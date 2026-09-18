@@ -1,0 +1,579 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Schema Engineering 宣讲本</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,300;1,6..72,400&family=Noto+Serif+SC:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap">
+<style>
+:root{
+  --paper:#F1F0F4; --paper-2:#E6E4EC; --stage:#D3D1DC;
+  --ink:#26252B; --ink-2:#5C5A66; --ink-3:#8E8C99; --ink-4:#B9B7C2;
+  --rule:#C9C7D2; --rule-2:#DEDCE6;
+  --zhu:#A83A22; --hl:#F0DC6A;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --paper:#17161D; --paper-2:#211F29; --stage:#0B0A0E;
+    --ink:#E6E4EC; --ink-2:#A8A5B4; --ink-3:#777482; --ink-4:#514E5C;
+    --rule:#35333F; --rule-2:#282631;
+    --zhu:#E4795C; --hl:#9C8420;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#17161D; --paper-2:#211F29; --stage:#0B0A0E;
+  --ink:#E6E4EC; --ink-2:#A8A5B4; --ink-3:#777482; --ink-4:#514E5C;
+  --rule:#35333F; --rule-2:#282631;
+  --zhu:#E4795C; --hl:#9C8420;
+}
+
+*,*::before,*::after{box-sizing:border-box}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.001ms!important;transition-duration:.001ms!important}}
+
+html,body{height:100%}
+body{
+  margin:0;background:var(--stage);color:var(--ink);overflow:hidden;
+  font-family:"Newsreader","Noto Serif SC","Songti SC",Georgia,serif;
+  font-synthesis:none;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+}
+.mono{font-family:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;font-variant-numeric:tabular-nums}
+
+/* ── 台 ───────────────────────────────────── */
+.stage{position:fixed;inset:0 0 44px 0;display:grid;place-items:center;overflow:hidden}
+.slide{
+  position:absolute;width:1280px;height:720px;background:var(--paper);
+  padding:52px 76px 44px;display:none;flex-direction:column;
+  transform-origin:center center;
+}
+.slide.on{display:flex;animation:sin .22s ease both}
+@keyframes sin{from{opacity:0}to{opacity:1}}
+
+/* ── 条文头 ───────────────────────────────── */
+.sh{display:flex;justify-content:space-between;align-items:baseline;
+    border-top:2px solid var(--ink);padding-top:11px}
+.sh .l{font-family:"JetBrains Mono",ui-monospace,monospace;font-size:12px;letter-spacing:.1em;color:var(--ink-3)}
+.sh .r{font-family:"Newsreader",serif;font-style:italic;font-size:14px;color:var(--ink-3)}
+
+h2{margin:0;font-weight:500;font-size:40px;line-height:1.26;letter-spacing:-.014em;text-wrap:balance}
+h2 .no{font-family:"JetBrains Mono",ui-monospace,monospace;font-size:13px;font-weight:500;
+       color:var(--zhu);letter-spacing:.02em;display:block;margin-bottom:14px}
+.lede{margin:0;font-size:18.5px;line-height:1.72;color:var(--ink-2);max-width:74ch}
+.cap{font-family:"JetBrains Mono",ui-monospace,monospace;font-size:10.5px;letter-spacing:.16em;color:var(--ink-3)}
+.cap.z{color:var(--zhu)}
+
+.prop{display:grid;grid-template-columns:56px 1fr;gap:0 14px;align-items:baseline}
+.prop .p{font-family:"JetBrains Mono",ui-monospace,monospace;font-size:12.5px;color:var(--zhu);transform:translateY(-.12em)}
+.prop .s{font-size:23px;line-height:1.6;font-weight:500;color:var(--ink)}
+.prop .s em{display:block;font-style:normal}
+
+.big{font-family:"JetBrains Mono",ui-monospace,monospace;font-size:62px;font-weight:500;
+     line-height:1;color:var(--ink);font-variant-numeric:tabular-nums;letter-spacing:-.03em}
+.big small{font-size:20px;font-weight:400;color:var(--ink-3);letter-spacing:0}
+
+table{border-collapse:collapse;width:100%;font-size:15px;line-height:1.62}
+th{font-family:"JetBrains Mono",ui-monospace,monospace;font-size:10.5px;font-weight:500;letter-spacing:.14em;
+   color:var(--ink-3);text-align:left;padding:0 16px 10px 0;border-bottom:2px solid var(--ink);white-space:nowrap}
+td{padding:12px 16px 12px 0;border-bottom:1px solid var(--rule-2);vertical-align:top;color:var(--ink-2)}
+th:last-child,td:last-child{padding-right:0}
+td.h{color:var(--ink);font-weight:500}
+
+pre{margin:0;font-family:"JetBrains Mono",ui-monospace,monospace;font-size:12.5px;line-height:1.9;color:var(--ink)}
+code{font-family:"JetBrains Mono",ui-monospace,monospace;font-size:13px;background:var(--paper-2);padding:4px 8px;border-radius:2px}
+
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-top:2px solid var(--ink)}
+.grid3 > span{font-size:16.5px;line-height:1.5;color:var(--ink);padding:19px 22px 19px 0;
+              border-bottom:1px solid var(--rule-2);border-right:1px solid var(--rule-2)}
+.grid3 > span:nth-child(3n){border-right:0;padding-right:0}
+.grid3 > span:nth-child(3n+2){padding-left:22px}
+.grid3 > span:nth-child(3n){padding-left:22px}
+
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:0 52px}
+.duo ul{list-style:none;margin:0;padding:0}
+.duo li{padding:12px 0;border-bottom:1px solid var(--rule-2);font-size:15.5px;line-height:1.55;color:var(--ink-2)}
+.duo .cap{display:block;padding-bottom:10px;border-bottom:2px solid var(--ink)}
+.duo .cap.z{border-bottom-color:var(--zhu)}
+
+.tree{display:flex;flex-direction:column;gap:10px}
+.tree .lv{border-left:1px solid var(--ink-4);margin-left:9px;padding-top:10px;display:flex;flex-direction:column;gap:10px}
+.tree .it{display:flex;align-items:center}
+.tree .it i{width:16px;height:1px;background:var(--ink-4);display:block}
+.tree .it b{font-weight:400;font-size:15.5px;color:var(--ink);padding-left:10px}
+.tree .it b.s{font-weight:600}
+.tree .it u{text-decoration:none;font-size:12.5px;color:var(--ink-3);padding-left:12px}
+
+.s-prin td{padding-top:8.5px;padding-bottom:8.5px}
+.s-prin .big{font-size:52px}
+
+.foot{margin-top:auto;border-top:1px solid var(--rule);padding-top:13px;
+      display:flex;justify-content:space-between;align-items:baseline;gap:32px}
+.foot .n{font-family:"Newsreader",serif;font-style:italic;font-size:13.5px;color:var(--ink-3);max-width:88ch}
+.foot .s{font-family:"JetBrains Mono",ui-monospace,monospace;font-size:11.5px;color:var(--ink-3);white-space:nowrap}
+
+/* ── 卷次栏 ───────────────────────────────── */
+.rail{position:fixed;inset:auto 0 0 0;height:44px;background:var(--paper);border-top:1px solid var(--rule);
+      display:flex;align-items:stretch;padding:0 14px;gap:2px;z-index:30}
+.rail button{flex:1;background:none;border:0;padding:0;cursor:pointer;position:relative;
+             font-family:"JetBrains Mono",ui-monospace,monospace;font-size:10px;color:var(--ink-4);
+             display:flex;align-items:center;justify-content:center;letter-spacing:.06em}
+.rail button::before{content:"";position:absolute;left:2px;right:2px;top:0;height:2px;background:var(--rule)}
+.rail button:hover{color:var(--ink-2)}
+.rail button:hover::before{background:var(--ink-4)}
+.rail button[aria-current="true"]{color:var(--ink)}
+.rail button[aria-current="true"]::before{background:var(--zhu)}
+.rail button[data-done="1"]::before{background:var(--ink-4)}
+.rail .hint{display:flex;align-items:center;padding-left:16px;white-space:nowrap;
+            font-family:"JetBrains Mono",ui-monospace,monospace;font-size:10px;color:var(--ink-4);letter-spacing:.08em}
+button:focus-visible{outline:2px solid var(--zhu);outline-offset:-3px}
+
+/* ── 总览 ─────────────────────────────────── */
+.ov{position:fixed;inset:0;background:var(--stage);z-index:50;display:none;overflow:auto;padding:36px}
+.ov.on{display:block}
+.ov h3{margin:0 0 26px;font-family:"JetBrains Mono",ui-monospace,monospace;font-size:11px;
+       letter-spacing:.18em;color:var(--ink-3);font-weight:500}
+.ov .g{display:grid;grid-template-columns:repeat(auto-fill,minmax(268px,1fr));gap:24px}
+.ov .c{cursor:pointer;background:none;border:0;padding:0;text-align:left;display:flex;flex-direction:column;gap:9px}
+.ov .thumb{position:relative;width:100%;aspect-ratio:16/9;overflow:hidden;background:var(--paper);
+           border:1px solid var(--rule);outline-offset:2px}
+.ov .c[aria-current="true"] .thumb{border-color:var(--zhu);box-shadow:0 0 0 1px var(--zhu)}
+.ov .thumb > .mini{position:absolute;top:0;left:0;width:1280px;height:720px;transform-origin:top left;
+                   display:flex;flex-direction:column;padding:52px 76px 44px;background:var(--paper);pointer-events:none}
+.ov .lab{font-family:"JetBrains Mono",ui-monospace,monospace;font-size:11px;color:var(--ink-3);
+         display:flex;gap:10px;align-items:baseline}
+.ov .lab b{color:var(--ink);font-weight:500;font-family:"Newsreader","Noto Serif SC",serif;font-size:13.5px}
+
+/* ── 竖屏提示 ─────────────────────────────── */
+.rot{display:none;position:fixed;inset:auto 0 44px 0;padding:9px 16px;background:var(--paper-2);
+     border-top:1px solid var(--rule);z-index:29;
+     font-family:"JetBrains Mono",ui-monospace,monospace;font-size:10.5px;color:var(--ink-2);text-align:center}
+@media (orientation:portrait) and (max-width:820px){.rot{display:block}}
+
+@media print{
+  body{overflow:visible;background:#fff}
+  .rail,.ov,.rot{display:none}
+  .stage{position:static;inset:auto;display:block;overflow:visible}
+  .slide{display:flex!important;position:static;transform:none!important;page-break-after:always;
+         border:0;width:100%;height:100vh}
+  @page{size:landscape}
+}
+</style>
+
+<div class="stage" id="stage">
+<!-- 1 封面 -->
+<section class="slide" data-rail="封" data-name="定本 · 宣讲本">
+  <div class="sh"><span class="l">Schema Engineering</span><span class="r">Canon · Edition 2026-08-24</span></div>
+  <div style="flex:1;display:grid;grid-template-columns:1fr 400px;gap:0 76px;align-items:center;padding:26px 0">
+    <div style="display:flex;flex-direction:column;gap:28px">
+      <span class="cap z">定本 · 宣讲本</span>
+      <h1 style="margin:0;font-size:74px;line-height:1.04;font-weight:300;letter-spacing:-.026em">Schema<br>Engineering</h1>
+      <p class="lede" style="max-width:34ch;font-size:20px">当概率模型进入专业工作后，工作本身应当以什么对象、状态、契约、执行和裁决结构持续存在？</p>
+    </div>
+    <div style="display:flex;flex-direction:column">
+      <span class="cap" style="padding-bottom:11px;border-bottom:2px solid var(--ink)">本讲取定本八节</span>
+      <table><tbody>
+        <tr><td class="h mono" style="width:52px">§0</td><td class="h">定本位置</td></tr>
+        <tr><td class="h mono">§1</td><td class="h">定义</td></tr>
+        <tr><td class="h mono">§4</td><td class="h">Matter，而不是 Session</td></tr>
+        <tr><td class="h mono">§5</td><td class="h">Runtime Ontology</td></tr>
+        <tr><td class="h mono">§6</td><td class="h">状态连续性</td></tr>
+        <tr><td class="h mono">§7</td><td class="h">Contract Discipline</td></tr>
+        <tr><td class="h mono">§11</td><td class="h">双重折旧</td></tr>
+        <tr><td class="h mono">§14</td><td class="h">Canonical Principles</td></tr>
+      </tbody></table>
+    </div>
+  </div>
+  <div class="foot"><span class="n">法律可以提供高要求的实例，但不是理论边界。</span><span class="s">← → 翻页　O 总览　F 全屏</span></div>
+</section>
+
+<!-- 2 §0 -->
+<section class="slide" data-rail="0" data-name="定本位置">
+  <div class="sh"><span class="l">§0　定本位置</span><span class="r">Schema Engineering</span></div>
+  <div style="flex:1;display:flex;flex-direction:column;justify-content:center;gap:44px;padding:20px 0">
+    <h2 style="max-width:26ch;font-size:46px"><span class="no">§0</span>工作本身应当以什么结构持续存在？</h2>
+    <div class="duo" style="gap:0 60px">
+      <div>
+        <span class="cap">本文接受的两条前提</span>
+        <ul>
+          <li>经验性判断必须保留证据等级——独立复现、独立 benchmark、含负面结果的 technical report、self-benchmark、community observation 与产品推论，不能被统一称为「已验证」。</li>
+          <li>系统能力是 Model、Runtime、Environment、Context、Contract 与 Evaluator 的<b style="color:var(--ink);font-weight:600">交互结果</b>；同一改动在不同模型上可能方向相反。</li>
+        </ul>
+      </div>
+      <div>
+        <span class="cap">法律是高要求的实例，不是边界</span>
+        <ul>
+          <li>事实需要来源</li>
+          <li>行动受权限约束</li>
+          <li>成果需要审阅</li>
+          <li>责任不能交给模型自行宣布</li>
+        </ul>
+        <p class="lede" style="font-size:15px;padding-top:14px">同样的要求见于财务、医疗、咨询、研究、工程、合规与审计。</p>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span class="n">修订後 §0 由九段缩至四段：撇清语已删，划界交由 §1 与 §14 承担。</span><span class="s">§0</span></div>
+</section>
+
+<!-- 3 §1 -->
+<section class="slide" data-rail="1" data-name="定义">
+  <div class="sh"><span class="l">§1　定义</span><span class="r">Schema Engineering</span></div>
+  <div style="padding:30px 0 26px">
+    <div class="prop"><span class="p">定义</span><span class="s" style="font-size:26px;max-width:56ch">Schema Engineering 是把专业工作的语义、状态、责任与裁决边界，编译为可版本化、可执行、可验证、可恢复的契约，使概率模型能够参与工作，而工作本身不依赖某一次模型输出、某段对话或某个专家的隐性补位。</span></div>
+  </div>
+  <div style="display:flex;justify-content:space-between;align-items:flex-end;padding-bottom:16px">
+    <p class="lede" style="max-width:60ch;font-size:16.5px">「编译」不是把全部专业知识形式化，也不是把专家替换成规则。它只要求把对委派真正必要的边界变得明确——</p>
+    <span class="big">9<small>　项边界</small></span>
+  </div>
+  <div class="grid3">
+    <span>正在处理什么工作对象</span><span>谁承担什么责任</span><span>可以读取和改变什么</span>
+    <span>哪些主张需要证据</span><span>当前状态是什么</span><span>什么条件才算完成</span>
+    <span>哪些判断可以由系统裁决</span><span>哪些判断必须由人承担</span><span>修改、批准与升级如何改变正式成果</span>
+  </div>
+  <div class="foot"><span class="n">Schema 不是 JSON 的同义词，而是专业工作从概率性探索进入组织性承诺时的中间表示与契约纪律。</span><span class="s">§1</span></div>
+</section>
+
+<!-- 4 §4 -->
+<section class="slide" data-rail="4" data-name="Matter，而不是 Session">
+  <div class="sh"><span class="l">§4　Matter，而不是 Session</span><span class="r">Schema Engineering</span></div>
+  <div style="padding:28px 0 24px;display:flex;justify-content:space-between;align-items:flex-end;gap:48px">
+    <h2 style="max-width:24ch"><span class="no">§4</span>用户管理的是事项，不是会话</h2>
+    <p class="lede" style="max-width:40ch;font-size:16.5px;padding-bottom:6px">Matter 应能跨模型、跨会话、跨人员继续存在。Conversation 只是它内部的一种 interaction surface。</p>
+  </div>
+  <div class="duo" style="gap:0 52px">
+    <div>
+      <span class="cap">Chat 产品让用户管理</span>
+      <ul>
+        <li>new chat　·　history　·　title</li>
+        <li>branch　·　memory　·　context</li>
+      </ul>
+    </div>
+    <div>
+      <span class="cap z">Professional Work 产品让用户管理</span>
+      <ul>
+        <li>事项　·　材料　·　问题</li>
+        <li>成果　·　证据　·　修订与批准</li>
+      </ul>
+    </div>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:16px;padding-top:34px">
+    <div class="prop"><span class="p">P1</span><span class="s">Session 是基础设施对象，Matter 才是用户对象。</span></div>
+    <div class="prop"><span class="p">P2</span><span class="s">Conversation 是交互表面，不是工作本体。</span></div>
+  </div>
+  <div class="foot"><span class="n">这并不要求所有长期对话都被称为 Work——共享 runtime primitives，不必共享证据、完成、权限与责任语义。</span><span class="s">§4</span></div>
+</section>
+
+<!-- 5 §5 -->
+<section class="slide" data-rail="5" data-name="Runtime Ontology">
+  <div class="sh"><span class="l">§5　Professional Work Runtime Ontology</span><span class="r">Schema Engineering</span></div>
+  <div style="padding:26px 0 22px;display:flex;justify-content:space-between;align-items:flex-end;gap:48px">
+    <h2 style="max-width:26ch"><span class="no">§5</span>九个一等对象</h2>
+    <span class="big">9<small>　个一等对象</small></span>
+  </div>
+  <div style="display:grid;grid-template-columns:496px 1fr;gap:0 64px">
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <span class="cap" style="padding-bottom:10px;border-bottom:2px solid var(--ink)">对象树</span>
+      <div class="tree">
+        <div style="font-size:20px;font-weight:600;color:var(--ink)">Matter</div>
+        <div class="lv">
+          <div class="it"><i></i><b>Resources / Context</b></div>
+          <div class="it"><i></i><b>Assignment / Work Contract</b></div>
+          <div class="it"><i></i><b class="s">Operator</b><u>承担一项稳定责任</u></div>
+          <div class="lv">
+            <div class="it"><i></i><b class="s">Lane</b><u>并行，不是委派</u></div>
+            <div class="lv"><div class="it"><i></i><b class="s">Run</b><u>一次 activation</u></div></div>
+            <div class="it"><i></i><b>Delegated Operator</b></div>
+          </div>
+          <div class="it"><i></i><b>Event Ledger</b><u>What happened</u></div>
+          <div class="it"><i></i><b>Semantic State</b><u>What is happening now</u></div>
+          <div class="it"><i></i><b>Evidence</b></div>
+          <div class="it"><i></i><b>Artifacts</b></div>
+          <div class="it"><i></i><b>Review</b></div>
+          <div class="lv"><div class="it"><i></i><b>Revision / Outcome</b></div></div>
+        </div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:26px">
+      <div>
+        <span class="cap" style="display:block;padding-bottom:10px;border-bottom:2px solid var(--ink)">三个最易混的对象</span>
+        <table><tbody>
+          <tr><td class="h" style="width:106px">Operator</td><td>责任。只有 responsibility、scope、tools、authority、completion、escalation 同时相对独立，才值得新建一个。</td></tr>
+          <tr><td class="h">Lane</td><td>并行。并行调用、检索线程或后台任务不自动等于 Multi-agent。</td></tr>
+          <tr><td class="h">Run</td><td>一次 activation。Run 结束不等于 Assignment 完成，更不等于 Matter 结束。</td></tr>
+        </tbody></table>
+      </div>
+      <div class="prop"><span class="p">P3</span><span class="s" style="font-size:20px">Transcript 是执行证据，不是 canonical work state。</span></div>
+    </div>
+  </div>
+  <div class="foot"><span class="n">Canonical state 存在于 artifacts、schema instances、evidence graph、issue state、completion ledger、revision state 与 approved decisions 中。</span><span class="s">§5</span></div>
+</section>
+
+<!-- 6 §6 -->
+<section class="slide" data-rail="6" data-name="状态连续性">
+  <div class="sh"><span class="l">§6　状态连续性与 Context Projection</span><span class="r">Schema Engineering</span></div>
+  <div style="padding:26px 0 22px;display:flex;justify-content:space-between;align-items:flex-end;gap:48px">
+    <h2 style="max-width:28ch"><span class="no">§6</span>三个问题不能由同一个 transcript 承担</h2>
+    <span class="big">3<small>　层</small></span>
+  </div>
+  <table>
+    <tbody>
+      <tr>
+        <td class="mono" style="width:214px;font-size:11px;letter-spacing:.1em;color:var(--ink-3);padding-top:19px;padding-bottom:19px">WHAT HAPPENED?</td>
+        <td class="h" style="width:216px;padding-top:19px;padding-bottom:19px">Tier 3　Raw History</td>
+        <td style="padding-top:19px;padding-bottom:19px">完整 transcript、原始材料、工具轨迹、低层 Event、旧版本成果。<b style="color:var(--ink);font-weight:600">默认可检索，而非全量注入。</b></td>
+      </tr>
+      <tr>
+        <td class="mono" style="font-size:11px;letter-spacing:.1em;color:var(--ink-3);padding-top:19px;padding-bottom:19px">WHAT IS HAPPENING?</td>
+        <td class="h" style="padding-top:19px;padding-bottom:19px">Tier 2　Semantic State</td>
+        <td style="padding-top:19px;padding-bottom:19px">当前事实、已确认判断、开放问题、evidence、coverage、artifact version、decision、pending review。</td>
+      </tr>
+      <tr>
+        <td class="mono" style="font-size:11px;letter-spacing:.1em;color:var(--ink-3);padding-top:19px;padding-bottom:19px">WHAT GOVERNS IT?</td>
+        <td class="h" style="padding-top:19px;padding-bottom:19px">Tier 1　Stable Contract</td>
+        <td style="padding-top:19px;padding-bottom:19px">role、institution policy、assignment semantics、professional schema、permissions、tool authority。</td>
+      </tr>
+      <tr>
+        <td class="mono" style="font-size:11px;letter-spacing:.1em;color:var(--zhu);padding-top:19px;padding-bottom:19px">WHAT SHOULD THE MODEL SEE NOW?</td>
+        <td class="h" style="color:var(--zhu);padding-top:19px;padding-bottom:19px">Context Projection</td>
+        <td style="padding-top:19px;padding-bottom:19px">Runtime 依当前 Operator、Lane、Assignment 与任务阶段生成的<b style="color:var(--ink);font-weight:600">临时视图</b>。可变化、可压缩、可替换；canonical state 不随其丢失。</td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="prop" style="padding-top:28px"><span class="p">P4</span><span class="s" style="font-size:21px;max-width:70ch">连续性应建立在 stable contract、current semantic state 与 retrievable history 上，而不是不断压缩 chronology。</span></div>
+  <div class="foot"><span class="n">Memory 不应被设计成一个不断增长的「模型记忆罐」。真正重要的是工作状态的外部化、检索权与语义投影。</span><span class="s">§6</span></div>
+</section>
+
+<!-- 7 §7 -->
+<section class="slide" data-rail="7" data-name="Contract Discipline">
+  <div class="sh"><span class="l">§7　Contract Discipline</span><span class="r">Schema Engineering</span></div>
+  <div style="padding:26px 0 20px;display:flex;justify-content:space-between;align-items:flex-end;gap:48px">
+    <h2 style="max-width:26ch"><span class="no">§7</span>一组互补契约，不是一个万能 schema</h2>
+    <span class="big">6<small>　种契约</small></span>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 396px;gap:0 60px">
+    <table><tbody>
+      <tr><td class="h" style="width:208px">Work Contract</td><td>约束一项工作的契约集合；可被版本化并由 Runtime 执行</td></tr>
+      <tr><td class="h">Evidence Contract</td><td>正式主张须关联 machine-readable provenance；须区分事实、推论、偏好、策略与人类裁决</td></tr>
+      <tr><td class="h">Completion Contract</td><td>在模型之外维护：deliverables、coverage、unresolved questions、evidence gaps、approvals</td></tr>
+      <tr><td class="h">Authority Contract</td><td>谁能读取、修改、批准、发布、执行与撤销什么</td></tr>
+      <tr><td class="h">Artifact Contract</td><td>成果类型、结构、版本、状态、引用关系、审批条件与下游可用性</td></tr>
+      <tr><td class="h">Review / Escalation</td><td>issue + evidence + alternatives + recommendation + reason</td></tr>
+    </tbody></table>
+    <div style="display:flex;flex-direction:column;gap:26px">
+      <div>
+        <span class="cap" style="display:block;padding-bottom:11px;border-bottom:2px solid var(--ink)">技术权限翻译为业务语义</span>
+        <div style="display:grid;grid-template-columns:36px 1fr;gap:11px 10px;padding-top:15px;align-items:center">
+          <span class="mono" style="font-size:11px;color:var(--ink-3)">不是</span><code style="color:var(--ink-3)">Allow write_file?</code>
+          <span class="mono" style="font-size:11px;color:var(--zhu)">而是</span><code>Accept this revision?</code>
+          <span class="mono" style="font-size:11px;color:var(--ink-3)">不是</span><code style="color:var(--ink-3)">Run external tool?</code>
+          <span class="mono" style="font-size:11px;color:var(--zhu)">而是</span><code>Send this to the client?</code>
+        </div>
+      </div>
+      <div class="prop"><span class="p">P7</span><span class="s" style="font-size:18.5px">Provenance 应当是 state，而不是装饰性 prose。无锚，不进入需要事实承诺的正式状态。</span></div>
+    </div>
+  </div>
+  <div class="foot"><span class="n">P5　探索可以概率化和扩张；承诺必须被收敛、定位、版本化并承担责任。</span><span class="s">§7</span></div>
+</section>
+
+<!-- 8 §11 -->
+<section class="slide" data-rail="11" data-name="双重折旧">
+  <div class="sh"><span class="l">§11　折旧、Eval 与模型战略</span><span class="r">Schema Engineering</span></div>
+  <div style="padding:28px 0 24px;display:flex;justify-content:space-between;align-items:flex-end;gap:48px">
+    <h2 style="max-width:26ch"><span class="no">§11.1</span>Scaffold 与语义有不同的寿命</h2>
+    <span class="big">2<small>　条曲线</small></span>
+  </div>
+  <div class="duo" style="gap:0 60px">
+    <div>
+      <span class="cap z">应主动删除　·　面向模型的 scaffold</span>
+      <ul>
+        <li>explicit reasoning recipes</li>
+        <li>model-specific prompt tricks</li>
+        <li>过细 workflow instruction</li>
+        <li>某一 checkpoint 的 tool workaround</li>
+        <li>仅为补偿当前模型缺陷的 context orchestration</li>
+      </ul>
+    </div>
+    <div>
+      <span class="cap">应谨慎保留　·　面向人与系统的语义</span>
+      <ul>
+        <li>artifact semantics　·　provenance</li>
+        <li>authority　·　permissions</li>
+        <li>canonical state　·　completion</li>
+        <li>review　·　audit</li>
+        <li>institution policy　·　rights</li>
+      </ul>
+    </div>
+  </div>
+  <div class="prop" style="padding-top:30px"><span class="p">P13</span><span class="s">Delete scaffolding aggressively; preserve semantics deliberately.</span></div>
+  <div class="foot"><span class="n">更强模型应当能够淘汰其中一部分实现，而不是被迫证明所有既有 scaffold 永久必要。产品即使从未训练任何模型，也必须能产生真实价值。</span><span class="s">§11</span></div>
+</section>
+
+<!-- 9 §14 -->
+<section class="slide s-prin" data-rail="14" data-name="Canonical Principles">
+  <div class="sh"><span class="l">§14　Canonical Principles</span><span class="r">Schema Engineering</span></div>
+  <div style="padding:18px 0 16px;display:flex;justify-content:space-between;align-items:flex-end;gap:48px">
+    <h2 style="max-width:30ch;font-size:34px"><span class="no">§14</span>全书原则的索引</h2>
+    <span class="big">16<small>　条</small></span>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:0 56px">
+    <table><tbody>
+      <tr><td class="h mono" style="width:44px;color:var(--zhu)">P1</td><td class="h" style="font-size:14.5px;line-height:1.5">Matter over Session.</td><td class="mono" style="width:70px;text-align:right;font-size:11.5px;white-space:nowrap">§4</td></tr>
+      <tr><td class="h mono" style="width:44px;color:var(--zhu)">P2</td><td class="h" style="font-size:14.5px;line-height:1.5">Conversation is an interaction surface, not the product ontology.</td><td class="mono" style="width:70px;text-align:right;font-size:11.5px;white-space:nowrap">§4</td></tr>
+      <tr><td class="h mono" style="width:44px;color:var(--zhu)">P3</td><td class="h" style="font-size:14.5px;line-height:1.5">Transcript is evidence of execution, not canonical work state.</td><td class="mono" style="width:70px;text-align:right;font-size:11.5px;white-space:nowrap">§5.7</td></tr>
+      <tr><td class="h mono" style="width:44px;color:var(--zhu)">P4</td><td class="h" style="font-size:14.5px;line-height:1.5">Continuity comes from stable contracts, current semantic state and retrievable history.</td><td class="mono" style="width:70px;text-align:right;font-size:11.5px;white-space:nowrap">§6.3</td></tr>
+      <tr><td class="h mono" style="width:44px;color:var(--zhu)">P5</td><td class="h" style="font-size:14.5px;line-height:1.5">Read wide; write narrow.</td><td class="mono" style="width:70px;text-align:right;font-size:11.5px;white-space:nowrap">§7.1</td></tr>
+      <tr><td class="h mono" style="width:44px;color:var(--zhu)">P6</td><td class="h" style="font-size:14.5px;line-height:1.5">Model proposes; systems enforce invariants; evaluators measure specified semantics; humans adjudicate irreducible judgment.</td><td class="mono" style="width:70px;text-align:right;font-size:11.5px;white-space:nowrap">§3.3</td></tr>
+      <tr><td class="h mono" style="width:44px;color:var(--zhu)">P7</td><td class="h" style="font-size:14.5px;line-height:1.5">Provenance is state, not prose.</td><td class="mono" style="width:70px;text-align:right;font-size:11.5px;white-space:nowrap">§7.2</td></tr>
+      <tr><td class="h mono" style="width:44px;color:var(--zhu)">P8</td><td class="h" style="font-size:14.5px;line-height:1.5">Completion must exist outside the model’s self-assessment.</td><td class="mono" style="width:70px;text-align:right;font-size:11.5px;white-space:nowrap">§7.3<span style="color:var(--ink-4)"> ·行文</span></td></tr>
+    </tbody></table>
+    <table><tbody>
+      <tr><td class="h mono" style="width:44px;color:var(--zhu)">P9</td><td class="h" style="font-size:14.5px;line-height:1.5">Lane is parallelism; Operator is responsibility.</td><td class="mono" style="width:70px;text-align:right;font-size:11.5px;white-space:nowrap">§5.4<span style="color:var(--ink-4)"> ·行文</span></td></tr>
+      <tr><td class="h mono" style="width:44px;color:var(--zhu)">P10</td><td class="h" style="font-size:14.5px;line-height:1.5">Agent complexity should be absorbed by the product.</td><td class="mono" style="width:70px;text-align:right;font-size:11.5px;white-space:nowrap">§8</td></tr>
+      <tr><td class="h mono" style="width:44px;color:var(--zhu)">P11</td><td class="h" style="font-size:14.5px;line-height:1.5">Capture first, infer later, promote selectively.</td><td class="mono" style="width:70px;text-align:right;font-size:11.5px;white-space:nowrap">§9</td></tr>
+      <tr><td class="h mono" style="width:44px;color:var(--zhu)">P12</td><td class="h" style="font-size:14.5px;line-height:1.5">Production traces reveal real distributions; synthetic environments expand them.</td><td class="mono" style="width:70px;text-align:right;font-size:11.5px;white-space:nowrap">§10</td></tr>
+      <tr><td class="h mono" style="width:44px;color:var(--zhu)">P13</td><td class="h" style="font-size:14.5px;line-height:1.5">Delete scaffolding aggressively; preserve semantics deliberately.</td><td class="mono" style="width:70px;text-align:right;font-size:11.5px;white-space:nowrap">§11.1</td></tr>
+      <tr><td class="h mono" style="width:44px;color:var(--zhu)">P14</td><td class="h" style="font-size:14.5px;line-height:1.5">Eval infrastructure compounds; individual eval items saturate.</td><td class="mono" style="width:70px;text-align:right;font-size:11.5px;white-space:nowrap">§11.2</td></tr>
+      <tr><td class="h mono" style="width:44px;color:var(--zhu)">P15</td><td class="h" style="font-size:14.5px;line-height:1.5">Post-training is optional and downstream of a working product.</td><td class="mono" style="width:70px;text-align:right;font-size:11.5px;white-space:nowrap">§11.4<span style="color:var(--ink-4)"> ·行文</span></td></tr>
+      <tr><td class="h mono" style="width:44px;color:var(--zhu)">P16</td><td class="h" style="font-size:14.5px;line-height:1.5">Do not train what can be reliably validated; do not globalize what is local preference; do not automate what remains irreducibly accountable.</td><td class="mono" style="width:70px;text-align:right;font-size:11.5px;white-space:nowrap">—<span style="color:var(--ink-4)"> ·行文</span></td></tr>
+    </tbody></table>
+  </div>
+  <div class="foot"><span class="n">正文中的定本命题标 P 号，与本表双向可查——引用块因此只承担一种功能。标「行文」者只在正文行文中成立。</span><span class="s">§14</span></div>
+</section>
+
+<!-- 10 收 -->
+<section class="slide" data-rail="收" data-name="产品定义">
+  <div class="sh"><span class="l">收束</span><span class="r">Schema Engineering · Canon</span></div>
+  <div style="flex:1;display:flex;flex-direction:column;justify-content:center;gap:40px">
+    <span class="cap z">无 buzzword 的产品定义</span>
+    <p style="margin:0;font-size:33px;line-height:1.62;font-weight:500;max-width:44ch;color:var(--ink)">Professional Work Runtime 是一种以长期工作事项和正式成果为中心的系统：模型在可执行契约下完成工作，系统在对话之外维护状态、证据、权限、完成条件与可恢复历史，人只在需要专业责任的节点进行裁决。</p>
+    <p class="lede" style="max-width:66ch;font-size:16.5px">本理论足以定义一种独立的产品范式，但尚不足以证明一个天然成立的横向市场品类。Courtwork 是法律方向的实现；它不构成本理论的证据闭环，也不限制理论的外延。</p>
+  </div>
+  <div class="foot"><span class="n">Status: Canon　·　Edition 2026-08-24　·　版次只出现于牌记，不入标题、不入正文。</span><span class="s">§13</span></div>
+</section>
+
+</div>
+
+<div class="rot">横屏观看　·　或按 O 打开总览</div>
+
+<nav class="rail" id="rail" aria-label="卷次"></nav>
+
+<div class="ov" id="ov">
+  <h3>总览　·　点选跳转　·　ESC 返回</h3>
+  <div class="g" id="ovGrid"></div>
+</div>
+<script>
+(function () {
+  var stage  = document.getElementById('stage');
+  var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+  var rail   = document.getElementById('rail');
+  var ov     = document.getElementById('ov');
+  var ovGrid = document.getElementById('ovGrid');
+  var i = 0, ovBuilt = false;
+
+  /* 卷次栏 */
+  slides.forEach(function (s, n) {
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.textContent = s.dataset.rail;
+    b.title = s.dataset.name;
+    b.setAttribute('aria-label', '第 ' + (n + 1) + ' 屏：' + s.dataset.name);
+    b.addEventListener('click', function () { go(n); });
+    rail.appendChild(b);
+  });
+  var railBtns = Array.prototype.slice.call(rail.querySelectorAll('button'));
+
+  function fit() {
+    var w = window.innerWidth, h = window.innerHeight - 44;
+    var k = Math.min((w - 32) / 1280, (h - 24) / 720);
+    slides.forEach(function (s) { s.style.transform = 'scale(' + k + ')'; });
+  }
+
+  function go(n) {
+    i = Math.max(0, Math.min(slides.length - 1, n));
+    slides.forEach(function (s, k) { s.classList.toggle('on', k === i); });
+    railBtns.forEach(function (b, k) {
+      b.setAttribute('aria-current', k === i ? 'true' : 'false');
+      b.dataset.done = k < i ? '1' : '0';
+    });
+    if (ovBuilt) {
+      Array.prototype.slice.call(ovGrid.children).forEach(function (c, k) {
+        c.setAttribute('aria-current', k === i ? 'true' : 'false');
+      });
+    }
+    var hash = '#' + (i + 1);
+    if (location.hash !== hash) history.replaceState(null, '', hash);
+    fit();
+  }
+
+  function buildOverview() {
+    slides.forEach(function (s, n) {
+      var c = document.createElement('button');
+      c.type = 'button'; c.className = 'c';
+      c.innerHTML = '<span class="thumb"></span><span class="lab"><span>' +
+        (n + 1) + '</span><b></b></span>';
+      c.querySelector('b').textContent = s.dataset.name;
+      var mini = s.cloneNode(true);
+      mini.className = 'mini';
+      mini.removeAttribute('id');
+      mini.style.display = 'flex';
+      mini.style.transform = '';
+      c.querySelector('.thumb').appendChild(mini);
+      c.addEventListener('click', function () { closeOv(); go(n); });
+      ovGrid.appendChild(c);
+    });
+    ovBuilt = true;
+  }
+
+  function scaleThumbs() {
+    Array.prototype.slice.call(ovGrid.querySelectorAll('.thumb')).forEach(function (t) {
+      var k = t.clientWidth / 1280;
+      t.querySelector('.mini').style.transform = 'scale(' + k + ')';
+    });
+  }
+
+  function openOv() {
+    if (!ovBuilt) buildOverview();
+    ov.classList.add('on');
+    scaleThumbs();
+    Array.prototype.slice.call(ovGrid.children).forEach(function (c, k) {
+      c.setAttribute('aria-current', k === i ? 'true' : 'false');
+    });
+  }
+  function closeOv() { ov.classList.remove('on'); }
+  function toggleOv() { ov.classList.contains('on') ? closeOv() : openOv(); }
+
+  document.addEventListener('keydown', function (e) {
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    var k = e.key;
+    if (k === 'ArrowRight' || k === 'PageDown' || k === ' ' || k === 'Enter') { e.preventDefault(); closeOv(); go(i + 1); }
+    else if (k === 'ArrowLeft' || k === 'PageUp' || k === 'Backspace') { e.preventDefault(); closeOv(); go(i - 1); }
+    else if (k === 'Home') { e.preventDefault(); closeOv(); go(0); }
+    else if (k === 'End') { e.preventDefault(); closeOv(); go(slides.length - 1); }
+    else if (k === 'o' || k === 'O') { e.preventDefault(); toggleOv(); }
+    else if (k === 'Escape') { closeOv(); }
+    else if (k === 'f' || k === 'F') {
+      e.preventDefault();
+      if (document.fullscreenElement) document.exitFullscreen();
+      else if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen();
+    }
+  });
+
+  stage.addEventListener('click', function (e) {
+    if (ov.classList.contains('on')) return;
+    go(e.clientX < window.innerWidth / 2 ? i - 1 : i + 1);
+  });
+
+  var tx = 0, ty = 0;
+  stage.addEventListener('touchstart', function (e) {
+    tx = e.changedTouches[0].clientX; ty = e.changedTouches[0].clientY;
+  }, { passive: true });
+  stage.addEventListener('touchend', function (e) {
+    var dx = e.changedTouches[0].clientX - tx, dy = e.changedTouches[0].clientY - ty;
+    if (Math.abs(dx) > 44 && Math.abs(dx) > Math.abs(dy)) go(dx < 0 ? i + 1 : i - 1);
+  }, { passive: true });
+
+  window.addEventListener('resize', function () { fit(); if (ov.classList.contains('on')) scaleThumbs(); });
+  window.addEventListener('hashchange', function () {
+    var n = parseInt(location.hash.slice(1), 10);
+    if (n && n - 1 !== i) go(n - 1);
+  });
+
+  var start = parseInt(location.hash.slice(1), 10);
+  go(start ? start - 1 : 0);
+})();
+</script>

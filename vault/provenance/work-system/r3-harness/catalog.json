@@ -1,0 +1,424 @@
+{
+  "schema_version": "1.0",
+  "catalog_id": "work-system-toolchain-r3-harness",
+  "as_of": "2026-09-19",
+  "scope": {
+    "archive": "vault/archive/chat/work-system-toolchain-20260919-r3.json",
+    "archive_turn_id": "313c8106-e4a0-46fc-94f1-61fed0e45716",
+    "message_item_id": "cdf04d80-f999-4ac0-8ac7-4c89976c17d7",
+    "citation_indices": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+    "message_rule": "仅登记指定 agent message 的 16 个 citation index；同一 archive 的其他轮次不在本 catalog。",
+    "identity_rule": "导出内容只保留 citation placeholder，没有暴露历史原始 URL；sources 中的 URL 是本轮逐页检查的当前官方/社区一手页面，不宣称恢复了隐藏引用。",
+    "direct_browse": true,
+    "installation_policy": "register_only；未 fork、未安装依赖、未运行 Harness 或社区插件。"
+  },
+  "provenance_policy": {
+    "checked_at": "2026-09-19",
+    "original_url_status": "missing_original",
+    "supplemental_evidence": "每个 source URL 都实际打开或检索了 GitHub 一手页面；社区 Discussion 只作为复现报告，不能升级为上游保证。",
+    "claim_rule": "summary_zh 只写页面明确支持的事实；产品设计推论、社区自述和未能唯一定位的历史缺陷分别以 limits、note 和 support 标注。",
+    "version_rule": "版本号与发布日期仅从当前 release 页面登记，不继承历史 assistant 的无证据结论。",
+    "evidence_fields": "evidence_url 是实际读取的稳定公共地址；locator 使用页面章节/行段语义，避免依赖 web 工具内部引用编号。"
+  },
+  "sources": [
+    {
+      "slug": "deepseek-harness-repo",
+      "url": "https://github.com/deepseek-ai/deepseek-harness",
+      "title": "DeepSeek Harness README",
+      "official": true,
+      "status": "verified",
+      "evidence_url": "https://github.com/deepseek-ai/deepseek-harness",
+      "locator": "README: project description, Developer preview, Run from source, Community and support",
+      "summary_zh": "官方 README 将 dsh 定位为 DeepSeek AI 的开源 agent harness，采用 everything-is-a-plugin/Cordis 架构；明确写明 developer preview 和兼容性会破坏性变化，并要求源码运行前先 build。",
+      "limits": "README 是项目自述，不能替代某个 alpha 的 release notes、插件兼容矩阵或安全审计。",
+      "revisit_trigger": "决定锁定 Harness 版本、升级 alpha 或对外承诺稳定性时复查。",
+      "purpose_tags": ["BUILD", "GRAMMAR", "SCALE"],
+      "card_path": "vault/provenance/work-system/r3-harness/cards/deepseek-harness-repo.md"
+    },
+    {
+      "slug": "dsh-release-016-alpha2",
+      "url": "https://github.com/deepseek-ai/deepseek-harness/releases",
+      "title": "DeepSeek Harness v0.1.6-alpha.2 release",
+      "official": true,
+      "status": "verified",
+      "evidence_url": "https://github.com/deepseek-ai/deepseek-harness/releases",
+      "locator": "v0.1.6-alpha.2 release notes: release date/commit; 新增功能; 其他变更; v0.1.6-alpha.1 新增功能（Browser/Computer Use、MCP Resources、headless JSON）",
+      "summary_zh": "当前 release 页列出 v0.1.6-alpha.2，发布时间为 2026-09-17 13:30、commit ddefc45；说明插件管理页、实时启停、运行时解析/卸载、dsh <profile> 和多实例 Client Sessions，并列出文件变更卡片、Office/URL/Subagent/计划侧栏预览。alpha.1 条目另列 Browser Use、Computer Use、MCP Resources 与 headless JSON。",
+      "limits": "这是开发预览 release notes；功能被列出不等于跨平台、第三方插件或并发场景已稳定。",
+      "revisit_trigger": "新的 alpha/rc 发布、需要依赖具体版本、或要验证跨平台运行时行为时复查。",
+      "purpose_tags": ["BUILD", "GRAMMAR", "SCALE"],
+      "card_path": "vault/provenance/work-system/r3-harness/cards/dsh-release-016-alpha2.md"
+    },
+    {
+      "slug": "dsh-app-boot-profile",
+      "url": "https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/boot/app-boot/README.md",
+      "title": "@deepseek-ai/dsh-app-boot profiles and boot",
+      "official": true,
+      "status": "verified",
+      "evidence_url": "https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/boot/app-boot/README.md",
+      "locator": "Summary; Profiles; Startup and reload failures; Further Exploration",
+      "summary_zh": "app-boot 说明 dsh launcher 如何加载环境层、组合 profile bundles 与 patch、启动插件并报告失败；profile 位于 $DSH_HOME/profiles/<name>，由可安装 bundles 与 cordis.patch.yml 组成，web/headless/acp/sdk/sdk-minimal 是不同组合，缺少 bundle patch 声明会明确失败。",
+      "limits": "页面描述运行时组合和启动诊断，不证明社区包的质量、安全或长期兼容性。",
+      "revisit_trigger": "Profile manifest、patch 层级、HMR 或 runtime resolution 发生变化时复查。",
+      "purpose_tags": ["GRAMMAR", "BUILD", "SCALE"],
+      "card_path": "vault/provenance/work-system/r3-harness/cards/dsh-app-boot-profile.md"
+    },
+    {
+      "slug": "dsh-cli-profile-reference",
+      "url": "https://github.com/deepseek-ai/deepseek-harness/blob/master/apps/cli/reference/README.md",
+      "title": "dsh CLI behavior reference",
+      "official": true,
+      "status": "verified",
+      "evidence_url": "https://github.com/deepseek-ai/deepseek-harness/blob/master/apps/cli/reference/README.md",
+      "locator": "Profile boot; profile path and ordered bundle/patch layers; bundle resolution; source execution reference",
+      "summary_zh": "官方 CLI reference 定义 dsh --profile <name>、profile 目录、bundle 顺序和 profile/home/argv patch 层；内置 bundles 从安装解析，树外插件从 profile node_modules 解析，web/headless 首次使用可从模板初始化。",
+      "limits": "命令语法和层级是当前 master 的实现契约，不能据此承诺旧 alpha 或未构建源码的行为。",
+      "revisit_trigger": "脚手架命令、profile 初始化、bundle resolution 或源码运行方式升级时复查。",
+      "purpose_tags": ["GRAMMAR", "BUILD"],
+      "card_path": "vault/provenance/work-system/r3-harness/cards/dsh-cli-profile-reference.md"
+    },
+    {
+      "slug": "dsh-bundle-profile-composition",
+      "url": "https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/bundle/README.md",
+      "title": "Profile plugin bundles",
+      "official": true,
+      "status": "verified",
+      "evidence_url": "https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/bundle/README.md",
+      "locator": "Summary; Packages; Related documentation",
+      "summary_zh": "bundle README 规定每个 package 声明 dsh.bundle.patch，由 launcher 按顺序叠加成 dsh --profile 组合；web/headless/acp/sdk 基于 dsh-base，sdk-minimal 是完整树，树外 bundle 可通过 dsh plugin --profile <name> add 安装。",
+      "limits": "该页只定义 bundle 元数据和组合 grammar；不能单独证明某个 Computer Use 包实际声明了 dsh.bundle，或没有启动缺陷。",
+      "revisit_trigger": "新增 bundle、profile 层级或插件安装失败时复查 package manifest 与 app-boot 文档。",
+      "purpose_tags": ["GRAMMAR", "BUILD"],
+      "card_path": "vault/provenance/work-system/r3-harness/cards/dsh-bundle-profile-composition.md"
+    },
+    {
+      "slug": "dsh-home-paths",
+      "url": "https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/util/home-paths/README.md",
+      "title": "@deepseek-ai/dsh-home-paths",
+      "official": true,
+      "status": "verified",
+      "evidence_url": "https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/util/home-paths/README.md",
+      "locator": "Summary; Choosing/resolving the Harness home; Resolution rules",
+      "summary_zh": "官方 home-paths 说明 Harness home 的优先级是显式配置、$DSH_HOME、最后 ~/.dsh；并提供从同一根目录推导 settings/cache 等子路径的 helper。",
+      "limits": "该库只证明 home 的解析规则；把两个 home 作为 Praxis 与 coding 的隔离策略是本 Kit 的工程推论，仍需按实际凭据、浏览器 profile、端口和桌面打包验证。",
+      "revisit_trigger": "改变部署目录、凭据/session 存储、桌面发行方式或升级路径解析包时复查。",
+      "purpose_tags": ["GRAMMAR", "SCALE"],
+      "card_path": "vault/provenance/work-system/r3-harness/cards/dsh-home-paths.md"
+    },
+    {
+      "slug": "dsh-agent-preset-group",
+      "url": "https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/preset/README.md",
+      "title": "packages/preset group",
+      "official": true,
+      "status": "verified",
+      "evidence_url": "https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/preset/README.md",
+      "locator": "Summary; Packages table; Related documentation",
+      "summary_zh": "preset group 将 agent preset 定义为含一个 agent.cordis.yml 的目录；每个 session 可拥有自己的 tools、prompt sections 和 skills 组合，agent-presets 管 roster/discovery/mount，单进程可同时运行不同 composition 的 agents。",
+      "limits": "该页说明 Harness 的 composition grammar，不是对任意社区 preset 的审核，也不把 model routing 归入 preset。",
+      "revisit_trigger": "新增 preset 类型、用户目录、继承或 session composition 规则时复查。",
+      "purpose_tags": ["GRAMMAR", "SCALE"],
+      "card_path": "vault/provenance/work-system/r3-harness/cards/dsh-agent-preset-group.md"
+    },
+    {
+      "slug": "dsh-per-session-agent-preset-note",
+      "url": "https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/implemented/architecture/2026-08-03-per-session-agent-presets.md",
+      "title": "Per-session agent presets implementation note",
+      "official": true,
+      "status": "verified",
+      "evidence_url": "https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/implemented/architecture/2026-08-03-per-session-agent-presets.md",
+      "locator": "Status: implemented; Decision; Composition planes; Consequences; blank-session switching",
+      "summary_zh": "实现说明把 preset 挂到每个 agent/session scope；Host plane 保留 registries 与 model routing，Agent plane 提供工具/persona/prompt；已运行 session 不重组，只有 blank session 可切换，resume 恢复原 preset composition。",
+      "limits": "这是 upstream 当前实现/设计记录，不是稳定 API 版本承诺；其中 model/provider routing 明确在 preset 之外。",
+      "revisit_trigger": "需要在已有内容 session 切换 preset、修改 provider/model seam 或跨进程复用时复查。",
+      "purpose_tags": ["GRAMMAR", "BUILD"],
+      "card_path": "vault/provenance/work-system/r3-harness/cards/dsh-per-session-agent-preset-note.md"
+    },
+    {
+      "slug": "dsh-plugin-manager",
+      "url": "https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/boot/plugin-manager/README.md",
+      "title": "@deepseek-ai/dsh-plugin-manager",
+      "official": true,
+      "status": "verified",
+      "evidence_url": "https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/boot/plugin-manager/README.md",
+      "locator": "Summary; Web Plugins page; HMR and runtime operations; Known limitations/failure behavior",
+      "summary_zh": "官方 plugin-manager 支持在当前 profile 安装/移除 bundle、启用/禁用 plugin entry；Web Plugins sidebar 和 plugin_manager tool 共用操作，启用 HMR 时立即应用，移除流程会卸载 runtime contributions。",
+      "limits": "profile-wide 变更会影响使用该 profile 的 sessions；安装可能执行 Host 代码，页面要求相应权限/审批，不能把热卸载理解成进程级安全隔离。",
+      "revisit_trigger": "部署 GUI 插件管理、HMR、安装审批或 runtime unload 时复查当前限制。",
+      "purpose_tags": ["BUILD", "GRAMMAR", "SCALE"],
+      "card_path": "vault/provenance/work-system/r3-harness/cards/dsh-plugin-manager.md"
+    },
+    {
+      "slug": "dsh-client-slot-seam",
+      "url": "https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/client/AGENTS.md",
+      "title": "Web client plugin and slot composition guidance",
+      "official": true,
+      "status": "verified",
+      "evidence_url": "https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/client/AGENTS.md",
+      "locator": "Slot and props discipline; Export discipline (client plugin packages); cross-package slot registration",
+      "summary_zh": "官方 Web client guidance 规定 UI plugin 通过 ctx.slots.register/inject 组合，跨 package 的 UI 通过 slots、行为通过 Cordis services；动态声明可等待、卸载并重新注册，插件不应重建整个 shell。",
+      "limits": "文档证明 slot seam 的存在，不证明某个 VS Code bridge 或社区插件确实只使用该 seam，也不列出完整社区生态。",
+      "revisit_trigger": "实现 Sidebar、review surface、IDE client 或跨包 UI 扩展时复查 slot declaration/ownership 约束。",
+      "purpose_tags": ["GRAMMAR", "BUILD"],
+      "card_path": "vault/provenance/work-system/r3-harness/cards/dsh-client-slot-seam.md"
+    },
+    {
+      "slug": "dsh-tools-scoped-restriction",
+      "url": "https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/core/tools/README.md",
+      "title": "Per-agent scoped tool restrictions",
+      "official": true,
+      "status": "verified",
+      "evidence_url": "https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/core/tools/README.md",
+      "locator": "Restrict tools per agent; ctx.tools.restrict/filter/get/schemas",
+      "summary_zh": "核心 tools 文档定义 ctx.tools.restrict(filter)：对 agent 继承的 global tools 加 allow/deny mask，mask 相交，scoped registrations 保留可见，dispose 后解除；同一 resolver 同时影响 schemas、lookup 和 execution view。",
+      "limits": "这是同进程的可见性/组合控制，不是安全边界、授权模型、插件沙箱或 parent-to-child 非升级保证。",
+      "revisit_trigger": "把 restrict 用于企业权限、跨进程隔离或合规承诺前，必须复查 authority 设计和执行时 enforcement。",
+      "purpose_tags": ["GRAMMAR", "SCALE"],
+      "card_path": "vault/provenance/work-system/r3-harness/cards/dsh-tools-scoped-restriction.md"
+    },
+    {
+      "slug": "dsh-subagent-composition-controls",
+      "url": "https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/implemented/feature/2026-07-12-subagent-persona-tool-filter-and-depth.md",
+      "title": "Subagent persona, toolFilter and depth controls",
+      "official": true,
+      "status": "verified",
+      "evidence_url": "https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/implemented/feature/2026-07-12-subagent-persona-tool-filter-and-depth.md",
+      "locator": "Decision; capability gating; Visibility is not authority",
+      "summary_zh": "实现说明把 subagent composition 拆成 persona、toolFilter、maxDepth；provider 需声明能力，不支持时启动前拒绝；toolFilter 只改变 visible tool view，文档明确说不形成 authority、parent subset、插件 sandbox 或直接 service caller 隔离。",
+      "limits": "这是当前 in-process provider 的组合语义；外部 provider 可只声明部分能力，不能把 toolFilter 当企业授权系统。",
+      "revisit_trigger": "设计多 agent policy、工具白名单、递归深度或外部 provider adapter 时复查。",
+      "purpose_tags": ["GRAMMAR", "SCALE"],
+      "card_path": "vault/provenance/work-system/r3-harness/cards/dsh-subagent-composition-controls.md"
+    },
+    {
+      "slug": "dsh-vscode-community-bridge",
+      "url": "https://github.com/deepseek-ai/deepseek-harness/discussions/915",
+      "title": "DeepSeek Harness WebUI for VS Code discussion",
+      "official": false,
+      "status": "partial",
+      "evidence_url": "https://github.com/deepseek-ai/deepseek-harness/discussions/915",
+      "locator": "Show Your Plugins discussion #915, 2026-08-14: DSH for VSC description and embedded WebUI behavior",
+      "summary_zh": "官方仓库的 Show Your Plugins 讨论记录一个非官方 VS Code 扩展：把 DSH WebUI 映射到 IDE 原生扩展页/面板，并提供服务启动、状态和日志操作。",
+      "limits": "讨论支持的是社区扩展存在与其作者自述；没有证明它通过官方 client-plugin seam 注入 profile，也没有官方维护或兼容承诺。",
+      "revisit_trigger": "要采用 VS Code bridge、依赖多 webview 或宣称官方 seam 兼容时复查扩展仓库和当前 DSH client API。",
+      "purpose_tags": ["BUILD", "GRAMMAR"],
+      "card_path": "vault/provenance/work-system/r3-harness/cards/dsh-vscode-community-bridge.md"
+    },
+    {
+      "slug": "dsh-agent-team-community",
+      "url": "https://github.com/deepseek-ai/deepseek-harness/discussions/1785",
+      "title": "dsh-agent-team-gui community plugin discussion",
+      "official": false,
+      "status": "partial",
+      "evidence_url": "https://github.com/deepseek-ai/deepseek-harness/discussions/1785",
+      "locator": "Show Your Plugins discussion #1785: unofficial community plugin, saved members, per-member models/tool policies, planner/implementer/reviewer recipe",
+      "summary_zh": "讨论明确标注非官方社区插件，描述可复用 planner/implementation/reviewer 小队、成员独立模型/角色/工具 policy、recipe 和 Run Center；页面同时标出版本范围与需要重启。",
+      "limits": "这是维护者/作者的社区自述和示例数据说明，不是 DSH 核心能力或性能基准，也不构成安全审计。",
+      "revisit_trigger": "采用该插件、依据其版本范围升级 DSH 或把示例当生产验证时复查其仓库 release、构建和隔离运行。",
+      "purpose_tags": ["BUILD", "SCALE"],
+      "card_path": "vault/provenance/work-system/r3-harness/cards/dsh-agent-team-community.md"
+    },
+    {
+      "slug": "dsh-browser-session-bug",
+      "url": "https://github.com/deepseek-ai/deepseek-harness/discussions/7007",
+      "title": "Browser Use provider multi-session report",
+      "official": false,
+      "status": "partial",
+      "evidence_url": "https://github.com/deepseek-ai/deepseek-harness/discussions/7007",
+      "locator": "General discussion #7007, 2026-09-18: Summary, Environment, Steps to reproduce, Isolation evidence",
+      "summary_zh": "社区报告在 Windows、dsh 0.1.6-alpha.1/alpha.2 与 browser-use alpha.1 组合中，首个 session 可用而后续创建/恢复失败；移除 profile insert 后恢复，作者做了两轮开关复现。",
+      "limits": "单条无回复的 Windows 复现，针对具体 profile/plugin 组合；不是官方 bug 修复状态，也不能泛化为所有 Browser Use 或所有平台。",
+      "revisit_trigger": "启用 Browser Use、多 session 或升级 alpha 时在目标平台做独立最小复现，并检查对应插件版本。",
+      "purpose_tags": ["BUILD", "SCALE"],
+      "card_path": "vault/provenance/work-system/r3-harness/cards/dsh-browser-session-bug.md"
+    },
+    {
+      "slug": "dsh-source-launch-bug",
+      "url": "https://github.com/deepseek-ai/deepseek-harness/discussions/6974",
+      "title": "alpha.2 source checkout runtime-resolution regression report",
+      "official": false,
+      "status": "partial",
+      "evidence_url": "https://github.com/deepseek-ai/deepseek-harness/discussions/6974",
+      "locator": "General discussion #6974, 2026-09-17: Environment, Summary, Current behavior, source-via-tsx/runtime versus built-bin comparison",
+      "summary_zh": "社区报告在 alpha.2 commit ddefc45、源码 pnpm dsh web、runtime resolution 下首个 tool call 抛 prepare 错误并使 session 无法恢复；同一报告和回复显示改回 link 或使用 built bin 可工作。",
+      "limits": "这是指定 commit/Node/平台的讨论复现，页面未证明当前 master 或每个 tool 都仍受影响；官方 README 只确认源码需先 build。",
+      "revisit_trigger": "从 checkout 运行 dsh、切换 resolution mode、或升级 alpha 时重新跑最小 read/tool-call 复现并检查 release 修复。",
+      "purpose_tags": ["BUILD", "SCALE"],
+      "card_path": "vault/provenance/work-system/r3-harness/cards/dsh-source-launch-bug.md"
+    }
+  ],
+  "occurrences": [
+    {
+      "archive_turn_id": "313c8106-e4a0-46fc-94f1-61fed0e45716",
+      "message_item_id": "cdf04d80-f999-4ac0-8ac7-4c89976c17d7",
+      "index": 0,
+      "claim": "截至 2026-09-18，官方最新 prerelease 是 v0.1.6-alpha.2（9 月 17 日发布）；新增 GUI Plugin Manager、安装/配置/实时启停、运行时卸载、dsh <profile>、Client Session 多实例。",
+      "source_refs": ["dsh-release-016-alpha2", "dsh-plugin-manager", "dsh-cli-profile-reference"],
+      "support": "verified",
+      "note": "当前 release 页实际列出 alpha.2、发布日期和 commit；功能逐项来自 release notes 与 plugin-manager/CLI 页面。"
+    },
+    {
+      "archive_turn_id": "313c8106-e4a0-46fc-94f1-61fed0e45716",
+      "message_item_id": "cdf04d80-f999-4ac0-8ac7-4c89976c17d7",
+      "index": 1,
+      "claim": "Profile 位于 $DSH_HOME/profiles/<name>，含 package.json 与 cordis.patch.yml，组合 web/headless/ACP/SDK bundles；Agent Preset 提供 session 级 tools、prompt、provider 与能力组合。",
+      "source_refs": ["dsh-app-boot-profile", "dsh-cli-profile-reference", "dsh-bundle-profile-composition", "dsh-agent-preset-group", "dsh-per-session-agent-preset-note"],
+      "support": "partial",
+      "note": "Profile/path/bundle/preset 的大部分得到官方文档支持；但实现说明明确 model/provider routing 留在 Host plane，不应把 provider 作为 preset 自身能力登记。"
+    },
+    {
+      "archive_turn_id": "313c8106-e4a0-46fc-94f1-61fed0e45716",
+      "message_item_id": "cdf04d80-f999-4ac0-8ac7-4c89976c17d7",
+      "index": 2,
+      "claim": "Agent Preset 是 per-session composition；空白 session 可选择/重组，已有内容的 session 不适合彻底换 preset，因为工具历史已经写入。",
+      "source_refs": ["dsh-agent-preset-group", "dsh-per-session-agent-preset-note"],
+      "support": "verified",
+      "note": "官方实现说明更强地规定已运行 session 不重组，只有 blank session switch；model routing 仍在 preset 外。"
+    },
+    {
+      "archive_turn_id": "313c8106-e4a0-46fc-94f1-61fed0e45716",
+      "message_item_id": "cdf04d80-f999-4ac0-8ac7-4c89976c17d7",
+      "index": 3,
+      "claim": "DSH_HOME 默认 ~/.dsh，并管理 profiles/plugins/credentials/settings/sessions/cache/instructions；可用两个 DSH_HOME 隔离 coding 与 Praxis，而非改源码 agentId。",
+      "source_refs": ["dsh-home-paths", "dsh-app-boot-profile", "dsh-cli-profile-reference"],
+      "support": "partial",
+      "note": "官方页面确认 home 解析顺序、profile/patch 与从 home 派生数据路径；完整资源隔离清单和‘两个 home 优先于改 agentId’是本 Kit 工程推论，应按目标部署验证。"
+    },
+    {
+      "archive_turn_id": "313c8106-e4a0-46fc-94f1-61fed0e45716",
+      "message_item_id": "cdf04d80-f999-4ac0-8ac7-4c89976c17d7",
+      "index": 4,
+      "claim": "GUI Plugin Manager 支持 realtime enable/disable 与 runtime unload。",
+      "source_refs": ["dsh-release-016-alpha2", "dsh-plugin-manager"],
+      "support": "verified",
+      "note": "release notes 写明 Plugin Manager page、实时启停和 runtime unloading；manager 文档说明 Web sidebar/HMR 与移除时的 runtime contribution unload。"
+    },
+    {
+      "archive_turn_id": "313c8106-e4a0-46fc-94f1-61fed0e45716",
+      "message_item_id": "cdf04d80-f999-4ac0-8ac7-4c89976c17d7",
+      "index": 5,
+      "claim": "VS Code bridge 通过官方 client-plugin seam 注入 Web profile。",
+      "source_refs": ["dsh-client-slot-seam", "dsh-vscode-community-bridge"],
+      "support": "partial",
+      "note": "官方 client guidance 证实 slot seam；仓库 Discussion 只证实一个非官方 VS Code 扩展嵌入/控制 WebUI，没有证据证明该扩展使用官方 seam 或注入 profile。"
+    },
+    {
+      "archive_turn_id": "313c8106-e4a0-46fc-94f1-61fed0e45716",
+      "message_item_id": "cdf04d80-f999-4ac0-8ac7-4c89976c17d7",
+      "index": 6,
+      "claim": "社区已有 UI sidebar、MCP panel、GenUI、IDE、主题、agent-team 等 client plugins；Web Client 用 slot composition，插件注册 slot 而非重建应用。",
+      "source_refs": ["dsh-client-slot-seam", "dsh-vscode-community-bridge", "dsh-agent-team-community"],
+      "support": "partial",
+      "note": "slot composition 是官方文档事实；两个社区讨论只提供 VS Code 与 agent-team 的例子，未完成完整生态枚举，因此不把‘大量’和所有类别视为已验证。"
+    },
+    {
+      "archive_turn_id": "313c8106-e4a0-46fc-94f1-61fed0e45716",
+      "message_item_id": "cdf04d80-f999-4ac0-8ac7-4c89976c17d7",
+      "index": 7,
+      "claim": "社区 dshpack 把 Skills + MCP + Profile Patch + permission defaults 做成可安装/可审计 profile package，并带 lock、compose、export、冲突处理。",
+      "source_refs": [],
+      "support": "unverified",
+      "note": "本轮实际检索未找到能唯一对应 dshpack 的官方仓库、release 或讨论；没有把搜索到的第三方目录当作证据，保留原主张但不纳入当前上游事实。"
+    },
+    {
+      "archive_turn_id": "313c8106-e4a0-46fc-94f1-61fed0e45716",
+      "message_item_id": "cdf04d80-f999-4ac0-8ac7-4c89976c17d7",
+      "index": 8,
+      "claim": "社区 agent-team GUI 可保存 planner/implementer/reviewer 成员，并为每个成员指定模型与工具 policy。",
+      "source_refs": ["dsh-agent-team-community"],
+      "support": "partial",
+      "note": "官方仓库 Discussion 明确标注这是非官方社区插件，并自述 saved members、individual models/roles/tool policies 与 planner/implementation/reviewer recipe；没有 DSH 官方保证或独立运行验证。"
+    },
+    {
+      "archive_turn_id": "313c8106-e4a0-46fc-94f1-61fed0e45716",
+      "message_item_id": "cdf04d80-f999-4ac0-8ac7-4c89976c17d7",
+      "index": 9,
+      "claim": "多 Agent 项目可用 tools.restrict 做 role-bound capability，DSH core 支持 per-agent scoped tool restrictions。",
+      "source_refs": ["dsh-tools-scoped-restriction", "dsh-subagent-composition-controls"],
+      "support": "partial",
+      "note": "per-agent restriction/过滤器本身已验证；但官方实现明确说它改变同进程 visible tool view，不是 authority/security boundary，也不保证 parent-to-child non-escalation，因此‘强制 role-bound capability’需降格为 composition grammar。"
+    },
+    {
+      "archive_turn_id": "313c8106-e4a0-46fc-94f1-61fed0e45716",
+      "message_item_id": "cdf04d80-f999-4ac0-8ac7-4c89976c17d7",
+      "index": 10,
+      "claim": "0.1.6-alpha.1 加入 Playwright MCP、Chrome DevTools MCP、Stagehand、Cua Driver MCP、native Computer Use、MCP Resources 和 headless JSON event output。",
+      "source_refs": ["dsh-release-016-alpha2"],
+      "support": "verified",
+      "note": "release 页 alpha.1 条目逐项列出这些能力；原文将 Browser/Computer Use 标为 experimental，headless JSON 是 newline-delimited run events。"
+    },
+    {
+      "archive_turn_id": "313c8106-e4a0-46fc-94f1-61fed0e45716",
+      "message_item_id": "cdf04d80-f999-4ac0-8ac7-4c89976c17d7",
+      "index": 11,
+      "claim": "DSH 仍是 developer preview，会发生 breaking changes。",
+      "source_refs": ["deepseek-harness-repo"],
+      "support": "verified",
+      "note": "当前官方 README 明确使用 developer preview 与 compatibility-breaking changes 警示。"
+    },
+    {
+      "archive_turn_id": "313c8106-e4a0-46fc-94f1-61fed0e45716",
+      "message_item_id": "cdf04d80-f999-4ac0-8ac7-4c89976c17d7",
+      "index": 12,
+      "claim": "0.1.6-alpha.1 的 Browser Use 出现重复模块/第二个 session 创建失败问题。",
+      "source_refs": ["dsh-browser-session-bug"],
+      "support": "partial",
+      "note": "#7007 是 2026-09-18 的仓库 Discussion 社区复现：具体是 Windows、browser-use alpha.1 插件与 web profile，alpha.1/alpha.2 core 均复现；它不是 release note 或普遍保证。"
+    },
+    {
+      "archive_turn_id": "313c8106-e4a0-46fc-94f1-61fed0e45716",
+      "message_item_id": "cdf04d80-f999-4ac0-8ac7-4c89976c17d7",
+      "index": 13,
+      "claim": "Computer Use 的两个包曾因缺少 dsh.bundle，按文档安装后 profile 无法启动。",
+      "source_refs": [],
+      "support": "unverified",
+      "note": "未找到可唯一定位的官方 issue/commit/discussion。bundle README 只支持 dsh.bundle.patch 是通用契约，不能证明这两个包曾缺声明或造成该故障。"
+    },
+    {
+      "archive_turn_id": "313c8106-e4a0-46fc-94f1-61fed0e45716",
+      "message_item_id": "cdf04d80-f999-4ac0-8ac7-4c89976c17d7",
+      "index": 14,
+      "claim": "2026-09-18 alpha.2 source launch bug：源码 pnpm dsh web 的 tool calls 可全部失败，built launch 不受影响。",
+      "source_refs": ["dsh-source-launch-bug", "deepseek-harness-repo"],
+      "support": "partial",
+      "note": "#6974 讨论实际报告 alpha.2 commit ddefc45、source-via-tsx + runtime 下首个 tool call 崩溃、session 不可恢复，并以 link/built bin 对照；当前 README 只确认源码需 build，不能把该 commit 复现泛化为今日 master。"
+    },
+    {
+      "archive_turn_id": "313c8106-e4a0-46fc-94f1-61fed0e45716",
+      "message_item_id": "cdf04d80-f999-4ac0-8ac7-4c89976c17d7",
+      "index": 15,
+      "claim": "alpha.2 新增 file change card/sidebar 逐文件 review、Office previews、URL sidebar、Subagent sidebar、plan preview，类似 Courtwork review surface。",
+      "source_refs": ["dsh-release-016-alpha2"],
+      "support": "partial",
+      "note": "release notes 逐项验证前五项功能；‘类似 Courtwork’是本 Kit 的设计类比，release 页面没有该比较，因此不把它作为上游事实。"
+    }
+  ],
+  "coverage": {
+    "citation_indices": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+    "occurrence_count": 16,
+    "source_count": 16,
+    "verified_occurrences": 6,
+    "partial_occurrences": 8,
+    "unverified_occurrences": 2,
+    "direct_official_browse": true,
+    "community_reports_separated": true,
+    "forked_or_installed": false,
+    "cards": "未手工生成；card_path 预留给 main 的卡片生成轮。"
+  },
+  "gaps": [
+    {
+      "index": 7,
+      "status": "unverified",
+      "reason": "没有唯一可定位的 dshpack 官方/社区一手仓库或 release。"
+    },
+    {
+      "index": 13,
+      "status": "unverified",
+      "reason": "没有找到 Computer Use 两包缺少 dsh.bundle 的唯一 issue、commit 或 discussion；通用 bundle README 不足以证明历史故障。"
+    },
+    {
+      "indices": [5, 6, 8, 12, 14],
+      "status": "partial",
+      "reason": "这些结论依赖社区插件自述或 Discussions 复现；官方核心页面只支持对应 extension seam、composition grammar 或 release feature list。"
+    }
+  ]
+}

@@ -1,0 +1,114 @@
+{
+  "schemaVersion": 1,
+  "intakeId": "reporting-design-kit-chat-2026-09-18",
+  "source": {
+    "path": "vault/archive/chat/report-design-kit.json",
+    "threadId": "6aad44ad-bdbc-83ec-912e-a1b901556f2b",
+    "title": "登记汇报设计 Kit",
+    "turnCount": 2,
+    "messageItemCount": 4,
+    "readStatus": "all 2 turns and all 4 message items read"
+  },
+  "coverage": {
+    "allMessageItemsCovered": true,
+    "userMessages": 2,
+    "assistantMessages": 2,
+    "citationPlaceholderTotal": 20,
+    "structuredOutputs": [
+      "vault/distilled/reporting/README.md",
+      "vault/distilled/reporting/artifact-grammar.md",
+      "vault/distilled/reporting/claim-evidence.md",
+      "vault/distilled/reporting/audience-delivery.md",
+      "vault/distilled/reporting/writing-anti-slop.md",
+      "vault/distilled/reporting/visual-renderer-review.md",
+      "vault/distilled/reporting/local-design.md",
+      "vault/distilled/reporting/turn-manifest.json"
+    ]
+  },
+  "materials": [
+    {
+      "turnNumber": 1,
+      "turnId": "1a5102f9-39ab-4428-b7d8-7c53a8b7857b",
+      "items": [
+        {
+          "itemNumber": 1,
+          "itemId": "1a5102f9-39ab-4428-b7d8-7c53a8b7857b",
+          "actor": "user",
+          "type": "userMessage",
+          "textLength": 223,
+          "role": "explicit_intent",
+          "mappedTo": ["vault/distilled/reporting/artifact-grammar.md", "vault/distilled/reporting/audience-delivery.md", "vault/distilled/reporting/visual-renderer-review.md"]
+        },
+        {
+          "itemNumber": 2,
+          "itemId": "9ba8c96a-5d4c-459e-941b-af215de790ba",
+          "actor": "assistant",
+          "type": "agentMessage",
+          "textLength": 10477,
+          "role": "historical_suggestion",
+          "citationPlaceholderCount": 12,
+          "mappedTo": ["vault/distilled/reporting/artifact-grammar.md", "vault/distilled/reporting/claim-evidence.md", "vault/distilled/reporting/audience-delivery.md", "vault/distilled/reporting/writing-anti-slop.md", "vault/distilled/reporting/visual-renderer-review.md"],
+          "verification": "外部 artifact 实践、受众建议和 Agent Skill 能力需由外部 source ledger 重新登记；此 intake 不将占位引用视为证据。"
+        }
+      ]
+    },
+    {
+      "turnNumber": 2,
+      "turnId": "0baa9631-6530-42ab-9308-4b0c7a37af85",
+      "items": [
+        {
+          "itemNumber": 1,
+          "itemId": "0baa9631-6530-42ab-9308-4b0c7a37af85",
+          "actor": "user",
+          "type": "userMessage",
+          "textLength": 216,
+          "role": "explicit_intent",
+          "mappedTo": ["vault/distilled/reporting/README.md", "vault/distilled/reporting/artifact-grammar.md", "vault/distilled/reporting/writing-anti-slop.md", "vault/distilled/reporting/visual-renderer-review.md"]
+        },
+        {
+          "itemNumber": 2,
+          "itemId": "871ecd10-c6a6-44ef-883a-ba3c86644a89",
+          "actor": "assistant",
+          "type": "agentMessage",
+          "textLength": 4354,
+          "role": "historical_suggestion",
+          "citationPlaceholderCount": 8,
+          "mappedTo": ["vault/distilled/reporting/claim-evidence.md", "vault/distilled/reporting/writing-anti-slop.md", "vault/distilled/reporting/visual-renderer-review.md", "vault/distilled/reporting/audience-delivery.md"],
+          "verification": "PPT/HTML/PDF/Markdown renderer、数据可视化和 anti-slop 规则作为候选；外部引用未从 archive 还原。"
+        }
+      ]
+    }
+  ],
+  "localSnapshot": {
+    "manifest": "vault/intake/local-projects.json",
+    "structuredEntry": "vault/distilled/reporting/local-design.md",
+    "offlineRule": "local-design.md 只使用 vault/snapshots/local/ 的相对链接；原始绝对路径和哈希只在 intake manifest 中追溯。"
+  },
+  "gaps": [
+    {
+      "id": "citation-placeholders",
+      "severity": "high",
+      "count": 20,
+      "description": "两轮 assistant 消息共 20 个 chatgpt-content-reference 占位；归档没有 URL、标题、正文或抓取时间。",
+      "handling": "主题文件将外部主张写成历史建议或待核实，不声称已核验；外部 source ledger 由其他流程维护。"
+    },
+    {
+      "id": "local-binary-visual-evidence-not-copied",
+      "severity": "medium",
+      "description": "为避免整仓和敏感材料，未复制 Courtwork evidence/截图、build/media/video 和 career-kit QA raster；HTML 样张与文字规范已保留。",
+      "handling": "local-design.md 不声称完成视觉回归；需要视觉对照时按 manifest 原路径、权限和具体任务增量取证。"
+    },
+    {
+      "id": "local-indexed-not-deep-read",
+      "severity": "medium",
+      "description": "Courtwork 快照 219 个文件中 48 个核心文件深读，171 个 design 文本按目录级 indexed；indexed 文件保留哈希/mtime但未逐件提炼。",
+      "handling": "后续按具体 artifact/visual/review 问题渐进读取，manifest processingStatus 明确区分。"
+    },
+    {
+      "id": "sensitive-and-out-of-scope-materials",
+      "severity": "high",
+      "description": "career-kit 的项目展开-内部机密、LNG case、20-Submit、_archive、个人材料未复制；Courtwork 的 node_modules、evidence 与构建/截图目录未复制。",
+      "handling": "保持排除，不从其缺失推断任何业务事实。"
+    }
+  ]
+}

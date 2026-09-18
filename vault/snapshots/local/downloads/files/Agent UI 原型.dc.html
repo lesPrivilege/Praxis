@@ -1,0 +1,1559 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/industry-181859b0-4d32-4e17-a16d-06cd94bbb7af/styles.css">
+<script src="_ds/industry-181859b0-4d32-4e17-a16d-06cd94bbb7af/_ds_bundle.js"></script>
+<style>
+:root{
+  --font-mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  --paper:#f7f8f9;
+  --ink-2:#5d5d60;
+  --ink-3:#83838a;
+  --rule:color-mix(in srgb,#1d1f20 11%,transparent);
+  --rule-2:color-mix(in srgb,#1d1f20 20%,transparent);
+}
+html,body{height:100%}
+body{margin:0;overflow:hidden;background:var(--color-bg)}
+a{color:var(--color-accent-700);text-underline-offset:3px}
+a:hover{color:var(--color-accent-900)}
+@keyframes agPulse{0%,100%{opacity:.28}50%{opacity:1}}
+@keyframes agCaret{0%,49%{opacity:1}50%,100%{opacity:0}}
+@keyframes agIn{from{opacity:0;transform:translateY(3px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.001ms !important;transition-duration:.001ms !important}}
+::-webkit-scrollbar{width:11px;height:11px}
+::-webkit-scrollbar-thumb{background:var(--color-neutral-300)}
+::-webkit-scrollbar-thumb:hover{background:var(--color-neutral-400)}
+::-webkit-scrollbar-track{background:transparent}
+</style>
+</helmet>
+
+<div style="position:relative;display:flex;flex-direction:column;height:100vh;min-height:0;overflow:hidden;background:var(--color-bg);color:var(--color-text);font:400 15px/1.55 var(--font-body)">
+
+  <header style="flex:none;display:flex;align-items:center;gap:14px;height:50px;padding:0 14px 0 16px;border-bottom:1px solid var(--rule-2);background:var(--color-bg)">
+    <sc-if value="{{ railOverlay }}">
+      <button onClick="{{ toggleRail }}" class="btn btn-secondary btn-icon" aria-label="工作列表" style="width:30px;height:30px;flex:none">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16"/><path d="M4 12h16"/><path d="M4 19h16"/></svg>
+      </button>
+    </sc-if>
+    <span style="font:600 16px/1 var(--font-heading);letter-spacing:.04em;text-transform:uppercase">青屿 工作台</span>
+    <span style="width:1px;height:18px;background:var(--rule-2)"></span>
+    <nav aria-label="主导航" style="display:flex;gap:2px">
+      <button onClick="{{ goWork }}" aria-current="{{ navWorkCur }}" class="btn btn-ghost" style="font-size:13px;letter-spacing:.06em;padding:5px 9px;color:var(--color-text)">工作</button>
+      <button onClick="{{ goSettings }}" aria-current="{{ navSetCur }}" class="btn btn-ghost" style="font-size:13px;letter-spacing:.06em;padding:5px 9px;color:var(--color-text)">设置与帮助</button>
+    </nav>
+    <div style="margin-left:auto;display:flex;align-items:center;gap:12px">
+      <span style="display:flex;align-items:center;gap:6px;font:400 11px/1 var(--font-mono);letter-spacing:.04em;color:var(--ink-2)">
+        <span style="width:6px;height:6px;background:{{ connDot }}"></span>{{ connLabel }}
+      </span>
+      <span style="display:flex;gap:4px">
+        <button onClick="{{ toggleLeft }}" class="btn btn-secondary btn-icon" aria-label="{{ leftToggleLabel }}" title="{{ leftToggleLabel }}" style="width:30px;height:30px">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M9 3v18"/></svg>
+        </button>
+        <button onClick="{{ toggleRight }}" class="btn btn-secondary btn-icon" aria-label="{{ rightToggleLabel }}" title="{{ rightToggleLabel }}" style="width:30px;height:30px">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M15 3v18"/></svg>
+        </button>
+      </span>
+    </div>
+  </header>
+
+  <div data-ag="shell" style="flex:1;min-height:0;display:flex;position:relative">
+
+    <sc-if value="{{ leftMini }}">
+      <aside aria-label="工作栏（已收起）" style="flex:0 0 54px;width:54px;display:flex;flex-direction:column;align-items:center;gap:8px;padding:12px 0;min-height:0;border-right:1px solid var(--rule-2);background:var(--color-bg)">
+        <button onClick="{{ toggleLeft }}" class="btn btn-secondary btn-icon" aria-label="展开左栏（⌘[）" style="width:32px;height:32px">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+        </button>
+        <button onClick="{{ newConv }}" class="btn btn-primary btn-icon" aria-label="新建工作" style="width:32px;height:32px">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+        </button>
+        <sc-for list="{{ dashCells }}" as="d" hint-placeholder-count="3">
+          <button onClick="{{ d.onClick }}" aria-label="{{ d.label }}" title="{{ d.label }}" style="width:36px;padding:5px 0;background:transparent;border:0;border-top:1px solid var(--rule);cursor:pointer;font:400 13px/1.2 var(--font-mono);color:var(--ink-2)" style-hover="color:var(--color-text)">{{ d.n }}</button>
+        </sc-for>
+      </aside>
+    </sc-if>
+
+    <sc-if value="{{ showRail }}" hint-placeholder-val="{{ true }}">
+      <aside style="{{ railStyle }}">
+        <div style="flex:none;padding:11px 12px 10px;border-bottom:1px solid var(--rule)">
+          <div style="font:600 10px/1 var(--font-heading);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);margin-bottom:8px">概览</div>
+          <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:var(--rule)">
+            <sc-for list="{{ dashCells }}" as="d" hint-placeholder-count="3">
+              <button onClick="{{ d.onClick }}" style="text-align:left;background:var(--color-bg);border:0;padding:7px 8px 8px;cursor:pointer;font:inherit;color:var(--color-text)" style-hover="background:var(--paper)">
+                <span style="display:block;font:400 18px/1 var(--font-mono);color:{{ d.ink }}">{{ d.n }}</span>
+                <span style="display:block;margin-top:4px;font:400 10.5px/1.3 var(--font-body);color:var(--ink-3)">{{ d.label }}</span>
+              </button>
+            </sc-for>
+          </div>
+        </div>
+        <div style="flex:none;padding:11px 12px 10px;display:flex;flex-direction:column;gap:8px;border-bottom:1px solid var(--rule)">
+          <button onClick="{{ newConv }}" class="btn btn-primary blueprint" style="justify-content:flex-start;letter-spacing:.06em">
+            <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+            新建工作
+          </button>
+          <input data-ag="filter" value="{{ filter }}" onChange="{{ onFilter }}" class="input" type="search" placeholder="筛选工作（⌘K）" aria-label="筛选工作" style="font-size:13px;background:var(--paper)">
+        </div>
+        <div class="ag-scroll" style="flex:1;min-height:0;overflow:auto;padding:6px">
+          <h6 style="margin:6px 6px 6px;color:var(--ink-3)">工作 · {{ convCount }}</h6>
+          <sc-for list="{{ convs }}" as="c" hint-placeholder-count="4">
+            <button onClick="{{ c.onClick }}" style="position:relative;display:block;width:100%;text-align:left;background:transparent;border:0;border-left:1px solid transparent;padding:8px 10px 9px 11px;cursor:pointer;font:inherit;color:var(--color-text)" style-hover="background:var(--color-neutral-200)">
+              <sc-if value="{{ c.selected }}">
+                <span aria-hidden="true" style="position:absolute;inset:0;background:var(--paper);border-left:2px solid var(--color-accent);pointer-events:none"></span>
+              </sc-if>
+              <span style="position:relative;display:block;font-size:13.5px;line-height:1.42;text-wrap:pretty">{{ c.title }}</span>
+              <span style="position:relative;display:flex;align-items:center;gap:7px;margin-top:4px;font:400 10.5px/1 var(--font-mono);letter-spacing:.03em;color:var(--ink-3)">
+                <span>{{ c.time }}</span>
+                <sc-if value="{{ c.hasDraft }}"><span style="color:var(--color-accent-700)">草稿</span></sc-if>
+                <sc-if value="{{ c.pending }}"><span style="color:var(--color-accent-800);border-bottom:1px solid var(--color-accent-400)">待处理 {{ c.pending }}</span></sc-if>
+                <sc-if value="{{ c.running }}"><span style="color:var(--color-accent-800);animation:agPulse 1.6s ease-in-out infinite">运行中</span></sc-if>
+              </span>
+            </button>
+          </sc-for>
+          <sc-if value="{{ noHit }}">
+            <p style="margin:12px 10px;font-size:12.5px;color:var(--ink-3)">没有匹配「{{ filter }}」的工作。<button onClick="{{ clearFilter }}" class="btn btn-ghost" style="font-size:12.5px;padding:0 2px">清除筛选</button></p>
+          </sc-if>
+        </div>
+        <div style="flex:none;padding:9px 12px 52px;border-top:1px solid var(--rule);font:400 10.5px/1.5 var(--font-mono);color:var(--ink-3)">本地演示数据 · 无后端</div>
+      </aside>
+    </sc-if>
+
+    <sc-if value="{{ isSettings }}">
+      <main class="ag-scroll" style="flex:1;min-height:0;overflow:auto;background:var(--color-bg)">
+        <div style="max-width:760px;padding:34px 40px 60px">
+          <h6 style="color:var(--ink-3)">设置与帮助</h6>
+          <h2 style="margin:0 0 6px">运行环境与输入约定</h2>
+          <p style="max-width:56ch;color:var(--ink-2);font-size:14px">这一页与工作页共用同一导航、控件与返回逻辑。此处所有连接、存储与权限均为演示状态，不代表真实服务。</p>
+
+          <section style="margin-top:30px;border-top:1px solid var(--rule-2);padding-top:16px">
+            <h4 style="margin:0 0 10px">连接（模拟）</h4>
+            <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center">
+              <button onClick="{{ setOnline }}" class="btn btn-secondary" style="font-size:13px">模拟已连接</button>
+              <button onClick="{{ setOffline }}" class="btn btn-secondary" style="font-size:13px">模拟断线</button>
+              <span style="font:400 11.5px/1 var(--font-mono);color:var(--ink-3)">当前：{{ connLabel }}</span>
+            </div>
+          </section>
+
+          <section style="margin-top:26px;border-top:1px solid var(--rule);padding-top:16px">
+            <h4 style="margin:0 0 10px">版式模式</h4>
+            <p style="max-width:56ch;font-size:13.5px;color:var(--ink-2);margin-bottom:10px">两种注意力组织假设共用同一套视觉 token 与控件；切换只改版面，不改行为含义。</p>
+            <div class="seg" role="group" aria-label="版式模式">
+              <label class="seg-opt"><input type="radio" name="agmode" checked="{{ modeAOn }}" onChange="{{ setModeA }}">A · 对话为主，按需展开</label>
+              <label class="seg-opt"><input type="radio" name="agmode" checked="{{ modeBOn }}" onChange="{{ setModeB }}">B · 对话与产物双面</label>
+            </div>
+          </section>
+
+          <section style="margin-top:26px;border-top:1px solid var(--rule);padding-top:16px">
+            <h4 style="margin:0 0 10px">输入与换行</h4>
+            <ul style="margin:0;padding-left:18px;font-size:13.5px;color:var(--ink-2);line-height:1.75">
+              <li>Enter 发送；中文输入法组合过程中的 Enter 只用于确认候选词，不会发送。</li>
+              <li>Shift+Enter 换行。运行中仍可编辑下一条消息，草稿会保留并标明未发送。</li>
+              <li>运行中发送即「排队为下一轮」：入队后可修改或撤回，运行自然结束时自动发送；停止或断线时退回草稿，不会发送。本版没有实时插话（steer）。</li>
+              <li>每条请求可「回到此处之前」：确认后移除其后的记录、活动与产物，原文回到输入框；演示原型没有版本库，移除不可取回。</li>
+              <li>切换工作时各自的草稿与滚动位置分别保存。</li>
+            </ul>
+          </section>
+
+          <section style="margin-top:26px;border-top:1px solid var(--rule);padding-top:16px">
+            <h4 style="margin:0 0 12px">快捷键</h4>
+            <table class="table" style="max-width:560px">
+              <thead><tr><th style="width:150px">按键</th><th>作用范围</th></tr></thead>
+              <tbody>
+                <tr><td style="font-family:var(--font-mono);font-size:12.5px">Enter</td><td>输入框内发送</td></tr>
+                <tr><td style="font-family:var(--font-mono);font-size:12.5px">Shift + Enter</td><td>输入框内换行</td></tr>
+                <tr><td style="font-family:var(--font-mono);font-size:12.5px">Esc</td><td>关闭浮层或辅助面，焦点回到触发处</td></tr>
+                <tr><td style="font-family:var(--font-mono);font-size:12.5px">⌘ / Ctrl + K</td><td>全局：聚焦工作筛选</td></tr>
+                <tr><td style="font-family:var(--font-mono);font-size:12.5px">⌘ / Ctrl + .</td><td>运行中：请求停止</td></tr>
+                <tr><td style="font-family:var(--font-mono);font-size:12.5px">⌘ / Ctrl + [</td><td>全局：收起或展开左栏</td></tr>
+                <tr><td style="font-family:var(--font-mono);font-size:12.5px">⌘ / Ctrl + ]</td><td>全局：收起或展开右栏</td></tr>
+                <tr><td style="font-family:var(--font-mono);font-size:12.5px">⌘ / Ctrl + \</td><td>全局：右栏在卡片列与预览面之间切换</td></tr>
+              </tbody>
+            </table>
+          </section>
+
+          <section style="margin-top:26px;border-top:1px solid var(--rule);padding-top:16px">
+            <h4 style="margin:0 0 10px">数据位置</h4>
+            <p style="max-width:60ch;font-size:13.5px;color:var(--ink-2)">草稿、当前工作与演示场景写入浏览器 localStorage 的 <code style="font-family:var(--font-mono);font-size:12.5px;background:var(--color-neutral-200);padding:1px 5px">agentui.qingyu.v1</code>。附件、来源原文与输出为固定 fixture，不上传、不落盘。刷新可验证恢复；恢复失败时会在对话顶部说明并给出重新开始的入口。</p>
+            <button onClick="{{ resetDemo }}" class="btn btn-secondary" style="font-size:13px;margin-top:4px">重置演示数据</button>
+          </section>
+        </div>
+      </main>
+    </sc-if>
+
+    <sc-if value="{{ isWork }}" hint-placeholder-val="{{ true }}">
+      <main style="flex:1;min-width:0;display:flex;flex-direction:column;min-height:0;position:relative">
+
+        <div style="flex:none;display:flex;align-items:flex-start;gap:14px;padding:14px 26px 12px;border-bottom:1px solid var(--rule)">
+          <div style="min-width:0;flex:1">
+            <div style="display:flex;align-items:center;gap:8px;font:400 10.5px/1 var(--font-mono);letter-spacing:.06em;color:var(--ink-3);margin-bottom:5px">
+              <span>工作</span><span>·</span><span>{{ convStamp }}</span>
+            </div>
+            <h4 style="margin:0;max-width:46ch;font-size:19px;line-height:1.25;text-wrap:pretty">{{ convTitle }}</h4>
+          </div>
+          <div style="flex:none;display:flex;align-items:center;gap:6px">
+            <button onClick="{{ openActivity }}" class="btn btn-secondary" style="font-size:12.5px;padding:5px 9px">活动</button>
+            <sc-if value="{{ hasOutput }}">
+              <button onClick="{{ openOutput }}" class="btn btn-secondary" style="font-size:12.5px;padding:5px 9px">产物 1</button>
+            </sc-if>
+          </div>
+        </div>
+
+        <div style="flex:none;padding:7px 26px 8px;border-bottom:1px solid var(--rule);background:var(--paper)">
+          <button onClick="{{ toggleRecap }}" aria-expanded="{{ recapOpen }}" style="display:flex;align-items:center;gap:10px;width:100%;text-align:left;background:transparent;border:0;padding:2px 0;cursor:pointer;font:inherit;color:var(--color-text)">
+            <span style="flex:none;font:600 10px/1 var(--font-heading);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)">当前状态</span>
+            <span style="min-width:0;font:400 12px/1.5 var(--font-mono);color:var(--ink-2)">{{ recapLine }}</span>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="{{ recapChev }};flex:none;margin-left:auto;color:var(--ink-3)"><path d="m9 18 6-6-6-6"/></svg>
+          </button>
+          <sc-if value="{{ recapOpen }}">
+            <div style="display:flex;flex-wrap:wrap;gap:26px;padding:11px 0 4px">
+              <div>
+                <div style="font:600 10px/1 var(--font-heading);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);margin-bottom:8px">进度</div>
+                <div style="display:flex;align-items:center;gap:9px">
+                  <sc-for list="{{ recapSteps }}" as="p" hint-placeholder-count="3">
+                    <span style="display:flex;align-items:center;gap:6px;font:400 12px/1 var(--font-mono);color:var(--ink-2)">
+                      <span aria-hidden="true" style="width:8px;height:8px;background:{{ p.dot }}"></span>{{ p.label }}
+                    </span>
+                  </sc-for>
+                </div>
+              </div>
+              <div>
+                <div style="font:600 10px/1 var(--font-heading);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);margin-bottom:8px">这次用到的材料</div>
+                <div style="display:flex;gap:7px">
+                  <sc-for list="{{ recapDocs }}" as="d" hint-placeholder-count="2">
+                    <button onClick="{{ d.open }}" class="btn btn-secondary" style="font:400 11.5px/1 var(--font-mono);padding:4px 8px;background:var(--color-bg)">{{ d.name }}</button>
+                  </sc-for>
+                </div>
+              </div>
+              <p style="margin:0;max-width:34ch;font-size:12px;line-height:1.6;color:var(--ink-3)">这一栏由下面的记录投影出来，不是另一份真值。记录被回退时，它跟着变。</p>
+            </div>
+          </sc-if>
+        </div>
+
+        <div data-ag="flow" onScroll="{{ onScroll }}" class="ag-scroll" style="flex:1;min-height:0;overflow:auto;position:relative">
+          <div style="position:relative;max-width:820px;padding:26px 26px 40px">
+            <sc-if value="{{ showRule }}" hint-placeholder-val="{{ true }}">
+              <span aria-hidden="true" style="position:absolute;top:30px;bottom:34px;left:49px;width:1px;background:var(--rule-2)"></span>
+            </sc-if>
+
+            <sc-if value="{{ restoreNote }}">
+              <div style="margin:0 0 22px 0;border:1px solid var(--rule-2);background:var(--paper);padding:11px 13px;display:flex;gap:11px;align-items:flex-start">
+                <span aria-hidden="true" style="flex:none;margin-top:3px;width:9px;height:9px;border:1px solid var(--color-accent-700)"></span>
+                <div style="font-size:13px;line-height:1.6;color:var(--ink-2)">已从本地恢复此工作的消息、草稿与待处理项。<button onClick="{{ dismissRestore }}" class="btn btn-ghost" style="font-size:13px;padding:0 3px">知道了</button></div>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ isBlank }}">
+              <div style="padding:8px 0 0 62px;max-width:60ch">
+                <h6 style="color:var(--ink-3)">空工作</h6>
+                <h3 style="margin:0 0 8px">直接说要做什么就可以开始</h3>
+                <p style="font-size:14px;color:var(--ink-2);margin-bottom:18px">不必先选专家包或配置流程。可以只写一句要求，也可以先带上材料。下面三条是这个工作台能做的事，不是模板。</p>
+                <ul style="margin:0;padding-left:18px;font-size:13.5px;line-height:1.85;color:var(--ink-2)">
+                  <li>对照几份材料，写一份区分事实与建议的备忘录。</li>
+                  <li>整理一批命名不一致的资料，保留原件入口。</li>
+                  <li>把一份长记录压成可核对的清单，标出缺口。</li>
+                </ul>
+              </div>
+            </sc-if>
+
+            <sc-for list="{{ items }}" as="m" hint-placeholder-count="3">
+              <div style="position:relative;display:grid;grid-template-columns:50px minmax(0,1fr);column-gap:12px;padding-bottom:26px">
+
+                <div style="position:relative;padding-top:3px">
+                  <sc-if value="{{ m.isUser }}">
+                    <span aria-hidden="true" style="position:absolute;left:19px;top:5px;width:11px;height:11px;background:var(--color-text)"></span>
+                  </sc-if>
+                  <sc-if value="{{ m.isAgent }}">
+                    <span aria-hidden="true" style="position:absolute;left:19px;top:5px;width:11px;height:11px;border:1px solid var(--color-text);background:var(--color-bg)"></span>
+                  </sc-if>
+                  <sc-if value="{{ m.isAct }}">
+                    <span aria-hidden="true" style="position:absolute;left:22px;top:9px;width:5px;height:5px;background:var(--color-neutral-500)"></span>
+                  </sc-if>
+                  <sc-if value="{{ m.isAsk }}">
+                    <span aria-hidden="true" style="position:absolute;left:19px;top:5px;width:11px;height:11px;background:var(--color-accent);animation:agPulse 2.2s ease-in-out infinite"></span>
+                  </sc-if>
+                  <sc-if value="{{ m.isNotice }}">
+                    <span aria-hidden="true" style="position:absolute;left:19px;top:5px;width:11px;height:11px;border:1px solid var(--color-accent-800);background:var(--color-accent-100)"></span>
+                  </sc-if>
+                </div>
+
+                <div style="min-width:0">
+
+                  <sc-if value="{{ m.isUser }}">
+                    <div style="border-top:1px solid var(--color-text);border-bottom:1px solid var(--rule);padding:9px 0 12px">
+                      <div style="display:flex;align-items:baseline;gap:9px;margin-bottom:6px">
+                        <span style="font:600 11px/1 var(--font-heading);letter-spacing:.12em;text-transform:uppercase">请求</span>
+                        <span style="font:400 10.5px/1 var(--font-mono);color:var(--ink-3)">{{ m.time }}</span>
+                        <button onClick="{{ m.rewind }}" class="btn btn-ghost" style="margin-left:auto;font-size:12px;padding:1px 5px">回到此处之前</button>
+                      </div>
+                      <p style="margin:0;max-width:62ch;font-size:15px;line-height:1.7;text-wrap:pretty">{{ m.text }}</p>
+                      <sc-if value="{{ m.hasAtts }}">
+                        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:10px">
+                          <sc-for list="{{ m.atts }}" as="a" hint-placeholder-count="2">
+                            <button onClick="{{ a.open }}" class="btn btn-secondary" style="font:400 11.5px/1 var(--font-mono);gap:5px;padding:4px 8px;background:var(--paper)">
+                              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"/><path d="M14 2v5a1 1 0 0 0 1 1h5"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg>
+                              {{ a.name }}
+                            </button>
+                          </sc-for>
+                        </div>
+                      </sc-if>
+                    </div>
+                  </sc-if>
+
+                  <sc-if value="{{ m.isAct }}">
+                    <div style="padding-top:2px">
+                      <sc-if value="{{ m.hasFolded }}">
+                        <button onClick="{{ m.toggle }}" style="display:flex;align-items:center;gap:7px;background:transparent;border:0;padding:3px 0;cursor:pointer;font:400 12px/1.4 var(--font-mono);color:var(--ink-2);letter-spacing:.02em" style-hover="color:var(--color-accent-800)" aria-expanded="{{ m.expanded }}">
+                          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true" style="{{ m.chevStyle }}"><path d="M9 6l6 6-6 6"/></svg>
+                          {{ m.foldLabel }}
+                        </button>
+                      </sc-if>
+                      <sc-for list="{{ m.rows }}" as="r" hint-placeholder-count="2">
+                        <div style="display:flex;align-items:flex-start;gap:9px;padding:4px 0">
+                          <span aria-hidden="true" style="flex:none;margin-top:6px;width:7px;height:7px;background:{{ r.dot }}"></span>
+                          <div style="min-width:0">
+                            <div style="font:400 12.5px/1.5 var(--font-mono);letter-spacing:.01em;color:{{ r.ink }}">{{ r.label }}</div>
+                            <sc-if value="{{ r.detail }}">
+                              <div style="font-size:12.5px;line-height:1.6;color:var(--ink-3);margin-top:2px;max-width:56ch">{{ r.detail }}</div>
+                            </sc-if>
+                            <sc-if value="{{ r.action }}">
+                              <button onClick="{{ r.action.onClick }}" class="btn btn-secondary" style="font-size:12px;padding:3px 8px;margin-top:6px">{{ r.action.label }}</button>
+                            </sc-if>
+                          </div>
+                        </div>
+                      </sc-for>
+                    </div>
+                  </sc-if>
+
+                  <sc-if value="{{ m.isAgent }}">
+                    <div>
+                      <div style="display:flex;align-items:baseline;gap:9px;flex-wrap:wrap;margin-bottom:9px">
+                        <span style="font:600 11px/1 var(--font-heading);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2)">{{ m.label }}</span>
+                        <sc-if value="{{ m.streaming }}">
+                          <span style="font:400 10.5px/1 var(--font-mono);color:var(--color-accent-800)">正在写入…</span>
+                        </sc-if>
+                        <sc-if value="{{ m.partial }}">
+                          <span class="tag tag-outline" style="font-family:var(--font-mono);font-size:10.5px">未完成</span>
+                        </sc-if>
+                      </div>
+                      <div style="max-width:64ch">
+                        <sc-for list="{{ m.blocks }}" as="b" hint-placeholder-count="3">
+                          <sc-if value="{{ b.isH }}">
+                            <h5 style="margin:20px 0 7px;font-size:15px;letter-spacing:.01em">
+                              <sc-for list="{{ b.runs }}" as="r" hint-placeholder-count="1"><span>{{ r.text }}</span></sc-for>
+                            </h5>
+                          </sc-if>
+                          <sc-if value="{{ b.isP }}" hint-placeholder-val="{{ true }}">
+                            <p style="margin:0 0 13px;font-size:15px;line-height:1.75;text-wrap:pretty">
+                              <sc-for list="{{ b.runs }}" as="r" hint-placeholder-count="2">
+                                <sc-if value="{{ r.isText }}" hint-placeholder-val="{{ true }}"><span>{{ r.text }}</span></sc-if>
+                                <sc-if value="{{ r.isSrc }}">
+                                  <button onClick="{{ r.open }}" style="display:inline;background:transparent;border:0;padding:0 1px;margin:0;font:inherit;font-size:13.5px;color:var(--color-accent-800);border-bottom:1px solid var(--color-accent-400);cursor:pointer" style-hover="background:var(--color-accent-100);border-bottom-color:var(--color-accent-800)">〔{{ r.text }}〕</button>
+                                </sc-if>
+                              </sc-for>
+                            </p>
+                          </sc-if>
+                          <sc-if value="{{ b.isUl }}">
+                            <ul style="margin:0 0 13px;padding-left:17px;font-size:15px;line-height:1.75">
+                              <sc-for list="{{ b.items }}" as="it" hint-placeholder-count="2">
+                                <li style="margin-bottom:5px;text-wrap:pretty">
+                                  <sc-for list="{{ it.runs }}" as="r" hint-placeholder-count="1">
+                                    <sc-if value="{{ r.isText }}" hint-placeholder-val="{{ true }}"><span>{{ r.text }}</span></sc-if>
+                                    <sc-if value="{{ r.isSrc }}">
+                                      <button onClick="{{ r.open }}" style="display:inline;background:transparent;border:0;padding:0 1px;font:inherit;font-size:13.5px;color:var(--color-accent-800);border-bottom:1px solid var(--color-accent-400);cursor:pointer" style-hover="background:var(--color-accent-100)">〔{{ r.text }}〕</button>
+                                    </sc-if>
+                                  </sc-for>
+                                </li>
+                              </sc-for>
+                            </ul>
+                          </sc-if>
+                          <sc-if value="{{ b.isQuote }}">
+                            <blockquote style="margin:0 0 13px;padding:2px 0 2px 15px;border-left:1px solid var(--rule-2);font-size:14.5px;line-height:1.75;color:var(--ink-2);white-space:pre-line">{{ b.text }}</blockquote>
+                          </sc-if>
+                          <sc-if value="{{ b.isCode }}">
+                            <div style="position:relative;margin:0 0 15px">
+                              <pre style="margin:0;padding:12px 13px;background:var(--paper);border:1px solid var(--rule-2);overflow:auto;font:400 12.5px/1.75 var(--font-mono);white-space:pre">{{ b.text }}</pre>
+                              <button onClick="{{ m.copyCode }}" class="btn btn-secondary" style="position:absolute;top:6px;right:6px;font-size:11.5px;padding:3px 7px;background:var(--color-bg)">{{ m.copyCodeLabel }}</button>
+                            </div>
+                          </sc-if>
+                        </sc-for>
+                        <sc-if value="{{ m.streaming }}">
+                          <span aria-hidden="true" style="display:inline-block;width:8px;height:16px;background:var(--color-accent-800);vertical-align:-3px;animation:agCaret 1s step-end infinite"></span>
+                        </sc-if>
+                      </div>
+
+                      <sc-if value="{{ m.hasObject }}">
+                        <div class="blueprint" style="margin-top:18px;background:var(--paper);padding:13px 15px 14px;max-width:60ch">
+                          <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+                          <div style="display:flex;align-items:baseline;gap:9px;margin-bottom:3px">
+                            <span style="font:600 10.5px/1 var(--font-heading);letter-spacing:.12em;text-transform:uppercase;color:var(--color-accent-800)">产物</span>
+                            <span style="font:400 10.5px/1 var(--font-mono);color:var(--ink-3)">{{ m.objMeta }}</span>
+                          </div>
+                          <div style="font:600 17px/1.25 var(--font-heading);margin-bottom:3px">{{ m.objName }}</div>
+                          <p style="margin:0 0 11px;font-size:12.5px;color:var(--ink-3)">生成完毕，尚未被采用。采用与否由你在阅读后决定。</p>
+                          <div style="display:flex;flex-wrap:wrap;gap:7px">
+                            <button onClick="{{ m.openObj }}" class="btn btn-primary" style="font-size:13px">打开阅读</button>
+                            <button onClick="{{ m.copyObj }}" class="btn btn-secondary" style="font-size:13px">{{ m.copyLabel }}</button>
+                            <button onClick="{{ m.openSrcList }}" class="btn btn-secondary" style="font-size:13px">查看来源</button>
+                            <button onClick="{{ m.revise }}" class="btn btn-secondary" style="font-size:13px">继续修改</button>
+                          </div>
+                        </div>
+                      </sc-if>
+                    </div>
+                  </sc-if>
+
+                  <sc-if value="{{ m.isAsk }}">
+                    <div class="blueprint" style="background:var(--paper);padding:14px 16px 15px;max-width:58ch">
+                      <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+                      <div style="display:flex;align-items:baseline;gap:9px;margin-bottom:7px">
+                        <span style="font:600 10.5px/1 var(--font-heading);letter-spacing:.12em;text-transform:uppercase;color:var(--color-accent-800)">{{ m.askKind }}</span>
+                        <sc-if value="{{ m.stale }}">
+                          <span class="tag tag-neutral" style="font-family:var(--font-mono);font-size:10.5px">已失效</span>
+                        </sc-if>
+                      </div>
+                      <p style="margin:0 0 4px;font-size:15.5px;line-height:1.55;font-weight:500">{{ m.askTitle }}</p>
+                      <p style="margin:0 0 13px;font-size:13px;line-height:1.65;color:var(--ink-2);max-width:52ch">{{ m.askBody }}</p>
+
+                      <sc-if value="{{ m.answered }}">
+                        <div style="display:flex;align-items:center;gap:9px;font-size:13.5px;padding:8px 0 2px;border-top:1px solid var(--rule)">
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true" style="color:var(--color-accent-800)"><path d="M20 6L9 17l-5-5"/></svg>
+                          <span>{{ m.answeredText }}</span>
+                          <button onClick="{{ m.undo }}" class="btn btn-ghost" style="font-size:12.5px;margin-left:auto">改一下</button>
+                        </div>
+                      </sc-if>
+
+                      <sc-if value="{{ m.answerable }}" hint-placeholder-val="{{ true }}">
+                        <div style="display:flex;flex-wrap:wrap;gap:7px;margin-bottom:10px">
+                          <sc-for list="{{ m.options }}" as="o" hint-placeholder-count="2">
+                            <button onClick="{{ o.onClick }}" class="btn btn-secondary" style="font-size:13px;background:var(--color-bg)">{{ o.label }}</button>
+                          </sc-for>
+                        </div>
+                        <div style="display:flex;gap:7px;align-items:flex-start">
+                          <input value="{{ m.freeValue }}" onChange="{{ m.onFree }}" onKeyDown="{{ m.onFreeKey }}" class="input" placeholder="或者自己写一句" aria-label="自由回答" style="font-size:13.5px;background:var(--color-bg)">
+                          <button onClick="{{ m.submitFree }}" class="btn btn-secondary" disabled="{{ m.freeDisabled }}" style="font-size:13px;flex:none">回答</button>
+                        </div>
+                      </sc-if>
+
+                      <sc-if value="{{ m.stale }}">
+                        <p style="margin:8px 0 0;font-size:12.5px;color:var(--ink-2);border-top:1px solid var(--rule);padding-top:9px">你离开过这个工作，这个问题已经过期，不会再被提交。Agent 已按“暂不确定”继续，可在下一条消息里补充。</p>
+                      </sc-if>
+                    </div>
+                  </sc-if>
+
+                  <sc-if value="{{ m.isNotice }}">
+                    <div style="border:1px solid var(--color-accent-400);background:var(--color-accent-100);padding:12px 14px;max-width:58ch">
+                      <div style="display:flex;align-items:baseline;gap:9px;margin-bottom:5px">
+                        <span style="font:600 10.5px/1 var(--font-heading);letter-spacing:.12em;text-transform:uppercase;color:var(--color-accent-900)">{{ m.noticeKind }}</span>
+                      </div>
+                      <p style="margin:0 0 3px;font-size:14.5px;line-height:1.6;color:var(--color-accent-900);font-weight:500">{{ m.noticeTitle }}</p>
+                      <p style="margin:0 0 11px;font-size:13px;line-height:1.65;color:var(--color-accent-900);max-width:52ch">{{ m.noticeBody }}</p>
+                      <div style="display:flex;flex-wrap:wrap;gap:7px">
+                        <sc-for list="{{ m.noticeActions }}" as="a" hint-placeholder-count="2">
+                          <button onClick="{{ a.onClick }}" class="btn btn-secondary" style="font-size:13px;background:var(--color-bg);border-color:var(--color-accent-400)">{{ a.label }}</button>
+                        </sc-for>
+                      </div>
+                    </div>
+                  </sc-if>
+
+                </div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+
+        <sc-if value="{{ showJump }}">
+          <button onClick="{{ jumpLatest }}" class="btn btn-secondary" style="position:absolute;left:50%;transform:translateX(-50%);bottom:158px;font-size:12.5px;background:var(--color-bg);box-shadow:var(--shadow-md);gap:6px;z-index:4">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
+            回到最新
+          </button>
+        </sc-if>
+
+        <div style="flex:none;border-top:1px solid var(--rule-2);background:var(--color-bg)">
+
+          <div style="display:flex;align-items:center;gap:10px;min-height:34px;padding:0 26px;border-bottom:1px solid var(--rule)">
+            <span aria-hidden="true" style="flex:none;width:8px;height:8px;background:{{ stateDot }};{{ stateDotAnim }}"></span>
+            <span aria-live="polite" style="font:400 12px/1 var(--font-mono);letter-spacing:.02em;color:var(--ink-2)">{{ stateLabel }}</span>
+            <sc-if value="{{ stateDetail }}">
+              <button onClick="{{ openActivity }}" class="btn btn-ghost" style="font-size:12px;padding:0 3px">{{ stateDetail }}</button>
+            </sc-if>
+            <div style="margin-left:auto;display:flex;align-items:center;gap:7px">
+              <sc-if value="{{ canStop }}">
+                <button onClick="{{ requestStop }}" class="btn btn-secondary" disabled="{{ stopBusy }}" style="font-size:12.5px;padding:4px 9px;gap:6px">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="6" width="12" height="12"/></svg>
+                  {{ stopLabel }}
+                </button>
+              </sc-if>
+              <sc-if value="{{ isOffline }}">
+                <button onClick="{{ reconnect }}" class="btn btn-secondary" style="font-size:12.5px;padding:4px 9px">重新连接</button>
+              </sc-if>
+            </div>
+          </div>
+
+          <div style="padding:12px 26px 14px;max-width:920px">
+            <sc-if value="{{ hasAttach }}">
+              <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:9px">
+                <sc-for list="{{ attach }}" as="a" hint-placeholder-count="2">
+                  <span style="display:inline-flex;align-items:center;gap:7px;border:1px solid {{ a.border }};background:{{ a.bg }};padding:4px 5px 4px 9px;font:400 11.5px/1 var(--font-mono);color:{{ a.ink }}">
+                    <span>{{ a.name }}</span>
+                    <sc-if value="{{ a.failed }}"><span style="letter-spacing:.04em">读取失败</span></sc-if>
+                    <button onClick="{{ a.remove }}" class="btn btn-secondary btn-icon" aria-label="{{ a.removeLabel }}" style="width:19px;height:19px;border-color:transparent;background:transparent">
+                      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+                    </button>
+                  </span>
+                </sc-for>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ attachError }}">
+              <div style="display:flex;gap:10px;align-items:flex-start;border:1px solid var(--color-accent-400);background:var(--color-accent-100);padding:9px 11px;margin-bottom:9px">
+                <span aria-hidden="true" style="flex:none;margin-top:4px;width:9px;height:9px;border:1px solid var(--color-accent-800)"></span>
+                <div style="font-size:13px;line-height:1.6;color:var(--color-accent-900)">
+                  这份附件暂无法读取。可移除后继续，或换成文本。
+                  <span style="display:flex;gap:7px;margin-top:8px">
+                    <button onClick="{{ removeBadAttach }}" class="btn btn-secondary" style="font-size:12.5px;padding:3px 8px;background:var(--color-bg);border-color:var(--color-accent-400)">移除并继续</button>
+                    <button onClick="{{ swapAttach }}" class="btn btn-secondary" style="font-size:12.5px;padding:3px 8px;background:var(--color-bg);border-color:var(--color-accent-400)">换成文本</button>
+                  </span>
+                </div>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ queued }}">
+              <div style="display:flex;gap:10px;align-items:flex-start;border:1px solid var(--rule-2);background:var(--paper);padding:9px 11px;margin-bottom:9px">
+                <span aria-hidden="true" style="flex:none;margin-top:5px;width:9px;height:9px;background:var(--color-accent)"></span>
+                <div style="min-width:0;flex:1">
+                  <div style="font:400 11px/1.5 var(--font-mono);letter-spacing:.03em;color:var(--color-accent-800);margin-bottom:4px">已入队 · 这次运行结束时自动发送；停止或断线时退回草稿</div>
+                  <p style="margin:0;font-size:13.5px;line-height:1.6;text-wrap:pretty">{{ queued }}</p>
+                </div>
+                <span style="display:flex;gap:6px;flex:none">
+                  <button onClick="{{ editQueued }}" class="btn btn-secondary" style="font-size:12px;padding:3px 8px">修改</button>
+                  <button onClick="{{ dropQueued }}" class="btn btn-secondary" style="font-size:12px;padding:3px 8px">撤回</button>
+                </span>
+              </div>
+            </sc-if>
+
+            <div style="border:1px solid var(--rule-2);background:var(--paper)">
+              <textarea data-ag="composer" value="{{ draft }}" onChange="{{ onDraft }}" onKeyDown="{{ onDraftKey }}" onCompositionStart="{{ onCompStart }}" onCompositionEnd="{{ onCompEnd }}" aria-label="给 Agent 的消息" placeholder="{{ placeholder }}" style="display:block;width:100%;min-height:62px;max-height:180px;resize:none;border:0;background:transparent;padding:11px 13px 4px;font:400 14.5px/1.65 var(--font-body);color:var(--color-text);caret-color:var(--color-accent);outline:none"></textarea>
+              <div style="display:flex;align-items:center;gap:9px;padding:6px 9px 8px 11px">
+                <button onClick="{{ addAttach }}" class="btn btn-secondary" style="flex:none;white-space:nowrap;font-size:12.5px;padding:4px 9px;gap:6px;background:var(--color-bg)">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m16 6-8.414 8.586a2 2 0 0 0 2.829 2.829l8.414-8.586a4 4 0 1 0-5.657-5.657l-8.379 8.551a6 6 0 1 0 8.485 8.485l8.379-8.551"/></svg>
+                  附件
+                </button>
+                <sc-if value="{{ showHint }}">
+                  <span style="min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;font:400 11.5px/1.4 var(--font-mono);color:var(--ink-3)">{{ inputHint }}</span>
+                </sc-if>
+                <button onClick="{{ send }}" class="btn btn-primary blueprint" disabled="{{ sendDisabled }}" style="margin-left:auto;flex:none;white-space:nowrap;gap:7px;letter-spacing:.06em;padding:7px 14px">
+                  <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+                  {{ sendLabel }}
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+                </button>
+              </div>
+            </div>
+            <sc-if value="{{ draftHeld }}">
+              <p style="margin:8px 0 0;font:400 11.5px/1.5 var(--font-mono);color:var(--color-accent-800)">草稿已保留，未发送 · 可排队为下一轮，或等运行结束后自己发送</p>
+            </sc-if>
+          </div>
+        </div>
+      </main>
+
+      <sc-if value="{{ cardsOpen }}">
+        <aside aria-label="上下文栏" style="{{ cardsStyle }}">
+          <div style="flex:none;display:flex;align-items:center;gap:8px;padding:13px 13px 10px">
+            <span style="font:600 10.5px/1 var(--font-heading);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)">这个工作的组件</span>
+            <button onClick="{{ toggleRight }}" class="btn btn-secondary btn-icon" aria-label="收起右栏（⌘]）" style="width:24px;height:24px;margin-left:auto;border-color:transparent">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+            </button>
+          </div>
+          <div class="ag-scroll" style="flex:1;min-height:0;overflow:auto;padding:0 13px 16px;display:flex;flex-direction:column;gap:11px">
+            <sc-for list="{{ rightCards }}" as="c" hint-placeholder-count="3">
+              <div class="blueprint" style="background:var(--paper);padding:11px 12px 12px">
+                <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+                <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:5px">
+                  <span style="font:600 10px/1 var(--font-heading);letter-spacing:.12em;text-transform:uppercase;color:var(--color-accent-800)">{{ c.kicker }}</span>
+                  <span style="margin-left:auto;font:400 10.5px/1 var(--font-mono);color:var(--ink-3)">{{ c.count }}</span>
+                </div>
+                <div style="font:600 15px/1.25 var(--font-heading);margin-bottom:4px;text-wrap:pretty">{{ c.title }}</div>
+                <p style="margin:0 0 10px;font-size:12.5px;line-height:1.6;color:var(--ink-3);text-wrap:pretty">{{ c.sub }}</p>
+                <button onClick="{{ c.expand }}" class="btn btn-secondary" style="font-size:12.5px;padding:4px 9px;background:var(--color-bg)">展开</button>
+              </div>
+            </sc-for>
+            <p style="margin:2px 0 0;font-size:11.5px;line-height:1.6;color:var(--ink-3)">每张卡片独立展开为右侧预览面，互不牵连；关闭预览回到这一列。</p>
+          </div>
+        </aside>
+      </sc-if>
+
+      <sc-if value="{{ panelOpen }}">
+        <aside aria-label="辅助面" style="{{ panelStyle }}">
+          <div style="flex:none;display:flex;align-items:flex-start;gap:10px;padding:13px 15px 11px;border-bottom:1px solid var(--rule-2)">
+            <div style="min-width:0;flex:1">
+              <div style="font:600 10.5px/1 var(--font-heading);letter-spacing:.12em;text-transform:uppercase;color:var(--color-accent-800);margin-bottom:5px">{{ panelKicker }}</div>
+              <div style="font:600 16px/1.25 var(--font-heading);text-wrap:pretty">{{ panelTitle }}</div>
+              <sc-if value="{{ panelMeta }}">
+                <div style="font:400 10.5px/1.5 var(--font-mono);color:var(--ink-3);margin-top:4px">{{ panelMeta }}</div>
+              </sc-if>
+            </div>
+            <button onClick="{{ closePanel }}" class="btn btn-secondary btn-icon" aria-label="收起为卡片（Esc）" title="收起为卡片（Esc）" style="width:28px;height:28px;flex:none;border-color:transparent">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+            </button>
+          </div>
+
+          <div role="tablist" aria-label="预览面标签" style="flex:none;display:flex;align-items:flex-end;gap:3px;padding:7px 9px 0;background:var(--color-bg);border-bottom:1px solid var(--rule-2)">
+            <sc-for list="{{ dockTabs }}" as="t" hint-placeholder-count="5">
+              <button onClick="{{ t.onClick }}" role="tab" aria-selected="{{ t.on }}" style="position:relative;padding:7px 11px 8px;cursor:pointer;font:600 12.5px/1 var(--font-heading);letter-spacing:.05em;color:{{ t.ink }};{{ t.box }}" style-hover="color:var(--color-text)">{{ t.label }}</button>
+            </sc-for>
+          </div>
+
+          <div data-ag="panelbody" class="ag-scroll" style="flex:1;min-height:0;overflow:auto;padding:16px 15px 22px">
+
+            <sc-if value="{{ panelIsDoc }}">
+              <div>
+                <sc-for list="{{ docLines }}" as="l" hint-placeholder-count="6">
+                  <div style="display:grid;grid-template-columns:26px minmax(0,1fr);column-gap:10px;padding:1px 0;background:{{ l.bg }};border-left:2px solid {{ l.bar }};padding-left:6px">
+                    <span style="font:400 11px/1.75 var(--font-mono);color:var(--ink-3);text-align:right;user-select:none">{{ l.n }}</span>
+                    <span style="font:400 12.5px/1.75 var(--font-mono);white-space:pre-wrap;word-break:break-word;color:{{ l.ink }}">{{ l.text }}</span>
+                  </div>
+                </sc-for>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ panelIsOutput }}">
+              <div style="font-size:14.5px;line-height:1.75">
+                <sc-for list="{{ panelBlocks }}" as="b" hint-placeholder-count="4">
+                  <sc-if value="{{ b.isH }}"><h5 style="margin:19px 0 7px;font-size:15px">{{ b.plain }}</h5></sc-if>
+                  <sc-if value="{{ b.isP }}" hint-placeholder-val="{{ true }}">
+                    <p style="margin:0 0 12px;text-wrap:pretty">
+                      <sc-for list="{{ b.runs }}" as="r" hint-placeholder-count="2">
+                        <sc-if value="{{ r.isText }}" hint-placeholder-val="{{ true }}"><span>{{ r.text }}</span></sc-if>
+                        <sc-if value="{{ r.isSrc }}">
+                          <button onClick="{{ r.open }}" style="display:inline;background:transparent;border:0;padding:0 1px;font:inherit;font-size:13px;color:var(--color-accent-800);border-bottom:1px solid var(--color-accent-400);cursor:pointer" style-hover="background:var(--color-accent-100)">〔{{ r.text }}〕</button>
+                        </sc-if>
+                      </sc-for>
+                    </p>
+                  </sc-if>
+                  <sc-if value="{{ b.isUl }}">
+                    <ul style="margin:0 0 12px;padding-left:17px">
+                      <sc-for list="{{ b.items }}" as="it" hint-placeholder-count="2"><li style="margin-bottom:5px">{{ it.plain }}</li></sc-for>
+                    </ul>
+                  </sc-if>
+                  <sc-if value="{{ b.isQuote }}">
+                    <blockquote style="margin:0 0 12px;padding:2px 0 2px 14px;border-left:1px solid var(--rule-2);color:var(--ink-2);white-space:pre-line">{{ b.text }}</blockquote>
+                  </sc-if>
+                  <sc-if value="{{ b.isCode }}">
+                    <pre style="margin:0 0 14px;padding:11px 12px;background:var(--color-bg);border:1px solid var(--rule-2);overflow:auto;font:400 12px/1.75 var(--font-mono)">{{ b.text }}</pre>
+                  </sc-if>
+                </sc-for>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ panelIsSrcList }}">
+              <div style="display:flex;flex-direction:column;gap:9px">
+                <p style="margin:0 0 3px;font-size:13px;color:var(--ink-2)">这份产物引用了两份材料。点击进入原文并定位到被引用的段落。</p>
+                <sc-for list="{{ srcList }}" as="s" hint-placeholder-count="2">
+                  <button onClick="{{ s.open }}" class="blueprint" style="text-align:left;background:var(--color-bg);padding:11px 13px;cursor:pointer;font:inherit" style-hover="background:var(--color-neutral-200)">
+                    <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+                    <div style="font:400 12.5px/1 var(--font-mono);margin-bottom:6px">{{ s.name }}</div>
+                    <div style="font-size:12.5px;line-height:1.6;color:var(--ink-3)">{{ s.hint }}</div>
+                  </button>
+                </sc-for>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ panelIsFolder }}">
+              <div>
+                <p style="margin:0 0 11px;font-size:12.5px;color:var(--ink-2)">目录属于这个工作。文本文件可直接打开原文；产物在「输出」下。</p>
+                <sc-for list="{{ folderItems }}" as="f" hint-placeholder-count="5">
+                  <button onClick="{{ f.onClick }}" style="display:flex;align-items:center;gap:9px;width:100%;text-align:left;background:transparent;border:0;border-bottom:1px solid var(--rule);padding:8px 4px;cursor:pointer;font:inherit" style-hover="background:var(--color-bg)">
+                    <sc-if value="{{ f.isDir }}">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex:none;color:var(--ink-3)"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/></svg>
+                    </sc-if>
+                    <sc-if value="{{ f.isOut }}">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex:none;color:var(--color-accent-800)"><path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"/><path d="M14 2v5a1 1 0 0 0 1 1h5"/></svg>
+                    </sc-if>
+                    <span style="min-width:0;font:400 12.5px/1.5 var(--font-mono);color:{{ f.ink }};overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ f.name }}</span>
+                    <span style="margin-left:auto;flex:none;font:400 10.5px/1.5 var(--font-mono);color:var(--ink-3)">{{ f.meta }}</span>
+                  </button>
+                </sc-for>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ panelIsTask }}">
+              <div>
+                <p style="margin:0 0 11px;font-size:12.5px;color:var(--ink-2)">待办属于这个工作，不随一次运行结束而消失。</p>
+                <sc-for list="{{ tasks }}" as="t" hint-placeholder-count="4">
+                  <div style="display:flex;align-items:flex-start;gap:10px;padding:9px 0;border-bottom:1px solid var(--rule)">
+                    <span aria-hidden="true" style="flex:none;margin-top:6px;width:8px;height:8px;background:{{ t.dot }}"></span>
+                    <div style="min-width:0;flex:1">
+                      <div style="font-size:13.5px;line-height:1.55;color:{{ t.ink }};text-decoration:{{ t.strike }};text-wrap:pretty">{{ t.label }}</div>
+                      <sc-if value="{{ t.note }}">
+                        <div style="font-size:12px;line-height:1.6;color:var(--ink-3);margin-top:2px">{{ t.note }}</div>
+                      </sc-if>
+                    </div>
+                    <sc-if value="{{ t.action }}">
+                      <button onClick="{{ t.action.onClick }}" class="btn btn-secondary" style="flex:none;font-size:12px;padding:3px 8px;background:var(--color-bg)">{{ t.action.label }}</button>
+                    </sc-if>
+                  </div>
+                </sc-for>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ panelIsAct }}">
+              <div>
+                <sc-for list="{{ allAct }}" as="r" hint-placeholder-count="4">
+                  <div style="display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid var(--rule)">
+                    <span aria-hidden="true" style="flex:none;margin-top:6px;width:7px;height:7px;background:{{ r.dot }}"></span>
+                    <div style="min-width:0">
+                      <div style="font:400 12.5px/1.5 var(--font-mono);color:{{ r.ink }}">{{ r.label }}</div>
+                      <sc-if value="{{ r.detail }}">
+                        <div style="font-size:12.5px;line-height:1.6;color:var(--ink-3);margin-top:2px">{{ r.detail }}</div>
+                      </sc-if>
+                    </div>
+                    <span style="margin-left:auto;flex:none;font:400 10.5px/1.6 var(--font-mono);color:var(--ink-3)">{{ r.stamp }}</span>
+                  </div>
+                </sc-for>
+                <p style="margin:14px 0 0;font-size:12.5px;line-height:1.65;color:var(--ink-3)">这里只记录 Agent 实际执行的动作与结果，不展示内部推理。</p>
+              </div>
+            </sc-if>
+          </div>
+
+          <sc-if value="{{ panelFooter }}">
+            <div style="flex:none;display:flex;flex-wrap:wrap;gap:7px;padding:11px 15px;border-top:1px solid var(--rule-2);background:var(--color-bg)">
+              <sc-for list="{{ panelActions }}" as="a" hint-placeholder-count="2">
+                <button onClick="{{ a.onClick }}" class="btn btn-secondary" style="font-size:13px">{{ a.label }}</button>
+              </sc-for>
+              <sc-if value="{{ returnAction }}">
+                <button onClick="{{ returnToPlace }}" class="btn btn-primary blueprint" style="font-size:13px;margin-left:auto">
+                  <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+                  返回原位置
+                </button>
+              </sc-if>
+            </div>
+          </sc-if>
+        </aside>
+      </sc-if>
+    </sc-if>
+
+    <sc-if value="{{ railScrim }}">
+      <button onClick="{{ toggleRail }}" aria-label="关闭工作列表" style="position:absolute;inset:0;z-index:5;border:0;background:color-mix(in srgb,var(--color-neutral-900) 34%, transparent);cursor:pointer"></button>
+    </sc-if>
+  </div>
+
+  <div style="position:absolute;left:12px;bottom:12px;z-index:20;display:flex;flex-direction:column;align-items:flex-start;gap:8px">
+    <sc-if value="{{ demoOpen }}">
+      <div class="blueprint elev-lg" style="background:var(--color-bg);padding:12px 13px;width:266px">
+        <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+        <h6 style="margin:0 0 8px;color:var(--ink-3)">演示场景</h6>
+        <div style="display:flex;flex-direction:column;gap:2px;margin-bottom:11px">
+          <sc-for list="{{ scenes }}" as="s" hint-placeholder-count="6">
+            <button onClick="{{ s.onClick }}" style="position:relative;display:flex;align-items:baseline;gap:8px;text-align:left;background:transparent;border:0;padding:5px 7px;cursor:pointer;font:inherit;font-size:13px;color:var(--color-text)" style-hover="background:var(--color-neutral-200)">
+              <sc-if value="{{ s.on }}">
+                <span aria-hidden="true" style="position:absolute;inset:0;background:var(--color-accent-100);border-left:2px solid var(--color-accent)"></span>
+              </sc-if>
+              <span style="position:relative;flex:none;width:16px;font:400 10.5px/1.6 var(--font-mono);color:var(--ink-3)">{{ s.no }}</span>
+              <span style="position:relative">{{ s.label }}</span>
+            </button>
+          </sc-for>
+        </div>
+        <h6 style="margin:0 0 7px;color:var(--ink-3)">版式模式</h6>
+        <div class="seg" role="group" aria-label="版式模式" style="width:100%">
+          <label class="seg-opt" style="flex:1;justify-content:center;font-size:12px"><input type="radio" name="agmode2" checked="{{ modeAOn }}" onChange="{{ setModeA }}">A 按需展开</label>
+          <label class="seg-opt" style="flex:1;justify-content:center;font-size:12px"><input type="radio" name="agmode2" checked="{{ modeBOn }}" onChange="{{ setModeB }}">B 双面</label>
+        </div>
+        <div style="display:flex;gap:7px;margin-top:11px;padding-top:10px;border-top:1px solid var(--rule)">
+          <button onClick="{{ simulateRefresh }}" class="btn btn-secondary" style="font-size:12px;padding:4px 8px">模拟刷新</button>
+          <button onClick="{{ resetDemo }}" class="btn btn-secondary" style="font-size:12px;padding:4px 8px">重置</button>
+        </div>
+      </div>
+    </sc-if>
+    <button onClick="{{ toggleDemo }}" class="btn btn-secondary" aria-expanded="{{ demoOpen }}" style="font:400 11.5px/1 var(--font-mono);letter-spacing:.04em;padding:6px 10px;background:var(--color-bg);box-shadow:var(--shadow-sm);gap:7px">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>
+    演示工具 · {{ sceneLabel }}
+    </button>
+  </div>
+
+  <sc-if value="{{ confirmOpen }}">
+    <div class="dialog-backdrop" style="z-index:40">
+      <div class="dialog blueprint" style="background:var(--paper)">
+        <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+        <div class="dialog-title">{{ confirmTitle }}</div>
+        <div class="dialog-body">{{ confirmBody }}</div>
+        <div class="dialog-actions">
+          <button onClick="{{ closeConfirm }}" class="btn btn-secondary" style="font-size:13px">取消</button>
+          <button onClick="{{ doRewind }}" class="btn btn-primary" style="font-size:13px">回到这里之前</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ toast }}">
+    <div role="status" aria-live="polite" style="position:absolute;left:50%;transform:translateX(-50%);top:62px;z-index:30;border:1px solid var(--rule-2);background:var(--color-bg);box-shadow:var(--shadow-md);padding:9px 14px;font:400 12.5px/1 var(--font-mono);animation:agIn .18s ease-out">{{ toast }}</div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1440,&quot;height&quot;:900},&quot;layoutMode&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;A&quot;,&quot;B&quot;],&quot;default&quot;:&quot;A&quot;,&quot;tsType&quot;:&quot;'A' | 'B'&quot;,&quot;section&quot;:&quot;版式&quot;,&quot;label&quot;:&quot;版式模式（A 按需展开 / B 双面）&quot;},&quot;showRunRule&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;版式&quot;,&quot;label&quot;:&quot;显示运行标尺&quot;},&quot;startScene&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;blank&quot;,&quot;run&quot;,&quot;long&quot;,&quot;ask&quot;,&quot;perm&quot;,&quot;attach&quot;,&quot;output&quot;,&quot;offline&quot;,&quot;stopped&quot;,&quot;partial&quot;],&quot;default&quot;:&quot;run&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;演示&quot;,&quot;label&quot;:&quot;初始演示场景&quot;}}">
+class Component extends DCLogic {
+  KEY = 'agentui.qingyu.v1';
+
+  DOCS = {
+    interview: { name: '访谈摘记.txt', meta: '文本 · 4.2 KB · 未修改', hint: '三位受访者的自述记录，含年份核对与原件入口两处提及。', lines: [
+      '访谈摘记 · 青屿资料室整理试点',
+      '记录人：值班员乙　范围：三位受访者，各约 25 分钟',
+      '',
+      '受访者 A（编目）：同名项目太多，年份要再核对一次才敢下结论。',
+      '受访者 B（阅览）：摘要写多长不是关键，能不能回到原件是关键。',
+      '受访者 C（编目）：上次那批同名展览资料，我们核对了两遍年份。',
+      '受访者 B：如果原件入口丢了，摘要越长越难判断。',
+      '',
+      '备注：本次访谈未测量时间收益，也未记录任务耗时。'
+    ], hit: [3, 6] },
+    pilot: { name: '两周试点记录.txt', meta: '文本 · 2.8 KB · 未修改', hint: '12 次观察的逐次登记，两类情况的汇总说明在末尾。', lines: [
+      '两周试点记录 · 青屿资料室',
+      '范围：12 次整理观察，逐次登记，未配对任务难度',
+      '',
+      '编号　情况',
+      '03　　同名资料需人工辨别（涉及年份）',
+      '05　　缺少原件入口',
+      '07　　同名资料需人工辨别',
+      '09　　同名资料需人工辨别',
+      '11　　缺少原件入口',
+      '',
+      '汇总：3 次辨别，2 次缺入口；两类可能重合，不应相加为 5 次。',
+      '说明：本记录未测量时间收益。'
+    ], hit: [4, 10] }
+  };
+
+  SRCMAP = { '访谈摘记': 'interview', '两周试点记录': 'pilot' };
+
+  SHORT = [
+    { t: 'h', s: '试点观察' },
+    { t: 'p', s: '同名资料辨别与原件回跳，是本次记录中需要优先处理的两类问题。访谈里三位受访者都提到核对年份，两位强调原件入口〔访谈摘记〕。' },
+    { t: 'p', s: '12 次观察中，3 次涉及同名资料辨别，2 次缺少原件入口；两类可能重合，不应相加为 5 次独立失败〔两周试点记录〕。当前记录也不足以估算稳定的时间收益。' },
+    { t: 'p', s: '建议先补齐原件入口，并在结果中保留年份及版本信息。后续再用可比任务观察变化。本次整理没有决定扩大试点。' }
+  ];
+
+  LONG = [
+    { t: 'h', s: '试点观察备忘录' },
+    { t: 'p', s: '本文整理青屿资料室两周整理试点的记录，用于内部对照。全文只使用访谈摘记与两周试点记录两份材料，未引入其他来源，也没有补充材料之外的数字。文中区分「记录中的事实」与「本次提出的建议」，后者未经验证。' },
+    { t: 'h', s: '一　记录范围与限制' },
+    { t: 'p', s: '本次可用材料为三位受访者的访谈摘记，以及 12 次观察的逐次登记〔两周试点记录〕。两份材料的记录方式不同：访谈是自述，试点是现场登记，二者不能互相验证，只能并列。' },
+    { t: 'ul', items: [
+      '访谈没有测量时间收益，相关判断只能作为受访者的感受记录〔访谈摘记〕。',
+      '试点记录未配对任务难度，不同次观察之间不具备直接可比性。',
+      '两份材料都没有区分资料的年代与来源渠道，本次不在这个维度上作结论。',
+      '第三份附件未能读取，其内容不进入本文，也不作为缺口的解释。'
+    ] },
+    { t: 'h', s: '二　记录中的事实' },
+    { t: 'p', s: '三位受访者都提到同名项目需要再次核对年份，其中两位另外强调原件入口比摘要长短更重要〔访谈摘记〕。这两点在三份自述中重复出现，属记录中较稳定的部分。' },
+    { t: 'p', s: '12 次观察中，3 次需要人工辨别同名资料，2 次缺少原件入口〔两周试点记录〕。登记表未标注这两类情况是否发生在同一次观察上，因此它们可能重合，不应相加为 5 次独立失败。' },
+    { t: 'q', s: '摘要写多长不是关键，能不能回到原件是关键。\n如果原件入口丢了，摘要越长越难判断。' },
+    { t: 'p', s: '以上引述来自受访者 B，属自述而非测量结果。它说明的是判断方式，不是效率结论：受访者关心的是能否回到原件，而不是摘要的详略。' },
+    { t: 'p', s: '需要明确指出的是，记录中没有任何一次观察给出耗时数据，也没有对照组。因此本文不提出时间收益的估计，也不把 3 次与 2 次换算成比例〔两周试点记录〕。' },
+    { t: 'h', s: '三　本次提出的建议（未经验证）' },
+    { t: 'ul', items: [
+      '先补齐原件入口：每条整理结果都保留可点击的原件位置，而不是只留一个文件名。',
+      '在结果中保留年份与版本信息，使同名资料在列表层面即可区分，不必打开才知道是哪一年。',
+      '登记表增加一列，标注一次观察是否同时涉及两类情况，以便下次汇总不再有重合歧义。',
+      '后续用可比任务观察变化，再讨论是否扩展试点；本次不具备作此判断的材料。'
+    ] },
+    { t: 'h', s: '四　命名示例' },
+    { t: 'p', s: '为便于在列表层面区分同名资料，可考虑如下命名形态。示例仅为形式说明，未在试点中实测，也不构成命名规范。' },
+    { t: 'code', s: '青屿-展览-{年份}-{原名}-{版次}.{ext}\n\n青屿-展览-1998-海图与港口-v2.txt\n青屿-展览-2004-海图与港口-v1.txt\n青屿-展览-2004-海图与港口-v1-附件目录.txt' },
+    { t: 'p', s: '按此形态，两份同名资料在同一层列表中即可凭年份与版次区分，不需要额外打开核对。原名保持受访者要求的原始写法，不作译名统一。' },
+    { t: 'h', s: '五　待补充的问题' },
+    { t: 'ul', items: [
+      '同名资料的判定标准由谁确定，是否需要编目与阅览共同确认。',
+      '缺少原件入口的 2 次，是登记遗漏还是原件本身不可达，记录中未作区分。',
+      '时间收益如需评估，需要另设可比任务与计时方式，本次不具备条件。',
+      '未能读取的第三份附件是否包含与上述两类情况相关的记录，暂无法确认。'
+    ] },
+    { t: 'p', s: '本次整理没有决定是否扩大试点。以上建议应在补齐入口与年份信息后再复核；在此之前，本文只作为记录的整理，不作为结论。' }
+  ];
+
+  ACT_FULL = [
+    { id: 'a1', label: '已读取 访谈摘记.txt', st: 'done', detail: '读取 9 行，未修改原件。', stamp: '14:02' },
+    { id: 'a2', label: '已建立两类问题的对照表', st: 'done', detail: '同名辨别、原件入口。', stamp: '14:03' },
+    { id: 'a3', label: '正在对照 两周试点记录.txt', st: 'active', detail: '逐条比对同名与入口两类情况，未合并计数。', stamp: '14:03' },
+    { id: 'a4', label: '等待 补充材料.pdf', st: 'wait', detail: '附件无法读取，等待你移除或替换后再继续。', stamp: '14:04' },
+    { id: 'a5', label: '继续整理', st: 'queued', detail: '', stamp: '—' }
+  ];
+
+  FOLDER = { path: '青屿资料室 / 整理试点', items: [
+    { name: '原始目录', kind: 'dir', meta: '12 项' },
+    { name: '访谈摘记.txt', kind: 'file', doc: 'interview', meta: '4.2 KB' },
+    { name: '两周试点记录.txt', kind: 'file', doc: 'pilot', meta: '2.8 KB' },
+    { name: '补充材料.pdf', kind: 'file', meta: '读取失败', bad: true },
+    { name: '输出', kind: 'dir', meta: '1 项' },
+    { name: '试点观察备忘录.md', kind: 'out', meta: '未采用' }
+  ] };
+
+  TASKS = [
+    { label: '对照访谈与试点记录的两类问题', st: 'done' },
+    { label: '在结果中区分事实与建议', st: 'done' },
+    { label: '回答：这份备忘录主要给谁看', st: 'wait' },
+    { label: '补齐原件入口的命名示例', st: 'todo' },
+    { label: '是否扩展试点', st: 'held', note: '本次记录不足以判断，暂不决定' }
+  ];
+
+  state = {
+    left: 'full', right: 'cards',
+    view: 'work', mode: this.props.layoutMode || 'A', scene: this.props.startScene || 'run', convId: 'c1',
+    drafts: { c1: '', c2: '请保留作者原名，暂不统一译名。', c3: '', c4: '' },
+    msgs: [], runState: 'idle', chars: 0,
+    panel: null, actOpen: false,
+    answer: null, answerStale: false, free: '', perm: null,
+    attach: [], attachError: false,
+    queued: null, recapOpen: false, confirm: null,
+    atBottom: true, toast: null, filter: '', demoOpen: false,
+    railOpen: false, w: 1440, copied: '', restoreNote: false, stopBusy: false
+  };
+
+  CONVS = [
+    { id: 'c1', title: '青屿资料室 · 整理试点观察', time: '14:04' },
+    { id: 'c2', title: '展览资料索引 · 命名整理', time: '昨天' },
+    { id: 'c3', title: '跨年度同名展览资料的原始目录、译名与附件命名规则整理', time: '9 月 2 日' },
+    { id: 'c4', title: '新工作', time: '刚刚' }
+  ];
+
+  SCENES = [
+    { k: 'blank', no: '01', label: '空白工作' },
+    { k: 'run', no: '02', label: '运行中 · 流式追加' },
+    { k: 'long', no: '03', label: '长内容与代码' },
+    { k: 'ask', no: '04', label: '等待回答问题' },
+    { k: 'perm', no: '05', label: '权限请求' },
+    { k: 'attach', no: '06', label: '附件读取失败' },
+    { k: 'output', no: '07', label: '输出与来源阅读' },
+    { k: 'offline', no: '08', label: '断线' },
+    { k: 'stopped', no: '09', label: '已停止 · 状态待核对' },
+    { k: 'partial', no: '10', label: '限流 · 工具部分成功' }
+  ];
+
+  // ── lifecycle ─────────────────────────────────────────────
+  componentDidMount() {
+    let saved = null;
+    try { saved = JSON.parse(localStorage.getItem(this.KEY) || 'null'); } catch (e) { saved = null; }
+    const next = saved && saved.v === 1
+      ? { scene: saved.scene || 'run', convId: saved.convId || 'c1', mode: saved.mode || 'A', drafts: Object.assign({}, this.state.drafts, saved.drafts || {}), restoreNote: !!saved.touched }
+      : {};
+    this.setState(Object.assign({}, next, this.buildScene(next.scene || this.state.scene)), this.startStream);
+    this.resizeH = () => {
+      const w = this.measureW();
+      if (Math.abs(w - (this._lastW || 0)) > 2) this.setState({ w });
+    };
+    window.addEventListener('resize', this.resizeH);
+    this.attachRO = () => {
+      const node = this.el('[data-ag="shell"]');
+      if (!node) { setTimeout(this.attachRO, 60); return; }
+      try {
+        if (this.ro) this.ro.disconnect();
+        this.ro = new ResizeObserver(() => this.resizeH());
+        this.ro.observe(node);
+      } catch (e) {}
+      this.resizeH();
+    };
+    this.attachRO();
+    requestAnimationFrame(this.resizeH);
+    setTimeout(this.resizeH, 0);
+    setTimeout(this.resizeH, 300);
+    this.keyH = e => this.onWindowKey(e);
+    window.addEventListener('keydown', this.keyH);
+  }
+  componentWillUnmount() {
+    if (this.ro) this.ro.disconnect();
+    window.removeEventListener('resize', this.resizeH);
+    window.removeEventListener('keydown', this.keyH);
+    clearInterval(this.iv); clearTimeout(this.st); clearTimeout(this.tt);
+  }
+  componentDidUpdate() {
+    const s = this.state;
+    if (s.runState === 'running' && s.atBottom && s.chars !== this._chars) this.scrollBottom();
+    if (this._run === 'running' && s.runState === 'idle' && s.queued) this.flushQueue();
+    this._chars = s.chars; this._run = s.runState;
+  }
+
+  el(sel) { return document.querySelector(sel); }
+  measureW() {
+    const n = this.el('[data-ag="shell"]');
+    const w = n ? n.getBoundingClientRect().width : 0;
+    return w > 40 ? w : (document.documentElement.clientWidth || window.innerWidth || 1440);
+  }
+  get flow() { return this.el('[data-ag="flow"]'); }
+  get input() { return this.el('[data-ag="composer"]'); }
+  get filterEl() { return this.el('[data-ag="filter"]'); }
+  get panelBody() { return this.el('[data-ag="panelbody"]'); }
+
+  persist(extra) {
+    const s = Object.assign({}, this.state, extra || {});
+    try { localStorage.setItem(this.KEY, JSON.stringify({ v: 1, scene: s.scene, convId: s.convId, mode: s.mode, drafts: s.drafts, touched: true })); } catch (e) {}
+  }
+
+  // ── scenes ────────────────────────────────────────────────
+  atts(withBad) {
+    const a = [{ name: '访谈摘记.txt', doc: 'interview' }, { name: '两周试点记录.txt', doc: 'pilot' }];
+    if (withBad) a.push({ name: '补充材料.pdf', failed: true });
+    return a;
+  }
+  userMsg(atts) { return { kind: 'user', time: '14:02', atts: atts || ['访谈摘记.txt', '两周试点记录.txt'], text: '请对照访谈与两周试点记录，写一份简短观察备忘录。区分记录中的事实与建议，保留原材料入口。先整理问题，不作是否扩展试点的决定。' }; }
+  act(ids) { return { kind: 'act', ids }; }
+
+  buildScene(k, keepScene) {
+    if (!keepScene && !this.SCENES.some(x => x.k === k)) k = 'run';
+    const base = { scene: keepScene ? this.state.scene : k, panel: null, answer: null, answerStale: false, free: '', perm: null, attachError: false, actOpen: false, atBottom: true, chars: 0, stopBusy: false };
+    if (k === 'blank') return Object.assign(base, { convId: 'c4', msgs: [], runState: 'idle', attach: [] });
+    if (k === 'run') return Object.assign(base, { convId: 'c1', attach: [], runState: 'running', chars: 46,
+      msgs: [this.userMsg(), this.act(['a1', 'a2', 'a3']), { kind: 'agent', label: '输出', blocks: this.SHORT, stream: true }] });
+    if (k === 'long') return Object.assign(base, { convId: 'c1', attach: [], runState: 'idle', chars: 99999,
+      msgs: [this.userMsg(), this.act(['a1', 'a2']), { kind: 'agent', label: '输出', blocks: this.LONG, obj: { name: '试点观察备忘录', meta: '约 1,500 字 · 14:07', blocks: this.LONG } }] });
+    if (k === 'ask') return Object.assign(base, { convId: 'c1', attach: [], runState: 'waiting', chars: 99999,
+      msgs: [this.userMsg(), this.act(['a1', 'a2']), { kind: 'ask', ask: 'question' }] });
+    if (k === 'perm') return Object.assign(base, { convId: 'c1', attach: [], runState: 'waiting', chars: 99999,
+      msgs: [this.userMsg(), this.act(['a1', 'a2', 'a3']), { kind: 'ask', ask: 'perm' }] });
+    if (k === 'attach') return Object.assign(base, { convId: 'c1', attach: this.atts(true), attachError: true, runState: 'idle', chars: 0,
+      msgs: [{ kind: 'notice', kind2: '附件', title: '补充材料.pdf 暂无法读取', body: '这份附件没有进入这次任务。可以移除后继续，或换成文本；其他两份附件不受影响。', actions: [{ label: '移除并继续', act: 'removeBad' }, { label: '换成文本', act: 'swap' }] }] });
+    if (k === 'output') return Object.assign(base, { convId: 'c1', attach: [], runState: 'idle', chars: 99999,
+      msgs: [this.userMsg(), this.act(['a1', 'a2', 'a3']), { kind: 'agent', label: '输出', blocks: this.SHORT, obj: { name: '试点观察备忘录', meta: '约 220 字 · 14:05', blocks: this.SHORT } },
+        { kind: 'user', time: '14:06', atts: [], text: '第二段保留数字，但把结论收窄；另加一段待补充的问题。' },
+        { kind: 'act', ids: ['a5'] }] });
+    if (k === 'offline') return Object.assign(base, { convId: 'c1', attach: [], runState: 'offline', chars: 88,
+      msgs: [this.userMsg(), this.act(['a1', 'a2', 'a3']), { kind: 'agent', label: '输出', blocks: this.SHORT, partial: true },
+        { kind: 'notice', kind2: '连接', title: '连接中断，这次运行停在第一段之后', body: '已写入的内容保留在这里。重新连接后可以从中断处继续，或把已有内容当作草稿继续修改。', actions: [{ label: '重新连接', act: 'reconnect' }, { label: '当作草稿继续', act: 'revise' }] }] });
+    if (k === 'stopped') return Object.assign(base, { convId: 'c1', attach: [], runState: 'unverified', chars: 120,
+      msgs: [this.userMsg(), this.act(['a1', 'a2', 'a3']), { kind: 'agent', label: '输出', blocks: this.SHORT, partial: true },
+        { kind: 'notice', kind2: '已停止', title: '已停止，最后一步的状态待核对', body: '停止请求在对照试点记录的过程中送达。已读取的两份材料未被修改；对照是否写完，需要打开活动记录核对后再继续。', actions: [{ label: '打开活动记录', act: 'activity' }, { label: '重新运行这一步', act: 'rerun' }] }] });
+    if (k === 'partial') return Object.assign(base, { convId: 'c1', attach: [], runState: 'idle', chars: 99999,
+      msgs: [this.userMsg(), this.act(['a1', 'a2']), { kind: 'notice', kind2: '部分成功', title: '两份材料只读到一份完整内容', body: '访谈摘记已完整读取；两周试点记录被上游限流，只读到前 6 行。可以先按已读部分整理，或等 2 分钟重试。', actions: [{ label: '按已读部分整理', act: 'proceed' }, { label: '重试读取', act: 'rerun' }] },
+        { kind: 'agent', label: '输出', blocks: this.SHORT.slice(0, 2), partial: true }] });
+    return Object.assign(base, { msgs: [], runState: 'idle', attach: [] });
+  }
+
+  setScene(k) {
+    clearInterval(this.iv); this.iv = null;
+    const s = this.buildScene(k);
+    this.setState(Object.assign({ demoOpen: false, view: 'work', restoreNote: false }, s), this.startStream);
+    this.persist(s);
+    this.toast('演示场景：' + (this.SCENES.find(x => x.k === k) || {}).label);
+  }
+
+  scrollBottom = () => { requestAnimationFrame(() => { if (this.flow) this.flow.scrollTop = this.flow.scrollHeight; }); };
+
+  startStream = () => {
+    this.scrollBottom();
+    clearInterval(this.iv); this.iv = null;
+    if (this.state.runState !== 'running') return;
+    this.iv = setInterval(() => {
+      this.setState(s => {
+        if (s.runState !== 'running') return null;
+        const total = this.totalChars(s);
+        if (s.chars >= total) { clearInterval(this.iv); this.iv = null; return { runState: 'idle', msgs: s.msgs.map(m => m.stream ? Object.assign({}, m, { stream: false, obj: { name: '试点观察备忘录', meta: '约 220 字 · 14:05', blocks: this.SHORT } }) : m) }; }
+        return { chars: Math.min(total, s.chars + 9) };
+      });
+    }, 46);
+  };
+
+  streamMsg(s) { return (s.msgs || []).find(m => m.stream); }
+  totalChars(s) {
+    const m = this.streamMsg(s); if (!m) return 0;
+    return m.blocks.reduce((n, b) => n + (b.t === 'ul' ? b.items.join('').length : (b.s || '').length), 0);
+  }
+
+  // ── content prep ──────────────────────────────────────────
+  mkRuns(t) {
+    let text = t;
+    const open = (text.match(/〔/g) || []).length, close = (text.match(/〕/g) || []).length;
+    if (open > close) text = text.slice(0, text.lastIndexOf('〔'));
+    const out = []; const re = /〔([^〕]+)〕/g; let i = 0, m;
+    while ((m = re.exec(text))) {
+      if (m.index > i) out.push({ isText: true, text: text.slice(i, m.index) });
+      const nm = m[1];
+      out.push({ isSrc: true, text: nm, open: e => this.openDoc(this.SRCMAP[nm] || 'interview', e) });
+      i = re.lastIndex;
+    }
+    if (i < text.length) out.push({ isText: true, text: text.slice(i) });
+    return out;
+  }
+  prep(blocks, limit) {
+    let left = limit == null ? Infinity : limit; const out = [];
+    for (const b of blocks) {
+      if (left <= 0) break;
+      if (b.t === 'ul') {
+        const items = [];
+        for (const it of b.items) { if (left <= 0) break; const t = it.slice(0, left); left -= t.length; items.push({ runs: this.mkRuns(t), plain: t.replace(/[〔〕]/g, '') }); }
+        out.push({ isUl: true, items });
+      } else if (b.t === 'code') {
+        const t = b.s.slice(0, left); left -= t.length; out.push({ isCode: true, text: t });
+      } else if (b.t === 'q') {
+        const t = b.s.slice(0, left); left -= t.length; out.push({ isQuote: true, text: t });
+      } else {
+        const t = b.s.slice(0, left); left -= t.length;
+        out.push({ isH: b.t === 'h', isP: b.t === 'p', runs: this.mkRuns(t), plain: t.replace(/[〔〕]/g, '') });
+      }
+    }
+    return out;
+  }
+
+  // ── actions ───────────────────────────────────────────────
+  toast(t) { clearTimeout(this.tt); this.setState({ toast: t }); this.tt = setTimeout(() => this.setState({ toast: null }), 2600); }
+
+  openDoc(id, e) {
+    if (e && e.currentTarget) this.trigger = e.currentTarget;
+    this.setState({ panel: { kind: 'doc', id }, right: 'panel', railOpen: false }, () => {
+      if (this.panelBody) this.panelBody.scrollTop = Math.max(0, (this.DOCS[id].hit[0] * 24) - 60);
+    });
+  }
+  openOutputPanel = e => {
+    if (e && e.currentTarget) this.trigger = e.currentTarget;
+    this.setState({ panel: { kind: 'output' }, right: 'panel', railOpen: false });
+  };
+  openSrcList = e => { if (e && e.currentTarget) this.trigger = e.currentTarget; this.setState({ panel: { kind: 'srclist' }, right: 'panel' }); };
+  openActivity = e => { if (e && e.currentTarget) this.trigger = e.currentTarget; this.setState({ panel: { kind: 'act' }, right: 'panel' }); };
+  openTab = (kind, e) => { if (e && e.currentTarget) this.trigger = e.currentTarget; this.setState({ panel: { kind }, right: 'panel' }); };
+  closePanel = () => {
+    this.setState({ right: 'cards' }, () => { if (this.trigger && this.trigger.isConnected) this.trigger.focus(); });
+  };
+  toggleLeft = () => this.setState(s => ({ left: s.left === 'full' ? 'mini' : 'full' }));
+  toggleRight = () => this.setState(s => ({ right: s.right !== 'hidden' ? 'hidden' : this.measureW() < 900 ? 'panel' : 'cards' }));
+  returnToPlace = () => {
+    const back = this.state.panel && this.state.panel.kind === 'doc' ? { kind: null } : null;
+    this.setState({ panel: null }, () => {
+      if (this.trigger && this.trigger.isConnected) { this.trigger.focus(); this.toast('已回到引用位置'); }
+    });
+    void back;
+  };
+
+  selectConv = id => {
+    const cur = this.state.convId;
+    if (id === cur) { this.setState({ railOpen: false }); return; }
+    const stale = (this.state.msgs || []).some(m => m.kind === 'ask') && !this.state.answer;
+    const next = id === 'c1'
+      ? this.buildScene(this.state.scene === 'blank' ? 'output' : this.state.scene)
+      : this.buildScene(id === 'c4' ? 'blank' : 'run', true);
+    if (id !== 'c1') {
+      next.msgs = id === 'c2'
+        ? [{ kind: 'user', time: '昨天 17:20', atts: [], text: '把展览资料索引里的作者名整理成一致的写法，先不要统一译名。' },
+           { kind: 'act', ids: ['a1'] },
+           { kind: 'agent', label: '输出', blocks: [{ t: 'p', s: '已按原名保留作者写法，未统一译名。索引中有 4 处同名不同人，已单独列出待你确认。' }] }]
+        : id === 'c3'
+          ? [{ kind: 'user', time: '9 月 2 日', atts: [], text: '把跨年度同名展览资料的原始目录、译名与附件命名规则整理到一处，先列出冲突。' }]
+          : [];
+      next.runState = 'idle'; next.chars = 99999;
+    }
+    this.setState(Object.assign({ convId: id, railOpen: false, panel: null, answerStale: stale && cur === 'c1' }, next), this.startStream);
+    this.persist({ convId: id });
+  };
+  newConv = () => { this.setScene('blank'); };
+
+  onDraft = e => {
+    const v = e.target.value;
+    this.setState(s => ({ drafts: Object.assign({}, s.drafts, { [s.convId]: v }) }), () => this.persist());
+  };
+  onCompStart = () => { this.composing = true; };
+  onCompEnd = () => { this.composing = false; };
+  onDraftKey = e => {
+    if (e.key !== 'Enter') return;
+    if (this.composing || e.nativeEvent.isComposing || e.keyCode === 229) return;
+    if (e.shiftKey) return;
+    e.preventDefault();
+    this.send();
+  };
+  enqueue = () => {
+    const s = this.state; const text = (s.drafts[s.convId] || '').trim();
+    if (!text) { this.toast('先写下一条要说的话'); return; }
+    this.setState({ queued: text, drafts: Object.assign({}, s.drafts, { [s.convId]: '' }) }, () => this.persist());
+    this.toast('已入队 · 这次运行结束时自动发送');
+  };
+  editQueued = () => {
+    const q = this.state.queued; if (!q) return;
+    this.setState(s => ({ queued: null, drafts: Object.assign({}, s.drafts, { [s.convId]: q }) }), () => {
+      if (this.input) this.input.focus();
+      this.toast('已取出队列，回到草稿');
+    });
+  };
+  dropQueued = () => { this.setState({ queued: null }); this.toast('已撤回入队消息'); };
+  flushQueue = () => {
+    const q = this.state.queued; if (!q) return;
+    this.setState({ queued: null }, () => this.send(q));
+  };
+
+  askRewind = i => this.setState({ confirm: { kind: 'rewind', i } });
+  closeConfirm = () => this.setState({ confirm: null });
+  doRewind = () => {
+    const c = this.state.confirm; if (!c) return;
+    const m = this.state.msgs[c.i];
+    clearInterval(this.iv); this.iv = null;
+    this.setState(s => ({
+      confirm: null, msgs: s.msgs.slice(0, c.i), runState: 'idle', chars: 99999, panel: null, queued: null,
+      drafts: Object.assign({}, s.drafts, { [s.convId]: m && m.text ? m.text : (s.drafts[s.convId] || '') })
+    }), () => { this.toast('已回到这一条之前 · 原文回到草稿'); if (this.input) this.input.focus(); });
+  };
+
+  send = (override) => {
+    const s = this.state; const text = ((override != null ? override : s.drafts[s.convId]) || '').trim();
+    if (!text) { this.toast('先写一句要求，或者带上材料'); return; }
+    if (override == null && (s.runState === 'running' || s.runState === 'stopping')) { this.enqueue(); return; }
+    if (s.runState === 'offline') { this.toast('连接中断，先重新连接'); return; }
+    const msgs = s.msgs.concat([{ kind: 'user', time: '现在', atts: s.attach.filter(a => !a.failed).map(a => a.name), text },
+      { kind: 'act', ids: ['a1', 'a3'] },
+      { kind: 'agent', label: '输出', blocks: this.SHORT, stream: true }]);
+    this.setState({ msgs, chars: 0, runState: 'running', atBottom: true, drafts: Object.assign({}, s.drafts, { [s.convId]: '' }) }, () => {
+      this.startStream();
+      if (this.flow) this.flow.scrollTop = this.flow.scrollHeight;
+    });
+    this.persist({ drafts: Object.assign({}, s.drafts, { [s.convId]: '' }) });
+  };
+
+  requestStop = () => {
+    if (this.state.runState !== 'running') return;
+    clearInterval(this.iv); this.iv = null;
+    this.setState({ runState: 'stopping', stopBusy: true });
+    clearTimeout(this.st);
+    this.st = setTimeout(() => {
+      this.setState(s => ({ runState: 'unverified', stopBusy: false,
+        queued: null,
+        drafts: s.queued ? Object.assign({}, s.drafts, { [s.convId]: s.queued }) : s.drafts,
+        msgs: s.msgs.map(m => m.stream ? Object.assign({}, m, { stream: false, partial: true }) : m) }));
+      this.toast(this.state.queued ? '已停止 · 入队消息退回草稿，未发送' : '已停止 · 最后一步状态待核对');
+    }, 1100);
+  };
+  reconnect = () => { this.setState({ runState: 'idle' }); this.toast('已重新连接（模拟）'); };
+
+  answerWith = v => { this.setState({ answer: v, free: '' }); this.toast('已回答：' + v); };
+  onFree = e => this.setState({ free: e.target.value });
+  onFreeKey = e => { if (e.key === 'Enter' && !this.composing && !e.nativeEvent.isComposing) { e.preventDefault(); if (this.state.free.trim()) this.answerWith(this.state.free.trim()); } };
+  undoAnswer = () => this.setState({ answer: null });
+  setPerm = v => { this.setState({ perm: v }); this.toast(v === 'granted' ? '已允许读取 · 这不表示认可输出' : '已拒绝 · Agent 将只用已有两份材料继续'); };
+
+  removeBad = () => this.setState(s => ({ attach: s.attach.filter(a => !a.failed), attachError: false }), () => this.toast('已移除 补充材料.pdf'));
+  swapAttach = () => this.setState(s => ({ attach: s.attach.map(a => a.failed ? { name: '补充材料.txt', doc: 'pilot' } : a), attachError: false }), () => this.toast('已换成 补充材料.txt'));
+  addAttach = () => this.setState(s => s.attach.length ? { attach: s.attach } : { attach: this.atts(false) }, () => this.toast('已带上两份文本附件（固定演示材料）'));
+  removeAttach = n => this.setState(s => ({ attach: s.attach.filter(a => a.name !== n), attachError: s.attachError && n !== '补充材料.pdf' }));
+
+  copy = (text, tag) => {
+    const done = () => { this.setState({ copied: tag }); this.toast('已复制到剪贴板'); clearTimeout(this.ct); this.ct = setTimeout(() => this.setState({ copied: '' }), 1800); };
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, () => this.toast('复制失败，可手动选择文本'));
+    else this.toast('复制失败，可手动选择文本');
+  };
+  copyOutput = blocks => this.copy(blocks.map(b => b.t === 'ul' ? b.items.map(i => '· ' + i).join('\n') : b.s).join('\n\n').replace(/[〔〕]/g, ''), 'out');
+  revise = () => {
+    this.setState(s => ({ drafts: Object.assign({}, s.drafts, { [s.convId]: '第二段保留数字，但把结论收窄；另加一段待补充的问题。' }) }), () => {
+      if (this.input) { this.input.focus(); this.input.setSelectionRange(this.input.value.length, this.input.value.length); }
+      this.toast('已把修改要求填入输入框，未发送');
+    });
+  };
+
+  onScroll = e => {
+    const el = e.target;
+    const at = el.scrollHeight - el.scrollTop - el.clientHeight < 40;
+    if (at !== this.state.atBottom) this.setState({ atBottom: at });
+  };
+  jumpLatest = () => { if (this.flow) this.flow.scrollTo({ top: this.flow.scrollHeight, behavior: 'smooth' }); this.setState({ atBottom: true }); };
+
+  onWindowKey = e => {
+    const mod = e.metaKey || e.ctrlKey;
+    if (e.key === 'Escape') {
+      if (this.state.confirm) { this.setState({ confirm: null }); return; }
+      if (this.state.demoOpen) { this.setState({ demoOpen: false }); return; }
+      if (this.state.railOpen) { this.setState({ railOpen: false }); return; }
+      if (this.state.right === 'panel') { e.preventDefault(); this.closePanel(); }
+      return;
+    }
+    if (mod && (e.key === 'k' || e.key === 'K')) { e.preventDefault(); this.setState({ left: 'full', railOpen: true }, () => this.filterEl && this.filterEl.focus()); }
+    if (mod && e.key === '.') { e.preventDefault(); this.requestStop(); }
+    if (mod && e.key === '[') { e.preventDefault(); this.toggleLeft(); }
+    if (mod && e.key === ']') { e.preventDefault(); this.toggleRight(); }
+    if (mod && e.key === '\\') { e.preventDefault(); this.state.right === 'panel' ? this.closePanel() : this.setState({ right: 'panel' }); }
+  };
+  onRootKey = () => {};
+
+  simulateRefresh = () => {
+    this.persist();
+    clearInterval(this.iv); this.iv = null;
+    const s = this.buildScene(this.state.scene);
+    this.setState(Object.assign({ demoOpen: false, restoreNote: true, panel: null }, s), this.startStream);
+    this.toast('已模拟刷新 · 草稿与待处理项由本地恢复');
+  };
+  resetDemo = () => {
+    try { localStorage.removeItem(this.KEY); } catch (e) {}
+    clearInterval(this.iv); this.iv = null;
+    this.setState(Object.assign({ demoOpen: false, view: 'work', mode: 'A', restoreNote: false, drafts: { c1: '', c2: '请保留作者原名，暂不统一译名。', c3: '', c4: '' }, filter: '' }, this.buildScene('run')), this.startStream);
+    this.toast('演示数据已重置');
+  };
+
+  // ── render values ─────────────────────────────────────────
+  renderVals() {
+    const s = this.state;
+    const W = this.measureW();
+    this._lastW = W;
+    const tiny = W < 860, overlayPanel = W < 1280;
+    const pw = W < 1000 ? 400 : 430;
+    const streaming = s.runState === 'running';
+    const limit = streaming ? s.chars : null;
+
+    const dotFor = st => st === 'done' ? 'var(--color-neutral-400)' : st === 'active' ? 'var(--color-accent)' : st === 'wait' ? 'var(--color-accent-800)' : st === 'fail' ? 'var(--color-accent-900)' : 'var(--color-neutral-300)';
+    const inkFor = st => st === 'done' ? 'var(--ink-2)' : st === 'queued' ? 'var(--ink-3)' : st === 'wait' ? 'var(--color-accent-900)' : 'var(--color-text)';
+
+    const items = (s.msgs || []).map((m, i) => {
+      if (m.kind === 'user') return { key: i, isUser: true, time: m.time, text: m.text, hasAtts: (m.atts || []).length > 0,
+        rewind: () => this.askRewind(i),
+        atts: (m.atts || []).map(n => ({ name: n, open: e => this.openDoc(n.indexOf('访谈') >= 0 ? 'interview' : 'pilot', e) })) };
+      if (m.kind === 'act') {
+        const rows = m.ids.map(id => this.ACT_FULL.find(a => a.id === id)).filter(Boolean);
+        const done = rows.filter(r => r.st === 'done');
+        const rest = rows.filter(r => r.st !== 'done');
+        const folded = done.length > 1 && !s.actOpen;
+        const shown = (folded ? [] : done).concat(rest);
+        return { key: i, isAct: true, hasFolded: done.length > 1,
+          expanded: s.actOpen ? 'true' : 'false',
+          foldLabel: s.actOpen ? '收起已完成的 ' + done.length + ' 项' : '已完成 ' + done.length + ' 项',
+          chevStyle: s.actOpen ? 'transform:rotate(90deg)' : '',
+          toggle: () => this.setState(x => ({ actOpen: !x.actOpen })),
+          rows: shown.map(r => ({ label: r.label, detail: r.detail, dot: dotFor(r.st), ink: inkFor(r.st),
+            action: r.st === 'wait' ? { label: '处理这个附件', onClick: () => this.setScene('attach') } : null })) };
+      }
+      if (m.kind === 'agent') {
+        const blocks = this.prep(m.blocks, m.stream ? limit : null);
+        const obj = m.obj;
+        return { key: i, isAgent: true, label: m.label, streaming: !!m.stream, partial: !!m.partial, blocks,
+          hasObject: !!obj, objName: obj ? obj.name : '', objMeta: obj ? obj.meta : '',
+          openObj: this.openOutputPanel, openSrcList: this.openSrcList, revise: this.revise,
+          copyObj: () => this.copyOutput(m.blocks), copyLabel: s.copied === 'out' ? '已复制' : '复制',
+          copyCode: () => this.copy((m.blocks.find(b => b.t === 'code') || { s: '' }).s, 'code'),
+          copyCodeLabel: s.copied === 'code' ? '已复制' : '复制' };
+      }
+      if (m.kind === 'ask') {
+        const isPerm = m.ask === 'perm';
+        const stale = s.answerStale && !isPerm;
+        const answered = isPerm ? !!s.perm : !!s.answer;
+        return { key: i, isAsk: true, stale, answered,
+          askKind: isPerm ? '权限请求' : '需要你回答',
+          askTitle: isPerm ? '允许读取补充资料目录？' : '这份备忘录主要给谁看？',
+          askBody: isPerm
+            ? '只读取 /资料室/补充资料/ 下的文本文件名与内容，不写入、不删除。拒绝后 Agent 会只用已带的两份附件继续，并在结果里标明这一处没有核对。'
+            : '读者不同，写法不同：给同事会保留更多原始编号，给负责人会先给结论范围。你也可以自己写一句。',
+          answeredText: isPerm ? (s.perm === 'granted' ? '已允许读取 · 允许工具读取不表示认可输出' : '已拒绝 · 结果会标明未核对的部分') : '已回答：' + s.answer,
+          undo: isPerm ? () => this.setState({ perm: null }) : this.undoAnswer,
+          answerable: !answered && !stale,
+          options: isPerm
+            ? [{ label: '允许读取', onClick: () => this.setPerm('granted') }, { label: '拒绝', onClick: () => this.setPerm('denied') }]
+            : [{ label: '资料室同事', onClick: () => this.answerWith('资料室同事') }, { label: '项目负责人', onClick: () => this.answerWith('项目负责人') }],
+          freeValue: s.free, onFree: this.onFree, onFreeKey: this.onFreeKey,
+          submitFree: () => s.free.trim() && this.answerWith(s.free.trim()),
+          freeDisabled: !s.free.trim() };
+      }
+      if (m.kind === 'notice') {
+        const map = { removeBad: this.removeBad, swap: this.swapAttach, reconnect: this.reconnect, revise: this.revise,
+          activity: this.openActivity, rerun: () => this.setScene('run'), proceed: () => this.setScene('output') };
+        return { key: i, isNotice: true, noticeKind: m.kind2, noticeTitle: m.title, noticeBody: m.body,
+          noticeActions: (m.actions || []).map(a => ({ label: a.label, onClick: map[a.act] || (() => {}) })) };
+      }
+      return { key: i };
+    });
+
+    const conv = this.CONVS.find(c => c.id === s.convId) || this.CONVS[0];
+    const q = s.filter.trim();
+    const convs = this.CONVS.filter(c => !q || c.title.indexOf(q) >= 0).map(c => ({
+      id: c.id, title: c.title, time: c.time, selected: c.id === s.convId,
+      hasDraft: !!(s.drafts[c.id] || '').trim(),
+      pending: c.id === 'c1' && (s.scene === 'ask' || s.scene === 'perm') && !s.answer && !s.perm ? 1 : 0,
+      running: c.id === s.convId && streaming,
+      onClick: () => this.selectConv(c.id)
+    }));
+
+    const stateMap = {
+      idle: { dot: 'var(--color-neutral-400)', label: '空闲 · 等你的下一步', detail: '' },
+      running: { dot: 'var(--color-accent)', label: '运行中 · 正在对照两周试点记录', detail: '查看活动', anim: 'animation:agPulse 1.5s ease-in-out infinite' },
+      stopping: { dot: 'var(--color-accent-800)', label: '正在停止 · 等当前一步收尾', detail: '', anim: 'animation:agPulse .7s ease-in-out infinite' },
+      unverified: { dot: 'var(--color-accent-900)', label: '已停止 · 最后一步状态待核对', detail: '打开活动记录' },
+      waiting: { dot: 'var(--color-accent)', label: '已暂停 · 等你回答一个问题', detail: '', anim: 'animation:agPulse 2s ease-in-out infinite' },
+      offline: { dot: 'var(--color-accent-900)', label: '连接中断 · 已写入的内容保留', detail: '' }
+    };
+    const st = stateMap[s.runState] || stateMap.idle;
+
+    const hasOutput = (s.msgs || []).some(m => m.obj);
+    const pending = (s.scene === 'ask' || s.scene === 'perm') && !s.answer && !s.perm ? 1 : 0;
+    const rightEff = s.view !== 'work' ? 'hidden'
+      : s.right === 'hidden' ? 'hidden'
+      : s.mode === 'B' && !overlayPanel ? 'panel' : s.right;
+    let panel = s.panel;
+    if (rightEff === 'panel' && (!panel || (panel.kind === 'output' && !hasOutput))) panel = { kind: hasOutput ? 'output' : 'act' };
+    const panelOpen = rightEff === 'panel' && !!panel;
+    const cardsW = W < 1180 ? 216 : 270;
+    const cardsOpen = rightEff === 'cards' && W >= 900;
+    const outObj = ((s.msgs || []).filter(m => m.obj).pop() || {}).obj;
+    const doc = panel && panel.kind === 'doc' ? this.DOCS[panel.id] : null;
+
+    const draft = s.drafts[s.convId] || '';
+    const held = !!draft.trim() && (s.runState === 'running' || s.runState === 'stopping');
+
+    return {
+      isWork: s.view === 'work', isSettings: s.view === 'settings',
+      goWork: () => this.setState({ view: 'work' }), goSettings: () => this.setState({ view: 'settings', panel: null }),
+      navWorkCur: s.view === 'work' ? 'page' : undefined, navSetCur: s.view === 'settings' ? 'page' : undefined,
+
+      leftMini: s.left === 'mini' && !tiny, toggleLeft: this.toggleLeft,
+      showRail: (!tiny || s.railOpen) && (s.left === 'full' || tiny),
+      dashCells: [
+        { n: String(pending), label: '待你处理', on: pending > 0, onClick: () => pending ? this.jumpLatest() : this.toast('现在没有待处理项') },
+        { n: streaming ? '1' : '0', label: '运行中', on: streaming, onClick: () => this.openActivity() },
+        { n: hasOutput ? '1' : '0', label: '产物未采用', on: hasOutput, onClick: e => hasOutput ? this.openOutputPanel(e) : this.toast('这个工作还没有产物') }
+      ].map(d => Object.assign(d, { ink: d.on ? 'var(--color-accent-800)' : 'var(--ink-3)' })),
+
+      cardsOpen, toggleRight: this.toggleRight, rightHidden: rightEff === 'hidden',
+      cardsStyle: 'flex:0 0 ' + cardsW + 'px;width:' + cardsW + 'px;display:flex;flex-direction:column;min-height:0;border-left:1px solid var(--rule-2);background:var(--color-bg)',
+      rightCards: [
+        { kicker: 'Context', title: '这次用到的材料', count: '2 份', sub: '访谈摘记、两周试点记录；正文里有 2 处句内引用可直接跳到原文。', expand: e => this.openTab('srclist', e) },
+        { kicker: 'Folder', title: this.FOLDER.path, count: this.FOLDER.items.length + ' 项', sub: '工作目录属于这个工作，不随单次运行消失。', expand: e => this.openTab('folder', e) },
+        { kicker: 'Task', title: '这个工作的待办', count: this.TASKS.length + ' 项', sub: (pending ? '1 项等你回答；' : '') + '2 项已完成，1 项因材料不足暂不决定。', expand: e => this.openTab('task', e) }
+      ].concat(hasOutput ? [{ kicker: 'Output', title: '试点观察备忘录', count: '未采用', sub: '生成完毕，采用与否由你在阅读后决定。', expand: e => this.openOutputPanel(e) }] : []),
+
+      panelIsFolder: !!panel && panel.kind === 'folder',
+      folderPath: this.FOLDER.path,
+      folderItems: this.FOLDER.items.map(it => ({
+        name: it.name, meta: it.meta,
+        isDir: it.kind === 'dir', isOut: it.kind === 'out', bad: !!it.bad,
+        ink: it.bad ? 'var(--color-accent-900)' : it.kind === 'dir' ? 'var(--ink-2)' : 'var(--color-text)',
+        onClick: e => it.doc ? this.openDoc(it.doc, e) : it.kind === 'out' ? this.openOutputPanel(e) : it.bad ? this.setScene('attach') : this.toast('演示目录：这一层没有展开')
+      })),
+
+      panelIsTask: !!panel && panel.kind === 'task',
+      tasks: this.TASKS.map(t => ({
+        label: t.label, note: t.note,
+        dot: t.st === 'done' ? 'var(--color-neutral-400)' : t.st === 'wait' ? 'var(--color-accent)' : t.st === 'held' ? 'var(--color-neutral-300)' : 'var(--color-accent-800)',
+        ink: t.st === 'done' ? 'var(--ink-2)' : t.st === 'held' ? 'var(--ink-3)' : 'var(--color-text)',
+        strike: t.st === 'done' ? 'line-through' : 'none',
+        action: t.st === 'wait' ? { label: '去回答', onClick: () => this.setScene('ask') } : null
+      })),
+
+      railOverlay: tiny,
+      railScrim: tiny && s.railOpen,
+      railStyle: (tiny ? 'position:absolute;z-index:6;top:0;bottom:0;left:0;box-shadow:var(--shadow-lg);' : '') +
+        'flex:0 0 246px;width:246px;display:flex;flex-direction:column;min-height:0;background:var(--color-bg);border-right:1px solid var(--rule-2)',
+      toggleRail: () => this.setState(x => ({ railOpen: !x.railOpen })),
+
+      convs, convCount: this.CONVS.length, noHit: convs.length === 0, filter: s.filter,
+      onFilter: e => this.setState({ filter: e.target.value }), clearFilter: () => this.setState({ filter: '' }),
+      convTitle: conv.title, convStamp: conv.time,
+
+      items, hasMsgs: (s.msgs || []).length > 0, isBlank: (s.msgs || []).length === 0,
+      showRule: (s.msgs || []).length > 0 && (this.props.showRunRule !== false),
+      restoreNote: s.restoreNote && (s.msgs || []).length > 0, dismissRestore: () => this.setState({ restoreNote: false }),
+
+      hasOutput, openOutput: this.openOutputPanel, openActivity: this.openActivity,
+
+      stateDot: st.dot, stateDotAnim: st.anim || '', stateLabel: st.label, stateDetail: st.detail,
+      canStop: s.runState === 'running' || s.runState === 'stopping',
+      stopLabel: s.runState === 'stopping' ? '正在停止…' : '停止',
+      stopBusy: s.stopBusy && s.runState === 'stopping',
+      requestStop: this.requestStop,
+      isOffline: s.runState === 'offline', reconnect: this.reconnect,
+
+      showJump: !s.atBottom && (s.msgs || []).length > 0,
+      jumpLatest: this.jumpLatest, onScroll: this.onScroll,
+
+      draft, onDraft: this.onDraft, onDraftKey: this.onDraftKey, onCompStart: this.onCompStart, onCompEnd: this.onCompEnd,
+      placeholder: s.runState === 'running' ? '可以先写下一条，运行结束后由你发送' : '说要做什么，或先带上材料',
+      inputHint: 'Enter 发送 · Shift+Enter 换行',
+      showHint: W >= 1050 || rightEff === 'hidden',
+      sendLabel: s.runState === 'running' || s.runState === 'stopping' ? '排队为下一轮' : '发送',
+      sendDisabled: !draft.trim() || s.runState === 'offline',
+      send: () => this.send(), draftHeld: held && !s.queued,
+
+      queued: s.queued, editQueued: this.editQueued, dropQueued: this.dropQueued,
+
+      confirmOpen: !!s.confirm,
+      confirmTitle: '回到这一条之前？',
+      confirmBody: '这一条之后的记录、活动与产物会从这个工作里移除，原文回到输入框。演示原型没有真实版本库，移除后不能再取回。',
+      doRewind: this.doRewind, closeConfirm: this.closeConfirm,
+
+      recapOpen: s.recapOpen, toggleRecap: () => this.setState(x => ({ recapOpen: !x.recapOpen })),
+      recapChev: s.recapOpen ? 'transform:rotate(90deg)' : '',
+      recapLine: [
+        (s.msgs || []).length ? '已读 2 份材料' : '还没有材料',
+        streaming ? '对照进行中' : (s.msgs || []).some(m => m.kind === 'agent') ? '对照已完成' : '未开始对照',
+        hasOutput ? '产物 1 · 未采用' : '暂无产物',
+        (s.scene === 'ask' || s.scene === 'perm') && !s.answer && !s.perm ? '待你处理 1 项' : null
+      ].filter(Boolean).join(' · '),
+      recapSteps: [
+        { label: '读取材料', dot: (s.msgs || []).length ? 'var(--color-neutral-400)' : 'var(--color-neutral-300)' },
+        { label: '对照记录', dot: streaming ? 'var(--color-accent)' : (s.msgs || []).some(m => m.kind === 'agent') ? 'var(--color-neutral-400)' : 'var(--color-neutral-300)' },
+        { label: '整理输出', dot: hasOutput ? 'var(--color-neutral-400)' : streaming ? 'var(--color-accent)' : 'var(--color-neutral-300)' }
+      ],
+      recapDocs: ['interview', 'pilot'].map(k => ({ name: this.DOCS[k].name, open: e => this.openDoc(k, e) })),
+
+      hasAttach: s.attach.length > 0,
+      attach: s.attach.map(a => ({ name: a.name, failed: !!a.failed,
+        border: a.failed ? 'var(--color-accent-400)' : 'var(--rule-2)',
+        bg: a.failed ? 'var(--color-accent-100)' : 'var(--paper)',
+        ink: a.failed ? 'var(--color-accent-900)' : 'var(--ink-2)',
+        removeLabel: '移除 ' + a.name, remove: () => this.removeAttach(a.name) })),
+      attachError: s.attachError, removeBadAttach: this.removeBad, swapAttach: this.swapAttach, addAttach: this.addAttach,
+
+      panelOpen,
+      panelStyle: (overlayPanel ? 'position:absolute;z-index:6;top:0;bottom:0;right:0;box-shadow:var(--shadow-lg);' : '') +
+        'flex:0 0 ' + pw + 'px;width:' + (overlayPanel ? 'min(' + pw + 'px,100%)' : pw + 'px') + ';display:flex;flex-direction:column;min-height:0;background:var(--paper);border-left:1px solid var(--rule-2)',
+      panelKicker: panel ? ({ doc: '来源原文', output: '产物阅读', srclist: '来源清单', act: '活动记录', folder: '工作目录', task: '任务' })[panel.kind] : '',
+      panelTitle: panel ? (panel.kind === 'doc' ? doc.name : panel.kind === 'output' ? (outObj ? outObj.name : '产物')
+        : panel.kind === 'srclist' ? '这份产物引用了什么' : panel.kind === 'folder' ? this.FOLDER.path
+        : panel.kind === 'task' ? '这个工作的待办' : '这次运行做了什么') : '',
+      panelMeta: panel ? (panel.kind === 'doc' ? doc.meta : panel.kind === 'output' && outObj ? outObj.meta + ' · 尚未采用' : '') : '',
+      closePanel: this.closePanel,
+
+      panelIsDoc: !!panel && panel.kind === 'doc',
+      docLines: doc ? doc.lines.map((t, i) => {
+        const on = i >= doc.hit[0] && i <= doc.hit[1];
+        return { n: i + 1, text: t || ' ', bg: on ? 'var(--color-accent-100)' : 'transparent',
+          bar: on ? 'var(--color-accent)' : 'transparent', ink: on ? 'var(--color-accent-900)' : 'var(--color-text)' };
+      }) : [],
+
+      panelIsOutput: !!panel && panel.kind === 'output',
+      panelBlocks: outObj ? this.prep(outObj.blocks, null) : [],
+
+      panelIsSrcList: !!panel && panel.kind === 'srclist',
+      srcList: ['interview', 'pilot'].map(k => ({ name: this.DOCS[k].name, hint: this.DOCS[k].hint, open: e => this.openDoc(k, e) })),
+
+      panelIsAct: !!panel && panel.kind === 'act',
+      allAct: this.ACT_FULL.map(r => ({ label: r.label, detail: r.detail, stamp: r.stamp, dot: dotFor(r.st), ink: inkFor(r.st) })),
+
+      panelFooter: !!panel && ['output', 'srclist', 'doc'].indexOf(panel.kind) >= 0,
+      dockTabs: [
+        { label: '产物', on: !!panel && panel.kind === 'output', dim: !hasOutput, onClick: hasOutput ? this.openOutputPanel : () => this.toast('这个工作还没有产物') },
+        { label: '来源', on: !!panel && (panel.kind === 'srclist' || panel.kind === 'doc'), dim: false, onClick: this.openSrcList },
+        { label: '目录', on: !!panel && panel.kind === 'folder', dim: false, onClick: e => this.openTab('folder', e) },
+        { label: '任务', on: !!panel && panel.kind === 'task', dim: false, onClick: e => this.openTab('task', e) },
+        { label: '活动', on: !!panel && panel.kind === 'act', dim: false, onClick: this.openActivity }
+      ].map(t => Object.assign(t, {
+        ink: t.on ? 'var(--color-text)' : t.dim ? 'var(--ink-3)' : 'var(--ink-2)',
+        box: t.on ? 'background:var(--paper);border:1px solid var(--rule-2);border-bottom-color:var(--paper);margin-bottom:-1px'
+          : 'background:transparent;border:1px solid transparent'
+      })),
+      panelActions: panel && panel.kind === 'doc' ? [{ label: '回到来源清单', onClick: this.openSrcList }]
+        : panel && panel.kind === 'output' && outObj
+        ? [{ label: s.copied === 'out' ? '已复制' : '复制全文', onClick: () => this.copyOutput(outObj.blocks) },
+           { label: '查看来源', onClick: this.openSrcList }, { label: '继续修改', onClick: this.revise }]
+        : panel && panel.kind === 'srclist' ? [{ label: '回到产物', onClick: this.openOutputPanel }] : [],
+      returnAction: !!panel && panel.kind === 'doc', returnToPlace: this.returnToPlace,
+
+      scenes: this.SCENES.map(x => ({ no: x.no, label: x.label, on: x.k === s.scene, onClick: () => this.setScene(x.k) })),
+      sceneLabel: (this.SCENES.find(x => x.k === s.scene) || {}).label || '—',
+      demoOpen: s.demoOpen, toggleDemo: () => this.setState(x => ({ demoOpen: !x.demoOpen })),
+      simulateRefresh: this.simulateRefresh, resetDemo: this.resetDemo,
+
+      modeAOn: s.mode === 'A', modeBOn: s.mode === 'B',
+      setModeA: () => { this.setState({ mode: 'A' }, () => this.persist()); },
+      setModeB: () => { this.setState({ mode: 'B' }, () => this.persist()); },
+
+      connDot: s.runState === 'offline' ? 'var(--color-accent-900)' : 'var(--color-accent)',
+      connLabel: s.runState === 'offline' ? '连接中断（模拟）' : '已连接（模拟）',
+      setOnline: () => { this.setState({ runState: 'idle' }); this.toast('已模拟连接'); },
+      setOffline: () => { this.setState({ runState: 'offline' }); this.toast('已模拟断线'); },
+      leftToggleLabel: s.left === 'full' ? '收起左栏（⌘[）' : '展开左栏（⌘[）',
+      rightToggleLabel: rightEff === 'hidden' ? '展开右栏（⌘]）' : '收起右栏（⌘]）',
+
+      toast: s.toast
+    };
+  }
+}
+</script>
+</body>
+</html>

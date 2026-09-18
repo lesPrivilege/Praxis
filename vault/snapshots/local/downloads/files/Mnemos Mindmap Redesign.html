@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="zh">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Mnemos · Mindmap Redesign</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="styles.css"/>
+<style>
+  /* Per-phone dark scope (copied from Mnemos v2 Redesign) */
+  .phone-screen.dark {
+    --bg: oklch(16% 0.014 35); --bg-card: oklch(20% 0.016 35); --bg-raised: oklch(24% 0.018 35); --bg-sunken: oklch(13% 0.012 35);
+    --border: oklch(30% 0.018 35); --border-soft: oklch(26% 0.014 35); --border-strong: oklch(42% 0.022 35);
+    --ink: oklch(94% 0.012 80); --ink-2: oklch(74% 0.014 80); --ink-3: oklch(56% 0.014 80); --ink-4: oklch(40% 0.014 80);
+    --accent: oklch(74% 0.13 65); --accent-soft: oklch(28% 0.06 50); --accent-line: oklch(44% 0.10 60);
+    --teal: oklch(74% 0.10 195); --teal-soft: oklch(26% 0.05 195); --teal-line: oklch(44% 0.08 195);
+    --good: oklch(74% 0.13 155); --good-soft: oklch(24% 0.05 155); --warn: oklch(76% 0.13 75); --warn-soft: oklch(26% 0.05 75);
+    --danger: oklch(72% 0.15 28); --danger-soft: oklch(26% 0.06 28); --plum: oklch(72% 0.12 320);
+    --shadow-sm: 0 1px 2px #0008; --shadow-md: 0 1px 3px #0008, 0 6px 24px #0006; --shadow-lg: 0 4px 12px #000a, 0 16px 40px #0008;
+  }
+  /* Stage tinted to match Mnemos v2 */
+  body { background: #0d0d0d; }
+  /* Canvas tweaks to compress phone height (we don't need a topbar within the phone bezel) */
+  .phone { width: 360px; height: 740px; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<script type="text/babel" src="tweaks-panel.jsx"></script>
+<script type="text/babel" src="design-canvas.jsx"></script>
+<script type="text/babel" src="atoms.jsx"></script>
+<script type="text/babel" src="mindmap-shared.jsx"></script>
+<script type="text/babel" src="mindmap-atlas.jsx"></script>
+<script type="text/babel" src="mindmap-constellation.jsx"></script>
+<script type="text/babel" src="mindmap-stratum.jsx"></script>
+
+<script type="text/babel">
+const { useState, useEffect, useMemo } = React;
+
+const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+  "showRadial": true,
+  "showConstellation": false,
+  "showStratum": false,
+  "connStyle": "bezier"
+}/*EDITMODE-END*/;
+
+// Phone bezel — slightly slimmer label to match design canvas chrome
+const MMPhone = ({ label, theme, children, screenLabel }) => (
+  <div style={{display:"flex", flexDirection:"column", alignItems:"center", gap:8}} data-screen-label={screenLabel}>
+    <div style={{display:"flex", alignItems:"center", justifyContent:"space-between", width: 360, padding:"0 6px"}}>
+      <div style={{fontFamily:"var(--font-mono)", fontSize:10, color:"#888", letterSpacing:".16em", textTransform:"uppercase"}}>{label}</div>
+      <div style={{fontFamily:"var(--font-mono)", fontSize:9, color:"#666", letterSpacing:".1em"}}>{theme === "dark" ? "DARK" : "LIGHT"}</div>
+    </div>
+    <div className="phone">
+      <div className={"phone-screen " + (theme === "dark" ? "dark" : "")}>
+        <div className="phone-notch"><div className="phone-notch-dot"/></div>
+        <div className="phone-screen-inner">{children}</div>
+      </div>
+    </div>
+  </div>
+);
+
+const App = () => {
+  const [tweaks, setTweak] = useTweaks(TWEAK_DEFAULTS);
+
+  return (
+    <>
+      <div style={{minHeight:"100vh", padding:"36px 24px 80px", background:"radial-gradient(1400px 500px at 50% -8%, #2a201888, transparent 60%), #0d0d0d"}}>
+        <div style={{maxWidth:1800, margin:"0 auto 28px", display:"flex", alignItems:"flex-end", justifyContent:"space-between", gap:24, padding:"0 8px"}}>
+          <div>
+            <div style={{fontFamily:"var(--font-disp)", fontSize:34, lineHeight:1, color:"#d8cdba", fontWeight:400}}>Mnemos · <em style={{fontStyle:"italic", color:"oklch(72% 0.12 60)"}}>Mindmap</em></div>
+            <div style={{fontFamily:"var(--font-mono)", fontSize:11, letterSpacing:".18em", textTransform:"uppercase", color:"#6b6055", marginTop:6}}>REDESIGN · 3 LAYOUTS · 5 STATES</div>
+          </div>
+          <div style={{fontFamily:"var(--font-mono)", fontSize:10, letterSpacing:".14em", color:"#5a5046", textAlign:"right", lineHeight:1.7}}>
+            <div><b style={{color:"#ad9b81"}}>ATLAS</b> · 水平树 · 白底 + 色点</div>
+            <div><b style={{color:"#ad9b81"}}>CONSTELLATION</b> · 径向 · 环形进度</div>
+            <div><b style={{color:"#ad9b81"}}>STRATUM</b> · 分层泳道 · 直方图</div>
+          </div>
+        </div>
+
+        <div style={{maxWidth:1800, margin:"0 auto"}}>
+          <DesignCanvas storageKey="mnemos-mindmap-canvas">
+
+            <DCSection id="atlas" title="Variation A · Atlas" subtitle="精修水平树 — 白底 + 左侧 mastery 色点 + 贝塞尔连线 + 固定图例条">
+              <DCArtboard id="a-main" label="A1 · 主视图（水平）" width={400} height={830}>
+                <MMPhone label="A1 · 主视图（水平）" theme="light" screenLabel="A1 主视图">
+                  <MindmapAtlas connStyle={tweaks.connStyle}/>
+                </MMPhone>
+              </DCArtboard>
+
+              <DCArtboard id="a-radial" label="A2 · 径向" width={400} height={830}>
+                <MMPhone label="A2 · 径向" theme="light" screenLabel="A2 径向">
+                  <MindmapAtlas initView="radial" connStyle={tweaks.connStyle}/>
+                </MMPhone>
+              </DCArtboard>
+
+              <DCArtboard id="a-sheet" label="A3 · 卡片 Sheet 打开" width={400} height={830}>
+                <MMPhone label="A3 · 卡片 Sheet 打开" theme="light" screenLabel="A3 Sheet">
+                  <MindmapAtlas initSheet={true} connStyle={tweaks.connStyle}/>
+                </MMPhone>
+              </DCArtboard>
+
+              <DCArtboard id="a-filter" label="A4 · 过滤 · 薄弱" width={400} height={830}>
+                <MMPhone label="A4 · 过滤 · 薄弱" theme="light" screenLabel="A4 Filter Weak">
+                  <MindmapAtlas initFilter="weak" connStyle={tweaks.connStyle}/>
+                </MMPhone>
+              </DCArtboard>
+
+              <DCArtboard id="a-focus" label="A5 · Focus · 复习分支" width={400} height={830}>
+                <MMPhone label="A5 · Focus · 复习分支" theme="light" screenLabel="A5 Focus">
+                  <MindmapAtlas initFocus="ch2" connStyle={tweaks.connStyle}/>
+                </MMPhone>
+              </DCArtboard>
+
+              <DCArtboard id="a-menu" label="A6 · 长按菜单" width={400} height={830}>
+                <MMPhone label="A6 · 长按菜单" theme="light" screenLabel="A6 Menu">
+                  <MindmapAtlas
+                    initMenu={{node: SAMPLE_TREE.children[1], x: 195, y: 280}}
+                    connStyle={tweaks.connStyle}/>
+                </MMPhone>
+              </DCArtboard>
+
+              <DCArtboard id="a-dark" label="A7 · 深色" width={400} height={830}>
+                <MMPhone label="A7 · 深色" theme="dark" screenLabel="A7 Dark">
+                  <MindmapAtlas connStyle={tweaks.connStyle}/>
+                </MMPhone>
+              </DCArtboard>
+            </DCSection>
+
+            <DCSection id="constellation" title="Variation B · Constellation" subtitle="径向为主 — 节点带环形进度环（mastery = 环填充）+ 沿半径外延的标签">
+              <DCArtboard id="b-main" label="B1 · 主视图（径向）" width={400} height={830}>
+                <MMPhone label="B1 · 主视图" theme="light" screenLabel="B1 Main">
+                  <MindmapConstellation/>
+                </MMPhone>
+              </DCArtboard>
+
+              <DCArtboard id="b-focus" label="B2 · Focus · 复习" width={400} height={830}>
+                <MMPhone label="B2 · Focus · 复习" theme="light" screenLabel="B2 Focus">
+                  <MindmapConstellation initFocus="ch2"/>
+                </MMPhone>
+              </DCArtboard>
+
+              <DCArtboard id="b-filter" label="B3 · 过滤 · 到期" width={400} height={830}>
+                <MMPhone label="B3 · 过滤 · 到期" theme="light" screenLabel="B3 Filter">
+                  <MindmapConstellation initFilter="due"/>
+                </MMPhone>
+              </DCArtboard>
+
+              <DCArtboard id="b-sheet" label="B4 · Sheet（翻面）" width={400} height={830}>
+                <MMPhone label="B4 · Sheet（翻面）" theme="light" screenLabel="B4 Sheet">
+                  <MindmapConstellation initSheet={true}/>
+                </MMPhone>
+              </DCArtboard>
+
+              <DCArtboard id="b-dark" label="B5 · 深色" width={400} height={830}>
+                <MMPhone label="B5 · 深色" theme="dark" screenLabel="B5 Dark">
+                  <MindmapConstellation/>
+                </MMPhone>
+              </DCArtboard>
+            </DCSection>
+
+            <DCSection id="stratum" title="Variation C · Stratum" subtitle="章节分层泳道 — 每章一带，章节头带 mastery 分布直方条；可折叠章节">
+              <DCArtboard id="c-main" label="C1 · 主视图（4 章泳道）" width={400} height={830}>
+                <MMPhone label="C1 · 主视图" theme="light" screenLabel="C1 Main">
+                  <MindmapStratum/>
+                </MMPhone>
+              </DCArtboard>
+
+              <DCArtboard id="c-filter" label="C2 · 过滤 · 薄弱" width={400} height={830}>
+                <MMPhone label="C2 · 过滤 · 薄弱" theme="light" screenLabel="C2 Filter">
+                  <MindmapStratum initFilter="weak"/>
+                </MMPhone>
+              </DCArtboard>
+
+              <DCArtboard id="c-collapse" label="C3 · 章节折叠（混合状态）" width={400} height={830}>
+                <MMPhone label="C3 · 折叠" theme="light" screenLabel="C3 Collapse">
+                  <MindmapStratum initCollapsed={["ch1", "ch3"]}/>
+                </MMPhone>
+              </DCArtboard>
+
+              <DCArtboard id="c-sheet" label="C4 · Sheet（翻面）" width={400} height={830}>
+                <MMPhone label="C4 · Sheet" theme="light" screenLabel="C4 Sheet">
+                  <MindmapStratum initSheet={true}/>
+                </MMPhone>
+              </DCArtboard>
+
+              <DCArtboard id="c-dark" label="C5 · 深色" width={400} height={830}>
+                <MMPhone label="C5 · 深色" theme="dark" screenLabel="C5 Dark">
+                  <MindmapStratum/>
+                </MMPhone>
+              </DCArtboard>
+            </DCSection>
+
+          </DesignCanvas>
+        </div>
+
+        <div style={{maxWidth:1800, margin:"60px auto 0", padding:"32px 8px 0", borderTop:"1px solid #2a241e", display:"flex", justifyContent:"space-between", alignItems:"flex-end", gap:24, flexWrap:"wrap"}}>
+          <div>
+            <div style={{fontFamily:"var(--font-disp)", fontStyle:"italic", color:"#ad9b81", fontSize:18}}>mappa memoriae</div>
+            <div style={{fontFamily:"var(--font-mono)", fontSize:10, color:"#5a5046", letterSpacing:".16em", textTransform:"uppercase", marginTop:4}}>知识不是列表，是地图</div>
+          </div>
+          <div style={{fontFamily:"var(--font-mono)", fontSize:10, color:"#5a5046", letterSpacing:".14em", textAlign:"right", lineHeight:1.7}}>
+            <div>5 MASTERY BUCKETS · NEW / WEAK / LEARNING / GOOD / MASTERED</div>
+            <div>4 INTERACTIONS · TAP / LONG-PRESS / FILTER / FOCUS</div>
+            <div>2 LAYOUTS · HORIZONTAL · RADIAL</div>
+          </div>
+        </div>
+      </div>
+
+      <TweaksPanel title="Tweaks">
+        <TweakSection title="连线样式 · CONNECTOR">
+          <TweakRadio value={tweaks.connStyle} options={[
+            {value:"bezier", label:"贝塞尔"},
+            {value:"step",   label:"折线"},
+            {value:"line",   label:"直线"},
+          ]} onChange={(v)=>setTweak("connStyle", v)}/>
+        </TweakSection>
+      </TweaksPanel>
+    </>
+  );
+};
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
+</script>
+</body>
+</html>

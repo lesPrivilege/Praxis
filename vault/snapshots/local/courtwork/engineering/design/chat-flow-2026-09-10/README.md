@@ -1,0 +1,19 @@
+# Chat Flow construction intake · 2026-09-10
+
+2026-09-14：[本轮polish独立切片](polish-slices-20260914.md)登记inline-code contrast、fenced-code density及P1 composer Access迁移；Copy已有局部修复，其他各自待施工与视觉验收。
+
+2026-09-14：[Agent Run聚合与消息呈现PR登记](run-surface-pr-20260914.md)接用户真实dogfooding反馈，包含运行态分组、pending消息动作时机、user时间右对齐；权限与传输另片。仅登记，未实现。
+
+User supplied three screenshots and a full Chat Flow recommendation while the sequential Home backlog was in progress. User's actual directions: distinguish user messages with right-biased bounded bubbles/left whitespace, consider stronger bubble differentiation, and provide session management at the home of Attention. These steer this implementation. The attached report's multi-agent/runtime scope restriction describes that report; it does not cancel the already-authorized Runtime/Usage backlog.
+
+Immediate: right-aligned bounded authored bubble, asymmetric rounded corners, neutral secondary surface, no mirrored assistant bubble; remove duplicate terminal Run status beside composer. Session management joins the same actual Session owner and will be available from Attention home/recent conversations and the shared management entrance.
+
+The full supplied CF-01–10 material has been read. Adopt: user authored Markdown with separate source/copy/edit, long input disclosure; group observable tool activity within an agent response; distinct question/permission states and receipts; source/artifact controls belong to those objects; Stop belongs to the composer. Preserve immutable user records and Edit as new message. No raw reasoning request or renderer-owned authority.
+
+CF-01–09 are a construction checklist, not a claim that every proposed control already exists. Regenerate requires actual alternative-response identity and must not be labelled on an ordinary appended Run; tool retry is never generic. CF-10 Queue/Steer needs a separate runtime admission/receipt contract and remains unavailable. The screenshots are interaction/layout references, not capability or provider facts. Research URLs remain supplied leads; no new external source audit is claimed.
+
+The Chat Flow pass will follow completion of the current Usage slice and precede the remaining Tabs/Material/Overlay/Glyph/Sidebar work. Existing source/contracts and actual backend facts govern each adopted part. [Sequential backlog](../home-backlog-2026-09-10/README.md).
+
+Implementation update: shared authored Markdown/source/long disclosure and immutable Edit are connected to both conversation surfaces. Message-level copy sits below user/assistant content; generated fenced cards retain their internal content-copy action. The user's later screenshot explicitly selects a dark neutral **user bubble**, not a dark global theme. Scoped authored roles preserve readable text, links, source and nested cards; exterior action controls stay on the parent plane. This adds an authored reading plane to the prior neutral material mapping without assigning review/status meaning to it.
+
+Attention now has real searchable recent conversations, Open/New and persisted Rename through the Session owner. Consecutive tool activity and other response parts share their actual Run group; question and permission labels/receipts stay distinct; active Stop owns the composer action seat. Message disclosure/focus restoration is keyed to the retained input. [Implementation and review attribution](../../../evidence/home-backlog-20260910/chat-flow/README.md).

@@ -1,0 +1,41 @@
+# Design · Work Agent GUI
+
+**UI开工先读：** [UX Grammar](ux-grammar.md) → [前端连续性规范](agent-interface-2026-09-10/frontend-contract.md) → 工单相关owner合同与实现先例。文字去留沿[文案体例](copy-convention.md)，布局沿[编排标准](ui-composition-standard.md)，组件沿[Atlas](atlas/README.md)。
+
+设计目标是具有独立语言、能持续完成工作的 Agent GUI。设计研究、原型比较与工程验证并行：先探索人的工作方式，再把交互契约交给 Adapter/Core 验证，不等待全部后端完成才设计界面。
+
+文档、静态候选、交互和实测状态以 [current](../current.md) 与 [RD-003](../research/RD-003-work-surface.md) 为准；视觉候选不等于已选择方向或已通过交互验收。
+
+## 系列索引
+
+外部规范专题：[Apple HIG消费轨道](apple-hig-track-20260914.md)，按原工单采用Agency、反馈与交互连续性；官方核验和本地推论分列。
+
+| 文档 | 责任 |
+|---|---|
+| [principles.md](principles.md) | 设计目标、成熟行为底线与陌生化边界 |
+| [completion-surface.md](completion-surface.md) | 成熟 GUI 的状态—动作—恢复覆盖；明确首版和后置范围 |
+| [directions.md](directions.md) | 三个有实质差异的设计语言候选与比较任务 |
+| [prototype-plan.md](prototype-plan.md) | 从设计取证到可交互状态原型、真实联调的步骤与退出条件 |
+| [decisions.md](decisions.md) | 局部设计选择与裁决格式；作者推荐和用户选择分开 |
+| [sources.md](sources.md) | 官方 skill、官方规范、社区转译和产品能力资料的来源边界 |
+| [scout/README.md](scout/README.md) | Design Scout 层：X 聚合来源、capture schema、disposition 与各 grammar 的消化路径（WK-134） |
+| [agent-interface-2026-09-10/README.md](agent-interface-2026-09-10/README.md) | Agent-facing design-system / UI Continuity 候选索引；只记录召回路径与未裁方向，不构成组件或 runtime 选型 |
+| [web-gpt-design-handoff-20260910.md](web-gpt-design-handoff-20260910.md) | 可交网页端 GPT 的局部 Design / frontend PR 候选、写权、禁区与验收 handoff |
+| [reference-consumption.md](reference-consumption.md) | 历史本地巧思、网页端建议与外部工具的裁取，隔离旧 context |
+| [frontend-layering-spec.md](frontend-layering-spec.md) | 前端分层与自定义入口主规范（FN-01…29、反例 FE-T01…12、候选裁决）；对象、接口、状态与权限的不变量，布局与 token 留在体例与产品配置 |
+| [work-surface-boundaries.md](work-surface-boundaries.md) | Chrome / Domain / Expert责任，Review与commit语义、同源投影和组件adapter边界；连接Fable现有契约 |
+| [UX Polish研究包](../research/ux-polish-2026-09-08/README.md) | 材质/层级与局部motion/hover的来源、源码现状及build联调绘制切片 |
+
+[局部解耦与异步任务合流Design](../research/architecture-maintenance-2026-09-09/integration-design.md)补执行/交付/工作效力、renderer缺席、generation/typed commands与前后端共同fixture；属于后续语义设计，进入既有FE单writer队列，不改变当前视觉方向或假定后端能力已交付。
+
+## 与工程治理的关系
+
+[Clean and Cool 前端审查与图稿包](clean-cool-2026-09-09/README.md)以当前main实拍核对FE-01/02与Review，映射FE-03/04/05及BE-17/18接缝，附三张较自由的Image Gen参考、完整prompt与Claude交接。属于待选择设计输入，不改变现有施工规范或前端队列。
+
+Design 是 M10/M11 和 RD-003 的设计输入，也可能暴露 M02/M04/M06 的接口缺口。完成面决定需要哪些可见状态；实际语义仍由 [Core 契约](../core-contracts.md) 定义。设计不自行创造 approve、cancelled 或已保存事实。
+
+设计范围和工程承诺记在 [工程 decisions](../decisions.md)；本系列的视觉/交互决策记在 Design decisions，不重复技术采纳记录。设计研究推进不改变任何 RD 的运行状态。
+
+## 维护粒度
+
+一个设计单元可以是“长运行时输入与停止的关系”“证据回跳和返回位置”“候选接受的过期冲突”，而不是一个源码组件或一整套皮肤。每项保留目标、必要状态、候选、取舍、证据、可访问替代、版本/恢复要求和裁决。只有在 prototype 中出现可独立验证的分歧时才继续拆分文档。

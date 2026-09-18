@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<style>
+  body { background: #eaeff4; }
+  @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .001ms !important; transition-duration: .001ms !important; } }
+</style>
+</helmet>
+<section style="font-family:-apple-system,'Segoe UI','PingFang SC','MiSans','Microsoft YaHei','Noto Sans SC','Helvetica Neue',Arial,sans-serif;font-variant-numeric:tabular-nums;color:#0a2540;padding:48px;display:flex;flex-direction:column;gap:28px;">
+
+  <div style="max-width:980px;display:flex;flex-direction:column;gap:12px;">
+    <div style="display:flex;align-items:center;gap:10px;">
+      <span style="font:12px/1.5 ui-monospace,'SF Mono','JetBrains Mono',Menlo,Consolas,'Courier New',monospace;color:#425466;border:1px solid #cdd8e3;border-radius:4px;padding:2px 7px;background:#fff;">turn 1</span>
+      <h1 style="margin:0;font-size:20px;font-weight:510;letter-spacing:-.01em;">修订预览 · 红删蓝增 → 冻结仪式 → 未落格确认知悉 → 已编译终态</h1>
+    </div>
+    <p style="margin:0;font-size:14px;line-height:1.6;color:#425466;text-wrap:pretty;">晨曦印务设备纠纷 · 修订预览面（三段一体）。基线复刻现状行内 redline，两个变体沿「redline 呈现」轴（行内对照 / 左右分栏）拉开并补齐<strong style="color:#0a2540;font-weight:510;">冻结仪式 + 未落格确认知悉流</strong>。每张卡内点「编译为 Word」即走全流程：定稿确认（冻结）→ 未落格逐条知悉 → 产物终态。共守：<strong style="color:#0a2540;font-weight:510;">确认知悉 ≠ 确认修订生效</strong>（只登记「知道这条没落上去」）；取消出口与冻结钮同权重（不生成产物是正当出路）；冻结的是本次修订集、原件永远只读；toast 禁「成功」（用「已写入」）；每条 redline 标来源回链（来自哪条 RISK 的处置，账本连续性）；落定用 settleFlash 族；reduced-motion 退化为即时。</p>
+    <div style="display:flex;flex-wrap:wrap;gap:14px;margin-top:2px;font-size:12px;color:#425466;">
+      <span style="display:inline-flex;align-items:center;gap:6px;"><span style="width:12px;height:10px;border-radius:2px;background:#fef2f2;border:1px solid #b91c1c;"></span>删（red）</span>
+      <span style="display:inline-flex;align-items:center;gap:6px;"><span style="width:12px;height:10px;border-radius:2px;background:#eff6ff;border:1px solid #1d4ed8;"></span>增（blue · 下划线）</span>
+      <span style="display:inline-flex;align-items:center;gap:6px;"><span style="width:12px;height:2px;background:#d97706;"></span>未落格待知悉</span>
+      <span style="display:inline-flex;align-items:center;gap:6px;"><span style="width:12px;height:2px;background:#16a34a;"></span>已写入 / 已落定</span>
+    </div>
+  </div>
+
+  <div style="display:flex;flex-wrap:wrap;gap:36px;align-items:flex-start;">
+
+    <div id="1a" style="display:flex;flex-direction:column;gap:12px;width:900px;">
+      <div style="display:flex;flex-direction:column;gap:4px;">
+        <div style="display:flex;align-items:center;gap:8px;"><span style="font:12px/1.5 ui-monospace,'SF Mono','JetBrains Mono',Menlo,Consolas,'Courier New',monospace;color:#0a2540;border:1px solid #cdd8e3;border-radius:4px;padding:1px 7px;background:#fff;font-weight:510;">1a</span><strong style="font-size:15px;font-weight:510;">基线 · 现状复刻</strong></div>
+        <p style="margin:0;font-size:13px;line-height:1.55;color:#6e8098;max-width:900px;">现行行内 redline（红删蓝增）document-preview，无来源回链、无仪式增强。冻结仪式与未落格知悉流照现状接线。保真基准。</p>
+      </div>
+      <div style="height:720px;"><dc-import name="RevisionSurface" variant="baseline" hint-size="900px,720px" style="width:900px;height:720px;"></dc-import></div>
+    </div>
+
+    <div id="1b" style="display:flex;flex-direction:column;gap:12px;width:900px;">
+      <div style="display:flex;flex-direction:column;gap:4px;">
+        <div style="display:flex;align-items:center;gap:8px;"><span style="font:12px/1.5 ui-monospace,'SF Mono','JetBrains Mono',Menlo,Consolas,'Courier New',monospace;color:#0a2540;border:1px solid #cdd8e3;border-radius:4px;padding:1px 7px;background:#fff;font-weight:510;">1b</span><strong style="font-size:15px;font-weight:510;">变体A · 行内对照（来源回链）</strong></div>
+        <p style="margin:0;font-size:13px;line-height:1.55;color:#6e8098;max-width:900px;">行内 redline，每条修订标注来源回链（来自哪条 RISK 的哪次处置）+ 冻结仪式最后一览 + 未落格逐条知悉。动线：顺读文书、就地对照。</p>
+      </div>
+      <div style="height:720px;"><dc-import name="RevisionSurface" variant="inline" hint-size="900px,720px" style="width:900px;height:720px;"></dc-import></div>
+    </div>
+
+    <div id="1c" style="display:flex;flex-direction:column;gap:12px;width:900px;">
+      <div style="display:flex;flex-direction:column;gap:4px;">
+        <div style="display:flex;align-items:center;gap:8px;"><span style="font:12px/1.5 ui-monospace,'SF Mono','JetBrains Mono',Menlo,Consolas,'Courier New',monospace;color:#0a2540;border:1px solid #cdd8e3;border-radius:4px;padding:1px 7px;background:#fff;font-weight:510;">1c</span><strong style="font-size:15px;font-weight:510;">变体B · 左右分栏对照</strong></div>
+        <p style="margin:0;font-size:13px;line-height:1.55;color:#6e8098;max-width:900px;">原文 | 修订后 左右分栏，逐条对齐；同带来源回链 + 全套仪式。动线：先比对改了什么，再核来源。适合改动密集的条款。</p>
+      </div>
+      <div style="height:720px;"><dc-import name="RevisionSurface" variant="split" hint-size="900px,720px" style="width:900px;height:720px;"></dc-import></div>
+    </div>
+
+  </div>
+</section>
+</x-dc>
+</body>
+</html>

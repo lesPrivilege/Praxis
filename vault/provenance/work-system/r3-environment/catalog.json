@@ -1,0 +1,303 @@
+{
+  "schema_version": "1.0",
+  "catalog_id": "work-system-r3-environment",
+  "as_of": "2026-09-19",
+  "scope": {
+    "archive": "vault/archive/chat/work-system-toolchain-20260919-r3.json",
+    "archive_turns_total": 19,
+    "included_occurrences": 6,
+    "selected_turns": [
+      "47c72d09-4a5e-444a-98fd-ec00abcdabc5",
+      "59f28eb3-e875-43ed-8790-20bba6734d67"
+    ],
+    "message_rule": "Only the two specified agent messages and their six chatgpt-content-reference placeholders are in scope. Other r3 turns, including citation-free attention/skill-weight theory, are excluded and not externally endorsed.",
+    "identity_rule": "Every placeholder is mapped to its exact archive turn, message item and index. The exported archive did not expose the original citation URLs."
+  },
+  "provenance_policy": {
+    "original_url_status": "missing_original",
+    "supplemental_evidence": "The public official URLs below were checked after export. They supplement the claims and do not restore or endorse the hidden original citation results.",
+    "checked_at": "2026-09-19",
+    "installation_policy": "register_only; no package, CLI, account, secret manager, or service was installed or activated by this catalog work.",
+    "claim_rule": "Record what the source directly supports, keep design synthesis partial, and separate product documentation from deployment or enterprise policy conclusions.",
+    "evidence_fields": "evidence_url is the durable public URL checked for the source; locator records the page section or reading range. Internal web-tool IDs are intentionally omitted."
+  },
+  "sources": [
+    {
+      "slug": "r3-chezmoi-setup",
+      "url": "https://www.chezmoi.io/user-guide/setup/",
+      "title": "chezmoi setup: shared source and machine-specific config",
+      "publisher": "chezmoi",
+      "official": true,
+      "status": "verified",
+      "summary_zh": "官方设置文档区分跨机器共享的 source directory 与本机配置文件，并说明模板可根据本机数据生成目标文件；也展示 init、diff、apply 和 init --apply 流程。",
+      "limits": "chezmoi 是 dotfiles/config 管理工具，不等于企业环境、MDM、权限或客户数据政策；密钥治理仍需单独设计。",
+      "revisit_trigger": "chezmoi 配置模型、模板语义、bootstrap 流程或企业设备政策变化时复查。",
+      "evidence_url": "https://www.chezmoi.io/user-guide/setup/",
+      "locator": "官方页面《Understand chezmoi's files and directories》及 init/diff/apply 段落，约行 437–470、483–492。",
+      "purpose_tags": ["GRAMMAR", "BUILD"],
+      "card_path": "vault/provenance/work-system/r3-environment/cards/r3-chezmoi-setup.md"
+    },
+    {
+      "slug": "r3-chezmoi-scripts",
+      "url": "https://www.chezmoi.io/user-guide/use-scripts-to-perform-actions/",
+      "title": "chezmoi scripts and idempotency",
+      "publisher": "chezmoi",
+      "official": true,
+      "status": "verified",
+      "summary_zh": "官方文档说明 run、run_onchange、run_once 脚本的执行语义、内容哈希状态和 dry-run；明确要求所有脚本保持幂等。",
+      "limits": "脚本会突破声明式边界，仍可能修改系统、依赖外部命令或泄露输出；幂等需要由实现者验证。",
+      "revisit_trigger": "bootstrap 脚本、run_once/run_onchange 语义或目标系统权限变化时复查。",
+      "evidence_url": "https://www.chezmoi.io/user-guide/use-scripts-to-perform-actions/",
+      "locator": "官方页面《Understand how scripts work》段落，约行 438–456；package script 示例约行 518–526。",
+      "purpose_tags": ["GRAMMAR", "BUILD", "GOVERNANCE"],
+      "card_path": "vault/provenance/work-system/r3-environment/cards/r3-chezmoi-scripts.md"
+    },
+    {
+      "slug": "r3-chezmoi-package-declarative",
+      "url": "https://www.chezmoi.io/user-guide/advanced/install-packages-declaratively/",
+      "title": "chezmoi declarative package installation",
+      "publisher": "chezmoi",
+      "official": true,
+      "status": "verified",
+      "summary_zh": "官方示例用 .chezmoidata 声明包清单，再由 run_onchange 脚本调用 brew bundle；包清单变化时才重新执行安装逻辑。",
+      "limits": "官方明确这是用脚本模拟包安装的声明式体验；不保证跨机器、权限、锁版本或卸载语义。",
+      "revisit_trigger": "选择 chezmoi 与 Homebrew 的组合、包锁定或 bootstrap 失败恢复策略时复查。",
+      "evidence_url": "https://www.chezmoi.io/user-guide/advanced/install-packages-declaratively/",
+      "locator": "官方页面《Install packages declaratively》及 .chezmoidata/run_onchange 示例段落。",
+      "purpose_tags": ["GRAMMAR", "BUILD"],
+      "card_path": "vault/provenance/work-system/r3-environment/cards/r3-chezmoi-package-declarative.md"
+    },
+    {
+      "slug": "r3-homebrew-bundle",
+      "url": "https://docs.brew.sh/Brew-Bundle-and-Brewfile",
+      "title": "Homebrew Bundle and Brewfile",
+      "publisher": "Homebrew",
+      "official": true,
+      "status": "verified",
+      "summary_zh": "Homebrew 官方文档把 Brewfile 定位为声明目标安装状态的接口，可记录 formula、cask、tap 等并通过 brew bundle 安装、升级或清理。",
+      "limits": "Brewfile 只管理 Homebrew 支持的包和服务；cleanup 可能卸载未声明内容，不能替代 MDM、系统权限、许可证或其他安装渠道。",
+      "revisit_trigger": "软件 desired state、Brewfile cleanup、跨 macOS/Linux 环境或 Homebrew 语义变化时复查。",
+      "evidence_url": "https://docs.brew.sh/Brew-Bundle-and-Brewfile",
+      "locator": "官方页面《Projects》与 brew bundle/Brewfile 段落，约行 88–119；cleanup 约行 121–129。",
+      "purpose_tags": ["GRAMMAR", "BUILD"],
+      "card_path": "vault/provenance/work-system/r3-environment/cards/r3-homebrew-bundle.md"
+    },
+    {
+      "slug": "r3-home-manager",
+      "url": "https://nix-community.github.io/home-manager/introduction.html",
+      "title": "Home Manager introduction",
+      "publisher": "Home Manager / nix-community",
+      "official": true,
+      "status": "verified",
+      "summary_zh": "Home Manager 官方手册将其描述为基于 Nix、可复现管理用户 home 目录的工具，覆盖程序、配置文件、环境变量和任意文件，并强调跨主机一致性。",
+      "limits": "这是 Home Manager/Nix 生态的能力说明，不代表适合所有企业 Fresh Mac；版本锁定、MDM 冲突、学习成本和运维责任需另评估。",
+      "revisit_trigger": "决定是否引入 Nix/Home Manager、Nixpkgs 版本或企业设备约束变化时复查。",
+      "evidence_url": "https://nix-community.github.io/home-manager/introduction.html",
+      "locator": "官方手册《Introduction to Home Manager》正文，约行 12–36。",
+      "purpose_tags": ["GRAMMAR", "BUILD"],
+      "card_path": "vault/provenance/work-system/r3-environment/cards/r3-home-manager.md"
+    },
+    {
+      "slug": "r3-sqlite-wal",
+      "url": "https://www.sqlite.org/wal.html",
+      "title": "SQLite Write-Ahead Logging and WAL-reset bug",
+      "publisher": "SQLite",
+      "official": true,
+      "status": "verified",
+      "summary_zh": "SQLite 官方文档说明 WAL 允许读写并发但要求所有进程位于同一主机、网络文件系统不可用且只有一个 writer；文档还记录 2026 年 WAL-reset corruption bug 在 3.51.3 及以后修复，部分旧版有 backport。",
+      "limits": "版本门槛只针对该官方描述的特定 WAL-reset 条件，不保证应用事务、备份、checkpoint、文件系统或多租户设计安全；WAL 仍不适合网络文件系统。",
+      "revisit_trigger": "SQLite 版本升级、WAL 多进程写入、checkpoint/备份策略或本机数据库边界变化时复查。",
+      "evidence_url": "https://www.sqlite.org/wal.html",
+      "locator": "官方《Write-Ahead Logging》Overview/Concurrency 段落约行 61–99；《The WAL-Reset Bug》约行 191–197。",
+      "purpose_tags": ["GRAMMAR", "BUILD", "GOVERNANCE"],
+      "card_path": "vault/provenance/work-system/r3-environment/cards/r3-sqlite-wal.md"
+    },
+    {
+      "slug": "r3-apple-keychain-accessibility",
+      "url": "https://developer.apple.com/documentation/Security/restricting-keychain-item-accessibility",
+      "title": "Apple Keychain item accessibility",
+      "publisher": "Apple Developer",
+      "official": true,
+      "status": "partial",
+      "summary_zh": "Apple 官方 Security 文档说明 Keychain item 的可访问条件可按设备状态设置，并以 kSecAttrAccessible 控制应用访问密码等秘密的条件。",
+      "limits": "本轮页面正文需要 JavaScript，具体 API 细节未逐行读取；Keychain access control 也不自动解决组织审批、备份、同步或第三方工具边界。",
+      "revisit_trigger": "macOS Keychain API、设备锁定策略、应用 access group 或企业 MDM 要求变化时复查。",
+      "evidence_url": "https://developer.apple.com/documentation/Security/restricting-keychain-item-accessibility",
+      "locator": "Apple Developer 页面标题《Restricting keychain item accessibility》及 Overview/Control access based on device state；本轮页面正文受 JS 限制。",
+      "purpose_tags": ["GRAMMAR", "GOVERNANCE"],
+      "card_path": "vault/provenance/work-system/r3-environment/cards/r3-apple-keychain-accessibility.md"
+    },
+    {
+      "slug": "r3-apple-platform-security-keychain",
+      "url": "https://help.apple.com/pdf/security/en_US/apple-platform-security-guide.pdf",
+      "title": "Apple Platform Security: Keychain access control",
+      "publisher": "Apple",
+      "official": true,
+      "status": "verified",
+      "summary_zh": "Apple Platform Security 官方指南把 Keychain 描述为保存用户名、密码、数字身份、加密密钥和 secure notes 的安全存储，并讨论 Keychain access control。",
+      "limits": "平台安全指南是系统能力说明，不是 Praxis credential lifecycle 或第三方 secret manager 的部署规范。",
+      "revisit_trigger": "Apple 平台安全指南、Keychain access control 或企业设备安全基线变化时复查。",
+      "evidence_url": "https://help.apple.com/pdf/security/en_US/apple-platform-security-guide.pdf",
+      "locator": "官方 PDF《Apple Platform Security》中的 Keychain access control 章节。",
+      "purpose_tags": ["GRAMMAR", "GOVERNANCE"],
+      "card_path": "vault/provenance/work-system/r3-environment/cards/r3-apple-platform-security-keychain.md"
+    },
+    {
+      "slug": "r3-1password-secrets",
+      "url": "https://developer.1password.com/docs/cli/secrets-scripts",
+      "title": "1Password CLI: load secrets into scripts",
+      "publisher": "1Password Developer",
+      "official": true,
+      "status": "verified",
+      "summary_zh": "1Password 官方文档说明 op run、op read、op inject 和 secret references 可在运行时把秘密注入 subprocess、环境变量或配置文件，并建议用限制到特定 vault 的 Service Account 遵循最小权限。",
+      "limits": "需要 1Password 账户、CLI 和已存储秘密；环境变量/命令行仍需防日志泄露，Service Account 范围与组织政策要单独审查。",
+      "revisit_trigger": "CLI 版本、beta Environment、Service Account 权限或企业秘密注入策略变化时复查。",
+      "evidence_url": "https://www.1password.dev/cli/secrets-scripts",
+      "locator": "官方《Load secrets into scripts》正文：Service Accounts 约行 23–35，op run/secret references 约行 55–65，op inject 约行 104–108。",
+      "purpose_tags": ["GRAMMAR", "GOVERNANCE"],
+      "card_path": "vault/provenance/work-system/r3-environment/cards/r3-1password-secrets.md"
+    },
+    {
+      "slug": "r3-palantir-workflow-lineage",
+      "url": "https://www.palantir.com/docs/foundry/workflow-lineage/overview",
+      "title": "Palantir Foundry Workflow Lineage",
+      "publisher": "Palantir",
+      "official": true,
+      "status": "verified",
+      "summary_zh": "Palantir 官方文档将 Workflow Lineage 定位为理解和管理应用及其底层流程的交互工作区，可查看对象、动作、函数、模型、资源、下游使用、权限、运行指标和 provenance。",
+      "limits": "这是 Palantir Foundry 产品能力，不证明通用企业 lineage 模型或 Praxis 应直接复制其 ontology；需租户管理员授权。",
+      "revisit_trigger": "workflow lineage、资源依赖、权限或 AI FDE 产品能力变化时复查。",
+      "evidence_url": "https://www.palantir.com/docs/foundry/workflow-lineage/overview",
+      "locator": "官方《Workflow Lineage》Overview：功能段落约行 431–469，When to use 约行 471–482。",
+      "purpose_tags": ["GRAMMAR", "BUILD"],
+      "card_path": "vault/provenance/work-system/r3-environment/cards/r3-palantir-workflow-lineage.md"
+    },
+    {
+      "slug": "r3-anthropic-services-track",
+      "url": "https://www.anthropic.com/news/services-track-partner-hub",
+      "title": "Anthropic Services Track and Partner Hub",
+      "publisher": "Anthropic",
+      "official": true,
+      "status": "verified",
+      "summary_zh": "Anthropic 官方文章指出企业 AI 从 pilot 到可运行系统的主要工作涉及 integration、evaluation 和人的工作方式变化，并描述伙伴帮助企业生产化。",
+      "limits": "这是 Anthropic 的生态/服务观点，不是独立行业研究或所有企业的因果结论；文中规模数字是公司自述。",
+      "revisit_trigger": "企业 AI 生产化、伙伴计划或 Anthropic 生态叙述变化时复查。",
+      "evidence_url": "https://www.anthropic.com/news/services-track-partner-hub",
+      "locator": "官方文章开头企业 AI 生产化段落，约行 16–18。",
+      "purpose_tags": ["GRAMMAR", "FIELD_PRACTICE"],
+      "card_path": "vault/provenance/work-system/r3-environment/cards/r3-anthropic-services-track.md"
+    },
+    {
+      "slug": "r3-anthropic-agent-evals",
+      "url": "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+      "title": "Anthropic: Demystifying evals for AI agents",
+      "publisher": "Anthropic",
+      "official": true,
+      "status": "verified",
+      "summary_zh": "Anthropic 官方工程文章把 eval 定义为给系统输入并用 grading logic 衡量成功，说明多轮工具调用会修改状态、需要真实或沙箱环境评估，并强调 agent eval 仍在快速演化。",
+      "limits": "这是 Anthropic 工程经验，不是统一评测标准；真实环境评估还涉及数据、权限、成本和安全边界。",
+      "revisit_trigger": "agent eval 方法、工具调用、状态修改或评测基线变化时复查。",
+      "evidence_url": "https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents",
+      "locator": "官方《The structure of an evaluation》约行 24–29；computer-use evaluation 约行 215；evolving field 约行 376。",
+      "purpose_tags": ["GRAMMAR", "BUILD", "FIELD_PRACTICE"],
+      "card_path": "vault/provenance/work-system/r3-environment/cards/r3-anthropic-agent-evals.md"
+    }
+  ],
+  "occurrences": [
+    {
+      "archive_turn_id": "47c72d09-4a5e-444a-98fd-ec00abcdabc5",
+      "message_item_id": "9e7b952c-ea8c-43b5-b114-65c1d76294c3",
+      "index": 0,
+      "claim": "environment manifest 应声明 desired state；chezmoi 区分共享 source repo 与机器本地 config 并支持幂等 bootstrap，Homebrew Bundle 用 Brewfile 描述安装状态，Home Manager 提供可复现的声明式 home environment。",
+      "source_refs": ["r3-chezmoi-setup", "r3-chezmoi-scripts", "r3-chezmoi-package-declarative", "r3-homebrew-bundle", "r3-home-manager"],
+      "support": "partial",
+      "note": "各产品官方文档直接支持对应机制；将它们组合为 Praxis environment manifest 是设计综合，不能视为任一厂商的统一架构建议。"
+    },
+    {
+      "archive_turn_id": "47c72d09-4a5e-444a-98fd-ec00abcdabc5",
+      "message_item_id": "9e7b952c-ea8c-43b5-b114-65c1d76294c3",
+      "index": 1,
+      "claim": "SQLite 适合作为单机 canonical state；WAL 允许读写并行但要求同一主机、不能放网络文件系统；2026 年 WAL-reset corruption bug 要求 SQLite 3.51.3+ 或官方 backport。",
+      "source_refs": ["r3-sqlite-wal"],
+      "support": "supported",
+      "note": "SQLite 官方 WAL 页面直接支持并发、同主机限制、单 writer 和 3.51.3 修复范围；版本门槛不等于应用级安全保证。"
+    },
+    {
+      "archive_turn_id": "47c72d09-4a5e-444a-98fd-ec00abcdabc5",
+      "message_item_id": "9e7b952c-ea8c-43b5-b114-65c1d76294c3",
+      "index": 2,
+      "claim": "macOS Keychain 适合保存密码、密钥和 identity 并支持 access control；1Password CLI 可在运行时向 subprocess 注入 secret，Service Account 可限制到指定 vault。",
+      "source_refs": ["r3-apple-keychain-accessibility", "r3-apple-platform-security-keychain", "r3-1password-secrets"],
+      "support": "partial",
+      "note": "Apple Developer 页面正文受 JavaScript 限制，因此具体 kSecAttrAccessible 细节标 partial；Apple PDF 与 1Password 官方文档支持总体存储/注入能力，但不构成 Praxis 的凭证生命周期设计。"
+    },
+    {
+      "archive_turn_id": "47c72d09-4a5e-444a-98fd-ec00abcdabc5",
+      "message_item_id": "9e7b952c-ea8c-43b5-b114-65c1d76294c3",
+      "index": 3,
+      "claim": "Brewfile 与 chezmoi 的机器特定 config、幂等脚本适合分阶段 Fresh Mac bootstrap；每步应 inspect、diff、apply、verify、record。",
+      "source_refs": ["r3-homebrew-bundle", "r3-chezmoi-setup", "r3-chezmoi-scripts", "r3-chezmoi-package-declarative"],
+      "support": "partial",
+      "note": "官方文档支持 desired-state 文件、init/diff/apply 和幂等脚本；五段式 bootstrap 阶段机及 record 语义是 Praxis 设计综合。"
+    },
+    {
+      "archive_turn_id": "47c72d09-4a5e-444a-98fd-ec00abcdabc5",
+      "message_item_id": "9e7b952c-ea8c-43b5-b114-65c1d76294c3",
+      "index": 4,
+      "claim": "Home Manager 的可复现模型值得借鉴，但不应成为所有企业 Fresh Mac 的默认 hard dependency；可按自主管理程度提供 Nix profile。",
+      "source_refs": ["r3-home-manager"],
+      "support": "partial",
+      "note": "Home Manager 官方手册支持可复现 home 与跨主机一致性；“不默认强制采用”是针对 MDM/IT 约束的架构判断，没有外部来源直接背书。"
+    },
+    {
+      "archive_turn_id": "59f28eb3-e875-43ed-8790-20bba6734d67",
+      "message_item_id": "18fc8b9a-dc6e-42dc-805d-1fbaf9bdd851",
+      "index": 0,
+      "claim": "Discovery Grammar 应把不同角色的陈述落到统一槽位并显式记录 lineage；Palantir Workflow Lineage 展示资源、流程和上下游依赖，Anthropic 将 enterprise AI 的难点归结为 integration、evaluation 与人的工作方式变化。",
+      "source_refs": ["r3-palantir-workflow-lineage", "r3-anthropic-services-track", "r3-anthropic-agent-evals"],
+      "support": "partial",
+      "note": "Palantir 官方文档直接支持 workflow provenance、上下游依赖和调试管理；Anthropic 官方文章支持 integration/evaluation/work evolution 与 agent eval 复杂性。统一 Discovery Grammar、assertion_type 和槽位模型是 Praxis 综合设计。"
+    }
+  ],
+  "entities": {
+    "verified_or_partial": [
+      "chezmoi",
+      "Homebrew Bundle/Brewfile",
+      "Home Manager",
+      "SQLite WAL",
+      "Apple Keychain",
+      "1Password CLI",
+      "Palantir Foundry Workflow Lineage",
+      "Anthropic enterprise AI services",
+      "Anthropic agent evals"
+    ],
+    "registered_only_or_unverified": [],
+    "note": "本 catalog 仅登记和核查来源；没有安装软件、创建账户、读取秘密或启用任何服务。"
+  },
+  "gaps": [
+    {
+      "id": "r3-original-citations",
+      "status": "open",
+      "detail": "r3 两条指定消息的 6 个 chatgpt-content-reference 占位未提供原始 URL；本 catalog 的官方 URL 均为补充核查，不是原引用恢复。",
+      "revisit_trigger": "原始 citation metadata 或完整 Chat 导出提供 URL。"
+    },
+    {
+      "id": "r3-citation-free-theory",
+      "status": "out_of_scope",
+      "detail": "r3 其他无 citation 的 attention/skill 权重理论和工作流建议不在本 catalog 中，也未获得外部背书。",
+      "revisit_trigger": "用户明确要求对指定理论消息建立 occurrence 后再单独核查。"
+    },
+    {
+      "id": "r3-apple-js-doc",
+      "status": "partial",
+      "detail": "Apple Developer Keychain accessibility 页面本轮正文依赖 JavaScript；以官方 Platform Security PDF 补充总体能力，但具体 API 章节仍需读取。",
+      "revisit_trigger": "获得 Apple 页面 Markdown/API 文档或目标 macOS SDK 版本后复查。"
+    },
+    {
+      "id": "r3-environment-synthesis",
+      "status": "partial",
+      "detail": "environment manifest、Discovery Grammar、阶段机和 assertion slots 是跨来源设计综合，不应写成 chezmoi/Homebrew/Home Manager/Palantir/Anthropic 的官方统一方案。",
+      "revisit_trigger": "形成实际 Praxis manifest schema 或选定企业 Fresh Mac 约束后做可运行验证。"
+    }
+  ]
+}

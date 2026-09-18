@@ -1,0 +1,660 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Schema Engineering 定本</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,300;1,6..72,400&family=Noto+Serif+SC:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap">
+<style>
+:root{
+  --paper:#F1F0F4; --paper-2:#E6E4EC; --paper-3:#DAD8E2;
+  --ink:#26252B; --ink-2:#5C5A66; --ink-3:#8E8C99; --ink-4:#B9B7C2;
+  --rule:#C9C7D2; --rule-2:#DEDCE6;
+  --zhu:#A83A22; --hl:#F0DC6A; --hl-ink:#26252B;
+  --sel:#DCD8EE;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#131218; --paper-2:#1C1B23; --paper-3:#26242E;
+    --ink:#E6E4EC; --ink-2:#A8A5B4; --ink-3:#777482; --ink-4:#514E5C;
+    --rule:#33313C; --rule-2:#26242E;
+    --zhu:#E4795C; --hl:#8A7418; --hl-ink:#F1EFE4;
+    --sel:#332F4A;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#131218; --paper-2:#1C1B23; --paper-3:#26242E;
+  --ink:#E6E4EC; --ink-2:#A8A5B4; --ink-3:#777482; --ink-4:#514E5C;
+  --rule:#33313C; --rule-2:#26242E;
+  --zhu:#E4795C; --hl:#8A7418; --hl-ink:#F1EFE4;
+  --sel:#332F4A;
+}
+
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:86px}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{animation-duration:.001ms!important;transition-duration:.001ms!important}}
+
+body{
+  margin:0; background:var(--paper); color:var(--ink);
+  font-family:"Newsreader","Noto Serif SC","Songti SC",Georgia,serif;
+  font-size:17px; line-height:1.95; font-weight:400;
+  font-synthesis:none; -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+}
+::selection{background:var(--sel)}
+p{margin:0}
+h1,h2,h3{margin:0;font-weight:400;text-wrap:balance}
+a{color:var(--zhu);text-decoration:none;border-bottom:1px solid color-mix(in oklab,var(--zhu) 35%,transparent)}
+a:hover{border-bottom-color:var(--zhu)}
+a:focus-visible,button:focus-visible{outline:2px solid var(--zhu);outline-offset:3px;border-radius:2px}
+.mono{font-family:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;font-variant-numeric:tabular-nums}
+
+/* ── 天头：阅读进度 ───────────────────────── */
+.gauge{position:fixed;inset:0 0 auto 0;height:2px;background:transparent;z-index:60}
+.gauge > i{display:block;height:100%;width:0;background:var(--zhu)}
+
+/* ── 版心 ─────────────────────────────────── */
+.wrap{max-width:1360px;margin:0 auto;padding:0 40px}
+
+/* ── 牌记 ─────────────────────────────────── */
+.masthead{padding:64px 0 0}
+.colophon{
+  display:grid;grid-template-columns:max-content 1fr;
+  border-top:2px solid var(--ink);border-bottom:1px solid var(--rule);
+  font-family:"JetBrains Mono",ui-monospace,monospace;font-size:12px;line-height:2.1;
+}
+.colophon dt{color:var(--ink-3);padding:9px 26px 9px 0;border-bottom:1px solid var(--rule-2)}
+.colophon dd{margin:0;color:var(--ink);padding:9px 0;border-bottom:1px solid var(--rule-2);
+             font-family:"Newsreader","Noto Serif SC",serif;font-size:13.5px;line-height:1.85}
+.colophon dt:last-of-type,.colophon dd:last-of-type{border-bottom:0}
+
+h1.title{
+  font-size:clamp(38px,6.4vw,64px); line-height:1.06; font-weight:300;
+  letter-spacing:-.012em; margin:52px 0 0; color:var(--ink);
+}
+h1.title .cjk{display:block;font-size:.45em;letter-spacing:.24em;font-weight:400;color:var(--ink-2);margin-top:22px}
+.strap{
+  margin:40px 0 0;max-width:56ch;font-size:19px;line-height:1.85;color:var(--ink-2);
+}
+.strap b{font-weight:600;color:var(--ink)}
+
+/* ── 三栏：目次 · 正文 · 校勘记 ───────────── */
+.page{display:grid;grid-template-columns:190px minmax(0,1fr);gap:0 56px;padding:72px 0 0;align-items:start}
+
+nav.toc{position:sticky;top:40px;font-size:13.5px;line-height:1.5}
+nav.toc .cap{font-family:"JetBrains Mono",ui-monospace,monospace;font-size:10.5px;letter-spacing:.18em;color:var(--ink-3);padding-bottom:10px;border-bottom:1px solid var(--rule)}
+nav.toc ol{list-style:none;margin:0;padding:8px 0 0;display:flex;flex-direction:column}
+nav.toc a{display:grid;grid-template-columns:26px 1fr;gap:8px;padding:6px 0;color:var(--ink-2);border:0;align-items:baseline}
+nav.toc a .n{font-family:"JetBrains Mono",ui-monospace,monospace;font-size:11px;color:var(--ink-4);font-variant-numeric:tabular-nums}
+nav.toc a:hover{color:var(--ink)}
+nav.toc a.on{color:var(--ink)}
+nav.toc a.on .t{background:linear-gradient(transparent 62%,var(--hl) 62%,var(--hl) 96%,transparent 96%);padding:0 1px}
+nav.toc a.on .n{color:var(--zhu)}
+
+.sec{display:grid;grid-template-columns:minmax(0,1fr) 232px;gap:0 44px;padding:0 0 68px}
+.sec > .b{display:flex;flex-direction:column;gap:22px;min-width:0;max-width:44em}
+.sec > aside{grid-column:2;align-self:start;position:sticky;top:40px}
+
+h2.sh{display:grid;grid-template-columns:64px 1fr;gap:0 12px;align-items:baseline;
+      font-size:27px;line-height:1.45;font-weight:500;letter-spacing:-.005em;padding-top:6px}
+h2.sh .no{font-family:"JetBrains Mono",ui-monospace,monospace;font-size:12.5px;font-weight:500;
+          color:var(--zhu);letter-spacing:.02em;transform:translateY(-.55em)}
+h3.ssh{font-size:18px;font-weight:600;color:var(--ink);padding-top:12px;line-height:1.6}
+h3.ssh .no{font-family:"JetBrains Mono",ui-monospace,monospace;font-size:12px;color:var(--ink-3);padding-right:12px;font-weight:400}
+
+.lede{font-size:19px;line-height:1.8;color:var(--ink-2)}
+
+/* ── 校勘记（旁注） ───────────────────────── */
+aside .k{border-top:1px solid var(--rule);padding-top:9px}
+aside .k .cap{font-family:"JetBrains Mono",ui-monospace,monospace;font-size:10px;letter-spacing:.16em;color:var(--zhu);display:block;padding-bottom:7px}
+aside .k p{font-family:"Newsreader","Noto Serif SC",serif;font-size:13.5px;line-height:1.78;color:var(--ink-2)}
+aside .k p em,aside .k p i{font-style:italic}
+aside .k p + p{margin-top:9px}
+
+/* ── 定本命题 ─────────────────────────────── */
+.prop{display:grid;grid-template-columns:64px 1fr;gap:0 12px;padding:10px 0 12px;align-items:baseline}
+.prop .p{font-family:"JetBrains Mono",ui-monospace,monospace;font-size:12.5px;color:var(--zhu);
+         border:0;letter-spacing:.02em;transform:translateY(-.15em)}
+.prop .s{font-size:21px;line-height:1.72;font-weight:500;color:var(--ink)}
+.prop .s em{display:block;font-style:normal}
+
+/* ── 列表 ─────────────────────────────────── */
+ul.bul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:9px}
+ul.bul li{display:grid;grid-template-columns:20px 1fr;gap:0 8px;line-height:1.85}
+ul.bul li::before{content:"—";color:var(--ink-4);font-size:13px}
+
+/* ── 表 ───────────────────────────────────── */
+.tw{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:15px;line-height:1.7}
+th{font-family:"JetBrains Mono",ui-monospace,monospace;font-size:10.5px;font-weight:500;letter-spacing:.14em;
+   color:var(--ink-3);text-align:left;padding:0 18px 10px 0;border-bottom:2px solid var(--ink);white-space:nowrap}
+td{padding:12px 18px 12px 0;border-bottom:1px solid var(--rule-2);vertical-align:top;color:var(--ink-2)}
+th:last-child,td:last-child{padding-right:0}
+td.h{color:var(--ink);font-weight:500}
+tr:hover td{background:color-mix(in oklab,var(--paper-2) 60%,transparent)}
+
+/* ── 代码 / 结构图 ────────────────────────── */
+pre{margin:0;background:var(--paper-2);border-left:2px solid var(--rule);
+    padding:20px 22px;overflow-x:auto;
+    font-family:"JetBrains Mono",ui-monospace,monospace;font-size:12.5px;line-height:1.9;color:var(--ink)}
+code{font-family:"JetBrains Mono",ui-monospace,monospace;font-size:.86em;
+     background:var(--paper-2);padding:2px 5px;border-radius:2px;color:var(--ink)}
+
+/* ── 术语（虚线下划，悬停释义） ───────────── */
+.term{position:relative;border-bottom:1px dotted var(--ink-4);cursor:help}
+.term .def{
+  display:none;position:absolute;left:0;bottom:calc(100% + 9px);z-index:40;
+  width:max-content;max-width:min(300px,62vw);
+  background:var(--ink);color:var(--paper);padding:11px 14px;border-radius:3px;
+  font-family:"Newsreader","Noto Serif SC",serif;font-style:normal;font-size:13.5px;line-height:1.62;
+  pointer-events:none;box-shadow:0 6px 22px rgba(0,0,0,.18)
+}
+.term:hover .def,.term:focus-visible .def{display:block;animation:defin .13s ease both}
+@keyframes defin{from{opacity:0}to{opacity:1}}
+
+/* ── 双栏对照 ─────────────────────────────── */
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:0 40px}
+.duo .cap{font-family:"JetBrains Mono",ui-monospace,monospace;font-size:10.5px;letter-spacing:.14em;
+          padding-bottom:10px;border-bottom:2px solid var(--ink);display:block}
+.duo .cap.z{color:var(--zhu);border-bottom-color:var(--zhu)}
+.duo ul{list-style:none;margin:0;padding:0}
+.duo li{padding:11px 0;border-bottom:1px solid var(--rule-2);font-size:15px;line-height:1.6;color:var(--ink-2)}
+
+/* ── 页脚 ─────────────────────────────────── */
+footer{margin-top:40px;border-top:2px solid var(--ink);padding:20px 0 72px;
+       display:flex;flex-wrap:wrap;gap:12px 40px;justify-content:space-between;
+       font-family:"JetBrains Mono",ui-monospace,monospace;font-size:11.5px;color:var(--ink-3);line-height:1.8}
+
+/* ── 窄屏 ─────────────────────────────────── */
+@media (max-width:1180px){
+  .sec{grid-template-columns:minmax(0,1fr)}
+  .sec > aside{grid-column:1;position:static;padding-top:6px;max-width:44em}
+  aside .k{border-top:1px solid var(--rule);border-left:0}
+}
+@media (max-width:900px){
+  .wrap{padding:0 24px}
+  .page{grid-template-columns:minmax(0,1fr);gap:0}
+  nav.toc{position:static;margin-bottom:52px}
+  nav.toc ol{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:0 20px}
+  h2.sh{grid-template-columns:52px 1fr;font-size:24px}
+  .prop{grid-template-columns:52px 1fr}
+  .prop .s{font-size:19px}
+  .duo{grid-template-columns:1fr;gap:32px}
+  h1.title{font-size:clamp(32px,10vw,44px)}
+  body{font-size:16.5px}
+}
+
+@media print{
+  .gauge,nav.toc{display:none}
+  body{background:#fff;color:#000;font-size:11pt}
+  .page{grid-template-columns:1fr}
+  .sec{grid-template-columns:1fr;page-break-inside:avoid}
+  .sec > aside{position:static}
+}
+</style>
+
+<div class="gauge"><i id="gauge"></i></div>
+
+<div class="wrap">
+
+  <header class="masthead">
+    <dl class="colophon">
+      <dt>status</dt><dd>Canon</dd>
+      <dt>edition</dt><dd>2026-08-24</dd>
+      <dt>scope</dt><dd>Courtwork 所采用的通用产品理念；法律是其中一种实现，而不是理论边界。</dd>
+    </dl>
+    <h1 class="title">Schema Engineering<span class="cjk">定本</span></h1>
+    <p class="strap">把专业工作的语义、状态、责任与裁决边界，编译为<b>可版本化、可执行、可验证、可恢复</b>的契约——使概率模型能够参与工作，而工作本身不依赖某一次模型输出、某段对话或某个专家的隐性补位。</p>
+  </header>
+
+  <div class="page">
+    <nav class="toc" aria-label="目次">
+      <div class="cap">目次</div>
+      <ol><li><a href="#s0" data-t="s0"><span class="n">§0</span><span class="t">定本位置</span></a></li>
+<li><a href="#s1" data-t="s1"><span class="n">§1</span><span class="t">定义</span></a></li>
+<li><a href="#s2" data-t="s2"><span class="n">§2</span><span class="t">术语</span></a></li>
+<li><a href="#s3" data-t="s3"><span class="n">§3</span><span class="t">为什么概率模型需要结构化契约</span></a></li>
+<li><a href="#s4" data-t="s4"><span class="n">§4</span><span class="t">Matter，而不是 Session</span></a></li>
+<li><a href="#s5" data-t="s5"><span class="n">§5</span><span class="t">Professional Work Runtime Ontology</span></a></li>
+<li><a href="#s6" data-t="s6"><span class="n">§6</span><span class="t">状态连续性与 Context Projection</span></a></li>
+<li><a href="#s7" data-t="s7"><span class="n">§7</span><span class="t">Contract Discipline</span></a></li>
+<li><a href="#s8" data-t="s8"><span class="n">§8</span><span class="t">从专家 Prototype 到产品</span></a></li>
+<li><a href="#s9" data-t="s9"><span class="n">§9</span><span class="t">Review、Revision 与学习</span></a></li>
+<li><a href="#s10" data-t="s10"><span class="n">§10</span><span class="t">Production Learning 与 Synthetic Environment</span></a></li>
+<li><a href="#s11" data-t="s11"><span class="n">§11</span><span class="t">折旧、Eval 与模型战略</span></a></li>
+<li><a href="#s12" data-t="s12"><span class="n">§12</span><span class="t">长期资产与商业边界</span></a></li>
+<li><a href="#s13" data-t="s13"><span class="n">§13</span><span class="t">它是否定义了一个独立产品</span></a></li>
+<li><a href="#s14" data-t="s14"><span class="n">§14</span><span class="t">Canonical Principles</span></a></li></ol>
+    </nav>
+
+    <main>
+<section class="sec" id="s0">
+  <div class="b">
+    <h2 class="sh"><span class="no">§0</span><span>定本位置</span></h2>
+    <p>本文试图回答一个基础问题：当概率模型进入专业工作后，工作本身应当以什么对象、状态、契约、执行和裁决结构持续存在？</p>
+<p>法律可以提供高要求的实例：事实需要来源，行动受权限约束，成果需要审阅，责任不能交给模型自行宣布。但这些要求也存在于财务、医疗、咨询、研究、工程、合规、审计和其他高价值工作中。</p>
+<p>经验性判断必须保留证据等级。独立复现、独立 benchmark、含负面结果的 vendor technical report、vendor self-benchmark、community observation 与产品推论不能被统一称为「已验证」。</p>
+<p>系统能力应被理解为 Model、Runtime、Environment、Context、Contract 与 Evaluator 的交互结果。不同组件之间可能存在强交互，甚至同一改动在不同模型上方向相反。</p>
+  </div>
+  <aside><div class="k"><span class="cap">校勘记</span>
+<p>九段缩至四段。删「本文不是 Agent 方法论……的总称」「不以法律行业、某一产品或某一代模型为前提」「拿掉模型、公司与行业名称本文仍成立」「不再使用乘法式 capability formula」四处撇清语。</p>
+<p>两条约束移入 §11；「同一机构同时设计 benchmark、harness、grader 与 post-training」一句移入裁定记录。划界交由 §1 与 §14 承担。</p>
+  </div></aside>
+</section>
+<section class="sec" id="s1">
+  <div class="b">
+    <h2 class="sh"><span class="no">§1</span><span>定义</span></h2>
+    <p>Courtwork 原定义为：把领域判断编译成模型可写、系统可验、人可读改签的契约。本文将它上提为：</p>
+<div class="prop"><span class="p">定义</span><span class="s">Schema Engineering 是把专业工作的语义、状态、责任与裁决边界，编译为可版本化、可执行、可验证、可恢复的契约，使概率模型能够参与工作，而工作本身不依赖某一次模型输出、某段对话或某个专家的隐性补位。</span></div>
+<p>这里的「编译」不是把全部专业知识形式化，也不是把专家替换成规则。它只要求把对委派真正必要的边界变得明确：</p>
+<ul class="bul">
+<li>正在处理什么工作对象；</li><li>谁承担什么责任；</li><li>可以读取和改变什么；</li>
+<li>哪些主张需要证据；</li><li>当前状态是什么；</li><li>什么条件才算完成；</li>
+<li>哪些判断可以由系统裁决；</li><li>哪些判断必须由人承担；</li>
+<li>修改、批准和升级如何改变正式工作成果。</li>
+</ul>
+<p>Schema 因而不是 JSON 的同义词。它是专业工作从概率性探索进入组织性承诺时的中间表示和契约纪律。</p>
+  </div>
+  <aside><div class="k"><span class="cap">校勘记</span>
+<p>原定义保留于正文，以「原定义为」引出，不再作加粗引用块。定本命题自此只有一种形式，见 §14。</p>
+<p>「2.1 将它上提为」改「本文将它上提为」。</p>
+  </div></aside>
+</section>
+<section class="sec" id="s2">
+  <div class="b">
+    <h2 class="sh"><span class="no">§2</span><span>术语</span></h2>
+    <p>下列对象为 Runtime 一等对象，全书首字大写；契约名同。同一词作普通名词使用时全小写——「该 artifact 的 provenance」。</p>
+<div class="tw"><table>
+<thead><tr><th style="width:26%">一等对象</th><th>语义</th></tr></thead>
+<tbody>
+<tr><td class="h">Matter</td><td>用户世界中长期存在的工作事项；长期工作容器。</td></tr>
+<tr><td class="h">Assignment</td><td>一次可检查的委派，及其 Work Contract。</td></tr>
+<tr><td class="h">Operator</td><td>承担一项稳定责任的 actor：人、主 Agent 或被委派执行者。</td></tr>
+<tr><td class="h">Lane</td><td>同一 Operator 内部的一条独立工作线；解决 parallelism，不解决 delegation。</td></tr>
+<tr><td class="h">Run</td><td>某条 Lane 上的一次 activation。</td></tr>
+<tr><td class="h">Event</td><td>在适用 retention policy 内不可被静默改写的执行事实。</td></tr>
+<tr><td class="h">Artifact</td><td>可以进入真实工作流的成果。</td></tr>
+<tr><td class="h">Semantic State</td><td>当前已确认的事实、判断、开放问题、coverage 与版本状态。</td></tr>
+<tr><td class="h">Review</td><td>工作生命周期的一部分，不是异常处理。</td></tr>
+</tbody></table></div>
+<div class="tw"><table>
+<thead><tr><th style="width:26%">契约</th><th>约束什么</th></tr></thead>
+<tbody>
+<tr><td class="h">Work Contract</td><td>约束一项工作的契约集合，可被版本化并由 Runtime 执行。</td></tr>
+<tr><td class="h">Evidence Contract</td><td>正式主张与 machine-readable provenance 的关联。</td></tr>
+<tr><td class="h">Completion Contract</td><td>在模型之外维护的完成条件。</td></tr>
+<tr><td class="h">Authority Contract</td><td>谁能读取、修改、批准、发布、执行与撤销什么。</td></tr>
+<tr><td class="h">Artifact Contract</td><td>成果类型、结构、版本、状态与下游可用性。</td></tr>
+<tr><td class="h">Review / Escalation Contract</td><td>审阅节点与升级的一等表达。</td></tr>
+</tbody></table></div>
+  </div>
+  <aside><div class="k"><span class="cap">校勘记</span>
+<p>新立一节。原 §4 的对象清单提升为独立术语表，置于 §1 之後；其後各节序数顺移一位。</p>
+<p>大小写自此有一条规则：Runtime 一等对象与契约名首字大写，同词作普通名词时全小写。原文中 semantic state 与 Semantic State 并存之类的摇摆一并抻平。</p>
+  </div></aside>
+</section>
+<section class="sec" id="s3">
+  <div class="b">
+    <h2 class="sh"><span class="no">§3</span><span>为什么概率模型需要结构化契约</span></h2>
+    <h3 class="ssh"><span class="no">3.1</span>提议不等于承诺</h3>
+<p>模型擅长提出候选答案、线索、解释、草稿和行动。专业工作要求的是可以被组织采用的主张、决定、成果和行动。两者之间存在结构性差异：</p>
+<ul class="bul">
+<li>提议可以并列、撤回和互相矛盾；</li>
+<li>承诺必须有范围、依据、版本、责任与后果；</li>
+<li>推理过程可以探索；</li>
+<li>正式成果必须知道哪些内容被接受，哪些仍未解决。</li>
+</ul>
+<p>因此模型不应同时成为工作的执行者、事实来源、完成标准和最终裁决者。一个专业系统必须在模型之外维护正式状态和责任边界。</p>
+
+<h3 class="ssh"><span class="no">3.2</span>工作必须长于一次执行</h3>
+<p>一次 <span class="term" tabindex="0">Run<span class="def">某条 Lane 上的一次 activation：接受输入、调用工具、生成或修改成果、停止、失败与恢复。</span></span> 会结束，模型会替换，上下文会压缩，工具会变化，用户会隔日返回。真实工作却必须继续存在。如果工作只存在于 transcript 中，那么连续性依赖于：对历史对话的反复压缩；对旧模型隐含推理的猜测；对一次性 prompt 的复现；对用户记得「上次说到哪里」的要求。这不是稳定的工作状态，只是会话残留。</p>
+
+<h3 class="ssh"><span class="no">3.3</span>专业正确性不是单一 Boolean</h3>
+<p>专业工作通常没有一个廉价、完整的 oracle。系统可以验证字段、权限、版本、引用坐标、算术和明确 coverage，却不能自动替代所有关于重要性、策略、风险接受、例外和责任的判断。因此需要混合裁决：</p>
+<div class="prop"><a class="p" href="#s14">P6</a><span class="s">模型提出；确定性系统执行不变量；Evaluator 测量已被明确规定的语义；人裁决不可约的专业判断。</span></div>
+<p>Schema Engineering 不假装消除人类判断，而是把人从持续、隐形的微操，移动到少数真正需要承担责任的节点。</p>
+
+<h3 class="ssh"><span class="no">3.4</span>完整编码专业知识既昂贵也脆弱</h3>
+<p>专家往往无法完整陈述自己如何工作。即使能够陈述，规则也可能只适用于某一机构、客户、时点或个人习惯。把所有隐性知识都写成规则，会制造新的维护负担和伪确定性。</p>
+<p>因此 Schema Engineering 的问题不是：如何把专业领域完整地写进系统？而是：为了让工作可委派、可验证、可恢复、可审阅，哪些语义必须显式存在？</p>
+<p>Schema 是判断边界，不是领域全知模型。</p>
+  </div>
+  <aside><div class="k"><span class="cap">校勘记</span>
+<p>原 §2。3.4 中被否决的提问与采纳的提问原为两个不加粗引用块，功能相反而形式相同；今一并改为正文，冒号引出。</p>
+  </div></aside>
+</section>
+<section class="sec" id="s4">
+  <div class="b">
+    <h2 class="sh"><span class="no">§4</span><span>Matter，而不是 Session</span></h2>
+    <p>Professional Work 产品的一等对象应当是 <span class="term" tabindex="0">Matter<span class="def">用户世界中长期存在的工作事项：一宗案件、一项交易、一次审计、一个研究任务、一个客户项目或一项长期职责。</span></span>：用户世界中长期存在的工作事项。它可以是一宗案件、一项交易、一次审计、一个研究任务、一个客户项目或一项长期职责，并拥有 identity、resources、participants、permissions、assignments、artifacts、semantic state、evidence、event history、reviews 与 outcomes。</p>
+<p>Session 是一次技术交互；Matter 是工作本身。传统 Chat 产品让用户管理 new chat、history、title、branch、memory 和 context。Professional Work 产品应让用户管理事项、材料、问题、成果、证据、修订与批准。Conversation 仍然存在，但它只是 Matter 内的一种 interaction surface。正式原则是：</p>
+<div class="prop"><a class="p" href="#s14">P1</a><span class="s">Session 是基础设施对象，Matter 才是用户对象。</span></div>
+<div class="prop"><a class="p" href="#s14">P2</a><span class="s">Conversation 是交互表面，不是工作本体。</span></div>
+<p>这并不要求所有长期对话都被称为 Work。普通聊天、角色陪伴和开放探索可以共享持久化 runtime primitives，却不必共享专业工作的证据、完成、权限和责任语义。</p>
+  </div>
+  <aside><div class="k"><span class="cap">校勘记</span>
+<p>原 §3。</p>
+  </div></aside>
+</section>
+<section class="sec" id="s5">
+  <div class="b">
+    <h2 class="sh"><span class="no">§5</span><span>Professional Work Runtime Ontology</span></h2>
+    <p>一个最小的 Professional Work Runtime 可以由以下对象构成：</p>
+<pre>Matter
+├── Resources / Context
+├── Assignment / Work Contract
+├── Operator
+│   ├── Lane
+│   │   └── Run
+│   └── Delegated Operator
+├── Event Ledger
+├── Semantic State
+├── Evidence
+├── Artifacts
+└── Review
+    └── Revision / Outcome</pre>
+
+<h3 class="ssh"><span class="no">5.1</span>Matter</h3>
+<p>长期工作容器。它定义资源边界、参与者、权限、当前事实、正式成果和历史。Matter 应能跨模型、跨会话、跨人员继续存在。</p>
+
+<h3 class="ssh"><span class="no">5.2</span>Assignment 与 Work Contract</h3>
+<p>Assignment 是一次可检查的委派，不只是自然语言 prompt。它至少说明 objective、deliverable、audience、constraints、deadline、authority、completion requirements 与 review / escalation requirements。</p>
+<p>Work Contract 是约束这项工作的契约集合，包括 evidence、artifact、state、completion、authority、review 和 escalation。重要的是这些语义可被版本化并由 Runtime 执行。Matter 可以同时容纳多个 Assignment：Matter 本身是对象，Work Contract 是规范。</p>
+
+<h3 class="ssh"><span class="no">5.3</span>Operator</h3>
+<p>承担一项稳定责任的 actor，可以是人、主 Agent 或被委派的专门执行者。只有同时出现相对独立的 responsibility、scope、tools、authority、completion 与 escalation，才值得创建新的 Operator。并行调用、检索线程或后台任务不自动等于 Multi-agent。</p>
+
+<h3 class="ssh"><span class="no">5.4</span>Lane</h3>
+<p>同一 Operator 内部的一条独立工作线或 execution cursor。<span class="term" tabindex="0">Lane<span class="def">解决 parallelism，不解决 delegation：同一责任主体在不同 Lane 中并行推进，共享责任与权限。</span></span> 解决的是 parallelism，不是 delegation。同一个责任主体可以在不同 Lane 中检查不同问题、起草不同部分或并行搜集材料。它们共享责任与权限，不需要伪装成多个 Agent。</p>
+
+<h3 class="ssh"><span class="no">5.5</span>Run</h3>
+<p>某条 Lane 上的一次 activation，包括接受输入、调用工具、生成或修改成果、停止、失败和恢复。Run 是暂时的；Operator 是稳定责任主体。一次 Run 的结束不等于 Assignment 完成，更不等于 Matter 结束。</p>
+
+<h3 class="ssh"><span class="no">5.6</span>Event</h3>
+<p>在适用 retention policy 内不可被静默改写的执行事实。纠正应通过新的 Event 表达；删除、归档或匿名化由明确的权利与保留政策处理。Event 例如：assignment accepted、resource accessed、tool called、artifact created、review requested、revision made、approval granted、failure occurred。</p>
+<p>Event history 回答「What happened」，但不直接等于当前工作状态，也不应默认全部进入模型上下文。</p>
+
+<h3 class="ssh"><span class="no">5.7</span>Artifact 与 Semantic State</h3>
+<p>Artifact 是可以进入真实工作流的成果：文档、表格、redline、研究记录、结构化 issue、决策记录或其他 work product。<span class="term" tabindex="0">Semantic State<span class="def">回答「现在是什么」：已确认的事实与判断、未解决的问题、当前 coverage、evidence gap、已批准的决定、成果的版本与状态。</span></span> 回答「What is happening now」：已确认哪些事实和判断；哪些问题仍未解决；当前 coverage 如何；存在哪些 evidence gap；哪些决定已经批准；哪些成果处于何种版本和状态。正式原则是：</p>
+<div class="prop"><a class="p" href="#s14">P3</a><span class="s">Transcript 是执行证据，不是 canonical work state。</span></div>
+<p>Canonical state 应主要存在于 artifacts、schema instances、evidence graph、issue state、completion ledger、revision state 和 approved decisions 中。</p>
+
+<h3 class="ssh"><span class="no">5.8</span>Review</h3>
+<p>Review 是工作生命周期的一部分，不是异常处理。它包括 accept、reject、revise、request further work、escalate、approve 与 promote policy。专业系统的目标不是让人一路点击 Yes，而是让人只在具有专业意义、权限意义或学习治理意义的节点裁决。</p>
+  </div>
+  <aside><div class="k"><span class="cap">校勘记</span>
+<p>原 §4。对象清单已提升为 §2 术语表，本节只留各对象的展开。</p>
+<p>5.2 删两句：「它不必被包装成新的『Stack』」与「不必为了概念完整再创造一个上位的 Matter Contract」。二者皆为对前一版的差分，读者并不持有前一版。</p>
+  </div></aside>
+</section>
+<section class="sec" id="s6">
+  <div class="b">
+    <h2 class="sh"><span class="no">§6</span><span>状态连续性与 Context Projection</span></h2>
+    <p>Professional Work Runtime 必须分开三个问题：What happened？——Event 与 raw history；What is happening？——Current Semantic State；What should the model see now？——Context Projection。这三者不能由同一个 transcript 同时承担。连续性可以分为三层：</p>
+
+<h3 class="ssh"><span class="no">6.1</span>Stable Contract</h3>
+<p>长期稳定的 role、institution policy、assignment semantics、professional schema、permissions 和 tool authority。</p>
+
+<h3 class="ssh"><span class="no">6.2</span>Current Semantic State</h3>
+<p>当前事实、已确认判断、开放问题、evidence、coverage、artifact version、decision 和 pending review。</p>
+
+<h3 class="ssh"><span class="no">6.3</span>Raw History / Evidence</h3>
+<p>完整 transcript、原始材料、工具轨迹、低层 Event 和旧版本成果。默认可检索，而非全量注入。由此得到：</p>
+<div class="prop"><a class="p" href="#s14">P4</a><span class="s">连续性应建立在 stable contract、current semantic state 与 retrievable history 上，而不是不断压缩 chronology。</span></div>
+<p>Context Projection 是 Runtime 根据当前 Operator、Lane、Assignment 和任务阶段，为模型生成的临时视图。它可以变化、压缩和替换；canonical state 不随其变化而丢失。因此 Memory 不应被设计成一个不断增长的「模型记忆罐」。真正重要的是工作状态的外部化、检索权和语义投影。</p>
+  </div>
+  <aside><div class="k"><span class="cap">校勘记</span>
+<p>原 §5。Tier 1 / 2 / 3 三个不入编号体系的标题，改为 6.1–6.3 小数编号，与全书一致；Tier 序数改由正文承担。</p>
+  </div></aside>
+</section>
+<section class="sec" id="s7">
+  <div class="b">
+    <h2 class="sh"><span class="no">§7</span><span>Contract Discipline</span></h2>
+    <p>Schema Engineering 通过一组互补契约约束工作，而不是试图用一个万能 schema 表达一切。</p>
+
+<h3 class="ssh"><span class="no">7.1</span>读宽写窄</h3>
+<p>模型可以广泛阅读、搜索、比较、试探和撤回。进入正式成果的内容必须经过更窄的 typed boundary：</p>
+<div class="prop"><a class="p" href="#s14">P5</a><span class="s">探索可以概率化和扩张；承诺必须被收敛、定位、版本化并承担责任。</span></div>
+
+<h3 class="ssh"><span class="no">7.2</span>Evidence Contract</h3>
+<p>需要事实依据的正式主张必须关联 machine-readable provenance。模型可以提出 quote 或 claim；Runtime 负责解析真实来源、版本、坐标和可验证关系。</p>
+<div class="prop"><a class="p" href="#s14">P7</a><span class="s"><em>Provenance 应当是 state，而不是装饰性 prose。</em><em>无锚，不进入需要事实承诺的正式状态。</em></span></div>
+<p>这不意味着所有专业判断都有可引用来源。Evidence Contract 必须区分事实、推论、偏好、策略与人类裁决，避免用伪引用掩盖判断。</p>
+
+<h3 class="ssh"><span class="no">7.3</span>Completion Contract</h3>
+<p>模型不能单方面定义成功并宣布完成。Completion Contract 应在模型之外维护：required deliverables、required issue families、coverage、unresolved questions、evidence gaps、mandatory checks、required approvals、artifact validation state。专业工作不一定有完整 oracle，但可以被拆成一组局部可验证义务和明确的人类裁决点。</p>
+
+<h3 class="ssh"><span class="no">7.4</span>Authority Contract</h3>
+<p>系统必须知道谁能读取、修改、批准、发布、执行和撤销什么。技术工具权限应被翻译为业务语义：</p>
+<div class="duo">
+  <div><span class="cap">不是</span><ul>
+    <li><code>Allow write_file?</code></li>
+    <li><code>Run external tool?</code></li>
+  </ul></div>
+  <div><span class="cap z">而是</span><ul>
+    <li><code>Accept this revision?</code></li>
+    <li><code>Send this work product to the client?</code></li>
+  </ul></div>
+</div>
+<p>技术对象不应自动成为用户心智对象。</p>
+
+<h3 class="ssh"><span class="no">7.5</span>Artifact Contract</h3>
+<p>最终价值单位是 work product，而不是聊天回答。Artifact Contract 定义成果类型、结构、版本、状态、引用关系、审批条件和下游可用性。</p>
+
+<h3 class="ssh"><span class="no">7.6</span>Review 与 Escalation Contract</h3>
+<p>Escalation 是一等 action，不是模型失败后的兜底。一次合格 escalation 至少应表达：</p>
+<pre>issue + evidence + alternatives + recommendation + reason_for_escalation</pre>
+<p>目标不是迫使模型回答，而是让不确定性在正确的责任边界上被处理。</p>
+  </div>
+  <aside><div class="k"><span class="cap">校勘记</span>
+<p>原 §6。</p>
+  </div></aside>
+</section>
+<section class="sec" id="s8">
+  <div class="b">
+    <h2 class="sh"><span class="no">§8</span><span>从专家 Prototype 到产品</span></h2>
+    <p>高水平专家做出的 prototype 往往不是「好 prompt」的证明，而是专家本人构成了一层隐形 runtime：</p>
+<pre>Expert selects task and context
+→ Model attempts
+→ Expert notices omission or error
+→ Expert changes framing, source or search
+→ Model retries
+→ Expert judges materiality
+→ Expert decides what is deliverable</pre>
+<p>产品化的对象不是 prompt，而是这些干预。</p>
+<div class="prop"><a class="p" href="#s14">P10</a><span class="s">产品化专家 prototype，是把足够多的隐形人类 harness 外部化，使其他人能够委派同类工作，而不必继承作者的大脑。</span></div>
+<p>「足够多」很重要。并非所有专家行为都应进入系统：</p>
+<div class="tw"><table>
+<thead><tr><th style="width:46%">专家行为</th><th>默认去向</th></tr></thead>
+<tbody>
+<tr><td class="h">可重复、低争议、可机械验证</td><td>Validator / deterministic policy</td></tr>
+<tr><td class="h">稳定的领域义务</td><td>Product contract / evaluator</td></tr>
+<tr><td class="h">稳定的机构惯例</td><td>Versioned institution configuration</td></tr>
+<tr><td class="h">客户或 Matter 特有要求</td><td>Client / Matter context</td></tr>
+<tr><td class="h">可委派但仍需判断的步骤</td><td>Assignment / review surface / escalation</td></tr>
+<tr><td class="h">个人表达和捷径</td><td>User preference，默认不推广</td></tr>
+<tr><td class="h">高风险、语境密集且责任不可转移的判断</td><td>保留给 expert</td></tr>
+</tbody></table></div>
+<p>专家 prototype 通常混合四层知识：domain invariant、institution convention、client / matter context、individual habit。Schema Engineering 的核心操作不是简单 capture，而是正确分层和谨慎 promotion。频率不能自动把个人习惯升级成机构规则，也不能把机构规则误写成领域真理。</p>
+  </div>
+  <aside><div class="k"><span class="cap">校勘记</span>
+<p>原 §7。</p>
+  </div></aside>
+</section>
+<section class="sec" id="s9">
+  <div class="b">
+    <h2 class="sh"><span class="no">§9</span><span>Review、Revision 与学习</span></h2>
+    <p>Revision 不是异常；专业工作本来就通过委派、审阅、修改和批准推进。但产品不应要求专业人士为了未来训练，在每次修改时额外填写 reason code、materiality、scope 和 judgment type。那会把真实工作变成数据标注，并最终使审阅界面退化为最低成本点击。本文采用：</p>
+<div class="prop"><a class="p" href="#s14">P11</a><span class="s">Capture first, infer later, promote selectively.</span></div>
+
+<h3 class="ssh"><span class="no">9.1</span>Automatically observed facts</h3>
+<p>系统自动记录本来就发生的事实：before / after；artifact path 与 version；actor 与 role；matter 与 assignment；evidence；surrounding context；trajectory；outcome；learning rights。</p>
+
+<h3 class="ssh"><span class="no">9.2</span>Machine-inferred semantics</h3>
+<p>系统可以带不确定性地推断 correction type、likely scope、materiality、failure family、applicability 与 reviewer disagreement。这些推断可以通过跨 Matter、跨 reviewer 和跨版本比较逐步校正，不应立即成为规则。</p>
+
+<h3 class="ssh"><span class="no">9.3</span>Human-confirmed promotion</h3>
+<p>只有当系统准备改变 future behavior 时，才要求一次明确裁决，例如：Matter 规则是否成为客户偏好；重复客户偏好是否成为机构配置候选；重复机构修正是否成为产品或领域规则候选；某类失败是否进入正式 eval；某类数据是否允许用于 aggregate、evaluation 或 training。</p>
+<div class="prop"><a class="p" href="#s14">P11</a><span class="s">不要把低频、高价值的 learning governance，变成高频审阅摩擦。</span></div>
+  </div>
+  <aside><div class="k"><span class="cap">校勘记</span>
+<p>原 §8。「2.1 采用」改「本文采用」。</p>
+  </div></aside>
+</section>
+<section class="sec" id="s10">
+  <div class="b">
+    <h2 class="sh"><span class="no">§10</span><span>Production Learning 与 Synthetic Environment</span></h2>
+    <p>结构化产品界面可以成为数据采集界面，但它不会自动形成数据飞轮。真实生产 trace 的独特价值首先是暴露 task distribution、failure distribution、preference distribution、escalation distribution、environment seeds 与 accepted-work-product standard。</p>
+<p>它们未必适合直接训练。客户机密、权限、上下文依赖、审阅歧义和选择偏差都可能使原始 production data 无法复用。同时存在另一条路线：</p>
+<pre>Expert defines task family / rubric ontology
+→ synthetic environment generation
+→ oracle or multi-agent solve
+→ deterministic checks
+→ expert audits disagreements and high-value cases
+→ accepted eval / training environments</pre>
+<p>这两条路线不是简单替代关系：Production Learning 告诉系统真实世界在哪里工作、在哪里失败、何种偏好重要；Synthetic Environment Factory 用更低的边际成本扩展这些任务族和失败模式；生产中的 accepted work product 与隐藏分布可作为独立验证集，防止 synthetic system 只优化自己的世界。因此更稳健的裁定是：</p>
+<div class="prop"><a class="p" href="#s14">P12</a><span class="s">Production feedback 的首要价值是发现真实分布并提供环境种子；其直接训练价值必须逐项证明。Synthetic generation 可以扩展规模，但不能自行证明分布相关性。</span></div>
+<p>Schema、Evidence 和 Revision 的作用，是让生产事件有机会被解释和治理，而不是保证每个事件都能转化为训练样本。</p>
+  </div>
+  <aside><div class="k"><span class="cap">校勘记</span>
+<p>原 §9。</p>
+  </div></aside>
+</section>
+<section class="sec" id="s11">
+  <div class="b">
+    <h2 class="sh"><span class="no">§11</span><span>折旧、Eval 与模型战略</span></h2>
+    <h3 class="ssh"><span class="no">11.1</span>双重折旧曲线</h3>
+<p>Schema 中面向模型的 scaffold 与面向人和系统的语义具有不同寿命。</p>
+<div class="duo">
+  <div><span class="cap z">应主动删除</span><ul>
+    <li>explicit reasoning recipes</li>
+    <li>model-specific prompt tricks</li>
+    <li>过细 workflow instruction</li>
+    <li>某一 checkpoint 的 tool workaround</li>
+    <li>仅为补偿当前模型缺陷的 context orchestration</li>
+  </ul></div>
+  <div><span class="cap">应谨慎保留</span><ul>
+    <li>artifact semantics · provenance</li>
+    <li>authority · permissions</li>
+    <li>canonical state · completion</li>
+    <li>review · audit</li>
+    <li>institution policy · rights</li>
+  </ul></div>
+</div>
+<div class="prop"><a class="p" href="#s14">P13</a><span class="s">Delete scaffolding aggressively; preserve semantics deliberately.</span></div>
+<p>如果一部分 Schema 只是在补模型智力，它理应被更强模型淘汰——本理论也接受这一点：更强模型应当能够淘汰其中一部分实现，而不是被迫证明所有既有 scaffold 永久必要。真正长期存在的不是对模型「怎么想」的规定，而是工作「是什么、由谁承担、何时成立」的语义。</p>
+
+<h3 class="ssh"><span class="no">11.2</span>Eval infrastructure 复利，单个 Eval item 折旧</h3>
+<p>一个 Eval 条目可能因为模型普遍通过而失去 frontier discrimination value，也可能因任务分布、制度或法规变化而过时。应分别衡量 stable regression value、frontier discriminative value、distribution relevance 与 legal / institutional validity。</p>
+<div class="prop"><a class="p" href="#s14">P14</a><span class="s"><em>Eval infrastructure 会复利；单个 Eval item 会饱和并折旧。</em><em>Environment generation capability 会复利；单个 environment instance 也会饱和。</em></span></div>
+
+<h3 class="ssh"><span class="no">11.3</span>Harness 的经济折旧</h3>
+<p>一个 harness scaffold 即使今天有效，也可能被上游模型进步单方面重新定价。模型原生获得规划、恢复、context management、tool repair 或 long-horizon 能力后，下游相应基础设施可能直接折旧。这与「模型是否 overfit 某个 prefix 或 tool name」是两个问题：技术问题是模型是否依赖表面语法；经济问题是下游 harness 的哪些能力拥有独立长期价值。对前者应做 portability 与 robustness eval；对后者应持续删除已被模型吸收的 scaffold。</p>
+<p>好的 harness specialization 让模型学会工作环境的语义：state、evidence、authority、completion、escalation。坏的 harness overfit 让模型只会固定 wrapper、tool name、field order 或 prompt template。</p>
+
+<h3 class="ssh"><span class="no">11.4</span>Post-training 的位置</h3>
+<p>Post-training 不是产品理论的终点。顺序应是：</p>
+<pre>Professional Work
+→ stable product semantics
+→ production usage
+→ failure distribution
+→ eval
+→ environment
+→ selective post-training, only when justified</pre>
+<p>新的 frontier model 若在 accepted-work-product eval 上超过旧 specialized model，应直接迁移，不为旧 checkpoint 的 sunk cost 辩护。Training 只在可测量地改善 accepted work product、completeness、grounding、escalation calibration、institutional adherence、cost、latency 与 tool efficiency 时存在。</p>
+<p>产品即使从未训练任何模型，也必须能通过 Matter、state、evidence、authority、artifact 和 review 产生真实价值。</p>
+  </div>
+  <aside><div class="k"><span class="cap">校勘记</span>
+<p>原 §10。§0 原有的两条约束移来此处：其一「更强模型应能淘汰本理论一部分实现」并入 11.1，与 P13 同段；其二「不训练自有模型亦成立」由 11.4 末句承担。</p>
+  </div></aside>
+</section>
+<section class="sec" id="s12">
+  <div class="b">
+    <h2 class="sh"><span class="no">§12</span><span>长期资产与商业边界</span></h2>
+    <p>不存在一个自动成立的单一 moat。需要分别评估 distribution、work semantics、production failure distribution、expert access、environment generation、rights、runtime integration 与 refinement capability。这些资产可能只有组合起来才产生价值，也可能分别被平台商、模型商或垂直软件商品化。Schema Engineering 不保证护城河，只提供一个观察和积累这些资产的结构。</p>
+<p>同样，机构真正能够沉淀的是具体对象：work contracts、precedent hierarchy、institution policy、client preference、completion standards、review patterns、escalation rules、eval infrastructure、environment generators、trained policies。若这些对象确实能让专业判断超越原始个体而稳定复现，可以描述为组织能力。</p>
+  </div>
+  <aside><div class="k"><span class="cap">校勘记</span>
+<p>原 §11。删末句「没有必要再用『Institutional Intelligence』『Model Refinery』或『Professional Intelligence Refinery』承担额外论证」——三名词属已删概念，在定本中出现即把 changelog 写入正文。</p>
+  </div></aside>
+</section>
+<section class="sec" id="s13">
+  <div class="b">
+    <h2 class="sh"><span class="no">§13</span><span>它是否定义了一个独立产品</span></h2>
+    <p>本理论足以定义一种独立的产品范式，但尚不足以证明一个天然成立的横向市场品类。它定义的共同产品问题是：如何让用户面对长期工作对象和正式成果，让概率模型在背后执行，让系统维护状态、证据、权限与历史，让人只在具有专业意义的节点裁决。</p>
+<p>这一范式可以由不同垂直产品实现，因为各领域的 artifact、evidence、authority、completion 与 review 语义不同。共享 runtime primitives 不意味着一个无差别的「万能专业 Agent 平台」必然优于垂直产品。Courtwork 是法律方向的实现；它不构成本理论的证据闭环，也不限制理论的外延。最终的无 buzzword 产品定义是：</p>
+<div class="prop"><span class="p">产品定义</span><span class="s">Professional Work Runtime 是一种以长期工作事项和正式成果为中心的系统：模型在可执行契约下完成工作，系统在对话之外维护状态、证据、权限、完成条件与可恢复历史，人只在需要专业责任的节点进行裁决。</span></div>
+  </div>
+  <aside><div class="k"><span class="cap">校勘记</span>
+<p>原 §12。「2.1 足以定义」改「本理论足以定义」。</p>
+<p>本句为全书唯一的产品定义定本句；产品定义一册中的同义句应逐字引用此处并注出处，不另立措辞。</p>
+  </div></aside>
+</section>
+<section class="sec" id="s14">
+  <div class="b">
+    <h2 class="sh"><span class="no">§14</span><span>Canonical Principles</span></h2>
+    <p>下表是全书原则的索引。「所在」列为该原则在正文中的落点；其中十二条以定本命题形式出现并标 P 号，与本表双向可查。P8、P9、P15 只在正文行文中成立，P16 为综括，正文无对应命题。</p>
+<div class="tw"><table>
+<thead><tr><th style="width:7%">编号</th><th>原则</th><th style="width:14%">所在</th></tr></thead>
+<tbody>
+<tr><td class="h mono" style="white-space:nowrap">P1</td><td class="h">Matter over Session.</td><td class="mono" style="white-space:nowrap;font-size:12.5px">§4</td></tr>
+<tr><td class="h mono" style="white-space:nowrap">P2</td><td class="h">Conversation is an interaction surface, not the product ontology.</td><td class="mono" style="white-space:nowrap;font-size:12.5px">§4</td></tr>
+<tr><td class="h mono" style="white-space:nowrap">P3</td><td class="h">Transcript is evidence of execution, not canonical work state.</td><td class="mono" style="white-space:nowrap;font-size:12.5px">§5.7</td></tr>
+<tr><td class="h mono" style="white-space:nowrap">P4</td><td class="h">Continuity comes from stable contracts, current semantic state and retrievable history.</td><td class="mono" style="white-space:nowrap;font-size:12.5px">§6.3</td></tr>
+<tr><td class="h mono" style="white-space:nowrap">P5</td><td class="h">Read wide; write narrow.</td><td class="mono" style="white-space:nowrap;font-size:12.5px">§7.1</td></tr>
+<tr><td class="h mono" style="white-space:nowrap">P6</td><td class="h">Model proposes; systems enforce invariants; evaluators measure specified semantics; humans adjudicate irreducible judgment.</td><td class="mono" style="white-space:nowrap;font-size:12.5px">§3.3</td></tr>
+<tr><td class="h mono" style="white-space:nowrap">P7</td><td class="h">Provenance is state, not prose.</td><td class="mono" style="white-space:nowrap;font-size:12.5px">§7.2</td></tr>
+<tr><td class="h mono" style="white-space:nowrap">P8</td><td class="h">Completion must exist outside the model’s self-assessment.</td><td class="mono" style="white-space:nowrap;font-size:12.5px">§7.3<span style="color:var(--ink-4)"> · 行文</span></td></tr>
+<tr><td class="h mono" style="white-space:nowrap">P9</td><td class="h">Lane is parallelism; Operator is responsibility.</td><td class="mono" style="white-space:nowrap;font-size:12.5px">§5.4<span style="color:var(--ink-4)"> · 行文</span></td></tr>
+<tr><td class="h mono" style="white-space:nowrap">P10</td><td class="h">Agent complexity should be absorbed by the product.</td><td class="mono" style="white-space:nowrap;font-size:12.5px">§8</td></tr>
+<tr><td class="h mono" style="white-space:nowrap">P11</td><td class="h">Capture first, infer later, promote selectively.</td><td class="mono" style="white-space:nowrap;font-size:12.5px">§9</td></tr>
+<tr><td class="h mono" style="white-space:nowrap">P12</td><td class="h">Production traces reveal real distributions; synthetic environments expand them.</td><td class="mono" style="white-space:nowrap;font-size:12.5px">§10</td></tr>
+<tr><td class="h mono" style="white-space:nowrap">P13</td><td class="h">Delete scaffolding aggressively; preserve semantics deliberately.</td><td class="mono" style="white-space:nowrap;font-size:12.5px">§11.1</td></tr>
+<tr><td class="h mono" style="white-space:nowrap">P14</td><td class="h">Eval infrastructure compounds; individual eval items saturate.</td><td class="mono" style="white-space:nowrap;font-size:12.5px">§11.2</td></tr>
+<tr><td class="h mono" style="white-space:nowrap">P15</td><td class="h">Post-training is optional and downstream of a working product.</td><td class="mono" style="white-space:nowrap;font-size:12.5px">§11.4<span style="color:var(--ink-4)"> · 行文</span></td></tr>
+<tr><td class="h mono" style="white-space:nowrap">P16</td><td class="h">Do not train what can be reliably validated; do not globalize what is local preference; do not automate what remains irreducibly accountable.</td><td class="mono" style="white-space:nowrap;font-size:12.5px">—<span style="color:var(--ink-4)"> · 行文</span></td></tr>
+</tbody></table></div>
+  </div>
+  <aside><div class="k"><span class="cap">校勘记</span>
+<p>原 §13。加粗引用块自此只承担一种功能——定本命题；本表即其索引，正文与之双向可查。</p>
+<p>全书不再使用分节线：层级由字级、间距与序号承担。</p>
+  </div></aside>
+</section>
+    </main>
+  </div>
+
+  <footer>
+    <span>Schema Engineering · Canon · Edition 2026-08-24</span>
+    <span>版次只出现于牌记，不入标题、不入正文。</span>
+    <span>右栏校勘记记本次修订之删、移、并、改。</span>
+  </footer>
+
+</div>
+
+<script>
+(function () {
+  var gauge = document.getElementById('gauge');
+  var links = Array.prototype.slice.call(document.querySelectorAll('nav.toc a'));
+  var map = {};
+  links.forEach(function (a) { map[a.dataset.t] = a; });
+  var secs = Array.prototype.slice.call(document.querySelectorAll('section.sec'));
+
+  function onScroll() {
+    var h = document.documentElement.scrollHeight - window.innerHeight;
+    gauge.style.width = (h > 0 ? Math.min(1, window.scrollY / h) * 100 : 0) + '%';
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+  if ('IntersectionObserver' in window) {
+    var seen = new Set();
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) seen.add(e.target.id); else seen.delete(e.target.id);
+      });
+      var first = secs.filter(function (s) { return seen.has(s.id); })[0];
+      links.forEach(function (a) { a.classList.remove('on'); });
+      if (first && map[first.id]) map[first.id].classList.add('on');
+    }, { rootMargin: '-84px 0px -62% 0px', threshold: 0 });
+    secs.forEach(function (s) { io.observe(s); });
+  }
+})();
+</script>
