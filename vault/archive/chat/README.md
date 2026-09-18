@@ -16,3 +16,5 @@
 - 当前版本选择与历史顺序由 [chat-captures](../../intake/chat-captures.json) 管理。
 
 - [工作系统r4](work-system-toolchain-20260919-r4.json)：完整20轮，新增1轮2消息（治理与抗折旧），旧19轮不变。
+
+[建立材料分类体系](material-classification-20260919.json)：2026-09-19 完整获取 2 轮/4 消息，无截断，仅供备查。

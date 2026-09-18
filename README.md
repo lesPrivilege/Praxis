@@ -53,6 +53,6 @@ Kit保存长期知识与契约，Skill作为具体任务的薄入口按需引用
 
 治理：Luna 是首选 explorer，承担探索、摘要、登记与核查；Astra 负责边界、晋升和冲突裁决。详见 [治理入口](docs/governance/README.md)。
 
-验收：[本轮覆盖与限制](docs/verification/2026-09-19-final.md)。
+验收：[最新材料分类增量](docs/verification/2026-09-19-material-classification.md) · [初始发布覆盖与限制](docs/verification/2026-09-19-final.md)。
 
 验证：`python3 scripts/validate_repository.py`。本仓库尚无应用测试或部署；不得把文档验证当成产品可用性验证。

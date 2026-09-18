@@ -24,3 +24,5 @@ Reporting 与本地设计材料入口：[`reporting/`](reporting/README.md)、[`
 Work System 入口：[`work-system/`](work-system/README.md)，原始 5 轮登记见 [`work-system/turn-manifest.json`](work-system/turn-manifest.json) 与 [`../intake/work-system-materials.json`](../intake/work-system-materials.json)，r2 增量（4 轮/8 条消息）见 [`../intake/work-system-increment-r2.json`](../intake/work-system-increment-r2.json)。
 
 最新增量：[r3 环境与 Expert](work-system/r3/README.md)、[r4 治理与抗折旧澄清](work-system/r4/README.md)。完整增量导航以 [Work System 入口](work-system/README.md) 为准。
+
+新材料：[材料分类与驻场组织接口](reporting/material-classification.md)，在现有 Reporting / Work System 内消费。

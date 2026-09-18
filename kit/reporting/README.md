@@ -15,3 +15,5 @@
 本地快照和提炼是默认阅读来源；外链仅用于更新与追溯。存在远端资产的HTML，离线能力以登记结果为准。未审查的来源模板不自动升级为规范。
 
 开工可填写 [Reporting brief](../../templates/reporting/README.md)。
+
+材料分类采用 [路由契约](grammar.md#材料路由与逐步对齐) 与六项最小 brief；[本次提炼](../../vault/distilled/reporting/material-classification.md) 保留建议与采纳边界。

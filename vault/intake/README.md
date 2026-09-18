@@ -17,3 +17,5 @@ Work System 材料：[`work-system-materials.json`](work-system-materials.json)�
 Downloads登记：[downloads.json](downloads.json)；[主题提炼](../distilled/reporting/downloads.md)。统一消息与来源索引：[registry.json](../registry.json)；快照完整性：[snapshot-manifest.json](../snapshot-manifest.json)。
 
 后续完整增量：[r3 登记](work-system-increment-r3.json)（10 轮/20 消息）、[r4 登记](work-system-increment-r4.json)（1 轮/2 消息）。
+
+[建立材料分类体系登记](material-classification.json)：独立对话 2 轮/4 消息，无外部 URL 或 citation。

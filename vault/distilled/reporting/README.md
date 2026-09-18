@@ -23,3 +23,5 @@
 Reporting Kit 的结构化阅读路径优先于原始 chat；原始 JSON 只用于追溯。消息覆盖与引用缺口见 [`../../intake/reporting-materials.json`](../../intake/reporting-materials.json)。
 
 本地快照的逐文件来源、哈希、mtime 和 processing status 见 [`../../intake/local-projects.json`](../../intake/local-projects.json)。
+
+[材料分类与组织接口](material-classification.md)：按目的、受众、阶段和证据路由材料，并连接驻场授权、净减负与复用账本。

@@ -83,7 +83,8 @@ def build():
     for item in read(rel)['messages']:
         add_message(item['turn_id'], item['item_id'], item['role'], item['classification'],
                     item['distilled_paths'], rel)
-    for path in sorted((ROOT / 'vault/intake').glob('work-system-increment-r*.json')):
+    for path in sorted([*(ROOT / 'vault/intake').glob('work-system-increment-r*.json'),
+                        ROOT / 'vault/intake/material-classification.json']):
         rel = path.relative_to(ROOT).as_posix()
         for turn in read(rel)['turns']:
             for item in turn['items']:

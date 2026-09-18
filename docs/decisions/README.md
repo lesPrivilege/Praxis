@@ -11,3 +11,5 @@
 | [007](007-environment-expert.md) | accepted / runtime deferred | Environment、Expert、Skill与使用量治理边界 |
 
 accepted表示本次repo治理决定，不表示用户已逐条选定所有技术。未来变更以新ADR替代并指向旧记录。
+
+- [ADR-008：材料路由与驻场组织接口](008-artifact-field-governance.md)（accepted；文体与现场效果待验证）。

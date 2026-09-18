@@ -35,3 +35,13 @@
 标题与故事线 → claim/evidence → 异议和替代方案 → 视觉层级 → 实际渲染 → 受众与ask → 文字去套话。
 
 空泛形容、无证据收益、重复总结和装饰性术语要被删除或换成具体事实。截图只能证明当时呈现；交互HTML另检查状态、键盘、窄屏及离线依赖。PDF/幻灯片按最终导出逐页检查。
+
+## 材料路由与逐步对齐
+
+补充依据：[材料分类提炼](../../vault/distilled/reporting/material-classification.md)，采纳范围见 [ADR-008](../../docs/decisions/008-artifact-field-governance.md)。回应对方期待，以能够共同理解的语义推进；不同受众共享事实基础，允许调整解释深度、叙事顺序和展示形式，不改变已知事实与限制。
+
+工作目的使用可扩展词表：align（对齐）、discover（发现）、decide（决定）、design（设计）、deliver（交付）、review（复盘）、escalate（升级裁决）、transfer（移交）。选一个主要目的，必要时补次要目的；它们是路由标签，不要求建立八套目录，也不替代既有 artifact family。
+
+先填写 brief 的六项最小契约，再选文体。Evidence-led、case-led、demo-led、model-led、narrative-led 描述论述主要依靠什么；同一材料可以混合，但每条 claim 仍标明事实、假设、愿景或已验证结果。Demo 不证明采用或经营收益，叙事不冒充事实证明。
+
+先确认事实与未知，再对齐问题、约束和判断标准，最后讨论方案与局部分歧。无法锁定的共识显式保留，不用整套方案的接受来掩盖未决项。具体文体与行业实践在真实任务出现后再扩展。
