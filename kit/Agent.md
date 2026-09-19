@@ -40,7 +40,7 @@
 
 ## 晋升
 
-第一次留scenario；第二个独立场景重复可提candidate；第三个独立场景和稳定contract、fixture、验证证据齐备后，由Astra通过ADR采纳。数字是最低证据门槛，不自动晋升。详见 [ADR-002](../docs/decisions/002-promotion.md)。
+共享运行组件第一次留scenario；第二个独立场景重复可提candidate；第三个独立场景和稳定contract、fixture、验证证据齐备后，由Astra通过ADR采纳。知识说明和治理约定不自动适用这条实现门槛。数字是最低证据门槛，不自动晋升。详见 [ADR-002](../docs/decisions/002-promotion.md)。
 
 ## 禁止混淆
 
