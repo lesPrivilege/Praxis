@@ -1,5 +1,5 @@
-# Scenarios
+# 场景
 
-从 [_template](_template/README.md) 建立独立业务闭环。每个场景说明worker、输入、对象、规则、AI边界、人工决定、证据、状态与验收。当前无真实客户场景。
+当前提供 [场景契约模板](_template/README.md)。从问题、基线与替代方案开始，形成对象、动作、证据、失败处理、验收和接收责任。
 
-可运行实现进入 [demos](../demos/README.md)；真实项目与资料边界见 [ADR-006](../docs/decisions/006-demo-project-vault.md)。
+场景定义完成后，可按 [Demo 入口](../demos/README.md) 创建运行实现。真实客户项目与原始资料按 [ADR-006](../docs/decisions/006-demo-project-vault.md) 独立管理。

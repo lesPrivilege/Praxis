@@ -14,7 +14,7 @@
 
 ## 开工顺序
 
-1. 从 [README](README.md) 选择企业工作面或 [汇报设计](reporting/README.md)。
+1. 从 [任务入口](README.md) 选择业务发现、场景验证、材料写作、工作整理或环境准备。
 2. 阅读对应 vault 提炼与来源卡，不用重新消费整份 Chat。
 3. 企业 demo 复制 [场景契约](../scenarios/_template/README.md) 的结构；材料写作先选 artifact family、读者、需要的决定及证据。
 4. 区分已采纳规范、场景候选、外部参考与未验证陈述。引用用稳定来源 ID 加本地相对路径。

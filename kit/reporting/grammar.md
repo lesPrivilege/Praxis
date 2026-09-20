@@ -42,6 +42,6 @@
 
 工作目的使用可扩展词表：align（对齐）、discover（发现）、decide（决定）、design（设计）、deliver（交付）、review（复盘）、escalate（升级裁决）、transfer（移交）。选一个主要目的，必要时补次要目的；它们是路由标签，不要求建立八套目录，也不替代既有 artifact family。
 
-先填写 brief 的六项最小契约，再选文体。Evidence-led、case-led、demo-led、model-led、narrative-led 描述论述主要依靠什么；同一材料可以混合，但每条 claim 仍标明事实、假设、愿景或已验证结果。Demo 不证明采用或经营收益，叙事不冒充事实证明。
+先填写 brief 的六项最小契约，再选文体。evidence-led、case-led、demo-led、model-led、narrative-led 描述论述主要依靠什么；同一材料可以混合，但每条 claim 仍标明事实、假设、愿景或已验证结果。Demo 不证明采用或经营收益，叙事不冒充事实证明。
 
 先确认事实与未知，再对齐问题、约束和判断标准，最后讨论方案与局部分歧。无法锁定的共识显式保留，不用整套方案的接受来掩盖未决项。具体文体与行业实践在真实任务出现后再扩展。

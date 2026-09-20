@@ -43,7 +43,7 @@ def tags(value: Any) -> list[str]:
     return [str(value)]
 
 
-def render_card(source: dict[str, Any], catalog_rel: str) -> str:
+def render_card(source: dict[str, Any], catalog_rel: str, *, direct_research: bool = False) -> str:
     required = ("title", "summary_zh", "status", "url", "limits", "revisit_trigger")
     missing = [key for key in required if not source.get(key)]
     if missing:
@@ -78,7 +78,9 @@ def render_card(source: dict[str, Any], catalog_rel: str) -> str:
         "",
         str(source['revisit_trigger']),
         "",
-        "引用映射与核查日期见 [catalog](../catalog.json)。本卡为登记结果的阅读投影；补充找到的来源不代表恢复原Chat隐藏引用。",
+        ("来源身份、核查日期、支持主张与选型状态见 [catalog](../catalog.json)。"
+         if direct_research else
+         "引用映射与核查日期见 [catalog](../catalog.json)。本卡为登记结果的阅读投影；补充找到的来源不代表恢复原Chat隐藏引用。"),
         "",
     ]
     return "\n".join(lines)
@@ -91,11 +93,17 @@ def render_indexes(root: Path, namespace: str, catalog_rel: str, cards_rel: str,
     citation_count = len(catalog['occurrences'])
     title = {'enterprise': 'Enterprise 早期来源', 'reporting': 'Reporting 来源',
              'work-system': 'Work System 来源（含增量）'}.get(namespace, str(catalog.get('catalog_id', namespace)))
+    if catalog.get('origin') == 'direct-research':
+        introduction = ("按研究问题查 [逐源摘要](cards/README.md)，"
+                        "按来源身份查 [catalog.json](catalog.json)。"
+                        "选型与采纳分别记录在主题提炼和 ADR。\n\n")
+    else:
+        introduction = ("默认阅读 [逐源摘要](cards/README.md)，机器登记见 [catalog.json](catalog.json)。"
+                        "这里的来源URL是另行找到的补充证据；原Chat隐藏引用未恢复。"
+                        "验证状态针对摘要中写明的主张，不能扩大为对整个历史回答的背书。\n\n")
     header = (f"# {title}\n\n"
               f"登记 {len(sources)} 个来源记录、{citation_count} 个引用占位映射；状态：{status_text}。\n\n"
-              "默认阅读 [逐源摘要](cards/README.md)，机器登记见 [catalog.json](catalog.json)。"
-              "这里的来源URL是另行找到的补充证据；原Chat隐藏引用未恢复。"
-              "验证状态针对摘要中写明的主张，不能扩大为对整个历史回答的背书。\n\n")
+              + introduction)
     if namespace == 'enterprise':
         header += ("## 其他主题\n\n- [Reporting](reporting/README.md)\n"
                    "- [Work System 与增量](work-system/README.md)\n"
@@ -142,7 +150,7 @@ def render_catalog(root: Path, namespace: str, catalog_rel: str, cards_rel: str)
             raise ValueError(f"{catalog_rel}: duplicate slug: {slug}")
         seen.add(slug)
         card_path = cards_dir / f"{slug}.md"
-        card_path.write_text(render_card(source, catalog_rel), encoding="utf-8")
+        card_path.write_text(render_card(source, catalog_rel, direct_research=catalog.get('origin') == 'direct-research'), encoding="utf-8")
         written += 1
     render_indexes(root, namespace, catalog_rel, cards_rel, catalog)
     print(json.dumps({"namespace": namespace, "catalog": catalog_rel, "cards_written": written}, ensure_ascii=False))

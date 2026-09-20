@@ -48,7 +48,7 @@ def build():
             sources.append({
                 'id': namespace + ':' + s['slug'], 'kind': 'external-url',
                 'collection': namespace, 'title': s['title'],
-                'original_locator': None, 'canonical_url': s['url'],
+                'original_locator': s.get('original_url'), 'canonical_url': s['url'],
                 'reviewed_at': data['as_of'], 'evidence_status': s['status'],
                 'summary': s['summary_zh'], 'purpose_tags': s.get('purpose_tags', []),
                 'local_card': s.get('card_path') or str(Path(rel).parent / 'cards' / (s['slug'] + '.md')), 'record_path': rel,
@@ -58,7 +58,7 @@ def build():
             citations.append({'turn_id': c['archive_turn_id'], 'item_id': c['message_item_id'],
                               'index': int(c['index']), 'claim': c['claim'],
                               'source_ids': [namespace + ':' + slug for slug in c['source_refs']],
-                              'mapping': 'supplemental-original-missing',
+                              'mapping': c.get('mapping', 'supplemental-original-missing'),
                               'support': c['support'], 'record_path': rel})
         collections.append({'id': namespace, 'path': rel, 'source_count': len(data['sources'])})
     chats = read('vault/chat-inventory.json')
@@ -86,6 +86,11 @@ def build():
     for path in sorted([*(ROOT / 'vault/intake').glob('work-system-increment-r*.json'),
                         ROOT / 'vault/intake/material-classification.json']):
         rel = path.relative_to(ROOT).as_posix()
+        for turn in read(rel)['turns']:
+            for item in turn['items']:
+                add_message(turn['turn_id'], item['item_id'], item['role'], item['classification'],
+                            item['distilled_paths'], rel)
+    for rel in ['vault/intake/architecture-review-2026-09-20.json']:
         for turn in read(rel)['turns']:
             for item in turn['items']:
                 add_message(turn['turn_id'], item['item_id'], item['role'], item['classification'],

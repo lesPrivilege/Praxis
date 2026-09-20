@@ -1,17 +1,15 @@
-# Governance
+# 治理
 
-Astra编订目录、术语和晋升规则；Luna完成材料explore/distill及可审计登记。技术事实需官方证据，用户意图与历史助手建议分别标注。
+Luna 负责探索、追溯、提炼和登记；Astra 负责架构、术语、冲突处理、采纳与最终验收。
 
-- [入账与快照标准](intake.md)
-- [Agent使用说明](../../kit/Agent.md)
-- [裁决记录](../decisions/README.md)
+| 当前工作 | 规则 | 完成产物 |
+|---|---|---|
+| 选择研究问题 | [研究清单](research-agenda.md) | 判断问题、证据需求、写回位置、停止条件 |
+| 处理新材料 | [入账与快照](intake.md) | 来源身份、提炼与覆盖缺口 |
+| 区分处理、证据与采纳程度 | [状态词表](status-vocabulary.md) | 分维度状态记录 |
+| 修订规则或停止推荐 | [增量与修订](evolution.md) | 影响分析、迁移、入口更新与回执 |
+| 编订 README 和契约 | [文档结构](../architecture/documentation.md) | 任务路径与唯一维护位置 |
+| 移交其他项目消费 | [消费分流](consumption-map.md) | 候选、接收责任与验证条件 |
+| 查裁决与 Agent 执行约定 | [ADR](../decisions/README.md)、[Agent](../../kit/Agent.md) | 当前规则与职责 |
 
-新增顶层目录必须说明已有目录为何无法承担职责。所有主题目录有README；常用入口指向结构化内容，不直接导向原Chat。
-
-- [增量与修订](evolution.md)：Goal、证据、目录与规则的演进。
-
-- [状态词表](status-vocabulary.md)：处理、证据、采纳和本地可用性分别表达。
-
-公开版本只收录已明确可发布的工作规则、参考和研究资产；最终push前对实际拟提交范围进行检查，企业事实与secret保持独立。
-
-- [消费分流](consumption-map.md)：当前Praxis采纳与其他项目后续消费分开登记。
+新增目录须有唯一职责、消费目的和 README。公开版本范围在实际发布前检查，企业事实与 secret 独立管理。

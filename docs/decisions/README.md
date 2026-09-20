@@ -10,6 +10,10 @@
 | [006](006-demo-project-vault.md) | accepted | Demo、真实项目与企业Source Vault分界 |
 | [007](007-environment-expert.md) | accepted / runtime deferred | Environment、Expert、Skill与使用量治理边界 |
 
-accepted表示本次repo治理决定，不表示用户已逐条选定所有技术。未来变更以新ADR替代并指向旧记录。
+accepted 表示本仓库采纳；技术实现与使用证据在对应契约和验收中记录。变更以新 ADR 关联旧记录。
 
 - [ADR-008：材料路由与驻场组织接口](008-artifact-field-governance.md)（accepted；文体与现场效果待验证）。
+
+- [ADR-009：以工作为入口的知识架构](009-work-led-knowledge-architecture.md)（accepted）。
+- [ADR-010：领域 Kit 与运行消费者](010-domain-kit-consumers.md)（accepted；接入待验证）。
+- [ADR-011：由文档结构承担使用指引](011-task-documentation.md)（accepted）。

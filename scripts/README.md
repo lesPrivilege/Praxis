@@ -1,13 +1,21 @@
-# Repository checks
+# 索引生成与仓库检查
 
-运行 `python3 scripts/validate_repository.py` 检查受治理目录入口、Markdown本地链接、JSON解析、Chat轮次和快照hash。来源快照中的原有文档结构不强制添加README或改写链接，避免污染原件；其消费入口由vault维护。
+在仓库根目录运行下列命令。catalog 与 intake 是编辑源，registry、来源卡和清单是生成投影。
 
-此检查不证明外部主张正确，也不执行来源HTML或应用。来源核查状态与离线依赖分别查看各批次登记。
+| 触发 | 编辑源 | 运行命令 | 生成物 |
+|---|---|---|---|
+| 新 Chat 或对话增量 | `vault/intake/chat-captures.json` 与版本归档 | `python3 scripts/build_chat_inventory.py` | `vault/chat-inventory.json` |
+| 新来源或核查更新 | 各 `provenance/catalog.json` | `python3 scripts/render_source_cards.py` | 逐源卡与目录索引 |
+| 入账与来源映射变更 | intake 与 catalog | `python3 scripts/build_registry.py` | `vault/registry.json` |
+| 新增原件快照 | 对应 intake 的原始定位与 hash | `python3 scripts/build_snapshot_manifest.py` | `vault/snapshot-manifest.json` |
+| 修改完成 | 当前工作树 | `python3 scripts/validate_repository.py` | 终端中的计数、错误与通过状态 |
 
-外部登记完成或更新后运行 `python3 scripts/build_registry.py` 生成统一字段的 `vault/registry.json`，再运行验证。各来源catalog是编辑入口，registry是消费投影；不手改生成索引。
+同批新增 Chat、来源与快照时依次运行表中命令。provenance 子目录 catalog 自动发现；新材料类别须接入 registry 对应读取逻辑。
 
-快照入账后运行 `python3 scripts/build_snapshot_manifest.py`，它会复核intake原件hash并冻结当前快照摘要；已登记路径内容发生变化时拒绝静默刷新，改用新版本路径。随后运行主验证脚本。
+## 失败处理与覆盖
 
-来源catalog更新后先运行 `python3 scripts/render_source_cards.py` 同步中文卡片与目录索引，再运行registry构建和验证。
+- 原件 hash 不符或已登记路径内容改变：保留旧原件，核对来源后以新版本路径入账。
+- 索引过期：修改源登记，重新生成对应投影。
+- 链接、身份或覆盖失败：修复错误列出的源记录，再运行验证。
 
-新Chat或增量：先把新版本加入 `vault/intake/chat-captures.json`，运行 `python3 scripts/build_chat_inventory.py`；旧快照不覆盖。后续registry、来源卡生成自动发现新增provenance/catalog.json与work-system增量manifest。
+验证检查受治理目录 README、Markdown 本地链接、JSON、Chat 消息覆盖和快照 hash。来源快照保持原字节，其导航由 Vault 维护。外部主张核查、renderer 离线依赖、应用行为与业务结果分别在 [分层验收](../kit/verification/README.md) 中记录。

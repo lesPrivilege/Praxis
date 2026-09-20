@@ -1,16 +1,26 @@
 # Kit
 
-| 面 | 内容 | 当前状态 |
-|---|---|---|
-| [产品 grammar](grammar/README.md) | 对象、动作、状态、证据、人工与trace | 使用契约 |
-| [汇报与设计](reporting/README.md) | PM/FDE文体、内容编排、视觉、读者适配 | 独立知识条目 |
-| [工作全景](landscape.md) | 从问题、机会到运营或退出的能力地图 | 当前任务的起点 |
-| [共同工作语法](grammar/work.md) | 跨域对象、证据、规则、动作与交接 | 组合约束与反例 |
-| [工作系统](work-system/README.md) | 会议对象、状态diff、review与工具控制面 | [现场闭环](work-system/field-loop.md) |
-| [Environment](environment/README.md) | 能力索引、数据/账号分区、Expert边界与Agent用量治理 | 共享环境契约，尚无bootstrap |
-| [Contracts](contracts/README.md) | schema/API/事件与来源边界 | 契约要求，无runtime |
-| [UI](ui/README.md) | 企业工作面及状态矩阵 | 候选目录，无组件实现 |
-| [Adapters](adapters/README.md) | 模型、存储、身份、企业接入 | 接口边界，无驱动实现 |
-| [Verification](verification/README.md) | demo与文档验收 | 使用清单 |
+## 按任务使用
 
-阅读 [Agent.md](Agent.md) 了解使用、入账及角色分工。所有研究依据集中在 [Vault](../vault/README.md)。
+| 任务 | 指南或模板 | 查定义与验收 |
+|---|---|---|
+| 发现业务问题、选择机会 | [工作全景](landscape.md)、[现场闭环](work-system/field-loop.md) | [组织接口](work-system/field-governance.md) |
+| 定义验证、试点与移交 | [场景模板](../scenarios/_template/README.md) | [契约](contracts/README.md)、[验收](verification/README.md) |
+| 写材料促成决定 | [Reporting brief](../templates/reporting/README.md) | [汇报与设计](reporting/README.md) |
+| 将会议转成工作状态 | [工作系统](work-system/README.md) | [共同工作语法](grammar/work.md) |
+| 在新环境开展工作 | [Environment](environment/README.md) | [消费角色契约](environment/expert-contract.md) |
+
+## 能力与状态
+
+| 能力 | 内容 | 当前状态 |
+|---|---|---|
+| [共同工作语法](grammar/work.md) / [企业工作面](grammar/README.md) | 对象、证据、动作、决定、交接 | 语义契约 |
+| [汇报与设计](reporting/README.md) | 材料路由、论证、读者与呈现 | 使用契约 |
+| [工作系统](work-system/README.md) | 来源事件、状态差异与后续责任 | 手动工作流程 |
+| [Environment](environment/README.md) | 能力、数据分区、角色与用量 | 环境契约，尚无 bootstrap |
+| [Contracts](contracts/README.md) | schema、API、事件与恢复要求 | 契约，无运行实现 |
+| [UI](ui/README.md) | 工作面及状态矩阵 | 组件候选，无实现 |
+| [Adapters](adapters/README.md) | 模型、存储、身份、企业接入 | 接口边界，无驱动实现 |
+| [Verification](verification/README.md) | 知识、材料、系统、业务与运营 | 分层检查清单 |
+
+Agent 使用与分工见 [Agent.md](Agent.md)；研究依据见 [Vault](../vault/README.md)；维护规则见 [增量与修订](../docs/governance/evolution.md)。

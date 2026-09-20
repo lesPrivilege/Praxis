@@ -45,3 +45,11 @@ Expert表达工作职责；runtime/model表达执行选择。这是产品与维�
 具体边界见 [ADR-006](../decisions/006-demo-project-vault.md)、[ADR-007](../decisions/007-environment-expert.md)；研究来路见 [r3提炼](../../vault/distilled/work-system/r3/README.md)。
 
 [r4 治理与抗折旧澄清](../../vault/distilled/work-system/r4/README.md) 补充上述理由与边界，不改变已采纳架构，也不新增 runtime 实现承诺。
+
+## 后续编订 · 2026-09-20
+
+当前任务入口和文档职责见 [文档结构契约](documentation.md) 与 [ADR-011](../decisions/011-task-documentation.md)。领域知识可由多个运行角色消费，原“Praxis Expert”及选择器方案保留为候选历史；当前映射要求见 [ADR-010](../decisions/010-domain-kit-consumers.md)。
+
+## 实现候选与触发
+
+React/TypeScript/Vite、Ant Design、FastAPI/Pydantic、PostgreSQL 与 Compose 保留为候选。首个可运行 demo 根据场景约束，以实现 ADR 登记版本、替代方案和验证；流程引擎、身份平台等由实际需求触发。

@@ -24,6 +24,11 @@ for item in read('vault/intake/downloads.json')['entries']:
                                      'original_locator': item['originalPath'],
                                      'source_mtime': item['mtimeUtc'],
                                      'record_path': 'vault/intake/downloads.json'}
+for item in read('vault/intake/architecture-review-2026-09-20.json')['source_snapshots']:
+    expected[item['snapshot_path']] = {'sha256': item['sha256'],
+                                       'original_locator': item['original_path'],
+                                       'source_mtime': item['source_mtime'],
+                                       'record_path': 'vault/intake/architecture-review-2026-09-20.json'}
 old = {item['path']: item['sha256'] for item in read('vault/snapshot-manifest.json')['files']} if DEST.exists() else {}
 paths = []
 for name in ['courtwork', 'career-kit', 'downloads']:

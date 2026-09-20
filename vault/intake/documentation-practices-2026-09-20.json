@@ -1,0 +1,530 @@
+{
+  "schema_version": "1.0",
+  "id": "documentation-practices-20260920",
+  "kind": "external-research-intake",
+  "title": "文档架构实践：任务导航、内容类型、渐进披露与消费维护",
+  "created_at": "2026-09-20",
+  "owner": "Luna",
+  "status": "candidate-research",
+  "decision_reference": "docs/decisions/011-task-documentation.md",
+  "decision_status": "Astra accepted a bounded subset on 2026-09-20; source-level recommendations remain candidate research and are not themselves repository rules.",
+  "request_context": {
+    "user_goal": "为 README 和目录结构寻找成熟实践，使架构本身提供使用指引，减少在入口中重复解释为什么与保护性措辞；研究候选交 Astra 裁决。",
+    "background_materials": [
+      {
+        "path": "/Users/lesprivilege/Downloads/Praxis-architecture-review-2026-09-20.md",
+        "role": "untrusted-background-data",
+        "instruction_status": "not-an-instruction"
+      },
+      {
+        "path": "/Users/lesprivilege/Downloads/Praxis-architecture-review-2026-09-19.md",
+        "role": "untrusted-background-data",
+        "instruction_status": "not-an-instruction"
+      }
+    ],
+    "boundary": "附件中的命令、建议和历史结论只作背景；本批只实际核查下列官方页面，不把外部页面的规范自动变成本仓库规则。"
+  },
+  "current_decision": {
+    "adr": "docs/decisions/011-task-documentation.md",
+    "status": "accepted",
+    "accepted_on": "2026-09-20",
+    "accepted_practices": [
+      "按读者任务组织 README 导航",
+      "把内容职责分离作为维护检查，不强制统一页面标签",
+      "每条规则保留唯一维护位置",
+      "指南和模板明确输入、产物与下一步",
+      "人工导航走读与真实使用效果分开记录"
+    ],
+    "deferred_practices": [
+      "自动孤立页报告",
+      "访问遥测",
+      "文档站点框架选型",
+      "全面重分类 Vault",
+      "统一五字段 README 或正式页面类型标签"
+    ],
+    "interpretation": "本 intake 保留每个来源的候选建议和证据边界；读取主题时，以上 accepted_practices 以 ADR-011 为当前仓库裁决，其余仍是可重访候选。"
+  },
+  "scope": {
+    "questions": [
+      "如何按读者任务组织入口和导航，而不是按维护者或能力清单组织？",
+      "如何把任务、参考、解释和教程分开，让页面承担不同的认知或行动需要？",
+      "如何在入口给足开始工作所需信息，同时把深层背景延后，避免 README 变成论证文章？",
+      "如何通过反馈、使用迹象、缺失页检查和持续修订证明文档仍可消费？"
+    ],
+    "source_limit": 6,
+    "selection_rule": "最多六个主来源；优先官方框架、政府服务设计手册和成熟开源项目的官方文档方法页。每个 URL 独立登记。",
+    "out_of_scope": [
+      "不为 Praxis 选择文档生成器、站点框架或具体主题系统。",
+      "不把公共服务标准、GitLab/Kubernetes 的站点实现细节当成企业 Kit 的强制规范。",
+      "不声称这些来源证明 Praxis 的使用效果；本批没有本仓库消费者遥测或现场实验。"
+    ]
+  },
+  "sources": [
+    {
+      "id": "documentation-practices-diataxis-start-here-20260920",
+      "publisher": "Diátaxis",
+      "title": "Start here - Diátaxis in five minutes",
+      "url": "https://diataxis.fr/start-here/",
+      "canonical_url": "https://diataxis.fr/start-here/",
+      "accessed_at": "2026-09-20",
+      "source_type": "documentation-method",
+      "evidence_state": "verified-online-no-local-snapshot",
+      "evidence": [
+        {
+          "claim_id": "DIA-01",
+          "locator": "页面第 39–41 行，The four kinds of documentation",
+          "claim": "教程、how-to、reference 和 explanation 回应四种可区分的需要；每一种有不同目的和写法。"
+        },
+        {
+          "claim_id": "DIA-02",
+          "locator": "页面第 53–80 行，How-to / Reference / Explanation",
+          "claim": "how-to 面向已经有能力、正在完成真实工作的读者；reference 提供准确完整且少解释的事实；explanation 提供背景、上下文并回答 why。"
+        },
+        {
+          "claim_id": "DIA-03",
+          "locator": "页面第 33–36 行、第 81–82 行，Start here / minimal explanation",
+          "claim": "入口应像手册或工具箱，先给短引导并按需要链接深层内容；教程中的解释应保持最小，深层解释另页承载。"
+        },
+        {
+          "claim_id": "DIA-04",
+          "locator": "页面第 84–126 行、第 129–143 行，map / compass / Working",
+          "claim": "四类内容是有边界和关系的架构；维护可用小步迭代，每次改善一个具体问题。"
+        }
+      ],
+      "summary": "Diátaxis 将文档架构从维护者写作习惯转为读者需要：行动/认知与学习/工作交叉决定内容类型。它明确说明任务页应完成工作，参考页应保持描述性，解释页负责背景，并建议入口保持短、在实际问题出现时再深入。",
+      "praxis_candidate": {
+        "candidate_rule": "给每个长期页面标出主要消费需要（学习、执行、查定义、理解取舍），让 README 用任务和链接路由，避免同一页同时承担完整操作、字段参考和架构论证。",
+        "possible_writeback": [
+          "README.md",
+          "kit/README.md",
+          "docs/architecture/README.md",
+          "docs/architecture/documentation.md",
+          "kit/contracts/README.md",
+          "kit/verification/README.md"
+        ],
+        "adoption": "candidate",
+        "selection_caution": "采用内容类型和边界作为内部分类启发式即可；不复制 Diátaxis 的完整理论、命名或要求建立四套镜像目录。"
+      },
+      "revisit_triggers": [
+        "入口页面开始同时放置长操作步骤、字段表和历史论证。",
+        "消费者无法判断一个链接是用来执行任务、查字段还是理解取舍。",
+        "需要重新划分教程、操作指南、参考和解释的页面类型。",
+        "Diátaxis 主站的框架、页面或推荐工作流发生重大变化。"
+      ],
+      "snapshot_gap": "本次通过网页实际阅读，未保存 HTML、图片或依赖快照；离线复核需要在后续批次获取页面原件并登记 SHA-256。"
+    },
+    {
+      "id": "documentation-practices-govuk-user-needs-20260920",
+      "publisher": "GOV.UK Service Manual",
+      "title": "Learning about users and their needs",
+      "url": "https://www.gov.uk/service-manual/user-research/start-by-learning-user-needs",
+      "canonical_url": "https://www.gov.uk/service-manual/user-research/start-by-learning-user-needs",
+      "accessed_at": "2026-09-20",
+      "source_type": "official-service-design-guidance",
+      "evidence_state": "verified-online-no-local-snapshot",
+      "evidence": [
+        {
+          "claim_id": "GOV-UR-01",
+          "locator": "页面第 71–105 行，Understanding / Researching user needs",
+          "claim": "设计从理解使用者及其需要开始；研究应贯穿各开发阶段；已有证据、访谈和观察可用于识别需要，未经用户来源支持的意见应视为待验证假设。"
+        },
+        {
+          "claim_id": "GOV-UR-02",
+          "locator": "页面第 108–110 行，Who to research with",
+          "claim": "研究对象应包括不同类型的使用者，也包括提供或支持服务的人，而非只研究典型用户。"
+        },
+        {
+          "claim_id": "GOV-UR-03",
+          "locator": "页面第 139–163 行，Validating / Linking user needs",
+          "claim": "好的用户需要以证据为基础、描述问题而非预设方案，并在阶段推进时持续验证；将用户需要关联到 user story 可保留可追溯关系。"
+        }
+      ],
+      "summary": "GOV.UK 把入口和服务设计锚定在真实使用者的任务与结果，要求研究贯穿阶段、覆盖支持角色，并保留从稳定用户需要到具体工作项的追溯。对 Praxis 的直接启发是：README 的任务行应来自实际消费者问题，文档修订应有使用断点或反馈证据，而不是只凭维护者判断增加旁白。",
+      "praxis_candidate": {
+        "candidate_rule": "每个高频 README 入口至少表达使用者要完成的任务、触发条件、预期产物和下一站；将实际消费断点、反馈或走读记录回链到对应入口。",
+        "possible_writeback": [
+          "README.md",
+          "kit/README.md",
+          "docs/README.md",
+          "docs/governance/README.md",
+          "kit/verification/README.md"
+        ],
+        "adoption": "candidate",
+        "selection_caution": "这是公共服务研究方法，不是企业 Kit 的合规要求；用户需要字段、观察频率和证据强度需要 Astra 按 Praxis 场景裁决。"
+      },
+      "revisit_triggers": [
+        "README 的任务路由没有对应读者、触发条件或真实产物。",
+        "修订只凭作者意见，没有使用走读、反馈、搜索或支持问题证据。",
+        "需要把维护者、接收者、运营者等非直接读者纳入消费研究。",
+        "GOV.UK 页面更新用户研究、用户需要或追溯指导。"
+      ],
+      "snapshot_gap": "本次未保存 GOV.UK 页面快照；页面带有更新日期和反馈表单，但本批未取得其后台反馈或使用数据。"
+    },
+    {
+      "id": "documentation-practices-govuk-simple-service-20260920",
+      "publisher": "GOV.UK Service Manual",
+      "title": "4. Make the service simple to use",
+      "url": "https://www.gov.uk/service-manual/service-standard/point-4-make-the-service-simple-to-use",
+      "canonical_url": "https://www.gov.uk/service-manual/service-standard/point-4-make-the-service-simple-to-use",
+      "accessed_at": "2026-09-20",
+      "source_type": "official-service-standard-guidance",
+      "evidence_state": "verified-online-no-local-snapshot",
+      "evidence": [
+        {
+          "claim_id": "GOV-S-01",
+          "locator": "页面第 55–59 行，标题与摘要",
+          "claim": "服务应简单、直观、易理解，并通过用户测试确认可用。"
+        },
+        {
+          "claim_id": "GOV-S-02",
+          "locator": "页面第 74–83 行，What it means",
+          "claim": "服务团队应帮助用户以尽量少的帮助完成目标，频繁与真实或潜在用户做可用性测试，检查用户接触的线上和线下部分，并保持从开始到结束的一致体验。"
+        },
+        {
+          "claim_id": "GOV-S-03",
+          "locator": "页面第 95–123 行，Service standard points",
+          "claim": "简单易用与理解用户、全程问题、迭代改进、定义成功和可靠运营同属服务检查面。"
+        }
+      ],
+      "summary": "该页把‘易用’表达为可检查的行为：用户少求助即可完成目标，团队频繁测试实际交互，且检查完整服务链。这支持把 README 当作使用入口来测，而不是把可读性理解为再增加解释段落。",
+      "praxis_candidate": {
+        "candidate_rule": "把 README 验收写成任务走读：陌生消费者能否从入口找到必要前置、完成一个动作、取得预期产物并知道下一责任；记录需要额外求助或跳转失败的位置。",
+        "possible_writeback": [
+          "docs/architecture/documentation.md",
+          "kit/verification/README.md",
+          "README.md",
+          "kit/README.md"
+        ],
+        "adoption": "candidate",
+        "selection_caution": "仅借鉴‘以用户完成任务为验收’的结构；不把 GOV.UK Service Standard 宣称为 Praxis 的企业合规或服务等级。"
+      },
+      "revisit_triggers": [
+        "消费者能读懂页面但无法完成入口承诺的任务。",
+        "一次任务需要在多个入口间猜测下一步或重复提供上下文。",
+        "新增文档影响上下游接收、支持或退出，而验收只看链接存在。",
+        "GOV.UK 更新该服务标准点的成功、测试或可靠运营要求。"
+      ],
+      "snapshot_gap": "本次未保存页面快照，也未取得 GOV.UK 服务实际使用数据；‘简单’在本批只作为结构候选，未作量化结论。"
+    },
+    {
+      "id": "documentation-practices-kubernetes-page-types-20260920",
+      "publisher": "Kubernetes",
+      "title": "Page content types",
+      "url": "https://kubernetes.io/docs/contribute/style/page-content-types/",
+      "canonical_url": "https://kubernetes.io/docs/contribute/style/page-content-types/",
+      "accessed_at": "2026-09-20",
+      "source_type": "open-source-docs-method",
+      "evidence_state": "verified-online-no-local-snapshot",
+      "evidence": [
+        {
+          "claim_id": "K8S-PT-01",
+          "locator": "页面第 906–918 行，Page content types / Content sections",
+          "claim": "Kubernetes 将页面分为 Concept、Task、Tutorial、Reference，并为各类型规定期望结构；页面明确把 Diátaxis 作为写作参考。"
+        },
+        {
+          "claim_id": "K8S-PT-02",
+          "locator": "页面第 961–1008 行，Concept / Task",
+          "claim": "Concept 解释概念并链接到任务或教程；Task 聚焦单一事情，解释保持最少，背景应链接到概念页；两者都有 overview、前置或下一步等结构。"
+        },
+        {
+          "claim_id": "K8S-PT-03",
+          "locator": "页面第 1009–1046 行，Tutorial / Reference",
+          "claim": "Tutorial 面向较大目标并可包含多段步骤，深层解释链接到概念页；Reference 承载描述、选项、示例和 see-also 等查阅信息。"
+        },
+        {
+          "claim_id": "K8S-PT-04",
+          "locator": "页面第 1052–1065 行，What's next / Feedback / Last modified",
+          "claim": "页面有显式 What's next、反馈入口和最后修改信息，形成从当前页面到后续消费与维护的结构线索。"
+        }
+      ],
+      "summary": "Kubernetes 把内容类型落实为可重复的页面骨架，而非只在风格指南中讲原则：概念页有背景与下一步，任务页有前置、步骤和必要的最少解释，教程承载更大目标，参考页承载稳定描述。它还为读者提供下一步和反馈入口。",
+      "praxis_candidate": {
+        "candidate_rule": "为场景、契约、验收和导航 README 选择主要页面类型；正文顺序优先是用途/前置 → 可执行内容或定义 → 产物/下一步，深层背景用链接连接。",
+        "possible_writeback": [
+          "docs/architecture/README.md",
+          "docs/architecture/documentation.md",
+          "kit/README.md",
+          "kit/contracts/README.md",
+          "kit/verification/README.md",
+          "scenarios/_template/README.md"
+        ],
+        "adoption": "candidate",
+        "selection_caution": "只借鉴结构和链接关系；不复制 Kubernetes/Hugo shortcode、目录名、五项 next 上限或其产品内容组织。"
+      },
+      "revisit_triggers": [
+        "某个 README 既要教新人、指导操作、定义字段又要解释取舍，读者无法判断页面用途。",
+        "场景或契约页面缺少前置、完成条件、下一步或反馈路径。",
+        "需要设计 README 模板或检查页类型一致性。",
+        "Kubernetes 变更页面类型骨架、版本策略或维护流程。"
+      ],
+      "snapshot_gap": "本次未保存 Kubernetes 页面快照或其站点资产；页面实际显示多语言、版本与反馈结构，但本批未验证其生成系统或分析配置。"
+    },
+    {
+      "id": "documentation-practices-gitlab-styleguide-20260920",
+      "publisher": "GitLab Docs",
+      "title": "Documentation Style Guide",
+      "url": "https://docs.gitlab.com/development/documentation/styleguide/",
+      "canonical_url": "https://docs.gitlab.com/development/documentation/styleguide/",
+      "accessed_at": "2026-09-20",
+      "source_type": "open-source-docs-governance",
+      "evidence_state": "verified-online-no-local-snapshot",
+      "evidence": [
+        {
+          "claim_id": "GL-STYLE-01",
+          "locator": "页面第 68–91 行，SSoT / Topic types",
+          "claim": "GitLab 将文档作为实现、使用和排障信息的单一事实来源并持续更新；Topic type 以重复模式帮助读者扫描，也把作者视角转成读者任务。"
+        },
+        {
+          "claim_id": "GL-STYLE-02",
+          "locator": "页面第 92–98 行，Docs-first methodology",
+          "claim": "已有答案应链接文档而不是重新转述；遇到文档缺口应补写文档并分享变更，以形成可复用的可信资源。"
+        },
+        {
+          "claim_id": "GL-STYLE-03",
+          "locator": "页面第 1776–1787 行，Help and feedback section",
+          "claim": "文档默认带帮助/反馈区域，只有明确需要且经过技术写作者检查才省略。"
+        }
+      ],
+      "summary": "GitLab 将文档的职责、类型、补缺和反馈放进同一维护方法：入口不是把作者知道的内容尽量写全，而是成为产品信息的可复用权威位置，并让缺口通过变更和反馈回流。",
+      "praxis_candidate": {
+        "candidate_rule": "为每条采纳规范指定唯一维护位置；其他入口只链接并标出用途。消费者遇到缺口时登记可复现的缺口或变更请求，修订后保留使用证据与日期。",
+        "possible_writeback": [
+          "docs/architecture/README.md",
+          "docs/governance/README.md",
+          "docs/governance/evolution.md",
+          "kit/README.md",
+          "kit/verification/README.md"
+        ],
+        "adoption": "candidate",
+        "selection_caution": "可借鉴单一维护位置、可复用链接和反馈回流；不宣称 Praxis 的所有知识都应成为类似产品文档的绝对 SSoT，也不复制 GitLab 技术写作者审批流程。"
+      },
+      "revisit_triggers": [
+        "同一规则在多个 README 中出现分叉。",
+        "消费者通过复制粘贴而不是稳定链接获得答案。",
+        "修订没有记录缺口来源、反馈、维护者或最后核验。",
+        "GitLab 更新 topic type、docs-first 或反馈机制。"
+      ],
+      "snapshot_gap": "本次未保存 GitLab 页面、其仓库源码或反馈后台；页面的 SSoT 与反馈主张只针对公开方法说明。"
+    },
+    {
+      "id": "documentation-practices-gitlab-global-nav-20260920",
+      "publisher": "GitLab Docs",
+      "title": "Global navigation",
+      "url": "https://docs.gitlab.com/development/documentation/site_architecture/global_nav/",
+      "canonical_url": "https://docs.gitlab.com/development/documentation/site_architecture/global_nav/",
+      "accessed_at": "2026-09-20",
+      "source_type": "open-source-docs-information-architecture",
+      "evidence_state": "verified-online-no-local-snapshot",
+      "evidence": [
+        {
+          "claim_id": "GL-NAV-01",
+          "locator": "页面第 63–81 行，workflow-based navigation",
+          "claim": "GitLab 顶层导航以工作流组织，帮助使用者建立使用心智模型；导航名称应短、上下文明确，并说明页面用途。"
+        },
+        {
+          "claim_id": "GL-NAV-02",
+          "locator": "页面第 88–115 行，Add / Where to add / What to add",
+          "claim": "新增导航要先确认页面已发布、放入正确用户或管理分区，并以短而有上下文的文本呈现；顶层导航过长会破坏作用。"
+        },
+        {
+          "claim_id": "GL-NAV-03",
+          "locator": "页面第 127–148 行，missing pages / Use GitLab section",
+          "claim": "被有意排除的页面应显式标记；技术写作团队每月运行未入导航页面报告，并为工作流类别保持 top-level 与 Get started 的重复入口结构。"
+        }
+      ],
+      "summary": "GitLab 将导航视作使用者建立心智模型的工作流入口，而非所有页面的字母索引；页面缺失导航有报告可查，且通过固定的 top-level / Get started 模式减少首次进入时的猜测。",
+      "praxis_candidate": {
+        "candidate_rule": "把根 README、Kit、docs 和 Vault 的首层链接按消费者任务/工作流排列；每个入口标题同时说明动作或产物。周期性检查新增文档是否可从任务入口到达，允许明确标记不应进入常用导航的内部页。",
+        "possible_writeback": [
+          "README.md",
+          "kit/README.md",
+          "docs/README.md",
+          "docs/architecture/README.md",
+          "vault/README.md"
+        ],
+        "adoption": "candidate",
+        "selection_caution": "采用工作流导航与缺失入口检查的思想；不建立与 GitLab 相同的全局 nav YAML、审批角色或页面报告命令，除非后续实现任务证明有必要。"
+      },
+      "revisit_triggers": [
+        "新增文档存在但无法从任务入口发现。",
+        "顶层 README 链接增长到读者无法选择，或同一链接在多个任务下含义不清。",
+        "需要判断页面应进入常用入口、二级参考或仅留在追溯目录。",
+        "GitLab 更新其工作流导航、缺页报告或 Get started 结构。"
+      ],
+      "snapshot_gap": "本次未保存 GitLab 导航配置或其仓库文件；只核查公开方法页，未复现其月度报告或评估真实导航使用数据。"
+    }
+  ],
+  "cross_source_findings": [
+    {
+      "id": "documentation-practices-finding-task-first-navigation",
+      "source_ids": [
+        "documentation-practices-govuk-user-needs-20260920",
+        "documentation-practices-govuk-simple-service-20260920",
+        "documentation-practices-gitlab-global-nav-20260920"
+      ],
+      "finding": "入口应从消费者要完成的工作、触发条件和预期产物开始；导航层按工作流或任务表达，而不是按维护者知识分类表达。",
+      "candidate_writeback": "README.md、kit/README.md、docs/README.md、docs/architecture/README.md、vault/README.md",
+      "adoption": "candidate",
+      "evidence_limit": "没有本仓库消费者的点击、搜索、求助或任务完成数据；这里只能提出结构候选。"
+    },
+    {
+      "id": "documentation-practices-finding-content-boundaries",
+      "source_ids": [
+        "documentation-practices-diataxis-start-here-20260920",
+        "documentation-practices-kubernetes-page-types-20260920",
+        "documentation-practices-gitlab-styleguide-20260920"
+      ],
+      "finding": "内容类型和重复页面骨架应承担边界：任务页面做事，参考页面查定义，概念/解释页面建立理解；入口保留最小上下文并链接深层内容。",
+      "candidate_writeback": "docs/architecture/documentation.md、kit/contracts/README.md、kit/verification/README.md、scenarios/_template/README.md",
+      "adoption": "candidate",
+      "evidence_limit": "外部方法说明不决定 Praxis 的页面类型名称、字段或目录；Astra 需按现有 Enterprise/Reporting/Work System 结构裁决。"
+    },
+    {
+      "id": "documentation-practices-finding-maintenance-evidence",
+      "source_ids": [
+        "documentation-practices-govuk-user-needs-20260920",
+        "documentation-practices-kubernetes-page-types-20260920",
+        "documentation-practices-gitlab-styleguide-20260920",
+        "documentation-practices-gitlab-global-nav-20260920"
+      ],
+      "finding": "可维护性需要结构化证据回路：唯一维护位置、最后修改/状态、反馈入口、可发现性检查，以及基于用户或消费者证据的迭代。",
+      "candidate_writeback": "docs/governance/evolution.md、docs/architecture/documentation.md、kit/verification/README.md、README.md",
+      "adoption": "candidate",
+      "evidence_limit": "来源展示了方法和页面信号，但没有证明任何特定信号足以代表成功；Praxis 需要后续消费任务决定最小记录字段。"
+    }
+  ],
+  "readme_review_matrix": [
+    {
+      "path": "README.md",
+      "observed_role": "仓库总入口，已有按任务开始工作、研究维护、Goal 和地图。",
+      "candidate_structural_change": "首屏只保留高频任务 → 最小前置 → 产物/下一步；把 Goal、地图和治理说明降为可按需进入的参考层。导航标题用读者动作或结果。",
+      "supporting_sources": [
+        "documentation-practices-govuk-user-needs-20260920",
+        "documentation-practices-gitlab-global-nav-20260920",
+        "documentation-practices-diataxis-start-here-20260920"
+      ],
+      "adoption": "candidate"
+    },
+    {
+      "path": "kit/README.md",
+      "observed_role": "Kit 的按任务入口与能力/状态目录。",
+      "candidate_structural_change": "保留按任务表作为主导航；每行明确读者要带入的输入、完成的产物和验收/下一站；能力表只做参考，避免重复解释状态。",
+      "supporting_sources": [
+        "documentation-practices-govuk-simple-service-20260920",
+        "documentation-practices-gitlab-global-nav-20260920",
+        "documentation-practices-kubernetes-page-types-20260920"
+      ],
+      "adoption": "candidate"
+    },
+    {
+      "path": "docs/README.md",
+      "observed_role": "架构、治理、决策和验收的目录列表。",
+      "candidate_structural_change": "把每个链接命名为可执行的阅读需要，例如理解边界、修改规则、查裁决、核对结果；将历史理由留在子页。",
+      "supporting_sources": [
+        "documentation-practices-diataxis-start-here-20260920",
+        "documentation-practices-gitlab-global-nav-20260920"
+      ],
+      "adoption": "candidate"
+    },
+    {
+      "path": "docs/architecture/README.md",
+      "observed_role": "目录所有权、内容职责、文档职责和运行所有权的架构入口。",
+      "candidate_structural_change": "用‘若要完成 X，先看 Y，产出 Z，规则维护在 W’表达内容归属；将架构理由与实现状态链接出去，不在表格下重复辩护。",
+      "supporting_sources": [
+        "documentation-practices-diataxis-start-here-20260920",
+        "documentation-practices-kubernetes-page-types-20260920",
+        "documentation-practices-gitlab-styleguide-20260920"
+      ],
+      "adoption": "candidate"
+    },
+    {
+      "path": "vault/README.md",
+      "observed_role": "研究层次和默认阅读入口。",
+      "candidate_structural_change": "先按消费任务进入主题提炼，再按需回查逐源记录、快照和 Chat；清楚显示哪些是已消费知识、候选提炼和缺口。",
+      "supporting_sources": [
+        "documentation-practices-gitlab-styleguide-20260920",
+        "documentation-practices-gitlab-global-nav-20260920",
+        "documentation-practices-diataxis-start-here-20260920"
+      ],
+      "adoption": "candidate"
+    },
+    {
+      "path": "docs/governance/README.md",
+      "observed_role": "角色、入账、裁决、修订和消费分流的治理入口。",
+      "candidate_structural_change": "以新增材料、提出候选、申请采纳、验证消费、撤回/重访五个动作路由；角色解释和保护边界下沉到对应指南。",
+      "supporting_sources": [
+        "documentation-practices-govuk-user-needs-20260920",
+        "documentation-practices-gitlab-styleguide-20260920",
+        "documentation-practices-gitlab-global-nav-20260920"
+      ],
+      "adoption": "candidate"
+    }
+  ],
+  "candidate_writeback_order": [
+    {
+      "order": 1,
+      "area": "入口导航",
+      "paths": [
+        "README.md",
+        "kit/README.md",
+        "docs/README.md",
+        "vault/README.md"
+      ],
+      "reason": "先让新消费者按工作目标到达正确层，减少后续页面中的旁白需求。"
+    },
+    {
+      "order": 2,
+      "area": "内容类型与唯一维护位置",
+      "paths": [
+        "docs/architecture/README.md",
+        "docs/architecture/documentation.md",
+        "docs/governance/README.md"
+      ],
+      "reason": "入口稳定后，明确概念、任务、参考、解释和治理规则各自的权威位置。"
+    },
+    {
+      "order": 3,
+      "area": "消费验收与反馈",
+      "paths": [
+        "kit/contracts/README.md",
+        "kit/verification/README.md",
+        "scenarios/_template/README.md"
+      ],
+      "reason": "把‘能找到’扩展为‘能完成任务并留下证据’，再决定是否需要更多字段或自动检查。"
+    }
+  ],
+  "follow_up_questions": [
+    "未来是否需要正式页面类型标签，还是继续只把内容职责分离作为维护检查？",
+    "真实消费任务何时暴露出需要自动孤立页报告、访问遥测或更严格的标题约定？",
+    "在保留各消费域职责差异的前提下，哪些字段值得形成可复用的模板片段？"
+  ],
+  "not_covered": [
+    "未研究 MkDocs、Docusaurus、Sphinx、Hugo 或其他生成器的实现选型。",
+    "未研究企业内部知识库、权限分层、搜索排序或多语言翻译的运行实现。",
+    "未获得 Praxis 消费者的真实点击、搜索、支持工单、反馈、任务耗时或成功率。",
+    "Diátaxis、GOV.UK、Kubernetes 或 GitLab 的未采纳部分仍不是本仓库规范；当前采纳子集与延后项见 ADR-011。"
+  ],
+  "distilled_path": "vault/distilled/themes/documentation-practices.md",
+  "catalog_handoff": {
+    "shared_catalog_updated": true,
+    "reason": "主代理已合并到现有 provenance 分批目录并重建统一 registry；逐源候选与证据仍保留在本 intake。",
+    "records_to_merge": [
+      "documentation-practices-diataxis-start-here-20260920",
+      "documentation-practices-govuk-user-needs-20260920",
+      "documentation-practices-govuk-simple-service-20260920",
+      "documentation-practices-kubernetes-page-types-20260920",
+      "documentation-practices-gitlab-styleguide-20260920",
+      "documentation-practices-gitlab-global-nav-20260920"
+    ],
+    "catalog_path": "vault/provenance/documentation-practices/catalog.json",
+    "registry_path": "vault/registry.json",
+    "source_id_mapping": {
+      "documentation-practices-diataxis-start-here-20260920": "provenance-documentation-practices:diataxis-start-here",
+      "documentation-practices-govuk-user-needs-20260920": "provenance-documentation-practices:govuk-user-needs",
+      "documentation-practices-govuk-simple-service-20260920": "provenance-documentation-practices:govuk-simple-service",
+      "documentation-practices-kubernetes-page-types-20260920": "provenance-documentation-practices:kubernetes-page-types",
+      "documentation-practices-gitlab-styleguide-20260920": "provenance-documentation-practices:gitlab-styleguide",
+      "documentation-practices-gitlab-global-nav-20260920": "provenance-documentation-practices:gitlab-global-nav"
+    }
+  }
+}

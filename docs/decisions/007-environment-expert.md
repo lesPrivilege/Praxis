@@ -11,3 +11,7 @@ Expert表达职责，Kit保存长期资产，Skill是有界入口，工具执行
 用量治理只记录真实可见指标；unknown不等于0。抗折旧方向采纳可移植schema、evidence、review和eval契约；关于神经attention/指令权重的具体因果解释不作为架构事实。
 
 后果：不把Kit整体压成一个Skill，不以目录名推断宿主指令优先级，不自动修改全局Agent配置、安装工具或把企业trace用于训练。后续实现需独立ADR与可检验产物。
+
+## 后续关联 · 2026-09-20
+
+[ADR-010](010-domain-kit-consumers.md) 补充领域 Kit 与运行消费者映射；原权限、环境和用量边界继续有效。

@@ -26,3 +26,5 @@ Work System 入口：[`work-system/`](work-system/README.md)，原始 5 轮登�
 最新增量：[r3 环境与 Expert](work-system/r3/README.md)、[r4 治理与抗折旧澄清](work-system/r4/README.md)。完整增量导航以 [Work System 入口](work-system/README.md) 为准。
 
 新材料：[材料分类与驻场组织接口](reporting/material-classification.md)，在现有 Reporting / Work System 内消费。
+
+架构维护：[两份审阅与关联会话](themes/architecture-review-2026-09-20.md) · [文档架构外部实践](themes/documentation-practices.md)。

@@ -1,13 +1,17 @@
-# Canonical demos
+# 演示实现
 
-本目录承载可复用的演示实现；当前仅建立入口，没有可运行demo。
+当前无可运行 demo。创建实现前完成 [场景契约](../scenarios/_template/README.md)，按 [工程蓝图](../templates/demo/README.md) 选择必要目录。
 
-- `scenarios/` 定义业务闭环、schema、policy、fixture与验收要求。
-- `demos/<id>/` 在需要实际运行时实现一个或多个场景，登记所用scenario和kit版本。
-- 真实客户交付移入独立项目repo；客户原始资料留在独立Source Vault。
+## 准入与交付
 
-初期demo作为本repo普通子目录维护；不要在这里随意嵌套`.git`。需要独立历史时另建repo并登记关系。Git worktree是整个仓库的checkout，放在仓库外，不是给单个子目录附加版本历史。
+| 记录 | 要求 |
+|---|---|
+| 消费版本 | scenario ID、Kit revision、实现版本 |
+| 数据 | synthetic 或经明确审查的 sanitized fixture；scenario provenance 记录来源、许可与导出依据 |
+| 运行 | 启动方式、依赖、mock 与真实集成范围 |
+| 验收 | 正常与失败 fixture、预期结果、运行回执和已知缺口 |
+| 后续 | 接收者、维护责任、下一验证或退出条件 |
 
-Demo仅消费synthetic或经明确审查的sanitized fixture，不能通过软链接、绝对路径或live query绕回真实企业资料。数据来源与许可/导出依据写进scenario provenance；敏感的反向映射留在外部受控vault。
+真实客户交付进入独立项目；原始资料和敏感反向映射留在受控 Source Vault。demo 禁止通过软链接、绝对路径或 live query 读取真实企业资料。具体分区见 [ADR-006](../docs/decisions/006-demo-project-vault.md)。
 
-开工入口：[场景模板](../scenarios/_template/README.md)、[ADR-006](../docs/decisions/006-demo-project-vault.md)。
+本仓库 demo 使用普通子目录。需要独立历史时另建仓库并登记关系；Git worktree 放在仓库外，禁止以嵌套 `.git` 给 demo 子目录附加历史。

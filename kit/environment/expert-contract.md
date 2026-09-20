@@ -1,21 +1,34 @@
-# Expert / Kit / Skill / Runtime
+# 领域 Kit 与运行消费者
 
-| 层 | 负责什么 | 不应承载什么 |
+| 概念 | 负责内容 | 归属 |
 |---|---|---|
-| Expert | 工作职责、能力入口、默认kit与review边界 | 某个模型版本的永久身份 |
-| Kit | 长期grammar、规则、材料、索引、契约与演进 | 每次任务的全部执行日志 |
-| Skill | 有触发条件和验收点的有限工作方法；渐进链接Kit | 把整个Kit压进一份超长指令 |
-| Tool / Adapter | 可执行动作与输入输出、权限和失败契约 | 擅自推断业务决定或授权 |
-| Runtime / Model | 执行与推理能力；按质量、速度、成本选择 | 长期业务语义的唯一所有者 |
+| Role / Expert | 持续工作职责、能力入口、review 和交接责任 | 消费宿主定义 |
+| Kit | 领域语法、规则、证据、模板、契约与演进 | Praxis 维护 |
+| Skill | 触发条件、必要输入、步骤、产物和验收 | 按任务引用 Kit 的有限入口 |
+| Tool / Adapter | 动作、输入输出、权限与失败契约 | 实现项目 |
+| Runtime | 执行生命周期、工具调用与恢复 | 消费宿主 |
+| Provider / Model | 服务通道与账号约束 / 可替换的推理选择 | 环境与运行配置 |
 
-此处层次描述产品职责与数据治理，不构成宿主system/developer/user指令优先级，也不能让Kit或Skill覆盖用户授权。
+Praxis 是可由多个角色消费的领域 Kit。角色名称、模型或服务通道变化时，工作身份、状态归属和账号权限按消费契约持续维护。Kit、Skill 和角色文档遵守宿主指令层级与用户授权。
 
-Praxis Expert是未来消费本Kit的运行角色，和Praxis仓库是两个对象。当前可由通用agent执行Kit中的手动loop；Courtwork Expert接入、composer中的一级选择器、独立Praxis Agent及fork均为候选实现，未在本次落地。
+## 消费登记
 
-建议Expert最小描述包含：expert_id、kit_revision、capabilities、workflow入口、runtime策略、工具scope、review契约、state归属、handoff与验证方法。不要因为换模型就复制一份Kit；也不要因为同一runtime可编码，就让它默认取得所有业务账户能力。
+| 字段 | 填写内容 |
+|---|---|
+| consumer / role | 宿主、角色、工作职责与负责人 |
+| kit_revision / entry | 固定 commit 或版本、需要的契约和任务入口 |
+| capabilities / runtime | 能力、执行方式、Provider 与 Model 选择依据 |
+| scope / review | 账号、数据、工具权限、人工确认与批准范围 |
+| state_authority / mapping | 工作项、义务、事件与已确认状态的权威位置；本 Kit 概念到宿主字段的映射 |
+| handoff / recovery | 产物接收、未决责任、错误升级与恢复 |
+| verification / migration | 使用证据、兼容范围、升级重验与回退 |
 
-Skill应作为薄入口引用具体契约与索引，维护触发条件、必读材料、步骤、产物和验收。索引持续演进，Skill不复制全部历史材料。暂不凭命名或文件层级推断模型的实际遵守程度。
+同一 Kit 可分别供 Attention、Expert 或材料处理角色消费；每个消费者登记自己的 scope 与状态权威。Courtwork、Hermes 等具体接入保持待验证，设计线索见 [消费分流](../../docs/governance/consumption-map.md)。
 
-关于attention、后训练与“权重”的技术解释保留为研究假说：可观察的是任务成功、错误与人工修正；是否提升遵守程度需要实际eval。语义trace可成为未来评估或训练候选，但不能自动把企业原始数据回灌训练。
+## 方法入口与替换
 
-抗折旧资产优先是对象与权限边界、证据定位、review事件、fixture、eval和迁移记录。具体harness、模型和插件版本可在这些契约下替换。
+Skill 引用所需契约和索引，保留触发条件、输入、步骤、产物与验收。模型或 harness 替换使用相同任务与标准比较质量、错误、人工修正和实际费用。
+
+执行日志存消费环境；可复用的规则、fixture、评估结论与迁移记录经入账返回 Kit。训练用途需独立的数据权限、用途批准和效果验证。
+
+裁决见 [ADR-010](../../docs/decisions/010-domain-kit-consumers.md)。

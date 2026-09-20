@@ -13,5 +13,7 @@
 
 ## 增量批次
 
+- [architecture-review-2026-09-20](architecture-review-2026-09-20/README.md)
+- [documentation-practices](documentation-practices/README.md)
 - [reporting](reporting/README.md)
 - [work-system](work-system/README.md)

@@ -19,3 +19,8 @@ Downloads登记：[downloads.json](downloads.json)；[主题提炼](../distilled
 后续完整增量：[r3 登记](work-system-increment-r3.json)（10 轮/20 消息）、[r4 登记](work-system-increment-r4.json)（1 轮/2 消息）。
 
 [建立材料分类体系登记](material-classification.json)：独立对话 2 轮/4 消息，无外部 URL 或 citation。
+
+## 架构与文档增量 · 2026-09-20
+
+- [审阅入账](architecture-review-2026-09-20.json)：两份原件、1 轮/2 消息、7 个引用占位及交付缺口。
+- [文档实践研究](documentation-practices-2026-09-20.json)：6 个官方 URL 的问题、证据、选型建议与未快照依赖；[来源登记](../provenance/documentation-practices/catalog.json)。

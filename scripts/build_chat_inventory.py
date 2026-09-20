@@ -25,7 +25,7 @@ for entry in read('vault/intake/chat-captures.json')['threads']:
             messages.append({'turn_id': turn['id'], 'item_id': item['id'], 'role': item['type'],
                              'characters': len(text),
                              'citation_indices': re.findall(r':chatgpt-content-reference\{index="(\d+)"\}', text),
-                             'explicit_urls': re.findall(r'https?://[^\s)<>]+', text)})
+                             'explicit_urls': re.findall(r'https?://[^\s)<>\[\]]+', text)})
     threads.append({'id': data['thread']['id'], 'title': data['thread']['title'],
                     'archive_path': rel, 'sha256': hashlib.sha256((ROOT / rel).read_bytes()).hexdigest(),
                     'turn_count': len(data['turns']), 'message_count': len(messages), 'has_more': False,

@@ -1,13 +1,14 @@
-# Environment contract
+# Environment
 
-Praxis可以作为工作环境的能力索引与治理契约：声明需要哪些能力、数据分区、身份边界、工作对象与review点；真实账号、数据和运行状态在受控本地环境中生成。
+三个消费域共用的环境契约。当前提供盘点、数据分区、消费角色与用量规则；bootstrap 和运行接入尚未实现。
 
-本目录是三个消费域共享的环境层，不替代Enterprise、Reporting和Work System入口。当前只有契约，没有可执行bootstrap或已部署Expert。
+| 步骤 | 入口 | 产物 |
+|---|---|---|
+| 盘点机器、账号、能力与缺口 | [环境与数据分区](workspace-contract.md) | 带 scope 的 inventory 与计划 |
+| 定义消费角色及状态归属 | [领域 Kit 与运行消费者](expert-contract.md) | 固定 Kit 版本、权限、review 与交接契约 |
+| 安排 Agent 分工与预算 | [使用与额度登记](agent-usage.md) | 执行计划与实际用量记录 |
+| 执行与验收 | [统一验收](../verification/README.md) | 授权范围内的操作和验证回执 |
 
-- [环境与数据分区](workspace-contract.md)
-- [Expert / Kit / Skill / Runtime边界](expert-contract.md)
-- [Agent使用与额度登记](agent-usage.md)
-- [Astra裁决](../../docs/decisions/007-environment-expert.md)
-- [r3来源提炼](../../vault/distilled/work-system/r3/README.md)
+安装、账号操作、读取企业资料及外发内容以用户授权为准。真实账号、secret、企业资料和运行状态按环境分区管理。
 
-第一次在新机器消费本Kit时，先盘点可用能力与缺口，编排具体计划，再执行已授权的安装/目录/账号操作并验证。索引中的工具条目本身不授权安装、联网、读取企业资料或发送内容。
+理由与证据：[ADR-007](../../docs/decisions/007-environment-expert.md)、[ADR-010](../../docs/decisions/010-domain-kit-consumers.md)、[r3 提炼](../../vault/distilled/work-system/r3/README.md)。

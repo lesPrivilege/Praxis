@@ -1,9 +1,42 @@
-# Scenario contract template
+# 场景契约模板
 
-状态：模板，不含真实数据。
+状态：可填写模板；示例与 fixture 须标注 synthetic、public 或 redacted。填写以下各节形成 `scenario.md`，实现计划写入 `demo.md`。
 
-填写：场景ID/owner、受众与业务结果、worker与天然输入件、输出、system of record、对象schema、确定性规则、AI动作、人工验收点、evidence定位、权限、state/action/event、下一站。
+## 1. 工作与机会
 
-建议场景目录：`schemas/ policies/ fixtures/ expected/`，并写 `scenario.md` 与 `demo.md`。实际创建这些目录时各加README。fixture标注synthetic/public/redacted；预期结果包含失败、缺项、异常和人工修正。
+- 场景 ID 与 revision、固定的 Kit commit 或版本、owner、工作范围、使用者、专业复核者与最终接收者。
+- 当前流程、真实问题、输入可得性、基线及观察窗口。
+- 期望改变、非 AI 替代方案、继续条件与停止条件。
+- 启动所需人员、账号、数据权限与支持条件，参照 [现场治理](../../kit/work-system/field-governance.md)。
 
-衡量acceptance、correction、missing context、覆盖率与复核时间；无真实测量不得写收益数字。首先只跑一个worker、一类材料、一个动作、一个人工验收点。
+## 2. 对象、证据与动作
+
+- 一个 worker、一类天然输入件、一个动作、一个人工验收点及预期产物。
+- 对象 ID 与版本、schema、system of record、来源定位与允许用途。
+- 确定性规则、AI 提议、人工决定各自的输出与责任人。
+- actor 与权限、state/action/event、外部确认方式，参照 [契约](../../kit/contracts/README.md)。
+
+## 3. 失败与恢复
+
+| 情况 | 填写处理规则 |
+|---|---|
+| 缺材料、缺上下文或证据冲突 | 缺项表达、补件人、升级与暂停条件 |
+| 输入或规则版本改变 | 受影响判断、批准失效条件与重验 |
+| 外部动作超时、结果未知 | 尝试身份、外部核对、可安全重试条件 |
+| 重复导入、重复执行 | 来源事件身份、去重与副作用控制 |
+| 人工修正或拒绝 | 保留原提议、修正依据与状态更新权限 |
+
+## 4. 验证与结果
+
+- fixture、预期输出、正常路径及上表反例；建议目录 `schemas/ policies/ fixtures/ expected/`，实际创建时各加 README。
+- 按 [分层验收](../../kit/verification/README.md) 记录范围、版本、证据、结果和缺口。
+- 记录 acceptance、correction、missing context、覆盖率、复核时间及新增人工劳动；保留样本、分母和观察窗口。
+- 净减负及 Value / Asset Ledger 按 [现场治理](../../kit/work-system/field-governance.md) 计算；未知值保持未知，合成数据只用于演练。
+
+## 5. 接收与后续责任
+
+- 交付版本、允许用途、接收标准、接收者及其确认依据。
+- 未决项与持续义务、下一责任人、到期或观察点、失败升级、支持与恢复方式。
+- 扩展、移交、撤回或退出条件，资料留存与删除责任。
+
+完成条件：输入可取得，动作获授权，产物可评判，接收与剩余责任有归属。未满足项记录负责人和阻塞原因。
