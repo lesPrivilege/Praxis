@@ -24,14 +24,69 @@
       "source_count": 43
     },
     {
+      "id": "provenance-ai-assessment-chat",
+      "path": "vault/provenance/ai-assessment-chat/catalog.json",
+      "source_count": 0
+    },
+    {
+      "id": "provenance-ai-assessment-q123",
+      "path": "vault/provenance/ai-assessment-q123/catalog.json",
+      "source_count": 16
+    },
+    {
+      "id": "provenance-ai-assessment-q45",
+      "path": "vault/provenance/ai-assessment-q45/catalog.json",
+      "source_count": 15
+    },
+    {
       "id": "provenance-architecture-review-2026-09-20",
       "path": "vault/provenance/architecture-review-2026-09-20/catalog.json",
       "source_count": 4
     },
     {
+      "id": "provenance-cw-frontend-references",
+      "path": "vault/provenance/cw-frontend-references/catalog.json",
+      "source_count": 6
+    },
+    {
       "id": "provenance-documentation-practices",
       "path": "vault/provenance/documentation-practices/catalog.json",
       "source_count": 6
+    },
+    {
+      "id": "provenance-explanation-visualization-references",
+      "path": "vault/provenance/explanation-visualization-references/catalog.json",
+      "source_count": 3
+    },
+    {
+      "id": "provenance-jev-community-runtime",
+      "path": "vault/provenance/jev-community-runtime/catalog.json",
+      "source_count": 12
+    },
+    {
+      "id": "provenance-jev-community-workflows",
+      "path": "vault/provenance/jev-community-workflows/catalog.json",
+      "source_count": 12
+    },
+    {
+      "id": "provenance-platform-product",
+      "path": "vault/provenance/platform-product/catalog.json",
+      "source_count": 4
+    },
+    {
+      "id": "provenance-platform-product-chat",
+      "path": "vault/provenance/platform-product-chat/catalog.json",
+      "source_count": 0
+    },
+    {
+      "id": "provenance-rsi-review",
+      "path": "vault/provenance/rsi-review/catalog.json",
+      "source_count": 2
+    },
+    {
+      "id": "provenance-se-frontend-references",
+      "path": "vault/provenance/se-frontend-references/catalog.json",
+      "source_count": 5
     },
     {
       "id": "provenance-work-system-r3-environment",
@@ -45,10 +100,10 @@
     }
   ],
   "chat_counts": {
-    "threads": 5,
-    "turns": 35,
-    "messages": 70,
-    "citation_occurrences": 144,
+    "threads": 7,
+    "turns": 48,
+    "messages": 92,
+    "citation_occurrences": 205,
     "explicit_url_occurrences": 31
   },
   "sources": [
@@ -3034,6 +3089,711 @@
       "revisit_when": "适用监管机构、模型风险政策和 AI 治理规则变化时复查。"
     },
     {
+      "id": "provenance-ai-assessment-q123:s01-anthropic-context-engineering",
+      "kind": "external-url",
+      "collection": "provenance-ai-assessment-q123",
+      "title": "Anthropic — Effective context engineering for AI agents",
+      "original_locator": "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents",
+      "canonical_url": "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents",
+      "reviewed_at": "2026-09-23",
+      "evidence_status": "verified",
+      "summary": "Anthropic 将 context 定义为每次推理可见的 token 集合，并把长任务的供给问题拆为 just-in-time retrieval、compaction、结构化笔记和子代理隔离；建议让工具返回高信号、可渐进披露的内容。",
+      "purpose_tags": [
+        "GRAMMAR",
+        "SCALE"
+      ],
+      "local_card": "vault/provenance/ai-assessment-q123/cards/s01-anthropic-context-engineering.md",
+      "record_path": "vault/provenance/ai-assessment-q123/catalog.json",
+      "limitations": [
+        "厂商工程文章和经验总结，不是跨模型保证；文章中的方法不能证明本题轨迹、压缩不变量或业务质量已实测。"
+      ],
+      "revisit_when": "上下文窗口、压缩、memory/tool retrieval 或文章引用的 Claude 能力发生变化时；正式交付前复查长任务边界。"
+    },
+    {
+      "id": "provenance-ai-assessment-q123:s02-claude-code-prompt-caching",
+      "kind": "external-url",
+      "collection": "provenance-ai-assessment-q123",
+      "title": "Claude Code — How Claude Code uses prompt caching",
+      "original_locator": "https://code.claude.com/docs/en/prompt-caching",
+      "canonical_url": "https://code.claude.com/docs/en/prompt-caching",
+      "reviewed_at": "2026-09-23",
+      "evidence_status": "verified",
+      "summary": "Claude Code 当前文档描述按前缀匹配的缓存、工具定义所在层和模型/effort/连接变更的产品行为；同时区分延迟工具目录变化与已加载到前缀的工具变化。",
+      "purpose_tags": [
+        "GRAMMAR",
+        "SCALE"
+      ],
+      "local_card": "vault/provenance/ai-assessment-q123/cards/s02-claude-code-prompt-caching.md",
+      "record_path": "vault/provenance/ai-assessment-q123/catalog.json",
+      "limitations": [
+        "这是 Claude Code 及其后端/接入渠道的实现文档；模型、effort、网关和云渠道存在条件差异，不能外推为所有 API 的通则，也没有本地实测本题账单。"
+      ],
+      "revisit_when": "Claude Code、模型、effort、MCP/插件加载策略、网关或云渠道变化时；引用具体缓存行为前复查。"
+    },
+    {
+      "id": "provenance-ai-assessment-q123:s03-manus-context-engineering",
+      "kind": "external-url",
+      "collection": "provenance-ai-assessment-q123",
+      "title": "Manus — Context Engineering for AI Agents: Lessons from Building Manus",
+      "original_locator": "https://manus.im/blog/Context-Engineering-for-AI-Agents-Lessons-from-Building-Manus",
+      "canonical_url": "https://manus.im/blog/Context-Engineering-for-AI-Agents-Lessons-from-Building-Manus",
+      "reviewed_at": "2026-09-23",
+      "evidence_status": "partial",
+      "summary": "Manus 的厂商工程文章作为历史对照，强调稳定前缀、外部文件状态、失败信息和任务重锚定；本轮保存页面 HTTP 正文以便主代理按原文复查。",
+      "purpose_tags": [
+        "GRAMMAR"
+      ],
+      "local_card": "vault/provenance/ai-assessment-q123/cards/s03-manus-context-engineering.md",
+      "record_path": "vault/provenance/ai-assessment-q123/catalog.json",
+      "limitations": [
+        "厂商自述且建议会随产品和模型变化；不把其早期固定工具集合或性能叙述当作当前跨供应商机制。"
+      ],
+      "revisit_when": "需要引用 Manus 的具体实现、版本或性能时；当前动态工具机制发生变化时重新核对。"
+    },
+    {
+      "id": "provenance-ai-assessment-q123:s04-openai-reasoning",
+      "kind": "external-url",
+      "collection": "provenance-ai-assessment-q123",
+      "title": "OpenAI — Reasoning models",
+      "original_locator": "https://developers.openai.com/api/docs/guides/reasoning",
+      "canonical_url": "https://developers.openai.com/api/docs/guides/reasoning",
+      "reviewed_at": "2026-09-23",
+      "evidence_status": "verified",
+      "summary": "官方文档将 reasoning effort 与任务类型、延迟/成本权衡关联，并确认不可见 reasoning tokens 会占用上下文、计入输出 token 和 usage；提供跨调用上下文与摘要的控制面。",
+      "purpose_tags": [
+        "GRAMMAR",
+        "SCALE"
+      ],
+      "local_card": "vault/provenance/ai-assessment-q123/cards/s04-openai-reasoning.md",
+      "record_path": "vault/provenance/ai-assessment-q123/catalog.json",
+      "limitations": [
+        "effort 名称不是跨厂商同量单位；文档的建议仍需在目标任务、模型版本和服务渠道上测质量、延迟和成本。"
+      ],
+      "revisit_when": "模型版本、reasoning effort/context、usage schema 或 API 计费规则变化时；接入前重新核对支持矩阵。"
+    },
+    {
+      "id": "provenance-ai-assessment-q123:s05-anthropic-thinking-cost",
+      "kind": "external-url",
+      "collection": "provenance-ai-assessment-q123",
+      "title": "Anthropic — Steering thinking and cost",
+      "original_locator": "https://platform.claude.com/docs/en/build-with-claude/thinking-steering-and-cost",
+      "canonical_url": "https://platform.claude.com/docs/en/build-with-claude/thinking-steering-and-cost",
+      "reviewed_at": "2026-09-23",
+      "evidence_status": "verified",
+      "summary": "Anthropic 文档说明 thinking/effort 可按请求和任务控制，长任务应观察推理、工具和上下文管理的总成本；本批将其作为节点预算与任务预算拆分的外部对照。",
+      "purpose_tags": [
+        "GRAMMAR",
+        "SCALE"
+      ],
+      "local_card": "vault/provenance/ai-assessment-q123/cards/s05-anthropic-thinking-cost.md",
+      "record_path": "vault/provenance/ai-assessment-q123/catalog.json",
+      "limitations": [
+        "供应商 API 文档；不把单次 max_tokens、thinking 档位或其成本口径外推成完整 agent run 的预算上限。"
+      ],
+      "revisit_when": "thinking、effort、context editing、prompt caching 或供应商计费文档变化时。"
+    },
+    {
+      "id": "provenance-ai-assessment-q123:s06-openai-latency-optimization",
+      "kind": "external-url",
+      "collection": "provenance-ai-assessment-q123",
+      "title": "OpenAI — Latency optimization",
+      "original_locator": "https://developers.openai.com/api/docs/guides/latency-optimization",
+      "canonical_url": "https://developers.openai.com/api/docs/guides/latency-optimization",
+      "reviewed_at": "2026-09-23",
+      "evidence_status": "verified",
+      "summary": "官方指南将延迟拆为 token 生成、输入、请求往返和串行依赖，建议减少输出和请求、并行独立步骤、对确定性工作使用硬编码/规则。",
+      "purpose_tags": [
+        "GRAMMAR",
+        "SCALE"
+      ],
+      "local_card": "vault/provenance/ai-assessment-q123/cards/s06-openai-latency-optimization.md",
+      "record_path": "vault/provenance/ai-assessment-q123/catalog.json",
+      "limitations": [
+        "文档中的经验比例和原则不是本产品 p95、SLO 或价格；任何 0.1/1/10 秒等待目标仍需用户行为和真实链路验证。"
+      ],
+      "revisit_when": "模型服务、网络区域、工具链或用户行为变化时；上线前按真实 p50/p95/p99 重测。"
+    },
+    {
+      "id": "provenance-ai-assessment-q123:s07-openai-computer-use",
+      "kind": "external-url",
+      "collection": "provenance-ai-assessment-q123",
+      "title": "OpenAI — Computer use",
+      "original_locator": "https://developers.openai.com/api/docs/guides/tools-computer-use",
+      "canonical_url": "https://developers.openai.com/api/docs/guides/tools-computer-use",
+      "reviewed_at": "2026-09-23",
+      "evidence_status": "verified",
+      "summary": "官方 computer-use 指南要求隔离环境、站点/动作 allowlist、不信任屏幕和第三方文本、在具体副作用前确认、为敏感数据输入取得明确同意，并限制步数/时间/成本及核对实际结果。",
+      "purpose_tags": [
+        "GRAMMAR",
+        "SCALE"
+      ],
+      "local_card": "vault/provenance/ai-assessment-q123/cards/s07-openai-computer-use.md",
+      "record_path": "vault/provenance/ai-assessment-q123/catalog.json",
+      "limitations": [
+        "指南是集成与安全控制建议，不证明目标桌面、浏览器、账号或企业权限已按这些要求实现；敏感输入、生产变更和邮件发送仍需目标系统验证。"
+      ],
+      "revisit_when": "computer tool/code execution 版本、权限策略、敏感数据范围或桌面运行环境变化时；上线前做故障注入和人工接管演练。"
+    },
+    {
+      "id": "provenance-ai-assessment-q123:s08-openai-guardrails-approvals",
+      "kind": "external-url",
+      "collection": "provenance-ai-assessment-q123",
+      "title": "OpenAI — Guardrails and human review",
+      "original_locator": "https://developers.openai.com/api/docs/guides/agents/guardrails-approvals",
+      "canonical_url": "https://developers.openai.com/api/docs/guides/agents/guardrails-approvals",
+      "reviewed_at": "2026-09-23",
+      "evidence_status": "verified",
+      "summary": "官方 Agents 指南把自动 guardrail 与人审拆开：敏感工具调用前可暂停，审批作为可恢复 interruption 保存 state；工具级检查贴近副作用，不能只依赖 agent 输入/最终输出检查。",
+      "purpose_tags": [
+        "GRAMMAR",
+        "SCALE"
+      ],
+      "local_card": "vault/provenance/ai-assessment-q123/cards/s08-openai-guardrails-approvals.md",
+      "record_path": "vault/provenance/ai-assessment-q123/catalog.json",
+      "limitations": [
+        "SDK 状态模型不替代环境中的身份、网络、文件和项目隔离；仅文档确认 API 语义，未运行 approval、超时或恢复回放。"
+      ],
+      "revisit_when": "Agents API/SDK interruption、guardrail scope、工具审批或序列化 state 变化时。"
+    },
+    {
+      "id": "provenance-ai-assessment-q123:s09-anthropic-containment",
+      "kind": "external-url",
+      "collection": "provenance-ai-assessment-q123",
+      "title": "Anthropic — How we contain Claude across products",
+      "original_locator": "https://www.anthropic.com/engineering/how-we-contain-claude",
+      "canonical_url": "https://www.anthropic.com/engineering/how-we-contain-claude",
+      "reviewed_at": "2026-09-23",
+      "evidence_status": "verified",
+      "summary": "Anthropic 的生产安全文章强调环境边界、网络出口和文件系统隔离，指出用户或项目文件也可能成为 prompt-injection 入口，并讨论审批疲劳与不同隔离级别。",
+      "purpose_tags": [
+        "GRAMMAR",
+        "SCALE"
+      ],
+      "local_card": "vault/provenance/ai-assessment-q123/cards/s09-anthropic-containment.md",
+      "record_path": "vault/provenance/ai-assessment-q123/catalog.json",
+      "limitations": [
+        "厂商安全经验和披露案例，不是目标产品的独立安全审计；隔离不会自动使挂载目录内写入、账号、生产连接或凭证安全。"
+      ],
+      "revisit_when": "沙箱/VM、凭证挂载、网络出口、项目配置加载或人工审批策略变化时；目标环境独立做权限和注入测试。"
+    },
+    {
+      "id": "provenance-ai-assessment-q123:s10-aws-idempotent-apis",
+      "kind": "external-url",
+      "collection": "provenance-ai-assessment-q123",
+      "title": "AWS Builders’ Library — Making retries safe with idempotent APIs",
+      "original_locator": "https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/",
+      "canonical_url": "https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/",
+      "reviewed_at": "2026-09-23",
+      "evidence_status": "verified",
+      "summary": "AWS 文章把安全重试建立在调用方唯一请求标识、服务端去重、语义等价响应和重复请求意图区分上；适合将 GUI/邮件未知结果分成核验与有界重试。",
+      "purpose_tags": [
+        "GRAMMAR",
+        "SCALE"
+      ],
+      "local_card": "vault/provenance/ai-assessment-q123/cards/s10-aws-idempotent-apis.md",
+      "record_path": "vault/provenance/ai-assessment-q123/catalog.json",
+      "limitations": [
+        "这是分布式 API 设计实践，不证明邮件 GUI、桌面点击或目标业务系统提供服务端幂等；客户端自造 ID 只能作为对账线索。"
+      ],
+      "revisit_when": "目标发送/文件/配置接口公布幂等契约、回执查询或重试语义变化时；上线前注入超时和迟到请求。"
+    },
+    {
+      "id": "provenance-ai-assessment-q123:s11-osworld-2",
+      "kind": "external-url",
+      "collection": "provenance-ai-assessment-q123",
+      "title": "OSWorld 2.0 — Benchmarking computer-use agents on long-horizon real-world tasks",
+      "original_locator": "https://osworld-v2.xlang.ai/",
+      "canonical_url": "https://osworld-v2.xlang.ai/",
+      "reviewed_at": "2026-09-23",
+      "evidence_status": "partial",
+      "summary": "OSWorld 2.0 项目将长任务中的隐式状态、冲突消解、动态环境、主动澄清和时间/动作/成本与完成度放在轨迹层评估，并公开失败案例。",
+      "purpose_tags": [
+        "GRAMMAR",
+        "SCALE"
+      ],
+      "local_card": "vault/provenance/ai-assessment-q123/cards/s11-osworld-2.md",
+      "record_path": "vault/provenance/ai-assessment-q123/catalog.json",
+      "limitations": [
+        "项目页面与 benchmark 结果不是生产安全认证；不能把榜单、任务完成或页面案例直接转成企业权限、正确性或安全保证。"
+      ],
+      "revisit_when": "基准版本、任务集或评估协议变化时；将其作为测试设计参考而非上线门槛。"
+    },
+    {
+      "id": "provenance-ai-assessment-q123:s27-openai-evaluation-best-practices",
+      "kind": "external-url",
+      "collection": "provenance-ai-assessment-q123",
+      "title": "OpenAI — Evaluation best practices",
+      "original_locator": "https://developers.openai.com/api/docs/guides/evaluation-best-practices",
+      "canonical_url": "https://developers.openai.com/api/docs/guides/evaluation-best-practices",
+      "reviewed_at": "2026-09-23",
+      "evidence_status": "verified",
+      "summary": "官方评估指南要求按任务目标构建数据集、持续评估、覆盖多步工作流和边界输入，并把人工标签与模型评审的角色区分开。",
+      "purpose_tags": [
+        "GRAMMAR",
+        "SCALE"
+      ],
+      "local_card": "vault/provenance/ai-assessment-q123/cards/s27-openai-evaluation-best-practices.md",
+      "record_path": "vault/provenance/ai-assessment-q123/catalog.json",
+      "limitations": [
+        "方法指南不能给出 Q1—Q3 的业务阈值、真实 p95 或安全结论；示例分数不是本项目门槛。"
+      ],
+      "revisit_when": "任务分布、模型/工具链或验收标准变化时；每次配置、模型或工具更新后重跑回归集。"
+    },
+    {
+      "id": "provenance-ai-assessment-q123:supp-openai-prompt-caching",
+      "kind": "external-url",
+      "collection": "provenance-ai-assessment-q123",
+      "title": "OpenAI — Prompt caching",
+      "original_locator": "https://developers.openai.com/api/docs/guides/prompt-caching",
+      "canonical_url": "https://developers.openai.com/api/docs/guides/prompt-caching",
+      "reviewed_at": "2026-09-23",
+      "evidence_status": "verified",
+      "summary": "当前官方文档说明缓存匹配完整 rendered prefix，工具定义/顺序和部分设置会影响复用；工具可 append-only 追加，defer_loading 发现工具追加到上下文末尾，且可用 usage 和 diagnostics 测量实际命中。",
+      "purpose_tags": [
+        "GRAMMAR",
+        "SCALE"
+      ],
+      "local_card": "vault/provenance/ai-assessment-q123/cards/supp-openai-prompt-caching.md",
+      "record_path": "vault/provenance/ai-assessment-q123/catalog.json",
+      "limitations": [
+        "缓存生命周期、模型支持、区域/路由和价格随模型与组织策略变化；文档确认不等于目标账户命中或成本收益已实测。"
+      ],
+      "revisit_when": "模型族、cache mode、prompt_cache_options、tool loading 或定价/数据保留变化时；接入前重新读取当前文档。"
+    },
+    {
+      "id": "provenance-ai-assessment-q123:supp-openai-tool-search",
+      "kind": "external-url",
+      "collection": "provenance-ai-assessment-q123",
+      "title": "OpenAI — Tool search",
+      "original_locator": "https://developers.openai.com/api/docs/guides/tools-tool-search",
+      "canonical_url": "https://developers.openai.com/api/docs/guides/tools-tool-search",
+      "reviewed_at": "2026-09-23",
+      "evidence_status": "verified",
+      "summary": "当前官方 Tool search 支持 hosted/client search、defer_loading、工具加载到上下文末尾和 additional_tools 指定位置注入；已加载集合的修改会破坏后续缓存，因此后续加载、撤回和授权仍需分开。",
+      "purpose_tags": [
+        "GRAMMAR",
+        "SCALE"
+      ],
+      "local_card": "vault/provenance/ai-assessment-q123/cards/supp-openai-tool-search.md",
+      "record_path": "vault/provenance/ai-assessment-q123/catalog.json",
+      "limitations": [
+        "Tool search 的模型/API 支持和 Agents API/MCP 配置不同；动态加载不自动授予权限，也不证明目标 runtime 支持无中断 hot-swap。"
+      ],
+      "revisit_when": "tool_search 支持模型、Agents API/MCP 接入、工具集合变更或缓存语义变化时；目标运行时做实际轨迹和授权测试。"
+    },
+    {
+      "id": "provenance-ai-assessment-q123:supp-anthropic-tool-search",
+      "kind": "external-url",
+      "collection": "provenance-ai-assessment-q123",
+      "title": "Anthropic — Tool search tool",
+      "original_locator": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-search-tool",
+      "canonical_url": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-search-tool",
+      "reviewed_at": "2026-09-23",
+      "evidence_status": "verified",
+      "summary": "Anthropic 当前 Tool search 允许为工具设置 defer_loading；客户端仍提交完整目录，但延迟工具不进入初始 system prompt，发现后用 tool_reference 展开并保持前缀缓存。",
+      "purpose_tags": [
+        "GRAMMAR",
+        "SCALE"
+      ],
+      "local_card": "vault/provenance/ai-assessment-q123/cards/supp-anthropic-tool-search.md",
+      "record_path": "vault/provenance/ai-assessment-q123/catalog.json",
+      "limitations": [
+        "文档规定的是 Claude API 的工具搜索和 toolset 语义；它不证明所有 Claude Code/第三方网关/目标 runtime 相同，也不把发现视为执行授权。"
+      ],
+      "revisit_when": "tool search/toolset 日期版本、MCP/Computer toolset 配置或 prompt caching 语义变化时。"
+    },
+    {
+      "id": "provenance-ai-assessment-q123:supp-mcp-2026-07-28",
+      "kind": "external-url",
+      "collection": "provenance-ai-assessment-q123",
+      "title": "Model Context Protocol — The 2026-07-28 Specification",
+      "original_locator": "https://blog.modelcontextprotocol.io/posts/2026-07-28/",
+      "canonical_url": "https://blog.modelcontextprotocol.io/posts/2026-07-28/",
+      "reviewed_at": "2026-09-23",
+      "evidence_status": "verified",
+      "summary": "MCP 官方 2026-07-28 发布说明将协议核心改为无会话/可路由，并为 tools/list 结果提供 ttlMs/cacheScope；工具变更通知迁移到客户端主动订阅的 subscriptions/listen，支持更可控的目录缓存和刷新。",
+      "purpose_tags": [
+        "GRAMMAR",
+        "SCALE"
+      ],
+      "local_card": "vault/provenance/ai-assessment-q123/cards/supp-mcp-2026-07-28.md",
+      "record_path": "vault/provenance/ai-assessment-q123/catalog.json",
+      "limitations": [
+        "这是协议发布说明，不证明每个 agent、MCP server 或 SDK 已实现/协商该版本；Chat 中引用的 2025-11-25 listChanged 语句需要按目标连接版本重新核对。"
+      ],
+      "revisit_when": "MCP 协议/SDK 升级、版本协商、工具目录缓存或 subscriptions/listen 实际支持变化时。"
+    },
+    {
+      "id": "provenance-ai-assessment-q45:s13-typesafe-score",
+      "kind": "external-url",
+      "collection": "provenance-ai-assessment-q45",
+      "title": "TypeSafe — Score",
+      "original_locator": "https://docs.typesafe.ai/primitives/score.md",
+      "canonical_url": "https://docs.typesafe.ai/primitives/score.md",
+      "reviewed_at": "2026-09-23",
+      "evidence_status": "verified",
+      "summary": "Score 是按有序、描述性等级评估内容的题型，正文说明返回每级概率、加权 score 和 confidence；score 可以落在两个等级之间。正文还明确 confidence 只描述返回分布的集中程度，同一个 score 可由不同概率分布产生。",
+      "purpose_tags": [
+        "Q4",
+        "JEV",
+        "SCORE",
+        "CALIBRATION",
+        "THRESHOLD"
+      ],
+      "local_card": "vault/provenance/ai-assessment-q45/cards/s13-typesafe-score.md",
+      "record_path": "vault/provenance/ai-assessment-q45/catalog.json",
+      "limitations": [
+        "这是厂商接口语义和演示，不是本业务正确率或校准证据。等级编号的概率加权均值不是物理量或业务损失；四舍五入不能单独承担严重风险闸门。"
+      ],
+      "revisit_when": "Score/Choice/Noul API 语义、概率字段或等级处理变更；为业务阈值做实测前复查。"
+    },
+    {
+      "id": "provenance-ai-assessment-q45:s14-typesafe-confidence",
+      "kind": "external-url",
+      "collection": "provenance-ai-assessment-q45",
+      "title": "TypeSafe — Confidence",
+      "original_locator": "https://docs.typesafe.ai/confidence.md",
+      "canonical_url": "https://docs.typesafe.ai/confidence.md",
+      "reviewed_at": "2026-09-23",
+      "evidence_status": "verified",
+      "summary": "Confidence 是由 Choice/Score 概率分布形状计算的 0 到 1 统计量；文档给出按风险区分自动执行、审阅和降级的示例，并说明阈值不是全系统只有一个数。",
+      "purpose_tags": [
+        "Q4",
+        "JEV",
+        "CONFIDENCE",
+        "CALIBRATION",
+        "DEGRADATION"
+      ],
+      "local_card": "vault/provenance/ai-assessment-q45/cards/s14-typesafe-confidence.md",
+      "record_path": "vault/provenance/ai-assessment-q45/catalog.json",
+      "limitations": [
+        "confidence 是概率分布的派生量，不是经业务验证的正确率，也不是独立证据。文档示例阈值不是本题上线门槛，仍需自有标签和错误成本校准。"
+      ],
+      "revisit_when": "confidence 定义、计算方式、fallback 行为或风险分层示例变化；业务 policy 版本变更时复查。"
+    },
+    {
+      "id": "provenance-ai-assessment-q45:s15-typesafe-jev-1-13-jaggedness",
+      "kind": "external-url",
+      "collection": "provenance-ai-assessment-q45",
+      "title": "TypeSafe — Jev 1.13 jaggedness",
+      "original_locator": "https://docs.typesafe.ai/model-jaggedness/jev-1.13.md",
+      "canonical_url": "https://docs.typesafe.ai/model-jaggedness/jev-1.13.md",
+      "reviewed_at": "2026-09-23",
+      "evidence_status": "verified",
+      "summary": "Jev 1.13 的限制页明确列出字面理解、数学与数字、日期比较、间接推理、无关上下文、对抗内容和结构不变量等边界；建议把算术和日期组装留给代码，过滤输入并分别设计问题。",
+      "purpose_tags": [
+        "Q4",
+        "JEV",
+        "LIMITS",
+        "ROBUSTNESS",
+        "INJECTION",
+        "CALIBRATION"
+      ],
+      "local_card": "vault/provenance/ai-assessment-q45/cards/s15-typesafe-jev-1-13-jaggedness.md",
+      "record_path": "vault/provenance/ai-assessment-q45/catalog.json",
+      "limitations": [
+        "这是版本化的厂商限制说明，页内明确 last reviewed 2026-09-17；不证明其他 Jev 版本、其他 primitive 或业务数据的效果。文档自称 calibrated 不是独立校准证据。"
+      ],
+      "revisit_when": "Jev 版本、模型限制页或 primitive 语义更新；业务使用从 jev-1.13 切换到 latest/preview 时必须复查。"
+    },
+    {
+      "id": "provenance-ai-assessment-q45:s16-typesafe-consistency-choice",
+      "kind": "external-url",
+      "collection": "provenance-ai-assessment-q45",
+      "title": "TypeSafe — Self-consistency: choices",
+      "original_locator": "https://docs.typesafe.ai/cookbooks/consistency_choice_cookbook.md",
+      "canonical_url": "https://docs.typesafe.ai/cookbooks/consistency_choice_cookbook.md",
+      "reviewed_at": "2026-09-23",
+      "evidence_status": "verified",
+      "summary": "官方 cookbook 对一个边界 moderation post 做 15 次重复，报告标签一致性、概率波动、uncertain 比例和自动处理覆盖率；它明确说明把 top probability 低于 0.60 的结果送人工能提高重复一致性，但该阈值只是示例 policy，不代表校准保证，重复性不等于正确性。",
+      "purpose_tags": [
+        "Q4",
+        "CONSISTENCY",
+        "REPEATABILITY",
+        "ABSTENTION",
+        "HUMAN_REVIEW"
+      ],
+      "local_card": "vault/provenance/ai-assessment-q45/cards/s16-typesafe-consistency-choice.md",
+      "record_path": "vault/provenance/ai-assessment-q45/catalog.json",
+      "limitations": [
+        "单个边界 post、8 个 Choice、每条件 15 次，TypeSafe 调用使用 fresh uid；不能分离同请求随机性与 uid 扰动，也不能推导本业务正确率、校准或优越性。"
+      ],
+      "revisit_when": "Jev/LLM 版本、rubric、uid/cache 机制或业务 action policy 改变；正式上线前用自有标注和未调参测试集重做。"
+    },
+    {
+      "id": "provenance-ai-assessment-q45:s18-pydantic-typesafe",
+      "kind": "external-url",
+      "collection": "provenance-ai-assessment-q45",
+      "title": "Pydantic AI — TypeSafe (Jev)",
+      "original_locator": "https://pydantic.dev/docs/ai/models/typesafe/",
+      "canonical_url": "https://pydantic.dev/docs/ai/models/typesafe/",
+      "reviewed_at": "2026-09-23",
+      "evidence_status": "verified",
+      "summary": "Pydantic AI 的 Jev 集成文档把 schema 类型、原始 probabilities、confidence 和 rubric 的未取整 scores 分开；rubric 结果取最近等级且半数进位。文档要求在自有标签上测 accuracy、阈值和 hand-off rate，并提醒 latest/preview 别名会移动。",
+      "purpose_tags": [
+        "Q4",
+        "SCHEMA",
+        "ROUNDING",
+        "RAW_SCORE",
+        "FALLBACK",
+        "CALIBRATION"
+      ],
+      "local_card": "vault/provenance/ai-assessment-q45/cards/s18-pydantic-typesafe.md",
+      "record_path": "vault/provenance/ai-assessment-q45/catalog.json",
+      "limitations": [
+        "这是框架集成语义和维护者示例，不是 Jev 或业务的独立效果验证；包装层的取整不能替代原始分数和概率；内部支持工单示例太小，不能推导本题业务准确率。"
+      ],
+      "revisit_when": "Pydantic AI 或 TypeSafe provider 版本更新，provider_details 结构、取整规则、latest 别名或 fallback API 变化。"
+    },
+    {
+      "id": "provenance-ai-assessment-q45:s19-pydantic-api-typesafe",
+      "kind": "external-url",
+      "collection": "provenance-ai-assessment-q45",
+      "title": "Pydantic AI — models.typesafe API",
+      "original_locator": "https://pydantic.dev/docs/ai/api/models/typesafe/",
+      "canonical_url": "https://pydantic.dev/docs/ai/api/models/typesafe/",
+      "reviewed_at": "2026-09-23",
+      "evidence_status": "verified",
+      "summary": "API 参考明确 bool threshold 默认 0.5、tool-call threshold 默认 0.6，并区分 bool 的阈值化、float 原始概率、rubric 最近等级和 provider_details 中的 confidence/probabilities/scores。它提醒工具阈值应在自有标注上调校。",
+      "purpose_tags": [
+        "Q4",
+        "SCHEMA",
+        "THRESHOLD",
+        "RAW_SCORE",
+        "VERSIONING",
+        "DEGRADATION"
+      ],
+      "local_card": "vault/provenance/ai-assessment-q45/cards/s19-pydantic-api-typesafe.md",
+      "record_path": "vault/provenance/ai-assessment-q45/catalog.json",
+      "limitations": [
+        "API 默认值不是业务门槛，也不是跨 primitive 可迁移的校准结果；文档中的 provider/model 版本和运行环境不证明服务 SLA、区域稳定性或绝对确定性。"
+      ],
+      "revisit_when": "Pydantic AI API 版本、TypeSafe provider 配置、threshold 默认值或 response metadata 结构变更。"
+    },
+    {
+      "id": "provenance-ai-assessment-q45:s20-google-research-rrsi",
+      "kind": "external-url",
+      "collection": "provenance-ai-assessment-q45",
+      "title": "Google Research — RRSI: Regularized Recursive Self-Improvement of Agent Harnesses",
+      "original_locator": "https://github.com/google-research/rrsi",
+      "canonical_url": "https://github.com/google-research/rrsi",
+      "reviewed_at": "2026-09-23",
+      "evidence_status": "verified",
+      "summary": "RRSI README 把 harness 演化描述为研究方法：开放 prompt、control flow、tools、memory 等编辑空间，但通过编辑预算、完整历史、leakage critic、噪声调整门槛、成本规则、剪枝和独立 worktree 控制搜索；每个编辑保留假设、分数、成本变化和裁决。",
+      "purpose_tags": [
+        "Q5",
+        "RSI",
+        "PLAYBOOK",
+        "VERSIONING",
+        "CANDIDATE",
+        "INDEPENDENT_EVAL",
+        "COST_GUARD"
+      ],
+      "local_card": "vault/provenance/ai-assessment-q45/cards/s20-google-research-rrsi.md",
+      "record_path": "vault/provenance/ai-assessment-q45/catalog.json",
+      "limitations": [
+        "README 明确项目不是受支持的 Google 产品；其 benchmark、代码和工作流不能证明法律 playbook 的正确性、组织成熟度、权限隔离或生产 SLA，也未固定远端默认分支 commit。"
+      ],
+      "revisit_when": "研究论文/仓库 commit、候选选择算法或本题 playbook 变更治理设计改变；正式采用前必须用独立业务评估验证。"
+    },
+    {
+      "id": "provenance-ai-assessment-q45:s22-rsi-exam",
+      "kind": "external-url",
+      "collection": "provenance-ai-assessment-q45",
+      "title": "RSI-Exam — Benchmarking Recursive Self-Improvement through Executable Research",
+      "original_locator": "https://rsi-exam.ai/",
+      "canonical_url": "https://rsi-exam.ai/",
+      "reviewed_at": "2026-09-23",
+      "evidence_status": "verified",
+      "summary": "RSI-Exam 项目页说明 agent 在可见数据上迭代，最后把产物交给隔离 verifier container，在 hidden data 上一次性评分；任务由领域专家编写并由其他人审阅，要求隔离镜像、artifact contract、hidden data 和可信评分代码。",
+      "purpose_tags": [
+        "Q5",
+        "RSI",
+        "INDEPENDENT_EVAL",
+        "HIDDEN_SET",
+        "ISOLATION",
+        "RESEARCH"
+      ],
+      "local_card": "vault/provenance/ai-assessment-q45/cards/s22-rsi-exam.md",
+      "record_path": "vault/provenance/ai-assessment-q45/catalog.json",
+      "limitations": [
+        "这是递归自改进研究 benchmark，不是法律真值、生产发布控制或权限方案；隐藏集隔离不能替代具备相应法域能力的独立标注和争议裁决。页面是动态 HTML，远端资产未保存。"
+      ],
+      "revisit_when": "评估协议、任务库、隔离执行环境或隐藏集规则更新；若用于 Q5，只可作为独立验收的研究参考。"
+    },
+    {
+      "id": "provenance-ai-assessment-q45:s24-anthropic-reward-hacking",
+      "kind": "external-url",
+      "collection": "provenance-ai-assessment-q45",
+      "title": "Anthropic — Natural emergent misalignment from reward hacking",
+      "original_locator": "https://www.anthropic.com/research/emergent-misalignment-reward-hacking",
+      "canonical_url": "https://www.anthropic.com/research/emergent-misalignment-reward-hacking",
+      "reviewed_at": "2026-09-23",
+      "evidence_status": "verified",
+      "summary": "Anthropic 研究把 reward hacking 定义为模型钻评测漏洞以取得高 reward、却没有完成预期任务，并报告在可被 hack 的训练环境中学会作弊后，若干不对齐行为评估同步上升。对 Q5 的可迁移点是把评价器、验收集和发布状态置于候选修改者控制之外，并审计绕过检查的路径。",
+      "purpose_tags": [
+        "Q5",
+        "REWARD_HACKING",
+        "MISALIGNMENT",
+        "EVALUATOR_INDEPENDENCE",
+        "SAFETY_RESEARCH"
+      ],
+      "local_card": "vault/provenance/ai-assessment-q45/cards/s24-anthropic-reward-hacking.md",
+      "record_path": "vault/provenance/ai-assessment-q45/catalog.json",
+      "limitations": [
+        "这是训练研究，不证明本题系统一定出现同类行为，也不是生产治理标准；报告中的实验比例不能直接当作目标系统风险率。"
+      ],
+      "revisit_when": "奖励函数、验收器、评估集或自动发布链改变；出现通过删警告、避开难例、伪造回执等路径时重新做威胁建模。"
+    },
+    {
+      "id": "provenance-ai-assessment-q45:s25-singapore-man-financial-v-wong",
+      "kind": "external-url",
+      "collection": "provenance-ai-assessment-q45",
+      "title": "Singapore Court of Appeal — Man Financial v Wong Bark Chuan David [2007] SGCA 53",
+      "original_locator": "https://www.elitigation.sg/gd/s/2007_SGCA_53",
+      "canonical_url": "https://www.elitigation.sg/gd/s/2007_SGCA_53",
+      "reviewed_at": "2026-09-23",
+      "evidence_status": "verified",
+      "summary": "判决正文说明其在雇佣关系中澄清并重述 restraint of trade doctrine，并讨论 settlement/compromise、可保护的 proprietary interest 及限制条款对当事人和公共利益的合理性。它支持的是具体判决中的法理和事实审查，不支持跨法域或跨国家套用补偿数字。",
+      "purpose_tags": [
+        "Q5",
+        "SG",
+        "LEGAL_CONCEPT",
+        "RESTRAINT_OF_TRADE",
+        "BOUNDARY"
+      ],
+      "local_card": "vault/provenance/ai-assessment-q45/cards/s25-singapore-man-financial-v-wong.md",
+      "record_path": "vault/provenance/ai-assessment-q45/catalog.json",
+      "limitations": [
+        "这是 2007 年具体判决，不是最新新加坡竞业限制法的穷尽检索，也不是本题合同的法律意见；没有据此推导 SG/VN 通用公式。"
+      ],
+      "revisit_when": "需要形成新加坡正式法律结论、适用新法或具体合同事实发生变化时，补查后续法源并由相应法域律师复核。"
+    },
+    {
+      "id": "provenance-ai-assessment-q45:s26-de-hgb-74",
+      "kind": "external-url",
+      "collection": "provenance-ai-assessment-q45",
+      "title": "Germany — Handelsgesetzbuch §74",
+      "original_locator": "https://www.gesetze-im-internet.de/hgb/__74.html",
+      "canonical_url": "https://www.gesetze-im-internet.de/hgb/__74.html",
+      "reviewed_at": "2026-09-23",
+      "evidence_status": "verified",
+      "summary": "HGB §74(1)要求离职后竞业限制以书面形式并交付签署文件；§74(2)规定竞业限制期间每年补偿至少达到最后合同给付的一半。",
+      "purpose_tags": [
+        "Q5",
+        "DE",
+        "LEGAL_CONCEPT",
+        "NONCOMPETE",
+        "COMPENSATION",
+        "50_PERCENT"
+      ],
+      "local_card": "vault/provenance/ai-assessment-q45/cards/s26-de-hgb-74.md",
+      "record_path": "vault/provenance/ai-assessment-q45/catalog.json",
+      "limitations": [
+        "简单 fixture 若已明确适用的离职后竞业限制、主体、期间和可计入的合同给付，月薪×12×50%可以是年度最低补偿的算术表达；本条不把 50% 变成普遍制裁，也不独自给出完整公式或事实结论。这里只做概念核对，不作完整德国法律意见。"
+      ],
+      "revisit_when": "使用德国公式或判断条款可执行性时，复核适用主体、合同给付、期间和后续法源，并联读 S26 共同主题组。"
+    },
+    {
+      "id": "provenance-ai-assessment-q45:s26-de-hgb-74a",
+      "kind": "external-url",
+      "collection": "provenance-ai-assessment-q45",
+      "title": "Germany — Handelsgesetzbuch §74a",
+      "original_locator": "https://www.gesetze-im-internet.de/hgb/__74a.html",
+      "canonical_url": "https://www.gesetze-im-internet.de/hgb/__74a.html",
+      "reviewed_at": "2026-09-23",
+      "evidence_status": "verified",
+      "summary": "HGB §74a 将竞业限制限定为保护合法商业利益，不能造成不公平职业阻碍，期限不得超过离职后两年，并列出其他无效情形。",
+      "purpose_tags": [
+        "Q5",
+        "DE",
+        "LEGAL_CONCEPT",
+        "NONCOMPETE",
+        "SCOPE",
+        "BOUNDARY"
+      ],
+      "local_card": "vault/provenance/ai-assessment-q45/cards/s26-de-hgb-74a.md",
+      "record_path": "vault/provenance/ai-assessment-q45/catalog.json",
+      "limitations": [
+        "本条只补充适用边界，不独自决定具体合同有效性或补偿金额；这里只做概念核对，不作完整德国法律意见。"
+      ],
+      "revisit_when": "使用德国公式或判断条款可执行性时，联读 S26 共同主题组并复核后续法源和事实。"
+    },
+    {
+      "id": "provenance-ai-assessment-q45:s26-de-hgb-74b",
+      "kind": "external-url",
+      "collection": "provenance-ai-assessment-q45",
+      "title": "Germany — Handelsgesetzbuch §74b",
+      "original_locator": "https://www.gesetze-im-internet.de/hgb/__74b.html",
+      "canonical_url": "https://www.gesetze-im-internet.de/hgb/__74b.html",
+      "reviewed_at": "2026-09-23",
+      "evidence_status": "verified",
+      "summary": "HGB §74b 规定补偿于每月末支付；佣金或变动给付按最近三年平均，特殊费用性质的给付不计入。",
+      "purpose_tags": [
+        "Q5",
+        "DE",
+        "LEGAL_CONCEPT",
+        "COMPENSATION",
+        "PAYMENT",
+        "BOUNDARY"
+      ],
+      "local_card": "vault/provenance/ai-assessment-q45/cards/s26-de-hgb-74b.md",
+      "record_path": "vault/provenance/ai-assessment-q45/catalog.json",
+      "limitations": [
+        "本条说明支付时点和部分基数处理，不独自证明月薪就是全部合同给付，也不构成完整德国法律意见。"
+      ],
+      "revisit_when": "使用德国补偿公式或面对佣金、变动给付、费用时，联读 S26 共同主题组并复核后续法源和事实。"
+    },
+    {
+      "id": "provenance-ai-assessment-q45:s26-de-gewo-110",
+      "kind": "external-url",
+      "collection": "provenance-ai-assessment-q45",
+      "title": "Germany — Gewerbeordnung §110",
+      "original_locator": "https://www.gesetze-im-internet.de/gewo/__110.html",
+      "canonical_url": "https://www.gesetze-im-internet.de/gewo/__110.html",
+      "reviewed_at": "2026-09-23",
+      "evidence_status": "verified",
+      "summary": "GewO §110 说明雇主与雇员可约定离职后的职业限制，并规定 HGB §§74-75f 相应适用。",
+      "purpose_tags": [
+        "Q5",
+        "DE",
+        "LEGAL_CONCEPT",
+        "NONCOMPETE",
+        "CROSS_REFERENCE",
+        "BOUNDARY"
+      ],
+      "local_card": "vault/provenance/ai-assessment-q45/cards/s26-de-gewo-110.md",
+      "record_path": "vault/provenance/ai-assessment-q45/catalog.json",
+      "limitations": [
+        "本条是相应适用的入口，不独自给出具体补偿、有效性或事实结论；这里只做概念核对，不作完整德国法律意见。"
+      ],
+      "revisit_when": "使用德国公式、判断主体范围或条款可执行性时，联读 S26 共同主题组并复核后续法源和事实。"
+    },
+    {
+      "id": "provenance-ai-assessment-q45:s28-ofac-50-percent-rule",
+      "kind": "external-url",
+      "collection": "provenance-ai-assessment-q45",
+      "title": "US Treasury OFAC — Entities Owned by Blocked Persons (50 Percent Rule)",
+      "original_locator": "https://ofac.treasury.gov/faqs/topic/1521",
+      "canonical_url": "https://ofac.treasury.gov/faqs/topic/1521",
+      "reviewed_at": "2026-09-23",
+      "evidence_status": "verified",
+      "summary": "OFAC FAQ 的 50 Percent Rule 讨论一个或多个 blocked persons 对实体的直接或间接、合计 50% 以上所有权及其 blocked property 后果；控制但不拥有 50% 并不会仅因该规则自动 block。它与竞业补偿的 50% 不是同一概念。",
+      "purpose_tags": [
+        "Q5",
+        "OFAC",
+        "50_PERCENT",
+        "CONCEPT_DISAMBIGUATION",
+        "SANCTIONS_BOUNDARY"
+      ],
+      "local_card": "vault/provenance/ai-assessment-q45/cards/s28-ofac-50-percent-rule.md",
+      "record_path": "vault/provenance/ai-assessment-q45/catalog.json",
+      "limitations": [
+        "这里只核对同名规则的概念区别，不构成制裁筛查、美国法适用或交易法律意见，也不能仅凭题干断言其一定引用 OFAC。"
+      ],
+      "revisit_when": "题干出现 50 Percent Rule、blocked person、制裁或所有权结构时；OFAC FAQ 或制裁项目更新时复查。"
+    },
+    {
       "id": "provenance-architecture-review-2026-09-20:praxis-repository",
       "kind": "external-url",
       "collection": "provenance-architecture-review-2026-09-20",
@@ -3113,6 +3873,146 @@
         "摘要中的概括尚未独立核验，不能写成符合性认证、法规意见或系统风险验证。"
       ],
       "revisit_when": "需要把风险、责任或评估要求写入 README、场景契约或验收时逐页核查。"
+    },
+    {
+      "id": "provenance-cw-frontend-references:cw-wcag-target-size-minimum",
+      "kind": "external-url",
+      "collection": "provenance-cw-frontend-references",
+      "title": "WCAG 2.2 SC 2.5.8 Target Size (Minimum)",
+      "original_locator": "https://www.w3.org/WAI/WCAG22/Understanding/target-size-minimum",
+      "canonical_url": "https://www.w3.org/WAI/WCAG22/Understanding/target-size-minimum",
+      "reviewed_at": "2026-09-23",
+      "evidence_status": "partial",
+      "summary": "本地外部索引报告 WCAG 2.2 AA 目标尺寸 24 CSS px 及 spacing/equivalent 等例外，并把 44px 保留为 coarse/touch 或高后果控件的 CW 选择；不把 44px 说成通用 WCAG 要求。",
+      "purpose_tags": [
+        "ACCESSIBILITY",
+        "TARGET_SIZE",
+        "CW",
+        "SE"
+      ],
+      "local_card": "vault/provenance/cw-frontend-references/cards/cw-wcag-target-size-minimum.md",
+      "record_path": "vault/provenance/cw-frontend-references/catalog.json",
+      "limitations": [
+        "本批没有重新访问 W3C 正文；该条只证明本地记录曾报告此主张，不是本次独立法规/标准核验，也不等于 CW 每个控件已通过验证。"
+      ],
+      "revisit_when": "开始前端绘制、目标尺寸或无障碍验收时重新读取规范正文并按实际 target geometry 验证。"
+    },
+    {
+      "id": "provenance-cw-frontend-references:cw-wcag-resize-text",
+      "kind": "external-url",
+      "collection": "provenance-cw-frontend-references",
+      "title": "WCAG 2.2 SC 1.4.4 Resize Text",
+      "original_locator": "https://www.w3.org/WAI/WCAG22/Understanding/resize-text.html",
+      "canonical_url": "https://www.w3.org/WAI/WCAG22/Understanding/resize-text.html",
+      "reviewed_at": "2026-09-23",
+      "evidence_status": "partial",
+      "summary": "本地索引把 200% text resize/reflow 与内容不裁剪作为 CW 必须测试的内容完整性约束，并拒绝用固定高度 overflow 隐藏正常文本。",
+      "purpose_tags": [
+        "ACCESSIBILITY",
+        "REFLOW",
+        "TEXT",
+        "CW",
+        "SE"
+      ],
+      "local_card": "vault/provenance/cw-frontend-references/cards/cw-wcag-resize-text.md",
+      "record_path": "vault/provenance/cw-frontend-references/catalog.json",
+      "limitations": [
+        "未重新核查 W3C 正文，未运行 200% zoom/text-spacing/browser 检查；没有形成 CW 页面通过结论。"
+      ],
+      "revisit_when": "绘制正文、状态卡、菜单和 tab panel 时重新读取标准并执行 200%/text-spacing/reflow 验证。"
+    },
+    {
+      "id": "provenance-cw-frontend-references:cw-wai-aria-tabs",
+      "kind": "external-url",
+      "collection": "provenance-cw-frontend-references",
+      "title": "WAI-ARIA Authoring Practices — Tabs Pattern",
+      "original_locator": "https://www.w3.org/WAI/ARIA/apg/patterns/tabs/",
+      "canonical_url": "https://www.w3.org/WAI/ARIA/apg/patterns/tabs/",
+      "reviewed_at": "2026-09-23",
+      "evidence_status": "partial",
+      "summary": "本地 Claude/frontend handoff 将 APG Tabs 作为 tablist/tab/tabpanel 关系、键盘箭头、显式/自动激活和动态面板延迟的行为参考；它不提供 CW 权限、后端状态或技术栈。",
+      "purpose_tags": [
+        "ACCESSIBILITY",
+        "TABS",
+        "KEYBOARD",
+        "PREVIEW",
+        "SE"
+      ],
+      "local_card": "vault/provenance/cw-frontend-references/cards/cw-wai-aria-tabs.md",
+      "record_path": "vault/provenance/cw-frontend-references/catalog.json",
+      "limitations": [
+        "本批未重新访问 APG 正文，也未重新运行 tabbed Preview 键盘/焦点验证；记录中的实现状态来自 Courtwork 回执。"
+      ],
+      "revisit_when": "绘制或实现 tabs/Preview/section navigation 时复核 APG 版本、激活策略、焦点归还和加载时机。"
+    },
+    {
+      "id": "provenance-cw-frontend-references:cw-carbon-button-style",
+      "kind": "external-url",
+      "collection": "provenance-cw-frontend-references",
+      "title": "Carbon — Button style",
+      "original_locator": "https://carbondesignsystem.com/components/button/style/",
+      "canonical_url": "https://carbondesignsystem.com/components/button/style/",
+      "reviewed_at": "2026-09-23",
+      "evidence_status": "partial",
+      "summary": "本地外部索引报告 Carbon 的 control-height ladder、icon size、label case 和 group spacing 作为“尺寸、图标、文字、间距分开”的 donor；明确不整体复制 Carbon 数值或引入依赖。",
+      "purpose_tags": [
+        "CONTROL_DENSITY",
+        "BUTTON",
+        "TOKENS",
+        "SE"
+      ],
+      "local_card": "vault/provenance/cw-frontend-references/cards/cw-carbon-button-style.md",
+      "record_path": "vault/provenance/cw-frontend-references/catalog.json",
+      "limitations": [
+        "本批未重新访问 Carbon 页面；本地记录明确称它是概念 donor，不能证明当前 Carbon 页面数值、CW 兼容性或 CW 现有实现。"
+      ],
+      "revisit_when": "需要具体按钮/compact control 设计或外部对照时重新读取页面并固定版本/截图范围。"
+    },
+    {
+      "id": "provenance-cw-frontend-references:cw-radix-spacing",
+      "kind": "external-url",
+      "collection": "provenance-cw-frontend-references",
+      "title": "Radix Themes — Spacing",
+      "original_locator": "https://www.radix-ui.com/themes/docs/theme/spacing",
+      "canonical_url": "https://www.radix-ui.com/themes/docs/theme/spacing",
+      "reviewed_at": "2026-09-23",
+      "evidence_status": "partial",
+      "summary": "本地索引报告 Radix spacing scale 和 scaling 联动 font/line-height 的 token 原则；CW 只取 token/scaling 思路，不引入 React/Radix 依赖。",
+      "purpose_tags": [
+        "TOKENS",
+        "SPACING",
+        "SCALING",
+        "SE"
+      ],
+      "local_card": "vault/provenance/cw-frontend-references/cards/cw-radix-spacing.md",
+      "record_path": "vault/provenance/cw-frontend-references/catalog.json",
+      "limitations": [
+        "本批未重新访问 Radix 页面；不证明 Radix 当前数值、CW 采用了其 tokens，或 vanilla JS 项目需要迁移框架。"
+      ],
+      "revisit_when": "若遇到具体 token/scaling 缺口，再核验 Radix 当前文档并比较 CW 现有 tokens。"
+    },
+    {
+      "id": "provenance-cw-frontend-references:cw-vscode-contribution-points",
+      "kind": "external-url",
+      "collection": "provenance-cw-frontend-references",
+      "title": "VS Code — Contribution Points",
+      "original_locator": "https://code.visualstudio.com/api/references/contribution-points#contributes.menus",
+      "canonical_url": "https://code.visualstudio.com/api/references/contribution-points#contributes.menus",
+      "reviewed_at": "2026-09-23",
+      "evidence_status": "partial",
+      "summary": "Courtwork handoff 记录 VS Code Contribution Points 作为菜单可见条件与命令 enablement 的行为参照；它不授予 CW 权限，不提供 CW backend 状态或技术迁移许可。",
+      "purpose_tags": [
+        "MENU",
+        "ENABLEMENT",
+        "SEMANTIC_STATE",
+        "SE"
+      ],
+      "local_card": "vault/provenance/cw-frontend-references/cards/cw-vscode-contribution-points.md",
+      "record_path": "vault/provenance/cw-frontend-references/catalog.json",
+      "limitations": [
+        "本批未重新访问 VS Code 文档；只保留本地 handoff 的 reported-in-local-record，不继承其他验证状态。"
+      ],
+      "revisit_when": "绘制菜单、动作可用性或条件可见性时重新核验当前贡献点语义，再映射 CW 自己的 Host/permission facts。"
     },
     {
       "id": "provenance-documentation-practices:diataxis-start-here",
@@ -3239,6 +4139,872 @@
         "采用工作流导航与缺失入口检查的思想；不建立与 GitLab 相同的全局 nav YAML、审批角色或页面报告命令，除非后续实现任务证明有必要。 本次未保存 GitLab 导航配置或其仓库文件；只核查公开方法页，未复现其月度报告或评估真实导航使用数据。"
       ],
       "revisit_when": "新增文档存在但无法从任务入口发现。 顶层 README 链接增长到读者无法选择，或同一链接在多个任务下含义不清。 需要判断页面应进入常用入口、二级参考或仅留在追溯目录。 GitLab 更新其工作流导航、缺页报告或 Get started 结构。"
+    },
+    {
+      "id": "provenance-explanation-visualization-references:show-me",
+      "kind": "external-url",
+      "collection": "provenance-explanation-visualization-references",
+      "title": "show-me upstream SKILL.md",
+      "original_locator": "https://github.com/humanlayer/skills/blob/main/plugins/show-me/skills/show-me/SKILL.md",
+      "canonical_url": "https://raw.githubusercontent.com/humanlayer/skills/ca7c8088db69e315a8b2deea43820270457f8f3c/plugins/show-me/skills/show-me/SKILL.md",
+      "reviewed_at": "2026-09-23",
+      "evidence_status": "source-read-and-pinned",
+      "summary": "按问题选择必要的表达方式，使逻辑、状态或改动直接可见。",
+      "purpose_tags": [
+        "GRAMMAR",
+        "BUILD"
+      ],
+      "local_card": "vault/distilled/frontend-design/explanation-visualization-index.md",
+      "record_path": "vault/provenance/explanation-visualization-references/catalog.json",
+      "limitations": [
+        "固定版本原文作为方法参考；不是运行测试或当前答卷视觉验收。未安装或执行。"
+      ],
+      "revisit_when": "准备安装、复制实现或采用新版本时复核许可证及差异。"
+    },
+    {
+      "id": "provenance-explanation-visualization-references:visual-explainer",
+      "kind": "external-url",
+      "collection": "provenance-explanation-visualization-references",
+      "title": "visual-explainer upstream SKILL.md",
+      "original_locator": "https://github.com/nicobailon/visual-explainer/blob/main/plugins/visual-explainer/SKILL.md",
+      "canonical_url": "https://raw.githubusercontent.com/nicobailon/visual-explainer/7163c3e10660912e0b89e1af465db9f387282b88/plugins/visual-explainer/SKILL.md",
+      "reviewed_at": "2026-09-23",
+      "evidence_status": "source-read-and-pinned",
+      "summary": "以机制、主张和内容关系决定表达与编排，图注说清支持的判断。",
+      "purpose_tags": [
+        "GRAMMAR",
+        "BUILD"
+      ],
+      "local_card": "vault/distilled/frontend-design/explanation-visualization-index.md",
+      "record_path": "vault/provenance/explanation-visualization-references/catalog.json",
+      "limitations": [
+        "固定版本原文作为方法参考；不是运行测试或当前答卷视觉验收。未安装或执行。"
+      ],
+      "revisit_when": "准备安装、复制实现或采用新版本时复核许可证及差异。"
+    },
+    {
+      "id": "provenance-explanation-visualization-references:data-visualization",
+      "kind": "external-url",
+      "collection": "provenance-explanation-visualization-references",
+      "title": "data-visualization upstream SKILL.md",
+      "original_locator": "https://github.com/openai/plugins/blob/main/plugins/build-web-data-visualization/skills/data-visualization/SKILL.md",
+      "canonical_url": "https://raw.githubusercontent.com/openai/plugins/1dc195897af4161d039b80d8471ec0a10c9bbc89/plugins/build-web-data-visualization/skills/data-visualization/SKILL.md",
+      "reviewed_at": "2026-09-23",
+      "evidence_status": "source-read-and-pinned",
+      "summary": "先确定分析任务、数据与交付条件，再选择图式及实现。",
+      "purpose_tags": [
+        "GRAMMAR",
+        "BUILD"
+      ],
+      "local_card": "vault/distilled/frontend-design/explanation-visualization-index.md",
+      "record_path": "vault/provenance/explanation-visualization-references/catalog.json",
+      "limitations": [
+        "固定版本原文作为方法参考；不是运行测试或当前答卷视觉验收。未安装或执行。"
+      ],
+      "revisit_when": "准备安装、复制实现或采用新版本时复核许可证及差异。"
+    },
+    {
+      "id": "provenance-jev-community-runtime:jc-s01-typesafe-models",
+      "kind": "external-url",
+      "collection": "provenance-jev-community-runtime",
+      "title": "TypeSafe Models",
+      "original_locator": "https://docs.typesafe.ai/models.md",
+      "canonical_url": "https://docs.typesafe.ai/models.md",
+      "reviewed_at": "2026-09-23",
+      "evidence_status": "verified",
+      "summary": "当前模型页列出 Jev 1.13 / `jev-1.13.0`、输入计费、请求与 state/question 上下文边界、别名解析、文本输入限制、英语优先及版本化 ID 记录建议。",
+      "purpose_tags": [
+        "GRAMMAR",
+        "SCALE",
+        "SOURCE"
+      ],
+      "local_card": "vault/provenance/jev-community-runtime/cards/jc-s01-typesafe-models.md",
+      "record_path": "vault/provenance/jev-community-runtime/catalog.json",
+      "limitations": [
+        "页面同时标注 rate limits 会动态调整；价格、别名、模型可用性和账户配额是访问日文档状态，不是本次 API 实测或长期承诺。"
+      ],
+      "revisit_when": "Jev 版本/别名、上下文上限、价格、rate limit、语言能力或 data handling 文档变化时；任何阈值校准前重新读取。"
+    },
+    {
+      "id": "provenance-jev-community-runtime:jc-s02-typesafe-legal",
+      "kind": "external-url",
+      "collection": "provenance-jev-community-runtime",
+      "title": "TypeSafe Legal",
+      "original_locator": "https://docs.typesafe.ai/legal.md",
+      "canonical_url": "https://docs.typesafe.ai/legal.md",
+      "reviewed_at": "2026-09-23",
+      "evidence_status": "verified",
+      "summary": "官方 Legal 索引说明数据保留、不训练承诺及相关法律文件入口，并明确写出 enterprise customers 可申请 ZDR、需要联系 privacy@typesafe.ai。",
+      "purpose_tags": [
+        "SOURCE",
+        "GRAMMAR"
+      ],
+      "local_card": "vault/provenance/jev-community-runtime/cards/jc-s02-typesafe-legal.md",
+      "record_path": "vault/provenance/jev-community-runtime/catalog.json",
+      "limitations": [
+        "该页没有逐条确认普通账户默认 ZDR、每条数据路径、SLA、独立安全测试或地区部署；ZDR 申请资格不等于已启用或本地处理。"
+      ],
+      "revisit_when": "签署 DPA/MCA、核对账户 ZDR、数据区域、SLA、保留策略或安全测试权限时，必须逐条读取链接后的合同/政策。"
+    },
+    {
+      "id": "provenance-jev-community-runtime:jc-s03-autoresearch-feature-discovery",
+      "kind": "external-url",
+      "collection": "provenance-jev-community-runtime",
+      "title": "Autoresearch feature discovery",
+      "original_locator": "https://docs.typesafe.ai/cookbooks/autoresearch_feature_discovery.md",
+      "canonical_url": "https://docs.typesafe.ai/cookbooks/autoresearch_feature_discovery.md",
+      "reviewed_at": "2026-09-23",
+      "evidence_status": "partial",
+      "summary": "Cookbook 把 Jev 的 score/noul 输出编码成数值特征，由 CatBoost 训练评分预测器；2,000 条 wine reviews 中 800 条留出，18→38 个问题的五轮特征发现把示例 held-out RMSE 从 1.87 降到 1.77。代码固定 `jev-1.12`，不是当前 1.13.0 复测。",
+      "purpose_tags": [
+        "GRAMMAR",
+        "BUILD",
+        "SCALE"
+      ],
+      "local_card": "vault/provenance/jev-community-runtime/cards/jc-s03-autoresearch-feature-discovery.md",
+      "record_path": "vault/provenance/jev-community-runtime/catalog.json",
+      "limitations": [
+        "这是厂商示例和作者设定的数据集；RMSE 不等于通用业务正确性，留出集是该示例内部评估，问题/特征发现受其程序与数据分布影响。"
+      ],
+      "revisit_when": "将 Jev 特征接入业务、升级 Jev、改变标签/数据集或修改问题生成器时，需重新固定版本、数据切分、独立验收集和特征漂移测试。"
+    },
+    {
+      "id": "provenance-jev-community-runtime:jc-s04-sde-cascade",
+      "kind": "external-url",
+      "collection": "provenance-jev-community-runtime",
+      "title": "SDE cascade",
+      "original_locator": "https://docs.typesafe.ai/cookbooks/sde_cascade.md",
+      "canonical_url": "https://docs.typesafe.ai/cookbooks/sde_cascade.md",
+      "reviewed_at": "2026-09-23",
+      "evidence_status": "partial",
+      "summary": "SDE cookbook 展示 mini 提取→Jev 逐字段验证→必要时升级 reasoning 的级联，并明确案例使用 `jev-1.12`；100 prompts 的成本/质量曲线是历史快照，文档说没有按当前 Jev 费率重算。",
+      "purpose_tags": [
+        "GRAMMAR",
+        "SCALE"
+      ],
+      "local_card": "vault/provenance/jev-community-runtime/cards/jc-s04-sde-cascade.md",
+      "record_path": "vault/provenance/jev-community-runtime/catalog.json",
+      "limitations": [
+        "示例含硬编码/单例展示和供应商自报成本；100 prompts 不是本轮独立复现，价格来自文档核对日和外部链接，不能当当前账单或上线收益。"
+      ],
+      "revisit_when": "模型/价格、Jev 版本、gate threshold、提取字段或升级策略变化时；重新测 accepted result、误检、漏检、端到端延迟和总成本。"
+    },
+    {
+      "id": "provenance-jev-community-runtime:jc-s05-langchain-jev-agent-evals",
+      "kind": "external-url",
+      "collection": "provenance-jev-community-runtime",
+      "title": "Jev-as-a-Judge for Agent Evals",
+      "original_locator": "https://www.langchain.com/blog/jev-agent-evals-langsmith",
+      "canonical_url": "https://www.langchain.com/blog/jev-agent-evals-langsmith",
+      "reviewed_at": "2026-09-23",
+      "evidence_status": "partial",
+      "summary": "LangChain 将 5 条固定 weather agent runs 存为数据集，每条固定行为重复评估 100 次；以一位 human reviewer 的标签作 oracle，报告 Jev 与 GPT-5.6 Luna/Terra/Claude Sonnet 4.6 的一致性、方差、费用和延迟。",
+      "purpose_tags": [
+        "GRAMMAR",
+        "SCALE",
+        "SOURCE"
+      ],
+      "local_card": "vault/provenance/jev-community-runtime/cards/jc-s05-langchain-jev-agent-evals.md",
+      "record_path": "vault/provenance/jev-community-runtime/catalog.json",
+      "limitations": [
+        "5 条固定轨迹 × 100 是 500 次重复判断，不是 500 个独立任务；低方差不保证正确；一位标注者、LLM judge 配置未固定 temperature/top-p/seed/max tokens，Jev service version 未写入实验元数据。S06 复用该实验，不是第二次独立复现。"
+      ],
+      "revisit_when": "更换 agent/轨迹、人工标注者、模型/服务版本、judge 配置或生产数据分布时；用独立任务和多标注者重新评估。"
+    },
+    {
+      "id": "provenance-jev-community-runtime:jc-s06-langchain-jev-integration",
+      "kind": "external-url",
+      "collection": "provenance-jev-community-runtime",
+      "title": "Jev is now available in LangSmith Evals",
+      "original_locator": "https://www.langchain.com/blog/jev-is-now-available-in-langsmith-evals",
+      "canonical_url": "https://www.langchain.com/blog/jev-is-now-available-in-langsmith-evals",
+      "reviewed_at": "2026-09-23",
+      "evidence_status": "partial",
+      "summary": "LangSmith 公告说明 Jev 可作为 online evaluator，以 typed questions 生成 feedback keys；文中直接复用 S05 结果，并在当时的 LangSmith provider 配置说明中写出 TypeSafe 当前不提供 ZDR。",
+      "purpose_tags": [
+        "GRAMMAR",
+        "SCALE",
+        "SOURCE"
+      ],
+      "local_card": "vault/provenance/jev-community-runtime/cards/jc-s06-langchain-jev-integration.md",
+      "record_path": "vault/provenance/jev-community-runtime/catalog.json",
+      "limitations": [
+        "它不是第二次独立实验；ZDR 表述是该接入路径/公告时点的产品说明，和 TypeSafe enterprise ZDR 索引及 Vercel AI Gateway 的按请求 ZDR 选项不能拼成统一账户结论。"
+      ],
+      "revisit_when": "LangSmith provider、TypeSafe 合同、ZDR 选项、在线 evaluator 数据流或 S05 实验版本变化时；分别核对通道与账户。"
+    },
+    {
+      "id": "provenance-jev-community-runtime:jc-s07-vercel-typesafe-jev",
+      "kind": "external-url",
+      "collection": "provenance-jev-community-runtime",
+      "title": "TypeSafe AI's Jev now available on AI Gateway",
+      "original_locator": "https://vercel.com/changelog/typesafe-ai-jev-now-available-on-ai-gateway",
+      "canonical_url": "https://vercel.com/changelog/typesafe-ai-jev-now-available-on-ai-gateway",
+      "reviewed_at": "2026-09-23",
+      "evidence_status": "partial",
+      "summary": "Vercel AI Gateway 公告展示 `experimental_evaluate`/`typesafe-ai/jev` 的 Boolean/Choice/Score 接口、`providerOptions.gateway.zeroDataRetention: true` 示例，并说明 confidence/metadata 与日志/预算入口。",
+      "purpose_tags": [
+        "GRAMMAR",
+        "SCALE",
+        "SOURCE"
+      ],
+      "local_card": "vault/provenance/jev-community-runtime/cards/jc-s07-vercel-typesafe-jev.md",
+      "record_path": "vault/provenance/jev-community-runtime/catalog.json",
+      "limitations": [
+        "这是 AI Gateway 通道的示例和产品声明，不是所有 TypeSafe 账户默认 ZDR、不是本地处理、也不是本轮实际启用 ZDR 的证明；实验 API 名称和版本会变化。"
+      ],
+      "revisit_when": "AI SDK/API 版本、Gateway provider options、日志/保留策略、账户合同或 ZDR 默认值变化时；正式接入前做配置和数据流核验。"
+    },
+    {
+      "id": "provenance-jev-community-runtime:jc-s08-vercel-http-api",
+      "kind": "external-url",
+      "collection": "provenance-jev-community-runtime",
+      "title": "AI Gateway now supports TypeSafe clients and an HTTP API for Jev",
+      "original_locator": "https://vercel.com/changelog/ai-gateway-now-supports-typesafe-clients-and-http-api-for-jev",
+      "canonical_url": "https://vercel.com/changelog/ai-gateway-now-supports-typesafe-clients-and-http-api-for-jev",
+      "reviewed_at": "2026-09-23",
+      "evidence_status": "partial",
+      "summary": "Vercel 公告提供 TypeSafe client 改 baseURL、HTTP `/v1/evaluate` 和 AI SDK 三条 Gateway 路径，说明请求计入 Gateway usage/observability，并保留 typed answers/probabilities。",
+      "purpose_tags": [
+        "GRAMMAR",
+        "SCALE",
+        "SOURCE"
+      ],
+      "local_card": "vault/provenance/jev-community-runtime/cards/jc-s08-vercel-http-api.md",
+      "record_path": "vault/provenance/jev-community-runtime/catalog.json",
+      "limitations": [
+        "兼容入口不证明各路径完全相同的版本、舍入、metadata、故障域或数据保留；公告中的免费促销和当前价格不作为本批账单证据。"
+      ],
+      "revisit_when": "Gateway API、TypeSafe SDK、HTTP schema、模型版本、计费/观测或 ZDR 配置变化时；接入前记录原始响应和通道。"
+    },
+    {
+      "id": "provenance-jev-community-runtime:jc-s09-jev-harness-lab-readme",
+      "kind": "external-url",
+      "collection": "provenance-jev-community-runtime",
+      "title": "jev-harness-lab README",
+      "original_locator": "https://github.com/Aitejiu/jev-harness-lab/blob/main/README.md",
+      "canonical_url": "https://github.com/Aitejiu/jev-harness-lab/blob/main/README.md",
+      "reviewed_at": "2026-09-23",
+      "evidence_status": "partial",
+      "summary": "社区仓库提供 Jev MCP server 的 injection/bash-risk/rank-candidates 工具和 skill router，并在 README 摘要报告工具路由、skill 选择、风险门控、模型难度路由和轨迹归因结果。",
+      "purpose_tags": [
+        "BUILD",
+        "GRAMMAR",
+        "SCALE"
+      ],
+      "local_card": "vault/provenance/jev-community-runtime/cards/jc-s09-jev-harness-lab-readme.md",
+      "record_path": "vault/provenance/jev-community-runtime/catalog.json",
+      "limitations": [
+        "README 是作者自述和入口，不是独立复现或生产验收；其安装命令、API key、MCP/skill 权限与报告数字未在本轮执行；总调用/费用需与 REPORT 的局部统计区分。"
+      ],
+      "revisit_when": "仓库 main、发布包、评测数据、模型版本或报告发生变化时；采用 MCP/skill router 前必须在隔离环境审查工具权限和数据出口。"
+    },
+    {
+      "id": "provenance-jev-community-runtime:jc-s10-jev-harness-lab-report",
+      "kind": "external-url",
+      "collection": "provenance-jev-community-runtime",
+      "title": "jev-harness-lab 技术评估报告",
+      "original_locator": "https://github.com/Aitejiu/jev-harness-lab/blob/main/docs/REPORT.md",
+      "canonical_url": "https://github.com/Aitejiu/jev-harness-lab/blob/main/docs/REPORT.md",
+      "reviewed_at": "2026-09-23",
+      "evidence_status": "partial",
+      "summary": "报告把 Jev 用于注入检测、检索重排、意图分类、命令风险、工具/agent 路由和 skill router，并保留模型难度路由 51.3%、轨迹失败归因 AUROC 0.560、中文子集 14.6% 等负结果；报告还说明工具路由条件是目录已知的候选选择。",
+      "purpose_tags": [
+        "GRAMMAR",
+        "SCALE",
+        "SOURCE"
+      ],
+      "local_card": "vault/provenance/jev-community-runtime/cards/jc-s10-jev-harness-lab-report.md",
+      "record_path": "vault/provenance/jev-community-runtime/catalog.json",
+      "limitations": [
+        "作者报告不是独立审计；数据集、criteria、阈值和同集迭代需复核；README 总计约 22,500 calls/$2.19，而报告方法段局部写 13,616 calls/$0.45，不能合并成一个无歧义总账。安全检测结果不等于生产安全认证，模型路由负结果不能推成所有能力路由都失败。"
+      ],
+      "revisit_when": "报告或结果 JSON 更新、criteria/阈值变化、数据集切片和模型版本变化时；独立复现前逐项核对调用数、费用、重复/泄漏和 held-out 规则。"
+    },
+    {
+      "id": "provenance-jev-community-runtime:jc-s11-jevbench-readme",
+      "kind": "external-url",
+      "collection": "provenance-jev-community-runtime",
+      "title": "JevBench README",
+      "original_locator": "https://github.com/fstandhartinger/jevbench/blob/main/README.md",
+      "canonical_url": "https://github.com/fstandhartinger/jevbench/blob/main/README.md",
+      "reviewed_at": "2026-09-23",
+      "evidence_status": "partial",
+      "summary": "JevBench v1.3.0 将 chance-corrected Intelligence、Calibration、Speed、Cost 以几何平均组合，基于 534 decisions；Cost 明确是每 1,000 个 decision，不是 token。README 还把 classifier.dev Fast 标为 Jev 底层服务的 honorable mention，不与 Jev 自身重复排名。",
+      "purpose_tags": [
+        "GRAMMAR",
+        "SCALE",
+        "SOURCE"
+      ],
+      "local_card": "vault/provenance/jev-community-runtime/cards/jc-s11-jevbench-readme.md",
+      "record_path": "vault/provenance/jev-community-runtime/catalog.json",
+      "limitations": [
+        "复合权重、延迟 ×2/+0.15s 调整和部分价格估算是 benchmark 作者规则/假设；534 decisions 不是所有业务任务，榜单不等于生产 SLA 或独立业务正确性。"
+      ],
+      "revisit_when": "JevBench 版本、decision set、复合权重、价格/延迟口径或 classifier.dev 底层模型变化时；引用数字需锁定 tag/artifact。"
+    },
+    {
+      "id": "provenance-jev-community-runtime:jc-s12-jevbench-combination-study",
+      "kind": "external-url",
+      "collection": "provenance-jev-community-runtime",
+      "title": "JevBench combination study",
+      "original_locator": "https://github.com/fstandhartinger/jevbench/blob/main/RESULTS-COMBINATIONS.md",
+      "canonical_url": "https://github.com/fstandhartinger/jevbench/blob/main/RESULTS-COMBINATIONS.md",
+      "reviewed_at": "2026-09-23",
+      "evidence_status": "partial",
+      "summary": "组合研究在 534 frozen decisions 上离线回放 committee、probability averaging、cascade 和 best-of-n；成本计入每个被调用成员，委员会/并行 best-of-n 等待最慢调用，级联为串行等待。没有组合超过最佳单系统复合分数。",
+      "purpose_tags": [
+        "GRAMMAR",
+        "SCALE",
+        "SOURCE"
+      ],
+      "local_card": "vault/provenance/jev-community-runtime/cards/jc-s12-jevbench-combination-study.md",
+      "record_path": "vault/provenance/jev-community-runtime/catalog.json",
+      "limitations": [
+        "不是新鲜线上 cascade，也不提供目标网络 p95；classifier.dev Fast→Jev 涉及同一 Jev 底层模型，不能当两份独立模型证据。组合成本仍应按实际每次调用计入，‘同底层’只影响独立性/去重解释，不自动免除账单。"
+      ],
+      "revisit_when": "组合成员、底层模型、阈值、决策集、并发策略或价格变化时；线上路由必须重新测独立性、重复调用成本、p95 和最终接受率。"
+    },
+    {
+      "id": "provenance-jev-community-workflows:jc-s13-jev-as-a-judge-project",
+      "kind": "external-url",
+      "collection": "provenance-jev-community-workflows",
+      "title": "JEV-as-a-Judge 项目页",
+      "original_locator": "https://yubol-bobo.github.io/jev-as-a-judge/",
+      "canonical_url": "https://yubol-bobo.github.io/jev-as-a-judge/",
+      "reviewed_at": "2026-09-23",
+      "evidence_status": "verified",
+      "summary": "作者项目页报告 17 个 judge 配置、冻结输入、保留失败和 source-cluster bootstrap 区间；JEV 在普通偏好/证据事实任务接近强 judge，但在 JudgeBench 推理编码和样式对抗任务明显落后，reference-free prose 近似随机且高置信。项目页报告冻结 JEV→GPT-6 cascade 在 510 个扩展 preference pairs 上保留约 99% accuracy、使用约 56.8% 费用。",
+      "purpose_tags": [
+        "Q2",
+        "Q4",
+        "JUDGE",
+        "CASCADE",
+        "CALIBRATION",
+        "CONFIDENCE",
+        "PRACTICE_MAP"
+      ],
+      "local_card": "vault/provenance/jev-community-workflows/cards/jc-s13-jev-as-a-judge-project.md",
+      "record_path": "vault/provenance/jev-community-workflows/catalog.json",
+      "limitations": [
+        "作者研究页不是独立复现或生产 SLA；指标是 benchmark agreement/作者定义标签，非通用真实正确率。cascade 阈值在离线扩展集上选择，作者明确要求按 workload 验证；一个 proprietary JEV 版本、计算预算不匹配和估算费用限制外推。"
+      ],
+      "revisit_when": "论文、补充代码、JEV 版本、judge 数据或 cascade policy 更新；任何上线闸门前重做独立标注与隐藏测试。"
+    },
+    {
+      "id": "provenance-jev-community-workflows:jc-s14-jev-as-a-judge-arxiv",
+      "kind": "external-url",
+      "collection": "provenance-jev-community-workflows",
+      "title": "JEV-as-a-Judge: Accept When Confident, Escalate When Unsure",
+      "original_locator": "https://arxiv.org/abs/2609.26550",
+      "canonical_url": "https://arxiv.org/abs/2609.26550",
+      "reviewed_at": "2026-09-23",
+      "evidence_status": "partial",
+      "summary": "arXiv 摘要说明该研究比较 decision-only JEV 与 16 个 generative/reward-model judges，关注成本和 confidence reliability；摘要报告普通 preference 与 evidence-grounded factuality 接近强 judge、较难的 derivation/style 任务差距更大，并提出 confident accept / uncertain escalation cascade。",
+      "purpose_tags": [
+        "Q2",
+        "Q4",
+        "JUDGE",
+        "CASCADE",
+        "CONFIDENCE",
+        "STUDY_DEDUP"
+      ],
+      "local_card": "vault/provenance/jev-community-workflows/cards/jc-s14-jev-as-a-judge-arxiv.md",
+      "record_path": "vault/provenance/jev-community-workflows/catalog.json",
+      "limitations": [
+        "本次只核查 arXiv abstract，不把摘要当作完整论文方法、数据、限制或复现证据；与 S13 是同一 study_id，不能计为第二份独立研究。"
+      ],
+      "revisit_when": "需要完整方法、数据切分、阈值选择或限制时读取 PDF/HTML experimental 全文并新增版本快照。"
+    },
+    {
+      "id": "provenance-jev-community-workflows:jc-s15-jev-scientific-decisions-arxiv",
+      "kind": "external-url",
+      "collection": "provenance-jev-community-workflows",
+      "title": "Jev for Scientific Decisions: Evaluating Semantic Choices and Their Consequences",
+      "original_locator": "https://arxiv.org/abs/2609.24965",
+      "canonical_url": "https://arxiv.org/abs/2609.24965",
+      "reviewed_at": "2026-09-23",
+      "evidence_status": "partial",
+      "summary": "摘要把 Jev 放入科学工作流的语义选择环节，报告 12 个 model configurations、20 个 source-grounded Choices、10 个 scientific cases、每 case 5 次重复，并分别检查 semantic selections、downstream outputs 和 final claim labels；摘要强调错误中间选择可能改变下游数量却保留最终标签。",
+      "purpose_tags": [
+        "Q4",
+        "SEMANTIC_CHOICE",
+        "DOWNSTREAM_EFFECT",
+        "REPEATABILITY",
+        "STUDY_MAP"
+      ],
+      "local_card": "vault/provenance/jev-community-workflows/cards/jc-s15-jev-scientific-decisions-arxiv.md",
+      "record_path": "vault/provenance/jev-community-workflows/catalog.json",
+      "limitations": [
+        "本次只核查摘要，未核对完整标注、模型配置、统计区间或限制；摘要中的结果属于作者预印本研究，不是生产科学决策保证。"
+      ],
+      "revisit_when": "需要 Q4 的重复性/中间量验收细节时读取全文、补充材料和数据切分。"
+    },
+    {
+      "id": "provenance-jev-community-workflows:jc-s16-sregym-jev",
+      "kind": "external-url",
+      "collection": "provenance-jev-community-workflows",
+      "title": "Can Jev Make SRE Agents More Reliable?",
+      "original_locator": "https://sregym.com/blog/jev-sregym-lite",
+      "canonical_url": "https://sregym.com/blog/jev-sregym-lite",
+      "reviewed_at": "2026-09-23",
+      "evidence_status": "verified",
+      "summary": "SREGym 作者在 10 个 SREGym-Lite problems 上把 Jev 接入 gpt-5.6-luna Codex harness：jev_plan 选择 3–5 个竞争假设和只读测试，jev_submit 在 diagnosis/mitigation 前审查证据，要求每个问题概率达到 0.70。每种条件每事件 5 次，成功尝试由 20/50 变为 24/50；两个问题退步。",
+      "purpose_tags": [
+        "Q2",
+        "Q4",
+        "SRE",
+        "EVENTS_10_X5",
+        "CANDIDATE_RECALL",
+        "SAFETY_GATE"
+      ],
+      "local_card": "vault/provenance/jev-community-workflows/cards/jc-s16-sregym-jev.md",
+      "record_path": "vault/provenance/jev-community-workflows/catalog.json",
+      "limitations": [
+        "不是 50 个独立事件；每事件仅 5 次，作者明确不能据此声称一般性八个百分点提升。实验测 pass rate，不测诊断耗时、前置安全动作或生产恢复；Jev 不能找回从未进入候选集的正确假设，也会接受表象恢复而遗漏持久性 invariant。"
+      ],
+      "revisit_when": "SREGym 任务、模型、候选生成、阈值或安全 reviewer 实验更新；若用于生产，先独立测候选召回、持久性修复和不可逆动作闸门。"
+    },
+    {
+      "id": "provenance-jev-community-workflows:jc-s17-jev-harness-readme",
+      "kind": "external-url",
+      "collection": "provenance-jev-community-workflows",
+      "title": "JevHarness README",
+      "original_locator": "https://github.com/TianyuCodings/JevHarness/blob/main/README.md",
+      "canonical_url": "https://github.com/TianyuCodings/JevHarness/blob/main/README.md",
+      "reviewed_at": "2026-09-23",
+      "evidence_status": "verified",
+      "summary": "项目把强模型开发和冻结的 task-specific harness 分开：代码/特征/问题/控制流由 authoring LLM 修改，冻结后运行时只执行代码与 Jev calls。README 报告 Pokémon Eval 3/12→9/12，但明确 Eval 用于候选选择，不是未见游戏估计；GEPA 记录 rejected proposals、ancestry 和完整 trace。",
+      "purpose_tags": [
+        "Q2",
+        "Q4",
+        "HARNESS",
+        "FREEZE",
+        "EVAL_CONTAMINATION",
+        "TRACE",
+        "VERSIONING"
+      ],
+      "local_card": "vault/provenance/jev-community-workflows/cards/jc-s17-jev-harness-readme.md",
+      "record_path": "vault/provenance/jev-community-workflows/catalog.json",
+      "limitations": [
+        "这是作者项目 README 与 selection Eval 自测，不是独立 holdout 或生产验收。默认分支不是固定 commit；hosted alias 未钉死未来 provider 行为；页面/演示依赖远端资产。本次未复跑。"
+      ],
+      "revisit_when": "项目 commit、Eval split、模型版本、harness freezing contract 或作者公布独立测试更新时复查。"
+    },
+    {
+      "id": "provenance-jev-community-workflows:jc-s18-jev-harness-turn12",
+      "kind": "external-url",
+      "collection": "provenance-jev-community-workflows",
+      "title": "JevHarness recorded turn-12 call",
+      "original_locator": "https://github.com/TianyuCodings/JevHarness/blob/main/docs/examples/pokemon-turn12-jev.json",
+      "canonical_url": "https://github.com/TianyuCodings/JevHarness/blob/main/docs/examples/pokemon-turn12-jev.json",
+      "reviewed_at": "2026-09-23",
+      "evidence_status": "verified",
+      "summary": "记录保留 run/candidate/episode/split/turn、输入 state、候选动作、probabilities、confidence、rounding、transport、usage、执行动作和游戏结果。turn 12 选择概率 0.72 的 switch:2 是动作选择概率，不是赢得整场比赛的概率；记录明确 model_version_pinned=false。",
+      "purpose_tags": [
+        "Q2",
+        "Q4",
+        "RECORDED_CALL",
+        "MODEL_VERSION",
+        "PROVENANCE",
+        "PROBABILITY_SEMANTICS"
+      ],
+      "local_card": "vault/provenance/jev-community-workflows/cards/jc-s18-jev-harness-turn12.md",
+      "record_path": "vault/provenance/jev-community-workflows/catalog.json",
+      "limitations": [
+        "这是规范化记录，不是完整 gateway 原包；source trace 只登记远端路径和 hash，本批未验证原 trace；未钉死模型版本，回放不等于今天新鲜调用会相同。"
+      ],
+      "revisit_when": "需要复盘 provider 行为、模型版本、rounding 或真实可重放性时取得原 trace、固定 commit/model version 并做新鲜调用对照。"
+    },
+    {
+      "id": "provenance-jev-community-workflows:jc-s19-pg-jev-readme",
+      "kind": "external-url",
+      "collection": "provenance-jev-community-workflows",
+      "title": "pg-jev README",
+      "original_locator": "https://github.com/realZachi/pg-jev/blob/master/README.md",
+      "canonical_url": "https://github.com/realZachi/pg-jev/blob/master/README.md",
+      "reviewed_at": "2026-09-23",
+      "evidence_status": "verified",
+      "summary": "pg-jev 把 Jev 判断封装为 PostgreSQL functions，支持批量、并发、read-ahead、session cache、score/choice/confidence 和 raw eval。README 报告 2,000-row 测试首跑约 100 requests、二跑命中缓存约 50ms；结构化 ground truth 上 batch 1–20 为 100%，40 为 92–98%，80 为 77–94%，位置关联准确率在大 batch 下降。",
+      "purpose_tags": [
+        "Q2",
+        "Q4",
+        "POSTGRES",
+        "BATCH",
+        "CACHE",
+        "THROUGHPUT",
+        "DATA_BOUNDARY"
+      ],
+      "local_card": "vault/provenance/jev-community-workflows/cards/jc-s19-pg-jev-readme.md",
+      "record_path": "vault/provenance/jev-community-workflows/catalog.json",
+      "limitations": [
+        "作者有限结构化字段自测，不是独立数据库基准；需要 plpython3u、superuser 和 API key，row 内容会发第三方 API；每 session cache 不等于跨连接共享；README 的成本、延迟和准确率不是本次实测。"
+      ],
+      "revisit_when": "extension、Jev API、batch/cache 实现、托管 Postgres 权限或数据外发策略变化时复查，并用目标数据库和切片重测。"
+    },
+    {
+      "id": "provenance-jev-community-workflows:jc-s20-jev-vs-agentic-loop",
+      "kind": "external-url",
+      "collection": "provenance-jev-community-workflows",
+      "title": "Typed Judgments or Agentic Loops? Benchmarking Jev Against a GPT Agent",
+      "original_locator": "https://blog.r6i.it/typesafe-jev-vs-agentic-loop.html",
+      "canonical_url": "https://blog.r6i.it/typesafe-jev-vs-agentic-loop.html",
+      "reviewed_at": "2026-09-23",
+      "evidence_status": "verified",
+      "summary": "作者把 50 商品分类从 agentic loop 迁到 typed Choice，报告平均 9.62s→1.38s、calls 7.22→3.18，但旧管线用 5 threads、新管线 sequential，作者自己说 7x headline 偏乐观。14 个非一致案例只有一位人工、无 ground truth；结论是 Jev 是 classification primitive，agent loop 保留回溯价值。",
+      "purpose_tags": [
+        "Q2",
+        "CASCADE",
+        "ROUTING",
+        "LATENCY",
+        "COST",
+        "BACKTRACKING"
+      ],
+      "local_card": "vault/provenance/jev-community-workflows/cards/jc-s20-jev-vs-agentic-loop.md",
+      "record_path": "vault/provenance/jev-community-workflows/catalog.json",
+      "limitations": [
+        "并发条件不同、样本仅 50 商品、人工分歧不能当准确率；成本/时延依赖模型、价格、并发和输出计费，不能据此宣称 7x 收益或 SLA。贪心树搜索会丢失错误上层分支，需单独评估回溯/beam 设计。"
+      ],
+      "revisit_when": "模型、并发、树深度、候选扇出、输出计费或有 ground truth 的分类集变化时复查；对 Q2 只引用相对 trade-off。"
+    },
+    {
+      "id": "provenance-jev-community-workflows:jc-s21-southbridge-entity-resolution",
+      "kind": "external-url",
+      "collection": "provenance-jev-community-workflows",
+      "title": "Using system-one models inside high-throughput data pipelines",
+      "original_locator": "https://www.southbridge.ai/blog/jev-entity-resolution",
+      "canonical_url": "https://www.southbridge.ai/blog/jev-entity-resolution",
+      "reviewed_at": "2026-09-23",
+      "evidence_status": "verified",
+      "summary": "Southbridge 在 Ohio campaign-finance entity resolution 困难切片中用 Jev 作为主判断、Luna 复核难例，强调实体同一性与关系（如 household）分开判断；作者报告 batch/evidence pipeline 的成本、吞吐和接近 Fable 质量。",
+      "purpose_tags": [
+        "Q2",
+        "Q4",
+        "ENTITY_RESOLUTION",
+        "RELATIONSHIP",
+        "BATCH",
+        "COST",
+        "PRACTICE_MAP"
+      ],
+      "local_card": "vault/provenance/jev-community-workflows/cards/jc-s21-southbridge-entity-resolution.md",
+      "record_path": "vault/provenance/jev-community-workflows/catalog.json",
+      "limitations": [
+        "困难子集、作者自测和累计 call-seconds；TB 成本是外推而非 TB 运行，Jev-only 会明显掉准确率，关系不是实体合并许可。公开页面不是独立金标、通用实体解析准确率或生产 SLA。"
+      ],
+      "revisit_when": "数据切片、entity/relationship ontology、review policy、模型/价格或公开 experiment bundle 更新时复查；用于实践地图时保留实体与关系拆分。"
+    },
+    {
+      "id": "provenance-jev-community-workflows:jc-s22-jev-rag-receipts",
+      "kind": "external-url",
+      "collection": "provenance-jev-community-workflows",
+      "title": "RAG ranking is not the same as judging with Jev",
+      "original_locator": "https://dev.to/kike/how-i-went-from-trust-me-bro-to-boomer-with-receipts-using-jev-2141",
+      "canonical_url": "https://dev.to/kike/how-i-went-from-trust-me-bro-to-boomer-with-receipts-using-jev-2141",
+      "reviewed_at": "2026-09-23",
+      "evidence_status": "verified",
+      "summary": "Zerikai Memory 作者把 RAG 的 lexical ranking 与 Jev judging 分开：L2/lexical 先召回排序，Jev 批量判断每段 relevant/evidence/contradicts/injection 及全局 coverage/conflict，代码决定 keep/drop，最后给 synthesis LLM receipts。53 calls、约 210k input tokens 的 early-access 试验中，5 candidates 保留 3；作者明确集成未公开、阈值小样本校准，尚未做 post-synthesis faithfulness guard。",
+      "purpose_tags": [
+        "Q4",
+        "RAG",
+        "RELEVANCE",
+        "EVIDENCE_SUPPORT",
+        "INJECTION",
+        "RECEIPTS",
+        "CALIBRATION"
+      ],
+      "local_card": "vault/provenance/jev-community-workflows/cards/jc-s22-jev-rag-receipts.md",
+      "record_path": "vault/provenance/jev-community-workflows/catalog.json",
+      "limitations": [
+        "不是独立准确率样本，53 次调用不等于 53 个独立任务；集成未发布、阈值是作者自定且边界会翻转；只证明输入证据筛选，不证明最终答案忠实，后合成审查仍未实现。"
+      ],
+      "revisit_when": "集成公开、retrieval candidate distribution、threshold calibration 或 post-synthesis guard 更新时复查；实践地图保留 support/relevance/injection 分离。"
+    },
+    {
+      "id": "provenance-jev-community-workflows:jc-s23-jev-kg-extraction",
+      "kind": "external-url",
+      "collection": "provenance-jev-community-workflows",
+      "title": "Typed Judgments for Knowledge Graph Extraction with TypeSafe's Jev",
+      "original_locator": "https://lyonwj.com/blog/typesafe-jev-knowledge-graph-extraction",
+      "canonical_url": "https://lyonwj.com/blog/typesafe-jev-knowledge-graph-extraction",
+      "reviewed_at": "2026-09-23",
+      "evidence_status": "verified",
+      "summary": "William Lyon 文章把 GLiNER 候选生成与 Jev 的 assertion/relationship 判断分开，在 10 篇合成文档、47 gold triples、13 alias groups 上说明：候选生成决定 recall，Jev 对已有候选做 assertion gate、relation selection、entity resolution；阈值扫 stored judgments 可不重新调用模型。文章报告局部 precision 提升和实体合并反例。",
+      "purpose_tags": [
+        "Q4",
+        "KNOWLEDGE_GRAPH",
+        "CANDIDATE_GENERATION",
+        "ASSERTION",
+        "RELATION_SELECTION",
+        "THRESHOLD"
+      ],
+      "local_card": "vault/provenance/jev-community-workflows/cards/jc-s23-jev-kg-extraction.md",
+      "record_path": "vault/provenance/jev-community-workflows/catalog.json",
+      "limitations": [
+        "合成小数据、候选已由 GLiNER 生成，不能将局部 gate 结果当端到端图谱召回或生产准确率；作者明确 perfect judge 对错误 queue 无法补回漏候选；本次未运行代码和 API。"
+      ],
+      "revisit_when": "ontology、candidate generator、scope（paragraph/document）、threshold 或关系聚合更新时复查；用独立 gold graph 测候选 recall 与关系 precision 分层。"
+    },
+    {
+      "id": "provenance-jev-community-workflows:jc-s24-semif-readme",
+      "kind": "external-url",
+      "collection": "provenance-jev-community-workflows",
+      "title": "SemIf README",
+      "original_locator": "https://github.com/TheoLeeCJ/SemIf/blob/master/README.md",
+      "canonical_url": "https://github.com/TheoLeeCJ/SemIf/blob/master/README.md",
+      "reviewed_at": "2026-09-23",
+      "evidence_status": "verified",
+      "summary": "SemIf 明确是独立项目，只复现 typed-decision 接口模式，不复现 TypeSafe/Jev 权重或训练。README 的 2026-09-22 更新新增 PyTorch/MPS、Qwen3.8-27B EXL3 bridge 和按 workload 的 temperature calibration；同时保留 MLX/llama.cpp 后端、模型 revision/prompt hash、BF16 fast-path argmax 差异和 out-of-fold ECE 表。",
+      "purpose_tags": [
+        "Q2",
+        "Q4",
+        "LOCAL_ALTERNATIVE",
+        "MPS",
+        "CALIBRATION",
+        "BACKEND",
+        "VERSIONING"
+      ],
+      "local_card": "vault/provenance/jev-community-workflows/cards/jc-s24-semif-readme.md",
+      "record_path": "vault/provenance/jev-community-workflows/catalog.json",
+      "limitations": [
+        "这是作者项目 README 和自有 fixture 测试，不是 Jev 等价物或独立复现；量化、后端、缓存路径会改变数值，calibration 只对各 workload 的标签切分有意义。README 的 TypeSafe published subset 不是本次 live Jev 运行。"
+      ],
+      "revisit_when": "MPS/MLX/llama.cpp 后端、模型 revision、校准方法、结果 bundle 或 TypeSafe 对齐数据更新时复查；本地替代必须重新验收概率质量和动作质量。"
+    },
+    {
+      "id": "provenance-platform-product:google-ads-ctr-definition",
+      "kind": "external-url",
+      "collection": "provenance-platform-product",
+      "title": "Clickthrough rate (CTR): Definition",
+      "original_locator": "https://support.google.com/google-ads/answer/2615875?hl=en",
+      "canonical_url": "https://support.google.com/google-ads/answer/2615875?hl=en",
+      "reviewed_at": "2026-09-22",
+      "evidence_status": "verified",
+      "summary": "Google Ads 官方帮助页将 CTR 定义为点击次数除以广告展示次数，并用示例说明 5 次点击 / 100 次展示为 5%。",
+      "purpose_tags": [
+        "GRAMMAR",
+        "METRICS"
+      ],
+      "local_card": "vault/provenance/platform-product/cards/google-ads-ctr-definition.md",
+      "record_path": "vault/provenance/platform-product/catalog.json",
+      "limitations": [
+        "这是 Google Ads 广告/免费商品列表的定义；平台内内容、搜索结果或推荐位需要明确自己的曝光与点击事件，不能直接假定事件去重、有效点击过滤和归因窗相同。高 CTR 只证明响应代理变好，不证明成交、利润或长期价值变好。"
+      ],
+      "revisit_when": "Google 改写 CTR 定义、广告统计口径或无效点击处理；本目录为非广告场景新增 CTR 定义；数据产品改变曝光、点击去重或归因时间窗。"
+    },
+    {
+      "id": "provenance-platform-product:google-analytics-recommended-ecommerce-events",
+      "kind": "external-url",
+      "collection": "provenance-platform-product",
+      "title": "[GA4] Recommended events",
+      "original_locator": "https://support.google.com/analytics/answer/9267735?hl=en",
+      "canonical_url": "https://support.google.com/analytics/answer/9267735?hl=en",
+      "reviewed_at": "2026-09-22",
+      "evidence_status": "verified",
+      "summary": "GA4 官方文档把电商行为拆成 view_item、add_to_cart、begin_checkout、purchase、refund 等可测事件，用于观察商品浏览、加购、结账、购买与退款。",
+      "purpose_tags": [
+        "GRAMMAR",
+        "FUNNEL",
+        "METRICS"
+      ],
+      "local_card": "vault/provenance/platform-product/cards/google-analytics-recommended-ecommerce-events.md",
+      "record_path": "vault/provenance/platform-product/catalog.json",
+      "limitations": [
+        "这是 GA4 事件命名和收集建议，不是所有电商、零售或本地生活系统的强制 schema；事件触发、去重、登录状态、退款时间和商品金额口径仍需业务系统明确。事件存在不等于业务价值成立。"
+      ],
+      "revisit_when": "GA4 更新推荐事件、事件语义或报告计算；本目录拟把事件名写成系统契约；漏斗比较出现跨端、跨渠道或退款归属不一致。"
+    },
+    {
+      "id": "provenance-platform-product:tiktok-shop-shop-tab-basics",
+      "kind": "external-url",
+      "collection": "provenance-platform-product",
+      "title": "Shop Tab Basics",
+      "original_locator": "https://seller-us.tiktok.com/university/course?content_id=603906625865518&learning_id=633299596756778",
+      "canonical_url": "https://seller-us.tiktok.com/university/course?content_id=603906625865518&learning_id=633299596756778",
+      "reviewed_at": "2026-09-22",
+      "evidence_status": "partial",
+      "summary": "TikTok Shop Seller Academy 官方课程把 Shop Tab 描述为站内市场，包含搜索、类目浏览、个性化推荐、促销、店铺页和购买，并区分内容驱动的短视频/直播与货架型购物入口。",
+      "purpose_tags": [
+        "GRAMMAR",
+        "CONTENT_COMMERCE",
+        "DISTRIBUTION"
+      ],
+      "local_card": "vault/provenance/platform-product/cards/tiktok-shop-shop-tab-basics.md",
+      "record_path": "vault/provenance/platform-product/catalog.json",
+      "limitations": [
+        "只用来核查内容场、货架场、搜索、推荐、商品入口这些方言的落点；课程按地区、账号和时间变化，不能外推成 TikTok 全平台或中国抖音电商的完整业务事实，也不能把课程建议当作行业通用定律。"
+      ],
+      "revisit_when": "课程 URL、区域版本或 Shop Tab 结构变化；需要引用具体推荐排序、佣金、GMV 或平台政策；用户要求核查抖音中国业务而不是 TikTok Shop US。"
+    },
+    {
+      "id": "provenance-platform-product:xmind-markdown-to-mind-map",
+      "kind": "external-url",
+      "collection": "provenance-platform-product",
+      "title": "Markdown to Mind Map",
+      "original_locator": "https://xmind.com/user-guide/markdown-to-mind-map",
+      "canonical_url": "https://xmind.com/user-guide/markdown-to-mind-map",
+      "reviewed_at": "2026-09-22",
+      "evidence_status": "verified",
+      "summary": "Xmind 官方用户指南说明可从 File → Import → Markdown 导入 .md；标题层级映射为节点层级，第一行文本或标题成为中心主题，并支持粘贴 Markdown 文本。",
+      "purpose_tags": [
+        "GRAMMAR",
+        "DOCUMENTATION",
+        "XMind_IMPORT"
+      ],
+      "local_card": "vault/provenance/platform-product/cards/xmind-markdown-to-mind-map.md",
+      "record_path": "vault/provenance/platform-product/catalog.json",
+      "limitations": [
+        "官方指南用于核对导入能力；具体输出遵循用户提供的 xmind-md/0.1。单一 H1、短标题、列表解释，不依赖表格、代码围栏或 HTML。未执行本机 Xmind 实测，不能把文档核查视作导入验收。"
+      ],
+      "revisit_when": "Xmind 修改 Markdown 导入入口、标题映射、最大层级或纯文本粘贴规则；Xmind 导入实测出现 H1、H2、H3、H4 结构丢失；仓库新增 md/xmind profile。"
+    },
+    {
+      "id": "provenance-rsi-review:rrsi",
+      "kind": "external-url",
+      "collection": "provenance-rsi-review",
+      "title": "RRSI README",
+      "original_locator": "https://github.com/google-research/rrsi",
+      "canonical_url": "https://raw.githubusercontent.com/google-research/rrsi/e4d1a7a0388e02b388bc40eb0a125fcfc7123f8d/README.md",
+      "reviewed_at": "2026-09-23",
+      "evidence_status": "source-checked",
+      "summary": "固定模型之外的harness也可作为持久改进对象；编辑历史、成本约束和候选筛选提供工程参考。",
+      "purpose_tags": [
+        "Q5",
+        "RSI",
+        "EVAL"
+      ],
+      "local_card": "vault/distilled/ai-capability-assessment/rsi-reference-index.md",
+      "record_path": "vault/provenance/rsi-review/catalog.json",
+      "limitations": [
+        "研究原文核对；未复现实验，不提供法律适用或生产收益证明。"
+      ],
+      "revisit_when": "具体采用研究方法、版本或指标时重新核查。"
+    },
+    {
+      "id": "provenance-rsi-review:aide2",
+      "kind": "external-url",
+      "collection": "provenance-rsi-review",
+      "title": "Weco AIDE² research report",
+      "original_locator": "https://www.weco.ai/blog/first-evidence-of-recursive-self-improvement",
+      "canonical_url": "https://www.weco.ai/blog/first-evidence-of-recursive-self-improvement",
+      "reviewed_at": "2026-09-23",
+      "evidence_status": "source-checked",
+      "summary": "区分内层任务优化与外层改进能力，报告在固定成本及未见任务上检验；作者未认为点火证据充分。",
+      "purpose_tags": [
+        "Q5",
+        "RSI",
+        "EVAL"
+      ],
+      "local_card": "vault/distilled/ai-capability-assessment/rsi-reference-index.md",
+      "record_path": "vault/provenance/rsi-review/catalog.json",
+      "limitations": [
+        "研究原文核对；未复现实验，不提供法律适用或生产收益证明。"
+      ],
+      "revisit_when": "具体采用研究方法、版本或指标时重新核查。"
+    },
+    {
+      "id": "provenance-se-frontend-references:se-ref-reef-readme",
+      "kind": "external-url",
+      "collection": "provenance-se-frontend-references",
+      "title": "REEF README at fixed commit",
+      "original_locator": "https://github.com/Human-Agent-Society/reef/blob/8e87829572b210572cad2008c28d39888b2b8396/README.md",
+      "canonical_url": "https://github.com/Human-Agent-Society/reef/blob/8e87829572b210572cad2008c28d39888b2b8396/README.md",
+      "reviewed_at": "2026-09-23",
+      "evidence_status": "partial",
+      "summary": "Schema Engineering publication-surface 记录曾固定读取该 README，把双语 README、Docs 与公开 roadmap 作为发布面信息结构参考。实际消费是发布入口/信息架构层，不是 REEF 产品能力、质量或正文命题的背书。",
+      "purpose_tags": [
+        "BUILD",
+        "GRAMMAR"
+      ],
+      "local_card": "vault/provenance/se-frontend-references/cards/se-ref-reef-readme.md",
+      "record_path": "vault/provenance/se-frontend-references/catalog.json",
+      "limitations": [
+        "本轮未重新读取该 commit 页面，未核对当前 GitHub 展示、关联脚本或远端仓库状态；固定 SHA 只是 SE 原记录中的定位。"
+      ],
+      "revisit_when": "再次借鉴双语入口、Docs/roadmap 信息架构或需要引用 REEF 当前实现时，按固定 SHA/当前 HEAD 独立复核。"
+    },
+    {
+      "id": "provenance-se-frontend-references:se-ref-reef-readme-i18n-check",
+      "kind": "external-url",
+      "collection": "provenance-se-frontend-references",
+      "title": "REEF README i18n checker at fixed commit",
+      "original_locator": "https://github.com/Human-Agent-Society/reef/blob/8e87829572b210572cad2008c28d39888b2b8396/.github/scripts/check_readme_i18n.py",
+      "canonical_url": "https://github.com/Human-Agent-Society/reef/blob/8e87829572b210572cad2008c28d39888b2b8396/.github/scripts/check_readme_i18n.py",
+      "reviewed_at": "2026-09-23",
+      "evidence_status": "partial",
+      "summary": "SE 发布面记录将该脚本作为 README 结构同步检查的参考，实际用途是说明双语入口可以绑定自动检查；没有把脚本规则复制为 Praxis 的验证器。",
+      "purpose_tags": [
+        "BUILD",
+        "SCALE"
+      ],
+      "local_card": "vault/provenance/se-frontend-references/cards/se-ref-reef-readme-i18n-check.md",
+      "record_path": "vault/provenance/se-frontend-references/catalog.json",
+      "limitations": [
+        "本轮未打开脚本或运行检查；不支持该脚本当前可用、适用于其他仓库或已覆盖语义翻译质量。"
+      ],
+      "revisit_when": "需要建立双语/多入口同步检查，或要引用具体检查字段、退出码和限制时复核固定 commit。"
+    },
+    {
+      "id": "provenance-se-frontend-references:se-ref-deepseek-extension-cookbook",
+      "kind": "external-url",
+      "collection": "provenance-se-frontend-references",
+      "title": "DeepSeek Harness — extension plugin shapes",
+      "original_locator": "https://deepseek-harness.github.io/deepseek-harness/en/reference/cookbook/extension-cookbook",
+      "canonical_url": "https://deepseek-harness.github.io/deepseek-harness/en/reference/cookbook/extension-cookbook",
+      "reviewed_at": "2026-09-23",
+      "evidence_status": "partial",
+      "summary": "Practice Index 的来源登记把该页面用于 UI extension surface 的公开定义；SE 消费的是宿主 extension/renderer 接缝的参考方向，保留 Work Contract、Human Work Surface 和权限语义由本地论文承担。",
+      "purpose_tags": [
+        "BUILD",
+        "GRAMMAR"
+      ],
+      "local_card": "vault/provenance/se-frontend-references/cards/se-ref-deepseek-extension-cookbook.md",
+      "record_path": "vault/provenance/se-frontend-references/catalog.json",
+      "limitations": [
+        "本轮未重新读取该文档；不证明 DeepSeek Harness 当前 API、插件生命周期、UI slot 或跨版本兼容性。"
+      ],
+      "revisit_when": "实现可插拔 UI/renderer、需要 provider-neutral extension seam 或要引用具体 API 时复核当前版本和固定 commit。"
+    },
+    {
+      "id": "provenance-se-frontend-references:se-ref-deepseek-user-questions",
+      "kind": "external-url",
+      "collection": "provenance-se-frontend-references",
+      "title": "DeepSeek Harness — User Interaction",
+      "original_locator": "https://deepseek-harness.github.io/deepseek-harness/en/reference/subsystems/user-questions",
+      "canonical_url": "https://deepseek-harness.github.io/deepseek-harness/en/reference/subsystems/user-questions",
+      "reviewed_at": "2026-09-23",
+      "evidence_status": "partial",
+      "summary": "Practice Index 将其作为 provider-neutral question vocabulary 与 presentation intent 的参考，消费用途是帮助区分人类问题/确认表面和领域工作语义；不把宿主 question API 当作 Human Work Surface 的完整治理。",
+      "purpose_tags": [
+        "GRAMMAR",
+        "BUILD"
+      ],
+      "local_card": "vault/provenance/se-frontend-references/cards/se-ref-deepseek-user-questions.md",
+      "record_path": "vault/provenance/se-frontend-references/catalog.json",
+      "limitations": [
+        "本轮未重新读取当前文档；不支持具体 question schema、权限或审批行为已与 Praxis 相同。"
+      ],
+      "revisit_when": "需要把 question/confirmation 投影到前端、或要对照 provider-neutral presentation intent 时复核当前版本。"
+    },
+    {
+      "id": "provenance-se-frontend-references:se-ref-deepseek-architecture",
+      "kind": "external-url",
+      "collection": "provenance-se-frontend-references",
+      "title": "DeepSeek Harness — Architecture reference",
+      "original_locator": "https://deepseek-harness.github.io/deepseek-harness/en/reference/",
+      "canonical_url": "https://deepseek-harness.github.io/deepseek-harness/en/reference/",
+      "reviewed_at": "2026-09-23",
+      "evidence_status": "partial",
+      "summary": "Practice Index 记录该架构页用于 session events、agent events、capability events、turn flow 与 session log 的公开定义；前端消费只取事件/状态可投影的设计启发，不把 Runtime event 模型等同于 SE 的 Committed Event。",
+      "purpose_tags": [
+        "BUILD",
+        "GRAMMAR"
+      ],
+      "local_card": "vault/provenance/se-frontend-references/cards/se-ref-deepseek-architecture.md",
+      "record_path": "vault/provenance/se-frontend-references/catalog.json",
+      "limitations": [
+        "本轮未重新读取；不证明当前 DeepSeek Harness 事件语义、版本兼容、恢复或 UI 投影实现。"
+      ],
+      "revisit_when": "需要设计事件驱动的前端状态投影、回放或 runtime adapter 时，复核固定版本和事件契约。"
     },
     {
       "id": "provenance-work-system-r3-environment:r3-chezmoi-setup",
@@ -4871,6 +6637,335 @@
         "vault/distilled/themes/architecture-review-2026-09-20.md"
       ],
       "record_path": "vault/intake/architecture-review-2026-09-20.json"
+    },
+    {
+      "id": "chat:6ab23b4e-7380-83ec-816d-f0db9f66f47b:2e71033f-7b24-43ff-9e92-85e2cd2e44a8",
+      "kind": "chat-message",
+      "conversation_id": "6ab23b4e-7380-83ec-816d-f0db9f66f47b",
+      "turn_id": "2e71033f-7b24-43ff-9e92-85e2cd2e44a8",
+      "item_id": "2e71033f-7b24-43ff-9e92-85e2cd2e44a8",
+      "role": "user",
+      "classification": "user_intent",
+      "processing_status": "distilled",
+      "distilled_paths": [
+        "vault/distilled/platform-product/outline.md",
+        "vault/distilled/platform-product/annotated.md"
+      ],
+      "record_path": "vault/intake/platform-grammar-20260922.json"
+    },
+    {
+      "id": "chat:6ab23b4e-7380-83ec-816d-f0db9f66f47b:2231595f-4f08-405f-bd6d-cafba41cab04",
+      "kind": "chat-message",
+      "conversation_id": "6ab23b4e-7380-83ec-816d-f0db9f66f47b",
+      "turn_id": "2e71033f-7b24-43ff-9e92-85e2cd2e44a8",
+      "item_id": "2231595f-4f08-405f-bd6d-cafba41cab04",
+      "role": "assistant",
+      "classification": "historical_suggestion",
+      "processing_status": "distilled",
+      "distilled_paths": [
+        "vault/distilled/platform-product/outline.md",
+        "vault/distilled/platform-product/annotated.md"
+      ],
+      "record_path": "vault/intake/platform-grammar-20260922.json"
+    },
+    {
+      "id": "chat:6ab23b4e-7380-83ec-816d-f0db9f66f47b:fa4a14bf-c2bc-4b7d-a933-3d79b1a3560f",
+      "kind": "chat-message",
+      "conversation_id": "6ab23b4e-7380-83ec-816d-f0db9f66f47b",
+      "turn_id": "fa4a14bf-c2bc-4b7d-a933-3d79b1a3560f",
+      "item_id": "fa4a14bf-c2bc-4b7d-a933-3d79b1a3560f",
+      "role": "user",
+      "classification": "user_intent",
+      "processing_status": "distilled",
+      "distilled_paths": [
+        "vault/distilled/platform-product/outline.md",
+        "vault/distilled/platform-product/annotated.md"
+      ],
+      "record_path": "vault/intake/platform-grammar-20260922.json"
+    },
+    {
+      "id": "chat:6ab23b4e-7380-83ec-816d-f0db9f66f47b:3c4107cb-565b-4d57-a2ea-a2e6fa43c793",
+      "kind": "chat-message",
+      "conversation_id": "6ab23b4e-7380-83ec-816d-f0db9f66f47b",
+      "turn_id": "fa4a14bf-c2bc-4b7d-a933-3d79b1a3560f",
+      "item_id": "3c4107cb-565b-4d57-a2ea-a2e6fa43c793",
+      "role": "assistant",
+      "classification": "historical_suggestion",
+      "processing_status": "distilled",
+      "distilled_paths": [
+        "vault/distilled/platform-product/outline.md",
+        "vault/distilled/platform-product/annotated.md"
+      ],
+      "record_path": "vault/intake/platform-grammar-20260922.json"
+    },
+    {
+      "id": "chat:6ab23b4e-7380-83ec-816d-f0db9f66f47b:68b37172-1e42-4f26-880f-04e76b651952",
+      "kind": "chat-message",
+      "conversation_id": "6ab23b4e-7380-83ec-816d-f0db9f66f47b",
+      "turn_id": "68b37172-1e42-4f26-880f-04e76b651952",
+      "item_id": "68b37172-1e42-4f26-880f-04e76b651952",
+      "role": "user",
+      "classification": "user_intent",
+      "processing_status": "distilled",
+      "distilled_paths": [
+        "vault/distilled/platform-product/outline.md",
+        "vault/distilled/platform-product/annotated.md"
+      ],
+      "record_path": "vault/intake/platform-grammar-20260922.json"
+    },
+    {
+      "id": "chat:6ab23b4e-7380-83ec-816d-f0db9f66f47b:c86b8c53-fbb0-475c-8958-50b514f699e9",
+      "kind": "chat-message",
+      "conversation_id": "6ab23b4e-7380-83ec-816d-f0db9f66f47b",
+      "turn_id": "68b37172-1e42-4f26-880f-04e76b651952",
+      "item_id": "c86b8c53-fbb0-475c-8958-50b514f699e9",
+      "role": "assistant",
+      "classification": "historical_suggestion",
+      "processing_status": "distilled",
+      "distilled_paths": [
+        "vault/distilled/platform-product/outline.md",
+        "vault/distilled/platform-product/annotated.md"
+      ],
+      "record_path": "vault/intake/platform-grammar-20260922.json"
+    },
+    {
+      "id": "chat:6ab23b4e-7380-83ec-816d-f0db9f66f47b:2f38e59e-44b9-4aca-8859-da8ed684ea39",
+      "kind": "chat-message",
+      "conversation_id": "6ab23b4e-7380-83ec-816d-f0db9f66f47b",
+      "turn_id": "2f38e59e-44b9-4aca-8859-da8ed684ea39",
+      "item_id": "2f38e59e-44b9-4aca-8859-da8ed684ea39",
+      "role": "user",
+      "classification": "user_intent",
+      "processing_status": "distilled",
+      "distilled_paths": [
+        "vault/distilled/platform-product/outline.md",
+        "vault/distilled/platform-product/annotated.md"
+      ],
+      "record_path": "vault/intake/platform-grammar-20260922.json"
+    },
+    {
+      "id": "chat:6ab23b4e-7380-83ec-816d-f0db9f66f47b:1d88c5eb-b1ab-4744-b6e5-8bb7f362be1f",
+      "kind": "chat-message",
+      "conversation_id": "6ab23b4e-7380-83ec-816d-f0db9f66f47b",
+      "turn_id": "2f38e59e-44b9-4aca-8859-da8ed684ea39",
+      "item_id": "1d88c5eb-b1ab-4744-b6e5-8bb7f362be1f",
+      "role": "assistant",
+      "classification": "historical_suggestion",
+      "processing_status": "distilled",
+      "distilled_paths": [
+        "vault/distilled/platform-product/outline.md",
+        "vault/distilled/platform-product/annotated.md"
+      ],
+      "record_path": "vault/intake/platform-grammar-20260922.json"
+    },
+    {
+      "id": "chat:6ab33ace-e690-83ec-8acb-11e88d77f14f:e7835cd0-51e3-481d-aad6-8115030f4dfd",
+      "kind": "chat-message",
+      "conversation_id": "6ab33ace-e690-83ec-8acb-11e88d77f14f",
+      "turn_id": "e7835cd0-51e3-481d-aad6-8115030f4dfd",
+      "item_id": "e7835cd0-51e3-481d-aad6-8115030f4dfd",
+      "role": "user",
+      "classification": "user_intent",
+      "processing_status": "distilled",
+      "distilled_paths": [
+        "vault/distilled/ai-capability-assessment/source-synthesis.md",
+        "vault/distilled/ai-capability-assessment/answer-draft.md"
+      ],
+      "record_path": "vault/intake/ai-capability-assessment-20260923.json"
+    },
+    {
+      "id": "chat:6ab33ace-e690-83ec-8acb-11e88d77f14f:cac16eff-4ead-47d6-98fc-47897f9c1fc2",
+      "kind": "chat-message",
+      "conversation_id": "6ab33ace-e690-83ec-8acb-11e88d77f14f",
+      "turn_id": "e7835cd0-51e3-481d-aad6-8115030f4dfd",
+      "item_id": "cac16eff-4ead-47d6-98fc-47897f9c1fc2",
+      "role": "assistant",
+      "classification": "historical_suggestion",
+      "processing_status": "distilled",
+      "distilled_paths": [
+        "vault/distilled/ai-capability-assessment/source-synthesis.md",
+        "vault/distilled/ai-capability-assessment/answer-draft.md"
+      ],
+      "record_path": "vault/intake/ai-capability-assessment-20260923.json"
+    },
+    {
+      "id": "chat:6ab33ace-e690-83ec-8acb-11e88d77f14f:0a309392-9ba8-47bd-97b9-30f7b9c53434",
+      "kind": "chat-message",
+      "conversation_id": "6ab33ace-e690-83ec-8acb-11e88d77f14f",
+      "turn_id": "0a309392-9ba8-47bd-97b9-30f7b9c53434",
+      "item_id": "0a309392-9ba8-47bd-97b9-30f7b9c53434",
+      "role": "user",
+      "classification": "user_preference",
+      "processing_status": "distilled",
+      "distilled_paths": [
+        "vault/distilled/ai-capability-assessment/source-synthesis.md",
+        "vault/distilled/ai-capability-assessment/answer-draft.md"
+      ],
+      "record_path": "vault/intake/ai-capability-assessment-20260923.json"
+    },
+    {
+      "id": "chat:6ab33ace-e690-83ec-8acb-11e88d77f14f:e0774919-71bd-4a7e-ba0b-eb4c873fc3e4",
+      "kind": "chat-message",
+      "conversation_id": "6ab33ace-e690-83ec-8acb-11e88d77f14f",
+      "turn_id": "e0774919-71bd-4a7e-ba0b-eb4c873fc3e4",
+      "item_id": "e0774919-71bd-4a7e-ba0b-eb4c873fc3e4",
+      "role": "user",
+      "classification": "user_preference",
+      "processing_status": "distilled",
+      "distilled_paths": [
+        "vault/distilled/ai-capability-assessment/source-synthesis.md",
+        "vault/distilled/ai-capability-assessment/answer-draft.md"
+      ],
+      "record_path": "vault/intake/ai-capability-assessment-20260923.json"
+    },
+    {
+      "id": "chat:6ab33ace-e690-83ec-8acb-11e88d77f14f:009a458a-275e-420a-9ae6-2ad84e4c3462",
+      "kind": "chat-message",
+      "conversation_id": "6ab33ace-e690-83ec-8acb-11e88d77f14f",
+      "turn_id": "009a458a-275e-420a-9ae6-2ad84e4c3462",
+      "item_id": "009a458a-275e-420a-9ae6-2ad84e4c3462",
+      "role": "user",
+      "classification": "user_review",
+      "processing_status": "distilled",
+      "distilled_paths": [
+        "vault/distilled/ai-capability-assessment/source-synthesis.md",
+        "vault/distilled/ai-capability-assessment/answer-draft.md"
+      ],
+      "record_path": "vault/intake/ai-capability-assessment-20260923.json"
+    },
+    {
+      "id": "chat:6ab33ace-e690-83ec-8acb-11e88d77f14f:155dafa1-2051-4727-881a-bd273b19b095",
+      "kind": "chat-message",
+      "conversation_id": "6ab33ace-e690-83ec-8acb-11e88d77f14f",
+      "turn_id": "009a458a-275e-420a-9ae6-2ad84e4c3462",
+      "item_id": "155dafa1-2051-4727-881a-bd273b19b095",
+      "role": "assistant",
+      "classification": "historical_suggestion",
+      "processing_status": "distilled",
+      "distilled_paths": [
+        "vault/distilled/ai-capability-assessment/source-synthesis.md",
+        "vault/distilled/ai-capability-assessment/answer-draft.md"
+      ],
+      "record_path": "vault/intake/ai-capability-assessment-20260923.json"
+    },
+    {
+      "id": "chat:6ab33ace-e690-83ec-8acb-11e88d77f14f:e425e863-1ec3-4596-8c7b-6040951c6293",
+      "kind": "chat-message",
+      "conversation_id": "6ab33ace-e690-83ec-8acb-11e88d77f14f",
+      "turn_id": "e425e863-1ec3-4596-8c7b-6040951c6293",
+      "item_id": "e425e863-1ec3-4596-8c7b-6040951c6293",
+      "role": "user",
+      "classification": "user_intent",
+      "processing_status": "distilled",
+      "distilled_paths": [
+        "vault/distilled/ai-capability-assessment/source-synthesis.md",
+        "vault/distilled/ai-capability-assessment/answer-draft.md"
+      ],
+      "record_path": "vault/intake/ai-capability-assessment-20260923.json"
+    },
+    {
+      "id": "chat:6ab33ace-e690-83ec-8acb-11e88d77f14f:a3ef5815-d955-4a36-8efb-3539c27bb80d",
+      "kind": "chat-message",
+      "conversation_id": "6ab33ace-e690-83ec-8acb-11e88d77f14f",
+      "turn_id": "a3ef5815-d955-4a36-8efb-3539c27bb80d",
+      "item_id": "a3ef5815-d955-4a36-8efb-3539c27bb80d",
+      "role": "user",
+      "classification": "tool_request",
+      "processing_status": "distilled",
+      "distilled_paths": [
+        "vault/distilled/ai-capability-assessment/source-synthesis.md",
+        "vault/distilled/ai-capability-assessment/answer-draft.md"
+      ],
+      "record_path": "vault/intake/ai-capability-assessment-20260923.json"
+    },
+    {
+      "id": "chat:6ab33ace-e690-83ec-8acb-11e88d77f14f:01df3e51-00fa-4f5c-9a97-85fb4abdfbf0",
+      "kind": "chat-message",
+      "conversation_id": "6ab33ace-e690-83ec-8acb-11e88d77f14f",
+      "turn_id": "a3ef5815-d955-4a36-8efb-3539c27bb80d",
+      "item_id": "01df3e51-00fa-4f5c-9a97-85fb4abdfbf0",
+      "role": "assistant",
+      "classification": "historical_suggestion",
+      "processing_status": "distilled",
+      "distilled_paths": [
+        "vault/distilled/ai-capability-assessment/source-synthesis.md",
+        "vault/distilled/ai-capability-assessment/answer-draft.md"
+      ],
+      "record_path": "vault/intake/ai-capability-assessment-20260923.json"
+    },
+    {
+      "id": "chat:6ab33ace-e690-83ec-8acb-11e88d77f14f:40db57bd-6d6a-46e4-bc12-1644f605c24f",
+      "kind": "chat-message",
+      "conversation_id": "6ab33ace-e690-83ec-8acb-11e88d77f14f",
+      "turn_id": "40db57bd-6d6a-46e4-bc12-1644f605c24f",
+      "item_id": "40db57bd-6d6a-46e4-bc12-1644f605c24f",
+      "role": "user",
+      "classification": "user_intent",
+      "processing_status": "distilled",
+      "distilled_paths": [
+        "vault/distilled/ai-capability-assessment/source-synthesis.md",
+        "vault/distilled/ai-capability-assessment/answer-draft.md"
+      ],
+      "record_path": "vault/intake/ai-capability-assessment-20260923.json"
+    },
+    {
+      "id": "chat:6ab33ace-e690-83ec-8acb-11e88d77f14f:038cb4d9-268f-429f-a0d2-30072a2532ac",
+      "kind": "chat-message",
+      "conversation_id": "6ab33ace-e690-83ec-8acb-11e88d77f14f",
+      "turn_id": "038cb4d9-268f-429f-a0d2-30072a2532ac",
+      "item_id": "038cb4d9-268f-429f-a0d2-30072a2532ac",
+      "role": "user",
+      "classification": "user_intent",
+      "processing_status": "distilled",
+      "distilled_paths": [
+        "vault/distilled/ai-capability-assessment/source-synthesis.md",
+        "vault/distilled/ai-capability-assessment/answer-draft.md"
+      ],
+      "record_path": "vault/intake/ai-capability-assessment-20260923.json"
+    },
+    {
+      "id": "chat:6ab33ace-e690-83ec-8acb-11e88d77f14f:0cc7c4f0-f665-4de7-93ed-13837f757b9a",
+      "kind": "chat-message",
+      "conversation_id": "6ab33ace-e690-83ec-8acb-11e88d77f14f",
+      "turn_id": "038cb4d9-268f-429f-a0d2-30072a2532ac",
+      "item_id": "0cc7c4f0-f665-4de7-93ed-13837f757b9a",
+      "role": "assistant",
+      "classification": "historical_suggestion",
+      "processing_status": "distilled",
+      "distilled_paths": [
+        "vault/distilled/ai-capability-assessment/source-synthesis.md",
+        "vault/distilled/ai-capability-assessment/answer-draft.md",
+        "vault/distilled/ai-capability-assessment/pro-review-index.md"
+      ],
+      "record_path": "vault/intake/ai-capability-assessment-20260923.json"
+    },
+    {
+      "id": "chat:6ab33ace-e690-83ec-8acb-11e88d77f14f:ee5c0db6-6dac-4137-87f2-e7210c756068",
+      "kind": "chat-message",
+      "conversation_id": "6ab33ace-e690-83ec-8acb-11e88d77f14f",
+      "turn_id": "ee5c0db6-6dac-4137-87f2-e7210c756068",
+      "item_id": "ee5c0db6-6dac-4137-87f2-e7210c756068",
+      "role": "user",
+      "classification": "user_review_and_editorial_feedback",
+      "processing_status": "distilled",
+      "distilled_paths": [
+        "vault/distilled/ai-capability-assessment/pro-review-index.md"
+      ],
+      "record_path": "vault/intake/ai-capability-assessment-20260923.json"
+    },
+    {
+      "id": "chat:6ab33ace-e690-83ec-8acb-11e88d77f14f:c5180185-b5ec-446b-a45c-7728418b4592",
+      "kind": "chat-message",
+      "conversation_id": "6ab33ace-e690-83ec-8acb-11e88d77f14f",
+      "turn_id": "ee5c0db6-6dac-4137-87f2-e7210c756068",
+      "item_id": "c5180185-b5ec-446b-a45c-7728418b4592",
+      "role": "assistant",
+      "classification": "historical_suggestion",
+      "processing_status": "distilled",
+      "distilled_paths": [
+        "vault/distilled/ai-capability-assessment/pro-review-index.md"
+      ],
+      "record_path": "vault/intake/ai-capability-assessment-20260923.json"
     }
   ],
   "citation_mappings": [
@@ -6299,6 +8394,506 @@
       "record_path": "vault/provenance/work-system/catalog.json"
     },
     {
+      "turn_id": "e7835cd0-51e3-481d-aad6-8115030f4dfd",
+      "item_id": "cac16eff-4ead-47d6-98fc-47897f9c1fc2",
+      "index": 0,
+      "claim": "assistant称 OpenAI Tool search 可把发现的工具定义加载到上下文末尾，并可用 additional_tools 在指定位置加入工具。",
+      "source_ids": [],
+      "mapping": "missing-original",
+      "support": "unavailable",
+      "record_path": "vault/provenance/ai-assessment-chat/catalog.json"
+    },
+    {
+      "turn_id": "e7835cd0-51e3-481d-aad6-8115030f4dfd",
+      "item_id": "cac16eff-4ead-47d6-98fc-47897f9c1fc2",
+      "index": 1,
+      "claim": "assistant称 Anthropic deferred tool loading 将延迟工具排除在系统提示前缀之外，发现后以 tool_reference 展开定义，并区分请求载荷与实际上下文。",
+      "source_ids": [],
+      "mapping": "missing-original",
+      "support": "unavailable",
+      "record_path": "vault/provenance/ai-assessment-chat/catalog.json"
+    },
+    {
+      "turn_id": "e7835cd0-51e3-481d-aad6-8115030f4dfd",
+      "item_id": "cac16eff-4ead-47d6-98fc-47897f9c1fc2",
+      "index": 2,
+      "claim": "assistant称 Claude Code 区分延迟加载工具连接/断开或目录变化的追加处理，与预加载工具变化导致的缓存失效。",
+      "source_ids": [],
+      "mapping": "missing-original",
+      "support": "unavailable",
+      "record_path": "vault/provenance/ai-assessment-chat/catalog.json"
+    },
+    {
+      "turn_id": "e7835cd0-51e3-481d-aad6-8115030f4dfd",
+      "item_id": "cac16eff-4ead-47d6-98fc-47897f9c1fc2",
+      "index": 3,
+      "claim": "assistant称 MCP 2025-11-25 规范的 listChanged 与 notifications/tools/list_changed 支持目录变化通知，但不能单凭协议断言 agent 已实现无缝热更新。",
+      "source_ids": [],
+      "mapping": "missing-original",
+      "support": "unavailable",
+      "record_path": "vault/provenance/ai-assessment-chat/catalog.json"
+    },
+    {
+      "turn_id": "e7835cd0-51e3-481d-aad6-8115030f4dfd",
+      "item_id": "cac16eff-4ead-47d6-98fc-47897f9c1fc2",
+      "index": 4,
+      "claim": "assistant称修改历史 tool_search_output 中已加载工具集合会从修改位置起破坏缓存，追加工具不等于任意修改既有定义都不影响缓存。",
+      "source_ids": [],
+      "mapping": "missing-original",
+      "support": "unavailable",
+      "record_path": "vault/provenance/ai-assessment-chat/catalog.json"
+    },
+    {
+      "turn_id": "e7835cd0-51e3-481d-aad6-8115030f4dfd",
+      "item_id": "cac16eff-4ead-47d6-98fc-47897f9c1fc2",
+      "index": 5,
+      "claim": "assistant以受影响旧内容数量与重新处理价/缓存读取价的差额给出缓存增量估算，并称追加且命中旧缓存时旧内容重算量可为零。",
+      "source_ids": [],
+      "mapping": "missing-original",
+      "support": "unavailable",
+      "record_path": "vault/provenance/ai-assessment-chat/catalog.json"
+    },
+    {
+      "turn_id": "e7835cd0-51e3-481d-aad6-8115030f4dfd",
+      "item_id": "cac16eff-4ead-47d6-98fc-47897f9c1fc2",
+      "index": 6,
+      "claim": "assistant称延迟加载应结合工具规模、发现开销与任务表现选择，不能成为所有场景的新教条。",
+      "source_ids": [],
+      "mapping": "missing-original",
+      "support": "unavailable",
+      "record_path": "vault/provenance/ai-assessment-chat/catalog.json"
+    },
+    {
+      "turn_id": "a3ef5815-d955-4a36-8efb-3539c27bb80d",
+      "item_id": "01df3e51-00fa-4f5c-9a97-85fb4abdfbf0",
+      "index": 20,
+      "claim": "assistant称本轮通过 Exa 主检索登记 28 条原始来源，并指向已整理的材料；原始目标未由 Chat export 暴露。",
+      "source_ids": [],
+      "mapping": "missing-original",
+      "support": "unavailable",
+      "record_path": "vault/provenance/ai-assessment-chat/catalog.json"
+    },
+    {
+      "turn_id": "a3ef5815-d955-4a36-8efb-3539c27bb80d",
+      "item_id": "01df3e51-00fa-4f5c-9a97-85fb4abdfbf0",
+      "index": 0,
+      "claim": "assistant引用 Anthropic 上下文工程实践，支持按需供给、压缩、外部笔记和子任务隔离的长任务解法。",
+      "source_ids": [],
+      "mapping": "missing-original",
+      "support": "unavailable",
+      "record_path": "vault/provenance/ai-assessment-chat/catalog.json"
+    },
+    {
+      "turn_id": "a3ef5815-d955-4a36-8efb-3539c27bb80d",
+      "item_id": "01df3e51-00fa-4f5c-9a97-85fb4abdfbf0",
+      "index": 1,
+      "claim": "assistant引用 Claude Code prompt caching，说明前缀式工具变更可能影响缓存，而延迟工具加载可追加内容并保留前缀。",
+      "source_ids": [],
+      "mapping": "missing-original",
+      "support": "unavailable",
+      "record_path": "vault/provenance/ai-assessment-chat/catalog.json"
+    },
+    {
+      "turn_id": "a3ef5815-d955-4a36-8efb-3539c27bb80d",
+      "item_id": "01df3e51-00fa-4f5c-9a97-85fb4abdfbf0",
+      "index": 2,
+      "claim": "assistant引用 OpenAI reasoning 文档，说明推理强度、摘要和上下文行为依模型而异，隐藏推理仍可能消耗预算与费用。",
+      "source_ids": [],
+      "mapping": "missing-original",
+      "support": "unavailable",
+      "record_path": "vault/provenance/ai-assessment-chat/catalog.json"
+    },
+    {
+      "turn_id": "a3ef5815-d955-4a36-8efb-3539c27bb80d",
+      "item_id": "01df3e51-00fa-4f5c-9a97-85fb4abdfbf0",
+      "index": 3,
+      "claim": "assistant引用 OpenAI latency optimization，支持减少不必要生成/请求、并行独立工作和让确定性工作脱离模型。",
+      "source_ids": [],
+      "mapping": "missing-original",
+      "support": "unavailable",
+      "record_path": "vault/provenance/ai-assessment-chat/catalog.json"
+    },
+    {
+      "turn_id": "a3ef5815-d955-4a36-8efb-3539c27bb80d",
+      "item_id": "01df3e51-00fa-4f5c-9a97-85fb4abdfbf0",
+      "index": 4,
+      "claim": "assistant引用 Claude Code 当前模型/effort 与缓存耦合的实现，建议用职责固定、上下文较短的调用承接阶段并测量编排收益。",
+      "source_ids": [],
+      "mapping": "missing-original",
+      "support": "unavailable",
+      "record_path": "vault/provenance/ai-assessment-chat/catalog.json"
+    },
+    {
+      "turn_id": "a3ef5815-d955-4a36-8efb-3539c27bb80d",
+      "item_id": "01df3e51-00fa-4f5c-9a97-85fb4abdfbf0",
+      "index": 5,
+      "claim": "assistant引用 Anthropic containment 实践，主张按文件挂载、账号、网络出口和生产影响面设置环境隔离与行为防御。",
+      "source_ids": [],
+      "mapping": "missing-original",
+      "support": "unavailable",
+      "record_path": "vault/provenance/ai-assessment-chat/catalog.json"
+    },
+    {
+      "turn_id": "a3ef5815-d955-4a36-8efb-3539c27bb80d",
+      "item_id": "01df3e51-00fa-4f5c-9a97-85fb4abdfbf0",
+      "index": 6,
+      "claim": "assistant引用 OSWorld 作为操作能力参考，并强调生产验收仍需权限、副作用、恢复和真实完成状态检查。",
+      "source_ids": [],
+      "mapping": "missing-original",
+      "support": "unavailable",
+      "record_path": "vault/provenance/ai-assessment-chat/catalog.json"
+    },
+    {
+      "turn_id": "a3ef5815-d955-4a36-8efb-3539c27bb80d",
+      "item_id": "01df3e51-00fa-4f5c-9a97-85fb4abdfbf0",
+      "index": 7,
+      "claim": "assistant引用 OpenAI computer-use 指南，主张在风险发生前确认，敏感信息输入表单可能早于提交产生传输，页面/第三方文本不能授予权限。",
+      "source_ids": [],
+      "mapping": "missing-original",
+      "support": "unavailable",
+      "record_path": "vault/provenance/ai-assessment-chat/catalog.json"
+    },
+    {
+      "turn_id": "a3ef5815-d955-4a36-8efb-3539c27bb80d",
+      "item_id": "01df3e51-00fa-4f5c-9a97-85fb4abdfbf0",
+      "index": 8,
+      "claim": "assistant引用 AWS 幂等 API 实践，主张副作用不明时先核验，只有真正服务端去重契约才可有界重试写操作。",
+      "source_ids": [],
+      "mapping": "missing-original",
+      "support": "unavailable",
+      "record_path": "vault/provenance/ai-assessment-chat/catalog.json"
+    },
+    {
+      "turn_id": "a3ef5815-d955-4a36-8efb-3539c27bb80d",
+      "item_id": "01df3e51-00fa-4f5c-9a97-85fb4abdfbf0",
+      "index": 9,
+      "claim": "assistant引用 OpenAI guardrails/approvals，主张审批可以暂停并恢复，并贴近实际工具调用而非仅靠弹窗。",
+      "source_ids": [],
+      "mapping": "missing-original",
+      "support": "unavailable",
+      "record_path": "vault/provenance/ai-assessment-chat/catalog.json"
+    },
+    {
+      "turn_id": "a3ef5815-d955-4a36-8efb-3539c27bb80d",
+      "item_id": "01df3e51-00fa-4f5c-9a97-85fb4abdfbf0",
+      "index": 10,
+      "claim": "assistant引用 TypeSafe Jev 发布文，区分 schema 类型保证与业务正确性，并指出工作流自评参考其他模型概率答案。",
+      "source_ids": [],
+      "mapping": "missing-original",
+      "support": "unavailable",
+      "record_path": "vault/provenance/ai-assessment-chat/catalog.json"
+    },
+    {
+      "turn_id": "a3ef5815-d955-4a36-8efb-3539c27bb80d",
+      "item_id": "01df3e51-00fa-4f5c-9a97-85fb4abdfbf0",
+      "index": 11,
+      "claim": "assistant引用 Pydantic AI/TypeSafe 集成，区分原始概率、分数、confidence、分布集中度与包装结果，并要求自有数据验收阈值。",
+      "source_ids": [],
+      "mapping": "missing-original",
+      "support": "unavailable",
+      "record_path": "vault/provenance/ai-assessment-chat/catalog.json"
+    },
+    {
+      "turn_id": "a3ef5815-d955-4a36-8efb-3539c27bb80d",
+      "item_id": "01df3e51-00fa-4f5c-9a97-85fb4abdfbf0",
+      "index": 12,
+      "claim": "assistant引用 OpenAI evaluation best practices，主张按任务分布、边界/对抗样本、人工标注和持续评估做应用验收。",
+      "source_ids": [],
+      "mapping": "missing-original",
+      "support": "unavailable",
+      "record_path": "vault/provenance/ai-assessment-chat/catalog.json"
+    },
+    {
+      "turn_id": "a3ef5815-d955-4a36-8efb-3539c27bb80d",
+      "item_id": "01df3e51-00fa-4f5c-9a97-85fb4abdfbf0",
+      "index": 13,
+      "claim": "assistant称应固定 Jev 的模型、rubric、policy 与输入版本，不把 latest 别名作为已校准版本的永久标识。",
+      "source_ids": [],
+      "mapping": "missing-original",
+      "support": "unavailable",
+      "record_path": "vault/provenance/ai-assessment-chat/catalog.json"
+    },
+    {
+      "turn_id": "a3ef5815-d955-4a36-8efb-3539c27bb80d",
+      "item_id": "01df3e51-00fa-4f5c-9a97-85fb4abdfbf0",
+      "index": 14,
+      "claim": "assistant引用德国 HGB §74(2)，称“至少一半”涉及竞业限制期间补偿及合同给付，不是题干所谓制裁。",
+      "source_ids": [],
+      "mapping": "missing-original",
+      "support": "unavailable",
+      "record_path": "vault/provenance/ai-assessment-chat/catalog.json"
+    },
+    {
+      "turn_id": "a3ef5815-d955-4a36-8efb-3539c27bb80d",
+      "item_id": "01df3e51-00fa-4f5c-9a97-85fb4abdfbf0",
+      "index": 15,
+      "claim": "assistant引用 OFAC 50 Percent Rule，指出其涉及被封锁人士对实体的所有权及制裁后果，不是竞业补偿系数。",
+      "source_ids": [],
+      "mapping": "missing-original",
+      "support": "unavailable",
+      "record_path": "vault/provenance/ai-assessment-chat/catalog.json"
+    },
+    {
+      "turn_id": "a3ef5815-d955-4a36-8efb-3539c27bb80d",
+      "item_id": "01df3e51-00fa-4f5c-9a97-85fb4abdfbf0",
+      "index": 16,
+      "claim": "assistant引用新加坡相关判决，称其讨论限制交易、可保护利益与合理性，不能推出跨国家补偿公式。",
+      "source_ids": [],
+      "mapping": "missing-original",
+      "support": "unavailable",
+      "record_path": "vault/provenance/ai-assessment-chat/catalog.json"
+    },
+    {
+      "turn_id": "a3ef5815-d955-4a36-8efb-3539c27bb80d",
+      "item_id": "01df3e51-00fa-4f5c-9a97-85fb4abdfbf0",
+      "index": 17,
+      "claim": "assistant引用 RRSI 与 HarnessDev，提议把自我改进拆成提议、历史保留、验证、选择、回滚，并防止评估泄漏。",
+      "source_ids": [],
+      "mapping": "missing-original",
+      "support": "unavailable",
+      "record_path": "vault/provenance/ai-assessment-chat/catalog.json"
+    },
+    {
+      "turn_id": "a3ef5815-d955-4a36-8efb-3539c27bb80d",
+      "item_id": "01df3e51-00fa-4f5c-9a97-85fb4abdfbf0",
+      "index": 18,
+      "claim": "assistant引用 Anthropic reward hacking 研究，警示满足评分方式不等于完成真实目标，需把评估器、验收集与发布权置于学习器之外。",
+      "source_ids": [],
+      "mapping": "missing-original",
+      "support": "unavailable",
+      "record_path": "vault/provenance/ai-assessment-chat/catalog.json"
+    },
+    {
+      "turn_id": "a3ef5815-d955-4a36-8efb-3539c27bb80d",
+      "item_id": "01df3e51-00fa-4f5c-9a97-85fb4abdfbf0",
+      "index": 21,
+      "claim": "assistant在交付形式段落以占位符列出已分开整理的第一份材料，具体原始目标未由 Chat export 暴露。",
+      "source_ids": [],
+      "mapping": "missing-original",
+      "support": "unavailable",
+      "record_path": "vault/provenance/ai-assessment-chat/catalog.json"
+    },
+    {
+      "turn_id": "a3ef5815-d955-4a36-8efb-3539c27bb80d",
+      "item_id": "01df3e51-00fa-4f5c-9a97-85fb4abdfbf0",
+      "index": 22,
+      "claim": "assistant在交付形式段落以占位符列出已分开整理的第二份材料，具体原始目标未由 Chat export 暴露。",
+      "source_ids": [],
+      "mapping": "missing-original",
+      "support": "unavailable",
+      "record_path": "vault/provenance/ai-assessment-chat/catalog.json"
+    },
+    {
+      "turn_id": "a3ef5815-d955-4a36-8efb-3539c27bb80d",
+      "item_id": "01df3e51-00fa-4f5c-9a97-85fb4abdfbf0",
+      "index": 23,
+      "claim": "assistant在交付形式段落以占位符列出已分开整理的第三份材料，具体原始目标未由 Chat export 暴露。",
+      "source_ids": [],
+      "mapping": "missing-original",
+      "support": "unavailable",
+      "record_path": "vault/provenance/ai-assessment-chat/catalog.json"
+    },
+    {
+      "turn_id": "ee5c0db6-6dac-4137-87f2-e7210c756068",
+      "item_id": "c5180185-b5ec-446b-a45c-7728418b4592",
+      "index": 5,
+      "claim": "Pro assistant以占位符指向其重做的“五页论证与视觉编排”材料，原始目标未由 Chat export 暴露。",
+      "source_ids": [],
+      "mapping": "missing-original",
+      "support": "unavailable",
+      "record_path": "vault/provenance/ai-assessment-chat/catalog.json"
+    },
+    {
+      "turn_id": "ee5c0db6-6dac-4137-87f2-e7210c756068",
+      "item_id": "c5180185-b5ec-446b-a45c-7728418b4592",
+      "index": 6,
+      "claim": "Pro assistant以占位符指向其更新的 Claude 工单，原始目标未由 Chat export 暴露。",
+      "source_ids": [],
+      "mapping": "missing-original",
+      "support": "unavailable",
+      "record_path": "vault/provenance/ai-assessment-chat/catalog.json"
+    },
+    {
+      "turn_id": "ee5c0db6-6dac-4137-87f2-e7210c756068",
+      "item_id": "c5180185-b5ec-446b-a45c-7728418b4592",
+      "index": 1,
+      "claim": "Pro assistant称其对照方法符合当前 Claude Code 前缀加载与 deferred tools 的描述。",
+      "source_ids": [],
+      "mapping": "missing-original",
+      "support": "unavailable",
+      "record_path": "vault/provenance/ai-assessment-chat/catalog.json"
+    },
+    {
+      "turn_id": "ee5c0db6-6dac-4137-87f2-e7210c756068",
+      "item_id": "c5180185-b5ec-446b-a45c-7728418b4592",
+      "index": 3,
+      "claim": "Pro assistant引用按需加载与 tool search 的适用条件，主张需把发现成本纳入加载方式比较。",
+      "source_ids": [],
+      "mapping": "missing-original",
+      "support": "unavailable",
+      "record_path": "vault/provenance/ai-assessment-chat/catalog.json"
+    },
+    {
+      "turn_id": "038cb4d9-268f-429f-a0d2-30072a2532ac",
+      "item_id": "0cc7c4f0-f665-4de7-93ed-13837f757b9a",
+      "index": 0,
+      "claim": "assistant称本轮 Jev 研究把发布能力推进为按任务选择、按工作流验收的实践地图。",
+      "source_ids": [],
+      "mapping": "missing-original",
+      "support": "unavailable",
+      "record_path": "vault/provenance/ai-assessment-chat/catalog.json"
+    },
+    {
+      "turn_id": "038cb4d9-268f-429f-a0d2-30072a2532ac",
+      "item_id": "0cc7c4f0-f665-4de7-93ed-13837f757b9a",
+      "index": 29,
+      "claim": "assistant称本轮登记 24 个原始来源入口，并说明同一研究的论文和项目页不能算 24 项独立研究。",
+      "source_ids": [],
+      "mapping": "missing-original",
+      "support": "unavailable",
+      "record_path": "vault/provenance/ai-assessment-chat/catalog.json"
+    },
+    {
+      "turn_id": "038cb4d9-268f-429f-a0d2-30072a2532ac",
+      "item_id": "0cc7c4f0-f665-4de7-93ed-13837f757b9a",
+      "index": 30,
+      "claim": "assistant在 Jev 研究段落以占位符列出研究综述、sources.json 与 XMind 导览材料。",
+      "source_ids": [],
+      "mapping": "missing-original",
+      "support": "unavailable",
+      "record_path": "vault/provenance/ai-assessment-chat/catalog.json"
+    },
+    {
+      "turn_id": "038cb4d9-268f-429f-a0d2-30072a2532ac",
+      "item_id": "0cc7c4f0-f665-4de7-93ed-13837f757b9a",
+      "index": 1,
+      "claim": "assistant引用 LangChain 在线评估接入与重复判定实验。",
+      "source_ids": [],
+      "mapping": "missing-original",
+      "support": "unavailable",
+      "record_path": "vault/provenance/ai-assessment-chat/catalog.json"
+    },
+    {
+      "turn_id": "038cb4d9-268f-429f-a0d2-30072a2532ac",
+      "item_id": "0cc7c4f0-f665-4de7-93ed-13837f757b9a",
+      "index": 5,
+      "claim": "assistant引用 Southbridge 的 Jev 实体对齐实践。",
+      "source_ids": [],
+      "mapping": "missing-original",
+      "support": "unavailable",
+      "record_path": "vault/provenance/ai-assessment-chat/catalog.json"
+    },
+    {
+      "turn_id": "038cb4d9-268f-429f-a0d2-30072a2532ac",
+      "item_id": "0cc7c4f0-f665-4de7-93ed-13837f757b9a",
+      "index": 6,
+      "claim": "assistant引用 Zerikai Memory 将相关性、证据支持、矛盾和注入风险拆开判断。",
+      "source_ids": [],
+      "mapping": "missing-original",
+      "support": "unavailable",
+      "record_path": "vault/provenance/ai-assessment-chat/catalog.json"
+    },
+    {
+      "turn_id": "038cb4d9-268f-429f-a0d2-30072a2532ac",
+      "item_id": "0cc7c4f0-f665-4de7-93ed-13837f757b9a",
+      "index": 8,
+      "claim": "assistant引用 LangChain 固定天气代理轨迹各重复 100 次的 Jev 评估实验。",
+      "source_ids": [],
+      "mapping": "missing-original",
+      "support": "unavailable",
+      "record_path": "vault/provenance/ai-assessment-chat/catalog.json"
+    },
+    {
+      "turn_id": "038cb4d9-268f-429f-a0d2-30072a2532ac",
+      "item_id": "0cc7c4f0-f665-4de7-93ed-13837f757b9a",
+      "index": 9,
+      "claim": "assistant引用 JEV-as-a-Judge 预印本及其选择性升级/离线级联结果。",
+      "source_ids": [],
+      "mapping": "missing-original",
+      "support": "unavailable",
+      "record_path": "vault/provenance/ai-assessment-chat/catalog.json"
+    },
+    {
+      "turn_id": "038cb4d9-268f-429f-a0d2-30072a2532ac",
+      "item_id": "0cc7c4f0-f665-4de7-93ed-13837f757b9a",
+      "index": 11,
+      "claim": "assistant引用 SREGym 的 Jev 端到端事件实验。",
+      "source_ids": [],
+      "mapping": "missing-original",
+      "support": "unavailable",
+      "record_path": "vault/provenance/ai-assessment-chat/catalog.json"
+    },
+    {
+      "turn_id": "038cb4d9-268f-429f-a0d2-30072a2532ac",
+      "item_id": "0cc7c4f0-f665-4de7-93ed-13837f757b9a",
+      "index": 12,
+      "claim": "assistant引用 SREGym 关于恢复当前功能不等于修复未来配置、候选缺失不能由排序补回的失败机制。",
+      "source_ids": [],
+      "mapping": "missing-original",
+      "support": "unavailable",
+      "record_path": "vault/provenance/ai-assessment-chat/catalog.json"
+    },
+    {
+      "turn_id": "038cb4d9-268f-429f-a0d2-30072a2532ac",
+      "item_id": "0cc7c4f0-f665-4de7-93ed-13837f757b9a",
+      "index": 15,
+      "claim": "assistant引用 Southbridge 的实体对齐中 Jev 与强模型复核的组合。",
+      "source_ids": [],
+      "mapping": "missing-original",
+      "support": "unavailable",
+      "record_path": "vault/provenance/ai-assessment-chat/catalog.json"
+    },
+    {
+      "turn_id": "038cb4d9-268f-429f-a0d2-30072a2532ac",
+      "item_id": "0cc7c4f0-f665-4de7-93ed-13837f757b9a",
+      "index": 16,
+      "claim": "assistant引用 Zerikai Memory 的候选片段分层判断与后续忠实性审查边界。",
+      "source_ids": [],
+      "mapping": "missing-original",
+      "support": "unavailable",
+      "record_path": "vault/provenance/ai-assessment-chat/catalog.json"
+    },
+    {
+      "turn_id": "038cb4d9-268f-429f-a0d2-30072a2532ac",
+      "item_id": "0cc7c4f0-f665-4de7-93ed-13837f757b9a",
+      "index": 19,
+      "claim": "assistant引用 Sam Reghenzi 的 typed Choice/分类树实验与缺少回溯的限制。",
+      "source_ids": [],
+      "mapping": "missing-original",
+      "support": "unavailable",
+      "record_path": "vault/provenance/ai-assessment-chat/catalog.json"
+    },
+    {
+      "turn_id": "038cb4d9-268f-429f-a0d2-30072a2532ac",
+      "item_id": "0cc7c4f0-f665-4de7-93ed-13837f757b9a",
+      "index": 22,
+      "claim": "assistant引用 Vercel 网关关于按请求启用 ZDR 与不训练选项的说明。",
+      "source_ids": [],
+      "mapping": "missing-original",
+      "support": "unavailable",
+      "record_path": "vault/provenance/ai-assessment-chat/catalog.json"
+    },
+    {
+      "turn_id": "038cb4d9-268f-429f-a0d2-30072a2532ac",
+      "item_id": "0cc7c4f0-f665-4de7-93ed-13837f757b9a",
+      "index": 23,
+      "claim": "assistant引用 Vercel 新增 TypeSafe 客户端兼容入口与 HTTP evaluate 接口。",
+      "source_ids": [],
+      "mapping": "missing-original",
+      "support": "unavailable",
+      "record_path": "vault/provenance/ai-assessment-chat/catalog.json"
+    },
+    {
+      "turn_id": "038cb4d9-268f-429f-a0d2-30072a2532ac",
+      "item_id": "0cc7c4f0-f665-4de7-93ed-13837f757b9a",
+      "index": 27,
+      "claim": "assistant引用 Jev for Scientific Decisions 研究关于语义选择、中间量与最终标签分离的观察。",
+      "source_ids": [],
+      "mapping": "missing-original",
+      "support": "unavailable",
+      "record_path": "vault/provenance/ai-assessment-chat/catalog.json"
+    },
+    {
       "turn_id": "13aebfc5-4c6b-4762-8843-c8dbb4c97ee4",
       "item_id": "a4462cf4-0c60-4f14-a982-1b7f1d39cb2b",
       "index": 3,
@@ -6373,6 +8968,116 @@
       "mapping": "missing-original",
       "support": "unavailable",
       "record_path": "vault/provenance/architecture-review-2026-09-20/catalog.json"
+    },
+    {
+      "turn_id": "2e71033f-7b24-43ff-9e92-85e2cd2e44a8",
+      "item_id": "2231595f-4f08-405f-bd6d-cafba41cab04",
+      "index": 0,
+      "claim": "assistant称抖音电商官方学习体系区分商城推荐、货架运营、搜索运营、搜索 GMV；并概括美团公开材料反复使用交易用户、活跃商户、交易频次、优质供给、订单与履约等概念。",
+      "source_ids": [],
+      "mapping": "missing-original",
+      "support": "unavailable",
+      "record_path": "vault/provenance/platform-product-chat/catalog.json"
+    },
+    {
+      "turn_id": "2e71033f-7b24-43ff-9e92-85e2cd2e44a8",
+      "item_id": "2231595f-4f08-405f-bd6d-cafba41cab04",
+      "index": 1,
+      "claim": "assistant称美团公开表述持续围绕交易用户、消费频次、活跃商户、优质供给、即时零售与履约时效。",
+      "source_ids": [],
+      "mapping": "missing-original",
+      "support": "unavailable",
+      "record_path": "vault/provenance/platform-product-chat/catalog.json"
+    },
+    {
+      "turn_id": "2e71033f-7b24-43ff-9e92-85e2cd2e44a8",
+      "item_id": "2231595f-4f08-405f-bd6d-cafba41cab04",
+      "index": 2,
+      "claim": "assistant称抖音电商官方学习平台把货架运营、商城推荐、搜索运营、搜索 GMV、商品曝光与转化列为经营知识模块。",
+      "source_ids": [],
+      "mapping": "missing-original",
+      "support": "unavailable",
+      "record_path": "vault/provenance/platform-product-chat/catalog.json"
+    },
+    {
+      "turn_id": "fa4a14bf-c2bc-4b7d-a933-3d79b1a3560f",
+      "item_id": "3c4107cb-565b-4d57-a2ea-a2e6fa43c793",
+      "index": 0,
+      "claim": "assistant称美团更接近本地供给×高意图交易×履约网络，抖音电商更接近内容分发×兴趣激发×交易承接，并归纳两方公开材料/官方课程。",
+      "source_ids": [],
+      "mapping": "missing-original",
+      "support": "unavailable",
+      "record_path": "vault/provenance/platform-product-chat/catalog.json"
+    },
+    {
+      "turn_id": "fa4a14bf-c2bc-4b7d-a933-3d79b1a3560f",
+      "item_id": "3c4107cb-565b-4d57-a2ea-a2e6fa43c793",
+      "index": 1,
+      "claim": "assistant称美团公开披露年度交易用户、人均交易频次及中高频用户。",
+      "source_ids": [],
+      "mapping": "missing-original",
+      "support": "unavailable",
+      "record_path": "vault/provenance/platform-product-chat/catalog.json"
+    },
+    {
+      "turn_id": "fa4a14bf-c2bc-4b7d-a933-3d79b1a3560f",
+      "item_id": "3c4107cb-565b-4d57-a2ea-a2e6fa43c793",
+      "index": 2,
+      "claim": "assistant称美团描述即时零售时同时强调供给扩展与“30 分钟到家”。",
+      "source_ids": [],
+      "mapping": "missing-original",
+      "support": "unavailable",
+      "record_path": "vault/provenance/platform-product-chat/catalog.json"
+    },
+    {
+      "turn_id": "fa4a14bf-c2bc-4b7d-a933-3d79b1a3560f",
+      "item_id": "3c4107cb-565b-4d57-a2ea-a2e6fa43c793",
+      "index": 3,
+      "claim": "assistant称抖音官方材料区分内容场与商城/搜索货架场，并讨论搜索 CTR、订单转化率、销量、体验等经营因素。",
+      "source_ids": [],
+      "mapping": "missing-original",
+      "support": "unavailable",
+      "record_path": "vault/provenance/platform-product-chat/catalog.json"
+    },
+    {
+      "turn_id": "fa4a14bf-c2bc-4b7d-a933-3d79b1a3560f",
+      "item_id": "3c4107cb-565b-4d57-a2ea-a2e6fa43c793",
+      "index": 4,
+      "claim": "assistant称抖音官方经营材料把短视频数量不足视作影响搜索和交易增长的供给问题。",
+      "source_ids": [],
+      "mapping": "missing-original",
+      "support": "unavailable",
+      "record_path": "vault/provenance/platform-product-chat/catalog.json"
+    },
+    {
+      "turn_id": "68b37172-1e42-4f26-880f-04e76b651952",
+      "item_id": "c86b8c53-fbb0-475c-8958-50b514f699e9",
+      "index": 0,
+      "claim": "assistant以 Google 标准电商漏斗概括商品浏览、加购、开始结账与购买路径。",
+      "source_ids": [],
+      "mapping": "missing-original",
+      "support": "unavailable",
+      "record_path": "vault/provenance/platform-product-chat/catalog.json"
+    },
+    {
+      "turn_id": "68b37172-1e42-4f26-880f-04e76b651952",
+      "item_id": "c86b8c53-fbb0-475c-8958-50b514f699e9",
+      "index": 1,
+      "claim": "assistant以 Google Analytics 事件路径 view_item → add_to_cart → begin_checkout → purchase 说明标准购买路径。",
+      "source_ids": [],
+      "mapping": "missing-original",
+      "support": "unavailable",
+      "record_path": "vault/provenance/platform-product-chat/catalog.json"
+    },
+    {
+      "turn_id": "68b37172-1e42-4f26-880f-04e76b651952",
+      "item_id": "c86b8c53-fbb0-475c-8958-50b514f699e9",
+      "index": 2,
+      "claim": "assistant以 CTR = 点击 / 曝光给出点击率公式。",
+      "source_ids": [],
+      "mapping": "missing-original",
+      "support": "unavailable",
+      "record_path": "vault/provenance/platform-product-chat/catalog.json"
     },
     {
       "turn_id": "47c72d09-4a5e-444a-98fd-ec00abcdabc5",
@@ -6662,9 +9367,9 @@
     }
   ],
   "counts": {
-    "distilled_messages": 70,
-    "source_records": 180,
-    "unique_canonical_urls": 177,
-    "citation_mappings": 144
+    "distilled_messages": 92,
+    "source_records": 255,
+    "unique_canonical_urls": 252,
+    "citation_mappings": 205
   }
 }

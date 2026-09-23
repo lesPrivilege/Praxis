@@ -13,7 +13,16 @@
 
 ## 增量批次
 
+- [ai-assessment-chat](ai-assessment-chat/README.md)
+- [ai-assessment-q123](ai-assessment-q123/README.md)
+- [ai-assessment-q45](ai-assessment-q45/README.md)
 - [architecture-review-2026-09-20](architecture-review-2026-09-20/README.md)
+- [cw-frontend-references](cw-frontend-references/README.md)
 - [documentation-practices](documentation-practices/README.md)
+- [jev-community-runtime](jev-community-runtime/README.md)
+- [jev-community-workflows](jev-community-workflows/README.md)
+- [platform-product](platform-product/README.md)
+- [platform-product-chat](platform-product-chat/README.md)
 - [reporting](reporting/README.md)
+- [se-frontend-references](se-frontend-references/README.md)
 - [work-system](work-system/README.md)

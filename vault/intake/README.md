@@ -20,7 +20,19 @@ Downloads登记：[downloads.json](downloads.json)；[主题提炼](../distilled
 
 [建立材料分类体系登记](material-classification.json)：独立对话 2 轮/4 消息，无外部 URL 或 citation。
 
+[平台类产品 grammar 扫盲](platform-grammar-20260922.json)：原线程读取 6 轮/12 消息，按主题归档 4 轮/8 消息；11 个 citation placeholder 登记为 `missing-original`。后续消费入口预留为 [`../distilled/platform-product/README.md`](../distilled/platform-product/README.md)、[`../distilled/platform-product/outline.md`](../distilled/platform-product/outline.md) 与 [`../distilled/platform-product/annotated.md`](../distilled/platform-product/annotated.md)。
+
 ## 架构与文档增量 · 2026-09-20
 
 - [审阅入账](architecture-review-2026-09-20.json)：两份原件、1 轮/2 消息、7 个引用占位及交付缺口。
 - [文档实践研究](documentation-practices-2026-09-20.json)：6 个官方 URL 的问题、证据、选型建议与未快照依赖；[来源登记](../provenance/documentation-practices/catalog.json)。
+
+[AI 能力测试登记](ai-capability-assessment-20260923.json)：r2 8 轮/11 条可见消息（保留 r1）、3 个附件原件与逐消息覆盖；[消费入口](../distilled/ai-capability-assessment/README.md)。
+
+[Jev社区研究包增量](jev-community-20260923.json)：4个包文件与1份粘贴文本；24个历史来源入口另行核查，逐项状态见[实践索引](../distilled/jev-practices/README.md)。
+
+[CW Pages召回](cw-pages-recall-20260923.json)与[career HTML召回](career-html-recall-20260923.json)：实际图式/编译入口、展示HTML、定向快照和未保存依赖，供[五页答卷](../distilled/ai-capability-assessment/five-page-outline.md)消费。
+
+[CW前端消费链](cw-frontend-consumption-20260923.json)与[SE前端消费链](se-frontend-recall-20260923.json)：统一归入[前端设计资料目](../distilled/frontend-design/README.md)。
+
+[用户Q1截图审阅](assessment-layout-review-20260923.json)与[真实编排参考](frontend-composition-anchors-20260923.json)：保存当前问题证据与历史设计参考，二者不混作当前页面验收。

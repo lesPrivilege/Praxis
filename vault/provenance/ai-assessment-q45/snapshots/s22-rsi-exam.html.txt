@@ -1,0 +1,1096 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>RSI-Exam · Benchmarking Recursive Self-Improvement through Executable Research</title>
+<meta name="description" content="RSI-Exam evaluates whether an AI agent can improve a working method and generalize to unseen data. 88 active tasks across 6 domains: 35 public and 53 private.">
+<link rel="icon" href="data:image/png;base64,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">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="apple-touch-icon" href="img/logo/apple-touch-icon.png">
+<meta property="og:site_name" content="RSI-Exam">
+<meta property="og:type" content="website">
+<meta property="og:title" content="RSI-Exam · Benchmarking Recursive Self-Improvement through Executable Research">
+<meta property="og:description" content="RSI-Exam evaluates whether an AI agent can improve a working method and generalize to unseen data. 88 active tasks across 6 domains: 35 public and 53 private.">
+<meta name="twitter:card" content="summary">
+<link rel="stylesheet" href="style.css?v=fb68f2a1">
+</head>
+<body class="home">
+
+<header class="nav"><div class="wrap">
+  <a class="brand" href="index.html">RSI-Exam</a>
+  <nav><a class="on" href="index.html">Home</a><a href="tasks.html">Tasks</a>
+  <a href="blog.html">Blog</a>
+  <a href="contribute.html">Contribute</a>
+  <a href="https://mail.google.com/mail/?view=cm&amp;fs=1&amp;to=contact%40rsi-exam.ai" target="_blank" rel="noopener">Contact</a>
+  <a href="https://github.com/aiming-lab/RSI-Exam">GitHub</a></nav>
+</div></header>
+
+<div class="hero"><div class="wrap">
+  <h1><span class="nm">RSI-Exam</span>: Benchmarking Recursive
+    <span class="nb">Self-Improvement</span> through Executable Research</h1>
+  <p class="sub">It evaluates whether an AI agent can improve itself over a long horizon and
+    generalize to unseen data. Hours of autonomous experimentation on the method that solves the task or
+    the harness that drives a frozen model, then one final run on a hidden test set.</p>
+  <div class="cta">
+    <a class="btn" href="tasks.html">Browse tasks</a>
+    <a class="btn" href="#leaderboard">Leaderboard</a>
+    <a class="btn" href="#overview">How it works</a>
+    <a class="btn" href="contribute.html">Contribute a task</a>
+  </div>
+</div></div>
+
+<section class="institution-strip" aria-label="Institutions represented in the RSI-Exam research community">
+  <div class="wrap">
+    <div class="institution-marquee" tabindex="0" aria-label="Stanford, UC Berkeley, UNC Chapel Hill, UC San Diego, UC Santa Cruz, Carnegie Mellon, Oxford, RIKEN Japan, Rutgers, MBZUAI, NUS, Yale, and the University of Pittsburgh">
+      <div class="institution-marquee-track">
+        <ul class="institution-marquee-group">
+          <li><img class="institution-logo logo-stanford" src="img/institutions/stanford-seal.svg" width="512" height="512" alt="Stanford University seal" decoding="async"></li>
+          <li><img class="institution-logo logo-berkeley" src="img/institutions/berkeley-seal.svg" width="666" height="666" alt="UC Berkeley seal" decoding="async"></li>
+          <li><img class="institution-logo logo-unc" src="img/institutions/unc-seal.png" width="960" height="960" alt="UNC Chapel Hill seal" decoding="async"></li>
+          <li><img class="institution-logo logo-ucsd" src="img/institutions/ucsd-seal.png" width="960" height="966" alt="UC San Diego seal" decoding="async"></li>
+          <li><img class="institution-logo logo-ucsc" src="img/institutions/ucsc-seal.svg" width="512" height="512" alt="UC Santa Cruz seal" decoding="async"></li>
+          <li><img class="institution-logo logo-cmu" src="img/institutions/cmu-seal.svg" width="300" height="300" alt="Carnegie Mellon University seal" decoding="async"></li>
+          <li><img class="institution-logo logo-oxford" src="img/institutions/oxford-crest.svg" width="500" height="602" alt="University of Oxford crest" decoding="async"></li>
+          <li><img class="institution-logo logo-riken" src="img/institutions/riken-mark.svg" width="512" height="892" alt="RIKEN mark" decoding="async"></li>
+          <li><img class="institution-logo logo-rutgers" src="img/institutions/rutgers-seal.svg" width="300" height="301" alt="Rutgers University seal" decoding="async"></li>
+          <li><img class="institution-logo logo-mbzuai" src="img/institutions/mbzuai-mark.svg" width="97" height="79" alt="MBZUAI mark" decoding="async"></li>
+          <li><img class="institution-logo logo-nus" src="img/institutions/nus-crest.svg" width="175" height="218" alt="National University of Singapore crest" decoding="async"></li>
+          <li><img class="institution-logo logo-yale" src="img/institutions/yale-shield.svg" width="279" height="293" alt="Yale University shield" decoding="async"></li>
+          <li><img class="institution-logo logo-pitt" src="img/institutions/pitt-seal.png" width="840" height="848" alt="University of Pittsburgh seal" decoding="async"></li>
+        </ul>
+        <ul class="institution-marquee-group" aria-hidden="true">
+          <li><img class="institution-logo logo-stanford" src="img/institutions/stanford-seal.svg" width="512" height="512" alt="" decoding="async"></li>
+          <li><img class="institution-logo logo-berkeley" src="img/institutions/berkeley-seal.svg" width="666" height="666" alt="" decoding="async"></li>
+          <li><img class="institution-logo logo-unc" src="img/institutions/unc-seal.png" width="960" height="960" alt="" decoding="async"></li>
+          <li><img class="institution-logo logo-ucsd" src="img/institutions/ucsd-seal.png" width="960" height="966" alt="" decoding="async"></li>
+          <li><img class="institution-logo logo-ucsc" src="img/institutions/ucsc-seal.svg" width="512" height="512" alt="" decoding="async"></li>
+          <li><img class="institution-logo logo-cmu" src="img/institutions/cmu-seal.svg" width="300" height="300" alt="" decoding="async"></li>
+          <li><img class="institution-logo logo-oxford" src="img/institutions/oxford-crest.svg" width="500" height="602" alt="" decoding="async"></li>
+          <li><img class="institution-logo logo-riken" src="img/institutions/riken-mark.svg" width="512" height="892" alt="" decoding="async"></li>
+          <li><img class="institution-logo logo-rutgers" src="img/institutions/rutgers-seal.svg" width="300" height="301" alt="" decoding="async"></li>
+          <li><img class="institution-logo logo-mbzuai" src="img/institutions/mbzuai-mark.svg" width="97" height="79" alt="" decoding="async"></li>
+          <li><img class="institution-logo logo-nus" src="img/institutions/nus-crest.svg" width="175" height="218" alt="" decoding="async"></li>
+          <li><img class="institution-logo logo-yale" src="img/institutions/yale-shield.svg" width="279" height="293" alt="" decoding="async"></li>
+          <li><img class="institution-logo logo-pitt" src="img/institutions/pitt-seal.png" width="840" height="848" alt="" decoding="async"></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="leaderboard" class="tinted"><div class="wrap">
+  <span class="eyebrow e-orange">RSI-Exam 0.1</span>
+  <h2>Leaderboard</h2>
+<!-- LB:START -->
+<div class="lbtabs" role="tablist" aria-label="Leaderboard scope">
+<button class="lbtab on" type="button" role="tab" id="lbtab-full" aria-selected="true" aria-controls="lbpanel-full" data-board="full">Full<span class="lbn">88</span></button>
+<button class="lbtab" type="button" role="tab" id="lbtab-public" aria-selected="false" aria-controls="lbpanel-public" data-board="public">Public<span class="lbn">35</span></button>
+<button class="lbtab" type="button" role="tab" id="lbtab-private" aria-selected="false" aria-controls="lbpanel-private" data-board="private">Private<span class="lbn">53</span></button>
+</div>
+<div class="hlbwrap" id="lbpanel-full" role="tabpanel" aria-labelledby="lbtab-full" data-board="full">
+<svg class="hlb" viewBox="0 0 900 688" role="img" aria-label="mean held-out normalised score per model over all 88 active tasks">
+<line class="hlbg" x1="216.0" y1="23" x2="216.0" y2="670"/>
+<text class="hlbax" x="216.0" y="18" text-anchor="middle">0.2</text>
+<line class="hlbg" x1="377.5" y1="23" x2="377.5" y2="670"/>
+<text class="hlbax" x="377.5" y="18" text-anchor="middle">0.4</text>
+<line class="hlbg" style="stroke:#d8d0ca" opacity=".72" x1="539.0" y1="23" x2="539.0" y2="670"/>
+<text class="hlbax" x="539.0" y="18" text-anchor="middle">0.6</text>
+<line class="hlbg" x1="700.5" y1="23" x2="700.5" y2="670"/>
+<text class="hlbax" x="700.5" y="18" text-anchor="middle">0.8</text>
+<line class="hlbg" x1="862" y1="23" x2="862" y2="670"/>
+<text class="hlbax" x="862" y="18" text-anchor="middle">1.0</text>
+<text class="hlbanch" x="539.0" y="683" text-anchor="middle">frontier-calibrated reference</text>
+<g class="hlbrow" style="--tier:#3d6b5c">
+<text class="hlbrank" x="5" y="53">1</text>
+<image aria-hidden="true" href="img/models/openai.svg?v=fa2f9f6f" x="20" y="38" width="26" height="26"/>
+<text class="hlbmodel" x="56" y="49">GPT-6-astra</text>
+<text class="hlbsub" x="56" y="62">codex · max</text>
+<rect class="hlbtrack" x="216" y="41" width="646" height="16" rx="8"/>
+<rect class="hlbfill" x="216" y="41" width="252.4" height="16" rx="8"/>
+<text class="hlbval" x="476.9" y="53" text-anchor="start">0.5126</text>
+</g>
+<g class="hlbrow" style="--tier:#c2703d">
+<text class="hlbrank" x="5" y="95">2</text>
+<image aria-hidden="true" href="img/models/anthropic.png?v=0ba8389d" x="20" y="80" width="26" height="26"/>
+<text class="hlbmodel" x="56" y="91">Fable 5.1</text>
+<text class="hlbsub" x="56" y="104">claude code · max</text>
+<rect class="hlbtrack" x="216" y="83" width="646" height="16" rx="8"/>
+<rect class="hlbfill" x="216" y="83" width="227.1" height="16" rx="8"/>
+<text class="hlbval" x="451.6" y="95" text-anchor="start">0.4813</text>
+</g>
+<g class="hlbrow" style="--tier:#a56953">
+<text class="hlbrank" x="5" y="137">3</text>
+<image aria-hidden="true" href="img/models/anthropic.png?v=0ba8389d" x="20" y="122" width="26" height="26"/>
+<text class="hlbmodel" x="56" y="133">Opus 5</text>
+<text class="hlbsub" x="56" y="146">claude code · max</text>
+<rect class="hlbtrack" x="216" y="125" width="646" height="16" rx="8"/>
+<rect class="hlbfill" x="216" y="125" width="213.2" height="16" rx="8"/>
+<text class="hlbval" x="437.7" y="137" text-anchor="start">0.4640</text>
+</g>
+<g class="hlbrow" style="--tier:#312d27">
+<text class="hlbrank" x="5" y="179">4</text>
+<image aria-hidden="true" href="img/models/openai.svg?v=fa2f9f6f" x="20" y="164" width="26" height="26"/>
+<text class="hlbmodel" x="56" y="175">GPT-5.6-sol</text>
+<text class="hlbsub" x="56" y="188">codex · max</text>
+<rect class="hlbtrack" x="216" y="167" width="646" height="16" rx="8"/>
+<rect class="hlbfill" x="216" y="167" width="188.2" height="16" rx="8"/>
+<text class="hlbval" x="412.7" y="179" text-anchor="start">0.4331</text>
+</g>
+<g class="hlbrow" style="--tier:#4d7ea8">
+<text class="hlbrank" x="5" y="221">5</text>
+<image aria-hidden="true" href="img/models/zai.svg?v=e7ebbf5a" x="20" y="206" width="26" height="26"/>
+<text class="hlbmodel" x="56" y="217">GLM 5.3</text>
+<text class="hlbsub" x="56" y="230">claude code · max</text>
+<rect class="hlbtrack" x="216" y="209" width="646" height="16" rx="8"/>
+<rect class="hlbfill" x="216" y="209" width="163.8" height="16" rx="8"/>
+<text class="hlbval" x="388.3" y="221" text-anchor="start">0.4029</text>
+</g>
+<g class="hlbrow" style="--tier:#7e5068">
+<text class="hlbrank" x="5" y="263">6</text>
+<image aria-hidden="true" href="img/models/qwen.png?v=cb55ca37" x="20" y="248" width="26" height="26"/>
+<text class="hlbmodel" x="56" y="259">Qwen3.8 Max-0902</text>
+<text class="hlbsub" x="56" y="272">claude code · xhigh</text>
+<rect class="hlbtrack" x="216" y="251" width="646" height="16" rx="8"/>
+<rect class="hlbfill" x="216" y="251" width="155.3" height="16" rx="8"/>
+<text class="hlbval" x="379.8" y="263" text-anchor="start">0.3923</text>
+</g>
+<g class="hlbrow" style="--tier:#5b7a99">
+<text class="hlbrank" x="5" y="305">7</text>
+<image aria-hidden="true" href="img/models/meta.png?v=5e2a8d7c" x="20" y="290" width="26" height="26"/>
+<text class="hlbmodel" x="56" y="301">Muse Spark 1.3</text>
+<text class="hlbsub" x="56" y="314">musecode · max</text>
+<rect class="hlbtrack" x="216" y="293" width="646" height="16" rx="8"/>
+<rect class="hlbfill" x="216" y="293" width="154.0" height="16" rx="8"/>
+<text class="hlbval" x="378.5" y="305" text-anchor="start">0.3907</text>
+</g>
+<g class="hlbrow" style="--tier:#735f86">
+<text class="hlbrank" x="5" y="347">8</text>
+<image aria-hidden="true" href="img/models/kimi.png?v=ae724724" x="20" y="332" width="26" height="26"/>
+<text class="hlbmodel" x="56" y="343">Kimi K3</text>
+<text class="hlbsub" x="56" y="356">kimi cli · max</text>
+<rect class="hlbtrack" x="216" y="335" width="646" height="16" rx="8"/>
+<rect class="hlbfill" x="216" y="335" width="146.9" height="16" rx="8"/>
+<text class="hlbval" x="371.4" y="347" text-anchor="start">0.3820</text>
+</g>
+<g class="hlbrow" style="--tier:#676c73">
+<text class="hlbrank" x="5" y="389">9</text>
+<image aria-hidden="true" href="img/models/xai.png?v=1e6fae26" x="20" y="374" width="26" height="26"/>
+<text class="hlbmodel" x="56" y="385">Grok 4.6</text>
+<text class="hlbsub" x="56" y="398">grok · xhigh</text>
+<rect class="hlbtrack" x="216" y="377" width="646" height="16" rx="8"/>
+<rect class="hlbfill" x="216" y="377" width="134.9" height="16" rx="8"/>
+<text class="hlbval" x="359.4" y="389" text-anchor="start">0.3671</text>
+</g>
+<g class="hlbrow" style="--tier:#4a7c6f">
+<text class="hlbrank" x="5" y="431">10</text>
+<image aria-hidden="true" href="img/models/google-deepmind.svg?v=5b470587" x="20" y="416" width="26" height="26"/>
+<text class="hlbmodel" x="56" y="427">Gemini 3.8 Flash</text>
+<text class="hlbsub" x="56" y="440">antigravity · high</text>
+<rect class="hlbtrack" x="216" y="419" width="646" height="16" rx="8"/>
+<rect class="hlbfill" x="216" y="419" width="113.5" height="16" rx="8"/>
+<text class="hlbval" x="338.0" y="431" text-anchor="start">0.3406</text>
+</g>
+<g class="hlbrow" style="--tier:#6b7f8c">
+<text class="hlbrank" x="5" y="473">11</text>
+<image aria-hidden="true" href="img/models/openai.svg?v=fa2f9f6f" x="20" y="458" width="26" height="26"/>
+<text class="hlbmodel" x="56" y="469">GPT-5.5</text>
+<text class="hlbsub" x="56" y="482">codex · xhigh</text>
+<rect class="hlbtrack" x="216" y="461" width="646" height="16" rx="8"/>
+<rect class="hlbfill" x="216" y="461" width="106.0" height="16" rx="8"/>
+<text class="hlbval" x="330.5" y="473" text-anchor="start">0.3312</text>
+</g>
+<g class="hlbrow" style="--tier:#a8705a">
+<text class="hlbrank" x="5" y="515">12</text>
+<image aria-hidden="true" href="img/models/seed.png?v=c1999fa2" x="20" y="500" width="26" height="26"/>
+<text class="hlbmodel" x="56" y="511">Seed Evolving-0909</text>
+<text class="hlbsub" x="56" y="524">claude code · max</text>
+<rect class="hlbtrack" x="216" y="503" width="646" height="16" rx="8"/>
+<rect class="hlbfill" x="216" y="503" width="100.4" height="16" rx="8"/>
+<text class="hlbval" x="324.9" y="515" text-anchor="start">0.3243</text>
+</g>
+<g class="hlbrow" style="--tier:#8a6b3d">
+<text class="hlbrank" x="5" y="557">13</text>
+<image aria-hidden="true" href="img/models/deepseek.png?v=be68bf4f" x="20" y="542" width="26" height="26"/>
+<text class="hlbmodel" x="56" y="553">DeepSeek V4 Pro</text>
+<text class="hlbsub" x="56" y="566">claude code · max</text>
+<rect class="hlbtrack" x="216" y="545" width="646" height="16" rx="8"/>
+<rect class="hlbfill" x="216" y="545" width="98.9" height="16" rx="8"/>
+<text class="hlbval" x="323.4" y="557" text-anchor="start">0.3225</text>
+</g>
+<g class="hlbrow" style="--tier:#976279">
+<text class="hlbrank" x="5" y="599">14</text>
+<image aria-hidden="true" href="img/models/qwen.png?v=cb55ca37" x="20" y="584" width="26" height="26"/>
+<text class="hlbmodel" x="56" y="595">Qwen3.8 Max</text>
+<text class="hlbsub" x="56" y="608">qwen coder · xhigh</text>
+<rect class="hlbtrack" x="216" y="587" width="646" height="16" rx="8"/>
+<rect class="hlbfill" x="216" y="587" width="98.4" height="16" rx="8"/>
+<text class="hlbval" x="322.9" y="599" text-anchor="start">0.3218</text>
+</g>
+<g class="hlbrow" style="--tier:#607d9d">
+<text class="hlbrank" x="5" y="641">15</text>
+<image aria-hidden="true" href="img/models/google-deepmind.svg?v=5b470587" x="20" y="626" width="26" height="26"/>
+<text class="hlbmodel" x="56" y="637">Gemini 3.7 Flash</text>
+<text class="hlbsub" x="56" y="650">antigravity · high</text>
+<rect class="hlbtrack" x="216" y="629" width="646" height="16" rx="8"/>
+<rect class="hlbfill" x="216" y="629" width="87.9" height="16" rx="8"/>
+<text class="hlbval" x="312.4" y="641" text-anchor="start">0.3088</text>
+</g>
+</svg>
+</div>
+<div class="hlbwrap" id="lbpanel-public" role="tabpanel" aria-labelledby="lbtab-public" data-board="public" hidden>
+<svg class="hlb" viewBox="0 0 900 688" role="img" aria-label="mean held-out normalised score per model over the 35 public tasks">
+<line class="hlbg" x1="216.0" y1="23" x2="216.0" y2="670"/>
+<text class="hlbax" x="216.0" y="18" text-anchor="middle">0.2</text>
+<line class="hlbg" x1="377.5" y1="23" x2="377.5" y2="670"/>
+<text class="hlbax" x="377.5" y="18" text-anchor="middle">0.4</text>
+<line class="hlbg" style="stroke:#d8d0ca" opacity=".72" x1="539.0" y1="23" x2="539.0" y2="670"/>
+<text class="hlbax" x="539.0" y="18" text-anchor="middle">0.6</text>
+<line class="hlbg" x1="700.5" y1="23" x2="700.5" y2="670"/>
+<text class="hlbax" x="700.5" y="18" text-anchor="middle">0.8</text>
+<line class="hlbg" x1="862" y1="23" x2="862" y2="670"/>
+<text class="hlbax" x="862" y="18" text-anchor="middle">1.0</text>
+<text class="hlbanch" x="539.0" y="683" text-anchor="middle">frontier-calibrated reference</text>
+<g class="hlbrow" style="--tier:#3d6b5c">
+<text class="hlbrank" x="5" y="53">1</text>
+<image aria-hidden="true" href="img/models/openai.svg?v=fa2f9f6f" x="20" y="38" width="26" height="26"/>
+<text class="hlbmodel" x="56" y="49">GPT-6-astra</text>
+<text class="hlbsub" x="56" y="62">codex · max</text>
+<rect class="hlbtrack" x="216" y="41" width="646" height="16" rx="8"/>
+<rect class="hlbfill" x="216" y="41" width="267.6" height="16" rx="8"/>
+<text class="hlbval" x="492.1" y="53" text-anchor="start">0.5314</text>
+</g>
+<g class="hlbrow" style="--tier:#c2703d">
+<text class="hlbrank" x="5" y="95">2</text>
+<image aria-hidden="true" href="img/models/anthropic.png?v=0ba8389d" x="20" y="80" width="26" height="26"/>
+<text class="hlbmodel" x="56" y="91">Fable 5.1</text>
+<text class="hlbsub" x="56" y="104">claude code · max</text>
+<rect class="hlbtrack" x="216" y="83" width="646" height="16" rx="8"/>
+<rect class="hlbfill" x="216" y="83" width="222.1" height="16" rx="8"/>
+<text class="hlbval" x="446.6" y="95" text-anchor="start">0.4750</text>
+</g>
+<g class="hlbrow" style="--tier:#a56953">
+<text class="hlbrank" x="5" y="137">3</text>
+<image aria-hidden="true" href="img/models/anthropic.png?v=0ba8389d" x="20" y="122" width="26" height="26"/>
+<text class="hlbmodel" x="56" y="133">Opus 5</text>
+<text class="hlbsub" x="56" y="146">claude code · max</text>
+<rect class="hlbtrack" x="216" y="125" width="646" height="16" rx="8"/>
+<rect class="hlbfill" x="216" y="125" width="211.0" height="16" rx="8"/>
+<text class="hlbval" x="435.5" y="137" text-anchor="start">0.4613</text>
+</g>
+<g class="hlbrow" style="--tier:#312d27">
+<text class="hlbrank" x="5" y="179">4</text>
+<image aria-hidden="true" href="img/models/openai.svg?v=fa2f9f6f" x="20" y="164" width="26" height="26"/>
+<text class="hlbmodel" x="56" y="175">GPT-5.6-sol</text>
+<text class="hlbsub" x="56" y="188">codex · max</text>
+<rect class="hlbtrack" x="216" y="167" width="646" height="16" rx="8"/>
+<rect class="hlbfill" x="216" y="167" width="185.9" height="16" rx="8"/>
+<text class="hlbval" x="410.4" y="179" text-anchor="start">0.4303</text>
+</g>
+<g class="hlbrow" style="--tier:#7e5068">
+<text class="hlbrank" x="5" y="221">5</text>
+<image aria-hidden="true" href="img/models/qwen.png?v=cb55ca37" x="20" y="206" width="26" height="26"/>
+<text class="hlbmodel" x="56" y="217">Qwen3.8 Max-0902</text>
+<text class="hlbsub" x="56" y="230">claude code · xhigh</text>
+<rect class="hlbtrack" x="216" y="209" width="646" height="16" rx="8"/>
+<rect class="hlbfill" x="216" y="209" width="176.4" height="16" rx="8"/>
+<text class="hlbval" x="400.9" y="221" text-anchor="start">0.4184</text>
+</g>
+<g class="hlbrow" style="--tier:#5b7a99">
+<text class="hlbrank" x="5" y="263">6</text>
+<image aria-hidden="true" href="img/models/meta.png?v=5e2a8d7c" x="20" y="248" width="26" height="26"/>
+<text class="hlbmodel" x="56" y="259">Muse Spark 1.3</text>
+<text class="hlbsub" x="56" y="272">musecode · max</text>
+<rect class="hlbtrack" x="216" y="251" width="646" height="16" rx="8"/>
+<rect class="hlbfill" x="216" y="251" width="146.6" height="16" rx="8"/>
+<text class="hlbval" x="371.1" y="263" text-anchor="start">0.3815</text>
+</g>
+<g class="hlbrow" style="--tier:#4d7ea8">
+<text class="hlbrank" x="5" y="305">7</text>
+<image aria-hidden="true" href="img/models/zai.svg?v=e7ebbf5a" x="20" y="290" width="26" height="26"/>
+<text class="hlbmodel" x="56" y="301">GLM 5.3</text>
+<text class="hlbsub" x="56" y="314">claude code · max</text>
+<rect class="hlbtrack" x="216" y="293" width="646" height="16" rx="8"/>
+<rect class="hlbfill" x="216" y="293" width="143.4" height="16" rx="8"/>
+<text class="hlbval" x="367.9" y="305" text-anchor="start">0.3776</text>
+</g>
+<g class="hlbrow" style="--tier:#676c73">
+<text class="hlbrank" x="5" y="347">8</text>
+<image aria-hidden="true" href="img/models/xai.png?v=1e6fae26" x="20" y="332" width="26" height="26"/>
+<text class="hlbmodel" x="56" y="343">Grok 4.6</text>
+<text class="hlbsub" x="56" y="356">grok · xhigh</text>
+<rect class="hlbtrack" x="216" y="335" width="646" height="16" rx="8"/>
+<rect class="hlbfill" x="216" y="335" width="134.7" height="16" rx="8"/>
+<text class="hlbval" x="359.2" y="347" text-anchor="start">0.3669</text>
+</g>
+<g class="hlbrow" style="--tier:#735f86">
+<text class="hlbrank" x="5" y="389">9</text>
+<image aria-hidden="true" href="img/models/kimi.png?v=ae724724" x="20" y="374" width="26" height="26"/>
+<text class="hlbmodel" x="56" y="385">Kimi K3</text>
+<text class="hlbsub" x="56" y="398">kimi cli · max</text>
+<rect class="hlbtrack" x="216" y="377" width="646" height="16" rx="8"/>
+<rect class="hlbfill" x="216" y="377" width="121.3" height="16" rx="8"/>
+<text class="hlbval" x="345.8" y="389" text-anchor="start">0.3503</text>
+</g>
+<g class="hlbrow" style="--tier:#a8705a">
+<text class="hlbrank" x="5" y="431">10</text>
+<image aria-hidden="true" href="img/models/seed.png?v=c1999fa2" x="20" y="416" width="26" height="26"/>
+<text class="hlbmodel" x="56" y="427">Seed Evolving-0909</text>
+<text class="hlbsub" x="56" y="440">claude code · max</text>
+<rect class="hlbtrack" x="216" y="419" width="646" height="16" rx="8"/>
+<rect class="hlbfill" x="216" y="419" width="109.3" height="16" rx="8"/>
+<text class="hlbval" x="333.8" y="431" text-anchor="start">0.3353</text>
+</g>
+<g class="hlbrow" style="--tier:#6b7f8c">
+<text class="hlbrank" x="5" y="473">11</text>
+<image aria-hidden="true" href="img/models/openai.svg?v=fa2f9f6f" x="20" y="458" width="26" height="26"/>
+<text class="hlbmodel" x="56" y="469">GPT-5.5</text>
+<text class="hlbsub" x="56" y="482">codex · xhigh</text>
+<rect class="hlbtrack" x="216" y="461" width="646" height="16" rx="8"/>
+<rect class="hlbfill" x="216" y="461" width="98.6" height="16" rx="8"/>
+<text class="hlbval" x="323.1" y="473" text-anchor="start">0.3221</text>
+</g>
+<g class="hlbrow" style="--tier:#976279">
+<text class="hlbrank" x="5" y="515">12</text>
+<image aria-hidden="true" href="img/models/qwen.png?v=cb55ca37" x="20" y="500" width="26" height="26"/>
+<text class="hlbmodel" x="56" y="511">Qwen3.8 Max</text>
+<text class="hlbsub" x="56" y="524">qwen coder · xhigh</text>
+<rect class="hlbtrack" x="216" y="503" width="646" height="16" rx="8"/>
+<rect class="hlbfill" x="216" y="503" width="83.9" height="16" rx="8"/>
+<text class="hlbval" x="308.4" y="515" text-anchor="start">0.3039</text>
+</g>
+<g class="hlbrow" style="--tier:#4a7c6f">
+<text class="hlbrank" x="5" y="557">13</text>
+<image aria-hidden="true" href="img/models/google-deepmind.svg?v=5b470587" x="20" y="542" width="26" height="26"/>
+<text class="hlbmodel" x="56" y="553">Gemini 3.8 Flash</text>
+<text class="hlbsub" x="56" y="566">antigravity · high</text>
+<rect class="hlbtrack" x="216" y="545" width="646" height="16" rx="8"/>
+<rect class="hlbfill" x="216" y="545" width="82.2" height="16" rx="8"/>
+<text class="hlbval" x="306.7" y="557" text-anchor="start">0.3018</text>
+</g>
+<g class="hlbrow" style="--tier:#8a6b3d">
+<text class="hlbrank" x="5" y="599">14</text>
+<image aria-hidden="true" href="img/models/deepseek.png?v=be68bf4f" x="20" y="584" width="26" height="26"/>
+<text class="hlbmodel" x="56" y="595">DeepSeek V4 Pro</text>
+<text class="hlbsub" x="56" y="608">claude code · max</text>
+<rect class="hlbtrack" x="216" y="587" width="646" height="16" rx="8"/>
+<rect class="hlbfill" x="216" y="587" width="70.3" height="16" rx="8"/>
+<text class="hlbval" x="294.8" y="599" text-anchor="start">0.2871</text>
+</g>
+<g class="hlbrow" style="--tier:#607d9d">
+<text class="hlbrank" x="5" y="641">15</text>
+<image aria-hidden="true" href="img/models/google-deepmind.svg?v=5b470587" x="20" y="626" width="26" height="26"/>
+<text class="hlbmodel" x="56" y="637">Gemini 3.7 Flash</text>
+<text class="hlbsub" x="56" y="650">antigravity · high</text>
+<rect class="hlbtrack" x="216" y="629" width="646" height="16" rx="8"/>
+<rect class="hlbfill" x="216" y="629" width="61.3" height="16" rx="8"/>
+<text class="hlbval" x="285.8" y="641" text-anchor="start">0.2759</text>
+</g>
+</svg>
+</div>
+<div class="hlbwrap" id="lbpanel-private" role="tabpanel" aria-labelledby="lbtab-private" data-board="private" hidden>
+<svg class="hlb" viewBox="0 0 900 688" role="img" aria-label="mean held-out normalised score per model over the 53 private tasks">
+<line class="hlbg" x1="216.0" y1="23" x2="216.0" y2="670"/>
+<text class="hlbax" x="216.0" y="18" text-anchor="middle">0.2</text>
+<line class="hlbg" x1="377.5" y1="23" x2="377.5" y2="670"/>
+<text class="hlbax" x="377.5" y="18" text-anchor="middle">0.4</text>
+<line class="hlbg" style="stroke:#d8d0ca" opacity=".72" x1="539.0" y1="23" x2="539.0" y2="670"/>
+<text class="hlbax" x="539.0" y="18" text-anchor="middle">0.6</text>
+<line class="hlbg" x1="700.5" y1="23" x2="700.5" y2="670"/>
+<text class="hlbax" x="700.5" y="18" text-anchor="middle">0.8</text>
+<line class="hlbg" x1="862" y1="23" x2="862" y2="670"/>
+<text class="hlbax" x="862" y="18" text-anchor="middle">1.0</text>
+<text class="hlbanch" x="539.0" y="683" text-anchor="middle">frontier-calibrated reference</text>
+<g class="hlbrow" style="--tier:#3d6b5c">
+<text class="hlbrank" x="5" y="53">1</text>
+<image aria-hidden="true" href="img/models/openai.svg?v=fa2f9f6f" x="20" y="38" width="26" height="26"/>
+<text class="hlbmodel" x="56" y="49">GPT-6-astra</text>
+<text class="hlbsub" x="56" y="62">codex · max</text>
+<rect class="hlbtrack" x="216" y="41" width="646" height="16" rx="8"/>
+<rect class="hlbfill" x="216" y="41" width="242.4" height="16" rx="8"/>
+<text class="hlbval" x="466.9" y="53" text-anchor="start">0.5002</text>
+</g>
+<g class="hlbrow" style="--tier:#c2703d">
+<text class="hlbrank" x="5" y="95">2</text>
+<image aria-hidden="true" href="img/models/anthropic.png?v=0ba8389d" x="20" y="80" width="26" height="26"/>
+<text class="hlbmodel" x="56" y="91">Fable 5.1</text>
+<text class="hlbsub" x="56" y="104">claude code · max</text>
+<rect class="hlbtrack" x="216" y="83" width="646" height="16" rx="8"/>
+<rect class="hlbfill" x="216" y="83" width="230.5" height="16" rx="8"/>
+<text class="hlbval" x="455.0" y="95" text-anchor="start">0.4854</text>
+</g>
+<g class="hlbrow" style="--tier:#a56953">
+<text class="hlbrank" x="5" y="137">3</text>
+<image aria-hidden="true" href="img/models/anthropic.png?v=0ba8389d" x="20" y="122" width="26" height="26"/>
+<text class="hlbmodel" x="56" y="133">Opus 5</text>
+<text class="hlbsub" x="56" y="146">claude code · max</text>
+<rect class="hlbtrack" x="216" y="125" width="646" height="16" rx="8"/>
+<rect class="hlbfill" x="216" y="125" width="214.6" height="16" rx="8"/>
+<text class="hlbval" x="439.1" y="137" text-anchor="start">0.4657</text>
+</g>
+<g class="hlbrow" style="--tier:#312d27">
+<text class="hlbrank" x="5" y="179">4</text>
+<image aria-hidden="true" href="img/models/openai.svg?v=fa2f9f6f" x="20" y="164" width="26" height="26"/>
+<text class="hlbmodel" x="56" y="175">GPT-5.6-sol</text>
+<text class="hlbsub" x="56" y="188">codex · max</text>
+<rect class="hlbtrack" x="216" y="167" width="646" height="16" rx="8"/>
+<rect class="hlbfill" x="216" y="167" width="189.8" height="16" rx="8"/>
+<text class="hlbval" x="414.3" y="179" text-anchor="start">0.4350</text>
+</g>
+<g class="hlbrow" style="--tier:#4d7ea8">
+<text class="hlbrank" x="5" y="221">5</text>
+<image aria-hidden="true" href="img/models/zai.svg?v=e7ebbf5a" x="20" y="206" width="26" height="26"/>
+<text class="hlbmodel" x="56" y="217">GLM 5.3</text>
+<text class="hlbsub" x="56" y="230">claude code · max</text>
+<rect class="hlbtrack" x="216" y="209" width="646" height="16" rx="8"/>
+<rect class="hlbfill" x="216" y="209" width="177.3" height="16" rx="8"/>
+<text class="hlbval" x="401.8" y="221" text-anchor="start">0.4195</text>
+</g>
+<g class="hlbrow" style="--tier:#735f86">
+<text class="hlbrank" x="5" y="263">6</text>
+<image aria-hidden="true" href="img/models/kimi.png?v=ae724724" x="20" y="248" width="26" height="26"/>
+<text class="hlbmodel" x="56" y="259">Kimi K3</text>
+<text class="hlbsub" x="56" y="272">kimi cli · max</text>
+<rect class="hlbtrack" x="216" y="251" width="646" height="16" rx="8"/>
+<rect class="hlbfill" x="216" y="251" width="163.8" height="16" rx="8"/>
+<text class="hlbval" x="388.3" y="263" text-anchor="start">0.4029</text>
+</g>
+<g class="hlbrow" style="--tier:#5b7a99">
+<text class="hlbrank" x="5" y="305">7</text>
+<image aria-hidden="true" href="img/models/meta.png?v=5e2a8d7c" x="20" y="290" width="26" height="26"/>
+<text class="hlbmodel" x="56" y="301">Muse Spark 1.3</text>
+<text class="hlbsub" x="56" y="314">musecode · max</text>
+<rect class="hlbtrack" x="216" y="293" width="646" height="16" rx="8"/>
+<rect class="hlbfill" x="216" y="293" width="158.9" height="16" rx="8"/>
+<text class="hlbval" x="383.4" y="305" text-anchor="start">0.3968</text>
+</g>
+<g class="hlbrow" style="--tier:#7e5068">
+<text class="hlbrank" x="5" y="347">8</text>
+<image aria-hidden="true" href="img/models/qwen.png?v=cb55ca37" x="20" y="332" width="26" height="26"/>
+<text class="hlbmodel" x="56" y="343">Qwen3.8 Max-0902</text>
+<text class="hlbsub" x="56" y="356">claude code · xhigh</text>
+<rect class="hlbtrack" x="216" y="335" width="646" height="16" rx="8"/>
+<rect class="hlbfill" x="216" y="335" width="141.4" height="16" rx="8"/>
+<text class="hlbval" x="365.9" y="347" text-anchor="start">0.3751</text>
+</g>
+<g class="hlbrow" style="--tier:#676c73">
+<text class="hlbrank" x="5" y="389">9</text>
+<image aria-hidden="true" href="img/models/xai.png?v=1e6fae26" x="20" y="374" width="26" height="26"/>
+<text class="hlbmodel" x="56" y="385">Grok 4.6</text>
+<text class="hlbsub" x="56" y="398">grok · xhigh</text>
+<rect class="hlbtrack" x="216" y="377" width="646" height="16" rx="8"/>
+<rect class="hlbfill" x="216" y="377" width="135.0" height="16" rx="8"/>
+<text class="hlbval" x="359.5" y="389" text-anchor="start">0.3672</text>
+</g>
+<g class="hlbrow" style="--tier:#4a7c6f">
+<text class="hlbrank" x="5" y="431">10</text>
+<image aria-hidden="true" href="img/models/google-deepmind.svg?v=5b470587" x="20" y="416" width="26" height="26"/>
+<text class="hlbmodel" x="56" y="427">Gemini 3.8 Flash</text>
+<text class="hlbsub" x="56" y="440">antigravity · high</text>
+<rect class="hlbtrack" x="216" y="419" width="646" height="16" rx="8"/>
+<rect class="hlbfill" x="216" y="419" width="134.2" height="16" rx="8"/>
+<text class="hlbval" x="358.7" y="431" text-anchor="start">0.3662</text>
+</g>
+<g class="hlbrow" style="--tier:#8a6b3d">
+<text class="hlbrank" x="5" y="473">11</text>
+<image aria-hidden="true" href="img/models/deepseek.png?v=be68bf4f" x="20" y="458" width="26" height="26"/>
+<text class="hlbmodel" x="56" y="469">DeepSeek V4 Pro</text>
+<text class="hlbsub" x="56" y="482">claude code · max</text>
+<rect class="hlbtrack" x="216" y="461" width="646" height="16" rx="8"/>
+<rect class="hlbfill" x="216" y="461" width="117.7" height="16" rx="8"/>
+<text class="hlbval" x="342.2" y="473" text-anchor="start">0.3458</text>
+</g>
+<g class="hlbrow" style="--tier:#6b7f8c">
+<text class="hlbrank" x="5" y="515">12</text>
+<image aria-hidden="true" href="img/models/openai.svg?v=fa2f9f6f" x="20" y="500" width="26" height="26"/>
+<text class="hlbmodel" x="56" y="511">GPT-5.5</text>
+<text class="hlbsub" x="56" y="524">codex · xhigh</text>
+<rect class="hlbtrack" x="216" y="503" width="646" height="16" rx="8"/>
+<rect class="hlbfill" x="216" y="503" width="110.8" height="16" rx="8"/>
+<text class="hlbval" x="335.3" y="515" text-anchor="start">0.3372</text>
+</g>
+<g class="hlbrow" style="--tier:#976279">
+<text class="hlbrank" x="5" y="557">13</text>
+<image aria-hidden="true" href="img/models/qwen.png?v=cb55ca37" x="20" y="542" width="26" height="26"/>
+<text class="hlbmodel" x="56" y="553">Qwen3.8 Max</text>
+<text class="hlbsub" x="56" y="566">qwen coder · xhigh</text>
+<rect class="hlbtrack" x="216" y="545" width="646" height="16" rx="8"/>
+<rect class="hlbfill" x="216" y="545" width="107.9" height="16" rx="8"/>
+<text class="hlbval" x="332.4" y="557" text-anchor="start">0.3337</text>
+</g>
+<g class="hlbrow" style="--tier:#607d9d">
+<text class="hlbrank" x="5" y="599">14</text>
+<image aria-hidden="true" href="img/models/google-deepmind.svg?v=5b470587" x="20" y="584" width="26" height="26"/>
+<text class="hlbmodel" x="56" y="595">Gemini 3.7 Flash</text>
+<text class="hlbsub" x="56" y="608">antigravity · high</text>
+<rect class="hlbtrack" x="216" y="587" width="646" height="16" rx="8"/>
+<rect class="hlbfill" x="216" y="587" width="105.4" height="16" rx="8"/>
+<text class="hlbval" x="329.9" y="599" text-anchor="start">0.3305</text>
+</g>
+<g class="hlbrow" style="--tier:#a8705a">
+<text class="hlbrank" x="5" y="641">15</text>
+<image aria-hidden="true" href="img/models/seed.png?v=c1999fa2" x="20" y="626" width="26" height="26"/>
+<text class="hlbmodel" x="56" y="637">Seed Evolving-0909</text>
+<text class="hlbsub" x="56" y="650">claude code · max</text>
+<rect class="hlbtrack" x="216" y="629" width="646" height="16" rx="8"/>
+<rect class="hlbfill" x="216" y="629" width="94.5" height="16" rx="8"/>
+<text class="hlbval" x="319.0" y="641" text-anchor="start">0.3171</text>
+</g>
+</svg>
+</div>
+<!-- LB:END -->
+
+</div></section>
+
+<section id="efficiency" class="effsec"><div class="wrap">
+  <span class="eyebrow e-orange">Model resource comparison</span>
+  <div class="effaxes" role="tablist" aria-label="horizontal axis">
+    <button class="effax on" data-k="cost" role="tab" aria-selected="true">Average spend</button>
+    <button class="effax" data-k="time" role="tab" aria-selected="false">Average run time</button>
+    <button class="effax" data-k="out" role="tab" aria-selected="false">Average output tokens</button>
+  </div>
+  <div class="effbox">
+    <svg id="effchart" viewBox="0 0 900 470" role="img"
+         aria-label="mean hidden-set score against average cost per task"></svg>
+  </div>
+  <p class="effnote">Mean hidden-set score over the 88 published tasks against what one task took on average.</p>
+</div>
+<script id="effdata" type="application/json">[{"id": "codex-gpt-5.6-sol-max", "name": "GPT-5.6-sol", "sub": "codex · max", "colour": "#526e8e", "logo": "openai.svg", "score": 0.4331, "cost": 53.39, "time": 274.1, "out": 233916, "n": [86, 84, 84]}, {"id": "claude-code-opus-5-max", "name": "Opus 5", "sub": "claude code · max", "colour": "#883839", "logo": "anthropic.png", "score": 0.464, "cost": 42.33, "time": 333.4, "out": 287844, "n": [89, 89, 85]}, {"id": "antigravity-cli-gemini-3.7-flash-high", "name": "Gemini 3.7 Flash", "sub": "antigravity · high", "colour": "#506c50", "logo": "google-deepmind.svg", "score": 0.3088, "cost": 9.34, "time": 160.8, "out": 395387, "n": [86, 84, 81]}, {"id": "kimi-cli-k3", "name": "Kimi K3", "sub": "kimi cli · max", "colour": "#735f86", "logo": "kimi.png", "score": 0.382, "cost": 10.32, "time": 288.9, "out": 133843, "n": [80, 79, 80]}, {"id": "grok-build-grok-4.6-xhigh", "name": "Grok 4.6", "sub": "grok · xhigh", "colour": "#b5825f", "logo": "xai.png", "score": 0.3671, "cost": 13.71, "time": 115.9, "out": 251550, "n": [88, 84, 88]}, {"id": "claude-code-deepseek-v4-pro-max", "name": "DeepSeek V4 Pro", "sub": "claude code · max", "colour": "#3f8f79", "logo": "deepseek.png", "score": 0.3225, "cost": 6.66, "time": 282.0, "out": 507998, "n": [88, 88, 84]}, {"id": "qwen-coder-qwen3.8-max-xhigh", "name": "Qwen3.8 Max", "sub": "qwen coder · xhigh", "colour": "#976279", "logo": "qwen.png", "score": 0.3218, "cost": 20.23, "time": 201.4, "out": 229019, "n": [88, 88, 84]}, {"id": "claude-code-glm-5.3-1m-max", "name": "GLM 5.3", "sub": "claude code · max", "colour": "#4d7ea8", "logo": "zai.svg", "score": 0.4029, "cost": 18.27, "time": 342.2, "out": 273129, "n": [85, 87, 84]}, {"id": "codex-gpt-5.5-xhigh", "name": "GPT-5.5", "sub": "codex · xhigh", "colour": "#6b7f8c", "logo": "openai.svg", "score": 0.3312, "cost": 12.96, "time": 100.6, "out": 69741, "n": [88, 84, 88]}]</script>
+<script>
+(function(){
+  var el0=document.getElementById('effdata'); if(!el0) return;
+  var D=JSON.parse(el0.textContent);
+  var svg=document.getElementById('effchart'), NS='http://www.w3.org/2000/svg';
+  var AX={cost:{lab:'average spend per task',fmt:function(v){return '$'+v.toFixed(0)}},
+           time:{lab:'average run time per task',fmt:function(v){return v.toFixed(0)+' min'}},
+           out:{lab:'average output tokens per task',fmt:function(v){
+             return v>=1e6?(v/1e6).toFixed(1)+'M':(v/1e3).toFixed(0)+'k'}}};
+  var L=68,R=868,T=26,B=396, DOT=15;
+  function el(n,a){var e=document.createElementNS(NS,n);for(var k in a)e.setAttribute(k,a[k]);return e}
+  function txt(e,s){e.textContent=s;return e}
+  function nice(lo,hi){
+    var span=hi-lo||1, step=Math.pow(10,Math.floor(Math.log10(span/4)));
+    [1,2,2.5,5,10].some(function(m){if(span/(step*m)<=5){step*=m;return true}});
+    var out=[],v=Math.floor(lo/step)*step;
+    for(;v<=hi+step*0.5;v+=step) out.push(+v.toFixed(10));
+    return out;
+  }
+  function hit(a,b){return !(a.x2<b.x1||b.x2<a.x1||a.y2<b.y1||b.y2<a.y1)}
+  function draw(key){
+    while(svg.firstChild) svg.removeChild(svg.firstChild);
+    var ax=AX[key], xs=D.map(function(d){return d[key]}), ys=D.map(function(d){return d.score});
+    var xhi=Math.max.apply(null,xs)*1.12, xlo=0;
+    var ylo=Math.min.apply(null,ys)-0.022, yhi=Math.max.apply(null,ys)+0.022;
+    var X=function(v){return L+(R-L)*(v-xlo)/(xhi-xlo)};
+    var Y=function(v){return B-(B-T)*(v-ylo)/(yhi-ylo)};
+    nice(ylo,yhi).forEach(function(g){
+      if(g<ylo||g>yhi)return;
+      svg.appendChild(el('line',{x1:L,y1:Y(g).toFixed(1),x2:R,y2:Y(g).toFixed(1),class:'effgrid'}));
+      svg.appendChild(txt(el('text',{x:L-11,y:(Y(g)+4).toFixed(1),class:'effax-t','text-anchor':'end'}),g.toFixed(2)));
+    });
+    nice(xlo,xhi).forEach(function(g){
+      if(g<xlo||g>xhi)return;
+      svg.appendChild(el('line',{x1:X(g).toFixed(1),y1:T,x2:X(g).toFixed(1),y2:B,class:'effgrid'}));
+      svg.appendChild(txt(el('text',{x:X(g).toFixed(1),y:B+22,class:'effax-t','text-anchor':'middle'}),ax.fmt(g)));
+    });
+    svg.appendChild(txt(el('text',{x:((L+R)/2).toFixed(0),y:B+48,class:'effax-l','text-anchor':'middle'}),ax.lab));
+    var yl=((T+B)/2).toFixed(0);
+    svg.appendChild(txt(el('text',{x:18,y:yl,class:'effax-l','text-anchor':'middle',
+      transform:'rotate(-90 18 '+yl+')'}),'mean hidden-set score'));
+
+    var pts=D.map(function(d){
+      var w=Math.max(d.name.length*6.9, (ax.fmt(d[key])+'  ·  '+d.score.toFixed(3)).length*5.4);
+      return {d:d,x:X(d[key]),y:Y(d.score),w:w+4,h:27};
+    });
+    // a label sits beside its own dot: try eight berths, keep the first that is clear
+    var taken=pts.map(function(p){return {x1:p.x-DOT,y1:p.y-DOT,x2:p.x+DOT,y2:p.y+DOT}});
+    var PAD=10;
+    pts.sort(function(a,b){return b.d.score-a.d.score}).forEach(function(p){
+      var berths=[[ DOT+PAD, 0,'start'],[-DOT-PAD, 0,'end'],
+                  [ DOT+2,  -DOT-9,'start'],[-DOT-2, -DOT-9,'end'],
+                  [ DOT+2,   DOT+16,'start'],[-DOT-2, DOT+16,'end'],
+                  [ 0,      -DOT-11,'middle'],[0,      DOT+18,'middle']];
+      var best=null, bestPen=Infinity;
+      berths.forEach(function(b){
+        var cx=p.x+b[0], cy=p.y+b[1];
+        var x1=b[2]==='start'?cx:(b[2]==='end'?cx-p.w:cx-p.w/2);
+        var box={x1:x1,y1:cy-13,x2:x1+p.w,y2:cy+13};
+        var pen=0;
+        if(box.x1<4) pen+=(4-box.x1)*6;
+        if(box.x2>896) pen+=(box.x2-896)*6;
+        if(box.y1<2) pen+=(2-box.y1)*6;
+        if(box.y2>B+2) pen+=(box.y2-B-2)*6;
+        taken.forEach(function(t){ if(hit(box,t)) pen+=140; });
+        if(pen<bestPen){ bestPen=pen; best={box:box,cx:cx,cy:cy,anchor:b[2]}; }
+      });
+      p.lab=best; taken.push(best.box);
+    });
+    pts.forEach(function(p){
+      var g=el('g',{class:'effpt'});
+      g.appendChild(el('circle',{cx:p.x.toFixed(1),cy:p.y.toFixed(1),r:DOT,
+        class:'effhalo',style:'--tier:'+p.d.colour}));
+      if(p.d.logo){
+        var im=el('image',{x:(p.x-10).toFixed(1),y:(p.y-10).toFixed(1),width:20,height:20,class:'efflogo'});
+        im.setAttribute('href','img/models/'+p.d.logo);
+        im.setAttributeNS('http://www.w3.org/1999/xlink','href','img/models/'+p.d.logo);
+        g.appendChild(im);
+      }
+      g.appendChild(txt(el('text',{x:p.lab.cx.toFixed(1),y:(p.lab.cy-3).toFixed(1),
+        class:'effname','text-anchor':p.lab.anchor}),p.d.name));
+      g.appendChild(txt(el('text',{x:p.lab.cx.toFixed(1),y:(p.lab.cy+10).toFixed(1),
+        class:'effsub','text-anchor':p.lab.anchor}),
+        ax.fmt(p.d[key])+'  ·  '+p.d.score.toFixed(3)));
+      svg.appendChild(g);
+    });
+  }
+  [].forEach.call(document.querySelectorAll('.effax'),function(b){
+    b.addEventListener('click',function(){
+      [].forEach.call(document.querySelectorAll('.effax'),function(x){
+        x.classList.toggle('on',x===b); x.setAttribute('aria-selected',x===b?'true':'false');
+      });
+      draw(b.dataset.k);
+    });
+  });
+  draw('cost');
+})();
+</script>
+</section>
+
+
+<section class="tinted"><div class="wrap">
+  <span class="eyebrow e-green">Task bank</span>
+  <h2>Tasks by domain</h2>
+  <p class="wide">Grouped by the problem a task solves. Hover or click a domain to see the tasks inside it.</p>
+  <div class="tally">
+    <div class="ti"><span class="tv">6</span><span class="tk">domains</span></div>
+    <div class="ti"><span class="tv">88</span><span class="tk">active tasks</span></div>
+  </div>
+  <div class="doms">
+      <div class="dom k1">
+        <button class="dcard" type="button" aria-expanded="false" style="--frac:0.947">
+          <span class="dnum">18</span>
+          <span class="dn">AI Models &amp; Agents</span>
+          <span class="dc">18 tasks</span>
+        </button>
+      </div>
+      <div class="pop"><div class="inner">
+          <div class="scn-sub">
+            <div class="sh"><span class="sn">AI Models &amp; Agents</span><span class="sc">18</span></div>
+<ul><li><span class="tlk locked">Budget-Constrained Multi-Agent Medical QA Workflow Design</span></li><li><a href="tasks/lean_formal_proof_workflow_design.html">Lean 4 Proof-Search LLM agent Workflow Design</a></li><li><a href="tasks/clevr_cogent_grpo_qwen2vl.html">Vision-Language Compositional Generalization Post-Training</a></li><li><span class="tlk locked">Nuisance-Robust Semantic Image Editing</span></li><li><span class="tlk locked">Five-Step Diffusion Sampler Schedule Optimization</span></li><li><span class="tlk locked">Budget-Constrained 3D Gaussian Splat Compression</span></li><li><a href="tasks/locomo_longterm_memory.html">LLM Agent Memory Architecture Design</a></li><li><a href="tasks/vggt_multiview_dense_reconstruction.html">Multi-View Point Cloud Fusion</a></li><li><span class="tlk locked">Point-Track Candidate Lattice Selection and Fusion</span></li><li><span class="tlk locked">Mathematical and Statistical Reasoning Workflow Design</span></li><li><span class="tlk locked">Query-Conditioned Video Evidence Selection Agent Design</span></li><li><a href="tasks/trifinger_offline_rl_push_refined.html">TriFinger Cube-Pushing Offline RL</a></li><li><a href="tasks/discoveryworld_agent_harness_low2.html">Scientific Discovery Agent Harness Design</a></li><li><a href="tasks/robotap_switch_budget_candidate_routing_optimization.html">Video Point-Track Candidate Routing</a></li><li><a href="tasks/teacher_student_math_posttraining.html">Small-Model Math Reasoning Post-Training</a></li><li><span class="tlk locked">Ten-Evaluation Diffusion Sampler Optimization</span></li><li><span class="tlk locked">Terminal-Task LLM Agent Harness Design</span></li><li><span class="tlk locked">Label-Free World-Model Hallucination Prediction</span></li></ul>
+          </div>
+      </div></div>
+      <div class="dom k2">
+        <button class="dcard" type="button" aria-expanded="false" style="--frac:1.000">
+          <span class="dnum">19</span>
+          <span class="dn">Physical Sciences &amp; Engineering</span>
+          <span class="dc">19 tasks</span>
+        </button>
+      </div>
+      <div class="pop"><div class="inner">
+          <div class="scn-sub">
+            <div class="sh"><span class="sn">Physical Sciences &amp; Engineering</span><span class="sc">19</span></div>
+            <ul><li><span class="tlk locked">Constrained Ackermann Parking Trajectory Optimization</span></li><li><span class="tlk locked">Borehole Lithology Sequence Classification</span></li><li><span class="tlk locked">Climate Subgrid Convection Emulation</span></li><li><span class="tlk locked">Dual-Doppler 3D Wind-Field Inversion</span></li><li><span class="tlk locked">Exoplanet Transmission-Spectrum Atmospheric Retrieval</span></li><li><span class="tlk locked">Molecular HOMO–LUMO Gap Prediction from SMILES</span></li><li><span class="tlk locked">Online Hybrid-Vehicle Energy Management Policy Optimization</span></li><li><span class="tlk locked">Photometric Transient and Variable-Source Classification</span></li><li><span class="tlk locked">Fuel-Efficient Real-Time Gear-Shift Policy Optimization</span></li><li><a href="tasks/ahc066_macro_controller.html">Robot Routing and Macro-Program Optimization</a></li><li><a href="tasks/feeder_phase_impedance_inversion.html">Distribution Feeder Model Calibration from Smart-Meter Data</a></li><li><span class="tlk locked">Sparse-Sensor Damage Mapping</span></li><li><span class="tlk locked">Suspension Geometry Co-Design</span></li><li><a href="tasks/tidal_friction_inverse.html">Tidal Seabed Friction Field Inversion</a></li><li><span class="tlk locked">Time-Optimal Drone Racing</span></li><li><span class="tlk locked">Extrapolative Scientific Law Discovery</span></li><li><a href="tasks/device_iv_regime_extrapolation.html">Power-Diode Extreme-Regime I–V Extrapolation</a></li><li><span class="tlk locked">Building Indoor-Temperature Extreme Extrapolation</span></li><li><span class="tlk locked">Wake-Aware Wind Farm Layout Optimization</span></li></ul>
+          </div>
+      </div></div>
+      <div class="dom k3">
+        <button class="dcard" type="button" aria-expanded="false" style="--frac:0.947">
+          <span class="dnum">18</span>
+          <span class="dn">Optimization, Planning &amp; Control</span>
+          <span class="dc">18 tasks</span>
+        </button>
+      </div>
+      <div class="pop"><div class="inner">
+          <div class="scn-sub">
+            <div class="sh"><span class="sn">Optimization, Planning &amp; Control</span><span class="sc">18</span></div>
+            <ul><li><a href="tasks/2048_strategy.html">2048 Search-Policy Optimization</a></li><li><span class="tlk locked">Real-Time Battle Tetris Planning Agent</span></li><li><span class="tlk locked">Bilevel Road Capacity and Toll Design</span></li><li><span class="tlk locked">Time-Windowed Robotaxi Dispatch Optimization</span></li><li><span class="tlk locked">Query-Budgeted Continuous Black-Box Optimization</span></li><li><span class="tlk locked">Electric-Van Routing with Charging Detours</span></li><li><a href="tasks/johnson1991_leighton_graph_coloring.html">Fixed-Color-Budget Graph Coloring Optimization</a></li><li><a href="tasks/bbo_noisy_continuous_v1.html">Query-Budgeted Noisy Black-Box Optimization</a></li><li><span class="tlk locked">Collision-Free Multi-Crane Scheduling</span></li><li><span class="tlk locked">Long-Horizon Transport Company Planning Agent</span></li><li><span class="tlk locked">Large-Scale Pickup-and-Delivery Routing with Time Windows</span></li><li><span class="tlk locked">Online Railway Disruption Recovery and Rescheduling</span></li><li><span class="tlk locked">Recursive Sokoban Planning Agent</span></li><li><span class="tlk locked">Self-Financing Rail Network Expansion Planning</span></li><li><a href="tasks/roadef_glass_cutting.html">Defect-Aware Guillotine Glass Cutting Optimization</a></li><li><a href="tasks/bbo_simopt_inventory_v1.html">Query-Budgeted Stochastic Inventory Policy Optimization</a></li><li><a href="tasks/citywide_signal_coordination.html">City-Scale Traffic Signal Control Optimization</a></li><li><span class="tlk locked">Coverage-Constrained Urban Bus Network Design</span></li></ul>
+          </div>
+      </div></div>
+      <div class="dom k4">
+        <button class="dcard" type="button" aria-expanded="false" style="--frac:0.684">
+          <span class="dnum">13</span>
+          <span class="dn">Systems &amp; Hardware</span>
+          <span class="dc">13 tasks</span>
+        </button>
+      </div>
+      <div class="pop"><div class="inner">
+          <div class="scn-sub">
+            <div class="sh"><span class="sn">Systems &amp; Hardware</span><span class="sc">13</span></div>
+            <ul><li><a href="tasks/flashfftconv_multistream_gated_forward_speedup.html">Multi-Stream Gated FlashFFTConv Kernel Optimization</a></li><li><a href="tasks/paged_ragged_gqa_decode_speedup.html">Paged Ragged GQA Decode Kernel Optimization</a></li><li><span class="tlk locked">Cross-Language Dart Formatter Reimplementation</span></li><li><span class="tlk locked">EDA Cell Placement, Sizing, and Buffering Optimization</span></li><li><span class="tlk locked">Mamba-3 Training Kernel Optimization</span></li><li><a href="tasks/mbff_banking_placement.html">EDA Flip-Flop Banking and Placement Optimization</a></li><li><span class="tlk locked">PostgreSQL-Compatible Server over SQLite</span></li><li><a href="tasks/qec_decoder_arena.html">Quantum Color-Code Decoder</a></li><li><a href="tasks/flashattention_varlen_feature_full_vjp_speedup.html">Ragged GQA Training Kernel Optimization</a></li><li><a href="tasks/splash_attention_strata_speedup.html">TPU v6e Masked GQA Kernel Optimization</a></li><li><a href="tasks/gate_sizing.html">EDA Standard-Cell Gate Sizing Optimization</a></li><li><a href="tasks/bigann_filtered_vector_search.html">10M-Scale Metadata-Filtered ANN Search</a></li><li><a href="tasks/tddn_contraction_planning.html">Quantum Circuit TDD Contraction Planning</a></li></ul>
+          </div>
+      </div></div>
+      <div class="dom k5">
+        <button class="dcard" type="button" aria-expanded="false" style="--frac:0.632">
+          <span class="dnum">12</span>
+          <span class="dn">Life Sciences &amp; Medicine</span>
+          <span class="dc">12 tasks</span>
+        </button>
+      </div>
+      <div class="pop"><div class="inner">
+          <div class="scn-sub">
+            <div class="sh"><span class="sn">Life Sciences &amp; Medicine</span><span class="sc">12</span></div>
+            <ul><li><span class="tlk locked">Cross-Dataset Single-Cell Label Transfer</span></li><li><a href="tasks/cxr_ood_triage_policy.html">Cross-Site Chest X-Ray Triage Policy Optimization</a></li><li><span class="tlk locked">12-Lead ECG Chagas Disease Screening</span></li><li><a href="tasks/lung_fewshot_celltype_annotation.html">Five-Shot Lung scRNA-seq Cell-Type Annotation</a></li><li><a href="tasks/protein_ligand_cofolding_posebusters.html">Protein–Ligand Co-Folding Inference Optimization</a></li><li><span class="tlk locked">Mini-Protein Stability Regression</span></li><li><span class="tlk locked">Out-of-Distribution Cell Morphology Generation</span></li><li><a href="tasks/pbmc_batch_correction.html">Unsupervised PBMC scATAC Batch Integration</a></li><li><span class="tlk locked">Chromatin-to-Gene Expression Prediction</span></li><li><span class="tlk locked">DNA-to-ATAC Accessibility Prediction</span></li><li><a href="tasks/cellflux_rxrx1.html">Perturbation-Conditioned Six-Channel Cell Morphology Generation</a></li><li><span class="tlk locked">Zero-Shot TCR–Epitope Binding Prediction</span></li></ul>
+          </div>
+      </div></div>
+      <div class="dom k6">
+        <button class="dcard" type="button" aria-expanded="false" style="--frac:0.421">
+          <span class="dnum">8</span>
+          <span class="dn">Finance, Law &amp; Business</span>
+          <span class="dc">8 tasks</span>
+        </button>
+      </div>
+      <div class="pop"><div class="inner">
+          <div class="scn-sub">
+            <div class="sh"><span class="sn">Finance, Law &amp; Business</span><span class="sc">8</span></div>
+            <ul><li><a href="tasks/qlib_alpha_factor_icir.html">Cross-Sectional Stock Return Ranking</a></li><li><a href="tasks/finscope_dcf_valuation.html">Equity DCF Value-Driver Forecasting</a></li><li><span class="tlk locked">Investment Banking Deal-Document Question Answering</span></li><li><span class="tlk locked">Management Consulting Engagement-Document Question Answering</span></li><li><span class="tlk locked">Arbitrage-Free Implied-Volatility Surface Calibration</span></li><li><span class="tlk locked">Multivariate Time-Series Structural Break Detection</span></li><li><a href="tasks/legal_matter_caseload_regulatory.html">Multi-Matter Legal Research and Analysis Agent</a></li><li><span class="tlk locked">Transactional Legal Matter Document Reasoning</span></li></ul>
+          </div>
+      </div></div>
+  </div>
+</div></section>
+
+<section id="overview"><div class="wrap">
+  <span class="eyebrow e-blue">Overview</span>
+  <h2>The evaluation pipeline</h2>
+  <p class="lead">In the working container an agent receives the task instruction and the autoresearch
+    protocol. It then improves its approach round after round, guided by feedback on the visible data.
+    When it is done, the artifact it produced is handed to the verifier container and scored on hidden
+    data.</p>
+
+  <div class="fig"><svg class="pfig" viewBox="0 0 1200 592" role="img"
+ aria-label="Left: the agent image on visible data. The agent is handed two things of comparable weight - the task instruction, which fixes the interface, the data, the metric and the rules, and the autoresearch protocol, whose three standing rules are to loop forever, to keep every version in the trail, and to aim at what transfers because the visible score is only a proxy. Under those two the agent runs a loop: edit the weak baseline, self-check on visible data, repeat for many rounds. Only the artifact crosses the one-way seal. Right: the verifier image, sealed and offline, reruns the artifact in a fresh container on hidden data, reads the task's own raw metric, and places it on the anchor scale to give one normalised score.">
+ <defs>
+  <marker id="q-g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto">
+    <path d="M0 0 L10 5 L0 10 z" fill="#a49c92"/></marker>
+  <marker id="q-r" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto">
+    <path d="M0 0 L10 5 L0 10 z" fill="#883839"/></marker>
+  <marker id="q-s" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.2" markerHeight="6.2" orient="auto">
+    <path d="M0 0 L10 5 L0 10 z" fill="#c59593"/></marker>
+  <marker id="q-k" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto">
+    <path d="M0 0 L10 5 L0 10 z" fill="#666159"/></marker>
+  <marker id="q-a" viewBox="0 0 10 12" refX="4" refY="6" markerWidth="10" markerHeight="12"
+    markerUnits="userSpaceOnUse" orient="auto">
+    <path d="M0 0 L10 6 L0 12 z" fill="#a56765"/></marker>
+
+  <g id="i-doc"><path d="M5 2.5h6.5L15 6v11.5H5z"/><path d="M11.5 2.5V6H15"/><path d="M7.5 9.5h5M7.5 12.5h5"/></g>
+  <g id="i-rule"><path d="M4 3.5h12v13H4z"/><path d="M7 7.5h6M7 10.5h6M7 13.5h3.5"/></g>
+  <g id="i-code"><path d="M7.2 5.8 3 10.1l4.2 4.3"/><path d="M12.8 5.8 17 10.1l-4.2 4.3"/></g>
+  <g id="i-data"><ellipse cx="10" cy="5.4" rx="6.4" ry="2.6"/>
+    <path d="M3.6 5.4v9.2c0 1.44 2.87 2.6 6.4 2.6s6.4-1.16 6.4-2.6V5.4"/>
+    <path d="M3.6 10c0 1.44 2.87 2.6 6.4 2.6s6.4-1.16 6.4-2.6"/></g>
+  <g id="i-gauge"><path d="M3 16.6h14"/><path d="M5.6 16.6v-4.4M9.2 16.6V7.2M12.8 16.6v-6.6M16.4 16.6V4.4"/></g>
+  <g id="i-loop"><path d="M16.4 10a6.4 6.4 0 1 1-1.88-4.52"/><path d="M16.6 3.2v3.5h-3.5"/></g>
+  <g id="i-cam"><path d="M3 6.6h2.7l1.5-2h5.6l1.5 2H17a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1v-8a1 1 0 0 1 1-1z"/>
+    <circle cx="10" cy="11.6" r="3"/></g>
+  <g id="i-target"><circle cx="10" cy="10" r="7.6"/><circle cx="10" cy="10" r="3.6"/>
+    <circle cx="10" cy="10" r="1.1" fill="#883839" stroke="none"/></g>
+  <g id="i-bot"><path d="M6.4 7.6h7.2a2 2 0 0 1 2 2v4.6a2 2 0 0 1-2 2H6.4a2 2 0 0 1-2-2V9.6a2 2 0 0 1 2-2z"/>
+    <path d="M10 4.4v3.2"/><circle cx="10" cy="3.2" r="1.2"/><path d="M8.1 11.3v1.3M11.9 11.3v1.3"/></g>
+  <g id="i-search"><circle cx="9" cy="9" r="5.6"/><path d="M13.2 13.2 17.4 17.4"/></g>
+  <g id="i-box"><path d="M10 2.6 17.4 6.6v7.8L10 18.4 2.6 14.4V6.6z"/><path d="M2.6 6.6 10 10.6l7.4-4"/>
+    <path d="M10 10.6v7.8"/></g>
+  <g id="i-lock"><path d="M6.2 9.2V6.9a3.8 3.8 0 0 1 7.6 0v2.3"/><path d="M4.6 9.2h10.8v8.2H4.6z"/>
+    <path d="M10 12v2.4"/></g>
+  <g id="i-cup"><path d="M6.2 3h7.6v4.6a3.8 3.8 0 0 1-7.6 0z"/><path d="M6.2 4.2H4.3v1.5a2.4 2.4 0 0 0 2.3 2.4"/>
+    <path d="M13.8 4.2h1.9v1.5a2.4 2.4 0 0 1-2.3 2.4"/><path d="M10 11.4v3.3M7.2 17h5.6"/></g>
+   <linearGradient id="aflow" x1="0" y1="506" x2="0" y2="120" gradientUnits="userSpaceOnUse">
+   <stop offset="0" stop-color="#a56765" stop-opacity=".16"/>
+   <stop offset="1" stop-color="#a56765" stop-opacity=".9"/>
+  </linearGradient>
+ </defs>
+
+ <text x="26" y="24" class="pf-lab">AGENT IMAGE · VISIBLE DATA</text>
+ <text x="802" y="24" class="pf-lab2">VERIFIER IMAGE · SEALED, OFFLINE</text>
+
+ <rect x="8" y="34" width="740" height="536" rx="18" class="pf-panel"/>
+ <rect x="784" y="34" width="408" height="536" rx="18" class="pf-panel2"/>
+
+ <!-- ════ what the agent is handed: two boxes of identical size ════ -->
+ <rect x="26" y="54" width="338" height="200" rx="14" fill="#fff" stroke="#e8cecc" stroke-width="1.3"/>
+ <use href="#i-doc" transform="translate(44,62) scale(1.05)" class="ic"/>
+ <text x="76" y="79" class="pf-lab">TASK INSTRUCTION</text>
+ <line x1="44" y1="96" x2="346" y2="96" stroke="#f0e2e0" stroke-width="1"/>
+ <use href="#i-code" transform="translate(46,120)" class="ic"/>
+ <text x="76" y="136" class="pf-pill">interface</text>
+ <text x="76" y="153" class="pf-anch">the contract to keep</text>
+ <use href="#i-data" transform="translate(200,120)" class="ic"/>
+ <text x="230" y="136" class="pf-pill">data</text>
+ <text x="230" y="153" class="pf-anch">where it lives</text>
+ <use href="#i-gauge" transform="translate(46,186)" class="ic"/>
+ <text x="76" y="202" class="pf-pill">metric</text>
+ <text x="76" y="219" class="pf-anch">how it is scored</text>
+ <use href="#i-rule" transform="translate(200,186)" class="ic"/>
+ <text x="230" y="202" class="pf-pill">rules</text>
+ <text x="230" y="219" class="pf-anch">what is forbidden</text>
+
+ <rect x="384" y="54" width="338" height="200" rx="14" fill="#fdf7f6" stroke="#883839" stroke-width="1.3"/>
+ <use href="#i-rule" transform="translate(402,62) scale(1.05)" class="ic"/>
+ <text x="434" y="79" class="pf-lab">AUTORESEARCH PROTOCOL</text>
+ <line x1="402" y1="96" x2="704" y2="96" stroke="#e8cecc" stroke-width="1"/>
+ <use href="#i-loop" transform="translate(402,112)" class="ic"/>
+ <text x="432" y="124" class="pf-ttl">01 · LOOP FOREVER</text>
+ <text x="432" y="142" class="pf-anch">experiment · log · snapshot · repeat</text>
+ <use href="#i-cam" transform="translate(402,160)" class="ic"/>
+ <text x="432" y="172" class="pf-ttl">02 · KEEP THE TRAIL</text>
+ <text x="432" y="190" class="pf-anch">every version saved, reverts included</text>
+ <use href="#i-target" transform="translate(402,208)" class="ic"/>
+ <text x="432" y="220" class="pf-ttl">03 · AIM AT WHAT TRANSFERS</text>
+ <text x="432" y="238" class="pf-anch">the visible score is only a proxy</text>
+
+ <!-- both hand down into one column -->
+ <path d="M195 254v14q0 14 14 14h330q14 0 14-14v-14" fill="none" stroke="#c9c2b8" stroke-width="1.3"/>
+ <path d="M378 282v26" fill="none" stroke="#883839" stroke-width="1.5" marker-end="url(#q-r)"/>
+
+ <!-- ════ the loop, read top to bottom ════ -->
+ <rect x="258" y="316" width="240" height="56" rx="28" fill="#f8ebea" stroke="#883839" stroke-width="1.6"/>
+ <use href="#i-bot" transform="translate(280,334)" class="ic"/>
+ <text x="312" y="347" style="font:600 15px var(--sans);fill:#642627">Agent under evaluation</text>
+ <path d="M378 372v22" fill="none" stroke="#883839" stroke-width="1.5" marker-end="url(#q-r)"/>
+
+ <rect x="228" y="404" width="300" height="56" rx="10" class="pf-card"/>
+ <use href="#i-code" transform="translate(250,422)" class="ic"/>
+ <text x="282" y="427" class="pf-t">Edit the weak baseline</text>
+ <text x="282" y="447" class="pf-s">/app/methods/main</text>
+ <path d="M378 460v22" fill="none" stroke="#883839" stroke-width="1.5" marker-end="url(#q-r)"/>
+
+ <rect x="238" y="492" width="280" height="56" rx="10" class="pf-card"/>
+ <use href="#i-search" transform="translate(260,510)" class="ic"/>
+ <text x="292" y="515" class="pf-t">Self-check on visible data</text>
+ <text x="292" y="535" class="pf-s">the only feedback</text>
+
+ <!-- feedback: back up the left margin into the agent -->
+ <path d="M238 520H150q-14 0-14-14V358q0-14 14-14h108" fill="none" stroke="#883839" stroke-width="1.5"
+   stroke-dasharray="5 4" stroke-linecap="round" marker-end="url(#q-r)"/>
+ <text x="118" y="432" text-anchor="middle" transform="rotate(-90 118 432)" class="pf-ttl">MANY ROUNDS</text>
+
+ <!-- artifact leaves for the seal -->
+ <path d="M518 520h200" fill="none" stroke="#883839" stroke-width="1.5" marker-end="url(#q-r)"/>
+ <!-- the seal -->
+ <line x1="766" y1="14" x2="766" y2="570" class="pf-seal"/>
+ <rect x="724" y="506" width="84" height="28" rx="14" fill="#fff" stroke="#883839" stroke-width="1.2"/>
+ <text x="766" y="525" text-anchor="middle" style="font:600 12px var(--mono);fill:#883839">artifact</text>
+
+ <!-- ════ the hidden-set rerun: hidden data -> raw metric -> anchor scale -> score ════ -->
+ <rect x="822" y="76" width="352" height="62" rx="10" class="pf-card2"/>
+ <use href="#i-box" transform="translate(842,96) scale(1.1)" class="ic-d"/>
+ <text x="876" y="104" class="pf-t">Fresh container</text>
+ <text x="876" y="125" class="pf-s">scoring code the agent can never touch</text>
+ <path d="M998 138v32" fill="none" stroke="#a49c92" stroke-width="1.4" marker-end="url(#q-k)"/>
+
+ <rect x="822" y="178" width="352" height="62" rx="10" class="pf-card2"/>
+ <use href="#i-lock" transform="translate(842,198) scale(1.1)" class="ic-d"/>
+ <text x="876" y="206" class="pf-t">Hidden data</text>
+ <text x="876" y="227" class="pf-s">never entered the agent image</text>
+ <path d="M998 240v32" fill="none" stroke="#a49c92" stroke-width="1.4" marker-end="url(#q-k)"/>
+
+
+ <rect x="822" y="280" width="352" height="172" rx="10" class="pf-card2"/>
+ <text x="840" y="308" class="pf-lab2">ANCHOR SCALE</text>
+ <text x="1156" y="308" text-anchor="end" class="pf-s">measured by the task author</text>
+ <line x1="840" y1="322" x2="1156" y2="322" stroke="#efece8" stroke-width="1"/>
+
+ <rect x="866" y="385" width="264" height="6" rx="3" fill="#efece8"/>
+ <g style="font:600 13px var(--mono);fill:#2b2823" text-anchor="middle">
+  <circle cx="866" cy="388" r="5.5" fill="#fff" stroke="#6f6a62" stroke-width="1.6"/>
+  <text x="866" y="368">0</text>
+  <text x="866" y="412" class="pf-anch">baseline</text>
+  <circle cx="1024" cy="388" r="5.5" fill="#fff" stroke="#883839" stroke-width="1.6"
+    stroke-dasharray="2.4 2.1"/>
+  <text x="1024" y="368">0.6</text>
+  <text x="1024" y="412" class="pf-anch">frontier calibrated</text>
+  <text x="1024" y="427" class="pf-anch">reference</text>
+  <circle cx="1130" cy="388" r="6" fill="#181612"/>
+  <text x="1130" y="368">1.0</text>
+  <text x="1130" y="412" class="pf-anch">upper</text>
+  <text x="1130" y="427" class="pf-anch">bound</text>
+ </g>
+ <path d="M998 452v32" fill="none" stroke="#a49c92" stroke-width="1.4"
+   stroke-dasharray="3 3" marker-end="url(#q-k)"/>
+
+ <rect x="890" y="496" width="216" height="52" rx="26" fill="#181612"/>
+ <use href="#i-cup" transform="translate(912,510)" style="fill:none;stroke:#fff;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round"/>
+ <text x="944" y="529" style="font:600 16px var(--sans);fill:#fff">Normalised score</text>
+
+ <path d="M790 506V119q0-12 12-12h8" fill="none" stroke="url(#aflow)"
+   stroke-width="7" stroke-linejoin="round" marker-end="url(#q-a)"/>
+</svg></div>
+</div></section>
+
+<section class="tight tinted"><div class="wrap">
+  <span class="eyebrow e-violet">Two axes</span>
+  <h2>Recursive improvement &amp; Generalization</h2>
+  <div class="grid g2" style="margin-top:6px">
+    <div>
+      <h3>Two artifact types</h3>
+      <p>The method that solves the problem, or the harness that runs a frozen model. Each task targets
+        one of them.</p>
+      <div class="fig" style="margin-top:14px"><svg viewBox="0 0 424 196" role="img"
+ aria-label="Two self-improvement loops drawn as circles: method and agent harness">
+ <defs>
+  <marker id="lp" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7"
+    orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#883839"/></marker>
+  <marker id="lp3" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7"
+    orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#735f86"/></marker>
+ </defs>
+ <g>
+  <path d="M148 55A52 52 0 1 1 96 55"
+    fill="none" stroke="#883839" stroke-width="1.8" stroke-dasharray="4 4"
+    stroke-linecap="round" marker-end="url(#lp)"/>
+  <circle cx="122" cy="100" r="34" fill="#f8ebea" stroke="#883839" stroke-width="1.6"/>
+  <text x="122" y="105" text-anchor="middle" style="font:600 13.5px var(--sans);fill:#642627">Method</text>
+  <text x="122" y="186" text-anchor="middle" style="font:400 12px var(--sans);fill:#883839">solves the task directly</text>
+ </g>
+ <g>
+  <path d="M328 55A52 52 0 1 1 276 55"
+    fill="none" stroke="#735f86" stroke-width="1.8" stroke-dasharray="4 4"
+    stroke-linecap="round" marker-end="url(#lp3)"/>
+  <circle cx="302" cy="100" r="34" fill="#f0eaf4" stroke="#735f86" stroke-width="1.6"/>
+  <text x="302" y="105" text-anchor="middle" style="font:600 13.5px var(--sans);fill:#574466">Harness</text>
+  <text x="302" y="186" text-anchor="middle" style="font:400 12px var(--sans);fill:#8a779c">drives a frozen model</text>
+ </g>
+</svg>
+        <div class="cap">whichever one you submit, the verifier runs it</div></div>
+    </div>
+    <div>
+      <h3>One-shot hidden-set generalization</h3>
+      <p>Iterate on the visible data as long as the budget allows. The score comes from one run on the
+        hidden set.</p>
+      <div class="fig" style="margin-top:14px"><svg viewBox="0 0 424 196" role="img"
+ aria-label="Visible development set on one side of the seal, a hidden-set rerun on the other">
+ <defs><marker id="sl" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7"
+   orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#883839"/></marker></defs>
+ <rect x="8" y="34" width="176" height="132" rx="13" fill="#f6f4f1" stroke="#e8cecc"/>
+ <text x="96" y="58" text-anchor="middle" style="font:600 10px var(--mono);letter-spacing:.12em;fill:#642627">VISIBLE</text>
+ <text x="96" y="86" text-anchor="middle" style="font:600 12.5px var(--sans);fill:#4a463f">Development set</text>
+ <text x="96" y="108" text-anchor="middle" style="font:400 10.5px var(--sans);fill:#666159">split it as you like</text>
+ <text x="96" y="126" text-anchor="middle" style="font:400 10.5px var(--sans);fill:#666159">iterate freely</text>
+ <text x="96" y="144" text-anchor="middle" style="font:400 10.5px var(--sans);fill:#666159">self-check any time</text>
+
+ <line x1="212" y1="20" x2="212" y2="180" stroke="#883839" stroke-width="1.8" stroke-dasharray="7 5"/>
+ <text x="212" y="14" text-anchor="middle" style="font:600 10px var(--mono);letter-spacing:.12em;fill:#883839">SEAL</text>
+ <path d="M195 100h34" fill="none" stroke="#883839" stroke-width="2" marker-end="url(#sl)"/>
+ <text x="212" y="122" text-anchor="middle" style="font:600 10.5px var(--sans);fill:#883839">artifact</text>
+
+ <rect x="240" y="34" width="176" height="132" rx="13" fill="#f6f4f1" stroke="#e0ddd8"/>
+ <text x="328" y="58" text-anchor="middle" style="font:600 10px var(--mono);letter-spacing:.12em;fill:#666159">HIDDEN</text>
+ <text x="328" y="86" text-anchor="middle" style="font:600 12.5px var(--sans);fill:#2b2823">Rerun from scratch</text>
+ <text x="328" y="108" text-anchor="middle" style="font:400 10.5px var(--sans);fill:#6f6a62">fresh container, offline</text>
+ <text x="328" y="126" text-anchor="middle" style="font:400 10.5px var(--sans);fill:#6f6a62">data never touched</text>
+ <text x="328" y="144" text-anchor="middle" style="font:400 10.5px var(--sans);fill:#6f6a62">this number is the score</text>
+
+</svg>
+        <div class="cap">topping the visible set is not the same as improving</div></div>
+    </div>
+  </div>
+</div></section>
+
+<section><div class="wrap">
+  <span class="eyebrow e-amber">Authoring</span>
+  <h2>How a task is built</h2>
+  <p class="wide">Every task is written by a domain expert, then implemented and reviewed by other people.</p>
+<svg class="bfig" viewBox="0 0 1200 268" role="img"
+ aria-label="How a task reaches the bank: 40 plus domain experts propose it, 10 developers build the two images, 90 plus rubric checks audit it, and agent trajectories are analysed end to end. What comes out is one of the 88 active tasks; everything else goes back to the authors as feedback - a fix, an enhancement, or a filter.">
+ <defs>
+  <marker id="b-r" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto">
+    <path d="M0 0 L10 5 L0 10 z" fill="#883839"/></marker>
+  <g id="b-people">
+    <circle cx="7.5" cy="6" r="3.4"/><path d="M1.6 18c0-3.3 2.6-6 5.9-6s5.9 2.7 5.9 6"/>
+    <circle cx="17" cy="7.5" r="2.8"/><path d="M14 18c0-2.6 1.6-4.8 4-5.6"/></g>
+  <g id="b-code"><path d="M8 4 2 11l6 7"/><path d="M16 4l6 7-6 7"/></g>
+  <g id="b-check"><path d="M4 3.2h16v17.6H4z"/><path d="M8 9.6l2.8 2.8L16.4 7"/><path d="M8 16.4h8"/></g>
+  <g id="b-traj"><path d="M3 20h18"/><path d="M4.5 16.5l4.6-5.2 3.8 2.6 4.4-6.4"/>
+    <circle cx="4.5" cy="16.5" r="1.6"/><circle cx="9.1" cy="11.3" r="1.6"/>
+    <circle cx="12.9" cy="13.9" r="1.6"/><circle cx="17.3" cy="7.5" r="1.6"/></g>
+ </defs>
+
+ <g class="bnode">
+  <rect x="16" y="26" width="212" height="126" rx="12"/>
+  <use href="#b-people" transform="translate(108,48) scale(1.35)"/>
+  <text x="122" y="108" text-anchor="middle" class="bk">40+ DOMAIN</text>
+  <text x="122" y="128" text-anchor="middle" class="bk">EXPERTS</text>
+ </g>
+ <path d="M234 89h30" class="barr" marker-end="url(#b-r)"/>
+
+ <g class="bnode">
+  <rect x="270" y="26" width="212" height="126" rx="12"/>
+  <use href="#b-code" transform="translate(360,48) scale(1.35)"/>
+  <text x="376" y="108" text-anchor="middle" class="bk">10+</text>
+  <text x="376" y="128" text-anchor="middle" class="bk">DEVELOPERS</text>
+ </g>
+ <path d="M488 89h30" class="barr" marker-end="url(#b-r)"/>
+
+ <g class="bnode">
+  <rect x="524" y="26" width="212" height="126" rx="12"/>
+  <use href="#b-check" transform="translate(614,48) scale(1.35)"/>
+  <text x="630" y="108" text-anchor="middle" class="bk">90+ RUBRIC</text>
+  <text x="630" y="128" text-anchor="middle" class="bk">CHECKS</text>
+ </g>
+ <path d="M742 89h30" class="barr" marker-end="url(#b-r)"/>
+
+ <g class="bnode">
+  <rect x="778" y="26" width="212" height="126" rx="12"/>
+  <use href="#b-traj" transform="translate(868,48) scale(1.35)"/>
+  <text x="884" y="108" text-anchor="middle" class="bk">ANALYSE AGENT</text>
+  <text x="884" y="128" text-anchor="middle" class="bk">TRAJECTORIES</text>
+ </g>
+ <path d="M996 89h28" class="barr" marker-end="url(#b-r)"/>
+
+ <rect x="1030" y="62" width="154" height="54" rx="27" fill="#642627"/>
+ <text x="1107" y="86" text-anchor="middle" class="bout">88 ACTIVE</text>
+ <text x="1107" y="104" text-anchor="middle" class="bout">TASKS</text>
+
+ <path d="M1107 116v70q0 16-16 16H138q-16 0-16-16v-34" class="barr bback" marker-end="url(#b-r)"/>
+ <text x="614" y="226" text-anchor="middle" class="bback-t">FEEDBACK · FIX, ENHANCE, FILTER</text>
+</svg>
+  <div class="pipe">
+    <div class="pnode n1"><div class="k">01 · Author</div><h4>Domain expert</h4>
+      <p>Proposes the problem and the metric, and runs the weak baseline and at least one stronger reference
+        end to end to calibrate the range.</p></div>
+    <div class="pnode n2"><div class="k">02 · Developer</div><h4>Implementation</h4>
+      <p>Turns the idea into our required format: two isolated images, a declared artifact contract, hidden
+        data and trusted scoring code.</p></div>
+    <div class="pnode n3"><div class="k">03 · Reviewer 1</div><h4>Cross-check</h4>
+      <p>A standing rubric of 90+ checks: value, measurability, data provenance and licensing, and every
+        leakage path that could be looked up or memorised.</p></div>
+    <div class="pnode n4"><div class="k">04 · Reviewer 2</div><h4>Analysis &amp; feedback</h4>
+      <p>Analyses a full agent trajectory against the anchors, then sends the verdict back as a fix,
+        an enhancement or a filter.</p></div>
+  </div>
+  <p class="mut" style="margin-top:26px;font-size:13.5px">Authors are PhD students, postdocs, faculty and industry practitioners, each writing in their own research area.</p>
+</div></section>
+
+<footer><div class="wrap">RSI-Exam &nbsp;·&nbsp;
+  <a href="https://mail.google.com/mail/?view=cm&amp;fs=1&amp;to=contact%40rsi-exam.ai" target="_blank" rel="noopener">Contact</a> &nbsp;&middot;&nbsp;
+  <a href="https://github.com/aiming-lab/RSI-Exam">GitHub</a></div></footer>
+<script>
+(function(){
+  var domains=[].slice.call(document.querySelectorAll('.doms .dom'));
+  function setOpen(domain,open){
+    var card=domain.querySelector('.dcard');
+    domain.classList.toggle('is-open',open);
+    if(card) card.setAttribute('aria-expanded',open?'true':'false');
+  }
+  function closeAll(except){
+    domains.forEach(function(domain){if(domain!==except)setOpen(domain,false);});
+  }
+  domains.forEach(function(domain){
+    var card=domain.querySelector('.dcard');
+    if(!card)return;
+    card.addEventListener('click',function(event){
+      event.stopPropagation();
+      var willOpen=!domain.classList.contains('is-open');
+      closeAll(domain);
+      setOpen(domain,willOpen);
+    });
+  });
+  document.addEventListener('click',function(event){
+    if(!event.target.closest('.doms'))closeAll();
+  });
+  document.addEventListener('keydown',function(event){
+    if(event.key==='Escape'){closeAll();document.activeElement&&document.activeElement.blur();}
+  });
+})();
+</script>
+<script defer src="nav-scroll.js?v=24838331"></script>
+<script defer src="leaderboard.js?v=dfb95f72"></script>
+</body></html>

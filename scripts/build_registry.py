@@ -95,6 +95,12 @@ def build():
             for item in turn['items']:
                 add_message(turn['turn_id'], item['item_id'], item['role'], item['classification'],
                             item['distilled_paths'], rel)
+    for rel in ['vault/intake/platform-grammar-20260922.json',
+                'vault/intake/ai-capability-assessment-20260923.json']:
+        for turn in read(rel)['turns']:
+            for item in turn['items']:
+                add_message(turn['turn_id'], item['item_id'], item['role'], item['classification'],
+                            item['distilled_paths'], rel)
     return {'schema_version': '1.0', 'generated_from': 'scripts/build_registry.py',
             'note': 'Derived index; edit source catalogs, then rebuild. Snapshot processing status remains in intake.',
             'collections': collections, 'chat_counts': chats['counts'],

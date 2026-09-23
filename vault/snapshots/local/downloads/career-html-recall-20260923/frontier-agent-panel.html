@@ -1,0 +1,1004 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="description" content="Frontier Agent 与下游 AI 产品的第一性原理：能力空间扩大，用户决策空间缩小。">
+  <title>能力全量，暴露最小｜Frontier Agent 与下游产品</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --paper: #f3f0e9;
+      --paper-raised: #fbf9f4;
+      --ink: #191815;
+      --ink-2: #4d4a43;
+      --ink-3: #777168;
+      --line: #c9c3b8;
+      --line-strong: #2b2925;
+      --accent: #9d3328;
+      --accent-soft: #ead8d3;
+      --ok: #2f5f4a;
+      --focus: #236a9b;
+      --radius-control: 0.45rem;
+      --measure: 72ch;
+      --page: 76rem;
+      --rail: 12.75rem;
+      --space-1: 0.35rem;
+      --space-2: 0.65rem;
+      --space-3: 1rem;
+      --space-4: 1.5rem;
+      --space-5: 2.25rem;
+      --space-6: 3.5rem;
+      --space-7: 5.5rem;
+      --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+      --ease-move: cubic-bezier(0.77, 0, 0.175, 1);
+      --duration-fast: 140ms;
+      --duration-ui: 220ms;
+      font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang SC", "Microsoft YaHei", sans-serif;
+      font-synthesis: none;
+      text-rendering: optimizeLegibility;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font-size: 1rem;
+      line-height: 1.65;
+    }
+
+    button, a { -webkit-tap-highlight-color: transparent; }
+    button { font: inherit; }
+    a { color: inherit; }
+    ::selection { background: var(--accent-soft); color: var(--ink); }
+
+    .skip-link {
+      position: fixed;
+      inset: var(--space-3) auto auto var(--space-3);
+      z-index: 100;
+      padding: var(--space-2) var(--space-3);
+      background: var(--ink);
+      color: var(--paper-raised);
+      border-radius: var(--radius-control);
+      transform: translateY(-180%);
+      transition: transform var(--duration-ui) var(--ease-out);
+    }
+    .skip-link:focus { transform: translateY(0); }
+
+    .chrome {
+      position: fixed;
+      inset: 0 0 auto;
+      z-index: 20;
+      min-height: 3.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-3);
+      padding: var(--space-2) max(var(--space-3), calc((100vw - var(--page)) / 2));
+      background: var(--paper);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .brand {
+      display: flex;
+      align-items: baseline;
+      gap: var(--space-2);
+      min-width: 0;
+    }
+    .brand strong {
+      font-size: 0.88rem;
+      letter-spacing: 0.02em;
+      white-space: nowrap;
+    }
+    .brand span {
+      overflow: hidden;
+      color: var(--ink-3);
+      font: 0.72rem/1.3 ui-monospace, "SFMono-Regular", Consolas, monospace;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .toolbar { display: flex; gap: var(--space-2); }
+    .control {
+      min-height: 2.75rem;
+      padding: 0 var(--space-3);
+      border: 1px solid var(--line-strong);
+      border-radius: var(--radius-control);
+      background: transparent;
+      color: var(--ink);
+      cursor: pointer;
+      transition: transform var(--duration-fast) var(--ease-out), background-color var(--duration-fast) ease, color var(--duration-fast) ease;
+    }
+    .control:hover { background: var(--ink); color: var(--paper-raised); }
+    .control:active { transform: scale(0.97); }
+    .control[aria-pressed="true"] { background: var(--ink); color: var(--paper-raised); }
+
+    .progress {
+      position: fixed;
+      inset: 3.45rem 0 auto;
+      z-index: 21;
+      height: 0.16rem;
+      background: transparent;
+      pointer-events: none;
+    }
+    .progress > span {
+      display: block;
+      width: 0;
+      height: 100%;
+      background: var(--accent);
+      transform-origin: left center;
+    }
+
+    .shell {
+      width: min(calc(100% - 2rem), var(--page));
+      margin: 0 auto;
+      padding-top: 3.6rem;
+      display: grid;
+      grid-template-columns: var(--rail) minmax(0, 1fr);
+      gap: var(--space-6);
+    }
+
+    .rail {
+      position: sticky;
+      top: 5.75rem;
+      align-self: start;
+      height: calc(100vh - 7rem);
+      padding: var(--space-5) var(--space-4) var(--space-4) 0;
+      border-right: 1px solid var(--line);
+      overflow-y: auto;
+    }
+    .rail-label {
+      margin: 0 0 var(--space-3);
+      color: var(--ink-3);
+      font: 0.7rem/1.3 ui-monospace, "SFMono-Regular", Consolas, monospace;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .rail nav { display: grid; gap: var(--space-1); }
+    .rail a {
+      min-height: 2.75rem;
+      display: flex;
+      align-items: center;
+      padding: 0 var(--space-2);
+      border-left: 0.18rem solid transparent;
+      color: var(--ink-3);
+      text-decoration: none;
+      transition: color var(--duration-fast) ease, border-color var(--duration-fast) ease, transform var(--duration-fast) var(--ease-out);
+    }
+    .rail a:hover { color: var(--ink); transform: translateX(0.18rem); }
+    .rail a[aria-current="true"] { color: var(--ink); border-left-color: var(--accent); font-weight: 650; }
+    .rail-hint {
+      margin: var(--space-4) 0 0;
+      color: var(--ink-3);
+      font-size: 0.75rem;
+      line-height: 1.5;
+    }
+
+    main { min-width: 0; }
+    .chapter {
+      min-height: min(48rem, calc(100svh - 3.6rem));
+      padding: var(--space-7) 0;
+      border-bottom: 1px solid var(--line-strong);
+      scroll-margin-top: 3.6rem;
+    }
+    .chapter:last-child { border-bottom: 0; }
+    .eyebrow {
+      margin: 0 0 var(--space-3);
+      color: var(--accent);
+      font: 0.72rem/1.3 ui-monospace, "SFMono-Regular", Consolas, monospace;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+    }
+    h1, h2, h3, p { text-wrap: pretty; }
+    h1, h2, h3 { margin: 0; font-weight: 720; }
+    h1 {
+      max-width: 12ch;
+      font-size: clamp(3.25rem, 8.4vw, 7.5rem);
+      line-height: 0.94;
+      letter-spacing: -0.065em;
+    }
+    h2 {
+      max-width: 18ch;
+      font-size: clamp(2.25rem, 5.2vw, 4.8rem);
+      line-height: 1.02;
+      letter-spacing: -0.05em;
+    }
+    h3 {
+      font-size: clamp(1.12rem, 1.8vw, 1.4rem);
+      line-height: 1.25;
+      letter-spacing: -0.015em;
+    }
+    .lede {
+      max-width: var(--measure);
+      margin: var(--space-5) 0 0;
+      color: var(--ink-2);
+      font-size: clamp(1.15rem, 2vw, 1.45rem);
+      line-height: 1.62;
+    }
+    .lede strong { color: var(--ink); font-weight: 720; }
+
+    .thesis {
+      margin-top: var(--space-7);
+      padding: var(--space-5) 0;
+      border-top: 0.18rem solid var(--line-strong);
+      border-bottom: 1px solid var(--line);
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: var(--space-4);
+    }
+    .thesis-part span {
+      display: block;
+      color: var(--ink-3);
+      font: 0.72rem/1.3 ui-monospace, "SFMono-Regular", Consolas, monospace;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .thesis-part strong {
+      display: block;
+      margin-top: var(--space-2);
+      font-size: clamp(1.4rem, 3vw, 2.35rem);
+      line-height: 1.18;
+    }
+    .thesis-arrow { color: var(--accent); font-size: 2rem; }
+    .thesis .down strong { color: var(--accent); }
+
+    .takeaway {
+      max-width: var(--measure);
+      margin: var(--space-6) 0 0;
+      padding-left: var(--space-4);
+      border-left: 0.2rem solid var(--accent);
+      font-size: clamp(1.25rem, 2.4vw, 1.8rem);
+      line-height: 1.45;
+      font-weight: 650;
+    }
+
+    .equation {
+      margin: var(--space-6) 0 0;
+      padding: var(--space-5) 0;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      display: grid;
+      grid-template-columns: 1fr auto 1fr auto 1fr;
+      align-items: stretch;
+      gap: var(--space-3);
+    }
+    .equation-term {
+      min-height: 8.5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: var(--space-4);
+      padding: var(--space-3);
+    }
+    .equation-term b { font-size: clamp(1.2rem, 2.3vw, 1.8rem); line-height: 1.2; }
+    .equation-term small { color: var(--ink-3); font-size: 0.82rem; }
+    .equation-mark { align-self: center; color: var(--accent); font-size: 1.7rem; }
+
+    .review-strip {
+      margin-top: var(--space-6);
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      border-top: 0.18rem solid var(--line-strong);
+      border-bottom: 1px solid var(--line-strong);
+    }
+    .review-item { padding: var(--space-4); border-right: 1px solid var(--line); }
+    .review-item:last-child { border-right: 0; }
+    .review-item span {
+      display: block;
+      color: var(--ink-3);
+      font: 0.7rem/1.3 ui-monospace, "SFMono-Regular", Consolas, monospace;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .review-item strong { display: block; margin-top: var(--space-2); line-height: 1.35; }
+
+    .authority {
+      margin-top: var(--space-6);
+      border-top: 0.18rem solid var(--line-strong);
+    }
+    .authority-row {
+      display: grid;
+      grid-template-columns: 8rem 1fr 1.3fr;
+      gap: var(--space-4);
+      align-items: baseline;
+      padding: var(--space-4) 0;
+      border-bottom: 1px solid var(--line);
+    }
+    .authority-row b { font-size: 1.05rem; }
+    .authority-row span { color: var(--ink-2); }
+    .authority-row p { margin: 0; color: var(--ink-3); }
+    .authority-row.human { background: var(--accent-soft); margin-inline: calc(-1 * var(--space-3)); padding-inline: var(--space-3); }
+    .authority-row.human b { color: var(--accent); }
+
+    .work-loop {
+      margin-top: var(--space-6);
+      padding: var(--space-5) 0;
+      border-top: 0.18rem solid var(--line-strong);
+      border-bottom: 1px solid var(--line-strong);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--space-2);
+    }
+    .work-loop span {
+      padding: var(--space-2) var(--space-3);
+      border: 1px solid var(--line);
+      font-weight: 680;
+      white-space: nowrap;
+    }
+    .work-loop i { color: var(--accent); font-style: normal; }
+
+    .formula-band {
+      margin-top: var(--space-6);
+      padding: var(--space-5) 0;
+      border-top: 0.18rem solid var(--line-strong);
+      border-bottom: 1px solid var(--line-strong);
+      font-size: clamp(1.15rem, 2.5vw, 1.8rem);
+      line-height: 1.5;
+      font-weight: 690;
+      font-variant-numeric: tabular-nums;
+    }
+    .formula-band .accent { color: var(--accent); }
+
+    .evolution {
+      margin-top: var(--space-6);
+      border-top: 0.18rem solid var(--line-strong);
+    }
+    .evolution-row {
+      display: grid;
+      grid-template-columns: 4.5rem 1fr 1.5fr;
+      gap: var(--space-4);
+      padding: var(--space-4) 0;
+      border-bottom: 1px solid var(--line);
+      align-items: baseline;
+    }
+    .evolution-row code { color: var(--ink-3); font: 0.72rem/1.4 ui-monospace, "SFMono-Regular", Consolas, monospace; }
+    .evolution-row b { font-size: 1.08rem; }
+    .evolution-row p { margin: 0; color: var(--ink-2); }
+    .evolution-row.final { background: var(--accent-soft); margin-inline: calc(-1 * var(--space-3)); padding-inline: var(--space-3); }
+    .evolution-row.final b, .evolution-row.final code { color: var(--accent); }
+
+    .cost-ledger {
+      margin-top: var(--space-6);
+      border-top: 0.18rem solid var(--line-strong);
+    }
+    .cost-row {
+      display: grid;
+      grid-template-columns: minmax(10rem, 1fr) 8rem 2fr;
+      gap: var(--space-4);
+      padding: var(--space-3) 0;
+      border-bottom: 1px solid var(--line);
+      align-items: baseline;
+    }
+    .cost-row b { font-size: 1.02rem; }
+    .cost-row em { color: var(--ink-3); font-style: normal; font-weight: 680; }
+    .cost-row p { margin: 0; color: var(--ink-2); }
+    .cost-row.down em { color: var(--ok); }
+    .cost-row.stubborn em { color: var(--accent); }
+
+    .memory-stack {
+      margin-top: var(--space-5);
+      border-top: 0.18rem solid var(--line-strong);
+    }
+    .memory-row {
+      display: grid;
+      grid-template-columns: 10rem 1fr;
+      gap: var(--space-4);
+      padding: var(--space-4) 0;
+      border-bottom: 1px solid var(--line);
+    }
+    .memory-row b { color: var(--accent); }
+    .memory-row p { margin: 0; color: var(--ink-2); }
+
+    .mode-compare {
+      margin-top: var(--space-6);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      border-top: 0.18rem solid var(--line-strong);
+      border-bottom: 1px solid var(--line-strong);
+    }
+    .mode {
+      padding: var(--space-5);
+      border-right: 1px solid var(--line);
+    }
+    .mode:last-child { border-right: 0; }
+    .mode span { color: var(--ink-3); font: 0.72rem/1.4 ui-monospace, "SFMono-Regular", Consolas, monospace; }
+    .mode h3 { margin-top: var(--space-2); }
+    .mode p { margin: var(--space-3) 0 0; color: var(--ink-2); }
+
+    .ratio {
+      margin-top: var(--space-6);
+      padding: var(--space-5) 0;
+      border-top: 0.22rem solid var(--accent);
+      border-bottom: 0.22rem solid var(--accent);
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: var(--space-4);
+      align-items: center;
+      text-align: center;
+    }
+    .ratio b { font-size: clamp(1.15rem, 2.5vw, 1.9rem); line-height: 1.3; }
+    .ratio i { color: var(--accent); font-size: 2rem; font-style: normal; }
+
+    .layer-map {
+      margin-top: var(--space-6);
+      border-top: 0.18rem solid var(--line-strong);
+    }
+    .layer {
+      display: grid;
+      grid-template-columns: 7rem 15rem 1fr;
+      gap: var(--space-4);
+      align-items: baseline;
+      padding: var(--space-4) 0;
+      border-bottom: 1px solid var(--line);
+    }
+    .layer-code { color: var(--ink-3); font: 0.75rem/1.3 ui-monospace, "SFMono-Regular", Consolas, monospace; }
+    .layer-name { font-size: 1.12rem; font-weight: 720; }
+    .layer p { margin: 0; color: var(--ink-2); }
+    .layer.product { background: var(--accent-soft); margin-inline: calc(-1 * var(--space-3)); padding-inline: var(--space-3); }
+    .layer.product .layer-code, .layer.product .layer-name { color: var(--accent); }
+
+    .translation {
+      margin-top: var(--space-6);
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+      align-items: stretch;
+      border-top: 1px solid var(--line-strong);
+      border-bottom: 1px solid var(--line-strong);
+    }
+    .translation-side { padding: var(--space-5); }
+    .translation-side p { margin: 0 0 var(--space-3); color: var(--ink-3); font-size: 0.8rem; }
+    .translation-side ul { list-style: none; padding: 0; margin: 0; display: grid; gap: var(--space-2); }
+    .translation-side li { padding-bottom: var(--space-2); border-bottom: 1px solid var(--line); }
+    .translation-side.output li { font-weight: 680; }
+    .translation-divider {
+      width: 3.75rem;
+      display: grid;
+      place-items: center;
+      border-inline: 1px solid var(--line);
+      color: var(--accent);
+      font-size: 1.6rem;
+    }
+
+    .case-grid {
+      margin-top: var(--space-6);
+      display: grid;
+      grid-template-columns: 0.9fr 1.1fr;
+      gap: var(--space-6);
+      align-items: start;
+    }
+    .user-ask {
+      padding: var(--space-5) 0;
+      border-top: 0.18rem solid var(--line-strong);
+      border-bottom: 1px solid var(--line);
+    }
+    .user-ask span { color: var(--ink-3); font-size: 0.8rem; }
+    .user-ask blockquote {
+      margin: var(--space-3) 0 0;
+      font-size: clamp(1.35rem, 2.6vw, 2rem);
+      line-height: 1.35;
+      letter-spacing: -0.025em;
+      font-weight: 680;
+    }
+    .pipeline { border-top: 0.18rem solid var(--line-strong); }
+    .pipeline-row {
+      display: grid;
+      grid-template-columns: 2.2rem 1fr;
+      gap: var(--space-3);
+      padding: var(--space-3) 0;
+      border-bottom: 1px solid var(--line);
+    }
+    .pipeline-row .dot {
+      width: 1.55rem;
+      height: 1.55rem;
+      display: grid;
+      place-items: center;
+      border: 1px solid var(--line-strong);
+      border-radius: 50%;
+      font: 0.68rem/1 ui-monospace, "SFMono-Regular", Consolas, monospace;
+      font-variant-numeric: tabular-nums;
+    }
+    .pipeline-row strong { display: block; line-height: 1.35; }
+    .pipeline-row small { display: block; margin-top: var(--space-1); color: var(--ink-3); }
+    .boundary {
+      margin-top: var(--space-4);
+      padding: var(--space-3) var(--space-4);
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      font-weight: 680;
+    }
+
+    .contract {
+      margin-top: var(--space-6);
+      border-top: 0.18rem solid var(--line-strong);
+    }
+    .contract-row {
+      display: grid;
+      grid-template-columns: 10rem 1fr;
+      gap: var(--space-4);
+      padding: var(--space-3) 0;
+      border-bottom: 1px solid var(--line);
+    }
+    .contract-row dt { color: var(--ink-3); font: 0.74rem/1.6 ui-monospace, "SFMono-Regular", Consolas, monospace; }
+    .contract-row dd { margin: 0; font-weight: 620; }
+    .contract-row.human dd { color: var(--accent); }
+
+    .moat-line {
+      margin-top: var(--space-6);
+      padding: var(--space-4) 0;
+      border-top: 0.18rem solid var(--line-strong);
+      border-bottom: 1px solid var(--line-strong);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--space-3);
+      font-weight: 680;
+    }
+    .moat-line span { white-space: nowrap; }
+    .moat-line i { color: var(--accent); font-style: normal; }
+
+    .judgment {
+      margin-top: var(--space-6);
+      border-top: 0.18rem solid var(--line-strong);
+    }
+    .judgment-row {
+      display: grid;
+      grid-template-columns: 2fr 1fr 3fr;
+      gap: var(--space-4);
+      padding: var(--space-4) 0;
+      border-bottom: 1px solid var(--line);
+      align-items: baseline;
+    }
+    .judgment-row b { font-size: 1.08rem; }
+    .judgment-row em { color: var(--ok); font-style: normal; font-weight: 720; }
+    .judgment-row p { margin: 0; color: var(--ink-2); }
+
+    .closing {
+      margin-top: var(--space-7);
+      padding: var(--space-6) 0;
+      border-top: 0.25rem solid var(--accent);
+      border-bottom: 0.25rem solid var(--accent);
+      font-size: clamp(1.6rem, 4vw, 3.3rem);
+      line-height: 1.2;
+      letter-spacing: -0.04em;
+      font-weight: 750;
+    }
+    .closing span { color: var(--accent); }
+
+    .speaker-note {
+      display: none;
+      max-width: var(--measure);
+      margin-top: var(--space-5);
+      padding: var(--space-3) var(--space-4);
+      background: var(--ink);
+      color: var(--paper-raised);
+      border-radius: var(--radius-control);
+      font-size: 0.92rem;
+    }
+    .speaker-note strong { color: #f1c5bb; }
+    body.notes-on .speaker-note { display: block; }
+
+    .source-note {
+      max-width: var(--measure);
+      margin-top: var(--space-6);
+      color: var(--ink-3);
+      font-size: 0.78rem;
+    }
+    .source-note a { text-underline-offset: 0.18em; }
+
+    :focus-visible { outline: 0.18rem solid var(--focus); outline-offset: 0.2rem; }
+
+    @media (max-width: 860px) {
+      .chrome { padding-inline: var(--space-3); }
+      .brand span { display: none; }
+      .shell { display: block; width: min(calc(100% - 2rem), 46rem); }
+      .rail { display: none; }
+      .chapter { min-height: auto; padding: var(--space-6) 0; }
+      h1 { max-width: 10ch; font-size: clamp(3rem, 15vw, 5.5rem); }
+      .equation { grid-template-columns: 1fr; }
+      .equation-mark { transform: rotate(90deg); }
+      .equation-term { min-height: 6.5rem; }
+      .review-strip { grid-template-columns: 1fr; }
+      .review-item { border-right: 0; border-bottom: 1px solid var(--line); }
+      .review-item:last-child { border-bottom: 0; }
+      .authority-row, .evolution-row, .cost-row { grid-template-columns: 1fr; gap: var(--space-1); }
+      .mode-compare { grid-template-columns: 1fr; }
+      .mode { border-right: 0; border-bottom: 1px solid var(--line); padding-inline: 0; }
+      .mode:last-child { border-bottom: 0; }
+      .ratio { grid-template-columns: 1fr; }
+      .ratio i { transform: rotate(90deg); }
+      .layer { grid-template-columns: 4rem 1fr; }
+      .layer p { grid-column: 2; }
+      .translation { grid-template-columns: 1fr; }
+      .translation-divider { width: auto; height: 3.25rem; border-inline: 0; border-block: 1px solid var(--line); transform: rotate(90deg); }
+      .case-grid { grid-template-columns: 1fr; gap: var(--space-5); }
+      .judgment-row { grid-template-columns: 1fr; gap: var(--space-1); }
+    }
+
+    @media (max-width: 520px) {
+      .control { min-width: 2.75rem; padding-inline: var(--space-2); }
+      .control .wide-label { display: none; }
+      .thesis { grid-template-columns: 1fr; }
+      .thesis-arrow { transform: rotate(90deg); }
+      .contract-row { grid-template-columns: 1fr; gap: var(--space-1); }
+      .translation-side { padding-inline: 0; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+    }
+
+    @media (prefers-reduced-transparency: reduce) {
+      .chrome { background: var(--paper); }
+    }
+
+    @media (prefers-contrast: more) {
+      :root { --line: #716b62; }
+      .chrome { background: var(--paper); }
+    }
+
+    @media print {
+      @page { size: A4 landscape; margin: 12mm; }
+      .chrome, .progress, .rail { display: none !important; }
+      .shell { display: block; width: 100%; padding: 0; }
+      .chapter { min-height: 0; break-after: page; padding: 8mm 0; }
+      .chapter:last-child { break-after: auto; }
+      .speaker-note { display: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">跳到正文</a>
+
+  <header class="chrome" aria-label="演讲控制">
+    <div class="brand">
+      <strong>能力全量，暴露最小</strong>
+      <span>Frontier Agent × Downstream Product</span>
+    </div>
+    <div class="toolbar">
+      <button class="control" id="notesToggle" type="button" aria-pressed="false" aria-controls="main">
+        <span aria-hidden="true">✦</span> <span class="wide-label">提词</span>
+      </button>
+      <button class="control" id="fullToggle" type="button">
+        <span aria-hidden="true">↗</span> <span class="wide-label">全屏</span>
+      </button>
+    </div>
+  </header>
+  <div class="progress" aria-hidden="true"><span id="progressBar"></span></div>
+
+  <div class="shell">
+    <aside class="rail" aria-label="章节导航">
+      <p class="rail-label">Talk map</p>
+      <nav>
+        <a href="#thesis" aria-current="true">总命题</a>
+        <a href="#authority">职权分配</a>
+        <a href="#work">Work 单位</a>
+        <a href="#reliability">可靠工作秩序</a>
+        <a href="#archaeology">产品考古</a>
+        <a href="#cheaper">Coding cheaper</a>
+        <a href="#runtime">Runtime 上游化</a>
+        <a href="#compression">选择压缩</a>
+        <a href="#consumer">Consumer AI</a>
+        <a href="#courtwork">工作契约</a>
+        <a href="#moat">护城河与判断</a>
+      </nav>
+      <p class="rail-hint">↑ ↓ 或 PageUp / PageDown<br>切换章节</p>
+    </aside>
+
+    <main id="main">
+      <section class="chapter" id="thesis" data-title="总命题">
+        <p class="eyebrow">Agent 第一性原理</p>
+        <h1>不是让模型负责一切，而是在模型之外建立工作秩序。</h1>
+        <p class="lede">Courtwork 的主线不是“Agent 有多少功能”，而是从概率模型如何承担真实工作责任倒推产品结构：谁提案，谁验证，谁裁决；什么叫完成；失败如何显式、恢复与验收。</p>
+
+        <div class="thesis" role="img" aria-label="模型负责生成，系统建立秩序，人保留裁决">
+          <div class="thesis-part"><span>Probabilistic Model</span><strong>理解、生成、候选</strong></div>
+          <div class="thesis-arrow" aria-hidden="true">→</div>
+          <div class="thesis-part down"><span>Work Order</span><strong>验证、边界、裁决</strong></div>
+        </div>
+
+        <p class="takeaway">Agent 的核心不是 autonomy，而是 responsibility；产品的核心不是 conversation，而是 work。</p>
+        <aside class="speaker-note"><strong>讲法：</strong>整场先从责任问题开始。模型越强，越不能把生成、验证、授权、完成判断全部交给同一个概率主体。Agent 产品的第一性问题是职权与责任如何分配。</aside>
+      </section>
+
+      <section class="chapter" id="authority" data-title="职权分配">
+        <p class="eyebrow">谁有资格决定什么</p>
+        <h2>Agent 设计的核心，是 authority allocation。</h2>
+        <p class="lede">“能不能由模型做”不是充分问题；“谁最有资格做这个决定”才是。Human-in-the-loop 也不是到处加确认框，而是对 decision rights 的建模。</p>
+
+        <div class="authority" aria-label="Agent 系统的职权矩阵">
+          <div class="authority-row"><b>Model</b><span>模糊理解、归纳、生成、规划候选</span><p>擅长在开放空间提出可能方案</p></div>
+          <div class="authority-row"><b>System</b><span>格式、范围、权限、引用、计算、状态</span><p>能确定性裁决的部分不让模型猜</p></div>
+          <div class="authority-row"><b>Harness</b><span>失败检测、重试、恢复、续行</span><p>让长任务在中断后仍可追溯与恢复</p></div>
+          <div class="authority-row human"><b>Human</b><span>价值判断、专业责任、不可逆决定</span><p>真正需要承担后果的裁决不被自动化偷换</p></div>
+        </div>
+
+        <p class="takeaway">模型生成，系统裁决，人类定夺；Harness 对失败与恢复负责。</p>
+        <aside class="speaker-note"><strong>讲法：</strong>市场谈 Agent PM 时常用 autonomy、HITL、eval。Courtwork 的回答更具体：把职权拆开。模型不能既写答案、又证明自己正确、又批准自己的权限、再宣布任务完成。</aside>
+      </section>
+
+      <section class="chapter" id="work" data-title="Work 单位">
+        <p class="eyebrow">从回答质量到工作完成</p>
+        <h2>Chatbot 的单位是 turn；Agent 的单位是 persistent work。</h2>
+        <p class="lede">Agent 不只优化一次回答。它要对持续存在的目标负责，因此必须管理状态、权限、行动、验证、失败与恢复，最后交付一个可验收的结果。</p>
+
+        <div class="work-loop" aria-label="Agent Work 生命周期">
+          <span>Goal</span><i>→</i><span>State</span><i>→</i><span>Observe</span><i>→</i><span>Act</span><i>→</i><span>Verify</span><i>→</i><span>Recover</span><i>→</i><span>Deliver</span>
+        </div>
+
+        <div class="review-strip" aria-label="聊天与工作的差异">
+          <div class="review-item"><span>Chat</span><strong>一轮回答是否像样</strong></div>
+          <div class="review-item"><span>Agent</span><strong>一个目标是否完成</strong></div>
+          <div class="review-item"><span>Required</span><strong>journal · artifact · permission · resume</strong></div>
+        </div>
+
+        <p class="takeaway">没有持久状态、验证、恢复与交付，Agent 很容易退化为“会调用工具的 chatbot”。</p>
+        <aside class="speaker-note"><strong>讲法：</strong>这里把 resume、journal、artifact、workspace 放回产品本质，而不是工程附件。只要基本单位从 turn 变成 work，这些机制就自然出现。</aside>
+      </section>
+
+      <section class="chapter" id="reliability" data-title="可靠工作秩序">
+        <p class="eyebrow">概率性是架构输入</p>
+        <h2>不要把概率模型假装成确定系统。</h2>
+        <p class="lede">更稳健的结构，是把概率性限制在允许概率性的区域：读入可以宽，提案可以丰富；写入、行动与完成判断逐层收窄。权威接口失败时显式标记未核验，不静默回退为模型猜测。</p>
+
+        <div class="equation" aria-label="从开放世界到受控行动的漏斗">
+          <div class="equation-term"><b>Rich Context</b><small>读取完整材料与复杂世界</small></div>
+          <div class="equation-mark" aria-hidden="true">→</div>
+          <div class="equation-term"><b>Structured Proposal</b><small>schema、证据、显式不确定性</small></div>
+          <div class="equation-mark" aria-hidden="true">→</div>
+          <div class="equation-term"><b>Validated Action</b><small>权限、确定性门、人工裁决</small></div>
+        </div>
+
+        <div class="formula-band">Trust = <span class="accent">Provenance</span> + Observability + Reversibility + Recoverability</div>
+        <div class="review-strip" aria-label="Eval 的产品含义">
+          <div class="review-item"><span>不是</span><strong>按钮存在、流程能跑</strong></div>
+          <div class="review-item"><span>而是</span><strong>场景 → 行为 → 结果</strong></div>
+          <div class="review-item"><span>还包括</span><strong>失败场景 → 预期失败行为</strong></div>
+        </div>
+
+        <p class="takeaway">Agent PM 不只拥有 roadmap，也必须拥有 quality model、failure taxonomy 与验收标准。</p>
+        <aside class="speaker-note"><strong>讲法：</strong>“读宽写窄”把 structured output、sandbox、permission、typed action、confirmation 串成同一个原则。Eval 也不是上线前 QA，而是产品定义的一半。</aside>
+      </section>
+
+      <section class="chapter" id="archaeology" data-title="产品考古">
+        <p class="eyebrow">垂类套壳清缴之后</p>
+        <h2>被淘汰的是产品形态，不是工作知识。</h2>
+        <p class="lede">第一波垂类 AI 把聊天壳、场景菜单、prompt、workflow 与专用页面绑成独立产品。Courtwork 的归档演化显示，这些形态会折旧；稳定留下的是工作对象、判断结构与验收标准。</p>
+
+        <div class="evolution" aria-label="垂类产品到 Agent extensions 的演进">
+          <div class="evolution-row"><code>SHELL</code><b>Vertical Chatbots</b><p>一个行业一个壳、一个导航、一组 prompt</p></div>
+          <div class="evolution-row"><code>FLOW</code><b>Workflows</b><p>把专用页面收敛成可重复流程</p></div>
+          <div class="evolution-row"><code>SCENE</code><b>Scenes</b><p>场景降为自然语言意图的 shortcut</p></div>
+          <div class="evolution-row"><code>CONTRACT</code><b>Work Contracts</b><p>schema、source policy、tools、confirmation、renderer、eval</p></div>
+          <div class="evolution-row final"><code>SYSTEM</code><b>Agent + Extensions</b><p>一个 Work Agent；垂类知识作为可加载、可移除的契约包</p></div>
+        </div>
+
+        <div class="formula-band">Competitor feature → 去 UI → 去 workflow ceremony → 去 prompt → <span class="accent">Work Contract</span></div>
+        <p class="takeaway">第一波垂类套壳潮即使产品形态折旧，也完成了一次昂贵的需求标注：枚举了值得结构化的工作面。</p>
+        <aside class="speaker-note"><strong>讲法：</strong>风险清单、时间线、对照、证据矩阵并不等于四个页面。把视觉工作面剥掉后，真正耐久的是 artifact schema、证据策略、确定性规则、人工裁决与 eval。</aside>
+      </section>
+
+      <section class="chapter" id="cheaper" data-title="Coding cheaper">
+        <p class="eyebrow">实现变便宜之后</p>
+        <h2>“能不能做”失去区分度，“该不该存在”成为核心问题。</h2>
+        <p class="lede">Coding cheaper 主要降低首次实现成本，没有自动消除集成、验证、维护、认知与产品承诺。技术门槛下降，反而让产品减法更重要。</p>
+
+        <div class="cost-ledger" aria-label="功能总成本">
+          <div class="cost-row down"><b>Implementation</b><em>显著下降</em><p>UI、workflow、tool binding 与数据结构更快生成</p></div>
+          <div class="cost-row stubborn"><b>Integration</b><em>仍然存在</em><p>入口、状态、权限和既有工作流会相互作用</p></div>
+          <div class="cost-row stubborn"><b>Verification</b><em>仍然存在</em><p>必须证明行为有效，也必须证明失败会被看见</p></div>
+          <div class="cost-row stubborn"><b>Maintenance</b><em>持续累积</em><p>每项功能都形成兼容性与长期承诺</p></div>
+          <div class="cost-row stubborn"><b>Cognitive + Promise</b><em>用户承担</em><p>新概念、第二入口与错误预期消耗注意力和信任</p></div>
+        </div>
+
+        <div class="formula-band"><span class="accent">Capability</span> ≠ Feature ≠ UI Entry</div>
+        <div class="judgment" aria-label="能力应当落在哪一层">
+          <div class="judgment-row"><b>人人反复需要</b><em>默认行为</em><p>无需再做一次入口选择。</p></div>
+          <div class="judgment-row"><b>重要但无需理解</b><em>内隐机制</em><p>compaction、recovery、context projection 由 harness 承担。</p></div>
+          <div class="judgment-row"><b>有明确用户意图</b><em>简单动作</em><p>“审查合同”“验证策略”是用户可理解的产品词汇。</p></div>
+          <div class="judgment-row"><b>偶发高级需求</b><em>渐进披露</em><p>不污染多数人的主路径。</p></div>
+          <div class="judgment-row"><b>没有真实需求</b><em>不做</em><p>开发便宜，不构成存在理由。</p></div>
+        </div>
+
+        <aside class="speaker-note"><strong>讲法：</strong>“功能便宜所以多做”是错误推论。能力可以存在于系统内部、extension、渐进披露或开发者面，并不都要变成用户入口。减法不是资源不足，而是用户注意力昂贵。</aside>
+      </section>
+
+      <section class="chapter" id="runtime" data-title="Runtime 上游化">
+        <p class="eyebrow">新的上游—下游关系</p>
+        <h2>下游未必需要拥有自己的智能。</h2>
+        <p class="lede">模型 API 之后，Frontier provider 连 Agent runtime 也可作为基础能力开放。规划、工具调用、computer use、长任务恢复和多 Agent 协作的上游升级，可以直接变成下游的能力红利。</p>
+
+        <div class="evolution" aria-label="三代 AI 产品供给">
+          <div class="evolution-row"><code>GEN 1</code><b>Model API</b><p>下游自建 prompt、tools、loop、memory、runtime</p></div>
+          <div class="evolution-row"><code>GEN 2</code><b>Agent Runtime</b><p>直接消费可读文件、调工具、长期执行、恢复任务的 Agent</p></div>
+          <div class="evolution-row final"><code>GEN 3</code><b>Work Product</b><p>下游拥有用户与智能之间的工作协议</p></div>
+        </div>
+
+        <div class="formula-band">C<sub>user</sub> = C<sub>intent</sub> + <span class="accent">C<sub>agent-literacy</sub></span> + C<sub>supervision</sub> + C<sub>verification</sub></div>
+        <div class="review-strip" aria-label="产品应该保留的界面">
+          <div class="review-item"><span>保留</span><strong>意图入口</strong></div>
+          <div class="review-item"><span>保留</span><strong>不可替代的人类判断</strong></div>
+          <div class="review-item"><span>保留</span><strong>最终工作对象</strong></div>
+        </div>
+
+        <p class="takeaway">Frontier 提供 Agent；产品提供“怎样工作”。下游主要降低的是 Agent literacy、监督与验证成本。</p>
+        <aside class="speaker-note"><strong>讲法：</strong>这不是把下游价值缩成 UI。恰恰相反：底下可以永远换最强 Agent，产品层必须拥有 intent compilation、work contract、defaults、guardrails 和 human decision surface。</aside>
+      </section>
+
+      <section class="chapter" id="compression" data-title="选择压缩">
+        <p class="eyebrow">泛化悖论</p>
+        <h2>Agent 越通用，普通用户越需要一个有主见的产品。</h2>
+        <p class="lede">通用 Agent 必须面对“用户可能想做任何事情”。能力数量增长时，组合空间与配置负担同步增长；MCP、skill、plugin、connector、memory 是构建 Agent 的概念，不是完成用户工作的概念。</p>
+
+        <div class="equation" aria-label="泛化悖论的因果链">
+          <div class="equation-term"><b>能力泛化</b><small>模型、工具、研究、执行</small></div>
+          <div class="equation-mark" aria-hidden="true">→</div>
+          <div class="equation-term"><b>组合空间</b><small>MCP、skills、plugins、connectors</small></div>
+          <div class="equation-mark" aria-hidden="true">→</div>
+          <div class="equation-term"><b>决策负担</b><small>选入口、数据、模式、验证与输出</small></div>
+        </div>
+
+        <div class="layer-map" aria-label="AI 产品四层结构">
+          <div class="layer"><span class="layer-code">L0</span><span class="layer-name">Model</span><p>reasoning / generation</p></div>
+          <div class="layer"><span class="layer-code">L1</span><span class="layer-name">Agent Runtime</span><p>tools / loop / execution / recovery</p></div>
+          <div class="layer"><span class="layer-code">L2</span><span class="layer-name">Capability Platform</span><p>MCP / connectors / skills / plugins / memory</p></div>
+          <div class="layer product"><span class="layer-code">L3</span><span class="layer-name">Product</span><p>持仓分析 / 合同审查 / 用户反馈整理 / 行程规划</p></div>
+        </div>
+
+        <div class="translation" aria-label="能力控制面到产品词汇的翻译">
+          <div class="translation-side"><p>Huge Capability Space</p><ul><li>选择数据源与权限</li><li>选择工具与执行模式</li><li>选择计算方法与输出</li><li>选择记忆、恢复与验证</li></ul></div>
+          <div class="translation-divider" aria-hidden="true">→</div>
+          <div class="translation-side output"><p>Small Product Vocabulary</p><ul><li>看持仓</li><li>验证策略</li><li>审查合同</li><li>交付修订稿</li></ul></div>
+        </div>
+
+        <p class="takeaway">Choice Compression：复杂度没有消失，而是从用户侧移动到产品侧。</p>
+        <aside class="speaker-note"><strong>讲法：</strong>“能力全量、暴露最小”不是删能力，而是把能力编译成少数可靠路径。好的 consumer 产品主动提高自己的产品判断成本，降低用户的技术决策成本。</aside>
+      </section>
+
+      <section class="chapter" id="consumer" data-title="Consumer AI">
+        <p class="eyebrow">Curated agency</p>
+        <h2>普通用户要 outcomes，不要 primitives。</h2>
+        <p class="lede">股票与算命性质不同，却共同说明：消费级 Agent 产品的体验差异来自领域数据或叙事传统、用户上下文、记忆连续性、预先包装的判断与极低摩擦，而不是再造一个更大的 Agent 控制台。</p>
+
+        <div class="mode-compare" aria-label="两类消费 Agent 产品">
+          <article class="mode"><span>DATA-RICH + CONTEXT-RICH</span><h3>股票</h3><p>权威数据 + 确定性计算 + Agent 解读 + 个人上下文。模型生成，系统裁决；研究与回测可以自动化，交易决定保留为人工动作。</p></article>
+          <article class="mode"><span>CONTEXT-RICH + NO AUTHORITATIVE FORECAST</span><h3>算命</h3><p>传统解释 + 用户历史 + 叙事连续性。价值在个人化叙事体验；定位为娱乐或文化解释，不把不可验证预测包装成事实。</p></article>
+        </div>
+
+        <div class="case-grid">
+          <div class="user-ask"><span>用户只说</span><blockquote>“今天有什么值得看看？”</blockquote></div>
+          <div class="pipeline" aria-label="股票产品的隐藏编排">
+            <div class="pipeline-row"><span class="dot">A</span><div><strong>解释意图</strong><small>盈利稳定、估值、行业差异与时间窗口</small></div></div>
+            <div class="pipeline-row"><span class="dot">B</span><div><strong>连接可信数据</strong><small>行情、财报、公告、自选股与持仓</small></div></div>
+            <div class="pipeline-row"><span class="dot">C</span><div><strong>确定性计算</strong><small>筛选、回测、收益、回撤与组合暴露</small></div></div>
+            <div class="pipeline-row"><span class="dot">D</span><div><strong>Agent 解读</strong><small>解释变化、暴露假设、指出失效条件</small></div></div>
+          </div>
+        </div>
+
+        <div class="memory-stack" aria-label="产品长期上下文的三层结构">
+          <div class="memory-row"><b>对象状态</b><p>持仓、成本、公司研究与上一次为什么买入或放弃</p></div>
+          <div class="memory-row"><b>用户偏好</b><p>市场、风格、周期、回撤敏感度、关注行业与表达偏好</p></div>
+          <div class="memory-row"><b>机构知识</b><p>组织规则、方法、合规边界与跨用户共享的工作标准</p></div>
+        </div>
+
+        <p class="takeaway">普通用户得到连续性，而不是一套 memory management console；session/context 不应成为用户要管理的对象。</p>
+        <aside class="speaker-note"><strong>讲法：</strong>这页补齐会话里的 memory 讨论。产品从行为与修正中形成可撤销、可审计的规则，用户感知到“它记得我”，而不是被要求配置 risk_tolerance、context window 或 memory slot。</aside>
+      </section>
+
+      <section class="chapter" id="courtwork" data-title="工作契约">
+        <p class="eyebrow">Feature = packaged judgment</p>
+        <h2>“帮我看看合同”，不是一个完整任务。</h2>
+        <p class="lede">通用 Agent 给出能力；产品把含混意图编译成可执行、可验证、可裁决、可交付的工作契约。Extension 的合理定义也不是插件小应用，而是 Work Contract Package。</p>
+
+        <dl class="contract" aria-label="合同审查的工作契约">
+          <div class="contract-row"><dt>INPUT</dt><dd>合同正文 + 交易背景 + 用户角色</dd></div>
+          <div class="contract-row"><dt>ARTIFACT</dt><dd>RiskList：条款、问题、严重度、理由、修订、证据</dd></div>
+          <div class="contract-row"><dt>EVIDENCE</dt><dd>事实须带来源；模型给 quote，系统铸造 coordinate</dd></div>
+          <div class="contract-row"><dt>CALCULATION</dt><dd>金额、期限与比例走确定性工具</dd></div>
+          <div class="contract-row human"><dt>HIGH RISK</dt><dd>逐项人工裁决，不批量自动接受</dd></div>
+          <div class="contract-row"><dt>REVISION</dt><dd>原件只读，修改形成 RevisionEvent 与 tracked changes</dd></div>
+          <div class="contract-row"><dt>RECOVERY</dt><dd>journal、resume、partial success 与 coverage 显式</dd></div>
+          <div class="contract-row"><dt>COMPLETION</dt><dd>风险已审、选择已落、修订件可交付</dd></div>
+        </dl>
+
+        <div class="formula-band">Feature = Capability + Defaults + Guardrails + Contract + Presentation</div>
+        <p class="takeaway">产品功能不是一个 button，而是一组被提前完成、持续维护并可验收的判断。</p>
+        <aside class="speaker-note"><strong>讲法：</strong>这页是全场最具体的落点。所谓 schema engineering，是把自然语言中的隐含标准显式化，为非代码工作制造一个弱编译器：模型可写，系统可验，人可读改签。</aside>
+      </section>
+
+      <section class="chapter" id="moat" data-title="护城河与判断">
+        <p class="eyebrow">最后的边界</p>
+        <h2>垂类 Agent 未必有护城河；垂类工作契约可以有。</h2>
+        <p class="lede">上游会吸收昨日的判断，下游也会快速复制上游的新范例。静态功能的独占期持续缩短；真正耐久的是契约语料、eval 语料、可信数据与工具、用户修正历史，以及持续做取舍的产品判断。</p>
+
+        <div class="moat-line" aria-label="下游产品的耐久资产">
+          <span>Harness</span><i>+</i><span>Contract Corpus</span><i>+</i><span>Eval Corpus</span><i>+</i><span>Trusted Data / Tools</span><i>+</i><span>Human Revision History</span><i>+</i><span>Distribution</span>
+        </div>
+
+        <div class="ratio" aria-label="普通用户 Agent 产品的核心效率指标">
+          <b>Successful useful work</b><i>÷</i><b>User decisions required</b>
+        </div>
+
+        <div class="judgment" aria-label="下游产品成立的四项判断">
+          <div class="judgment-row"><b>任务高频且可命名</b><em>需要</em><p>用户会反复说“看持仓”“审查合同”，不是一次性开放问题。</p></div>
+          <div class="judgment-row"><b>默认值可沉淀</b><em>需要</em><p>数据、口径、风险和交付方式可以由领域判断预先固定。</p></div>
+          <div class="judgment-row"><b>上下文会复利</b><em>需要</em><p>对象状态、用户偏好、机构知识与修正历史能改善下一次工作。</p></div>
+          <div class="judgment-row"><b>完成态可检验</b><em>需要</em><p>结果不是“聊过了”，而是有出处、算过、裁过、可恢复并交付。</p></div>
+        </div>
+
+        <div class="closing">Frontier Agent 负责让更多事情<span>成为可能</span>；下游产品负责让普通人<span>无需理解 Agent 也能完成工作</span>。</div>
+
+        <p class="source-note">内容完整消费 2026-08-23 ChatGPT 会话《Agent第一性原理分析》六轮讨论后整理；设计校法参考本地 Deswrit Kit《刊例》《谱例》、Apple Design、Emil Design Engineering 与 <a href="https://www.ui-skills.com/" target="_blank" rel="noreferrer">UI Skills</a>。市场岗位与外部产品例证仅保留会话中形成的方法论结论，本面板不复述未经重新核验的时效性细节。金融与合同场景用于说明产品结构，不构成投资或法律建议。版本：v2.0 · 单文件离线 HTML。</p>
+        <aside class="speaker-note"><strong>90 秒收束：</strong>Agent 产品的第一性问题不是模型能做什么，而是谁有资格决定什么。模型负责理解与生成，系统负责确定性验证，Harness 负责失败与恢复，人保留专业裁决。产品单位从 turn 变成 persistent work，schema 把模糊期待编译成可执行、可验证、可验收的契约。垂类套壳会折旧，工作契约会留下。Coding cheaper 让实现不再稀缺，选择、维护和注意力更稀缺。Frontier runtime 可以租用，产品真正要拥有的是用户与智能之间的工作协议。上游把能力空间做大，下游把用户需要面对的空间做小。</aside>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    (() => {
+      const chapters = [...document.querySelectorAll('.chapter')];
+      const links = [...document.querySelectorAll('.rail a')];
+      const progressBar = document.querySelector('#progressBar');
+      const notesToggle = document.querySelector('#notesToggle');
+      const fullToggle = document.querySelector('#fullToggle');
+
+      const setCurrent = (id) => {
+        links.forEach((link) => link.setAttribute('aria-current', String(link.hash === `#${id}`)));
+      };
+
+      const observer = new IntersectionObserver((entries) => {
+        const visible = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+        if (visible) setCurrent(visible.target.id);
+      }, { rootMargin: '-22% 0px -58% 0px', threshold: [0, 0.2, 0.6] });
+
+      chapters.forEach((chapter) => observer.observe(chapter));
+
+      const updateProgress = () => {
+        const max = document.documentElement.scrollHeight - window.innerHeight;
+        const ratio = max > 0 ? window.scrollY / max : 0;
+        progressBar.style.width = `${Math.min(1, Math.max(0, ratio)) * 100}%`;
+      };
+      updateProgress();
+      window.addEventListener('scroll', updateProgress, { passive: true });
+
+      const currentIndex = () => {
+        const current = links.find((link) => link.getAttribute('aria-current') === 'true');
+        return Math.max(0, chapters.findIndex((chapter) => current && `#${chapter.id}` === current.hash));
+      };
+
+      const go = (delta) => {
+        const index = Math.min(chapters.length - 1, Math.max(0, currentIndex() + delta));
+        chapters[index].scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
+      };
+
+      window.addEventListener('keydown', (event) => {
+        if (event.target.matches('button, a, input, textarea, select')) return;
+        if (['ArrowDown', 'PageDown'].includes(event.key)) { event.preventDefault(); go(1); }
+        if (['ArrowUp', 'PageUp'].includes(event.key)) { event.preventDefault(); go(-1); }
+      });
+
+      notesToggle.addEventListener('click', () => {
+        const enabled = !document.body.classList.contains('notes-on');
+        document.body.classList.toggle('notes-on', enabled);
+        notesToggle.setAttribute('aria-pressed', String(enabled));
+      });
+
+      fullToggle.addEventListener('click', async () => {
+        try {
+          if (!document.fullscreenElement) await document.documentElement.requestFullscreen();
+          else await document.exitFullscreen();
+        } catch (_) {
+          fullToggle.querySelector('.wide-label').textContent = '浏览器不支持';
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

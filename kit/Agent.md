@@ -18,6 +18,7 @@
 2. 阅读对应 vault 提炼与来源卡，不用重新消费整份 Chat。
 3. 企业 demo 复制 [场景契约](../scenarios/_template/README.md) 的结构；材料写作先选 artifact family、读者、需要的决定及证据。
 4. 区分已采纳规范、场景候选、外部参考与未验证陈述。引用用稳定来源 ID 加本地相对路径。
+5. 撰写对外中文成文时，使用项目内 skill `writing`（`.claude/skills/writing/SKILL.md`）；设计、可视化编排与界面选型，从 [Design](design/README.md) 按需取用，裁决记回项目自己的 index。
 5. 交付前按 [验收](verification/README.md) 和相应场景检查，不把精美页面当成证据。
 
 ## 分工与预算

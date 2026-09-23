@@ -1,0 +1,1266 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>rule-console · 规则策略控制面（演示与学习材料）</title>
+<style>
+  /* ==========================================================================
+     视觉 token —— 取自成熟企业中台设计系统的公开规范，不自创配色：
+       · Ant Design v5 seed：colorPrimary #1677ff / borderRadius 6 /
+         colorBorder #d9d9d9 / controlHeight 32 / 基号 14 行高 22；
+         中性用透明度分级（正文 .88 / 次要 .65 / 失效 .25 / 分隔 rgba(5,5,5,.06)）；
+         功能色 success #52c41a / warning #faad14 / error #ff4d4f / info #1677ff
+       · AWS Cloudscape 色彩原则：界面主体由白与灰阶构成，仅主操作与状态指示带色
+       · IBM Carbon 数据表行高档位：紧凑 24 / 短 32 / 中 40 / 默认 48，本表取中档
+     字号只用 5 档（20 / 16 / 14 / 13 / 12），字重只用 400 与 500。
+     ========================================================================== */
+  :root{
+    --primary:#1677ff; --primary-h:#4096ff; --primary-a:#0958d9; --primary-bg:#e6f4ff;
+    --success:#52c41a; --warning:#faad14; --error:#ff4d4f;
+    --t1:rgba(0,0,0,.88); --t2:rgba(0,0,0,.65); --t3:rgba(0,0,0,.45); --t4:rgba(0,0,0,.25);
+    --bd:#d9d9d9; --bd-c:#f0f0f0; --split:rgba(5,5,5,.06);
+    --bg:#f5f5f5; --paper:#fff; --hover:#fafafa;
+    --r:6px; --r-c:8px; --h:32px;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",
+      "PingFang SC","Hiragino Sans GB","Microsoft YaHei",Arial,sans-serif;
+    font-size:14px; line-height:22px; color:var(--t1);
+    font-variant-numeric:tabular-nums;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--t1)}
+
+  /* ---- 顶部：产品栏 + 主导航（Ant Design Pro top-menu 版式） ---- */
+  .topbar{background:var(--paper);border-bottom:1px solid var(--bd-c)}
+  .topbar__row{max-width:1440px;margin:0 auto;padding:0 24px;display:flex;align-items:center;gap:16px}
+  .topbar__row--brand{height:48px}
+  .logo{display:flex;align-items:center;gap:8px;font-size:16px;font-weight:500;white-space:nowrap}
+  .logo span{width:16px;height:16px;border-radius:3px;background:var(--primary);flex:none}
+  .topbar__sep{width:1px;height:16px;background:var(--bd-c)}
+  .topbar__sub{color:var(--t3);font-size:13px;white-space:nowrap}
+  .topbar__right{margin-left:auto;display:flex;align-items:center;gap:12px}
+  .field{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--t2);white-space:nowrap}
+  .env{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--t2);white-space:nowrap}
+  .env::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--success)}
+  nav{max-width:1440px;margin:0 auto;padding:0 24px;display:flex;gap:24px;overflow-x:auto}
+  nav button{border:0;background:none;padding:11px 0 10px;font:inherit;font-size:14px;color:var(--t2);
+    cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap}
+  nav button:hover{color:var(--primary)}
+  nav button.on{color:var(--primary);font-weight:500;border-bottom-color:var(--primary)}
+
+  main{max-width:1440px;margin:0 auto;padding:16px 24px 40px}
+
+  /* ---- 面包屑 + 页头 ---- */
+  .crumb{font-size:14px;color:var(--t3);margin-bottom:8px}
+  .crumb b{color:var(--t1);font-weight:400}
+  .pagehead{display:flex;justify-content:space-between;align-items:flex-start;gap:24px;margin-bottom:16px}
+  .pagehead h1{margin:0 0 4px;font-size:20px;line-height:28px;font-weight:500}
+  .pagehead h1 em{font-style:normal;font-size:14px;font-weight:400;color:var(--t3);margin-left:8px}
+  .pagehead p{margin:0;font-size:14px;color:var(--t2);max-width:82ch}
+
+  /* ---- 容器（Cloudscape container / AntD card） ---- */
+  .panel{background:var(--paper);border:1px solid var(--bd-c);border-radius:var(--r-c);margin-bottom:16px}
+  .panel>header{display:flex;justify-content:space-between;align-items:center;gap:12px;
+    padding:12px 16px;border-bottom:1px solid var(--bd-c)}
+  .panel>header h2{margin:0;font-size:16px;font-weight:500}
+  .panel>header .sub{font-size:13px;color:var(--t3);font-weight:400;margin-left:8px}
+  .panel>.body{padding:16px}
+  .panel>.body>:first-child{margin-top:0}
+  .cols{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:16px;align-items:start}
+  .cols>*{margin-bottom:0}
+  .cols--wide-right{grid-template-columns:minmax(0,1fr) minmax(0,1.35fr)}
+
+  /* ---- 表格（Carbon 中档行高 40px；表头灰底、次要色、500 字重） ---- */
+  table{width:100%;border-collapse:collapse;font-size:14px}
+  thead th{background:var(--hover);color:var(--t2);font-size:12px;font-weight:500;text-align:left;
+    padding:8px 16px;border-bottom:1px solid var(--bd-c);white-space:nowrap}
+  tbody td{padding:9px 16px;border-bottom:1px solid var(--bd-c);vertical-align:top;color:var(--t1)}
+  tbody tr:last-child td{border-bottom:0}
+  tbody tr.clickable{cursor:pointer}
+  tbody tr.clickable:hover{background:var(--hover)}
+  tbody tr.on{background:var(--primary-bg)}
+  td.num{font-variant-numeric:tabular-nums;white-space:nowrap}
+  td.dim,.dim{color:var(--t3)}
+  .empty{padding:32px 16px;text-align:center;color:var(--t3);font-size:14px}
+
+  /* ---- 状态指示（Cloudscape status indicator：色点 + 文字，非药丸） ---- */
+  .st{display:inline-flex;align-items:center;gap:6px;white-space:nowrap;color:var(--t1)}
+  .st::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor;flex:none}
+  .st-draft,.st-submitted{color:var(--t3)}
+  .st-in_review,.st-under_review,.st-shadow{color:var(--primary)}
+  .st-approved,.st-applied,.st-active,.st-upheld{color:var(--success)}
+  .st-partial{color:var(--warning)}
+  .st-rolled_back,.st-rejected,.st-cancelled,.st-overturned{color:var(--error)}
+  .st-superseded,.st-retired{color:var(--t4)}
+  .yes{color:var(--success)} .no{color:var(--error)}
+
+  /* ---- 键值对（Cloudscape key-value pairs） ---- */
+  .kvs{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px 24px}
+  .kvs.one{grid-template-columns:1fr}
+  .kv>label{display:block;font-size:12px;line-height:20px;color:var(--t3)}
+  .kv>div{font-size:14px;line-height:22px;color:var(--t1);overflow-wrap:anywhere}
+
+  /* ---- 提示条（AntD Alert 官方配色，替代自创的琥珀色装饰块） ---- */
+  .alert{display:flex;gap:8px;align-items:flex-start;padding:9px 12px;border:1px solid;
+    border-radius:var(--r);font-size:14px;margin-bottom:16px;color:var(--t1)}
+  .alert::before{font-size:13px;line-height:22px;flex:none}
+  .alert-info{background:var(--primary-bg);border-color:#91caff}
+  .alert-info::before{content:"ⓘ";color:var(--primary)}
+  .alert-success{background:#f6ffed;border-color:#b7eb8f}
+  .alert-success::before{content:"✓";color:var(--success)}
+  .alert-warning{background:#fffbe6;border-color:#ffe58f}
+  .alert-warning::before{content:"!";color:var(--warning);font-weight:600}
+  .alert .grow{flex:1}
+
+  /* ---- 步骤条（AntD Steps small） ---- */
+  .steps{display:flex;align-items:center;margin:0 0 16px;overflow-x:auto;padding-bottom:2px}
+  .steps .s{display:flex;align-items:center;gap:8px;flex:none}
+  .steps .s i{width:22px;height:22px;border-radius:50%;border:1px solid var(--bd);
+    display:grid;place-items:center;font:400 12px/1 inherit;font-style:normal;color:var(--t3);flex:none}
+  .steps .s b{font-weight:400;font-size:13px;color:var(--t3);white-space:nowrap}
+  .steps .s.done i{background:var(--primary);border-color:var(--primary);color:#fff}
+  .steps .s.done b{color:var(--t1)}
+  .steps .s.now i{background:var(--primary);border-color:var(--primary);color:#fff}
+  .steps .s.now b{color:var(--t1);font-weight:500}
+  .steps .bar{flex:1;min-width:16px;height:1px;background:var(--bd-c);margin:0 8px}
+  .steps .s.done+.bar{background:var(--primary)}
+
+  /* ---- 时间线（AntD Timeline） ---- */
+  .tl{margin:0;padding:0 0 0 4px;list-style:none}
+  .tl li{position:relative;padding:0 0 16px 20px;border-left:1px solid var(--bd-c)}
+  .tl li:last-child{border-left-color:transparent;padding-bottom:0}
+  .tl li::before{content:"";position:absolute;left:-4px;top:6px;width:7px;height:7px;border-radius:50%;
+    background:var(--paper);border:1px solid var(--primary)}
+  .tl li.hist::before{border-color:var(--t4)}
+  .tl b{font-weight:500}
+  .tl small{display:block;color:var(--t3);font-size:12px;line-height:20px}
+
+  /* ---- 控件 ---- */
+  button,select,textarea,input{font-family:inherit;font-size:14px}
+  .btn{height:var(--h);padding:0 15px;border:1px solid var(--bd);border-radius:var(--r);
+    background:var(--paper);color:var(--t1);cursor:pointer;white-space:nowrap;
+    transition:color .1s,border-color .1s,background-color .1s}
+  .btn:hover{color:var(--primary-h);border-color:var(--primary-h)}
+  .btn:active{color:var(--primary-a);border-color:var(--primary-a)}
+  .btn-primary{background:var(--primary);border-color:var(--primary);color:#fff}
+  .btn-primary:hover{background:var(--primary-h);border-color:var(--primary-h);color:#fff}
+  .btn-primary:active{background:var(--primary-a);border-color:var(--primary-a)}
+  .btn-sm{height:24px;padding:0 7px;font-size:13px;border-radius:4px}
+  .btn-link{border:0;background:none;color:var(--primary);padding:0;height:auto;cursor:pointer;font-size:inherit}
+  .btn-link:hover{color:var(--primary-h);text-decoration:underline}
+  .btn:disabled{color:var(--t4);border-color:var(--bd);background:var(--hover);cursor:not-allowed}
+  select{height:var(--h);padding:0 8px;border:1px solid var(--bd);border-radius:var(--r);
+    background:var(--paper);color:var(--t1);cursor:pointer}
+  select:hover{border-color:var(--primary-h)}
+  textarea{width:100%;min-height:56px;padding:5px 11px;border:1px solid var(--bd);border-radius:var(--r);
+    resize:vertical;line-height:22px;color:var(--t1)}
+  textarea:hover{border-color:var(--primary-h)}
+  textarea:focus{outline:0;border-color:var(--primary);box-shadow:0 0 0 2px rgba(5,145,255,.1)}
+  :focus-visible{outline:2px solid var(--primary);outline-offset:1px}
+  .toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:12px 16px;
+    border-bottom:1px solid var(--bd-c)}
+  .toolbar .count{margin-left:auto;color:var(--t3);font-size:13px;white-space:nowrap}
+  .actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  .form-item{margin-bottom:12px}
+  .form-item>label{display:block;font-size:14px;color:var(--t1);margin-bottom:4px}
+
+  code{font-family:Monaco,Menlo,Consolas,"Courier New",monospace;font-size:13px;
+    background:rgba(0,0,0,.04);padding:1px 5px;border-radius:4px;color:var(--t1)}
+  pre{font-family:Monaco,Menlo,Consolas,"Courier New",monospace;font-size:12px;line-height:20px;
+    background:var(--hover);border:1px solid var(--bd-c);border-radius:var(--r);padding:12px;
+    margin:0;overflow:auto;max-height:280px;color:var(--t2)}
+  h3{font-size:14px;font-weight:500;margin:20px 0 8px;color:var(--t1)}
+  .note{font-size:13px;color:var(--t3);line-height:20px}
+  footer{max-width:1440px;margin:0 auto;padding:16px 24px 32px;color:var(--t3);font-size:13px;line-height:20px}
+
+  @media(max-width:900px){
+    .cols{grid-template-columns:1fr}
+    .topbar__sub,.env{display:none}
+    .topbar__row,nav,main,footer{padding-left:16px;padding-right:16px}
+  }
+  @media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="topbar__row topbar__row--brand">
+    <div class="logo"><span></span>rule-console</div>
+    <div class="topbar__sep"></div>
+    <div class="topbar__sub">规则策略控制面</div>
+    <div class="topbar__right">
+      <label class="field">业务皮肤 <select id="skin"></select></label>
+      <div class="env">本地演示环境</div>
+    </div>
+  </div>
+  <nav id="tabs"></nav>
+</header>
+<main id="app"></main>
+<footer>
+  演示与学习材料 · 规则与数据均为合成 · 非产品、无生产验证。
+  控制面组件对皮肤零耦合：组件只读 SKIN_* 声明，不含任何 <code>if (skin === ...)</code> 分支。
+  对象与状态机的唯一规格源：<code>../../技术扫盲/规则策略控制面.md</code> §三 / §六。
+  <div id="skincheck" style="margin-top:4px"></div>
+</footer>
+
+<script>
+/* ==========================================================================
+   一、标准内核常量 —— §三 对象模型与状态机，原样落地，集中一处
+   面试时直接打开本段指认：对象、状态取值、动作分级与可逆性。
+   ========================================================================== */
+
+/* §三「对象」块：desc 为规格原文，逐字未改；fields 为该行名词落成的字段名。 */
+const OBJECTS = Object.freeze({
+  RuleSource:      { desc: "规则来源：法规/平台政策/内部制度/事故复盘，带 URL 或文号、证据等级",
+                     fields: ["type", "ref", "evidenceLevel"] },
+  Rule:            { desc: "规则本体：目的、对象类型、判断条件的语义描述，跨版本稳定",
+                     fields: ["purpose", "subjectType", "semantic"] },
+  RuleVersion:     { desc: "规则版本：条件表达式、动作绑定、生效日、过渡期处理，不可变",
+                     fields: ["expression", "actionTier", "effectiveDate", "transition"] },
+  Scope:           { desc: "范围声明：市场/品类/组织/环境 × 版本，声明式配置",
+                     fields: ["market", "category", "org", "env", "version"] },
+  ChangeRequest:   { desc: "变更请求：draft → in_review → approved → applied / rejected / cancelled",
+                     fields: ["state", "proposer", "reviewer", "flips"] },
+  DecisionRecord:  { desc: "判定记录：输入快照、命中版本、结果、动作、时间——判定级留痕",
+                     fields: ["input", "ruleVersionId", "result", "actionTier", "time"] },
+  AuditEvent:      { desc: "变更审计：谁在何时改了什么，含前后对比——配置级留痕",
+                     fields: ["who", "when", "what", "before", "after"] },
+  Case:            { desc: "案件：一次命中形成的处置对象，绑定 Subject（被处置主体）",
+                     fields: ["subject", "ruleVersionId", "actionTier", "evidence", "status"] },
+  Action:          { desc: "动作：分级谱系（提示 → 限制 → 阻断 → 下架/冻结 → 终止），与可逆性绑定",
+                     fields: ["tier", "label", "reversible", "execution"] },
+  Exception:       { desc: "例外：申请人、批准人、理由、期限、超期升级、使用记录",
+                     fields: ["applicant", "approver", "reason", "expiry", "escalation", "usage"] },
+  Appeal:          { desc: "申诉：submitted → under_review → upheld / overturned；overturned 回流评测集",
+                     fields: ["state", "sections", "reviewNote", "returnedToEval"] },
+  GuardrailMetric: { desc: "护栏指标：误伤率、申诉推翻率、处置时长，超阈值触发回滚",
+                     fields: ["name", "value", "threshold", "breached"] }
+});
+
+/* §三 RuleVersion 状态机：九个取值原样，未增未删未改名。 */
+const RULE_VERSION_STATES = Object.freeze([
+  "draft", "in_review", "approved", "shadow", "partial",
+  "active", "superseded", "rolled_back", "retired"
+]);
+
+/* 状态注释同为 §三 原文（draft/in_review/approved 规格未附注释，此处留空）。 */
+const RULE_VERSION_STATE_NOTES = Object.freeze({
+  draft: "", in_review: "", approved: "",
+  shadow:      "对真实流量旁路判定，只记录不执行——回放或双跑实现",
+  partial:     "灰度：按范围或比例部分生效，护栏指标监控中",
+  active:      "全量生效",
+  superseded:  "被新版本替代，历史判定仍指向本版",
+  rolled_back: "护栏触发或人工回滚",
+  retired:     "退役：停用但留痕，不删除"
+});
+
+/* 迁移边：§三 以箭头链给出顺序，未穷举分支边。下表是对该链的显式化，
+   只补边不增删状态；灰度/全量的回滚边与退役边按状态注释补齐。 */
+const RULE_VERSION_TRANSITIONS = Object.freeze({
+  draft:       ["in_review"],
+  in_review:   ["approved", "draft"],
+  approved:    ["shadow"],
+  shadow:      ["partial"],
+  partial:     ["active", "rolled_back"],
+  active:      ["superseded", "rolled_back", "retired"],
+  superseded:  ["retired"],
+  rolled_back: ["draft", "retired"],
+  retired:     []
+});
+
+const CHANGE_REQUEST_STATES = Object.freeze(
+  ["draft", "in_review", "approved", "applied", "rejected", "cancelled"]);
+const APPEAL_STATES = Object.freeze(
+  ["submitted", "under_review", "upheld", "overturned"]);
+const RULE_SOURCE_TYPES = Object.freeze(["法规", "平台政策", "内部制度", "事故复盘"]);
+
+/* §三 判断 3：动作不按严厉程度排，按错误代价与可逆性排。
+   可逆动作允许规则自动执行；不可逆动作强制人工确认或例外授权。
+   规格点名了「提示、限流」可逆与「下架、冻结、终止」不可逆；
+   「阻断」未点名，此处按可撤销判为可逆。 */
+const ACTION_TIERS = Object.freeze([
+  { tier: "提示",      reversible: true,  execution: "规则自动执行" },
+  { tier: "限制",      reversible: true,  execution: "规则自动执行" },
+  { tier: "阻断",      reversible: true,  execution: "规则自动执行" },
+  { tier: "下架/冻结", reversible: false, execution: "人工确认或例外授权" },
+  { tier: "终止",      reversible: false, execution: "人工确认或例外授权" }
+]);
+
+/* §六 视图清单 */
+const VIEWS = ["规则库", "变更请求", "发布时间线", "案件与申诉", "决策日志"];
+
+/* §六 验收链 */
+const FLOW_STEPS = ["新规上线", "shadow", "灰度", "命中成案", "申诉", "推翻", "回流评测集"];
+
+
+/* ==========================================================================
+   二、皮肤声明 —— { skinName, subjectTypes[], actionLadder[], appealPath{},
+                    ruleLexicon{}, sampleData{} }
+   皮肤只声明「叫什么、管什么、动作怎么落地、申诉走哪条路」；
+   内核的 tier 取值来自 ACTION_TIERS，皮肤只给这些 tier 换本地称谓。
+   全部数值、主体名、来源文号均为合成，不指向任何真实平台。
+   ========================================================================== */
+
+const SKIN_COMMERCE = {
+  skinName: "商品治理",
+  subjectTypes: ["商品条目", "店铺主体", "内容素材"],
+  actionLadder: [
+    { tier: "提示",      label: "违规提示" },
+    { tier: "限制",      label: "能力限制" },
+    { tier: "阻断",      label: "条目下架" },
+    { tier: "下架/冻结", label: "资金扣留与账户暂停" },
+    { tier: "终止",      label: "账户终止" }
+  ],
+  appealPath: {
+    submitAction: "提交申诉",
+    stateLabels: { submitted: "已提交", under_review: "复核中",
+                   upheld: "维持原判", overturned: "推翻原判" },
+    form: [
+      { key: "rootCause",   label: "根因",       preset: "合成：证据快照采集于素材更新前，判定输入与当时页面不一致。" },
+      { key: "actionTaken", label: "已采取行动", preset: "合成：已补齐凭证并重新提交核验，条目文案同步修订。" },
+      { key: "prevention",  label: "防复发方案", preset: "合成：新增上架前自检清单，凭证到期前触发提醒。" }
+    ],
+    evalReturnNote: "overturned 的 Appeal 连同其 DecisionRecord 进入评测集，作为下一版回归用例。"
+  },
+  ruleLexicon: {
+    subject: "商品/店铺", rule: "治理规则", case: "治理案件",
+    appeal: "申诉", decision: "判定记录", source: "规则来源",
+    scope: "适用范围", exception: "准入豁免"
+  },
+  sampleData: {
+    ruleSources: [
+      { id: "src-c1", type: "平台政策", ref: "SYN-POL-014", evidenceLevel: "合成·一级" },
+      { id: "src-c2", type: "内部制度", ref: "SYN-INT-052", evidenceLevel: "合成·二级" },
+      { id: "src-c3", type: "事故复盘", ref: "SYN-PIR-007", evidenceLevel: "合成·二级" },
+      { id: "src-c4", type: "法规",     ref: "SYN-REG-101", evidenceLevel: "合成·一级" }
+    ],
+    rules: [
+      { id: "com-r01", name: "声明与素材一致性", purpose: "减少声明与素材不一致导致的误导",
+        subjectType: "商品条目", semantic: "声明字段与素材说明出现冲突", sourceId: "src-c1",
+        scope: { market: "北区", category: "器物", org: "全部", env: "演示" },
+        version: { id: "com-rv-101", state: "draft", expression: "claim_conflict == true",
+                   actionTier: "提示", effectiveDate: "待批准", transition: "先旁路判定，再按范围灰度",
+                   rollout: 0 } },
+      { id: "com-r02", name: "素材短周期重复", purpose: "限制同素材反复投放",
+        subjectType: "内容素材", semantic: "相似素材在短周期内重复出现", sourceId: "src-c2",
+        scope: { market: "北区", category: "全量", org: "全部", env: "演示" },
+        version: { id: "com-rv-102", state: "shadow", expression: "duplicate_score > 0.82",
+                   actionTier: "限制", effectiveDate: "合成 T+0", transition: "旁路判定中，只记录不执行",
+                   rollout: 0 } },
+      { id: "com-r03", name: "风险表达词表", purpose: "阻断高风险表达",
+        subjectType: "商品条目", semantic: "文本命中合成风险词表", sourceId: "src-c1",
+        scope: { market: "东区", category: "器物", org: "全部", env: "演示" },
+        version: { id: "com-rv-103", state: "partial", expression: "term_match in syn_risk_list",
+                   actionTier: "阻断", effectiveDate: "合成 T+1", transition: "按范围灰度中",
+                   rollout: 30 } },
+      { id: "com-r04", name: "经营凭证缺口", purpose: "冻结待核验主体",
+        subjectType: "店铺主体", semantic: "必要的合成凭证缺失或过期", sourceId: "src-c4",
+        scope: { market: "全区", category: "全量", org: "全部", env: "演示" },
+        version: { id: "com-rv-104", state: "active", expression: "credential_status == 'missing'",
+                   actionTier: "下架/冻结", effectiveDate: "合成 T-6", transition: "全量生效",
+                   rollout: 100 } },
+      { id: "com-r05", name: "重复违规累计", purpose: "终止反复违规主体",
+        subjectType: "店铺主体", semantic: "滚动窗口内重复违规达到阈值", sourceId: "src-c3",
+        scope: { market: "南区", category: "全量", org: "试点组", env: "演示" },
+        version: { id: "com-rv-105", state: "active", expression: "repeat_count >= 5",
+                   actionTier: "终止", effectiveDate: "合成 T-4", transition: "全量生效，动作需人工确认",
+                   rollout: 100 } },
+      { id: "com-r06", name: "敏感展示组合", purpose: "限制敏感素材组合展示",
+        subjectType: "内容素材", semantic: "素材同时满足两项合成敏感条件", sourceId: "src-c1",
+        scope: { market: "西区", category: "全量", org: "全部", env: "演示" },
+        version: { id: "com-rv-106", state: "rolled_back", expression: "sensitive_combo == true",
+                   actionTier: "限制", effectiveDate: "已回滚", transition: "护栏触发，自动回滚",
+                   rollout: 0 } },
+      { id: "com-r07", name: "历史标签映射", purpose: "淘汰无法解释的旧标签规则",
+        subjectType: "商品条目", semantic: "历史标签无法解释当前分类", sourceId: "src-c2",
+        scope: { market: "北区", category: "旧类", org: "全部", env: "演示" },
+        version: { id: "com-rv-107", state: "retired", expression: "legacy_tag == true",
+                   actionTier: "提示", effectiveDate: "已退役", transition: "停用但留痕，不删除",
+                   rollout: 0 } },
+      { id: "com-r08", name: "价格区间异常", purpose: "提示价格偏离合成区间",
+        subjectType: "商品条目", semantic: "价格偏离同类合成区间", sourceId: "src-c3",
+        scope: { market: "全区", category: "器物", org: "全部", env: "演示" },
+        version: { id: "com-rv-108", state: "superseded", expression: "price_delta > 0.45",
+                   actionTier: "提示", effectiveDate: "合成 T-9", transition: "被 com-rv-104 之后的新版替代",
+                   rollout: 0 } }
+    ],
+    changeRequests: [
+      { id: "com-cr-01", ruleVersionId: "com-rv-101", state: "draft", proposer: "演示维护者",
+        reviewer: "—", note: "等待从规则库提交",
+        flips: [
+          { recordId: "com-d04", from: "放行", to: "提示", why: "声明字段与素材说明冲突" },
+          { recordId: "com-d11", from: "提示", to: "放行", why: "旧版误判，候选版收紧条件后不再命中" },
+          { recordId: "com-d17", from: "放行", to: "提示", why: "同上，属预期扩大的命中面" }
+        ] },
+      { id: "com-cr-02", ruleVersionId: "com-rv-103", state: "applied", proposer: "演示维护者",
+        reviewer: "合成审批者", note: "已批准并应用，当前灰度 30%",
+        flips: [ { recordId: "com-d06", from: "放行", to: "阻断", why: "词表扩充后命中" } ] },
+      { id: "com-cr-03", ruleVersionId: "com-rv-106", state: "cancelled", proposer: "演示维护者",
+        reviewer: "合成审批者", note: "护栏回滚后撤回本次扩量申请",
+        flips: [ { recordId: "com-d09", from: "放行", to: "限制", why: "敏感组合命中面偏大" } ] }
+    ],
+    decisionRecords: [
+      { id: "com-d01", time: "合成 T+0 09:12", subject: "合成商品 Aster-17",  subjectType: "商品条目", ruleVersionId: "com-rv-104", result: "命中", actionTier: "下架/冻结", input: { credential_status: "missing", listing_age_days: 12 }, hitChain: ["com-r04", "com-rv-104", "scope: 全区/全量"] },
+      { id: "com-d02", time: "合成 T+0 09:40", subject: "合成素材 Cedar-42",  subjectType: "内容素材", ruleVersionId: "com-rv-102", result: "旁路命中", actionTier: "限制", input: { duplicate_score: 0.91 }, hitChain: ["com-r02", "com-rv-102", "shadow: 只记录不执行"] },
+      { id: "com-d03", time: "合成 T+0 10:05", subject: "合成商品 Birch-08",  subjectType: "商品条目", ruleVersionId: "com-rv-103", result: "放行", actionTier: "—", input: { term_match: null }, hitChain: ["com-r03", "无命中"] },
+      { id: "com-d04", time: "合成 T+0 10:31", subject: "合成商品 Dahlia-25", subjectType: "商品条目", ruleVersionId: "com-rv-108", result: "放行", actionTier: "—", input: { claim_conflict: true, price_delta: 0.12 }, hitChain: ["com-r08", "无命中"] },
+      { id: "com-d05", time: "合成 T+0 11:02", subject: "合成店铺 Elm-03",    subjectType: "店铺主体", ruleVersionId: "com-rv-105", result: "命中", actionTier: "终止", input: { repeat_count: 6 }, hitChain: ["com-r05", "com-rv-105", "待人工确认"] },
+      { id: "com-d06", time: "合成 T+0 11:44", subject: "合成商品 Fern-11",   subjectType: "商品条目", ruleVersionId: "com-rv-103", result: "命中", actionTier: "阻断", input: { term_match: "syn_term_a" }, hitChain: ["com-r03", "com-rv-103", "rollout: 30%"] },
+      { id: "com-d07", time: "合成 T+1 08:20", subject: "合成素材 Ginkgo-19", subjectType: "内容素材", ruleVersionId: "com-rv-102", result: "旁路命中", actionTier: "限制", input: { duplicate_score: 0.86 }, hitChain: ["com-r02", "com-rv-102", "shadow: 只记录不执行"] },
+      { id: "com-d08", time: "合成 T+1 08:55", subject: "合成商品 Hazel-31",  subjectType: "商品条目", ruleVersionId: "com-rv-103", result: "放行", actionTier: "—", input: { term_match: null }, hitChain: ["com-r03", "无命中"] },
+      { id: "com-d09", time: "合成 T+1 09:33", subject: "合成素材 Iris-27",   subjectType: "内容素材", ruleVersionId: "com-rv-106", result: "命中", actionTier: "限制", input: { sensitive_combo: true }, hitChain: ["com-r06", "com-rv-106", "回滚前的判定"] },
+      { id: "com-d10", time: "合成 T+1 10:14", subject: "合成店铺 Juniper-05", subjectType: "店铺主体", ruleVersionId: "com-rv-104", result: "命中", actionTier: "下架/冻结", input: { credential_status: "missing" }, hitChain: ["com-r04", "com-rv-104"] },
+      { id: "com-d11", time: "合成 T+1 11:00", subject: "合成商品 Kalmia-14", subjectType: "商品条目", ruleVersionId: "com-rv-108", result: "命中", actionTier: "提示", input: { claim_conflict: false, price_delta: 0.51 }, hitChain: ["com-r08", "com-rv-108"] },
+      { id: "com-d12", time: "合成 T+1 13:26", subject: "合成商品 Larch-22",  subjectType: "商品条目", ruleVersionId: "com-rv-103", result: "命中", actionTier: "阻断", input: { term_match: "syn_term_c" }, hitChain: ["com-r03", "com-rv-103", "rollout: 30%"] },
+      { id: "com-d13", time: "合成 T+2 08:41", subject: "合成素材 Maple-38",  subjectType: "内容素材", ruleVersionId: "com-rv-102", result: "放行", actionTier: "—", input: { duplicate_score: 0.44 }, hitChain: ["com-r02", "无命中"] },
+      { id: "com-d14", time: "合成 T+2 09:17", subject: "合成店铺 Nutmeg-09", subjectType: "店铺主体", ruleVersionId: "com-rv-105", result: "放行", actionTier: "—", input: { repeat_count: 2 }, hitChain: ["com-r05", "无命中"] },
+      { id: "com-d15", time: "合成 T+2 10:02", subject: "合成商品 Olive-16",  subjectType: "商品条目", ruleVersionId: "com-rv-103", result: "命中", actionTier: "阻断", input: { term_match: "syn_term_b" }, hitChain: ["com-r03", "com-rv-103", "rollout: 30%"] },
+      { id: "com-d16", time: "合成 T+2 10:48", subject: "合成素材 Poplar-33", subjectType: "内容素材", ruleVersionId: "com-rv-106", result: "命中", actionTier: "限制", input: { sensitive_combo: true }, hitChain: ["com-r06", "com-rv-106", "回滚前的判定"] },
+      { id: "com-d17", time: "合成 T+2 11:29", subject: "合成商品 Quince-07", subjectType: "商品条目", ruleVersionId: "com-rv-108", result: "放行", actionTier: "—", input: { claim_conflict: true, price_delta: 0.08 }, hitChain: ["com-r08", "无命中"] },
+      { id: "com-d18", time: "合成 T+3 09:05", subject: "合成店铺 Rowan-21",  subjectType: "店铺主体", ruleVersionId: "com-rv-104", result: "放行", actionTier: "—", input: { credential_status: "valid" }, hitChain: ["com-r04", "无命中"] },
+      { id: "com-d19", time: "合成 T+3 09:52", subject: "合成素材 Sorrel-29", subjectType: "内容素材", ruleVersionId: "com-rv-102", result: "旁路命中", actionTier: "限制", input: { duplicate_score: 0.88 }, hitChain: ["com-r02", "com-rv-102", "shadow: 只记录不执行"] },
+      { id: "com-d20", time: "合成 T+3 10:37", subject: "合成商品 Teasel-13", subjectType: "商品条目", ruleVersionId: "com-rv-103", result: "命中", actionTier: "阻断", input: { term_match: "syn_term_a" }, hitChain: ["com-r03", "com-rv-103", "rollout: 30%"] }
+    ],
+    cases: [
+      { id: "com-case-01", subject: "合成商品 Aster-17", subjectType: "商品条目", decisionRecordId: "com-d01",
+        ruleVersionId: "com-rv-104", actionTier: "下架/冻结", evidence: "合成凭证状态 = missing；输入快照见 com-d01",
+        status: "已处置（申诉推翻后撤销）", appealId: "com-ap-01" },
+      { id: "com-case-02", subject: "合成店铺 Elm-03", subjectType: "店铺主体", decisionRecordId: "com-d05",
+        ruleVersionId: "com-rv-105", actionTier: "终止", evidence: "合成重复计数 = 6，达到阈值",
+        status: "待人工确认（不可逆动作不自动执行）", appealId: null },
+      { id: "com-case-03", subject: "合成商品 Fern-11", subjectType: "商品条目", decisionRecordId: "com-d06",
+        ruleVersionId: "com-rv-103", actionTier: "阻断", evidence: "合成风险词 syn_term_a 命中",
+        status: "已处置", appealId: "com-ap-02" }
+    ],
+    appeals: [
+      { id: "com-ap-01", caseId: "com-case-01", state: "overturned",
+        sections: [
+          { label: "根因", text: "合成：证据快照采集于凭证补齐之前，判定输入与当时实际状态不一致。" },
+          { label: "已采取行动", text: "合成：凭证已补齐并通过复核，条目信息同步更新。" },
+          { label: "防复发方案", text: "合成：凭证到期前 30 天触发提醒，避免同类快照错位。" }
+        ],
+        reviewNote: "复核认定判定输入过期，推翻原处置。", returnedToEval: true },
+      { id: "com-ap-02", caseId: "com-case-03", state: "upheld",
+        sections: [
+          { label: "根因", text: "合成：文案沿用旧模板，含风险词表内表达。" },
+          { label: "已采取行动", text: "合成：已替换文案，重新提交审核。" },
+          { label: "防复发方案", text: "合成：模板库统一清理同类表达。" }
+        ],
+        reviewNote: "复核认定原判定成立，维持原处置。", returnedToEval: false }
+    ],
+    exceptions: [
+      { id: "com-ex-01", scopeRef: "市场=南区 / 品类=器物", actionTier: "下架/冻结",
+        applicant: "合成申请人 A", approver: "合成审批者 B", reason: "试点品类准入过渡期",
+        expiry: "合成 T+30", escalation: "超期未撤销自动升级至治理负责人", usage: "已使用 3 次" },
+      { id: "com-ex-02", scopeRef: "组织=试点组", actionTier: "终止",
+        applicant: "合成申请人 C", approver: "合成审批者 B", reason: "重复违规判定口径复核期间暂缓",
+        expiry: "合成 T+14", escalation: "到期自动失效并回到强制人工确认", usage: "已使用 1 次" }
+    ],
+    guardrails: [
+      { name: "误伤率",     value: "合成 2.1%",   threshold: "合成阈值 2.0%", breached: true,
+        note: "触发 com-rv-106 自动回滚" },
+      { name: "申诉推翻率", value: "合成 1 / 2",  threshold: "合成阈值 1 / 4", breached: true,
+        note: "进入复盘，推翻样本回流评测集" },
+      { name: "处置时长",   value: "合成 9 分钟", threshold: "合成阈值 15 分钟", breached: false,
+        note: "通过" }
+    ],
+    historyTimeline: [
+      { at: "合成 T+0", state: "shadow",      note: "com-rv-106 旁路判定，只记录不执行" },
+      { at: "合成 T+1", state: "partial",     note: "按范围灰度 10% → 30%" },
+      { at: "合成 T+2", state: "rolled_back", note: "误伤率 2.1% 超阈值 2.0%，护栏触发自动回滚" }
+    ],
+    auditEvents: [
+      { who: "演示维护者", when: "合成 T-1", what: "创建 com-rv-101", before: "—", after: "draft" },
+      { who: "合成审批者", when: "合成 T+1", what: "应用 com-cr-02", before: "approved", after: "applied" },
+      { who: "护栏系统",   when: "合成 T+2", what: "回滚 com-rv-106", before: "partial", after: "rolled_back" },
+      { who: "合成复核者", when: "合成 T+2", what: "推翻 com-ap-01", before: "under_review", after: "overturned" }
+    ],
+    flow: { ruleId: "com-r01", versionId: "com-rv-101", changeRequestId: "com-cr-01", reached: [] }
+  }
+};
+
+const SKIN_ATS = {
+  skinName: "ATS",
+  subjectTypes: ["候选档案", "职位申请", "面试安排"],
+  actionLadder: [
+    { tier: "提示",      label: "自动打标" },
+    { tier: "限制",      label: "流程提醒" },
+    { tier: "阻断",      label: "审批阻断" },
+    { tier: "下架/冻结", label: "流程暂停" },
+    { tier: "终止",      label: "自动拒绝" }
+  ],
+  appealPath: {
+    submitAction: "发起复议",
+    stateLabels: { submitted: "已发起复议", under_review: "复议中",
+                   upheld: "维持处理", overturned: "推翻并重跑审批" },
+    form: [
+      { key: "reason",     label: "复议理由",         preset: "合成：核验状态在提交后已更新，判定依据的是过期快照。" },
+      { key: "field",      label: "变更字段",         preset: "合成：verification 由 incomplete 改为 complete。" },
+      { key: "retrigger",  label: "重新触发的审批环节", preset: "合成：重跑用人部门审批环节。" }
+    ],
+    evalReturnNote: "overturned 的复议连同其 DecisionRecord 进入评测集，作为下一版回归用例。"
+  },
+  ruleLexicon: {
+    subject: "候选档案/申请", rule: "流程规则", case: "流程案件",
+    appeal: "复议请求", decision: "判定记录", source: "规则来源",
+    scope: "适用范围", exception: "审批链临时调整"
+  },
+  sampleData: {
+    ruleSources: [
+      { id: "src-a1", type: "内部制度", ref: "SYN-HR-021", evidenceLevel: "合成·二级" },
+      { id: "src-a2", type: "法规",     ref: "SYN-REG-204", evidenceLevel: "合成·一级" },
+      { id: "src-a3", type: "事故复盘", ref: "SYN-PIR-011", evidenceLevel: "合成·二级" }
+    ],
+    rules: [
+      { id: "ats-r01", name: "申请材料完整性", purpose: "缺件时提示补充，不阻断流程",
+        subjectType: "职位申请", semantic: "申请材料缺少合成必填字段", sourceId: "src-a1",
+        scope: { market: "—", category: "全部职位", org: "试点部门", env: "演示" },
+        version: { id: "ats-rv-101", state: "draft", expression: "required_field == 'missing'",
+                   actionTier: "提示", effectiveDate: "待批准", transition: "先旁路判定，再按部门灰度",
+                   rollout: 0 } },
+      { id: "ats-r02", name: "面试排期冲突", purpose: "限制冲突安排落库",
+        subjectType: "面试安排", semantic: "同一时段存在合成排期冲突", sourceId: "src-a3",
+        scope: { market: "—", category: "全部职位", org: "试点部门", env: "演示" },
+        version: { id: "ats-rv-102", state: "partial", expression: "schedule_conflict == true",
+                   actionTier: "限制", effectiveDate: "合成 T+1", transition: "按部门灰度中",
+                   rollout: 30 } },
+      { id: "ats-r03", name: "背景核验未完成", purpose: "核验未完成前阻断审批推进",
+        subjectType: "候选档案", semantic: "核验状态未完成", sourceId: "src-a2",
+        scope: { market: "—", category: "全部职位", org: "全部", env: "演示" },
+        version: { id: "ats-rv-103", state: "active", expression: "verification == 'incomplete'",
+                   actionTier: "阻断", effectiveDate: "合成 T-3", transition: "全量生效",
+                   rollout: 100 } }
+    ],
+    changeRequests: [
+      { id: "ats-cr-01", ruleVersionId: "ats-rv-101", state: "draft", proposer: "演示维护者",
+        reviewer: "—", note: "等待从规则库提交",
+        flips: [ { recordId: "ats-d03", from: "放行", to: "提示", why: "候选版把缺件也纳入提示" } ] },
+      { id: "ats-cr-02", ruleVersionId: "ats-rv-102", state: "applied", proposer: "演示维护者",
+        reviewer: "合成审批者", note: "已批准并应用，当前灰度 30%",
+        flips: [ { recordId: "ats-d02", from: "放行", to: "限制", why: "冲突判定窗口放宽后命中" } ] }
+    ],
+    decisionRecords: [
+      { id: "ats-d01", time: "合成 T+1 09:30", subject: "合成档案 Amber-01", subjectType: "候选档案", ruleVersionId: "ats-rv-103", result: "命中", actionTier: "阻断", input: { verification: "incomplete" }, hitChain: ["ats-r03", "ats-rv-103"] },
+      { id: "ats-d02", time: "合成 T+1 10:15", subject: "合成申请 Blue-02",  subjectType: "职位申请", ruleVersionId: "ats-rv-102", result: "命中", actionTier: "限制", input: { schedule_conflict: true }, hitChain: ["ats-r02", "ats-rv-102", "rollout: 30%"] },
+      { id: "ats-d03", time: "合成 T+2 09:05", subject: "合成申请 Coral-03", subjectType: "职位申请", ruleVersionId: "ats-rv-102", result: "放行", actionTier: "—", input: { schedule_conflict: false, required_field: "missing" }, hitChain: ["ats-r02", "无命中"] }
+    ],
+    cases: [
+      { id: "ats-case-01", subject: "合成档案 Amber-01", subjectType: "候选档案", decisionRecordId: "ats-d01",
+        ruleVersionId: "ats-rv-103", actionTier: "阻断", evidence: "合成核验状态 = incomplete；输入快照见 ats-d01",
+        status: "已处置（复议推翻后撤销）", appealId: "ats-ap-01" },
+      { id: "ats-case-02", subject: "合成申请 Blue-02", subjectType: "职位申请", decisionRecordId: "ats-d02",
+        ruleVersionId: "ats-rv-102", actionTier: "限制", evidence: "合成排期冲突",
+        status: "已处置", appealId: null }
+    ],
+    appeals: [
+      { id: "ats-ap-01", caseId: "ats-case-01", state: "overturned",
+        sections: [
+          { label: "复议理由", text: "合成：核验已在提交后完成，判定依据为过期快照。" },
+          { label: "变更字段", text: "合成：verification incomplete → complete。" },
+          { label: "重新触发的审批环节", text: "合成：重跑用人部门审批。" }
+        ],
+        reviewNote: "复核认定快照过期，推翻并重跑审批。", returnedToEval: true }
+    ],
+    exceptions: [
+      { id: "ats-ex-01", scopeRef: "组织=试点部门", actionTier: "阻断",
+        applicant: "合成申请人 D", approver: "合成审批者 E", reason: "核验供应商切换过渡期",
+        expiry: "合成 T+10", escalation: "到期自动失效并恢复阻断", usage: "已使用 2 次" }
+    ],
+    guardrails: [
+      { name: "误拒率",   value: "合成 1.0%",   threshold: "合成阈值 2.0%",   breached: false, note: "通过" },
+      { name: "流程时长", value: "合成 4.2 天", threshold: "合成阈值 5.0 天", breached: false, note: "通过" }
+    ],
+    historyTimeline: [
+      { at: "合成 T+0", state: "shadow",  note: "ats-rv-102 旁路判定，只记录不执行" },
+      { at: "合成 T+1", state: "partial", note: "按部门灰度 10% → 30%" }
+    ],
+    auditEvents: [
+      { who: "演示维护者", when: "合成 T-1", what: "创建 ats-rv-101", before: "—", after: "draft" },
+      { who: "合成复核者", when: "合成 T+2", what: "推翻 ats-ap-01", before: "under_review", after: "overturned" }
+    ],
+    flow: { ruleId: "ats-r01", versionId: "ats-rv-101", changeRequestId: "ats-cr-01", reached: [] }
+  }
+};
+
+const SKINS = Object.freeze([SKIN_COMMERCE, SKIN_ATS]);
+
+
+/* ==========================================================================
+   三、控制面运行时 —— 以下全部代码对皮肤零耦合：
+   只读 SKIN_* 声明与 sampleData，不存在按 skinName 分支的逻辑。
+   ========================================================================== */
+
+const state = {
+  skinIndex: 0,
+  view: VIEWS[0],
+  data: null,
+  caseId: null,
+  recordId: null,
+  ruleId: null,
+  crId: null,
+  fSubject: "",
+  fVersion: ""
+};
+
+const app = document.getElementById("app");
+const skinSelect = document.getElementById("skin");
+const tabsEl = document.getElementById("tabs");
+
+const skin = () => SKINS[state.skinIndex];
+const clone = v => JSON.parse(JSON.stringify(v));
+const esc = v => String(v == null ? "" : v)
+  .replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const st = s => `<span class="st st-${esc(s)}">${esc(s)}</span>`;
+const lex = k => skin().ruleLexicon[k];
+
+/* 动作：内核 tier → 皮肤称谓 → 可逆性。皮肤未声明该 tier 时退回内核名。 */
+const tierMeta = t => ACTION_TIERS.find(a => a.tier === t) || null;
+const tierLabel = t => {
+  const row = skin().actionLadder.find(a => a.tier === t);
+  return row ? row.label : (t || "—");
+};
+const actionText = t => t && t !== "—"
+  ? `${esc(tierLabel(t))} <span class="dim">（${esc(t)}）</span>` : `<span class="dim">—</span>`;
+const revText = t => {
+  const m = tierMeta(t);
+  return m ? `<span class="${m.reversible ? "yes" : "no"}">${m.reversible ? "可逆" : "不可逆"}</span>
+              <span class="dim">· ${esc(m.execution)}</span>` : `<span class="dim">—</span>`;
+};
+const kv = (label, value) => `<div class="kv"><label>${esc(label)}</label><div>${value}</div></div>`;
+const scopeText = sc => `市场=${esc(sc.market)} / 品类=${esc(sc.category)} / 组织=${esc(sc.org)} / 环境=${esc(sc.env)}`;
+
+const rules       = () => state.data.rules;
+const ruleOf      = vid => rules().find(r => r.version.id === vid);
+const ruleById    = id => rules().find(r => r.id === id);
+const flow        = () => state.data.flow;
+const flowRule    = () => ruleById(flow().ruleId);
+const flowVersion = () => flowRule().version;
+const flowCR      = () => state.data.changeRequests.find(c => c.id === flow().changeRequestId);
+const flowCase    = () => state.data.cases.find(c => c.isFlow);
+const appealOf    = kase => kase && kase.appealId
+  ? state.data.appeals.find(a => a.id === kase.appealId) : null;
+const recordById  = id => state.data.decisionRecords.find(d => d.id === id);
+
+function mark(s) { if (!flow().reached.includes(s)) flow().reached.push(s); }
+
+/* 皮肤校验：受控配置不得发明内核以外的取值。
+   一份新皮肤只能在 RULE_VERSION_STATES / ACTION_TIERS / RULE_SOURCE_TYPES /
+   CHANGE_REQUEST_STATES / APPEAL_STATES 的取值域内声明——这正是
+   「标准内核—受控配置」在代码里的落点，也是本 demo 论题的可执行版本。 */
+function validateSkin(s) {
+  const tiers = ACTION_TIERS.map(a => a.tier), d = s.sampleData, bad = [];
+  const chk = (ok, msg) => { if (!ok) bad.push(msg); };
+  s.actionLadder.forEach(a => chk(tiers.includes(a.tier), `actionLadder 越界 tier: ${a.tier}`));
+  d.ruleSources.forEach(x => chk(RULE_SOURCE_TYPES.includes(x.type), `RuleSource 越界 type: ${x.type}`));
+  d.rules.forEach(r => {
+    chk(RULE_VERSION_STATES.includes(r.version.state), `RuleVersion 越界 state: ${r.version.state}`);
+    chk(tiers.includes(r.version.actionTier), `RuleVersion 越界 actionTier: ${r.version.actionTier}`);
+    chk(s.subjectTypes.includes(r.subjectType), `Rule 越界 subjectType: ${r.subjectType}`);
+  });
+  d.changeRequests.forEach(c => chk(CHANGE_REQUEST_STATES.includes(c.state), `ChangeRequest 越界 state: ${c.state}`));
+  d.appeals.forEach(a => chk(APPEAL_STATES.includes(a.state), `Appeal 越界 state: ${a.state}`));
+  return bad;
+}
+
+function audit(what, before, after) {
+  state.data.auditEvents.unshift({ who: "演示维护者", when: "本地交互", what, before, after });
+}
+
+/* 验收链进度：每一步都由对象的真实状态推出，不额外维护一个 UI 计数器 */
+function milestones() {
+  const r = flow().reached, k = flowCase(), a = appealOf(k);
+  return [
+    r.includes("in_review"),
+    r.includes("shadow"),
+    r.includes("partial"),
+    !!k,
+    !!a,
+    !!a && a.state === "overturned",
+    !!a && a.returnedToEval === true
+  ];
+}
+
+function steps() {
+  const m = milestones(), cur = m.indexOf(false);
+  return `<div class="steps">${FLOW_STEPS.map((label, i) => {
+    const cls = m[i] ? "done" : i === cur ? "now" : "";
+    return `<div class="s ${cls}"><i>${m[i] ? "✓" : i + 1}</i><b>${esc(label)}</b></div>`
+      + (i < FLOW_STEPS.length - 1 ? `<div class="bar"></div>` : "");
+  }).join("")}</div>`;
+}
+
+function page(o) {
+  return `<div class="crumb">规则策略控制面 / <b>${esc(o.title)}</b></div>
+    <div class="pagehead">
+      <div><h1>${esc(o.title)}${o.count != null ? `<em>共 ${o.count} 项</em>` : ""}</h1><p>${o.desc}</p></div>
+      ${o.actions ? `<div class="actions">${o.actions}</div>` : ""}
+    </div>
+    ${steps()}`;
+}
+
+const notice = (type, html) => `<div class="alert alert-${type}"><div class="grow">${html}</div></div>`;
+const btn = (act, text, kind, arg) =>
+  `<button class="btn ${kind || ""}" data-act="${act}"${arg ? ` data-arg="${esc(arg)}"` : ""}>${esc(text)}</button>`;
+
+/* --------------------------------------------------------------- 视图 1 */
+function viewRules() {
+  const srcMap = Object.fromEntries(state.data.ruleSources.map(x => [x.id, x]));
+  const list = rules();
+  const sel = list.find(r => r.id === state.ruleId) || flowRule();
+  state.ruleId = sel.id;
+  const v = sel.version, src = srcMap[sel.sourceId];
+  const fv = flowVersion();
+
+  const rows = list.map(r => `<tr class="clickable ${r.id === sel.id ? "on" : ""}"
+      data-act="pickRule" data-arg="${esc(r.id)}">
+      <td>${esc(r.name)}${r.id === flow().ruleId ? ` <span class="dim">· 演示链路</span>` : ""}</td>
+      <td class="dim">${esc(r.subjectType)}</td>
+      <td class="num"><code>${esc(r.version.id)}</code></td>
+      <td>${st(r.version.state)}</td>
+      <td>${actionText(r.version.actionTier)}</td>
+      <td class="num dim">${r.version.rollout}%</td>
+      <td class="dim">${esc(srcMap[r.sourceId].type)} · ${esc(srcMap[r.sourceId].ref)}</td>
+    </tr>`).join("");
+
+  const ladder = skin().actionLadder.map(a => `<tr>
+      <td><code>${esc(a.tier)}</code></td><td>${esc(a.label)}</td><td>${revText(a.tier)}</td>
+    </tr>`).join("");
+
+  const exceptions = state.data.exceptions.map(e => `<tr>
+      <td class="num"><code>${esc(e.id)}</code></td><td>${esc(e.scopeRef)}</td>
+      <td>${actionText(e.actionTier)}</td>
+      <td class="dim">${esc(e.applicant)} → ${esc(e.approver)}</td>
+      <td>${esc(e.reason)}</td><td class="num dim">${esc(e.expiry)}</td>
+      <td class="dim">${esc(e.escalation)}</td><td class="num dim">${esc(e.usage)}</td>
+    </tr>`).join("");
+
+  const inUse = new Set(list.map(r => r.version.state));
+  const machine = RULE_VERSION_STATES.map(x => `<tr class="${x === v.state ? "on" : ""}">
+      <td>${st(x)}</td>
+      <td class="dim">${RULE_VERSION_TRANSITIONS[x].length
+        ? RULE_VERSION_TRANSITIONS[x].map(y => `<code>${esc(y)}</code>`).join(" / ")
+        : "终态"}</td>
+      <td class="dim">${inUse.has(x) ? `${[...list].filter(r => r.version.state === x).length} 个版本` : "—"}</td>
+    </tr>`).join("");
+
+  let act = `<span class="note">本规则不在演示链路上。</span>`;
+  if (sel.id === flow().ruleId && v.state === "draft") act = btn("submitCR", "提交变更请求", "btn-primary");
+  else if (sel.id === flow().ruleId && v.state === "rolled_back") act = btn("reopen", "修订后回到 draft");
+  else if (sel.id === flow().ruleId) act = `<span class="note">链路下一步不在本视图，见「${
+    v.state === "in_review" || v.state === "approved" ? "变更请求" : "发布时间线"}」。</span>`;
+
+  return `${page({
+    title: "规则库", count: list.length,
+    desc: `${esc(lex("rule"))} 与 RuleVersion 分离登记：本体跨版本稳定，版本携带条件表达式、动作绑定与生效日。
+           演示链路的新规为 <code>${esc(fv.id)}</code>，当前 ${st(fv.state)}。`
+  })}
+    ${notice("info", `链路第 1 步在本视图：选中演示链路那条规则，把 draft 版本提交为变更请求。
+      其余 ${list.length - 1} 条铺开了 RuleVersion 九态中的其余状态，in_review 与 approved 由链路现场走出。`)}
+    <div class="panel">
+      <header><h2>规则清单<span class="sub">Rule × RuleVersion</span></h2></header>
+      <table>
+        <thead><tr><th>规则本体</th><th>对象类型</th><th>版本</th><th>状态</th><th>动作</th><th>放量</th><th>来源</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>
+    <div class="panel">
+      <header><h2>${esc(sel.name)}<span class="sub">${esc(sel.id)} · ${esc(v.id)}</span></h2>
+        <div class="actions">${act}</div></header>
+      <div class="body">
+        <div class="kvs">
+          ${kv("目的", esc(sel.purpose))}
+          ${kv("对象类型", esc(sel.subjectType))}
+          ${kv("判断条件语义", esc(sel.semantic))}
+          ${kv("条件表达式", `<code>${esc(v.expression)}</code>`)}
+          ${kv("动作绑定", actionText(v.actionTier))}
+          ${kv("可逆性", revText(v.actionTier))}
+          ${kv("版本状态", st(v.state))}
+          ${kv("生效日", esc(v.effectiveDate))}
+          ${kv("放量", `${v.rollout}%`)}
+          ${kv("过渡期处理", esc(v.transition))}
+          ${kv("范围声明 Scope", scopeText(sel.scope))}
+          ${kv("规则来源 RuleSource", `${esc(src.type)} · ${esc(src.ref)} · ${esc(src.evidenceLevel)}`)}
+        </div>
+        ${RULE_VERSION_STATE_NOTES[v.state]
+          ? `<h3>状态含义（规格原文）</h3><p class="note">${esc(RULE_VERSION_STATE_NOTES[v.state])}</p>` : ""}
+      </div>
+    </div>
+    <div class="cols">
+      <div class="panel">
+        <header><h2>动作分级<span class="sub">Action：内核 tier → 本皮肤称谓</span></h2></header>
+        <table><thead><tr><th>内核 tier</th><th>${esc(skin().skinName)} 称谓</th><th>可逆性与执行方式</th></tr></thead>
+          <tbody>${ladder}</tbody></table>
+      </div>
+      <div class="panel">
+        <header><h2>版本状态机<span class="sub">RULE_VERSION_STATES / TRANSITIONS</span></h2></header>
+        <table><thead><tr><th>状态</th><th>可迁移至</th><th>在用</th></tr></thead>
+          <tbody>${machine}</tbody></table>
+      </div>
+    </div>
+    <div class="panel">
+      <header><h2>${esc(lex("exception"))}<span class="sub">Exception</span></h2></header>
+      <table><thead><tr><th>编号</th><th>范围</th><th>动作</th><th>申请 → 批准</th><th>理由</th><th>期限</th><th>超期升级</th><th>使用</th></tr></thead>
+        <tbody>${exceptions}</tbody></table>
+    </div>`;
+}
+
+/* --------------------------------------------------------------- 视图 2 */
+function viewChange() {
+  const list = state.data.changeRequests;
+  const sel = list.find(c => c.id === state.crId) || flowCR() || list[0];
+  state.crId = sel.id;
+  const rule = ruleOf(sel.ruleVersionId);
+
+  const rows = list.map(c => `<tr class="clickable ${c.id === sel.id ? "on" : ""}"
+      data-act="pickCR" data-arg="${esc(c.id)}">
+      <td class="num"><code>${esc(c.id)}</code>${c.id === flow().changeRequestId ? ` <span class="dim">· 演示链路</span>` : ""}</td>
+      <td class="num"><code>${esc(c.ruleVersionId)}</code></td>
+      <td>${esc(ruleOf(c.ruleVersionId) ? ruleOf(c.ruleVersionId).name : "—")}</td>
+      <td>${st(c.state)}</td>
+      <td class="dim">${esc(c.proposer)}</td>
+      <td class="dim">${esc(c.reviewer)}</td>
+      <td class="num dim">${c.flips.length}</td>
+    </tr>`).join("");
+
+  const flips = sel.flips.map(f => `<tr>
+      <td class="num"><button class="btn-link" data-act="openRecord" data-arg="${esc(f.recordId)}">${esc(f.recordId)}</button></td>
+      <td>${esc(f.from)} → <b>${esc(f.to)}</b></td><td class="dim">${esc(f.why)}</td>
+    </tr>`).join("");
+
+  let act = `<span class="note">本请求不在演示链路上。</span>`;
+  if (sel.id === flow().changeRequestId) {
+    if (sel.state === "in_review") act = btn("approveCR", "批准", "btn-primary");
+    else if (sel.state === "approved") act = btn("applyCR", "应用并上线 shadow", "btn-primary");
+    else if (sel.state === "draft") act = `<span class="note">请先在「规则库」提交。</span>`;
+    else act = `<span class="note">已应用，链路下一步见「发布时间线」。</span>`;
+  }
+
+  return `${page({
+    title: "变更请求", count: list.length,
+    desc: `变更不是直接改配置，而是可审批、可否决、可撤回的有状态对象：
+           <code>${CHANGE_REQUEST_STATES.join(" / ")}</code>。`
+  })}
+    ${notice("info", `审批材料是「判定翻转清单」——用候选版本对历史 DecisionRecord 重新求值，
+      列出原放行现拦截、原拦截现放行的条目。开源世界 shadow 基本空白，OPA 明确把 dry-run 留给上层集成，
+      所以此处用回放实现，属产品设计空间。清单里的记录号可直接跳到决策日志核对原始输入。`)}
+    <div class="panel">
+      <header><h2>请求清单<span class="sub">ChangeRequest</span></h2></header>
+      <table>
+        <thead><tr><th>编号</th><th>目标版本</th><th>规则</th><th>状态</th><th>提议人</th><th>审批人</th><th>翻转数</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>
+    <div class="panel">
+      <header><h2>${esc(sel.id)}<span class="sub">${esc(rule ? rule.name : "—")}</span></h2>
+        <div class="actions">${act}</div></header>
+      <div class="body">
+        <div class="kvs">
+          ${kv("状态", st(sel.state))}
+          ${kv("目标版本", `<code>${esc(sel.ruleVersionId)}</code>`)}
+          ${kv("提议人", esc(sel.proposer))}
+          ${kv("审批人", esc(sel.reviewer))}
+          ${kv("说明", esc(sel.note))}
+        </div>
+      </div>
+      <table>
+        <thead><tr><th>判定记录</th><th>翻转</th><th>原因</th></tr></thead>
+        <tbody>${flips}</tbody>
+      </table>
+    </div>`;
+}
+
+/* --------------------------------------------------------------- 视图 3 */
+function viewTimeline() {
+  const v = flowVersion();
+  const live = (flow().timeline || []).map(e =>
+    `<li><b>${esc(e.state)}</b> — ${esc(e.note)}<small>${esc(e.at)}</small></li>`).join("")
+    || `<li class="hist"><span class="dim">尚无事件：请先在「变更请求」批准并应用，把版本推到 shadow。</span></li>`;
+  const hist = state.data.historyTimeline.map(e =>
+    `<li class="hist"><b>${esc(e.state)}</b> — ${esc(e.note)}<small>${esc(e.at)}</small></li>`).join("");
+  const metrics = state.data.guardrails.map(g => `<tr>
+      <td>${esc(g.name)}</td><td class="num">${esc(g.value)}</td><td class="num dim">${esc(g.threshold)}</td>
+      <td>${g.breached ? `<span class="st st-rolled_back">超阈值</span>` : `<span class="st st-active">通过</span>`}</td>
+      <td class="dim">${esc(g.note)}</td></tr>`).join("");
+
+  let act = `<span class="note">当前 ${v.state}：链路下一步不在本视图。</span>`;
+  if (v.state === "shadow") act = btn("toPartial", "进入灰度（10%）", "btn-primary");
+  else if (v.state === "partial") act = `${btn("rampUp", "扩量至 30%")}${btn("toActive", "全量生效")}
+    ${btn("rollback", "模拟护栏超阈值 → 自动回滚")}${btn("goto", "去案件与申诉", "btn-primary", "案件与申诉")}`;
+  else if (v.state === "active") act = btn("goto", "去案件与申诉", "btn-primary", "案件与申诉");
+  else if (v.state === "rolled_back") act = btn("reopen", "修订后回到 draft");
+
+  return `${page({
+    title: "发布时间线",
+    desc: `一条 RuleVersion 的放行路径：<code>${RULE_VERSION_STATES.join(" → ")}</code>。
+           shadow 是旁路判定（对流量求值但不执行），partial 是部分真实生效并挂护栏——两者不是一回事。`,
+    actions: act
+  })}
+    <div class="cols">
+      <div class="panel">
+        <header><h2>${esc(flowRule().name)}<span class="sub">${esc(v.id)}</span></h2>${st(v.state)}</header>
+        <div class="body">
+          <div class="kvs">
+            ${kv("条件表达式", `<code>${esc(v.expression)}</code>`)}
+            ${kv("动作", actionText(v.actionTier))}
+            ${kv("放量", `${v.rollout}%`)}
+            ${kv("过渡期处理", esc(v.transition))}
+            ${kv("可迁移的下一步", RULE_VERSION_TRANSITIONS[v.state].length
+              ? RULE_VERSION_TRANSITIONS[v.state].map(x => `<code>${esc(x)}</code>`).join(" / ")
+              : `<span class="dim">终态</span>`)}
+          </div>
+          <h3>本地链路时间线</h3>
+          <ul class="tl">${live}</ul>
+        </div>
+      </div>
+      <div class="panel">
+        <header><h2>护栏指标<span class="sub">GuardrailMetric</span></h2></header>
+        <table><thead><tr><th>指标</th><th>取值</th><th>阈值</th><th>判定</th><th>处置</th></tr></thead>
+          <tbody>${metrics}</tbody></table>
+        <div class="body">
+          <h3>历史：一次护栏触发的自动回滚</h3>
+          <ul class="tl">${hist}</ul>
+          <p class="note">回滚是护栏的自动动作，同时写入配置级 AuditEvent，见「决策日志」右栏。</p>
+        </div>
+      </div>
+    </div>`;
+}
+
+/* --------------------------------------------------------------- 视图 4 */
+function viewCases() {
+  const list = state.data.cases;
+  const sel = list.find(c => c.id === state.caseId) || list[0] || null;
+  if (sel) state.caseId = sel.id;
+  const ap = appealOf(sel);
+  const v = flowVersion();
+  const canCreate = (v.state === "partial" || v.state === "active") && !flowCase();
+
+  const rows = list.map(c => {
+    const a = appealOf(c);
+    return `<tr class="clickable ${c.id === state.caseId ? "on" : ""}" data-act="pickCase" data-arg="${esc(c.id)}">
+      <td class="num"><code>${esc(c.id)}</code>${c.isFlow ? ` <span class="dim">· 演示链路</span>` : ""}</td>
+      <td>${esc(c.subject)}</td>
+      <td class="dim">${esc(c.subjectType)}</td>
+      <td class="num"><code>${esc(c.ruleVersionId)}</code></td>
+      <td>${actionText(c.actionTier)}</td>
+      <td>${a ? st(a.state) : `<span class="dim">无</span>`}</td>
+      <td class="dim">${esc(c.status)}</td>
+    </tr>`;
+  }).join("");
+
+  let detail = `<div class="empty">暂无案件。</div>`;
+  if (sel) {
+    const path = skin().appealPath;
+    let body;
+    if (!ap) {
+      body = `<h3>${esc(lex("appeal"))}：${path.form.length} 段式提交</h3>
+        ${path.form.map(f => `<div class="form-item"><label>${esc(f.label)}</label>
+          <textarea data-field="${esc(f.key)}">${esc(f.preset)}</textarea></div>`).join("")}
+        <div class="actions">${btn("submitAppeal", path.submitAction, "btn-primary")}</div>`;
+    } else {
+      let ops = "";
+      if (ap.state === "submitted") ops = btn("reviewAppeal", "受理复核", "btn-primary");
+      else if (ap.state === "under_review") ops = btn("overturn", "推翻", "btn-primary") + btn("uphold", "维持原判");
+      else if (ap.state === "upheld") ops = btn("reviewAppeal", "重开复核");
+      else if (ap.state === "overturned" && !ap.returnedToEval) ops = btn("returnEval", "回流评测集", "btn-primary");
+      body = `<h3>${esc(lex("appeal"))}</h3>
+        <div class="kvs one">
+          ${kv("状态", `${st(ap.state)} <span class="dim">${esc(path.stateLabels[ap.state] || "")}</span>`)}
+          ${ap.sections.map(x => kv(x.label, esc(x.text))).join("")}
+          ${kv("复核意见", esc(ap.reviewNote))}
+        </div>
+        ${ap.returnedToEval
+          ? notice("success", `<b>已回流评测集</b>　${esc(path.evalReturnNote)}
+              本案的 <code>${esc(sel.decisionRecordId)}</code> 已标记为回归用例。`)
+          : ""}
+        ${ops ? `<div class="actions">${ops}</div>` : ""}`;
+    }
+    detail = `<div class="body">
+      <div class="kvs">
+        ${kv("Subject", `${esc(sel.subject)} <span class="dim">（${esc(sel.subjectType)}）</span>`)}
+        ${kv("命中版本", `<code>${esc(sel.ruleVersionId)}</code> ${esc(ruleOf(sel.ruleVersionId) ? ruleOf(sel.ruleVersionId).name : "")}`)}
+        ${kv("动作", actionText(sel.actionTier))}
+        ${kv("可逆性", revText(sel.actionTier))}
+        ${kv("处置状态", esc(sel.status))}
+        ${kv("判定记录", `<button class="btn-link" data-act="openRecord" data-arg="${esc(sel.decisionRecordId)}">${esc(sel.decisionRecordId)}</button>`)}
+        ${kv("证据", esc(sel.evidence))}
+      </div>
+      ${body}
+    </div>`;
+  }
+
+  return `${page({
+    title: "案件与申诉", count: list.length,
+    desc: `Case 是一次命中形成的处置对象，绑定 Subject。Appeal 状态机
+           <code>${APPEAL_STATES.join(" / ")}</code>；申诉表单的段数与字段由皮肤声明，不由组件写死。`,
+    actions: canCreate ? btn("createCase", "模拟命中 → 建立案件", "btn-primary") : ""
+  })}
+    ${canCreate
+      ? notice("info", "灰度版本对真实流量生效后，一次命中同时产出 DecisionRecord 与 Case。")
+      : (!flowCase() ? notice("warning", "链路案件尚未产生：请先在「发布时间线」把演示版本推进到 partial。") : "")}
+    <div class="panel">
+      <header><h2>案件清单<span class="sub">Case</span></h2></header>
+      <table>
+        <thead><tr><th>编号</th><th>Subject</th><th>对象类型</th><th>命中版本</th><th>动作</th><th>申诉</th><th>处置状态</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>
+    <div class="panel">
+      <header><h2>${sel ? esc(sel.subject) : "详情"}<span class="sub">${sel ? esc(sel.id) : ""}</span></h2></header>
+      ${detail}
+    </div>`;
+}
+
+/* --------------------------------------------------------------- 视图 5 */
+function viewDecisions() {
+  const all = state.data.decisionRecords;
+  const subjects = [...new Set(all.map(d => d.subject))];
+  const versions = [...new Set(all.map(d => d.ruleVersionId))];
+  const rows = all.filter(d =>
+    (!state.fSubject || d.subject === state.fSubject) &&
+    (!state.fVersion || d.ruleVersionId === state.fVersion));
+  const sel = recordById(state.recordId) || rows[0] || all[0] || null;
+
+  const body = rows.map(d => `<tr class="clickable ${sel && d.id === sel.id ? "on" : ""}"
+      data-act="openRecord" data-arg="${esc(d.id)}">
+      <td class="num"><code>${esc(d.id)}</code></td>
+      <td class="num dim">${esc(d.time)}</td>
+      <td>${esc(d.subject)}</td>
+      <td class="num"><code>${esc(d.ruleVersionId)}</code></td>
+      <td>${esc(d.result)}</td>
+      <td>${actionText(d.actionTier)}</td>
+      <td>${d.returnedToEval ? `<span class="st st-overturned">已回流评测集</span>` : ""}</td>
+    </tr>`).join("") || `<tr><td colspan="7"><div class="empty">无匹配记录</div></td></tr>`;
+
+  const audits = state.data.auditEvents.map(e => `<tr>
+      <td class="num dim">${esc(e.when)}</td><td class="num">${esc(e.who)}</td><td>${esc(e.what)}</td>
+      <td class="dim">${esc(e.before)} → <b>${esc(e.after)}</b></td></tr>`).join("");
+
+  return `${page({
+    title: "决策日志",
+    desc: `两层留痕，不合并：DecisionRecord 答「这一单当时按哪版规则判的」（高频、按对象），
+           AuditEvent 答「谁改了规则」（低频、按人）。合并成一张表会丢掉这两个问题的区分，
+           保留策略也无法分别设定。`
+  })}
+    <div class="panel">
+      <header><h2>判定级留痕<span class="sub">DecisionRecord</span></h2></header>
+      <div class="toolbar">
+        <select data-act="fSubject"><option value="">全部 Subject</option>
+          ${subjects.map(x => `<option ${state.fSubject === x ? "selected" : ""}>${esc(x)}</option>`).join("")}</select>
+        <select data-act="fVersion"><option value="">全部 RuleVersion</option>
+          ${versions.map(x => `<option ${state.fVersion === x ? "selected" : ""}>${esc(x)}</option>`).join("")}</select>
+        ${state.fSubject || state.fVersion ? btn("clearFilter", "清除筛选") : ""}
+        <span class="count">显示 ${rows.length} / ${all.length} 条</span>
+      </div>
+      <table>
+        <thead><tr><th>记录</th><th>时间</th><th>Subject</th><th>命中版本</th><th>结果</th><th>动作</th><th>标记</th></tr></thead>
+        <tbody>${body}</tbody>
+      </table>
+    </div>
+    <div class="cols cols--wide-right">
+      <div class="panel">
+        <header><h2>单条判定<span class="sub">${sel ? esc(sel.id) : ""}</span></h2></header>
+        <div class="body">
+          ${sel ? `<div class="kvs one">
+              ${kv("命中链", sel.hitChain.map(h => `<code>${esc(h)}</code>`).join(" → "))}
+            </div>
+            <h3>输入快照</h3>
+            <pre>${esc(JSON.stringify({
+              输入快照: sel.input, 命中版本: sel.ruleVersionId, 结果: sel.result,
+              动作: sel.actionTier, 动作称谓: tierLabel(sel.actionTier),
+              时间: sel.time, 回流评测集: !!sel.returnedToEval
+            }, null, 2))}</pre>` : `<div class="empty">无记录。</div>`}
+        </div>
+      </div>
+      <div class="panel">
+        <header><h2>配置级留痕<span class="sub">AuditEvent</span></h2></header>
+        <table><thead><tr><th>时间</th><th>操作人</th><th>改了什么</th><th>前后对比</th></tr></thead>
+          <tbody>${audits}</tbody></table>
+      </div>
+    </div>`;
+}
+
+/* ----------------------------------------------------------- 链路动作 */
+function setVersionState(next, note) {
+  const v = flowVersion(), before = v.state;
+  if (!RULE_VERSION_TRANSITIONS[before].includes(next)) {
+    alert(`状态机不允许 ${before} → ${next}`);
+    return;
+  }
+  v.state = next;
+  mark(next);
+  flow().timeline = flow().timeline || [];
+  flow().timeline.push({ at: "本地交互", state: next, note });
+  audit(`更新 ${v.id}`, before, next);
+}
+
+const ACTIONS = {
+  goto(arg) { state.view = arg; },
+
+  submitCR() {
+    const cr = flowCR();
+    cr.state = "in_review"; cr.reviewer = "合成审批者"; cr.note = "已提交，等待审批";
+    audit(`提交 ${cr.id}`, "draft", "in_review");
+    setVersionState("in_review", "提交变更请求");
+    state.view = "变更请求";
+  },
+  approveCR() {
+    const cr = flowCR();
+    cr.state = "approved"; cr.note = "已批准，待应用";
+    audit(`批准 ${cr.id}`, "in_review", "approved");
+    setVersionState("approved", "变更请求批准");
+  },
+  applyCR() {
+    const cr = flowCR(), v = flowVersion();
+    cr.state = "applied"; cr.note = "已应用，版本上线至 shadow";
+    audit(`应用 ${cr.id}`, "approved", "applied");
+    setVersionState("shadow", RULE_VERSION_STATE_NOTES.shadow);
+    v.effectiveDate = "本地交互"; v.transition = RULE_VERSION_STATE_NOTES.shadow;
+    state.view = "发布时间线";
+  },
+  toPartial() {
+    const v = flowVersion();
+    setVersionState("partial", "按范围灰度，放量 10%，护栏监控中");
+    v.rollout = 10; v.transition = RULE_VERSION_STATE_NOTES.partial;
+  },
+  rampUp() {
+    const v = flowVersion();
+    if (v.rollout >= 30) return;
+    const before = v.rollout; v.rollout = 30;
+    flow().timeline.push({ at: "本地交互", state: "partial", note: "放量 10% → 30%" });
+    audit(`扩量 ${v.id}`, `${before}%`, "30%");
+  },
+  toActive() {
+    const v = flowVersion();
+    setVersionState("active", RULE_VERSION_STATE_NOTES.active);
+    v.rollout = 100; v.transition = RULE_VERSION_STATE_NOTES.active;
+  },
+  rollback() {
+    const v = flowVersion();
+    setVersionState("rolled_back", "误伤率超阈值，护栏自动回滚");
+    v.rollout = 0; v.transition = RULE_VERSION_STATE_NOTES.rolled_back;
+  },
+  reopen() {
+    const v = flowVersion();
+    setVersionState("draft", "修订后重新起草");
+    flowCR().state = "draft"; flowCR().note = "回滚后重新起草";
+    v.rollout = 0; v.effectiveDate = "待批准";
+    state.view = "规则库";
+  },
+
+  createCase() {
+    const r = flowRule(), v = r.version;
+    const rid = "flow-d01", cid = "flow-case-01";
+    state.data.decisionRecords.unshift({
+      id: rid, time: "本地交互", subject: `合成${lex("subject")} Flow-01`,
+      subjectType: r.subjectType, ruleVersionId: v.id, result: "命中", actionTier: v.actionTier,
+      input: { demo_match: true, expression: v.expression, rollout: v.rollout },
+      hitChain: [r.id, v.id, `rollout: ${v.rollout}%`]
+    });
+    state.data.cases.unshift({
+      id: cid, subject: `合成${lex("subject")} Flow-01`, subjectType: r.subjectType,
+      decisionRecordId: rid, ruleVersionId: v.id, actionTier: v.actionTier,
+      evidence: `合成输入快照命中 ${v.expression}`, status: "已处置", appealId: null, isFlow: true
+    });
+    state.caseId = cid; state.recordId = rid;
+    audit(`建立 ${cid}`, "—", `命中 ${v.id}`);
+  },
+  submitAppeal() {
+    const kase = state.data.cases.find(c => c.id === state.caseId);
+    const path = skin().appealPath;
+    const sections = path.form.map(f => {
+      const el = document.querySelector(`[data-field="${f.key}"]`);
+      return { label: f.label, text: (el && el.value.trim()) || f.preset };
+    });
+    const id = `${kase.id}-appeal`;
+    state.data.appeals.unshift({
+      id, caseId: kase.id, state: "submitted", sections,
+      reviewNote: "待复核", returnedToEval: false
+    });
+    kase.appealId = id;
+    audit(`提交 ${id}`, "—", "submitted");
+  },
+  reviewAppeal() {
+    const a = appealOf(state.data.cases.find(c => c.id === state.caseId));
+    const before = a.state;
+    a.state = "under_review"; a.reviewNote = "人工复核中";
+    audit(`复核 ${a.id}`, before, "under_review");
+  },
+  uphold() {
+    const a = appealOf(state.data.cases.find(c => c.id === state.caseId));
+    a.state = "upheld"; a.reviewNote = "复核认定原判定成立，维持原处置。";
+    audit(`维持 ${a.id}`, "under_review", "upheld");
+  },
+  overturn() {
+    const kase = state.data.cases.find(c => c.id === state.caseId);
+    const a = appealOf(kase);
+    a.state = "overturned"; a.reviewNote = "复核认定判定依据不成立，推翻原处置。";
+    kase.status = "已撤销（申诉推翻）";
+    audit(`推翻 ${a.id}`, "under_review", "overturned");
+  },
+  returnEval() {
+    const kase = state.data.cases.find(c => c.id === state.caseId);
+    const a = appealOf(kase);
+    a.returnedToEval = true;
+    const rec = recordById(kase.decisionRecordId);
+    if (rec) rec.returnedToEval = true;
+    audit(`回流评测集 ${a.id}`, "overturned", "已回流评测集（回归用例）");
+  },
+
+  pickRule(arg) { state.ruleId = arg; },
+  pickCR(arg)   { state.crId = arg; },
+  clearFilter() { state.fSubject = ""; state.fVersion = ""; },
+  pickCase(arg) { state.caseId = arg; },
+  openRecord(arg) { state.recordId = arg; state.view = "决策日志"; }
+};
+
+/* ----------------------------------------------------------- 渲染与事件 */
+const RENDERERS = {
+  "规则库": viewRules, "变更请求": viewChange, "发布时间线": viewTimeline,
+  "案件与申诉": viewCases, "决策日志": viewDecisions
+};
+
+let lastView = null;
+function render() {
+  tabsEl.innerHTML = VIEWS.map(v =>
+    `<button class="${v === state.view ? "on" : ""}" data-act="goto" data-arg="${esc(v)}">${esc(v)}</button>`).join("");
+  app.innerHTML = RENDERERS[state.view]();
+  /* 只在换视图时回到顶部：链路按钮多在下方面板，逐步操作时不该把人弹回页首 */
+  if (state.view !== lastView) { window.scrollTo({ top: 0 }); lastView = state.view; }
+}
+
+function loadSkin(i) {
+  state.skinIndex = i;
+  const bad = validateSkin(SKINS[i]);
+  document.getElementById("skincheck").innerHTML = bad.length
+    ? `皮肤校验未通过：${bad.map(esc).join("；")}`
+    : `皮肤校验通过：<b>${esc(SKINS[i].skinName)}</b> 的全部取值都落在内核取值域内
+       （RuleVersion ${RULE_VERSION_STATES.length} 态 / Action ${ACTION_TIERS.length} 级 /
+       ChangeRequest ${CHANGE_REQUEST_STATES.length} 态 / Appeal ${APPEAL_STATES.length} 态）。`;
+  state.data = clone(SKINS[i].sampleData);
+  state.view = VIEWS[0];
+  state.caseId = null; state.recordId = null;
+  state.ruleId = null; state.crId = null;
+  state.fSubject = ""; state.fVersion = "";
+  render();
+}
+
+document.addEventListener("click", e => {
+  const el = e.target.closest("[data-act]");
+  if (!el || el.tagName === "SELECT") return;
+  const fn = ACTIONS[el.dataset.act];
+  if (!fn) return;
+  fn(el.dataset.arg);
+  render();
+});
+
+document.addEventListener("change", e => {
+  const el = e.target;
+  if (el === skinSelect) { loadSkin(Number(el.value)); return; }
+  if (el.dataset.act === "fSubject") { state.fSubject = el.value; render(); }
+  if (el.dataset.act === "fVersion") { state.fVersion = el.value; render(); }
+});
+
+skinSelect.innerHTML = SKINS.map((s, i) => `<option value="${i}">${esc(s.skinName)}</option>`).join("");
+loadSkin(0);
+</script>
+</body>
+</html>

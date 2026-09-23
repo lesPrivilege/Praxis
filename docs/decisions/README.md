@@ -17,3 +17,9 @@ accepted 表示本仓库采纳；技术实现与使用证据在对应契约和�
 - [ADR-009：以工作为入口的知识架构](009-work-led-knowledge-architecture.md)（accepted）。
 - [ADR-010：领域 Kit 与运行消费者](010-domain-kit-consumers.md)（accepted；接入待验证）。
 - [ADR-011：由文档结构承担使用指引](011-task-documentation.md)（accepted）。
+
+- [ADR-012：平台产品扫盲与思维导图归属](012-platform-grammar-mindmaps.md)（accepted；行业说明为研究，XMind 导入待验证）。
+
+- [ADR-013：能力测试回答体例与证据分层](013-assessment-answer-profile.md)（accepted；产品实测与视觉制作 deferred）。
+
+- [ADR-014：跨项目的 Design 与 Writing kit](014-design-writing-kits.md)（accepted；重复登记待逐步合并）。

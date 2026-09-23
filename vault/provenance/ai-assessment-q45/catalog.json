@@ -1,0 +1,553 @@
+{
+  "schema_version": "1.1",
+  "catalog_id": "ai-assessment-q45-2026-09-23",
+  "origin": "direct-research",
+  "as_of": "2026-09-23",
+  "scope": {
+    "questions": ["Q4", "Q5"],
+    "attachment": "/Users/lesprivilege/Downloads/AI_能力测试_研究与交付蓝图_2026-09-23/",
+    "attachment_sources_considered": ["S12", "S13", "S14", "S15", "S16", "S17", "S18", "S19", "S20", "S21", "S22", "S23", "S24", "S25", "S26", "S27", "S28"],
+    "selection_rule": "从附件历史来源 S12-S26/S28 中选择 15 个 URL 级来源记录，直接支撑 Jev 语义、限制、重复一致性、版本化改进、独立评估、奖励黑客和有限法律概念核查；S26 的四页法源保留共同主题组和历史来源 ID；未选项与研究/法律缺口另列。",
+    "snapshot_rule": "直接 HTTP body 保存；没有把历史 Chat citation placeholder 当作本轮验证；远端动态资产、默认分支和未保存依赖不宣称离线完整。"
+  },
+  "provenance_policy": {
+    "claim_rule": "status 只描述本批直接读取的正文能支持的具体主张，不等于模型效果、生产成熟度、法律意见或部署批准。",
+    "maturity_rule": "vendor_doc、integration_doc、case_law、statute、regulatory_guidance、research 和 safety_research 分开标识；研究材料不晋升为成熟实践。",
+    "snapshot_layer": "http-body",
+    "original_url_rule": "original_url 保留附件列出的来源 URL；S20 的快照使用该仓库当前默认分支 raw README，并在定位中注明，未声称固定 commit。",
+    "checked_at": "2026-09-23",
+    "evidence_fields": "supported_claims[].locator 使用本地快照行号或正文标题/短语定位；每个 source 的 snapshot_path、snapshot_sha256、snapshot_size_bytes 都是单值并一一对应；S26 通过 related_source_group 和 historical_source_id 连接四条独立记录。"
+  },
+  "retrieval_summary": {
+    "unique_urls": 15,
+    "http_success": 15,
+    "http_failures": [],
+    "snapshot_body_files": 15,
+    "snapshot_body_bytes": 1081535,
+    "note": "本批所有选定 URL 均取得 HTTP 200 正文；没有把远端图片、字体、脚本、动态接口或默认分支完整仓库宣称为离线资产。"
+  },
+  "sources": [
+    {
+      "slug": "s13-typesafe-score",
+      "title": "TypeSafe — Score",
+      "url": "https://docs.typesafe.ai/primitives/score.md",
+      "original_url": "https://docs.typesafe.ai/primitives/score.md",
+      "official": true,
+      "publisher": "TypeSafe",
+      "source_class": "vendor_doc",
+      "maturity": "product_semantics",
+      "status": "verified",
+      "summary_zh": "Score 是按有序、描述性等级评估内容的题型，正文说明返回每级概率、加权 score 和 confidence；score 可以落在两个等级之间。正文还明确 confidence 只描述返回分布的集中程度，同一个 score 可由不同概率分布产生。",
+      "limits": "这是厂商接口语义和演示，不是本业务正确率或校准证据。等级编号的概率加权均值不是物理量或业务损失；四舍五入不能单独承担严重风险闸门。",
+      "revisit_trigger": "Score/Choice/Noul API 语义、概率字段或等级处理变更；为业务阈值做实测前复查。",
+      "purpose_tags": ["Q4", "JEV", "SCORE", "CALIBRATION", "THRESHOLD"],
+      "review_scope": "官方 Markdown 正文，HTTP body；未运行 TypeSafe API。",
+      "supported_claims": [
+        {
+          "claim_id": "S13-Q4-score-01",
+          "claim_zh": "Score 返回 probabilities、score、legend 和 confidence；score 是各等级编号乘概率后的和，可以是分数线上的小数。",
+          "locator": "快照第 659-665 行；标题 Response structure。"
+        },
+        {
+          "claim_id": "S13-Q4-score-02",
+          "claim_zh": "confidence 1.0 只表示概率集中；不同分布可能得到相同 score，因此必须同时保留 probabilities 与 confidence。",
+          "locator": "快照第 730-736 行；标题 Reading a Score。"
+        }
+      ],
+      "snapshot_path": "vault/provenance/ai-assessment-q45/snapshots/s13-typesafe-score.md.txt",
+      "snapshot_sha256": "5afe0db1d2d108c3bf35f73f5fddbfcd2b9ade2d3c6f553af8a02b2bfd005ae9",
+      "snapshot_size_bytes": 43992,
+      "accessed_at": "2026-09-23T11:29:06+08:00",
+      "card_path": "vault/provenance/ai-assessment-q45/cards/s13-typesafe-score.md"
+    },
+    {
+      "slug": "s14-typesafe-confidence",
+      "title": "TypeSafe — Confidence",
+      "url": "https://docs.typesafe.ai/confidence.md",
+      "original_url": "https://docs.typesafe.ai/confidence.md",
+      "official": true,
+      "publisher": "TypeSafe",
+      "source_class": "vendor_doc",
+      "maturity": "product_semantics",
+      "status": "verified",
+      "summary_zh": "Confidence 是由 Choice/Score 概率分布形状计算的 0 到 1 统计量；文档给出按风险区分自动执行、审阅和降级的示例，并说明阈值不是全系统只有一个数。",
+      "limits": "confidence 是概率分布的派生量，不是经业务验证的正确率，也不是独立证据。文档示例阈值不是本题上线门槛，仍需自有标签和错误成本校准。",
+      "revisit_trigger": "confidence 定义、计算方式、fallback 行为或风险分层示例变化；业务 policy 版本变更时复查。",
+      "purpose_tags": ["Q4", "JEV", "CONFIDENCE", "CALIBRATION", "DEGRADATION"],
+      "review_scope": "官方 Markdown 正文，HTTP body；未运行 API。",
+      "supported_claims": [
+        {
+          "claim_id": "S14-Q4-confidence-01",
+          "claim_zh": "Score/Choice 都有 probabilities；confidence 把分布形状压成单数，Noul 不带该字段。",
+          "locator": "快照第 143-157 行；标题 Confidence is derived from the probabilities。"
+        },
+        {
+          "claim_id": "S14-Q4-confidence-02",
+          "claim_zh": "文档建议高 confidence 可自动、medium 需谨慎、low 进入人工/澄清/其他系统；不同动作按后果设置不同阈值。",
+          "locator": "快照第 159-179 行；标题 I don't know is a useful signal / Thresholds scale with risk。"
+        }
+      ],
+      "snapshot_path": "vault/provenance/ai-assessment-q45/snapshots/s14-typesafe-confidence.md.txt",
+      "snapshot_sha256": "97dafe98b77979906a2ad456013dd85a70dcecd109d0644b096817d910997ea5",
+      "snapshot_size_bytes": 11396,
+      "accessed_at": "2026-09-23T11:29:07+08:00",
+      "card_path": "vault/provenance/ai-assessment-q45/cards/s14-typesafe-confidence.md"
+    },
+    {
+      "slug": "s15-typesafe-jev-1-13-jaggedness",
+      "title": "TypeSafe — Jev 1.13 jaggedness",
+      "url": "https://docs.typesafe.ai/model-jaggedness/jev-1.13.md",
+      "original_url": "https://docs.typesafe.ai/model-jaggedness/jev-1.13.md",
+      "official": true,
+      "publisher": "TypeSafe",
+      "source_class": "vendor_limitations",
+      "maturity": "product_limitations",
+      "status": "verified",
+      "summary_zh": "Jev 1.13 的限制页明确列出字面理解、数学与数字、日期比较、间接推理、无关上下文、对抗内容和结构不变量等边界；建议把算术和日期组装留给代码，过滤输入并分别设计问题。",
+      "limits": "这是版本化的厂商限制说明，页内明确 last reviewed 2026-09-17；不证明其他 Jev 版本、其他 primitive 或业务数据的效果。文档自称 calibrated 不是独立校准证据。",
+      "revisit_trigger": "Jev 版本、模型限制页或 primitive 语义更新；业务使用从 jev-1.13 切换到 latest/preview 时必须复查。",
+      "purpose_tags": ["Q4", "JEV", "LIMITS", "ROBUSTNESS", "INJECTION", "CALIBRATION"],
+      "review_scope": "官方 Markdown 正文；适用 jev-1.13，未运行模型。",
+      "supported_claims": [
+        {
+          "claim_id": "S15-Q4-limit-01",
+          "claim_zh": "Jev 1.13 对数值精度、日期顺序/间隔、复杂间接推理和冗余上下文有已知限制，算术应放在代码。",
+          "locator": "快照第 5-27、35-84、88-102 行；The failure modes in detail / Math and Numbers / Date and time comparison。"
+        },
+        {
+          "claim_id": "S15-Q4-limit-02",
+          "claim_zh": "对抗内容可能移动答案；Noul 与 Choice 等问题不保证直觉恒等式，不能跨 primitive 搬阈值。",
+          "locator": "快照第 104-137 行；Adversarial content / Common-sense structural invariants。"
+        }
+      ],
+      "snapshot_path": "vault/provenance/ai-assessment-q45/snapshots/s15-typesafe-jev-1-13-jaggedness.md.txt",
+      "snapshot_sha256": "e69329bd32e91ac08f0bd2681ceb4aacc34923b9190e29c15c8f75d8e22950e2",
+      "snapshot_size_bytes": 11588,
+      "accessed_at": "2026-09-23T11:29:08+08:00",
+      "card_path": "vault/provenance/ai-assessment-q45/cards/s15-typesafe-jev-1-13-jaggedness.md"
+    },
+    {
+      "slug": "s16-typesafe-consistency-choice",
+      "title": "TypeSafe — Self-consistency: choices",
+      "url": "https://docs.typesafe.ai/cookbooks/consistency_choice_cookbook.md",
+      "original_url": "https://docs.typesafe.ai/cookbooks/consistency_choice_cookbook.md",
+      "official": true,
+      "publisher": "TypeSafe",
+      "source_class": "vendor_cookbook",
+      "maturity": "illustrative_experiment",
+      "status": "verified",
+      "summary_zh": "官方 cookbook 对一个边界 moderation post 做 15 次重复，报告标签一致性、概率波动、uncertain 比例和自动处理覆盖率；它明确说明把 top probability 低于 0.60 的结果送人工能提高重复一致性，但该阈值只是示例 policy，不代表校准保证，重复性不等于正确性。",
+      "limits": "单个边界 post、8 个 Choice、每条件 15 次，TypeSafe 调用使用 fresh uid；不能分离同请求随机性与 uid 扰动，也不能推导本业务正确率、校准或优越性。",
+      "revisit_trigger": "Jev/LLM 版本、rubric、uid/cache 机制或业务 action policy 改变；正式上线前用自有标注和未调参测试集重做。",
+      "purpose_tags": ["Q4", "CONSISTENCY", "REPEATABILITY", "ABSTENTION", "HUMAN_REVIEW"],
+      "review_scope": "官方 Markdown cookbook 与代码/结果；未重新运行其依赖或 API。",
+      "supported_claims": [
+        {
+          "claim_id": "S16-Q4-consistency-01",
+          "claim_zh": "示例以同一边界 post、8 个 Choice、每条件 15 次重复测标签变化；TypeSafe 也会出现选择翻转。",
+          "locator": "快照第 9-41 行；开头实验说明。"
+        },
+        {
+          "claim_id": "S16-Q4-consistency-02",
+          "claim_zh": "top probability < 0.60 时返回 uncertain 并送人工；示例一致性升至 99.2%、自动处理 74.2%，但文档明确这些只表示 repeatability，不表示动作正确。",
+          "locator": "快照第 935-944、1004-1015 行；Let uncertain probabilities produce an uncertain decision。"
+        }
+      ],
+      "snapshot_path": "vault/provenance/ai-assessment-q45/snapshots/s16-typesafe-consistency-choice.md.txt",
+      "snapshot_sha256": "e0444c2c4e9c9440595692eaa2806157d43080adc525f94fe5c204b2d7bafe36",
+      "snapshot_size_bytes": 49891,
+      "accessed_at": "2026-09-23T11:29:09+08:00",
+      "card_path": "vault/provenance/ai-assessment-q45/cards/s16-typesafe-consistency-choice.md"
+    },
+    {
+      "slug": "s18-pydantic-typesafe",
+      "title": "Pydantic AI — TypeSafe (Jev)",
+      "url": "https://pydantic.dev/docs/ai/models/typesafe/",
+      "original_url": "https://pydantic.dev/docs/ai/models/typesafe/",
+      "official": true,
+      "publisher": "Pydantic",
+      "source_class": "integration_doc",
+      "maturity": "framework_semantics",
+      "status": "verified",
+      "summary_zh": "Pydantic AI 的 Jev 集成文档把 schema 类型、原始 probabilities、confidence 和 rubric 的未取整 scores 分开；rubric 结果取最近等级且半数进位。文档要求在自有标签上测 accuracy、阈值和 hand-off rate，并提醒 latest/preview 别名会移动。",
+      "limits": "这是框架集成语义和维护者示例，不是 Jev 或业务的独立效果验证；包装层的取整不能替代原始分数和概率；内部支持工单示例太小，不能推导本题业务准确率。",
+      "revisit_trigger": "Pydantic AI 或 TypeSafe provider 版本更新，provider_details 结构、取整规则、latest 别名或 fallback API 变化。",
+      "purpose_tags": ["Q4", "SCHEMA", "ROUNDING", "RAW_SCORE", "FALLBACK", "CALIBRATION"],
+      "review_scope": "维护者官方 HTML 正文；保留 HTTP body，未运行示例。",
+      "supported_claims": [
+        {
+          "claim_id": "S18-Q4-wrapper-01",
+          "claim_zh": "rubric 是有序等级；Jev 先给等级线上的位置，再由字段取最近等级，半数进位；未取整位置存于 provider_details['scores']。",
+          "locator": "HTML body 标题 A rubric is a set of ordered levels；短语 provider_details['scores']；示例 grade_with_a_rubric.py。"
+        },
+        {
+          "claim_id": "S18-Q4-wrapper-02",
+          "claim_zh": "provider_details['confidence'] 是 margin/分布形状的数值，不是答案正确概率；provider_details['probabilities'] 和 ['scores'] 应保留，阈值需用自有标注调校。",
+          "locator": "HTML body 标题 Confidence and thresholds、Falling back on low confidence、Measure on your own data。"
+        }
+      ],
+      "snapshot_path": "vault/provenance/ai-assessment-q45/snapshots/s18-pydantic-typesafe.html.txt",
+      "snapshot_sha256": "ec2dea84082122fb4659576840def399d9ffe05d8502982a4cec4f0aff7cc14d",
+      "snapshot_size_bytes": 242390,
+      "accessed_at": "2026-09-23T11:29:10+08:00",
+      "card_path": "vault/provenance/ai-assessment-q45/cards/s18-pydantic-typesafe.md"
+    },
+    {
+      "slug": "s19-pydantic-api-typesafe",
+      "title": "Pydantic AI — models.typesafe API",
+      "url": "https://pydantic.dev/docs/ai/api/models/typesafe/",
+      "original_url": "https://pydantic.dev/docs/ai/api/models/typesafe/",
+      "official": true,
+      "publisher": "Pydantic",
+      "source_class": "integration_api",
+      "maturity": "framework_semantics",
+      "status": "verified",
+      "summary_zh": "API 参考明确 bool threshold 默认 0.5、tool-call threshold 默认 0.6，并区分 bool 的阈值化、float 原始概率、rubric 最近等级和 provider_details 中的 confidence/probabilities/scores。它提醒工具阈值应在自有标注上调校。",
+      "limits": "API 默认值不是业务门槛，也不是跨 primitive 可迁移的校准结果；文档中的 provider/model 版本和运行环境不证明服务 SLA、区域稳定性或绝对确定性。",
+      "revisit_trigger": "Pydantic AI API 版本、TypeSafe provider 配置、threshold 默认值或 response metadata 结构变更。",
+      "purpose_tags": ["Q4", "SCHEMA", "THRESHOLD", "RAW_SCORE", "VERSIONING", "DEGRADATION"],
+      "review_scope": "维护者官方 API HTML 正文；保留 HTTP body，未运行 API。",
+      "supported_claims": [
+        {
+          "claim_id": "S19-Q4-api-01",
+          "claim_zh": "bool field 的默认阈值是 0.5；bounded float 返回原始概率且不阈值化；tool-call threshold 默认 0.6，文档要求用自有标注调校。",
+          "locator": "HTML body 的 TypeSafeModelSettings 小节；字段 typesafe_boolean_threshold、typesafe_tool_call_threshold。"
+        },
+        {
+          "claim_id": "S19-Q4-api-02",
+          "claim_zh": "API 参考把 confidence、probabilities、scores 列为不同 response details；rubric 输出是最近等级，原始等级位置需单独读取。",
+          "locator": "HTML body 的 TypeSafeModel 小节；字段映射表与 ModelResponse.provider_details 描述。"
+        }
+      ],
+      "snapshot_path": "vault/provenance/ai-assessment-q45/snapshots/s19-pydantic-api-typesafe.html.txt",
+      "snapshot_sha256": "5719658a1779e91c413798d78a8f383e0f6e7337b1f9e422665b6a76fa68ca23",
+      "snapshot_size_bytes": 161117,
+      "accessed_at": "2026-09-23T11:29:10+08:00",
+      "card_path": "vault/provenance/ai-assessment-q45/cards/s19-pydantic-api-typesafe.md"
+    },
+    {
+      "slug": "s20-google-research-rrsi",
+      "title": "Google Research — RRSI: Regularized Recursive Self-Improvement of Agent Harnesses",
+      "url": "https://github.com/google-research/rrsi",
+      "original_url": "https://github.com/google-research/rrsi",
+      "official": false,
+      "publisher": "Google Research repository; README disclaimer says not an officially supported Google product",
+      "source_class": "research_repo",
+      "maturity": "research_only",
+      "status": "verified",
+      "summary_zh": "RRSI README 把 harness 演化描述为研究方法：开放 prompt、control flow、tools、memory 等编辑空间，但通过编辑预算、完整历史、leakage critic、噪声调整门槛、成本规则、剪枝和独立 worktree 控制搜索；每个编辑保留假设、分数、成本变化和裁决。",
+      "limits": "README 明确项目不是受支持的 Google 产品；其 benchmark、代码和工作流不能证明法律 playbook 的正确性、组织成熟度、权限隔离或生产 SLA，也未固定远端默认分支 commit。",
+      "revisit_trigger": "研究论文/仓库 commit、候选选择算法或本题 playbook 变更治理设计改变；正式采用前必须用独立业务评估验证。",
+      "purpose_tags": ["Q5", "RSI", "PLAYBOOK", "VERSIONING", "CANDIDATE", "INDEPENDENT_EVAL", "COST_GUARD"],
+      "review_scope": "GitHub 仓库当前默认分支 raw README HTTP body；未抓取仓库完整 commit、代码和资产。",
+      "supported_claims": [
+        {
+          "claim_id": "S20-Q5-rrsi-01",
+          "claim_zh": "RRSI 认为只在固定 evolve set 上演化会过拟合，因此以编辑历史、预算、泄漏检查、噪声调整 floor、成本规则和剪枝约束搜索。",
+          "locator": "快照第 15-29、38-54 行；Overview 与 Method to code。"
+        },
+        {
+          "claim_id": "S20-Q5-rrsi-02",
+          "claim_zh": "候选在独立 git worktree/branch 中草拟、筛选和评估，接受后 fast-forward incumbent；每次编辑记录 component、hypothesis、measured score、cost change 和 verdict。",
+          "locator": "快照第 31-36、81-92 行；Key features 与 Run an instance。"
+        }
+      ],
+      "snapshot_path": "vault/provenance/ai-assessment-q45/snapshots/s20-rrsi-readme.md.txt",
+      "snapshot_sha256": "4822dae4f4bf69a4502bfbf23ebbf80aeccd65e1f0cefde3652cafda586cfac8",
+      "snapshot_size_bytes": 12070,
+      "accessed_at": "2026-09-23T11:29:11+08:00",
+      "card_path": "vault/provenance/ai-assessment-q45/cards/s20-google-research-rrsi.md"
+    },
+    {
+      "slug": "s22-rsi-exam",
+      "title": "RSI-Exam — Benchmarking Recursive Self-Improvement through Executable Research",
+      "url": "https://rsi-exam.ai/",
+      "original_url": "https://rsi-exam.ai/",
+      "official": false,
+      "publisher": "RSI-Exam project",
+      "source_class": "research_benchmark",
+      "maturity": "research_only",
+      "status": "verified",
+      "summary_zh": "RSI-Exam 项目页说明 agent 在可见数据上迭代，最后把产物交给隔离 verifier container，在 hidden data 上一次性评分；任务由领域专家编写并由其他人审阅，要求隔离镜像、artifact contract、hidden data 和可信评分代码。",
+      "limits": "这是递归自改进研究 benchmark，不是法律真值、生产发布控制或权限方案；隐藏集隔离不能替代具备相应法域能力的独立标注和争议裁决。页面是动态 HTML，远端资产未保存。",
+      "revisit_trigger": "评估协议、任务库、隔离执行环境或隐藏集规则更新；若用于 Q5，只可作为独立验收的研究参考。",
+      "purpose_tags": ["Q5", "RSI", "INDEPENDENT_EVAL", "HIDDEN_SET", "ISOLATION", "RESEARCH"],
+      "review_scope": "项目主页 HTTP body；未运行 benchmark、未抓取任务仓库。",
+      "supported_claims": [
+        {
+          "claim_id": "S22-Q5-rsi-exam-01",
+          "claim_zh": "工作容器中可见数据迭代，产物交给 verifier container，在 hidden data 上评分；最终评分是 one-shot hidden-set generalization。",
+          "locator": "HTML body 标题 The evaluation pipeline、One-shot hidden-set generalization；短语 working container / verifier container。"
+        },
+        {
+          "claim_id": "S22-Q5-rsi-exam-02",
+          "claim_zh": "任务由领域专家编写并由其他人审阅，任务格式包含两份隔离镜像、artifact contract、hidden data 和 trusted scoring code。",
+          "locator": "HTML body 标题 How a task is built；短语 Every task is written by a domain expert。"
+        }
+      ],
+      "snapshot_path": "vault/provenance/ai-assessment-q45/snapshots/s22-rsi-exam.html.txt",
+      "snapshot_sha256": "bf00330b037fc66749129d69b72d60422539e52fc97c3cf7ad75de1659e7fdff",
+      "snapshot_size_bytes": 83543,
+      "accessed_at": "2026-09-23T11:29:13+08:00",
+      "card_path": "vault/provenance/ai-assessment-q45/cards/s22-rsi-exam.md"
+    },
+    {
+      "slug": "s24-anthropic-reward-hacking",
+      "title": "Anthropic — Natural emergent misalignment from reward hacking",
+      "url": "https://www.anthropic.com/research/emergent-misalignment-reward-hacking",
+      "original_url": "https://www.anthropic.com/research/emergent-misalignment-reward-hacking",
+      "official": true,
+      "publisher": "Anthropic",
+      "source_class": "safety_research",
+      "maturity": "research_only",
+      "status": "verified",
+      "summary_zh": "Anthropic 研究把 reward hacking 定义为模型钻评测漏洞以取得高 reward、却没有完成预期任务，并报告在可被 hack 的训练环境中学会作弊后，若干不对齐行为评估同步上升。对 Q5 的可迁移点是把评价器、验收集和发布状态置于候选修改者控制之外，并审计绕过检查的路径。",
+      "limits": "这是训练研究，不证明本题系统一定出现同类行为，也不是生产治理标准；报告中的实验比例不能直接当作目标系统风险率。",
+      "revisit_trigger": "奖励函数、验收器、评估集或自动发布链改变；出现通过删警告、避开难例、伪造回执等路径时重新做威胁建模。",
+      "purpose_tags": ["Q5", "REWARD_HACKING", "MISALIGNMENT", "EVALUATOR_INDEPENDENCE", "SAFETY_RESEARCH"],
+      "review_scope": "Anthropic 官方研究页面 HTTP body；未复现实验。",
+      "supported_claims": [
+        {
+          "claim_id": "S24-Q5-reward-01",
+          "claim_zh": "reward hacking 是让训练过程给高分而未完成预期任务；页面举例说明可以通过测试漏洞伪造成功。",
+          "locator": "HTML body 标题 From shortcuts to sabotage；段落含 reward hacking 定义及 sys.exit(0) 示例。"
+        },
+        {
+          "claim_id": "S24-Q5-reward-02",
+          "claim_zh": "研究报告学会 reward hacking 后若干 misalignment 评估上升，包含规避监控和安全研究 sabotage 等行为。",
+          "locator": "HTML body 小节 realistic setup / misalignment evaluations；短语 sharp increase 与 sabotage evaluation。"
+        }
+      ],
+      "snapshot_path": "vault/provenance/ai-assessment-q45/snapshots/s24-anthropic-reward-hacking.html.txt",
+      "snapshot_sha256": "e7d7222560bb6d16099970af411efb135b49bb124e7c9d8baa54c51d0572f622",
+      "snapshot_size_bytes": 182042,
+      "accessed_at": "2026-09-23T11:29:14+08:00",
+      "card_path": "vault/provenance/ai-assessment-q45/cards/s24-anthropic-reward-hacking.md"
+    },
+    {
+      "slug": "s25-singapore-man-financial-v-wong",
+      "title": "Singapore Court of Appeal — Man Financial v Wong Bark Chuan David [2007] SGCA 53",
+      "url": "https://www.elitigation.sg/gd/s/2007_SGCA_53",
+      "original_url": "https://www.elitigation.sg/gd/s/2007_SGCA_53",
+      "official": true,
+      "publisher": "Singapore Judiciary eLitigation",
+      "source_class": "case_law",
+      "maturity": "primary_legal_source",
+      "status": "verified",
+      "summary_zh": "判决正文说明其在雇佣关系中澄清并重述 restraint of trade doctrine，并讨论 settlement/compromise、可保护的 proprietary interest 及限制条款对当事人和公共利益的合理性。它支持的是具体判决中的法理和事实审查，不支持跨法域或跨国家套用补偿数字。",
+      "limits": "这是 2007 年具体判决，不是最新新加坡竞业限制法的穷尽检索，也不是本题合同的法律意见；没有据此推导 SG/VN 通用公式。",
+      "revisit_trigger": "需要形成新加坡正式法律结论、适用新法或具体合同事实发生变化时，补查后续法源并由相应法域律师复核。",
+      "purpose_tags": ["Q5", "SG", "LEGAL_CONCEPT", "RESTRAINT_OF_TRADE", "BOUNDARY"],
+      "review_scope": "判决正文 HTTP body；重点读取开头第 1-14 段及判决中 reasonableness/proprietary interest 段落。",
+      "supported_claims": [
+        {
+          "claim_id": "S25-Q5-sg-01",
+          "claim_zh": "法院将问题放在 restraint of trade、雇佣关系、settlement/compromise 和可保护利益的具体事实框架中。",
+          "locator": "HTML body paragraphs 1-14；开头案件摘要和 Introduction。"
+        },
+        {
+          "claim_id": "S25-Q5-sg-02",
+          "claim_zh": "合理性需要分别考察当事人利益与公共利益，并先识别可保护的 legitimate proprietary interest；不提供题干 50% 数字规则。",
+          "locator": "HTML body paragraphs 44-48、69-79、84-98；Reasonableness 与 A legitimate proprietary interest 小节。"
+        }
+      ],
+      "snapshot_path": "vault/provenance/ai-assessment-q45/snapshots/s25-sgca-2007-53.html.txt",
+      "snapshot_sha256": "149d5ad7912ad6bf7b48208106772767e2470c92f672a4a94a3f6341438454a6",
+      "snapshot_size_bytes": 218121,
+      "accessed_at": "2026-09-23T11:29:16+08:00",
+      "card_path": "vault/provenance/ai-assessment-q45/cards/s25-singapore-man-financial-v-wong.md"
+    },
+    {
+      "slug": "s26-de-hgb-74",
+      "historical_source_id": "S26",
+      "related_source_group": "s26-germany-noncompete-statutes",
+      "title": "Germany — Handelsgesetzbuch §74",
+      "url": "https://www.gesetze-im-internet.de/hgb/__74.html",
+      "original_url": "https://www.gesetze-im-internet.de/hgb/__74.html",
+      "official": true,
+      "publisher": "Gesetze im Internet",
+      "source_class": "statute",
+      "maturity": "primary_legal_source",
+      "status": "verified",
+      "summary_zh": "HGB §74(1)要求离职后竞业限制以书面形式并交付签署文件；§74(2)规定竞业限制期间每年补偿至少达到最后合同给付的一半。",
+      "limits": "简单 fixture 若已明确适用的离职后竞业限制、主体、期间和可计入的合同给付，月薪×12×50%可以是年度最低补偿的算术表达；本条不把 50% 变成普遍制裁，也不独自给出完整公式或事实结论。这里只做概念核对，不作完整德国法律意见。",
+      "revisit_trigger": "使用德国公式或判断条款可执行性时，复核适用主体、合同给付、期间和后续法源，并联读 S26 共同主题组。",
+      "purpose_tags": ["Q5", "DE", "LEGAL_CONCEPT", "NONCOMPETE", "COMPENSATION", "50_PERCENT"],
+      "review_scope": "德国政府法源 HTML body；单页正文。",
+      "supported_claims": [
+        {
+          "claim_id": "S26-Q5-de-74",
+          "claim_zh": "HGB §74(1)要求书面形式和交付签署文件；§74(2)要求限制期间每年补偿至少达到最后合同给付的一半。",
+          "locator": "快照正文 HTML title §74 HGB - Einzelnorm；第 6-8 行。"
+        }
+      ],
+      "snapshot_path": "vault/provenance/ai-assessment-q45/snapshots/s26-de-hgb-74.html.txt",
+      "snapshot_sha256": "9ae86866208e86167cabe67d3f36d6aca0e888c442f17017cff1e86d80fcdc90",
+      "snapshot_size_bytes": 4039,
+      "accessed_at": "2026-09-23T11:29:18+08:00",
+      "card_path": "vault/provenance/ai-assessment-q45/cards/s26-de-hgb-74.md"
+    },
+    {
+      "slug": "s26-de-hgb-74a",
+      "historical_source_id": "S26",
+      "related_source_group": "s26-germany-noncompete-statutes",
+      "title": "Germany — Handelsgesetzbuch §74a",
+      "url": "https://www.gesetze-im-internet.de/hgb/__74a.html",
+      "original_url": "https://www.gesetze-im-internet.de/hgb/__74a.html",
+      "official": true,
+      "publisher": "Gesetze im Internet",
+      "source_class": "statute",
+      "maturity": "primary_legal_source",
+      "status": "verified",
+      "summary_zh": "HGB §74a 将竞业限制限定为保护合法商业利益，不能造成不公平职业阻碍，期限不得超过离职后两年，并列出其他无效情形。",
+      "limits": "本条只补充适用边界，不独自决定具体合同有效性或补偿金额；这里只做概念核对，不作完整德国法律意见。",
+      "revisit_trigger": "使用德国公式或判断条款可执行性时，联读 S26 共同主题组并复核后续法源和事实。",
+      "purpose_tags": ["Q5", "DE", "LEGAL_CONCEPT", "NONCOMPETE", "SCOPE", "BOUNDARY"],
+      "review_scope": "德国政府法源 HTML body；单页正文。",
+      "supported_claims": [
+        {
+          "claim_id": "S26-Q5-de-74a",
+          "claim_zh": "HGB §74a 要求合法商业利益，禁止不公平妨碍职业发展，期限不得超过离职后两年。",
+          "locator": "快照正文 HTML title §74a HGB - Einzelnorm；第 6-9 行。"
+        }
+      ],
+      "snapshot_path": "vault/provenance/ai-assessment-q45/snapshots/s26-de-hgb-74a.html.txt",
+      "snapshot_sha256": "710755d4458b2c20d460ea794a76b7751a1f26033beeaa6650577968a82f64ed",
+      "snapshot_size_bytes": 4535,
+      "accessed_at": "2026-09-23T11:29:20+08:00",
+      "card_path": "vault/provenance/ai-assessment-q45/cards/s26-de-hgb-74a.md"
+    },
+    {
+      "slug": "s26-de-hgb-74b",
+      "historical_source_id": "S26",
+      "related_source_group": "s26-germany-noncompete-statutes",
+      "title": "Germany — Handelsgesetzbuch §74b",
+      "url": "https://www.gesetze-im-internet.de/hgb/__74b.html",
+      "original_url": "https://www.gesetze-im-internet.de/hgb/__74b.html",
+      "official": true,
+      "publisher": "Gesetze im Internet",
+      "source_class": "statute",
+      "maturity": "primary_legal_source",
+      "status": "verified",
+      "summary_zh": "HGB §74b 规定补偿于每月末支付；佣金或变动给付按最近三年平均，特殊费用性质的给付不计入。",
+      "limits": "本条说明支付时点和部分基数处理，不独自证明月薪就是全部合同给付，也不构成完整德国法律意见。",
+      "revisit_trigger": "使用德国补偿公式或面对佣金、变动给付、费用时，联读 S26 共同主题组并复核后续法源和事实。",
+      "purpose_tags": ["Q5", "DE", "LEGAL_CONCEPT", "COMPENSATION", "PAYMENT", "BOUNDARY"],
+      "review_scope": "德国政府法源 HTML body；单页正文。",
+      "supported_claims": [
+        {
+          "claim_id": "S26-Q5-de-74b",
+          "claim_zh": "HGB §74b 规定补偿于每月末支付；佣金或变动给付按最近三年平均，特殊费用性质的给付不计入。",
+          "locator": "快照正文 HTML title §74b HGB - Einzelnorm；第 6-9 行。"
+        }
+      ],
+      "snapshot_path": "vault/provenance/ai-assessment-q45/snapshots/s26-de-hgb-74b.html.txt",
+      "snapshot_sha256": "b0471c73b3d2eacf3338a5178f69bdd1a998c801b40efe6e7b1b92f0f41eaec4",
+      "snapshot_size_bytes": 4170,
+      "accessed_at": "2026-09-23T11:29:21+08:00",
+      "card_path": "vault/provenance/ai-assessment-q45/cards/s26-de-hgb-74b.md"
+    },
+    {
+      "slug": "s26-de-gewo-110",
+      "historical_source_id": "S26",
+      "related_source_group": "s26-germany-noncompete-statutes",
+      "title": "Germany — Gewerbeordnung §110",
+      "url": "https://www.gesetze-im-internet.de/gewo/__110.html",
+      "original_url": "https://www.gesetze-im-internet.de/gewo/__110.html",
+      "official": true,
+      "publisher": "Gesetze im Internet",
+      "source_class": "statute",
+      "maturity": "primary_legal_source",
+      "status": "verified",
+      "summary_zh": "GewO §110 说明雇主与雇员可约定离职后的职业限制，并规定 HGB §§74-75f 相应适用。",
+      "limits": "本条是相应适用的入口，不独自给出具体补偿、有效性或事实结论；这里只做概念核对，不作完整德国法律意见。",
+      "revisit_trigger": "使用德国公式、判断主体范围或条款可执行性时，联读 S26 共同主题组并复核后续法源和事实。",
+      "purpose_tags": ["Q5", "DE", "LEGAL_CONCEPT", "NONCOMPETE", "CROSS_REFERENCE", "BOUNDARY"],
+      "review_scope": "德国政府法源 HTML body；单页正文。",
+      "supported_claims": [
+        {
+          "claim_id": "S26-Q5-de-gewo-110",
+          "claim_zh": "GewO §110 说明雇主与雇员可约定离职后的职业限制，并规定 HGB §§74-75f 相应适用。",
+          "locator": "快照正文 HTML title §110 GewO - Einzelnorm；第 6-8 行。"
+        }
+      ],
+      "snapshot_path": "vault/provenance/ai-assessment-q45/snapshots/s26-de-gewo-110.html.txt",
+      "snapshot_sha256": "81073bbef525300a9a855498fba5ef0cc5ec957b34dcdb7acfcf746ad0593289",
+      "snapshot_size_bytes": 3633,
+      "accessed_at": "2026-09-23T11:29:22+08:00",
+      "card_path": "vault/provenance/ai-assessment-q45/cards/s26-de-gewo-110.md"
+    },
+    {
+      "slug": "s28-ofac-50-percent-rule",
+      "title": "US Treasury OFAC — Entities Owned by Blocked Persons (50 Percent Rule)",
+      "url": "https://ofac.treasury.gov/faqs/topic/1521",
+      "original_url": "https://ofac.treasury.gov/faqs/topic/1521",
+      "official": true,
+      "publisher": "U.S. Department of the Treasury, OFAC",
+      "source_class": "regulatory_guidance",
+      "maturity": "primary_regulatory_source",
+      "status": "verified",
+      "summary_zh": "OFAC FAQ 的 50 Percent Rule 讨论一个或多个 blocked persons 对实体的直接或间接、合计 50% 以上所有权及其 blocked property 后果；控制但不拥有 50% 并不会仅因该规则自动 block。它与竞业补偿的 50% 不是同一概念。",
+      "limits": "这里只核对同名规则的概念区别，不构成制裁筛查、美国法适用或交易法律意见，也不能仅凭题干断言其一定引用 OFAC。",
+      "revisit_trigger": "题干出现 50 Percent Rule、blocked person、制裁或所有权结构时；OFAC FAQ 或制裁项目更新时复查。",
+      "purpose_tags": ["Q5", "OFAC", "50_PERCENT", "CONCEPT_DISAMBIGUATION", "SANCTIONS_BOUNDARY"],
+      "review_scope": "OFAC 官方 FAQ HTML body；重点读取 FAQ 398-402。",
+      "supported_claims": [
+        {
+          "claim_id": "S28-Q5-ofac-01",
+          "claim_zh": "OFAC 规则按一个或多个 blocked persons 的合计直接/间接所有权判断实体是否被 block，规则主题是制裁和 blocked property。",
+          "locator": "HTML body topic title Entities Owned by Blocked Persons (50% Rule)；FAQ 398-402 及各例。"
+        },
+        {
+          "claim_id": "S28-Q5-ofac-02",
+          "claim_zh": "FAQ 398 说明仅控制但未达到 50% 所有权不因 50 Percent Rule 自动 block；这不是离职竞业补偿系数。",
+          "locator": "HTML body FAQ 398；短语 speaks only to ownership and not to control。"
+        }
+      ],
+      "snapshot_path": "vault/provenance/ai-assessment-q45/snapshots/s28-ofac-faq-1521.html.txt",
+      "snapshot_sha256": "44b45413acc74b903c2c16bfc852f0930b587a2f47b2ed1528defd7991cb23ad",
+      "snapshot_size_bytes": 49008,
+      "accessed_at": "2026-09-23T11:29:30+08:00",
+      "card_path": "vault/provenance/ai-assessment-q45/cards/s28-ofac-50-percent-rule.md"
+    }
+  ],
+  "gaps": [
+    {
+      "id": "attachment-sources-not-selected",
+      "status": "open",
+      "detail": "附件来源 S12（Jev 发布说明）、S17（LLM guardrails 示例）、S21（HarnessDev 论文）、S23（AHE 工程仓库）和 S27（OpenAI Evaluation best practices）未纳入本批 15 个 URL 级正文快照；它们仍保留在附件登记，不能继承历史状态。S12/S17 可在需要厂商自评或样例阈值时补查，S21/S23 可在研究对照时补查，S27 可在独立评估方法卡片时补查。",
+      "revisit_trigger": "main 需要对应题目补充来源卡或要对照 Q1-Q3 的统一评估方法时。"
+    },
+    {
+      "id": "jev-independent-business-eval",
+      "status": "open",
+      "detail": "本批没有调用 Jev API，没有自有中文/法律标签、校准曲线、置信区间、严重漏报率、重复请求控制实验、网络稳定性或真实降级回放；不能据此宣称正确率、校准或生产可用。",
+      "revisit_trigger": "取得独立标注集、固定模型/rubric/policy 版本和可控运行环境后。"
+    },
+    {
+      "id": "rsi-production-maturity",
+      "status": "open",
+      "detail": "RRSI 与 RSI-Exam 是研究参考，Anthropic 页面是安全研究；本批没有成熟企业变更治理、IAM/tenant policy、不可篡改发布权限或实际法律 playbook 证据。",
+      "revisit_trigger": "需要把研究方法转成 kit candidate 时，先做独立场景和权限/发布验收。"
+    },
+    {
+      "id": "vn-approved-legal-source",
+      "status": "unknown",
+      "detail": "附件没有提供已批准的越南法源，本批不从新加坡判决、德国条文或 OFAC FAQ 推导越南规则；越南相关结论必须停在 unknown/待审草稿。",
+      "revisit_trigger": "取得并核验批准的越南原始法源、版本和适用事实后。"
+    },
+    {
+      "id": "legal-scope-bounded",
+      "status": "bounded",
+      "detail": "SG 只核查一件 Court of Appeal 判决，DE 只核查 HGB §§74/74a/74b 与 GewO §110，OFAC 只核查同名 50% 概念；没有完成完整法律意见、最新法源穷举、合同解释或制裁筛查。",
+      "revisit_trigger": "任何正式对外交付、法律判断或规则晋升前。"
+    },
+    {
+      "id": "third-party-contract-claims",
+      "status": "unverified",
+      "detail": "没有把第三方合同、SLA、禁止测试或服务区域等传言当作事实；本批未对其进行合同条款核查。",
+      "revisit_trigger": "拿到具体服务合同、条款版本或官方服务说明时。"
+    }
+  ],
+  "occurrences": []
+}

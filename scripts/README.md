@@ -19,3 +19,7 @@
 - 链接、身份或覆盖失败：修复错误列出的源记录，再运行验证。
 
 验证检查受治理目录 README、Markdown 本地链接、JSON、Chat 消息覆盖和快照 hash。来源快照保持原字节，其导航由 Vault 维护。外部主张核查、renderer 离线依赖、应用行为与业务结果分别在 [分层验收](../kit/verification/README.md) 中记录。
+
+XMind 导图另运行 `python3 scripts/lint_xmind.py <file.md> ...`，执行 [md/xmind profile](../docs/governance/xmind-markdown-profile.md) 静态 preflight；通过不代表已在 Xmind 实机导入。
+
+AI 能力测试批次使用专属 intake；来源 catalog 的 snapshot_path / snapshot_sha256 将外部正文副本接入统一快照清单。正文快照不意味着站点依赖完整或产品行为已实测。

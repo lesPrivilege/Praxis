@@ -13,3 +13,5 @@ Luna 负责探索、追溯、提炼和登记；Astra 负责架构、术语、冲
 | 查裁决与 Agent 执行约定 | [ADR](../decisions/README.md)、[Agent](../../kit/Agent.md) | 当前规则与职责 |
 
 新增目录须有唯一职责、消费目的和 README。公开版本范围在实际发布前检查，企业事实与 secret 独立管理。
+
+导图交付使用 [XMind Markdown Profile](xmind-markdown-profile.md)，普通研究文档继续使用 `md/general`。

@@ -1,0 +1,521 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agent 系统设计：证据与状态索引</title>
+<style>/* Light, cool palette only: ice-white bars, white reading surface, mist blue-grey structure.
+   Ice cyan and cobalt mark navigation, the current page and the key object in a figure.
+   Figure grammar: solid line = kept or authoritative; dashed = on demand, conditional or not yet effective. */
+:root {
+  /* Fresh cool neutrals: clear white paper, pale sky plate, slate ink; one clear blue accent with an ice tint. */
+  --canvas: #f3f7fa;
+  --paper: #ffffff;
+  --plate: #f4f8fb;
+  --ink: #101a24;
+  --ink-2: #3a4756;
+  --mist: #647282;
+  --mist-2: #97a4b2;
+  --line: #e2e8ee;
+  --line-2: #c5d0da;
+  --track: #e9eef3;
+  --bar: #66788b;
+  --ice: #e9f4fc;
+  --ice-2: #a8d1f0;
+  --cobalt: #1f6fd6;
+  --cobalt-ink: #1656ad;
+  --focus: #1f6fd6;
+  --sans: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Noto Sans CJK SC", "Microsoft YaHei", "Segoe UI", system-ui, sans-serif;
+  --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  /* Serif only for the five page questions (CW Pages precedent: serif for top-level titles, sans for claims);
+     below that, hierarchy comes from size and weight, not colour or frames. */
+  --serif: "Songti SC", "Source Han Serif SC", "Noto Serif CJK SC", "Noto Serif SC", "STSong", "SimSun", serif;
+  --text: 42rem;
+  /* named size roles below body; larger sizes are set per heading role */
+  --fs-caption: 0.75rem;
+  --fs-label: 0.85rem;
+  --fs-small: 0.92rem;
+  color-scheme: light;
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--sans); font-size: 1rem; line-height: 1.8; text-autospace: normal; text-spacing-trim: normal; font-kerning: normal; }
+::selection { background: var(--ice-2); color: var(--ink); }
+h1, h2, h3, figcaption, caption { text-wrap: balance; }
+p, .node-body, td { text-wrap: pretty; }
+a { color: var(--cobalt-ink); text-decoration-color: var(--line-2); text-underline-offset: 0.2em; }
+a:hover { text-decoration-color: currentColor; }
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: 2px; }
+code { font-family: var(--mono); font-size: 0.86em; overflow-wrap: anywhere; }
+.eyebrow { display: block; font-family: var(--mono); font-size: var(--fs-caption); line-height: 1.5; letter-spacing: 0.06em; color: var(--mist); margin-bottom: 0.45rem; font-weight: 400; }
+
+/* frame and top bar */
+.frame { max-width: 68rem; margin: 0 auto; padding: 0 1.5rem; }
+.topbar { position: sticky; top: 0; z-index: 10; background: var(--canvas); border-bottom: 1px solid var(--line); }
+.topbar-inner { position: relative; display: flex; align-items: center; gap: 0.5rem 1.25rem; min-height: 3.25rem; }
+h1 { font-size: var(--fs-small); line-height: 1.4; margin: 0; font-weight: 700; white-space: nowrap; }
+h1 a { color: inherit; text-decoration: none; }
+.publication-header { padding-top: 1.25rem; padding-bottom: 0; }
+.publication-masthead { display: flex; align-items: baseline; justify-content: space-between; gap: 1.5rem; }
+.publication-actions { display: flex; align-items: baseline; gap: 1.25rem; }
+.publication-header h1 { font-size: var(--fs-label); font-weight: 500; color: var(--mist); }
+.publication-header .index-link { font-size: var(--fs-label); }
+.chapter-controls { display: none; }
+.paged .chapter-controls { position: fixed; inset: auto 0 0; z-index: 20; display: flex; align-items: center; justify-content: center; gap: 1.75rem; min-height: 3.5rem; padding: 0.55rem 1rem max(0.55rem, env(safe-area-inset-bottom)); background: var(--paper); border-top: 1px solid var(--line); }
+.chapter-controls button { border: 0; border-radius: 0; background: transparent; padding: 0.5rem; color: var(--ink-2); font: inherit; font-size: var(--fs-label); cursor: pointer; }
+.chapter-controls button:hover { color: var(--cobalt-ink); }
+.chapter-controls button:disabled { opacity: 0.35; cursor: default; }
+.chapter-controls button { min-width: 11rem; }
+#chapter-prev { text-align: right; }
+#chapter-next { text-align: left; }
+#chapter-count { color: var(--mist); font-family: var(--mono); font-size: var(--fs-caption); font-variant-numeric: tabular-nums; }
+#chapter-overview { border: 0; background: none; color: var(--ink-2); padding: 0.35rem 0; min-height: 2.5rem; font: inherit; font-size: var(--fs-label); cursor: pointer; }
+.chapter-tabs { margin-top: 1rem; overflow-x: auto; scrollbar-width: thin; }
+.chapter-tabs ol { list-style: none; display: flex; gap: 2.25rem; margin: 0; padding: 0; border-bottom: 1px solid var(--line); }
+.chapter-tabs li { flex: none; }
+.chapter-tab { display: flex; align-items: baseline; gap: 0.45rem; padding: 0.7rem 0 0.65rem; margin-bottom: -1px; color: var(--mist); text-decoration: none; white-space: nowrap; border-bottom: 2px solid transparent; }
+.chapter-tab-no { font-family: var(--mono); font-size: var(--fs-caption); font-weight: 400; letter-spacing: 0.04em; }
+.chapter-tab-title { font-size: var(--fs-small); line-height: 1.45; font-weight: 500; }
+.chapter-tab:hover { color: var(--ink); }
+.chapter-tab[aria-current="page"] { color: var(--ink); border-bottom-color: var(--cobalt); }
+.chapter-tab[aria-current="page"] .chapter-tab-no { color: var(--cobalt); }
+.chapter-tab[aria-current="page"] .chapter-tab-title { font-weight: 650; }
+.outline-dialog { width: min(68rem, calc(100vw - 3rem)); max-height: calc(100dvh - 4rem); padding: 1.5rem; border: 0; border-radius: 0; color: var(--ink); background: var(--paper); overflow: auto; }
+.outline-dialog::backdrop { background: var(--paper); }
+.overview-heading { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 2rem; }
+.overview-heading h2 { margin: 0; font-size: 1.25rem; }
+.overview-heading button { font: inherit; font-size: var(--fs-label); padding: 0.6rem 0; background: none; border: 0; cursor: pointer; color: var(--cobalt-ink); }
+.cards ol { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.5rem; }
+.card { display: flex; flex-direction: column; gap: 0.75rem; min-height: 11rem; height: 100%; padding: 1rem 0; border-bottom: 1px solid var(--line); color: var(--ink); text-decoration: none; }
+.card:hover, .card[aria-current="page"] { border-bottom-color: var(--cobalt); }
+.card-no { font-family: var(--mono); font-size: var(--fs-caption); color: var(--mist); }
+.card[aria-current="page"] .card-no { color: var(--cobalt); }
+.card-title { font-weight: 600; font-size: 1.05rem; line-height: 1.45; }
+.card-text { font-size: var(--fs-small); line-height: 1.7; color: var(--ink-2); }
+.index-link { font-size: var(--fs-label); white-space: nowrap; }
+
+/* page grid: text column plus a side column; wide figures span both */
+main.frame { padding-top: 2.75rem; padding-bottom: 7rem; }
+.paged .q-page { min-height: calc(100dvh - 8rem); }
+.q-page { display: grid; grid-template-columns: minmax(0, var(--text)) minmax(0, 1fr); column-gap: 3rem; align-items: start; }
+.q-page > *, .argument > * { grid-column: 1; }
+.q-page + .q-page { margin-top: 3rem; padding-top: 2.5rem; border-top: 1px solid var(--line); }
+.argument { grid-column: 1 / -1; display: grid; grid-template-columns: subgrid; column-gap: 3rem; margin-top: 3.5rem; padding-top: 2.25rem; border-top: 1px solid var(--line); }
+.argument > .exhibit.primary { grid-column: 1 / -1; margin: 2rem 0 2.75rem; padding: 1.5rem 1.75rem 1.75rem; background: var(--plate); }
+.exhibit.primary .node, .exhibit.primary .state { background: var(--paper); }
+.exhibit.primary .node.focus { background: var(--ice); }
+.q-head { grid-column: 1 / -1; }
+.opening { grid-column: 1; }
+.core-answer { font-size: 1.35rem; line-height: 1.7; font-weight: 600; letter-spacing: -0.005em; color: var(--ink); margin: 0 0 1.75rem; padding-bottom: 1.75rem; border-bottom: 1px solid var(--line); }
+.section-answer { font-size: 1.2rem; line-height: 1.72; font-weight: 600; color: var(--ink); margin-bottom: 1.4rem; }
+.answer-map { grid-column: 2; align-self: start; }
+.answer-map ol { list-style: none; margin: 0; padding: 0; }
+.answer-map li + li { margin-top: 1rem; }
+.answer-map a { display: grid; grid-template-columns: 2.4em 1fr; gap: 0.35rem; font-size: var(--fs-label); line-height: 1.6; color: var(--ink-2); text-decoration: none; }
+.answer-map a:hover { color: var(--cobalt-ink); text-decoration: underline; }
+.map-no { font-family: var(--mono); color: var(--mist); font-size: var(--fs-caption); padding-top: 0.1rem; }
+h2 { margin: 0 0 1.5rem; line-height: 1.3; }
+.q-num { display: block; font-family: var(--mono); font-size: var(--fs-label); font-weight: 400; letter-spacing: 0.08em; color: var(--mist); margin-bottom: 0.35rem; }
+.q-title { display: block; font-family: var(--serif); font-size: 2.4rem; line-height: 1.3; font-weight: 600; letter-spacing: 0.01em; max-width: 21em; }
+.sec-no { font-family: var(--mono); font-size: var(--fs-caption); color: var(--mist); font-weight: 400; }
+h3 { margin: 0 0 0.9rem; font-size: 1.05rem; line-height: 1.5; font-weight: 600; color: var(--ink-2); display: grid; grid-template-columns: 2.9rem 1fr; align-items: baseline; }
+h3 .sec-no { font-size: var(--fs-label); }
+p { margin: 0 0 1.1rem; font-size: 1.0625rem; line-height: 1.8; color: var(--ink); }
+.argument { scroll-margin-top: 1.5rem; }
+
+/* figures: open layout; boxes only for real objects */
+.exhibit { margin: 1.25rem 0 2rem; font-size: var(--fs-small); line-height: 1.6; }
+figcaption { font-weight: 600; font-size: var(--fs-small); line-height: 1.55; margin-bottom: 1rem; max-width: var(--text); }
+.fig-no { display: block; font-family: var(--mono); font-weight: 400; font-size: var(--fs-caption); letter-spacing: 0.08em; color: var(--mist); margin-bottom: 0.1rem; }
+.exhibit-note { font-size: var(--fs-label); line-height: 1.7; color: var(--ink-2); margin: 0.9rem 0 0; max-width: var(--text); }
+.exhibit p { font-size: var(--fs-small); line-height: 1.7; margin: 0; }
+.node { display: flex; flex-direction: column; gap: 0.1rem; padding: 0.55rem 0.7rem; border: 1px solid var(--line-2); border-radius: 2px; background: var(--paper); }
+.node-name { font-weight: 600; font-size: var(--fs-small); }
+.node-body { font-size: var(--fs-label); color: var(--ink-2); }
+.node.kept { border-color: var(--ink-2); }
+.node.on-demand, .node.pending { border-style: dashed; border-color: var(--mist-2); }
+.node.pending .node-name { color: var(--ink-2); font-weight: 500; }
+.node.focus { border-color: var(--cobalt); background: var(--ice); }
+.arrow { position: relative; display: block; height: 1px; background: var(--mist); align-self: center; }
+.arrow::after { content: ""; position: absolute; right: -1px; top: -4px; border: 4.5px solid transparent; border-left: 7px solid var(--mist); border-right: 0; }
+.plain { list-style: none; margin: 0; padding: 0; }
+.plain li { padding: 0.35rem 0; border-bottom: 1px solid var(--line); }
+.compare { display: grid; gap: 1.5rem 2rem; }
+.compare.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.facts { margin: 0.75rem 0 0; display: grid; gap: 0.35rem; }
+.facts div { display: grid; grid-template-columns: 5.5em 1fr; gap: 0.75rem; }
+.facts dt { color: var(--mist); font-size: var(--fs-label); }
+.facts dd { margin: 0; font-size: var(--fs-label); }
+.facts.shared { margin-top: 1.25rem; padding-top: 0.75rem; border-top: 1px solid var(--line); }
+.facts.shared div { grid-template-columns: 7em 1fr; }
+
+
+/* Q1 loop */
+.loop { display: grid; grid-template-columns: minmax(0, 1.25fr) 2rem minmax(0, 1fr) 2rem minmax(0, 0.75fr); align-items: center; gap: 0.5rem; }
+.loop-col { align-self: stretch; display: flex; flex-direction: column; justify-content: center; }
+.loop-col > .eyebrow { margin-top: 0; }
+.stack-nodes { display: grid; gap: 0.35rem; }
+.return-note .eyebrow { display: inline; margin-right: 0.6rem; }
+
+/* Q2 routing */
+.routes { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.5rem; }
+.route { display: grid; grid-template-columns: minmax(0, 1.6fr) 2.5rem minmax(0, 1fr); align-items: center; gap: 0.5rem; }
+.route-cond { display: flex; flex-direction: column; padding: 0.5rem 0 0.5rem 0.75rem; border-left: 1px solid var(--ink-2); }
+.route-cond .eyebrow { margin-bottom: 0.1rem; }
+.gap-routes { margin-top: 1rem; padding-top: 0.75rem; border-top: 1px dashed var(--line-2); }
+
+/* Q2 cost */
+.cost { display: grid; gap: 0.5rem; }
+.cost-row { display: grid; grid-template-columns: 4.5em 1fr 3.5em; gap: 0.75rem; align-items: center; }
+.cost-name { font-weight: 600; font-size: var(--fs-label); }
+.cost-track { display: flex; height: 1.9rem; background: var(--track); }
+.cseg { background: var(--bar); color: #fff; font-size: var(--fs-label); display: flex; align-items: center; padding-left: 0.5rem; white-space: nowrap; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+.cseg.model { background: var(--cobalt); padding: 0; }
+.cost-unknown { padding: 0.3rem 0.6rem; border: 1px dashed var(--mist); font-size: var(--fs-label); color: var(--ink-2); }
+.cost-total { text-align: right; font-weight: 600; font-variant-numeric: tabular-nums; }
+.cost-legend { display: flex; flex-wrap: wrap; gap: 0.25rem 1.5rem; font-size: var(--fs-label); color: var(--mist); padding-left: 5.25em; }
+
+/* Q3 branch tree */
+.tree { font-size: var(--fs-label); }
+.branch-root { max-width: 22rem; }
+.branches { list-style: none; margin: 0 0 0 1.25rem; padding: 0.5rem 0 0 0; border-left: 1px solid var(--mist); }
+.branches > li { position: relative; padding: 0.3rem 0 0.3rem 1.5rem; }
+.branches > li::before { content: ""; position: absolute; left: 0; top: 1.15rem; width: 1.2rem; border-top: 1px solid var(--mist); }
+.branches > li:last-child { border-left: 1px solid var(--paper); margin-left: -1px; }
+.branches > li:last-child::after { content: ""; position: absolute; left: 0; top: 0; height: 1.15rem; border-left: 1px solid var(--mist); }
+.branches .branches { margin-left: 0.5rem; }
+.branch-row { display: grid; grid-template-columns: minmax(0, 1.3fr) 10.5rem minmax(0, 1.4fr); gap: 0.75rem; align-items: baseline; padding: 0.3rem 0; border-bottom: 1px solid var(--line); }
+.obs { font-weight: 500; }
+.next { color: var(--ink-2); }
+.state { display: inline-flex; align-items: baseline; gap: 0.35em; justify-self: start; font-weight: 600; font-size: var(--fs-label); padding: 0 0.5em; border: 1px solid var(--line-2); border-radius: 2px; background: var(--paper); line-height: 1.6; }
+.glyph { font-family: var(--mono); font-weight: 700; }
+.state-ok { border-color: var(--cobalt); color: var(--cobalt-ink); }
+.state-unknown { border-style: dashed; border-color: var(--mist); }
+.state-retry { border-color: var(--ink-2); }
+.state-failed { border-color: var(--ink-2); background: var(--track); }
+table.failures { margin-top: 1rem; max-width: var(--text); }
+
+/* Q4 distribution */
+.dist-title { font-size: var(--fs-small); margin: 0 0 0.6rem; }
+.bars { font-size: var(--fs-label); }
+.axis, .bar-row { display: grid; grid-template-columns: 4.5em 1fr 3.6em; gap: 0.5rem; align-items: center; }
+.axis { color: var(--mist); font-family: var(--mono); }
+.axis span { grid-column: 2; grid-row: 1; font-size: 0.85em; }
+.axis span:nth-child(2) { justify-self: center; }
+.axis span:nth-child(3) { justify-self: end; }
+.bar-row { min-height: 1.85em; }
+.bar-track { position: relative; height: 0.85em; background: var(--track); border-left: 1px solid var(--mist); }
+.bar-track::after { content: ""; position: absolute; left: 50%; top: -0.2em; bottom: -0.2em; border-left: 1px dotted var(--mist-2); }
+.bar { position: absolute; inset: 0 auto 0 0; background: var(--bar); print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+.tail .bar { background: var(--cobalt); }
+.tail .bar-label { font-weight: 600; }
+.bar-value { text-align: right; font-variant-numeric: tabular-nums; }
+.tail-sum { display: flex; justify-content: space-between; margin: 0.35rem 0 1rem 5em; padding: 0.3rem 0 0.3rem 0.6rem; border-left: 2px solid var(--cobalt); font-size: var(--fs-label); }
+.tail-sum strong { font-variant-numeric: tabular-nums; }
+.mean-scale { margin: 0.2rem 0 0.4rem 5em; }
+.mean-axis { position: relative; display: block; height: 0.7rem; border-bottom: 1px solid var(--mist); }
+.mean-threshold { position: absolute; top: -0.35rem; bottom: -0.35rem; border-left: 1px dashed var(--ink); }
+.mean-marker { position: absolute; bottom: -0.3rem; width: 0.6rem; height: 0.6rem; margin-left: -0.3rem; background: var(--ink); transform: rotate(45deg); }
+.mean-ticks { display: flex; justify-content: space-between; font-family: var(--mono); font-size: var(--fs-caption); color: var(--mist); margin-top: 0.3rem; }
+.derived { margin: 0.8rem 0 0; display: grid; grid-template-columns: max-content 1fr; gap: 0.1rem 1rem; font-size: var(--fs-label); border-top: 1px solid var(--line); padding-top: 0.6rem; }
+.derived div { display: contents; }
+.derived dt { color: var(--mist); }
+.derived dd { margin: 0; font-variant-numeric: tabular-nums; font-weight: 600; }
+table.exact { margin-top: 1.5rem; }
+.exact td { font-variant-numeric: tabular-nums; }
+.explorer { margin-top: 1.75rem; padding-top: 1.25rem; border-top: 1px solid var(--line-2); }
+fieldset { border: 0; padding: 0; margin: 0; }
+legend { font-size: var(--fs-label); font-weight: 600; padding: 0; margin-bottom: 0.5rem; }
+.inputs { display: grid; grid-template-columns: repeat(auto-fit, minmax(7.5rem, 1fr)); gap: 0.5rem 1rem; }
+.num { display: flex; flex-direction: column; gap: 0.15rem; font-size: var(--fs-label); color: var(--ink-2); }
+.num input { font: inherit; font-size: 1rem; padding: 0.35rem 0.5rem; min-height: 2.5rem; border: 1px solid var(--line-2); border-radius: 3px; background: var(--paper); color: var(--ink); font-variant-numeric: tabular-nums; }
+.num input:focus { border-color: var(--cobalt); }
+.buttons { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.75rem; }
+button { font: inherit; font-size: var(--fs-label); min-height: 2.5rem; padding: 0.35rem 0.95rem; border: 1px solid var(--line-2); border-radius: 3px; background: var(--paper); color: var(--ink); cursor: pointer; }
+button:hover { border-color: var(--mist); }
+button[type="submit"] { background: var(--cobalt); border-color: var(--cobalt); color: #fff; }
+.status { min-height: 1.6em; font-size: var(--fs-label); margin: 0.6rem 0; color: var(--ink-2); }
+.status[data-state="invalid"] { color: var(--ink); font-weight: 600; }
+.status[data-state="invalid"]::before { content: "✕ "; font-family: var(--mono); }
+
+/* Q4 evaluation ledger */
+.ledger { margin: 0; }
+.ledger div { display: grid; grid-template-columns: 11rem 1fr; gap: 1.25rem; padding: 0.65rem 0; border-bottom: 1px solid var(--line); }
+.ledger dt .eyebrow { margin-bottom: 0.1rem; }
+.ledger dd { margin: 0; font-size: var(--fs-label); color: var(--ink); }
+
+/* chains: Q4 fallbacks, Q5 evidence chains and states */
+.chain { list-style: none; margin: 0; padding: 0; display: grid; gap: 1.1rem; }
+.chain > li { position: relative; }
+.chain > li + li::before { content: ""; position: absolute; left: 1.1rem; top: -1.05rem; height: 1rem; border-left: 1px solid var(--mist); }
+.chain > li + li::after { content: ""; position: absolute; left: calc(1.1rem - 4px); top: -0.4rem; border: 4px solid transparent; border-top: 6px solid var(--mist); border-bottom: 0; }
+
+/* Q5 */
+.diff { list-style: none; margin: 0 0 1.25rem; padding: 0; border: 1px solid var(--line-2); font-size: var(--fs-label); max-width: var(--text); }
+.diff li { display: grid; grid-template-columns: 2rem 5.5em 1fr; gap: 0.5rem; align-items: baseline; padding: 0.45rem 0.75rem 0.45rem 0; }
+.diff li + li { border-top: 1px solid var(--line); }
+.diff-sign { font-family: var(--mono); font-weight: 700; text-align: center; }
+.diff-id { font-weight: 600; }
+.diff-del { background: var(--plate); }
+.diff-del .diff-text { text-decoration: line-through; text-decoration-color: var(--mist); color: var(--mist); }
+.diff-add { background: var(--ice); }
+.diff-add .diff-sign { color: var(--cobalt); }
+.scopes-block { margin-top: 1.25rem; }
+.scopes { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border: 1px solid var(--ink-2); }
+.scope { padding: 0.6rem 0.75rem; }
+.scope + .scope { border-left: 1px solid var(--ink-2); }
+
+/* tables */
+table { width: 100%; border-collapse: collapse; font-size: var(--fs-label); line-height: 1.6; margin: 0.25rem 0 0.75rem; }
+caption { text-align: left; font-weight: 600; font-size: var(--fs-label); padding: 0.5rem 0 0.4rem; color: var(--ink-2); }
+th, td { text-align: left; vertical-align: baseline; padding: 0.5rem 0.75rem 0.5rem 0; border-bottom: 1px solid var(--line); }
+thead th { font-weight: 600; font-size: var(--fs-caption); color: var(--mist); border-bottom: 1px solid var(--ink); }
+tbody th { font-weight: 600; }
+
+/* evidence index */
+.index > section { max-width: 60rem; }
+.index > section + section { margin-top: 2.75rem; }
+.index h2 { font-size: 1.3rem; padding-bottom: 0.6rem; border-bottom: 1px solid var(--ink); }
+.index h3 { display: block; border-top: 0; padding-top: 0; font-size: 1.05rem; margin: 1.75rem 0 0.6rem; }
+.index p { font-size: var(--fs-small); color: var(--ink-2); }
+.index table { font-size: var(--fs-label); }
+
+/* paged mode (JS): only the addressed page is shown */
+.q-page[hidden] { display: none; }
+.paged .q-page + .q-page { margin-top: 0; padding-top: 0; border-top: 0; }
+
+@media (max-width: 60rem) {
+  .chapter-tabs ol { display: flex; gap: 1.5rem; }
+  .cards ol { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .q-page { grid-template-columns: minmax(0, 1fr); }
+  .argument { grid-template-columns: minmax(0, 1fr); }
+  .answer-map { grid-column: 1; margin-top: 0.5rem; }
+  .answer-map ol { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.8rem 1.5rem; }
+  .answer-map li + li { margin-top: 0; }
+    .loop { grid-template-columns: minmax(0, 1fr); }
+  .loop > .arrow { width: 1px; height: 1.3rem; justify-self: center; }
+  .loop > .arrow::after { right: auto; left: -4px; top: auto; bottom: -1px; border: 4.5px solid transparent; border-top: 7px solid var(--mist); border-bottom: 0; }
+}
+
+@media (max-width: 40rem) {
+  .frame { padding: 0 1rem; }
+  .topbar-inner { flex-wrap: wrap; gap: 0 0.75rem; padding-top: 0.5rem; }
+  h1 { flex: 1 0 auto; }
+  .cards ol { grid-template-columns: 1fr; }
+  .argument { scroll-margin-top: 1rem; }
+  .publication-header { padding-top: 0.75rem; }
+  .chapter-controls { gap: 0.65rem !important; }
+  .chapter-controls button { min-width: 0; }
+  .pager-label { display: none; }
+  .publication-masthead { align-items: center; gap: 1rem; }
+  .publication-actions { gap: 0.75rem; }
+  .publication-header .index-link { font-size: var(--fs-caption); }
+  .outline-dialog { width: calc(100vw - 1rem); max-height: calc(100dvh - 1rem); padding: 1rem; }
+  .card { min-height: auto; }
+  main.frame { padding-top: 1.75rem; }
+  .q-title { font-size: 1.65rem; }
+  .core-answer { font-size: 1.2rem; }
+  .section-answer { font-size: 1.12rem; }
+  .argument > .exhibit.primary { padding: 1rem 0.9rem 1.2rem; margin-left: -0.25rem; margin-right: -0.25rem; }
+  .answer-map ol { grid-template-columns: minmax(0, 1fr); }
+  h3 { font-size: 1rem; grid-template-columns: 2.6rem 1fr; }
+  p { font-size: 1rem; }
+  .compare.two { grid-template-columns: minmax(0, 1fr); }
+  .route { grid-template-columns: minmax(0, 1fr); }
+  .route > .arrow { width: 1px; height: 1rem; margin-left: 1rem; }
+  .route > .arrow::after { right: auto; left: -4px; top: auto; bottom: -1px; border: 4.5px solid transparent; border-top: 7px solid var(--mist); border-bottom: 0; }
+  .branch-row { grid-template-columns: minmax(0, 1fr); gap: 0.25rem; }
+  .branches { margin-left: 0.5rem; }
+  .branches > li { padding-left: 1rem; }
+  .branches > li::before { width: 0.8rem; }
+  .scopes { grid-template-columns: minmax(0, 1fr); }
+  .scope + .scope { border-left: 0; border-top: 1px solid var(--ink-2); }
+  .ledger div { grid-template-columns: minmax(0, 1fr); gap: 0.2rem; }
+  .facts div, .facts.shared div { grid-template-columns: minmax(0, 1fr); gap: 0; }
+  .tail-sum, .mean-scale { margin-left: 0; }
+  table.stack, table.stack tbody, table.stack tr, table.stack td, table.stack th, table.stack caption { display: block; width: 100% !important; }
+  table.stack thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+  table.stack tr { border-top: 1px solid var(--line-2); padding: 0.4rem 0; }
+  table.stack td, table.stack tbody th { border: 0; padding: 0.15rem 0; }
+  table.stack td[data-label]::before, table.stack tbody th[data-label]::before { content: attr(data-label) "："; color: var(--mist); font-weight: 400; }
+  .cost-legend { padding-left: 0; }
+  .diff li { grid-template-columns: 1.6rem 4.5em 1fr; }
+}
+
+/* print: A4, every question in order on a new page; navigation and controls hidden */
+@page { size: A4; margin: 17mm 16mm; }
+@media print {
+  body { font-size: 10pt; }
+  p { font-size: 10pt; line-height: 1.7; }
+  .chapter-tabs, .publication-actions, .chapter-controls, .outline-dialog, .index-link, .explorer { display: none !important; }
+  .publication-header { padding: 0 0 4mm; }
+  .paged .q-page { min-height: 0; }
+  .topbar { position: static; border: 0; background: #fff; }
+  .topbar-inner { min-height: 0; padding: 0 0 4mm; }
+  .frame { max-width: none; padding: 0; }
+  main.frame { padding: 0; }
+  .q-page, .q-page[hidden] { display: block !important; }
+  .argument { display: block; }
+  .answer-map { display: none; }
+  .core-answer, .section-answer { font-size: 11.5pt; break-after: avoid; }
+  .q-title { font-size: 19pt; }
+  h3 { font-size: 10pt; }
+  .argument { border-top: 1px solid var(--line); padding-top: 5mm; margin-top: 8mm; }
+  .q-page + .q-page { margin-top: 0; padding-top: 0; border-top: 0; }
+  .q-page { break-before: page; page-break-before: always; }
+  .q-page:first-child { break-before: auto; page-break-before: auto; }
+  a { text-decoration: none; color: inherit; }
+  h1, h2, h3, .dist-title, caption, figcaption, .eyebrow { break-after: avoid; page-break-after: avoid; }
+  p { orphans: 3; widows: 3; }
+  thead { display: table-header-group; }
+  tr, .dist, .node, .loop, .routes, .cost, .compare-col, .diff, .scopes, .ledger div, .branch-row { break-inside: avoid; page-break-inside: avoid; }
+  table { font-size: 8.6pt; }
+  .exhibit { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+  .exhibit { break-inside: avoid; page-break-inside: avoid; }
+}
+
+/* line figures: a wide SVG and a compact HTML variant share one caption; only one is shown */
+.figsvg { display: block; width: 100%; height: auto; margin: 0.25rem 0 0.5rem; font-family: var(--sans); overflow: visible; }
+.figsvg text { fill: var(--ink); }
+.figsvg .n-name { font-size: 14.5px; font-weight: 600; }
+.figsvg .n-body { font-size: 12.5px; fill: var(--ink-2); }
+.figsvg .n-meta { font-size: 12.5px; fill: var(--mist); }
+.figsvg .svg-node rect { fill: var(--paper); stroke: var(--line-2); stroke-width: 1.25; }
+.figsvg .svg-node.kept rect { stroke: var(--ink-2); stroke-width: 1.5; }
+.figsvg .svg-node.pending rect, .figsvg .svg-node.unknown rect { stroke: var(--mist-2); stroke-dasharray: 5 4; }
+.figsvg .svg-node.pending .n-name { font-weight: 500; fill: var(--ink-2); }
+.figsvg .svg-node.focus rect { fill: var(--ice); stroke: var(--cobalt); }
+.figsvg .svg-node.ok rect { stroke: var(--cobalt); stroke-width: 1.5; }
+.figsvg .svg-node.ok .n-name { fill: var(--cobalt-ink); }
+.figsvg .svg-node.failed rect { fill: var(--track); stroke: var(--ink-2); }
+.figsvg .svg-node.retry rect { stroke: var(--ink-2); stroke-width: 1.5; }
+.figsvg .edge { fill: none; stroke: var(--mist); stroke-width: 1.5; }
+.figsvg .edge.dashed, .figsvg .edge.now { stroke-dasharray: 5 4; }
+.figsvg .edge.now { stroke: var(--ink-2); stroke-width: 1.25; }
+/* the one accent in a line figure marks where a person decides (CW figure rule) */
+.figsvg .svg-node.decision rect { stroke: var(--cobalt); stroke-width: 2; stroke-dasharray: 5 4; }
+.figsvg .svg-node.decision .n-name { fill: var(--cobalt-ink); font-weight: 600; }
+@media (forced-colors: active) {
+  .figsvg text, .figsvg .svg-node .n-name { fill: CanvasText; }
+  .figsvg .svg-node rect { fill: Canvas; stroke: CanvasText; }
+  .figsvg .svg-node.decision rect, .figsvg .svg-node.focus rect { stroke: Highlight; }
+  .figsvg .edge { stroke: CanvasText; }
+  .figsvg .arrowhead { fill: CanvasText; }
+}
+.figsvg .arrowhead { fill: var(--mist); }
+.fig-compact { display: none; }
+@media (max-width: 60rem) {
+  .fig-wide { display: none; }
+  .fig-compact { display: block; }
+  .compare.two.fig-compact { display: grid; }
+}
+@media print {
+  .fig-wide { display: block !important; }
+  .fig-compact { display: none !important; }
+}
+.figsvg .edge.rule { stroke: var(--ink-2); stroke-width: 1; }
+.figsvg .edge.thin { stroke: var(--line-2); stroke-width: 1; }
+@media (max-width: 60rem) {
+  .loop.fig-compact { display: grid; }
+  .facts.shared div.fig-compact { display: grid; }
+}
+.figsvg .edge.span { stroke: var(--mist-2); stroke-width: 1.25; }
+.figsvg .edge.span.key { stroke: var(--cobalt); stroke-width: 2.25; }
+.figsvg .n-name.key { fill: var(--cobalt-ink); }
+.cseg-label { align-self: center; margin-left: 0.5rem; font-size: var(--fs-caption); color: var(--cobalt-ink); white-space: nowrap; }
+
+/* tables: the first column names the row, numbers align */
+table.stack tbody td:first-child { font-weight: 550; color: var(--ink); }
+td, th { font-variant-numeric: tabular-nums; }
+
+/* print: quiet page numbers */
+@page { @bottom-right { content: counter(page) " / " counter(pages); font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 7.5pt; color: #647282; } }
+/* headings break at punctuation, not inside a word; long runs may still wrap on narrow screens */
+.q-title, h3, figcaption { word-break: keep-all; overflow-wrap: anywhere; }
+
+/* numeric columns align right (exact-value table) */
+table.exact td[data-label^="P("], table.exact td[data-label="均值"], table.exact th[scope="col"]:not(:first-child):not(:last-child) { text-align: right; }
+
+/* narrow screens: the chapter row becomes a disclosure menu (works without JS; the current chapter shows when closed) */
+.chapter-menu { display: none; }
+.chapter-menu summary { display: flex; align-items: baseline; gap: 0.75rem; min-height: 2.75rem; padding: 0.7rem 0; list-style: none; cursor: pointer; border-bottom: 1px solid var(--line); }
+.chapter-menu summary::-webkit-details-marker { display: none; }
+.chapter-menu summary::after { content: ""; margin-left: auto; align-self: center; width: 0.45rem; height: 0.45rem; border-right: 1.5px solid var(--mist); border-bottom: 1.5px solid var(--mist); transform: rotate(45deg) translateY(-2px); }
+.chapter-menu[open] summary::after { transform: rotate(-135deg) translateY(-2px); }
+.chapter-menu-label { font-family: var(--mono); font-size: var(--fs-caption); color: var(--mist); letter-spacing: 0.06em; }
+.chapter-menu-current { font-weight: 600; white-space: pre; overflow: hidden; text-overflow: ellipsis; }
+.chapter-menu ol { list-style: none; margin: 0; padding: 0.25rem 0 0.5rem; border-bottom: 1px solid var(--line); }
+.chapter-link { display: flex; align-items: baseline; gap: 0.6rem; min-height: 2.75rem; padding: 0.6rem 0; color: var(--ink-2); text-decoration: none; }
+.chapter-link .chapter-tab-no { font-family: var(--mono); font-size: var(--fs-caption); color: var(--mist); }
+.chapter-link[aria-current="page"] { color: var(--ink); font-weight: 600; }
+.chapter-link[aria-current="page"] .chapter-tab-no { color: var(--cobalt); }
+@media (max-width: 48rem) {
+  .chapter-tabs { display: none; }
+  .chapter-menu { display: block; margin-top: 0.5rem; }
+}
+@media print { .chapter-menu { display: none !important; } }
+.sources h2 { font-size: 1.15rem; margin-top: 2.25rem; }
+
+/* per-chapter sources: quiet reference list after the argument */
+.q-sources { grid-column: 1 / -1; margin-top: 4rem; padding-top: 1.25rem; border-top: 1px solid var(--line-2); max-width: var(--text); }
+.q-sources h3 { display: block; font-family: var(--mono); font-size: var(--fs-caption); font-weight: 400; letter-spacing: 0.06em; color: var(--mist); margin: 0 0 0.75rem; }
+.q-sources ol { list-style: none; margin: 0; padding: 0; counter-reset: src; }
+.q-sources li { counter-increment: src; display: grid; grid-template-columns: 1.75rem minmax(0, 1fr) auto; column-gap: 0.75rem; row-gap: 0.1rem; padding: 0.5rem 0; border-bottom: 1px solid var(--line); font-size: var(--fs-label); line-height: 1.6; }
+.q-sources li::before { content: counter(src, decimal-leading-zero); grid-row: 1 / span 2; font-family: var(--mono); font-size: var(--fs-caption); color: var(--mist); padding-top: 0.1rem; }
+.src-title { grid-column: 2; overflow-wrap: anywhere; }
+.src-meta { grid-column: 3; grid-row: 1; color: var(--mist); white-space: nowrap; font-size: var(--fs-caption); padding-top: 0.1rem; }
+.src-point { grid-column: 2 / -1; color: var(--ink-2); }
+.src-note { font-size: var(--fs-caption); color: var(--mist); margin-top: 0.9rem; line-height: 1.7; }
+@media (max-width: 40rem) {
+  .q-sources li { grid-template-columns: 1.5rem minmax(0, 1fr); }
+  .src-meta { grid-column: 2; grid-row: auto; white-space: normal; }
+}
+@media print {
+  .q-sources { margin-top: 8mm; break-inside: auto; }
+  .q-sources li { break-inside: avoid; font-size: 8.5pt; }
+  .q-sources a { color: inherit; }
+  .q-sources a::after { content: " " attr(href); font-family: ui-monospace, Menlo, monospace; font-size: 7pt; color: #647282; overflow-wrap: anywhere; }
+}
+
+/* motion: only where something changes; short, ease-out; none for keyboard paging; reduced motion keeps fades only */
+:root { --ease-out: cubic-bezier(0.23, 1, 0.32, 1); --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1); }
+.paged .q-page { transition: opacity 180ms var(--ease-out), transform 180ms var(--ease-out); }
+@starting-style { .paged .q-page { opacity: 0; transform: translateY(4px); } }
+.paged.keyed .q-page { transition: none; }
+#q4-custom .bar { transition: width 240ms var(--ease-in-out); }
+#q4-mean-marker { transition: left 240ms var(--ease-in-out); }
+.chapter-menu summary::after { transition: transform 180ms var(--ease-out); }
+.chapter-menu[open] ol { transition: opacity 180ms var(--ease-out), transform 180ms var(--ease-out); }
+@starting-style { .chapter-menu[open] ol { opacity: 0; transform: translateY(-4px); } }
+button { transition: transform 140ms var(--ease-out), border-color 140ms ease; }
+button:active:not(:disabled) { transform: scale(0.97); }
+#chapter-section { font-family: var(--mono); font-size: var(--fs-caption); color: var(--mist); min-width: 3.5em; margin-left: -1.25rem; font-variant-numeric: tabular-nums; }
+@media (prefers-reduced-motion: reduce) {
+  .paged .q-page, .chapter-menu[open] ol { transition: opacity 180ms ease; transform: none; }
+  @starting-style { .paged .q-page, .chapter-menu[open] ol { transform: none; } }
+  #q4-custom .bar, #q4-mean-marker, button { transition: none; }
+  button:active:not(:disabled) { transform: none; }
+}
+@media print { #chapter-section { display: none; } }
+#chapter-progress { position: absolute; left: 0; right: 0; top: -1px; height: 2px; background: var(--cobalt); transform: scaleX(0); transform-origin: left center; pointer-events: none; }
+</style>
+</head>
+<body>
+<header class="topbar">
+<div class="frame topbar-inner">
+<h1>Agent 系统设计：证据与状态索引</h1>
+<a class="index-link" href="answer.html">返回答卷</a>
+</div>
+</header>
+<main class="frame index">
+<section id="version"><h2>内容版本</h2>
+<p>答卷正文与本索引由同一生成脚本从下列输入生成；正文、小节与图的位置取自回答母稿，构图映射记录论证关系与要点位置。</p>
+<table class="stack"><thead><tr><th scope="col">输入</th><th scope="col">SHA-256</th></tr></thead><tbody><tr><td data-label="输入"><code>answer-draft.md</code></td><td data-label="SHA-256"><code>c03c51e3cf99e798943b6ac9b2cef26badd775a8d21da725aed19c64bc7ebe71</code></td></tr><tr><td data-label="输入"><code>page-composition.json</code></td><td data-label="SHA-256"><code>d11abf8f3904a2ab9efcd180299fb6c8c51072fe57fd33eb91e5383a5c816a76</code></td></tr><tr><td data-label="输入"><code>five-page-outline.md</code></td><td data-label="SHA-256"><code>fd6b23da7f72d637c2817fa4bc4309a6a38efbd6a8d6a00f6d69afdc5cb350c1</code></td></tr><tr><td data-label="输入"><code>evidence-index.md</code></td><td data-label="SHA-256"><code>5bb484bf5ab5af37ffa41416bdc756a9b68ce3c03d8b5d0902f7e6c71af8c03b</code></td></tr><tr><td data-label="输入"><code>cross-check.md</code></td><td data-label="SHA-256"><code>c95be839e48814951f31e0c68b0edb7ca43a8da7c852a26df6acd754c8f66cfd</code></td></tr><tr><td data-label="输入"><code>rendered/build.py</code></td><td data-label="SHA-256"><code>b75c42dd2731af69828ce41a7e3922d613c4f2506ede748e70158d32b025cf1e</code></td></tr><tr><td data-label="输入"><code>rendered/exhibits.py</code></td><td data-label="SHA-256"><code>7750f41f0af38830aedda5c29411349c591af0116dd71277b671c9f8adb0e5df</code></td></tr><tr><td data-label="输入"><code>rendered/q4.js</code></td><td data-label="SHA-256"><code>ab260ad496320ba8062a04836d9021f7bf716ea8d0e3c96ea1306ac178094d9b</code></td></tr><tr><td data-label="输入"><code>rendered/nav.js</code></td><td data-label="SHA-256"><code>626813bb99e42417a800cdd0702e6de626b2a441910ea794120e1ffd3207d734</code></td></tr><tr><td data-label="输入"><code>rendered/style.css</code></td><td data-label="SHA-256"><code>20e75ec0d37eb674d30d01ad5aa1d70b3994cc7667be46d92385deca936ceff7</code></td></tr></tbody></table></section>
+<section id="exhibits"><h2>展项数据与身份</h2><table class="stack"><thead><tr><th scope="col">展项</th><th scope="col">数据身份</th><th scope="col">边界</th></tr></thead><tbody><tr><td data-label="展项">Q1 跨轮信息与上下文</td><td data-label="数据身份">按正文Q1整理的关系图</td><td data-label="边界">设计方案，未做目标任务对照</td></tr><tr><td data-label="展项">Q1 三种加载路径的差额</td><td data-label="数据身份">假设演算与条件路径</td><td data-label="边界">150,000 token、1元与0.1元/百万token为假设值；目录路径不给数值</td></tr><tr><td data-label="展项">Q2 按步骤选择reasoning effort</td><td data-label="数据身份">按正文Q2整理的关系图</td><td data-label="边界">设计方案，未做API或用户等待实验</td></tr><tr><td data-label="展项">Q2 四个计时终点</td><td data-label="数据身份">按正文Q2整理的计时定义</td><td data-label="边界">1秒与p95不超过3秒为初始设计目标；刻度间距不代表时长，没有实测数据</td></tr><tr><td data-label="展项">Q2 被接受结果的费用</td><td data-label="数据身份">假设演算</td><td data-label="边界">人工5分钟×300元/小时=25元由正文假设推得；错误损失未计，不是生产账单</td></tr><tr><td data-label="展项">Q3 授权边界与unknown分支</td><td data-label="数据身份">按正文Q3整理的设计路径</td><td data-label="边界">不含真实账号、请求或发送回执；未连接邮件接口</td></tr><tr><td data-label="展项">Q4 构造分布A、B</td><td data-label="数据身份">确定性合成例子</td><td data-label="边界">不是Jev测量或校准曲线；送审、阻断与放行阈值未设常量</td></tr><tr><td data-label="展项">Q4 自定义分布</td><td data-label="数据身份">页面内确定性计算</td><td data-label="边界">只接受非负且总和为1的向量；非法输入不更新结果，不自动归一化</td></tr><tr><td data-label="展项">Q4 独立验证与回退</td><td data-label="数据身份">按正文Q4整理</td><td data-label="边界">未运行评估、重放或降级测试</td></tr><tr><td data-label="展项">Q5 证据链、记录范围与反事实</td><td data-label="数据身份">按正文Q5整理的评估设计</td><td data-label="边界">预期行为与验收条件，不含测试结果；D1、D2均未批准或生效</td></tr></tbody></table></section>
+<section id="evidence"><h2>证据、状态与覆盖</h2><h3>问题—答案结构修订</h3><p>用户本轮reconnect的论证诊断采纳：<a href="../argument-tree.md">问题—答案树</a>记录五个总问题、18个子问题及推导、支持与动作条件。当前母稿、schema 4.0与HTML已同步；这次重构不新增外部实测证据。旧版“文案通过”不能延伸为结构或视觉通过，当前修订与未决项见<a href="../../../../docs/verification/assessment-astra-20260923/argument-revision.md">结构记录</a>。</p><p>示例中的Q2计时表作调整：所有终点统一以请求发出为起点。Q3“参数错误即可重试”不作无条件规则，需确认原请求未执行；变更参数不能借用原请求的幂等保证。其余初始延迟目标、构造分布、假设计费与法域限制保持原身份。</p><p>编订：Astra/main；登记与来源探索：Luna Max（gpt-5.6-luna）；日期：2026-09-23。正文采用连续自然语言，研究状态与来源映射在本索引维护。最终呈现采用 <a href="../../../../kit/reporting/assessment-answer-profile.md">回答体例</a>，改动判断见 <a href="../cross-check.md">交叉核验</a>。</p><h3>句法修订</h3><p>本轮按用户对内部对象直接进入正文的批评通改五题、纲要及相关图注，保留46项主张、18个子问题、4张原生表格和12个展项。<a href="../../../../docs/verification/assessment-astra-20260923/prose-revision.md">句法修订记录</a>区分实际改写、条件核对和未完成验收；这是本地文本修订，未新增来源核查或业务实验。</p><h3>原始材料与覆盖</h3><p><a href="../../../intake/ai-capability-assessment-20260923.json">本批登记</a> 保存 Chat、附件和消息映射。初次归档7轮10消息；复读新增1条用户消息，r2共8轮11消息，r1保留。新增消息表达进一步研究Jev社区实践的意向，仅作为历史来源登记，没有据此另启无边界研究。Chat工具未暴露附件；用户另行提供的3个本地文件已按原字节复制。30个引用占位均为missing-original，本次来源是独立核查，不冒充恢复原引文。</p><p>附件S01–S28为历史来源地图。本轮核查其中24项，另补工具加载/缓存/MCP的4项来源，并将德国法律的4个URL分别登记；合计31个URL、31个HTTP/Markdown正文快照。S12厂商发布文、S17 guardrails示例、S21 HarnessDev、S23 AHE未在本轮核查。厂商和研究正文得到确认不等于业务效果独立验证。</p><h3>主张与来源</h3><table class="stack"><thead><tr><th scope="col">正文位置</th><th scope="col">主要证据</th><th scope="col">本次裁决及证据边界</th></tr></thead><tbody><tr><td data-label="正文位置">Q1 信息供给、压缩与外部状态</td><td data-label="主要证据"><a href="../../../provenance/ai-assessment-q123/cards/s01-anthropic-context-engineering.md">S01 上下文工程</a></td><td data-label="本次裁决及证据边界">采为设计方法；未做目标任务对照</td></tr><tr><td data-label="正文位置">Q1 后续加载与前缀缓存</td><td data-label="主要证据"><a href="../../../provenance/ai-assessment-q123/cards/supp-openai-tool-search.md">OpenAI Tool Search</a>、<a href="../../../provenance/ai-assessment-q123/cards/supp-openai-prompt-caching.md">缓存</a>、<a href="../../../provenance/ai-assessment-q123/cards/supp-anthropic-tool-search.md">Anthropic Tool Search</a></td><td data-label="本次裁决及证据边界">定义供给与服务热更新分开，实际账单须有usage</td></tr><tr><td data-label="正文位置">Q1/Q2 产品缓存条件</td><td data-label="主要证据"><a href="../../../provenance/ai-assessment-q123/cards/s02-claude-code-prompt-caching.md">S02 Claude Code</a></td><td data-label="本次裁决及证据边界">条件依赖模型与渠道，正文不固化价格或具名模型例外</td></tr><tr><td data-label="正文位置">Q1 目录刷新</td><td data-label="主要证据"><a href="../../../provenance/ai-assessment-q123/cards/supp-mcp-2026-07-28.md">MCP发布说明</a></td><td data-label="本次裁决及证据边界">核查到2026-07-28语义；原Chat 2025-11-25描述保留为历史；未测目标客户端</td></tr><tr><td data-label="正文位置">Q2 推理预算与延迟</td><td data-label="主要证据"><a href="../../../provenance/ai-assessment-q123/cards/s04-openai-reasoning.md">S04 reasoning</a>、<a href="../../../provenance/ai-assessment-q123/cards/s05-anthropic-thinking-cost.md">S05 thinking</a>、<a href="../../../provenance/ai-assessment-q123/cards/s06-openai-latency-optimization.md">S06 latency</a></td><td data-label="本次裁决及证据边界">路由是设计方案；未做API或用户等待实验</td></tr><tr><td data-label="正文位置">Q3 副作用前授权与恢复</td><td data-label="主要证据"><a href="../../../provenance/ai-assessment-q123/cards/s07-openai-computer-use.md">S07 computer use</a>、<a href="../../../provenance/ai-assessment-q123/cards/s08-openai-guardrails-approvals.md">S08 approval</a>、<a href="../../../provenance/ai-assessment-q123/cards/s09-anthropic-containment.md">S09 containment</a></td><td data-label="本次裁决及证据边界">采用边界原则；未连接真实账号或生产环境</td></tr><tr><td data-label="正文位置">Q3 幂等与unknown</td><td data-label="主要证据"><a href="../../../provenance/ai-assessment-q123/cards/s10-aws-idempotent-apis.md">S10 AWS</a></td><td data-label="本次裁决及证据边界">成熟API方法；不据此声称GUI或邮件接口幂等</td></tr><tr><td data-label="正文位置">Q3 向导消融</td><td data-label="主要证据"><a href="../../../provenance/ai-assessment-q123/cards/s11-osworld-2.md">S11 OSWorld</a>、<a href="../../../provenance/ai-assessment-q123/cards/s27-openai-evaluation-best-practices.md">S27 eval</a></td><td data-label="本次裁决及证据边界">基准帮助设计失败测试；非劣效方案为本次设计，无结果数据</td></tr><tr><td data-label="正文位置">Q4 分数与confidence</td><td data-label="主要证据"><a href="../../../provenance/ai-assessment-q45/cards/s13-typesafe-score.md">S13 Score</a>、<a href="../../../provenance/ai-assessment-q45/cards/s14-typesafe-confidence.md">S14 Confidence</a></td><td data-label="本次裁决及证据边界">原始分布、均值与集中程度各有语义，均不直接保证业务正确</td></tr><tr><td data-label="正文位置">Q4 重复与适用范围</td><td data-label="主要证据"><a href="../../../provenance/ai-assessment-q45/cards/s15-typesafe-jev-1-13-jaggedness.md">S15 Jev限制</a>、<a href="../../../provenance/ai-assessment-q45/cards/s16-typesafe-consistency-choice.md">S16 consistency</a></td><td data-label="本次裁决及证据边界">厂商示例阈值不采纳；未做独立重放</td></tr><tr><td data-label="正文位置">Q4 包装层取整</td><td data-label="主要证据"><a href="../../../provenance/ai-assessment-q45/cards/s18-pydantic-typesafe.md">S18 Pydantic集成</a>、<a href="../../../provenance/ai-assessment-q45/cards/s19-pydantic-api-typesafe.md">S19 API</a></td><td data-label="本次裁决及证据边界">核对日期2026-09-23；rubric最近等级与半数进位、原始provider_details[&#x27;scores&#x27;]来自读取时集成文档，未固定SDK发布版本或执行SDK测试；实现前需核对所用版本</td></tr><tr><td data-label="正文位置">Q5 候选、独立验收与奖励黑客</td><td data-label="主要证据"><a href="../../../provenance/ai-assessment-q45/cards/s20-google-research-rrsi.md">S20 RRSI</a>、<a href="../../../provenance/ai-assessment-q45/cards/s22-rsi-exam.md">S22 RSI-Exam</a>、<a href="../../../provenance/ai-assessment-q45/cards/s24-anthropic-reward-hacking.md">S24 reward hacking</a></td><td data-label="本次裁决及证据边界">研究参考；不将模型演化收益当法律治理保证</td></tr><tr><td data-label="正文位置">Q5 法域、规则身份与德国假阳性</td><td data-label="主要证据"><a href="../../../provenance/ai-assessment-q45/cards/README.md">Q4–Q5来源目录</a>中的S25/S26/S28</td><td data-label="本次裁决及证据边界">只核查具体SG判决、HGB74/74a/74b、GewO110及OFAC概念；没有完整三国法律适用意见，VN未取得批准法源</td></tr></tbody></table><p>每个URL的原始地址、访问时间、支持主张ID、章节/行定位、hash、正文路径和重访条件在 <a href="../../../provenance/ai-assessment-q123/catalog.json">Q1–Q3 catalog</a> 与 <a href="../../../provenance/ai-assessment-q45/catalog.json">Q4–Q5 catalog</a>。正文未堆叠脚注；本表按题目和主张承担定位。</p><h3>RSI综述的增补</h3><p><a href="../rsi-reference-index.md">综述裁决</a>对应Q5：明确改进对象为有版本的playbook，补足评估与权限独立、回退，以及任务效果和产生下一次有效改进能力的分别检验。两份实际消费的一手原文与版本在<a href="../../../provenance/rsi-review/catalog.json">补充来源目录</a>。研究数字和分级不进正文，论文或团队自报不充当法律结论依据。</p><h3>时效与用语复核（2026-09-23）</h3><p>Claude另派两名Sonnet只读复核。时效：Claude Code prompt caching、OpenAI与Anthropic tool search、MCP 2026-07-28发布说明、OpenAI reasoning与computer use、AWS幂等API、TypeSafe score/confidence/jev-1.13限制（2026-09-17复核版）、Pydantic集成、HGB §74、OFAC 50 Percent Rule、RRSI README与Anthropic reward hacking共12项均实时取回，正文所依赖的说法仍然成立；RRSI当前commit未能从页面确认。用语：未发现自造术语冒充通行概念；“可见性窗口”“放行上限”“阻断线”“送审”是本答卷的描述性用语，不作为行业专名。</p><table class="stack"><thead><tr><th scope="col">正文位置</th><th scope="col">依据</th><th scope="col">身份</th></tr></thead><tbody><tr><td data-label="正文位置">Q3.2 Message-ID不提供去重保证</td><td data-label="依据"><a href="https://www.rfc-editor.org/rfc/rfc5322#section-3.6.4">RFC 5322 §3.6.4</a>：Message-ID标识某封邮件的特定版本，唯一性由生成主机保证；规范不涉及接收方去重</td><td data-label="身份">2026-09-23在线核对，未保存正文快照</td></tr><tr><td data-label="正文位置">Q4.1 放行上限按严重漏报置信上界不超过预算校准</td><td data-label="依据">本答卷提出的方法，思路与selective prediction/risk control一致</td><td data-label="身份">设计方案，未引用具体文献，没有数据</td></tr><tr><td data-label="正文位置">Q4.2 样本覆盖中文、否定、日期和数字、长材料、选项次序、无关信息和对抗内容</td><td data-label="依据">其中数字、日期、无关上下文与对抗内容见S15；中文、长材料、选项次序为本答卷补充的覆盖清单</td><td data-label="身份">设计清单，不是厂商列出的限制</td></tr><tr><td data-label="正文位置">Q2.1 不同厂商effort档位不对应相同计算量</td><td data-label="依据">S04</td><td data-label="身份">官方文档；未做跨厂商实测</td></tr></tbody></table><h3>演算与设计目标</h3><table class="stack"><thead><tr><th scope="col">正文数据</th><th scope="col">身份</th><th scope="col">检查结果/待办</th></tr></thead><tbody><tr><td data-label="正文数据">15万token、1元与0.1元/百万token、差额0.135元</td><td data-label="身份">假设演算</td><td data-label="检查结果/待办">150000/1000000×(1−0.1)=0.135；不是供应商报价</td></tr><tr><td data-label="正文数据">人工12分钟→5分钟、300元/小时、模型工具2元</td><td data-label="身份">假设演算</td><td data-label="检查结果/待办">60元→27元，未计新增错误损失；不是生产账单</td></tr><tr><td data-label="正文数据">1秒确认、3秒p95、预计10秒以上提供阶段状态</td><td data-label="身份">初版设计目标</td><td data-label="检查结果/待办">没有用户实验、SLA或性能实测；Nielsen历史经验未另行核查，不作为这里的来源</td></tr><tr><td data-label="正文数据">P(1)=0.01/P(2)=0.99</td><td data-label="身份">确定性合成例子</td><td data-label="检查结果/待办">期望1.99、严重及以上99%；不是Jev测量</td></tr><tr><td data-label="正文数据">P(0)=0.5/P(3)=0.5</td><td data-label="身份">确定性合成例子</td><td data-label="检查结果/待办">期望1.5、严重及以上50%；不是校准曲线</td></tr><tr><td data-label="正文数据">放行/送审/阻断阈值、非劣效容差</td><td data-label="身份">待业务数据决定</td><td data-label="检查结果/待办">没有填入伪精确常量，需独立标签、风险预算与样本量</td></tr></tbody></table><h3>尚未验证与离线范围</h3><p>未运行模型API、真实工具热插拔、邮件发送、生产配置修改、Jev校准、国内网络测量、业务降级或客户隔离测试。没有核查第三方服务区域、SLA、测试限制等合同传言，没有穷尽题干四家公司RSI研究归属。已有文档契约不等于运行控制已经实现。</p><p>31份快照保存已读取HTTP/Markdown正文，可本地检查。远端图片、字体、JS、登录态、API和完整来源仓库未保存，不构成完整离线站点。RRSI保存的是读取时默认分支README，不是完整commit快照。可视化参考的原件、依赖与覆盖单列在 <a href="../visual-reference-index.md">视觉参考index</a>。页面、打印和交互验收属于后续Claude工单，当前未执行。</p><h3>Jev社区增量</h3><p>用户同日追加研究包后，另按24个来源入口登记核查；<a href="../../jev-practices/README.md">实践地图与独立证据index</a>维护本批身份、同研究去重和失败记录。它们的S01–S24使用独立命名空间，不与先前28项历史来源混用。Q2吸收语义路由/能力路由与候选覆盖的区分；Q4吸收固定轨迹重复不等于独立样本、用途分层、语义选择/中间量/最终结论分开验收。正文没有添加项目清单或社区性能排行。</p><h3>Q1段落编订</h3><p>用户指出加载策略与验证两段呈现孤立原则。本次把段落主线收束为“使用场景与原生能力→加载选择→请求记录核对成本→回到第40轮任务结果”，没有新增外部事实。未来维护原则“原生能力覆盖自建补丁时简化设计”移出当前论证，留为重访与维护要求。page-composition已同步新母稿hash和q1-p06/p07身份；renderer尚未据此重新生成或验收。</p><h3>术语修订</h3><p>按用户要求保留无稳定译法的行业英文，清理低/高工作量、工具供给、法律真值、不可补偿门槛等不必要表述；工具选择与模型选择直接解释区别，不将作者分类名当作公认术语。正文仍为37段，page-composition与纲要已同步，未执行renderer重建。修订未新增外部事实。</p><h3>全文编订与参考消费状态</h3><p>用户指出整篇句子仍像独立断言，母稿已围绕各题的判断过程重写为29段；旧37段数量不再作为要求。最新hash及逐段映射已同步，没有运行renderer。技术与法律依据仍沿既有逐源登记，不因文案重写提高证据状态。</p><p>现成CW Pages/career HTML已有可直接查看的构图，但本答卷尚未凭新页面截图完成设计消费验收。CW/SE的11条外部URL仍为partial，只确认其本地使用记录；CW Pages参考清单中的若干产品仍为preparation-only。本轮不以新增外部搜索代替对现成HTML的实际复用。</p><p>正文已统一为直接陈述，删除答题者的预告式自述；29段内容映射及hash已同步。仅更新母稿、体例和工单，未重建页面。</p><h3>撰写权限更新</h3><p>用户已将正文撰写权开放给Claude，包括句子、段落、论证组织、标题及图文分工。现有工作稿与composition是参考，不按旧段落或字面冻结。外部来源、原始快照和证据状态仍按记录核对；改写本身不提高证据等级。</p><h3>Claude改写版本（2026-09-23）</h3><p>正文由Claude按撰写授权改写，母稿hash为 <code>9d10789ded32</code>。改写只调整论证组织、标题与图文分工：列举性内容移入图表，正文保留理由、条件与限度。上文“演算与设计目标”中的数字、单位和假设身份未变；Q5反事实表不再点名新加坡，因为当前母稿未涉及新加坡的具体依据。结构与图的位置由母稿承载，论证关系和要点位置见<a href="../page-composition.json">构图映射</a>，页面验收见<a href="../rendered/verification.md">渲染验收</a>。</p><h3>Astra独立验收修订</h3><p>交付标题改为“Agent 系统设计”，“AI能力测试”仅保留为任务/来源身份。Q2撤回“增加effort只对难以验证的节点有意义”和“低effort再检查一定更便宜”的绝对说法，改按生成、检查、重试和返工总成本比较。Q5恢复原题既定背景：香港律师修改客户A的新加坡就业合同；这不新增新加坡法律结论，不能因为缺少法律依据就删除题干事实。</p><p>作者headless与640px检查作为该版作者自检保存；640px视口不能替代真实200%浏览器缩放，12页A4对应五个题目、每题可续页。Astra的桌面交互、消费裁决与最终版本另见<a href="../../../../docs/verification/assessment-astra-20260923/README.md">独立回执</a>。</p><h3>本轮文案验收</h3><p><a href="../../../../docs/verification/assessment-astra-20260923/text-verdict.md">文案裁决</a>为修订后通过。Q2区分确定性算法与结果可检查性，Q3补足原请求终止和幂等有效期/同标识同参数条件，Q4区分构造等级分布与实测风险，Q5恢复题干两项具体修改并明确两处50%不能直接等同。正文与展项文字同步更新；这不构成视觉、交互或业务效果通过。</p></section>
+<section id="cross-check"><h2>交叉核验与裁决</h2><table class="stack"><thead><tr><th scope="col">待核原说法</th><th scope="col">本次裁决</th><th scope="col">对回答的改变</th></tr></thead><tbody><tr><td data-label="待核原说法">第40轮新增3工具会导致整段缓存重写</td><td data-label="本次裁决">只在前缀被改变且相关缓存条件成立时计算；延迟/后续加载另算</td><td data-label="对回答的改变">Q1分支账单，取消统一倍率与“越晚必越贵”</td></tr><tr><td data-label="待核原说法">切effort总是或从不影响缓存</td><td data-label="本次裁决">型号、接入通道、配置与接口版本共同限定；无实测则不承诺</td><td data-label="对回答的改变">Q2只给路由实验及缓存核查要求</td></tr><tr><td data-label="待核原说法">用Message-ID即可保证邮件安全重试</td><td data-label="本次裁决">标识可帮助对账，但不创造服务端去重或事务性</td><td data-label="对回答的改变">Q3保留unknown，查不到记录不自动重发</td></tr><tr><td data-label="待核原说法">Jev期望1.99与门槛2的冲突靠取整解决</td><td data-label="本次裁决">包装层字段需核查；均值之外还有严重尾部</td><td data-label="对回答的改变">Q4保留完整概率向量，同时使用远离阈值的1.5/50%反例</td></tr><tr><td data-label="待核原说法">德国样例通过说明“月薪×12×50%”公式有效</td><td data-label="本次裁决">数值吻合不足以证明法源、基数、期间和适用范围一致，更不证明跨国可用</td><td data-label="对回答的改变">Q5增加德国假阳性测试，D2留待证候选</td></tr><tr><td data-label="待核原说法">厂商托管地、SLA、测试限制已由另一模型核对</td><td data-label="本次裁决">未获当前合同原件和核查记录，不采为事实</td><td data-label="对回答的改变">把接入与数据流审查列为上线待办</td></tr><tr><td data-label="待核原说法">全部五题做交互更能展示能力</td><td data-label="本次裁决">交互须证明额外判断价值</td><td data-label="对回答的改变">首版只优先Q4，Q5静态反事实矩阵</td></tr></tbody></table><p>可确定复核的两个演算为：<code>0×0+1×0.01+2×0.99+3×0=1.99</code>；<code>0×0.5+3×0.5=1.5</code>。它们只证明均值与尾部的数学区别，不证明任何厂商返回过这些分布。</p></section>
+</main>
+
+</body>
+</html>

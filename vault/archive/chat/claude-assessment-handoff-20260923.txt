@@ -1,0 +1,96 @@
+I have authorship freedom to restructure, rewrite, and rebalance the content while preserving factual accuracy. I'll first pin down the exact terms of the request, particularly where rewritten text should go, before drafting anything.
+
+Composition 2.0 arrived at 13:55, giving me authorship over the draft, outline, and composition while dropping the verbatim paragraph requirement and the per-page local index—acceptance now checks fact/reasoning coverage instead. Next I'll review composition 2.0 and its required_claims.
+
+I'll restructure the draft to combine prose and structure (headed sections, stable ids, figure placements) while keeping figures for enumerations and prose for reasoning, then update the map with claim references. Starting with the new draft now.
+
+The draft on disk (13:44) may differ slightly from the version I read at 13:43, since composition 2.0 records a "direct answer voice" revision. Re-reading it once before rewriting.
+
+I'll write the new draft now, preserving every fact, number, and assumption while making figure placement explicit and rewriting any paragraphs that just restated figure numbers so they instead explain reasoning and limitations.
+
+Draft complete with all facts from the original 29 paragraphs preserved in prose or figures. Now trimming exhibits to remove redundancy—converting the Q1 cache comparison into an aligned three-row table with the shared assumption stated once, dropping bar lengths for unknown schema sizes.
+
+I'll fix two wording issues in the figures—removing the "不属于effort档位" phrasing and aligning the Q1 write-back label with the draft—then build a new parser in `build.py` to handle h2/h3 headings with `{#id}` anchors, `::: figure` directives, and composition 3.0 validation.
+
+Building composition 3.0 now, keeping Astra's metadata, reasoning relations, and visual encodings intact while swapping the paragraph lists and editorial units for a claims list linked to the draft's section ids, plus a new revision entry.
+
+The build passes with composition 3.0, resolving all 43 claims to draft locations. Now I'll clean up the stylesheet and screenshot the rewritten pages.
+
+The rewritten pages build and render. Now visually reviewing Q1, Q2 and Q4 at 1440px.
+
+Q2 has redundant repetition—the heading, caption, and opening all say "按节点选择," and the paragraph after figure 2.1 just re-lists the figure's routes. I'll rewrite it to focus only on the reasoning (checking cost) and the limit, giving the heading and caption distinct roles.
+
+Q2 now splits cleanly: the figure routes each node type, and the prose gives the reason and the limit. Rendering Q3–Q5 side by side for review.
+
+All three pages render with a clear hierarchy, but I'm fixing the Q5 counterfactual row since it references Singapore while the draft doesn't, changing it to "换成另一法域（德国或越南）". Next, I'll update `evidence-index.md` and `page-composition.md` with version notes for this rewrite.
+
+Docs synced. Removing the stylesheet rules no figure uses any more (context bars, relation strips, parallel track, feedback box), then running the full check suite on the final build.
+
+Fixing the one failing test by replacing the local section index check with a test that verifies `#q5-scope` navigation opens Q5 at the right section, and removing the now-unused three-column CSS.
+
+All 24 interaction checks pass. Now I'll gather the evidence set—print PDF, no-JS render, desktop/mobile screenshots of Q1/Q3/Q4, and the Q1 before/after pair—into `rendered/verification/`.
+
+The PDF text search matched 5 lines for control labels, which could mean controls are leaking into print. Checking which lines matched.
+
+They are leaking: the 纲要 control and the Q4 explorer buttons appear in the PDF. Checking the print block of the stylesheet.
+
+Found it. My earlier regex removing the `.local` rules also cut the rest of the print line that hides the controls, merging it into the next rule. Restoring it.
+
+Controls are correctly hidden in print, with 12 A4 pages (one per question) and all key values intact. I'll regenerate the print evidence sheet and review it page by page to confirm.
+
+One print defect remains: on page 11, the "图 5.3" label is stranded at the bottom with its table on the next page. Tying the caption to whatever follows it and re-checking.
+
+Still orphaned: Chrome ignores break-after on the caption here. More robust fix: in print, keep every figure whole. Each fits within an A4 page, and Chrome still splits one if it doesn't.
+
+Print is now clean: 12 pages, each question and each figure starting a page cleanly, and no controls. Regenerating the print evidence sheet, then writing `verification.md`.
+
+Before writing the reference mapping, I'll confirm the exact source lines for the mechanisms I claim to have borrowed, so each citation is accurate rather than taken from the index.
+
+I've confirmed the references against the source and am now writing `verification.md`, covering the page-by-page mapping, an element-to-role audit, and the status of each check.
+
+The hash table was computed before the last print-CSS fixes, so I'll recompute it at the end. I'm also adding Q2 and Q5 desktop screenshots, since the mapping table cites them.
+
+Now updating `rendered/README.md` for the new structure, then running the repository validator.
+
+Validation passed with no errors. Now I'll recompute the final hashes, verify the inputs haven't changed, and write the results table and validator output into `verification.md`.
+
+Everything checks out against the final build. Sending the page and the Q1 before/after comparison.
+
+答卷正文已按撰写授权重写，页面也已按最新工单完成返工。所有自动检查都在最终构建上跑过并通过。正文结构和图文分工请你再看一眼，这部分只有我自己审过，还没有人复核。
+
+**说明一点**：工单写的 `enterprise-kit` 目录不存在，你后来的工单版本已改为 Praxis，全部工作都在 Praxis 内完成。
+
+**正文怎么改的**
+- 以29段母稿为材料，重写了 `answer-draft.md`。母稿现在同时承载正文和结构：每题一页，下设带 id 的小节，图的位置也写在母稿里。
+- 列举性内容（路由类别、授权动作、失败原因、验证要素、D1/D2 核查项、记录字段、适用范围）只在图表里出现一次；正文负责理由、条件和限度。本题小节目录已按工单删除。
+- 数字和假设身份都没变：0.135元、60/27元、1秒/3秒/10秒、1.99/99%、1.50/50%、德国条款条件、越南待审。
+- 唯一的实质调整：Q5 反事实表原写"新加坡换成德国或越南"，但母稿没有涉及新加坡的依据，已改为"换成另一法域（德国或越南）"，并记入 `evidence-index.md`。没有发现需要交 Astra 裁决的事实冲突。
+- `page-composition.json` 升级为 3.0：保留你的论证关系和视觉任务，新增43项要点，每项指向母稿里的小节。生成器逐项校验，遇到不支持的写法、放错或重复的展项、主展项不符都会直接报错。
+
+**页面**
+- 顶部一行 Q1–Q5 题签，"纲要"展开五张卡；正文直接落在页面网格上，没有外框。
+- 每页一张主图占满宽度，辅助图留在文字列内：Q1 是信息如何进入当前步骤并回写，Q2 是按节点分配推理投入（"缺少关键事实"单列，不画成一个档位），Q3 是超时后进入 unknown 的核验分支，Q4 是两组分布在同一刻度上对照，Q5 是 D1/D2 两条独立的证据链。
+- 颜色只用于当前页、严重尾部和关键对象；卡片上边线、阴影、渐变都已去掉。每类视觉元素表达什么，列在 `verification.md` 里。
+
+**检查结果**
+- **Q4 计算**：两组预设算得正确，六类非法向量都被拒绝，不会被暗中归一化。
+- **交互（24项）**：在真实的 `file://` 页面上用键盘驱动 Chrome 测试，全部通过。包括纲要展开收起、五张卡进入对应题、前进后退与刷新、切题后 Q4 输入和阅读位置保留、直接定位到小节。控制台无错误，没有外部请求。
+- **窄屏**：375px 与 640px 下五页和 index 都没有横向溢出。
+- **禁用 JS**：五题正文和两组固定例子依次完整显示。
+- **A4 打印**：12页，每题新起一页，图不跨页，控件都隐藏。打印时发现过两个问题，都已修复：控件漏进打印稿，图号被孤立在页底。
+- **仓库校验**：`validate_repository.py` 通过。
+
+**没有做的**
+- 没用真实浏览器的文字缩放设置，200%缩放是用640px宽度等效测的；也没测屏幕阅读器、Safari/Firefox，没有物理断网。
+- 灰阶打印没有单独出图：严重尾部和其他等级的灰度接近，只能靠加粗标签和百分比区分。
+- CW/SE 的11条历史外链没有重新核查，仍为 partial。
+
+**剩余问题**
+- 图里的文字在 `exhibits.py`，正文在母稿，是两个文件；改图中事实时需要同时核对正文。
+- 以后改母稿，需要同步更新构图映射里的 `source_sha256`，否则会构建失败。
+
+文件都在 `vault/distilled/ai-capability-assessment/rendered/`：
+- `answer.html`
+- `evidence-index.html`
+- `verification.md`（参考机制 → 构图 → 代码 → 截图对照，以及已做和未做的检查）
+- `verification/`（Q1 前后对比、五页桌面、Q1/Q3/Q4 窄屏、打印、无 JS 截图）

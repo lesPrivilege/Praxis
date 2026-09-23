@@ -11,6 +11,8 @@
 | 写汇报、memo、deck 或 HTML | [Reporting brief](templates/reporting/README.md) → [汇报契约](kit/reporting/grammar.md) | 面向读者与决定的材料 |
 | 整理会议、项目状态与后续工作 | [工作系统](kit/work-system/README.md) | 候选变化、确认状态与下一责任 |
 | 在新环境消费 Kit | [Environment](kit/environment/README.md) | 能力盘点、权限范围与消费计划 |
+| 设计页面、编排可视化或选择界面做法 | [Design](kit/design/README.md) → [参考索引](kit/design/references.md) | 已裁决的做法、依据与可复用产出 |
+| 撰写或改定对外中文成文 | 项目 skill `writing`（`.claude/skills/writing/SKILL.md`）→ [Writing](kit/writing/README.md) | 按写作原理成文，附审阅裁决 |
 | 查定义、接口与验收要求 | [Kit](kit/README.md) | 对应契约与检查项 |
 
 ## 研究与维护
@@ -20,6 +22,7 @@
 | 阅读已消费材料、查证来源 | [Vault](vault/README.md) → [主题提炼](vault/distilled/README.md) |
 | 增补材料或启动研究 | [入账](docs/governance/intake.md) / [研究问题](docs/governance/research-agenda.md) |
 | 修改规则、迁移或撤回推荐 | [修订流程](docs/governance/evolution.md) |
+| 登记新的设计或写作参考 | [Design 的增量规则](kit/design/README.md#增量) / [Writing](kit/writing/README.md#增量) |
 | 理解组织方式与历史取舍 | [架构](docs/architecture/README.md) / [决策](docs/decisions/README.md) |
 | Agent 开工 | [使用约定](kit/Agent.md) / [AGENTS.md](AGENTS.md) |
 

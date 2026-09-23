@@ -1,0 +1,566 @@
+{
+  "schema_version": "1.1",
+  "catalog_id": "jev-community-workflows-2026-09-23",
+  "origin": "direct-research",
+  "as_of": "2026-09-23",
+  "scope": {
+    "source_package": "/Users/lesprivilege/Downloads/Jev_社区实践研究包_2026-09-23/sources.json",
+    "source_ids": ["S13", "S14", "S15", "S16", "S17", "S18", "S19", "S20", "S21", "S22", "S23", "S24"],
+    "source_count": 12,
+    "independent_study_count": 10,
+    "focus": ["judge_and_cascade", "sre_10_events_x5", "jev_harness_eval_contamination", "recorded_call_model_version", "pg_jev_batch", "southbridge_entity_relation", "rag_support_vs_relevance", "semif_mps_calibration"],
+    "deduplication_rule": "每个 URL 独立 source；同一研究或项目的不同页面用 study_id 连接，不把 12 个 URL 当作 12 个独立研究。",
+    "method": "直接 HTTP body 获取；GitHub 页面改用对应 raw body；未安装依赖、未执行代码、未调用 Jev API、未运行 benchmark。"
+  },
+  "provenance_policy": {
+    "claim_rule": "status 只描述本次直接读取的正文能够支持的具体主张；作者自测、研究预印本、产品成熟度和本次未复跑分别登记。",
+    "time_rule": "reported_date 保留来源/项目报告日期或访问日快照；checked_at 是本次 HTTP 读取时间，二者不混用。",
+    "source_rule": "只登记原始作者、作者项目页、原始仓库或 arXiv 作者预印本；不把二手转载当作独立来源。",
+    "snapshot_layer": "http-body",
+    "evidence_fields": "每条 source 的 snapshot_path、snapshot_sha256、snapshot_size_bytes 都是单值；supported_claims[].locator 使用正文标题、短语或本地快照行号。",
+    "checked_at": "2026-09-23"
+  },
+  "retrieval_summary": {
+    "unique_urls": 12,
+    "http_success": 12,
+    "http_failures": [],
+    "snapshot_body_files": 12,
+    "snapshot_body_bytes": 1140956,
+    "live_api_reruns": 0,
+    "executed_community_code": false,
+    "note": "所有选定 URL 均取得 HTTP 200；远端动态资产、默认分支未来变化和未保存依赖不宣称离线完整。"
+  },
+  "sources": [
+    {
+      "slug": "jc-s13-jev-as-a-judge-project",
+      "source_id": "S13",
+      "study_id": "jev-as-a-judge-2026",
+      "study_role": "author_project_page",
+      "title": "JEV-as-a-Judge 项目页",
+      "url": "https://yubol-bobo.github.io/jev-as-a-judge/",
+      "original_url": "https://yubol-bobo.github.io/jev-as-a-judge/",
+      "snapshot_source_url": "https://yubol-bobo.github.io/jev-as-a-judge/",
+      "source_origin": "author_primary",
+      "first_party_source": true,
+      "publisher": "Yubo Li et al.",
+      "source_class": "author_research_project",
+      "maturity": "research_only",
+      "reported_date": "2026-09（预印本项目页）",
+      "checked_at": "2026-09-23T11:49:26+08:00",
+      "inspection_scope": "项目页正文与方法/结果摘要；未运行其匿名补充包或 API。",
+      "author_self_test": true,
+      "live_api_rerun": false,
+      "status": "verified",
+      "summary_zh": "作者项目页报告 17 个 judge 配置、冻结输入、保留失败和 source-cluster bootstrap 区间；JEV 在普通偏好/证据事实任务接近强 judge，但在 JudgeBench 推理编码和样式对抗任务明显落后，reference-free prose 近似随机且高置信。项目页报告冻结 JEV→GPT-6 cascade 在 510 个扩展 preference pairs 上保留约 99% accuracy、使用约 56.8% 费用。",
+      "limits": "作者研究页不是独立复现或生产 SLA；指标是 benchmark agreement/作者定义标签，非通用真实正确率。cascade 阈值在离线扩展集上选择，作者明确要求按 workload 验证；一个 proprietary JEV 版本、计算预算不匹配和估算费用限制外推。",
+      "revisit_trigger": "论文、补充代码、JEV 版本、judge 数据或 cascade policy 更新；任何上线闸门前重做独立标注与隐藏测试。",
+      "purpose_tags": ["Q2", "Q4", "JUDGE", "CASCADE", "CALIBRATION", "CONFIDENCE", "PRACTICE_MAP"],
+      "supported_claims": [
+        {
+          "claim_id": "JC-S13-JUDGE-01",
+          "claim_zh": "任务适配比统一排名更重要：JEV 可在普通偏好/证据任务接近强 judge，但 JudgeBench 难推理和样式对抗任务出现明显差距。",
+          "locator": "正文标题 Finding 01/02、Task fit matters more than a universal ranking；短语 JudgeBench 14.6-point gap、RM-Bench loses 9.2 points。"
+        },
+        {
+          "claim_id": "JC-S13-CASCADE-01",
+          "claim_zh": "作者采用 confidence 作为升级信号而非正确性证书；冻结 JEV→GPT-6 cascade 在 510 extension pairs 上报告 92.5% vs 93.1% 与 56.8% fee ratio。",
+          "locator": "正文标题 Confidence is not a correctness certificate、When does escalation pay?、JEV → GPT-6 at threshold 0.9。"
+        }
+      ],
+      "snapshot_path": "vault/provenance/jev-community-workflows/snapshots/jc-s13-jev-as-a-judge-project.html.txt",
+      "snapshot_sha256": "100a66393179a1287fda57203b9dfc9a3142c041b9ae88347eaf7a1fb2e35b15",
+      "snapshot_size_bytes": 64112,
+      "card_path": "vault/provenance/jev-community-workflows/cards/jc-s13-jev-as-a-judge-project.md"
+    },
+    {
+      "slug": "jc-s14-jev-as-a-judge-arxiv",
+      "source_id": "S14",
+      "study_id": "jev-as-a-judge-2026",
+      "study_role": "arxiv_record",
+      "title": "JEV-as-a-Judge: Accept When Confident, Escalate When Unsure",
+      "url": "https://arxiv.org/abs/2609.26550",
+      "original_url": "https://arxiv.org/abs/2609.26550",
+      "snapshot_source_url": "https://arxiv.org/abs/2609.26550",
+      "source_origin": "author_preprint",
+      "first_party_source": true,
+      "publisher": "Yubo Li, Yidi Miao, Ramayya Krishnan, Rema Padman",
+      "source_class": "preprint_abstract",
+      "maturity": "research_only",
+      "reported_date": "2026-09-22（arXiv submitted）",
+      "checked_at": "2026-09-23T11:49:27+08:00",
+      "inspection_scope": "arXiv abstract HTML；未抓取 PDF/HTML experimental 全文。",
+      "author_self_test": true,
+      "live_api_rerun": false,
+      "status": "partial",
+      "summary_zh": "arXiv 摘要说明该研究比较 decision-only JEV 与 16 个 generative/reward-model judges，关注成本和 confidence reliability；摘要报告普通 preference 与 evidence-grounded factuality 接近强 judge、较难的 derivation/style 任务差距更大，并提出 confident accept / uncertain escalation cascade。",
+      "limits": "本次只核查 arXiv abstract，不把摘要当作完整论文方法、数据、限制或复现证据；与 S13 是同一 study_id，不能计为第二份独立研究。",
+      "revisit_trigger": "需要完整方法、数据切分、阈值选择或限制时读取 PDF/HTML experimental 全文并新增版本快照。",
+      "purpose_tags": ["Q2", "Q4", "JUDGE", "CASCADE", "CONFIDENCE", "STUDY_DEDUP"],
+      "supported_claims": [
+        {
+          "claim_id": "JC-S14-ABSTRACT-01",
+          "claim_zh": "摘要研究 decision-only judge 的低成本 first pass 与升级不确定样本的策略，并报告普通任务接近强 judge、推理/复杂错误答案任务差距更大。",
+          "locator": "arXiv abstract HTML 的 Abstract 段落；提交日期与标题在页面顶部。"
+        }
+      ],
+      "snapshot_path": "vault/provenance/jev-community-workflows/snapshots/jc-s14-jev-as-a-judge-arxiv.html.txt",
+      "snapshot_sha256": "8657e3a5daee1313d2896c8fe7b00d8834fda2a96569c3b0de26f9e2264fa7d5",
+      "snapshot_size_bytes": 40198,
+      "card_path": "vault/provenance/jev-community-workflows/cards/jc-s14-jev-as-a-judge-arxiv.md"
+    },
+    {
+      "slug": "jc-s15-jev-scientific-decisions-arxiv",
+      "source_id": "S15",
+      "study_id": "jev-scientific-decisions-2026",
+      "study_role": "arxiv_record",
+      "title": "Jev for Scientific Decisions: Evaluating Semantic Choices and Their Consequences",
+      "url": "https://arxiv.org/abs/2609.24965",
+      "original_url": "https://arxiv.org/abs/2609.24965",
+      "snapshot_source_url": "https://arxiv.org/abs/2609.24965",
+      "source_origin": "author_preprint",
+      "first_party_source": true,
+      "publisher": "Boyuan Deng, Shuyi Fan, Hongyang Zhang, Xinhong Xie",
+      "source_class": "preprint_abstract",
+      "maturity": "research_only",
+      "reported_date": "2026-09-21",
+      "checked_at": "2026-09-23T11:49:29+08:00",
+      "inspection_scope": "arXiv abstract HTML；未抓取 PDF/HTML experimental 全文。",
+      "author_self_test": true,
+      "live_api_rerun": false,
+      "status": "partial",
+      "summary_zh": "摘要把 Jev 放入科学工作流的语义选择环节，报告 12 个 model configurations、20 个 source-grounded Choices、10 个 scientific cases、每 case 5 次重复，并分别检查 semantic selections、downstream outputs 和 final claim labels；摘要强调错误中间选择可能改变下游数量却保留最终标签。",
+      "limits": "本次只核查摘要，未核对完整标注、模型配置、统计区间或限制；摘要中的结果属于作者预印本研究，不是生产科学决策保证。",
+      "revisit_trigger": "需要 Q4 的重复性/中间量验收细节时读取全文、补充材料和数据切分。",
+      "purpose_tags": ["Q4", "SEMANTIC_CHOICE", "DOWNSTREAM_EFFECT", "REPEATABILITY", "STUDY_MAP"],
+      "supported_claims": [
+        {
+          "claim_id": "JC-S15-SCI-01",
+          "claim_zh": "研究将语义选择、下游输出和最终标签分开测量；五次重复和中间量错误显示最终标签正确不能掩盖可复用语义选择错误。",
+          "locator": "arXiv abstract HTML 的 Abstract 段落；页面顶部提交日期 21 Sep 2026。"
+        }
+      ],
+      "snapshot_path": "vault/provenance/jev-community-workflows/snapshots/jc-s15-jev-scientific-decisions-arxiv.html.txt",
+      "snapshot_sha256": "1e8242e0afcbcdb78f9098dc4a944305e1674e7e31c5175dcebea0b48ce8b0b0",
+      "snapshot_size_bytes": 41600,
+      "card_path": "vault/provenance/jev-community-workflows/cards/jc-s15-jev-scientific-decisions-arxiv.md"
+    },
+    {
+      "slug": "jc-s16-sregym-jev",
+      "source_id": "S16",
+      "study_id": "sregym-jev-2026",
+      "study_role": "author_benchmark_post",
+      "title": "Can Jev Make SRE Agents More Reliable?",
+      "url": "https://sregym.com/blog/jev-sregym-lite",
+      "original_url": "https://sregym.com/blog/jev-sregym-lite",
+      "snapshot_source_url": "https://sregym.com/blog/jev-sregym-lite",
+      "source_origin": "benchmark_author_primary",
+      "first_party_source": true,
+      "publisher": "SREGym authors",
+      "source_class": "benchmark_author_integration",
+      "maturity": "author_experiment",
+      "reported_date": "2026-09-17",
+      "checked_at": "2026-09-23T11:49:29+08:00",
+      "inspection_scope": "全文正文；未运行 SREGym、未复现 10×5 试验。",
+      "author_self_test": true,
+      "live_api_rerun": false,
+      "status": "verified",
+      "summary_zh": "SREGym 作者在 10 个 SREGym-Lite problems 上把 Jev 接入 gpt-5.6-luna Codex harness：jev_plan 选择 3–5 个竞争假设和只读测试，jev_submit 在 diagnosis/mitigation 前审查证据，要求每个问题概率达到 0.70。每种条件每事件 5 次，成功尝试由 20/50 变为 24/50；两个问题退步。",
+      "limits": "不是 50 个独立事件；每事件仅 5 次，作者明确不能据此声称一般性八个百分点提升。实验测 pass rate，不测诊断耗时、前置安全动作或生产恢复；Jev 不能找回从未进入候选集的正确假设，也会接受表象恢复而遗漏持久性 invariant。",
+      "revisit_trigger": "SREGym 任务、模型、候选生成、阈值或安全 reviewer 实验更新；若用于生产，先独立测候选召回、持久性修复和不可逆动作闸门。",
+      "purpose_tags": ["Q2", "Q4", "SRE", "EVENTS_10_X5", "CANDIDATE_RECALL", "SAFETY_GATE"],
+      "supported_claims": [
+        {
+          "claim_id": "JC-S16-SRE-01",
+          "claim_zh": "Jev 在 SRE 中作为决策支持选择测试并审核诊断/缓解证据，agent 仍执行测试和修复；每个事件五次，20/50→24/50。",
+          "locator": "正文 How we integrated Jev、Results；jev_plan/jev_submit 小节和结果表。"
+        },
+        {
+          "claim_id": "JC-S16-SRE-02",
+          "claim_zh": "作者记录了两个边界：未进入候选集的正确假设无法被排序恢复；当前功能恢复不等于未来 invariant 持久满足。",
+          "locator": "正文 Where Jev failed；短语 Jev could not rescue a missing hypothesis 与 recovery was mistaken for a durable repair。"
+        }
+      ],
+      "snapshot_path": "vault/provenance/jev-community-workflows/snapshots/jc-s16-sregym-jev.html.txt",
+      "snapshot_sha256": "95193405d47f8be0bd8fc606e5af76f9bc7c863a5c9a2381531c46ea70716bc3",
+      "snapshot_size_bytes": 95106,
+      "card_path": "vault/provenance/jev-community-workflows/cards/jc-s16-sregym-jev.md"
+    },
+    {
+      "slug": "jc-s17-jev-harness-readme",
+      "source_id": "S17",
+      "study_id": "jev-harness-2026",
+      "study_role": "project_readme",
+      "title": "JevHarness README",
+      "url": "https://github.com/TianyuCodings/JevHarness/blob/main/README.md",
+      "original_url": "https://github.com/TianyuCodings/JevHarness/blob/main/README.md",
+      "snapshot_source_url": "https://raw.githubusercontent.com/TianyuCodings/JevHarness/main/README.md",
+      "source_origin": "author_repository_primary",
+      "first_party_source": true,
+      "publisher": "TianyuCodings",
+      "source_class": "community_prototype",
+      "maturity": "author_experiment",
+      "reported_date": "2026-09-21（示例运行）",
+      "checked_at": "2026-09-23T11:49:30+08:00",
+      "inspection_scope": "main README raw body；未执行安装、reflection、Eval 或网站构建。",
+      "author_self_test": true,
+      "live_api_rerun": false,
+      "github_blob_sha": "50d8d6757beb8e261cdcd59362f83429deb3b701",
+      "status": "verified",
+      "summary_zh": "项目把强模型开发和冻结的 task-specific harness 分开：代码/特征/问题/控制流由 authoring LLM 修改，冻结后运行时只执行代码与 Jev calls。README 报告 Pokémon Eval 3/12→9/12，但明确 Eval 用于候选选择，不是未见游戏估计；GEPA 记录 rejected proposals、ancestry 和完整 trace。",
+      "limits": "这是作者项目 README 与 selection Eval 自测，不是独立 holdout 或生产验收。默认分支不是固定 commit；hosted alias 未钉死未来 provider 行为；页面/演示依赖远端资产。本次未复跑。",
+      "revisit_trigger": "项目 commit、Eval split、模型版本、harness freezing contract 或作者公布独立测试更新时复查。",
+      "purpose_tags": ["Q2", "Q4", "HARNESS", "FREEZE", "EVAL_CONTAMINATION", "TRACE", "VERSIONING"],
+      "supported_claims": [
+        {
+          "claim_id": "JC-S17-HARNESS-01",
+          "claim_zh": "作者描述开发/运行分离：强模型写 task-specific harness，冻结后运行不需 authoring LLM 每次参与；Jev 只作快速模糊判断。",
+          "locator": "raw README 第 5-13 行；Let an LLM write a task-specific harness / Freeze the strategy。"
+        },
+        {
+          "claim_id": "JC-S17-HARNESS-02",
+          "claim_zh": "Pokémon 3/12→9/12 是用于选择的 Eval 结果；README 明确不是 unseen games 的独立性能估计，并保留 rejected proposals 与 Train/Eval 区分。",
+          "locator": "raw README 第 15、37-48、79-83 行；Start with the example / Improve from evidence / Freeze the selected harness。"
+        }
+      ],
+      "snapshot_path": "vault/provenance/jev-community-workflows/snapshots/jc-s17-jev-harness-readme.md.txt",
+      "snapshot_sha256": "fa521b13d179492c1bb7b80f8bc516c1855522f7ef6fda747b4bcfda632c7c58",
+      "snapshot_size_bytes": 15582,
+      "card_path": "vault/provenance/jev-community-workflows/cards/jc-s17-jev-harness-readme.md"
+    },
+    {
+      "slug": "jc-s18-jev-harness-turn12",
+      "source_id": "S18",
+      "study_id": "jev-harness-2026",
+      "study_role": "recorded_call_json",
+      "title": "JevHarness recorded turn-12 call",
+      "url": "https://github.com/TianyuCodings/JevHarness/blob/main/docs/examples/pokemon-turn12-jev.json",
+      "original_url": "https://github.com/TianyuCodings/JevHarness/blob/main/docs/examples/pokemon-turn12-jev.json",
+      "snapshot_source_url": "https://raw.githubusercontent.com/TianyuCodings/JevHarness/main/docs/examples/pokemon-turn12-jev.json",
+      "source_origin": "author_repository_primary",
+      "first_party_source": true,
+      "publisher": "TianyuCodings",
+      "source_class": "recorded_call",
+      "maturity": "author_artifact",
+      "reported_date": "2026-09-21",
+      "checked_at": "2026-09-23T11:49:31+08:00",
+      "inspection_scope": "完整 JSON 人工核读；未验证远端原 trace 文件和哈希是否可取得。",
+      "author_self_test": true,
+      "live_api_rerun": false,
+      "github_blob_sha": "110d5decf3dd6b5fba16f7b2d52a8d53ff0e43f7",
+      "status": "verified",
+      "summary_zh": "记录保留 run/candidate/episode/split/turn、输入 state、候选动作、probabilities、confidence、rounding、transport、usage、执行动作和游戏结果。turn 12 选择概率 0.72 的 switch:2 是动作选择概率，不是赢得整场比赛的概率；记录明确 model_version_pinned=false。",
+      "limits": "这是规范化记录，不是完整 gateway 原包；source trace 只登记远端路径和 hash，本批未验证原 trace；未钉死模型版本，回放不等于今天新鲜调用会相同。",
+      "revisit_trigger": "需要复盘 provider 行为、模型版本、rounding 或真实可重放性时取得原 trace、固定 commit/model version 并做新鲜调用对照。",
+      "purpose_tags": ["Q2", "Q4", "RECORDED_CALL", "MODEL_VERSION", "PROVENANCE", "PROBABILITY_SEMANTICS"],
+      "supported_claims": [
+        {
+          "claim_id": "JC-S18-TRACE-01",
+          "claim_zh": "记录包含输入、候选、概率、confidence、rounding、transport、usage、executed action 和结果，便于把动作选择概率与任务结果分开。",
+          "locator": "JSON 第 1-26、190-241 行；provenance/request/response/recording/outcome。"
+        },
+        {
+          "claim_id": "JC-S18-TRACE-02",
+          "claim_zh": "`recording.model_version_pinned` 为 false；`model` 为 typesafe-ai/jev，transport 为 vercel，选择 0.72 与游戏胜负分别记录。",
+          "locator": "JSON 第 217-241 行；model、recording、outcome 字段。"
+        }
+      ],
+      "snapshot_path": "vault/provenance/jev-community-workflows/snapshots/jc-s18-jev-harness-turn12.json.txt",
+      "snapshot_sha256": "1006a276ca39074eaabe02864c1ae81bac7977006a63b10845574daade1c21c2",
+      "snapshot_size_bytes": 8944,
+      "card_path": "vault/provenance/jev-community-workflows/cards/jc-s18-jev-harness-turn12.md"
+    },
+    {
+      "slug": "jc-s19-pg-jev-readme",
+      "source_id": "S19",
+      "study_id": "pg-jev-2026",
+      "study_role": "project_readme",
+      "title": "pg-jev README",
+      "url": "https://github.com/realZachi/pg-jev/blob/master/README.md",
+      "original_url": "https://github.com/realZachi/pg-jev/blob/master/README.md",
+      "snapshot_source_url": "https://raw.githubusercontent.com/realZachi/pg-jev/master/README.md",
+      "source_origin": "author_repository_primary",
+      "first_party_source": true,
+      "publisher": "realZachi",
+      "source_class": "community_extension",
+      "maturity": "author_self_test",
+      "reported_date": "访问日快照",
+      "checked_at": "2026-09-23T11:49:31+08:00",
+      "inspection_scope": "README raw body 前 212 行；未安装 PostgreSQL extension 或调用 API。",
+      "author_self_test": true,
+      "live_api_rerun": false,
+      "github_blob_sha": "97dc7ef7eb6f01cac78261b4d562173ccd9e3f01",
+      "status": "verified",
+      "summary_zh": "pg-jev 把 Jev 判断封装为 PostgreSQL functions，支持批量、并发、read-ahead、session cache、score/choice/confidence 和 raw eval。README 报告 2,000-row 测试首跑约 100 requests、二跑命中缓存约 50ms；结构化 ground truth 上 batch 1–20 为 100%，40 为 92–98%，80 为 77–94%，位置关联准确率在大 batch 下降。",
+      "limits": "作者有限结构化字段自测，不是独立数据库基准；需要 plpython3u、superuser 和 API key，row 内容会发第三方 API；每 session cache 不等于跨连接共享；README 的成本、延迟和准确率不是本次实测。",
+      "revisit_trigger": "extension、Jev API、batch/cache 实现、托管 Postgres 权限或数据外发策略变化时复查，并用目标数据库和切片重测。",
+      "purpose_tags": ["Q2", "Q4", "POSTGRES", "BATCH", "CACHE", "THROUGHPUT", "DATA_BOUNDARY"],
+      "supported_claims": [
+        {
+          "claim_id": "JC-S19-BATCH-01",
+          "claim_zh": "README 说明每批默认 20 行共享 state 并行评估；batch 40/80 的 row-position accuracy 比 1–20 下降，且不应把批量扩大当作无成本优化。",
+          "locator": "raw README 第 40-68 行；How it works / Why 20 rows per request。"
+        },
+        {
+          "claim_id": "JC-S19-DATA-01",
+          "claim_zh": "README 明确 row contents 发送第三方 API、cache 位于 backend session、plpython3u 以服务器权限运行，并提供 max_rows/max_chars spend guards。",
+          "locator": "raw README 第 148-188 行；Settings / Caveats。"
+        }
+      ],
+      "snapshot_path": "vault/provenance/jev-community-workflows/snapshots/jc-s19-pg-jev-readme.md.txt",
+      "snapshot_sha256": "e8735928b57d89ee41482e9fc24d6301af2863765db4cc15fa11dd1cf3b1a192",
+      "snapshot_size_bytes": 11555,
+      "card_path": "vault/provenance/jev-community-workflows/cards/jc-s19-pg-jev-readme.md"
+    },
+    {
+      "slug": "jc-s20-jev-vs-agentic-loop",
+      "source_id": "S20",
+      "study_id": "jev-agentic-loop-comparison-2026",
+      "study_role": "author_migration_experiment",
+      "title": "Typed Judgments or Agentic Loops? Benchmarking Jev Against a GPT Agent",
+      "url": "https://blog.r6i.it/typesafe-jev-vs-agentic-loop.html",
+      "original_url": "https://blog.r6i.it/typesafe-jev-vs-agentic-loop.html",
+      "snapshot_source_url": "https://blog.r6i.it/typesafe-jev-vs-agentic-loop.html",
+      "source_origin": "author_primary",
+      "first_party_source": true,
+      "publisher": "Sam Reghenzi",
+      "source_class": "migration_experiment",
+      "maturity": "author_self_test",
+      "reported_date": "2026-09-21",
+      "checked_at": "2026-09-23T11:49:32+08:00",
+      "inspection_scope": "正文 HTML 与方法；未执行其分类 pipeline。",
+      "author_self_test": true,
+      "live_api_rerun": false,
+      "status": "verified",
+      "summary_zh": "作者把 50 商品分类从 agentic loop 迁到 typed Choice，报告平均 9.62s→1.38s、calls 7.22→3.18，但旧管线用 5 threads、新管线 sequential，作者自己说 7x headline 偏乐观。14 个非一致案例只有一位人工、无 ground truth；结论是 Jev 是 classification primitive，agent loop 保留回溯价值。",
+      "limits": "并发条件不同、样本仅 50 商品、人工分歧不能当准确率；成本/时延依赖模型、价格、并发和输出计费，不能据此宣称 7x 收益或 SLA。贪心树搜索会丢失错误上层分支，需单独评估回溯/beam 设计。",
+      "revisit_trigger": "模型、并发、树深度、候选扇出、输出计费或有 ground truth 的分类集变化时复查；对 Q2 只引用相对 trade-off。",
+      "purpose_tags": ["Q2", "CASCADE", "ROUTING", "LATENCY", "COST", "BACKTRACKING"],
+      "supported_claims": [
+        {
+          "claim_id": "JC-S20-LOOP-01",
+          "claim_zh": "同一 50 商品/分类树的作者迁移比较显示 typed Jev 路径较快、调用较少，但 fan-out 和并发条件使 headline 需谨慎。",
+          "locator": "正文标题 The numbers, up front、Fan-out is free、Honesty note；HTML body phrase old benchmark ran with 5 threads。"
+        },
+        {
+          "claim_id": "JC-S20-LOOP-02",
+          "claim_zh": "作者承认 agentic loop 在需要 backtracking 的分支仍有价值；非一致案例只有一位人工且无 ground truth。",
+          "locator": "正文 Where the agentic loop still earns its cost、结论 Typed Judgments or Agentic Loops。"
+        }
+      ],
+      "snapshot_path": "vault/provenance/jev-community-workflows/snapshots/jc-s20-jev-vs-agentic-loop.html.txt",
+      "snapshot_sha256": "182d69a2a38a794838eb6fa36babd03f2fb0a78b3598fa825e093f9f80e0b871",
+      "snapshot_size_bytes": 26678,
+      "card_path": "vault/provenance/jev-community-workflows/cards/jc-s20-jev-vs-agentic-loop.md"
+    },
+    {
+      "slug": "jc-s21-southbridge-entity-resolution",
+      "source_id": "S21",
+      "study_id": "southbridge-entity-resolution-2026",
+      "study_role": "author_business_experiment",
+      "title": "Using system-one models inside high-throughput data pipelines",
+      "url": "https://www.southbridge.ai/blog/jev-entity-resolution",
+      "original_url": "https://www.southbridge.ai/blog/jev-entity-resolution",
+      "snapshot_source_url": "https://www.southbridge.ai/blog/jev-entity-resolution",
+      "source_origin": "author_primary",
+      "first_party_source": true,
+      "publisher": "Southbridge.AI",
+      "source_class": "author_business_experiment",
+      "maturity": "author_self_test",
+      "reported_date": "2026-09-20",
+      "checked_at": "2026-09-23T11:49:33+08:00",
+      "inspection_scope": "全文正文；未下载实验数据、未运行其 bundle。",
+      "author_self_test": true,
+      "live_api_rerun": false,
+      "status": "verified",
+      "summary_zh": "Southbridge 在 Ohio campaign-finance entity resolution 困难切片中用 Jev 作为主判断、Luna 复核难例，强调实体同一性与关系（如 household）分开判断；作者报告 batch/evidence pipeline 的成本、吞吐和接近 Fable 质量。",
+      "limits": "困难子集、作者自测和累计 call-seconds；TB 成本是外推而非 TB 运行，Jev-only 会明显掉准确率，关系不是实体合并许可。公开页面不是独立金标、通用实体解析准确率或生产 SLA。",
+      "revisit_trigger": "数据切片、entity/relationship ontology、review policy、模型/价格或公开 experiment bundle 更新时复查；用于实践地图时保留实体与关系拆分。",
+      "purpose_tags": ["Q2", "Q4", "ENTITY_RESOLUTION", "RELATIONSHIP", "BATCH", "COST", "PRACTICE_MAP"],
+      "supported_claims": [
+        {
+          "claim_id": "JC-S21-ENTITY-01",
+          "claim_zh": "作者将实体同一性与实体间关系分别建模：Jev 先判断 donor 是否同一，再判断 household 等关系，关系连接不等于合并许可。",
+          "locator": "正文 The job / This is where Jev comes in；HTML body phrase household is a connection between people, not permission to merge them。"
+        },
+        {
+          "claim_id": "JC-S21-ENTITY-02",
+          "claim_zh": "作者报告 Jev 主力加 Luna 复核的成本/吞吐 trade-off，并明确单独 Jev adjudication 会掉准确率。",
+          "locator": "正文 What is a hank?；结果段含 Jev only、Jev + 5 Luna reviews、226x lower cost 和 7.35x throughput。"
+        }
+      ],
+      "snapshot_path": "vault/provenance/jev-community-workflows/snapshots/jc-s21-southbridge-entity-resolution.html.txt",
+      "snapshot_sha256": "b574ff07ccf5ffb0fb8d45a39a5f57b5df820316d5efa194671237a94f4431c9",
+      "snapshot_size_bytes": 295573,
+      "card_path": "vault/provenance/jev-community-workflows/cards/jc-s21-southbridge-entity-resolution.md"
+    },
+    {
+      "slug": "jc-s22-jev-rag-receipts",
+      "source_id": "S22",
+      "study_id": "jev-rag-receipts-2026",
+      "study_role": "author_prototype_report",
+      "title": "RAG ranking is not the same as judging with Jev",
+      "url": "https://dev.to/kike/how-i-went-from-trust-me-bro-to-boomer-with-receipts-using-jev-2141",
+      "original_url": "https://dev.to/kike/how-i-went-from-trust-me-bro-to-boomer-with-receipts-using-jev-2141",
+      "snapshot_source_url": "https://dev.to/kike/how-i-went-from-trust-me-bro-to-boomer-with-receipts-using-jev-2141",
+      "source_origin": "author_primary",
+      "first_party_source": true,
+      "publisher": "Enrique Bruzual / Zerikai Memory",
+      "source_class": "author_prototype_report",
+      "maturity": "early_prototype",
+      "reported_date": "2026-09-22",
+      "checked_at": "2026-09-23T11:49:34+08:00",
+      "inspection_scope": "全文 HTML；包含评论但只采纳作者正文。未运行未公开集成。",
+      "author_self_test": true,
+      "live_api_rerun": false,
+      "status": "verified",
+      "summary_zh": "Zerikai Memory 作者把 RAG 的 lexical ranking 与 Jev judging 分开：L2/lexical 先召回排序，Jev 批量判断每段 relevant/evidence/contradicts/injection 及全局 coverage/conflict，代码决定 keep/drop，最后给 synthesis LLM receipts。53 calls、约 210k input tokens 的 early-access 试验中，5 candidates 保留 3；作者明确集成未公开、阈值小样本校准，尚未做 post-synthesis faithfulness guard。",
+      "limits": "不是独立准确率样本，53 次调用不等于 53 个独立任务；集成未发布、阈值是作者自定且边界会翻转；只证明输入证据筛选，不证明最终答案忠实，后合成审查仍未实现。",
+      "revisit_trigger": "集成公开、retrieval candidate distribution、threshold calibration 或 post-synthesis guard 更新时复查；实践地图保留 support/relevance/injection 分离。",
+      "purpose_tags": ["Q4", "RAG", "RELEVANCE", "EVIDENCE_SUPPORT", "INJECTION", "RECEIPTS", "CALIBRATION"],
+      "supported_claims": [
+        {
+          "claim_id": "JC-S22-RAG-01",
+          "claim_zh": "文章主张 lexical ranking 只回答接近度，Jev 才提供 keep/drop 的相关性、证据支持、矛盾和注入判断。",
+          "locator": "正文 1. Ranking is not the same as judging、4. The First Test；HTML body phrase my retrieval could rank, but it couldn't judge。"
+        },
+        {
+          "claim_id": "JC-S22-RAG-02",
+          "claim_zh": "作者明确阈值是自己的小样本校准，当前只清理输入证据，不证明 synthesis 输出 faithful；post-synthesis guard 尚未构建。",
+          "locator": "正文 What happened on the test query、Conclusion & The Next Frontier；HTML body phrases these are my thresholds / I haven't built it yet。"
+        }
+      ],
+      "snapshot_path": "vault/provenance/jev-community-workflows/snapshots/jc-s22-jev-rag-receipts.html.txt",
+      "snapshot_sha256": "ccaa38bf1ed72d1909c3af7755762e7f0405fce48fa19c590803b5a46d17cfcb",
+      "snapshot_size_bytes": 171767,
+      "card_path": "vault/provenance/jev-community-workflows/cards/jc-s22-jev-rag-receipts.md"
+    },
+    {
+      "slug": "jc-s23-jev-kg-extraction",
+      "source_id": "S23",
+      "study_id": "jev-kg-extraction-2026",
+      "study_role": "author_code_experiment",
+      "title": "Typed Judgments for Knowledge Graph Extraction with TypeSafe's Jev",
+      "url": "https://lyonwj.com/blog/typesafe-jev-knowledge-graph-extraction",
+      "original_url": "https://lyonwj.com/blog/typesafe-jev-knowledge-graph-extraction",
+      "snapshot_source_url": "https://lyonwj.com/blog/typesafe-jev-knowledge-graph-extraction",
+      "source_origin": "author_primary",
+      "first_party_source": true,
+      "publisher": "William Lyon",
+      "source_class": "author_code_experiment",
+      "maturity": "small_synthetic_experiment",
+      "reported_date": "2026-09-17",
+      "checked_at": "2026-09-23T11:49:35+08:00",
+      "inspection_scope": "文章 HTML；未拉取/运行 repo notebooks。",
+      "author_self_test": true,
+      "live_api_rerun": false,
+      "status": "verified",
+      "summary_zh": "William Lyon 文章把 GLiNER 候选生成与 Jev 的 assertion/relationship 判断分开，在 10 篇合成文档、47 gold triples、13 alias groups 上说明：候选生成决定 recall，Jev 对已有候选做 assertion gate、relation selection、entity resolution；阈值扫 stored judgments 可不重新调用模型。文章报告局部 precision 提升和实体合并反例。",
+      "limits": "合成小数据、候选已由 GLiNER 生成，不能将局部 gate 结果当端到端图谱召回或生产准确率；作者明确 perfect judge 对错误 queue 无法补回漏候选；本次未运行代码和 API。",
+      "revisit_trigger": "ontology、candidate generator、scope（paragraph/document）、threshold 或关系聚合更新时复查；用独立 gold graph 测候选 recall 与关系 precision 分层。",
+      "purpose_tags": ["Q4", "KNOWLEDGE_GRAPH", "CANDIDATE_GENERATION", "ASSERTION", "RELATION_SELECTION", "THRESHOLD"],
+      "supported_claims": [
+        {
+          "claim_id": "JC-S23-KG-01",
+          "claim_zh": "文章把 candidate generation 与 judgment 分开；Jev 可判断候选边是否被文本支持和选择关系，但无法创造未被候选生成器提出的边。",
+          "locator": "正文 Selection, Not Generation；HTML body phrase Candidate generation and judgment are different jobs。"
+        },
+        {
+          "claim_id": "JC-S23-KG-02",
+          "claim_zh": "作者报告 stored judgments 支持 threshold frontier 重算，且 entity resolution 与 relationship/household 语义必须分开描述。",
+          "locator": "正文 How the questions are batched、A Perfect Judge On The Wrong Queue、Threshold, Not Gate。"
+        }
+      ],
+      "snapshot_path": "vault/provenance/jev-community-workflows/snapshots/jc-s23-jev-kg-extraction.html.txt",
+      "snapshot_sha256": "2e1c7a3116b7337d210c637312dd9312044ae8d1df30020534739a4c49fd86e9",
+      "snapshot_size_bytes": 358247,
+      "card_path": "vault/provenance/jev-community-workflows/cards/jc-s23-jev-kg-extraction.md"
+    },
+    {
+      "slug": "jc-s24-semif-readme",
+      "source_id": "S24",
+      "study_id": "semif-local-backends-2026",
+      "study_role": "project_readme",
+      "title": "SemIf README",
+      "url": "https://github.com/TheoLeeCJ/SemIf/blob/master/README.md",
+      "original_url": "https://github.com/TheoLeeCJ/SemIf/blob/master/README.md",
+      "snapshot_source_url": "https://raw.githubusercontent.com/TheoLeeCJ/SemIf/master/README.md",
+      "source_origin": "author_repository_primary",
+      "first_party_source": true,
+      "publisher": "TheoLeeCJ / SemIf",
+      "source_class": "open_project",
+      "maturity": "author_self_test",
+      "reported_date": "2026-09-22（README latest changes）",
+      "checked_at": "2026-09-23T11:49:36+08:00",
+      "inspection_scope": "README raw body；未安装、未运行 MPS/MLX/llama.cpp、未复核结果文件。",
+      "author_self_test": true,
+      "live_api_rerun": false,
+      "github_blob_sha": "290666f09384630d357131ce95dcf85791daaf77",
+      "status": "verified",
+      "summary_zh": "SemIf 明确是独立项目，只复现 typed-decision 接口模式，不复现 TypeSafe/Jev 权重或训练。README 的 2026-09-22 更新新增 PyTorch/MPS、Qwen3.8-27B EXL3 bridge 和按 workload 的 temperature calibration；同时保留 MLX/llama.cpp 后端、模型 revision/prompt hash、BF16 fast-path argmax 差异和 out-of-fold ECE 表。",
+      "limits": "这是作者项目 README 和自有 fixture 测试，不是 Jev 等价物或独立复现；量化、后端、缓存路径会改变数值，calibration 只对各 workload 的标签切分有意义。README 的 TypeSafe published subset 不是本次 live Jev 运行。",
+      "revisit_trigger": "MPS/MLX/llama.cpp 后端、模型 revision、校准方法、结果 bundle 或 TypeSafe 对齐数据更新时复查；本地替代必须重新验收概率质量和动作质量。",
+      "purpose_tags": ["Q2", "Q4", "LOCAL_ALTERNATIVE", "MPS", "CALIBRATION", "BACKEND", "VERSIONING"],
+      "supported_claims": [
+        {
+          "claim_id": "JC-S24-SEMIF-01",
+          "claim_zh": "README 2026-09-22 更新列出 MPS scoring、Qwen3.8-27B EXL3 bridge 和 per-workload temperature calibration；项目声明不隶属 TypeSafe。",
+          "locator": "raw README 第 1-33 行；Latest changes 与 Independent research project。"
+        },
+        {
+          "claim_id": "JC-S24-SEMIF-02",
+          "claim_zh": "README 要求记录 exact model revision、prompt hash，并报告 fast reuse path 相对 fresh scoring 的 argmax 差异和 workload-specific ECE。",
+          "locator": "raw README 第 40-123、156-182 行；Quick start / Speed / Calibration / Input。"
+        }
+      ],
+      "snapshot_path": "vault/provenance/jev-community-workflows/snapshots/jc-s24-semif-readme.md.txt",
+      "snapshot_sha256": "6ee2a0d148ca1efbc755b003ba2d816ded1b05625d8c436a07fba60e426e31fe",
+      "snapshot_size_bytes": 11594,
+      "card_path": "vault/provenance/jev-community-workflows/cards/jc-s24-semif-readme.md"
+    }
+  ],
+  "gaps": [
+    {
+      "id": "not-independent-duplicate-pages",
+      "status": "bounded",
+      "detail": "S13/S14 使用同一 study_id jev-as-a-judge-2026，S17/S18 使用同一 study_id jev-harness-2026；不能把项目页/论文页或 README/调用 JSON 计作独立复现。",
+      "revisit_trigger": "取得不同作者、不同数据或不同实现的独立复现时新增 study_id。"
+    },
+    {
+      "id": "no-live-rerun",
+      "status": "open",
+      "detail": "本批 12 个来源均 live_api_rerun=false；没有安装依赖、运行代码、调用 Jev、复跑 SRE 10×5、复跑 pg-jev batch、实体/关系实验、RAG 53 calls 或 SemIf backend/calibration。",
+      "revisit_trigger": "获得可控环境、固定 model/SDK/provider、独立数据切分和批准的执行预算后。"
+    },
+    {
+      "id": "abstract-only-preprints",
+      "status": "partial",
+      "detail": "S14、S15 本次只保存 arXiv abstract HTML；没有把 PDF 或 experimental HTML 全文当作已核查证据。",
+      "revisit_trigger": "需要完整方法、标注、统计区间和限制时新增全文快照，不覆盖本批 abstract。"
+    },
+    {
+      "id": "author-self-test-no-independent-gold",
+      "status": "open",
+      "detail": "多数来源是作者自测/作者项目报告；S20 的人工差异无 ground truth，S21 是困难子集和外推成本，S22 是小样本且未做 post-synthesis faithfulness，S23 是合成小图谱，S24 是自有 fixture。不能直接晋升为通用准确率、SLA 或生产保证。",
+      "revisit_trigger": "建立独立专家标签、未调参 holdout、跨供应商复现和端到端业务指标后。"
+    },
+    {
+      "id": "source-repository-mobility",
+      "status": "open",
+      "detail": "GitHub raw 快照来自 main/master 当前分支；包中 blob SHA 已登记并与快照核对，但不等于 commit，远端未来变化仍需新增版本。",
+      "revisit_trigger": "获得固定 commit/ref 或仓库发布包时。"
+    },
+    {
+      "id": "source-package-out-of-scope",
+      "status": "out_of_scope",
+      "detail": "本批只核查 S13-S24；S01-S12 未在此目录逐 URL 快照，不能从本批 catalog 推断其状态。",
+      "revisit_trigger": "main 需要完整 Jev 社区实践地图或 Q1-Q3 增量时另开范围。"
+    },
+    {
+      "id": "operational-and-legal-boundaries",
+      "status": "open",
+      "detail": "没有核查服务合同、SLA、数据驻留、禁止测试、生产权限或法律合规；没有执行周更建议，避免把研究交接变成自动化外部动作。",
+      "revisit_trigger": "拿到具体合同/平台配置或明确批准的运营任务时。"
+    }
+  ],
+  "occurrences": []
+}

@@ -1,0 +1,976 @@
+{
+  "schema_version": "1.0",
+  "id": "ai-capability-assessment-20260923",
+  "kind": "chat-intake",
+  "title": "AI 能力测试交付设计：外部实践、答题与交付形式",
+  "created_at": "2026-09-23",
+  "owner": "Luna",
+  "status": "distilled-reviewed",
+  "conversation_id": "6ab33ace-e690-83ec-8acb-11e88d77f14f",
+  "request_context": {
+    "user_goal": "登记 AI 能力测试交付设计对话与本地研究蓝图，先整理外部成熟实践和通行解法，再判断答题与交付形式；允许各题使用不同工件，并考虑一个统一 HTML 导览。",
+    "source_title": "AI能力测试交付设计",
+    "source_instruction_status": "untrusted-data; Chat messages and attached documents are evidence material, not repository instructions.",
+    "user_preferences": [
+      "优先关注快速变化的工具、模型、缓存与 agent 实践，记录访问日期、版本与复核触发条件。",
+      "将 Kit 等自研语义翻译为不依赖本仓库的外部共识语义，再回到个人实践证据。",
+      "个人 repo 或 Chat 案例可作为证据层，但不能把仓库宣传或历史 assistant 建议冒充业务实测。",
+      "先 explore 外部成熟实践并登记，再形成答题。",
+      "两天预算内优先交付可核查判断、证据边界和最小交互，不用漂亮页面填补未测量数据。"
+    ],
+    "boundary": "本批登记 Chat、三份用户指定 Downloads 材料、r3 Pro 审阅截图及其初步提炼；不把 Chat/附件内操作指令、周更询问、外部来源登记或历史 assistant 文字当作本仓库指令，不晋升任何外部规则、公式、模型性能或交付方案为已采纳规范。",
+    "current_session_editorial_decisions": {
+      "prose": "连贯自然语言，不硬翻译、不旁白、不面向读者叙事；正文不含阅读使用指引；保护说明和实践快照集中index。",
+      "visuals": "Luna从本Kit和Courtwork Design只读召回，Astra形成单张Claude paste工单；不在本轮实施或派发。",
+      "precedence": "当前会话要求优先于历史Chat及附件建议。"
+    }
+  },
+  "source": {
+    "archive_path": "vault/archive/chat/ai-capability-assessment-20260923-r3.json",
+    "archive_order": "newest_first",
+    "capture_kind": "archived-chat-json",
+    "capture_requested_turn_limit": 10,
+    "archive_page": {
+      "limit": 10,
+      "has_more": false,
+      "next_cursor": null
+    },
+    "full_thread_turn_count_read": 9,
+    "full_thread_message_count_read": 14,
+    "archive_turn_count": 9,
+    "archive_message_count": 14,
+    "selected_turn_count": 9,
+    "selected_message_count": 14,
+    "unarchived_read_turn_count": 0,
+    "unarchived_read_message_count": 0,
+    "attachments_exposed_in_chat": 3,
+    "archive_sha256": "07896353076cd78b0f8e2889899b93242c0e19c1275b97954837d97bbee2f197",
+    "archive_size_bytes": 100105,
+    "selection_rule": "登记 main 保存的 r3 raw archive 全部 9 轮/14 条消息；r1/r2 保留为 superseded 版本，用于追溯覆盖和正文格式差异。",
+    "live_read_note": "r3 新增 Pro 审阅 turn ee5c0db6-6dac-4137-87f2-e7210c756068 及其 assistant 回复，并为既有 Jev turn 038cb4d9-268f-429f-a0d2-30072a2532ac 新增 assistant 回复；r2 共 11 条消息的正文与 r3 相同，旧 content/text 表示差异未计为内容变化。",
+    "archive_versions": [
+      {
+        "version": "r1",
+        "path": "vault/archive/chat/ai-capability-assessment-20260923.json",
+        "turn_count": 7,
+        "message_count": 10,
+        "size_bytes": 67954,
+        "sha256": "0b3217aec73211d20989d8d41154baba6586c26808da9f971928ca06f8465d8a",
+        "status": "superseded"
+      },
+      {
+        "version": "r2",
+        "path": "vault/archive/chat/ai-capability-assessment-20260923-r2.json",
+        "turn_count": 8,
+        "message_count": 11,
+        "size_bytes": 60464,
+        "sha256": "508ef5df25266c9274a0aedcfb74469a2478235fd13bcf88ee9ea47c85ffb032",
+        "status": "superseded"
+      },
+      {
+        "version": "r3",
+        "path": "vault/archive/chat/ai-capability-assessment-20260923-r3.json",
+        "turn_count": 9,
+        "message_count": 14,
+        "size_bytes": 100105,
+        "sha256": "07896353076cd78b0f8e2889899b93242c0e19c1275b97954837d97bbee2f197",
+        "status": "active"
+      }
+    ],
+    "archive_increment": {
+      "from": "r1",
+      "to": "r2",
+      "added_turn_count": 1,
+      "added_message_count": 1,
+      "added_turn_id": "038cb4d9-268f-429f-a0d2-30072a2532ac",
+      "added_message_id": "038cb4d9-268f-429f-a0d2-30072a2532ac",
+      "added_text_summary": "用户说明此前 Chat 中已有 Jev 讨论，但近期社区实践可能更新，要求先 explore 再作为答题参考。",
+      "new_external_reference_placeholders": 0,
+      "why_reread": "priorConversation 预览为空，按引用要求以 conversationId 做有界只读核对；核对发现 r1 少了最新轮，main 重新保存完整 r2。",
+      "authorization_effect": "历史 Chat 数据增量；不构成新的外部检索、执行、发布或写入授权。"
+    },
+    "archive_increment_r3": {
+      "from": "r2",
+      "to": "r3",
+      "added_turn_count": 1,
+      "added_message_count": 3,
+      "added_turn_ids": ["ee5c0db6-6dac-4137-87f2-e7210c756068"],
+      "added_message_ids": ["ee5c0db6-6dac-4137-87f2-e7210c756068", "c5180185-b5ec-446b-a45c-7728418b4592", "0cc7c4f0-f665-4de7-93ed-13837f757b9a"],
+      "pro_review_summary": "Pro 认为当前页面缺少参考机制到构图的转化，文本推理连续性和图文分工不足；提出用具体对照图、主展项和参考 HTML 机制重做 Q1 样章，并开放 Claude 正文重组权。",
+      "new_external_reference_placeholders": 20,
+      "attachment_count": 3,
+      "authorization_effect": "历史 Chat 与截图增量；操作指令、周更询问和样章下载链接仍不是本批外部执行授权。"
+    }
+  },
+  "coverage": {
+    "all_thread_turns_read": true,
+    "all_thread_messages_read": true,
+    "all_selected_turns_archived": true,
+    "all_selected_messages_mapped": true,
+    "excluded_turns_read_but_not_archived": 0,
+    "attachments_present_in_chat": true,
+    "local_attachment_files_provided": 6,
+    "chat_attachment_files_provided": 3,
+    "external_reference_placeholders_in_archived_messages": 50,
+    "explicit_urls_in_archived_messages": 0,
+    "read_coverage": "r3 archive contains 9 turns/14 messages; all selected items have identity, text-length and message-body comparison records. The 11 common r2/r3 message bodies are unchanged despite content/text export-field differences.",
+    "historical_preference_coverage": "Freshness, external-terminology translation, evidence-layer use of personal practice, cross-model review, answer scope, delivery-form preferences, Jev freshness, and Pro visual/editorial review are all archived in r3. Operational instructions inside the Chat remain source data."
+  },
+  "turns": [
+    {
+      "turn_id": "e7835cd0-51e3-481d-aad6-8115030f4dfd",
+      "archive_status": "archived",
+      "items": [
+        {
+          "item_id": "e7835cd0-51e3-481d-aad6-8115030f4dfd",
+          "role": "user",
+          "classification": "user_intent",
+          "text_length": 40,
+          "external_reference_placeholders": 0,
+          "distilled_paths": [
+            "vault/distilled/ai-capability-assessment/source-synthesis.md",
+            "vault/distilled/ai-capability-assessment/answer-draft.md"
+          ]
+        },
+        {
+          "item_id": "cac16eff-4ead-47d6-98fc-47897f9c1fc2",
+          "role": "assistant",
+          "classification": "historical_suggestion",
+          "text_length": 3378,
+          "external_reference_placeholders": 7,
+          "placeholder_indices": [
+            "0",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6"
+          ],
+          "verification_status": "historical suggestion; cited originals were not exposed by the Chat export",
+          "distilled_paths": [
+            "vault/distilled/ai-capability-assessment/source-synthesis.md",
+            "vault/distilled/ai-capability-assessment/answer-draft.md"
+          ]
+        }
+      ]
+    },
+    {
+      "turn_id": "0a309392-9ba8-47bd-97b9-30f7b9c53434",
+      "archive_status": "archived",
+      "items": [
+        {
+          "item_id": "0a309392-9ba8-47bd-97b9-30f7b9c53434",
+          "role": "user",
+          "classification": "user_preference",
+          "text_length": 23,
+          "external_reference_placeholders": 0,
+          "distilled_paths": [
+            "vault/distilled/ai-capability-assessment/source-synthesis.md",
+            "vault/distilled/ai-capability-assessment/answer-draft.md"
+          ]
+        }
+      ]
+    },
+    {
+      "turn_id": "e0774919-71bd-4a7e-ba0b-eb4c873fc3e4",
+      "archive_status": "archived",
+      "items": [
+        {
+          "item_id": "e0774919-71bd-4a7e-ba0b-eb4c873fc3e4",
+          "role": "user",
+          "classification": "user_preference",
+          "text_length": 81,
+          "external_reference_placeholders": 0,
+          "distilled_paths": [
+            "vault/distilled/ai-capability-assessment/source-synthesis.md",
+            "vault/distilled/ai-capability-assessment/answer-draft.md"
+          ]
+        }
+      ]
+    },
+    {
+      "turn_id": "009a458a-275e-420a-9ae6-2ad84e4c3462",
+      "archive_status": "archived",
+      "items": [
+        {
+          "item_id": "009a458a-275e-420a-9ae6-2ad84e4c3462",
+          "role": "user",
+          "classification": "user_review",
+          "text_length": 4639,
+          "external_reference_placeholders": 0,
+          "distilled_paths": [
+            "vault/distilled/ai-capability-assessment/source-synthesis.md",
+            "vault/distilled/ai-capability-assessment/answer-draft.md"
+          ]
+        },
+        {
+          "item_id": "155dafa1-2051-4727-881a-bd273b19b095",
+          "role": "assistant",
+          "classification": "historical_suggestion",
+          "text_length": 4517,
+          "external_reference_placeholders": 0,
+          "verification_status": "historical suggestion; personal repo and Chat case boundaries were described but not re-tested in this intake",
+          "distilled_paths": [
+            "vault/distilled/ai-capability-assessment/source-synthesis.md",
+            "vault/distilled/ai-capability-assessment/answer-draft.md"
+          ]
+        }
+      ]
+    },
+    {
+      "turn_id": "e425e863-1ec3-4596-8c7b-6040951c6293",
+      "archive_status": "archived",
+      "items": [
+        {
+          "item_id": "e425e863-1ec3-4596-8c7b-6040951c6293",
+          "role": "user",
+          "classification": "user_intent",
+          "text_length": 31,
+          "external_reference_placeholders": 0,
+          "distilled_paths": [
+            "vault/distilled/ai-capability-assessment/source-synthesis.md",
+            "vault/distilled/ai-capability-assessment/answer-draft.md"
+          ]
+        }
+      ]
+    },
+    {
+      "turn_id": "a3ef5815-d955-4a36-8efb-3539c27bb80d",
+      "archive_status": "archived",
+      "items": [
+        {
+          "item_id": "a3ef5815-d955-4a36-8efb-3539c27bb80d",
+          "role": "user",
+          "classification": "tool_request",
+          "text_length": 4,
+          "external_reference_placeholders": 0,
+          "distilled_paths": [
+            "vault/distilled/ai-capability-assessment/source-synthesis.md",
+            "vault/distilled/ai-capability-assessment/answer-draft.md"
+          ]
+        },
+        {
+          "item_id": "01df3e51-00fa-4f5c-9a97-85fb4abdfbf0",
+          "role": "assistant",
+          "classification": "historical_suggestion",
+          "text_length": 9019,
+          "external_reference_placeholders": 23,
+          "placeholder_indices": [
+            "20",
+            "0",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "10",
+            "11",
+            "12",
+            "13",
+            "14",
+            "15",
+            "16",
+            "17",
+            "18",
+            "21",
+            "22",
+            "23"
+          ],
+          "verification_status": "historical suggestion; 28 source claims were described but citation originals were not exposed by the Chat export",
+          "distilled_paths": [
+            "vault/distilled/ai-capability-assessment/source-synthesis.md",
+            "vault/distilled/ai-capability-assessment/answer-draft.md"
+          ]
+        }
+      ]
+    },
+    {
+      "turn_id": "40db57bd-6d6a-46e4-bc12-1644f605c24f",
+      "archive_status": "archived",
+      "items": [
+        {
+          "item_id": "40db57bd-6d6a-46e4-bc12-1644f605c24f",
+          "role": "user",
+          "classification": "user_intent",
+          "text_length": 936,
+          "external_reference_placeholders": 0,
+          "distilled_paths": [
+            "vault/distilled/ai-capability-assessment/source-synthesis.md",
+            "vault/distilled/ai-capability-assessment/answer-draft.md"
+          ]
+        }
+      ]
+    },
+    {
+      "turn_id": "038cb4d9-268f-429f-a0d2-30072a2532ac",
+      "archive_status": "archived",
+      "items": [
+        {
+          "item_id": "038cb4d9-268f-429f-a0d2-30072a2532ac",
+          "role": "user",
+          "classification": "user_intent",
+          "text_length": 71,
+          "external_reference_placeholders": 0,
+          "distilled_paths": [
+            "vault/distilled/ai-capability-assessment/source-synthesis.md",
+            "vault/distilled/ai-capability-assessment/answer-draft.md"
+          ]
+        },
+        {
+          "item_id": "0cc7c4f0-f665-4de7-93ed-13837f757b9a",
+          "role": "assistant",
+          "classification": "historical_suggestion",
+          "text_length": 6672,
+          "external_reference_placeholders": 16,
+          "placeholder_indices": ["0", "29", "30", "1", "5", "6", "8", "9", "11", "12", "15", "16", "19", "22", "23", "27"],
+          "verification_status": "historical suggestion; reported Jev research references were not re-opened in this intake",
+          "distilled_paths": [
+            "vault/distilled/ai-capability-assessment/source-synthesis.md",
+            "vault/distilled/ai-capability-assessment/answer-draft.md",
+            "vault/distilled/ai-capability-assessment/pro-review-index.md"
+          ]
+        }
+      ]
+    },
+    {
+      "turn_id": "ee5c0db6-6dac-4137-87f2-e7210c756068",
+      "archive_status": "archived",
+      "items": [
+        {
+          "item_id": "ee5c0db6-6dac-4137-87f2-e7210c756068",
+          "role": "user",
+          "classification": "user_review_and_editorial_feedback",
+          "text_length": 2381,
+          "external_reference_placeholders": 0,
+          "attachment_count": 3,
+          "distilled_paths": [
+            "vault/distilled/ai-capability-assessment/pro-review-index.md"
+          ]
+        },
+        {
+          "item_id": "c5180185-b5ec-446b-a45c-7728418b4592",
+          "role": "assistant",
+          "classification": "historical_suggestion",
+          "text_length": 3215,
+          "external_reference_placeholders": 4,
+          "placeholder_indices": ["5", "6", "1", "3"],
+          "verification_status": "Pro review suggestion based on screenshots/pasted text; latest page-composition file was not independently recovered",
+          "distilled_paths": [
+            "vault/distilled/ai-capability-assessment/pro-review-index.md"
+          ]
+        }
+      ]
+    }
+  ],
+  "unarchived_read_turns": [],
+  "external_reference_placeholders": {
+    "count": 50,
+    "status": "missing-original",
+    "items": [
+      {
+        "turn_id": "e7835cd0-51e3-481d-aad6-8115030f4dfd",
+        "message_item_id": "cac16eff-4ead-47d6-98fc-47897f9c1fc2",
+        "index": "0",
+        "claim": "assistant称 OpenAI Tool search 可把发现的工具定义加载到上下文末尾，并可用 additional_tools 在指定位置加入工具。",
+        "source_ids": [],
+        "mapping": "missing-original",
+        "support": "unavailable",
+        "note": "Chat export only retained a chatgpt-content-reference placeholder; original URL/title/body and attachments were not exposed."
+      },
+      {
+        "turn_id": "e7835cd0-51e3-481d-aad6-8115030f4dfd",
+        "message_item_id": "cac16eff-4ead-47d6-98fc-47897f9c1fc2",
+        "index": "1",
+        "claim": "assistant称 Anthropic deferred tool loading 将延迟工具排除在系统提示前缀之外，发现后以 tool_reference 展开定义，并区分请求载荷与实际上下文。",
+        "source_ids": [],
+        "mapping": "missing-original",
+        "support": "unavailable",
+        "note": "Chat export only retained a chatgpt-content-reference placeholder; original URL/title/body and attachments were not exposed."
+      },
+      {
+        "turn_id": "e7835cd0-51e3-481d-aad6-8115030f4dfd",
+        "message_item_id": "cac16eff-4ead-47d6-98fc-47897f9c1fc2",
+        "index": "2",
+        "claim": "assistant称 Claude Code 区分延迟加载工具连接/断开或目录变化的追加处理，与预加载工具变化导致的缓存失效。",
+        "source_ids": [],
+        "mapping": "missing-original",
+        "support": "unavailable",
+        "note": "Chat export only retained a chatgpt-content-reference placeholder; original URL/title/body and attachments were not exposed."
+      },
+      {
+        "turn_id": "e7835cd0-51e3-481d-aad6-8115030f4dfd",
+        "message_item_id": "cac16eff-4ead-47d6-98fc-47897f9c1fc2",
+        "index": "3",
+        "claim": "assistant称 MCP 2025-11-25 规范的 listChanged 与 notifications/tools/list_changed 支持目录变化通知，但不能单凭协议断言 agent 已实现无缝热更新。",
+        "source_ids": [],
+        "mapping": "missing-original",
+        "support": "unavailable",
+        "note": "Chat export only retained a chatgpt-content-reference placeholder; original URL/title/body and attachments were not exposed."
+      },
+      {
+        "turn_id": "e7835cd0-51e3-481d-aad6-8115030f4dfd",
+        "message_item_id": "cac16eff-4ead-47d6-98fc-47897f9c1fc2",
+        "index": "4",
+        "claim": "assistant称修改历史 tool_search_output 中已加载工具集合会从修改位置起破坏缓存，追加工具不等于任意修改既有定义都不影响缓存。",
+        "source_ids": [],
+        "mapping": "missing-original",
+        "support": "unavailable",
+        "note": "Chat export only retained a chatgpt-content-reference placeholder; original URL/title/body and attachments were not exposed."
+      },
+      {
+        "turn_id": "e7835cd0-51e3-481d-aad6-8115030f4dfd",
+        "message_item_id": "cac16eff-4ead-47d6-98fc-47897f9c1fc2",
+        "index": "5",
+        "claim": "assistant以受影响旧内容数量与重新处理价/缓存读取价的差额给出缓存增量估算，并称追加且命中旧缓存时旧内容重算量可为零。",
+        "source_ids": [],
+        "mapping": "missing-original",
+        "support": "unavailable",
+        "note": "Chat export only retained a chatgpt-content-reference placeholder; original URL/title/body and attachments were not exposed."
+      },
+      {
+        "turn_id": "e7835cd0-51e3-481d-aad6-8115030f4dfd",
+        "message_item_id": "cac16eff-4ead-47d6-98fc-47897f9c1fc2",
+        "index": "6",
+        "claim": "assistant称延迟加载应结合工具规模、发现开销与任务表现选择，不能成为所有场景的新教条。",
+        "source_ids": [],
+        "mapping": "missing-original",
+        "support": "unavailable",
+        "note": "Chat export only retained a chatgpt-content-reference placeholder; original URL/title/body and attachments were not exposed."
+      },
+      {
+        "turn_id": "a3ef5815-d955-4a36-8efb-3539c27bb80d",
+        "message_item_id": "01df3e51-00fa-4f5c-9a97-85fb4abdfbf0",
+        "index": "20",
+        "claim": "assistant称本轮通过 Exa 主检索登记 28 条原始来源，并指向已整理的材料；原始目标未由 Chat export 暴露。",
+        "source_ids": [],
+        "mapping": "missing-original",
+        "support": "unavailable",
+        "note": "The three locally supplied files are separate material snapshots; they do not restore this hidden Chat reference."
+      },
+      {
+        "turn_id": "a3ef5815-d955-4a36-8efb-3539c27bb80d",
+        "message_item_id": "01df3e51-00fa-4f5c-9a97-85fb4abdfbf0",
+        "index": "0",
+        "claim": "assistant引用 Anthropic 上下文工程实践，支持按需供给、压缩、外部笔记和子任务隔离的长任务解法。",
+        "source_ids": [],
+        "mapping": "missing-original",
+        "support": "unavailable",
+        "note": "Chat export only retained a chatgpt-content-reference placeholder; the attached S01 record is supplemental material, not recovered Chat provenance."
+      },
+      {
+        "turn_id": "a3ef5815-d955-4a36-8efb-3539c27bb80d",
+        "message_item_id": "01df3e51-00fa-4f5c-9a97-85fb4abdfbf0",
+        "index": "1",
+        "claim": "assistant引用 Claude Code prompt caching，说明前缀式工具变更可能影响缓存，而延迟工具加载可追加内容并保留前缀。",
+        "source_ids": [],
+        "mapping": "missing-original",
+        "support": "unavailable",
+        "note": "Chat export only retained a chatgpt-content-reference placeholder; the attached S02 record is supplemental material, not recovered Chat provenance."
+      },
+      {
+        "turn_id": "a3ef5815-d955-4a36-8efb-3539c27bb80d",
+        "message_item_id": "01df3e51-00fa-4f5c-9a97-85fb4abdfbf0",
+        "index": "2",
+        "claim": "assistant引用 OpenAI reasoning 文档，说明推理强度、摘要和上下文行为依模型而异，隐藏推理仍可能消耗预算与费用。",
+        "source_ids": [],
+        "mapping": "missing-original",
+        "support": "unavailable",
+        "note": "Chat export only retained a chatgpt-content-reference placeholder; the attached S04 record is supplemental material, not recovered Chat provenance."
+      },
+      {
+        "turn_id": "a3ef5815-d955-4a36-8efb-3539c27bb80d",
+        "message_item_id": "01df3e51-00fa-4f5c-9a97-85fb4abdfbf0",
+        "index": "3",
+        "claim": "assistant引用 OpenAI latency optimization，支持减少不必要生成/请求、并行独立工作和让确定性工作脱离模型。",
+        "source_ids": [],
+        "mapping": "missing-original",
+        "support": "unavailable",
+        "note": "Chat export only retained a chatgpt-content-reference placeholder; the attached S06 record is supplemental material, not recovered Chat provenance."
+      },
+      {
+        "turn_id": "a3ef5815-d955-4a36-8efb-3539c27bb80d",
+        "message_item_id": "01df3e51-00fa-4f5c-9a97-85fb4abdfbf0",
+        "index": "4",
+        "claim": "assistant引用 Claude Code 当前模型/effort 与缓存耦合的实现，建议用职责固定、上下文较短的调用承接阶段并测量编排收益。",
+        "source_ids": [],
+        "mapping": "missing-original",
+        "support": "unavailable",
+        "note": "Chat export only retained a chatgpt-content-reference placeholder; the attached S02 record is supplemental material, not recovered Chat provenance. Historical user review says this effort detail may be partly stale and needs recheck."
+      },
+      {
+        "turn_id": "a3ef5815-d955-4a36-8efb-3539c27bb80d",
+        "message_item_id": "01df3e51-00fa-4f5c-9a97-85fb4abdfbf0",
+        "index": "5",
+        "claim": "assistant引用 Anthropic containment 实践，主张按文件挂载、账号、网络出口和生产影响面设置环境隔离与行为防御。",
+        "source_ids": [],
+        "mapping": "missing-original",
+        "support": "unavailable",
+        "note": "Chat export only retained a chatgpt-content-reference placeholder; the attached S09 record is supplemental material, not recovered Chat provenance."
+      },
+      {
+        "turn_id": "a3ef5815-d955-4a36-8efb-3539c27bb80d",
+        "message_item_id": "01df3e51-00fa-4f5c-9a97-85fb4abdfbf0",
+        "index": "6",
+        "claim": "assistant引用 OSWorld 作为操作能力参考，并强调生产验收仍需权限、副作用、恢复和真实完成状态检查。",
+        "source_ids": [],
+        "mapping": "missing-original",
+        "support": "unavailable",
+        "note": "Chat export only retained a chatgpt-content-reference placeholder; the attached S11 record is supplemental material, not recovered Chat provenance."
+      },
+      {
+        "turn_id": "a3ef5815-d955-4a36-8efb-3539c27bb80d",
+        "message_item_id": "01df3e51-00fa-4f5c-9a97-85fb4abdfbf0",
+        "index": "7",
+        "claim": "assistant引用 OpenAI computer-use 指南，主张在风险发生前确认，敏感信息输入表单可能早于提交产生传输，页面/第三方文本不能授予权限。",
+        "source_ids": [],
+        "mapping": "missing-original",
+        "support": "unavailable",
+        "note": "Chat export only retained a chatgpt-content-reference placeholder; the attached S07 record is supplemental material, not recovered Chat provenance."
+      },
+      {
+        "turn_id": "a3ef5815-d955-4a36-8efb-3539c27bb80d",
+        "message_item_id": "01df3e51-00fa-4f5c-9a97-85fb4abdfbf0",
+        "index": "8",
+        "claim": "assistant引用 AWS 幂等 API 实践，主张副作用不明时先核验，只有真正服务端去重契约才可有界重试写操作。",
+        "source_ids": [],
+        "mapping": "missing-original",
+        "support": "unavailable",
+        "note": "Chat export only retained a chatgpt-content-reference placeholder; the attached S10 record is supplemental material, not recovered Chat provenance."
+      },
+      {
+        "turn_id": "a3ef5815-d955-4a36-8efb-3539c27bb80d",
+        "message_item_id": "01df3e51-00fa-4f5c-9a97-85fb4abdfbf0",
+        "index": "9",
+        "claim": "assistant引用 OpenAI guardrails/approvals，主张审批可以暂停并恢复，并贴近实际工具调用而非仅靠弹窗。",
+        "source_ids": [],
+        "mapping": "missing-original",
+        "support": "unavailable",
+        "note": "Chat export only retained a chatgpt-content-reference placeholder; the attached S08 record is supplemental material, not recovered Chat provenance."
+      },
+      {
+        "turn_id": "a3ef5815-d955-4a36-8efb-3539c27bb80d",
+        "message_item_id": "01df3e51-00fa-4f5c-9a97-85fb4abdfbf0",
+        "index": "10",
+        "claim": "assistant引用 TypeSafe Jev 发布文，区分 schema 类型保证与业务正确性，并指出工作流自评参考其他模型概率答案。",
+        "source_ids": [],
+        "mapping": "missing-original",
+        "support": "unavailable",
+        "note": "Chat export only retained a chatgpt-content-reference placeholder; the attached S12 record is supplemental material, not recovered Chat provenance."
+      },
+      {
+        "turn_id": "a3ef5815-d955-4a36-8efb-3539c27bb80d",
+        "message_item_id": "01df3e51-00fa-4f5c-9a97-85fb4abdfbf0",
+        "index": "11",
+        "claim": "assistant引用 Pydantic AI/TypeSafe 集成，区分原始概率、分数、confidence、分布集中度与包装结果，并要求自有数据验收阈值。",
+        "source_ids": [],
+        "mapping": "missing-original",
+        "support": "unavailable",
+        "note": "Chat export only retained a chatgpt-content-reference placeholder; the attached S18/S19 records are supplemental material, not recovered Chat provenance."
+      },
+      {
+        "turn_id": "a3ef5815-d955-4a36-8efb-3539c27bb80d",
+        "message_item_id": "01df3e51-00fa-4f5c-9a97-85fb4abdfbf0",
+        "index": "12",
+        "claim": "assistant引用 OpenAI evaluation best practices，主张按任务分布、边界/对抗样本、人工标注和持续评估做应用验收。",
+        "source_ids": [],
+        "mapping": "missing-original",
+        "support": "unavailable",
+        "note": "Chat export only retained a chatgpt-content-reference placeholder; the attached S27 record is supplemental material, not recovered Chat provenance."
+      },
+      {
+        "turn_id": "a3ef5815-d955-4a36-8efb-3539c27bb80d",
+        "message_item_id": "01df3e51-00fa-4f5c-9a97-85fb4abdfbf0",
+        "index": "13",
+        "claim": "assistant称应固定 Jev 的模型、rubric、policy 与输入版本，不把 latest 别名作为已校准版本的永久标识。",
+        "source_ids": [],
+        "mapping": "missing-original",
+        "support": "unavailable",
+        "note": "Chat export only retained a chatgpt-content-reference placeholder; the attached S19 record is supplemental material, not recovered Chat provenance."
+      },
+      {
+        "turn_id": "a3ef5815-d955-4a36-8efb-3539c27bb80d",
+        "message_item_id": "01df3e51-00fa-4f5c-9a97-85fb4abdfbf0",
+        "index": "14",
+        "claim": "assistant引用德国 HGB §74(2)，称“至少一半”涉及竞业限制期间补偿及合同给付，不是题干所谓制裁。",
+        "source_ids": [],
+        "mapping": "missing-original",
+        "support": "unavailable",
+        "note": "Chat export only retained a chatgpt-content-reference placeholder; the attached S26 record is supplemental material, not recovered Chat provenance. Legal scope remains to be independently reviewed."
+      },
+      {
+        "turn_id": "a3ef5815-d955-4a36-8efb-3539c27bb80d",
+        "message_item_id": "01df3e51-00fa-4f5c-9a97-85fb4abdfbf0",
+        "index": "15",
+        "claim": "assistant引用 OFAC 50 Percent Rule，指出其涉及被封锁人士对实体的所有权及制裁后果，不是竞业补偿系数。",
+        "source_ids": [],
+        "mapping": "missing-original",
+        "support": "unavailable",
+        "note": "Chat export only retained a chatgpt-content-reference placeholder; the attached S28 record is supplemental material, not recovered Chat provenance."
+      },
+      {
+        "turn_id": "a3ef5815-d955-4a36-8efb-3539c27bb80d",
+        "message_item_id": "01df3e51-00fa-4f5c-9a97-85fb4abdfbf0",
+        "index": "16",
+        "claim": "assistant引用新加坡相关判决，称其讨论限制交易、可保护利益与合理性，不能推出跨国家补偿公式。",
+        "source_ids": [],
+        "mapping": "missing-original",
+        "support": "unavailable",
+        "note": "Chat export only retained a chatgpt-content-reference placeholder; the attached S25 record is supplemental material, not recovered Chat provenance. Legal scope remains to be independently reviewed."
+      },
+      {
+        "turn_id": "a3ef5815-d955-4a36-8efb-3539c27bb80d",
+        "message_item_id": "01df3e51-00fa-4f5c-9a97-85fb4abdfbf0",
+        "index": "17",
+        "claim": "assistant引用 RRSI 与 HarnessDev，提议把自我改进拆成提议、历史保留、验证、选择、回滚，并防止评估泄漏。",
+        "source_ids": [],
+        "mapping": "missing-original",
+        "support": "unavailable",
+        "note": "Chat export only retained a chatgpt-content-reference placeholder; the attached S20/S21 records are supplemental material, not recovered Chat provenance."
+      },
+      {
+        "turn_id": "a3ef5815-d955-4a36-8efb-3539c27bb80d",
+        "message_item_id": "01df3e51-00fa-4f5c-9a97-85fb4abdfbf0",
+        "index": "18",
+        "claim": "assistant引用 Anthropic reward hacking 研究，警示满足评分方式不等于完成真实目标，需把评估器、验收集与发布权置于学习器之外。",
+        "source_ids": [],
+        "mapping": "missing-original",
+        "support": "unavailable",
+        "note": "Chat export only retained a chatgpt-content-reference placeholder; the attached S24 record is supplemental material, not recovered Chat provenance."
+      },
+      {
+        "turn_id": "a3ef5815-d955-4a36-8efb-3539c27bb80d",
+        "message_item_id": "01df3e51-00fa-4f5c-9a97-85fb4abdfbf0",
+        "index": "21",
+        "claim": "assistant在交付形式段落以占位符列出已分开整理的第一份材料，具体原始目标未由 Chat export 暴露。",
+        "source_ids": [],
+        "mapping": "missing-original",
+        "support": "unavailable",
+        "note": "The locally supplied blueprint and registration are separate snapshots, not recovery of this hidden reference."
+      },
+      {
+        "turn_id": "a3ef5815-d955-4a36-8efb-3539c27bb80d",
+        "message_item_id": "01df3e51-00fa-4f5c-9a97-85fb4abdfbf0",
+        "index": "22",
+        "claim": "assistant在交付形式段落以占位符列出已分开整理的第二份材料，具体原始目标未由 Chat export 暴露。",
+        "source_ids": [],
+        "mapping": "missing-original",
+        "support": "unavailable",
+        "note": "The locally supplied blueprint and registration are separate snapshots, not recovery of this hidden reference."
+      },
+      {
+        "turn_id": "a3ef5815-d955-4a36-8efb-3539c27bb80d",
+        "message_item_id": "01df3e51-00fa-4f5c-9a97-85fb4abdfbf0",
+        "index": "23",
+        "claim": "assistant在交付形式段落以占位符列出已分开整理的第三份材料，具体原始目标未由 Chat export 暴露。",
+        "source_ids": [],
+        "mapping": "missing-original",
+        "support": "unavailable",
+        "note": "The locally supplied blueprint and registration are separate snapshots, not recovery of this hidden reference."
+      },
+      {
+        "turn_id": "ee5c0db6-6dac-4137-87f2-e7210c756068",
+        "message_item_id": "c5180185-b5ec-446b-a45c-7728418b4592",
+        "index": "5",
+        "claim": "Pro assistant以占位符指向其重做的五页论证与视觉编排材料，原始目标未由 Chat export 暴露。",
+        "source_ids": [],
+        "mapping": "missing-original",
+        "support": "unavailable",
+        "note": "Historical path is not recovered provenance; r3 screenshots are separately snapshotted."
+      },
+      {
+        "turn_id": "ee5c0db6-6dac-4137-87f2-e7210c756068",
+        "message_item_id": "c5180185-b5ec-446b-a45c-7728418b4592",
+        "index": "6",
+        "claim": "Pro assistant以占位符指向其更新的 Claude 工单，原始目标未由 Chat export 暴露。",
+        "source_ids": [],
+        "mapping": "missing-original",
+        "support": "unavailable",
+        "note": "Historical path is not recovered provenance; no external dispatch was performed in this intake."
+      },
+      {
+        "turn_id": "ee5c0db6-6dac-4137-87f2-e7210c756068",
+        "message_item_id": "c5180185-b5ec-446b-a45c-7728418b4592",
+        "index": "1",
+        "claim": "Pro assistant称其对照方法符合当前 Claude Code 前缀加载与 deferred tools 的描述。",
+        "source_ids": [],
+        "mapping": "missing-original",
+        "support": "unavailable",
+        "note": "Original URL is not exposed in the Chat export; historical claim remains unverified here."
+      },
+      {
+        "turn_id": "ee5c0db6-6dac-4137-87f2-e7210c756068",
+        "message_item_id": "c5180185-b5ec-446b-a45c-7728418b4592",
+        "index": "3",
+        "claim": "Pro assistant引用按需加载与 tool search 的适用条件，主张发现成本应进入加载方式比较。",
+        "source_ids": [],
+        "mapping": "missing-original",
+        "support": "unavailable",
+        "note": "Original URL is not exposed in the Chat export; no external verification was performed here."
+      },
+      {
+        "turn_id": "038cb4d9-268f-429f-a0d2-30072a2532ac",
+        "message_item_id": "0cc7c4f0-f665-4de7-93ed-13837f757b9a",
+        "index": "0",
+        "claim": "assistant称本轮 Jev 研究把发布能力推进为按任务选择、按工作流验收的实践地图。",
+        "source_ids": [],
+        "mapping": "missing-original",
+        "support": "unavailable",
+        "note": "Chat export retained only a citation placeholder; later research package is not recovery of this hidden reference."
+      },
+      {
+        "turn_id": "038cb4d9-268f-429f-a0d2-30072a2532ac",
+        "message_item_id": "0cc7c4f0-f665-4de7-93ed-13837f757b9a",
+        "index": "29",
+        "claim": "assistant称本轮登记 24 个原始来源入口，并说明同一研究论文和项目页不能算 24 项独立研究。",
+        "source_ids": [],
+        "mapping": "missing-original",
+        "support": "unavailable",
+        "note": "The 24-source package is separately supplied and does not restore this hidden citation."
+      },
+      {
+        "turn_id": "038cb4d9-268f-429f-a0d2-30072a2532ac",
+        "message_item_id": "0cc7c4f0-f665-4de7-93ed-13837f757b9a",
+        "index": "30",
+        "claim": "assistant在 Jev 研究段落以占位符列出研究综述、sources.json 与 XMind 导览材料。",
+        "source_ids": [],
+        "mapping": "missing-original",
+        "support": "unavailable",
+        "note": "Locally supplied files are separate snapshots, not recovery of this hidden citation."
+      },
+      {
+        "turn_id": "038cb4d9-268f-429f-a0d2-30072a2532ac",
+        "message_item_id": "0cc7c4f0-f665-4de7-93ed-13837f757b9a",
+        "index": "1",
+        "claim": "assistant引用 LangChain 在线评估接入与重复判定实验。",
+        "source_ids": [],
+        "mapping": "missing-original",
+        "support": "unavailable",
+        "note": "Original URL is not exposed in the Chat export; reported source remains separate and unverified."
+      },
+      {
+        "turn_id": "038cb4d9-268f-429f-a0d2-30072a2532ac",
+        "message_item_id": "0cc7c4f0-f665-4de7-93ed-13837f757b9a",
+        "index": "5",
+        "claim": "assistant引用 Southbridge 的 Jev 实体对齐实践。",
+        "source_ids": [],
+        "mapping": "missing-original",
+        "support": "unavailable",
+        "note": "Original URL is not exposed in the Chat export."
+      },
+      {
+        "turn_id": "038cb4d9-268f-429f-a0d2-30072a2532ac",
+        "message_item_id": "0cc7c4f0-f665-4de7-93ed-13837f757b9a",
+        "index": "6",
+        "claim": "assistant引用 Zerikai Memory 将相关性、证据支持、矛盾和注入风险拆开判断。",
+        "source_ids": [],
+        "mapping": "missing-original",
+        "support": "unavailable",
+        "note": "Original URL is not exposed in the Chat export."
+      },
+      {
+        "turn_id": "038cb4d9-268f-429f-a0d2-30072a2532ac",
+        "message_item_id": "0cc7c4f0-f665-4de7-93ed-13837f757b9a",
+        "index": "8",
+        "claim": "assistant引用 LangChain 固定天气轨迹各重复 100 次的 Jev 评估实验。",
+        "source_ids": [],
+        "mapping": "missing-original",
+        "support": "unavailable",
+        "note": "Original URL is not exposed in the Chat export."
+      },
+      {
+        "turn_id": "038cb4d9-268f-429f-a0d2-30072a2532ac",
+        "message_item_id": "0cc7c4f0-f665-4de7-93ed-13837f757b9a",
+        "index": "9",
+        "claim": "assistant引用 JEV-as-a-Judge 预印本及其选择性升级/离线级联结果。",
+        "source_ids": [],
+        "mapping": "missing-original",
+        "support": "unavailable",
+        "note": "Original URL is not exposed in the Chat export."
+      },
+      {
+        "turn_id": "038cb4d9-268f-429f-a0d2-30072a2532ac",
+        "message_item_id": "0cc7c4f0-f665-4de7-93ed-13837f757b9a",
+        "index": "11",
+        "claim": "assistant引用 SREGym 的 Jev 端到端事件实验。",
+        "source_ids": [],
+        "mapping": "missing-original",
+        "support": "unavailable",
+        "note": "Original URL is not exposed in the Chat export."
+      },
+      {
+        "turn_id": "038cb4d9-268f-429f-a0d2-30072a2532ac",
+        "message_item_id": "0cc7c4f0-f665-4de7-93ed-13837f757b9a",
+        "index": "12",
+        "claim": "assistant引用 SREGym 关于恢复当前功能不等于修复未来配置、候选缺失不能由排序补回的失败机制。",
+        "source_ids": [],
+        "mapping": "missing-original",
+        "support": "unavailable",
+        "note": "Original URL is not exposed in the Chat export."
+      },
+      {
+        "turn_id": "038cb4d9-268f-429f-a0d2-30072a2532ac",
+        "message_item_id": "0cc7c4f0-f665-4de7-93ed-13837f757b9a",
+        "index": "15",
+        "claim": "assistant引用 Southbridge 的实体对齐中 Jev 与强模型复核的组合。",
+        "source_ids": [],
+        "mapping": "missing-original",
+        "support": "unavailable",
+        "note": "Original URL is not exposed in the Chat export."
+      },
+      {
+        "turn_id": "038cb4d9-268f-429f-a0d2-30072a2532ac",
+        "message_item_id": "0cc7c4f0-f665-4de7-93ed-13837f757b9a",
+        "index": "16",
+        "claim": "assistant引用 Zerikai Memory 的候选片段分层判断与后续忠实性审查边界。",
+        "source_ids": [],
+        "mapping": "missing-original",
+        "support": "unavailable",
+        "note": "Original URL is not exposed in the Chat export."
+      },
+      {
+        "turn_id": "038cb4d9-268f-429f-a0d2-30072a2532ac",
+        "message_item_id": "0cc7c4f0-f665-4de7-93ed-13837f757b9a",
+        "index": "19",
+        "claim": "assistant引用 Sam Reghenzi 的 typed Choice/分类树实验与缺少回溯的限制。",
+        "source_ids": [],
+        "mapping": "missing-original",
+        "support": "unavailable",
+        "note": "Original URL is not exposed in the Chat export."
+      },
+      {
+        "turn_id": "038cb4d9-268f-429f-a0d2-30072a2532ac",
+        "message_item_id": "0cc7c4f0-f665-4de7-93ed-13837f757b9a",
+        "index": "22",
+        "claim": "assistant引用 Vercel 网关关于按请求启用 ZDR 与不训练选项的说明。",
+        "source_ids": [],
+        "mapping": "missing-original",
+        "support": "unavailable",
+        "note": "Original URL is not exposed in the Chat export."
+      },
+      {
+        "turn_id": "038cb4d9-268f-429f-a0d2-30072a2532ac",
+        "message_item_id": "0cc7c4f0-f665-4de7-93ed-13837f757b9a",
+        "index": "23",
+        "claim": "assistant引用 Vercel 新增 TypeSafe 客户端兼容入口与 HTTP evaluate 接口。",
+        "source_ids": [],
+        "mapping": "missing-original",
+        "support": "unavailable",
+        "note": "Original URL is not exposed in the Chat export."
+      },
+      {
+        "turn_id": "038cb4d9-268f-429f-a0d2-30072a2532ac",
+        "message_item_id": "0cc7c4f0-f665-4de7-93ed-13837f757b9a",
+        "index": "27",
+        "claim": "assistant引用 Jev for Scientific Decisions 研究关于语义选择、中间量与最终标签分离的观察。",
+        "source_ids": [],
+        "mapping": "missing-original",
+        "support": "unavailable",
+        "note": "Original URL is not exposed in the Chat export."
+      }
+    ]
+  },
+  "source_snapshots": [
+    {
+      "id": "ai-capability-assessment-external-practice-20260923",
+      "original_path": "/Users/lesprivilege/Downloads/AI_能力测试_研究与交付蓝图_2026-09-23/AI_能力测试_外部实践登记_2026-09-23.md",
+      "snapshot_path": "vault/snapshots/local/downloads/ai-capability-assessment-20260923/external-practice-registration-20260923.md",
+      "kind": "research-registration",
+      "size_bytes": 21831,
+      "source_mtime": "2026-09-23T02:50:52+08:00",
+      "sha256": "52e3928f142a4dcbfb67a7b811ddd003ba2f3c6e299c980ab04907bf4ebe864e",
+      "distilled_path": "vault/distilled/ai-capability-assessment/source-synthesis.md",
+      "selection_reason": "用户指定的外部成熟实践登记材料；保留原字节，作为候选证据地图，不自动恢复 Chat citation 或晋升为 verified。"
+    },
+    {
+      "id": "ai-capability-assessment-blueprint-v0-1-20260923",
+      "original_path": "/Users/lesprivilege/Downloads/AI_能力测试_研究与交付蓝图_2026-09-23/AI_能力测试_答题与交付蓝图_v0.1.md",
+      "snapshot_path": "vault/snapshots/local/downloads/ai-capability-assessment-20260923/answer-and-delivery-blueprint-v0.1.md",
+      "kind": "answer-delivery-blueprint",
+      "size_bytes": 20595,
+      "source_mtime": "2026-09-23T02:50:52+08:00",
+      "sha256": "c5062b607008aae3c32c85bc008ac53a910392f6eec4ad79e352801eb6579ab2",
+      "distilled_path": "vault/distilled/ai-capability-assessment/source-synthesis.md",
+      "selection_reason": "用户指定的研究后设计稿；记录题目覆盖、解题注意点和交付建议，但其阈值、例子与来源边界仍按材料状态消费。"
+    },
+    {
+      "id": "ai-capability-assessment-source-list-20260923",
+      "original_path": "/Users/lesprivilege/Downloads/AI_能力测试_研究与交付蓝图_2026-09-23/sources_2026-09-23.json",
+      "snapshot_path": "vault/snapshots/local/downloads/ai-capability-assessment-20260923/sources-20260923.json",
+      "kind": "source-list-material",
+      "size_bytes": 19162,
+      "source_mtime": "2026-09-23T02:50:52+08:00",
+      "sha256": "a0bd2e493b13eff08f4bec166803a8675ebb7568d3ed553d68f8115848d9144a",
+      "distilled_path": "vault/distilled/ai-capability-assessment/source-synthesis.md",
+      "selection_reason": "用户指定的来源列表材料；当前 JSON 内容为 0—27 的索引数组，不能单独充当 URL 或来源元数据。"
+    },
+    {
+      "id": "ai-capability-pro-review-q1-layout-20260923",
+      "original_path": "/var/folders/g8/ggxmnsrs3t91bg8zz4s4yp300000gn/T/codex-file-preview-23bx7I/0a3c103b-047d-4e56-ad7f-039014840e34.png",
+      "snapshot_path": "vault/snapshots/local/downloads/pro-review-20260923/pro-q1-layout.png",
+      "kind": "chat-attachment-screenshot",
+      "size_bytes": 274992,
+      "source_mtime": "2026-09-23T15:14:36+08:00",
+      "sha256": "7fca67806b96f367489ae75762a5923328d5d7087dc4d45a375c28a033636963",
+      "distilled_path": "vault/distilled/ai-capability-assessment/pro-review-index.md",
+      "selection_reason": "r3 Pro review attachment; compared against existing user screenshots with no SHA-256 duplicate."
+    },
+    {
+      "id": "ai-capability-pro-review-q1-cache-20260923",
+      "original_path": "/var/folders/g8/ggxmnsrs3t91bg8zz4s4yp300000gn/T/codex-file-preview-To9hTk/76e309bc-cf9f-4f47-93d8-358e44d6c29b.png",
+      "snapshot_path": "vault/snapshots/local/downloads/pro-review-20260923/pro-q1-cache-comparison.png",
+      "kind": "chat-attachment-screenshot",
+      "size_bytes": 365029,
+      "source_mtime": "2026-09-23T15:14:36+08:00",
+      "sha256": "7e8c58ad9e09782359e5ea3370ad70328b807c71b9b2d89ab3fc89f45270eafd",
+      "distilled_path": "vault/distilled/ai-capability-assessment/pro-review-index.md",
+      "selection_reason": "r3 Pro review attachment; compared against existing user screenshots with no SHA-256 duplicate."
+    },
+    {
+      "id": "ai-capability-pro-review-layout-20260923",
+      "original_path": "/var/folders/g8/ggxmnsrs3t91bg8zz4s4yp300000gn/T/codex-file-preview-Q9mLC8/Screenshot 2026-09-23 at 14.52.22.png",
+      "snapshot_path": "vault/snapshots/local/downloads/pro-review-20260923/pro-review-layout-screenshot.png",
+      "kind": "chat-attachment-screenshot",
+      "size_bytes": 746859,
+      "source_mtime": "2026-09-23T15:14:36+08:00",
+      "sha256": "e78e760353f65a986e1a0e42ce547cddc2bfa79f479046002167b246a413e767",
+      "distilled_path": "vault/distilled/ai-capability-assessment/pro-review-index.md",
+      "selection_reason": "r3 Pro review attachment; compared against existing user screenshots with no SHA-256 duplicate."
+    }
+  ],
+  "excluded_turns": [],
+  "gaps": [
+    "r1→r2→r3 的新增轮次与消息已由 main 保存到不可变版本；r1/r2 仍作为 superseded raw archive 保留，增量事实见 source.archive_increment 与 source.archive_increment_r3。",
+    "Chat 的 50 个 citation placeholder 均没有原始 URL、标题、正文或附件；全部在 vault/provenance/ai-assessment-chat/catalog.json 独立登记为 missing-original。",
+    "附件登记中的 S01—S28 是用户提供的外部实践研究底稿；本批未把附件中的访问记录自动当作本轮外部核查，需按来源类型与访问日逐项复核。",
+    "没有真实 40 轮以上会话日志、文件版本与 cache usage；新增工具的账单只能写变量与参数化示例。",
+    "没有节点级模型/effort 对照、端到端 p95、每个被接受结果的真实成本或人工返工数据。",
+    "没有真实 GUI 写入、邮件超时、服务端幂等或桌面恢复故障注入记录。",
+    "没有 Jev 固定版本在业务标签集上的独立校准、重复性、取整字段和中国网络/跨境数据评估；历史 review 中的新增细节仍需逐项核实。",
+    "Pro 审阅只读到截图与 pasted 文本，未独立读取最新 page-composition 草稿；Chat 中提到的 Q1_tool_loading_sample.html 在 Downloads 精确路径不存在，Pro citation 原始目标未恢复。",
+    "r3 的 3 份 Pro 截图已复制并与既有用户截图按 SHA-256 去重，未发现重复；截图证明评审视图，不证明页面源码或最终视觉验收。",
+    "第五题的合同、完整法源、SG/DE/VN 当地法律适用与香港律师执业法域均未构成完整法律意见；50% 语义陷阱只能作为核查入口。",
+    "不能从“Anthropic、Google、字节、千问都研究 RSI”的题干概括推出四家均有同一研究；研究归属和迁移效果待独立核查。",
+    "个人 repo/Chat 案例只支持有限的历史完整性、中断恢复和逐项审阅判断，不证明生产邮件、生产配置、Jev 法律审查或自动学习平台已经实现。"
+  ],
+  "raw_backup": "vault/archive/chat/ai-capability-assessment-20260923-r3.json",
+  "prior_raw_backups": [
+    "vault/archive/chat/ai-capability-assessment-20260923.json",
+    "vault/archive/chat/ai-capability-assessment-20260923-r2.json"
+  ],
+  "snapshot_root": "vault/snapshots/local/downloads/ai-capability-assessment-20260923/",
+  "distilled_root": "vault/distilled/ai-capability-assessment/",
+  "provenance_catalog": "vault/provenance/ai-assessment-chat/catalog.json",
+  "review": {
+    "role": "Luna",
+    "status": "accepted-editorial-profile; runtime-and-rendering-deferred",
+    "review_date": "2026-09-23",
+    "decision_path": "docs/decisions/013-assessment-answer-profile.md",
+    "main_reviewer": "Astra/main",
+    "main_review_date": "2026-09-23"
+  }
+}

@@ -28,3 +28,11 @@ Work System 入口：[`work-system/`](work-system/README.md)，原始 5 轮登�
 新材料：[材料分类与驻场组织接口](reporting/material-classification.md)，在现有 Reporting / Work System 内消费。
 
 架构维护：[两份审阅与关联会话](themes/architecture-review-2026-09-20.md) · [文档架构外部实践](themes/documentation-practices.md)。
+
+平台产品学习：[grammar 词表、解释与迁移案例](platform-product/README.md)；跨任务 [思维导图入口](../mindmaps/README.md)。
+
+AI 能力测试：[材料提炼、五题母稿与交付蓝图](ai-capability-assessment/README.md)。
+
+Jev社区增量：[实践地图与证据索引](jev-practices/README.md)，按任务和工作流验收，不将项目数量视作独立证据数量。
+
+前端设计复用：[素材与消费记录](frontend-design/README.md)，汇总CW Pages、career展示HTML、CW/SE前端消费链及外部参考。

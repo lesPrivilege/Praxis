@@ -10,3 +10,7 @@
 产物：可独立阅读、证据可追溯且决策请求明确的材料。
 
 查证与重访：[逐源登记](../../vault/provenance/reporting/README.md)；分类理由：[材料分类提炼](../../vault/distilled/reporting/material-classification.md)。
+
+开放题与方案评审：使用 [能力测试回答体例](assessment-answer-profile.md)，按判断、机制、反例、验收和时效组织答案；[本批五题研究](../../vault/distilled/ai-capability-assessment/README.md) 提供实例。
+
+前端呈现参考：[CW、SE、career素材与消费记录](../../vault/distilled/frontend-design/README.md)，按具体任务裁取，不自动晋升来源规则。

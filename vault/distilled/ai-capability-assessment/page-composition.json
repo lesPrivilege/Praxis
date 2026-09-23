@@ -1,0 +1,946 @@
+{
+  "schema_version": "4.0",
+  "id": "assessment-argument-tree-r3",
+  "content_source": "vault/distilled/ai-capability-assessment/answer-draft.md",
+  "source_sha256": "c03c51e3cf99e798943b6ac9b2cef26badd775a8d21da725aed19c64bc7ebe71",
+  "status": "Claude authorship pass mapping each exam sub-question to a question-answer node; text, build and in-app checks recorded in rendered/verification.md.",
+  "rules": [
+    "Each page and section asks a natural question and immediately states its answer.",
+    "Page question, core answer and child questions are rendered from the same draft as the body.",
+    "Argument nodes record reason, evidence or measurement, and resulting decision; these metadata labels do not become a rigid visible template.",
+    "Each exhibit belongs to one answer and supplies a comparison, condition, counterexample or verification structure.",
+    "The original 43 claims plus 3 RSI application claims preserve coverage; existence checks do not prove semantic correctness.",
+    "Authorship remains open to Claude; Astra revisions are not an authorship freeze.",
+    "Practice snapshots, reference consumption and verification status stay in the index.",
+    "Review sentences separately from structure: concrete action and causal connection first; internal object names appear only when needed for precision."
+  ],
+  "pages": [
+    {
+      "id": "q1",
+      "navigation_title": "上下文与缓存",
+      "primary_exhibit": "persistent-to-working-set",
+      "semantic_encodings": {
+        "groups": "长期保留材料与当次工作集",
+        "edges": "供给、执行与回写",
+        "emphasis": "工作集与存量的区别"
+      },
+      "reasoning": {
+        "central_claim": "先改信息供给：查清出错那一步模型实际收到了什么，把约束、进度和文件版本记在每一步都携带的任务状态里；改提示词和扩大窗口只作对照。中途新增工具的额外费用取决于定义加载的位置，与工具个数没有固定的倍数关系。",
+        "premises": [
+          "不同工具定义加载位置影响缓存路径",
+          "工具使用频率和运行时能力限定可选方式"
+        ],
+        "relations": [
+          {
+            "from": "请求轨迹/缓存命中/usage",
+            "type": "supports",
+            "to": "加载与成本估算是否符合实际"
+          },
+          {
+            "from": "加载和成本核对通过",
+            "type": "does-not-imply",
+            "to": "第40轮的约束遗漏和状态恢复已改善"
+          },
+          {
+            "from": "同组任务的供给对照、错误与恢复结果",
+            "type": "supports",
+            "to": "必要信息保留时的整体收益判断"
+          }
+        ],
+        "visual_job": "区分局部核验和整体结论；在条件化路径比较后，标出还需任务对照的证据缺口。"
+      },
+      "claims": [
+        {
+          "id": "diagnose-request",
+          "claim": "检查遗漏发生时的请求：约束未保存或未读回、被压缩删除、在场却未遵守、已被合法变更四种情况各有修法；只有第三种需要比较提示词与窗口，扩大窗口至多推迟压缩",
+          "location": "opening"
+        },
+        {
+          "id": "state-not-full-context",
+          "claim": "保留目标、约束与当前状态，原始材料按下一步需要补入，不每步携带全部文件",
+          "location": "q1-working-set"
+        },
+        {
+          "id": "read-record-versions",
+          "claim": "读取记录关联版本，文件变化后按记录判断重查范围，旧结论对应旧版本",
+          "location": "q1-working-set"
+        },
+        {
+          "id": "cache-new-vs-old",
+          "claim": "新增内容/发现/执行与旧缓存受影响的差额分开计算",
+          "location": "q1-cache-paths"
+        },
+        {
+          "id": "cache-three-paths",
+          "claim": "前缀改动重新处理、后部追加可命中、仅目录更新不等于schema已载入",
+          "location": "q1-cache-paths"
+        },
+        {
+          "id": "cache-example",
+          "claim": "假设150000 token、1元/百万与0.1元/百万，旧内容差额0.135元",
+          "location": "q1-cache-paths"
+        },
+        {
+          "id": "cache-billing",
+          "claim": "按实际计费项计，同一批token不重复计为普通输入与缓存创建",
+          "location": "q1-cache-paths"
+        },
+        {
+          "id": "cache-runtime",
+          "claim": "tool search、deferred loading与热更新状态不同，目录通知不证明接入或缓存不受影响；以请求记录核对",
+          "location": "q1-cache-paths"
+        },
+        {
+          "id": "loading-choice",
+          "claim": "预先加载与按需发现取决于工具后续使用方式",
+          "location": "q1-cache-paths"
+        },
+        {
+          "id": "task-comparison",
+          "claim": "成本核对不说明问题已解决；三种方案在同一组长任务上比较错误、恢复，再看成本与p95",
+          "location": "q1-test-supply"
+        },
+        {
+          "id": "reread-legit",
+          "claim": "正当重读（文件变化、核对原文、局部读取）与同版本同目的的无效重读分开；权限与隔离在每次工具调用时重新检查",
+          "location": "q1-working-set"
+        },
+        {
+          "id": "tool-four-states",
+          "claim": "发现、定义载入、服务接入/热更新、调用授权四个环节互不蕴含；追加不影响旧缓存不等于撤下或改动已载入定义无影响",
+          "location": "q1-cache-paths"
+        }
+      ],
+      "argument_tree": {
+        "question": "长会话开始遗漏约束，应该怎样调整上下文和工具加载？",
+        "answer": "先改信息供给：查清出错那一步模型实际收到了什么，把约束、进度和文件版本记在每一步都携带的任务状态里；改提示词和扩大窗口只作对照。中途新增工具的额外费用取决于定义加载的位置，与工具个数没有固定的倍数关系。",
+        "nodes": [
+          {
+            "id": "q1-working-set",
+            "question": "怎样保留任务状态，又避免每轮重读全部材料？",
+            "answer": "目标、约束和进度每一步都携带，文件和工具输出用到时再读取。文件修改后，只重查依赖旧版本的那些结论。",
+            "reason": "约束、状态和原始材料承担不同作用；读取版本决定哪些旧结论仍有效。",
+            "evidence": "以遗漏时的请求、读取版本及恢复记录核对信息是否仍可用。",
+            "decision": "文件变化后重查依赖旧版本的结论，恢复从当前状态继续；重读按版本和目的区分正当与多余，权限在工具入口重查。",
+            "exhibits": [
+              "persistent-to-working-set"
+            ],
+            "representation": {
+              "job": "信息保留与更新",
+              "view": "带回写的流程图",
+              "encoding": "对象分组区分长期状态与按需材料，箭头标出选入、执行和回写；版本条件邻近回写。",
+              "reference_id": "show-me",
+              "status": "implementation brief; existing representations require visual review"
+            }
+          },
+          {
+            "id": "q1-cache-paths",
+            "question": "第40轮新增三个工具，会让旧内容重新计费吗？",
+            "answer": "不一定。新定义如果改动了已缓存的前缀，受影响的旧内容需要重新处理；如果只是追加在会话后面，旧缓存仍然可能命中。",
+            "reason": "旧内容是否重算取决于加载位置；发现、定义载入、服务接入和调用授权是四个互不蕴含的环节。",
+            "evidence": "三路径表给出有共同假设的差额；请求轨迹和usage检验真实加载与计费。",
+            "decision": "按工具使用频率和运行时原生能力选择加载方式；撤下或改动已载入定义另计缓存失效。",
+            "exhibits": [
+              "cache-path-comparison"
+            ],
+            "representation": {
+              "job": "比较不同加载位置的差额",
+              "view": "三路径对照表",
+              "encoding": "同一批旧内容对齐比较，共同假设邻表；未测目录路径不画定量长度。",
+              "reference_id": "data-visualization",
+              "status": "implementation brief; existing representations require visual review"
+            }
+          },
+          {
+            "id": "q1-test-supply",
+            "question": "怎样证明这些调整改善了长任务？",
+            "answer": "用同一组长任务做对照，每次只改变工具加载、上下文组织或窗口大小中的一项，再比较结果和总开销。",
+            "reason": "局部缓存节省不能证明长任务改善，混合变量会掩盖改善来源。",
+            "evidence": "三组控制变量对照在第20、40、60轮等多个检查点记录质量、恢复、总费用与p95。",
+            "decision": "保留必要事实、达到任务质量要求后，才接受开销改善。",
+            "exhibits": [],
+            "representation": {
+              "job": "区分改动的因果贡献",
+              "view": "控制变量表",
+              "encoding": "改什么、固定什么、测什么形成三列，不能用步骤箭头暗示三项必须依次实施。",
+              "reference_id": "show-me",
+              "status": "implementation brief; existing representations require visual review"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "q2",
+      "navigation_title": "Reasoning effort 与成本",
+      "primary_exhibit": "routing-and-review",
+      "semantic_encodings": {
+        "branches": "可计算、可检查、冲突/难验证",
+        "parallel_track": "独立复核与授权，不是推理高档",
+        "quantities": "仅费用对照使用有依据的长度"
+      },
+      "reasoning": {
+        "central_claim": "不给整项任务固定一个 reasoning effort，而是按每一步的难度和出错代价来选；衡量的是多久出现有用结果，以及完成工作的总费用。",
+        "relations": [
+          {
+            "from": "更高推理强度",
+            "type": "does-not-imply",
+            "to": "更高质量或更大权限"
+          },
+          {
+            "from": "错误损失下降与新增费用/等待/审阅的对照",
+            "type": "supports",
+            "to": "是否值得升级"
+          },
+          {
+            "from": "独立复核及授权",
+            "type": "constrains",
+            "to": "可执行的动作"
+          }
+        ],
+        "visual_job": "条件路由与独立责任并置；成本图支持经济比较，不用任意阶梯表示智能或正确性。"
+      },
+      "claims": [
+        {
+          "id": "effort-by-node",
+          "claim": "effort按生成难度、核查成本与错误代价选择",
+          "location": "opening"
+        },
+        {
+          "id": "routing-three",
+          "claim": "有确定算法/规则→代码；边界清楚且检查成本可控→低effort基线；生成困难/冲突/返工昂贵→评估高effort收益",
+          "location": "q2-routing"
+        },
+        {
+          "id": "missing-facts",
+          "claim": "缺少关键事实时更长思考不产生证据，需检索、补问或人复核",
+          "location": "q2-routing"
+        },
+        {
+          "id": "model-tool-selection",
+          "claim": "模型按相似任务实际表现选择；工具先查候选召回，评估追到执行结果",
+          "location": "q2-routing"
+        },
+        {
+          "id": "latency-targets",
+          "claim": "初版目标：1秒确认、简单任务首次有用结果p95≤3秒、>10秒显示阶段并可取消/离开/继续；四个时点分别计时；待实测调整",
+          "location": "q2-latency"
+        },
+        {
+          "id": "accepted-cost",
+          "claim": "成本分子含全部调用/重试/工具/审阅/返工，分母为被接受结果；无接受时报告失败成本",
+          "location": "q2-unit-economics"
+        },
+        {
+          "id": "cost-example",
+          "claim": "假设演算：人工60元对AI辅助27元（人工25元＋模型工具2元），33元差额未扣错误损失",
+          "location": "q2-unit-economics"
+        },
+        {
+          "id": "upgrade-condition",
+          "claim": "错误减少收益覆盖新增费用与等待才升级；切换对缓存的影响计入",
+          "location": "q2-unit-economics"
+        },
+        {
+          "id": "trust-work-facts",
+          "claim": "展示可核对的工作过程与执行前差异、执行后回执，不依赖原始思考",
+          "location": "q2-trust"
+        },
+        {
+          "id": "side-effect-not-effort",
+          "claim": "外部副作用步骤由应用在执行前检查授权，effort高低不构成许可",
+          "location": "q2-routing"
+        },
+        {
+          "id": "effort-cache-coupling",
+          "claim": "部分实现把模型与effort计入缓存键，阶段可交给职责固定、上下文较短的调用并计入编排开销",
+          "location": "q2-routing"
+        },
+        {
+          "id": "unknown-ui",
+          "claim": "结果可见而执行状态未确认时如实标注，不提供重试，控件与真实状态一致",
+          "location": "q2-trust"
+        },
+        {
+          "id": "effort-not-comparable",
+          "claim": "不同厂商effort档位不对应相同计算量，须同任务实测",
+          "location": "q2-routing"
+        }
+      ],
+      "argument_tree": {
+        "question": "怎样在能力、等待时间和成本之间选择？",
+        "answer": "不给整项任务固定一个 reasoning effort，而是按每一步的难度和出错代价来选；衡量的是多久出现有用结果，以及完成工作的总费用。",
+        "nodes": [
+          {
+            "id": "q2-routing",
+            "question": "什么时候值得提高 reasoning effort？",
+            "answer": "难生成、容易返工的步骤，值得试更高的 effort；有确定算法的步骤交给代码。缺的是事实，就先找材料，推理再久也推不出证据。",
+            "reason": "生成容易、检查容易和失败代价低不是同一条件。",
+            "evidence": "路由图区分确定算法、较低effort、升级与补证；任务集比较正确率、重试和总成本。",
+            "decision": "按节点和实际进展路由，并从候选召回验证到工具执行；副作用步骤另由执行前授权检查，切换模型或effort时计入缓存与编排开销。",
+            "exhibits": [
+              "routing-and-review"
+            ],
+            "representation": {
+              "job": "按条件分配处理方式",
+              "view": "条件分支图",
+              "encoding": "确定算法、生成难度和缺证分别通向处理方式；不画成模型能力的等级阶梯。",
+              "reference_id": "show-me",
+              "status": "implementation brief; existing representations require visual review"
+            }
+          },
+          {
+            "id": "q2-latency",
+            "question": "怎样判断用户的等待是否合理？",
+            "answer": "从请求发出开始计时，重点看多久出现有用结果；首次反馈、完整结果和最终接受也分别记录。",
+            "reason": "开始生成只反映系统活动，不代表已有可用结果。",
+            "evidence": "同一请求起点的四个终点分别计时，按任务类型统计分布与用户行为。",
+            "decision": "以初始目标安排反馈、部分结果和可取消执行态，再据实测调整。",
+            "exhibits": [
+              "latency-endpoints"
+            ],
+            "representation": {
+              "job": "区分计时终点与产品目标",
+              "view": "共同起点的事件序列＋独立目标表",
+              "encoding": "四个终点共享请求起点；事件若画成序列，不按未测时长配置距离。初始目标单独标明。",
+              "reference_id": "data-visualization",
+              "status": "implementation brief; existing representations require visual review"
+            }
+          },
+          {
+            "id": "q2-unit-economics",
+            "question": "成本应该算到一次调用，还是一次完成的任务？",
+            "answer": "把模型、工具、重试、人工审阅和返工的费用加起来，再除以最终被接受的结果数；一份也没被接受时，单独报告失败的费用。",
+            "reason": "单次调用价格可能把成本转移给重试、返工和审阅。",
+            "evidence": "60元与27元是共同假设下的成本比较；33元差额尚未扣除新增错误损失。",
+            "decision": "错误概率下降乘以错误损失超过新增模型费、等待与验证成本时升级；安全要求优先，节省不能抵消越权。",
+            "exhibits": [
+              "accepted-result-cost"
+            ],
+            "representation": {
+              "job": "比较整项任务成本",
+              "view": "共同尺度的成本分解",
+              "encoding": "人工与AI辅助共用0–60元尺度；未计错误损失保持未知，不能画成零。",
+              "reference_id": "data-visualization",
+              "status": "implementation brief; existing representations require visual review"
+            }
+          },
+          {
+            "id": "q2-trust",
+            "question": "不展示原始思考，怎样让工作过程可信？",
+            "answer": "把用了哪些材料、改了什么、执行结果如何展示出来，让每个判断和动作都能核对。",
+            "reason": "生成的过程叙述不能自行证明材料使用和动作已经发生。",
+            "evidence": "文件版本、冲突、差异、影响范围、执行回执与核验记录。",
+            "decision": "进度和确认界面呈现可核对事实，执行后保存结果；执行状态无法确认时如实标注并停用重试。",
+            "exhibits": [],
+            "representation": {
+              "job": "说明信任怎样得到支持",
+              "view": "连续正文，必要时以一条记录示例补充",
+              "encoding": "从材料版本推到动作差异，再到回执，保留因果承接；没有具体数据时不增加仪表盘。",
+              "reference_id": "show-me",
+              "status": "implementation brief; existing representations require visual review"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "q3",
+      "navigation_title": "权限与恢复",
+      "primary_exhibit": "unknown-reconciliation",
+      "semantic_encodings": {
+        "branches": "可靠回执、明确失败、结果未知",
+        "conditions": "核验已提交/未提交/仍未知",
+        "retry_edge": "只在契约允许的条件下出现"
+      },
+      "reasoning": {
+        "central_claim": "已获授权的动作可以继续执行；发送、披露或修改数据以后，如果不知道是否成功，就先查结果，不能直接重做。",
+        "relations": [
+          {
+            "from": "请求超时",
+            "type": "does-not-imply",
+            "to": "未提交"
+          },
+          {
+            "from": "权威核验结果",
+            "type": "resolves-or-preserves",
+            "to": "已提交/未提交/仍未知"
+          },
+          {
+            "from": "原请求已终止且未提交，或同一请求标识/参数仍处于有效幂等保证内",
+            "type": "enables-under-conditions",
+            "to": "有界重试"
+          }
+        ],
+        "visual_job": "以观察能排除哪些状态为分支依据，保留仍未知，不把时间顺序画成成功证据。"
+      },
+      "claims": [
+        {
+          "id": "boundary-not-location",
+          "claim": "云端/本地不决定确认点，边界取决于具体动作的权限、范围、出口和对象",
+          "location": "opening"
+        },
+        {
+          "id": "action-classes",
+          "claim": "已授权的读取/整理/草稿继续；发送/披露/覆盖/改生产状态需确认覆盖具体后果",
+          "location": "q3-authorization"
+        },
+        {
+          "id": "authorization-binding",
+          "claim": "确认绑定对象、内容版本、范围和期限；实质变化后重核；检查在副作用之前；外来指令不授权",
+          "location": "q3-authorization"
+        },
+        {
+          "id": "unknown-state",
+          "claim": "超时进入unknown，先查权威记录；查不到不立即重发",
+          "location": "q3-unknown"
+        },
+        {
+          "id": "retry-condition",
+          "claim": "原请求已终止且未提交，或在有效幂等范围内沿用同一请求标识与参数，才有限次重试；Message-ID不提供去重保证",
+          "location": "q3-unknown"
+        },
+        {
+          "id": "failure-causes",
+          "claim": "限流退避、参数先修正、权限拒绝停止；恢复保留请求身份与输入版本",
+          "location": "q3-unknown"
+        },
+        {
+          "id": "wizard-ablation",
+          "claim": "逐步移除向导步骤，留出任务比较风险与介入；预设容差与样本；少量无事故不足以取消",
+          "location": "q3-remove-wizard"
+        },
+        {
+          "id": "benchmark-not-permission",
+          "claim": "基准成绩提高说明操作能力，不改变权限边界；真实账号、权限与恢复另行验收",
+          "location": "q3-remove-wizard"
+        }
+      ],
+      "argument_tree": {
+        "question": "哪些动作可以自动执行，失败后又怎样恢复？",
+        "answer": "已获授权的动作可以继续执行；发送、披露或修改数据以后，如果不知道是否成功，就先查结果，不能直接重做。",
+        "nodes": [
+          {
+            "id": "q3-authorization",
+            "question": "什么时候需要重新取得确认？",
+            "answer": "账号、对象、内容或后果超出了已有授权，就在执行前确认；还在授权范围内的，不必重复询问。",
+            "reason": "部署地点不足以刻画后果，数据输入时副作用可能已发生。",
+            "evidence": "授权图按动作后果分类；核对对象、内容版本、范围和期限。",
+            "decision": "在首个副作用之前核对授权，已有授权足够时继续执行。",
+            "exhibits": [
+              "action-boundary"
+            ],
+            "representation": {
+              "job": "确定授权范围",
+              "view": "动作后果对照",
+              "encoding": "已覆盖与需核对的动作分组，确认对象、内容版本和期限邻近呈现。",
+              "reference_id": "show-me",
+              "status": "implementation brief; existing representations require visual review"
+            }
+          },
+          {
+            "id": "q3-unknown",
+            "question": "Agent 失败后，什么时候可以自动重试？",
+            "answer": "只有确认原请求已经终止且没有提交，或者接口仍能保证同一请求不会重复产生副作用，才可以有限次重试。遇到权限拒绝，必须停止。",
+            "reason": "无回执与未提交不同，记录不可见也不等于操作未发生。",
+            "evidence": "unknown分支查询权威回执，再核对原请求终止状态或幂等保证。",
+            "decision": "沿用有效请求标识及参数进行有限重试；权限拒绝停止，仍未知则继续核验。",
+            "exhibits": [
+              "unknown-reconciliation"
+            ],
+            "representation": {
+              "job": "决定失败后下一步",
+              "view": "状态分支树＋失败决策表",
+              "encoding": "边上说明核验条件；unknown不能直接连到重发；幂等有效期与参数条件紧邻重试。",
+              "reference_id": "show-me",
+              "status": "implementation brief; existing representations require visual review"
+            }
+          },
+          {
+            "id": "q3-remove-wizard",
+            "question": "模型能力提高后，哪些向导步骤可以删除？",
+            "answer": "先删去已经不需要的操作指导，每次只删一步；确认风险没有超出容差、用户确实少做了工作，再保留这项简化。",
+            "reason": "操作指导、意图确认、业务取舍与授权承担不同作用。",
+            "evidence": "逐项移除，在留出任务上测风险上界、恢复与用户介入。",
+            "decision": "提前设定容差和样本，风险满足要求且负担减少才保留简化。",
+            "exhibits": [],
+            "representation": {
+              "job": "检验是否可以删步骤",
+              "view": "连续论证＋消融比较条件",
+              "encoding": "一次删一步、留出任务、风险上界与减负共同构成接受条件；不伪造实验结果图。",
+              "reference_id": "show-me",
+              "status": "implementation brief; existing representations require visual review"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "q4",
+      "navigation_title": "概率与风险",
+      "primary_exhibit": "risk-distribution",
+      "semantic_encodings": {
+        "x_categories": "有序等级0至3",
+        "length": "同一概率尺度",
+        "labels": "均值与严重尾部概率分开量纲",
+        "color": "同图内严重等级的一致强调"
+      },
+      "reasoning": {
+        "central_claim": "答案符合 schema，仍然可能选错。要让系统自动放行，还需要检查概率分布、在自己的业务上校准，并通过独立验收。",
+        "relations": [
+          {
+            "from": "输出符合schema",
+            "type": "does-not-imply",
+            "to": "业务判断正确"
+          },
+          {
+            "from": "均值低于2",
+            "type": "does-not-imply",
+            "to": "严重事件概率低"
+          },
+          {
+            "from": "1.99/99%及1.5/50%合成分布",
+            "type": "counterexample-to",
+            "to": "仅以均值门槛放行"
+          },
+          {
+            "from": "独立标签、适用范围与校准",
+            "type": "required-for",
+            "to": "业务阈值和动作策略"
+          }
+        ],
+        "visual_job": "让反例通过同尺度分布和尾部概率直接成立，再说明校准缺口；不是把四个名词各做一块。"
+      },
+      "claims": [
+        {
+          "id": "schema-not-truth",
+          "claim": "schema合法不等于答案正确；confidence按定义使用，不是正确概率",
+          "location": "opening"
+        },
+        {
+          "id": "mean-counterexample",
+          "claim": "构造分布A均值1.99、P(≥2)=99%；B均值1.50、P(≥2)=50%；两者都被“低于2放行”放过",
+          "location": "q4-distribution"
+        },
+        {
+          "id": "keep-distribution",
+          "claim": "规则保留完整概率向量，按严重事件概率和漏报代价决定动作；阈值待校准",
+          "location": "q4-distribution"
+        },
+        {
+          "id": "independent-report",
+          "claim": "目标业务的独立验证：独立标签、材料分开、同时观察严重漏报/置信区间/覆盖率/接管/成本",
+          "location": "q4-independent-eval"
+        },
+        {
+          "id": "intermediate-steps",
+          "claim": "中间字段错误可能不改变最终标签，需要分别核对",
+          "location": "q4-independent-eval"
+        },
+        {
+          "id": "repeat-diagnosis",
+          "claim": "三次不一致先核对调用是否相同，再区分数值/标签/动作；不能重试到通过",
+          "location": "q4-repeat"
+        },
+        {
+          "id": "applicability",
+          "claim": "输入不完整、版本未验收或超出校准范围时不自动放行；固定轨迹重复不增加独立情境",
+          "location": "q4-repeat"
+        },
+        {
+          "id": "two-fallbacks",
+          "claim": "网络故障与判断不确定分开回退；动作集合统一，分数与阈值不共用；数据去向接入时确定；高影响动作停在草稿或人工",
+          "location": "q4-fallback"
+        },
+        {
+          "id": "severity-rule",
+          "claim": "规则读取完整向量：输入或版本不合格送审；P(等级≥2)不高于放行上限放行、高于阻断线阻断、其间送审；已送审事项无新证据不因重试降级",
+          "location": "q4-distribution"
+        },
+        {
+          "id": "release-report-scope",
+          "claim": "上线前补独立业务验收与发布批准报告，覆盖样本切片、分组隔离、国内网络故障表现与负责人批准；监控用途不自动升级为发布闸门",
+          "location": "q4-independent-eval"
+        },
+        {
+          "id": "five-properties",
+          "claim": "输出空间锁死只保证类型合法；业务正确、概率校准、决策稳定与输入鲁棒分别检查",
+          "location": "opening"
+        }
+      ],
+      "argument_tree": {
+        "question": "类型受约束的输出，怎样才能用于业务决策？",
+        "answer": "答案符合 schema，仍然可能选错。要让系统自动放行，还需要检查概率分布、在自己的业务上校准，并通过独立验收。",
+        "nodes": [
+          {
+            "id": "q4-distribution",
+            "question": "严重度得分为1.99，人工闸门设在2.00，规则应该怎样写？",
+            "answer": "规则不按均值写，按严重等级的概率写：“严重及以上”的概率不超过放行上限（用业务数据校准）才自动放行，超过阻断线就阻断，落在两者之间的送审。",
+            "reason": "均值把分布压成一个数，同一均值下严重尾部概率可以差别很大。",
+            "evidence": "构造分布A、B的精确值与页面内计算；放行上限按独立测试集上严重漏报置信上界不超过预算校准。",
+            "decision": "按P(等级≥2)与校准后的放行上限、阻断线分区；输入或版本不合格一律送审；无新证据不因重试降级。",
+            "exhibits": [
+              "risk-distribution"
+            ],
+            "representation": {
+              "job": "揭示均值隐藏的严重尾部",
+              "view": "同尺度分布小多图＋精确值",
+              "encoding": "A/B共用等级与概率尺度，均值和严重尾部同时可见；保留构造例子身份与原始向量。",
+              "reference_id": "data-visualization",
+              "status": "implementation brief; existing representations require visual review"
+            }
+          },
+          {
+            "id": "q4-independent-eval",
+            "question": "上线前要补哪一份材料？",
+            "answer": "补一份独立的业务验收与发布批准报告：用自己的业务样本和独立标注，检查字段、中间量和最终决定，写清严重漏报、覆盖率、转人工比例和国内网络下的故障表现，最后由负责人批准。",
+            "reason": "厂商题集不能替代目标业务；最终正确可能掩盖关键中间错误。",
+            "evidence": "独立验证报告检查标签、字段、计算和规则适用等过程证据。",
+            "decision": "发布报告写明用途、禁用用途、版本、切片、网络故障表现与负责人批准；监控用评估器不直接改作发布闸门。",
+            "exhibits": [
+              "evaluation-contract"
+            ],
+            "representation": {
+              "job": "限定验收覆盖",
+              "view": "验证对象与证据矩阵",
+              "encoding": "最终标签、字段和中间量对应所需检查；不把未执行的检查画成通过状态。",
+              "reference_id": "visual-explainer",
+              "status": "implementation brief; existing representations require visual review"
+            }
+          },
+          {
+            "id": "q4-repeat",
+            "question": "同一道题三次结果不同，应该检查什么？",
+            "answer": "先确认三次的输入和评分条件是否一致，再看差异出在原始数值、标签，还是最终动作上。",
+            "reason": "输入、模型、rubric、包装层和字段映射都可能影响结果。",
+            "evidence": "固定调用条件后分别记录原始数值、标签、动作；独立业务情境验证严重漏报上界。",
+            "decision": "不重试到通过，未验收版本或超校准范围不自动放行，同时评价覆盖率。",
+            "exhibits": [],
+            "representation": {
+              "job": "定位不一致发生在哪层",
+              "view": "输入条件—数值—标签—动作的核对关系",
+              "encoding": "区分实验控制与业务后果，保持稳定性和独立情境数量的区别；正文承担解释。",
+              "reference_id": "show-me",
+              "status": "implementation brief; existing representations require visual review"
+            }
+          },
+          {
+            "id": "q4-fallback",
+            "question": "服务不稳定和判断不确定，能用同一种降级吗？",
+            "answer": "服务无法连接，按故障流程恢复或切换；证据不足，就补证或送审。两种情况最后可以返回同一类动作，但触发条件不能共用一套。",
+            "reason": "服务可用性与决策证据是两种故障来源。",
+            "evidence": "双路径图分别核对网络恢复条件与判断依据。",
+            "decision": "备用服务须满足已验证条件，网络恢复不自动继承判断阈值。",
+            "exhibits": [
+              "two-fallback-paths"
+            ],
+            "representation": {
+              "job": "区分两种失败原因",
+              "view": "并列双路径",
+              "encoding": "网络可用性与判断证据各有条件，共同动作集合不意味着阈值可互换。",
+              "reference_id": "show-me",
+              "status": "implementation brief; existing representations require visual review"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "q5",
+      "navigation_title": "修改与生效",
+      "primary_exhibit": "atomic-change-branches",
+      "semantic_encodings": {
+        "parallel_lanes": "D1删除与D2新增",
+        "symbols": "删除/新增原子差异",
+        "gates": "分别补证、独立评估与发布条件",
+        "scope": "事项、客户、法域和平台流程的实际适用边界"
+      },
+      "reasoning": {
+        "central_claim": "两处修改都先保存下来，但不直接写进全平台生效的 playbook。删句和加公式各自查清理由和依据，批准后也只在限定的客户和法域内使用；下周的德国和越南事项，只用各自已经批准的规则。",
+        "relations": [
+          {
+            "from": "律师已交付或德国样例数值吻合",
+            "type": "does-not-imply",
+            "to": "规则正确且可跨法域适用"
+          },
+          {
+            "from": "法源、适用范围、独立评估与有效批准",
+            "type": "jointly-required-for",
+            "to": "相应范围内生效"
+          },
+          {
+            "from": "减少警告/提高代理分数",
+            "type": "does-not-imply",
+            "to": "真实质量提高"
+          }
+        ],
+        "visual_job": "表达两项变更各自缺什么依据、共同发布条件与适用边界；候选身份不能沿箭头自动变成批准。"
+      },
+      "claims": [
+        {
+          "id": "delivery-not-rule",
+          "claim": "律师改过这份合同不等于其他合同可以照搬，删句和加公式的理由分别核查。",
+          "location": "opening"
+        },
+        {
+          "id": "d1-reason",
+          "claim": "D1需弄清删除原因；一次删除不推出风险以后不必提示",
+          "location": "q5-atomic-diff"
+        },
+        {
+          "id": "d2-basis",
+          "claim": "D2需查明公式的法源、计算基数与适用对象；两处50%不可因数值相同视作同一规则；客户接受不使其成为法域规则",
+          "location": "q5-atomic-diff"
+        },
+        {
+          "id": "germany-false-positive",
+          "claim": "德国50%为补偿下限，涉及最后合同给付、浮动给付平均与期间；简化样例可能巧合；越南无依据时待审",
+          "location": "q5-atomic-diff"
+        },
+        {
+          "id": "record-fields",
+          "claim": "记录改了什么、依据是什么、后来经历了什么；版本号不代替生效状态",
+          "location": "q5-scope"
+        },
+        {
+          "id": "scope-isolation",
+          "claim": "事项、客户偏好、法域规则、平台流程分开管理，取得和使用时检查范围",
+          "location": "q5-scope"
+        },
+        {
+          "id": "independent-eval",
+          "claim": "法域复核者核查法源；学习器不能改验收集、评分或生效状态；原版/仅删/仅增/组合比较；冻结后在未调参材料验收",
+          "location": "q5-independent-release"
+        },
+        {
+          "id": "counterfactuals",
+          "claim": "换客户、换法域、德国数值吻合、越南无依据、仅有未生效版本号、作者资历变化均不绕过要求",
+          "location": "q5-independent-release"
+        },
+        {
+          "id": "reward-hacking",
+          "claim": "先满足硬性门槛再比较质量/覆盖率/人工/成本；RSI方法不提供法律结论依据",
+          "location": "q5-incentives"
+        },
+        {
+          "id": "versioned-playbook-learning",
+          "claim": "本题经验写入有版本的playbook，不要求先改模型权重。",
+          "location": "q5-scope"
+        },
+        {
+          "id": "release-control-rollback",
+          "claim": "学习器不能自行修改验收、隔离和发布权限；保留父版本与证据，回归停用并恢复适用已批准版本。",
+          "location": "q5-independent-release"
+        },
+        {
+          "id": "task-vs-improver-eval",
+          "claim": "任务效果与产生下一次有效改进的能力分别检验；后者固定起点和预算，计入被拒候选成本，跨轮跨任务复核。",
+          "location": "q5-incentives"
+        },
+        {
+          "id": "next-week-scope",
+          "claim": "下周德国、越南事项只用各自已批准的规则；越南无批准依据时停在待审",
+          "location": "opening"
+        }
+      ],
+      "argument_tree": {
+        "question": "律师的一次修改，怎样才能成为平台规则？",
+        "answer": "两处修改都先保存下来，但不直接写进全平台生效的 playbook。删句和加公式各自查清理由和依据，批准后也只在限定的客户和法域内使用；下周的德国和越南事项，只用各自已经批准的规则。",
+        "nodes": [
+          {
+            "id": "q5-atomic-diff",
+            "question": "为什么删除一句话和新增一个公式要分开审查？",
+            "answer": "这次删了风险提示，不代表以后都不用提示；这次加了公式，也不代表其他合同都可以照此计算。两处修改的理由要分别核实。",
+            "reason": "删除与新增可能理由不同，相同50%或相同样例金额不证明法律身份一致。",
+            "evidence": "D1/D2分支逐项查法源、基数、期间和适用对象。",
+            "decision": "分别保存候选；德国继续核查适用条件，越南无依据时待审。",
+            "exhibits": [
+              "atomic-change-branches"
+            ],
+            "representation": {
+              "job": "区分删除与新增的待证事项",
+              "view": "结构diff＋两条独立证据链",
+              "encoding": "D1/D2符号对应真实改动，两处50%分别追溯；候选与批准状态分开。",
+              "reference_id": "show-me",
+              "status": "implementation brief; existing representations require visual review"
+            }
+          },
+          {
+            "id": "q5-scope",
+            "question": "机制要保留什么，修改才能成为规则？",
+            "answer": "要保留原稿、两处改动各自的理由和依据、作者和委托关系、审查与批准记录，以及父版本和适用范围。做法批准之后才写进带版本的 playbook，只给一个新版本号是不够的。",
+            "reason": "本题更新有版本的playbook，不预设训练权重；持久经验仍须通过批准并限定使用范围。",
+            "evidence": "原稿、D1/D2理由与依据、作者与委托关系、审查批准记录、父版本与适用范围；每次读取和使用时的范围检查。",
+            "decision": "批准后只在限定范围内生效，客户偏好不覆盖强制规则或平台权限。",
+            "exhibits": [
+              "scope-and-state"
+            ],
+            "representation": {
+              "job": "判断生效及适用范围",
+              "view": "记录字段与生效条件、范围的对应关系",
+              "encoding": "记录说明依据，批准决定生效，范围限制复用；不可只排列三个主题框。",
+              "reference_id": "visual-explainer",
+              "status": "implementation brief; existing representations require visual review"
+            }
+          },
+          {
+            "id": "q5-independent-release",
+            "question": "独立评估怎样做？",
+            "answer": "原版、只删、只加、两处都改，四个版本分开测试；法源交给熟悉当地法律的人复核，验收材料、评分标准和发布权限都不交给提出修改的一方。",
+            "reason": "组合收益需要对照辨认，提出候选的一方控制验收会损害独立性。",
+            "evidence": "原版/仅删除/仅新增/组合四组，以及跨客户、法域、作者和状态的反事实检查。",
+            "decision": "学习器不能改变验收、隔离或发布权限；批准后保留父版本及证据，回归时停用受影响规则并恢复适用的已批准版本。",
+            "exhibits": [
+              "counterfactual-matrix"
+            ],
+            "representation": {
+              "job": "检验收益来源与错误复用",
+              "view": "四组对照＋反事实矩阵",
+              "encoding": "原版、仅删、仅增、组合按共同问题比较；客户/法域变化对应预期行为和验收条件。",
+              "reference_id": "visual-explainer",
+              "status": "implementation brief; existing representations require visual review"
+            }
+          },
+          {
+            "id": "q5-incentives",
+            "question": "奖励黑客风险在哪里？",
+            "answer": "如果只奖励报告干净、改动少或测试分高，系统就可能学会删警告、套公式、避开难题，或者把全部请求转交人工。法源、范围、隔离、批准这几条要先满足，效率再高也不能折抵；满足之后，再比较质量和成本。要说系统更善于改进自己，还需另做一层对照。",
+            "reason": "删警告、套公式、避开难题、记住客户答案或全转人工都能改善局部指标；任务提升也不等于产生后续改进的能力提升。",
+            "evidence": "任务层对照未见事项质量与完整成本；改进层固定规则、案例和预算，独立验收候选，计入被拒候选成本。",
+            "decision": "先满足法源、范围、隔离和批准条件；分别评价任务效果与改进能力，跨轮跨任务复核，不把研究流程当法律依据。",
+            "exhibits": [],
+            "representation": {
+              "job": "区分任务提升与改进能力提升",
+              "view": "两层对照实验表＋指标失真的连续解释",
+              "encoding": "两行分别固定比较对象与预算，说明各自支持的结论；不将两层画成已达成的能力等级。",
+              "reference_id": "show-me",
+              "status": "table implemented; visual review pending"
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "visual_policy": {
+    "primary_reference": "Courtwork Pages semantic composition",
+    "theme": "light-cool-only",
+    "decoration": "none unless the mark expresses text hierarchy, object/scope, relation, comparable quantity, change or interaction state",
+    "saaS_scope": "navigation, controls, focus and responsive behavior only",
+    "bitmap_role": "only necessary explanatory content prepared by Codex; no decorative assignment"
+  },
+  "content_revisions": [
+    {
+      "date": "2026-09-23",
+      "scope": [
+        "q1-p06",
+        "q1-p07"
+      ],
+      "previous_source_sha256": "a4c02a47d16bc1bdf5f03777544ea96aafaa98d4e7408b24dc04b6d28c066722",
+      "reason": "User identified isolated principle-like sentences; rebuilt paragraph continuity and moved future-maintenance aside to index."
+    },
+    {
+      "date": "2026-09-23",
+      "scope": "terminology and unnecessary coined phrases",
+      "previous_source_sha256": "3ffaa4374a1744c2c752ff032111e42648fd69a724b9693570cfeeb9afb5db9b",
+      "reason": "Keep established English technical terms when a stable Chinese equivalent is absent; use ordinary language instead of invented labels."
+    },
+    {
+      "date": "2026-09-23",
+      "scope": "full prose rewrite",
+      "previous_source_sha256": "2f551fe830c55a26a7216d9ae8ea4942a0bb31589ddaf4206e409732d53d166c",
+      "reason": "User rejected flat, standalone assertions throughout. Paragraphs rebuilt around questions, reasons, examples and conclusions; old paragraph count is not a constraint."
+    },
+    {
+      "date": "2026-09-23",
+      "scope": "direct answer voice",
+      "previous_source_sha256": "ea7a1d4f90a0d97cc71307af5104dc1dcb36872869bcb40eed3e1bf330d7e7b0",
+      "reason": "Removed first-person prospective narration; state the decision, condition and method directly."
+    },
+    {
+      "date": "2026-09-23",
+      "scope": "Claude rewrite for text/figure division",
+      "previous_source_sha256": "c0f6aa250be03feca8c47d16d55a3b100059a9ac91435b78c71841abc656a002",
+      "reason": "Enumerations moved into figures; prose keeps reasons, conditions and limits. Facts, numbers and assumption identities unchanged; see rendered/verification.md."
+    },
+    {
+      "date": "2026-09-23",
+      "scope": "Astra independent review: document title; Q2 effort inference; Q5 given scenario",
+      "previous_source_sha256": "9d10789ded32be69fe06477e2f12e42ceaaa4233717aab566dbd5b12526e651d",
+      "reason": "Use a content title; verification ease does not determine generation cost; Singapore is a given scenario, not an unsupported new legal claim."
+    },
+    {
+      "date": "2026-09-23",
+      "scope": "Astra adjudication of Pro review",
+      "reason": "Separate tool-loading comparison from context/window experiments; place cache validity and configuration assumptions beside the comparison."
+    },
+    {
+      "date": "2026-09-23",
+      "scope": "text acceptance after restart",
+      "previous_source_sha256": "849cf80ed0947f10c20ef2cbd77ef5159530ae6db715514fa85214e650f082f5",
+      "reason": "Distinguish generation from verification; require terminal non-commit or effective idempotency before retry; restore the two exact source modifications; describe synthetic probability precisely."
+    },
+    {
+      "date": "2026-09-23",
+      "scope": "prose polish (Claude)",
+      "reason": "Replaced remaining schema-first phrasing with concrete subjects and actions in four prose sentences and figure/table labels; answers, facts, numbers and assumption status unchanged."
+    },
+    {
+      "date": "2026-09-23",
+      "scope": "Opus authorship pass (Claude)",
+      "previous_source_sha256": "c15fd461ccb77592c4f13a387495bfe9ed1383b2af8e6d9d433cb8d35b91ff01",
+      "reason": "Mapped every exam sub-question to a heading and answer: Q1 four request observations decide prompt/window/supply and the four tool-loading stages; Q2 side-effect nodes, effort cache coupling and the unconfirmed-result UI; Q4 explicit severity rule with calibrated release bound and the named pre-launch report; Q5 headings now answer what the mechanism keeps, how independent evaluation works and where reward hacking appears, plus next-week DE/VN scope. Facts, numbers and assumption status unchanged."
+    },
+    {
+      "date": "2026-09-23",
+      "scope": "grounding review (Claude with Sonnet audits)",
+      "previous_source_sha256": "fae0713391ffce5a2bd05cc90e491bbd57b9c7fe8293f51fb45785a5c46e509a",
+      "reason": "Live re-check of 12 main sources found no stale claim; terminology audit found no coined terms. Added the separated properties behind \"output space locked\" to Q4 opening and cross-vendor effort non-equivalence to Q2.1 (both from S04/S12–S15 cards)."
+    },
+    {
+      "date": "2026-09-23",
+      "scope": "q2-latency figure (Claude)",
+      "previous_source_sha256": "231951ff3250dc6b20458b0a7b8e45afd703ffff68f9f8ff7af22352efa1fe5f",
+      "reason": "Replaced the four-endpoint table with a same-origin span figure (key metric emphasised, spacing not to scale); the table remains as the compact variant."
+    },
+    {
+      "date": "2026-09-24",
+      "scope": "independent review adjudicated (Claude)",
+      "previous_source_sha256": "854064db30b57ee17a9f01abf380047522c0d45776197c7d1af8e888f07aace6",
+      "reason": "Adopted sentence splitting, word-order causality and varied negation from an independent review where they read as natural written Chinese; rejected translationese and colloquial register; restored the \"假设演算\" label and one dropped hedge; clarified the German 50% reference. Facts, numbers, conditions and assumption status unchanged."
+    },
+    {
+      "date": "2026-09-24",
+      "scope": "register review of structural text (fresh Opus review, Claude adjudication)",
+      "previous_source_sha256": "4bbec9d83c9c777f7145249c62e7f16b5db8bca15545af834991d5f4a66cdc44",
+      "reason": "Table headers, row labels, figure labels, one-line answers, outline cards and source points moved to stable written Chinese: parallel noun-phrase headers, no spoken particles or English calques in structural slots; over-formal proposals moderated. Meaning, hedges and evidence labels unchanged."
+    }
+  ],
+  "renderer_contract": "answer-draft.md holds prose and structure (h2 pages, h3 sections with {#id}, `::: figure <exhibit> <role>` placements). The build rejects unsupported blocks, unknown or duplicated exhibits, a primary exhibit that differs from this file, and claim locations the draft lacks.",
+  "authoring_authority": {
+    "writer": "Claude",
+    "authority": "Explicit user instruction",
+    "allowed": [
+      "rewrite answer prose",
+      "change headings and outline copy",
+      "split/merge/reorder paragraphs",
+      "revise reasoning with evidence",
+      "redistribute content between prose and graphics",
+      "change composition schema and renderer together"
+    ],
+    "reference_status": "Existing paragraphs, wording, hashes and editorial units are editable references, not immutable copy.",
+    "preserve": [
+      "question coverage",
+      "evidence accuracy and scope",
+      "units and arithmetic",
+      "assumption versus measured result",
+      "user writing and visual requirements"
+    ],
+    "sync": [
+      "answer-draft.md",
+      "page-composition.md/json",
+      "five-page-outline.md",
+      "evidence-index.md",
+      "rendered output and verification"
+    ]
+  }
+}

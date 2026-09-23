@@ -20,3 +20,11 @@
 [建立材料分类体系](material-classification-20260919.json)：2026-09-19 完整获取 2 轮/4 消息，无截断，仅供备查。
 
 [建立企业仓库架构](architecture-review-20260920.json)：2026-09-20 工具返回 1 轮/2 消息，hasMore=false，attachments 为空；7 个引用占位按本批 intake 登记，补丁包未返回。
+
+[平台类产品 grammar 扫盲](platform-grammar-20260922.json)：2026-09-22 读取原线程 6 轮/12 消息，按主题保留 4 轮/8 消息；前 2 轮个人访谈/资源语境已排除。11 个引用占位均为 missing-original，附件为空；覆盖与 hash 见 [`../../intake/platform-grammar-20260922.json`](../../intake/platform-grammar-20260922.json)。
+
+[AI能力测试交付设计](ai-capability-assessment-20260923.json)：2026-09-23 工具返回 7 轮/10 条可见消息，hasMore=false，无附件条目；用户另给本地 3 个附件，覆盖见 [intake](../../intake/ai-capability-assessment-20260923.json)。
+
+[AI能力测试 r2](ai-capability-assessment-20260923-r2.json)：同日复读新增1条用户消息，共8轮11条；旧7轮内容未变，r1保留。
+
+[Jev社区研究粘贴文本](jev-community-pasted-20260923.txt)：本轮用户给定的原字节附件，没有conversation/turn ID，不计入read_thread消息覆盖；元数据见[增量登记](../../intake/jev-community-20260923.json)。

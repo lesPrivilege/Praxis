@@ -11,3 +11,9 @@
 
 - [2026-09-19 架构 review 消费回执](2026-09-19-architecture-review.md)：ADR-009 的原始消费范围。
 - [2026-09-20 文档架构与审阅消费](2026-09-20-documentation-architecture.md)：README 结构、契约接续、外部选型、原件登记与本轮验证。
+
+- [2026-09-23 AI 能力测试入账、研究与编订](ai-capability-assessment-20260923.md)
+
+- [2026-09-23 五页答卷与可视化参考召回](ai-visual-recall-20260923.md)
+
+- [2026-09-23 用户截图后的版式复审](assessment-layout-review-20260923.md)：当前设计未通过，重写论证编排与单工单。

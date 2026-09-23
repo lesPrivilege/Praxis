@@ -9,6 +9,7 @@
 | References | [来源卡](references/README.md) | 明确外部URL摘要 |
 | Provenance | [追溯与研究](provenance/README.md) | 引用恢复、补充证据与独立外部研究 |
 | Snapshots | [快照](snapshots/README.md) | 本地原件和依赖的离线副本 |
+| Mindmaps | [思维导图](mindmaps/README.md) | 跨任务查找 Markdown 导图原稿 |
 | Archive | [备查](archive/README.md) | 原Chat，非主阅读路径 |
 
 依照 [入账规范](../docs/governance/intake.md) 扩展。研究登记不等于本repo采纳。
@@ -18,3 +19,7 @@
 统一消息与外源消费索引：[registry.json](registry.json)。其字段统一来源身份、摘要、证据状态、限制与重访条件；详细分类catalog保留特有证据信息。更新后按 [脚本说明](../scripts/README.md) 重建。
 
 本轮研究：[架构审阅消费](distilled/themes/architecture-review-2026-09-20.md) · [文档实践与选型](distilled/themes/documentation-practices.md)。
+
+AI 能力测试：[研究、回答母稿与交付蓝图](distilled/ai-capability-assessment/README.md)。
+
+设计素材另目：[前端设计素材与消费记录](distilled/frontend-design/README.md)，原件、采纳/舍弃和验证身份分开。

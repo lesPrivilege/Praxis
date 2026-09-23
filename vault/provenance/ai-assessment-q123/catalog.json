@@ -1,0 +1,608 @@
+{
+  "schema_version": "1.0",
+  "catalog_id": "ai-assessment-q123-2026-09-23",
+  "origin": "direct-research",
+  "as_of": "2026-09-23",
+  "scope": {
+    "questions": [
+      "Q1",
+      "Q2",
+      "Q3"
+    ],
+    "historical_source_ids": [
+      "S01",
+      "S02",
+      "S03",
+      "S04",
+      "S05",
+      "S06",
+      "S07",
+      "S08",
+      "S09",
+      "S10",
+      "S11",
+      "S27"
+    ],
+    "chat_conversation_id": "6ab33ace-e690-83ec-8acb-11e88d77f14f",
+    "chat_archive": "vault/archive/chat/ai-capability-assessment-20260923.json",
+    "chat_increment_turn_id": "e7835cd0-51e3-481d-aad6-8115030f4dfd",
+    "chat_increment_item_id": "cac16eff-4ead-47d6-98fc-47897f9c1fc2",
+    "selection_rule": "先核查用户附件 S01—S11、S27；补充当前 OpenAI Tool Search、Anthropic Tool Search 和 MCP 2026-07-28 页面，以覆盖 Chat 最后一轮关于后续加载与热插拔的增量。",
+    "read_boundary": "外部页面逐 URL 实际读取并保存正文响应；没有保存远端脚本、图片、字体、登录状态或完整离线站点；没有运行模型 API、computer-use、OSWorld 或企业业务测试。"
+  },
+  "provenance_policy": {
+    "status_rule": "verified/partial 表示本地快照中列出的主张已按 locator 读取；不表示对产品稳定性、价格、账户可用性或完整页面的背书。",
+    "chat_rule": "原 Chat 只引用既有 archive 的 conversation/turn/item ID；Chat assistant 的动态加载结论是不可信上下文，不能替代逐 URL 官方核查。",
+    "snapshot_rule": "OpenAI 页面使用官方 .md HTTP 正文；其他页面保存 HTTP 正文。每个 source 独立记录 URL、读取时间、snapshot_path、snapshot_sha256、snapshot_size_bytes。",
+    "pricing_rule": "本批不登记当前美元价格或倍率；成本结论只使用官方 usage 字段、缓存命中和调用链测量建议。"
+  },
+  "sources": [
+    {
+      "slug": "s01-anthropic-context-engineering",
+      "title": "Anthropic — Effective context engineering for AI agents",
+      "url": "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents",
+      "original_url": "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents",
+      "status": "verified",
+      "summary_zh": "Anthropic 将 context 定义为每次推理可见的 token 集合，并把长任务的供给问题拆为 just-in-time retrieval、compaction、结构化笔记和子代理隔离；建议让工具返回高信号、可渐进披露的内容。",
+      "limits": "厂商工程文章和经验总结，不是跨模型保证；文章中的方法不能证明本题轨迹、压缩不变量或业务质量已实测。",
+      "revisit_trigger": "上下文窗口、压缩、memory/tool retrieval 或文章引用的 Claude 能力发生变化时；正式交付前复查长任务边界。",
+      "purpose_tags": [
+        "GRAMMAR",
+        "SCALE"
+      ],
+      "card_path": "vault/provenance/ai-assessment-q123/cards/s01-anthropic-context-engineering.md",
+      "accessed_at": "2026-09-23T11:28:57+08:00",
+      "snapshot_path": "vault/provenance/ai-assessment-q123/snapshots/anthropic-context-engineering.html.txt",
+      "snapshot_sha256": "485eb94f0cd6be27dc980c91733c6824b4668741de82f8d50592e5ab48a240d9",
+      "snapshot_size_bytes": 199586,
+      "snapshot_source_url": "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents",
+      "snapshot_scope": "HTTP response body; not a full offline site",
+      "historical_ref": [
+        "S01"
+      ],
+      "supported_claims": [
+        {
+          "id": "Q1-C01",
+          "claim": "上下文是模型采样时可见的信息集合，长任务需要管理整体 context state，而不只是改 system prompt。",
+          "locator": "page sections ‘Context engineering vs. prompt engineering’ and ‘Why context engineering is important’, fetched-page lines 21-35"
+        },
+        {
+          "id": "Q1-C02",
+          "claim": "just-in-time context、compaction、结构化笔记和子代理是长任务的成熟设计选项，均有速度、保真和复杂度取舍。",
+          "locator": "page sections ‘Context retrieval and agentic search’ and ‘Context engineering for long-horizon tasks’, fetched-page lines 51-97"
+        }
+      ]
+    },
+    {
+      "slug": "s02-claude-code-prompt-caching",
+      "title": "Claude Code — How Claude Code uses prompt caching",
+      "url": "https://code.claude.com/docs/en/prompt-caching",
+      "original_url": "https://code.claude.com/docs/en/prompt-caching",
+      "status": "verified",
+      "summary_zh": "Claude Code 当前文档描述按前缀匹配的缓存、工具定义所在层和模型/effort/连接变更的产品行为；同时区分延迟工具目录变化与已加载到前缀的工具变化。",
+      "limits": "这是 Claude Code 及其后端/接入渠道的实现文档；模型、effort、网关和云渠道存在条件差异，不能外推为所有 API 的通则，也没有本地实测本题账单。",
+      "revisit_trigger": "Claude Code、模型、effort、MCP/插件加载策略、网关或云渠道变化时；引用具体缓存行为前复查。",
+      "purpose_tags": [
+        "GRAMMAR",
+        "SCALE"
+      ],
+      "card_path": "vault/provenance/ai-assessment-q123/cards/s02-claude-code-prompt-caching.md",
+      "accessed_at": "2026-09-23T11:28:57+08:00",
+      "snapshot_path": "vault/provenance/ai-assessment-q123/snapshots/claude-code-prompt-caching.html.txt",
+      "snapshot_sha256": "ac6dd3dcef47163a93ec07502b216c300769aca6606879439f90f50281c29ab8",
+      "snapshot_size_bytes": 552510,
+      "snapshot_source_url": "https://code.claude.com/docs/en/prompt-caching",
+      "snapshot_scope": "HTTP response body; dynamic docs assets not saved",
+      "historical_ref": [
+        "S02"
+      ],
+      "supported_claims": [
+        {
+          "id": "Q1-C03",
+          "claim": "模型每轮收到完整历史，新增内容通常追加在末尾；前缀任意变化会使其后的内容重新处理。",
+          "locator": "page sections ‘How the cache is organized’ and ‘Actions that invalidate the cache’, lines 55-80 and 100-113"
+        },
+        {
+          "id": "Q1-C04",
+          "claim": "Claude Code 文档单独列出 deferred 工具、MCP 连接/工具列表变化和 prefix-loaded tools 的不同缓存路径。",
+          "locator": "page navigation entries ‘Connecting or disconnecting an MCP server’, ‘Enabling or disabling a plugin’, ‘Plugins that provide MCP servers’; use current page section rather than historical Chat summary"
+        },
+        {
+          "id": "Q2-C01",
+          "claim": "effort 缓存行为是该产品的模型/渠道条件项：多数模型切 effort 会重读，而文档列出特定模型与 API key/订阅条件下的例外。",
+          "locator": "page section ‘Changing effort level’, lines 77-80 and 125-128"
+        }
+      ]
+    },
+    {
+      "slug": "s03-manus-context-engineering",
+      "title": "Manus — Context Engineering for AI Agents: Lessons from Building Manus",
+      "url": "https://manus.im/blog/Context-Engineering-for-AI-Agents-Lessons-from-Building-Manus",
+      "original_url": "https://manus.im/blog/Context-Engineering-for-AI-Agents-Lessons-from-Building-Manus",
+      "status": "partial",
+      "summary_zh": "Manus 的厂商工程文章作为历史对照，强调稳定前缀、外部文件状态、失败信息和任务重锚定；本轮保存页面 HTTP 正文以便主代理按原文复查。",
+      "limits": "厂商自述且建议会随产品和模型变化；不把其早期固定工具集合或性能叙述当作当前跨供应商机制。",
+      "revisit_trigger": "需要引用 Manus 的具体实现、版本或性能时；当前动态工具机制发生变化时重新核对。",
+      "purpose_tags": [
+        "GRAMMAR"
+      ],
+      "card_path": "vault/provenance/ai-assessment-q123/cards/s03-manus-context-engineering.md",
+      "accessed_at": "2026-09-23T11:28:57+08:00",
+      "snapshot_path": "vault/provenance/ai-assessment-q123/snapshots/manus-context-engineering.redacted-20260924.html.txt",
+      "snapshot_sha256": "fb6562c033798224bd323a7327ebc5579612ed8179a7f306e816f4be10a797a0",
+      "snapshot_size_bytes": 292046,
+      "snapshot_source_url": "https://manus.im/blog/Context-Engineering-for-AI-Agents-Lessons-from-Building-Manus",
+      "snapshot_scope": "HTTP response body; page assets not saved",
+      "historical_ref": [
+        "S03"
+      ],
+      "supported_claims": [
+        {
+          "id": "Q1-C05",
+          "claim": "该文章可作为稳定前缀、外部状态和失败保留的厂商经验对照，但不构成当前通用 API 约束。",
+          "locator": "snapshot HTML body; article headings/paragraphs describing stable prefixes, external state and failure handling; exact version not fixed"
+        }
+      ],
+      "snapshot_redaction": "2026-09-24：页面内预签名 S3 链接的 X-Amz-Credential 访问密钥 ID 与 X-Amz-Signature 已替换为 REDACTED；正文未改动。"
+    },
+    {
+      "slug": "s04-openai-reasoning",
+      "title": "OpenAI — Reasoning models",
+      "url": "https://developers.openai.com/api/docs/guides/reasoning",
+      "original_url": "https://developers.openai.com/api/docs/guides/reasoning",
+      "status": "verified",
+      "summary_zh": "官方文档将 reasoning effort 与任务类型、延迟/成本权衡关联，并确认不可见 reasoning tokens 会占用上下文、计入输出 token 和 usage；提供跨调用上下文与摘要的控制面。",
+      "limits": "effort 名称不是跨厂商同量单位；文档的建议仍需在目标任务、模型版本和服务渠道上测质量、延迟和成本。",
+      "revisit_trigger": "模型版本、reasoning effort/context、usage schema 或 API 计费规则变化时；接入前重新核对支持矩阵。",
+      "purpose_tags": [
+        "GRAMMAR",
+        "SCALE"
+      ],
+      "card_path": "vault/provenance/ai-assessment-q123/cards/s04-openai-reasoning.md",
+      "accessed_at": "2026-09-23T11:28:57+08:00",
+      "snapshot_path": "vault/provenance/ai-assessment-q123/snapshots/openai-reasoning.md.txt",
+      "snapshot_sha256": "93327c5eb19df7ecf8c0bd9d581f58052dee9f090c38bb48906110b08d0ce251",
+      "snapshot_size_bytes": 70315,
+      "snapshot_source_url": "https://developers.openai.com/api/docs/guides/reasoning.md",
+      "snapshot_scope": "official Markdown response body",
+      "historical_ref": [
+        "S04"
+      ],
+      "supported_claims": [
+        {
+          "id": "Q2-C01",
+          "claim": "effort 档位应按任务难度、可靠性、延迟和成本做实测路由，而不是把档位当作跨供应商相等计算量。",
+          "locator": "snapshot: openai-reasoning.md.txt, ‘Reasoning effort’ table, lines 186-210"
+        },
+        {
+          "id": "Q2-C02",
+          "claim": "reasoning tokens 对 API 不可见，但占用上下文并计入输出 token；usage 可观察 reasoning_tokens，达到限制可能在可见输出前就返回 incomplete。",
+          "locator": "snapshot: openai-reasoning.md.txt, ‘How reasoning works’, ‘Controlling costs’ and ‘Allocating space for reasoning’, lines 239-285"
+        },
+        {
+          "id": "Q2-C03",
+          "claim": "原始 reasoning 不对用户展示，可用摘要或验证过的证据/结果建立信任。",
+          "locator": "snapshot: openai-reasoning.md.txt, ‘Preserve reasoning across calls’ and ‘Reasoning summaries’, lines 500-524 and 1169-1171"
+        }
+      ]
+    },
+    {
+      "slug": "s05-anthropic-thinking-cost",
+      "title": "Anthropic — Steering thinking and cost",
+      "url": "https://platform.claude.com/docs/en/build-with-claude/thinking-steering-and-cost",
+      "original_url": "https://platform.claude.com/docs/en/build-with-claude/thinking-steering-and-cost",
+      "status": "verified",
+      "summary_zh": "Anthropic 文档说明 thinking/effort 可按请求和任务控制，长任务应观察推理、工具和上下文管理的总成本；本批将其作为节点预算与任务预算拆分的外部对照。",
+      "limits": "供应商 API 文档；不把单次 max_tokens、thinking 档位或其成本口径外推成完整 agent run 的预算上限。",
+      "revisit_trigger": "thinking、effort、context editing、prompt caching 或供应商计费文档变化时。",
+      "purpose_tags": [
+        "GRAMMAR",
+        "SCALE"
+      ],
+      "card_path": "vault/provenance/ai-assessment-q123/cards/s05-anthropic-thinking-cost.md",
+      "accessed_at": "2026-09-23T11:28:57+08:00",
+      "snapshot_path": "vault/provenance/ai-assessment-q123/snapshots/anthropic-thinking-cost.html.txt",
+      "snapshot_sha256": "a75bc84a97b8659daf6f9e5ff021e0408d75c09df7486d69a5a42352a12837e4",
+      "snapshot_size_bytes": 772516,
+      "snapshot_source_url": "https://platform.claude.com/docs/en/build-with-claude/thinking-steering-and-cost",
+      "snapshot_scope": "HTTP response body; dynamic docs assets not saved",
+      "historical_ref": [
+        "S05"
+      ],
+      "supported_claims": [
+        {
+          "id": "Q2-C04",
+          "claim": "thinking/effort 是节点级控制面，完整多步任务仍需在任务级累加调用、工具、等待和人工成本。",
+          "locator": "snapshot HTML body; page section ‘Steering thinking’ and linked cost/context guidance"
+        }
+      ]
+    },
+    {
+      "slug": "s06-openai-latency-optimization",
+      "title": "OpenAI — Latency optimization",
+      "url": "https://developers.openai.com/api/docs/guides/latency-optimization",
+      "original_url": "https://developers.openai.com/api/docs/guides/latency-optimization",
+      "status": "verified",
+      "summary_zh": "官方指南将延迟拆为 token 生成、输入、请求往返和串行依赖，建议减少输出和请求、并行独立步骤、对确定性工作使用硬编码/规则。",
+      "limits": "文档中的经验比例和原则不是本产品 p95、SLO 或价格；任何 0.1/1/10 秒等待目标仍需用户行为和真实链路验证。",
+      "revisit_trigger": "模型服务、网络区域、工具链或用户行为变化时；上线前按真实 p50/p95/p99 重测。",
+      "purpose_tags": [
+        "GRAMMAR",
+        "SCALE"
+      ],
+      "card_path": "vault/provenance/ai-assessment-q123/cards/s06-openai-latency-optimization.md",
+      "accessed_at": "2026-09-23T11:28:57+08:00",
+      "snapshot_path": "vault/provenance/ai-assessment-q123/snapshots/openai-latency-optimization.md.txt",
+      "snapshot_sha256": "1a57f7b85e4d6c43dc7f621a0a8e387cb7b452636cda2087f6e1f12a87c196e8",
+      "snapshot_size_bytes": 24037,
+      "snapshot_source_url": "https://developers.openai.com/api/docs/guides/latency-optimization.md",
+      "snapshot_scope": "official Markdown response body",
+      "historical_ref": [
+        "S06"
+      ],
+      "supported_claims": [
+        {
+          "id": "Q2-C05",
+          "claim": "输出生成通常是主要延迟项；独立步骤可并行；不必要的请求和模型调用应删除或改为确定性逻辑。",
+          "locator": "snapshot: openai-latency-optimization.md.txt, ‘Generate fewer tokens’, ‘Make fewer requests’, ‘Parallelize’, ‘Don’t default to an LLM’, lines 49-116"
+        }
+      ]
+    },
+    {
+      "slug": "s07-openai-computer-use",
+      "title": "OpenAI — Computer use",
+      "url": "https://developers.openai.com/api/docs/guides/tools-computer-use",
+      "original_url": "https://developers.openai.com/api/docs/guides/tools-computer-use",
+      "status": "verified",
+      "summary_zh": "官方 computer-use 指南要求隔离环境、站点/动作 allowlist、不信任屏幕和第三方文本、在具体副作用前确认、为敏感数据输入取得明确同意，并限制步数/时间/成本及核对实际结果。",
+      "limits": "指南是集成与安全控制建议，不证明目标桌面、浏览器、账号或企业权限已按这些要求实现；敏感输入、生产变更和邮件发送仍需目标系统验证。",
+      "revisit_trigger": "computer tool/code execution 版本、权限策略、敏感数据范围或桌面运行环境变化时；上线前做故障注入和人工接管演练。",
+      "purpose_tags": [
+        "GRAMMAR",
+        "SCALE"
+      ],
+      "card_path": "vault/provenance/ai-assessment-q123/cards/s07-openai-computer-use.md",
+      "accessed_at": "2026-09-23T11:28:57+08:00",
+      "snapshot_path": "vault/provenance/ai-assessment-q123/snapshots/openai-computer-use.md.txt",
+      "snapshot_sha256": "64643d08bd05af3207f4b05a822cc042dd9017849a2dd512500f3b612bc27679",
+      "snapshot_size_bytes": 25185,
+      "snapshot_source_url": "https://developers.openai.com/api/docs/guides/tools-computer-use.md",
+      "snapshot_scope": "official Markdown response body",
+      "historical_ref": [
+        "S07"
+      ],
+      "supported_claims": [
+        {
+          "id": "Q3-C01",
+          "claim": "computer-use 必须由集成方执行动作并返回屏幕/结果；运行应保持环境状态、支持取消并核验实际状态。",
+          "locator": "snapshot: openai-computer-use.md.txt, ‘Preserve state and return observations’, ‘Execute the requested actions’, ‘Return the screenshot’"
+        },
+        {
+          "id": "Q3-C02",
+          "claim": "安全边界包括隔离环境和 allowlist；屏幕或第三方内容不能授予权限；购买、传输、破坏性变更和敏感数据输入应在风险点确认。",
+          "locator": "snapshot: openai-computer-use.md.txt, ‘Run safely’, lines 626-648"
+        }
+      ]
+    },
+    {
+      "slug": "s08-openai-guardrails-approvals",
+      "title": "OpenAI — Guardrails and human review",
+      "url": "https://developers.openai.com/api/docs/guides/agents/guardrails-approvals",
+      "original_url": "https://developers.openai.com/api/docs/guides/agents/guardrails-approvals",
+      "status": "verified",
+      "summary_zh": "官方 Agents 指南把自动 guardrail 与人审拆开：敏感工具调用前可暂停，审批作为可恢复 interruption 保存 state；工具级检查贴近副作用，不能只依赖 agent 输入/最终输出检查。",
+      "limits": "SDK 状态模型不替代环境中的身份、网络、文件和项目隔离；仅文档确认 API 语义，未运行 approval、超时或恢复回放。",
+      "revisit_trigger": "Agents API/SDK interruption、guardrail scope、工具审批或序列化 state 变化时。",
+      "purpose_tags": [
+        "GRAMMAR",
+        "SCALE"
+      ],
+      "card_path": "vault/provenance/ai-assessment-q123/cards/s08-openai-guardrails-approvals.md",
+      "accessed_at": "2026-09-23T11:28:57+08:00",
+      "snapshot_path": "vault/provenance/ai-assessment-q123/snapshots/openai-guardrails-approvals.md.txt",
+      "snapshot_sha256": "9900845b3e016e66c90e44f5e92e1718841b7160eba15243b7f560f7dc8ba4d9",
+      "snapshot_size_bytes": 9476,
+      "snapshot_source_url": "https://developers.openai.com/api/docs/guides/agents/guardrails-approvals.md",
+      "snapshot_scope": "official Markdown response body",
+      "historical_ref": [
+        "S08"
+      ],
+      "supported_claims": [
+        {
+          "id": "Q3-C03",
+          "claim": "审批 interruption 应保存可恢复 state，审批后从同一 run 恢复，而不是开启新用户轮次；工具级 guardrail 才覆盖所附工具调用。",
+          "locator": "snapshot: openai-guardrails-approvals.md.txt, ‘Approval lifecycle’, ‘Workflow boundaries matter’, lines 203-220"
+        },
+        {
+          "id": "Q3-C04",
+          "claim": "在高风险工具实际执行前检查目标、动作、参数、身份和授权窗口；审查不可用时可 fail closed。",
+          "locator": "snapshot: openai-guardrails-approvals.md.txt, ‘Review cybersecurity actions before execution’, lines 224-248"
+        }
+      ]
+    },
+    {
+      "slug": "s09-anthropic-containment",
+      "title": "Anthropic — How we contain Claude across products",
+      "url": "https://www.anthropic.com/engineering/how-we-contain-claude",
+      "original_url": "https://www.anthropic.com/engineering/how-we-contain-claude",
+      "status": "verified",
+      "summary_zh": "Anthropic 的生产安全文章强调环境边界、网络出口和文件系统隔离，指出用户或项目文件也可能成为 prompt-injection 入口，并讨论审批疲劳与不同隔离级别。",
+      "limits": "厂商安全经验和披露案例，不是目标产品的独立安全审计；隔离不会自动使挂载目录内写入、账号、生产连接或凭证安全。",
+      "revisit_trigger": "沙箱/VM、凭证挂载、网络出口、项目配置加载或人工审批策略变化时；目标环境独立做权限和注入测试。",
+      "purpose_tags": [
+        "GRAMMAR",
+        "SCALE"
+      ],
+      "card_path": "vault/provenance/ai-assessment-q123/cards/s09-anthropic-containment.md",
+      "accessed_at": "2026-09-23T11:28:57+08:00",
+      "snapshot_path": "vault/provenance/ai-assessment-q123/snapshots/anthropic-containment.html.txt",
+      "snapshot_sha256": "4753ee2a1fede2116e07c706fb2836a460c8e198490adf4abd3266ded83f88a8",
+      "snapshot_size_bytes": 227262,
+      "snapshot_source_url": "https://www.anthropic.com/engineering/how-we-contain-claude",
+      "snapshot_scope": "HTTP response body; page assets not saved",
+      "historical_ref": [
+        "S09"
+      ],
+      "supported_claims": [
+        {
+          "id": "Q3-C05",
+          "claim": "不应把‘本地’或用户确认当作信任边界；项目配置和用户输入都可能携带注入，环境出口和文件边界是不可替代的控制。",
+          "locator": "page sections ‘Risk we missed: Everything before the trust dialog’ and ‘Risk we missed: The user as an injection vector’, fetched-page lines 62-76"
+        }
+      ]
+    },
+    {
+      "slug": "s10-aws-idempotent-apis",
+      "title": "AWS Builders’ Library — Making retries safe with idempotent APIs",
+      "url": "https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/",
+      "original_url": "https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/",
+      "status": "verified",
+      "summary_zh": "AWS 文章把安全重试建立在调用方唯一请求标识、服务端去重、语义等价响应和重复请求意图区分上；适合将 GUI/邮件未知结果分成核验与有界重试。",
+      "limits": "这是分布式 API 设计实践，不证明邮件 GUI、桌面点击或目标业务系统提供服务端幂等；客户端自造 ID 只能作为对账线索。",
+      "revisit_trigger": "目标发送/文件/配置接口公布幂等契约、回执查询或重试语义变化时；上线前注入超时和迟到请求。",
+      "purpose_tags": [
+        "GRAMMAR",
+        "SCALE"
+      ],
+      "card_path": "vault/provenance/ai-assessment-q123/cards/s10-aws-idempotent-apis.md",
+      "accessed_at": "2026-09-23T11:28:57+08:00",
+      "snapshot_path": "vault/provenance/ai-assessment-q123/snapshots/aws-idempotent-apis.html.txt",
+      "snapshot_sha256": "442067d55e9ee76d8429723aa1431ce655b2ebb35152460993bc0a9e05dce5b1",
+      "snapshot_size_bytes": 475656,
+      "snapshot_source_url": "https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/",
+      "snapshot_scope": "HTTP response body; page scripts/assets not saved",
+      "historical_ref": [
+        "S10"
+      ],
+      "supported_claims": [
+        {
+          "id": "Q3-C06",
+          "claim": "同一唯一请求标识可让服务端返回语义等价结果并安全支持默认重试；请求标识相同但意图/参数不同必须被区分。",
+          "locator": "page sections ‘Retries and semantic equivalence’, ‘Same client request ID, different intent’, fetched-page lines 275-332 and corresponding article sections"
+        }
+      ]
+    },
+    {
+      "slug": "s11-osworld-2",
+      "title": "OSWorld 2.0 — Benchmarking computer-use agents on long-horizon real-world tasks",
+      "url": "https://osworld-v2.xlang.ai/",
+      "original_url": "https://osworld-v2.xlang.ai/",
+      "status": "partial",
+      "summary_zh": "OSWorld 2.0 项目将长任务中的隐式状态、冲突消解、动态环境、主动澄清和时间/动作/成本与完成度放在轨迹层评估，并公开失败案例。",
+      "limits": "项目页面与 benchmark 结果不是生产安全认证；不能把榜单、任务完成或页面案例直接转成企业权限、正确性或安全保证。",
+      "revisit_trigger": "基准版本、任务集或评估协议变化时；将其作为测试设计参考而非上线门槛。",
+      "purpose_tags": [
+        "GRAMMAR",
+        "SCALE"
+      ],
+      "card_path": "vault/provenance/ai-assessment-q123/cards/s11-osworld-2.md",
+      "accessed_at": "2026-09-23T11:28:57+08:00",
+      "snapshot_path": "vault/provenance/ai-assessment-q123/snapshots/osworld-2.html.txt",
+      "snapshot_sha256": "0d30c0d8092c95437c15a4edbe743d64bc0257f07ee02ba74d13bc2fd48d2adf",
+      "snapshot_size_bytes": 88325,
+      "snapshot_source_url": "https://osworld-v2.xlang.ai/",
+      "snapshot_scope": "HTTP response body; benchmark assets not saved",
+      "historical_ref": [
+        "S11"
+      ],
+      "supported_claims": [
+        {
+          "id": "Q3-C07",
+          "claim": "长任务失败不仅来自单次点击，还涉及隐式状态、冲突信息、动态环境和未主动澄清；轨迹应检查状态和副作用。",
+          "locator": "page challenge table and ‘Task Horizon and Performance Collapse’/‘Agents Are Weak at Recovering and Maintaining Hidden State’, fetched-page lines 72-121"
+        },
+        {
+          "id": "Q3-C08",
+          "claim": "文件存在不等于内容正确，过程中的证据和最终业务状态必须分别验证。",
+          "locator": "page failure case ‘File Existence Replaces Geometric Validation’, fetched-page lines 257-265"
+        }
+      ]
+    },
+    {
+      "slug": "s27-openai-evaluation-best-practices",
+      "title": "OpenAI — Evaluation best practices",
+      "url": "https://developers.openai.com/api/docs/guides/evaluation-best-practices",
+      "original_url": "https://developers.openai.com/api/docs/guides/evaluation-best-practices",
+      "status": "verified",
+      "summary_zh": "官方评估指南要求按任务目标构建数据集、持续评估、覆盖多步工作流和边界输入，并把人工标签与模型评审的角色区分开。",
+      "limits": "方法指南不能给出 Q1—Q3 的业务阈值、真实 p95 或安全结论；示例分数不是本项目门槛。",
+      "revisit_trigger": "任务分布、模型/工具链或验收标准变化时；每次配置、模型或工具更新后重跑回归集。",
+      "purpose_tags": [
+        "GRAMMAR",
+        "SCALE"
+      ],
+      "card_path": "vault/provenance/ai-assessment-q123/cards/s27-openai-evaluation-best-practices.md",
+      "accessed_at": "2026-09-23T11:28:57+08:00",
+      "snapshot_path": "vault/provenance/ai-assessment-q123/snapshots/openai-evaluation-best-practices.md.txt",
+      "snapshot_sha256": "93aeca2e3b1fc3df153d004ed8227b48f2d6c55e3786c2fb33c6c0af6eb92164",
+      "snapshot_size_bytes": 23604,
+      "snapshot_source_url": "https://developers.openai.com/api/docs/guides/evaluation-best-practices.md",
+      "snapshot_scope": "official Markdown response body",
+      "historical_ref": [
+        "S27"
+      ],
+      "supported_claims": [
+        {
+          "id": "Q1-C06",
+          "claim": "长会话、复杂工作流和多代理应按对应架构评估，持续评估可捕获配置变化和非确定性。",
+          "locator": "snapshot: openai-evaluation-best-practices.md.txt, ‘Design your eval process’, ‘Identify where you need evals’, lines 53-61 and 181-355"
+        },
+        {
+          "id": "Q2-C06",
+          "claim": "评估应同时关注质量、延迟/成本相关指标和边界输入，不能依赖 vibe-based eval。",
+          "locator": "snapshot: openai-evaluation-best-practices.md.txt, ‘How to read evals’ and ‘Handle edge cases’, lines 30-50 and 442-480"
+        },
+        {
+          "id": "Q3-C09",
+          "claim": "computer-use 生产验收应保留真实任务、异常和边界数据的持续回归，并对模型评审与人工标签做一致性核验。",
+          "locator": "snapshot: openai-evaluation-best-practices.md.txt, ‘Create and combine different types of evaluators’ and ‘Continuously evaluate’, lines 399-440 and 53-61"
+        }
+      ]
+    },
+    {
+      "slug": "supp-openai-prompt-caching",
+      "title": "OpenAI — Prompt caching",
+      "url": "https://developers.openai.com/api/docs/guides/prompt-caching",
+      "original_url": "https://developers.openai.com/api/docs/guides/prompt-caching",
+      "status": "verified",
+      "summary_zh": "当前官方文档说明缓存匹配完整 rendered prefix，工具定义/顺序和部分设置会影响复用；工具可 append-only 追加，defer_loading 发现工具追加到上下文末尾，且可用 usage 和 diagnostics 测量实际命中。",
+      "limits": "缓存生命周期、模型支持、区域/路由和价格随模型与组织策略变化；文档确认不等于目标账户命中或成本收益已实测。",
+      "revisit_trigger": "模型族、cache mode、prompt_cache_options、tool loading 或定价/数据保留变化时；接入前重新读取当前文档。",
+      "purpose_tags": [
+        "GRAMMAR",
+        "SCALE"
+      ],
+      "card_path": "vault/provenance/ai-assessment-q123/cards/supp-openai-prompt-caching.md",
+      "accessed_at": "2026-09-23T11:28:57+08:00",
+      "snapshot_path": "vault/provenance/ai-assessment-q123/snapshots/openai-prompt-caching.md.txt",
+      "snapshot_sha256": "69680fbec38e31a7abc8b0e33a6582b0aae29687e8de98404789337a55b55e2e",
+      "snapshot_size_bytes": 47098,
+      "snapshot_source_url": "https://developers.openai.com/api/docs/guides/prompt-caching.md",
+      "snapshot_scope": "official Markdown response body",
+      "historical_ref": [],
+      "supported_claims": [
+        {
+          "id": "Q1-C07",
+          "claim": "缓存复用要求完整 rendered prefix 匹配；工具名、描述、schema 或顺序变化会影响后续前缀，但追加工具可保留旧前缀。",
+          "locator": "snapshot: openai-prompt-caching.md.txt, ‘Which settings affect the cached prefix’ and ‘Manage tools with append-only updates’, lines 45-63 and 361-371"
+        },
+        {
+          "id": "Q1-C08",
+          "claim": "应记录 cached_tokens、cache_write_tokens、输入 token、延迟和实现成本，并用 prompt cache diagnostics 解释 cache miss；不以工具数量直接推导账单。",
+          "locator": "snapshot: openai-prompt-caching.md.txt, ‘Monitor cache performance’ and ‘How caching works’, lines 553-649"
+        }
+      ]
+    },
+    {
+      "slug": "supp-openai-tool-search",
+      "title": "OpenAI — Tool search",
+      "url": "https://developers.openai.com/api/docs/guides/tools-tool-search",
+      "original_url": "https://developers.openai.com/api/docs/guides/tools-tool-search",
+      "status": "verified",
+      "summary_zh": "当前官方 Tool search 支持 hosted/client search、defer_loading、工具加载到上下文末尾和 additional_tools 指定位置注入；已加载集合的修改会破坏后续缓存，因此后续加载、撤回和授权仍需分开。",
+      "limits": "Tool search 的模型/API 支持和 Agents API/MCP 配置不同；动态加载不自动授予权限，也不证明目标 runtime 支持无中断 hot-swap。",
+      "revisit_trigger": "tool_search 支持模型、Agents API/MCP 接入、工具集合变更或缓存语义变化时；目标运行时做实际轨迹和授权测试。",
+      "purpose_tags": [
+        "GRAMMAR",
+        "SCALE"
+      ],
+      "card_path": "vault/provenance/ai-assessment-q123/cards/supp-openai-tool-search.md",
+      "accessed_at": "2026-09-23T11:28:57+08:00",
+      "snapshot_path": "vault/provenance/ai-assessment-q123/snapshots/openai-tool-search.md.txt",
+      "snapshot_sha256": "9d6c3855a4cb722a98fb364618a852fb436e9822a36fe9b54650f75bbc8d1fd8",
+      "snapshot_size_bytes": 39288,
+      "snapshot_source_url": "https://developers.openai.com/api/docs/guides/tools-tool-search.md",
+      "snapshot_scope": "official Markdown response body",
+      "historical_ref": [],
+      "supported_claims": [
+        {
+          "id": "Q1-C09",
+          "claim": "defer_loading 可让模型按需搜索/加载工具，发现工具会在上下文末尾注入以保留已有缓存；Discovery 仍有额外步骤，需要和任务完成率、输入 token、延迟比较。",
+          "locator": "snapshot: openai-tool-search.md.txt, lines 1-14, 860-868 and 1127-1134"
+        },
+        {
+          "id": "Q1-C10",
+          "claim": "additional_tools 可在会话特定位置追加工具；移除或改动已加载 tool_search_output 集合会从该位置起破坏缓存。",
+          "locator": "snapshot: openai-tool-search.md.txt, ‘Understand what gets loaded’, ‘Tool search and caching’, ‘Add tools at a specific point in the input’, lines 858-899"
+        }
+      ]
+    },
+    {
+      "slug": "supp-anthropic-tool-search",
+      "title": "Anthropic — Tool search tool",
+      "url": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-search-tool",
+      "original_url": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-search-tool",
+      "status": "verified",
+      "summary_zh": "Anthropic 当前 Tool search 允许为工具设置 defer_loading；客户端仍提交完整目录，但延迟工具不进入初始 system prompt，发现后用 tool_reference 展开并保持前缀缓存。",
+      "limits": "文档规定的是 Claude API 的工具搜索和 toolset 语义；它不证明所有 Claude Code/第三方网关/目标 runtime 相同，也不把发现视为执行授权。",
+      "revisit_trigger": "tool search/toolset 日期版本、MCP/Computer toolset 配置或 prompt caching 语义变化时。",
+      "purpose_tags": [
+        "GRAMMAR",
+        "SCALE"
+      ],
+      "card_path": "vault/provenance/ai-assessment-q123/cards/supp-anthropic-tool-search.md",
+      "accessed_at": "2026-09-23T11:28:57+08:00",
+      "snapshot_path": "vault/provenance/ai-assessment-q123/snapshots/anthropic-tool-search.html.txt",
+      "snapshot_sha256": "91815ee33a74fb318b47eb27073fcb155beecacd9febf8f85d7ced500c82b209",
+      "snapshot_size_bytes": 767649,
+      "snapshot_source_url": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-search-tool",
+      "snapshot_scope": "HTTP response body; dynamic docs assets not saved",
+      "historical_ref": [],
+      "supported_claims": [
+        {
+          "id": "Q1-C11",
+          "claim": "defer_loading 控制进入模型 context 的时机，不控制请求载荷：完整定义仍发给 API，只有发现后才进入上下文；tool_reference 会在会话内展开。",
+          "locator": "page section ‘Deferred tool loading’, fetched-page lines 213-240"
+        },
+        {
+          "id": "Q1-C12",
+          "claim": "Anthropic 文档建议少量常用工具保持非延迟，大目录才按需搜索；这说明延迟加载是条件性优化，不是通用教条。",
+          "locator": "page sections ‘When to use tool search’ and ‘Optimization tips’, current fetched page"
+        }
+      ]
+    },
+    {
+      "slug": "supp-mcp-2026-07-28",
+      "title": "Model Context Protocol — The 2026-07-28 Specification",
+      "url": "https://blog.modelcontextprotocol.io/posts/2026-07-28/",
+      "original_url": "https://blog.modelcontextprotocol.io/posts/2026-07-28/",
+      "status": "verified",
+      "summary_zh": "MCP 官方 2026-07-28 发布说明将协议核心改为无会话/可路由，并为 tools/list 结果提供 ttlMs/cacheScope；工具变更通知迁移到客户端主动订阅的 subscriptions/listen，支持更可控的目录缓存和刷新。",
+      "limits": "这是协议发布说明，不证明每个 agent、MCP server 或 SDK 已实现/协商该版本；Chat 中引用的 2025-11-25 listChanged 语句需要按目标连接版本重新核对。",
+      "revisit_trigger": "MCP 协议/SDK 升级、版本协商、工具目录缓存或 subscriptions/listen 实际支持变化时。",
+      "purpose_tags": [
+        "GRAMMAR",
+        "SCALE"
+      ],
+      "card_path": "vault/provenance/ai-assessment-q123/cards/supp-mcp-2026-07-28.md",
+      "accessed_at": "2026-09-23T11:28:57+08:00",
+      "snapshot_path": "vault/provenance/ai-assessment-q123/snapshots/mcp-2026-07-28.html.txt",
+      "snapshot_sha256": "9e3c347f359baa66725fffe8e88f348299905d236dea320cd8457e8c4619e520",
+      "snapshot_size_bytes": 133679,
+      "snapshot_source_url": "https://blog.modelcontextprotocol.io/posts/2026-07-28/",
+      "snapshot_scope": "HTTP response body; blog assets not saved",
+      "historical_ref": [],
+      "supported_claims": [
+        {
+          "id": "Q1-C13",
+          "claim": "MCP 2026-07-28 的 tools/list 等列表响应带 ttlMs/cacheScope，工具变化通知改为客户端主动打开 subscriptions/listen；这支持目录缓存/刷新，但不等同 agent 热插拔。",
+          "locator": "snapshot: mcp-2026-07-28.html.txt, ‘List results are cacheable’ and ‘Tasks/Deprecations’, fetched-page lines 59-77"
+        },
+        {
+          "id": "Q3-C10",
+          "claim": "新版本通过 MRTR 以 input_required 和 inputResponses 处理工具中途需要用户确认的流程；权限与版本协商仍由 host/client 执行。",
+          "locator": "snapshot: mcp-2026-07-28.html.txt, ‘Multi Round-Trip Requests’ and ‘Authorization’, fetched-page lines 55-71"
+        }
+      ]
+    }
+  ],
+  "chat_context": {
+    "conversation_id": "6ab33ace-e690-83ec-8acb-11e88d77f14f",
+    "archive_path": "vault/archive/chat/ai-capability-assessment-20260923.json",
+    "turn_id": "e7835cd0-51e3-481d-aad6-8115030f4dfd",
+    "message_item_id": "cac16eff-4ead-47d6-98fc-47897f9c1fc2",
+    "use": "context-only",
+    "note": "最后工具动态加载增量主张：工具发现、延迟加载、热插拔和调用时授权分层；新增/撤回成本按前缀与追加路径分支；MCP 版本与当前官方页面存在时效差异。原文仍只在 archive。"
+  },
+  "occurrences": []
+}
