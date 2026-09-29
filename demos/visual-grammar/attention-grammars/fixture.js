@@ -1,0 +1,53 @@
+window.VG_FIXTURE = {
+  "fixture_id": "vg-attention-001",
+  "revision": "20260929-r1",
+  "synthetic": true,
+  "note": "合成数据。状态与动作名取自 Courtwork app/core/attention.py（HEAD d44e0fc，本地读取与测试记录见 Vault 索引）：STATUSES investigating/needs_you/waiting/later/resolved；expected_revision、request_id 幂等与 record_signal 不授权的规则由本 demo 以最小 JS 重写。不是 Courtwork UI 录屏；RV26-FE03 仍为 blocked-by-dependencies 工单。",
+  "items": [
+    { "id": "att-A", "descriptor": "续签回函", "pos": [0.30, 0.34] },
+    { "id": "att-B", "descriptor": "发票核对", "pos": [0.70, 0.42] },
+    { "id": "att-C", "descriptor": "法务意见", "pos": [0.46, 0.72] }
+  ],
+  "actions": [
+    { "t": 4.0,  "item": "att-A", "action": "create", "request_id": "req-01", "expected_revision": 0, "sound": "create",
+      "payload": { "next_action": "等对方回函" }, "expect": "applied" },
+    { "t": 6.5,  "item": "att-B", "action": "create", "request_id": "req-02", "expected_revision": 0, "sound": "create",
+      "payload": { "next_action": "核对金额" }, "expect": "applied" },
+    { "t": 9.0,  "item": "att-C", "action": "create", "request_id": "req-03", "expected_revision": 0, "sound": "create",
+      "payload": { "next_action": "请法务出意见" }, "expect": "applied" },
+    { "t": 12.0, "item": "att-A", "action": "acknowledge", "request_id": "req-04", "expected_revision": 1, "sound": "tick",
+      "payload": {}, "expect": "applied" },
+    { "t": 15.0, "item": "att-A", "action": "set_waiting", "request_id": "req-05", "expected_revision": 2, "sound": "wait",
+      "payload": { "next_action": "10-02 前等回函", "due_at": "10-02" }, "expect": "applied" },
+    { "t": 18.0, "item": "att-B", "action": "snooze", "request_id": "req-06", "expected_revision": 1, "sound": "snooze",
+      "payload": { "next_action": "月底再核" }, "expect": "applied" },
+    { "t": 21.0, "item": "att-B", "action": "snooze", "request_id": "req-06", "expected_revision": 1, "sound": "replay",
+      "payload": { "next_action": "月底再核" }, "expect": "replayed" },
+    { "t": 24.0, "item": "att-B", "action": "snooze", "request_id": "req-06", "expected_revision": 1, "sound": "conflict",
+      "payload": { "next_action": "下周再核" }, "expect": "IDEMPOTENCY_CONFLICT" },
+    { "t": 27.0, "item": "att-A", "action": "record_signal", "request_id": "sig-01", "expected_revision": 3, "sound": "silent", "actor": "runtime",
+      "payload": { "attempt_status": "resolved" }, "expect": "applied" },
+    { "t": 30.0, "item": "att-C", "action": "resolve", "request_id": "req-08", "expected_revision": 1, "sound": "resolve",
+      "payload": {}, "expect": "applied" },
+    { "t": 33.0, "item": "att-C", "action": "snooze", "request_id": "req-09", "expected_revision": 2, "sound": "conflict",
+      "payload": { "next_action": "下周再看" }, "expect": "INVALID_TRANSITION" },
+    { "t": 36.0, "item": "att-C", "action": "reopen", "request_id": "req-10", "expected_revision": 2, "sound": "bell",
+      "payload": { "status": "needs_you", "next_action": "补充意见需你确认" }, "expect": "applied" },
+    { "t": 39.0, "item": "att-A", "action": "resume", "request_id": "req-11", "expected_revision": 3, "sound": "conflict",
+      "payload": { "status": "needs_you", "next_action": "回函已到，需你判断" }, "expect": "VERSION_CONFLICT" },
+    { "t": 39.06, "item": "att-A", "action": "resume", "request_id": "req-12", "expected_revision": 4, "sound": "resume",
+      "payload": { "status": "needs_you", "next_action": "回函已到，需你判断" }, "expect": "applied" },
+    { "t": 43.0, "item": "att-A", "action": "resolve", "request_id": "req-13", "expected_revision": 5, "sound": "resolve",
+      "payload": {}, "expect": "applied" },
+    { "t": 46.0, "item": "att-B", "action": "resume", "request_id": "req-14", "expected_revision": 2, "sound": "resume",
+      "payload": { "status": "investigating", "next_action": "重新核对金额" }, "expect": "applied" }
+  ],
+  "expected": {
+    "final": { "att-A": "resolved", "att-B": "investigating", "att-C": "needs_you" },
+    "revisions": { "att-A": 6, "att-B": 3, "att-C": 3 },
+    "att-A_freshness_after_signal": "unknown",
+    "signal_changed_status": false,
+    "open_items_at_end": 2,
+    "audio_detect_expect_missed": ["sig-01", "req-12"]
+  }
+};

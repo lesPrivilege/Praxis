@@ -1,0 +1,259 @@
+{
+ "work": "attention-grammars",
+ "git_head": "17d44bd397bbfa2914c6ddeec4027192dfa433a5",
+ "checked_at": "2026-09-29T20:41:10+0800",
+ "fixture": {
+  "fixture_id": "vg-attention-001",
+  "fixture_revision": "20260929-r1"
+ },
+ "gl_renderer": "ANGLE (Apple, ANGLE Metal Renderer: Apple M2, Unspecified Version)",
+ "self_test": {
+  "pass": true,
+  "checks": [
+   {
+    "name": "req-01@4",
+    "got": "applied",
+    "want": "applied",
+    "pass": true
+   },
+   {
+    "name": "req-02@6.5",
+    "got": "applied",
+    "want": "applied",
+    "pass": true
+   },
+   {
+    "name": "req-03@9",
+    "got": "applied",
+    "want": "applied",
+    "pass": true
+   },
+   {
+    "name": "req-04@12",
+    "got": "applied",
+    "want": "applied",
+    "pass": true
+   },
+   {
+    "name": "req-05@15",
+    "got": "applied",
+    "want": "applied",
+    "pass": true
+   },
+   {
+    "name": "req-06@18",
+    "got": "applied",
+    "want": "applied",
+    "pass": true
+   },
+   {
+    "name": "req-06@21",
+    "got": "replayed",
+    "want": "replayed",
+    "pass": true
+   },
+   {
+    "name": "req-06@24",
+    "got": "IDEMPOTENCY_CONFLICT",
+    "want": "IDEMPOTENCY_CONFLICT",
+    "pass": true
+   },
+   {
+    "name": "sig-01@27",
+    "got": "applied",
+    "want": "applied",
+    "pass": true
+   },
+   {
+    "name": "req-08@30",
+    "got": "applied",
+    "want": "applied",
+    "pass": true
+   },
+   {
+    "name": "req-09@33",
+    "got": "INVALID_TRANSITION",
+    "want": "INVALID_TRANSITION",
+    "pass": true
+   },
+   {
+    "name": "req-10@36",
+    "got": "applied",
+    "want": "applied",
+    "pass": true
+   },
+   {
+    "name": "req-11@39",
+    "got": "VERSION_CONFLICT",
+    "want": "VERSION_CONFLICT",
+    "pass": true
+   },
+   {
+    "name": "req-12@39.06",
+    "got": "applied",
+    "want": "applied",
+    "pass": true
+   },
+   {
+    "name": "req-13@43",
+    "got": "applied",
+    "want": "applied",
+    "pass": true
+   },
+   {
+    "name": "req-14@46",
+    "got": "applied",
+    "want": "applied",
+    "pass": true
+   },
+   {
+    "name": "final",
+    "got": {
+     "att-A": "resolved",
+     "att-B": "investigating",
+     "att-C": "needs_you"
+    },
+    "want": {
+     "att-A": "resolved",
+     "att-B": "investigating",
+     "att-C": "needs_you"
+    },
+    "pass": true
+   },
+   {
+    "name": "revisions",
+    "got": {
+     "att-A": 6,
+     "att-B": 3,
+     "att-C": 3
+    },
+    "want": {
+     "att-A": 6,
+     "att-B": 3,
+     "att-C": 3
+    },
+    "pass": true
+   },
+   {
+    "name": "att-A_freshness_after_signal",
+    "got": "unknown",
+    "want": "unknown",
+    "pass": true
+   },
+   {
+    "name": "signal_changed_status",
+    "got": false,
+    "want": false,
+    "pass": true
+   },
+   {
+    "name": "open_items_at_end",
+    "got": 2,
+    "want": 2,
+    "pass": true
+   },
+   {
+    "name": "audio_detect_missed",
+    "got": [
+     "sig-01",
+     "req-12"
+    ],
+    "want": [
+     "sig-01",
+     "req-12"
+    ],
+    "pass": true
+   }
+  ]
+ },
+ "seek_consistency": {
+  "times": 33,
+  "orders": 3,
+  "mismatched_times": [],
+  "pass": true
+ },
+ "interactive_play": {
+  "advanced_to_s": 1.2,
+  "pass": true
+ },
+ "transcript_samples": {
+  "2.00": "合成演示 vg-attention-001：同一组 Attention 动作，同时用三种语法呈现，分别是排印账本、空间轨道和着色器光场。底部是声音时间线。",
+  "10.00": "三条线索被创建，进入 investigating。",
+  "13.50": "att-A 被确认看过：acknowledge 只改 seen，不改状态。",
+  "16.50": "att-A 转入 waiting，记下“10-02 前等回函”。next_action 是记录的后续描述，不是定时器，也不是核心义务。",
+  "21.80": "同一 request_id 以相同内容重放：复用原回执，不产生新事件，revision 不变。",
+  "24.80": "同一 request_id 换了内容：IDEMPOTENCY_CONFLICT，拒收。",
+  "28.00": "运行时信号试图把 att-A 标为已处理：record_signal 只能把 freshness 设为 unknown，不能改状态。这个动作没有声音，声音分析也检不出它。",
+  "33.80": "对已处理的事项暂缓：INVALID_TRANSITION，resolved 需要先 reopen。",
+  "37.50": "att-C 重新打开，转为 needs_you：需要你判断。",
+  "39.80": "att-A 以过期 revision 恢复：VERSION_CONFLICT；60 毫秒后按最新 revision 重试成功。两声靠得太近，检测只找到一个起点。",
+  "44.00": "att-A 处理完毕。",
+  "52.00": "声音时间线：14 个作者事件被检出，2 个漏检，3 个误检。光场只听声音，所以它也漏掉了那条信号。"
+ },
+ "console_errors": [],
+ "static_param": {
+  "plates": 12,
+  "expected": 12,
+  "static_visible": true,
+  "horizontal_overflow_390px": false,
+  "pass": true
+ },
+ "reduced_motion": {
+  "plates": 12,
+  "expected": 12,
+  "static_visible": true,
+  "horizontal_overflow_390px": false,
+  "pass": true
+ },
+ "audio_sync": {
+  "decoder": "Chromium decodeAudioData",
+  "decoded_seconds": 56.014,
+  "source_seconds": 56.0,
+  "offset_ms": 0.0,
+  "correlation": 1.0,
+  "pass": true
+ },
+ "video_decode": {
+  "decoder": "OpenCV 5.0.0",
+  "frames_decoded": 1681,
+  "frames_expected": 1681,
+  "psnr_vs_fresh_render_db": {
+   "2.00": 42.97,
+   "10.00": 42.95,
+   "13.50": 42.31,
+   "16.50": 42.38,
+   "21.80": 42.4,
+   "24.80": 42.43,
+   "28.00": 43.13,
+   "33.80": 41.96,
+   "37.50": 41.67,
+   "39.80": 40.95,
+   "44.00": 42.65,
+   "52.00": 42.46
+  },
+  "pass": true
+ },
+ "contact_sheet": "renders/contact-sheet.png (decoded video frames, every 4 s)",
+ "browser_playback": {
+  "ended": true,
+  "duration": 56.033333,
+  "width": 1920,
+  "height": 1080,
+  "audio_bytes_decoded": 320659,
+  "video_bytes_decoded": 42074354,
+  "wall_s": 14.358099999964237,
+  "playback_rate": 4,
+  "pass": true
+ },
+ "summary": {
+  "self_test": true,
+  "seek_consistency": true,
+  "interactive_play": true,
+  "static_param": true,
+  "reduced_motion": true,
+  "video_decode": true,
+  "browser_playback": true,
+  "audio_sync": true,
+  "console_errors": 0
+ }
+}

@@ -1,0 +1,161 @@
+{
+ "work": "event-state-context",
+ "git_head": "17d44bd397bbfa2914c6ddeec4027192dfa433a5",
+ "checked_at": "2026-09-29T20:39:54+0800",
+ "fixture": {
+  "fixture_id": "vg-esc-001",
+  "fixture_revision": "20260929-r1"
+ },
+ "gl_renderer": "ANGLE (Apple, ANGLE Metal Renderer: Apple M2, Unspecified Version)",
+ "self_test": {
+  "pass": true,
+  "checks": [
+   {
+    "name": "log_length",
+    "got": 6,
+    "want": 6,
+    "pass": true
+   },
+   {
+    "name": "replay_appended",
+    "got": false,
+    "want": false,
+    "pass": true
+   },
+   {
+    "name": "final_state_version",
+    "got": 3,
+    "want": 3,
+    "pass": true
+   },
+   {
+    "name": "final_state",
+    "got": {
+     "counterparty": "澄川科技",
+     "term": "24 个月",
+     "payment": "按月",
+     "status": "审阅中"
+    },
+    "want": {
+     "counterparty": "澄川科技",
+     "term": "24 个月",
+     "payment": "按月",
+     "status": "审阅中"
+    },
+    "pass": true
+   },
+   {
+    "name": "rejected_candidate_in_state",
+    "got": false,
+    "want": false,
+    "pass": true
+   },
+   {
+    "name": "rejected_event_in_log",
+    "got": true,
+    "want": true,
+    "pass": true
+   },
+   {
+    "name": "ctx-A_current_at_end",
+    "got": false,
+    "want": false,
+    "pass": true
+   },
+   {
+    "name": "ctx-B_current_at_end",
+    "got": true,
+    "want": true,
+    "pass": true
+   },
+   {
+    "name": "term_in_state_while_excluded_from_ctx-B",
+    "got": true,
+    "want": true,
+    "pass": true
+   }
+  ]
+ },
+ "seek_consistency": {
+  "times": 33,
+  "orders": 3,
+  "mismatched_times": [],
+  "pass": true
+ },
+ "interactive_play": {
+  "advanced_to_s": 1.2,
+  "pass": true
+ },
+ "transcript_samples": {
+  "3.00": "合成演示 vg-esc-001：一份合同续签事项。下层记录发生过什么，中层是当前生效的事实，上层是某次模型调用看到的材料。",
+  "9.50": "evt-001 登记事项。已生效的事件进入日志，状态据此形成 v1。",
+  "13.00": "evt-002 是模型提议：期限改为 24 个月。提议进入日志；在状态中只是待审候选，尚未生效。",
+  "17.00": "evt-003 人工批准该候选。批准本身也是一条事件，状态随之更新为 v2。",
+  "24.00": "evt-005 人工拒绝，理由留档。被拒的提议仍在日志中，从未进入状态。",
+  "31.00": "上下文 ctx-A 为“起草续签邮件”从状态 v2 选入对方与期限，付款与状态未选入。它是一次投影，不是事实本身。",
+  "38.00": "evt-006 人工修正：附件 v3 更正付款为按月。状态更新为 v3。",
+  "41.50": "ctx-A 仍基于 v2：basis.current = false。过期只说明输入不再适用，既不是批准也不是拒绝；决定入口暂停，需重新编译。",
+  "45.50": "evt-003 被重放。事件 ID 已存在，日志不新增，状态不变：重放不凭空产生新事实。",
+  "51.50": "ctx-B 为“复核付款条款”基于 v3 选入付款与附件 v3 证据；期限未选入。",
+  "55.00": "未选入不等于已删除：期限 24 个月仍在当前状态中。",
+  "61.50": "事件追加，不改写；状态只随已生效事件变化；上下文按任务选择，可以过期，也可以不选，但不删除事实。"
+ },
+ "console_errors": [],
+ "static_param": {
+  "plates": 12,
+  "expected": 12,
+  "static_visible": true,
+  "horizontal_overflow_390px": false,
+  "pass": true
+ },
+ "reduced_motion": {
+  "plates": 12,
+  "expected": 12,
+  "static_visible": true,
+  "horizontal_overflow_390px": false,
+  "pass": true
+ },
+ "video_decode": {
+  "decoder": "OpenCV 5.0.0",
+  "frames_decoded": 1921,
+  "frames_expected": 1921,
+  "psnr_vs_fresh_render_db": {
+   "3.00": 41.44,
+   "9.50": 40.97,
+   "13.00": 41.15,
+   "17.00": 40.33,
+   "24.00": 40.12,
+   "31.00": 41.67,
+   "38.00": 39.63,
+   "41.50": 41.61,
+   "45.50": 38.83,
+   "51.50": 41.54,
+   "55.00": 40.2,
+   "61.50": 40.49
+  },
+  "pass": true
+ },
+ "contact_sheet": "renders/contact-sheet.png (decoded video frames, every 4 s)",
+ "browser_playback": {
+  "ended": true,
+  "duration": 64.033333,
+  "width": 1920,
+  "height": 1080,
+  "audio_bytes_decoded": 0,
+  "video_bytes_decoded": 33211596,
+  "wall_s": 16.0415,
+  "playback_rate": 4,
+  "pass": true
+ },
+ "summary": {
+  "self_test": true,
+  "seek_consistency": true,
+  "interactive_play": true,
+  "static_param": true,
+  "reduced_motion": true,
+  "video_decode": true,
+  "browser_playback": true,
+  "audio_sync": null,
+  "console_errors": 0
+ }
+}

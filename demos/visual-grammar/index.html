@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>视觉语法工场</title>
+<link rel="stylesheet" href="_runtime/vg-stage.css">
+<style>
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 36px 16px 64px; }
+  h1 { font-size: clamp(24px, 3.4vw, 36px); font-weight: 600; margin: 4px 0 10px; }
+  .lede { color: var(--ink-2); line-height: 1.7; max-width: 60em; margin: 0 0 28px; }
+  .work { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 24px; padding: 26px 0; border-top: 1px solid var(--line); }
+  .work img { width: 100%; display: block; border: 1px solid var(--line); border-radius: 6px; }
+  .work h2 { font-size: 22px; font-weight: 600; margin: 2px 0 8px; }
+  .work p { color: var(--ink-2); line-height: 1.7; margin: 0 0 12px; font-size: 15px; }
+  .meta { font: 12px/1.6 var(--mono); color: var(--ink-3); }
+  .links { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+  .links a { font-size: 14px; color: var(--ink); text-decoration: none; border: 1px solid var(--line); border-radius: 4px; padding: 7px 12px; background: var(--panel); }
+  .links a:first-child { border-color: var(--accent); color: var(--accent); }
+  .links a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  footer { margin-top: 24px; font-size: 13px; color: var(--ink-3); line-height: 1.7; border-top: 1px solid var(--line); padding-top: 14px; }
+  footer a { color: var(--ink-2); }
+  @media (max-width: 760px) { .work { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<main class="wrap">
+  <p class="vg-kicker">Praxis · demos/visual-grammar · 2026-09-29</p>
+  <h1>视觉语法工场</h1>
+  <p class="lede">前三件用合成 fixture 表达本地项目的语义，第四件只探索形式。全部以本地 Canvas/WebGL 运行，可暂停、逐帧 seek，也可切换为静态分镜；每件都导出了可解码的 WebM，有声音的作品带 Opus 音轨。画面中的语义由页面内的函数算出，不是产品录屏。</p>
+
+  <section class="work">
+    <a href="event-state-context/index.html"><img src="event-state-context/renders/keyframes/t041.50.png" alt="事件·状态·上下文：上下文 ctx-A 在状态更新后显示 basis.current = false"></a>
+    <div>
+      <p class="meta">VG-01 · 64 s · 透视镜头 · Canvas 2D</p>
+      <h2>同一件事，三种存在：事件 · 状态 · 上下文</h2>
+      <p>日志只追加，状态只随已生效事件变化，上下文按任务选择。拒绝仍留在日志中，修正使旧上下文过期，重放不新增事件，未选入不等于删除。</p>
+      <div class="links"><a href="event-state-context/index.html">打开作品</a><a href="event-state-context/index.html?static=1">静态分镜</a><a href="event-state-context/renders/event-state-context.webm">视频</a><a href="event-state-context/README.md">施工回执</a></div>
+    </div>
+  </section>
+
+  <section class="work">
+    <a href="schema-gate/index.html"><img src="schema-gate/renders/keyframes/t046.40.png" alt="Schema 闸门：候选在版本闸门被拒收，STATE_VERSION_CONFLICT"></a>
+    <div>
+      <p class="meta">VG-03 · 83 s · 动态排印 · 预计算物理</p>
+      <h2>Schema 闸门：意义成为可检查的对象</h2>
+      <p>四份候选依次经过结构、证据、版本、权限四道闸门。三份在可定位的位置被拒收并保留，一份经人工批准后提交，随后同一状态生成三种投影。</p>
+      <div class="links"><a href="schema-gate/index.html">打开作品</a><a href="schema-gate/index.html?static=1">静态分镜</a><a href="schema-gate/renders/schema-gate.webm">视频</a><a href="schema-gate/README.md">施工回执</a></div>
+    </div>
+  </section>
+
+  <section class="work">
+    <a href="attention-grammars/index.html"><img src="attention-grammars/renders/keyframes/t039.80.png" alt="注意力的三种语法：账本、轨道、光场与声音时间线"></a>
+    <div>
+      <p class="meta">VG-02 · VG-05 · VG-06 · 56 s · 着色器 · 声音分析</p>
+      <h2>注意力的三种语法：排印 · 空间 · 光与声</h2>
+      <p>同一组 Attention 动作同时以账本、轨道和光场呈现。光场只读取从音轨中检出的起点，所以静默信号与相隔 60 毫秒的第二声都会漏检。</p>
+      <div class="links"><a href="attention-grammars/index.html">打开作品</a><a href="attention-grammars/index.html?static=1">静态分镜</a><a href="attention-grammars/renders/attention-grammars.webm">视频（含音轨）</a><a href="attention-grammars/README.md">施工回执</a></div>
+    </div>
+  </section>
+
+  <section class="work">
+    <a href="form-lab-01/index.html"><img src="form-lab-01/renders/keyframes/t038.50.png" alt="形式实验 01：文字环沿对数螺旋无限嵌套"></a>
+    <div>
+      <p class="meta">形式优先 · 64 s · 120 BPM · WebGL2 · 占位数据</p>
+      <h2>形式实验 01：七种画法，一条节拍</h2>
+      <p>同一条合成音轨切出七种画法：16 万粒子的排印与点云、距离场柱廊、Droste 无限缩放、slit-scan 时间切片、流场光丝，最后塌缩为一点。词语只是占位。</p>
+      <div class="links"><a href="form-lab-01/index.html">打开作品</a><a href="form-lab-01/index.html?static=1">静态分镜</a><a href="form-lab-01/renders/form-lab-01.webm">视频（含音轨）</a><a href="form-lab-01/README.md">施工回执</a></div>
+    </div>
+  </section>
+
+  <footer>运行层与流水线：<a href="_runtime/README.md">_runtime</a> · <a href="_pipeline/README.md">_pipeline</a> · <a href="observations.md">grammar 观察</a> · <a href="README.md">工场说明</a>。视频由浏览器 WebCodecs 编码为 VP9 + Opus；视频与音轨不进 git，先运行各作品的音频脚本与 <code>_pipeline/vgpipe.py render</code> 在本地生成。尚未做受众测试。</footer>
+</main>
+</body>
+</html>

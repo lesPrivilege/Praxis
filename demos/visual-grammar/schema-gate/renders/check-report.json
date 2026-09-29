@@ -1,0 +1,229 @@
+{
+ "work": "schema-gate",
+ "git_head": "17d44bd397bbfa2914c6ddeec4027192dfa433a5",
+ "checked_at": "2026-09-29T20:40:28+0800",
+ "fixture": {
+  "fixture_id": "vg-schema-gate-001",
+  "fixture_revision": "20260929-r1"
+ },
+ "gl_renderer": "ANGLE (Apple, ANGLE Metal Renderer: Apple M2, Unspecified Version)",
+ "self_test": {
+  "pass": true,
+  "checks": [
+   {
+    "name": "cand-11.result",
+    "got": "rejected",
+    "want": "rejected",
+    "pass": true
+   },
+   {
+    "name": "cand-11.gate",
+    "got": "shape",
+    "want": "shape",
+    "pass": true
+   },
+   {
+    "name": "cand-11.reason_code",
+    "got": "TYPE_MISMATCH",
+    "want": "TYPE_MISMATCH",
+    "pass": true
+   },
+   {
+    "name": "cand-12.result",
+    "got": "rejected",
+    "want": "rejected",
+    "pass": true
+   },
+   {
+    "name": "cand-12.gate",
+    "got": "evidence",
+    "want": "evidence",
+    "pass": true
+   },
+   {
+    "name": "cand-12.reason_code",
+    "got": "EVIDENCE_REQUIRED",
+    "want": "EVIDENCE_REQUIRED",
+    "pass": true
+   },
+   {
+    "name": "cand-13.result",
+    "got": "rejected",
+    "want": "rejected",
+    "pass": true
+   },
+   {
+    "name": "cand-13.gate",
+    "got": "version",
+    "want": "version",
+    "pass": true
+   },
+   {
+    "name": "cand-13.reason_code",
+    "got": "STATE_VERSION_CONFLICT",
+    "want": "STATE_VERSION_CONFLICT",
+    "pass": true
+   },
+   {
+    "name": "cand-14.result",
+    "got": "committed",
+    "want": "committed",
+    "pass": true
+   },
+   {
+    "name": "cand-14.gate",
+    "got": null,
+    "want": null,
+    "pass": true
+   },
+   {
+    "name": "cand-14.reason_code",
+    "got": null,
+    "want": null,
+    "pass": true
+   },
+   {
+    "name": "final_state_version",
+    "got": 4,
+    "want": 4,
+    "pass": true
+   },
+   {
+    "name": "final_term_months",
+    "got": 24,
+    "want": 24,
+    "pass": true
+   },
+   {
+    "name": "committed_events",
+    "got": [
+     "evt-007"
+    ],
+    "want": [
+     "evt-007"
+    ],
+    "pass": true
+   },
+   {
+    "name": "retained_candidates",
+    "got": [
+     "cand-11",
+     "cand-12",
+     "cand-13"
+    ],
+    "want": [
+     "cand-11",
+     "cand-12",
+     "cand-13"
+    ],
+    "pass": true
+   },
+   {
+    "name": "state_unchanged_after_rejections",
+    "got": true,
+    "want": true,
+    "pass": true
+   },
+   {
+    "name": "projection_identity",
+    "got": "M-0417@v4",
+    "want": "M-0417@v4",
+    "pass": true
+   },
+   {
+    "name": "stale_hit_promoted",
+    "got": false,
+    "want": false,
+    "pass": true
+   },
+   {
+    "name": "decision_not_before_arrival",
+    "got": true,
+    "want": true,
+    "pass": true
+   }
+  ]
+ },
+ "seek_consistency": {
+  "times": 31,
+  "orders": 3,
+  "mismatched_times": [],
+  "pass": true
+ },
+ "interactive_play": {
+  "advanced_to_s": 1.2,
+  "pass": true
+ },
+ "transcript_samples": {
+  "3.00": "合成演示 vg-schema-gate-001：四份候选依次经过同一份工作合同 C-renewal v2 的四道检查。当前状态 M-0417 · v3。",
+  "8.00": "cand-11 提议把期限改为“三年”。先读原文，再把它压缩成一个候选送去检查。",
+  "11.80": "结构检查：term_months 应为 1–60 的整数，收到字符串“三年”。TYPE_MISMATCH；候选被弹回保留区，状态不变。",
+  "15.70": "结构检查：term_months 应为 1–60 的整数，收到字符串“三年”。TYPE_MISMATCH；候选被弹回保留区，状态不变。",
+  "29.10": "证据检查：evidence 为空。EVIDENCE_REQUIRED：形式正确不等于有依据。",
+  "38.30": "cand-13 提议 24 个月并附证据，但它是基于状态 v2 起草的。",
+  "46.40": "版本检查：期望 v2，当前 v3。STATE_VERSION_CONFLICT：候选保留，待重载当前状态后重验；没有提交事件，状态不变。",
+  "63.10": "三道自动检查通过。验证通过不等于批准：提交还需要 reviewer 的人工决定。",
+  "63.80": "reviewer 林 批准。提交事件 evt-007 写入，状态更新为 v4。",
+  "65.90": "reviewer 林 批准。提交事件 evt-007 写入，状态更新为 v4。",
+  "69.70": "同一状态 v4 生成三种投影：模型上下文、审阅包、检索索引。披露范围不同，对象身份与版本一致。",
+  "74.70": "检索索引中的 v3 旧值仍可命中，但标为已取代，不提升为当前事实；视图重建不回写状态。"
+ },
+ "console_errors": [],
+ "static_param": {
+  "plates": 12,
+  "expected": 12,
+  "static_visible": true,
+  "horizontal_overflow_390px": false,
+  "pass": true
+ },
+ "reduced_motion": {
+  "plates": 12,
+  "expected": 12,
+  "static_visible": true,
+  "horizontal_overflow_390px": false,
+  "pass": true
+ },
+ "video_decode": {
+  "decoder": "OpenCV 5.0.0",
+  "frames_decoded": 2491,
+  "frames_expected": 2491,
+  "psnr_vs_fresh_render_db": {
+   "3.00": 40.63,
+   "8.00": 40.33,
+   "11.80": 40.28,
+   "15.70": 40.31,
+   "29.10": 40.34,
+   "38.30": 40.41,
+   "46.40": 40.31,
+   "63.10": 40.33,
+   "63.80": 38.87,
+   "65.90": 38.75,
+   "69.70": 40.14,
+   "74.70": 40.14
+  },
+  "pass": true
+ },
+ "contact_sheet": "renders/contact-sheet.png (decoded video frames, every 4 s)",
+ "browser_playback": {
+  "ended": true,
+  "duration": 83.033333,
+  "width": 1920,
+  "height": 1080,
+  "audio_bytes_decoded": 0,
+  "video_bytes_decoded": 11993925,
+  "wall_s": 20.7965,
+  "playback_rate": 4,
+  "pass": true
+ },
+ "summary": {
+  "self_test": true,
+  "seek_consistency": true,
+  "interactive_play": true,
+  "static_param": true,
+  "reduced_motion": true,
+  "video_decode": true,
+  "browser_playback": true,
+  "audio_sync": null,
+  "console_errors": 0
+ }
+}
