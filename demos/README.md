@@ -1,6 +1,6 @@
 # 演示实现
 
-当前无可运行 demo。创建实现前完成 [场景契约](../scenarios/_template/README.md)，按 [工程蓝图](../templates/demo/README.md) 选择必要目录。
+此入口的原基线未登记可运行 demo；本轮新增的合成消费小样见下方，视觉语法目录的接收状态由其作者回执负责。创建实现前完成 [场景契约](../scenarios/_template/README.md)，按 [工程蓝图](../templates/demo/README.md) 选择必要目录。
 
 ## 准入与交付
 
@@ -15,3 +15,5 @@
 真实客户交付进入独立项目；原始资料和敏感反向映射留在受控 Source Vault。demo 禁止通过软链接、绝对路径或 live query 读取真实企业资料。具体分区见 [ADR-006](../docs/decisions/006-demo-project-vault.md)。
 
 本仓库 demo 使用普通子目录。需要独立历史时另建仓库并登记关系；Git worktree 放在仓库外，禁止以嵌套 `.git` 给 demo 子目录附加历史。
+
+合成消费小样：[退款复核、材料职责与 XMind 往返门槛](consumption-sample/README.md)。四例断言可本地运行；不代表真实业务或模型验收。
