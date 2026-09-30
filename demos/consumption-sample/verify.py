@@ -2,10 +2,11 @@
 import json
 from pathlib import Path
 def judge(case):
-    if case.get("state") == "approved":
-        return "already_decided"
+    # A material source revision change invalidates reliance on prior approval.
     if case["revision"] != 1:
         return "revalidate"
+    if case.get("state") == "approved":
+        return "already_decided"
     if not case["paid"] or not case["returned"]:
         return "needs_evidence"
     return "ready_for_review"
@@ -14,4 +15,4 @@ for case in cases:
     result = judge(case)
     assert result == case["expected"], (case["id"], result)
     assert result != "approved"
-print("PASS: 4 synthetic cases; no automated approval, real-model or business acceptance claim")
+print(f"PASS: {len(cases)} synthetic cases; no automated approval, real-model or business acceptance claim")
