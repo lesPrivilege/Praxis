@@ -1,5 +1,7 @@
 # Chat snapshots
 
+- [环境观测来源 · 2026-09-30](environment-observation-20260930.json)：工具返回 4 轮 8 消息，hasMore=false；一张附件未消费或保存。覆盖、显式 URL 与引用缺口见 [登记](../../intake/environment-observation-20260930.json)。仅作来源备查，不随前端交付。
+
 | 文件 | 对话 | 范围 |
 |---|---|---|
 | [enterprise-kit.json](enterprise-kit.json) | 6aad2162-4364-83ec-853b-31df2c36c388 | 工具返回10轮，hasMore=false |
@@ -28,3 +30,13 @@
 [AI能力测试 r2](ai-capability-assessment-20260923-r2.json)：同日复读新增1条用户消息，共8轮11条；旧7轮内容未变，r1保留。
 
 [Jev社区研究粘贴文本](jev-community-pasted-20260923.txt)：本轮用户给定的原字节附件，没有conversation/turn ID，不计入read_thread消息覆盖；元数据见[增量登记](../../intake/jev-community-20260923.json)。
+
+[Opus 5.5 remotion video](opus-remotion-video-20260927.json)：2026-09-27 读取 5 轮/10 消息，hasMore=false，附件为空；消费登记见 [intake](../../intake/opus-remotion-video-20260927.json)。
+
+[Design Grammar](design-grammar-20260927.json)：2026-09-27 读取 5 轮/10 消息，hasMore=false，附件为空；7 个 citation placeholder 登记为 missing-original，消费登记见 [intake](../../intake/design-grammar-20260927.json)。
+
+[比较 SourceWeft 与 Praxis](sourceweft-praxis-20260928.json)：2026-09-28 读取 1 轮/2 消息，hasMore=false，附件为空；12 个显式 URL 身份与 1 个 citation placeholder（index=6）见 [intake](../../intake/sourceweft-praxis-20260928.json) 和 [provenance](../../provenance/sourceweft-praxis-20260928/catalog.json)。
+
+[建立视觉语法语料库](visual-grammar-20260928.json)：3轮6消息，hasMore=false；1张技术栈截图已保存并目视阅读。6个引用占位仍 missing-original；见 [入账](../../intake/visual-grammar-20260928.json)。
+
+- [提炼Palantir书单方法](palantir-20261001.json)：2026-10-01取回4轮7消息，无截断、无附件，hasMore=false；[登记与覆盖](../../intake/palantir-20261001.json)。

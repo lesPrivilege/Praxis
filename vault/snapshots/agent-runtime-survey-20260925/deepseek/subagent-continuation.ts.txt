@@ -1,0 +1,12 @@
+Source URL: https://github.com/deepseek-ai/deepseek-harness/blob/477b4f420553e8a52c2fbccc464d7561b239c443/packages/subagent/subagent/src/continuation.ts
+Source commit: 477b4f420553e8a52c2fbccc464d7561b239c443
+Source lines: 1-11, 97-192, 194-233, 274-325, 402-420
+
+L1-11 Continuable orchestration owns stable child ids, descriptor persistence, provider preparation, cold resume, authorization, and message routing. One durable Session has at most one process-local Activation; the Agent inbox is the only turn queue.
+L97-104 `startContinuable` resolves at initial inbox acceptance; earlier failure disposes created handles and rolls back Activation/parent ownership without returning ids.
+L104-128 It validates admission/depth, reserves child id, resolves provider/model/reasoning options, snapshots a descriptor, and captures delegated policy before awaits.
+L133-185 It holds parent ownership, prepares the provider, materializes the child with seed/meta/descriptor/composition, and submits the initial prompt through the child inbox.
+L187-192 Success returns `{ childId, messageId }`; failed acceptance releases the hold and throws.
+L194-233 `sendMessage` requires the exact live sender and only allows direct parent/direct child routes; stale, sibling, one-shot, or unauthorized paths fail.
+L274-325 Child delivery serializes by child id, waits for disposal cutoffs, checks image capability, submits to the existing inbox, and retries after a lost disposal race.
+L402-420 Cold resume observes persisted Session state; an unavailable child becomes typed `NOT_RESUMABLE` rather than silently creating a new child.

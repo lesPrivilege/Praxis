@@ -1,0 +1,140 @@
+/* ─────── Reader panels ─────── */
+
+.reader-panel {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 280px;
+  z-index: 15;
+  background: var(--bg-card);
+  border-right: 1px solid var(--border-soft);
+  box-shadow: var(--shadow-lg);
+  overflow-y: auto;
+  transform: translateX(-100%);
+  transition: transform var(--motion-gentle);
+}
+
+.reader-panel.open {
+  transform: translateX(0);
+}
+
+.reader-panel.right {
+  left: auto;
+  right: 0;
+  border-right: none;
+  border-left: 1px solid var(--border-soft);
+  transform: translateX(100%);
+}
+
+.reader-panel.right.open {
+  transform: translateX(0);
+}
+
+.reader-panel-inner {
+  padding-top: max(52px, calc(env(safe-area-inset-top, 0px) + 8px));
+}
+
+.panel-header {
+  padding: 8px 12px;
+  /* 面板题为 chrome，归器轨（判例三之轴；mono 唯真数据） */
+  font-family: var(--font-ui);
+  font-size: var(--text-2xs);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  border-bottom: 1px solid var(--border-soft);
+}
+
+.panel-empty {
+  text-align: center;
+  color: var(--ink-3);
+  font-size: var(--text-sm);
+  padding: 32px 12px;
+  line-height: 1.6;
+}
+
+/* ─────── Backdrop ─────── */
+
+.reader-backdrop {
+  opacity: 0;
+  transition: opacity var(--motion-mid);
+  pointer-events: none;
+}
+
+.reader-backdrop.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Reading controls stay compact as a three-column group, while each stepper
+   keeps the platform hit target. The columns may shrink; the actions do not. */
+.reader-settings {
+  width: 100%;
+  max-width: 100%;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+  padding: 8px 12px;
+  background: var(--bg);
+  border-top: 1px solid var(--border-soft);
+}
+
+.reader-setting-group {
+  min-width: 0;
+  display: grid;
+  gap: 4px;
+}
+
+.reader-setting-label {
+  min-width: 0;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 4px;
+  color: var(--ink-3);
+  font-family: var(--font-ui);
+  font-size: var(--text-2xs);
+  white-space: nowrap;
+}
+
+.reader-setting-actions {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 2px;
+}
+
+.reader-stepper {
+  width: 44px;
+  min-width: 44px;
+  height: 44px;
+  min-height: 44px;
+  justify-self: center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  color: var(--ink-2);
+  font-size: var(--text-sm);
+}
+
+.reader-stepper:disabled {
+  cursor: default;
+  opacity: 0.4;
+}
+
+/* 摘录用对象名与字轨区分，不以左缘色条代替语义（记-58）。 */
+.reader-excerpt-quote { margin: 0; color: var(--ink); }
+.reader-excerpt-label { display: block; margin-bottom: var(--sp-3); font-family: var(--font-ui); font-size: var(--text-xs); color: var(--ink-3); }
+.reader-excerpt-quote p { font-family: var(--font-zh); font-size: var(--text-lg); line-height: var(--leading-relaxed); }
+.selection-actions { position: fixed; z-index: 60; display: flex; max-width: calc(100vw - var(--sp-7)); border: 1px solid var(--border-strong); border-radius: var(--r-lg); background: var(--bg-card); color: var(--ink); padding: var(--sp-2); }
+.selection-actions button { min-height: var(--hit-target); padding: var(--sp-4) var(--sp-6); font-size: var(--text-md); }
+.reader-note { display: grid; gap: var(--sp-4); margin-top: var(--sp-6); }
+.reader-note textarea { width: 100%; padding: var(--sp-4); border: 1px solid var(--border); border-radius: var(--r-md); background: var(--bg); font-size: var(--text-lg); }
+.reader-excerpt-actions { display: flex; flex-wrap: wrap; gap: var(--sp-4); margin-top: var(--sp-4); }
+.reader-excerpt-actions button { min-height: var(--hit-target); padding: var(--sp-4); font-size: var(--text-md); }
+.reader-receipt { display: flex; align-items: center; gap: var(--sp-6); padding: var(--sp-6) var(--sp-7); background: var(--bg-raised); font-size: var(--text-md); }
+.reader-receipt a, .reader-receipt button { min-height: var(--hit-target); display: inline-flex; align-items: center; }
+.context-dialog .reader-panel-inner { padding-top: 0; }

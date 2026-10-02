@@ -1,0 +1,803 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="用一个合成的社区问卷例子，说明70%的分母、答复者范围、自选偏差与下一步补证。">
+  <title>300 份答复里的 70%｜社区问卷说明</title>
+  <style>
+    :root {
+      --ink: #192522;
+      --muted: #5f6b67;
+      --paper: #f5f4ef;
+      --surface: #fffefa;
+      --surface-2: #edf3ef;
+      --line: #d3dcd7;
+      --line-strong: #a8bbb2;
+      --accent: #1c6d60;
+      --accent-dark: #125247;
+      --accent-pale: #dcece5;
+      --warm: #a95628;
+      --warm-pale: #f6e6d7;
+      --shadow: 0 14px 36px rgba(24, 46, 38, .08);
+      --radius: 18px;
+      --max: 1120px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 12% 0%, rgba(209, 230, 220, .52), transparent 34rem),
+        var(--paper);
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      font-size: 16px;
+      line-height: 1.65;
+      overflow-wrap: anywhere;
+    }
+
+    a { color: var(--accent-dark); }
+    a:focus-visible, summary:focus-visible { outline: 3px solid #e39a63; outline-offset: 3px; }
+
+    .skip-link {
+      position: absolute;
+      left: 1rem;
+      top: -4rem;
+      padding: .65rem .9rem;
+      color: #fff;
+      background: var(--accent-dark);
+      border-radius: 8px;
+      z-index: 4;
+    }
+
+    .skip-link:focus { top: 1rem; }
+
+    .page-shell {
+      width: min(var(--max), calc(100% - 40px));
+      margin: 0 auto;
+    }
+
+    header {
+      padding: 66px 0 40px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .eyebrow {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .55rem;
+      align-items: center;
+      margin: 0 0 1.1rem;
+      color: var(--accent-dark);
+      font-size: .77rem;
+      font-weight: 760;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    .eyebrow::before {
+      content: "";
+      display: inline-block;
+      width: 22px;
+      height: 2px;
+      background: var(--warm);
+    }
+
+    .tag {
+      display: inline-block;
+      padding: .15rem .55rem;
+      color: var(--warm);
+      background: var(--warm-pale);
+      border: 1px solid #e6c5ab;
+      border-radius: 999px;
+      font-size: .7rem;
+      letter-spacing: .02em;
+      text-transform: none;
+    }
+
+    h1, h2, h3, p { margin-top: 0; }
+    h1, h2, h3 { letter-spacing: -.025em; line-height: 1.18; }
+
+    h1 {
+      max-width: 850px;
+      margin-bottom: 1rem;
+      font-size: clamp(2.3rem, 5vw, 4.6rem);
+      font-weight: 780;
+    }
+
+    .dek {
+      max-width: 760px;
+      margin-bottom: 0;
+      color: var(--muted);
+      font-size: clamp(1.08rem, 2vw, 1.32rem);
+      line-height: 1.65;
+    }
+
+    main { padding: 42px 0 72px; }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.05fr) minmax(300px, .95fr);
+      gap: 22px;
+      align-items: stretch;
+      margin-bottom: 64px;
+    }
+
+    .panel {
+      min-width: 0;
+      padding: clamp(22px, 3vw, 34px);
+      background: rgba(255, 254, 250, .82);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .panel-kicker, .section-kicker {
+      margin-bottom: .7rem;
+      color: var(--accent-dark);
+      font-size: .76rem;
+      font-weight: 780;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+    }
+
+    .panel h2 {
+      margin-bottom: .8rem;
+      font-size: clamp(1.55rem, 3vw, 2.2rem);
+    }
+
+    .lead-claim {
+      max-width: 600px;
+      margin-bottom: 1.6rem;
+      font-size: 1.08rem;
+    }
+
+    .formula {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: .32rem .58rem;
+      margin: 1.15rem 0 1.35rem;
+      font-variant-numeric: tabular-nums;
+      font-weight: 780;
+    }
+
+    .formula .number {
+      color: var(--accent-dark);
+      font-size: clamp(2.2rem, 5vw, 4rem);
+      letter-spacing: -.06em;
+      line-height: 1;
+    }
+
+    .formula .operator {
+      color: var(--muted);
+      font-size: 1.25rem;
+    }
+
+    .formula .result { color: var(--warm); }
+
+    .denominator-note {
+      display: inline-block;
+      margin-left: .3rem;
+      padding: .18rem .45rem;
+      color: var(--accent-dark);
+      background: var(--accent-pale);
+      border-radius: 5px;
+      font-size: .78rem;
+      font-weight: 720;
+      letter-spacing: .02em;
+    }
+
+    .ratio-track {
+      position: relative;
+      display: flex;
+      height: 18px;
+      overflow: hidden;
+      background: #e1e7e2;
+      border-radius: 999px;
+    }
+
+    .ratio-track span {
+      display: block;
+      background: var(--accent);
+      border-radius: inherit;
+    }
+
+    .ratio-legend {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-top: .7rem;
+      color: var(--muted);
+      font-size: .87rem;
+    }
+
+    .ratio-legend strong { color: var(--ink); }
+
+    .scope-panel {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      background: var(--accent-dark);
+      border-color: var(--accent-dark);
+      color: #f6fbf8;
+    }
+
+    .scope-panel .panel-kicker, .scope-panel p { color: #c9e3d9; }
+    .scope-panel h2 { color: #fff; }
+
+    .scope-stack {
+      display: grid;
+      gap: 10px;
+      margin: 1rem 0 1.1rem;
+    }
+
+    .scope-item {
+      padding: 1rem 1.1rem;
+      border: 1px solid rgba(222, 244, 235, .33);
+      border-radius: 12px;
+    }
+
+    .scope-item small {
+      display: block;
+      margin-bottom: .25rem;
+      color: #b7d5ca;
+      font-size: .77rem;
+      font-weight: 700;
+      letter-spacing: .08em;
+    }
+
+    .scope-item strong {
+      display: block;
+      font-size: clamp(1.35rem, 3vw, 1.9rem);
+      line-height: 1.25;
+    }
+
+    .scope-panel .method-note {
+      margin-bottom: 0;
+      padding-top: 1rem;
+      border-top: 1px solid rgba(222, 244, 235, .28);
+      font-size: .92rem;
+    }
+
+    .section { margin-bottom: 70px; }
+
+    .section-heading {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(240px, .6fr);
+      gap: 24px;
+      align-items: end;
+      margin-bottom: 22px;
+    }
+
+    .section-heading h2 {
+      margin-bottom: 0;
+      font-size: clamp(1.75rem, 3.5vw, 2.7rem);
+    }
+
+    .section-heading > p {
+      margin-bottom: .1rem;
+      color: var(--muted);
+    }
+
+    .breakdown {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(230px, .54fr);
+      gap: 18px;
+    }
+
+    .breakdown-main, .breakdown-side {
+      min-width: 0;
+      padding: 24px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface);
+    }
+
+    .breakdown-main h3, .breakdown-side h3 { margin-bottom: .4rem; font-size: 1.12rem; }
+    .breakdown-main > p, .breakdown-side > p { color: var(--muted); }
+
+    .breakdown-side {
+      background: var(--surface-2);
+      border-color: var(--line-strong);
+    }
+
+    .fraction-list {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin: 1.3rem 0 1.2rem;
+    }
+
+    .fraction {
+      padding: 1rem;
+      border-left: 4px solid var(--accent);
+      background: #f7faf7;
+      border-radius: 9px;
+    }
+
+    .fraction b {
+      display: block;
+      margin-bottom: .2rem;
+      color: var(--accent-dark);
+      font-size: 1.65rem;
+      font-variant-numeric: tabular-nums;
+      line-height: 1.1;
+    }
+
+    .fraction span { color: var(--muted); font-size: .9rem; }
+
+    .method-line {
+      margin: 0;
+      padding: .9rem 1rem;
+      color: #67411f;
+      background: var(--warm-pale);
+      border-left: 4px solid var(--warm);
+      border-radius: 8px;
+      font-size: .92rem;
+    }
+
+    .definition {
+      margin: 1.3rem 0 0;
+      padding: 0;
+    }
+
+    .definition div + div { margin-top: 1rem; }
+    .definition dt { color: var(--muted); font-size: .83rem; font-weight: 720; }
+    .definition dd { margin: .15rem 0 0; font-weight: 680; }
+
+    .boundary-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+      margin-top: 18px;
+    }
+
+    .boundary-card {
+      min-width: 0;
+      padding: 21px 22px;
+      border-radius: var(--radius);
+    }
+
+    .boundary-card h3 { margin-bottom: .55rem; font-size: 1.2rem; }
+    .boundary-card p { margin-bottom: 0; }
+
+    .boundary-card.can {
+      color: #174d43;
+      background: var(--accent-pale);
+      border: 1px solid #a9cfc0;
+    }
+
+    .boundary-card.cannot {
+      color: #64361f;
+      background: var(--warm-pale);
+      border: 1px solid #e6bea0;
+    }
+
+    .boundary-card strong { font-weight: 780; }
+
+    .uncertainty-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .uncertainty-card {
+      min-width: 0;
+      padding: 25px;
+      background: var(--surface);
+      border-radius: var(--radius);
+    }
+
+    .uncertainty-card.random { border: 2px solid var(--line-strong); }
+    .uncertainty-card.selection { border: 2px dashed var(--warm); }
+
+    .uncertainty-label {
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+      margin-bottom: 1rem;
+      font-weight: 780;
+    }
+
+    .uncertainty-mark {
+      width: 19px;
+      height: 19px;
+      flex: 0 0 auto;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+
+    .selection .uncertainty-mark {
+      background: transparent;
+      border: 2px dashed var(--warm);
+      border-radius: 4px;
+    }
+
+    .uncertainty-card h3 { margin-bottom: .6rem; font-size: 1.35rem; }
+    .uncertainty-card p { color: var(--muted); }
+
+    .mini-sequence {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: .55rem;
+      margin: 1.2rem 0 1rem;
+      font-variant-numeric: tabular-nums;
+      font-weight: 760;
+    }
+
+    .mini-sequence span {
+      padding: .45rem .65rem;
+      color: var(--accent-dark);
+      background: var(--accent-pale);
+      border-radius: 7px;
+    }
+
+    .mini-sequence i { color: var(--muted); font-style: normal; }
+
+    .uncertainty-card .takeaway {
+      margin: 0;
+      padding-top: .9rem;
+      border-top: 1px solid var(--line);
+      color: var(--ink);
+      font-size: .94rem;
+      font-weight: 680;
+    }
+
+    .counterexample {
+      padding: clamp(22px, 4vw, 36px);
+      color: #f8fbf8;
+      background: #243a34;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .counterexample .section-kicker, .counterexample .section-heading > p { color: #b9d8cc; }
+    .counterexample .section-heading h2 { color: #fff; }
+    .counterexample .section-heading { margin-bottom: 28px; }
+
+    .counter-rows {
+      display: grid;
+      gap: 10px;
+    }
+
+    .counter-row {
+      display: grid;
+      grid-template-columns: minmax(180px, .8fr) minmax(0, 1.2fr);
+      gap: 16px;
+      align-items: center;
+      padding: 15px 16px;
+      border: 1px solid rgba(208, 236, 224, .24);
+      border-radius: 11px;
+    }
+
+    .counter-row .label { color: #b9d8cc; font-size: .91rem; }
+
+    .counter-row .value {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: .28rem .5rem;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .counter-row .value strong { color: #fff; font-size: 1.35rem; }
+    .counter-row .value span { color: #cbe2d9; }
+
+    .counterexample .caption {
+      max-width: 760px;
+      margin: 1.35rem 0 0;
+      color: #d5e9e1;
+      font-size: .92rem;
+    }
+
+    .action-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 15px;
+    }
+
+    .action-card {
+      min-width: 0;
+      padding: 22px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+    }
+
+    .action-number {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 30px;
+      height: 30px;
+      margin-bottom: 1rem;
+      color: #fff;
+      background: var(--accent);
+      border-radius: 50%;
+      font-size: .85rem;
+      font-weight: 780;
+    }
+
+    .action-card h3 { margin-bottom: .55rem; font-size: 1.16rem; }
+    .action-card p { margin-bottom: .8rem; color: var(--muted); font-size: .94rem; }
+    .action-card dl { margin: 0; }
+    .action-card dt { color: var(--accent-dark); font-size: .79rem; font-weight: 760; }
+    .action-card dd { margin: .12rem 0 0; font-size: .91rem; }
+    .action-card dt + dd + dt { margin-top: .75rem; }
+
+    .decision-line {
+      padding: 27px clamp(22px, 4vw, 38px);
+      background: #e6f0eb;
+      border: 1px solid #a8c9bc;
+      border-radius: var(--radius);
+    }
+
+    .decision-line h2 { margin-bottom: .7rem; font-size: clamp(1.5rem, 3vw, 2.1rem); }
+    .decision-line p { max-width: 850px; margin-bottom: 0; font-size: 1.08rem; }
+
+    details {
+      margin-top: 16px;
+      border-top: 1px solid var(--line);
+    }
+
+    summary {
+      padding: .9rem 0;
+      color: var(--accent-dark);
+      cursor: pointer;
+      font-weight: 720;
+    }
+
+    details p { color: var(--muted); font-size: .93rem; }
+
+    footer {
+      padding: 22px 0 42px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: .85rem;
+    }
+
+    footer p { margin-bottom: .45rem; }
+    footer p:last-child { margin-bottom: 0; }
+
+    @media (max-width: 840px) {
+      .hero-grid, .breakdown, .section-heading { grid-template-columns: 1fr; }
+      .section-heading { align-items: start; gap: 8px; }
+      .hero-grid { margin-bottom: 52px; }
+      .action-grid { grid-template-columns: 1fr; }
+      .action-card { padding: 20px; }
+    }
+
+    @media (max-width: 560px) {
+      .page-shell { width: min(100% - 28px, var(--max)); }
+      header { padding: 36px 0 28px; }
+      main { padding: 28px 0 52px; }
+      h1 { font-size: clamp(2.15rem, 11vw, 3.2rem); }
+      .hero-grid { gap: 14px; }
+      .panel, .breakdown-main, .breakdown-side, .uncertainty-card { padding: 20px; }
+      .fraction-list, .boundary-grid, .uncertainty-grid { grid-template-columns: 1fr; }
+      .fraction-list { gap: 9px; }
+      .ratio-legend { display: grid; grid-template-columns: 1fr; gap: .3rem; }
+      .counter-row { grid-template-columns: 1fr; gap: 4px; }
+      .counterexample { padding: 22px 18px; }
+      .section { margin-bottom: 52px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">跳到正文</a>
+  <div class="page-shell">
+    <header>
+      <p class="eyebrow">社区决策简报 <span class="tag">synthetic 合成示例</span></p>
+      <h1>300 份答复里，210 份赞成延长开放时间</h1>
+      <p class="dek">这页的结论很具体：在这 300 位填写者中，70% 表示赞成。它告诉我们答复者表达了什么，也清楚标出它没有告诉我们的事。</p>
+    </header>
+
+    <main id="main-content">
+      <section class="hero-grid" aria-label="核心数字与适用范围">
+        <article class="panel">
+          <p class="panel-kicker">核心计算</p>
+          <h2>70% 的分母是 300 份答复</h2>
+          <p class="lead-claim">210 份赞成，除以本周收到的 300 份答复，得到答复者中的赞成比例。</p>
+          <p class="formula" aria-label="210除以300等于百分之七十">
+            <span class="number">210</span><span class="operator">÷</span><span class="number">300</span>
+            <span class="operator">=</span><span class="number result">70%</span>
+            <span class="denominator-note">分母：300 份答复</span>
+          </p>
+          <div class="ratio-track" role="img" aria-label="210份赞成，占300份答复的70%">
+            <span style="width: 70%"></span>
+          </div>
+          <div class="ratio-legend">
+            <span><strong>210</strong> 份赞成</span>
+            <span><strong>90</strong> 份其余答复</span>
+          </div>
+          <details>
+            <summary>展开计算口径</summary>
+            <p>页面只把 210 份作为“赞成”，其余 90 份没有细分为反对、不确定或空白。70% 的估计对象是“本周填写这份自愿问卷的答复者”，不是全体居民。</p>
+          </details>
+        </article>
+
+        <article class="panel scope-panel">
+          <div>
+            <p class="panel-kicker">这条数字描述谁？</p>
+            <h2>先读对象，再读百分比</h2>
+            <div class="scope-stack">
+              <div class="scope-item">
+                <small>可以说</small>
+                <strong>答复者中，70% 表示赞成</strong>
+              </div>
+              <div class="scope-item">
+                <small>还不能直接说</small>
+                <strong>70% 的居民同意</strong>
+              </div>
+            </div>
+          </div>
+          <p class="method-note">问卷通过公众号自愿填写。没有全体居民的随机抽样框或受邀名单时，答复者和居民总体之间的差别无法仅靠这 300 份数字校正。</p>
+        </article>
+      </section>
+
+      <section class="section" aria-labelledby="boundary-title">
+        <div class="section-heading">
+          <div>
+            <p class="section-kicker">01 · 证据范围</p>
+            <h2 id="boundary-title">同一个 70%，有两种不同的读法</h2>
+          </div>
+          <p>分子和分母说明“答复者怎么答”；抽样机制决定“能不能谈居民总体”。</p>
+        </div>
+
+        <div class="breakdown">
+          <div class="breakdown-main">
+            <h3>问卷实际记录了什么</h3>
+            <p>某周公众号收到 300 份自愿答复，其中 210 份选择赞成延长开放时间。</p>
+            <div class="fraction-list" aria-label="问卷分子和分母">
+              <div class="fraction"><b>210</b><span>表示赞成的答复</span></div>
+              <div class="fraction"><b>300</b><span>全部答复，作为分母</span></div>
+            </div>
+            <p class="method-line"><strong>方法提示：</strong>“自愿填写”会影响这条数字的适用范围。它不是一个可以藏在页脚里的小注，因为它改变我们该把 70% 说给谁听。</p>
+          </div>
+
+          <aside class="breakdown-side">
+            <h3>中间少了哪一步</h3>
+            <p>从全体居民到最终答复，中间至少经过两次选择：</p>
+            <dl class="definition">
+              <div><dt>第一步</dt><dd>谁看到、能进入公众号问卷</dd></div>
+              <div><dt>第二步</dt><dd>谁愿意花时间填写并提交</dd></div>
+              <div><dt>因此</dt><dd>答复者不是自动等于居民总体</dd></div>
+            </dl>
+          </aside>
+        </div>
+
+        <div class="boundary-grid">
+          <article class="boundary-card can">
+            <h3>这份数据可以支持</h3>
+            <p>把“答复者中有 70% 表示赞成”作为一个明确的态度信号，继续安排覆盖、非答复和实际使用情况的补证。</p>
+          </article>
+          <article class="boundary-card cannot">
+            <h3>这份数据不能单独支持</h3>
+            <p>把“70% 的居民同意”当作已经确认的总体结论，或只凭答复数量决定永久延长开放时间。</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" aria-labelledby="uncertainty-title">
+        <div class="section-heading">
+          <div>
+            <p class="section-kicker">02 · 两种不确定性</p>
+            <h2 id="uncertainty-title">增加答卷数，能改变随机波动；它不会自动改变回答机制</h2>
+          </div>
+          <p>把“数字会不会晃动”和“谁会出现在数字里”分开，才能知道下一步补什么。</p>
+        </div>
+
+        <div class="uncertainty-grid">
+          <article class="uncertainty-card random">
+            <div class="uncertainty-label"><span class="uncertainty-mark" aria-hidden="true"></span>可量化的随机波动</div>
+            <h3>同一种抽样机制下，更多答卷通常让比例更不容易偶然起伏</h3>
+            <p>如果每次取得的答复都来自同一种、可比较的抽样机制，样本从 30 增加到 300，单次偶然波动通常会变小。这个判断只谈随机起伏，不替自愿问卷补上随机抽样。</p>
+            <div class="mini-sequence" aria-label="答卷数从30增加到300">
+              <span>30 份</span><i>→</i><span>300 份</span><i>→</i><span>随机起伏可能变小</span>
+            </div>
+            <p class="takeaway">本页没有把 70% 变成置信区间：自愿答复缺少可以直接套用的概率抽样依据。</p>
+          </article>
+
+          <article class="uncertainty-card selection">
+            <div class="uncertainty-label"><span class="uncertainty-mark" aria-hidden="true"></span>未量化的自选偏差</div>
+            <h3>谁更愿意回答，可能仍然决定数字偏向哪一边</h3>
+            <p>如果对延长开放时间特别在意的人更愿意点击、填写和提交，那么从 300 份增加到 3,000 份，可能只是把同一种选择机制放大。数量本身没有回答“没填的人会怎么选”。</p>
+            <div class="mini-sequence" aria-label="答复数从300增加到3000但选择机制不变">
+              <span>300 份</span><i>→</i><span>3,000 份</span><i>→</i><span>偏差可能仍在</span>
+            </div>
+            <p class="takeaway">这条偏差没有可靠的端点，就不要画成一个看似精确的区间；先补覆盖与非答复信息。</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section counterexample" aria-labelledby="counter-title">
+        <div class="section-heading">
+          <div>
+            <p class="section-kicker">03 · synthetic 反例</p>
+            <h2 id="counter-title">同样是 70%，居民总体可以完全不同</h2>
+          </div>
+          <p>这是为了检查推理边界而构造的思维实验，不是本社区的测量结果。</p>
+        </div>
+
+        <div class="counter-rows">
+          <div class="counter-row">
+            <span class="label">假设的居民总体（未观测）</span>
+            <span class="value"><strong>500 / 1,000 = 50%</strong><span>真实支持者占一半</span></span>
+          </div>
+          <div class="counter-row">
+            <span class="label">在自选机制下收到 300 份答复</span>
+            <span class="value"><strong>210 / 300 = 70%</strong><span>支持者更容易主动填写</span></span>
+          </div>
+          <div class="counter-row">
+            <span class="label">同一机制扩大十倍</span>
+            <span class="value"><strong>2,100 / 3,000 = 70%</strong><span>答复更多，比例仍可能一样</span></span>
+          </div>
+        </div>
+        <p class="caption">这个构造例子只说明逻辑上的可能性：更多答复可以减少随机起伏，却不能凭数量自动消除“谁会来答问卷”的偏差。实际居民比例在本题中仍然未知。</p>
+      </section>
+
+      <section class="section" aria-labelledby="next-title">
+        <div class="section-heading">
+          <div>
+            <p class="section-kicker">04 · 下一步补证</p>
+            <h2 id="next-title">把 70% 当作起点，补三类不同证据</h2>
+          </div>
+          <p>每一项都补一个问号：谁被覆盖、谁没有回答、实际使用是否改变。</p>
+        </div>
+
+        <div class="action-grid">
+          <article class="action-card">
+            <span class="action-number" aria-hidden="true">1</span>
+            <h3>记录覆盖和回应率</h3>
+            <p>先知道邀请到了谁，以及不同群体是否同样有机会看到问卷。</p>
+            <dl>
+              <dt>收集</dt><dd>邀请范围、各组收到邀请数、答复数和回应率。</dd>
+              <dt>帮助判断</dt><dd>70% 是否只来自某些容易接触公众号的人。</dd>
+            </dl>
+          </article>
+
+          <article class="action-card">
+            <span class="action-number" aria-hidden="true">2</span>
+            <h3>尽可能比较非答复者</h3>
+            <p>在合法且合适的范围内，用已知的邀请信息看见“没有填的人”。</p>
+            <dl>
+              <dt>收集</dt><dd>受邀者与答复者的分层构成、未答复原因或补访结果。</dd>
+              <dt>帮助判断</dt><dd>答复者是否与被邀请人群存在系统差异。</dd>
+            </dl>
+          </article>
+
+          <article class="action-card">
+            <span class="action-number" aria-hidden="true">3</span>
+            <h3>补实际行为和小规模试点</h3>
+            <p>意愿之外，再观察开放时段的到访变化和运营代价。</p>
+            <dl>
+              <dt>收集</dt><dd>现有时段到访记录、延长时段试点的预设指标和观察窗口。</dd>
+              <dt>帮助判断</dt><dd>是否真的有稳定使用需求，以及延长开放是否可执行。</dd>
+            </dl>
+          </article>
+        </div>
+      </section>
+
+      <section class="decision-line" aria-labelledby="decision-title">
+        <h2 id="decision-title">给决策者的一句话</h2>
+        <p><strong>210 / 300 = 70%</strong> 可以作为“本周自愿答复者中，赞成延长开放时间的比例”的信号；它足以启动补证或设计小规模试点，但还不足以把全体居民的同意当作已确认事实。</p>
+      </section>
+    </main>
+
+    <footer>
+      <p><strong>数据身份：</strong>本页全部数字、反例和社区场景均为 synthetic 合成内容，不能用于描述任何真实社区。</p>
+      <p><strong>离线说明：</strong>页面可直接从本地文件打开；无远程字体、图片、脚本或外部数据请求。输入登记见 <a href="input.synthetic.json">input.synthetic.json</a>，反例登记见 <a href="counterexample.synthetic.json">counterexample.synthetic.json</a>。</p>
+    </footer>
+  </div>
+</body>
+</html>

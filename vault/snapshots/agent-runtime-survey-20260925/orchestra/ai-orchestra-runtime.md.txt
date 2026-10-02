@@ -1,0 +1,41 @@
+CURATED RESEARCH EXTRACT from official yedidya-buildfy/ai-orchestra source at main (paraphrased; not a byte-for-byte source copy)
+Source commit: 107b590f4404bed258edeed493feb42fbc7f6a72
+
+src/agent-adapter.ts
+--------------------
+AgentAdapter exposes spawn, kill, prompt, injectContext, readUsage and
+isAlive. BaseAdapter wraps one TmuxSession per agent and stores a JSON metadata
+file plus a pipe-pane log. The default YOLO commands are Claude
+`--dangerously-skip-permissions`, Codex
+`--dangerously-bypass-approvals-and-sandbox`, and Gemini `--yolo`. Resume
+commands are built per CLI; Codex places its bypass flag after `resume`.
+
+src/tmux.ts
+----------
+TmuxSession is a subprocess wrapper around the installed tmux CLI. It supports
+has-session, detached new-session, kill-session, literal send-keys followed by
+a 200 ms delay and Enter, capture-pane, and pipe-pane output. Restart is
+stop+start. It intentionally survives crashes of the Node orchestrator process
+because tmux owns the sessions.
+
+src/orchestrator.ts
+-------------------
+The watcher uses chokidar on board.md. A dispatch tick takes a writer lock,
+reads board state, measures context, starts a configured adapter if needed,
+sends a rehydration prompt, sets STATUS=WAITING and appends a JSON event/log.
+It suppresses self-triggered board writes and serializes pending ticks.
+
+src/refresh.ts
+-------------
+`refreshAgent` persists a snapshot, optionally compresses memory, kills the
+tmux session, spawns it again, clears the agent block, writes a bootstrap file,
+sends a short read-this-file prompt, verifies `isAlive` for a bounded timeout,
+and appends a refresh DONE entry. It does not preserve a native conversation
+ID in the refresh path; named resume is a separate registry feature.
+
+src/permissions.ts
+------------------
+The helper computes a picomatch decision for a relative path. Claude is always
+WRITE `**`; Codex/Gemini are checked against board scopes. This is a helper
+used by the orchestration layer and is not evidence that the spawned CLI
+itself enforces the same scope.

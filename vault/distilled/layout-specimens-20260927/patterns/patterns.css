@@ -1,0 +1,63 @@
+/* Pattern layer · p- prefix.
+   Only composition concerns live here: rhythm between atoms, slots that become their own
+   `stage` container, bands, main–margin grids and the deliberately failed card grid.
+   Atom appearance comes from ../atoms/*.css and is never redefined here; every override
+   below is a minimal adapter and is listed as a composition finding in the spec-note. */
+
+/* vertical rhythm between atoms: one gap, one tight gap */
+.p-flow > * + * { margin-top: 20px; }
+.p-flow--tight > * + * { margin-top: 8px; }
+.p-flow > * { margin-bottom: 0; }
+
+/* a slot re-declares the `stage` container so atom @container queries see the slot, not the page */
+.p-slot { container: stage / inline-size; min-width: 0; }
+
+/* padding for bleed stages that mix full-bleed and ordinary atoms */
+.p-pad { padding: 20px 16px; }
+@container stage (min-width: 640px) { .p-pad { padding: 32px 40px; } }
+
+/* ---- P02 metric band ---- */
+.p-band__h { margin: 0; font: 600 var(--fs-13)/1.5 var(--mono); color: var(--ink-2); letter-spacing: .02em; border-bottom: 2px solid var(--ink); padding-bottom: 6px; }
+.p-band__row { display: grid; gap: 20px 28px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr)); align-items: start; }
+.p-band__row > * { margin: 0; }
+.p-band__row--rule > * { border-top: 1px solid var(--line); padding-top: 10px; }
+.p-band__warn { margin: 0; font-size: var(--fs-13); color: var(--ink-2); }
+.p-band__warn b { color: var(--ink); }
+/* scale declaration shared by two gauges */
+.p-band__scale { margin: 0; font: var(--fs-12)/1.5 var(--mono); color: var(--muted); }
+
+/* ---- main + margin (P07-b, P08-b) ---- */
+.p-mm { display: grid; gap: 20px; }
+@container stage (min-width: 820px) {
+  .p-mm { grid-template-columns: minmax(0, 36em) minmax(18rem, 1fr); gap: 40px; align-items: start; }
+}
+
+/* ---- failed: every atom in an equal card ---- */
+.p-cards { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr)); }
+.p-card { background: var(--paper-2); border: 1px solid var(--line); border-radius: 12px; padding: 16px; box-shadow: 0 2px 6px rgba(0, 0, 0, .06); min-width: 0; font-size: var(--fs-15); }
+.p-card > :last-child { margin-bottom: 0; }
+.p-card__h { margin: 0 0 8px; font: 700 var(--fs-12)/1.4 var(--mono); letter-spacing: .06em; color: var(--muted); text-transform: uppercase; }
+.p-card .v-quote, .p-card .v-ex { margin: 0; }
+.p-card table { font-size: var(--fs-13); }
+
+/* ---- distance marker for the failed "evidence too far" assembly ---- */
+.p-gap-mark { margin: 0; font: var(--fs-12)/1.4 var(--mono); color: var(--muted); border-top: 1px dashed var(--line); padding-top: 4px; }
+
+/* ---- P05-c inversion: an excerpt blown up past the claim ---- */
+.p-hero { font-family: var(--serif); }
+.p-hero .v-ex-body p { font-size: var(--fs-30); line-height: 1.4; font-weight: 700; }
+.p-small { font-size: var(--fs-12); color: var(--muted); max-width: 60em; }
+.p-small .t-kp { font-size: var(--fs-13); font-weight: 400; border-left-width: 1px; }
+
+/* ---- adapters (each one is a finding) ---- */
+/* W03-c gloss only lays out .w-host in column 2; a figure in the host column needs the same */
+@container stage (min-width: 640px) {
+  .w-note--gloss .w-note__row > figure { grid-column: 2; grid-row: 1; margin: 0; }
+}
+/* the UA figure side margin (40px) survives on atoms that do not reset it */
+.p-flow > figure { margin-left: 0; margin-right: 0; }
+/* E09-b's warm palette lives on the stage element itself; inside a pattern it needs its own box */
+.p-ed { background: var(--warm-paper); color: var(--warm-ink); padding: 20px 16px; }
+@container stage (min-width: 640px) { .p-ed { padding: 32px 40px; } }
+/* E09-b spaces its kickers with .e-neutral's bottom margin; a kicker after .e-rec gets none */
+.p-ed .e-rec + .e-ed__kicker { margin-top: 28px; }

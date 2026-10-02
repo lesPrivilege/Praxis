@@ -1,0 +1,49 @@
+Source URL: https://github.com/deepseek-ai/deepseek-harness/blob/477b4f420553e8a52c2fbccc464d7561b239c443/packages/llm/llm/src/index.ts
+Source commit: 477b4f420553e8a52c2fbccc464d7561b239c443
+Source lines: 168-208, 270-335, 338-470, 490-627
+
+L168 One model call whose config and adapter registration were resolved together.
+L169 export interface PreparedLlmCall {
+L170   readonly config: LlmCallConfig
+L173   readonly retryPolicy: ResolvedRetryPolicy
+L175   readonly context?: LlmModelContext
+L185   stream(options: GenerateOptions): AsyncIterable<StreamChunk>
+L202 Provider-wire adapter for the harness message and stream vocabulary. Register implementations with `ctx.llm.registerAdapter(providers, adapter)`.
+L208 export abstract class LlmAdapter {
+L240   List models this adapter can currently advertise for one owned provider.
+L261   Resolve all metadata available for one exact model.
+L269 Bind exact model metadata and the eventual request dispatch to one adapter generation.
+L278 async prepareCall(provider, model, signal) { return { model: await this.resolveModel(provider, model, signal), stream: options => this.stream(options) } }
+
+L293 What `LlmRuntime.registerAdapter` returns: the disposer, plus an atomic route replacement for the same adapter instance.
+L301 `replace` validates the candidate set in full; conflicts or bad metadata leave current routes untouched, and the swap is one synchronous section so no request observes a gap.
+
+L338 The abstract `llm` service is an adapter registry plus a streaming model-call API, interceptable via `llm/stream`.
+L342 export class LlmRuntime extends TypertRemoteService {
+L343   private adapters = new Map<string, AdapterRegistration>()
+L344   private directory = new Map<string, LlmConfigurableProvider>()
+L345   private discoveries = new Map<string, (request, signal?) => Promise<readonly LlmDiscoveredModel[]>>()
+L354 Registry notifications are non-vetoing and listener failures are contained.
+L388 Register an adapter for provider routes; duplicate routes fail all-or-nothing.
+L396 registerAdapter(providers, adapter)
+L403 ctx.effect owns registration lifetime; disposing removes owned routes and announces `llm/adapters-updated`.
+L416 handle.replace(next) validates and atomically swaps the registration.
+L427 `prepareRoutes` validates names, collisions, provider metadata and retry policy without mutating state.
+L456 `commitRoutes` removes the old owned routes and installs the prepared set in one synchronous section.
+L463 commitRoutes(...)
+L470 emitAdaptersUpdated()
+
+L482 Describe provider routes with a registered adapter.
+L490 registerConfigurableProviders(entries) declares provider routes that configuration can activate.
+L494 The candidate set is validated in full and nothing is written until the whole set passes.
+L500 const commit = (candidates) => { ... }
+L516 for (const entry of held) this.directory.delete(entry.provider)
+L517 for (const entry of detached) this.directory.set(entry.provider, entry)
+L519 emitAdaptersUpdated()
+L535 handle.replace(next) calls the same atomic commit path.
+L545 List every declared configurable provider, registered or dormant.
+L554 Model discovery is registered by the settings namespace the plugin owns.
+L587 Interrogate one provider endpoint for advertised models; this does not read or write settings or credentials.
+L596 discoverModels(settingsNs, request, signal)
+L601 Missing discovery rejects with `NO_DISCOVERY`; the request must name a provider route or baseURL.
+L610 The discovery result is deduplicated in endpoint order and reduced to id/name/context/maxTokens/inputModalities.

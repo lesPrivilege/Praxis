@@ -1,0 +1,16 @@
+Source URL: https://github.com/deepseek-ai/deepseek-harness/blob/477b4f420553e8a52c2fbccc464d7561b239c443/packages/interaction/user-questions/src/index.ts
+Source commit: 477b4f420553e8a52c2fbccc464d7561b239c443
+Source lines: 1-7, 30-39, 64-150
+
+L1 Service Definition for the user-questions capability seam (`ctx.userQuestions`): a UI-backed service for pausing an agent tool call until the human answers.
+L2-5 The model-facing tool is separate; UI packages compose answerers on the Agent-scoped Cordis waterfall.
+L30 export interface AskUserQuestionRequest extends AskUserQuestionRequestEvent {}
+L33-38 `UserQuestionError` carries a stable code.
+L64 `ctx.userQuestions`: validation plus the scoped answerer waterfall.
+L70-85 `ask` requires the exact live runtime root when an agent is supplied; an owned child has no human answerer, while a resumed lineage-bearing Session as a new root may ask.
+L86 async ask(request)
+L87-92 Aborted requests and empty question batches fail explicitly.
+L93-107 Supplied agents must still be the registry's exact live instance and a root; delegated callers fail with `DELEGATED_CALLER` and are told to include the unresolved decision in the child result.
+L108-129 `intent` validation ensures the approve label belongs to the question and a plan-review includes detail.
+L130-142 No answerer returns `NO_PROVIDER`; the request runs through the scoped `user-questions/request` waterfall.
+L143-150 Errors are restored to the stable taxonomy; an abort becomes `ASK_ABORTED`.

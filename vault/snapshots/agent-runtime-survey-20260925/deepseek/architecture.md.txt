@@ -1,0 +1,35 @@
+Source URL: https://github.com/deepseek-ai/deepseek-harness/blob/477b4f420553e8a52c2fbccc464d7561b239c443/docs/architecture.md
+Source commit: 477b4f420553e8a52c2fbccc464d7561b239c443
+Source lines: 9-31, 72-127, 141-163
+
+L9  [Cordis](cordis-primer.md) is the framework under dsh: plugins contribute services, typed events, and reversible effects to a shared context. Every part of the product is a plugin, including the model adapter, the tool registry, the session log, and the agent loop itself, so each is replaceable from configuration.
+L13 There is no privileged core to patch: you extend dsh by mounting a plugin beside the others, and registrations are effects that unwind when their plugin unloads.
+L17 A running `dsh` is a plugin tree composed at boot from ordered layers.
+L19 A **profile** is a named composition stored in the Harness home. It lists the bundles it stacks, holds any out-of-tree plugins it installs, and keeps the user's own `cordis.patch.yml`. `web`, `headless`, `sdk`, `sdk-minimal`, and `acp` ship as templates.
+L21 A **bundle** is a distribution format for Cordis config rows and the code they mount, so whatever it inserts stays patchable by the layers above it.
+L23 Each declares itself in its own `package.json` under a `dsh` field: `dsh.profile` lists a profile's bundles, and `dsh.bundle` points at a bundle's patch file.
+L25 [`dsh-base`] is the shared first layer of web/headless/sdk/acp: model adapters, tools, persistence, sandbox and approval policy, settings, credentials, telemetry. Web/headless/sdk/acp add their application layer; sdk-minimal owns an explicit complete SDK tree.
+L27 Layers apply to an empty entry list in bundle order, then profile patch, home patch, and `--patch` overlay. A patch targets a row by id and replaces its whole config, or inserts a new row.
+L29 YAML controls HMR: base enables config-only `dsh-hmr`; headless, SDK and ACP disable it; profile patches override these defaults.
+L31 Base includes Plugin Manager for Web and agents.
+
+L72 Events are the extension points, and picking the right domain is the first decision in most changes.
+L76 Session events are durable facts appended to the log and broadcast through `session/event`; use one when the fact must survive a reload.
+L77 Agent events carry a live Agent: inbox, step, status, request, validation, continuation.
+L78 Capability events attach policy and adapters to a seam (`fs/*`, `tools/*`, `telemetry/*`) without importing the loop.
+L80 AgentLoop awaits serial `agent/created` initialization before starting queued work; initialization failure rolls back creation.
+L86 A step is one model request plus its tools; a turn is zero or more steps.
+L97 The loop appends entered messages as `user/message` and logs request/header and request/context as needed.
+L109 Durable turn/step/system/user/assistant/tool events are distinct from live extension points; `agent/assistant-stream` is process-local while the compact stream is committed before the end frame.
+L121 The session log is the source of context the model sees. `deriveMessages()` projects model history; `assistant/attempt` retains failed/retried/cancelled/stream-error attempts without adding model history.
+L123 Stored-session open selects the highest canonical generation, translates supported history, refuses a future version, and preserves immutable source generations.
+L127 `dsh-session-projection` folds committed events incrementally; host consumers read typed state and fail explicitly when a required projection is absent.
+
+L141 | Goal | Mechanism |
+L143 | Add a model provider | register its adapter on `ctx.llm` |
+L144 | Add a model-facing capability | register on `ctx.tools` |
+L149 | Manage background jobs | register on `ctx.jobs`; `job_*` tools read or stop jobs |
+L153 | Intercept a request, tool, or turn | use its `agent/*` or `tools/*` event |
+L154 | Add model-facing context | call `agent.inject()`; it lands in the next admitted request |
+L157 | Add durable session state | extend `SessionEventMap`; render and replay from the log |
+L161 | Store sessions in a new backend | implement `SessionPersistence` over shared handle scaffolding |

@@ -1,0 +1,807 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agent 系统设计</title>
+<style>/* Light, cool palette only: ice-white bars, white reading surface, mist blue-grey structure.
+   Ice cyan and cobalt mark navigation, the current page and the key object in a figure.
+   Figure grammar: solid line = kept or authoritative; dashed = on demand, conditional or not yet effective. */
+:root {
+  /* Fresh cool neutrals: clear white paper, pale sky plate, slate ink; one clear blue accent with an ice tint. */
+  --canvas: #f3f7fa;
+  --paper: #ffffff;
+  --plate: #f4f8fb;
+  --ink: #101a24;
+  --ink-2: #3a4756;
+  --mist: #647282;
+  --mist-2: #97a4b2;
+  --line: #e2e8ee;
+  --line-2: #c5d0da;
+  --track: #e9eef3;
+  --bar: #66788b;
+  --ice: #e9f4fc;
+  --ice-2: #a8d1f0;
+  --cobalt: #1f6fd6;
+  --cobalt-ink: #1656ad;
+  --focus: #1f6fd6;
+  --sans: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Noto Sans CJK SC", "Microsoft YaHei", "Segoe UI", system-ui, sans-serif;
+  --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  /* Serif only for the five page questions (CW Pages precedent: serif for top-level titles, sans for claims);
+     below that, hierarchy comes from size and weight, not colour or frames. */
+  --serif: "Songti SC", "Source Han Serif SC", "Noto Serif CJK SC", "Noto Serif SC", "STSong", "SimSun", serif;
+  --text: 45rem;
+  /* named size roles below body; larger sizes are set per heading role */
+  --fs-caption: 0.75rem;
+  --fs-label: 0.85rem;
+  --fs-small: 0.92rem;
+  color-scheme: light;
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--sans); font-size: 1rem; line-height: 1.8; text-autospace: normal; text-spacing-trim: normal; font-kerning: normal; }
+::selection { background: var(--ice-2); color: var(--ink); }
+h1, h2, h3, figcaption, caption { text-wrap: balance; }
+p, .node-body, td { text-wrap: pretty; }
+a { color: var(--cobalt-ink); text-decoration-color: var(--line-2); text-underline-offset: 0.2em; }
+a:hover { text-decoration-color: currentColor; }
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: 2px; }
+code { font-family: var(--mono); font-size: 0.86em; overflow-wrap: anywhere; }
+.eyebrow { display: block; font-family: var(--mono); font-size: var(--fs-caption); line-height: 1.5; letter-spacing: 0.06em; color: var(--mist); margin-bottom: 0.45rem; font-weight: 400; }
+
+/* frame and top bar */
+.frame { max-width: 68rem; margin: 0 auto; padding: 0 1.5rem; }
+.topbar { position: sticky; top: 0; z-index: 10; background: var(--canvas); border-bottom: 1px solid var(--line); }
+.topbar-inner { position: relative; display: flex; align-items: center; gap: 0.5rem 1.25rem; min-height: 3.25rem; }
+h1 { font-size: var(--fs-small); line-height: 1.4; margin: 0; font-weight: 700; white-space: nowrap; }
+h1 a { color: inherit; text-decoration: none; }
+.publication-header { padding-top: 1.25rem; padding-bottom: 0; }
+.publication-masthead { display: flex; align-items: baseline; justify-content: space-between; gap: 1.5rem; }
+.publication-header h1 { font-size: var(--fs-label); font-weight: 500; color: var(--mist); }
+.publication-header .index-link { font-size: var(--fs-label); }
+.chapter-tab-no { font-family: var(--mono); font-size: var(--fs-caption); font-weight: 400; letter-spacing: 0.04em; }
+.chapter-tab-title { font-size: var(--fs-small); line-height: 1.45; font-weight: 500; }
+.index-link { font-size: var(--fs-label); white-space: nowrap; }
+
+/* page grid: text column plus a side column; wide figures span both */
+#answer-pages { padding-top: 2.75rem; padding-bottom: 4rem; min-width: 0; }
+.paged .q-page { min-height: calc(100dvh - 8rem); }
+/* one reading column: text and figures share the same width */
+.q-page { max-width: var(--text); }
+.q-page > *, .argument > * { max-width: var(--text); }
+.q-page + .q-page { margin-top: 3rem; padding-top: 2.5rem; border-top: 1px solid var(--line); }
+.q-page > .argument, .q-page > .q-head { max-width: none; }
+.argument { margin-top: 3.5rem; padding-top: 2.25rem; border-top: 1px solid var(--line); }
+.argument > .exhibit { max-width: none; }
+.argument > .exhibit.primary { margin: 2rem 0 2.75rem; padding: 1.5rem 1.25rem 1.75rem; background: var(--plate); }
+.exhibit.primary .node, .exhibit.primary .state { background: var(--paper); }
+.exhibit.primary .node.focus { background: var(--ice); }
+.core-answer { font-size: 1.35rem; line-height: 1.7; font-weight: 600; letter-spacing: -0.005em; color: var(--ink); margin: 0 0 1.75rem; padding-bottom: 1.75rem; border-bottom: 1px solid var(--line); }
+.section-answer { font-size: 1.2rem; line-height: 1.72; font-weight: 600; color: var(--ink); margin-bottom: 1.4rem; }
+.answer-map { margin: 0 0 0.5rem; }
+.answer-map ol { list-style: none; margin: 0; padding: 0; }
+.answer-map li + li { margin-top: 1rem; }
+.answer-map a { display: grid; grid-template-columns: 2.4em 1fr; gap: 0.35rem; font-size: var(--fs-label); line-height: 1.6; color: var(--ink-2); text-decoration: none; }
+.answer-map a:hover { color: var(--cobalt-ink); text-decoration: underline; }
+.map-no { font-family: var(--mono); color: var(--mist); font-size: var(--fs-caption); padding-top: 0.1rem; }
+h2 { margin: 0 0 1.5rem; line-height: 1.3; }
+.q-num { display: block; font-family: var(--mono); font-size: var(--fs-label); font-weight: 400; letter-spacing: 0.08em; color: var(--mist); margin-bottom: 0.35rem; }
+.q-title { display: block; font-family: var(--serif); font-size: 2.4rem; line-height: 1.3; font-weight: 600; letter-spacing: 0.01em; max-width: 21em; }
+.sec-no { font-family: var(--mono); font-size: var(--fs-caption); color: var(--mist); font-weight: 400; }
+h3 { margin: 0 0 0.9rem; font-size: 1.05rem; line-height: 1.5; font-weight: 600; color: var(--ink-2); display: grid; grid-template-columns: 2.9rem 1fr; align-items: baseline; }
+h3 .sec-no { font-size: var(--fs-label); }
+p { margin: 0 0 1.1rem; font-size: 1.0625rem; line-height: 1.8; color: var(--ink); }
+.argument { scroll-margin-top: 1.5rem; }
+
+/* figures: open layout; boxes only for real objects */
+.exhibit { margin: 1.25rem 0 2rem; font-size: var(--fs-small); line-height: 1.6; }
+figcaption { font-weight: 600; font-size: var(--fs-small); line-height: 1.55; margin-bottom: 1rem; max-width: var(--text); }
+.fig-no { display: block; font-family: var(--mono); font-weight: 400; font-size: var(--fs-caption); letter-spacing: 0.08em; color: var(--mist); margin-bottom: 0.1rem; }
+.exhibit-note { font-size: var(--fs-label); line-height: 1.7; color: var(--ink-2); margin: 0.9rem 0 0; max-width: var(--text); }
+.exhibit p { font-size: var(--fs-small); line-height: 1.7; margin: 0; }
+.node { display: flex; flex-direction: column; gap: 0.1rem; padding: 0.55rem 0.7rem; border: 1px solid var(--line-2); border-radius: 2px; background: var(--paper); }
+.node-name { font-weight: 600; font-size: var(--fs-small); }
+.node-body { font-size: var(--fs-label); color: var(--ink-2); }
+.node.kept { border-color: var(--ink-2); }
+.node.on-demand, .node.pending { border-style: dashed; border-color: var(--mist-2); }
+.node.pending .node-name { color: var(--ink-2); font-weight: 500; }
+.node.focus { border-color: var(--cobalt); background: var(--ice); }
+.arrow { position: relative; display: block; height: 1px; background: var(--mist); align-self: center; }
+.arrow::after { content: ""; position: absolute; right: -1px; top: -4px; border: 4.5px solid transparent; border-left: 7px solid var(--mist); border-right: 0; }
+.plain { list-style: none; margin: 0; padding: 0; }
+.plain li { padding: 0.35rem 0; border-bottom: 1px solid var(--line); }
+.compare { display: grid; gap: 1.5rem 2rem; }
+.compare.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.facts { margin: 0.75rem 0 0; display: grid; gap: 0.35rem; }
+.facts div { display: grid; grid-template-columns: 5.5em 1fr; gap: 0.75rem; }
+.facts dt { color: var(--mist); font-size: var(--fs-label); }
+.facts dd { margin: 0; font-size: var(--fs-label); }
+.facts.shared { margin-top: 1.25rem; padding-top: 0.75rem; border-top: 1px solid var(--line); }
+.facts.shared div { grid-template-columns: 7em 1fr; }
+
+
+/* Q1 loop */
+.loop { display: grid; grid-template-columns: minmax(0, 1.25fr) 2rem minmax(0, 1fr) 2rem minmax(0, 0.75fr); align-items: center; gap: 0.5rem; }
+.loop-col { align-self: stretch; display: flex; flex-direction: column; justify-content: center; }
+.loop-col > .eyebrow { margin-top: 0; }
+.stack-nodes { display: grid; gap: 0.35rem; }
+.return-note .eyebrow { display: inline; margin-right: 0.6rem; }
+
+/* Q2 routing */
+.routes { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.5rem; }
+.route { display: grid; grid-template-columns: minmax(0, 1.6fr) 2.5rem minmax(0, 1fr); align-items: center; gap: 0.5rem; }
+.route-cond { display: flex; flex-direction: column; padding: 0.5rem 0 0.5rem 0.75rem; border-left: 1px solid var(--ink-2); }
+.route-cond .eyebrow { margin-bottom: 0.1rem; }
+.gap-routes { margin-top: 1rem; padding-top: 0.75rem; border-top: 1px dashed var(--line-2); }
+
+/* Q2 cost */
+.cost { display: grid; gap: 0.5rem; }
+.cost-row { display: grid; grid-template-columns: 4.5em 1fr 3.5em; gap: 0.75rem; align-items: center; }
+.cost-name { font-weight: 600; font-size: var(--fs-label); }
+.cost-track { display: flex; height: 1.9rem; background: var(--track); }
+.cseg { background: var(--bar); color: #fff; font-size: var(--fs-label); display: flex; align-items: center; padding-left: 0.5rem; white-space: nowrap; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+.cseg.model { background: var(--cobalt); padding: 0; }
+.cost-unknown { padding: 0.3rem 0.6rem; border: 1px dashed var(--mist); font-size: var(--fs-label); color: var(--ink-2); }
+.cost-total { text-align: right; font-weight: 600; font-variant-numeric: tabular-nums; }
+.cost-legend { display: flex; flex-wrap: wrap; gap: 0.25rem 1.5rem; font-size: var(--fs-label); color: var(--mist); padding-left: 5.25em; }
+
+/* Q3 branch tree */
+.tree { font-size: var(--fs-label); }
+.branch-root { max-width: 22rem; }
+.branches { list-style: none; margin: 0 0 0 1.25rem; padding: 0.5rem 0 0 0; border-left: 1px solid var(--mist); }
+.branches > li { position: relative; padding: 0.3rem 0 0.3rem 1.5rem; }
+.branches > li::before { content: ""; position: absolute; left: 0; top: 1.15rem; width: 1.2rem; border-top: 1px solid var(--mist); }
+.branches > li:last-child { border-left: 1px solid var(--paper); margin-left: -1px; }
+.branches > li:last-child::after { content: ""; position: absolute; left: 0; top: 0; height: 1.15rem; border-left: 1px solid var(--mist); }
+.branches .branches { margin-left: 0.5rem; }
+.branch-row { display: grid; grid-template-columns: minmax(0, 1.3fr) 10.5rem minmax(0, 1.4fr); gap: 0.75rem; align-items: baseline; padding: 0.3rem 0; border-bottom: 1px solid var(--line); }
+.obs { font-weight: 500; }
+.next { color: var(--ink-2); }
+.state { display: inline-flex; align-items: baseline; gap: 0.35em; justify-self: start; font-weight: 600; font-size: var(--fs-label); padding: 0 0.5em; border: 1px solid var(--line-2); border-radius: 2px; background: var(--paper); line-height: 1.6; }
+.glyph { font-family: var(--mono); font-weight: 700; }
+.state-ok { border-color: var(--cobalt); color: var(--cobalt-ink); }
+.state-unknown { border-style: dashed; border-color: var(--mist); }
+.state-retry { border-color: var(--ink-2); }
+.state-failed { border-color: var(--ink-2); background: var(--track); }
+table.failures { margin-top: 1rem; max-width: var(--text); }
+
+/* Q4 distribution */
+.dist-title { font-size: var(--fs-small); margin: 0 0 0.6rem; }
+.bars { font-size: var(--fs-label); }
+.axis, .bar-row { display: grid; grid-template-columns: 4.5em 1fr 3.6em; gap: 0.5rem; align-items: center; }
+.axis { color: var(--mist); font-family: var(--mono); }
+.axis span { grid-column: 2; grid-row: 1; font-size: 0.85em; }
+.axis span:nth-child(2) { justify-self: center; }
+.axis span:nth-child(3) { justify-self: end; }
+.bar-row { min-height: 1.85em; }
+.bar-track { position: relative; height: 0.85em; background: var(--track); border-left: 1px solid var(--mist); }
+.bar-track::after { content: ""; position: absolute; left: 50%; top: -0.2em; bottom: -0.2em; border-left: 1px dotted var(--mist-2); }
+.bar { position: absolute; inset: 0 auto 0 0; background: var(--bar); print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+.tail .bar { background: var(--cobalt); }
+.tail .bar-label { font-weight: 600; }
+.bar-value { text-align: right; font-variant-numeric: tabular-nums; }
+.tail-sum { display: flex; justify-content: space-between; margin: 0.35rem 0 1rem 5em; padding: 0.3rem 0 0.3rem 0.6rem; border-left: 2px solid var(--cobalt); font-size: var(--fs-label); }
+.tail-sum strong { font-variant-numeric: tabular-nums; }
+.mean-scale { margin: 0.2rem 0 0.4rem 5em; }
+.mean-axis { position: relative; display: block; height: 0.7rem; border-bottom: 1px solid var(--mist); }
+.mean-threshold { position: absolute; top: -0.35rem; bottom: -0.35rem; border-left: 1px dashed var(--ink); }
+.mean-marker { position: absolute; bottom: -0.3rem; width: 0.6rem; height: 0.6rem; margin-left: -0.3rem; background: var(--ink); transform: rotate(45deg); }
+.mean-ticks { display: flex; justify-content: space-between; font-family: var(--mono); font-size: var(--fs-caption); color: var(--mist); margin-top: 0.3rem; }
+.derived { margin: 0.8rem 0 0; display: grid; grid-template-columns: max-content 1fr; gap: 0.1rem 1rem; font-size: var(--fs-label); border-top: 1px solid var(--line); padding-top: 0.6rem; }
+.derived div { display: contents; }
+.derived dt { color: var(--mist); }
+.derived dd { margin: 0; font-variant-numeric: tabular-nums; font-weight: 600; }
+table.exact { margin-top: 1.5rem; }
+.exact td { font-variant-numeric: tabular-nums; }
+.explorer { margin-top: 1.75rem; padding-top: 1.25rem; border-top: 1px solid var(--line-2); }
+fieldset { border: 0; padding: 0; margin: 0; }
+legend { font-size: var(--fs-label); font-weight: 600; padding: 0; margin-bottom: 0.5rem; }
+.inputs { display: grid; grid-template-columns: repeat(auto-fit, minmax(7.5rem, 1fr)); gap: 0.5rem 1rem; }
+.num { display: flex; flex-direction: column; gap: 0.15rem; font-size: var(--fs-label); color: var(--ink-2); }
+.num input { font: inherit; font-size: 1rem; padding: 0.35rem 0.5rem; min-height: 2.5rem; border: 1px solid var(--line-2); border-radius: 3px; background: var(--paper); color: var(--ink); font-variant-numeric: tabular-nums; }
+.num input:focus { border-color: var(--cobalt); }
+.buttons { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.75rem; }
+button { font: inherit; font-size: var(--fs-label); min-height: 2.5rem; padding: 0.35rem 0.95rem; border: 1px solid var(--line-2); border-radius: 3px; background: var(--paper); color: var(--ink); cursor: pointer; }
+button:hover { border-color: var(--mist); }
+button[type="submit"] { background: var(--cobalt); border-color: var(--cobalt); color: #fff; }
+.status { min-height: 1.6em; font-size: var(--fs-label); margin: 0.6rem 0; color: var(--ink-2); }
+.status[data-state="invalid"] { color: var(--ink); font-weight: 600; }
+.status[data-state="invalid"]::before { content: "✕ "; font-family: var(--mono); }
+
+/* Q4 evaluation ledger */
+.ledger { margin: 0; }
+.ledger div { display: grid; grid-template-columns: 11rem 1fr; gap: 1.25rem; padding: 0.65rem 0; border-bottom: 1px solid var(--line); }
+.ledger dt .eyebrow { margin-bottom: 0.1rem; }
+.ledger dd { margin: 0; font-size: var(--fs-label); color: var(--ink); }
+
+/* chains: Q4 fallbacks, Q5 evidence chains and states */
+.chain { list-style: none; margin: 0; padding: 0; display: grid; gap: 1.1rem; }
+.chain > li { position: relative; }
+.chain > li + li::before { content: ""; position: absolute; left: 1.1rem; top: -1.05rem; height: 1rem; border-left: 1px solid var(--mist); }
+.chain > li + li::after { content: ""; position: absolute; left: calc(1.1rem - 4px); top: -0.4rem; border: 4px solid transparent; border-top: 6px solid var(--mist); border-bottom: 0; }
+
+/* Q5 */
+.diff { list-style: none; margin: 0 0 1.25rem; padding: 0; border: 1px solid var(--line-2); font-size: var(--fs-label); max-width: var(--text); }
+.diff li { display: grid; grid-template-columns: 2rem 5.5em 1fr; gap: 0.5rem; align-items: baseline; padding: 0.45rem 0.75rem 0.45rem 0; }
+.diff li + li { border-top: 1px solid var(--line); }
+.diff-sign { font-family: var(--mono); font-weight: 700; text-align: center; }
+.diff-id { font-weight: 600; }
+.diff-del { background: var(--plate); }
+.diff-del .diff-text { text-decoration: line-through; text-decoration-color: var(--mist); color: var(--mist); }
+.diff-add { background: var(--ice); }
+.diff-add .diff-sign { color: var(--cobalt); }
+.scopes-block { margin-top: 1.25rem; }
+.scopes { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border: 1px solid var(--ink-2); }
+.scope { padding: 0.6rem 0.75rem; }
+.scope + .scope { border-left: 1px solid var(--ink-2); }
+
+/* tables */
+table { width: 100%; border-collapse: collapse; font-size: var(--fs-label); line-height: 1.6; margin: 0.25rem 0 0.75rem; }
+caption { text-align: left; font-weight: 600; font-size: var(--fs-label); padding: 0.5rem 0 0.4rem; color: var(--ink-2); }
+th, td { text-align: left; vertical-align: baseline; padding: 0.5rem 0.75rem 0.5rem 0; border-bottom: 1px solid var(--line); }
+thead th { font-weight: 600; font-size: var(--fs-caption); color: var(--mist); border-bottom: 1px solid var(--ink); }
+tbody th { font-weight: 600; }
+
+/* evidence index */
+.index > section { max-width: 60rem; }
+.index > section + section { margin-top: 2.75rem; }
+.index h2 { font-size: 1.3rem; padding-bottom: 0.6rem; border-bottom: 1px solid var(--ink); }
+.index h3 { display: block; border-top: 0; padding-top: 0; font-size: 1.05rem; margin: 1.75rem 0 0.6rem; }
+.index p { font-size: var(--fs-small); color: var(--ink-2); }
+.index table { font-size: var(--fs-label); }
+
+/* paged mode (JS): only the addressed page is shown */
+.q-page[hidden] { display: none; }
+.paged .q-page + .q-page { margin-top: 0; padding-top: 0; border-top: 0; }
+
+@media (max-width: 60rem) {
+  .answer-map { margin-top: 0.5rem; }
+  .answer-map ol { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.8rem 1.5rem; }
+  .answer-map li + li { margin-top: 0; }
+    .loop { grid-template-columns: minmax(0, 1fr); }
+  .loop > .arrow { width: 1px; height: 1.3rem; justify-self: center; }
+  .loop > .arrow::after { right: auto; left: -4px; top: auto; bottom: -1px; border: 4.5px solid transparent; border-top: 7px solid var(--mist); border-bottom: 0; }
+}
+
+@media (max-width: 40rem) {
+  .frame { padding: 0 1rem; }
+  .topbar-inner { flex-wrap: wrap; gap: 0 0.75rem; padding-top: 0.5rem; }
+  h1 { flex: 1 0 auto; }
+  .argument { scroll-margin-top: 1rem; }
+  .publication-header { padding-top: 0.75rem; }
+  .publication-masthead { align-items: center; gap: 1rem; }
+  .publication-header .index-link { font-size: var(--fs-caption); }
+  #answer-pages { padding-top: 1.75rem; }
+  .q-title { font-size: 1.65rem; }
+  .core-answer { font-size: 1.2rem; }
+  .section-answer { font-size: 1.12rem; }
+  .argument > .exhibit.primary { padding: 1rem 0.9rem 1.2rem; margin-left: -0.25rem; margin-right: -0.25rem; }
+  .answer-map ol { grid-template-columns: minmax(0, 1fr); }
+  h3 { font-size: 1rem; grid-template-columns: 2.6rem 1fr; }
+  p { font-size: 1rem; }
+  .compare.two { grid-template-columns: minmax(0, 1fr); }
+  .route { grid-template-columns: minmax(0, 1fr); }
+  .route > .arrow { width: 1px; height: 1rem; margin-left: 1rem; }
+  .route > .arrow::after { right: auto; left: -4px; top: auto; bottom: -1px; border: 4.5px solid transparent; border-top: 7px solid var(--mist); border-bottom: 0; }
+  .branch-row { grid-template-columns: minmax(0, 1fr); gap: 0.25rem; }
+  .branches { margin-left: 0.5rem; }
+  .branches > li { padding-left: 1rem; }
+  .branches > li::before { width: 0.8rem; }
+  .scopes { grid-template-columns: minmax(0, 1fr); }
+  .scope + .scope { border-left: 0; border-top: 1px solid var(--ink-2); }
+  .ledger div { grid-template-columns: minmax(0, 1fr); gap: 0.2rem; }
+  .facts div, .facts.shared div { grid-template-columns: minmax(0, 1fr); gap: 0; }
+  .tail-sum, .mean-scale { margin-left: 0; }
+  table.stack, table.stack tbody, table.stack tr, table.stack td, table.stack th, table.stack caption { display: block; width: 100% !important; }
+  table.stack thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+  table.stack tr { border-top: 1px solid var(--line-2); padding: 0.4rem 0; }
+  table.stack td, table.stack tbody th { border: 0; padding: 0.15rem 0; }
+  table.stack td[data-label]::before, table.stack tbody th[data-label]::before { content: attr(data-label) "："; color: var(--mist); font-weight: 400; }
+  .cost-legend { padding-left: 0; }
+  .diff li { grid-template-columns: 1.6rem 4.5em 1fr; }
+}
+
+/* print: A4, every question in order on a new page; navigation and controls hidden */
+@page { size: A4; margin: 17mm 16mm; }
+@media print {
+  body { font-size: 10pt; }
+  p { font-size: 10pt; line-height: 1.7; }
+  .publication-header { padding: 0 0 4mm; }
+  .paged .q-page { min-height: 0; }
+  .topbar { position: static; border: 0; background: #fff; }
+  .topbar-inner { min-height: 0; padding: 0 0 4mm; }
+  .frame { max-width: none; padding: 0; }
+  #answer-pages { padding: 0; }
+  .reader { display: block; }
+  .q-page, .q-page[hidden] { display: block !important; }
+  .argument { display: block; }
+  .answer-map { display: none; }
+  .core-answer, .section-answer { font-size: 11.5pt; break-after: avoid; }
+  .q-title { font-size: 19pt; }
+  h3 { font-size: 10pt; }
+  .argument { border-top: 1px solid var(--line); padding-top: 5mm; margin-top: 8mm; }
+  .q-page + .q-page { margin-top: 0; padding-top: 0; border-top: 0; }
+  .q-page { break-before: page; page-break-before: always; }
+  .q-page:first-child { break-before: auto; page-break-before: auto; }
+  a { text-decoration: none; color: inherit; }
+  h1, h2, h3, .dist-title, caption, figcaption, .eyebrow { break-after: avoid; page-break-after: avoid; }
+  p { orphans: 3; widows: 3; }
+  thead { display: table-header-group; }
+  tr, .dist, .node, .loop, .routes, .cost, .compare-col, .diff, .scopes, .ledger div, .branch-row { break-inside: avoid; page-break-inside: avoid; }
+  table { font-size: 8.6pt; }
+  .exhibit { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+  .exhibit { break-inside: avoid; page-break-inside: avoid; }
+}
+
+/* line figures: a wide SVG and a compact HTML variant share one caption; only one is shown */
+.figsvg { display: block; width: 100%; height: auto; margin: 0.25rem 0 0.5rem; font-family: var(--sans); overflow: visible; }
+.figsvg text { fill: var(--ink); }
+.figsvg .n-name { font-size: 16px; font-weight: 600; }
+.figsvg .n-body { font-size: 14px; fill: var(--ink-2); }
+.figsvg .n-meta { font-size: 14px; fill: var(--mist); }
+.figsvg .svg-node rect { fill: var(--paper); stroke: var(--line-2); stroke-width: 1.25; }
+.figsvg .svg-node.kept rect { stroke: var(--ink-2); stroke-width: 1.5; }
+.figsvg .svg-node.pending rect, .figsvg .svg-node.unknown rect { stroke: var(--mist-2); stroke-dasharray: 5 4; }
+.figsvg .svg-node.pending .n-name { font-weight: 500; fill: var(--ink-2); }
+.figsvg .svg-node.focus rect { fill: var(--ice); stroke: var(--cobalt); }
+.figsvg .svg-node.ok rect { stroke: var(--cobalt); stroke-width: 1.5; }
+.figsvg .svg-node.ok .n-name { fill: var(--cobalt-ink); }
+.figsvg .svg-node.failed rect { fill: var(--track); stroke: var(--ink-2); }
+.figsvg .svg-node.retry rect { stroke: var(--ink-2); stroke-width: 1.5; }
+.figsvg .edge { fill: none; stroke: var(--mist); stroke-width: 1.5; }
+.figsvg .edge.dashed, .figsvg .edge.now { stroke-dasharray: 5 4; }
+.figsvg .edge.now { stroke: var(--ink-2); stroke-width: 1.25; }
+/* the one accent in a line figure marks where a person decides (CW figure rule) */
+.figsvg .svg-node.decision rect { stroke: var(--cobalt); stroke-width: 2; stroke-dasharray: 5 4; }
+.figsvg .svg-node.decision .n-name { fill: var(--cobalt-ink); font-weight: 600; }
+@media (forced-colors: active) {
+  .figsvg text, .figsvg .svg-node .n-name { fill: CanvasText; }
+  .figsvg .svg-node rect { fill: Canvas; stroke: CanvasText; }
+  .figsvg .svg-node.decision rect, .figsvg .svg-node.focus rect { stroke: Highlight; }
+  .figsvg .edge { stroke: CanvasText; }
+  .figsvg .arrowhead { fill: CanvasText; }
+}
+.figsvg .arrowhead { fill: var(--mist); }
+.fig-compact { display: none; }
+@media (max-width: 60rem) {
+  .fig-wide { display: none; }
+  .fig-compact { display: block; }
+  .compare.two.fig-compact { display: grid; }
+}
+@media print {
+  .fig-wide { display: block !important; }
+  .fig-compact { display: none !important; }
+}
+.figsvg .edge.rule { stroke: var(--ink-2); stroke-width: 1; }
+.figsvg .edge.thin { stroke: var(--line-2); stroke-width: 1; }
+@media (max-width: 60rem) {
+  .loop.fig-compact { display: grid; }
+  .facts.shared div.fig-compact { display: grid; }
+}
+.figsvg .edge.span { stroke: var(--mist-2); stroke-width: 1.25; }
+.figsvg .edge.span.key { stroke: var(--cobalt); stroke-width: 2.25; }
+.figsvg .n-name.key { fill: var(--cobalt-ink); }
+.cseg-label { align-self: center; margin-left: 0.5rem; font-size: var(--fs-caption); color: var(--cobalt-ink); white-space: nowrap; }
+
+/* tables: the first column names the row, numbers align */
+table.stack tbody td:first-child { font-weight: 550; color: var(--ink); }
+td, th { font-variant-numeric: tabular-nums; }
+
+/* print: quiet page numbers */
+@page { @bottom-right { content: counter(page) " / " counter(pages); font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 7.5pt; color: #647282; } }
+/* headings break at punctuation, not inside a word; long runs may still wrap on narrow screens */
+.q-title, h3, figcaption { word-break: keep-all; overflow-wrap: anywhere; }
+
+/* numeric columns align right (exact-value table) */
+table.exact td[data-label^="P("], table.exact td[data-label="均值"], table.exact th[scope="col"]:not(:first-child):not(:last-child) { text-align: right; }
+
+/* narrow screens: the chapter row becomes a disclosure menu (works without JS; the current chapter shows when closed) */
+.chapter-menu { display: none; }
+.chapter-menu summary { display: flex; align-items: baseline; gap: 0.75rem; min-height: 2.75rem; padding: 0.7rem 0; list-style: none; cursor: pointer; border-bottom: 1px solid var(--line); }
+.chapter-menu summary::-webkit-details-marker { display: none; }
+.chapter-menu summary::after { content: ""; margin-left: auto; align-self: center; width: 0.45rem; height: 0.45rem; border-right: 1.5px solid var(--mist); border-bottom: 1.5px solid var(--mist); transform: rotate(45deg) translateY(-2px); }
+.chapter-menu[open] summary::after { transform: rotate(-135deg) translateY(-2px); }
+.chapter-menu-label { font-family: var(--mono); font-size: var(--fs-caption); color: var(--mist); letter-spacing: 0.06em; }
+.chapter-menu-current { font-weight: 600; white-space: pre; overflow: hidden; text-overflow: ellipsis; }
+.chapter-menu ol { list-style: none; margin: 0; padding: 0.25rem 0 0.5rem; border-bottom: 1px solid var(--line); }
+.chapter-link { display: flex; align-items: baseline; gap: 0.6rem; min-height: 2.75rem; padding: 0.6rem 0; color: var(--ink-2); text-decoration: none; }
+.chapter-link .chapter-tab-no { font-family: var(--mono); font-size: var(--fs-caption); color: var(--mist); }
+.chapter-link[aria-current="page"] { color: var(--ink); font-weight: 600; }
+.chapter-link[aria-current="page"] .chapter-tab-no { color: var(--cobalt); }
+@media (max-width: 75rem) {
+  .chapter-menu { display: block; }
+}
+@media print { .chapter-menu { display: none !important; } }
+.sources h2 { font-size: 1.15rem; margin-top: 2.25rem; }
+
+/* per-chapter sources: quiet reference list after the argument */
+.q-sources { margin-top: 4rem; padding-top: 1.25rem; border-top: 1px solid var(--line-2); max-width: var(--text); }
+.q-sources h3 { display: block; font-family: var(--mono); font-size: var(--fs-caption); font-weight: 400; letter-spacing: 0.06em; color: var(--mist); margin: 0 0 0.75rem; }
+.q-sources ol { list-style: none; margin: 0; padding: 0; counter-reset: src; }
+.q-sources li { counter-increment: src; display: grid; grid-template-columns: 1.75rem minmax(0, 1fr) auto; column-gap: 0.75rem; row-gap: 0.1rem; padding: 0.5rem 0; border-bottom: 1px solid var(--line); font-size: var(--fs-label); line-height: 1.6; }
+.q-sources li::before { content: counter(src, decimal-leading-zero); grid-row: 1 / span 2; font-family: var(--mono); font-size: var(--fs-caption); color: var(--mist); padding-top: 0.1rem; }
+.src-title { grid-column: 2; overflow-wrap: anywhere; }
+.src-meta { grid-column: 3; grid-row: 1; color: var(--mist); white-space: nowrap; font-size: var(--fs-caption); padding-top: 0.1rem; }
+.src-point { grid-column: 2 / -1; color: var(--ink-2); }
+.src-note { font-size: var(--fs-caption); color: var(--mist); margin-top: 0.9rem; line-height: 1.7; }
+@media (max-width: 40rem) {
+  .q-sources li { grid-template-columns: 1.5rem minmax(0, 1fr); }
+  .src-meta { grid-column: 2; grid-row: auto; white-space: normal; }
+}
+@media print {
+  .q-sources { margin-top: 8mm; break-inside: auto; }
+  .q-sources li { break-inside: avoid; font-size: 8.5pt; }
+  .q-sources a { color: inherit; }
+  .q-sources a::after { content: " " attr(href); font-family: ui-monospace, Menlo, monospace; font-size: 7pt; color: #647282; overflow-wrap: anywhere; }
+}
+
+/* motion: only where something changes; short, ease-out; none for keyboard paging; reduced motion keeps fades only */
+:root { --ease-out: cubic-bezier(0.23, 1, 0.32, 1); --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1); }
+.paged .q-page { transition: opacity 180ms var(--ease-out), transform 180ms var(--ease-out); }
+@starting-style { .paged .q-page { opacity: 0; transform: translateY(4px); } }
+.paged.keyed .q-page { transition: none; }
+#q4-custom .bar { transition: width 240ms var(--ease-in-out); }
+#q4-mean-marker { transition: left 240ms var(--ease-in-out); }
+.chapter-menu summary::after { transition: transform 180ms var(--ease-out); }
+.chapter-menu[open] ol { transition: opacity 180ms var(--ease-out), transform 180ms var(--ease-out); }
+@starting-style { .chapter-menu[open] ol { opacity: 0; transform: translateY(-4px); } }
+button { transition: transform 140ms var(--ease-out), border-color 140ms ease; }
+button:active:not(:disabled) { transform: scale(0.97); }
+@media (prefers-reduced-motion: reduce) {
+  .paged .q-page, .chapter-menu[open] ol { transition: opacity 180ms ease; transform: none; }
+  @starting-style { .paged .q-page, .chapter-menu[open] ol { transform: none; } }
+  #q4-custom .bar, #q4-mean-marker, button { transition: none; }
+  button:active:not(:disabled) { transform: none; }
+}
+
+/* chapter reader: wide screens get a left rail of the five chapters; narrower screens a sticky chapter menu */
+.chapter-tab-no { font-family: var(--mono); font-size: var(--fs-caption); font-weight: 400; letter-spacing: 0.04em; }
+.chapter-tab-title { font-size: var(--fs-small); line-height: 1.45; font-weight: 500; }
+.frame.reader { max-width: calc(16rem + 3rem + var(--text) + 3rem); }
+.reader { display: grid; grid-template-columns: 11rem minmax(0, 1fr); column-gap: 3rem; align-items: start; }
+.chapter-menu { position: sticky; top: 0; z-index: 15; background: var(--paper); padding: 0 1.5rem; }
+.chapter-menu summary { position: relative; }
+.menu-progress { position: absolute; left: 0; right: 0; bottom: -1px; height: 2px; background: var(--cobalt); transform: scaleX(0); transform-origin: left center; }
+.chapter-end { display: flex; justify-content: space-between; gap: 1.5rem; margin-top: 3rem; padding-top: 1.25rem; border-top: 1px solid var(--line); }
+.chapter-end a { display: flex; flex-direction: column; gap: 0.15rem; min-height: 2.75rem; color: var(--ink-2); text-decoration: none; }
+.chapter-end a:hover .chapter-end-title { color: var(--cobalt-ink); }
+.chapter-end-next { margin-left: auto; text-align: right; }
+.chapter-end-dir { font-family: var(--mono); font-size: var(--fs-caption); color: var(--mist); }
+.chapter-end-title { font-size: var(--fs-small); font-weight: 500; }
+/* programmatic focus targets (chapter headings) carry no outline; keyboard focus on links and controls keeps it */
+[tabindex="-1"]:focus { outline: none; }
+@media (max-width: 75rem) {
+  .reader { display: block; }
+}
+@media (max-width: 40rem) {
+  .chapter-menu { padding: 0 1rem; }
+}
+.publication-header.frame { max-width: calc(16rem + 3rem + var(--text) + 3rem); }
+@media (max-width: 75rem) {
+  .q-page, .argument, .q-sources { scroll-margin-top: 4.25rem; }
+}
+@media print {
+  .reader { display: block; }
+  .frame.reader, .publication-header.frame { max-width: none; }
+}
+/* cost chart at narrow widths or large zoom: name on its own line; bar labels truncate; the side note may wrap */
+@media (max-width: 40rem) {
+  .cost-row { grid-template-columns: minmax(0, 1fr) auto; row-gap: 0.2rem; }
+  .cost-name { grid-column: 1 / -1; }
+  .cost-track { min-width: 0; }
+  .cseg { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+  .cseg-label { min-width: 0; white-space: normal; line-height: 1.3; }
+  .cost-legend span { white-space: normal; }
+}
+.chapter-menu-label { white-space: nowrap; }
+.q-title, h3, figcaption { line-break: strict; }
+@media (max-width: 24rem) { .q-title, h3, figcaption { word-break: normal; } }
+
+/* left table of contents (after the Schema Engineering reader): one open disclosure, chapters with their sections */
+.chapter-rail { position: sticky; top: 1.5rem; align-self: start; max-height: calc(100vh - 3rem); overflow-y: auto; margin-top: 2.6rem; padding-right: 0.5rem; font-size: 0.82rem; line-height: 1.6; }
+.chapter-rail summary { display: flex; align-items: center; gap: 0.5rem; min-height: 2.75rem; color: var(--mist); cursor: pointer; list-style: none; }
+.chapter-rail summary::-webkit-details-marker { display: none; }
+.chapter-rail summary::before { content: ""; width: 0.5em; height: 0.5em; border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor; transform: rotate(-45deg); }
+.chapter-rail[open] summary::before { transform: rotate(45deg); }
+.chapter-rail summary:hover { color: var(--ink); }
+.chapter-rail ol { list-style: none; margin: 0; padding: 0; }
+.chapter-rail > nav > ol { display: grid; gap: 0.6rem; margin-top: 0.4rem; }
+.chapter-rail .chapter-link { display: grid; grid-template-columns: 1.8rem 1fr; align-items: baseline; color: var(--ink); text-decoration: none; font-weight: 600; }
+.chapter-rail .chapter-link .chapter-tab-title { font-size: inherit; font-weight: 600; }
+.chapter-rail .chapter-link[aria-current="page"] .chapter-tab-no { color: var(--cobalt); }
+.chapter-rail li ol { display: grid; gap: 0.1rem; margin: 0.15rem 0 0 1.8rem; }
+.rail-section-link { display: grid; grid-template-columns: 1.9rem 1fr; align-items: baseline; padding: 0.1rem 0; color: var(--mist); text-decoration: none; }
+.rail-section-link .sec-no { font-size: inherit; }
+.chapter-rail a:hover { color: var(--ink); text-decoration: underline; }
+.rail-section-link.reading { color: var(--ink); }
+.rail-section-link.reading .sec-no { color: var(--cobalt); }
+@media (max-width: 75rem) { .chapter-rail { display: none; } }
+@media (min-width: 75.001rem) { .answer-map { display: none; } }
+@media print { .chapter-rail { display: none !important; } }
+@media print {
+  .chapter-end, .chapter-menu, .chapter-rail, .index-link, .explorer { display: none !important; }
+}
+.reader { grid-template-columns: 16rem minmax(0, 1fr); }
+</style>
+</head>
+<body>
+<header class="publication-header frame">
+<div class="publication-masthead">
+<h1><a href="#" class="home">Agent 系统设计</a></h1>
+</div>
+</header>
+<details class="chapter-menu"><summary><span class="chapter-menu-label">目录</span><span class="chapter-menu-current">共5题</span><span class="menu-progress" aria-hidden="true"></span></summary>
+<nav aria-label="目录"><ol><li><a class="chapter-link" href="#q1"><span class="chapter-tab-no">01</span><span class="chapter-tab-title">上下文与缓存</span></a></li><li><a class="chapter-link" href="#q2"><span class="chapter-tab-no">02</span><span class="chapter-tab-title">Reasoning effort 与成本</span></a></li><li><a class="chapter-link" href="#q3"><span class="chapter-tab-no">03</span><span class="chapter-tab-title">权限与恢复</span></a></li><li><a class="chapter-link" href="#q4"><span class="chapter-tab-no">04</span><span class="chapter-tab-title">概率与风险</span></a></li><li><a class="chapter-link" href="#q5"><span class="chapter-tab-no">05</span><span class="chapter-tab-title">修改与生效</span></a></li></ol></nav></details>
+<div class="frame reader">
+<details class="chapter-rail" open><summary>目录</summary><nav aria-label="目录"><ol><li><a class="chapter-link" href="#q1"><span class="chapter-tab-no">01</span><span class="chapter-tab-title">上下文与缓存</span></a><ol><li><a class="rail-section-link" href="#q1-working-set"><span class="sec-no">1.1</span><span>怎样保留任务状态，又避免每轮重读全部材料？</span></a></li><li><a class="rail-section-link" href="#q1-cache-paths"><span class="sec-no">1.2</span><span>第40轮新增三个工具，会让旧内容重新计费吗？</span></a></li><li><a class="rail-section-link" href="#q1-test-supply"><span class="sec-no">1.3</span><span>怎样证明这些调整改善了长任务？</span></a></li></ol></li><li><a class="chapter-link" href="#q2"><span class="chapter-tab-no">02</span><span class="chapter-tab-title">Reasoning effort 与成本</span></a><ol><li><a class="rail-section-link" href="#q2-routing"><span class="sec-no">2.1</span><span>什么时候值得提高 reasoning effort？</span></a></li><li><a class="rail-section-link" href="#q2-latency"><span class="sec-no">2.2</span><span>怎样判断用户的等待是否合理？</span></a></li><li><a class="rail-section-link" href="#q2-unit-economics"><span class="sec-no">2.3</span><span>成本应该算到一次调用，还是一次完成的任务？</span></a></li><li><a class="rail-section-link" href="#q2-trust"><span class="sec-no">2.4</span><span>不展示原始思考，怎样让工作过程可信？</span></a></li></ol></li><li><a class="chapter-link" href="#q3"><span class="chapter-tab-no">03</span><span class="chapter-tab-title">权限与恢复</span></a><ol><li><a class="rail-section-link" href="#q3-authorization"><span class="sec-no">3.1</span><span>什么时候需要重新取得确认？</span></a></li><li><a class="rail-section-link" href="#q3-unknown"><span class="sec-no">3.2</span><span>Agent 失败后，什么时候可以自动重试？</span></a></li><li><a class="rail-section-link" href="#q3-remove-wizard"><span class="sec-no">3.3</span><span>模型能力提高后，哪些向导步骤可以删除？</span></a></li></ol></li><li><a class="chapter-link" href="#q4"><span class="chapter-tab-no">04</span><span class="chapter-tab-title">概率与风险</span></a><ol><li><a class="rail-section-link" href="#q4-distribution"><span class="sec-no">4.1</span><span>严重度得分为1.99，人工闸门设在2.00，规则应该怎样写？</span></a></li><li><a class="rail-section-link" href="#q4-independent-eval"><span class="sec-no">4.2</span><span>上线前要补哪一份材料？</span></a></li><li><a class="rail-section-link" href="#q4-repeat"><span class="sec-no">4.3</span><span>同一道题三次结果不同，应该检查什么？</span></a></li><li><a class="rail-section-link" href="#q4-fallback"><span class="sec-no">4.4</span><span>服务不稳定和判断不确定，能用同一种降级吗？</span></a></li></ol></li><li><a class="chapter-link" href="#q5"><span class="chapter-tab-no">05</span><span class="chapter-tab-title">修改与生效</span></a><ol><li><a class="rail-section-link" href="#q5-atomic-diff"><span class="sec-no">5.1</span><span>为什么删除一句话和新增一个公式要分开审查？</span></a></li><li><a class="rail-section-link" href="#q5-scope"><span class="sec-no">5.2</span><span>机制要保留什么，修改才能成为规则？</span></a></li><li><a class="rail-section-link" href="#q5-independent-release"><span class="sec-no">5.3</span><span>独立评估怎样做？</span></a></li><li><a class="rail-section-link" href="#q5-incentives"><span class="sec-no">5.4</span><span>奖励黑客风险在哪里？</span></a></li></ol></li></ol></nav></details>
+<main id="answer-pages">
+<section class="q-page" id="q1" aria-labelledby="q1-h"><header class="q-head"><h2 id="q1-h"><span class="q-num">Q1</span><span class="q-title">长会话开始遗漏约束，应该怎样调整上下文和工具加载？</span></h2></header><div class="opening"><p class="core-answer" id="q1-answer">先改信息供给：查清出错那一步模型实际收到了什么，把约束、进度和文件版本记在每一步都携带的任务状态里；改提示词和扩大窗口只作对照。中途新增工具的额外费用取决于定义加载的位置，与工具个数没有固定的倍数关系。</p><p>到了第40轮，模型开始忘记要求、反复读同一份文件。先看出错那一步实际收到的请求，常见的有四种情况，各自指向不同的修改。</p><table class="stack"><thead><tr><th scope="col">约束的状态</th><th scope="col">原因</th><th scope="col">修改位置</th></tr></thead><tbody><tr><td data-label="约束的状态">请求中没有该约束</td><td data-label="原因">未保存，或恢复任务时未读回</td><td data-label="修改位置">保存与恢复流程</td></tr><tr><td data-label="约束的状态">约束在压缩后消失</td><td data-label="原因">摘要删去了约束</td><td data-label="修改位置">压缩规则：关键约束、数字和禁止事项压缩后仍能查回原文</td></tr><tr><td data-label="约束的状态">约束仍在，模型未遵循</td><td data-label="原因">与其他指令冲突、位置不当或任务过难</td><td data-label="修改位置">提示词、约束位置与 context window：只在这种情形下比较</td></tr><tr><td data-label="约束的状态">约束已被后续指令修改</td><td data-label="原因">不属于遗忘</td><td data-label="修改位置">任务状态：记录变更及生效时间</td></tr></tbody></table><p>前两种情况，约束在送达模型之前已经缺失，提示词写得再好也无法补回；扩大窗口最多推迟压缩，删去约束的那条压缩规则仍然有效。</p></div><nav class="answer-map" aria-label="Q1的问题结构"><ol><li><a href="#q1-working-set"><span class="map-no">1.1</span><span>怎样保留任务状态，又避免每轮重读全部材料？</span></a></li><li><a href="#q1-cache-paths"><span class="map-no">1.2</span><span>第40轮新增三个工具，会让旧内容重新计费吗？</span></a></li><li><a href="#q1-test-supply"><span class="map-no">1.3</span><span>怎样证明这些调整改善了长任务？</span></a></li></ol></nav><section class="argument" id="q1-working-set" aria-labelledby="q1-working-set-h"><h3 id="q1-working-set-h"><span class="sec-no">1.1</span>怎样保留任务状态，又避免每轮重读全部材料？</h3><p class="section-answer" id="q1-working-set-answer">目标、约束和进度每一步都携带，文件和工具输出用到时再读取。文件修改后，只重查依赖旧版本的那些结论。</p><p>长任务进行到一半，最终要交付什么、上一步做到了哪里，这两点都要留在当前上下文里。这样模型不必靠重翻文件来找回进度；文件原文等下一步确实用到时再读取。</p><figure class="exhibit primary" id="fig-persistent-to-working-set" aria-describedby="q1-working-set-answer"><figcaption><span class="fig-no">图 1.1</span>保留目标和进度，按需读材料，再把结果写回进度记录</figcaption><svg class="figsvg fig-wide" viewBox="0 0 880 262" role="img" aria-labelledby="fig-q1-t fig-q1-d" xmlns="http://www.w3.org/2000/svg"><title id="fig-q1-t">跨轮保留的信息、当前步骤的上下文与执行</title><desc id="fig-q1-d">目标和约束、当前状态跨轮保留；原始材料与工具输出按下一步需要补入。三者中这一步需要的部分组成下一步所需内容，再去读取或调用工具；结果回写当前状态，文件变化后按读取记录判断哪些结论需要重查。</desc><defs><marker id="fig-q1-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" class="arrowhead"/></marker></defs><text x="16" y="18" class="n-meta">跨轮保留</text><g class="svg-node pending"><rect x="16" y="28" width="236" height="58"/><text x="28" y="50" class="n-name">原始材料与工具输出</text><text x="28" y="70" class="n-body">按下一步需要补入</text></g><g class="svg-node kept"><rect x="16" y="98" width="236" height="50"/><text x="28" y="120" class="n-name">目标与约束</text><text x="28" y="140" class="n-body">持续保留</text></g><g class="svg-node kept"><rect x="16" y="160" width="236" height="74"/><text x="28" y="182" class="n-name">当前状态</text><text x="28" y="202" class="n-body">已完成的工作、采用的文件版本、</text><text x="28" y="221" class="n-body">未解决的问题</text></g><path d="M252 57 H282" class="edge dashed"/><path d="M252 123 H282 M252 192 H282 M282 57 V192" class="edge"/><path d="M282 123 H326" class="edge " marker-end="url(#fig-q1-a)"/><text x="330" y="86" class="n-meta">当前步骤的上下文</text><g class="svg-node focus"><rect x="330" y="94" width="236" height="74"/><text x="342" y="116" class="n-name">下一步所需内容</text><text x="342" y="136" class="n-body">不必每一步重新携带</text><text x="342" y="155" class="n-body">全部文件和工具输出</text></g><path d="M566 123 H622" class="edge " marker-end="url(#fig-q1-a)"/><text x="626" y="92" class="n-meta">执行</text><g class="svg-node plain"><rect x="626" y="100" width="200" height="46"/><text x="638" y="122" class="n-name">读取、调用工具</text></g><path d="M726 146 V250 H134 V238" class="edge dashed" marker-end="url(#fig-q1-a)"/><text x="430" y="243" text-anchor="middle" class="n-meta">回写：文件变化后，按读取记录判断哪些结论需要重查</text></svg><div class="loop fig-compact">
+<div class="loop-col"><span class="eyebrow">跨轮保留</span><div class="stack-nodes"><div class="node kept"><span class="node-name">目标与约束</span><span class="node-body">持续保留</span></div><div class="node kept"><span class="node-name">当前状态</span><span class="node-body">已完成的工作、采用的文件版本、未解决的问题</span></div><div class="node on-demand"><span class="node-name">原始材料与工具输出</span><span class="node-body">按下一步需要补入</span></div></div></div>
+<span class="arrow" aria-hidden="true"></span>
+<div class="loop-col"><span class="eyebrow">当前步骤的上下文</span><div class="node focus"><span class="node-name">下一步所需内容</span><span class="node-body">不必每一步重新携带全部文件和工具输出</span></div></div>
+<span class="arrow" aria-hidden="true"></span>
+<div class="loop-col"><span class="eyebrow">执行</span><div class="node "><span class="node-name">读取、调用工具</span></div></div>
+</div>
+<p class="exhibit-note return-note fig-compact"><span class="eyebrow">回写</span>文件变化后，按读取记录判断哪些结论需要重查</p></figure><p>进度不能只写“合同已检查”，要写清查的是哪一版、结论是什么、还剩哪些问题。文件一更新，顺着这份读取记录就能找到该重查的结论；任务中断了，也能从这里接着做，不会把“读过”误当成“现在仍然有效”。</p><p>有了读取记录，也就分得清哪些重读是必要的。文件改过、要核对原文、上次只读了一部分，这些都该再读；同一版本、同样目的、读完也没有新信息的重读，才需要减少。至于权限和客户隔离，不依赖这份记录，也不依赖模型的记忆，每次调用工具都重新检查。</p></section><section class="argument" id="q1-cache-paths" aria-labelledby="q1-cache-paths-h"><h3 id="q1-cache-paths-h"><span class="sec-no">1.2</span>第40轮新增三个工具，会让旧内容重新计费吗？</h3><p class="section-answer" id="q1-cache-paths-answer">不一定。新定义如果改动了已缓存的前缀，受影响的旧内容需要重新处理；如果只是追加在会话后面，旧缓存仍然可能命中。</p><p>新增三个工具，费用要分两笔计算：一笔是新定义、发现调用和工具执行本身的花费；另一笔是原本能命中缓存的旧内容，是否因此产生额外费用。第二笔取决于定义放在哪里，仅凭“第40轮新增了工具”，推不出整段上下文都要重算。</p><figure class="exhibit supporting" id="fig-cache-path-comparison" aria-describedby="q1-cache-paths-answer"><figcaption><span class="fig-no">图 1.2</span>同一批旧内容在三种加载路径下的差额</figcaption><table class="stack paths"><thead><tr><th scope="col">加载路径</th><th scope="col">对旧内容的影响</th><th scope="col">旧内容的差额</th></tr></thead><tbody><tr><td data-label="加载路径">修改已缓存前缀</td><td data-label="对旧内容的影响">受影响的旧内容重新处理</td><td data-label="旧内容的差额">150,000 × (1 − 0.1) ÷ 1,000,000 = 0.135元</td></tr><tr><td data-label="加载路径">在会话后部追加定义</td><td data-label="对旧内容的影响">旧前缀可能继续命中</td><td data-label="旧内容的差额">旧缓存命中时为0</td></tr><tr><td data-label="加载路径">只更新可搜索目录</td><td data-label="对旧内容的影响">完整schema可能尚未载入</td><td data-label="旧内容的差额">核对目录摘要和实际加载记录后计算，不能直接记为0</td></tr></tbody></table><p class="exhibit-note">比较前提：模型和其他配置不变，原缓存仍有效。假设受影响的旧内容为150,000 token，重新处理为每百万token 1元，读取缓存为每百万token 0.1元。</p></figure><p>旧内容如果重新处理，按接口实际适用的普通输入或缓存创建计费，同一批 token 只算一次。旧前缀继续命中，只说明这部分没有多付；新定义、发现调用、执行和返回的内容仍要另算。</p><p>按需发现省下的是每次请求都携带整张工具目录的开销，代价是发现本身可能多一次调用。少数几个工具每步都要用，预先加载更简单；目录很大、每次只用其中几项，按需发现才更可能划算。运行时本身支持 tool search 或 deferred loading，就直接使用，不必再自行封装一层。</p><p>“中途加入工具”包含四个环节，前一个环节完成，不等于后一个也已完成：</p><table class="stack"><thead><tr><th scope="col">环节</th><th scope="col">回答的问题</th><th scope="col">不能据此推出的结论</th></tr></thead><tbody><tr><td data-label="环节">发现</td><td data-label="回答的问题">目录里有哪些相关工具</td><td data-label="不能据此推出的结论">工具已获准执行</td></tr><tr><td data-label="环节">定义载入</td><td data-label="回答的问题">schema 何时、在什么位置进入模型上下文</td><td data-label="不能据此推出的结论">工具服务已经接通</td></tr><tr><td data-label="环节">服务接入或热更新</td><td data-label="回答的问题">会话不中断时，能否接入、更新或移除工具实现</td><td data-label="不能据此推出的结论">缓存不受影响，或进行中的调用可以换到新版本</td></tr><tr><td data-label="环节">调用授权</td><td data-label="回答的问题">现在能否对这个对象执行这个动作</td><td data-label="不能据此推出的结论">加载或批准一次后可以长期执行</td></tr></tbody></table><p>追加定义不影响旧缓存，撤下或改动已载入的定义则不同：改动位置之后的缓存都会失效。客户端收到目录变更通知，也不代表定义已经载入、服务已经接通。要确认本次采用哪种加载路径、前面的估算是否成立，需要沿请求轨迹查看定义在哪一轮、什么位置出现，再用 usage 核对缓存命中。</p></section><section class="argument" id="q1-test-supply" aria-labelledby="q1-test-supply-h"><h3 id="q1-test-supply-h"><span class="sec-no">1.3</span>怎样证明这些调整改善了长任务？</h3><p class="section-answer" id="q1-test-supply-answer">用同一组长任务做对照，每次只改变工具加载、上下文组织或窗口大小中的一项，再比较结果和总开销。</p><p>账单降了，不等于模型不再漏掉约束。按需发现可能多一次调用，选错工具还会引出重试；如果同时重组上下文、扩大窗口，就算任务做得更好，也无法区分改善来自哪一项。</p><table class="stack"><thead><tr><th scope="col">待验证的改动</th><th scope="col">保持不变的条件</th><th scope="col">比较指标</th></tr></thead><tbody><tr><td data-label="待验证的改动">预加载与按需发现</td><td data-label="保持不变的条件">任务、模型、材料、权限、上下文组织和窗口</td><td data-label="比较指标">工具选择与执行结果、重试、总费用和p95</td></tr><tr><td data-label="待验证的改动">原上下文与分层组织</td><td data-label="保持不变的条件">同组长任务、模型、权限、工具加载和窗口</td><td data-label="比较指标">约束遗漏、失效文件误用、不必要重读、恢复成功率、成本和p95</td></tr><tr><td data-label="待验证的改动">原窗口与扩大窗口</td><td data-label="保持不变的条件">同组长任务、模型、权限、工具加载和上下文组织</td><td data-label="比较指标">相同的任务质量与开销指标</td></tr></tbody></table><p>检查点不只放在第40轮：遗漏不一定总在那里出现，第20、40、60轮都要看。上下文变短了却缺失必要事实，不算改好；加载便宜了却让任务更难恢复，这笔代价也要算进去。最后保留的，应当是任务照样完成、总开销确实下降的改动。</p></section><section class="q-sources" id="q1-sources" aria-labelledby="q1-sources-h"><h3 id="q1-sources-h">来源</h3><ol><li><span class="src-title"><a href="https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents">Anthropic — Effective context engineering for AI agents</a></span><span class="src-meta">Anthropic · 官方工程文章</span><span class="src-point">按需检索与结构化笔记供给</span></li><li><span class="src-title"><a href="https://code.claude.com/docs/en/prompt-caching">Claude Code — How Claude Code uses prompt caching</a></span><span class="src-meta">Anthropic（Claude Code） · 官方文档</span><span class="src-point">缓存按前缀匹配，改动即失效</span></li><li><span class="src-title"><a href="https://developers.openai.com/api/docs/guides/tools-tool-search">OpenAI — Tool search</a></span><span class="src-meta">OpenAI · 官方文档</span><span class="src-point">按需发现的工具追加在末尾</span></li><li><span class="src-title"><a href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-search-tool">Anthropic — Tool search tool</a></span><span class="src-meta">Anthropic · 官方文档</span><span class="src-point">延迟加载的定义不进入初始上下文</span></li><li><span class="src-title"><a href="https://developers.openai.com/api/docs/guides/prompt-caching">OpenAI — Prompt caching</a></span><span class="src-meta">OpenAI · 官方文档</span><span class="src-point">追加工具可保留旧前缀缓存</span></li><li><span class="src-title"><a href="https://blog.modelcontextprotocol.io/posts/2026-07-28/">Model Context Protocol — The 2026-07-28 Specification</a></span><span class="src-meta">Model Context Protocol · 官方工程文章</span><span class="src-point">目录变更通知不等于已接通</span></li><li><span class="src-title"><a href="https://developers.openai.com/api/docs/guides/evaluation-best-practices">OpenAI — Evaluation best practices</a></span><span class="src-meta">OpenAI · 官方文档</span><span class="src-point">持续评估捕捉配置变化</span></li></ol></section><nav class="chapter-end" aria-label="翻页"><a class="chapter-end-next" href="#q2"><span class="chapter-end-dir">下一题</span><span class="chapter-end-title">02 Reasoning effort 与成本</span></a></nav></section><section class="q-page" id="q2" aria-labelledby="q2-h"><header class="q-head"><h2 id="q2-h"><span class="q-num">Q2</span><span class="q-title">怎样在能力、等待时间和成本之间选择？</span></h2></header><div class="opening"><p class="core-answer" id="q2-answer">不给整项任务固定一个 reasoning effort，而是按每一步的难度和出错代价来选；衡量的是多久出现有用结果，以及完成工作的总费用。</p><p>提高 reasoning effort，有时能省下后面的重试和返工，有时只是多等了时间。所以“推理更强”和“调用更贵”要放在一起算，一直算到任务结束，看多花的时间和费用换来了什么。</p></div><nav class="answer-map" aria-label="Q2的问题结构"><ol><li><a href="#q2-routing"><span class="map-no">2.1</span><span>什么时候值得提高 reasoning effort？</span></a></li><li><a href="#q2-latency"><span class="map-no">2.2</span><span>怎样判断用户的等待是否合理？</span></a></li><li><a href="#q2-unit-economics"><span class="map-no">2.3</span><span>成本应该算到一次调用，还是一次完成的任务？</span></a></li><li><a href="#q2-trust"><span class="map-no">2.4</span><span>不展示原始思考，怎样让工作过程可信？</span></a></li></ol></nav><section class="argument" id="q2-routing" aria-labelledby="q2-routing-h"><h3 id="q2-routing-h"><span class="sec-no">2.1</span>什么时候值得提高 reasoning effort？</h3><p class="section-answer" id="q2-routing-answer">难生成、容易返工的步骤，值得试更高的 effort；有确定算法的步骤交给代码。缺的是事实，就先找材料，推理再久也推不出证据。</p><p>答案好检查，不代表好做出来。程序是否通过测试，运行一次就能知道；找到正确的修复，却可能要试好几轮。低 effort 如果总是失败，还要反复检查、修改，一开始就提高 effort 反而可能更省。</p><figure class="exhibit primary" id="fig-routing-and-review" aria-describedby="q2-routing-answer"><figcaption><span class="fig-no">图 2.1</span>根据当前步骤的难点，选择代码、reasoning effort或补充材料</figcaption><svg class="figsvg fig-wide" viewBox="0 0 880 282" role="img" aria-labelledby="fig-q2-t fig-q2-d" xmlns="http://www.w3.org/2000/svg"><title id="fig-q2-t">按当前步骤的难点选择处理方式</title><desc id="fig-q2-d">有确定算法或规则的步骤交给代码；边界清楚且检查成本可控的抽取和转换，先用较低effort再检查输出；生成困难、存在冲突或返工昂贵的步骤，试用更高effort并比较收益；缺少关键事实时，更长的思考不会产生新证据，应先找材料、询问用户或请相关专业人员复核。</desc><defs><marker id="fig-q2-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" class="arrowhead"/></marker></defs><line x1="16" y1="16" x2="16" y2="60" class="edge rule"/><text x="30" y="34" class="n-name">有确定的算法或规则</text><text x="30" y="54" class="n-body">算术、格式校验、明确的权限条件</text><path d="M500 38 H596" class="edge " marker-end="url(#fig-q2-a)"/><g class="svg-node plain"><rect x="600" y="16" width="264" height="44"/><text x="612" y="38" class="n-name">代码</text></g><line x1="16" y1="78" x2="16" y2="122" class="edge rule"/><text x="30" y="96" class="n-name">边界清楚且检查成本可控</text><text x="30" y="116" class="n-body">抽取和转换</text><path d="M500 100 H596" class="edge " marker-end="url(#fig-q2-a)"/><g class="svg-node plain"><rect x="600" y="78" width="264" height="44"/><text x="612" y="100" class="n-name">先用较低effort，再检查输出</text></g><line x1="16" y1="140" x2="16" y2="184" class="edge rule"/><text x="30" y="158" class="n-name">生成困难、存在冲突或返工昂贵</text><text x="30" y="178" class="n-body">多份材料冲突、规划需同时满足多个条件</text><path d="M500 162 H596" class="edge " marker-end="url(#fig-q2-a)"/><g class="svg-node focus"><rect x="600" y="140" width="264" height="44"/><text x="612" y="162" class="n-name">试用更高effort，比较收益</text></g><line x1="16" y1="206" x2="864" y2="206" class="edge dashed thin"/><line x1="16" y1="222" x2="16" y2="266" class="edge rule"/><text x="30" y="240" class="n-name">缺少关键事实</text><text x="30" y="260" class="n-body">更长的推理不会产生新证据</text><path d="M500 244 H596" class="edge " marker-end="url(#fig-q2-a)"/><g class="svg-node kept"><rect x="600" y="216" width="264" height="58"/><text x="612" y="238" class="n-name">先找材料、询问用户，</text><text x="612" y="258" class="n-body">或请相关专业人员复核</text></g></svg><ol class="routes fig-compact"><li class="route"><div class="route-cond"><span class="node-name">有确定的算法或规则</span><span class="node-body">算术、格式校验、明确的权限条件</span></div><span class="arrow" aria-hidden="true"></span><div class="node "><span class="node-name">代码</span></div></li><li class="route"><div class="route-cond"><span class="node-name">边界清楚且检查成本可控</span><span class="node-body">抽取和转换</span></div><span class="arrow" aria-hidden="true"></span><div class="node "><span class="node-name">先用较低effort，再检查输出</span></div></li><li class="route"><div class="route-cond"><span class="node-name">生成困难、存在冲突或返工昂贵</span><span class="node-body">多份材料冲突、规划需同时满足多个条件</span></div><span class="arrow" aria-hidden="true"></span><div class="node focus"><span class="node-name">试用更高effort，比较收益</span></div></li></ol>
+<ol class="routes gap-routes fig-compact"><li class="route gap"><div class="route-cond"><span class="node-name">缺少关键事实</span><span class="node-body">更长的推理不会产生新证据</span></div><span class="arrow" aria-hidden="true"></span><div class="node kept"><span class="node-name">先找材料、询问用户，或请相关专业人员复核</span></div></li></ol></figure><p>边界清楚、检查成本可控的步骤，可以先用较低 effort 运行一次，再和升级后的正确率、重试次数、总成本比较。任务进行中也可以调整：抽取信息时发现材料互相矛盾，就重新考虑要不要升级；复杂规划里夹着的机械计算，仍然交给代码。选模型也是同样的道理，看它在相似任务、相同工具环境和质量要求下的实际表现。各家的 effort 档位对应的计算量并不一样，只能拿同一批任务实测比较。</p><p>工具选错，有时在排序之前就已经注定：正确的工具根本没被检索出来，排序再准也选不到它。所以评估要从候选工具是否齐全查起，一直查到选中的工具能否完成工作；只看请求和工具描述是否相似，是不够的。</p><p>有外部副作用的步骤另有规则。发邮件、覆盖文件、改线上配置之前，effort 设得再高、模型想得再清楚，也不等于获准执行；是否放行，由应用在执行前检查授权来决定。</p><p>按步骤选 effort，并不是要在同一条长会话里来回切换模型或 effort。有些实现把这两项算进缓存键，切换后旧内容需要重新处理。可以把不同阶段交给职责固定、上下文较短的调用，编排增加的开销也一并计入。</p></section><section class="argument" id="q2-latency" aria-labelledby="q2-latency-h"><h3 id="q2-latency-h"><span class="sec-no">2.2</span>怎样判断用户的等待是否合理？</h3><p class="section-answer" id="q2-latency-answer">从请求发出开始计时，重点看多久出现有用结果；首次反馈、完整结果和最终接受也分别记录。</p><p>界面一秒内出现“正在处理”，只说明系统收到了请求。之后如果很久都没有能用的内容，用户其实仍在等待。衡量等待，关键不在模型何时开始输出，而在它何时给出能用于下一步工作的结果。</p><figure class="exhibit supporting" id="fig-latency-endpoints" aria-describedby="q2-latency-answer"><figcaption><span class="fig-no">图 2.2</span>四项时间都从同一次请求发出算起</figcaption><svg class="figsvg fig-wide" viewBox="0 0 880 176" role="img" aria-labelledby="fig-q2l-t fig-q2l-d" xmlns="http://www.w3.org/2000/svg"><title id="fig-q2l-t">四项时间都从同一次请求发出算起</title><desc id="fig-q2l-d">首次反馈、首次有用结果、完整结果和最终接受，都从请求发出开始计时，分别以界面确认收到请求、出现可用于下一步工作的内容、系统完成一份可审阅的结果、结果达到验收标准并被接受为终点；首次有用结果是重点。刻度间距不代表实际时长。</desc><defs><marker id="fig-q2l-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" class="arrowhead"/></marker></defs><path d="M40 22 V30 M40 26 H220 M220 22 V30" class="edge span"/><text x="228" y="31" class="n-name">首次反馈</text><path d="M220 110 V122" class="edge"/><text x="220" y="142" text-anchor="middle" class="n-body">界面确认收到请求</text><path d="M40 40 V48 M40 44 H420 M420 40 V48" class="edge span key"/><text x="428" y="49" class="n-name key">首次有用结果</text><path d="M420 110 V122" class="edge"/><text x="420" y="142" text-anchor="middle" class="n-body">出现可用于下一步工作的内容</text><path d="M40 58 V66 M40 62 H620 M620 58 V66" class="edge span"/><text x="628" y="67" class="n-name">完整结果</text><path d="M620 110 V122" class="edge"/><text x="620" y="142" text-anchor="middle" class="n-body">系统完成一份可审阅的结果</text><path d="M40 76 V84 M40 80 H820 M820 76 V84" class="edge span"/><text x="812" y="74" text-anchor="end" class="n-name">最终接受</text><path d="M820 110 V122" class="edge"/><text x="860" y="142" text-anchor="end" class="n-body">结果达到验收标准并被接受</text><path d="M40 116 H864" class="edge " marker-end="url(#fig-q2l-a)"/><path d="M40 108 V124" class="edge rule"/><text x="40" y="142" text-anchor="middle" class="n-body">请求发出</text><text x="40" y="170" class="n-meta">刻度间距不代表实际时长</text></svg><div class="fig-compact"><table class="stack "><thead><tr><th scope="col">时间终点</th><th scope="col">记录的事件</th><th scope="col">对应判断</th></tr></thead><tbody><tr><td data-label="时间终点">首次反馈</td><td data-label="记录的事件">界面确认收到请求</td><td data-label="对应判断">系统是否及时回应</td></tr><tr><td data-label="时间终点">首次有用结果</td><td data-label="记录的事件">出现可用于下一步工作的内容</td><td data-label="对应判断">用户何时开始获得可用结果</td></tr><tr><td data-label="时间终点">完整结果</td><td data-label="记录的事件">系统完成一份可审阅的结果</td><td data-label="对应判断">生成和执行何时结束</td></tr><tr><td data-label="时间终点">最终接受</td><td data-label="记录的事件">结果达到验收标准并被接受</td><td data-label="对应判断">任务连同审阅、修改的总耗时</td></tr></tbody></table></div></figure><p>初版先按下表设定目标，上线后按任务类型统计实际延迟和用户行为，再决定怎样调整。</p><table class="stack"><thead><tr><th scope="col">初始目标或触发条件</th><th scope="col">产品行为</th></tr></thead><tbody><tr><td data-label="初始目标或触发条件">请求发出后1秒内</td><td data-label="产品行为">确认收到请求</td></tr><tr><td data-label="初始目标或触发条件">简单任务首次有用结果的p95不超过3秒</td><td data-label="产品行为">以可用内容出现计时，不能由打字动画代替</td></tr><tr><td data-label="初始目标或触发条件">预计任务超过10秒</td><td data-label="产品行为">显示已经完成的步骤，允许取消、离开和返回</td></tr></tbody></table><p>长任务可以先交出有用的一部分，让后续工作先开始。但整份结果如果还要审阅、修改，这段时间也要计入最终接受；第一段来得早，不能用来掩盖后面漫长的返工。</p></section><section class="argument" id="q2-unit-economics" aria-labelledby="q2-unit-economics-h"><h3 id="q2-unit-economics-h"><span class="sec-no">2.3</span>成本应该算到一次调用，还是一次完成的任务？</h3><p class="section-answer" id="q2-unit-economics-answer">把模型、工具、重试、人工审阅和返工的费用加起来，再除以最终被接受的结果数；一份也没被接受时，单独报告失败的费用。</p><p>一次调用便宜，可能只是把更多工作留给了下一次调用或人工。所以比较人工完成和 AI 辅助，要把同一项工作从头算到尾，不能拿模型单价去比人工工时。</p><figure class="exhibit supporting" id="fig-accepted-result-cost" aria-describedby="q2-unit-economics-answer"><figcaption><span class="fig-no">图 2.3</span>人工与AI辅助完成同一项工作的费用（假设演算）</figcaption><div class="cost">
+<div class="cost-row"><span class="cost-name">人工完成</span><span class="cost-track"><span class="cseg " style="width:100%"><span>人工12分钟 60</span></span></span><span class="cost-total">60元</span></div>
+<div class="cost-row"><span class="cost-name">AI辅助</span><span class="cost-track"><span class="cseg " style="width:41.6667%"><span>人工5分钟 25</span></span><span class="cseg model" style="width:3.33333%"><span></span></span><span class="cseg-label">← 模型与工具费 2</span></span><span class="cost-total">27元</span></div>
+<div class="cost-row"><span class="cost-name">未计入</span><span class="cost-unknown">新增错误带来的返工或其他损失</span><span class="cost-total">—</span></div>
+<div class="cost-legend"><span>时间价值每小时300元；同一尺度0–60元</span></div>
+</div></figure><p>假设演算里省下的33元还不是净收益，新增错误带来的返工或损失还要扣除。提高 effort 或换模型也这样算：错误概率降低多少，乘以每次出错的损失，超过新增的模型费、等待和验证成本，升级才划算。这笔经济账在满足安全要求之后才算，省下的钱抵消不了越权。</p></section><section class="argument" id="q2-trust" aria-labelledby="q2-trust-h"><h3 id="q2-trust-h"><span class="sec-no">2.4</span>不展示原始思考，怎样让工作过程可信？</h3><p class="section-answer" id="q2-trust-answer">把用了哪些材料、改了什么、执行结果如何展示出来，让每个判断和动作都能核对。</p><p>检查文件时，显示读的是哪一版、发现了哪些冲突、还缺哪些事实。这样用户知道工作为什么停在这里，也能指出遗漏。准备发送或修改文件时，再把具体内容、目标对象和影响范围列出来，用户确认的就是马上要发生的那个动作。</p><p>执行后给回执，并核对结果是否符合预期，“准备做”和“已经做成”才分得开。这些记录还能用于中断恢复和事后审阅，一段读来流畅的思考过程代替不了它们。</p><p>结果确认不了，界面就照实显示。例如进程已经结束、输出也已保存，服务却在发布结果前中断：恢复以后可以展示已有输出，但执行状态仍标“未确认”，也不提供重试按钮。按钮与真实状态一致，比写一段解释更能帮助用户判断下一步。</p></section><section class="q-sources" id="q2-sources" aria-labelledby="q2-sources-h"><h3 id="q2-sources-h">来源</h3><ol><li><span class="src-title"><a href="https://developers.openai.com/api/docs/guides/reasoning">OpenAI — Reasoning models</a></span><span class="src-meta">OpenAI · 官方文档</span><span class="src-point">effort是速度、成本与质量的取舍</span></li><li><span class="src-title"><a href="https://github.com/Aitejiu/jev-harness-lab/blob/main/docs/REPORT.md">jev-harness-lab — Technical evaluation report</a></span><span class="src-meta">Aitejiu · 研究代码仓库</span><span class="src-point">候选召回限制排序的上限</span></li><li><span class="src-title"><a href="https://platform.claude.com/docs/en/build-with-claude/thinking-steering-and-cost">Anthropic — Steering thinking and cost</a></span><span class="src-meta">Anthropic · 官方文档</span><span class="src-point">节点成本需累加到任务级</span></li><li><span class="src-title"><a href="https://developers.openai.com/api/docs/guides/latency-optimization">OpenAI — Latency optimization</a></span><span class="src-meta">OpenAI · 官方文档</span><span class="src-point">减少请求并改用确定性逻辑</span></li><li><span class="src-title"><a href="https://code.claude.com/docs/en/prompt-caching">Claude Code — How Claude Code uses prompt caching</a></span><span class="src-meta">Anthropic（Claude Code） · 官方文档</span><span class="src-point">切换effort可能导致缓存重算</span></li><li><span class="src-title"><a href="https://developers.openai.com/api/docs/guides/evaluation-best-practices">OpenAI — Evaluation best practices</a></span><span class="src-meta">OpenAI · 官方文档</span><span class="src-point">评估须同时衡量质量、延迟与成本</span></li></ol></section><nav class="chapter-end" aria-label="翻页"><a class="chapter-end-prev" href="#q1"><span class="chapter-end-dir">上一题</span><span class="chapter-end-title">01 上下文与缓存</span></a><a class="chapter-end-next" href="#q3"><span class="chapter-end-dir">下一题</span><span class="chapter-end-title">03 权限与恢复</span></a></nav></section><section class="q-page" id="q3" aria-labelledby="q3-h"><header class="q-head"><h2 id="q3-h"><span class="q-num">Q3</span><span class="q-title">哪些动作可以自动执行，失败后又怎样恢复？</span></h2></header><div class="opening"><p class="core-answer" id="q3-answer">已获授权的动作可以继续执行；发送、披露或修改数据以后，如果不知道是否成功，就先查结果，不能直接重做。</p><p>同样是改文件，云端沙箱可能连着生产账号，本地桌面上打开的也可能只是工作副本。要不要确认，看的是这次会访问什么、改什么、把数据发到哪里，而不是程序运行在云端还是本地。</p></div><nav class="answer-map" aria-label="Q3的问题结构"><ol><li><a href="#q3-authorization"><span class="map-no">3.1</span><span>什么时候需要重新取得确认？</span></a></li><li><a href="#q3-unknown"><span class="map-no">3.2</span><span>Agent 失败后，什么时候可以自动重试？</span></a></li><li><a href="#q3-remove-wizard"><span class="map-no">3.3</span><span>模型能力提高后，哪些向导步骤可以删除？</span></a></li></ol></nav><section class="argument" id="q3-authorization" aria-labelledby="q3-authorization-h"><h3 id="q3-authorization-h"><span class="sec-no">3.1</span>什么时候需要重新取得确认？</h3><p class="section-answer" id="q3-authorization-answer">账号、对象、内容或后果超出了已有授权，就在执行前确认；还在授权范围内的，不必重复询问。</p><p>允许读一封邮件，不等于允许把它发出去，哪怕用的是同一个账号、同一个工具。所以要确认的是这一次具体要做的事，而不是笼统地问“能不能用这个工具”。</p><figure class="exhibit supporting" id="fig-action-boundary" aria-describedby="q3-authorization-answer"><figcaption><span class="fig-no">图 3.1</span>按具体动作的后果决定是否需要确认</figcaption><div class="compare two">
+<div class="compare-col"><span class="eyebrow">授权范围内：继续执行</span><ul class="plain"><li>读取</li><li>整理</li><li>起草</li></ul></div>
+<div class="compare-col"><span class="eyebrow">执行前：确认授权覆盖具体后果</span><ul class="plain"><li>发送</li><li>披露</li><li>覆盖关键文件</li><li>改变生产状态</li></ul></div>
+</div></figure><p>批准发送时，要定下收件人、正文版本和有效期；修改资源时，还要定下改动范围。正文、收件人或目标一变，就要重新看原来的批准是否仍然适用。网页或邮件里要求上传文件，那只是读到了一条外部指令，不能当成用户已经同意。</p><p>确认必须在数据离开之前完成。敏感内容一旦填入联网表单，就可能已经上传；等到点击提交时再询问，这次披露已无法阻止。</p></section><section class="argument" id="q3-unknown" aria-labelledby="q3-unknown-h"><h3 id="q3-unknown-h"><span class="sec-no">3.2</span>Agent 失败后，什么时候可以自动重试？</h3><p class="section-answer" id="q3-unknown-answer">只有确认原请求已经终止且没有提交，或者接口仍能保证同一请求不会重复产生副作用，才可以有限次重试。遇到权限拒绝，必须停止。</p><p>点击发送后超时，邮件可能已经发出，只是客户端没有收到回执。这时直接重发，收件人就可能收到两封。所以状态变成 unknown 以后，先查权威的发送记录，再决定怎么办。</p><figure class="exhibit primary" id="fig-unknown-reconciliation" aria-describedby="q3-unknown-answer"><figcaption><span class="fig-no">图 3.2</span>发送超时后，先查邮件是否已经送出，再决定能否重试</figcaption><svg class="figsvg fig-wide" viewBox="0 0 880 318" role="img" aria-labelledby="fig-q3-t fig-q3-d" xmlns="http://www.w3.org/2000/svg"><title id="fig-q3-t">发送超时后的状态与下一步</title><desc id="fig-q3-d">点击发送后有三种结果：取得记录即已发送；超时进入unknown；明确失败按原因处理。unknown不直接重发，先查询权威发送记录或业务回执：查到则记录回执；查不到可能是可见性延迟，仍为unknown并继续核验；只有原请求确认未提交或幂等保证仍有效时，才沿用同一请求标识和参数在去重有效期内有限次重试。</desc><defs><marker id="fig-q3-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" class="arrowhead"/></marker></defs><g class="svg-node kept"><rect x="16" y="110" width="150" height="74"/><text x="28" y="132" class="n-name">点击发送</text><text x="28" y="152" class="n-body">授权已覆盖</text><text x="28" y="171" class="n-body">这次后果</text></g><path d="M166 140 H196 M196 48 V234" class="edge"/><path d="M196 48 H222" class="edge " marker-end="url(#fig-q3-a)"/><path d="M196 140 H222" class="edge " marker-end="url(#fig-q3-a)"/><path d="M196 234 H222" class="edge " marker-end="url(#fig-q3-a)"/><g class="svg-node ok"><rect x="226" y="24" width="160" height="48"/><text x="238" y="46" class="n-name">✓ 已发送</text><text x="238" y="66" class="n-body">取得记录或回执</text></g><g class="svg-node unknown"><rect x="226" y="110" width="160" height="74"/><text x="238" y="132" class="n-name">? unknown</text><text x="238" y="152" class="n-body">超时，未收到结果</text><text x="238" y="171" class="n-body">不直接重发</text></g><g class="svg-node failed"><rect x="226" y="210" width="160" height="48"/><text x="238" y="232" class="n-name">✕ 明确失败</text><text x="238" y="252" class="n-body">按下表辨认原因</text></g><path d="M386 140 H442" class="edge " marker-end="url(#fig-q3-a)"/><g class="svg-node focus"><rect x="446" y="110" width="170" height="74"/><text x="458" y="132" class="n-name">查询权威记录</text><text x="458" y="152" class="n-body">发送记录或</text><text x="458" y="171" class="n-body">业务回执</text></g><path d="M616 140 H646 M646 53 V232" class="edge"/><path d="M646 53 H672" class="edge " marker-end="url(#fig-q3-a)"/><path d="M646 140 H672" class="edge " marker-end="url(#fig-q3-a)"/><path d="M646 232 H672" class="edge " marker-end="url(#fig-q3-a)"/><g class="svg-node ok"><rect x="676" y="24" width="188" height="58"/><text x="688" y="46" class="n-name">✓ 已发送</text><text x="688" y="66" class="n-body">记录回执</text></g><g class="svg-node unknown"><rect x="676" y="110" width="188" height="74"/><text x="688" y="132" class="n-name">? 仍为unknown</text><text x="688" y="152" class="n-body">可能是可见性延迟</text><text x="688" y="171" class="n-body">继续核验</text></g><g class="svg-node retry"><rect x="676" y="196" width="188" height="72"/><text x="688" y="218" class="n-name">↻ 可有限次重试</text><text x="688" y="238" class="n-body">原请求确认未提交，</text><text x="688" y="257" class="n-body">或幂等保证仍有效</text></g><path d="M770 268 V296 H91 V188" class="edge dashed" marker-end="url(#fig-q3-a)"/><text x="440" y="289" text-anchor="middle" class="n-meta">重试：沿用同一请求标识和参数，在去重有效期内，有限次</text></svg><div class="tree fig-compact"><div class="branch-root"><div class="node kept"><span class="node-name">点击发送</span><span class="node-body">授权已覆盖这次后果</span></div></div>
+<ul class="branches">
+<li><div class="branch-row"><span class="obs">取得发送记录或业务回执</span><span class="state state-ok"><span class="glyph" aria-hidden="true">✓</span>已发送</span><span class="next">记录回执</span></div></li>
+<li><div class="branch-row"><span class="obs">请求超时，客户端未收到结果</span><span class="state state-unknown"><span class="glyph" aria-hidden="true">?</span>unknown</span><span class="next">查询权威发送记录或业务回执</span></div>
+<ul class="branches"><li><div class="branch-row"><span class="obs">权威记录显示已送出</span><span class="state state-ok"><span class="glyph" aria-hidden="true">✓</span>已发送</span><span class="next">记录回执</span></div></li><li><div class="branch-row"><span class="obs">原请求已终止且未提交，或仍有有效的幂等性保证</span><span class="state state-retry"><span class="glyph" aria-hidden="true">↻</span>可有限次重试</span><span class="next">沿用原请求标识和参数，并在去重有效期内重试</span></div></li><li><div class="branch-row"><span class="obs">未查到记录（可能是可见性延迟）</span><span class="state state-unknown"><span class="glyph" aria-hidden="true">?</span>仍为unknown</span><span class="next">继续核验，不立即重发</span></div></li></ul></li>
+<li><div class="branch-row"><span class="obs">明确失败</span><span class="state state-failed"><span class="glyph" aria-hidden="true">✕</span>失败</span><span class="next">先辨认原因，见下表</span></div></li>
+</ul></div><table class="stack failures"><caption>明确失败时</caption><thead><tr><th scope="col">失败原因</th><th scope="col">下一步</th><th scope="col">依据</th></tr></thead><tbody><tr><td data-label="失败原因">读取被限流</td><td data-label="下一步">在预算内退避后重试</td><td data-label="依据">读取没有待核验的写入副作用</td></tr><tr><td data-label="失败原因">参数错误</td><td data-label="下一步">修正参数后重新执行</td><td data-label="依据">确认原请求未执行；不能沿用原参数的幂等保证替代核验</td></tr><tr><td data-label="失败原因">权限拒绝</td><td data-label="下一步">停止</td><td data-label="依据">重复尝试或换一条路径不会使动作获得授权</td></tr></tbody></table></figure><p>刚发的邮件查不到，也可能只是记录尚未同步（eventual consistency）。这时应等待可见性窗口结束，再继续查询；只有确认原请求已经终止且没有提交，才能排除它稍后自行完成。如果重试依赖接口的幂等（idempotency）保证，就必须沿用同一个请求标识和同一组参数，而且仍在去重有效期内。Message-ID 能帮助找到同一封邮件，但它本身不负责去重。</p><p>参数错了要先改，但改好参数并不能证明上次没执行，仍要核对。权限拒绝则不是多试几次、换一条路径就能解决的。恢复任务时，保留原请求标识、输入版本和核验结果，才知道接下来是在继续同一个请求，还是内容已经变了、需要重新批准。</p></section><section class="argument" id="q3-remove-wizard" aria-labelledby="q3-remove-wizard-h"><h3 id="q3-remove-wizard-h"><span class="sec-no">3.3</span>模型能力提高后，哪些向导步骤可以删除？</h3><p class="section-answer" id="q3-remove-wizard-answer">先删去已经不需要的操作指导，每次只删一步；确认风险没有超出容差、用户确实少做了工作，再保留这项简化。</p><p>即使模型能力提高十倍，会操作软件，也不等于知道用户愿意接受哪种业务取舍，更不等于已经获准发送文件。教它怎样点击的步骤，可以重新测试后再决定去留；确认意图和授权的步骤，不能因为模型变强就取消。</p><p>OSWorld 这类基准的成绩提高了，说明操作能力变强，权限边界并不会跟着改变。它的任务设计可以借用，真实账号、权限和中断恢复仍要另外验收。</p><p>测试要用没参与调整的任务，比较危险副作用、选错对象、重复执行和中断恢复，同时统计用户介入了多少次。可接受的风险上限和所需样本量事先定好；不能因为少量试验没有出事故，就撤除整套向导。</p></section><section class="q-sources" id="q3-sources" aria-labelledby="q3-sources-h"><h3 id="q3-sources-h">来源</h3><ol><li><span class="src-title"><a href="https://developers.openai.com/api/docs/guides/tools-computer-use">OpenAI — Computer use</a></span><span class="src-meta">OpenAI · 官方文档</span><span class="src-point">敏感环节应在执行前确认</span></li><li><span class="src-title"><a href="https://developers.openai.com/api/docs/guides/agents/guardrails-approvals">OpenAI — Guardrails and human review</a></span><span class="src-meta">OpenAI · 官方文档</span><span class="src-point">执行前检查对象、参数与授权窗口</span></li><li><span class="src-title"><a href="https://www.anthropic.com/engineering/how-we-contain-claude">Anthropic — How we contain Claude across products</a></span><span class="src-meta">Anthropic · 官方工程文章</span><span class="src-point">按访问范围与凭证边界判断风险</span></li><li><span class="src-title"><a href="https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/">AWS Builders&#x27; Library — Making retries safe with idempotent APIs</a></span><span class="src-meta">Amazon Web Services · 官方工程文章</span><span class="src-point">同一请求标识才能安全重试</span></li><li><span class="src-title"><a href="https://www.rfc-editor.org/rfc/rfc5322#section-3.6.4">RFC 5322 — Internet Message Format</a></span><span class="src-meta">IETF · 技术标准</span><span class="src-point">Message-ID不提供去重保证</span></li><li><span class="src-title"><a href="https://osworld-v2.xlang.ai/">OSWorld 2.0 — Benchmarking computer-use agents on long-horizon real-world tasks</a></span><span class="src-meta">OSWorld · 研究基准</span><span class="src-point">任务设计可借用，权限须另行验收</span></li><li><span class="src-title"><a href="https://developers.openai.com/api/docs/guides/evaluation-best-practices">OpenAI — Evaluation best practices</a></span><span class="src-meta">OpenAI · 官方文档</span><span class="src-point">生产验收需保留真实任务回归</span></li></ol></section><nav class="chapter-end" aria-label="翻页"><a class="chapter-end-prev" href="#q2"><span class="chapter-end-dir">上一题</span><span class="chapter-end-title">02 Reasoning effort 与成本</span></a><a class="chapter-end-next" href="#q4"><span class="chapter-end-dir">下一题</span><span class="chapter-end-title">04 概率与风险</span></a></nav></section><section class="q-page" id="q4" aria-labelledby="q4-h"><header class="q-head"><h2 id="q4-h"><span class="q-num">Q4</span><span class="q-title">类型受约束的输出，怎样才能用于业务决策？</span></h2></header><div class="opening"><p class="core-answer" id="q4-answer">答案符合 schema，仍然可能选错。要让系统自动放行，还需要检查概率分布、在自己的业务上校准，并通过独立验收。</p><p>模型只能在几个合法选项里选，这解决的是格式和取值范围；选错了其中一项，业务判断仍然是错的。Jev 的 confidence 反映的是分布有多集中，并不直接等于答对的概率。所以“输出空间锁死”只保证了类型合法。选择是否正确、概率是否经过校准、重复调用会不会跨过动作边界、能否抵抗误导性输入，这些都要分开检查；还要清楚漏掉一个严重问题要付出什么代价。</p></div><nav class="answer-map" aria-label="Q4的问题结构"><ol><li><a href="#q4-distribution"><span class="map-no">4.1</span><span>严重度得分为1.99，人工闸门设在2.00，规则应该怎样写？</span></a></li><li><a href="#q4-independent-eval"><span class="map-no">4.2</span><span>上线前要补哪一份材料？</span></a></li><li><a href="#q4-repeat"><span class="map-no">4.3</span><span>同一道题三次结果不同，应该检查什么？</span></a></li><li><a href="#q4-fallback"><span class="map-no">4.4</span><span>服务不稳定和判断不确定，能用同一种降级吗？</span></a></li></ol></nav><section class="argument" id="q4-distribution" aria-labelledby="q4-distribution-h"><h3 id="q4-distribution-h"><span class="sec-no">4.1</span>严重度得分为1.99，人工闸门设在2.00，规则应该怎样写？</h3><p class="section-answer" id="q4-distribution-answer">规则不按均值写，按严重等级的概率写：“严重及以上”的概率不超过放行上限（用业务数据校准）才自动放行，超过阻断线就阻断，落在两者之间的送审。</p><p>四个等级分别记0、1、2、3分，构造下面两组概率。两组均值都低于2，“低于2放行”都会放行，但两组在各等级上的概率差异很大。</p><figure class="exhibit primary" id="fig-risk-distribution" aria-describedby="q4-distribution-answer"><figcaption><span class="fig-no">图 4.1</span>同一条“低于2放行”规则下的两组四等级风险分布</figcaption><div class="compare two"><div class="dist" data-preset="A">
+<h4 class="dist-title">构造分布A（确定性合成示例）</h4>
+<span class="eyebrow">概率，0–100%</span><div class="bars" aria-hidden="true"><div class="axis"><span>0%</span><span>50%</span><span>100%</span></div><div class="bar-row"><span class="bar-label">0 无害</span><span class="bar-track"><span class="bar" style="width:0%"></span></span><span class="bar-value">0%</span></div><div class="bar-row"><span class="bar-label">1 轻微</span><span class="bar-track"><span class="bar" style="width:1%"></span></span><span class="bar-value">1%</span></div><div class="bar-row tail"><span class="bar-label">2 严重</span><span class="bar-track"><span class="bar" style="width:99%"></span></span><span class="bar-value">99%</span></div><div class="bar-row tail"><span class="bar-label">3 极严重</span><span class="bar-track"><span class="bar" style="width:0%"></span></span><span class="bar-value">0%</span></div></div>
+<div class="tail-sum"><span>P(等级≥2)</span><strong>99%</strong></div>
+<span class="eyebrow">均值，按0–3计分；竖线为2</span><div class="mean-scale" aria-hidden="true"><span class="mean-axis"><span class="mean-threshold" style="left:66.6667%"></span><span class="mean-marker" style="left:66.3333%"></span></span><span class="mean-ticks"><span>0</span><span>1</span><span>2</span><span>3</span></span></div>
+<dl class="derived"><div><dt>概率向量</dt><dd><code>[0, 0.01, 0.99, 0]</code></dd></div>
+<div><dt>均值</dt><dd>1.99</dd></div><div><dt>“低于2放行”</dt><dd>放行</dd></div></dl>
+</div><div class="dist" data-preset="B">
+<h4 class="dist-title">构造分布B（确定性合成示例）</h4>
+<span class="eyebrow">概率，0–100%</span><div class="bars" aria-hidden="true"><div class="axis"><span>0%</span><span>50%</span><span>100%</span></div><div class="bar-row"><span class="bar-label">0 无害</span><span class="bar-track"><span class="bar" style="width:50%"></span></span><span class="bar-value">50%</span></div><div class="bar-row"><span class="bar-label">1 轻微</span><span class="bar-track"><span class="bar" style="width:0%"></span></span><span class="bar-value">0%</span></div><div class="bar-row tail"><span class="bar-label">2 严重</span><span class="bar-track"><span class="bar" style="width:0%"></span></span><span class="bar-value">0%</span></div><div class="bar-row tail"><span class="bar-label">3 极严重</span><span class="bar-track"><span class="bar" style="width:50%"></span></span><span class="bar-value">50%</span></div></div>
+<div class="tail-sum"><span>P(等级≥2)</span><strong>50%</strong></div>
+<span class="eyebrow">均值，按0–3计分；竖线为2</span><div class="mean-scale" aria-hidden="true"><span class="mean-axis"><span class="mean-threshold" style="left:66.6667%"></span><span class="mean-marker" style="left:50%"></span></span><span class="mean-ticks"><span>0</span><span>1</span><span>2</span><span>3</span></span></div>
+<dl class="derived"><div><dt>概率向量</dt><dd><code>[0.5, 0, 0, 0.5]</code></dd></div>
+<div><dt>均值</dt><dd>1.50</dd></div><div><dt>“低于2放行”</dt><dd>放行</dd></div></dl>
+</div></div>
+<table class="stack exact"><caption>原始值</caption>
+<thead><tr><th scope="col">分布</th><th scope="col">P(0 无害)</th><th scope="col">P(1 轻微)</th><th scope="col">P(2 严重)</th><th scope="col">P(3 极严重)</th><th scope="col">均值</th><th scope="col">P(等级≥2)</th><th scope="col">“低于2放行”</th></tr></thead>
+<tbody><tr><th scope="row">构造分布A</th><td data-label="P(0)">0</td><td data-label="P(1)">0.01</td><td data-label="P(2)">0.99</td><td data-label="P(3)">0</td><td data-label="均值">1.99</td><td data-label="P(等级≥2)">99%</td><td data-label="“低于2放行”">放行</td></tr><tr><th scope="row">构造分布B</th><td data-label="P(0)">0.5</td><td data-label="P(1)">0</td><td data-label="P(2)">0</td><td data-label="P(3)">0.5</td><td data-label="均值">1.50</td><td data-label="P(等级≥2)">50%</td><td data-label="“低于2放行”">放行</td></tr></tbody></table>
+<div class="explorer" id="q4-explorer" hidden>
+<h4 class="dist-title" id="q4-custom-title">自定义分布</h4>
+<form id="q4-form" novalidate><fieldset><legend>概率向量（非负，总和为1）</legend>
+<div class="inputs"><label class="num"><span>P(0 无害)</span><input type="number" id="q4-p0" min="0" max="1" step="0.01" inputmode="decimal"></label><label class="num"><span>P(1 轻微)</span><input type="number" id="q4-p1" min="0" max="1" step="0.01" inputmode="decimal"></label><label class="num"><span>P(2 严重)</span><input type="number" id="q4-p2" min="0" max="1" step="0.01" inputmode="decimal"></label><label class="num"><span>P(3 极严重)</span><input type="number" id="q4-p3" min="0" max="1" step="0.01" inputmode="decimal"></label></div>
+<div class="buttons"><button type="submit">计算</button><button type="button" data-load="A">恢复构造分布A</button><button type="button" data-load="B">恢复构造分布B</button></div>
+</fieldset></form>
+<p class="status" id="q4-status" role="status" aria-live="polite"></p>
+<div class="dist" id="q4-custom">
+<span class="eyebrow">概率，0–100%</span><div class="bars" aria-hidden="true"><div class="axis"><span>0%</span><span>50%</span><span>100%</span></div><div id="q4-custom-bars"></div></div>
+<div class="tail-sum"><span>P(等级≥2)</span><strong id="q4-tail"></strong></div>
+<span class="eyebrow">均值，按0–3计分；竖线为2</span><div class="mean-scale" aria-hidden="true"><span class="mean-axis"><span class="mean-threshold" style="left:66.6667%"></span><span class="mean-marker" id="q4-mean-marker"></span></span><span class="mean-ticks"><span>0</span><span>1</span><span>2</span><span>3</span></span></div>
+<dl class="derived"><div><dt>有效向量</dt><dd><code id="q4-vec"></code></dd></div><div><dt>均值</dt><dd id="q4-mean"></dd></div>
+<div><dt>“低于2放行”</dt><dd id="q4-rule"></dd></div><div><dt>阈值</dt><dd>待目标业务数据校准</dd></div></dl>
+</div></div></figure><p>分布A里“严重”占了99%，均值却只有1.99。把1.99取整成2，看似修补了这个例子，却拦不住分布B：无害和极严重各占一半，均值只有1.5。均值把整个分布压成一个数，严重尾部也跟着消失，调整小数位也无法补回。</p><p>所以规则直接读完整的概率向量，按下面的顺序判断：</p><table class="stack"><thead><tr><th scope="col">条件</th><th scope="col">动作</th></tr></thead><tbody><tr><td data-label="条件">输入不完整、模型或 rubric 版本未经验收、输入超出校准范围</td><td data-label="动作">送审</td></tr><tr><td data-label="条件">P(等级≥2) 不高于放行上限</td><td data-label="动作">自动放行</td></tr><tr><td data-label="条件">P(等级≥2) 高于阻断线</td><td data-label="动作">阻断</td></tr><tr><td data-label="条件">介于放行上限与阻断线之间</td><td data-label="动作">送审</td></tr></tbody></table><p>放行上限在独立的业务测试集上校准，让严重漏报率的置信上界不超过业务能承受的预算；阻断线按误拦的代价来定。已经送审的事项，没有新证据，就不能因为重试一次得到更低的分数又改回放行。</p></section><section class="argument" id="q4-independent-eval" aria-labelledby="q4-independent-eval-h"><h3 id="q4-independent-eval-h"><span class="sec-no">4.2</span>上线前要补哪一份材料？</h3><p class="section-answer" id="q4-independent-eval-answer">补一份独立的业务验收与发布批准报告：用自己的业务样本和独立标注，检查字段、中间量和最终决定，写清严重漏报、覆盖率、转人工比例和国内网络下的故障表现，最后由负责人批准。</p><p>厂商题集上的校准数字，只能说明模型在那批题上表现如何；换成自己的文件和业务要求，就要重新取样、重新标注。样本要覆盖中文、否定句、日期和数字、长材料、选项顺序、无关信息和对抗内容；同一客户、同一份合同的片段，不能既出现在调参材料里，又出现在测试材料里。</p><figure class="exhibit supporting" id="fig-evaluation-contract" aria-describedby="q4-independent-eval-answer"><figcaption><span class="fig-no">图 4.2</span>发布报告的内容，以及只核对最终标签时漏检的错误</figcaption><div class="compare two">
+<div class="compare-col"><span class="eyebrow">发布报告内容</span><dl class="ledger"><div><dt>标准答案</dt><dd>由独立标注者给出，意见不一致时另行裁决</dd></div><div><dt>测试材料</dt><dd>调参、校准和最终测试各用一批，互不重复</dd></div><div><dt>报告指标</dt><dd>严重漏报及其置信区间、自动处理覆盖率、转人工比例和成本</dd></div><div><dt>网络与故障</dt><dd>国内网络下的延迟、超时率和降级演练结果</dd></div><div><dt>用途与批准</dt><dd>批准的用途与禁用用途、模型和rubric版本、负责人</dd></div></dl></div>
+<div class="compare-col"><span class="eyebrow">只核对最终标签时漏检的错误</span><ol class="chain"><li><div class="node focus"><span class="node-name">字段选择</span><span class="node-body">选错</span></div></li><li><div class="node "><span class="node-name">后续计算</span><span class="node-body">随之改变</span></div></li><li><div class="node on-demand"><span class="node-name">最终通过标签</span><span class="node-body">恰好没有改变</span></div></li></ol></div>
+</div></figure><p>只核对最后的通过标签也不够。模型可能取错了字段，却碰巧得出同样的标签；如果这个错误字段后面还要参与计算，这次“答对”反而掩盖了问题。所以验收要查那些后面还会用到的字段和中间量，不能只报一个最终准确率。</p><p>同一个模型，拿来监控趋势和拿来放行生产动作，验收标准不一样。报告批准的是某个具体用途；只在监控里验证过的评估器，不能直接拿去当发布闸门。</p></section><section class="argument" id="q4-repeat" aria-labelledby="q4-repeat-h"><h3 id="q4-repeat-h"><span class="sec-no">4.3</span>同一道题三次结果不同，应该检查什么？</h3><p class="section-answer" id="q4-repeat-answer">先确认三次的输入和评分条件是否一致，再看差异出在原始数值、标签，还是最终动作上。</p><p>输入字节、实际模型版本、rubric、选项顺序、包装层，任何一项改变，三次调用就不能直接比较。排除这些以后，还要看波动造成了什么后果：小数点后变了一点但动作没变，和一次放行、一次送审，性质完全不同。包装层如果把1.99转成了整数2，还要查清业务代码实际读的是哪个字段。</p><p>这些信息要和重复实验一起保存，不能最后只剩一个“一致率”，更不能一直重试到某一次通过为止。同一条轨迹重复运行很多次，能检验稳定性，但并没有增加新的业务情境；严重漏报的上界，仍要靠独立的业务测试来估计。</p><p>输入完整、模型版本已验收、结果仍在校准范围内，三条都满足，自动判断才有依据。把请求全部交给人工，自动错误可能少了，自动处理的工作却没有完成，所以覆盖率要一起报告。</p></section><section class="argument" id="q4-fallback" aria-labelledby="q4-fallback-h"><h3 id="q4-fallback-h"><span class="sec-no">4.4</span>服务不稳定和判断不确定，能用同一种降级吗？</h3><p class="section-answer" id="q4-fallback-answer">服务无法连接，按故障流程恢复或切换；证据不足，就补证或送审。两种情况最后可以返回同一类动作，但触发条件不能共用一套。</p><p>网络恢复了，只说明又能收到响应，不说明答案可靠。备用模型能返回分数，也不代表原模型的阈值可以直接套上去。决定下一步之前，先确定当前缺少的是服务响应，还是下判断的依据。</p><figure class="exhibit supporting" id="fig-two-fallback-paths" aria-describedby="q4-fallback-answer"><figcaption><span class="fig-no">图 4.3</span>网络故障与判断不确定分别处理</figcaption><svg class="figsvg fig-wide" viewBox="0 0 880 222" role="img" aria-labelledby="fig-q4f-t fig-q4f-d" xmlns="http://www.w3.org/2000/svg"><title id="fig-q4f-t">网络故障与判断不确定的两条处理路径</title><desc id="fig-q4f-d">网络故障时，超时、有限次重试、熔断，再切换到事先验收的备用方案（本地模型、规则或人工）；判断不确定时，判断证据是否充分、风险高低，再送审或标为unknown。两条路径返回同一组动作allow、review、deny、unknown，但触发条件不同，分数和阈值不能直接共用。</desc><defs><marker id="fig-q4f-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" class="arrowhead"/></marker></defs><text x="16" y="18" class="n-meta">网络故障</text><g class="svg-node plain"><rect x="16" y="28" width="230" height="46"/><text x="28" y="50" class="n-name">超时、有限次重试、熔断</text></g><path d="M246 51 H292" class="edge " marker-end="url(#fig-q4f-a)"/><g class="svg-node plain"><rect x="296" y="28" width="250" height="58"/><text x="308" y="50" class="n-name">切换到事先验收的备用方案</text><text x="308" y="70" class="n-body">本地模型、规则或人工</text></g><text x="16" y="134" class="n-meta">判断不确定</text><g class="svg-node plain"><rect x="16" y="144" width="230" height="46"/><text x="28" y="166" class="n-name">判断证据是否充分、风险高低</text></g><path d="M246 167 H292" class="edge " marker-end="url(#fig-q4f-a)"/><g class="svg-node plain"><rect x="296" y="144" width="250" height="46"/><text x="308" y="166" class="n-name">送审（review）或标为unknown</text></g><path d="M546 57 H566 V112" class="edge"/><path d="M546 167 H566 V112" class="edge"/><path d="M566 112 H584" class="edge " marker-end="url(#fig-q4f-a)"/><g class="svg-node kept"><rect x="588" y="70" width="276" height="84"/><text x="600" y="92" class="n-name">统一返回的动作</text><text x="600" y="112" class="n-body">allow · review · deny · unknown</text><text x="600" y="131" class="n-body">触发条件不同，阈值不共用</text></g></svg><div class="compare two fig-compact">
+<div class="compare-col"><span class="eyebrow">网络故障</span><ol class="chain"><li><div class="node "><span class="node-name">超时、有限次重试、熔断</span></div></li><li><div class="node "><span class="node-name">切换到事先验收的备用方案</span><span class="node-body">本地模型、规则或人工</span></div></li></ol></div>
+<div class="compare-col"><span class="eyebrow">判断不确定</span><ol class="chain"><li><div class="node "><span class="node-name">判断证据是否充分、风险高低</span></div></li><li><div class="node "><span class="node-name">送审（review）或标为unknown</span></div></li></ol></div>
+</div>
+<dl class="facts shared"><div class="fig-compact"><dt>统一返回</dt><dd>allow、review、deny、unknown；分数与阈值不能直接共用</dd></div>
+<div><dt>数据去向</dt><dd>接入时确定，不在故障后临时更换供应商或传输区域</dd></div>
+<div><dt>高影响动作</dt><dd>校验服务不可用时，只保存草稿或交人工处理</dd></div></dl></figure></section><section class="q-sources" id="q4-sources" aria-labelledby="q4-sources-h"><h3 id="q4-sources-h">来源</h3><ol><li><span class="src-title"><a href="https://docs.typesafe.ai/primitives/score.md">TypeSafe — Score</a></span><span class="src-meta">TypeSafe · 官方文档</span><span class="src-point">分数为等级概率加权，可落在两级之间</span></li><li><span class="src-title"><a href="https://docs.typesafe.ai/confidence.md">TypeSafe — Confidence</a></span><span class="src-meta">TypeSafe · 官方文档</span><span class="src-point">confidence只反映分布集中度</span></li><li><span class="src-title"><a href="https://docs.typesafe.ai/model-jaggedness/jev-1.13.md">TypeSafe — Jev 1.13 jaggedness</a></span><span class="src-meta">TypeSafe · 官方文档</span><span class="src-point">数字、日期与对抗内容需专项覆盖</span></li><li><span class="src-title"><a href="https://docs.typesafe.ai/cookbooks/consistency_choice_cookbook.md">TypeSafe — Self-consistency: choices</a></span><span class="src-meta">TypeSafe · 官方文档</span><span class="src-point">重复一致率不等于结果正确</span></li><li><span class="src-title"><a href="https://pydantic.dev/docs/ai/models/typesafe/">Pydantic AI — TypeSafe (Jev)</a></span><span class="src-meta">Pydantic · 官方文档</span><span class="src-point">取整等级需核对原始分数字段</span></li><li><span class="src-title"><a href="https://pydantic.dev/docs/ai/api/models/typesafe/">Pydantic AI — models.typesafe API</a></span><span class="src-meta">Pydantic · 官方文档</span><span class="src-point">latest别名随发布变动，需记录实际版本</span></li></ol></section><nav class="chapter-end" aria-label="翻页"><a class="chapter-end-prev" href="#q3"><span class="chapter-end-dir">上一题</span><span class="chapter-end-title">03 权限与恢复</span></a><a class="chapter-end-next" href="#q5"><span class="chapter-end-dir">下一题</span><span class="chapter-end-title">05 修改与生效</span></a></nav></section><section class="q-page" id="q5" aria-labelledby="q5-h"><header class="q-head"><h2 id="q5-h"><span class="q-num">Q5</span><span class="q-title">律师的一次修改，怎样才能成为平台规则？</span></h2></header><div class="opening"><p class="core-answer" id="q5-answer">两处修改都先保存下来，但不直接写进全平台生效的 playbook。删句和加公式各自查清理由和依据，批准后也只在限定的客户和法域内使用；下周的德国和越南事项，只用各自已经批准的规则。</p><p>香港律师替客户A修改新加坡就业合同，删了一句风险提示，加了一条补偿公式。律师交付合同，完成的是客户A的委托；平台要不要采纳其中的做法，是另一个决定。平台如果只记下“律师改过这份合同”，下次就判断不了该沿用哪一处。经验要能复用，还要知道律师为什么这样改。</p></div><nav class="answer-map" aria-label="Q5的问题结构"><ol><li><a href="#q5-atomic-diff"><span class="map-no">5.1</span><span>为什么删除一句话和新增一个公式要分开审查？</span></a></li><li><a href="#q5-scope"><span class="map-no">5.2</span><span>机制要保留什么，修改才能成为规则？</span></a></li><li><a href="#q5-independent-release"><span class="map-no">5.3</span><span>独立评估怎样做？</span></a></li><li><a href="#q5-incentives"><span class="map-no">5.4</span><span>奖励黑客风险在哪里？</span></a></li></ol></nav><section class="argument" id="q5-atomic-diff" aria-labelledby="q5-atomic-diff-h"><h3 id="q5-atomic-diff-h"><span class="sec-no">5.1</span>为什么删除一句话和新增一个公式要分开审查？</h3><p class="section-answer" id="q5-atomic-diff-answer">这次删了风险提示，不代表以后都不用提示；这次加了公式，也不代表其他合同都可以照此计算。两处修改的理由要分别核实。</p><p>律师删那句话，可能是原句没有依据，也可能只是它不适用于客户A；加公式又可能出于另一番考虑。两处虽然是一起改的，接受其中一处的理由，却不能用到另一处。</p><figure class="exhibit primary" id="fig-atomic-change-branches" aria-describedby="q5-atomic-diff-answer"><figcaption><span class="fig-no">图 5.1</span>删去风险句与加上公式各自所需的理由和检查</figcaption><ol class="diff" aria-label="律师修改的两项原子变更">
+<li class="diff-del"><span class="diff-sign" aria-hidden="true">−</span><span class="diff-id">D1 删除</span><span class="diff-text">若条款被挑战，供应商可能面临 50% 规则制裁</span></li>
+<li class="diff-add"><span class="diff-sign" aria-hidden="true">+</span><span class="diff-id">D2 新增</span><span class="diff-text">补偿公式 = 月薪 × 12 × 当地 50% 规则系数</span></li>
+</ol>
+<svg class="figsvg fig-wide" viewBox="0 0 880 280" role="img" aria-labelledby="fig-q5-t fig-q5-d" xmlns="http://www.w3.org/2000/svg"><title id="fig-q5-t">两处修改各自的审查路径</title><desc id="fig-q5-d">D1删去风险句、D2加上公式都已发生，但理由和依据尚未核实。D1依次查明删除理由、独立复核、批准；D2依次查明公式出处、逐个法域核对、批准。两条路径分别审查，一项的理由不能用于另一项；批准后只在获准的客户和法域内生效。</desc><defs><marker id="fig-q5-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" class="arrowhead"/></marker></defs><line x1="217" y1="24" x2="217" y2="250" class="edge now"/><text x="217" y="16" text-anchor="middle" class="n-meta">现在</text><g class="svg-node kept"><rect x="16" y="40" width="180" height="72"/><text x="28" y="62" class="n-name">D1 已删去风险句</text><text x="28" y="82" class="n-body">删除理由尚未核实</text></g><g class="svg-node pending"><rect x="238" y="40" width="180" height="72"/><text x="250" y="62" class="n-name">查明删除理由</text><text x="250" y="82" class="n-body">原句错误、缺少依据，</text><text x="250" y="101" class="n-body">不适用或谈判让步</text></g><path d="M200 76 H234" class="edge dashed" marker-end="url(#fig-q5-a)"/><g class="svg-node pending"><rect x="460" y="40" width="180" height="72"/><text x="472" y="62" class="n-name">独立复核</text><text x="472" y="82" class="n-body">删去一次，不代表</text><text x="472" y="101" class="n-body">以后都不必提示</text></g><path d="M422 76 H456" class="edge dashed" marker-end="url(#fig-q5-a)"/><g class="svg-node decision"><rect x="682" y="40" width="180" height="72"/><text x="694" y="62" class="n-name">批准</text><text x="694" y="82" class="n-body">只在获准的客户</text><text x="694" y="101" class="n-body">和法域内生效</text></g><path d="M644 76 H678" class="edge dashed" marker-end="url(#fig-q5-a)"/><text x="540" y="137" text-anchor="middle" class="n-meta">两项分别审查，一项的理由不能用于另一项</text><g class="svg-node kept"><rect x="16" y="160" width="180" height="72"/><text x="28" y="182" class="n-name">D2 已加上公式</text><text x="28" y="202" class="n-body">计算依据尚未核实</text></g><g class="svg-node pending"><rect x="238" y="160" width="180" height="72"/><text x="250" y="182" class="n-name">查明公式出处</text><text x="250" y="202" class="n-body">从哪里来、计算什么、</text><text x="250" y="221" class="n-body">适用于谁</text></g><path d="M200 196 H234" class="edge dashed" marker-end="url(#fig-q5-a)"/><g class="svg-node pending"><rect x="460" y="160" width="180" height="72"/><text x="472" y="182" class="n-name">逐个法域核对</text><text x="472" y="202" class="n-body">德国：基数、期间、范围</text><text x="472" y="221" class="n-body">越南：无批准依据则待审</text></g><path d="M422 196 H456" class="edge dashed" marker-end="url(#fig-q5-a)"/><g class="svg-node decision"><rect x="682" y="160" width="180" height="72"/><text x="694" y="182" class="n-name">批准</text><text x="694" y="202" class="n-body">只在获准的客户</text><text x="694" y="221" class="n-body">和法域内生效</text></g><path d="M644 196 H678" class="edge dashed" marker-end="url(#fig-q5-a)"/><g transform="translate(16 270)"><line x1="0" y1="-4" x2="28" y2="-4" class="edge "/><text x="36" y="0" class="n-meta">已经发生</text><line x1="116" y1="-4" x2="144" y2="-4" class="edge dashed"/><text x="152" y="0" class="n-meta">尚未发生</text></g></svg>
+<div class="compare two fig-compact">
+<div class="compare-col"><span class="eyebrow">D1</span><ol class="chain"><li><div class="node focus"><span class="node-name">律师已删去风险句</span><span class="node-body">删除理由尚未核实</span></div></li><li><div class="node pending"><span class="node-name">查明删除理由</span><span class="node-body">原句错误、缺少依据、不适用于这份合同，还是客户在谈判中作出的取舍</span></div></li><li><div class="node pending"><span class="node-name">请独立复核者检查</span><span class="node-body">删去这句，不代表以后都不必提示这类风险</span></div></li><li><div class="node pending"><span class="node-name">批准可复用的做法</span></div></li><li><div class="node pending"><span class="node-name">仅用于获准的客户和法域</span></div></li></ol></div>
+<div class="compare-col"><span class="eyebrow">D2</span><ol class="chain"><li><div class="node focus"><span class="node-name">律师已加上公式</span><span class="node-body">计算依据尚待核实</span></div></li><li><div class="node pending"><span class="node-name">查明公式出处</span><span class="node-body">从哪里来、计算什么、适用于谁</span></div></li><li><div class="node pending"><span class="node-name">核对各法域的条件</span><span class="node-body">德国：基数、期间和适用范围；越南没有已批准的依据时保持待审</span></div></li><li><div class="node pending"><span class="node-name">批准可复用的做法</span></div></li><li><div class="node pending"><span class="node-name">仅用于获准的客户和法域</span></div></li></ol></div>
+</div>
+<p class="exhibit-note fig-compact">实线表示已发生的修改，虚线表示尚未进行的步骤。</p></figure><p>被删句子里的“50%规则制裁”和公式里的“50%规则系数”，要各自查清指的是什么。数字一样，不能说明出自同一条法律规定；客户A愿意接受这样的约定，也不能说明别的客户都该这样写。</p><p>放到德国合同里，就算碰巧算出一样的金额，算法也还要核对。德国相关规定中的50%是竞业限制补偿的下限，基数涉及最后取得的合同给付，浮动部分另有平均规则，计算期间也要和限制期对应。只拿月薪乘12再乘50%，也许能与某个样例的结果相符，这些条件却都被遗漏了。换到越南，没有取得并批准当地依据之前，不能只改国家名称、填一个系数。</p></section><section class="argument" id="q5-scope" aria-labelledby="q5-scope-h"><h3 id="q5-scope-h"><span class="sec-no">5.2</span>机制要保留什么，修改才能成为规则？</h3><p class="section-answer" id="q5-scope-answer">要保留原稿、两处改动各自的理由和依据、作者和委托关系、审查与批准记录，以及父版本和适用范围。做法批准之后才写进带版本的 playbook，只给一个新版本号是不够的。</p><p>平台先要学会的，是以后怎样检查合同：哪些句子要查法源，公式要核对哪些条件，碰到什么情况需要复核。这些做法存进带版本的 playbook，后面的合同就能用上，不必先训练模型权重。要说清一次更新为什么值得采用，就要保留D1、D2各自的原稿、理由、反对意见和审查过程；这些历史记录受权限约束，也不会自动进入以后的回答。</p><figure class="exhibit supporting" id="fig-scope-and-state" aria-describedby="q5-scope-answer"><figcaption><span class="fig-no">图 5.2</span>保留修改理由和批准过程，再限定可适用的合同范围</figcaption><dl class="ledger"><div><dt>修改内容</dt><dd>原稿、逐项diff和父版本</dd></div><div><dt>修改理由</dt><dd>作者身份、执业法域、修改理由、法源与反对意见</dd></div><div><dt>检查与批准</dt><dd>测试结果、审批人和生效时间</dd></div></dl>
+<div class="scopes-block"><span class="eyebrow">四类信息分开保存，读取和使用时都核对范围</span><div class="scopes"><div class="scope"><span class="node-name">合同事实</span></div><div class="scope"><span class="node-name">客户偏好</span><span class="node-body">可以影响起草选择，不能覆盖强制规定或平台的权限要求</span></div><div class="scope"><span class="node-name">法律要求</span></div><div class="scope"><span class="node-name">平台核查步骤</span></div></div></div></figure><p>能不能复用，还要看资料可以给谁用。客户A的红线不能拿去回答客户B的问题，也不能进入给B准备的摘要、记忆或评估材料；到最后才把客户名删掉，之前已经用过A资料的影响无法消除。所以读材料、用规则的时候，都要核对客户和适用范围。</p><p>客户偏好、合同事实、法律要求和平台流程，也不能混在一起。A偏好的写法可以用在替A起草的合同里，但不能覆盖强制规定，也不能改变平台的权限要求。按A的要求交付了一份合同，不等于以后所有客户都要照这样写。</p></section><section class="argument" id="q5-independent-release" aria-labelledby="q5-independent-release-h"><h3 id="q5-independent-release-h"><span class="sec-no">5.3</span>独立评估怎样做？</h3><p class="section-answer" id="q5-independent-release-answer">原版、只删、只加、两处都改，四个版本分开测试；法源交给熟悉当地法律的人复核，验收材料、评分标准和发布权限都不交给提出修改的一方。</p><p>只测改完的整份合同，就算结果更好，也分不清作用来自删句、加公式，还是两者一起。四组对照能把这件事拆开；再换客户、换法域、换作者，看平台会不会在不该沿用的时候照搬。</p><figure class="exhibit supporting" id="fig-counterfactual-matrix" aria-describedby="q5-independent-release-answer"><figcaption><span class="fig-no">图 5.3</span>先比较四个版本，再检查更换客户、法域或作者后的行为</figcaption><table class="stack "><caption>分别测试删除、新增及两者组合</caption><thead><tr><th scope="col">比较对象</th><th scope="col">待回答的问题</th><th scope="col">验收条件</th><th scope="col">状态</th></tr></thead><tbody><tr><td data-label="比较对象">原版</td><td data-label="待回答的问题">—</td><td data-label="验收条件">作为父版本与对照基线</td><td data-label="状态">父版本</td></tr><tr><td data-label="比较对象">仅删除D1（风险句）</td><td data-label="待回答的问题">原句错误、缺少依据、不适用于这份合同，还是谈判取舍</td><td data-label="验收条件">不据此推定以后都不必提示这类风险</td><td data-label="状态">已提出，待核查</td></tr><tr><td data-label="比较对象">仅新增D2（公式）</td><td data-label="待回答的问题">公式从哪里来、计算什么、适用于谁</td><td data-label="验收条件">各法域分别取得依据；没有已批准依据时保持待审</td><td data-label="状态">已提出，待核查</td></tr><tr><td data-label="比较对象">D1＋D2组合</td><td data-label="待回答的问题">改进来自哪一处修改</td><td data-label="验收条件">版本冻结后，用未参与调参的材料验收</td><td data-label="状态">D1、D2分别待审</td></tr></tbody></table><table class="stack "><caption>改变条件后的预期行为</caption><thead><tr><th scope="col">变化</th><th scope="col">预期行为</th><th scope="col">验收条件</th></tr></thead><tbody><tr><td data-label="变化">客户A换成客户B</td><td data-label="预期行为">A的红线不进入B的材料</td><td data-label="验收条件">检查检索、摘要、记忆和评估材料，不只删除最后的客户名</td></tr><tr><td data-label="变化">换成另一法域（德国或越南）</td><td data-label="预期行为">不通过替换国家名称补出系数</td><td data-label="验收条件">各法域分别取得依据，由对应法域的复核者核查</td></tr><tr><td data-label="变化">德国样例算出相同金额</td><td data-label="预期行为">不据此认定公式完整、可用于其他法域</td><td data-label="验收条件">检查基数、期间和适用范围</td></tr><tr><td data-label="变化">越南没有已批准的依据</td><td data-label="预期行为">保持待审</td><td data-label="验收条件">不输出系数</td></tr><tr><td data-label="变化">只有尚未生效的版本号</td><td data-label="预期行为">不绕过验收与批准</td><td data-label="验收条件">以规则是否已批准生效为准，不以版本号为准</td></tr><tr><td data-label="变化">作者换成知名合伙人</td><td data-label="预期行为">不绕过验收与批准</td><td data-label="验收条件">相同证据得到相同处理</td></tr></tbody></table></figure><p>法源和适用条件，由熟悉当地法律的复核者来查。提出修改的学习器，不能自己改验收题、评分标准或发布权限，也不能修改客户隔离要求。版本定下来之后，再用没参与调参的材料验收；如果反复依据同一个隐藏集的结果挑选版本，实际上也是在针对这套题调参。作者再有名、版本号再新，这些检查都省不了。</p><p>采用新版时，父版本和依据都保留。后来发现它把原先答对的题答错了，就停用受影响的规则，退回到适用的已批准版本，再根据失败记录提出新的修改。这样下一轮仍能继续学习，已经发现的问题也不会继续影响合同。</p></section><section class="argument" id="q5-incentives" aria-labelledby="q5-incentives-h"><h3 id="q5-incentives-h"><span class="sec-no">5.4</span>奖励黑客风险在哪里？</h3><p class="section-answer" id="q5-incentives-answer">如果只奖励报告干净、改动少或测试分高，系统就可能学会删警告、套公式、避开难题，或者把全部请求转交人工。法源、范围、隔离、批准这几条要先满足，效率再高也不能折抵；满足之后，再比较质量和成本。要说系统更善于改进自己，还需另做一层对照。</p><p>删掉警告，报告更干净；套上公式，结论显得更确定；跳过难题，正确率更高；记住客户A的答案，演示更好看；全部转人工，自动错误更少。每一样都能让某个指标变好，问题却留给了客户或审阅者。所以法源、适用范围、客户隔离、必检项和批准是门槛，要先通过，效率上的收益抵不掉其中任何一项；通过之后，再把质量、覆盖率、人工时间和成本放在一起比较。</p><p>这些都做到了，也只回答了一个问题：新版本是否更善于处理合同。要证明平台更善于改进自己，得另做一次比较。</p><table class="stack"><thead><tr><th scope="col">待证明的结论</th><th scope="col">比较方法</th><th scope="col">可以支持的判断</th></tr></thead><tbody><tr><td data-label="待证明的结论">新规则更善于完成任务</td><td data-label="比较方法">原版与新版处理同一批未见过的合同，比较错误、覆盖率、审阅时间和总成本</td><td data-label="可以支持的判断">这次规则更新有效</td></tr><tr><td data-label="待证明的结论">新系统更善于产生下一次改进</td><td data-label="比较方法">使用相同规则版本、失败案例和预算，分别检查新旧学习器提出的修改是否有效；未被采用的尝试也计入成本</td><td data-label="可以支持的判断">在这些条件下，新版更善于提出并验证有效改进</td></tr></tbody></table><p>前一项做得好，替代不了后一项的证据；后一项也要跨多轮、跨任务复核，才能排除碰巧成功。RSI 研究里的提出、验证、选择和回滚，可以用来安排这些实验，但证明不了哪条法律公式是对的。平台当前就能使用的，是这次学到的检查方法：删和加分开审，先查清规则从哪来，再交给独立的人验收。至于那条公式，依据和批准仍需另行取得。</p></section><section class="q-sources" id="q5-sources" aria-labelledby="q5-sources-h"><h3 id="q5-sources-h">来源</h3><ol><li><span class="src-title"><a href="https://github.com/google-research/rrsi">Google Research — RRSI: Regularized Recursive Self-Improvement of Agent Harnesses</a></span><span class="src-meta">Google Research · 研究代码仓库</span><span class="src-point">候选保留变更历史，评估后再选用</span></li><li><span class="src-title"><a href="https://rsi-exam.ai/">RSI-Exam — Benchmarking Recursive Self-Improvement through Executable Research</a></span><span class="src-meta">RSI-Exam project · 研究基准</span><span class="src-point">开发与隐藏评测分离，冻结后验收</span></li><li><span class="src-title"><a href="https://www.weco.ai/blog/first-evidence-of-recursive-self-improvement">Weco AIDE² research report</a></span><span class="src-meta">Weco AI · 研究论文或预印本</span><span class="src-point">任务优化不等于改进能力提升</span></li><li><span class="src-title"><a href="https://www.anthropic.com/research/emergent-misalignment-reward-hacking">Anthropic — Natural emergent misalignment from reward hacking</a></span><span class="src-meta">Anthropic · 研究论文或预印本</span><span class="src-point">奖励黑客可能引发 misalignment</span></li><li><span class="src-title"><a href="https://www.elitigation.sg/gd/s/2007_SGCA_53">Singapore Court of Appeal — Man Financial v Wong Bark Chuan David [2007] SGCA 53</a></span><span class="src-meta">Singapore Judiciary eLitigation · 判决</span><span class="src-point">竞业限制须辨别可保护利益</span></li><li><span class="src-title"><a href="https://www.gesetze-im-internet.de/hgb/__74.html">Germany — Handelsgesetzbuch §74</a></span><span class="src-meta">Gesetze im Internet · 法律条文</span><span class="src-point">补偿下限为最后合同给付的一半</span></li><li><span class="src-title"><a href="https://www.gesetze-im-internet.de/hgb/__74a.html">Germany — Handelsgesetzbuch §74a</a></span><span class="src-meta">Gesetze im Internet · 法律条文</span><span class="src-point">限制期不得超过离职后两年</span></li><li><span class="src-title"><a href="https://www.gesetze-im-internet.de/hgb/__74b.html">Germany — Handelsgesetzbuch §74b</a></span><span class="src-meta">Gesetze im Internet · 法律条文</span><span class="src-point">浮动给付按近三年平均计算</span></li><li><span class="src-title"><a href="https://www.gesetze-im-internet.de/gewo/__110.html">Germany — Gewerbeordnung §110</a></span><span class="src-meta">Gesetze im Internet · 法律条文</span><span class="src-point">雇佣关系相应适用HGB竞业条款</span></li><li><span class="src-title"><a href="https://ofac.treasury.gov/faqs/topic/1521">US Treasury OFAC — Entities Owned by Blocked Persons (50 Percent Rule)</a></span><span class="src-meta">U.S. Department of the Treasury, OFAC · 监管机关说明</span><span class="src-point">50%所有权规则不是补偿系数</span></li></ol><p class="src-note">访问与核对日期：2026-09-23。法律条文和判决仅用于辨认题中出现的概念（如竞业限制补偿、可保护利益、50%规则的不同含义），不构成法律意见，也不覆盖新加坡、德国以外法域或本题合同的完整适用判断。</p></section><nav class="chapter-end" aria-label="翻页"><a class="chapter-end-prev" href="#q4"><span class="chapter-end-dir">上一题</span><span class="chapter-end-title">04 概率与风险</span></a></nav></section>
+</main>
+</div>
+<script>// Q4 distribution explorer. Pure functions first so they can be tested without a DOM.
+const LEVELS = ["无害", "轻微", "严重", "极严重"];
+const PRESETS = {"A": {"title": "构造分布A", "values": [0, 0.01, 0.99, 0]}, "B": {"title": "构造分布B", "values": [0.5, 0, 0, 0.5]}};
+function validate(values) {
+  if (values.length !== 4) return {ok: false, reason: '需要四个概率'};
+  for (let i = 0; i < 4; i++) {
+    const v = values[i];
+    if (typeof v !== 'number' || !Number.isFinite(v)) return {ok: false, reason: `P(${i})不是数字`};
+    if (v < 0) return {ok: false, reason: `P(${i})为负数`};
+    if (v > 1) return {ok: false, reason: `P(${i})大于1`};
+  }
+  const sum = values.reduce((a, b) => a + b, 0);
+  if (Math.abs(sum - 1) > 1e-9) return {ok: false, reason: `总和为${+sum.toFixed(6)}，须为1`};
+  return {ok: true};
+}
+function derive(values) {
+  const mean = values.reduce((acc, p, i) => acc + i * p, 0);
+  return {mean, tail: values[2] + values[3], meanRuleAllows: mean < 2};
+}
+function fmtPct(x) { return `${+(x * 100).toFixed(2)}%`; }
+if (typeof document !== 'undefined') {
+  const explorer = document.getElementById('q4-explorer');
+  const form = document.getElementById('q4-form');
+  const inputs = LEVELS.map((_, i) => document.getElementById(`q4-p${i}`));
+  const status = document.getElementById('q4-status');
+  const title = document.getElementById('q4-custom-title');
+  const out = id => document.getElementById(id);
+  let label = '';
+  function render(values) {
+    const d = derive(values);
+    const bars = out('q4-custom-bars');
+    if (!bars.children.length) {
+      bars.innerHTML = values.map((p, i) =>
+        `<div class="bar-row${i >= 2 ? ' tail' : ''}"><span class="bar-label">${i} ${LEVELS[i]}</span>` +
+        `<span class="bar-track"><span class="bar" style="width:${p * 100}%"></span></span>` +
+        `<span class="bar-value">${fmtPct(p)}</span></div>`).join('');
+    } else {
+      // Update in place so the bars move from the old values to the new ones.
+      values.forEach((p, i) => {
+        bars.children[i].querySelector('.bar').style.width = `${p * 100}%`;
+        bars.children[i].querySelector('.bar-value').textContent = fmtPct(p);
+      });
+    }
+    out('q4-vec').textContent = `[${values.join(', ')}]`;
+    out('q4-mean').textContent = d.mean.toFixed(2);
+    out('q4-mean-marker').style.left = `${d.mean / 3 * 100}%`;
+    out('q4-tail').textContent = fmtPct(d.tail);
+    out('q4-rule').textContent = d.meanRuleAllows ? '放行' : '不放行';
+    title.textContent = label;
+  }
+  function load(key) {
+    const preset = PRESETS[key];
+    preset.values.forEach((v, i) => { inputs[i].value = v; });
+    label = `${preset.title}（确定性合成示例）`;
+    render(preset.values);
+    status.textContent = `已恢复${preset.title}。`;
+  }
+  form.addEventListener('submit', event => {
+    event.preventDefault();
+    const values = inputs.map(input => input.value.trim() === '' ? NaN : Number(input.value));
+    const check = validate(values);
+    if (!check.ok) {
+      status.textContent = `向量无效：${check.reason}。下方结果仍为上一有效向量。`;
+      status.dataset.state = 'invalid';
+      return;
+    }
+    status.dataset.state = '';
+    label = '自定义分布';
+    render(values);
+    status.textContent = '已按新向量计算。';
+  });
+  explorer.querySelectorAll('[data-load]').forEach(button =>
+    button.addEventListener('click', () => { status.dataset.state = ''; load(button.dataset.load); }));
+  load('A');
+  status.textContent = '';
+  explorer.hidden = false;
+}
+// Chapter presentation. No JS: all questions remain visible, chapter links and chapter-end links jump by anchor.
+if (typeof document !== 'undefined') (function () {
+  var ids = ["q1", "q2", "q3", "q4", "q5"];
+  var answerTitle = document.querySelector('.home').textContent;
+  var root = document.documentElement;
+  var menu = document.querySelector('.chapter-menu');
+  var menuCurrent = menu.querySelector('.chapter-menu-current');
+  var menuProgress = menu.querySelector('.menu-progress');
+  var positions = {};
+  var current = null;
+  var restoring = false;
+  try { positions = JSON.parse(sessionStorage.getItem('q-positions')) || {}; } catch (e) {}
+  if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+  root.classList.add('paged');
+
+  function target() {
+    var id = (location.hash || '').slice(1);
+    if (ids.indexOf(id) >= 0) return {page: id, anchor: null};
+    var el = id && document.getElementById(id);
+    var page = el && el.closest('.q-page');
+    return page ? {page: page.id, anchor: el} : {page: null, anchor: null};
+  }
+  function remember() {
+    if (!current || restoring) return;
+    positions[current] = window.scrollY;
+    try { sessionStorage.setItem('q-positions', JSON.stringify(positions)); } catch (e) {}
+  }
+  function offset(el) {
+    // Leave room for the sticky chapter menu when it is shown (narrower screens).
+    var cover = menu.offsetHeight ? menu.offsetHeight + 16 : 24;
+    return Math.max(0, el.getBoundingClientRect().top + window.scrollY - cover);
+  }
+  function chapterLabel(index) {
+    var link = document.querySelector('.chapter-menu .chapter-link[href="#' + ids[index] + '"]');
+    return link.querySelector('.chapter-tab-no').textContent + ' / ' + String(ids.length).padStart(2, '0')
+      + '  ' + link.querySelector('.chapter-tab-title').textContent;
+  }
+  function cue() {
+    // Section being read and reading progress through the current chapter.
+    var page = current && document.getElementById(current);
+    if (!page) return;
+    var line = window.innerHeight * 0.35, label = '', reading = null;
+    page.querySelectorAll('.argument, .q-sources').forEach(function (part) {
+      if (part.getBoundingClientRect().top < line) {
+        var no = part.querySelector('.sec-no');
+        label = no ? no.textContent : '来源';
+        reading = part.classList.contains('argument') ? part.id : null;
+      }
+    });
+    var top = page.getBoundingClientRect().top + window.scrollY;
+    var span = Math.max(1, page.offsetHeight - window.innerHeight);
+    var ratio = Math.min(1, Math.max(0, (window.scrollY - top + 80) / span));
+    document.querySelectorAll('.rail-section-link').forEach(function (link) {
+      link.classList.toggle('reading', link.getAttribute('href') === '#' + reading);
+    });
+    menuCurrent.textContent = chapterLabel(ids.indexOf(current)) + (label ? '  · ' + label : '');
+    menuProgress.style.transform = 'scaleX(' + ratio.toFixed(3) + ')';
+  }
+  function show(t, focusHeading) {
+    restoring = true;
+    current = t.page || ids[0];
+    ids.forEach(function (q) {
+      document.getElementById(q).hidden = q !== current;
+      document.querySelectorAll('.chapter-link[href="#' + q + '"]').forEach(function (link) {
+        if (q === current) link.setAttribute('aria-current', 'page');
+        else link.removeAttribute('aria-current');
+      });
+    });
+    menu.open = false;
+    document.title = document.querySelector('#' + current + ' .q-title').textContent + ' · ' + answerTitle;
+    requestAnimationFrame(function () {
+      if (!t.page) window.scrollTo(0, 0);
+      else if (t.anchor) window.scrollTo(0, offset(t.anchor));
+      else window.scrollTo(0, positions[current] != null ? positions[current] : offset(document.getElementById(current)));
+      if (focusHeading) {
+        // Programmatic focus target for screen readers; its outline is suppressed in CSS.
+        var heading = document.querySelector('#' + current + ' h2');
+        heading.tabIndex = -1;
+        heading.focus({preventScroll: true});
+      }
+      requestAnimationFrame(function () { restoring = false; cue(); });
+    });
+  }
+  function go(delta) {
+    var index = ids.indexOf(current) + delta;
+    if (index < 0 || index >= ids.length) return;
+    remember();
+    location.hash = ids[index];
+  }
+  document.addEventListener('pointerdown', function () { root.classList.remove('keyed'); });
+  document.addEventListener('keydown', function (event) {
+    if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
+    if (event.target.closest('input, textarea, select, [contenteditable], .explorer, [role="slider"]')) return;
+    var selection = window.getSelection();
+    if (selection && !selection.isCollapsed) return;
+    if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
+      event.preventDefault();
+      root.classList.add('keyed');
+      go(event.key === 'ArrowLeft' ? -1 : 1);
+    }
+  });
+  var pending = false;
+  window.addEventListener('scroll', function () {
+    if (pending || restoring) return;
+    pending = true;
+    requestAnimationFrame(function () { pending = false; remember(); cue(); });
+  }, {passive: true});
+  window.addEventListener('hashchange', function () { show(target(), true); });
+  window.addEventListener('pagehide', remember);
+  show(target(), false);
+  if (document.readyState !== 'complete') {
+    window.addEventListener('load', function () { show(target(), false); }, {once: true});
+  }
+})();
+</script>
+</body>
+</html>

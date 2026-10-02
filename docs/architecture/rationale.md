@@ -53,3 +53,7 @@ Expert表达工作职责；runtime/model表达执行选择。这是产品与维�
 ## 实现候选与触发
 
 React/TypeScript/Vite、Ant Design、FastAPI/Pydantic、PostgreSQL 与 Compose 保留为候选。首个可运行 demo 根据场景约束，以实现 ADR 登记版本、替代方案和验证；流程引擎、身份平台等由实际需求触发。
+
+## 目录落实 · 2026-09-27
+
+[ADR-016](../decisions/016-progressive-kit-structure.md)把渐进消费落到 Write 与 Design 的真实分支。Reporting 保留领域目的，成文原理由 Prose 单点维护；Writing skill 只承担有界入口。旧路径继续到达，当前规范不维持重复正文。

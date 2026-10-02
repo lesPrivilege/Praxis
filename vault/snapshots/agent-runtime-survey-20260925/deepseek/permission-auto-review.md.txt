@@ -1,0 +1,24 @@
+Source URLs:
+- https://github.com/deepseek-ai/deepseek-harness/blob/477b4f420553e8a52c2fbccc464d7561b239c443/docs/subsystems/permission-presets.md
+- https://github.com/deepseek-ai/deepseek-harness/blob/477b4f420553e8a52c2fbccc464d7561b239c443/packages/experimental/auto-review/README.md
+- https://github.com/deepseek-ai/deepseek-harness/blob/477b4f420553e8a52c2fbccc464d7561b239c443/packages/experimental/auto-review/src/index.ts
+Source commit: 477b4f420553e8a52c2fbccc464d7561b239c443
+Source lines: permission-presets 1-7, 47-75; auto-review README 10-12, 44-62, 86-119; auto-review source 617-739
+
+Permission preset excerpt:
+L5 Permission presets bundle independent sandbox mode and approval policy; Auto review owns additional enforcement and the layer itself owns no execution policy.
+L47-51 Auto is a fixed current-session-only registration. Catalog changes notify consumers; no Session event is appended for the process-level catalog.
+L71-75 Switching appends log-only `permission/preset` intent before changed knob events; reselecting the effective preset appends nothing. The projection retains the selection across replay.
+
+Auto review README excerpt:
+L10-12 Auto reviews each native/PTC inner call before its body. Allow executes with Full access; deny asks the user when approval policy is `ask`. It is experimental and can allow unsafe actions or spend extra tokens.
+L44-48 Low-risk project work is allowed; medium-risk irreversible/external/security effects require current human/direct-parent authorization; high-risk exfiltration is always denied; ambiguous effects fail closed. Under `ask`, denial asks the user; under `never`, a delegated child denial is final.
+L58-62 `src/index.ts` installs a prepended `tools/pre-execute` listener; after review, denial reads the Session approval policy, and unloading migrates live Auto Sessions to Full access then aborts/drains reviews.
+L86-101 Reviewer uses the current request provider/model, returns strict JSON, and adds one extra model request; final denial and reviewer failure are distinct tool results.
+L115-119 Limits: no deterministic sandbox, no persistent grants/configurable policy, in-process children review their own calls, and reviewer history still uses a deprecated synchronous reader.
+
+Auto review source excerpt:
+L617-637 `classifyRisk` snapshots the action and streams the review through the current provider/model with the fixed policy; the review prompt is not entered into the Session log.
+L640-675 `denied`, `askUser`, and `failed` materialize separate outcomes; denied bodies never execute and reviewer failures are their own errors.
+L677-721 `apply` prepends `tools/pre-execute`. Under Auto it reviews, fails closed on technical failure, returns final denial under `never`, otherwise delegates and turns a denied downstream action into a user `ask`.
+L723-739 Auto registration is effect-scoped; disposal disables admission, migrates live sessions to Full access, aborts active reviews, and drains them.

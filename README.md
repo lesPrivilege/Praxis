@@ -12,7 +12,7 @@
 | 整理会议、项目状态与后续工作 | [工作系统](kit/work-system/README.md) | 候选变化、确认状态与下一责任 |
 | 在新环境消费 Kit | [Environment](kit/environment/README.md) | 能力盘点、权限范围与消费计划 |
 | 设计页面、编排可视化或选择界面做法 | [Design](kit/design/README.md) → [参考索引](kit/design/references.md) | 已裁决的做法、依据与可复用产出 |
-| 撰写或改定对外中文成文 | 项目 skill `writing`（`.claude/skills/writing/SKILL.md`）→ [Writing](kit/writing/README.md) | 按写作原理成文，附审阅裁决 |
+| 撰写或改定对外中文成文 | 项目 skill `writing`（`.claude/skills/writing/SKILL.md`）→ [Write / Prose](kit/write/prose/README.md) | 按写作原理成文，附审阅裁决 |
 | 查定义、接口与验收要求 | [Kit](kit/README.md) | 对应契约与检查项 |
 
 ## 研究与维护
@@ -20,9 +20,11 @@
 | 需要 | 入口 |
 |---|---|
 | 阅读已消费材料、查证来源 | [Vault](vault/README.md) → [主题提炼](vault/distilled/README.md) |
+| 进入 Palantir 方法论主题 | [palantir](palantir/README.md)：一级提炼入口；当前仅有 5 本书、2 篇文章的登记，材料参考见 `palantir/references/README.md`，来源登记与原件仍在 Vault |
+| 进入 Tally SaaS 研究主题 | [tally](tally/README.md)：一级提炼入口；当前仅有《清算 SaaS》书稿登记，材料参考见 `tally/references/README.md`，来源登记与原件仍在 Vault |
 | 增补材料或启动研究 | [入账](docs/governance/intake.md) / [研究问题](docs/governance/research-agenda.md) |
 | 修改规则、迁移或撤回推荐 | [修订流程](docs/governance/evolution.md) |
-| 登记新的设计或写作参考 | [Design 的增量规则](kit/design/README.md#增量) / [Writing](kit/writing/README.md#增量) |
+| 登记新的设计或写作参考 | [Design 的增量规则](docs/governance/reference-lifecycle.md) / [Writing](kit/write/prose/review.md#增量) |
 | 理解组织方式与历史取舍 | [架构](docs/architecture/README.md) / [决策](docs/decisions/README.md) |
 | Agent 开工 | [使用约定](kit/Agent.md) / [AGENTS.md](AGENTS.md) |
 
@@ -46,12 +48,14 @@
 |---|---|
 | [kit](kit/README.md) | 已采纳的知识、使用契约和能力目录 |
 | [scenarios](scenarios/README.md) | 独立业务闭环与验收定义，当前提供模板 |
-| [demos](demos/README.md) | 演示实现入口，当前无运行实现 |
+| [demos](demos/README.md) | 演示实现与施工交接；视觉语法工场与并行施工现场，运行验收见项目回执 |
 | [templates](templates/README.md) | 入账、材料 brief 与 demo 蓝图 |
 | [docs](docs/README.md) | 架构理由、治理规则、裁决和验收回执 |
 | [vault](vault/README.md) | 研究登记、提炼、来源、快照与 Chat 备查 |
+| [palantir](palantir/README.md) | 一级主题/提炼入口；材料参考见 [references](palantir/references/README.md)，当前仅登记，尚无完成提炼 |
+| [tally](tally/README.md) | 一级主题/提炼入口；材料参考见 [references](tally/references/README.md)，当前仅登记，尚无完成提炼 |
 | [scripts](scripts/README.md) | 生成消费索引与检查仓库一致性 |
 
 验证：`python3 scripts/validate_repository.py`；[验收记录](docs/verification/README.md) 记录各批覆盖与缺口。
 
-远端：[lesPrivilege/Praxis](https://github.com/lesPrivilege/Praxis)。本地目录名为 `enterprise-kit`。
+远端：[lesPrivilege/Praxis](https://github.com/lesPrivilege/Praxis)。本地目录为 `Praxis`。

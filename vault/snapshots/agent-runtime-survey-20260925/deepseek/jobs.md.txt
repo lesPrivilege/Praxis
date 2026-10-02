@@ -1,0 +1,18 @@
+Source URLs:
+- https://github.com/deepseek-ai/deepseek-harness/blob/477b4f420553e8a52c2fbccc464d7561b239c443/packages/jobs/jobs/README.md
+- https://github.com/deepseek-ai/deepseek-harness/blob/477b4f420553e8a52c2fbccc464d7561b239c443/packages/jobs/tool-jobs/README.md
+Source commit: 477b4f420553e8a52c2fbccc464d7561b239c443
+Source lines: jobs README 10-90, 120-129; tool-jobs README 10-63, 75-87
+
+L12 Jobs keep long-running work active while an agent continues. Stable ids, owner-scoped read/wait/cancel, retained output and in-session completion notices avoid polling.
+L32-38 Settlement emits a notice; owner scope fences inspect/stop access. Output can carry a producer byte cap.
+L40-55 A controller is required to start work; preflight rejection leaves no job; shipped jobs are process-local and die with the harness, so restart durability needs another backend.
+L69-74 Registry semantics are separate from implementation; settlement is first-wins and owner/service disposal cancels live work.
+L127-129 The contract is explicitly in-process; durable/cross-process backends must redesign identity, restart, ownership, and observation.
+
+Tool-jobs excerpt:
+L12 `job_output`, `job_list`, and `job_kill` control background commands, PTY work, and subagents; busy owners get completion in the next step and idle owners wake through a follow-up turn.
+L32-40 Reads may wait, cancellation settles after work stops, and completions already collected by a live wait do not produce redundant notices.
+L42 `maxConsecutiveWakes` bounds self-exciting wake chains; `quiet` keeps idle notices injected instead of opening turns.
+L61-63 A completion notice pending on an idle owner does not survive owner disposal.
+L75-87 Delivery is owned by the tool plugin; the registry supplies owner-relative routing and one notice per completion.

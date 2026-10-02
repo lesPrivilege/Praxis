@@ -1,0 +1,56 @@
+CURATED RESEARCH EXTRACT from official reidliu41/agent-workbench source at 0.1.12 (paraphrased; not a byte-for-byte source copy)
+Source commit: 4c6f7b7d937873fb3b546cd616a1a7edad55e3f7
+
+packages/core/src/orchestrator/workbenchOrchestrator.ts
+-------------------------------------------------------
+`createSession` validates the selected backend, rejects backends without
+`startSession`/`sendMessage`, creates a random task ID and isolated worktree
+under `~/.agent-workbench/worktrees/<project>/<id>`, checks the requested
+working branch, and calls `git worktree add -b`. Imported Gemini/Qwen sessions
+are bridged into the new worktree. The task stores backend ID, native session
+ID/kind/origin/resume mode, branch/worktree paths and status. Persistent
+backends are attached after the task enters `running`.
+
+`recoverStaleSessions` runs on server startup. If a recoverable task has no
+live backend session, it captures the worktree diff; it changes the task to
+`review_ready` when files changed, otherwise `failed`, and records a recovery
+action saying the process is gone while worktree changes were preserved.
+Qwen resume state is separately repaired if its bridged session file is gone.
+
+apps/server/src/index.ts — TerminalManager
+------------------------------------------
+The server opens a WebSocket terminal and uses `node-pty` to spawn the shell
+with the normalized provider command in the session worktree. It sets
+AGENT_WORKBENCH_SESSION_ID, native agent session ID, worktree and xterm env;
+PTY data is buffered/broadcast as terminal output and terminal exit is recorded
+as an event followed by a diff refresh. Browser input writes to the PTY;
+resize calls PTY resize; stop kills the PTY. Native session IDs are discovered
+from terminal output and also polled every five seconds while the process is
+alive. An existing PTY handle is reused on attach; restart kills the old handle
+and starts a new one.
+
+Provider command normalization
+------------------------------
+Codex uses `codex --cd <worktree>` initially and `codex resume --cd <worktree>
+<id>` once linked. Claude uses `claude --session-id <id> --name <title>` then
+`claude --resume <id>`. Qwen uses `qwen --session-id <id>` then
+`qwen --resume <id>`. Copilot uses `copilot --resume=<id>`. Gemini uses
+`gemini --resume <id>` when an ID is known. The command builder is a provider
+switch, not a common SDK transport.
+
+packages/adapters/src/*TerminalBackend.ts
+------------------------------------------
+Claude, Codex, Qwen and Copilot adapter classes primarily advertise capability
+profiles and emit a native-terminal action; the actual persistent PTY is owned
+by the server. Their profiles mark terminal, resume/cancel/worktree as
+available while approvals remain partial/native. GenericPtyBackend is a
+task-scoped child-process fallback: it streams stdout/stderr, writes one
+initial prompt, ends stdin and kills with SIGTERM; it has no structured events,
+approval channel or persistent session.
+
+packages/adapters/src/gemini/geminiAcpBackend.ts
+------------------------------------------------
+Gemini ACP is the structured path: a persistent child connection, typed prompt
+events, command/tool updates and approval requests. Pending approvals are held
+by approval ID and resolved or rejected when the session is cancelled. The
+profile still marks full TUI parity and skill routing as partial.

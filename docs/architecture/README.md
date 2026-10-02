@@ -18,6 +18,17 @@ Praxis 由 Enterprise、Reporting、Work System 三个消费域和共享 Environ
 
 运行依赖：`客户 overlay → 行业 scenario → kit`；Kit 的运行代码不得依赖客户逻辑。
 
+## 一级主题入口
+
+- [palantir](../../palantir/README.md)：一级提炼入口；当前仅有 5 本书、2 篇文章的登记，材料参考见 [`palantir/references`](../../palantir/references/README.md)。
+- [tally](../../tally/README.md)：一级提炼入口；当前仅有《清算 SaaS》书稿登记，材料参考见 [`tally/references`](../../tally/references/README.md)。
+
+这两个目录是主题的一级提炼入口；当前尚无完成提炼的成果，不应把登记当作成果。Chat 原文、会话溯源与入账记录由 `vault` 承载；材料自身参考可放对应 `references`，已有快照保留原定位，且不表示内容已经采纳进 Kit。
+
+## 表达与设计的跨域消费
+
+[Write](../../kit/write/README.md)以 Prose / Publish / Motion 承载内容表达，Shared 保证证据与验收一致；[Design](../../kit/design/README.md)以视觉、交互和运动判断支持这些模式。Reporting 仍负责材料目的和组织决定。Skill 为有界入口，知识正文通过目录渐进读取，迁移见 [ADR-016](../decisions/016-progressive-kit-structure.md)。
+
 ## 文档职责
 
 | 阅读需要 | 维护位置 |

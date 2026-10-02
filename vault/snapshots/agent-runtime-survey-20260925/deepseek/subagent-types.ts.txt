@@ -1,0 +1,13 @@
+Source URL: https://github.com/deepseek-ai/deepseek-harness/blob/477b4f420553e8a52c2fbccc464d7561b239c443/packages/subagent/subagent/src/types.ts
+Source commit: 477b4f420553e8a52c2fbccc464d7561b239c443
+Source lines: 119-200
+
+L119-129 Provider start-time capabilities are checked before delegation; unsupported requests fail loudly rather than being accepted and ignored. Continuable children are gated by `prepareContinuable`.
+L130-136 `SubagentCapabilities` includes agentOptions, outputSchema, depthLimit, toolFilter, and persona.
+L138-143 `SubagentStartRequest` is validated against the named provider before `SubagentProvider.start`.
+L145-163 Request contains prompt, exact parent Agent, and one cancellation signal valid before and after startup.
+L165-171 Provider/model/reasoning/token overrides require the capability and are merged over parent/instance defaults by supported backends.
+L173-177 Object-rooted output schemas are rejected when unsupported and returned as structured child output when accepted.
+L178-184 `maxDepth` is an absolute non-negative depth cap and is rejected when unsupported.
+L185-192 `toolFilter` is a scoped `tools.restrict()` view: named tools disappear from prompt and refuse execution, with unknown names rejected.
+L193-200 Persona is scoped to the child and shadows deployment persona; it is not a general authority boundary.

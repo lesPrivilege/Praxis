@@ -1,0 +1,314 @@
+import { isValidIp } from './ip.js';
+import { providerTimeoutMs } from './providers/config.js';
+import { enabledProviders } from './providers/index.js';
+import type { Env, IpProvider } from './providers/types.js';
+import {
+  type Consensus,
+  emptyIntelligence,
+  type FactKey,
+  type FactSummary,
+  type IpIntelligence,
+  type IpReport,
+  type ProviderResult,
+} from './schema.js';
+
+/** Per-call knobs for a lookup. Currently only provider skipping. */
+export interface LookupOptions {
+  /**
+   * Providers to report as `skipped` instead of calling — e.g. a hosted
+   * deployment whose daily quota for that provider is exhausted.
+   */
+  skipProviderIds?: Iterable<string>;
+  /** Human-readable reason recorded on each skipped result's `error` field. */
+  skipReason?: string;
+}
+
+/** A result row for a provider that was deliberately not called. */
+function skippedResult(
+  provider: IpProvider,
+  ip: string,
+  reason: string | undefined
+): ProviderResult {
+  return {
+    id: provider.id,
+    name: provider.name,
+    category: provider.category,
+    requiresKey: provider.requiresKey,
+    sourceUrl: provider.sourceUrl(ip),
+    status: 'skipped',
+    durationMs: 0,
+    data: null,
+    error: reason ?? null,
+  };
+}
+
+/** Run one provider, timing it and normalizing the outcome into a ProviderResult. */
+async function runProvider(
+  provider: IpProvider,
+  ip: string,
+  env: Env,
+  timeoutMs: number
+): Promise<ProviderResult> {
+  const startedAt = Date.now();
+  const controller = new AbortController();
+  let timer: ReturnType<typeof setTimeout> | null = null;
+  const base = {
+    id: provider.id,
+    name: provider.name,
+    category: provider.category,
+    requiresKey: provider.requiresKey,
+    sourceUrl: provider.sourceUrl(ip),
+  };
+  try {
+    const partial = await Promise.race([
+      provider.lookup(ip, env, { signal: controller.signal, timeoutMs }),
+      new Promise<never>((_, reject) => {
+        timer = setTimeout(() => {
+          controller.abort();
+          reject(new Error(`Timeout after ${timeoutMs}ms`));
+        }, timeoutMs);
+      }),
+    ]);
+    const durationMs = Date.now() - startedAt;
+    if (!partial) {
+      return { ...base, status: 'empty', durationMs, data: null, error: null };
+    }
+    const data: IpIntelligence = { ...emptyIntelligence(ip), ...partial, ip };
+    return { ...base, status: 'ok', durationMs, data, error: null };
+  } catch (err) {
+    return {
+      ...base,
+      status: 'error',
+      durationMs: Date.now() - startedAt,
+      data: null,
+      error: err instanceof Error ? err.message : String(err),
+    };
+  } finally {
+    if (timer) {
+      clearTimeout(timer);
+    }
+  }
+}
+
+/** First non-empty value across the successful sources, in source order. */
+function firstAvailable<K extends keyof IpIntelligence>(
+  sources: ProviderResult[],
+  key: K
+): IpIntelligence[K] | null {
+  for (const source of sources) {
+    const value = source.data?.[key];
+    if (value !== null && value !== undefined && value !== '') {
+      return value as IpIntelligence[K];
+    }
+  }
+  return null;
+}
+
+function buildConsensus(sources: ProviderResult[]): Consensus {
+  const ok = sources.filter((s) => s.status === 'ok' && s.data);
+
+  const blocklists = Array.from(
+    new Set(ok.flatMap((s) => s.data?.blocklists ?? []))
+  );
+
+  return {
+    country_code: firstAvailable(ok, 'country_code'),
+    country_name: firstAvailable(ok, 'country_name'),
+    city: firstAvailable(ok, 'city'),
+    asn: firstAvailable(ok, 'asn'),
+    isp: firstAvailable(ok, 'isp'),
+    organization: firstAvailable(ok, 'organization'),
+    rir: firstAvailable(ok, 'rir'),
+    registered_country_code: firstAvailable(ok, 'registered_country_code'),
+    blocklists,
+    source_count: ok.length,
+  };
+}
+
+const FACT_KEYS: FactKey[] = [
+  'country',
+  'city',
+  'region',
+  'registration_country',
+  'rir',
+  'allocation',
+  'asn',
+  'isp',
+  'organization',
+  'announced_prefix',
+  'ptr',
+  'announcement',
+  'origin_asn',
+  'origin_holder',
+  'rpki',
+];
+
+const FACT_VALUE_READERS: Record<
+  FactKey,
+  (data: IpIntelligence) => { group: string; value: string } | null
+> = {
+  country: (data) => {
+    const group = data.country_code ?? data.country_name;
+    if (!group) {
+      return null;
+    }
+    if (data.country_name && data.country_code) {
+      return {
+        group,
+        value: `${data.country_name} (${data.country_code})`,
+      };
+    }
+    return { group, value: group };
+  },
+  city: (data) => (data.city ? { group: data.city, value: data.city } : null),
+  region: (data) =>
+    data.region ? { group: data.region, value: data.region } : null,
+  registration_country: (data) =>
+    data.registered_country_code
+      ? {
+          group: data.registered_country_code,
+          value: data.registered_country_code,
+        }
+      : null,
+  rir: (data) => (data.rir ? { group: data.rir, value: data.rir } : null),
+  allocation: (data) =>
+    data.allocation_cidr
+      ? { group: data.allocation_cidr, value: data.allocation_cidr }
+      : null,
+  asn: (data) => (data.asn ? { group: data.asn, value: data.asn } : null),
+  isp: (data) => (data.isp ? { group: data.isp, value: data.isp } : null),
+  organization: (data) =>
+    data.organization
+      ? { group: data.organization, value: data.organization }
+      : null,
+  announced_prefix: (data) =>
+    data.announced_prefix
+      ? { group: data.announced_prefix, value: data.announced_prefix }
+      : null,
+  ptr: (data) => (data.ptr ? { group: data.ptr, value: data.ptr } : null),
+  announcement: (data) => {
+    if (data.is_announced === null) {
+      return null;
+    }
+    const value = data.is_announced ? 'announced' : 'not_announced';
+    return { group: value, value };
+  },
+  origin_asn: (data) => {
+    if (data.origin_asns.length === 0) {
+      return null;
+    }
+    const value = [...data.origin_asns].sort().join(', ');
+    return { group: value, value };
+  },
+  origin_holder: (data) => {
+    if (data.origin_holders.length === 0) {
+      return null;
+    }
+    const value = [...data.origin_holders].sort().join(', ');
+    return { group: value, value };
+  },
+  rpki: (data) =>
+    data.rpki_status
+      ? { group: data.rpki_status, value: data.rpki_status }
+      : null,
+};
+
+function factValue(
+  data: IpIntelligence,
+  key: FactKey
+): { group: string; value: string } | null {
+  return FACT_VALUE_READERS[key](data);
+}
+
+function buildFact(key: FactKey, sources: ProviderResult[]): FactSummary[] {
+  const values = new Map<string, { value: string; sources: Set<string> }>();
+  for (const source of sources) {
+    if (!source.data) {
+      continue;
+    }
+    const reading = factValue(source.data, key);
+    const group = reading?.group.trim();
+    const value = reading?.value.trim();
+    if (!group || !value) {
+      continue;
+    }
+    const entry = values.get(group) ?? { value, sources: new Set<string>() };
+    if (entry.value === group && value !== group) {
+      entry.value = value;
+    }
+    entry.sources.add(source.name);
+    values.set(group, entry);
+  }
+  if (values.size === 0) {
+    return [];
+  }
+  const entries = Array.from(values.values()).map((entry) => ({
+    value: entry.value,
+    sources: Array.from(entry.sources),
+  }));
+  return [
+    {
+      key,
+      values: entries,
+      source_count: entries.reduce((sum, v) => sum + v.sources.length, 0),
+      conflict: entries.length > 1,
+    },
+  ];
+}
+
+function buildFacts(sources: ProviderResult[]): FactSummary[] {
+  const ok = sources.filter((s) => s.status === 'ok' && s.data);
+  return FACT_KEYS.flatMap((key) => buildFact(key, ok));
+}
+
+export class InvalidIpError extends Error {
+  constructor(ip: string) {
+    super(`Invalid IP address: ${ip}`);
+    this.name = 'InvalidIpError';
+  }
+}
+
+/**
+ * Run a specific set of providers for `ip` concurrently. Exposed mainly for
+ * testing with fake providers; production callers use `lookupIp`.
+ */
+export async function lookupIpWith(
+  providers: IpProvider[],
+  ip: string,
+  env: Env = process.env,
+  options: LookupOptions = {}
+): Promise<IpReport> {
+  const trimmed = ip.trim();
+  if (!isValidIp(trimmed)) {
+    throw new InvalidIpError(ip);
+  }
+  const timeoutMs = providerTimeoutMs(env);
+  const skip = new Set(options.skipProviderIds ?? []);
+  const sources = await Promise.all(
+    providers.map((p) =>
+      skip.has(p.id)
+        ? Promise.resolve(skippedResult(p, trimmed, options.skipReason))
+        : runProvider(p, trimmed, env, timeoutMs)
+    )
+  );
+  return {
+    ip: trimmed,
+    queried_at: new Date().toISOString(),
+    consensus: buildConsensus(sources),
+    facts: buildFacts(sources),
+    sources,
+  };
+}
+
+/**
+ * Query every enabled provider for `ip` concurrently and return a normalized
+ * report: per-source results (with timing + partial-failure info) plus a merged
+ * consensus view. Never throws on individual provider failure.
+ */
+export function lookupIp(
+  ip: string,
+  env: Env = process.env,
+  options: LookupOptions = {}
+): Promise<IpReport> {
+  return lookupIpWith(enabledProviders(env), ip, env, options);
+}

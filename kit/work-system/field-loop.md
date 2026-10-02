@@ -12,3 +12,9 @@
 | 运营、扩展或退出 | 条件与收益是否持续成立 | 使用反馈、失败记录、责任及数据处置 | 责任人决定维护、扩展、撤回或退出 |
 
 移交后持续义务按其履行条件关闭；每次扩展重新检查对象、权限、责任与证据覆盖。知识反馈按 [修订流程](../../docs/governance/evolution.md) 返回对应条目。
+
+## 阶段参考路由
+
+需要选择某一阶段的证据和退出条件时，按阶段查[现场实践参考族](../../vault/references/field-practice/README.md)：发现先看 [FDPM](../../vault/references/field-practice/scale-fdpm.md)，介入与生产化先看 [FDE](../../vault/references/field-practice/scale-fde.md)，工作面密度或人机协作再看 [Enterprise Design](../../vault/references/field-practice/scale-enterprise-design.md)，重复模式能否回流平台时查 [Enterprise Core](../../vault/references/field-practice/scale-enterprise-core.md)。消费的是 field signal、production outcome、field-to-core 和 shared-pattern 检查；这些卡片不构成岗位 SLA 或平台实现承诺。
+
+需要跨进程长任务、重试或恢复时，再查 [workflow 参考族](../../vault/references/workflow/README.md) 中的 [Camunda](../../vault/references/workflow/camunda.md) 或 [Temporal](../../vault/references/workflow/temporal.md)，只消费 process/runtime、workflow/activity 和 durability 的区分，不因为现场阶段表出现这些词就引入 engine。

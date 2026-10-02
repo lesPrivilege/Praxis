@@ -376,9 +376,9 @@ def two_fallback_paths():
             svg_box(16, 144, 230, '判断证据是否充分、风险高低', [], 'plain', 46),
             svg_path('M246 167 H292', m),
             svg_box(296, 144, 250, '送审（review）或标为unknown', [], 'plain', 46),
-            '<path d="M546 57 H576 V112" class="edge"/><path d="M546 167 H576 V112" class="edge"/>',
-            svg_path('M576 112 H616', m),
-            svg_box(620, 70, 244, '统一返回的动作', ['allow · review · deny · unknown', '触发条件不同，阈值不共用'], 'kept', 84),
+            '<path d="M546 57 H566 V112" class="edge"/><path d="M546 167 H566 V112" class="edge"/>',
+            svg_path('M566 112 H584', m),
+            svg_box(588, 70, 276, '统一返回的动作', ['allow · review · deny · unknown', '触发条件不同，阈值不共用'], 'kept', 84),
         ]))
     body = f'''{wide}<div class="compare two fig-compact">
 <div class="compare-col">{eyebrow('网络故障')}<ol class="chain">{network}</ol></div>

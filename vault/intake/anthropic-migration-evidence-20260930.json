@@ -1,0 +1,555 @@
+{
+  "schema_version": "1.0",
+  "id": "anthropic-migration-evidence-20260930",
+  "kind": "external-research-intake",
+  "title": "Anthropic账户与设备迁移、授权撤销及恢复路径",
+  "created_at": "2026-09-30",
+  "owner": "Praxis",
+  "status": "candidate-research",
+  "request_context": {
+    "user_goal": "独立核查 Anthropic 当前官方账户/设备/网络迁移实践（全会话退出、Claude Code授权撤销、支持地区、VPN/代理与IP allowlisting、停用申诉），并核查 Apple/Microsoft 设备交接清除规范；支持正常设备与工作环境迁移、凭据撤销和账号恢复。",
+    "boundary": "仅核查官方一手资料。将威胁情报与普通账户迁移分开；不提供设备指纹伪装、地区绕过或封禁规避建议。"
+  },
+  "scope": {
+    "as_of": "2026-09-30",
+    "source_count": 15,
+    "selection_rule": "每个 URL 单独登记，优先 Anthropic/Apple/Microsoft 官方支持或产品文档；在线访问后制作本地摘要摘录与 hash。",
+    "questions": [
+      "Claude全局会话何处撤销，Claude Code授权是否单独管理？",
+      "Claude当前支持地区和官方对代理/IP allowlisting的说明是什么？",
+      "被暂停用户如何申诉、导出可得数据或请求组织复核？",
+      "Apple与Microsoft个人及组织设备交接时如何备份、清除、撤销账户/设备及管理记录？",
+      "原始的聚合封禁数字及 proxy/metadata 相关公开陈述，官方页面实际支持到什么范围？"
+    ],
+    "out_of_scope": [
+      "不处理现实账户、不代用户提交申诉或撤销登录。",
+      "不把 Anthropic aggregate enforcement counts 推算为个人封禁概率。",
+      "不研究伪装设备指纹、绕过地区限制、隐藏代理出口。",
+      "不为企业 tenant 做个案租户配置，也不代表管理员授权。"
+    ]
+  },
+  "findings": [
+    {
+      "claim_id": "A01",
+      "finding": "Anthropic网页端 Settings > Account > Log Out 会立即退出所有Claude web/mobile/desktop sessions；其文档注明web inactivity session为28天，并逐小时活动刷新期限。",
+      "status": "verified",
+      "source_ids": [
+        "anthropic-migration-evidence-20260930-anthropic-active-sessions"
+      ]
+    },
+    {
+      "claim_id": "A02",
+      "finding": "Claude Code OAuth/授权 token 单独在 Settings > Claude Code 删除；全局Claude登出和该授权撤销应分别完成。",
+      "status": "verified",
+      "source_ids": [
+        "anthropic-migration-evidence-20260930-anthropic-active-sessions"
+      ]
+    },
+    {
+      "claim_id": "A03",
+      "finding": "Anthropic分别列出 Claude.ai 与 commercial API 支持地区；当前 Claude.ai 列表覆盖新加坡和马来西亚。迁移时应核对实际所在地和产品。",
+      "status": "verified",
+      "source_ids": [
+        "anthropic-migration-evidence-20260930-anthropic-supported-regions",
+        "anthropic-migration-evidence-20260930-anthropic-claude-code-setup"
+      ]
+    },
+    {
+      "claim_id": "A04",
+      "finding": "错误停用走已登录的 Claude appeal form；官方明确不支持地区账户创建、条款或重复使用政策违规可能造成停用。被停用户仍可请求导出可用数据或删号，组织被暂停可走 Request a review。",
+      "status": "verified",
+      "source_ids": [
+        "anthropic-migration-evidence-20260930-anthropic-safeguards-appeals"
+      ]
+    },
+    {
+      "claim_id": "A05",
+      "finding": "11.4 million bans 属 Anthropic 官方发布的2026年1–6月 aggregate banned accounts 数，同时公布 398k appeals、42k appeal overturns；该数字可独立核实，但不能推导某个人的风险。",
+      "status": "verified-with-scope",
+      "source_ids": [
+        "anthropic-migration-evidence-20260930-anthropic-transparency-bans"
+      ]
+    },
+    {
+      "claim_id": "A06",
+      "finding": "Claude Code setup要求位于Anthropic支持国家，并区分 Claude.ai/Console OAuth 与 Bedrock/Vertex 等企业provider。",
+      "status": "verified",
+      "source_ids": [
+        "anthropic-migration-evidence-20260930-anthropic-claude-code-setup"
+      ]
+    },
+    {
+      "claim_id": "A07",
+      "finding": "Anthropic文档支持正常企业代理、防火墙allowlist与已配置的组织IP allowlisting。后者依赖组织配置、代理出口需按管理员允许的IP路径，不能由此推导用户VPN可改变地区资格。",
+      "status": "verified-with-scope",
+      "source_ids": [
+        "anthropic-migration-evidence-20260930-anthropic-claude-code-network"
+      ]
+    },
+    {
+      "claim_id": "A08",
+      "finding": "官方未找到把一般VPN使用列为一概禁用行为的通用规则；可核实的是地域访问资格限制，以及企业网络按代理/出口IP allowlist 配置。VPN政策在此作为未证实一般化说法处理。",
+      "status": "partial",
+      "source_ids": [
+        "anthropic-migration-evidence-20260930-anthropic-supported-regions",
+        "anthropic-migration-evidence-20260930-anthropic-claude-code-network"
+      ]
+    },
+    {
+      "claim_id": "A09",
+      "finding": "2026年9月威胁报告提到proxy/transfer stations、地理控制规避、盗用账户与转卖会话记录，主体是对抗性规模化滥用行动；无法支持普通迁移时IP变化将导致停用的推论。",
+      "status": "verified-with-scope",
+      "source_ids": [
+        "anthropic-migration-evidence-20260930-anthropic-september-threat-report"
+      ]
+    },
+    {
+      "claim_id": "D01",
+      "finding": "Apple iPhone/iPad换机先备份/转移，之后退出并抹除旧设备、移除可信设备；手机号变化需预先添加可信号码。",
+      "status": "verified",
+      "source_ids": [
+        "anthropic-migration-evidence-20260930-apple-iphone-transfer-erase",
+        "anthropic-migration-evidence-20260930-apple-account-device-list"
+      ]
+    },
+    {
+      "claim_id": "D02",
+      "finding": "Apple Mac交接需账户/服务退出并恢复出厂；符合条件设备用Erase All Content and Settings，其他型号按Recovery抹除重装。保留设备的普通迁移不等于交接清除。",
+      "status": "verified",
+      "source_ids": [
+        "anthropic-migration-evidence-20260930-apple-mac-transfer-erase"
+      ]
+    },
+    {
+      "claim_id": "D03",
+      "finding": "Apple Account设备列表支持远程移除/登出；仍在设备上的活动登录可能让设备重现，永久移除还需本机退出或擦除。",
+      "status": "verified",
+      "source_ids": [
+        "anthropic-migration-evidence-20260930-apple-account-device-list"
+      ]
+    },
+    {
+      "claim_id": "D04",
+      "finding": "个人Microsoft账户可请求全局退出，完成最长可能24小时，且Xbox例外。",
+      "status": "verified",
+      "source_ids": [
+        "anthropic-migration-evidence-20260930-microsoft-account-global-signout"
+      ]
+    },
+    {
+      "claim_id": "D05",
+      "finding": "个人Windows设备出售/赠送：先备份，Reset PC，之后从Microsoft账户移除。",
+      "status": "verified",
+      "source_ids": [
+        "anthropic-migration-evidence-20260930-microsoft-pc-handover"
+      ]
+    },
+    {
+      "claim_id": "D06",
+      "finding": "Microsoft Entra管理员可禁用账户并撤销refresh sessions；应用自签的session cookie可能要等应用重查/自行撤销，故组织还需按系统单独deprovision。",
+      "status": "verified-with-scope",
+      "source_ids": [
+        "anthropic-migration-evidence-20260930-microsoft-entra-revoke-access"
+      ]
+    },
+    {
+      "claim_id": "D07",
+      "finding": "Intune Retire去除组织托管数据而保留个人数据；Wipe是设备重置。Retire等设备check-in且依平台/策略而异，Entra-joined Windows操作前需备份BitLocker恢复密钥和本地管理员凭据。",
+      "status": "verified-with-scope",
+      "source_ids": [
+        "anthropic-migration-evidence-20260930-microsoft-intune-retire"
+      ]
+    },
+    {
+      "claim_id": "D08",
+      "finding": "Entra清理陈旧设备先禁用并设置宽限期；MDM设备先在管理系统Retire；Autopilot等system-managed设备不可随意删，否则可能无法重新配置。",
+      "status": "verified",
+      "source_ids": [
+        "anthropic-migration-evidence-20260930-microsoft-stale-device-cleanup"
+      ]
+    }
+  ],
+  "source_count": 15,
+  "sources": [
+    {
+      "id": "anthropic-migration-evidence-20260930-anthropic-active-sessions",
+      "publisher": "Anthropic Claude Help Center",
+      "title": "How do I log out of all active sessions?",
+      "url": "https://support.claude.com/en/articles/10310342-how-do-i-log-out-of-all-active-sessions",
+      "canonical_url": "https://support.claude.com/en/articles/10310342-how-do-i-log-out-of-all-active-sessions",
+      "accessed_at": "2026-09-30",
+      "source_type": "official-product-support-or-documentation",
+      "evidence_state": "verified-online-no-page-snapshot",
+      "evidence_path": "vault/provenance/anthropic-migration-20260930/anthropic-active-sessions.md",
+      "sha256": "4d3a02e48899987994f0dc04b64f3fa7727a2e16b7f9f7ff91215a12de91f8f0",
+      "hash_scope": "local-evidence-note-bytes-not-remote-webpage",
+      "summary": "Web Settings > Account > Log Out immediately signs out web, mobile, and desktop sessions. The web session is 28 days and refreshes to 28 days after page activity. Claude Code authorization tokens are separately managed at Settings > Claude Code; deleting a token logs out that Claude Code authorization.",
+      "limits": "This is first-party Claude account behavior. It does not revoke unrelated Google/email sessions, API keys, or tokens issued by other providers. Mobile apps do not provide the global logout action.",
+      "claim_ids": [
+        "A01",
+        "A02"
+      ]
+    },
+    {
+      "id": "anthropic-migration-evidence-20260930-anthropic-supported-regions",
+      "publisher": "Anthropic",
+      "title": "Supported countries and regions",
+      "url": "https://www.anthropic.com/supported-countries",
+      "canonical_url": "https://www.anthropic.com/supported-countries",
+      "accessed_at": "2026-09-30",
+      "source_type": "official-product-support-or-documentation",
+      "evidence_state": "verified-online-no-page-snapshot",
+      "evidence_path": "vault/provenance/anthropic-migration-20260930/anthropic-supported-regions.md",
+      "sha256": "6eb78a5f3b76164affd06d0c833cfd927ea8270ec84d63e6fd20ccfada211ccc",
+      "hash_scope": "local-evidence-note-bytes-not-remote-webpage",
+      "summary": "Anthropic publishes separate service availability lists for commercial API and Claude.ai. The live Claude.ai list includes Singapore and Malaysia. Claude Code setup also links location eligibility to Anthropic supported countries. Recheck at move time because this list can change.",
+      "limits": "Availability is product-specific; verify the right product and account terms. The list does not authorize routing through another location or using a proxy to mask physical location. It gives no account-specific assurance.",
+      "claim_ids": [
+        "A03"
+      ]
+    },
+    {
+      "id": "anthropic-migration-evidence-20260930-anthropic-safeguards-appeals",
+      "publisher": "Anthropic Claude Help Center",
+      "title": "Safeguards warnings and appeals",
+      "url": "https://support.claude.com/en/articles/8241253-safeguards-warnings-and-appeals",
+      "canonical_url": "https://support.claude.com/en/articles/8241253-safeguards-warnings-and-appeals",
+      "accessed_at": "2026-09-30",
+      "source_type": "official-product-support-or-documentation",
+      "evidence_state": "verified-online-no-page-snapshot",
+      "evidence_path": "vault/provenance/anthropic-migration-20260930/anthropic-safeguards-appeals.md",
+      "sha256": "f62d2fe8240685eb1a3aa9e1deab028a2909e9ae044bcbf7b7ed14811283c241",
+      "hash_scope": "local-evidence-note-bytes-not-remote-webpage",
+      "summary": "The official appeal route is to sign in at claude.ai with the suspended account and submit the linked appeal form; the form requires login. Anthropic names repeated Usage Policy violations, account creation from an unsupported location, and Terms violations as possible suspension reasons. Banned Free/Pro/Max users may still export available data or delete their account from the restricted screen; export availability may be limited. Organization-on-hold review is a separate path.",
+      "limits": "It does not promise a review timeline, reversal, or full data export. Do not create substitute accounts or attempt to bypass a suspension; follow the official review path.",
+      "claim_ids": [
+        "A04"
+      ]
+    },
+    {
+      "id": "anthropic-migration-evidence-20260930-anthropic-transparency-bans",
+      "publisher": "Anthropic",
+      "title": "Anthropic’s Transparency Hub: System Trust and Reporting",
+      "url": "https://www.anthropic.com/transparency/system-trust-reporting",
+      "canonical_url": "https://www.anthropic.com/transparency/system-trust-reporting",
+      "accessed_at": "2026-09-30",
+      "source_type": "official-product-support-or-documentation",
+      "evidence_state": "verified-online-no-page-snapshot",
+      "evidence_path": "vault/provenance/anthropic-migration-20260930/anthropic-transparency-bans.md",
+      "sha256": "455276f2b87fffc2649ebfa785b9ef0ec01d7535809018d32cdfb75c5ecdee5d",
+      "hash_scope": "local-evidence-note-bytes-not-remote-webpage",
+      "summary": "Anthropic reports 11.4 million banned accounts, 398,000 appeals, and 42,000 appeal overturns for Jan–Jun 2026. Thus the historical Chat’s 11.4m figure is independently confirmed as an official aggregate. These counts are not a user-level probability, do not specify that all bans are permanent or unique people, and do not establish why any individual account was actioned.",
+      "limits": "Aggregate enforcement data only; the page gives no denominator, detailed reason distribution, or per-account prediction.",
+      "claim_ids": [
+        "A05"
+      ]
+    },
+    {
+      "id": "anthropic-migration-evidence-20260930-anthropic-claude-code-setup",
+      "publisher": "Anthropic Claude Code Docs",
+      "title": "Set up Claude Code",
+      "url": "https://code.claude.com/docs/en/getting-started",
+      "canonical_url": "https://code.claude.com/docs/en/getting-started",
+      "accessed_at": "2026-09-30",
+      "source_type": "official-product-support-or-documentation",
+      "evidence_state": "verified-online-no-page-snapshot",
+      "evidence_path": "vault/provenance/anthropic-migration-20260930/anthropic-claude-code-setup.md",
+      "sha256": "a827139eb2616b7e6b22b6e75d366556f7aa11504f690a23d66929458a0d1a17",
+      "hash_scope": "local-evidence-note-bytes-not-remote-webpage",
+      "summary": "Claude Code requires internet access and location in an Anthropic-supported country. Supported authentication choices include Claude.ai with Pro/Max, Anthropic Console, and enterprise cloud providers. Anthropic says Claude Code securely stores credentials and directs readers to Credential Management. For a normal device move, reinstall from the official source, authenticate through the intended account/provider, and check the credential-management steps for the currently installed version.",
+      "limits": "This page does not provide a per-device remote revoke procedure; Claude account token revocation is documented separately. Installation commands and supported OS versions may change.",
+      "claim_ids": [
+        "A06"
+      ]
+    },
+    {
+      "id": "anthropic-migration-evidence-20260930-anthropic-claude-code-network",
+      "publisher": "Anthropic Claude Code Docs",
+      "title": "Enterprise network configuration",
+      "url": "https://code.claude.com/docs/en/corporate-proxy",
+      "canonical_url": "https://code.claude.com/docs/en/corporate-proxy",
+      "accessed_at": "2026-09-30",
+      "source_type": "official-product-support-or-documentation",
+      "evidence_state": "verified-online-no-page-snapshot",
+      "evidence_path": "vault/provenance/anthropic-migration-20260930/anthropic-claude-code-network.md",
+      "sha256": "b10495ddb0855f242fb06a53186f196beb789ed1d38c36138aa10a6ec68eb819",
+      "hash_scope": "local-evidence-note-bytes-not-remote-webpage",
+      "summary": "Claude Code supports standard HTTP/HTTPS corporate proxies and documents required Anthropic/Claude hosts to permit through approved proxy/firewall rules. The page also describes organization IP allowlisting: where an organization has enabled it, proxy egress must match the organization allowlist and dedicated egress is advised; shared vendor egress may admit other customers. This is a legitimate enterprise network configuration, not evidence that VPN/proxy use changes supported-region eligibility.",
+      "limits": "Technical support for corporate proxies and IP allowlisting is not a statement that personal VPNs are supported as a way around location restrictions. Clarify actual organization network policy with the administrator.",
+      "claim_ids": [
+        "A07",
+        "A08"
+      ]
+    },
+    {
+      "id": "anthropic-migration-evidence-20260930-anthropic-september-threat-report",
+      "publisher": "Anthropic",
+      "title": "Countering misuse of AI: September 2026",
+      "url": "https://www.anthropic.com/threat-intelligence-report-september-2026",
+      "canonical_url": "https://www.anthropic.com/threat-intelligence-report-september-2026",
+      "accessed_at": "2026-09-30",
+      "source_type": "official-product-support-or-documentation",
+      "evidence_state": "verified-online-no-page-snapshot",
+      "evidence_path": "vault/provenance/anthropic-migration-20260930/anthropic-september-threat-report.md",
+      "sha256": "c7f82a477b54dd1d78010681d0a63ca7abcbe7e52fb1f6b5bbd956a77a2eb8f3",
+      "hash_scope": "local-evidence-note-bytes-not-remote-webpage",
+      "summary": "Anthropic describes proxy networks/transfer stations as part of illicit, industrial-scale access campaigns using fake accounts, stolen identities/payment methods, or stolen API keys to circumvent geographic and related controls; some third-party routers also retained and resold user transcripts. It also reports account-level metadata/content as campaign attribution signals. This concerns adversarial bulk abuse and user-data exposure through untrusted intermediaries. It does not establish that ordinary device migration, a changed home/work IP, or a legitimate corporate proxy triggers enforcement.",
+      "limits": "Threat-intelligence examples are not an account risk model or a general list of risk signals. Do not infer an individual detection method or translate this into evasion advice.",
+      "claim_ids": [
+        "A08",
+        "A09"
+      ]
+    },
+    {
+      "id": "anthropic-migration-evidence-20260930-apple-iphone-transfer-erase",
+      "publisher": "Apple Support",
+      "title": "What to do before you sell, give away or trade in your iPhone or iPad",
+      "url": "https://support.apple.com/en-us/109511",
+      "canonical_url": "https://support.apple.com/en-us/109511",
+      "accessed_at": "2026-09-30",
+      "source_type": "official-product-support-or-documentation",
+      "evidence_state": "verified-online-no-page-snapshot",
+      "evidence_path": "vault/provenance/anthropic-migration-20260930/apple-iphone-transfer-erase.md",
+      "sha256": "5551c010074c80a30dde20039076edccac94bc7768895e0ecfa7087780b2cce0",
+      "hash_scope": "local-evidence-note-bytes-not-remote-webpage",
+      "summary": "Apple’s handover path is backup, transfer, sign out, erase all content/settings, and remove the old device from trusted devices. If the phone number changes, add trusted numbers before transfer to avoid loss of account access. Erase removes local data and disables Find My/Activation Lock while leaving iCloud content intact.",
+      "limits": "Apple device-specific steps and menu labels depend on OS version. This is for transfer/disposal; migration to a retained device does not require erasing it.",
+      "claim_ids": [
+        "D01"
+      ]
+    },
+    {
+      "id": "anthropic-migration-evidence-20260930-apple-mac-transfer-erase",
+      "publisher": "Apple Support",
+      "title": "What to do before you sell, give away, trade in, or recycle your Mac",
+      "url": "https://support.apple.com/en-us/102773",
+      "canonical_url": "https://support.apple.com/en-us/102773",
+      "accessed_at": "2026-09-30",
+      "source_type": "official-product-support-or-documentation",
+      "evidence_state": "verified-online-no-page-snapshot",
+      "evidence_path": "vault/provenance/anthropic-migration-20260930/apple-mac-transfer-erase.md",
+      "sha256": "d42ecd83451e8a34de853e4e778ee717a34ac3aceb8ab9e91c23b6530f15346e",
+      "hash_scope": "local-evidence-note-bytes-not-remote-webpage",
+      "summary": "Apple recommends a backup/file transfer, account/service sign-out, and factory reset before the Mac leaves the owner. Supported Macs should use Erase All Content and Settings; other Macs use the documented Recovery erase/reinstall process. Leave the device at setup assistant for the new owner.",
+      "limits": "Applies when handing off or disposing of a Mac. For migration where the old Mac remains yours, it can remain in your Apple Account and need not be erased.",
+      "claim_ids": [
+        "D02"
+      ]
+    },
+    {
+      "id": "anthropic-migration-evidence-20260930-apple-account-device-list",
+      "publisher": "Apple Support",
+      "title": "Review devices signed in to your Apple Account",
+      "url": "https://support.apple.com/en-us/102649",
+      "canonical_url": "https://support.apple.com/en-us/102649",
+      "accessed_at": "2026-09-30",
+      "source_type": "official-product-support-or-documentation",
+      "evidence_state": "verified-online-no-page-snapshot",
+      "evidence_path": "vault/provenance/anthropic-migration-20260930/apple-account-device-list.md",
+      "sha256": "14a6134f2456b4c4dc7663fe2cc972610075669fbf67dd0e388fbe3004e6e9a3",
+      "hash_scope": "local-evidence-note-bytes-not-remote-webpage",
+      "summary": "The Apple Account device list shows associated/trusted devices and allows remote removal/sign-out. Removed devices lose access to iCloud, Find My, other Apple services, and 2FA codes. A device still signed in may reappear, so Apple says to sign out on it or erase it for permanent removal.",
+      "limits": "Account device removal manages Apple Account associations; it is not a substitute for organization MDM offboarding or clearing device storage.",
+      "claim_ids": [
+        "D03"
+      ]
+    },
+    {
+      "id": "anthropic-migration-evidence-20260930-microsoft-account-global-signout",
+      "publisher": "Microsoft Support",
+      "title": "How to sign out of your Microsoft account everywhere",
+      "url": "https://support.microsoft.com/en-us/accounts-billing/manage/how-to-sign-out-of-your-microsoft-account-everywhere",
+      "canonical_url": "https://support.microsoft.com/en-us/accounts-billing/manage/how-to-sign-out-of-your-microsoft-account-everywhere",
+      "accessed_at": "2026-09-30",
+      "source_type": "official-product-support-or-documentation",
+      "evidence_state": "verified-online-no-page-snapshot",
+      "evidence_path": "vault/provenance/anthropic-migration-20260930/microsoft-account-global-signout.md",
+      "sha256": "9ec1b8682eeb8bc8a3ee88e5a6c1335a6be6cd46003e0abf8d2ca816864ac0f4",
+      "hash_scope": "local-evidence-note-bytes-not-remote-webpage",
+      "summary": "A personal Microsoft account can request Sign out everywhere in Advanced security options. Microsoft says it may take up to 24 hours to sign out from browsers, apps, and other sign-ins; Xbox is excluded.",
+      "limits": "Consumer Microsoft account workflow. It does not by itself wipe a device, unlink it, revoke all application-specific sessions, or substitute for Entra admin actions in a work tenant.",
+      "claim_ids": [
+        "D04"
+      ]
+    },
+    {
+      "id": "anthropic-migration-evidence-20260930-microsoft-pc-handover",
+      "publisher": "Microsoft Support",
+      "title": "Before you recycle, sell, or gift your Xbox or Windows PC",
+      "url": "https://support.microsoft.com/en-us/accounts-billing/security/before-you-recycle-sell-or-gift-your-xbox-or-windows-pc",
+      "canonical_url": "https://support.microsoft.com/en-us/accounts-billing/security/before-you-recycle-sell-or-gift-your-xbox-or-windows-pc",
+      "accessed_at": "2026-09-30",
+      "source_type": "official-product-support-or-documentation",
+      "evidence_state": "verified-online-no-page-snapshot",
+      "evidence_path": "vault/provenance/anthropic-migration-20260930/microsoft-pc-handover.md",
+      "sha256": "81f65e7eaa232600caae57b503073d1172975fbf7ed8fff21ec5097cd533c66f",
+      "hash_scope": "local-evidence-note-bytes-not-remote-webpage",
+      "summary": "Microsoft says back up needed data, reset Windows through System > Recovery > Reset PC, then remove the reset device from the personal Microsoft account; unlinking is a separate optional Store device-limit action.",
+      "limits": "This is the consumer account/consumer Windows reset flow. Organization-owned or enrolled hardware needs the organization’s IT process before reset/disposal.",
+      "claim_ids": [
+        "D05"
+      ]
+    },
+    {
+      "id": "anthropic-migration-evidence-20260930-microsoft-entra-revoke-access",
+      "publisher": "Microsoft Learn",
+      "title": "Revoke user access in an emergency in Microsoft Entra ID",
+      "url": "https://learn.microsoft.com/en-us/entra/identity/users/users-revoke-access",
+      "canonical_url": "https://learn.microsoft.com/en-us/entra/identity/users/users-revoke-access",
+      "accessed_at": "2026-09-30",
+      "source_type": "official-product-support-or-documentation",
+      "evidence_state": "verified-online-no-page-snapshot",
+      "evidence_path": "vault/provenance/anthropic-migration-20260930/microsoft-entra-revoke-access.md",
+      "sha256": "7f696147e69d6dc6e61e3ff076281ad2b20e6eff097f8e2379402ea8e18ec176",
+      "hash_scope": "local-evidence-note-bytes-not-remote-webpage",
+      "summary": "Admins can block new sign-ins and revoke refresh tokens/sessions in Entra. Microsoft cautions that app-issued session cookies may persist until the app rechecks Entra or the app itself revokes them; access-token effects can wait for expiry. Use the organization’s offboarding workflow and independently deprovision apps that do not federate their session control.",
+      "limits": "Administrative guidance for work/school identity; requires appropriate roles. Revocation is not always instantaneous across every app/device.",
+      "claim_ids": [
+        "D06"
+      ]
+    },
+    {
+      "id": "anthropic-migration-evidence-20260930-microsoft-intune-retire",
+      "publisher": "Microsoft Learn",
+      "title": "Device action: Retire — Microsoft Intune",
+      "url": "https://learn.microsoft.com/en-us/intune/device-management/actions/retire",
+      "canonical_url": "https://learn.microsoft.com/en-us/intune/device-management/actions/retire",
+      "accessed_at": "2026-09-30",
+      "source_type": "official-product-support-or-documentation",
+      "evidence_state": "verified-online-no-page-snapshot",
+      "evidence_path": "vault/provenance/anthropic-migration-20260930/microsoft-intune-retire.md",
+      "sha256": "a07b1a29ed90b7b81fee218e69d1b07d57905f99ce9e1ced2a547e6b2a3c6d38",
+      "hash_scope": "local-evidence-note-bytes-not-remote-webpage",
+      "summary": "Intune Retire removes managed company data/configuration and unenrolls without a full factory reset, preserving personal content; wipe resets the device. Actions wait until device check-in. On iOS, managed profiles/certs/network settings are removed; on Windows/macOS details vary, and some Entra records remain. Back up BitLocker recovery key and local admin credentials before retiring Entra-joined Windows devices.",
+      "limits": "Results differ by platform and management configuration. Do not assume Retire is a full device erase or that a pending action has completed. A manager/admin should select the operation consistent with ownership and redeployment.",
+      "claim_ids": [
+        "D07"
+      ]
+    },
+    {
+      "id": "anthropic-migration-evidence-20260930-microsoft-stale-device-cleanup",
+      "publisher": "Microsoft Learn",
+      "title": "How to manage stale devices in Microsoft Entra ID",
+      "url": "https://learn.microsoft.com/en-us/entra/identity/devices/manage-stale-devices",
+      "canonical_url": "https://learn.microsoft.com/en-us/entra/identity/devices/manage-stale-devices",
+      "accessed_at": "2026-09-30",
+      "source_type": "official-product-support-or-documentation",
+      "evidence_state": "verified-online-no-page-snapshot",
+      "evidence_path": "vault/provenance/anthropic-migration-20260930/microsoft-stale-device-cleanup.md",
+      "sha256": "7bac93ac53d7cfcf1ded46ccad4d01f7726b06b6c5d9e078988e2183bfb9b138",
+      "hash_scope": "local-evidence-note-bytes-not-remote-webpage",
+      "summary": "Microsoft advises a disable/grace period before deleting possibly stale device records, retiring MDM-controlled devices in the management system before deleting/disabling identity records, and preserving system-managed Autopilot records because deletion can prevent reprovisioning.",
+      "limits": "This is admin cleanup guidance for device records; it is not a consumer laptop reset checklist.",
+      "claim_ids": [
+        "D08"
+      ]
+    }
+  ],
+  "uncovered": [
+    "未查询或访问用户实际Anthropic/Google/Apple/Microsoft账户、租户、设备、网络/VPN配置；没有任何真实账户审计日志。",
+    "未找到Anthropic公开解释个人登录时采集哪些设备指纹/metadata、如何评估一般家庭/企业IP迁移。",
+    "没有对VPN一般使用建立官方允许/禁止结论；呈 partial/missing evidence。",
+    "没有保存远端HTML/PDF原件；在线证据摘要可读，离线重访依赖互联网。",
+    "Apple/Microsoft按具体设备型号、OS、账号类型和企业MDM设置会有差异；这里只给官方流程的边界。"
+  ],
+  "consumption_boundary": "候选研究材料，仅供 main/Astra 裁决正常迁移清单及是否形成场景规则。不能直接升入 kit，不是法律/合规意见；不能用于地区绕过、指纹掩饰或规避制裁/封禁。原Chat中其他并未指明的网络因果陈述保留为未核实。",
+  "decision_points_for_astra": [
+    "是否把“查支持地区→先转移并确认新设备账户访问→全会话登出并分别撤销Claude Code token/API keys/provider credentials→新设备重新认证”作为个人迁移候选步骤。",
+    "个人Apple/Microsoft设备与组织托管设备需在scenario里分两条：本机Erase/Reset 与 IT 的Retire/Wipe、Entra revocation、Autopilot/设备注册记录清理不可混为一个操作。",
+    "是否把1,140万数字只列为Anthropic公布的半年度总量并显式阻止个体风险推断。",
+    "网络部分仅接受组织授权代理与管理员IP allowlist的技术配置事实；对VPN的泛化政策和普通IP变化因果保持未核实。"
+  ],
+  "provenance_path": "vault/provenance/anthropic-migration-20260930/catalog.json",
+  "source_records": [
+    {
+      "source_id": "anthropic-migration-evidence-20260930-anthropic-active-sessions",
+      "catalog_path": "vault/provenance/anthropic-migration-20260930/catalog.json",
+      "card_path": "vault/provenance/anthropic-migration-20260930/anthropic-active-sessions.md",
+      "sha256": "4d3a02e48899987994f0dc04b64f3fa7727a2e16b7f9f7ff91215a12de91f8f0"
+    },
+    {
+      "source_id": "anthropic-migration-evidence-20260930-anthropic-supported-regions",
+      "catalog_path": "vault/provenance/anthropic-migration-20260930/catalog.json",
+      "card_path": "vault/provenance/anthropic-migration-20260930/anthropic-supported-regions.md",
+      "sha256": "6eb78a5f3b76164affd06d0c833cfd927ea8270ec84d63e6fd20ccfada211ccc"
+    },
+    {
+      "source_id": "anthropic-migration-evidence-20260930-anthropic-safeguards-appeals",
+      "catalog_path": "vault/provenance/anthropic-migration-20260930/catalog.json",
+      "card_path": "vault/provenance/anthropic-migration-20260930/anthropic-safeguards-appeals.md",
+      "sha256": "f62d2fe8240685eb1a3aa9e1deab028a2909e9ae044bcbf7b7ed14811283c241"
+    },
+    {
+      "source_id": "anthropic-migration-evidence-20260930-anthropic-transparency-bans",
+      "catalog_path": "vault/provenance/anthropic-migration-20260930/catalog.json",
+      "card_path": "vault/provenance/anthropic-migration-20260930/anthropic-transparency-bans.md",
+      "sha256": "455276f2b87fffc2649ebfa785b9ef0ec01d7535809018d32cdfb75c5ecdee5d"
+    },
+    {
+      "source_id": "anthropic-migration-evidence-20260930-anthropic-claude-code-setup",
+      "catalog_path": "vault/provenance/anthropic-migration-20260930/catalog.json",
+      "card_path": "vault/provenance/anthropic-migration-20260930/anthropic-claude-code-setup.md",
+      "sha256": "a827139eb2616b7e6b22b6e75d366556f7aa11504f690a23d66929458a0d1a17"
+    },
+    {
+      "source_id": "anthropic-migration-evidence-20260930-anthropic-claude-code-network",
+      "catalog_path": "vault/provenance/anthropic-migration-20260930/catalog.json",
+      "card_path": "vault/provenance/anthropic-migration-20260930/anthropic-claude-code-network.md",
+      "sha256": "b10495ddb0855f242fb06a53186f196beb789ed1d38c36138aa10a6ec68eb819"
+    },
+    {
+      "source_id": "anthropic-migration-evidence-20260930-anthropic-september-threat-report",
+      "catalog_path": "vault/provenance/anthropic-migration-20260930/catalog.json",
+      "card_path": "vault/provenance/anthropic-migration-20260930/anthropic-september-threat-report.md",
+      "sha256": "c7f82a477b54dd1d78010681d0a63ca7abcbe7e52fb1f6b5bbd956a77a2eb8f3"
+    },
+    {
+      "source_id": "anthropic-migration-evidence-20260930-apple-iphone-transfer-erase",
+      "catalog_path": "vault/provenance/anthropic-migration-20260930/catalog.json",
+      "card_path": "vault/provenance/anthropic-migration-20260930/apple-iphone-transfer-erase.md",
+      "sha256": "5551c010074c80a30dde20039076edccac94bc7768895e0ecfa7087780b2cce0"
+    },
+    {
+      "source_id": "anthropic-migration-evidence-20260930-apple-mac-transfer-erase",
+      "catalog_path": "vault/provenance/anthropic-migration-20260930/catalog.json",
+      "card_path": "vault/provenance/anthropic-migration-20260930/apple-mac-transfer-erase.md",
+      "sha256": "d42ecd83451e8a34de853e4e778ee717a34ac3aceb8ab9e91c23b6530f15346e"
+    },
+    {
+      "source_id": "anthropic-migration-evidence-20260930-apple-account-device-list",
+      "catalog_path": "vault/provenance/anthropic-migration-20260930/catalog.json",
+      "card_path": "vault/provenance/anthropic-migration-20260930/apple-account-device-list.md",
+      "sha256": "14a6134f2456b4c4dc7663fe2cc972610075669fbf67dd0e388fbe3004e6e9a3"
+    },
+    {
+      "source_id": "anthropic-migration-evidence-20260930-microsoft-account-global-signout",
+      "catalog_path": "vault/provenance/anthropic-migration-20260930/catalog.json",
+      "card_path": "vault/provenance/anthropic-migration-20260930/microsoft-account-global-signout.md",
+      "sha256": "9ec1b8682eeb8bc8a3ee88e5a6c1335a6be6cd46003e0abf8d2ca816864ac0f4"
+    },
+    {
+      "source_id": "anthropic-migration-evidence-20260930-microsoft-pc-handover",
+      "catalog_path": "vault/provenance/anthropic-migration-20260930/catalog.json",
+      "card_path": "vault/provenance/anthropic-migration-20260930/microsoft-pc-handover.md",
+      "sha256": "81f65e7eaa232600caae57b503073d1172975fbf7ed8fff21ec5097cd533c66f"
+    },
+    {
+      "source_id": "anthropic-migration-evidence-20260930-microsoft-entra-revoke-access",
+      "catalog_path": "vault/provenance/anthropic-migration-20260930/catalog.json",
+      "card_path": "vault/provenance/anthropic-migration-20260930/microsoft-entra-revoke-access.md",
+      "sha256": "7f696147e69d6dc6e61e3ff076281ad2b20e6eff097f8e2379402ea8e18ec176"
+    },
+    {
+      "source_id": "anthropic-migration-evidence-20260930-microsoft-intune-retire",
+      "catalog_path": "vault/provenance/anthropic-migration-20260930/catalog.json",
+      "card_path": "vault/provenance/anthropic-migration-20260930/microsoft-intune-retire.md",
+      "sha256": "a07b1a29ed90b7b81fee218e69d1b07d57905f99ce9e1ced2a547e6b2a3c6d38"
+    },
+    {
+      "source_id": "anthropic-migration-evidence-20260930-microsoft-stale-device-cleanup",
+      "catalog_path": "vault/provenance/anthropic-migration-20260930/catalog.json",
+      "card_path": "vault/provenance/anthropic-migration-20260930/microsoft-stale-device-cleanup.md",
+      "sha256": "7bac93ac53d7cfcf1ded46ccad4d01f7726b06b6c5d9e078988e2183bfb9b138"
+    }
+  ]
+}

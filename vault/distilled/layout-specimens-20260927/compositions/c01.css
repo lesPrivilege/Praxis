@@ -1,0 +1,151 @@
+/* C01 · 证据主导的解释长文 · composition layer. Prefix c1-.
+   Only page grid, slot containers, rhythm and the minimal adaptations the atoms need here.
+   Atom look comes from ../atoms/*.css; every override below is listed in the page's composition notes. */
+
+body.c1-page { background: #efe7da; }
+
+/* ---------- local palette: warm paper page; atoms read these tokens ---------- */
+.c1-doc {
+  --paper: #fbf7ef;
+  --paper-2: #ede4d4;
+  --ink: #2a1f16;
+  --ink-2: #4d4034;
+  --muted: #6c5f50;
+  --line: #d6cab6;
+  --line-2: #e6dccb;
+  --accent-wash: #e4e7ea;
+  --c1-rail: 7rem;
+  --c1-main: 40rem;   /* = 640px: deliberately at the atoms' 640px container threshold */
+  --c1-side: 15rem;
+  --c1-g1: 1.5rem;    /* rail gap = W01-b's internal 24px gap */
+  --c1-g2: 2.5rem;
+}
+
+/* the whole essay is one .stage (so lab.js width control and check cover it) … */
+.c1-doc.stage {
+  container-name: stage c1doc;
+  max-width: calc(var(--c1-rail) + var(--c1-g1) + var(--c1-main) + var(--c1-g2) + var(--c1-side) + 64px);
+  margin: 0 auto;
+  padding: 24px 16px 96px;
+  background: var(--warm-paper);
+  color: var(--ink);
+  outline: 0;
+  font-family: var(--serif);
+  font-size: 17px;
+  line-height: 1.85;
+}
+body[data-width="720"] .c1-doc.stage, body[data-width="375"] .c1-doc.stage { max-width: var(--stage-max); }
+
+/* … but every slot re-declares `stage`, so an atom measures the column it sits in, not the page. */
+.c1-slot { container: stage / inline-size; min-width: 0; }
+
+.c1-syn { margin: 0 0 20px; font: 600 var(--fs-12)/1.5 var(--mono); letter-spacing: .06em; color: var(--muted); }
+.c1-syn b { border: 1px dashed currentColor; padding: 0 6px; margin-right: 8px; }
+
+/* ---------- chapter: rail | body ---------- */
+.c1-ch { display: grid; grid-template-columns: minmax(0, 1fr); margin: 0 0 72px; scroll-margin-top: 48px; }
+.c1-rail { display: none; }
+.c1-body { display: grid; grid-template-columns: minmax(0, 1fr); column-gap: var(--c1-g2); }
+
+/* rows: text rows touch, block rows breathe */
+.c1-row { display: grid; grid-template-columns: subgrid; grid-column: 1 / -1; align-items: start; }
+.c1-span, .c1-full { grid-column: 1 / -1; }
+.c1-block { margin: 32px 0; }
+.c1-row + .c1-block, .c1-block + .c1-block { margin-top: 36px; }
+
+/* folded margin (narrow): note stays right after its sentence, indented, with a rule */
+.c1-side { margin: 6px 0 16px 1rem; font-family: var(--sans); }  /* each side atom brings its own rule; no second line */
+
+@container c1doc (min-width: 900px) {
+  .c1-ch { grid-template-columns: var(--c1-rail) minmax(0, 1fr); column-gap: var(--c1-g1); }
+  .c1-ch > .c1-head { grid-column: 1 / -1; }
+  .c1-rail { display: block; grid-column: 1; }
+  .c1-body { grid-column: 2; grid-template-columns: minmax(0, var(--c1-main)) var(--c1-side); }
+  .c1-side { margin: 0; padding-left: 0; border-left: 0; }
+  .c1-side > :first-child { margin-top: .35em; }
+}
+
+/* ---------- running chapter mark (W02-c idea moved onto the viewport; composition-owned) ---------- */
+.c1-run { position: sticky; top: 52px; margin-top: 8px; font: var(--fs-12)/1.5 var(--sans); color: var(--muted); text-align: right; }
+.c1-run__n { display: block; font: 700 var(--fs-24)/1 var(--serif); color: var(--warm-accent); font-variant-numeric: tabular-nums; }
+.c1-run__n small { font-size: var(--fs-13); color: var(--muted); font-weight: 400; }
+.c1-run__t { display: block; color: var(--ink-2); font-weight: 600; margin-top: 2px; }
+.c1-run__src { display: block; margin-top: 10px; padding-top: 6px; border-top: 1px solid var(--line); }
+.c1-run a { color: inherit; }
+
+/* ---------- intro ---------- */
+.c1-intro > .c1-full { margin-top: 36px; }
+.c1-ch > .c1-full { grid-column: 1 / -1; }
+
+/* ---------- adaptations: strip the editorial atoms' own paper + padding shells ---------- */
+.c1-doc :is(.w-sec--hang, .w-scope--lead, .w-toc--argue, .t-body--book, .q-ed, .v-quote--pair, .v-wm) { background: transparent; }
+.c1-doc .w-sec--hang { padding: 0 0 18px; border-bottom: 1px solid var(--line); margin-bottom: 28px; }
+.c1-doc .w-scope--lead { padding: 0; }
+.c1-doc .w-toc--argue { padding: 0; }
+.c1-doc .t-body--book { padding: 0; }
+.c1-doc .q-ed { padding: 0; }
+.c1-doc .v-quote--pair { padding: 24px 0; border-block: 1px solid var(--line); }
+.c1-doc .v-wm { padding: 0; }
+@container stage (min-width: 600px) {
+  /* W04-c's 5rem mark column re-set to the page rail so “范围” hangs where the chapter numerals hang */
+  .c1-doc .w-scope--lead { grid-template-columns: var(--c1-rail) minmax(0, 1fr); column-gap: var(--c1-g1); padding: 0; }
+}
+@container stage (min-width: 640px) {
+  .c1-doc .w-toc--argue { padding: 0; }
+  .c1-doc .w-toc--argue li a { grid-template-columns: var(--c1-rail) 10rem minmax(0, 1fr); column-gap: var(--c1-g1); }
+  .c1-doc .t-body--book { padding: 0; }
+  .c1-doc .v-wm { padding: 0; }
+}
+@container stage (min-width: 520px) {
+  .c1-doc .w-sec--hang { grid-template-columns: var(--c1-rail) minmax(0, 1fr); padding: 0 0 20px; }
+  .c1-doc .w-sec--hang .w-sec__big { font-size: 7rem; }
+}
+
+/* T01-a claim inside W01-b: serif to match the editorial body (atom is sans) */
+.c1-doc .w-sec__body .t-head__claim { font-family: var(--serif); font-size: var(--fs-30); line-height: 1.35; margin: 0 0 4px; max-width: 22em; }
+.c1-doc .w-sec--hang .w-sec__kicker { font-family: var(--sans); }
+.c1-title .t-head__claim { font-family: var(--serif); font-size: clamp(1.9rem, 6cqi, 3.2rem); line-height: 1.22; max-width: 16em; }
+.c1-title .t-head__topic { font-family: var(--mono); color: var(--warm-accent); }
+.c1-doc .t-lead { font-family: var(--serif); }
+
+/* T09-b book paragraphs split into one row per paragraph (so notes align) must still read as one run */
+.c1-doc .t-body--book p { max-width: none; }
+.c1-row--text + .c1-row--text .t-body--book p { margin-top: 0; }
+/* T09-b justifies; with nowrap numbers (.t-n) a narrow column opens gaps between every character */
+@container stage (max-width: 559px) { .c1-doc .t-body--book p { text-align: start; } }
+
+/* side-form atoms: they render their narrow form in the margin slot; remove the narrow-state indent */
+.c1-doc .c1-side .v-sm-note { margin-left: 0; }
+.c1-doc .c1-side .t-kp { font-family: var(--sans); }
+.c1-doc .c1-side .w-note__sn { margin: 0; }
+.c1-doc .c1-side .v-wm-notes { font-family: var(--sans); }
+.c1-doc .c1-side .q-hedge__side { font-family: var(--sans); }
+
+/* sans for data-bearing atoms so tabular figures line up */
+.c1-doc :is(.q-rows, .q-table, .q-strip, .q-trend, .q-data, .v-ms, .v-exm, .v-ex-head, .v-exh-d, .v-exh-s, .v-exh-c, .w-pos, .t-concl__basis, .v-qp-scale) { font-family: var(--sans); }
+.c1-doc .v-exh { max-width: none; }
+.c1-doc .v-exh-t { font-family: var(--serif); font-size: var(--fs-24); }
+
+/* pager at chapter end (W02-a) */
+.c1-doc .w-pos--pager { margin-top: 40px; }
+.c1-doc .w-pos--pager a { background: var(--paper); }
+
+/* zero/missing sentence */
+.c1-nil { display: inline-block; white-space: nowrap; text-align: center; text-indent: 0; font: 600 var(--fs-12)/1.5 var(--sans); border: 1px dashed var(--ink-2); padding: 0 6px; }
+
+/* colophon */
+.c1-colophon { font: var(--fs-13)/1.7 var(--sans); color: var(--ink-2); border-top: 2px solid var(--ink); padding-top: 12px; max-width: 48em; }
+.c1-colophon h2 { font-size: var(--fs-13); margin: 0 0 4px; letter-spacing: .06em; }
+
+/* composition notes (lab chrome, outside the essay) */
+.c1-notes { max-width: 1120px; margin: 0 auto; padding: 32px 16px 96px; font: var(--fs-13)/1.65 var(--sans); color: var(--chrome-ink); }
+.c1-notes h2 { font-size: var(--fs-17); color: var(--ink); margin: 0 0 8px; }
+.c1-notes h3 { font-size: var(--fs-13); color: var(--ink); margin: 20px 0 4px; }
+.c1-notes ul { margin: 0; padding-left: 1.2em; }
+.c1-notes code { font-family: var(--mono); font-size: .95em; }
+
+@media print {
+  body.c1-page { background: #fff; }
+  .c1-run { position: static; }
+  .c1-notes { display: none; }
+}

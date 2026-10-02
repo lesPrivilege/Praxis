@@ -1,0 +1,35 @@
+Source URL: https://github.com/deepseek-ai/deepseek-harness/blob/477b4f420553e8a52c2fbccc464d7561b239c443/packages/schedule/schedule/src/index.ts
+Source commit: 477b4f420553e8a52c2fbccc464d7561b239c443
+Source lines: 1-18, 72-106, 126-229, 236-281, 284-385, 410-430
+
+L1 Host-wide durable reminders and shared human/model management.
+L10 import { ScheduleRuntime } from './runtime.ts'
+L11 import { registerScheduleTools } from './tools.ts'
+L12 import { scheduleDomain } from './storage.ts'
+L13 import { deliveryHistoryPage } from './delivery-history.ts'
+L16 import { foldScheduleEvents, ... createAfterScheduleRecord, createAtScheduleRecord, ... createEveryScheduleRecord, createDailyScheduleRecord, createWeeklyScheduleRecord, createCronScheduleRecord, ... } from './domain.ts'
+
+L72 Configuration for the Host Schedule domain.
+L75 Delivery-history window defaults to 30 days.
+L80 Retained delivery records default to 200; the older of cap and window wins.
+L92 Shared management service; reads, deletion, and timing edits never activate a Session.
+L95 A delivery commits only when `ctx.sessions.flush()` reports that a `session/flush` listener participated.
+L100 export class ScheduleService extends TypertRemoteService
+L101 static inject = ['agents', 'sessions', 'tools', 'storageDomain', 'sessionController', 'sessionPersistence']
+L126 ready = ctx.storageDomain.open(scheduleDomain)
+L155 const tasks = domain.table('tasks')
+L156 runtime = new ScheduleRuntime(ctx, () => [...tasks.entries()].map(([, task]) => task), work => this.serialize(work), async task => { await tasks.put(task.record.id, task); this.emitChanged() }, retention)
+L164 runtime.requestDrive()
+L167-186 Agent-scoped schedule tools are attached and disposed with root agents and plugin effects.
+L188-205 Historical Schedule events remain readable but do not populate Host tasks; unreadable legacy history warns instead of blocking Session creation.
+L206-228 Workspace activity reports armed tasks and session-stop removes them, preventing delivery into a closed Session.
+
+L236 Create a reminder bound to a caller-selected Session without activating it.
+L241-247 The record is anchored before the serialized queue; cancellation does not roll back an in-flight write.
+L249-281 `create` accepts exactly one selector (`at`, `after_seconds`, `every_seconds`, `daily`, `weekly`, or `cron`), stores a globally unique id/title/record, writes the task row, emits `schedule/changed`, and requests a drive.
+L284-295 `list` reads active tasks for a Session from storage without resuming its Agent.
+L297-312 `catalog` reads active/inactive Host reminders and last delivery metadata.
+L314-330 `history` reads saved inbox deliveries through bounded retention without activating the Session.
+L333-355 `delete` removes a task row, saved deliveries included.
+L358-385 `update` changes timing/name/instruction inside the original Session binding and keeps saved deliveries.
+L410-430 archive stop enumerates and deletes active rows inside the same serialized queue used by tools.

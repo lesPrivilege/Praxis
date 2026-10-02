@@ -1,0 +1,45 @@
+{
+  "fixture_id": "community-opening-failure-no-weekend-volunteers-v1",
+  "synthetic": true,
+  "title": "失败：周末没有志愿者",
+  "question": "哪种方案满足每天有人开门？",
+  "week": ["周一", "周二", "周三", "周四", "周五", "周六", "周日"],
+  "context": {
+    "weekend_volunteers_present": false
+  },
+  "options": [
+    {
+      "code": "A",
+      "open_days": 7,
+      "monthly_cost": 1800,
+      "condition_scope": "none",
+      "condition": "无附加条件",
+      "weekly_status": ["有人", "有人", "有人", "有人", "有人", "有人", "有人"],
+      "decision": "satisfies"
+    },
+    {
+      "code": "B",
+      "open_days": 5,
+      "monthly_cost": 1200,
+      "condition_scope": "none",
+      "condition": "无附加条件",
+      "weekly_status": ["有人", "有人", "有人", "有人", "有人", "关闭", "关闭"],
+      "decision": "does-not-satisfy"
+    },
+    {
+      "code": "C",
+      "open_days": 7,
+      "monthly_cost": 1500,
+      "condition_scope": "C-only",
+      "condition": "仅当周末有志愿者",
+      "weekly_status": ["有人", "有人", "有人", "有人", "有人", "关闭", "关闭"],
+      "decision": "does-not-satisfy",
+      "failure_reason": "周末志愿者缺席，C 的专属条件不成立。"
+    }
+  ],
+  "expected": {
+    "direct_answer": "A",
+    "counterexample": "C 的周六、周日关闭，因此 C 不能满足‘每天有人开门’。",
+    "scope_check": "condition_scope=C-only"
+  }
+}

@@ -1,0 +1,289 @@
+/* ═══════════════════════════════════════════════════
+   MNEMOS DESIGN TOKENS — three-layer structure
+   1. Primitives   — raw color/shadow/radius/font values (existing)
+   2. Scales       — type / spacing / motion (this commit, unused yet)
+   3. Surfaces     — composite semantics built from primitives
+   ═══════════════════════════════════════════════════ */
+
+:root {
+  /* Light · Dystopia 中性灰阶（R2 换刻，记-25）。灰由 hue 250 微移至 240，
+     值据色板反解：纸 #F4F5F6、界 #DDE1E4、次墨 #565C5F、墨 #2A2D2E。
+     仍拒 cream/terracotta 那对已成 AI 产品默认的配色。 */
+  --bg:            oklch(97.6% 0.002 240);
+  --bg-card:       oklch(100% 0 0);
+  --bg-raised:     oklch(95.4% 0.003 240);
+  --bg-sunken:     oklch(93.2% 0.004 240);
+  --border:        oklch(87.5% 0.005 240);
+  --border-soft:   oklch(91.8% 0.004 240);
+  --border-strong: oklch(66% 0.010 240);
+  --ink:           oklch(24% 0.006 240);
+  --ink-2:         oklch(44% 0.008 240);
+  /* 53% 而非 54%：54% 在 --bg-raised 上只有 4.42，落 AA 线下。此落点
+     旧门未校（门三只校 ink-3/bg 与 ink-3/bg-card），本轮补入（记-25）。 */
+  --ink-3:         oklch(53% 0.008 240);
+  /* --ink-4 唯线、轨、禁用之形，不入文字位：对 --bg 仅 2.15，连图形 3:1
+     亦不及。凡以 ink-4 排字者皆讹（记-25）。 */
+  --ink-4:         oklch(74% 0.006 240);
+  /* 砖红，反解自 Dystopia 色板 #B0392B（≈ #af3a2c，差一色阶）。
+     accent 作小字排（due 数、streak、位置记），故取最严消费者 4.5:1
+     於 --bg-card——实测 6.08，不必再压。铜 #B86A30 於本轮退役（判例四
+     递修：职司不变，锚色已换）。 */
+  --accent:        oklch(51.5% 0.155 30);
+  --accent-soft:   oklch(94.5% 0.024 30);
+  --accent-line:   oklch(76% 0.070 30);
+  --teal:          oklch(45% 0.062 215);
+  --teal-soft:     oklch(94% 0.018 215);
+  --teal-line:     oklch(79% 0.04 215);
+  --good:          oklch(51% 0.10 150);
+  --good-soft:     oklch(94% 0.028 150);
+  --warn:          oklch(52% 0.104 78);
+  --warn-soft:     oklch(94% 0.03 78);
+  /* danger 之司自三收一，按「有无后果」划线（记-25）：
+       告知类之错（错误提示、错题标记、弱卡）→ --danger 墨阶，
+         识别改由 2px 描边＋恒在图标＋明确动词承载，以形不以色；
+       有后果之动作（重来重置间隔、删除毁数据）→ --danger-critical 真红。
+     墨阶之值与 --ink-2 有别（38 vs 44），免声部被静默并入墨。 */
+  --danger:        oklch(38% 0.014 240);
+  --danger-soft:   oklch(93.2% 0.004 240);
+  --danger-critical:      oklch(48% 0.170 15);
+  --danger-critical-soft: oklch(94% 0.028 12);
+  --plum:          oklch(46% 0.09 320);
+  --rate-hard:     oklch(48% 0.098 95);
+  --rate-hard-soft: oklch(93.5% 0.03 95);
+
+  --shadow-sm:     none;
+  --shadow-md:     none;
+  --shadow-lg:     none;
+
+  /* Code syntax — light */
+  --code-bg:       oklch(94.5% 0.006 90);
+  --code-border:   oklch(89% 0.008 85);
+  --tk-key:        oklch(46% 0.13 320);
+  --tk-str:        oklch(48% 0.10 150);
+  --tk-num:        oklch(50% 0.09 78);
+  --tk-com:        oklch(58% 0.02 80);
+  --tk-fn:         oklch(46% 0.09 215);
+  --tk-op:         oklch(46% 0.05 80);
+
+  --r-sm: 2px; --r-md: 4px; --r-lg: 6px; --r-xl: 10px;
+
+  /* 字轨四声（记-10，主令 2026-07-24 再翻转）——UI 层与内容层解耦：
+     器（UI）：多字重宋立层级，UI 拉丁前置 Times，栈尾收 serif 泛族——黑体全路径无落点；
+     文（内容正文）：朱雀仿宋（常用级子集，其自带罗马体与仿宋相称，故拉丁不另前置），
+       罕字回退系统仿宋再回退宋；「同版异纸」：内容纸切换见下方 :root.content-song；
+     展示：Times 系；数据：mono 唯真数据，公式 KaTeX 自字体（terminal 声不动）。 */
+  --font-zh:    'Zhuque Fangsong (technical preview)', 'FangSong', 'STFangsong', 'Noto Serif SC', 'Songti SC', serif;
+  --font-disp:  'Times New Roman', 'Noto Serif SC', Georgia, serif;
+  --font-ui:    'Times New Roman', 'Noto Serif SC', 'Songti SC', Georgia, serif;
+  --font-mono:  'JetBrains Mono', ui-monospace, monospace;
+
+  /* ─────── Type scale (Dynamic Type-ready) ───────
+     Re-derived 2026-07-25 (记-16) from the app's real, measured type
+     vocabulary rather than a borrowed minor-third ladder. Mnemos is a
+     compact information tool: chrome text clusters at 9-14px (13px is
+     the workhorse, 49 sites), content reads at 16px, display is sparse.
+     A constant 1.2 ratio can't hold that fine low end, so steps are
+     tight below the reading anchor and widen into display. Hierarchy
+     jumps (body 13 → title 19 = 1.46; content 16 → micro 10 = 1.6) all
+     clear ≥1.2; adjacent fine-steps within a tier may sit below it by
+     design. rem-based so the OS text-size setting scales the whole app
+     (this is what makes Dynamic Type, M4, possible). xl = 1rem is the
+     content-reading anchor. Hero display numbers stay on their own
+     fluid clamp() (a recorded display exception, not on this ladder). */
+  --text-2xs:  0.625rem;    /* 10px — 微标：kicker / tag / mono-mini */
+  --text-xs:   0.6875rem;   /* 11px — 元信息 / caption */
+  --text-sm:   0.75rem;     /* 12px — 次要文字 */
+  --text-md:   0.8125rem;   /* 13px — chrome 正文（工作字号） */
+  --text-lg:   0.875rem;    /* 14px — chrome 强调 / 列表主项 */
+  --text-xl:   1rem;        /* 16px — 内容阅读锚（Dynamic Type base） */
+  --text-2xl:  1.1875rem;   /* 19px — 题 / 卡问 / 顶栏 */
+  --text-3xl:  1.5rem;      /* 24px — 大标题 */
+  --text-4xl:  2.0625rem;   /* 33px — 展示 / 完成屏 */
+
+  --leading-tight:  1.2;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.7;
+
+  /* ─────── Spacing (2px lattice) ───────
+     Re-derived 2026-07-25 (记-18) from what the app actually measures:
+     a hand-tuned 2px-granular lattice (6px and 10px are the two most
+     used gaps, with 2/3/5/7/9/11/13 all present), NOT the 4/8 grid the
+     previous ladder assumed — that ladder had zero consumers, an
+     aspirational scale describing nothing. These steps are a vocabulary
+     for new code; existing hand-tuned values are deliberate density
+     decisions and are NOT swept onto the lattice (记-18 拒: no competing
+     source to unify, no Dynamic Type payoff — a11y needs text to scale,
+     not gaps — and forcing them would be lossy). No death-check gate
+     polices spacing, by the same ruling. */
+  --sp-1: 2px;
+  --sp-2: 4px;
+  --sp-3: 6px;
+  --sp-4: 8px;
+  --sp-5: 10px;
+  --sp-6: 12px;
+  --sp-7: 16px;
+  --sp-8: 24px;
+  --sp-9: 32px;
+  --sp-10: 48px;
+
+  /* 高频触控目标：按钮、顶栏操作与段控共用的最小可触面积。 */
+  --hit-target: 44px;
+
+  /* ─────── 竖向缩放谱（记-21；横向已拒，主令 2026-07-24）───────
+     一栏之宽有度，余宽让给天地，不让行拉长——手机既定之行款不动，
+     宽屏只加白。四级各有其度：
+       L0 首页 / L1 列表：操作行与内容行同宽，止于 --col-list
+       L2 会话（复习卡、题卡）：限宽居中，视线不横扫
+       阅读：续用 measure 上限（680px 已行之有效，不动）
+     著录于行款语「iPad 竖向」一款；实测基准 390 / 768 / 834pt。 */
+  --col-list:    480px;  /* L0/L1 单栏上限——手机满宽，宽屏留白 */
+  --col-session: 560px;  /* L2 会话卡上限——较列表略宽以容长题干 */
+  --col-read:    680px;  /* 阅读 measure 上限（现行值，此处只是入册） */
+  --gutter-wide: var(--sp-10); /* 宽屏天地边距（≥720 竖向） */
+
+  /* ─────── Motion ───────
+     Four durations, one standard-decelerate curve. quick = tap
+     feedback & micro color shifts; mid = hover/background state
+     shifts & small reveals (added 2026-07-24 to absorb the 140-200ms
+     hardcoded band recorded in docs/design-collation.md 记-03);
+     gentle = sheet/panel movement; slow = flip cards, charts,
+     progress. Spring physics are reserved for gesture-following
+     JS interactions only (家讳6) and never live in this file. */
+  --motion-quick:  120ms cubic-bezier(0.2, 0, 0, 1);
+  --motion-mid:    180ms cubic-bezier(0.2, 0, 0, 1);
+  --motion-gentle: 240ms cubic-bezier(0.2, 0, 0, 1);
+  --motion-slow:   420ms cubic-bezier(0.2, 0, 0, 1);
+  /* 动作四态之循环（记-31）：不定长进行态，唯 linear——匀速方读作
+     「还在转」，带缓动的循环会读作心跳。其性质与上四档（过渡）不同，
+     故另立而不混入。完成态之驻留时长不入此处：那是 JS 计时，非 CSS 值，
+     底本不辖；置之於此即成零消费者之槽（记-18 所拒）。 */
+  --motion-loop:   640ms linear;
+
+  /* ─────── Surfaces — light ───────
+     Composite semantics built from the primitives above.
+     - --surface-chrome-bg / --surface-chrome-blur are calibrated to
+       FloatingBar.jsx's real, already-shipped production values
+       (recalibrated in Commit 2 — Commit 1 guessed --bg at 78% alpha
+       + blur(16px) before that call site existed to check against).
+       FloatingBar mixes --bg-card (not --bg) at 85% alpha with
+       blur(8px). color-mix() is used here rather than a hardcoded
+       oklch-alpha literal so the token stays derived from --bg-card
+       as its single source of truth instead of duplicating it.
+     - --surface-raised / --surface-overlay are plain 1:1 aliases
+       today (var(--bg-raised) / var(--bg-card)), not multi-property
+       composites like --surface-chrome. That's deliberate: the value
+       here is the semantic name, not the property count — call sites
+       say "give me the raised/overlay surface" instead of naming a
+       bg-* primitive directly, so if a surface later needs a shadow
+       or border alongside its color, that composition happens in one
+       place (here) instead of at every call site. */
+  --surface-chrome-bg:     color-mix(in oklch, var(--bg-card) 88%, transparent);
+  --surface-chrome-blur:   blur(12px);
+  --surface-chrome-border: var(--border-soft);
+  --surface-raised:        var(--bg-raised);
+  --surface-overlay:       var(--bg-card);
+  /* 幕布：遮罩恒为暗纱，不随纸色反转（overlay/modal/panel 共用一部） */
+  --scrim:                 oklch(15% 0.01 240 / 0.38);
+}
+
+/* 同版异纸（第五条，记-10）：内容纸之宋刻本——切换只发生在此，组件零分支。
+   偏好键 mnemos-content-font，Settings 阅读区设入口。 */
+:root.content-song {
+  --font-zh: 'Times New Roman', 'Noto Serif SC', 'Songti SC', Georgia, serif;
+}
+
+:root.dark {
+  /* Dark · Dystopia graphite（R2 换刻，记-25） */
+  --bg:            oklch(16.5% 0.005 240);
+  --bg-card:       oklch(19.5% 0.006 240);
+  --bg-raised:     oklch(23.5% 0.007 240);
+  --bg-sunken:     oklch(12.8% 0.004 240);
+  --border:        oklch(30% 0.007 240);
+  --border-soft:   oklch(25.5% 0.006 240);
+  --border-strong: oklch(45% 0.010 240);
+  --ink:           oklch(92% 0.004 240);
+  --ink-2:         oklch(74% 0.006 240);
+  /* 64% 而非 61%：61% 在 --bg-raised 上只有 4.40（同明纸之病，只治一纸
+     即漏，故两纸同调，记-25）。 */
+  --ink-3:         oklch(64% 0.007 240);
+  --ink-4:         oklch(41% 0.007 240);
+  /* 暗纸 accent 归 oklch——旧值为 hex 字面量 #D9945E，跨层异文（记-04）今清。
+     值取 65%／.165 而非明纸之等价上提：暗纸上抬明度必失其彩，70%／.145
+     实机读作鲑鱼粉（#eb7867）而非砖红，故降一档明度、补一档彩度收回红意
+     （#e2604f）。soft 随之压至 24% 以守 accent/accent-soft 之 AA（4.78）。
+     记-29：暗纸之色不是明纸之算术反演，须以实机所见裁。 */
+  --accent:        oklch(65% 0.165 30);
+  --accent-soft:   oklch(24% 0.040 30);
+  --accent-line:   oklch(45% 0.090 30);
+  --teal:          oklch(73% 0.07 215);
+  --teal-soft:     oklch(25% 0.035 215);
+  --teal-line:     oklch(43% 0.055 215);
+  --good:          oklch(73% 0.11 150);
+  --good-soft:     oklch(24% 0.05 150);
+  --warn:          oklch(76% 0.11 78);
+  --warn-soft:     oklch(25% 0.05 78);
+  --danger:        oklch(80% 0.010 240);
+  --danger-soft:   oklch(23.5% 0.007 240);
+  --danger-critical:      oklch(69% 0.150 15);
+  --danger-critical-soft: oklch(25% 0.05 12);
+  --plum:          oklch(72% 0.10 320);
+  --rate-hard:     oklch(68% 0.10 95);
+  --rate-hard-soft: oklch(25% 0.045 95);
+  --shadow-sm:     none;
+  --shadow-md:     none;
+  --shadow-lg:     none;
+
+  /* Code syntax — dark */
+  --code-bg:       oklch(12.5% 0.007 75);
+  --code-border:   oklch(25.5% 0.009 75);
+  --tk-key:        oklch(74% 0.13 320);
+  --tk-str:        oklch(72% 0.10 150);
+  --tk-num:        oklch(76% 0.11 78);
+  --tk-com:        oklch(54% 0.01 80);
+  --tk-fn:         oklch(72% 0.09 215);
+  --tk-op:         oklch(84% 0.01 85);
+
+  /* ─────── Surfaces — dark ───────
+     Same rationale and values as the light-theme surfaces above —
+     color-mix(in oklch, var(--bg-card) 85%, transparent) resolves
+     against dark's own --bg-card here, so no separate alpha literal
+     is needed per theme. */
+  --surface-chrome-bg:     color-mix(in oklch, var(--bg-card) 85%, transparent);
+  --surface-chrome-blur:   blur(12px);
+  --surface-chrome-border: var(--border-soft);
+  --surface-raised:        var(--bg-raised);
+  --surface-overlay:       var(--bg-card);
+  --scrim:                 oklch(5% 0.01 240 / 0.52);
+}
+
+/* Chrome accessibility fallbacks stay at the semantic-token layer so every
+   consumer (including opaque topbars) responds without component exceptions. */
+@media (prefers-reduced-transparency: reduce) {
+  :root,
+  :root.dark {
+    --surface-chrome-bg: var(--bg-card);
+    --surface-chrome-blur: none;
+  }
+}
+@media (prefers-contrast: more) {
+  :root,
+  :root.dark {
+    --surface-chrome-bg: var(--bg-card);
+    --surface-chrome-blur: none;
+    --surface-chrome-border: var(--border-strong);
+  }
+}
+
+/* ─────── Reduced motion ───────
+   Global override: zero out animation/transition durations for
+   users who have asked the OS for reduced motion. Applies to
+   every element regardless of which token or hardcoded duration
+   is in play. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

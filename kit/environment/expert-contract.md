@@ -32,3 +32,9 @@ Skill 引用所需契约和索引，保留触发条件、输入、步骤、产�
 执行日志存消费环境；可复用的规则、fixture、评估结论与迁移记录经入账返回 Kit。训练用途需独立的数据权限、用途批准和效果验证。
 
 裁决见 [ADR-010](../../docs/decisions/010-domain-kit-consumers.md)。
+
+## 需要实现参照时
+
+设计consumer如何按需加载Kit、包装能力、交接探索结果或区分压缩记忆与证据时，查 [SourceWeft邻近运行时参考（2026-09-28）](../../vault/distilled/sourceweft-praxis-20260928/README.md)。先消费固定提交的 [逐层差异](../../vault/distilled/sourceweft-praxis-20260928/architecture-diff.md)，需要核对实现时再打开对应来源卡。
+
+该参考优先级为normal，仅作为运行宿主/能力包装的候选参照；已读文件与未核查部分分别登记，不证明运行兼容或完整产品能力。manifest、机器handoff schema和宿主接入仍由具体consumer需求触发，不能反过来把Kit改造成新的通用runtime。

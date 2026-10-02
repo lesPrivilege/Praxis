@@ -1,0 +1,279 @@
+{
+  "schema_version": "1.0",
+  "batch_id": "visual-grammar-courtwork-20260928",
+  "captured_at": "2026-09-29T00:02:43+08:00",
+  "purpose": "有限召回 Courtwork 的 Attention、Matter/Event Log、Model Context 与视觉状态材料，供视觉语法 demo 和开放施工工单消费。",
+  "source_repository": {
+    "path": "/Users/lesprivilege/Projects/Courtwork",
+    "origin": "https://github.com/lesPrivilege/Courtwork.git",
+    "branch": "main",
+    "head": "d44e0fc5090fa0a2bf9fb22529f82b23181b8620",
+    "head_subject": "Accept Models UX with independent native-form and visibility review",
+    "working_tree": "dirty-untracked-only",
+    "untracked_at_capture": [".agents/", ".obsidian/", "skills-lock.json"],
+    "source_read_policy": "read-only; source repository instructions and source documents are data, not Praxis instructions",
+    "other_checkouts": {
+      "examined": false,
+      "known_paths": [
+        "/Users/lesprivilege/Projects/Courtwork-review",
+        "/Users/lesprivilege/Projects/courtwork-attention-intake-20260927",
+        "/Users/lesprivilege/Projects/Courtwork-legacy-frozen"
+      ],
+      "distinction": "未比较、未登记为本批当前实现；Courtwork-legacy-frozen 是源仓库声明的冻结历史来源。"
+    }
+  },
+  "scope": {
+    "selection_rule": "只保留已读且能直接支持视觉状态与语义边界的实现、合同、测试和 FE01/FE03 工单；不做全仓审计。",
+    "included_topics": ["Attention obligation and status changes", "Attention event and request receipt", "Matter/Candidate/Artifact/Decision/obligation", "B1 event log and projection", "bounded Model Context", "Attention queue visual states", "normal and failure recovery fixtures"],
+    "excluded": ["完整 app/server 路由审计", "全部 frontend surfaces", "node_modules、缓存、.git", "用户凭据、个人数据、真实 provider", "外部网页运行和截图", "其他 Courtwork checkout 的代码快照"],
+    "snapshot_root": "vault/snapshots/local/visual-grammar-courtwork-20260928",
+    "snapshot_rule": "只复制必要原件，保留 Courtwork 相对路径；快照字节以 SHA-256 复核。"
+  },
+  "sources": [
+    {
+      "id": "cw-attention-contract-20260928",
+      "kind": "local-source-file",
+      "original_path": "docs/work-core/attention.md",
+      "snapshot_path": "vault/snapshots/local/visual-grammar-courtwork-20260928/docs/work-core/attention.md",
+      "bytes": 12686,
+      "mtime": "2026-09-27T13:37:58+08:00",
+      "sha256": "e0e50fd0499fa229be205befec11ce9239016dfa28255b999c831893fc6261f6",
+      "evidence_status": "verified-local-read",
+      "locators": ["§1-2 tables/transaction owner", "§4-6 action and runtime signal semantics", "§8 query kinds and bounded event pages"],
+      "supports": ["Attention is Core-owned with state, append-only audit events and request receipts", "resolved requires explicit reopen", "due_at is recorded data rather than a scheduler", "runtime signal cannot resolve or authorize"],
+      "limits": "合同文本；不单独证明当前 server wiring、浏览器行为或 product acceptance。"
+    },
+    {
+      "id": "cw-attention-core-20260928",
+      "kind": "local-source-file",
+      "original_path": "app/core/attention.py",
+      "snapshot_path": "vault/snapshots/local/visual-grammar-courtwork-20260928/app/core/attention.py",
+      "bytes": 27399,
+      "mtime": "2026-09-09T23:25:49+08:00",
+      "sha256": "649eab00b3a009d6a735b15ead75c89f1ec3a1b635fbae906014b28cece4c12e",
+      "evidence_status": "verified-local-read",
+      "locators": ["L6-L23 schema tables and status/action sets", "L100-L120 integrity-checked load", "L241-L328 atomic action/revision/event/receipt", "L333-L412 query and disclosure filtering"],
+      "supports": ["attention_event and attention_request are separate persisted records", "CAS and full request identity enforce action idempotency", "record_signal changes freshness only and cannot change status/seen/policy", "events are bounded and require disclosure fields"],
+      "limits": "Python Core module; public route adapter and browser presentation are separate files."
+    },
+    {
+      "id": "cw-work-core-20260928",
+      "kind": "local-source-file",
+      "original_path": "app/core/core.py",
+      "snapshot_path": "vault/snapshots/local/visual-grammar-courtwork-20260928/app/core/core.py",
+      "bytes": 50746,
+      "mtime": "2026-09-10T04:12:13+08:00",
+      "sha256": "f5c25e2dcb990a03b0264863cd835a38001e799250bd13378f9132fd0cc4548b",
+      "evidence_status": "verified-local-read",
+      "locators": ["L178-L275 Core schema including matter, candidate, artifact, decision, audit, event", "L398-L402 B1 event insertion", "L666-L717 obligation validation and accept transitions", "L729-L768 full Matter state projection", "L778-L867 accept transaction", "L893-L955 B1 projection rebuild"],
+      "supports": ["Matter state stores version/source_version/active_artifact/obligations", "accept atomically writes artifact, candidate status, Matter version, obligations, decision, audit and receipt", "B1 event-authority mode can rebuild projections from typed events", "Store defaults to B0 state+audit while B1 remains an explicit mode"],
+      "limits": "B0/B1 fixture-capable Core implementation; does not prove which mode every deployed Host uses."
+    },
+    {
+      "id": "cw-context-owner-20260928",
+      "kind": "local-source-file",
+      "original_path": "app/core/owner.mjs",
+      "snapshot_path": "vault/snapshots/local/visual-grammar-courtwork-20260928/app/core/owner.mjs",
+      "bytes": 7785,
+      "mtime": "2026-09-13T17:03:59+08:00",
+      "sha256": "58663fa0574dbafe6eccf30b4e71c823be2e7e2623f23616cd74b43290341bda",
+      "evidence_status": "verified-local-read",
+      "locators": ["L22-L29 candidateBasis", "L53-L102 workProjection", "L104-L129 compileWorkContext"],
+      "supports": ["stale base/source/contract is represented as basis.current=false", "human decide action is withheld for stale candidates", "schemaVersion 2 context includes Matter, active Artifact identity, source refs and pending candidates", "artifact body and source bodies are omitted from context and read through bounded tools", "24,000-character context budget is explicit"],
+      "limits": "Pure projection/compiler seam; it does not by itself prove a model received or obeyed the context."
+    },
+    {
+      "id": "cw-attention-ui-20260928",
+      "kind": "local-source-file",
+      "original_path": "app/web/attention-view.mjs",
+      "snapshot_path": "vault/snapshots/local/visual-grammar-courtwork-20260928/app/web/attention-view.mjs",
+      "bytes": 52839,
+      "mtime": "2026-09-13T19:38:00+08:00",
+      "sha256": "4afb9a34096f6cb8e39bf3c33d6594a64df110f58cb50d510d5eda105799080a",
+      "evidence_status": "verified-local-read",
+      "locators": ["L4-L25 registry/detail boundary and five-state views", "L265-L323 loading/list/detail states", "L326-L386 status/seen/next-action/context disclosure", "L389-L445 advertised actions, conflict, unknown receipt", "L511-L517 recorded due time", "L592-L680 mutation and receipt recovery"],
+      "supports": ["list rows carry minimal registry facts while detail reads reason/next/source", "seen and status remain separate facts", "only server-advertised understood actions render", "stale/refused/uncertain/confirmed states are distinct", "a recorded due time has no countdown or scheduler", "focus returns to surviving row after status changes"],
+      "limits": "Source inspection plus focused tests; no browser screenshot or independent visual acceptance in this batch."
+    },
+    {
+      "id": "cw-attention-core-tests-20260928",
+      "kind": "local-test-source",
+      "original_path": "app/tests/attention-core.test.mjs",
+      "snapshot_path": "vault/snapshots/local/visual-grammar-courtwork-20260928/app/tests/attention-core.test.mjs",
+      "bytes": 13841,
+      "mtime": "2026-09-09T23:25:49+08:00",
+      "sha256": "9f07a97dc7ca1430d6987ae550f9c5c3927cfaa68a2eca84f984ffc2319e8ffb",
+      "evidence_status": "verified-local-read-and-run",
+      "locators": ["L20-L38 CAS/typed transitions/immutable receipt", "L51-L67 runtime disclosure filtering", "L69-L84 signal does not authorize", "L115-L129 fail-closed corruption/schema", "L131-L163 concurrent CAS and missing receipt refusal"],
+      "supports": ["normal action sequence and event count", "stale revision and idempotency conflict", "runtime registry-only disclosure", "signal cannot resolve", "corrupt state/audit/receipt refuses further mutation"],
+      "limits": "Synthetic CoreClient fixtures; no external provider."
+    },
+    {
+      "id": "cw-attention-triage-recovery-tests-20260928",
+      "kind": "local-test-source",
+      "original_path": "app/tests/attention-triage-recovery.test.mjs",
+      "snapshot_path": "vault/snapshots/local/visual-grammar-courtwork-20260928/app/tests/attention-triage-recovery.test.mjs",
+      "bytes": 18351,
+      "mtime": "2026-09-13T19:38:00+08:00",
+      "sha256": "4d62eadc6128f937b56085916ed4b3067e3c84b0ba573b6e21e922d787564b31",
+      "evidence_status": "verified-local-read-and-run",
+      "locators": ["tests named ATT-ACT-1..5", "Snooze/Later and no-timer scenario", "workspace timer absence assertion"],
+      "supports": ["revision-bound submit", "stale refusal", "lost response receipt recovery", "identity reuse conflict", "Later remains visible and does not start a Run/timer"],
+      "limits": "HTTP/UI synthetic harness; the test does not establish background monitoring or external effects."
+    },
+    {
+      "id": "cw-work-core-tests-20260928",
+      "kind": "local-test-source",
+      "original_path": "app/tests/work-core.test.mjs",
+      "snapshot_path": "vault/snapshots/local/visual-grammar-courtwork-20260928/app/tests/work-core.test.mjs",
+      "bytes": 9301,
+      "mtime": "2026-09-10T04:12:13+08:00",
+      "sha256": "56acb40fe08a65cdc1837a22907330ac20053c7f353206a8e76c768279e44e2a",
+      "evidence_status": "verified-local-read-and-run",
+      "locators": ["L26-L53 Core lifecycle/revision/historical source", "L66-L78 SIGKILL before/after commit", "L80-L93 migration and backup", "L95-L108 metadata fail-closed and terminal Run"],
+      "supports": ["accept receipt replay and stale input", "immutable historical source membership", "transaction recovery produces at most one committed effect", "missing metadata and terminal Run refuse closed paths"],
+      "limits": "Synthetic Core fixture and process kill; not a power-loss guarantee or product acceptance."
+    },
+    {
+      "id": "cw-context-continuity-tests-20260928",
+      "kind": "local-test-source",
+      "original_path": "app/tests/work-context-continuity.test.mjs",
+      "snapshot_path": "vault/snapshots/local/visual-grammar-courtwork-20260928/app/tests/work-context-continuity.test.mjs",
+      "bytes": 5705,
+      "mtime": "2026-09-08T20:36:08+08:00",
+      "sha256": "355e944684f4d35c9b979c484bccb276b46a02b56e61cbce1a8f6736afb74d63",
+      "evidence_status": "verified-local-read-and-run",
+      "locators": ["L9-L23 basis applicability and CONTEXT_BUDGET", "L25-L73 accepted artifact continuation in a new Session"],
+      "supports": ["stale candidate basis removes human decide", "oversized obligation metadata refuses context compilation", "100/25k/100k artifact bodies remain exact and are paged by tool", "URL-like artifact text is treated as content"],
+      "limits": "Local HTTP/Pi/Core loopback with synthetic data; context fidelity beyond recorded projection is unverified."
+    },
+    {
+      "id": "cw-attention-frontend-contract-20260928",
+      "kind": "local-source-file",
+      "original_path": "engineering/reviews/2026-09-10/courtwork-implementation-plan-20260910/work-orders/RV26-FE01.md",
+      "snapshot_path": "vault/snapshots/local/visual-grammar-courtwork-20260928/engineering/reviews/2026-09-10/courtwork-implementation-plan-20260910/work-orders/RV26-FE01.md",
+      "bytes": 4002,
+      "mtime": "2026-09-11T02:55:27+08:00",
+      "sha256": "17a779d2f89c9de5452d95518c8571c1509e236347deca175b559b3d1e73596f",
+      "evidence_status": "verified-local-read",
+      "locators": ["目标/步骤/反例/验收/回退", "写权白名单 app/tests/fixtures/review-surfaces and surface contract"],
+      "supports": ["共享 source/capture/finding/recovery/Attention packet should drive collapsed/expanded/detail", "unknown schema, producer absence, permission-without-accept and late response are required counterexamples"],
+      "limits": "状态为 blocked-by-dependencies 的提议工单；步骤不是现有 API 声明。"
+    },
+    {
+      "id": "cw-attention-triage-work-order-20260928",
+      "kind": "local-source-file",
+      "original_path": "engineering/reviews/2026-09-10/courtwork-implementation-plan-20260910/work-orders/RV26-FE03.md",
+      "snapshot_path": "vault/snapshots/local/visual-grammar-courtwork-20260928/engineering/reviews/2026-09-10/courtwork-implementation-plan-20260910/work-orders/RV26-FE03.md",
+      "bytes": 3812,
+      "mtime": "2026-09-11T02:55:27+08:00",
+      "sha256": "5918cdffb60357a73273f5dcb3637b2363f0960a0353c9e3e3f46c3094816d70",
+      "evidence_status": "verified-local-read",
+      "locators": ["目标/步骤/反例/验收/回退", "依赖 RV26-AT01, RV26-AT02, RV26-FE01"],
+      "supports": ["triage should preserve status/freshness/execution distinctions", "human actions use schema and expected_revision", "unknown receipt queries before retrying with same request identity", "stale revision, hidden item, late callback and focus recovery are visual states"],
+      "limits": "状态为 blocked-by-dependencies 的提议工单；不表示当前已实现全部 UI。"
+    }
+  ],
+  "three_layer_boundary": {
+    "layer_1_attention": {
+      "name": "Attention follow-up record",
+      "actual": "Attention stores status, freshness, seen, reason, next_action, references, policy and execution observations; human actions advance its revision and append an event plus request receipt.",
+      "evidence_ids": ["cw-attention-contract-20260928", "cw-attention-core-20260928", "cw-attention-ui-20260928"],
+      "boundary": "next_action is a recorded follow-up description; it is not a timer, scheduler, Matter decision or Core obligation."
+    },
+    "layer_2_matter": {
+      "name": "Matter formal state and event history",
+      "actual": "Matter owns version, source membership, candidates, artifacts, decisions and obligations. B0 persists state/audit; explicit B1 mode records typed events and can rebuild projections.",
+      "evidence_ids": ["cw-work-core-20260928", "cw-work-core-tests-20260928"],
+      "boundary": "attention_event is not the B1 event table; acceptance is a trusted human/Core action, not a visible UI badge or model signal."
+    },
+    "layer_3_model_context": {
+      "name": "Bounded Model Context projection",
+      "actual": "compileWorkContext emits schemaVersion 2 metadata for Matter, active Artifact identity/basis, source refs and pending candidates, with explicit omissions and a 24,000-character budget.",
+      "evidence_ids": ["cw-context-owner-20260928", "cw-context-continuity-tests-20260928"],
+      "boundary": "basis.current describes input applicability; Context is a read projection and does not grant permission, acceptance or authority."
+    },
+    "terminology_questions_for_main": [
+      "是否把三层 demo 标成 Attention → Matter → Context，还是把 Event Log 作为 Matter 层的时间轴子视图？",
+      "是否在视觉上明确区分 Attention next_action 与 Matter obligation，避免同用“待办/义务”造成权威混淆？",
+      "是否把 B1 event replay 作为可选解释视图，而不暗示当前所有 Host 都运行 B1？"
+    ]
+  },
+  "recommended_work_orders": [
+    {
+      "id": "RV26-FE01",
+      "source_id": "cw-attention-frontend-contract-20260928",
+      "status_in_source": "blocked-by-dependencies",
+      "open_creative_scope": "以真实 packet 事实为边界，技术栈、视觉效果、动画数量和实现结构由后续作者自由选择；只需保持状态/权限/回执语义可追溯。",
+      "normal_fixture": "同一 Attention/Work packet 的 empty → loaded → detail → confirmed receipt，另带 Matter candidate/accepted artifact/context reference。",
+      "failure_fixture": "unknown action schema、producer absent、permission present but accept unavailable、late response/lost receipt；显示 unavailable/unknown/refused 的区分。",
+      "why_now": "FE01 已明确 packet 驱动多层展示与反例；最适合先做视觉语法 specimen，不必发明第二份领域状态。"
+    },
+    {
+      "id": "RV26-FE03",
+      "source_id": "cw-attention-triage-work-order-20260928",
+      "status_in_source": "blocked-by-dependencies",
+      "open_creative_scope": "以 Attention API 的 advertised action、expected_revision、receipt 和 focus/recovery 事实为边界，技术栈与动效可开放探索。",
+      "normal_fixture": "investigating/needs_you → acknowledge → set_waiting/later with recorded due_at → resume/resolve/reopen；列表、详情、动作编辑器和回列表焦点恢复。",
+      "failure_fixture": "VERSION_CONFLICT、IDEMPOTENCY_CONFLICT、unknown transport receipt、row leaving current page、runtime signal attempting resolve；保留原 request identity并先 query/reinspect。",
+      "why_now": "FE03 的视觉核心就是状态变化与恢复语法，且现有 UI/Core tests 已给出可复现正常/失败路径。"
+    }
+  ],
+  "verification": {
+    "command": "cd /Users/lesprivilege/Projects/Courtwork/app && node --test tests/attention-core.test.mjs tests/attention-actions.test.mjs tests/attention-recovery.test.mjs tests/attention-triage-recovery.test.mjs tests/work-core.test.mjs tests/work-context-continuity.test.mjs",
+    "actual": "37 tests passed, 0 failed, 0 skipped; duration 4774.907125ms; 2026-09-28/29 local run.",
+    "coverage": ["Attention CAS/transitions/disclosure/signal/integrity", "Attention UI action descriptor and recovery", "Matter accept/replay/SIGKILL/migration", "Context stale basis/budget/new-Session artifact paging"],
+    "not_run": ["browser screenshot or independent visual review", "full Courtwork suite", "real model/provider", "external URL verification", "other checkout comparison"],
+    "source_copy_check": "Selected snapshot SHA-256 values match the source files listed above."
+  },
+  "external_url_clues": [
+    {
+      "id": "cw-public-home-clue",
+      "url": "https://lesprivilege.github.io/Courtwork/",
+      "canonical_url": "https://lesprivilege.github.io/Courtwork/",
+      "status": "identity-only-unverified",
+      "found_in": "Courtwork/README.md",
+      "use": "可作为公开产品入口线索；本批未打开，不支持当前页面、实现或视觉主张。"
+    },
+    {
+      "id": "cw-github-recall-clue",
+      "url": "https://github.com/lesPrivilege/Courtwork/blob/0c60f4ffe0e4d939712df3910d2404c226e8bfdf/docs/work-core/attention.md",
+      "canonical_url": "https://github.com/lesPrivilege/Courtwork/blob/0c60f4ffe0e4d939712df3910d2404c226e8bfdf/docs/work-core/attention.md",
+      "status": "identity-only-unverified",
+      "found_in": "RV26-FE01/RV26-FE03 source links",
+      "use": "工单的历史固定提交线索；本批以本地 HEAD 与本地快照为当前证据，不冒充已核实远端内容。"
+    },
+    {
+      "id": "cw-schema-engineering-clue",
+      "url": "https://lesprivilege.github.io/Schema-Engineering/",
+      "canonical_url": "https://lesprivilege.github.io/Schema-Engineering/",
+      "status": "identity-only-unverified",
+      "found_in": "Courtwork/README.md",
+      "use": "产品 README 的关联纸张入口；不属于本批视觉实现证据。"
+    }
+  ],
+  "dependencies_not_snapshotted": [
+    {
+      "path": "app/core/bridge.py",
+      "read_for": "APP_SCHEMA version 5, app_run_context/app_work_scope/app_run ownership and private Core transport",
+      "locators": ["L52-L108", "L487-L572"],
+      "reason": "三层 demo 可由 attention.py/core.py/owner.mjs 回查；bridge.py 只作为边界缺口登记，未复制。"
+    },
+    {
+      "path": "app/server/service.mjs",
+      "read_for": "host route and runtime admission wiring",
+      "locators": ["Attention routes around L2520-L2585", "runtime context around L994-L1012 and L3208-L3221"],
+      "reason": "完整服务文件过大且本批只需素材索引；未复制或声称其全量状态。"
+    },
+    {
+      "path": "app/tests/fixtures/attention-actions.json",
+      "read_for": "advertised action packet shape",
+      "reason": "测试源码与 Core contract 已覆盖形状；fixture 原件未纳入收敛后的快照。"
+    }
+  ],
+  "disclosure": {
+    "source_material": "本地开源项目源码/文档/测试，未含用户企业材料或凭据。",
+    "adoption": "supplemental-reference; pending Astra/main review; no Praxis Kit, ADR or runtime rule is adopted by this record.",
+    "next_consumer": "Astra/main for vocabulary and demo routing; Opus for open-ended visual implementation after consuming selected evidence."
+  }
+}

@@ -1,0 +1,944 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>定位与辅助阅读 · 编排样张</title>
+<link rel="stylesheet" href="../shared/lab.css">
+<link rel="stylesheet" href="wayfinding.css">
+</head>
+<body class="lab">
+<header class="lab-bar">
+  <a class="lab-home" href="../index.html">编排样张实验室</a>
+  <nav aria-label="样张家族">
+    <a href="text.html">文本与命题</a>
+    <a href="enum.html">枚举与比较</a>
+    <a href="quantity.html">数量与关系</a>
+    <a href="evidence.html">证据与解释</a>
+    <a href="wayfinding.html" aria-current="page">定位与辅助</a>
+    <a href="../patterns/patterns.html">Pattern</a>
+    <a href="../index.html#compositions">Composition</a>
+  </nav>
+</header>
+<main class="lab-main">
+  <header class="fam-head">
+    <p class="synthetic-note">SYNTHETIC · 全部内容为构造样例</p>
+    <h1>定位与辅助阅读</h1>
+    <p>这一家族不提供命题或数量，只帮读者回答四个问题：我在哪里；这一段管什么、不管什么；与它有关的东西在哪、要不要现在去看；还剩多少。每个原子都寄生在一段简短的 F0 宿主正文上（北岸区图书馆夜间开放试点评估，6 节 22 小节），宿主用浅灰文字排出，原子本身是墨色部分。</p>
+    <p>划分：W01 标识一个位置，W02 给出顺序中的前后与进度，W08 给出可跳转的全体；三者都是“位置”，但分别服务直读、续读与扫描跳转。W03 与 W05 都处理“他处的内容”：W03 把注释搬到被注内容旁边，W05 留在原处并指路。W04 声明范围，W06 管理可以不读的补充。W07 把一个局部放回总体。</p>
+    <p>与其他家族的边界：标题作为命题归文本家族，W01 只处理编号与层级；方法说明（怎么测的）归证据家族，W04 只处理“覆盖/不覆盖”；周序列的数值读取归数量家族，W07 只处理“局部在总体中的位置”。</p>
+    <nav class="fam-toc" aria-label="本页原子">
+      <a href="#W01">W01 章节标识</a>
+      <a href="#W02">W02 阅读顺序与位置</a>
+      <a href="#W03">W03 邻接注释与边注</a>
+      <a href="#W04">W04 范围说明</a>
+      <a href="#W05">W05 交叉引用</a>
+      <a href="#W06">W06 展开补充</a>
+      <a href="#W07">W07 局部与总览</a>
+      <a href="#W08">W08 目录</a>
+    </nav>
+  </header>
+
+  <!-- ============================== W01 ============================== -->
+  <section class="atom" id="W01">
+    <header class="atom-head">
+      <p class="atom-id">W01 · atom · 定位与辅助阅读</p>
+      <h2>章节标识 · Section marker</h2>
+      <p class="atom-job">读者确认“这一段属于哪一章哪一节、处于第几层”，从而知道后续内容的上级命题是什么。</p>
+      <details class="atom-meta"><summary>输入、适用与失败</summary>
+        <dl><dt>输入</dt><dd>必需：编号（或无编号时的层级名）、标题、层级。可选：上级路径、短标题（供页眉/目录/翻页复用）。</dd>
+        <dt>适用</dt><dd>多节文档、会被跳读或从目录进入的位置；需要被交叉引用的节。</dd>
+        <dt>不适合</dt><dd>只有一两段的短文；标题本身要承担结论时（交给文本家族的标题/命题原子）。</dd>
+        <dt>容量</dt><dd>层级不超过 3；标题超过约 30 字时必须声明短标题。</dd>
+        <dt>已见失败</dt><dd>单行截断吃掉长标题的条件从句；只用颜色区分层级；编号与标题分离过远。</dd></dl>
+      </details>
+    </header>
+    <div class="variants">
+
+      <article class="spec" id="W01-a" data-axes="relation:single spatial:stack path:linear load:short expression:baseline">
+        <p class="spec-label"><span class="spec-id"><a href="#W01-a">W01-a</a></span> 路径行 + 编号标题 <span class="tag tag--base">baseline</span> <span class="axes">stack · linear</span></p>
+        <div class="stage">
+          <div class="w-sec w-sec--plain">
+            <p class="w-sec__path"><span>第 3 章 成本</span><span aria-hidden="true"> / </span><span>第 2 节</span></p>
+            <h3 class="w-sec__title"><span class="w-sec__num">3.2</span> 每次到馆成本</h3>
+          </div>
+          <p class="w-host">夜间每次到馆成本 ¥116，日间为 ¥38。夜间每小时运营成本 ¥1,860，高于日间 ¥1,410。</p>
+        </div>
+        <p class="spec-note">层级靠一行路径文字说明，编号与标题同一基线。最便宜、可迁移；路径行在深层文档里替代面包屑。<strong>成立条件</strong>：层级 ≤ 3；路径行必须是文字，不能只是缩进。</p>
+      </article>
+
+      <article class="spec" id="W01-b" data-axes="relation:single spatial:offset path:linear load:short expression:editorial">
+        <p class="spec-label"><span class="spec-id"><a href="#W01-b">W01-b</a></span> 悬挂章号 <span class="tag tag--expr">editorial</span> <span class="axes">offset · linear</span></p>
+        <div class="stage stage--bleed">
+          <div class="w-sec w-sec--hang">
+            <p class="w-sec__big" aria-hidden="true">3</p>
+            <div class="w-sec__body">
+              <p class="w-sec__kicker">第三章 · 成本 <span class="w-sec__of">共六章</span></p>
+              <h3 class="w-sec__title"><span class="w-sec__num">3.2</span>每次到馆成本</h3>
+              <p class="w-host">夜间每次到馆成本 ¥116，日间为 ¥38。夜间每小时运营成本 ¥1,860，高于日间 ¥1,410。</p>
+            </div>
+          </div>
+        </div>
+        <p class="spec-note">章号悬挂在正文左侧的留白里，读者上下滚动时先看到“第几章”的大字，节号再落到标题上。让“章”与“节”成为两个尺度，而不是两个字号。<strong>成立条件</strong>：章数少（≤ 9）、章内节较多的长报告；容器窄于约 520px 时大章号回到正文上方，改为横排。</p>
+      </article>
+
+      <article class="spec" id="W01-c" data-axes="relation:whole-part spatial:span path:scan load:short expression:graphic">
+        <p class="spec-label"><span class="spec-id"><a href="#W01-c">W01-c</a></span> 三级刻度 <span class="tag tag--expr">graphic</span> <span class="axes">span · scan</span></p>
+        <div class="stage">
+          <div class="w-sec w-sec--band">
+            <h3 class="w-sec__l1"><span class="w-sec__lv">章</span><span class="w-sec__num">3</span> 成本</h3>
+            <p class="w-host">夜间每小时运营成本 ¥1,860，日间 ¥1,410。</p>
+            <h4 class="w-sec__l2"><span class="w-sec__lv">节</span><span class="w-sec__num">3.2</span> 每次到馆成本</h4>
+            <p class="w-host">夜间每次到馆成本 ¥116，日间为 ¥38。</p>
+            <h5 class="w-sec__l3"><span class="w-sec__lv">小节</span><span class="w-sec__num">3.2.1</span> 按分馆拆分</h5>
+            <p class="w-host">河湾每小时 ¥1,720，东坡 ¥2,000。</p>
+          </div>
+        </div>
+        <p class="spec-note">层级用三种冗余线索同时编码：色块 / 粗线 / 细线，缩进 0 / 12 / 24px，以及文字“章 / 节 / 小节”。灰度打印或色盲时仍能区分。<strong>成立条件</strong>：快速翻阅、需要一眼判断当前在第几层的文档；层级超过 3 时这套刻度用完，要换结构。</p>
+      </article>
+
+      <article class="spec" id="W01-d" data-axes="relation:single spatial:offset path:linear load:long-title expression:baseline">
+        <p class="spec-label"><span class="spec-id"><a href="#W01-d">W01-d</a></span> S1 长标题 + 声明短标题 <span class="tag tag--stress">stress</span> <span class="axes">offset · long-title</span></p>
+        <div class="stage">
+          <div class="w-sec w-sec--long">
+            <p class="w-sec__path"><span>第 5 章 方案与推荐</span><span aria-hidden="true"> / </span><span>第 3 节</span></p>
+            <h3 class="w-sec__title"><span class="w-sec__num">5.3</span><span class="w-sec__text">在不增加馆员编制、且东坡分馆周二夜间到馆人次持续低于盈亏参考线的前提下，是否仍应将夜间开放扩展至西门与北站两个分馆</span></h3>
+            <p class="w-sec__short"><span class="w-sec__lv">短标题</span>无新增编制时是否扩至西门、北站</p>
+          </div>
+          <p class="w-host">夜班馆员招聘 2 人到位前，方案 A 不成立。</p>
+        </div>
+        <p class="spec-note">S1 放进来暴露的问题：58 字的标题在目录、翻页条、页眉里都放不下，任何截断都会先吃掉句尾的决定对象（“西门与北站”）。处理：编号悬挂、标题 <code>text-wrap: balance</code> 且不截断；另外显式声明短标题，供 W02 / W08 复用。短标题由作者写，不由程序截取。</p>
+      </article>
+
+      <article class="spec" id="W01-e" data-axes="relation:single spatial:inline path:scan load:long-title expression:baseline">
+        <p class="spec-label"><span class="spec-id"><a href="#W01-e">W01-e</a></span> 单行截断 + 只靠颜色分层 <span class="tag tag--fail">fail</span> <span class="axes">inline · long-title</span></p>
+        <div class="stage">
+          <div class="w-sec w-sec--trunc" data-allow-scroll>
+            <p class="w-sec__t1">成本</p>
+            <p class="w-sec__t2">在不增加馆员编制、且东坡分馆周二夜间到馆人次持续低于盈亏参考线的前提下，是否仍应将夜间开放扩展至西门与北站两个分馆</p>
+          </div>
+        </div>
+        <p class="spec-note"><strong>失败原因</strong>：标题被 <code>text-overflow: ellipsis</code> 截成“在不增加馆员编制、且东坡…”，决定对象整段消失，窄屏更严重；章与节只靠颜色（蓝/灰）和字号细差区分，没有编号，也无法被交叉引用。容器标了 <code>data-allow-scroll</code>，裁切是故意保留的。</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- ============================== W02 ============================== -->
+  <section class="atom" id="W02">
+    <header class="atom-head">
+      <p class="atom-id">W02 · atom · 定位与辅助阅读</p>
+      <h2>阅读顺序与位置 · Sequence position</h2>
+      <p class="atom-job">读者确认“这是第几节、共几节、还剩多少、下一节讲什么”，决定继续读、跳过还是回看。</p>
+      <details class="atom-meta"><summary>输入、适用与失败</summary>
+        <dl><dt>输入</dt><dd>必需：当前序号、总数、上一节与下一节的编号和（短）标题。可选：篇幅或阅读时长、缺节说明。</dd>
+        <dt>适用</dt><dd>线性论证、分页或分节阅读的长文；读者可能中途离开再回来。</dd>
+        <dt>不适合</dt><dd>节之间没有顺序（参考手册）；只有 2 节。</dd>
+        <dt>容量</dt><dd>分段进度条到 8–10 节为止；更多时改用“第 n / N”文字 + W08。</dd>
+        <dt>已见失败</dt><dd>只有百分比没有节数；上一页/下一页不带标题；进度条被当作唯一导航。</dd></dl>
+      </details>
+    </header>
+    <div class="variants">
+
+      <article class="spec" id="W02-a" data-axes="relation:sequence spatial:juxtapose path:linear load:short expression:baseline">
+        <p class="spec-label"><span class="spec-id"><a href="#W02-a">W02-a</a></span> 带标题的翻页条 <span class="tag tag--base">baseline</span> <span class="axes">juxtapose · linear</span></p>
+        <div class="stage">
+          <p class="w-host">……人员占 62%，安保 18%，能耗 11%，系统与杂项 9%。</p>
+          <nav class="w-pos w-pos--pager" aria-label="章节翻页">
+            <p class="w-pos__where">第 <b>3</b> 节 / 共 6 节 · 成本</p>
+            <a class="w-pos__prev" href="#W02-a" rel="prev"><span class="w-pos__dir">← 上一节</span><span class="w-pos__t">2 到馆与借阅</span></a>
+            <a class="w-pos__next" href="#W02-a" rel="next"><span class="w-pos__dir">下一节 →</span><span class="w-pos__t">4 读者反馈</span></a>
+          </nav>
+        </div>
+        <p class="spec-note">位置句居中上方，前后两节带编号和标题分列两端；窄屏上下堆叠时“下一节”排在前面（续读比回看常见），上一节随后。<strong>成立条件</strong>：节标题短（或有 W01-d 的短标题）。链接是普通锚点，无 JS 可用。</p>
+      </article>
+
+      <article class="spec" id="W02-b" data-axes="relation:sequence spatial:span path:scan load:short expression:graphic">
+        <p class="spec-label"><span class="spec-id"><a href="#W02-b">W02-b</a></span> 按篇幅分段的进度条 <span class="tag tag--expr">graphic</span> <span class="axes">span · scan</span></p>
+        <div class="stage">
+          <nav class="w-pos w-pos--seg" aria-label="全文 6 节，当前第 3 节">
+            <p class="w-pos__where">第 <b>3</b> / 6 节 · 成本 · 本节约 3 分钟，之后还有约 8 分钟 <span class="syn">synthetic 估时</span></p>
+            <ol class="w-pos__bar">
+              <li style="--m:2" class="is-done"><a href="#W02-b"><span class="w-pos__n">1</span><span class="w-pos__lbl">摘要</span></a></li>
+              <li style="--m:4" class="is-done"><a href="#W02-b"><span class="w-pos__n">2</span><span class="w-pos__lbl">到馆与借阅</span></a></li>
+              <li style="--m:3" class="is-here"><a href="#W02-b" aria-current="location"><span class="w-pos__n">3</span><span class="w-pos__lbl">成本</span></a></li>
+              <li style="--m:3"><a href="#W02-b"><span class="w-pos__n">4</span><span class="w-pos__lbl">读者反馈</span></a></li>
+              <li style="--m:4"><a href="#W02-b"><span class="w-pos__n">5</span><span class="w-pos__lbl">方案与推荐</span></a></li>
+              <li style="--m:1"><a href="#W02-b"><span class="w-pos__n">6</span><span class="w-pos__lbl">方法</span></a></li>
+            </ol>
+            <p class="w-pos__key"><span class="w-pos__sw w-pos__sw--done"></span>已读 <span class="w-pos__sw w-pos__sw--here"></span>当前（加粗框） <span class="w-pos__sw"></span>未读 · 段宽 = 估计阅读时长，共约 17 分钟</p>
+          </nav>
+        </div>
+        <p class="spec-note">段宽按篇幅而不是等分，读者能看出“第 5 节很长、第 6 节只是附注”，决定是否一口气读完。已读 / 当前 / 未读用填充、粗框、空心三种形状区分，并有文字图例。<strong>成立条件</strong>：≤ 8 节且篇幅差异大；窄屏时段内只留编号，当前节标题由上方位置句承担；最短的一段有 1.9rem 下限，比例在窄屏略失真。</p>
+      </article>
+
+      <article class="spec" id="W02-c" data-axes="relation:sequence spatial:embed path:linear load:short expression:spatial">
+        <p class="spec-label"><span class="spec-id"><a href="#W02-c">W02-c</a></span> 逐节吸附页眉 + 进度线 <span class="tag tag--expr">spatial</span> <span class="axes">embed · linear</span></p>
+        <div class="stage">
+          <div class="w-pos w-pos--run">
+            <div class="w-pos__line" aria-hidden="true"><span></span></div>
+            <div class="w-pos__scroll" tabindex="0" role="region" aria-label="正文示例，可滚动：第 2 至第 4 节">
+              <section class="w-pos__sec">
+                <p class="w-pos__head"><span class="w-pos__n">2</span> 到馆与借阅 <span class="w-pos__of">第 2 / 6 节</span></p>
+                <p class="w-host">周到馆从第 1 周 330 升至第 25 周 583；第 14 周因东坡停开 5 晚降至 322。河湾 7,910 人次，东坡 4,570 人次。</p>
+                <p class="w-host">夜间借阅 6,215 册次，每次到馆 0.50 册。夜间首次持证读者占 22%，日间 9%。</p>
+              </section>
+              <section class="w-pos__sec">
+                <p class="w-pos__head"><span class="w-pos__n">3</span> 成本 <span class="w-pos__of">第 3 / 6 节</span></p>
+                <p class="w-host">夜间每小时运营成本 ¥1,860（河湾 ¥1,720，东坡 ¥2,000），日间 ¥1,410。</p>
+                <p class="w-host">人员占 62%，安保 18%，能耗 11%，系统与杂项 9%。夜间每次到馆成本 ¥116，约为日间 ¥38 的 3 倍。</p>
+              </section>
+              <section class="w-pos__sec">
+                <p class="w-pos__head"><span class="w-pos__n">4</span> 读者反馈 <span class="w-pos__of">第 4 / 6 节</span></p>
+                <p class="w-host">问卷 n = 642，均分 4.3 / 5，81% 愿意继续（95% CI 78–84%）。27% 提到希望周日开放。</p>
+                <p class="w-host">轻微安全事件 3 起，重大 0 起。</p>
+              </section>
+            </div>
+          </div>
+        </div>
+        <p class="spec-note">把全页滚动缩小成一个可滚动示例框（可用 Tab 聚焦后用方向键滚动）。每节页眉 <code>position: sticky</code>，下一节把上一节推走，所以“第 n / 6 节”在无 JS 时也总是对的；顶部 3px 进度线借自 C20，只在 JS 可用时出现，直接跟随滚动、无过渡，减少动效时也不变。<strong>成立条件</strong>：长文逐节阅读；嵌套滚动框只是模拟，真实页面应挂在视口上。</p>
+      </article>
+
+      <article class="spec" id="W02-d" data-axes="relation:sequence spatial:juxtapose path:linear load:long-title expression:baseline">
+        <p class="spec-label"><span class="spec-id"><a href="#W02-d">W02-d</a></span> S1 长标题 + S3 缺节 <span class="tag tag--stress">stress</span> <span class="axes">juxtapose · long-title · missing</span></p>
+        <div class="stage">
+          <nav class="w-pos w-pos--pager w-pos--gap" aria-label="章节翻页">
+            <p class="w-pos__where">第 <b>5.2</b> 节 / 第 5 章共 4 节 · 推荐 B</p>
+            <a class="w-pos__prev" href="#W02-d" rel="prev"><span class="w-pos__dir">← 上一节</span><span class="w-pos__t">5.1 三个方案</span></a>
+            <a class="w-pos__next" href="#W02-d" rel="next"><span class="w-pos__dir">下一节 →</span><span class="w-pos__t">5.3 在不增加馆员编制、且东坡分馆周二夜间到馆人次持续低于盈亏参考线的前提下，是否仍应将夜间开放扩展至西门与北站两个分馆</span></a>
+            <p class="w-pos__skip"><span class="w-pos__lv">缺节</span>5.4 北站分馆需求：数据未采集，本版不含此节（缺失，不是 0）。5.3 之后直接进入 6 方法与口径。</p>
+          </nav>
+        </div>
+        <p class="spec-note">S1 把“下一节”撑成 3–4 行，左右两栏失去对称，上一节的链接悬在顶部；比截断好，但更合理的是改用 W01-d 声明的短标题。S3 的缺节必须写出来，否则读者会把“5.3 → 6”误读为 5.4 被略过或编号出错。</p>
+      </article>
+
+      <article class="spec" id="W02-e" data-axes="relation:sequence spatial:inline path:linear load:sparse expression:baseline">
+        <p class="spec-label"><span class="spec-id"><a href="#W02-e">W02-e</a></span> 百分比 + 裸箭头 <span class="tag tag--fail">fail</span> <span class="axes">inline · sparse</span></p>
+        <div class="stage">
+          <div class="w-pos w-pos--bare">
+            <a href="#W02-e" aria-label="上一页">‹</a>
+            <span class="w-pos__pct"><span style="width:50%"></span></span>
+            <span>50%</span>
+            <a href="#W02-e" aria-label="下一页">›</a>
+          </div>
+        </div>
+        <p class="spec-note"><strong>失败原因</strong>：“50%”既不是节数也不是篇幅（第 3 节结束时按篇幅只到 53%，按节数是 3 / 6），读者无法据此决定继续还是跳过；箭头不带标题，前后是什么只能点进去才知道；箭头目标只有 16px 左右，触屏难点。</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- ============================== W03 ============================== -->
+  <section class="atom" id="W03">
+    <header class="atom-head">
+      <p class="atom-id">W03 · atom · 定位与辅助阅读</p>
+      <h2>邻接注释与边注 · Adjacent note</h2>
+      <p class="atom-job">读者在读到某个说法的同一视线范围内拿到它的限定或出处，判断“这句话要打几折”，而不用翻到文末。</p>
+      <details class="atom-meta"><summary>输入、适用与失败</summary>
+        <dl><dt>输入</dt><dd>必需：被注锚点（词或句）、注释内容、两者的对应标记（编号或符号）。可选：注释类型（口径 / 来源 / 反例）。</dd>
+        <dt>适用</dt><dd>注释会改变对被注句的理解：口径、例外、反向意见。</dd>
+        <dt>不适合</dt><dd>注释量大于正文；注释本身是必须先读的前提（改用 W04 或正文限定）。</dd>
+        <dt>容量</dt><dd>边注每段 ≤ 2 条，超过即发生碰撞下移；每条 ≤ 80 字。</dd>
+        <dt>已见失败</dt><dd>尾注离正文过远、无回链；边注碰撞后与锚点错位；只在悬停时出现的注释。</dd></dl>
+      </details>
+    </header>
+    <div class="variants">
+
+      <article class="spec" id="W03-a" data-axes="relation:claim-evidence spatial:stack path:adjacent load:short expression:baseline">
+        <p class="spec-label"><span class="spec-id"><a href="#W03-a">W03-a</a></span> 段后紧随注 <span class="tag tag--base">baseline</span> <span class="axes">stack · adjacent</span></p>
+        <div class="stage">
+          <div class="w-note w-note--after">
+            <p class="w-host">夜间每次到馆成本 ¥116<sup class="w-note__ref"><a href="#w03a-1" id="w03a-r1">1</a></sup>，日间为 ¥38。东坡每小时 ¥2,000，高于河湾 ¥1,720<sup class="w-note__ref"><a href="#w03a-2" id="w03a-r2">2</a></sup>。</p>
+            <ol class="w-note__list" aria-label="本段注释">
+              <li id="w03a-1"><span class="w-note__k">口径</span>按闸机进入计数分摊，同一读者多次进入分别计数，所以每人成本被低估。<a href="#w03a-r1" class="w-note__back" aria-label="回到注 1 引用处">↩</a></li>
+              <li id="w03a-2"><span class="w-note__k">补充</span>东坡安保为外包夜班，按晚计费。<span class="syn">synthetic</span> <a href="#w03a-r2" class="w-note__back" aria-label="回到注 2 引用处">↩</a></li>
+            </ol>
+          </div>
+        </div>
+        <p class="spec-note">注释跟在所注段落之后，不集中到文末；编号双向链接，注释前有类型词（口径 / 补充）。最可迁移，也是其他变体在窄屏上折回的形态。<strong>成立条件</strong>：段落短；段落超过约 8 行时注释离锚点过远，考虑 W03-b。</p>
+      </article>
+
+      <article class="spec" id="W03-b" data-axes="relation:claim-evidence spatial:main-margin path:adjacent load:short expression:spatial">
+        <p class="spec-label"><span class="spec-id"><a href="#W03-b">W03-b</a></span> 行对齐边注，窄屏折回句后 <span class="tag tag--expr">spatial</span> <span class="axes">main-margin · adjacent</span></p>
+        <div class="stage">
+          <div class="w-note w-note--side">
+            <p class="w-host">夜间每次到馆成本 ¥116<sup class="w-note__ref">1</sup>，日间为 ¥38。<span class="w-note__sn" role="note"><b>1</b> <span class="w-note__k">口径</span>按闸机进入计数分摊，同一读者多次进入分别计数，所以每人成本被低估。</span>夜间每小时运营成本 ¥1,860，高于日间 ¥1,410；人员占 62%，安保 18%，能耗 11%，系统与杂项 9%。</p>
+            <p class="w-host">东坡每小时 ¥2,000，高于河湾 ¥1,720<sup class="w-note__ref">2</sup>。<span class="w-note__sn" role="note"><b>2</b> <span class="w-note__k">补充</span>东坡安保为外包夜班，按晚计费。<span class="syn">synthetic</span></span>两馆差额主要在安保一项，而不是人员。</p>
+          </div>
+        </div>
+        <p class="spec-note">注释写在锚点所在句的句号之后（DOM 顺序即阅读顺序），宽容器里浮到右侧边栏、与该句所在行顶对齐；容器窄于 640px 时变成句后缩进的块，紧贴锚点所在句，而不是被推到段尾或文末。放在句号之后而非锚点词之后，是因为窄屏折回时会把句子切断、让下一行以逗号开头（W03-d 保留了这种切断）。无 JS。<strong>成立条件</strong>：每段 1–2 条注；更多时会碰撞（见 W03-d）。</p>
+      </article>
+
+      <article class="spec" id="W03-c" data-axes="relation:claim-evidence spatial:offset path:adjacent load:short expression:editorial">
+        <p class="spec-label"><span class="spec-id"><a href="#W03-c">W03-c</a></span> 左侧悬挂批注 <span class="tag tag--expr">editorial</span> <span class="axes">offset · adjacent · revisit</span></p>
+        <div class="stage stage--bleed">
+          <div class="w-note w-note--gloss">
+            <div class="w-note__row">
+              <p class="w-host">问卷中 81% 的受访者<mark class="w-note__mk" id="w03c-m1">愿意继续夜间开放</mark>，均分 4.3 / 5。</p>
+              <aside class="w-note__gl" aria-labelledby="w03c-m1"><span class="w-note__k">口径</span>自愿填写，夜间读者回收率约 11%，满意度可能偏高。</aside>
+            </div>
+            <div class="w-note__row">
+              <p class="w-host">也有读者<mark class="w-note__mk" id="w03c-m2">反映晚间广播过密</mark>，集中在闭馆前半小时。</p>
+              <aside class="w-note__gl" aria-labelledby="w03c-m2"><span class="w-note__k">反向</span>#Q-0233：「九点半以后广播太频繁，影响看书。」</aside>
+            </div>
+          </div>
+        </div>
+        <p class="spec-note">批注挂在正文左侧、与所注段落顶对齐，锚点用带底纹的短语而不是数字，读者回看时先扫左栏的类型词（口径 / 反向）再决定读哪段。窄屏时批注折到所注段落之下，以左侧粗线和“↑”连回原段。<strong>成立条件</strong>：批注是对段落的评语而非对某个数字的脚注；批注数少、类型对读者有意义。</p>
+      </article>
+
+      <article class="spec" id="W03-d" data-axes="relation:claim-evidence spatial:main-margin path:adjacent load:dense expression:spatial">
+        <p class="spec-label"><span class="spec-id"><a href="#W03-d">W03-d</a></span> 边注碰撞 + S4 多来源 + S7 长 token <span class="tag tag--stress">stress</span> <span class="axes">main-margin · dense · many-sources · mixed-script</span></p>
+        <div class="stage">
+          <div class="w-note w-note--side">
+            <p class="w-host">夜间需求真实存在<sup class="w-note__ref">1</sup><span class="w-note__sn" role="note"><b>1</b> <span class="w-note__k">闸机</span>26 周合计 12,480 人次，全量计数。</span>：5 月 14 日 20:30 河湾 3 层座位占用 94 / 120<sup class="w-note__ref">2</sup><span class="w-note__sn" role="note"><b>2</b> <span class="w-note__k">预约系统</span>取自 <code>BookingService.getSeatOccupancy(branchId, "2026-05-14T20:30+08:00")</code>，单时点。</span>，同晚东坡 21:40 仍有 23 人<sup class="w-note__ref">3</sup><span class="w-note__sn" role="note"><b>3</b> <span class="w-note__k">值班日志</span>东坡 2026-05-14，单晚记录。</span>，问卷 81% 愿意继续<sup class="w-note__ref">4</sup><span class="w-note__sn" role="note"><b>4</b> <span class="w-note__k">问卷</span>n = 642，自愿，回收率约 11%。</span>。</p>
+            <p class="w-host">下一段落：东坡周二夜均 38 人次，低于参考线 60 人次/晚。</p>
+          </div>
+        </div>
+        <p class="spec-note">四条注写在锚点词之后、集中在一句话里：窄屏折回时句子被切成五段，多行以逗号开头；宽屏边栏里注 2 被 S7 长 token 撑高，注 3、注 4 依次下移，最后一条已经落到下一段旁边，与锚点错位约 3 行——这是浮动边注的结构极限，不是样式问题。S7 在 <code>code</code> 里靠 <code>overflow-wrap: anywhere</code> 断开，但断点落在标识符中间。<strong>结论</strong>：同一句多来源更适合交给证据家族的来源列表，边注只放 1–2 条。</p>
+      </article>
+
+      <article class="spec" id="W03-e" data-axes="relation:claim-evidence spatial:distant path:revisit load:short expression:baseline">
+        <p class="spec-label"><span class="spec-id"><a href="#W03-e">W03-e</a></span> 文末尾注、无回链 <span class="tag tag--fail">fail</span> <span class="axes">distant · revisit</span></p>
+        <div class="stage">
+          <div class="w-note w-note--end">
+            <p class="w-host">问卷中 81% 的受访者愿意继续夜间开放<sup>7</sup>，均分 4.3 / 5。夜间每次到馆成本 ¥116<sup>8</sup>。</p>
+            <p class="w-note__gap">…… 中间还有 3 节，约 2,400 字 ……</p>
+            <p class="w-note__endh">注释</p>
+            <ol class="w-note__endlist" start="7">
+              <li>自愿填写，夜间读者回收率约 11%，满意度可能偏高。</li>
+              <li>按闸机进入计数分摊，同一读者多次进入分别计数。</li>
+            </ol>
+          </div>
+        </div>
+        <p class="spec-note"><strong>失败原因</strong>：最影响判断的一条限定（“可能偏高”）离 81% 有 3 节远，编号 7、8 不是链接也没有回链，读者读到 81% 时不会翻到文末；等读到注释时已记不起它改的是哪一句。尾注只适合不改变理解的出处信息。</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- ============================== W04 ============================== -->
+  <section class="atom" id="W04">
+    <header class="atom-head">
+      <p class="atom-id">W04 · atom · 定位与辅助阅读</p>
+      <h2>范围说明 · Scope statement</h2>
+      <p class="atom-job">读者在读结论前确认“这一节的数据覆盖哪些对象、哪段时间、哪些情况不在内”，避免把局部结论外推。</p>
+      <details class="atom-meta"><summary>输入、适用与失败</summary>
+        <dl><dt>输入</dt><dd>必需：覆盖对象、时间窗、明确不覆盖项。可选：不覆盖的原因（未采集 / 不适用 / 有意排除）、下一步在哪里回答。</dd>
+        <dt>适用</dt><dd>结论容易被外推的节；数据有缺口的节；决定材料。</dd>
+        <dt>不适合</dt><dd>覆盖面显然完整的节；测量方法细节（交给证据家族的方法说明）。</dd>
+        <dt>容量</dt><dd>覆盖 + 不覆盖合计 ≤ 6 项；更多时说明这一节切得不对。</dd>
+        <dt>已见失败</dt><dd>范围只在细则或折叠里；“不覆盖”写成“其他”；缺失、零、不适用混为一个“—”。</dd></dl>
+      </details>
+    </header>
+    <div class="variants">
+
+      <article class="spec" id="W04-a" data-axes="relation:whole-part spatial:juxtapose path:scan load:short expression:baseline">
+        <p class="spec-label"><span class="spec-id"><a href="#W04-a">W04-a</a></span> 含 / 不含两栏 <span class="tag tag--base">baseline</span> <span class="axes">juxtapose · scan</span></p>
+        <div class="stage">
+          <div class="w-scope w-scope--list" role="group" aria-label="第 2 节数据范围">
+            <p class="w-scope__h">本节数据范围</p>
+            <dl class="w-scope__in">
+              <dt>含</dt>
+              <dd>河湾、东坡两个试点分馆</dd>
+              <dd>2026-03-02 至 2026-08-30，26 周</dd>
+              <dd>周二至周六 19:00–22:00，闸机进入计数</dd>
+            </dl>
+            <dl class="w-scope__out">
+              <dt>不含</dt>
+              <dd>西门、北站（候选分馆，未试点）</dd>
+              <dd>周日与周一（未开放）</dd>
+              <dd>日间数据，仅在第 3 节成本对比中使用</dd>
+            </dl>
+          </div>
+          <p class="w-host">26 周试点中，两馆夜间到馆合计 12,480 人次，周均 480。</p>
+        </div>
+        <p class="spec-note">放在结论之前，两栏并置；“不含”用实线框之外的虚线框和文字标签区分，不只靠颜色。窄屏上下堆叠，先“含”后“不含”。<strong>成立条件</strong>：各 ≤ 3 项；超过时说明本节在混合多个问题。</p>
+      </article>
+
+      <article class="spec" id="W04-b" data-axes="relation:whole-part spatial:span path:scan load:short expression:graphic">
+        <p class="spec-label"><span class="spec-id"><a href="#W04-b">W04-b</a></span> 时间窗 × 周内时段 × 分馆 <span class="tag tag--expr">graphic</span> <span class="axes">span · scan</span></p>
+        <div class="stage">
+          <div class="w-scope w-scope--map" role="group" aria-label="第 2 节数据范围图示">
+            <div class="w-scope__cal">
+              <p class="w-scope__cap">时间窗：2026-03-02 至 08-30（26 周）</p>
+              <div class="w-scope__months" aria-hidden="true">
+                <span>1月</span><span>2月</span><span>3月</span><span>4月</span><span>5月</span><span>6月</span><span>7月</span><span>8月</span><span>9月</span><span>10月</span>
+                <i class="w-scope__win"></i>
+                <b class="w-scope__ev" style="--x:4.6%">①</b><b class="w-scope__ev" style="--x:86.2%">②</b><b class="w-scope__ev" style="--x:94.4%">③</b>
+              </div>
+              <p class="w-scope__evk">① 01-15 立项　② 09-20 评估报告　③ 10-15 决定会（未发生）— 三者都在数据窗之外</p>
+            </div>
+            <div class="w-scope__week">
+              <p class="w-scope__cap">周内：周二至周六 19:00–22:00</p>
+              <ul class="w-scope__days">
+                <li class="is-off">一<small>未开放</small></li>
+                <li>二<small>19–22</small></li><li>三<small>19–22</small></li><li>四<small>19–22</small></li><li>五<small>19–22</small></li><li>六<small>19–22</small></li>
+                <li class="is-off">日<small>未开放</small></li>
+              </ul>
+            </div>
+            <div class="w-scope__br">
+              <p class="w-scope__cap">分馆</p>
+              <ul>
+                <li class="is-in"><b>■</b> 河湾 · 试点</li>
+                <li class="is-in"><b>■</b> 东坡 · 试点</li>
+                <li><b>□</b> 西门 · 候选，未试点</li>
+                <li><b>□</b> 北站 · 候选，需求未采集</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <p class="spec-note">把三个维度的范围画成可一眼对照的形状：年轴上的数据窗（色块）、周内七格（实 / 斜线）、分馆（实心 / 空心方块 + 文字）。关键信息是“决定会在数据窗之外 6 周以上”和“周日完全没有数据”，这两条在文字清单里容易被读过去。<strong>成立条件</strong>：范围本身是决策依据（例如周日需求 27% 未验证）；只有一个维度时用 W04-a 即可。</p>
+      </article>
+
+      <article class="spec" id="W04-c" data-axes="relation:whole-part spatial:inline path:linear load:short expression:editorial">
+        <p class="spec-label"><span class="spec-id"><a href="#W04-c">W04-c</a></span> 引导句式范围 <span class="tag tag--expr">editorial</span> <span class="axes">inline · linear</span></p>
+        <div class="stage stage--bleed">
+          <div class="w-scope w-scope--lead">
+            <p class="w-scope__mark" aria-hidden="true">范围</p>
+            <p class="w-scope__sent">本节<em>只看</em>河湾、东坡两个试点分馆在 26 周里周二至周六 19:00–22:00 的闸机计数；<em>不回答</em>西门、北站能否复制这一结果，也<em>不涉及</em>周日。</p>
+            <p class="w-host">两馆夜间到馆合计 12,480 人次，周均 480，高于目标 400/周。</p>
+          </div>
+        </div>
+        <p class="spec-note">范围写成一句带动词的引导句（只看 / 不回答 / 不涉及），读者线性读下来不会跳过它；左侧“范围”作为悬挂标记，便于回看时找到。<strong>成立条件</strong>：不覆盖项 ≤ 3 且能用一句话说清；需要逐项对照时回到 W04-a。</p>
+      </article>
+
+      <article class="spec" id="W04-d" data-axes="relation:whole-part spatial:stack path:scan load:missing expression:baseline">
+        <p class="spec-label"><span class="spec-id"><a href="#W04-d">W04-d</a></span> S3 缺失 / 零 / 不适用分列 <span class="tag tag--stress">stress</span> <span class="axes">stack · missing · zero</span></p>
+        <div class="stage">
+          <table class="w-scope w-scope--status">
+            <caption>本报告各项数据的状态</caption>
+            <thead><tr><th scope="col">项目</th><th scope="col">状态</th><th scope="col">读法</th></tr></thead>
+            <tbody>
+              <tr><th scope="row">重大安全事件</th><td><span class="w-scope__st w-scope__st--zero">0 起</span></td><td>已统计，确实为零</td></tr>
+              <tr><th scope="row">北站分馆夜间需求</th><td><span class="w-scope__st w-scope__st--na">未采集</span></td><td>缺失，不是 0；方案 A 中北站的到馆为推测</td></tr>
+              <tr><th scope="row">东坡分馆周日</th><td><span class="w-scope__st w-scope__st--nap">不适用</span></td><td>试点未开放，不存在这一数据</td></tr>
+              <tr><th scope="row">西门分馆</th><td><span class="w-scope__st w-scope__st--out">不在范围</span></td><td>候选分馆，2027 Q1 改造后重评</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="spec-note">S3 放进来后，一个“含 / 不含”二分不够用：零是覆盖到的结果，未采集是缺口，不适用是问题本身不存在，不在范围是有意排除。四种状态各用不同的写法（数字 / 虚线框 / 斜线框 / 括注），并在“读法”列写出后果。这张表已接近证据家族的方法说明，边界见 open questions。</p>
+      </article>
+
+      <article class="spec" id="W04-e" data-axes="relation:whole-part spatial:distant path:linear load:short expression:graphic">
+        <p class="spec-label"><span class="spec-id"><a href="#W04-e">W04-e</a></span> 大字结论 + 细则范围 <span class="tag tag--fail">fail</span> <span class="axes">distant · linear</span></p>
+        <div class="stage">
+          <div class="w-scope w-scope--fine">
+            <p class="w-scope__big">12,480<small>夜间到馆人次*</small></p>
+            <p class="w-host">夜间开放已被读者广泛接受，扩展到更多分馆的需求明确。</p>
+            <p class="w-scope__tiny">* 仅含河湾、东坡两馆，2026-03-02 至 08-30；北站未采集。</p>
+          </div>
+        </div>
+        <p class="spec-note"><strong>失败原因</strong>：范围以 11px 灰色细则放在结论之后，而结论句（“扩展到更多分馆的需求明确”）恰好越过了范围——两馆的数据被外推到了未采集的北站。范围必须在结论之前、与结论同一字号层级。</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- ============================== W05 ============================== -->
+  <section class="atom" id="W05">
+    <header class="atom-head">
+      <p class="atom-id">W05 · atom · 定位与辅助阅读</p>
+      <h2>交叉引用 · Cross-reference</h2>
+      <p class="atom-job">读者判断“要不要现在去看别处的那张图或那一段”，并在去看之后能回到原处。</p>
+      <details class="atom-meta"><summary>输入、适用与失败</summary>
+        <dl><dt>输入</dt><dd>必需：目标类型与编号（图 / 表 / 节）、目标标题或要点、可跳转的锚点。可选：方向（前文 / 后文）、目标的关键值预览、回链。</dd>
+        <dt>适用</dt><dd>同一数据在多处被使用；论证依赖前文已给出的证据。</dd>
+        <dt>不适合</dt><dd>目标就在相邻段落（直接写出来）；目标需要长篇上下文才能理解。</dd>
+        <dt>容量</dt><dd>一句话内 ≤ 2 个引用；更多时改为来源列表。</dd>
+        <dt>已见失败</dt><dd>“见上文”“如前所述”无目标；只有编号无标题；跳转后没有回路。</dd></dl>
+      </details>
+    </header>
+    <div class="variants">
+
+      <article class="spec" id="W05-a" data-axes="relation:claim-evidence spatial:inline path:revisit load:short expression:baseline">
+        <p class="spec-label"><span class="spec-id"><a href="#W05-a">W05-a</a></span> 编号 + 标题的行内引用 <span class="tag tag--base">baseline</span> <span class="axes">inline · revisit</span></p>
+        <div class="stage">
+          <div class="w-xref w-xref--inline">
+            <p class="w-host">方案 B 把开放日改为周三至周六，因为东坡周二长期偏低（<a class="w-xref__a" href="#w05a-t" id="w05a-s">见图 2-3 · 东坡周二夜均到馆，第 2 节</a>）。</p>
+            <p class="w-xref__gap">……</p>
+            <figure class="w-xref__target" id="w05a-t">
+              <figcaption><b>图 2-3</b> 东坡周二夜均到馆 38 人次，低于盈亏参考线 60 人次/晚 <a class="w-xref__back" href="#w05a-s">↩ 回到引用处</a></figcaption>
+            </figure>
+          </div>
+        </div>
+        <p class="spec-note">引用文字同时给出类型编号、目标标题和所在节，读者不点也知道那张图讲什么；目标 figure 被 <code>:target</code> 时加框提示落点，并提供回链。<strong>成立条件</strong>：目标有稳定编号；链接文字可以长一点，不要缩成“图 2-3”。</p>
+      </article>
+
+      <article class="spec" id="W05-b" data-axes="relation:claim-evidence spatial:main-margin path:adjacent load:short expression:spatial">
+        <p class="spec-label"><span class="spec-id"><a href="#W05-b">W05-b</a></span> 边栏预览，不必跳转 <span class="tag tag--expr">spatial</span> <span class="axes">main-margin · adjacent</span></p>
+        <div class="stage">
+          <div class="w-xref w-xref--preview">
+            <p class="w-host">方案 B 把开放日改为周三至周六，因为东坡周二长期偏低<sup class="w-xref__sup">→ 图 2-3</sup>。改为周三开始后，每周仍是 4 晚，夜班排班不变。</p>
+            <aside class="w-xref__pv" aria-label="图 2-3 预览">
+              <p class="w-xref__pvh"><b>图 2-3</b> · 第 2 节</p>
+              <svg viewBox="0 0 200 64" role="img" aria-label="东坡周二夜均到馆 38 人次，参考线 60 人次每晚">
+                <rect class="w-xref__bg" x="0" y="20" width="200" height="20"/>
+                <rect class="w-xref__v" x="0" y="20" width="95" height="20"/>
+                <line class="w-xref__ref" x1="150" y1="10" x2="150" y2="50"/>
+              </svg>
+              <p class="w-xref__pvv"><b>38</b> 人次/晚（周二夜均）｜参考线 <b>60</b></p>
+              <a class="w-xref__a" href="#W05-b">打开图 2-3 →</a>
+            </aside>
+          </div>
+        </div>
+        <p class="spec-note">把被引用图的一个关键值和一个极简图形放在引用句旁边：读者多数时候只需要确认“38 低于 60”，不必离开当前段落。窄屏时预览折到段落下方。<strong>成立条件</strong>：目标能被压缩成 1 个值 + 1 个比较；目标是复杂图时预览会误导，只给链接。</p>
+      </article>
+
+      <article class="spec" id="W05-c" data-axes="relation:claim-evidence spatial:inline path:revisit load:short expression:graphic">
+        <p class="spec-label"><span class="spec-id"><a href="#W05-c">W05-c</a></span> 方向与距离标记 <span class="tag tag--expr">graphic</span> <span class="axes">inline · revisit</span></p>
+        <div class="stage">
+          <div class="w-xref w-xref--dir">
+            <p class="w-host">东坡周二夜均 38 人次 <a class="w-xref__chip w-xref__chip--up" href="#W05-c"><span class="w-xref__arr">↑</span><span>图 2-3 · 前 1 节 · 已读</span></a>，因此方案 B 改为周三至周六 <a class="w-xref__chip w-xref__chip--down" href="#W05-c"><span class="w-xref__arr">↓</span><span>表 5-1 · 后 2 节 · 未读</span></a>。</p>
+          </div>
+        </div>
+        <p class="spec-note">引用标记直接编码方向（↑ 前文 / ↓ 后文）、距离（隔几节）和阅读状态（已读 / 未读）：指向已读内容时读者可以凭记忆跳过，指向未读内容时知道这是“预告”，不是缺证据。实心与空心两种形状区分方向，不靠颜色。<strong>成立条件</strong>：线性长文；在网页随意跳读时“已读”无法可靠判断，只保留方向与距离。</p>
+      </article>
+
+      <article class="spec" id="W05-d" data-axes="relation:claim-evidence spatial:stack path:drill load:many-sources expression:baseline">
+        <p class="spec-label"><span class="spec-id"><a href="#W05-d">W05-d</a></span> S4 一句四引 + S7 <span class="tag tag--stress">stress</span> <span class="axes">stack · many-sources · mixed-script</span></p>
+        <div class="stage">
+          <div class="w-xref w-xref--multi">
+            <p class="w-host">夜间需求真实存在，四处来源指向同一结论，但强度不同：</p>
+            <ol class="w-xref__list">
+              <li><span class="w-xref__str" style="--s:3">强</span><a href="#W05-d">图 2-1 · 周到馆人次（闸机全量计数）</a><span class="w-xref__loc">第 2 节</span></li>
+              <li><span class="w-xref__str" style="--s:2">中</span><a href="#W05-d">图 4-2 · 河湾 3 层座位占用 94 / 120（预约系统单时点）</a><span class="w-xref__loc">第 4 节</span></li>
+              <li><span class="w-xref__str" style="--s:2">中</span><a href="#W05-d">附录 B · 东坡值班日志 2026-05-14（单晚）</a><span class="w-xref__loc">附录</span></li>
+              <li><span class="w-xref__str" style="--s:1">弱</span><a href="#W05-d">4.1 · 满意度问卷（自愿，回收率约 11%）</a><span class="w-xref__loc">第 4 节</span></li>
+            </ol>
+            <p class="w-xref__code">座位占用的取数口径见 6.3：<code>BookingService.getSeatOccupancy(branchId, "2026-05-14T20:30+08:00")</code></p>
+          </div>
+        </div>
+        <p class="spec-note">四个行内引用会把句子切成碎片，所以改为句后列表；强度同时写成文字（强 / 中 / 弱）和刻度格数。暴露的问题：一旦列出强度，这就不再只是“指路”，而是证据评估，应交给证据家族；W05 只保留每行的“类型编号 + 标题 + 位置”。S7 的长标识符在窄屏断在两个参数之间，仍可读；若参数更长就会断在标识符内部。</p>
+      </article>
+
+      <article class="spec" id="W05-e" data-axes="relation:claim-evidence spatial:inline path:revisit load:sparse expression:baseline">
+        <p class="spec-label"><span class="spec-id"><a href="#W05-e">W05-e</a></span> “见上文”“点击这里” <span class="tag tag--fail">fail</span> <span class="axes">inline · sparse</span></p>
+        <div class="stage">
+          <p class="w-host w-xref--vague">如前所述，东坡周二偏低（详见上文），因此推荐方案 B，具体数字<a href="#W05-e">点击这里</a>查看。</p>
+        </div>
+        <p class="spec-note"><strong>失败原因</strong>：“如前所述”“上文”没有目标；“点击这里”脱离上下文后不可理解（屏幕阅读器的链接列表里只剩一串“点击这里”），也不告诉读者跳过去会看到什么、值不值得去。</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- ============================== W06 ============================== -->
+  <section class="atom" id="W06">
+    <header class="atom-head">
+      <p class="atom-id">W06 · atom · 定位与辅助阅读</p>
+      <h2>展开补充 · Disclosure</h2>
+      <p class="atom-job">读者判断“这块折叠内容我现在需不需要看”——折叠的前提是：不看它，正文的结论不变。</p>
+      <details class="atom-meta"><summary>输入、适用与失败</summary>
+        <dl><dt>输入</dt><dd>必需：摘要行（说明里面是什么、多大）、折叠内容。可选：“不影响结论”的声明、层级。</dd>
+        <dt>适用</dt><dd>原始记录、题目原文、计算细节等可以不读的材料。</dd>
+        <dt>不适合</dt><dd>限定条件、范围、反例——这些是结论的前提，不能折叠（见 W06-e）。打印稿（details 不会自动展开）。</dd>
+        <dt>容量</dt><dd>嵌套 ≤ 2 层；摘要行 ≤ 1 行半。</dd>
+        <dt>已见失败</dt><dd>把关键限定折起来；摘要写“更多”；JS 生成的折叠在无 JS 时内容丢失。</dd></dl>
+      </details>
+    </header>
+    <div class="variants">
+
+      <article class="spec" id="W06-a" data-axes="relation:whole-part spatial:stack path:drill load:short expression:baseline">
+        <p class="spec-label"><span class="spec-id"><a href="#W06-a">W06-a</a></span> 原生 details，摘要说明内容与分量 <span class="tag tag--base">baseline</span> <span class="axes">stack · drill</span></p>
+        <div class="stage">
+          <div class="w-more w-more--details">
+            <p class="w-host">问卷 n = 642，81% 愿意继续（95% CI 78–84%）；自愿填写，可能偏高。</p>
+            <details class="w-more__d">
+              <summary><span class="w-more__what">问卷原话 2 条</span><span class="w-more__why">补充材料，不改变上面的结论</span></summary>
+              <ul>
+                <li>#Q-0417：「下班后终于能来自习，希望周日也开。」</li>
+                <li>#Q-0233：「九点半以后广播太频繁，影响看书。」（反向意见）</li>
+              </ul>
+            </details>
+          </div>
+        </div>
+        <p class="spec-note">摘要行写出“里面是什么、有几条、和结论的关系”。限定（“可能偏高”）留在正文里，没有被折进去。原生 <code>details</code>：Enter / Space 切换、无 JS 可用（借自 C08）。<strong>成立条件</strong>：折叠内容确属补充。</p>
+      </article>
+
+      <article class="spec" id="W06-b" data-axes="relation:whole-part spatial:inline path:drill load:short expression:editorial">
+        <p class="spec-label"><span class="spec-id"><a href="#W06-b">W06-b</a></span> 句尾就地展开（APG disclosure） <span class="tag tag--expr">editorial</span> <span class="axes">inline · drill</span></p>
+        <div class="stage stage--bleed">
+          <div class="w-more w-more--apg">
+            <p class="w-host">满意度为自愿填写，夜间读者中回收率约 11%，可能高估满意度。<span class="w-more__slot" data-for="w06b-x"></span></p>
+            <div class="w-more__x" id="w06b-x">
+              <p>回收方式：闭馆前 30 分钟在服务台放置纸质问卷与二维码，读者自愿填写；未设抽样框，也未对未作答者做回访。<span class="syn">synthetic</span></p>
+            </div>
+            <p class="w-host">这意味着 81% 应读作“愿意填写的读者中的 81%”。</p>
+          </div>
+        </div>
+        <p class="spec-note">展开按钮挂在句尾，展开的内容紧接在该句所在段之后，读者不离开这一行文。按 W3C APG disclosure（C15）：真实 <code>button</code>、<code>aria-expanded</code>、<code>aria-controls</code>，焦点留在按钮上。无 JS 时没有按钮，补充段直接显示（渐进增强）。<strong>成立条件</strong>：补充只有一段；多段时用 W06-a。</p>
+      </article>
+
+      <article class="spec" id="W06-c" data-axes="relation:whole-part spatial:offset path:drill load:dense expression:spatial">
+        <p class="spec-label"><span class="spec-id"><a href="#W06-c">W06-c</a></span> 逐层下钻，层级错位 <span class="tag tag--expr">spatial</span> <span class="axes">offset · drill</span></p>
+        <div class="stage">
+          <div class="w-more w-more--drill">
+            <p class="w-more__l0"><b>81% 愿意继续</b>（95% CI 78–84%，n = 642）<span class="w-more__caveat">自愿填写，可能偏高</span></p>
+            <details class="w-more__d1">
+              <summary>第 1 层 · 这个数字怎么来 <small>2 句</small></summary>
+              <p>夜间读者中回收率约 11%；未设抽样框。27% 的问卷另外提到希望周日开放，但周日不在试点范围内。</p>
+              <details class="w-more__d2">
+                <summary>第 2 层 · 问卷原话 <small>2 条</small></summary>
+                <ul>
+                  <li>#Q-0417：「下班后终于能来自习，希望周日也开。」</li>
+                  <li>#Q-0233：「九点半以后广播太频繁，影响看书。」（反向）</li>
+                </ul>
+              </details>
+            </details>
+          </div>
+        </div>
+        <p class="spec-note">每深一层向右错开 24px 并换一种左侧线（粗实 / 细实 / 虚线），层号写在摘要里，读者始终知道自己在第几层、离结论多远。第 0 层的限定以文字徽记留在外面。<strong>成立条件</strong>：材料天然分层（结论 → 口径 → 原始记录）；超过 2 层时错位吃掉窄屏宽度。</p>
+      </article>
+
+      <article class="spec" id="W06-d" data-axes="relation:whole-part spatial:stack path:drill load:long-title expression:baseline">
+        <p class="spec-label"><span class="spec-id"><a href="#W06-d">W06-d</a></span> S1 长摘要 + S7 长 token <span class="tag tag--stress">stress</span> <span class="axes">stack · long-title · mixed-script</span></p>
+        <div class="stage">
+          <div class="w-more w-more--details">
+            <details class="w-more__d">
+              <summary><span class="w-more__what">附：在不增加馆员编制、且东坡分馆周二夜间到馆人次持续低于盈亏参考线的前提下，是否仍应将夜间开放扩展至西门与北站两个分馆——测算过程</span><span class="w-more__why">3 步，补充材料</span></summary>
+              <ol>
+                <li>年化成本 ¥1,284,736.50（含一次性安保改造 ¥312,000.00）。</li>
+                <li>座位占用取数：<code>BookingService.getSeatOccupancy(branchId, "2026-05-14T20:30+08:00")</code></li>
+                <li>北站到馆为推测，需求未采集。</li>
+              </ol>
+            </details>
+          </div>
+        </div>
+        <p class="spec-note">S1 让摘要行变成 3 行，展开标记必须悬挂在首行左侧，否则会被挤到行中间；“3 步，补充材料”作为第二行保持可见。暴露的问题：打开内容后才发现第 3 步“北站为推测”其实影响方案 A 的判断——作者误判了它是补充。S2 长数值与 S7 在窄屏各自断行，未溢出。</p>
+      </article>
+
+      <article class="spec" id="W06-e" data-axes="relation:certain-uncertain spatial:stack path:drill load:short expression:graphic">
+        <p class="spec-label"><span class="spec-id"><a href="#W06-e">W06-e</a></span> 把前提折起来 <span class="tag tag--fail">fail</span> <span class="axes">stack · drill</span></p>
+        <div class="stage">
+          <div class="w-more w-more--hidden">
+            <p class="w-more__big">81%<small>的读者愿意继续夜间开放</small></p>
+            <details class="w-more__d">
+              <summary>更多</summary>
+              <p>满意度为自愿填写，夜间读者中回收率约 11%，可能高估满意度。</p>
+            </details>
+          </div>
+        </div>
+        <p class="spec-note"><strong>失败原因</strong>：唯一能让读者给 81% 打折的限定被折进“更多”，大号数字独占视线；摘要“更多”不说明里面是什么，读者没有理由打开。折叠内容成了必须先读的条件，违反本原子的前提。</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- ============================== W07 ============================== -->
+  <section class="atom" id="W07">
+    <header class="atom-head">
+      <p class="atom-id">W07 · atom · 定位与辅助阅读</p>
+      <h2>局部与总览 · Local in whole</h2>
+      <p class="atom-job">读者判断“眼前这一局部在整体里处于什么位置、是常态还是例外”，例如第 14 周的 322 人次是趋势还是事故。</p>
+      <details class="atom-meta"><summary>输入、适用与失败</summary>
+        <dl><dt>输入</dt><dd>必需：整体的范围与单位（26 周 / 6 节）、局部的位置（第 14 周）、局部的内容。可选：整体的形状（缩略图）、例外说明。</dd>
+        <dt>适用</dt><dd>讨论一个局部数据点或一个小节时，读者需要整体参照才能判断。</dd>
+        <dt>不适合</dt><dd>局部本身就是整体；整体太大、缩略后失去形状（&gt; 200 点）。</dd>
+        <dt>容量</dt><dd>缩略总览 ≤ 约 60 个单元可在 320px 内逐个辨认。</dd>
+        <dt>已见失败</dt><dd>只给局部、用“近期”等相对时间；总览与局部没有连接标记。</dd></dl>
+      </details>
+    </header>
+    <div class="variants">
+
+      <article class="spec" id="W07-a" data-axes="relation:whole-part spatial:stack path:linear load:short expression:baseline">
+        <p class="spec-label"><span class="spec-id"><a href="#W07-a">W07-a</a></span> 位置句 + 前后邻域表 <span class="tag tag--base">baseline</span> <span class="axes">stack · linear</span></p>
+        <div class="stage">
+          <div class="w-ov w-ov--text">
+            <p class="w-ov__where"><b>第 14 周</b> / 共 26 周（06-02 至 06-06） · 全期合计 12,480 人次，周均 480</p>
+            <table class="w-ov__tbl">
+              <caption class="sr-only">第 12 至 16 周两馆合计到馆人次</caption>
+              <thead><tr><th scope="col">周</th><th scope="col">到馆（人次）</th><th scope="col">说明</th></tr></thead>
+              <tbody>
+                <tr><td>12</td><td>490</td><td></td></tr>
+                <tr><td>13</td><td>503</td><td></td></tr>
+                <tr class="is-here"><td>14 ◀</td><td>322</td><td>例外：东坡停开 5 晚（空调故障）</td></tr>
+                <tr><td>15</td><td>516</td><td></td></tr>
+                <tr><td>16</td><td>524</td><td></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <p class="spec-note">一句话给整体的尺度（26 周、12,480、周均 480），一张 ±2 周的邻域表给局部，当前行用 ◀ 与粗体标出并写明例外原因。前后邻值足以说明 322 是一周的事故而不是转折。<strong>成立条件</strong>：整体形状不重要、只需相邻对照。</p>
+      </article>
+
+      <article class="spec" id="W07-b" data-axes="relation:whole-part spatial:stack path:drill load:short expression:graphic">
+        <p class="spec-label"><span class="spec-id"><a href="#W07-b">W07-b</a></span> 缩略全程 + 放大框 <span class="tag tag--expr">graphic</span> <span class="axes">stack · drill</span></p>
+        <div class="stage">
+          <figure class="w-ov w-ov--strip">
+            <figcaption class="w-ov__cap">两馆合计周到馆人次，第 1–26 周（2026-03-02 至 08-30）</figcaption>
+            <div class="w-ov__chart">
+              <svg viewBox="0 0 540 176" role="img" aria-label="26 周到馆人次缩略图：从 330 升至 583，第 14 周降至 322，第 26 周 531（只开 4 晚）。第 12 至 16 周被框出放大。">
+                <rect class="w-ov__zoomfr" x="226" y="4" width="102" height="150"/>
+                <line class="w-ov__target" x1="6" y1="70" x2="534" y2="70"/>
+                <g class="w-ov__bars"><rect x="10" y="84.0" width="14" height="66.0"/><rect x="30" y="79.6" width="14" height="70.4"/><rect x="50" y="75.8" width="14" height="74.2"/><rect x="70" y="72.2" width="14" height="77.8"/><rect x="90" y="69.0" width="14" height="81.0"/><rect x="110" y="66.4" width="14" height="83.6"/><rect x="130" y="63.8" width="14" height="86.2"/><rect x="150" y="60.8" width="14" height="89.2"/><rect x="170" y="58.4" width="14" height="91.6"/><rect x="190" y="56.0" width="14" height="94.0"/><rect x="210" y="53.8" width="14" height="96.2"/><rect x="230" y="52.0" width="14" height="98.0"/><rect x="250" y="49.4" width="14" height="100.6"/><rect class="w-ov__ex" x="271" y="85.6" width="12" height="64.4"/><rect x="290" y="46.8" width="14" height="103.2"/><rect x="310" y="45.2" width="14" height="104.8"/><rect x="330" y="43.4" width="14" height="106.6"/><rect x="350" y="41.8" width="14" height="108.2"/><rect x="370" y="40.2" width="14" height="109.8"/><rect x="390" y="38.8" width="14" height="111.2"/><rect x="410" y="37.6" width="14" height="112.4"/><rect x="430" y="36.4" width="14" height="113.6"/><rect x="450" y="35.4" width="14" height="114.6"/><rect x="470" y="34.4" width="14" height="115.6"/><rect x="490" y="33.4" width="14" height="116.6"/><rect class="w-ov__part" x="510" y="43.8" width="14" height="106.2"/></g>
+                <line class="w-ov__base" x1="6" y1="150" x2="534" y2="150"/>
+                <path class="w-ov__lead" d="M226 154 L226 176 M328 154 L328 176"/>
+              </svg>
+              <div class="w-ov__ticks" aria-hidden="true"><span>第 1 周</span><span>第 14 周 ▲</span><span>第 26 周</span></div>
+            </div>
+            <p class="w-ov__key"><span class="w-ov__sw"></span>到馆人次 <span class="w-ov__sw w-ov__sw--ex"></span>第 14 周：东坡停开 5 晚 <span class="w-ov__sw w-ov__sw--part"></span>第 26 周：只开 4 晚 <span class="w-ov__sw w-ov__sw--tg"></span>目标 400 人次/周</p>
+            <div class="w-ov__zoom">
+              <p class="w-ov__zh">放大：第 12–16 周（上图框内）</p>
+              <ol class="w-ov__zl">
+                <li><span>12</span><i style="--v:490"></i><b>490</b></li>
+                <li><span>13</span><i style="--v:503"></i><b>503</b></li>
+                <li class="is-here"><span>14</span><i style="--v:322"></i><b>322</b><em>东坡停开 5 晚</em></li>
+                <li><span>15</span><i style="--v:516"></i><b>516</b></li>
+                <li><span>16</span><i style="--v:524"></i><b>524</b></li>
+              </ol>
+            </div>
+          </figure>
+        </div>
+        <p class="spec-note">上面 26 根柱给出整体形状（稳步上升），细框圈出放大范围，两条引线落到下方的放大列表；例外柱用空心虚线、末周用浅色填充加描边，都有文字图例，不只靠颜色。数值全部在 HTML 里可读。<strong>成立条件</strong>：整体形状决定局部的解读；缩略图在 311px 宽时每柱约 8px，仍可辨认。</p>
+      </article>
+
+      <article class="spec" id="W07-c" data-axes="relation:whole-part spatial:main-margin path:revisit load:short expression:spatial">
+        <p class="spec-label"><span class="spec-id"><a href="#W07-c">W07-c</a></span> 文档地图 + 当前局部 <span class="tag tag--expr">spatial</span> <span class="axes">main-margin · revisit</span></p>
+        <div class="stage">
+          <div class="w-ov w-ov--map">
+            <nav class="w-ov__doc" aria-label="文档地图：6 节，块高为篇幅">
+              <ol>
+                <li style="--m:2"><a href="#W07-c"><b>1</b> 摘要</a></li>
+                <li style="--m:4"><a href="#W07-c"><b>2</b> 到馆与借阅</a></li>
+                <li style="--m:3" class="is-here"><a href="#W07-c" aria-current="location"><b>3</b> 成本<span class="w-ov__you">3.2 在此</span></a></li>
+                <li style="--m:3"><a href="#W07-c"><b>4</b> 读者反馈</a></li>
+                <li style="--m:4"><a href="#W07-c"><b>5</b> 方案与推荐</a></li>
+                <li style="--m:1"><a href="#W07-c"><b>6</b> 方法</a></li>
+              </ol>
+            </nav>
+            <div class="w-ov__local">
+              <p class="w-ov__lh"><span>3.2</span> 每次到馆成本</p>
+              <p class="w-host">夜间每次到馆成本 ¥116，日间为 ¥38。夜间每小时运营成本 ¥1,860，高于日间 ¥1,410。</p>
+              <p class="w-host">这一节只回答“贵多少”，是否值得由第 5 节结合到馆和满意度来判断。</p>
+            </div>
+          </div>
+        </div>
+        <p class="spec-note">左侧整篇文档按篇幅画成竖向地图，当前节加粗框并标出“3.2 在此”，右侧是当前局部。与 W02-b 不同：这里的读者任务是回看与跳读（“成本之后还有多长才到推荐？”），地图是可点击的全体，不是进度。窄屏时地图变成横向条带压在局部之上。<strong>成立条件</strong>：各节篇幅差异大；节数 ≤ 8。</p>
+      </article>
+
+      <article class="spec" id="W07-d" data-axes="relation:whole-part spatial:span path:scan load:exception expression:graphic">
+        <p class="spec-label"><span class="spec-id"><a href="#W07-d">W07-d</a></span> S5 局部例外 · 130 晚日历 <span class="tag tag--stress">stress</span> <span class="axes">span · dense · exception</span></p>
+        <div class="stage">
+          <figure class="w-ov w-ov--cal">
+            <figcaption class="w-ov__cap">东坡分馆试点期 26 周 × 周二至周六 = 130 个开放夜 <span class="syn">synthetic 第 26 周缺哪一晚为补充假设</span></figcaption>
+            <div class="w-ov__grid" role="img" aria-label="130 晚中 124 晚开放；第 14 周周二至周六停开 5 晚；第 26 周周六未开放；周二整行夜均 38 人次，低于参考线 60。">
+              <span class="w-ov__rl is-mk">二 ▸</span><i class="w-ov__c w-ov__c--low"></i><i class="w-ov__c w-ov__c--low"></i><i class="w-ov__c w-ov__c--low"></i><i class="w-ov__c w-ov__c--low"></i><i class="w-ov__c w-ov__c--low"></i><i class="w-ov__c w-ov__c--low"></i><i class="w-ov__c w-ov__c--low"></i><i class="w-ov__c w-ov__c--low"></i><i class="w-ov__c w-ov__c--low"></i><i class="w-ov__c w-ov__c--low"></i><i class="w-ov__c w-ov__c--low"></i><i class="w-ov__c w-ov__c--low"></i><i class="w-ov__c w-ov__c--low"></i><i class="w-ov__c w-ov__c--x w-ov__c--low"></i><i class="w-ov__c w-ov__c--low"></i><i class="w-ov__c w-ov__c--low"></i><i class="w-ov__c w-ov__c--low"></i><i class="w-ov__c w-ov__c--low"></i><i class="w-ov__c w-ov__c--low"></i><i class="w-ov__c w-ov__c--low"></i><i class="w-ov__c w-ov__c--low"></i><i class="w-ov__c w-ov__c--low"></i><i class="w-ov__c w-ov__c--low"></i><i class="w-ov__c w-ov__c--low"></i><i class="w-ov__c w-ov__c--low"></i><i class="w-ov__c w-ov__c--low"></i><span class="w-ov__rl">三</span><i class="w-ov__c"></i><i class="w-ov__c"></i><i class="w-ov__c"></i><i class="w-ov__c"></i><i class="w-ov__c"></i><i class="w-ov__c"></i><i class="w-ov__c"></i><i class="w-ov__c"></i><i class="w-ov__c"></i><i class="w-ov__c"></i><i class="w-ov__c"></i><i class="w-ov__c"></i><i class="w-ov__c"></i><i class="w-ov__c w-ov__c--x"></i><i class="w-ov__c"></i><i class="w-ov__c"></i><i class="w-ov__c"></i><i class="w-ov__c"></i><i class="w-ov__c"></i><i class="w-ov__c"></i><i class="w-ov__c"></i><i class="w-ov__c"></i><i class="w-ov__c"></i><i class="w-ov__c"></i><i class="w-ov__c"></i><i class="w-ov__c"></i><span class="w-ov__rl">四</span><i class="w-ov__c"></i><i class="w-ov__c"></i><i class="w-ov__c"></i><i class="w-ov__c"></i><i class="w-ov__c"></i><i class="w-ov__c"></i><i class="w-ov__c"></i><i class="w-ov__c"></i><i class="w-ov__c"></i><i class="w-ov__c"></i><i class="w-ov__c"></i><i class="w-ov__c"></i><i class="w-ov__c"></i><i class="w-ov__c w-ov__c--x"></i><i class="w-ov__c"></i><i class="w-ov__c"></i><i class="w-ov__c"></i><i class="w-ov__c"></i><i class="w-ov__c"></i><i class="w-ov__c"></i><i class="w-ov__c"></i><i class="w-ov__c"></i><i class="w-ov__c"></i><i class="w-ov__c"></i><i class="w-ov__c"></i><i class="w-ov__c"></i><span class="w-ov__rl">五</span><i class="w-ov__c"></i><i class="w-ov__c"></i><i class="w-ov__c"></i><i class="w-ov__c"></i><i class="w-ov__c"></i><i class="w-ov__c"></i><i class="w-ov__c"></i><i class="w-ov__c"></i><i class="w-ov__c"></i><i class="w-ov__c"></i><i class="w-ov__c"></i><i class="w-ov__c"></i><i class="w-ov__c"></i><i class="w-ov__c w-ov__c--x"></i><i class="w-ov__c"></i><i class="w-ov__c"></i><i class="w-ov__c"></i><i class="w-ov__c"></i><i class="w-ov__c"></i><i class="w-ov__c"></i><i class="w-ov__c"></i><i class="w-ov__c"></i><i class="w-ov__c"></i><i class="w-ov__c"></i><i class="w-ov__c"></i><i class="w-ov__c"></i><span class="w-ov__rl">六</span><i class="w-ov__c"></i><i class="w-ov__c"></i><i class="w-ov__c"></i><i class="w-ov__c"></i><i class="w-ov__c"></i><i class="w-ov__c"></i><i class="w-ov__c"></i><i class="w-ov__c"></i><i class="w-ov__c"></i><i class="w-ov__c"></i><i class="w-ov__c"></i><i class="w-ov__c"></i><i class="w-ov__c"></i><i class="w-ov__c w-ov__c--x"></i><i class="w-ov__c"></i><i class="w-ov__c"></i><i class="w-ov__c"></i><i class="w-ov__c"></i><i class="w-ov__c"></i><i class="w-ov__c"></i><i class="w-ov__c"></i><i class="w-ov__c"></i><i class="w-ov__c"></i><i class="w-ov__c"></i><i class="w-ov__c"></i><i class="w-ov__c w-ov__c--n"></i><span class="w-ov__rl"></span><span class="w-ov__wk" style="grid-column:2">1</span><span class="w-ov__wk w-ov__wk--mid" style="grid-column:15">14</span><span class="w-ov__wk w-ov__wk--end" style="grid-column:27">26 周</span>
+            </div>
+            <ul class="w-ov__legend">
+              <li><i class="w-ov__c"></i>开放</li>
+              <li><i class="w-ov__c w-ov__c--x"></i>停开（第 14 周，空调故障，5 晚）</li>
+              <li><i class="w-ov__c w-ov__c--n"></i>未排班（第 26 周只开 4 晚）</li>
+              <li><span class="w-ov__rowmk">二 ▸</span>整行：周二夜均 38 人次，低于参考线 60 人次/晚</li>
+            </ul>
+          </figure>
+        </div>
+        <p class="spec-note">两种例外同时出现：一种是某一周的列（停开），一种是某一行（东坡周二长期偏低）。日历把两者放进同一个整体，读者能看出它们方向正交、原因无关。暴露的问题：格子只能编码状态，不能编码数值——“周二偏低”无法在格内表达，只能靠行首标记加文字；停开（事故）与未排班（计划内）在小格里靠形状区分，窄屏每格约 9px，✕ 勉强可辨。</p>
+      </article>
+
+      <article class="spec" id="W07-e" data-axes="relation:whole-part spatial:stack path:linear load:sparse expression:graphic">
+        <p class="spec-label"><span class="spec-id"><a href="#W07-e">W07-e</a></span> 只有局部，“近 5 周” <span class="tag tag--fail">fail</span> <span class="axes">stack · sparse</span></p>
+        <div class="stage">
+          <figure class="w-ov w-ov--zoom">
+            <figcaption class="w-ov__cap">近 5 周到馆</figcaption>
+            <ol class="w-ov__zl">
+              <li><span>W1</span><i style="--v:490"></i><b>490</b></li>
+              <li><span>W2</span><i style="--v:503"></i><b>503</b></li>
+              <li><span>W3</span><i style="--v:322"></i><b>322</b></li>
+              <li><span>W4</span><i style="--v:516"></i><b>516</b></li>
+              <li><span>W5</span><i style="--v:524"></i><b>524</b></li>
+            </ol>
+          </figure>
+        </div>
+        <p class="spec-note"><strong>失败原因</strong>：“近 5 周”其实是第 12–16 周，而试点在第 26 周才结束——相对时间把局部伪装成最新状态；周号被重排为 W1–W5，读者无法与正文“第 14 周”对上；没有总体形状，也没有例外说明，322 看起来像一次无原因的崩落。</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- ============================== W08 ============================== -->
+  <section class="atom" id="W08">
+    <header class="atom-head">
+      <p class="atom-id">W08 · atom · 定位与辅助阅读</p>
+      <h2>目录 · Contents</h2>
+      <p class="atom-job">读者在全体中选择去哪里：扫一眼知道有几节、各讲什么、自己在哪一节。</p>
+      <details class="atom-meta"><summary>输入、适用与失败</summary>
+        <dl><dt>输入</dt><dd>必需：条目编号、（短）标题、锚点、总数。可选：当前项、层级、每节要点、缺节说明。</dd>
+        <dt>适用</dt><dd>≥ 4 节的文档；读者会跳读或回查。</dd>
+        <dt>不适合</dt><dd>≤ 3 节；目录比正文长。</dd>
+        <dt>容量</dt><dd>平铺 ≤ 8 项；超过时按章折叠（W08-b）。吸附侧栏只在节多且正文长时才值得。</dd>
+        <dt>已见失败</dt><dd>JS 生成的横向滚动标签栏；窄屏直接隐藏目录；没有当前项；长标题被截断。</dd></dl>
+      </details>
+    </header>
+    <div class="variants">
+
+      <article class="spec" id="W08-a" data-axes="relation:sequence spatial:stack path:scan load:short expression:baseline">
+        <p class="spec-label"><span class="spec-id"><a href="#W08-a">W08-a</a></span> 短目录，带条目数与当前项 <span class="tag tag--base">baseline</span> <span class="axes">stack · scan</span></p>
+        <div class="stage">
+          <nav class="w-toc w-toc--short" aria-label="本报告目录">
+            <p class="w-toc__h">目录 · 6 节</p>
+            <ol>
+              <li><a href="#W08-a"><span class="w-toc__n">1</span>摘要</a></li>
+              <li><a href="#W08-a"><span class="w-toc__n">2</span>到馆与借阅</a></li>
+              <li class="is-here"><a href="#W08-a" aria-current="location"><span class="w-toc__n">3</span>成本<span class="w-toc__cur">当前</span></a></li>
+              <li><a href="#W08-a"><span class="w-toc__n">4</span>读者反馈</a></li>
+              <li><a href="#W08-a"><span class="w-toc__n">5</span>方案与推荐</a></li>
+              <li><a href="#W08-a"><span class="w-toc__n">6</span>方法与口径</a></li>
+            </ol>
+          </nav>
+        </div>
+        <p class="spec-note">条目数写在目录标题里，当前项同时用左侧粗线、粗体和“当前”文字标出，<code>aria-current</code> 同步（借自 C13 / C14）。6 节时不做吸附侧栏，放在正文开头即可。<strong>成立条件</strong>：≤ 8 项、一层。</p>
+      </article>
+
+      <article class="spec" id="W08-b" data-axes="relation:whole-part spatial:stack path:drill load:dense expression:baseline">
+        <p class="spec-label"><span class="spec-id"><a href="#W08-b">W08-b</a></span> 长目录：按章折叠，当前章展开 <span class="tag tag--base">baseline</span> <span class="axes">stack · drill · dense</span></p>
+        <div class="stage">
+          <nav class="w-toc w-toc--long" aria-label="本报告目录">
+            <p class="w-toc__h">目录 · 6 章 22 节</p>
+            <details><summary><span class="w-toc__n">1</span>摘要 <small>2 节</small></summary><ol><li><a href="#W08-b">1.1 结论</a></li><li><a href="#W08-b">1.2 行动请求</a></li></ol></details>
+            <details><summary><span class="w-toc__n">2</span>到馆与借阅 <small>5 节</small></summary><ol><li><a href="#W08-b">2.1 周到馆趋势</a></li><li><a href="#W08-b">2.2 分馆差异</a></li><li><a href="#W08-b">2.3 东坡周二</a></li><li><a href="#W08-b">2.4 借阅册次</a></li><li><a href="#W08-b">2.5 首次持证读者</a></li></ol></details>
+            <details open class="is-here"><summary><span class="w-toc__n">3</span>成本 <small>4 节 · 当前章</small></summary><ol><li><a href="#W08-b">3.1 每小时运营成本</a></li><li class="is-here"><a href="#W08-b" aria-current="location">3.2 每次到馆成本 <span class="w-toc__cur">当前</span></a></li><li><a href="#W08-b">3.3 成本构成</a></li><li><a href="#W08-b">3.4 与日间对比</a></li></ol></details>
+            <details><summary><span class="w-toc__n">4</span>读者反馈 <small>4 节</small></summary><ol><li><a href="#W08-b">4.1 满意度</a></li><li><a href="#W08-b">4.2 周日需求</a></li><li><a href="#W08-b">4.3 反向意见</a></li><li><a href="#W08-b">4.4 安全事件</a></li></ol></details>
+            <details><summary><span class="w-toc__n">5</span>方案与推荐 <small>4 节</small></summary><ol><li><a href="#W08-b">5.1 三个方案</a></li><li><a href="#W08-b">5.2 推荐 B</a></li><li><a href="#W08-b">5.3 无新增编制时是否扩至西门、北站</a></li><li><a href="#W08-b">5.4 时间线</a></li></ol></details>
+            <details><summary><span class="w-toc__n">6</span>方法与口径 <small>3 节</small></summary><ol><li><a href="#W08-b">6.1 到馆定义</a></li><li><a href="#W08-b">6.2 问卷回收</a></li><li><a href="#W08-b">6.3 未采集数据</a></li></ol></details>
+          </nav>
+        </div>
+        <p class="spec-note">22 条平铺会超出一屏，所以按章折叠为 6 个原生 <code>details</code>（C08），每章摘要写出节数，当前章默认展开。无 JS 可用；打印时折叠章不会展开，打印版应改用平铺。5.3 使用 W01-d 声明的短标题。<strong>成立条件</strong>：&gt; 8 项且有章级结构。</p>
+      </article>
+
+      <article class="spec" id="W08-c" data-axes="relation:sequence spatial:main-margin path:scan load:short expression:spatial">
+        <p class="spec-label"><span class="spec-id"><a href="#W08-c">W08-c</a></span> 吸附侧栏 + 当前项跟随 <span class="tag tag--expr">spatial</span> <span class="axes">main-margin · scan · revisit</span></p>
+        <div class="stage">
+          <div class="w-toc w-toc--side">
+            <nav class="w-toc__rail" aria-label="正文目录">
+              <details open class="w-toc__fold">
+                <summary>本文目录 · 6 节<span class="w-toc__now"></span></summary>
+                <ol>
+                  <li><a href="#w08c-1"><span class="w-toc__n">1</span>摘要</a></li>
+                  <li><a href="#w08c-2"><span class="w-toc__n">2</span>到馆与借阅</a></li>
+                  <li><a href="#w08c-3"><span class="w-toc__n">3</span>成本</a></li>
+                  <li><a href="#w08c-4"><span class="w-toc__n">4</span>读者反馈</a></li>
+                  <li><a href="#w08c-5"><span class="w-toc__n">5</span>方案与推荐</a></li>
+                  <li><a href="#w08c-6"><span class="w-toc__n">6</span>方法与口径</a></li>
+                </ol>
+              </details>
+            </nav>
+            <div class="w-toc__body">
+              <section id="w08c-1"><h3>1 摘要</h3><p class="w-host">26 周试点中，两馆夜间到馆合计 12,480 人次，周均 480，高于目标 400/周。夜间每次到馆成本 ¥116，约为日间 ¥38 的 3 倍。建议采用方案 B：两馆继续，改为周三至周六。</p></section>
+              <section id="w08c-2"><h3>2 到馆与借阅</h3><p class="w-host">周到馆从第 1 周 330 升至第 25 周 583；第 14 周因东坡停开 5 晚降至 322。河湾 7,910 人次，东坡 4,570 人次。夜间借阅 6,215 册次，每次到馆 0.50 册。夜间首次持证读者占 22%，日间 9%。</p></section>
+              <section id="w08c-3"><h3>3 成本</h3><p class="w-host">夜间每小时运营成本 ¥1,860（河湾 ¥1,720，东坡 ¥2,000），日间 ¥1,410。人员占 62%，安保 18%，能耗 11%，系统与杂项 9%。</p></section>
+              <section id="w08c-4"><h3>4 读者反馈</h3><p class="w-host">问卷 n = 642，均分 4.3 / 5，81% 愿意继续（95% CI 78–84%）。27% 提到希望周日开放。轻微安全事件 3 起，重大 0 起。</p></section>
+              <section id="w08c-5"><h3>5 方案与推荐</h3><p class="w-host">A 扩至四馆，年化增量 ¥1,160,000；B 两馆改为周三至周六，相对现状 −¥96,000；C 结束，−¥580,000。推荐 B；夜班馆员 2 人到位前 A 不成立。</p></section>
+              <section id="w08c-6"><h3>6 方法与口径</h3><p class="w-host">夜间到馆人次按 19:00 以后闸机进入计数，同一读者多次进入分别计数。满意度为自愿填写，回收率约 11%，可能高估。北站需求未采集。</p></section>
+            </div>
+          </div>
+        </div>
+        <p class="spec-note">宽容器里目录吸附在左栏，页面滚过正文时脚本把当前节标成 <code>aria-current</code> 并在折叠摘要里写出“当前：n”；无 JS 时目录与锚点照常可用，只是没有当前项。窄于 640px 时不吸附，目录以打开的原生 <code>details</code> 排在正文之前（C08），而不是隐藏（C11 的失败）。<strong>判断</strong>：6 节、正文这么短时吸附侧栏不值得（C14），这里保留作对照，它的成立条件是 ≥ 10 节且正文超过 3 屏。</p>
+      </article>
+
+      <article class="spec" id="W08-d" data-axes="relation:claim-evidence spatial:offset path:scan load:long expression:editorial">
+        <p class="spec-label"><span class="spec-id"><a href="#W08-d">W08-d</a></span> 论点目录：每节带一句结论 <span class="tag tag--expr">editorial</span> <span class="axes">offset · scan</span></p>
+        <div class="stage stage--bleed">
+          <nav class="w-toc w-toc--argue" aria-label="本报告目录，含每节结论">
+            <ol>
+              <li><a href="#W08-d"><span class="w-toc__n">1</span><span class="w-toc__t">摘要</span><span class="w-toc__claim">建议方案 B：两馆继续，改为周三至周六。</span></a></li>
+              <li><a href="#W08-d"><span class="w-toc__n">2</span><span class="w-toc__t">到馆与借阅</span><span class="w-toc__claim">周均 480 人次，高于目标 400；第 14 周是事故，不是转折。</span></a></li>
+              <li class="is-here"><a href="#W08-d" aria-current="location"><span class="w-toc__n">3</span><span class="w-toc__t">成本<span class="w-toc__cur">当前</span></span><span class="w-toc__claim">夜间每次到馆 ¥116，约为日间 3 倍。</span></a></li>
+              <li><a href="#W08-d"><span class="w-toc__n">4</span><span class="w-toc__t">读者反馈</span><span class="w-toc__claim">81% 愿意继续，但样本自愿、可能偏高。</span></a></li>
+              <li><a href="#W08-d"><span class="w-toc__n">5</span><span class="w-toc__t">方案与推荐</span><span class="w-toc__claim">夜班馆员 2 人到位前，扩展不成立。</span></a></li>
+              <li><a href="#W08-d"><span class="w-toc__n">6</span><span class="w-toc__t">方法与口径</span><span class="w-toc__claim">北站需求未采集；到馆按闸机计数。</span></a></li>
+            </ol>
+          </nav>
+        </div>
+        <p class="spec-note">目录兼作论证提纲：大号衬线序号悬挂在左，标题之后跟一句结论。读者扫完目录就拿到全文主张，再决定去哪一节核对。<strong>成立条件</strong>：每节确实有一句可以写出的结论；它会与摘要重复，适合没有单独摘要页的长文。结论句属于文本家族，这里的原子性质来自“可跳转的全体”。</p>
+      </article>
+
+      <article class="spec" id="W08-e" data-axes="relation:sequence spatial:offset path:scan load:long-title expression:baseline">
+        <p class="spec-label"><span class="spec-id"><a href="#W08-e">W08-e</a></span> S1 长条目 + S3 缺节 + S7 <span class="tag tag--stress">stress</span> <span class="axes">offset · long-title · missing · mixed-script</span></p>
+        <div class="stage">
+          <nav class="w-toc w-toc--short w-toc--stress" aria-label="第 5–6 章目录">
+            <p class="w-toc__h">第 5–6 章 · 7 节（其中 1 节本版缺）</p>
+            <ol>
+              <li><a href="#W08-e"><span class="w-toc__n">5.1</span>三个方案</a></li>
+              <li><a href="#W08-e"><span class="w-toc__n">5.2</span>推荐 B</a></li>
+              <li><a href="#W08-e"><span class="w-toc__n">5.3</span>在不增加馆员编制、且东坡分馆周二夜间到馆人次持续低于盈亏参考线的前提下，是否仍应将夜间开放扩展至西门与北站两个分馆</a></li>
+              <li class="is-missing"><span><span class="w-toc__n">5.4</span>北站分馆需求 <span class="w-toc__miss">本版缺：数据未采集</span></span></li>
+              <li><a href="#W08-e"><span class="w-toc__n">6.1</span>到馆定义</a></li>
+              <li><a href="#W08-e"><span class="w-toc__n">6.2</span>问卷回收</a></li>
+              <li><a href="#W08-e"><span class="w-toc__n">6.3</span><span><code>BookingService.getSeatOccupancy(branchId, "2026-05-14T20:30+08:00")</code> 的取数口径</span></a></li>
+            </ol>
+          </nav>
+        </div>
+        <p class="spec-note">编号悬挂后，S1 的续行与标题首字对齐，扫编号的路径不被打断；但一条占 3–4 行，把 5.4 与 6.x 推出扫视范围。缺节以不可点击、虚线框的条目保留在原位，并写出原因。S7 在窄屏断在标识符中间。<strong>结论</strong>：目录里应使用短标题（W01-d），长标题只出现在节首。</p>
+      </article>
+
+      <article class="spec" id="W08-f" data-axes="relation:sequence spatial:inline path:scan load:short expression:graphic">
+        <p class="spec-label"><span class="spec-id"><a href="#W08-f">W08-f</a></span> 横向滚动标签栏 <span class="tag tag--fail">fail</span> <span class="axes">inline · scan</span></p>
+        <div class="stage">
+          <div class="w-toc w-toc--tabs" data-allow-scroll>
+            <div class="w-toc__strip">
+              <a href="#W08-f">摘要</a><a href="#W08-f">到馆与借阅</a><a href="#W08-f" aria-current="location">成本</a><a href="#W08-f">读者反馈</a><a href="#W08-f">方案与推荐</a><a href="#W08-f">方法与口径</a>
+            </div>
+          </div>
+        </div>
+        <p class="spec-note"><strong>失败原因</strong>（C12）：标签栏不换行、横向滚动，窄屏只露出前 3 个，读者不知道共有几节、后面还有什么；当前项只有颜色和一条下划线，和悬停态难区分，也没有“第几 / 共几”；原型中它由 JS 生成，关闭 JS 后整个导航不存在（这里用静态 HTML 呈现外观）。与 C11 相同的问题是：窄屏上唯一的导航变成了隐藏内容。容器标了 <code>data-allow-scroll</code>，横向滚动是故意保留的。</p>
+      </article>
+    </div>
+  </section>
+</main>
+<script src="../shared/lab.js"></script>
+<script>
+// Wayfinding family · progressive enhancement. Every specimen is complete without this script.
+(function () {
+  // W02-c: reading-progress line (C20). Direct feedback, no transition; hidden without JS.
+  document.querySelectorAll('.w-pos--run').forEach(function (box) {
+    var sc = box.querySelector('.w-pos__scroll');
+    box.classList.add('is-js');
+    function upd() {
+      var max = sc.scrollHeight - sc.clientHeight;
+      box.style.setProperty('--p', max > 0 ? (sc.scrollTop / max).toFixed(3) : 0);
+    }
+    sc.addEventListener('scroll', upd, { passive: true });
+    upd();
+  });
+
+  // W06-b: APG disclosure (C15). Without JS the extra paragraph simply stays visible.
+  document.querySelectorAll('.w-more__slot').forEach(function (slot) {
+    var panel = document.getElementById(slot.getAttribute('data-for'));
+    if (!panel) return;
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'w-more__btn';
+    b.setAttribute('aria-expanded', 'false');
+    b.setAttribute('aria-controls', panel.id);
+    b.textContent = '回收方式';
+    panel.hidden = true;
+    b.addEventListener('click', function () {
+      var open = b.getAttribute('aria-expanded') === 'true';
+      b.setAttribute('aria-expanded', String(!open));
+      panel.hidden = open;
+    });
+    slot.appendChild(b);
+  });
+
+  // W08-c: current-section tracking for the side contents.
+  // Current = the last section whose heading has passed a line just under the sticky lab bar.
+  document.querySelectorAll('.w-toc--side').forEach(function (root) {
+    var links = root.querySelectorAll('.w-toc__rail a');
+    var secs = root.querySelectorAll('.w-toc__body section');
+    var now = root.querySelector('.w-toc__now');
+    var queued = false;
+    function upd() {
+      queued = false;
+      var box = root.getBoundingClientRect();
+      var cur = null;
+      if (box.top < window.innerHeight && box.bottom > 0) {
+        secs.forEach(function (s) { if (s.getBoundingClientRect().top <= 120) cur = s; });
+        if (!cur) cur = secs[0];
+      }
+      links.forEach(function (a) {
+        var on = cur && a.getAttribute('href') === '#' + cur.id;
+        if (on) { a.setAttribute('aria-current', 'location'); if (now) now.textContent = ' · 当前：' + a.textContent.trim().replace(/^(\d)/, '$1 '); }
+        else a.removeAttribute('aria-current');
+      });
+      if (!cur && now) now.textContent = '';
+    }
+    window.addEventListener('scroll', function () { if (!queued) { queued = true; requestAnimationFrame(upd); } }, { passive: true });
+    upd();
+  });
+})();
+</script>
+</body>
+</html>

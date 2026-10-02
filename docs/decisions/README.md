@@ -23,3 +23,11 @@ accepted 表示本仓库采纳；技术实现与使用证据在对应契约和�
 - [ADR-013：能力测试回答体例与证据分层](013-assessment-answer-profile.md)（accepted；产品实测与视觉制作 deferred）。
 
 - [ADR-014：跨项目的 Design 与 Writing kit](014-design-writing-kits.md)（accepted；重复登记待逐步合并）。
+
+- [ADR-015：Kit 体例、参考消费与活跃维护](015-kit-editorial-contract.md)（accepted；收敛项目样式范围，跨项目效果待使用验证）。
+
+- [ADR-016：以真实分支落实 Kit 的渐进消费](016-progressive-kit-structure.md)（accepted；Write/Design 分层，skill改为薄入口，旧路径保留导航）。
+
+- [ADR-017：验收后的参考进入任务优先层](017-reviewed-reference-priority.md)（accepted；优先级与证据/规范采纳分离，首批仅验收结构查阅用途）。
+
+- [ADR-018：Design 保留泛化的构成关系，原子化作为取用方式](018-generalized-design-relations.md)（accepted；用户裁决，九项问题尚无真实任务检验）。

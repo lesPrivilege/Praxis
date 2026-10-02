@@ -17,3 +17,22 @@
 - [2026-09-23 五页答卷与可视化参考召回](ai-visual-recall-20260923.md)
 
 - [2026-09-23 用户截图后的版式复审](assessment-layout-review-20260923.md)：当前设计未通过，重写论证编排与单工单。
+
+- [2026-09-25 Agent Runtime 研究与裁决](agent-runtime-survey-20260925.md)
+
+- [2026-09-27 Kit 体例与参考消费](kit-editorial-review-20260927.md)：两份 Chat 的覆盖、Design 范围收敛、外部语义补充及导航验证。
+
+- [2026-09-27 Sol 体例与阶段材料审计](editorial-audit-20260927/README.md)：迁移前的范围、发现与独立治理工单。
+- [2026-09-27 Kit 结构迁移](kit-structure-migration-20260927.md)：Write/Design实际分层、skill薄入口与迁移后检查。
+
+- [2026-09-27 原子化编排实验接收](layout-specimens-review-20260927/README.md)：索引与fixture核查、制作方报告范围、main局部截图筛选；不等于全部视觉验收。
+
+- [2026-09-28 需求驱动的参考发现与优先层](reference-discovery-20260928.md)：任务路由补接、两条限定用途参考验收、新上下文消费检查与剩余边界。
+
+- [视觉语法入账与Opus交接](visual-grammar-20260928.md)：开放工单、Luna追溯、快照、既有断链收尾与 [无材料提示的消费证据](reference-consumption-20260929/README.md)。
+
+- [2026-09-29 视觉语法作品阶段验收](visual-grammar-acceptance-20260929.md)：四件作品有条件接收；提交闭包、JSON 展示、缺音轨反馈与视频质量待收尾，浏览器现场复验未执行。
+
+- [2026-10-01 Palantir 与 Tally 初始登记](reading-intake-20261001.md)：阅读清单、书稿快照与来源覆盖；未开展全文提炼。
+
+- [2026-10-02 Design grammar atlas 消费](design-grammar-atlas-20261002.md)：研究包入账、与本地 Kit 的对照裁决、47 条来源重访、六题冷启动走读、风格名入口补接与 A01 样张；未做读者与可访问性验证。

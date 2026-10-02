@@ -1,0 +1,18 @@
+Source URL: https://github.com/deepseek-ai/deepseek-harness/blob/477b4f420553e8a52c2fbccc464d7561b239c443/packages/boot/plugin-manager/README.md
+Source commit: 477b4f420553e8a52c2fbccc464d7561b239c443
+Source lines: 10-18, 28-67, 86-94, 125-132
+
+L10 Application-owned profiles supply their bundled package-manager invocation.
+L12-14 The manager manages current-profile plugins without hand-editing: enable/disable entries, select installed bundles, install/remove external bundles. With HMR enabled, configuration changes apply immediately; without HMR, the running composition remains until restart. Changes affect every Session using the profile.
+L31 Web Plugins page and `plugin_manager` tool share operations. Every tool action requires `danger-full-access` or approval; installed Host code executes in-process outside the workspace sandbox.
+L40 Plugin toggles update the last matching profile override; bundle toggles update the ordered `dsh.profile.bundles` list, and enabling appends at the end, changing configuration precedence.
+L42 A selected bundle that cannot load remains visible with an error; a broken bundle cannot be enabled.
+L46 `inspect` reads a spec before install, classifies invalid/already-installed/not-found/not-a-bundle/network/unknown and carries queried registries.
+L48 GitHub specs are checked with `git ls-remote` before pnpm; cancellation and disposal stop the check and descendants.
+L50 Registries are tried in order with configured fallback registries; private registries do not fall through to public ones.
+L54 Install state streams per request id; `cancelInstall` stops before application, restores manifest/lockfile after failed/cancelled install, and emits `plugin-manager/changed` after a completed operation.
+L56 `waitForInstall(requestId)` lets clients recover a lost response by waiting for the active installation; completed results are not retained, so null means neither success nor cancellation.
+L58 Pending build scripts are surfaced and can be approved/retried through `approvedBuilds`; this executes host-user commands.
+L63-69 Compatibility checks run before registry installs where possible; exact version exemptions require explicit risk acceptance and apply on next composition, with live profiles recomposing.
+L92 The service and `dsh plugin` share operations; HMR serializes reloads, file watching and management writes. Each refresh re-reads bundle selection and patch layers, updates the root Include, awaits removed resources, and uses a profile writer lock.
+L129-132 Limits include no per-package pending approval, package replacement requiring restart for a fresh JS generation, startup-only profiles requiring restart, and inability to change another profile or agent-preset composition.

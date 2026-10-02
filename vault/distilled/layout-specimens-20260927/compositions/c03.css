@@ -1,0 +1,129 @@
+/* C03 运营回顾 · composition layer (prefix c3-).
+   Only grid, rhythm, cross-atom alignment and the few structures no atom provides.
+   Atom classes are reused as-is from ../atoms/*.css; adaptations are listed in the page note. */
+
+/* The composition root answers to its own container name; each zone re-declares `stage`
+   so atom container queries see the column width, not the page width. */
+.c3 { container: c3 / inline-size; background: var(--paper); }
+.c3-zone { container: stage / inline-size; min-width: 0; }
+
+/* ---------- masthead: dark band, tokens re-scoped so atoms re-theme themselves ---------- */
+.c3-mast {
+  --paper: var(--night); --ink: var(--night-ink); --ink-2: #c3c9d2; --muted: var(--night-muted);
+  --line: #3a414c; --line-2: #2b3139; --accent-ink: #a9c4f7;
+  background: var(--night); color: var(--ink);
+  padding: 20px 16px 18px; display: grid; gap: 14px;
+}
+.c3-path { margin: 0; font: 500 var(--fs-12)/1.5 var(--mono); color: var(--muted); }
+.c3-syn { display: inline-block; margin-left: 8px; padding: 0 6px; border: 1px dashed currentColor; font: 700 10px/1.6 var(--mono); letter-spacing: .08em; text-transform: uppercase; }
+.c3-head .t-head__claim { font-size: clamp(1.4rem, 3.4cqi, 2.4rem); line-height: 1.3; max-width: 28em; }
+.c3-head .t-n { color: var(--block-b); }
+.c3-scope { background: none; color: inherit; padding: 0; }
+.c3-scope .w-scope__mark { color: var(--block-b); }
+.c3-scope .w-scope__sent { margin: 0; font: var(--fs-15)/1.7 var(--sans); color: var(--ink-2); max-width: 60em; }
+.c3-scope em { color: var(--ink); border-bottom-color: var(--block-b); }
+@container stage (min-width: 600px) {
+  .c3-scope { grid-template-columns: 3rem minmax(0, 1fr); padding: 0; }
+  .c3-scope .w-scope__mark { border-left-color: var(--block-b); padding-top: 0; }
+}
+/* W08-a turned into a jump strip: horizontal at every width */
+.c3-toc { max-width: none; }
+.c3-toc .w-toc__h { color: var(--muted); font-size: var(--fs-12); margin-bottom: 4px; }
+.c3-toc ol { display: flex; flex-wrap: wrap; gap: 6px; }
+.c3-toc li a { display: flex; align-items: center; gap: 4px; min-height: 36px; padding: 4px 10px 4px 8px; border: 1px solid var(--line); border-left: 3px solid var(--ink); color: var(--ink); font-size: var(--fs-13); }
+.c3-toc .w-toc__n { min-width: 0; margin-right: 2px; font-weight: 800; color: var(--block-b); }
+.c3-toc li a b { font-variant-numeric: tabular-nums; color: var(--ink-2); font-weight: 600; margin-left: 2px; }
+.c3-toc li a:hover { background: var(--line-2); text-decoration: none; }
+
+/* ---------- grid and rhythm ---------- */
+.c3-grid { display: grid; }
+.c3-grid > .c3-zone { padding: 20px 16px 28px; border-top: 4px solid var(--ink); scroll-margin-top: 48px; }
+.c3-sec .w-sec__title { margin: 0 0 12px; font-size: var(--fs-20); line-height: 1.35; }
+.c3-sec .w-sec__num { display: inline-grid; place-items: center; min-width: 1.5em; height: 1.5em; margin-right: .5em; background: var(--ink); color: var(--paper); font-size: .9em; }
+@container c3 (min-width: 980px) {
+  .c3-mast { padding: 28px 32px 22px; }
+  .c3-grid { grid-template-columns: repeat(12, minmax(0, 1fr)); }
+  .c3-grid > .c3-zone { grid-column: 1 / -1; padding: 24px 32px 32px; }
+  .c3-grid > .c3-anom { grid-column: 1 / 8; }
+  .c3-grid > .c3-kpi { grid-column: 8 / -1; border-left: 1px solid var(--line); }
+  .c3-grid > .c3-events { grid-column: 1 / 6; }
+  .c3-grid > .c3-method { grid-column: 6 / -1; border-left: 1px solid var(--line); }
+}
+
+/* ---------- 1 anomalies: E07-a ranking with graphic weight ---------- */
+.c3-rank { max-width: none; }
+.c3-rank li { grid-template-columns: 2.6rem minmax(0, 1fr) minmax(5.5rem, auto); gap: 4px 14px; align-items: start; padding: 14px 0; }
+.c3-rank li:first-child { border-top: 3px solid var(--ink); }
+.c3-rank .e-rank__n { display: grid; place-items: center; height: 2.6rem; font-size: var(--fs-24); border: 2px solid var(--ink); }
+.c3-rank .c3-hot .e-rank__n { background: var(--ink); color: var(--paper); }
+.c3-rank .e-rank__who { display: grid; gap: 4px; min-width: 0; }
+.c3-rank .e-rank__v { font-size: clamp(1.75rem, 5cqi, 2.75rem); font-weight: 800; line-height: 1; letter-spacing: -.01em; }
+.c3-sign { display: block; font-size: var(--fs-12); font-weight: 700; letter-spacing: .08em; color: var(--ink-2); margin-bottom: 4px; }
+.c3-what { font-size: var(--fs-17); font-weight: 700; line-height: 1.4; }
+.c3-what small { font-weight: 400; font-size: var(--fs-12); color: var(--muted); margin-left: 4px; }
+.c3-where { display: inline-block; margin-right: 6px; padding: 0 6px; background: var(--block-b); color: var(--block-c); }
+.c3-vs { display: flex; flex-wrap: wrap; gap: 2px 12px; font-size: var(--fs-15); font-variant-numeric: tabular-nums; }
+.c3-vs__v { font-weight: 700; }
+.c3-vs__r { color: var(--ink-2); }
+.c3-vs__d { font-weight: 700; padding-left: 8px; border-left: 3px solid var(--ink); }
+.c3-sub { font-size: var(--fs-13); color: var(--ink-2); }
+.c3-act { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; font-size: var(--fs-13); }
+.c3-act .w-xref__a { font-weight: 600; }
+.c3-act .w-xref__a::before { content: "↓ "; }
+.c3-anom .e-rank__out { max-width: none; }
+/* narrow: the deviation moves up next to the rank; detail and a full-width drill link follow */
+@container stage (max-width: 559px) {
+  .c3-rank li { grid-template-columns: 2.6rem minmax(0, 1fr); }
+  .c3-rank .e-rank__v { grid-column: 2; grid-row: 1; text-align: left; display: flex; align-items: baseline; gap: 8px; }
+  .c3-rank .c3-sign { margin: 0; }
+  .c3-rank .e-rank__who { grid-column: 1 / -1; grid-row: 2; }
+  .c3-act { display: grid; gap: 6px; }
+  .c3-act .q-st { justify-self: start; }
+  .c3-act .w-xref__a { display: flex; align-items: center; min-height: 40px; padding: 0 10px; border: 1.5px solid var(--ink); text-decoration: none; }
+}
+
+/* ---------- 3 matrix ---------- */
+.c3-mx .e-mx { max-width: 72rem; }
+.c3-mx .c3-hit > th { box-shadow: inset 4px 0 0 var(--ink); padding-left: 10px; }
+.c3-flag { color: var(--signal); text-underline-offset: 3px; }
+.c3-halt { display: inline-block; padding: 0 4px; border: 1.5px solid var(--ink); font-weight: 700; line-height: 1.4; white-space: nowrap; }
+.c3-halt::before { content: "✕ "; font-weight: 800; }
+.c3-key { max-width: 72rem; }
+
+/* ---------- 4 small multiples: three Q10-b panels, rows aligned by week ---------- */
+.c3-sm { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.c3-sm__p { container: stage / inline-size; min-width: 0; }
+.c3-sm__h { margin: 0 0 6px; padding-bottom: 4px; border-bottom: 2px solid var(--ink); font-weight: 700; font-size: var(--fs-15); }
+.c3-sm__h small { display: block; font-weight: 400; font-size: var(--fs-12); color: var(--muted); font-variant-numeric: tabular-nums; }
+.c3-ref .q-cols li { position: relative; }
+.c3-ref .q-cols li::before {
+  content: ""; position: absolute; top: -1px; bottom: -1px; z-index: 1;
+  left: calc(2.2em + 8px + (100% - 5.2em - 16px) * .5);
+  border-left: 3px solid var(--block-b); box-shadow: -1px 0 0 var(--ink), 1px 0 0 var(--ink);
+}
+@container stage (min-width: 480px) { .c3-sm { gap: 20px; } }
+/* narrow: one shared week column (panel 1); panels 2–3 drop their repeated week key so bars keep some length */
+@container stage (max-width: 559px) {
+  .c3-sm { gap: 6px; }
+  .c3-sm__p + .c3-sm__p .q-cols li { grid-template-columns: 0 minmax(0, 1fr) 2.4em; gap: 0 4px; }
+  .c3-sm__p + .c3-sm__p .q-cols__k { font-size: 0; }
+  .c3-sm__p + .c3-sm__p.c3-ref .q-cols li::before { left: calc(4px + (100% - 2.4em - 8px) * .5); }
+}
+
+/* ---------- 5 drill-down ---------- */
+.c3-drill__grid { display: grid; gap: 16px; align-items: start; }
+.c3-d { container: stage / inline-size; min-width: 0; display: grid; gap: 12px; align-content: start; }
+.c3-d__h { margin: 0; font-weight: 700; font-size: var(--fs-17); }
+.c3-d__h b { display: inline-block; margin-right: 6px; padding: 0 6px; background: var(--ink); color: var(--paper); font-variant-numeric: tabular-nums; }
+.c3-d .w-xref__back { display: inline-block; font-weight: 400; white-space: nowrap; }
+.c3-d .v-work-as { margin: 0; }
+.c3-d .w-more__d { max-width: none; }
+.c3-d .v-alt { margin-bottom: 10px; }
+.c3-def { font-size: var(--fs-13); }
+.c3-say { margin: 0; font-size: var(--fs-13); color: var(--ink-2); }
+@container stage (min-width: 900px) { .c3-drill__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+/* ---------- footer ---------- */
+.c3-foot { margin: 0; padding: 12px 16px; border-top: 1px solid var(--line); font: 600 var(--fs-12)/1.5 var(--mono); color: var(--muted); letter-spacing: .02em; }
+@container c3 (min-width: 980px) { .c3-foot { padding: 12px 32px; } }
+.c3-ref .q-cols__why { position: relative; z-index: 2; background: var(--paper); }

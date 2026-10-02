@@ -1,0 +1,43 @@
+{
+  "fixture_id": "community-opening-normal-v1",
+  "synthetic": true,
+  "title": "正常：周末有志愿者",
+  "question": "哪种方案满足每天有人开门？",
+  "week": ["周一", "周二", "周三", "周四", "周五", "周六", "周日"],
+  "context": {
+    "weekend_volunteers_present": true
+  },
+  "options": [
+    {
+      "code": "A",
+      "open_days": 7,
+      "monthly_cost": 1800,
+      "condition_scope": "none",
+      "condition": "无附加条件",
+      "weekly_status": ["有人", "有人", "有人", "有人", "有人", "有人", "有人"],
+      "decision": "satisfies"
+    },
+    {
+      "code": "B",
+      "open_days": 5,
+      "monthly_cost": 1200,
+      "condition_scope": "none",
+      "condition": "无附加条件",
+      "weekly_status": ["有人", "有人", "有人", "有人", "有人", "关闭", "关闭"],
+      "decision": "does-not-satisfy"
+    },
+    {
+      "code": "C",
+      "open_days": 7,
+      "monthly_cost": 1500,
+      "condition_scope": "C-only",
+      "condition": "仅当周末有志愿者",
+      "weekly_status": ["有人", "有人", "有人", "有人", "有人", "志愿者", "志愿者"],
+      "decision": "conditionally-satisfies"
+    }
+  ],
+  "expected": {
+    "direct_answer": "A",
+    "conditional_answer": "C 在 weekend_volunteers_present=true 时满足；B 不满足。"
+  }
+}

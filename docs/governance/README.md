@@ -7,6 +7,7 @@ Luna 负责探索、追溯、提炼和登记；Astra 负责架构、术语、冲
 | 选择研究问题 | [研究清单](research-agenda.md) | 判断问题、证据需求、写回位置、停止条件 |
 | 处理新材料 | [入账与快照](intake.md) | 来源身份、提炼与覆盖缺口 |
 | 区分处理、证据与采纳程度 | [状态词表](status-vocabulary.md) | 分维度状态记录 |
+| 验收参考并决定先读什么 | [参考生命周期](reference-lifecycle.md) | 优先卡片、任务入口和demo增量回流 |
 | 修订规则或停止推荐 | [增量与修订](evolution.md) | 影响分析、迁移、入口更新与回执 |
 | 编订 README 和契约 | [文档结构](../architecture/documentation.md) | 任务路径与唯一维护位置 |
 | 移交其他项目消费 | [消费分流](consumption-map.md) | 候选、接收责任与验证条件 |

@@ -6,6 +6,10 @@
 
 ## 其他主题
 
+- Drift 采集实现参考：[社区探针与覆盖边界](drift-checkers-20260930/README.md)、[多提供方与官方接口](drift-providers-20260930/README.md)。固定提交的选定源码与许可证已保存；依赖和上游运行未覆盖。
+
+- [账户与设备迁移来源 · 2026-09-30](anthropic-migration-20260930/README.md)：15 个官方 URL 的核查摘要，未快照网页原件；只支持迁移研究，不建立服务商风险模型。
+
 - [Reporting](reporting/README.md)
 - [Work System 与增量](work-system/README.md)
 - [原对话明确URL](../references/README.md)
@@ -13,16 +17,29 @@
 
 ## 增量批次
 
+- [agent-runtime-survey-20260925](agent-runtime-survey-20260925/README.md)
 - [ai-assessment-chat](ai-assessment-chat/README.md)
 - [ai-assessment-q123](ai-assessment-q123/README.md)
 - [ai-assessment-q45](ai-assessment-q45/README.md)
 - [architecture-review-2026-09-20](architecture-review-2026-09-20/README.md)
 - [cw-frontend-references](cw-frontend-references/README.md)
 - [documentation-practices](documentation-practices/README.md)
+- [explanation-visualization-references](explanation-visualization-references/README.md)
 - [jev-community-runtime](jev-community-runtime/README.md)
 - [jev-community-workflows](jev-community-workflows/README.md)
 - [platform-product](platform-product/README.md)
 - [platform-product-chat](platform-product-chat/README.md)
 - [reporting](reporting/README.md)
+- [rsi-review](rsi-review/README.md)
 - [se-frontend-references](se-frontend-references/README.md)
 - [work-system](work-system/README.md)
+
+- [结构写作补充来源 · 2026-09-27](writing-structure-20260927/README.md)：5 个 Google / Microsoft 官方页面，逐 URL 记录标题、段落、列表与表格的语义和取用边界；不冒充恢复原 Chat 引用。
+
+- [Write / Design Chat 来源占位](write-design-grammar/README.md)：记录示意 GitHub URL，无真实仓库身份，不作为外部证据。
+
+- [SourceWeft比较来源 · 2026-09-28](sourceweft-praxis-20260928/README.md)：原对话显式URL与固定提交核查，区分已读文件、定位入口和missing-original。
+
+- [Design grammar atlas 来源重访 · 2026-10-02](design-grammar-atlas-20261002/README.md)：研究包四份台账的 47 条来源逐条重访，32 verified、11 partial、4 unavailable；只读文字，未看图。
+
+- 视觉语法定向召回：[Courtwork](visual-grammar-courtwork-20260928/README.md)、[Schema Engineering](visual-grammar-schema-20260928/README.md)、[Praxis及相邻项目](visual-grammar-praxis-20260928/README.md)、[外部参考](visual-grammar-external-20260928/README.md)。施工消费见 [演示工场](../../demos/visual-grammar/README.md)。

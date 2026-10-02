@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Render answer.html and evidence-index.html.
+"""Render the named answer artifact and evidence-index.html.
 
 answer-draft.md carries the prose and its structure: h2 pages and h3 sections with {#id} anchors, and
 `::: figure <exhibit> <primary|supporting>` lines placing each exhibit. page-composition.json records
@@ -17,6 +17,7 @@ sys.dont_write_bytecode = True
 from exhibits import EXHIBITS, IDENTITY, q4_script_data
 
 HERE = Path(__file__).resolve().parent
+ANSWER_FILENAME = 'AI交付能力测试-answer-孙广昊.html'
 SRC = HERE.parent
 DRAFT = SRC / 'answer-draft.md'
 COMPOSITION = SRC / 'page-composition.json'
@@ -274,43 +275,47 @@ def build_answer():
     sources, note = chapter_sources()
     if sorted(sources) != list(range(1, len(pages) + 1)):
         raise SystemExit('public-source-index.md needs one source table per page')
+    def pager(i):
+        # Previous/next at the end of each chapter; plain links, so they also work without JS.
+        links = []
+        if i > 0:
+            q, t_, _ = cards[i - 1]
+            links.append(f'<a class="chapter-end-prev" href="#{q}"><span class="chapter-end-dir">上一题</span>'
+                         f'<span class="chapter-end-title">{i:02} {esc(t_)}</span></a>')
+        if i < len(cards) - 1:
+            q, t_, _ = cards[i + 1]
+            links.append(f'<a class="chapter-end-next" href="#{q}"><span class="chapter-end-dir">下一题</span>'
+                         f'<span class="chapter-end-title">{i + 2:02} {esc(t_)}</span></a>')
+        return f'<nav class="chapter-end" aria-label="翻页">{"".join(links)}</nav>'
     parts = []
     for i, page in enumerate(pages):
         parts += render_page(i, page)
         parts.append(render_sources(i + 1, page, sources[i + 1], note if i == len(pages) - 1 else ''))
+        parts.append(pager(i))
         parts.append('</section>')
-    chapter_tabs = ''.join(
-        f'<li><a class="chapter-tab" href="#{q}"><span class="chapter-tab-no">{i + 1:02}</span>'
-        f'<span class="chapter-tab-title">{esc(t)}</span></a></li>'
-        for i, (q, t, _) in enumerate(cards))
     chapter_links = ''.join(
         f'<li><a class="chapter-link" href="#{q}"><span class="chapter-tab-no">{i + 1:02}</span>'
         f'<span class="chapter-tab-title">{esc(t)}</span></a></li>'
         for i, (q, t, _) in enumerate(cards))
-    card_html = ''.join(f'<li><a class="card" href="#{q}"><span class="card-no">{i + 1:02} / {len(cards):02}</span>'
-                        f'<span class="card-title">{esc(t)}</span><span class="card-text">{esc(s)}</span></a></li>'
-                        for i, (q, t, s) in enumerate(cards))
+    def rail_item(i, q, title):
+        sections = ''.join(f'<li><a class="rail-section-link" href="#{s["id"]}"><span class="sec-no">{i + 1}.{j + 1}</span>'
+                           f'<span>{esc(s["heading"])}</span></a></li>' for j, s in enumerate(pages[i]['sections']))
+        return (f'<li><a class="chapter-link" href="#{q}"><span class="chapter-tab-no">{i + 1:02}</span>'
+                f'<span class="chapter-tab-title">{esc(title)}</span></a><ol>{sections}</ol></li>')
+    rail_links = ''.join(rail_item(i, q, t_) for i, (q, t_, _) in enumerate(cards))
     body = f'''<header class="publication-header frame">
 <div class="publication-masthead">
 <h1><a href="#" class="home">{esc(title)}</a></h1>
-<div class="publication-actions"><button type="button" id="chapter-overview" aria-haspopup="dialog" aria-controls="outline-dialog" aria-expanded="false">纲要总览</button></div>
 </div>
-<nav class="chapter-tabs" aria-label="章节"><ol>{chapter_tabs}</ol></nav>
-<details class="chapter-menu"><summary><span class="chapter-menu-label">章节</span><span class="chapter-menu-current">共{len(cards)}题</span></summary>
-<nav aria-label="章节"><ol>{chapter_links}</ol></nav></details>
 </header>
-<main class="frame" id="answer-pages">
+<details class="chapter-menu"><summary><span class="chapter-menu-label">目录</span><span class="chapter-menu-current">共{len(cards)}题</span><span class="menu-progress" aria-hidden="true"></span></summary>
+<nav aria-label="目录"><ol>{chapter_links}</ol></nav></details>
+<div class="frame reader">
+<details class="chapter-rail" open><summary>目录</summary><nav aria-label="目录"><ol>{rail_links}</ol></nav></details>
+<main id="answer-pages">
 {''.join(parts)}
 </main>
-<nav class="chapter-controls" aria-label="章节翻页"><span id="chapter-progress" aria-hidden="true"></span>
-<button type="button" id="chapter-prev" disabled><span aria-hidden="true">←</span> <span class="pager-label">上一题</span></button>
-<output id="chapter-count" aria-label="当前题目" aria-live="polite">01 / {len(cards):02}</output><span id="chapter-section" aria-hidden="true"></span>
-<button type="button" id="chapter-next"><span class="pager-label">下一题</span> <span aria-hidden="true">→</span></button>
-</nav>
-<dialog class="outline-dialog" id="outline-dialog" aria-labelledby="outline-title">
-<header class="overview-heading"><h2 id="outline-title">纲要</h2><button type="button" id="outline-close">返回当前题</button></header>
-<nav class="cards" aria-label="五题纲要"><ol>{card_html}</ol></nav>
-</dialog>'''
+</div>'''
     levels, presets = q4_script_data()
     script = ((HERE / 'q4.js').read_text().replace('__LEVELS__', levels).replace('__PRESETS__', presets)
               + (HERE / 'nav.js').read_text().replace('__IDS__', json.dumps(ids)))
@@ -342,7 +347,7 @@ def build_index():
     body = f'''<header class="topbar">
 <div class="frame topbar-inner">
 <h1>{esc(index_title)}</h1>
-<a class="index-link" href="answer.html">返回答卷</a>
+<a class="index-link" href="{esc(ANSWER_FILENAME)}">返回答卷</a>
 </div>
 </header>
 <main class="frame index">
@@ -357,6 +362,6 @@ def build_index():
 
 
 if __name__ == '__main__':
-    (HERE / 'answer.html').write_text(build_answer())
+    (HERE / ANSWER_FILENAME).write_text(build_answer())
     (HERE / 'evidence-index.html').write_text(build_index())
-    print('wrote answer.html, evidence-index.html')
+    print(f'wrote {ANSWER_FILENAME}, evidence-index.html')

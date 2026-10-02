@@ -1,0 +1,62 @@
+CURATED RESEARCH EXTRACT from official proboscis/orch source at v1.8.3-beta (paraphrased; not a byte-for-byte source copy)
+Source commit: b1a6c1628fea02ad56347d4df9a7e1bef4e2b65d
+
+internal/agent/adapter.go
+-------------------------
+The adapter contract exposes LaunchCommand, ExtraEnv, ProbeAvailability,
+PromptInjection and ReadyPattern. LaunchConfig carries work directory, issue/run
+IDs, branch, prompt, resume/session IDs, model/variant, profile auth paths and
+an OpenCode port. PromptInjection has arg, tmux and http modes. AgentType is
+claude, codex, gemini, opencode or custom.
+
+internal/agent/claude.go and codex.go
+------------------------------------
+Claude builds `claude` plus configured extra args (otherwise
+`--dangerously-skip-permissions`), model and effort. A fresh run pins an
+agent-native session with `--session-id`; revive requires the recorded ID and
+uses `--resume`. Codex defaults to `--yolo`, strips an orch `provider/model`
+prefix before passing `--model`, maps the variant to
+`-c model_reasoning_effort=...`, and uses `codex resume <id>` when resuming.
+Both use positional prompt injection.
+
+internal/agent/gemini.go
+------------------------
+Gemini defaults to `--yolo` and sends the prompt through
+`--prompt-interactive`. It has no native session identity recorded by the
+ADR-0005 identity seam, so the reaper keeps such runs alive rather than
+claiming they are revivable.
+
+internal/agent/opencode.go
+--------------------------
+OpenCode is a different transport. The adapter starts
+`opencode serve --port <port> --hostname 0.0.0.0`, declares HTTP prompt
+injection, checks `/global/health`, and attaches with
+`opencode attach http://127.0.0.1:<port>`. Continue mode addresses a stored
+OpenCode session ID. The adapter sets an autonomous-operation permission JSON
+environment value and uses a port in the 4096–4196 range.
+
+internal/agent/opencode_client.go
+---------------------------------
+`ParseModel` splits `provider/model` into `ModelRef{ProviderID, ModelID}`.
+`PromptRequest` contains text parts, an optional model ref and an optional
+variant. Session creation and async prompt calls retry with exponential
+backoff; the async path accepts an acknowledgement then closes the body. A
+health poll waits for a healthy server. The client also exposes abort, session
+status, messages and an SSE `/event` subscription. The manager maps OpenCode
+busy/idle/retry session status to running/waiting/rate_limited and treats a
+missing server/session as an observable failure.
+
+internal/multiplexer/multiplexer.go
+-----------------------------------
+The terminal abstraction includes NewSession, AttachSession, KillSession,
+ListSessions, SendKeys, SendText, CapturePane and WaitForReady. Implementations
+exist for tmux and zellij; auto selection prefers a current zellij/tmux context
+and falls back between installed multiplexers.
+
+internal/git/worktree.go
+------------------------
+CreateWorktree normalizes an isolated path, creates a branch named
+`issue/<issue>/run-<run>`, tries the remote base ref first, then a local branch
+fallback, and records the resulting path/branch/base. RemoveWorktree calls
+`git worktree remove --force`; cleanup first verifies that the path/branch is a
+registered worktree.

@@ -1,0 +1,13 @@
+Source URL: https://github.com/deepseek-ai/deepseek-harness/blob/477b4f420553e8a52c2fbccc464d7561b239c443/docs/subsystems/persistence.md
+Source commit: 477b4f420553e8a52c2fbccc464d7561b239c443
+Source lines: 1-11, 67-114, 137-176
+
+L5 The durability seam makes the append-only SessionEvent log durable; the page covers SessionPersistence, JSONL, flush checkpoints, crash recovery, and the metadata header.
+L7 `ctx.sessionPersistence` exposes create/open/stat/list; create/open return a per-session SessionHandle with read/append/flush/close and single-writer ownership. There is no parallel persisted event type.
+L11 Every log read/write flows through a handle; a second write open rejects with `SessionAlreadyOwnedError` while an owner is active.
+L67-79 `append` accepts contiguous events and makes them visible on resolution, but only a resolved `flush` promises crash durability; committed events are never rewritten.
+L81-98 `flush` is the durability barrier; `close` drains pending durability and releases write ownership.
+L102 A created Session is process-visible immediately; other processes see it only after materialization by append/flush.
+L106 `session/event` feeds a bounded write-behind window; `session/flush` drains to quiescence and is the ordering/error checkpoint before the next ordinary turn.
+L108-114 Crash recovery retains the valid log rather than truncating an open turn. Resume computes missing tool errors/open step-end/synthetic interrupted turn-end and appends them under the write handle before publishing; concurrent write repair is rejected.
+L137-176 SessionHeader carries format/version/cwd/seed lineage and durable subagent delegation depth/agent preset metadata outside the replayable event log.

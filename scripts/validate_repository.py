@@ -8,14 +8,14 @@ from pathlib import Path
 from urllib.parse import unquote, urlsplit
 
 ROOT = Path(__file__).resolve().parents[1]
-OWNED = ['docs', 'kit', 'scenarios', 'templates', 'demos', 'vault', 'scripts']
+OWNED = ['docs', 'kit', 'scenarios', 'templates', 'demos', 'vault', 'scripts', 'palantir', 'tally']
 errors = []
 counts = {'markdown': 0, 'json': 0, 'snapshots': 0}
 
 
 def managed(path):
     rel = path.relative_to(ROOT).as_posix()
-    return not rel.startswith('vault/snapshots/local/')
+    return not rel.startswith('vault/snapshots/local/') and 'node_modules' not in path.parts
 
 
 def markdown_targets(content):

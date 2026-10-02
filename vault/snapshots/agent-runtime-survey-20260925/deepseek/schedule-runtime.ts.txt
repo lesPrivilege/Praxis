@@ -1,0 +1,15 @@
+Source URL: https://github.com/deepseek-ai/deepseek-harness/blob/477b4f420553e8a52c2fbccc464d7561b239c443/packages/schedule/schedule/src/runtime.ts
+Source commit: 477b4f420553e8a52c2fbccc464d7561b239c443
+Source lines: 1-165
+
+L1 Host timer over stored tasks; Session activation is a delivery operation.
+L19 Owns at most one timer across recomputations; delivery and management share the serialized operation.
+L26-38 Constructor receives durable tasks, a transaction serializer, a commit function, and delivery retention bounds.
+L40-70 `requestDrive` recomputes nearest obligations; failures are logged and refused admission is not retried automatically.
+L72-78 dispose stops the timer and drains an accepted delivery before storage closes.
+L85-90 `drive` scans active stored tasks whose target is due.
+L94-118 Recurring tasks are grouped by Session; the runtime resolves the Agent, rechecks clock time after restoration, computes occurrences, and frames one reminder or batch.
+L119-125 It queues a `followup` synchronously, flushes the Session, and refuses to acknowledge a reminder if persistence did not participate.
+L126-142 One-shot tasks become inactive with a retained delivery record; recurring tasks advance to the next occurrence and retain delivery metadata.
+L143-152 Failures leave pending tasks active and log the unacknowledged ids; no private retry timer is created.
+L154-165 After each drive, the next active target schedules one bounded timer and re-enters through `requestDrive`.

@@ -14,6 +14,8 @@
 
 可继承父级约定；在具体条目记录例外和实证。新主题先入 intake，再由 Astra 决定归属。
 
+Kit 活跃条目的准入、薄使用记录与退出条件统一见 [文档结构契约](../architecture/documentation.md)。真实消费发现规则失效、反复被绕过或无人能从任务入口找到时，按下列修订流程处理；历史证据保留，当前入口指向有效替代。
+
 ## 修订流程
 
 1. 登记触发问题、旧判断、来源版本与关系（supports / challenges / extends / duplicates）。
@@ -37,7 +39,11 @@
 
 ## 设计与写作的增量
 
-设计与写作是最泛化的两部分，分别在 [kit/design](../../kit/design/README.md) 与 [kit/writing](../../kit/writing/README.md)。新参考先登记到 vault，再以 `candidate` 进入参考索引，使用后裁决；只有能跨项目复用的结论才写进 kit。写作原理只在项目 skill `writing` 中维护，审阅裁决与常见偏差记在 kit/writing。
+设计与内容表达分别在 [Design](../../kit/design/README.md) 与 [Write](../../kit/write/README.md)，按任务分支维护。新参考先登记到 Vault，再以 `candidate` 进入相应参考入口，使用后裁决；只有能跨项目复用的结论才进入规范。写作原理在 [Prose grammar](../../kit/write/prose/grammar.md)，偏差和审阅记录在 [Prose review](../../kit/write/prose/review.md)；项目 skill `writing` 只负责按需进入 Kit。旧目录和引用保留迁移导航。
+
+## 参考的持续消费
+
+验收后的参考按 [参考生命周期](reference-lifecycle.md)进入相应 Kit 任务分支。demo或真实任务记录参考ID、版本、取用/改写、结果和反例；新增观察先登记，经过提炼与裁决再更新唯一卡片。优先级可以提高、降低或停止，原件和历史review保留。来源登记本身不自动获得首选资格。
 
 ## 审阅交付消费
 

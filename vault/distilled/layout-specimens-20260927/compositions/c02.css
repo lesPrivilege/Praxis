@@ -1,0 +1,46 @@
+/* C02 决定备忘 · composition layer. Prefix c2-.
+   Atom classes come from ../atoms/*.css unchanged; this file only sets the page column,
+   vertical rhythm, the memo header, and minimal token/size adaptations noted in the page. */
+
+/* One accent: the recommendation keeps --accent; exception/method/gate colour falls back to ink. */
+.c2 {
+  --signal: var(--ink-2);
+  --signal-wash: var(--paper-2);
+}
+
+/* Reading column. Re-declared as the `stage` container so atom @container queries
+   see the real column width instead of the full stage. */
+.c2-page {
+  container: stage / inline-size;
+  max-width: 50rem;
+  margin: 0 auto;
+}
+
+/* Header block: meta, title, lead */
+.c2-top { display: grid; gap: 20px; padding-bottom: 28px; border-bottom: 2px solid var(--ink); }
+.c2-meta { display: grid; gap: 6px; }
+.c2-meta__kind { margin: 0; font: 600 var(--fs-12)/1.5 var(--mono); letter-spacing: .06em; color: var(--muted); display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: baseline; }
+.c2-meta__kind .syn { border: 1px dashed var(--line); padding: 0 6px; }
+.c2-meta__f { margin: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 10rem), 1fr)); gap: 4px 20px; font-size: var(--fs-13); }
+.c2-meta__f div { display: flex; gap: 8px; min-width: 0; }
+.c2-meta__f dt { color: var(--muted); flex: none; }
+.c2-meta__f dd { margin: 0; color: var(--ink-2); }
+
+/* Sections: one rhythm step between sections, a smaller one between atoms inside. */
+.c2-sec { display: grid; gap: 20px; padding: 28px 0 32px; border-bottom: 1px solid var(--line); }
+.c2-sec:last-child { border-bottom: 0; padding-bottom: 0; }
+
+/* W01-a adaptation: in a one-level memo the section title sits below the memo title,
+   so it steps down from the atom's 24px; the number loses the accent (accent = recommendation). */
+.c2 .w-sec__title { margin: 0; font-size: var(--fs-17); }
+.c2 .w-sec__num { color: var(--muted); font-variant-numeric: tabular-nums; }
+
+/* Atoms that bring their own bottom margin inside a gap-based section */
+.c2-sec :is(.w-scope--list, .t-p) { margin-bottom: 0; }
+.c2-sec .e-foot { margin-top: -12px; }
+
+/* Answer pair: conclusion and request side by side when the column allows. */
+.c2-answer { display: grid; gap: 16px; }
+@container stage (min-width: 720px) {
+  .c2-answer { grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); align-items: start; gap: 28px; }
+}

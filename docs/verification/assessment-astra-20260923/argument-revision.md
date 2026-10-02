@@ -32,4 +32,4 @@ RSI参考增补：当前仍为5题18个子问题，新增3项主张和1张两层
 
 当前工具目录未提供可调用的内置浏览器控制工具，未发出新的页面访问请求，也没有新的截图、真实输入、历史导航、恢复、缩放或打印记录。旧版Chrome截图及作者headless检查不覆盖当前HTML。此前file://访问被拒的记录保留，未采用其他表面或底层命令绕过。
 
-[唯一Claude工作单](../../../vault/distilled/ai-capability-assessment/claude-paste-order.md)已按当前五题结构更新；[当前页面](../../../vault/distilled/ai-capability-assessment/rendered/answer.html)作为待视觉验收版本。整体交付未判通过。
+[唯一Claude工作单](../../../vault/distilled/ai-capability-assessment/claude-paste-order.md)已按当前五题结构更新；[当前页面](../../../vault/distilled/ai-capability-assessment/rendered/AI交付能力测试-answer-孙广昊.html)作为待视觉验收版本。整体交付未判通过。
