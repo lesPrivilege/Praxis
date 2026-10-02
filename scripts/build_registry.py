@@ -159,7 +159,8 @@ def build():
                 'vault/intake/design-kit-workorders-20261002.json',
                 'vault/intake/write-present-supplement-20261002.json',
                 'vault/intake/content-architecture-review-20261002.json',
-                'vault/intake/community-grammar-20261002.json']:
+                'vault/intake/community-grammar-20261002.json',
+                'vault/intake/self-contained-review-20261002.json']:
         data = read(rel)
         sources.append({
             'id': data['id'], 'kind': data['kind'], 'collection': data['topic'],

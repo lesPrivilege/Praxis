@@ -166,5 +166,29 @@ if registry_path.exists():
     counts['source_records'] = len(source_ids)
     counts['citation_mappings'] = len(actual_citations)
 
+from render_source_cards import catalogs, projection
+try:
+    expected_cards = projection(ROOT)
+    shared_cards = {}
+    for _, rel, _, catalog in catalogs(ROOT):
+        for source in catalog['sources']:
+            shared_cards.setdefault(source.get('card_path'), []).append((rel, source))
+except ValueError as e:
+    errors.append(f'Source catalog: {e}')
+else:
+    for path, content in expected_cards.items():
+        if not path.is_file() or path.read_text(encoding='utf-8') != content:
+            errors.append(f'Stale generated source card: {path.relative_to(ROOT)}; '
+                          'run python3 scripts/render_source_cards.py')
+    # A card that stands for several sources must still name each of them.
+    for card, entries in shared_cards.items():
+        if card is None or len(entries) < 2 or not (ROOT / card).is_file():
+            continue
+        text = (ROOT / card).read_text(encoding='utf-8')
+        for rel, source in entries:
+            if source['url'] not in text:
+                errors.append(f"Shared source card omits a URL: {card} lacks {source['slug']} ({rel})")
+    counts['generated_source_cards'] = len(expected_cards)
+
 print(json.dumps({'counts': counts, 'errors': errors, 'status': 'fail' if errors else 'pass'}, ensure_ascii=False, indent=2))
 sys.exit(bool(errors))

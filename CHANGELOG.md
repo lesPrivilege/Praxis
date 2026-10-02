@@ -135,3 +135,11 @@
 - [文档结构契约](docs/architecture/documentation.md)的验收加一条默认做法：说规则起了作用之前留对照和留出任务。
 - [Kit 任务入口](kit/README.md)的企业工作表加一行，把恢复类任务指向工作契约和共同工作语法。
 - 八次走读含三次不读仓库的对照：对照把“部分成功先对账”该做的全做到了，所以没有写成规则；读仓库的那次原先到不了已有的不变量，加路由后到了。裁决见 [ADR-021](docs/decisions/021-community-mechanisms-and-attribution-check.md)，结果见 [回执](docs/verification/community-grammar-20261002.md)。
+
+## 2026-10-02 · 自足性审查：来源卡归属与当前状态校订
+
+- 入账一份没有署名的 [自足性审查](vault/distilled/self-contained-review-20261002/README.md)，读的是 `main@ff96b9a`。十一条建议逐条对回本地，裁决见 [ADR-022](docs/decisions/022-source-card-ownership.md)，过程见 [回执](docs/verification/self-contained-review-20261002.md)。
+- 每份 provenance catalog 加 `cards` 字段声明来源卡是生成的还是手写的。[生成脚本](scripts/render_source_cards.py)只写 `generated` 的 17 份，内容相同不写，不再写整层的 Provenance 索引。改之前照说明运行会覆盖 108 张手写卡和 24 页索引。
+- [仓库校验](scripts/validate_repository.py)加两项：生成的卡和索引与 catalog 逐字相同；共用一张卡的几条来源在卡里都有 URL。第二项查出一处缺口并已补上。
+- 工单提案的现状只留在主题页的裁决表，两个上层入口不再复述；[决定索引](docs/decisions/README.md)注明 ADR-014、015、016 被后来的决定替代或修订的部分；根 README 的设计任务直链参考路由。
+- 没有做：按用途投影、用真实任务做带对照的消费验收、兼容入口的瘦身。没有改任何 Kit 规则。

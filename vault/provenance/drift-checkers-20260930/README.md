@@ -1,6 +1,6 @@
 # Drift 探针源码研究 · 2026-09-30
 
-本目录消费了两个固定提交源码 seed：[`yacuo/check-cc`](https://github.com/yacuo/check-cc/tree/078e7baa1d2a08df28da3f25dacb90e687f4c79f)（MIT）与 [`TZZ520/claude-environment-check`](https://github.com/TZZ520/claude-environment-check/tree/723385d6e07052196fe0e2df4647c7c88882c993)（Apache-2.0）。固定提交分别为 `078e7baa1d2a08df28da3f25dacb90e687f4c79f`（2026-08-03）和 `723385d6e07052196fe0e2df4647c7c88882c993`（2026-07-04）。GitHub API 返回两个仓库均存在、默认分支 main、未归档；官方许可证文件与 API 一致。TZZ 的 Pages URL 返回 HTTP 200，但当前部署字节未与固定提交绑定。
+本目录消费了两个固定提交源码 seed：[`yacuo/check-cc`](https://github.com/yacuo/check-cc/tree/078e7baa1d2a08df28da3f25dacb90e687f4c79f)（MIT）与 [`TZZ520/claude-environment-check`](https://github.com/TZZ520/claude-environment-check/tree/723385d6e07052196fe0e2df4647c7c88882c993)（Apache-2.0）。固定提交分别为 `078e7baa1d2a08df28da3f25dacb90e687f4c79f`（2026-08-03）和 `723385d6e07052196fe0e2df4647c7c88882c993`（2026-07-04）。GitHub API 返回两个仓库均存在、默认分支 main、未归档；官方许可证文件与 API 一致。TZZ 的 [Pages 部署](https://tzz520.github.io/claude-environment-check/) 返回 HTTP 200，但当前部署字节未与固定提交绑定。
 
 完整逐 URL 登记、原始出现位置、证据状态、快照路径与 SHA-256 在 [`catalog.json`](catalog.json)；本批 intake 在 [`vault/intake/drift-checkers-20260930.json`](../../intake/drift-checkers-20260930.json)。共保存 23 个必要上游文件。未保存依赖/lockfile/构建产物，也未安装、构建或运行上游项目。
 

@@ -42,9 +42,10 @@ Vault 保存研究材料、来源身份、提炼结果和可回查的原件。�
 - 2026-09-28/29：[视觉语法材料与开放施工](distilled/visual-grammar-20260928/README.md)，原件和研究留Vault，实施交接见 [demos工场](../demos/visual-grammar/README.md)。
 
 - 2026-10-02：[Design grammar atlas 消费与裁决](distilled/design-grammar-atlas-20261002/README.md)，含 47 条来源重访和一件阅读关系样张；进入 Kit 的是 [构成关系与问题地图](../kit/design/foundations/relations.md)和 [视觉语言参考](../kit/design/references/languages.md)。
-- 2026-10-02：[PraxisDesignKit 工单提案](distilled/design-kit-workorders-20261002/README.md)，五包串行工单与 Motion 附录；工单一已执行，16 条来源重读并改了 Kit 六处措辞，其余四包未开工。
+- 2026-10-02：[PraxisDesignKit 工单提案](distilled/design-kit-workorders-20261002/README.md)，五包串行工单与 Motion 附录；各包做到哪一步、下一包要什么输入，只在该页的裁决表里记。
 - 2026-10-02：[Write / Present 架构校订补充](distilled/write-present-supplement-20261002/README.md)，对照本地后按 ADR-019 落位：不新建 Present，Write 规则分三种强度，入口分消费与维护两条路；附一件投影与改编的对照样张。
 - 2026-10-02：[内容架构与能力语法审阅](distilled/content-architecture-review-20261002/README.md)，对照本地后只校订了入口措辞与文档体例（ADR-020）；九类能力语法候选和交付生命周期登记为候选，等真实素材；附三条企业工作路线与三个反例的前后走读。
 - 2026-10-02：[社区 Skills 与 Prompts 的可迁移语法](distilled/community-grammar-20261002/README.md)，十个社区样本的工作机制；五条泛化后收进 Kit 的 [工作开展方式 · 备用素材](../kit/environment/working-methods.md)，不是规则；带对照组的走读显示其中一条当前执行模型不读也做得到（ADR-021）。
+- 2026-10-02：[自足性审查](distilled/self-contained-review-20261002/README.md)，一份针对 `ff96b9a` 的减法与加法建议逐条对回本地的结果；来源卡由谁维护的裁决在 ADR-022。
 
 这些入口只说明材料在哪里、已消费到什么程度和下一步去哪里；不要以目录名称推断安装、运行、发布或视觉验收状态。

@@ -1,10 +1,13 @@
 #!/usr/bin/env python3
-"""Render one stable-URL source card for every entry in the provenance catalogs.
+"""Render source cards and indexes for the catalogs that declare them generated.
 
-The catalogs are the source of truth.  This script only writes the card files
-for source slugs that are present in those catalogs; it never removes files.
-Summaries and statuses are projected from existing catalog entries.  It does
-not browse, re-check URLs, or expose internal search-result references.
+Every provenance catalog states who keeps its cards: ``"cards": "generated"``
+means this script owns one card per source slug plus the two indexes;
+``"cards": "maintained"`` means the cards and indexes are written by hand and
+this script leaves them alone.  The catalogs are the source of truth.  The
+script never removes files.  Summaries and statuses are projected from existing
+catalog entries.  It does not browse, re-check URLs, or expose internal
+search-result references.
 """
 
 from __future__ import annotations
@@ -15,7 +18,7 @@ import json
 import os
 import re
 from pathlib import Path
-from typing import Any
+from typing import Any, Iterator
 
 
 CATALOGS = (
@@ -23,6 +26,7 @@ CATALOGS = (
     ("reporting", "vault/provenance/reporting/catalog.json", "vault/provenance/reporting/cards"),
     ("work-system", "vault/provenance/work-system/catalog.json", "vault/provenance/work-system/cards"),
 )
+CARD_MODES = ("generated", "maintained")
 SAFE_SLUG = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]*$")
 
 
@@ -41,6 +45,22 @@ def tags(value: Any) -> list[str]:
     if isinstance(value, list):
         return [str(item) for item in value]
     return [str(value)]
+
+
+def catalogs(root: Path) -> Iterator[tuple[str, str, str, dict[str, Any]]]:
+    """Yield (namespace, catalog path, cards directory, catalog) for every catalog."""
+    specs = list(CATALOGS)
+    known = {rel for _, rel, _ in specs}
+    for path in sorted((root / 'vault/provenance').rglob('catalog.json')):
+        rel = path.relative_to(root).as_posix()
+        if rel not in known:
+            name = path.parent.relative_to(root / 'vault/provenance').as_posix().replace('/', '-')
+            specs.append((name, rel, path.parent.relative_to(root).as_posix() + '/cards'))
+    for namespace, rel, cards_rel in specs:
+        catalog = load_json(root / rel)
+        if catalog.get('cards') not in CARD_MODES:
+            raise ValueError(f"{rel}: \"cards\" must be one of {', '.join(CARD_MODES)}")
+        yield namespace, rel, cards_rel, catalog
 
 
 def render_card(source: dict[str, Any], catalog_rel: str, *, direct_research: bool = False) -> str:
@@ -86,13 +106,27 @@ def render_card(source: dict[str, Any], catalog_rel: str, *, direct_research: bo
     return "\n".join(lines)
 
 
-def render_indexes(root: Path, namespace: str, catalog_rel: str, cards_rel: str, catalog: dict[str, Any]) -> None:
+def render_indexes(root: Path, namespace: str, catalog_rel: str, cards_rel: str,
+                   catalog: dict[str, Any]) -> dict[Path, str]:
     sources = catalog['sources']
-    statuses = Counter(source['status'] for source in sources)
-    status_text = '、'.join(f"{count} `{status}`" for status, count in sorted(statuses.items()))
     citation_count = len(catalog['occurrences'])
     title = {'enterprise': 'Enterprise 早期来源', 'reporting': 'Reporting 来源',
              'work-system': 'Work System 来源（含增量）'}.get(namespace, str(catalog.get('catalog_id', namespace)))
+    lines = [f"# {title} · 摘要索引", "",
+             f"{len(sources)} 个来源；{citation_count} 个引用映射。详细记录见 [catalog](../catalog.json)。", "",
+             "| 来源 | 证据状态 | 用途 |", "|---|---|---|"]
+    for source in sources:
+        label = str(source['title']).replace('|', '/')
+        purpose = ' / '.join(tags(source.get('purpose_tags'))) or '待分类'
+        lines.append(f"| [{label}]({source['slug']}.md) | {source['status']} | {purpose} |")
+    lines += ["", "卡片与此索引由 catalog 生成；修改登记后重跑 scripts/render_source_cards.py。", ""]
+    indexes = {root / cards_rel / 'README.md': '\n'.join(lines)}
+    # vault/provenance/README.md is the hand-kept index of the whole layer.
+    if namespace == 'enterprise':
+        return indexes
+
+    statuses = Counter(source['status'] for source in sources)
+    status_text = '、'.join(f"{count} `{status}`" for status, count in sorted(statuses.items()))
     if catalog.get('origin') == 'direct-research':
         introduction = ("按研究问题查 [逐源摘要](cards/README.md)，"
                         "按来源身份查 [catalog.json](catalog.json)。"
@@ -104,17 +138,10 @@ def render_indexes(root: Path, namespace: str, catalog_rel: str, cards_rel: str,
     header = (f"# {title}\n\n"
               f"登记 {len(sources)} 个来源记录、{citation_count} 个引用占位映射；状态：{status_text}。\n\n"
               + introduction)
-    if namespace == 'enterprise':
-        header += ("## 其他主题\n\n- [Reporting](reporting/README.md)\n"
-                   "- [Work System 与增量](work-system/README.md)\n"
-                   "- [原对话明确URL](../references/README.md)\n"
-                   "- [统一登记投影](../registry.json)\n")
-    else:
-        parent = (root / catalog_rel).parent
-        home = os.path.relpath(root / 'vault/provenance/README.md', parent)
-        distilled = os.path.relpath(root / 'vault/distilled/README.md', parent)
-        header += f"[追溯总入口]({home}) · [结构化主题]({distilled})\n"
     parent = (root / catalog_rel).parent
+    home = os.path.relpath(root / 'vault/provenance/README.md', parent)
+    distilled = os.path.relpath(root / 'vault/distilled/README.md', parent)
+    header += f"[追溯总入口]({home}) · [结构化主题]({distilled})\n"
     children = sorted(p for p in parent.glob('*/catalog.json') if p.parent.name != 'cards')
     if children:
         header += "\n## 增量批次\n\n"
@@ -123,38 +150,32 @@ def render_indexes(root: Path, namespace: str, catalog_rel: str, cards_rel: str,
             header += f"- [{relative}]({relative}/README.md)\n"
     if str(catalog_rel) == 'vault/provenance/work-system/catalog.json':
         header += '\nr4 已消费，无新的外部 citation，因此没有新增来源卡；见 [r4 登记](../../intake/work-system-increment-r4.json)。\n'
-    (root / catalog_rel).parent.joinpath('README.md').write_text(header, encoding='utf-8')
-    lines = [f"# {title} · 摘要索引", "",
-             f"{len(sources)} 个来源；{citation_count} 个引用映射。详细记录见 [catalog](../catalog.json)。", "",
-             "| 来源 | 证据状态 | 用途 |", "|---|---|---|"]
-    for source in sources:
-        label = str(source['title']).replace('|', '/')
-        purpose = ' / '.join(tags(source.get('purpose_tags'))) or '待分类'
-        lines.append(f"| [{label}]({source['slug']}.md) | {source['status']} | {purpose} |")
-    lines += ["", "卡片与此索引由 catalog 生成；修改登记后重跑 scripts/render_source_cards.py。", ""]
-    (root / cards_rel / 'README.md').write_text('\n'.join(lines), encoding='utf-8')
+    indexes[parent / 'README.md'] = header
+    return indexes
 
 
-def render_catalog(root: Path, namespace: str, catalog_rel: str, cards_rel: str) -> int:
-    catalog_path = root / catalog_rel
-    cards_dir = root / cards_rel
-    cards_dir.mkdir(parents=True, exist_ok=True)
-    catalog = load_json(catalog_path)
-    written = 0
-    seen: set[str] = set()
-    for source in catalog.get("sources", []):
-        slug = source.get("slug")
-        if not isinstance(slug, str) or not SAFE_SLUG.fullmatch(slug):
-            raise ValueError(f"{catalog_rel}: unsafe or missing slug: {slug!r}")
-        if slug in seen:
-            raise ValueError(f"{catalog_rel}: duplicate slug: {slug}")
-        seen.add(slug)
-        card_path = cards_dir / f"{slug}.md"
-        card_path.write_text(render_card(source, catalog_rel, direct_research=catalog.get('origin') == 'direct-research'), encoding="utf-8")
-        written += 1
-    render_indexes(root, namespace, catalog_rel, cards_rel, catalog)
-    print(json.dumps({"namespace": namespace, "catalog": catalog_rel, "cards_written": written}, ensure_ascii=False))
-    return written
+def projection(root: Path) -> dict[Path, str]:
+    """Expected content of every file owned by a catalog with generated cards."""
+    files: dict[Path, str] = {}
+    for namespace, catalog_rel, cards_rel, catalog in catalogs(root):
+        if catalog['cards'] != 'generated':
+            continue
+        seen: set[str] = set()
+        for source in catalog.get("sources", []):
+            slug = source.get("slug")
+            if not isinstance(slug, str) or not SAFE_SLUG.fullmatch(slug):
+                raise ValueError(f"{catalog_rel}: unsafe or missing slug: {slug!r}")
+            if slug in seen:
+                raise ValueError(f"{catalog_rel}: duplicate slug: {slug}")
+            seen.add(slug)
+            target = f"{cards_rel}/{slug}.md"
+            if source.get('card_path', target) != target:
+                raise ValueError(f"{catalog_rel}: generated card for {slug} must be {target}, "
+                                 f"catalog says {source['card_path']}")
+            files[root / target] = render_card(
+                source, catalog_rel, direct_research=catalog.get('origin') == 'direct-research')
+        files.update(render_indexes(root, namespace, catalog_rel, cards_rel, catalog))
+    return files
 
 
 def main() -> int:
@@ -162,15 +183,15 @@ def main() -> int:
     parser.add_argument("--root", type=Path, default=Path(__file__).resolve().parents[1])
     args = parser.parse_args()
     root = args.root.resolve()
-    specs = list(CATALOGS)
-    known = {rel for _, rel, _ in specs}
-    for path in sorted((root / 'vault/provenance').rglob('catalog.json')):
-        rel = path.relative_to(root).as_posix()
-        if rel not in known:
-            name = path.parent.relative_to(root / 'vault/provenance').as_posix().replace('/', '-')
-            specs.append((name, rel, path.parent.relative_to(root).as_posix() + '/cards'))
-    total = sum(render_catalog(root, *spec) for spec in specs)
-    print(json.dumps({"total_cards_written": total}, ensure_ascii=False))
+    files = projection(root)
+    written = 0
+    for path, content in files.items():
+        if path.is_file() and path.read_text(encoding="utf-8") == content:
+            continue
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(content, encoding="utf-8")
+        written += 1
+    print(json.dumps({"files_checked": len(files), "files_written": written}, ensure_ascii=False))
     return 0
 
 
