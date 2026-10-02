@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="zh-Hans">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>A01 · 同一内容，四种阅读关系</title>
+<style>
+/* A01 · one fixture, one DOM, five stylesheets. Inlined into index.html by build.py. */
+:root {
+  --bg: #f5f7fa; --paper: #fff; --ink: #17212b; --muted: #5a6878; --line: #d5dce5; --accent: #1f5fd6;
+  --sans: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+  --serif: "Songti SC", "Noto Serif CJK SC", "Source Han Serif SC", STSong, serif;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.65 var(--sans); -webkit-text-size-adjust: 100%; }
+.page { max-width: 1240px; margin: 0 auto; padding: 40px 24px 80px; }
+.page > header h1 { font-size: 28px; line-height: 1.25; margin: 0 0 12px; font-weight: 600; word-break: keep-all; overflow-wrap: anywhere; }
+.lead { max-width: 44em; margin: 0 0 8px; }
+.meta { color: var(--muted); font-size: 14px; max-width: 52em; }
+a { color: var(--accent); }
+.variant { margin-top: 56px; padding-top: 20px; border-top: 1px solid var(--line); }
+.variant h2 { font-size: 19px; line-height: 1.35; margin: 0 0 4px; font-weight: 600; }
+.variant .rel { margin: 0; max-width: 46em; }
+.pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; margin-top: 18px; align-items: start; }
+.stage { container-type: inline-size; min-width: 0; }
+.cap { font-size: 13px; color: var(--muted); margin: 0 0 6px; }
+details { margin-top: 14px; font-size: 14.5px; max-width: 46em; }
+summary { cursor: pointer; color: var(--accent); }
+details p { margin: 8px 0 0; }
+.notes { margin-top: 64px; padding-top: 20px; border-top: 1px solid var(--line); }
+.notes h2 { font-size: 19px; margin: 0 0 8px; font-weight: 600; }
+.notes table { border-collapse: collapse; width: 100%; font-size: 14.5px; }
+.notes th, .notes td { text-align: left; vertical-align: top; padding: 9px 14px 9px 0; border-bottom: 1px solid var(--line); }
+.notes th { font-weight: 600; white-space: nowrap; }
+.notes p { max-width: 46em; }
+@media (max-width: 900px) {
+  .page { padding: 24px 16px 56px; }
+  .pair { grid-template-columns: minmax(0, 1fr); }
+  .notes table, .notes tbody, .notes tr, .notes th, .notes td { display: block; padding-right: 0; }
+  .notes thead { display: none; }
+  .notes th { border-bottom: 0; padding-bottom: 0; }
+  .notes td { border-bottom: 0; padding-top: 2px; }
+  .notes td[data-h]::before { content: attr(data-h) "："; color: var(--muted); }
+  .notes tr { border-bottom: 1px solid var(--line); padding: 8px 0; }
+}
+@media print { body { background: #fff; } .variant { break-inside: avoid; } }
+
+/* ---------- shared specimen reset ----------
+   Bold stops at 600: in this system stack Han glyphs get no heavier above 600 while digits do,
+   so a higher value only makes numerals darker than the characters beside them. */
+.sp { background: #fff; color: #111; font: 15px/1.6 var(--sans); padding: 28px; border: 1px solid var(--line); overflow-wrap: anywhere; }
+.sp h3, .sp p, .sp dl, .sp dd, .sp ol { margin: 0; padding: 0; }
+.sp h3 { font-size: inherit; font-weight: inherit; }
+/* Headings break only at the phrase boundaries the fixture marks with <wbr>; balance chooses among them. */
+.sp .t { word-break: keep-all; text-wrap: balance; }
+.sp ol { list-style: none; }
+.sp time { font-variant-numeric: tabular-nums; }
+@container (max-width: 479px) { .sp { padding: 20px; } }
+
+/* ---------- 甲 · 共同轴 ---------- */
+.v-axis { --lab: 5.2em; --gap: 1.3em; --x: calc(var(--lab) + var(--gap)); }
+.v-axis .t { margin-left: var(--x); font-size: 2.1em; line-height: 1.18; font-weight: 600; }
+.v-axis .lede { margin: .7em 0 2.2em var(--x); max-width: 29em; color: #2b2b2b; }
+.v-axis .facts { border-top: 1.5px solid #111; }
+.v-axis .f { display: grid; grid-template-columns: var(--lab) minmax(0, 1fr); column-gap: var(--gap); align-items: baseline; padding: .72em 0; border-bottom: 1px solid #cfcfcf; }
+.v-axis dt { text-align: right; font-size: .86em; color: #666; }
+.v-axis li { display: grid; grid-template-columns: 3.5em minmax(0, 1fr); }
+.v-axis .act { font-weight: 600; }
+@container (max-width: 479px) {
+  .v-axis { --x: 0px; }
+  .v-axis .t { font-size: 1.75em; }
+  .v-axis .f { grid-template-columns: minmax(0, 1fr); row-gap: .1em; }
+  .v-axis dt { text-align: left; }
+}
+
+/* ---------- 乙 · 行动放大 ---------- */
+.v-act { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: 28px;
+  grid-template-areas: "time time" "place join" "t prog" "lede prog"; grid-template-rows: auto auto auto 1fr; }
+.v-act .facts { display: contents; }
+.v-act .f.time { grid-area: time; }
+.v-act .f.place { grid-area: place; }
+.v-act .f.join { grid-area: join; }
+.v-act .f.prog { grid-area: prog; }
+.v-act .t { grid-area: t; }
+.v-act .lede { grid-area: lede; }
+.v-act dt { font-size: .82em; color: #666; }
+.v-act .f.time dd { line-height: 1.05; margin-top: .25em; }
+.v-act .y { display: block; font-size: 1em; color: #444; line-height: 1.5; }
+.v-act .d { font-size: 3.4em; font-weight: 600; letter-spacing: -.01em; }
+.v-act .h { font-size: 1.7em; font-weight: 500; margin-left: .35em; white-space: nowrap; }
+.v-act .f.place, .v-act .f.join { margin-top: 1.5em; }
+.v-act .f.place dd { font-size: 1.25em; font-weight: 600; line-height: 1.4; }
+.v-act .f.join dd { font-size: .93em; color: #333; }
+.v-act .act { font-size: 1.345em; font-weight: 600; color: var(--accent); }
+.v-act .t, .v-act .f.prog { margin-top: 27px; padding-top: 16px; border-top: 1px solid #111; }
+.v-act .t { font-size: 1.15em; font-weight: 600; line-height: 1.4; }
+.v-act .lede { margin-top: .5em; font-size: .93em; color: #444; }
+.v-act .f.prog dd { font-size: .93em; margin-top: .2em; }
+.v-act li { display: grid; grid-template-columns: 3.5em minmax(0, 1fr); }
+@container (max-width: 479px) {
+  .v-act { grid-template-columns: minmax(0, 1fr); grid-template-areas: "time" "place" "join" "t" "lede" "prog"; grid-template-rows: none; }
+  .v-act .d { font-size: 3em; }
+  .v-act .h { display: block; margin: .25em 0 0; }
+  .v-act .f.place, .v-act .f.join { margin-top: 1.1em; }
+  .v-act .f.prog { margin-top: 21px; }
+}
+
+/* ---------- 丙 · 时长成形 ---------- */
+.v-span .t { font-size: 1.55em; font-weight: 600; line-height: 1.25; }
+.v-span .lede { margin-top: .6em; max-width: 32em; color: #333; }
+.v-span .facts { margin-top: 1.9em; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: 24px; row-gap: 1.3em;
+  grid-template-areas: "time time" "prog prog" "place join"; }
+.v-span .f.time { grid-area: time; }
+.v-span .f.prog { grid-area: prog; }
+.v-span .f.place { grid-area: place; }
+.v-span .f.join { grid-area: join; }
+.v-span dt { font-size: .82em; color: #666; }
+.v-span .f.time dd { font-size: 1.15em; font-weight: 600; }
+.v-span ol { display: grid; grid-template-columns: var(--cols); margin-top: .45em; border-right: 2px solid #111; }
+.v-span li { border-left: 2px solid #111; border-top: 8px solid #111; padding: .5em .5em .25em .55em; min-width: 0; line-height: 1.4; }
+.v-span li time { display: block; font-weight: 600; }
+.v-span .act { font-weight: 600; }
+@container (max-width: 479px) {
+  .v-span .facts { grid-template-columns: minmax(0, 1fr); grid-template-areas: "time" "prog" "place" "join"; }
+  .v-span ol { grid-template-columns: minmax(0, 1fr); border-right: 0; border-bottom: 2px solid #111; }
+  .v-span li { border-top: 2px solid #111; border-left: 8px solid #111; min-height: calc(var(--min) * 1.15px); padding: .35em 0 .35em .7em; }
+}
+
+/* ---------- 丁 · 轮廓分组 ---------- */
+.v-box .t { background: #9db8ff; border: 2.5px solid #111; box-shadow: 6px 6px 0 #111; padding: .32em .5em; margin-right: 6px;
+  font-size: 2.15em; font-weight: 600; line-height: 1.18; }
+.v-box .lede { margin: 1.6em 0 1.3em; max-width: 33em; }
+.v-box .facts { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 14px; }
+.v-box .f { border: 2.5px solid #111; padding: .65em .8em; }
+.v-box .f.prog, .v-box .f.join { grid-column: 1 / -1; }
+.v-box .f.join { background: #d9ff5c; box-shadow: 6px 6px 0 #111; margin: 0 6px 6px 0; }
+.v-box dt { font-weight: 600; font-size: .8em; margin-bottom: .15em; }
+.v-box .act { font-weight: 600; font-size: 1.15em; }
+.v-box li { display: grid; grid-template-columns: 3.6em minmax(0, 1fr); }
+.v-box li time { font-weight: 600; }
+@container (max-width: 479px) {
+  .v-box .t { font-size: 1.7em; }
+  .v-box .facts { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* ---------- 戊 · 只换皮（反例）：甲的结构不变 ---------- */
+.v-skin { background: #eef6f3; color: #12332b; }
+.v-skin .t { font-family: var(--serif); font-weight: 600; letter-spacing: .02em; }
+.v-skin .lede { color: #23463d; }
+.v-skin .facts { border-top-color: #0f7a5f; }
+.v-skin .f { border-bottom-color: #b9d6cc; }
+.v-skin dt, .v-skin .act { color: #0f7a5f; }
+</style>
+</head>
+<body>
+<div class="page">
+<header>
+<h1>A01 · 同一内容，四种阅读关系</h1>
+<p class="lead">同一段活动信息，用四种构成关系各排一次，再加一个只换字体和颜色的反例。五个样张共用同一份 HTML 结构，只有样式表不同；右列把标题和导语加长，用来看哪种关系先失效。</p>
+<p class="meta">内容为合成夹具 F1，活动与地点均不存在。左列为原长，右列为加长；窄屏下两列上下排开。</p>
+</header>
+<section class="variant" id="axis"><h2>甲 · 共同轴</h2><p class="rel">标题、导语和四项事实都从同一条竖线起排，字段名退到线的左侧。</p><div class="pair"><div><p class="cap">原长</p><div class="stage" id="axis-short" data-check-root><article class="sp v-axis"><h3 class="t">物的<wbr>另一种<wbr>秩序</h3><p class="lede">一场关于日常物件、材料与视觉秩序的开放工作坊。参与者会带来一件普通物品，尝试用排列、文字和光线重新解释它。</p><dl class="facts"><div class="f time"><dt>时间</dt><dd><time datetime="2026-11-08T14:00"><span class="y">2026年</span><span class="d">11月8日</span> <span class="h">14:00–17:00</span></time></dd></div><div class="f place"><dt>地点</dt><dd>北侧工作室 二层</dd></div><div class="f prog"><dt>内容</dt><dd><ol style="--cols:minmax(0,60fr) minmax(0,75fr) minmax(0,45fr)"><li style="--min:60"><time>14:00</time> <span>观察与记录</span></li><li style="--min:75"><time>15:00</time> <span>组合实验</span></li><li style="--min:45"><time>16:15</time> <span>展示与讨论</span></li></ol></dd></div><div class="f join"><dt>参加方式</dt><dd><strong class="act">预约后参加</strong><span class="rest">，现场提供基本材料。无需设计经验。</span></dd></div></dl></article></div></div><div><p class="cap">加长</p><div class="stage" id="axis-long" data-check-root><article class="sp v-axis"><h3 class="t">为日常物件<wbr>重新寻找<wbr>可理解的秩序</h3><p class="lede">这是一场向所有人开放的工作坊，谈的是日常物件、材料与视觉秩序之间的关系。每位参与者都会带来一件再普通不过的物品，在现场尝试用排列的方式、几行文字和不同方向的光线，一步一步地重新解释它，看看同一件物品还能被怎样理解。</p><dl class="facts"><div class="f time"><dt>时间</dt><dd><time datetime="2026-11-08T14:00"><span class="y">2026年</span><span class="d">11月8日</span> <span class="h">14:00–17:00</span></time></dd></div><div class="f place"><dt>地点</dt><dd>北侧工作室 二层</dd></div><div class="f prog"><dt>内容</dt><dd><ol style="--cols:minmax(0,60fr) minmax(0,75fr) minmax(0,45fr)"><li style="--min:60"><time>14:00</time> <span>观察与记录</span></li><li style="--min:75"><time>15:00</time> <span>组合实验</span></li><li style="--min:45"><time>16:15</time> <span>展示与讨论</span></li></ol></dd></div><div class="f join"><dt>参加方式</dt><dd><strong class="act">预约后参加</strong><span class="rest">，现场提供基本材料。无需设计经验。</span></dd></div></dl></article></div></div></div><details><summary>来路与自由选择</summary><p>借自包内 Swiss / International 条目的两点：共同对齐轴，以及用稳定版面容纳会变的内容。依据是瑞士国家图书馆的专题页（H01）和 Poster House《The Swiss Grid》展览文本（H02），两处文字在 2026-10-02 重访时都能找到；Hofmann 为巴塞尔市立剧院做的海报没有看图。</p><p>轴的位置、标签栏宽度、细线和字号是这里自己定的。没有借字体、列数和黑白配色。</p></details></section><section class="variant" id="act"><h2>乙 · 行动放大</h2><p class="rel">何时、何地、怎么参加占最大的字和最靠上的位置，主题退到第二眼。</p><div class="pair"><div><p class="cap">原长</p><div class="stage" id="act-short" data-check-root><article class="sp v-act"><h3 class="t">物的<wbr>另一种<wbr>秩序</h3><p class="lede">一场关于日常物件、材料与视觉秩序的开放工作坊。参与者会带来一件普通物品，尝试用排列、文字和光线重新解释它。</p><dl class="facts"><div class="f time"><dt>时间</dt><dd><time datetime="2026-11-08T14:00"><span class="y">2026年</span><span class="d">11月8日</span> <span class="h">14:00–17:00</span></time></dd></div><div class="f place"><dt>地点</dt><dd>北侧工作室 二层</dd></div><div class="f prog"><dt>内容</dt><dd><ol style="--cols:minmax(0,60fr) minmax(0,75fr) minmax(0,45fr)"><li style="--min:60"><time>14:00</time> <span>观察与记录</span></li><li style="--min:75"><time>15:00</time> <span>组合实验</span></li><li style="--min:45"><time>16:15</time> <span>展示与讨论</span></li></ol></dd></div><div class="f join"><dt>参加方式</dt><dd><strong class="act">预约后参加</strong><span class="rest">，现场提供基本材料。无需设计经验。</span></dd></div></dl></article></div></div><div><p class="cap">加长</p><div class="stage" id="act-long" data-check-root><article class="sp v-act"><h3 class="t">为日常物件<wbr>重新寻找<wbr>可理解的秩序</h3><p class="lede">这是一场向所有人开放的工作坊，谈的是日常物件、材料与视觉秩序之间的关系。每位参与者都会带来一件再普通不过的物品，在现场尝试用排列的方式、几行文字和不同方向的光线，一步一步地重新解释它，看看同一件物品还能被怎样理解。</p><dl class="facts"><div class="f time"><dt>时间</dt><dd><time datetime="2026-11-08T14:00"><span class="y">2026年</span><span class="d">11月8日</span> <span class="h">14:00–17:00</span></time></dd></div><div class="f place"><dt>地点</dt><dd>北侧工作室 二层</dd></div><div class="f prog"><dt>内容</dt><dd><ol style="--cols:minmax(0,60fr) minmax(0,75fr) minmax(0,45fr)"><li style="--min:60"><time>14:00</time> <span>观察与记录</span></li><li style="--min:75"><time>15:00</time> <span>组合实验</span></li><li style="--min:45"><time>16:15</time> <span>展示与讨论</span></li></ol></dd></div><div class="f join"><dt>参加方式</dt><dd><strong class="act">预约后参加</strong><span class="rest">，现场提供基本材料。无需设计经验。</span></dd></div></dl></article></div></div></div><details><summary>来路与自由选择</summary><p>不借历史条目。用的是包内维度 G01（主从面积）和 G11（先给行动还是先给主题）提出的两个问题。</p><p>日期 51 像素、“预约后参加”用全页唯一的蓝色，是这里的选择。HTML 顺序没有变，标题仍在最前；视觉上事实块排到了标题上方，两种顺序不一致。这一页没有可聚焦的控件。</p></details></section><section class="variant" id="span"><h2>丙 · 时长成形</h2><p class="rel">三个环节排在同一条时间尺上，每段的长度就是它的分钟数。</p><div class="pair"><div><p class="cap">原长</p><div class="stage" id="span-short" data-check-root><article class="sp v-span"><h3 class="t">物的<wbr>另一种<wbr>秩序</h3><p class="lede">一场关于日常物件、材料与视觉秩序的开放工作坊。参与者会带来一件普通物品，尝试用排列、文字和光线重新解释它。</p><dl class="facts"><div class="f time"><dt>时间</dt><dd><time datetime="2026-11-08T14:00"><span class="y">2026年</span><span class="d">11月8日</span> <span class="h">14:00–17:00</span></time></dd></div><div class="f place"><dt>地点</dt><dd>北侧工作室 二层</dd></div><div class="f prog"><dt>内容</dt><dd><ol style="--cols:minmax(0,60fr) minmax(0,75fr) minmax(0,45fr)"><li style="--min:60"><time>14:00</time> <span>观察与记录</span></li><li style="--min:75"><time>15:00</time> <span>组合实验</span></li><li style="--min:45"><time>16:15</time> <span>展示与讨论</span></li></ol></dd></div><div class="f join"><dt>参加方式</dt><dd><strong class="act">预约后参加</strong><span class="rest">，现场提供基本材料。无需设计经验。</span></dd></div></dl></article></div></div><div><p class="cap">加长</p><div class="stage" id="span-long" data-check-root><article class="sp v-span"><h3 class="t">为日常物件<wbr>重新寻找<wbr>可理解的秩序</h3><p class="lede">这是一场向所有人开放的工作坊，谈的是日常物件、材料与视觉秩序之间的关系。每位参与者都会带来一件再普通不过的物品，在现场尝试用排列的方式、几行文字和不同方向的光线，一步一步地重新解释它，看看同一件物品还能被怎样理解。</p><dl class="facts"><div class="f time"><dt>时间</dt><dd><time datetime="2026-11-08T14:00"><span class="y">2026年</span><span class="d">11月8日</span> <span class="h">14:00–17:00</span></time></dd></div><div class="f place"><dt>地点</dt><dd>北侧工作室 二层</dd></div><div class="f prog"><dt>内容</dt><dd><ol style="--cols:minmax(0,60fr) minmax(0,75fr) minmax(0,45fr)"><li style="--min:60"><time>14:00</time> <span>观察与记录</span></li><li style="--min:75"><time>15:00</time> <span>组合实验</span></li><li style="--min:45"><time>16:15</time> <span>展示与讨论</span></li></ol></dd></div><div class="f join"><dt>参加方式</dt><dd><strong class="act">预约后参加</strong><span class="rest">，现场提供基本材料。无需设计经验。</span></dd></div></dl></article></div></div></div><details><summary>来路与自由选择</summary><p>借自包内 Bauhaus 条目的“同一元素只改一个变量”。来源（Bauhaus-Archiv，H03）讲的是预备课程里的材料实验和平衡习作；把它转成界面做法是包作者的推断，这里又转了一次。</p><p>三段长度按分钟给出：60、75、45，由夹具的三个开始时刻和 17:00 的结束时刻算出，页面上没有另外印这三个数。</p></details></section><section class="variant" id="box"><h2>丁 · 轮廓分组</h2><p class="rel">粗轮廓把内容切成块，主题和参加方式各垫一层硬偏移。</p><div class="pair"><div><p class="cap">原长</p><div class="stage" id="box-short" data-check-root><article class="sp v-box"><h3 class="t">物的<wbr>另一种<wbr>秩序</h3><p class="lede">一场关于日常物件、材料与视觉秩序的开放工作坊。参与者会带来一件普通物品，尝试用排列、文字和光线重新解释它。</p><dl class="facts"><div class="f time"><dt>时间</dt><dd><time datetime="2026-11-08T14:00"><span class="y">2026年</span><span class="d">11月8日</span> <span class="h">14:00–17:00</span></time></dd></div><div class="f place"><dt>地点</dt><dd>北侧工作室 二层</dd></div><div class="f prog"><dt>内容</dt><dd><ol style="--cols:minmax(0,60fr) minmax(0,75fr) minmax(0,45fr)"><li style="--min:60"><time>14:00</time> <span>观察与记录</span></li><li style="--min:75"><time>15:00</time> <span>组合实验</span></li><li style="--min:45"><time>16:15</time> <span>展示与讨论</span></li></ol></dd></div><div class="f join"><dt>参加方式</dt><dd><strong class="act">预约后参加</strong><span class="rest">，现场提供基本材料。无需设计经验。</span></dd></div></dl></article></div></div><div><p class="cap">加长</p><div class="stage" id="box-long" data-check-root><article class="sp v-box"><h3 class="t">为日常物件<wbr>重新寻找<wbr>可理解的秩序</h3><p class="lede">这是一场向所有人开放的工作坊，谈的是日常物件、材料与视觉秩序之间的关系。每位参与者都会带来一件再普通不过的物品，在现场尝试用排列的方式、几行文字和不同方向的光线，一步一步地重新解释它，看看同一件物品还能被怎样理解。</p><dl class="facts"><div class="f time"><dt>时间</dt><dd><time datetime="2026-11-08T14:00"><span class="y">2026年</span><span class="d">11月8日</span> <span class="h">14:00–17:00</span></time></dd></div><div class="f place"><dt>地点</dt><dd>北侧工作室 二层</dd></div><div class="f prog"><dt>内容</dt><dd><ol style="--cols:minmax(0,60fr) minmax(0,75fr) minmax(0,45fr)"><li style="--min:60"><time>14:00</time> <span>观察与记录</span></li><li style="--min:75"><time>15:00</time> <span>组合实验</span></li><li style="--min:45"><time>16:15</time> <span>展示与讨论</span></li></ol></dd></div><div class="f join"><dt>参加方式</dt><dd><strong class="act">预约后参加</strong><span class="rest">，现场提供基本材料。无需设计经验。</span></dd></div></dl></article></div></div></div><details><summary>来路与自由选择</summary><p>借自包内 Neubrutalism 条目的三点：轮廓分组、硬偏移层、展示字与正文的强弱反差。包内台账以 Malewicz 2022 年的文章（H18）为依据；2026-10-02 重访该页被 403 拦下，原文和配图这一轮都没有读到。</p><p>两处填色和 6 像素偏移是这里的选择。</p></details></section><section class="variant" id="skin"><h2>戊 · 只换皮（反例）</h2><p class="rel">甲的结构原样保留，只换衬线标题、底色和强调色。</p><div class="pair"><div><p class="cap">原长</p><div class="stage" id="skin-short" data-check-root><article class="sp v-axis v-skin"><h3 class="t">物的<wbr>另一种<wbr>秩序</h3><p class="lede">一场关于日常物件、材料与视觉秩序的开放工作坊。参与者会带来一件普通物品，尝试用排列、文字和光线重新解释它。</p><dl class="facts"><div class="f time"><dt>时间</dt><dd><time datetime="2026-11-08T14:00"><span class="y">2026年</span><span class="d">11月8日</span> <span class="h">14:00–17:00</span></time></dd></div><div class="f place"><dt>地点</dt><dd>北侧工作室 二层</dd></div><div class="f prog"><dt>内容</dt><dd><ol style="--cols:minmax(0,60fr) minmax(0,75fr) minmax(0,45fr)"><li style="--min:60"><time>14:00</time> <span>观察与记录</span></li><li style="--min:75"><time>15:00</time> <span>组合实验</span></li><li style="--min:45"><time>16:15</time> <span>展示与讨论</span></li></ol></dd></div><div class="f join"><dt>参加方式</dt><dd><strong class="act">预约后参加</strong><span class="rest">，现场提供基本材料。无需设计经验。</span></dd></div></dl></article></div></div><div><p class="cap">加长</p><div class="stage" id="skin-long" data-check-root><article class="sp v-axis v-skin"><h3 class="t">为日常物件<wbr>重新寻找<wbr>可理解的秩序</h3><p class="lede">这是一场向所有人开放的工作坊，谈的是日常物件、材料与视觉秩序之间的关系。每位参与者都会带来一件再普通不过的物品，在现场尝试用排列的方式、几行文字和不同方向的光线，一步一步地重新解释它，看看同一件物品还能被怎样理解。</p><dl class="facts"><div class="f time"><dt>时间</dt><dd><time datetime="2026-11-08T14:00"><span class="y">2026年</span><span class="d">11月8日</span> <span class="h">14:00–17:00</span></time></dd></div><div class="f place"><dt>地点</dt><dd>北侧工作室 二层</dd></div><div class="f prog"><dt>内容</dt><dd><ol style="--cols:minmax(0,60fr) minmax(0,75fr) minmax(0,45fr)"><li style="--min:60"><time>14:00</time> <span>观察与记录</span></li><li style="--min:75"><time>15:00</time> <span>组合实验</span></li><li style="--min:45"><time>16:15</time> <span>展示与讨论</span></li></ol></dd></div><div class="f join"><dt>参加方式</dt><dd><strong class="act">预约后参加</strong><span class="rest">，现场提供基本材料。无需设计经验。</span></dd></div></dl></article></div></div></div><details><summary>来路与自由选择</summary><p>不借任何条目。</p><p>衬线标题、浅绿底和绿色强调。</p></details></section>
+<section class="notes" id="notes">
+<h2>看图后的记录</h2>
+<table>
+<thead><tr><th scope="col">变体</th><th scope="col">先读到</th><th scope="col">加长或变窄后</th><th scope="col">处置</th></tr></thead>
+<tbody><tr><th scope="row">甲 · 共同轴</th><td data-h="先读到">标题，然后沿竖线往下读四项事实。</td><td data-h="加长或变窄后">标题折成两行，事实表整体下移约 85 像素，轴不动。375 宽时标签并到内容上方，全页仍只有一条左边线。</td><td data-h="处置">保留。五个里最稳，但参加方式并不比其他三项事实更显眼。</td></tr><tr><th scope="row">乙 · 行动放大</th><td data-h="先读到">“11月8日”，其次是地点和蓝色的“预约后参加”，标题到第三眼才出现。</td><td data-h="加长或变窄后">加长的导语在半栏里排成六行，右栏下方空出一块。375 宽时退回单列，日期仍是最大的字。</td><td data-h="处置">保留，用在读者已经知道是什么活动、只想确认何时何地的场合。主题需要先被认出来时不用。</td></tr><tr><th scope="row">丙 · 时长成形</th><td data-h="先读到">标题，接着是那条时间尺，第二段明显最长。</td><td data-h="加长或变窄后">加长标题在宽屏仍排在一行。375 宽时时间尺竖过来，长度改成高度，比例还在。按宽度估算，最短一段在宽屏只放得下七个字左右，更长的环节名会先在那里折行；这一点没有换内容实测。</td><td data-h="处置">保留给时长有差别的日程。环节只有先后、没有时长差别时不用。</td></tr><tr><th scope="row">丁 · 轮廓分组</th><td data-h="先读到">蓝底标题块和黄绿的参加方式块同时抢第一眼，中间三个白框等权。</td><td data-h="加长或变窄后">375 宽时四个框叠成一列，标题块折成两行。强弱反差做不满：系统中文字体最重只到 600，标题和甲一样粗，反差只剩字号和填色。</td><td data-h="处置">留作对照。参加方式没有被装饰盖住，是因为它自己也垫了一层；再多一块内容就是五个等粗的框，主次要另想办法；这一点没有实测。</td></tr><tr><th scope="row">戊 · 只换皮（反例）</th><td data-h="先读到">与甲相同：标题，再沿竖线往下。</td><td data-h="加长或变窄后">与甲相同。</td><td data-h="处置">不算另一种关系。换字体和颜色改了气质，没有改先读什么。</td></tr></tbody>
+</table>
+<p>十个样张的文字由 build.py 从同一份夹具生成并逐字比对，全部一致。几何检查在 1440 和 375 两种视口下没有发现横向滚动、越界或裁切。这两项不说明好不好看，也不说明读屏和键盘可用。</p><p>最先失效的是标题断行，不是哪一种关系。平衡断行按宽度切，中文不分词，加长标题在黑体下被切成“为日常物件重新寻／找可理解的秩序”；同一结构换成衬线后字宽变了，断点移到“重新／寻找”之间，恰好落在词间。这台机器上的 Chrome 154 对这段中文也没有按词组断开（word-break: auto-phrase 无效）。现在由夹具标出允许断行的词组边界，样式只在这些位置里选。</p><p>字重也有一处失配。在页面所用的系统字体栈里，汉字从 600 到 900 的着墨量相同，数字却继续加重，到 900 时多出约三成（应用内浏览器，Chromium 152，画布像素计数）。所以样张里的粗体一律停在 600，否则“11月8日”里的数字会比“月”“日”更黑。</p><p>“先读到”一栏是我看截图后的判断，没有找读者测过。</p>
+</section>
+</div>
+</body>
+</html>

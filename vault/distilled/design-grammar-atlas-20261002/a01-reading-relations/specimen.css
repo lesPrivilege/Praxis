@@ -1,0 +1,145 @@
+/* A01 · one fixture, one DOM, five stylesheets. Inlined into index.html by build.py. */
+:root {
+  --bg: #f5f7fa; --paper: #fff; --ink: #17212b; --muted: #5a6878; --line: #d5dce5; --accent: #1f5fd6;
+  --sans: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+  --serif: "Songti SC", "Noto Serif CJK SC", "Source Han Serif SC", STSong, serif;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.65 var(--sans); -webkit-text-size-adjust: 100%; }
+.page { max-width: 1240px; margin: 0 auto; padding: 40px 24px 80px; }
+.page > header h1 { font-size: 28px; line-height: 1.25; margin: 0 0 12px; font-weight: 600; word-break: keep-all; overflow-wrap: anywhere; }
+.lead { max-width: 44em; margin: 0 0 8px; }
+.meta { color: var(--muted); font-size: 14px; max-width: 52em; }
+a { color: var(--accent); }
+.variant { margin-top: 56px; padding-top: 20px; border-top: 1px solid var(--line); }
+.variant h2 { font-size: 19px; line-height: 1.35; margin: 0 0 4px; font-weight: 600; }
+.variant .rel { margin: 0; max-width: 46em; }
+.pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; margin-top: 18px; align-items: start; }
+.stage { container-type: inline-size; min-width: 0; }
+.cap { font-size: 13px; color: var(--muted); margin: 0 0 6px; }
+details { margin-top: 14px; font-size: 14.5px; max-width: 46em; }
+summary { cursor: pointer; color: var(--accent); }
+details p { margin: 8px 0 0; }
+.notes { margin-top: 64px; padding-top: 20px; border-top: 1px solid var(--line); }
+.notes h2 { font-size: 19px; margin: 0 0 8px; font-weight: 600; }
+.notes table { border-collapse: collapse; width: 100%; font-size: 14.5px; }
+.notes th, .notes td { text-align: left; vertical-align: top; padding: 9px 14px 9px 0; border-bottom: 1px solid var(--line); }
+.notes th { font-weight: 600; white-space: nowrap; }
+.notes p { max-width: 46em; }
+@media (max-width: 900px) {
+  .page { padding: 24px 16px 56px; }
+  .pair { grid-template-columns: minmax(0, 1fr); }
+  .notes table, .notes tbody, .notes tr, .notes th, .notes td { display: block; padding-right: 0; }
+  .notes thead { display: none; }
+  .notes th { border-bottom: 0; padding-bottom: 0; }
+  .notes td { border-bottom: 0; padding-top: 2px; }
+  .notes td[data-h]::before { content: attr(data-h) "："; color: var(--muted); }
+  .notes tr { border-bottom: 1px solid var(--line); padding: 8px 0; }
+}
+@media print { body { background: #fff; } .variant { break-inside: avoid; } }
+
+/* ---------- shared specimen reset ----------
+   Bold stops at 600: in this system stack Han glyphs get no heavier above 600 while digits do,
+   so a higher value only makes numerals darker than the characters beside them. */
+.sp { background: #fff; color: #111; font: 15px/1.6 var(--sans); padding: 28px; border: 1px solid var(--line); overflow-wrap: anywhere; }
+.sp h3, .sp p, .sp dl, .sp dd, .sp ol { margin: 0; padding: 0; }
+.sp h3 { font-size: inherit; font-weight: inherit; }
+/* Headings break only at the phrase boundaries the fixture marks with <wbr>; balance chooses among them. */
+.sp .t { word-break: keep-all; text-wrap: balance; }
+.sp ol { list-style: none; }
+.sp time { font-variant-numeric: tabular-nums; }
+@container (max-width: 479px) { .sp { padding: 20px; } }
+
+/* ---------- 甲 · 共同轴 ---------- */
+.v-axis { --lab: 5.2em; --gap: 1.3em; --x: calc(var(--lab) + var(--gap)); }
+.v-axis .t { margin-left: var(--x); font-size: 2.1em; line-height: 1.18; font-weight: 600; }
+.v-axis .lede { margin: .7em 0 2.2em var(--x); max-width: 29em; color: #2b2b2b; }
+.v-axis .facts { border-top: 1.5px solid #111; }
+.v-axis .f { display: grid; grid-template-columns: var(--lab) minmax(0, 1fr); column-gap: var(--gap); align-items: baseline; padding: .72em 0; border-bottom: 1px solid #cfcfcf; }
+.v-axis dt { text-align: right; font-size: .86em; color: #666; }
+.v-axis li { display: grid; grid-template-columns: 3.5em minmax(0, 1fr); }
+.v-axis .act { font-weight: 600; }
+@container (max-width: 479px) {
+  .v-axis { --x: 0px; }
+  .v-axis .t { font-size: 1.75em; }
+  .v-axis .f { grid-template-columns: minmax(0, 1fr); row-gap: .1em; }
+  .v-axis dt { text-align: left; }
+}
+
+/* ---------- 乙 · 行动放大 ---------- */
+.v-act { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: 28px;
+  grid-template-areas: "time time" "place join" "t prog" "lede prog"; grid-template-rows: auto auto auto 1fr; }
+.v-act .facts { display: contents; }
+.v-act .f.time { grid-area: time; }
+.v-act .f.place { grid-area: place; }
+.v-act .f.join { grid-area: join; }
+.v-act .f.prog { grid-area: prog; }
+.v-act .t { grid-area: t; }
+.v-act .lede { grid-area: lede; }
+.v-act dt { font-size: .82em; color: #666; }
+.v-act .f.time dd { line-height: 1.05; margin-top: .25em; }
+.v-act .y { display: block; font-size: 1em; color: #444; line-height: 1.5; }
+.v-act .d { font-size: 3.4em; font-weight: 600; letter-spacing: -.01em; }
+.v-act .h { font-size: 1.7em; font-weight: 500; margin-left: .35em; white-space: nowrap; }
+.v-act .f.place, .v-act .f.join { margin-top: 1.5em; }
+.v-act .f.place dd { font-size: 1.25em; font-weight: 600; line-height: 1.4; }
+.v-act .f.join dd { font-size: .93em; color: #333; }
+.v-act .act { font-size: 1.345em; font-weight: 600; color: var(--accent); }
+.v-act .t, .v-act .f.prog { margin-top: 27px; padding-top: 16px; border-top: 1px solid #111; }
+.v-act .t { font-size: 1.15em; font-weight: 600; line-height: 1.4; }
+.v-act .lede { margin-top: .5em; font-size: .93em; color: #444; }
+.v-act .f.prog dd { font-size: .93em; margin-top: .2em; }
+.v-act li { display: grid; grid-template-columns: 3.5em minmax(0, 1fr); }
+@container (max-width: 479px) {
+  .v-act { grid-template-columns: minmax(0, 1fr); grid-template-areas: "time" "place" "join" "t" "lede" "prog"; grid-template-rows: none; }
+  .v-act .d { font-size: 3em; }
+  .v-act .h { display: block; margin: .25em 0 0; }
+  .v-act .f.place, .v-act .f.join { margin-top: 1.1em; }
+  .v-act .f.prog { margin-top: 21px; }
+}
+
+/* ---------- 丙 · 时长成形 ---------- */
+.v-span .t { font-size: 1.55em; font-weight: 600; line-height: 1.25; }
+.v-span .lede { margin-top: .6em; max-width: 32em; color: #333; }
+.v-span .facts { margin-top: 1.9em; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: 24px; row-gap: 1.3em;
+  grid-template-areas: "time time" "prog prog" "place join"; }
+.v-span .f.time { grid-area: time; }
+.v-span .f.prog { grid-area: prog; }
+.v-span .f.place { grid-area: place; }
+.v-span .f.join { grid-area: join; }
+.v-span dt { font-size: .82em; color: #666; }
+.v-span .f.time dd { font-size: 1.15em; font-weight: 600; }
+.v-span ol { display: grid; grid-template-columns: var(--cols); margin-top: .45em; border-right: 2px solid #111; }
+.v-span li { border-left: 2px solid #111; border-top: 8px solid #111; padding: .5em .5em .25em .55em; min-width: 0; line-height: 1.4; }
+.v-span li time { display: block; font-weight: 600; }
+.v-span .act { font-weight: 600; }
+@container (max-width: 479px) {
+  .v-span .facts { grid-template-columns: minmax(0, 1fr); grid-template-areas: "time" "prog" "place" "join"; }
+  .v-span ol { grid-template-columns: minmax(0, 1fr); border-right: 0; border-bottom: 2px solid #111; }
+  .v-span li { border-top: 2px solid #111; border-left: 8px solid #111; min-height: calc(var(--min) * 1.15px); padding: .35em 0 .35em .7em; }
+}
+
+/* ---------- 丁 · 轮廓分组 ---------- */
+.v-box .t { background: #9db8ff; border: 2.5px solid #111; box-shadow: 6px 6px 0 #111; padding: .32em .5em; margin-right: 6px;
+  font-size: 2.15em; font-weight: 600; line-height: 1.18; }
+.v-box .lede { margin: 1.6em 0 1.3em; max-width: 33em; }
+.v-box .facts { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 14px; }
+.v-box .f { border: 2.5px solid #111; padding: .65em .8em; }
+.v-box .f.prog, .v-box .f.join { grid-column: 1 / -1; }
+.v-box .f.join { background: #d9ff5c; box-shadow: 6px 6px 0 #111; margin: 0 6px 6px 0; }
+.v-box dt { font-weight: 600; font-size: .8em; margin-bottom: .15em; }
+.v-box .act { font-weight: 600; font-size: 1.15em; }
+.v-box li { display: grid; grid-template-columns: 3.6em minmax(0, 1fr); }
+.v-box li time { font-weight: 600; }
+@container (max-width: 479px) {
+  .v-box .t { font-size: 1.7em; }
+  .v-box .facts { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* ---------- 戊 · 只换皮（反例）：甲的结构不变 ---------- */
+.v-skin { background: #eef6f3; color: #12332b; }
+.v-skin .t { font-family: var(--serif); font-weight: 600; letter-spacing: .02em; }
+.v-skin .lede { color: #23463d; }
+.v-skin .facts { border-top-color: #0f7a5f; }
+.v-skin .f { border-bottom-color: #b9d6cc; }
+.v-skin dt, .v-skin .act { color: #0f7a5f; }
