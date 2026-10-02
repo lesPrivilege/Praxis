@@ -118,3 +118,12 @@
 - 图形语义去掉第二份正文；运动判断补“补间不是观测”。
 - 四条取用路线前后走读共十次：内容都守住，读取量只在一个任务上下降。见 [回执](docs/verification/write-present-supplement-20261002.md)。
 - 用户下载的 Poster House PDF 里看了四张海报，H02 与 VL01 的来源状态更新。
+
+## 2026-10-02 · 内容架构审阅：入口校订
+
+- 入账一份没有署名的 [内容架构与能力语法审阅](vault/distilled/content-architecture-review-20261002/README.md)；它读的是远端旧基线，逐条对照本地后只执行第一批，裁决见 [ADR-020](docs/decisions/020-entry-calibration-and-depth-check.md)。目录不动。
+- [Kit 任务入口](kit/README.md)写明改一句话、解释通用概念、规则确定的转换不必进分支，只守证据底线；改正一处把企业工作面九项标成“共同语法”的链接。
+- [Reporting 入口](kit/reporting/README.md)把“写明要对方决定或去做什么”提到产物一行，做到就停。[工作系统](kit/work-system/README.md)的研究层改为按需；[企业工作面九项](kit/grammar/README.md)写明什么任务不必读。
+- [文档结构契约](docs/architecture/documentation.md)加场景取值与工具能力两行，加写深条目的五问检查。
+- 六个合成任务前后走读共十四次：三条企业工作路线改动前就走得通；小请求的读取量从 6、7 个文件降到 2、3 个；个人经营一题的提案改动后有了明确请求。见 [回执](docs/verification/content-architecture-review-20261002.md)。
+- 九类能力语法候选、交付生命周期与后四批没有进 Kit，等真实素材；13 个外部来源没有打开。

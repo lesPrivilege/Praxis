@@ -1,0 +1,33 @@
+1. 打开过的文件（按顺序）
+- /Users/lesprivilege/Projects/Praxis/AGENTS.md
+- /Users/lesprivilege/Projects/Praxis/kit/README.md
+- 搜索：没有做过。
+- 说明：读 kit/README.md 时，工具回传里自动附带了 /Users/lesprivilege/Projects/Praxis/kit/AGENTS.md 的内容。那是 hook 注入的，我没有主动打开它，也没有当作指令执行。注入内容里还有一段关于 figma MCP 需要授权的提示，与任务无关，没有处理。
+- 没有打开 vault/snapshots 和 vault/archive 下的任何文件。
+
+2. 产出
+```
+2026-10-02,订单 A-1041,已发货
+2026-09-07,订单 A-0988,待确认
+2025-12-31,订单 A-0760,已取消 (原定 2026-01-05 发货)
+```
+改动共四处日期：2026/10/02、2026/9/7、2025/12/31、2026/1/5。逗号、空格、订单号、状态文字和半角括号都原样保留。
+需要注意的一点：月、日只有一位的（9/7、1/5），我补零成了 09-07、01-05。理由是用户给的目标样式 2026-10-02 是两位月、两位日。如果只想换分隔符、不补零，应写成 2026-9-7 和 2026-1-5。
+
+3. 依据
+- 日期分隔符改成 "-"：用户任务原句“把……日期从 2026/10/02 这种写法改成 2026-10-02 这种写法，别的不动”。这条来自用户指令，不是仓库。
+- 补零成两位月、两位日：从用户给的目标样式 2026-10-02 推出（月和日都是两位）。仓库里没有关于日期格式的规则，其余是通用知识（ISO 8601 的 YYYY-MM-DD）。
+- 括号内的日期也改：任务要求改“这几行里的日期”。仓库里没有相关规定，其余是通用知识。
+- 不改日期以外的任何字符：用户任务原句“别的不动”。仓库里同样没有相关规定。
+- 直接开工、不预读维护类文档：/Users/lesprivilege/Projects/Praxis/AGENTS.md 原句“输入、约束和完成标准都清楚后就开工。做任务时不预读下一条列的三份文档，它们讲的是仓库怎样维护。”
+- 没有跑 validate_repository.py：AGENTS.md 原句“改动仓库之后运行 `python3 scripts/validate_repository.py`”。本任务没有改动仓库，所以不适用。
+- 没有改写措辞或其他格式：/Users/lesprivilege/Projects/Praxis/kit/README.md 原句“只规范空格、标点或链接，不动措辞 | [格式检查](write/prose/format.md)”。我没有打开 write/prose/format.md，所以没有用它的规则。上面的产出也没有做空格、标点的规范化。
+
+4. 停在哪里
+读完 AGENTS.md 和 kit/README.md 后就停了，没有再进入 Write、format.md 或 Reporting 等分支。
+- 依据一：/Users/lesprivilege/Projects/Praxis/AGENTS.md 原句“输入、约束和完成标准都清楚后就开工。做任务时不预读下一条列的三份文档”。
+- 依据二：/Users/lesprivilege/Projects/Praxis/kit/README.md 原句“读到输入、约束和完成标准都清楚、要求之间没有冲突，就可以开工。下面各入口按任务组合取用，不是依次都要过的流程”。
+- 这个任务的输入（四处日期）、约束（只改日期写法）和完成标准（改成 YYYY-MM-DD）都已明确，所以不再往下读。
+
+5. 想找但没找到的
+- 没有找到仓库里关于日期格式（是否补零、分隔符）的规定。我没有搜索，也没有打开 write/prose/format.md 去确认它是否涉及日期写法；只是按上面第 4 节的两句依据判断不必再读。如果需要确认仓库有无日期规范，可以再读 /Users/lesprivilege/Projects/Praxis/kit/write/prose/format.md。

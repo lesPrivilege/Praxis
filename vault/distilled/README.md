@@ -18,6 +18,7 @@
 | 需求用风格名表达，或要查尚未进 Kit 的构成维度 | [Design grammar atlas](design-grammar-atlas-20261002/README.md) · [A01 样张](design-grammar-atlas-20261002/a01-reading-relations/README.md) | 研究包与本地 Kit 的对照裁决、候选维度和包内更正；条目本身在 Kit 的视觉语言参考 |
 | 要接着做 Design Kit 的验证、打样或 Motion 桥接 | [PraxisDesignKit 工单提案](design-kit-workorders-20261002/README.md) | 五包串行工单的裁决与现状；工单一已完成，输入的放行与悬置见其回执 |
 | 要改写作、编排、设计几支的归属或入口，或要区分投影与改编 | [Write / Present 架构校订补充](write-present-supplement-20261002/README.md) · [对照样张](write-present-supplement-20261002/projection-vs-adaptation/README.md) | 八类问题的归属、十条规则对到本地八条、采纳与不采纳；一份真实内容的投影与五页改编 |
+| 要把企业工作一侧的条目写深，或要查九类能力语法候选、交付生命周期的本地承接 | [内容架构与能力语法审阅](content-architecture-review-20261002/README.md) · [前后走读](content-architecture-review-20261002/entry-walkthroughs/README.md) | 审阅与本地的逐条对照、九类候选各自的承接位置与所需素材、三条路线的走读；候选没有进 Kit |
 
 ## 早期 Enterprise kit 批次
 

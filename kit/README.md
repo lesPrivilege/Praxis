@@ -4,6 +4,8 @@ Kit 通过目录逐层展开工作语境。先选这次工作，再读有关分�
 
 读到输入、约束和完成标准都清楚、要求之间没有冲突，就可以开工。下面各入口按任务组合取用，不是依次都要过的流程；做到一半发现编排、图形或运动改变了意思，再回到维护那条规则的分支。入账、迁移和晋升是维护工作，不是每件任务的前置。
 
+不是每个请求都要进分支。改一句话、解释一个通用概念、做一次规则确定的转换，事实和要求已经齐了就直接做，只守 [底线](write/shared/evidence.md#底线)：事实、范围、条件和确定性照原样，要求有两种读法时说出来。成段的对外成文、要促成决定的材料，或问的是本仓库自己的定义，再从下面选入口。
+
 ## 内容表达与设计
 
 | 当前任务 | 第一入口 | 需要时再展开 |
@@ -24,7 +26,7 @@ Write 的 [Shared](write/shared/README.md)贯穿表达模式；具体项目保�
 | 定义试点和实现边界 | [场景模板](../scenarios/_template/README.md) | 场景契约、fixture、验收 |
 | 准备新环境或运行角色 | [Environment](environment/README.md) | scope、能力与运行消费契约 |
 
-字段与实现约束按需查 [共同语法](grammar/README.md)、[Contracts](contracts/README.md)、[Adapters](adapters/README.md)。界面任务从 Design/Interaction 到 [UI候选](ui/README.md)，不把候选清单当成已实现组件库。
+概念的定义查 [共同工作语法](grammar/work.md)；把它落到列表、详情和 review 工作面时查 [企业工作面九项](grammar/README.md)。字段与实现约束按需查 [Contracts](contracts/README.md)、[Adapters](adapters/README.md)。界面任务从 Design/Interaction 到 [UI候选](ui/README.md)，不把候选清单当成已实现组件库。
 
 ## 验收、来路与维护
 

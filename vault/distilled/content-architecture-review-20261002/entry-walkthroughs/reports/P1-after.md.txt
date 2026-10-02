@@ -1,0 +1,106 @@
+## 1. 打开过的文件（按顺序）
+
+1. /Users/lesprivilege/Projects/Praxis/AGENTS.md
+2. /Users/lesprivilege/Projects/Praxis/kit/README.md
+   - 读它时系统自动附带了 kit/AGENTS.md 的内容（一句话的转引，指向 README 和 Agent.md）。我没有自己打开这个文件。
+3. /Users/lesprivilege/Projects/Praxis/kit/reporting/README.md
+4. /Users/lesprivilege/Projects/Praxis/templates/reporting/README.md（Reporting brief）
+5. /Users/lesprivilege/Projects/Praxis/kit/reporting/grammar.md
+6. /Users/lesprivilege/Projects/Praxis/kit/write/README.md
+7. /Users/lesprivilege/Projects/Praxis/kit/write/shared/evidence.md
+8. /Users/lesprivilege/Projects/Praxis/kit/work-system/field-loop.md
+
+后三份（6、7、8）是并行一次读完的。
+
+搜索共两次，都在一条 Bash 里：
+- `grep -rIl --exclude-dir=snapshots --exclude-dir=archive -i "discovery memo" kit docs templates`。命中 kit/reporting/grammar.md、kit/AGENTS.md 之外只有 README.md 一类，具体是 kit/reporting/grammar.md 和 README.md；没有专门的 Discovery memo 模板。搜索范围不含 vault。
+- `ls kit/write/prose/genres`。只有 README.md 和 assessment-answer.md。
+
+没有打开 vault/snapshots 或 vault/archive 下的任何文件，也没有改动任何文件。
+
+## 2. 产出
+
+先说明读者选择：材料给销售主管，同时是我方内部底稿。文体用 Discovery memo。
+
+---
+
+**询价报价提速：第一次电话之后**
+
+**先答。** 下周能看到的不是一个能出报价的助手，而是一份“报价现在慢在哪里”的底稿。原因是现在还不知道两三天花在哪一步，在不知道的地方直接做助手，等于盲注。
+
+**电话里得到的（转述，未核实）**
+- 报价由 3 名内勤做，销售把客户询价邮件转给内勤。
+- 客户一问要等两三天。这是主管口述，还没有数据。
+- 一名内勤说，很多询价缺型号或数量，要来回问。这是一个人的一句话，不知道“很多”是多少。
+- 价格表在一张共享 Excel 里，维护人不清楚。
+- “每天大概省两小时”是主管的估计，没有口径（几人、几份、每份多久）。**待核实，现在不能当作收益。**
+
+**我们的判断（推断，不是结论）**
+两三天可能花在三处：等客户补型号和数量、内勤查价算价、邮件在销售与内勤之间传递。电话只给了第一处一条线索。如果时间主要耗在第一处，助手“直接出报价”帮不上：信息不全时没有东西可报。价格表没人负责，也会让助手给出的价格不可信，而报出去的价格会成为对客户的承诺。所以现在不定做什么。
+
+**还不知道的（待验证）**
+1. 一份询价从收到到发出，时间分别花在哪几步？
+2. 缺型号或数量的询价占多少？补齐要几轮、几天？
+3. 价格表谁改、多久改一次、改了怎么通知内勤？
+4. 报价发出前谁复核，价格出错谁负责？
+5. “每天两小时”从哪来？
+
+**下周可以交的**
+看过约 20 份近期真实询价（可脱敏）和价格表之后，交一页：耗时分布草图、缺项类型清单，以及“值不值得做、先做哪一块”的建议。候选方向有：询价缺项检查清单或标准询价单、价格表认领维护人、AI 从邮件里抽取字段。这三个都还是候选，不是推荐。如果发现时间主要耗在客户补信息上，就不做报价助手。
+
+**请主管批准的一件事：约第二次沟通**
+约 45 分钟，参加人：1～2 名内勤、1 名销售、价格表的实际维护人。会前请提供上述询价样例和价格表副本。请回复：本周哪天可以？
+
+---
+
+## 3. 依据
+
+- 选 Discovery memo、当前阶段定为“发现”
+  - kit/reporting/grammar.md：“| 发现现实 | Discovery memo / Field note | 观察、原始证据、解释与未知分别表达 |”
+  - kit/work-system/field-loop.md：“| 发现 | 谁遇到什么问题，现状怎样 | 流程、样例、基线与未知清单 | 业务 owner 确认问题 |”
+  - 据此下周交付物定为“样例、基线、未知清单”，下一步落在业务方确认。
+- 观察、转述、推断、假设分开标注
+  - kit/write/shared/evidence.md：“每次取用明确是事实、观察、转述、推断、假设还是构造例子。”
+- “两小时”标待核实，一个人的话不写成“很多”的数据
+  - kit/write/shared/evidence.md：“没有证据时写假设或待核实，不用精确图形增强确定性。”
+  - kit/write/shared/evidence.md：“范围、条件和确定性照原样：事实、推断、经验、建议与可能性不互相冒充，改文风不提高证据等级。”
+- 未知单列成清单
+  - templates/reporting/README.md：“未知列入待验证项；各项主张有依据或假设标签”
+- 先事实和未知，不先给方案（所以不承诺助手）
+  - kit/reporting/grammar.md：“先确认事实与未知，再对齐问题、约束和判断标准，最后讨论方案与局部分歧。”
+- 材料结尾写明要对方做什么（约第二次沟通）
+  - kit/reporting/README.md：“产物：事实可追溯、论证自足的材料，并写明读完要对方批准、选择、修改或执行什么。”
+  - templates/reporting/README.md：“Ask 是材料需要促成的决定或行动”
+- 列非 AI 候选方案和停止条件
+  - kit/work-system/field-loop.md：“| 选择 | 相比非 AI 方案是否值得介入 | 替代方案、收益假设、成本、风险、接收者与停止条件 | 责任人决定启动、补证或停止 |”
+  - 这是“选择”阶段的要求，我只借来写成候选和停止条件，没有往下做。
+- 只出这一份材料，不补别的文体
+  - kit/reporting/README.md：“做到这几点就停，不补齐其他候选文体。”
+- 写成短文、先答后说
+  - kit/write/README.md 只在强度表里点了名：“承重、主语、先答后说、连贯、收尾”。具体写法在 prose/grammar.md，我没读，开头的写法是按这个名称加用户的 Q→A 记忆偏好做的。
+
+通用知识（仓库里没有依据）：
+- 价格报出去等于对客户的承诺。
+- 耗时可能分在“等客户补信息 / 查价算价 / 内部传递”三处的拆法。
+- 样例取 20 份左右、会议 45 分钟、参加人的组合。
+- “时间主要耗在客户补信息就不做助手”这一具体判据。
+- 把“下周能看到东西”改成交一份底稿的承诺范围。
+
+## 4. 停在哪里
+
+读到 reporting 分支的 brief 与 grammar、write 入口和 evidence、field-loop 之后停，没有往下读 prose/README、prose/grammar.md、shared/verification.md、verification/README、vault、ADR、kit/Agent.md。依据：
+- AGENTS.md：“输入、约束和完成标准都清楚后就开工。做任务时不预读下一条列的三份文档，它们讲的是仓库怎样维护。”
+- kit/README.md：“读到输入、约束和完成标准都清楚、要求之间没有冲突，就可以开工。”
+- kit/write/README.md：“从需要交付的表达模式进入；跨模式只共享证据和验收，不预读所有分支。”
+- kit/reporting/README.md：“做到这几点就停，不补齐其他候选文体。”
+
+没有句子要求这份材料必须先读成文原理（prose/grammar.md）。跳过它是我的判断，不是仓库规定。
+
+## 5. 想找但没找到的
+
+- 没找到 Discovery memo 的专门模板或体例，只有 kit/reporting/grammar.md 里的一行“必须包含”。grep 范围不含 vault。
+- 没找到对“一页以内”的篇幅规则，这是任务给的，不是仓库给的。
+- 没找到仓库对“销售主管要先做 AI 助手、问下周能不能看到”这类开场的处理指引。
+- 没读成文原理，所以“先答后说”等启发式是否在这类文体里被改写，我没核对。
+- 没有核对 shared/verification.md 里的内容验收，上面的产出没有按它的清单走一遍。
+- 没有改动仓库，所以没运行 scripts/validate_repository.py。

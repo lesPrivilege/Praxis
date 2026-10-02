@@ -29,7 +29,7 @@
 
 ## 任务参考路由
 
-需要把会议或工作事件整理为状态、行动和后续义务时，先读[工作系统提炼](../../vault/distilled/work-system/README.md)及其 [Core Model](../../vault/distilled/work-system/core-model.md)，消费 Event / State / Context 与 Capture→Follow 的区分；这些是候选工作语义，不是现有运行时 schema。
+上面的五步和 [共同工作语法](../grammar/work.md)够用时不必往下读。某一步的边界不清，或要对照外部做法时，再读[工作系统提炼](../../vault/distilled/work-system/README.md)及其 [Core Model](../../vault/distilled/work-system/core-model.md)，消费 Event / State / Context 与 Capture→Follow 的区分；这些是候选工作语义，不是现有运行时 schema。
 
 | 需要 | 先查 | 消费什么 | 边界 |
 |---|---|---|---|
