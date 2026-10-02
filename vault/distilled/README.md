@@ -19,6 +19,7 @@
 | 要接着做 Design Kit 的验证、打样或 Motion 桥接 | [PraxisDesignKit 工单提案](design-kit-workorders-20261002/README.md) | 五包串行工单的裁决与现状；工单一已完成，输入的放行与悬置见其回执 |
 | 要改写作、编排、设计几支的归属或入口，或要区分投影与改编 | [Write / Present 架构校订补充](write-present-supplement-20261002/README.md) · [对照样张](write-present-supplement-20261002/projection-vs-adaptation/README.md) | 八类问题的归属、十条规则对到本地八条、采纳与不采纳；一份真实内容的投影与五页改编 |
 | 要把企业工作一侧的条目写深，或要查九类能力语法候选、交付生命周期的本地承接 | [内容架构与能力语法审阅](content-architecture-review-20261002/README.md) · [前后走读](content-architecture-review-20261002/entry-walkthroughs/README.md) | 审阅与本地的逐条对照、九类候选各自的承接位置与所需素材、三条路线的走读；候选没有进 Kit |
+| 要从外面的 skill 或 prompt 里取一条做法，或要查恢复、排查、汇总、验证这几种工作方式的来路 | [社区 Skills 与 Prompts 的可迁移语法](community-grammar-20261002/README.md) · [候选卡](community-grammar-20261002/candidates/README.md) · [对照走读](community-grammar-20261002/control-walkthroughs/README.md) | 十个样本逐个处置、五张候选卡、多模型分工的转述登记；泛化后的说法在 Kit 的备用素材页，都不是规则 |
 
 ## 早期 Enterprise kit 批次
 

@@ -127,3 +127,11 @@
 - [文档结构契约](docs/architecture/documentation.md)加场景取值与工具能力两行，加写深条目的五问检查。
 - 六个合成任务前后走读共十四次：三条企业工作路线改动前就走得通；小请求的读取量从 6、7 个文件降到 2、3 个；个人经营一题的提案改动后有了明确请求。见 [回执](docs/verification/content-architecture-review-20261002.md)。
 - 九类能力语法候选、交付生命周期与后四批没有进 Kit，等真实素材；13 个外部来源没有打开。
+
+## 2026-10-02 · 社区实践里的工作方式：备用素材
+
+- 入账三份没有署名的文件：[社区 Skills 与 Prompts 的可迁移语法](vault/distilled/community-grammar-20261002/README.md)、版本与读取范围、给 Opus 的消费建议。十个样本不安装、不导入、不做成 skill；45 个外部链接里主会话按固定提交回读了 8 个，与研究包的说法一致。
+- 新增 [工作开展方式 · 备用素材](kit/environment/working-methods.md)一页：部分成功后的对账、原因不明时的单一假设、对照留出与代价、分支终态、检查的覆盖范围，以及从外面拿一条做法之前的四层拆法。normal 参考，不是规则。
+- [文档结构契约](docs/architecture/documentation.md)的验收加一条默认做法：说规则起了作用之前留对照和留出任务。
+- [Kit 任务入口](kit/README.md)的企业工作表加一行，把恢复类任务指向工作契约和共同工作语法。
+- 八次走读含三次不读仓库的对照：对照把“部分成功先对账”该做的全做到了，所以没有写成规则；读仓库的那次原先到不了已有的不变量，加路由后到了。裁决见 [ADR-021](docs/decisions/021-community-mechanisms-and-attribution-check.md)，结果见 [回执](docs/verification/community-grammar-20261002.md)。

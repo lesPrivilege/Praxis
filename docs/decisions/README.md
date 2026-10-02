@@ -35,3 +35,5 @@ accepted 表示本仓库采纳；技术实现与使用证据在对应契约和�
 - [ADR-019：表达规则的归属、强度与两条入口路径](019-expression-owners-and-entry-paths.md)（accepted；不新建 Present，Write 规则分三种强度，入口分消费与维护；走读每条路线前后各一次）。
 
 - [ADR-020：企业工作侧的入口校订与写深条目的检查](020-entry-calibration-and-depth-check.md)（accepted；目录不动，入口补三句改两处，体例加场景取值、工具能力与五问；九类能力语法候选与交付生命周期延后，等真实素材）。
+
+- [ADR-021：社区实践里的工作方式作为备用素材，以及“规则起了作用”的检查](021-community-mechanisms-and-attribution-check.md)（accepted；五条机制收进 Kit 一页备用素材，没有一条写成规则；验收加对照、留出、代价的默认做法；入口加恢复路由一行）。

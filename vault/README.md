@@ -45,5 +45,6 @@ Vault 保存研究材料、来源身份、提炼结果和可回查的原件。�
 - 2026-10-02：[PraxisDesignKit 工单提案](distilled/design-kit-workorders-20261002/README.md)，五包串行工单与 Motion 附录；工单一已执行，16 条来源重读并改了 Kit 六处措辞，其余四包未开工。
 - 2026-10-02：[Write / Present 架构校订补充](distilled/write-present-supplement-20261002/README.md)，对照本地后按 ADR-019 落位：不新建 Present，Write 规则分三种强度，入口分消费与维护两条路；附一件投影与改编的对照样张。
 - 2026-10-02：[内容架构与能力语法审阅](distilled/content-architecture-review-20261002/README.md)，对照本地后只校订了入口措辞与文档体例（ADR-020）；九类能力语法候选和交付生命周期登记为候选，等真实素材；附三条企业工作路线与三个反例的前后走读。
+- 2026-10-02：[社区 Skills 与 Prompts 的可迁移语法](distilled/community-grammar-20261002/README.md)，十个社区样本的工作机制；五条泛化后收进 Kit 的 [工作开展方式 · 备用素材](../kit/environment/working-methods.md)，不是规则；带对照组的走读显示其中一条当前执行模型不读也做得到（ADR-021）。
 
 这些入口只说明材料在哪里、已消费到什么程度和下一步去哪里；不要以目录名称推断安装、运行、发布或视觉验收状态。

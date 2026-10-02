@@ -44,5 +44,6 @@
 - [工单提案的外部链接 · 2026-10-02](design-kit-workorders-20261002/README.md)：提案引用的 16 个 Remotion 官方与社区链接，全部 unverified，本仓库未重访。
 - [架构校订补充的外部链接 · 2026-10-02](write-present-supplement-20261002/README.md)：5 个写作与无障碍来源，4 个由主会话直接读过相关段落。
 - [内容架构与能力语法审阅的外部链接 · 2026-10-02](content-architecture-review-20261002/README.md)：13 个现场实践、评估与文档方法来源，全部 unverified，本仓库未打开；其中三条已有来源卡。
+- [社区 Skills 与 Prompts 研究的外部链接 · 2026-10-02](community-grammar-20261002/README.md)：十个样本和三篇论文共 45 个链接，按样本分 13 张卡；8 个由主会话按固定提交读过，37 个未打开。
 
 - 视觉语法定向召回：[Courtwork](visual-grammar-courtwork-20260928/README.md)、[Schema Engineering](visual-grammar-schema-20260928/README.md)、[Praxis及相邻项目](visual-grammar-praxis-20260928/README.md)、[外部参考](visual-grammar-external-20260928/README.md)。施工消费见 [演示工场](../../demos/visual-grammar/README.md)。

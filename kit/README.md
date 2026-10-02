@@ -24,9 +24,10 @@ Write 的 [Shared](write/shared/README.md)贯穿表达模式；具体项目保�
 | 发现业务问题与机会 | [工作全景](landscape.md)、[现场闭环](work-system/field-loop.md) | 问题、证据与验证机会 |
 | 将会议与来源转成工作状态 | [Work System](work-system/README.md) | 状态差异、责任与交接 |
 | 定义试点和实现边界 | [场景模板](../scenarios/_template/README.md) | 场景契约、fixture、验收 |
+| 动作失败、中断或结果不明，要决定怎样恢复 | [工作契约](contracts/README.md)的失败与恢复、[共同工作语法](grammar/work.md)的不变量与反例 | 先核对什么、恢复步骤、停下来找人的条件 |
 | 准备新环境或运行角色 | [Environment](environment/README.md) | scope、能力与运行消费契约 |
 
-概念的定义查 [共同工作语法](grammar/work.md)；把它落到列表、详情和 review 工作面时查 [企业工作面九项](grammar/README.md)。字段与实现约束按需查 [Contracts](contracts/README.md)、[Adapters](adapters/README.md)。界面任务从 Design/Interaction 到 [UI候选](ui/README.md)，不把候选清单当成已实现组件库。
+概念的定义查 [共同工作语法](grammar/work.md)；把它落到列表、详情和 review 工作面时查 [企业工作面九项](grammar/README.md)。字段与实现约束按需查 [Contracts](contracts/README.md)、[Adapters](adapters/README.md)。界面任务从 Design/Interaction 到 [UI候选](ui/README.md)，不把候选清单当成已实现组件库。恢复、排查和汇总时可以取用的做法，备在 [工作开展方式](environment/working-methods.md)，不是规则，按需读。
 
 ## 验收、来路与维护
 

@@ -70,5 +70,6 @@ Distilled 是经过判断和泛化的消费说明；其处理状态不意味着�
 - 权限、真实数据分区、证据状态和实现状态仍能在操作发生前查到。
 - 同一规则只有一个维护位置；历史记录保留当时结论。
 - 用合成任务走读正常路径和失败路径，记录断点；实际使用效果另记观察证据。
+- 说一条规则或入口起了作用之前，默认留一个不读它的对照和一个没参与调整的任务，产出和代价一起看，做法见 [对照、留出、代价](../../kit/environment/working-methods.md#要说一条规则有用)。做不到时记“未对照”（[ADR-021](../decisions/021-community-mechanisms-and-attribution-check.md)）。
 
 选型依据与后续候选见 [文档实践提炼](../../vault/distilled/themes/documentation-practices.md)；采纳裁决见 [ADR-011](../decisions/011-task-documentation.md)。
