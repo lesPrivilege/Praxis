@@ -37,6 +37,7 @@
 | 日期 | 消费者 | 取用 | 结果 |
 |---|---|---|---|
 | 2026-10-02 | [A01 阅读关系样张](../../../vault/distilled/design-grammar-atlas-20261002/a01-reading-relations/README.md) | VL01 共同轴、VL02 单变量、VL04 轮廓分组，合成活动信息 | 前两条成立；VL04 的强弱反差在系统中文字体上靠字重做不出来。只换皮的对照没有改变阅读顺序 |
+| 2026-10-02 | [工单二迁移题](../../../vault/distilled/design-kit-workorders-20261002/wo2-unfamiliar-briefs/README.md)，两次 Sonnet 冷读 | VL01 共同轴、按传播问题建网格，合成的借用规则通知（A4 与手机） | 两次都取到关系，没有把字体、颜色或列数归给风格名；不读仓库的对照把无衬线和红黑列为 Swiss 的做法。只有文字结构草图，没有渲染 |
 
 ## 重访
 

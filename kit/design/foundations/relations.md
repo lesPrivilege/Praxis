@@ -74,4 +74,4 @@ Design 的可复用单位是一条构成关系：谁相对谁怎样组织，为�
 
 ## 来路与状态
 
-问题地图由 2026-10-02 的 Design grammar atlas 研究泛化而来，按用户当日裁决保留在 Kit，见 [ADR-018](../../../docs/decisions/018-generalized-design-relations.md)。每项背后的规范与系统来源各重访过一次，G01、G11、G12 三行的依据另由主会话直接读过原文，状态见 [逐源卡](../../../vault/provenance/design-grammar-atlas-20261002/cards/README.md)。使用证据目前只有 A01 一件样张和三次冷启动走读（浮层可读性、阿拉伯语混排、一个说不清的“看着乱”）；九项没有本地规则的问题尚未被真实任务检验。被真实任务挑战、或某项长出自己的规则时，更新这一页并把规则放到对应分支。
+问题地图由 2026-10-02 的 Design grammar atlas 研究泛化而来，按用户当日裁决保留在 Kit，见 [ADR-018](../../../docs/decisions/018-generalized-design-relations.md)。每项背后的规范与系统来源各重访过一次，G01、G11、G12 三行的依据另由主会话直接读过原文，状态见 [逐源卡](../../../vault/provenance/design-grammar-atlas-20261002/cards/README.md)。使用证据：A01 一件样张；三次冷启动走读（浮层可读性、阿拉伯语混排、一个说不清的“看着乱”）；[工单二](../../../vault/distilled/design-kit-workorders-20261002/wo2-unfamiliar-briefs/README.md)的六次冷读，在三份陌生的合成内容上 G01、G10、G11、G12 几行被引用并支持了决定，但不读仓库的对照组作出了同样的结构决定。九项没有本地规则的问题尚未被真实任务检验。被真实任务挑战、或某项长出自己的规则时，更新这一页并把规则放到对应分支。

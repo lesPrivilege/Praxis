@@ -101,3 +101,10 @@
 - 执行工单一：九项更正逐条对回包内原句，主会话直接重读 16 条来源并看了一张原作海报；三行首轮记法撤回，atlas 来源现为 34 verified、12 partial、1 unavailable。
 - Kit 只改措辞：[视觉语言参考](kit/design/references/languages.md)的 VL01、VL03、VL07 与图像说明，[问题地图](kit/design/foundations/relations.md)的 G12 一句。没有新增条目或规则。
 - 放行给下一包的输入、悬置项与未做项见 [回执](docs/verification/design-kit-wo1-20261002.md)。工单二至五未开工。
+
+## 2026-10-02 · 工单二：陌生 brief 冷读
+
+- 三份合成内容（迁移、拒用、补充），预期判断在代理开跑前冻结；九次 Sonnet 冷读，其中三次是不读仓库的对照。
+- 读过 Kit 的六次全部到达所需页面并作出预期决定。对照组在版面结构上决定相同，只在把字体与颜色归给风格名这一点上不同。
+- 修订一处：A01 的字重观察补了适用范围。VL01 与问题地图登记了这次取用。没有新增条目、参数或样张。
+- 结果、限制与给下一包的输入见 [冷读结果](vault/distilled/design-kit-workorders-20261002/wo2-unfamiliar-briefs/README.md)与 [回执](docs/verification/design-kit-wo2-20261002.md)。
