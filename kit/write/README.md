@@ -5,10 +5,21 @@
 | 要做什么 | 进入哪里 | 这一支负责什么 |
 |---|---|---|
 | 成文、改写、审校正文 | [Prose](prose/README.md) | 论述、句法、语体、文体与审阅 |
-| 编排 HTML、报告、Slides 或 PDF | [Publish](publish/README.md) | 内容层级、展项、引介、图注与来源职责 |
+| 编排 HTML、报告、Slides 或 PDF；把一份内容改成另一种媒介或篇幅 | [Publish](publish/README.md) | 内容层级、阅读单元、展项、引介、图注与来源职责 |
 | 将内容转成时间叙事 | [Motion](motion/README.md) | 分镜、信息驻留、转场语义与音画分工 |
-| 跨模式引用或交付复核 | [Shared](shared/README.md) | 证据身份、来源与验收 |
+| 只规范空格、标点或链接 | [格式检查](prose/format.md) | 保护范围、可自动修的和只报不改的 |
+| 跨模式引用或交付复核 | [Shared](shared/README.md) | 任何语言和模式都守的底线、证据身份、来源与验收 |
 
-不知道材料要促成什么决定时，先去 [Reporting](../reporting/README.md)填写 brief。需要字体、配色、图形编码或交互取舍时再进入 [Design](../design/README.md)。Write 决定什么信息需要表达及其职责，Design 处理视觉和媒介表现；两者通过这些语义接口协作。
+不知道材料要促成什么决定时，先去 [Reporting](../reporting/README.md)填写 brief。需要字体、配色、图形编码或交互取舍时再进入 [Design](../design/README.md)。Write 决定什么信息需要表达及其职责，Design 处理视觉和媒介表现；两者通过这些语义接口协作。只调颜色、字体或间距时不用进来。
+
+## 规则有三种强度
+
+| 强度 | 管什么 | 在哪里 | 什么时候适用 |
+|---|---|---|---|
+| 底线 | 事实不虚构不歪曲；指称与逻辑关系可靠；范围、条件和确定性准确；改写、摘要和重排不悄悄丢掉任务需要的信息与推理 | [Shared / 证据与来源](shared/evidence.md) | 任何语言、任何模式 |
+| 语言约定 | 语体、搭配、标点与结构位置的写法 | 中文在 [成文原理](prose/grammar.md)；其他语言目前没有维护 | 按输出语言取用；混排文本各区域用各自的约定 |
+| 编辑启发式与文体 | 承重、主语、先答后说、连贯、收尾，以及专门文体 | [成文原理](prose/grammar.md)、[Genres](prose/genres/README.md) | 对外中文技术成文的默认；任务或文体可以改写，改写时说明理由 |
+
+要求相互冲突时，先守住任务的准确、完整、可访问和交付约束，再依次是本次明确的风格要求、语言约定、文体、作者或品牌偏好、通用启发式。两条强要求不能同时满足时写明裁决，不靠谁后加载来决定。
 
 当前为可执行的内容契约。Motion 提供分镜交接与检查，未提供通用 renderer；原子样张仍在 [实验工单](../../vault/distilled/layout-specimens-20260927/README.md)阶段。使用时在项目 index 记录分支、版本、调整与结果；维护要求见 [体例契约](../../docs/architecture/documentation.md)。

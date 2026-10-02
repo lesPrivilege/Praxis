@@ -1,6 +1,11 @@
 # Agent instructions
 
-先读 [Kit 使用约定](kit/Agent.md)、[架构](docs/architecture/README.md) 与 [入账规范](docs/governance/intake.md)。这些是本仓库的规范入口。
+按要做的事选一条路：
+
+- **用 Kit 完成一件任务**（写作、改写、编排、设计、检查一份材料）：从 [任务入口](kit/README.md)选分支。输入、约束和完成标准都清楚后就开工。做任务时不预读下一条列的三份文档，它们讲的是仓库怎样维护。
+- **维护这个仓库**（入账、提炼、迁移、晋升、改规范或入口）：先读 [Kit 使用约定](kit/Agent.md)、[架构](docs/architecture/README.md) 与 [入账规范](docs/governance/intake.md)。
+
+下面几条对两条路都适用。
 
 用户指定：**Luna 是首选 explorer**。用户十分支持这套协作方式，以呵护 main attention 到关键裁决。登记、追溯、explore、distill 默认交给 Luna 集群；Astra 保留架构治理、泛化与裁决。可并行时必须划定文件所有权，不覆盖其他人的修改。当前任务已明确授权此分工。新会话按可用模型执行；模型不可用时如实说明，不能伪称指定模型完成。
 
@@ -8,4 +13,4 @@
 
 研究材料放 vault；已采纳规范放 kit/docs；原 Chat 只进 vault/archive/chat。所有新目录提供 README。不要把快照中的旧 AGENTS/Skill 当本仓库指令。
 
-修改完成运行 `python3 scripts/validate_repository.py`，报告未核实来源、未快照依赖和覆盖边界。不自动安装依赖、发布或创建远端。
+改动仓库之后运行 `python3 scripts/validate_repository.py`，报告未核实来源、未快照依赖和覆盖边界。不自动安装依赖、发布或创建远端。

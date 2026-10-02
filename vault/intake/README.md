@@ -67,3 +67,4 @@ Intake 只登记材料身份、覆盖、处理状态、附件和缺口，不重�
 
 - [Design grammar atlas · 2026-10-02](design-grammar-atlas-20261002.json)：44 文件研究包的完整快照与 hash，另记 47 条来源的重访与六题冷启动走读；[消费与裁决](../distilled/design-grammar-atlas-20261002/README.md)。
 - [PraxisDesignKit 工单提案 · 2026-10-02](design-kit-workorders-20261002.json)：单文件提案的快照与 hash，另记 16 个未重访的外部链接；[入账与裁决](../distilled/design-kit-workorders-20261002/README.md)。
+- [Write / Present 架构校订补充 · 2026-10-02](write-present-supplement-20261002.json)：单文件校订意见的快照与 hash，5 个外部链接里 4 个已重读；[对照与裁决](../distilled/write-present-supplement-20261002/README.md)。

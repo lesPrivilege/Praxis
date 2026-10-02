@@ -31,3 +31,5 @@ accepted 表示本仓库采纳；技术实现与使用证据在对应契约和�
 - [ADR-017：验收后的参考进入任务优先层](017-reviewed-reference-priority.md)（accepted；优先级与证据/规范采纳分离，首批仅验收结构查阅用途）。
 
 - [ADR-018：Design 保留泛化的构成关系，原子化作为取用方式](018-generalized-design-relations.md)（accepted；用户裁决，九项问题尚无真实任务检验）。
+
+- [ADR-019：表达规则的归属、强度与两条入口路径](019-expression-owners-and-entry-paths.md)（accepted；不新建 Present，Write 规则分三种强度，入口分消费与维护；走读每条路线前后各一次）。

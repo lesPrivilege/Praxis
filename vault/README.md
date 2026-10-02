@@ -43,5 +43,6 @@ Vault 保存研究材料、来源身份、提炼结果和可回查的原件。�
 
 - 2026-10-02：[Design grammar atlas 消费与裁决](distilled/design-grammar-atlas-20261002/README.md)，含 47 条来源重访和一件阅读关系样张；进入 Kit 的是 [构成关系与问题地图](../kit/design/foundations/relations.md)和 [视觉语言参考](../kit/design/references/languages.md)。
 - 2026-10-02：[PraxisDesignKit 工单提案](distilled/design-kit-workorders-20261002/README.md)，五包串行工单与 Motion 附录；工单一已执行，16 条来源重读并改了 Kit 六处措辞，其余四包未开工。
+- 2026-10-02：[Write / Present 架构校订补充](distilled/write-present-supplement-20261002/README.md)，对照本地后按 ADR-019 落位：不新建 Present，Write 规则分三种强度，入口分消费与维护两条路；附一件投影与改编的对照样张。
 
 这些入口只说明材料在哪里、已消费到什么程度和下一步去哪里；不要以目录名称推断安装、运行、发布或视觉验收状态。

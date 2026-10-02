@@ -12,7 +12,7 @@
 | 查成熟方法、来源或样张 | [References](references/README.md) | 按任务消费的解释、限制和原件来路 |
 | 需求里出现风格名，或要探索一种视觉语言 | [视觉语言参考](references/languages.md) | 名字对应的范围、可以试的构成关系与来源状态 |
 
-不需要所有任务都先读一遍基础。遇到取舍争议再回 Foundations；只有需要依据才展开 References 和 Vault。配色、字体、密度与媒介参数在消费者项目决定，历史 accepted 不自动扩散为全局规则。
+图表和界面任务可以直接从这里开始，不必先过 Write；纯文字校对不涉及视觉时不用进来。不需要所有任务都先读一遍基础。遇到取舍争议再回 Foundations；只有需要依据才展开 References 和 Vault。配色、字体、密度与媒介参数在消费者项目决定，历史 accepted 不自动扩散为全局规则。
 
 新参考在 Vault 登记，实际使用在项目 index 记录；可复用结论由 [维护流程](../../docs/governance/evolution.md)回流。[原子化编排实验](../../vault/distilled/layout-specimens-20260927/README.md)已形成样张，可直接用作参考或改编样板，已有局部筛选；[筛选记录](../../vault/distilled/layout-specimens-20260927/review.md)区分可复验的语义与尚未稳定的实现，不能视为已验收组件库。
 

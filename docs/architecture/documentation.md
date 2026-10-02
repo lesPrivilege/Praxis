@@ -17,7 +17,7 @@ README 本身就是任务模板时，可直接保留填写项与验收，例如 
 
 ## Kit 的体例与准入
 
-Kit 通过目录、README 和正文共同承担使用引导。挂载后从任务进入有关分支，先读当前规则和已消费参考，只有依据不足时才回查原件；无需将整个 Kit 或 Vault 预先装入上下文。Skill 可提供有界入口，不把目录压成一个完整指令包；Writing skill 按 [ADR-016](../decisions/016-progressive-kit-structure.md)改为读取 Write/Prose 的薄入口，规则正文在 Kit 单点维护。
+Kit 通过目录、README 和正文共同承担使用引导。挂载后从任务进入有关分支，先读当前规则和已消费参考，只有依据不足时才回查原件；无需将整个 Kit 或 Vault 预先装入上下文。做任务的消费者从任务入口读到输入、约束和完成标准都清楚就停，入账、迁移与晋升只在维护时读（[ADR-019](../decisions/019-expression-owners-and-entry-paths.md)）。Skill 可提供有界入口，不把目录压成一个完整指令包；Writing skill 按 [ADR-016](../decisions/016-progressive-kit-structure.md)改为读取 Write/Prose 的薄入口，规则正文在 Kit 单点维护。
 
 一项内容进入活跃 Kit，应说明它为何必要、预计在哪类任务重复使用、从哪个入口能找到、如何改变实际行为，以及如何验证和重访。治理规则可由本仓库维护任务验证；实现组件仍遵守 ADR-002 的独立场景门槛。一次性参数、模型技巧和项目样式留在项目记录或 Vault，不能仅因整理完整就晋升。
 

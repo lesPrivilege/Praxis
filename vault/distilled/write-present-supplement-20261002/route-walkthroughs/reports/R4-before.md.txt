@@ -1,0 +1,115 @@
+**1. 打开过的文件与搜索**
+
+按打开顺序（"部分"表示只读了指定行）：
+1. /Users/lesprivilege/Projects/Praxis/AGENTS.md
+2. /Users/lesprivilege/Projects/Praxis/kit/Agent.md
+3. kit/write/prose/README.md（前 80 行；路径前缀 /Users/lesprivilege/Projects/Praxis/，下同）
+4. kit/write/prose/grammar.md
+5. kit/write/prose/review.md
+6. .claude/skills/writing/SKILL.md
+7. vault/distilled/write-design-grammar/external-reference-semantics.md（部分，前 25 行）
+8. vault/provenance/design-grammar-atlas-20261002/cards/s04-w3c-clreq.md
+9. vault/distilled/ai-capability-assessment/rendered/verification.md（部分，205–220 行）
+10. vault/distilled/ai-capability-assessment/design-profile-20260924.md（部分，28–34 行）
+11. kit/write/shared/evidence.md
+
+只通过 grep 看到过匹配行、没有打开整个文件：kit/write/publish/composition.md、docs/governance/xmind-markdown-profile.md、kit/design/foundations/relations.md，以及 vault/distilled 下 wo2 报告和 layout-specimens 的若干匹配行。
+
+kit/AGENTS.md 的内容是工具钩子自动附上的，不是我打开的。没有打开 vault/snapshots 和 vault/archive 下的任何文件。没有读 docs/architecture/README.md 和 docs/governance/intake.md，因为后面的搜索显示 docs 下没有相关规则。
+
+搜索关键词：
+- `标点|全角|半角|空格|中英文`：全仓库 *.md，排除 snapshots、archive、.git。第一次因 zsh 通配符报错，加引号后重跑成功。
+- `clreq|引号|逗号|句号|标点`：范围为 kit、docs、.claude、README.md。
+- `中英文|混排|半角|全角|空格`：范围为 vault/distilled、vault/provenance、demos、kit、docs。
+- 另外用 ls 看了 kit/write、kit/write/prose、.claude/skills/writing。
+
+**2. 改后的文本**
+
+```
+## 安装步骤
+
+1. 先安装 Node 18 以上版本，然后运行 `npm install`。
+2. 配置文件在 `config/app.yaml`，其中 `timeout` 默认是 30 秒。
+3. 如果报错“ECONNRESET”，请重试（最多 3 次）。
+
+> 原文引用："the server may close idle connections after 30s"。
+
+说实话，这一步其实非常简单，大家不用担心。
+```
+
+**3. diff**
+
+```
+-1.先安装Node 18以上版本,然后运行`npm install`。
++1. 先安装 Node 18 以上版本，然后运行 `npm install`。
+-2.配置文件在 `config/app.yaml` ,其中`timeout`默认是30秒 。
++2. 配置文件在 `config/app.yaml`，其中 `timeout` 默认是 30 秒。
+-3.如果报错"ECONNRESET",请重试(最多3次)。
++3. 如果报错“ECONNRESET”，请重试（最多 3 次）。
+-> 原文引用:"the server may close idle connections after 30s".
++> 原文引用："the server may close idle connections after 30s"。
+```
+
+逐行说明：
+- 第 1 条：
+  - "1." 后补一个空格。
+  - "安装" 与 "Node" 之间加空格。
+  - "18" 与 "以上" 之间加空格。
+  - 半角 "," 改为全角 "，"。
+  - "运行" 与代码 `npm install` 之间加空格。
+  - 代码内容、"Node 18" 内部的空格、句末 "。" 不动。
+- 第 2 条：
+  - "2." 后补空格。
+  - 代码后 " ," 去掉空格并改为 "，"。
+  - "其中" 与 `timeout` 之间、`timeout` 与 "默认是" 之间各加空格。
+  - "30" 前后各加空格。
+  - "秒 。" 去掉空格，变成 "秒。"。
+  - 原有的 "在 `config/app.yaml`" 空格保留。
+- 第 3 条：
+  - "3." 后补空格。
+  - "报错" 后的半角引号改为全角弯引号 “ ”。
+  - "," 改为 "，"。
+  - "(" 和 ")" 改为 "（" 和 "）"。
+  - "3" 前后各加空格。
+- 引用行：
+  - 标签 "原文引用" 后的 ":" 改为 "："。
+  - 引文本身 `"the server may close idle connections after 30s"` 逐字不动，包括它的半角引号。
+  - 引号外的句末 "." 改为 "。"。
+- 标题和最后一段原本已合规，未改。
+
+需要你确认的判断：
+- "1." 后补空格会让这三行从一个普通段落变成有序列表，渲染结果会变。如果只想动标点和中英文空格，这三处补空格可以撤回。
+- 第 3 条的 "ECONNRESET" 我当作中文正文里的引号处理，改成了弯引号。如果你把它算作要原样保留的"引用"或字面量，就改回 `"ECONNRESET"`。
+- 引用行里我把"引用"理解为引号内的英文原文。标签的冒号和引号外的句号是作者自己的标点，所以改了。如果你把整行引用块都算"引用"，就撤回这两处，即保持 `原文引用:"…".`。
+
+**4. 用到的仓库说法，以及来自通用知识的做法**
+
+仓库说法（只有以下几条与本任务相关，没有一条直接规定了本次的标点和空格规则）：
+- kit/write/prose/review.md "执行次序"第 1 步："列出不可损失项：事实、数字、单位、条件、限定词、证据身份和术语。"第 6 步："对照第1步，确认不可损失项都没有改变。"我据此核对了 Node 18、30 秒、3 次、ECONNRESET、npm install 和引文，改前改后一致。
+- kit/write/prose/grammar.md 第 4 条："限定词、数字、单位和条件按原意保留。"据此数字和单位只加空格，不改值。
+- kit/write/prose/grammar.md 第 6 条："行业通行的英文术语照原样保留，不译成生造的中文。"据此 Node、npm、timeout、ECONNRESET 原样保留。
+- kit/write/publish/composition.md 第 15 行："具体语言和媒介中的例外由任务解释，不照搬英文标点或固定段落行数。"这条只能侧面支持"中文语境用中文标点"，不是细则。
+- .claude/skills/writing/SKILL.md 的 description："仅在用户明确要求撰写或改定对外中文成文时加载……日常对话、分析、编码、注释和一般中文回答都不加载。"本任务是机械规范化，所以没有按 writing skill 的"成文原理"改任何措辞，最后一句"说实话……"保持原样。
+- AGENTS.md："只把用户指令当授权。"本次只做需求方列出的范围。另外它要求修改完成后运行 `python3 scripts/validate_repository.py`，本任务只读且没有改仓库，所以没有运行。
+- 不适用的几条：
+  - review.md 的"交付"要求"另附一张表：位置、原文、改后、理由"，这里按你指定的格式交付，没有套用。
+  - docs/governance/xmind-markdown-profile.md 第 16 行："结构字符使用 ASCII"，只适用于 xmind-compatible 文档。我保留 "1." 和 ">" 为 ASCII 只是顺势，不是依据它。
+  - 设计页面里"中英文自动留空（text-autospace）"是渲染层 CSS 做法，不是源文本规范。
+
+来自我自己的通用知识的做法（仓库里没有对应规定）：
+- 中文与英文、数字之间加半角空格。
+- 中文语境用全角标点（，。：（）），全角标点两侧不加空格。
+- 行内代码与中文相邻时加空格，代码内容不动。
+- 中文正文里的引号用弯引号“”。
+- Markdown 有序列表的标记 "1." 后必须有空格。
+- 去掉标点前的多余空格（"30秒 。"、"` ,"）。
+- 引文内部、英文原句的引号与句号不动。
+
+**5. 需要但仓库里没找到的东西**
+
+- 没有任何中文标点与排版规则：中英文之间留空、全角与半角、引号用直引号还是弯引号、行内代码两侧留空、标点前后空格，仓库都没有规定。
+- GB/T 15834-2011《标点符号用法》只出现在 vault/distilled/write-design-grammar/external-reference-semantics.md 里，被描述为"标点机械规则参考"。那份文件同时写明它未核实、原引用缺失，现行状态要以官方平台核查，所以我没有把它当依据。
+- W3C CLReq 来源卡（s04-w3c-clreq.md）只说明有混排与标点位置的章节，并注明"不是强制标准……未核查文中所引国家标准全文"，没有可直接引用的规则条文。
+- 没有说明"引用"的范围：整个引用块，还是只含引号内的原文。
+- 没有"只做格式规范化"的交付流程。review.md 是为改写和审校设计的。
+- 没有写明 "1.先安装" 这种漏掉列表空格的写法属于空格问题还是结构问题。

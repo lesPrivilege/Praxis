@@ -14,6 +14,8 @@
 
 ## 开工顺序
 
+只是取用 Kit 做一件任务时，读完第 1、2 步就可以开工；分工、入账与晋升几节在维护仓库时适用。
+
 1. 从 [任务入口](README.md) 选择业务发现、场景验证、内容表达、设计、工作整理或环境准备；Write 再按 prose / publish / motion 选 mode。
 2. 先读相关分支的 README 和所需规则；需要参考时先看任务匹配的优先参考，未覆盖再看普通参考，依据不足时回查 Vault 原件。不要仅因标为preferred就提升来源可信度或规范优先级。
 3. 企业 demo 复制 [场景契约](../scenarios/_template/README.md) 的结构；材料写作先选 artifact family、读者、需要的决定及证据。

@@ -1,0 +1,105 @@
+1. 打开过的文件（按打开顺序），以及做过的搜索：
+- /Users/lesprivilege/Projects/Praxis/AGENTS.md
+- /Users/lesprivilege/Projects/Praxis/kit/Agent.md
+- /Users/lesprivilege/Projects/Praxis/kit/AGENTS.md（读 kit/Agent.md 时由系统自动附上，我没有单独打开）
+- /Users/lesprivilege/Projects/Praxis/kit/README.md
+- /Users/lesprivilege/Projects/Praxis/kit/write/README.md
+- /Users/lesprivilege/Projects/Praxis/kit/write/prose/README.md
+- /Users/lesprivilege/Projects/Praxis/kit/write/shared/evidence.md
+- /Users/lesprivilege/Projects/Praxis/kit/write/prose/review.md
+- /Users/lesprivilege/Projects/Praxis/kit/write/prose/genres/README.md
+- /Users/lesprivilege/Projects/Praxis/kit/write/prose/format.md
+- /Users/lesprivilege/Projects/Praxis/kit/write/shared/verification.md
+- /Users/lesprivilege/Projects/Praxis/kit/write/prose/grammar.md
+- /Users/lesprivilege/Projects/Praxis/docs/decisions/019-expression-owners-and-entry-paths.md
+- /Users/lesprivilege/Projects/Praxis/kit/write/publish/composition.md
+- /Users/lesprivilege/Projects/Praxis/vault/distilled/writing-structure-20260927/README.md（只读前 45 行）
+
+搜索只覆盖 kit 和 docs，没有碰 vault 的 snapshots 和 archive。
+- 在 kit、docs 下搜 `English|英文|排障|troubleshoot|runbook|操作步骤|手册|procedur`。第一次因 zsh 通配符报错，没有结果；改写参数后重跑。
+- 在 writing-structure-20260927/README.md 里搜 `写作结构|heading|list`。
+
+2. 改后的文本：
+
+````
+## Sync fails with error 409
+
+If the sync job stops with `409 Conflict`, the local index is ahead of the server. This happens only when two devices pushed within the same minute.
+
+Do not delete the `.sync/` folder: it holds unsent changes.
+
+To fix the error:
+
+1. Reset the local index:
+
+        syncctl index reset --keep-unsent
+
+2. Run the push command:
+
+        syncctl push
+
+After the push, the error should normally be gone. If it still appears after two attempts, contact support and attach `~/.sync/logs/last.json`.
+````
+
+3. 修改表（按影响从大到小）：
+
+| 位置 | 原文 | 改后 | 理由 |
+|---|---|---|---|
+| 修复步骤的引入句 | `To fix it you should basically just run the reset command and then it will work again:` | `To fix the error:` + 编号步骤 1 `Reset the local index:` | "basically just" 只表达语气，删去。"it will work again" 是确定的承诺，比后文 "normally ... should be gone" 强，也与它重复；这里不提高确定性，只保留后文的限定。"it" 改为 "the error"，指称明确。 |
+| 第二步及结果 | `After that is done, you can run `syncctl push` and normally the error should be gone.` | 步骤 2 `Run the push command:`，之后 `After the push, the error should normally be gone.` | 有先后顺序的操作改成编号步骤。"you can" 是可选的口气，改成祈使句，隐含"这一步要做"，请需求方确认。"normally" 和 "should" 保留，限定词没有丢。 |
+| 末句条件 | `If it's still there after two tries` | `If it still appears after two attempts` | "it" 改为明确的 "the error"。"tries" 换成较正式的 "attempts"。"两次"数的是什么，原文没说，我没有替它补，见第 5 部分。 |
+| 警告句 | `Do not delete the `.sync/` folder, it holds unsent changes.` | `Do not delete the `.sync/` folder: it holds unsent changes.` | 逗号连接两个独立分句，改为冒号。单独成段，位置仍在修复步骤之前。 |
+| 命令格式 | 命令缩进 4 格 | 命令文字不变，缩进 8 格 | 命令嵌入编号列表后需要更深的缩进，Markdown 才会把它渲染成列表项里的代码块。 |
+
+标题、第一段、`409 Conflict`、`.sync/`、`syncctl index reset --keep-unsent`、`syncctl push` 和 `~/.sync/logs/last.json` 都没有改动。
+
+4. 用到的仓库说法，以及来自我自己的通用知识的做法：
+
+仓库说法（逐字引用原句）：
+- kit/write/prose/README.md：
+  - "改写英文或其他语言的文本时，适用的是 [底线](../shared/evidence.md#底线)和 [审阅方法](review.md)里的不可损失项；中文的语体与搭配约定不套到别的语言上，那门语言的写法按任务指定的风格指南或需求方的要求来。本仓库目前没有维护英文约定。"
+  - "代码、命令、标识符、路径、URL 和引文原样保留。"
+  - 这决定了我只用底线和不可损失项约束改写，没有套中文成文原理。
+- kit/write/shared/evidence.md 的底线：
+  - "范围、条件和确定性照原样：事实、推断、经验、建议与可能性不互相冒充，改文风不提高证据等级。"
+  - "改写、摘要和重排不悄悄丢掉任务需要的信息与推理。丢了就写明。"
+  - 我据此保留 "only when"、"normally"、"should"，并在修改表里说明删掉的 "it will work again"。
+- kit/write/prose/review.md：
+  - "列出不可损失项：事实、数字、单位、条件、限定词、证据身份和术语。"
+  - "对照第1步，确认不可损失项都没有改变。"
+  - "只交最终成文。改写和审校另附一张表：位置、原文、改后、理由，按严重程度排序。"
+  - 我用它定交付形式、修改表的列和排序。
+- kit/write/prose/format.md：
+  - "代码块、行内代码、命令、标识符、路径、URL、引文，以及需求方点名要原样保留的部分，逐字不动。"
+  - 这页针对"不动措辞"的任务，只借它划保护范围的做法。
+- kit/write/shared/verification.md：正文行写着"主张、条件、术语与改写前一致，段落关系可理解"，我用它做交付前核对。
+- kit/write/publish/composition.md：
+  - "有顺序的过程才编号；比较保持共同字段；段落推进一个可以理解的判断。"
+  - 这页管编排，我只借"有顺序才编号"的原则。
+- vault/distilled/writing-structure-20260927/README.md：
+  - "有顺序的步骤、阶段或优先级使用 numbered list"
+  - "列表应有完整引导句或明确上下文，同一列表保持平行句法"
+  - 该页状态是 supplemental-candidate，不是已采纳规范，只当候选检查表参考。
+- kit/write/prose/grammar.md 强度表里两行：
+  - "操作步骤以读者为主语或用祈使句更清楚时"
+  - "操作说明里条件和前提先于指令；条件与动作是一个理解单元，不拆开"
+  - 这页是中文成文原理，对英文没有约束力，我只拿它们当旁证，没有当依据。
+
+来自我自己的通用知识，仓库里没有对应说法：
+- 英文操作说明用祈使句，步骤用 "Run ..." 开头。
+- 去掉 "basically just" 这类填充语。
+- 用 "attempts" 代替 "tries"。
+- 用冒号连接警告与理由，避免逗号连接两个独立分句。
+- 避免 "it" 指代不清。
+- Markdown 列表项里的缩进代码块需要缩进 8 格。
+- 引导句以冒号结尾，后接编号步骤。
+
+5. 需要但仓库里没找到的东西：
+- 没有英文写作约定，也没有英文排障、runbook 或说明文档的文体规范。kit/write/prose/genres/README.md 只列了中文答卷体例，prose/README.md 明说"本仓库目前没有维护英文约定"。所以标题大小写、步骤句式、"attempts" 与 "tries" 的取舍，都只是我的判断。
+- 没有 Markdown 列表与代码块嵌套的缩进规则。
+- 需要需求方确认的事实（这些我没有替他补）：
+  1. "after two tries" 指两次什么：两次 `syncctl push`，还是两轮 reset 加 push。我保留了原来的含混。
+  2. "you can run `syncctl push`" 是否应变成必做的一步。
+  3. "This happens only when two devices pushed within the same minute" 中的 "only" 是否属实。我原样保留，无法核实。
+  4. `--keep-unsent` 与 `.sync/` 里未发送变更的关系。我没有加任何说明，所以这条警告和命令之间的联系仍然没有交代。
+- 没有读者信息，不知道是终端用户还是管理员，因此术语 "local index" 没有解释。

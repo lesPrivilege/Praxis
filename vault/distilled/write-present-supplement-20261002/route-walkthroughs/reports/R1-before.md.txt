@@ -1,0 +1,105 @@
+1. 打开过的文件与搜索
+
+按打开顺序：
+- /Users/lesprivilege/Projects/Praxis/AGENTS.md
+- /Users/lesprivilege/Projects/Praxis/kit/Agent.md
+- /Users/lesprivilege/Projects/Praxis/docs/architecture/README.md
+- /Users/lesprivilege/Projects/Praxis/docs/governance/intake.md
+- /Users/lesprivilege/Projects/Praxis/kit/writing/README.md
+- /Users/lesprivilege/Projects/Praxis/kit/write/README.md
+- /Users/lesprivilege/Projects/Praxis/kit/write/prose/README.md
+- /Users/lesprivilege/Projects/Praxis/kit/write/prose/grammar.md
+- /Users/lesprivilege/Projects/Praxis/kit/write/prose/review.md
+- /Users/lesprivilege/Projects/Praxis/kit/write/prose/genres/README.md
+- /Users/lesprivilege/Projects/Praxis/kit/write/publish/composition.md
+- /Users/lesprivilege/Projects/Praxis/kit/write/shared/evidence.md
+- /Users/lesprivilege/Projects/Praxis/vault/distilled/writing-structure-20260927/README.md
+- /Users/lesprivilege/Projects/Praxis/.claude/skills/writing/SKILL.md
+
+另有两点：
+- 读 kit/Agent.md 时，工具回传里附带了 kit/AGENTS.md 的内容，只指向 Agent.md。我没有主动打开它。
+- 下面三个文件只经 grep 看到命中行，没有打开：kit/write/prose/genres/assessment-answer.md、kit/verification/README.md、docs/decisions/015-kit-editorial-contract.md。
+
+没有碰 vault/snapshots 和 vault/archive。
+
+做过的搜索：
+- 一次 `ls` 列 kit 与 kit/write 的目录。
+- 关键词 `english|英文|troubleshoot|排障|runbook|command|命令`，范围是 kit 与 docs 下的 .md 文件。
+- 关键词 `english|英文|命令|command|troubleshoot|排障`，范围是 prose/grammar.md、prose/review.md、publish/composition.md、assessment-answer.md、verification/README.md、ADR-015。
+- 一次 `ls` 查 .claude/skills/writing 和 vault/distilled/writing-structure-20260927。
+
+第一次搜索因 shell 的 glob 报错没有执行，第二次才执行。
+
+2. 改后的文本
+
+````
+## Sync fails with error 409
+
+If the sync job stops with `409 Conflict`, the local index is ahead of the server. This happens only when two devices pushed within the same minute.
+
+Do not delete the `.sync/` folder. It holds unsent changes.
+
+To fix the error:
+
+1. Reset the local index:
+
+   ```
+   syncctl index reset --keep-unsent
+   ```
+
+2. Run `syncctl push`. The error should normally be gone.
+
+If the error persists after two attempts, contact support and attach `~/.sync/logs/last.json`.
+````
+
+3. 修改表（按严重程度排序）
+
+| 位置 | 原文 | 改后 | 理由 |
+|---|---|---|---|
+| 修复步骤 | you should basically just run the reset command and then it will work again | 步骤 1：Reset the local index: + 命令块 | 原文说 it will work again，后文又说 normally ... should be gone，两处确定程度不一致。统一取较弱的一处，不升级成确定的说法。basically just 只表语气，删去。命令只写在代码块里，原样保留。 |
+| 步骤顺序 | 两段话里先 reset，后 push，再联系支持 | 编号步骤 1、2，最后一段是升级条件 | 有先后顺序，所以编号。升级条件不属于修复步骤，另起一段。 |
+| 警告 | Do not delete the `.sync/` folder, it holds unsent changes. | 独立成段：Do not delete the `.sync/` folder. It holds unsent changes. | 原句是逗号拼接的两个句子，拆开。警告提到修复步骤之前，读者操作前先看到。 |
+| push 步骤 | After that is done, you can run `syncctl push` and normally the error should be gone. | 步骤 2：Run `syncctl push`. The error should normally be gone. | After that is done 删去，编号已经表明先后。you can 改成祈使句，与步骤 1 并列。normally 和 should 保留。 |
+| 升级条件 | If it's still there after two tries | If the error persists after two attempts | it 指代不明，改为 the error。tries 改为 attempts，更书面。次数 two 保留。 |
+| 首段 | 第一段两句 | 不变 | 先给现象和原因，再说怎么办，已符合先回答后说明。only 是限定词，保留。 |
+| 标题 | Sync fails with error 409 | 不变 | 句首大写，说明现象。 |
+
+4. 用到的仓库说法与通用知识
+
+仓库里的说法：
+- kit/write/prose/review.md：「只交最终成文。改写和审校另附一张表：位置、原文、改后、理由，按严重程度排序。」决定了输出格式和表的排序。
+- kit/write/prose/review.md：「列出不可损失项：事实、数字、单位、条件、限定词、证据身份和术语。」我以此核对：409 Conflict、only、同一分钟、`.sync/` 的内容、two、`last.json` 路径、命令。
+- kit/write/prose/grammar.md：「每个成分都承重。」（删 basically just、After that is done）。
+- kit/write/prose/grammar.md：「先回答，再说明。」（保留首段结构）。
+- kit/write/prose/grammar.md：「说完即止。不写旁白、阅读指引、过程叙述或收尾客套。」
+- kit/write/prose/grammar.md：「证据强度不变。……限定词、数字、单位和条件按原意保留。」（统一为较弱的 normally ... should）。
+- kit/write/prose/grammar.md：「连贯靠内容，不靠连接词。」（删 After that is done）。
+- kit/write/publish/composition.md：「有顺序的过程才编号」。
+- vault/distilled/writing-structure-20260927/README.md：「有顺序的步骤、阶段或优先级使用 numbered list」；「列表应有完整引导句或明确上下文，同一列表保持平行句法」；Google 建议 sentence case 标题。这份文件状态是 supplemental-candidate，自己声明「不是 Kit 规范」，只当检查表参考，没有当硬规则。
+
+适用范围的提醒：
+- kit/write/prose/grammar.md 开头是「默认用于对外中文技术成文」，.claude/skills/writing/SKILL.md 的描述是「中文写作与审校」。这些规则本身面向中文，我只借用与语言无关的原则（承重、证据强度、先答后说、说完即止、修改表格式），没有套用中文语体、搭配或标点规则。
+- vault/distilled/writing-structure-20260927/README.md 也提示，英文编辑建议要转成其他语言规则须另行裁决。
+
+来自我自己的通用知识（仓库里没有）：
+- 英文技术文档用祈使句写步骤、警告前置。
+- 去掉 basically、just 一类语气词。
+- 拆开逗号拼接的句子（comma splice）。
+- it 指代不明要改成名词。
+- tries 与 attempts 的语体差别。
+- 命令放进代码块，且不改字。
+
+5. 需要但仓库里没找到的东西
+
+- 没有英文写作或英文排障文档的规则。仓库里的成文规则面向中文，英文部分只有一份候选提炼，未被采纳。
+- 没有排障或故障说明这一文体的体例，也没有针对命令、代码块、警告提示的格式规则。
+- 没有该产品（syncctl、`.sync/`）的任何事实，下列事实我都无法核实，只能原样保留：
+  - 409 的成因
+  - 「only ... same minute」
+  - `index reset --keep-unsent` 是否确实重置的是本地索引，以及它是否保留 `.sync/`
+  - 「两次」到底指 push 两次、还是 reset 加 push 两轮
+- 步骤 1 写成 Reset the local index，是我根据命令名和首段推断的，请需求方确认。
+- 「two attempts」指什么需要需求方确认。若指 reset 加 push 整轮重来，应改成 If the error persists after you repeat these steps twice。
+- 这份文本的读者、发布位置和术语表也没有。仓库里没有 Sync 相关材料，这部分信息只能来自需求方。
+
+没有修改任何文件，没有运行 `scripts/validate_repository.py`（本任务为只读）。

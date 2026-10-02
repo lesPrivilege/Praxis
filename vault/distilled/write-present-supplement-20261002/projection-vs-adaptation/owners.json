@@ -1,0 +1,29 @@
+{
+  "groups": [
+    {"name": "Reporting", "decides": "要促成什么", "branches": [
+      {"id": "reporting", "name": "目的与文体", "owns": "读者、要促成的理解或决定、组织动作与文体选择", "path": "kit/reporting/"}]},
+    {"name": "Write", "decides": "说什么、怎样被读到", "branches": [
+      {"id": "shared", "name": "底线与证据", "owns": "四条底线、证据身份、投影与改编、交付验收", "path": "kit/write/shared/"},
+      {"id": "prose", "name": "成文", "owns": "中文成文原理及其强度、审阅方法、专门文体", "path": "kit/write/prose/"},
+      {"id": "format", "name": "格式检查", "owns": "不动的范围、可直接改的与只报不改的", "path": "kit/write/prose/format.md"},
+      {"id": "publish", "name": "空间编排", "owns": "阅读单元、分页、密度、展项与说明的职责", "path": "kit/write/publish/"},
+      {"id": "narrative", "name": "时间叙事", "owns": "每段时间的认知任务、分镜交接、音画分工", "path": "kit/write/motion/"}]},
+    {"name": "Design", "decides": "怎样看得见、可操作", "branches": [
+      {"id": "composition", "name": "编排与编码", "owns": "视觉层级、空间关系、数量与关系的图形编码", "path": "kit/design/composition/"},
+      {"id": "interaction", "name": "状态与可达", "owns": "对象、操作、状态反馈与可达性", "path": "kit/design/interaction/"},
+      {"id": "motion", "name": "运动", "owns": "运动的目的、与真实状态同步、减少动效时的替代", "path": "kit/design/motion/"}]}
+  ],
+  "routes": [
+    {"task": "改写一段英文排障说明，命令原样", "marks": {"shared": "use", "prose": "use"}, "notes": {"prose": "只取审阅方法，中文约定不适用"}},
+    {"task": "把中文备忘录改成五分钟现场幻灯片", "marks": {"reporting": "maybe", "shared": "use", "prose": "maybe", "publish": "use", "composition": "maybe"}, "notes": {"shared": "按改编处理，附变动说明"}},
+    {"task": "检查仪表板图表的尺度、比较与刷新动画", "marks": {"shared": "maybe", "composition": "use", "interaction": "maybe", "motion": "use"}, "notes": {"shared": "核对数据口径"}},
+    {"task": "只规范中文 Markdown 的空格与标点", "marks": {"format": "use"}}
+  ],
+  "feedback": [
+    {"when": "版面放不下，要删条件、异议或证据", "back_to": "底线与证据：按改编处理，写明取舍；或换一种形式"},
+    {"when": "重排之后先后、并列或因果读起来变了", "back_to": "成文或空间编排：核对论证的依赖关系"},
+    {"when": "图形的尺度、聚合或颜色改变了数量或状态的含义", "back_to": "编排与编码，并回到内容责任者核对主张"},
+    {"when": "补间、排序或先后让数据看起来多了含义", "back_to": "运动；必要时回到底线与证据核对口径"},
+    {"when": "不知道材料要促成什么决定", "back_to": "目的与文体：先填 brief"}
+  ]
+}

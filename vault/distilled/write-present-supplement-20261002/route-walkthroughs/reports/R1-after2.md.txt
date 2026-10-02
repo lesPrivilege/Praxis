@@ -1,0 +1,113 @@
+1. 打开过的文件与搜索
+
+按打开顺序，均在 /Users/lesprivilege/Projects/Praxis 下：
+1. AGENTS.md
+2. kit/README.md
+3. kit/write/README.md
+4. kit/write/prose/README.md
+5. kit/write/shared/README.md
+6. kit/write/shared/evidence.md
+7. kit/write/prose/review.md
+8. kit/write/prose/genres/README.md
+9. kit/write/prose/grammar.md
+10. kit/write/prose/format.md
+11. kit/write/publish/composition.md（读了前 30 行，即全文）
+12. kit/write/shared/verification.md
+
+补充说明：
+- 读 kit/README.md 时，系统自动附带了 kit/AGENTS.md 的内容。我没有主动打开它。
+- 只在搜索结果里看到 docs/decisions/019-expression-owners-and-entry-paths.md 的第 12 行和第 23 行摘录，没有打开该文件。
+- 没有打开 vault/snapshots 和 vault/archive 下的任何文件。搜索时用 --exclude-dir 排除了这两个目录。
+
+做过的搜索：一次 `ls kit/write/prose/genres`。一次 grep 因 shell 通配符报错，没有产出。另一次有效 grep 在 kit 与 docs 下搜索 `english|英文|plain language|imperative|祈使|runbook|排障|troubleshoot`。
+
+2. 改后的文本
+
+````markdown
+## Sync fails with error 409
+
+If the sync job stops with `409 Conflict`, the local index is ahead of the server. This happens only when two devices push within the same minute.
+
+Do not delete the `.sync/` folder: it holds unsent changes.
+
+To fix the error:
+
+1. Reset the index.
+
+        syncctl index reset --keep-unsent
+
+2. Push again.
+
+        syncctl push
+
+The error should usually be gone after the push. If it persists after two push attempts, contact support and attach `~/.sync/logs/last.json`.
+````
+
+3. 修改表
+
+按严重程度排序，前两行改动较大。
+
+| 位置 | 原文 | 改后 | 理由 |
+|---|---|---|---|
+| 修复段，第一句 | you should basically just run the reset command and then it will work again | 步骤 1 "Reset the index."，后接命令 | 删去 "basically just"，它只缓和语气。"it will work again" 是肯定句，与后文 "normally ... should be gone" 的把握程度冲突，所以删掉，把确定性统一放到最后的 "should usually be gone"。"the reset command" 改为动作加原样命令。 |
+| 修复段，第二句 | After that is done, you can run `syncctl push` and normally the error should be gone. | 步骤 2 "Push again."，后接命令；另起一句 "The error should usually be gone after the push." | 先后顺序改成编号步骤，命令各占一个代码块，原样不动。"normally ... should" 的限定保留，"normally" 换成 "usually"，把握程度不变。 |
+| 最后一句 | after two tries | after two push attempts | "tries" 指什么原文没说。我按上下文理解为两次 push。这是我的推断，需求方需确认。如果指"reset 加 push 算一轮"，要改回。 |
+| 第一段，第二句 | two devices pushed | two devices push | 描述一般条件，改一般现在时。"only when" 和 "within the same minute" 原样保留。 |
+| 警告句 | Do not delete the `.sync/` folder, it holds unsent changes. | 单独成段，逗号改冒号 | 逗号连接两个完整句，改为冒号。警示仍放在修复步骤之前，位置没有挪动。 |
+| 最后一句 | If it's still there | If it persists | 指代 "it" 不清，改为明确的 "persists"。 |
+| 最后一句 | contact support and attach `~/.sync/logs/last.json` | 不变 | 动作和路径都不改。 |
+| 标题、`409 Conflict`、命令、路径 | 不变 | 不变 | 属于需求方要求原样保留的内容。 |
+
+4. 用到的仓库说法与通用知识
+
+仓库说法，路径均在 /Users/lesprivilege/Projects/Praxis/ 下：
+
+- kit/write/prose/README.md：
+  - "成文原理是为中文写的。改写英文或其他语言的文本时，适用的是 [底线](../shared/evidence.md#底线)和 [审阅方法](review.md)里的不可损失项；中文的语体与搭配约定不套到别的语言上，那门语言的写法按任务指定的风格指南或需求方的要求来。本仓库目前没有维护英文约定。"
+  - "代码、命令、标识符、路径、URL 和引文原样保留。"
+  - 我据此没有套中文语体约定，命令、路径和代码字面不动。
+- kit/write/prose/review.md：
+  - 交付格式："只交最终成文。改写和审校另附一张表：位置、原文、改后、理由，按严重程度排序。"
+  - 执行次序第 1 步："列出不可损失项：事实、数字、单位、条件、限定词、证据身份和术语。"
+  - 第 6 步："对照第1步，确认不可损失项都没有改变。"
+  - 验收："正文没有旁白、阅读指引、过程叙述或收尾客套。"
+- kit/write/shared/evidence.md：
+  - "范围、条件和确定性照原样：事实、推断、经验、建议与可能性不互相冒充，改文风不提高证据等级。"
+  - "改写、摘要和重排不悄悄丢掉任务需要的信息与推理。丢了就写明。"
+  - "顺序本身也会改变理解：把警示挪到行动之后、把要并排比较的选项拆进互斥的标签页、把条件收进折叠区，都要按改编处理。"
+  - 据此保留 "only when"、"usually"、警示在前，并把 "will work again" 的删除记入表中。
+- kit/write/shared/verification.md：正文检查 "主张、条件、术语与改写前一致，段落关系可理解"；"字数变少或句子更短" 不足以证明完成。
+- kit/write/publish/composition.md：
+  - "有顺序的过程才编号；比较保持共同字段；段落推进一个可以理解的判断。"
+  - 这页管编排，本任务只借它判断何时编号，属类推。
+- kit/write/prose/grammar.md（中文成文原理）：
+  - 第 2 条的例外："操作步骤以读者为主语或用祈使句更清楚时"。
+  - 第 3 条的例外："操作说明里条件和前提先于指令；条件与动作是一个理解单元，不拆开"。
+  - 第 8 条："不写旁白、阅读指引、过程叙述或收尾客套"。
+  - 这些是对外中文技术成文的编辑启发式，不约束英文，我只把它们当方向一致的参照，没有当作约束。
+- kit/write/prose/format.md：
+  - "代码块、行内代码、命令、标识符、路径、URL、引文……逐字不动。"
+  - 该页针对只改格式的任务，这里借它的保护范围，属类推。
+
+来自我自己的通用知识，仓库没有写：
+- 英文操作步骤用祈使句。
+- 有先后的命令用编号步骤，命令单独放代码块。
+- 逗号连接两个完整句要改成冒号或句号。
+- "basically just"、"then it will work again" 属于口语和过度保证。
+- "still there" 改为 "persists"。
+- 一般条件用一般现在时。
+- "normally" 与 "usually" 可互换。
+- 步骤下嵌套缩进代码块的 Markdown 写法。
+
+5. 需要但仓库里没找到的东西
+
+- 英文的写作约定或风格指南。仓库明说"本仓库目前没有维护英文约定"。
+- 技术说明或排障文档这类文体的规范。kit/write/prose/genres/ 里只有 assessment-answer.md。
+- 编号、代码块在步骤里怎么放、标题大小写、人称等格式规范。
+- 事实性信息，需求方需确认：
+  - "two tries" 指两次 push，还是两轮 reset 加 push。
+  - `--keep-unsent` 是否确实保留 `.sync/` 里的未发送改动。我没有写入这个说明，因为原文没有明说。
+  - "same minute" 是否为精确条件。
+  - "Reset the index" 指的是否为本地索引。我保守写成 "the index"。
+  - 原文 "it will work again" 与 "normally ... should be gone" 的把握程度冲突，我取了较弱的一个。
+- 没有运行 `python3 scripts/validate_repository.py`，因为本次只读，没有改动仓库。

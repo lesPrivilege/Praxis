@@ -108,3 +108,13 @@
 - 读过 Kit 的六次全部到达所需页面并作出预期决定。对照组在版面结构上决定相同，只在把字体与颜色归给风格名这一点上不同。
 - 修订一处：A01 的字重观察补了适用范围。VL01 与问题地图登记了这次取用。没有新增条目、参数或样张。
 - 结果、限制与给下一包的输入见 [冷读结果](vault/distilled/design-kit-workorders-20261002/wo2-unfamiliar-briefs/README.md)与 [回执](docs/verification/design-kit-wo2-20261002.md)。
+
+## 2026-10-02 · 表达规则的归属、强度与入口
+
+- 入账 dot 的 [Write / Present 架构校订补充](vault/distilled/write-present-supplement-20261002/README.md)；它审的是远端旧基线，对照本地后按 [ADR-019](docs/decisions/019-expression-owners-and-entry-paths.md)落位，不新建 Present。
+- 根 `AGENTS.md` 与 Kit 入口分成“做任务”与“维护仓库”两条路，写明读到哪里停。
+- Write 的规则分底线、语言约定、编辑启发式三种强度；成文原理八条原文不改，新增强度表；新增 [格式检查](kit/write/prose/format.md)。
+- 换媒介或改篇幅分投影、改编与新增，改编附变动说明；配一件 [对照样张](vault/distilled/write-present-supplement-20261002/projection-vs-adaptation/README.md)。
+- 图形语义去掉第二份正文；运动判断补“补间不是观测”。
+- 四条取用路线前后走读共十次：内容都守住，读取量只在一个任务上下降。见 [回执](docs/verification/write-present-supplement-20261002.md)。
+- 用户下载的 Poster House PDF 里看了四张海报，H02 与 VL01 的来源状态更新。

@@ -27,7 +27,7 @@ Praxis 由 Enterprise、Reporting、Work System 三个消费域和共享 Environ
 
 ## 表达与设计的跨域消费
 
-[Write](../../kit/write/README.md)以 Prose / Publish / Motion 承载内容表达，Shared 保证证据与验收一致；[Design](../../kit/design/README.md)以视觉、交互和运动判断支持这些模式。Reporting 仍负责材料目的和组织决定。Skill 为有界入口，知识正文通过目录渐进读取，迁移见 [ADR-016](../decisions/016-progressive-kit-structure.md)。
+[Write](../../kit/write/README.md)以 Prose / Publish / Motion 承载内容表达，Shared 保证证据与验收一致；[Design](../../kit/design/README.md)以视觉、交互和运动判断支持这些模式。Reporting 仍负责材料目的和组织决定。三者按任务组合取用，不是依次都要过的流程；规则的归属与强度见 [ADR-019](../decisions/019-expression-owners-and-entry-paths.md)。Skill 为有界入口，知识正文通过目录渐进读取，迁移见 [ADR-016](../decisions/016-progressive-kit-structure.md)。
 
 ## 文档职责
 

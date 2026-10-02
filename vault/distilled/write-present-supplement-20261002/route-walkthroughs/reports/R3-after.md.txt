@@ -1,0 +1,162 @@
+1. 打开过的文件与搜索
+
+打开顺序（均为 Read，除非另注）：
+1. /Users/lesprivilege/Projects/Praxis/AGENTS.md
+2. /Users/lesprivilege/Projects/Praxis/kit/Agent.md（根 AGENTS.md 要求的维护类入口，我是顺手读的）
+3. /Users/lesprivilege/Projects/Praxis/kit/README.md
+   （读 kit/Agent.md 时，系统自动附带了 kit/AGENTS.md 的内容，我没有单独打开它）
+4. /Users/lesprivilege/Projects/Praxis/kit/design/README.md
+5. kit/design 目录树（Bash `ls -R`，仅列文件名）
+6. /Users/lesprivilege/Projects/Praxis/kit/design/composition/README.md
+7. /Users/lesprivilege/Projects/Praxis/kit/design/composition/encoding.md
+8. /Users/lesprivilege/Projects/Praxis/kit/design/motion/README.md
+9. /Users/lesprivilege/Projects/Praxis/kit/design/motion/grammar.md
+10. /Users/lesprivilege/Projects/Praxis/kit/design/references/curated/comparison-continuity.md
+11. /Users/lesprivilege/Projects/Praxis/kit/design/composition/layout.md
+12. /Users/lesprivilege/Projects/Praxis/kit/write/publish/exhibits.md
+13. /Users/lesprivilege/Projects/Praxis/kit/design/interaction/states.md
+14. /Users/lesprivilege/Projects/Praxis/kit/design/foundations/relations.md
+15. /Users/lesprivilege/Projects/Praxis/kit/design/foundations/grammar.md
+16. /Users/lesprivilege/Projects/Praxis/kit/design/references/composition.md
+17. /Users/lesprivilege/Projects/Praxis/vault/distilled/write-present-supplement-20261002/projection-vs-adaptation/owners.json（只当路由表用：它把"检查仪表板图表的尺度、比较与刷新动画"归到编排与编码、运动，数据口径回底线与证据；我没有读它的样张页）
+18. /Users/lesprivilege/Projects/Praxis/docs/decisions/019-expression-owners-and-entry-paths.md
+19. /Users/lesprivilege/Projects/Praxis/kit/write/shared/evidence.md
+20. /Users/lesprivilege/Projects/Praxis/kit/design/interaction/README.md
+21. /Users/lesprivilege/Projects/Praxis/kit/write/shared/verification.md
+
+没有打开 vault/snapshots 和 vault/archive 下任何文件。搜索范围限定在 kit、docs、scenarios 以及 vault/distilled、vault/provenance，没有搜 vault/snapshots 与 vault/archive。未联网，未改动任何文件。
+
+搜索关键词（共三轮 grep）：
+- 第一轮：零点|截断|缺失|补间|排序|基线|重排|柱。第一次带 `--include` 写法报错，随后去掉该参数重跑。
+- 第二轮：仪表|看板|dashboard|刷新|动画|过渡|重新排序|重排序|zero|truncat|baseline
+- 第三轮：共同尺度|纵轴|柱长|数据更新|实时|轮询|减少动效|reduced-motion|中间帧|聚合；另用 `grep -rl prefers-reduced-motion` 查文件名。
+
+2. 要改的地方
+
+先说判断依据。四个数按 400 起算：柱长是 A 本周 120、A 上周 80、B 本周 55、B 上周 70。按真值算，A 周环比约 +8.3%（520 比 480），B 约 −3.2%（455 比 470），A 比 B 高约 14%。图上 A 本周柱是上周的 1.5 倍，B 本周柱比上周短约 21%，A 本周柱是 B 本周柱的 2.2 倍。差异被放大了五六倍。
+
+(1) 纵轴从 400 起，柱长失真
+- 问题：用柱长表达数量，却把基线放在 400。读者按柱长读比例，会把 +8% 读成 +50%，把 −3% 读成 −21%。
+- 改法：二选一。
+  - 柱子改回从 0 起，数值直接标在柱端。
+  - 若要看的其实是"相对上周的变化"，改成画差值（A +40、B −15，0 为基线），或改成点/折线并明确标注"轴从 400 起"。
+  - 如果 400 是有业务含义的值（例如常规产能线、SLA 线），把它画成带标签的参考线，不当基线用。
+- 理由：见第 3 节 encoding.md 与 relations.md G10。400 有没有业务含义，仓库里查不到，需要需求方回答（见第 4 节）。
+- 附带：缺失被显示成 0，而轴起点是 400。0 在这张图上本来就画不出来，要么被裁掉，要么画成负向柱，读者看到的"0"没有意义。
+
+(2) 比较方式没有说明读者要比什么
+- 问题：四根柱同时承载三种比较：同组本周对上周，A 对 B，以及两者的绝对水平。目前没有说明哪一种是主比较，也没有看到直接标值，只能从柱长估数。
+- 改法：
+  - 先定主任务。多数仪表板的主任务是"每组本周相比上周变了多少"，那就让同组的本周和上周相邻、顺序固定（上周在前、本周在后，或相反，但所有组一致）。
+  - 全图共用一条尺度（共同基线）。
+  - 每根柱标精确值，或在组内标变化量。
+  - 本周和上周用有明度差的两种填充，再配直接标签，不只靠颜色。
+- 理由：见第 3 节 encoding.md 与 C05。
+
+(3) 周期可比性与口径没有交代
+- 问题：数据每小时刷新，"本周"在周中只是一个未完成的周，而"上周"是完整一周。再加上周三缺数据，本周 520 和 455 很可能是缺了周三的下限值。拿它和完整的上周比，不是同口径比较。
+- 改法：
+  - 图的标题或引介写明：指标是什么（新建单还是关闭单）、单位、统计窗口、"本周截至何时"、最后更新时间。
+  - 本周数据不完整时，比较要么对齐到同一截止时点（上周同一时点），要么在本周柱上明示"不完整"，不要让读者当成完整周比较。
+- 理由：见第 3 节 evidence.md 与 encoding.md。具体怎么处理（对齐截止点还是只加标注），要看第 4 节的未知项。
+
+(4) 周三缺失显示为 0
+- 问题：缺失和零是两回事。0 是"统计过，确实没有工单"，缺失是"不知道"。显示为 0 会让周内总量偏低，推出"本周下降"的假结论，而且数据补上时会触发一次从 0 到真值的柱子增长动画，读者会把它读成"工单突然涌入"。
+- 改法：
+  - 缺失画成缺口、斜线填充或"无数据"标记，不是 0 高度的柱。
+  - 用文字写明缺失原因（未入库、采集失败，还是确实不可得），未知就写"原因待核实"。
+  - 汇总值标注"缺周三"，或不给出汇总。
+  - 数据补上时，这根柱直接更新，不播放从 0 起的增长。
+- 理由：见第 3 节 encoding.md、C05、foundations/grammar.md。
+
+(5) 刷新动画：补间被读成数据
+- 问题：柱子"从旧值平滑长到新值"，中间帧是不存在的数值，读者会把它当成观测。每小时一次的数据更新，实际变化多为几件到几十件，在截断轴上还会被动画放大成大幅位移。
+- 改法：
+  - 数值标签在刷新时直接换成新值，不做计数滚动，动画只是视觉过渡。
+  - 或者干脆不要长度动画，只用一次短暂的高亮或"较上次刷新 +N"标记提示"变了"。
+  - 若保留长度过渡，一次刷新只动长度一个属性，时长和曲线按真实观看速度调。
+  - 新数据在动画中途到达时，动画直接转向最新值，不排队、不叠加，最终状态以数据为准。
+  - 减少动效偏好下，立即更新并保留"已更新 / 更新时间"提示。
+  - 刷新失败时，保留上一次的值和更新时间，不动画、不清零。
+- 理由：见第 3 节 motion/grammar.md、states.md 与 relations.md G08。
+
+(6) 刷新时同时重新排序
+- 问题：长度变化和位置变化叠在同一段运动里，读者分不清是"这个组变大了"还是"这个组被挪走了"。两个组比较的是同一类别在两个时点，位置每小时都可能互换，也破坏了对象和位置的对应。按当前数据，A 排在 B 前面（本周和上周都如此），排序并不改变现状，却带来每小时位置互换的风险。
+- 改法：
+  - 两组固定顺序（按名称或固定约定），本周、上周在组内的顺序也固定。
+  - 若排名本身是读者需要的信息，用标签或排名数字给出，不靠位置运动。
+  - 如果确需重排，把"数量变化"和"位置变化"分成先后两步，且重排只在组数多到需要靠位置看排名时才用。
+- 理由：见第 3 节 motion/grammar.md、comparison-continuity.md、relations.md G08。
+
+(7) 验收方式
+- 内容固定、宽度收窄到手机宽度各看一次，并用关键 case 各跑一遍：周三缺失、本周与上周数值交叉、刷新中途又来新数据、刷新失败、减少动效。
+- 实际速度观看动画，不只看单帧。
+- 记录通过、未通过、未执行三类，只自动检查（溢出、文字完整）不能代替人读图。
+- 理由：见第 3 节 relations.md 的检验一节与 verification.md。
+
+3. 用到的仓库说法
+
+文件 /Users/lesprivilege/Projects/Praxis/kit/design/composition/encoding.md
+- "柱长、面积等以大小表达数量的编码需要有意义的零点；折线等采用截断轴时明确刻度范围，并检验是否夸大变化。缺失和零分开，单位、分母、时间范围及精确值可查。视觉比例不能替代真实计算。"（用于第 1、3、4 条）
+- "数量比较需要共同尺度"（第 2 条）
+- "线型、粗细、颜色和位置形成一致的图例。……颜色也不能单独承载关键区别。"（第 2 条）
+- "在真实数据和目标宽度下核对图文，数量换口径或新增图型时重访来源"（第 7 条）
+
+文件 /Users/lesprivilege/Projects/Praxis/kit/design/motion/grammar.md
+- "数值之间的补间只是过渡，不是观测，中间帧不能被读成数据；排序变化和数量变化不放进同一段运动里让人分不清"（第 5、6 条）
+- "运动与真实状态同步；连续操作、取消或反向操作时保持可理解的中间状态，不让动画完成时间决定业务结果。"（第 5 条的中途更新）
+- "选属性、曲线和时长后检查实际操作速度、键盘与减少动效偏好。减少运动的替代要保留反馈，不强制用淡入替代所有运动。"（第 5 条）
+- "每个运动先说明帮助读者辨认哪种变化：状态切换、空间位置、关系变化或叙事时间。没有必要语义的运动可以作为明确的表现探索，但不能遮挡信息、伪造进度或暗示不存在的因果。"（第 5、6 条，及"动画可以不要"的判断）
+
+文件 /Users/lesprivilege/Projects/Praxis/kit/design/motion/README.md
+- "时长、曲线、镜头、材质与动态排印是具体任务的选择，不能把一次答卷的240ms或淡入写成通用值。"（所以我没有给具体毫秒数）
+
+文件 /Users/lesprivilege/Projects/Praxis/kit/design/foundations/relations.md
+- G10：可调"数据任务、编码、尺度与基线、排序、分组、标签、类别/顺序/发散色义"；要保住"原始值、单位、分母、时间范围、缺失与零、类别身份、参考点"。
+- G08：要保住"最终状态与对象对应；结果不只出现在短动画里；停止或降级后任务仍能完成"。
+- 检验节："把内容加长、把宽度收窄各看一次，记下最先失效的地方。"以及"分开记：自动检查能证明文字完整、没有溢出；先读到什么、好不好看要人看图判断；读者效果要找读者。"
+- 约束强度节："外部标准的数值门槛（对比度、目标尺寸、重排、减少运动）只在项目明确采用某个标准、版本和级别后成为规则"
+
+文件 /Users/lesprivilege/Projects/Praxis/kit/design/references/composition.md
+- C05："直接标值、精确值、缺失与零值区分；用数据语义决定图式"；其边界栏："不能泛化为所有数量图必须零起点或同一 chart 类型"。（所以"零起点"在仓库里不是绝对规则，我的判断是 400 若有业务含义就换成参考线）
+
+文件 /Users/lesprivilege/Projects/Praxis/kit/design/references/curated/comparison-continuity.md
+- "窄屏可按属性分块，让对象的槽位、顺序和尺度保持一致。"（它针对窄屏下少量对象的属性比较，状态是 preferred / reference，仅结构方法查阅通过；我只借"槽位与顺序一致"的机制来支持第 2、6 条，没有把它当作对本图的直接规定）
+
+文件 /Users/lesprivilege/Projects/Praxis/kit/write/shared/evidence.md
+- "数量附单位、分母、时间范围及实际/预测属性。没有证据时写假设或待核实，不用精确图形增强确定性。"（第 3、4 条）
+- "示意数字与实际测量分开"
+
+文件 /Users/lesprivilege/Projects/Praxis/kit/design/foundations/grammar.md
+- "找到真实对象、关系、状态与证据，不用外观补足缺失事实。"（第 4 条）
+
+文件 /Users/lesprivilege/Projects/Praxis/kit/design/interaction/states.md
+- "请求发出但结果未知时保留核对与恢复路径。没有真实进度时说明当前状态或已完成步骤，不能制造百分比和预计完成时间。"（第 5 条刷新失败的处理，是类推，该页讲的是请求与操作状态，不是图表刷新）
+
+文件 /Users/lesprivilege/Projects/Praxis/vault/distilled/write-present-supplement-20261002/projection-vs-adaptation/owners.json
+- 路由：该任务标"composition: use, motion: use, shared: maybe（核对数据口径）"，反馈项"补间、排序或先后让数据看起来多了含义"回"运动；必要时回到底线与证据核对口径"。
+
+文件 /Users/lesprivilege/Projects/Praxis/kit/write/shared/verification.md
+- "按任务记录通过、未通过和未执行，不要求所有任务都产出全部格式。"（第 7 条）
+
+来自我自己的通用知识（仓库没有写）：
+- 上面的具体数字算术：柱长 120/80/55/70、+8.3%、−3.2%、14%、1.5 倍、2.2 倍、五六倍。
+- 周中的"本周"是未完成周，与完整的上周不可直接比，需对齐截止时点或标注不完整。
+- 0 在起点为 400 的轴上画不出来。
+- 缺失值更新时从 0 起的增长会被读成真实涌入。
+- 计数滚动和长度过渡的建议、"动画中途来新数据时转向最新值"的做法、刷新失败时保留旧值并标更新时间。
+- 差值图、点图、参考线作为替代编码的选择。
+- 按名称固定排序、用排名数字代替位置运动、重排分两步。
+- WCAG 2.2.2（暂停、停止、隐藏）可能涉及自动开始的动效：我没有查证，也不确定一次短刷新动画是否落入其范围；仓库只收录了 2.3.3（C16，针对用户触发的动效），不能据此套用。
+
+4. 需要但仓库里没找到的东西
+
+- 对"有意义的零点"的判定标准：什么算有意义、400 这种阈值该怎么处理（C05 只说不能泛化为必须零起点）。我只能假设 400 没有业务含义；需要需求方说明 400 是什么。
+- 图表刷新或实时数据的动画规则，包括：补间时长和曲线的取值范围，何时该直接换值、何时可以动；仓库只有"补间不是观测"的一句原则。
+- 重排序的规则：什么时候该排序、两组时是否应固定顺序、重排与数值变化的先后。只有"不放进同一段运动"一句。
+- 周期不完整（本周未完）与完整周的比较规则；缺失原因的呈现标准；缺失数据补入时的更新行为。仓库只要求缺失和零分开、标时间范围。
+- 差值图、分组柱状图、点图等具体图型的选型规则，以及组内顺序、色板、标签格式的约定。
+- 仪表板层面的约定：刷新时间戳、自动刷新的暂停或关闭路径、刷新失败的呈现。
+- 项目采用的无障碍标准、版本和级别；仓库明确说明没替项目采用任何标准，因此减少动效等的门槛只能按"采用后才成规则"处理。
+- 这张图本身的 brief：读者要据此做什么决定（看环比、看两组排名，还是监控异常），指标含义（新建单还是关闭单），"每周"的起止日，本周 520 和 455 是否含周三，周三缺失是未入库还是确实不可得，更新是否可能延迟。这些要向需求方确认；Reporting 分支（kit/reporting/）我没有打开，因此不知道它是否有可填的 brief 模板。
+- 动画是否有真实需求：仓库没有此类任务的使用证据（relations.md 说明 G08 之类尚无真实任务检验，只有 G10 在三份合成内容上被引用）。我无法从仓库得到"这个仪表板需不需要动画"的依据。

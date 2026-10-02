@@ -42,5 +42,6 @@
 
 - [Design grammar atlas 来源重访 · 2026-10-02](design-grammar-atlas-20261002/README.md)：研究包四份台账的 47 条来源逐条重访，其中 16 条同日由主会话再读一次；现为 34 verified、12 partial、1 unavailable，看过一张图。
 - [工单提案的外部链接 · 2026-10-02](design-kit-workorders-20261002/README.md)：提案引用的 16 个 Remotion 官方与社区链接，全部 unverified，本仓库未重访。
+- [架构校订补充的外部链接 · 2026-10-02](write-present-supplement-20261002/README.md)：5 个写作与无障碍来源，4 个由主会话直接读过相关段落。
 
 - 视觉语法定向召回：[Courtwork](visual-grammar-courtwork-20260928/README.md)、[Schema Engineering](visual-grammar-schema-20260928/README.md)、[Praxis及相邻项目](visual-grammar-praxis-20260928/README.md)、[外部参考](visual-grammar-external-20260928/README.md)。施工消费见 [演示工场](../../demos/visual-grammar/README.md)。
