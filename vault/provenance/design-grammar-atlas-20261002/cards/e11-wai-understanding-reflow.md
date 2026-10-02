@@ -6,7 +6,7 @@ url: "https://www.w3.org/WAI/WCAG22/Understanding/reflow.html"
 
 # E11 · W3C WAI — Understanding Reflow (WCAG 2.2)
 
-来源：[原始页面](https://www.w3.org/WAI/WCAG22/Understanding/reflow.html) · 状态：`verified` · 重访：2026-10-02（ok）
+来源：[原始页面](https://www.w3.org/WAI/WCAG22/Understanding/reflow.html) · 状态：`verified` · 重访：2026-10-02，两次（ok）
 
 用途：GRAMMAR / METHOD / VERIFICATION
 
@@ -22,9 +22,13 @@ WCAG 1.4.10 Reflow 的解释性文档，支持重排要求及二维内容例外�
 - 有依据：必要二维内容的例外不自动扩展到整页。地图、图表、数据表、视频、演示等可二维滚动，但表头、搜索框、分页等周边仍须重排。
 - 有依据：不是所有内容都必须一列。页面明确称并非要求单列布局。
 
+## 第二次重访
+
+2026-10-02，Opus 5.5 主会话，应用内浏览器直接读页面文字。直接读正文：调整或挪动内容不算丢失信息或功能，只要用户仍能到达；示例里主导航收进菜单按钮是可接受的。问题地图 G12 原写“不靠隐藏必要内容换整齐”，容易被读成不许折叠，已改为“收起后仍能到达”。
+
 ## 限制
 
-Understanding 文档是解释材料；不能由一次截图证明合规，也不能搬到固定画布媒介。 本轮只读文字，没有看图。
+Understanding 文档是解释材料；不能由一次截图证明合规，也不能搬到固定画布媒介。 没有看图。
 
 ## 何时重访
 

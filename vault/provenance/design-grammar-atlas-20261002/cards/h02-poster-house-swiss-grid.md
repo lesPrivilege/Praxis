@@ -6,7 +6,7 @@ url: "https://posterhouse.org/wp-content/uploads/2019/10/PH_Exh_Swiss_Archive_in
 
 # H02 · Poster House：The Swiss Grid 展览档案 PDF
 
-来源：[原始页面](https://posterhouse.org/wp-content/uploads/2019/10/PH_Exh_Swiss_Archive_interactive_Final.pdf) · 状态：`verified` · 重访：2026-10-02（ok）
+来源：[原始页面](https://posterhouse.org/wp-content/uploads/2019/10/PH_Exh_Swiss_Archive_interactive_Final.pdf) · 状态：`verified` · 重访：2026-10-02，两次（ok）
 
 用途：GRAMMAR / DESIGN-HISTORY / PROFILE
 
@@ -26,9 +26,13 @@ Poster House 展览档案，文字足以支持：网格因传播问题而生、�
 
 与台账不符或需注意：台账称 Exa 只读了若干章节；本次用 WebFetch 取得 PDF，再在本地用 pdftotext 抽取了全部文字（约 960 行），确认含 Intro、Zürich vs. Basel、How It Works、Stadt Theater Basel、Giselle、Breaking the Grid 等。仅读文字，未看海报图。
 
+## 第二次重访
+
+2026-10-02，Opus 5.5 主会话，应用内浏览器直接读页面文字。应用内浏览器打不开这份 PDF，也没有下载；海报图仍未看。文字用上一轮抽出的全文逐句核对：网格每次按要解决的问题重新确定；Stadt Theater Basel 1964 海报右上与左下划出两个方框放每周节目，整张海报可沿用一年；Lohse 与 Hofmann 的图注都写到元素贴着网格线对齐；苏黎世与巴塞尔两派字体不同，海报里到 1980 年代才常见 Helvetica。原文还给了一个偏好的格数（20 或 32 格通常被认为理想），同时说每件作品要单独分析；“不锁列数”是本仓库的边界，不是来源没给数。同一段把 Bauhaus 出身的 Max Bill 推广的具体艺术列为影响 Keller 学生的来源之一。
+
 ## 限制
 
-不能证明字段数通用，不能证明单人发明；文字是策展叙述；未看任何海报图。 本轮只读文字，没有看图。
+不能证明字段数通用，不能证明单人发明；文字是策展叙述；未看任何海报图。 没有看图。
 
 ## 何时重访
 

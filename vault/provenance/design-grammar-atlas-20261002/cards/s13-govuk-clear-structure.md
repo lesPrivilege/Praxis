@@ -6,7 +6,7 @@ url: "https://guidance.publishing.service.gov.uk/writing-to-gov-uk-standards/wri
 
 # S13 · GOV.UK：Create a clear structure for your content
 
-来源：[原始页面](https://guidance.publishing.service.gov.uk/writing-to-gov-uk-standards/writing-guidelines/clear-structure/) · 状态：`verified` · 重访：2026-10-02（ok）
+来源：[原始页面](https://guidance.publishing.service.gov.uk/writing-to-gov-uk-standards/writing-guidelines/clear-structure/) · 状态：`verified` · 重访：2026-10-02，两次（ok）
 
 用途：GRAMMAR / STANDARD / DESIGN-SYSTEM
 
@@ -24,9 +24,13 @@ GOV.UK 内容结构指导，支持前置、描述性标题、列表与步骤的�
 - 有依据：步骤/列表、避免重复。用要点和步骤减少重复，并避免在正文重复摘要。
 - 有依据：F 型阅读与 20–28% 阅读比例、禁脚注、禁问句标题。页面确有这些说法（只读 20 至 28% 文本、F 形阅读、避免问句标题与脚注），台账不外推它们为普适实证的限定合理。
 
+## 第二次重访
+
+2026-10-02，Opus 5.5 主会话，应用内浏览器直接读页面文字。直接读正文：小节依次是前置要点、用标题分段、用列表与步骤、避免脚注、不重复；第一条就是把最重要的信息放在最前。与问题地图 G11 的用法相符。
+
 ## 限制
 
-针对 GOV.UK 网页任务；F 型阅读与阅读比例未回溯原研究，不可当实证。 本轮只读文字，没有看图。
+针对 GOV.UK 网页任务；F 型阅读与阅读比例未回溯原研究，不可当实证。 没有看图。
 
 ## 何时重访
 

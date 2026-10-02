@@ -6,7 +6,7 @@ url: "https://designsystem.digital.gov/components/typography/"
 
 # S07 · USWDS：Typography
 
-来源：[原始页面](https://designsystem.digital.gov/components/typography/) · 状态：`verified` · 重访：2026-10-02（ok）
+来源：[原始页面](https://designsystem.digital.gov/components/typography/) · 状态：`verified` · 重访：2026-10-02，两次（ok）
 
 用途：GRAMMAR / STANDARD / DESIGN-SYSTEM
 
@@ -26,9 +26,13 @@ url: "https://designsystem.digital.gov/components/typography/"
 
 与台账不符或需注意：台账日期 2026-08-28 与页面元数据 2026-09-28 不一致；Exa 副本仍为 08-28，疑为缓存时差，需主代理裁决采用哪一个。
 
+## 第二次重访
+
+2026-10-02，Opus 5.5 主会话，应用内浏览器直接读页面文字。直接读页面元数据：article:published_time 为 2026-09-28。台账写 2026-08-28，包读取时页面是否如此无法回溯；以现行页面为准。
+
 ## 限制
 
-面向英文政府网站；不能当作中文或其他文字的排版规则，也不是实证结论。 本轮只读文字，没有看图。
+面向英文政府网站；不能当作中文或其他文字的排版规则，也不是实证结论。 没有看图。
 
 ## 何时重访
 

@@ -11,9 +11,9 @@
 | H05 | [NGV：Carlton room divider](h05-ngv-carlton-room-divider.md) | `verified` |
 | H06 | [V&A：An introduction to Art Deco](h06-va-introduction-to-art-deco.md) | `verified` |
 | H07 | [V&A：Art Deco: where tradition meets modernity](h07-va-art-deco-tradition-modernity.md) | `verified` |
-| H08 | [CARI：Y2K Aesthetic](h08-cari-y2k-aesthetic.md) | `unavailable` |
-| H09 | [CARI：Project History](h09-cari-project-history.md) | `unavailable` |
-| H10 | [CARI：Cassette Futurism](h10-cari-cassette-futurism.md) | `unavailable` |
+| H08 | [CARI：Y2K Aesthetic](h08-cari-y2k-aesthetic.md) | `verified` |
+| H09 | [CARI：Project History](h09-cari-project-history.md) | `partial` |
+| H10 | [CARI：Cassette Futurism](h10-cari-cassette-futurism.md) | `verified` |
 | H11 | [Sahil Lavingia：Introducing the new Gumroad](h11-lavingia-new-gumroad.md) | `verified` |
 | H12 | [Pascal Deville：Brutalist Websites](h12-brutalist-websites.md) | `partial` |
 | H13 | [Bandcamp Daily：Vectors of Vektroid and Vaporwave](h13-bandcamp-vektroid-interview.md) | `verified` |

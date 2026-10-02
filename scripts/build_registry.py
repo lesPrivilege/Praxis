@@ -155,7 +155,8 @@ def build():
                         'source_count': len(data['explicit_url_identities'])})
     # Whole local packages snapshotted from disk: one source record each.
     for rel in ['vault/intake/tally-saas-20261001.json',
-                'vault/intake/design-grammar-atlas-20261002.json']:
+                'vault/intake/design-grammar-atlas-20261002.json',
+                'vault/intake/design-kit-workorders-20261002.json']:
         data = read(rel)
         sources.append({
             'id': data['id'], 'kind': data['kind'], 'collection': data['topic'],

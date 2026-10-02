@@ -6,7 +6,7 @@ url: "https://www.sony.com/en/SonyInfo/design/bside/01_throwback_walkman/"
 
 # H15 · Sony Design：#01 Throwback Walkman
 
-来源：[原始页面](https://www.sony.com/en/SonyInfo/design/bside/01_throwback_walkman/) · 状态：`partial` · 重访：2026-10-02（ok）
+来源：[原始页面](https://www.sony.com/en/SonyInfo/design/bside/01_throwback_walkman/) · 状态：`partial` · 重访：2026-10-02，两次（ok）
 
 用途：GRAMMAR / DESIGN-HISTORY / PROFILE
 
@@ -25,9 +25,13 @@ Sony 的 Walkman 年表档案，文字支持 1979 首款 Walkman 及后续运动
 
 与台账不符或需注意：WebFetch 工具拒绝抓取 sony.com，改用 Exa fetch 读到正文。台账把「方形便携磁带物件」列入「支持」，但文字里找不到；cassette-futurism.md:7 的「磁带观察窗与机壳分区可核验」只能来自台账称的静帧，本次无法复核。
 
+## 第二次重访
+
+2026-10-02，Opus 5.5 主会话，应用内浏览器直接读页面文字。想补看 TPS-L2 的图：应用内浏览器按安全限制不打开 sony.com，图没有看到。台账的“方形便携磁带物件”和 cassette-futurism.md 的“磁带观察窗与机壳分区”仍只有包内自述的看图为据。
+
 ## 限制
 
-文字不能证明磁带观察窗或方形外形，也不能证明它与 Cassette Futurism 的关系。 本轮只读文字，没有看图。
+文字不能证明磁带观察窗或方形外形，也不能证明它与 Cassette Futurism 的关系。 没有看图。
 
 ## 何时重访
 

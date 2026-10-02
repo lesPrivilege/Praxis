@@ -94,3 +94,10 @@
 - 按用户裁决保留泛化层（[ADR-018](docs/decisions/018-generalized-design-relations.md)）：新增 [构成关系与问题地图](kit/design/foundations/relations.md)，收十五个构成问题、约束强度与检验方法；[视觉语言参考](kit/design/references/languages.md)（VL01–VL08）、样张和打样提案作为它的取用方式挂出。
 - 按包内 A01 提案做了一件 [阅读关系样张](vault/distilled/design-grammar-atlas-20261002/a01-reading-relations/README.md)：一份夹具、一份 HTML、五套样式；得到断行与字重两处失配。
 - 六题冷启动走读、补入口后的复跑与全部未做项见 [回执](docs/verification/design-grammar-atlas-20261002.md)。Opus 主会话裁决，Sonnet 只读代理对照、重访与走读。
+
+## 2026-10-02 · 工单提案入账与工单一
+
+- 入账 dot 的 [下一轮串行工单与 Motion 提案](vault/distilled/design-kit-workorders-20261002/README.md)：五包工单逐包裁决，附录的 16 个外部链接登记为 unverified。
+- 执行工单一：九项更正逐条对回包内原句，主会话直接重读 16 条来源并看了一张原作海报；三行首轮记法撤回，atlas 来源现为 34 verified、12 partial、1 unavailable。
+- Kit 只改措辞：[视觉语言参考](kit/design/references/languages.md)的 VL01、VL03、VL07 与图像说明，[问题地图](kit/design/foundations/relations.md)的 G12 一句。没有新增条目或规则。
+- 放行给下一包的输入、悬置项与未做项见 [回执](docs/verification/design-kit-wo1-20261002.md)。工单二至五未开工。

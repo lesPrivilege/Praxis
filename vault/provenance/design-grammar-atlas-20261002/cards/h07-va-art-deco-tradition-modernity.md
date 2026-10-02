@@ -6,7 +6,7 @@ url: "https://www.vam.ac.uk/articles/art-deco-where-tradition-meets-modernity"
 
 # H07 · V&A：Art Deco: where tradition meets modernity
 
-来源：[原始页面](https://www.vam.ac.uk/articles/art-deco-where-tradition-meets-modernity) · 状态：`verified` · 重访：2026-10-02（ok）
+来源：[原始页面](https://www.vam.ac.uk/articles/art-deco-where-tradition-meets-modernity) · 状态：`verified` · 重访：2026-10-02，两次（ok）
 
 用途：GRAMMAR / DESIGN-HISTORY / PROFILE
 
@@ -22,9 +22,15 @@ V&A 对象与技术说明，确认 Gray 漆屏约 1923 年、大片光泽区，S
 - 有依据：Skeaping 注浆量产。1927 年为 Wedgwood 做的鹿群，用廉价的注浆法一次成形。
 - 有依据：Lalique 工艺／商业生产并行。同时是工匠与实业家，1920 年代中期后转向压模玻璃，用颜色、珐琅、磨砂等做大量生产。
 
+与台账不符或需注意：profile 把来源混合一句挂在 H07；本页只支持“传统与进步结合”，完整表述在 H06。
+
+## 第二次重访
+
+2026-10-02，Opus 5.5 主会话，应用内浏览器直接读页面文字。直接读正文：本页只说传统与进步的结合，并以 Skeaping、Gray、Lalique 为例；没有出现前卫艺术或机器时代。art-deco.md 把“传统工艺、前卫艺术与机器时代的混合”挂在 H07，依据在 H06。图仍未看。
+
 ## 限制
 
-不能证明所有 Deco 都密集装饰或都是手工奢侈品；没有看图；图像 © V&A 未核复用许可。 本轮只读文字，没有看图。
+不能证明所有 Deco 都密集装饰或都是手工奢侈品；没有看图；图像 © V&A 未核复用许可。 没有看图。
 
 ## 何时重访
 

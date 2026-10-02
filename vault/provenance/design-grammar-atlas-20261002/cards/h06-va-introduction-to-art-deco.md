@@ -6,7 +6,7 @@ url: "https://www.vam.ac.uk/articles/an-introduction-to-art-deco"
 
 # H06 · V&A：An introduction to Art Deco
 
-来源：[原始页面](https://www.vam.ac.uk/articles/an-introduction-to-art-deco) · 状态：`verified` · 重访：2026-10-02（ok）
+来源：[原始页面](https://www.vam.ac.uk/articles/an-introduction-to-art-deco) · 状态：`verified` · 重访：2026-10-02，两次（ok）
 
 用途：GRAMMAR / DESIGN-HISTORY / PROFILE
 
@@ -23,9 +23,13 @@ V&A 综述，确认名称 1960 年代才出现、1925 巴黎展是关键事件�
 - 有依据：传统／前卫／机器时代来源混合。列出历史欧洲运动、前卫艺术、俄罗斯芭蕾、民间艺术、异域与古代文化、机器时代城市意象，以及 Cubism、Futurism、Constructivism 等。
 - 有依据：媒介多样。纺织、玻璃、家具、金属器、陶瓷、烟盒、化妆盒等。
 
+## 第二次重访
+
+2026-10-02，Opus 5.5 主会话，应用内浏览器直接读页面文字。直接读正文：来源混合一句在本页，列出欧洲历史风格、当代前卫艺术、俄罗斯芭蕾、民间艺术、异域与古代文化、机器时代的都市意象；名称是 1960 年代才有的；1925 年巴黎展汇集了欧洲各地及以外的设计师，英美评论界另有称呼。“跨地区”因此有间接依据，没有一句直接这样定性。
+
 ## 限制
 
-页面摘要里没有看到地理分布的论述，故不能用它证明「跨地区」；也不能证明黑金或对称是必要条件。 本轮只读文字，没有看图。
+页面摘要里没有看到地理分布的论述，故不能用它证明「跨地区」；也不能证明黑金或对称是必要条件。 没有看图。
 
 ## 何时重访
 

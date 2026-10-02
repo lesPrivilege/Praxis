@@ -6,7 +6,7 @@ url: "https://uxdesign.cc/neubrutalism-is-taking-over-the-web-e9d09e0fe441"
 
 # H18 · Michal Malewicz：Neubrutalism is taking over the web
 
-来源：[原始页面](https://uxdesign.cc/neubrutalism-is-taking-over-the-web-e9d09e0fe441) · 状态：`unavailable` · 重访：2026-10-02（blocked）
+来源：[原始页面](https://uxdesign.cc/neubrutalism-is-taking-over-the-web-e9d09e0fe441) · 状态：`unavailable` · 重访：2026-10-02，两次（blocked）
 
 用途：GRAMMAR / DESIGN-HISTORY / PROFILE
 
@@ -22,9 +22,13 @@ url: "https://uxdesign.cc/neubrutalism-is-taking-over-the-web-e9d09e0fe441"
 
 与台账不符或需注意：无法核验。与台账自述的 Cloudflare 阻挡一致，已停止，未绕过。
 
+## 第二次重访
+
+2026-10-02，Opus 5.5 主会话，应用内浏览器直接读页面文字。第二次尝试：应用内浏览器停在 Cloudflare 的人机验证页，已停止，没有继续。
+
 ## 限制
 
-2026-10-02 重访被站点拒绝（403），本轮没有读到页面；包内台账自述的读取未经本仓库复核。本次无任何可用结论。 本轮只读文字，没有看图。
+2026-10-02 重访被站点拒绝（403），本轮没有读到页面；包内台账自述的读取未经本仓库复核。本次无任何可用结论。 没有看图。
 
 ## 何时重访
 

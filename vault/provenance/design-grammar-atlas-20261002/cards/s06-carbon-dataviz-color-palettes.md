@@ -6,7 +6,7 @@ url: "https://www.carbondesignsystem.com/building-blocks/data-visualization/colo
 
 # S06 · Carbon：Color palettes
 
-来源：[原始页面](https://www.carbondesignsystem.com/building-blocks/data-visualization/color-palettes) · 状态：`partial` · 重访：2026-10-02（redirected）
+来源：[原始页面](https://www.carbondesignsystem.com/building-blocks/data-visualization/color-palettes) · 状态：`partial` · 重访：2026-10-02，两次（redirected）
 
 用途：GRAMMAR / STANDARD / DESIGN-SYSTEM
 
@@ -24,11 +24,15 @@ IBM Carbon 的数据可视化配色指南，说明类别、顺序、发散、警
 - 有依据：类别配色顺序。类别色为 14 色定序，设计目标是相邻色最大对比。
 - 部分：gradient 禁用语句针对本系统装饰用法，不否定连续色标。页面实际说法是 Carbon Charts 尚不支持渐变，仅限单类别可视化，避免用于有意义的递进，不得用来替代顺序色板；并非专指装饰用法。
 
-与台账不符或需注意：URL 由 carbondesignsystem.com 重定向到 www.carbondesignsystem.com/building-blocks/data-visualization/color-palettes。台账称 gradient 语句针对装饰用法，与页面所述范围（Carbon Charts 不支持、限单类别）略有出入。
+与台账不符或需注意：URL 重定向到 www 子域。台账称 gradient 语句是针对装饰用法的禁用；页面是有条件允许（单类别、突出极值），并禁止用它表示递进、发散或代替顺序色板。
+
+## 第二次重访
+
+2026-10-02，Opus 5.5 主会话，应用内浏览器直接读页面文字。直接读“Gradient use”一节：单类别图在需要时可以用渐变突出一段数值里的极端；多重渐变因可访问性不被鼓励；渐变不得表示有意义的递进或发散，不得代替顺序色板；Carbon Charts 尚不支持渐变。页面仍标为进行中的指南。台账说这是针对“装饰用法”的禁用语句：页面没有提装饰，也不是禁用。
 
 ## 限制
 
-仅是 Carbon 一个系统的做法，不构成普适配色法则；页面仍在制作中。 本轮只读文字，没有看图。
+仅是 Carbon 一个系统的做法，不构成普适配色法则；页面仍在制作中。 没有看图。
 
 ## 何时重访
 

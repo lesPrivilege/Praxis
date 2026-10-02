@@ -66,3 +66,4 @@ Intake 只登记材料身份、覆盖、处理状态、附件和缺口，不重�
 - [Tally · SaaS · 2026-10-01](tally-saas-20261001.json)：72文件完整快照与hash；[书稿阅读入口](../../tally/README.md)。
 
 - [Design grammar atlas · 2026-10-02](design-grammar-atlas-20261002.json)：44 文件研究包的完整快照与 hash，另记 47 条来源的重访与六题冷启动走读；[消费与裁决](../distilled/design-grammar-atlas-20261002/README.md)。
+- [PraxisDesignKit 工单提案 · 2026-10-02](design-kit-workorders-20261002.json)：单文件提案的快照与 hash，另记 16 个未重访的外部链接；[入账与裁决](../distilled/design-kit-workorders-20261002/README.md)。
