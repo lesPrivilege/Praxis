@@ -1,6 +1,6 @@
 # Prose · 成文与审校
 
-用于以自然语言为主的答卷、报告、备忘录与说明。产物是论证连贯、证据身份不变的成文。
+用于以自然语言为主的答卷、报告、备忘录与说明。产物是论证连贯、证据身份不变的成文。用户已给出的口吻和阅读偏好决定此次行文基调，具体个人用字不自动成为通用规则。
 
 1. 开始写作或改写中文，读 [成文原理](grammar.md)；[底线与证据](../shared/evidence.md)一并读。
 2. 需要审校或裁决他人修改，读 [审阅方法与偏差](review.md)。
@@ -13,7 +13,15 @@
 
 项目 skill `writing` 是此分支的薄入口。直接挂载 Kit 也可按本页执行，原理只在 Kit 维护。页面和图表编排转 [Publish](../publish/README.md)，视觉表现转 [Design](../../design/README.md)。
 
-## 结构选择时的参考路由
+## 按需取用外部参考
+
+外部指南提供具体问题的参考，权重低于本次任务与适用的 Kit 规则，不默认整份加载。先取足以支持判断的部分，需要细节才读来源卡和原文。
+
+- 段落与列表：围绕一个主题组织段落，按顺序、集合或术语解释选择列表，同类结构保持对应。取用 [Google 段落结构](../../../vault/provenance/writing-structure-20260927/cards/google-paragraph-structure.md)和 [列表](../../../vault/provenance/writing-structure-20260927/cards/google-lists.md)；句数与英文标点不转成中文硬规则。
+- 中文技术文档：需要检查指代或表达习惯时，查 [中文技术文档指南 · 文本](../../../vault/provenance/write-present-supplement-20261002/cards/p04-ruanyf-document-style-guide-text.md)。只取与任务相符的提示，不采纳其句长阈值或将作者取舍视为普适规范；这份补充来源未恢复早期 Chat 的指南引用身份。
+- ASD-STE100：仅在任务要求该受控英文标准时再核对官方版本、全文与适用范围。本轮官方访问受限，未提炼规则，也不宣称按该标准合规；访问范围见 [审阅回执](../../../docs/verification/writing-review-20261003.md#外部参考核查)。
+
+### 更细的结构选择
 
 需要决定标题、段落、列表或表格的语义结构时，查 [写作结构补充语义 · 2026-09-27](../../../vault/distilled/writing-structure-20260927/README.md)，按其中的 heading、paragraph、list、table 选择启发式消费；需要逐 URL 回查时进入该页列出的 provenance 卡片。该目录是 supplemental-candidate，来源未恢复原 Chat 占位，也不是已采纳的 Kit 规则或 HTML 通过结论。
 

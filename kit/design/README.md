@@ -12,7 +12,19 @@
 | 查成熟方法、来源或样张 | [References](references/README.md) | 按任务消费的解释、限制和原件来路 |
 | 需求里出现风格名，或要探索一种视觉语言 | [视觉语言参考](references/languages.md) | 名字对应的范围、可以试的构成关系与来源状态 |
 
-图表和界面任务可以直接从这里开始，不必先过 Write；纯文字校对不涉及视觉时不用进来。不需要所有任务都先读一遍基础。遇到取舍争议再回 Foundations；只有需要依据才展开 References 和 Vault。配色、字体、密度与媒介参数在消费者项目决定，历史 accepted 不自动扩散为全局规则。
+图表和界面任务可以直接从这里开始，不必先走 Write 的成文流程；产物上写给读者的成句文字，包括说明、标注、按钮、状态提示和图注，仍按 [Write / Prose](../write/prose/README.md)写和审。纯文字校对不涉及视觉时不用进来。不需要所有任务都先读一遍基础，遇到取舍争议再回 Foundations。
+
+下列情形先读对应参考，再动手：
+
+| 情形 | 先读 |
+|---|---|
+| 窄屏下还要保持几个对象的比较 | [按属性维持比较](references/curated/comparison-continuity.md) |
+| 局部注释在宽屏和窄屏都要跟着它解释的内容 | [注释保持邻接](references/curated/note-adjacency.md) |
+| 需求里出现风格名 | [视觉语言参考](references/languages.md) |
+| 界面控件、对象状态和可达性检查 | [界面参考 U01–U09](references/interface.md) |
+| 关系图、数据图、导航和页面节奏 | [编排参考 C01–C25](references/composition.md) |
+
+其余情形依据不足时，再展开 [References](references/README.md) 和 Vault。配色、字体、密度与媒介参数在消费者项目决定，历史 accepted 不自动扩散为全局规则。
 
 新参考在 Vault 登记，实际使用在项目 index 记录；可复用结论由 [维护流程](../../docs/governance/evolution.md)回流。[原子化编排实验](../../vault/distilled/layout-specimens-20260927/README.md)已形成样张，可直接用作参考或改编样板，已有局部筛选；[筛选记录](../../vault/distilled/layout-specimens-20260927/review.md)区分可复验的语义与尚未稳定的实现，不能视为已验收组件库。
 

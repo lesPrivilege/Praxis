@@ -18,4 +18,4 @@
 
 Markdown、HTML、PDF、Slides 和视频是不同投影。同一主张的证据身份、限定条件与引用关系应在转换后保留；导航、页序、字幕、音频和时间节奏按实际媒介验收。HTML 可使用语义标题、列表与表格表达相应关系，不能只凭 CSS 外观赋予内容身份。
 
-这些职责是本仓库对讨论材料的消费裁决，见 [ADR-015](../../../docs/decisions/015-kit-editorial-contract.md)。完整内容原子注册表、canonical specimen 与 renderer schema 尚未建立；由后续实际交付产生样本和失败证据，再决定是否需要独立维护。
+这些职责的消费来路见 [ADR-015](../../../docs/decisions/015-kit-editorial-contract.md)，当前分支落位与职责归属见 [ADR-016](../../../docs/decisions/016-progressive-kit-structure.md)和 [ADR-019](../../../docs/decisions/019-expression-owners-and-entry-paths.md)。完整内容原子注册表、canonical specimen 与 renderer schema 尚未建立；由后续实际交付产生样本和失败证据，再决定是否需要独立维护。

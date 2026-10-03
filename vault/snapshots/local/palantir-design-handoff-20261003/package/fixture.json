@@ -1,0 +1,283 @@
+{
+  "schema": "palantir-discovery-synthetic-fixture-v1",
+  "synthetic": true,
+  "purpose": "Compare how evidence changes a research and business decision; no real customer, interview, log, permission, action or measured effect.",
+  "source_scope": "Original report Palantir method card and Design brief; E0–E4 and S0–S1.",
+  "versions": {
+    "content": "2026-10-03-local-aligned",
+    "fixture": "v1"
+  },
+  "roles": [
+    {
+      "id": "R01",
+      "label": "虚构运营负责人",
+      "responsibility": "提出诉求并参与业务裁决"
+    },
+    {
+      "id": "R02",
+      "label": "虚构研究者",
+      "responsibility": "在获准范围内匹配研究问题与方法"
+    },
+    {
+      "id": "R03",
+      "label": "agent",
+      "responsibility": "整理获准材料，不补造访谈或执行外部动作"
+    }
+  ],
+  "voices": [
+    {
+      "id": "C1",
+      "identity": "author_experience",
+      "source_id": "palantir-url-01"
+    },
+    {
+      "id": "C2",
+      "identity": "author_advice",
+      "source_id": "palantir-url-02"
+    },
+    {
+      "id": "C3",
+      "identity": "chapter_method",
+      "source_id": "palantir-url-04"
+    },
+    {
+      "id": "D1",
+      "identity": "project_inference",
+      "summary": "快速行动可以是迅速取得能改变决定的材料，不预设将初始功能尽快上线"
+    }
+  ],
+  "research_plan_fields": [
+    "本次决定",
+    "研究未知",
+    "已有材料",
+    "取证方式",
+    "现场提问/动作",
+    "证据与推断",
+    "下一决定"
+  ],
+  "states": [
+    {
+      "id": "S0",
+      "available_evidence": [
+        "E0"
+      ],
+      "request_status": "candidate",
+      "decision": "本周是否批准一个有边界的减少订单等待试点",
+      "unknowns": [
+        "等待原因",
+        "提醒权限",
+        "收益",
+        "成本"
+      ],
+      "allowed_next": "形成获准取证计划，不批准真实外部动作"
+    },
+    {
+      "id": "S1",
+      "available_evidence": [
+        "E0",
+        "E1",
+        "E2",
+        "E3",
+        "E4"
+      ],
+      "request_status": "candidate",
+      "interpretation": "至少存在缺件与接手责任待澄清两种解释",
+      "bulk_automation_supported": false,
+      "population_prevalence": null,
+      "allowed_next": "窄范围取证或人工试验计划"
+    }
+  ],
+  "evidence": [
+    {
+      "id": "E0",
+      "synthetic": true,
+      "type": "role_statement",
+      "label": "请求卡",
+      "text": "希望 AI 每天自动催未处理订单",
+      "supports": [
+        "一名虚构角色提出功能请求"
+      ],
+      "cannot_conclude": [
+        "已批准",
+        "原因已知",
+        "发送获授权"
+      ]
+    },
+    {
+      "id": "E1",
+      "synthetic": true,
+      "type": "case_replay",
+      "label": "订单甲回放卡",
+      "object_id": "ORDER-A",
+      "statements": [
+        {
+          "actor": "虚构经办人甲",
+          "text": "还缺一份必填附件"
+        }
+      ],
+      "observations": [
+        {
+          "record": "演练记录",
+          "field": "必填附件",
+          "value": "空"
+        }
+      ],
+      "supports": [
+        "这个案例有缺件证据"
+      ],
+      "cannot_conclude": [
+        "所有等待均因缺件",
+        "缺件的总体比例"
+      ]
+    },
+    {
+      "id": "E2",
+      "synthetic": true,
+      "type": "case_replay",
+      "label": "订单乙回放卡",
+      "object_id": "ORDER-B",
+      "statements": [
+        {
+          "actor": "虚构经办人乙",
+          "text": "不知道下一位接手者是谁"
+        }
+      ],
+      "observations": [
+        {
+          "record": "演练记录",
+          "field": "附件",
+          "value": "完整"
+        },
+        {
+          "record": "演练记录",
+          "field": "前一动作",
+          "value": "已结束"
+        }
+      ],
+      "supports": [
+        "接手责任有待澄清",
+        "现有材料不足以完整解释等待"
+      ],
+      "cannot_conclude": [
+        "已证明遗忘",
+        "系统没有任何提醒"
+      ]
+    },
+    {
+      "id": "E3",
+      "synthetic": true,
+      "type": "constraint",
+      "label": "约束卡",
+      "automatic_outbound_authorized": false,
+      "full_order_history_access_authorized": false,
+      "supports": [
+        "当前动作与取证权限存在缺口"
+      ],
+      "cannot_conclude": [
+        "缺项已解决",
+        "获准全量读取",
+        "获准自动催单"
+      ]
+    },
+    {
+      "id": "E4",
+      "synthetic": true,
+      "type": "proposal",
+      "label": "替代做法卡",
+      "text": "由获准人员整理缺件与待接手清单，再决定是否需要自动提醒",
+      "status": "candidate",
+      "measured_benefit": null,
+      "cannot_conclude": [
+        "已采用",
+        "实测有效",
+        "优于自动提醒"
+      ]
+    }
+  ],
+  "options": [
+    {
+      "id": "O1",
+      "label": "补证后试行单类提醒",
+      "conditions": [
+        "证据支持可避免的遗忘",
+        "提醒动作获授权",
+        "可比基线",
+        "新增成本",
+        "验收与停止条件"
+      ],
+      "current_external_execution_allowed": false
+    },
+    {
+      "id": "O2",
+      "label": "人工依赖整理",
+      "conditions": [
+        "资料或审批/接手依赖需要澄清",
+        "人员与材料范围获准"
+      ],
+      "measured_benefit": null
+    },
+    {
+      "id": "O3",
+      "label": "暂缓或不做",
+      "conditions": [
+        "缺权限/样例",
+        "或预期价值不足以覆盖新增复核操作成本"
+      ],
+      "meaning": "可解释的业务选择，不自动认定研究失败"
+    }
+  ],
+  "open_questions": [
+    "谁接收下一动作",
+    "是否允许相应提醒",
+    "哪些对象和窗口形成可比基线",
+    "哪些额外复核成本需计入",
+    "缺项由谁补齐"
+  ],
+  "counterexamples": [
+    {
+      "id": "X1",
+      "synthetic": true,
+      "kind": "invalid_inference",
+      "interviewees": 5,
+      "willing_statements": 4,
+      "invalid_claim": "80% 的订单可自动化",
+      "valid_interpretation": "仅虚构受访者表态，不能推导总体比例、技术/组织可自动化或实际采用",
+      "display_as_adoption_metric": false
+    },
+    {
+      "id": "X2",
+      "kind": "missing_evidence_or_permission",
+      "expected": "保留缺项和补件责任，不模拟真实结论"
+    },
+    {
+      "id": "X3",
+      "kind": "future_behavior_statement",
+      "expected": "保留陈述身份，不按字面写成预测"
+    },
+    {
+      "id": "X4",
+      "kind": "method_decision_mismatch",
+      "expected": "补证或改方法；填满题单不等于计划成立"
+    }
+  ],
+  "unknown_metrics": {
+    "prevalence": null,
+    "baseline": null,
+    "observation_window": null,
+    "net_reduction": null,
+    "extra_review_cost": null,
+    "quality": null,
+    "adoption": null,
+    "business_effect": null
+  },
+  "unknown_semantics": "null means unknown, never zero",
+  "interaction_scope": "Simulated choices only; no real sending, customer connection, history read or external effect.",
+  "future_check_paths": [
+    "正常选择",
+    "证据不足",
+    "返回",
+    "重选",
+    "停止"
+  ],
+  "sequence_boundary": "Relationship model; not a mandatory linear research workflow."
+}

@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-10-03 · 成文规则与 writing 薄入口
+
+- 对照委托提供的召回摘要与当前 Write 实现，窄修订语体、句式、信息作用、审阅判准和修改记录默认，见 [ADR-024](docs/decisions/024-prose-defaults-and-review-scope.md)。四条语义底线和现有目录保持，个人口吻只用于当前任务。
+- Prose 直接说明外部参考的用途与低权重边界；既有三个来源重访，ASD-STE100 三个官方路由访问受限，未提炼规则或声称合规。Reporting 的 brief 前提与入口对齐，Publish 补当前职责裁决链接。
+- [回执](docs/verification/writing-review-20261003.md)保留对照表、四段现有文本的适用边界和未验项。Write 纯文本收缩与既有 ADR 落位的冲突已列明，未实施职责迁移。
+
 ## 2026-09-27 · Kit 体例与设计参考消费
 
 - 消费两份指定 Chat，由 Luna 探索与登记、Astra/main 裁决；覆盖与缺口见 [验收回执](docs/verification/kit-editorial-review-20260927.md)。
@@ -143,3 +149,12 @@
 - [仓库校验](scripts/validate_repository.py)加两项：生成的卡和索引与 catalog 逐字相同；共用一张卡的几条来源在卡里都有 URL。第二项查出一处缺口并已补上。
 - 工单提案的现状只留在主题页的裁决表，两个上层入口不再复述；[决定索引](docs/decisions/README.md)注明 ADR-014、015、016 被后来的决定替代或修订的部分；根 README 的设计任务直链参考路由。
 - 没有做：按用途投影、用真实任务做带对照的消费验收、兼容入口的瘦身。没有改任何 Kit 规则。
+
+## 2026-10-03 · Palantir 首次设计打样
+
+- 入账用户交来的 [设计交接包](vault/snapshots/local/palantir-design-handoff-20261003/README.md)（七个文件），登记见 [入账记录](vault/intake/palantir-design-handoff-20261003.json)。
+- 据此做了 [从诉求到决定](demos/palantir-discovery/README.md)：一页离线交互网页，读者加减五张合成材料，台账和四个分支的判读随之改写，选择只模拟；同一文件打印成 A4 带 S0/S1 对照表。
+- 复查三篇公开来源：Lonsdale 第 5、6 条在交接里对应反了，作品已逐条改写；Portigal 页面遇到人机验证，主会话没有亲自读到。
+- 没有做：受众测试、减少动效和读屏软件下的实际检查。方法仍是项目候选，`palantir/` 主题和 Kit 规则没有改。
+- 用户读页面后指出文案别扭：页面文字没有经过 Write / Prose，Design 参考卡也没读。按 [审阅方法](kit/write/prose/review.md)改了 63 处，按两张优先参考卡加了“判读一览”，记录见作品 README。
+- 入口修订见 [ADR-023](docs/decisions/023-consume-by-artifact-component.md)：[Kit 任务入口](kit/README.md)按产物的组成部分分到几支；[Design 入口](kit/design/README.md)写明页面文字仍按 Prose 写和审，并加一张先读哪张参考的表；[媒介验收](kit/write/shared/verification.md)加交付前的分工核对；[成文原理](kit/write/prose/grammar.md)的结构位置加上按钮、图例和状态提示；`writing` skill 在产物含中文文字时也加载。一次改前改后对照：改后的代理打开了审阅方法和四种 Design 参考，改前只看到名字。

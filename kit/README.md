@@ -15,6 +15,8 @@ Kit 通过目录逐层展开工作语境。先选这次工作，再读有关分�
 | 只规范空格、标点或链接，不动措辞 | [格式检查](write/prose/format.md) | 不需要成文原理 |
 | 判断如何表现内容、数据或交互；图表与界面任务可以直接从这里开始 | [Design](design/README.md) | Foundations / Composition / Interaction / Motion / References |
 
+一件产物常要用到几支。按产物的组成部分取用，不按请求的叫法：产物里写给读者的成句文字，包括正文、图注、页面说明、界面标签、按钮和状态提示，按 [Prose](write/prose/README.md)写，按 [审阅方法](write/prose/review.md)查；阅读顺序、展项和说明的分工过 [Publish](write/publish/README.md)；视觉、交互和运动过 Design，遇到它列出的情形先读对应参考。交互网页和带图的报告通常三支都用到。
+
 Write 的 [Shared](write/shared/README.md)贯穿表达模式；具体项目保持自己的风格、运行实现和消费记录。样张与历史产出是参考，不能自动变成全局规则。
 
 ## 企业工作与环境

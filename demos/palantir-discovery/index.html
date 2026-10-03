@@ -1,0 +1,1083 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>从诉求到决定</title>
+<style>
+:root {
+  --paper: #ffffff;
+  --wash: #f2f5f8;
+  --rule: #d6dde5;
+  --rule-strong: #8f9cab;
+  --ink: #16202a;
+  --ink-2: #3f4b58;
+  --ink-3: #66727f;
+  --accent: #1b58cf;
+  --accent-wash: #eaf0fc;
+  --sans: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Noto Sans CJK SC", "Source Han Sans SC", "Microsoft YaHei", sans-serif;
+  --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --gutter: 16px;
+}
+* { box-sizing: border-box; }
+html { background: var(--paper); }
+body {
+  margin: 0; background: var(--paper); color: var(--ink);
+  font: 16px/1.72 var(--sans); -webkit-text-size-adjust: 100%;
+}
+a { color: inherit; text-decoration-color: var(--rule-strong); text-underline-offset: 3px; }
+a:hover { text-decoration-color: var(--ink); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+h1, h2, h3 { font-weight: 600; line-height: 1.3; margin: 0; }
+p { margin: 0 0 .8em; }
+ul { margin: 0; padding-left: 1.2em; }
+.wrap { max-width: 1120px; margin: 0 auto; padding: 0 var(--gutter); }
+.id { font-family: var(--mono); font-size: .86em; letter-spacing: .02em; }
+.tag {
+  display: inline-block; font-size: 12px; line-height: 1.5; padding: 0 6px;
+  border: 1px solid var(--rule-strong); border-radius: 3px; color: var(--ink-2);
+  white-space: nowrap; vertical-align: 2px; font-weight: 400;
+}
+.tag.dash { border-style: dashed; }
+.muted { color: var(--ink-3); }
+.small { font-size: 14px; }
+
+/* Synthetic banner */
+.synthetic {
+  border-bottom: 1px solid var(--rule); background: var(--wash);
+  font-size: 14px; color: var(--ink-2);
+}
+.synthetic .wrap { padding-top: 10px; padding-bottom: 10px; }
+.synthetic strong { color: var(--ink); font-weight: 600; }
+
+/* Section rhythm */
+section { padding: 56px 0 8px; }
+.sec-head { display: grid; grid-template-columns: 3.2em 1fr; gap: 0 12px; margin-bottom: 24px; }
+.sec-head .no { font-family: var(--mono); color: var(--ink-3); font-size: 15px; padding-top: 4px; }
+.sec-head h2 { font-size: 24px; }
+.sec-head .answer { grid-column: 2; margin-top: 8px; font-size: 17px; color: var(--ink-2); max-width: 46em; }
+
+/* Hero: the request as a specimen */
+.hero { padding: 48px 0 8px; }
+.hero .who { font-size: 14px; color: var(--ink-3); margin-bottom: 10px; }
+.request {
+  font-size: clamp(30px, 6.4vw, 64px); line-height: 1.32; font-weight: 600;
+  letter-spacing: .01em; margin: 0 0 28px;
+}
+.request .seg { border-bottom: 3px dashed var(--rule-strong); padding-bottom: 2px; margin-right: .12em; }
+.request sup { font: 600 14px/1 var(--mono); color: var(--ink-3); margin-left: 2px; vertical-align: super; }
+.notes { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0 28px; border-top: 1px solid var(--rule); }
+.note { padding: 14px 0 0; }
+.note h3 { font-size: 15px; margin-bottom: 4px; }
+.note h3 .id { color: var(--ink-3); margin-right: 6px; }
+.note p { font-size: 15px; color: var(--ink-2); margin: 0; }
+
+.decision {
+  margin: 36px 0 0; padding: 18px 20px 18px 22px;
+  border-left: 4px solid var(--accent); background: var(--accent-wash);
+}
+.decision .k { font-size: 14px; color: var(--accent); font-weight: 600; margin-bottom: 4px; }
+.decision .v { font-size: clamp(20px, 3vw, 28px); line-height: 1.4; font-weight: 600; }
+.decision dl { display: grid; grid-template-columns: auto 1fr; gap: 2px 14px; margin: 12px 0 0; font-size: 15px; }
+.decision dt { color: var(--ink-3); }
+.decision dd { margin: 0; }
+.inference { margin-top: 16px; font-size: 15px; color: var(--ink-2); max-width: 52em; }
+
+/* Bench */
+.bench {
+  display: grid; gap: 24px 32px;
+  grid-template-columns: minmax(0, 1fr) 380px;
+  grid-template-areas: "controls controls" "cards ledger";
+}
+.controls { grid-area: controls; display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; }
+.cards { grid-area: cards; display: grid; gap: 16px; }
+.ledger-col { grid-area: ledger; }
+.ledger { position: sticky; top: 16px; }
+button {
+  font: inherit; font-size: 15px; color: var(--ink); background: var(--paper);
+  border: 1px solid var(--rule-strong); border-radius: 4px;
+  min-height: 40px; padding: 6px 14px; cursor: pointer;
+}
+button:hover { background: var(--wash); }
+button[aria-pressed="true"] { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+button.primary { border-color: var(--accent); color: var(--accent); }
+button.primary:hover { background: var(--accent-wash); }
+.have-line { font-size: 14px; color: var(--ink-2); }
+
+.card { border: 1px solid var(--rule-strong); border-radius: 4px; padding: 16px 18px; background: var(--paper); }
+.card.out { border-style: dashed; }
+.card header { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 10px; margin-bottom: 10px; }
+.card header h3 { font-size: 17px; }
+.card header .id { font-size: 15px; font-weight: 600; }
+.card header .state { margin-left: auto; font-size: 13px; color: var(--ink-3); }
+.card .body { font-size: 15px; }
+.quote { margin: 0 0 8px; }
+.quote q { quotes: "「" "」"; }
+.quote .by { color: var(--ink-3); font-size: 14px; margin-left: 6px; }
+.record .src-k { color: var(--ink-3); font-family: var(--sans); }
+.record { font-family: var(--mono); font-size: 13.5px; background: var(--wash); padding: 6px 10px; border-radius: 3px; margin: 0 0 8px; }
+.sc { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 20px; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--rule); }
+.sc h4 { font-size: 13px; font-weight: 600; color: var(--ink-3); margin: 0 0 2px; }
+.sc ul { font-size: 14.5px; }
+.card .toggle { margin-top: 12px; }
+.card .fb { font-size: 13.5px; color: var(--ink-2); margin: 8px 0 0; }
+.card .fb a { color: var(--accent); }
+
+.ledger h3 { font-size: 15px; display: flex; justify-content: space-between; gap: 8px; align-items: baseline; }
+.ledger .stage { font-family: var(--mono); font-size: 14px; color: var(--ink-2); }
+.ledger ol { list-style: none; margin: 10px 0 0; padding: 0; border-top: 2px solid var(--ink); }
+.ledger li { padding: 9px 0 10px; border-bottom: 1px solid var(--rule); }
+.ledger .lk { font-size: 13px; color: var(--ink-3); display: flex; gap: 8px; align-items: baseline; }
+.ledger .lk .src { font-family: var(--mono); font-size: 12px; }
+.ledger .lk .new { margin-left: auto; font-size: 12px; color: var(--accent); font-weight: 600; }
+.ledger .lv { font-size: 15px; }
+.ledger .lv.unknown { color: var(--ink-2); }
+.ledger .lv.unknown span.u { border-bottom: 1px dashed var(--rule-strong); }
+.ledger .ln { font-size: 13px; color: var(--ink-3); }
+.ledger li.next { background: var(--accent-wash); padding-left: 10px; padding-right: 10px; border-left: 3px solid var(--accent); }
+.ledger li.next .lk { color: var(--accent); }
+.legend { font-size: 13px; color: var(--ink-3); margin-top: 10px; }
+.legend span { margin-right: 12px; white-space: nowrap; }
+.legend i { display: inline-block; width: 22px; height: 0; border-top: 1.5px solid var(--ink); vertical-align: middle; margin-right: 4px; }
+.legend i.d { border-top-style: dashed; border-color: var(--rule-strong); }
+.metrics { display: flex; flex-wrap: wrap; gap: 4px 6px; margin-top: 4px; }
+
+/* Branch board */
+.board { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+.branch { border-top: 2px solid var(--ink); padding-top: 12px; display: flex; flex-direction: column; }
+.branch .bid { font-family: var(--mono); font-size: 13px; color: var(--ink-3); }
+.branch h3 { font-size: 18px; margin: 2px 0 8px; }
+.branch .when { font-size: 14px; color: var(--ink-2); margin-bottom: 8px; }
+.branch .when b { font-weight: 600; color: var(--ink); }
+.conds { list-style: none; padding: 0; margin: 0 0 10px; font-size: 14px; }
+.conds li { display: grid; grid-template-columns: 1.4em 1fr; padding: 5px 0; border-top: 1px solid var(--rule); }
+.conds .g { font-family: var(--mono); }
+.conds .why { display: block; color: var(--ink-3); font-size: 13px; }
+.conds .grp { grid-column: 1 / -1; font-size: 12px; color: var(--ink-3); padding-top: 4px; }
+.verdict { font-size: 14px; font-weight: 600; margin: 4px 0 10px; }
+.branch .act { font-size: 14px; color: var(--ink-2); margin-bottom: 12px; }
+.branch button { margin-top: auto; width: 100%; }
+.branch.chosen button { background: var(--ink); color: var(--paper); }
+.strip { margin-bottom: 24px; }
+.strip td, .strip th { padding-top: 6px; padding-bottom: 6px; }
+.strip .id { color: var(--ink-3); margin-right: 8px; }
+.rule-note { font-size: 13.5px; color: var(--ink-3); margin-top: 16px; max-width: 60em; }
+
+.record-panel { margin-top: 28px; border: 1px solid var(--ink); border-radius: 4px; padding: 20px 22px; }
+.record-panel[hidden] { display: none; }
+.record-panel h3 { font-size: 19px; }
+.record-panel h3:focus { outline: none; }
+.record-panel .sim { font-size: 13px; color: var(--ink-3); margin: 2px 0 14px; }
+.record-panel dl { display: grid; grid-template-columns: 9em 1fr; gap: 8px 16px; margin: 0; font-size: 15px; }
+.record-panel dt { color: var(--ink-3); }
+.record-panel dd { margin: 0; }
+.record-panel dd.who { border-left: 3px solid var(--accent); padding-left: 10px; }
+.record-panel .stale { border: 1px dashed var(--ink); padding: 8px 12px; margin-bottom: 14px; font-size: 14.5px; }
+.record-panel.is-stale dl { opacity: .55; }
+.record-panel .actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+.record-panel .ack { margin-top: 12px; font-size: 14.5px; padding: 8px 12px; background: var(--wash); }
+
+/* Counterexample */
+.chain { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; font-size: clamp(17px, 2.4vw, 22px); font-weight: 600; margin: 4px 0 18px; }
+.chain .arrow { color: var(--ink-3); font-weight: 400; }
+.chain .bad { text-decoration: line-through; text-decoration-thickness: 2px; color: var(--ink-2); }
+.gaps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0 24px; border-top: 1px solid var(--rule); }
+.gaps div { padding-top: 10px; font-size: 15px; }
+.gaps b { display: block; font-weight: 600; }
+
+table { border-collapse: collapse; width: 100%; font-size: 15px; }
+th, td { text-align: left; vertical-align: top; padding: 9px 12px 9px 0; border-bottom: 1px solid var(--rule); }
+thead th { font-size: 13px; font-weight: 600; color: var(--ink-3); border-bottom: 2px solid var(--ink); }
+tbody th { font-weight: 600; white-space: nowrap; }
+.table-scroll { overflow-x: auto; }
+
+.split { display: grid; grid-template-columns: 1fr 1fr; gap: 0 32px; }
+.split h3 { font-size: 16px; margin-bottom: 6px; }
+.split ul { font-size: 15px; }
+.split li { margin-bottom: 4px; }
+
+.voices { display: grid; gap: 0; border-top: 2px solid var(--ink); }
+.voice { display: grid; grid-template-columns: 9em 1fr; gap: 4px 20px; padding: 14px 0; border-bottom: 1px solid var(--rule); }
+.voice .vh { font-size: 14px; }
+.voice .vh .id { display: block; font-size: 15px; font-weight: 600; }
+.voice p { font-size: 15px; margin: 0 0 6px; }
+.voice .bound { font-size: 14px; color: var(--ink-3); }
+.voice .url { font-family: var(--mono); font-size: 12.5px; color: var(--ink-3); word-break: break-all; }
+
+footer { margin-top: 64px; border-top: 1px solid var(--rule); padding: 20px 0 48px; font-size: 14px; color: var(--ink-2); }
+footer p { max-width: 60em; }
+
+/* Motion: only where state changes */
+@keyframes settle { from { opacity: .25; transform: translateY(3px); } to { opacity: 1; transform: none; } }
+.changed .lv, .changed .ln, .flip .verdict, .flip .conds { animation: settle 200ms ease-out; }
+.record-panel.enter { animation: settle 180ms ease-out; }
+@media (prefers-reduced-motion: reduce) {
+  .changed .lv, .changed .ln, .flip .verdict, .flip .conds, .record-panel.enter { animation: none; }
+}
+
+/* Narrow */
+@media (max-width: 980px) {
+  .board { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 860px) {
+  .bench { grid-template-columns: minmax(0, 1fr); grid-template-areas: "controls" "ledger" "cards"; }
+  .ledger { position: static; }
+}
+@media (max-width: 640px) {
+  section { padding-top: 44px; }
+  .sec-head { grid-template-columns: 1fr; }
+  .sec-head .answer { grid-column: 1; }
+  .notes, .gaps, .split { grid-template-columns: 1fr; }
+  .board { grid-template-columns: 1fr; }
+  .sc { grid-template-columns: 1fr; }
+  .voice { grid-template-columns: 1fr; }
+  .record-panel dl { grid-template-columns: 1fr; gap: 2px; }
+  .record-panel dd { margin-bottom: 8px; }
+  .decision dl { grid-template-columns: 1fr; }
+}
+
+/* Print: A4, controls removed, every card and the comparison readable */
+@media print {
+  @page { size: A4; margin: 14mm 14mm 16mm; }
+  body { font-size: 10.5pt; line-height: 1.55; }
+  .wrap { max-width: none; padding: 0; }
+  button, .controls, .card .toggle, .record-panel .actions { display: none !important; }
+  section { padding-top: 22px; }
+  .hero { padding-top: 12px; }
+  .request { font-size: 30pt; }
+  .bench { display: block; }
+  .ledger { position: static; margin-bottom: 16px; }
+  .ledger ol { columns: 2; column-gap: 24px; }
+  .ledger li { break-inside: avoid; }
+  .cards { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .sec-head { break-after: avoid; }
+  .card, .branch, .voice, tr, .decision, .record-panel { break-inside: avoid; }
+  .card.out { border-style: solid; }
+  .board { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .sec-head h2 { font-size: 15pt; }
+  a { text-decoration: none; }
+  #compare { break-before: page; }
+  .changed .lv, .changed .ln { animation: none; }
+}
+</style>
+</head>
+<body>
+
+<div class="synthetic" role="note">
+  <div class="wrap"><strong>演练材料：</strong>本页的组织、角色、请求、陈述和记录全部为虚构，不是采访摘录、企业日志、真实授权或测量。按钮只在本页模拟，不发送催单，不连接客户，也不读取任何真实资料。</div>
+</div>
+
+<main>
+<div class="wrap">
+
+<header class="hero">
+  <p class="who">虚构运营负责人提出的功能诉求 <span class="tag">合成</span> <span class="id">E0</span></p>
+  <p class="request" aria-describedby="request-notes">希望 <span class="seg">AI<sup>a</sup></span> <span class="seg">每天自动催<sup>b</sup></span><span class="seg">未处理订单<sup>c</sup></span>。</p>
+  <div class="notes" id="request-notes">
+    <div class="note"><h3><span class="id">a</span>候选做法</h3><p>“AI 自动催”是候选功能，尚未批准；人工整理、暂缓和不做也在可选之列。</p></div>
+    <div class="note"><h3><span class="id">b</span>需要单独授权的外部动作</h3><p>每天自动发出提醒属于对外动作。业务批准、资料权限和发信授权需要分别取得，这条请求一项也不包含。</p></div>
+    <div class="note"><h3><span class="id">c</span>尚未查明的等待原因</h3><p>等待可能源于遗忘、缺件、未到审批、权限限制或尚未到处理时间，这五种都是待检验的解释。</p></div>
+  </div>
+
+  <div class="decision">
+    <div class="k">请求背后尚未作出的决定</div>
+    <div class="v">本周是否批准一个有边界的“减少订单等待”试点。</div>
+    <dl>
+      <dt>决定者</dt><dd>相应业务负责人；方法与范围由研究者确认</dd>
+      <dt>现有证据</dt><dd>只有请求本身（S0）</dd>
+      <dt>初始功能</dt><dd>候选</dd>
+    </dl>
+  </div>
+  <p class="inference"><span class="tag">项目推断</span> <span class="id">D1</span> 在这个催单场景里，“尽快行动”可以是尽快取得能改变决定的材料，不预设把初始功能尽快上线。这是本项目的比较与解释，不是下文三位作者的共同立场，也不是实测效果。</p>
+</header>
+
+<section id="bench" aria-labelledby="bench-h">
+  <div class="sec-head">
+    <span class="no">01</span>
+    <h2 id="bench-h">材料的支持范围</h2>
+    <p class="answer">订单甲和订单乙的回放各提示一种等待原因：缺件，以及接手责任不明。约束卡表明，自动发信和读取全部订单历史都未获准。没有一份材料给出发生比例，批量自动催单因此仍无依据。</p>
+  </div>
+
+  <div class="bench">
+    <div class="controls" role="group" aria-label="材料选择">
+      <button type="button" id="to-s0">回到 S0：只有请求</button>
+      <button type="button" id="to-s1" class="primary">加入全部材料：S1</button>
+      <span class="have-line" id="have-line"></span>
+      <span class="have-line">加入或移出材料卡，台账逐行改写。</span>
+    </div>
+    <div class="cards" id="cards"></div>
+    <div class="ledger-col">
+      <div class="ledger" aria-labelledby="ledger-h">
+        <h3><span id="ledger-h">台账</span><span class="stage" id="stage"></span></h3>
+        <ol id="ledger"></ol>
+        <p class="legend"><span><i></i>演练材料已确定</span><span><i class="d"></i>未知或候选</span></p>
+        <p class="sr" id="live" aria-live="polite" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)"></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="branches" aria-labelledby="branches-h">
+  <div class="sec-head">
+    <span class="no">02</span>
+    <h2 id="branches-h">下一步的四个分支</h2>
+    <p class="answer">补证后的提醒试验、人工整理、写明缺项和暂缓各有前提。前提有材料提示时，可以准备对应的一步；前提不满足或仍然未知时，下一步是补证。暂缓和不做是可以说明理由的业务选择，不等于研究失败。</p>
+  </div>
+  <table class="strip" aria-label="判读一览"><thead><tr><th scope="col">分支</th><th scope="col">判读结果</th></tr></thead><tbody id="strip"></tbody></table>
+  <div class="board" id="board"></div>
+  <p class="rule-note"><span class="tag">项目设计</span> 判读规则：准备一步所需的前提全部“有材料提示”时，可以准备；任何一项“不满足”，这一步暂不可行；有一项仍“未知”，记为证据不足。以“或”连接的前提，一项有提示即可。规则和分支措辞都是本项目的操作化，不是作者原文。</p>
+
+  <div class="record-panel" id="record" hidden aria-labelledby="record-h"></div>
+</section>
+
+<section id="who" aria-labelledby="who-h">
+  <div class="sec-head">
+    <span class="no">03</span>
+    <h2 id="who-h">决定者与 agent 的分工</h2>
+    <p class="answer">人确认待作的决定、受影响的人、允许接触的资料和负责裁决的人。agent 在获准材料内整理、比对并标出缺口；它的产物既不能代替人的授权，也不能代替证据。</p>
+  </div>
+  <div class="split">
+    <div>
+      <h3>人</h3>
+      <ul>
+        <li>提供或确认可以改变的决定，以及受影响的人</li>
+        <li>划定允许接触的资料，指定负责裁决的人</li>
+        <li>确认范围与专业边界后，再进行获准的研究</li>
+        <li>作出业务决定，包括不做这个功能</li>
+      </ul>
+    </div>
+    <div>
+      <h3>agent</h3>
+      <ul>
+        <li>在获准材料内提出最少的研究未知，匹配方法，标出当前方法答不了的问题</li>
+        <li>整理来源定位、遗漏和互相冲突的陈述</li>
+        <li>可以建议不做功能</li>
+        <li>不假装访谈过人，不补造观察，不自行发送邀请或催单</li>
+      </ul>
+    </div>
+  </div>
+  <p class="small muted" style="margin-top:14px">私密原件留在获准范围之内；通用表达不携带真实身份或原文。</p>
+</section>
+
+<section id="counter" aria-labelledby="counter-h">
+  <div class="sec-head">
+    <span class="no">04</span>
+    <h2 id="counter-h">问题与方法的匹配</h2>
+    <p class="answer">取证方法随问题而定。等待发生在哪个动作之前，由获准的案例回放区分；发生比例需要有分母和时间窗口的记录；受访者对未来是否使用的表态，不能当作预测。</p>
+  </div>
+  <p class="small muted" style="margin-bottom:6px"><span class="tag">合成</span> 错误推理示例 <span class="id">X1</span></p>
+  <p class="chain" aria-label="错误推理：访谈五人，四人说愿意用，因此推出八成订单可自动化，这个结论不成立">
+    <span>访谈 5 人</span><span class="arrow" aria-hidden="true">→</span>
+    <span>4 人说愿意用</span><span class="arrow" aria-hidden="true">→</span>
+    <span class="bad">80% 的订单可自动化</span>
+  </p>
+  <div class="gaps">
+    <div><b>表态不是采用</b>“愿意用”是受访者的陈述，不是实际使用。</div>
+    <div><b>受访者不是订单总体</b>5 名受访者的回答既没有订单分母，也没有时间窗口。</div>
+    <div><b>意愿不是可自动化边界</b>技术与组织上能否自动化，需要另行判断。</div>
+  </div>
+
+  <div class="table-scroll" style="margin-top:28px">
+  <table>
+    <thead><tr><th scope="col">研究未知</th><th scope="col">相配的取证方式</th><th scope="col">不能单独回答的材料</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">等待发生的环节</th><td>在获准的最近案例中，请实际经办人回放状态变化、依赖与已有提醒</td><td>发生比例数据</td></tr>
+      <tr><th scope="row">各类等待的发生比例</th><td>有分母和时间窗口的记录、计数或对照</td><td>少量回放或访谈</td></tr>
+      <tr><th scope="row">提醒对等待的影响</th><td>定好可比基线、成本与停止条件后的小范围试验</td><td>意愿表态</td></tr>
+      <tr><th scope="row">容量、总体发生率、因果收益</th><td>与问题相配的方法，由相应研究或业务专家判断</td><td>访谈已完成这一事实</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="small" style="margin-top:12px">回放提问示例：“请带我看最近一次未按预期推进的订单，从上一个动作开始，之后发生了什么？”现场提问是取证手段，不能替代研究未知；待检验的解释也不写成诱导式选项。</p>
+</section>
+
+<section id="method" aria-labelledby="method-h">
+  <div class="sec-head">
+    <span class="no">05</span>
+    <h2 id="method-h">方法卡：从功能诉求到待作决定</h2>
+    <p class="answer">收到功能诉求后，先确定要作的决定。每项研究未知都写明它会改变哪个决定、什么材料能支持判断。最小产物是一页业务负责人和研究者都能复核的研究计划，或一份有依据的补证、改方法或停止建议。</p>
+  </div>
+  <p class="small muted"><span class="tag">项目设计</span> 下表的字段、状态与催单案例是本项目的操作化，不是作者原文的 schema。方法仍是项目候选，未经真实任务使用。</p>
+  <div class="table-scroll">
+  <table>
+    <thead><tr><th scope="col">记录项</th><th scope="col">要回答什么</th><th scope="col">不合格的替代</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">本次决定</th><td>谁在什么边界内决定启动、改变、暂缓或停止什么</td><td>只写“了解用户”</td></tr>
+      <tr><th scope="row">研究未知</th><td>哪些解释尚待区分，什么新信息会改变选择</td><td>只问“大家是否喜欢 AI”</td></tr>
+      <tr><th scope="row">已有材料</th><td>来源、范围、时间、许可与缺项</td><td>把方案说明当用户证据</td></tr>
+      <tr><th scope="row">取证方式</th><td>哪种观察、回放、访谈、日志或试验能区分解释</td><td>先定访谈人数，再找理由</td></tr>
+      <tr><th scope="row">现场提问/动作</th><td>怎样取得具体经历或获准的工作过程</td><td>把内部抽象研究问句直接念给人</td></tr>
+      <tr><th scope="row">证据与推断</th><td>分开保存观察、当事人陈述和研究者推断，并附定位</td><td>将 agent 补全的原因写成访谈原话</td></tr>
+      <tr><th scope="row">下一决定</th><td>谁接收，材料还不能证明什么，怎样补证或停止</td><td>因访谈完成就宣告应上线</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="small" style="margin-top:12px">这些关系可以反复调整，保留原问题和改动理由。不同解释可以并存，也不要求所有工作遵循同一条线性流程。记录是否完整，与决定和方法是否匹配，分开判断；填满表格不能证明研究计划成立。</p>
+</section>
+
+<section id="compare" aria-labelledby="compare-h">
+  <div class="sec-head">
+    <span class="no">06</span>
+    <h2 id="compare-h">S0 与 S1 对照</h2>
+    <p class="answer">从 S0 到 S1，待作的决定没有变化，初始功能仍是候选。新增的是两种可区分的解释、写明的权限缺口和一个人工替代方案；发生率和收益仍然未知。</p>
+  </div>
+  <div class="table-scroll">
+  <table>
+    <thead><tr><th scope="col"></th><th scope="col">S0 · 只有请求</th><th scope="col">S1 · 加入 E1–E4</th></tr></thead>
+    <tbody id="compare-body"></tbody>
+  </table>
+  </div>
+</section>
+
+<section id="sources" aria-labelledby="sources-h">
+  <div class="sec-head">
+    <span class="no">07</span>
+    <h2 id="sources-h">来源与边界</h2>
+    <p class="answer">三位作者的身份与立场各不相同，不合并为一份共同宣言；方法依据只限于 Portigal 一书的第一章。Palantir 提供研究主题和有归属的现场经验，本页不是经过验证的 Palantir 公司方法。</p>
+  </div>
+  <div class="voices">
+    <div class="voice">
+      <div class="vh"><span class="id">C1</span><span class="tag">作者经验</span></div>
+      <div>
+        <p>Nabeel Qureshi 在《<a href="https://nabeelqu.co/reflections-on-palantir">Reflections on Palantir</a>》第 2–3 节回忆：深入客户现场取得情境，很快交付能用的软件，核心团队把现场做出的东西泛化成产品，以及取得数据访问常常受阻。</p>
+        <p class="bound">2024-10-15 的个人回忆，作者声明持有 PLTR 多头。不支持普适因果、当前官方制度或经营数字。</p>
+        <p class="url">nabeelqu.co/reflections-on-palantir</p>
+      </div>
+    </div>
+    <div class="voice">
+      <div class="vh"><span class="id">C2</span><span class="tag">作者建议</span></div>
+      <div>
+        <p>Joe Lonsdale 在《<a href="https://www.8vc.com/resources/lessons-from-peter-thiel">Lessons from Peter Thiel</a>》里写：第 1 条，把理由拆开，找出最重要的一项；第 5 条，用细小迹象看整体，尤其留意指向不合心意结论的迹象；第 6 条，不空谈打算想什么，当下就想清楚；第 7 条，花时间听持不同意见的聪明人。</p>
+        <p class="bound">个人经验，带强烈的组织立场。第 8 条对外部伙伴的不信任不作默认规则。页面日期 2010-04-11。</p>
+        <p class="url">8vc.com/resources/lessons-from-peter-thiel</p>
+      </div>
+    </div>
+    <div class="voice">
+      <div class="vh"><span class="id">C3</span><span class="tag">章节方法</span></div>
+      <div>
+        <p>Steve Portigal，《Interviewing Users》第二版（2023），<a href="https://rosenfeldmedia.com/interviewing-users-second-edition-sample-chapter/">出版社公开的第一章</a>：研究计划由业务问题、研究问题和研究方法构成，参与者提问另列，不等于研究问题；方法要产出所需的信息，信息要支撑接下来的行动；计划的这三项可以从任何一项开始对齐。章首的安全帽案例最终没有推出产品：原方案有风险，新发现的机会又不合组织的技术与文化能力。访谈重深度而非样本量；人们对自己未来行为的预测不可靠。</p>
+        <p class="bound">只用第一章，不代表全书；图表未核。方法卡的字段不是原文 schema。</p>
+        <p class="url">rosenfeldmedia.com/interviewing-users-second-edition-sample-chapter/</p>
+      </div>
+    </div>
+    <div class="voice">
+      <div class="vh"><span class="id">D1</span><span class="tag">项目推断</span></div>
+      <div>
+        <p>“尽快行动”可以是尽快取得能改变决定的材料，不预设把初始功能尽快上线。</p>
+        <p class="bound">本项目的比较与解释，不是作者共同立场，也不是实测效果。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>边界：组织、角色、请求、陈述与演练记录全部为虚构；页面里的按钮只模拟选择，不发送、不连接、不保存。没有做受众测试，本页不声称改善了理解，也不证明方法有效或带来业务收益。不使用公司经营数字，不引用未读书籍的结论。</p>
+  <p class="muted">内容版本 2026-10-03-local-aligned · fixture v1 · 公开来源核查 2026-10-03 · Praxis demos/palantir-discovery</p>
+</footer>
+
+</div>
+</main>
+
+<script type="application/json" id="fixture">
+{
+  "schema": "palantir-discovery-synthetic-fixture-v1",
+  "synthetic": true,
+  "purpose": "Compare how evidence changes a research and business decision; no real customer, interview, log, permission, action or measured effect.",
+  "source_scope": "Original report Palantir method card and Design brief; E0–E4 and S0–S1.",
+  "versions": {
+    "content": "2026-10-03-local-aligned",
+    "fixture": "v1"
+  },
+  "roles": [
+    {
+      "id": "R01",
+      "label": "虚构运营负责人",
+      "responsibility": "提出诉求并参与业务裁决"
+    },
+    {
+      "id": "R02",
+      "label": "虚构研究者",
+      "responsibility": "在获准范围内匹配研究问题与方法"
+    },
+    {
+      "id": "R03",
+      "label": "agent",
+      "responsibility": "整理获准材料，不补造访谈或执行外部动作"
+    }
+  ],
+  "voices": [
+    {
+      "id": "C1",
+      "identity": "author_experience",
+      "source_id": "palantir-url-01"
+    },
+    {
+      "id": "C2",
+      "identity": "author_advice",
+      "source_id": "palantir-url-02"
+    },
+    {
+      "id": "C3",
+      "identity": "chapter_method",
+      "source_id": "palantir-url-04"
+    },
+    {
+      "id": "D1",
+      "identity": "project_inference",
+      "summary": "快速行动可以是迅速取得能改变决定的材料，不预设将初始功能尽快上线"
+    }
+  ],
+  "research_plan_fields": [
+    "本次决定",
+    "研究未知",
+    "已有材料",
+    "取证方式",
+    "现场提问/动作",
+    "证据与推断",
+    "下一决定"
+  ],
+  "states": [
+    {
+      "id": "S0",
+      "available_evidence": [
+        "E0"
+      ],
+      "request_status": "candidate",
+      "decision": "本周是否批准一个有边界的减少订单等待试点",
+      "unknowns": [
+        "等待原因",
+        "提醒权限",
+        "收益",
+        "成本"
+      ],
+      "allowed_next": "形成获准取证计划，不批准真实外部动作"
+    },
+    {
+      "id": "S1",
+      "available_evidence": [
+        "E0",
+        "E1",
+        "E2",
+        "E3",
+        "E4"
+      ],
+      "request_status": "candidate",
+      "interpretation": "至少存在缺件与接手责任待澄清两种解释",
+      "bulk_automation_supported": false,
+      "population_prevalence": null,
+      "allowed_next": "窄范围取证或人工试验计划"
+    }
+  ],
+  "evidence": [
+    {
+      "id": "E0",
+      "synthetic": true,
+      "type": "role_statement",
+      "label": "请求卡",
+      "text": "希望 AI 每天自动催未处理订单",
+      "supports": [
+        "一名虚构角色提出功能请求"
+      ],
+      "cannot_conclude": [
+        "已批准",
+        "原因已知",
+        "发送获授权"
+      ]
+    },
+    {
+      "id": "E1",
+      "synthetic": true,
+      "type": "case_replay",
+      "label": "订单甲回放卡",
+      "object_id": "ORDER-A",
+      "statements": [
+        {
+          "actor": "虚构经办人甲",
+          "text": "还缺一份必填附件"
+        }
+      ],
+      "observations": [
+        {
+          "record": "演练记录",
+          "field": "必填附件",
+          "value": "空"
+        }
+      ],
+      "supports": [
+        "这个案例有缺件证据"
+      ],
+      "cannot_conclude": [
+        "所有等待均因缺件",
+        "缺件的总体比例"
+      ]
+    },
+    {
+      "id": "E2",
+      "synthetic": true,
+      "type": "case_replay",
+      "label": "订单乙回放卡",
+      "object_id": "ORDER-B",
+      "statements": [
+        {
+          "actor": "虚构经办人乙",
+          "text": "不知道下一位接手者是谁"
+        }
+      ],
+      "observations": [
+        {
+          "record": "演练记录",
+          "field": "附件",
+          "value": "完整"
+        },
+        {
+          "record": "演练记录",
+          "field": "前一动作",
+          "value": "已结束"
+        }
+      ],
+      "supports": [
+        "接手责任有待澄清",
+        "现有材料不足以完整解释等待"
+      ],
+      "cannot_conclude": [
+        "已证明遗忘",
+        "系统没有任何提醒"
+      ]
+    },
+    {
+      "id": "E3",
+      "synthetic": true,
+      "type": "constraint",
+      "label": "约束卡",
+      "automatic_outbound_authorized": false,
+      "full_order_history_access_authorized": false,
+      "supports": [
+        "当前动作与取证权限存在缺口"
+      ],
+      "cannot_conclude": [
+        "缺项已解决",
+        "获准全量读取",
+        "获准自动催单"
+      ]
+    },
+    {
+      "id": "E4",
+      "synthetic": true,
+      "type": "proposal",
+      "label": "替代做法卡",
+      "text": "由获准人员整理缺件与待接手清单，再决定是否需要自动提醒",
+      "status": "candidate",
+      "measured_benefit": null,
+      "cannot_conclude": [
+        "已采用",
+        "实测有效",
+        "优于自动提醒"
+      ]
+    }
+  ],
+  "options": [
+    {
+      "id": "O1",
+      "label": "补证后试行单类提醒",
+      "conditions": [
+        "证据支持可避免的遗忘",
+        "提醒动作获授权",
+        "可比基线",
+        "新增成本",
+        "验收与停止条件"
+      ],
+      "current_external_execution_allowed": false
+    },
+    {
+      "id": "O2",
+      "label": "人工依赖整理",
+      "conditions": [
+        "资料或审批/接手依赖需要澄清",
+        "人员与材料范围获准"
+      ],
+      "measured_benefit": null
+    },
+    {
+      "id": "O3",
+      "label": "暂缓或不做",
+      "conditions": [
+        "缺权限/样例",
+        "或预期价值不足以覆盖新增复核操作成本"
+      ],
+      "meaning": "可解释的业务选择，不自动认定研究失败"
+    }
+  ],
+  "open_questions": [
+    "谁接收下一动作",
+    "是否允许相应提醒",
+    "哪些对象和窗口形成可比基线",
+    "哪些额外复核成本需计入",
+    "缺项由谁补齐"
+  ],
+  "counterexamples": [
+    {
+      "id": "X1",
+      "synthetic": true,
+      "kind": "invalid_inference",
+      "interviewees": 5,
+      "willing_statements": 4,
+      "invalid_claim": "80% 的订单可自动化",
+      "valid_interpretation": "仅虚构受访者表态，不能推导总体比例、技术/组织可自动化或实际采用",
+      "display_as_adoption_metric": false
+    },
+    {
+      "id": "X2",
+      "kind": "missing_evidence_or_permission",
+      "expected": "保留缺项和补件责任，不模拟真实结论"
+    },
+    {
+      "id": "X3",
+      "kind": "future_behavior_statement",
+      "expected": "保留陈述身份，不按字面写成预测"
+    },
+    {
+      "id": "X4",
+      "kind": "method_decision_mismatch",
+      "expected": "补证或改方法；填满题单不等于计划成立"
+    }
+  ],
+  "unknown_metrics": {
+    "prevalence": null,
+    "baseline": null,
+    "observation_window": null,
+    "net_reduction": null,
+    "extra_review_cost": null,
+    "quality": null,
+    "adoption": null,
+    "business_effect": null
+  },
+  "unknown_semantics": "null means unknown, never zero",
+  "interaction_scope": "Simulated choices only; no real sending, customer connection, history read or external effect.",
+  "future_check_paths": [
+    "正常选择",
+    "证据不足",
+    "返回",
+    "重选",
+    "停止"
+  ],
+  "sequence_boundary": "Relationship model; not a mandatory linear research workflow."
+}
+</script>
+<script>
+(function () {
+  'use strict';
+  var F = JSON.parse(document.getElementById('fixture').textContent);
+  var EV = {};
+  F.evidence.forEach(function (e) { EV[e.id] = e; });
+  var S0 = F.states[0], S1 = F.states[1];
+  var OPT = {};
+  F.options.forEach(function (o) { OPT[o.id] = o; });
+  var REST = ['E1', 'E2', 'E3', 'E4'];
+  // fixture v1 gives E4 no "supports"; the brief's material table does.
+  var BRIEF_SUPPORTS = { E4: ['一项可讨论的人工方案'] };
+  var TYPE = { role_statement: '角色陈述', case_replay: '案例回放', constraint: '约束', proposal: '提议' };
+  var METRIC = { prevalence: '发生率', baseline: '可比基线', observation_window: '观察窗口', net_reduction: '净减少',
+                 extra_review_cost: '额外复核成本', quality: '质量', adoption: '采用', business_effect: '业务效果' };
+
+  var have = new Set(['E0']);
+  var choice = null;      // { id, basis: [...] }
+  var prevLedger = null;
+  var prevVerdicts = {};
+  var lastActor = '';
+  var lastChanged = [];
+  var lastCard = null;
+
+  function el(tag, attrs, html) {
+    var n = document.createElement(tag);
+    if (attrs) Object.keys(attrs).forEach(function (k) { n.setAttribute(k, attrs[k]); });
+    if (html != null) n.innerHTML = html;
+    return n;
+  }
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function list(a) { return '<ul>' + a.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul>'; }
+  function sorted() { return ['E0'].concat(REST.filter(function (id) { return have.has(id); })); }
+  function isFull() { return REST.every(function (id) { return have.has(id); }); }
+  function stageName() {
+    if (isFull()) return 'S1';
+    if (have.size === 1) return 'S0';
+    return 'S0 与 S1 之间';
+  }
+
+  /* Evidence cards */
+  function cardBody(e) {
+    var h = '';
+    if (e.text) h += '<p class="quote"><q>' + esc(e.text) + '</q>' + (e.type === 'role_statement' ? '<span class="by">虚构运营负责人</span>' : '') + '</p>';
+    (e.statements || []).forEach(function (s) {
+      h += '<p class="quote"><q>' + esc(s.text) + '</q><span class="by">' + esc(s.actor) + '（陈述）</span></p>';
+    });
+    if (e.observations && e.observations.length) {
+      h += '<div class="record">' + e.observations.map(function (o) { return '<div><span class="src-k">' + esc(o.record) + ' · </span>' + esc(o.field) + '：' + esc(o.value) + '</div>'; }).join('') + '</div>';
+    }
+    if (e.type === 'constraint') {
+      h += '<div class="record"><div><span class="src-k">约束 · </span>自动发信授权：' + (e.automatic_outbound_authorized ? '有' : '没有') + '</div><div><span class="src-k">约束 · </span>读取全部订单历史：' + (e.full_order_history_access_authorized ? '获准' : '未获准') + '</div></div>';
+    }
+    if (e.type === 'proposal') {
+      h += '<p class="small muted">状态：候选 · 实测收益：' + (e.measured_benefit == null ? '未知' : esc(e.measured_benefit)) + '</p>';
+    }
+    h += '<div class="sc"><div><h4>能支持</h4>' + list(e.supports || BRIEF_SUPPORTS[e.id] || ['—']) + '</div><div><h4>不能推出</h4>' + list(e.cannot_conclude) + '</div></div>';
+    return h;
+  }
+  function renderCards() {
+    var box = document.getElementById('cards');
+    box.innerHTML = '';
+    F.evidence.forEach(function (e) {
+      var inn = have.has(e.id);
+      var c = el('article', { 'class': 'card' + (inn ? '' : ' out'), id: 'card-' + e.id, 'aria-labelledby': 'card-h-' + e.id });
+      var head = '<header><span class="id">' + e.id + '</span><h3 id="card-h-' + e.id + '">' + esc(e.label) + '</h3>' +
+        '<span class="tag">合成</span><span class="tag">' + (TYPE[e.type] || e.type) + '</span>' +
+        '<span class="state">' + (e.id === 'E0' ? '始终在台账中' : (inn ? '已加入台账' : '未加入台账')) + '</span></header>';
+      c.innerHTML = head + '<div class="body">' + cardBody(e) + '</div>';
+      if (e.id !== 'E0') {
+        var b = el('button', { type: 'button', 'class': 'toggle', 'aria-pressed': inn ? 'true' : 'false' },
+          inn ? '移出台账 · ' + e.id : '加入台账 · ' + e.id);
+        b.addEventListener('click', function () {
+          if (have.has(e.id)) have.delete(e.id); else have.add(e.id);
+          lastActor = (have.has(e.id) ? '加入 ' : '移出 ') + e.id;
+          lastCard = e.id;
+          update({ focusCard: e.id });
+        });
+        c.appendChild(b);
+        if (lastCard === e.id) {
+          c.appendChild(el('p', { 'class': 'fb' }, '台账：' + stageName() + '；' +
+            (lastChanged.length ? '更新行：' + lastChanged.join('、') : '没有变化') + '。<a href="#ledger-h">查看台账</a>'));
+        }
+      }
+      box.appendChild(c);
+    });
+  }
+
+  /* Ledger: each row cites the cards it comes from */
+  function ledger() {
+    var h = function (id) { return have.has(id); };
+    var expl = [];
+    if (h('E1')) expl.push('缺件：订单甲的陈述与记录一致');
+    if (h('E2')) expl.push('接手责任待澄清：订单乙附件完整，记录只到前一动作结束');
+    var missing = REST.filter(function (id) { return !h(id); });
+    var metrics = Object.keys(F.unknown_metrics).filter(function (k) { return k !== 'prevalence'; });
+    return [
+      { k: 'decision', label: '待作决定', src: 'S0', v: esc(S0.decision), known: true },
+      { k: 'request', label: '初始功能', src: 'E0', v: '候选，未批准', known: false },
+      { k: 'expl', label: '等待的解释', src: [h('E1') && 'E1', h('E2') && 'E2'].filter(Boolean).join(' '),
+        v: expl.length ? expl.map(esc).join('<br>') : '<span class="u">尚无材料区分</span>', known: expl.length > 0,
+        n: '其余待检验：遗忘、未到审批、权限限制、未到处理时间' },
+      { k: 'send', label: '自动发信授权', src: h('E3') ? 'E3' : '', v: h('E3') ? '没有' : '<span class="u">未知</span>', known: h('E3') },
+      { k: 'history', label: '全部订单历史的读取权限', src: h('E3') ? 'E3' : '', v: h('E3') ? '未获准' : '<span class="u">未知</span>', known: h('E3') },
+      { k: 'alt', label: '替代做法', src: h('E4') ? 'E4' : '', v: h('E4') ? '获准人员先整理缺件与待接手清单' : '<span class="u">尚未提出</span>', known: false,
+        n: h('E4') ? '候选；实测收益未知' : '' },
+      { k: 'prev', label: '总体发生率', src: '', v: '<span class="u">未知（不等于 0）</span>', known: false,
+        n: (h('E1') || h('E2')) ? '个别回放不能给出比例' : '' },
+      { k: 'metrics', label: '其余指标', src: '', v: '<span class="metrics">' + metrics.map(function (k) { return '<span class="tag dash">' + METRIC[k] + '：未知</span>'; }).join('') + '</span>', known: false },
+      { k: 'bulk', label: '批量自动催单的依据', src: isFull() ? 'S1' : '', v: isFull() ? '现有材料不支持' : '<span class="u">尚无</span>', known: isFull() },
+      { k: 'next', label: '允许的下一步', src: isFull() ? 'S1' : 'S0', next: true, known: true,
+        v: esc(isFull() ? '准备' + S1.allowed_next + '；尚不能作批量自动催单决定' : S0.allowed_next),
+        n: isFull() ? 'S1 由 E0–E4 共同构成' : (have.size > 1 ? 'S1 尚未成立，缺 ' + missing.join('、') : '只有请求本身') }
+    ];
+  }
+  function renderLedger() {
+    var rows = ledger();
+    var box = document.getElementById('ledger');
+    var changed = [];
+    box.innerHTML = '';
+    rows.forEach(function (r) {
+      var sig = r.v + '|' + (r.n || '');
+      var isNew = prevLedger && prevLedger[r.k] !== sig;
+      if (isNew) changed.push(r.label);
+      var li = el('li', { 'class': (r.next ? 'next ' : '') + (isNew ? 'changed' : '') });
+      li.innerHTML = '<div class="lk"><span>' + r.label + '</span>' + (r.src ? '<span class="src">' + r.src + '</span>' : '') +
+        (isNew ? '<span class="new">本次更新</span>' : '') + '</div>' +
+        '<div class="lv' + (r.known ? '' : ' unknown') + '">' + r.v + '</div>' +
+        (r.n ? '<div class="ln">' + esc(r.n) + '</div>' : '');
+      box.appendChild(li);
+    });
+    var sigs = {};
+    rows.forEach(function (r) { sigs[r.k] = r.v + '|' + (r.n || ''); });
+    prevLedger = sigs;
+    lastChanged = changed;
+    document.getElementById('stage').textContent = stageName();
+    document.getElementById('have-line').textContent = '已在台账：' + sorted().join('、');
+    if (lastActor) {
+      document.getElementById('live').textContent = lastActor + '。台账：' + stageName() + (changed.length ? '；更新行：' + changed.join('、') : '；没有变化') + '。';
+    }
+  }
+
+  /* Branches: conditions read against the cards in the ledger */
+  var BR = [
+    { id: 'B1', ref: 'O1', title: '补证后的单类提醒试验',
+      when: '证据支持可避免的遗忘，提醒获授权且可验收',
+      next: '定义可比基线、成本和停止条件后，提出单类小范围提醒试验',
+      cannot: '可避免遗忘的发生比例；提醒对等待的实际影响',
+      plan: function (h) { return [
+        { t: '证据支持可避免的遗忘', s: 'unknown', why: h.has('E2') ? 'E2 不能直接判定遗忘' : '尚无材料' },
+        { t: '提醒动作获授权', s: h.has('E3') ? 'unmet' : 'unknown', why: h.has('E3') ? 'E3：没有自动发信授权' : '授权情况未知' } ]; },
+      launch: ['可比基线：哪些对象和时间窗口', '新增复核与操作成本', '验收与停止条件'] },
+    { id: 'B2', ref: 'O2', title: '依赖与责任的人工整理',
+      when: '证据提示审批、资料或接手依赖尚未解决',
+      next: '回到依赖与责任，先做获准的人工整理',
+      cannot: '人工整理的实测收益（未知），以及它是否优于自动提醒',
+      plan: function (h) { var hint = h.has('E1') || h.has('E2'); return [
+        { t: '资料、审批或接手依赖需要澄清', s: hint ? 'hint' : 'unknown',
+          why: hint ? [h.has('E1') && 'E1 缺件', h.has('E2') && 'E2 接手不明'].filter(Boolean).join('；') : '尚无回放材料' } ]; },
+      launch: ['人员与材料范围获准' , '谁接收下一动作', '缺项由谁补齐'] },
+    { id: 'B3', ref: 'X2', title: '缺项与补件责任的说明',
+      when: '没有取证权限或可用样例',
+      next: '明确缺项、影响与补件责任；不模拟真实结论',
+      cannot: '任何真实结论；缺项补齐之前不作推断',
+      plan: function (h) { return [
+        { t: '取证权限或样例不足', s: h.has('E3') ? 'hint' : 'unknown', why: h.has('E3') ? 'E3：未获准读取全部订单历史' : '权限状况未知' } ]; },
+      launch: ['补件责任人', '是否允许相应提醒'] },
+    { id: 'B4', ref: 'O3', title: '暂缓或不做', or: true,
+      when: '预期价值不足以覆盖新增复核与操作成本，或缺权限、缺样例',
+      next: '建议不做该功能或暂缓；业务裁决保留给负责人',
+      cannot: '暂缓不能证明研究失败；它是可以说明理由的业务选择',
+      plan: function (h) { return [
+        { t: '预期价值不足以覆盖新增复核与操作成本', s: 'unknown', why: '价值与成本都未知' },
+        { t: '缺权限或缺样例', s: h.has('E3') ? 'hint' : 'unknown', why: h.has('E3') ? 'E3：发信与全量历史都未获准' : '权限状况未知' } ]; },
+      launch: ['业务负责人的裁决'] }
+  ];
+  var GLYPH = { hint: '●', unmet: '✕', unknown: '○' };
+  var WORD = { hint: '有材料提示', unmet: '不满足', unknown: '未知' };
+
+  function verdict(b) {
+    var cs = b.plan(have);
+    var st = cs.map(function (c) { return c.s; });
+    var v;
+    if (b.or) v = st.indexOf('hint') >= 0 ? 'ready' : 'insufficient';
+    else if (st.indexOf('unmet') >= 0) v = 'blocked';
+    else if (st.indexOf('unknown') >= 0) v = 'insufficient';
+    else v = 'ready';
+    return { v: v, conds: cs };
+  }
+  var VWORD = { ready: '可以准备', blocked: '前提不满足，暂不可行', insufficient: '证据不足，需要补证' };
+
+  function renderBoard() {
+    // One row per branch, so the verdicts can be compared without reading four cards (REF-COMP-001).
+    document.getElementById('strip').innerHTML = BR.map(function (b) {
+      return '<tr><th scope="row"><span class="id">' + b.id + '</span>' + esc(b.title) + '</th><td>' + VWORD[verdict(b).v] + '</td></tr>';
+    }).join('');
+    var box = document.getElementById('board');
+    box.innerHTML = '';
+    BR.forEach(function (b) {
+      var r = verdict(b);
+      var flip = prevVerdicts[b.id] && prevVerdicts[b.id] !== r.v;
+      prevVerdicts[b.id] = r.v;
+      var d = el('article', { 'class': 'branch' + (choice && choice.id === b.id ? ' chosen' : '') + (flip ? ' flip' : ''), id: 'branch-' + b.id, 'aria-labelledby': 'bh-' + b.id });
+      var conds = r.conds.map(function (c, i) {
+        return (b.or && i > 0 ? '<li><span class="grp">或</span></li>' : '') +
+          '<li><span class="g" aria-hidden="true">' + GLYPH[c.s] + '</span><span>' + esc(c.t) + ' · <b>' + WORD[c.s] + '</b><span class="why">' + esc(c.why) + '</span></span></li>';
+      }).join('');
+      d.innerHTML = '<span class="bid">' + b.id + ' · ' + b.ref + '</span><h3 id="bh-' + b.id + '">' + esc(b.title) + '</h3>' +
+        '<p class="when"><b>前提</b> ' + esc(b.when) + '</p>' +
+        '<ul class="conds" aria-label="前提核对">' + conds + '</ul>' +
+        '<p class="verdict">' + VWORD[r.v] + '</p>' +
+        '<p class="act">对应动作：' + esc(b.next) + '</p>';
+      var btn = el('button', { type: 'button', 'aria-pressed': choice && choice.id === b.id ? 'true' : 'false' }, '选择此分支（模拟）');
+      btn.addEventListener('click', function () { choose(b.id); });
+      d.appendChild(btn);
+      box.appendChild(d);
+    });
+  }
+
+  function choose(id) {
+    choice = { id: id, basis: sorted() };
+    renderBoard();
+    renderRecord(true);
+  }
+
+  function renderRecord(enter) {
+    var p = document.getElementById('record');
+    if (!choice) { p.hidden = true; p.innerHTML = ''; return; }
+    var b = BR.filter(function (x) { return x.id === choice.id; })[0];
+    var basisNow = sorted().join('、');
+    var basisThen = choice.basis.join('、');
+    var stale = basisNow !== basisThen;
+    var r = verdict(b);
+    var open = r.conds.filter(function (c) { return c.s !== 'hint'; });
+    var now;
+    if (r.v === 'ready') now = esc(b.next) + '。这是一份待裁决的准备，不是已批准的行动。';
+    else now = '先补证：' + open.map(function (c) { return esc(c.t) + '（' + WORD[c.s] + '：' + esc(c.why) + '）'; }).join('；') + '。';
+    if (b.id === 'B4' && r.v !== 'ready') now += '业务负责人仍可以决定暂缓；这是业务裁决，不是研究结论。';
+    p.className = 'record-panel' + (stale ? ' is-stale' : '') + (enter ? ' enter' : '');
+    p.hidden = false;
+    p.innerHTML =
+      '<h3 id="record-h" tabindex="-1">裁决单 · ' + b.id + ' ' + esc(b.title) + '</h3>' +
+      '<p class="sim">模拟：只存在于本页，刷新即消失；没有发送，也没有保存。</p>' +
+      (stale ? '<p class="stale">材料已经改变：这份裁决单依据 ' + basisThen + '，台账现为 ' + basisNow + '。裁决单已失效，需要回到分支重新选择。</p>' : '') +
+      '<dl>' +
+      '<dt>依据材料</dt><dd><span class="id">' + basisThen + '</span>（' + (choice.basis.length === 5 ? 'S1' : choice.basis.length === 1 ? 'S0' : 'S0 与 S1 之间') + '，全部合成）</dd>' +
+      '<dt>判读结果</dt><dd><b>' + VWORD[r.v] + '</b></dd>' +
+      '<dt>当前可做的工作</dt><dd>' + now + '</dd>' +
+      '<dt>启动前的条件</dt><dd>' + b.launch.map(esc).join('；') + '</dd>' +
+      '<dt>尚不能证明的事项</dt><dd>' + esc(b.cannot) + '</dd>' +
+      '<dt>决定者与分工</dt><dd class="who">业务裁决：相应业务负责人（本例中虚构运营负责人参与）。方法与范围：虚构研究者确认。agent 只整理获准材料、标出缺口与冲突，不访谈、不补造观察、不发送邀请或催单。</dd>' +
+      '</dl>' +
+      '<div class="actions">' +
+      '<button type="button" id="hand-over" class="primary">交给业务负责人（模拟）</button>' +
+      '<button type="button" id="back">返回分支</button>' +
+      (b.id !== 'B4' ? '<button type="button" id="stop">改为暂缓（停止）</button>' : '') +
+      '</div><div id="ack" aria-live="polite"></div>';
+    document.getElementById('hand-over').addEventListener('click', function () {
+      document.getElementById('ack').innerHTML = '<p class="ack">模拟完成：没有发送任何消息，也没有记录到任何系统。真实裁决在本页之外由负责人作出。</p>';
+    });
+    document.getElementById('back').addEventListener('click', function () {
+      var id = choice.id;
+      choice = null;
+      renderBoard();
+      renderRecord(false);
+      var btn = document.querySelector('#branch-' + id + ' button');
+      if (btn) btn.focus();
+    });
+    var stop = document.getElementById('stop');
+    if (stop) stop.addEventListener('click', function () { choose('B4'); });
+    if (enter) document.getElementById('record-h').focus({ preventScroll: false });
+  }
+
+  /* Static S0 / S1 comparison, straight from the fixture */
+  function renderCompare() {
+    var rows = [
+      ['现有材料', 'E0 请求卡', 'E0–E4'],
+      ['待作决定', S0.decision, '不变'],
+      ['初始功能', '候选', '候选'],
+      ['等待的解释', '未知', S1.interpretation],
+      ['发信与读取权限', '未知', '没有自动发信授权；未获准读取全部订单历史'],
+      ['替代做法', '尚未提出', '获准人员整理缺件与待接手清单（候选，实测收益未知）'],
+      ['总体发生率', '未知', '未知（个别回放不能给出比例）'],
+      ['其余指标', '未知', Object.keys(F.unknown_metrics).filter(function (k) { return k !== 'prevalence'; }).map(function (k) { return METRIC[k]; }).join('、') + '：全部未知'],
+      ['允许的下一步', S0.allowed_next, '准备' + S1.allowed_next],
+      ['尚不支持的动作', '批准真实外部动作', '凭总体发生率作批量自动催单决定'],
+      ['待补问题', S0.unknowns.join('、') + '：均未知', F.open_questions.join('；')]
+    ];
+    document.getElementById('compare-body').innerHTML = rows.map(function (r) {
+      return '<tr><th scope="row">' + esc(r[0]) + '</th><td>' + esc(r[1]) + '</td><td>' + esc(r[2]) + '</td></tr>';
+    }).join('');
+  }
+
+  function update(opts) {
+    renderLedger();
+    renderCards();
+    renderBoard();
+    if (choice) renderRecord(false);
+    if (opts && opts.focusCard) {
+      var b = document.querySelector('#card-' + opts.focusCard + ' .toggle');
+      if (b) b.focus({ preventScroll: true });
+    }
+  }
+
+  document.getElementById('to-s0').addEventListener('click', function () {
+    have = new Set(['E0']); lastActor = '回到 S0'; lastCard = null; update();
+  });
+  document.getElementById('to-s1').addEventListener('click', function () {
+    have = new Set(['E0'].concat(REST)); lastActor = '加入全部材料'; lastCard = null; update();
+  });
+
+  renderCompare();
+  update();
+})();
+</script>
+</body>
+</html>

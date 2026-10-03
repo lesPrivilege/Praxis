@@ -34,3 +34,5 @@
 
 
 2026-09-29接管测试：[消费证据](../../../../docs/verification/reference-consumption-20260929/README.md)。前两次取用记录将普通堆叠误归于本卡，促成本页增加机制识别反例；随后的独立新上下文在未被提示材料位置的情况下，自行取用属性分组，并明确未采用不相干注释卡，见 [小型样例与trace](../../../../docs/verification/reference-consumption-20260929/device-comparison/README.md)。这支持目录发现与结构消费，不证明生产组件、渲染或所有任务的成功率；测试产物只保留为验收证据。
+
+2026-10-03 [Palantir 首次设计打样](../../../../demos/palantir-discovery/README.md#kit-消费记录)：第一版没有读到本卡；入口修订（ADR-023）后取用，在四个分支的整卡之上加一张“分支 × 判读结果”的一览，S0/S1 对照表本来按属性成行。375 px 下四行可同时看到。真实读者没有用过。

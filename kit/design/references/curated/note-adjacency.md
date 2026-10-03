@@ -29,3 +29,5 @@
 | 2026-09-27 | [实验局部筛选](../../../../vault/distilled/layout-specimens-20260927/review.md)及HTML/CSS核对 | 邻接与投影结构查阅通过；完整组件与跨域效果未通过此验收 |
 
 2026-09-29的[问卷消费工件](../../../../docs/verification/reference-consumption-20260929/survey-explainer/README.md)通过正常仓库入口找到W03与本卡，将解释保留在数字/主张近处；[设备布局测试](../../../../docs/verification/reference-consumption-20260929/device-comparison/README.md)明确因无局部注释需求而未取用。它们仅验证发现、适用判断与结构消费，不作为产品demo或完整视觉验收。维护和降级见 [参考生命周期](../../../../docs/governance/reference-lifecycle.md)。
+
+2026-10-03 [Palantir 首次设计打样](../../../../demos/palantir-discovery/README.md#kit-消费记录)：入口修订（ADR-023）后核对，请求原句的三条标注和台账变化提示都紧跟所注内容，没有改动；宽屏没有用边注。
