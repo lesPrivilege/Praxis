@@ -26,4 +26,5 @@
 
 - [从诉求到决定 · Palantir 首次设计打样](palantir-discovery/README.md)：按用户交来的设计交接包做的一页离线交互网页，材料全部合成，按钮只模拟；宽窄屏、打印与五条交互路径已检查，没有做受众验证。
 
-- 合成消费小样：[退款复核、材料职责与 XMind 往返门槛](consumption-sample/README.md)。四例断言可本地运行；不代表真实业务或模型验收。
+- 合成消费小样：[退款复核、材料职责与 XMind 往返门槛](consumption-sample/README.md)。20 例合成断言可本地运行；不代表真实业务或模型验收。
+- [A3 机制演算项目](visual-grammar/a3-event-state-context/README.md)：2026-10-02 从旧 VG-01 加工合成输入制作新的交互 HTML 与 Remotion MP4；项目集中保留内容基线、消费摘要、源码、成品和当轮证据。制作与隔离浏览器测试完成，原生屏幕复验有缺项，用户接收待定。

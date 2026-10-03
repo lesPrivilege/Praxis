@@ -44,3 +44,5 @@
 - [2026-10-02 自足性审查的消费](self-contained-review-20261002.md)：十一条建议逐条对回本地；隔离副本里实跑显示来源卡生成脚本会覆盖 108 张手写卡，改为由 catalog 声明卡片归属，校验加两项；工单状态、ADR 索引和一处入口链接已校订；真实任务的消费验收没有做。
 - [2026-10-03 Writing skill 与成文规则审阅](writing-review-20261003.md)：召回摘要与现有规范逐项对照；收窄句式、语体与交付默认，检查四段现有文本；官方 STE 访问受限，Write 纯文本职责迁移未执行。
 - [2026-10-03 Palantir 首次设计打样](../../demos/palantir-discovery/README.md#验收记录)：交接包入账，做成一页离线交互网页和 A4 打印样张；五条交互路径、宽窄屏和打印逐页检查通过；Lonsdale 条目对应改正；页面文字补做 Prose 审校；减少动效、读屏和受众测试没有做。入口修订与对照走读见 [ADR-023](../decisions/023-consume-by-artifact-component.md)。
+
+- [2026-10-02 A3 真实任务消费与双媒介施工](../../demos/visual-grammar/a3-event-state-context/acceptance.md)：指定 b76ece4 基线，VG-01 合成输入改编，交互 HTML 与 84 秒 Remotion MP4；实际消费/工具轨迹、渲染、解码、隔离 Chromium 交互与抽样目检证据。原生屏幕通道失联，连续原生观看、真实浏览器 200% 缩放与受众验证仍未执行；未做消融/双盲或 Kit 因果归因。
