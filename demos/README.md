@@ -25,3 +25,5 @@
 - [视觉语法演示工场](visual-grammar/README.md)：Luna来源索引、选编工单、场景契约与Opus唤醒prompt；四件可运行作品已交付（网页与 VP9/Opus WebM，含一件只做形式探索的作品；未做受众验证），验收见各作品回执。
 
 - [从诉求到决定 · Palantir 首次设计打样](palantir-discovery/README.md)：按用户交来的设计交接包做的一页离线交互网页，材料全部合成，按钮只模拟；宽窄屏、打印与五条交互路径已检查，没有做受众验证。
+
+- 合成消费小样：[退款复核、材料职责与 XMind 往返门槛](consumption-sample/README.md)。四例断言可本地运行；不代表真实业务或模型验收。
