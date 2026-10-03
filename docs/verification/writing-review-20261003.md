@@ -1,6 +1,6 @@
 # Writing skill 与成文规则差异审阅 · 2026-10-03
 
-基线：`b76ece44264a4dd3efe767d3b4e8b829c8e7a778`。本轮使用独立分支 `codex/writing-review-20261003`；main 有其他未提交工作，本轮未带入或改动。没有 merge、push、部署或全局 skill 安装。
+基线：`b76ece44264a4dd3efe767d3b4e8b829c8e7a778`。本轮使用独立分支 `codex/writing-review-20261003`；main 有其他未提交工作，本轮未带入或改动。没有 merge、push、部署或全局 skill 安装。完成前复查 main，发现并行工作另有 ADR-023，并修改 writing skill、Prose grammar、CHANGELOG 与决定 / 验收索引等重叠文件；本轮改用 ADR-024 避免编号碰撞，未合并那些未提交改稿。最终交接按本基线提供，整合时须逐项对照并行差异。
 
 ## 证据与实际入口
 
@@ -8,7 +8,7 @@ R1 是本轮委托提供的可复用要求及召回摘要，不是原 Chat 的�
 
 真实路径为 [Write](../../kit/write/README.md)下的 Prose、Publish、Motion、Shared；[旧 Writing](../../kit/writing/README.md)只有导航。writing skill 位于 [项目薄入口](../../.claude/skills/writing/SKILL.md)，仓库没有 `.agents/skills`。上下游从 [Kit](../../kit/README.md)、[Reporting](../../kit/reporting/README.md)及 [Agent 指引](../../kit/Agent.md)到达；成文经 grammar/review、Shared 和相应文体交付。没有预设新目录。
 
-主代理读治理、关键成文页并编订；Luna 只读 Write 全部页面、上下游入口、相关 ADR 和 Vault 摘要，不读原 Chat，不修改文件。规范裁决见 [ADR-023](../decisions/023-prose-defaults-and-review-scope.md)。
+主代理读治理、关键成文页并编订；Luna 只读 Write 全部页面、上下游入口、相关 ADR 和 Vault 摘要，不读原 Chat，不修改文件。规范裁决见 [ADR-024](../decisions/024-prose-defaults-and-review-scope.md)。
 
 ## 对照表
 

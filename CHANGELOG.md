@@ -2,7 +2,7 @@
 
 ## 2026-10-03 · 成文规则与 writing 薄入口
 
-- 对照委托提供的召回摘要与当前 Write 实现，窄修订语体、句式、信息作用、审阅判准和修改记录默认，见 [ADR-023](docs/decisions/023-prose-defaults-and-review-scope.md)。四条语义底线和现有目录保持，个人口吻只用于当前任务。
+- 对照委托提供的召回摘要与当前 Write 实现，窄修订语体、句式、信息作用、审阅判准和修改记录默认，见 [ADR-024](docs/decisions/024-prose-defaults-and-review-scope.md)。四条语义底线和现有目录保持，个人口吻只用于当前任务。
 - Prose 直接说明外部参考的用途与低权重边界；既有三个来源重访，ASD-STE100 三个官方路由访问受限，未提炼规则或声称合规。Reporting 的 brief 前提与入口对齐，Publish 补当前职责裁决链接。
 - [回执](docs/verification/writing-review-20261003.md)保留对照表、四段现有文本的适用边界和未验项。Write 纯文本收缩与既有 ADR 落位的冲突已列明，未实施职责迁移。
 
