@@ -45,5 +45,6 @@
 - [架构校订补充的外部链接 · 2026-10-02](write-present-supplement-20261002/README.md)：5 个写作与无障碍来源，4 个由主会话直接读过相关段落。
 - [内容架构与能力语法审阅的外部链接 · 2026-10-02](content-architecture-review-20261002/README.md)：13 个现场实践、评估与文档方法来源，全部 unverified，本仓库未打开；其中三条已有来源卡。
 - [社区 Skills 与 Prompts 研究的外部链接 · 2026-10-02](community-grammar-20261002/README.md)：十个样本和三篇论文共 45 个链接，按样本分 13 张卡；8 个由主会话按固定提交读过，37 个未打开。
+- [Writing 审阅的官方访问缺口 · 2026-10-03](writing-review-20261003/README.md)：三个 ASD-STE100 官方路由均返回 403，未读取标准正文，不支持版本或合规结论；既有写作指南重访不重复登记。
 
 - 视觉语法定向召回：[Courtwork](visual-grammar-courtwork-20260928/README.md)、[Schema Engineering](visual-grammar-schema-20260928/README.md)、[Praxis及相邻项目](visual-grammar-praxis-20260928/README.md)、[外部参考](visual-grammar-external-20260928/README.md)。施工消费见 [演示工场](../../demos/visual-grammar/README.md)。

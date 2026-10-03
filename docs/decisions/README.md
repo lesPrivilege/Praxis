@@ -32,10 +32,12 @@ accepted 表示本仓库当时采纳；技术实现与使用证据在对应契�
 
 - [ADR-018：Design 保留泛化的构成关系，原子化作为取用方式](018-generalized-design-relations.md)（accepted；用户裁决，九项问题尚无真实任务检验）。
 
-- [ADR-019：表达规则的归属、强度与两条入口路径](019-expression-owners-and-entry-paths.md)（accepted；不新建 Present，Write 规则分三种强度，入口分消费与维护；走读每条路线前后各一次）。
+- [ADR-019：表达规则的归属、强度与两条入口路径](019-expression-owners-and-entry-paths.md)（accepted；不新建 Present，Write 规则分三种强度，入口分消费与维护；走读每条路线前后各一次。其中“八条原文不改”和语体分类由 ADR-023 修订）。
 
 - [ADR-020：企业工作侧的入口校订与写深条目的检查](020-entry-calibration-and-depth-check.md)（accepted；目录不动，入口补三句改两处，体例加场景取值、工具能力与五问；九类能力语法候选与交付生命周期延后，等真实素材）。
 
 - [ADR-021：社区实践里的工作方式作为备用素材，以及“规则起了作用”的检查](021-community-mechanisms-and-attribution-check.md)（accepted；五条机制收进 Kit 一页备用素材，没有一条写成规则；验收加对照、留出、代价的默认做法；入口加恢复路由一行）。
 
 - [ADR-022：来源卡由谁维护要在 catalog 里声明，以及自足性审查的处置](022-source-card-ownership.md)（accepted；catalog 加 `cards` 字段，生成脚本只写 `generated` 的 17 份，校验对两种都查；在途状态只记一处；按用途投影和真实任务的消费验收没有做）。
+
+- [ADR-023：成文默认与审阅范围的窄修订](023-prose-defaults-and-review-scope.md)（accepted；信息作用、语体、句式与修改记录按任务判断，参考低权重；Write 纯文本职责收缩待迁移裁决，目录与所有权未改）。
