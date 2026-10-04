@@ -1,6 +1,6 @@
 // In-memory state of the matter scenario, loaded from its fixture. Restarting the process resets it.
 import type { components } from '../../contracts/matter.d.ts';
-import { readFixture, requireConsistent } from '../fixture.ts';
+import { readFixture, requireConsistent, stateAfter } from '../fixture.ts';
 import type { Behaviors } from '../kernel.ts';
 
 type S = components['schemas'];
@@ -100,6 +100,13 @@ export interface State {
 }
 
 // A fixture that points at something missing fails here, with every problem listed, not later in a request.
+// What each kind of record does to a risk; the same steps the actions in domain.ts take.
+const RISK_STEPS = {
+  open: { proposal: 'proposed', decision: 'decided' },
+  proposed: { decision: 'decided', return: 'open' },
+  decided: { decision: 'decided' },
+};
+
 export function fixtureProblems(data: Omit<State, 'views' | 'seq'>): string[] {
   const problems: string[] = [];
   const users = new Set(data.users.map((u) => u.id));
@@ -142,10 +149,9 @@ export function fixtureProblems(data: Omit<State, 'views' | 'seq'>): string[] {
           if (!linked.has(c.evidenceId)) problems.push(`dangling-evidence ${path}.records[${ri}].cited: ${c.evidenceId}`);
         }
       });
-      const standing = r.status === 'open' ? null : r.status === 'decided' ? 'decision' : 'proposal';
-      if (standing && !r.records.some((record) => record.kind === standing)) {
-        problems.push(`bad-state ${path}: status ${r.status} without a ${standing} record`);
-      }
+      const reached = stateAfter(RISK_STEPS, 'open', r.records.map((record) => record.kind));
+      if ('stuckAt' in reached) problems.push(`bad-record-order ${path}.records[${reached.stuckAt}]: a ${r.records[reached.stuckAt].kind} cannot follow ${reached.state}`);
+      else if (reached.state !== r.status) problems.push(`bad-state ${path}: status ${r.status}, but its records leave it ${reached.state}`);
     });
     m.tasks.forEach((t, i) => {
       claim(t.id, `${at}.tasks[${i}]`);

@@ -103,7 +103,7 @@
 
 ## 4. 验证与结果
 
-fixture 在 [fixtures](../fixtures/README.md)，12 个事项各承载一种情形。验证分三层，结果记在 [README](../README.md)：契约（每个响应按 OpenAPI 校验）、后端行为（18 项测试）、界面（浏览器里手走）；金额的录入与显示另有 5 项测试。
+fixture 在 [fixtures](../fixtures/README.md)，12 个事项各承载一种情形。验证分三层，结果记在 [README](../README.md)：契约（每个响应按 OpenAPI 校验）、后端行为（19 项测试）、界面（浏览器里手走）；金额的录入与显示另有 5 项测试。
 
 接受率、修正率、复核时间和净减负都没有样本，保持未知。
 

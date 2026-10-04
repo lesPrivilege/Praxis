@@ -30,6 +30,18 @@ export function readFixture(path: string): any {
   return resolveDates(JSON.parse(readFileSync(path, 'utf8')), new Date());
 }
 
+// Walks an object's records through the steps its actions allow, and says where that leaves it.
+// A status the records could not have produced is a fixture error, not something to repair.
+export function stateAfter(steps: Record<string, Record<string, string>>, start: string, kinds: string[]): { state: string } | { stuckAt: number; state: string } {
+  let state = start;
+  for (const [i, kind] of kinds.entries()) {
+    const next = Object.hasOwn(steps[state] ?? {}, kind) ? steps[state][kind] : undefined;
+    if (!next) return { stuckAt: i, state };
+    state = next;
+  }
+  return { state };
+}
+
 // Refuses to start on an inconsistent fixture, listing every problem at once.
 export function requireConsistent(path: string, problems: string[]): void {
   if (problems.length) throw new Error(`Fixture ${path} is inconsistent:\n${problems.join('\n')}`);

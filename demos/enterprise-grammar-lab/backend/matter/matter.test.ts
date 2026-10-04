@@ -289,6 +289,21 @@ test('fixture: inconsistencies are reported together, with their paths', () => {
   assert.deepEqual(fixtureProblems(data).map((p) => p.split(' ')[0]).sort(), ['bad-state', 'dangling-document', 'dangling-evidence', 'dangling-target', 'duplicate-id', 'unknown-user']);
 });
 
+test('fixture: a status the records could not have produced is refused', () => {
+  const mutated = (change: (risks: any[]) => void) => {
+    const { dates: _dates, savedViews: _views, ...data } = readFixture(fixture);
+    change(data.matters.flatMap((m: any) => m.risks));
+    return fixtureProblems(data).map((p) => p.split(' ')[0]);
+  };
+  const proposed = (risks: any[]) => risks.find((r) => r.status === 'proposed');
+  const decided = (risks: any[]) => risks.find((r) => r.status === 'decided');
+  assert.deepEqual(mutated((risks) => { proposed(risks).status = 'not-a-status'; }), ['bad-state']);
+  assert.deepEqual(mutated((risks) => { decided(risks).status = 'open'; }), ['bad-state'], 'decided by its records, open by its status');
+  assert.deepEqual(mutated((risks) => { const r = proposed(risks); r.records.push({ ...r.records[0], kind: 'return' }); }), ['bad-state'], 'returned, yet still proposed');
+  assert.deepEqual(mutated((risks) => { const r = decided(risks); r.records.push({ ...r.records[0], kind: 'return' }); }), ['bad-record-order'], 'a decision cannot be returned');
+  assert.deepEqual(mutated((risks) => { proposed(risks).records[0].kind = 'constructor'; }), ['bad-record-order']);
+});
+
 test('empty and detail: a new matter has no linked objects', async () => {
   const matter = (await get(ZHOU, '/matters/M-2055')).body;
   assert.deepEqual(matter.links, { parties: 2, documents: 0, evidence: 0, risks: 0, tasks: 0 });
