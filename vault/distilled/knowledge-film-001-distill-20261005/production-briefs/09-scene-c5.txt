@@ -1,0 +1,34 @@
+You are the motion designer and scene programmer for the closing chapter ("一道检验") of a ~10 minute Chinese knowledge film about Barbara Minto's Pyramid Principle. The film is an HTML stage (1920×1080) driven by one paused GSAP timeline; frames are rendered by seeking. Your job: design and implement the ending so it stands next to a mature YouTube documentary essay — it has to land the film's one idea and close the loop with the opening.
+
+Project root: /Users/lesprivilege/Projects/Praxis/demos/knowledge-film-001-pyramid
+
+Read first, in this order:
+1. film/AUTHORING.md — the rules you must follow (timing from narration cues, tl.to only, design language, self-review loop).
+2. film/js/kit.js, film/js/parts.js, film/js/engine.js, film/css/film.css — tools and tokens.
+3. The two chapters you call back to. film/js/scenes/c0-hook.js with the `c0-` rules in film/css/scenes.css: the cold open, a passage nobody can place until a title ("煮饺子") lands in an empty dashed slot above it, the lines snap into place and hang from a blue spine; and the title card (dark, 金字塔原理 / 写不清楚，是因为还没想完). film/js/scenes/c2-case.js with the `c2-` rules: the pyramid — solid blue top box with white serif text, white key-line boxes with a 3px ink border, small white evidence cards, orthogonal ink connectors (K.elbow), question pills ("为什么？") travelling down. Render both to see them: `python3 pipeline/frames.py c0.5+2 c0.6+2 c0.7+4 c0.title+4 c2.19+3 c2.22+4 c2.27+9 --name ref --out pipeline/_review/c5` then Read the PNG.
+4. script/narration.json — yours are c5.card, c5.1 … c5.6 and the silent c5.end (about 11 seconds, the last shot and the end card). script/timeline.json has times and word lists; use Chinese words as anchors. The whole script is worth reading once: your last shot summarises it.
+
+Facts that may appear on screen (I verified the quote on McKinsey's alumni page myself): Barbara Minto: "The pyramid is a tool to help you find out what you think." Attribution: 麦肯锡校友网访谈. Chinese: 金字塔是一件工具，帮你弄清自己到底在想什么。 Do not add other quotes or facts about her.
+
+You own exactly two files and may modify nothing else: film/js/scenes/c5-close.js and film/css/c5.css. The JS file exists as a stub and is already linked in film/index.html; the CSS file is new — create it, and I (the main session) will add the `<link>` for css/c5.css to film/index.html right now so do not edit index.html. CSS class prefix: `c5-`. Other agents work in the same folder at the same time; do not touch their files, the engine, kit, parts, timeline, narration, film.css or scenes.css. If you need a helper that kit.js lacks, define it locally. Do not install anything, do not run a dev server, do not use git.
+
+Scope in time: start with `Parts.chapterCard('c5', '05', '一道检验')`. Your scenes run from about T('c5.card','end') to the end of the film (`Film.duration`). Chrome: `K.chrome(root, { chapter: ['05', '一道检验'] })` on the content scenes, none on the end card.
+
+Direction (you may improve on it; keep the meaning):
+- c5.1 "回到开头。写不清楚，多半不是不会写。" Return to the cold-open image: lines of text (as bars) adrift under an empty dashed slot. The lines are fine; the slot is empty.
+- c5.2 "是塔尖上那句话，还说不出来。" The empty slot becomes the empty top box of a pyramid; a caret waits in it.
+- c5.3 Minto's sentence, set large in English with the Chinese beneath and the attribution (K.source). Give it room; this is the film's thesis in her words.
+- c5.4 The test. A claim is written into the top box (a neutral bar or the words 你的主张). "为什么？" is asked; an answer row appears; asked again; another row. It holds. One sentence, and it survives the questions.
+- c5.5 Two outcomes side by side or in sequence: 说得出 → the remaining pieces simply arrange themselves beneath it (order, not effort); 说不出 → the pieces stay loose, the top stays dashed: 还没想完.
+- c5.6 and c5.end: "这部片子，也是这么搭的。" Pull back to reveal the film's own argument as a pyramid, built with the same components, and let the viewer read it (hold it for at least 5 seconds). Content:
+  top: 写不清楚，是因为思考还没有形成结构
+  key line, four boxes, each with two or three small evidence chips beneath:
+   1 起点 — 毛病在思考，不在语言 · chips: 1966 伦敦 / 巴黎、杜塞尔多夫 / 明托的原话
+   2 方法 — 从材料往上搭，从塔尖往下讲 · chips: 分组 / 写成判断 / 三条规则
+   3 原理 — 读者把先读到的当成主旨 · chips: Bransford & Johnson 1972 / Kieras 1980 / 直接证据并不一边倒
+   4 边界 — 结构工整，不等于论证成立 · chips: 凑三点 / 为切而切 / 先定结论 / 哥伦比亚号的幻灯片
+  Then the end card on the dark stage, matching the title card: 金字塔原理 · 写不清楚，是因为还没想完, and small credit lines: 案例为合成，数字为虚构 / 旁白为合成语音 / 出处见配套页面. Hold the end card for the last ~3.5 seconds and fade to black over the final 0.8 s.
+
+On-screen text is a skeleton of the narration, never full narration sentences (the film's own pyramid is the one place where full statements belong). Quality bar: the main subject fills at least 60% of the frame width; no text to be read under 30px except source and credit lines (24px minimum); nothing overlaps or clips; no stretch of more than ~4 seconds without a meaningful change, except the deliberate hold on the film's pyramid; the same elements travel between states (the dashed slot becomes the top box; the bars become the rows) rather than fading out and in. Review your own frames repeatedly with pipeline/frames.py (write review images to pipeline/_review/c5 with --out and --name; prefer cue-relative times such as `c5.4+3`, `c5.end+6`) and fix what you see. Check the terminal output of frames.py for console errors — a JS error in your file breaks the whole film for everyone, so run frames.py after every substantial edit.
+
+When done, reply with: the list of scenes (id, cue span, one line each), anything you could not show honestly, any kit/engine limitation you worked around, and the paths of 2 contact sheets covering the chapter every ~3 seconds. Keep the reply under 300 words.

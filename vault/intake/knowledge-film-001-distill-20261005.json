@@ -1,0 +1,101 @@
+{
+ "schema_version": "1.0",
+ "id": "knowledge-film-001-distill-20261005",
+ "kind": "production-reconstruction",
+ "title": "Knowledge Film 001《金字塔原理》· 制作过程重建与 Fresh Distill",
+ "created_at": "2026-10-05",
+ "topic": "knowledge-film",
+ "local_card": "vault/distilled/knowledge-film-001-distill-20261005/README.md",
+ "status": "distilled",
+ "evidence_status": "partial",
+ "adoption": "candidate",
+ "reference_priority": "normal",
+ "purpose_tags": [
+  "MOTION",
+  "WRITE",
+  "GOVERNANCE"
+ ],
+ "summary": "工单第二阶段的交付：由没有参与制作的代理按会话日志和冻结目录重建《金字塔原理》知识片的制作过程，回答 Dogfooding 七问，列出经过这次施工验证的做法和失败，并逐条判断去向。全部结论是候选，没有改 Kit、docs 或任何已有文件。",
+ "executors": {
+  "reconstruction_and_adjudication": "Opus 5.5 子代理（claude-opus-5-5），由制作会话在用户确认冻结后派出，没有参与制作",
+  "agents": "两个只读的 Sonnet 子代理：出处表核对、审校处置核对。关键结论由 Opus 子代理回到原处复核",
+  "luna": "Luna 在本环境不可用，没有使用"
+ },
+ "baseline": {
+  "local_head": "49277957439ab453c8e7d3f05d0d1f6bd2cbdac1",
+  "working_tree": "含另一个会话未提交的改动；成品目录整体未跟踪，没有任何 commit"
+ },
+ "materials": [
+  {
+   "id": "kf001-work-order",
+   "what": "用户粘贴的工单原文",
+   "location": "制作会话日志第 1 行（queue-operation）与第 3 行（user），2026-10-04T11:57:31Z",
+   "bytes": 10374,
+   "sha256": "0fe236ce9ab3e02b747eface35c0dd4c4c06611cf2c40d8e71d19b00014ab720",
+   "sha256_of": "制作会话 scratchpad 里的逐字副本 work-order-original.md",
+   "in_repository": false
+  },
+  {
+   "id": "kf001-frozen-directory",
+   "what": "成品与制作目录",
+   "location": "demos/knowledge-film-001-pyramid",
+   "files": 413,
+   "freeze_list_sha256": "1df63c00b38077d3c33051e85b4a570e751cd1b67525701a0d663800020a131b",
+   "verified": "2026-10-05 运行 shasum -a 256 -c FREEZE.sha256，413 行全部 OK",
+   "in_repository": true
+  },
+  {
+   "id": "kf001-session-log",
+   "what": "制作会话日志（JSON Lines）",
+   "location": "本机 ~/.claude/projects/-Users-lesprivilege-Projects-Praxis/ecaee7c5-8cfd-4f82-9b4a-ae30363f027e.jsonl，同名目录下有 subagents/ 与 tool-results/",
+   "range_read": "第 1–1556 行是制作，到用户确认冻结并生成校验表为止；之后的行属于第二阶段，只取了其中的用户消息",
+   "sha256_of_lines_1_1556": "06a9aca5cc8afaf822047dc66ab63f9ab9d76380556d2e6cc742874f7f699069",
+   "in_repository": false,
+   "not_copied_because": "日志第 285–1051 行之间有 31 行带着 shell 报错回显出来的、密钥形状的字符串，子代理日志里也有。日志没有复制进仓库"
+  },
+  {
+   "id": "kf001-subagent-briefs",
+   "what": "十二份子代理任务书",
+   "location": "vault/distilled/knowledge-film-001-distill-20261005/production-briefs",
+   "copied_from": "各子代理日志的第一条消息，逐字",
+   "in_repository": true
+  },
+  {
+   "id": "kf001-post-freeze-user-feedback",
+   "what": "冻结之后的用户消息：对文案的反馈（日志第 1559、1590 行）",
+   "location": "制作会话日志，2026-10-04T16:13:29Z 与 16:19:50Z",
+   "in_repository": false
+  },
+  {
+   "id": "kf001-post-freeze-chat-relay",
+   "what": "冻结之后用户转贴的一段关于外部参考分层与 Taste 的 Chat 回复",
+   "location": "制作会话日志第 1651 行，2026-10-04T16:29:04Z",
+   "bytes": 11473,
+   "sha256": "9b960b191d21cc479e9148df9af91164ed7570dcdbfd40f89004de9528db1997",
+   "sha256_of": "制作会话 scratchpad 里的逐字副本 user-material-20261005-showcase-taste.md",
+   "identity": "原 Chat 转贴，没有出处；其中的数字、引用的 prompt 和截图都没有核实",
+   "in_repository": false
+  },
+  {
+   "id": "kf001-earlier-style-rulings",
+   "what": "2026-09-23 答卷会话里用户关于文风的三条原话",
+   "location": "本机 ~/.claude/projects/-Users-lesprivilege-Projects-Praxis/c0ae911c-de42-4d99-ac67-16d3c227b3ad.jsonl 第 1060、1139、1227 行（queue-operation）",
+   "in_repository": false
+  }
+ ],
+ "scope": {
+  "reading_coverage": "工单全文；冻结目录的说明、文稿、施工约定、出处表、两份审校与裁决、引擎与检查脚本、四张联络表；主日志第 1–1556 行的全部用户消息、工具调用与返回摘要；十二个制作子代理的任务书、交回报告与工具调用统计",
+  "not_done": "没有听声音；没有按实际速度观看成片；没有重跑渲染管线；没有重开片中引用的外部来源；没有逐行读分镜源码；没有读片中引用的研究笔记全文",
+  "external_urls_revisited": 0
+ },
+ "pending_index_changes": [
+  "scripts/build_registry.py 没有读取本记录，vault/registry.json 里没有它",
+  "vault/intake/README.md、vault/distilled/README.md、demos/README.md、CHANGELOG.md 没有加索引行：检出被另一个会话共用，本次只新建文件"
+ ],
+ "limitations": [
+  "日志里的思考块绝大多数是空的，制作方当时的理由只能从它对用户说的话和动作里看",
+  "出处表逐行核对和审校处置核对由 Sonnet 子代理完成，Opus 子代理只复核了其中改变结论的几条",
+  "这次没有对照组：说某条 Kit 规则起了作用的地方，都只能写成“产物与规则一致”"
+ ],
+ "revisit_when": "用户裁决报告里的候选时；第二条知识片开工时；制作会话日志被清理或压缩之前。"
+}

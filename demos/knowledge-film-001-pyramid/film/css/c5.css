@@ -1,0 +1,65 @@
+/* ---- c5 · the test ---- */
+.c5-world { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; transform-origin: 0 0; }
+
+/* the slot of the cold open, which is the top box of the pyramid */
+.c5-top { --edge: 0; --fill: 0; --ring: 0; position: absolute; left: 0; top: 0; border: 3px dashed var(--ink3); border-radius: 6px; }
+.c5-top::before { content: ""; position: absolute; inset: -3px; border: 3px solid var(--blue); border-radius: 6px; opacity: var(--edge);
+  background: rgba(31, 79, 224, var(--fill)); box-shadow: 0 0 0 calc(var(--ring) * 12px) rgba(31, 79, 224, .22); }
+.c5-ph1, .c5-ph2 { position: absolute; top: 0; bottom: 0; display: flex; align-items: center; white-space: nowrap; color: var(--ink3); }
+.c5-ph1 { left: 30px; font: 500 34px/1 var(--sans); letter-spacing: .08em; }
+.c5-ph2 { font: 700 50px/1 var(--serif); letter-spacing: .04em; }
+.c5-claim { position: absolute; top: 50%; width: 0; height: 36px; margin-top: -18px; background: var(--blue); border-radius: 3px; }
+.c5-caret { position: absolute; top: 50%; width: 7px; height: 76px; margin-top: -38px; background: var(--blue); opacity: 0; }
+.c5-toptxt { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; white-space: nowrap; opacity: 0;
+  font: 900 54px/1.2 var(--serif); letter-spacing: .01em; color: #fff; }
+
+/* one piece: a bar, then a box holding the bar, then a box holding words */
+.c5-piece { --box: 0; --p: 0; --bh: 32; --pl: 0px; --pr: 0px; position: absolute; left: 0; top: 0; }
+.c5-piece::before { content: ""; position: absolute; inset: 0; background: #fff; border: 3px solid var(--ink); border-radius: 6px; opacity: var(--box); }
+.c5-piece.chip::before { border: 2px solid var(--rule); border-radius: 4px; }
+.c5-piece i { position: absolute; left: calc(var(--p) * var(--pl)); right: calc(var(--p) * var(--pr)); top: 50%;
+  height: calc(var(--bh) * 1px); margin-top: calc(var(--bh) * -.5px); background: var(--ink); border-radius: 3px; opacity: .88; }
+.c5-txt { position: absolute; inset: 0; opacity: 0; white-space: nowrap; }
+.c5-piece.key .c5-txt { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+.c5-piece.key em { display: block; font: 600 30px/1.2 var(--sans); letter-spacing: .14em; color: var(--ink3); margin-bottom: 10px; }
+.c5-piece.key u { text-decoration: none; color: var(--blue); margin-right: 14px; letter-spacing: 0; }
+.c5-piece.key b { display: inline-block; font: 700 40px/1.3 var(--serif); color: var(--ink); }
+.c5-piece.chip .c5-txt { display: flex; align-items: center; padding: 0 16px; }
+.c5-piece.chip b { display: inline-block; font: 500 30px/1 var(--sans); color: var(--ink); }
+.c5-ghost { border: 3px dashed var(--ink3); border-radius: 6px; }
+.c5-pill { text-align: center; font: 700 40px/1 var(--sans); color: #fff; background: var(--ink); border-radius: 40px; padding: 14px 0 15px; z-index: 4; }
+
+/* words beside the diagram */
+.c5-apex, .c5-word { font: 900 76px/1 var(--serif); color: var(--blue); white-space: nowrap; }
+.c5-word { --strike: 0; }
+.c5-word.dim { color: var(--ink3); }
+.c5-word::after { content: ""; position: absolute; left: -8px; right: -8px; top: 52%; height: 5px; background: var(--red); transform: scaleX(var(--strike)); transform-origin: 0 50%; }
+.c5-sidenote { font: 500 38px/1.3 var(--sans); color: var(--ink2); white-space: nowrap; }
+.c5-item { --on: 0; display: flex; align-items: center; gap: 16px; font: 700 42px/1.2 var(--serif); color: var(--ink); white-space: nowrap; }
+.c5-item b { flex: none; width: 52px; height: 52px; border-radius: 50%; font-size: 30px; line-height: 46px; text-align: center;
+  border: 3px solid color-mix(in srgb, var(--blue) calc(var(--on) * 100%), var(--ink));
+  background: color-mix(in srgb, var(--blue) calc(var(--on) * 100%), transparent);
+  color: color-mix(in srgb, #fff calc(var(--on) * 100%), var(--ink)); }
+
+/* Minto's sentence */
+.c5-who { font: 600 30px/1 var(--sans); letter-spacing: .14em; color: var(--ink3); white-space: nowrap; }
+.c5-quote.lines .line-mask { padding-left: 90px; margin-left: -90px; }
+.c5-quote .line-inner { position: relative; font: 500 120px/1.2 var(--serif); letter-spacing: -.005em; color: var(--ink); }
+.c5-hang { position: absolute; right: 100%; top: 0; }
+.c5-zh { font: 400 46px/1.55 var(--serif); color: var(--ink2); white-space: nowrap; }
+.c5-zh span { display: inline-block; }
+.c5-zh em { color: inherit; }
+.c5-link { height: 3px; background: repeating-linear-gradient(90deg, var(--blue) 0 10px, transparent 10px 22px); }
+
+/* the two outcomes */
+.c5-out { font: 900 92px/1.1 var(--serif); color: var(--ink); white-space: nowrap; }
+.c5-out.blue { color: var(--blue); }
+.c5-cap { font: 700 60px/1.2 var(--serif); color: var(--ink2); white-space: nowrap; }
+.c5-cap.strong { font-weight: 900; color: var(--ink); }
+
+/* end card: the title card again, with the credits */
+.c5-end-title { text-align: center; color: var(--moon); letter-spacing: .08em; font-size: 168px; }
+.c5-end-sub { text-align: center; font-family: var(--serif); font-size: 50px; letter-spacing: .12em; color: var(--blue-lite); }
+.c5-end-rule { background: var(--moon2); }
+.c5-end-credits { display: flex; justify-content: center; font: 500 26px/1 var(--sans); letter-spacing: .14em; color: var(--moon2); white-space: nowrap; }
+.c5-end-credits span + span::before { content: ""; display: inline-block; width: 2px; height: 22px; margin: 0 30px; background: var(--nightline); vertical-align: -3px; }

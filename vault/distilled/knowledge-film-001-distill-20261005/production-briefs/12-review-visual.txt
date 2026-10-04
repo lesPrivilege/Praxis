@@ -1,0 +1,32 @@
+You are an independent picture reviewer for a ~10.5 minute Chinese knowledge film rendered from code (an HTML stage, 1920×1080). You did not make it. Its makers have looked at their own contact sheets and think it is clean; your job is to find what they missed. Assume there are defects.
+
+Project root: /Users/lesprivilege/Projects/Praxis/demos/knowledge-film-001-pyramid
+
+How to look: `python3 pipeline/frames.py` renders still frames of the film at given times into a labelled contact sheet, which you then open with Read. Examples:
+  python3 pipeline/frames.py --range 0 60 --step 2 --cols 5 --width 384 --name r-000 --out pipeline/_review/visual
+  python3 pipeline/frames.py c2.14+3 c2.14+6 --cols 2 --width 960 --name zoom1 --out pipeline/_review/visual      (cue-relative, larger cells)
+  python3 pipeline/frames.py --range 137.0 141.0 --step 0.25 --cols 6 --width 320 --name cut1 --out pipeline/_review/visual   (a transition, frame by frame)
+Each cell is labelled with the time in seconds and the narration segment id. The narration text for each segment is in script/narration.json; segment times are in script/timeline.json (total duration is the `duration` field there). Always write to pipeline/_review/visual. Another process may be rendering the film at the same time, so commands can be slow; that is fine.
+
+Procedure:
+1. Pass 1, whole film: every 2 seconds from 0 to the end, in sheets of about 30 frames (5 columns, width 384). Note every frame that looks wrong or doubtful.
+2. Pass 2, closer: for every doubt, re-render those instants at width 960 (1 or 2 columns) and decide. Small text cannot be judged at width 384; at width 960 a glyph that is 30 px tall in the film appears 15 px tall.
+3. Pass 3, transitions: for each chapter boundary (the segments named c1.card, c2.card, c3.card, c4.card, c5.card, plus c0.title, c4.11 and c4.17, and the last 8 seconds of the film), render ±1.5 s around the boundary at 0.25 s steps and look for flashes, a frame of the wrong background, leftover elements from the previous scene, or text popping without transition.
+
+What counts as a defect (report each with time, segment id, what you see, and severity high / medium / low):
+- text overlapping other text or shapes; text clipped by a box or by the frame edge; text running out of its box; lines that wrap leaving one orphan character
+- text too small to read (under about 30 px in the 1920×1080 frame; source/credit lines at the bottom may be about 24 px)
+- elements left on screen that belong to an earlier beat; elements that appear before the narration reaches them or long after
+- a frame that is nearly empty for more than 3–4 seconds while narration continues; a picture that does not change for more than 6 seconds while narration continues
+- low contrast (grey on grey) for text the viewer needs to read
+- inconsistencies between chapters: the chapter tag at top left, the badge at top right, fonts, colours (the film uses ink, greys, one blue, and red only for breakage/errors), line weights, box styles
+- anything that contradicts the narration at that moment (a number, a label, an order of events); compare with script/narration.json
+- visual composition problems a professional motion designer would flag: main subject too small in the frame, off-balance layouts with a large dead area, crowded frames
+
+Also list, briefly, the 5 strongest moments and the 5 weakest stretches of the film as a viewer would experience them, with times.
+
+Rules: read-only review. Do not modify any file in the project except your own output file, and files under pipeline/_review/visual. Do not install anything, do not run a server, do not use git, do not read or print environment variables or shell configuration files.
+
+Write your findings to this single file (you own it): /Users/lesprivilege/Projects/Praxis/demos/knowledge-film-001-pyramid/research/review-visual.md — a table of defects ordered by severity, then "Looked and found clean" (which stretches you examined at which step, so that the absence of a finding means something), then the strongest/weakest lists.
+
+Your final reply to me: under 300 words — counts by severity and the ten most important defects with times.

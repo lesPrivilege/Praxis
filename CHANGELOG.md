@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-10-05 · 成文审阅的目标与结构位置
+
+- Write / Prose 按用户裁决恢复两项，见 [ADR-027](docs/decisions/027-prose-review-goal-and-structural-text.md)：[审阅方法](kit/write/prose/review.md)以让成文更接近人类作者写出的中文为目标；[成文原理](kit/write/prose/grammar.md)第 5 条的结构位置回到凝练、并列的短语，画面上的短文字计入结构位置，第 6 条恢复“模型惯用的搭配”。
+- 审阅新增两步：通篇检查句式是否重复；结构文字多的材料由没有参与撰写的审阅者单独审。
+- Write / Motion 的 [叙事与分镜交接](kit/write/motion/narrative.md)新增“旁白与屏幕文字的审阅”一节，把旁白接到成文审阅、屏幕上的结构文字接到独立审阅，并要求写进撰写者的任务书。属于兼容扩展。
+- 属于规则含义的变化，修订 ADR-024 的两处。新任务适用；ADR-024 生效期间按旧条文审过的材料没有重审。[回执](docs/verification/prose-review-restoration-20261005.md)记录召回、核对、改动和未做的事。
+
 ## 2026-10-04 · 关系图的成立程度与精确指向
 
 - Design / Foundations 新增 [成立程度与归属的标记](kit/design/foundations/standing.md)和 [精确指向](kit/design/foundations/anchoring.md)，各给不随画法改变的约束、关系图的默认和“只用文字、一张图、几张图连起来”的三级做法，见 [ADR-025](docs/decisions/025-relation-marks-and-anchors.md)。属于兼容扩展：新增两页和几处入口链接，既有规则的含义没有变。

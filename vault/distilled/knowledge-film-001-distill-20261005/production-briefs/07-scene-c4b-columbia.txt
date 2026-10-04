@@ -1,0 +1,46 @@
+You are the motion designer and scene programmer for one sequence — the Columbia accident slide — in Chapter 4 of a ~10 minute Chinese knowledge film about Barbara Minto's Pyramid Principle. The film is an HTML stage (1920×1080) driven by one paused GSAP timeline; frames are rendered by seeking. Your job: design and implement this sequence so it stands next to a mature YouTube documentary essay. It is the gravest passage of the film: restrained, exact, no spectacle.
+
+Project root: /Users/lesprivilege/Projects/Praxis/demos/knowledge-film-001-pyramid
+
+Read first, in this order:
+1. film/AUTHORING.md — the rules you must follow (timing from narration cues, tl.to only, design language, self-review loop).
+2. film/js/kit.js, film/js/parts.js, film/js/engine.js, film/css/film.css — the tools and tokens.
+3. film/js/scenes/c0-hook.js and film/css/scenes.css — a finished chapter as the style and code reference. Render a few of its frames to see the look: `python3 pipeline/frames.py --range 4 62 --step 6 --name c0 --out pipeline/_review/c4b` then Read the PNG.
+4. script/narration.json — segments c4.11 … c4.16 are yours. script/timeline.json has their times and word lists (use Chinese words as anchors).
+5. research/notes-evidence.md, section 7 — the verified facts, including what must not be said.
+
+I checked the Columbia Accident Investigation Board report myself (Report Volume I, August 2003, Chapter 7, section 7.5, sidebar "Engineering by Viewgraphs", p. 191). The slide text as reproduced there, which you may set on screen exactly (it is quoted from a US government report):
+
+Title: Review Of Test Data Indicates Conservatism for Tile Penetration
+• The existing SOFI on tile test data used to create Crater was reviewed along with STS-107 Southwest Research data
+  – Crater overpredicted penetration of tile coating significantly
+    • Initial penetration to described by normal velocity
+      • Varies with volume/mass of projectile (e.g., 200ft/sec for 3cu. In)
+    • Significant energy is required for the softer SOFI particle to penetrate the relatively hard tile coating
+      • Test results do show that it is possible at sufficient mass and velocity
+    • Conversely, once tile is penetrated SOFI can cause significant damage
+      • Minor variations in total energy (above penetration level) can cause significant tile damage
+  – Flight condition is significantly outside of test database
+    • Volume of ramp is 1920cu in vs 3 cu in for test
+
+(The exact indent depth of each line is my reading of the reproduction; the report says the slide has "six levels of hierarchy" over "11 simple sentences". Keep the title as level 1 and the last line as the deepest region; do not print a numbered claim about which line sits on which level beyond "六层".) Report sentences you may quote or paraphrase: "Only at the bottom of the slide do engineers state a key piece of information: that one estimate of the debris that struck Columbia was 640 times larger than the data used to calibrate the model" and "(Later analysis showed that the debris object was actually 400 times larger)"; "The Board views the endemic use of PowerPoint briefing slides instead of technical papers as an illustration of the problematic methods of technical communication at NASA."; Tufte, quoted there: the word "significant/significantly" is used 5 times on the slide.
+
+Binding limits: 1920 cu in is the volume of the foam ramp as written on the slide, not a measured size of the debris; say 640 is the ratio on the slide and that later analysis put it at 400. Do not put a date on the slide. Do not say or imply the slide or PowerPoint caused the accident; the Board put the main weight on organisational and management causes. No shuttle imagery, no explosion, no photographs, no depiction of the crew. The accident itself is stated in type only.
+
+You own exactly two files and may modify nothing else: film/js/scenes/c4b-columbia.js and film/css/c4b.css (both exist as stubs and are already linked in film/index.html). CSS class prefix: `c4b-`. Other agents are working in the same folder on other chapters at the same time; do not touch their files, the engine, kit, parts, timeline, narration, or film.css. If you need a helper that kit.js lacks, define it locally in your file. Do not install anything, do not run a dev server, do not use git.
+
+Scope in time: your scenes run from T('c4.11') − 0.3 to T('c4.17') − 0.1; before and after belong to another author, so open by covering the frame (your scene has its own opaque background) and end by fading your content out over the last 0.5 s. Carry the chapter tag `K.chrome(root, { chapter: ['04', '怎样被用坏'], dark: true })` if you use the dark stage (`night`), which suits this sequence; paper is also acceptable if you judge it better.
+
+Direction (you may improve on it; keep the meaning):
+- c4.11: "工整的层级，还会把要紧的事埋起来" — a tidy indented outline, seen as bars; one bar at the very bottom is the one that matters.
+- c4.12: 2003, Columbia, foam strike on the left wing at launch, engineers brief by slides during the flight. Type only: date and a few words.
+- c4.13: the slide appears, set plainly and legibly (English as written; a Chinese gloss of the title beneath or beside it: 对测试数据的复核表明，隔热瓦被击穿的估计偏于保守). The title is what the eye reads first; let the frame say so.
+- c4.14: travel down the hierarchy, level by level, to the last line. Then make 1920 against 3 visible as quantity: for example one unit square beside 640 unit squares (a 32×20 field), built up so the viewer feels the ratio. Label it as the ratio written on the slide; add "事后分析：约 400 倍" in small type.
+- c4.15: the loss, in type. Then the Board: main causes organisational; and its count — 11 sentences, 6 levels. Citation via K.source: Columbia Accident Investigation Board, Report Vol. I (2003), p. 191.
+- c4.16: the general point: hierarchy sends the eye to the top; if the top is off, what is right below it is hard to see. Return to the outline-as-bars from c4.11, top bar lit, bottom bar the one that mattered.
+
+On-screen text is a skeleton of the narration (keywords, numbers, quotes, sources), never full narration sentences.
+
+Quality bar: the main subject fills at least 60% of the frame width; no text under 30px except the source line and the body lines of the reproduced slide (those may be 26px minimum, and the camera should bring the lines that matter up to a comfortable size); nothing overlaps or clips; no stretch of more than ~4 seconds without a meaningful change. Review your own frames repeatedly with pipeline/frames.py (write review images to pipeline/_review/c4b using --out and --name) and fix what you see. Check the terminal output of frames.py for console errors — a JS error in your file can break the whole film for everyone, so run frames.py after every substantial edit.
+
+When done, reply with: the list of scenes (id, time span, one line on what happens), anything in the narration you could not show honestly, any kit/engine limitation you worked around, and the paths of 2 contact sheets that show the finished sequence (every ~2.5 seconds). Keep the reply under 300 words.
