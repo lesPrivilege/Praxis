@@ -279,3 +279,18 @@ test('fixture: inconsistencies are reported together, with their paths', () => {
   data.cases[1].owner = 'U-nobody';
   assert.deepEqual(fixtureProblems(data).map((p) => p.split(' ')[0]).sort(), ['bad-state', 'bad-version', 'unknown-user']);
 });
+
+test('fixture: a stage the records could not have produced, or a proposal the case does not have, is refused', () => {
+  const mutated = (change: (cases: any[]) => void) => {
+    const { dates: _dates, ...data } = readFixture(fixture);
+    change(data.cases);
+    return fixtureProblems(data).map((p) => p.split(' ')[0]);
+  };
+  const inReview = (cases: any[]) => cases.find((c) => c.stage === 'in-review');
+  const submission = (cases: any[]) => cases.flatMap((c) => c.records).find((r) => r.proposalId);
+  assert.deepEqual(mutated((cases) => { cases[0].stage = 'not-a-stage'; }), ['bad-state']);
+  assert.deepEqual(mutated((cases) => { inReview(cases).stage = 'decided'; }), ['bad-state'], 'nobody accepted it');
+  assert.deepEqual(mutated((cases) => { const c = inReview(cases); c.records.unshift({ ...c.records[0], kind: 'acceptance' }); }), ['bad-record-order'], 'accepted before it was submitted');
+  assert.deepEqual(mutated((cases) => { submission(cases).proposalId = 'MP-0'; }), ['dangling-proposal']);
+  assert.deepEqual(mutated((cases) => { delete submission(cases).proposalId; }), ['missing-proposal']);
+});

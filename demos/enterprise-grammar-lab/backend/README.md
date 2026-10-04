@@ -4,13 +4,13 @@
 
 ```sh
 npm run backend        # http://127.0.0.1:8787/api/matter 与 /api/payment
-npm test               # 后端 38 项，逐个响应按契约校验；另有前端金额函数 5 项
+npm test               # 后端 40 项，逐个响应按契约校验；另有前端金额函数 5 项
 ```
 
 | 位置 | 职责 |
 |---|---|
 | `kernel.ts` | 场景之间不该各写一遍的部分：HTTP 进出、演示身份、动作尝试与幂等、延迟和 fixture 里写明的异常行为。场景以一个 `Scenario` 对象挂上来 |
-| `fixture.ts` | 读 fixture、换算相对日期、fixture 不自洽时拒绝启动 |
+| `fixture.ts` | 读 fixture、换算相对日期、把记录按动作允许的步骤走一遍、fixture 不自洽时拒绝启动 |
 | `contract-check.ts` | 测试用：按场景的契约校验每个响应 |
 | `server.ts` | 入口，把两个场景挂到一个端口上 |
 | [matter](matter/README.md) | 事项工作台的状态、规则、动作和测试 |

@@ -1,6 +1,6 @@
 // In-memory state of the payment-review scenario, loaded from its fixture. Restarting the process resets it.
 import type { components } from '../../contracts/payment.d.ts';
-import { readFixture, requireConsistent } from '../fixture.ts';
+import { readFixture, requireConsistent, stateAfter } from '../fixture.ts';
 import type { Behaviors } from '../kernel.ts';
 
 type S = components['schemas'];
@@ -87,6 +87,13 @@ export interface State {
   seq: number;
 }
 
+// What each kind of record does to a case; the same steps the actions in domain.ts take.
+const CASE_STEPS = {
+  drafting: { submission: 'in-review' },
+  'in-review': { acceptance: 'decided', return: 'drafting' },
+  decided: { return: 'drafting' },
+};
+
 export function fixtureProblems(data: Omit<State, 'seq'>): string[] {
   const problems: string[] = [];
   const users = new Set(data.users.map((u) => u.id));
@@ -129,10 +136,13 @@ export function fixtureProblems(data: Omit<State, 'seq'>): string[] {
     c.records.forEach((r, ri) => {
       user(r.by, `${at}.records[${ri}].by`);
       basis(r.basis, `${at}.records[${ri}].basis`);
+      // A case has one proposal; a record that says what was done with "the" proposal has to mean that one.
+      if (r.proposalId && r.proposalId !== c.proposal?.id) problems.push(`dangling-proposal ${at}.records[${ri}]: ${r.proposalId}`);
+      if (r.proposalUse && r.proposalUse !== 'none' && !r.proposalId) problems.push(`missing-proposal ${at}.records[${ri}]: ${r.proposalUse} without saying which proposal`);
     });
-    const last = c.records.at(-1)?.kind;
-    const expected: (string | undefined)[] = { drafting: [undefined, 'return'], 'in-review': ['submission'], decided: ['acceptance'] }[c.stage];
-    if (!expected.includes(last)) problems.push(`bad-state ${at}: stage ${c.stage} but the last record is ${last ?? 'absent'}`);
+    const reached = stateAfter(CASE_STEPS, 'drafting', c.records.map((r) => r.kind));
+    if ('stuckAt' in reached) problems.push(`bad-record-order ${at}.records[${reached.stuckAt}]: a ${c.records[reached.stuckAt].kind} cannot follow ${reached.state}`);
+    else if (reached.state !== c.stage) problems.push(`bad-state ${at}: stage ${c.stage}, but its records leave it ${reached.state}`);
     c.events.forEach((e, ei) => {
       user(e.actor, `${at}.events[${ei}].actor`);
       const known = e.target.kind === 'case' ? e.target.id === c.id : versions.has(e.target.id);
