@@ -52,7 +52,7 @@ npm run contract   # 改了契约之后重新生成类型
 
 ## 验收
 
-对象与版本：本目录，基线 `main@d4fd387`，提交在分支 `claude/enterprise-grammar-lab-20261004` 上。执行者 Opus 5.5，日期 2026-10-04。
+对象与版本：本目录，基线 `main@d4fd387`，经分支 `claude/enterprise-grammar-lab-20261004` 合并进 `main`。执行者 Opus 5.5，日期 2026-10-04。
 
 | 层 | 结果 | 证据与范围 |
 |---|---|---|
