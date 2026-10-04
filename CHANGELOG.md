@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-10-05 · 口播旁白与独立冷读
+
+- Write / Prose 新增文体页 [口播旁白](kit/write/prose/genres/narration.md)：为耳朵写的指代、主干、读音和叫法，口播里要数的六种句式，旁白与画面文字的对应，随稿交付的句式统计和读音清单。见 [ADR-028](docs/decisions/028-narration-genre-and-cold-read.md)。
+- [审阅方法](kit/write/prose/review.md)新增“成文的独立冷读”，结构文字的独立审阅补三项产出，常见偏差表加七行结构文字的例子；[成文原理](kit/write/prose/grammar.md)第 5 条加一句“同一句话在几处出现时逐字一致”。
+- Prose 入口加两处：把撰写交给别人时把条文写进任务书；空泛写法的自查指向 Vault 里已有的候选提炼。
+- 属于兼容扩展。[回执](docs/verification/narration-distill-20261005.md)记录这次提炼对照的过程、进入与没有进入的内容、一次入口走读。使用证据只有一条片子和同一名主笔。
+
 ## 2026-10-05 · 成文审阅的目标与结构位置
 
 - Write / Prose 按用户裁决恢复两项，见 [ADR-027](docs/decisions/027-prose-review-goal-and-structural-text.md)：[审阅方法](kit/write/prose/review.md)以让成文更接近人类作者写出的中文为目标；[成文原理](kit/write/prose/grammar.md)第 5 条的结构位置回到凝练、并列的短语，画面上的短文字计入结构位置，第 6 条恢复“模型惯用的搭配”。
