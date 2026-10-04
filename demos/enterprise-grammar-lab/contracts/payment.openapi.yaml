@@ -1,0 +1,472 @@
+openapi: 3.1.0
+info:
+  title: Payment Review API
+  version: 0.1.0
+  description: >
+    Contract for scenario payment-review r0.1: checking whether the contract,
+    invoice and acceptance material behind a payment request is enough to hand
+    to a person for review. Shares the work envelope in work.yaml with the
+    other scenarios. Every request except /meta and /users carries
+    X-Demo-Persona; identity is a demo persona, not authentication.
+servers:
+  - url: /api/payment
+security:
+  - persona: []
+
+paths:
+  /meta:
+    get:
+      operationId: getMeta
+      security: []
+      responses:
+        default: { $ref: "#/components/responses/Problem" }
+        "200": { description: Environment the backend reports, content: { application/json: { schema: { $ref: "./work.yaml#/components/schemas/Meta" } } } }
+  /me:
+    get:
+      operationId: getMe
+      responses:
+        default: { $ref: "#/components/responses/Problem" }
+        "200": { description: Current actor, content: { application/json: { schema: { $ref: "#/components/schemas/User" } } } }
+  /users:
+    get:
+      operationId: listUsers
+      description: The demo identities. Open, because one has to be picked before anything else can be asked.
+      security: []
+      responses:
+        default: { $ref: "#/components/responses/Problem" }
+        "200": { description: Users, content: { application/json: { schema: { type: array, items: { $ref: "#/components/schemas/User" } } } } }
+  /search:
+    get:
+      operationId: search
+      parameters:
+        - { name: q, in: query, required: true, schema: { type: string } }
+      responses:
+        default: { $ref: "#/components/responses/Problem" }
+        "200": { description: Cases the actor may see, content: { application/json: { schema: { type: array, items: { $ref: "#/components/schemas/SearchHit" } } } } }
+
+  /cases:
+    get:
+      operationId: listCases
+      parameters:
+        - { name: q, in: query, schema: { type: string } }
+        - { name: status, in: query, schema: { $ref: "#/components/schemas/CaseStatus" } }
+        - { name: owner, in: query, description: 'A user id, "me" for the current actor, or "none" for unassigned', schema: { type: string } }
+        - { name: dueFrom, in: query, schema: { type: string, format: date } }
+        - { name: dueTo, in: query, schema: { type: string, format: date } }
+        - { name: currency, in: query, description: Required with amountMin or amountMax. Amounts in different currencies are not comparable., schema: { type: string } }
+        - { name: amountMin, in: query, description: In minor units of `currency`, schema: { type: integer, minimum: 0 } }
+        - { name: amountMax, in: query, description: In minor units of `currency`, schema: { type: integer, minimum: 0 } }
+        - { name: sort, in: query, schema: { $ref: "#/components/schemas/CaseSort" } }
+        - { name: page, in: query, schema: { type: integer, minimum: 1, default: 1 } }
+        - { name: pageSize, in: query, schema: { type: integer, minimum: 1, maximum: 50, default: 10 } }
+      responses:
+        default: { $ref: "#/components/responses/Problem" }
+        "200": { description: A page of cases, content: { application/json: { schema: { $ref: "#/components/schemas/CasePage" } } } }
+        "422": { $ref: "#/components/responses/Problem" }
+  /cases/{caseId}:
+    parameters: [{ $ref: "#/components/parameters/caseId" }]
+    get:
+      operationId: getCase
+      responses:
+        default: { $ref: "#/components/responses/Problem" }
+        "200": { description: Case with its files, records and affordances, content: { application/json: { schema: { $ref: "#/components/schemas/Case" } } } }
+        "403": { $ref: "#/components/responses/Problem" }
+        "404": { $ref: "#/components/responses/Problem" }
+  /cases/{caseId}/checks:
+    parameters: [{ $ref: "#/components/parameters/caseId" }]
+    get:
+      operationId: listChecks
+      description: The drill rules evaluated against the current versions of the case's files.
+      responses:
+        default: { $ref: "#/components/responses/Problem" }
+        "200": { description: Check results, content: { application/json: { schema: { type: array, items: { $ref: "#/components/schemas/CheckResult" } } } } }
+        "403": { $ref: "#/components/responses/Problem" }
+        "404": { $ref: "#/components/responses/Problem" }
+  /cases/{caseId}/proposal:
+    parameters: [{ $ref: "#/components/parameters/caseId" }]
+    get:
+      operationId: getProposal
+      responses:
+        default: { $ref: "#/components/responses/Problem" }
+        "200": { description: The machine proposal for this case, content: { application/json: { schema: { $ref: "#/components/schemas/Proposal" } } } }
+        "403": { $ref: "#/components/responses/Problem" }
+        "404": { $ref: "#/components/responses/Problem" }
+  /cases/{caseId}/events:
+    parameters: [{ $ref: "#/components/parameters/caseId" }]
+    get:
+      operationId: listEvents
+      responses:
+        default: { $ref: "#/components/responses/Problem" }
+        "200": { description: Audit events, newest first, content: { application/json: { schema: { type: array, items: { $ref: "#/components/schemas/AuditEvent" } } } } }
+        "403": { $ref: "#/components/responses/Problem" }
+        "404": { $ref: "#/components/responses/Problem" }
+  /files/{fileId}/versions/{version}:
+    parameters:
+      - { name: fileId, in: path, required: true, schema: { type: string } }
+      - { name: version, in: path, required: true, schema: { type: integer, minimum: 1 } }
+    get:
+      operationId: getFileVersion
+      description: One version of a file, with the fragments that checks and records point at.
+      responses:
+        default: { $ref: "#/components/responses/Problem" }
+        "200": { description: File version, content: { application/json: { schema: { $ref: "#/components/schemas/FileVersion" } } } }
+        "403": { $ref: "#/components/responses/Problem" }
+        "404": { $ref: "#/components/responses/Problem" }
+
+  /actions/submit-for-review:
+    post:
+      operationId: submitForReview
+      parameters: [{ $ref: "#/components/parameters/idempotencyKey" }]
+      requestBody:
+        required: true
+        content: { application/json: { schema: { $ref: "#/components/schemas/SubmitInput" } } }
+      responses:
+        default: { $ref: "#/components/responses/Problem" }
+        "200": { $ref: "#/components/responses/ActionApplied" }
+        "403": { $ref: "#/components/responses/Problem" }
+        "404": { $ref: "#/components/responses/Problem" }
+        "409": { $ref: "#/components/responses/Problem" }
+        "422": { $ref: "#/components/responses/Problem" }
+  /actions/accept-review:
+    post:
+      operationId: acceptReview
+      parameters: [{ $ref: "#/components/parameters/idempotencyKey" }]
+      requestBody:
+        required: true
+        content: { application/json: { schema: { $ref: "#/components/schemas/AcceptInput" } } }
+      responses:
+        default: { $ref: "#/components/responses/Problem" }
+        "200": { $ref: "#/components/responses/ActionApplied" }
+        "403": { $ref: "#/components/responses/Problem" }
+        "404": { $ref: "#/components/responses/Problem" }
+        "409": { $ref: "#/components/responses/Problem" }
+        "422": { $ref: "#/components/responses/Problem" }
+  /actions/return-review:
+    post:
+      operationId: returnReview
+      parameters: [{ $ref: "#/components/parameters/idempotencyKey" }]
+      requestBody:
+        required: true
+        content: { application/json: { schema: { $ref: "#/components/schemas/ReturnInput" } } }
+      responses:
+        default: { $ref: "#/components/responses/Problem" }
+        "200": { $ref: "#/components/responses/ActionApplied" }
+        "403": { $ref: "#/components/responses/Problem" }
+        "404": { $ref: "#/components/responses/Problem" }
+        "409": { $ref: "#/components/responses/Problem" }
+        "422": { $ref: "#/components/responses/Problem" }
+  /action-attempts/{attemptId}:
+    parameters:
+      - { name: attemptId, in: path, required: true, schema: { type: string } }
+    get:
+      operationId: getActionAttempt
+      description: >
+        What the backend knows about one attempt. 404 means the attempt never
+        arrived, so the same key may be sent again.
+      responses:
+        default: { $ref: "#/components/responses/Problem" }
+        "200": { description: Attempt, content: { application/json: { schema: { $ref: "./work.yaml#/components/schemas/ActionAttempt" } } } }
+        "404": { $ref: "#/components/responses/Problem" }
+
+components:
+  securitySchemes:
+    persona:
+      type: apiKey
+      in: header
+      name: X-Demo-Persona
+  parameters:
+    caseId: { name: caseId, in: path, required: true, schema: { type: string } }
+    idempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: true
+      description: Identity of this attempt. Sending the same key again returns the first result.
+      schema: { type: string, minLength: 8 }
+  responses:
+    Problem:
+      description: Why the request was not served
+      content: { application/json: { schema: { $ref: "./work.yaml#/components/schemas/Problem" } } }
+    ActionApplied:
+      description: The action took effect
+      content: { application/json: { schema: { $ref: "./work.yaml#/components/schemas/ActionResult" } } }
+
+  schemas:
+    Role: { type: string, enum: [reviewer, lead, observer] }
+    User:
+      allOf:
+        - $ref: "./work.yaml#/components/schemas/User"
+        - { type: object, properties: { role: { $ref: "#/components/schemas/Role" } } }
+    ActionType: { type: string, enum: [submit-for-review, accept-review, return-review] }
+    Affordance:
+      allOf:
+        - $ref: "./work.yaml#/components/schemas/Affordance"
+        - { type: object, properties: { type: { $ref: "#/components/schemas/ActionType" } } }
+    ObjectKind: { type: string, enum: [case, file] }
+    ObjectRef:
+      allOf:
+        - $ref: "./work.yaml#/components/schemas/ObjectRef"
+        - { type: object, properties: { kind: { $ref: "#/components/schemas/ObjectKind" } } }
+    AuditEventType:
+      type: string
+      enum: [case-opened, file-received, file-version-added, review-submitted, review-returned, review-accepted]
+    AuditEvent:
+      allOf:
+        - $ref: "./work.yaml#/components/schemas/AuditEvent"
+        - type: object
+          properties:
+            type: { $ref: "#/components/schemas/AuditEventType" }
+            target: { $ref: "#/components/schemas/ObjectRef" }
+
+    Money:
+      type: object
+      additionalProperties: false
+      required: [currency, minor]
+      description: An exact amount. `minor` counts the currency's smallest unit; an unknown amount is null, never zero.
+      properties:
+        currency: { type: string, pattern: "^[A-Z]{3}$" }
+        minor: { type: integer }
+
+    CaseStatus:
+      type: string
+      enum: [needs-material, ready, in-review, decided]
+      description: >
+        Business state. needs-material and ready are both before submission and
+        follow from the checks; in-review and decided follow from the records.
+    CaseSort: { type: string, enum: [dueDate, -dueDate, updatedAt, -updatedAt], default: dueDate }
+    CaseFields:
+      type: object
+      required: [id, title, vendor, contractNo, milestone, amount, dueDate, status, owner, failed, blocking, needsRecheck, version, updatedAt]
+      properties:
+        id: { type: string }
+        title: { type: string }
+        vendor: { type: string }
+        contractNo: { type: string }
+        milestone: { type: string }
+        amount: { oneOf: [{ $ref: "#/components/schemas/Money" }, { type: "null" }], description: The invoice amount. Null while no invoice states one. }
+        dueDate: { type: [string, "null"], format: date }
+        status: { $ref: "#/components/schemas/CaseStatus" }
+        owner: { oneOf: [{ $ref: "./work.yaml#/components/schemas/UserRef" }, { type: "null" }], description: The reviewer responsible for the case }
+        failed: { type: integer, description: Checks that did not pass }
+        blocking: { type: integer, description: Checks that could not be decided or found conflicting evidence }
+        needsRecheck: { type: boolean, description: A file changed after the standing submission was made }
+        version: { type: integer }
+        updatedAt: { type: string, format: date-time }
+    CaseSummary:
+      allOf: [{ $ref: "#/components/schemas/CaseFields" }]
+      unevaluatedProperties: false
+    CasePage:
+      type: object
+      additionalProperties: false
+      required: [items, total, totalExact, page, pageSize]
+      properties:
+        items: { type: array, items: { $ref: "#/components/schemas/CaseSummary" } }
+        total: { type: integer }
+        totalExact: { type: boolean, description: False when the backend can only estimate the count }
+        page: { type: integer }
+        pageSize: { type: integer }
+
+    FileKind: { type: string, enum: [contract, terms, supplement, invoice, acceptance] }
+    CaseFile:
+      type: object
+      additionalProperties: false
+      required: [id, title, kind, version, receivedAt, source]
+      properties:
+        id: { type: string }
+        title: { type: string }
+        kind: { $ref: "#/components/schemas/FileKind" }
+        version: { type: integer, description: Current version }
+        receivedAt: { type: string, format: date }
+        source: { type: string }
+    FileVersion:
+      type: object
+      additionalProperties: false
+      required: [id, caseId, title, kind, version, currentVersion, receivedAt, source, fragments]
+      properties:
+        id: { type: string }
+        caseId: { type: string }
+        title: { type: string }
+        kind: { $ref: "#/components/schemas/FileKind" }
+        version: { type: integer }
+        currentVersion: { type: integer }
+        receivedAt: { type: string, format: date }
+        source: { type: string }
+        fragments:
+          type: array
+          items:
+            type: object
+            additionalProperties: false
+            required: [key, locator, text]
+            properties:
+              key: { type: string, description: Stable name of the place inside the file }
+              locator: { type: string, description: Where a person finds it }
+              text: { type: string }
+    EvidenceRef:
+      type: object
+      additionalProperties: false
+      required: [fileId, title, version, currentVersion, key, locator]
+      description: A pointer to one place in one version of a file.
+      properties:
+        fileId: { type: string }
+        title: { type: string }
+        version: { type: integer }
+        currentVersion: { type: integer }
+        key: { type: string }
+        locator: { type: string }
+    BasisVersion:
+      type: object
+      additionalProperties: false
+      required: [fileId, title, version, current]
+      properties:
+        fileId: { type: string }
+        title: { type: string }
+        version: { type: integer }
+        current: { type: boolean, description: False when the file has a newer version }
+
+    CheckResult:
+      type: object
+      additionalProperties: false
+      required: [rule, ruleVersion, title, outcome, detail, basis, missing, conflict]
+      description: A deterministic drill rule applied to the files. Not a legal or financial conclusion.
+      properties:
+        rule: { type: string }
+        ruleVersion: { type: integer }
+        title: { type: string }
+        outcome: { type: string, enum: [pass, fail, unknown, conflict] }
+        detail: { type: string }
+        basis: { type: array, items: { $ref: "#/components/schemas/EvidenceRef" } }
+        missing:
+          type: array
+          description: What has to arrive before the rule can be decided, and who supplies it.
+          items:
+            type: object
+            additionalProperties: false
+            required: [what, supplier]
+            properties:
+              what: { type: string }
+              supplier: { type: string }
+        conflict:
+          description: Present when two sources state different values for the same thing.
+          oneOf:
+            - type: object
+              additionalProperties: false
+              required: [field, values]
+              properties:
+                field: { type: string }
+                values:
+                  type: array
+                  items:
+                    type: object
+                    additionalProperties: false
+                    required: [display, ref]
+                    properties:
+                      display: { type: string }
+                      ref: { $ref: "#/components/schemas/EvidenceRef" }
+            - type: "null"
+
+    Proposal:
+      type: object
+      additionalProperties: false
+      required: [id, source, generatedAt, suggestion, text, basis, current]
+      description: A suggestion produced by a machine. It changes nothing until a person submits.
+      properties:
+        id: { type: string }
+        source: { type: string, enum: [machine] }
+        generatedAt: { type: string, format: date-time }
+        suggestion: { type: string, enum: [submit, submit-as-exception, request-material] }
+        text: { type: string }
+        basis: { type: array, items: { $ref: "#/components/schemas/BasisVersion" } }
+        current: { type: boolean, description: False when any file it was based on has a newer version }
+
+    ReviewRecord:
+      type: object
+      additionalProperties: false
+      required: [kind, by, at, attemptId, caseVersion]
+      properties:
+        kind: { type: string, enum: [submission, return, acceptance] }
+        by: { $ref: "./work.yaml#/components/schemas/UserRef" }
+        at: { type: string, format: date-time }
+        attemptId: { type: string }
+        caseVersion: { type: integer, description: Version of the case after this record }
+        conclusion: { type: string, enum: [sufficient, exception] }
+        explanation: { type: string }
+        proposalUse: { $ref: "#/components/schemas/ProposalUse" }
+        proposalId: { type: string, description: The machine proposal the person was responding to }
+        basis: { type: array, items: { $ref: "#/components/schemas/BasisVersion" } }
+    ProposalUse:
+      type: string
+      enum: [adopted, amended, rejected, none]
+      description: What the person did with the machine proposal. "none" when there was no proposal.
+    Case:
+      unevaluatedProperties: false
+      allOf:
+        - $ref: "#/components/schemas/CaseFields"
+        - type: object
+          required: [requester, files, records, submission, next, actions]
+          properties:
+            requester: { type: string }
+            files: { type: array, items: { $ref: "#/components/schemas/CaseFile" } }
+            records:
+              type: array
+              description: Submissions, returns and the acceptance, oldest first. Nothing is overwritten.
+              items: { $ref: "#/components/schemas/ReviewRecord" }
+            submission:
+              type: object
+              additionalProperties: false
+              required: [conclusion, explanationRequired, proposalUses, receiver, basis]
+              description: What a submission made now would carry. The conclusion follows from the checks; the person does not choose it.
+              properties:
+                conclusion: { type: string, enum: [sufficient, exception] }
+                explanationRequired: { type: boolean }
+                proposalUses:
+                  type: array
+                  description: >
+                    What may be said about the machine proposal. ["none"] when there is none;
+                    "adopted" is absent when the proposal was made on older material or disagrees with the checks.
+                  items: { $ref: "#/components/schemas/ProposalUse" }
+                receiver: { $ref: "./work.yaml#/components/schemas/UserRef" }
+                basis: { type: array, items: { $ref: "#/components/schemas/BasisVersion" } }
+            next:
+              type: object
+              additionalProperties: false
+              required: [step, owner]
+              description: The step this case is waiting for and who holds it.
+              properties:
+                step: { type: string, enum: [supply-material, submit, decide, recheck, pay-elsewhere] }
+                owner: { oneOf: [{ $ref: "./work.yaml#/components/schemas/UserRef" }, { type: "null" }], description: Null when the step is held outside this workbench or by nobody yet }
+            actions: { type: array, items: { $ref: "#/components/schemas/Affordance" } }
+
+    SubmitInput:
+      type: object
+      additionalProperties: false
+      required: [caseId, expectedVersion, explanation, proposalUse]
+      properties:
+        caseId: { type: string }
+        expectedVersion: { type: integer }
+        explanation: { type: string }
+        proposalUse: { $ref: "#/components/schemas/ProposalUse" }
+    AcceptInput:
+      type: object
+      additionalProperties: false
+      required: [caseId, expectedVersion]
+      properties:
+        caseId: { type: string }
+        expectedVersion: { type: integer }
+        note: { type: string }
+    ReturnInput:
+      type: object
+      additionalProperties: false
+      required: [caseId, expectedVersion, reason]
+      properties:
+        caseId: { type: string }
+        expectedVersion: { type: integer }
+        reason: { type: string, minLength: 1 }
+
+    SearchHit:
+      type: object
+      additionalProperties: false
+      required: [kind, id, title, context]
+      properties:
+        kind: { type: string, enum: [case] }
+        id: { type: string }
+        title: { type: string }
+        context: { type: string }

@@ -1,0 +1,2267 @@
+{
+ "notice": "合成数据：供应方、合同、发票、金额和人员均为虚构；检查规则只供演练，不是法律或财务结论。",
+ "dates": "以 @ 开头的值是相对后端启动日的偏移：@-5d 表示五天前，@+8d 表示八天后，@-1d16:40 带时刻。",
+ "users": [
+  {
+   "id": "U-shen",
+   "name": "沈若溪",
+   "role": "reviewer",
+   "demoPersona": true
+  },
+  {
+   "id": "U-gu",
+   "name": "顾承安",
+   "role": "lead",
+   "demoPersona": true
+  },
+  {
+   "id": "U-tang",
+   "name": "唐一鸣",
+   "role": "observer",
+   "demoPersona": true
+  },
+  {
+   "id": "U-lu",
+   "name": "陆言",
+   "role": "reviewer",
+   "demoPersona": false
+  }
+ ],
+ "lead": "U-gu",
+ "behaviors": {
+  "latencyMs": [
+   120,
+   480
+  ],
+  "failFirst": [
+   {
+    "route": "GET /cases/PR-4107/checks",
+    "times": 1,
+    "message": "检查结果暂时取不到，稍后重试。"
+   }
+  ],
+  "failAlways": [
+   {
+    "route": "GET /cases/PR-4106/events",
+    "message": "记录服务没有响应。"
+   }
+  ],
+  "concurrentEdit": {
+   "caseId": "PR-4109",
+   "afterMs": 8000,
+   "actor": "U-lu",
+   "explanation": "三项检查通过，材料齐备。",
+   "proposalUse": "adopted"
+  },
+  "dropResponse": [
+   {
+    "ref": "PR-4110",
+    "when": "after-apply",
+    "times": 1
+   },
+   {
+    "ref": "PR-4111",
+    "when": "before-apply",
+    "times": 1
+   }
+  ]
+ },
+ "cases": [
+  {
+   "id": "PR-4101",
+   "title": "澄观信息 · 里程碑二 系统上线",
+   "vendor": "澄观信息技术有限公司",
+   "contractNo": "HT-2026-031",
+   "milestone": "里程碑二",
+   "requester": "澄观信息技术有限公司 · 经 何川 发起",
+   "owner": "U-shen",
+   "dueDate": "@+6d",
+   "stage": "drafting",
+   "version": 3,
+   "updatedAt": "@-1d15:20",
+   "contacts": {
+    "invoice": "供应方对接人",
+    "acceptance": "甲方项目经理 何川",
+    "terms": "合同管理员 祁安",
+    "currency": "财务对接人 韩越"
+   },
+   "files": [
+    {
+     "id": "F-2101",
+     "kind": "contract",
+     "title": "服务合同（付款条款）",
+     "versions": [
+      {
+       "version": 1,
+       "receivedAt": "@-60d",
+       "source": "合同管理系统",
+       "fragments": [
+        {
+         "key": "cap-clause",
+         "locator": "第 6.2 条",
+         "text": "每期发票金额不得超过付款条件表所列该里程碑的上限。",
+         "value": null
+        },
+        {
+         "key": "acceptance-clause",
+         "locator": "第 6.4 条",
+         "text": "付款以甲方项目经理签署的验收记录为前提。",
+         "value": null
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "id": "F-2102",
+     "kind": "terms",
+     "title": "付款条件表",
+     "versions": [
+      {
+       "version": 1,
+       "receivedAt": "@-60d",
+       "source": "合同管理系统导出",
+       "fragments": [
+        {
+         "key": "currency",
+         "locator": "表头 · 结算币种",
+         "text": "结算币种：人民币（CNY）",
+         "value": "CNY"
+        },
+        {
+         "key": "cap",
+         "locator": "里程碑二一行 · 上限",
+         "text": "里程碑二 上限 ¥480,000.00",
+         "value": {
+          "currency": "CNY",
+          "minor": 48000000
+         }
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "id": "F-2103",
+     "kind": "invoice",
+     "title": "发票记录",
+     "versions": [
+      {
+       "version": 1,
+       "receivedAt": "@-4d",
+       "source": "供应方开具",
+       "fragments": [
+        {
+         "key": "invoice-no",
+         "locator": "发票号码栏",
+         "text": "发票号码 INV-88210",
+         "value": "INV-88210"
+        },
+        {
+         "key": "amount",
+         "locator": "价税合计栏",
+         "text": "价税合计 ¥486,000.00",
+         "value": {
+          "currency": "CNY",
+          "minor": 48600000
+         }
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "id": "F-2104",
+     "kind": "acceptance",
+     "title": "验收记录",
+     "versions": [
+      {
+       "version": 1,
+       "receivedAt": "@-5d",
+       "source": "项目管理系统",
+       "fragments": [
+        {
+         "key": "milestone",
+         "locator": "标题",
+         "text": "里程碑二验收记录",
+         "value": "里程碑二"
+        },
+        {
+         "key": "signed",
+         "locator": "签署栏",
+         "text": "甲方项目经理已签署",
+         "value": true
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "proposal": {
+    "id": "MP-1",
+    "generatedAt": "@-1d15:21",
+    "suggestion": "submit-as-exception",
+    "text": "发票金额比里程碑二的上限高 ¥6,000.00。验收记录已签署，币种一致。建议作为例外提交，并请供应方说明超出部分的来由。",
+    "basis": [
+     {
+      "fileId": "F-2101",
+      "version": 1
+     },
+     {
+      "fileId": "F-2102",
+      "version": 1
+     },
+     {
+      "fileId": "F-2103",
+      "version": 1
+     },
+     {
+      "fileId": "F-2104",
+      "version": 1
+     }
+    ]
+   },
+   "records": [],
+   "events": [
+    {
+     "at": "@-20d09:00",
+     "actor": "U-gu",
+     "type": "case-opened",
+     "target": {
+      "kind": "case",
+      "id": "PR-4101"
+     },
+     "targetVersion": 1
+    }
+   ]
+  },
+  {
+   "id": "PR-4102",
+   "title": "栖云数据 · 里程碑一 需求确认",
+   "vendor": "栖云数据服务有限公司",
+   "contractNo": "HT-2026-044",
+   "milestone": "里程碑一",
+   "requester": "栖云数据服务有限公司 · 经 宋棠 发起",
+   "owner": "U-shen",
+   "dueDate": "@+9d",
+   "stage": "drafting",
+   "version": 2,
+   "updatedAt": "@-2d10:05",
+   "contacts": {
+    "invoice": "供应方对接人",
+    "acceptance": "甲方项目经理 宋棠",
+    "terms": "合同管理员 祁安",
+    "currency": "财务对接人 韩越"
+   },
+   "files": [
+    {
+     "id": "F-2105",
+     "kind": "contract",
+     "title": "服务合同（付款条款）",
+     "versions": [
+      {
+       "version": 1,
+       "receivedAt": "@-45d",
+       "source": "合同管理系统",
+       "fragments": [
+        {
+         "key": "cap-clause",
+         "locator": "第 6.2 条",
+         "text": "每期发票金额不得超过付款条件表所列该里程碑的上限。",
+         "value": null
+        },
+        {
+         "key": "acceptance-clause",
+         "locator": "第 6.4 条",
+         "text": "付款以甲方项目经理签署的验收记录为前提。",
+         "value": null
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "id": "F-2106",
+     "kind": "terms",
+     "title": "付款条件表",
+     "versions": [
+      {
+       "version": 1,
+       "receivedAt": "@-45d",
+       "source": "合同管理系统导出",
+       "fragments": [
+        {
+         "key": "currency",
+         "locator": "表头 · 结算币种",
+         "text": "结算币种：人民币（CNY）",
+         "value": "CNY"
+        },
+        {
+         "key": "cap",
+         "locator": "里程碑一一行 · 上限",
+         "text": "里程碑一 上限 ¥120,000.00",
+         "value": {
+          "currency": "CNY",
+          "minor": 12000000
+         }
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "id": "F-2107",
+     "kind": "invoice",
+     "title": "发票记录",
+     "versions": [
+      {
+       "version": 1,
+       "receivedAt": "@-3d",
+       "source": "供应方开具",
+       "fragments": [
+        {
+         "key": "invoice-no",
+         "locator": "发票号码栏",
+         "text": "发票号码 INV-30417",
+         "value": "INV-30417"
+        },
+        {
+         "key": "amount",
+         "locator": "价税合计栏",
+         "text": "价税合计 ¥118,000.00",
+         "value": {
+          "currency": "CNY",
+          "minor": 11800000
+         }
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "proposal": {
+    "id": "MP-2",
+    "generatedAt": "@-2d10:06",
+    "suggestion": "submit",
+    "text": "三项检查均通过，建议提交复核。",
+    "basis": [
+     {
+      "fileId": "F-2105",
+      "version": 1
+     },
+     {
+      "fileId": "F-2106",
+      "version": 1
+     },
+     {
+      "fileId": "F-2107",
+      "version": 1
+     }
+    ]
+   },
+   "records": [],
+   "events": [
+    {
+     "at": "@-20d09:00",
+     "actor": "U-gu",
+     "type": "case-opened",
+     "target": {
+      "kind": "case",
+      "id": "PR-4102"
+     },
+     "targetVersion": 1
+    }
+   ]
+  },
+  {
+   "id": "PR-4103",
+   "title": "泊远物流 · 里程碑三 仓配联调",
+   "vendor": "泊远物流科技有限公司",
+   "contractNo": "HT-2025-118",
+   "milestone": "里程碑三",
+   "requester": "泊远物流科技有限公司 · 经 程砚 发起",
+   "owner": "U-shen",
+   "dueDate": "@+4d",
+   "stage": "drafting",
+   "version": 4,
+   "updatedAt": "@-3d16:40",
+   "contacts": {
+    "invoice": "供应方对接人",
+    "acceptance": "甲方项目经理 程砚",
+    "terms": "合同管理员 祁安",
+    "currency": "财务对接人 韩越"
+   },
+   "files": [
+    {
+     "id": "F-2108",
+     "kind": "contract",
+     "title": "服务合同（付款条款）",
+     "versions": [
+      {
+       "version": 1,
+       "receivedAt": "@-90d",
+       "source": "合同管理系统",
+       "fragments": [
+        {
+         "key": "cap-clause",
+         "locator": "第 6.2 条",
+         "text": "每期发票金额不得超过付款条件表所列该里程碑的上限。",
+         "value": null
+        },
+        {
+         "key": "acceptance-clause",
+         "locator": "第 6.4 条",
+         "text": "付款以甲方项目经理签署的验收记录为前提。",
+         "value": null
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "id": "F-2109",
+     "kind": "terms",
+     "title": "付款条件表",
+     "versions": [
+      {
+       "version": 1,
+       "receivedAt": "@-90d",
+       "source": "合同管理系统导出",
+       "fragments": [
+        {
+         "key": "currency",
+         "locator": "表头 · 结算币种",
+         "text": "结算币种：人民币（CNY）",
+         "value": "CNY"
+        },
+        {
+         "key": "cap",
+         "locator": "里程碑三一行 · 上限",
+         "text": "里程碑三 上限 ¥300,000.00",
+         "value": {
+          "currency": "CNY",
+          "minor": 30000000
+         }
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "id": "F-2110",
+     "kind": "supplement",
+     "title": "补充协议",
+     "versions": [
+      {
+       "version": 1,
+       "receivedAt": "@-30d",
+       "source": "合同管理系统",
+       "fragments": [
+        {
+         "key": "cap",
+         "locator": "第 2 条",
+         "text": "里程碑三付款上限调整为 ¥260,000.00。",
+         "value": {
+          "currency": "CNY",
+          "minor": 26000000
+         }
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "id": "F-2111",
+     "kind": "invoice",
+     "title": "发票记录",
+     "versions": [
+      {
+       "version": 1,
+       "receivedAt": "@-6d",
+       "source": "供应方开具",
+       "fragments": [
+        {
+         "key": "invoice-no",
+         "locator": "发票号码栏",
+         "text": "发票号码 INV-55102",
+         "value": "INV-55102"
+        },
+        {
+         "key": "amount",
+         "locator": "价税合计栏",
+         "text": "价税合计 ¥280,000.00",
+         "value": {
+          "currency": "CNY",
+          "minor": 28000000
+         }
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "id": "F-2112",
+     "kind": "acceptance",
+     "title": "验收记录",
+     "versions": [
+      {
+       "version": 1,
+       "receivedAt": "@-7d",
+       "source": "项目管理系统",
+       "fragments": [
+        {
+         "key": "milestone",
+         "locator": "标题",
+         "text": "里程碑三验收记录",
+         "value": "里程碑三"
+        },
+        {
+         "key": "signed",
+         "locator": "签署栏",
+         "text": "甲方项目经理已签署",
+         "value": true
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "proposal": {
+    "id": "MP-3",
+    "generatedAt": "@-3d16:41",
+    "suggestion": "request-material",
+    "text": "付款条件表与补充协议对里程碑三的上限写法不同，无法判断发票是否超限。建议先请合同管理员确认适用的上限。",
+    "basis": [
+     {
+      "fileId": "F-2108",
+      "version": 1
+     },
+     {
+      "fileId": "F-2109",
+      "version": 1
+     },
+     {
+      "fileId": "F-2110",
+      "version": 1
+     },
+     {
+      "fileId": "F-2111",
+      "version": 1
+     },
+     {
+      "fileId": "F-2112",
+      "version": 1
+     }
+    ]
+   },
+   "records": [],
+   "events": [
+    {
+     "at": "@-20d09:00",
+     "actor": "U-gu",
+     "type": "case-opened",
+     "target": {
+      "kind": "case",
+      "id": "PR-4103"
+     },
+     "targetVersion": 1
+    }
+   ]
+  },
+  {
+   "id": "PR-4104",
+   "title": "青砚设计 · 里程碑一 视觉方案",
+   "vendor": "青砚设计工作室",
+   "contractNo": "HT-2026-052",
+   "milestone": "里程碑一",
+   "requester": "青砚设计工作室 · 经 何川 发起",
+   "owner": "U-shen",
+   "dueDate": "@+3d",
+   "stage": "in-review",
+   "version": 3,
+   "updatedAt": "@-1d11:30",
+   "contacts": {
+    "invoice": "供应方对接人",
+    "acceptance": "甲方项目经理 何川",
+    "terms": "合同管理员 祁安",
+    "currency": "财务对接人 韩越"
+   },
+   "files": [
+    {
+     "id": "F-2113",
+     "kind": "contract",
+     "title": "服务合同（付款条款）",
+     "versions": [
+      {
+       "version": 1,
+       "receivedAt": "@-50d",
+       "source": "合同管理系统",
+       "fragments": [
+        {
+         "key": "cap-clause",
+         "locator": "第 6.2 条",
+         "text": "每期发票金额不得超过付款条件表所列该里程碑的上限。",
+         "value": null
+        },
+        {
+         "key": "acceptance-clause",
+         "locator": "第 6.4 条",
+         "text": "付款以甲方项目经理签署的验收记录为前提。",
+         "value": null
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "id": "F-2114",
+     "kind": "terms",
+     "title": "付款条件表",
+     "versions": [
+      {
+       "version": 1,
+       "receivedAt": "@-50d",
+       "source": "合同管理系统导出",
+       "fragments": [
+        {
+         "key": "currency",
+         "locator": "表头 · 结算币种",
+         "text": "结算币种：人民币（CNY）",
+         "value": "CNY"
+        },
+        {
+         "key": "cap",
+         "locator": "里程碑一一行 · 上限",
+         "text": "里程碑一 上限 ¥90,000.00",
+         "value": {
+          "currency": "CNY",
+          "minor": 9000000
+         }
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "id": "F-2115",
+     "kind": "invoice",
+     "title": "发票记录",
+     "versions": [
+      {
+       "version": 1,
+       "receivedAt": "@-8d",
+       "source": "供应方开具",
+       "fragments": [
+        {
+         "key": "invoice-no",
+         "locator": "发票号码栏",
+         "text": "发票号码 INV-71288",
+         "value": "INV-71288"
+        },
+        {
+         "key": "amount",
+         "locator": "价税合计栏",
+         "text": "价税合计 ¥90,000.00",
+         "value": {
+          "currency": "CNY",
+          "minor": 9000000
+         }
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "id": "F-2116",
+     "kind": "acceptance",
+     "title": "验收记录",
+     "versions": [
+      {
+       "version": 1,
+       "receivedAt": "@-9d",
+       "source": "项目管理系统",
+       "fragments": [
+        {
+         "key": "milestone",
+         "locator": "标题",
+         "text": "里程碑一验收记录",
+         "value": "里程碑一"
+        },
+        {
+         "key": "signed",
+         "locator": "签署栏",
+         "text": "甲方项目经理已签署",
+         "value": true
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "proposal": {
+    "id": "MP-4",
+    "generatedAt": "@-2d09:00",
+    "suggestion": "submit",
+    "text": "三项检查均通过，建议提交复核。",
+    "basis": [
+     {
+      "fileId": "F-2113",
+      "version": 1
+     },
+     {
+      "fileId": "F-2114",
+      "version": 1
+     },
+     {
+      "fileId": "F-2115",
+      "version": 1
+     },
+     {
+      "fileId": "F-2116",
+      "version": 1
+     }
+    ]
+   },
+   "records": [
+    {
+     "kind": "submission",
+     "by": "U-shen",
+     "at": "@-1d11:30",
+     "attemptId": "seed-4104",
+     "caseVersion": 3,
+     "conclusion": "sufficient",
+     "explanation": "三项检查通过，材料齐备。",
+     "proposalUse": "adopted",
+     "basis": [
+      {
+       "fileId": "F-2113",
+       "version": 1
+      },
+      {
+       "fileId": "F-2114",
+       "version": 1
+      },
+      {
+       "fileId": "F-2115",
+       "version": 1
+      },
+      {
+       "fileId": "F-2116",
+       "version": 1
+      }
+     ],
+     "proposalId": "MP-4"
+    }
+   ],
+   "events": [
+    {
+     "at": "@-20d09:00",
+     "actor": "U-gu",
+     "type": "case-opened",
+     "target": {
+      "kind": "case",
+      "id": "PR-4104"
+     },
+     "targetVersion": 1
+    },
+    {
+     "at": "@-1d11:30",
+     "actor": "U-shen",
+     "type": "review-submitted",
+     "target": {
+      "kind": "case",
+      "id": "PR-4104"
+     },
+     "targetVersion": 3,
+     "attemptId": "seed-4104",
+     "changes": [
+      {
+       "field": "status",
+       "from": "ready",
+       "to": "in-review"
+      }
+     ],
+     "rules": [
+      "ROLE-1@1",
+      "VER-1@1",
+      "SUB-1@1",
+      "SUB-2@1"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "PR-4105",
+   "title": "明滩科技 · 里程碑二 接口交付",
+   "vendor": "明滩科技有限公司",
+   "contractNo": "HT-2026-019",
+   "milestone": "里程碑二",
+   "requester": "明滩科技有限公司 · 经 乔岭 发起",
+   "owner": "U-shen",
+   "dueDate": "@+2d",
+   "stage": "in-review",
+   "version": 4,
+   "updatedAt": "@-1d09:10",
+   "contacts": {
+    "invoice": "供应方对接人",
+    "acceptance": "甲方项目经理 乔岭",
+    "terms": "合同管理员 祁安",
+    "currency": "财务对接人 韩越"
+   },
+   "files": [
+    {
+     "id": "F-2118",
+     "kind": "contract",
+     "title": "服务合同（付款条款）",
+     "versions": [
+      {
+       "version": 1,
+       "receivedAt": "@-70d",
+       "source": "合同管理系统",
+       "fragments": [
+        {
+         "key": "cap-clause",
+         "locator": "第 6.2 条",
+         "text": "每期发票金额不得超过付款条件表所列该里程碑的上限。",
+         "value": null
+        },
+        {
+         "key": "acceptance-clause",
+         "locator": "第 6.4 条",
+         "text": "付款以甲方项目经理签署的验收记录为前提。",
+         "value": null
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "id": "F-2119",
+     "kind": "terms",
+     "title": "付款条件表",
+     "versions": [
+      {
+       "version": 1,
+       "receivedAt": "@-70d",
+       "source": "合同管理系统导出",
+       "fragments": [
+        {
+         "key": "currency",
+         "locator": "表头 · 结算币种",
+         "text": "结算币种：人民币（CNY）",
+         "value": "CNY"
+        },
+        {
+         "key": "cap",
+         "locator": "里程碑二一行 · 上限",
+         "text": "里程碑二 上限 ¥220,000.00",
+         "value": {
+          "currency": "CNY",
+          "minor": 22000000
+         }
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "id": "F-2117",
+     "kind": "invoice",
+     "title": "发票记录",
+     "versions": [
+      {
+       "version": 1,
+       "receivedAt": "@-10d",
+       "source": "供应方开具",
+       "fragments": [
+        {
+         "key": "invoice-no",
+         "locator": "发票号码栏",
+         "text": "发票号码 INV-90031",
+         "value": "INV-90031"
+        },
+        {
+         "key": "amount",
+         "locator": "价税合计栏",
+         "text": "价税合计 ¥215,000.00",
+         "value": {
+          "currency": "CNY",
+          "minor": 21500000
+         }
+        }
+       ]
+      },
+      {
+       "version": 2,
+       "receivedAt": "@-1d",
+       "source": "供应方红冲后重开",
+       "fragments": [
+        {
+         "key": "invoice-no",
+         "locator": "发票号码栏",
+         "text": "发票号码 INV-90031-R",
+         "value": "INV-90031-R"
+        },
+        {
+         "key": "amount",
+         "locator": "价税合计栏",
+         "text": "价税合计 ¥219,500.00",
+         "value": {
+          "currency": "CNY",
+          "minor": 21950000
+         }
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "id": "F-2120",
+     "kind": "acceptance",
+     "title": "验收记录",
+     "versions": [
+      {
+       "version": 1,
+       "receivedAt": "@-11d",
+       "source": "项目管理系统",
+       "fragments": [
+        {
+         "key": "milestone",
+         "locator": "标题",
+         "text": "里程碑二验收记录",
+         "value": "里程碑二"
+        },
+        {
+         "key": "signed",
+         "locator": "签署栏",
+         "text": "甲方项目经理已签署",
+         "value": true
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "proposal": {
+    "id": "MP-5",
+    "generatedAt": "@-4d14:00",
+    "suggestion": "submit",
+    "text": "三项检查均通过，建议提交复核。",
+    "basis": [
+     {
+      "fileId": "F-2118",
+      "version": 1
+     },
+     {
+      "fileId": "F-2119",
+      "version": 1
+     },
+     {
+      "fileId": "F-2117",
+      "version": 1
+     },
+     {
+      "fileId": "F-2120",
+      "version": 1
+     }
+    ]
+   },
+   "records": [
+    {
+     "kind": "submission",
+     "by": "U-shen",
+     "at": "@-4d14:20",
+     "attemptId": "seed-4105",
+     "caseVersion": 3,
+     "conclusion": "sufficient",
+     "explanation": "三项检查通过。",
+     "proposalUse": "adopted",
+     "basis": [
+      {
+       "fileId": "F-2118",
+       "version": 1
+      },
+      {
+       "fileId": "F-2119",
+       "version": 1
+      },
+      {
+       "fileId": "F-2117",
+       "version": 1
+      },
+      {
+       "fileId": "F-2120",
+       "version": 1
+      }
+     ],
+     "proposalId": "MP-5"
+    }
+   ],
+   "events": [
+    {
+     "at": "@-20d09:00",
+     "actor": "U-gu",
+     "type": "case-opened",
+     "target": {
+      "kind": "case",
+      "id": "PR-4105"
+     },
+     "targetVersion": 1
+    },
+    {
+     "at": "@-4d14:20",
+     "actor": "U-shen",
+     "type": "review-submitted",
+     "target": {
+      "kind": "case",
+      "id": "PR-4105"
+     },
+     "targetVersion": 3,
+     "attemptId": "seed-4105",
+     "changes": [
+      {
+       "field": "status",
+       "from": "ready",
+       "to": "in-review"
+      }
+     ],
+     "rules": [
+      "ROLE-1@1",
+      "VER-1@1",
+      "SUB-1@1",
+      "SUB-2@1"
+     ]
+    },
+    {
+     "at": "@-1d09:10",
+     "actor": "U-lu",
+     "type": "file-version-added",
+     "target": {
+      "kind": "file",
+      "id": "F-2117"
+     },
+     "targetVersion": 2,
+     "changes": [
+      {
+       "field": "version",
+       "from": "1",
+       "to": "2"
+      }
+     ],
+     "note": "供应方红冲后重开发票，金额有变化。此前的提交基于第 1 版。"
+    }
+   ]
+  },
+  {
+   "id": "PR-4106",
+   "title": "海屿咨询 · 里程碑一 调研报告",
+   "vendor": "海屿咨询有限公司",
+   "contractNo": "HT-2026-061",
+   "milestone": "里程碑一",
+   "requester": "海屿咨询有限公司 · 经 闻笛 发起",
+   "owner": "U-lu",
+   "dueDate": "@+12d",
+   "stage": "drafting",
+   "version": 2,
+   "updatedAt": "@-2d17:00",
+   "contacts": {
+    "invoice": "供应方对接人",
+    "acceptance": "甲方项目经理 闻笛",
+    "terms": "合同管理员 祁安",
+    "currency": "财务对接人 韩越"
+   },
+   "files": [
+    {
+     "id": "F-2121",
+     "kind": "contract",
+     "title": "服务合同（付款条款）",
+     "versions": [
+      {
+       "version": 1,
+       "receivedAt": "@-40d",
+       "source": "合同管理系统",
+       "fragments": [
+        {
+         "key": "cap-clause",
+         "locator": "第 6.2 条",
+         "text": "每期发票金额不得超过付款条件表所列该里程碑的上限。",
+         "value": null
+        },
+        {
+         "key": "acceptance-clause",
+         "locator": "第 6.4 条",
+         "text": "付款以甲方项目经理签署的验收记录为前提。",
+         "value": null
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "id": "F-2122",
+     "kind": "terms",
+     "title": "付款条件表",
+     "versions": [
+      {
+       "version": 1,
+       "receivedAt": "@-40d",
+       "source": "合同管理系统导出",
+       "fragments": [
+        {
+         "key": "currency",
+         "locator": "表头 · 结算币种",
+         "text": "结算币种：人民币（CNY）",
+         "value": "CNY"
+        },
+        {
+         "key": "cap",
+         "locator": "里程碑一一行 · 上限",
+         "text": "里程碑一 上限 ¥150,000.00",
+         "value": {
+          "currency": "CNY",
+          "minor": 15000000
+         }
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "id": "F-2123",
+     "kind": "invoice",
+     "title": "发票记录",
+     "versions": [
+      {
+       "version": 1,
+       "receivedAt": "@-2d",
+       "source": "供应方开具",
+       "fragments": [
+        {
+         "key": "invoice-no",
+         "locator": "发票号码栏",
+         "text": "发票号码 INV-US-0091",
+         "value": "INV-US-0091"
+        },
+        {
+         "key": "amount",
+         "locator": "价税合计栏",
+         "text": "价税合计 US$20,500.00",
+         "value": {
+          "currency": "USD",
+          "minor": 2050000
+         }
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "id": "F-2124",
+     "kind": "acceptance",
+     "title": "验收记录",
+     "versions": [
+      {
+       "version": 1,
+       "receivedAt": "@-3d",
+       "source": "项目管理系统",
+       "fragments": [
+        {
+         "key": "milestone",
+         "locator": "标题",
+         "text": "里程碑一验收记录",
+         "value": "里程碑一"
+        },
+        {
+         "key": "signed",
+         "locator": "签署栏",
+         "text": "甲方项目经理已签署",
+         "value": true
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "proposal": {
+    "id": "MP-6",
+    "generatedAt": "@-2d17:01",
+    "suggestion": "request-material",
+    "text": "发票以美元开具，合同约定以人民币结算。建议请供应方按合同币种重开，或由财务提供换算依据。",
+    "basis": [
+     {
+      "fileId": "F-2121",
+      "version": 1
+     },
+     {
+      "fileId": "F-2122",
+      "version": 1
+     },
+     {
+      "fileId": "F-2123",
+      "version": 1
+     },
+     {
+      "fileId": "F-2124",
+      "version": 1
+     }
+    ]
+   },
+   "records": [],
+   "events": [
+    {
+     "at": "@-20d09:00",
+     "actor": "U-gu",
+     "type": "case-opened",
+     "target": {
+      "kind": "case",
+      "id": "PR-4106"
+     },
+     "targetVersion": 1
+    }
+   ]
+  },
+  {
+   "id": "PR-4107",
+   "title": "松间软件 · 里程碑二 试运行",
+   "vendor": "松间软件有限公司",
+   "contractNo": "HT-2026-070",
+   "milestone": "里程碑二",
+   "requester": "松间软件有限公司 · 经 陶然 发起",
+   "owner": null,
+   "dueDate": "@+15d",
+   "stage": "drafting",
+   "version": 1,
+   "updatedAt": "@-2d08:30",
+   "contacts": {
+    "invoice": "供应方对接人",
+    "acceptance": "甲方项目经理 陶然",
+    "terms": "合同管理员 祁安",
+    "currency": "财务对接人 韩越"
+   },
+   "files": [
+    {
+     "id": "F-2125",
+     "kind": "contract",
+     "title": "服务合同（付款条款）",
+     "versions": [
+      {
+       "version": 1,
+       "receivedAt": "@-25d",
+       "source": "合同管理系统",
+       "fragments": [
+        {
+         "key": "cap-clause",
+         "locator": "第 6.2 条",
+         "text": "每期发票金额不得超过付款条件表所列该里程碑的上限。",
+         "value": null
+        },
+        {
+         "key": "acceptance-clause",
+         "locator": "第 6.4 条",
+         "text": "付款以甲方项目经理签署的验收记录为前提。",
+         "value": null
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "id": "F-2126",
+     "kind": "terms",
+     "title": "付款条件表",
+     "versions": [
+      {
+       "version": 1,
+       "receivedAt": "@-25d",
+       "source": "合同管理系统导出",
+       "fragments": [
+        {
+         "key": "currency",
+         "locator": "表头 · 结算币种",
+         "text": "结算币种：人民币（CNY）",
+         "value": "CNY"
+        },
+        {
+         "key": "cap",
+         "locator": "里程碑二一行 · 上限",
+         "text": "里程碑二 上限 ¥64,000.00",
+         "value": {
+          "currency": "CNY",
+          "minor": 6400000
+         }
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "id": "F-2127",
+     "kind": "acceptance",
+     "title": "验收记录",
+     "versions": [
+      {
+       "version": 1,
+       "receivedAt": "@-2d",
+       "source": "项目管理系统",
+       "fragments": [
+        {
+         "key": "milestone",
+         "locator": "标题",
+         "text": "里程碑二验收记录",
+         "value": "里程碑二"
+        },
+        {
+         "key": "signed",
+         "locator": "签署栏",
+         "text": "甲方项目经理已签署",
+         "value": true
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "proposal": null,
+   "records": [],
+   "events": [
+    {
+     "at": "@-20d09:00",
+     "actor": "U-gu",
+     "type": "case-opened",
+     "target": {
+      "kind": "case",
+      "id": "PR-4107"
+     },
+     "targetVersion": 1
+    }
+   ]
+  },
+  {
+   "id": "PR-4108",
+   "title": "临川测绘 · 里程碑一 外业采集",
+   "vendor": "临川测绘有限公司",
+   "contractNo": "HT-2025-140",
+   "milestone": "里程碑一",
+   "requester": "临川测绘有限公司 · 经 庄霁 发起",
+   "owner": "U-lu",
+   "dueDate": null,
+   "stage": "decided",
+   "version": 4,
+   "updatedAt": "@-26d10:00",
+   "contacts": {
+    "invoice": "供应方对接人",
+    "acceptance": "甲方项目经理 庄霁",
+    "terms": "合同管理员 祁安",
+    "currency": "财务对接人 韩越"
+   },
+   "files": [
+    {
+     "id": "F-2128",
+     "kind": "contract",
+     "title": "服务合同（付款条款）",
+     "versions": [
+      {
+       "version": 1,
+       "receivedAt": "@-120d",
+       "source": "合同管理系统",
+       "fragments": [
+        {
+         "key": "cap-clause",
+         "locator": "第 6.2 条",
+         "text": "每期发票金额不得超过付款条件表所列该里程碑的上限。",
+         "value": null
+        },
+        {
+         "key": "acceptance-clause",
+         "locator": "第 6.4 条",
+         "text": "付款以甲方项目经理签署的验收记录为前提。",
+         "value": null
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "id": "F-2129",
+     "kind": "terms",
+     "title": "付款条件表",
+     "versions": [
+      {
+       "version": 1,
+       "receivedAt": "@-120d",
+       "source": "合同管理系统导出",
+       "fragments": [
+        {
+         "key": "currency",
+         "locator": "表头 · 结算币种",
+         "text": "结算币种：人民币（CNY）",
+         "value": "CNY"
+        },
+        {
+         "key": "cap",
+         "locator": "里程碑一一行 · 上限",
+         "text": "里程碑一 上限 ¥56,000.00",
+         "value": {
+          "currency": "CNY",
+          "minor": 5600000
+         }
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "id": "F-2130",
+     "kind": "invoice",
+     "title": "发票记录",
+     "versions": [
+      {
+       "version": 1,
+       "receivedAt": "@-30d",
+       "source": "供应方开具",
+       "fragments": [
+        {
+         "key": "invoice-no",
+         "locator": "发票号码栏",
+         "text": "发票号码 INV-11020",
+         "value": "INV-11020"
+        },
+        {
+         "key": "amount",
+         "locator": "价税合计栏",
+         "text": "价税合计 ¥56,000.00",
+         "value": {
+          "currency": "CNY",
+          "minor": 5600000
+         }
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "id": "F-2131",
+     "kind": "acceptance",
+     "title": "验收记录",
+     "versions": [
+      {
+       "version": 1,
+       "receivedAt": "@-31d",
+       "source": "项目管理系统",
+       "fragments": [
+        {
+         "key": "milestone",
+         "locator": "标题",
+         "text": "里程碑一验收记录",
+         "value": "里程碑一"
+        },
+        {
+         "key": "signed",
+         "locator": "签署栏",
+         "text": "甲方项目经理已签署",
+         "value": true
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "proposal": null,
+   "records": [
+    {
+     "kind": "submission",
+     "by": "U-lu",
+     "at": "@-28d15:00",
+     "attemptId": "seed-4108a",
+     "caseVersion": 3,
+     "conclusion": "sufficient",
+     "explanation": "三项检查通过。",
+     "proposalUse": "none",
+     "basis": [
+      {
+       "fileId": "F-2128",
+       "version": 1
+      },
+      {
+       "fileId": "F-2129",
+       "version": 1
+      },
+      {
+       "fileId": "F-2130",
+       "version": 1
+      },
+      {
+       "fileId": "F-2131",
+       "version": 1
+      }
+     ]
+    },
+    {
+     "kind": "acceptance",
+     "by": "U-gu",
+     "at": "@-26d10:00",
+     "attemptId": "seed-4108b",
+     "caseVersion": 4,
+     "basis": [
+      {
+       "fileId": "F-2128",
+       "version": 1
+      },
+      {
+       "fileId": "F-2129",
+       "version": 1
+      },
+      {
+       "fileId": "F-2130",
+       "version": 1
+      },
+      {
+       "fileId": "F-2131",
+       "version": 1
+      }
+     ]
+    }
+   ],
+   "events": [
+    {
+     "at": "@-20d09:00",
+     "actor": "U-gu",
+     "type": "case-opened",
+     "target": {
+      "kind": "case",
+      "id": "PR-4108"
+     },
+     "targetVersion": 1
+    },
+    {
+     "at": "@-28d15:00",
+     "actor": "U-lu",
+     "type": "review-submitted",
+     "target": {
+      "kind": "case",
+      "id": "PR-4108"
+     },
+     "targetVersion": 3,
+     "attemptId": "seed-4108a",
+     "changes": [
+      {
+       "field": "status",
+       "from": "ready",
+       "to": "in-review"
+      }
+     ],
+     "rules": [
+      "ROLE-1@1",
+      "VER-1@1",
+      "SUB-1@1",
+      "SUB-2@1"
+     ]
+    },
+    {
+     "at": "@-26d10:00",
+     "actor": "U-gu",
+     "type": "review-accepted",
+     "target": {
+      "kind": "case",
+      "id": "PR-4108"
+     },
+     "targetVersion": 4,
+     "attemptId": "seed-4108b",
+     "changes": [
+      {
+       "field": "status",
+       "from": "in-review",
+       "to": "decided"
+      }
+     ],
+     "rules": [
+      "ROLE-1@1",
+      "VER-1@1",
+      "VER-2@1"
+     ],
+     "note": "复核材料已接受；付款由财务另行发起。"
+    }
+   ]
+  },
+  {
+   "id": "PR-4109",
+   "title": "望舒传媒 · 里程碑一 样片",
+   "vendor": "望舒传媒有限公司",
+   "contractNo": "HT-2026-075",
+   "milestone": "里程碑一",
+   "requester": "望舒传媒有限公司 · 经 景行 发起",
+   "owner": "U-shen",
+   "dueDate": "@+7d",
+   "stage": "drafting",
+   "version": 2,
+   "updatedAt": "@-3d13:00",
+   "contacts": {
+    "invoice": "供应方对接人",
+    "acceptance": "甲方项目经理 景行",
+    "terms": "合同管理员 祁安",
+    "currency": "财务对接人 韩越"
+   },
+   "files": [
+    {
+     "id": "F-2132",
+     "kind": "contract",
+     "title": "服务合同（付款条款）",
+     "versions": [
+      {
+       "version": 1,
+       "receivedAt": "@-30d",
+       "source": "合同管理系统",
+       "fragments": [
+        {
+         "key": "cap-clause",
+         "locator": "第 6.2 条",
+         "text": "每期发票金额不得超过付款条件表所列该里程碑的上限。",
+         "value": null
+        },
+        {
+         "key": "acceptance-clause",
+         "locator": "第 6.4 条",
+         "text": "付款以甲方项目经理签署的验收记录为前提。",
+         "value": null
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "id": "F-2133",
+     "kind": "terms",
+     "title": "付款条件表",
+     "versions": [
+      {
+       "version": 1,
+       "receivedAt": "@-30d",
+       "source": "合同管理系统导出",
+       "fragments": [
+        {
+         "key": "currency",
+         "locator": "表头 · 结算币种",
+         "text": "结算币种：人民币（CNY）",
+         "value": "CNY"
+        },
+        {
+         "key": "cap",
+         "locator": "里程碑一一行 · 上限",
+         "text": "里程碑一 上限 ¥40,000.00",
+         "value": {
+          "currency": "CNY",
+          "minor": 4000000
+         }
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "id": "F-2134",
+     "kind": "invoice",
+     "title": "发票记录",
+     "versions": [
+      {
+       "version": 1,
+       "receivedAt": "@-3d",
+       "source": "供应方开具",
+       "fragments": [
+        {
+         "key": "invoice-no",
+         "locator": "发票号码栏",
+         "text": "发票号码 INV-64001",
+         "value": "INV-64001"
+        },
+        {
+         "key": "amount",
+         "locator": "价税合计栏",
+         "text": "价税合计 ¥38,000.00",
+         "value": {
+          "currency": "CNY",
+          "minor": 3800000
+         }
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "id": "F-2135",
+     "kind": "acceptance",
+     "title": "验收记录",
+     "versions": [
+      {
+       "version": 1,
+       "receivedAt": "@-4d",
+       "source": "项目管理系统",
+       "fragments": [
+        {
+         "key": "milestone",
+         "locator": "标题",
+         "text": "里程碑一验收记录",
+         "value": "里程碑一"
+        },
+        {
+         "key": "signed",
+         "locator": "签署栏",
+         "text": "甲方项目经理已签署",
+         "value": true
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "proposal": {
+    "id": "MP-09",
+    "generatedAt": "@-3d13:01",
+    "suggestion": "submit",
+    "text": "三项检查均通过，建议提交复核。",
+    "basis": [
+     {
+      "fileId": "F-2132",
+      "version": 1
+     },
+     {
+      "fileId": "F-2133",
+      "version": 1
+     },
+     {
+      "fileId": "F-2134",
+      "version": 1
+     },
+     {
+      "fileId": "F-2135",
+      "version": 1
+     }
+    ]
+   },
+   "records": [],
+   "events": [
+    {
+     "at": "@-20d09:00",
+     "actor": "U-gu",
+     "type": "case-opened",
+     "target": {
+      "kind": "case",
+      "id": "PR-4109"
+     },
+     "targetVersion": 1
+    }
+   ]
+  },
+  {
+   "id": "PR-4110",
+   "title": "知北咨询 · 里程碑二 中期报告",
+   "vendor": "知北咨询有限公司",
+   "contractNo": "HT-2026-079",
+   "milestone": "里程碑二",
+   "requester": "知北咨询有限公司 · 经 阮青 发起",
+   "owner": "U-shen",
+   "dueDate": "@+8d",
+   "stage": "drafting",
+   "version": 2,
+   "updatedAt": "@-3d13:00",
+   "contacts": {
+    "invoice": "供应方对接人",
+    "acceptance": "甲方项目经理 阮青",
+    "terms": "合同管理员 祁安",
+    "currency": "财务对接人 韩越"
+   },
+   "files": [
+    {
+     "id": "F-2136",
+     "kind": "contract",
+     "title": "服务合同（付款条款）",
+     "versions": [
+      {
+       "version": 1,
+       "receivedAt": "@-30d",
+       "source": "合同管理系统",
+       "fragments": [
+        {
+         "key": "cap-clause",
+         "locator": "第 6.2 条",
+         "text": "每期发票金额不得超过付款条件表所列该里程碑的上限。",
+         "value": null
+        },
+        {
+         "key": "acceptance-clause",
+         "locator": "第 6.4 条",
+         "text": "付款以甲方项目经理签署的验收记录为前提。",
+         "value": null
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "id": "F-2137",
+     "kind": "terms",
+     "title": "付款条件表",
+     "versions": [
+      {
+       "version": 1,
+       "receivedAt": "@-30d",
+       "source": "合同管理系统导出",
+       "fragments": [
+        {
+         "key": "currency",
+         "locator": "表头 · 结算币种",
+         "text": "结算币种：人民币（CNY）",
+         "value": "CNY"
+        },
+        {
+         "key": "cap",
+         "locator": "里程碑二一行 · 上限",
+         "text": "里程碑二 上限 ¥74,000.00",
+         "value": {
+          "currency": "CNY",
+          "minor": 7400000
+         }
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "id": "F-2138",
+     "kind": "invoice",
+     "title": "发票记录",
+     "versions": [
+      {
+       "version": 1,
+       "receivedAt": "@-3d",
+       "source": "供应方开具",
+       "fragments": [
+        {
+         "key": "invoice-no",
+         "locator": "发票号码栏",
+         "text": "发票号码 INV-64118",
+         "value": "INV-64118"
+        },
+        {
+         "key": "amount",
+         "locator": "价税合计栏",
+         "text": "价税合计 ¥72,000.00",
+         "value": {
+          "currency": "CNY",
+          "minor": 7200000
+         }
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "id": "F-2139",
+     "kind": "acceptance",
+     "title": "验收记录",
+     "versions": [
+      {
+       "version": 1,
+       "receivedAt": "@-4d",
+       "source": "项目管理系统",
+       "fragments": [
+        {
+         "key": "milestone",
+         "locator": "标题",
+         "text": "里程碑二验收记录",
+         "value": "里程碑二"
+        },
+        {
+         "key": "signed",
+         "locator": "签署栏",
+         "text": "甲方项目经理已签署",
+         "value": true
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "proposal": {
+    "id": "MP-10",
+    "generatedAt": "@-3d13:01",
+    "suggestion": "submit",
+    "text": "三项检查均通过，建议提交复核。",
+    "basis": [
+     {
+      "fileId": "F-2136",
+      "version": 1
+     },
+     {
+      "fileId": "F-2137",
+      "version": 1
+     },
+     {
+      "fileId": "F-2138",
+      "version": 1
+     },
+     {
+      "fileId": "F-2139",
+      "version": 1
+     }
+    ]
+   },
+   "records": [],
+   "events": [
+    {
+     "at": "@-20d09:00",
+     "actor": "U-gu",
+     "type": "case-opened",
+     "target": {
+      "kind": "case",
+      "id": "PR-4110"
+     },
+     "targetVersion": 1
+    }
+   ]
+  },
+  {
+   "id": "PR-4111",
+   "title": "南柯网络 · 里程碑一 环境搭建",
+   "vendor": "南柯网络有限公司",
+   "contractNo": "HT-2026-082",
+   "milestone": "里程碑一",
+   "requester": "南柯网络有限公司 · 经 贺兰 发起",
+   "owner": "U-shen",
+   "dueDate": "@+10d",
+   "stage": "drafting",
+   "version": 2,
+   "updatedAt": "@-3d13:00",
+   "contacts": {
+    "invoice": "供应方对接人",
+    "acceptance": "甲方项目经理 贺兰",
+    "terms": "合同管理员 祁安",
+    "currency": "财务对接人 韩越"
+   },
+   "files": [
+    {
+     "id": "F-2140",
+     "kind": "contract",
+     "title": "服务合同（付款条款）",
+     "versions": [
+      {
+       "version": 1,
+       "receivedAt": "@-30d",
+       "source": "合同管理系统",
+       "fragments": [
+        {
+         "key": "cap-clause",
+         "locator": "第 6.2 条",
+         "text": "每期发票金额不得超过付款条件表所列该里程碑的上限。",
+         "value": null
+        },
+        {
+         "key": "acceptance-clause",
+         "locator": "第 6.4 条",
+         "text": "付款以甲方项目经理签署的验收记录为前提。",
+         "value": null
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "id": "F-2141",
+     "kind": "terms",
+     "title": "付款条件表",
+     "versions": [
+      {
+       "version": 1,
+       "receivedAt": "@-30d",
+       "source": "合同管理系统导出",
+       "fragments": [
+        {
+         "key": "currency",
+         "locator": "表头 · 结算币种",
+         "text": "结算币种：人民币（CNY）",
+         "value": "CNY"
+        },
+        {
+         "key": "cap",
+         "locator": "里程碑一一行 · 上限",
+         "text": "里程碑一 上限 ¥47,500.00",
+         "value": {
+          "currency": "CNY",
+          "minor": 4750000
+         }
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "id": "F-2142",
+     "kind": "invoice",
+     "title": "发票记录",
+     "versions": [
+      {
+       "version": 1,
+       "receivedAt": "@-3d",
+       "source": "供应方开具",
+       "fragments": [
+        {
+         "key": "invoice-no",
+         "locator": "发票号码栏",
+         "text": "发票号码 INV-64230",
+         "value": "INV-64230"
+        },
+        {
+         "key": "amount",
+         "locator": "价税合计栏",
+         "text": "价税合计 ¥45,500.00",
+         "value": {
+          "currency": "CNY",
+          "minor": 4550000
+         }
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "id": "F-2143",
+     "kind": "acceptance",
+     "title": "验收记录",
+     "versions": [
+      {
+       "version": 1,
+       "receivedAt": "@-4d",
+       "source": "项目管理系统",
+       "fragments": [
+        {
+         "key": "milestone",
+         "locator": "标题",
+         "text": "里程碑一验收记录",
+         "value": "里程碑一"
+        },
+        {
+         "key": "signed",
+         "locator": "签署栏",
+         "text": "甲方项目经理已签署",
+         "value": true
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "proposal": {
+    "id": "MP-11",
+    "generatedAt": "@-3d13:01",
+    "suggestion": "submit",
+    "text": "三项检查均通过，建议提交复核。",
+    "basis": [
+     {
+      "fileId": "F-2140",
+      "version": 1
+     },
+     {
+      "fileId": "F-2141",
+      "version": 1
+     },
+     {
+      "fileId": "F-2142",
+      "version": 1
+     },
+     {
+      "fileId": "F-2143",
+      "version": 1
+     }
+    ]
+   },
+   "records": [],
+   "events": [
+    {
+     "at": "@-20d09:00",
+     "actor": "U-gu",
+     "type": "case-opened",
+     "target": {
+      "kind": "case",
+      "id": "PR-4111"
+     },
+     "targetVersion": 1
+    }
+   ]
+  },
+  {
+   "id": "PR-4112",
+   "title": "启衡集团 · 里程碑一 尽调服务",
+   "vendor": "启衡集团股份有限公司",
+   "contractNo": "HT-2026-090",
+   "milestone": "里程碑一",
+   "requester": "启衡集团股份有限公司 · 经 凌舟 发起",
+   "owner": "U-lu",
+   "dueDate": "@+20d",
+   "stage": "drafting",
+   "version": 2,
+   "updatedAt": "@-1d18:00",
+   "contacts": {
+    "invoice": "供应方对接人",
+    "acceptance": "甲方项目经理 凌舟",
+    "terms": "合同管理员 祁安",
+    "currency": "财务对接人 韩越"
+   },
+   "files": [
+    {
+     "id": "F-2144",
+     "kind": "contract",
+     "title": "服务合同（付款条款）",
+     "versions": [
+      {
+       "version": 1,
+       "receivedAt": "@-15d",
+       "source": "合同管理系统",
+       "fragments": [
+        {
+         "key": "cap-clause",
+         "locator": "第 6.2 条",
+         "text": "每期发票金额不得超过付款条件表所列该里程碑的上限。",
+         "value": null
+        },
+        {
+         "key": "acceptance-clause",
+         "locator": "第 6.4 条",
+         "text": "付款以甲方项目经理签署的验收记录为前提。",
+         "value": null
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "id": "F-2145",
+     "kind": "terms",
+     "title": "付款条件表",
+     "versions": [
+      {
+       "version": 1,
+       "receivedAt": "@-15d",
+       "source": "合同管理系统导出",
+       "fragments": [
+        {
+         "key": "currency",
+         "locator": "表头 · 结算币种",
+         "text": "结算币种：人民币（CNY）",
+         "value": "CNY"
+        },
+        {
+         "key": "cap",
+         "locator": "里程碑一一行 · 上限",
+         "text": "里程碑一 上限 ¥980,000.00",
+         "value": {
+          "currency": "CNY",
+          "minor": 98000000
+         }
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "id": "F-2146",
+     "kind": "invoice",
+     "title": "发票记录",
+     "versions": [
+      {
+       "version": 1,
+       "receivedAt": "@-1d",
+       "source": "供应方开具",
+       "fragments": [
+        {
+         "key": "invoice-no",
+         "locator": "发票号码栏",
+         "text": "发票号码 INV-00007",
+         "value": "INV-00007"
+        },
+        {
+         "key": "amount",
+         "locator": "价税合计栏",
+         "text": "价税合计 ¥960,000.00",
+         "value": {
+          "currency": "CNY",
+          "minor": 96000000
+         }
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "id": "F-2147",
+     "kind": "acceptance",
+     "title": "验收记录",
+     "versions": [
+      {
+       "version": 1,
+       "receivedAt": "@-2d",
+       "source": "项目管理系统",
+       "fragments": [
+        {
+         "key": "milestone",
+         "locator": "标题",
+         "text": "里程碑一验收记录",
+         "value": "里程碑一"
+        },
+        {
+         "key": "signed",
+         "locator": "签署栏",
+         "text": "甲方项目经理已签署",
+         "value": true
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "proposal": {
+    "id": "MP-12",
+    "generatedAt": "@-1d18:01",
+    "suggestion": "submit",
+    "text": "三项检查均通过，建议提交复核。",
+    "basis": [
+     {
+      "fileId": "F-2144",
+      "version": 1
+     },
+     {
+      "fileId": "F-2145",
+      "version": 1
+     },
+     {
+      "fileId": "F-2146",
+      "version": 1
+     },
+     {
+      "fileId": "F-2147",
+      "version": 1
+     }
+    ]
+   },
+   "records": [],
+   "events": [
+    {
+     "at": "@-20d09:00",
+     "actor": "U-gu",
+     "type": "case-opened",
+     "target": {
+      "kind": "case",
+      "id": "PR-4112"
+     },
+     "targetVersion": 1
+    }
+   ],
+   "wall": {
+    "members": [
+     "U-gu",
+     "U-shen",
+     "U-lu"
+    ],
+    "contact": "顾承安（复核负责人）"
+   }
+  }
+ ]
+}

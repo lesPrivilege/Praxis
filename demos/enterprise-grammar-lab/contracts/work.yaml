@@ -1,0 +1,152 @@
+openapi: 3.1.0
+info:
+  title: Work envelope
+  version: 0.2.0
+  description: >
+    The parts of a workbench contract that do not depend on the domain: who is
+    acting, what they may do and why not, why a request was refused, what an
+    action attempt came to, and the record it left. Scenario contracts reference
+    these schemas and narrow the open strings (roles, action types, object kinds,
+    event types) to their own vocabularies.
+paths: {}
+components:
+  schemas:
+    Meta:
+      type: object
+      additionalProperties: false
+      required: [environment, dataNotice, contractVersion, scenario]
+      properties:
+        environment: { type: string, enum: [synthetic-demo, production] }
+        dataNotice: { type: string }
+        contractVersion: { type: string }
+        scenario: { type: string }
+    UserRef:
+      type: object
+      additionalProperties: false
+      required: [id, name]
+      properties:
+        id: { type: string }
+        name: { type: string }
+    User:
+      type: object
+      additionalProperties: false
+      required: [id, name, role, demoPersona]
+      properties:
+        id: { type: string }
+        name: { type: string }
+        role: { type: string, description: A role name defined by the scenario }
+        demoPersona: { type: boolean, description: True when this user can be chosen as a demo identity }
+    RuleViolation:
+      type: object
+      additionalProperties: false
+      required: [rule, ruleVersion, message]
+      properties:
+        rule: { type: string }
+        ruleVersion: { type: integer }
+        message: { type: string }
+        exceptionOwner: { type: string, description: Who may grant an exception }
+        ref: { type: string, description: The object the violation is about }
+    Affordance:
+      type: object
+      additionalProperties: false
+      required: [type, allowed, violations]
+      properties:
+        type: { type: string, description: An action type defined by the scenario }
+        allowed: { type: boolean }
+        violations: { type: array, items: { $ref: "#/components/schemas/RuleViolation" } }
+    Problem:
+      type: object
+      additionalProperties: false
+      required: [code, message]
+      properties:
+        code:
+          type: string
+          enum: [unauthenticated, forbidden, not-found, conflict, rule-violation, invalid-input, unavailable]
+        message: { type: string }
+        violations: { type: array, items: { $ref: "#/components/schemas/RuleViolation" } }
+        currentVersion: { type: integer, description: On conflict, the version the object has now }
+        changedBy: { $ref: "#/components/schemas/UserRef" }
+        changedAt: { type: string, format: date-time }
+        contact: { type: string, description: Who to ask when access is refused }
+    ObjectRef:
+      type: object
+      additionalProperties: false
+      required: [kind, id, title]
+      properties:
+        kind: { type: string, description: An object kind defined by the scenario }
+        id: { type: string }
+        title: { type: string }
+    AuditEvent:
+      type: object
+      additionalProperties: false
+      required: [id, subjectId, at, actor, type, target, targetVersion, attemptId, changes, rules, note]
+      properties:
+        id: { type: string }
+        subjectId: { type: string, description: The object whose record this event belongs to }
+        at: { type: string, format: date-time }
+        actor: { $ref: "#/components/schemas/UserRef" }
+        type: { type: string, description: An event type defined by the scenario }
+        target: { $ref: "#/components/schemas/ObjectRef" }
+        targetVersion: { type: [integer, "null"], description: Version of the target after the event }
+        attemptId: { type: [string, "null"] }
+        changes:
+          type: array
+          items:
+            type: object
+            additionalProperties: false
+            required: [field, from, to]
+            properties:
+              field: { type: string }
+              from: { type: [string, "null"] }
+              to: { type: [string, "null"] }
+        rules: { type: array, items: { type: string }, description: Rules checked, as RULE@version }
+        note: { type: [string, "null"] }
+    ActionResult:
+      type: object
+      additionalProperties: false
+      required: [attemptId, type, target, targetVersion, eventIds, created]
+      properties:
+        attemptId: { type: string }
+        type: { type: string }
+        target: { $ref: "#/components/schemas/ObjectRef" }
+        targetVersion: { type: integer }
+        eventIds: { type: array, items: { type: string } }
+        created: { type: array, items: { $ref: "#/components/schemas/ObjectRef" } }
+    ActionAttempt:
+      type: object
+      additionalProperties: false
+      required: [attemptId, type, actor, receivedAt, outcome]
+      properties:
+        attemptId: { type: string }
+        type: { type: string }
+        actor: { $ref: "#/components/schemas/UserRef" }
+        receivedAt: { type: string, format: date-time }
+        outcome:
+          type: string
+          enum: [applied, rejected, running]
+          description: >
+            For a job action, applied means the job ran to the end; whether each
+            item took effect is in the job's items, not here.
+        result: { $ref: "#/components/schemas/ActionResult" }
+        problem: { $ref: "#/components/schemas/Problem" }
+        jobId: { type: string }
+    JobItem:
+      type: object
+      additionalProperties: false
+      required: [ref, status, violations]
+      properties:
+        ref: { $ref: "#/components/schemas/ObjectRef" }
+        status: { type: string, enum: [pending, applied, rejected] }
+        violations: { type: array, items: { $ref: "#/components/schemas/RuleViolation" } }
+    Job:
+      type: object
+      additionalProperties: false
+      required: [id, attemptId, type, status, total, done, items]
+      properties:
+        id: { type: string }
+        attemptId: { type: string }
+        type: { type: string }
+        status: { type: string, enum: [running, completed] }
+        total: { type: integer }
+        done: { type: integer }
+        items: { type: array, items: { $ref: "#/components/schemas/JobItem" } }
