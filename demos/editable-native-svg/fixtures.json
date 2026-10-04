@@ -1,0 +1,335 @@
+{
+  "id": "editable-native-svg-fixtures",
+  "revision": "20261004-r1",
+  "synthetic": true,
+  "note": "本项目新写的合成输入，非真实客户数据，未运行；不作为 Flash 留出内容。",
+  "fixtures": [
+    {
+      "id": "F01",
+      "task": "新材料与旧阅读依据",
+      "requirements": [
+        "SVG-R08",
+        "SVG-R17",
+        "SVG-R26",
+        "SVG-R27"
+      ],
+      "matter": {
+        "id": "matter-demo-01",
+        "revision": 8,
+        "status": "待人复核"
+      },
+      "materials": [
+        {
+          "id": "material-demo-01",
+          "revision": 1,
+          "fragment": "§4",
+          "label": "旧附件：分期说明"
+        },
+        {
+          "id": "material-demo-01",
+          "revision": 2,
+          "fragment": "§4",
+          "label": "新附件：付款说明与适用条件仍待核对"
+        }
+      ],
+      "reading": {
+        "id": "reading-demo-01",
+        "basis": {
+          "material_id": "material-demo-01",
+          "revision": 1,
+          "fragment": "§4"
+        },
+        "statement": "旧附件的季度付款条款已阅读",
+        "origin": "human-reading"
+      },
+      "proposal": {
+        "id": "proposal-demo-01",
+        "origin": "machine-suggestion",
+        "text": "建议复核 v2，未取得批准"
+      },
+      "rule": {
+        "id": "rule-demo-01",
+        "revision": 3,
+        "text": "人判断绑定材料身份、版本和片段"
+      },
+      "decision": null,
+      "expected": [
+        "材料 v2 到达；事项 revision 仍为 8",
+        "reading basis 仍绑定 v1 §4",
+        "v2 尚未阅读，机器建议不等于人批准"
+      ],
+      "negative": "把 reading 的线或已阅读标签自动重接到 v2"
+    },
+    {
+      "id": "F02",
+      "task": "候选、拒绝、重放与状态",
+      "requirements": [
+        "SVG-R09",
+        "SVG-R17",
+        "SVG-R18",
+        "SVG-R24",
+        "SVG-R25"
+      ],
+      "object": {
+        "id": "object-demo-02",
+        "revision": 2,
+        "fields": {
+          "期限": "12 个月",
+          "付款": "季度"
+        }
+      },
+      "events": [
+        {
+          "id": "e1",
+          "kind": "pending",
+          "proposes": {
+            "期限": "24 个月"
+          }
+        },
+        {
+          "id": "e2",
+          "kind": "reject",
+          "candidate": "e1",
+          "reason": "待补证据"
+        },
+        {
+          "id": "e2",
+          "kind": "reject",
+          "candidate": "e1",
+          "replay": true
+        }
+      ],
+      "context": {
+        "basis_revision": 2,
+        "selected_fields": [
+          "期限"
+        ]
+      },
+      "expected": [
+        "唯一事件 2 条；拒绝记录保留",
+        "对象 revision 仍为 2，期限仍为 12 个月",
+        "未选付款字段仍存在"
+      ],
+      "negative": "用所有事件数递增对象版本，或省略付款即删除"
+    },
+    {
+      "id": "F03",
+      "task": "比较量与缺失语义",
+      "requirements": [
+        "SVG-R11",
+        "SVG-R12",
+        "SVG-R14",
+        "SVG-R15",
+        "SVG-R28",
+        "SVG-R29"
+      ],
+      "metric": {
+        "id": "energy-demo",
+        "unit": "kWh/实际开放小时",
+        "window": "合成周 W1",
+        "formula": "用电 kWh ÷ 实际开放小时",
+        "direction": "低值表示单位时耗电较少，不能单独证明总体收益"
+      },
+      "objects": [
+        {
+          "id": "site-A",
+          "label": "甲区域：长标签含中文、English 与 2026 数字",
+          "energy_kwh": 120,
+          "hours": 20,
+          "value": 6,
+          "value_state": "observed"
+        },
+        {
+          "id": "site-B",
+          "label": "乙区域",
+          "energy_kwh": 0,
+          "hours": 10,
+          "value": 0,
+          "value_state": "observed"
+        },
+        {
+          "id": "site-C",
+          "label": "丙区域",
+          "energy_kwh": null,
+          "hours": 10,
+          "value": null,
+          "value_state": "missing"
+        },
+        {
+          "id": "site-D",
+          "label": "丁区域",
+          "energy_kwh": 0,
+          "hours": 0,
+          "value": null,
+          "value_state": "not-applicable"
+        }
+      ],
+      "reference": {
+        "value": 5,
+        "basis": "合成讨论目标；不是法定标准"
+      },
+      "expected": [
+        "6、0、缺失、不适用分开",
+        "不能对四个比率直接平均后称整体均值",
+        "共同尺度与实际小时分母可查"
+      ],
+      "negative": "将 C/D 写成 0 或按未知人数绘制可信收益"
+    },
+    {
+      "id": "F04",
+      "task": "持续时间、重叠与播放时间",
+      "requirements": [
+        "SVG-R16",
+        "SVG-R17",
+        "SVG-R33"
+      ],
+      "timeline": {
+        "label": "合成偏移时钟，不声称对应真实城市的时区规则",
+        "events": [
+          {
+            "id": "t1",
+            "at": "2026-10-25T01:30:00+02:00",
+            "label": "第一次记录"
+          },
+          {
+            "id": "t2",
+            "at": "2026-10-25T01:30:00+01:00",
+            "label": "第二次记录"
+          }
+        ],
+        "intervals": [
+          {
+            "id": "i1",
+            "start": "2026-10-25T00:00:00Z",
+            "end": "2026-10-25T02:00:00Z",
+            "label": "等待窗口"
+          },
+          {
+            "id": "i2",
+            "start": "2026-10-25T01:00:00Z",
+            "end": null,
+            "label": "下一责任尚未结束"
+          }
+        ]
+      },
+      "presentation": {
+        "fps": 30,
+        "duration_seconds": 12
+      },
+      "expected": [
+        "同钟面文本的 t1/t2 相差 1 小时",
+        "i1/i2 可重叠；i2 结束未知",
+        "12 秒播放不是业务用时"
+      ],
+      "negative": "按字符串排序或把未知结束补到当前播放时刻"
+    },
+    {
+      "id": "F05",
+      "task": "区域、空间与责任",
+      "requirements": [
+        "SVG-R04",
+        "SVG-R05",
+        "SVG-R19",
+        "SVG-R20",
+        "SVG-R23",
+        "SVG-R31",
+        "SVG-R32"
+      ],
+      "coordinate_system": {
+        "kind": "synthetic-plan",
+        "unit": "m",
+        "origin": "局部示意原点",
+        "geometry_is_real": false
+      },
+      "zones": [
+        {
+          "id": "zone-A",
+          "label": "收集区域",
+          "bounds": [
+            0,
+            0,
+            8,
+            4
+          ]
+        },
+        {
+          "id": "zone-B",
+          "label": "复核区域与较长的说明",
+          "bounds": [
+            8,
+            0,
+            6,
+            4
+          ]
+        }
+      ],
+      "objects": [
+        {
+          "id": "desk-1",
+          "zone_id": "zone-A",
+          "point": [
+            2,
+            2
+          ]
+        },
+        {
+          "id": "desk-2",
+          "zone_id": "zone-B",
+          "point": [
+            10,
+            2
+          ]
+        }
+      ],
+      "handoff": {
+        "from": "desk-1",
+        "to": "desk-2",
+        "sent": true,
+        "accepted": false,
+        "actor": "演示角色乙",
+        "basis": "接收依据待补"
+      },
+      "expected": [
+        "合成空间声明可见",
+        "区域和 actor 不自动代表访问权限",
+        "发出不等于已接收"
+      ],
+      "negative": "按位置给权限或从已发出直接关闭责任"
+    },
+    {
+      "id": "F06",
+      "task": "条件和注释的准确作用范围",
+      "requirements": [
+        "SVG-R06",
+        "SVG-R07",
+        "SVG-R08"
+      ],
+      "claims": [
+        {
+          "id": "claim-A",
+          "text": "方案甲在 2027 年重新评估。"
+        },
+        {
+          "id": "claim-B",
+          "text": "建议当前采用方案乙。"
+        }
+      ],
+      "condition": {
+        "id": "condition-1",
+        "target_id": "claim-A",
+        "text": "仅在两名管理员到位且改造完成后重新评估；条件文本加长时仍限定方案甲。"
+      },
+      "annotation": {
+        "id": "note-1",
+        "target_id": "claim-B",
+        "text": "这是一项建议，未表示人已决定。"
+      },
+      "expected": [
+        "条件明确限定 claim-A",
+        "note-1 始终解释 claim-B",
+        "窄栏、长标签后关联不变"
+      ],
+      "negative": "括线只圈条件框，却让人误读为同时限定 A/B"
+    }
+  ]
+}

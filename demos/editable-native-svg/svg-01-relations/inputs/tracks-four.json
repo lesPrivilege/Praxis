@@ -1,0 +1,121 @@
+{
+  "id": "tracks-four",
+  "synthetic": true,
+  "asset": "rel-tracks",
+  "role": "stress",
+  "requirements": [
+    "SVG-R17"
+  ],
+  "note": "四条版本线，一条判断同时绑定两个对象的版本。",
+  "model": {
+    "title": "调阅单、馆藏、规则与读者证各自的版本",
+    "lanes": [
+      {
+        "id": "slip-D-12",
+        "role": "调阅单",
+        "versions": [
+          {
+            "rev": 1,
+            "label": "已提交"
+          },
+          {
+            "rev": 2,
+            "label": "改了取书时间",
+            "current": true
+          }
+        ]
+      },
+      {
+        "id": "item-0871",
+        "role": "馆藏",
+        "versions": [
+          {
+            "rev": 4,
+            "label": "在库，品相记录为“书脊开裂”",
+            "current": true
+          }
+        ]
+      },
+      {
+        "id": "rule-loan",
+        "role": "规则",
+        "versions": [
+          {
+            "rev": 2,
+            "label": "古籍可在阅览室调阅"
+          },
+          {
+            "rev": 3,
+            "label": "品相受损的古籍须经修复室同意 (repair sign-off)",
+            "current": true
+          }
+        ]
+      },
+      {
+        "id": "card-5521",
+        "role": "读者证",
+        "versions": [
+          {
+            "rev": 1,
+            "label": "有效期至 2027-03-31",
+            "current": true
+          }
+        ]
+      }
+    ],
+    "bindings": [
+      {
+        "id": "check-01",
+        "origin": "human",
+        "kind": "审核",
+        "state": "recorded",
+        "text": "按规则 v2 审核通过",
+        "basis": [
+          {
+            "lane": "slip-D-12",
+            "rev": 1
+          },
+          {
+            "lane": "rule-loan",
+            "rev": 2,
+            "locator": "第 8 条"
+          }
+        ]
+      },
+      {
+        "id": "hint-01",
+        "origin": "machine",
+        "kind": "建议",
+        "state": "proposed",
+        "text": "规则已更新到 v3，建议重新审核",
+        "basis": [
+          {
+            "lane": "rule-loan",
+            "rev": 3,
+            "locator": "第 8 条"
+          }
+        ]
+      },
+      {
+        "id": "decision-01",
+        "origin": "human",
+        "kind": "决定",
+        "state": "open",
+        "text": "是否放行，尚未决定",
+        "basis": [
+          {
+            "lane": "slip-D-12",
+            "rev": 2
+          }
+        ]
+      }
+    ],
+    "absences": [
+      {
+        "lane": "slip-D-12",
+        "rev": 2,
+        "text": "这个版本没有审核记录"
+      }
+    ]
+  }
+}

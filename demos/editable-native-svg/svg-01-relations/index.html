@@ -1,0 +1,1688 @@
+<!doctype html>
+<html lang="zh-Hans">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>四个可编辑的关系图件 · SVG-01</title>
+<style>
+:root{--ink:#1b2733;--sub:#526276;--rule:#dbe2eb;--accent:#1f5fd1}
+*{box-sizing:border-box}
+body{margin:0;background:#fff;color:var(--ink);font:16px/1.7 system-ui,-apple-system,"PingFang SC","Hiragino Sans GB","Noto Sans CJK SC","Microsoft YaHei",sans-serif}
+header,main{max-width:1040px;margin:0 auto;padding:0 16px}
+header{padding-top:40px}
+h1{font-size:26px;line-height:1.3;margin:0 0 12px}
+h2{font-size:20px;margin:56px 0 8px;padding-top:24px;border-top:1px solid var(--rule)}
+h3{font-size:16px;margin:36px 0 4px}
+h4{font-size:13px;margin:0;color:var(--sub)}
+p{margin:0 0 12px;max-width:44em}
+code{font:13px ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--sub);font-weight:400}
+a{color:var(--accent)}
+.role{font-size:13px;font-weight:400;color:var(--sub);margin-left:8px}
+nav a{margin-right:16px}
+dl{margin:12px 0 0;font-size:14px}
+dl div{display:flex;gap:16px;padding:4px 0;border-bottom:1px solid var(--rule);max-width:44em}
+dt{flex:0 0 4em;color:var(--sub)}
+dd{margin:0}
+.pair{display:flex;gap:40px;align-items:flex-start;margin:16px 0}
+figure{margin:0}
+figure svg{display:block;max-width:100%;height:auto}
+figcaption{font-size:12px;color:var(--sub);margin-top:8px}
+.wide{display:none}
+.equiv{font-size:14px;color:var(--sub);max-width:48em}
+.equiv p{margin:0}
+.equiv ul{margin:4px 0;padding-left:1.4em}
+.files{font-size:13px;color:var(--sub);overflow-wrap:anywhere}
+table{border-collapse:collapse;font-size:14px;margin:8px 0 0;max-width:48em}
+th,td{text-align:left;vertical-align:top;padding:6px 16px 6px 0;border-bottom:1px solid var(--rule)}
+th{font-weight:600;color:var(--sub)}
+footer{max-width:1040px;margin:56px auto 40px;padding:16px 16px 0;border-top:1px solid var(--rule);font-size:13px;color:var(--sub)}
+@media (min-width:736px){.wide{display:block}.narrow{display:none}}
+@media (min-width:1040px){.narrow{display:block}}
+@media print{.wide{display:block}.narrow{display:none}.case{break-inside:avoid}h2{break-after:avoid}}
+</style>
+</head>
+<body>
+<header>
+<h1>四个可编辑的关系图件</h1>
+<p>每一张图都由一份语义输入生成：改输入里的文字、端点、目标或版本，图、等效文字和文件一起重建。文字是 SVG 的文字节点，没有转成轮廓。全部内容是合成的图书馆示例和本项目的合成 fixture。</p>
+<p>实线表示已经成立、已有记录或已核对；虚线表示尚未成立、尚未核对或没有生效，被拒绝的候选另加一个叉；蓝色只用在还等人决定的那一处。每处区别同时写成文字。版本 0.1.0，SVG-01 批次；验收范围见 <a href="acceptance.md">acceptance.md</a>。</p>
+<nav><a href="#rel-fan">分支与汇合</a><a href="#rel-scope">范围与跨界</a><a href="#rel-qualify">限定与证据</a><a href="#rel-tracks">版本与绑定</a></nav>
+</header>
+<main>
+<section id="rel-fan">
+<h2>分支与汇合 <code>rel-fan</code></h2>
+<p class="job">一个对象有几条去向，各由什么条件决定；或者几项输入怎样汇到一处。只有一条出边时，它就是一条写明类型和依据的方向关系。</p>
+<dl><div><dt>输入</dt><dd>一个中心对象，若干条带条件或类型的关系，各自的端点和依据</dd></div><div><dt>可以改</dt><dd>条件与标签、端点、分支次序、方向、汇合规则、每条关系是否成立</dd></div><div><dt>不适用</dt><dd>条件不完备、需要完整决策表、关系没有依据</dd></div><div><dt>测试到</dt><dd>1 至 8 条关系</dd></div></dl>
+<article class="case" id="fan-link">
+<h3>预约登记引用的规则 <span class="role">正常输入</span></h3>
+<p>只有一条出边：一条写明类型和依据的方向关系。</p>
+<div class="pair">
+<figure class="wide"><svg xmlns="http://www.w3.org/2000/svg" id="fan-link-w672" viewBox="-2 -2 672 53" width="672" height="53" role="img" aria-labelledby="fan-link-w672-title fan-link-w672-desc" lang="zh-Hans" xml:lang="zh-Hans" font-family="system-ui, -apple-system, 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif" data-asset="rel-fan" data-asset-version="0.1.0" data-direction="out">
+<title id="fan-link-w672-title">预约登记引用的规则</title>
+<desc id="fan-link-w672-desc">“预约登记 0412”引用“借阅规则 v3 第 5 条”，方向由前者指向后者。</desc>
+<defs><marker id="fan-link-w672-arrow-solid" viewBox="0 0 8 8" refX="7.5" refY="4" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto"><path d="M0.5 0.8 7.5 4 0.5 7.2Z" fill="#3d4c5e"/></marker></defs>
+<path d="M187 26 L205 26 L205 26 L448 26" fill="none" stroke="#3d4c5e" stroke-width="1.3" marker-end="url(#fan-link-w672-arrow-solid)" data-edge-id="cites-rule" data-from="booking-0412" data-to="rule-loan@3#5" data-state="established"/>
+<text x="217" y="15.4" font-size="14" fill="#1b2733" data-text="cites-rule.label">引用</text>
+<text x="217" y="44.2" font-size="12" fill="#526276" data-text="cites-rule.sub">依据：登记表“规则版本”一栏</text>
+<g data-object-id="rule-loan@3#5" data-role="node">
+<rect x="448" y="6" width="220" height="40" rx="4" fill="#ffffff" stroke="#7b8ba0" stroke-width="1"/>
+<text x="460" y="30.4" font-size="14" fill="#1b2733" data-text="rule-loan@3#5.label">借阅规则 v3 第 5 条</text>
+</g>
+<g data-object-id="booking-0412" data-role="hub">
+<rect x="0" y="6" width="187" height="40" rx="4" fill="#f2f5f9" stroke="#7b8ba0" stroke-width="1"/>
+<text x="12" y="30.4" font-size="14" font-weight="600" fill="#1b2733" data-text="booking-0412.label">预约登记 0412</text>
+</g>
+</svg>
+<figcaption>宽 672</figcaption></figure>
+<figure class="narrow"><svg xmlns="http://www.w3.org/2000/svg" id="fan-link-w288" viewBox="-2 -2 288 142" width="288" height="142" role="img" aria-labelledby="fan-link-w288-title fan-link-w288-desc" lang="zh-Hans" xml:lang="zh-Hans" font-family="system-ui, -apple-system, 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif" data-asset="rel-fan" data-asset-version="0.1.0" data-direction="out">
+<title id="fan-link-w288-title">预约登记引用的规则</title>
+<desc id="fan-link-w288-desc">“预约登记 0412”引用“借阅规则 v3 第 5 条”，方向由前者指向后者。</desc>
+<defs><marker id="fan-link-w288-arrow-solid" viewBox="0 0 8 8" refX="7.5" refY="4" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto"><path d="M0.5 0.8 7.5 4 0.5 7.2Z" fill="#3d4c5e"/></marker></defs>
+<text x="26" y="69.4" font-size="14" fill="#1b2733" data-text="cites-rule.label">引用</text>
+<text x="26" y="88.2" font-size="12" fill="#526276" data-text="cites-rule.sub">依据：登记表“规则版本”一栏</text>
+<g data-object-id="rule-loan@3#5" data-role="node">
+<rect x="26" y="98" width="258" height="40" rx="4" fill="#ffffff" stroke="#7b8ba0" stroke-width="1"/>
+<text x="38" y="122.4" font-size="14" fill="#1b2733" data-text="rule-loan@3#5.label">借阅规则 v3 第 5 条</text>
+</g>
+<path d="M9 40 L9 118 L26 118" fill="none" stroke="#3d4c5e" stroke-width="1.3" marker-end="url(#fan-link-w288-arrow-solid)" data-edge-id="cites-rule" data-from="booking-0412" data-to="rule-loan@3#5" data-state="established"/>
+<g data-object-id="booking-0412" data-role="hub">
+<rect x="0" y="0" width="284" height="40" rx="4" fill="#f2f5f9" stroke="#7b8ba0" stroke-width="1"/>
+<text x="12" y="24.4" font-size="14" font-weight="600" fill="#1b2733" data-text="booking-0412.label">预约登记 0412</text>
+</g>
+</svg>
+<figcaption>窄 288</figcaption></figure>
+</div>
+<div class="equiv"><h4>等效文字</h4><p>“预约登记 0412”引用“借阅规则 v3 第 5 条”，方向由前者指向后者。</p><ul><li>引用 → 借阅规则 v3 第 5 条（依据：登记表“规则版本”一栏）</li></ul></div>
+<p class="files">输入：<a href="inputs/fan-link.json">inputs/fan-link.json</a>。文件：<a href="svg/fan-link--w672.svg">svg/fan-link--w672.svg</a>、<a href="svg/fan-link--w288.svg">svg/fan-link--w288.svg</a></p>
+</article>
+<article class="case" id="fan-branch">
+<h3>借阅申请的分支 <span class="role">正常输入</span></h3>
+<p>三个条件各自绑定一条出边，默认分支写明。</p>
+<div class="pair">
+<figure class="wide"><svg xmlns="http://www.w3.org/2000/svg" id="fan-branch-w672" viewBox="-2 -2 672 242" width="672" height="242" role="img" aria-labelledby="fan-branch-w672-title fan-branch-w672-desc" lang="zh-Hans" xml:lang="zh-Hans" font-family="system-ui, -apple-system, 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif" data-asset="rel-fan" data-asset-version="0.1.0" data-direction="out">
+<title id="fan-branch-w672-title">借阅申请的分支</title>
+<desc id="fan-branch-w672-desc">借阅申请到达之后有 4 条分支，各由条件决定。</desc>
+<defs><marker id="fan-branch-w672-arrow-solid" viewBox="0 0 8 8" refX="7.5" refY="4" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto"><path d="M0.5 0.8 7.5 4 0.5 7.2Z" fill="#3d4c5e"/></marker></defs>
+<path d="M187 26 L205 26 L205 26 L448 26" fill="none" stroke="#3d4c5e" stroke-width="1.3" marker-end="url(#fan-branch-w672-arrow-solid)" data-edge-id="on-shelf" data-from="request" data-to="lend" data-state="established"/>
+<text x="217" y="15.4" font-size="14" fill="#1b2733" data-text="on-shelf.label">馆藏在架，读者证有效</text>
+<text x="217" y="44.2" font-size="12" fill="#526276" data-text="on-shelf.sub">依据：借阅规则 v3 第 2 条</text>
+<g data-object-id="lend" data-role="node">
+<rect x="448" y="6" width="220" height="40" rx="4" fill="#ffffff" stroke="#7b8ba0" stroke-width="1"/>
+<text x="460" y="30.4" font-size="14" fill="#1b2733" data-text="lend.label">当日出借</text>
+</g>
+<path d="M187 26 L205 26 L205 89 L448 89" fill="none" stroke="#3d4c5e" stroke-width="1.3" marker-end="url(#fan-branch-w672-arrow-solid)" data-edge-id="on-loan" data-from="request" data-to="reserve" data-state="established"/>
+<text x="217" y="78.4" font-size="14" fill="#1b2733" data-text="on-loan.label">馆藏已借出</text>
+<text x="217" y="107.2" font-size="12" fill="#526276" data-text="on-loan.sub">依据：借阅规则 v3 第 5 条</text>
+<g data-object-id="reserve" data-role="node">
+<rect x="448" y="69" width="220" height="40" rx="4" fill="#ffffff" stroke="#7b8ba0" stroke-width="1"/>
+<text x="460" y="93.4" font-size="14" fill="#1b2733" data-text="reserve.label">登记预约</text>
+</g>
+<path d="M187 26 L205 26 L205 152 L448 152" fill="none" stroke="#3d4c5e" stroke-width="1.3" marker-end="url(#fan-branch-w672-arrow-solid)" data-edge-id="rare" data-from="request" data-to="reading-room" data-state="established"/>
+<text x="217" y="141.4" font-size="14" fill="#1b2733" data-text="rare.label">馆藏属于古籍</text>
+<text x="217" y="170.2" font-size="12" fill="#526276" data-text="rare.sub">依据：借阅规则 v3 第 8 条</text>
+<g data-object-id="reading-room" data-role="node">
+<rect x="448" y="132" width="220" height="40" rx="4" fill="#ffffff" stroke="#7b8ba0" stroke-width="1"/>
+<text x="460" y="156.4" font-size="14" fill="#1b2733" data-text="reading-room.label">转古籍阅览室，不外借</text>
+</g>
+<path d="M187 26 L205 26 L205 215 L448 215" fill="none" stroke="#3d4c5e" stroke-width="1.3" marker-end="url(#fan-branch-w672-arrow-solid)" data-edge-id="otherwise" data-from="request" data-to="manual" data-state="established"/>
+<text x="217" y="204.4" font-size="14" fill="#1b2733" data-text="otherwise.label">其余情况（默认）</text>
+<text x="217" y="233.2" font-size="12" fill="#526276" data-text="otherwise.sub">依据：借阅规则 v3 第 9 条</text>
+<g data-object-id="manual" data-role="node">
+<rect x="448" y="195" width="220" height="40" rx="4" fill="#ffffff" stroke="#7b8ba0" stroke-width="1"/>
+<text x="460" y="219.4" font-size="14" fill="#1b2733" data-text="manual.label">转人工核对</text>
+</g>
+<g data-object-id="request" data-role="hub">
+<rect x="0" y="6" width="187" height="40" rx="4" fill="#f2f5f9" stroke="#7b8ba0" stroke-width="1"/>
+<text x="12" y="30.4" font-size="14" font-weight="600" fill="#1b2733" data-text="request.label">借阅申请到达</text>
+</g>
+</svg>
+<figcaption>宽 672</figcaption></figure>
+<figure class="narrow"><svg xmlns="http://www.w3.org/2000/svg" id="fan-branch-w288" viewBox="-2 -2 288 436" width="288" height="436" role="img" aria-labelledby="fan-branch-w288-title fan-branch-w288-desc" lang="zh-Hans" xml:lang="zh-Hans" font-family="system-ui, -apple-system, 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif" data-asset="rel-fan" data-asset-version="0.1.0" data-direction="out">
+<title id="fan-branch-w288-title">借阅申请的分支</title>
+<desc id="fan-branch-w288-desc">借阅申请到达之后有 4 条分支，各由条件决定。</desc>
+<defs><marker id="fan-branch-w288-arrow-solid" viewBox="0 0 8 8" refX="7.5" refY="4" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto"><path d="M0.5 0.8 7.5 4 0.5 7.2Z" fill="#3d4c5e"/></marker></defs>
+<text x="26" y="69.4" font-size="14" fill="#1b2733" data-text="on-shelf.label">馆藏在架，读者证有效</text>
+<text x="26" y="88.2" font-size="12" fill="#526276" data-text="on-shelf.sub">依据：借阅规则 v3 第 2 条</text>
+<g data-object-id="lend" data-role="node">
+<rect x="26" y="98" width="258" height="40" rx="4" fill="#ffffff" stroke="#7b8ba0" stroke-width="1"/>
+<text x="38" y="122.4" font-size="14" fill="#1b2733" data-text="lend.label">当日出借</text>
+</g>
+<text x="26" y="167.4" font-size="14" fill="#1b2733" data-text="on-loan.label">馆藏已借出</text>
+<text x="26" y="186.2" font-size="12" fill="#526276" data-text="on-loan.sub">依据：借阅规则 v3 第 5 条</text>
+<g data-object-id="reserve" data-role="node">
+<rect x="26" y="196" width="258" height="40" rx="4" fill="#ffffff" stroke="#7b8ba0" stroke-width="1"/>
+<text x="38" y="220.4" font-size="14" fill="#1b2733" data-text="reserve.label">登记预约</text>
+</g>
+<text x="26" y="265.4" font-size="14" fill="#1b2733" data-text="rare.label">馆藏属于古籍</text>
+<text x="26" y="284.2" font-size="12" fill="#526276" data-text="rare.sub">依据：借阅规则 v3 第 8 条</text>
+<g data-object-id="reading-room" data-role="node">
+<rect x="26" y="294" width="258" height="40" rx="4" fill="#ffffff" stroke="#7b8ba0" stroke-width="1"/>
+<text x="38" y="318.4" font-size="14" fill="#1b2733" data-text="reading-room.label">转古籍阅览室，不外借</text>
+</g>
+<text x="26" y="363.4" font-size="14" fill="#1b2733" data-text="otherwise.label">其余情况（默认）</text>
+<text x="26" y="382.2" font-size="12" fill="#526276" data-text="otherwise.sub">依据：借阅规则 v3 第 9 条</text>
+<g data-object-id="manual" data-role="node">
+<rect x="26" y="392" width="258" height="40" rx="4" fill="#ffffff" stroke="#7b8ba0" stroke-width="1"/>
+<text x="38" y="416.4" font-size="14" fill="#1b2733" data-text="manual.label">转人工核对</text>
+</g>
+<path d="M9 40 L9 118 L26 118" fill="none" stroke="#3d4c5e" stroke-width="1.3" marker-end="url(#fan-branch-w288-arrow-solid)" data-edge-id="on-shelf" data-from="request" data-to="lend" data-state="established"/>
+<path d="M9 40 L9 216 L26 216" fill="none" stroke="#3d4c5e" stroke-width="1.3" marker-end="url(#fan-branch-w288-arrow-solid)" data-edge-id="on-loan" data-from="request" data-to="reserve" data-state="established"/>
+<path d="M9 40 L9 314 L26 314" fill="none" stroke="#3d4c5e" stroke-width="1.3" marker-end="url(#fan-branch-w288-arrow-solid)" data-edge-id="rare" data-from="request" data-to="reading-room" data-state="established"/>
+<path d="M9 40 L9 412 L26 412" fill="none" stroke="#3d4c5e" stroke-width="1.3" marker-end="url(#fan-branch-w288-arrow-solid)" data-edge-id="otherwise" data-from="request" data-to="manual" data-state="established"/>
+<g data-object-id="request" data-role="hub">
+<rect x="0" y="0" width="284" height="40" rx="4" fill="#f2f5f9" stroke="#7b8ba0" stroke-width="1"/>
+<text x="12" y="24.4" font-size="14" font-weight="600" fill="#1b2733" data-text="request.label">借阅申请到达</text>
+</g>
+</svg>
+<figcaption>窄 288</figcaption></figure>
+</div>
+<div class="equiv"><h4>等效文字</h4><p>借阅申请到达之后有 4 条分支，各由条件决定。</p><ul><li>馆藏在架，读者证有效 → 当日出借（依据：借阅规则 v3 第 2 条）</li><li>馆藏已借出 → 登记预约（依据：借阅规则 v3 第 5 条）</li><li>馆藏属于古籍 → 转古籍阅览室，不外借（依据：借阅规则 v3 第 8 条）</li><li>其余情况（默认） → 转人工核对（依据：借阅规则 v3 第 9 条）</li></ul></div>
+<p class="files">输入：<a href="inputs/fan-branch.json">inputs/fan-branch.json</a>。文件：<a href="svg/fan-branch--w672.svg">svg/fan-branch--w672.svg</a>、<a href="svg/fan-branch--w288.svg">svg/fan-branch--w288.svg</a></p>
+</article>
+<article class="case" id="fan-join">
+<h3>开馆前须到位的三项 <span class="role">正常输入</span></h3>
+<p>三项输入须全部到位；到位不等于已经开馆。</p>
+<div class="pair">
+<figure class="wide"><svg xmlns="http://www.w3.org/2000/svg" id="fan-join-w672" viewBox="-2 -2 672 207" width="672" height="207" role="img" aria-labelledby="fan-join-w672-title fan-join-w672-desc" lang="zh-Hans" xml:lang="zh-Hans" font-family="system-ui, -apple-system, 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif" data-asset="rel-fan" data-asset-version="0.1.0" data-direction="in" data-rule="all">
+<title id="fan-join-w672-title">开馆前须到位的三项</title>
+<desc id="fan-join-w672-desc">开馆由 3 项输入汇合，须全部到位，已到位 2 项，汇合条件未满足。</desc>
+<defs><marker id="fan-join-w672-arrow-open" viewBox="0 0 8 8" refX="7.5" refY="4" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto"><path d="M1 1 7.5 4 1 7" fill="none" stroke="#3d4c5e" stroke-width="1.25"/></marker></defs>
+<path d="M220 29.5 L369 29.5 L369 29.5" fill="none" stroke="#3d4c5e" stroke-width="1.3" data-edge-id="in-fire" data-from="fire-check" data-to="opening" data-state="established"/>
+<text x="232" y="18.9" font-size="14" fill="#1b2733" data-text="in-fire.label">当日记录已签字</text>
+<g data-object-id="fire-check" data-role="node">
+<rect x="0" y="9.5" width="220" height="40" rx="4" fill="#ffffff" stroke="#7b8ba0" stroke-width="1"/>
+<text x="12" y="33.9" font-size="14" fill="#1b2733" data-text="fire-check.label">消防通道检查</text>
+</g>
+<path d="M220 89.5 L369 89.5 L369 29.5" fill="none" stroke="#3d4c5e" stroke-width="1.3" data-edge-id="in-roster" data-from="roster" data-to="opening" data-state="established"/>
+<text x="232" y="78.9" font-size="14" fill="#1b2733" data-text="in-roster.label">值班人已确认</text>
+<g data-object-id="roster" data-role="node">
+<rect x="0" y="69.5" width="220" height="40" rx="4" fill="#ffffff" stroke="#7b8ba0" stroke-width="1"/>
+<text x="12" y="93.9" font-size="14" fill="#1b2733" data-text="roster.label">值班表</text>
+</g>
+<path d="M220 149.5 L369 149.5 L369 29.5" fill="none" stroke="#3d4c5e" stroke-width="1.3" stroke-dasharray="4 3" data-edge-id="in-device" data-from="device-log" data-to="opening" data-state="pending"/>
+<text x="232" y="138.9" font-size="14" fill="#1b2733" data-text="in-device.label">自检日志</text>
+<text x="232" y="167.7" font-size="12" fill="#526276" data-text="in-device.sub">尚未提交</text>
+<g data-object-id="device-log" data-role="node">
+<rect x="0" y="129.5" width="220" height="40" rx="4" fill="#ffffff" stroke="#7b8ba0" stroke-width="1"/>
+<text x="12" y="153.9" font-size="14" fill="#1b2733" data-text="device-log.label">借还设备自检</text>
+</g>
+<g data-object-id="opening" data-role="hub">
+<rect x="481" y="0" width="187" height="59" rx="4" fill="#f2f5f9" stroke="#7b8ba0" stroke-width="1"/>
+<text x="493" y="24.4" font-size="14" font-weight="600" fill="#1b2733" data-text="opening.label">开馆</text>
+<text x="493" y="45.2" font-size="12" fill="#526276" data-text="opening.state">尚未开馆</text>
+</g>
+<path d="M369 29.5 L481 29.5" fill="none" stroke="#3d4c5e" stroke-width="1.3" stroke-dasharray="4 3" marker-end="url(#fan-join-w672-arrow-open)" data-join-for="opening" data-rule="all" data-met="false"/>
+<text x="377" y="18.9" font-size="14" font-weight="600" fill="#1b2733" data-text="opening.rule">须全部到位</text>
+<text x="377" y="47.7" font-size="12" fill="#526276" data-text="opening.arrived">已到位 2/3</text>
+<text x="0" y="197.7" font-size="12" fill="#526276" data-text="opening.foot.0">依据：开馆检查表 v2</text>
+</svg>
+<figcaption>宽 672</figcaption></figure>
+<figure class="narrow"><svg xmlns="http://www.w3.org/2000/svg" id="fan-join-w288" viewBox="-2 -2 288 402" width="288" height="402" role="img" aria-labelledby="fan-join-w288-title fan-join-w288-desc" lang="zh-Hans" xml:lang="zh-Hans" font-family="system-ui, -apple-system, 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif" data-asset="rel-fan" data-asset-version="0.1.0" data-direction="in" data-rule="all">
+<title id="fan-join-w288-title">开馆前须到位的三项</title>
+<desc id="fan-join-w288-desc">开馆由 3 项输入汇合，须全部到位，已到位 2 项，汇合条件未满足。</desc>
+<defs><marker id="fan-join-w288-arrow-open" viewBox="0 0 8 8" refX="7.5" refY="4" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto"><path d="M1 1 7.5 4 1 7" fill="none" stroke="#3d4c5e" stroke-width="1.25"/></marker></defs>
+<text x="26" y="15.4" font-size="14" fill="#1b2733" data-text="in-fire.label">当日记录已签字</text>
+<g data-object-id="fire-check" data-role="node">
+<rect x="26" y="26" width="258" height="40" rx="4" fill="#ffffff" stroke="#7b8ba0" stroke-width="1"/>
+<text x="38" y="50.4" font-size="14" fill="#1b2733" data-text="fire-check.label">消防通道检查</text>
+</g>
+<text x="26" y="95.4" font-size="14" fill="#1b2733" data-text="in-roster.label">值班人已确认</text>
+<g data-object-id="roster" data-role="node">
+<rect x="26" y="106" width="258" height="40" rx="4" fill="#ffffff" stroke="#7b8ba0" stroke-width="1"/>
+<text x="38" y="130.4" font-size="14" fill="#1b2733" data-text="roster.label">值班表</text>
+</g>
+<text x="26" y="175.4" font-size="14" fill="#1b2733" data-text="in-device.label">自检日志</text>
+<text x="26" y="194.2" font-size="12" fill="#526276" data-text="in-device.sub">尚未提交</text>
+<g data-object-id="device-log" data-role="node">
+<rect x="26" y="204" width="258" height="40" rx="4" fill="#ffffff" stroke="#7b8ba0" stroke-width="1"/>
+<text x="38" y="228.4" font-size="14" fill="#1b2733" data-text="device-log.label">借还设备自检</text>
+</g>
+<text x="26" y="273.4" font-size="14" font-weight="600" fill="#1b2733" data-text="opening.rule">须全部到位</text>
+<text x="26" y="292.2" font-size="12" fill="#526276" data-text="opening.arrived">已到位 2/3</text>
+<path d="M26 46 L9 46 L9 224" fill="none" stroke="#3d4c5e" stroke-width="1.3" data-edge-id="in-fire" data-from="fire-check" data-to="opening" data-state="established"/>
+<path d="M26 126 L9 126 L9 224" fill="none" stroke="#3d4c5e" stroke-width="1.3" data-edge-id="in-roster" data-from="roster" data-to="opening" data-state="established"/>
+<path d="M26 224 L9 224 L9 224" fill="none" stroke="#3d4c5e" stroke-width="1.3" stroke-dasharray="4 3" data-edge-id="in-device" data-from="device-log" data-to="opening" data-state="pending"/>
+<path d="M9 224 L9 309" fill="none" stroke="#3d4c5e" stroke-width="1.3" stroke-dasharray="4 3" marker-end="url(#fan-join-w288-arrow-open)" data-join-for="opening" data-rule="all" data-met="false"/>
+<g data-object-id="opening" data-role="hub">
+<rect x="0" y="309" width="284" height="59" rx="4" fill="#f2f5f9" stroke="#7b8ba0" stroke-width="1"/>
+<text x="12" y="333.4" font-size="14" font-weight="600" fill="#1b2733" data-text="opening.label">开馆</text>
+<text x="12" y="354.2" font-size="12" fill="#526276" data-text="opening.state">尚未开馆</text>
+</g>
+<text x="0" y="393.2" font-size="12" fill="#526276" data-text="opening.foot.0">依据：开馆检查表 v2</text>
+</svg>
+<figcaption>窄 288</figcaption></figure>
+</div>
+<div class="equiv"><h4>等效文字</h4><p>开馆由 3 项输入汇合，须全部到位，已到位 2 项，汇合条件未满足。</p><ul><li>消防通道检查：当日记录已签字</li><li>值班表：值班人已确认</li><li>借还设备自检：自检日志（尚未成立；尚未提交）</li></ul><ul><li>依据：开馆检查表 v2</li><li>开馆：尚未开馆</li></ul></div>
+<p class="files">输入：<a href="inputs/fan-join.json">inputs/fan-join.json</a>。文件：<a href="svg/fan-join--w672.svg">svg/fan-join--w672.svg</a>、<a href="svg/fan-join--w288.svg">svg/fan-join--w288.svg</a></p>
+</article>
+<article class="case" id="fan-branch-8">
+<h3>借阅申请的八条分支 <span class="role">压力输入</span></h3>
+<p>八条分支，条件里混有英文和数字。</p>
+<div class="pair">
+<figure class="wide"><svg xmlns="http://www.w3.org/2000/svg" id="fan-branch-8-w672" viewBox="-2 -2 672 657" width="672" height="657" role="img" aria-labelledby="fan-branch-8-w672-title fan-branch-8-w672-desc" lang="zh-Hans" xml:lang="zh-Hans" font-family="system-ui, -apple-system, 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif" data-asset="rel-fan" data-asset-version="0.1.0" data-direction="out">
+<title id="fan-branch-8-w672-title">借阅申请的八条分支</title>
+<desc id="fan-branch-8-w672-desc">借阅申请到达之后有 8 条分支，各由条件决定。</desc>
+<defs><marker id="fan-branch-8-w672-arrow-solid" viewBox="0 0 8 8" refX="7.5" refY="4" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto"><path d="M0.5 0.8 7.5 4 0.5 7.2Z" fill="#3d4c5e"/></marker></defs>
+<path d="M187 47 L205 47 L205 47 L448 47" fill="none" stroke="#3d4c5e" stroke-width="1.3" marker-end="url(#fan-branch-8-w672-arrow-solid)" data-edge-id="b1" data-from="request" data-to="n1" data-state="established"/>
+<text x="217" y="15.4" font-size="14" fill="#1b2733" data-text="b1.label"><tspan x="217" y="15.4">读者证有效，且近 12 个月没有</tspan><tspan x="217" y="36.4">逾期记录</tspan></text>
+<g data-object-id="n1" data-role="node">
+<rect x="448" y="27" width="220" height="40" rx="4" fill="#ffffff" stroke="#7b8ba0" stroke-width="1"/>
+<text x="460" y="51.4" font-size="14" fill="#1b2733" data-text="n1.label">当日出借</text>
+</g>
+<path d="M187 47 L205 47 L205 128 L448 128" fill="none" stroke="#3d4c5e" stroke-width="1.3" marker-end="url(#fan-branch-8-w672-arrow-solid)" data-edge-id="b2" data-from="request" data-to="n2" data-state="established"/>
+<text x="217" y="96.4" font-size="14" fill="#1b2733" data-text="b2.label"><tspan x="217" y="96.4">馆藏在架，但属于参考工具书</tspan><tspan x="217" y="117.4">(reference only)</tspan></text>
+<g data-object-id="n2" data-role="node">
+<rect x="448" y="108" width="220" height="40" rx="4" fill="#ffffff" stroke="#7b8ba0" stroke-width="1"/>
+<text x="460" y="132.4" font-size="14" fill="#1b2733" data-text="n2.label">只在馆内阅览</text>
+</g>
+<path d="M187 47 L205 47 L205 209 L448 209" fill="none" stroke="#3d4c5e" stroke-width="1.3" marker-end="url(#fan-branch-8-w672-arrow-solid)" data-edge-id="b3" data-from="request" data-to="n3" data-state="established"/>
+<text x="217" y="177.4" font-size="14" fill="#1b2733" data-text="b3.label"><tspan x="217" y="177.4">馆藏已借出，预约队列不超过 3</tspan><tspan x="217" y="198.4">人</tspan></text>
+<g data-object-id="n3" data-role="node">
+<rect x="448" y="189" width="220" height="40" rx="4" fill="#ffffff" stroke="#7b8ba0" stroke-width="1"/>
+<text x="460" y="213.4" font-size="14" fill="#1b2733" data-text="n3.label">登记预约</text>
+</g>
+<path d="M187 47 L205 47 L205 290 L448 290" fill="none" stroke="#3d4c5e" stroke-width="1.3" marker-end="url(#fan-branch-8-w672-arrow-solid)" data-edge-id="b4" data-from="request" data-to="n4" data-state="established"/>
+<text x="217" y="258.4" font-size="14" fill="#1b2733" data-text="b4.label"><tspan x="217" y="258.4">馆藏已借出，预约队列超过 3</tspan><tspan x="217" y="279.4">人，且读者同意等待 30 天以上</tspan></text>
+<g data-object-id="n4" data-role="node">
+<rect x="448" y="270" width="220" height="40" rx="4" fill="#ffffff" stroke="#7b8ba0" stroke-width="1"/>
+<text x="460" y="294.4" font-size="14" fill="#1b2733" data-text="n4.label">登记预约，并告知预计等待时间</text>
+</g>
+<path d="M187 47 L205 47 L205 371 L448 371" fill="none" stroke="#3d4c5e" stroke-width="1.3" marker-end="url(#fan-branch-8-w672-arrow-solid)" data-edge-id="b5" data-from="request" data-to="n5" data-state="established"/>
+<text x="217" y="339.4" font-size="14" fill="#1b2733" data-text="b5.label"><tspan x="217" y="339.4">馆藏属于古籍或 1949 年前的出</tspan><tspan x="217" y="360.4">版物</tspan></text>
+<g data-object-id="n5" data-role="node">
+<rect x="448" y="351" width="220" height="40" rx="4" fill="#ffffff" stroke="#7b8ba0" stroke-width="1"/>
+<text x="460" y="375.4" font-size="14" fill="#1b2733" data-text="n5.label">转古籍阅览室，不外借</text>
+</g>
+<path d="M187 47 L205 47 L205 452 L448 452" fill="none" stroke="#3d4c5e" stroke-width="1.3" marker-end="url(#fan-branch-8-w672-arrow-solid)" data-edge-id="b6" data-from="request" data-to="n6" data-state="established"/>
+<text x="217" y="420.4" font-size="14" fill="#1b2733" data-text="b6.label"><tspan x="217" y="420.4">馆藏在修复中，预计恢复日期</tspan><tspan x="217" y="441.4">未定</tspan></text>
+<g data-object-id="n6" data-role="node">
+<rect x="448" y="432" width="220" height="40" rx="4" fill="#ffffff" stroke="#7b8ba0" stroke-width="1"/>
+<text x="460" y="456.4" font-size="14" fill="#1b2733" data-text="n6.label">告知暂不可借，登记到货通知</text>
+</g>
+<path d="M187 47 L205 47 L205 533 L448 533" fill="none" stroke="#3d4c5e" stroke-width="1.3" marker-end="url(#fan-branch-8-w672-arrow-solid)" data-edge-id="b7" data-from="request" data-to="n7" data-state="established"/>
+<text x="217" y="501.4" font-size="14" fill="#1b2733" data-text="b7.label"><tspan x="217" y="501.4">读者证已过期，但在 30 天宽限</tspan><tspan x="217" y="522.4">期内</tspan></text>
+<g data-object-id="n7" data-role="node">
+<rect x="448" y="503" width="220" height="60" rx="4" fill="#ffffff" stroke="#7b8ba0" stroke-width="1"/>
+<text x="460" y="527.4" font-size="14" fill="#1b2733" data-text="n7.label"><tspan x="460" y="527.4">先续证，再按上面的条件重新</tspan><tspan x="460" y="548.4">判断</tspan></text>
+</g>
+<path d="M187 47 L205 47 L205 603 L448 603" fill="none" stroke="#3d4c5e" stroke-width="1.3" marker-end="url(#fan-branch-8-w672-arrow-solid)" data-edge-id="b8" data-from="request" data-to="n8" data-state="established"/>
+<text x="217" y="592.4" font-size="14" fill="#1b2733" data-text="b8.label">其余情况（默认）</text>
+<g data-object-id="n8" data-role="node">
+<rect x="448" y="583" width="220" height="40" rx="4" fill="#ffffff" stroke="#7b8ba0" stroke-width="1"/>
+<text x="460" y="607.4" font-size="14" fill="#1b2733" data-text="n8.label">转人工核对</text>
+</g>
+<g data-object-id="request" data-role="hub">
+<rect x="0" y="27" width="187" height="40" rx="4" fill="#f2f5f9" stroke="#7b8ba0" stroke-width="1"/>
+<text x="12" y="51.4" font-size="14" font-weight="600" fill="#1b2733" data-text="request.label">借阅申请到达</text>
+</g>
+<text x="0" y="648.2" font-size="12" fill="#526276" data-text="request.foot.0">依据：借阅规则 v3 第 2–9 条</text>
+</svg>
+<figcaption>宽 672</figcaption></figure>
+<figure class="narrow"><svg xmlns="http://www.w3.org/2000/svg" id="fan-branch-8-w288" viewBox="-2 -2 288 756" width="288" height="756" role="img" aria-labelledby="fan-branch-8-w288-title fan-branch-8-w288-desc" lang="zh-Hans" xml:lang="zh-Hans" font-family="system-ui, -apple-system, 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif" data-asset="rel-fan" data-asset-version="0.1.0" data-direction="out">
+<title id="fan-branch-8-w288-title">借阅申请的八条分支</title>
+<desc id="fan-branch-8-w288-desc">借阅申请到达之后有 8 条分支，各由条件决定。</desc>
+<defs><marker id="fan-branch-8-w288-arrow-solid" viewBox="0 0 8 8" refX="7.5" refY="4" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto"><path d="M0.5 0.8 7.5 4 0.5 7.2Z" fill="#3d4c5e"/></marker></defs>
+<text x="26" y="69.4" font-size="14" fill="#1b2733" data-text="b1.label">读者证有效，且近 12 个月没有逾期记录</text>
+<g data-object-id="n1" data-role="node">
+<rect x="26" y="80" width="258" height="40" rx="4" fill="#ffffff" stroke="#7b8ba0" stroke-width="1"/>
+<text x="38" y="104.4" font-size="14" fill="#1b2733" data-text="n1.label">当日出借</text>
+</g>
+<text x="26" y="149.4" font-size="14" fill="#1b2733" data-text="b2.label"><tspan x="26" y="149.4">馆藏在架，但属于参考工具书</tspan><tspan x="26" y="170.4">(reference only)</tspan></text>
+<g data-object-id="n2" data-role="node">
+<rect x="26" y="181" width="258" height="40" rx="4" fill="#ffffff" stroke="#7b8ba0" stroke-width="1"/>
+<text x="38" y="205.4" font-size="14" fill="#1b2733" data-text="n2.label">只在馆内阅览</text>
+</g>
+<text x="26" y="250.4" font-size="14" fill="#1b2733" data-text="b3.label">馆藏已借出，预约队列不超过 3 人</text>
+<g data-object-id="n3" data-role="node">
+<rect x="26" y="261" width="258" height="40" rx="4" fill="#ffffff" stroke="#7b8ba0" stroke-width="1"/>
+<text x="38" y="285.4" font-size="14" fill="#1b2733" data-text="n3.label">登记预约</text>
+</g>
+<text x="26" y="330.4" font-size="14" fill="#1b2733" data-text="b4.label"><tspan x="26" y="330.4">馆藏已借出，预约队列超过 3 人，且读者</tspan><tspan x="26" y="351.4">同意等待 30 天以上</tspan></text>
+<g data-object-id="n4" data-role="node">
+<rect x="26" y="362" width="258" height="40" rx="4" fill="#ffffff" stroke="#7b8ba0" stroke-width="1"/>
+<text x="38" y="386.4" font-size="14" fill="#1b2733" data-text="n4.label">登记预约，并告知预计等待时间</text>
+</g>
+<text x="26" y="431.4" font-size="14" fill="#1b2733" data-text="b5.label">馆藏属于古籍或 1949 年前的出版物</text>
+<g data-object-id="n5" data-role="node">
+<rect x="26" y="442" width="258" height="40" rx="4" fill="#ffffff" stroke="#7b8ba0" stroke-width="1"/>
+<text x="38" y="466.4" font-size="14" fill="#1b2733" data-text="n5.label">转古籍阅览室，不外借</text>
+</g>
+<text x="26" y="511.4" font-size="14" fill="#1b2733" data-text="b6.label">馆藏在修复中，预计恢复日期未定</text>
+<g data-object-id="n6" data-role="node">
+<rect x="26" y="522" width="258" height="40" rx="4" fill="#ffffff" stroke="#7b8ba0" stroke-width="1"/>
+<text x="38" y="546.4" font-size="14" fill="#1b2733" data-text="n6.label">告知暂不可借，登记到货通知</text>
+</g>
+<text x="26" y="591.4" font-size="14" fill="#1b2733" data-text="b7.label">读者证已过期，但在 30 天宽限期内</text>
+<g data-object-id="n7" data-role="node">
+<rect x="26" y="602" width="258" height="40" rx="4" fill="#ffffff" stroke="#7b8ba0" stroke-width="1"/>
+<text x="38" y="626.4" font-size="14" fill="#1b2733" data-text="n7.label">先续证，再按上面的条件重新判断</text>
+</g>
+<text x="26" y="671.4" font-size="14" fill="#1b2733" data-text="b8.label">其余情况（默认）</text>
+<g data-object-id="n8" data-role="node">
+<rect x="26" y="682" width="258" height="40" rx="4" fill="#ffffff" stroke="#7b8ba0" stroke-width="1"/>
+<text x="38" y="706.4" font-size="14" fill="#1b2733" data-text="n8.label">转人工核对</text>
+</g>
+<path d="M9 40 L9 100 L26 100" fill="none" stroke="#3d4c5e" stroke-width="1.3" marker-end="url(#fan-branch-8-w288-arrow-solid)" data-edge-id="b1" data-from="request" data-to="n1" data-state="established"/>
+<path d="M9 40 L9 201 L26 201" fill="none" stroke="#3d4c5e" stroke-width="1.3" marker-end="url(#fan-branch-8-w288-arrow-solid)" data-edge-id="b2" data-from="request" data-to="n2" data-state="established"/>
+<path d="M9 40 L9 281 L26 281" fill="none" stroke="#3d4c5e" stroke-width="1.3" marker-end="url(#fan-branch-8-w288-arrow-solid)" data-edge-id="b3" data-from="request" data-to="n3" data-state="established"/>
+<path d="M9 40 L9 382 L26 382" fill="none" stroke="#3d4c5e" stroke-width="1.3" marker-end="url(#fan-branch-8-w288-arrow-solid)" data-edge-id="b4" data-from="request" data-to="n4" data-state="established"/>
+<path d="M9 40 L9 462 L26 462" fill="none" stroke="#3d4c5e" stroke-width="1.3" marker-end="url(#fan-branch-8-w288-arrow-solid)" data-edge-id="b5" data-from="request" data-to="n5" data-state="established"/>
+<path d="M9 40 L9 542 L26 542" fill="none" stroke="#3d4c5e" stroke-width="1.3" marker-end="url(#fan-branch-8-w288-arrow-solid)" data-edge-id="b6" data-from="request" data-to="n6" data-state="established"/>
+<path d="M9 40 L9 622 L26 622" fill="none" stroke="#3d4c5e" stroke-width="1.3" marker-end="url(#fan-branch-8-w288-arrow-solid)" data-edge-id="b7" data-from="request" data-to="n7" data-state="established"/>
+<path d="M9 40 L9 702 L26 702" fill="none" stroke="#3d4c5e" stroke-width="1.3" marker-end="url(#fan-branch-8-w288-arrow-solid)" data-edge-id="b8" data-from="request" data-to="n8" data-state="established"/>
+<g data-object-id="request" data-role="hub">
+<rect x="0" y="0" width="284" height="40" rx="4" fill="#f2f5f9" stroke="#7b8ba0" stroke-width="1"/>
+<text x="12" y="24.4" font-size="14" font-weight="600" fill="#1b2733" data-text="request.label">借阅申请到达</text>
+</g>
+<text x="0" y="747.2" font-size="12" fill="#526276" data-text="request.foot.0">依据：借阅规则 v3 第 2–9 条</text>
+</svg>
+<figcaption>窄 288</figcaption></figure>
+</div>
+<div class="equiv"><h4>等效文字</h4><p>借阅申请到达之后有 8 条分支，各由条件决定。</p><ul><li>读者证有效，且近 12 个月没有逾期记录 → 当日出借</li><li>馆藏在架，但属于参考工具书 (reference only) → 只在馆内阅览</li><li>馆藏已借出，预约队列不超过 3 人 → 登记预约</li><li>馆藏已借出，预约队列超过 3 人，且读者同意等待 30 天以上 → 登记预约，并告知预计等待时间</li><li>馆藏属于古籍或 1949 年前的出版物 → 转古籍阅览室，不外借</li><li>馆藏在修复中，预计恢复日期未定 → 告知暂不可借，登记到货通知</li><li>读者证已过期，但在 30 天宽限期内 → 先续证，再按上面的条件重新判断</li><li>其余情况（默认） → 转人工核对</li></ul><ul><li>依据：借阅规则 v3 第 2–9 条</li></ul></div>
+<p class="files">输入：<a href="inputs/fan-branch-8.json">inputs/fan-branch-8.json</a>。文件：<a href="svg/fan-branch-8--w672.svg">svg/fan-branch-8--w672.svg</a>、<a href="svg/fan-branch-8--w288.svg">svg/fan-branch-8--w288.svg</a></p>
+</article>
+<article class="case" id="fan-join-8">
+<h3>开馆前的八项输入 <span class="role">压力输入</span></h3>
+<p>八项输入，汇合规则还没有定。</p>
+<div class="pair">
+<figure class="wide"><svg xmlns="http://www.w3.org/2000/svg" id="fan-join-8-w672" viewBox="-2 -2 672 513" width="672" height="513" role="img" aria-labelledby="fan-join-8-w672-title fan-join-8-w672-desc" lang="zh-Hans" xml:lang="zh-Hans" font-family="system-ui, -apple-system, 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif" data-asset="rel-fan" data-asset-version="0.1.0" data-direction="in" data-rule="undetermined">
+<title id="fan-join-8-w672-title">开馆前的八项输入</title>
+<desc id="fan-join-8-w672-desc">开馆由 8 项输入汇合，汇合规则未定，已到位 5 项，无法判断是否满足。</desc>
+<defs><marker id="fan-join-8-w672-arrow-open" viewBox="0 0 8 8" refX="7.5" refY="4" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto"><path d="M1 1 7.5 4 1 7" fill="none" stroke="#3d4c5e" stroke-width="1.25"/></marker></defs>
+<path d="M220 38.5 L369 38.5 L369 38.5" fill="none" stroke="#3d4c5e" stroke-width="1.3" stroke-dasharray="4 3" data-edge-id="in1" data-from="i1" data-to="opening" data-state="pending"/>
+<text x="232" y="27.9" font-size="14" fill="#1b2733" data-text="in1.label">尚未提交</text>
+<g data-object-id="i1" data-role="node">
+<rect x="0" y="18.5" width="220" height="40" rx="4" fill="#ffffff" stroke="#7b8ba0" stroke-width="1"/>
+<text x="12" y="42.9" font-size="14" fill="#1b2733" data-text="i1.label">消防通道检查</text>
+</g>
+<path d="M220 98.5 L369 98.5 L369 38.5" fill="none" stroke="#3d4c5e" stroke-width="1.3" data-edge-id="in2" data-from="i2" data-to="opening" data-state="established"/>
+<text x="232" y="87.9" font-size="14" fill="#1b2733" data-text="in2.label">已提交</text>
+<g data-object-id="i2" data-role="node">
+<rect x="0" y="78.5" width="220" height="40" rx="4" fill="#ffffff" stroke="#7b8ba0" stroke-width="1"/>
+<text x="12" y="102.9" font-size="14" fill="#1b2733" data-text="i2.label">值班表</text>
+</g>
+<path d="M220 158.5 L369 158.5 L369 38.5" fill="none" stroke="#3d4c5e" stroke-width="1.3" data-edge-id="in3" data-from="i3" data-to="opening" data-state="established"/>
+<text x="232" y="147.9" font-size="14" fill="#1b2733" data-text="in3.label">已提交</text>
+<g data-object-id="i3" data-role="node">
+<rect x="0" y="138.5" width="220" height="40" rx="4" fill="#ffffff" stroke="#7b8ba0" stroke-width="1"/>
+<text x="12" y="162.9" font-size="14" fill="#1b2733" data-text="i3.label">借还设备自检</text>
+</g>
+<path d="M220 218.5 L369 218.5 L369 38.5" fill="none" stroke="#3d4c5e" stroke-width="1.3" stroke-dasharray="4 3" data-edge-id="in4" data-from="i4" data-to="opening" data-state="pending"/>
+<text x="232" y="207.9" font-size="14" fill="#1b2733" data-text="in4.label">尚未提交</text>
+<g data-object-id="i4" data-role="node">
+<rect x="0" y="198.5" width="220" height="40" rx="4" fill="#ffffff" stroke="#7b8ba0" stroke-width="1"/>
+<text x="12" y="222.9" font-size="14" fill="#1b2733" data-text="i4.label">温湿度记录（古籍库）</text>
+</g>
+<path d="M220 278.5 L369 278.5 L369 38.5" fill="none" stroke="#3d4c5e" stroke-width="1.3" data-edge-id="in5" data-from="i5" data-to="opening" data-state="established"/>
+<text x="232" y="267.9" font-size="14" fill="#1b2733" data-text="in5.label">已提交</text>
+<g data-object-id="i5" data-role="node">
+<rect x="0" y="258.5" width="220" height="40" rx="4" fill="#ffffff" stroke="#7b8ba0" stroke-width="1"/>
+<text x="12" y="282.9" font-size="14" fill="#1b2733" data-text="i5.label">闭馆清点差异单</text>
+</g>
+<path d="M220 338.5 L369 338.5 L369 38.5" fill="none" stroke="#3d4c5e" stroke-width="1.3" data-edge-id="in6" data-from="i6" data-to="opening" data-state="established"/>
+<text x="232" y="327.9" font-size="14" fill="#1b2733" data-text="in6.label">已提交</text>
+<g data-object-id="i6" data-role="node">
+<rect x="0" y="318.5" width="220" height="40" rx="4" fill="#ffffff" stroke="#7b8ba0" stroke-width="1"/>
+<text x="12" y="342.9" font-size="14" fill="#1b2733" data-text="i6.label">当日预约名单</text>
+</g>
+<path d="M220 398.5 L369 398.5 L369 38.5" fill="none" stroke="#3d4c5e" stroke-width="1.3" stroke-dasharray="4 3" data-edge-id="in7" data-from="i7" data-to="opening" data-state="pending"/>
+<text x="232" y="387.9" font-size="14" fill="#1b2733" data-text="in7.label">尚未提交</text>
+<g data-object-id="i7" data-role="node">
+<rect x="0" y="378.5" width="220" height="40" rx="4" fill="#ffffff" stroke="#7b8ba0" stroke-width="1"/>
+<text x="12" y="402.9" font-size="14" fill="#1b2733" data-text="i7.label">保洁完成确认</text>
+</g>
+<path d="M220 458.5 L369 458.5 L369 38.5" fill="none" stroke="#3d4c5e" stroke-width="1.3" data-edge-id="in8" data-from="i8" data-to="opening" data-state="established"/>
+<text x="232" y="447.9" font-size="14" fill="#1b2733" data-text="in8.label">已提交</text>
+<g data-object-id="i8" data-role="node">
+<rect x="0" y="438.5" width="220" height="40" rx="4" fill="#ffffff" stroke="#7b8ba0" stroke-width="1"/>
+<text x="12" y="462.9" font-size="14" fill="#1b2733" data-text="i8.label">公告栏更新</text>
+</g>
+<g data-object-id="opening" data-role="hub">
+<rect x="481" y="0" width="187" height="77" rx="4" fill="#f2f5f9" stroke="#7b8ba0" stroke-width="1"/>
+<text x="493" y="24.4" font-size="14" font-weight="600" fill="#1b2733" data-text="opening.label">开馆</text>
+<text x="493" y="45.2" font-size="12" fill="#526276" data-text="opening.state"><tspan x="493" y="45.2">规则未定，不能据此判断可否</tspan><tspan x="493" y="63.2">开馆</tspan></text>
+</g>
+<path d="M369 38.5 L481 38.5" fill="none" stroke="#3d4c5e" stroke-width="1.3" stroke-dasharray="4 3" marker-end="url(#fan-join-8-w672-arrow-open)" data-join-for="opening" data-rule="undetermined" data-met="false"/>
+<text x="377" y="27.9" font-size="14" font-weight="600" fill="#1b2733" data-text="opening.rule">汇合规则未定</text>
+<text x="377" y="56.7" font-size="12" fill="#526276" data-text="opening.arrived">已到位 5/8</text>
+<text x="0" y="503.7" font-size="12" fill="#526276" data-text="opening.foot.0">依据：开馆检查表 v3 草稿，尚未写明哪些是必需项</text>
+</svg>
+<figcaption>宽 672</figcaption></figure>
+<figure class="narrow"><svg xmlns="http://www.w3.org/2000/svg" id="fan-join-8-w288" viewBox="-2 -2 288 784" width="288" height="784" role="img" aria-labelledby="fan-join-8-w288-title fan-join-8-w288-desc" lang="zh-Hans" xml:lang="zh-Hans" font-family="system-ui, -apple-system, 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif" data-asset="rel-fan" data-asset-version="0.1.0" data-direction="in" data-rule="undetermined">
+<title id="fan-join-8-w288-title">开馆前的八项输入</title>
+<desc id="fan-join-8-w288-desc">开馆由 8 项输入汇合，汇合规则未定，已到位 5 项，无法判断是否满足。</desc>
+<defs><marker id="fan-join-8-w288-arrow-open" viewBox="0 0 8 8" refX="7.5" refY="4" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto"><path d="M1 1 7.5 4 1 7" fill="none" stroke="#3d4c5e" stroke-width="1.25"/></marker></defs>
+<text x="26" y="15.4" font-size="14" fill="#1b2733" data-text="in1.label">尚未提交</text>
+<g data-object-id="i1" data-role="node">
+<rect x="26" y="26" width="258" height="40" rx="4" fill="#ffffff" stroke="#7b8ba0" stroke-width="1"/>
+<text x="38" y="50.4" font-size="14" fill="#1b2733" data-text="i1.label">消防通道检查</text>
+</g>
+<text x="26" y="95.4" font-size="14" fill="#1b2733" data-text="in2.label">已提交</text>
+<g data-object-id="i2" data-role="node">
+<rect x="26" y="106" width="258" height="40" rx="4" fill="#ffffff" stroke="#7b8ba0" stroke-width="1"/>
+<text x="38" y="130.4" font-size="14" fill="#1b2733" data-text="i2.label">值班表</text>
+</g>
+<text x="26" y="175.4" font-size="14" fill="#1b2733" data-text="in3.label">已提交</text>
+<g data-object-id="i3" data-role="node">
+<rect x="26" y="186" width="258" height="40" rx="4" fill="#ffffff" stroke="#7b8ba0" stroke-width="1"/>
+<text x="38" y="210.4" font-size="14" fill="#1b2733" data-text="i3.label">借还设备自检</text>
+</g>
+<text x="26" y="255.4" font-size="14" fill="#1b2733" data-text="in4.label">尚未提交</text>
+<g data-object-id="i4" data-role="node">
+<rect x="26" y="266" width="258" height="40" rx="4" fill="#ffffff" stroke="#7b8ba0" stroke-width="1"/>
+<text x="38" y="290.4" font-size="14" fill="#1b2733" data-text="i4.label">温湿度记录（古籍库）</text>
+</g>
+<text x="26" y="335.4" font-size="14" fill="#1b2733" data-text="in5.label">已提交</text>
+<g data-object-id="i5" data-role="node">
+<rect x="26" y="346" width="258" height="40" rx="4" fill="#ffffff" stroke="#7b8ba0" stroke-width="1"/>
+<text x="38" y="370.4" font-size="14" fill="#1b2733" data-text="i5.label">闭馆清点差异单</text>
+</g>
+<text x="26" y="415.4" font-size="14" fill="#1b2733" data-text="in6.label">已提交</text>
+<g data-object-id="i6" data-role="node">
+<rect x="26" y="426" width="258" height="40" rx="4" fill="#ffffff" stroke="#7b8ba0" stroke-width="1"/>
+<text x="38" y="450.4" font-size="14" fill="#1b2733" data-text="i6.label">当日预约名单</text>
+</g>
+<text x="26" y="495.4" font-size="14" fill="#1b2733" data-text="in7.label">尚未提交</text>
+<g data-object-id="i7" data-role="node">
+<rect x="26" y="506" width="258" height="40" rx="4" fill="#ffffff" stroke="#7b8ba0" stroke-width="1"/>
+<text x="38" y="530.4" font-size="14" fill="#1b2733" data-text="i7.label">保洁完成确认</text>
+</g>
+<text x="26" y="575.4" font-size="14" fill="#1b2733" data-text="in8.label">已提交</text>
+<g data-object-id="i8" data-role="node">
+<rect x="26" y="586" width="258" height="40" rx="4" fill="#ffffff" stroke="#7b8ba0" stroke-width="1"/>
+<text x="38" y="610.4" font-size="14" fill="#1b2733" data-text="i8.label">公告栏更新</text>
+</g>
+<text x="26" y="655.4" font-size="14" font-weight="600" fill="#1b2733" data-text="opening.rule">汇合规则未定</text>
+<text x="26" y="674.2" font-size="12" fill="#526276" data-text="opening.arrived">已到位 5/8</text>
+<path d="M26 46 L9 46 L9 606" fill="none" stroke="#3d4c5e" stroke-width="1.3" stroke-dasharray="4 3" data-edge-id="in1" data-from="i1" data-to="opening" data-state="pending"/>
+<path d="M26 126 L9 126 L9 606" fill="none" stroke="#3d4c5e" stroke-width="1.3" data-edge-id="in2" data-from="i2" data-to="opening" data-state="established"/>
+<path d="M26 206 L9 206 L9 606" fill="none" stroke="#3d4c5e" stroke-width="1.3" data-edge-id="in3" data-from="i3" data-to="opening" data-state="established"/>
+<path d="M26 286 L9 286 L9 606" fill="none" stroke="#3d4c5e" stroke-width="1.3" stroke-dasharray="4 3" data-edge-id="in4" data-from="i4" data-to="opening" data-state="pending"/>
+<path d="M26 366 L9 366 L9 606" fill="none" stroke="#3d4c5e" stroke-width="1.3" data-edge-id="in5" data-from="i5" data-to="opening" data-state="established"/>
+<path d="M26 446 L9 446 L9 606" fill="none" stroke="#3d4c5e" stroke-width="1.3" data-edge-id="in6" data-from="i6" data-to="opening" data-state="established"/>
+<path d="M26 526 L9 526 L9 606" fill="none" stroke="#3d4c5e" stroke-width="1.3" stroke-dasharray="4 3" data-edge-id="in7" data-from="i7" data-to="opening" data-state="pending"/>
+<path d="M26 606 L9 606 L9 606" fill="none" stroke="#3d4c5e" stroke-width="1.3" data-edge-id="in8" data-from="i8" data-to="opening" data-state="established"/>
+<path d="M9 606 L9 691" fill="none" stroke="#3d4c5e" stroke-width="1.3" stroke-dasharray="4 3" marker-end="url(#fan-join-8-w288-arrow-open)" data-join-for="opening" data-rule="undetermined" data-met="false"/>
+<g data-object-id="opening" data-role="hub">
+<rect x="0" y="691" width="284" height="59" rx="4" fill="#f2f5f9" stroke="#7b8ba0" stroke-width="1"/>
+<text x="12" y="715.4" font-size="14" font-weight="600" fill="#1b2733" data-text="opening.label">开馆</text>
+<text x="12" y="736.2" font-size="12" fill="#526276" data-text="opening.state">规则未定，不能据此判断可否开馆</text>
+</g>
+<text x="0" y="775.2" font-size="12" fill="#526276" data-text="opening.foot.0">依据：开馆检查表 v3 草稿，尚未写明哪些是必需项</text>
+</svg>
+<figcaption>窄 288</figcaption></figure>
+</div>
+<div class="equiv"><h4>等效文字</h4><p>开馆由 8 项输入汇合，汇合规则未定，已到位 5 项，无法判断是否满足。</p><ul><li>消防通道检查：尚未提交（尚未成立）</li><li>值班表：已提交</li><li>借还设备自检：已提交</li><li>温湿度记录（古籍库）：尚未提交（尚未成立）</li><li>闭馆清点差异单：已提交</li><li>当日预约名单：已提交</li><li>保洁完成确认：尚未提交（尚未成立）</li><li>公告栏更新：已提交</li></ul><ul><li>依据：开馆检查表 v3 草稿，尚未写明哪些是必需项</li><li>开馆：规则未定，不能据此判断可否开馆</li></ul></div>
+<p class="files">输入：<a href="inputs/fan-join-8.json">inputs/fan-join-8.json</a>。文件：<a href="svg/fan-join-8--w672.svg">svg/fan-join-8--w672.svg</a>、<a href="svg/fan-join-8--w288.svg">svg/fan-join-8--w288.svg</a></p>
+</article>
+<h3>拒用的输入</h3>
+<table><thead><tr><th>输入</th><th>拒用理由</th></tr></thead><tbody>
+<tr><td><a href="inputs/refuse-fan-basis.json">画了箭头却没有依据。</a></td><td>关系 e 没有依据</td></tr>
+<tr><td><a href="inputs/refuse-fan-default.json">两条分支都带条件，没有默认分支，也没有说明为什么。</a></td><td>多条分支须恰有一条默认分支，或用 no_default 写明为什么没有</td></tr>
+<tr><td><a href="inputs/refuse-fan-duplicate.json">同一个端点出现两次。</a></td><td>端点 roster 出现两次；合并成一条关系，或确认它们是两个对象</td></tr>
+<tr><td><a href="inputs/refuse-fan-rule.json">汇合没有写明是全部还是任一。</a></td><td>汇合须写明 rule：all、any 或 undetermined</td></tr>
+</tbody></table>
+</section>
+<section id="rel-scope">
+<h2>范围与跨界 <code>rel-scope</code></h2>
+<p class="job">谁在哪个范围里，哪些关系越过了边界。每个边界都写明它表示什么，位置本身不表示权限。</p>
+<dl><div><dt>输入</dt><dd>容器及其上下级，成员，跨界关系及依据</dd></div><div><dt>可以改</dt><dd>成员、嵌套、边界说明、关系端点与状态</dd></div><div><dt>不适用</dt><dd>集合互相重叠、边框只是装饰、两端在同一范围内的关系</dd></div><div><dt>测试到</dt><dd>3 层嵌套、空容器、3 条跨界关系</dd></div></dl>
+<article class="case" id="scope-library">
+<h3>古籍调阅经过的范围 <span class="role">正常输入</span></h3>
+<p>三层嵌套、一个空容器、一个不在任何范围内的对象，三条跨界关系。</p>
+<div class="pair">
+<figure class="wide"><svg xmlns="http://www.w3.org/2000/svg" id="scope-library-w480" viewBox="-2 -2 480 624" width="480" height="624" role="img" aria-labelledby="scope-library-w480-title scope-library-w480-desc" lang="zh-Hans" xml:lang="zh-Hans" font-family="system-ui, -apple-system, 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif" data-asset="rel-scope" data-asset-version="0.1.0">
+<title id="scope-library-w480-title">古籍调阅经过的范围</title>
+<desc id="scope-library-w480-desc">5 个范围、4 个成员，3 条关系越过边界。</desc>
+<defs><marker id="scope-library-w480-arrow-solid" viewBox="0 0 8 8" refX="7.5" refY="4" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto"><path d="M0.5 0.8 7.5 4 0.5 7.2Z" fill="#3d4c5e"/></marker><marker id="scope-library-w480-arrow-open" viewBox="0 0 8 8" refX="7.5" refY="4" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto"><path d="M1 1 7.5 4 1 7" fill="none" stroke="#3d4c5e" stroke-width="1.25"/></marker></defs>
+<g data-object-id="area-reading" data-role="container">
+<rect x="0" y="0" width="420" height="214" rx="6" fill="none" stroke="#7b8ba0" stroke-width="1"/>
+<text x="10" y="24.4" font-size="14" font-weight="600" fill="#1b2733" data-text="area-reading.label">阅览区</text>
+<text x="10" y="43.2" font-size="12" fill="#526276" data-text="area-reading.boundary">开放时间内读者可以进入；不表示馆藏可以借出</text>
+<g data-object-id="shelf-open" data-role="member" data-container="area-reading">
+<rect x="10" y="56" width="400" height="37" rx="4" fill="#ffffff" stroke="#7b8ba0" stroke-width="1"/>
+<text x="20" y="79.4" font-size="14" fill="#1b2733" data-text="shelf-open.label">开架书架</text>
+</g>
+<g data-object-id="room-rare" data-role="container" data-parent="area-reading">
+<rect x="10" y="101" width="400" height="103" rx="6" fill="none" stroke="#7b8ba0" stroke-width="1"/>
+<text x="20" y="125.4" font-size="14" font-weight="600" fill="#1b2733" data-text="room-rare.label">古籍阅览室</text>
+<text x="20" y="144.2" font-size="12" fill="#526276" data-text="room-rare.boundary">须预约进入；边界只表示房间位置</text>
+<g data-object-id="desk-12" data-role="member" data-container="room-rare">
+<rect x="20" y="157" width="380" height="37" rx="4" fill="#ffffff" stroke="#7b8ba0" stroke-width="1"/>
+<text x="30" y="180.4" font-size="14" fill="#1b2733" data-text="desk-12.label">阅览桌 12</text>
+</g>
+</g>
+</g>
+<g data-object-id="area-stack" data-role="container">
+<rect x="0" y="226" width="420" height="169" rx="6" fill="none" stroke="#7b8ba0" stroke-width="1"/>
+<text x="10" y="250.4" font-size="14" font-weight="600" fill="#1b2733" data-text="area-stack.label">闭架书库</text>
+<text x="10" y="269.2" font-size="12" fill="#526276" data-text="area-stack.boundary">只有馆员进入；在库内不等于有调阅权限</text>
+<g data-object-id="vault" data-role="container" data-parent="area-stack">
+<rect x="10" y="282" width="400" height="103" rx="6" fill="none" stroke="#7b8ba0" stroke-width="1"/>
+<text x="20" y="306.4" font-size="14" font-weight="600" fill="#1b2733" data-text="vault.label">恒温库房</text>
+<text x="20" y="325.2" font-size="12" fill="#526276" data-text="vault.boundary">温湿度受控的房间</text>
+<g data-object-id="cabinet-a" data-role="member" data-container="vault">
+<rect x="20" y="338" width="380" height="37" rx="4" fill="#ffffff" stroke="#7b8ba0" stroke-width="1"/>
+<text x="30" y="361.4" font-size="14" fill="#1b2733" data-text="cabinet-a.label">古籍柜 A</text>
+</g>
+</g>
+</g>
+<g data-object-id="room-repair" data-role="container">
+<rect x="0" y="407" width="420" height="84" rx="6" fill="none" stroke="#7b8ba0" stroke-width="1"/>
+<text x="10" y="431.4" font-size="14" font-weight="600" fill="#1b2733" data-text="room-repair.label">修复室</text>
+<text x="10" y="450.2" font-size="12" fill="#526276" data-text="room-repair.boundary">修复期间不对外</text>
+<text x="10" y="476.2" font-size="12" fill="#526276" data-text="room-repair.empty">当前没有成员</text>
+</g>
+<g data-object-id="counter" data-role="member">
+<rect x="0" y="503" width="420" height="37" rx="4" fill="#ffffff" stroke="#7b8ba0" stroke-width="1"/>
+<text x="10" y="526.4" font-size="14" fill="#1b2733" data-text="counter.label">总服务台</text>
+</g>
+<path d="M400 352.5 L432 352.5 L432 167.5 L400 167.5" fill="none" stroke="#3d4c5e" stroke-width="1.3" marker-end="url(#scope-library-w480-arrow-solid)" data-edge-id="fetch" data-from="cabinet-a" data-to="desk-12" data-state="established"/>
+<rect x="425" y="251" width="14" height="18" fill="#ffffff"/>
+<text x="432" y="264.2" font-size="12" fill="#3d4c5e" text-anchor="middle" data-text="fetch.mark">①</text>
+<path d="M400 175.5 L446 175.5 L446 360.5 L400 360.5" fill="none" stroke="#3d4c5e" stroke-width="1.3" stroke-dasharray="4 3" marker-end="url(#scope-library-w480-arrow-open)" data-edge-id="return" data-from="desk-12" data-to="cabinet-a" data-state="pending"/>
+<rect x="439" y="259" width="14" height="18" fill="#ffffff"/>
+<text x="446" y="272.2" font-size="12" fill="#3d4c5e" text-anchor="middle" data-text="return.mark">②</text>
+<path d="M420 521.5 L460 521.5 L460 183.5 L400 183.5" fill="none" stroke="#3d4c5e" stroke-width="1.3" marker-end="url(#scope-library-w480-arrow-solid)" data-edge-id="confirm" data-from="counter" data-to="desk-12" data-state="established"/>
+<rect x="453" y="343.5" width="14" height="18" fill="#ffffff"/>
+<text x="460" y="356.7" font-size="12" fill="#3d4c5e" text-anchor="middle" data-text="confirm.mark">③</text>
+<text x="0" y="567.2" font-size="12" fill="#1b2733" data-text="fetch.key">① 调阅：古籍柜 A → 阅览桌 12。已送达。依据：调阅单 D-12</text>
+<text x="0" y="589.2" font-size="12" fill="#1b2733" data-text="return.key">② 归还：阅览桌 12 → 古籍柜 A。尚未归还。依据：调阅单 D-12 回执栏</text>
+<text x="0" y="611.2" font-size="12" fill="#1b2733" data-text="confirm.key">③ 预约确认：总服务台 → 阅览桌 12。已确认。依据：预约登记 0412</text>
+</svg>
+<figcaption>宽 480</figcaption></figure>
+<figure class="narrow"><svg xmlns="http://www.w3.org/2000/svg" id="scope-library-w288" viewBox="-2 -2 288 714" width="288" height="714" role="img" aria-labelledby="scope-library-w288-title scope-library-w288-desc" lang="zh-Hans" xml:lang="zh-Hans" font-family="system-ui, -apple-system, 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif" data-asset="rel-scope" data-asset-version="0.1.0">
+<title id="scope-library-w288-title">古籍调阅经过的范围</title>
+<desc id="scope-library-w288-desc">5 个范围、4 个成员，3 条关系越过边界。</desc>
+<defs><marker id="scope-library-w288-arrow-solid" viewBox="0 0 8 8" refX="7.5" refY="4" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto"><path d="M0.5 0.8 7.5 4 0.5 7.2Z" fill="#3d4c5e"/></marker><marker id="scope-library-w288-arrow-open" viewBox="0 0 8 8" refX="7.5" refY="4" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto"><path d="M1 1 7.5 4 1 7" fill="none" stroke="#3d4c5e" stroke-width="1.25"/></marker></defs>
+<g data-object-id="area-reading" data-role="container">
+<rect x="0" y="0" width="228" height="232" rx="6" fill="none" stroke="#7b8ba0" stroke-width="1"/>
+<text x="10" y="24.4" font-size="14" font-weight="600" fill="#1b2733" data-text="area-reading.label">阅览区</text>
+<text x="10" y="43.2" font-size="12" fill="#526276" data-text="area-reading.boundary"><tspan x="10" y="43.2">开放时间内读者可以进入；不表示馆藏</tspan><tspan x="10" y="61.2">可以借出</tspan></text>
+<g data-object-id="shelf-open" data-role="member" data-container="area-reading">
+<rect x="10" y="74" width="208" height="37" rx="4" fill="#ffffff" stroke="#7b8ba0" stroke-width="1"/>
+<text x="20" y="97.4" font-size="14" fill="#1b2733" data-text="shelf-open.label">开架书架</text>
+</g>
+<g data-object-id="room-rare" data-role="container" data-parent="area-reading">
+<rect x="10" y="119" width="208" height="103" rx="6" fill="none" stroke="#7b8ba0" stroke-width="1"/>
+<text x="20" y="143.4" font-size="14" font-weight="600" fill="#1b2733" data-text="room-rare.label">古籍阅览室</text>
+<text x="20" y="162.2" font-size="12" fill="#526276" data-text="room-rare.boundary">须预约进入；边界只表示房间位置</text>
+<g data-object-id="desk-12" data-role="member" data-container="room-rare">
+<rect x="20" y="175" width="188" height="37" rx="4" fill="#ffffff" stroke="#7b8ba0" stroke-width="1"/>
+<text x="30" y="198.4" font-size="14" fill="#1b2733" data-text="desk-12.label">阅览桌 12</text>
+</g>
+</g>
+</g>
+<g data-object-id="area-stack" data-role="container">
+<rect x="0" y="244" width="228" height="187" rx="6" fill="none" stroke="#7b8ba0" stroke-width="1"/>
+<text x="10" y="268.4" font-size="14" font-weight="600" fill="#1b2733" data-text="area-stack.label">闭架书库</text>
+<text x="10" y="287.2" font-size="12" fill="#526276" data-text="area-stack.boundary"><tspan x="10" y="287.2">只有馆员进入；在库内不等于有调阅</tspan><tspan x="10" y="305.2">权限</tspan></text>
+<g data-object-id="vault" data-role="container" data-parent="area-stack">
+<rect x="10" y="318" width="208" height="103" rx="6" fill="none" stroke="#7b8ba0" stroke-width="1"/>
+<text x="20" y="342.4" font-size="14" font-weight="600" fill="#1b2733" data-text="vault.label">恒温库房</text>
+<text x="20" y="361.2" font-size="12" fill="#526276" data-text="vault.boundary">温湿度受控的房间</text>
+<g data-object-id="cabinet-a" data-role="member" data-container="vault">
+<rect x="20" y="374" width="188" height="37" rx="4" fill="#ffffff" stroke="#7b8ba0" stroke-width="1"/>
+<text x="30" y="397.4" font-size="14" fill="#1b2733" data-text="cabinet-a.label">古籍柜 A</text>
+</g>
+</g>
+</g>
+<g data-object-id="room-repair" data-role="container">
+<rect x="0" y="443" width="228" height="84" rx="6" fill="none" stroke="#7b8ba0" stroke-width="1"/>
+<text x="10" y="467.4" font-size="14" font-weight="600" fill="#1b2733" data-text="room-repair.label">修复室</text>
+<text x="10" y="486.2" font-size="12" fill="#526276" data-text="room-repair.boundary">修复期间不对外</text>
+<text x="10" y="512.2" font-size="12" fill="#526276" data-text="room-repair.empty">当前没有成员</text>
+</g>
+<g data-object-id="counter" data-role="member">
+<rect x="0" y="539" width="228" height="37" rx="4" fill="#ffffff" stroke="#7b8ba0" stroke-width="1"/>
+<text x="10" y="562.4" font-size="14" fill="#1b2733" data-text="counter.label">总服务台</text>
+</g>
+<path d="M208 388.5 L240 388.5 L240 185.5 L208 185.5" fill="none" stroke="#3d4c5e" stroke-width="1.3" marker-end="url(#scope-library-w288-arrow-solid)" data-edge-id="fetch" data-from="cabinet-a" data-to="desk-12" data-state="established"/>
+<rect x="233" y="278" width="14" height="18" fill="#ffffff"/>
+<text x="240" y="291.2" font-size="12" fill="#3d4c5e" text-anchor="middle" data-text="fetch.mark">①</text>
+<path d="M208 193.5 L254 193.5 L254 396.5 L208 396.5" fill="none" stroke="#3d4c5e" stroke-width="1.3" stroke-dasharray="4 3" marker-end="url(#scope-library-w288-arrow-open)" data-edge-id="return" data-from="desk-12" data-to="cabinet-a" data-state="pending"/>
+<rect x="247" y="286" width="14" height="18" fill="#ffffff"/>
+<text x="254" y="299.2" font-size="12" fill="#3d4c5e" text-anchor="middle" data-text="return.mark">②</text>
+<path d="M228 557.5 L268 557.5 L268 201.5 L208 201.5" fill="none" stroke="#3d4c5e" stroke-width="1.3" marker-end="url(#scope-library-w288-arrow-solid)" data-edge-id="confirm" data-from="counter" data-to="desk-12" data-state="established"/>
+<rect x="261" y="370.5" width="14" height="18" fill="#ffffff"/>
+<text x="268" y="383.7" font-size="12" fill="#3d4c5e" text-anchor="middle" data-text="confirm.mark">③</text>
+<text x="0" y="603.2" font-size="12" fill="#1b2733" data-text="fetch.key"><tspan x="0" y="603.2">① 调阅：古籍柜 A → 阅览桌 12。已送达。依据：调</tspan><tspan x="0" y="621.2">阅单 D-12</tspan></text>
+<text x="0" y="643.2" font-size="12" fill="#1b2733" data-text="return.key"><tspan x="0" y="643.2">② 归还：阅览桌 12 → 古籍柜 A。尚未归还。依据：</tspan><tspan x="0" y="661.2">调阅单 D-12 回执栏</tspan></text>
+<text x="0" y="683.2" font-size="12" fill="#1b2733" data-text="confirm.key"><tspan x="0" y="683.2">③ 预约确认：总服务台 → 阅览桌 12。已确认。依</tspan><tspan x="0" y="701.2">据：预约登记 0412</tspan></text>
+</svg>
+<figcaption>窄 288</figcaption></figure>
+</div>
+<div class="equiv"><h4>等效文字</h4><p>5 个范围、4 个成员，3 条关系越过边界。</p><ul><li>阅览区（开放时间内读者可以进入；不表示馆藏可以借出）：开架书架</li><li>　古籍阅览室（须预约进入；边界只表示房间位置）：阅览桌 12</li><li>闭架书库（只有馆员进入；在库内不等于有调阅权限）：成员都在下一级范围里</li><li>　恒温库房（温湿度受控的房间）：古籍柜 A</li><li>修复室（修复期间不对外）：当前没有成员</li><li>不在任何范围内：总服务台</li></ul><ul><li>① 调阅：古籍柜 A → 阅览桌 12。已送达。依据：调阅单 D-12</li><li>② 归还：阅览桌 12 → 古籍柜 A。尚未归还。依据：调阅单 D-12 回执栏</li><li>③ 预约确认：总服务台 → 阅览桌 12。已确认。依据：预约登记 0412</li></ul></div>
+<p class="files">输入：<a href="inputs/scope-library.json">inputs/scope-library.json</a>。文件：<a href="svg/scope-library--w480.svg">svg/scope-library--w480.svg</a>、<a href="svg/scope-library--w288.svg">svg/scope-library--w288.svg</a></p>
+</article>
+<h3>拒用的输入</h3>
+<table><thead><tr><th>输入</th><th>拒用理由</th></tr></thead><tbody>
+<tr><td><a href="inputs/refuse-scope-cycle.json">两个容器互相包含。</a></td><td>容器 a 的包含关系成环</td></tr>
+<tr><td><a href="inputs/refuse-scope-decorative.json">容器没有写明边界表示什么。</a></td><td>容器 a 没有写明边界表示什么；只是装饰边框就不要画</td></tr>
+<tr><td><a href="inputs/refuse-scope-overlap.json">一个成员同时属于两个容器。</a></td><td>成员 m 同时属于多个容器；集合重叠不能画成一棵树</td></tr>
+</tbody></table>
+</section>
+<section id="rel-qualify">
+<h2>限定与证据 <code>rel-qualify</code></h2>
+<p class="job">条件、注释和证据各自限定哪一项主张，或者主张里的哪几个字。括线量的是被限定的主张，不是限定语自己。</p>
+<dl><div><dt>输入</dt><dd>主张，限定语及其目标（一项、相邻几项或一个片段），证据的来源身份与核对状态</dd></div><div><dt>可以改</dt><dd>主张与限定语的文字、目标、片段、证据关系与状态</dd></div><div><dt>不适用</dt><dd>整体说明硬绑到某一项主张、同一项主张上叠两层以上的范围</dd></div><div><dt>测试到</dt><dd>3 项主张、一项主张上 5 条证据、四倍长的条件、一项主张上至多两层范围</dd></div></dl>
+<article class="case" id="f06-scope">
+<h3>条件和注释的准确作用范围 <span class="role">正常输入</span></h3>
+<p>条件限定方案甲，注释解释方案乙。</p>
+<div class="pair">
+<figure class="wide"><svg xmlns="http://www.w3.org/2000/svg" id="f06-scope-w672" viewBox="-2 -2 672 119" width="672" height="119" role="img" aria-labelledby="f06-scope-w672-title f06-scope-w672-desc" lang="zh-Hans" xml:lang="zh-Hans" font-family="system-ui, -apple-system, 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif" data-asset="rel-qualify" data-asset-version="0.1.0">
+<title id="f06-scope-w672-title">条件和注释的准确作用范围</title>
+<desc id="f06-scope-w672-desc">2 项主张，2 条限定、注释或证据，各自标在所限定的主张旁。</desc>
+<g data-object-id="claim-A" data-role="claim">
+<text x="0" y="15.4" font-size="14" fill="#1b2733" data-text="claim-A.text">方案甲在 2027 年重新评估。</text>
+</g>
+<g data-qualifier-id="condition-1" data-type="condition">
+<text x="234" y="13.2" font-size="12" font-weight="600" fill="#526276" data-text="condition-1.head">条件</text>
+<text x="234" y="33.4" font-size="14" fill="#1b2733" data-text="condition-1.text"><tspan x="234" y="33.4">仅在两名管理员到位且改造完成后重新评估；条件文本加长时仍限定方</tspan><tspan x="234" y="54.4">案甲。</tspan></text>
+</g>
+<g data-object-id="claim-B" data-role="claim">
+<text x="0" y="91.4" font-size="14" fill="#1b2733" data-text="claim-B.text">建议当前采用方案乙。</text>
+</g>
+<g data-qualifier-id="note-1" data-type="note">
+<text x="234" y="89.2" font-size="12" font-weight="600" fill="#526276" data-text="note-1.head">注释</text>
+<text x="234" y="109.4" font-size="14" fill="#1b2733" data-text="note-1.text">这是一项建议，未表示人已决定。</text>
+</g>
+<path d="M196 3 L201 3 L201 18 L196 18" fill="none" stroke="#1b2733" stroke-width="1.5" data-bracket-for="claim-A"/>
+<path d="M201 9 L226 9" fill="none" stroke="#7b8ba0" stroke-width="1" data-leader-for="condition-1" data-target="claim-A"/>
+<circle cx="228" cy="9" r="2" fill="#7b8ba0"/>
+<path d="M196 79 L201 79 L201 94 L196 94" fill="none" stroke="#1b2733" stroke-width="1.5" data-bracket-for="claim-B"/>
+<path d="M201 85 L226 85" fill="none" stroke="#7b8ba0" stroke-width="1" data-leader-for="note-1" data-target="claim-B"/>
+<circle cx="228" cy="85" r="2" fill="#7b8ba0"/>
+</svg>
+<figcaption>宽 672</figcaption></figure>
+<figure class="narrow"><svg xmlns="http://www.w3.org/2000/svg" id="f06-scope-w288" viewBox="-2 -2 288 177" width="288" height="177" role="img" aria-labelledby="f06-scope-w288-title f06-scope-w288-desc" lang="zh-Hans" xml:lang="zh-Hans" font-family="system-ui, -apple-system, 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif" data-asset="rel-qualify" data-asset-version="0.1.0">
+<title id="f06-scope-w288-title">条件和注释的准确作用范围</title>
+<desc id="f06-scope-w288-desc">2 项主张，2 条限定、注释或证据，各自标在所限定的主张旁。</desc>
+<g data-object-id="claim-A" data-role="claim">
+<text x="22" y="15.4" font-size="14" fill="#1b2733" data-text="claim-A.text">方案甲在 2027 年重新评估。</text>
+</g>
+<g data-qualifier-id="condition-1" data-type="condition">
+<text x="40" y="42.2" font-size="12" font-weight="600" fill="#526276" data-text="condition-1.head">条件</text>
+<text x="40" y="62.4" font-size="14" fill="#1b2733" data-text="condition-1.text"><tspan x="40" y="62.4">仅在两名管理员到位且改造完成后重新</tspan><tspan x="40" y="83.4">评估；条件文本加长时仍限定方案甲。</tspan></text>
+</g>
+<g data-object-id="claim-B" data-role="claim">
+<text x="22" y="120.4" font-size="14" fill="#1b2733" data-text="claim-B.text">建议当前采用方案乙。</text>
+</g>
+<g data-qualifier-id="note-1" data-type="note">
+<text x="40" y="147.2" font-size="12" font-weight="600" fill="#526276" data-text="note-1.head">注释</text>
+<text x="40" y="167.4" font-size="14" fill="#1b2733" data-text="note-1.text">这是一项建议，未表示人已决定。</text>
+</g>
+<path d="M10 3 L5 3 L5 18 L10 18" fill="none" stroke="#1b2733" stroke-width="1.5" data-bracket-for="claim-A"/>
+<path d="M5 18 L5 38 L32 38" fill="none" stroke="#7b8ba0" stroke-width="1" data-leader-for="condition-1" data-target="claim-A"/>
+<circle cx="34" cy="38" r="2" fill="#7b8ba0"/>
+<path d="M10 108 L5 108 L5 123 L10 123" fill="none" stroke="#1b2733" stroke-width="1.5" data-bracket-for="claim-B"/>
+<path d="M5 123 L5 143 L32 143" fill="none" stroke="#7b8ba0" stroke-width="1" data-leader-for="note-1" data-target="claim-B"/>
+<circle cx="34" cy="143" r="2" fill="#7b8ba0"/>
+</svg>
+<figcaption>窄 288</figcaption></figure>
+</div>
+<div class="equiv"><h4>等效文字</h4><p>2 项主张，2 条限定、注释或证据，各自标在所限定的主张旁。</p><ul><li>方案甲在 2027 年重新评估。〔条件；仅在两名管理员到位且改造完成后重新评估；条件文本加长时仍限定方案甲。〕</li><li>建议当前采用方案乙。〔注释；这是一项建议，未表示人已决定。〕</li></ul></div>
+<p class="files">输入：<a href="../fixtures.json">fixtures.json 的 F06</a>，经 src/cases.mjs 适配。文件：<a href="svg/f06-scope--w672.svg">svg/f06-scope--w672.svg</a>、<a href="svg/f06-scope--w288.svg">svg/f06-scope--w288.svg</a></p>
+</article>
+<article class="case" id="qualify-multi">
+<h3>一条注释限定两项主张 <span class="role">正常输入</span></h3>
+<p>一条注释同时限定相邻两项主张，其中一项另有自己的条件。</p>
+<div class="pair">
+<figure class="wide"><svg xmlns="http://www.w3.org/2000/svg" id="qualify-multi-w672" viewBox="-2 -2 672 166" width="672" height="166" role="img" aria-labelledby="qualify-multi-w672-title qualify-multi-w672-desc" lang="zh-Hans" xml:lang="zh-Hans" font-family="system-ui, -apple-system, 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif" data-asset="rel-qualify" data-asset-version="0.1.0">
+<title id="qualify-multi-w672-title">一条注释限定两项主张</title>
+<desc id="qualify-multi-w672-desc">3 项主张，2 条限定、注释或证据，各自标在所限定的主张旁。</desc>
+<g data-object-id="c-open" data-role="claim">
+<text x="0" y="15.4" font-size="14" fill="#1b2733" data-text="c-open.text">古籍阅览室每周开放三天。</text>
+</g>
+<g data-qualifier-id="cond-holiday" data-type="condition">
+<text x="218" y="13.2" font-size="12" font-weight="600" fill="#526276" data-text="cond-holiday.head">条件</text>
+<text x="218" y="33.4" font-size="14" fill="#1b2733" data-text="cond-holiday.text">法定节假日当周另行公告。</text>
+</g>
+<g data-qualifier-id="note-reader" data-type="note">
+<text x="218" y="62.2" font-size="12" font-weight="600" fill="#526276" data-text="note-reader.head">注释</text>
+<text x="218" y="82.4" font-size="14" fill="#1b2733" data-text="note-reader.text">这两项只适用于本馆读者。</text>
+</g>
+<g data-object-id="c-notice" data-role="claim">
+<text x="0" y="119.4" font-size="14" fill="#1b2733" data-text="c-notice.text">调阅古籍须提前预约。</text>
+</g>
+<g data-object-id="c-copy" data-role="claim">
+<text x="0" y="156.4" font-size="14" fill="#1b2733" data-text="c-copy.text">馆内提供自助复印。</text>
+</g>
+<path d="M180 3 L185 3 L185 122 L180 122" fill="none" stroke="#1b2733" stroke-width="1.5" data-bracket-for="c-open c-notice"/>
+<path d="M185 58 L210 58" fill="none" stroke="#7b8ba0" stroke-width="1" data-leader-for="note-reader" data-target="c-open c-notice"/>
+<circle cx="212" cy="58" r="2" fill="#7b8ba0"/>
+<path d="M173 3 L178 3 L178 18 L173 18" fill="none" stroke="#1b2733" stroke-width="1.5" data-bracket-for="c-open"/>
+<path d="M178 9 L210 9" fill="none" stroke="#7b8ba0" stroke-width="1" data-leader-for="cond-holiday" data-target="c-open"/>
+<circle cx="212" cy="9" r="2" fill="#7b8ba0"/>
+</svg>
+<figcaption>宽 672</figcaption></figure>
+<figure class="narrow"><svg xmlns="http://www.w3.org/2000/svg" id="qualify-multi-w288" viewBox="-2 -2 288 193" width="288" height="193" role="img" aria-labelledby="qualify-multi-w288-title qualify-multi-w288-desc" lang="zh-Hans" xml:lang="zh-Hans" font-family="system-ui, -apple-system, 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif" data-asset="rel-qualify" data-asset-version="0.1.0">
+<title id="qualify-multi-w288-title">一条注释限定两项主张</title>
+<desc id="qualify-multi-w288-desc">3 项主张，2 条限定、注释或证据，各自标在所限定的主张旁。</desc>
+<g data-object-id="c-open" data-role="claim">
+<text x="22" y="15.4" font-size="14" fill="#1b2733" data-text="c-open.text">古籍阅览室每周开放三天。</text>
+</g>
+<g data-qualifier-id="cond-holiday" data-type="condition">
+<text x="40" y="42.2" font-size="12" font-weight="600" fill="#526276" data-text="cond-holiday.head">条件</text>
+<text x="40" y="62.4" font-size="14" fill="#1b2733" data-text="cond-holiday.text">法定节假日当周另行公告。</text>
+</g>
+<g data-object-id="c-notice" data-role="claim">
+<text x="22" y="99.4" font-size="14" fill="#1b2733" data-text="c-notice.text">调阅古籍须提前预约。</text>
+</g>
+<g data-qualifier-id="note-reader" data-type="note">
+<text x="40" y="126.2" font-size="12" font-weight="600" fill="#526276" data-text="note-reader.head">注释</text>
+<text x="40" y="146.4" font-size="14" fill="#1b2733" data-text="note-reader.text">这两项只适用于本馆读者。</text>
+</g>
+<g data-object-id="c-copy" data-role="claim">
+<text x="22" y="183.4" font-size="14" fill="#1b2733" data-text="c-copy.text">馆内提供自助复印。</text>
+</g>
+<path d="M10 3 L5 3 L5 102 L10 102" fill="none" stroke="#1b2733" stroke-width="1.5" data-bracket-for="c-open c-notice"/>
+<path d="M5 102 L5 122 L32 122" fill="none" stroke="#7b8ba0" stroke-width="1" data-leader-for="note-reader" data-target="c-open c-notice"/>
+<circle cx="34" cy="122" r="2" fill="#7b8ba0"/>
+<path d="M17 3 L12 3 L12 18 L17 18" fill="none" stroke="#1b2733" stroke-width="1.5" data-bracket-for="c-open"/>
+<path d="M12 18 L12 38 L32 38" fill="none" stroke="#7b8ba0" stroke-width="1" data-leader-for="cond-holiday" data-target="c-open"/>
+<circle cx="34" cy="38" r="2" fill="#7b8ba0"/>
+</svg>
+<figcaption>窄 288</figcaption></figure>
+</div>
+<div class="equiv"><h4>等效文字</h4><p>3 项主张，2 条限定、注释或证据，各自标在所限定的主张旁。</p><ul><li>古籍阅览室每周开放三天。〔条件；法定节假日当周另行公告。｜注释；同时限定 2 项主张；这两项只适用于本馆读者。〕</li><li>调阅古籍须提前预约。〔注释；同时限定 2 项主张；这两项只适用于本馆读者。〕</li><li>馆内提供自助复印。</li></ul></div>
+<p class="files">输入：<a href="inputs/qualify-multi.json">inputs/qualify-multi.json</a>。文件：<a href="svg/qualify-multi--w672.svg">svg/qualify-multi--w672.svg</a>、<a href="svg/qualify-multi--w288.svg">svg/qualify-multi--w288.svg</a></p>
+</article>
+<article class="case" id="f06-long">
+<h3>条件和注释的准确作用范围 <span class="role">压力输入</span></h3>
+<p>同一份输入，条件加长到四倍并混排。</p>
+<div class="pair">
+<figure class="wide"><svg xmlns="http://www.w3.org/2000/svg" id="f06-long-w672" viewBox="-2 -2 672 182" width="672" height="182" role="img" aria-labelledby="f06-long-w672-title f06-long-w672-desc" lang="zh-Hans" xml:lang="zh-Hans" font-family="system-ui, -apple-system, 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif" data-asset="rel-qualify" data-asset-version="0.1.0">
+<title id="f06-long-w672-title">条件和注释的准确作用范围</title>
+<desc id="f06-long-w672-desc">2 项主张，2 条限定、注释或证据，各自标在所限定的主张旁。</desc>
+<g data-object-id="claim-A" data-role="claim">
+<text x="0" y="15.4" font-size="14" fill="#1b2733" data-text="claim-A.text">方案甲在 2027 年重新评估。</text>
+</g>
+<g data-qualifier-id="condition-1" data-type="condition">
+<text x="234" y="13.2" font-size="12" font-weight="600" fill="#526276" data-text="condition-1.head">条件</text>
+<text x="234" y="33.4" font-size="14" fill="#1b2733" data-text="condition-1.text"><tspan x="234" y="33.4">仅在两名管理员到位且改造完成后重新评估；条件文本加长时仍限定方</tspan><tspan x="234" y="54.4">案甲。补充：管理员须持 Level-2 证书，改造验收单 (sign-off) 编</tspan><tspan x="234" y="75.4">号 2027-014 已归档。</tspan><tspan x="234" y="96.4">到位与验收缺一不可；任一项撤回，重新评估即中止，已作出的结论保</tspan><tspan x="234" y="117.4">留在记录里。条件再长，也只限定方案甲。</tspan></text>
+</g>
+<g data-object-id="claim-B" data-role="claim">
+<text x="0" y="154.4" font-size="14" fill="#1b2733" data-text="claim-B.text">建议当前采用方案乙。</text>
+</g>
+<g data-qualifier-id="note-1" data-type="note">
+<text x="234" y="152.2" font-size="12" font-weight="600" fill="#526276" data-text="note-1.head">注释</text>
+<text x="234" y="172.4" font-size="14" fill="#1b2733" data-text="note-1.text">这是一项建议，未表示人已决定。</text>
+</g>
+<path d="M196 3 L201 3 L201 18 L196 18" fill="none" stroke="#1b2733" stroke-width="1.5" data-bracket-for="claim-A"/>
+<path d="M201 9 L226 9" fill="none" stroke="#7b8ba0" stroke-width="1" data-leader-for="condition-1" data-target="claim-A"/>
+<circle cx="228" cy="9" r="2" fill="#7b8ba0"/>
+<path d="M196 142 L201 142 L201 157 L196 157" fill="none" stroke="#1b2733" stroke-width="1.5" data-bracket-for="claim-B"/>
+<path d="M201 148 L226 148" fill="none" stroke="#7b8ba0" stroke-width="1" data-leader-for="note-1" data-target="claim-B"/>
+<circle cx="228" cy="148" r="2" fill="#7b8ba0"/>
+</svg>
+<figcaption>宽 672</figcaption></figure>
+<figure class="narrow"><svg xmlns="http://www.w3.org/2000/svg" id="f06-long-w288" viewBox="-2 -2 288 303" width="288" height="303" role="img" aria-labelledby="f06-long-w288-title f06-long-w288-desc" lang="zh-Hans" xml:lang="zh-Hans" font-family="system-ui, -apple-system, 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif" data-asset="rel-qualify" data-asset-version="0.1.0">
+<title id="f06-long-w288-title">条件和注释的准确作用范围</title>
+<desc id="f06-long-w288-desc">2 项主张，2 条限定、注释或证据，各自标在所限定的主张旁。</desc>
+<g data-object-id="claim-A" data-role="claim">
+<text x="22" y="15.4" font-size="14" fill="#1b2733" data-text="claim-A.text">方案甲在 2027 年重新评估。</text>
+</g>
+<g data-qualifier-id="condition-1" data-type="condition">
+<text x="40" y="42.2" font-size="12" font-weight="600" fill="#526276" data-text="condition-1.head">条件</text>
+<text x="40" y="62.4" font-size="14" fill="#1b2733" data-text="condition-1.text"><tspan x="40" y="62.4">仅在两名管理员到位且改造完成后重新</tspan><tspan x="40" y="83.4">评估；条件文本加长时仍限定方案甲。</tspan><tspan x="40" y="104.4">补充：管理员须持 Level-2 证书，改</tspan><tspan x="40" y="125.4">造验收单 (sign-off) 编号</tspan><tspan x="40" y="146.4">2027-014 已归档。</tspan><tspan x="40" y="167.4">到位与验收缺一不可；任一项撤回，重</tspan><tspan x="40" y="188.4">新评估即中止，已作出的结论保留在记</tspan><tspan x="40" y="209.4">录里。条件再长，也只限定方案甲。</tspan></text>
+</g>
+<g data-object-id="claim-B" data-role="claim">
+<text x="22" y="246.4" font-size="14" fill="#1b2733" data-text="claim-B.text">建议当前采用方案乙。</text>
+</g>
+<g data-qualifier-id="note-1" data-type="note">
+<text x="40" y="273.2" font-size="12" font-weight="600" fill="#526276" data-text="note-1.head">注释</text>
+<text x="40" y="293.4" font-size="14" fill="#1b2733" data-text="note-1.text">这是一项建议，未表示人已决定。</text>
+</g>
+<path d="M10 3 L5 3 L5 18 L10 18" fill="none" stroke="#1b2733" stroke-width="1.5" data-bracket-for="claim-A"/>
+<path d="M5 18 L5 38 L32 38" fill="none" stroke="#7b8ba0" stroke-width="1" data-leader-for="condition-1" data-target="claim-A"/>
+<circle cx="34" cy="38" r="2" fill="#7b8ba0"/>
+<path d="M10 234 L5 234 L5 249 L10 249" fill="none" stroke="#1b2733" stroke-width="1.5" data-bracket-for="claim-B"/>
+<path d="M5 249 L5 269 L32 269" fill="none" stroke="#7b8ba0" stroke-width="1" data-leader-for="note-1" data-target="claim-B"/>
+<circle cx="34" cy="269" r="2" fill="#7b8ba0"/>
+</svg>
+<figcaption>窄 288</figcaption></figure>
+</div>
+<div class="equiv"><h4>等效文字</h4><p>2 项主张，2 条限定、注释或证据，各自标在所限定的主张旁。</p><ul><li>方案甲在 2027 年重新评估。〔条件；仅在两名管理员到位且改造完成后重新评估；条件文本加长时仍限定方案甲。补充：管理员须持 Level-2 证书，改造验收单 (sign-off) 编号 2027-014 已归档。
+到位与验收缺一不可；任一项撤回，重新评估即中止，已作出的结论保留在记录里。条件再长，也只限定方案甲。〕</li><li>建议当前采用方案乙。〔注释；这是一项建议，未表示人已决定。〕</li></ul></div>
+<p class="files">输入：<a href="../fixtures.json">fixtures.json 的 F06</a>，经 src/cases.mjs 适配。文件：<a href="svg/f06-long--w672.svg">svg/f06-long--w672.svg</a>、<a href="svg/f06-long--w288.svg">svg/f06-long--w288.svg</a></p>
+</article>
+<article class="case" id="qualify-five">
+<h3>一项主张的五条来源 <span class="role">压力输入</span></h3>
+<p>同一项主张上五条来源，有冲突，有一条只是推断。</p>
+<div class="pair">
+<figure class="wide"><svg xmlns="http://www.w3.org/2000/svg" id="qualify-five-w672" viewBox="-2 -2 672 329" width="672" height="329" role="img" aria-labelledby="qualify-five-w672-title qualify-five-w672-desc" lang="zh-Hans" xml:lang="zh-Hans" font-family="system-ui, -apple-system, 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif" data-asset="rel-qualify" data-asset-version="0.1.0">
+<title id="qualify-five-w672-title">一项主张的五条来源</title>
+<desc id="qualify-five-w672-desc">1 项主张，5 条限定、注释或证据，各自标在所限定的主张旁。</desc>
+<g data-object-id="c-open" data-role="claim">
+<text x="0" y="15.4" font-size="14" fill="#1b2733" data-text="c-open.text">古籍阅览室每周开放三天。</text>
+</g>
+<g data-qualifier-id="ev-notice" data-type="evidence" data-relation="supports" data-status="verified">
+<text x="218" y="13.2" font-size="12" font-weight="600" fill="#526276" data-text="ev-notice.head">证据 · 支持</text>
+<text x="218" y="33.4" font-size="14" fill="#1b2733" data-text="ev-notice.text">公告写明周二、周四、周六开放。</text>
+<text x="218" y="52.2" font-size="12" fill="#526276" data-text="ev-notice.source">notice-03@v2 第 1 段 · 已核对</text>
+</g>
+<g data-qualifier-id="ev-site" data-type="evidence" data-relation="supports" data-status="verified">
+<text x="218" y="80.2" font-size="12" font-weight="600" fill="#526276" data-text="ev-site.head">证据 · 支持</text>
+<text x="218" y="100.4" font-size="14" fill="#1b2733" data-text="ev-site.text">网站开放时间表与公告一致。</text>
+<text x="218" y="119.2" font-size="12" fill="#526276" data-text="ev-site.source">site-hours@v5 开放时间表 · 已核对</text>
+</g>
+<g data-qualifier-id="ev-desk" data-type="evidence" data-relation="supports" data-status="inferred">
+<text x="218" y="147.2" font-size="12" font-weight="600" fill="#526276" data-text="ev-desk.head">证据 · 支持</text>
+<text x="218" y="167.4" font-size="14" fill="#1b2733" data-text="ev-desk.text">服务台口头确认，没有书面记录。</text>
+<text x="218" y="186.2" font-size="12" fill="#526276" data-text="ev-desk.source">desk-note · 推断，未核对</text>
+</g>
+<g data-qualifier-id="ev-roster" data-type="evidence" data-relation="contradicts" data-status="verified">
+<text x="218" y="214.2" font-size="12" font-weight="600" fill="#526276" data-text="ev-roster.head">证据 · 反驳</text>
+<text x="218" y="234.4" font-size="14" fill="#1b2733" data-text="ev-roster.text">十月值班表只排了两天。</text>
+<text x="218" y="253.2" font-size="12" fill="#526276" data-text="ev-roster.source">roster-10@v1 第 3 行 · 已核对</text>
+</g>
+<g data-qualifier-id="ev-holiday" data-type="evidence" data-relation="limits" data-status="verified">
+<text x="218" y="281.2" font-size="12" font-weight="600" fill="#526276" data-text="ev-holiday.head">证据 · 限定</text>
+<text x="218" y="301.4" font-size="14" fill="#1b2733" data-text="ev-holiday.text">法定节假日当周另行公告。</text>
+<text x="218" y="320.2" font-size="12" fill="#526276" data-text="ev-holiday.source">notice-03@v2 第 3 段 · 已核对</text>
+</g>
+<path d="M180 3 L185 3 L185 18 L180 18" fill="none" stroke="#1b2733" stroke-width="1.5" data-bracket-for="c-open"/>
+<path d="M185 9 L210 9" fill="none" stroke="#7b8ba0" stroke-width="1" data-leader-for="ev-notice" data-target="c-open"/>
+<circle cx="212" cy="9" r="2" fill="#7b8ba0"/>
+<path d="M185 18 L198 18 L198 76 L210 76" fill="none" stroke="#7b8ba0" stroke-width="1" data-leader-for="ev-site" data-target="c-open"/>
+<circle cx="212" cy="76" r="2" fill="#7b8ba0"/>
+<path d="M185 18 L198 18 L198 143 L210 143" fill="none" stroke="#7b8ba0" stroke-width="1" stroke-dasharray="4 3" data-leader-for="ev-desk" data-target="c-open"/>
+<circle cx="212" cy="143" r="2" fill="#7b8ba0"/>
+<path d="M185 18 L198 18 L198 210 L210 210" fill="none" stroke="#7b8ba0" stroke-width="1" data-leader-for="ev-roster" data-target="c-open"/>
+<circle cx="212" cy="210" r="2" fill="#7b8ba0"/>
+<path d="M185 18 L198 18 L198 277 L210 277" fill="none" stroke="#7b8ba0" stroke-width="1" data-leader-for="ev-holiday" data-target="c-open"/>
+<circle cx="212" cy="277" r="2" fill="#7b8ba0"/>
+</svg>
+<figcaption>宽 672</figcaption></figure>
+<figure class="narrow"><svg xmlns="http://www.w3.org/2000/svg" id="qualify-five-w288" viewBox="-2 -2 288 350" width="288" height="350" role="img" aria-labelledby="qualify-five-w288-title qualify-five-w288-desc" lang="zh-Hans" xml:lang="zh-Hans" font-family="system-ui, -apple-system, 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif" data-asset="rel-qualify" data-asset-version="0.1.0">
+<title id="qualify-five-w288-title">一项主张的五条来源</title>
+<desc id="qualify-five-w288-desc">1 项主张，5 条限定、注释或证据，各自标在所限定的主张旁。</desc>
+<g data-object-id="c-open" data-role="claim">
+<text x="22" y="15.4" font-size="14" fill="#1b2733" data-text="c-open.text">古籍阅览室每周开放三天。</text>
+</g>
+<g data-qualifier-id="ev-notice" data-type="evidence" data-relation="supports" data-status="verified">
+<text x="40" y="42.2" font-size="12" font-weight="600" fill="#526276" data-text="ev-notice.head">证据 · 支持</text>
+<text x="40" y="62.4" font-size="14" fill="#1b2733" data-text="ev-notice.text">公告写明周二、周四、周六开放。</text>
+<text x="40" y="81.2" font-size="12" fill="#526276" data-text="ev-notice.source">notice-03@v2 第 1 段 · 已核对</text>
+</g>
+<g data-qualifier-id="ev-site" data-type="evidence" data-relation="supports" data-status="verified">
+<text x="40" y="107.2" font-size="12" font-weight="600" fill="#526276" data-text="ev-site.head">证据 · 支持</text>
+<text x="40" y="127.4" font-size="14" fill="#1b2733" data-text="ev-site.text">网站开放时间表与公告一致。</text>
+<text x="40" y="146.2" font-size="12" fill="#526276" data-text="ev-site.source">site-hours@v5 开放时间表 · 已核对</text>
+</g>
+<g data-qualifier-id="ev-desk" data-type="evidence" data-relation="supports" data-status="inferred">
+<text x="40" y="172.2" font-size="12" font-weight="600" fill="#526276" data-text="ev-desk.head">证据 · 支持</text>
+<text x="40" y="192.4" font-size="14" fill="#1b2733" data-text="ev-desk.text">服务台口头确认，没有书面记录。</text>
+<text x="40" y="211.2" font-size="12" fill="#526276" data-text="ev-desk.source">desk-note · 推断，未核对</text>
+</g>
+<g data-qualifier-id="ev-roster" data-type="evidence" data-relation="contradicts" data-status="verified">
+<text x="40" y="237.2" font-size="12" font-weight="600" fill="#526276" data-text="ev-roster.head">证据 · 反驳</text>
+<text x="40" y="257.4" font-size="14" fill="#1b2733" data-text="ev-roster.text">十月值班表只排了两天。</text>
+<text x="40" y="276.2" font-size="12" fill="#526276" data-text="ev-roster.source">roster-10@v1 第 3 行 · 已核对</text>
+</g>
+<g data-qualifier-id="ev-holiday" data-type="evidence" data-relation="limits" data-status="verified">
+<text x="40" y="302.2" font-size="12" font-weight="600" fill="#526276" data-text="ev-holiday.head">证据 · 限定</text>
+<text x="40" y="322.4" font-size="14" fill="#1b2733" data-text="ev-holiday.text">法定节假日当周另行公告。</text>
+<text x="40" y="341.2" font-size="12" fill="#526276" data-text="ev-holiday.source">notice-03@v2 第 3 段 · 已核对</text>
+</g>
+<path d="M10 3 L5 3 L5 18 L10 18" fill="none" stroke="#1b2733" stroke-width="1.5" data-bracket-for="c-open"/>
+<path d="M5 18 L5 38 L32 38" fill="none" stroke="#7b8ba0" stroke-width="1" data-leader-for="ev-notice" data-target="c-open"/>
+<circle cx="34" cy="38" r="2" fill="#7b8ba0"/>
+<path d="M5 18 L5 103 L32 103" fill="none" stroke="#7b8ba0" stroke-width="1" data-leader-for="ev-site" data-target="c-open"/>
+<circle cx="34" cy="103" r="2" fill="#7b8ba0"/>
+<path d="M5 18 L5 168 L32 168" fill="none" stroke="#7b8ba0" stroke-width="1" stroke-dasharray="4 3" data-leader-for="ev-desk" data-target="c-open"/>
+<circle cx="34" cy="168" r="2" fill="#7b8ba0"/>
+<path d="M5 18 L5 233 L32 233" fill="none" stroke="#7b8ba0" stroke-width="1" data-leader-for="ev-roster" data-target="c-open"/>
+<circle cx="34" cy="233" r="2" fill="#7b8ba0"/>
+<path d="M5 18 L5 298 L32 298" fill="none" stroke="#7b8ba0" stroke-width="1" data-leader-for="ev-holiday" data-target="c-open"/>
+<circle cx="34" cy="298" r="2" fill="#7b8ba0"/>
+</svg>
+<figcaption>窄 288</figcaption></figure>
+</div>
+<div class="equiv"><h4>等效文字</h4><p>1 项主张，5 条限定、注释或证据，各自标在所限定的主张旁。</p><ul><li>古籍阅览室每周开放三天。〔证据 · 支持；公告写明周二、周四、周六开放。；notice-03@v2 第 1 段 · 已核对｜证据 · 支持；网站开放时间表与公告一致。；site-hours@v5 开放时间表 · 已核对｜证据 · 支持；服务台口头确认，没有书面记录。；desk-note · 推断，未核对｜证据 · 反驳；十月值班表只排了两天。；roster-10@v1 第 3 行 · 已核对｜证据 · 限定；法定节假日当周另行公告。；notice-03@v2 第 3 段 · 已核对〕</li></ul><ul><li>来源冲突：“古籍阅览室每周开放三天。”同时有支持和反驳的证据。</li></ul></div>
+<p class="files">输入：<a href="src/cases.mjs">src/cases.mjs</a>。文件：<a href="svg/qualify-five--w672.svg">svg/qualify-five--w672.svg</a>、<a href="svg/qualify-five--w288.svg">svg/qualify-five--w288.svg</a></p>
+</article>
+<article class="case" id="qualify-evidence">
+<h3>三项主张各自的条件与证据 <span class="role">压力输入</span></h3>
+<p>片段限定、互相冲突的两条来源、一条推断、一项没有证据的主张和一条整体说明。</p>
+<div class="pair">
+<figure class="wide"><svg xmlns="http://www.w3.org/2000/svg" id="qualify-evidence-w672" viewBox="-2 -2 672 361" width="672" height="361" role="img" aria-labelledby="qualify-evidence-w672-title qualify-evidence-w672-desc" lang="zh-Hans" xml:lang="zh-Hans" font-family="system-ui, -apple-system, 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif" data-asset="rel-qualify" data-asset-version="0.1.0">
+<title id="qualify-evidence-w672-title">三项主张各自的条件与证据</title>
+<desc id="qualify-evidence-w672-desc">3 项主张，5 条限定、注释或证据，各自标在所限定的主张旁。</desc>
+<g data-object-id="c-open" data-role="claim">
+<text x="0" y="15.4" font-size="14" fill="#1b2733" data-text="c-open.text">古籍阅览室每周开放三天。</text>
+</g>
+<g data-qualifier-id="ev-notice" data-type="evidence" data-relation="supports" data-status="verified">
+<text x="260" y="13.2" font-size="12" font-weight="600" fill="#526276" data-text="ev-notice.head">证据 · 支持</text>
+<text x="260" y="33.4" font-size="14" fill="#1b2733" data-text="ev-notice.text">公告写明周二、周四、周六开放。</text>
+<text x="260" y="52.2" font-size="12" fill="#526276" data-text="ev-notice.source">notice-03@v2 第 1 段 · 已核对</text>
+</g>
+<g data-qualifier-id="ev-roster" data-type="evidence" data-relation="contradicts" data-status="verified">
+<text x="260" y="80.2" font-size="12" font-weight="600" fill="#526276" data-text="ev-roster.head">证据 · 反驳</text>
+<text x="260" y="100.4" font-size="14" fill="#1b2733" data-text="ev-roster.text">十月值班表只排了两天。</text>
+<text x="260" y="119.2" font-size="12" fill="#526276" data-text="ev-roster.source">roster-10@v1 第 3 行 · 已核对</text>
+</g>
+<g data-object-id="c-notice" data-role="claim">
+<text x="0" y="155.4" font-size="14" fill="#1b2733" data-text="c-notice.text">调阅古籍须提前<tspan text-decoration="underline" data-fragment-of="cond-days">两个工作日</tspan>预约。</text>
+</g>
+<g data-qualifier-id="cond-days" data-type="condition">
+<text x="260" y="153.2" font-size="12" font-weight="600" fill="#526276" data-text="cond-days.head">条件 · 限于“两个工作日”</text>
+<text x="260" y="173.4" font-size="14" fill="#1b2733" data-text="cond-days.text"><tspan x="260" y="173.4">遇法定节假日顺延；跨馆调阅 (inter-library) 另加 1 个工作</tspan><tspan x="260" y="194.4">日。</tspan></text>
+</g>
+<g data-qualifier-id="ev-rule" data-type="evidence" data-relation="supports" data-status="inferred">
+<text x="260" y="223.2" font-size="12" font-weight="600" fill="#526276" data-text="ev-rule.head">证据 · 支持</text>
+<text x="260" y="243.4" font-size="14" fill="#1b2733" data-text="ev-rule.text">规则只写“提前预约”，天数来自服务台的口头说明。</text>
+<text x="260" y="262.2" font-size="12" fill="#526276" data-text="ev-rule.source">rule-loan@v3 · 推断，未核对</text>
+</g>
+<g data-object-id="c-repair" data-role="claim">
+<text x="0" y="298.4" font-size="14" fill="#1b2733" data-text="c-repair.text">修复室今年内恢复使用。</text>
+</g>
+<g data-qualifier-id="c-repair.no-evidence" data-type="evidence" data-status="none">
+<text x="260" y="296.2" font-size="12" font-weight="600" fill="#526276" data-text="c-repair.no-evidence.head">证据 · 尚无</text>
+</g>
+<path d="M222 3 L227 3 L227 18 L222 18" fill="none" stroke="#1b2733" stroke-width="1.5" data-bracket-for="c-open"/>
+<path d="M227 9 L252 9" fill="none" stroke="#7b8ba0" stroke-width="1" data-leader-for="ev-notice" data-target="c-open"/>
+<circle cx="254" cy="9" r="2" fill="#7b8ba0"/>
+<path d="M227 18 L240 18 L240 76 L252 76" fill="none" stroke="#7b8ba0" stroke-width="1" data-leader-for="ev-roster" data-target="c-open"/>
+<circle cx="254" cy="76" r="2" fill="#7b8ba0"/>
+<path d="M222 143 L227 143 L227 158 L222 158" fill="none" stroke="#1b2733" stroke-width="1.5" data-bracket-for="c-notice"/>
+<path d="M227 158 L240 158 L240 219 L252 219" fill="none" stroke="#7b8ba0" stroke-width="1" stroke-dasharray="4 3" data-leader-for="ev-rule" data-target="c-notice"/>
+<circle cx="254" cy="219" r="2" fill="#7b8ba0"/>
+<path d="M222 286 L227 286 L227 301 L222 301" fill="none" stroke="#1b2733" stroke-width="1.5" data-bracket-for="c-repair"/>
+<path d="M227 292 L252 292" fill="none" stroke="#7b8ba0" stroke-width="1" stroke-dasharray="4 3" data-leader-for="c-repair.no-evidence" data-target="c-repair"/>
+<circle cx="254" cy="292" r="2" fill="#7b8ba0"/>
+<path d="M215 143 L220 143 L220 158 L215 158" fill="none" stroke="#1b2733" stroke-width="1.5" data-bracket-for="c-notice" data-fragment="两个工作日"/>
+<path d="M220 149 L252 149" fill="none" stroke="#7b8ba0" stroke-width="1" data-leader-for="cond-days" data-target="c-notice"/>
+<circle cx="254" cy="149" r="2" fill="#7b8ba0"/>
+<text x="0" y="331.2" font-size="12" font-weight="600" fill="#526276" data-text="g-synthetic.head">整体说明</text>
+<text x="0" y="351.4" font-size="14" fill="#1b2733" data-text="g-synthetic.text">以上是合成示例，不是真实的馆务安排。</text>
+</svg>
+<figcaption>宽 672</figcaption></figure>
+<figure class="narrow"><svg xmlns="http://www.w3.org/2000/svg" id="qualify-evidence-w288" viewBox="-2 -2 288 462" width="288" height="462" role="img" aria-labelledby="qualify-evidence-w288-title qualify-evidence-w288-desc" lang="zh-Hans" xml:lang="zh-Hans" font-family="system-ui, -apple-system, 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif" data-asset="rel-qualify" data-asset-version="0.1.0">
+<title id="qualify-evidence-w288-title">三项主张各自的条件与证据</title>
+<desc id="qualify-evidence-w288-desc">3 项主张，5 条限定、注释或证据，各自标在所限定的主张旁。</desc>
+<g data-object-id="c-open" data-role="claim">
+<text x="22" y="15.4" font-size="14" fill="#1b2733" data-text="c-open.text">古籍阅览室每周开放三天。</text>
+</g>
+<g data-qualifier-id="ev-notice" data-type="evidence" data-relation="supports" data-status="verified">
+<text x="40" y="42.2" font-size="12" font-weight="600" fill="#526276" data-text="ev-notice.head">证据 · 支持</text>
+<text x="40" y="62.4" font-size="14" fill="#1b2733" data-text="ev-notice.text">公告写明周二、周四、周六开放。</text>
+<text x="40" y="81.2" font-size="12" fill="#526276" data-text="ev-notice.source">notice-03@v2 第 1 段 · 已核对</text>
+</g>
+<g data-qualifier-id="ev-roster" data-type="evidence" data-relation="contradicts" data-status="verified">
+<text x="40" y="107.2" font-size="12" font-weight="600" fill="#526276" data-text="ev-roster.head">证据 · 反驳</text>
+<text x="40" y="127.4" font-size="14" fill="#1b2733" data-text="ev-roster.text">十月值班表只排了两天。</text>
+<text x="40" y="146.2" font-size="12" fill="#526276" data-text="ev-roster.source">roster-10@v1 第 3 行 · 已核对</text>
+</g>
+<g data-object-id="c-notice" data-role="claim">
+<text x="22" y="182.4" font-size="14" fill="#1b2733" data-text="c-notice.text">调阅古籍须提前<tspan text-decoration="underline" data-fragment-of="cond-days">两个工作日</tspan>预约。</text>
+</g>
+<g data-qualifier-id="cond-days" data-type="condition">
+<text x="40" y="209.2" font-size="12" font-weight="600" fill="#526276" data-text="cond-days.head">条件 · 限于“两个工作日”</text>
+<text x="40" y="229.4" font-size="14" fill="#1b2733" data-text="cond-days.text"><tspan x="40" y="229.4">遇法定节假日顺延；跨馆调阅</tspan><tspan x="40" y="250.4">(inter-library) 另加 1 个工作日。</tspan></text>
+</g>
+<g data-qualifier-id="ev-rule" data-type="evidence" data-relation="supports" data-status="inferred">
+<text x="40" y="277.2" font-size="12" font-weight="600" fill="#526276" data-text="ev-rule.head">证据 · 支持</text>
+<text x="40" y="297.4" font-size="14" fill="#1b2733" data-text="ev-rule.text"><tspan x="40" y="297.4">规则只写“提前预约”，天数来自服务</tspan><tspan x="40" y="318.4">台的口头说明。</tspan></text>
+<text x="40" y="337.2" font-size="12" fill="#526276" data-text="ev-rule.source">rule-loan@v3 · 推断，未核对</text>
+</g>
+<g data-object-id="c-repair" data-role="claim">
+<text x="22" y="373.4" font-size="14" fill="#1b2733" data-text="c-repair.text">修复室今年内恢复使用。</text>
+</g>
+<g data-qualifier-id="c-repair.no-evidence" data-type="evidence" data-status="none">
+<text x="40" y="400.2" font-size="12" font-weight="600" fill="#526276" data-text="c-repair.no-evidence.head">证据 · 尚无</text>
+</g>
+<path d="M10 3 L5 3 L5 18 L10 18" fill="none" stroke="#1b2733" stroke-width="1.5" data-bracket-for="c-open"/>
+<path d="M5 18 L5 38 L32 38" fill="none" stroke="#7b8ba0" stroke-width="1" data-leader-for="ev-notice" data-target="c-open"/>
+<circle cx="34" cy="38" r="2" fill="#7b8ba0"/>
+<path d="M5 18 L5 103 L32 103" fill="none" stroke="#7b8ba0" stroke-width="1" data-leader-for="ev-roster" data-target="c-open"/>
+<circle cx="34" cy="103" r="2" fill="#7b8ba0"/>
+<path d="M10 170 L5 170 L5 185 L10 185" fill="none" stroke="#1b2733" stroke-width="1.5" data-bracket-for="c-notice"/>
+<path d="M5 185 L5 273 L32 273" fill="none" stroke="#7b8ba0" stroke-width="1" stroke-dasharray="4 3" data-leader-for="ev-rule" data-target="c-notice"/>
+<circle cx="34" cy="273" r="2" fill="#7b8ba0"/>
+<path d="M10 361 L5 361 L5 376 L10 376" fill="none" stroke="#1b2733" stroke-width="1.5" data-bracket-for="c-repair"/>
+<path d="M5 376 L5 396 L32 396" fill="none" stroke="#7b8ba0" stroke-width="1" stroke-dasharray="4 3" data-leader-for="c-repair.no-evidence" data-target="c-repair"/>
+<circle cx="34" cy="396" r="2" fill="#7b8ba0"/>
+<path d="M17 170 L12 170 L12 185 L17 185" fill="none" stroke="#1b2733" stroke-width="1.5" data-bracket-for="c-notice" data-fragment="两个工作日"/>
+<path d="M12 185 L12 205 L32 205" fill="none" stroke="#7b8ba0" stroke-width="1" data-leader-for="cond-days" data-target="c-notice"/>
+<circle cx="34" cy="205" r="2" fill="#7b8ba0"/>
+<text x="22" y="432.2" font-size="12" font-weight="600" fill="#526276" data-text="g-synthetic.head">整体说明</text>
+<text x="22" y="452.4" font-size="14" fill="#1b2733" data-text="g-synthetic.text">以上是合成示例，不是真实的馆务安排。</text>
+</svg>
+<figcaption>窄 288</figcaption></figure>
+</div>
+<div class="equiv"><h4>等效文字</h4><p>3 项主张，5 条限定、注释或证据，各自标在所限定的主张旁。</p><ul><li>古籍阅览室每周开放三天。〔证据 · 支持；公告写明周二、周四、周六开放。；notice-03@v2 第 1 段 · 已核对｜证据 · 反驳；十月值班表只排了两天。；roster-10@v1 第 3 行 · 已核对〕</li><li>调阅古籍须提前两个工作日预约。〔条件 · 限于“两个工作日”；遇法定节假日顺延；跨馆调阅 (inter-library) 另加 1 个工作日。｜证据 · 支持；规则只写“提前预约”，天数来自服务台的口头说明。；rule-loan@v3 · 推断，未核对〕</li><li>修复室今年内恢复使用。〔证据 · 尚无〕</li></ul><ul><li>整体说明：以上是合成示例，不是真实的馆务安排。</li><li>来源冲突：“古籍阅览室每周开放三天。”同时有支持和反驳的证据。</li></ul></div>
+<p class="files">输入：<a href="inputs/qualify-evidence.json">inputs/qualify-evidence.json</a>。文件：<a href="svg/qualify-evidence--w672.svg">svg/qualify-evidence--w672.svg</a>、<a href="svg/qualify-evidence--w288.svg">svg/qualify-evidence--w288.svg</a></p>
+</article>
+<h3>拒用的输入</h3>
+<table><thead><tr><th>输入</th><th>拒用理由</th></tr></thead><tbody>
+<tr><td><a href="inputs/refuse-qualify-global.json">整体说明被当成某一项主张的条件，却没有目标。</a></td><td>限定语 q 没有指向已登记的主张；整体说明请放进 global_notes</td></tr>
+<tr><td><a href="inputs/refuse-qualify-layers.json">同一项主张上叠了三层限定范围。</a></td><td>同一项主张上叠了两层以上的限定范围；拆开主张，或改用列表</td></tr>
+<tr><td><a href="inputs/refuse-qualify-unlocated.json">来源没有版本和定位，却标为已核对。</a></td><td>证据 q 标为已核对，却缺少来源身份、版本或定位</td></tr>
+</tbody></table>
+</section>
+<section id="rel-tracks">
+<h2>版本与绑定 <code>rel-tracks</code></h2>
+<p class="job">材料、事项、规则各有自己的版本。一条判断绑定的是某个对象的某个版本，别的对象更新不会带着它走。</p>
+<dl><div><dt>输入</dt><dd>对象及其版本，判断、建议或候选及其依据版本，尚无记录的空缺</dd></div><div><dt>可以改</dt><dd>版本、依据、状态、空缺说明</dd></div><div><dt>不适用</dt><dd>用一个全局版本号概括所有对象；需要按时长比例排布</dd></div><div><dt>测试到</dt><dd>1 至 4 条版本线，每条 1 至 2 个版本</dd></div></dl>
+<article class="case" id="f01-versions">
+<h3>新材料与旧阅读依据 <span class="role">正常输入</span></h3>
+<p>材料 v2 到了，事项仍是 v8，旧阅读仍绑定材料 v1 §4。</p>
+<div class="pair">
+<figure class="wide"><svg xmlns="http://www.w3.org/2000/svg" id="f01-versions-w672" viewBox="-2 -2 672 380" width="672" height="380" role="img" aria-labelledby="f01-versions-w672-title f01-versions-w672-desc" lang="zh-Hans" xml:lang="zh-Hans" font-family="system-ui, -apple-system, 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif" data-asset="rel-tracks" data-asset-version="0.1.0">
+<title id="f01-versions-w672-title">新材料与旧阅读依据</title>
+<desc id="f01-versions-w672-desc">3 个对象各有自己的版本，3 条判断、建议或候选分别绑定到具体版本。</desc>
+<g data-object-id="matter-demo-01" data-role="lane">
+<text x="0" y="13.2" font-size="12" fill="#526276" data-text="matter-demo-01.role">事项</text>
+<text x="0" y="33.4" font-size="14" font-weight="600" fill="#1b2733" data-text="matter-demo-01.id">matter-demo-01</text>
+<path d="M6 57.5V57.5" fill="none" stroke="#1b2733" stroke-width="1.5"/><circle cx="6" cy="57.5" r="5" fill="#1b2733" stroke="#1b2733" stroke-width="1.5"/>
+<g data-version="matter-demo-01@8" data-current="true">
+<text x="20" y="62.4" font-size="14" font-weight="600" fill="#1b2733" data-text="matter-demo-01@8.head">v8 · 当前</text>
+<text x="20" y="83.4" font-size="14" fill="#1b2733" data-text="matter-demo-01@8.label">待人复核</text>
+<g data-binding-id="decision-pending" data-origin="human" data-state="open" data-basis="matter-demo-01@8">
+<text x="43" y="109.2" font-size="12" font-weight="600" fill="#1f5fd1" data-text="decision-pending.head">人 · 决定</text>
+<text x="43" y="129.4" font-size="14" fill="#1b2733" data-text="decision-pending.text">尚未作出</text>
+<text x="43" y="148.2" font-size="12" fill="#526276" data-text="decision-pending.basis"><tspan x="43" y="148.2">decision-pending 绑定</tspan><tspan x="43" y="166.2">matter-demo-01@v8</tspan></text>
+<path d="M26 90 L26 105 L31 105" fill="none" stroke="#1f5fd1" stroke-width="1" stroke-dasharray="4 3" data-link-for="decision-pending" data-to="matter-demo-01@8"/>
+<circle cx="35" cy="105" r="3.5" fill="#ffffff" stroke="#1f5fd1" stroke-width="1.5"/>
+</g>
+</g>
+</g>
+<g data-object-id="material-demo-01" data-role="lane">
+<text x="230.7" y="13.2" font-size="12" fill="#526276" data-text="material-demo-01.role">材料</text>
+<text x="230.7" y="33.4" font-size="14" font-weight="600" fill="#1b2733" data-text="material-demo-01.id">material-demo-01</text>
+<path d="M236.66666666666666 57.5V216.5" fill="none" stroke="#1b2733" stroke-width="1.5"/><circle cx="236.66666666666666" cy="57.5" r="5" fill="#ffffff" stroke="#1b2733" stroke-width="1.5"/><circle cx="236.66666666666666" cy="216.5" r="5" fill="#1b2733" stroke="#1b2733" stroke-width="1.5"/>
+<g data-version="material-demo-01@1">
+<text x="250.7" y="62.4" font-size="14" font-weight="600" fill="#1b2733" data-text="material-demo-01@1.head">v1</text>
+<text x="250.7" y="83.4" font-size="14" fill="#1b2733" data-text="material-demo-01@1.label">旧附件：分期说明</text>
+<g data-binding-id="reading-demo-01" data-origin="human" data-state="recorded" data-basis="material-demo-01@1#§4">
+<text x="273.7" y="109.2" font-size="12" font-weight="600" fill="#526276" data-text="reading-demo-01.head">人 · 阅读</text>
+<text x="273.7" y="129.4" font-size="14" fill="#1b2733" data-text="reading-demo-01.text"><tspan x="273.7" y="129.4">旧附件的季度付款条款已</tspan><tspan x="273.7" y="150.4">阅读</tspan></text>
+<text x="273.7" y="169.2" font-size="12" fill="#526276" data-text="reading-demo-01.basis"><tspan x="273.7" y="169.2">reading-demo-01 绑定</tspan><tspan x="273.7" y="187.2">material-demo-01@v1 §4</tspan></text>
+<path d="M256.7 90 L256.7 105 L261.7 105" fill="none" stroke="#3d4c5e" stroke-width="1" data-link-for="reading-demo-01" data-to="material-demo-01@1"/>
+<circle cx="265.7" cy="105" r="2.5" fill="#3d4c5e"/>
+</g>
+</g>
+<g data-version="material-demo-01@2" data-current="true">
+<text x="250.7" y="221.4" font-size="14" font-weight="600" fill="#1b2733" data-text="material-demo-01@2.head">v2 · 当前</text>
+<text x="250.7" y="242.4" font-size="14" fill="#1b2733" data-text="material-demo-01@2.label"><tspan x="250.7" y="242.4">新附件：付款说明与适用条件</tspan><tspan x="250.7" y="263.4">仍待核对</tspan></text>
+<g data-binding-id="proposal-demo-01" data-origin="machine" data-state="proposed" data-basis="material-demo-01@2">
+<text x="273.7" y="289.2" font-size="12" font-weight="600" fill="#526276" data-text="proposal-demo-01.head">机器 · 建议</text>
+<text x="273.7" y="309.4" font-size="14" fill="#1b2733" data-text="proposal-demo-01.text">建议复核 v2，未取得批准</text>
+<text x="273.7" y="328.2" font-size="12" fill="#526276" data-text="proposal-demo-01.basis"><tspan x="273.7" y="328.2">proposal-demo-01 绑定</tspan><tspan x="273.7" y="346.2">material-demo-01@v2</tspan></text>
+<path d="M256.7 270 L256.7 285 L261.7 285" fill="none" stroke="#3d4c5e" stroke-width="1" stroke-dasharray="4 3" data-link-for="proposal-demo-01" data-to="material-demo-01@2"/>
+<circle cx="265.7" cy="285" r="2.5" fill="#ffffff" stroke="#3d4c5e" stroke-width="1.3"/>
+</g>
+<text x="273.7" y="371.2" font-size="12" fill="#526276" data-text="material-demo-01@2.absence.0">没有人阅读这个版本的记录</text>
+<path d="M256.7 270 L256.7 367 L261.7 367" fill="none" stroke="#7b8ba0" stroke-width="1" stroke-dasharray="4 3" data-absence-at="material-demo-01@2"/>
+</g>
+</g>
+<g data-object-id="rule-demo-01" data-role="lane">
+<text x="461.3" y="13.2" font-size="12" fill="#526276" data-text="rule-demo-01.role">规则</text>
+<text x="461.3" y="33.4" font-size="14" font-weight="600" fill="#1b2733" data-text="rule-demo-01.id">rule-demo-01</text>
+<path d="M467.3333333333333 57.5V57.5" fill="none" stroke="#1b2733" stroke-width="1.5"/><circle cx="467.3333333333333" cy="57.5" r="5" fill="#1b2733" stroke="#1b2733" stroke-width="1.5"/>
+<g data-version="rule-demo-01@3" data-current="true">
+<text x="481.3" y="62.4" font-size="14" font-weight="600" fill="#1b2733" data-text="rule-demo-01@3.head">v3 · 当前</text>
+<text x="481.3" y="83.4" font-size="14" fill="#1b2733" data-text="rule-demo-01@3.label"><tspan x="481.3" y="83.4">人判断绑定材料身份、版本和</tspan><tspan x="481.3" y="104.4">片段</tspan></text>
+</g>
+</g>
+</svg>
+<figcaption>宽 672</figcaption></figure>
+<figure class="narrow"><svg xmlns="http://www.w3.org/2000/svg" id="f01-versions-w288" viewBox="-2 -2 288 638" width="288" height="638" role="img" aria-labelledby="f01-versions-w288-title f01-versions-w288-desc" lang="zh-Hans" xml:lang="zh-Hans" font-family="system-ui, -apple-system, 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif" data-asset="rel-tracks" data-asset-version="0.1.0">
+<title id="f01-versions-w288-title">新材料与旧阅读依据</title>
+<desc id="f01-versions-w288-desc">3 个对象各有自己的版本，3 条判断、建议或候选分别绑定到具体版本。</desc>
+<g data-object-id="matter-demo-01" data-role="lane">
+<text x="0" y="13.2" font-size="12" fill="#526276" data-text="matter-demo-01.role">事项</text>
+<text x="0" y="33.4" font-size="14" font-weight="600" fill="#1b2733" data-text="matter-demo-01.id">matter-demo-01</text>
+<path d="M6 57.5V57.5" fill="none" stroke="#1b2733" stroke-width="1.5"/><circle cx="6" cy="57.5" r="5" fill="#1b2733" stroke="#1b2733" stroke-width="1.5"/>
+<g data-version="matter-demo-01@8" data-current="true">
+<text x="20" y="62.4" font-size="14" font-weight="600" fill="#1b2733" data-text="matter-demo-01@8.head">v8 · 当前</text>
+<text x="20" y="83.4" font-size="14" fill="#1b2733" data-text="matter-demo-01@8.label">待人复核</text>
+<g data-binding-id="decision-pending" data-origin="human" data-state="open" data-basis="matter-demo-01@8">
+<text x="43" y="109.2" font-size="12" font-weight="600" fill="#1f5fd1" data-text="decision-pending.head">人 · 决定</text>
+<text x="43" y="129.4" font-size="14" fill="#1b2733" data-text="decision-pending.text">尚未作出</text>
+<text x="43" y="148.2" font-size="12" fill="#526276" data-text="decision-pending.basis"><tspan x="43" y="148.2">decision-pending 绑定</tspan><tspan x="43" y="166.2">matter-demo-01@v8</tspan></text>
+<path d="M26 90 L26 105 L31 105" fill="none" stroke="#1f5fd1" stroke-width="1" stroke-dasharray="4 3" data-link-for="decision-pending" data-to="matter-demo-01@8"/>
+<circle cx="35" cy="105" r="3.5" fill="#ffffff" stroke="#1f5fd1" stroke-width="1.5"/>
+</g>
+</g>
+</g>
+<g data-object-id="material-demo-01" data-role="lane">
+<text x="0" y="204.2" font-size="12" fill="#526276" data-text="material-demo-01.role">材料</text>
+<text x="0" y="224.4" font-size="14" font-weight="600" fill="#1b2733" data-text="material-demo-01.id">material-demo-01</text>
+<path d="M6 248.5V386.5" fill="none" stroke="#1b2733" stroke-width="1.5"/><circle cx="6" cy="248.5" r="5" fill="#ffffff" stroke="#1b2733" stroke-width="1.5"/><circle cx="6" cy="386.5" r="5" fill="#1b2733" stroke="#1b2733" stroke-width="1.5"/>
+<g data-version="material-demo-01@1">
+<text x="20" y="253.4" font-size="14" font-weight="600" fill="#1b2733" data-text="material-demo-01@1.head">v1</text>
+<text x="20" y="274.4" font-size="14" fill="#1b2733" data-text="material-demo-01@1.label">旧附件：分期说明</text>
+<g data-binding-id="reading-demo-01" data-origin="human" data-state="recorded" data-basis="material-demo-01@1#§4">
+<text x="43" y="300.2" font-size="12" font-weight="600" fill="#526276" data-text="reading-demo-01.head">人 · 阅读</text>
+<text x="43" y="320.4" font-size="14" fill="#1b2733" data-text="reading-demo-01.text">旧附件的季度付款条款已阅读</text>
+<text x="43" y="339.2" font-size="12" fill="#526276" data-text="reading-demo-01.basis"><tspan x="43" y="339.2">reading-demo-01 绑定</tspan><tspan x="43" y="357.2">material-demo-01@v1 §4</tspan></text>
+<path d="M26 281 L26 296 L31 296" fill="none" stroke="#3d4c5e" stroke-width="1" data-link-for="reading-demo-01" data-to="material-demo-01@1"/>
+<circle cx="35" cy="296" r="2.5" fill="#3d4c5e"/>
+</g>
+</g>
+<g data-version="material-demo-01@2" data-current="true">
+<text x="20" y="391.4" font-size="14" font-weight="600" fill="#1b2733" data-text="material-demo-01@2.head">v2 · 当前</text>
+<text x="20" y="412.4" font-size="14" fill="#1b2733" data-text="material-demo-01@2.label">新附件：付款说明与适用条件仍待核对</text>
+<g data-binding-id="proposal-demo-01" data-origin="machine" data-state="proposed" data-basis="material-demo-01@2">
+<text x="43" y="438.2" font-size="12" font-weight="600" fill="#526276" data-text="proposal-demo-01.head">机器 · 建议</text>
+<text x="43" y="458.4" font-size="14" fill="#1b2733" data-text="proposal-demo-01.text">建议复核 v2，未取得批准</text>
+<text x="43" y="477.2" font-size="12" fill="#526276" data-text="proposal-demo-01.basis"><tspan x="43" y="477.2">proposal-demo-01 绑定</tspan><tspan x="43" y="495.2">material-demo-01@v2</tspan></text>
+<path d="M26 419 L26 434 L31 434" fill="none" stroke="#3d4c5e" stroke-width="1" stroke-dasharray="4 3" data-link-for="proposal-demo-01" data-to="material-demo-01@2"/>
+<circle cx="35" cy="434" r="2.5" fill="#ffffff" stroke="#3d4c5e" stroke-width="1.3"/>
+</g>
+<text x="43" y="520.2" font-size="12" fill="#526276" data-text="material-demo-01@2.absence.0">没有人阅读这个版本的记录</text>
+<path d="M26 419 L26 516 L31 516" fill="none" stroke="#7b8ba0" stroke-width="1" stroke-dasharray="4 3" data-absence-at="material-demo-01@2"/>
+</g>
+</g>
+<g data-object-id="rule-demo-01" data-role="lane">
+<text x="0" y="558.2" font-size="12" fill="#526276" data-text="rule-demo-01.role">规则</text>
+<text x="0" y="578.4" font-size="14" font-weight="600" fill="#1b2733" data-text="rule-demo-01.id">rule-demo-01</text>
+<path d="M6 602.5V602.5" fill="none" stroke="#1b2733" stroke-width="1.5"/><circle cx="6" cy="602.5" r="5" fill="#1b2733" stroke="#1b2733" stroke-width="1.5"/>
+<g data-version="rule-demo-01@3" data-current="true">
+<text x="20" y="607.4" font-size="14" font-weight="600" fill="#1b2733" data-text="rule-demo-01@3.head">v3 · 当前</text>
+<text x="20" y="628.4" font-size="14" fill="#1b2733" data-text="rule-demo-01@3.label">人判断绑定材料身份、版本和片段</text>
+</g>
+</g>
+</svg>
+<figcaption>窄 288</figcaption></figure>
+</div>
+<div class="equiv"><h4>等效文字</h4><p>3 个对象各有自己的版本，3 条判断、建议或候选分别绑定到具体版本。</p><ul><li>事项 matter-demo-01：v8（当前） 待人复核</li><li>材料 material-demo-01：v1 旧附件：分期说明；v2（当前） 新附件：付款说明与适用条件仍待核对</li><li>规则 rule-demo-01：v3（当前） 人判断绑定材料身份、版本和片段</li></ul><ul><li>人 · 阅读 · reading-demo-01：旧附件的季度付款条款已阅读（绑定 material-demo-01@v1 §4）</li><li>机器 · 建议 · proposal-demo-01：建议复核 v2，未取得批准（绑定 material-demo-01@v2）</li><li>人 · 决定 · decision-pending：尚未作出（绑定 matter-demo-01@v8）</li><li>material-demo-01@v2：没有人阅读这个版本的记录</li></ul></div>
+<p class="files">输入：<a href="../fixtures.json">fixtures.json 的 F01</a>，经 src/cases.mjs 适配。文件：<a href="svg/f01-versions--w672.svg">svg/f01-versions--w672.svg</a>、<a href="svg/f01-versions--w288.svg">svg/f01-versions--w288.svg</a></p>
+</article>
+<article class="case" id="f02-candidate">
+<h3>候选、拒绝、重放与状态 <span class="role">正常输入</span></h3>
+<p>候选被拒绝并留在记录里，对象仍是 v2；没有选入的字段仍在。</p>
+<div class="pair">
+<figure class="wide"><svg xmlns="http://www.w3.org/2000/svg" id="f02-candidate-w672" viewBox="-2 -2 672 239" width="672" height="239" role="img" aria-labelledby="f02-candidate-w672-title f02-candidate-w672-desc" lang="zh-Hans" xml:lang="zh-Hans" font-family="system-ui, -apple-system, 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif" data-asset="rel-tracks" data-asset-version="0.1.0">
+<title id="f02-candidate-w672-title">候选、拒绝、重放与状态</title>
+<desc id="f02-candidate-w672-desc">1 个对象各有自己的版本，2 条判断、建议或候选分别绑定到具体版本。</desc>
+<g data-object-id="object-demo-02" data-role="lane">
+<text x="0" y="13.2" font-size="12" fill="#526276" data-text="object-demo-02.role">对象</text>
+<text x="0" y="33.4" font-size="14" font-weight="600" fill="#1b2733" data-text="object-demo-02.id">object-demo-02</text>
+<path d="M6 57.5V57.5" fill="none" stroke="#1b2733" stroke-width="1.5"/><circle cx="6" cy="57.5" r="5" fill="#1b2733" stroke="#1b2733" stroke-width="1.5"/>
+<g data-version="object-demo-02@2" data-current="true">
+<text x="20" y="62.4" font-size="14" font-weight="600" fill="#1b2733" data-text="object-demo-02@2.head">v2 · 当前</text>
+<text x="20" y="83.4" font-size="14" fill="#1b2733" data-text="object-demo-02@2.label">期限 12 个月；付款 季度</text>
+<g data-binding-id="e1" data-state="rejected" data-basis="object-demo-02@2">
+<text x="43" y="109.2" font-size="12" font-weight="600" fill="#526276" data-text="e1.head">候选</text>
+<text x="43" y="129.4" font-size="14" fill="#1b2733" data-text="e1.text">提议改为：期限 24 个月</text>
+<text x="43" y="148.2" font-size="12" fill="#526276" data-text="e1.basis">e1 绑定 object-demo-02@v2</text>
+<text x="43" y="166.2" font-size="12" fill="#526276" data-text="e1.resolution">拒绝 · e2：待补证据；重放 1 次，未重复生效</text>
+<path d="M26 90 L26 105 L31 105" fill="none" stroke="#3d4c5e" stroke-width="1" stroke-dasharray="4 3" data-link-for="e1" data-to="object-demo-02@2"/>
+<path d="M32 102L38 108M38 102L32 108" fill="none" stroke="#3d4c5e" stroke-width="1.5"/>
+</g>
+<g data-binding-id="context" data-origin="context" data-state="recorded" data-basis="object-demo-02@2">
+<text x="43" y="191.2" font-size="12" font-weight="600" fill="#526276" data-text="context.head">上下文 · 投影</text>
+<text x="43" y="211.4" font-size="14" fill="#1b2733" data-text="context.text">选入：期限。没有选入、仍在对象里：付款。</text>
+<text x="43" y="230.2" font-size="12" fill="#526276" data-text="context.basis">context 绑定 object-demo-02@v2</text>
+<path d="M26 90 L26 187 L31 187" fill="none" stroke="#3d4c5e" stroke-width="1" data-link-for="context" data-to="object-demo-02@2"/>
+<circle cx="35" cy="187" r="2.5" fill="#3d4c5e"/>
+</g>
+</g>
+</g>
+</svg>
+<figcaption>宽 672</figcaption></figure>
+<figure class="narrow"><svg xmlns="http://www.w3.org/2000/svg" id="f02-candidate-w288" viewBox="-2 -2 288 278" width="288" height="278" role="img" aria-labelledby="f02-candidate-w288-title f02-candidate-w288-desc" lang="zh-Hans" xml:lang="zh-Hans" font-family="system-ui, -apple-system, 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif" data-asset="rel-tracks" data-asset-version="0.1.0">
+<title id="f02-candidate-w288-title">候选、拒绝、重放与状态</title>
+<desc id="f02-candidate-w288-desc">1 个对象各有自己的版本，2 条判断、建议或候选分别绑定到具体版本。</desc>
+<g data-object-id="object-demo-02" data-role="lane">
+<text x="0" y="13.2" font-size="12" fill="#526276" data-text="object-demo-02.role">对象</text>
+<text x="0" y="33.4" font-size="14" font-weight="600" fill="#1b2733" data-text="object-demo-02.id">object-demo-02</text>
+<path d="M6 57.5V57.5" fill="none" stroke="#1b2733" stroke-width="1.5"/><circle cx="6" cy="57.5" r="5" fill="#1b2733" stroke="#1b2733" stroke-width="1.5"/>
+<g data-version="object-demo-02@2" data-current="true">
+<text x="20" y="62.4" font-size="14" font-weight="600" fill="#1b2733" data-text="object-demo-02@2.head">v2 · 当前</text>
+<text x="20" y="83.4" font-size="14" fill="#1b2733" data-text="object-demo-02@2.label">期限 12 个月；付款 季度</text>
+<g data-binding-id="e1" data-state="rejected" data-basis="object-demo-02@2">
+<text x="43" y="109.2" font-size="12" font-weight="600" fill="#526276" data-text="e1.head">候选</text>
+<text x="43" y="129.4" font-size="14" fill="#1b2733" data-text="e1.text">提议改为：期限 24 个月</text>
+<text x="43" y="148.2" font-size="12" fill="#526276" data-text="e1.basis">e1 绑定 object-demo-02@v2</text>
+<text x="43" y="166.2" font-size="12" fill="#526276" data-text="e1.resolution"><tspan x="43" y="166.2">拒绝 · e2：待补证据；重放 1 次，未重复</tspan><tspan x="43" y="184.2">生效</tspan></text>
+<path d="M26 90 L26 105 L31 105" fill="none" stroke="#3d4c5e" stroke-width="1" stroke-dasharray="4 3" data-link-for="e1" data-to="object-demo-02@2"/>
+<path d="M32 102L38 108M38 102L32 108" fill="none" stroke="#3d4c5e" stroke-width="1.5"/>
+</g>
+<g data-binding-id="context" data-origin="context" data-state="recorded" data-basis="object-demo-02@2">
+<text x="43" y="209.2" font-size="12" font-weight="600" fill="#526276" data-text="context.head">上下文 · 投影</text>
+<text x="43" y="229.4" font-size="14" fill="#1b2733" data-text="context.text"><tspan x="43" y="229.4">选入：期限。没有选入、仍在对象里：</tspan><tspan x="43" y="250.4">付款。</tspan></text>
+<text x="43" y="269.2" font-size="12" fill="#526276" data-text="context.basis">context 绑定 object-demo-02@v2</text>
+<path d="M26 90 L26 205 L31 205" fill="none" stroke="#3d4c5e" stroke-width="1" data-link-for="context" data-to="object-demo-02@2"/>
+<circle cx="35" cy="205" r="2.5" fill="#3d4c5e"/>
+</g>
+</g>
+</g>
+</svg>
+<figcaption>窄 288</figcaption></figure>
+</div>
+<div class="equiv"><h4>等效文字</h4><p>1 个对象各有自己的版本，2 条判断、建议或候选分别绑定到具体版本。</p><ul><li>对象 object-demo-02：v2（当前） 期限 12 个月；付款 季度</li></ul><ul><li>候选 · e1：提议改为：期限 24 个月（绑定 object-demo-02@v2） 拒绝 · e2：待补证据；重放 1 次，未重复生效</li><li>上下文 · 投影 · context：选入：期限。没有选入、仍在对象里：付款。（绑定 object-demo-02@v2）</li></ul></div>
+<p class="files">输入：<a href="../fixtures.json">fixtures.json 的 F02</a>，经 src/cases.mjs 适配。文件：<a href="svg/f02-candidate--w672.svg">svg/f02-candidate--w672.svg</a>、<a href="svg/f02-candidate--w288.svg">svg/f02-candidate--w288.svg</a></p>
+</article>
+<article class="case" id="f01-next">
+<h3>新材料与旧阅读依据 <span class="role">压力输入</span></h3>
+<p>事项升到 v9，另一条阅读绑定材料 v2；旧阅读不动。</p>
+<div class="pair">
+<figure class="wide"><svg xmlns="http://www.w3.org/2000/svg" id="f01-next-w672" viewBox="-2 -2 672 458" width="672" height="458" role="img" aria-labelledby="f01-next-w672-title f01-next-w672-desc" lang="zh-Hans" xml:lang="zh-Hans" font-family="system-ui, -apple-system, 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif" data-asset="rel-tracks" data-asset-version="0.1.0">
+<title id="f01-next-w672-title">新材料与旧阅读依据</title>
+<desc id="f01-next-w672-desc">3 个对象各有自己的版本，4 条判断、建议或候选分别绑定到具体版本。</desc>
+<g data-object-id="matter-demo-01" data-role="lane">
+<text x="0" y="13.2" font-size="12" fill="#526276" data-text="matter-demo-01.role">事项</text>
+<text x="0" y="33.4" font-size="14" font-weight="600" fill="#1b2733" data-text="matter-demo-01.id">matter-demo-01</text>
+<path d="M6 57.5V57.5" fill="none" stroke="#1b2733" stroke-width="1.5"/><circle cx="6" cy="57.5" r="5" fill="#1b2733" stroke="#1b2733" stroke-width="1.5"/>
+<g data-version="matter-demo-01@9" data-current="true">
+<text x="20" y="62.4" font-size="14" font-weight="600" fill="#1b2733" data-text="matter-demo-01@9.head">v9 · 当前</text>
+<text x="20" y="83.4" font-size="14" fill="#1b2733" data-text="matter-demo-01@9.label">待人复核</text>
+<g data-binding-id="decision-pending" data-origin="human" data-state="open" data-basis="matter-demo-01@9">
+<text x="43" y="109.2" font-size="12" font-weight="600" fill="#1f5fd1" data-text="decision-pending.head">人 · 决定</text>
+<text x="43" y="129.4" font-size="14" fill="#1b2733" data-text="decision-pending.text">尚未作出</text>
+<text x="43" y="148.2" font-size="12" fill="#526276" data-text="decision-pending.basis"><tspan x="43" y="148.2">decision-pending 绑定</tspan><tspan x="43" y="166.2">matter-demo-01@v9</tspan></text>
+<path d="M26 90 L26 105 L31 105" fill="none" stroke="#1f5fd1" stroke-width="1" stroke-dasharray="4 3" data-link-for="decision-pending" data-to="matter-demo-01@9"/>
+<circle cx="35" cy="105" r="3.5" fill="#ffffff" stroke="#1f5fd1" stroke-width="1.5"/>
+</g>
+</g>
+</g>
+<g data-object-id="material-demo-01" data-role="lane">
+<text x="230.7" y="13.2" font-size="12" fill="#526276" data-text="material-demo-01.role">材料</text>
+<text x="230.7" y="33.4" font-size="14" font-weight="600" fill="#1b2733" data-text="material-demo-01.id">material-demo-01</text>
+<path d="M236.66666666666666 57.5V216.5" fill="none" stroke="#1b2733" stroke-width="1.5"/><circle cx="236.66666666666666" cy="57.5" r="5" fill="#ffffff" stroke="#1b2733" stroke-width="1.5"/><circle cx="236.66666666666666" cy="216.5" r="5" fill="#1b2733" stroke="#1b2733" stroke-width="1.5"/>
+<g data-version="material-demo-01@1">
+<text x="250.7" y="62.4" font-size="14" font-weight="600" fill="#1b2733" data-text="material-demo-01@1.head">v1</text>
+<text x="250.7" y="83.4" font-size="14" fill="#1b2733" data-text="material-demo-01@1.label">旧附件：分期说明</text>
+<g data-binding-id="reading-demo-01" data-origin="human" data-state="recorded" data-basis="material-demo-01@1#§4">
+<text x="273.7" y="109.2" font-size="12" font-weight="600" fill="#526276" data-text="reading-demo-01.head">人 · 阅读</text>
+<text x="273.7" y="129.4" font-size="14" fill="#1b2733" data-text="reading-demo-01.text"><tspan x="273.7" y="129.4">旧附件的季度付款条款已</tspan><tspan x="273.7" y="150.4">阅读</tspan></text>
+<text x="273.7" y="169.2" font-size="12" fill="#526276" data-text="reading-demo-01.basis"><tspan x="273.7" y="169.2">reading-demo-01 绑定</tspan><tspan x="273.7" y="187.2">material-demo-01@v1 §4</tspan></text>
+<path d="M256.7 90 L256.7 105 L261.7 105" fill="none" stroke="#3d4c5e" stroke-width="1" data-link-for="reading-demo-01" data-to="material-demo-01@1"/>
+<circle cx="265.7" cy="105" r="2.5" fill="#3d4c5e"/>
+</g>
+</g>
+<g data-version="material-demo-01@2" data-current="true">
+<text x="250.7" y="221.4" font-size="14" font-weight="600" fill="#1b2733" data-text="material-demo-01@2.head">v2 · 当前</text>
+<text x="250.7" y="242.4" font-size="14" fill="#1b2733" data-text="material-demo-01@2.label"><tspan x="250.7" y="242.4">新附件：付款说明与适用条件</tspan><tspan x="250.7" y="263.4">仍待核对</tspan></text>
+<g data-binding-id="reading-demo-02" data-origin="human" data-state="recorded" data-basis="material-demo-01@2#§4">
+<text x="273.7" y="289.2" font-size="12" font-weight="600" fill="#526276" data-text="reading-demo-02.head">人 · 阅读</text>
+<text x="273.7" y="309.4" font-size="14" fill="#1b2733" data-text="reading-demo-02.text"><tspan x="273.7" y="309.4">新附件的付款说明已阅</tspan><tspan x="273.7" y="330.4">读，适用条件仍待核对</tspan></text>
+<text x="273.7" y="349.2" font-size="12" fill="#526276" data-text="reading-demo-02.basis"><tspan x="273.7" y="349.2">reading-demo-02 绑定</tspan><tspan x="273.7" y="367.2">material-demo-01@v2 §4</tspan></text>
+<path d="M256.7 270 L256.7 285 L261.7 285" fill="none" stroke="#3d4c5e" stroke-width="1" data-link-for="reading-demo-02" data-to="material-demo-01@2"/>
+<circle cx="265.7" cy="285" r="2.5" fill="#3d4c5e"/>
+</g>
+<g data-binding-id="proposal-demo-01" data-origin="machine" data-state="proposed" data-basis="material-demo-01@2">
+<text x="273.7" y="392.2" font-size="12" font-weight="600" fill="#526276" data-text="proposal-demo-01.head">机器 · 建议</text>
+<text x="273.7" y="412.4" font-size="14" fill="#1b2733" data-text="proposal-demo-01.text">建议复核 v2，未取得批准</text>
+<text x="273.7" y="431.2" font-size="12" fill="#526276" data-text="proposal-demo-01.basis"><tspan x="273.7" y="431.2">proposal-demo-01 绑定</tspan><tspan x="273.7" y="449.2">material-demo-01@v2</tspan></text>
+<path d="M256.7 270 L256.7 388 L261.7 388" fill="none" stroke="#3d4c5e" stroke-width="1" stroke-dasharray="4 3" data-link-for="proposal-demo-01" data-to="material-demo-01@2"/>
+<circle cx="265.7" cy="388" r="2.5" fill="#ffffff" stroke="#3d4c5e" stroke-width="1.3"/>
+</g>
+</g>
+</g>
+<g data-object-id="rule-demo-01" data-role="lane">
+<text x="461.3" y="13.2" font-size="12" fill="#526276" data-text="rule-demo-01.role">规则</text>
+<text x="461.3" y="33.4" font-size="14" font-weight="600" fill="#1b2733" data-text="rule-demo-01.id">rule-demo-01</text>
+<path d="M467.3333333333333 57.5V57.5" fill="none" stroke="#1b2733" stroke-width="1.5"/><circle cx="467.3333333333333" cy="57.5" r="5" fill="#1b2733" stroke="#1b2733" stroke-width="1.5"/>
+<g data-version="rule-demo-01@3" data-current="true">
+<text x="481.3" y="62.4" font-size="14" font-weight="600" fill="#1b2733" data-text="rule-demo-01@3.head">v3 · 当前</text>
+<text x="481.3" y="83.4" font-size="14" fill="#1b2733" data-text="rule-demo-01@3.label"><tspan x="481.3" y="83.4">人判断绑定材料身份、版本和</tspan><tspan x="481.3" y="104.4">片段</tspan></text>
+</g>
+</g>
+</svg>
+<figcaption>宽 672</figcaption></figure>
+<figure class="narrow"><svg xmlns="http://www.w3.org/2000/svg" id="f01-next-w288" viewBox="-2 -2 288 716" width="288" height="716" role="img" aria-labelledby="f01-next-w288-title f01-next-w288-desc" lang="zh-Hans" xml:lang="zh-Hans" font-family="system-ui, -apple-system, 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif" data-asset="rel-tracks" data-asset-version="0.1.0">
+<title id="f01-next-w288-title">新材料与旧阅读依据</title>
+<desc id="f01-next-w288-desc">3 个对象各有自己的版本，4 条判断、建议或候选分别绑定到具体版本。</desc>
+<g data-object-id="matter-demo-01" data-role="lane">
+<text x="0" y="13.2" font-size="12" fill="#526276" data-text="matter-demo-01.role">事项</text>
+<text x="0" y="33.4" font-size="14" font-weight="600" fill="#1b2733" data-text="matter-demo-01.id">matter-demo-01</text>
+<path d="M6 57.5V57.5" fill="none" stroke="#1b2733" stroke-width="1.5"/><circle cx="6" cy="57.5" r="5" fill="#1b2733" stroke="#1b2733" stroke-width="1.5"/>
+<g data-version="matter-demo-01@9" data-current="true">
+<text x="20" y="62.4" font-size="14" font-weight="600" fill="#1b2733" data-text="matter-demo-01@9.head">v9 · 当前</text>
+<text x="20" y="83.4" font-size="14" fill="#1b2733" data-text="matter-demo-01@9.label">待人复核</text>
+<g data-binding-id="decision-pending" data-origin="human" data-state="open" data-basis="matter-demo-01@9">
+<text x="43" y="109.2" font-size="12" font-weight="600" fill="#1f5fd1" data-text="decision-pending.head">人 · 决定</text>
+<text x="43" y="129.4" font-size="14" fill="#1b2733" data-text="decision-pending.text">尚未作出</text>
+<text x="43" y="148.2" font-size="12" fill="#526276" data-text="decision-pending.basis"><tspan x="43" y="148.2">decision-pending 绑定</tspan><tspan x="43" y="166.2">matter-demo-01@v9</tspan></text>
+<path d="M26 90 L26 105 L31 105" fill="none" stroke="#1f5fd1" stroke-width="1" stroke-dasharray="4 3" data-link-for="decision-pending" data-to="matter-demo-01@9"/>
+<circle cx="35" cy="105" r="3.5" fill="#ffffff" stroke="#1f5fd1" stroke-width="1.5"/>
+</g>
+</g>
+</g>
+<g data-object-id="material-demo-01" data-role="lane">
+<text x="0" y="204.2" font-size="12" fill="#526276" data-text="material-demo-01.role">材料</text>
+<text x="0" y="224.4" font-size="14" font-weight="600" fill="#1b2733" data-text="material-demo-01.id">material-demo-01</text>
+<path d="M6 248.5V386.5" fill="none" stroke="#1b2733" stroke-width="1.5"/><circle cx="6" cy="248.5" r="5" fill="#ffffff" stroke="#1b2733" stroke-width="1.5"/><circle cx="6" cy="386.5" r="5" fill="#1b2733" stroke="#1b2733" stroke-width="1.5"/>
+<g data-version="material-demo-01@1">
+<text x="20" y="253.4" font-size="14" font-weight="600" fill="#1b2733" data-text="material-demo-01@1.head">v1</text>
+<text x="20" y="274.4" font-size="14" fill="#1b2733" data-text="material-demo-01@1.label">旧附件：分期说明</text>
+<g data-binding-id="reading-demo-01" data-origin="human" data-state="recorded" data-basis="material-demo-01@1#§4">
+<text x="43" y="300.2" font-size="12" font-weight="600" fill="#526276" data-text="reading-demo-01.head">人 · 阅读</text>
+<text x="43" y="320.4" font-size="14" fill="#1b2733" data-text="reading-demo-01.text">旧附件的季度付款条款已阅读</text>
+<text x="43" y="339.2" font-size="12" fill="#526276" data-text="reading-demo-01.basis"><tspan x="43" y="339.2">reading-demo-01 绑定</tspan><tspan x="43" y="357.2">material-demo-01@v1 §4</tspan></text>
+<path d="M26 281 L26 296 L31 296" fill="none" stroke="#3d4c5e" stroke-width="1" data-link-for="reading-demo-01" data-to="material-demo-01@1"/>
+<circle cx="35" cy="296" r="2.5" fill="#3d4c5e"/>
+</g>
+</g>
+<g data-version="material-demo-01@2" data-current="true">
+<text x="20" y="391.4" font-size="14" font-weight="600" fill="#1b2733" data-text="material-demo-01@2.head">v2 · 当前</text>
+<text x="20" y="412.4" font-size="14" fill="#1b2733" data-text="material-demo-01@2.label">新附件：付款说明与适用条件仍待核对</text>
+<g data-binding-id="reading-demo-02" data-origin="human" data-state="recorded" data-basis="material-demo-01@2#§4">
+<text x="43" y="438.2" font-size="12" font-weight="600" fill="#526276" data-text="reading-demo-02.head">人 · 阅读</text>
+<text x="43" y="458.4" font-size="14" fill="#1b2733" data-text="reading-demo-02.text"><tspan x="43" y="458.4">新附件的付款说明已阅读，适用条件仍</tspan><tspan x="43" y="479.4">待核对</tspan></text>
+<text x="43" y="498.2" font-size="12" fill="#526276" data-text="reading-demo-02.basis"><tspan x="43" y="498.2">reading-demo-02 绑定</tspan><tspan x="43" y="516.2">material-demo-01@v2 §4</tspan></text>
+<path d="M26 419 L26 434 L31 434" fill="none" stroke="#3d4c5e" stroke-width="1" data-link-for="reading-demo-02" data-to="material-demo-01@2"/>
+<circle cx="35" cy="434" r="2.5" fill="#3d4c5e"/>
+</g>
+<g data-binding-id="proposal-demo-01" data-origin="machine" data-state="proposed" data-basis="material-demo-01@2">
+<text x="43" y="541.2" font-size="12" font-weight="600" fill="#526276" data-text="proposal-demo-01.head">机器 · 建议</text>
+<text x="43" y="561.4" font-size="14" fill="#1b2733" data-text="proposal-demo-01.text">建议复核 v2，未取得批准</text>
+<text x="43" y="580.2" font-size="12" fill="#526276" data-text="proposal-demo-01.basis"><tspan x="43" y="580.2">proposal-demo-01 绑定</tspan><tspan x="43" y="598.2">material-demo-01@v2</tspan></text>
+<path d="M26 419 L26 537 L31 537" fill="none" stroke="#3d4c5e" stroke-width="1" stroke-dasharray="4 3" data-link-for="proposal-demo-01" data-to="material-demo-01@2"/>
+<circle cx="35" cy="537" r="2.5" fill="#ffffff" stroke="#3d4c5e" stroke-width="1.3"/>
+</g>
+</g>
+</g>
+<g data-object-id="rule-demo-01" data-role="lane">
+<text x="0" y="636.2" font-size="12" fill="#526276" data-text="rule-demo-01.role">规则</text>
+<text x="0" y="656.4" font-size="14" font-weight="600" fill="#1b2733" data-text="rule-demo-01.id">rule-demo-01</text>
+<path d="M6 680.5V680.5" fill="none" stroke="#1b2733" stroke-width="1.5"/><circle cx="6" cy="680.5" r="5" fill="#1b2733" stroke="#1b2733" stroke-width="1.5"/>
+<g data-version="rule-demo-01@3" data-current="true">
+<text x="20" y="685.4" font-size="14" font-weight="600" fill="#1b2733" data-text="rule-demo-01@3.head">v3 · 当前</text>
+<text x="20" y="706.4" font-size="14" fill="#1b2733" data-text="rule-demo-01@3.label">人判断绑定材料身份、版本和片段</text>
+</g>
+</g>
+</svg>
+<figcaption>窄 288</figcaption></figure>
+</div>
+<div class="equiv"><h4>等效文字</h4><p>3 个对象各有自己的版本，4 条判断、建议或候选分别绑定到具体版本。</p><ul><li>事项 matter-demo-01：v9（当前） 待人复核</li><li>材料 material-demo-01：v1 旧附件：分期说明；v2（当前） 新附件：付款说明与适用条件仍待核对</li><li>规则 rule-demo-01：v3（当前） 人判断绑定材料身份、版本和片段</li></ul><ul><li>人 · 阅读 · reading-demo-01：旧附件的季度付款条款已阅读（绑定 material-demo-01@v1 §4）</li><li>人 · 阅读 · reading-demo-02：新附件的付款说明已阅读，适用条件仍待核对（绑定 material-demo-01@v2 §4）</li><li>机器 · 建议 · proposal-demo-01：建议复核 v2，未取得批准（绑定 material-demo-01@v2）</li><li>人 · 决定 · decision-pending：尚未作出（绑定 matter-demo-01@v9）</li></ul></div>
+<p class="files">输入：<a href="../fixtures.json">fixtures.json 的 F01</a>，经 src/cases.mjs 适配。文件：<a href="svg/f01-next--w672.svg">svg/f01-next--w672.svg</a>、<a href="svg/f01-next--w288.svg">svg/f01-next--w288.svg</a></p>
+</article>
+<article class="case" id="tracks-four">
+<h3>调阅单、馆藏、规则与读者证各自的版本 <span class="role">压力输入</span></h3>
+<p>四条版本线，一条判断同时绑定两个对象的版本。</p>
+<div class="pair">
+<figure class="wide"><svg xmlns="http://www.w3.org/2000/svg" id="tracks-four-w672" viewBox="-2 -2 672 774" width="672" height="774" role="img" aria-labelledby="tracks-four-w672-title tracks-four-w672-desc" lang="zh-Hans" xml:lang="zh-Hans" font-family="system-ui, -apple-system, 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif" data-asset="rel-tracks" data-asset-version="0.1.0">
+<title id="tracks-four-w672-title">调阅单、馆藏、规则与读者证各自的版本</title>
+<desc id="tracks-four-w672-desc">4 个对象各有自己的版本，3 条判断、建议或候选分别绑定到具体版本。</desc>
+<g data-object-id="slip-D-12" data-role="lane">
+<text x="0" y="13.2" font-size="12" fill="#526276" data-text="slip-D-12.role">调阅单</text>
+<text x="0" y="33.4" font-size="14" font-weight="600" fill="#1b2733" data-text="slip-D-12.id">slip-D-12</text>
+<path d="M6 57.5V177.5" fill="none" stroke="#1b2733" stroke-width="1.5"/><circle cx="6" cy="57.5" r="5" fill="#ffffff" stroke="#1b2733" stroke-width="1.5"/><circle cx="6" cy="177.5" r="5" fill="#1b2733" stroke="#1b2733" stroke-width="1.5"/>
+<g data-version="slip-D-12@1">
+<text x="20" y="62.4" font-size="14" font-weight="600" fill="#1b2733" data-text="slip-D-12@1.head">v1</text>
+<text x="20" y="83.4" font-size="14" fill="#1b2733" data-text="slip-D-12@1.label">已提交</text>
+<g data-binding-id="check-01" data-origin="human" data-state="recorded" data-basis="slip-D-12@1 rule-loan@2#第 8 条">
+<text x="43" y="109.2" font-size="12" font-weight="600" fill="#526276" data-text="check-01.head">人 · 审核</text>
+<text x="43" y="129.4" font-size="14" fill="#1b2733" data-text="check-01.text">按规则 v2 审核通过</text>
+<text x="43" y="148.2" font-size="12" fill="#526276" data-text="check-01.basis">check-01 绑定 slip-D-12@v1；rule-loan@v2 第 8 条</text>
+<path d="M26 90 L26 105 L31 105" fill="none" stroke="#3d4c5e" stroke-width="1" data-link-for="check-01" data-to="slip-D-12@1"/>
+<circle cx="35" cy="105" r="2.5" fill="#3d4c5e"/>
+</g>
+</g>
+<g data-version="slip-D-12@2" data-current="true">
+<text x="20" y="182.4" font-size="14" font-weight="600" fill="#1b2733" data-text="slip-D-12@2.head">v2 · 当前</text>
+<text x="20" y="203.4" font-size="14" fill="#1b2733" data-text="slip-D-12@2.label">改了取书时间</text>
+<g data-binding-id="decision-01" data-origin="human" data-state="open" data-basis="slip-D-12@2">
+<text x="43" y="229.2" font-size="12" font-weight="600" fill="#1f5fd1" data-text="decision-01.head">人 · 决定</text>
+<text x="43" y="249.4" font-size="14" fill="#1b2733" data-text="decision-01.text">是否放行，尚未决定</text>
+<text x="43" y="268.2" font-size="12" fill="#526276" data-text="decision-01.basis">decision-01 绑定 slip-D-12@v2</text>
+<path d="M26 210 L26 225 L31 225" fill="none" stroke="#1f5fd1" stroke-width="1" stroke-dasharray="4 3" data-link-for="decision-01" data-to="slip-D-12@2"/>
+<circle cx="35" cy="225" r="3.5" fill="#ffffff" stroke="#1f5fd1" stroke-width="1.5"/>
+</g>
+<text x="43" y="293.2" font-size="12" fill="#526276" data-text="slip-D-12@2.absence.0">这个版本没有审核记录</text>
+<path d="M26 210 L26 289 L31 289" fill="none" stroke="#7b8ba0" stroke-width="1" stroke-dasharray="4 3" data-absence-at="slip-D-12@2"/>
+</g>
+</g>
+<g data-object-id="item-0871" data-role="lane">
+<text x="0" y="331.2" font-size="12" fill="#526276" data-text="item-0871.role">馆藏</text>
+<text x="0" y="351.4" font-size="14" font-weight="600" fill="#1b2733" data-text="item-0871.id">item-0871</text>
+<path d="M6 375.5V375.5" fill="none" stroke="#1b2733" stroke-width="1.5"/><circle cx="6" cy="375.5" r="5" fill="#1b2733" stroke="#1b2733" stroke-width="1.5"/>
+<g data-version="item-0871@4" data-current="true">
+<text x="20" y="380.4" font-size="14" font-weight="600" fill="#1b2733" data-text="item-0871@4.head">v4 · 当前</text>
+<text x="20" y="401.4" font-size="14" fill="#1b2733" data-text="item-0871@4.label">在库，品相记录为“书脊开裂”</text>
+</g>
+</g>
+<g data-object-id="rule-loan" data-role="lane">
+<text x="0" y="440.2" font-size="12" fill="#526276" data-text="rule-loan.role">规则</text>
+<text x="0" y="460.4" font-size="14" font-weight="600" fill="#1b2733" data-text="rule-loan.id">rule-loan</text>
+<path d="M6 484.5V565.5" fill="none" stroke="#1b2733" stroke-width="1.5"/><circle cx="6" cy="484.5" r="5" fill="#ffffff" stroke="#1b2733" stroke-width="1.5"/><circle cx="6" cy="565.5" r="5" fill="#1b2733" stroke="#1b2733" stroke-width="1.5"/>
+<g data-version="rule-loan@2">
+<text x="20" y="489.4" font-size="14" font-weight="600" fill="#1b2733" data-text="rule-loan@2.head">v2</text>
+<text x="20" y="510.4" font-size="14" fill="#1b2733" data-text="rule-loan@2.label">古籍可在阅览室调阅</text>
+<text x="43" y="536.2" font-size="12" fill="#526276" data-text="check-01.ref.rule-loan@2">check-01 同时绑定这个版本（已记录）</text>
+<path d="M26 517 L26 532 L31 532" fill="none" stroke="#7b8ba0" stroke-width="1" data-link-for="check-01" data-to="rule-loan@2"/>
+</g>
+<g data-version="rule-loan@3" data-current="true">
+<text x="20" y="570.4" font-size="14" font-weight="600" fill="#1b2733" data-text="rule-loan@3.head">v3 · 当前</text>
+<text x="20" y="591.4" font-size="14" fill="#1b2733" data-text="rule-loan@3.label">品相受损的古籍须经修复室同意 (repair sign-off)</text>
+<g data-binding-id="hint-01" data-origin="machine" data-state="proposed" data-basis="rule-loan@3#第 8 条">
+<text x="43" y="617.2" font-size="12" font-weight="600" fill="#526276" data-text="hint-01.head">机器 · 建议</text>
+<text x="43" y="637.4" font-size="14" fill="#1b2733" data-text="hint-01.text">规则已更新到 v3，建议重新审核</text>
+<text x="43" y="656.2" font-size="12" fill="#526276" data-text="hint-01.basis">hint-01 绑定 rule-loan@v3 第 8 条</text>
+<path d="M26 598 L26 613 L31 613" fill="none" stroke="#3d4c5e" stroke-width="1" stroke-dasharray="4 3" data-link-for="hint-01" data-to="rule-loan@3"/>
+<circle cx="35" cy="613" r="2.5" fill="#ffffff" stroke="#3d4c5e" stroke-width="1.3"/>
+</g>
+</g>
+</g>
+<g data-object-id="card-5521" data-role="lane">
+<text x="0" y="694.2" font-size="12" fill="#526276" data-text="card-5521.role">读者证</text>
+<text x="0" y="714.4" font-size="14" font-weight="600" fill="#1b2733" data-text="card-5521.id">card-5521</text>
+<path d="M6 738.5V738.5" fill="none" stroke="#1b2733" stroke-width="1.5"/><circle cx="6" cy="738.5" r="5" fill="#1b2733" stroke="#1b2733" stroke-width="1.5"/>
+<g data-version="card-5521@1" data-current="true">
+<text x="20" y="743.4" font-size="14" font-weight="600" fill="#1b2733" data-text="card-5521@1.head">v1 · 当前</text>
+<text x="20" y="764.4" font-size="14" fill="#1b2733" data-text="card-5521@1.label">有效期至 2027-03-31</text>
+</g>
+</g>
+</svg>
+<figcaption>宽 672</figcaption></figure>
+<figure class="narrow"><svg xmlns="http://www.w3.org/2000/svg" id="tracks-four-w288" viewBox="-2 -2 288 813" width="288" height="813" role="img" aria-labelledby="tracks-four-w288-title tracks-four-w288-desc" lang="zh-Hans" xml:lang="zh-Hans" font-family="system-ui, -apple-system, 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif" data-asset="rel-tracks" data-asset-version="0.1.0">
+<title id="tracks-four-w288-title">调阅单、馆藏、规则与读者证各自的版本</title>
+<desc id="tracks-four-w288-desc">4 个对象各有自己的版本，3 条判断、建议或候选分别绑定到具体版本。</desc>
+<g data-object-id="slip-D-12" data-role="lane">
+<text x="0" y="13.2" font-size="12" fill="#526276" data-text="slip-D-12.role">调阅单</text>
+<text x="0" y="33.4" font-size="14" font-weight="600" fill="#1b2733" data-text="slip-D-12.id">slip-D-12</text>
+<path d="M6 57.5V195.5" fill="none" stroke="#1b2733" stroke-width="1.5"/><circle cx="6" cy="57.5" r="5" fill="#ffffff" stroke="#1b2733" stroke-width="1.5"/><circle cx="6" cy="195.5" r="5" fill="#1b2733" stroke="#1b2733" stroke-width="1.5"/>
+<g data-version="slip-D-12@1">
+<text x="20" y="62.4" font-size="14" font-weight="600" fill="#1b2733" data-text="slip-D-12@1.head">v1</text>
+<text x="20" y="83.4" font-size="14" fill="#1b2733" data-text="slip-D-12@1.label">已提交</text>
+<g data-binding-id="check-01" data-origin="human" data-state="recorded" data-basis="slip-D-12@1 rule-loan@2#第 8 条">
+<text x="43" y="109.2" font-size="12" font-weight="600" fill="#526276" data-text="check-01.head">人 · 审核</text>
+<text x="43" y="129.4" font-size="14" fill="#1b2733" data-text="check-01.text">按规则 v2 审核通过</text>
+<text x="43" y="148.2" font-size="12" fill="#526276" data-text="check-01.basis"><tspan x="43" y="148.2">check-01 绑定 slip-D-12@v1；</tspan><tspan x="43" y="166.2">rule-loan@v2 第 8 条</tspan></text>
+<path d="M26 90 L26 105 L31 105" fill="none" stroke="#3d4c5e" stroke-width="1" data-link-for="check-01" data-to="slip-D-12@1"/>
+<circle cx="35" cy="105" r="2.5" fill="#3d4c5e"/>
+</g>
+</g>
+<g data-version="slip-D-12@2" data-current="true">
+<text x="20" y="200.4" font-size="14" font-weight="600" fill="#1b2733" data-text="slip-D-12@2.head">v2 · 当前</text>
+<text x="20" y="221.4" font-size="14" fill="#1b2733" data-text="slip-D-12@2.label">改了取书时间</text>
+<g data-binding-id="decision-01" data-origin="human" data-state="open" data-basis="slip-D-12@2">
+<text x="43" y="247.2" font-size="12" font-weight="600" fill="#1f5fd1" data-text="decision-01.head">人 · 决定</text>
+<text x="43" y="267.4" font-size="14" fill="#1b2733" data-text="decision-01.text">是否放行，尚未决定</text>
+<text x="43" y="286.2" font-size="12" fill="#526276" data-text="decision-01.basis">decision-01 绑定 slip-D-12@v2</text>
+<path d="M26 228 L26 243 L31 243" fill="none" stroke="#1f5fd1" stroke-width="1" stroke-dasharray="4 3" data-link-for="decision-01" data-to="slip-D-12@2"/>
+<circle cx="35" cy="243" r="3.5" fill="#ffffff" stroke="#1f5fd1" stroke-width="1.5"/>
+</g>
+<text x="43" y="311.2" font-size="12" fill="#526276" data-text="slip-D-12@2.absence.0">这个版本没有审核记录</text>
+<path d="M26 228 L26 307 L31 307" fill="none" stroke="#7b8ba0" stroke-width="1" stroke-dasharray="4 3" data-absence-at="slip-D-12@2"/>
+</g>
+</g>
+<g data-object-id="item-0871" data-role="lane">
+<text x="0" y="349.2" font-size="12" fill="#526276" data-text="item-0871.role">馆藏</text>
+<text x="0" y="369.4" font-size="14" font-weight="600" fill="#1b2733" data-text="item-0871.id">item-0871</text>
+<path d="M6 393.5V393.5" fill="none" stroke="#1b2733" stroke-width="1.5"/><circle cx="6" cy="393.5" r="5" fill="#1b2733" stroke="#1b2733" stroke-width="1.5"/>
+<g data-version="item-0871@4" data-current="true">
+<text x="20" y="398.4" font-size="14" font-weight="600" fill="#1b2733" data-text="item-0871@4.head">v4 · 当前</text>
+<text x="20" y="419.4" font-size="14" fill="#1b2733" data-text="item-0871@4.label">在库，品相记录为“书脊开裂”</text>
+</g>
+</g>
+<g data-object-id="rule-loan" data-role="lane">
+<text x="0" y="458.2" font-size="12" fill="#526276" data-text="rule-loan.role">规则</text>
+<text x="0" y="478.4" font-size="14" font-weight="600" fill="#1b2733" data-text="rule-loan.id">rule-loan</text>
+<path d="M6 502.5V583.5" fill="none" stroke="#1b2733" stroke-width="1.5"/><circle cx="6" cy="502.5" r="5" fill="#ffffff" stroke="#1b2733" stroke-width="1.5"/><circle cx="6" cy="583.5" r="5" fill="#1b2733" stroke="#1b2733" stroke-width="1.5"/>
+<g data-version="rule-loan@2">
+<text x="20" y="507.4" font-size="14" font-weight="600" fill="#1b2733" data-text="rule-loan@2.head">v2</text>
+<text x="20" y="528.4" font-size="14" fill="#1b2733" data-text="rule-loan@2.label">古籍可在阅览室调阅</text>
+<text x="43" y="554.2" font-size="12" fill="#526276" data-text="check-01.ref.rule-loan@2">check-01 同时绑定这个版本（已记录）</text>
+<path d="M26 535 L26 550 L31 550" fill="none" stroke="#7b8ba0" stroke-width="1" data-link-for="check-01" data-to="rule-loan@2"/>
+</g>
+<g data-version="rule-loan@3" data-current="true">
+<text x="20" y="588.4" font-size="14" font-weight="600" fill="#1b2733" data-text="rule-loan@3.head">v3 · 当前</text>
+<text x="20" y="609.4" font-size="14" fill="#1b2733" data-text="rule-loan@3.label"><tspan x="20" y="609.4">品相受损的古籍须经修复室同意 (repair</tspan><tspan x="20" y="630.4">sign-off)</tspan></text>
+<g data-binding-id="hint-01" data-origin="machine" data-state="proposed" data-basis="rule-loan@3#第 8 条">
+<text x="43" y="656.2" font-size="12" font-weight="600" fill="#526276" data-text="hint-01.head">机器 · 建议</text>
+<text x="43" y="676.4" font-size="14" fill="#1b2733" data-text="hint-01.text">规则已更新到 v3，建议重新审核</text>
+<text x="43" y="695.2" font-size="12" fill="#526276" data-text="hint-01.basis">hint-01 绑定 rule-loan@v3 第 8 条</text>
+<path d="M26 637 L26 652 L31 652" fill="none" stroke="#3d4c5e" stroke-width="1" stroke-dasharray="4 3" data-link-for="hint-01" data-to="rule-loan@3"/>
+<circle cx="35" cy="652" r="2.5" fill="#ffffff" stroke="#3d4c5e" stroke-width="1.3"/>
+</g>
+</g>
+</g>
+<g data-object-id="card-5521" data-role="lane">
+<text x="0" y="733.2" font-size="12" fill="#526276" data-text="card-5521.role">读者证</text>
+<text x="0" y="753.4" font-size="14" font-weight="600" fill="#1b2733" data-text="card-5521.id">card-5521</text>
+<path d="M6 777.5V777.5" fill="none" stroke="#1b2733" stroke-width="1.5"/><circle cx="6" cy="777.5" r="5" fill="#1b2733" stroke="#1b2733" stroke-width="1.5"/>
+<g data-version="card-5521@1" data-current="true">
+<text x="20" y="782.4" font-size="14" font-weight="600" fill="#1b2733" data-text="card-5521@1.head">v1 · 当前</text>
+<text x="20" y="803.4" font-size="14" fill="#1b2733" data-text="card-5521@1.label">有效期至 2027-03-31</text>
+</g>
+</g>
+</svg>
+<figcaption>窄 288</figcaption></figure>
+</div>
+<div class="equiv"><h4>等效文字</h4><p>4 个对象各有自己的版本，3 条判断、建议或候选分别绑定到具体版本。</p><ul><li>调阅单 slip-D-12：v1 已提交；v2（当前） 改了取书时间</li><li>馆藏 item-0871：v4（当前） 在库，品相记录为“书脊开裂”</li><li>规则 rule-loan：v2 古籍可在阅览室调阅；v3（当前） 品相受损的古籍须经修复室同意 (repair sign-off)</li><li>读者证 card-5521：v1（当前） 有效期至 2027-03-31</li></ul><ul><li>人 · 审核 · check-01：按规则 v2 审核通过（绑定 slip-D-12@v1；rule-loan@v2 第 8 条）</li><li>机器 · 建议 · hint-01：规则已更新到 v3，建议重新审核（绑定 rule-loan@v3 第 8 条）</li><li>人 · 决定 · decision-01：是否放行，尚未决定（绑定 slip-D-12@v2）</li><li>slip-D-12@v2：这个版本没有审核记录</li></ul></div>
+<p class="files">输入：<a href="inputs/tracks-four.json">inputs/tracks-four.json</a>。文件：<a href="svg/tracks-four--w672.svg">svg/tracks-four--w672.svg</a>、<a href="svg/tracks-four--w288.svg">svg/tracks-four--w288.svg</a></p>
+</article>
+<article class="case" id="f01-rebound">
+<h3>新材料与旧阅读依据 <span class="role">反例输入</span></h3>
+<p>反例输入：旧阅读的依据被改指 v2。图照输入画，错误因此看得见。</p>
+<div class="pair">
+<figure class="wide"><svg xmlns="http://www.w3.org/2000/svg" id="f01-rebound-w672" viewBox="-2 -2 672 380" width="672" height="380" role="img" aria-labelledby="f01-rebound-w672-title f01-rebound-w672-desc" lang="zh-Hans" xml:lang="zh-Hans" font-family="system-ui, -apple-system, 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif" data-asset="rel-tracks" data-asset-version="0.1.0">
+<title id="f01-rebound-w672-title">新材料与旧阅读依据</title>
+<desc id="f01-rebound-w672-desc">3 个对象各有自己的版本，3 条判断、建议或候选分别绑定到具体版本。</desc>
+<g data-object-id="matter-demo-01" data-role="lane">
+<text x="0" y="13.2" font-size="12" fill="#526276" data-text="matter-demo-01.role">事项</text>
+<text x="0" y="33.4" font-size="14" font-weight="600" fill="#1b2733" data-text="matter-demo-01.id">matter-demo-01</text>
+<path d="M6 57.5V57.5" fill="none" stroke="#1b2733" stroke-width="1.5"/><circle cx="6" cy="57.5" r="5" fill="#1b2733" stroke="#1b2733" stroke-width="1.5"/>
+<g data-version="matter-demo-01@8" data-current="true">
+<text x="20" y="62.4" font-size="14" font-weight="600" fill="#1b2733" data-text="matter-demo-01@8.head">v8 · 当前</text>
+<text x="20" y="83.4" font-size="14" fill="#1b2733" data-text="matter-demo-01@8.label">待人复核</text>
+<g data-binding-id="decision-pending" data-origin="human" data-state="open" data-basis="matter-demo-01@8">
+<text x="43" y="109.2" font-size="12" font-weight="600" fill="#1f5fd1" data-text="decision-pending.head">人 · 决定</text>
+<text x="43" y="129.4" font-size="14" fill="#1b2733" data-text="decision-pending.text">尚未作出</text>
+<text x="43" y="148.2" font-size="12" fill="#526276" data-text="decision-pending.basis"><tspan x="43" y="148.2">decision-pending 绑定</tspan><tspan x="43" y="166.2">matter-demo-01@v8</tspan></text>
+<path d="M26 90 L26 105 L31 105" fill="none" stroke="#1f5fd1" stroke-width="1" stroke-dasharray="4 3" data-link-for="decision-pending" data-to="matter-demo-01@8"/>
+<circle cx="35" cy="105" r="3.5" fill="#ffffff" stroke="#1f5fd1" stroke-width="1.5"/>
+</g>
+</g>
+</g>
+<g data-object-id="material-demo-01" data-role="lane">
+<text x="230.7" y="13.2" font-size="12" fill="#526276" data-text="material-demo-01.role">材料</text>
+<text x="230.7" y="33.4" font-size="14" font-weight="600" fill="#1b2733" data-text="material-demo-01.id">material-demo-01</text>
+<path d="M236.66666666666666 57.5V138.5" fill="none" stroke="#1b2733" stroke-width="1.5"/><circle cx="236.66666666666666" cy="57.5" r="5" fill="#ffffff" stroke="#1b2733" stroke-width="1.5"/><circle cx="236.66666666666666" cy="138.5" r="5" fill="#1b2733" stroke="#1b2733" stroke-width="1.5"/>
+<g data-version="material-demo-01@1">
+<text x="250.7" y="62.4" font-size="14" font-weight="600" fill="#1b2733" data-text="material-demo-01@1.head">v1</text>
+<text x="250.7" y="83.4" font-size="14" fill="#1b2733" data-text="material-demo-01@1.label">旧附件：分期说明</text>
+<text x="273.7" y="109.2" font-size="12" fill="#526276" data-text="material-demo-01@1.absence.0">没有人阅读这个版本的记录</text>
+<path d="M256.7 90 L256.7 105 L261.7 105" fill="none" stroke="#7b8ba0" stroke-width="1" stroke-dasharray="4 3" data-absence-at="material-demo-01@1"/>
+</g>
+<g data-version="material-demo-01@2" data-current="true">
+<text x="250.7" y="143.4" font-size="14" font-weight="600" fill="#1b2733" data-text="material-demo-01@2.head">v2 · 当前</text>
+<text x="250.7" y="164.4" font-size="14" fill="#1b2733" data-text="material-demo-01@2.label"><tspan x="250.7" y="164.4">新附件：付款说明与适用条件</tspan><tspan x="250.7" y="185.4">仍待核对</tspan></text>
+<g data-binding-id="reading-demo-01" data-origin="human" data-state="recorded" data-basis="material-demo-01@2#§4">
+<text x="273.7" y="211.2" font-size="12" font-weight="600" fill="#526276" data-text="reading-demo-01.head">人 · 阅读</text>
+<text x="273.7" y="231.4" font-size="14" fill="#1b2733" data-text="reading-demo-01.text"><tspan x="273.7" y="231.4">旧附件的季度付款条款已</tspan><tspan x="273.7" y="252.4">阅读</tspan></text>
+<text x="273.7" y="271.2" font-size="12" fill="#526276" data-text="reading-demo-01.basis"><tspan x="273.7" y="271.2">reading-demo-01 绑定</tspan><tspan x="273.7" y="289.2">material-demo-01@v2 §4</tspan></text>
+<path d="M256.7 192 L256.7 207 L261.7 207" fill="none" stroke="#3d4c5e" stroke-width="1" data-link-for="reading-demo-01" data-to="material-demo-01@2"/>
+<circle cx="265.7" cy="207" r="2.5" fill="#3d4c5e"/>
+</g>
+<g data-binding-id="proposal-demo-01" data-origin="machine" data-state="proposed" data-basis="material-demo-01@2">
+<text x="273.7" y="314.2" font-size="12" font-weight="600" fill="#526276" data-text="proposal-demo-01.head">机器 · 建议</text>
+<text x="273.7" y="334.4" font-size="14" fill="#1b2733" data-text="proposal-demo-01.text">建议复核 v2，未取得批准</text>
+<text x="273.7" y="353.2" font-size="12" fill="#526276" data-text="proposal-demo-01.basis"><tspan x="273.7" y="353.2">proposal-demo-01 绑定</tspan><tspan x="273.7" y="371.2">material-demo-01@v2</tspan></text>
+<path d="M256.7 192 L256.7 310 L261.7 310" fill="none" stroke="#3d4c5e" stroke-width="1" stroke-dasharray="4 3" data-link-for="proposal-demo-01" data-to="material-demo-01@2"/>
+<circle cx="265.7" cy="310" r="2.5" fill="#ffffff" stroke="#3d4c5e" stroke-width="1.3"/>
+</g>
+</g>
+</g>
+<g data-object-id="rule-demo-01" data-role="lane">
+<text x="461.3" y="13.2" font-size="12" fill="#526276" data-text="rule-demo-01.role">规则</text>
+<text x="461.3" y="33.4" font-size="14" font-weight="600" fill="#1b2733" data-text="rule-demo-01.id">rule-demo-01</text>
+<path d="M467.3333333333333 57.5V57.5" fill="none" stroke="#1b2733" stroke-width="1.5"/><circle cx="467.3333333333333" cy="57.5" r="5" fill="#1b2733" stroke="#1b2733" stroke-width="1.5"/>
+<g data-version="rule-demo-01@3" data-current="true">
+<text x="481.3" y="62.4" font-size="14" font-weight="600" fill="#1b2733" data-text="rule-demo-01@3.head">v3 · 当前</text>
+<text x="481.3" y="83.4" font-size="14" fill="#1b2733" data-text="rule-demo-01@3.label"><tspan x="481.3" y="83.4">人判断绑定材料身份、版本和</tspan><tspan x="481.3" y="104.4">片段</tspan></text>
+</g>
+</g>
+</svg>
+<figcaption>宽 672</figcaption></figure>
+<figure class="narrow"><svg xmlns="http://www.w3.org/2000/svg" id="f01-rebound-w288" viewBox="-2 -2 288 638" width="288" height="638" role="img" aria-labelledby="f01-rebound-w288-title f01-rebound-w288-desc" lang="zh-Hans" xml:lang="zh-Hans" font-family="system-ui, -apple-system, 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif" data-asset="rel-tracks" data-asset-version="0.1.0">
+<title id="f01-rebound-w288-title">新材料与旧阅读依据</title>
+<desc id="f01-rebound-w288-desc">3 个对象各有自己的版本，3 条判断、建议或候选分别绑定到具体版本。</desc>
+<g data-object-id="matter-demo-01" data-role="lane">
+<text x="0" y="13.2" font-size="12" fill="#526276" data-text="matter-demo-01.role">事项</text>
+<text x="0" y="33.4" font-size="14" font-weight="600" fill="#1b2733" data-text="matter-demo-01.id">matter-demo-01</text>
+<path d="M6 57.5V57.5" fill="none" stroke="#1b2733" stroke-width="1.5"/><circle cx="6" cy="57.5" r="5" fill="#1b2733" stroke="#1b2733" stroke-width="1.5"/>
+<g data-version="matter-demo-01@8" data-current="true">
+<text x="20" y="62.4" font-size="14" font-weight="600" fill="#1b2733" data-text="matter-demo-01@8.head">v8 · 当前</text>
+<text x="20" y="83.4" font-size="14" fill="#1b2733" data-text="matter-demo-01@8.label">待人复核</text>
+<g data-binding-id="decision-pending" data-origin="human" data-state="open" data-basis="matter-demo-01@8">
+<text x="43" y="109.2" font-size="12" font-weight="600" fill="#1f5fd1" data-text="decision-pending.head">人 · 决定</text>
+<text x="43" y="129.4" font-size="14" fill="#1b2733" data-text="decision-pending.text">尚未作出</text>
+<text x="43" y="148.2" font-size="12" fill="#526276" data-text="decision-pending.basis"><tspan x="43" y="148.2">decision-pending 绑定</tspan><tspan x="43" y="166.2">matter-demo-01@v8</tspan></text>
+<path d="M26 90 L26 105 L31 105" fill="none" stroke="#1f5fd1" stroke-width="1" stroke-dasharray="4 3" data-link-for="decision-pending" data-to="matter-demo-01@8"/>
+<circle cx="35" cy="105" r="3.5" fill="#ffffff" stroke="#1f5fd1" stroke-width="1.5"/>
+</g>
+</g>
+</g>
+<g data-object-id="material-demo-01" data-role="lane">
+<text x="0" y="204.2" font-size="12" fill="#526276" data-text="material-demo-01.role">材料</text>
+<text x="0" y="224.4" font-size="14" font-weight="600" fill="#1b2733" data-text="material-demo-01.id">material-demo-01</text>
+<path d="M6 248.5V329.5" fill="none" stroke="#1b2733" stroke-width="1.5"/><circle cx="6" cy="248.5" r="5" fill="#ffffff" stroke="#1b2733" stroke-width="1.5"/><circle cx="6" cy="329.5" r="5" fill="#1b2733" stroke="#1b2733" stroke-width="1.5"/>
+<g data-version="material-demo-01@1">
+<text x="20" y="253.4" font-size="14" font-weight="600" fill="#1b2733" data-text="material-demo-01@1.head">v1</text>
+<text x="20" y="274.4" font-size="14" fill="#1b2733" data-text="material-demo-01@1.label">旧附件：分期说明</text>
+<text x="43" y="300.2" font-size="12" fill="#526276" data-text="material-demo-01@1.absence.0">没有人阅读这个版本的记录</text>
+<path d="M26 281 L26 296 L31 296" fill="none" stroke="#7b8ba0" stroke-width="1" stroke-dasharray="4 3" data-absence-at="material-demo-01@1"/>
+</g>
+<g data-version="material-demo-01@2" data-current="true">
+<text x="20" y="334.4" font-size="14" font-weight="600" fill="#1b2733" data-text="material-demo-01@2.head">v2 · 当前</text>
+<text x="20" y="355.4" font-size="14" fill="#1b2733" data-text="material-demo-01@2.label">新附件：付款说明与适用条件仍待核对</text>
+<g data-binding-id="reading-demo-01" data-origin="human" data-state="recorded" data-basis="material-demo-01@2#§4">
+<text x="43" y="381.2" font-size="12" font-weight="600" fill="#526276" data-text="reading-demo-01.head">人 · 阅读</text>
+<text x="43" y="401.4" font-size="14" fill="#1b2733" data-text="reading-demo-01.text">旧附件的季度付款条款已阅读</text>
+<text x="43" y="420.2" font-size="12" fill="#526276" data-text="reading-demo-01.basis"><tspan x="43" y="420.2">reading-demo-01 绑定</tspan><tspan x="43" y="438.2">material-demo-01@v2 §4</tspan></text>
+<path d="M26 362 L26 377 L31 377" fill="none" stroke="#3d4c5e" stroke-width="1" data-link-for="reading-demo-01" data-to="material-demo-01@2"/>
+<circle cx="35" cy="377" r="2.5" fill="#3d4c5e"/>
+</g>
+<g data-binding-id="proposal-demo-01" data-origin="machine" data-state="proposed" data-basis="material-demo-01@2">
+<text x="43" y="463.2" font-size="12" font-weight="600" fill="#526276" data-text="proposal-demo-01.head">机器 · 建议</text>
+<text x="43" y="483.4" font-size="14" fill="#1b2733" data-text="proposal-demo-01.text">建议复核 v2，未取得批准</text>
+<text x="43" y="502.2" font-size="12" fill="#526276" data-text="proposal-demo-01.basis"><tspan x="43" y="502.2">proposal-demo-01 绑定</tspan><tspan x="43" y="520.2">material-demo-01@v2</tspan></text>
+<path d="M26 362 L26 459 L31 459" fill="none" stroke="#3d4c5e" stroke-width="1" stroke-dasharray="4 3" data-link-for="proposal-demo-01" data-to="material-demo-01@2"/>
+<circle cx="35" cy="459" r="2.5" fill="#ffffff" stroke="#3d4c5e" stroke-width="1.3"/>
+</g>
+</g>
+</g>
+<g data-object-id="rule-demo-01" data-role="lane">
+<text x="0" y="558.2" font-size="12" fill="#526276" data-text="rule-demo-01.role">规则</text>
+<text x="0" y="578.4" font-size="14" font-weight="600" fill="#1b2733" data-text="rule-demo-01.id">rule-demo-01</text>
+<path d="M6 602.5V602.5" fill="none" stroke="#1b2733" stroke-width="1.5"/><circle cx="6" cy="602.5" r="5" fill="#1b2733" stroke="#1b2733" stroke-width="1.5"/>
+<g data-version="rule-demo-01@3" data-current="true">
+<text x="20" y="607.4" font-size="14" font-weight="600" fill="#1b2733" data-text="rule-demo-01@3.head">v3 · 当前</text>
+<text x="20" y="628.4" font-size="14" fill="#1b2733" data-text="rule-demo-01@3.label">人判断绑定材料身份、版本和片段</text>
+</g>
+</g>
+</svg>
+<figcaption>窄 288</figcaption></figure>
+</div>
+<div class="equiv"><h4>等效文字</h4><p>3 个对象各有自己的版本，3 条判断、建议或候选分别绑定到具体版本。</p><ul><li>事项 matter-demo-01：v8（当前） 待人复核</li><li>材料 material-demo-01：v1 旧附件：分期说明；v2（当前） 新附件：付款说明与适用条件仍待核对</li><li>规则 rule-demo-01：v3（当前） 人判断绑定材料身份、版本和片段</li></ul><ul><li>人 · 阅读 · reading-demo-01：旧附件的季度付款条款已阅读（绑定 material-demo-01@v2 §4）</li><li>机器 · 建议 · proposal-demo-01：建议复核 v2，未取得批准（绑定 material-demo-01@v2）</li><li>人 · 决定 · decision-pending：尚未作出（绑定 matter-demo-01@v8）</li><li>material-demo-01@v1：没有人阅读这个版本的记录</li></ul></div>
+<p class="files">输入：<a href="../fixtures.json">fixtures.json 的 F01</a>，经 src/cases.mjs 适配。文件：<a href="svg/f01-rebound--w672.svg">svg/f01-rebound--w672.svg</a>、<a href="svg/f01-rebound--w288.svg">svg/f01-rebound--w288.svg</a></p>
+</article>
+<h3>拒用的输入</h3>
+<table><thead><tr><th>输入</th><th>拒用理由</th></tr></thead><tbody>
+<tr><td><a href="inputs/refuse-tracks-dangling.json">判断绑定到一个不存在的版本。</a></td><td>绑定 reading 指向的 material@v2 不存在</td></tr>
+<tr><td><a href="inputs/refuse-tracks-global.json">用一个全局版本号代替各对象的版本。</a></td><td>不能用一个全局版本号代替各对象自己的版本</td></tr>
+</tbody></table>
+</section>
+</main>
+<footer>由 <code>node src/build.mjs</code> 生成，请勿手改本页；要改图，改 inputs/ 或 fixtures.json 后重建。</footer>
+</body>
+</html>

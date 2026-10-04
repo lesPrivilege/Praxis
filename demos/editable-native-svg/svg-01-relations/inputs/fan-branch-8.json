@@ -1,0 +1,85 @@
+{
+  "id": "fan-branch-8",
+  "synthetic": true,
+  "asset": "rel-fan",
+  "role": "stress",
+  "requirements": [
+    "SVG-R02"
+  ],
+  "note": "八条分支，条件里混有英文和数字。",
+  "model": {
+    "title": "借阅申请的八条分支",
+    "direction": "out",
+    "basis": "借阅规则 v3 第 2–9 条",
+    "hub": {
+      "id": "request",
+      "label": "借阅申请到达"
+    },
+    "spokes": [
+      {
+        "edge_id": "b1",
+        "label": "读者证有效，且近 12 个月没有逾期记录",
+        "node": {
+          "id": "n1",
+          "label": "当日出借"
+        }
+      },
+      {
+        "edge_id": "b2",
+        "label": "馆藏在架，但属于参考工具书 (reference only)",
+        "node": {
+          "id": "n2",
+          "label": "只在馆内阅览"
+        }
+      },
+      {
+        "edge_id": "b3",
+        "label": "馆藏已借出，预约队列不超过 3 人",
+        "node": {
+          "id": "n3",
+          "label": "登记预约"
+        }
+      },
+      {
+        "edge_id": "b4",
+        "label": "馆藏已借出，预约队列超过 3 人，且读者同意等待 30 天以上",
+        "node": {
+          "id": "n4",
+          "label": "登记预约，并告知预计等待时间"
+        }
+      },
+      {
+        "edge_id": "b5",
+        "label": "馆藏属于古籍或 1949 年前的出版物",
+        "node": {
+          "id": "n5",
+          "label": "转古籍阅览室，不外借"
+        }
+      },
+      {
+        "edge_id": "b6",
+        "label": "馆藏在修复中，预计恢复日期未定",
+        "node": {
+          "id": "n6",
+          "label": "告知暂不可借，登记到货通知"
+        }
+      },
+      {
+        "edge_id": "b7",
+        "label": "读者证已过期，但在 30 天宽限期内",
+        "node": {
+          "id": "n7",
+          "label": "先续证，再按上面的条件重新判断"
+        }
+      },
+      {
+        "edge_id": "b8",
+        "default": true,
+        "node": {
+          "id": "n8",
+          "label": "转人工核对"
+        }
+      }
+    ]
+  }
+}

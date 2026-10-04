@@ -1,0 +1,58 @@
+{
+  "id": "fan-branch",
+  "synthetic": true,
+  "asset": "rel-fan",
+  "role": "normal",
+  "requirements": [
+    "SVG-R01",
+    "SVG-R02"
+  ],
+  "note": "三个条件各自绑定一条出边，默认分支写明。",
+  "model": {
+    "title": "借阅申请的分支",
+    "direction": "out",
+    "hub": {
+      "id": "request",
+      "label": "借阅申请到达"
+    },
+    "spokes": [
+      {
+        "edge_id": "on-shelf",
+        "label": "馆藏在架，读者证有效",
+        "basis": "借阅规则 v3 第 2 条",
+        "node": {
+          "id": "lend",
+          "label": "当日出借"
+        }
+      },
+      {
+        "edge_id": "on-loan",
+        "label": "馆藏已借出",
+        "basis": "借阅规则 v3 第 5 条",
+        "node": {
+          "id": "reserve",
+          "label": "登记预约"
+        }
+      },
+      {
+        "edge_id": "rare",
+        "label": "馆藏属于古籍",
+        "basis": "借阅规则 v3 第 8 条",
+        "node": {
+          "id": "reading-room",
+          "label": "转古籍阅览室，不外借"
+        }
+      },
+      {
+        "edge_id": "otherwise",
+        "default": true,
+        "basis": "借阅规则 v3 第 9 条",
+        "node": {
+          "id": "manual",
+          "label": "转人工核对"
+        }
+      }
+    ]
+  },
+  "order": 2
+}
