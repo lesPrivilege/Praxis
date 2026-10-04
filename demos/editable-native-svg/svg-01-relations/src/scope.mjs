@@ -1,7 +1,8 @@
 // rel-scope：谁在哪个范围里，哪些关系越过了边界。
 // 每个容器必须写明边界表示什么；跨界关系在右侧走线，编号对应图下的说明行。
 
-import { T, PAD, canvas, finish, measure, need, needId } from './kernel.mjs';
+import { T, PAD, anchor, anchorKey, anchorText, canvas, finish, measure, need, needId } from './kernel.mjs';
+import { LEGEND, standing } from './standing.mjs';
 
 const NUM = '①②③④⑤⑥';
 const MAX_DEPTH = 3;
@@ -43,10 +44,9 @@ function validate(m) {
   for (const x of xs) {
     needId(x.edge_id, '关系');
     need(!es.has(x.edge_id) && !ms.has(x.edge_id) && !cs.has(x.edge_id), 'duplicate-id', `关系 ${x.edge_id} 与别的关系或对象重名`);
-    need(x.state === undefined || x.state === 'established' || x.state === 'pending', 'state', `关系 ${x.edge_id} 的 state 只能是 established 或 pending：${x.state}`);
     need(ms.has(x.from) && ms.has(x.to), 'unknown-endpoint', `关系 ${x.edge_id} 的端点不是已登记的成员`);
     need((ms.get(x.from).container ?? null) !== (ms.get(x.to).container ?? null), 'not-crossing', `关系 ${x.edge_id} 的两端在同一个容器里，不是跨界关系`);
-    need(x.kind && x.basis, 'no-basis', `关系 ${x.edge_id} 缺少类型或依据`);
+    need(x.kind && x.basis != null, 'no-basis', `关系 ${x.edge_id} 缺少类型或依据`);
     es.add(x.edge_id);
     for (const id of [x.from, x.to]) {
       load[id] = (load[id] ?? 0) + 1;
@@ -55,11 +55,15 @@ function validate(m) {
   }
 }
 
-export function scope(model, { width = 480, scope: sid } = {}) {
+export function scope(model, { width = 480, scope: sid, legend = true } = {}) {
   validate(model);
   const m = model;
   const members = m.members ?? [];
-  const xs = m.crossings ?? [];
+  const xs = (m.crossings ?? []).map((x) => ({
+    ...x,
+    st: standing(x.state, ['established', 'pending'], `关系 ${x.edge_id} `),
+    basis: anchor(x.basis, `关系 ${x.edge_id} 的依据`),
+  }));
   const W = width - 2 * PAD;
   const c = canvas(sid);
   const gutter = xs.length ? 14 + 14 * xs.length : 0;
@@ -111,11 +115,10 @@ export function scope(model, { width = 480, scope: sid } = {}) {
     const tx = FW + 12 + i * 14;
     const ay = portY(x.from, x.edge_id);
     const by = portY(x.to, x.edge_id);
-    const dashed = x.state === 'pending';
     c.path([[a.x + a.w, ay], [tx, ay], [tx, by], [b.x + b.w, by]], {
-      dashed,
+      st: x.st,
       arrow: true,
-      data: { 'data-edge-id': x.edge_id, 'data-from': x.from, 'data-to': x.to, 'data-state': dashed ? 'pending' : 'established' },
+      data: { 'data-edge-id': x.edge_id, 'data-from': x.from, 'data-to': x.to, 'data-state': x.state, 'data-basis': anchorKey(x.basis) || null },
     });
     const my = (ay + by) / 2;
     c.add(`<rect x="${tx - 7}" y="${my - 9}" width="14" height="18" fill="${T.paper}"/>`);
@@ -123,11 +126,16 @@ export function scope(model, { width = 480, scope: sid } = {}) {
   });
 
   const label = (id) => members.find((mb) => mb.id === id).label;
-  const keyText = (x, i) => `${NUM[i]} ${x.kind}：${label(x.from)} → ${label(x.to)}。${x.status ? `${x.status}。` : ''}依据：${x.basis}`;
+  const keyText = (x, i) => `${NUM[i]} ${x.kind}：${label(x.from)} → ${label(x.to)}。${[x.state === 'pending' && x.st.word, x.status].filter(Boolean).map((t) => `${t}。`).join('')}依据：${anchorText(x.basis)}`;
   if (xs.length) y += 14;
   xs.forEach((x, i) => {
     y += c.label(`${x.edge_id}.key`, keyText(x, i), { x: 0, y, w: W, size: T.small }).h + 4;
+    c.mention(x.edge_id, x.basis, `${x.edge_id}.key`);
   });
+  if (legend) {
+    const h = c.legend(LEGEND, y + 8, W);
+    if (h) y += 8 + h;
+  }
 
   const tree = (parent, d) =>
     m.containers

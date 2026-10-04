@@ -16,7 +16,9 @@
 
 | 作品 | 资产 ID 与版本 | 覆盖的需求 | 状态 |
 |---|---|---|---|
-| [SVG-01 · 四个可编辑的关系图件](svg-01-relations/README.md)（[预览](svg-01-relations/index.html)） | `rel-fan`、`rel-scope`、`rel-qualify`、`rel-tracks`，均为 `0.1.0` | R01–R08、R17；R09、R18 各一半；R10 未画 | 候选，等用户 review；自动检查与看图范围见其 [验收回执](svg-01-relations/acceptance.md) |
+| [SVG-01 · 四个可编辑的关系图件](svg-01-relations/README.md)（[预览](svg-01-relations/index.html)） | `rel-fan`、`rel-scope`、`rel-qualify`、`rel-tracks`、`rel-sheet`，均为 `0.2.0` | R01–R08、R17；R09、R18 各一半；R10 未画 | 候选，等用户 review；自动检查与看图范围见其 [验收回执](svg-01-relations/acceptance.md) |
+
+| [两条关系语法的样板](grammar-specimens/README.md)（[样板页](grammar-specimens/index.html)） | 用上面的图件画，不另立资产 | 不对应新的需求；演示 Kit 的成立程度与精确指向两页 | 候选，等用户 review |
 
 需求 ID 与资产 ID 是多对多的关系，覆盖程度以作品 README 为准。
 

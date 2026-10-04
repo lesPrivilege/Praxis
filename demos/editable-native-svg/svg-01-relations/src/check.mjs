@@ -8,7 +8,7 @@ import path from 'node:path';
 import { spawn, spawnSync } from 'node:child_process';
 import os from 'node:os';
 import { Refusal } from './kernel.mjs';
-import { HERE, GEN, NARROW, wideOf, cases, fixtures, edits, f01ToTracks, f02ToTracks, foldF02, f06ToQualify } from './cases.mjs';
+import { HERE, GEN, NARROW, cases, fixtures, edits, f01ToTracks, f02ToTracks, foldF02, f06ToQualify } from './cases.mjs';
 
 const results = [];
 const check = (id, name, fn) => {
@@ -46,7 +46,7 @@ check('A01', '语义编辑：换对象、增删节点、重绑一条关系', () 
   const before = draw('rel-fan', m);
   m.spokes[0].node = { id: 'lend-today', label: '当日办理出借手续' };
   m.spokes.splice(2, 1);
-  m.spokes.splice(1, 0, { edge_id: 'reference', label: '馆藏属于参考工具书', basis: '借阅规则 v3 第 4 条', node: { id: 'in-house', label: '只在馆内阅览' } });
+  m.spokes.splice(1, 0, { edge_id: 'reference', state: 'established', label: '馆藏属于参考工具书', basis: { id: 'rule-loan', label: '借阅规则', version: 3, locator: '第 4 条' }, node: { id: 'in-house', label: '只在馆内阅览' } });
   m.spokes.find((s) => s.edge_id === 'on-loan').node = { id: 'waitlist', label: '进入等候名单' };
   const notes = [];
   for (const w of WIDTHS) {
@@ -195,7 +195,7 @@ check('A11', '安全：没有可执行内容和外部引用，标签按文字插
   m.title = evil;
   const svg = draw('rel-fan', m).svg;
   must(!/<script/i.test(svg) && svg.includes('&lt;script&gt;alert(1)&lt;/script&gt; &amp; &quot;x&quot;'), '标签没有被转义');
-  must(textOf(svg, 'rule-loan@3#5.label').replace(/\s/g, '') === evil.replace(/\s/g, ''), '转义后的文字与输入不一致');
+  must(textOf(svg, 'rule-loan-3-5.label').replace(/\s/g, '') === evil.replace(/\s/g, ''), '转义后的文字与输入不一致');
   return `${files.length} 个文件无 script、事件属性、外链、style、foreignObject、image、DOCTYPE、实体；注入的 <script> 字样作为文字显示`;
 });
 
@@ -214,7 +214,7 @@ check('A14', '拒用：越界输入给出理由，不硬画', () => {
   let nine = null;
   try {
     const m = clone(byId('fan-branch-8').model);
-    m.spokes.splice(7, 0, { edge_id: 'b9', label: '第九条', node: { id: 'n9', label: '第九个去向' } });
+    m.spokes.splice(7, 0, { edge_id: 'b9', state: 'established', label: '第九条', node: { id: 'n9', label: '第九个去向' } });
     draw('rel-fan', m);
   } catch (e) {
     nine = e.code;
@@ -245,9 +245,10 @@ const codeOf = (fn) => {
   }
 };
 const HUB = { id: 'h', label: '中心' };
-const sp = (o = {}) => ({ edge_id: 'e1', label: '条件', basis: '合成', node: { id: 'n1', label: '去向' }, ...o });
-const lane = { id: 'm', versions: [{ rev: 1 }, { rev: 2, current: true }] };
-const bind = (o = {}) => ({ id: 'b1', kind: '阅读', state: 'recorded', text: '已读', basis: [{ lane: 'm', rev: 1 }], ...o });
+const SYN = { text: '合成' };
+const sp = (o = {}) => ({ edge_id: 'e1', label: '条件', basis: SYN, state: 'established', node: { id: 'n1', label: '去向' }, ...o });
+const lane = { id: 'm', versions: [{ version: 1 }, { version: 2, current: true }] };
+const bind = (o = {}) => ({ id: 'b1', kind: '阅读', state: 'recorded', text: '已读', basis: [{ id: 'm', version: 1 }], ...o });
 const claim = { id: 'a', text: '古籍阅览室每周开放三天。' };
 
 check('B02', '独立复查发现的越界输入：现在都以拒用收场', () => {
@@ -260,18 +261,19 @@ check('B02', '独立复查发现的越界输入：现在都以拒用收场', () 
     ['关系与端点同名', 'duplicate-id', () => draw('rel-fan', { title: 't', direction: 'out', hub: HUB, spokes: [sp({ edge_id: 'n1' })] })],
     ['没有 title', 'title', () => draw('rel-fan', { direction: 'out', hub: HUB, spokes: [sp()] })],
     ['id 含空格', 'id', () => draw('rel-fan', { title: 't', direction: 'out', hub: { id: 'a b', label: '中心' }, spokes: [sp()] })],
-    ['两端都不在任何容器里', 'not-crossing', () => draw('rel-scope', { title: 't', containers: [{ id: 'c', label: '甲', boundary: '合成' }], members: [{ id: 'm1', label: 'M1', container: null }, { id: 'm2', label: 'M2' }], crossings: [{ edge_id: 'x', from: 'm1', to: 'm2', kind: 'k', basis: 'b' }] })],
-    ['跨界关系状态写成 proposed', 'state', () => draw('rel-scope', { title: 't', containers: [{ id: 'c', label: '甲', boundary: '合成' }], members: [{ id: 'm1', label: 'M1', container: 'c' }, { id: 'm2', label: 'M2' }], crossings: [{ edge_id: 'x', from: 'm1', to: 'm2', kind: 'k', basis: 'b', state: 'proposed' }] })],
-    ['一个成员上接五条跨界关系', 'capacity', () => draw('rel-scope', { title: 't', containers: [{ id: 'c', label: '甲', boundary: '合成' }], members: [{ id: 'm1', label: 'M1', container: 'c' }, { id: 'm2', label: 'M2' }], crossings: [1, 2, 3, 4, 5].map((i) => ({ edge_id: `x${i}`, from: 'm1', to: 'm2', kind: 'k', basis: 'b' })) })],
+    ['两端都不在任何容器里', 'not-crossing', () => draw('rel-scope', { title: 't', containers: [{ id: 'c', label: '甲', boundary: '合成' }], members: [{ id: 'm1', label: 'M1', container: null }, { id: 'm2', label: 'M2' }], crossings: [{ edge_id: 'x', from: 'm1', to: 'm2', kind: 'k', basis: SYN, state: 'established' }] })],
+    ['跨界关系状态写成 proposed', 'state', () => draw('rel-scope', { title: 't', containers: [{ id: 'c', label: '甲', boundary: '合成' }], members: [{ id: 'm1', label: 'M1', container: 'c' }, { id: 'm2', label: 'M2' }], crossings: [{ edge_id: 'x', from: 'm1', to: 'm2', kind: 'k', basis: SYN, state: 'proposed' }] })],
+    ['一个成员上接五条跨界关系', 'capacity', () => draw('rel-scope', { title: 't', containers: [{ id: 'c', label: '甲', boundary: '合成' }], members: [{ id: 'm1', label: 'M1', container: 'c' }, { id: 'm2', label: 'M2' }], crossings: [1, 2, 3, 4, 5].map((i) => ({ edge_id: `x${i}`, from: 'm1', to: 'm2', kind: 'k', basis: SYN, state: 'established' })) })],
     ['片段是空字符串', 'fragment', () => draw('rel-qualify', { title: 't', claims: [claim], qualifiers: [{ id: 'q', type: 'note', text: '注', target: { claim: 'a', fragment: '' } }] })],
     ['片段只有换行', 'fragment', () => draw('rel-qualify', { title: 't', claims: [{ id: 'a', text: '第一行\n第二行' }], qualifiers: [{ id: 'q', type: 'note', text: '注', target: { claim: 'a', fragment: '\n' } }] })],
     ['同时写 claim 和 claims', 'target', () => draw('rel-qualify', { title: 't', claims: [claim], qualifiers: [{ id: 'q', type: 'note', text: '注', target: { claim: 'a', claims: ['a'] } }] })],
     ['限定语与主张同名', 'duplicate-id', () => draw('rel-qualify', { title: 't', claims: [claim], qualifiers: [{ id: 'a', type: 'note', text: '注', target: { claim: 'a' } }] })],
     ['整体说明没有 id', 'id', () => draw('rel-qualify', { title: 't', claims: [claim], global_notes: [{ text: '说明' }] })],
-    ['已核对的证据版本是空串', 'unlocated-source', () => draw('rel-qualify', { title: 't', claims: [claim], qualifiers: [{ id: 'q', type: 'evidence', relation: 'supports', status: 'verified', target: { claim: 'a' }, source: { id: 's', version: '', locator: 'p' } }] })],
-    ['绑定与版本同名', 'duplicate-id', () => draw('rel-tracks', { title: 't', lanes: [lane], bindings: [bind({ id: 'm@1' })] })],
+    ['已核对的证据版本是空串', 'anchor', () => draw('rel-qualify', { title: 't', claims: [claim], qualifiers: [{ id: 'q', type: 'evidence', relation: 'supports', status: 'verified', target: { claim: 'a' }, source: { id: 's', version: '', locator: 'p' } }] })],
+    ['绑定与版本线同名', 'duplicate-id', () => draw('rel-tracks', { title: 't', lanes: [lane], bindings: [bind({ id: 'm' })] })],
+    ['id 里带 @', 'id', () => draw('rel-tracks', { title: 't', lanes: [lane], bindings: [bind({ id: 'm@1' })] })],
     ['依据是 null', 'dangling-basis', () => draw('rel-tracks', { title: 't', lanes: [lane], bindings: [bind({ basis: [null] })] })],
-    ['同一个版本写两次', 'duplicate-basis', () => draw('rel-tracks', { title: 't', lanes: [lane], bindings: [bind({ basis: [{ lane: 'm', rev: 1 }, { lane: 'm', rev: 1 }] })] })],
+    ['同一个版本写两次', 'duplicate-basis', () => draw('rel-tracks', { title: 't', lanes: [lane], bindings: [bind({ basis: [{ id: 'm', version: 1 }, { id: 'm', version: 1 }] })] })],
     ['先拒绝又接受同一个候选', 'conflict', f02([e1, e2, { id: 'e3', kind: 'accept', candidate: 'e1' }])],
     ['两个事件各接受一次', 'conflict', f02([e1, { id: 'e3', kind: 'accept', candidate: 'e1' }, { id: 'e4', kind: 'accept', candidate: 'e1' }])],
     ['接受一个不存在的候选', 'illegal-event', f02([e1, { id: 'e3', kind: 'accept', candidate: 'nope' }])],
@@ -285,12 +287,12 @@ check('B02', '独立复查发现的越界输入：现在都以拒用收场', () 
 
 check('B03', '独立复查发现的误导画法：现在图里写明', () => {
   for (const w of WIDTHS) {
-    const nd = draw('rel-fan', { title: 't', direction: 'out', basis: '借阅规则 v3', no_default: '两个条件已经穷尽', hub: HUB, spokes: [sp({ basis: undefined }), sp({ edge_id: 'e2', basis: undefined, node: { id: 'n2', label: '其他' } })] }, w).svg;
-    must(textOf(nd, 'h.foot.0') === '依据：借阅规则 v3' && textOf(nd, 'h.foot.1') === '没有默认分支：两个条件已经穷尽', `宽 ${w}：共用依据或“没有默认分支”没有画进图里`);
-    const two = { title: 't', lanes: [lane, { id: 'r', versions: [{ rev: 3, current: true }] }], bindings: [bind({ id: 'd4', state: 'rejected', basis: [{ lane: 'm', rev: 1 }, { lane: 'r', rev: 3 }] }), bind({ id: 'done', kind: '决定', state: 'decided', basis: [{ lane: 'm', rev: 2 }] }), bind({ id: 'wait', kind: '决定', state: 'open', basis: [{ lane: 'm', rev: 2 }] })] };
+    const nd = draw('rel-fan', { title: 't', direction: 'out', basis: { id: 'rule-loan', label: '借阅规则', version: 3 }, no_default: '两个条件已经穷尽', hub: HUB, spokes: [sp({ basis: undefined }), sp({ edge_id: 'e2', basis: undefined, node: { id: 'n2', label: '其他' } })] }, w).svg;
+    must(textOf(nd, 'h.basis') === '依据：借阅规则 v3' && textOf(nd, 'h.no-default') === '没有默认分支：两个条件已经穷尽', `宽 ${w}：共用依据或“没有默认分支”没有画进图里`);
+    const two = { title: 't', lanes: [lane, { id: 'r', versions: [{ version: 3, current: true }] }], bindings: [bind({ id: 'd4', state: 'rejected', basis: [{ id: 'm', version: 1 }, { id: 'r', version: 3 }] }), bind({ id: 'done', kind: '决定', state: 'decided', basis: [{ id: 'm', version: 2 }] }), bind({ id: 'wait', kind: '决定', state: 'open', basis: [{ id: 'm', version: 2 }] })] };
     const tr = draw('rel-tracks', two, w).svg;
     must(textOf(tr, 'd4.ref.r@3').includes('已拒绝'), `宽 ${w}：第二个依据处没有写出状态`);
-    must(/stroke-dasharray="4 3" data-link-for="d4" data-to="r@3"/.test(tr), `宽 ${w}：第二个依据处的接线仍是实线`);
+    must(/stroke-dasharray="4 3"[^>]*data-link-for="d4" data-to="r@3"/.test(tr), `宽 ${w}：第二个依据处的接线仍是实线`);
     const head = (id) => tr.match(new RegExp(`<text[^>]*fill="([^"]*)"[^>]*data-text="${id}.head"`))[1];
     must(head('done') !== '#1f5fd1' && head('wait') === '#1f5fd1', `宽 ${w}：已作出的决定仍是蓝色，或待定的不是蓝色`);
     const fr = draw('rel-qualify', { title: 't', claims: [{ id: 'a', text: '甲方案须在周一提交，乙方案须在周三提交。' }], qualifiers: [{ id: 'q0', type: 'condition', text: '仅甲方案', target: { claim: 'a', fragment: '甲方案' } }, { id: 'q1', type: 'evidence', relation: 'supports', status: 'verified', source: { id: 's', version: 1, locator: 'p' }, target: { claim: 'a', fragment: '乙方案' } }] }, w).svg;
@@ -304,13 +306,65 @@ check('B03', '独立复查发现的误导画法：现在图里写明', () => {
   return '共用依据与“没有默认分支”画进图里；第二个依据处带状态和虚线；只有待定的决定用蓝色；限定语标题引出片段；只限定片段的证据不算整项主张有证据';
 });
 
+check('B04', '第二轮复查发现的问题：缺省、原型键、假版本、组合的边界', () => {
+  const ev = (source, extra = {}) => () => draw('rel-qualify', { title: 't', claims: [claim], qualifiers: [{ id: 'q', type: 'evidence', relation: 'supports', status: 'verified', target: { claim: 'a' }, source, ...extra }] });
+  const sheetOf = (pieces, width = 480) => () => GEN['rel-sheet']({ title: 't', pieces }, { width, scope: 'chk' });
+  const tr = (id = 'r') => ({ asset: 'rel-tracks', heading: `版本 ${id}`, model: { title: 't', lanes: [{ id: 'r', label: '规则', versions: [{ version: 1 }, { version: 2, current: true }] }] } });
+  const fn = (basis) => ({ asset: 'rel-fan', heading: '分支', model: { title: 't', direction: 'out', hub: HUB, spokes: [sp({ basis })] } });
+  const table = [
+    ['分支没有写状态', 'state', () => draw('rel-fan', { title: 't', direction: 'out', hub: HUB, spokes: [sp({ state: undefined })] })],
+    ['跨界关系没有写状态', 'state', () => draw('rel-scope', { title: 't', containers: [{ id: 'c', label: '甲', boundary: '合成' }], members: [{ id: 'm1', label: 'M1', container: 'c' }, { id: 'm2', label: 'M2' }], crossings: [{ edge_id: 'x', from: 'm1', to: 'm2', kind: 'k', basis: SYN }] })],
+    ['归属写成 constructor', 'origin', () => draw('rel-tracks', { title: 't', lanes: [lane], bindings: [bind({ origin: 'constructor' })] })],
+    ['证据关系写成 constructor', 'relation', ev({ id: 's', version: 1, locator: 'p' }, { relation: 'constructor' })],
+    ['限定语类型写成 toString', 'type', () => draw('rel-qualify', { title: 't', claims: [claim], qualifiers: [{ id: 'q', type: 'toString', text: 'x', target: { claim: 'a' } }] })],
+    ['汇合规则写成 toString', 'rule', () => draw('rel-fan', { title: 't', direction: 'in', rule: 'toString', hub: HUB, spokes: [sp()] })],
+    ['已核对的证据版本是 latest', 'anchor', ev({ id: 's', version: 'latest', locator: 'p' })],
+    ['已核对的证据版本是 v3', 'anchor', ev({ id: 's', version: 'v3', locator: 'p' })],
+    ['已核对的证据版本是 NaN', 'anchor', ev({ id: 's', version: NaN, locator: 'p' })],
+    ['已核对的证据版本是 true', 'anchor', ev({ id: 's', version: true, locator: 'p' })],
+    ['位置只有空格', 'anchor', ev({ id: 's', version: 1, locator: ' ' })],
+    ['名字是空串', 'anchor', ev({ id: 's', label: '', version: 1, locator: 'p' })],
+    ['同时写 id 和 text', 'anchor', ev({ id: 's', text: '口述', version: 1, locator: 'p' })],
+    ['绑定的依据没有版本', 'no-version', () => draw('rel-tracks', { title: 't', lanes: [lane], bindings: [bind({ basis: [{ id: 'm' }] })] })],
+    ['组合里的 asset 是 constructor', 'pieces', sheetOf([{ asset: 'constructor', heading: 'x', model: {} }, tr()])],
+    ['组合宽度 672', 'capacity', sheetOf([fn({ id: 'r', version: 2 }), tr()], 672)],
+    ['同一个版本在另外两件里都画了', 'ambiguous-target', sheetOf([fn({ id: 'r', version: 2 }), tr('甲'), tr('乙')])],
+    ['指向的 id 里带 @', 'id', sheetOf([fn({ id: 'r@2' }), tr()])],
+    ['同一个对象两处名字不同', 'inconsistent-label', sheetOf([fn({ id: 'r', label: '规则', version: 2 }), { ...fn({ id: 'r', label: '借阅规则', version: 1 }), heading: '另一个分支', model: { title: 't', direction: 'out', hub: { id: 'h2', label: '中心' }, spokes: [sp({ edge_id: 'e2', basis: { id: 'r', label: '借阅规则', version: 1 }, node: { id: 'n2', label: '去向' } })] } }, tr()])],
+  ];
+  const wrong = table.map(([name, code, f]) => [name, code, codeOf(f)]).filter(([, code, got]) => got !== code);
+  must(!wrong.length, wrong.map(([name, code, got]) => `${name}：应为 ${code}，实际 ${got ?? '画出来了'}`).join('；'));
+
+  // 该画出来的仍然画得出来
+  must(codeOf(() => draw('rel-tracks', { title: 't', lanes: [{ id: 'constructor', versions: [{ version: 1, current: true }] }] })) === null, '名叫 constructor 的版本线被误拒');
+  must(codeOf(() => draw('rel-tracks', { title: 't', lanes: [lane], bindings: [bind({ basis: [{ id: 'm', version: '2' }] })] })) === null, '写成字符串 "2" 的版本没有对上数字 2');
+
+  for (const w of WIDTHS) {
+    const allPending = clone(byId('fan-join').model);
+    allPending.spokes.forEach((x) => (x.state = 'pending'));
+    const fj = draw('rel-fan', allPending, w).svg;
+    must(textOf(fj, 'in-fire.sub').includes('尚未成立'), `宽 ${w}：未成立的输入旁边没有写“尚未成立”`);
+    must(textOf(fj, 'opening.arrived').includes('汇合条件未满足'), `宽 ${w}：汇合没有写是否满足`);
+    must(/data-role="legend"/.test(fj) && !fj.includes('>已确认<'), `宽 ${w}：只有虚线时没有图例，或图例列了图里没有的端点`);
+    const sc = clone(byId('scope-library').model);
+    sc.crossings.forEach((x) => (x.state = 'pending'));
+    must(textOf(draw('rel-scope', sc, w).svg, 'fetch.key').includes('尚未成立'), `宽 ${w}：未成立的跨界关系没有写“尚未成立”`);
+    const ro = draw('rel-tracks', { title: 't', lanes: [lane], bindings: [bind(), bind({ id: 'wait', kind: '决定', state: 'open', basis: [{ id: 'm', version: 2 }] })] }, w).svg;
+    must(ro.includes('等人决定') && !ro.includes('>未确认<'), `宽 ${w}：图里只有蓝色的空心端点，图例却列了普通的“未确认”`);
+  }
+  const sh = GEN['rel-sheet'](byId('sheet-rare-book').model, { width: 480, scope: 'chk' });
+  must(sh.links.length === 4 && sh.equivalent.notes.every((t) => !/@|#/.test(t)), '组合的等效文字里出现了给程序用的键');
+  must(/data-basis="slip-D-12@1"/.test(sh.svg) && !/data-basis="[^"]* [^"]*@/.test(sh.svg), 'data-basis 仍把几条指向用空格拼在一起');
+  return `${table.length} 种输入按预期代码拒用；未成立的关系和汇合都写了词；图例只列图里有的画法；组合的等效文字用读者的写法`;
+});
+
 check('A11b', '四个生成器都按文字插入不可信标签', () => {
   const evil = '<script>alert(1)</script>&"';
   const svgs = [
-    draw('rel-fan', { title: evil, direction: 'out', hub: { id: 'h', label: evil }, spokes: [sp({ label: evil, basis: evil, node: { id: 'n1', label: evil } })] }).svg,
-    draw('rel-scope', { title: evil, containers: [{ id: 'c', label: evil, boundary: evil }], members: [{ id: 'm1', label: evil, container: 'c' }, { id: 'm2', label: evil }], crossings: [{ edge_id: 'x', from: 'm1', to: 'm2', kind: evil, basis: evil, status: evil }] }).svg,
-    draw('rel-qualify', { title: evil, claims: [{ id: 'a', text: evil }], qualifiers: [{ id: 'q', type: 'evidence', relation: 'limits', status: 'inferred', source: { id: evil }, text: evil, target: { claim: 'a', fragment: 'alert' } }], global_notes: [{ id: 'g', text: evil }] }).svg,
-    draw('rel-tracks', { title: evil, lanes: [{ id: 'm', role: evil, label: evil, versions: [{ rev: 1, label: evil, current: true }] }], bindings: [bind({ text: evil, kind: evil, resolution: { id: 'r', kind: evil, text: evil } })], absences: [{ lane: 'm', rev: 1, text: evil }] }).svg,
+    draw('rel-fan', { title: evil, direction: 'out', hub: { id: 'h', label: evil }, spokes: [sp({ label: evil, basis: { text: evil }, node: { id: 'n1', label: evil } })] }).svg,
+    draw('rel-scope', { title: evil, containers: [{ id: 'c', label: evil, boundary: evil }], members: [{ id: 'm1', label: evil, container: 'c' }, { id: 'm2', label: evil }], crossings: [{ edge_id: 'x', from: 'm1', to: 'm2', kind: evil, basis: { id: 'src', label: evil }, status: evil, state: 'established' }] }).svg,
+    draw('rel-qualify', { title: evil, claims: [{ id: 'a', text: evil }], qualifiers: [{ id: 'q', type: 'evidence', relation: 'limits', status: 'inferred', source: { text: evil }, text: evil, target: { claim: 'a', fragment: 'alert' } }], global_notes: [{ id: 'g', text: evil }] }).svg,
+    draw('rel-tracks', { title: evil, lanes: [{ id: 'm', role: evil, label: evil, versions: [{ version: 1, label: evil, current: true }] }], bindings: [bind({ text: evil, kind: evil, resolution: { id: 'r', kind: evil, text: evil } })], absences: [{ id: 'm', version: 1, text: evil }] }).svg,
   ];
   for (const svg of svgs) must(!/<script/i.test(svg) && svg.includes('&lt;script&gt;'), '有标签没有被转义');
   return '标题、标签、依据、状态、来源、空缺说明里的 <script> 字样都作为文字输出';
@@ -360,7 +414,7 @@ const refsOk = (svg) => {
   for (const el of svg.querySelectorAll('[marker-end]')) {
     const id = el.getAttribute('marker-end').slice(5, -1);
     const t = document.getElementById(id);
-    if (!t || t.closest('svg') !== svg) bad.push(id);
+    if (!t || t.closest('svg') !== el.closest('svg')) bad.push(id);
   }
   for (const id of svg.getAttribute('aria-labelledby').split(' ')) {
     const t = document.getElementById(id);
@@ -372,14 +426,17 @@ for (const it of items) {
   const svg = document.getElementById(it.scope);
   const sink = it.group === 'control' ? out.control : out;
   out.svgs++;
-  const vb = svg.viewBox.baseVal;
   const boxes = [];
   for (const lab of it.labels) {
-    const el = svg.querySelector('text[data-text="' + CSS.escape(lab.key) + '"]');
+    // 组合图里的文字在嵌入的那一件里找；宽度按本件坐标量，重叠和穿线按屏幕坐标量
+    const root = lab.in ? document.getElementById(lab.in) : svg;
+    const vb = root.viewBox.baseVal;
+    const el = root.querySelector('text[data-text="' + CSS.escape(lab.key) + '"]');
     if (!el) { out.missing.push(it.scope + ' ' + lab.key); continue; }
     out.texts++;
     const b = el.getBBox();
-    boxes.push({ key: lab.key, b });
+    const sr = el.getBoundingClientRect();
+    boxes.push({ key: lab.key, b: { x: sr.x, y: sr.y, width: sr.width, height: sr.height } });
     if (b.width > lab.budget + 0.5) out.overBudget.push({ scope: it.scope, key: lab.key, actual: +b.width.toFixed(1), budget: lab.budget });
     if (b.x < vb.x - 0.5 || b.y < vb.y - 0.5 || b.x + b.width > vb.x + vb.width + 0.5 || b.y + b.height > vb.y + vb.height + 0.5) out.outside.push(it.scope + ' ' + lab.key);
     if (lab.w > 40) out.slack.push(b.width / lab.w);
@@ -390,7 +447,8 @@ for (const it of items) {
   // 线段不穿过文字（跨界编号有意压在线上，除外）
   for (const p of svg.querySelectorAll('path[d]')) {
     if (p.closest('defs')) continue;
-    const pts = [...p.getAttribute('d').matchAll(/[ML]\\s*(-?[\\d.]+)[ ,](-?[\\d.]+)/g)].map((m) => [+m[1], +m[2]]);
+    const ctm = p.getScreenCTM();
+    const pts = [...p.getAttribute('d').matchAll(/[ML]\\s*(-?[\\d.]+)[ ,](-?[\\d.]+)/g)].map((m) => [ctm.a * m[1] + ctm.c * m[2] + ctm.e, ctm.b * m[1] + ctm.d * m[2] + ctm.f]);
     for (let i = 1; i < pts.length; i++) {
       const seg = { x: Math.min(pts[i - 1][0], pts[i][0]), y: Math.min(pts[i - 1][1], pts[i][1]), width: Math.abs(pts[i][0] - pts[i - 1][0]), height: Math.abs(pts[i][1] - pts[i - 1][1]) };
       for (const t of boxes) {
@@ -473,7 +531,10 @@ const runChrome = () =>
     let buf = '';
     const done = (v) => {
       p.kill('SIGKILL');
-      fs.rmSync(profile, { recursive: true, force: true });
+      // Chrome 被杀掉后还可能在写临时目录，删不掉就留给系统清理
+      try {
+        fs.rmSync(profile, { recursive: true, force: true, maxRetries: 5, retryDelay: 200 });
+      } catch {}
       resolve(v);
     };
     const timer = setTimeout(() => done({ ran: false, why: 'Chrome 60 秒内没有输出结果' }), 60000);

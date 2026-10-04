@@ -9,11 +9,13 @@ import { fan } from './fan.mjs';
 import { scope } from './scope.mjs';
 import { qualify } from './qualify.mjs';
 import { tracks } from './tracks.mjs';
+import { sheet } from './sheet.mjs';
 
 export const HERE = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 export const GEN = { 'rel-fan': fan, 'rel-scope': scope, 'rel-qualify': qualify, 'rel-tracks': tracks };
+GEN['rel-sheet'] = (model, opt) => sheet(model, { ...opt, generators: GEN });
 export const NARROW = 288;
-export const wideOf = (asset) => (asset === 'rel-scope' ? 480 : 672);
+export const wideOf = (asset) => (asset === 'rel-scope' || asset === 'rel-sheet' ? 480 : 672);
 
 const readJson = (p) => JSON.parse(fs.readFileSync(p, 'utf8'));
 export const fixtures = () => {
@@ -30,9 +32,9 @@ export function f01ToTracks(f) {
   return {
     title: f.task,
     lanes: [
-      { id: f.matter.id, role: '事项', versions: [{ rev: f.matter.revision, label: f.matter.status, current: true }] },
-      { id: latest.id, role: '材料', versions: f.materials.map((x) => ({ rev: x.revision, label: x.label, current: x === latest })) },
-      { id: f.rule.id, role: '规则', versions: [{ rev: f.rule.revision, label: f.rule.text, current: true }] },
+      { id: f.matter.id, role: '事项', versions: [{ version: f.matter.revision, label: f.matter.status, current: true }] },
+      { id: latest.id, role: '材料', versions: f.materials.map((x) => ({ version: x.revision, label: x.label, current: x === latest })) },
+      { id: f.rule.id, role: '规则', versions: [{ version: f.rule.revision, label: f.rule.text, current: true }] },
     ],
     bindings: [
       ...readings.map((x) => ({
@@ -41,14 +43,14 @@ export function f01ToTracks(f) {
         kind: '阅读',
         state: 'recorded',
         text: x.statement,
-        basis: [{ lane: x.basis.material_id, rev: x.basis.revision, locator: x.basis.fragment }],
+        basis: [{ id: x.basis.material_id, version: x.basis.revision, locator: x.basis.fragment }],
       })),
-      { id: f.proposal.id, origin: 'machine', kind: '建议', state: 'proposed', text: f.proposal.text, basis: [{ lane: latest.id, rev: latest.revision }] },
+      { id: f.proposal.id, origin: 'machine', kind: '建议', state: 'proposed', text: f.proposal.text, basis: [{ id: latest.id, version: latest.revision }] },
       f.decision
-        ? { id: f.decision.id, origin: 'human', kind: '决定', state: 'decided', text: f.decision.text, basis: [{ lane: f.matter.id, rev: f.matter.revision }] }
-        : { id: 'decision-pending', origin: 'human', kind: '决定', state: 'open', text: '尚未作出', basis: [{ lane: f.matter.id, rev: f.matter.revision }] },
+        ? { id: f.decision.id, origin: 'human', kind: '决定', state: 'decided', text: f.decision.text, basis: [{ id: f.matter.id, version: f.matter.revision }] }
+        : { id: 'decision-pending', origin: 'human', kind: '决定', state: 'open', text: '尚未作出', basis: [{ id: f.matter.id, version: f.matter.revision }] },
     ],
-    absences: f.materials.filter((x) => !read(x.revision)).map((x) => ({ lane: x.id, rev: x.revision, text: '没有人阅读这个版本的记录' })),
+    absences: f.materials.filter((x) => !read(x.revision)).map((x) => ({ id: x.id, version: x.revision, text: '没有人阅读这个版本的记录' })),
   };
 }
 
@@ -96,13 +98,13 @@ export function f02ToTracks(f) {
       kind: '候选',
       state: res?.kind === 'reject' ? 'rejected' : res?.kind === 'accept' ? 'recorded' : 'proposed',
       text: `提议改为：${fieldText(e.proposes)}`,
-      basis: [{ lane, rev: f.object.revision }],
+      basis: [{ id: lane, version: f.object.revision }],
       resolution: res && { id: res.id, kind: res.kind === 'reject' ? '拒绝' : '接受', text: res.reason ?? '没有写理由', replays: res.replays },
     };
   });
   return {
     title: f.task,
-    lanes: [{ id: lane, role: '对象', versions: versions.map((v) => ({ rev: v.rev, label: fieldText(v.fields), current: v === current })) }],
+    lanes: [{ id: lane, role: '对象', versions: versions.map((v) => ({ version: v.rev, label: fieldText(v.fields), current: v === current })) }],
     bindings: [
       ...candidates,
       {
@@ -111,7 +113,7 @@ export function f02ToTracks(f) {
         kind: '投影',
         state: 'recorded',
         text: `选入：${f.context.selected_fields.join('、') || '无'}。没有选入、仍在对象里：${rest.join('、') || '无'}。`,
-        basis: [{ lane, rev: f.context.basis_revision }],
+        basis: [{ id: lane, version: f.context.basis_revision }],
       },
     ],
   };
@@ -164,7 +166,7 @@ const FIVE = {
   qualifiers: [
     ['ev-notice', 'supports', 'verified', { id: 'notice-03', version: 2, locator: '第 1 段' }, '公告写明周二、周四、周六开放。'],
     ['ev-site', 'supports', 'verified', { id: 'site-hours', version: 5, locator: '开放时间表' }, '网站开放时间表与公告一致。'],
-    ['ev-desk', 'supports', 'inferred', { id: 'desk-note' }, '服务台口头确认，没有书面记录。'],
+    ['ev-desk', 'supports', 'inferred', { text: '服务台口头确认' }, '没有书面记录。'],
     ['ev-roster', 'contradicts', 'verified', { id: 'roster-10', version: 1, locator: '第 3 行' }, '十月值班表只排了两天。'],
     ['ev-holiday', 'limits', 'verified', { id: 'notice-03', version: 2, locator: '第 3 段' }, '法定节假日当周另行公告。'],
   ].map(([id, relation, status, source, text]) => ({ id, type: 'evidence', relation, status, source, text, target: { claim: 'c-open' } })),

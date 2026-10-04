@@ -23,7 +23,9 @@
 | 需求里出现风格名 | [视觉语言参考](references/languages.md) |
 | 界面控件、对象状态和可达性检查 | [界面参考 U01–U09](references/interface.md) |
 | 关系图、数据图、导航和页面节奏 | [编排参考 C01–C25](references/composition.md) |
-| 需要可改文字、关系、数据并可组合的原生 SVG | [SVG 需求与绘制项目](../../demos/editable-native-svg/README.md)：候选登记与分批工单；第一批有四个关系图件，仍是候选，未经用户 review |
+| 图里或页面里既有已定的、也有未定的、被否的或等人决定的内容 | [成立程度与归属的标记](foundations/standing.md) |
+| 证据、条件、注释或判断要指向某个对象的某个版本、某一处 | [精确指向](foundations/anchoring.md) |
+| 需要可改文字、关系、数据并可组合的原生 SVG | [SVG 需求与绘制项目](../../demos/editable-native-svg/README.md)：候选登记与分批工单；第一批有四个关系图件和一个组合件，仍是候选，未经用户 review |
 
 其余情形依据不足时，再展开 [References](references/README.md) 和 Vault。配色、字体、密度与媒介参数在消费者项目决定，历史 accepted 不自动扩散为全局规则。
 
