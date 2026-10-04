@@ -45,3 +45,5 @@ accepted 表示本仓库当时采纳；技术实现与使用证据在对应契�
 - [ADR-024：成文默认与审阅范围的窄修订](024-prose-defaults-and-review-scope.md)（accepted；信息作用、语体、句式与修改记录按任务判断，参考低权重；Write 纯文本职责收缩待迁移裁决，目录与所有权未改）。
 
 - [ADR-025：成立程度的标记与精确指向进入 Design Foundations](025-relation-marks-and-anchors.md)（accepted；Foundations 加两页，各给约束、关系图的默认和三级做法；实现与样板留在 demo；合成内容、单一制作者、无对照）。
+
+- [ADR-027：成文审阅的目标与结构位置的取形](027-prose-review-goal-and-structural-text.md)（accepted；用户裁决恢复两项：审阅以更接近人类作者为目标，结构位置用凝练、并列的短语；审阅新增句式重复检查和结构文字的独立审阅；修订 ADR-024 的两处，其余不变；新条文尚未在真实任务上用过）。

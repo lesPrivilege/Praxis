@@ -49,3 +49,4 @@
 - [2026-10-03 Palantir 首次设计打样](../../demos/palantir-discovery/README.md#验收记录)：交接包入账，做成一页离线交互网页和 A4 打印样张；五条交互路径、宽窄屏和打印逐页检查通过；Lonsdale 条目对应改正；页面文字补做 Prose 审校；减少动效、读屏和受众测试没有做。入口修订与对照走读见 [ADR-023](../decisions/023-consume-by-artifact-component.md)。
 
 - [2026-10-02 A3 真实任务消费与双媒介施工](../../demos/visual-grammar/a3-event-state-context/acceptance.md)：指定 b76ece4 基线，VG-01 合成输入改编，交互 HTML 与 84 秒 Remotion MP4；实际消费/工具轨迹、渲染、解码、隔离 Chromium 交互与抽样目检证据。原生屏幕通道失联，连续原生观看、真实浏览器 200% 缩放与受众验证仍未执行；未做消融/双盲或 Kit 因果归因。
+- [2026-10-05 成文审阅目标与结构位置的恢复](prose-review-restoration-20261005.md)：知识片的文案反馈触发；从答卷会话日志召回用户原裁决，与 ADR-024 之后的条文有两处相反；按用户裁决恢复，并新增句式重复检查和结构文字的独立审阅；ASD-STE100 官方页面仍无法访问；新条文尚未使用。
