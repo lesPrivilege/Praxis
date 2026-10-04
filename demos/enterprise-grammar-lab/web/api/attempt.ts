@@ -1,7 +1,7 @@
 // One action attempt, from submission to a known outcome.
 // A lost response is not a failure: the attempt keeps its identity and is checked before any retry.
 import { useQueryClient } from '@tanstack/react-query';
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { ApiError } from './core.ts';
 import type { W } from './core.ts';
 
@@ -23,6 +23,17 @@ export interface Attempt<I, R> {
 
 const ACTION_TIMEOUT_MS = 15_000;
 
+// Closing the tab or reloading drops whatever lives only in this page. While `when` holds, the browser asks first;
+// the wording of that dialog is the browser's own and cannot be set.
+export function useUnloadConfirm(when: boolean): void {
+  useEffect(() => {
+    if (!when) return;
+    const ask = (event: BeforeUnloadEvent) => event.preventDefault();
+    window.addEventListener('beforeunload', ask);
+    return () => window.removeEventListener('beforeunload', ask);
+  }, [when]);
+}
+
 export function useAttempt<I, R>(
   send: (input: I, attemptId: string, signal: AbortSignal) => Promise<R>,
   // Turns what the backend recorded for the attempt into the result `send` would have returned.
@@ -35,6 +46,8 @@ export function useAttempt<I, R>(
   // Set the moment a submission starts. State alone would let two quick clicks both pass before the next render.
   const busy = useRef(false);
   const queryClient = useQueryClient();
+  // The attempt number is kept nowhere else; without it the outcome can only be read off the object afterwards.
+  useUnloadConfirm(state.phase === 'submitting' || state.phase === 'unknown');
 
   const settle = useCallback(
     (next: AttemptState<R>) => {

@@ -5,6 +5,7 @@ import { Alert, Button, Flex, Form, Modal, Typography } from 'antd';
 import { useState } from 'react';
 import type { ReactNode } from 'react';
 import { useBlocker } from 'react-router';
+import { useUnloadConfirm } from '../api/attempt.ts';
 import type { Attempt } from '../api/attempt.ts';
 import type { W } from '../api/core.ts';
 import { ActionBar } from './ActionBar.tsx';
@@ -69,6 +70,8 @@ export function ActionPanel({
 
   // Leaving the page would drop unsent input, or the attempt number needed to check an unknown outcome.
   const unsent = dirty && active !== null && phase !== 'applied';
+  // In-app navigation is held by the blocker below; closing or reloading the tab by the browser's own dialog.
+  useUnloadConfirm(unsent);
   const blocker = useBlocker(
     ({ currentLocation, nextLocation }) => (unsent || locked) && currentLocation.pathname !== nextLocation.pathname,
   );
