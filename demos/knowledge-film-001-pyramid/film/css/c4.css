@@ -1,0 +1,112 @@
+/* Chapter 4, 怎样被用坏 (c4-misuse.js). The Columbia slide has its own file, c4b.css. */
+
+/* running index 一…五 and the title of each misuse */
+.c4-index { position: absolute; left: 430px; top: 53px; display: flex; gap: 20px; z-index: 55; }
+.c4-ix { font: 900 30px/1.5 var(--serif); color: #a9b4c3; }
+.c4-title { position: absolute; left: 180px; top: 122px; z-index: 6; }
+.c4-title .line-inner { font: 900 64px/1.3 var(--serif); letter-spacing: .02em; color: var(--ink); }
+.c4-title b { color: var(--blue); margin-right: -6px; }
+.c4-kick { font: 600 30px/1.4 var(--sans); letter-spacing: .1em; color: var(--ink3); white-space: nowrap; }
+.c4-note { font: 500 30px/1.4 var(--sans); letter-spacing: .04em; color: var(--ink3); white-space: nowrap; }
+.c4-say { font: 700 46px/1.4 var(--serif); color: var(--ink); white-space: nowrap; }
+.c4-say .red { color: var(--red); }
+
+/* the pyramid: same object as Chapter 2 */
+.c4-pyr { transform-origin: 0 0; }
+.c4-lab { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; white-space: nowrap; }
+.c4-top { --ring: 0; --void: 0; border-radius: 6px;
+  background: color-mix(in srgb, var(--paper) calc(var(--void) * 100%), var(--blue));
+  color: color-mix(in srgb, var(--ink2) calc(var(--void) * 100%), #fff);
+  box-shadow: 0 0 0 calc(var(--ring) * 12px) rgba(31, 79, 224, .22); }
+.c4-top::after { content: ""; position: absolute; inset: 0; border: 3px dashed var(--ink3); border-radius: 6px; opacity: var(--void); }
+.c4-top .c4-lab { font: 900 42px/1.2 var(--serif); letter-spacing: .02em; }
+.c4-key { --ring: 0; background: #fff; border: 3px solid var(--ink); border-radius: 6px; box-shadow: 0 0 0 calc(var(--ring) * 9px) rgba(31, 79, 224, .22); }
+.c4-key .c4-lab { font: 700 34px/1.2 var(--serif); color: var(--ink); }
+.c4-card { --hot: 0; --tick: 1; background: #fff; border-radius: 4px;
+  border: 2px solid color-mix(in srgb, var(--blue) calc(var(--hot) * 100%), var(--rule));
+  box-shadow: 0 0 0 calc(var(--hot) * 4px) rgba(31, 79, 224, .18); }
+.c4-card span { position: absolute; left: 16px; top: 0; font: 500 30px/52px "Avenir Next", var(--sans); color: var(--ink); white-space: nowrap; }
+.c4-card::before { content: ""; position: absolute; left: -26px; top: 50%; width: 24px; height: 2px; margin-top: -1px; background: var(--ink3); opacity: var(--tick); }
+.c4-card.out { z-index: 4; }
+.c4-hollow { background: transparent; border: 2px dashed var(--ink3); }
+.c4-hollow span { color: var(--ink3); }
+.c4-etc span { left: auto; right: 18px; color: var(--ink2); }
+.c4-spine { width: 2px; background: var(--ink3); }
+.c4-cnt { --strike: 0; display: flex; align-items: baseline; gap: 8px; white-space: nowrap; }
+.c4-cnt b { font-size: 46px; line-height: 1; color: var(--ink); }
+.c4-cnt span { position: relative; font: 500 30px/1 var(--sans); color: var(--ink3); }
+.c4-cnt i { font-style: normal; }
+.c4-cnt i + i { position: absolute; left: 0; top: 0; }
+.c4-cnt::after { content: ""; position: absolute; left: -8px; top: 52%; width: 86px; height: 4px; background: var(--red); transform: scaleX(var(--strike)); transform-origin: 0 50%; }
+.c4-tpl { border: 2px dashed var(--ink3); border-radius: 8px; }
+.c4-rule { position: relative; padding-left: 58px; font: 700 34px/44px var(--serif); color: var(--ink); white-space: nowrap; }
+.c4-rule b { position: absolute; left: 0; top: 1px; width: 42px; height: 42px; border-radius: 50%; background: var(--blue); color: #fff; font-size: 26px; line-height: 42px; text-align: center; }
+
+/* MECE: one whole, cut into parts */
+.c4-mece .line-inner { font: 700 150px/1 "Avenir Next", var(--sans); letter-spacing: .02em; color: var(--ink); }
+.c4-gloss { display: flex; align-items: baseline; white-space: nowrap; }
+.c4-gloss i { width: 88px; font: 700 40px/1.3 "Avenir Next", var(--sans); font-style: normal; color: var(--blue); }
+.c4-gloss span { width: 440px; font: 500 36px/1.3 "Avenir Next", var(--sans); color: var(--ink2); }
+.c4-gloss b { font: 700 50px/1.3 var(--serif); color: var(--ink); }
+.c4-tag { font: 600 32px/1.4 var(--sans); letter-spacing: .04em; color: var(--blue); white-space: nowrap; }
+.c4-tag.red { color: var(--red); }
+.c4-tag.mid { text-align: center; }
+.c4-hatch { border: 3px solid var(--red); background: repeating-linear-gradient(135deg, rgba(221, 74, 60, .85) 0 5px, rgba(221, 74, 60, .12) 5px 13px); }
+.c4-gap { border: 3px dashed var(--red); background: var(--red-soft); }
+.c4-scan { width: 4px; background: var(--blue); }
+.c4-who i { display: block; font: 600 30px/1.4 var(--sans); font-style: normal; letter-spacing: .1em; color: var(--ink3); }
+.c4-who b { display: block; font: 900 64px/1.3 var(--serif); color: var(--ink); white-space: nowrap; }
+.c4-quote { font: 400 34px/1.4 var(--type); color: var(--ink); white-space: nowrap; }
+.c4-quote-zh { font: 400 30px/1.5 var(--serif); color: var(--ink2); white-space: nowrap; }
+
+/* the loop, and the partition laid over it */
+.c4-node { --ring: 0; display: flex; align-items: center; justify-content: center; background: #fff; border-radius: 50px; white-space: nowrap;
+  border: 3px solid color-mix(in srgb, var(--blue) calc(var(--ring) * 100%), var(--ink));
+  box-shadow: 0 0 0 calc(var(--ring) * 10px) rgba(31, 79, 224, .2); font: 700 44px/1 var(--serif); color: var(--ink); }
+.c4-verb { font: 500 34px/1.3 var(--sans); color: var(--ink2); white-space: nowrap; }
+.c4-verb.r { text-align: right; }
+.c4-center { text-align: center; font: 700 60px/1.4 var(--serif); color: var(--ink2); white-space: nowrap; }
+.c4-center.red { color: var(--red); font-weight: 900; }
+.c4-celllab { font: 600 32px/1.3 var(--sans); letter-spacing: .14em; color: var(--ink3); white-space: nowrap; }
+svg .c4-x { fill: none; stroke: var(--red); stroke-width: 7; stroke-linecap: round; }
+svg .ln.c4-arrow { stroke-width: 4; }
+
+/* 先说结论 / 先定结论 */
+.c4-pair { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; transform-origin: 0 0; }
+.c4-pairline { position: absolute; }
+.c4-pairline .line-inner { font: 900 150px/1.15 var(--serif); color: var(--ink); }
+.c4-pairline u { text-decoration: none; color: var(--red); }
+.c4-as { text-align: center; font: 500 40px/1.2 var(--sans); letter-spacing: .1em; color: var(--ink3); }
+.c4-gl i { display: block; font: 500 34px/1.5 var(--sans); font-style: normal; color: var(--ink3); white-space: nowrap; }
+.c4-gl b { display: block; font: 700 64px/1.3 var(--serif); color: var(--ink); white-space: nowrap; }
+.c4-gl.blue b { color: var(--blue); }
+.c4-dir b { display: block; font: 900 72px/1.15 var(--serif); color: var(--ink); }
+.c4-dir span { display: block; font: 500 30px/1.5 var(--sans); color: var(--ink3); white-space: nowrap; }
+.c4-dir.blue b { color: var(--blue); }
+.c4-pilelab { font: 600 34px/1.3 var(--sans); letter-spacing: .04em; color: var(--ink2); white-space: nowrap; }
+.c4-verdict { font: 900 56px/1.3 var(--serif); color: var(--ink); white-space: nowrap; }
+.c4-verdict span { color: var(--red); }
+
+/* c4.17: when not to lead with the answer */
+.c4-veil { background: var(--night); z-index: 70; pointer-events: none; }
+.c4-sheet { background: #fff; border: 2px solid var(--rule); border-radius: 4px; }
+.c4-blk { --hot: 0; padding: 18px 26px 0; background: var(--paper); border-radius: 6px;
+  border: 3px solid color-mix(in srgb, var(--blue) calc(var(--hot) * 100%), var(--rule)); }
+.c4-blk i { display: block; font: 600 30px/1.3 var(--sans); font-style: normal; letter-spacing: .1em; color: var(--ink3); }
+.c4-blk b { display: block; margin-top: 6px; font: 700 50px/1.3 var(--serif); color: var(--ink); white-space: nowrap; }
+.c4-blk s { display: block; height: 12px; margin-top: 16px; border-radius: 2px; background: var(--paper3); }
+.c4-blk s + s { width: 68%; }
+.c4-blk.concl { background: #fff; z-index: 3; border-color: color-mix(in srgb, var(--blue) calc(var(--hot) * 100%), var(--ink)); }
+.c4-cap b { display: block; font: 700 46px/1.3 var(--serif); color: var(--ink); white-space: nowrap; }
+.c4-cap span { display: block; margin-top: 6px; font: 500 32px/1.5 var(--sans); color: var(--ink2); white-space: nowrap; }
+.c4-find { transform-origin: 0 0; white-space: nowrap; }
+.c4-find i { display: block; font: 600 30px/1.4 var(--sans); font-style: normal; letter-spacing: .1em; color: var(--ink3); margin-bottom: 14px; }
+.c4-find b { display: block; font: 700 64px/1.3 var(--serif); color: var(--ink); margin-bottom: 18px; }
+.c4-find span { display: inline-block; font: 500 44px/1.45 var(--sans); color: var(--ink2); }
+.c4-top0 { border: 3px dashed var(--ink3); border-radius: 6px; }
+.c4-mkey { background: #fff; border: 3px solid var(--ink); border-radius: 6px; }
+.c4-mkey::after, .c4-mcard::after { content: ""; position: absolute; left: 18%; right: 18%; top: 50%; height: 10px; margin-top: -5px; border-radius: 2px; background: var(--paper3); }
+.c4-mkey::after { background: var(--ink3); height: 12px; margin-top: -6px; }
+.c4-mcard { background: #fff; border: 2px solid var(--rule); border-radius: 4px; }
+.c4-mcard::before { content: ""; position: absolute; left: -26px; top: 50%; width: 24px; height: 2px; margin-top: -1px; background: var(--ink3); }
+.c4-mcard::after { left: 14px; right: 30%; }
