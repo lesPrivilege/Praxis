@@ -1,0 +1,308 @@
+{
+  "notice": "合成数据：当事方、事项、文书和人员均为虚构，不对应任何真实案件。",
+  "dates": "以 @ 开头的值是相对后端启动日的偏移：@-5d 表示五天前，@+8d 表示八天后，@-1d16:40 带时刻。",
+  "users": [
+    { "id": "U-zhou", "name": "周明远", "role": "partner", "demoPersona": true },
+    { "id": "U-lin", "name": "林知夏", "role": "associate", "demoPersona": true },
+    { "id": "U-chen", "name": "陈一苇", "role": "paralegal", "demoPersona": true },
+    { "id": "U-he", "name": "何蔚", "role": "partner", "demoPersona": false },
+    { "id": "U-xu", "name": "许衡", "role": "associate", "demoPersona": false }
+  ],
+  "conflicts": [
+    { "userId": "U-lin", "partyId": "P-140", "note": "入职前曾任该公司法务" }
+  ],
+  "savedViews": [
+    { "id": "V-1", "name": "待我复核", "query": { "reviewer": "me", "status": "active" } },
+    { "id": "V-2", "name": "有待处置风险", "query": { "openRisk": true, "status": "active" } },
+    { "id": "V-3", "name": "未指派复核人", "query": { "reviewer": "none", "status": "active" } }
+  ],
+  "behaviors": {
+    "latencyMs": [120, 480],
+    "jobItemMs": 700,
+    "failFirst": [
+      { "route": "GET /matters/M-2051/risks", "times": 1, "message": "风险数据暂时取不到，稍后重试。" }
+    ],
+    "failAlways": [
+      { "route": "GET /matters/M-2053/events", "message": "记录服务没有响应。" }
+    ],
+    "concurrentEdit": {
+      "riskId": "R-3104",
+      "afterMs": 8000,
+      "actor": "U-xu",
+      "disposition": "mitigate",
+      "rationale": "运行日志里四次停机标注为操作原因，建议先申请鉴定，再决定是否调整诉讼请求。",
+      "citedEvidenceIds": ["E-9007"]
+    },
+    "dropResponse": [
+      { "ref": "R-3106", "when": "after-apply", "times": 1 },
+      { "ref": "R-3107", "when": "before-apply", "times": 1 }
+    ]
+  },
+  "matters": [
+    {
+      "id": "M-2048",
+      "title": "北辰重工诉临港物流设备买卖合同纠纷",
+      "cause": "买卖合同纠纷",
+      "stage": "evidence",
+      "status": "active",
+      "owner": "U-zhou",
+      "reviewer": "U-lin",
+      "court": "滨海市中级人民法院",
+      "caseNumber": "（合成）滨民初 2048 号",
+      "openedAt": "@-62d",
+      "nextDeadline": { "label": "举证期限届满", "date": "@+8d" },
+      "version": 7,
+      "updatedAt": "@-1d16:40",
+      "parties": [
+        { "id": "P-101", "name": "北辰重工股份有限公司", "role": "client", "kind": "organization" },
+        { "id": "P-102", "name": "临港物流有限公司", "role": "counterparty", "kind": "organization" },
+        { "id": "P-103", "name": "衡平律师事务所", "role": "opposing-counsel", "kind": "organization" },
+        { "id": "P-104", "name": "滨海市中级人民法院", "role": "court", "kind": "organization" }
+      ],
+      "documents": [
+        { "id": "D-701", "title": "设备买卖合同", "kind": "contract", "version": 1, "receivedAt": "@-62d", "source": "委托人移交", "privileged": false },
+        { "id": "D-702", "title": "设备验收确认单", "kind": "exhibit", "version": 2, "receivedAt": "@-5d", "source": "委托人补充盖章页后重新移交", "privileged": false },
+        { "id": "D-703", "title": "催款函及送达回执", "kind": "correspondence", "version": 1, "receivedAt": "@-48d", "source": "委托人移交", "privileged": false },
+        { "id": "D-704", "title": "答辩状", "kind": "pleading", "version": 1, "receivedAt": "@-12d", "source": "法院送达", "privileged": false },
+        { "id": "D-705", "title": "案情分析备忘录", "kind": "memo", "version": 1, "receivedAt": "@-9d", "source": "本所", "privileged": true },
+        { "id": "D-706", "title": "设备运行日志导出", "kind": "exhibit", "version": 1, "receivedAt": "@-7d", "source": "委托人移交", "privileged": false }
+      ],
+      "evidence": [
+        { "id": "E-9001", "documentId": "D-701", "documentVersion": 1, "locator": "第 8.2 条", "excerpt": "买方逾期付款的，每逾期一日按未付款项的千分之一支付违约金。" },
+        { "id": "E-9002", "documentId": "D-702", "documentVersion": 1, "locator": "验收结论栏", "excerpt": "设备于安装调试后验收合格，买方代表签字。" },
+        { "id": "E-9003", "documentId": "D-702", "documentVersion": 2, "locator": "第 2 页盖章页", "excerpt": "买方加盖合同专用章，落款日期比签字日期晚 21 日。" },
+        { "id": "E-9004", "documentId": "D-703", "documentVersion": 1, "locator": "送达回执", "excerpt": "催款函在第一期货款到期后第 14 个月由买方前台签收。" },
+        { "id": "E-9005", "documentId": "D-704", "documentVersion": 1, "locator": "第二项抗辩", "excerpt": "被告称设备交付后多次停机，主张质量不符合约定，拒付尾款。" },
+        { "id": "E-9006", "documentId": "D-705", "documentVersion": 1, "locator": "第 3 节", "excerpt": "初步判断：质量抗辩的举证责任在对方，但运行日志可能对我方不利。" },
+        { "id": "E-9007", "documentId": "D-706", "documentVersion": 1, "locator": "第 14–37 行", "excerpt": "交付后 90 日内停机 6 次，其中 4 次标注为操作原因。" },
+        { "id": "E-9008", "documentId": "D-701", "documentVersion": 1, "locator": "第 12.1 条", "excerpt": "因本合同发生的争议，由卖方所在地有管辖权的人民法院管辖。" },
+        { "id": "E-9009", "documentId": "D-703", "documentVersion": 1, "locator": "信封地址栏", "excerpt": "回执所载地址与被告的工商登记地址不一致。" }
+      ],
+      "risks": [
+        {
+          "id": "R-3101", "title": "部分货款的诉讼时效可能已经届满", "category": "limitation", "severity": "high", "status": "open", "version": 2, "updatedAt": "@-40d10:05",
+          "statement": "第一期货款到期已超过三年。时效是否因催款函中断，取决于送达是否有效。",
+          "evidence": [{ "id": "E-9004", "stance": "refutes" }, { "id": "E-9009", "stance": "supports" }],
+          "records": []
+        },
+        {
+          "id": "R-3102", "title": "验收是否完成存在争议", "category": "evidence", "severity": "medium", "status": "decided", "version": 3, "updatedAt": "@-20d15:30",
+          "statement": "对方可能主张设备从未通过验收，付款条件未成就。",
+          "evidence": [{ "id": "E-9002", "stance": "refutes" }, { "id": "E-9003", "stance": "limits" }],
+          "records": [
+            { "kind": "decision", "by": "U-zhou", "at": "@-20d15:30", "attemptId": "seed-r3102", "disposition": "mitigate", "rationale": "确认单有买方代表签字，可以证明验收完成；另向委托人调取验收现场照片作为补强。", "cited": [{ "evidenceId": "E-9002", "documentVersion": 1 }] }
+          ]
+        },
+        {
+          "id": "R-3103", "title": "约定的违约金可能被法院调减", "category": "performance", "severity": "medium", "status": "proposed", "version": 2, "updatedAt": "@-1d16:40",
+          "statement": "日千分之一折合年化约 36.5%，对方请求调减时法院可能支持。",
+          "evidence": [{ "id": "E-9001", "stance": "supports" }],
+          "records": [
+            { "kind": "proposal", "by": "U-lin", "at": "@-1d16:40", "attemptId": "seed-r3103", "disposition": "accept", "rationale": "调减幅度在委托人可接受范围内，不影响主请求；建议接受这项风险，在代理意见里预先说明实际损失。", "cited": [{ "evidenceId": "E-9001", "documentVersion": 1 }] }
+          ]
+        },
+        {
+          "id": "R-3104", "title": "对方的质量瑕疵抗辩可能成立", "category": "performance", "severity": "high", "status": "open", "version": 3, "updatedAt": "@-7d11:20",
+          "statement": "对方以设备多次停机为由拒付尾款。抗辩成立的话，尾款请求会被驳回或抵减。",
+          "evidence": [{ "id": "E-9005", "stance": "supports" }, { "id": "E-9007", "stance": "limits" }, { "id": "E-9006", "stance": "supports" }],
+          "records": []
+        },
+        {
+          "id": "R-3105", "title": "关键证据的原件尚未取得", "category": "evidence", "severity": "low", "status": "open", "version": 1, "updatedAt": "@-30d09:00",
+          "statement": "验收确认单和送达回执目前只有复印件，对方否认真实性时需要出示原件。",
+          "evidence": [],
+          "records": []
+        },
+        {
+          "id": "R-3106", "title": "对方可能提出管辖权异议", "category": "procedure", "severity": "medium", "status": "open", "version": 1, "updatedAt": "@-12d14:00",
+          "statement": "对方住所地在外市，可能主张约定管辖条款无效。",
+          "evidence": [{ "id": "E-9008", "stance": "refutes" }],
+          "records": []
+        },
+        {
+          "id": "R-3107", "title": "对方的送达地址可能已经失效", "category": "procedure", "severity": "low", "status": "open", "version": 1, "updatedAt": "@-10d09:30",
+          "statement": "回执地址与登记地址不一致，后续文书可能无法有效送达。",
+          "evidence": [{ "id": "E-9009", "stance": "supports" }],
+          "records": []
+        }
+      ],
+      "tasks": [
+        { "id": "T-501", "title": "复核本事项的风险处置", "kind": "review", "assignee": "U-lin", "dueDate": "@+8d", "status": "open", "origin": null },
+        { "id": "T-502", "title": "向委托人调取验收现场照片", "kind": "follow-up", "assignee": "U-lin", "dueDate": "@+3d", "status": "open", "origin": { "attemptId": "seed-r3102", "ref": "R-3102" } },
+        { "id": "T-503", "title": "提交证据目录", "kind": "filing", "assignee": "U-xu", "dueDate": "@+8d", "status": "open", "origin": null }
+      ],
+      "events": [
+        { "at": "@-62d09:10", "actor": "U-zhou", "type": "matter-opened", "target": { "kind": "matter", "id": "M-2048" }, "targetVersion": 1 },
+        { "at": "@-62d09:40", "actor": "U-xu", "type": "document-received", "target": { "kind": "document", "id": "D-701" }, "targetVersion": 1 },
+        { "at": "@-60d14:00", "actor": "U-xu", "type": "document-received", "target": { "kind": "document", "id": "D-702" }, "targetVersion": 1 },
+        { "at": "@-48d10:30", "actor": "U-xu", "type": "document-received", "target": { "kind": "document", "id": "D-703" }, "targetVersion": 1 },
+        { "at": "@-40d10:05", "actor": "U-lin", "type": "risk-registered", "target": { "kind": "risk", "id": "R-3101" }, "targetVersion": 1 },
+        { "at": "@-20d15:30", "actor": "U-zhou", "type": "risk-decided", "target": { "kind": "risk", "id": "R-3102" }, "targetVersion": 3, "attemptId": "seed-r3102", "changes": [{ "field": "status", "from": "open", "to": "decided" }, { "field": "disposition", "from": null, "to": "mitigate" }], "rules": ["EV-1@1", "ROLE-1@1", "VER-1@1"] },
+        { "at": "@-20d15:30", "actor": "U-zhou", "type": "task-created", "target": { "kind": "task", "id": "T-502" }, "attemptId": "seed-r3102" },
+        { "at": "@-12d13:20", "actor": "U-xu", "type": "document-received", "target": { "kind": "document", "id": "D-704" }, "targetVersion": 1 },
+        { "at": "@-9d17:05", "actor": "U-zhou", "type": "document-received", "target": { "kind": "document", "id": "D-705" }, "targetVersion": 1 },
+        { "at": "@-7d11:00", "actor": "U-xu", "type": "document-received", "target": { "kind": "document", "id": "D-706" }, "targetVersion": 1 },
+        { "at": "@-5d10:15", "actor": "U-xu", "type": "document-version-added", "target": { "kind": "document", "id": "D-702" }, "targetVersion": 2, "changes": [{ "field": "version", "from": "1", "to": "2" }], "note": "依据 E-9002 引用的是第 1 版；R-3102 的决定引用了它，需重新核对。" },
+        { "at": "@-1d16:40", "actor": "U-lin", "type": "disposition-proposed", "target": { "kind": "risk", "id": "R-3103" }, "targetVersion": 2, "attemptId": "seed-r3103", "changes": [{ "field": "status", "from": "open", "to": "proposed" }], "rules": ["EV-1@1", "VER-1@1"] }
+      ]
+    },
+    {
+      "id": "M-2049", "title": "远岫资本诉澄江置业股权转让纠纷", "cause": "股权转让纠纷", "stage": "pleading", "status": "active",
+      "owner": "U-he", "reviewer": null, "court": "江州市中级人民法院", "caseNumber": null, "openedAt": "@-21d",
+      "nextDeadline": { "label": "答辩期届满", "date": "@+15d" }, "version": 2, "updatedAt": "@-3d11:00",
+      "parties": [
+        { "id": "P-110", "name": "远岫资本管理有限公司", "role": "client", "kind": "organization" },
+        { "id": "P-111", "name": "澄江置业有限公司", "role": "counterparty", "kind": "organization" }
+      ],
+      "documents": [{ "id": "D-710", "title": "股权转让协议", "kind": "contract", "version": 1, "receivedAt": "@-21d", "source": "委托人移交", "privileged": false }],
+      "evidence": [{ "id": "E-9100", "documentId": "D-710", "documentVersion": 1, "locator": "第 5.3 条", "excerpt": "受让方应在交割日后 30 日内付清第二期转让款。" }],
+      "risks": [{ "id": "R-3120", "title": "交割条件是否成就存在争议", "category": "performance", "severity": "medium", "status": "open", "version": 1, "updatedAt": "@-3d11:00", "statement": "对方可能主张工商变更未完成，付款条件未成就。", "evidence": [{ "id": "E-9100", "stance": "limits" }], "records": [] }],
+      "tasks": [],
+      "events": [{ "at": "@-21d09:00", "actor": "U-he", "type": "matter-opened", "target": { "kind": "matter", "id": "M-2049" }, "targetVersion": 1 }]
+    },
+    {
+      "id": "M-2050", "title": "青禾食品与禾丰供应链买卖合同纠纷", "cause": "买卖合同纠纷", "stage": "enforcement", "status": "closed",
+      "owner": "U-zhou", "reviewer": "U-xu", "court": "滨海市滨江区人民法院", "caseNumber": "（合成）滨江民初 310 号", "openedAt": "@-300d",
+      "nextDeadline": null, "version": 12, "updatedAt": "@-45d10:00",
+      "parties": [
+        { "id": "P-120", "name": "青禾食品有限公司", "role": "client", "kind": "organization" },
+        { "id": "P-121", "name": "禾丰供应链有限公司", "role": "counterparty", "kind": "organization" }
+      ],
+      "documents": [], "evidence": [], "risks": [], "tasks": [],
+      "events": [{ "at": "@-300d09:00", "actor": "U-zhou", "type": "matter-opened", "target": { "kind": "matter", "id": "M-2050" }, "targetVersion": 1 }]
+    },
+    {
+      "id": "M-2051", "title": "云栖数据诉星图科技技术服务合同纠纷", "cause": "技术服务合同纠纷", "stage": "evidence", "status": "active",
+      "owner": "U-zhou", "reviewer": null, "court": "滨海市中级人民法院", "caseNumber": "（合成）滨民初 2051 号", "openedAt": "@-50d",
+      "nextDeadline": { "label": "举证期限届满", "date": "@+5d" }, "version": 4, "updatedAt": "@-2d09:30",
+      "parties": [
+        { "id": "P-130", "name": "云栖数据技术有限公司", "role": "client", "kind": "organization" },
+        { "id": "P-131", "name": "星图科技有限公司", "role": "counterparty", "kind": "organization" }
+      ],
+      "documents": [{ "id": "D-720", "title": "技术服务合同", "kind": "contract", "version": 1, "receivedAt": "@-50d", "source": "委托人移交", "privileged": false }],
+      "evidence": [{ "id": "E-9200", "documentId": "D-720", "documentVersion": 1, "locator": "附件二 验收标准", "excerpt": "系统连续稳定运行 30 日视为通过验收。" }],
+      "risks": [
+        { "id": "R-3130", "title": "验收标准约定不明", "category": "performance", "severity": "high", "status": "open", "version": 1, "updatedAt": "@-2d09:30", "statement": "“稳定运行”没有量化指标，对方可能主张从未达标。", "evidence": [{ "id": "E-9200", "stance": "supports" }], "records": [] },
+        { "id": "R-3131", "title": "源代码交付范围存在分歧", "category": "performance", "severity": "medium", "status": "open", "version": 1, "updatedAt": "@-6d15:00", "statement": "合同未列明交付物清单。", "evidence": [], "records": [] }
+      ],
+      "tasks": [],
+      "events": [{ "at": "@-50d09:00", "actor": "U-zhou", "type": "matter-opened", "target": { "kind": "matter", "id": "M-2051" }, "targetVersion": 1 }]
+    },
+    {
+      "id": "M-2052", "title": "沧澜航运诉泰和保险保险合同纠纷", "cause": "保险合同纠纷", "stage": "hearing", "status": "active",
+      "owner": "U-he", "reviewer": null, "court": "江州海事法院", "caseNumber": "（合成）江海商初 88 号", "openedAt": "@-120d",
+      "nextDeadline": { "label": "第二次开庭", "date": "@+20d" }, "version": 9, "updatedAt": "@-4d10:00",
+      "parties": [
+        { "id": "P-139", "name": "沧澜航运有限公司", "role": "client", "kind": "organization" },
+        { "id": "P-140", "name": "泰和保险股份有限公司", "role": "counterparty", "kind": "organization" }
+      ],
+      "documents": [{ "id": "D-730", "title": "船舶保险单", "kind": "contract", "version": 1, "receivedAt": "@-120d", "source": "委托人移交", "privileged": false }],
+      "evidence": [{ "id": "E-9300", "documentId": "D-730", "documentVersion": 1, "locator": "除外责任第 4 项", "excerpt": "因船舶不适航造成的损失，保险人不负赔偿责任。" }],
+      "risks": [{ "id": "R-3140", "title": "对方援引不适航除外条款", "category": "performance", "severity": "high", "status": "open", "version": 2, "updatedAt": "@-4d10:00", "statement": "检验报告对开航前的适航状态没有结论。", "evidence": [{ "id": "E-9300", "stance": "supports" }], "records": [] }],
+      "tasks": [],
+      "events": [{ "at": "@-120d09:00", "actor": "U-he", "type": "matter-opened", "target": { "kind": "matter", "id": "M-2052" }, "targetVersion": 1 }]
+    },
+    {
+      "id": "M-2053", "title": "明川建设诉岭南地产建设工程合同纠纷", "cause": "建设工程合同纠纷", "stage": "evidence", "status": "active",
+      "owner": "U-zhou", "reviewer": "U-lin", "court": "岭南市中级人民法院", "caseNumber": "（合成）岭民初 517 号", "openedAt": "@-90d",
+      "nextDeadline": { "label": "鉴定材料提交", "date": "@+11d" }, "version": 6, "updatedAt": "@-2d15:20",
+      "parties": [
+        { "id": "P-150", "name": "明川建设集团有限公司", "role": "client", "kind": "organization" },
+        { "id": "P-151", "name": "岭南地产开发有限公司", "role": "counterparty", "kind": "organization" }
+      ],
+      "documents": [{ "id": "D-740", "title": "施工合同", "kind": "contract", "version": 1, "receivedAt": "@-90d", "source": "委托人移交", "privileged": false }],
+      "evidence": [{ "id": "E-9400", "documentId": "D-740", "documentVersion": 1, "locator": "专用条款第 17 条", "excerpt": "工程款按形象进度支付，竣工验收合格后付至 95%。" }],
+      "risks": [{ "id": "R-3150", "title": "工程量签证不完整", "category": "evidence", "severity": "medium", "status": "open", "version": 1, "updatedAt": "@-2d15:20", "statement": "三份变更签证没有监理签字。", "evidence": [{ "id": "E-9400", "stance": "limits" }], "records": [] }],
+      "tasks": [{ "id": "T-520", "title": "整理工程量签证清单", "kind": "review", "assignee": "U-lin", "dueDate": "@+6d", "status": "open", "origin": null }],
+      "events": [{ "at": "@-90d09:00", "actor": "U-zhou", "type": "matter-opened", "target": { "kind": "matter", "id": "M-2053" }, "targetVersion": 1 }]
+    },
+    {
+      "id": "M-2054", "title": "启衡集团并购价款调整争议", "cause": "股权收购纠纷", "stage": "intake", "status": "active",
+      "owner": "U-he", "reviewer": "U-lin", "court": null, "caseNumber": null, "openedAt": "@-6d",
+      "nextDeadline": { "label": "仲裁申请提交", "date": "@+30d" }, "version": 1, "updatedAt": "@-6d09:00",
+      "wall": { "members": ["U-he", "U-zhou", "U-lin"], "contact": "何蔚（主办合伙人）" },
+      "parties": [
+        { "id": "P-160", "name": "启衡集团股份有限公司", "role": "client", "kind": "organization" },
+        { "id": "P-161", "name": "观澜投资合伙企业", "role": "counterparty", "kind": "organization" }
+      ],
+      "documents": [], "evidence": [], "risks": [], "tasks": [],
+      "events": [{ "at": "@-6d09:00", "actor": "U-he", "type": "matter-opened", "target": { "kind": "matter", "id": "M-2054" }, "targetVersion": 1 }]
+    },
+    {
+      "id": "M-2055", "title": "朔风能源诉广厦租赁融资租赁合同纠纷", "cause": "融资租赁合同纠纷", "stage": "intake", "status": "active",
+      "owner": "U-zhou", "reviewer": null, "court": null, "caseNumber": null, "openedAt": "@-1d",
+      "nextDeadline": null, "version": 1, "updatedAt": "@-1d09:00",
+      "parties": [
+        { "id": "P-170", "name": "朔风能源有限公司", "role": "client", "kind": "organization" },
+        { "id": "P-171", "name": "广厦融资租赁有限公司", "role": "counterparty", "kind": "organization" }
+      ],
+      "documents": [], "evidence": [], "risks": [], "tasks": [], "events": [{ "at": "@-1d09:00", "actor": "U-zhou", "type": "matter-opened", "target": { "kind": "matter", "id": "M-2055" }, "targetVersion": 1 }]
+    },
+    {
+      "id": "M-2056", "title": "栖霞制药与信安医药经销合同纠纷", "cause": "经销合同纠纷", "stage": "pleading", "status": "on-hold",
+      "owner": "U-he", "reviewer": "U-xu", "court": "江州市江北区人民法院", "caseNumber": null, "openedAt": "@-75d",
+      "nextDeadline": null, "version": 3, "updatedAt": "@-18d10:00",
+      "parties": [
+        { "id": "P-180", "name": "栖霞制药有限公司", "role": "client", "kind": "organization" },
+        { "id": "P-181", "name": "信安医药有限公司", "role": "counterparty", "kind": "organization" }
+      ],
+      "documents": [], "evidence": [], "risks": [], "tasks": [], "events": [{ "at": "@-75d09:00", "actor": "U-he", "type": "matter-opened", "target": { "kind": "matter", "id": "M-2056" }, "targetVersion": 1 }]
+    },
+    {
+      "id": "M-2057", "title": "听澜传媒诉万象网络著作权许可合同纠纷", "cause": "著作权许可合同纠纷", "stage": "hearing", "status": "active",
+      "owner": "U-zhou", "reviewer": "U-lin", "court": "滨海知识产权法院", "caseNumber": "（合成）滨知民初 73 号", "openedAt": "@-140d",
+      "nextDeadline": { "label": "开庭", "date": "@+2d" }, "version": 11, "updatedAt": "@-1d10:10",
+      "parties": [
+        { "id": "P-190", "name": "听澜传媒有限公司", "role": "client", "kind": "organization" },
+        { "id": "P-191", "name": "万象网络科技有限公司", "role": "counterparty", "kind": "organization" }
+      ],
+      "documents": [{ "id": "D-750", "title": "著作权许可协议", "kind": "contract", "version": 1, "receivedAt": "@-140d", "source": "委托人移交", "privileged": false }],
+      "evidence": [{ "id": "E-9500", "documentId": "D-750", "documentVersion": 1, "locator": "第 3.1 条", "excerpt": "许可范围限于中国大陆地区的信息网络传播权。" }],
+      "risks": [{ "id": "R-3160", "title": "许可地域范围解释对我方不利", "category": "performance", "severity": "high", "status": "open", "version": 1, "updatedAt": "@-1d10:10", "statement": "对方在境外平台的使用是否越权，取决于“中国大陆地区”是否包含跨境访问。", "evidence": [{ "id": "E-9500", "stance": "supports" }], "records": [] }],
+      "tasks": [], "events": [{ "at": "@-140d09:00", "actor": "U-zhou", "type": "matter-opened", "target": { "kind": "matter", "id": "M-2057" }, "targetVersion": 1 }]
+    },
+    {
+      "id": "M-2058", "title": "松涛物业诉景行商管租赁合同纠纷", "cause": "租赁合同纠纷", "stage": "enforcement", "status": "active",
+      "owner": "U-he", "reviewer": "U-xu", "court": "江州市江北区人民法院", "caseNumber": "（合成）江北执 204 号", "openedAt": "@-210d",
+      "nextDeadline": { "label": "财产线索提交", "date": "@+40d" }, "version": 8, "updatedAt": "@-9d10:00",
+      "parties": [
+        { "id": "P-200", "name": "松涛物业管理有限公司", "role": "client", "kind": "organization" },
+        { "id": "P-201", "name": "景行商业管理有限公司", "role": "counterparty", "kind": "organization" }
+      ],
+      "documents": [], "evidence": [], "risks": [], "tasks": [], "events": [{ "at": "@-210d09:00", "actor": "U-he", "type": "matter-opened", "target": { "kind": "matter", "id": "M-2058" }, "targetVersion": 1 }]
+    },
+    {
+      "id": "M-2059", "title": "溪山农业诉鼎泰粮油仓储合同纠纷", "cause": "仓储合同纠纷", "stage": "evidence", "status": "active",
+      "owner": "U-zhou", "reviewer": null, "court": "岭南市岭东区人民法院", "caseNumber": "（合成）岭东民初 1190 号", "openedAt": "@-35d",
+      "nextDeadline": { "label": "举证期限届满", "date": "@+9d" }, "version": 3, "updatedAt": "@-5d14:00",
+      "parties": [
+        { "id": "P-210", "name": "溪山农业发展有限公司", "role": "client", "kind": "organization" },
+        { "id": "P-211", "name": "鼎泰粮油储运有限公司", "role": "counterparty", "kind": "organization" }
+      ],
+      "documents": [{ "id": "D-760", "title": "仓储合同", "kind": "contract", "version": 1, "receivedAt": "@-35d", "source": "委托人移交", "privileged": false }],
+      "evidence": [{ "id": "E-9600", "documentId": "D-760", "documentVersion": 1, "locator": "第 6 条", "excerpt": "保管人对入库货物的自然损耗不承担责任。" }],
+      "risks": [{ "id": "R-3170", "title": "损耗比例的举证责任不明", "category": "evidence", "severity": "medium", "status": "open", "version": 1, "updatedAt": "@-5d14:00", "statement": "合同没有约定自然损耗的上限。", "evidence": [{ "id": "E-9600", "stance": "supports" }], "records": [] }],
+      "tasks": [], "events": [{ "at": "@-35d09:00", "actor": "U-zhou", "type": "matter-opened", "target": { "kind": "matter", "id": "M-2059" }, "targetVersion": 1 }]
+    },
+    {
+      "id": "M-2060", "title": "归雁航空与翔云地服服务合同纠纷", "cause": "服务合同纠纷", "stage": "enforcement", "status": "closed",
+      "owner": "U-he", "reviewer": "U-lin", "court": "滨海市滨江区人民法院", "caseNumber": "（合成）滨江民初 77 号", "openedAt": "@-400d",
+      "nextDeadline": null, "version": 15, "updatedAt": "@-90d10:00",
+      "parties": [
+        { "id": "P-220", "name": "归雁航空有限公司", "role": "client", "kind": "organization" },
+        { "id": "P-221", "name": "翔云地面服务有限公司", "role": "counterparty", "kind": "organization" }
+      ],
+      "documents": [], "evidence": [], "risks": [], "tasks": [], "events": [{ "at": "@-400d09:00", "actor": "U-he", "type": "matter-opened", "target": { "kind": "matter", "id": "M-2060" }, "targetVersion": 1 }]
+    },
+    {
+      "id": "M-2061", "title": "照临光电诉长风电子加工承揽合同纠纷", "cause": "承揽合同纠纷", "stage": "pleading", "status": "active",
+      "owner": "U-he", "reviewer": "U-lin", "court": "江州市中级人民法院", "caseNumber": null, "openedAt": "@-14d",
+      "nextDeadline": { "label": "起诉状提交", "date": "@+18d" }, "version": 2, "updatedAt": "@-7d10:00",
+      "parties": [
+        { "id": "P-230", "name": "照临光电股份有限公司", "role": "client", "kind": "organization" },
+        { "id": "P-231", "name": "长风电子有限公司", "role": "counterparty", "kind": "organization" }
+      ],
+      "documents": [], "evidence": [], "risks": [], "tasks": [], "events": [{ "at": "@-14d09:00", "actor": "U-he", "type": "matter-opened", "target": { "kind": "matter", "id": "M-2061" }, "targetVersion": 1 }]
+    }
+  ]
+}

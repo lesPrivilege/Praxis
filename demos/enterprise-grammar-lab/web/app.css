@@ -1,0 +1,76 @@
+/* Layout only. Colours are the Ant Design theme's CSS variables, so theme.ts stays the one place they are set. */
+body { margin: 0; }
+.shell { min-height: 100vh; }
+.shell-header.ant-layout-header { display: flex; align-items: center; justify-content: space-between; gap: 16px; border-bottom: 1px solid var(--ant-color-border-secondary); height: auto; min-height: 52px; flex-wrap: wrap; line-height: 1.5; padding-block: 8px; }
+.shell-brand { font-size: 16px; font-weight: 600; }
+.workbench-switch { font-size: 16px; font-weight: 600; margin-left: -11px; }
+.shell-body { display: grid; grid-template-columns: 208px minmax(0, 1fr); flex: 1; }
+.shell-sider { border-right: 1px solid var(--ant-color-border-secondary); background: var(--ant-color-bg-container); }
+.shell-content { padding: 20px 24px 48px; background: var(--ant-color-bg-container); min-width: 0; }
+.persona { display: flex; align-items: center; gap: 8px; }
+
+.nav { display: flex; flex-direction: column; gap: 2px; padding: 16px 12px; }
+.nav-heading { padding: 16px 8px 4px; }
+.nav-row { display: flex; align-items: center; gap: 4px; }
+.nav-link { flex: 1; white-space: nowrap; padding: 6px 8px; border-radius: 4px; color: inherit; }
+.nav-link:hover { background: var(--ant-color-bg-layout); color: inherit; }
+.nav-link-current { background: var(--ant-color-primary-bg); font-weight: 600; }
+
+.plain-list { list-style: none; margin: 0; padding: 0; }
+.rows > li { display: flex; flex-direction: column; gap: 4px; padding: 10px 0; border-bottom: 1px solid var(--ant-color-border-secondary); }
+.rows > li:last-child { border-bottom: 0; }
+.row-link { display: flex; flex-direction: column; gap: 4px; padding: 2px 8px; margin: -2px -8px; border-radius: 4px; color: inherit; }
+.row-link:hover { background: var(--ant-color-bg-layout); color: inherit; }
+.row-link-current { background: var(--ant-color-primary-bg); }
+.row-link-current > span:first-child { font-weight: 600; }
+
+.object-title.ant-typography { margin: 2px 0 8px; }
+.statement.ant-typography { font-size: 15px; margin: 0; max-width: 46em; }
+.excerpt { margin: 0; padding-left: 12px; border-left: 3px solid var(--ant-color-border); max-width: 46em; }
+.tag-after { margin-inline: 6px 0; }
+.cell-wrap { min-width: 16em; max-width: 30em; white-space: normal; }
+.field { display: flex; flex-direction: column; gap: 4px; }
+.stack { display: flex; flex-direction: column; gap: 6px; }
+.filter { min-width: 112px; }
+.filter-wide { min-width: 152px; }
+.filter-search { width: 240px; }
+
+.columns { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr); gap: 40px; align-items: start; }
+.split { display: grid; grid-template-columns: minmax(260px, 340px) minmax(0, 1fr); gap: 32px; align-items: start; }
+.split-back { display: none; margin-bottom: 12px; padding-block: 4px; }
+.action-area { max-width: 46em; }
+.action-form { padding-top: 16px; border-top: 1px solid var(--ant-color-border-secondary); display: flex; flex-direction: column; gap: 4px; }
+.action-form .ant-alert { margin-bottom: 12px; }
+
+.refresh-failure { margin-bottom: 12px; }
+
+.columns-even { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+.inline-field { display: flex; align-items: center; gap: 6px; }
+.filter-date { width: 150px; }
+.filter-amount { width: 120px; }
+.submission-summary { margin-bottom: 12px; }
+/* A machine's suggestion is set apart from rule results and human records by a rule down its side. */
+.machine { display: flex; flex-direction: column; gap: 6px; padding-left: 12px; border-left: 3px solid var(--ant-color-border); }
+.fragment { scroll-margin: 24px; }
+.fragment-current { background: var(--ant-color-primary-bg); padding-inline: 10px; margin-inline: -10px; border-radius: 4px; }
+
+.audit-event { display: flex; flex-direction: column; gap: 2px; }
+.audit-event-current { background: var(--ant-color-primary-bg); padding: 8px 10px; margin: -8px -10px; border-radius: 4px; }
+
+.palette-list { list-style: none; margin: 12px 0 0; padding: 0; max-height: 50vh; overflow: auto; }
+.palette-option { display: flex; justify-content: space-between; gap: 16px; padding: 8px 10px; border-radius: 4px; cursor: pointer; }
+.palette-option-active { background: var(--ant-color-primary-bg); }
+
+@media (max-width: 900px) {
+  .shell-body { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto 1fr; }
+  .shell-sider { border-right: 0; border-bottom: 1px solid var(--ant-color-border-secondary); }
+  .nav { flex-direction: row; flex-wrap: wrap; align-items: center; padding: 8px 12px; }
+  .nav .plain-list { display: flex; flex-wrap: wrap; }
+  .nav-link { flex: none; }
+  .nav-heading { padding: 6px 8px; }
+  .shell-content { padding: 16px 16px 40px; }
+  .columns, .columns-even, .split { grid-template-columns: minmax(0, 1fr); gap: 24px; }
+  .split[data-detail='open'] > .split-list { display: none; }
+  .split[data-detail='closed'] > .split-detail { display: none; }
+  .split-back { display: inline-block; }
+}

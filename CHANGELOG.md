@@ -162,3 +162,23 @@
 ## 2026-10-03 · 成文原理开头的写作姿态
 
 - 用户贴来一份写作姿态建议，主张单立 preamble 文件；按用户要求由 Opus 裁决，目标是文质彬彬、辞达。没有新建文件，把八条原理里还没写明的部分写成 [成文原理](kit/write/prose/grammar.md)开头一段：文辞与内容相称，不凑结构，不抹平复杂与分歧。裁决记在 [审阅方法](kit/write/prose/review.md#审阅裁决记录)。
+
+## 2026-10-04 · 企业工作面语法实验第一轮
+
+- 按用户贴入的两段任务来文，用 Kit 的企业工作语法和一份场景契约施工了 [事项工作台](demos/enterprise-grammar-lab/README.md)：React 与 Ant Design 前端、OpenAPI 契约、模拟冲突与结果未知等行为的假后端，数据全部合成。来文没有入账 Vault；技术栈只在该目录内选定，没有写实现 ADR。
+- [施工发现](demos/enterprise-grammar-lab/evals/README.md)记录了逐项判据、Kit 起作用和没有内容的地方，以及独立复查找出的缺陷和处置。只做了受 Kit 约束的一组，没有对照组，没有换领域。
+- 用户随后给了一份研究 brief 作参考（未入账）。按它的反例表对照后补了 fixture 自洽检查、风险的下一步归属和离开前的拦截；它建议的付款复核场景留作第二个独立场景的候选。
+- Kit、docs 和 Vault 没有改动；`.gitignore` 增加 `node_modules/`，`.claude/launch.json` 增加两条本地启动配置。
+
+## 2026-10-04 · 企业工作面语法实验第二轮
+
+- 用户决定做研究 brief 建议的场景。在同一目录加了第二个工作台 [付款复核台](demos/enterprise-grammar-lab/scenarios/payment-review.md)：规则检查、预制的机器提议和人的判断分开呈现，金额是带币种的精确值，依据按“材料、版本、位置”打开。
+- 为了让两个场景共用，把契约的公共部分、后端内核和工作面与场景解开。[第二轮施工发现](demos/enterprise-grammar-lab/evals/round-2.md)记录了改了多少、公共层里原先藏着哪些第一个场景的形状，以及两个场景各写了一遍、暂不抽取的部分。
+- Kit、docs 和 Vault 没有改动。工作面按 ADR-002 是两个独立场景在用的候选，没有申请晋升。
+
+## 2026-10-04 · 企业工作面语法实验收尾
+
+- 按用户转来的三条收尾建议处置第二轮末留下的问题：不做无 Kit 对照组，结论限定为两轮怎样消费了 Kit；技术栈记在只对该 demo 有效的 [实现 ADR](demos/enterprise-grammar-lab/stack-adr.md)，不进 `docs/decisions`；教训先留成四条带反例的 [候选条目](demos/enterprise-grammar-lab/evals/candidates.md)，没有提交裁决。
+- 用户给的交接稿（未入账）推荐的场景已经做完，只拿它的 12 条不变量对照了现状：五条有，七条部分有，没有因此改代码。
+- Kit、docs 和 Vault 没有改动。
+
