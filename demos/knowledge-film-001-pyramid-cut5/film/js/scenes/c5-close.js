@@ -15,7 +15,7 @@
       { tag: '起点', say: ['问题出在思考，', '不在语言'], chips: ['1966 伦敦', '巴黎、杜塞尔多夫', '明托的原话'] },
       { tag: '方法', say: ['从证据往上搭，', '从塔尖往下讲'], chips: ['分组', '写成判断', '三条规则'] },
       { tag: '依据', say: ['先读到的内容', '决定后文的读法'], chips: ['Bransford &amp; Johnson 1972', 'Kieras 1980', 'Li 等 2020'] },
-      { tag: '误用', say: ['结构工整', '不等于论证成立'], chips: ['凑三点', '为切而切', '先定结论', '埋没要点'] },
+      { tag: '误用', say: ['结构工整', '不等于论证成立'], chips: ['凑三点', '为切而切', '先定结论', '埋没要点', '不分场合'] },
     ],
   };
 
@@ -31,13 +31,13 @@
       html: `<em><u class="t-num">${k + 1}</u>${key.tag}</em><b>${key.say.join('<br>')}</b>` });
     key.chips.forEach((c, j) => SLOTS.push({ kind: 'chip', k, j, x: colX(k) + CHIP_IN, y: CHIP_Y + j * CHIP_P, w: COLW - CHIP_IN, h: CHIP_H, bh: 22, html: `<b>${c}</b>` }));
   });
-  const N = SLOTS.length;                                   // 17
+  const N = SLOTS.length;                                   // 18
   const keyIdx = SLOTS.map((s, i) => (s.kind === 'key' ? i : -1)).filter(i => i >= 0);
   const firstIdx = SLOTS.map((s, i) => (s.kind === 'chip' && s.j === 0 ? i : -1)).filter(i => i >= 0);
   const restIdx = SLOTS.map((s, i) => (s.kind === 'chip' && s.j > 0 ? i : -1)).filter(i => i >= 0);
 
-  // The five lines of the cold open, cut into seventeen pieces. Same drift as the opening (same seed, same order).
-  const LINES = [[512, 2], [1280, 5], [832, 3], [1024, 4], [704, 3]], SEG_GAP = 12;
+  // The five lines of the cold open, cut into eighteen pieces, one per box. Same drift as the opening (same seed, same order).
+  const LINES = [[512, 2], [1280, 5], [832, 3], [1024, 4], [704, 4]], SEG_GAP = 12;
   const drift = (() => { const r = K.rng(11); return LINES.map(() => ({ x: (r() - 0.35) * 150, y: (r() - 0.5) * 30, rot: (r() - 0.5) * 4.4 })); })();
   const SEGS = [];
   LINES.forEach(([W, n], li) => { for (let si = 0; si < n; si++) SEGS.push({ li, si, w: (W - (n - 1) * SEG_GAP) / n }); });
@@ -53,7 +53,7 @@
   }
   // the loose pile under the top box: staggered rows with jitter, taken left to right in the order of the columns they will join
   const CELLS = [];
-  [5, 4, 5, 3].forEach((n, row) => { for (let c = 0; c < n; c++) CELLS.push({ x: 272 + (5 - n) * 172 + c * 344, y: 745 + row * 73 }); });
+  [5, 4, 5, 4].forEach((n, row) => { for (let c = 0; c < n; c++) CELLS.push({ x: 272 + (5 - n) * 172 + c * 344, y: 745 + row * 73 }); });
   CELLS.sort((a, b) => a.x - b.x || a.y - b.y);
   const pile = seed => { const r = K.rng(seed); return CELLS.map(c => ({ cx: c.x + (r() - 0.5) * 90, cy: c.y + (r() - 0.5) * 22, rot: (r() - 0.5) * 24 })); };
   const tidy = i => ({ x: 100 + Math.floor(i / 3) * 290, y: 770 + (i % 3) * 78 - BAR / 2 });   // the same pieces set as a neat table
