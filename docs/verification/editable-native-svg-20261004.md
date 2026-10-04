@@ -39,3 +39,7 @@ Kit 只给 Design README 增加一条需求触发的发现链接，没有加入�
 最小交接从项目 README 的“接手下一批绘制”进入；可直接粘贴 prompt 在 wake-opus.md。完整 diff 与自足交付 Markdown 存在仓库外工作区，供父会话读取；Library 保存结果以工具实际回执为准，不写成研究/绘制通过。
 
 补充盘点：Git 跟踪独立 SVG 16 个，全部在 Vault 快照；三份读取 XML 源码，其余只枚举，全部未作图形/编辑验收。A3 原生 SVG 源码含固定 defs ID，已登记为多实例压力线索，未运行碰撞测试。此补充未改变需求数量或组件准入结论。
+
+## 后续
+
+同日，一个新的 Claude Opus 5.5 会话在 `9514ce4` 上应用了本登记包并交付 SVG-01，回执另见 [SVG-01 验收回执](../../demos/editable-native-svg/svg-01-relations/acceptance.md)。上文“未运行项”描述的是登记轮结束时的状态，没有改写。

@@ -1,0 +1,91 @@
+{
+  "id": "qualify-evidence",
+  "synthetic": true,
+  "asset": "rel-qualify",
+  "role": "stress",
+  "requirements": [
+    "SVG-R06",
+    "SVG-R07",
+    "SVG-R08"
+  ],
+  "note": "片段限定、互相冲突的两条来源、一条推断、一项没有证据的主张和一条整体说明。",
+  "model": {
+    "title": "三项主张各自的条件与证据",
+    "require_evidence": true,
+    "claims": [
+      {
+        "id": "c-open",
+        "text": "古籍阅览室每周开放三天。"
+      },
+      {
+        "id": "c-notice",
+        "text": "调阅古籍须提前两个工作日预约。"
+      },
+      {
+        "id": "c-repair",
+        "text": "修复室今年内恢复使用。"
+      }
+    ],
+    "qualifiers": [
+      {
+        "id": "ev-notice",
+        "type": "evidence",
+        "relation": "supports",
+        "status": "verified",
+        "target": {
+          "claim": "c-open"
+        },
+        "source": {
+          "id": "notice-03",
+          "version": 2,
+          "locator": "第 1 段"
+        },
+        "text": "公告写明周二、周四、周六开放。"
+      },
+      {
+        "id": "ev-roster",
+        "type": "evidence",
+        "relation": "contradicts",
+        "status": "verified",
+        "target": {
+          "claim": "c-open"
+        },
+        "source": {
+          "id": "roster-10",
+          "version": 1,
+          "locator": "第 3 行"
+        },
+        "text": "十月值班表只排了两天。"
+      },
+      {
+        "id": "cond-days",
+        "type": "condition",
+        "target": {
+          "claim": "c-notice",
+          "fragment": "两个工作日"
+        },
+        "text": "遇法定节假日顺延；跨馆调阅 (inter-library) 另加 1 个工作日。"
+      },
+      {
+        "id": "ev-rule",
+        "type": "evidence",
+        "relation": "supports",
+        "status": "inferred",
+        "target": {
+          "claim": "c-notice"
+        },
+        "source": {
+          "id": "rule-loan",
+          "version": 3
+        },
+        "text": "规则只写“提前预约”，天数来自服务台的口头说明。"
+      }
+    ],
+    "global_notes": [
+      {
+        "id": "g-synthetic",
+        "text": "以上是合成示例，不是真实的馆务安排。"
+      }
+    ]
+  }
+}

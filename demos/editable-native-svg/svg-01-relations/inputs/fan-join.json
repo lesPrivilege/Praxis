@@ -1,0 +1,50 @@
+{
+  "id": "fan-join",
+  "synthetic": true,
+  "asset": "rel-fan",
+  "role": "normal",
+  "requirements": [
+    "SVG-R03"
+  ],
+  "note": "三项输入须全部到位；到位不等于已经开馆。",
+  "model": {
+    "title": "开馆前须到位的三项",
+    "direction": "in",
+    "rule": "all",
+    "basis": "开馆检查表 v2",
+    "hub": {
+      "id": "opening",
+      "label": "开馆",
+      "state": "尚未开馆"
+    },
+    "spokes": [
+      {
+        "edge_id": "in-fire",
+        "label": "当日记录已签字",
+        "node": {
+          "id": "fire-check",
+          "label": "消防通道检查"
+        }
+      },
+      {
+        "edge_id": "in-roster",
+        "label": "值班人已确认",
+        "node": {
+          "id": "roster",
+          "label": "值班表"
+        }
+      },
+      {
+        "edge_id": "in-device",
+        "label": "自检日志",
+        "status": "尚未提交",
+        "state": "pending",
+        "node": {
+          "id": "device-log",
+          "label": "借还设备自检"
+        }
+      }
+    ]
+  },
+  "order": 3
+}

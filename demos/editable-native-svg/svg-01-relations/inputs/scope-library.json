@@ -1,0 +1,91 @@
+{
+  "id": "scope-library",
+  "synthetic": true,
+  "asset": "rel-scope",
+  "role": "normal",
+  "requirements": [
+    "SVG-R04",
+    "SVG-R05"
+  ],
+  "note": "三层嵌套、一个空容器、一个不在任何范围内的对象，三条跨界关系。",
+  "model": {
+    "title": "古籍调阅经过的范围",
+    "containers": [
+      {
+        "id": "area-reading",
+        "label": "阅览区",
+        "boundary": "开放时间内读者可以进入；不表示馆藏可以借出"
+      },
+      {
+        "id": "room-rare",
+        "label": "古籍阅览室",
+        "parent": "area-reading",
+        "boundary": "须预约进入；边界只表示房间位置"
+      },
+      {
+        "id": "area-stack",
+        "label": "闭架书库",
+        "boundary": "只有馆员进入；在库内不等于有调阅权限"
+      },
+      {
+        "id": "vault",
+        "label": "恒温库房",
+        "parent": "area-stack",
+        "boundary": "温湿度受控的房间"
+      },
+      {
+        "id": "room-repair",
+        "label": "修复室",
+        "boundary": "修复期间不对外"
+      }
+    ],
+    "members": [
+      {
+        "id": "shelf-open",
+        "label": "开架书架",
+        "container": "area-reading"
+      },
+      {
+        "id": "desk-12",
+        "label": "阅览桌 12",
+        "container": "room-rare"
+      },
+      {
+        "id": "cabinet-a",
+        "label": "古籍柜 A",
+        "container": "vault"
+      },
+      {
+        "id": "counter",
+        "label": "总服务台"
+      }
+    ],
+    "crossings": [
+      {
+        "edge_id": "fetch",
+        "from": "cabinet-a",
+        "to": "desk-12",
+        "kind": "调阅",
+        "status": "已送达",
+        "basis": "调阅单 D-12"
+      },
+      {
+        "edge_id": "return",
+        "from": "desk-12",
+        "to": "cabinet-a",
+        "kind": "归还",
+        "status": "尚未归还",
+        "state": "pending",
+        "basis": "调阅单 D-12 回执栏"
+      },
+      {
+        "edge_id": "confirm",
+        "from": "counter",
+        "to": "desk-12",
+        "kind": "预约确认",
+        "status": "已确认",
+        "basis": "预约登记 0412"
+      }
+    ]
+  }
+}

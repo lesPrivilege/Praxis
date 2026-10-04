@@ -1,6 +1,6 @@
 # 可编辑原生 SVG · 需求与绘制交接
 
-本项目从真实表达任务登记可编辑 SVG 的需求及组合关系。当前只交付研究、需求、合同和分批工单；所有绘制、预览、运行和 Flash 消费验收均未开始。构图、造型、颜色、字体和动效由 fresh Claude Opus 自主决定。
+本项目从真实表达任务登记可编辑 SVG 的需求及组合关系。研究、需求、合同和分批工单由登记轮交付；第一批绘制（SVG-01）已有作品，见下方“已交付作品”，其余四批和 Flash 消费验收尚未开始。构图、造型、颜色、字体和动效由 fresh Claude Opus 自主决定。
 
 基线：2026-10-04 云端 `main` 与本地 HEAD 均为 `d4fd38765af52f6bd2b9ae422cf016ac0ad1ae96`，通过 `git ls-remote origin refs/heads/main` 核对；登记分支 `codex/editable-native-svg-20261004`，未 push、未 merge。实际执行为当前 Codex 主代理，未派 Luna、Opus 或其他代理，不能称为 Luna explore 成果。
 
@@ -11,6 +11,14 @@
 | 检查陌生 Agent 能否自主找到和使用 | [消费入口与可视索引设计](discovery.md) → [验收任务](acceptance.md) | 实际发现、选择、调整、组合回执 |
 | 核对已有作品和一手技术依据 | [研究结论](../../vault/distilled/editable-native-svg-20261004/README.md) | 读取范围、来路、图像观察与未验证项 |
 | 开启 fresh Opus 会话 | [最小交接与启动边界](wake-opus.md) | 可直接粘贴的 prompt；本轮不调用 |
+
+## 已交付作品
+
+| 作品 | 资产 ID 与版本 | 覆盖的需求 | 状态 |
+|---|---|---|---|
+| [SVG-01 · 四个可编辑的关系图件](svg-01-relations/README.md)（[预览](svg-01-relations/index.html)） | `rel-fan`、`rel-scope`、`rel-qualify`、`rel-tracks`，均为 `0.1.0` | R01–R08、R17；R09、R18 各一半；R10 未画 | 候选，等用户 review；自动检查与看图范围见其 [验收回执](svg-01-relations/acceptance.md) |
+
+需求 ID 与资产 ID 是多对多的关系，覆盖程度以作品 README 为准。
 
 登记中的 `atomic` / `composite` / `do-not-extract` 是此次粒度判断，不是永久分类。ID 跟随任务关系，条目可合并或撤回。候选不进 Kit 组件库；Kit 只增加到本项目的发现链接。
 
