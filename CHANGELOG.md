@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-10-05 · 知识片的做法留作可取用的参考
+
+- 把 ADR-027、ADR-028 新增的两种独立审阅写明是可以取用的做法，不是每件任务的必经步骤；口播旁白页的随稿材料改成按任务取用。条文的含义没有变，强度写清了。
+- [工作开展方式 · 备用素材](kit/environment/working-methods.md)加三条：把研究交出去、自查通过之后、感知不到的部分。它们是备用素材，不默认加载。
+- [Motion 入口](kit/write/motion/README.md)、[演示实现](demos/README.md)和 [Distilled](vault/distilled/README.md)各加一处指向 Knowledge Film 001 的样例和过程重建。
+- Knowledge Film 001 第五版收尾：片尾塔补上第五片叶子，成片检查六项通过（旁白转写比对第一次跑）。记录在 [回执](docs/verification/narration-distill-20261005.md)的“收尾时的调整”一节。
+
 ## 2026-10-05 · 口播旁白与独立冷读
 
 - Write / Prose 新增文体页 [口播旁白](kit/write/prose/genres/narration.md)：为耳朵写的指代、主干、读音和叫法，口播里要数的六种句式，旁白与画面文字的对应，随稿交付的句式统计和读音清单。见 [ADR-028](docs/decisions/028-narration-genre-and-cold-read.md)。
