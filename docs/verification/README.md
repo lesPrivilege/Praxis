@@ -1,5 +1,7 @@
 # 验收回执
 
+- [可编辑原生 SVG 登记与交接 · 2026-10-04](editable-native-svg-20261004.md)：仓库、来源卡、链接和登记一致性；绘制、Opus/Flash、编辑器、读屏与受众验收未运行。
+
 - [2026-09-19 最终收敛与发布验收（至 r4）](2026-09-19-final.md)
 - [Luna 结构复核](luna-structure-review-2026-09-19.md)
 - [Luna 发布检查](luna-publication-review-2026-09-19.md)

@@ -34,6 +34,8 @@ Vault 保存研究材料、来源身份、提炼结果和可回查的原件。�
 
 ## 已登记的近期入口
 
+- 2026-10-04：[可编辑原生 SVG 研究与绘制交接](distilled/editable-native-svg-20261004/README.md)：一手文字参考、五张既有图的观察与表达需求；完整施工项目在 demos，绘制和消费验收未开始。
+
 - 2026-09-20： [架构审阅消费](distilled/themes/architecture-review-2026-09-20.md) · [文档实践与选型](distilled/themes/documentation-practices.md)。
 - 2026-09-25： [Agent Runtime 研究与裁决](distilled/agent-runtime-survey-20260925/README.md)。
 - 2026-09-27： [Write / Design 两份 Chat 的消费入口](distilled/write-design-grammar/README.md)，原件见 [Opus Chat](archive/chat/opus-remotion-video-20260927.json) 与 [Design Grammar Chat](archive/chat/design-grammar-20260927.json)。

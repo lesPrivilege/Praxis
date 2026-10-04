@@ -1,0 +1,1038 @@
+{
+  "schema_version": "project-local-v1",
+  "id": "editable-native-svg-20261004",
+  "baseline_sha": "d4fd38765af52f6bd2b9ae422cf016ac0ad1ae96",
+  "as_of": "2026-10-04",
+  "status": "registered",
+  "adoption": "candidate",
+  "reference_priority": "normal",
+  "note": "本项目需求登记，不是全仓 taxonomy、可用资产库或运行契约。bounds 是待测压力，不是已验收容量。",
+  "counts": {
+    "atomic": 22,
+    "composite": 14,
+    "do-not-extract": 8
+  },
+  "requirements": [
+    {
+      "id": "SVG-R01",
+      "kind": "atomic",
+      "job": "表达两对象有依据的方向关系",
+      "input_shape": "节点身份、端点、关系类型与依据",
+      "invariants": "关联不自动表示先后、因果或授权",
+      "editable": "标签、端点、路由、方向",
+      "bounds": "2 节点起；高密交叉需升级布局",
+      "avoid_when": "无关系依据或只需链接导航",
+      "compose_with": [
+        "SVG-R02",
+        "SVG-R03",
+        "SVG-R07",
+        "SVG-R08",
+        "SVG-R21"
+      ],
+      "basis": [
+        "L03",
+        "S01",
+        "S05"
+      ],
+      "work_order": "SVG-01",
+      "delivery_status": "not-drawn",
+      "artifact_entry": null,
+      "preview_entry": null
+    },
+    {
+      "id": "SVG-R02",
+      "kind": "atomic",
+      "job": "区分分支条件和分支结果",
+      "input_shape": "起点、带条件的出边、结果节点",
+      "invariants": "每个条件绑定正确出边；默认分支显式",
+      "editable": "条件文字、出边、次序",
+      "bounds": "先测 2/4/8 分支与长条件",
+      "avoid_when": "条件不完备或需要完整决策表",
+      "compose_with": [
+        "SVG-R01",
+        "SVG-R06",
+        "SVG-R09"
+      ],
+      "basis": [
+        "L03",
+        "S08"
+      ],
+      "work_order": "SVG-01",
+      "delivery_status": "not-drawn",
+      "artifact_entry": null,
+      "preview_entry": null
+    },
+    {
+      "id": "SVG-R03",
+      "kind": "atomic",
+      "job": "表达汇合、依赖和可并行输入",
+      "input_shape": "输入集合、目标、AND/OR 或未定汇合规则",
+      "invariants": "汇合不是自动完成；AND 与 OR 分开",
+      "editable": "输入成员、关系类型、标签",
+      "bounds": "先测 1/3/8 输入；重复端点须去重或明示",
+      "avoid_when": "无法定义汇合规则",
+      "compose_with": [
+        "SVG-R01",
+        "SVG-R02",
+        "SVG-R24"
+      ],
+      "basis": [
+        "L03",
+        "S08"
+      ],
+      "work_order": "SVG-01",
+      "delivery_status": "not-drawn",
+      "artifact_entry": null,
+      "preview_entry": null
+    },
+    {
+      "id": "SVG-R04",
+      "kind": "atomic",
+      "job": "表达成员属于哪个容器",
+      "input_shape": "容器和成员 ID、包含关系",
+      "invariants": "视觉包含不自动表示权限或数量权重",
+      "editable": "成员、嵌套、边界、标签",
+      "bounds": "先测 1/3 层与空容器；循环包含须拒绝",
+      "avoid_when": "集合重叠却被当单一树",
+      "compose_with": [
+        "SVG-R05",
+        "SVG-R19",
+        "SVG-R31"
+      ],
+      "basis": [
+        "L03",
+        "S09"
+      ],
+      "work_order": "SVG-01",
+      "delivery_status": "not-drawn",
+      "artifact_entry": null,
+      "preview_entry": null
+    },
+    {
+      "id": "SVG-R05",
+      "kind": "atomic",
+      "job": "区分范围、边界与跨界关系",
+      "input_shape": "范围对象、内外对象、跨界边及依据",
+      "invariants": "边界含义与越界关系明确；不伪造授权",
+      "editable": "范围、边、端口、边界说明",
+      "bounds": "先测 2 层和 3 条跨界线；狭栏重排",
+      "avoid_when": "只是装饰边框",
+      "compose_with": [
+        "SVG-R01",
+        "SVG-R04",
+        "SVG-R20"
+      ],
+      "basis": [
+        "L03",
+        "S01"
+      ],
+      "work_order": "SVG-01",
+      "delivery_status": "not-drawn",
+      "artifact_entry": null,
+      "preview_entry": null
+    },
+    {
+      "id": "SVG-R06",
+      "kind": "atomic",
+      "job": "把条件限定到准确主张或片段",
+      "input_shape": "主张 ID、范围或文本片段、条件",
+      "invariants": "括线/连线限定的对象不能靠盒高猜测",
+      "editable": "条件文字、target、范围锚点",
+      "bounds": "测一词/一句/多句及 4 倍长条件",
+      "avoid_when": "全局说明却硬绑某个局部词",
+      "compose_with": [
+        "SVG-R07",
+        "SVG-R08",
+        "SVG-R24"
+      ],
+      "basis": [
+        "L01",
+        "L02",
+        "S02"
+      ],
+      "work_order": "SVG-01",
+      "delivery_status": "not-drawn",
+      "artifact_entry": null,
+      "preview_entry": null
+    },
+    {
+      "id": "SVG-R07",
+      "kind": "atomic",
+      "job": "保持图内注释跟随被注对象",
+      "input_shape": "target ID、解释、候选标签位置",
+      "invariants": "注释与对象及读序关联稳定",
+      "editable": "文字、anchor、位置策略",
+      "bounds": "测多注释、长注释、窄栏和共用边栏",
+      "avoid_when": "注释相互遮挡且不能重排",
+      "compose_with": [
+        "SVG-R01",
+        "SVG-R06",
+        "SVG-R11",
+        "SVG-R16"
+      ],
+      "basis": [
+        "L01",
+        "L02",
+        "S04"
+      ],
+      "work_order": "SVG-01",
+      "delivery_status": "not-drawn",
+      "artifact_entry": null,
+      "preview_entry": null
+    },
+    {
+      "id": "SVG-R08",
+      "kind": "atomic",
+      "job": "显示材料支持、反驳或限定哪项主张",
+      "input_shape": "claim、source@version#locator、关系与证据状态",
+      "invariants": "文档存在不等于支持；推断不升级为已证",
+      "editable": "主张、依据、版本、关系、来源文字",
+      "bounds": "测 0/1/5 来源及冲突来源",
+      "avoid_when": "来源身份或定位缺失却声称已证",
+      "compose_with": [
+        "SVG-R06",
+        "SVG-R17",
+        "SVG-R26"
+      ],
+      "basis": [
+        "L03",
+        "L05",
+        "S04"
+      ],
+      "work_order": "SVG-01",
+      "delivery_status": "not-drawn",
+      "artifact_entry": null,
+      "preview_entry": null
+    },
+    {
+      "id": "SVG-R09",
+      "kind": "atomic",
+      "job": "区分当前状态、候选和合法转移",
+      "input_shape": "对象状态、事件、actor、guard、预期结果",
+      "invariants": "候选不自动生效；拒绝仍留记录",
+      "editable": "状态标签、转移、理由、guard",
+      "bounds": "测 3/6 状态、非法转移和重放",
+      "avoid_when": "只展示一个状态且普通文字足够",
+      "compose_with": [
+        "SVG-R01",
+        "SVG-R02",
+        "SVG-R17",
+        "SVG-R25"
+      ],
+      "basis": [
+        "L03",
+        "L04"
+      ],
+      "work_order": "SVG-01",
+      "delivery_status": "not-drawn",
+      "artifact_entry": null,
+      "preview_entry": null
+    },
+    {
+      "id": "SVG-R10",
+      "kind": "atomic",
+      "job": "突出前后变化与未变字段",
+      "input_shape": "稳定字段 ID、before/after、口径和时间",
+      "invariants": "不同身份/单位不能伪装成变化；不丢未变项",
+      "editable": "字段、值、差异标注",
+      "bounds": "测新增/删除/未变/待定/长标签",
+      "avoid_when": "两份不可比较的快照",
+      "compose_with": [
+        "SVG-R07",
+        "SVG-R11",
+        "SVG-R17",
+        "SVG-R30"
+      ],
+      "basis": [
+        "L04",
+        "S07"
+      ],
+      "work_order": "SVG-01",
+      "delivery_status": "not-drawn",
+      "artifact_entry": null,
+      "preview_entry": null
+    },
+    {
+      "id": "SVG-R11",
+      "kind": "atomic",
+      "job": "把单个量映射为可重算的长度或位置",
+      "input_shape": "数值、单位、domain、尺度、分母与时间",
+      "invariants": "大小编码保留原值与共同尺度；零点有意义",
+      "editable": "值、domain、参考点、标签",
+      "bounds": "测零/负数/极值/小数；面积编码另算",
+      "avoid_when": "纯序数或没有度量定义",
+      "compose_with": [
+        "SVG-R12",
+        "SVG-R14",
+        "SVG-R15",
+        "SVG-R29"
+      ],
+      "basis": [
+        "L03",
+        "S10"
+      ],
+      "work_order": "SVG-02",
+      "delivery_status": "not-drawn",
+      "artifact_entry": null,
+      "preview_entry": null
+    },
+    {
+      "id": "SVG-R12",
+      "kind": "atomic",
+      "job": "比较数值与目标或阈值",
+      "input_shape": "实测或预测值、参考值、尺度、阈值依据",
+      "invariants": "参考线不等于批准线；超标方向按指标定义",
+      "editable": "值、阈值、方向、文字",
+      "bounds": "测阈值两侧、等值、多个目标",
+      "avoid_when": "目标无依据或口径不同",
+      "compose_with": [
+        "SVG-R11",
+        "SVG-R13",
+        "SVG-R21"
+      ],
+      "basis": [
+        "L03",
+        "S10"
+      ],
+      "work_order": "SVG-02",
+      "delivery_status": "not-drawn",
+      "artifact_entry": null,
+      "preview_entry": null
+    },
+    {
+      "id": "SVG-R13",
+      "kind": "atomic",
+      "job": "表达有方法依据的区间和不确定性",
+      "input_shape": "点估计、上下界、方法、样本与未知偏差",
+      "invariants": "区间类型/置信或预测口径明确；不凭空补置信度",
+      "editable": "估计、上下界、说明、方法",
+      "bounds": "测非对称/跨零/未量化偏差；逆序界限拒绝",
+      "avoid_when": "没有方法却画精确区间",
+      "compose_with": [
+        "SVG-R11",
+        "SVG-R12",
+        "SVG-R34"
+      ],
+      "basis": [
+        "L01",
+        "S04",
+        "S10"
+      ],
+      "work_order": "SVG-02",
+      "delivery_status": "not-drawn",
+      "artifact_entry": null,
+      "preview_entry": null
+    },
+    {
+      "id": "SVG-R14",
+      "kind": "atomic",
+      "job": "让零、缺失、未适用和未估算可区分",
+      "input_shape": "value、value_state、原因、单位",
+      "invariants": "0 不替代 null；缺失不能连接成实测曲线",
+      "editable": "状态、值、原因、文字",
+      "bounds": "测四种语义并列和状态变化",
+      "avoid_when": "宿主已有足够可读状态文字",
+      "compose_with": [
+        "SVG-R11",
+        "SVG-R21",
+        "SVG-R28",
+        "SVG-R29"
+      ],
+      "basis": [
+        "L01",
+        "S10"
+      ],
+      "work_order": "SVG-02",
+      "delivery_status": "not-drawn",
+      "artifact_entry": null,
+      "preview_entry": null
+    },
+    {
+      "id": "SVG-R15",
+      "kind": "atomic",
+      "job": "表达部分与整体或占比",
+      "input_shape": "部分值、总量、同口径、是否互斥完备",
+      "invariants": "分母可查；重叠集合不能硬凑 100%",
+      "editable": "部分、整体、排序、分母标签",
+      "bounds": "测 0/100%、多小项、舍入误差；负值需换形式",
+      "avoid_when": "不共享整体或重叠不可加",
+      "compose_with": [
+        "SVG-R11",
+        "SVG-R14",
+        "SVG-R36"
+      ],
+      "basis": [
+        "L03",
+        "S05",
+        "S10"
+      ],
+      "work_order": "SVG-02",
+      "delivery_status": "not-drawn",
+      "artifact_entry": null,
+      "preview_entry": null
+    },
+    {
+      "id": "SVG-R16",
+      "kind": "atomic",
+      "job": "把时间点、区间和截止区别开",
+      "input_shape": "事件 ID、开始结束、时区/偏移、状态与依据",
+      "invariants": "时间长度有尺度；先后不是因果；播放秒不同于事件时刻",
+      "editable": "时间、标签、区间、标记",
+      "bounds": "测重叠、零时长、未知结束和长标签",
+      "avoid_when": "顺序未知却画确定时间线",
+      "compose_with": [
+        "SVG-R07",
+        "SVG-R17",
+        "SVG-R33"
+      ],
+      "basis": [
+        "L02",
+        "L04",
+        "S10"
+      ],
+      "work_order": "SVG-02",
+      "delivery_status": "not-drawn",
+      "artifact_entry": null,
+      "preview_entry": null
+    },
+    {
+      "id": "SVG-R17",
+      "kind": "atomic",
+      "job": "显示判断、材料与事项各自的版本绑定",
+      "input_shape": "object@version、source@version、basis、关系状态",
+      "invariants": "材料版本更新不隐式改事项或旧说明 basis",
+      "editable": "版本、basis、当前性说明、链接",
+      "bounds": "测材料变/事项不变、相反情况和独立修订",
+      "avoid_when": "用一个全局版本号替代所有对象版本",
+      "compose_with": [
+        "SVG-R08",
+        "SVG-R09",
+        "SVG-R10",
+        "SVG-R27"
+      ],
+      "basis": [
+        "L03",
+        "L04",
+        "L05"
+      ],
+      "work_order": "SVG-01",
+      "delivery_status": "not-drawn",
+      "artifact_entry": null,
+      "preview_entry": null
+    },
+    {
+      "id": "SVG-R18",
+      "kind": "atomic",
+      "job": "显示投影选入什么及未选字段仍存在",
+      "input_shape": "完整字段集合、selected keys、projection basis",
+      "invariants": "省略不是删除；投影不反向授权修改源状态",
+      "editable": "选择集合、槽位、映射、解释",
+      "bounds": "测全选/空选/新增字段与旧 basis",
+      "avoid_when": "只是复制整页截图",
+      "compose_with": [
+        "SVG-R01",
+        "SVG-R17",
+        "SVG-R25"
+      ],
+      "basis": [
+        "L03",
+        "L04",
+        "S01"
+      ],
+      "work_order": "SVG-01",
+      "delivery_status": "not-drawn",
+      "artifact_entry": null,
+      "preview_entry": null
+    },
+    {
+      "id": "SVG-R19",
+      "kind": "atomic",
+      "job": "表达父子关系与路径",
+      "input_shape": "节点 ID、parent ID、层级含义",
+      "invariants": "层级不是数量面积；多父或循环需另用图",
+      "editable": "成员、父子、折叠、顺序",
+      "bounds": "测深链、宽树、空根和多父输入",
+      "avoid_when": "拓扑不是树却硬设唯一父节点",
+      "compose_with": [
+        "SVG-R04",
+        "SVG-R07",
+        "SVG-R31"
+      ],
+      "basis": [
+        "L03",
+        "S09"
+      ],
+      "work_order": "SVG-02",
+      "delivery_status": "not-drawn",
+      "artifact_entry": null,
+      "preview_entry": null
+    },
+    {
+      "id": "SVG-R20",
+      "kind": "atomic",
+      "job": "定位对象、区域与路径的空间关系",
+      "input_shape": "参照坐标、对象/区域 ID、比例或示意声明",
+      "invariants": "示意与测量分开；位置不自动表示距离或权限",
+      "editable": "坐标、范围、路径、参照",
+      "bounds": "测密集标注、边缘对象和坐标变换",
+      "avoid_when": "没有位置依据的地理或建筑主张",
+      "compose_with": [
+        "SVG-R05",
+        "SVG-R07",
+        "SVG-R32"
+      ],
+      "basis": [
+        "L03",
+        "S11"
+      ],
+      "work_order": "SVG-02",
+      "delivery_status": "not-drawn",
+      "artifact_entry": null,
+      "preview_entry": null
+    },
+    {
+      "id": "SVG-R21",
+      "kind": "atomic",
+      "job": "让视觉编码有可编辑图例",
+      "input_shape": "编码角色到语义映射、单位、类别或顺序",
+      "invariants": "颜色不独自承载区别；图例与主体同步",
+      "editable": "标签、类别、线型与视觉角色",
+      "bounds": "测新增/删除类、灰度、深浅背景",
+      "avoid_when": "纯装饰色没有语义",
+      "compose_with": [
+        "SVG-R01",
+        "SVG-R11",
+        "SVG-R14",
+        "SVG-R29"
+      ],
+      "basis": [
+        "L03",
+        "S04"
+      ],
+      "work_order": "SVG-02",
+      "delivery_status": "not-drawn",
+      "artifact_entry": null,
+      "preview_entry": null
+    },
+    {
+      "id": "SVG-R22",
+      "kind": "atomic",
+      "job": "表达分布的点、区间或分箱",
+      "input_shape": "观测值/汇总、样本、分箱或分位方法",
+      "invariants": "聚合规则和样本可查；密度不是概率断言",
+      "editable": "样本、bin、尺度、标签",
+      "bounds": "测单样本/离群/缺失和 bin 改变",
+      "avoid_when": "没有数据却补拟真分布",
+      "compose_with": [
+        "SVG-R11",
+        "SVG-R13",
+        "SVG-R35"
+      ],
+      "basis": [
+        "L03",
+        "S05",
+        "S10"
+      ],
+      "work_order": "SVG-02",
+      "delivery_status": "not-drawn",
+      "artifact_entry": null,
+      "preview_entry": null
+    },
+    {
+      "id": "SVG-R23",
+      "kind": "composite",
+      "job": "解释跨角色流程与移交责任",
+      "input_shape": "角色、动作、对象、输入输出和接收依据",
+      "invariants": "泳道位置不自动赋权；发出不等于接收",
+      "editable": "节点/角色/分支/责任说明",
+      "bounds": "先测 3 角色 8 步；密图改列表",
+      "avoid_when": "步骤或责任未知",
+      "compose_with": [
+        "SVG-R01",
+        "SVG-R02",
+        "SVG-R03",
+        "SVG-R05",
+        "SVG-R09"
+      ],
+      "basis": [
+        "L03"
+      ],
+      "work_order": "SVG-03",
+      "delivery_status": "not-drawn",
+      "artifact_entry": null,
+      "preview_entry": null
+    },
+    {
+      "id": "SVG-R24",
+      "kind": "composite",
+      "job": "说明候选为何通过或被拒",
+      "input_shape": "规则版本、候选、guard、依据、reviewer、回执",
+      "invariants": "机器检查与人批准分开；拒绝不改状态",
+      "editable": "闸门、条件、候选、拒绝理由",
+      "bounds": "测类型/证据/版本/权限四失败与一次成功",
+      "avoid_when": "把机械 gate 当业务接受",
+      "compose_with": [
+        "SVG-R02",
+        "SVG-R03",
+        "SVG-R06",
+        "SVG-R08",
+        "SVG-R09",
+        "SVG-R17"
+      ],
+      "basis": [
+        "L03",
+        "L04"
+      ],
+      "work_order": "SVG-03",
+      "delivery_status": "not-drawn",
+      "artifact_entry": null,
+      "preview_entry": null
+    },
+    {
+      "id": "SVG-R25",
+      "kind": "composite",
+      "job": "解释事件、状态与本次上下文",
+      "input_shape": "event log、折叠规则、state、projection/basis",
+      "invariants": "事件不等于状态；拒绝保留；旧投影显式",
+      "editable": "事件、状态字段、选择、basis",
+      "bounds": "测 pending/approve/reject/replay/stale",
+      "avoid_when": "缺权威与折叠规则",
+      "compose_with": [
+        "SVG-R01",
+        "SVG-R09",
+        "SVG-R10",
+        "SVG-R17",
+        "SVG-R18"
+      ],
+      "basis": [
+        "L03",
+        "L04"
+      ],
+      "work_order": "SVG-03",
+      "delivery_status": "not-drawn",
+      "artifact_entry": null,
+      "preview_entry": null
+    },
+    {
+      "id": "SVG-R26",
+      "kind": "composite",
+      "job": "区分证据、规则、机器建议与人判断",
+      "input_shape": "claim/evidence/rule/proposal/decision及各身份",
+      "invariants": "建议不冒充人判断；证据支持范围可回查",
+      "editable": "条目、关联、状态、说明",
+      "bounds": "测冲突依据、无来源建议和待判断",
+      "avoid_when": "所有内容只贴一个已核实标签",
+      "compose_with": [
+        "SVG-R06",
+        "SVG-R08",
+        "SVG-R09",
+        "SVG-R17",
+        "SVG-R21"
+      ],
+      "basis": [
+        "L03",
+        "L05"
+      ],
+      "work_order": "SVG-03",
+      "delivery_status": "not-drawn",
+      "artifact_entry": null,
+      "preview_entry": null
+    },
+    {
+      "id": "SVG-R27",
+      "kind": "composite",
+      "job": "解释新材料与旧阅读说明的错归风险",
+      "input_shape": "material revisions、matter revision、reading basis、current links",
+      "invariants": "说明绑定精确材料版本；上传不隐式批准",
+      "editable": "版本节点、basis、关系、风险说明",
+      "bounds": "测材料 v1→v2 而事项 v8 不变",
+      "avoid_when": "复用整事项版本测试就宣称安全",
+      "compose_with": [
+        "SVG-R08",
+        "SVG-R10",
+        "SVG-R17",
+        "SVG-R26"
+      ],
+      "basis": [
+        "L03",
+        "L05"
+      ],
+      "work_order": "SVG-03",
+      "delivery_status": "not-drawn",
+      "artifact_entry": null,
+      "preview_entry": null
+    },
+    {
+      "id": "SVG-R28",
+      "kind": "composite",
+      "job": "帮助读者在共同属性下选择方案",
+      "input_shape": "对象×属性、尺度、单位、限定与推荐依据",
+      "invariants": "同属性可比较；推荐和条件不被等权化",
+      "editable": "对象、属性、排序、局部标注",
+      "bounds": "测 3/6 对象、窄栏、长属性与缺失",
+      "avoid_when": "多量纲合成无依据总分",
+      "compose_with": [
+        "SVG-R06",
+        "SVG-R07",
+        "SVG-R11",
+        "SVG-R14",
+        "SVG-R21"
+      ],
+      "basis": [
+        "L01",
+        "L03"
+      ],
+      "work_order": "SVG-03",
+      "delivery_status": "not-drawn",
+      "artifact_entry": null,
+      "preview_entry": null
+    },
+    {
+      "id": "SVG-R29",
+      "kind": "composite",
+      "job": "比较类别、排序与小倍数",
+      "input_shape": "同口径数据、domain、分组、基线",
+      "invariants": "各面板共享或明确区分尺度；排序与值变分开",
+      "editable": "值、排序、分组、尺度",
+      "bounds": "测负值、长类别、局部尺度诱导",
+      "avoid_when": "不共享指标而暗示数量高低",
+      "compose_with": [
+        "SVG-R11",
+        "SVG-R12",
+        "SVG-R14",
+        "SVG-R21"
+      ],
+      "basis": [
+        "L03",
+        "S10"
+      ],
+      "work_order": "SVG-02",
+      "delivery_status": "not-drawn",
+      "artifact_entry": null,
+      "preview_entry": null
+    },
+    {
+      "id": "SVG-R30",
+      "kind": "composite",
+      "job": "解释前后差异由哪些变化组成",
+      "input_shape": "基线、增减项、终值、身份与计算",
+      "invariants": "可加总口径闭合；未知项不补为零",
+      "editable": "基线、变化项、终值、说明",
+      "bounds": "测负项、未知项与不闭合差额",
+      "avoid_when": "变化原因只是相关或猜测",
+      "compose_with": [
+        "SVG-R10",
+        "SVG-R11",
+        "SVG-R14",
+        "SVG-R21"
+      ],
+      "basis": [
+        "L03"
+      ],
+      "work_order": "SVG-03",
+      "delivery_status": "not-drawn",
+      "artifact_entry": null,
+      "preview_entry": null
+    },
+    {
+      "id": "SVG-R31",
+      "kind": "composite",
+      "job": "探索层级、路径与数量的分工",
+      "input_shape": "树拓扑、节点信息、可选数量与单位",
+      "invariants": "层级/数量分别解释；面积不用来假装等级",
+      "editable": "树、数量、注释、折叠",
+      "bounds": "测 3 层/宽分支/长路径；需要列表替代",
+      "avoid_when": "图比可读目录更难定位",
+      "compose_with": [
+        "SVG-R04",
+        "SVG-R07",
+        "SVG-R11",
+        "SVG-R19"
+      ],
+      "basis": [
+        "L03",
+        "S09"
+      ],
+      "work_order": "SVG-03",
+      "delivery_status": "not-drawn",
+      "artifact_entry": null,
+      "preview_entry": null
+    },
+    {
+      "id": "SVG-R32",
+      "kind": "composite",
+      "job": "解释空间布局、区域责任或依赖路径",
+      "input_shape": "空间参照、区域、对象、路线与范围",
+      "invariants": "实体空间/逻辑空间分开；比例和方向有说明",
+      "editable": "位置、区域、路径、标签",
+      "bounds": "测边缘、重叠、缩放与长区域名",
+      "avoid_when": "没有地图来源或坐标依据",
+      "compose_with": [
+        "SVG-R01",
+        "SVG-R05",
+        "SVG-R07",
+        "SVG-R20",
+        "SVG-R21"
+      ],
+      "basis": [
+        "L03",
+        "S11"
+      ],
+      "work_order": "SVG-03",
+      "delivery_status": "not-drawn",
+      "artifact_entry": null,
+      "preview_entry": null
+    },
+    {
+      "id": "SVG-R33",
+      "kind": "composite",
+      "job": "解释事件序列、并行区间与截止",
+      "input_shape": "时间点/区间、时区、责任、依赖、窗口",
+      "invariants": "共享时间基准；未知结束显式；依赖有依据",
+      "editable": "时间、区间、责任、顺序",
+      "bounds": "测同钟面不同偏移、重叠和缺失结束",
+      "avoid_when": "只知道顺序却声称准确时长",
+      "compose_with": [
+        "SVG-R01",
+        "SVG-R07",
+        "SVG-R09",
+        "SVG-R16",
+        "SVG-R17"
+      ],
+      "basis": [
+        "L02",
+        "L03"
+      ],
+      "work_order": "SVG-02",
+      "delivery_status": "not-drawn",
+      "artifact_entry": null,
+      "preview_entry": null
+    },
+    {
+      "id": "SVG-R34",
+      "kind": "composite",
+      "job": "比较估计、基线与已量化/未知偏差",
+      "input_shape": "估计对象、区间类型、方法、样本、基线",
+      "invariants": "CI/预测范围/情景分开；未量化偏差可见",
+      "editable": "值、区间、基线、方法说明",
+      "bounds": "测跨零、非对称、多组与未知偏差",
+      "avoid_when": "把模拟 CI 当真实统计结论",
+      "compose_with": [
+        "SVG-R07",
+        "SVG-R11",
+        "SVG-R12",
+        "SVG-R13",
+        "SVG-R14"
+      ],
+      "basis": [
+        "L01",
+        "S04"
+      ],
+      "work_order": "SVG-02",
+      "delivery_status": "not-drawn",
+      "artifact_entry": null,
+      "preview_entry": null
+    },
+    {
+      "id": "SVG-R35",
+      "kind": "composite",
+      "job": "看分布、异常和局部数据证据",
+      "input_shape": "观测集合、分组、离群定义、方法与定位",
+      "invariants": "异常不是自动因果；样本和分箱可查",
+      "editable": "样本、分组、阈值、注释",
+      "bounds": "测单点/离群/多组/缺失",
+      "avoid_when": "数据不足却画平滑概率曲线",
+      "compose_with": [
+        "SVG-R07",
+        "SVG-R11",
+        "SVG-R12",
+        "SVG-R22"
+      ],
+      "basis": [
+        "L03",
+        "S05"
+      ],
+      "work_order": "SVG-02",
+      "delivery_status": "not-drawn",
+      "artifact_entry": null,
+      "preview_entry": null
+    },
+    {
+      "id": "SVG-R36",
+      "kind": "composite",
+      "job": "表达数量在流程中如何分配和受容量约束",
+      "input_shape": "边流量、节点收支、损耗、口径与容量",
+      "invariants": "宽度随量重算；守恒或未闭合显式；因果有依据",
+      "editable": "边值、容量、节点、图例",
+      "bounds": "测零流量/损耗/循环与负流量拒用",
+      "avoid_when": "仅有关系而没有流量依据",
+      "compose_with": [
+        "SVG-R01",
+        "SVG-R03",
+        "SVG-R11",
+        "SVG-R14",
+        "SVG-R15",
+        "SVG-R21"
+      ],
+      "basis": [
+        "L03",
+        "S05"
+      ],
+      "work_order": "SVG-03",
+      "delivery_status": "not-drawn",
+      "artifact_entry": null,
+      "preview_entry": null
+    },
+    {
+      "id": "SVG-R37",
+      "kind": "do-not-extract",
+      "job": "填满装饰性箭头、圆点与背景",
+      "input_shape": "外观偏好",
+      "invariants": "不产生可检验表达关系",
+      "editable": "在消费者项目调样式",
+      "bounds": "数量不能作覆盖指标",
+      "avoid_when": "有明确语义时回到对应关系需求",
+      "compose_with": [],
+      "basis": [
+        "L03"
+      ],
+      "work_order": "none",
+      "delivery_status": "excluded-for-now",
+      "artifact_entry": null,
+      "preview_entry": null
+    },
+    {
+      "id": "SVG-R38",
+      "kind": "do-not-extract",
+      "job": "把整页轮廓转路径称为 native SVG",
+      "input_shape": "页面像素或扁平轮廓",
+      "invariants": "文字与语义不可因此丢失",
+      "editable": "保留原网页源码或重新建语义输入",
+      "bounds": "整页路径文件大小不代表可编辑能力",
+      "avoid_when": "只有不可编辑 path 则拒收",
+      "compose_with": [],
+      "basis": [
+        "L01",
+        "L04",
+        "S02"
+      ],
+      "work_order": "none",
+      "delivery_status": "excluded-for-now",
+      "artifact_entry": null,
+      "preview_entry": null
+    },
+    {
+      "id": "SVG-R39",
+      "kind": "do-not-extract",
+      "job": "把连续正文、按钮和状态文字都转成图",
+      "input_shape": "文字与宿主交互",
+      "invariants": "语义读序与可访问控件优先",
+      "editable": "使用 HTML/正文原生控件",
+      "bounds": "长文留宿主；图中局部标签另按合同",
+      "avoid_when": "已有文字能独立完成任务",
+      "compose_with": [],
+      "basis": [
+        "L03",
+        "S04"
+      ],
+      "work_order": "none",
+      "delivery_status": "excluded-for-now",
+      "artifact_entry": null,
+      "preview_entry": null
+    },
+    {
+      "id": "SVG-R40",
+      "kind": "do-not-extract",
+      "job": "抽取完整密集业务表格为固定 SVG 模板",
+      "input_shape": "大量行列、编辑与筛选需要",
+      "invariants": "共同属性、表头和读序可达",
+      "editable": "优先语义 HTML 表格；局部标记可用 SVG",
+      "bounds": "容量阈值由任务决定，不硬缩全表",
+      "avoid_when": "不能提供可达表格替代",
+      "compose_with": [],
+      "basis": [
+        "L01",
+        "S04"
+      ],
+      "work_order": "none",
+      "delivery_status": "excluded-for-now",
+      "artifact_entry": null,
+      "preview_entry": null
+    },
+    {
+      "id": "SVG-R41",
+      "kind": "do-not-extract",
+      "job": "无来源地理底图、建筑平面或空间测量",
+      "input_shape": "缺坐标/比例/许可的图片线索",
+      "invariants": "示意不冒充事实测量",
+      "editable": "先补来源或只作显式合成示意",
+      "bounds": "完整地图数据另有版本和许可",
+      "avoid_when": "缺依据仍称真实空间",
+      "compose_with": [],
+      "basis": [
+        "L03",
+        "S11"
+      ],
+      "work_order": "none",
+      "delivery_status": "excluded-for-now",
+      "artifact_entry": null,
+      "preview_entry": null
+    },
+    {
+      "id": "SVG-R42",
+      "kind": "do-not-extract",
+      "job": "将照片、纹理或复杂 3D 扁平嵌入 SVG 充库",
+      "input_shape": "光栅/模型、许可、真实任务",
+      "invariants": "SVG 包裹不使内容成为原生可编辑几何",
+      "editable": "在作品保留原格式与来源",
+      "bounds": "质感属于项目表现；不造通用资产假象",
+      "avoid_when": "image/canvas 主体冒充原生 SVG",
+      "compose_with": [],
+      "basis": [
+        "L03",
+        "S01"
+      ],
+      "work_order": "none",
+      "delivery_status": "excluded-for-now",
+      "artifact_entry": null,
+      "preview_entry": null
+    },
+    {
+      "id": "SVG-R43",
+      "kind": "do-not-extract",
+      "job": "重画已有成熟通用图标或品牌符号",
+      "input_shape": "既有资源与许可",
+      "invariants": "功能和品牌身份不能随意改写",
+      "editable": "先查可信现成资源；只在真实语义缺口新画",
+      "bounds": "不统计图标数量作本任务成果",
+      "avoid_when": "无新增表达职责",
+      "compose_with": [],
+      "basis": [
+        "L03"
+      ],
+      "work_order": "none",
+      "delivery_status": "excluded-for-now",
+      "artifact_entry": null,
+      "preview_entry": null
+    },
+    {
+      "id": "SVG-R44",
+      "kind": "do-not-extract",
+      "job": "抽取没有任务证据的复杂图式和泛化 runtime",
+      "input_shape": "样式想象、分类标签或单一作品",
+      "invariants": "没有用途就不先建 taxonomy 或共享 API",
+      "editable": "保留研究线索，真实任务触发再登记",
+      "bounds": "三场景门槛只针对共享运行组件",
+      "avoid_when": "漂亮作品不自动晋升 shared",
+      "compose_with": [],
+      "basis": [
+        "L01",
+        "L03"
+      ],
+      "work_order": "none",
+      "delivery_status": "excluded-for-now",
+      "artifact_entry": null,
+      "preview_entry": null
+    }
+  ]
+}
