@@ -1,6 +1,6 @@
 # SVG-01 验收回执
 
-2026-10-04，Praxis `9514ce4` 之上的分支 `claude/editable-native-svg-01-20261004`，fixture 修订 `20261004-r1`，资产版本 `0.1.0`。制作与自动检查由 Claude Opus 5.5（`claude-opus-5-5`）完成；独立复查由一个只读的 Claude Sonnet 子代理完成，它没有看到制作方的结论。环境：macOS，Node v25.9.0，Chrome 154 无界面模式，xmllint。没有安装任何依赖。
+2026-10-04，Praxis `9514ce4` 之上的分支 `claude/editable-native-svg-01-20261004`（已并入本地 main），fixture 修订 `20261004-r1`，资产版本 `0.1.0`。制作与自动检查由 Claude Opus 5.5（`claude-opus-5-5`）完成；独立复查由一个只读的 Claude Sonnet 子代理完成，它没有看到制作方的结论。环境：macOS，Node v25.9.0，Chrome 154 无界面模式，xmllint。没有安装任何依赖。
 
 结论分五类记，互不替代：自动断言、浏览器里的几何实测、作者看图、独立复查、读者效果。前四类本批做了，读者效果没有做。
 

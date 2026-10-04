@@ -1,6 +1,6 @@
 # SVG-01 · 四个可编辑的关系图件
 
-版本 `0.1.0`，2026-10-04。工单 [SVG-01](../work-orders.md)，接收基线为 Praxis `9514ce4`（登记包的交接基线 `d4fd387` 之后，main 多了企业工作面实验的两个提交；登记补丁在新基线上无冲突应用，九个受影响入口里只有 `demos/README.md` 有别人的新增行，已保留）。分支 `claude/editable-native-svg-01-20261004`，登记包和本作品各一个提交，未 push、未 merge。
+版本 `0.1.0`，2026-10-04。工单 [SVG-01](../work-orders.md)，接收基线为 Praxis `9514ce4`（登记包的交接基线 `d4fd387` 之后，main 多了企业工作面实验的两个提交；登记补丁在新基线上无冲突应用，九个受影响入口里只有 `demos/README.md` 有别人的新增行，已保留）。分支 `claude/editable-native-svg-01-20261004`，登记包和本作品各一个提交，已按用户要求并入本地 main，未 push。
 
 实际执行者是 Claude Opus 5.5（`claude-opus-5-5`，Claude Code 桌面端的一个新会话）。独立复查由一个只读的 Claude Sonnet 子代理做，结果见 [验收回执](acceptance.md)。用户尚未 review，四个件都还是候选。
 
