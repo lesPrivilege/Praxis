@@ -1,7 +1,7 @@
 // 四个件共用的底层：文字估宽与换行、SVG 节点、作用域内的 ID、拒用。
 // 没有依赖。文字宽度是估算值，实际宽度由 probe 在浏览器里核对。
 
-export const VERSION = '0.1.0';
+export const VERSION = '0.2.0';
 
 export const T = {
   font: "system-ui, -apple-system, 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif",
@@ -11,6 +11,7 @@ export const T = {
   sub: '#526276',
   edge: '#3d4c5e',
   line: '#7b8ba0',
+  faint: '#a7b4c4',
   wash: '#f2f5f9',
   paper: '#ffffff',
   accent: '#1f5fd1',
@@ -31,8 +32,29 @@ export function need(ok, code, message) {
 
 // 业务 ID 会进属性值和以空格分隔的列表，不能为空，也不能含空白
 export function needId(id, what) {
-  need(typeof id === 'string' && /^\S+$/.test(id), 'id', `${what}的 id 须是不含空白的非空字符串：${JSON.stringify(id)}`);
+  need(typeof id === 'string' && /^[^\s@#]+$/.test(id), 'id', `${what}的 id 须是非空字符串，不含空白、@ 和 #（后两个留给“对象@版本#位置”）：${JSON.stringify(id)}`);
 }
+
+// 一条指向：指到哪个对象、哪个版本、哪一处。没有 id 只有 text 的，算“未定位”。
+export function anchor(a, what) {
+  need(a && typeof a === 'object' && !Array.isArray(a), 'anchor', `${what}须写成 { id, version, locator } 或 { text }，不能只是一句话`);
+  if (a.id == null) {
+    need(typeof a.text === 'string' && a.text.trim(), 'anchor', `${what}既没有 id 也没有 text`);
+    return { located: false, text: a.text };
+  }
+  needId(a.id, what);
+  need(a.text == null, 'anchor', `${what}同时写了 id 和 text；说得出身份就不用 text`);
+  // 版本是一个数，或以数字开头的串（3、"3.1"、"2026-03"）；"latest" 这类说法不算版本
+  const v = a.version;
+  need(v == null || (typeof v === 'number' && Number.isFinite(v) && v >= 0) || (typeof v === 'string' && /^[0-9][0-9A-Za-z.\-]*$/.test(v)), 'anchor', `${what}的 version 须是数字或以数字开头的版本号：${JSON.stringify(v)}`);
+  need(a.locator == null || (typeof a.locator === 'string' && a.locator.trim()), 'anchor', `${what}的 locator 是空的`);
+  need(a.label == null || (typeof a.label === 'string' && a.label.trim()), 'anchor', `${what}的 label 是空的`);
+  return { located: true, id: a.id, label: a.label ?? null, version: v == null ? null : typeof v === 'string' && /^\d+$/.test(v) ? Number(v) : v, locator: a.locator ?? null };
+}
+export const anchorText = (a) =>
+  a.located ? `${a.label ?? a.id}${a.version != null ? `${a.label ? ' ' : '@'}v${a.version}` : ''}${a.locator ? ` ${a.locator}` : ''}` : `${a.text}（未定位）`;
+export const anchorKey = (a) => (a.located ? `${a.id}${a.version != null ? `@${a.version}` : ''}${a.locator ? `#${a.locator}` : ''}` : '');
+export const anchorTarget = (a) => (a.located ? `${a.id}${a.version != null ? `@${a.version}` : ''}` : null);
 
 export const r = (n) => +n.toFixed(1);
 export const lineH = (size) => Math.round(size * 1.5);
@@ -160,23 +182,28 @@ export function measure(str, w, size = T.size, bold = false) {
 
 export const poly = (pts) => pts.map(([x, y], i) => `${i ? 'L' : 'M'}${r(x)} ${r(y)}`).join(' ');
 
+const DASH = '4 3';
 const MARKERS = {
   solid: (id) => `<marker id="${id}" viewBox="0 0 8 8" refX="7.5" refY="4" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto"><path d="M0.5 0.8 7.5 4 0.5 7.2Z" fill="${T.edge}"/></marker>`,
   open: (id) => `<marker id="${id}" viewBox="0 0 8 8" refX="7.5" refY="4" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto"><path d="M1 1 7.5 4 1 7" fill="none" stroke="${T.edge}" stroke-width="1.25"/></marker>`,
 };
 
-export function canvas(scope) {
+export function canvas(scope, seed = []) {
   need(/^[A-Za-z][A-Za-z0-9_-]*$/.test(scope ?? ''), 'scope', `scope 须是字母开头的 ID：${scope}`);
   const parts = [];
   const labels = [];
-  const boxes = {};
+  const boxes = Object.create(null);
   const used = new Set();
   const keys = new Set();
+  const marks = new Set(seed);
+  const mentions = [];
   const c = {
     scope,
     parts,
     labels,
     boxes,
+    mentions,
+    marks,
     add(s) {
       parts.push(s);
     },
@@ -190,23 +217,65 @@ export function canvas(scope) {
     insert(at, s) {
       parts.splice(at, 0, s);
     },
-    // 实线表示已经成立，虚线表示尚未成立；arrow 只在关系有方向时画。
-    path(pts, { dashed = false, arrow = false, color = T.edge, width = 1.25, data = {} } = {}) {
+    // st 是 standing.mjs 里的一项：线型回答“生效了吗”，端点回答“确认了吗”。
+    // 不带 st 的线只是指向或结构，一律实线、没有端点语义。arrow 只在关系有方向时画。
+    path(pts, { st = null, arrow = false, color = T.edge, width = 1.25, data = {} } = {}) {
+      const dashed = st?.line === 'dashed';
       let marker = null;
+      if (st) marks.add(`line:${st.line}`);
       if (arrow) {
-        const kind = dashed ? 'open' : 'solid';
+        const kind = st?.end === 'hollow' ? 'open' : 'solid';
         used.add(kind);
         marker = `url(#${scope}-arrow-${kind})`;
       }
       parts.push(
-        `<path${attrs({ d: typeof pts === 'string' ? pts : poly(pts), fill: 'none', stroke: color, 'stroke-width': width, 'stroke-dasharray': dashed ? '4 3' : null, 'marker-end': marker, ...data })}/>`,
+        `<path${attrs({ d: typeof pts === 'string' ? pts : poly(pts), fill: 'none', stroke: st?.accent ? T.accent : color, 'stroke-width': width, 'stroke-dasharray': dashed ? DASH : null, 'marker-end': marker, ...data })}/>`,
       );
+      if (st?.accent) marks.add('accent:accent');
+    },
+    // 端点记号：实心、空心、叉；none 不画。
+    end(x, y, st) {
+      if (st.end === 'none') return;
+      marks.add(st.accent ? 'accent:accent' : `end:${st.end}`);
+      const color = st.accent ? T.accent : T.edge;
+      if (st.end === 'cross') parts.push(`<path${attrs({ d: `M${r(x - 3)} ${r(y - 3)}L${r(x + 3)} ${r(y + 3)}M${r(x + 3)} ${r(y - 3)}L${r(x - 3)} ${r(y + 3)}`, fill: 'none', stroke: color, 'stroke-width': 1.5 })}/>`);
+      else if (st.end === 'filled') parts.push(`<circle${attrs({ cx: x, cy: y, r: 2.5, fill: color })}/>`);
+      else parts.push(`<circle${attrs({ cx: x, cy: y, r: st.accent ? 3.5 : 2.5, fill: T.paper, stroke: color, 'stroke-width': st.accent ? 1.5 : 1.25 })}/>`);
+    },
+    // 图例：只列实际用到的画法。一个通道里只有实线或只有实心端点时不必解释，出现了别的就把这个通道用到的都列出来。
+    legend(entries, y, W) {
+      const plain = new Set(['line:solid', 'end:filled']);
+      const used2 = (e) => marks.has(`${e.channel}:${e.mark}`);
+      const needs = (ch) => entries.some((e) => e.channel === ch && used2(e) && !plain.has(`${e.channel}:${e.mark}`));
+      const show = entries.filter((e) => used2(e) && needs(e.channel));
+      if (!show.length) return 0;
+      const LH = lineH(T.small);
+      let x = 0;
+      let top = y;
+      parts.push('<g data-role="legend">');
+      show.forEach((e, i) => {
+        const w = 26 + textW(e.word, T.small) + 16;
+        if (x && x + w - 16 > W) {
+          x = 0;
+          top += LH + 2;
+        }
+        const my = top + LH / 2;
+        if (e.channel === 'line') parts.push(`<path${attrs({ d: `M${r(x)} ${r(my)}L${r(x + 20)} ${r(my)}`, fill: 'none', stroke: T.edge, 'stroke-width': 1.25, 'stroke-dasharray': e.mark === 'dashed' ? DASH : null })}/>`);
+        else if (e.mark === 'cross') parts.push(`<path${attrs({ d: `M${r(x + 7)} ${r(my - 3)}L${r(x + 13)} ${r(my + 3)}M${r(x + 13)} ${r(my - 3)}L${r(x + 7)} ${r(my + 3)}`, fill: 'none', stroke: T.edge, 'stroke-width': 1.5 })}/>`);
+        else if (e.mark === 'accent') parts.push(`<circle${attrs({ cx: x + 10, cy: my, r: 3.5, fill: T.paper, stroke: T.accent, 'stroke-width': 1.5 })}/>`);
+        else parts.push(`<circle${attrs({ cx: x + 10, cy: my, r: 2.5, fill: e.mark === 'filled' ? T.edge : T.paper, stroke: T.edge, 'stroke-width': 1.25 })}/>`);
+        c.label(`legend.${i}`, e.word, { x: x + 26, y: top, w: W - x - 26, size: T.small, fill: T.sub });
+        x += w;
+      });
+      parts.push('</g>');
+      return top + LH - y;
+    },
+    // 记下一处指向出现在哪段文字里，组合时用它找位置。
+    mention(owner, a, labelKey) {
+      if (a.located) mentions.push({ owner, key: anchorKey(a), target: anchorTarget(a), id: a.id, name: a.label ?? a.id, text: anchorText(a), label: labelKey });
     },
     rect(b, a = {}) {
       parts.push(`<rect${attrs({ x: b.x, y: b.y, width: b.w, height: b.h, rx: 4, fill: T.paper, stroke: T.line, 'stroke-width': 1, ...a })}/>`);
-    },
-    dot(x, y, a = {}) {
-      parts.push(`<circle${attrs({ cx: x, cy: y, r: 2.5, fill: T.edge, ...a })}/>`);
     },
     // 一个标签一个 <text>，一行一个 <tspan>。marks 给出要单独标出的片段。
     label(key, str, { x, y, w, size = T.size, weight = null, fill = T.ink, marks = [], anchor = null }) {
@@ -239,7 +308,7 @@ export function canvas(scope) {
       return { h: lines.length * LH, lines, LH };
     },
     box(objectId, b) {
-      need(!(objectId in boxes), 'duplicate-id', `id ${objectId} 被两个对象使用`);
+      need(!Object.hasOwn(boxes, objectId), 'duplicate-id', `id ${objectId} 被两个对象使用`);
       boxes[objectId] = { x: r(b.x), y: r(b.y), w: r(b.w), h: r(b.h) };
     },
     defs() {
@@ -277,5 +346,10 @@ export function finish(c, { asset, width, height, title, desc, data = {} }) {
     height: H,
     boxes: c.boxes,
     labels: c.labels,
+    marks: [...c.marks],
+    mentions: c.mentions.map((mt) => {
+      const lab = c.labels.find((l) => l.key === mt.label);
+      return { ...mt, x: lab.x, y: r(lab.y + lab.h / 2) };
+    }),
   };
 }

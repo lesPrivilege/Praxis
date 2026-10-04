@@ -36,7 +36,7 @@ const ASSETS = [
     facts: [
       ['输入', '主张，限定语及其目标（一项、相邻几项或一个片段），证据的来源身份与核对状态'],
       ['可以改', '主张与限定语的文字、目标、片段、证据关系与状态'],
-      ['不适用', '整体说明硬绑到某一项主张、同一项主张上叠两层以上的范围'],
+      ['不适用', '整体说明硬绑到某一项主张、同一项主张上叠三层及以上的范围'],
       ['测试到', '3 项主张、一项主张上 5 条证据、四倍长的条件、一项主张上至多两层范围'],
     ],
   },
@@ -52,12 +52,23 @@ const ASSETS = [
     ],
   },
 ];
+ASSETS.push({
+  id: 'rel-sheet',
+  name: '组合',
+  job: '几件图叠成一张，靠共同的指向串起来。一件里写到的“对象@版本”如果正好画在另一件里，两处之间在左侧留白处连一条细线。',
+  facts: [
+    ['输入', '两件以上的图，各带一个小标题；各件的指向写成 id、version、locator'],
+    ['可以改', '各件的内容与次序；指向改了，连线跟着变'],
+    ['不适用', '宽度超过 520；被指到的对象或版本超过五个。只是一句话、没有身份的指向照常留作文字，但连不上'],
+    ['测试到', '3 件、3 条连线'],
+  ],
+});
 const ROLE = { normal: '正常输入', stress: '压力输入', counterexample: '反例输入' };
 
 const out = path.join(HERE, 'svg');
 for (const n of fs.readdirSync(out)) if (n.endsWith('.svg')) fs.rmSync(path.join(out, n));
 
-const manifest = { asset_version: VERSION, widths: { narrow: NARROW, wide: 'rel-scope 480，其余 672' }, cases: [], refusals: [] };
+const manifest = { asset_version: VERSION, widths: { narrow: NARROW, wide: 'rel-scope 与 rel-sheet 480，其余 672' }, cases: [], refusals: [] };
 const inline = {};
 for (const cs of cases()) {
   const gen = GEN[cs.asset];
@@ -82,7 +93,7 @@ for (const cs of cases()) {
     fs.writeFileSync(path.join(out, file), res.svg);
     inline[scope] = res.svg;
     equivalent = res.equivalent;
-    outputs.push({ width, scope, file: `svg/${file}`, w: res.width, h: res.height, boxes: res.boxes, labels: res.labels, brackets: res.brackets });
+    outputs.push({ width, scope, file: `svg/${file}`, w: res.width, h: res.height, boxes: res.boxes, labels: res.labels, brackets: res.brackets, links: res.links, mentions: res.mentions });
   }
   manifest.cases.push({
     id: cs.id,
@@ -178,7 +189,7 @@ const html = `<!doctype html>
 <header>
 <h1>四个可编辑的关系图件</h1>
 <p>每一张图都由一份语义输入生成：改输入里的文字、端点、目标或版本，图、等效文字和文件一起重建。文字是 SVG 的文字节点，没有转成轮廓。全部内容是合成的图书馆示例和本项目的合成 fixture。</p>
-<p>实线表示已经成立、已有记录或已核对；虚线表示尚未成立、尚未核对或没有生效，被拒绝的候选另加一个叉；蓝色只用在还等人决定的那一处。每处区别同时写成文字。版本 ${VERSION}，SVG-01 批次；验收范围见 <a href="acceptance.md">acceptance.md</a>。</p>
+<p>线型回答“生效了吗”：实线是已经成立，虚线是尚未成立或没有生效。端点回答“确认了吗”：实心是已确认，空心是未确认，叉是已拒绝。蓝色只用在还等人决定的那一处。每个回答同时写成词，写在它说的那一项旁边。版本 ${VERSION}，SVG-01 批次；验收范围见 <a href="acceptance.md">acceptance.md</a>。</p>
 <nav>${ASSETS.map((a) => `<a href="#${a.id}">${a.name}</a>`).join('')}</nav>
 </header>
 <main>

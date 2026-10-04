@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-10-04 · 关系图的成立程度与精确指向
+
+- Design / Foundations 新增 [成立程度与归属的标记](kit/design/foundations/standing.md)和 [精确指向](kit/design/foundations/anchoring.md)，各给不随画法改变的约束、关系图的默认和“只用文字、一张图、几张图连起来”的三级做法，见 [ADR-025](docs/decisions/025-relation-marks-and-anchors.md)。属于兼容扩展：新增两页和几处入口链接，既有规则的含义没有变。
+- 可编辑原生 SVG 的四个关系图件升到 0.2.0，状态词和指向改用共同的一套，新增组合件；另有一页样板。它们是 demo 里的候选实现，不是 Kit 的共享组件。
+- [回执](docs/verification/relation-grammar-20261004.md)记录检查、两次冷读与对照、未做的事。使用证据只有合成内容和同一名制作者。
+
 ## 2026-10-03 · 成文规则与 writing 薄入口
 
 - 对照委托提供的召回摘要与当前 Write 实现，窄修订语体、句式、信息作用、审阅判准和修改记录默认，见 [ADR-024](docs/decisions/024-prose-defaults-and-review-scope.md)。四条语义底线和现有目录保持，个人口吻只用于当前任务。
@@ -181,4 +187,9 @@
 - 按用户转来的三条收尾建议处置第二轮末留下的问题：不做无 Kit 对照组，结论限定为两轮怎样消费了 Kit；技术栈记在只对该 demo 有效的 [实现 ADR](demos/enterprise-grammar-lab/stack-adr.md)，不进 `docs/decisions`；教训先留成四条带反例的 [候选条目](demos/enterprise-grammar-lab/evals/candidates.md)，没有提交裁决。
 - 用户给的交接稿（未入账）推荐的场景已经做完，只拿它的 12 条不变量对照了现状：五条有，七条部分有，没有因此改代码。
 - Kit、docs 和 Vault 没有改动。
+
+## 2026-10-04 · 企业工作面语法实验：合并后的独立复验
+
+- 用户另找的执行者在 `9514ce4` 上做了独立复验（交接稿未入账），只到代码和后端。它报告的两处 fixture 检查漏检属实并已修：状态与记录是否一致改为把记录按动作允许的步骤走一遍；付款复核台的记录不能指向不存在的机器提议。测试 43 项变 45 项。
+- 它报告的另外两处是已记录的未修项（材料版本不带动事项版本；切换身份和整页离开绕过离开前的拦截），没有改；后一处补了浏览器实测。记录见 [合并后的独立复验](demos/enterprise-grammar-lab/evals/reverification.md)。
 

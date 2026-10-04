@@ -2,6 +2,8 @@
 
 - [可编辑原生 SVG · 2026-10-04](editable-native-svg-20261004.json)：需求覆盖、独立版本风险与 fresh Opus 工单；[研究入口](../distilled/editable-native-svg-20261004/README.md)，当前未绘制。
 
+- [关系图的两条语法 · 2026-10-04](relation-grammar-20261004.json)：两份仓库内清点与三份外部来源；[研究入口](../distilled/relation-grammar-20261004/README.md)。
+
 Intake 只登记材料身份、覆盖、处理状态、附件和缺口，不重复保存 raw 对话全文，也不把登记结果写成 Kit 规范。需要消费时进入对应的 `vault/distilled` 目录；需要逐 URL 证据时进入 `vault/references` 或 `vault/provenance`。
 
 ## 按登记任务进入

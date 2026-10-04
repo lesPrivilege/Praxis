@@ -1,7 +1,8 @@
 // rel-qualify：条件、注释和证据各自限定哪一项主张，或主张里的哪个片段。
 // 括线量的是被限定的主张，不是限定语自己；片段另用下划线标在原文上。
 
-import { T, PAD, canvas, finish, lineH, measure, need, needId } from './kernel.mjs';
+import { T, PAD, anchor, anchorKey, anchorText, canvas, finish, lineH, measure, need, needId } from './kernel.mjs';
+import { LEGEND, STANDING, standing } from './standing.mjs';
 
 const RELATION = { supports: '支持', contradicts: '反驳', limits: '限定' };
 const HEAD = { condition: '条件', note: '注释' };
@@ -22,7 +23,7 @@ function resolve(m) {
     need(!ids.has(q.id) && !index.has(q.id), 'duplicate-id', `限定语 ${q.id} 与别的限定语或主张重名`);
     ids.add(q.id);
     need(!(q.target?.claim && q.target?.claims), 'target', `限定语 ${q.id} 同时写了 claim 和 claims，只能写一个`);
-    need(HEAD[q.type] || q.type === 'evidence', 'type', `限定语 ${q.id} 的 type 须为 condition、note 或 evidence`);
+    need(Object.hasOwn(HEAD, q.type) || q.type === 'evidence', 'type', `限定语 ${q.id} 的 type 须为 condition、note 或 evidence`);
     const list = q.target?.claims ?? (q.target?.claim ? [q.target.claim] : []);
     need(list.length && list.every((id) => index.has(id)), 'target', `限定语 ${q.id} 没有指向已登记的主张；整体说明请放进 global_notes`);
     const at = list.map((id) => index.get(id));
@@ -38,10 +39,11 @@ function resolve(m) {
       q.frag = { start: s, end: s + q.target.fragment.length };
     }
     if (q.type === 'evidence') {
-      need(RELATION[q.relation], 'relation', `证据 ${q.id} 须写明 supports、contradicts 或 limits`);
-      need(q.status === 'verified' || q.status === 'inferred', 'status', `证据 ${q.id} 须写明 verified 或 inferred`);
-      const src = q.source ?? {};
-      need(q.status !== 'verified' || (src.id && src.version != null && src.version !== '' && src.locator), 'unlocated-source', `证据 ${q.id} 标为已核对，却缺少来源身份、版本或定位`);
+      need(Object.hasOwn(RELATION, q.relation), 'relation', `证据 ${q.id} 须写明 supports、contradicts 或 limits`);
+      q.st = standing(q.status, ['verified', 'inferred'], `证据 ${q.id} `);
+      need(q.source != null, 'unlocated-source', `证据 ${q.id} 没有来源；确实说不出来源就写 { text }`);
+      q.source = anchor(q.source, `证据 ${q.id} 的来源`);
+      need(q.status !== 'verified' || (q.source.located && q.source.version != null && q.source.locator), 'unlocated-source', `证据 ${q.id} 标为已核对，却缺少来源身份、版本或定位`);
     } else {
       need(q.text, 'text', `限定语 ${q.id} 没有文字`);
     }
@@ -49,7 +51,7 @@ function resolve(m) {
   if (m.require_evidence) {
     m.claims.forEach((cl, i) => {
       // 只限定某个片段的证据不算整项主张有了证据
-      if (!qs.some((q) => q.type === 'evidence' && !q.frag && q.i0 <= i && i <= q.i1)) qs.push({ id: `${cl.id}.no-evidence`, type: 'evidence', status: 'none', i0: i, i1: i });
+      if (!qs.some((q) => q.type === 'evidence' && !q.frag && q.i0 <= i && i <= q.i1)) qs.push({ id: `${cl.id}.no-evidence`, type: 'evidence', status: 'none', st: STANDING.none, i0: i, i1: i });
     });
   }
   // 同一段范围共用一条括线；范围互相重叠时错开到第二道，再多就拒用。
@@ -63,7 +65,7 @@ function resolve(m) {
   for (const e of list) {
     const taken = list.filter((o) => o.lane != null && o.i0 <= e.i1 && e.i0 <= o.i1).map((o) => o.lane);
     e.lane = [0, 1].find((l) => !taken.includes(l));
-    need(e.lane != null, 'capacity', '同一项主张上叠了两层以上的限定范围；拆开主张，或改用列表');
+    need(e.lane != null, 'capacity', '同一项主张上的限定范围超过两层；拆开主张，或改用列表');
   }
   for (const a of list) {
     for (const b of list) {
@@ -79,7 +81,6 @@ function resolve(m) {
   return { qs, extents: list };
 }
 
-const leaderDashed = (q) => q.type === 'evidence' && q.status !== 'verified';
 
 // 限定的是片段时，在标题里引出那几个字，读者不必靠括线猜是哪一处
 const only = (q) => (q.frag ? ` · 限于“${q.target.fragment}”` : '');
@@ -87,12 +88,10 @@ const only = (q) => (q.frag ? ` · 限于“${q.target.fragment}”` : '');
 function heads(q) {
   if (q.type !== 'evidence') return [HEAD[q.type] + only(q)];
   if (q.status === 'none') return ['证据 · 尚无'];
-  const src = q.source ?? {};
-  const where = [src.id && `${src.id}${src.version != null ? `@v${src.version}` : ''}`, src.locator].filter(Boolean).join(' ') || '来源未定位';
-  return [`证据 · ${RELATION[q.relation]}${only(q)}`, `${where} · ${q.status === 'verified' ? '已核对' : '推断，未核对'}`];
+  return [`证据 · ${RELATION[q.relation]}${only(q)}`, `${anchorText(q.source)} · ${q.st.word}`];
 }
 
-export function qualify(model, { width = 672, scope } = {}) {
+export function qualify(model, { width = 672, scope, legend = true } = {}) {
   const m = model;
   const { qs, extents } = resolve(m);
   const W = width - 2 * PAD;
@@ -107,11 +106,14 @@ export function qualify(model, { width = 672, scope } = {}) {
   const SH = lineH(T.small);
 
   const drawQ = (q, y) => {
-    c.open({ 'data-qualifier-id': q.id, 'data-type': q.type, 'data-relation': q.relation, 'data-status': q.status });
+    c.open({ 'data-qualifier-id': q.id, 'data-type': q.type, 'data-relation': q.relation, 'data-status': q.status, 'data-source': q.source ? anchorKey(q.source) || null : null });
     const [head, where] = heads(q);
     let cy = y + c.label(`${q.id}.head`, head, { x: qx, y, w: qw, size: T.small, weight: 600, fill: T.sub }).h;
     if (q.text) cy += c.label(`${q.id}.text`, q.text, { x: qx, y: cy, w: qw }).h;
-    if (where) cy += c.label(`${q.id}.source`, where, { x: qx, y: cy, w: qw, size: T.small, fill: T.sub }).h;
+    if (where) {
+      cy += c.label(`${q.id}.source`, where, { x: qx, y: cy, w: qw, size: T.small, fill: T.sub }).h;
+      c.mention(q.id, q.source, `${q.id}.source`);
+    }
     c.close();
     c.box(q.id, { x: qx, y, w: qw, h: cy - y });
     q.cy = y + SH / 2;
@@ -164,14 +166,17 @@ export function qualify(model, { width = 672, scope } = {}) {
     for (const q of e.qs) {
       const data = { 'data-leader-for': q.id, 'data-target': target };
       const end = qx - 8;
+      // 引线是一条指向，本身总是实线；只有“尚无证据”这一行还不存在，才用虚线
+      const st = q.st === STANDING.none ? q.st : null;
       if (wide) {
         const ya = Math.min(Math.max(q.cy, top), bot);
         const tx = cw + (e.lane ? 38 : 30);
-        c.path(ya === q.cy ? [[lx, ya], [end, ya]] : [[lx, ya], [tx, ya], [tx, q.cy], [end, q.cy]], { dashed: leaderDashed(q), color: T.line, width: 1, data });
+        c.path(ya === q.cy ? [[lx, ya], [end, ya]] : [[lx, ya], [tx, ya], [tx, q.cy], [end, q.cy]], { st, color: T.line, width: 1, data });
       } else {
-        c.path([[lx, bot], [lx, q.cy], [end, q.cy]], { dashed: leaderDashed(q), color: T.line, width: 1, data });
+        c.path([[lx, bot], [lx, q.cy], [end, q.cy]], { st, color: T.line, width: 1, data });
       }
-      c.dot(end + 2, q.cy, { r: 2, fill: T.line });
+      // 端点只属于证据：实心是已核对，空心是推断
+      if (q.st) c.end(end + 2, q.cy, q.st);
     }
   }
 
@@ -180,6 +185,11 @@ export function qualify(model, { width = 672, scope } = {}) {
     y += 14;
     y += c.label(`${g.id}.head`, '整体说明', { x: cx, y, w: W - cx, size: T.small, weight: 600, fill: T.sub }).h;
     y += c.label(`${g.id}.text`, g.text, { x: cx, y, w: W - cx }).h;
+  }
+
+  if (legend) {
+    const h = c.legend(LEGEND, y + 12, W);
+    if (h) y += 12 + h;
   }
 
   const items = m.claims.map((cl, i) => {

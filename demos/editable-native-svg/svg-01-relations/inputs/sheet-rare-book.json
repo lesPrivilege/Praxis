@@ -1,0 +1,269 @@
+{
+  "id": "sheet-rare-book",
+  "synthetic": true,
+  "asset": "rel-sheet",
+  "role": "normal",
+  "requirements": [
+    "SVG-R08",
+    "SVG-R17",
+    "SVG-R27"
+  ],
+  "note": "主张的证据、分支的依据都指到版本线上的具体版本；审核依据的是旧版规则，这一点由连线落在 v2 上看出来。",
+  "model": {
+    "title": "一张破损古籍的调阅单",
+    "pieces": [
+      {
+        "asset": "rel-qualify",
+        "heading": "主张与证据",
+        "model": {
+          "title": "三项主张各自的证据",
+          "claims": [
+            {
+              "id": "c-rule",
+              "text": "品相受损的古籍须经修复室同意才能调阅。"
+            },
+            {
+              "id": "c-check",
+              "text": "调阅单 D-12 已经审核通过。"
+            },
+            {
+              "id": "c-item",
+              "text": "馆藏 0871 书脊开裂。"
+            }
+          ],
+          "qualifiers": [
+            {
+              "id": "e-rule",
+              "type": "evidence",
+              "relation": "supports",
+              "status": "verified",
+              "source": {
+                "id": "rule-loan",
+                "label": "借阅规则",
+                "version": 3,
+                "locator": "第 8 条"
+              },
+              "target": {
+                "claim": "c-rule"
+              },
+              "text": "v3 新增的条文。"
+            },
+            {
+              "id": "e-check",
+              "type": "evidence",
+              "relation": "supports",
+              "status": "verified",
+              "source": {
+                "id": "slip-D-12",
+                "label": "调阅单 D-12",
+                "version": 1,
+                "locator": "审核栏"
+              },
+              "target": {
+                "claim": "c-check"
+              },
+              "text": "审核栏有签字。"
+            },
+            {
+              "id": "e-old",
+              "type": "evidence",
+              "relation": "limits",
+              "status": "verified",
+              "source": {
+                "id": "rule-loan",
+                "label": "借阅规则",
+                "version": 2,
+                "locator": "第 8 条"
+              },
+              "target": {
+                "claim": "c-check",
+                "fragment": "审核通过"
+              },
+              "text": "审核用的是 v2，那时还没有“修复室同意”这一项。"
+            },
+            {
+              "id": "e-item",
+              "type": "evidence",
+              "relation": "supports",
+              "status": "inferred",
+              "source": {
+                "text": "阅览室值班员口述"
+              },
+              "target": {
+                "claim": "c-item"
+              },
+              "text": "没有查到品相记录。"
+            }
+          ]
+        }
+      },
+      {
+        "asset": "rel-tracks",
+        "heading": "版本与判断",
+        "model": {
+          "title": "规则和调阅单各自的版本",
+          "lanes": [
+            {
+              "id": "rule-loan",
+              "role": "规则",
+              "label": "借阅规则",
+              "versions": [
+                {
+                  "version": 2,
+                  "label": "古籍可以在阅览室调阅"
+                },
+                {
+                  "version": 3,
+                  "label": "品相受损的古籍，须经修复室同意才能调阅",
+                  "current": true
+                }
+              ]
+            },
+            {
+              "id": "slip-D-12",
+              "role": "调阅单",
+              "label": "调阅单 D-12",
+              "versions": [
+                {
+                  "version": 1,
+                  "label": "申请调阅馆藏 0871"
+                },
+                {
+                  "version": 2,
+                  "label": "改了取书时间",
+                  "current": true
+                }
+              ]
+            }
+          ],
+          "bindings": [
+            {
+              "id": "check-01",
+              "origin": "human",
+              "kind": "审核",
+              "state": "recorded",
+              "text": "审核通过",
+              "basis": [
+                {
+                  "id": "slip-D-12",
+                  "label": "调阅单 D-12",
+                  "version": 1
+                },
+                {
+                  "id": "rule-loan",
+                  "label": "借阅规则",
+                  "version": 2,
+                  "locator": "第 8 条"
+                }
+              ]
+            },
+            {
+              "id": "hint-01",
+              "origin": "machine",
+              "kind": "建议",
+              "state": "proposed",
+              "text": "规则已经更新，建议重新审核",
+              "basis": [
+                {
+                  "id": "rule-loan",
+                  "label": "借阅规则",
+                  "version": 3,
+                  "locator": "第 8 条"
+                }
+              ]
+            },
+            {
+              "id": "swap-01",
+              "origin": "machine",
+              "kind": "候选",
+              "state": "rejected",
+              "text": "改为提供影印件",
+              "basis": [
+                {
+                  "id": "slip-D-12",
+                  "label": "调阅单 D-12",
+                  "version": 2
+                }
+              ],
+              "resolution": {
+                "id": "swap-01-r",
+                "origin": "human",
+                "kind": "拒绝",
+                "text": "读者需要看原件上的批注"
+              }
+            },
+            {
+              "id": "decision-01",
+              "origin": "human",
+              "kind": "决定",
+              "state": "open",
+              "text": "是否放行",
+              "basis": [
+                {
+                  "id": "slip-D-12",
+                  "label": "调阅单 D-12",
+                  "version": 2
+                }
+              ]
+            }
+          ],
+          "absences": [
+            {
+              "id": "slip-D-12",
+              "version": 2,
+              "text": "这个版本没有审核记录",
+              "label": "调阅单 D-12"
+            }
+          ]
+        }
+      },
+      {
+        "asset": "rel-fan",
+        "heading": "放行之前的分支",
+        "model": {
+          "title": "放行之前的分支",
+          "direction": "out",
+          "basis": {
+            "id": "rule-loan",
+            "label": "借阅规则",
+            "version": 3,
+            "locator": "第 8 条"
+          },
+          "hub": {
+            "id": "release",
+            "label": "调阅单 D-12 等待放行"
+          },
+          "spokes": [
+            {
+              "edge_id": "agree",
+              "label": "修复室同意",
+              "node": {
+                "id": "lend",
+                "label": "放行，在古籍阅览室调阅"
+              },
+              "state": "established"
+            },
+            {
+              "edge_id": "refuse",
+              "label": "修复室不同意",
+              "node": {
+                "id": "decline",
+                "label": "不放行，告知读者"
+              },
+              "state": "established"
+            },
+            {
+              "edge_id": "else",
+              "default": true,
+              "node": {
+                "id": "recheck",
+                "label": "退回，重新审核"
+              },
+              "state": "established"
+            }
+          ]
+        }
+      }
+    ]
+  }
+}
