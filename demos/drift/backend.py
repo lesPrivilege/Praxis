@@ -40,19 +40,19 @@ TARGETS = {"dns.example": "example.com", "tls.example": "example.com",
 PROVIDERS = {"egress.ipify": "https://api64.ipify.org?format=json", "egress.geojs": "https://get.geojs.io/v1/ip/geo.json"}
 SOURCES = [
     {"id": "local.runtime", "label": "本机运行环境", "url": None, "method": "Python 标准库只读运行信息",
-     "scope": "后端进程所在机器", "limitations": "不读取设备标识、账号、任意文件或浏览器指纹。"},
-    {"id": "local.dns", "label": "macOS DNS 配置", "url": None, "method": "固定 /usr/sbin/scutil --dns",
-     "scope": "系统公布的 DNS 配置", "limitations": "仅提取 nameserver 地址；配置不证明某次查询使用了哪个 resolver。其他 OS 未实现。"},
+     "scope": "本机服务进程的运行环境", "limitations": "系统、架构、时区与语言由 Python 标准库读取；语言或编码缺失时保留未知。"},
+    {"id": "local.dns", "label": "系统 DNS 配置", "url": None, "method": "固定 /usr/sbin/scutil --dns",
+     "scope": "macOS 公布的 nameserver 地址", "limitations": "当前支持 macOS；命令超时或未读取到地址时显示未知，其他系统显示不支持。"},
     {"id": "browser.self", "label": "当前浏览器自报", "url": None, "method": "时区、语言与 navigator.onLine",
-     "scope": "当前页面", "limitations": "可伪造或缺失；online 不证明外网可达，不是浏览器指纹。"},
-    {"id": "egress.ipify", "label": "ipify", "url": PROVIDERS["egress.ipify"], "method": "固定 HTTPS JSON GET · 仅出口 IP",
-     "scope": "后端进程请求所见出口", "limitations": "服务方可见请求源 IP；结果不代表浏览器或其他 app 出口，不与其他提供方融合。"},
-    {"id": "egress.geojs", "label": "GeoJS", "url": PROVIDERS["egress.geojs"], "method": "固定 HTTPS JSON GET · 服务方自行观测出口",
-     "scope": "后端进程请求所见出口及 GeoJS 数据库归属", "limitations": "服务方可见请求源 IP；ASN/国家可能缺失或过时；64512 为服务未知 ASN 占位；不代表浏览器或其他 app 出口。"},
-    {"id": "target.dns", "label": "固定目标 DNS 解析", "url": None, "method": "系统 getaddrinfo：example.com / www.cloudflare.com",
-     "scope": "后端进程解析结果", "limitations": "只报告目标地址，不检测 DNS resolver 公网出口；缓存、分流与代理行为可能不同。"},
-    {"id": "target.tls", "label": "固定目标 HTTPS / TLS", "url": None, "method": "校验证书的 HTTPS HEAD，尝试读取该请求 TLS 元数据",
-     "scope": "后端进程实际请求与握手", "limitations": "遵循系统/环境代理；peer 可是代理；元数据不可取得时保持未知或不支持；不是浏览器 JA3。"},
+     "scope": "当前页面提交的浏览器字段", "limitations": "online 是浏览器报告的联网状态；缺失字段保留未知，未提交时显示不支持。"},
+    {"id": "egress.ipify", "label": "ipify", "url": PROVIDERS["egress.ipify"], "method": "固定 HTTPS JSON GET · 服务端出口 IP",
+     "scope": "ipify 返回的服务端出口 IP", "limitations": "响应须为有效公网 IP；非公网地址记为未知，无效地址记为错误。"},
+    {"id": "egress.geojs", "label": "GeoJS", "url": PROVIDERS["egress.geojs"], "method": "固定 HTTPS JSON GET · 服务端出口 IP、ASN、国家代码",
+     "scope": "GeoJS 返回的服务端出口 IP 及数据库归属", "limitations": "ASN 与国家代码来自 GeoJS 数据库，可能缺失或过时；64512 是服务的未知 ASN 占位，私用与保留 ASN 记为未知。"},
+    {"id": "target.dns", "label": "目标 DNS 解析", "url": None, "method": "系统 getaddrinfo：example.com / www.cloudflare.com",
+     "scope": "服务端通过系统解析接口取得的目标地址", "limitations": "解析结果受系统 DNS 配置与缓存影响；解析失败或地址为空时保留未知。"},
+    {"id": "target.tls", "label": "目标 HTTPS / TLS", "url": None, "method": "校验证书的 HTTPS HEAD；读取 TLS 版本、cipher、传输对端",
+     "scope": "服务端发送的 HTTPS HEAD 请求", "limitations": "请求遵循系统与环境代理配置，传输对端可能是代理；TLS 元数据取不到时显示不支持，字段缺失时保留未知。"},
 ]
 
 
@@ -77,7 +77,7 @@ def fully_known(value):
 def fact(value, note=""):
     return result("success" if fully_known(value) else "unknown", value=value,
                   error=None if fully_known(value) else "partial_result",
-                  note=note if fully_known(value) else f"部分字段未知，不能作为完整对照。{note}")
+                  note=note if fully_known(value) else f"部分字段未知。{note}")
 
 
 class RefuseRedirect(urllib.request.HTTPRedirectHandler):
@@ -135,7 +135,7 @@ def parse_provider(probe_id, data):
     if not ip.is_global:
         return result("unknown", error="non_public_provider_ip")
     if probe_id == "egress.ipify":
-        return result(value={"ip": address}, note="ipify 只报告 IP；ASN 与国家不在该来源覆盖内。后端请求出口不代表浏览器或其他应用。")
+        return result(value={"ip": address}, note="ipify 返回这次 HTTPS 请求的服务端出口 IP。")
     country = data.get("country_code")
     country = country.upper() if isinstance(country, str) and re.fullmatch(r"[A-Za-z]{2}", country) else None
     raw_asn = data.get("asn")
@@ -145,12 +145,15 @@ def parse_provider(probe_id, data):
         if isinstance(raw_asn, bool) or not (isinstance(raw_asn, int) or isinstance(raw_asn, str) and re.fullmatch(r"[0-9]{1,10}", raw_asn)):
             raise ValueError()
         asn = int(raw_asn)
-        if not 0 < asn < 4294967295 or asn == 23456 or 64496 <= asn <= 65551 or 4200000000 <= asn <= 4294967294:
+        # IANA AS Numbers, last updated 2026-06-01; checked 2026-10-05:
+        # https://www.iana.org/assignments/as-numbers
+        # Recheck these exclusions when special-use/reserved assignments change.
+        if not 0 < asn < 4294967295 or asn == 23456 or 64496 <= asn <= 131071 or 4200000000 <= asn <= 4294967294:
             asn = None
     except (ValueError, TypeError):
         asn = None
     return fact(value={"ip": address, "asn": asn, "country": country},
-                  note="提供方独立结果；空字段保持未知。后端请求出口不代表浏览器或其他应用。")
+                  note="GeoJS 返回服务端出口 IP、ASN 与国家代码；缺失或无效的 ASN、国家代码，以及私用或保留 ASN，保持未知。")
 
 
 def provider_probe(probe_id, open_url=None):
@@ -182,7 +185,7 @@ def tls_probe(probe_id, open_url=None):
             peer = str(ipaddress.ip_address(peer))
             return fact(value={"target": host, "tls_version": transport.version(), "cipher": cipher[0] if cipher else None,
                                  "transport_peer": peer, "http_status": response.status},
-                          note="已校验证书的后端 HTTPS 请求；传输对端可能是系统/环境代理，不代表浏览器或其他应用。")
+                          note="这次 HTTPS HEAD 请求已校验证书；TLS 版本、cipher 与传输对端来自请求连接，传输对端可能是代理。")
     except (OSError, urllib.error.URLError) as error:
         return network_failure(error)
     except Exception:
@@ -196,7 +199,7 @@ def dns_probe(probe_id):
         addresses = sorted({str(ipaddress.ip_address(row[4][0])) for row in rows})[:32]
         if not addresses:
             return result("unknown", error="no_dns_result")
-        return result(value={"target": host, "addresses": addresses}, note="系统解析目标地址；不表明所用 resolver 或 DNS resolver 的公网出口。")
+        return result(value={"target": host, "addresses": addresses}, note="系统 getaddrinfo 返回的目标地址，按地址去重并排序。")
     except OSError:
         return result("unknown", error="dns_resolution_failed")
 
@@ -221,7 +224,7 @@ def dns_configuration():
                 pass
     if not addresses:
         return result("unknown", error="no_dns_configuration")
-    return result(value={"nameservers": sorted(addresses)[:32]}, note="仅系统配置地址，不能证明一次实际查询的 resolver 或公网出口。")
+    return result(value={"nameservers": sorted(addresses)[:32]}, note="从 macOS scutil --dns 输出提取的 nameserver 配置地址。")
 
 
 def local_probe(probe_id):
@@ -235,27 +238,29 @@ def local_probe(probe_id):
         language, encoding = locale.getlocale()
         return fact(value={"language": language, "encoding": encoding})
     if probe_id == "local.proxy":
-        return result(value={"configured": any(urllib.request.getproxies().get(k) for k in ("http", "https", "all"))}, note="仅后端可读取的代理配置存在性；false 不证明 VPN/PAC 未启用或浏览器没有代理。不导出代理地址、凭据或其他环境变量。")
+        return result(value={"configured": any(urllib.request.getproxies().get(k) for k in ("http", "https", "all"))}, note="通过 urllib.getproxies 检查 http、https、all 代理配置，记录配置检出状态。")
     if probe_id == "local.dns":
         return dns_configuration()
     raise ValueError("unknown_probe")
 
 
 PROBES = [
-    ("local.os", "系统", "local", "local.runtime", False),
+    ("local.os", "操作系统", "local", "local.runtime", False),
     ("local.timezone", "本机时区", "local", "local.runtime", True),
     ("local.locale", "本机语言", "local", "local.runtime", True),
-    ("local.proxy", "后端可读取的代理配置", "local", "local.runtime", False),
-    ("local.dns", "DNS 配置", "local", "local.dns", True),
+    ("local.proxy", "服务端代理配置", "local", "local.runtime", False),
+    ("local.dns", "系统 DNS 配置", "local", "local.dns", True),
     ("browser.context", "浏览器自报", "browser", "browser.self", True),
-    ("egress.ipify", "出口 · ipify", "egress", "egress.ipify", True),
-    ("egress.geojs", "出口 · GeoJS", "egress", "egress.geojs", True),
-    ("dns.example", "DNS · example.com", "dns", "target.dns", True),
-    ("dns.cloudflare", "DNS · cloudflare", "dns", "target.dns", True),
+    ("egress.ipify", "服务端出口 IP · ipify", "egress", "egress.ipify", True),
+    ("egress.geojs", "服务端出口 IP · GeoJS", "egress", "egress.geojs", True),
+    ("dns.example", "目标 DNS 解析 · example.com", "dns", "target.dns", True),
+    ("dns.cloudflare", "目标 DNS 解析 · www.cloudflare.com", "dns", "target.dns", True),
     ("tls.example", "TLS · example.com", "tls", "target.tls", True),
-    ("tls.cloudflare", "TLS · cloudflare", "tls", "target.tls", True),
+    ("tls.cloudflare", "TLS · www.cloudflare.com", "tls", "target.tls", True),
 ]
 PROBE_IDS = {probe[0] for probe in PROBES}
+# GeoJS v2 includes the reserved ASN range through 131071; legacy records stay v1.
+PROBE_VERSIONS = {"egress.geojs": 2}
 
 
 def raw_probe(probe_id):
@@ -439,7 +444,7 @@ class Collector:
                 raise APIError(409, "scan_in_progress", "已有扫描进行中。", scan_id=self.active["id"])
             observations = [{"id": id_, "label": label, "group": group, "source_id": source,
                              "status": "pending", "value": None, "observed_at": None, "duration_ms": None,
-                             "error": None, "note": "", "comparison_key": f"{id_}:v1", "sensitive": sensitive}
+                             "error": None, "note": "", "comparison_key": f"{id_}:v{PROBE_VERSIONS.get(id_, 1)}", "sensitive": sensitive}
                             for id_, label, group, source, sensitive in PROBES]
             scan = {"id": str(uuid.uuid4()), "started_at": utcnow(), "finished_at": None, "status": "queued",
                     "progress": {"done": 0, "total": len(observations), "label": "等待扫描"},
@@ -465,7 +470,7 @@ class Collector:
                 elif item["id"] == "browser.context":
                     if browser:
                         browser_value = {key: browser.get(key) for key in ("timezone", "languages", "online")}
-                        outcome = fact(value=browser_value, note="当前浏览器自报；online 不证明外网可达。")
+                        outcome = fact(value=browser_value, note="当前页面提交的时区、语言与 online；online 是浏览器报告的联网状态，缺失字段保持未知。")
                     else:
                         outcome = result("unsupported", error="browser_not_reported")
                 else:

@@ -79,6 +79,26 @@ class ProbeTests(unittest.TestCase):
             self.assertEqual(b.parse_provider("egress.ipify", {"ip": ip})["status"], "unknown")
         self.assertEqual(b.parse_provider("egress.ipify", {"ip": "2001:4860::1%en0"})["status"], "error")
 
+    def test_reserved_asn_boundaries_preserve_ip_but_are_not_comparable(self):
+        payload = {"ip": "8.8.8.8", "country_code": "US"}
+        known = {"id": "egress.geojs", "source_id": "egress.geojs", "comparison_key": "egress.geojs:v2",
+                 **b.parse_provider("egress.geojs", {**payload, "asn": 13335})}
+        for asn in (64496, 65551, 65552, 100000, 131071):
+            for raw_asn in (asn, str(asn), f"AS{asn}"):
+                with self.subTest(asn=raw_asn):
+                    got = b.parse_provider("egress.geojs", {**payload, "asn": raw_asn})
+                    self.assertEqual((got["status"], got["error"]), ("unknown", "partial_result"))
+                    self.assertEqual(got["value"], {"ip": payload["ip"], "asn": None, "country": "US"})
+                    unknown = {**known, **got}
+                    self.assertIsNone(b.comparable(unknown, known))
+                    self.assertIsNone(b.comparable(known, unknown))
+                    self.assertIsNone(b.comparable(unknown, unknown))
+        for asn in (64495, 131072):
+            with self.subTest(asn=asn):
+                got = b.parse_provider("egress.geojs", {**payload, "asn": asn})
+                self.assertEqual((got["status"], got["error"]), ("success", None))
+                self.assertEqual(got["value"], {"ip": payload["ip"], "asn": asn, "country": "US"})
+
     def test_non_json_invalid_json_and_response_overflow(self):
         for raw, kind, expected in [(b"<html>secret</html>", "text/html", "non_json_response"),
                                     (b"invalid", "application/json", "invalid_json_response"),
@@ -188,6 +208,35 @@ class CollectorTests(unittest.TestCase):
         self.assertTrue(rows["egress.ipify"]["sensitive"])
         self.assertEqual(scan["progress"]["done"], scan["progress"]["total"])
         self.assertNotIn("risk", json.dumps(scan))
+
+    def test_geojs_comparison_version_preserves_legacy_records(self):
+        def provider(id_, timeout):
+            if id_ == "egress.geojs":
+                return b.parse_provider(id_, {"ip": "8.8.8.8", "asn": 13335, "country_code": "US"})
+            return synthetic(id_, timeout)
+
+        self.collector.runner = provider
+        legacy = self.scan()
+        legacy_geojs = next(item for item in legacy["observations"] if item["id"] == "egress.geojs")
+        legacy_geojs["comparison_key"] = "egress.geojs:v1"
+        self.collector.store.save([legacy], legacy)
+        restarted = b.Collector(self.tmp.name, runner=provider)
+        self.assertEqual(restarted.get_scan(legacy["id"]), legacy)
+        self.assertEqual(restarted.get_baseline()["scan"], legacy)
+        current = self.scan(restarted)
+        rows = {item["id"]: item for item in current["observations"]}
+        for id_, item in rows.items():
+            with self.subTest(probe=id_):
+                self.assertEqual(item["comparison_key"], f"{id_}:v{2 if id_ == 'egress.geojs' else 1}")
+        current_geojs = rows["egress.geojs"]
+        self.assertEqual(current_geojs["value"], legacy_geojs["value"])
+        self.assertIsNone(b.comparable(legacy_geojs, current_geojs))
+        self.assertIsNone(b.comparable(current_geojs, legacy_geojs))
+        self.assertFalse(b.comparable(current_geojs, copy.deepcopy(current_geojs)))
+        changed = {**current_geojs, "value": {**current_geojs["value"], "asn": 131072}}
+        self.assertTrue(b.comparable(current_geojs, changed))
+        self.assertEqual(restarted.get_baseline()["scan"], legacy)
+        self.assertEqual(restarted.get_scan(legacy["id"]), legacy)
 
     def test_partial_scan_completes_and_preserves_success(self):
         def partial(id_, timeout):
