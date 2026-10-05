@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; font-src 'none'; base-uri 'none'; form-action 'none'">
   <meta name="color-scheme" content="light">
-  <title>Drift — 环境观测</title>
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='6' y='5' width='15' height='21' rx='4' fill='%23f0f2f4' stroke='%2325282c'/%3E%3Crect x='12' y='9' width='15' height='20' rx='4' fill='%23fff' stroke='%2325282c'/%3E%3C/svg%3E">
+  <title>Drift — 观测概览</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='6' y='5' width='15' height='21' rx='4' fill='%23f1f4f7' stroke='%231e2631'/%3E%3Crect x='12' y='9' width='15' height='20' rx='4' fill='%23fff' stroke='%231e2631'/%3E%3C/svg%3E">
   <link rel="stylesheet" href="style.css">
   <script src="app.js" defer></script>
 </head>
@@ -15,30 +15,34 @@
   <div class="app-shell">
     <aside class="sidebar" aria-label="工作区导航">
       <a class="brand" href="index.html" aria-label="Drift 首页"><span class="brand-symbol" aria-hidden="true"><i></i><i></i></span><span>drift<span class="brand-period">.</span></span></a>
-      <div class="workspace-label"><span class="workspace-avatar">L</span><span id="workspace-name">Local workspace<small>本机观测空间</small></span></div>
-      <p class="nav-label">工作台</p>
       <nav class="nav-list" aria-label="视图">
-        <button class="nav-item active" data-view="observations" aria-current="page"><svg viewBox="0 0 20 20" aria-hidden="true"><rect x="3" y="3" width="5" height="5" rx="1"/><rect x="12" y="3" width="5" height="5" rx="1"/><rect x="3" y="12" width="5" height="5" rx="1"/><rect x="12" y="12" width="5" height="5" rx="1"/></svg><span>观测概览</span><span class="nav-count" id="observation-count">—</span></button>
+        <button class="nav-item active" data-view="observations" aria-current="page"><svg viewBox="0 0 20 20" aria-hidden="true"><rect x="3" y="3" width="5" height="5" rx="1"/><rect x="12" y="3" width="5" height="5" rx="1"/><rect x="3" y="12" width="5" height="5" rx="1"/><rect x="12" y="12" width="5" height="5" rx="1"/></svg><span>概览</span><span class="nav-count" id="observation-count">—</span></button>
         <button class="nav-item" data-view="baseline"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 15h14M5 11V5m5 6V3m5 8V7"/></svg><span>基线</span></button>
-        <button class="nav-item" data-view="changes"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 5h11m-3-3 3 3-3 3M16 15H5m3-3-3 3 3 3"/></svg><span>变化</span><span class="nav-count" id="change-count">02</span></button>
+        <button class="nav-item" data-view="changes"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 5h11m-3-3 3 3-3 3M16 15H5m3-3-3 3 3 3"/></svg><span>变化</span><span class="nav-count" id="change-count">—</span></button>
         <button class="nav-item" data-view="sources"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 3h7l3 3v11H5zM12 3v4h3M8 10h4m-4 3h4"/></svg><span>来源</span></button>
-        <button class="nav-item" data-view="history"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 5a7 7 0 1 1-1 8M3 2v4h4m3 0v4l3 2"/></svg><span>历史</span></button>
+        <button class="nav-item" data-view="history"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 5a7 7 0 1 1-1 8M3 2v4h4m3 0v4l3 2"/></svg><span>记录</span></button>
       </nav>
-      <div class="sidebar-note"><span class="small-cross" aria-hidden="true">+</span><span>留意变化，<br>也保留未知。</span></div>
-      <div class="sidebar-bottom"><span class="offline-dot" aria-hidden="true"></span><span id="collector-state">正在连接</span><span class="version">v0.2</span></div>
+      <div class="sidebar-bottom"><span class="link-dot" id="collector-dot" aria-hidden="true"></span><span id="collector-state">正在连接</span><span class="version">v0.2</span></div>
     </aside>
     <div class="workspace">
-      <header class="topbar"><div class="breadcrumb"><span id="breadcrumb-workspace">Local</span><span>/</span><strong id="breadcrumb-current">观测概览</strong></div><div class="mode-controls"><label class="sr-only" for="mode-select">数据模式</label><select id="mode-select"><option value="real">本机实测</option><option value="demo">演示样本</option></select><span class="demo-badge" id="mode-badge">尚未采集</span></div></header>
+      <header class="topbar"><div class="breadcrumb"><span id="breadcrumb-workspace">本机</span><span aria-hidden="true">/</span><strong id="breadcrumb-current">概览</strong></div><div class="mode-controls"><label class="sr-only" for="mode-select">数据模式</label><select id="mode-select"><option value="real">本机实测</option><option value="demo">演示样本</option></select><span class="demo-badge" id="mode-badge">尚未采集</span></div></header>
       <main id="main" tabindex="-1">
-        <div class="page-heading"><div><p class="eyebrow">ENVIRONMENT OBSERVATORY</p><h1 id="page-title">环境观测<span class="title-dot">.</span></h1><p id="page-description">保留每一项的来源，也保留尚未得到的答案。</p></div><div class="heading-actions"><div class="sample-picker" id="sample-picker" hidden><label for="sample-select">当前样本</label><select id="sample-select"><option value="B">Sample B</option><option value="C">Sample C · 缺项</option></select></div><button class="quiet-button" id="privacy-toggle" aria-pressed="false">显示详细值</button><button class="primary-button" id="scan-button" disabled>连接中</button></div></div>
-        <div class="demo-notice"><span class="notice-symbol" aria-hidden="true">i</span><span id="scope-notice">采集由本机后端执行；公网地址等详细值默认隐藏。</span><span class="local-label">LOCAL WORKSPACE</span></div>
-        <section class="collection-bar" id="collection-bar" aria-label="采集进度" hidden></section>
+        <div class="page-heading"><div><h1 id="page-title">观测概览</h1><p id="page-description">查看当前读数、来源、采集时间与状态。</p></div><div class="heading-actions"><div class="sample-picker" id="sample-picker" hidden><label for="sample-select">当前样本</label><select id="sample-select"><option value="B">样本 B</option><option value="C">样本 C · 缺项</option></select></div><button class="quiet-button" id="privacy-toggle" aria-pressed="false">显示本页详细值</button><button class="primary-button" id="scan-button" disabled>连接中</button></div></div>
+        <div class="scope-note">
+          <p id="scope-notice">采集由本机服务端执行；敏感值默认隐藏。</p>
+          <details id="collection-disclosure">
+            <summary>采集目标与发送范围</summary>
+            <p>服务端向 ipify、GeoJS 发起 HTTPS 请求取得出口 IP；对 example.com、www.cloudflare.com 进行 DNS 解析与 HTTPS HEAD 请求。HTTPS 目标可见本次请求的出口 IP。</p>
+            <p>浏览器的时区、语言与联网提示仅提交到本机服务端。敏感读数默认隐藏。</p>
+          </details>
+        </div>
+        <section class="collection-bar" id="collection-bar" aria-label="采集进度" hidden><strong id="collection-label"></strong><span id="collection-count"></span><progress id="collection-progress" aria-label="采集任务进度"></progress><button class="text-button" id="collection-show" data-action="show-active" hidden>查看进行中的采集 <span aria-hidden="true">→</span></button></section>
         <div class="operation-error" id="operation-error" role="alert" hidden></div>
-        <div class="content-grid">
+        <div class="content-grid" id="content-grid">
           <div class="main-column" id="view-content"></div>
           <aside class="inspector" aria-label="选中项明细" id="inspector"></aside>
         </div>
-        <footer class="page-footer"><span>Drift / Local workspace</span><span id="footer-scope">只读观测 · 不修改设备或网络设置</span></footer>
+        <footer class="page-footer" id="footer-scope">网络 · 设备 · 浏览器观测</footer>
       </main>
     </div>
   </div>
