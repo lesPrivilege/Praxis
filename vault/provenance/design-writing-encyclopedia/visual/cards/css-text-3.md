@@ -6,7 +6,7 @@ url: https://www.w3.org/TR/css-text-3/
 
 # CSS Text Module Level 3
 
-原件：[W3C Recommendation](https://www.w3.org/TR/css-text-3/)。
+原件：[W3C Candidate Recommendation Draft](https://www.w3.org/TR/css-text-3/)。
 
 ## 摘要与定位
 
@@ -15,6 +15,8 @@ url: https://www.w3.org/TR/css-text-3/
 本 Kit 消费：中文内容可以在允许边界自然换行，但代码必须忠实保留语义和语言信息；混排长串须通过目标浏览器验证。它不规定中文标题、引文或中西文空格的风格偏好。
 
 ## 限制
+
+`status: verified` 表示来源已取得并读取，不表示已成为 W3C Recommendation 或浏览器实现已验证。文档版本与复核见[变更记录](../CHANGELOG.md)。
 
 这份材料是文本规则，不证明所有当前浏览器如何实现。Grapheme 分割、地区性标点规范和字体覆盖还需结合 CLReq、实际 UA 与内容语言核查。未在浏览器执行示例。
 

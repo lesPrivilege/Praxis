@@ -14,3 +14,9 @@
 ## 2026-10-11 · 上游身份核对
 
 协调者以只读 `git ls-remote ... HEAD` 取得 Anatomy HEAD `dbf697a527bbf7d358668e1557cb1e35ff725d46`，Hairline HEAD `a2217852fed6d1a4f20bc7d43d4fad1a3de117b8`。它们是核对时的上游身份，不冒称先前所有网页文本/图片均来自该 commit；动态站点与 raw main 仍可能漂移。源代码未执行，仓库未克隆。
+
+## 2026-10-11 · CSS Text 3 标准阶段勘误
+
+- 重新打开 DWV-07 的[最新发布入口](https://www.w3.org/TR/css-text-3/)及其 “This version” 指向的[固定版本](https://www.w3.org/TR/2026/CRD-css-text-3-20260814/)，核对标题区与 “Status of this document”。两者标明 **W3C Candidate Recommendation Draft**，来源日期为 **14 August 2026**。
+- 来源卡原写 W3C Recommendation，现更正为 Candidate Recommendation Draft。保留 `status: verified` 作为取得、读取来源的证据状态，与标准成熟阶段及浏览器实现验证分开；日期与固定版本 URL 仅在本记录保存。
+- 此次只修订来源卡及本 CHANGELOG，不改变语法、研究范围、目录或 schema。
