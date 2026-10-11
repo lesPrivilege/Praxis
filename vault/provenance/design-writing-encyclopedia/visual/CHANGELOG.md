@@ -1,0 +1,22 @@
+# Change log
+
+## Batch visual gaps · 2026-10-11 UTC
+
+- Scope: typography roles/CJK wrapping, color role separation from data encoding, and spatial/object representation; 9 new URL records, 8 accessible for substantive text/image evidence and 1 direct Anatomy skill landing route unavailable in this browser. Rechecked existing S07 and R03, with no duplicate records.
+- Newly acquired records: IDs DWV-01–DWV-09 in `catalog.json`. Reviewed W3C CSS Text 3 §4.1/§5, W3C Chinese Layout Gap Analysis §§2/7.1, ColorBrewer scheme guidance, Anatomy project README and linked static firing still, Hairline inspiration essay and skill page, and Hairline repository-linked hero GIF. See each card for precise locators and evidence modality.
+- Visual evidence: used the repository-linked Anatomy Raptor 2 firing still and Hairline `assets/hero.gif` first frame. Anatomy looks like pale filled/shaded surfaces bounded by fine edges and assembled around legible mechanical joints; the plume glow is an added effect. Hairline shows small light line figures on opaque pale plates. This supports distinct size/structure tradeoffs, not a universal style. The stills do not prove behavior or technical accuracy.
+- Existing-source rechecks: S07 `/components/typography/` was opened directly; current content still describes English-oriented web guidance with defaults plus exceptions, and static text does not expose its typography accessibility-test status. R03’s canonical `/WAI/WCAG22/Understanding/use-of-color.html` page was opened and read through the examples, technique notes and revision footer; it separates a visible alternative for color-only cues from assistive-technology relationships. Its revision note is 2025-09-16. The original R03 record remains canonical (evidence state stays partial until its owner revises it); no standard adoption is implied. Linked cards: [S07](../../design-grammar-atlas-20261002/cards/s07-uswds-typography.md), [R03](../../relation-grammar-20261004/cards/r03-wcag-use-of-color.md).
+- Duplicate screening: direct `rg` search found prior W3C CLReq requirements and USWDS typography records; those are cited/rechecked rather than re-registered. The separate W3C Chinese Layout Gap report (`/TR/clreq-gap/`) and CSS Text 3, ColorBrewer scheme explanation, and Anatomy/Hairline URLs did not have existing catalog records in the searched provenance folders.
+- Limits: the `skills.wheresryan.sh/anatomy` lead returned an internal fetch error; GitHub README and linked image were available instead. Hairline interactive pages were read via text extraction; the experience itself was not operated. Browser/font test suites were not run. CSS Text text was read at live W3C URL; the CLReq gap doc calls itself a draft and working document. ColorBrewer is a cartographic guide, not a general UI palette standard.
+- Snapshot decision: no full pages, screenshots, images, or source code were committed under `vault/snapshots/`; six bounded short excerpts are saved with source URL and locator, plus attribution/permission note. The downloaded image scratch is under `/tmp/praxis-encyclopedia/`. Cards are original paraphrase/observation notes, not source snapshots.
+- Execution role: delegated visual-research agent. Requested selector `gpt-6-luna` accepted. No user or third party was contacted; no source code or skill was executed.
+
+## 2026-10-11 · 上游身份核对
+
+协调者以只读 `git ls-remote ... HEAD` 取得 Anatomy HEAD `dbf697a527bbf7d358668e1557cb1e35ff725d46`，Hairline HEAD `a2217852fed6d1a4f20bc7d43d4fad1a3de117b8`。它们是核对时的上游身份，不冒称先前所有网页文本/图片均来自该 commit；动态站点与 raw main 仍可能漂移。源代码未执行，仓库未克隆。
+
+## 2026-10-11 · CSS Text 3 标准阶段勘误
+
+- 重新打开 DWV-07 的[最新发布入口](https://www.w3.org/TR/css-text-3/)及其 “This version” 指向的[固定版本](https://www.w3.org/TR/2026/CRD-css-text-3-20260814/)，核对标题区与 “Status of this document”。两者标明 **W3C Candidate Recommendation Draft**，来源日期为 **14 August 2026**。
+- 来源卡原写 W3C Recommendation，现更正为 Candidate Recommendation Draft。保留 `status: verified` 作为取得、读取来源的证据状态，与标准成熟阶段及浏览器实现验证分开；日期与固定版本 URL 仅在本记录保存。
+- 此次只修订来源卡及本 CHANGELOG，不改变语法、研究范围、目录或 schema。

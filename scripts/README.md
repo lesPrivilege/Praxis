@@ -34,3 +34,11 @@
 XMind 导图另运行 `python3 scripts/lint_xmind.py <file.md> ...`，执行 [md/xmind profile](../docs/governance/xmind-markdown-profile.md) 静态 preflight；通过不代表已在 Xmind 实机导入。
 
 AI 能力测试批次使用专属 intake；来源 catalog 的 snapshot_path / snapshot_sha256 将外部正文副本接入统一快照清单。正文快照不意味着站点依赖完整或产品行为已实测。
+
+## Design / Write 有界交叉索引
+
+`python3 scripts/reference_index.py` 从该书目各流的 `catalog.json` 生成 `vault/provenance/design-writing-encyclopedia/index.json`，不编辑来源卡。`--check` 验证新来源唯一 URL/ID、registry alias、精确主张定位、来源与语法双向路径、可选分面与摘录 hash，以及新正文无日期日志；不扫描迁移历史卡片或判断外部主张真伪。
+
+可用 `--facet task=error-recovery` 或 `--facet artifact=interactive-object --facet stack_runtime=React` 筛选；只输出唯一卡片和语法路径，不写文件。词值来自具体来源的可选 facets；缺字段不等于未知，来源行业不等于已证适用性。
+
+来源 catalog 可显式设 `registry_extensions: true`，把自身稳定 ID 作为 registry alias，并投影主张定位、分面、证据/许可、历史记录与实现成熟度等可选字段。未选择该扩展的历史记录保持原投影，避免新增索引变成全库迁移。

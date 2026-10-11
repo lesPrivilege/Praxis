@@ -2,11 +2,11 @@
 
 本页维护已有产出与实验样张的稳定入口。它帮助任务按已完成产出比较结构和验收线索，不把一次答卷的 profile 晋升为 Design 全局 contract。返回 [Design 参考路由](README.md) 或 [兼容入口](../references.md)。
 
-## P01 · 能力测试答卷（2026-09-24）
+## P01 · 能力测试答卷
 
 | ID | 产出 | 状态 | 可复用部分 | 边界与重访 | 位置 |
 |---|---|---|---|---|---|
-| P01 | 能力测试答卷（2026-09-24） | reference | 问题—答案页结构、五种线图、宽窄两版、窄屏章节菜单、翻页条、打印与离线交付、图中文字溢出检查 | 历史 specimen/profile，不单独产生 Design 全局 contract；新的独立消费者或实际任务反馈触发复核，是否 promotion 仍由 Astra 裁决 | [rendered](../../../vault/distilled/ai-capability-assessment/rendered/README.md) |
+| P01 | 能力测试答卷 | reference | 问题—答案页结构、五种线图、宽窄两版、窄屏章节菜单、翻页条、打印与离线交付、图中文字溢出检查 | 历史 specimen/profile，不单独产生 Design 全局 contract；新的独立消费者或实际任务反馈触发复核，是否 promotion 仍由 Astra 裁决 | [rendered](../../../vault/distilled/ai-capability-assessment/rendered/README.md) |
 
 P01 的结构可与 [C04、C10](composition.md) 对照，具体动效、配色、排印和交付参数仍回到该答卷的 [历史 profile](../../../vault/distilled/ai-capability-assessment/design-profile-20260924.md)；需要其他 artifact family 时，只取已经证明与语义任务相关的局部机制。
 

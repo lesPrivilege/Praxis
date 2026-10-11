@@ -1,0 +1,603 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Art/software atlas bounded index extension",
+  "description": "Reuses source catalog fields; adds typed identities and grammar-first projection. No migration of existing catalogs. Cross-record semantic checks are documented in validation receipt.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "scope",
+    "levels",
+    "facet_definitions",
+    "grammar",
+    "sources",
+    "reused_sources",
+    "entities",
+    "relations",
+    "redirects",
+    "facet_index"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "1.1"
+    },
+    "scope": {
+      "type": "string",
+      "minLength": 1
+    },
+    "levels": {
+      "type": "object"
+    },
+    "facet_definitions": {
+      "type": "object"
+    },
+    "grammar": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/grammar"
+      }
+    },
+    "sources": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/source"
+      }
+    },
+    "reused_sources": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/reuse"
+      }
+    },
+    "entities": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/entity"
+      }
+    },
+    "relations": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/relation"
+      }
+    },
+    "redirects": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "from",
+          "to",
+          "reason"
+        ],
+        "properties": {
+          "from": {
+            "type": "string",
+            "minLength": 1
+          },
+          "to": {
+            "type": "string",
+            "minLength": 1
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "facet_index": {
+      "type": "object",
+      "description": "Generated inverted IDs and per-state coverage; values remain canonical only on source/entity/grammar records. Each omitted facet is indexed as unreviewed.",
+      "propertyNames": {
+        "enum": [
+          "industry_author",
+          "industry_applicability",
+          "task",
+          "artifact",
+          "operation",
+          "stack_runtime",
+          "style_lineage",
+          "language"
+        ]
+      },
+      "additionalProperties": {
+        "type": "object",
+        "required": [
+          "values",
+          "states"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "values": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "uniqueItems": true
+            }
+          },
+          "states": {
+            "type": "object",
+            "required": [
+              "known",
+              "unknown",
+              "not-applicable",
+              "unreviewed"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "known": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "uniqueItems": true
+              },
+              "unknown": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "uniqueItems": true
+              },
+              "not-applicable": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "uniqueItems": true
+              },
+              "unreviewed": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "uniqueItems": true
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "source": {
+      "type": "object",
+      "required": [
+        "id",
+        "kind",
+        "slug",
+        "title",
+        "url",
+        "status",
+        "summary_zh",
+        "limits",
+        "revisit_trigger",
+        "card_path",
+        "grammar_paths",
+        "history_record",
+        "evidence_modality",
+        "license_state",
+        "supported_claims"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "kind": {
+          "const": "source-record"
+        },
+        "slug": {
+          "type": "string",
+          "minLength": 1
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "status": {
+          "enum": [
+            "verified",
+            "partial",
+            "unavailable",
+            "unverified"
+          ]
+        },
+        "summary_zh": {
+          "type": "string",
+          "minLength": 1
+        },
+        "limits": {
+          "type": "string",
+          "minLength": 1
+        },
+        "revisit_trigger": {
+          "type": "string",
+          "minLength": 1
+        },
+        "card_path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "grammar_paths": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "history_record": {
+          "type": "string",
+          "minLength": 1
+        },
+        "evidence_modality": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "license_state": {
+          "type": "string",
+          "minLength": 1
+        },
+        "supported_claims": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/claim"
+          }
+        },
+        "facets": {
+          "$ref": "#/$defs/facets"
+        }
+      },
+      "additionalProperties": true
+    },
+    "claim": {
+      "type": "object",
+      "required": [
+        "claim_id",
+        "locator",
+        "claim"
+      ],
+      "properties": {
+        "claim_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "locator": {
+          "type": "string",
+          "minLength": 1
+        },
+        "claim": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": true
+    },
+    "facet": {
+      "type": "object",
+      "required": [
+        "values",
+        "state",
+        "basis",
+        "evidence"
+      ],
+      "properties": {
+        "values": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "state": {
+          "enum": [
+            "known",
+            "unknown",
+            "not-applicable"
+          ]
+        },
+        "basis": {
+          "enum": [
+            "explicit",
+            "inferred"
+          ]
+        },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "rationale": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "const": "known"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "values": {
+                "minItems": 1
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "values": {
+                "maxItems": 0
+              }
+            }
+          }
+        }
+      ]
+    },
+    "grammar": {
+      "type": "object",
+      "required": [
+        "id",
+        "kind",
+        "title",
+        "path",
+        "level",
+        "reference_priority",
+        "adoption",
+        "operations",
+        "source_ids",
+        "evidence_modalities",
+        "implementation_maturity"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "kind": {
+          "const": "derived-grammar"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "level": {
+          "const": "L2"
+        },
+        "reference_priority": {
+          "enum": [
+            "normal",
+            "preferred",
+            "historical"
+          ]
+        },
+        "adoption": {
+          "enum": [
+            "reference",
+            "accepted",
+            "rejected"
+          ]
+        },
+        "operations": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "source_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "evidence_modalities": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "implementation_maturity": {
+          "type": "string",
+          "minLength": 1
+        },
+        "section": {
+          "type": "string",
+          "minLength": 1
+        },
+        "facets": {
+          "$ref": "#/$defs/facets"
+        }
+      },
+      "additionalProperties": false
+    },
+    "reuse": {
+      "type": "object",
+      "required": [
+        "id",
+        "kind",
+        "url",
+        "card_path",
+        "grammar_paths",
+        "limits"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "kind": {
+          "const": "source-record"
+        },
+        "url": {
+          "type": "string",
+          "minLength": 1
+        },
+        "card_path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "grammar_paths": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "limits": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "entity": {
+      "type": "object",
+      "required": [
+        "id",
+        "kind",
+        "title",
+        "source_ids",
+        "grammar_paths",
+        "description"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "kind": {
+          "enum": [
+            "discovery-corpus",
+            "exemplar",
+            "implementation-substrate"
+          ]
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "grammar_paths": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1
+        },
+        "corpus_scope": {
+          "enum": [
+            "atlas-selection",
+            "external-collection"
+          ]
+        },
+        "facets": {
+          "$ref": "#/$defs/facets"
+        }
+      },
+      "additionalProperties": true
+    },
+    "relation": {
+      "type": "object",
+      "required": [
+        "from",
+        "type",
+        "to",
+        "basis",
+        "limits"
+      ],
+      "properties": {
+        "from": {
+          "type": "string",
+          "minLength": 1
+        },
+        "type": {
+          "enum": [
+            "documents",
+            "contains",
+            "implements",
+            "informs",
+            "contrasts",
+            "discovered-via"
+          ]
+        },
+        "to": {
+          "type": "string",
+          "minLength": 1
+        },
+        "basis": {
+          "type": "string",
+          "minLength": 1
+        },
+        "limits": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "facets": {
+      "type": "object",
+      "propertyNames": {
+        "enum": [
+          "industry_author",
+          "industry_applicability",
+          "task",
+          "artifact",
+          "operation",
+          "stack_runtime",
+          "style_lineage",
+          "language"
+        ]
+      },
+      "additionalProperties": {
+        "$ref": "#/$defs/facet"
+      }
+    }
+  }
+}

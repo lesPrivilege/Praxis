@@ -14,7 +14,11 @@
 | 定义产品界面、控件状态和可访问性检查 | [interface.md](interface.md) | U01–U09 | 尺寸、焦点、对象状态、表面层级与 donor 的消费范围 |
 | 查找成熟设计系统或前端参考的原文入口 | [systems.md](systems.md) | ref-* | 逐 URL 的状态、消费语义、证据卡片和重访触发 |
 | 对照已有产出与实验样张 | [specimens.md](specimens.md) | P01、LAB-20260927 | 历史答卷、原子实验及局部筛选；区分结构参考、profile与未验收实现 |
+| 按来源的论述、术语与局限深入阅读，或比较跨媒介方法 | [公开来源书目](../../../vault/provenance/design-writing-encyclopedia/README.md) | DWV / DWI / DWW / DWX | 逐源摘要与相应任务语法双向回查 |
+| 判断营销演示、源码、标准说明和已测行为各能证明什么 | [读来源](reading-sources.md) | DWG-X-SOURCES | 保留证据差别，找到需要补读的具体材料 |
 | 把风格名（Swiss、Bauhaus、Y2K 等）换成可检验的构成关系 | [languages.md](languages.md) | VL01–VL08 | 名称与别名、所指范围、可以试的关系、名字推不出的内容和逐来源状态；不含主题参数 |
+
+从织物、编辑、空间、乐谱、规则、软件组件或 agent 设计生态探索新方向，先读 [艺术与软件操作入口](art-software-atlas.md)；按来源追溯读 [书目](../../../vault/provenance/art-software-atlas/README.md)。
 
 ## 需要原文或证据时
 

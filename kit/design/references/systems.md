@@ -2,7 +2,7 @@
 
 本页是 `ref-*` URL 卡片的 canonical route。它只提供 Design 需要的消费摘要；每条原 URL、canonical URL、原对话主张、核验差异、证据链接和重访触发仍以 Vault 卡片为准。卡片的 `verified`、`partial` 是来源证据状态，不是 Kit 的 `accepted` 状态。返回 [Design 参考路由](README.md) 或 [兼容入口](../references.md)。
 
-这些卡片记录 2026-09-18 的一轮官方入口核查；若卡片或本页注明需要重读，引用前按原 URL 复核。没有保存正文快照时，在线页面不能被当作离线证据。
+这些卡片保留历史官方入口核查；若卡片或本页注明需要重读，引用前按原 URL 复核。没有保存正文快照时，在线页面不能被当作离线证据。
 
 ## Design system 组织
 
@@ -28,3 +28,5 @@
 ## 维护
 
 逐 URL 的 canonical 登记只保留在 `vault/references` 或 `vault/provenance` 的一个位置；本页不复制原件。需要将某个系统的观察提炼为跨项目语法时，先在项目 index 记录实际消费，再按 [文档结构契约](../../../docs/architecture/documentation.md) 与修订流程提出裁决。
+
+已有品牌规范需要让 coding agent 按需查找时，读 [设计资源的包、组件与集成](agent-design-resources.md)；该入口区分同名项目、设计系统包、registry、Skill 和 MCP，不要求安装。

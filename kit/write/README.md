@@ -4,13 +4,17 @@
 
 | 要做什么 | 进入哪里 | 这一支负责什么 |
 |---|---|---|
+| 明确读者任务、论证、产品提示或多语言边界 | [Prose 可选参考](prose/README.md#有具体疑问时深入) | 判断依据、受众范围、微文案与语言取舍 |
 | 成文、改写、审校正文 | [Prose](prose/README.md) | 论述、句法、语体、文体与审阅 |
+| 选择文字、图、可操作对象或运动 | [媒介选择](publish/media-choice.md) | 为当前判断选择表达，保留等效内容 |
 | 编排 HTML、报告、Slides 或 PDF；把一份内容改成另一种媒介或篇幅 | [Publish](publish/README.md) | 内容层级、阅读单元、展项、引介、图注与来源职责 |
 | 将内容转成时间叙事 | [Motion](motion/README.md) | 分镜、信息驻留、转场语义与音画分工 |
 | 只规范空格、标点或链接 | [格式检查](prose/format.md) | 保护范围、可自动修的和只报不改的 |
 | 跨模式引用或交付复核 | [Shared](shared/README.md) | 任何语言和模式都守的底线、证据身份、来源与验收 |
 
 不知道材料要促成什么决定时，先去 [Reporting](../reporting/README.md)填写 brief。需要字体、配色、图形编码或交互取舍时再进入 [Design](../design/README.md)。Write 决定什么信息需要表达及其职责，Design 处理视觉和媒介表现；两者通过这些语义接口协作。只调颜色、字体或间距时不用进来。
+
+要把信息编成图形、跨文字方向排印，或改成可解释的事件乐谱，可按需查 Design 的 [编辑转译](../design/composition/editorial-translations.md) 与 [乐谱语法](../design/motion/score-and-time.md)，内容与证据职责仍留在本分支。
 
 ## 规则有三种强度
 

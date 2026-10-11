@@ -11,3 +11,5 @@
 [Agent Runtime 证据](agent-runtime-survey-20260925/README.md)：本地架构原件与外部研究摘录分别登记；不声称完整上游源码快照。
 
 - 视觉语法定向快照（2026-09-28/29）：[Courtwork](local/visual-grammar-courtwork-20260928/README.md)、[Schema Engineering](local/visual-grammar-schema-20260928/README.md)、[Mnemos等相邻项目](local/visual-grammar-praxis-20260928/README.md)。来源身份与完整性由 [本批intake](../intake/visual-grammar-20260928.json)和manifest联结；不代表运行依赖完整。
+
+- [Design / Write 公开来源摘录](design-writing-encyclopedia/README.md)：有限获准摘录与证据保存边界，不等同整站归档或运行验收。

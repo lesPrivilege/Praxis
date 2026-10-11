@@ -45,7 +45,7 @@ def build():
     for namespace, rel in base_specs + extras:
         data = read(rel)
         for s in data['sources']:
-            sources.append({
+            record = {
                 'id': namespace + ':' + s['slug'], 'kind': 'external-url',
                 'collection': namespace, 'title': s['title'],
                 'original_locator': s.get('original_url'), 'canonical_url': s['url'],
@@ -53,7 +53,18 @@ def build():
                 'summary': s['summary_zh'], 'purpose_tags': s.get('purpose_tags', []),
                 'local_card': s.get('card_path') or str(Path(rel).parent / 'cards' / (s['slug'] + '.md')), 'record_path': rel,
                 'limitations': [s['limits']], 'revisit_when': s['revisit_trigger'],
-            })
+            }
+            # Keep historical registry identities. Source-owned IDs are aliases,
+            # and optional discovery/provenance fields remain source-owned.
+            if data.get('registry_extensions'):
+                if s.get('id'):
+                    record['aliases'] = list(dict.fromkeys([s['id'], *s.get('aliases', [])]))
+                for key in ('history_record', 'supported_claims', 'grammar_paths',
+                            'evidence_modality', 'license_state', 'facets',
+                            'implementation_maturity', 'adoption'):
+                    if key in s:
+                        record[key] = s[key]
+            sources.append(record)
         for c in data['occurrences']:
             citations.append({'turn_id': c['archive_turn_id'], 'item_id': c['message_item_id'],
                               'index': int(c['index']), 'claim': c['claim'],

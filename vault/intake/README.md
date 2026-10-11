@@ -76,3 +76,7 @@ Intake 只登记材料身份、覆盖、处理状态、附件和缺口，不重�
 - [社区 Skills 与 Prompts 研究包 · 2026-10-02](community-grammar-20261002.json)：三个文件的快照与 hash，45 个外部链接里主会话读了 8 个；[对照与裁决](../distilled/community-grammar-20261002/README.md)。
 - [自足性审查 · 2026-10-02](self-contained-review-20261002.json)：单文件审查的快照与 hash，引用的都是本仓库自己的文件，没有外部来源；[对照与裁决](../distilled/self-contained-review-20261002/README.md)。
 - [Palantir 设计交接包 · 2026-10-03](palantir-design-handoff-20261003.json)：七个文件的快照与 hash，9 个外部链接复查了作品用到的 3 个；据此做的作品见 [demos/palantir-discovery](../../demos/palantir-discovery/README.md)。
+
+- [Design / Write 书目与语法参考登记](design-writing-encyclopedia-20261011.json)：公开来源的细读摘要、可选语法与有界分面；[阅读入口与覆盖](../provenance/design-writing-encyclopedia/README.md)，[历史与验收](../../docs/verification/design-writing-encyclopedia-20261011/README.md)。
+
+- [艺术与软件语法研究](art-software-atlas-20261011.json)：公开来源与原创综合的有界登记，无私有材料或会话导入。
