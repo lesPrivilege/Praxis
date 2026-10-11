@@ -33,6 +33,9 @@
     }
     const outputFilename=options.output_filename ?? 'risk-report.pdf';
     if(typeof outputFilename!=='string' || !outputFilename.trim()) throw new Error('MechanismLab output_filename must be a nonempty string');
+    const targetPath=options.target_path ?? 'reviews/risk.md';
+    if(typeof targetPath!=='string' || !targetPath.trim()) throw new Error('MechanismLab target_path must be a nonempty string');
+    const exploreExample=options.permission_mode==='EXPLORE';
     const start = options.start ?? options.from ?? 0;
     const duration = options.duration ?? spec.duration;
     const input = options.cues;
@@ -119,12 +122,12 @@
         if(i>=3) arrow(s,1082,180,1164,180,'active');
         node(p,'ml-paper',0,62,475,382,label(i===0?'ToolCallBlock · T1':'工具调用 · T1')+title('Write')+mono('目标：reviews/risk.md')+'<div class="ml-divider"></div>'+body('保存合同风险清单')+'<div style="margin-top:27px">'+chip(i<2?'pending':i===2?'asking':i<5?'allowed':'finished',i===2?'ask':'')+'</div>');
         node(p,'ml-paper ml-gate',596,62,486,382,
-          label(i===0?'Toolkit · 输入契约':i===1?'JSON / input_schema':'PermissionEngine')+title(['解析参数','校验通过','ASK · 等待确认','ALLOW · 允许执行','进入工具','返回结果'][i])+
+          label(i===0?'Toolkit · 输入契约':i===1?'JSON / input_schema':'PermissionEngine')+title(['解析参数','校验通过','ASK · 等待确认',exploreExample?'ALLOWED · 本次放行':'ALLOW · 允许执行','进入工具','返回结果'][i])+
           '<div class="ml-divider"></div>'+body([
             '工具已注册并激活<br>解析 JSON 参数',
             '输入字段匹配<br>input_schema',
-            'RequireUserConfirmEvent<br>reply_id = R1<br>tool_calls → [T1]',
-            'UserConfirmResultEvent<br>reply_id = R1<br>确认 ToolCallBlock T1',
+            exploreExample?'显式 ask 命中<br>RequireUserConfirmEvent<br>tool_calls → [T1]':'RequireUserConfirmEvent<br>reply_id = R1<br>tool_calls → [T1]',
+            exploreExample?'confirm_results[]<br>tool_call.id = T1<br>confirmed = true · R1':'UserConfirmResultEvent<br>reply_id = R1<br>确认 ToolCallBlock T1',
             'ToolResultStartEvent<br>tool_call_id = T1',
             'ToolResultEndEvent<br>tool_call_id = T1',
           ][i]));
@@ -138,9 +141,9 @@
         }
         node(p,'ml-band',0,520,1744,64,[
           '工具可用性与参数校验先于 Permission 判断。',
-          '参数合法后，Permission 决定此次调用能否执行。',
-          'ASK 结束当前 stream；AgentState 保留 R1 / T1 等待续接。',
-          '确认结果回到同一 R1 / T1，允许后才进入工具。',
+          exploreExample?'EXPLORE：deny → 显式 ask → 只读；其余非只读调用兜底 DENY。':'参数合法后，Permission 决定此次调用能否执行。',
+          exploreExample?'本例在 EXPLORE 命中显式 ask；R1 / T1 等待逐次确认。':'ASK 结束当前 stream；AgentState 保留 R1 / T1 等待续接。',
+          exploreExample?'合法确认将本次 T1 改为 ALLOWED；后续调用重新按 EXPLORE 判定。':'确认结果回到同一 R1 / T1，允许后才进入工具。',
           'ToolResultStartEvent 标记工具真正开始执行。',
           '工具结果回写上下文，Agent 再决定下一步。',
         ][i]);
@@ -216,11 +219,11 @@
     // Replace only exact example identities in text nodes, in one pass.
     // Timelines only change transform/opacity/visibility, so later seek cannot
     // restore old IDs. Text-node assignment keeps caller input out of HTML.
-    const replacements={R1:identities.reply_id,T1:identities.tool_call_id,S1:identities.session_id,F1:identities.file_id,A1:identities.artifact_id,'risk-report.pdf':outputFilename};
+    const replacements={R1:identities.reply_id,T1:identities.tool_call_id,S1:identities.session_id,F1:identities.file_id,A1:identities.artifact_id,'risk-report.pdf':outputFilename,'reviews/risk.md':targetPath};
     const textWalker=document.createTreeWalker(wrap,NodeFilter.SHOW_TEXT);
     while(textWalker.nextNode()) {
       const n=textWalker.currentNode;
-      n.nodeValue=n.nodeValue.replace(/\brisk-report\.pdf\b|\b(?:R1|T1|S1|F1|A1)\b/g, token=>replacements[token]);
+      n.nodeValue=n.nodeValue.replace(/\breviews\/risk\.md\b|\brisk-report\.pdf\b|\b(?:R1|T1|S1|F1|A1)\b/g, token=>replacements[token]);
     }
     function auditText(e) {
       if(e.nodeType===3) return e.textContent;
@@ -249,7 +252,7 @@
         const index=counts[role]||0; counts[role]=index+1; leaf.dataset.readingKey=key+':'+role+':'+index;
       });
     });
-    return { root:wrap, type, duration, identities:{...identities}, output_filename:outputFilename, phase_names:[...spec.phase_names], cues:Object.fromEntries(spec.phase_names.map((name,i)=>[name,cues[i]])), motion_windows:windows, screen_text:text, phases };
+    return { root:wrap, type, duration, identities:{...identities}, output_filename:outputFilename,target_path:targetPath,permission_mode:options.permission_mode??null, phase_names:[...spec.phase_names], cues:Object.fromEntries(spec.phase_names.map((name,i)=>[name,cues[i]])), motion_windows:windows, screen_text:text, phases };
   }
   window.MechanismLab = { build, specs };
 })();

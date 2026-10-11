@@ -1,0 +1,1607 @@
+[
+  {
+    "id": "agent",
+    "start": 197,
+    "end": 322,
+    "root": null,
+    "type": "state",
+    "duration": 125,
+    "identities": {
+      "session_id": "S1",
+      "agent_id": "A1",
+      "reply_id": "R2",
+      "tool_call_id": "T2",
+      "task_id": "BG2"
+    },
+    "phase_names": [
+      "persisted",
+      "own_tail_asking",
+      "observed_other_ignored",
+      "submitted_unresolved",
+      "matching_result",
+      "persisted_resumable"
+    ],
+    "cues": {
+      "persisted": 15,
+      "own_tail_asking": 51,
+      "observed_other_ignored": 65,
+      "submitted_unresolved": 83,
+      "matching_result": 96,
+      "persisted_resumable": 109
+    },
+    "motion_windows": [
+      {
+        "at": 15,
+        "duration": 0.65,
+        "purpose": "state_change"
+      },
+      {
+        "at": 51,
+        "duration": 0.4,
+        "purpose": "retire_previous_state"
+      },
+      {
+        "at": 51,
+        "duration": 0.65,
+        "purpose": "state_change"
+      },
+      {
+        "at": 65,
+        "duration": 0.4,
+        "purpose": "retire_previous_state"
+      },
+      {
+        "at": 65,
+        "duration": 0.65,
+        "purpose": "state_change"
+      },
+      {
+        "at": 83,
+        "duration": 0.4,
+        "purpose": "retire_previous_state"
+      },
+      {
+        "at": 83,
+        "duration": 0.65,
+        "purpose": "state_change"
+      },
+      {
+        "at": 96,
+        "duration": 0.4,
+        "purpose": "retire_previous_state"
+      },
+      {
+        "at": 96,
+        "duration": 0.65,
+        "purpose": "state_change"
+      },
+      {
+        "at": 96.8,
+        "duration": 1.4,
+        "purpose": "identity_preserving_delivery"
+      },
+      {
+        "at": 109,
+        "duration": 0.4,
+        "purpose": "retire_previous_state"
+      },
+      {
+        "at": 109,
+        "duration": 0.65,
+        "purpose": "state_change"
+      }
+    ],
+    "screen_text": [
+      {
+        "phase": "persisted",
+        "start": 212,
+        "end": 248,
+        "text": "AgentState · 持久 JSON 单元\nsession_id: S1\nsummary + context\nreply_context: R2\npermission_context: DEFAULT\ntool_context · 已激活工具\ntasks_context · 任务记录\nmiddle_context · 中间件状态\n\ncontext[-1] · 尾部 assistant Msg\n已载入持久状态\nname: A1　/　id: R2\n当前没有待处理 tool_call\n\n检查未压缩上下文的最后一条消息\n\n尚无待处理调用\nAgentState 把上下文、当前回复、权限、工具与任务状态一起保存为 JSON。"
+      },
+      {
+        "phase": "own_tail_asking",
+        "start": 248,
+        "end": 262,
+        "text": "AgentState · 持久 JSON 单元\nsession_id: S1\nsummary + context\nreply_context: R2\npermission_context: DEFAULT\ntool_context · 已激活工具\ntasks_context · 任务记录\nmiddle_context · 中间件状态\n\ncontext[-1] · 尾部 assistant Msg\n等待用户确认\nname: A1　/　id: R2\ntool_call T2 · ASKING\n\ntool_result T2 · 尚未出现\n\nparked = true · 等确认\n只检查该 Agent 的尾部 assistant Msg；ASKING 表示等待用户确认。"
+      },
+      {
+        "phase": "observed_other_ignored",
+        "start": 262,
+        "end": 280,
+        "text": "AgentState · 持久 JSON 单元\nsession_id: S1\nsummary + context\nreply_context: R2\npermission_context: DEFAULT\ntool_context · 已激活工具\ntasks_context · 任务记录\nmiddle_context · 中间件状态\n\ncontext[-1] · 尾部 assistant Msg\n观察到另一 Agent\nname: Reviewer　/　id: OBS1\n观察调用 OBS-T · ASKING\n\n属于 Reviewer，不属于 A1\n\nparked = false · 作者不匹配\n尾部若来自另一 Agent，返回空等待列表；观察消息不代表本 Agent 仍在等待。"
+      },
+      {
+        "phase": "submitted_unresolved",
+        "start": 280,
+        "end": 293,
+        "text": "AgentState · 持久 JSON 单元\nsession_id: S1\nsummary + context\nreply_context: R2\npermission_context: DEFAULT\ntool_context · 已激活工具\ntasks_context · 任务记录\nmiddle_context · 中间件状态\n\ncontext[-1] · 尾部 assistant Msg\n已批准，等待外部结果\nname: A1　/　id: R2\ntool_call T2 · SUBMITTED\n\ntool_result T2 · 尚未出现\n\nparked = true · 缺匹配结果\nSUBMITTED 且原消息没有同 ID 的 ToolResultBlock，才等待外部执行结果。"
+      },
+      {
+        "phase": "matching_result",
+        "start": 293,
+        "end": 306,
+        "text": "AgentState · 持久 JSON 单元\nsession_id: S1\nsummary + context\nreply_context: R2\npermission_context: DEFAULT\ntool_context · 已激活工具\ntasks_context · 任务记录\nmiddle_context · 中间件状态\n\ncontext[-1] · 尾部 assistant Msg\n匹配结果补入原消息\nname: A1　/　id: R2\ntool_call T2 · SUBMITTED\n\ntool_result T2 · success\n\nparked = false · 结果已补齐\n同一消息已有 ToolResultBlock(T2)；SUBMITTED 调用不再被当成等待。"
+      },
+      {
+        "phase": "persisted_resumable",
+        "start": 306,
+        "end": 322,
+        "text": "AgentState · 持久 JSON 单元\nsession_id: S1\nsummary + context\nreply_context: R2\npermission_context: DEFAULT\ntool_context · 已激活工具\ntasks_context · 任务记录\nmiddle_context · 中间件状态\n\ncontext[-1] · 尾部 assistant Msg\n继续原回复并保存\nname: A1　/　id: R2\ntool_call T2 · SUBMITTED\n\ntool_result T2 · success\n\nparked = false · 可继续\n保存后仍是 S1 / R2。下次请求根据本 Agent 的尾部消息，决定等待还是继续。"
+      },
+      {
+        "phase": "persistent",
+        "start": 197,
+        "end": 322,
+        "text": "会话 S1　/　Agent A1　/　回复 R2　/　写任务 T2\n"
+      }
+    ],
+    "phases": null,
+    "sources": [
+      {
+        "source_id": "as-614314fd8b6b",
+        "locator": "AgentState fields / append_context / get_awaiting_tool_calls"
+      },
+      {
+        "source_id": "as-188d64eb8aa5",
+        "locator": "Run agent / State and incoming events"
+      }
+    ]
+  },
+  {
+    "id": "events",
+    "start": 360,
+    "end": 450,
+    "root": null,
+    "type": "events",
+    "duration": 90,
+    "identities": {
+      "reply_id": "R1",
+      "tool_call_id": "T1",
+      "session_id": "S1",
+      "file_id": "F1",
+      "artifact_id": "A1"
+    },
+    "output_filename": "review-v3.md",
+    "target_path": "review-v3.md",
+    "permission_mode": "EXPLORE",
+    "phase_names": [
+      "reply_start",
+      "text_delta",
+      "text_end",
+      "tool_result",
+      "reply_end"
+    ],
+    "cues": {
+      "reply_start": 15,
+      "text_delta": 37,
+      "text_end": 49,
+      "tool_result": 65,
+      "reply_end": 77
+    },
+    "motion_windows": [
+      {
+        "at": 0,
+        "duration": 0.6,
+        "purpose": "state_reveal"
+      },
+      {
+        "at": 15,
+        "duration": 0.8,
+        "purpose": "state_change"
+      },
+      {
+        "at": 37,
+        "duration": 0.8,
+        "purpose": "state_change"
+      },
+      {
+        "at": 37.1,
+        "duration": 1.4,
+        "purpose": "object_transfer"
+      },
+      {
+        "at": 38.5,
+        "duration": 0.15,
+        "purpose": "delta_append"
+      },
+      {
+        "at": 38.7,
+        "duration": 1.4,
+        "purpose": "object_transfer"
+      },
+      {
+        "at": 40.1,
+        "duration": 0.15,
+        "purpose": "delta_append"
+      },
+      {
+        "at": 49,
+        "duration": 0.8,
+        "purpose": "state_change"
+      },
+      {
+        "at": 65,
+        "duration": 0.8,
+        "purpose": "state_change"
+      },
+      {
+        "at": 77,
+        "duration": 0.8,
+        "purpose": "state_change"
+      }
+    ],
+    "screen_text": [
+      {
+        "phase": "reply_start",
+        "start": 375,
+        "end": 397,
+        "text": "回复 R1\n\nREPLY_START\nreply_id = R1\nTEXT_START\nblock_id = B1\n\nTextBlock · B1\n\n已建立空文本块\nstart 建块；delta 追加内容\nAssistant\nMsg · R1\n\n有序内容\nB1 · 文本\n生成中\n\nreply_id 关联整次回复 R1；block_id 定位文本块 B1。"
+      },
+      {
+        "phase": "text_delta",
+        "start": 397,
+        "end": 409,
+        "text": "回复 R1\n\nTEXT_DELTA · B1\ndelta = “发现”\nTEXT_DELTA · B1\ndelta = “责任上限缺失”\n\n文本 · B1\n\n接收增量\n两段 delta 追加到同一个 B1\nAssistant\nMsg · R1\n\n有序内容\nB1 · 文本\n生成中\n\ndelta 追加到 B1，块身份保持稳定。"
+      },
+      {
+        "phase": "text_end",
+        "start": 409,
+        "end": 425,
+        "text": "回复 R1\n\nTEXT_END · B1\nreply_id = R1\nblock_id = B1\n文本块结束\n\n文本 · B1\n发现责任上限缺失\n文本块已结束\nTextBlock 留在 content 中，\n后续块继续追加。\nAssistant\nMsg · R1\n\n有序内容\nB1 · 文本\n生成中\n\nTEXT_END 结束文本块，回复可以继续产生工具调用。"
+      },
+      {
+        "phase": "tool_result",
+        "start": 425,
+        "end": 437,
+        "text": "回复 R1\n\nTOOL_CALL_START\ntool_call_id = T1\nTOOL_RESULT_END\ntool_call_id = T1\n\n文本 · B1\n发现责任上限缺失\n文本块已结束\n工具调用 · T1\nRead：读取合同条款\n工具结果 → T1\n\nAssistant\nMsg · R1\n\n有序内容\nB1 · 文本\nT1 · 工具调用\n结果 → T1\n生成中\n\ntool_call_id 把调用与结果配成一对。"
+      },
+      {
+        "phase": "reply_end",
+        "start": 437,
+        "end": 450,
+        "text": "回复 R1\n\nREPLY_END\nreply_id = R1\nfinished_reason\ncompleted\n\n文本 · B1\n发现责任上限缺失\n文本块已结束\n工具调用 · T1\nRead：读取合同条款\n工具结果 → T1\n\nAssistant\nMsg · R1\n\n有序内容\nB1 · 文本\nT1 · 工具调用\n结果 → T1\ncompleted · 回复完成\n\nREPLY_END 写入 completed，完整回复保存在 Msg · R1。"
+      },
+      {
+        "phase": "delta_append_1",
+        "start": 398.5,
+        "end": 409,
+        "text": "发现"
+      },
+      {
+        "phase": "delta_append_2",
+        "start": 400.1,
+        "end": 409,
+        "text": "责任上限缺失"
+      },
+      {
+        "phase": "persistent",
+        "start": 360,
+        "end": 450,
+        "text": "合同复核示例\n\n事件流\n\n内容块\n\n回复记录\n"
+      }
+    ],
+    "phases": null
+  },
+  {
+    "id": "permission",
+    "start": 612,
+    "end": 733,
+    "root": null,
+    "type": "permission",
+    "duration": 121,
+    "identities": {
+      "reply_id": "R2",
+      "tool_call_id": "T2",
+      "session_id": "S1",
+      "file_id": "F1",
+      "artifact_id": "A1"
+    },
+    "output_filename": "review-v3.md",
+    "target_path": "review-v3.md",
+    "permission_mode": "EXPLORE",
+    "phase_names": [
+      "tool_call",
+      "input_validated",
+      "ask_parked",
+      "confirmed",
+      "executing",
+      "result"
+    ],
+    "cues": {
+      "tool_call": 15,
+      "input_validated": 44,
+      "ask_parked": 59,
+      "confirmed": 76,
+      "executing": 91,
+      "result": 105
+    },
+    "motion_windows": [
+      {
+        "at": 0,
+        "duration": 0.6,
+        "purpose": "state_reveal"
+      },
+      {
+        "at": 15,
+        "duration": 0.8,
+        "purpose": "state_change"
+      },
+      {
+        "at": 44,
+        "duration": 0.8,
+        "purpose": "state_change"
+      },
+      {
+        "at": 59,
+        "duration": 0.8,
+        "purpose": "state_change"
+      },
+      {
+        "at": 76,
+        "duration": 0.8,
+        "purpose": "state_change"
+      },
+      {
+        "at": 76.6,
+        "duration": 1.6,
+        "purpose": "object_transfer"
+      },
+      {
+        "at": 91,
+        "duration": 0.8,
+        "purpose": "state_change"
+      },
+      {
+        "at": 105,
+        "duration": 0.8,
+        "purpose": "state_change"
+      }
+    ],
+    "screen_text": [
+      {
+        "phase": "tool_call",
+        "start": 627,
+        "end": 656,
+        "text": "ToolCallBlock · T2\nWrite\n目标：review-v3.md\n\n保存合同风险清单\npending\n\nToolkit · 输入契约\n解析参数\n\n工具已注册并激活\n解析 JSON 参数\n\n工作区工具\n尚未执行\n\nreview-v3.md\n无工具结果\n\n工具可用性与参数校验先于 Permission 判断。"
+      },
+      {
+        "phase": "input_validated",
+        "start": 656,
+        "end": 671,
+        "text": "工具调用 · T2\nWrite\n目标：review-v3.md\n\n保存合同风险清单\npending\n\nJSON / input_schema\n校验通过\n\n输入字段匹配\ninput_schema\n\n工作区工具\n尚未执行\n\nreview-v3.md\n无工具结果\n\nEXPLORE：deny → 显式 ask → 只读；其余非只读调用兜底 DENY。"
+      },
+      {
+        "phase": "ask_parked",
+        "start": 671,
+        "end": 688,
+        "text": "工具调用 · T2\nWrite\n目标：review-v3.md\n\n保存合同风险清单\nasking\n\nPermissionEngine\nASK · 等待确认\n\n显式 ask 命中\nRequireUserConfirmEvent\ntool_calls → [T2]\n\n工作区工具\n尚未执行\n\nreview-v3.md\n无工具结果\n\nparked · 等待用户确认\nⅡ\n本例在 EXPLORE 命中显式 ask；R2 / T2 等待逐次确认。"
+      },
+      {
+        "phase": "confirmed",
+        "start": 688,
+        "end": 703,
+        "text": "工具调用 · T2\nWrite\n目标：review-v3.md\n\n保存合同风险清单\nallowed\n\nPermissionEngine\nALLOWED · 本次放行\n\nconfirm_results[]\ntool_call.id = T2\nconfirmed = true · R2\n\n工作区工具\n尚未执行\n\nreview-v3.md\n无工具结果\n\n合法确认将本次 T2 改为 ALLOWED；后续调用重新按 EXPLORE 判定。"
+      },
+      {
+        "phase": "executing",
+        "start": 703,
+        "end": 717,
+        "text": "工具调用 · T2\nWrite\n目标：review-v3.md\n\n保存合同风险清单\nallowed\n\nPermissionEngine\n进入工具\n\nToolResultStartEvent\ntool_call_id = T2\n\n工作区工具\nWrite 执行中\n\n写入风险条目与修改建议\nstate = running\n\nToolResultStartEvent 标记工具真正开始执行。"
+      },
+      {
+        "phase": "result",
+        "start": 717,
+        "end": 733,
+        "text": "工具调用 · T2\nWrite\n目标：review-v3.md\n\n保存合同风险清单\nfinished\n\nPermissionEngine\n返回结果\n\nToolResultEndEvent\ntool_call_id = T2\n\n工作区工具\nToolResultBlock\n\n已保存 review-v3.md\nstate = success\n\n工具结果回写上下文，Agent 再决定下一步。"
+      },
+      {
+        "phase": "persistent",
+        "start": 612,
+        "end": 733,
+        "text": "合同复核示例\n\n模型请求\n\n执行入口\n\n工具与结果\n"
+      }
+    ],
+    "phases": null
+  },
+  {
+    "id": "offload",
+    "start": 845,
+    "end": 941,
+    "root": null,
+    "type": "offload",
+    "duration": 96,
+    "identities": {
+      "reply_id": "R1",
+      "tool_call_id": "T1",
+      "session_id": "S1",
+      "file_id": "F1",
+      "artifact_id": "A1"
+    },
+    "output_filename": "review-v3.md",
+    "target_path": "review-v3.md",
+    "permission_mode": "EXPLORE",
+    "phase_names": [
+      "context",
+      "compressed",
+      "offloaded",
+      "read_back"
+    ],
+    "cues": {
+      "context": 15,
+      "compressed": 47,
+      "offloaded": 63,
+      "read_back": 76
+    },
+    "motion_windows": [
+      {
+        "at": 0,
+        "duration": 0.6,
+        "purpose": "state_reveal"
+      },
+      {
+        "at": 15,
+        "duration": 0.8,
+        "purpose": "state_change"
+      },
+      {
+        "at": 47,
+        "duration": 0.8,
+        "purpose": "state_change"
+      },
+      {
+        "at": 63,
+        "duration": 0.8,
+        "purpose": "state_change"
+      },
+      {
+        "at": 63.3,
+        "duration": 1.7,
+        "purpose": "object_transfer"
+      },
+      {
+        "at": 76,
+        "duration": 0.8,
+        "purpose": "state_change"
+      },
+      {
+        "at": 76.4,
+        "duration": 1.7,
+        "purpose": "object_transfer"
+      }
+    ],
+    "screen_text": [
+      {
+        "phase": "context",
+        "start": 860,
+        "end": 892,
+        "text": "AgentState · session_id = S1\n用户：复核合同责任条款\nRead：合同全文与附件\nAgent：既往风险分析\n用户：采用修订稿 v3\nRead：本轮待核条款\n\n\n}\n超过压缩阈值\n生成 summary\nModel call\n完整历史\n\nsystem prompt\n全部 context\nactivated tool schemas\n\n模型输入将超过阈值：压缩较早消息，保留最近上下文。"
+      },
+      {
+        "phase": "compressed",
+        "start": 892,
+        "end": 908,
+        "text": "AgentState · session_id = S1\n用户：采用修订稿 v3\nRead：本轮待核条款\n最近消息保留在 context\n\n较早 3 条 → 等待 Offloader 写入\n\n\nsummary\n合同待复核\n沿用修订稿 v3\n\nModel call\n摘要与最近消息\n\nsystem prompt\nsummary + recent context\nactivated tool schemas\n\nsummary 概括较早消息，context 保留近期对话。"
+      },
+      {
+        "phase": "offloaded",
+        "start": 908,
+        "end": 921,
+        "text": "AgentState · session_id = S1\n用户：采用修订稿 v3\nRead：本轮待核条款\n最近消息保留在 context\n\n较早 3 条 → 已保存到 context.jsonl\n\n\nsummary\n合同待复核\n沿用修订稿 v3\n\nModel call\n摘要与最近消息\n\nsystem prompt\nsummary + recent context\nactivated tool schemas\n\nOffloader · S1\nsessions/S1/\ncontext.jsonl\n消息已保存\n\n配置 Offloader 后，被压缩消息追加到 context.jsonl，并返回引用。"
+      },
+      {
+        "phase": "read_back",
+        "start": 921,
+        "end": 941,
+        "text": "AgentState · session_id = S1\n用户：采用修订稿 v3\nRead：本轮待核条款\n最近消息保留在 context\n\n较早 3 条 → 已保存到 context.jsonl\n\n\nsummary\n合同待复核\n沿用修订稿 v3\n\nModel call\n摘要与所需细节\n\nsystem prompt\nsummary + recent context\nactivated tool schemas\n读回：责任上限条款\n\nOffloader · S1\nsessions/S1/\ncontext.jsonl\nRead / Grep / Glob\n\n按文件引用读回细节\n文件工具按引用读回所需细节，结果重新进入当前上下文。"
+      },
+      {
+        "phase": "persistent",
+        "start": 845,
+        "end": 941,
+        "text": "合同复核示例\n\n会话上下文\n\n下一次模型输入\n"
+      }
+    ],
+    "phases": null
+  },
+  {
+    "id": "sessions",
+    "start": 1319,
+    "end": 1452,
+    "root": null,
+    "type": "lock",
+    "duration": 133,
+    "identities": {
+      "session_id": "S1",
+      "agent_id": "A1",
+      "reply_id": "R2",
+      "tool_call_id": "T2",
+      "task_id": "BG2"
+    },
+    "phase_names": [
+      "contention",
+      "acquired_before_load",
+      "event_logged",
+      "event_live",
+      "persisted_before_release",
+      "next_worker_loads",
+      "stale_branch"
+    ],
+    "cues": {
+      "contention": 15,
+      "acquired_before_load": 49,
+      "event_logged": 63,
+      "event_live": 75,
+      "persisted_before_release": 86,
+      "next_worker_loads": 99,
+      "stale_branch": 114
+    },
+    "motion_windows": [
+      {
+        "at": 15,
+        "duration": 0.65,
+        "purpose": "state_change"
+      },
+      {
+        "at": 49,
+        "duration": 0.4,
+        "purpose": "retire_previous_state"
+      },
+      {
+        "at": 49,
+        "duration": 0.65,
+        "purpose": "state_change"
+      },
+      {
+        "at": 63,
+        "duration": 0.4,
+        "purpose": "retire_previous_state"
+      },
+      {
+        "at": 63,
+        "duration": 0.65,
+        "purpose": "state_change"
+      },
+      {
+        "at": 63.8,
+        "duration": 1.2,
+        "purpose": "identity_preserving_delivery"
+      },
+      {
+        "at": 75,
+        "duration": 0.4,
+        "purpose": "retire_previous_state"
+      },
+      {
+        "at": 75,
+        "duration": 0.65,
+        "purpose": "state_change"
+      },
+      {
+        "at": 75.8,
+        "duration": 1.2,
+        "purpose": "identity_preserving_delivery"
+      },
+      {
+        "at": 86,
+        "duration": 0.4,
+        "purpose": "retire_previous_state"
+      },
+      {
+        "at": 86,
+        "duration": 0.65,
+        "purpose": "state_change"
+      },
+      {
+        "at": 99,
+        "duration": 0.4,
+        "purpose": "retire_previous_state"
+      },
+      {
+        "at": 99,
+        "duration": 0.65,
+        "purpose": "state_change"
+      },
+      {
+        "at": 114,
+        "duration": 0.4,
+        "purpose": "retire_previous_state"
+      },
+      {
+        "at": 114,
+        "duration": 0.65,
+        "purpose": "state_change"
+      }
+    ],
+    "screen_text": [
+      {
+        "phase": "contention",
+        "start": 1334,
+        "end": 1368,
+        "text": "W1\nWorker · S1\n\n申请运行权\n运行权：尚未取得\n\nW2\nWorker · S1\n\n同时申请 → 等锁\n等待同一 run lock\n\nStorage · S1\nstate v0 · 消息 R2\n\nreplay log\n空：事件尚未写入\n\nlive channel\n尚未发送\n\nService 传入 TTL = 600s；Redis lease 续期；内存 acquire_lock 不因 TTL 自动过期。\nrun lock 保护同一会话的推进；两个 worker 不能各自用旧状态运行。"
+      },
+      {
+        "phase": "acquired_before_load",
+        "start": 1368,
+        "end": 1382,
+        "text": "W1\nWorker · S1\n\n拿锁 → 读取 state v0\n运行权：W1 持有\n\nW2\nWorker · S1\n\n等锁；不提前读取\n等待同一 run lock\n\nStorage · S1\nstate v0 · 消息 R2\n\nreplay log\n空：事件尚未写入\n\nlive channel\n尚未发送\n\nService 传入 TTL = 600s；Redis lease 续期；内存 acquire_lock 不因 TTL 自动过期。\n先拿锁，再载入可变 Session / AgentState；等待者不预先装配旧快照。"
+      },
+      {
+        "phase": "event_logged",
+        "start": 1382,
+        "end": 1394,
+        "text": "W1\nWorker · S1\n\n推进 R2，写事件 e1\n运行权：W1 持有\n\nW2\nWorker · S1\n\n等锁；不提前读取\n等待同一 run lock\n\nStorage · S1\nstate v0 · 消息 R2\n\nreplay log\ne1 · R2 / T2 · 已追加\n\nlive channel\n尚未发送\n\nService 传入 TTL = 600s；Redis lease 续期；内存 acquire_lock 不因 TTL 自动过期。\n每个事件先追加 replay log，取得 entry ID；此刻 live channel 还未发送。"
+      },
+      {
+        "phase": "event_live",
+        "start": 1394,
+        "end": 1405,
+        "text": "W1\nWorker · S1\n\n事件 e1 → live channel\n运行权：W1 持有\n\nW2\nWorker · S1\n\n等锁；不提前读取\n等待同一 run lock\n\nStorage · S1\nstate v0 · 消息 R2\n\nreplay log\ne1 · R2 / T2 · 已追加\n\nlive channel\ne1 · 与日志使用相同 entry ID\n\nService 传入 TTL = 600s；Redis lease 续期；内存 acquire_lock 不因 TTL 自动过期。\n再把同一事件和 entry ID 发到 live channel；断线补历史依靠日志。"
+      },
+      {
+        "phase": "persisted_before_release",
+        "start": 1405,
+        "end": 1418,
+        "text": "W1\nWorker · S1\n\n已保存消息 / state v1 / cursor\n运行权：W1 持有\n\nW2\nWorker · S1\n\n仍等锁，写入必须先完成\n等待同一 run lock\n\nStorage · S1\nstate v1 · 消息 R2 · cursor c1\n\nreplay log\ne1 · R2 / T2 · 已追加\n\nlive channel\ne1 · 与日志使用相同 entry ID\n\nService 传入 TTL = 600s；Redis lease 续期；内存 acquire_lock 不因 TTL 自动过期。\ncheckpoint lock 保护消息、AgentState 与 cursor 的组合写入；run lock 仍保持。"
+      },
+      {
+        "phase": "next_worker_loads",
+        "start": 1418,
+        "end": 1433,
+        "text": "W1\nWorker · S1\n\n保存完成 → 释放 run lock\n运行权：W2 持有\n\nW2\nWorker · S1\n\n拿锁 → 读取最新 state v1\n已取得 run lock\n\nStorage · S1\nstate v1 · 消息 R2 · cursor c1\n\nreplay log\ne1 · R2 / T2 · 已追加\n\nlive channel\ne1 · 与日志使用相同 entry ID\n\nService 传入 TTL = 600s；Redis lease 续期；内存 acquire_lock 不因 TTL 自动过期。\n写入完成才释放 run lock；W2 拿到运行权后读到 v1，再继续原会话。"
+      },
+      {
+        "phase": "stale_branch",
+        "start": 1433,
+        "end": 1452,
+        "text": "W1\nWorker · S1\n\nW1 已写入 v1\n运行权：错误分支 · 先读后锁\n\nW2\nWorker · S1\n\n错误：拿锁后仍用旧 v0\n旧快照 v0 ×\n\nStorage · S1\nstate v1 · 消息 R2 · cursor c1\n\nreplay log\ne1 · R2 / T2 · 已追加\n\nlive channel\ne1 · 与日志使用相同 entry ID\n\nService 传入 TTL = 600s；Redis lease 续期；内存 acquire_lock 不因 TTL 自动过期。\n先读 v0 再等锁：W1 已存 v1，W2 却按 v0 推进。应拿锁后重新读取。"
+      },
+      {
+        "phase": "persistent",
+        "start": 1319,
+        "end": 1452,
+        "text": "会话 S1　/　Agent A1　/　回复 R2　/　写任务 T2\n"
+      }
+    ],
+    "phases": null,
+    "sources": [
+      {
+        "source_id": "as-73da307b2ffd",
+        "locator": "ChatService._run_impl 804–850 / persistence 1476–1512"
+      },
+      {
+        "source_id": "as-68f5bb723b26",
+        "locator": "publish_session_event 37–66"
+      },
+      {
+        "source_id": "as-ebaf50819a12",
+        "locator": "acquire_lock 629–700"
+      },
+      {
+        "source_id": "as-e2af92fa9ac1",
+        "locator": "acquire_lock 362–399"
+      },
+      {
+        "source_id": "as-19629c6bf4d8",
+        "locator": "SESSION_RUN_TTL_SECS"
+      }
+    ]
+  },
+  {
+    "id": "background",
+    "start": 1452,
+    "end": 1629,
+    "root": null,
+    "type": "background",
+    "duration": 177,
+    "identities": {
+      "session_id": "S1",
+      "agent_id": "A1",
+      "reply_id": "R2",
+      "tool_call_id": "T2",
+      "task_id": "BG2"
+    },
+    "phase_names": [
+      "synchronous_wait",
+      "offloaded",
+      "observer_disconnected",
+      "watcher_completed",
+      "inbox_wakeup",
+      "locked_resume",
+      "process_exit"
+    ],
+    "cues": {
+      "synchronous_wait": 15,
+      "offloaded": 53,
+      "observer_disconnected": 73,
+      "watcher_completed": 91,
+      "inbox_wakeup": 110,
+      "locked_resume": 127,
+      "process_exit": 142
+    },
+    "motion_windows": [
+      {
+        "at": 15,
+        "duration": 0.65,
+        "purpose": "state_change"
+      },
+      {
+        "at": 53,
+        "duration": 0.4,
+        "purpose": "retire_previous_state"
+      },
+      {
+        "at": 53,
+        "duration": 0.65,
+        "purpose": "state_change"
+      },
+      {
+        "at": 73,
+        "duration": 0.4,
+        "purpose": "retire_previous_state"
+      },
+      {
+        "at": 73,
+        "duration": 0.65,
+        "purpose": "state_change"
+      },
+      {
+        "at": 91,
+        "duration": 0.4,
+        "purpose": "retire_previous_state"
+      },
+      {
+        "at": 91,
+        "duration": 0.65,
+        "purpose": "state_change"
+      },
+      {
+        "at": 110,
+        "duration": 0.4,
+        "purpose": "retire_previous_state"
+      },
+      {
+        "at": 110,
+        "duration": 0.65,
+        "purpose": "state_change"
+      },
+      {
+        "at": 110.8,
+        "duration": 1.7,
+        "purpose": "identity_preserving_delivery"
+      },
+      {
+        "at": 127,
+        "duration": 0.4,
+        "purpose": "retire_previous_state"
+      },
+      {
+        "at": 127,
+        "duration": 0.65,
+        "purpose": "state_change"
+      },
+      {
+        "at": 142,
+        "duration": 0.4,
+        "purpose": "retire_previous_state"
+      },
+      {
+        "at": 142,
+        "duration": 0.65,
+        "purpose": "state_change"
+      }
+    ],
+    "screen_text": [
+      {
+        "phase": "synchronous_wait",
+        "start": 1467,
+        "end": 1505,
+        "text": "应用进程　·　活跃　·　任务与 watcher 的生命周期\n普通工具同步等待\n\n调用开始\n10s 卸载阈值\n工具继续执行；同步等待结束\n\n尚未卸载\n执行线程等待结果\n\nBackgroundTaskManager · local handle + registry metadata\n页面 · 只观察\n观察 S1\n连接生命周期独立\n\n继续工作的入口\n原会话 S1\n无结果\n\n当前 Service 的普通工具默认等待 10 秒；状态注入与外部工具走同步路径。"
+      },
+      {
+        "phase": "offloaded",
+        "start": 1505,
+        "end": 1525,
+        "text": "应用进程　·　活跃　·　任务与 watcher 的生命周期\n超过 10s · 返回占位\ndrain_task 仍运行\ntask_id: BG2　/　tool_call: T2\n\nwatcher 持有 BG2\n进程内 asyncio task；页面不持有它\n\nBackgroundTaskManager · local handle + registry metadata\n页面 · 只观察\n观察 S1\n连接生命周期独立\n\n继续工作的入口\n原会话 S1\n先返回 synthetic 占位\n\n卸载阈值只结束同步等待：底层工具 task 继续，本进程 watcher 接住它。"
+      },
+      {
+        "phase": "observer_disconnected",
+        "start": 1525,
+        "end": 1543,
+        "text": "应用进程　·　活跃　·　任务与 watcher 的生命周期\n页面连接断开\ndrain_task 仍运行\ntask_id: BG2　/　tool_call: T2\n\nwatcher 继续持有 BG2\n进程内 asyncio task；页面不持有它\n\nBackgroundTaskManager · local handle + registry metadata\n页面 · 只观察\n连接 × 断开\n工具未被取消\n\n继续工作的入口\n原会话 S1\n页面离线；inbox 尚无真实结果\n\n页面断开停止观察；watcher 持有的工具任务仍运行，结果仍回到 S1。"
+      },
+      {
+        "phase": "watcher_completed",
+        "start": 1543,
+        "end": 1562,
+        "text": "应用进程　·　活跃　·　任务与 watcher 的生命周期\nwatcher 收到真实结果\ndrain_task 完成 · success\ntask_id: BG2　/　tool_call: T2\n\n汇总结果；task handle 清理\n按原 task / session 身份送回结果\n\nBackgroundTaskManager · local handle + registry metadata\n页面 · 只观察\n观察 S1\n连接生命周期独立\n\n继续工作的入口\n原会话 S1\n准备 HintBlock(BG2)\n\n工具完成后，watcher 将结果构造成 HintBlock；保留原会话与后台任务身份。"
+      },
+      {
+        "phase": "inbox_wakeup",
+        "start": 1562,
+        "end": 1579,
+        "text": "应用进程　·　活跃　·　任务与 watcher 的生命周期\n结果写入 inbox，触发 wakeup\n真实结果已投递\ntask_id: BG2　/　tool_call: T2\n\ninbox 投递完成\n按原 task / session 身份送回结果\n\nBackgroundTaskManager · local handle + registry metadata\n页面 · 只观察\n观察 S1\n连接生命周期独立\n\n继续工作的入口\n唤醒 S1\ninbox(S1) + wakeup\n\n结果进原会话 inbox，再 enqueue wakeup；空闲会话可被任一 worker 唤醒。"
+      },
+      {
+        "phase": "locked_resume",
+        "start": 1579,
+        "end": 1594,
+        "text": "应用进程　·　活跃　·　任务与 watcher 的生命周期\n拿会话锁，续接原工作\n原会话 S1 继续推理\ntask_id: BG2　/　tool_call: T2\n\n接续 worker 继续原会话\n按原 task / session 身份送回结果\n\nBackgroundTaskManager · local handle + registry metadata\n页面 · 只观察\n观察 S1\n连接生命周期独立\n\n继续工作的入口\n原会话续接\nrun lock → inbox → 继续推理\n\n先拿 S1 的 run lock，再消费 inbox 结果；可在同一 run 或新的 wakeup run 继续。"
+      },
+      {
+        "phase": "process_exit",
+        "start": 1594,
+        "end": 1629,
+        "text": "应用进程　·　已退出　·　任务与 watcher 的生命周期\n失败分支 · 完成前进程退出\n任务未完成时，进程退出\ntask_id: BG2　/　tool_call: T2\n\n停机取消 task；watcher 结束\n任务不会因 registry 记录重建\n\n崩溃可留下 stale registry；这不是存活任务\n页面 · 只观察\n需重新查执行状态\n旧记录不能证明存活\n\n继续工作的入口\n无自动恢复\nregistry(BG2) 只是 metadata\n\n硬重启没有原 asyncio task。即使 registry 暂时有旧记录，也不能据此宣称恢复执行。"
+      },
+      {
+        "phase": "persistent",
+        "start": 1452,
+        "end": 1629,
+        "text": "会话 S1　/　Agent A1　/　回复 R2　/　写任务 T2\n"
+      }
+    ],
+    "phases": null,
+    "sources": [
+      {
+        "source_id": "as-0791af56faa2",
+        "locator": "ToolOffloadMiddleware timeout_secs / timeout path / inbox delivery 68–394"
+      },
+      {
+        "source_id": "as-d612211accc9",
+        "locator": "register_task 249–328 / __aexit__ 446–470"
+      },
+      {
+        "source_id": "as-73da307b2ffd",
+        "locator": "ToolOffloadMiddleware assembly 984–995 / run lock acquisition"
+      }
+    ]
+  },
+  {
+    "id": "workspace",
+    "start": 1629,
+    "end": 1816,
+    "root": null,
+    "type": "isolation",
+    "duration": 187,
+    "identities": {
+      "user_id": "U-A",
+      "agent_id": "A",
+      "other_agent_id": "B",
+      "python_session_id": "PA1",
+      "other_python_session_id": "PA2",
+      "other_agent_session_id": "PB1",
+      "reply_id": "R2",
+      "tool_call_id": "T2",
+      "session_id": "JS1",
+      "file_id": "JF1",
+      "artifact_id": "JA1",
+      "external_call_id": "XW1",
+      "filename": "contract-v3.pdf",
+      "result_filename": "review-v3.md"
+    },
+    "phase_names": [
+      "default_agent",
+      "new_session",
+      "session_scope",
+      "user_scope",
+      "resource_scopes",
+      "backends",
+      "access_boundary"
+    ],
+    "cues": {
+      "default_agent": 15,
+      "new_session": 45,
+      "session_scope": 55,
+      "user_scope": 70,
+      "resource_scopes": 82,
+      "backends": 112,
+      "access_boundary": 146
+    },
+    "motion_windows": [
+      {
+        "at": 15,
+        "duration": 0.65,
+        "purpose": "state_change"
+      },
+      {
+        "at": 45,
+        "duration": 0.65,
+        "purpose": "state_change"
+      },
+      {
+        "at": 45.8,
+        "duration": 0.9,
+        "purpose": "workspace_resolution"
+      },
+      {
+        "at": 55,
+        "duration": 0.65,
+        "purpose": "state_change"
+      },
+      {
+        "at": 70,
+        "duration": 0.65,
+        "purpose": "state_change"
+      },
+      {
+        "at": 82,
+        "duration": 0.65,
+        "purpose": "state_change"
+      },
+      {
+        "at": 112,
+        "duration": 0.65,
+        "purpose": "state_change"
+      },
+      {
+        "at": 146,
+        "duration": 0.65,
+        "purpose": "state_change"
+      }
+    ],
+    "screen_text": [
+      {
+        "phase": "default_agent",
+        "start": 1644,
+        "end": 1674,
+        "text": "会话与 Agent\nAgent A\n合同复核\n\nAgent B\n合同归档\n\n会话 PA1\n会话 PB1\nper_agent · 默认\n每个 Agent 一个工作区\n\n输入材料 · v3\ncontract-v3.pdf\n保存于当前工作目录\n\n\n共用：PA1\n\n\n此文件的目录可见范围\n仅 Agent A\n会话 PA1　可见\n会话 PB1　不可见\n\nAgent A 与 Agent B 分到不同工作区；合同文件保存在 A 的目录。"
+      },
+      {
+        "phase": "new_session",
+        "start": 1674,
+        "end": 1684,
+        "text": "会话与 Agent\nAgent A\n合同复核\n\nAgent B\n合同归档\n\n会话 PA1\n会话 PA2\n会话 PB1\nper_agent · 同一 Agent 的新会话\n每个 Agent 一个工作区\n\n输入材料 · v3\ncontract-v3.pdf\n保存于当前工作目录\n\n\n共用：PA1 / PA2\n\n\n此文件的目录可见范围\n仅 Agent A\n会话 PA1　可见\n会话 PA2　可见\n会话 PB1　不可见\n\n同一 Agent 新开会话 PA2，仍落到原工作区，继续看到原文件。"
+      },
+      {
+        "phase": "session_scope",
+        "start": 1684,
+        "end": 1699,
+        "text": "会话与 Agent\nAgent A\n合同复核\n\nAgent B\n合同归档\n\n会话 PA1\n会话 PA2\n会话 PB1\nper_session · 配置对照\n每个会话一个工作区\n当前会话 PA1\n\n输入材料 · v3\ncontract-v3.pdf\n保存于当前工作目录\n\n\nPA2 · 独立目录\nPB1 · 独立目录\n\n\n\n此文件的目录可见范围\n仅当前会话\n会话 PA1　可见\n会话 PA2　不可见\n会话 PB1　不可见\n\n新建会话按 per_session 分配；PA2 不会继承 PA1 的工作目录。"
+      },
+      {
+        "phase": "user_scope",
+        "start": 1699,
+        "end": 1711,
+        "text": "会话与 Agent\nAgent A\n合同复核\n\nAgent B\n合同归档\n\n会话 PA1\n会话 PA2\n会话 PB1\nper_user · 配置对照\n同一用户一个工作区\n\n输入材料 · v3\ncontract-v3.pdf\n保存于当前工作目录\n\n\n共用：PA1 / PA2 / PB1\n\n\n此文件的目录可见范围\n同一用户的两个 Agent\n会话 PA1　可见\n会话 PA2　可见\n会话 PB1　可见\n\n新建会话按 per_user 分配；Agent B 也会落到同一用户的工作目录。"
+      },
+      {
+        "phase": "resource_scopes",
+        "start": 1711,
+        "end": 1741,
+        "text": "共享文件目录 · per_user\n用户 U-A\n\n\n输入材料 · v3\ncontract-v3.pdf\n多个 Agent 共用文件目录\n\n\n连接与技能仍有各自的分区\nMCP 连接\nAgent\n＋ Session\n\nA / PA1\n合同系统连接\n\nA / PA2\n本会话连接\n\nB / PB1\n归档系统连接\n\nSkills\n按 Agent\n\nAgent A\n合同复核技能 · PA1 / PA2\n\nAgent B\n合同归档技能\n\n文件共享粒度、MCP 连接分区与技能分区分别配置；同目录不意味着同一套连接与技能。"
+      },
+      {
+        "phase": "backends",
+        "start": 1741,
+        "end": 1775,
+        "text": "执行后端决定工具在哪里运行\nLocal\n主机目录\n\n直接使用主机文件系统；无沙箱\nDocker\n容器 ＋ 挂载目录\n\n目录持久化在主机\nE2B\n云沙箱\n\n按沙箱元数据重新连接\nK8s\nPod ＋ PVC\n\n按工作区身份连接集群资源\n后端选择改变执行环境与持久化方式；调用的读写授权仍由权限规则与具体工具检查。"
+      },
+      {
+        "phase": "access_boundary",
+        "start": 1775,
+        "end": 1816,
+        "text": "位置与分配\n会话记录保存工作区身份\n显式 workspace_id 优先于分配策略。\n策略变更只影响新分配的会话。\n\n\n输入材料 · v3\ncontract-v3.pdf\n文件始终落到已绑定的工作目录\n\n\n\n授权与副作用\n找到文件，再检查动作权限\n文件可见　→　工具读写检查\n共享资源　→　访问策略校验\n目录归属不能代替动作授权\n\n工作区确定文件与运行位置；用户身份、资源访问与每次工具调用的授权分别判定。"
+      },
+      {
+        "phase": "persistent",
+        "start": 1629,
+        "end": 1816,
+        "text": "Python Agent Service · 用户 U-A · contract-v3.pdf · 工作区分配\n"
+      }
+    ],
+    "phases": null,
+    "sources": [
+      {
+        "source_id": "as-00c6583072da",
+        "locator": "Isolation grain / End-to-end request flow / Distributed deployment"
+      },
+      {
+        "source_id": "as-dc202a66c974",
+        "locator": "Workspace implementation and isolation / Workspace MCPs / Workspace skills"
+      },
+      {
+        "source_id": "as-e8bf00e52cb9",
+        "locator": "Interface / workspace implementations"
+      }
+    ]
+  },
+  {
+    "id": "java-03-execution-targets",
+    "start": 2017,
+    "end": 2159,
+    "root": null,
+    "type": "targets",
+    "duration": 142,
+    "identities": {
+      "session_id": "JS1",
+      "turn_id": "U1",
+      "item_id": "M1",
+      "tool_call_id": "T1"
+    },
+    "phase_names": [
+      "ownership",
+      "context",
+      "records",
+      "discovery",
+      "delivery",
+      "recovery",
+      "capability_controls"
+    ],
+    "cues": {
+      "ownership": 15,
+      "context": 41,
+      "records": 60,
+      "discovery": 73,
+      "delivery": 91,
+      "recovery": 110,
+      "capability_controls": 129
+    },
+    "motion_windows": [
+      {
+        "at": 15,
+        "duration": 0.7,
+        "purpose": "state_change"
+      },
+      {
+        "at": 41,
+        "duration": 0.7,
+        "purpose": "state_change"
+      },
+      {
+        "at": 60,
+        "duration": 0.7,
+        "purpose": "state_change"
+      },
+      {
+        "at": 73,
+        "duration": 0.7,
+        "purpose": "state_change"
+      },
+      {
+        "at": 91,
+        "duration": 0.7,
+        "purpose": "state_change"
+      },
+      {
+        "at": 110,
+        "duration": 0.7,
+        "purpose": "state_change"
+      },
+      {
+        "at": 129,
+        "duration": 0.7,
+        "purpose": "state_change"
+      }
+    ],
+    "screen_text": [
+      {
+        "phase": "ownership",
+        "start": 2032,
+        "end": 2058,
+        "text": "比较维度\nManaged · 平台托管\nExternal · 外部应用\nHosted · 运行宿主\n谁持有执行\nService 平台\n已有应用进程\nRuntime Host 启动提供方\n选择执行所有权\nManaged：平台托管　/　External：保留应用部署　/　Hosted：指定机器上的运行宿主"
+      },
+      {
+        "phase": "context",
+        "start": 2058,
+        "end": 2077,
+        "text": "比较维度\nManaged · 平台托管\nExternal · 外部应用\nHosted · 运行宿主\n谁持有执行\nService 平台\n已有应用进程\nRuntime Host 启动提供方\n谁维护上下文\nHarness / AgentState\n应用与适配器\nCoding Agent 提供方\n上下文跟随运行者\nHarness（Agent 执行与状态内核）在运行层；Service（任务接入与记录平台）在服务层。"
+      },
+      {
+        "phase": "records",
+        "start": 2077,
+        "end": 2090,
+        "text": "比较维度\nManaged · 平台托管\nExternal · 外部应用\nHosted · 运行宿主\n谁持有执行\nService 平台\n已有应用进程\nRuntime Host 启动提供方\n谁维护上下文\nHarness / AgentState\n应用与适配器\nCoding Agent 提供方\nService 记录\nSession / Turn / 事件\nSession / Turn / 事件\nSession / Turn / 事件\n共同观察面\n同一 Session / Turn 接口记录任务进度；上下文、控制与恢复能力仍由目标实现。"
+      },
+      {
+        "phase": "discovery",
+        "start": 2090,
+        "end": 2108,
+        "text": "比较维度\nManaged · 平台托管\nExternal · 外部应用\nHosted · 运行宿主\n谁持有执行\nService 平台\n已有应用进程\nRuntime Host 启动提供方\n谁维护上下文\nHarness / AgentState\n应用与适配器\nCoding Agent 提供方\nService 记录\nSession / Turn / 事件\nSession / Turn / 事件\nSession / Turn / 事件\n能力发现\n查询 /capabilities\n注册 → 适配器能力\n查询提供方能力\n选中 Managed · 例：available_commands = [steer, cancel]\n调整后续步骤 · steer\n取消任务 · cancel\nExternal：注册成功仍需验证派发执行。"
+      },
+      {
+        "phase": "delivery",
+        "start": 2108,
+        "end": 2127,
+        "text": "比较维度\nManaged · 平台托管\nExternal · 外部应用\nHosted · 运行宿主\n谁持有执行\nService 平台\n已有应用进程\nRuntime Host 启动提供方\n谁维护上下文\nHarness / AgentState\n应用与适配器\nCoding Agent 提供方\nService 记录\nSession / Turn / 事件\nSession / Turn / 事件\nSession / Turn / 事件\n能力发现\n查询 /capabilities\n注册 → 适配器能力\n查询提供方能力\n文件交付\nSession file → Artifact\n按适配器的文件能力\n按提供方的文件能力\n交付按文件能力走\n先取得真实 Session 文件，再发布 Artifact；选中目标的文件能力决定输入与下载入口。"
+      },
+      {
+        "phase": "recovery",
+        "start": 2127,
+        "end": 2146,
+        "text": "比较维度\nManaged · 平台托管\nExternal · 外部应用\nHosted · 运行宿主\n谁持有执行\nService 平台\n已有应用进程\nRuntime Host 启动提供方\n谁维护上下文\nHarness / AgentState\n应用与适配器\nCoding Agent 提供方\nService 记录\nSession / Turn / 事件\nSession / Turn / 事件\nSession / Turn / 事件\n能力发现\n查询 /capabilities\n注册 → 适配器能力\n查询提供方能力\n文件交付\nSession file → Artifact\n按适配器的文件能力\n按提供方的文件能力\n执行恢复\n按可用命令续接状态\n取决于适配器支持\ncheckpoint_restore\n= false\n观察恢复与执行恢复分开\nHosted：checkpoint_restore = false；断线后仍可读取快照与事件，运行恢复另查可用命令。"
+      },
+      {
+        "phase": "capability_controls",
+        "start": 2146,
+        "end": 2159,
+        "text": "比较维度\nManaged · 平台托管\nExternal · 外部应用\nHosted · 运行宿主\n谁持有执行\nService 平台\n已有应用进程\nRuntime Host 启动提供方\n谁维护上下文\nHarness / AgentState\n应用与适配器\nCoding Agent 提供方\nService 记录\nSession / Turn / 事件\nSession / Turn / 事件\nSession / Turn / 事件\n能力发现\n查询 /capabilities\n注册 → 适配器能力\n查询提供方能力\n文件交付\nSession file → Artifact\n按适配器的文件能力\n按提供方的文件能力\n执行恢复\n按可用命令续接状态\n取决于适配器支持\ncheckpoint_restore\n= false\n选中 Hosted · 例：available_commands = [cancel]\n取消任务 · cancel\n恢复观察 · snapshot / events\ncheckpoint_restore: false"
+      },
+      {
+        "phase": "persistent",
+        "start": 2017,
+        "end": 2159,
+        "text": ""
+      }
+    ],
+    "phases": null,
+    "sources": [
+      {
+        "source_id": "as-79adbb1a7334",
+        "locator": "Sessions and tasks / Add requirements or context / Continue from a checkpoint"
+      },
+      {
+        "source_id": "as-d5dd49d8dc6e",
+        "locator": "Choose a transport / Java HTTP integration / Python with HTTP runtime transport"
+      },
+      {
+        "source_id": "as-556d0c6a5726",
+        "locator": "Preparation and execution / Events, approval and recovery / Track and control work through the API"
+      }
+    ]
+  },
+  {
+    "id": "java-05-snapshot-sse-cursor",
+    "start": 2206,
+    "end": 2378,
+    "root": null,
+    "type": "replay",
+    "duration": 172,
+    "identities": {
+      "session_id": "JS1",
+      "turn_id": "U1",
+      "item_id": "M1",
+      "tool_call_id": "T1"
+    },
+    "phase_names": [
+      "snapshot",
+      "subscribe",
+      "delta_applied",
+      "disconnected",
+      "replay_deduplicated",
+      "fresh_snapshot",
+      "turn_terminal"
+    ],
+    "cues": {
+      "snapshot": 15,
+      "subscribe": 56,
+      "delta_applied": 75,
+      "disconnected": 95,
+      "replay_deduplicated": 117,
+      "fresh_snapshot": 137,
+      "turn_terminal": 153
+    },
+    "motion_windows": [
+      {
+        "at": 15,
+        "duration": 0.7,
+        "purpose": "state_change"
+      },
+      {
+        "at": 56,
+        "duration": 0.7,
+        "purpose": "state_change"
+      },
+      {
+        "at": 75,
+        "duration": 0.7,
+        "purpose": "state_change"
+      },
+      {
+        "at": 75.8,
+        "duration": 1.65,
+        "purpose": "event_delivery"
+      },
+      {
+        "at": 77.45,
+        "duration": 0.15,
+        "purpose": "delta_append_after_arrival"
+      },
+      {
+        "at": 77.65,
+        "duration": 0.3,
+        "purpose": "cursor_after_apply"
+      },
+      {
+        "at": 95,
+        "duration": 0.7,
+        "purpose": "state_change"
+      },
+      {
+        "at": 117,
+        "duration": 0.7,
+        "purpose": "state_change"
+      },
+      {
+        "at": 117.6,
+        "duration": 1.55,
+        "purpose": "event_delivery"
+      },
+      {
+        "at": 119.4,
+        "duration": 1.05,
+        "purpose": "event_delivery"
+      },
+      {
+        "at": 137,
+        "duration": 0.7,
+        "purpose": "state_change"
+      },
+      {
+        "at": 153,
+        "duration": 0.7,
+        "purpose": "state_change"
+      }
+    ],
+    "screen_text": [
+      {
+        "phase": "snapshot",
+        "start": 2221,
+        "end": 2262,
+        "text": "Service · 任务记录与事件日志\n快照已保存至 e17\nas_of = c17\n\nsession_id = JS1\nturn_id = U1\nrunning\n\n观察通道\nsnapshot → 页面状态\nsnapshot / as_of\nService\n→页面\n\n同一资源的观察流\n\n业务页面 · 本地视图\n已复原消息 M1\n消息 M1\n责任上限\n\n保存游标 c17\nTurn U1 · running\n\n示例事件 e17–e20；示例游标 c17–c20。真实游标是资源专属的不透明值。\n先恢复快照里的消息、工具与待处理动作，再取 as_of 作为观察起点。"
+      },
+      {
+        "phase": "subscribe",
+        "start": 2262,
+        "end": 2281,
+        "text": "Service · 任务记录与事件日志\n后台保持运行\ne17 → 后续事件\n\nsession_id = JS1\nturn_id = U1\nrunning\n\n观察通道\nSSE · after = c17\n订阅该 Turn 的 events\nService\n→页面\n\n同一资源的观察流\n\n业务页面 · 本地视图\n观察同一任务 U1\n消息 M1\n责任上限\n\n已订阅后续变化\nTurn U1 · running\n\n示例事件 e17–e20；示例游标 c17–c20。真实游标是资源专属的不透明值。\nSSE（服务器持续推送事件）补上快照之后的变化；观察不再次提交任务。"
+      },
+      {
+        "phase": "delta_applied",
+        "start": 2281,
+        "end": 2301,
+        "text": "Service · 任务记录与事件日志\ne18 · item.delta\n内容增量：缺失\n\nsession_id = JS1\nturn_id = U1\nrunning\n\n观察通道\ne18 → 更新 M1\n按 item_id 更新已有对象\nService\n→页面\n\n同一资源的观察流\n\n业务页面 · 本地视图\n追加到原消息 M1\n消息 M1\n责任上限缺失\n\n\n保存游标 c17\n应用成功 → 保存 c18\n\nTurn U1 · running\n\n示例事件 e17–e20；示例游标 c17–c20。真实游标是资源专属的不透明值。\nitem.delta 追加；item.completed 替换累计内容。成功更新页面后才保存游标。"
+      },
+      {
+        "phase": "disconnected",
+        "start": 2301,
+        "end": 2323,
+        "text": "Service · 任务记录与事件日志\ne19 · 工具 T1 完成\nTurn U1 仍在运行\n\nsession_id = JS1\nturn_id = U1\nrunning\n\n观察通道\n观察连接 × 断开\n任务执行仍在后台继续\nService\n→页面\n\n离线期间：后台继续\n\n业务页面 · 本地视图\n页面保留 M1\n消息 M1\n责任上限缺失\n\n最后已应用游标 c18\nTurn U1 · running\n\n示例事件 e17–e20；示例游标 c17–c20。真实游标是资源专属的不透明值。\n断开的是观察连接；后台任务继续。单个工具完成，Turn 仍可继续运行。"
+      },
+      {
+        "phase": "replay_deduplicated",
+        "start": 2323,
+        "end": 2343,
+        "text": "Service · 任务记录与事件日志\n历史：e19；实时交界：e19\n事件 ID e19 相同\n\nsession_id = JS1\nturn_id = U1\nrunning\n\n观察通道\nafter = c18 → 补历史\n历史 e19　＋　实时 e19\nService\n→页面\n\ne19  × 1 次应用\n\n业务页面 · 本地视图\n工具 T1 已完成\n消息 M1\n责任上限缺失\n\n按事件 ID 去重 → 保存 c19\nTurn U1 · running\n\n示例事件 e17–e20；示例游标 c17–c20。真实游标是资源专属的不透明值。\n重连补历史；历史与实时交界的重复事件按事件 ID 丢弃，消息不再追加一次。"
+      },
+      {
+        "phase": "fresh_snapshot",
+        "start": 2343,
+        "end": 2359,
+        "text": "Service · 任务记录与事件日志\n新 snapshot：已含 e19\nas_of = c19\n\nsession_id = JS1\nturn_id = U1\nrunning\n\n观察通道\n410 · cursor_expired\n丢弃过期游标，重取快照\nService\n→页面\n\nGET snapshot → SSE\n\n业务页面 · 本地视图\n重建 U1 的视图\n消息 M1\n责任上限缺失\n\n新快照 → after = c19\nTurn U1 · running\n\n示例事件 e17–e20；示例游标 c17–c20。真实游标是资源专属的不透明值。\n游标过期：读取 fresh snapshot，再从新的 as_of 订阅。保留 U1，不新建 Turn。"
+      },
+      {
+        "phase": "turn_terminal",
+        "start": 2359,
+        "end": 2378,
+        "text": "Service · 任务记录与事件日志\ne20 · turn.completed\nTurn U1 = completed\n\nsession_id = JS1\nturn_id = U1\ncompleted\n\n观察通道\n终态事件 → 原任务\n任务状态同步到页面\nService\n→页面\n\n同一资源的观察流\n\n业务页面 · 本地视图\n同一 U1 已完成\n消息 M1\n责任上限缺失\n\n更新 Turn 状态 → 保存 c20\nTurn U1 · completed\n\n示例事件 e17–e20；示例游标 c17–c20。真实游标是资源专属的不透明值。\n只有目标 Turn 的明确终态，才把这次任务显示为完成。"
+      },
+      {
+        "phase": "persistent",
+        "start": 2206,
+        "end": 2378,
+        "text": "Session（会话） JS1　/　Turn（一次任务） U1　/　合同复核\n"
+      }
+    ],
+    "phases": null,
+    "sources": [
+      {
+        "source_id": "as-528e3df546ca",
+        "locator": "Restore a snapshot / Interpret events and status / Pagination, reconnects, and expiration"
+      },
+      {
+        "source_id": "as-79adbb1a7334",
+        "locator": "How Sessions and Turns relate / Read results and restore a page"
+      }
+    ]
+  },
+  {
+    "id": "java-07-files-artifacts",
+    "start": 2426,
+    "end": 2517,
+    "root": null,
+    "type": "artifact",
+    "duration": 91,
+    "identities": {
+      "reply_id": "R1",
+      "tool_call_id": "T1",
+      "session_id": "JS1",
+      "file_id": "JF1",
+      "artifact_id": "JA1"
+    },
+    "output_filename": "review-v3.md",
+    "target_path": "review-v3.md",
+    "permission_mode": "EXPLORE",
+    "phase_names": [
+      "working_file",
+      "session_file",
+      "published",
+      "record_read",
+      "downloaded"
+    ],
+    "cues": {
+      "working_file": 15,
+      "session_file": 43,
+      "published": 53,
+      "record_read": 64,
+      "downloaded": 74
+    },
+    "motion_windows": [
+      {
+        "at": 0,
+        "duration": 0.6,
+        "purpose": "state_reveal"
+      },
+      {
+        "at": 15,
+        "duration": 0.8,
+        "purpose": "state_change"
+      },
+      {
+        "at": 43,
+        "duration": 0.8,
+        "purpose": "state_change"
+      },
+      {
+        "at": 43.25,
+        "duration": 1.6,
+        "purpose": "object_transfer"
+      },
+      {
+        "at": 53,
+        "duration": 0.8,
+        "purpose": "state_change"
+      },
+      {
+        "at": 64,
+        "duration": 0.8,
+        "purpose": "state_change"
+      },
+      {
+        "at": 64.25,
+        "duration": 1.6,
+        "purpose": "object_transfer"
+      },
+      {
+        "at": 74,
+        "duration": 0.8,
+        "purpose": "state_change"
+      }
+    ],
+    "screen_text": [
+      {
+        "phase": "working_file",
+        "start": 2441,
+        "end": 2469,
+        "text": "合同复核输出\nreview-v3.md\n\n责任条款与修改建议\n\n\n\n工作目录文件\n\nManaged Session · JS1\n上传结果文件\n\nPOST /files\nreview-v3.md\n待上传\n\nApplication\n等待交付记录\n\nartifact_id / file_id\n尚未读取\n\n工作区落盘产生工作文件；应用交付仍需建立可读取的记录。"
+      },
+      {
+        "phase": "session_file",
+        "start": 2469,
+        "end": 2479,
+        "text": "合同复核输出\nreview-v3.md\n\n责任条款与修改建议\n\n\n\n工作目录文件\n\nManaged Session · JS1\nfile_id = JF1\n\nPOST /files\nreview-v3.md\n已上传 · JF1\n\nApplication\n等待交付记录\n\nartifact_id / file_id\n尚未读取\n\n此 Managed 示例上传结果文件，返回本 Session 的 file_id = JF1。"
+      },
+      {
+        "phase": "published",
+        "start": 2479,
+        "end": 2490,
+        "text": "合同复核输出\nreview-v3.md\n\n责任条款与修改建议\n\n\n\n工作目录文件\n\nManaged Session · JS1\nArtifact · JA1\n\nPOST /artifacts\n{ \"file_id\": \"JF1\" }\n已发布 · JA1\nArtifact 引用实际 Session file\n\nApplication\n等待交付记录\n\nartifact_id / file_id\n尚未读取\n\n显式发布 JF1，建立 artifact_id = JA1 的交付记录。"
+      },
+      {
+        "phase": "record_read",
+        "start": 2490,
+        "end": 2500,
+        "text": "合同复核输出\nreview-v3.md\n\n责任条款与修改建议\n\n\n\n工作目录文件\n\nManaged Session · JS1\nArtifact · JA1\n\nPOST /artifacts\n{ \"file_id\": \"JF1\" }\n已发布 · JA1\nArtifact 引用实际 Session file\n\nApplication\n读取 Artifact\n\nGET /artifacts/JA1\nfile_id = JF1\nJA1 → JF1\n\n应用读取实际 Artifact，取得它引用的 file_id。"
+      },
+      {
+        "phase": "downloaded",
+        "start": 2500,
+        "end": 2517,
+        "text": "合同复核输出\nreview-v3.md\n\n责任条款与修改建议\n\n\n\n工作目录文件\n\nManaged Session · JS1\nArtifact · JA1\n\nPOST /artifacts\n{ \"file_id\": \"JF1\" }\n已发布 · JA1\nArtifact 引用实际 Session file\n\nApplication\n下载实际文件\n\nGET /files/JF1/content\nreview-v3.md\n核对文件内容、版本与业务验收\n\n应用凭 Session 读取权限下载 JF1，再核对实际内容。"
+      },
+      {
+        "phase": "persistent",
+        "start": 2426,
+        "end": 2517,
+        "text": "合同复核示例\n\nENVIRONMENT · 工作文件\n\nMANAGED · 文件与发布\n\nAPPLICATION · 交付读取\n"
+      }
+    ],
+    "phases": null
+  },
+  {
+    "id": "end",
+    "start": 2884,
+    "end": 3121,
+    "root": null,
+    "type": "closure",
+    "duration": 237,
+    "identities": {
+      "user_id": "U-A",
+      "agent_id": "A",
+      "other_agent_id": "B",
+      "python_session_id": "PA1",
+      "other_python_session_id": "PA2",
+      "other_agent_session_id": "PB1",
+      "reply_id": "R2",
+      "tool_call_id": "T2",
+      "session_id": "JS1",
+      "file_id": "JF1",
+      "artifact_id": "JA1",
+      "external_call_id": "XW1",
+      "filename": "contract-v3.pdf",
+      "result_filename": "review-v3.md"
+    },
+    "phase_names": [
+      "input",
+      "missing_basis",
+      "supplemented",
+      "candidate",
+      "confirm_T2",
+      "written",
+      "artifact",
+      "accepted",
+      "unknown_receipt",
+      "receipt_checked"
+    ],
+    "cues": {
+      "input": 15,
+      "missing_basis": 47,
+      "supplemented": 65,
+      "candidate": 84,
+      "confirm_T2": 104,
+      "written": 123,
+      "artifact": 142,
+      "accepted": 165,
+      "unknown_receipt": 186,
+      "receipt_checked": 212
+    },
+    "motion_windows": [
+      {
+        "at": 15,
+        "duration": 0.65,
+        "purpose": "state_change"
+      },
+      {
+        "at": 47,
+        "duration": 0.65,
+        "purpose": "state_change"
+      },
+      {
+        "at": 65,
+        "duration": 0.65,
+        "purpose": "state_change"
+      },
+      {
+        "at": 65.9,
+        "duration": 1.4,
+        "purpose": "material_transfer"
+      },
+      {
+        "at": 84,
+        "duration": 0.65,
+        "purpose": "state_change"
+      },
+      {
+        "at": 104,
+        "duration": 0.65,
+        "purpose": "state_change"
+      },
+      {
+        "at": 123,
+        "duration": 0.65,
+        "purpose": "state_change"
+      },
+      {
+        "at": 123.9,
+        "duration": 1.4,
+        "purpose": "material_transfer"
+      },
+      {
+        "at": 142,
+        "duration": 0.65,
+        "purpose": "state_change"
+      },
+      {
+        "at": 165,
+        "duration": 0.65,
+        "purpose": "state_change"
+      },
+      {
+        "at": 186,
+        "duration": 0.65,
+        "purpose": "state_change"
+      },
+      {
+        "at": 212,
+        "duration": 0.65,
+        "purpose": "state_change"
+      }
+    ],
+    "screen_text": [
+      {
+        "phase": "input",
+        "start": 2899,
+        "end": 2931,
+        "text": "合同复核 · 示例业务路径\n1\n输入\n\n2\n依据\n\n3\n候选\n\n4\n执行\n\n5\n交付\n\n6\n接收\n\n任务对象\ncontract-v3.pdf\n输入版本 v3\n责任上限复核\n\n\n输入材料与版本固定\n复核合同责任上限\n合同第 8 条 + 附件 B\n\n输出：复核意见与引用依据\n\n\n输入版本、复核范围和输出要求形成这次任务的契约。"
+      },
+      {
+        "phase": "missing_basis",
+        "start": 2931,
+        "end": 2949,
+        "text": "合同复核 · 示例业务路径\n1\n输入\n\n2\n依据\n\n3\n候选\n\n4\n执行\n\n5\n交付\n\n6\n接收\n\n任务对象\ncontract-v3.pdf\n输入版本 v3\n责任上限复核\n\n\n缺少依据 → 暂停判断\n附件 B 尚未提供\n?\n附件 B · 缺失\n\n责任上限的计算口径待核对\n补件责任：合同经办人\n\n\n缺少计算依据时先补材料；当前输入不足以形成可执行结论。"
+      },
+      {
+        "phase": "supplemented",
+        "start": 2949,
+        "end": 2968,
+        "text": "合同复核 · 示例业务路径\n1\n输入\n\n2\n依据\n\n3\n候选\n\n4\n执行\n\n5\n交付\n\n6\n接收\n\n任务对象\ncontract-v3.pdf\n输入版本 v3\n责任上限复核\n\n\n读取新增依据后继续分析\n附件 B · v3 已补齐\n✓\n附件 B · v3 已收到\n\n第 8 条：责任上限取决于附件 B\n附件 B：年度费用 × 2\n\n\n补件沿原任务继续；输入版本有实质变化时，需要重新核对受影响的判断。"
+      },
+      {
+        "phase": "candidate",
+        "start": 2968,
+        "end": 2988,
+        "text": "合同复核 · 示例业务路径\n1\n输入\n\n2\n依据\n\n3\n候选\n\n4\n执行\n\n5\n交付\n\n6\n接收\n\n任务对象\ncontract-v3.pdf\n输入版本 v3\n责任上限复核\n\n\n依据 → 发现 → 建议\n候选意见已形成\n第 8 条\n＋\n附件 B · v3\n→\n候选批注\n\n发现：主合同与附件口径需保持一致\n建议：在批注中标明年度费用基数\n\n\n候选意见承载依据和建议；形成候选本身不触发外部写入。"
+      },
+      {
+        "phase": "confirm_T2",
+        "start": 2988,
+        "end": 3007,
+        "text": "合同复核 · 示例业务路径\n1\n输入\n\n2\n依据\n\n3\n候选\n\n4\n执行\n\n5\n交付\n\n6\n接收\n\n任务对象\ncontract-v3.pdf\n输入版本 v3\n责任上限复核\n\n\nPython · 回复 R2 / 调用 T2\n保存复核文件\n调用：Write review-v3.md\nASK · 等待确认\n\n针对本次调用\n用户确认 → 执行\n\n\nASK 是本次调用的判定结果；确认绑定 R2 / T2 和具体写入范围。"
+      },
+      {
+        "phase": "written",
+        "start": 3007,
+        "end": 3026,
+        "text": "合同复核 · 示例业务路径\n1\n输入\n\n2\n依据\n\n3\n候选\n\n4\n执行\n\n5\n交付\n\n6\n接收\n\n任务对象\ncontract-v3.pdf\n输入版本 v3\n责任上限复核\n\n\n确认后执行原调用 T2\n复核文件已生成\n\n复核结果 · v3\nreview-v3.md\n原调用 T2 已完成\n\n\n已生成\n尚未发布\n尚未业务接收\n\n\n原调用 T2 完成，只证明本次工具执行；文件交付与业务接收各有检查。"
+      },
+      {
+        "phase": "artifact",
+        "start": 3026,
+        "end": 3049,
+        "text": "合同复核 · 示例业务路径\n1\n输入\n\n2\n依据\n\n3\n候选\n\n4\n执行\n\n5\n交付\n\n6\n接收\n\n任务对象\ncontract-v3.pdf\n输入版本 v3\n责任上限复核\n\n\nJava Managed · Session JS1\n文件发布为 Artifact\nPython 执行例　→　材料交付契约　→　Java Managed 交付例\n工作文件\n上传真实字节\n\n\nSession file JF1\n归属 JS1\n\n\nArtifact JA1\n引用 JF1\n\n\n先上传核实的结果文件，再显式发布；从真实 Artifact 记录取得文件身份与下载内容。"
+      },
+      {
+        "phase": "accepted",
+        "start": 3049,
+        "end": 3070,
+        "text": "合同复核 · 示例业务路径\n1\n输入\n\n2\n依据\n\n3\n候选\n\n4\n执行\n\n5\n交付\n\n6\n接收\n\n任务对象\ncontract-v3.pdf\n输入版本 v3\n责任上限复核\n\n\n法务复核 · 接收版本 v3\n业务接收复核结果\n已发布 Artifact JA1\nreview-v3.md\n可下载文件与结果内容一致\n\n业务接收记录\n法务 · v3\n已接收\n\n\n已生成、已发布、已接收分别记录；发布动作不会自动替业务方验收。"
+      },
+      {
+        "phase": "unknown_receipt",
+        "start": 3070,
+        "end": 3096,
+        "text": "合同复核 · 示例业务路径 · 外部写入核对分支\n1\n输入\n\n2\n依据\n\n3\n候选\n\n4\n执行\n\n5\n交付\n\n6\n接收\n\n任务对象\ncontract-v3.pdf\n输入版本 v3\n责任上限复核\n\n\n另一路径 · 业务调用 XW1\n外部台账写入超时\n业务台账\n调用 XW1\n连接超时 · 结果未知\n\n\n接入方恢复逻辑\n查询原调用回执\n保持版本与调用身份\n\n\n超时不能推断未执行；接入方保留尝试身份，核对外部影响后决定恢复。"
+      },
+      {
+        "phase": "receipt_checked",
+        "start": 3096,
+        "end": 3121,
+        "text": "合同复核 · 示例业务路径 · 外部写入核对分支\n1\n输入\n\n2\n依据\n\n3\n候选\n\n4\n执行\n\n5\n交付\n\n6\n接收\n\n任务对象\ncontract-v3.pdf\n输入版本 v3\n责任上限复核\n\n\n核对 XW1 → 查到原回执\n原调用已写入台账\n业务台账回执\nXW1 · 已写入\n关联 JA1 / v3\n\n\n恢复原任务结果\n读取既有记录\n写入次数保持 1\n\n\n原回执证明既有写入；继续读取与观察，不把页面恢复变成重复提交。"
+      },
+      {
+        "phase": "persistent",
+        "start": 2884,
+        "end": 3121,
+        "text": ""
+      }
+    ],
+    "phases": null,
+    "sources": [
+      {
+        "source_id": "as-7dad78a203b5",
+        "locator": "Overview / Decision Matrix; ASK is conditional, not automatic for every write"
+      },
+      {
+        "source_id": "as-69ccfb190c6d",
+        "locator": "Upload a Session file / Download and deliver; Managed file and Artifact identity"
+      },
+      {
+        "source_id": "as-79adbb1a7334",
+        "locator": "Add requirements or context / Read results and restore a page"
+      },
+      {
+        "source_id": "kit-work-contract",
+        "locator": "kit/grammar/work.md: 外部动作结果未知 / 运行完成 / 材料接收; business teaching design"
+      }
+    ]
+  }
+]

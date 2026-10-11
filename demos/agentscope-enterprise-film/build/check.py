@@ -14,8 +14,40 @@ def probe(ff,video):
 def decoded_frame(ff,video,t):
     data=subprocess.run([ff,'-v','error','-ss',f'{max(0,t):.8f}','-i',str(video),'-frames:v','1','-f','image2pipe','-c:v','png','pipe:1'],capture_output=True,check=True).stdout
     return np.asarray(Image.open(io.BytesIO(data)).convert('RGB'),dtype=np.float32)
-def reading(tl):
-    rows=json.loads((ROOT/'out'/'screen-text.json').read_text());content=[row for row in rows if row['role']=='content'];by_scene={}
+def reading_units(rows):
+    """Merge explicit semantic identities; unkeyed inventories retain their original behavior.
+
+    A changed value under the same key remains new content. Exposure is an interval
+    union, so two simultaneous copies never manufacture additional reading time.
+    """
+    units={};excluded=0
+    for index,row in enumerate(rows):
+        if row['role']!='content':continue
+        if row.get('reading_transient'):
+            excluded+=1;continue
+        keys=tuple(sorted(set(row.get('reading_keys') or [])))
+        if not keys and row.get('reading_key'):keys=(row['reading_key'],)
+        identity=(row['scene'],keys,row['text']) if keys else ('unkeyed',index)
+        if identity not in units:
+            units[identity]={**row,'intervals':list(row.get('intervals',[])),'merged_dom_rows':1}
+            continue
+        unit=units[identity];unit['first']=min(unit['first'],row['first']);unit['last']=max(unit['last'],row['last'])
+        unit['px']=min(unit['px'],row['px']);unit['merged_dom_rows']+=1
+        unit['intervals'].extend(row.get('intervals',[]))
+        # Fallback for inventories without interval data: the explicit key permits
+        # semantic counting, but elapsed span is never inferred across a hidden gap.
+        if not row.get('intervals'):unit['visible_seconds']+=row['visible_seconds']
+    for unit in units.values():
+        if unit['intervals']:
+            merged=[]
+            for start,end in sorted(unit['intervals']):
+                if merged and start<=merged[-1][1]+1e-6:merged[-1][1]=max(merged[-1][1],end)
+                else:merged.append([start,end])
+            unit['intervals']=merged;unit['visible_seconds']=round(sum(end-start for start,end in merged),6)
+    return list(units.values()),excluded
+
+def analyze_reading(rows,tl):
+    content,excluded=reading_units(rows);by_scene={}
     for segment in tl['segments']:
         blocks=[row for row in content if row['scene']==segment['id']];chars=sum(COUNT(row['text']) for row in blocks);first=min((r['first'] for r in blocks),default=segment['start']);budget=segment['end']-first
         by_scene[segment['id']]={'characters':chars,'seconds':round(budget,2),'cps':round(chars/max(budget,.01),3)}
@@ -25,7 +57,9 @@ def reading(tl):
     for segment in tl['segments']:
         blocks=[r for r in content if r['scene']==segment['id']];peak=max((sum(COUNT(o['text']) for o in blocks if r['first']<=o['first']<r['first']+4)/4 for r in blocks),default=0)
         if peak>9:bursts.append({'scene':segment['id'],'new_characters_per_4s_second':round(peak,2)})
-    return ({'pass':not short and not slow,'target_scene_cps':6,'exposure_cps_heuristic':9,'basis':'Static knowledge pages use scene budgets and DOM exposure; subtitle bursts advisory.','by_scene':by_scene,'scenes_above_target':slow,'blocks_shown_too_briefly':short,'advisory_burst_windows':bursts},{'pass':not small,'minimum_content_px':30,'minimum_navigation_source_px':24,'too_small':small})
+    return ({'pass':not short and not slow,'target_scene_cps':6,'exposure_cps_heuristic':9,'basis':'Static knowledge pages use scene budgets and actual DOM exposure; repeated keyed semantic text counts once, changed values count separately, transient moving copies are excluded. Subtitle bursts are advisory; quantitative reading does not establish perceptual quality.','content_dom_rows':sum(r['role']=='content' for r in rows),'semantic_reading_units':len(content),'excluded_transient_rows':excluded,'merged_repeated_rows':sum(r['merged_dom_rows']-1 for r in content),'by_scene':by_scene,'scenes_above_target':slow,'blocks_shown_too_briefly':short,'advisory_burst_windows':bursts},{'pass':not small,'minimum_content_px':30,'minimum_navigation_source_px':24,'too_small':small})
+def reading(tl):
+    return analyze_reading(json.loads((ROOT/'out'/'screen-text.json').read_text()),tl)
 def main():
     ap=argparse.ArgumentParser();ap.add_argument('video',nargs='?');ap.add_argument('--samples',type=int,default=16);a=ap.parse_args()
     if a.samples<1:ap.error('At least one sample required')

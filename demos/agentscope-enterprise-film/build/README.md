@@ -34,3 +34,19 @@ PRAXIS_FILM_ROOT 可重定向至临时 fixture。播放器暂停起步，支持�
 恢复自本次已验证的7秒 fixture，临时重建后已通过 Python 编译、实际7秒fixture（168帧、22截图、约3秒编码）的媒体/PSNR/空白/DOM读速/字号/溢出检查，以及任意逆序seek、终场、controls、键盘、小屏和联络表检查。正式内容检查由 main 执行。返回 [项目说明](../README.md)。
 
 可选：渲染后运行 `python3 script/chapter_video.py`，无重编码加入六章标记；再运行成片检查。
+
+## 第二版完整重建
+
+在 Praxis 工作树根目录运行。`PRAXIS_FILM_ROOT` 指向第二版，第一版文件保留。
+
+```bash
+python3 demos/agentscope-enterprise-film/script/compile_cut2.py --retain-timing
+export PRAXIS_FILM_ROOT="$PWD/demos/agentscope-enterprise-film/cut2"
+python3 demos/agentscope-enterprise-film/build/screen_text.py
+python3 demos/agentscope-enterprise-film/quality/check_cut2_states.py
+python3 demos/agentscope-enterprise-film/build/render.py --workers 4 --name agentscope-enterprise-cut2
+python3 demos/agentscope-enterprise-film/script/chapter_video.py "$PRAXIS_FILM_ROOT/out/agentscope-enterprise-cut2.mp4"
+python3 demos/agentscope-enterprise-film/build/check.py "$PRAXIS_FILM_ROOT/out/agentscope-enterprise-cut2.mp4" --samples 50
+```
+
+第二版文字采集按可见文本节点的真实父元素测量字号，保留语义身份与临时移动副本标记。阅读统计合并同对象同文字的重复显示，但新值仍计入，曝光区间取并集；没有语义键的第一版继续沿用原统计口径。边界与实际结果见 [状态检查](../quality/cut2-state-acceptance.md)。

@@ -47,12 +47,12 @@
     if(type==='replay'){
       node(wrap,'sl-identity',0,0,1744,52,'Session（会话） '+I.session_id+'　/　Turn（一次任务） '+I.turn_id+'　/　合同复核');
       const steps=[
-        ['快照已保存至 e17','as_of = c17','snapshot → 页面状态','已复原消息 '+I.item_id,'责任上限待核对','保存游标 c17'],
-        ['后台保持运行','e17 → 后续事件','SSE · after = c17','观察同一任务 '+I.turn_id,'责任上限待核对','已订阅后续变化'],
+        ['快照已保存至 e17','as_of = c17','snapshot → 页面状态','已复原消息 '+I.item_id,'责任上限','保存游标 c17'],
+        ['后台保持运行','e17 → 后续事件','SSE · after = c17','观察同一任务 '+I.turn_id,'责任上限','已订阅后续变化'],
         ['e18 · item.delta','内容增量：缺失','e18 → 更新 '+I.item_id,'追加到原消息 '+I.item_id,'责任上限缺失','应用成功 → 保存 c18'],
         ['e19 · 工具 '+I.tool_call_id+' 完成','Turn '+I.turn_id+' 仍在运行','观察连接 × 断开','页面保留 '+I.item_id,'责任上限缺失','最后已应用游标 c18'],
         ['历史：e19；实时交界：e19','事件 ID e19 相同','after = c18 → 补历史','工具 '+I.tool_call_id+' 已完成','责任上限缺失','按事件 ID 去重 → 保存 c19'],
-        ['新 snapshot：已含 e19','as_of = c19','410 · cursor_expired','重建原任务 '+I.turn_id,'责任上限缺失','新快照 → after = c19'],
+        ['新 snapshot：已含 e19','as_of = c19','410 · cursor_expired','重建 '+I.turn_id+' 的视图','责任上限缺失','新快照 → after = c19'],
         ['e20 · turn.completed','Turn '+I.turn_id+' = completed','终态事件 → 原任务','同一 '+I.turn_id+' 已完成','责任上限缺失','更新 Turn 状态 → 保存 c20'],
       ];
       const bands=[
@@ -68,7 +68,13 @@
         const p=phase(i);
         node(p,'sl-panel sl-server',0,74,546,382,label('Service · 任务记录与事件日志')+head(s[0])+body(s[1])+'<div class="sl-divider"></div>'+mono('session_id = '+I.session_id+'<br>turn_id = '+I.turn_id)+pill(i===6?'completed':'running',i===6?'done':''));
         node(p,'sl-panel sl-wire',586,74,548,382,label('观察通道')+head(s[2])+body(i===0?'snapshot / as_of':i===1?'订阅该 Turn 的 events':i===2?'按 item_id 更新已有对象':i===3?'任务执行仍在后台继续':i===4?'历史 e19　＋　实时 e19':i===5?'丢弃过期游标，重取快照':'任务状态同步到页面')+'<div class="sl-track '+(i===3?'broken':'')+'"><span>Service</span><b>→</b><span>页面</span></div>'+pill(i===3?'离线期间：后台继续':i===4?'e19  × 1 次应用':i===5?'GET snapshot → SSE':'同一资源的观察流',i===3?'warm':''));
-        node(p,'sl-panel sl-page',1174,74,570,382,label('业务页面 · 本地视图')+head(s[3])+'<div class="sl-message">'+label('消息 '+I.item_id)+body(s[4])+'</div>'+body(s[5])+pill(i===6?'Turn '+I.turn_id+' · completed':'Turn '+I.turn_id+' · running',i===6?'done':''));
+        node(p,'sl-panel sl-page',1174,74,570,382,label('业务页面 · 本地视图')+head(s[3])+'<div class="sl-message">'+label('消息 '+I.item_id)+body(i===2?'责任上限<span class="sl-arrived-delta">缺失</span>':s[4])+'</div>'+body(i===2?'<span class="sl-cursor-before">保存游标 c17</span><span class="sl-cursor-after" style="position:absolute;left:0;top:0">应用成功 → 保存 c18</span>':s[5])+pill(i===6?'Turn '+I.turn_id+' · completed':'Turn '+I.turn_id+' · running',i===6?'done':''));
+        if(i===2){
+          const delta=p.querySelector('.sl-arrived-delta'),before=p.querySelector('.sl-cursor-before'),after=p.querySelector('.sl-cursor-after');after.parentElement.style.position='relative';
+          gsap.set([delta,after],{autoAlpha:0});
+          tl.to(delta,{autoAlpha:1,duration:.15},start+cues[2]+2.45);record(cues[2]+2.45,.15,'delta_append_after_arrival');
+          tl.to(before,{autoAlpha:0,duration:.15},start+cues[2]+2.65);tl.to(after,{autoAlpha:1,duration:.15},start+cues[2]+2.8);record(cues[2]+2.65,.3,'cursor_after_apply');
+        }
         node(p,'sl-symbol',0,468,1744,44,'示例事件 e17–e20；示例游标 c17–c20。真实游标是资源专属的不透明值。');
         node(p,'sl-band',0,522,1744,68,bands[i]);
       });

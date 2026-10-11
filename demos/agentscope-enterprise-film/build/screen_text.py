@@ -24,11 +24,15 @@ JS=r"""
   if(el.tagName.toLowerCase()==='text'||!el.children.length||block(el)){
    if(INLINE.has(el.tagName.toUpperCase())&&el.parentElement&&block(el.parentElement))return;
    const uid=sequence++;if(!visible(el))return;
-   let text='';const walker=document.createTreeWalker(el,NodeFilter.SHOW_TEXT);
-   for(let n=walker.nextNode();n;n=walker.nextNode())if(n.nodeValue.trim()&&visible(n.parentElement))text+=n.nodeValue;
+   let text='';const fonts=[],textRects=[],keys=[];let transient=true;const walker=document.createTreeWalker(el,NodeFilter.SHOW_TEXT);
+   for(let n=walker.nextNode();n;n=walker.nextNode())if(n.nodeValue.trim()&&visible(n.parentElement)){
+    text+=n.nodeValue;fonts.push(parseFloat(getComputedStyle(n.parentElement).fontSize));
+    const range=document.createRange();range.selectNodeContents(n);textRects.push(...range.getClientRects());
+    const keyed=n.parentElement.closest('[data-reading-key]');if(keyed)keys.push(keyed.dataset.readingKey);
+    transient=transient&&!!n.parentElement.closest('[data-reading-transient="true"]');
+   }
    text=text.replace(/\s+/g,' ').trim();if(!text)return;
    const rect=el.getBoundingClientRect(),cs=getComputedStyle(el),role=el.closest('.source,[data-reading="source"]')?'source':el.closest('.chrome-chapter,.chrome-badge,[data-reading="navigation"]')?'navigation':'content';
-   const range=document.createRange();range.selectNodeContents(el);const textRects=[...range.getClientRects()];
    const outside=textRects.some(r=>r.left<stage.left-1||r.top<stage.top-1||r.right>stage.right+1||r.bottom>stage.bottom+1);
    const clip=['hidden','clip'].includes(cs.overflow)&&(el.scrollHeight>el.clientHeight+2||el.scrollWidth>el.clientWidth+2);
    let parentClip=false;
@@ -36,7 +40,7 @@ JS=r"""
     const pc=getComputedStyle(p),pr=p.getBoundingClientRect(),horizontal=['hidden','clip'].includes(pc.overflowX),vertical=['hidden','clip'].includes(pc.overflowY);
     if(textRects.some(r=>(horizontal&&(r.left<pr.left-2||r.right>pr.right+2))||(vertical&&(r.top<pr.top-2||r.bottom>pr.bottom+2))))parentClip=true;
    }
-   rows.push({scene,uid,cls:el.getAttribute('class')||el.tagName.toLowerCase(),text,role,px:Math.round(parseFloat(cs.fontSize)*100)/100,x:Math.round(rect.left),y:Math.round(rect.top),overflow:outside||clip||parentClip,geometry:{x:rect.left,y:rect.top,width:rect.width,height:rect.height}});return;
+   rows.push({scene,uid,cls:el.getAttribute('class')||el.tagName.toLowerCase(),text,role,px:Math.round(Math.min(...fonts)*100)/100,reading_key:el.closest('[data-reading-key]')?.dataset.readingKey||null,reading_keys:[...new Set(keys)],reading_transient:transient,x:Math.round(rect.left),y:Math.round(rect.top),overflow:outside||clip||parentClip,geometry:{x:rect.left,y:rect.top,width:rect.width,height:rect.height}});return;
   }
   for(const c of el.children)walk(c,scene);
  }

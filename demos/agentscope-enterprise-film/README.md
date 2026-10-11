@@ -1,15 +1,15 @@
 # AgentScope 企业线 · 从运行机制到业务交付
 
-53 场，约 32 分钟，1920×1080 横屏，无 TTS。面向 PM，从文档系统反推职责，再展开消息、循环、工具、权限、上下文、协作、Python 服务和 Java 企业接入。
+第二版覆盖 53 个主题，编排为 50 场、52:01，1920×1080 横屏，无 TTS。面向 PM，从文档系统反推职责，再展开消息、循环、工具、权限、上下文、协作、Python 服务和 Java 企业接入。
 
 ## 交付入口
 
-- 视频：`out/agentscope-enterprise.mp4`，本地生成物。
-- [可暂停、跳章的舞台](film/index.html)
-- [详尽阅读稿](reading.html) · [Markdown 原稿](reading.md)
+- 视频：`cut2/out/agentscope-enterprise-cut2.mp4`，本地生成物。
+- [可暂停、跳章的舞台](cut2/film/index.html)
+- [详尽阅读稿](reading-v2.html) · [第一版 Markdown 原稿](reading.md)
 - [4:3 封面](covers/agentscope-4x3.png) · [可编辑 SVG](covers/agentscope-4x3.svg)
 - [3:4 封面](covers/agentscope-3x4.png) · [可编辑 SVG](covers/agentscope-3x4.svg)
-- [时间与证据分镜](script/storyboard.md) · [实际画面文字](out/screen-text.md)
+- [主题分镜](script/storyboard.md) · [第二版时间线](cut2/out/timeline.json) · [实际画面文字](cut2/out/screen-text.md)
 - [制作与验收](production.md)
 
 ## 阅读与观看顺序
@@ -29,10 +29,13 @@
 
 公开来源原件在 [Vault](../../vault/provenance/agentscope-enterprise-20261012/README.md)，源码固定提交和阅读缺口在 [研究](../../vault/distilled/agentscope-enterprise-20261012/README.md)。说明中的合同助手是贯穿解释案例，不是运行实录。
 
-## 第二版推进
+## 第二版与基线
 
-- [逐层阅读稿](reading-v2.html)：六章答案、53个局部、按问题查阅与八组机制条件补充。
-- [机制状态样片](quality/prototypes/README.md)：Event、Permission、offload、Artifact 四段候选；不替代第一版完整范围。
-- [质量与完成审计](quality/README.md)：与 Opus/Sonnet 实际参考比较，列出尚未完成的全片接入和观看验收。
+第二版将 AgentState、事件合并、权限确认、上下文卸载、运行锁、后台任务、目录分配、执行目标、SSE 回放、Artifact 与业务接收编排为 11 组状态展项。调用、会话和文件身份跨阶段保持稳定，关键默认与失败条件保留在画面和阅读稿中。
 
-2026-10-12 补查已修正阅读稿里的 EXPLORE 概括：显式 ask 可在单次确认后进入执行，不能称绝对只读。原完整视频的屏幕文字没有这条过强断言，时长与画面保持原版。
+- [逐层阅读稿](reading-v2.html)：六章答案、53 个局部、12 条追问路线。
+- [第二版工程](cut2/README.md) · [验收与修订记录](quality/README.md)
+- 第一版保留：`out/agentscope-enterprise.mp4`，53 场、32:14；[原舞台](film/index.html)、[原阅读稿](reading.html)。
+- [四段机制样片](quality/prototypes/README.md)保留初次时序与集成证据。
+
+封面按各自画幅原生绘制，不改变横屏视频；此项已记入 [后续视频交付要求](../../kit/write/motion/narrative.md#多平台封面与交付表述)。

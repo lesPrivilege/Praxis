@@ -1,0 +1,807 @@
+{
+  "schema_version": "1.0",
+  "purpose": "53场局部内容补丁；未提供的字段沿用beats.json；items仅替换文字，场内时间由主编重新编排。",
+  "scope": {
+    "python_docs": "2.0.9稳定入口；对应2.0.10dev构建块页",
+    "python_source": "e4c1e074dee3f0f6cca28ca29e934c4ec0605354 / 2.0.10dev",
+    "java_harness": "公开v2文档",
+    "java_service": "公开2.1.0-BETA1；Access/External preview",
+    "verification": "选定文档和固定源码静态核对，未运行目标系统"
+  },
+  "scenes": [
+    {
+      "id": "whole",
+      "title": "AgentScope 接成企业工作系统",
+      "essay_additions": [],
+      "source_ids": [
+        "as-13b26f7a4513",
+        "as-dc202a66c974"
+      ],
+      "reason": "压短主标题，保留系统职责与合同主线。",
+      "checked_scope": "原场文案、catalog身份与现有机制审阅；未重新核查所有实现路径"
+    },
+    {
+      "id": "docs",
+      "pm": "文档入口对应对象、协作、部署与接入契约。",
+      "source_ids": [
+        "as-e800b6665911",
+        "as-822919440da3"
+      ],
+      "reason": "把文档入口与实现判断直接关联。",
+      "checked_scope": "原场文案、catalog身份与现有机制审阅；未重新核查所有实现路径"
+    },
+    {
+      "id": "lanes",
+      "lead": "Python 文档 2.0.9／源码 2.0.10dev；Java Service 2.1.0-BETA1",
+      "pm": "两条实现路径分别定义状态、运行所有权与接入契约。",
+      "source_ids": [
+        "as-dc202a66c974",
+        "as-0a3782c37016",
+        "as-9d9136196aa8",
+        "as-dcf4eb671175"
+      ],
+      "reason": "稳定文档与固定源码分开标明版本，Java保留公开release身份。",
+      "checked_scope": "原场文案、catalog身份与现有机制审阅；未重新核查所有实现路径"
+    },
+    {
+      "id": "migration",
+      "source_ids": [
+        "as-38708b217d1d",
+        "as-ed35bc95bfb2",
+        "as-13b26f7a4513"
+      ],
+      "reason": "现有文案准确区分历史组件与新入口；不增加迁移承诺。",
+      "checked_scope": "原场文案、catalog身份与现有机制审阅；未重新核查所有实现路径"
+    },
+    {
+      "id": "task",
+      "pm": "候选意见、动作确认与文件交付分步发生。",
+      "essay_additions": [
+        "制度库提供条款依据；查询、批注和发布工具分别连接业务系统。审批人确认实际动作，最终接受标准由合同复核业务定义。"
+      ],
+      "source_ids": [
+        "as-dc202a66c974",
+        "as-69ccfb190c6d"
+      ],
+      "reason": "合同为构造案例，修去暗示框架自带业务审批和验收的措辞。",
+      "checked_scope": "原场文案、catalog身份与现有机制审阅；未重新核查所有实现路径"
+    },
+    {
+      "id": "agent",
+      "lead": "配置定义能力；AgentState 保存跨请求的工作状态",
+      "pm": "等待由尾部同一 Agent 的调用与结果共同判定。",
+      "essay_additions": [
+        "AgentState 可序列化为 JSON，保存摘要、上下文、当前 reply、权限、工具、任务和中间件状态。ReplyContext 还保留 reply_id、当前迭代数和结构化输出要求。",
+        "等待判定只查看该 Agent 写出的尾部 assistant Msg：调用处于 ASKING，或处于 SUBMITTED 且没有同 ID 的 ToolResultBlock。匹配结果已存在的 SUBMITTED 调用不再等待；其他 Agent 的观察消息也不能据此判定本 Agent 等待。",
+        "结构化 Schema 在进程内可以是 Pydantic class，保存时变成 JSON Schema；恢复后的字段结构不能代表原自定义 validator 和 default factory 全部随之恢复。"
+      ],
+      "source_ids": [
+        "as-f2b9fa0f0bea",
+        "as-188d64eb8aa5",
+        "as-614314fd8b6b",
+        "as-df9d991bfc3d",
+        "as-f99696363fae"
+      ],
+      "reason": "补连续工作状态的实质和等待谓词，旁文配合新状态展项。",
+      "checked_scope": "Python e4c1e074 / 2.0.10dev：AgentState、ReplyContext与尾部消息等待谓词"
+    },
+    {
+      "id": "message",
+      "items": [
+        {
+          "label": "消息身份",
+          "detail": "id、发送者、role 与时间。"
+        },
+        {
+          "label": "有序内容块",
+          "detail": "文字、工具调用与结果保留先后关系。"
+        },
+        {
+          "label": "结束原因",
+          "detail": "完成、中断、超限或错误；暂停尚无终态。"
+        },
+        {
+          "label": "附加结果",
+          "detail": "用量、结构化输出与错误信息。"
+        }
+      ],
+      "pm": "一次 reply 的多轮调用汇入同一助手消息。",
+      "source_ids": [
+        "as-24299c5c3ff5"
+      ],
+      "reason": "把暂停与终态放回Msg的具体表现。",
+      "checked_scope": "原场文案、catalog身份与现有机制审阅；未重新核查所有实现路径"
+    },
+    {
+      "id": "events",
+      "lead": "reply 与 block 身份决定增量更新的对象",
+      "pm": "事件到达后，还要成功应用到对应对象。",
+      "essay_additions": [
+        "文字 delta 追加到对应文字块，end 事件可用累积文字替换；媒体 Base64 delta 各自解码后合并二进制，URL delta 则替换媒体来源。reply_id 不符或目标块缺失时，事件被跳过，消息不会发生预期变化。",
+        "工具完成只更新一个调用；完整消息记录还包含其他调用、用量与回复结束原因。界面使用对象身份合并进展，避免把每一条事件都当作新消息。"
+      ],
+      "source_ids": [
+        "as-24299c5c3ff5",
+        "as-de4ce087584d"
+      ],
+      "reason": "旁文补到达与应用分离及不同数据delta；展项由主代理替换。",
+      "checked_scope": "Python固定源码Msg事件应用；message/event公开契约"
+    },
+    {
+      "id": "react",
+      "items": [
+        {
+          "label": "检查状态",
+          "detail": "选择推理、行动、暂停或结束。"
+        },
+        {
+          "label": "调用模型",
+          "detail": "发送上下文，读取答复与工具请求。"
+        },
+        {
+          "label": "执行与回灌",
+          "detail": "校验、执行，结果写回同一回复。"
+        },
+        {
+          "label": "迭代预算",
+          "detail": "默认 50 轮；普通文本超限做无工具总结。"
+        }
+      ],
+      "pm": "权限拒绝与工具失败仍可进入下一轮推理。",
+      "essay_additions": [
+        "固定 2.0.10dev 的 max_iters 默认 50，约束一次 reply 的 reasoning–acting 迭代。普通文本到上限后有一次禁用工具的总结；这不是 Service 任务的统一时限，也不是固定的模型请求次数。",
+        "默认 stop_on_reject=False，拒绝结果仍可交回推理循环。等待人工确认或外部结果则暂停当前事件流，后续事件续接同一 reply。"
+      ],
+      "source_ids": [
+        "as-f2b9fa0f0bea",
+        "as-f99696363fae",
+        "as-df9d991bfc3d",
+        "as-188d64eb8aa5"
+      ],
+      "reason": "把迭代预算、正常总结与暂停分支落到屏幕。",
+      "checked_scope": "Python e4c1e074 / 2.0.10dev：ReActConfig与Agent超限分支"
+    },
+    {
+      "id": "model",
+      "source_ids": [
+        "as-d47e94c7be0b",
+        "as-07cb85f8aa73"
+      ],
+      "reason": "已有协议分工和供应商能力边界成立，保留具体多媒体与说话者例子。",
+      "checked_scope": "原场文案、catalog身份与现有机制审阅；未重新核查所有实现路径"
+    },
+    {
+      "id": "tools",
+      "items": [
+        {
+          "label": "Schema",
+          "detail": "模型看到名称、说明和可填参数。"
+        },
+        {
+          "label": "ToolChunk",
+          "detail": "逐块返回内容与执行状态。"
+        },
+        {
+          "label": "ToolResponse",
+          "detail": "按 block ID 合并；URL 内容不能追加；error 不被 success 覆盖。"
+        },
+        {
+          "label": "ToolResultBlock",
+          "detail": "以原调用 ID 写回消息，供下一轮使用。"
+        }
+      ],
+      "pm": "进度、最终数据与执行状态分别合并。",
+      "essay_additions": [
+        "同一内容 block ID 的文字块追加文本；独立编码的 Base64 块先各自解码，再合并二进制。URL 来源或不相容媒体来源不能相加，追加会报错。",
+        "结果聚合一旦记录 error，后到的 success 不会把它改成成功。最终 ToolResultBlock 的 ID 对应原 ToolCallBlock；未注册、未激活或输入不合法的工具不会进入实际函数调用。"
+      ],
+      "source_ids": [
+        "as-47c09ed8a575",
+        "as-13c3e91cfe2f",
+        "as-87b75e2c3fd3",
+        "as-24299c5c3ff5",
+        "as-7a512c849f50"
+      ],
+      "reason": "把Schema、进度块、聚合结果与调用回灌分开，补error和URL关键条件。",
+      "checked_scope": "Python e4c1e074：ToolResponse.append_chunk、工具契约与调用回灌"
+    },
+    {
+      "id": "scheduling",
+      "lead": "并发安全属性决定执行批次，依赖由编排表达",
+      "pm": "先生成再发布的依赖由编排或后续轮次表达。",
+      "source_ids": [
+        "as-2fea42114514",
+        "as-13c3e91cfe2f"
+      ],
+      "reason": "消除调度器自动识别业务依赖的暗示。",
+      "checked_scope": "原场文案、catalog身份与现有机制审阅；未重新核查所有实现路径"
+    },
+    {
+      "id": "permission",
+      "lead": "DEFAULT：deny → ask → 只读 → 工具自检 → allow → ASK",
+      "pm": "EXPLORE 的显式 ASK 可逐次确认执行。",
+      "essay_additions": [
+        "DEFAULT 的第一个决定性结果生效：deny 规则、ask 规则、按本次输入判断的只读快速路径、工具自检、allow 规则，最后兜底 ASK。工具自检产生的 safety ASK 不被后面的 allow 覆盖。",
+        "EXPLORE 先保留 deny 与显式 ask，再判断只读；它跳过工具自检和 allow，剩余非只读调用才兜底 DENY。合法待确认调用经 confirmed=True 可进入本次执行；后续调用仍重新按模式判定。",
+        "DONT_ASK 把需要询问的结果转为拒绝，适用于没有确认者的运行。BYPASS 跳过工具 safety ASK，但显式 deny/ask 和工具 DENY 仍生效；运行环境的权限和沙箱边界另行约束执行。"
+      ],
+      "source_ids": [
+        "as-7dad78a203b5",
+        "as-7bfd7ee86f21",
+        "as-145a584b7630",
+        "as-df9d991bfc3d",
+        "as-4a805cb460f3"
+      ],
+      "reason": "DEFAULT顺序和EXPLORE单次确认例外必须同时可见；新展项配合旁文。",
+      "checked_scope": "Python e4c1e074：PermissionEngine与Agent合法确认续接路径"
+    },
+    {
+      "id": "hitl",
+      "items": [
+        {
+          "label": "待确认调用",
+          "detail": "保存工具名称、参数与调用 ID。"
+        },
+        {
+          "label": "暂停回复",
+          "detail": "ASKING 发出确认请求；reply 尚未完成。"
+        },
+        {
+          "label": "匹配答复",
+          "detail": "reply_id 与嵌套 tool_call.id 对应原对象。"
+        },
+        {
+          "label": "单次继续",
+          "detail": "confirmed=True 放行；False 返回拒绝。"
+        }
+      ],
+      "pm": "确认界面呈现实际批准的工具、参数与对象。",
+      "essay_additions": [
+        "UserConfirmResultEvent 携带 reply_id 与 confirm_results；每项包含 confirmed 和嵌套 ToolCallBlock。系统以 tool_call.id 对应等待中的调用，无等待或有额外 ID 的确认不能续接。",
+        "确认对象中的工具名称和参数会被采纳，confirmed=True 将本次调用改为 ALLOWED；追加 rules 是独立的可选项。执行前工具可用性、输入 Schema、自定义 permission middleware 和外部执行器仍按各自路径判断。"
+      ],
+      "source_ids": [
+        "as-7bfd7ee86f21",
+        "as-4a805cb460f3",
+        "as-df9d991bfc3d"
+      ],
+      "reason": "确认必须对应嵌套ToolCallBlock与reply，而非顶层假字段。",
+      "checked_scope": "Python e4c1e074：确认事件Schema与Agent确认处理"
+    },
+    {
+      "id": "integration",
+      "source_ids": [
+        "as-13c3e91cfe2f",
+        "as-2fea42114514"
+      ],
+      "reason": "保留Python/MCP/Skill职责区分；当前稿已含工具组与连接失败。",
+      "checked_scope": "原场文案、catalog身份与现有机制审阅；未重新核查所有实现路径"
+    },
+    {
+      "id": "context",
+      "source_ids": [
+        "as-524cfb38d8f2"
+      ],
+      "reason": "已有三层组装及运行提示成立，保留上下文对象分工。",
+      "checked_scope": "原场文案、catalog身份与现有机制审阅；未重新核查所有实现路径"
+    },
+    {
+      "id": "compression",
+      "lead": "2.0.10dev：历史压缩与单工具结果截短分别配置",
+      "items": [
+        {
+          "label": "触发压缩",
+          "detail": "默认超过模型 context size 的 80%。"
+        },
+        {
+          "label": "近期保留",
+          "detail": "默认保留窗口 10% 范围内的近期消息。"
+        },
+        {
+          "label": "工具结果",
+          "detail": "代码默认每项 50000 tokens；3000 为文档例子。"
+        },
+        {
+          "label": "摘要失败",
+          "detail": "默认截去旧消息；关闭该兜底则报错。"
+        }
+      ],
+      "pm": "阈值随模型窗口变化，回查依赖另配的 offloader。",
+      "essay_additions": [
+        "自动压缩在 reasoning 前统计系统提示、摘要、消息与工具 Schema 的 tokens；超过 trigger_ratio × context_size 才触发。固定源码 trigger_ratio=0.8，reserve_ratio=0.1，工具调用与结果对在历史分割时保持完整。",
+        "tool_result_limit 的固定源码默认是 50000 tokens；文档示例显式设置 3000，用于展示场景覆盖。工具结果超限可保留一段并截短余下内容，配置 offloader 才能保留被移出部分的回查路径。",
+        "摘要生成多次失败后，默认 compression_fallback_to_truncation=True 会删除最旧消息并留下截断提示；设为 False 则报错并保留原上下文。压缩后的摘要需保留约束、动作状态和材料身份，输入缩短本身不能证明细节仍可用。"
+      ],
+      "source_ids": [
+        "as-761fb054c0df",
+        "as-f99696363fae",
+        "as-df9d991bfc3d"
+      ],
+      "reason": "固定源码默认和文档例子分开；补摘要失败默认截断。",
+      "checked_scope": "Python e4c1e074 / 2.0.10dev：ContextConfig；对应压缩文档示例"
+    },
+    {
+      "id": "offload",
+      "lead": "摘要进入下一轮，原件在另配的存储中保留",
+      "pm": "引用、存储与读取工具一起形成回查路径。",
+      "essay_additions": [
+        "没有配置 offloader 时，压缩消息和截短工具结果离开上下文后直接丢弃。内置 Workspace 可作为 offloader，把压缩消息追加到 sessions/{session_id}/context.jsonl，把工具结果放入按 tool ID 命名的文件。",
+        "返回引用只提供定位。Agent 还需要能访问该存储的 Read、Grep 或 Glob 等工具，才能取回具体内容；自定义存储也要提供与引用相配的读取能力。"
+      ],
+      "source_ids": [
+        "as-c3e41125204e"
+      ],
+      "reason": "补不配置offloader就丢弃及session路径；新展项展示读回。",
+      "checked_scope": "Python 2.0.10dev offloader协议与Workspace保存布局"
+    },
+    {
+      "id": "memory",
+      "source_ids": [
+        "as-1223f953ff05"
+      ],
+      "reason": "当前稿已区分记忆写入、检索、归属与ReMe缺session行为；不硬编统一默认。",
+      "checked_scope": "原场文案、catalog身份与现有机制审阅；未重新核查所有实现路径"
+    },
+    {
+      "id": "rag",
+      "source_ids": [
+        "as-8379a990984a",
+        "as-29e364404cfc"
+      ],
+      "reason": "当前稿包含索引/检索两流程、后端一致性和metadata分区；保留。",
+      "checked_scope": "原场文案、catalog身份与现有机制审阅；未重新核查所有实现路径"
+    },
+    {
+      "id": "structured",
+      "items": [
+        {
+          "label": "输出 Schema",
+          "detail": "定义风险、位置、建议与依据。"
+        },
+        {
+          "label": "生成工具",
+          "detail": "用临时工具提交并校验字段。"
+        },
+        {
+          "label": "有限宽限",
+          "detail": "2.0.10dev 超出 max_iters 后默认再给 5 轮。"
+        },
+        {
+          "label": "失败结果",
+          "detail": "仍未形成有效结构时 structured_output = None。"
+        }
+      ],
+      "pm": "字段有效后，再核对风险依据与业务条件。",
+      "essay_additions": [
+        "固定源码的 structured_output_grace_iters 默认 5；达到 max_iters 后强制选择生成结构化输出的工具，仍可在宽限内提交。耗尽预算还未满足要求时，应用必须处理 structured_output=None，不能把普通文字当成已经过 Schema 校验的结果。"
+      ],
+      "source_ids": [
+        "as-188d64eb8aa5",
+        "as-f99696363fae",
+        "as-df9d991bfc3d"
+      ],
+      "reason": "补默认宽限及结构化输出未成功的实际表现。",
+      "checked_scope": "Python e4c1e074 / 2.0.10dev：ReActConfig与结构化输出结束路径"
+    },
+    {
+      "id": "interrupt",
+      "source_ids": [
+        "as-1787397c3223",
+        "as-79adbb1a7334"
+      ],
+      "reason": "已有运行/暂停/idle分支和外部副作用核对成立。",
+      "checked_scope": "原场文案、catalog身份与现有机制审阅；未重新核查所有实现路径"
+    },
+    {
+      "id": "middleware",
+      "source_ids": [
+        "as-cc1c5a96c71f"
+      ],
+      "reason": "已有hook位置与on_acting边界具体，保留而不扩张为万能治理。",
+      "checked_scope": "原场文案、catalog身份与现有机制审阅；未重新核查所有实现路径"
+    },
+    {
+      "id": "pipeline",
+      "pm": "格式校验与 verifier 的结果核验各有判定。",
+      "source_ids": [
+        "as-986459b99a69"
+      ],
+      "reason": "当前已解释executor/verifier、格式重试和预算续接；改去说教句。",
+      "checked_scope": "原场文案、catalog身份与现有机制审阅；未重新核查所有实现路径"
+    },
+    {
+      "id": "team",
+      "source_ids": [
+        "as-0c1773327b10",
+        "as-dc202a66c974"
+      ],
+      "reason": "已有并发成员/同成员串行/上下文清理条件；保持原机制。",
+      "checked_scope": "原场文案、catalog身份与现有机制审阅；未重新核查所有实现路径"
+    },
+    {
+      "id": "plan",
+      "source_ids": [
+        "as-ae1de456793f",
+        "as-6c4048dcd902"
+      ],
+      "reason": "当前计划与SOP分工成立，完成依据已落到文件测试或人工结果。",
+      "checked_scope": "原场文案、catalog身份与现有机制审阅；未重新核查所有实现路径"
+    },
+    {
+      "id": "service",
+      "source_ids": [
+        "as-dc202a66c974"
+      ],
+      "reason": "现有依赖、生命周期、请求与订阅解耦成立。",
+      "checked_scope": "原场文案、catalog身份与现有机制审阅；未重新核查所有实现路径"
+    },
+    {
+      "id": "identity",
+      "source_ids": [
+        "as-dc202a66c974",
+        "as-bd153c6e3a04"
+      ],
+      "reason": "把身份占位默认保留为产品接入事实；无新增组织级安全承诺。",
+      "checked_scope": "原场文案、catalog身份与现有机制审阅；未重新核查所有实现路径"
+    },
+    {
+      "id": "sessions",
+      "lead": "先拿运行锁，再读状态；提交完记录后释放锁",
+      "pm": "回放恢复观察，运行锁协调同一会话的执行。",
+      "essay_additions": [
+        "ChatService 先取得 session run lock，再读取可变状态。事件先追加 replay log，再发布 live channel；结束时持久化消息、AgentState 和 checkpoint cursor，完成后才释放运行锁。",
+        "当前路径给 run lock 传入 600 秒 TTL。Redis 使用 lease 与 heartbeat 续期，释放时核对持有 token；内存实现不会因这个 TTL 自动过期。因此 600 秒不等于工具任务必须在十分钟内结束。",
+        "Session replay 的裁剪参数为 1000 条：Redis 近似裁剪，内存精确裁剪；checkpoint 提交后还可主动 trim。订阅端先连接 live、再回放，以 entry ID 去重。历史已经被裁剪时，需要用保存的消息与状态重新建立视图。"
+      ],
+      "source_ids": [
+        "as-dc202a66c974",
+        "as-73da307b2ffd",
+        "as-19629c6bf4d8",
+        "as-68f5bb723b26",
+        "as-ebaf50819a12",
+        "as-e2af92fa9ac1",
+        "as-9af0c87d9dc4"
+      ],
+      "reason": "补运行锁顺序、提交顺序、不同bus的TTL/replay行为。",
+      "checked_scope": "Python e4c1e074 / 2.0.10dev：ChatService、BusOps、Redis/InMemory bus、SSE回放"
+    },
+    {
+      "id": "background",
+      "lead": "普通工具默认等 10 秒；超时交给进程内 watcher",
+      "pm": "watcher 完成后，经原会话 inbox 与 wakeup 回到推理。",
+      "essay_additions": [
+        "当前 Service 装配采用 ToolOffloadMiddleware 的 timeout_secs=10.0 默认；超时不取消底层 drain task，而是先向 Agent 返回占位结果。注入 live state 的工具与 external tool 仍同步执行。",
+        "进程级 watcher 等待完成，把 HintBlock 送入原 Session inbox 并发出 wakeup；执行端取得该会话运行锁后消费结果。页面断开不会取消 watcher，重新观察也不需要再提交原任务。",
+        "正常停机取消本进程任务。崩溃后 registry 最多留下受 TTL 约束的元数据，无法延续已经消失的 asyncio task；记录存在不能判定任务仍在执行。ToolStop 还核对 Session 身份，晚到结果按原 task 与 Session 处理。"
+      ],
+      "source_ids": [
+        "as-dc202a66c974",
+        "as-0791af56faa2",
+        "as-d612211accc9",
+        "as-19629c6bf4d8"
+      ],
+      "reason": "10秒已正式登记；补同步例外、进程watcher及重启表现。",
+      "checked_scope": "Python e4c1e074 / 2.0.10dev：ToolOffloadMiddleware、BackgroundTaskManager"
+    },
+    {
+      "id": "workspace",
+      "lead": "目录粒度、MCP live state 与 skills 分区分别配置",
+      "pm": "Local 的 per_agent 目录由 agent_id 定位。",
+      "essay_additions": [
+        "固定源码 LocalWorkspaceManager 默认 isolation=PER_AGENT，实际工作目录为 basedir/agent_id；ttl=3600.0 表示空闲缓存对象的回收时间。workspace ID 的绑定和 host 文件路径是不同层，不能由 per_agent 推出每位用户独享目录。",
+        "工作目录内，MCP live instances 按 agent_id 与 session_id 分区，skills 按 agent 分区。Local 直接使用 host filesystem；隔离执行环境要选择对应沙箱后端，并配置网络、挂载与凭据。"
+      ],
+      "source_ids": [
+        "as-e8bf00e52cb9",
+        "as-dc202a66c974",
+        "as-a40a77f95cef",
+        "as-b72c698b961f",
+        "as-62baab197e50"
+      ],
+      "reason": "共享粒度不能泛化成local host目录的租户隔离；补MCP和skills分区。",
+      "checked_scope": "Python e4c1e074：WorkspaceManagerBase、LocalWorkspaceManager、WorkspaceBase；公开Workspace文档"
+    },
+    {
+      "id": "sandbox",
+      "essay_additions": [
+        "运行条件包括文件挂载、网络出口、凭据、配额与回收时间。权限引擎的 ALLOW 只使调用进入执行路径，后端和操作系统仍按各自的访问边界处理该动作。"
+      ],
+      "source_ids": [
+        "as-e8bf00e52cb9",
+        "as-13b26f7a4513"
+      ],
+      "reason": "具体配置已有，替换读者说教为可配置对象。",
+      "checked_scope": "原场文案、catalog身份与现有机制审阅；未重新核查所有实现路径"
+    },
+    {
+      "id": "deployment",
+      "source_ids": [
+        "as-dc202a66c974",
+        "as-8379a990984a",
+        "as-c788c6cd8525"
+      ],
+      "reason": "当前多副本重复cron、下载密钥与索引后端条件明确；保留。",
+      "checked_scope": "原场文案、catalog身份与现有机制审阅；未重新核查所有实现路径"
+    },
+    {
+      "id": "observability",
+      "pm": "会话身份关联 reply、模型与具体工具调用。",
+      "source_ids": [
+        "as-13b26f7a4513",
+        "as-dc202a66c974"
+      ],
+      "reason": "已有span关闭时机和事件/trace区别；删去潜在泛泛质量姿态。",
+      "checked_scope": "原场文案、catalog身份与现有机制审阅；未重新核查所有实现路径"
+    },
+    {
+      "id": "java-01-harness-context",
+      "lead": "RuntimeContext 确定身份，运行实例按调用方式持有",
+      "pm": "身份键决定上下文、工作文件与恢复记录的关联。",
+      "source_ids": [
+        "as-0cf03f3aa25d",
+        "as-66d70ed869dd"
+      ],
+      "reason": "身份键与构建/后台实例职责成立；不将两个公开页面的默认冲突写成统一默认。",
+      "checked_scope": "Java Harness v2 architecture与production已登记公开页；未裁定默认存储冲突"
+    },
+    {
+      "id": "java-02-agent-session",
+      "source_ids": [
+        "as-0cf03f3aa25d",
+        "as-e60a2f6c58b3"
+      ],
+      "reason": "当前direct/session入口与respond/resume条件完整。",
+      "checked_scope": "原场文案、catalog身份与现有机制审阅；未重新核查所有实现路径"
+    },
+    {
+      "id": "java-03-execution-targets",
+      "lead": "Managed、External、Hosted 分别确定运行所有权",
+      "pm": "相同 Session API 下，交互与恢复能力由目标返回。",
+      "essay_additions": [
+        "目录注册、资源可见、Session 可用和任务派发是不同阶段。已有应用选择 External 保留进程；Hosted 由 Runtime Host 启动提供方进程，其动作、文件与恢复能力按 capabilities 查询。"
+      ],
+      "source_ids": [
+        "as-9d9136196aa8",
+        "as-d5dd49d8dc6e",
+        "as-556d0c6a5726"
+      ],
+      "reason": "旁文配合执行目标矩阵，不重写新展项。",
+      "checked_scope": "Java Service 2.1.0-BETA1公开执行目标与Runtime Host页面"
+    },
+    {
+      "id": "java-04-session-turn-idempotency",
+      "items": [
+        {
+          "label": "Session",
+          "detail": "冻结创建时目标配置或已发布流程版本。"
+        },
+        {
+          "label": "Turn",
+          "detail": "一次任务；等待审批可阻塞后续任务。"
+        },
+        {
+          "label": "幂等重试",
+          "detail": "同 Idempotency-Key 和请求体取回原 Turn。"
+        },
+        {
+          "label": "输入阶段",
+          "detail": "202 queued 已接收；input.applied 才已使用。"
+        }
+      ],
+      "pm": "Managed 续接上下文；Team 与 Workflow 每 Turn 独立启动。",
+      "essay_additions": [
+        "202 queued 只表示任务已接收并等待运行。input.accepted 表示输入已经持久化，input.applied 表示运行时已经消费；二者都需要继续观察目标 Turn 状态。",
+        "Session 保存创建时选定的目标配置，修改 Agent 定义不会自动改变已有 Session。网络重试使用原幂等键与相同请求体；改键只适用于真正新增的任务。"
+      ],
+      "source_ids": [
+        "as-9d9136196aa8",
+        "as-79adbb1a7334"
+      ],
+      "reason": "把accepted/applied和业务完成分离，保留同key同body。",
+      "checked_scope": "Java Service 2.1.0-BETA1公开Session契约"
+    },
+    {
+      "id": "java-05-snapshot-sse-cursor",
+      "lead": "先载入快照，再从 as_of 补事件；410 则重建视图",
+      "pm": "游标在事件成功应用后保存，且只属于原资源。",
+      "essay_additions": [
+        "item.delta 追加消息内容，item.completed 带累积内容并替换该项。把 completed 再追加会显示重复文字；工具或子 Agent 完成也不能代替目标 Turn 的终态。",
+        "Managed Session 快照提供运行资源数组；generic Turn、Team 与 Workflow 使用按 ID 索引的集合。界面各用对应结构，Session、Turn 与子 Agent 的游标也分别保存。"
+      ],
+      "source_ids": [
+        "as-528e3df546ca",
+        "as-eb83f48e5259"
+      ],
+      "reason": "补delta追加与completed替换以及不同快照shape；新展项主导。",
+      "checked_scope": "Java Service 2.1.0-BETA1公开snapshot/SSE契约"
+    },
+    {
+      "id": "java-06-interaction-capabilities",
+      "items": [
+        {
+          "label": "steer",
+          "detail": "改变后续要求；已发模型请求保持原输入。"
+        },
+        {
+          "label": "inject",
+          "detail": "补背景；不立即启动推理。"
+        },
+        {
+          "label": "actions",
+          "detail": "按 request_id 和 payload 回答待处理动作。"
+        },
+        {
+          "label": "resume",
+          "detail": "能力允许且动作处理后继续原 Turn。"
+        }
+      ],
+      "pm": "capabilities 与 available_commands 决定可显示的控制。",
+      "essay_additions": [
+        "接收 steer 或 inject 的回执不代表在途模型调用已经改变。界面可把输入接收、输入应用与任务继续分别显示，并从目标 capabilities 和当前状态决定下一项操作。"
+      ],
+      "source_ids": [
+        "as-79adbb1a7334",
+        "as-528e3df546ca",
+        "as-556d0c6a5726"
+      ],
+      "reason": "控件能力前提与指导生效时间补到具体标签。",
+      "checked_scope": "Java Service 2.1.0-BETA1 Session控制公开契约"
+    },
+    {
+      "id": "java-07-files-artifacts",
+      "lead": "Managed 输入引用 Session file，结果显式发布 Artifact",
+      "pm": "应用读取真实 Artifact 记录，再按授权取得内容。",
+      "essay_additions": [
+        "公开 Managed Session upload 上限为 16 MiB；文件只属于当前 Session。文件上传与 file_input 能力先查询，External、Hosted 和 Team/Workflow 不自动继承 Managed 输入格式。",
+        "Managed 可先上传实际输出为 Session file，再以真实 file_id 显式发布 Artifact；可访问的外部 HTTPS 资源是另一条发布路径。发布记录不会读取或生成工作目录文件，下载地址也不能从 Agent 回复中的路径自行猜测。"
+      ],
+      "source_ids": [
+        "as-69ccfb190c6d",
+        "as-675c5fc9c363"
+      ],
+      "reason": "补Managed文件上限、显式发布与真实记录；新展项由主代理集成。",
+      "checked_scope": "Java Service 2.1.0-BETA1公开Managed files/Artifacts契约"
+    },
+    {
+      "id": "java-08-auth-grant-registration",
+      "lead": "应用、Namespace 与 Runtime credential 分别授权",
+      "pm": "External 首次注册入口由受控网络或网关认证。",
+      "source_ids": [
+        "as-c4d45549fd7a",
+        "as-d5dd49d8dc6e",
+        "as-13473668ae95"
+      ],
+      "reason": "标preview身份，保护性过程范围不写成片；三条身份链保持具体。",
+      "checked_scope": "Java Service 2.1.0-BETA1；Access/External公开preview页"
+    },
+    {
+      "id": "java-09-recovery-capabilities",
+      "items": [
+        {
+          "label": "恢复前检查",
+          "detail": "capabilities、待处理动作与不确定工具结果。"
+        },
+        {
+          "label": "状态与文件",
+          "detail": "以原身份加载日志、checkpoint 和工作材料。"
+        },
+        {
+          "label": "执行所有权",
+          "detail": "旧 writer lease 先释放或过期。"
+        },
+        {
+          "label": "外部回执",
+          "detail": "查已发生的写入，再决定 resume 或重试。"
+        }
+      ],
+      "pm": "checkpoint 保留工作状态，外部动作仍需核对实际结果。",
+      "essay_additions": [
+        "checkpoint 不恢复操作系统线程、在途网络请求或工具内部进度。Hosted 的统一调用路径标记 checkpoint_restore:false；事件重连只能恢复观察，进程继续还需要对应提供方支持。",
+        "续跑前核对 pending actions、uncertain tool calls 和 writer lease。日志和 checkpoint 还要与可访问的工作文件一致；邮件、订单或外部写入已经完成时，应查询原回执，而非重新产生同一动作。"
+      ],
+      "source_ids": [
+        "as-e60a2f6c58b3",
+        "as-556d0c6a5726",
+        "as-79adbb1a7334",
+        "as-eb83f48e5259"
+      ],
+      "reason": "补checkpoint不恢复线程、在途请求和工具进度；恢复前检查不确定结果。",
+      "checked_scope": "Java Harness v2 Session恢复；Java Service公开Hosted和控制契约"
+    },
+    {
+      "id": "java-orchestration",
+      "source_ids": [
+        "as-675c5fc9c363"
+      ],
+      "reason": "Subagent/Team/Workflow作用层次与文件传递已有具体描述。",
+      "checked_scope": "原场文案、catalog身份与现有机制审阅；未重新核查所有实现路径"
+    },
+    {
+      "id": "java-issue",
+      "pm": "Run 记录执行，Issue 保留接受或退回的判断。",
+      "source_ids": [
+        "as-675c5fc9c363",
+        "as-eb83f48e5259"
+      ],
+      "reason": "执行记录与接受记录分开，去掉默认以用户提问为主语的句式。",
+      "checked_scope": "原场文案、catalog身份与现有机制审阅；未重新核查所有实现路径"
+    },
+    {
+      "id": "java-auth-scope",
+      "source_ids": [
+        "as-c4d45549fd7a"
+      ],
+      "reason": "当前Namespace、资源use与工作共享分层完整。",
+      "checked_scope": "原场文案、catalog身份与现有机制审阅；未重新核查所有实现路径"
+    },
+    {
+      "id": "java-budget",
+      "lead": "Managed 预算按已报告用量决定后续调用",
+      "pm": "已启动的并行调用可能使实际用量越过预算。",
+      "source_ids": [
+        "as-79adbb1a7334"
+      ],
+      "reason": "明确不是全目标通用预算，已有并行超额条件保持。",
+      "checked_scope": "原场文案、catalog身份与现有机制审阅；未重新核查所有实现路径"
+    },
+    {
+      "id": "java-channels",
+      "source_ids": [
+        "as-675c5fc9c363"
+      ],
+      "reason": "已有飞书Issue和Automation目标边界，保留具体触发限制。",
+      "checked_scope": "原场文案、catalog身份与现有机制审阅；未重新核查所有实现路径"
+    },
+    {
+      "id": "java-webhook",
+      "essay_additions": [
+        "接收顺序是验证原始请求体签名与时间，持久化通知，再按事件身份去重。事件触发的下游写入使用自己的幂等键和回执查询；通知处理结果与业务动作结果分别保存。"
+      ],
+      "source_ids": [
+        "as-528e3df546ca",
+        "as-eb83f48e5259"
+      ],
+      "reason": "已有签名、时间、持久化和事件身份去重；原稿追加句仍需自然融入。",
+      "checked_scope": "原场文案、catalog身份与现有机制审阅；未重新核查所有实现路径"
+    },
+    {
+      "id": "java-storage",
+      "source_ids": [
+        "as-eb83f48e5259"
+      ],
+      "reason": "当前数据库/文件/密钥/版本配套恢复具体，不增加未验证SLA。",
+      "checked_scope": "原场文案、catalog身份与现有机制审阅；未重新核查所有实现路径"
+    },
+    {
+      "id": "failure",
+      "pm": "原任务身份连接等待、结果、重试与恢复。",
+      "source_ids": [
+        "as-f2b9fa0f0bea",
+        "as-79adbb1a7334"
+      ],
+      "reason": "按原任务状态和具体回执闭环，已有动作分支保留。",
+      "checked_scope": "原场文案、catalog身份与现有机制审阅；未重新核查所有实现路径"
+    },
+    {
+      "id": "delivery",
+      "pm": "合同版本、动作授权、运行状态与文件身份共同约束交付。",
+      "source_ids": [
+        "as-dc202a66c974",
+        "as-69ccfb190c6d"
+      ],
+      "reason": "输入/动作/状态/交付四契约已落到合同对象与版本。",
+      "checked_scope": "原场文案、catalog身份与现有机制审阅；未重新核查所有实现路径"
+    },
+    {
+      "id": "end",
+      "lead": "输入、调用、等待、恢复与交付沿原任务身份连接",
+      "pm": "循环、状态、运行所有权与文件交付组成企业请求链。",
+      "source_ids": [
+        "as-13b26f7a4513",
+        "as-9d9136196aa8"
+      ],
+      "reason": "结束句用对象判断，配合总链新展项，不作读者教导。",
+      "checked_scope": "原场文案、catalog身份与现有机制审阅；未重新核查所有实现路径"
+    }
+  ]
+}
