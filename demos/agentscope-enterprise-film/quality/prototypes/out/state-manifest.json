@@ -1,0 +1,463 @@
+[
+  {
+    "id": "events",
+    "start": 0,
+    "end": 130,
+    "root": null,
+    "type": "events",
+    "duration": 130,
+    "identities": {
+      "reply_id": "R1",
+      "tool_call_id": "T1",
+      "session_id": "S1",
+      "file_id": "F1",
+      "artifact_id": "A1"
+    },
+    "output_filename": "risk-report.pdf",
+    "phase_names": [
+      "reply_start",
+      "text_delta",
+      "text_end",
+      "tool_result",
+      "reply_end"
+    ],
+    "cues": {
+      "reply_start": 15,
+      "text_delta": 48,
+      "text_end": 67,
+      "tool_result": 85,
+      "reply_end": 108
+    },
+    "motion_windows": [
+      {
+        "at": 0,
+        "duration": 0.6,
+        "purpose": "state_reveal"
+      },
+      {
+        "at": 15,
+        "duration": 0.8,
+        "purpose": "state_change"
+      },
+      {
+        "at": 48,
+        "duration": 0.8,
+        "purpose": "state_change"
+      },
+      {
+        "at": 48.1,
+        "duration": 1.4,
+        "purpose": "object_transfer"
+      },
+      {
+        "at": 49.5,
+        "duration": 0.15,
+        "purpose": "delta_append"
+      },
+      {
+        "at": 49.7,
+        "duration": 1.4,
+        "purpose": "object_transfer"
+      },
+      {
+        "at": 51.1,
+        "duration": 0.15,
+        "purpose": "delta_append"
+      },
+      {
+        "at": 67,
+        "duration": 0.8,
+        "purpose": "state_change"
+      },
+      {
+        "at": 85,
+        "duration": 0.8,
+        "purpose": "state_change"
+      },
+      {
+        "at": 108,
+        "duration": 0.8,
+        "purpose": "state_change"
+      }
+    ],
+    "screen_text": [
+      {
+        "phase": "reply_start",
+        "start": 15,
+        "end": 48,
+        "text": "回复 R1\n\nREPLY_START\nreply_id = R1\nTEXT_START\nblock_id = B1\n\nTextBlock · B1\n\n已建立空文本块\nstart 建块；delta 追加内容\nAssistant\nMsg · R1\n\n有序内容\nB1 · 文本\n生成中\n\nreply_id 关联整次回复 R1；block_id 定位文本块 B1。"
+      },
+      {
+        "phase": "text_delta",
+        "start": 48,
+        "end": 67,
+        "text": "回复 R1\n\nTEXT_DELTA · B1\ndelta = “发现”\nTEXT_DELTA · B1\ndelta = “责任上限缺失”\n\n文本 · B1\n\n接收增量\n两段 delta 追加到同一个 B1\nAssistant\nMsg · R1\n\n有序内容\nB1 · 文本\n生成中\n\ndelta 追加到 B1，块身份保持稳定。"
+      },
+      {
+        "phase": "text_end",
+        "start": 67,
+        "end": 85,
+        "text": "回复 R1\n\nTEXT_END · B1\nreply_id = R1\nblock_id = B1\n文本块结束\n\n文本 · B1\n发现责任上限缺失\n文本块已结束\nTextBlock 留在 content 中，\n后续块继续追加。\nAssistant\nMsg · R1\n\n有序内容\nB1 · 文本\n生成中\n\nTEXT_END 结束文本块，回复可以继续产生工具调用。"
+      },
+      {
+        "phase": "tool_result",
+        "start": 85,
+        "end": 108,
+        "text": "回复 R1\n\nTOOL_CALL_START\ntool_call_id = T1\nTOOL_RESULT_END\ntool_call_id = T1\n\n文本 · B1\n发现责任上限缺失\n文本块已结束\n工具调用 · T1\nRead：读取合同条款\n工具结果 → T1\n\nAssistant\nMsg · R1\n\n有序内容\nB1 · 文本\nT1 · 工具调用\n结果 → T1\n生成中\n\ntool_call_id 把调用与结果配成一对。"
+      },
+      {
+        "phase": "reply_end",
+        "start": 108,
+        "end": 130,
+        "text": "回复 R1\n\nREPLY_END\nreply_id = R1\nfinished_reason\ncompleted\n\n文本 · B1\n发现责任上限缺失\n文本块已结束\n工具调用 · T1\nRead：读取合同条款\n工具结果 → T1\n\nAssistant\nMsg · R1\n\n有序内容\nB1 · 文本\nT1 · 工具调用\n结果 → T1\ncompleted · 回复完成\n\nREPLY_END 写入 completed，完整回复保存在 Msg · R1。"
+      },
+      {
+        "phase": "delta_append_1",
+        "start": 49.5,
+        "end": 67,
+        "text": "发现"
+      },
+      {
+        "phase": "delta_append_2",
+        "start": 51.1,
+        "end": 67,
+        "text": "责任上限缺失"
+      },
+      {
+        "phase": "persistent",
+        "start": 0,
+        "end": 130,
+        "text": "合同复核示例\n\n事件流\n\n内容块\n\n回复记录\n"
+      }
+    ],
+    "phases": null
+  },
+  {
+    "id": "permission",
+    "start": 130,
+    "end": 296,
+    "root": null,
+    "type": "permission",
+    "duration": 166,
+    "identities": {
+      "reply_id": "R2",
+      "tool_call_id": "T2",
+      "session_id": "S1",
+      "file_id": "F1",
+      "artifact_id": "A1"
+    },
+    "output_filename": "risk-report.pdf",
+    "phase_names": [
+      "tool_call",
+      "input_validated",
+      "ask_parked",
+      "confirmed",
+      "executing",
+      "result"
+    ],
+    "cues": {
+      "tool_call": 15,
+      "input_validated": 49,
+      "ask_parked": 67,
+      "confirmed": 94,
+      "executing": 115,
+      "result": 138
+    },
+    "motion_windows": [
+      {
+        "at": 0,
+        "duration": 0.6,
+        "purpose": "state_reveal"
+      },
+      {
+        "at": 15,
+        "duration": 0.8,
+        "purpose": "state_change"
+      },
+      {
+        "at": 49,
+        "duration": 0.8,
+        "purpose": "state_change"
+      },
+      {
+        "at": 67,
+        "duration": 0.8,
+        "purpose": "state_change"
+      },
+      {
+        "at": 94,
+        "duration": 0.8,
+        "purpose": "state_change"
+      },
+      {
+        "at": 94.6,
+        "duration": 1.6,
+        "purpose": "object_transfer"
+      },
+      {
+        "at": 115,
+        "duration": 0.8,
+        "purpose": "state_change"
+      },
+      {
+        "at": 138,
+        "duration": 0.8,
+        "purpose": "state_change"
+      }
+    ],
+    "screen_text": [
+      {
+        "phase": "tool_call",
+        "start": 145,
+        "end": 179,
+        "text": "ToolCallBlock · T2\nWrite\n目标：reviews/risk.md\n\n保存合同风险清单\npending\n\nToolkit · 输入契约\n解析参数\n\n工具已注册并激活\n解析 JSON 参数\n\n工作区工具\n尚未执行\n\nreviews/risk.md\n无工具结果\n\n工具可用性与参数校验先于 Permission 判断。"
+      },
+      {
+        "phase": "input_validated",
+        "start": 179,
+        "end": 197,
+        "text": "工具调用 · T2\nWrite\n目标：reviews/risk.md\n\n保存合同风险清单\npending\n\nJSON / input_schema\n校验通过\n\n输入字段匹配\ninput_schema\n\n工作区工具\n尚未执行\n\nreviews/risk.md\n无工具结果\n\n参数合法后，Permission 决定此次调用能否执行。"
+      },
+      {
+        "phase": "ask_parked",
+        "start": 197,
+        "end": 224,
+        "text": "工具调用 · T2\nWrite\n目标：reviews/risk.md\n\n保存合同风险清单\nasking\n\nPermissionEngine\nASK · 等待确认\n\nRequireUserConfirmEvent\nreply_id = R2\ntool_calls → [T2]\n\n工作区工具\n尚未执行\n\nreviews/risk.md\n无工具结果\n\nparked · 等待用户确认\nⅡ\nASK 结束当前 stream；AgentState 保留 R2 / T2 等待续接。"
+      },
+      {
+        "phase": "confirmed",
+        "start": 224,
+        "end": 245,
+        "text": "工具调用 · T2\nWrite\n目标：reviews/risk.md\n\n保存合同风险清单\nallowed\n\nPermissionEngine\nALLOW · 允许执行\n\nUserConfirmResultEvent\nreply_id = R2\n确认 ToolCallBlock T2\n\n工作区工具\n尚未执行\n\nreviews/risk.md\n无工具结果\n\n确认结果回到同一 R2 / T2，允许后才进入工具。"
+      },
+      {
+        "phase": "executing",
+        "start": 245,
+        "end": 268,
+        "text": "工具调用 · T2\nWrite\n目标：reviews/risk.md\n\n保存合同风险清单\nallowed\n\nPermissionEngine\n进入工具\n\nToolResultStartEvent\ntool_call_id = T2\n\n工作区工具\nWrite 执行中\n\n写入风险条目与修改建议\nstate = running\n\nToolResultStartEvent 标记工具真正开始执行。"
+      },
+      {
+        "phase": "result",
+        "start": 268,
+        "end": 296,
+        "text": "工具调用 · T2\nWrite\n目标：reviews/risk.md\n\n保存合同风险清单\nfinished\n\nPermissionEngine\n返回结果\n\nToolResultEndEvent\ntool_call_id = T2\n\n工作区工具\nToolResultBlock\n\n已保存 reviews/risk.md\nstate = success\n\n工具结果回写上下文，Agent 再决定下一步。"
+      },
+      {
+        "phase": "persistent",
+        "start": 130,
+        "end": 296,
+        "text": "合同复核示例\n\n模型请求\n\n执行入口\n\n工具与结果\n"
+      }
+    ],
+    "phases": null
+  },
+  {
+    "id": "offload",
+    "start": 296,
+    "end": 422,
+    "root": null,
+    "type": "offload",
+    "duration": 126,
+    "identities": {
+      "reply_id": "R1",
+      "tool_call_id": "T1",
+      "session_id": "S1",
+      "file_id": "F1",
+      "artifact_id": "A1"
+    },
+    "output_filename": "risk-report.pdf",
+    "phase_names": [
+      "context",
+      "compressed",
+      "offloaded",
+      "read_back"
+    ],
+    "cues": {
+      "context": 15,
+      "compressed": 54,
+      "offloaded": 84,
+      "read_back": 107
+    },
+    "motion_windows": [
+      {
+        "at": 0,
+        "duration": 0.6,
+        "purpose": "state_reveal"
+      },
+      {
+        "at": 15,
+        "duration": 0.8,
+        "purpose": "state_change"
+      },
+      {
+        "at": 54,
+        "duration": 0.8,
+        "purpose": "state_change"
+      },
+      {
+        "at": 84,
+        "duration": 0.8,
+        "purpose": "state_change"
+      },
+      {
+        "at": 84.3,
+        "duration": 1.7,
+        "purpose": "object_transfer"
+      },
+      {
+        "at": 107,
+        "duration": 0.8,
+        "purpose": "state_change"
+      },
+      {
+        "at": 107.4,
+        "duration": 1.7,
+        "purpose": "object_transfer"
+      }
+    ],
+    "screen_text": [
+      {
+        "phase": "context",
+        "start": 311,
+        "end": 350,
+        "text": "AgentState · session_id = S1\n用户：复核合同责任条款\nRead：合同全文与附件\nAgent：既往风险分析\n用户：采用修订稿 v3\nRead：本轮待核条款\n\n\n}\n超过压缩阈值\n生成 summary\nModel call\n完整历史\n\nsystem prompt\n全部 context\nactivated tool schemas\n\n模型输入将超过阈值：压缩较早消息，保留最近上下文。"
+      },
+      {
+        "phase": "compressed",
+        "start": 350,
+        "end": 380,
+        "text": "AgentState · session_id = S1\n用户：采用修订稿 v3\nRead：本轮待核条款\n最近消息保留在 context\n\n较早 3 条 → 等待 Offloader 写入\n\n\nsummary\n合同待复核\n沿用修订稿 v3\n\nModel call\n摘要与最近消息\n\nsystem prompt\nsummary + recent context\nactivated tool schemas\n\nsummary 概括较早消息，context 保留近期对话。"
+      },
+      {
+        "phase": "offloaded",
+        "start": 380,
+        "end": 403,
+        "text": "AgentState · session_id = S1\n用户：采用修订稿 v3\nRead：本轮待核条款\n最近消息保留在 context\n\n较早 3 条 → 已保存到 context.jsonl\n\n\nsummary\n合同待复核\n沿用修订稿 v3\n\nModel call\n摘要与最近消息\n\nsystem prompt\nsummary + recent context\nactivated tool schemas\n\nOffloader · S1\nsessions/S1/\ncontext.jsonl\n消息已保存\n\n配置 Offloader 后，被压缩消息追加到 context.jsonl，并返回引用。"
+      },
+      {
+        "phase": "read_back",
+        "start": 403,
+        "end": 422,
+        "text": "AgentState · session_id = S1\n用户：采用修订稿 v3\nRead：本轮待核条款\n最近消息保留在 context\n\n较早 3 条 → 已保存到 context.jsonl\n\n\nsummary\n合同待复核\n沿用修订稿 v3\n\nModel call\n摘要与所需细节\n\nsystem prompt\nsummary + recent context\nactivated tool schemas\n读回：责任上限条款\n\nOffloader · S1\nsessions/S1/\ncontext.jsonl\nRead / Grep / Glob\n\n按文件引用读回细节\n文件工具按引用读回所需细节，结果重新进入当前上下文。"
+      },
+      {
+        "phase": "persistent",
+        "start": 296,
+        "end": 422,
+        "text": "合同复核示例\n\n会话上下文\n\n下一次模型输入\n"
+      }
+    ],
+    "phases": null
+  },
+  {
+    "id": "artifact",
+    "start": 422,
+    "end": 550,
+    "root": null,
+    "type": "artifact",
+    "duration": 128,
+    "identities": {
+      "reply_id": "R1",
+      "tool_call_id": "T1",
+      "session_id": "JS1",
+      "file_id": "JF1",
+      "artifact_id": "JA1"
+    },
+    "output_filename": "risk-report.pdf",
+    "phase_names": [
+      "working_file",
+      "session_file",
+      "published",
+      "record_read",
+      "downloaded"
+    ],
+    "cues": {
+      "working_file": 15,
+      "session_file": 56,
+      "published": 70,
+      "record_read": 91,
+      "downloaded": 108
+    },
+    "motion_windows": [
+      {
+        "at": 0,
+        "duration": 0.6,
+        "purpose": "state_reveal"
+      },
+      {
+        "at": 15,
+        "duration": 0.8,
+        "purpose": "state_change"
+      },
+      {
+        "at": 56,
+        "duration": 0.8,
+        "purpose": "state_change"
+      },
+      {
+        "at": 56.25,
+        "duration": 1.6,
+        "purpose": "object_transfer"
+      },
+      {
+        "at": 70,
+        "duration": 0.8,
+        "purpose": "state_change"
+      },
+      {
+        "at": 91,
+        "duration": 0.8,
+        "purpose": "state_change"
+      },
+      {
+        "at": 91.25,
+        "duration": 1.6,
+        "purpose": "object_transfer"
+      },
+      {
+        "at": 108,
+        "duration": 0.8,
+        "purpose": "state_change"
+      }
+    ],
+    "screen_text": [
+      {
+        "phase": "working_file",
+        "start": 437,
+        "end": 478,
+        "text": "合同复核输出\nrisk-report.pdf\n\n责任条款与修改建议\n\n\n\n工作目录文件\n\nManaged Session · JS1\n上传结果文件\n\nPOST /files\nrisk-report.pdf\n待上传\n\nApplication\n等待交付记录\n\nartifact_id / file_id\n尚未读取\n\n工作区落盘产生工作文件；应用交付仍需建立可读取的记录。"
+      },
+      {
+        "phase": "session_file",
+        "start": 478,
+        "end": 492,
+        "text": "合同复核输出\nrisk-report.pdf\n\n责任条款与修改建议\n\n\n\n工作目录文件\n\nManaged Session · JS1\nfile_id = JF1\n\nPOST /files\nrisk-report.pdf\n已上传 · JF1\n\nApplication\n等待交付记录\n\nartifact_id / file_id\n尚未读取\n\n此 Managed 示例上传结果文件，返回本 Session 的 file_id = JF1。"
+      },
+      {
+        "phase": "published",
+        "start": 492,
+        "end": 513,
+        "text": "合同复核输出\nrisk-report.pdf\n\n责任条款与修改建议\n\n\n\n工作目录文件\n\nManaged Session · JS1\nArtifact · JA1\n\nPOST /artifacts\n{ \"file_id\": \"JF1\" }\n已发布 · JA1\nArtifact 引用实际 Session file\n\nApplication\n等待交付记录\n\nartifact_id / file_id\n尚未读取\n\n显式发布 JF1，建立 artifact_id = JA1 的交付记录。"
+      },
+      {
+        "phase": "record_read",
+        "start": 513,
+        "end": 530,
+        "text": "合同复核输出\nrisk-report.pdf\n\n责任条款与修改建议\n\n\n\n工作目录文件\n\nManaged Session · JS1\nArtifact · JA1\n\nPOST /artifacts\n{ \"file_id\": \"JF1\" }\n已发布 · JA1\nArtifact 引用实际 Session file\n\nApplication\n读取 Artifact\n\nGET /artifacts/JA1\nfile_id = JF1\nJA1 → JF1\n\n应用读取实际 Artifact，取得它引用的 file_id。"
+      },
+      {
+        "phase": "downloaded",
+        "start": 530,
+        "end": 550,
+        "text": "合同复核输出\nrisk-report.pdf\n\n责任条款与修改建议\n\n\n\n工作目录文件\n\nManaged Session · JS1\nArtifact · JA1\n\nPOST /artifacts\n{ \"file_id\": \"JF1\" }\n已发布 · JA1\nArtifact 引用实际 Session file\n\nApplication\n下载实际文件\n\nGET /files/JF1/content\nrisk-report.pdf\n核对文件内容、版本与业务验收\n\n应用凭 Session 读取权限下载 JF1，再核对实际内容。"
+      },
+      {
+        "phase": "persistent",
+        "start": 422,
+        "end": 550,
+        "text": "合同复核示例\n\nENVIRONMENT · 工作文件\n\nMANAGED · 文件与发布\n\nAPPLICATION · 交付读取\n"
+      }
+    ],
+    "phases": null
+  }
+]

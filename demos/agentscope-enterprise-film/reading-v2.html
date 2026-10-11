@@ -1,0 +1,581 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>AgentScope · 企业工作机制</title><style>
+:root{--paper:#f3f1eb;--ink:#152b32;--muted:#546c73;--accent:#006d77;--line:#c1c9c6;--sand:#e9e4d9}*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:18px/1.8 "PingFang SC",sans-serif}main{max-width:1120px;margin:auto;padding:48px 28px 100px}h1{font:700 54px/1.25 "Songti SC",serif;max-width:850px;text-wrap:balance;margin:14px 0 24px}h1 span{display:block;text-wrap:balance}h2{font:700 36px/1.3 "Songti SC",serif;margin:0 0 12px}h3{font-size:25px;line-height:1.4;margin:0 0 14px}a{color:var(--accent);text-underline-offset:4px}.eyebrow{font-size:15px;letter-spacing:.14em;color:var(--muted)}.answer{font-size:24px;line-height:1.65}.chapter{margin-top:80px}.chapter-head{border-top:2px solid var(--ink);padding-top:24px}.chapter-no{font:16px Menlo,monospace;color:var(--accent)}.outline{display:grid;grid-template-columns:1fr 1fr;gap:0 35px;margin:35px 0}.outline a{border-top:1px solid var(--line);padding:14px 0;text-decoration:none;line-height:1.6}.outline b{display:block}.outline span{color:var(--muted);font-size:16px}.toolbar{display:flex;flex-wrap:wrap;gap:16px;align-items:center;margin:22px 0}button{font:inherit;background:none;border:1px solid var(--accent);padding:7px 14px;color:var(--accent);cursor:pointer}button:focus-visible,a:focus-visible,summary:focus-visible{outline:3px solid #b85c39;outline-offset:4px}.module{margin:35px 0 55px;padding-left:30px;border-left:2px solid var(--line)}.module p,.mechanism .work{overflow-wrap:anywhere}.principle{font-size:20px;margin:14px 0}.lead{color:var(--muted);font-size:17px}.mechanism{list-style:none;padding:0;margin:20px 0}.mechanism li{display:grid;grid-template-columns:240px 1fr;gap:20px;border-top:1px solid var(--line);padding:12px 0}.mechanism .name{font-weight:600}.mechanism .work{color:var(--muted)}.condition{background:var(--sand);padding:12px 18px;border-left:4px solid #b85c39;margin:20px 0}.detail{padding:18px 22px;background:#e4ece8;margin:20px 0}.detail summary{cursor:pointer;font-weight:550}.source{font-size:14px;margin-top:22px;color:var(--muted)}.source a{margin-right:15px;overflow-wrap:anywhere}nav.questions a{display:block;margin:10px 0}.glossary{font-size:16px;color:var(--muted);border-top:1px solid var(--line);padding-top:18px}.detail p{margin:14px 0;overflow-wrap:anywhere}.deep-mechanism{margin:24px 0;padding:18px 24px;border:1px solid var(--line)}.deep-mechanism h4{margin:0 0 14px;font-size:20px}.deep-mechanism dl{margin:0}.deep-mechanism dt{font-weight:650;margin-top:18px}.deep-mechanism dd{margin:4px 0 15px}.static-diagram{margin:28px 0;border-top:1px solid var(--line);padding-top:15px}.static-diagram svg{width:100%;height:auto;display:block}footer{margin-top:80px;border-top:2px solid var(--ink);padding-top:25px}.nojs-note{display:none}
+@media(max-width:680px){main{padding:28px 20px 60px}h1{font-size:38px}h2{font-size:30px}.answer{font-size:21px}.outline{grid-template-columns:1fr}.module{padding-left:16px}.mechanism li{grid-template-columns:1fr;gap:2px}.chapter{margin-top:58px}.toolbar{gap:10px}}
+@media print{main{max-width:none;padding:0}.toolbar,.video-link{display:none}.detail{display:block}.detail>p{display:block!important}.module{break-inside:avoid-page}a{color:inherit}.outline{grid-template-columns:1fr 1fr}h1{font-size:34px}}
+</style></head><body><main><header><div class="eyebrow">AGENTSCOPE / ENTERPRISE</div><h1><span>从一次请求，</span><span>到持续运行的企业工作</span></h1><p class="answer">AgentScope 将模型推理、工具执行与上下文，接到会话、权限、状态恢复和结果交付。</p><p class="lead">Python 文档 2.0.9 / 源码 2.0.10dev · Java Harness v2 / Service 2.1.0-BETA1</p><p class="video-link"><a href="cut2/film/index.html">观看讲解</a></p><p class="glossary">agent 负责推理与行动；tool 承担可执行动作；skill 提供任务指导和资源。session 关联持续工作，run 记录一次执行，Java Turn 承载一项提交任务；checkpoint 保存工作状态，Artifact 登记供应用取得的交付物。</p></header>
+<nav class="outline" aria-label="章节目录">
+<a href="#chapter-01"><b>01 · 项目全貌</b><span>AgentScope 将推理循环接到会话、执行环境和业务交付。</span></a>
+<a href="#chapter-02"><b>02 · Agent 内核</b><span>一次回复由状态检查、模型调用与工具反馈推进。</span></a>
+<a href="#chapter-03"><b>03 · 上下文与协作</b><span>长任务靠可见上下文、可回查材料与明确分工继续。</span></a>
+<a href="#chapter-04"><b>04 · Python 服务</b><span>Agent Service 管理一次循环之外的身份、状态与资源。</span></a>
+<a href="#chapter-05"><b>05 · Java 企业接入</b><span>统一 Session 接口组织不同执行目标，具体能力由目标决定。</span></a>
+<a href="#chapter-06"><b>06 · 从机制到方案</b><span>业务闭环同时核对输入、动作、执行状态与交付记录。</span></a>
+</nav>
+<div class="toolbar"><button id="expand-all" type="button">展开来源定位</button><button id="collapse-all" type="button">收起来源定位</button><a href="#questions">按问题查阅</a></div>
+<section class="chapter" id="chapter-01"><div class="chapter-head"><div class="chapter-no">01</div><h2>项目全貌</h2><p class="answer">AgentScope 将推理循环接到会话、执行环境和业务交付。</p><p class="lead">Python 2.0 与 Java Harness/Service 是两条完整实现路径。旧 Runtime 与 Studio 的职责已归入 Python 2.0。</p></div>
+<article class="module" id="whole"><h3>AgentScope 接成企业工作系统</h3><p class="lead">业务任务 → 运行机制 → 服务交付</p><p class="principle">合同助手接到任务后，需要读取材料、查规则、形成意见，必要时等待审批，再把文件和结果交回业务应用。AgentScope 把推理与工具循环，接到托管会话、执行环境和前端事件。</p><ul class="mechanism">
+<li><span class="name">Agent</span><span class="work">决定下一步，调用工具，维护工作上下文。</span></li>
+<li><span class="name">Service</span><span class="work">接收请求，管理会话，把进展和结果送回应用。</span></li>
+<li><span class="name">Workspace</span><span class="work">为文件、终端和工具提供执行环境。</span></li>
+</ul><p class="condition">产品需求同时涉及推理、执行、状态与交付。</p>
+<p>模型与提示词决定推理输入，工具连接业务动作，Service 管理请求和状态，Workspace 提供执行环境。一个功能跨越哪些职责，决定它需要哪些接口与控制。</p>
+<details class="detail"><summary>来源定位</summary><p data-source-id="as-13b26f7a4513"><a href="https://docs.agentscope.io/en/versions/2.0.9/index.md">2.0.9 / index</a></p><p data-source-id="as-dc202a66c974"><a href="https://docs.agentscope.io/en/versions/2.0.9/deploy/agent-service.md">agent-service</a></p></details>
+<p class="source"><a href="https://docs.agentscope.io/en/versions/2.0.9/index.md">2.0.9 / index</a><a href="https://docs.agentscope.io/en/versions/2.0.9/deploy/agent-service.md">agent-service</a></p></article>
+<article class="module" id="docs"><h3>文档目录对应四类实现问题</h3><p class="lead">从使用者需要反推项目结构</p><p class="principle">构建块回答局部对象的契约，编排回答它们如何组成任务，部署回答实例和状态如何被长期托管，企业接入回答应用怎样提交工作、观察进展并取得结果。文档目录因此可以作为架构的发现入口。</p><ul class="mechanism">
+<li><span class="name">构建块</span><span class="work">消息、模型、工具、上下文：运行由什么组成。</span></li>
+<li><span class="name">编排</span><span class="work">团队、计划、流水线：复杂工作如何组织。</span></li>
+<li><span class="name">部署</span><span class="work">服务、存储、事件：多人如何持续使用。</span></li>
+<li><span class="name">企业接入</span><span class="work">身份、权限、文件、恢复：业务怎样接管。</span></li>
+</ul><p class="condition">文档入口对应对象、协作、部署与接入契约。</p>
+<p>阅读顺序先确定业务问题，再找对象与接口，最后回查源码的控制点。同名的“会话”“事件”“工具”要放回各自层次理解。</p>
+<details class="detail"><summary>来源定位</summary><p data-source-id="as-e800b6665911"><a href="https://docs.agentscope.io/_llms/en/agent-scope/2-0-10dev.txt">2-0-10dev.txt</a></p><p data-source-id="as-822919440da3"><a href="https://java.agentscope.io/llms.txt">llms.txt</a></p></details>
+<p class="source"><a href="https://docs.agentscope.io/_llms/en/agent-scope/2-0-10dev.txt">2-0-10dev.txt</a><a href="https://java.agentscope.io/llms.txt">llms.txt</a></p></article>
+<article class="module" id="lanes"><h3>Python 与 Java 各有完整运行路径</h3><p class="lead">Python 文档 2.0.9／源码 2.0.10dev；Java Service 2.1.0-BETA1</p><p class="principle">Python 2.0 主项目已包含 Agent Service。Java 文档把应用侧 Harness 与平台侧 Service 分开：前者维护 Agent 的构建和持续工作语义，后者统一管理执行目标、Session、Turn、权限与交付。</p><ul class="mechanism">
+<li><span class="name">Python · Agent</span><span class="work">推理、工具、权限、上下文与工作区。</span></li>
+<li><span class="name">Java · Harness</span><span class="work">构建 Agent，保存历史与恢复点。</span></li>
+<li><span class="name">Python · Agent Service</span><span class="work">托管用户、会话、资源与事件流。</span></li>
+<li><span class="name">Java · Service</span><span class="work">把执行目标接成统一 Session API。</span></li>
+</ul><p class="condition">两条实现路径分别定义状态、运行所有权与接入契约。</p>
+<p>Python 2.0 的主项目提供 Agent 与托管服务。Java Harness 与 Java Service 分别维护应用侧和平台侧的契约。</p>
+<details class="detail"><summary>来源定位</summary><p data-source-id="as-dc202a66c974"><a href="https://docs.agentscope.io/en/versions/2.0.9/deploy/agent-service.md">agent-service</a></p><p data-source-id="as-0a3782c37016"><a href="https://java.agentscope.io/v2/en/intro.md">intro</a></p><p data-source-id="as-9d9136196aa8"><a href="https://java.agentscope.io/v2/en/service/index.md">service / index</a></p><p data-source-id="as-dcf4eb671175"><a href="https://raw.githubusercontent.com/agentscope-ai/agentscope/e4c1e074dee3f0f6cca28ca29e934c4ec0605354/src/agentscope/_version.py">src/agentscope/_version.py</a> · e4c1e074dee3f0f6cca28ca29e934c4ec0605354</p></details>
+<p class="source"><a href="https://docs.agentscope.io/en/versions/2.0.9/deploy/agent-service.md">agent-service</a><a href="https://java.agentscope.io/v2/en/intro.md">intro</a><a href="https://java.agentscope.io/v2/en/service/index.md">service / index</a><a href="https://raw.githubusercontent.com/agentscope-ai/agentscope/e4c1e074dee3f0f6cca28ca29e934c4ec0605354/src/agentscope/_version.py">src/agentscope/_version.py</a></p></article>
+<article class="module" id="migration"><h3>Runtime、Studio 的职责归入 2.0</h3><p class="lead">独立工具的能力转向主项目</p><p class="principle">独立 Runtime 与 Studio 的 README 已给出归档和迁移提示。Runtime 原来承接沙箱、Agent-as-a-Service 和观测；Studio 原来提供开发期可视化与调试。2.0 的服务架构与内置 Web UI 成为新入口。</p><ul class="mechanism">
+<li><span class="name">原 Runtime</span><span class="work">沙箱、Agent 服务、部署与观测。</span></li>
+<li><span class="name">原 Studio</span><span class="work">运行轨迹、调试与人工输入。</span></li>
+<li><span class="name">AgentScope 2.0</span><span class="work">主项目承接执行服务和内置 Web UI。</span></li>
+</ul><p class="condition">新方案从 2.0 进入，旧方案按原版本迁移。</p>
+<p>旧文档适合回查机制来路。旧 Runtime 的 AgentApp、Runner 和旧 Studio 项目结构应放在迁移对照中，不能直接用来解释新 Service 的接口。</p>
+<details class="detail"><summary>来源定位</summary><p data-source-id="as-38708b217d1d"><a href="https://github.com/agentscope-ai/agentscope-runtime/blob/22072fd7075ce0c6f43cb39509d6a14b0e60ddb5/README.md">README</a> · agentscope-runtime@22072fd7075ce0c6f43cb39509d6a14b0e60ddb5</p><p data-source-id="as-ed35bc95bfb2"><a href="https://github.com/agentscope-ai/agentscope-studio/blob/20e7638273d3726732eb317b440bfa34e6694e17/README.md">README</a> · agentscope-studio@20e7638273d3726732eb317b440bfa34e6694e17</p><p data-source-id="as-13b26f7a4513"><a href="https://docs.agentscope.io/en/versions/2.0.9/index.md">2.0.9 / index</a></p></details>
+<p class="source"><a href="https://github.com/agentscope-ai/agentscope-runtime/blob/22072fd7075ce0c6f43cb39509d6a14b0e60ddb5/README.md">README</a><a href="https://github.com/agentscope-ai/agentscope-studio/blob/20e7638273d3726732eb317b440bfa34e6694e17/README.md">README</a><a href="https://docs.agentscope.io/en/versions/2.0.9/index.md">2.0.9 / index</a></p></article>
+<article class="module" id="task"><h3>合同助手的一次工作</h3><p class="lead">按任务次序展开请求链</p><p class="principle">设想用户提交一份合同，Agent 检索制度和历史条款，形成风险清单，调用工具保存批注文件，需要时等待负责人的确认。检索结果进入上下文，确认事件解除暂停，文件进入交付登记。</p><ul class="mechanism">
+<li><span class="name">接收任务</span><span class="work">读取合同与复核要求。</span></li>
+<li><span class="name">获取依据</span><span class="work">检索规则，核对版本。</span></li>
+<li><span class="name">生成候选</span><span class="work">形成风险条目与修改建议。</span></li>
+<li><span class="name">交回业务</span><span class="work">确认动作，保存并发布结果。</span></li>
+</ul><p class="condition">候选意见、动作确认与文件交付分步发生。</p>
+<p>合同规则、可执行动作与最终接受标准由业务应用定义。框架提供运行基础，产品把它接到已有业务控制中。</p>
+<div class="deep-mechanism"><h4>实现与条件</h4>
+<p>制度库提供条款依据；查询、批注和发布工具分别连接业务系统。审批人确认实际动作，最终接受标准由合同复核业务定义。</p>
+</div>
+<details class="detail"><summary>来源定位</summary><p data-source-id="as-dc202a66c974"><a href="https://docs.agentscope.io/en/versions/2.0.9/deploy/agent-service.md">agent-service</a></p><p data-source-id="as-69ccfb190c6d"><a href="https://java.agentscope.io/v2/en/service/files.md">files</a></p></details>
+<p class="source"><a href="https://docs.agentscope.io/en/versions/2.0.9/deploy/agent-service.md">agent-service</a><a href="https://java.agentscope.io/v2/en/service/files.md">files</a></p></article>
+</section>
+<section class="chapter" id="chapter-02"><div class="chapter-head"><div class="chapter-no">02</div><h2>Agent 内核</h2><p class="answer">一次回复由状态检查、模型调用与工具反馈推进。</p><p class="lead">消息保存完整记录，事件提供实时增量。合法参数、执行权限和运行环境分别约束调用。</p></div>
+<article class="module" id="agent"><h3>Agent 是推理与行动的循环引擎</h3><p class="lead">配置定义能力；AgentState 保存跨请求的工作状态</p><p class="principle">Agent 执行推理与行动循环。配置说明它能使用什么，AgentState 保存这次工作到了哪里；新消息开始回复，确认事件或外部结果续接暂停中的回复。</p><ul class="mechanism">
+<li><span class="name">配置</span><span class="work">模型、工具、提示词、权限与中间件。</span></li>
+<li><span class="name">运行状态</span><span class="work">上下文、当前消息、工具与暂停信息。</span></li>
+<li><span class="name">调用入口</span><span class="work">接收消息或事件，返回结果或等待输入。</span></li>
+</ul><p class="condition">等待由尾部同一 Agent 的调用与结果共同判定。</p>
+<div class="deep-mechanism"><h4>实现与条件</h4>
+<p>AgentState 可序列化为 JSON，保存摘要、上下文、当前 reply、权限、工具、任务和中间件状态。ReplyContext 还保留 reply_id、当前迭代数和结构化输出要求。</p>
+<p>等待判定只查看该 Agent 写出的尾部 assistant Msg：调用处于 ASKING，或处于 SUBMITTED 且没有同 ID 的 ToolResultBlock。匹配结果已存在的 SUBMITTED 调用不再等待；其他 Agent 的观察消息也不能据此判定本 Agent 等待。</p>
+<p>结构化 Schema 在进程内可以是 Pydantic class，保存时变成 JSON Schema；恢复后的字段结构不能代表原自定义 validator 和 default factory 全部随之恢复。</p>
+</div>
+<details class="detail"><summary>来源定位</summary><p data-source-id="as-f2b9fa0f0bea"><a href="https://docs.agentscope.io/en/versions/2.0.10dev/building-blocks/agent_overview.md">agent overview</a> · e4c1e074dee3f0f6cca28ca29e934c4ec0605354</p><p data-source-id="as-188d64eb8aa5"><a href="https://docs.agentscope.io/en/versions/2.0.10dev/building-blocks/agent_run-agent.md">agent run-agent</a> · e4c1e074dee3f0f6cca28ca29e934c4ec0605354</p><p data-source-id="as-614314fd8b6b"><a href="https://raw.githubusercontent.com/agentscope-ai/agentscope/e4c1e074dee3f0f6cca28ca29e934c4ec0605354/src/agentscope/state/_state.py">agentscope/state/_state.py</a> · e4c1e074dee3f0f6cca28ca29e934c4ec0605354</p><p data-source-id="as-df9d991bfc3d"><a href="https://raw.githubusercontent.com/agentscope-ai/agentscope/e4c1e074dee3f0f6cca28ca29e934c4ec0605354/src/agentscope/agent/_agent.py">agentscope/agent/_agent.py</a> · e4c1e074dee3f0f6cca28ca29e934c4ec0605354</p><p data-source-id="as-f99696363fae"><a href="https://raw.githubusercontent.com/agentscope-ai/agentscope/e4c1e074dee3f0f6cca28ca29e934c4ec0605354/src/agentscope/agent/_config.py">agentscope/agent/_config.py</a> · e4c1e074dee3f0f6cca28ca29e934c4ec0605354</p></details>
+<p class="source"><a href="https://docs.agentscope.io/en/versions/2.0.10dev/building-blocks/agent_overview.md">agent overview</a><a href="https://docs.agentscope.io/en/versions/2.0.10dev/building-blocks/agent_run-agent.md">agent run-agent</a><a href="https://raw.githubusercontent.com/agentscope-ai/agentscope/e4c1e074dee3f0f6cca28ca29e934c4ec0605354/src/agentscope/state/_state.py">agentscope/state/_state.py</a><a href="https://raw.githubusercontent.com/agentscope-ai/agentscope/e4c1e074dee3f0f6cca28ca29e934c4ec0605354/src/agentscope/agent/_agent.py">agentscope/agent/_agent.py</a><a href="https://raw.githubusercontent.com/agentscope-ai/agentscope/e4c1e074dee3f0f6cca28ca29e934c4ec0605354/src/agentscope/agent/_config.py">agentscope/agent/_config.py</a></p></article>
+<article class="module" id="message"><h3>Msg 把一次回复收成完整记录</h3><p class="lead">消息身份与有序内容块共同保存</p><p class="principle">Msg 是通信与持久化的单位。2.0 一次 reply 可累积多轮思考、工具调用和执行结果，最后形成一条助手消息。content 的有序类型块保留过程，不能只保存最后一句话。</p><ul class="mechanism">
+<li><span class="name">消息身份</span><span class="work">id、发送者、role 与时间。</span></li>
+<li><span class="name">有序内容块</span><span class="work">文字、工具调用与结果保留先后关系。</span></li>
+<li><span class="name">结束原因</span><span class="work">完成、中断、超限或错误；暂停尚无终态。</span></li>
+<li><span class="name">附加结果</span><span class="work">用量、结构化输出与错误信息。</span></li>
+</ul><p class="condition">一次 reply 的多轮调用汇入同一助手消息。</p>
+<p>finished_reason 区分完成、中断、超限和错误；暂停时还没有结束原因。角色约束在构造时校验：用户消息与系统消息可携带的内容类型有明确范围。</p>
+<details class="detail"><summary>来源定位</summary><p data-source-id="as-24299c5c3ff5"><a href="https://docs.agentscope.io/en/versions/2.0.10dev/building-blocks/message-and-event.md">message-and-event</a> · e4c1e074dee3f0f6cca28ca29e934c4ec0605354</p></details>
+<p class="source"><a href="https://docs.agentscope.io/en/versions/2.0.10dev/building-blocks/message-and-event.md">message-and-event</a></p></article>
+<article class="module" id="events"><h3>Event 把运行进展送到界面</h3><p class="lead">reply 与 block 身份决定增量更新的对象</p><p class="principle">Event 把运行过程送到界面。reply_id 标识回复，block_id 或 tool_call_id 标识内部对象；start、delta、end 记录生成过程，Msg.append_event 把事件应用回完整消息。</p><ul class="mechanism">
+<li><span class="name">对象身份</span><span class="work">reply_id、block_id 与 tool_call_id 定位对象。</span></li>
+<li><span class="name">内容更新</span><span class="work">delta 更新进展，end 可交回累积内容。</span></li>
+<li><span class="name">动作交接</span><span class="work">确认与外部执行事件关联待处理调用。</span></li>
+<li><span class="name">回复终态</span><span class="work">目标 reply 结束后保存完整消息。</span></li>
+</ul><p class="condition">事件到达后，还要成功应用到对应对象。</p>
+<div class="deep-mechanism"><h4>实现与条件</h4>
+<p>文字 delta 追加到对应文字块，end 事件可用累积文字替换；媒体 Base64 delta 各自解码后合并二进制，URL delta 则替换媒体来源。reply_id 不符或目标块缺失时，事件被跳过，消息不会发生预期变化。</p>
+<p>工具完成只更新一个调用；完整消息记录还包含其他调用、用量与回复结束原因。界面使用对象身份合并进展，避免把每一条事件都当作新消息。</p>
+</div>
+<details class="detail"><summary>来源定位</summary><p data-source-id="as-24299c5c3ff5"><a href="https://docs.agentscope.io/en/versions/2.0.10dev/building-blocks/message-and-event.md">message-and-event</a> · e4c1e074dee3f0f6cca28ca29e934c4ec0605354</p><p data-source-id="as-de4ce087584d"><a href="https://raw.githubusercontent.com/agentscope-ai/agentscope/e4c1e074dee3f0f6cca28ca29e934c4ec0605354/src/agentscope/message/_base.py">agentscope/message/_base.py</a> · e4c1e074dee3f0f6cca28ca29e934c4ec0605354</p></details>
+<p class="source"><a href="https://docs.agentscope.io/en/versions/2.0.10dev/building-blocks/message-and-event.md">message-and-event</a><a href="https://raw.githubusercontent.com/agentscope-ai/agentscope/e4c1e074dee3f0f6cca28ca29e934c4ec0605354/src/agentscope/message/_base.py">agentscope/message/_base.py</a></p></article>
+<article class="module" id="react"><h3>推理与工具结果组成反馈回路</h3><p class="lead">下一步由当前消息和工具状态决定</p><p class="principle">ReAct 的核心是反馈。模型返回工具请求后，Agent 校验并执行；工具结果进入当前消息，下一轮模型据此决定继续或结束。每轮还会处理上下文压缩与运行提示。</p><ul class="mechanism">
+<li><span class="name">检查状态</span><span class="work">选择推理、行动、暂停或结束。</span></li>
+<li><span class="name">调用模型</span><span class="work">发送上下文，读取答复与工具请求。</span></li>
+<li><span class="name">执行与回灌</span><span class="work">校验、执行，结果写回同一回复。</span></li>
+<li><span class="name">迭代预算</span><span class="work">默认 50 轮；普通文本超限做无工具总结。</span></li>
+</ul><p class="condition">权限拒绝与工具失败仍可进入下一轮推理。</p>
+<p>等待人工确认或外部执行时，循环暂停，当前事件流结束而回复尚未完成。后续结果事件到达才续接。超过迭代预算有明确结束状态，普通文本还可进行禁用工具的总结。</p>
+<div class="deep-mechanism"><h4>实现与条件</h4>
+<p>固定 2.0.10dev 的 max_iters 默认 50，约束一次 reply 的 reasoning–acting 迭代。普通文本到上限后有一次禁用工具的总结；这不是 Service 任务的统一时限，也不是固定的模型请求次数。</p>
+<p>默认 stop_on_reject=False，拒绝结果仍可交回推理循环。等待人工确认或外部结果则暂停当前事件流，后续事件续接同一 reply。</p>
+</div>
+<details class="detail"><summary>来源定位</summary><p data-source-id="as-f2b9fa0f0bea"><a href="https://docs.agentscope.io/en/versions/2.0.10dev/building-blocks/agent_overview.md">agent overview</a> · e4c1e074dee3f0f6cca28ca29e934c4ec0605354</p><p data-source-id="as-f99696363fae"><a href="https://raw.githubusercontent.com/agentscope-ai/agentscope/e4c1e074dee3f0f6cca28ca29e934c4ec0605354/src/agentscope/agent/_config.py">agentscope/agent/_config.py</a> · e4c1e074dee3f0f6cca28ca29e934c4ec0605354</p><p data-source-id="as-df9d991bfc3d"><a href="https://raw.githubusercontent.com/agentscope-ai/agentscope/e4c1e074dee3f0f6cca28ca29e934c4ec0605354/src/agentscope/agent/_agent.py">agentscope/agent/_agent.py</a> · e4c1e074dee3f0f6cca28ca29e934c4ec0605354</p><p data-source-id="as-188d64eb8aa5"><a href="https://docs.agentscope.io/en/versions/2.0.10dev/building-blocks/agent_run-agent.md">agent run-agent</a> · e4c1e074dee3f0f6cca28ca29e934c4ec0605354</p></details>
+<p class="source"><a href="https://docs.agentscope.io/en/versions/2.0.10dev/building-blocks/agent_overview.md">agent overview</a><a href="https://raw.githubusercontent.com/agentscope-ai/agentscope/e4c1e074dee3f0f6cca28ca29e934c4ec0605354/src/agentscope/agent/_config.py">agentscope/agent/_config.py</a><a href="https://raw.githubusercontent.com/agentscope-ai/agentscope/e4c1e074dee3f0f6cca28ca29e934c4ec0605354/src/agentscope/agent/_agent.py">agentscope/agent/_agent.py</a><a href="https://docs.agentscope.io/en/versions/2.0.10dev/building-blocks/agent_run-agent.md">agent run-agent</a></p></article>
+<article class="module" id="model"><h3>Model 与 Formatter 分担协议转换</h3><p class="lead">内部消息通过适配层进入模型接口</p><p class="principle">Formatter 把内部 Msg 转成供应商请求格式，Model 处理调用、重试、流式返回和用量。流式接口输出增量及最终完整响应，Agent 再转成事件。</p><ul class="mechanism">
+<li><span class="name">内部消息</span><span class="work">保留消息与内容块。</span></li>
+<li><span class="name">Formatter</span><span class="work">转换角色、工具与媒体表示。</span></li>
+<li><span class="name">Model</span><span class="work">发送请求，读取响应与用量。</span></li>
+<li><span class="name">统一输出</span><span class="work">回到 Agent 可消费的结构。</span></li>
+</ul><p class="condition">更换模型时核对工具、媒体与输出能力。</p>
+<p>格式统一仍保留供应商差异。某些媒体不能进入模型时，适配层会转为 URL 或文件路径；多名说话者需要 MultiAgentFormatter 保留身份。产品切换模型要核对这些能力，而不只替换名称。</p>
+<details class="detail"><summary>来源定位</summary><p data-source-id="as-d47e94c7be0b"><a href="https://docs.agentscope.io/en/versions/2.0.10dev/building-blocks/model_overview.md">model overview</a> · e4c1e074dee3f0f6cca28ca29e934c4ec0605354</p><p data-source-id="as-07cb85f8aa73"><a href="https://docs.agentscope.io/en/versions/2.0.10dev/building-blocks/model_llm.md">model llm</a> · e4c1e074dee3f0f6cca28ca29e934c4ec0605354</p></details>
+<p class="source"><a href="https://docs.agentscope.io/en/versions/2.0.10dev/building-blocks/model_overview.md">model overview</a><a href="https://docs.agentscope.io/en/versions/2.0.10dev/building-blocks/model_llm.md">model llm</a></p></article>
+<article class="module" id="tools"><h3>工具把模型请求接到真实函数</h3><p class="lead">名称、参数模式和返回结构形成契约</p><p class="principle">Toolkit 把 Python 函数、MCP 工具和工具组收成可调用集合。模型读取名称、说明和参数 Schema，运行时再次校验工具是否激活以及输入是否合法。业务工具可以按查询、保存候选和发布文件分别定义动作与授权。</p><ul class="mechanism">
+<li><span class="name">Schema</span><span class="work">模型看到名称、说明和可填参数。</span></li>
+<li><span class="name">ToolChunk</span><span class="work">逐块返回内容与执行状态。</span></li>
+<li><span class="name">ToolResponse</span><span class="work">按 block ID 合并；URL 内容不能追加；error 不被 success 覆盖。</span></li>
+<li><span class="name">ToolResultBlock</span><span class="work">以原调用 ID 写回消息，供下一轮使用。</span></li>
+</ul><p class="condition">进度、最终数据与执行状态分别合并。</p>
+<div class="deep-mechanism"><h4>实现与条件</h4>
+<p>同一内容 block ID 的文字块追加文本；独立编码的 Base64 块先各自解码，再合并二进制。URL 来源或不相容媒体来源不能相加，追加会报错。</p>
+<p>结果聚合一旦记录 error，后到的 success 不会把它改成成功。最终 ToolResultBlock 的 ID 对应原 ToolCallBlock；未注册、未激活或输入不合法的工具不会进入实际函数调用。</p>
+</div>
+<details class="detail"><summary>来源定位</summary><p data-source-id="as-47c09ed8a575"><a href="https://docs.agentscope.io/en/versions/2.0.10dev/building-blocks/tool_python-tool.md">tool python-tool</a> · e4c1e074dee3f0f6cca28ca29e934c4ec0605354</p><p data-source-id="as-13c3e91cfe2f"><a href="https://docs.agentscope.io/en/versions/2.0.10dev/building-blocks/tool_overview.md">tool overview</a> · e4c1e074dee3f0f6cca28ca29e934c4ec0605354</p><p data-source-id="as-87b75e2c3fd3"><a href="https://raw.githubusercontent.com/agentscope-ai/agentscope/e4c1e074dee3f0f6cca28ca29e934c4ec0605354/src/agentscope/tool/_response.py">agentscope/tool/_response.py</a> · e4c1e074dee3f0f6cca28ca29e934c4ec0605354</p><p data-source-id="as-24299c5c3ff5"><a href="https://docs.agentscope.io/en/versions/2.0.10dev/building-blocks/message-and-event.md">message-and-event</a> · e4c1e074dee3f0f6cca28ca29e934c4ec0605354</p><p data-source-id="as-7a512c849f50"><a href="https://raw.githubusercontent.com/agentscope-ai/agentscope/e4c1e074dee3f0f6cca28ca29e934c4ec0605354/src/agentscope/tool/_toolkit.py">agentscope/tool/_toolkit.py</a> · e4c1e074dee3f0f6cca28ca29e934c4ec0605354</p></details>
+<p class="source"><a href="https://docs.agentscope.io/en/versions/2.0.10dev/building-blocks/tool_python-tool.md">tool python-tool</a><a href="https://docs.agentscope.io/en/versions/2.0.10dev/building-blocks/tool_overview.md">tool overview</a><a href="https://raw.githubusercontent.com/agentscope-ai/agentscope/e4c1e074dee3f0f6cca28ca29e934c4ec0605354/src/agentscope/tool/_response.py">agentscope/tool/_response.py</a><a href="https://docs.agentscope.io/en/versions/2.0.10dev/building-blocks/message-and-event.md">message-and-event</a><a href="https://raw.githubusercontent.com/agentscope-ai/agentscope/e4c1e074dee3f0f6cca28ca29e934c4ec0605354/src/agentscope/tool/_toolkit.py">agentscope/tool/_toolkit.py</a></p></article>
+<article class="module" id="scheduling"><h3>工具属性决定并行与串行</h3><p class="lead">并发安全属性决定执行批次，依赖由编排表达</p><p class="principle">2.0 的工具包含 is_concurrency_safe 等属性。并发安全调用可并行，其他调用按顺序组织；结果汇合后进入下一轮推理。同一批工具中，错误也要写回可识别的结果。</p><ul class="mechanism">
+<li><span class="name">独立读取</span><span class="work">多个查询可以同时执行。</span></li>
+<li><span class="name">依赖步骤</span><span class="work">先取得前一步结果，再发起后一步。</span></li>
+<li><span class="name">工具属性</span><span class="work">声明并发安全与执行特征。</span></li>
+<li><span class="name">结果汇合</span><span class="work">全部结果重新进入反馈。</span></li>
+</ul><p class="condition">先生成再发布的依赖由编排或后续轮次表达。</p>
+<p>同一批并发安全调用汇合结果后进入下一轮推理。生成文件后才能发布文件的依赖，由编排或后续推理轮表达；调度器不会自动从动作名称推断业务依赖。</p>
+<details class="detail"><summary>来源定位</summary><p data-source-id="as-2fea42114514"><a href="https://docs.agentscope.io/en/versions/2.0.10dev/building-blocks/tool_manage-tools.md">tool manage-tools</a> · e4c1e074dee3f0f6cca28ca29e934c4ec0605354</p><p data-source-id="as-13c3e91cfe2f"><a href="https://docs.agentscope.io/en/versions/2.0.10dev/building-blocks/tool_overview.md">tool overview</a> · e4c1e074dee3f0f6cca28ca29e934c4ec0605354</p></details>
+<p class="source"><a href="https://docs.agentscope.io/en/versions/2.0.10dev/building-blocks/tool_manage-tools.md">tool manage-tools</a><a href="https://docs.agentscope.io/en/versions/2.0.10dev/building-blocks/tool_overview.md">tool overview</a></p></article>
+<article class="module" id="permission"><h3>权限判定发生在工具执行前</h3><p class="lead">DEFAULT：deny → ask → 只读 → 工具自检 → allow → ASK</p><p class="principle">DEFAULT 模式按 deny、ask、只读快速路径、工具自检、allow 和默认 ASK 等阶段判定。EXPLORE 先检查显式 deny/ask 规则；未命中这些规则的非只读请求才默认拒绝。显式 ask 仍可在人工确认后执行，allow 规则不能改变非只读的默认拒绝。BYPASS 的控制含义不同，需要明确配置。</p><ul class="mechanism">
+<li><span class="name">ALLOW</span><span class="work">继续执行工具。</span></li>
+<li><span class="name">DENY</span><span class="work">返回拒绝结果，交回推理循环。</span></li>
+<li><span class="name">ASK</span><span class="work">暂停并发出人工确认事件。</span></li>
+</ul><p class="condition">EXPLORE 的显式 ASK 可逐次确认执行。</p>
+<p>权限系统决定是否执行，工具审查检查实际输入，沙箱限制运行环境。三个层次共同工作。人工确认应展示具体工具、参数和作用对象，答复要关联等待中的调用。</p>
+<div class="deep-mechanism"><h4>实现与条件</h4>
+<p>DEFAULT 的第一个决定性结果生效：deny 规则、ask 规则、按本次输入判断的只读快速路径、工具自检、allow 规则，最后兜底 ASK。工具自检产生的 safety ASK 不被后面的 allow 覆盖。</p>
+<p>EXPLORE 先保留 deny 与显式 ask，再判断只读；它跳过工具自检和 allow，剩余非只读调用才兜底 DENY。合法待确认调用经 confirmed=True 可进入本次执行；后续调用仍重新按模式判定。</p>
+<p>DONT_ASK 把需要询问的结果转为拒绝，适用于没有确认者的运行。BYPASS 跳过工具 safety ASK，但显式 deny/ask 和工具 DENY 仍生效；运行环境的权限和沙箱边界另行约束执行。</p>
+</div>
+<details class="detail"><summary>来源定位</summary><p data-source-id="as-7dad78a203b5"><a href="https://docs.agentscope.io/en/versions/2.0.9/building-blocks/permission-system/overview.md">permission-system / overview</a></p><p data-source-id="as-7bfd7ee86f21"><a href="https://docs.agentscope.io/en/versions/2.0.10dev/building-blocks/agent_human-in-the-loop.md">agent human-in-the-loop</a> · e4c1e074dee3f0f6cca28ca29e934c4ec0605354</p><p data-source-id="as-145a584b7630"><a href="https://raw.githubusercontent.com/agentscope-ai/agentscope/e4c1e074dee3f0f6cca28ca29e934c4ec0605354/src/agentscope/permission/_engine.py">agentscope/permission/_engine.py</a> · e4c1e074dee3f0f6cca28ca29e934c4ec0605354</p><p data-source-id="as-df9d991bfc3d"><a href="https://raw.githubusercontent.com/agentscope-ai/agentscope/e4c1e074dee3f0f6cca28ca29e934c4ec0605354/src/agentscope/agent/_agent.py">agentscope/agent/_agent.py</a> · e4c1e074dee3f0f6cca28ca29e934c4ec0605354</p><p data-source-id="as-4a805cb460f3"><a href="https://raw.githubusercontent.com/agentscope-ai/agentscope/e4c1e074dee3f0f6cca28ca29e934c4ec0605354/src/agentscope/event/_event.py">agentscope/event/_event.py</a> · e4c1e074dee3f0f6cca28ca29e934c4ec0605354</p></details>
+<p class="source"><a href="https://docs.agentscope.io/en/versions/2.0.9/building-blocks/permission-system/overview.md">permission-system / overview</a><a href="https://docs.agentscope.io/en/versions/2.0.10dev/building-blocks/agent_human-in-the-loop.md">agent human-in-the-loop</a><a href="https://raw.githubusercontent.com/agentscope-ai/agentscope/e4c1e074dee3f0f6cca28ca29e934c4ec0605354/src/agentscope/permission/_engine.py">agentscope/permission/_engine.py</a><a href="https://raw.githubusercontent.com/agentscope-ai/agentscope/e4c1e074dee3f0f6cca28ca29e934c4ec0605354/src/agentscope/agent/_agent.py">agentscope/agent/_agent.py</a><a href="https://raw.githubusercontent.com/agentscope-ai/agentscope/e4c1e074dee3f0f6cca28ca29e934c4ec0605354/src/agentscope/event/_event.py">agentscope/event/_event.py</a></p></article>
+<article class="module" id="hitl"><h3>人工确认把暂停接回执行</h3><p class="lead">确认事件关联待执行调用和用户答复</p><p class="principle">ASK 将工具调用改为 ASKING，并发出 RequireUserConfirmEvent。当前事件流结束，reply 尚未完成；调用方保存状态并展示实际工具、参数与作用对象，随后用确认事件续接。</p><ul class="mechanism">
+<li><span class="name">待确认调用</span><span class="work">保存工具名称、参数与调用 ID。</span></li>
+<li><span class="name">暂停回复</span><span class="work">ASKING 发出确认请求；reply 尚未完成。</span></li>
+<li><span class="name">匹配答复</span><span class="work">reply_id 与嵌套 tool_call.id 对应原对象。</span></li>
+<li><span class="name">单次继续</span><span class="work">confirmed=True 放行；False 返回拒绝。</span></li>
+</ul><p class="condition">确认界面呈现实际批准的工具、参数与对象。</p>
+<p>外部执行走另一条交接：external 工具发出执行请求，外部完成后带回结果。输入确认、执行结果和最终消息分别关联原调用。</p>
+<div class="deep-mechanism"><h4>实现与条件</h4>
+<p>UserConfirmResultEvent 携带 reply_id 与 confirm_results；每项包含 confirmed 和嵌套 ToolCallBlock。系统以 tool_call.id 对应等待中的调用，无等待或有额外 ID 的确认不能续接。</p>
+<p>确认对象中的工具名称和参数会被采纳，confirmed=True 将本次调用改为 ALLOWED；追加 rules 是独立的可选项。执行前工具可用性、输入 Schema、自定义 permission middleware 和外部执行器仍按各自路径判断。</p>
+</div>
+<details class="detail"><summary>来源定位</summary><p data-source-id="as-7bfd7ee86f21"><a href="https://docs.agentscope.io/en/versions/2.0.10dev/building-blocks/agent_human-in-the-loop.md">agent human-in-the-loop</a> · e4c1e074dee3f0f6cca28ca29e934c4ec0605354</p><p data-source-id="as-4a805cb460f3"><a href="https://raw.githubusercontent.com/agentscope-ai/agentscope/e4c1e074dee3f0f6cca28ca29e934c4ec0605354/src/agentscope/event/_event.py">agentscope/event/_event.py</a> · e4c1e074dee3f0f6cca28ca29e934c4ec0605354</p><p data-source-id="as-df9d991bfc3d"><a href="https://raw.githubusercontent.com/agentscope-ai/agentscope/e4c1e074dee3f0f6cca28ca29e934c4ec0605354/src/agentscope/agent/_agent.py">agentscope/agent/_agent.py</a> · e4c1e074dee3f0f6cca28ca29e934c4ec0605354</p></details>
+<p class="source"><a href="https://docs.agentscope.io/en/versions/2.0.10dev/building-blocks/agent_human-in-the-loop.md">agent human-in-the-loop</a><a href="https://raw.githubusercontent.com/agentscope-ai/agentscope/e4c1e074dee3f0f6cca28ca29e934c4ec0605354/src/agentscope/event/_event.py">agentscope/event/_event.py</a><a href="https://raw.githubusercontent.com/agentscope-ai/agentscope/e4c1e074dee3f0f6cca28ca29e934c4ec0605354/src/agentscope/agent/_agent.py">agentscope/agent/_agent.py</a></p></article>
+<article class="module" id="integration"><h3>Python、MCP 与 Skill 有不同入口</h3><p class="lead">工具能力与任务指导在 Toolkit 汇合</p><p class="principle">Python 工具连接已有函数，MCP 连接外部工具服务，Skill 提供任务说明与资源。工具组可按任务激活，减少模型一次看见的工具集合。MCP 列举失败时，组件可撤下该服务的工具并记录问题。</p><ul class="mechanism">
+<li><span class="name">Python 工具</span><span class="work">本地函数直接承担动作。</span></li>
+<li><span class="name">MCP 工具</span><span class="work">发现并调用外部服务工具。</span></li>
+<li><span class="name">Skill</span><span class="work">提供任务说明和按需读取的资源。</span></li>
+</ul><p class="condition">技能说明与实际工具授权分别配置。</p>
+<p>连接生命周期、凭据、技能资源和执行授权分别配置。技能文本不能为真实业务写入自动授予权限。</p>
+<details class="detail"><summary>来源定位</summary><p data-source-id="as-13c3e91cfe2f"><a href="https://docs.agentscope.io/en/versions/2.0.10dev/building-blocks/tool_overview.md">tool overview</a> · e4c1e074dee3f0f6cca28ca29e934c4ec0605354</p><p data-source-id="as-2fea42114514"><a href="https://docs.agentscope.io/en/versions/2.0.10dev/building-blocks/tool_manage-tools.md">tool manage-tools</a> · e4c1e074dee3f0f6cca28ca29e934c4ec0605354</p></details>
+<p class="source"><a href="https://docs.agentscope.io/en/versions/2.0.10dev/building-blocks/tool_overview.md">tool overview</a><a href="https://docs.agentscope.io/en/versions/2.0.10dev/building-blocks/tool_manage-tools.md">tool manage-tools</a></p></article>
+</section>
+<section class="chapter" id="chapter-03"><div class="chapter-head"><div class="chapter-no">03</div><h2>上下文与协作</h2><p class="answer">长任务靠可见上下文、可回查材料与明确分工继续。</p><p class="lead">压缩、offload、memory 与 RAG 处理不同的信息需要；计划、verifier 和 team 组织工作。</p></div>
+<article class="module" id="context"><h3>模型输入由三层组装</h3><p class="lead">固定指导、历史摘要与近期消息分开维护</p><p class="principle">上下文是 Agent 的工作记忆。每轮模型调用组装系统提示、历史摘要和近期消息。系统提示还会经过 on_system_prompt 变换，工具 Schema 取自当前激活集合。</p><ul class="mechanism">
+<li><span class="name">系统提示</span><span class="work">基础提示、技能说明与中间件变换。</span></li>
+<li><span class="name">压缩摘要</span><span class="work">保留较早历史的必要信息。</span></li>
+<li><span class="name">近期上下文</span><span class="work">最近消息、结果和运行提示。</span></li>
+</ul><p class="condition">上下文决定模型下一步能依据什么。</p>
+<p>会随执行变化的时间、任务状态和用量以运行提示注入上下文。讨论回答质量时，应检查必要材料和约束是否进入了本轮输入，而不只分析模型型号。</p>
+<details class="detail"><summary>来源定位</summary><p data-source-id="as-524cfb38d8f2"><a href="https://docs.agentscope.io/en/versions/2.0.10dev/building-blocks/context_overview.md">context overview</a> · e4c1e074dee3f0f6cca28ca29e934c4ec0605354</p></details>
+<p class="source"><a href="https://docs.agentscope.io/en/versions/2.0.10dev/building-blocks/context_overview.md">context overview</a></p></article>
+<article class="module" id="compression"><h3>压缩给长任务腾出上下文空间</h3><p class="lead">2.0.10dev：历史压缩与单工具结果截短分别配置</p><p class="principle">长任务同时面对历史积累和大型工具返回。历史压缩把较早消息收成摘要，近期消息继续保留；单个工具结果截短则限制本次返回占用的输入空间。</p><ul class="mechanism">
+<li><span class="name">触发压缩</span><span class="work">默认超过模型 context size 的 80%。</span></li>
+<li><span class="name">近期保留</span><span class="work">默认保留窗口 10% 范围内的近期消息。</span></li>
+<li><span class="name">工具结果</span><span class="work">代码默认每项 50000 tokens；3000 为文档例子。</span></li>
+<li><span class="name">摘要失败</span><span class="work">默认截去旧消息；关闭该兜底则报错。</span></li>
+</ul><p class="condition">阈值随模型窗口变化，回查依赖另配的 offloader。</p>
+<div class="deep-mechanism"><h4>实现与条件</h4>
+<p>自动压缩在 reasoning 前统计系统提示、摘要、消息与工具 Schema 的 tokens；超过 trigger_ratio × context_size 才触发。固定源码 trigger_ratio=0.8，reserve_ratio=0.1，工具调用与结果对在历史分割时保持完整。</p>
+<p>tool_result_limit 的固定源码默认是 50000 tokens；文档示例显式设置 3000，用于展示场景覆盖。工具结果超限可保留一段并截短余下内容，配置 offloader 才能保留被移出部分的回查路径。</p>
+<p>摘要生成多次失败后，默认 compression_fallback_to_truncation=True 会删除最旧消息并留下截断提示；设为 False 则报错并保留原上下文。压缩后的摘要需保留约束、动作状态和材料身份，输入缩短本身不能证明细节仍可用。</p>
+</div>
+<details class="detail"><summary>来源定位</summary><p data-source-id="as-761fb054c0df"><a href="https://docs.agentscope.io/en/versions/2.0.10dev/building-blocks/context_compress-context.md">context compress-context</a> · e4c1e074dee3f0f6cca28ca29e934c4ec0605354</p><p data-source-id="as-f99696363fae"><a href="https://raw.githubusercontent.com/agentscope-ai/agentscope/e4c1e074dee3f0f6cca28ca29e934c4ec0605354/src/agentscope/agent/_config.py">agentscope/agent/_config.py</a> · e4c1e074dee3f0f6cca28ca29e934c4ec0605354</p><p data-source-id="as-df9d991bfc3d"><a href="https://raw.githubusercontent.com/agentscope-ai/agentscope/e4c1e074dee3f0f6cca28ca29e934c4ec0605354/src/agentscope/agent/_agent.py">agentscope/agent/_agent.py</a> · e4c1e074dee3f0f6cca28ca29e934c4ec0605354</p></details>
+<p class="source"><a href="https://docs.agentscope.io/en/versions/2.0.10dev/building-blocks/context_compress-context.md">context compress-context</a><a href="https://raw.githubusercontent.com/agentscope-ai/agentscope/e4c1e074dee3f0f6cca28ca29e934c4ec0605354/src/agentscope/agent/_config.py">agentscope/agent/_config.py</a><a href="https://raw.githubusercontent.com/agentscope-ai/agentscope/e4c1e074dee3f0f6cca28ca29e934c4ec0605354/src/agentscope/agent/_agent.py">agentscope/agent/_agent.py</a></p></article>
+<article class="module" id="offload"><h3>卸载保留被压缩内容的回查路径</h3><p class="lead">摘要进入下一轮，原件在另配的存储中保留</p><p class="principle">offload 保存被移出模型输入的原始内容。摘要支持下一轮推理，外部保存的消息和工具结果提供细节回查，两者由引用关联。</p><ul class="mechanism">
+<li><span class="name">原始内容</span><span class="work">较早消息或大型结果。</span></li>
+<li><span class="name">外部保存</span><span class="work">offloader 写入存储。</span></li>
+<li><span class="name">保留引用</span><span class="work">上下文留下定位与摘要。</span></li>
+<li><span class="name">按需读回</span><span class="work">通过文件能力取回细节。</span></li>
+</ul><p class="condition">引用、存储与读取工具一起形成回查路径。</p>
+<div class="deep-mechanism"><h4>实现与条件</h4>
+<p>没有配置 offloader 时，压缩消息和截短工具结果离开上下文后直接丢弃。内置 Workspace 可作为 offloader，把压缩消息追加到 sessions/{session_id}/context.jsonl，把工具结果放入按 tool ID 命名的文件。</p>
+<p>返回引用只提供定位。Agent 还需要能访问该存储的 Read、Grep 或 Glob 等工具，才能取回具体内容；自定义存储也要提供与引用相配的读取能力。</p>
+</div>
+<details class="detail"><summary>来源定位</summary><p data-source-id="as-c3e41125204e"><a href="https://docs.agentscope.io/en/versions/2.0.10dev/building-blocks/context_offload-context.md">context offload-context</a> · e4c1e074dee3f0f6cca28ca29e934c4ec0605354</p></details>
+<p class="source"><a href="https://docs.agentscope.io/en/versions/2.0.10dev/building-blocks/context_offload-context.md">context offload-context</a></p></article>
+<article class="module" id="memory"><h3>长期记忆跨越当前对话</h3><p class="lead">记忆写入、检索与工作上下文分开</p><p class="principle">长期记忆通过中间件接入。Agentic Memory 用工作区 Markdown 支持自主读写，ReMe 和 Mem0 等方案提供检索、注入和回写路径，静态检索与工具检索也可组合。</p><ul class="mechanism">
+<li><span class="name">本轮上下文</span><span class="work">支持当前推理与工具反馈。</span></li>
+<li><span class="name">长期记忆</span><span class="work">保存跨任务可再利用的信息。</span></li>
+<li><span class="name">记忆写入</span><span class="work">选择需要留下的内容。</span></li>
+<li><span class="name">记忆检索</span><span class="work">按当前需要取回相关信息。</span></li>
+</ul><p class="condition">用户、会话与记忆归属保持一致。</p>
+<p>不同方案的数据归属与生命周期不同。ReMe 缺少 session_id 时会跳过回写，其检索范围又可能覆盖工作区。采用前应明确用户、Agent 和组织的记忆边界，以及修改和清除入口。</p>
+<details class="detail"><summary>来源定位</summary><p data-source-id="as-1223f953ff05"><a href="https://docs.agentscope.io/en/versions/2.0.10dev/building-blocks/long-term-memory.md">long-term-memory</a> · e4c1e074dee3f0f6cca28ca29e934c4ec0605354</p></details>
+<p class="source"><a href="https://docs.agentscope.io/en/versions/2.0.10dev/building-blocks/long-term-memory.md">long-term-memory</a></p></article>
+<article class="module" id="rag"><h3>RAG 把知识材料接到推理输入</h3><p class="lead">索引构建与问题检索组成两条流程</p><p class="principle">KnowledgeBase 组织 parser、chunker、embedding 和 vector store。查询会批量嵌入、检索、去重、按分数过滤并选取 top_k。RAGMiddleware 可在推理前静态注入，也可公开搜索工具让 Agent 主动查询。</p><ul class="mechanism">
+<li><span class="name">导入材料</span><span class="work">解析文档并切片。</span></li>
+<li><span class="name">建立索引</span><span class="work">嵌入片段，写入后端。</span></li>
+<li><span class="name">查询片段</span><span class="work">按问题检索、排序与去重。</span></li>
+<li><span class="name">形成回答</span><span class="work">把相关材料交给 Agent。</span></li>
+</ul><p class="condition">检索与回答质量分别检查。</p>
+<p>metadata_filter 约束检索与写入，可承担数据分区。API 与后台索引 worker 要使用一致的存储、总线、文件和向量后端。文本嵌入对多模态输入还有能力边界，需要在产品输入上明确处理。</p>
+<details class="detail"><summary>来源定位</summary><p data-source-id="as-8379a990984a"><a href="https://docs.agentscope.io/en/versions/2.0.9/deploy/rag.md">rag</a></p><p data-source-id="as-29e364404cfc"><a href="https://docs.agentscope.io/en/versions/2.0.10dev/building-blocks/rag.md">rag</a> · e4c1e074dee3f0f6cca28ca29e934c4ec0605354</p></details>
+<p class="source"><a href="https://docs.agentscope.io/en/versions/2.0.9/deploy/rag.md">rag</a><a href="https://docs.agentscope.io/en/versions/2.0.10dev/building-blocks/rag.md">rag</a></p></article>
+<article class="module" id="structured"><h3>结构化输出让结果进入后续流程</h3><p class="lead">Schema 固定字段，业务核对含义</p><p class="principle">结构化输出通过临时生成工具与 Schema 校验形成结果，最终保存在 Msg.structured_output。字段、类型与结构可以被程序消费，风险是否成立、引用是否准确仍由业务核对。</p><ul class="mechanism">
+<li><span class="name">输出 Schema</span><span class="work">定义风险、位置、建议与依据。</span></li>
+<li><span class="name">生成工具</span><span class="work">用临时工具提交并校验字段。</span></li>
+<li><span class="name">有限宽限</span><span class="work">2.0.10dev 超出 max_iters 后默认再给 5 轮。</span></li>
+<li><span class="name">失败结果</span><span class="work">仍未形成有效结构时 structured_output = None。</span></li>
+</ul><p class="condition">字段有效后，再核对风险依据与业务条件。</p>
+<div class="deep-mechanism"><h4>实现与条件</h4>
+<p>固定源码的 structured_output_grace_iters 默认 5；达到 max_iters 后强制选择生成结构化输出的工具，仍可在宽限内提交。耗尽预算还未满足要求时，应用必须处理 structured_output=None，不能把普通文字当成已经过 Schema 校验的结果。</p>
+</div>
+<details class="detail"><summary>来源定位</summary><p data-source-id="as-188d64eb8aa5"><a href="https://docs.agentscope.io/en/versions/2.0.10dev/building-blocks/agent_run-agent.md">agent run-agent</a> · e4c1e074dee3f0f6cca28ca29e934c4ec0605354</p><p data-source-id="as-f99696363fae"><a href="https://raw.githubusercontent.com/agentscope-ai/agentscope/e4c1e074dee3f0f6cca28ca29e934c4ec0605354/src/agentscope/agent/_config.py">agentscope/agent/_config.py</a> · e4c1e074dee3f0f6cca28ca29e934c4ec0605354</p><p data-source-id="as-df9d991bfc3d"><a href="https://raw.githubusercontent.com/agentscope-ai/agentscope/e4c1e074dee3f0f6cca28ca29e934c4ec0605354/src/agentscope/agent/_agent.py">agentscope/agent/_agent.py</a> · e4c1e074dee3f0f6cca28ca29e934c4ec0605354</p></details>
+<p class="source"><a href="https://docs.agentscope.io/en/versions/2.0.10dev/building-blocks/agent_run-agent.md">agent run-agent</a><a href="https://raw.githubusercontent.com/agentscope-ai/agentscope/e4c1e074dee3f0f6cca28ca29e934c4ec0605354/src/agentscope/agent/_config.py">agentscope/agent/_config.py</a><a href="https://raw.githubusercontent.com/agentscope-ai/agentscope/e4c1e074dee3f0f6cca28ca29e934c4ec0605354/src/agentscope/agent/_agent.py">agentscope/agent/_agent.py</a></p></article>
+<article class="module" id="interrupt"><h3>中断与继续各有明确状态</h3><p class="lead">生成中的运行与暂停中的运行分别处理</p><p class="principle">运行中通常取消异步任务，暂停中的回复则通过 UserInterruptEvent 处理等待工具并形成中断结果。idle 会话的中断是无操作。服务接受中断请求和实际工具清理完成是两个阶段。</p><ul class="mechanism">
+<li><span class="name">运行中断</span><span class="work">取消当前模型或工具任务。</span></li>
+<li><span class="name">暂停中断</span><span class="work">向等待中的回复送入中断事件。</span></li>
+<li><span class="name">保留记录</span><span class="work">保存部分输出和工具状态。</span></li>
+<li><span class="name">恢复核对</span><span class="work">确认外部动作实际结果。</span></li>
+</ul><p class="condition">停止等待后，外部动作仍需核对。</p>
+<p>已经送到业务系统的请求可能继续完成，取消界面等待不能替代下游撤销。恢复时先查询外部结果，再决定继续或重试。</p>
+<details class="detail"><summary>来源定位</summary><p data-source-id="as-1787397c3223"><a href="https://docs.agentscope.io/en/versions/2.0.10dev/building-blocks/agent_interrupt-agent.md">agent interrupt-agent</a> · e4c1e074dee3f0f6cca28ca29e934c4ec0605354</p><p data-source-id="as-79adbb1a7334"><a href="https://java.agentscope.io/v2/en/service/session-event-log.md">session-event-log</a></p></details>
+<p class="source"><a href="https://docs.agentscope.io/en/versions/2.0.10dev/building-blocks/agent_interrupt-agent.md">agent interrupt-agent</a><a href="https://java.agentscope.io/v2/en/service/session-event-log.md">session-event-log</a></p></article>
+<article class="module" id="middleware"><h3>中间件在生命周期接入规则</h3><p class="lead">横切逻辑通过明确阶段统一处理</p><p class="principle">MiddlewareBase 提供 on_reply、on_reasoning、on_check_permission、on_acting、on_model_call、on_compress_context 等环绕阶段，以及顺序变换的 on_system_prompt。它还可通过稳定 key 在 AgentState 中保存状态。</p><ul class="mechanism">
+<li><span class="name">系统提示</span><span class="work">按用户与场景调整指导。</span></li>
+<li><span class="name">模型阶段</span><span class="work">处理输入、输出和调用。</span></li>
+<li><span class="name">工具阶段</span><span class="work">审查、变换与记录 I/O。</span></li>
+<li><span class="name">运行阶段</span><span class="work">组织日志、压缩与回复逻辑。</span></li>
+</ul><p class="condition">规则的作用范围与执行顺序明确配置。</p>
+<p>on_acting 主要包工具 I/O，参数解析、权限判定和写入上下文在它之外。加入审计或后台卸载时要选择正确阶段，尤其注意可注入 live state 的工具所带来的并发影响。</p>
+<details class="detail"><summary>来源定位</summary><p data-source-id="as-cc1c5a96c71f"><a href="https://docs.agentscope.io/en/versions/2.0.10dev/building-blocks/middleware.md">middleware</a> · e4c1e074dee3f0f6cca28ca29e934c4ec0605354</p></details>
+<p class="source"><a href="https://docs.agentscope.io/en/versions/2.0.10dev/building-blocks/middleware.md">middleware</a></p></article>
+<article class="module" id="pipeline"><h3>GoalPipeline 用执行与核验推进目标</h3><p class="lead">候选结果经 verifier 判定后继续或结束</p><p class="principle">GoalPipeline 把 executor 与 verifier 接成目标闭环。失败结果回到执行者，格式无效有单独重试，HITL 事件按 reply_id 送回对应 Agent。预算属于 pipeline 实例，续接不会重新计数。</p><ul class="mechanism">
+<li><span class="name">执行目标</span><span class="work">executor 形成工作结果。</span></li>
+<li><span class="name">结构报告</span><span class="work">以约定格式提交候选。</span></li>
+<li><span class="name">核验判定</span><span class="work">返回 pass、fail 或 impossible。</span></li>
+<li><span class="name">反馈修正</span><span class="work">未通过且预算允许时继续。</span></li>
+</ul><p class="condition">格式校验与 verifier 的结果核验各有判定。</p>
+<p>verifier 可以读取文件、使用工具或请求人工判断，它也是普通 Agent。产品应为核验提供明确的可观察标准；不能把模型返回 pass 直接当成业务已经接收。</p>
+<details class="detail"><summary>来源定位</summary><p data-source-id="as-986459b99a69"><a href="https://docs.agentscope.io/en/versions/2.0.10dev/building-blocks/pipeline_goal.md">pipeline goal</a> · e4c1e074dee3f0f6cca28ca29e934c4ec0605354</p></details>
+<p class="source"><a href="https://docs.agentscope.io/en/versions/2.0.10dev/building-blocks/pipeline_goal.md">pipeline goal</a></p></article>
+<article class="module" id="team"><h3>团队把工作拆给不同 Agent</h3><p class="lead">分配、独立执行、通信与最终汇总</p><p class="principle">TeamPipeline 给 leader 注册分配工具。不同成员可并发，同一成员的任务串行；成员保留自己的权限要求，人工答复按回复身份路由。默认 leader 回复结束后清理成员上下文。</p><ul class="mechanism">
+<li><span class="name">分配任务</span><span class="work">leader 给成员完整任务输入。</span></li>
+<li><span class="name">独立执行</span><span class="work">成员在自己的上下文中工作。</span></li>
+<li><span class="name">传回结果</span><span class="work">成员结果成为 leader 的工具结果。</span></li>
+<li><span class="name">统一汇总</span><span class="work">leader 形成最终回复。</span></li>
+</ul><p class="condition">成员权限仍各自生效。</p>
+<p>Agent Service 还提供托管团队的工具与会话能力。产品应明确每个成员的材料、工具和结果责任，避免重复工作或把只负责研究的成员授予业务写入能力。</p>
+<details class="detail"><summary>来源定位</summary><p data-source-id="as-0c1773327b10"><a href="https://docs.agentscope.io/en/versions/2.0.10dev/building-blocks/pipeline_team.md">pipeline team</a> · e4c1e074dee3f0f6cca28ca29e934c4ec0605354</p><p data-source-id="as-dc202a66c974"><a href="https://docs.agentscope.io/en/versions/2.0.9/deploy/agent-service.md">agent-service</a></p></details>
+<p class="source"><a href="https://docs.agentscope.io/en/versions/2.0.10dev/building-blocks/pipeline_team.md">pipeline team</a><a href="https://docs.agentscope.io/en/versions/2.0.9/deploy/agent-service.md">agent-service</a></p></article>
+<article class="module" id="plan"><h3>计划与 SOP 组织复杂工作的约束</h3><p class="lead">待办状态和流程规则承担不同职责</p><p class="principle">计划让当前步骤和剩余工作可见，SOP 用 executor 与 verifier 推进固定里程碑。二者用于组织工作，不替代工具回执或最终接受。</p><ul class="mechanism">
+<li><span class="name">计划</span><span class="work">记录任务、进度和后续步骤。</span></li>
+<li><span class="name">SOP</span><span class="work">约束特定工作流程。</span></li>
+<li><span class="name">任务变化</span><span class="work">根据新材料调整后续计划。</span></li>
+<li><span class="name">核验推进</span><span class="work">按阶段结果决定继续。</span></li>
+</ul><p class="condition">计划完成状态依据实际执行结果。</p>
+<p>用户改变要求时，要判断是调整后续计划，还是改变业务规则。流程内的核验应连接文件、测试或人工结果，确保完成标签有依据。</p>
+<details class="detail"><summary>来源定位</summary><p data-source-id="as-ae1de456793f"><a href="https://docs.agentscope.io/en/versions/2.0.10dev/building-blocks/plan.md">plan</a> · e4c1e074dee3f0f6cca28ca29e934c4ec0605354</p><p data-source-id="as-6c4048dcd902"><a href="https://docs.agentscope.io/en/versions/2.0.10dev/building-blocks/sop.md">sop</a> · e4c1e074dee3f0f6cca28ca29e934c4ec0605354</p></details>
+<p class="source"><a href="https://docs.agentscope.io/en/versions/2.0.10dev/building-blocks/plan.md">plan</a><a href="https://docs.agentscope.io/en/versions/2.0.10dev/building-blocks/sop.md">sop</a></p></article>
+</section>
+<section class="chapter" id="chapter-04"><div class="chapter-head"><div class="chapter-no">04</div><h2>Python 服务</h2><p class="answer">Agent Service 管理一次循环之外的身份、状态与资源。</p><p class="lead">持久存储与消息总线分开；请求提交、后台运行和多个观察者之间保留会话身份。</p></div>
+<article class="module" id="service"><h3>Agent Service 托管循环之外的资源</h3><p class="lead">请求、身份、状态与事件围绕 Agent 组织</p><p class="principle">create_app 接受 storage、message_bus 和 workspace_manager 等依赖。启动生命周期连接资源，ChatService 处理会话输入和运行，路由层管理订阅、确认、中断和资源访问。</p><ul class="mechanism">
+<li><span class="name">请求层</span><span class="work">FastAPI 路由取得用户与会话。</span></li>
+<li><span class="name">托管层</span><span class="work">恢复状态，分配工作区，运行 Agent。</span></li>
+<li><span class="name">持久层</span><span class="work">保存记录，通过总线送出事件。</span></li>
+</ul><p class="condition">执行与多个观察者分别管理。</p>
+<p>本地 Agent 的循环无需重新编写，服务把它接到多用户、多会话请求。多个标签页可观察同一事件流，提交和订阅不必由一个 HTTP 请求一直托住。</p>
+<details class="detail"><summary>来源定位</summary><p data-source-id="as-dc202a66c974"><a href="https://docs.agentscope.io/en/versions/2.0.9/deploy/agent-service.md">agent-service</a></p></details>
+<p class="source"><a href="https://docs.agentscope.io/en/versions/2.0.9/deploy/agent-service.md">agent-service</a></p></article>
+<article class="module" id="identity"><h3>用户身份必须来自可信入口</h3><p class="lead">真实认证支撑资源归属校验</p><p class="principle">服务用 user_id 组织资源归属，路由层核对会话和凭据等对象的所有者。默认 X-User-ID 只是占位依赖，企业接入需要用 JWT、OAuth 或已有登录中间件替换。</p><ul class="mechanism">
+<li><span class="name">认证入口</span><span class="work">验证登录会话或令牌。</span></li>
+<li><span class="name">用户身份</span><span class="work">取得可信 user_id。</span></li>
+<li><span class="name">资源归属</span><span class="work">检查会话、Agent 和凭据的所有者。</span></li>
+<li><span class="name">执行请求</span><span class="work">通过校验后进入运行。</span></li>
+</ul><p class="condition">默认 X-User-ID 占位头需要替换。</p>
+<p>共享资源另有访问策略，默认 DenyAllResourceAccessPolicy。组织关系和 IAM 由接入方实现；用户拥有某个 Agent 的访问权，也不意味着获得其全部工作区、MCP、技能和记忆。</p>
+<details class="detail"><summary>来源定位</summary><p data-source-id="as-dc202a66c974"><a href="https://docs.agentscope.io/en/versions/2.0.9/deploy/agent-service.md">agent-service</a></p><p data-source-id="as-bd153c6e3a04"><a href="https://docs.agentscope.io/en/versions/2.0.9/deploy/sharing.md">sharing</a></p></details>
+<p class="source"><a href="https://docs.agentscope.io/en/versions/2.0.9/deploy/agent-service.md">agent-service</a><a href="https://docs.agentscope.io/en/versions/2.0.9/deploy/sharing.md">sharing</a></p></article>
+<article class="module" id="sessions"><h3>存储与总线分担会话运行</h3><p class="lead">先拿运行锁，再读状态；提交完记录后释放锁</p><p class="principle">Storage 保存 Agent、Session、消息和配置；Message Bus 协调运行锁、收件队列、唤醒和事件回放。锁协调执行所有权，回放补回观察者漏掉的进展。</p><ul class="mechanism">
+<li><span class="name">运行锁</span><span class="work">取得同一 Session 的锁后再加载状态。</span></li>
+<li><span class="name">回放与 live</span><span class="work">先写 replay log，再发送 live 事件。</span></li>
+<li><span class="name">持久提交</span><span class="work">消息、AgentState 与游标写完后释放锁。</span></li>
+<li><span class="name">重新观察</span><span class="work">先 live 订阅再回放，按 entry ID 去重。</span></li>
+</ul><p class="condition">回放恢复观察，运行锁协调同一会话的执行。</p>
+<p>运行中的持久快照可能落后于 worker 的实时状态。删除 Session 需要取消运行、等待锁释放并清理消息与工作区；清空页面不会完成这些动作。</p>
+<div class="deep-mechanism"><h4>实现与条件</h4>
+<p>ChatService 先取得 session run lock，再读取可变状态。事件先追加 replay log，再发布 live channel；结束时持久化消息、AgentState 和 checkpoint cursor，完成后才释放运行锁。</p>
+<p>当前路径给 run lock 传入 600 秒 TTL。Redis 使用 lease 与 heartbeat 续期，释放时核对持有 token；内存实现不会因这个 TTL 自动过期。因此 600 秒不等于工具任务必须在十分钟内结束。</p>
+<p>Session replay 的裁剪参数为 1000 条：Redis 近似裁剪，内存精确裁剪；checkpoint 提交后还可主动 trim。订阅端先连接 live、再回放，以 entry ID 去重。历史已经被裁剪时，需要用保存的消息与状态重新建立视图。</p>
+</div>
+<details class="detail"><summary>来源定位</summary><p data-source-id="as-dc202a66c974"><a href="https://docs.agentscope.io/en/versions/2.0.9/deploy/agent-service.md">agent-service</a></p><p data-source-id="as-73da307b2ffd"><a href="https://raw.githubusercontent.com/agentscope-ai/agentscope/e4c1e074dee3f0f6cca28ca29e934c4ec0605354/src/agentscope/app/_service/_chat.py">app/_service/_chat.py</a> · e4c1e074dee3f0f6cca28ca29e934c4ec0605354</p><p data-source-id="as-19629c6bf4d8"><a href="https://raw.githubusercontent.com/agentscope-ai/agentscope/e4c1e074dee3f0f6cca28ca29e934c4ec0605354/src/agentscope/app/message_bus/_keys.py">app/message_bus/_keys.py</a> · e4c1e074dee3f0f6cca28ca29e934c4ec0605354</p><p data-source-id="as-68f5bb723b26"><a href="https://raw.githubusercontent.com/agentscope-ai/agentscope/e4c1e074dee3f0f6cca28ca29e934c4ec0605354/src/agentscope/app/_bus_ops.py">agentscope/app/_bus_ops.py</a> · e4c1e074dee3f0f6cca28ca29e934c4ec0605354</p><p data-source-id="as-ebaf50819a12"><a href="https://raw.githubusercontent.com/agentscope-ai/agentscope/e4c1e074dee3f0f6cca28ca29e934c4ec0605354/src/agentscope/app/message_bus/_redis_message_bus.py">app/message_bus/_redis_message_bus.py</a> · e4c1e074dee3f0f6cca28ca29e934c4ec0605354</p><p data-source-id="as-e2af92fa9ac1"><a href="https://raw.githubusercontent.com/agentscope-ai/agentscope/e4c1e074dee3f0f6cca28ca29e934c4ec0605354/src/agentscope/app/message_bus/_in_memory_message_bus.py">app/message_bus/_in_memory_message_bus.py</a> · e4c1e074dee3f0f6cca28ca29e934c4ec0605354</p><p data-source-id="as-9af0c87d9dc4"><a href="https://raw.githubusercontent.com/agentscope-ai/agentscope/e4c1e074dee3f0f6cca28ca29e934c4ec0605354/src/agentscope/app/_router/_session.py">app/_router/_session.py</a> · e4c1e074dee3f0f6cca28ca29e934c4ec0605354</p></details>
+<p class="source"><a href="https://docs.agentscope.io/en/versions/2.0.9/deploy/agent-service.md">agent-service</a><a href="https://raw.githubusercontent.com/agentscope-ai/agentscope/e4c1e074dee3f0f6cca28ca29e934c4ec0605354/src/agentscope/app/_service/_chat.py">app/_service/_chat.py</a><a href="https://raw.githubusercontent.com/agentscope-ai/agentscope/e4c1e074dee3f0f6cca28ca29e934c4ec0605354/src/agentscope/app/message_bus/_keys.py">app/message_bus/_keys.py</a><a href="https://raw.githubusercontent.com/agentscope-ai/agentscope/e4c1e074dee3f0f6cca28ca29e934c4ec0605354/src/agentscope/app/_bus_ops.py">agentscope/app/_bus_ops.py</a><a href="https://raw.githubusercontent.com/agentscope-ai/agentscope/e4c1e074dee3f0f6cca28ca29e934c4ec0605354/src/agentscope/app/message_bus/_redis_message_bus.py">app/message_bus/_redis_message_bus.py</a><a href="https://raw.githubusercontent.com/agentscope-ai/agentscope/e4c1e074dee3f0f6cca28ca29e934c4ec0605354/src/agentscope/app/message_bus/_in_memory_message_bus.py">app/message_bus/_in_memory_message_bus.py</a><a href="https://raw.githubusercontent.com/agentscope-ai/agentscope/e4c1e074dee3f0f6cca28ca29e934c4ec0605354/src/agentscope/app/_router/_session.py">app/_router/_session.py</a></p></article>
+<article class="module" id="background"><h3>长工具转入后台继续执行</h3><p class="lead">普通工具默认等 10 秒；超时交给进程内 watcher</p><p class="principle">耗时工具可以与页面连接分开执行。长工具先返回后台占位，完成结果沿原会话身份送回，Agent 再使用结果继续工作。</p><ul class="mechanism">
+<li><span class="name">等待阈值</span><span class="work">普通工具默认等待 10 秒。</span></li>
+<li><span class="name">后台 watcher</span><span class="work">超时先返占位，底层 task 继续。</span></li>
+<li><span class="name">结果回送</span><span class="work">HintBlock 进入原会话 inbox，并唤醒执行。</span></li>
+<li><span class="name">退出行为</span><span class="work">页面断开不中止；进程退出不保留 watcher。</span></li>
+</ul><p class="condition">watcher 完成后，经原会话 inbox 与 wakeup 回到推理。</p>
+<p>CPU 密集的文档解析需要进程执行，避免阻塞 API 事件循环。观察断开、取消请求和实际任务退出分别记录。</p>
+<div class="deep-mechanism"><h4>实现与条件</h4>
+<p>当前 Service 装配采用 ToolOffloadMiddleware 的 timeout_secs=10.0 默认；超时不取消底层 drain task，而是先向 Agent 返回占位结果。注入 live state 的工具与 external tool 仍同步执行。</p>
+<p>进程级 watcher 等待完成，把 HintBlock 送入原 Session inbox 并发出 wakeup；执行端取得该会话运行锁后消费结果。页面断开不会取消 watcher，重新观察也不需要再提交原任务。</p>
+<p>正常停机取消本进程任务。崩溃后 registry 最多留下受 TTL 约束的元数据，无法延续已经消失的 asyncio task；记录存在不能判定任务仍在执行。ToolStop 还核对 Session 身份，晚到结果按原 task 与 Session 处理。</p>
+</div>
+<details class="detail"><summary>来源定位</summary><p data-source-id="as-dc202a66c974"><a href="https://docs.agentscope.io/en/versions/2.0.9/deploy/agent-service.md">agent-service</a></p><p data-source-id="as-0791af56faa2"><a href="https://raw.githubusercontent.com/agentscope-ai/agentscope/e4c1e074dee3f0f6cca28ca29e934c4ec0605354/src/agentscope/app/middleware/_tool_offload_middleware.py">app/middleware/_tool_offload_middleware.py</a> · e4c1e074dee3f0f6cca28ca29e934c4ec0605354</p><p data-source-id="as-d612211accc9"><a href="https://raw.githubusercontent.com/agentscope-ai/agentscope/e4c1e074dee3f0f6cca28ca29e934c4ec0605354/src/agentscope/app/_manager/_background_task_manager.py">app/_manager/_background_task_manager.py</a> · e4c1e074dee3f0f6cca28ca29e934c4ec0605354</p><p data-source-id="as-19629c6bf4d8"><a href="https://raw.githubusercontent.com/agentscope-ai/agentscope/e4c1e074dee3f0f6cca28ca29e934c4ec0605354/src/agentscope/app/message_bus/_keys.py">app/message_bus/_keys.py</a> · e4c1e074dee3f0f6cca28ca29e934c4ec0605354</p></details>
+<p class="source"><a href="https://docs.agentscope.io/en/versions/2.0.9/deploy/agent-service.md">agent-service</a><a href="https://raw.githubusercontent.com/agentscope-ai/agentscope/e4c1e074dee3f0f6cca28ca29e934c4ec0605354/src/agentscope/app/middleware/_tool_offload_middleware.py">app/middleware/_tool_offload_middleware.py</a><a href="https://raw.githubusercontent.com/agentscope-ai/agentscope/e4c1e074dee3f0f6cca28ca29e934c4ec0605354/src/agentscope/app/_manager/_background_task_manager.py">app/_manager/_background_task_manager.py</a><a href="https://raw.githubusercontent.com/agentscope-ai/agentscope/e4c1e074dee3f0f6cca28ca29e934c4ec0605354/src/agentscope/app/message_bus/_keys.py">app/message_bus/_keys.py</a></p></article>
+<article class="module" id="workspace"><h3>Workspace 组织文件与执行环境</h3><p class="lead">目录粒度、MCP live state 与 skills 分区分别配置</p><p class="principle">Workspace 组织目录、文件、终端、MCP 连接和 skills。服务用隔离策略分配 workspace ID；实际目录与执行环境由所选后端决定。</p><ul class="mechanism">
+<li><span class="name">分配策略</span><span class="work">per_agent、per_session、per_user 分配绑定。</span></li>
+<li><span class="name">Local 目录</span><span class="work">host path 为 basedir/agent_id。</span></li>
+<li><span class="name">MCP live state</span><span class="work">按 agent_id 与 session_id 分区。</span></li>
+<li><span class="name">skills</span><span class="work">按 agent 分区保存与发现。</span></li>
+</ul><p class="condition">Local 的 per_agent 目录由 agent_id 定位。</p>
+<p>共享粒度改变后续任务能访问的材料，资源授权再判断谁可以读取或修改。生命周期还要定义连接、缓存、执行环境和文件何时清理。</p>
+<div class="deep-mechanism"><h4>实现与条件</h4>
+<p>固定源码 LocalWorkspaceManager 默认 isolation=PER_AGENT，实际工作目录为 basedir/agent_id；ttl=3600.0 表示空闲缓存对象的回收时间。workspace ID 的绑定和 host 文件路径是不同层，不能由 per_agent 推出每位用户独享目录。</p>
+<p>工作目录内，MCP live instances 按 agent_id 与 session_id 分区，skills 按 agent 分区。Local 直接使用 host filesystem；隔离执行环境要选择对应沙箱后端，并配置网络、挂载与凭据。</p>
+</div>
+<details class="detail"><summary>来源定位</summary><p data-source-id="as-e8bf00e52cb9"><a href="https://docs.agentscope.io/en/versions/2.0.9/building-blocks/workspace/overview.md">workspace / overview</a></p><p data-source-id="as-dc202a66c974"><a href="https://docs.agentscope.io/en/versions/2.0.9/deploy/agent-service.md">agent-service</a></p><p data-source-id="as-a40a77f95cef"><a href="https://raw.githubusercontent.com/agentscope-ai/agentscope/e4c1e074dee3f0f6cca28ca29e934c4ec0605354/src/agentscope/app/workspace_manager/_base.py">app/workspace_manager/_base.py</a> · e4c1e074dee3f0f6cca28ca29e934c4ec0605354</p><p data-source-id="as-b72c698b961f"><a href="https://raw.githubusercontent.com/agentscope-ai/agentscope/e4c1e074dee3f0f6cca28ca29e934c4ec0605354/src/agentscope/app/workspace_manager/_local_workspace_manager.py">app/workspace_manager/_local_workspace_manager.py</a> · e4c1e074dee3f0f6cca28ca29e934c4ec0605354</p><p data-source-id="as-62baab197e50"><a href="https://raw.githubusercontent.com/agentscope-ai/agentscope/e4c1e074dee3f0f6cca28ca29e934c4ec0605354/src/agentscope/workspace/_base.py">agentscope/workspace/_base.py</a> · e4c1e074dee3f0f6cca28ca29e934c4ec0605354</p></details>
+<p class="source"><a href="https://docs.agentscope.io/en/versions/2.0.9/building-blocks/workspace/overview.md">workspace / overview</a><a href="https://docs.agentscope.io/en/versions/2.0.9/deploy/agent-service.md">agent-service</a><a href="https://raw.githubusercontent.com/agentscope-ai/agentscope/e4c1e074dee3f0f6cca28ca29e934c4ec0605354/src/agentscope/app/workspace_manager/_base.py">app/workspace_manager/_base.py</a><a href="https://raw.githubusercontent.com/agentscope-ai/agentscope/e4c1e074dee3f0f6cca28ca29e934c4ec0605354/src/agentscope/app/workspace_manager/_local_workspace_manager.py">app/workspace_manager/_local_workspace_manager.py</a><a href="https://raw.githubusercontent.com/agentscope-ai/agentscope/e4c1e074dee3f0f6cca28ca29e934c4ec0605354/src/agentscope/workspace/_base.py">agentscope/workspace/_base.py</a></p></article>
+<article class="module" id="sandbox"><h3>沙箱限制工具在哪个环境运行</h3><p class="lead">工作区接口连接本地或隔离后端</p><p class="principle">权限判定决定调用能否进入执行，沙箱后端提供运行环境。Workspace 接口把文件和终端操作交给所选后端，工具路径还要与后端文件映射一致。</p><ul class="mechanism">
+<li><span class="name">工具请求</span><span class="work">文件、终端或代码执行。</span></li>
+<li><span class="name">工作区接口</span><span class="work">把操作交给所选后端。</span></li>
+<li><span class="name">沙箱后端</span><span class="work">Docker、E2B 或 K8s 等环境。</span></li>
+<li><span class="name">执行结果</span><span class="work">返回输出和错误。</span></li>
+</ul><p class="condition">网络、挂载与凭据范围显式配置。</p>
+<div class="deep-mechanism"><h4>实现与条件</h4>
+<p>运行条件包括文件挂载、网络出口、凭据、配额与回收时间。权限引擎的 ALLOW 只使调用进入执行路径，后端和操作系统仍按各自的访问边界处理该动作。</p>
+</div>
+<details class="detail"><summary>来源定位</summary><p data-source-id="as-e8bf00e52cb9"><a href="https://docs.agentscope.io/en/versions/2.0.9/building-blocks/workspace/overview.md">workspace / overview</a></p><p data-source-id="as-13b26f7a4513"><a href="https://docs.agentscope.io/en/versions/2.0.9/index.md">2.0.9 / index</a></p></details>
+<p class="source"><a href="https://docs.agentscope.io/en/versions/2.0.9/building-blocks/workspace/overview.md">workspace / overview</a><a href="https://docs.agentscope.io/en/versions/2.0.9/index.md">2.0.9 / index</a></p></article>
+<article class="module" id="deployment"><h3>部署一致性影响具体运行结果</h3><p class="lead">共享状态、调度与下载凭据分别核对</p><p class="principle">多副本中，每个进程分别启动内存 cron 会重复触发。download_secret 不一致会使下载 token 在另一个副本验证失败。RAG 的 API 与 worker 后端不一致会使索引链出错。</p><ul class="mechanism">
+<li><span class="name">共享后端</span><span class="work">API 与 worker 使用一致的存储和总线。</span></li>
+<li><span class="name">调度所有权</span><span class="work">内存定时器由一个进程持有。</span></li>
+<li><span class="name">下载密钥</span><span class="work">副本共用 download_secret。</span></li>
+<li><span class="name">解析负载</span><span class="work">CPU 密集任务进入进程执行。</span></li>
+</ul><p class="condition">重复触发、下载失败和阻塞各有原因。</p>
+<p>上线配置同时核对运行锁、状态后端、工作区和定时调度的所有权。它们分别影响接管、恢复、文件访问与触发次数。</p>
+<details class="detail"><summary>来源定位</summary><p data-source-id="as-dc202a66c974"><a href="https://docs.agentscope.io/en/versions/2.0.9/deploy/agent-service.md">agent-service</a></p><p data-source-id="as-8379a990984a"><a href="https://docs.agentscope.io/en/versions/2.0.9/deploy/rag.md">rag</a></p><p data-source-id="as-c788c6cd8525"><a href="https://docs.agentscope.io/en/versions/2.0.9/others/faq.md">faq</a></p></details>
+<p class="source"><a href="https://docs.agentscope.io/en/versions/2.0.9/deploy/agent-service.md">agent-service</a><a href="https://docs.agentscope.io/en/versions/2.0.9/deploy/rag.md">rag</a><a href="https://docs.agentscope.io/en/versions/2.0.9/others/faq.md">faq</a></p></article>
+<article class="module" id="observability"><h3>轨迹连接模型、工具与会话</h3><p class="lead">界面事件与后台观测解决不同问题</p><p class="principle">TracingMiddleware 在配置 tracing 后建立 reply、LLM 和工具 spans，记录身份、用量、参数、结果和异常；流式 generator 要等最后一块再关闭 span。</p><ul class="mechanism">
+<li><span class="name">界面事件</span><span class="work">呈现进展与人工确认。</span></li>
+<li><span class="name">调用轨迹</span><span class="work">关联模型和工具执行阶段。</span></li>
+<li><span class="name">消息记录</span><span class="work">保存会话与最终结果。</span></li>
+<li><span class="name">运行诊断</span><span class="work">定位等待、错误、用量和耗时。</span></li>
+</ul><p class="condition">会话身份关联 reply、模型与具体工具调用。</p>
+<p>前端事件、消息记录与 trace 分别保存进展、工作内容和调用诊断。用户可见内容、运维诊断、敏感资料处理与保留期限各有范围；耗时与用量用于判断成本和等待。</p>
+<details class="detail"><summary>来源定位</summary><p data-source-id="as-13b26f7a4513"><a href="https://docs.agentscope.io/en/versions/2.0.9/index.md">2.0.9 / index</a></p><p data-source-id="as-dc202a66c974"><a href="https://docs.agentscope.io/en/versions/2.0.9/deploy/agent-service.md">agent-service</a></p></details>
+<p class="source"><a href="https://docs.agentscope.io/en/versions/2.0.9/index.md">2.0.9 / index</a><a href="https://docs.agentscope.io/en/versions/2.0.9/deploy/agent-service.md">agent-service</a></p></article>
+</section>
+<section class="chapter" id="chapter-05"><div class="chapter-head"><div class="chapter-no">05</div><h2>Java 企业接入</h2><p class="answer">统一 Session 接口组织不同执行目标，具体能力由目标决定。</p><p class="lead">Harness 支持持续工作，Service 把 Session、Turn、动作、权限和文件交付接入应用。</p></div>
+<article class="module" id="java-01-harness-context"><h3>身份键关联每次调用</h3><p class="lead">RuntimeContext 确定身份，运行实例按调用方式持有</p><p class="principle">Java Harness 把 Agent 能力嵌入应用。Builder 保存稳定配置，运行实例接收 RuntimeContext；namespace、userId、agentId 和 sessionId 共同参与工作身份。</p><ul class="mechanism">
+<li><span class="name">RuntimeContext</span><span class="work">每次调用显式传入用户与会话身份</span></li>
+<li><span class="name">HarnessAgent.Builder</span><span class="work">直接请求按次构建；后台会话保留实例。</span></li>
+<li><span class="name">AgentState</span><span class="work">上下文、权限与工具状态随会话走</span></li>
+</ul><p class="condition">身份键决定上下文、工作文件与恢复记录的关联。</p>
+<p>缺失或复用身份键可能使本应独立的会话共用状态。应用要在请求入口显式确定身份，再把会话记录、工作区和恢复路径关联起来。</p>
+<details class="detail"><summary>来源定位</summary><p data-source-id="as-0cf03f3aa25d"><a href="https://java.agentscope.io/v2/en/docs/harness/architecture.md">architecture</a></p><p data-source-id="as-66d70ed869dd"><a href="https://java.agentscope.io/v2/en/docs/others/going-to-production.md">going-to-production</a></p></details>
+<p class="source"><a href="https://java.agentscope.io/v2/en/docs/harness/architecture.md">architecture</a><a href="https://java.agentscope.io/v2/en/docs/others/going-to-production.md">going-to-production</a></p></article>
+<article class="module" id="java-02-agent-session"><h3>即时调用与后台会话分别选择</h3><p class="lead">应用按任务生命周期选择执行入口</p><p class="principle">直接调用与 AgentSession 是两种执行入口，同一会话选择其中一种。直接调用由应用管理执行；后台任务由会话调度，观察日志不会启动另一次推理。</p><ul class="mechanism">
+<li><span class="name">直接调用</span><span class="work">call / streamEvents 由应用管理执行。</span></li>
+<li><span class="name">后台会话</span><span class="work">AgentSession 接收任务并管理排队。</span></li>
+<li><span class="name">运行实例</span><span class="work">会话管理器持有 Agent，关闭时中断工作。</span></li>
+<li><span class="name">任务继续</span><span class="work">respond 回答等待，resume 继续未完成任务。</span></li>
+</ul><p class="condition">观察后台任务时，不再发起另一轮执行。</p>
+<p>观察连接断开后，后台工作继续，运行实例仍由会话管理器持有。respond 回答待处理交互，resume 继续未完成任务；已完成或取消的任务不能通过该操作续跑。checkpoint 恢复工作状态，外部结果仍需核对。</p>
+<details class="detail"><summary>来源定位</summary><p data-source-id="as-0cf03f3aa25d"><a href="https://java.agentscope.io/v2/en/docs/harness/architecture.md">architecture</a></p><p data-source-id="as-e60a2f6c58b3"><a href="https://java.agentscope.io/v2/en/docs/harness/session-log.md">session-log</a></p></details>
+<p class="source"><a href="https://java.agentscope.io/v2/en/docs/harness/architecture.md">architecture</a><a href="https://java.agentscope.io/v2/en/docs/harness/session-log.md">session-log</a></p></article>
+<article class="module" id="java-03-execution-targets"><h3>执行目标确定运行所有权</h3><p class="lead">Managed、External、Hosted 分别确定运行所有权</p><p class="principle">Managed 把 Agent 定义、运行时和会话交给 Service；External 保留应用自己的进程和部署；Hosted 由 Runtime Host 在指定机器上启动 Coding Agent 提供方。</p><ul class="mechanism">
+<li><span class="name">Managed</span><span class="work">Service托管Harness运行时与会话</span></li>
+<li><span class="name">External</span><span class="work">应用保留进程并实现执行适配器</span></li>
+<li><span class="name">Hosted</span><span class="work">Runtime Host启动Coding Agent进程</span></li>
+<li><span class="name">共同观察面</span><span class="work">都走Session/Turn，能力仍需查询</span></li>
+</ul><p class="condition">相同 Session API 下，交互与恢复能力由目标返回。</p>
+<p>三种目标进入同一 Session/Turn 观察面，动作、文件和恢复能力仍由目标决定。运行所有权影响谁保存状态、持有进程以及处理退出。</p>
+<div class="deep-mechanism"><h4>实现与条件</h4>
+<p>目录注册、资源可见、Session 可用和任务派发是不同阶段。已有应用选择 External 保留进程；Hosted 由 Runtime Host 启动提供方进程，其动作、文件与恢复能力按 capabilities 查询。</p>
+</div>
+<details class="detail"><summary>来源定位</summary><p data-source-id="as-9d9136196aa8"><a href="https://java.agentscope.io/v2/en/service/index.md">service / index</a></p><p data-source-id="as-d5dd49d8dc6e"><a href="https://java.agentscope.io/v2/en/service/external-agent.md">external-agent</a></p><p data-source-id="as-556d0c6a5726"><a href="https://java.agentscope.io/v2/en/service/runtime-host.md">runtime-host</a></p></details>
+<p class="source"><a href="https://java.agentscope.io/v2/en/service/index.md">service / index</a><a href="https://java.agentscope.io/v2/en/service/external-agent.md">external-agent</a><a href="https://java.agentscope.io/v2/en/service/runtime-host.md">runtime-host</a></p></article>
+<article class="module" id="java-04-session-turn-idempotency"><h3>Session 固定目标，Turn 承载任务</h3><p class="lead">配置冻结后，幂等键守住一次提交</p><p class="principle">Session 选定 Agent、Team 或 Workflow，Turn 承载一次提交的工作。应用把业务对象与 Session、Turn 关联；任务等待审批或前一项尚未结束时，后续 Turn 可能继续排队。</p><ul class="mechanism">
+<li><span class="name">Session</span><span class="work">冻结创建时目标配置或已发布流程版本。</span></li>
+<li><span class="name">Turn</span><span class="work">一次任务；等待审批可阻塞后续任务。</span></li>
+<li><span class="name">幂等重试</span><span class="work">同 Idempotency-Key 和请求体取回原 Turn。</span></li>
+<li><span class="name">输入阶段</span><span class="work">202 queued 已接收；input.applied 才已使用。</span></li>
+</ul><p class="condition">Managed 续接上下文；Team 与 Workflow 每 Turn 独立启动。</p>
+<p>Managed 在同一 Session 保留上下文；Team 和 Workflow 的每个 Turn 启动独立协作或流程。</p>
+<div class="deep-mechanism"><h4>实现与条件</h4>
+<p>202 queued 只表示任务已接收并等待运行。input.accepted 表示输入已经持久化，input.applied 表示运行时已经消费；二者都需要继续观察目标 Turn 状态。</p>
+<p>Session 保存创建时选定的目标配置，修改 Agent 定义不会自动改变已有 Session。网络重试使用原幂等键与相同请求体；改键只适用于真正新增的任务。</p>
+</div>
+<details class="detail"><summary>来源定位</summary><p data-source-id="as-9d9136196aa8"><a href="https://java.agentscope.io/v2/en/service/index.md">service / index</a></p><p data-source-id="as-79adbb1a7334"><a href="https://java.agentscope.io/v2/en/service/session-event-log.md">session-event-log</a></p></details>
+<p class="source"><a href="https://java.agentscope.io/v2/en/service/index.md">service / index</a><a href="https://java.agentscope.io/v2/en/service/session-event-log.md">session-event-log</a></p></article>
+<article class="module" id="java-05-snapshot-sse-cursor"><h3>快照与事件恢复同一视图</h3><p class="lead">先载入快照，再从 as_of 补事件；410 则重建视图</p><p class="principle">页面打开或丢失本地状态时，先读取目标资源的 Snapshot，再用 as_of 连接 SSE；事件只补快照之后的变化。已经成功应用的事件游标用于重连。</p><ul class="mechanism">
+<li><span class="name">Snapshot</span><span class="work">先载入消息、工具与待处理动作</span></li>
+<li><span class="name">as_of</span><span class="work">从快照游标之后订阅事件</span></li>
+<li><span class="name">Cursor</span><span class="work">成功应用事件后再保存</span></li>
+<li><span class="name">游标过期：410</span><span class="work">读取新快照，从新的 as_of 继续订阅。</span></li>
+</ul><p class="condition">游标在事件成功应用后保存，且只属于原资源。</p>
+<p>游标过期返回 410 cursor_expired，界面重新加载快照，从新的 as_of 继续观察。重投任务会创建额外工作，无法修复观察断线。</p>
+<div class="deep-mechanism"><h4>实现与条件</h4>
+<p>item.delta 追加消息内容，item.completed 带累积内容并替换该项。把 completed 再追加会显示重复文字；工具或子 Agent 完成也不能代替目标 Turn 的终态。</p>
+<p>Managed Session 快照提供运行资源数组；generic Turn、Team 与 Workflow 使用按 ID 索引的集合。界面各用对应结构，Session、Turn 与子 Agent 的游标也分别保存。</p>
+</div>
+<details class="detail"><summary>来源定位</summary><p data-source-id="as-528e3df546ca"><a href="https://java.agentscope.io/v2/en/service/sse-events.md">sse-events</a></p><p data-source-id="as-eb83f48e5259"><a href="https://java.agentscope.io/v2/en/service/operations.md">operations</a></p></details>
+<p class="source"><a href="https://java.agentscope.io/v2/en/service/sse-events.md">sse-events</a><a href="https://java.agentscope.io/v2/en/service/operations.md">operations</a></p></article>
+<article class="module" id="java-06-interaction-capabilities"><h3>控制入口按目标能力提供</h3><p class="lead">Steer与回答动作都要先读capabilities</p><p class="principle">Service 把任务指导、背景注入、动作答复和继续执行分开。steer 影响后续步骤，inject 添加背景，Turn 的 /actions 按 request_id 和 payload 回答 required action，resume 继续原任务。</p><ul class="mechanism">
+<li><span class="name">steer</span><span class="work">改变后续要求；已发模型请求保持原输入。</span></li>
+<li><span class="name">inject</span><span class="work">补背景；不立即启动推理。</span></li>
+<li><span class="name">actions</span><span class="work">按 request_id 和 payload 回答待处理动作。</span></li>
+<li><span class="name">resume</span><span class="work">能力允许且动作处理后继续原 Turn。</span></li>
+</ul><p class="condition">capabilities 与 available_commands 决定可显示的控制。</p>
+<p>前端读取 Turn 的 /capabilities 和 available_commands，再结合当前任务状态展示控件。Hosted 目标按提供方能力处理交互。</p>
+<div class="deep-mechanism"><h4>实现与条件</h4>
+<p>接收 steer 或 inject 的回执不代表在途模型调用已经改变。界面可把输入接收、输入应用与任务继续分别显示，并从目标 capabilities 和当前状态决定下一项操作。</p>
+</div>
+<details class="detail"><summary>来源定位</summary><p data-source-id="as-79adbb1a7334"><a href="https://java.agentscope.io/v2/en/service/session-event-log.md">session-event-log</a></p><p data-source-id="as-528e3df546ca"><a href="https://java.agentscope.io/v2/en/service/sse-events.md">sse-events</a></p><p data-source-id="as-556d0c6a5726"><a href="https://java.agentscope.io/v2/en/service/runtime-host.md">runtime-host</a></p></details>
+<p class="source"><a href="https://java.agentscope.io/v2/en/service/session-event-log.md">session-event-log</a><a href="https://java.agentscope.io/v2/en/service/sse-events.md">sse-events</a><a href="https://java.agentscope.io/v2/en/service/runtime-host.md">runtime-host</a></p></article>
+<article class="module" id="java-07-files-artifacts"><h3>文件发布为可取得的 Artifact</h3><p class="lead">Managed 输入引用 Session file，结果显式发布 Artifact</p><p class="principle">Session file 提供任务材料，Artifact 登记明确交付的结果，Environment 提供工具读写的工作目录。应用上传材料取得 file_id，再作为结构化任务输入；工作目录中的文件还需要明确发布才能进入交付记录。</p><ul class="mechanism">
+<li><span class="name">Session file</span><span class="work">Managed 上传上限 16 MiB，绑定当前 Session。</span></li>
+<li><span class="name">输入能力</span><span class="work">file_input 决定目标能否消费该文件。</span></li>
+<li><span class="name">Artifact 发布</span><span class="work">引用真实 file_id 或可访问 HTTPS 资源。</span></li>
+<li><span class="name">内容取得</span><span class="work">读取交付记录，按权限下载并核对版本。</span></li>
+</ul><p class="condition">应用读取真实 Artifact 记录，再按授权取得内容。</p>
+<p>Team 与 Workflow 成员不自动共享文件系统。跨成员传递使用可访问的文件或 Artifact，并核对内容、版本和业务接受标准。</p>
+<div class="deep-mechanism"><h4>实现与条件</h4>
+<p>公开 Managed Session upload 上限为 16 MiB；文件只属于当前 Session。文件上传与 file_input 能力先查询，External、Hosted 和 Team/Workflow 不自动继承 Managed 输入格式。</p>
+<p>Managed 可先上传实际输出为 Session file，再以真实 file_id 显式发布 Artifact；可访问的外部 HTTPS 资源是另一条发布路径。发布记录不会读取或生成工作目录文件，下载地址也不能从 Agent 回复中的路径自行猜测。</p>
+</div>
+<details class="detail"><summary>来源定位</summary><p data-source-id="as-69ccfb190c6d"><a href="https://java.agentscope.io/v2/en/service/files.md">files</a></p><p data-source-id="as-675c5fc9c363"><a href="https://java.agentscope.io/v2/en/service/orchestration.md">orchestration</a></p></details>
+<p class="source"><a href="https://java.agentscope.io/v2/en/service/files.md">files</a><a href="https://java.agentscope.io/v2/en/service/orchestration.md">orchestration</a></p></article>
+<article class="module" id="java-08-auth-grant-registration"><h3>身份、资源与运行通道分别授权</h3><p class="lead">应用、Namespace 与 Runtime credential 分别授权</p><p class="principle">企业接入至少有三条身份链：平台账户和Namespace决定管理范围，应用凭证决定业务调用，External运行凭证决定已注册实例如何连接。它们不能互相替代，尤其不能把一个应用Key当成终端用户的Namespace授权。</p><ul class="mechanism">
+<li><span class="name">Account / Namespace</span><span class="work">先确定用户身份与资源作用域</span></li>
+<li><span class="name">Application key</span><span class="work">调用Service，不替代用户权限</span></li>
+<li><span class="name">External registration</span><span class="work">初始注册端点本身不认证调用者</span></li>
+<li><span class="name">Runtime credential</span><span class="work">后续连接凭证需保护与轮换</span></li>
+</ul><p class="condition">External 首次注册入口由受控网络或网关认证。</p>
+<p>External的初始注册端点在预览文档中不负责认证调用者，应限制网络入口；注册后返回的凭证才用于后续运行连接。应用还要分别验证目录可见、Session可用和任务派发能力。</p>
+<details class="detail"><summary>来源定位</summary><p data-source-id="as-c4d45549fd7a"><a href="https://java.agentscope.io/v2/en/service/access.md">access</a></p><p data-source-id="as-d5dd49d8dc6e"><a href="https://java.agentscope.io/v2/en/service/external-agent.md">external-agent</a></p><p data-source-id="as-13473668ae95"><a href="https://github.com/agentscope-ai/agentscope-java/blob/65a35d40abc2925b57c2d23c65f2081a599972a8/agentscope-service/README.md">README</a> · agentscope-java@65a35d40abc2925b57c2d23c65f2081a599972a8</p></details>
+<p class="source"><a href="https://java.agentscope.io/v2/en/service/access.md">access</a><a href="https://java.agentscope.io/v2/en/service/external-agent.md">external-agent</a><a href="https://github.com/agentscope-ai/agentscope-java/blob/65a35d40abc2925b57c2d23c65f2081a599972a8/agentscope-service/README.md">README</a></p></article>
+<article class="module" id="java-09-recovery-capabilities"><h3>恢复同时核对状态与副作用</h3><p class="lead">Capabilities、存储与副作用共同决定可恢复性</p><p class="principle">恢复观察、恢复工作状态和核对外部副作用分别处理。会话日志、checkpoint、Workspace 和 sandbox 状态各有保存后端，运行所有权决定哪个实例能继续写入。</p><ul class="mechanism">
+<li><span class="name">恢复前检查</span><span class="work">capabilities、待处理动作与不确定工具结果。</span></li>
+<li><span class="name">状态与文件</span><span class="work">以原身份加载日志、checkpoint 和工作材料。</span></li>
+<li><span class="name">执行所有权</span><span class="work">旧 writer lease 先释放或过期。</span></li>
+<li><span class="name">外部回执</span><span class="work">查已发生的写入，再决定 resume 或重试。</span></li>
+</ul><p class="condition">checkpoint 保留工作状态，外部动作仍需核对实际结果。</p>
+<p>共享后端与隔离策略分别配置；改变隔离范围不会自动迁移既有数据。恢复材料需要沿原工作身份对齐。</p>
+<div class="deep-mechanism"><h4>实现与条件</h4>
+<p>checkpoint 不恢复操作系统线程、在途网络请求或工具内部进度。Hosted 的统一调用路径标记 checkpoint_restore:false；事件重连只能恢复观察，进程继续还需要对应提供方支持。</p>
+<p>续跑前核对 pending actions、uncertain tool calls 和 writer lease。日志和 checkpoint 还要与可访问的工作文件一致；邮件、订单或外部写入已经完成时，应查询原回执，而非重新产生同一动作。</p>
+</div>
+<details class="detail"><summary>来源定位</summary><p data-source-id="as-e60a2f6c58b3"><a href="https://java.agentscope.io/v2/en/docs/harness/session-log.md">session-log</a></p><p data-source-id="as-556d0c6a5726"><a href="https://java.agentscope.io/v2/en/service/runtime-host.md">runtime-host</a></p><p data-source-id="as-79adbb1a7334"><a href="https://java.agentscope.io/v2/en/service/session-event-log.md">session-event-log</a></p><p data-source-id="as-eb83f48e5259"><a href="https://java.agentscope.io/v2/en/service/operations.md">operations</a></p></details>
+<p class="source"><a href="https://java.agentscope.io/v2/en/docs/harness/session-log.md">session-log</a><a href="https://java.agentscope.io/v2/en/service/runtime-host.md">runtime-host</a><a href="https://java.agentscope.io/v2/en/service/session-event-log.md">session-event-log</a><a href="https://java.agentscope.io/v2/en/service/operations.md">operations</a></p></article>
+<article class="module" id="java-orchestration"><h3>协作有三种不同层次</h3><p class="lead">Subagent、Team 与 Workflow 按工作关系选择</p><p class="principle">Subagent 是当前 Agent 内的委派，Team 组织独立成员协作，Workflow 把过程写成明确步骤。三者可以组合，但不是同一层的不同名字。Service 把 Team 和 Workflow 接入 Session API，内部还需要检查成员实际承担的工作与结果。</p><ul class="mechanism">
+<li><span class="name">Subagent</span><span class="work">当前 Agent 内委派一段有界任务。</span></li>
+<li><span class="name">Team</span><span class="work">不同成员分工、沟通与汇总。</span></li>
+<li><span class="name">Workflow</span><span class="work">按显式步骤和依赖推进工作。</span></li>
+</ul><p class="condition">文件共享通过明确交付关系配置。</p>
+<p>Team 的成员并不自动共享文件系统。协作应通过明确的文件或 Artifact 传递关系组织，最后由相应成员汇总。需要人工接受的成果再进入业务工作记录。</p>
+<details class="detail"><summary>来源定位</summary><p data-source-id="as-675c5fc9c363"><a href="https://java.agentscope.io/v2/en/service/orchestration.md">orchestration</a></p></details>
+<p class="source"><a href="https://java.agentscope.io/v2/en/service/orchestration.md">orchestration</a></p></article>
+<article class="module" id="java-issue"><h3>Issue 把执行接到工作接受</h3><p class="lead">目标、讨论、执行与接收各留一份记录</p><p class="principle">当任务需要负责人、讨论和人工接受时，Issue 提供工作层记录。它保存目标与交付标准，再把执行交给 Agent 或 Team。Run 和相关记录说明系统做了什么，Issue 的接受或退回说明负责人如何判断成果。</p><ul class="mechanism">
+<li><span class="name">定义 Issue</span><span class="work">保存目标、负责人和交付标准。</span></li>
+<li><span class="name">分配执行</span><span class="work">交给 Agent 或 Team 处理。</span></li>
+<li><span class="name">跟踪过程</span><span class="work">检查执行记录、结果与讨论。</span></li>
+<li><span class="name">人工接收</span><span class="work">接受或退回需要判断的工作。</span></li>
+</ul><p class="condition">Run 记录执行，Issue 保留接受或退回的判断。</p>
+<p>用户提出修改要求与启动执行也需要区分。若工作已到达却没有结果，应从 Run、Node 和最新 Attempt 检查依赖、等待批准、缺输入、失败或部分交付，而不是只看最后一条聊天消息。</p>
+<details class="detail"><summary>来源定位</summary><p data-source-id="as-675c5fc9c363"><a href="https://java.agentscope.io/v2/en/service/orchestration.md">orchestration</a></p><p data-source-id="as-eb83f48e5259"><a href="https://java.agentscope.io/v2/en/service/operations.md">operations</a></p></details>
+<p class="source"><a href="https://java.agentscope.io/v2/en/service/orchestration.md">orchestration</a><a href="https://java.agentscope.io/v2/en/service/operations.md">operations</a></p></article>
+<article class="module" id="java-auth-scope"><h3>调用资源与读取工作分别授权</h3><p class="lead">账户、Namespace、资源与工作可见性分层</p><p class="principle">Service 区分账户身份、Namespace 角色、资源操作和工作可见性。Namespace 是授权边界，Workspace 则提供运行文件；二者不能用同一种“空间”概念替代。资源发现、use 操作和读取私人工作是不同判断。</p><ul class="mechanism">
+<li><span class="name">账户身份</span><span class="work">确认访问者是谁。</span></li>
+<li><span class="name">Namespace</span><span class="work">选择资源与授权边界。</span></li>
+<li><span class="name">资源动作</span><span class="work">判断是否可以发现、使用或管理。</span></li>
+<li><span class="name">工作共享</span><span class="work">决定能否读取某个 Issue、会话或文件。</span></li>
+</ul><p class="condition">可调用 Agent，不等于可读他人的工作。</p>
+<p>访问失败时，按身份和 namespace、资源决策、依赖权限、Issue 分享逐层排查。团队自身有 use 权限，也需要核对成员 Agent 以及 Memory、Vault、Environment 等依赖。</p>
+<details class="detail"><summary>来源定位</summary><p data-source-id="as-c4d45549fd7a"><a href="https://java.agentscope.io/v2/en/service/access.md">access</a></p></details>
+<p class="source"><a href="https://java.agentscope.io/v2/en/service/access.md">access</a></p></article>
+<article class="module" id="java-budget"><h3>预算控制工作能继续到哪一步</h3><p class="lead">Managed 预算按已报告用量决定后续调用</p><p class="principle">Managed Session 的 /budget 限制模型调用次数和已报告的累计用量。Token 与费用预算无法强制截断已经启动的并行调用；费用上限还需要模型定价。</p><ul class="mechanism">
+<li><span class="name">用量归属</span><span class="work">按 Session 和任务记录消耗。</span></li>
+<li><span class="name">Managed 预算</span><span class="work">限制模型调用次数或累计用量。</span></li>
+<li><span class="name">达到上限</span><span class="work">按能力和状态决定是否停止。</span></li>
+<li><span class="name">继续工作</span><span class="work">调整额度后对原任务执行控制。</span></li>
+</ul><p class="condition">已启动的并行调用可能使实际用量越过预算。</p>
+<p>应用级并发与 Token 预算另行管理。预算调整和任务继续是不同操作，续跑仍围绕原任务状态和可用控制进行。</p>
+<details class="detail"><summary>来源定位</summary><p data-source-id="as-79adbb1a7334"><a href="https://java.agentscope.io/v2/en/service/session-event-log.md">session-event-log</a></p></details>
+<p class="source"><a href="https://java.agentscope.io/v2/en/service/session-event-log.md">session-event-log</a></p></article>
+<article class="module" id="java-channels"><h3>消息渠道连接外部对话与任务</h3><p class="lead">外部消息与执行记录需要稳定关联</p><p class="principle">渠道接入负责消息接收、目标路由和结果回传。外部对话与执行记录应保持稳定关联。当前飞书的 Issue 路由支持 Agent 或 Team，其他适配器要分别查询能力。</p><ul class="mechanism">
+<li><span class="name">消息渠道</span><span class="work">接收外部平台的工作请求。</span></li>
+<li><span class="name">目标路由</span><span class="work">关联到配置的 Agent 或 Team。</span></li>
+<li><span class="name">执行观察</span><span class="work">跟踪对应会话、Issue 和结果。</span></li>
+<li><span class="name">渠道回传</span><span class="work">把结果送回原外部对话。</span></li>
+</ul><p class="condition">飞书 Issue 路由当前不接 Workflow 目标。</p>
+<p>渠道与 Automation 独立配置。当前 Automation 不能直接以 Workflow 为目标，已有 Workflow 需要通过发布后的 Session API 接入应用。这些具体边界影响产品触发方式的设计。</p>
+<details class="detail"><summary>来源定位</summary><p data-source-id="as-675c5fc9c363"><a href="https://java.agentscope.io/v2/en/service/orchestration.md">orchestration</a></p></details>
+<p class="source"><a href="https://java.agentscope.io/v2/en/service/orchestration.md">orchestration</a></p></article>
+<article class="module" id="java-webhook"><h3>Webhook 重复投递按事件身份合并</h3><p class="lead">接收通知与执行业务动作分开处理</p><p class="principle">Webhook 的至少一次投递允许同一事件重试。接收方按事件身份合并通知并保存处理结果；接收确认说明通知处理到了相应阶段，业务事务另有结果。</p><ul class="mechanism">
+<li><span class="name">发出事件</span><span class="work">运行产生带身份的通知。</span></li>
+<li><span class="name">接收投递</span><span class="work">同一事件可能重复到达。</span></li>
+<li><span class="name">身份去重</span><span class="work">接收方合并同一事件。</span></li>
+<li><span class="name">业务处理</span><span class="work">副作用使用自己的幂等契约。</span></li>
+</ul><p class="condition">通知已接收与业务事务完成分别核对。</p>
+<div class="deep-mechanism"><h4>实现与条件</h4>
+<p>接收顺序是验证原始请求体签名与时间，持久化通知，再按事件身份去重。事件触发的下游写入使用自己的幂等键和回执查询；通知处理结果与业务动作结果分别保存。</p>
+</div>
+<details class="detail"><summary>来源定位</summary><p data-source-id="as-528e3df546ca"><a href="https://java.agentscope.io/v2/en/service/sse-events.md">sse-events</a></p><p data-source-id="as-eb83f48e5259"><a href="https://java.agentscope.io/v2/en/service/operations.md">operations</a></p></details>
+<p class="source"><a href="https://java.agentscope.io/v2/en/service/sse-events.md">sse-events</a><a href="https://java.agentscope.io/v2/en/service/operations.md">operations</a></p></article>
+<article class="module" id="java-storage"><h3>恢复需要成套的数据与密钥</h3><p class="lead">数据库、工作文件和 Artifact 对齐同一备份点</p><p class="principle">运维文档把数据库、共享 Workspaces 和 Artifacts 列为持久数据，同时要求保留加密数据所需的原 Vault master key。恢复需要这些材料对应同一备份点，并使用匹配组件版本。</p><ul class="mechanism">
+<li><span class="name">数据库</span><span class="work">保存定义、会话、任务与工作状态。</span></li>
+<li><span class="name">文件快照</span><span class="work">保存对应 Workspace 和 Artifact。</span></li>
+<li><span class="name">Vault 密钥</span><span class="work">使用原密钥解密已经保存的凭据。</span></li>
+</ul><p class="condition">恢复后核对历史、文件、解密和新任务。</p>
+<p>恢复验收包含登录、已有 Agent、Session 历史、文件、Vault 解密、runtime 连接和一项新工作。只打开知识问答页面不能证明凭据恢复正常；工作接受状态也应与备份点一致。</p>
+<details class="detail"><summary>来源定位</summary><p data-source-id="as-eb83f48e5259"><a href="https://java.agentscope.io/v2/en/service/operations.md">operations</a></p></details>
+<p class="source"><a href="https://java.agentscope.io/v2/en/service/operations.md">operations</a></p></article>
+</section>
+<section class="chapter" id="chapter-06"><div class="chapter-head"><div class="chapter-no">06</div><h2>从机制到方案</h2><p class="answer">业务闭环同时核对输入、动作、执行状态与交付记录。</p><p class="lead">外部结果不因聊天取消或进程恢复而撤回。相同任务身份连接重试、回放和副作用核对。</p></div>
+<article class="module" id="failure"><h3>失败处理沿原任务身份闭环</h3><p class="lead">缺资料、拒绝、超时与恢复各有去向</p><p class="principle">企业失败场景可以映射到已有控制点：上下文补件、权限拒绝、回执查询、去重、指导和新任务。业务方把具体规则、责任人与下游接口接入。</p><ul class="mechanism">
+<li><span class="name">缺少依据</span><span class="work">补材料后再推理。</span></li>
+<li><span class="name">权限拒绝</span><span class="work">返回拒绝结果，停止外部执行。</span></li>
+<li><span class="name">结果未知</span><span class="work">查询下游回执，再决定重试。</span></li>
+<li><span class="name">输入改变</span><span class="work">更新后续要求，核对受影响动作。</span></li>
+</ul><p class="condition">原任务身份连接等待、结果、重试与恢复。</p>
+<p>执行中、等待确认、已生成、已发布与已接收应分别定义，使用户能够判断下一步，而不只看到一个错误提示。</p>
+<details class="detail"><summary>来源定位</summary><p data-source-id="as-f2b9fa0f0bea"><a href="https://docs.agentscope.io/en/versions/2.0.10dev/building-blocks/agent_overview.md">agent overview</a> · e4c1e074dee3f0f6cca28ca29e934c4ec0605354</p><p data-source-id="as-79adbb1a7334"><a href="https://java.agentscope.io/v2/en/service/session-event-log.md">session-event-log</a></p></details>
+<p class="source"><a href="https://docs.agentscope.io/en/versions/2.0.10dev/building-blocks/agent_overview.md">agent overview</a><a href="https://java.agentscope.io/v2/en/service/session-event-log.md">session-event-log</a></p></article>
+<article class="module" id="delivery"><h3>合同助手需要可检查的契约</h3><p class="lead">输入、动作、状态与交付连接成方案</p><p class="principle">输入契约定义材料与版本，动作契约定义副作用和授权，状态契约区分暂停、取消和未知结果，交付契约定义结构化结果与文件身份。</p><ul class="mechanism">
+<li><span class="name">输入契约</span><span class="work">合同版本、依据与访问范围。</span></li>
+<li><span class="name">动作契约</span><span class="work">查询、保存和发布的参数与授权。</span></li>
+<li><span class="name">状态契约</span><span class="work">等待、完成、中断与结果未知。</span></li>
+<li><span class="name">交付契约</span><span class="work">结果字段、依据与文件版本。</span></li>
+</ul><p class="condition">合同版本、动作授权、运行状态与文件身份共同约束交付。</p>
+<p>这一组契约把合同助手分到构建块、服务、工作区和业务应用。各层可以独立实现，也能沿同一任务回查其关系。</p>
+<details class="detail"><summary>来源定位</summary><p data-source-id="as-dc202a66c974"><a href="https://docs.agentscope.io/en/versions/2.0.9/deploy/agent-service.md">agent-service</a></p><p data-source-id="as-69ccfb190c6d"><a href="https://java.agentscope.io/v2/en/service/files.md">files</a></p></details>
+<p class="source"><a href="https://docs.agentscope.io/en/versions/2.0.9/deploy/agent-service.md">agent-service</a><a href="https://java.agentscope.io/v2/en/service/files.md">files</a></p></article>
+<article class="module" id="end"><h3>从 Agent 循环走到企业工作闭环</h3><p class="lead">输入、调用、等待、恢复与交付沿原任务身份连接</p><p class="principle">AgentScope 把推理、工具与持续运行的机制接起来。需求从任务进入，逐层确定输入、动作、暂停、状态保存、执行所有权和交付。</p><ul class="mechanism">
+<li><span class="name">构建能力</span><span class="work">消息、模型、工具、上下文与权限。</span></li>
+<li><span class="name">托管执行</span><span class="work">会话、工作区、事件、状态与恢复。</span></li>
+<li><span class="name">接入业务</span><span class="work">身份、任务、副作用与交付。</span></li>
+</ul><p class="condition">循环、状态、运行所有权与文件交付组成企业请求链。</p>
+<p>Python 和 Java 各给出对应入口，最终方案把企业已有的身份、审批、权威记录与文件交付接到请求链上。</p>
+<details class="detail"><summary>来源定位</summary><p data-source-id="as-13b26f7a4513"><a href="https://docs.agentscope.io/en/versions/2.0.9/index.md">2.0.9 / index</a></p><p data-source-id="as-9d9136196aa8"><a href="https://java.agentscope.io/v2/en/service/index.md">service / index</a></p></details>
+<p class="source"><a href="https://docs.agentscope.io/en/versions/2.0.9/index.md">2.0.9 / index</a><a href="https://java.agentscope.io/v2/en/service/index.md">service / index</a></p></article>
+</section>
+<footer id="questions"><h2>常见追问</h2><nav class="questions" aria-label="按问题查阅">
+<a href="#react">模型为何反复调用工具？</a>
+<a href="#hitl">确认之后怎样继续同一项工作？</a>
+<a href="#offload">长对话被压缩，细节还能找回吗？</a>
+<a href="#memory">上下文、长期记忆与知识库怎样分工？</a>
+<a href="#java-05-snapshot-sse-cursor">用户刷新页面会重跑任务吗？</a>
+<a href="#java-04-session-turn-idempotency">同一提交超时，如何避免创建两项任务？</a>
+<a href="#sandbox">沙箱与工具权限怎样分工？</a>
+<a href="#workspace">几个会话能看见同一批文件吗？</a>
+<a href="#sessions">如何确定任务还在后台运行？</a>
+<a href="#java-07-files-artifacts">Agent 生成文件后，应用怎样取得？</a>
+<a href="#java-06-interaction-capabilities">同一接口能控制所有 Agent 吗？</a>
+<a href="#interrupt">任务取消后，外部动作怎样核对？</a>
+</nav></footer></main><script>const ds=[...document.querySelectorAll("details.detail")];document.getElementById("expand-all").onclick=()=>ds.forEach(d=>d.open=true);document.getElementById("collapse-all").onclick=()=>ds.forEach(d=>d.open=false);let openBeforePrint=[];addEventListener("beforeprint",()=>{openBeforePrint=ds.map(d=>d.open);ds.forEach(d=>d.open=true)});addEventListener("afterprint",()=>ds.forEach((d,i)=>d.open=openBeforePrint[i]));</script></body></html>

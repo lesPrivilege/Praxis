@@ -1,5 +1,7 @@
 # Enterprise 早期来源
 
+- [AgentScope 企业线来源 · 2026-10-12](agentscope-enterprise-20261012/README.md)：230 个独立 URL 的读取、快照与局部支持范围。
+
 - [可编辑原生 SVG · 2026-10-04](editable-native-svg-20261004/README.md)：18 个一手 URL 的相关读取与失败记录；外部实际图未看，未快照正文。
 
 - [关系图的两条语法 · 2026-10-04](relation-grammar-20261004/README.md)：三份 W3C 文档的用词对照；主会话读了摘要所列的句子，未通读、未快照。

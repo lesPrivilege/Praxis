@@ -1,0 +1,227 @@
+[
+  {
+    "id": "java-orchestration",
+    "chapter": [
+      "05",
+      "Java 企业接入"
+    ],
+    "title": "协作有三种不同层次",
+    "lead": "Subagent、Team 与 Workflow 按工作关系选择",
+    "kind": "stack",
+    "items": [
+      {
+        "label": "Subagent",
+        "detail": "当前 Agent 内委派一段有界任务。"
+      },
+      {
+        "label": "Team",
+        "detail": "不同成员分工、沟通与汇总。"
+      },
+      {
+        "label": "Workflow",
+        "detail": "按显式步骤和依赖推进工作。"
+      }
+    ],
+    "pm": "文件共享通过明确交付关系配置。",
+    "refs": [
+      "java-service-orchestration.md"
+    ],
+    "essay": "Subagent 是当前 Agent 内的委派，Team 组织独立成员协作，Workflow 把过程写成明确步骤。三者可以组合，但不是同一层的不同名字。Service 把 Team 和 Workflow 接入 Session API，内部还需要检查成员实际承担的工作与结果。\n\nTeam 的成员并不自动共享文件系统。协作应通过明确的文件或 Artifact 传递关系组织，最后由相应成员汇总。需要人工接受的成果再进入业务工作记录。"
+  },
+  {
+    "id": "java-issue",
+    "chapter": [
+      "05",
+      "Java 企业接入"
+    ],
+    "title": "Issue 把执行接到工作接受",
+    "lead": "目标、讨论、执行与接收各留一份记录",
+    "kind": "flow",
+    "items": [
+      {
+        "label": "定义 Issue",
+        "detail": "保存目标、负责人和交付标准。"
+      },
+      {
+        "label": "分配执行",
+        "detail": "交给 Agent 或 Team 处理。"
+      },
+      {
+        "label": "跟踪过程",
+        "detail": "检查执行记录、结果与讨论。"
+      },
+      {
+        "label": "人工接收",
+        "detail": "接受或退回需要判断的工作。"
+      }
+    ],
+    "pm": "执行完成与工作被接收分别记录。",
+    "refs": [
+      "java-service-orchestration.md",
+      "java-service-operations.md"
+    ],
+    "essay": "当任务需要负责人、讨论和人工接受时，Issue 提供工作层记录。它保存目标与交付标准，再把执行交给 Agent 或 Team。Run 和相关记录说明系统做了什么，Issue 的接受或退回说明负责人如何判断成果。\n\n用户提出修改要求与启动执行也需要区分。若工作已到达却没有结果，应从 Run、Node 和最新 Attempt 检查依赖、等待批准、缺输入、失败或部分交付，而不是只看最后一条聊天消息。"
+  },
+  {
+    "id": "java-auth-scope",
+    "chapter": [
+      "05",
+      "Java 企业接入"
+    ],
+    "title": "调用资源与读取工作分别授权",
+    "lead": "账户、Namespace、资源与工作可见性分层",
+    "kind": "rows",
+    "items": [
+      {
+        "label": "账户身份",
+        "detail": "确认访问者是谁。"
+      },
+      {
+        "label": "Namespace",
+        "detail": "选择资源与授权边界。"
+      },
+      {
+        "label": "资源动作",
+        "detail": "判断是否可以发现、使用或管理。"
+      },
+      {
+        "label": "工作共享",
+        "detail": "决定能否读取某个 Issue、会话或文件。"
+      }
+    ],
+    "pm": "可调用 Agent，不等于可读他人的工作。",
+    "refs": [
+      "java-service-access.md"
+    ],
+    "essay": "Service 区分账户身份、Namespace 角色、资源操作和工作可见性。Namespace 是授权边界，Workspace 则提供运行文件；二者不能用同一种“空间”概念替代。资源发现、use 操作和读取私人工作是不同判断。\n\n访问失败时，按身份和 namespace、资源决策、依赖权限、Issue 分享逐层排查。团队自身有 use 权限，也需要核对成员 Agent 以及 Memory、Vault、Environment 等依赖。"
+  },
+  {
+    "id": "java-budget",
+    "chapter": [
+      "05",
+      "Java 企业接入"
+    ],
+    "title": "预算控制工作能继续到哪一步",
+    "lead": "Managed 用量预算约束后续运行",
+    "kind": "rows",
+    "items": [
+      {
+        "label": "用量归属",
+        "detail": "按 Session 和任务记录消耗。"
+      },
+      {
+        "label": "Managed 预算",
+        "detail": "把运行额度写入工作约束。"
+      },
+      {
+        "label": "达到上限",
+        "detail": "按能力和状态决定是否停止。"
+      },
+      {
+        "label": "继续工作",
+        "detail": "调整额度后对原任务执行控制。"
+      }
+    ],
+    "pm": "续跑前同时核对预算、能力和任务状态。",
+    "refs": [
+      "java-service-session.md"
+    ],
+    "essay": "Managed Session 的 /budget 限制模型调用次数和已报告的累计用量。Token 与费用预算无法强制截断已经启动的并行调用；费用上限还需要模型定价。\n\n应用级并发与 Token 预算另行管理。预算调整和任务继续是不同操作，续跑仍围绕原任务状态和可用控制进行。"
+  },
+  {
+    "id": "java-channels",
+    "chapter": [
+      "05",
+      "Java 企业接入"
+    ],
+    "title": "消息渠道连接外部对话与任务",
+    "lead": "外部消息与执行记录需要稳定关联",
+    "kind": "flow",
+    "items": [
+      {
+        "label": "消息渠道",
+        "detail": "接收外部平台的工作请求。"
+      },
+      {
+        "label": "目标路由",
+        "detail": "关联到配置的 Agent 或 Team。"
+      },
+      {
+        "label": "执行观察",
+        "detail": "跟踪对应会话、Issue 和结果。"
+      },
+      {
+        "label": "渠道回传",
+        "detail": "把结果送回原外部对话。"
+      }
+    ],
+    "pm": "飞书 Issue 路由当前不接 Workflow 目标。",
+    "refs": [
+      "java-service-orchestration.md"
+    ],
+    "essay": "渠道接入负责消息接收、目标路由和结果回传。外部对话与执行记录应保持稳定关联。当前飞书的 Issue 路由支持 Agent 或 Team，其他适配器要分别查询能力。\n\n渠道与 Automation 独立配置。当前 Automation 不能直接以 Workflow 为目标，已有 Workflow 需要通过发布后的 Session API 接入应用。这些具体边界影响产品触发方式的设计。"
+  },
+  {
+    "id": "java-webhook",
+    "chapter": [
+      "05",
+      "Java 企业接入"
+    ],
+    "title": "Webhook 重复投递按事件身份合并",
+    "lead": "接收通知与执行业务动作分开处理",
+    "kind": "flow",
+    "items": [
+      {
+        "label": "发出事件",
+        "detail": "运行产生带身份的通知。"
+      },
+      {
+        "label": "接收投递",
+        "detail": "同一事件可能重复到达。"
+      },
+      {
+        "label": "身份去重",
+        "detail": "接收方合并同一事件。"
+      },
+      {
+        "label": "业务处理",
+        "detail": "副作用使用自己的幂等契约。"
+      }
+    ],
+    "pm": "通知已接收与业务事务完成分别核对。",
+    "refs": [
+      "java-service-sse.md",
+      "java-service-operations.md"
+    ],
+    "essay": "Webhook 的至少一次投递允许同一事件重试，接收方应按事件身份去重并持久记录处理结果。接收确认只说明通知通道处理到了相应阶段。\n\n通知触发的邮件、系统写入或支付类动作还需要自身幂等与结果查询。重投事件不能直接再次执行副作用，否则通知的可靠性反而带来重复业务操作。 接收方先验证原始请求体签名与时间，再持久化并按事件身份去重。"
+  },
+  {
+    "id": "java-storage",
+    "chapter": [
+      "05",
+      "Java 企业接入"
+    ],
+    "title": "恢复需要成套的数据与密钥",
+    "lead": "数据库、工作文件和 Artifact 对齐同一备份点",
+    "kind": "stack",
+    "items": [
+      {
+        "label": "数据库",
+        "detail": "保存定义、会话、任务与工作状态。"
+      },
+      {
+        "label": "文件快照",
+        "detail": "保存对应 Workspace 和 Artifact。"
+      },
+      {
+        "label": "Vault 密钥",
+        "detail": "使用原密钥解密已经保存的凭据。"
+      }
+    ],
+    "pm": "恢复后核对历史、文件、解密和新任务。",
+    "refs": [
+      "java-service-operations.md"
+    ],
+    "essay": "运维文档把数据库、共享 Workspaces 和 Artifacts 列为持久数据，同时要求保留加密数据所需的原 Vault master key。恢复需要这些材料对应同一备份点，并使用匹配组件版本。\n\n恢复验收包含登录、已有 Agent、Session 历史、文件、Vault 解密、runtime 连接和一项新工作。只打开知识问答页面不能证明凭据恢复正常；工作接受状态也应与备份点一致。"
+  }
+]

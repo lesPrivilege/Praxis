@@ -1,0 +1,169 @@
+> ## Documentation Index
+> Fetch the complete documentation index at: https://docs.agentscope.io/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+> ## Agent Instructions
+> For AgentScope Python, use https://docs.agentscope.io/stable/en/index for new projects. For existing projects, check the installed agentscope version and use matching versioned documentation.
+> The /latest/ alias points to development documentation. Use it only with the matching development source. Do not mix AgentScope 1.x and 2.x APIs.
+> State the AgentScope version when providing installation commands or code examples. ReMe uses its own continuously updated /reme/latest/ documentation.
+
+# Subscribe to a session's event stream (SSE)
+
+> Subscribe to a session's live event stream.
+
+Returns a ``text/event-stream`` that first replays any buffered
+events from the current run's replay log (if a run is in progress
+or just finished), then streams live events as they are produced
+by :meth:`ChatService.run`. The connection stays open
+until the client disconnects — subsequent runs on the same session
+are delivered over the same connection.
+
+A heartbeat comment frame (``:\n\n``) is sent every 30 seconds to
+keep the connection alive through reverse proxies.
+
+Args:
+    session_id (`str`):
+        The session to subscribe to.
+    agent_id (`str`):
+        The agent that owns the session (used for ownership
+        validation).
+    user_id (`str`):
+        Injected authenticated user id.
+    storage (`StorageBase`):
+        Injected storage backend (ownership check only).
+    message_bus (`MessageBus`):
+        Injected message bus (replay + live subscription).
+
+Returns:
+    `StreamingResponse`:
+        SSE stream of AgentEvent frames + periodic heartbeats.
+
+
+
+## OpenAPI
+
+````yaml /en/versions/2.0.2/deploy/openapi.json get /sessions/{session_id}/stream
+openapi: 3.1.0
+info:
+  title: AgentScope
+  version: 2.0.1
+servers: []
+security: []
+paths:
+  /sessions/{session_id}/stream:
+    get:
+      tags:
+        - sessions
+      summary: Subscribe to a session's event stream (SSE)
+      description: |-
+        Subscribe to a session's live event stream.
+
+        Returns a ``text/event-stream`` that first replays any buffered
+        events from the current run's replay log (if a run is in progress
+        or just finished), then streams live events as they are produced
+        by :meth:`ChatService.run`. The connection stays open
+        until the client disconnects — subsequent runs on the same session
+        are delivered over the same connection.
+
+        A heartbeat comment frame (``:\n\n``) is sent every 30 seconds to
+        keep the connection alive through reverse proxies.
+
+        Args:
+            session_id (`str`):
+                The session to subscribe to.
+            agent_id (`str`):
+                The agent that owns the session (used for ownership
+                validation).
+            user_id (`str`):
+                Injected authenticated user id.
+            storage (`StorageBase`):
+                Injected storage backend (ownership check only).
+            message_bus (`MessageBus`):
+                Injected message bus (replay + live subscription).
+
+        Returns:
+            `StreamingResponse`:
+                SSE stream of AgentEvent frames + periodic heartbeats.
+      operationId: stream_session_events_sessions__session_id__stream_get
+      parameters:
+        - name: session_id
+          in: path
+          required: true
+          schema:
+            type: string
+            title: Session Id
+        - name: agent_id
+          in: query
+          required: true
+          schema:
+            type: string
+            description: Agent the session belongs to.
+            title: Agent Id
+          description: Agent the session belongs to.
+        - name: x-user-id
+          in: header
+          required: true
+          schema:
+            type: string
+            description: >-
+              Caller's user ID. Temporary header-based identity; will be
+              replaced by JWT auth.
+            title: X-User-Id
+          description: >-
+            Caller's user ID. Temporary header-based identity; will be replaced
+            by JWT auth.
+      responses:
+        '200':
+          description: Server-Sent Events stream of AgentEvent objects
+          content:
+            application/json:
+              schema: {}
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+components:
+  schemas:
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+              - type: string
+              - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+        - loc
+        - msg
+        - type
+      title: ValidationError
+
+````
+
+This documentation is built and hosted on [Mintlify](https://mintlify.com), a developer documentation platform.

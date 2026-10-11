@@ -1,5 +1,7 @@
 # 演示实现
 
+- [AgentScope 企业线知识片](agentscope-enterprise-film/README.md)：50 场覆盖 53 主题的横屏讲解，分层阅读稿与原生双画幅封面；官方文档与固定源码支持局部实现解释，检查范围见制作记录。
+
 当前有施工交接与并行生成的作品，具体运行和验收状态见各项目README。创建实现前完成 [场景契约](../scenarios/_template/README.md)，按 [工程蓝图](../templates/demo/README.md) 选择必要目录。
 
 ## 准入与交付

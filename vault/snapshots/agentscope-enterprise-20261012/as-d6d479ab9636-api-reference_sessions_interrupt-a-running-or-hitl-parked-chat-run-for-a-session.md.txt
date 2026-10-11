@@ -1,0 +1,177 @@
+> ## Documentation Index
+> Fetch the complete documentation index at: https://docs.agentscope.io/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+> ## Agent Instructions
+> For AgentScope Python, use https://docs.agentscope.io/stable/en/index for new projects. For existing projects, check the installed agentscope version and use matching versioned documentation.
+> The /latest/ alias points to development documentation. Use it only with the matching development source. Do not mix AgentScope 1.x and 2.x APIs.
+> State the AgentScope version when providing installation commands or code examples. ReMe uses its own continuously updated /reme/latest/ documentation.
+
+# Interrupt a running or HITL-parked chat run for a session
+
+> Request interruption of an in-progress reply for a session.
+
+Thin HTTP wrapper around :meth:`ChatService.interrupt`; see that
+method for the running vs not-running dispatch. Idempotent — an
+idle target session is a silent no-op at the agent layer.
+
+Args:
+    session_id: The session whose reply should be interrupted.
+    agent_id: The agent that owns the session.
+    user_id: Injected authenticated user id.
+    chat_service: Injected chat service.
+
+Returns:
+    202 with :class:`InterruptSessionResponse` echoing the
+    session id.
+
+Raises:
+    HTTPException: 404 if the session does not exist.
+
+
+
+## OpenAPI
+
+````yaml /en/versions/2.0.4/deploy/openapi.json post /sessions/{session_id}/interrupt
+openapi: 3.1.0
+info:
+  title: AgentScope
+  version: 2.0.4
+servers: []
+security: []
+paths:
+  /sessions/{session_id}/interrupt:
+    post:
+      tags:
+        - sessions
+      summary: Interrupt a running or HITL-parked chat run for a session
+      description: |-
+        Request interruption of an in-progress reply for a session.
+
+        Thin HTTP wrapper around :meth:`ChatService.interrupt`; see that
+        method for the running vs not-running dispatch. Idempotent — an
+        idle target session is a silent no-op at the agent layer.
+
+        Args:
+            session_id: The session whose reply should be interrupted.
+            agent_id: The agent that owns the session.
+            user_id: Injected authenticated user id.
+            chat_service: Injected chat service.
+
+        Returns:
+            202 with :class:`InterruptSessionResponse` echoing the
+            session id.
+
+        Raises:
+            HTTPException: 404 if the session does not exist.
+      operationId: interrupt_session_sessions__session_id__interrupt_post
+      parameters:
+        - name: session_id
+          in: path
+          required: true
+          schema:
+            type: string
+            title: Session Id
+        - name: agent_id
+          in: query
+          required: true
+          schema:
+            type: string
+            description: Agent the session belongs to.
+            title: Agent Id
+          description: Agent the session belongs to.
+        - name: x-user-id
+          in: header
+          required: true
+          schema:
+            type: string
+            description: >-
+              Caller's user ID. Temporary header-based identity; will be
+              replaced by JWT auth.
+            title: X-User-Id
+          description: >-
+            Caller's user ID. Temporary header-based identity; will be replaced
+            by JWT auth.
+      responses:
+        '202':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InterruptSessionResponse'
+        '404':
+          description: Session not found.
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+components:
+  schemas:
+    InterruptSessionResponse:
+      properties:
+        session_id:
+          type: string
+          title: Session Id
+          description: Echo of the interrupted session id.
+      type: object
+      required:
+        - session_id
+      title: InterruptSessionResponse
+      description: |-
+        Response body for ``POST /sessions/{sid}/interrupt`` (HTTP 202).
+
+        The interrupt operation is idempotent and always succeeds for an
+        existing session (only ``404`` is raised when the session id does
+        not exist):
+
+        - If the session is **running**, an interrupt signal is published
+          so the local
+          :class:`~agentscope.app._manager.CancelDispatcher` cancels the
+          chat-run task; the agent then runs its ``CancelledError`` cleanup
+          path.
+        - If the session is **parked** on HITL / external execution, a
+          resume trigger carrying a
+          :class:`~agentscope.event.UserInterruptEvent` is enqueued so the
+          agent short-circuits into the same cleanup path.
+        - If the session is **idle**, the call is a no-op.
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+              - type: string
+              - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+        - loc
+        - msg
+        - type
+      title: ValidationError
+
+````
+
+This documentation is built and hosted on [Mintlify](https://mintlify.com), a developer documentation platform.
