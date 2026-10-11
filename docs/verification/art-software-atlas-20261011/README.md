@@ -10,6 +10,7 @@
 - [草案比较](construction-comparison.md)与 [正文审校](concise-body-audit.md)：采纳取舍与内容归属。
 - [补正验证](facet-validation.json)、[补正独立复核](facet-independent-review.md)和 [新增发现试用](facet-discovery-trial.md)。
 - [软件范围路由复核](scope-routing.md)：平台、跨平台问题、局部覆盖与有界研究缺口。
+- [本地累计审阅](local-review.md)：实际所审 SHA、修订、查询复验及未覆盖项。
 - [本地审阅与合并交接](local-review-handoff.md)：累计审阅范围与保护工作区要求。
 
 当前入口：[来源书目](../../../vault/provenance/art-software-atlas/README.md) · [操作入口](../../../kit/design/references/art-software-atlas.md)。

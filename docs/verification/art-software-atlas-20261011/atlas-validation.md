@@ -107,7 +107,9 @@ for n in json.loads((B/'grammar.json').read_text())['grammar']:
 for dim in d['facet_definitions']:
  expected={'values':{},'states':{state:[] for state in ['known','unknown','not-applicable','unreviewed']}}
  for n in nodes:
-  f=n.get('facets',{}).get(dim);state=f['state'] if f else 'unreviewed';expected['states'][state].append(n['id'])
+  f=n.get('facets',{}).get(dim);state=f['state'] if f else 'unreviewed'
+  if state not in expected['states']:continue # Schema already reports invalid states.
+  expected['states'][state].append(n['id'])
   if state=='known':
    for val in f['values']:expected['values'].setdefault(val,[]).append(n['id'])
  for members in list(expected['states'].values())+list(expected['values'].values()):members.sort()

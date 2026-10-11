@@ -114,8 +114,8 @@ def validate(data):
             if not isinstance(facet.get('values'), list) or not isinstance(facet.get('evidence'), list):
                 errors.append(f'{sid}: facet values/evidence must be lists')
                 continue
-            if facet['state'] != 'known' and facet['values']:
-                errors.append(f'{sid}: unknown/N/A facet carries values')
+            if (facet['state'] == 'known') != bool(facet['values']):
+                errors.append(f'{sid}: facet state/value mismatch')
             if not facet['evidence'] or any(x not in known for x in facet['evidence']):
                 errors.append(f'{sid}: facet has unresolved evidence IDs')
         if s.get('snapshot_path'):
