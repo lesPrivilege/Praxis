@@ -194,7 +194,7 @@
 
 ## 2026-10-03 · 成文原理开头的写作姿态
 
-- 用户贴来一份写作姿态建议，主张单立 preamble 文件；按用户要求由 Opus 裁决，目标是文质彬彬、辞达。没有新建文件，把八条原理里还没写明的部分写成 [成文原理](kit/write/prose/grammar.md)开头一段：文辞与内容相称，不凑结构，不抹平复杂与分歧。裁决记在 [审阅方法](kit/write/prose/review.md#审阅裁决记录)。
+- 用户贴来一份写作姿态建议，主张单立 preamble 文件；按用户要求由 Opus 裁决，目标是文质彬彬、辞达。没有新建文件，把八条原理里还没写明的部分写成 [成文原理](kit/write/prose/grammar.md)开头一段：文辞与内容相称，不凑结构，不抹平复杂与分歧。裁决记在 [当时的审阅裁决](https://github.com/lesPrivilege/Praxis/blob/02ca9ea4b0faa6a9376523883c1f9f7afd5cf154/kit/write/prose/review.md#审阅裁决记录)。
 
 ## 2026-10-04 · 企业工作面语法实验第一轮
 

@@ -32,3 +32,10 @@
 - 独立编订审阅六项全部修复并由原审阅者回看：书目缺路、交互选择过严、动画/验证混用、反向来源边遗漏、Hairline 无依据精确参数、模态背景措辞。既有卡的缺陷与实现局限未被日期清理消除。
 - `registry_extensions` 只由新 catalog 选择；595 个旧来源记录与 850 条旧快照记录均保持。新集合 29 URL、13 语法、6 短摘录；生成源与本地检查通过，回归探针覆盖真实发现的反边遗漏与正文日期。
 - 重新 fetch main 后仍为初始 SHA；远端授权分支尚不存在，原工作树干净，无并发变动需要协调。本批仅在完全收敛后提交并推送唯一授权分支，远端 SHA 与工作树清洁状态随最终交付核对。
+
+## 2026-10-11 · 审阅历史迁移后的锚点修复
+
+- 根 README 的写作参考登记旧指向 `review.md#增量`，现指向现有 intake 的“处理链”及参考生命周期；实际目标标题已核对。
+- 根 CHANGELOG 的写作姿态历史条目改为基线 `02ca9ea4b0faa6a9376523883c1f9f7afd5cf154` 的 `review.md#审阅裁决记录`。用 `git show` 确认该精确版本存在此标题，历史裁决未搬回当前语法。
+- 仓库 validator 对这两个根入口通往 review/intake/reference-lifecycle 的普通标题锚点增加窄检查，不宣称全库 GFM 锚点验证。在内存中重新引入两条旧链接，均产生对应 Broken heading link；磁盘未被测试改写。
+- `validate_repository.py`、`reference_index.py --check` 与 `git diff --check` 通过。范围限导航修复及回归检查，来源研究、schema 与分类不变。

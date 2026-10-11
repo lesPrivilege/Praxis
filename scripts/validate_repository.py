@@ -76,6 +76,17 @@ for path in paths:
             errors.append(f'External local dependency: {path.relative_to(ROOT)} -> {target}')
         elif not resolved.exists():
             errors.append(f'Broken link: {path.relative_to(ROOT)} -> {target}')
+        elif (path.name in ('README.md', 'CHANGELOG.md') and path.parent == ROOT
+              and resolved in {ROOT / 'kit/write/prose/review.md',
+                               ROOT / 'docs/governance/intake.md',
+                               ROOT / 'docs/governance/reference-lifecycle.md'}
+              and urlsplit(target).fragment):
+            # Narrow regression guard for the relocated review history routes.
+            # These target headings are plain text; this is not a full GFM parser.
+            headings = {title.strip().lower().replace(' ', '-') for title in
+                        re.findall(r'^#{1,6} (.+)$', resolved.read_text(), re.M)}
+            if unquote(urlsplit(target).fragment) not in headings:
+                errors.append(f'Broken heading link: {path.relative_to(ROOT)} -> {target}')
 
 manifest = ROOT / 'vault' / 'snapshot-manifest.json'
 if manifest.exists():
