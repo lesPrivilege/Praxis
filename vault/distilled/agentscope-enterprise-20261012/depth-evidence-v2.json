@@ -1,0 +1,245 @@
+{
+  "schema_version": "1.0",
+  "review": {
+    "artifact": "demos/agentscope-enterprise-film",
+    "worktree": "/Users/lesprivilege/.codex/worktrees/agentscope-enterprise-film/Praxis",
+    "script": "demos/agentscope-enterprise-film/script/beats.json",
+    "reading": "demos/agentscope-enterprise-film/reading.md",
+    "source_batch": "agentscope-enterprise-20261012",
+    "method": "Bounded read-only mechanism review; each scene checked for why/how/default/failure.",
+    "version_boundary": {
+      "python_source_commit": "e4c1e074dee3f0f6cca28ca29e934c4ec0605354",
+      "python_source_version": "2.0.10dev",
+      "python_stable_docs_used": "2.0.9",
+      "java_service_release": "2.1.0-BETA1",
+      "java_service_status": "prerelease",
+      "runtime_tested": false,
+      "tts_used": false,
+      "clone_or_install_used": false,
+      "real_service_or_provider_tested": false
+    },
+    "rating_legend": {
+      "red": "A next question would expose a materially wrong or missing state/ownership/default boundary.",
+      "yellow": "The mechanism is usable at current granularity, but one condition or failure path should be made visible.",
+      "green": "The four questions are answerable within current scope; retain stated version and evidence limits."
+    }
+  },
+  "priority_gaps": [
+    {"priority":"P0","scenes":["agent","tools","permission","sessions","background","java-04-session-turn-idempotency","java-07-files-artifacts","java-09-recovery-capabilities"],"gap":"Make persisted state, aggregation, permission priority, lock/replay ordering, durable-vs-process background work, accepted/applied Turn state, Artifact publication, and recovery prerequisites visible."},
+    {"priority":"P1","scenes":["events","java-05-snapshot-sse-cursor","java-06-interaction-capabilities","java-08-auth-grant-registration","java-01-harness-context","java-02-agent-session","java-03-execution-targets"],"gap":"Add event application semantics, capability-specific controls, credential/Namespace boundaries, unresolved Java persistence default, and direct-call/session/recovery limits."},
+    {"priority":"P1","scenes":["whole","lanes","docs","service","identity","observability","failure","delivery","end"],"gap":"Expose version/status and enterprise responsibility boundaries so broad architecture claims do not become production or SLA claims."}
+  ],
+  "focus_evidence": [
+    {
+      "focus": "AgentState",
+      "scenes": ["agent"],
+      "local_refs": {"reading":"reading.md:94-109","beats":"script/beats.json:454-534"},
+      "four_questions": {
+        "why":"Cross-request/process continuation needs one serialized unit for context, current reply, permission, tools, tasks and middleware state.",
+        "how":"AgentState stores session_id, summary, context, reply_context, permission_context, tool_context, tasks_context and middle_context; parked state is derived from the tail assistant message and matching tool call/result ids.",
+        "default":"State is JSON serializable; structured schema becomes JSON Schema after reload; first persistence is upsert and later update assumes an existing session.",
+        "failure":"A resolved SUBMITTED call, another Agent's observed message, stale live snapshot or post-restart schema validator must not be treated as the same parked/resumable state."
+      },
+      "state_example":"S-17/R-4 with tail ToolCall C-9=ASKING, permission mode DEFAULT, activated groups basic/files -> AWAITING_PERMISSION; resume must carry R-4/C-9.",
+      "counterexample":"Tail C-9=SUBMITTED already has ToolResultBlock(C-9, success) -> not waiting; replaying confirmation would duplicate continuation.",
+      "sources":[
+        {"source_id":"as-614314fd8b6b","snapshot":"vault/snapshots/agentscope-enterprise-20261012/as-614314fd8b6b-_state.py.txt","lines":"182-220,268-372","status":"partial-static"},
+        {"source_id":"as-188d64eb8aa5","snapshot":"vault/snapshots/agentscope-enterprise-20261012/as-188d64eb8aa5-building-blocks_agent_run-agent.md.txt","lines":"180-244","status":"partial-static"},
+        {"source_id":"as-f2b9fa0f0bea","snapshot":"vault/snapshots/agentscope-enterprise-20261012/as-f2b9fa0f0bea-building-blocks_agent_overview.md.txt","lines":"12-67","status":"partial-static"}
+      ]
+    },
+    {
+      "focus": "ToolResponse-structure",
+      "scenes": ["tools","message","events"],
+      "local_refs": {"reading":"reading.md:110-143,178-194","beats":"script/beats.json:535-702,878-968"},
+      "four_questions": {
+        "why":"Model schema, streaming progress and durable context need separate objects and stable call/result identity.",
+        "how":"ToolChunk streams blocks; ToolResponse.append_chunk merges same-id text, re-encodes base64 data, updates metadata and retains severe failure state; Agent emits a ToolResultBlock with the ToolCallBlock id.",
+        "default":"Chunk starts as running; final states are success/error/interrupted/denied; URL DataBlock is not appendable; a result id must match its launching call.",
+        "failure":"Inactive/malformed calls fail before side effects; URL/different-source data append raises; later success cannot erase a previously recorded error."
+      },
+      "state_example":"C-9 -> b1 text chunks \"uploading \" + \"report.pdf\" -> one result block b1; state success.",
+      "counterexample":"Same b1 first URL DataBlock then another URL DataBlock, or ERROR then SUCCESS; do not concatenate URLs or downgrade final error.",
+      "sources":[
+        {"source_id":"as-87b75e2c3fd3","snapshot":"vault/snapshots/agentscope-enterprise-20261012/as-87b75e2c3fd3-_response.py.txt","lines":"28-43,50-170","status":"partial-static"},
+        {"source_id":"as-24299c5c3ff5","snapshot":"vault/snapshots/agentscope-enterprise-20261012/as-24299c5c3ff5-building-blocks_message-and-event.md.txt","lines":"123-145,247-300","status":"partial-static"},
+        {"source_id":"as-13c3e91cfe2f","snapshot":"vault/snapshots/agentscope-enterprise-20261012/as-13c3e91cfe2f-building-blocks_tool_overview.md.txt","lines":"14-34","status":"partial-static"}
+      ]
+    },
+    {
+      "focus": "permission-priority",
+      "scenes": ["permission","hitl"],
+      "local_refs": {"reading":"reading.md:212-244","beats":"script/beats.json:1060-1229"},
+      "four_questions": {
+        "why":"A valid tool schema does not authorize a side effect; the decision order determines the product safety boundary.",
+        "how":"DEFAULT evaluates deny, ask, read-only, tool check, allow, fallback ASK; EXPLORE skips tool check/allow for non-read-only; BYPASS skips safety ASK; DONT_ASK converts ASK to DENY; ASK parks and emits RequireUserConfirmEvent.",
+        "default":"Read-only is per invocation; safety ASK can be immune to allow rules except in BYPASS; suggested rules can persist future matching approvals.",
+        "failure":"Unknown tool, inactive group, JSON/schema failure and mismatched resume ids do not execute; parked reply has finished_reason=null; partial confirmations do not replay unresolved asks."
+      },
+      "state_example":"Write(/workspace/a.md): DEFAULT -> ASK; EXPLORE -> DENY; DONT_ASK -> DENY; same call with explicit BYPASS trust boundary may pass tool checks.",
+      "counterexample":"Allow rule cannot override EXPLORE write denial or a DEFAULT safety ASK; BYPASS is not a sandbox.",
+      "sources":[
+        {"source_id":"as-145a584b7630","snapshot":"vault/snapshots/agentscope-enterprise-20261012/as-145a584b7630-_engine.py.txt","lines":"117-212,214-295,297-393,395-489,491-560","status":"partial-static"},
+        {"source_id":"as-7dad78a203b5","snapshot":"vault/snapshots/agentscope-enterprise-20261012/as-7dad78a203b5-main-permission.md.txt","lines":"14-24,54-74","status":"verified-doc"},
+        {"source_id":"as-7bfd7ee86f21","snapshot":"vault/snapshots/agentscope-enterprise-20261012/as-7bfd7ee86f21-building-blocks_agent_human-in-the-loop.md.txt","lines":"14-81,85-120","status":"partial-static"}
+      ]
+    },
+    {
+      "focus": "background-result",
+      "scenes": ["background","sessions"],
+      "local_refs": {"reading":"reading.md:484-517","beats":"script/beats.json:2418-2585"},
+      "four_questions": {
+        "why":"A browser connection must not own a long tool's lifetime, and completion must wake the original session without a second submission.",
+        "how":"ToolOffloadMiddleware yields a placeholder; BackgroundTaskManager holds a process-local asyncio watcher and bus registry; completion pushes session inbox plus wakeup; WakeupDispatcher reruns under session lock; ToolStop cancels same-session local work or broadcasts remote cancellation.",
+        "default":"The watcher is process-local and TTL-registered, not a durable execution engine; browser disconnect is observation loss only; bus/storage are the durable handoff pieces.",
+        "failure":"Process restart loses the watcher; unknown/cross-session task ids fail; parked sessions must not be forced into a None run; late results need original task/session identity and state reconciliation."
+      },
+      "state_example":"C-9 -> B-7 submitted; browser disconnect; B-7 completes on W2 -> inbox(S-17)+wakeup -> lock -> next reasoning.",
+      "counterexample":"After disconnect, POSTing the original Msg again creates a second B-8; a registry record alone does not prove a watcher survived process exit.",
+      "sources":[
+        {"source_id":"as-dc202a66c974","snapshot":"vault/snapshots/agentscope-enterprise-20261012/as-dc202a66c974-main-agent-service.md.txt","lines":"30-35,121-124,195-196,327-357,803-840","status":"verified-doc"},
+        {"source_id":"as-d612211accc9","snapshot":"vault/snapshots/agentscope-enterprise-20261012/as-d612211accc9-_background_task_manager.py.txt","lines":"216-231,249-328,380-408,446-470","status":"partial-static"},
+        {"source_id":"as-19629c6bf4d8","snapshot":"vault/snapshots/agentscope-enterprise-20261012/as-19629c6bf4d8-agentscope-src__agentscope__app__message_bus___keys.py-e4c1e074.txt","lines":"27-47,201-240","status":"partial-static"}
+      ]
+    },
+    {
+      "focus": "locks-and-replay",
+      "scenes": ["sessions","events","java-05-snapshot-sse-cursor"],
+      "local_refs": {"reading":"reading.md:127-143,484-500,655-671","beats":"script/beats.json:619-702,2418-2501,3326-3417"},
+      "four_questions": {
+        "why":"Lock prevents concurrent state ownership; replay lets a late or reconnecting observer catch up. Neither replaces the other.",
+        "how":"Python bus uses tokenized NX/EX lock with heartbeat, append-only bounded replay plus transient pub/sub; ChatService takes the run lock before loading state and persists reply/state/cursor before releasing it. Java uses resource-specific snapshot/as_of/cursor projection and fresh snapshot after 410.",
+        "default":"Python session replay cap is 1000 entries; live pub/sub is fire-and-forget; Java native seq, Service SSE cursor, idempotency key and request id are distinct identities.",
+        "failure":"Expired/crashed lock can be taken over, but stale holder cannot delete a new token; stale snapshots must not overwrite live state; expired cursor requires snapshot, not task resubmission."
+      },
+      "state_example":"Subscribe first, replay after cursor, dedup the seam by entry id; persist checkpoint/state under the short checkpoint lock while the run lock is still held.",
+      "counterexample":"Subscribe only to pub/sub after a disconnect or read state before acquiring the run lock; both lose events or permit stale overwrite.",
+      "sources":[
+        {"source_id":"as-ad100b5dcf7e","snapshot":"vault/snapshots/agentscope-enterprise-20261012/as-ad100b5dcf7e-_base.py.txt","lines":"172-241,259-396","status":"partial-static"},
+        {"source_id":"as-ebaf50819a12","snapshot":"vault/snapshots/agentscope-enterprise-20261012/as-ebaf50819a12-agentscope-src__agentscope__app__message_bus___redis_message_bus.py-e4c1e074.txt","lines":"304-404,622-715","status":"partial-static"},
+        {"source_id":"as-73da307b2ffd","snapshot":"vault/snapshots/agentscope-enterprise-20261012/as-73da307b2ffd-_chat.py.txt","lines":"140-153,804-816,1476-1512","status":"partial-static"},
+        {"source_id":"as-9af0c87d9dc4","snapshot":"vault/snapshots/agentscope-enterprise-20261012/as-9af0c87d9dc4-_session.py.txt","lines":"649-682,827-906","status":"partial-static"},
+        {"source_id":"as-e60a2f6c58b3","snapshot":"vault/snapshots/agentscope-enterprise-20261012/as-e60a2f6c58b3-java-harness-session.md.txt","lines":"75-103,193-233,254-303","status":"verified-doc"},
+        {"source_id":"as-528e3df546ca","snapshot":"vault/snapshots/agentscope-enterprise-20261012/as-528e3df546ca-java-service-sse.md.txt","lines":"13-34,66-100","status":"verified-doc"}
+      ]
+    },
+    {
+      "focus": "java-turn",
+      "scenes": ["java-02-agent-session","java-04-session-turn-idempotency","java-06-interaction-capabilities"],
+      "local_refs": {"reading":"reading.md:604-620,638-688","beats":"script/beats.json:3043-3134,3234-3516"},
+      "four_questions": {
+        "why":"Business callers need stable logical work identity across retries, queues, approvals and page reconnects.",
+        "how":"Session freezes target/config; Turn is one logical request; run is one execution attempt; idempotency key + identical body retrieves the same Turn; accepted input can wait before applied consumption; capabilities gate steer/inject/actions/resume.",
+        "default":"202 queued is accepted-not-complete; later Turns queue behind an approval; Managed retains context, Team/Workflow Turns start independent work; observer reads do not execute.",
+        "failure":"New key duplicates work; changed body conflicts; completed/cancelled Turn cannot resume; action/steer on closed or unsupported target is rejected; resume does not undo external effects."
+      },
+      "state_example":"S1/T1/R1 accepted -> queued; T2 remains queued while T1 awaits approval; same key/body returns T1; approval makes input applied and continuation runs.",
+      "counterexample":"SSE disconnect followed by new key k2 resubmission creates T2; GET events is drawn as an inference call; accepted receipt is drawn as applied/completed.",
+      "sources":[
+        {"source_id":"as-79adbb1a7334","snapshot":"vault/snapshots/agentscope-enterprise-20261012/as-79adbb1a7334-java-service-session.md.txt","lines":"9-41,74-97,113-146,197-210","status":"verified-doc"},
+        {"source_id":"as-e60a2f6c58b3","snapshot":"vault/snapshots/agentscope-enterprise-20261012/as-e60a2f6c58b3-java-harness-session.md.txt","lines":"9-13,40-58,62-103,107-149","status":"verified-doc"},
+        {"source_id":"as-9d9136196aa8","snapshot":"vault/snapshots/agentscope-enterprise-20261012/as-9d9136196aa8-java-service-index.md.txt","lines":"41-50","status":"verified-doc"}
+      ]
+    },
+    {
+      "focus": "artifact",
+      "scenes": ["java-07-files-artifacts","java-orchestration"],
+      "local_refs": {"reading":"reading.md:689-704,738-753","beats":"script/beats.json:3517-3602,3795-3868"},
+      "four_questions": {
+        "why":"Execution workspace visibility and business deliverability are different contracts.",
+        "how":"Capability check -> session-bound file_id input -> workspace work -> explicit Artifact publication -> metadata/access verification -> download; Team/Workflow members exchange accessible artifacts rather than an implicit shared filesystem.",
+        "default":"Managed upload limit is 16 MiB; file_input differs by target; working-directory files and Host files are not automatically application-downloadable; completed is not verified delivery.",
+        "failure":"Cross-session file references, guessed paths, unsupported file_input and inaccessible artifacts fail; external URI publication does not copy or grant access; wrong content/version still needs business rejection."
+      },
+      "state_example":"F-1 uploaded to S1 -> Turn input; generated F-2 verified -> publish -> A-7 -> application reads A-7 metadata then downloads F-2.",
+      "counterexample":"Agent says /workspace/report.pdf exists, but no F-2/A-7 record; application treats the path as a public download or assumes Team Lead sees member disk.",
+      "sources":[
+        {"source_id":"as-69ccfb190c6d","snapshot":"vault/snapshots/agentscope-enterprise-20261012/as-69ccfb190c6d-java-service-files.md.txt","lines":"9-17,36-69,71-92,90-149","status":"verified-doc"},
+        {"source_id":"as-675c5fc9c363","snapshot":"vault/snapshots/agentscope-enterprise-20261012/as-675c5fc9c363-java-service-orchestration.md.txt","lines":"15-21,43-49","status":"verified-doc"},
+        {"source_id":"as-556d0c6a5726","snapshot":"vault/snapshots/agentscope-enterprise-20261012/as-556d0c6a5726-java-service-runtime-host.md.txt","lines":"148-153,179-183","status":"verified-doc"}
+      ]
+    },
+    {
+      "focus": "java-recovery-and-default-conflict",
+      "scenes": ["java-01-harness-context","java-09-recovery-capabilities","java-storage"],
+      "local_refs": {"reading":"reading.md:588-603,722-737,839-854","beats":"script/beats.json:2957-3042,3706-3794,4303-4376"},
+      "four_questions": {
+        "why":"A durable view is useful only if state, workspace, credentials, ownership and external effects can be reconciled.",
+        "how":"Harness/Service persist different layers; checkpoint restores working state but not OS/tool/provider progress; uncertain calls require business lookup and reconcile; database, workspace/artifact snapshot and original Vault key must restore together.",
+        "default":"Java source pages disagree on the Harness default (EVENT_LOG/native checkpoints vs JsonFileAgentStateStore); distributed production requires DistributedStore/remote state and execution guards; Java Service is prerelease.",
+        "failure":"Stale writer lease, missing key, mismatched backup point, provider session gone, expired cursor or external write after checkpoint blocks safe resume; recovery is not rollback."
+      },
+      "state_example":"C-9 uncertain after crash -> query order system -> reconcile verified ToolResult -> resume same Turn; restore DB+workspace+artifact+Vault key from one point.",
+      "counterexample":"Restore checkpoint and immediately replay create_order, or restore DB without original Vault key and call it recovered.",
+      "sources":[
+        {"source_id":"as-0cf03f3aa25d","snapshot":"vault/snapshots/agentscope-enterprise-20261012/as-0cf03f3aa25d-java-harness-architecture.md.txt","lines":"33-61","status":"verified-doc"},
+        {"source_id":"as-66d70ed869dd","snapshot":"vault/snapshots/agentscope-enterprise-20261012/as-66d70ed869dd-java-production.md.txt","lines":"49-95,117-159,297-345","status":"verified-doc"},
+        {"source_id":"as-e60a2f6c58b3","snapshot":"vault/snapshots/agentscope-enterprise-20261012/as-e60a2f6c58b3-java-harness-session.md.txt","lines":"127-170","status":"verified-doc"},
+        {"source_id":"as-556d0c6a5726","snapshot":"vault/snapshots/agentscope-enterprise-20261012/as-556d0c6a5726-java-service-runtime-host.md.txt","lines":"148-183","status":"verified-doc"},
+        {"source_id":"as-eb83f48e5259","snapshot":"vault/snapshots/agentscope-enterprise-20261012/as-eb83f48e5259-java-service-operations.md.txt","lines":"5-19,65-100,125-137","status":"verified-doc"}
+      ]
+    }
+  ],
+  "scenes": [
+    {"id":"whole","title":"AgentScope：把 Agent 接成工作系统","chapter":"01","reading_lines":"9-24","beats_lines":"5-85","adequacy":"yellow","four_questions":{"why":"separates Agent, Service and Workspace responsibilities","how":"stack is stated but cross-boundary state/event/file flow is not shown","default":"Python/Java versions and production responsibility are not visible","failure":"missing auth, external-effect and delivery failure example"},"gap":"Add AgentState → session → workspace/artifact chain.","source_ids":["as-13b26f7a4513","as-dc202a66c974"]},
+    {"id":"docs","title":"文档目录对应四类实现问题","chapter":"01","reading_lines":"25-41","beats_lines":"86-176","adequacy":"yellow","four_questions":{"why":"directory maps business questions to layers","how":"four categories are clear","default":"stable/latest and Java prerelease status absent","failure":"directory does not prove same-version support"},"gap":"State that docs are navigation, not capability proof.","source_ids":["as-e800b6665911","as-822919440da3"]},
+    {"id":"lanes","title":"Python 与 Java 各有完整运行路径","chapter":"01","reading_lines":"42-58","beats_lines":"177-274","adequacy":"yellow","four_questions":{"why":"runtime ownership differs across Python and Java","how":"four lanes are clear","default":"Java 2.1.0-BETA1 and operator ownership absent","failure":"risk of applying one lane's Session/permission defaults to another"},"gap":"Add version and ownership labels.","source_ids":["as-dc202a66c974","as-0a3782c37016","as-9d9136196aa8"]},
+    {"id":"migration","title":"Runtime、Studio 的职责归入 2.0","chapter":"01","reading_lines":"59-74","beats_lines":"275-362","adequacy":"green","four_questions":{"why":"prevents archived projects becoming current architecture","how":"history flows into 2.0","default":"archive status is stated","failure":"compatibility migration steps are not covered"},"gap":"Keep as transition; do not imply automatic upgrade.","source_ids":["as-38708b217d1d","as-ed35bc95bfb2","as-13b26f7a4513"]},
+    {"id":"task","title":"合同助手的一次工作","chapter":"01","reading_lines":"75-91","beats_lines":"363-453","adequacy":"yellow","four_questions":{"why":"case exposes retrieval, approval and delivery","how":"four business steps are clear","default":"business app owns rules, authorization and acceptance","failure":"file capability, Artifact and external receipt are absent"},"gap":"Split candidate generation from publish and business acceptance.","source_ids":["as-dc202a66c974","as-69ccfb190c6d"]},
+    {"id":"agent","title":"Agent 是推理与行动的循环引擎","chapter":"02","reading_lines":"94-109","beats_lines":"454-534","adequacy":"red","four_questions":{"why":"continuous work needs state","how":"loop and pause/resume are named","default":"state fields, persistence key and schema reload semantics absent","failure":"parked/stale/resolved state boundaries absent"},"gap":"Use focus_evidence AgentState card.","source_ids":["as-f2b9fa0f0bea","as-188d64eb8aa5","as-614314fd8b6b"]},
+    {"id":"message","title":"Msg 把一次回复收成完整记录","chapter":"02","reading_lines":"110-126","beats_lines":"535-618","adequacy":"yellow","four_questions":{"why":"Msg is persistence/inter-agent unit","how":"reply and ordered blocks are stated","default":"role/block/id constraints need visibility","failure":"paused/data-block and result-id failures absent"},"gap":"Connect to ToolResult and HITL identity rules.","source_ids":["as-24299c5c3ff5"]},
+    {"id":"events","title":"Event 把运行进展送到界面","chapter":"02","reading_lines":"127-143","beats_lines":"619-702","adequacy":"yellow","four_questions":{"why":"UI needs increments","how":"reply/block/tool ids and lifecycle are stated","default":"replay seam and cap absent","failure":"wrong target skip and DataBlock merge failure absent"},"gap":"Add arrival != state mutation counterexample.","source_ids":["as-24299c5c3ff5","as-9af0c87d9dc4"]},
+    {"id":"react","title":"推理与工具结果组成反馈回路","chapter":"02","reading_lines":"144-160","beats_lines":"703-786","adequacy":"yellow","four_questions":{"why":"tool results feed next reasoning","how":"reason/act/pause/end chain is clear","default":"iteration/grace/concurrency limits absent","failure":"missing final stream chunk and busy-loop boundaries"},"gap":"Retain pause != completed.","source_ids":["as-f2b9fa0f0bea"]},
+    {"id":"model","title":"Model 与 Formatter 分担协议转换","chapter":"02","reading_lines":"161-177","beats_lines":"787-877","adequacy":"yellow","four_questions":{"why":"provider differences need an adapter boundary","how":"format/call/stream/reassemble is clear","default":"retry count/media capabilities absent","failure":"partial/no-final-chunk behavior absent"},"gap":"Add provider capability warning.","source_ids":["as-d47e94c7be0b","as-07cb85f8aa73"]},
+    {"id":"tools","title":"工具把模型请求接到真实函数","chapter":"02","reading_lines":"178-194","beats_lines":"878-968","adequacy":"red","four_questions":{"why":"schema, runtime tool and result are distinct","how":"register/schema/call/result is clear","default":"block aggregation and states absent","failure":"URL/base64/metadata/error precedence absent"},"gap":"Use focus_evidence ToolResponse card.","source_ids":["as-47c09ed8a575","as-13c3e91cfe2f","as-87b75e2c3fd3"]},
+    {"id":"scheduling","title":"工具属性决定并行与串行","chapter":"02","reading_lines":"195-211","beats_lines":"969-1059","adequacy":"yellow","four_questions":{"why":"independent reads can parallelize","how":"is_concurrency_safe and result join are clear","default":"dependency inference is explicitly absent","failure":"declaration error/cancellation/exception merge absent"},"gap":"Remove duplicated sentence and add one dependency failure.","source_ids":["as-2fea42114514","as-13c3e91cfe2f"]},
+    {"id":"permission","title":"权限判定发生在工具执行前","chapter":"02","reading_lines":"212-227","beats_lines":"1060-1145","adequacy":"red","four_questions":{"why":"valid parameters do not authorize side effects","how":"three outcomes are shown","default":"priority/mode matrix absent from visible layer","failure":"safety ASK, DONT_ASK and BYPASS boundaries absent"},"gap":"Use focus_evidence permission-priority card.","source_ids":["as-7dad78a203b5","as-7bfd7ee86f21","as-145a584b7630"]},
+    {"id":"hitl","title":"人工确认把暂停接回执行","chapter":"02","reading_lines":"228-244","beats_lines":"1146-1229","adequacy":"yellow","four_questions":{"why":"dangerous/external actions need outside decision","how":"ask/result-event/resume chain is clear","default":"suggested rules and partial confirmation absent","failure":"wrong ids/schema and finished_reason null absent"},"gap":"Show waiting notice and original call identity.","source_ids":["as-7bfd7ee86f21"]},
+    {"id":"integration","title":"Python、MCP 与 Skill 有不同入口","chapter":"02","reading_lines":"245-260","beats_lines":"1230-1310","adequacy":"yellow","four_questions":{"why":"capability sources have different lifecycle/authority","how":"three entrances are clear","default":"basic always active and reset_tools final-state semantics absent","failure":"MCP enumerate removal and skill-not-authority absent"},"gap":"Add reset_tools final-state counterexample.","source_ids":["as-13c3e91cfe2f","as-2fea42114514"]},
+    {"id":"context","title":"模型输入由三层组装","chapter":"03","reading_lines":"263-278","beats_lines":"1311-1384","adequacy":"yellow","four_questions":{"why":"model only sees assembled input","how":"system/summary/recent layers are clear","default":"runtime injection and activated schemas absent","failure":"missing material changes quality without model change"},"gap":"Make dynamic tool schema part of input assembly.","source_ids":["as-524cfb38d8f2"]},
+    {"id":"compression","title":"压缩给长任务腾出上下文空间","chapter":"03","reading_lines":"279-295","beats_lines":"1385-1468","adequacy":"yellow","four_questions":{"why":"long work exceeds context","how":"threshold/summary/truncate/reassemble clear","default":"exact limits not verified; system prompt overflow absent","failure":"lost constraints/material identity change action"},"gap":"Do not invent numeric defaults; show loss boundary.","source_ids":["as-761fb054c0df"]},
+    {"id":"offload","title":"卸载保留被压缩内容的回查路径","chapter":"03","reading_lines":"296-312","beats_lines":"1469-1552","adequacy":"yellow","four_questions":{"why":"summary cannot replace detail","how":"store/reference/readback clear","default":"offloader absent/permissions/version absent","failure":"same filename or changed material corrupts recall"},"gap":"Show path reference plus version/access condition.","source_ids":["as-c3e41125204e"]},
+    {"id":"memory","title":"长期记忆跨越当前对话","chapter":"03","reading_lines":"313-329","beats_lines":"1553-1636","adequacy":"yellow","four_questions":{"why":"facts can cross sessions","how":"middleware static/agent/both clear","default":"scope, close and missing session id absent","failure":"async writeback/search delay or failure absent"},"gap":"Do not depict memory as full transcript replay.","source_ids":["as-1223f953ff05"]},
+    {"id":"rag","title":"RAG 把知识材料接到推理输入","chapter":"03","reading_lines":"330-346","beats_lines":"1637-1727","adequacy":"green","four_questions":{"why":"indexed material informs answers","how":"parse/chunk/embed/search/inject clear","default":"static non-persisted hint and backend consistency available","failure":"optional parser, worker mismatch and multimodal query boundary stated"},"gap":"Keep version labels consistent.","source_ids":["as-8379a990984a","as-29e364404cfc"]},
+    {"id":"structured","title":"结构化输出让结果进入后续流程","chapter":"03","reading_lines":"347-363","beats_lines":"1728-1811","adequacy":"yellow","four_questions":{"why":"fields enter downstream workflow","how":"schema/tool/validation/business check clear","default":"grace iterations and reload validator semantics absent","failure":"None after max iters and pass != acceptance absent"},"gap":"Add schema-pass/business-acceptance split.","source_ids":["as-188d64eb8aa5"]},
+    {"id":"interrupt","title":"中断与继续各有明确状态","chapter":"03","reading_lines":"364-380","beats_lines":"1812-1902","adequacy":"yellow","four_questions":{"why":"stop waiting is not rollback","how":"running/parked/record/reconcile clear","default":"202 accepted and idle no-op absent","failure":"downstream effect and terminal-state query need visibility"},"gap":"Tie HTTP accept to actual cleanup query.","source_ids":["as-1787397c3223","as-79adbb1a7334"]},
+    {"id":"middleware","title":"中间件在生命周期接入规则","chapter":"03","reading_lines":"381-397","beats_lines":"1903-1986","adequacy":"yellow","four_questions":{"why":"cross-cutting behavior without loop rewrite","how":"hooks and on_acting boundary clear","default":"ordering and streaming close semantics absent","failure":"state-injected background mutation/busy-loop risk absent"},"gap":"Keep phase ownership visible.","source_ids":["as-cc1c5a96c71f"]},
+    {"id":"pipeline","title":"GoalPipeline 用执行与核验推进目标","chapter":"03","reading_lines":"398-414","beats_lines":"1987-2070","adequacy":"yellow","four_questions":{"why":"candidate needs verifier","how":"executor/report/verdict/feedback clear","default":"verifier reset and instance budget absent","failure":"verifier can fail/HITL; pass != business acceptance"},"gap":"Show impossible and verifier failure branches.","source_ids":["as-986459b99a69"]},
+    {"id":"team","title":"团队把工作拆给不同 Agent","chapter":"03","reading_lines":"415-431","beats_lines":"2071-2161","adequacy":"yellow","four_questions":{"why":"specialists parallelize/aggregate","how":"leader/member/result routing clear","default":"same-member serial/different-member parallel and context cleanup absent","failure":"member permissions and no implicit filesystem absent"},"gap":"Connect cross-member delivery to Artifact.","source_ids":["as-0c1773327b10","as-dc202a66c974"]},
+    {"id":"plan","title":"计划与 SOP 组织复杂工作的约束","chapter":"03","reading_lines":"432-448","beats_lines":"2162-2252","adequacy":"yellow","four_questions":{"why":"steps and milestones need visibility","how":"plan/SOP/verifier clear","default":"Plan Mode read-only/HITL semantics absent","failure":"changed input can invalidate completed steps"},"gap":"Keep concept-level; add one changed-input failure.","source_ids":["as-ae1de456793f","as-6c4048dcd902"]},
+    {"id":"service","title":"Agent Service 托管循环之外的资源","chapter":"04","reading_lines":"451-466","beats_lines":"2253-2326","adequacy":"yellow","four_questions":{"why":"host Agent for multiple callers","how":"request/host/persist layers clear","default":"required deps and fire-and-forget/out-of-band SSE absent","failure":"missing bus/storage/workspace and WIP distribution absent"},"gap":"Do not equate app factory with HA.","source_ids":["as-dc202a66c974"]},
+    {"id":"identity","title":"用户身份必须来自可信入口","chapter":"04","reading_lines":"467-483","beats_lines":"2327-2417","adequacy":"yellow","four_questions":{"why":"resource ownership needs trusted identity","how":"header/resource policy flow clear","default":"X-User-ID placeholder and download_secret absent","failure":"401/404/403 and shared-resource limits absent"},"gap":"Add auth and cross-replica download boundary.","source_ids":["as-dc202a66c974","as-bd153c6e3a04"]},
+    {"id":"sessions","title":"存储与总线分担会话运行","chapter":"04","reading_lines":"484-500","beats_lines":"2418-2501","adequacy":"red","four_questions":{"why":"durable state and execution ownership differ","how":"storage/bus/lock/replay named","default":"lease, replay cap, acquire-before-load, persist-before-release absent","failure":"stale overwrite and offline pubsub loss absent"},"gap":"Use focus_evidence locks-and-replay card.","source_ids":["as-dc202a66c974","as-73da307b2ffd","as-9af0c87d9dc4","as-ad100b5dcf7e"]},
+    {"id":"background","title":"长工具转入后台继续执行","chapter":"04","reading_lines":"501-517","beats_lines":"2502-2585","adequacy":"red","four_questions":{"why":"disconnect must not own tool lifetime","how":"background/result/wakeup chain named","default":"process-local watcher and durable inbox distinction absent","failure":"restart/cross-session task/parked wakeup/duplicate input absent"},"gap":"Use focus_evidence background-result card.","source_ids":["as-dc202a66c974","as-d612211accc9","as-19629c6bf4d8"]},
+    {"id":"workspace","title":"Workspace 组织文件与执行环境","chapter":"04","reading_lines":"518-534","beats_lines":"2586-2676","adequacy":"yellow","four_questions":{"why":"filesystem/tool/MCP/skill need scope","how":"isolation grains clear","default":"per_agent and MCP/skill partitions absent","failure":"Local/no sandbox, cross-replica cache, TTL cold start absent"},"gap":"State path is not permission.","source_ids":["as-e8bf00e52cb9","as-dc202a66c974"]},
+    {"id":"sandbox","title":"沙箱限制工具在哪个环境运行","chapter":"04","reading_lines":"535-551","beats_lines":"2677-2767","adequacy":"yellow","four_questions":{"why":"permission and location solve different problems","how":"workspace backend to sandbox clear","default":"Local/host network and third-party backend constraints absent","failure":"egress/mount/secret/quota boundary absent"},"gap":"Add Local is not isolation counterexample.","source_ids":["as-e8bf00e52cb9","as-13b26f7a4513"]},
+    {"id":"deployment","title":"部署一致性影响具体运行结果","chapter":"04","reading_lines":"552-568","beats_lines":"2768-2865","adequacy":"green","four_questions":{"why":"replica consistency changes behavior","how":"shared backend/timer/secret/process pool clear","default":"one scheduler owner and shared download_secret clear","failure":"WIP distribution and RAG mismatch clear"},"gap":"Retain explicit limits.","source_ids":["as-dc202a66c974","as-8379a990984a","as-c788c6cd8525"]},
+    {"id":"observability","title":"轨迹连接模型、工具与会话","chapter":"04","reading_lines":"569-585","beats_lines":"2866-2956","adequacy":"yellow","four_questions":{"why":"diagnosis needs distinct event/message/trace views","how":"spans and identity chain clear","default":"tracing passthrough when unset and stream close absent","failure":"retention/PII/SaaS/alerts unverified"},"gap":"Keep ops promises scoped.","source_ids":["as-13b26f7a4513","as-dc202a66c974"]},
+    {"id":"java-01-harness-context","title":"身份键关联每次调用","chapter":"05","reading_lines":"588-603","beats_lines":"2957-3042","adequacy":"red","four_questions":{"why":"Java embedding needs stable identity","how":"Builder/RuntimeContext/AgentState clear","default":"EVENT_LOG vs JsonFileAgentStateStore conflict","failure":"missing identity and direct-call coordination absent"},"gap":"Mark unresolved default; do not merge docs.","source_ids":["as-0cf03f3aa25d","as-66d70ed869dd"]},
+    {"id":"java-02-agent-session","title":"即时调用与后台会话分别选择","chapter":"05","reading_lines":"604-620","beats_lines":"3043-3134","adequacy":"yellow","four_questions":{"why":"direct and background ownership differ","how":"call/stream/session/respond/resume clear","default":"observer no-op and close/retention absent","failure":"resume/checkpoint limitations absent"},"gap":"Add shared-store/direct-call concurrency limitation.","source_ids":["as-0cf03f3aa25d","as-e60a2f6c58b3"]},
+    {"id":"java-03-execution-targets","title":"执行目标确定运行所有权","chapter":"05","reading_lines":"621-637","beats_lines":"3135-3233","adequacy":"yellow","four_questions":{"why":"ownership determines APIs","how":"Managed/External/Hosted separation clear","default":"capabilities per adapter and preview registration absent","failure":"visibility != dispatch; Hosted recovery conditional"},"gap":"Show independent capability probes.","source_ids":["as-9d9136196aa8","as-d5dd49d8dc6e","as-556d0c6a5726"]},
+    {"id":"java-04-session-turn-idempotency","title":"Session 固定目标，Turn 承载任务","chapter":"05","reading_lines":"638-654","beats_lines":"3234-3325","adequacy":"red","four_questions":{"why":"stable logical task identity across retries","how":"Session/Turn/key/queue named","default":"accepted/applied/202 and frozen target conditions absent","failure":"duplicate key/body/new task and Team/Workflow context split absent"},"gap":"Use focus_evidence java-turn card.","source_ids":["as-9d9136196aa8","as-79adbb1a7334"]},
+    {"id":"java-05-snapshot-sse-cursor","title":"快照与事件恢复同一视图","chapter":"05","reading_lines":"655-671","beats_lines":"3326-3417","adequacy":"yellow","four_questions":{"why":"reconnect must restore observation without rerun","how":"snapshot/as_of/cursor/410 clear","default":"shape and delta/complete replacement absent","failure":"expired cursor requires fresh snapshot"},"gap":"Add target Turn terminal-state rule.","source_ids":["as-528e3df546ca","as-eb83f48e5259"]},
+    {"id":"java-06-interaction-capabilities","title":"控制入口按目标能力提供","chapter":"05","reading_lines":"672-688","beats_lines":"3418-3516","adequacy":"yellow","four_questions":{"why":"steer/inject/action/resume differ","how":"four controls clear","default":"capabilities and accepted/applied absent","failure":"request id/version/Hosted capability rejection absent"},"gap":"Gate controls by available_commands.","source_ids":["as-79adbb1a7334","as-528e3df546ca","as-556d0c6a5726"]},
+    {"id":"java-07-files-artifacts","title":"文件发布为可取得的 Artifact","chapter":"05","reading_lines":"689-704","beats_lines":"3517-3602","adequacy":"red","four_questions":{"why":"workspace is not delivery","how":"file/artifact/team flow clear","default":"16 MiB, file_input, publish record absent","failure":"path guess/cross-session/complete != valid absent"},"gap":"Use focus_evidence artifact card.","source_ids":["as-69ccfb190c6d","as-675c5fc9c363"]},
+    {"id":"java-08-auth-grant-registration","title":"身份、资源与运行通道分别授权","chapter":"05","reading_lines":"705-721","beats_lines":"3603-3705","adequacy":"yellow","four_questions":{"why":"identity chains cannot substitute","how":"Account/Namespace/key/registration/credential clear","default":"preview and application-key scope absent","failure":"initial registration unauthenticated and 404/403 layers absent"},"gap":"Mark preview and user permission check.","source_ids":["as-c4d45549fd7a","as-d5dd49d8dc6e","as-13473668ae95"]},
+    {"id":"java-09-recovery-capabilities","title":"恢复同时核对状态与副作用","chapter":"05","reading_lines":"722-737","beats_lines":"3706-3794","adequacy":"red","four_questions":{"why":"recovery spans state and effects","how":"capabilities/persistence/effects named","default":"uncertain call, lease, checkpoint limits absent","failure":"external writes not rolled back is stated but not operationalized"},"gap":"Use focus_evidence java-recovery card.","source_ids":["as-e60a2f6c58b3","as-556d0c6a5726","as-79adbb1a7334"]},
+    {"id":"java-orchestration","title":"协作有三种不同层次","chapter":"05","reading_lines":"738-753","beats_lines":"3795-3868","adequacy":"yellow","four_questions":{"why":"temporary delegation differs from team/process","how":"Subagent/Team/Workflow clear","default":"no implicit filesystem and Automation target limits absent","failure":"retry/cancel not rollback absent"},"gap":"Tie member handoff to Artifact.","source_ids":["as-675c5fc9c363"]},
+    {"id":"java-issue","title":"Issue 把执行接到工作接受","chapter":"05","reading_lines":"754-770","beats_lines":"3869-3959","adequacy":"yellow","four_questions":{"why":"execution and business acceptance differ","how":"Issue/Run/Attempt/accept clear","default":"sharing/artifact dependency absent","failure":"waiting/partial result diagnostics need exact state"},"gap":"Keep Run completion separate from Issue acceptance.","source_ids":["as-675c5fc9c363","as-eb83f48e5259"]},
+    {"id":"java-auth-scope","title":"调用资源与读取工作分别授权","chapter":"05","reading_lines":"771-787","beats_lines":"3960-4043","adequacy":"yellow","four_questions":{"why":"use and read are separate permissions","how":"four layers clear","default":"private/namespace/shared access modes absent","failure":"404/403/dependencies/admin reader limits absent"},"gap":"Add one 404 vs 403 diagnostic.","source_ids":["as-c4d45549fd7a"]},
+    {"id":"java-budget","title":"预算控制工作能继续到哪一步","chapter":"05","reading_lines":"788-804","beats_lines":"4044-4127","adequacy":"yellow","four_questions":{"why":"limits affect continuation","how":"usage/model calls/parallel call caveat clear","default":"example numeric limits are not defaults","failure":"unpriced calls and no forced truncation absent"},"gap":"Label 30/100000 as example only.","source_ids":["as-79adbb1a7334"]},
+    {"id":"java-channels","title":"消息渠道连接外部对话与任务","chapter":"05","reading_lines":"805-821","beats_lines":"4128-4211","adequacy":"yellow","four_questions":{"why":"external conversation needs stable task link","how":"receive/route/observe/return clear","default":"Feishu/Automation boundaries stated","failure":"adapter-specific capability checks absent"},"gap":"Keep Workflow through published Session API.","source_ids":["as-675c5fc9c363"]},
+    {"id":"java-webhook","title":"Webhook 重复投递按事件身份合并","chapter":"05","reading_lines":"822-838","beats_lines":"4212-4302","adequacy":"green","four_questions":{"why":"at-least-once delivery duplicates","how":"signature/time/event-id/persist-before-ack clear","default":"delivery is at least once","failure":"business effect needs own idempotency and receipt"},"gap":"No material gap within scope.","source_ids":["as-528e3df546ca","as-eb83f48e5259"]},
+    {"id":"java-storage","title":"恢复需要成套的数据与密钥","chapter":"05","reading_lines":"839-854","beats_lines":"4303-4376","adequacy":"green","four_questions":{"why":"state/files/key must match","how":"DB/workspace/artifact/Vault key and validation clear","default":"same backup point/version and stop writes","failure":"knowledge-only check cannot prove credentials; external writes persist"},"gap":"No material gap within scope.","source_ids":["as-eb83f48e5259"]},
+    {"id":"failure","title":"失败处理沿原任务身份闭环","chapter":"06","reading_lines":"857-873","beats_lines":"4377-4467","adequacy":"yellow","four_questions":{"why":"failure recovery needs original identity","how":"four business failure types clear","default":"accepted/applied/completed/unknown/published/accepted not unified","failure":"no exact ToolResult/Turn/Attempt/Artifact mapping"},"gap":"Reuse focus state examples in final chapter.","source_ids":["as-f2b9fa0f0bea","as-79adbb1a7334"]},
+    {"id":"delivery","title":"合同助手需要可检查的契约","chapter":"06","reading_lines":"874-890","beats_lines":"4468-4558","adequacy":"yellow","four_questions":{"why":"contract makes layers inspectable","how":"input/action/state/delivery map clear","default":"capability/artifact/version/acceptance absent","failure":"candidate/publish/accept/receipt can diverge"},"gap":"Separate completed from published and accepted.","source_ids":["as-dc202a66c974","as-69ccfb190c6d"]},
+    {"id":"end","title":"从 Agent 循环走到企业工作闭环","chapter":"06","reading_lines":"891-905","beats_lines":"4559-4640","adequacy":"yellow","four_questions":{"why":"closes build/host/business chain","how":"three layers summarized","default":"version/ownership conditions fade out","failure":"does not restate observe-vs-rerun, no rollback, Artifact/acceptance hard boundaries"},"gap":"Repeat the three hard boundaries in final card.","source_ids":["as-13b26f7a4513","as-9d9136196aa8"]}
+  ],
+  "unverified": [
+    "No runtime/provider/MCP/vector DB/ReMe/Mem0/OpenTelemetry/Java Runtime Host execution was performed.",
+    "No full Java Service router or worker source audit; preview/prerelease docs remain partial evidence.",
+    "Java Harness persistence default conflict between as-0cf03f3aa25d and as-66d70ed869dd is unresolved.",
+    "Auth/RBAC/retention/PII/SLA/HA/cost governance cannot be inferred from OSS connectors or placeholder identity headers.",
+    "No audience comprehension test; adequacy is a source-backed structural review only."
+  ]
+}

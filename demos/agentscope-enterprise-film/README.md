@@ -28,3 +28,11 @@
 直接打开舞台或阅读稿；舞台全部本地依赖。使用现有 Python、Playwright、Pillow、numpy 和 ffmpeg，重建命令见 [build](build/README.md)。封面在 [cover.py](script/cover.py)分别绘制，无裁切转换。
 
 公开来源原件在 [Vault](../../vault/provenance/agentscope-enterprise-20261012/README.md)，源码固定提交和阅读缺口在 [研究](../../vault/distilled/agentscope-enterprise-20261012/README.md)。说明中的合同助手是贯穿解释案例，不是运行实录。
+
+## 第二版推进
+
+- [逐层阅读稿](reading-v2.html)：六章答案、53个局部、按问题查阅与八组机制条件补充。
+- [机制状态样片](quality/prototypes/README.md)：Event、Permission、offload、Artifact 四段候选；不替代第一版完整范围。
+- [质量与完成审计](quality/README.md)：与 Opus/Sonnet 实际参考比较，列出尚未完成的全片接入和观看验收。
+
+2026-10-12 补查已修正阅读稿里的 EXPLORE 概括：显式 ask 可在单次确认后进入执行，不能称绝对只读。原完整视频的屏幕文字没有这条过强断言，时长与画面保持原版。

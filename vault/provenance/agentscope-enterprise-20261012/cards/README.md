@@ -1,6 +1,6 @@
 # AgentScope 企业线 · 2026-10-12 · 摘要索引
 
-230 个来源；0 个引用映射。详细记录见 [catalog](../catalog.json)。
+231 个来源；0 个引用映射。详细记录见 [catalog](../catalog.json)。
 
 | 来源 | 证据状态 | 用途 |
 |---|---|---|
@@ -234,5 +234,6 @@
 | [src/agentscope/app/workspace_manager/_opensandbox_workspace_manager.py](as-d591352865c8.md) | partial | BUILD |
 | [src/agentscope/app/message_bus//init/.py](as-ae039776c5bf.md) | partial | BUILD |
 | [src/agentscope/message//init/.py](as-5545c1397709.md) | partial | BUILD |
+| [ToolOffloadMiddleware · 固定源码](as-0791af56faa2.md) | partial | BUILD |
 
 卡片与此索引由 catalog 生成；修改登记后重跑 scripts/render_source_cards.py。

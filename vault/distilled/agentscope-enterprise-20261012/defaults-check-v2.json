@@ -1,0 +1,160 @@
+{
+  "schema_version": "1.0",
+  "review": {
+    "scope": "Six PM-relevant defaults/boundaries plus EXPLORE permission ordering.",
+    "worktree": "/Users/lesprivilege/.codex/worktrees/agentscope-enterprise-film/Praxis",
+    "source_batch": "agentscope-enterprise-20261012",
+    "python_commit": "e4c1e074dee3f0f6cca28ca29e934c4ec0605354",
+    "java_service_release": "2.1.0-BETA1",
+    "runtime_tested": false,
+    "clone_or_install_used": false,
+    "raw_supplement": "The fixed-commit ToolOffloadMiddleware source was read from its raw URL because it was absent from the saved catalog/snapshots; it is marked unregistered below."
+  },
+  "checks": [
+    {
+      "id": "agent-loop-budget",
+      "verdict": "confirmed-code-default",
+      "pm_sentence": "Agent ReActConfig defaults to max_iters=50 and structured_output_grace_iters=5; normal text gets one no-tool finalization path at the limit.",
+      "defaults": {
+        "max_iters": {"value": 50, "kind": "code_default"},
+        "structured_output_grace_iters": {"value": 5, "kind": "code_default"},
+        "normal_text_at_limit": "At cur_iter == max_iters, a no-tool finalization reasoning step is requested; if no final message, the reply ends EXCEED_MAX_ITERS.",
+        "structured_output_at_limit": "At/after max_iters the structured-output tool is forced; the reply exits after max_iters + grace_iters if unsatisfied."
+      },
+      "sources": [
+        {"source_id":"as-f99696363fae","snapshot":"vault/snapshots/agentscope-enterprise-20261012/as-f99696363fae-_config.py.txt","lines":"362-383","kind":"fixed-source-default"},
+        {"source_id":"as-df9d991bfc3d","snapshot":"vault/snapshots/agentscope-enterprise-20261012/as-df9d991bfc3d-_agent.py.txt","lines":"171-180,3580-3634,3704-3757","kind":"fixed-source-use"},
+        {"source_id":"as-188d64eb8aa5","snapshot":"vault/snapshots/agentscope-enterprise-20261012/as-188d64eb8aa5-building-blocks_agent_run-agent.md.txt","lines":"64-66,131-135","kind":"versioned-doc"}
+      ],
+      "unverified": "No provider run was used to observe how a specific model response increments cur_iter or to measure cost."
+    },
+    {
+      "id": "context-defaults",
+      "verdict": "confirmed-code-default-doc-example-distinguished",
+      "pm_sentence": "The code defaults to trigger_ratio=0.8 and tool_result_limit=50000 tokens; the docs' 3000 value is an explicit example override.",
+      "defaults": {
+        "trigger_ratio": {"value": 0.8, "kind": "code_default", "meaning": "compression threshold is 0.8 * model.context_size; field is capped at 0.9"},
+        "reserve_ratio": {"value": 0.1, "kind": "code_default"},
+        "context_buffer_ratio": {"value": 0.2, "kind": "code_default"},
+        "tool_result_limit": {"value": 50000, "unit":"tokens", "kind": "code_default"},
+        "tool_result_limit_doc_example": {"value": 3000, "unit":"tokens", "kind": "explicit-doc-example-not-default"},
+        "compression_fallback_to_truncation": {"value": true, "kind": "code_default"},
+        "compression_tool_enabled": {"value": false, "kind": "code_default"}
+      },
+      "sources": [
+        {"source_id":"as-f99696363fae","snapshot":"vault/snapshots/agentscope-enterprise-20261012/as-f99696363fae-_config.py.txt","lines":"51-80,146-177","kind":"fixed-source-default"},
+        {"source_id":"as-df9d991bfc3d","snapshot":"vault/snapshots/agentscope-enterprise-20261012/as-df9d991bfc3d-_agent.py.txt","lines":"171-180,518-520,2641-2669,3072-3211","kind":"fixed-source-use"},
+        {"source_id":"as-761fb054c0df","snapshot":"vault/snapshots/agentscope-enterprise-20261012/as-761fb054c0df-building-blocks_context_compress-context.md.txt","lines":"20-55,57-87,158-177","kind":"versioned-doc-example-and-boundary"},
+        {"source_id":"as-188d64eb8aa5","snapshot":"vault/snapshots/agentscope-enterprise-20261012/as-188d64eb8aa5-building-blocks_agent_run-agent.md.txt","lines":"146-177","kind":"versioned-doc-semantics"}
+      ],
+      "unverified": "Provider-specific context_size/tokenizer values and runtime truncation were not tested."
+    },
+    {
+      "id": "python-session-lock-replay",
+      "verdict": "confirmed-service-key-scope-not-universal",
+      "pm_sentence": "ChatService passes a 600-second default session run lease, while session event replay uses a 1000-entry trim parameter; transport and checkpoint trimming affect the actual retained history.",
+      "defaults": {
+        "session_run_ttl_secs": {"value": 600, "kind": "MessageBusKeys-service-default", "scope":"ChatService session run lock"},
+        "session_replay_max_len": {"value": 1000, "kind": "MessageBusKeys-service-default", "scope":"session event log append/read parameter"},
+        "session_event_checkpoint_lock_ttl_secs": {"value": 30, "kind":"different-lock-default"},
+        "inbox_lock_ttl_secs": {"value": 30, "kind":"different-lock-default"},
+        "sop_run_ttl_secs": {"value": 600, "kind":"different-lock-default"},
+        "background_registry_ttl_secs": {"value": 86400, "kind":"registry-fallback-ttl"}
+      },
+      "actual_use": {
+        "run_lock": "ChatService._run_impl calls acquire_lock(session_lock(session_id), ttl_secs=MessageBusKeys.SESSION_RUN_TTL_SECS).",
+        "replay_append": "publish_session_event passes SESSION_REPLAY_MAX_LEN to MessageBus.log_append and then publishes live.",
+        "replay_read": "session SSE log_read uses SESSION_REPLAY_MAX_LEN as max_count.",
+        "persistence": "reply/state/cursor persistence and checkpoint-log trim occur before releasing the run lock."
+      },
+      "transport_variance": {
+        "in_memory": "max_len is exact list trimming; ttl_secs is ignored because in-memory keys do not expire.",
+        "redis": "XADD MAXLEN ~N uses approximate trimming; key expiry only applies when ttl_secs is passed."
+      },
+      "sources": [
+        {"source_id":"as-19629c6bf4d8","snapshot":"vault/snapshots/agentscope-enterprise-20261012/as-19629c6bf4d8-agentscope-src__agentscope__app__message_bus___keys.py-e4c1e074.txt","lines":"121-158,201-240,299-300","kind":"fixed-source-constants"},
+        {"source_id":"as-73da307b2ffd","snapshot":"vault/snapshots/agentscope-enterprise-20261012/as-73da307b2ffd-_chat.py.txt","lines":"804-816,1270-1290,1476-1512","kind":"fixed-source-use"},
+        {"source_id":"as-68f5bb723b26","snapshot":"vault/snapshots/agentscope-enterprise-20261012/as-68f5bb723b26-_bus_ops.py.txt","lines":"37-66","kind":"fixed-source-use"},
+        {"source_id":"as-9af0c87d9dc4","snapshot":"vault/snapshots/agentscope-enterprise-20261012/as-9af0c87d9dc4-_session.py.txt","lines":"892-906,942-963","kind":"fixed-source-use"},
+        {"source_id":"as-e2af92fa9ac1","snapshot":"vault/snapshots/agentscope-enterprise-20261012/as-e2af92fa9ac1-_in_memory_message_bus.py.txt","lines":"204-234","kind":"transport-implementation"},
+        {"source_id":"as-ebaf50819a12","snapshot":"vault/snapshots/agentscope-enterprise-20261012/as-ebaf50819a12-agentscope-src__agentscope__app__message_bus___redis_message_bus.py-e4c1e074.txt","lines":"307-348","kind":"transport-implementation"}
+      ],
+      "unverified": "No Redis lease-expiry or multi-replica takeover was run; values are current fixed-source service parameters, not universal deployment guarantees."
+    },
+    {
+      "id": "python-tool-offload",
+      "verdict": "confirmed-from-fixed-raw-supplement-unregistered",
+      "pm_sentence": "The fixed commit's ToolOffloadMiddleware defaults to 10.0 seconds; timeout leaves the underlying task running and returns its result through inbox+wakeup, while process shutdown cancels local watchers.",
+      "defaults": {
+        "timeout_secs": {"value": 10.0, "unit":"seconds", "kind":"fixed-raw-source-default"},
+        "state_injected_or_external": "These tools bypass offload and run synchronously.",
+        "background_registry_ttl_secs": {"value":86400,"unit":"seconds","kind":"fixed-source-registry-ttl"}
+      },
+      "behavior": {
+        "timeout": "drain_task is not cancelled; it is registered and a synthetic ToolChunk/ToolResponse unblocks the Agent.",
+        "completion": "watcher builds a HintBlock and calls deliver_to_inbox; inbox helper enqueues a wakeup when no consumer is registered.",
+        "shutdown": "BackgroundTaskManager.__aexit__ cancels every local asyncio task and clears its local map.",
+        "crash": "A hard process crash loses the asyncio task; a Redis registry entry can remain only as stale metadata until its fallback TTL."
+      },
+      "sources": [
+        {"source_id":null,"raw_url":"https://raw.githubusercontent.com/agentscope-ai/agentscope/e4c1e074dee3f0f6cca28ca29e934c4ec0605354/src/agentscope/app/middleware/_tool_offload_middleware.py","lines":"46-99,105-159,223-245,338-394","kind":"fixed-raw-supplement","catalog_status":"not-registered"},
+        {"source_id":"as-73da307b2ffd","snapshot":"vault/snapshots/agentscope-enterprise-20261012/as-73da307b2ffd-_chat.py.txt","lines":"977-995","kind":"fixed-source-call-site"},
+        {"source_id":"as-d612211accc9","snapshot":"vault/snapshots/agentscope-enterprise-20261012/as-d612211accc9-_background_task_manager.py.txt","lines":"216-231,249-328,446-470","kind":"fixed-source-manager"},
+        {"source_id":"as-19629c6bf4d8","snapshot":"vault/snapshots/agentscope-enterprise-20261012/as-19629c6bf4d8-agentscope-src__agentscope__app__message_bus___keys.py-e4c1e074.txt","lines":"299-300","kind":"fixed-source-ttl"}
+      ],
+      "unverified": "The raw middleware file is not in the saved provenance catalog/snapshot; formal source ingestion is still needed before treating 10.0s as a fully cataloged public fact."
+    },
+    {
+      "id": "local-workspace-defaults",
+      "verdict": "confirmed-code-default-with-isolation-caveat",
+      "pm_sentence": "LocalWorkspaceManager defaults to PER_AGENT and a 3600-second idle cache TTL; Local workdir is basedir/agent_id, while MCP live state is keyed by agent+session and skills by agent partition.",
+      "defaults": {
+        "workspace_isolation": {"value":"per_agent","kind":"code_default"},
+        "local_cache_ttl_secs": {"value":3600.0,"kind":"code_default"},
+        "local_workdir": "basedir/agent_id",
+        "mcp_live_partition": "(agent_id, session_id)",
+        "skill_partition": "skills/<agent_id>"
+      },
+      "caveat": "per_agent workspace sharing is not per-user host isolation; current evidence does not promise independent host directories for different users using one Agent. Local workspace is host filesystem, not a sandbox.",
+      "sources": [
+        {"source_id":"as-a40a77f95cef","snapshot":"vault/snapshots/agentscope-enterprise-20261012/as-a40a77f95cef-agentscope-src__agentscope__app__workspace_manager___base.py-e4c1e074.txt","lines":"18-56,83-107","kind":"fixed-source-default-and-binding"},
+        {"source_id":"as-b72c698b961f","snapshot":"vault/snapshots/agentscope-enterprise-20261012/as-b72c698b961f-agentscope-src__agentscope__app__workspace_manager___local_workspace_manager.py-e4c1e074.txt","lines":"15-56,70-137","kind":"fixed-source-default-and-workdir"},
+        {"source_id":"as-62baab197e50","snapshot":"vault/snapshots/agentscope-enterprise-20261012/as-62baab197e50-agentscope-src__agentscope__workspace___base.py-e4c1e074.txt","lines":"34-55,584-650","kind":"fixed-source-mcp-and-skills"},
+        {"source_id":"as-e8bf00e52cb9","snapshot":"vault/snapshots/agentscope-enterprise-20261012/as-e8bf00e52cb9-main-workspace.md.txt","lines":"12-18","kind":"verified-doc-host-filesystem-boundary"}
+      ],
+      "unverified": "Cross-user ResourceAccess plus Local host path behavior was not run; do not infer organizational tenant isolation from per_agent."
+    },
+    {
+      "id": "java-managed-file-limit",
+      "verdict": "confirmed-public-managed-contract-not-universal",
+      "pm_sentence": "The current public Java Service page states a 16 MiB limit for Managed Session file upload; it does not make that limit universal across Team/Workflow/External/Hosted inputs or all Artifacts.",
+      "contract": {
+        "managed_session_upload_limit": {"value":16,"unit":"MiB","kind":"public-contract"},
+        "file_scope": "uploaded file belongs to current Session; another Session cannot directly reference it",
+        "capability_gate": "check files and file_input before upload/task input",
+        "other_targets": "Teams/Workflows use business-defined task input and attachments; Direct External/Hosted conversations do not automatically inherit Managed file-input support"
+      },
+      "sources": [
+        {"source_id":"as-69ccfb190c6d","snapshot":"vault/snapshots/agentscope-enterprise-20261012/as-69ccfb190c6d-java-service-files.md.txt","lines":"9-17,36-69,90-108,149-165","kind":"verified-public-doc"},
+        {"source_id":"as-9d9136196aa8","snapshot":"vault/snapshots/agentscope-enterprise-20261012/as-9d9136196aa8-java-service-index.md.txt","lines":"5-15","kind":"verified-public-release-status"}
+      ],
+      "unverified": "No upload boundary or Java Service router behavior was executed; page is public prerelease contract evidence."
+    }
+  ],
+  "explore_permission_correction": {
+    "verdict": "explicit-ask-rule-precedes-explore-fallback-deny",
+    "correct_order": ["deny rule -> DENY","ask rule -> ASK","read-only fast path -> ALLOW","skip tool check","skip allow rule","fallback non-read-only -> DENY"],
+    "pm_sentence": "EXPLORE's non-read-only fallback is DENY, but an explicit ask rule still produces ASK before that fallback; deny wins ask, and allow rules never open EXPLORE writes.",
+    "sources": [
+      {"source_id":"as-145a584b7630","snapshot":"vault/snapshots/agentscope-enterprise-20261012/as-145a584b7630-_engine.py.txt","lines":"214-295","kind":"fixed-source-order"},
+      {"source_id":"as-7dad78a203b5","snapshot":"vault/snapshots/agentscope-enterprise-20261012/as-7dad78a203b5-main-permission.md.txt","lines":"54-74","kind":"verified-doc-matrix"}
+    ],
+    "previous_wording_to_narrow": "Do not say 'all non-read-only calls are immediately DENY'; say 'after deny/ask checks, non-read-only calls fall through to DENY, and allow rules are skipped.'"
+  },
+  "unresolved": [
+    "ToolOffloadMiddleware raw source is fixed-commit evidence but not cataloged in the saved provenance batch.",
+    "No runtime execution was performed for lock expiry, replay trimming, offload timeout, workspace sharing, or Java upload limits.",
+    "Custom MessageBus/transport/deployment overrides can alter TTL and trimming behavior; current values are service implementation defaults.",
+    "The 16 MiB statement is a Managed Session public page contract, not evidence for all target types or all Artifact pathways."
+  ]
+}

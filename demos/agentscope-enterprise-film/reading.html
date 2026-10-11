@@ -171,7 +171,7 @@
 </tbody></table>
 <p class="pm-reading">副作用和依赖决定真实执行顺序。</p><p class="source-ref"><a href="https://docs.agentscope.io/en/versions/2.0.10dev/building-blocks/tool_manage-tools.md">as-2fea42114514</a> · <a href="https://docs.agentscope.io/en/versions/2.0.10dev/building-blocks/tool_overview.md">as-13c3e91cfe2f</a></p></article>
 <article id="permission"><h2>13 · 权限判定发生在工具执行前</h2>
-<p>DEFAULT 模式按 deny、ask、只读快速路径、工具自检、allow 和默认 ASK 等阶段判定。EXPLORE 对非只读操作直接拒绝，allow 规则也不能解除这一限制。BYPASS 的控制含义不同，需要明确配置。</p>
+<p>DEFAULT 模式按 deny、ask、只读快速路径、工具自检、allow 和默认 ASK 等阶段判定。EXPLORE 先检查显式 deny/ask 规则；未命中这些规则的非只读请求才默认拒绝。显式 ask 仍可在人工确认后执行，allow 规则不能改变非只读的默认拒绝。BYPASS 的控制含义不同，需要明确配置。</p>
 <p>权限系统决定是否执行，工具审查检查实际输入，沙箱限制运行环境。三个层次共同工作。人工确认应展示具体工具、参数和作用对象，答复要关联等待中的调用。</p>
 <table><tbody>
 <tr><th scope="row">ALLOW</th><td>继续执行工具。</td></tr>

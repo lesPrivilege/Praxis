@@ -1,6 +1,6 @@
 # AgentScope 企业线 · 2026-10-12
 
-登记 230 个来源记录、0 个引用占位映射；状态：192 `partial`、38 `verified`。
+登记 231 个来源记录、0 个引用占位映射；状态：193 `partial`、38 `verified`。
 
 按研究问题查 [逐源摘要](cards/README.md)，按来源身份查 [catalog.json](catalog.json)。选型与采纳分别记录在主题提炼和 ADR。
 

@@ -1,0 +1,94 @@
+{
+  "agent": {
+    "why": "跨请求继续工作，需要保存同一会话的上下文、当前回复、权限、工具和任务状态。",
+    "how": "AgentState 可序列化为 JSON。等待状态由该 agent 尾部的 assistant Msg 判断：调用为 asking，或已 submitted 但还没有匹配结果。回复 R1 与工具 T1 的身份把确认事件接回原工作。",
+    "default": "固定 2.0.10dev 源码的 max_iters 默认 50；结构化输出另有 5 轮宽限。序列化的 Schema 不保留进程内自定义 validator 的全部语义。",
+    "failure": "匹配结果已经补齐的 submitted 调用不再等待。运行中的旧持久快照不能覆盖 worker 实时状态。",
+    "refs": [
+      "as-614314fd8b6b",
+      "as-188d64eb8aa5",
+      "as-f99696363fae",
+      "as-df9d991bfc3d"
+    ],
+    "unresolved_refs": []
+  },
+  "tools": {
+    "why": "模型需要工具说明，界面需要进展，后续推理需要完整结果；三者的对象不同。",
+    "how": "Schema 定义可填参数。ToolChunk 逐块输出，ToolResponse 按内容 block ID 聚合；最后以工具调用 ID 写入 ToolResultBlock。",
+    "default": "文字块追加文本；Base64 数据先还原二进制再合并；URL 数据不能按字符串追加。聚合结果保留已经发生的 error。",
+    "failure": "未注册工具、未激活工具组或参数不匹配在副作用前返回错误。后来的 success 不能抹掉前面的 error。",
+    "refs": [
+      "as-87b75e2c3fd3",
+      "as-24299c5c3ff5"
+    ],
+    "unresolved_refs": []
+  },
+  "permission": {
+    "why": "合法参数只表明请求结构正确，执行权限还要单独判断。",
+    "how": "DEFAULT 按 deny → ask → 只读快速路径 → 工具自检 → allow → 默认 ASK 判定。确认结果以嵌套 ToolCallBlock 的身份关联原调用。",
+    "default": "EXPLORE 未命中显式 deny/ask 的非只读请求会被拒绝；显式 ask 可在用户确认后执行。DONT_ASK 把需要询问的结果转为拒绝，BYPASS 则跳过工具的 safety ASK。",
+    "failure": "确认对象或回复身份不匹配不能续接。工具可用性、JSON 和 Schema 的失败先于副作用执行。",
+    "refs": [
+      "as-145a584b7630",
+      "as-7bfd7ee86f21"
+    ],
+    "unresolved_refs": []
+  },
+  "background": {
+    "why": "页面的连接生命周期应与耗时工具分开；工具完成后仍要回到原会话。",
+    "how": "超过卸载阈值后，ToolOffloadMiddleware 返回占位，进程级 watcher 继续工作；完成结果进入原会话 inbox，再由 wakeup 和会话锁继续推理。",
+    "default": "固定源码的默认卸载等待为 10 秒。watcher 是进程内任务；正常停机取消它，崩溃后 registry 元数据不等于仍有执行。",
+    "failure": "页面断开只丢失观察，不自动停止 watcher；进程重启则不能只凭 registry 宣称任务恢复。晚到结果按原会话和任务身份核对。",
+    "refs": [
+      "as-d612211accc9",
+      "as-dc202a66c974",
+      "as-0791af56faa2"
+    ],
+    "unresolved_refs": []
+  },
+  "sessions": {
+    "why": "同一会话不能由两个 worker 用旧状态分别推进；观察者又要能补回断线期间的事件。",
+    "how": "先取得 session run lock，再读取可变状态。每个事件先写 replay log，再发送 live channel；保存消息、AgentState 和游标后才释放锁。订阅端先建立 live 订阅，再回放，用事件 entry ID 去重。",
+    "default": "当前 Service 向 run lock 传入 600 秒 TTL；Redis 按租约续期，内存实现不因该 TTL 自动过期。会话 replay 参数为 1000 条，Redis 近似裁剪、内存精确裁剪。",
+    "failure": "只用 pub/sub 无法补断线历史。锁过期后的旧 worker 不能删除新持有者的锁；先读状态后拿锁会使用过期快照。",
+    "refs": [
+      "as-ebaf50819a12",
+      "as-73da307b2ffd",
+      "as-9af0c87d9dc4"
+    ],
+    "unresolved_refs": []
+  },
+  "java-04-session-turn-idempotency": {
+    "why": "接收任务、开始使用输入和完成任务是不同阶段；重试必须保留原工作身份。",
+    "how": "Session 固定目标配置。Turn 用幂等键和相同请求体持久接收；202 queued 表示 accepted，input.applied 表示运行时已经使用输入。等待批准的 Turn 持有队列中的当前位置。",
+    "default": "Managed 保留会话上下文；Team 和 Workflow 的各个 Turn 启动独立协作或流程。修改 Agent 不自动改变既有 Session。",
+    "failure": "刷新应读原快照与事件；新的幂等键会创建新任务，不能用于修复一次观察断线。",
+    "refs": [
+      "as-79adbb1a7334",
+      "as-e60a2f6c58b3"
+    ],
+    "unresolved_refs": []
+  },
+  "java-07-files-artifacts": {
+    "why": "工作区写出文件与应用取得交付物之间，还需要明确的文件身份和发布记录。",
+    "how": "Managed 的一种路径是把实际输出上传为当前 Session file，再发布引用该 file ID 的 Artifact；应用读取真实记录后按授权下载。外部 HTTPS Artifact 是另一条路径。",
+    "default": "Managed Session file 受 file_input 能力约束，公开上限 16 MiB。上传能力与发布能力不推广为所有执行目标相同。",
+    "failure": "路径存在不会自动生成可下载 Artifact；跨会话文件引用和目标能力要核对。执行 completed 也不表示业务已经接受内容。",
+    "refs": [
+      "as-69ccfb190c6d"
+    ],
+    "unresolved_refs": []
+  },
+  "java-09-recovery-capabilities": {
+    "why": "恢复观察、恢复工作状态与确认外部副作用是三个不同问题。",
+    "how": "续跑前核对目标 capabilities、待处理动作、不确定工具调用及运行所有权；同一身份读取日志和 checkpoint，并访问对应工作文件。",
+    "default": "checkpoint 不恢复操作系统线程、在途网络请求或工具内部进度。Hosted 统一调用路径标记 checkpoint_restore:false。",
+    "failure": "旧 writer 的租约必须释放或过期。邮件、订单或外部写入可能已经完成，先查询并核对实际结果，再决定 resume 或重试。",
+    "refs": [
+      "as-e60a2f6c58b3",
+      "as-556d0c6a5726",
+      "as-eb83f48e5259"
+    ],
+    "unresolved_refs": []
+  }
+}
