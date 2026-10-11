@@ -28,3 +28,5 @@
 ## 维护
 
 逐 URL 的 canonical 登记只保留在 `vault/references` 或 `vault/provenance` 的一个位置；本页不复制原件。需要将某个系统的观察提炼为跨项目语法时，先在项目 index 记录实际消费，再按 [文档结构契约](../../../docs/architecture/documentation.md) 与修订流程提出裁决。
+
+已有品牌规范需要让 coding agent 按需查找时，读 [设计资源的包、组件与集成](agent-design-resources.md)；该入口区分同名项目、设计系统包、registry、Skill 和 MCP，不要求安装。

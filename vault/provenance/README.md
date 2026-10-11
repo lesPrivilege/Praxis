@@ -54,3 +54,5 @@
 - 视觉语法定向召回：[Courtwork](visual-grammar-courtwork-20260928/README.md)、[Schema Engineering](visual-grammar-schema-20260928/README.md)、[Praxis及相邻项目](visual-grammar-praxis-20260928/README.md)、[外部参考](visual-grammar-external-20260928/README.md)。施工消费见 [演示工场](../../demos/visual-grammar/README.md)。
 
 - [Design / Write 书目与语法参考](design-writing-encyclopedia/README.md)：按来源论述或具体操作双向取用，保留证据形态、分歧、覆盖缺口与独立变更记录。
+
+- [艺术、设计与软件语法书目](art-software-atlas/README.md)：跨传统、作品、档案、工具与 agent 设计生态的有界研究，原语境与软件推导分开。

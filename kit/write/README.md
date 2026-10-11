@@ -14,6 +14,8 @@
 
 不知道材料要促成什么决定时，先去 [Reporting](../reporting/README.md)填写 brief。需要字体、配色、图形编码或交互取舍时再进入 [Design](../design/README.md)。Write 决定什么信息需要表达及其职责，Design 处理视觉和媒介表现；两者通过这些语义接口协作。只调颜色、字体或间距时不用进来。
 
+要把信息编成图形、跨文字方向排印，或改成可解释的事件乐谱，可按需查 Design 的 [编辑转译](../design/composition/editorial-translations.md) 与 [乐谱语法](../design/motion/score-and-time.md)，内容与证据职责仍留在本分支。
+
 ## 规则有三种强度
 
 | 强度 | 管什么 | 在哪里 | 什么时候适用 |

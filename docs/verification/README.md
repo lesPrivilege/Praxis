@@ -53,3 +53,5 @@
 - [2026-10-05 第五版改稿过程的提炼](narration-distill-20261005.md)：用户评价改后文案效果不错并要求泛化；逐步对照改稿过程与 Kit 的去向，新增口播旁白文体页和成文的独立冷读；五项内容没有进入；证据只有一条片子和同一名主笔，没有对照。
 
 - [Design / Write 参考编订](design-writing-encyclopedia-20261011/README.md)：来源证据、独立发现任务、分面示例与静态检查；[薄消费记录模板](reference-consumption-template.md)可用于后续回流。
+
+- [艺术与软件语法参考书](art-software-atlas-20261011/README.md)：独立分支的证据、发现试用、审阅与交接。

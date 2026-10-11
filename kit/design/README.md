@@ -10,6 +10,7 @@
 | 编排页面、关系与数量 | [Composition](composition/README.md) | 阅读层级、空间关系与编码选择 |
 | 表达对象、操作和状态 | [Interaction](interaction/README.md) | 状态矩阵、反馈与可达性检查 |
 | 选择运动与时间表现 | [Motion](motion/README.md) | 运动目的、连续性、可中断与替代方式 |
+| 从传统、作品、实验或工具生态寻找可试的软件操作 | [艺术与软件操作入口](references/art-software-atlas.md) | 语境、变量、实现取舍与反例 |
 | 按作者或材料找方法，比较不同前提与证据 | [来源书目](../../vault/provenance/design-writing-encyclopedia/README.md) | 自足摘要、实际读取范围、原始定位与语法链接 |
 | 查成熟方法、来源或样张 | [References](references/README.md) | 按任务消费的解释、限制和原件来路 |
 | 需求里出现风格名，或要探索一种视觉语言 | [视觉语言参考](references/languages.md) | 名字对应的范围、可以试的构成关系与来源状态 |

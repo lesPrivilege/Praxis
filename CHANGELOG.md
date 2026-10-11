@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-10-11 · 艺术与软件语法参考书
+
+新增有界来源书目、12 条可选深参考与语法交叉索引，区分来源、发现集合、作品、实现工具和本库推导；覆盖传统材料、编辑排印、光与空间、时间/规则、交互及 Open Design/agent 设计生态。沿用既有 canonical homes，不改写上一轮百科。验证、失败与独立发现试用见 [交付回执](docs/verification/art-software-atlas-20261011/README.md)。
+
 ## 2026-10-11 · Design / Write 参考书目与语法扩展
 
 - 保留现有任务树，增加 13 个可选语法条目、29 个独立公开 URL 记录与 6 份短摘录，覆盖视觉、交互与时间、写作编辑、跨媒介四流；[书目与覆盖](vault/provenance/design-writing-encyclopedia/README.md)连接来源自足摘要和 Kit 操作判断。

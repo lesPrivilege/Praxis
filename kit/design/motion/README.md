@@ -5,4 +5,6 @@
 - 界面状态、定位与反馈需要运动：读 [界面运动编排](choreography.md)，处理连续输入、中断、反向与减弱动效；需要判断运动是否必要时回 [运动判断](grammar.md)。
 - 文稿要成为视频或动态解释：先在 [Write / Motion](../../write/motion/README.md)确定分镜语义，再读本分支选择视觉运动。
 
+把事件乐谱或规则生成转到软件时，读 [乐谱与时间](score-and-time.md) 或 [规则系统](rule-systems.md)；原作语境、演出自主权和算法可复现性分别保留。
+
 本分支负责表现方式，不维护一套 renderer API。时长、曲线、镜头、材质与动态排印是具体任务的选择，不能把一次答卷的240ms或淡入写成通用值。来源线索见 [C16–C21](../references/composition.md)；已有动态简报仍是项目 specimen。

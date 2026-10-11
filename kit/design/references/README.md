@@ -18,6 +18,8 @@
 | 判断营销演示、源码、标准说明和已测行为各能证明什么 | [读来源](reading-sources.md) | DWG-X-SOURCES | 保留证据差别，找到需要补读的具体材料 |
 | 把风格名（Swiss、Bauhaus、Y2K 等）换成可检验的构成关系 | [languages.md](languages.md) | VL01–VL08 | 名称与别名、所指范围、可以试的关系、名字推不出的内容和逐来源状态；不含主题参数 |
 
+从织物、编辑、空间、乐谱、规则、软件组件或 agent 设计生态探索新方向，先读 [艺术与软件操作入口](art-software-atlas.md)；按来源追溯读 [书目](../../../vault/provenance/art-software-atlas/README.md)。
+
 ## 需要原文或证据时
 
 - 逐条的外部语义提炼见 [Design reference semantics](../../../vault/distilled/design-reference-semantics/README.md)。它解释为什么消费某条参考，但不替代本目录的 ID、状态和证据路径。
