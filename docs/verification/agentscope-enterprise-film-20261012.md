@@ -12,7 +12,7 @@
 | 封面 | 4:3 1600×1200与3:4 1200×1600原生SVG/PNG已检查，独立于成片 | [封面](../../demos/agentscope-enterprise-film/covers/README.md) |
 | 播放器 | 7秒fixture任意seek、控制、键盘、终场与小屏通过；正片内置浏览器实际播放、暂停、跳章核对 | [管线](../../demos/agentscope-enterprise-film/build/README.md) |
 | 来源 | 230个URL独立登记，原件hash纳入snapshot manifest，registry重建 | [来源](../../vault/provenance/agentscope-enterprise-20261012/README.md) |
-| 仓库 | 通过：1366份Markdown、265份JSON、1080快照；0错误 | `python3 scripts/validate_repository.py` |
+| 仓库 | 通过：1366份Markdown、266份JSON、1080快照；0错误 | `python3 scripts/validate_repository.py` |
 
 运动检查没有冒称完成：未连续按实际速度完整看完32分钟，未做PM受众或对照验证。固定源码和文档只支持静态机制解释，未clone/安装/运行AgentScope本身。Java恢复默认值文档冲突与Python内嵌OpenAPI漂移保留研究记录。封面多平台发布、授权和媒体外部播放器没有验证。
 
@@ -20,6 +20,6 @@
 
 首次仓库检查发现本批catalog缺cards归属字段，已补生成器归属；另有两条基线Motion ceiling链接缺原文件，改为显式缺件的历史路径，不伪造恢复来源。该修订仅修复导航，原研究判断未改变。
 
-仓库最终验证通过；生成来源卡由现有 render_source_cards.py 统一维护，首次生成232份本批卡片与索引。维护文本的 git diff --check 通过。媒体生成物在独立worktree保留，未发布或上传。
+仓库最终验证通过；生成来源卡由现有 render_source_cards.py 统一维护，首次生成232份本批卡片与索引。维护文本的 git diff --check 通过（排除原始快照与原样复制的 GSAP vendor 文件；该 vendor 原有两处空白格式不作改写）。媒体生成物在独立worktree保留，未发布或上传。
 
 本地舞台在阻断所有HTTP/HTTPS请求时成功载入并跳到1408秒，未请求外部资产；[离线记录](../../demos/agentscope-enterprise-film/evidence/offline-stage.json)。MP4与双封面已另存到任务可视化目录，降低工作区误清理丢失生成物的风险。
