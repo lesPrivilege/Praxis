@@ -296,4 +296,3 @@ Harness architecture 的固定页称 `EVENT_LOG/native checkpoints` 为默认跨
 - 没有运行 provider、MCP、RAG vector store、ReMe/Mem0、OpenTelemetry exporter、Docker/E2B/K8s、Java Runtime Host 或目标项目测试；不报告性能、连通性、实际恢复成功率。
 - 没有覆盖 TTS/realtime provider、A2A、完整 formatter/provider 差异、全部 tool-level parser 和商业版/付费支持；无 TTS 要求已遵守。
 - 没有对受众理解做测试；“可经得起下一问”是固定源和当前文字的结构审阅，不是用户测试结果。
-
