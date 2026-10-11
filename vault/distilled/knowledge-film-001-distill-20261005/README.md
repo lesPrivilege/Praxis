@@ -104,7 +104,7 @@
 | [Publish](../../../kit/write/publish/README.md) | 观看页和出处表是编排好的页面 |
 | [Design 入口](../../../kit/design/README.md)与各分支 | [成立程度的标记](../../../kit/design/foundations/standing.md)第 36 行规定实线是已成立、虚线是未成立；施工约定第 63 行自己写了同一条 |
 | [anti-slop 提炼](../reporting/writing-anti-slop.md) | 工单点名的参考。Kit 和 docs 里没有任何链接指向它 |
-| [Motion ceiling 研究](../motion-ceiling-20261004/README.md)及其来源卡 | 工单点名的 `awesome-opus-5.5-video` 已有 [来源卡](../../provenance/motion-ceiling-20261004/cards/w02-zhuyansen-awesome-opus-5-5-video.md)；主会话只读了讲这次研究的跨会话笔记 |
+| Motion ceiling 研究及其来源卡（当前基线缺原文件；历史路径 `../motion-ceiling-20261004/README.md`） | 工单点名的 `awesome-opus-5.5-video` 当时已有来源卡（当前基线缺原文件；历史路径 `../../provenance/motion-ceiling-20261004/cards/w02-zhuyansen-awesome-opus-5-5-video.md`）；主会话只读了讲这次研究的跨会话笔记 |
 | 视觉语法工场的舞台运行层与导出管线 | 读了说明，没有用，另写了一套 |
 | [场景模板](../../../scenarios/_template/README.md)与 [Demo 准入](../../../demos/README.md)的消费版本记录 | 成品 README 里没有 scenario ID 和 Kit 版本 |
 | 叙事交接页第 9 行的最小分镜表 | 读了，没有填。分镜方向写在五份任务书里，主会话自己做的两章没有成文的分镜 |

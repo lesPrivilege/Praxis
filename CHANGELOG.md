@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-10-12 · AgentScope 企业线视频与封面交付
+
+- 新增 [AgentScope 企业线知识片](demos/agentscope-enterprise-film/README.md)：公开文档与固定源码研究形成 53 场、横屏无 TTS 视频，以及可暂停舞台、详尽阅读稿和两张原生绘制封面。Python 2.0 与 Java Harness/Service 分开讲解，旧 Runtime/Studio 只讲迁移。
+- 三位 Luna 做有界探索，Astra 裁决范围并独立审阅；事实和图形语义修订、编码及检查见 [制作记录](demos/agentscope-enterprise-film/production.md)。公开来源、原件 hash 与局部缺口保留 Vault。
+- 按用户新增要求，在唯一 [Motion 交接契约](kit/write/motion/narrative.md#多平台封面与交付表述)记录后续视频默认交付 4:3 与 3:4 原生封面，封面与成片画幅独立；制作状态和泛泛保护话语进入过程文档。新要求不追补历史成片。
+- 一次外部误重置移除了在制目录；研究包与管线在临时目录恢复，转入独立分支保存本次成果。仓库验证与成片范围见 [验收回执](docs/verification/agentscope-enterprise-film-20261012.md)。
+
 ## 2026-10-05 · 知识片的做法留作可取用的参考
 
 - 把 ADR-027、ADR-028 新增的两种独立审阅写明是可以取用的做法，不是每件任务的必经步骤；口播旁白页的随稿材料改成按任务取用。条文的含义没有变，强度写清了。

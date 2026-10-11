@@ -1,5 +1,7 @@
 # Distilled · 主题提炼与研究消费
 
+- [AgentScope 企业线研究 · 2026-10-12](agentscope-enterprise-20261012/README.md)：文档系统、Python 2.0、Java Harness/Service 与历史 Runtime/Studio 迁移；消费到知识片。
+
 - [可编辑原生 SVG · 2026-10-04](editable-native-svg-20261004/README.md)：从表达任务研究编辑与组合边界；施工、合同和分批交接见 demos，未绘制与未运行 Flash。
 
 - [Knowledge Film 001 的过程重建 · 2026-10-05](knowledge-film-001-distill-20261005/README.md)：没有参与制作的代理从会话日志重建一条知识片怎样做成，分 dogfooding、distill、architecture 三部分，附十二份任务书原文；24 条建议里已落地的见 ADR-027、ADR-028。

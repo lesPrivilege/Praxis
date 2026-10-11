@@ -1,0 +1,25 @@
+---
+id: "as-7bfd7ee86f21"
+status: "partial"
+url: "https://docs.agentscope.io/en/versions/2.0.10dev/building-blocks/agent_human-in-the-loop.md"
+---
+
+# building-blocks_agent_human-in-the-loop.md
+
+来源：[原始页面](https://docs.agentscope.io/en/versions/2.0.10dev/building-blocks/agent_human-in-the-loop.md) · 状态：`partial`
+
+用途：BUILD / GRAMMAR
+
+## 摘要
+
+官方材料，用于 官方 2.0.10dev 文档/索引原件
+
+## 证据与使用边界
+
+静态文档与选定源码读取；不代表运行或完整审计。
+
+## 何时重访
+
+项目版本、接口、归档状态或部署范围变化时重访。
+
+来源身份、核查日期、支持主张与选型状态见 [catalog](../catalog.json)。

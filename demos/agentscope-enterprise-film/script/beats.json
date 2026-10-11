@@ -1,0 +1,4640 @@
+{
+  "schema_version": "1.0",
+  "scenes": [
+    {
+      "id": "whole",
+      "chapter": [
+        "01",
+        "项目全貌"
+      ],
+      "title": "AgentScope：把 Agent 接成工作系统",
+      "lead": "业务任务 → 运行机制 → 服务交付",
+      "kind": "stack",
+      "items": [
+        {
+          "label": "Agent",
+          "detail": "决定下一步，调用工具，维护工作上下文。",
+          "labelAt": 9.23,
+          "detailAt": 9.23
+        },
+        {
+          "label": "Service",
+          "detail": "接收请求，管理会话，把进展和结果送回应用。",
+          "labelAt": 15.23,
+          "detailAt": 15.23
+        },
+        {
+          "label": "Workspace",
+          "detail": "为文件、终端和工具提供执行环境。",
+          "labelAt": 22.03,
+          "detailAt": 22.03
+        }
+      ],
+      "pm": "产品需求同时涉及推理、执行、状态与交付。",
+      "refs": [
+        "main-intro.md",
+        "main-agent-service.md"
+      ],
+      "essay": "合同助手接到任务后，需要读取材料、查规则、形成意见，必要时等待审批，再把文件和结果交回业务应用。模型生成文字只是其中一步。AgentScope 覆盖推理与工具循环，也覆盖托管会话、执行环境和前端事件。\n\n把这些职责分开，PM 才能判断一个功能应该修改提示词、增加工具、调整服务，还是接入业务系统的控制。贯穿本片的合同助手用于解释对象和动作怎样流转。",
+      "dark": true,
+      "evidence": [
+        {
+          "id": "as-13b26f7a4513",
+          "url": "https://docs.agentscope.io/en/versions/2.0.9/index.md",
+          "snapshot": "vault/snapshots/agentscope-enterprise-20261012/as-13b26f7a4513-main-intro.md.txt",
+          "version": null
+        },
+        {
+          "id": "as-dc202a66c974",
+          "url": "https://docs.agentscope.io/en/versions/2.0.9/deploy/agent-service.md",
+          "snapshot": "vault/snapshots/agentscope-enterprise-20261012/as-dc202a66c974-main-agent-service.md.txt",
+          "version": null
+        }
+      ],
+      "sourceLine": "docs.agentscope.io · AgentScope 2.0",
+      "leadAt": 5.68,
+      "pmAt": 28.43,
+      "dur": 35,
+      "events": [
+        {
+          "at": 0,
+          "duration": 1
+        },
+        {
+          "at": 5.68,
+          "duration": 0.85
+        },
+        {
+          "at": 9.23,
+          "duration": 0.85
+        },
+        {
+          "at": 15.23,
+          "duration": 0.85
+        },
+        {
+          "at": 22.03,
+          "duration": 0.85
+        },
+        {
+          "at": 28.43,
+          "duration": 0.85
+        }
+      ]
+    },
+    {
+      "id": "docs",
+      "chapter": [
+        "01",
+        "项目全貌"
+      ],
+      "title": "文档目录对应四类实现问题",
+      "lead": "从使用者需要反推项目结构",
+      "kind": "rows",
+      "items": [
+        {
+          "label": "构建块",
+          "detail": "消息、模型、工具、上下文：运行由什么组成。",
+          "labelAt": 8.05,
+          "detailAt": 8.05
+        },
+        {
+          "label": "编排",
+          "detail": "团队、计划、流水线：复杂工作如何组织。",
+          "labelAt": 13.65,
+          "detailAt": 13.65
+        },
+        {
+          "label": "部署",
+          "detail": "服务、存储、事件：多人如何持续使用。",
+          "labelAt": 18.85,
+          "detailAt": 18.85
+        },
+        {
+          "label": "企业接入",
+          "detail": "身份、权限、文件、恢复：业务怎样接管。",
+          "labelAt": 23.85,
+          "detailAt": 23.85
+        }
+      ],
+      "pm": "每个需求先定位职责，再进入对应文档。",
+      "refs": [
+        "main-index.txt",
+        "java-index.txt"
+      ],
+      "essay": "构建块回答局部对象的契约，编排回答它们如何组成任务，部署回答实例和状态如何被长期托管，企业接入回答应用怎样提交工作、观察进展并取得结果。文档目录因此可以作为架构的发现入口。\n\n阅读顺序先确定业务问题，再找对象与接口，最后回查源码的控制点。同名的“会话”“事件”“工具”要放回各自层次理解。",
+      "dark": false,
+      "evidence": [
+        {
+          "id": "as-e800b6665911",
+          "url": "https://docs.agentscope.io/_llms/en/agent-scope/2-0-10dev.txt",
+          "snapshot": "vault/snapshots/agentscope-enterprise-20261012/as-e800b6665911-main-index.txt.txt",
+          "version": null
+        },
+        {
+          "id": "as-822919440da3",
+          "url": "https://java.agentscope.io/llms.txt",
+          "snapshot": "vault/snapshots/agentscope-enterprise-20261012/as-822919440da3-java-index.txt.txt",
+          "version": null
+        }
+      ],
+      "sourceLine": "docs.agentscope.io · AgentScope 2.0",
+      "leadAt": 4.5,
+      "pmAt": 29.25,
+      "dur": 36,
+      "events": [
+        {
+          "at": 0,
+          "duration": 1
+        },
+        {
+          "at": 4.5,
+          "duration": 0.85
+        },
+        {
+          "at": 8.05,
+          "duration": 0.85
+        },
+        {
+          "at": 13.65,
+          "duration": 0.85
+        },
+        {
+          "at": 18.85,
+          "duration": 0.85
+        },
+        {
+          "at": 23.85,
+          "duration": 0.85
+        },
+        {
+          "at": 29.25,
+          "duration": 0.85
+        }
+      ]
+    },
+    {
+      "id": "lanes",
+      "chapter": [
+        "01",
+        "项目全貌"
+      ],
+      "title": "Python 与 Java 各有完整运行路径",
+      "lead": "Python 2.0 / Java Harness v2 与 Service 2.1.0-BETA1",
+      "kind": "compare",
+      "items": [
+        {
+          "label": "Python · Agent",
+          "detail": "推理、工具、权限、上下文与工作区。",
+          "labelAt": 13.91,
+          "detailAt": 13.91
+        },
+        {
+          "label": "Java · Harness",
+          "detail": "构建 Agent，保存历史与恢复点。",
+          "labelAt": 20.51,
+          "detailAt": 20.51
+        },
+        {
+          "label": "Python · Agent Service",
+          "detail": "托管用户、会话、资源与事件流。",
+          "labelAt": 27.51,
+          "detailAt": 27.51
+        },
+        {
+          "label": "Java · Service",
+          "detail": "把执行目标接成统一 Session API。",
+          "labelAt": 35.31,
+          "detailAt": 35.31
+        }
+      ],
+      "pm": "两条实现路径分别核对状态和接入契约。",
+      "refs": [
+        "main-agent-service.md",
+        "java-intro.md",
+        "java-service-index.md"
+      ],
+      "essay": "Python 2.0 主项目已包含 Agent Service。Java 文档把应用侧 Harness 与平台侧 Service 分开：前者维护 Agent 的构建和持续工作语义，后者统一管理执行目标、Session、Turn、权限与交付。\n\nPython 2.0 的主项目提供 Agent 与托管服务。Java Harness 与 Java Service 分别维护应用侧和平台侧的契约。",
+      "dark": false,
+      "evidence": [
+        {
+          "id": "as-dc202a66c974",
+          "url": "https://docs.agentscope.io/en/versions/2.0.9/deploy/agent-service.md",
+          "snapshot": "vault/snapshots/agentscope-enterprise-20261012/as-dc202a66c974-main-agent-service.md.txt",
+          "version": null
+        },
+        {
+          "id": "as-0a3782c37016",
+          "url": "https://java.agentscope.io/v2/en/intro.md",
+          "snapshot": "vault/snapshots/agentscope-enterprise-20261012/as-0a3782c37016-java-intro.md.txt",
+          "version": null
+        },
+        {
+          "id": "as-9d9136196aa8",
+          "url": "https://java.agentscope.io/v2/en/service/index.md",
+          "snapshot": "vault/snapshots/agentscope-enterprise-20261012/as-9d9136196aa8-java-service-index.md.txt",
+          "version": null
+        }
+      ],
+      "sourceLine": "docs.agentscope.io · AgentScope 2.0",
+      "leadAt": 5.04,
+      "pmAt": 43.11,
+      "dur": 50,
+      "events": [
+        {
+          "at": 0,
+          "duration": 1
+        },
+        {
+          "at": 5.04,
+          "duration": 0.85
+        },
+        {
+          "at": 13.91,
+          "duration": 0.85
+        },
+        {
+          "at": 20.51,
+          "duration": 0.85
+        },
+        {
+          "at": 27.51,
+          "duration": 0.85
+        },
+        {
+          "at": 35.31,
+          "duration": 0.85
+        },
+        {
+          "at": 43.11,
+          "duration": 0.85
+        }
+      ]
+    },
+    {
+      "id": "migration",
+      "chapter": [
+        "01",
+        "项目全貌"
+      ],
+      "title": "Runtime、Studio 的职责归入 2.0",
+      "lead": "独立工具的能力转向主项目",
+      "kind": "merge",
+      "items": [
+        {
+          "label": "原 Runtime",
+          "detail": "沙箱、Agent 服务、部署与观测。",
+          "labelAt": 8.81,
+          "detailAt": 8.81
+        },
+        {
+          "label": "原 Studio",
+          "detail": "运行轨迹、调试与人工输入。",
+          "labelAt": 15.01,
+          "detailAt": 15.01
+        },
+        {
+          "label": "AgentScope 2.0",
+          "detail": "主项目承接执行服务和内置 Web UI。",
+          "labelAt": 20.41,
+          "detailAt": 20.41
+        }
+      ],
+      "pm": "新方案从 2.0 进入，旧方案按原版本迁移。",
+      "refs": [
+        "runtime-readme.md",
+        "studio-readme.md",
+        "main-intro.md"
+      ],
+      "essay": "独立 Runtime 与 Studio 的 README 已给出归档和迁移提示。Runtime 原来承接沙箱、Agent-as-a-Service 和观测；Studio 原来提供开发期可视化与调试。2.0 的服务架构与内置 Web UI 成为新入口。\n\n旧文档适合回查机制来路。旧 Runtime 的 AgentApp、Runner 和旧 Studio 项目结构应放在迁移对照中，不能直接用来解释新 Service 的接口。",
+      "dark": false,
+      "evidence": [
+        {
+          "id": "as-38708b217d1d",
+          "url": "https://github.com/agentscope-ai/agentscope-runtime/blob/22072fd7075ce0c6f43cb39509d6a14b0e60ddb5/README.md",
+          "snapshot": "vault/snapshots/agentscope-enterprise-20261012/as-38708b217d1d-runtime-readme.md.txt",
+          "version": "agentscope-runtime@22072fd7075ce0c6f43cb39509d6a14b0e60ddb5"
+        },
+        {
+          "id": "as-ed35bc95bfb2",
+          "url": "https://github.com/agentscope-ai/agentscope-studio/blob/20e7638273d3726732eb317b440bfa34e6694e17/README.md",
+          "snapshot": "vault/snapshots/agentscope-enterprise-20261012/as-ed35bc95bfb2-studio-readme.md.txt",
+          "version": "agentscope-studio@20e7638273d3726732eb317b440bfa34e6694e17"
+        },
+        {
+          "id": "as-13b26f7a4513",
+          "url": "https://docs.agentscope.io/en/versions/2.0.9/index.md",
+          "snapshot": "vault/snapshots/agentscope-enterprise-20261012/as-13b26f7a4513-main-intro.md.txt",
+          "version": null
+        }
+      ],
+      "sourceLine": "官方仓库 README · Runtime / Studio",
+      "leadAt": 5.26,
+      "pmAt": 28.01,
+      "dur": 35,
+      "events": [
+        {
+          "at": 0,
+          "duration": 1
+        },
+        {
+          "at": 5.26,
+          "duration": 0.85
+        },
+        {
+          "at": 8.81,
+          "duration": 0.85
+        },
+        {
+          "at": 15.01,
+          "duration": 0.85
+        },
+        {
+          "at": 20.41,
+          "duration": 0.85
+        },
+        {
+          "at": 28.01,
+          "duration": 0.85
+        }
+      ]
+    },
+    {
+      "id": "task",
+      "chapter": [
+        "01",
+        "项目全貌"
+      ],
+      "title": "合同助手的一次工作",
+      "lead": "按任务次序展开请求链",
+      "kind": "flow",
+      "items": [
+        {
+          "label": "接收任务",
+          "detail": "读取合同与复核要求。",
+          "labelAt": 7.9,
+          "detailAt": 7.9
+        },
+        {
+          "label": "获取依据",
+          "detail": "检索规则，核对版本。",
+          "labelAt": 12.7,
+          "detailAt": 12.7
+        },
+        {
+          "label": "生成候选",
+          "detail": "形成风险条目与修改建议。",
+          "labelAt": 17.5,
+          "detailAt": 17.5
+        },
+        {
+          "label": "交回业务",
+          "detail": "确认动作，保存并发布结果。",
+          "labelAt": 22.3,
+          "detailAt": 22.3
+        }
+      ],
+      "pm": "建议生成与业务动作完成分别记录。",
+      "refs": [
+        "main-agent-service.md",
+        "java-service-files.md"
+      ],
+      "essay": "设想用户提交一份合同，Agent 检索制度和历史条款，形成风险清单，调用工具保存批注文件，需要时等待负责人的确认。检索结果进入上下文，确认事件解除暂停，文件进入交付登记。\n\n合同规则、可执行动作与最终接受标准由业务应用定义。框架提供运行基础，产品把它接到已有业务控制中。",
+      "dark": false,
+      "evidence": [
+        {
+          "id": "as-dc202a66c974",
+          "url": "https://docs.agentscope.io/en/versions/2.0.9/deploy/agent-service.md",
+          "snapshot": "vault/snapshots/agentscope-enterprise-20261012/as-dc202a66c974-main-agent-service.md.txt",
+          "version": null
+        },
+        {
+          "id": "as-69ccfb190c6d",
+          "url": "https://java.agentscope.io/v2/en/service/files.md",
+          "snapshot": "vault/snapshots/agentscope-enterprise-20261012/as-69ccfb190c6d-java-service-files.md.txt",
+          "version": null
+        }
+      ],
+      "sourceLine": "docs.agentscope.io · AgentScope 2.0",
+      "leadAt": 4.5,
+      "pmAt": 27.1,
+      "dur": 34,
+      "events": [
+        {
+          "at": 0,
+          "duration": 1
+        },
+        {
+          "at": 4.5,
+          "duration": 0.85
+        },
+        {
+          "at": 7.9,
+          "duration": 0.85
+        },
+        {
+          "at": 12.7,
+          "duration": 0.85
+        },
+        {
+          "at": 17.5,
+          "duration": 0.85
+        },
+        {
+          "at": 22.3,
+          "duration": 0.85
+        },
+        {
+          "at": 27.1,
+          "duration": 0.85
+        }
+      ]
+    },
+    {
+      "id": "agent",
+      "chapter": [
+        "02",
+        "Agent 内核"
+      ],
+      "title": "Agent 是推理与行动的循环引擎",
+      "lead": "配置定义能力，状态支持连续工作",
+      "kind": "stack",
+      "items": [
+        {
+          "label": "配置",
+          "detail": "模型、工具、提示词、权限与中间件。",
+          "labelAt": 8.48,
+          "detailAt": 8.48
+        },
+        {
+          "label": "运行状态",
+          "detail": "上下文、当前消息、工具与暂停信息。",
+          "labelAt": 13.28,
+          "detailAt": 13.28
+        },
+        {
+          "label": "调用入口",
+          "detail": "接收消息或事件，返回结果或等待输入。",
+          "labelAt": 18.68,
+          "detailAt": 18.68
+        }
+      ],
+      "pm": "连续工作需要保存和恢复正确的运行状态。",
+      "refs": [
+        "building-blocks_agent_overview.md",
+        "building-blocks_agent_run-agent.md"
+      ],
+      "essay": "Agent 执行循环，配置说明它能使用什么，AgentState 说明这次工作到了哪里。新消息进入上下文并开始回复；确认事件或外部结果续接一个暂停中的回复。\n\nAgent 根据状态选择推理、行动、暂停或结束。服务层把同一会话的状态交给正确运行实例，才能在多个请求之间维持连续工作。",
+      "dark": false,
+      "evidence": [
+        {
+          "id": "as-f2b9fa0f0bea",
+          "url": "https://docs.agentscope.io/en/versions/2.0.10dev/building-blocks/agent_overview.md",
+          "snapshot": "vault/snapshots/agentscope-enterprise-20261012/as-f2b9fa0f0bea-building-blocks_agent_overview.md.txt",
+          "version": "e4c1e074dee3f0f6cca28ca29e934c4ec0605354"
+        },
+        {
+          "id": "as-188d64eb8aa5",
+          "url": "https://docs.agentscope.io/en/versions/2.0.10dev/building-blocks/agent_run-agent.md",
+          "snapshot": "vault/snapshots/agentscope-enterprise-20261012/as-188d64eb8aa5-building-blocks_agent_run-agent.md.txt",
+          "version": "e4c1e074dee3f0f6cca28ca29e934c4ec0605354"
+        }
+      ],
+      "sourceLine": "docs.agentscope.io · AgentScope 2.0",
+      "leadAt": 4.5,
+      "pmAt": 24.48,
+      "dur": 31,
+      "events": [
+        {
+          "at": 0,
+          "duration": 1
+        },
+        {
+          "at": 4.5,
+          "duration": 0.85
+        },
+        {
+          "at": 8.48,
+          "duration": 0.85
+        },
+        {
+          "at": 13.28,
+          "duration": 0.85
+        },
+        {
+          "at": 18.68,
+          "duration": 0.85
+        },
+        {
+          "at": 24.48,
+          "duration": 0.85
+        }
+      ]
+    },
+    {
+      "id": "message",
+      "chapter": [
+        "02",
+        "Agent 内核"
+      ],
+      "title": "Msg 把一次回复收成完整记录",
+      "lead": "消息身份与有序内容块共同保存",
+      "kind": "rows",
+      "items": [
+        {
+          "label": "身份",
+          "detail": "id、发送者、role 与时间。",
+          "labelAt": 8.48,
+          "detailAt": 8.48
+        },
+        {
+          "label": "内容块",
+          "detail": "文字、思考、工具调用、结果及提示。",
+          "labelAt": 13.28,
+          "detailAt": 13.28
+        },
+        {
+          "label": "结束状态",
+          "detail": "完成、中断、迭代超限或错误。",
+          "labelAt": 18.28,
+          "detailAt": 18.28
+        },
+        {
+          "label": "附加结果",
+          "detail": "用量、结构化输出与错误信息。",
+          "labelAt": 23.08,
+          "detailAt": 23.08
+        }
+      ],
+      "pm": "一条助手消息可以包含多轮工具调用。",
+      "refs": [
+        "building-blocks_message-and-event.md"
+      ],
+      "essay": "Msg 是通信与持久化的单位。2.0 一次 reply 可累积多轮思考、工具调用和执行结果，最后形成一条助手消息。content 的有序类型块保留过程，不能只保存最后一句话。\n\nfinished_reason 区分完成、中断、超限和错误；暂停时还没有结束原因。角色约束在构造时校验：用户消息与系统消息可携带的内容类型有明确范围。",
+      "dark": false,
+      "evidence": [
+        {
+          "id": "as-24299c5c3ff5",
+          "url": "https://docs.agentscope.io/en/versions/2.0.10dev/building-blocks/message-and-event.md",
+          "snapshot": "vault/snapshots/agentscope-enterprise-20261012/as-24299c5c3ff5-building-blocks_message-and-event.md.txt",
+          "version": "e4c1e074dee3f0f6cca28ca29e934c4ec0605354"
+        }
+      ],
+      "sourceLine": "docs.agentscope.io · AgentScope 2.0",
+      "leadAt": 4.5,
+      "pmAt": 28.08,
+      "dur": 35,
+      "events": [
+        {
+          "at": 0,
+          "duration": 1
+        },
+        {
+          "at": 4.5,
+          "duration": 0.85
+        },
+        {
+          "at": 8.48,
+          "duration": 0.85
+        },
+        {
+          "at": 13.28,
+          "duration": 0.85
+        },
+        {
+          "at": 18.28,
+          "duration": 0.85
+        },
+        {
+          "at": 23.08,
+          "duration": 0.85
+        },
+        {
+          "at": 28.08,
+          "duration": 0.85
+        }
+      ]
+    },
+    {
+      "id": "events",
+      "chapter": [
+        "02",
+        "Agent 内核"
+      ],
+      "title": "Event 把运行进展送到界面",
+      "lead": "不同事件按身份更新同一回复",
+      "kind": "rows",
+      "items": [
+        {
+          "label": "文字增量",
+          "detail": "更新同一文字块。",
+          "labelAt": 8.27,
+          "detailAt": 8.27
+        },
+        {
+          "label": "工具事件",
+          "detail": "呈现参数、进展与结果。",
+          "labelAt": 13.07,
+          "detailAt": 13.07
+        },
+        {
+          "label": "确认请求",
+          "detail": "显示待确认动作并接收答复。",
+          "labelAt": 17.87,
+          "detailAt": 17.87
+        },
+        {
+          "label": "完整消息",
+          "detail": "收成可保存的回复记录。",
+          "labelAt": 22.87,
+          "detailAt": 22.87
+        }
+      ],
+      "pm": "界面按稳定 ID 更新对象。",
+      "refs": [
+        "building-blocks_message-and-event.md"
+      ],
+      "essay": "事件使用 reply_id、block_id 和 tool_call_id 标识回复与内部对象。start、delta、end 表达块的生成过程，Msg.append_event 按这些身份更新块、累计用量并记录结束原因。\n\n回复身份错误或缺少目标块时，事件可能被跳过。因此收到事件和成功改变视图是两步。前端应按稳定身份更新对象，重连时恢复先前记录，再应用新增量。",
+      "dark": false,
+      "evidence": [
+        {
+          "id": "as-24299c5c3ff5",
+          "url": "https://docs.agentscope.io/en/versions/2.0.10dev/building-blocks/message-and-event.md",
+          "snapshot": "vault/snapshots/agentscope-enterprise-20261012/as-24299c5c3ff5-building-blocks_message-and-event.md.txt",
+          "version": "e4c1e074dee3f0f6cca28ca29e934c4ec0605354"
+        }
+      ],
+      "sourceLine": "docs.agentscope.io · AgentScope 2.0",
+      "leadAt": 4.5,
+      "pmAt": 27.67,
+      "dur": 34,
+      "events": [
+        {
+          "at": 0,
+          "duration": 1
+        },
+        {
+          "at": 4.5,
+          "duration": 0.85
+        },
+        {
+          "at": 8.27,
+          "duration": 0.85
+        },
+        {
+          "at": 13.07,
+          "duration": 0.85
+        },
+        {
+          "at": 17.87,
+          "duration": 0.85
+        },
+        {
+          "at": 22.87,
+          "duration": 0.85
+        },
+        {
+          "at": 27.67,
+          "duration": 0.85
+        }
+      ]
+    },
+    {
+      "id": "react",
+      "chapter": [
+        "02",
+        "Agent 内核"
+      ],
+      "title": "推理与工具结果组成反馈回路",
+      "lead": "下一步由当前消息和工具状态决定",
+      "kind": "loop",
+      "items": [
+        {
+          "label": "检查状态",
+          "detail": "选择推理、行动、暂停或结束。",
+          "labelAt": 8.69,
+          "detailAt": 8.69
+        },
+        {
+          "label": "调用模型",
+          "detail": "发送上下文；无工具请求时形成答复。",
+          "labelAt": 13.49,
+          "detailAt": 13.49
+        },
+        {
+          "label": "执行工具",
+          "detail": "按参数运行可用工具。",
+          "labelAt": 19.09,
+          "detailAt": 19.09
+        },
+        {
+          "label": "接收结果",
+          "detail": "写回消息，再决定下一步。",
+          "labelAt": 23.89,
+          "detailAt": 23.89
+        }
+      ],
+      "pm": "工具失败也是下一轮推理的输入。",
+      "refs": [
+        "building-blocks_agent_overview.md"
+      ],
+      "essay": "ReAct 的核心是反馈。模型返回工具请求后，Agent 校验并执行；工具结果进入当前消息，下一轮模型据此决定继续或结束。每轮还会处理上下文压缩与运行提示。\n\n等待人工确认或外部执行时，循环暂停，当前事件流结束而回复尚未完成。后续结果事件到达才续接。超过迭代预算有明确结束状态，普通文本还可进行禁用工具的总结。",
+      "dark": false,
+      "evidence": [
+        {
+          "id": "as-f2b9fa0f0bea",
+          "url": "https://docs.agentscope.io/en/versions/2.0.10dev/building-blocks/agent_overview.md",
+          "snapshot": "vault/snapshots/agentscope-enterprise-20261012/as-f2b9fa0f0bea-building-blocks_agent_overview.md.txt",
+          "version": "e4c1e074dee3f0f6cca28ca29e934c4ec0605354"
+        }
+      ],
+      "sourceLine": "docs.agentscope.io · AgentScope 2.0",
+      "leadAt": 4.5,
+      "pmAt": 28.69,
+      "dur": 35,
+      "events": [
+        {
+          "at": 0,
+          "duration": 1
+        },
+        {
+          "at": 4.5,
+          "duration": 0.85
+        },
+        {
+          "at": 8.69,
+          "duration": 0.85
+        },
+        {
+          "at": 13.49,
+          "duration": 0.85
+        },
+        {
+          "at": 19.09,
+          "duration": 0.85
+        },
+        {
+          "at": 23.89,
+          "duration": 0.85
+        },
+        {
+          "at": 28.69,
+          "duration": 0.85
+        }
+      ]
+    },
+    {
+      "id": "model",
+      "chapter": [
+        "02",
+        "Agent 内核"
+      ],
+      "title": "Model 与 Formatter 分担协议转换",
+      "lead": "内部消息通过适配层进入模型接口",
+      "kind": "flow",
+      "items": [
+        {
+          "label": "内部消息",
+          "detail": "保留消息与内容块。",
+          "labelAt": 9.66,
+          "detailAt": 9.66
+        },
+        {
+          "label": "Formatter",
+          "detail": "转换角色、工具与媒体表示。",
+          "labelAt": 14.46,
+          "detailAt": 14.46
+        },
+        {
+          "label": "Model",
+          "detail": "发送请求，读取响应与用量。",
+          "labelAt": 20.26,
+          "detailAt": 20.26
+        },
+        {
+          "label": "统一输出",
+          "detail": "回到 Agent 可消费的结构。",
+          "labelAt": 25.26,
+          "detailAt": 25.26
+        }
+      ],
+      "pm": "更换模型时核对工具、媒体与输出能力。",
+      "refs": [
+        "building-blocks_model_overview.md",
+        "building-blocks_model_llm.md"
+      ],
+      "essay": "Formatter 把内部 Msg 转成供应商请求格式，Model 处理调用、重试、流式返回和用量。流式接口输出增量及最终完整响应，Agent 再转成事件。\n\n格式统一仍保留供应商差异。某些媒体不能进入模型时，适配层会转为 URL 或文件路径；多名说话者需要 MultiAgentFormatter 保留身份。产品切换模型要核对这些能力，而不只替换名称。",
+      "dark": false,
+      "evidence": [
+        {
+          "id": "as-d47e94c7be0b",
+          "url": "https://docs.agentscope.io/en/versions/2.0.10dev/building-blocks/model_overview.md",
+          "snapshot": "vault/snapshots/agentscope-enterprise-20261012/as-d47e94c7be0b-building-blocks_model_overview.md.txt",
+          "version": "e4c1e074dee3f0f6cca28ca29e934c4ec0605354"
+        },
+        {
+          "id": "as-07cb85f8aa73",
+          "url": "https://docs.agentscope.io/en/versions/2.0.10dev/building-blocks/model_llm.md",
+          "snapshot": "vault/snapshots/agentscope-enterprise-20261012/as-07cb85f8aa73-building-blocks_model_llm.md.txt",
+          "version": "e4c1e074dee3f0f6cca28ca29e934c4ec0605354"
+        }
+      ],
+      "sourceLine": "docs.agentscope.io · AgentScope 2.0",
+      "leadAt": 5.47,
+      "pmAt": 30.46,
+      "dur": 37,
+      "events": [
+        {
+          "at": 0,
+          "duration": 1
+        },
+        {
+          "at": 5.47,
+          "duration": 0.85
+        },
+        {
+          "at": 9.66,
+          "duration": 0.85
+        },
+        {
+          "at": 14.46,
+          "duration": 0.85
+        },
+        {
+          "at": 20.26,
+          "duration": 0.85
+        },
+        {
+          "at": 25.26,
+          "duration": 0.85
+        },
+        {
+          "at": 30.46,
+          "duration": 0.85
+        }
+      ]
+    },
+    {
+      "id": "tools",
+      "chapter": [
+        "02",
+        "Agent 内核"
+      ],
+      "title": "工具把模型请求接到真实函数",
+      "lead": "名称、参数模式和返回结构形成契约",
+      "kind": "flow",
+      "items": [
+        {
+          "label": "登记函数",
+          "detail": "读取签名、类型与说明。",
+          "labelAt": 8.69,
+          "detailAt": 8.69
+        },
+        {
+          "label": "形成 Schema",
+          "detail": "公开名称和可填参数。",
+          "labelAt": 13.49,
+          "detailAt": 13.49
+        },
+        {
+          "label": "执行调用",
+          "detail": "找到函数，校验并传入参数。",
+          "labelAt": 18.69,
+          "detailAt": 18.69
+        },
+        {
+          "label": "返回结果",
+          "detail": "聚合执行内容，写回消息。",
+          "labelAt": 23.49,
+          "detailAt": 23.49
+        }
+      ],
+      "pm": "参数校验通过后才进入副作用执行。",
+      "refs": [
+        "building-blocks_tool_python-tool.md",
+        "building-blocks_tool_overview.md"
+      ],
+      "essay": "Toolkit 把 Python 函数、MCP 工具和工具组收成可调用集合。模型看见函数名称、说明和参数 Schema，运行时再次检查工具是否激活并校验输入。ToolChunk 表达进展，ToolResponse 聚合最终结果。\n\n未注册工具、未激活工具组或参数不匹配会返回模型可读的错误。业务工具边界应与动作一致，例如查询合同状态、保存候选批注和发布文件，分别配置输入与授权。",
+      "dark": false,
+      "evidence": [
+        {
+          "id": "as-47c09ed8a575",
+          "url": "https://docs.agentscope.io/en/versions/2.0.10dev/building-blocks/tool_python-tool.md",
+          "snapshot": "vault/snapshots/agentscope-enterprise-20261012/as-47c09ed8a575-building-blocks_tool_python-tool.md.txt",
+          "version": "e4c1e074dee3f0f6cca28ca29e934c4ec0605354"
+        },
+        {
+          "id": "as-13c3e91cfe2f",
+          "url": "https://docs.agentscope.io/en/versions/2.0.10dev/building-blocks/tool_overview.md",
+          "snapshot": "vault/snapshots/agentscope-enterprise-20261012/as-13c3e91cfe2f-building-blocks_tool_overview.md.txt",
+          "version": "e4c1e074dee3f0f6cca28ca29e934c4ec0605354"
+        }
+      ],
+      "sourceLine": "docs.agentscope.io · AgentScope 2.0",
+      "leadAt": 4.5,
+      "pmAt": 28.29,
+      "dur": 35,
+      "events": [
+        {
+          "at": 0,
+          "duration": 1
+        },
+        {
+          "at": 4.5,
+          "duration": 0.85
+        },
+        {
+          "at": 8.69,
+          "duration": 0.85
+        },
+        {
+          "at": 13.49,
+          "duration": 0.85
+        },
+        {
+          "at": 18.69,
+          "duration": 0.85
+        },
+        {
+          "at": 23.49,
+          "duration": 0.85
+        },
+        {
+          "at": 28.29,
+          "duration": 0.85
+        }
+      ]
+    },
+    {
+      "id": "scheduling",
+      "chapter": [
+        "02",
+        "Agent 内核"
+      ],
+      "title": "工具属性决定并行与串行",
+      "lead": "并发安全属性控制一批调用的执行顺序",
+      "kind": "compare",
+      "items": [
+        {
+          "label": "独立读取",
+          "detail": "多个查询可以同时执行。",
+          "labelAt": 9.12,
+          "detailAt": 9.12
+        },
+        {
+          "label": "依赖步骤",
+          "detail": "先取得前一步结果，再发起后一步。",
+          "labelAt": 13.92,
+          "detailAt": 13.92
+        },
+        {
+          "label": "工具属性",
+          "detail": "声明并发安全与执行特征。",
+          "labelAt": 19.32,
+          "detailAt": 19.32
+        },
+        {
+          "label": "结果汇合",
+          "detail": "全部结果重新进入反馈。",
+          "labelAt": 24.12,
+          "detailAt": 24.12
+        }
+      ],
+      "pm": "副作用和依赖决定真实执行顺序。",
+      "refs": [
+        "building-blocks_tool_manage-tools.md",
+        "building-blocks_tool_overview.md"
+      ],
+      "essay": "2.0 的工具包含 is_concurrency_safe 等属性。并发安全调用可并行，其他调用按顺序组织；结果汇合后进入下一轮推理。同一批工具中，错误也要写回可识别的结果。\n\n同时查两个知识源适合并发。生成文件后才能发布文件，则要保持依赖。属性声明错误会让调度与业务要求不一致，验收应检查真实动作，而不只观察等待时间。 生成文件再发布文件的先后关系，由编排或后续推理轮表达。调度器不自动推断业务依赖。",
+      "dark": false,
+      "evidence": [
+        {
+          "id": "as-2fea42114514",
+          "url": "https://docs.agentscope.io/en/versions/2.0.10dev/building-blocks/tool_manage-tools.md",
+          "snapshot": "vault/snapshots/agentscope-enterprise-20261012/as-2fea42114514-building-blocks_tool_manage-tools.md.txt",
+          "version": "e4c1e074dee3f0f6cca28ca29e934c4ec0605354"
+        },
+        {
+          "id": "as-13c3e91cfe2f",
+          "url": "https://docs.agentscope.io/en/versions/2.0.10dev/building-blocks/tool_overview.md",
+          "snapshot": "vault/snapshots/agentscope-enterprise-20261012/as-13c3e91cfe2f-building-blocks_tool_overview.md.txt",
+          "version": "e4c1e074dee3f0f6cca28ca29e934c4ec0605354"
+        }
+      ],
+      "sourceLine": "docs.agentscope.io · AgentScope 2.0",
+      "leadAt": 4.5,
+      "pmAt": 28.92,
+      "dur": 35,
+      "events": [
+        {
+          "at": 0,
+          "duration": 1
+        },
+        {
+          "at": 4.5,
+          "duration": 0.85
+        },
+        {
+          "at": 9.12,
+          "duration": 0.85
+        },
+        {
+          "at": 13.92,
+          "duration": 0.85
+        },
+        {
+          "at": 19.32,
+          "duration": 0.85
+        },
+        {
+          "at": 24.12,
+          "duration": 0.85
+        },
+        {
+          "at": 28.92,
+          "duration": 0.85
+        }
+      ]
+    },
+    {
+      "id": "permission",
+      "chapter": [
+        "02",
+        "Agent 内核"
+      ],
+      "title": "权限判定发生在工具执行前",
+      "lead": "允许、拒绝和询问各有一条路径",
+      "kind": "branch",
+      "items": [
+        {
+          "label": "ALLOW",
+          "detail": "继续执行工具。",
+          "labelAt": 12.27,
+          "detailAt": 12.27
+        },
+        {
+          "label": "DENY",
+          "detail": "返回拒绝结果，交回推理循环。",
+          "labelAt": 17.07,
+          "detailAt": 17.07
+        },
+        {
+          "label": "ASK",
+          "detail": "暂停并发出人工确认事件。",
+          "labelAt": 22.07,
+          "detailAt": 22.07
+        }
+      ],
+      "pm": "批准关联具体动作与参数。",
+      "refs": [
+        "main-permission.md",
+        "building-blocks_agent_human-in-the-loop.md"
+      ],
+      "essay": "DEFAULT 模式按 deny、ask、只读快速路径、工具自检、allow 和默认 ASK 等阶段判定。EXPLORE 对非只读操作直接拒绝，allow 规则也不能解除这一限制。BYPASS 的控制含义不同，需要明确配置。\n\n权限系统决定是否执行，工具审查检查实际输入，沙箱限制运行环境。三个层次共同工作。人工确认应展示具体工具、参数和作用对象，答复要关联等待中的调用。",
+      "dark": false,
+      "evidence": [
+        {
+          "id": "as-7dad78a203b5",
+          "url": "https://docs.agentscope.io/en/versions/2.0.9/building-blocks/permission-system/overview.md",
+          "snapshot": "vault/snapshots/agentscope-enterprise-20261012/as-7dad78a203b5-main-permission.md.txt",
+          "version": null
+        },
+        {
+          "id": "as-7bfd7ee86f21",
+          "url": "https://docs.agentscope.io/en/versions/2.0.10dev/building-blocks/agent_human-in-the-loop.md",
+          "snapshot": "vault/snapshots/agentscope-enterprise-20261012/as-7bfd7ee86f21-building-blocks_agent_human-in-the-loop.md.txt",
+          "version": "e4c1e074dee3f0f6cca28ca29e934c4ec0605354"
+        }
+      ],
+      "sourceLine": "docs.agentscope.io · AgentScope 2.0",
+      "leadAt": 4.5,
+      "centerAt": 8.27,
+      "pmAt": 26.87,
+      "dur": 33,
+      "events": [
+        {
+          "at": 0,
+          "duration": 1
+        },
+        {
+          "at": 4.5,
+          "duration": 0.85
+        },
+        {
+          "at": 8.27,
+          "duration": 0.85
+        },
+        {
+          "at": 12.27,
+          "duration": 0.85
+        },
+        {
+          "at": 17.07,
+          "duration": 0.85
+        },
+        {
+          "at": 22.07,
+          "duration": 0.85
+        },
+        {
+          "at": 26.87,
+          "duration": 0.85
+        }
+      ]
+    },
+    {
+      "id": "hitl",
+      "chapter": [
+        "02",
+        "Agent 内核"
+      ],
+      "title": "人工确认把暂停接回执行",
+      "lead": "确认事件关联待执行调用和用户答复",
+      "kind": "flow",
+      "items": [
+        {
+          "label": "形成调用",
+          "detail": "保存工具、参数与身份。",
+          "labelAt": 8.9,
+          "detailAt": 8.9
+        },
+        {
+          "label": "停在确认点",
+          "detail": "发出请求，保存等待状态。",
+          "labelAt": 13.7,
+          "detailAt": 13.7
+        },
+        {
+          "label": "接收答复",
+          "detail": "关联用户选择与待确认对象。",
+          "labelAt": 18.5,
+          "detailAt": 18.5
+        },
+        {
+          "label": "继续循环",
+          "detail": "执行动作或返回拒绝结果。",
+          "labelAt": 23.5,
+          "detailAt": 23.5
+        }
+      ],
+      "pm": "多个待确认动作分别关联答复。",
+      "refs": [
+        "building-blocks_agent_human-in-the-loop.md"
+      ],
+      "essay": "ASK 把工具状态改为 asking，并发出 RequireUserConfirmEvent。当前运行不会一直占着等待的协程；调用方保存状态、展示确认请求，随后以 UserConfirmResultEvent 续接。\n\n外部执行使用相似机制：external 工具发出执行请求，外部完成后带回结果。回复身份或工具身份错误会阻止续接，结果结构也需要按工具契约校验。",
+      "dark": false,
+      "evidence": [
+        {
+          "id": "as-7bfd7ee86f21",
+          "url": "https://docs.agentscope.io/en/versions/2.0.10dev/building-blocks/agent_human-in-the-loop.md",
+          "snapshot": "vault/snapshots/agentscope-enterprise-20261012/as-7bfd7ee86f21-building-blocks_agent_human-in-the-loop.md.txt",
+          "version": "e4c1e074dee3f0f6cca28ca29e934c4ec0605354"
+        }
+      ],
+      "sourceLine": "docs.agentscope.io · AgentScope 2.0",
+      "leadAt": 4.5,
+      "pmAt": 28.3,
+      "dur": 35,
+      "events": [
+        {
+          "at": 0,
+          "duration": 1
+        },
+        {
+          "at": 4.5,
+          "duration": 0.85
+        },
+        {
+          "at": 8.9,
+          "duration": 0.85
+        },
+        {
+          "at": 13.7,
+          "duration": 0.85
+        },
+        {
+          "at": 18.5,
+          "duration": 0.85
+        },
+        {
+          "at": 23.5,
+          "duration": 0.85
+        },
+        {
+          "at": 28.3,
+          "duration": 0.85
+        }
+      ]
+    },
+    {
+      "id": "integration",
+      "chapter": [
+        "02",
+        "Agent 内核"
+      ],
+      "title": "Python、MCP 与 Skill 有不同入口",
+      "lead": "工具能力与任务指导在 Toolkit 汇合",
+      "kind": "stack",
+      "items": [
+        {
+          "label": "Python 工具",
+          "detail": "本地函数直接承担动作。",
+          "labelAt": 10.3,
+          "detailAt": 10.3
+        },
+        {
+          "label": "MCP 工具",
+          "detail": "发现并调用外部服务工具。",
+          "labelAt": 15.7,
+          "detailAt": 15.7
+        },
+        {
+          "label": "Skill",
+          "detail": "提供任务说明和按需读取的资源。",
+          "labelAt": 20.7,
+          "detailAt": 20.7
+        }
+      ],
+      "pm": "技能说明与实际工具授权分别配置。",
+      "refs": [
+        "building-blocks_tool_overview.md",
+        "building-blocks_tool_manage-tools.md"
+      ],
+      "essay": "Python 工具连接已有函数，MCP 连接外部工具服务，Skill 提供任务说明与资源。工具组可按任务激活，减少模型一次看见的工具集合。MCP 列举失败时，组件可撤下该服务的工具并记录问题。\n\n连接生命周期、凭据、技能资源和执行授权分别配置。技能文本不能为真实业务写入自动授予权限。",
+      "dark": false,
+      "evidence": [
+        {
+          "id": "as-13c3e91cfe2f",
+          "url": "https://docs.agentscope.io/en/versions/2.0.10dev/building-blocks/tool_overview.md",
+          "snapshot": "vault/snapshots/agentscope-enterprise-20261012/as-13c3e91cfe2f-building-blocks_tool_overview.md.txt",
+          "version": "e4c1e074dee3f0f6cca28ca29e934c4ec0605354"
+        },
+        {
+          "id": "as-2fea42114514",
+          "url": "https://docs.agentscope.io/en/versions/2.0.10dev/building-blocks/tool_manage-tools.md",
+          "snapshot": "vault/snapshots/agentscope-enterprise-20261012/as-2fea42114514-building-blocks_tool_manage-tools.md.txt",
+          "version": "e4c1e074dee3f0f6cca28ca29e934c4ec0605354"
+        }
+      ],
+      "sourceLine": "docs.agentscope.io · AgentScope 2.0",
+      "leadAt": 5.26,
+      "pmAt": 26.3,
+      "dur": 33,
+      "events": [
+        {
+          "at": 0,
+          "duration": 1
+        },
+        {
+          "at": 5.26,
+          "duration": 0.85
+        },
+        {
+          "at": 10.3,
+          "duration": 0.85
+        },
+        {
+          "at": 15.7,
+          "duration": 0.85
+        },
+        {
+          "at": 20.7,
+          "duration": 0.85
+        },
+        {
+          "at": 26.3,
+          "duration": 0.85
+        }
+      ]
+    },
+    {
+      "id": "context",
+      "chapter": [
+        "03",
+        "上下文与协作"
+      ],
+      "title": "模型输入由三层组装",
+      "lead": "固定指导、历史摘要与近期消息分开维护",
+      "kind": "stack",
+      "items": [
+        {
+          "label": "系统提示",
+          "detail": "基础提示、技能说明与中间件变换。",
+          "labelAt": 9.12,
+          "detailAt": 9.12
+        },
+        {
+          "label": "压缩摘要",
+          "detail": "保留较早历史的必要信息。",
+          "labelAt": 14.52,
+          "detailAt": 14.52
+        },
+        {
+          "label": "近期上下文",
+          "detail": "最近消息、结果和运行提示。",
+          "labelAt": 19.32,
+          "detailAt": 19.32
+        }
+      ],
+      "pm": "上下文决定模型下一步能依据什么。",
+      "refs": [
+        "building-blocks_context_overview.md"
+      ],
+      "essay": "上下文是 Agent 的工作记忆。每轮模型调用组装系统提示、历史摘要和近期消息。系统提示还会经过 on_system_prompt 变换，工具 Schema 取自当前激活集合。\n\n会随执行变化的时间、任务状态和用量以运行提示注入上下文。讨论回答质量时，应检查必要材料和约束是否进入了本轮输入，而不只分析模型型号。",
+      "dark": false,
+      "evidence": [
+        {
+          "id": "as-524cfb38d8f2",
+          "url": "https://docs.agentscope.io/en/versions/2.0.10dev/building-blocks/context_overview.md",
+          "snapshot": "vault/snapshots/agentscope-enterprise-20261012/as-524cfb38d8f2-building-blocks_context_overview.md.txt",
+          "version": "e4c1e074dee3f0f6cca28ca29e934c4ec0605354"
+        }
+      ],
+      "sourceLine": "docs.agentscope.io · AgentScope 2.0",
+      "leadAt": 4.5,
+      "pmAt": 24.32,
+      "dur": 31,
+      "events": [
+        {
+          "at": 0,
+          "duration": 1
+        },
+        {
+          "at": 4.5,
+          "duration": 0.85
+        },
+        {
+          "at": 9.12,
+          "duration": 0.85
+        },
+        {
+          "at": 14.52,
+          "duration": 0.85
+        },
+        {
+          "at": 19.32,
+          "duration": 0.85
+        },
+        {
+          "at": 24.32,
+          "duration": 0.85
+        }
+      ]
+    },
+    {
+      "id": "compression",
+      "chapter": [
+        "03",
+        "上下文与协作"
+      ],
+      "title": "压缩给长任务腾出上下文空间",
+      "lead": "历史消息和大型工具结果分别处理",
+      "kind": "rows",
+      "items": [
+        {
+          "label": "检查用量",
+          "detail": "按阈值判断是否压缩。",
+          "labelAt": 8.69,
+          "detailAt": 8.69
+        },
+        {
+          "label": "处理历史",
+          "detail": "较旧消息收成摘要。",
+          "labelAt": 13.49,
+          "detailAt": 13.49
+        },
+        {
+          "label": "截短结果",
+          "detail": "处理过大的工具返回。",
+          "labelAt": 18.29,
+          "detailAt": 18.29
+        },
+        {
+          "label": "重新组装",
+          "detail": "摘要与近期消息进入推理。",
+          "labelAt": 23.09,
+          "detailAt": 23.09
+        }
+      ],
+      "pm": "压缩策略决定后续仍可见的细节。",
+      "refs": [
+        "building-blocks_context_compress-context.md"
+      ],
+      "essay": "Agent 根据 trigger_ratio 与模型窗口比较 token 用量，保留近期消息并生成较早历史的结构化摘要。工具结果也可按 token 限制截短。压缩后的摘要继续作为推理输入。\n\n长期任务的约束、待处理动作和材料身份应纳入摘要质量验收。丢失这些信息可能改变下一步选择，因此仅用对话轮数评价压缩不够。",
+      "dark": false,
+      "evidence": [
+        {
+          "id": "as-761fb054c0df",
+          "url": "https://docs.agentscope.io/en/versions/2.0.10dev/building-blocks/context_compress-context.md",
+          "snapshot": "vault/snapshots/agentscope-enterprise-20261012/as-761fb054c0df-building-blocks_context_compress-context.md.txt",
+          "version": "e4c1e074dee3f0f6cca28ca29e934c4ec0605354"
+        }
+      ],
+      "sourceLine": "docs.agentscope.io · AgentScope 2.0",
+      "leadAt": 4.5,
+      "pmAt": 27.89,
+      "dur": 34,
+      "events": [
+        {
+          "at": 0,
+          "duration": 1
+        },
+        {
+          "at": 4.5,
+          "duration": 0.85
+        },
+        {
+          "at": 8.69,
+          "duration": 0.85
+        },
+        {
+          "at": 13.49,
+          "duration": 0.85
+        },
+        {
+          "at": 18.29,
+          "duration": 0.85
+        },
+        {
+          "at": 23.09,
+          "duration": 0.85
+        },
+        {
+          "at": 27.89,
+          "duration": 0.85
+        }
+      ]
+    },
+    {
+      "id": "offload",
+      "chapter": [
+        "03",
+        "上下文与协作"
+      ],
+      "title": "卸载保留被压缩内容的回查路径",
+      "lead": "外部保存与按需读取形成另一条通道",
+      "kind": "flow",
+      "items": [
+        {
+          "label": "原始内容",
+          "detail": "较早消息或大型结果。",
+          "labelAt": 8.9,
+          "detailAt": 8.9
+        },
+        {
+          "label": "外部保存",
+          "detail": "offloader 写入存储。",
+          "labelAt": 13.7,
+          "detailAt": 13.7
+        },
+        {
+          "label": "保留引用",
+          "detail": "上下文留下定位与摘要。",
+          "labelAt": 18.9,
+          "detailAt": 18.9
+        },
+        {
+          "label": "按需读回",
+          "detail": "通过文件能力取回细节。",
+          "labelAt": 23.7,
+          "detailAt": 23.7
+        }
+      ],
+      "pm": "摘要支持推理，原件支持细节回查。",
+      "refs": [
+        "building-blocks_context_offload-context.md"
+      ],
+      "essay": "压缩减少模型输入，卸载保存被移出输入的内容。offloader 把较早消息和截短结果交给存储，后续可以按引用读回。工作区提供相关文件能力。\n\n有效回查需要存储、引用和读取工具一同可用。业务材料还要保持版本和访问范围，避免不同任务读取同一文件名下已经改变的内容。",
+      "dark": false,
+      "evidence": [
+        {
+          "id": "as-c3e41125204e",
+          "url": "https://docs.agentscope.io/en/versions/2.0.10dev/building-blocks/context_offload-context.md",
+          "snapshot": "vault/snapshots/agentscope-enterprise-20261012/as-c3e41125204e-building-blocks_context_offload-context.md.txt",
+          "version": "e4c1e074dee3f0f6cca28ca29e934c4ec0605354"
+        }
+      ],
+      "sourceLine": "docs.agentscope.io · AgentScope 2.0",
+      "leadAt": 4.5,
+      "pmAt": 28.5,
+      "dur": 35,
+      "events": [
+        {
+          "at": 0,
+          "duration": 1
+        },
+        {
+          "at": 4.5,
+          "duration": 0.85
+        },
+        {
+          "at": 8.9,
+          "duration": 0.85
+        },
+        {
+          "at": 13.7,
+          "duration": 0.85
+        },
+        {
+          "at": 18.9,
+          "duration": 0.85
+        },
+        {
+          "at": 23.7,
+          "duration": 0.85
+        },
+        {
+          "at": 28.5,
+          "duration": 0.85
+        }
+      ]
+    },
+    {
+      "id": "memory",
+      "chapter": [
+        "03",
+        "上下文与协作"
+      ],
+      "title": "长期记忆跨越当前对话",
+      "lead": "记忆写入、检索与工作上下文分开",
+      "kind": "compare",
+      "items": [
+        {
+          "label": "本轮上下文",
+          "detail": "支持当前推理与工具反馈。",
+          "labelAt": 8.48,
+          "detailAt": 8.48
+        },
+        {
+          "label": "长期记忆",
+          "detail": "保存跨任务可再利用的信息。",
+          "labelAt": 13.48,
+          "detailAt": 13.48
+        },
+        {
+          "label": "记忆写入",
+          "detail": "选择需要留下的内容。",
+          "labelAt": 18.48,
+          "detailAt": 18.48
+        },
+        {
+          "label": "记忆检索",
+          "detail": "按当前需要取回相关信息。",
+          "labelAt": 23.28,
+          "detailAt": 23.28
+        }
+      ],
+      "pm": "用户、会话与记忆归属保持一致。",
+      "refs": [
+        "building-blocks_long-term-memory.md"
+      ],
+      "essay": "长期记忆通过中间件接入。Agentic Memory 用工作区 Markdown 支持自主读写，ReMe 和 Mem0 等方案提供检索、注入和回写路径，静态检索与工具检索也可组合。\n\n不同方案的数据归属与生命周期不同。ReMe 缺少 session_id 时会跳过回写，其检索范围又可能覆盖工作区。采用前应明确用户、Agent 和组织的记忆边界，以及修改和清除入口。",
+      "dark": false,
+      "evidence": [
+        {
+          "id": "as-1223f953ff05",
+          "url": "https://docs.agentscope.io/en/versions/2.0.10dev/building-blocks/long-term-memory.md",
+          "snapshot": "vault/snapshots/agentscope-enterprise-20261012/as-1223f953ff05-building-blocks_long-term-memory.md.txt",
+          "version": "e4c1e074dee3f0f6cca28ca29e934c4ec0605354"
+        }
+      ],
+      "sourceLine": "docs.agentscope.io · AgentScope 2.0",
+      "leadAt": 4.5,
+      "pmAt": 28.08,
+      "dur": 35,
+      "events": [
+        {
+          "at": 0,
+          "duration": 1
+        },
+        {
+          "at": 4.5,
+          "duration": 0.85
+        },
+        {
+          "at": 8.48,
+          "duration": 0.85
+        },
+        {
+          "at": 13.48,
+          "duration": 0.85
+        },
+        {
+          "at": 18.48,
+          "duration": 0.85
+        },
+        {
+          "at": 23.28,
+          "duration": 0.85
+        },
+        {
+          "at": 28.08,
+          "duration": 0.85
+        }
+      ]
+    },
+    {
+      "id": "rag",
+      "chapter": [
+        "03",
+        "上下文与协作"
+      ],
+      "title": "RAG 把知识材料接到推理输入",
+      "lead": "索引构建与问题检索组成两条流程",
+      "kind": "flow",
+      "items": [
+        {
+          "label": "导入材料",
+          "detail": "解析文档并切片。",
+          "labelAt": 8.69,
+          "detailAt": 8.69
+        },
+        {
+          "label": "建立索引",
+          "detail": "嵌入片段，写入后端。",
+          "labelAt": 13.49,
+          "detailAt": 13.49
+        },
+        {
+          "label": "查询片段",
+          "detail": "按问题检索、排序与去重。",
+          "labelAt": 18.29,
+          "detailAt": 18.29
+        },
+        {
+          "label": "形成回答",
+          "detail": "把相关材料交给 Agent。",
+          "labelAt": 23.09,
+          "detailAt": 23.09
+        }
+      ],
+      "pm": "检索与回答质量分别检查。",
+      "refs": [
+        "main-rag.md",
+        "building-blocks_rag.md"
+      ],
+      "essay": "KnowledgeBase 组织 parser、chunker、embedding 和 vector store。查询会批量嵌入、检索、去重、按分数过滤并选取 top_k。RAGMiddleware 可在推理前静态注入，也可公开搜索工具让 Agent 主动查询。\n\nmetadata_filter 约束检索与写入，可承担数据分区。API 与后台索引 worker 要使用一致的存储、总线、文件和向量后端。文本嵌入对多模态输入还有能力边界，需要在产品输入上明确处理。",
+      "dark": false,
+      "evidence": [
+        {
+          "id": "as-8379a990984a",
+          "url": "https://docs.agentscope.io/en/versions/2.0.9/deploy/rag.md",
+          "snapshot": "vault/snapshots/agentscope-enterprise-20261012/as-8379a990984a-main-rag.md.txt",
+          "version": null
+        },
+        {
+          "id": "as-29e364404cfc",
+          "url": "https://docs.agentscope.io/en/versions/2.0.10dev/building-blocks/rag.md",
+          "snapshot": "vault/snapshots/agentscope-enterprise-20261012/as-29e364404cfc-building-blocks_rag.md.txt",
+          "version": "e4c1e074dee3f0f6cca28ca29e934c4ec0605354"
+        }
+      ],
+      "sourceLine": "docs.agentscope.io · AgentScope 2.0",
+      "leadAt": 4.5,
+      "pmAt": 28.09,
+      "dur": 35,
+      "events": [
+        {
+          "at": 0,
+          "duration": 1
+        },
+        {
+          "at": 4.5,
+          "duration": 0.85
+        },
+        {
+          "at": 8.69,
+          "duration": 0.85
+        },
+        {
+          "at": 13.49,
+          "duration": 0.85
+        },
+        {
+          "at": 18.29,
+          "duration": 0.85
+        },
+        {
+          "at": 23.09,
+          "duration": 0.85
+        },
+        {
+          "at": 28.09,
+          "duration": 0.85
+        }
+      ]
+    },
+    {
+      "id": "structured",
+      "chapter": [
+        "03",
+        "上下文与协作"
+      ],
+      "title": "结构化输出让结果进入后续流程",
+      "lead": "Schema 固定字段，业务核对含义",
+      "kind": "flow",
+      "items": [
+        {
+          "label": "定义字段",
+          "detail": "风险类型、位置、建议和依据。",
+          "labelAt": 8.9,
+          "detailAt": 8.9
+        },
+        {
+          "label": "要求结构",
+          "detail": "给 Agent 提供输出 Schema。",
+          "labelAt": 13.7,
+          "detailAt": 13.7
+        },
+        {
+          "label": "校验结果",
+          "detail": "获得可解析的结构化字段。",
+          "labelAt": 19.5,
+          "detailAt": 19.5
+        },
+        {
+          "label": "业务核对",
+          "detail": "检查依据与权限后使用。",
+          "labelAt": 24.3,
+          "detailAt": 24.3
+        }
+      ],
+      "pm": "字段形状与业务结论分别验收。",
+      "refs": [
+        "building-blocks_agent_run-agent.md"
+      ],
+      "essay": "结构化输出通过临时生成工具和 Schema 校验形成结果，最终放入 Msg.structured_output。模型策略可以做 fallback，超限时还有有限宽限机会。\n\nSchema 解决字段、类型和结构，业务校验解决风险是否成立和依据是否正确。应用可以据此生成可逐项复核的列表，并在真实动作前检查授权和状态。",
+      "dark": false,
+      "evidence": [
+        {
+          "id": "as-188d64eb8aa5",
+          "url": "https://docs.agentscope.io/en/versions/2.0.10dev/building-blocks/agent_run-agent.md",
+          "snapshot": "vault/snapshots/agentscope-enterprise-20261012/as-188d64eb8aa5-building-blocks_agent_run-agent.md.txt",
+          "version": "e4c1e074dee3f0f6cca28ca29e934c4ec0605354"
+        }
+      ],
+      "sourceLine": "docs.agentscope.io · AgentScope 2.0",
+      "leadAt": 4.5,
+      "pmAt": 29.1,
+      "dur": 36,
+      "events": [
+        {
+          "at": 0,
+          "duration": 1
+        },
+        {
+          "at": 4.5,
+          "duration": 0.85
+        },
+        {
+          "at": 8.9,
+          "duration": 0.85
+        },
+        {
+          "at": 13.7,
+          "duration": 0.85
+        },
+        {
+          "at": 19.5,
+          "duration": 0.85
+        },
+        {
+          "at": 24.3,
+          "duration": 0.85
+        },
+        {
+          "at": 29.1,
+          "duration": 0.85
+        }
+      ]
+    },
+    {
+      "id": "interrupt",
+      "chapter": [
+        "03",
+        "上下文与协作"
+      ],
+      "title": "中断与继续各有明确状态",
+      "lead": "生成中的运行与暂停中的运行分别处理",
+      "kind": "rows",
+      "items": [
+        {
+          "label": "运行中断",
+          "detail": "取消当前模型或工具任务。",
+          "labelAt": 9.12,
+          "detailAt": 9.12
+        },
+        {
+          "label": "暂停中断",
+          "detail": "向等待中的回复送入中断事件。",
+          "labelAt": 13.92,
+          "detailAt": 13.92
+        },
+        {
+          "label": "保留记录",
+          "detail": "保存部分输出和工具状态。",
+          "labelAt": 19.12,
+          "detailAt": 19.12
+        },
+        {
+          "label": "恢复核对",
+          "detail": "确认外部动作实际结果。",
+          "labelAt": 23.92,
+          "detailAt": 23.92
+        }
+      ],
+      "pm": "停止等待后，外部动作仍需核对。",
+      "refs": [
+        "building-blocks_agent_interrupt-agent.md",
+        "java-service-session.md"
+      ],
+      "essay": "运行中通常取消异步任务，暂停中的回复则通过 UserInterruptEvent 处理等待工具并形成中断结果。idle 会话的中断是无操作。服务接受中断请求和实际工具清理完成是两个阶段。\n\n已经送到业务系统的请求可能继续完成，取消界面等待不能替代下游撤销。恢复时先查询外部结果，再决定继续或重试。",
+      "dark": false,
+      "evidence": [
+        {
+          "id": "as-1787397c3223",
+          "url": "https://docs.agentscope.io/en/versions/2.0.10dev/building-blocks/agent_interrupt-agent.md",
+          "snapshot": "vault/snapshots/agentscope-enterprise-20261012/as-1787397c3223-building-blocks_agent_interrupt-agent.md.txt",
+          "version": "e4c1e074dee3f0f6cca28ca29e934c4ec0605354"
+        },
+        {
+          "id": "as-79adbb1a7334",
+          "url": "https://java.agentscope.io/v2/en/service/session-event-log.md",
+          "snapshot": "vault/snapshots/agentscope-enterprise-20261012/as-79adbb1a7334-java-service-session.md.txt",
+          "version": null
+        }
+      ],
+      "sourceLine": "docs.agentscope.io · AgentScope 2.0",
+      "leadAt": 4.5,
+      "pmAt": 28.72,
+      "dur": 35,
+      "events": [
+        {
+          "at": 0,
+          "duration": 1
+        },
+        {
+          "at": 4.5,
+          "duration": 0.85
+        },
+        {
+          "at": 9.12,
+          "duration": 0.85
+        },
+        {
+          "at": 13.92,
+          "duration": 0.85
+        },
+        {
+          "at": 19.12,
+          "duration": 0.85
+        },
+        {
+          "at": 23.92,
+          "duration": 0.85
+        },
+        {
+          "at": 28.72,
+          "duration": 0.85
+        }
+      ]
+    },
+    {
+      "id": "middleware",
+      "chapter": [
+        "03",
+        "上下文与协作"
+      ],
+      "title": "中间件在生命周期接入规则",
+      "lead": "横切逻辑通过明确阶段统一处理",
+      "kind": "rows",
+      "items": [
+        {
+          "label": "系统提示",
+          "detail": "按用户与场景调整指导。",
+          "labelAt": 8.48,
+          "detailAt": 8.48
+        },
+        {
+          "label": "模型阶段",
+          "detail": "处理输入、输出和调用。",
+          "labelAt": 13.28,
+          "detailAt": 13.28
+        },
+        {
+          "label": "工具阶段",
+          "detail": "审查、变换与记录 I/O。",
+          "labelAt": 18.08,
+          "detailAt": 18.08
+        },
+        {
+          "label": "运行阶段",
+          "detail": "组织日志、压缩与回复逻辑。",
+          "labelAt": 22.88,
+          "detailAt": 22.88
+        }
+      ],
+      "pm": "规则的作用范围与执行顺序明确配置。",
+      "refs": [
+        "building-blocks_middleware.md"
+      ],
+      "essay": "MiddlewareBase 提供 on_reply、on_reasoning、on_check_permission、on_acting、on_model_call、on_compress_context 等环绕阶段，以及顺序变换的 on_system_prompt。它还可通过稳定 key 在 AgentState 中保存状态。\n\non_acting 主要包工具 I/O，参数解析、权限判定和写入上下文在它之外。加入审计或后台卸载时要选择正确阶段，尤其注意可注入 live state 的工具所带来的并发影响。",
+      "dark": false,
+      "evidence": [
+        {
+          "id": "as-cc1c5a96c71f",
+          "url": "https://docs.agentscope.io/en/versions/2.0.10dev/building-blocks/middleware.md",
+          "snapshot": "vault/snapshots/agentscope-enterprise-20261012/as-cc1c5a96c71f-building-blocks_middleware.md.txt",
+          "version": "e4c1e074dee3f0f6cca28ca29e934c4ec0605354"
+        }
+      ],
+      "sourceLine": "docs.agentscope.io · AgentScope 2.0",
+      "leadAt": 4.5,
+      "pmAt": 27.68,
+      "dur": 34,
+      "events": [
+        {
+          "at": 0,
+          "duration": 1
+        },
+        {
+          "at": 4.5,
+          "duration": 0.85
+        },
+        {
+          "at": 8.48,
+          "duration": 0.85
+        },
+        {
+          "at": 13.28,
+          "duration": 0.85
+        },
+        {
+          "at": 18.08,
+          "duration": 0.85
+        },
+        {
+          "at": 22.88,
+          "duration": 0.85
+        },
+        {
+          "at": 27.68,
+          "duration": 0.85
+        }
+      ]
+    },
+    {
+      "id": "pipeline",
+      "chapter": [
+        "03",
+        "上下文与协作"
+      ],
+      "title": "GoalPipeline 用执行与核验推进目标",
+      "lead": "候选结果经 verifier 判定后继续或结束",
+      "kind": "flow",
+      "items": [
+        {
+          "label": "执行目标",
+          "detail": "executor 形成工作结果。",
+          "labelAt": 11.15,
+          "detailAt": 11.15
+        },
+        {
+          "label": "结构报告",
+          "detail": "以约定格式提交候选。",
+          "labelAt": 16.55,
+          "detailAt": 16.55
+        },
+        {
+          "label": "核验判定",
+          "detail": "返回 pass、fail 或 impossible。",
+          "labelAt": 21.35,
+          "detailAt": 21.35
+        },
+        {
+          "label": "反馈修正",
+          "detail": "未通过且预算允许时继续。",
+          "labelAt": 28.15,
+          "detailAt": 28.15
+        }
+      ],
+      "pm": "结果核验与输出格式校验承担不同职责。",
+      "refs": [
+        "building-blocks_pipeline_goal.md"
+      ],
+      "essay": "GoalPipeline 把 executor 与 verifier 接成目标闭环。失败结果回到执行者，格式无效有单独重试，HITL 事件按 reply_id 送回对应 Agent。预算属于 pipeline 实例，续接不会重新计数。\n\nverifier 可以读取文件、使用工具或请求人工判断，它也是普通 Agent。产品应为核验提供明确的可观察标准；不能把模型返回 pass 直接当成业务已经接收。",
+      "dark": false,
+      "evidence": [
+        {
+          "id": "as-986459b99a69",
+          "url": "https://docs.agentscope.io/en/versions/2.0.10dev/building-blocks/pipeline_goal.md",
+          "snapshot": "vault/snapshots/agentscope-enterprise-20261012/as-986459b99a69-building-blocks_pipeline_goal.md.txt",
+          "version": "e4c1e074dee3f0f6cca28ca29e934c4ec0605354"
+        }
+      ],
+      "sourceLine": "docs.agentscope.io · AgentScope 2.0",
+      "leadAt": 5.68,
+      "pmAt": 32.95,
+      "dur": 39,
+      "events": [
+        {
+          "at": 0,
+          "duration": 1
+        },
+        {
+          "at": 5.68,
+          "duration": 0.85
+        },
+        {
+          "at": 11.15,
+          "duration": 0.85
+        },
+        {
+          "at": 16.55,
+          "duration": 0.85
+        },
+        {
+          "at": 21.35,
+          "duration": 0.85
+        },
+        {
+          "at": 28.15,
+          "duration": 0.85
+        },
+        {
+          "at": 32.95,
+          "duration": 0.85
+        }
+      ]
+    },
+    {
+      "id": "team",
+      "chapter": [
+        "03",
+        "上下文与协作"
+      ],
+      "title": "团队把工作拆给不同 Agent",
+      "lead": "分配、独立执行、通信与最终汇总",
+      "kind": "flow",
+      "items": [
+        {
+          "label": "分配任务",
+          "detail": "leader 给成员完整任务输入。",
+          "labelAt": 8.27,
+          "detailAt": 8.27
+        },
+        {
+          "label": "独立执行",
+          "detail": "成员在自己的上下文中工作。",
+          "labelAt": 13.87,
+          "detailAt": 13.87
+        },
+        {
+          "label": "传回结果",
+          "detail": "成员结果成为 leader 的工具结果。",
+          "labelAt": 18.87,
+          "detailAt": 18.87
+        },
+        {
+          "label": "统一汇总",
+          "detail": "leader 形成最终回复。",
+          "labelAt": 24.87,
+          "detailAt": 24.87
+        }
+      ],
+      "pm": "成员权限仍各自生效。",
+      "refs": [
+        "building-blocks_pipeline_team.md",
+        "main-agent-service.md"
+      ],
+      "essay": "TeamPipeline 给 leader 注册分配工具。不同成员可并发，同一成员的任务串行；成员保留自己的权限要求，人工答复按回复身份路由。默认 leader 回复结束后清理成员上下文。\n\nAgent Service 还提供托管团队的工具与会话能力。产品应明确每个成员的材料、工具和结果责任，避免重复工作或把只负责研究的成员授予业务写入能力。",
+      "dark": false,
+      "evidence": [
+        {
+          "id": "as-0c1773327b10",
+          "url": "https://docs.agentscope.io/en/versions/2.0.10dev/building-blocks/pipeline_team.md",
+          "snapshot": "vault/snapshots/agentscope-enterprise-20261012/as-0c1773327b10-building-blocks_pipeline_team.md.txt",
+          "version": "e4c1e074dee3f0f6cca28ca29e934c4ec0605354"
+        },
+        {
+          "id": "as-dc202a66c974",
+          "url": "https://docs.agentscope.io/en/versions/2.0.9/deploy/agent-service.md",
+          "snapshot": "vault/snapshots/agentscope-enterprise-20261012/as-dc202a66c974-main-agent-service.md.txt",
+          "version": null
+        }
+      ],
+      "sourceLine": "docs.agentscope.io · AgentScope 2.0",
+      "leadAt": 4.5,
+      "pmAt": 29.87,
+      "dur": 36,
+      "events": [
+        {
+          "at": 0,
+          "duration": 1
+        },
+        {
+          "at": 4.5,
+          "duration": 0.85
+        },
+        {
+          "at": 8.27,
+          "duration": 0.85
+        },
+        {
+          "at": 13.87,
+          "duration": 0.85
+        },
+        {
+          "at": 18.87,
+          "duration": 0.85
+        },
+        {
+          "at": 24.87,
+          "duration": 0.85
+        },
+        {
+          "at": 29.87,
+          "duration": 0.85
+        }
+      ]
+    },
+    {
+      "id": "plan",
+      "chapter": [
+        "03",
+        "上下文与协作"
+      ],
+      "title": "计划与 SOP 组织复杂工作的约束",
+      "lead": "待办状态和流程规则承担不同职责",
+      "kind": "compare",
+      "items": [
+        {
+          "label": "计划",
+          "detail": "记录任务、进度和后续步骤。",
+          "labelAt": 8.69,
+          "detailAt": 8.69
+        },
+        {
+          "label": "SOP",
+          "detail": "约束特定工作流程。",
+          "labelAt": 13.49,
+          "detailAt": 13.49
+        },
+        {
+          "label": "任务变化",
+          "detail": "根据新材料调整后续计划。",
+          "labelAt": 18.29,
+          "detailAt": 18.29
+        },
+        {
+          "label": "核验推进",
+          "detail": "按阶段结果决定继续。",
+          "labelAt": 23.09,
+          "detailAt": 23.09
+        }
+      ],
+      "pm": "计划完成状态依据实际执行结果。",
+      "refs": [
+        "building-blocks_plan.md",
+        "building-blocks_sop.md"
+      ],
+      "essay": "计划让当前步骤和剩余工作可见，SOP 用 executor 与 verifier 推进固定里程碑。二者用于组织工作，不替代工具回执或最终接受。\n\n用户改变要求时，要判断是调整后续计划，还是改变业务规则。流程内的核验应连接文件、测试或人工结果，确保完成标签有依据。",
+      "dark": false,
+      "evidence": [
+        {
+          "id": "as-ae1de456793f",
+          "url": "https://docs.agentscope.io/en/versions/2.0.10dev/building-blocks/plan.md",
+          "snapshot": "vault/snapshots/agentscope-enterprise-20261012/as-ae1de456793f-building-blocks_plan.md.txt",
+          "version": "e4c1e074dee3f0f6cca28ca29e934c4ec0605354"
+        },
+        {
+          "id": "as-6c4048dcd902",
+          "url": "https://docs.agentscope.io/en/versions/2.0.10dev/building-blocks/sop.md",
+          "snapshot": "vault/snapshots/agentscope-enterprise-20261012/as-6c4048dcd902-building-blocks_sop.md.txt",
+          "version": "e4c1e074dee3f0f6cca28ca29e934c4ec0605354"
+        }
+      ],
+      "sourceLine": "docs.agentscope.io · AgentScope 2.0",
+      "leadAt": 4.5,
+      "pmAt": 27.89,
+      "dur": 34,
+      "events": [
+        {
+          "at": 0,
+          "duration": 1
+        },
+        {
+          "at": 4.5,
+          "duration": 0.85
+        },
+        {
+          "at": 8.69,
+          "duration": 0.85
+        },
+        {
+          "at": 13.49,
+          "duration": 0.85
+        },
+        {
+          "at": 18.29,
+          "duration": 0.85
+        },
+        {
+          "at": 23.09,
+          "duration": 0.85
+        },
+        {
+          "at": 27.89,
+          "duration": 0.85
+        }
+      ]
+    },
+    {
+      "id": "service",
+      "chapter": [
+        "04",
+        "Python 服务"
+      ],
+      "title": "Agent Service 托管循环之外的资源",
+      "lead": "请求、身份、状态与事件围绕 Agent 组织",
+      "kind": "stack",
+      "items": [
+        {
+          "label": "请求层",
+          "detail": "FastAPI 路由取得用户与会话。",
+          "labelAt": 10.3,
+          "detailAt": 10.3
+        },
+        {
+          "label": "托管层",
+          "detail": "恢复状态，分配工作区，运行 Agent。",
+          "labelAt": 15.9,
+          "detailAt": 15.9
+        },
+        {
+          "label": "持久层",
+          "detail": "保存记录，通过总线送出事件。",
+          "labelAt": 21.5,
+          "detailAt": 21.5
+        }
+      ],
+      "pm": "执行与多个观察者分别管理。",
+      "refs": [
+        "main-agent-service.md"
+      ],
+      "essay": "create_app 接受 storage、message_bus 和 workspace_manager 等依赖。启动生命周期连接资源，ChatService 处理会话输入和运行，路由层管理订阅、确认、中断和资源访问。\n\n本地 Agent 的循环无需重新编写，服务把它接到多用户、多会话请求。多个标签页可观察同一事件流，提交和订阅不必由一个 HTTP 请求一直托住。",
+      "dark": false,
+      "evidence": [
+        {
+          "id": "as-dc202a66c974",
+          "url": "https://docs.agentscope.io/en/versions/2.0.9/deploy/agent-service.md",
+          "snapshot": "vault/snapshots/agentscope-enterprise-20261012/as-dc202a66c974-main-agent-service.md.txt",
+          "version": null
+        }
+      ],
+      "sourceLine": "docs.agentscope.io · AgentScope 2.0",
+      "leadAt": 5.47,
+      "pmAt": 26.3,
+      "dur": 33,
+      "events": [
+        {
+          "at": 0,
+          "duration": 1
+        },
+        {
+          "at": 5.47,
+          "duration": 0.85
+        },
+        {
+          "at": 10.3,
+          "duration": 0.85
+        },
+        {
+          "at": 15.9,
+          "duration": 0.85
+        },
+        {
+          "at": 21.5,
+          "duration": 0.85
+        },
+        {
+          "at": 26.3,
+          "duration": 0.85
+        }
+      ]
+    },
+    {
+      "id": "identity",
+      "chapter": [
+        "04",
+        "Python 服务"
+      ],
+      "title": "用户身份必须来自可信入口",
+      "lead": "真实认证支撑资源归属校验",
+      "kind": "flow",
+      "items": [
+        {
+          "label": "认证入口",
+          "detail": "验证登录会话或令牌。",
+          "labelAt": 8.05,
+          "detailAt": 8.05
+        },
+        {
+          "label": "用户身份",
+          "detail": "取得可信 user_id。",
+          "labelAt": 12.85,
+          "detailAt": 12.85
+        },
+        {
+          "label": "资源归属",
+          "detail": "检查会话、Agent 和凭据的所有者。",
+          "labelAt": 17.65,
+          "detailAt": 17.65
+        },
+        {
+          "label": "执行请求",
+          "detail": "通过校验后进入运行。",
+          "labelAt": 23.45,
+          "detailAt": 23.45
+        }
+      ],
+      "pm": "默认 X-User-ID 占位头需要替换。",
+      "refs": [
+        "main-agent-service.md",
+        "main-sharing.md"
+      ],
+      "essay": "服务用 user_id 组织资源归属，路由层核对会话和凭据等对象的所有者。默认 X-User-ID 只是占位依赖，企业接入需要用 JWT、OAuth 或已有登录中间件替换。\n\n共享资源另有访问策略，默认 DenyAllResourceAccessPolicy。组织关系和 IAM 由接入方实现；用户拥有某个 Agent 的访问权，也不意味着获得其全部工作区、MCP、技能和记忆。",
+      "dark": false,
+      "evidence": [
+        {
+          "id": "as-dc202a66c974",
+          "url": "https://docs.agentscope.io/en/versions/2.0.9/deploy/agent-service.md",
+          "snapshot": "vault/snapshots/agentscope-enterprise-20261012/as-dc202a66c974-main-agent-service.md.txt",
+          "version": null
+        },
+        {
+          "id": "as-bd153c6e3a04",
+          "url": "https://docs.agentscope.io/en/versions/2.0.9/deploy/sharing.md",
+          "snapshot": "vault/snapshots/agentscope-enterprise-20261012/as-bd153c6e3a04-main-sharing.md.txt",
+          "version": null
+        }
+      ],
+      "sourceLine": "docs.agentscope.io · AgentScope 2.0",
+      "leadAt": 4.5,
+      "pmAt": 28.25,
+      "dur": 35,
+      "events": [
+        {
+          "at": 0,
+          "duration": 1
+        },
+        {
+          "at": 4.5,
+          "duration": 0.85
+        },
+        {
+          "at": 8.05,
+          "duration": 0.85
+        },
+        {
+          "at": 12.85,
+          "duration": 0.85
+        },
+        {
+          "at": 17.65,
+          "duration": 0.85
+        },
+        {
+          "at": 23.45,
+          "duration": 0.85
+        },
+        {
+          "at": 28.25,
+          "duration": 0.85
+        }
+      ]
+    },
+    {
+      "id": "sessions",
+      "chapter": [
+        "04",
+        "Python 服务"
+      ],
+      "title": "存储与总线分担会话运行",
+      "lead": "保存对象、协调执行与分发事件",
+      "kind": "rows",
+      "items": [
+        {
+          "label": "Storage",
+          "detail": "保存 Agent、Session、消息和配置。",
+          "labelAt": 8.27,
+          "detailAt": 8.27
+        },
+        {
+          "label": "Message Bus",
+          "detail": "管理运行锁、收件队列与唤醒。",
+          "labelAt": 15.27,
+          "detailAt": 15.27
+        },
+        {
+          "label": "事件回放",
+          "detail": "重连客户端先取得已有进展。",
+          "labelAt": 21.47,
+          "detailAt": 21.47
+        },
+        {
+          "label": "执行所有权",
+          "detail": "同一会话的运行需要协调。",
+          "labelAt": 26.47,
+          "detailAt": 26.47
+        }
+      ],
+      "pm": "运行中的持久快照可能落后于实时状态。",
+      "refs": [
+        "main-agent-service.md"
+      ],
+      "essay": "持久存储保存可恢复对象，消息总线组织锁、队列、回放日志和唤醒。服务先查看 cluster-wide run lock，再从上下文推导 idle、等待确认或等待外部结果状态。\n\n运行期间快照可能尚未反映最新进展，不能拿旧快照覆盖 worker 的 live state。删除 Session 还涉及取消运行、等待锁释放、清理消息与工作区，不能与清空聊天视图区混为一个动作。",
+      "dark": false,
+      "evidence": [
+        {
+          "id": "as-dc202a66c974",
+          "url": "https://docs.agentscope.io/en/versions/2.0.9/deploy/agent-service.md",
+          "snapshot": "vault/snapshots/agentscope-enterprise-20261012/as-dc202a66c974-main-agent-service.md.txt",
+          "version": null
+        }
+      ],
+      "sourceLine": "docs.agentscope.io · AgentScope 2.0",
+      "leadAt": 4.5,
+      "pmAt": 31.47,
+      "dur": 38,
+      "events": [
+        {
+          "at": 0,
+          "duration": 1
+        },
+        {
+          "at": 4.5,
+          "duration": 0.85
+        },
+        {
+          "at": 8.27,
+          "duration": 0.85
+        },
+        {
+          "at": 15.27,
+          "duration": 0.85
+        },
+        {
+          "at": 21.47,
+          "duration": 0.85
+        },
+        {
+          "at": 26.47,
+          "duration": 0.85
+        },
+        {
+          "at": 31.47,
+          "duration": 0.85
+        }
+      ]
+    },
+    {
+      "id": "background",
+      "chapter": [
+        "04",
+        "Python 服务"
+      ],
+      "title": "长工具转入后台继续执行",
+      "lead": "工具结果完成后唤醒会话",
+      "kind": "flow",
+      "items": [
+        {
+          "label": "提出长任务",
+          "detail": "执行需要较长等待。",
+          "labelAt": 7.9,
+          "detailAt": 7.9
+        },
+        {
+          "label": "交给后台",
+          "detail": "服务维护执行与等待状态。",
+          "labelAt": 12.7,
+          "detailAt": 12.7
+        },
+        {
+          "label": "结果到达",
+          "detail": "送入同一会话事件流。",
+          "labelAt": 17.5,
+          "detailAt": 17.5
+        },
+        {
+          "label": "继续推理",
+          "detail": "Agent 使用结果完成工作。",
+          "labelAt": 22.3,
+          "detailAt": 22.3
+        }
+      ],
+      "pm": "前端断开与后台停止分别控制。",
+      "refs": [
+        "main-agent-service.md"
+      ],
+      "essay": "后台工具卸载让耗时动作与当前前端连接解耦。服务维护执行，结果完成后进入事件流并唤醒 Agent。状态应覆盖等待、完成、失败、取消和晚到结果。\n\nCPU 密集的文档解析要移到进程执行，避免占住 API 的事件循环。工具工作仍要关联原任务身份，防止重新连接触发重复执行。",
+      "dark": false,
+      "evidence": [
+        {
+          "id": "as-dc202a66c974",
+          "url": "https://docs.agentscope.io/en/versions/2.0.9/deploy/agent-service.md",
+          "snapshot": "vault/snapshots/agentscope-enterprise-20261012/as-dc202a66c974-main-agent-service.md.txt",
+          "version": null
+        }
+      ],
+      "sourceLine": "docs.agentscope.io · AgentScope 2.0",
+      "leadAt": 4.5,
+      "pmAt": 27.5,
+      "dur": 34,
+      "events": [
+        {
+          "at": 0,
+          "duration": 1
+        },
+        {
+          "at": 4.5,
+          "duration": 0.85
+        },
+        {
+          "at": 7.9,
+          "duration": 0.85
+        },
+        {
+          "at": 12.7,
+          "duration": 0.85
+        },
+        {
+          "at": 17.5,
+          "duration": 0.85
+        },
+        {
+          "at": 22.3,
+          "duration": 0.85
+        },
+        {
+          "at": 27.5,
+          "duration": 0.85
+        }
+      ]
+    },
+    {
+      "id": "workspace",
+      "chapter": [
+        "04",
+        "Python 服务"
+      ],
+      "title": "Workspace 组织文件与执行环境",
+      "lead": "按用户、Agent 或会话选择粒度",
+      "kind": "compare",
+      "items": [
+        {
+          "label": "per_agent",
+          "detail": "同一 Agent 的会话共享工作区。",
+          "labelAt": 9.02,
+          "detailAt": 9.02
+        },
+        {
+          "label": "per_session",
+          "detail": "每个会话有独立环境。",
+          "labelAt": 15.42,
+          "detailAt": 15.42
+        },
+        {
+          "label": "per_user",
+          "detail": "同一用户的 Agent 共享环境。",
+          "labelAt": 21.02,
+          "detailAt": 21.02
+        },
+        {
+          "label": "生命周期",
+          "detail": "管理目录、连接与清理。",
+          "labelAt": 27.02,
+          "detailAt": 27.02
+        }
+      ],
+      "pm": "共享粒度改变文件可见范围。",
+      "refs": [
+        "main-workspace.md",
+        "main-agent-service.md"
+      ],
+      "essay": "工作区组织目录、文件、终端、MCP 连接和技能资源。服务默认 per_agent，也支持按用户或会话分配。MCP 与技能还有自己的隔离维度。\n\n选择粒度时，明确后续任务可见哪些材料和中间结果、何时清理，以及谁能访问。共享目录与资源授权是不同配置，位置不能代替权限判断。",
+      "dark": false,
+      "evidence": [
+        {
+          "id": "as-e8bf00e52cb9",
+          "url": "https://docs.agentscope.io/en/versions/2.0.9/building-blocks/workspace/overview.md",
+          "snapshot": "vault/snapshots/agentscope-enterprise-20261012/as-e8bf00e52cb9-main-workspace.md.txt",
+          "version": null
+        },
+        {
+          "id": "as-dc202a66c974",
+          "url": "https://docs.agentscope.io/en/versions/2.0.9/deploy/agent-service.md",
+          "snapshot": "vault/snapshots/agentscope-enterprise-20261012/as-dc202a66c974-main-agent-service.md.txt",
+          "version": null
+        }
+      ],
+      "sourceLine": "docs.agentscope.io · AgentScope 2.0",
+      "leadAt": 4.83,
+      "pmAt": 31.82,
+      "dur": 38,
+      "events": [
+        {
+          "at": 0,
+          "duration": 1
+        },
+        {
+          "at": 4.83,
+          "duration": 0.85
+        },
+        {
+          "at": 9.02,
+          "duration": 0.85
+        },
+        {
+          "at": 15.42,
+          "duration": 0.85
+        },
+        {
+          "at": 21.02,
+          "duration": 0.85
+        },
+        {
+          "at": 27.02,
+          "duration": 0.85
+        },
+        {
+          "at": 31.82,
+          "duration": 0.85
+        }
+      ]
+    },
+    {
+      "id": "sandbox",
+      "chapter": [
+        "04",
+        "Python 服务"
+      ],
+      "title": "沙箱限制工具在哪个环境运行",
+      "lead": "工作区接口连接本地或隔离后端",
+      "kind": "flow",
+      "items": [
+        {
+          "label": "工具请求",
+          "detail": "文件、终端或代码执行。",
+          "labelAt": 8.48,
+          "detailAt": 8.48
+        },
+        {
+          "label": "工作区接口",
+          "detail": "把操作交给所选后端。",
+          "labelAt": 13.28,
+          "detailAt": 13.28
+        },
+        {
+          "label": "沙箱后端",
+          "detail": "Docker、E2B 或 K8s 等环境。",
+          "labelAt": 18.08,
+          "detailAt": 18.08
+        },
+        {
+          "label": "执行结果",
+          "detail": "返回输出和错误。",
+          "labelAt": 23.88,
+          "detailAt": 23.88
+        }
+      ],
+      "pm": "网络、挂载与凭据范围显式配置。",
+      "refs": [
+        "main-workspace.md",
+        "main-intro.md"
+      ],
+      "essay": "权限判定决定能否执行，沙箱决定在哪里执行。工作区接口可连接本地文件系统或隔离后端。工具对文件路径的理解还要与后端映射一致。\n\n容器、网络出口、挂载目录、凭据、配额和回收需要共同配置。PM 可以把它们转成具体运行条件，例如可读取哪些文件、能访问哪些服务、环境保留多久。",
+      "dark": false,
+      "evidence": [
+        {
+          "id": "as-e8bf00e52cb9",
+          "url": "https://docs.agentscope.io/en/versions/2.0.9/building-blocks/workspace/overview.md",
+          "snapshot": "vault/snapshots/agentscope-enterprise-20261012/as-e8bf00e52cb9-main-workspace.md.txt",
+          "version": null
+        },
+        {
+          "id": "as-13b26f7a4513",
+          "url": "https://docs.agentscope.io/en/versions/2.0.9/index.md",
+          "snapshot": "vault/snapshots/agentscope-enterprise-20261012/as-13b26f7a4513-main-intro.md.txt",
+          "version": null
+        }
+      ],
+      "sourceLine": "docs.agentscope.io · AgentScope 2.0",
+      "leadAt": 4.5,
+      "pmAt": 28.68,
+      "dur": 35,
+      "events": [
+        {
+          "at": 0,
+          "duration": 1
+        },
+        {
+          "at": 4.5,
+          "duration": 0.85
+        },
+        {
+          "at": 8.48,
+          "duration": 0.85
+        },
+        {
+          "at": 13.28,
+          "duration": 0.85
+        },
+        {
+          "at": 18.08,
+          "duration": 0.85
+        },
+        {
+          "at": 23.88,
+          "duration": 0.85
+        },
+        {
+          "at": 28.68,
+          "duration": 0.85
+        }
+      ]
+    },
+    {
+      "id": "deployment",
+      "chapter": [
+        "04",
+        "Python 服务"
+      ],
+      "title": "部署一致性影响具体运行结果",
+      "lead": "共享状态、调度与下载凭据分别核对",
+      "kind": "rows",
+      "items": [
+        {
+          "label": "共享后端",
+          "detail": "API 与 worker 使用一致的存储和总线。",
+          "labelAt": 8.69,
+          "detailAt": 8.69
+        },
+        {
+          "label": "调度所有权",
+          "detail": "内存定时器由一个进程持有。",
+          "labelAt": 15.29,
+          "detailAt": 15.29
+        },
+        {
+          "label": "下载密钥",
+          "detail": "副本共用 download_secret。",
+          "labelAt": 20.49,
+          "detailAt": 20.49
+        },
+        {
+          "label": "解析负载",
+          "detail": "CPU 密集任务进入进程执行。",
+          "labelAt": 26.69,
+          "detailAt": 26.69
+        }
+      ],
+      "pm": "重复触发、下载失败和阻塞各有原因。",
+      "refs": [
+        "main-agent-service.md",
+        "main-rag.md",
+        "main-faq.md"
+      ],
+      "essay": "多副本中，每个进程分别启动内存 cron 会重复触发。download_secret 不一致会使下载 token 在另一个副本验证失败。RAG 的 API 与 worker 后端不一致会使索引链出错。\n\n这些条件可直接变成上线验收场景。分布式部署文档仍在建设，应按所用版本核对运行锁、状态、工作区和调度的所有权。",
+      "dark": false,
+      "evidence": [
+        {
+          "id": "as-dc202a66c974",
+          "url": "https://docs.agentscope.io/en/versions/2.0.9/deploy/agent-service.md",
+          "snapshot": "vault/snapshots/agentscope-enterprise-20261012/as-dc202a66c974-main-agent-service.md.txt",
+          "version": null
+        },
+        {
+          "id": "as-8379a990984a",
+          "url": "https://docs.agentscope.io/en/versions/2.0.9/deploy/rag.md",
+          "snapshot": "vault/snapshots/agentscope-enterprise-20261012/as-8379a990984a-main-rag.md.txt",
+          "version": null
+        },
+        {
+          "id": "as-c788c6cd8525",
+          "url": "https://docs.agentscope.io/en/versions/2.0.9/others/faq.md",
+          "snapshot": "vault/snapshots/agentscope-enterprise-20261012/as-c788c6cd8525-main-faq.md.txt",
+          "version": null
+        }
+      ],
+      "sourceLine": "docs.agentscope.io · AgentScope 2.0",
+      "leadAt": 4.5,
+      "pmAt": 31.89,
+      "dur": 38,
+      "events": [
+        {
+          "at": 0,
+          "duration": 1
+        },
+        {
+          "at": 4.5,
+          "duration": 0.85
+        },
+        {
+          "at": 8.69,
+          "duration": 0.85
+        },
+        {
+          "at": 15.29,
+          "duration": 0.85
+        },
+        {
+          "at": 20.49,
+          "duration": 0.85
+        },
+        {
+          "at": 26.69,
+          "duration": 0.85
+        },
+        {
+          "at": 31.89,
+          "duration": 0.85
+        }
+      ]
+    },
+    {
+      "id": "observability",
+      "chapter": [
+        "04",
+        "Python 服务"
+      ],
+      "title": "轨迹连接模型、工具与会话",
+      "lead": "界面事件与后台观测解决不同问题",
+      "kind": "compare",
+      "items": [
+        {
+          "label": "界面事件",
+          "detail": "呈现进展与人工确认。",
+          "labelAt": 8.69,
+          "detailAt": 8.69
+        },
+        {
+          "label": "调用轨迹",
+          "detail": "关联模型和工具执行阶段。",
+          "labelAt": 13.49,
+          "detailAt": 13.49
+        },
+        {
+          "label": "消息记录",
+          "detail": "保存会话与最终结果。",
+          "labelAt": 18.29,
+          "detailAt": 18.29
+        },
+        {
+          "label": "运行诊断",
+          "detail": "定位等待、错误、用量和耗时。",
+          "labelAt": 23.09,
+          "detailAt": 23.09
+        }
+      ],
+      "pm": "从会话身份追到具体工具调用。",
+      "refs": [
+        "main-intro.md",
+        "main-agent-service.md"
+      ],
+      "essay": "TracingMiddleware 在配置 tracing 后建立 reply、LLM 和工具 spans，记录身份、用量、参数、结果和异常；流式 generator 要等最后一块再关闭 span。\n\n前端事件、消息与 trace 是不同数据。产品分别定义用户可见内容、运维诊断内容、敏感资料处理和保留范围。耗时与用量帮助理解成本和等待，质量验收仍需看结果。",
+      "dark": false,
+      "evidence": [
+        {
+          "id": "as-13b26f7a4513",
+          "url": "https://docs.agentscope.io/en/versions/2.0.9/index.md",
+          "snapshot": "vault/snapshots/agentscope-enterprise-20261012/as-13b26f7a4513-main-intro.md.txt",
+          "version": null
+        },
+        {
+          "id": "as-dc202a66c974",
+          "url": "https://docs.agentscope.io/en/versions/2.0.9/deploy/agent-service.md",
+          "snapshot": "vault/snapshots/agentscope-enterprise-20261012/as-dc202a66c974-main-agent-service.md.txt",
+          "version": null
+        }
+      ],
+      "sourceLine": "docs.agentscope.io · AgentScope 2.0",
+      "leadAt": 4.5,
+      "pmAt": 27.89,
+      "dur": 34,
+      "events": [
+        {
+          "at": 0,
+          "duration": 1
+        },
+        {
+          "at": 4.5,
+          "duration": 0.85
+        },
+        {
+          "at": 8.69,
+          "duration": 0.85
+        },
+        {
+          "at": 13.49,
+          "duration": 0.85
+        },
+        {
+          "at": 18.29,
+          "duration": 0.85
+        },
+        {
+          "at": 23.09,
+          "duration": 0.85
+        },
+        {
+          "at": 27.89,
+          "duration": 0.85
+        }
+      ]
+    },
+    {
+      "id": "java-01-harness-context",
+      "chapter": [
+        "05",
+        "Java 企业接入"
+      ],
+      "scope": "AgentScope Java Harness v2",
+      "title": "身份键关联每次调用",
+      "lead": "Harness先定义身份，再决定状态落点",
+      "kind": "stack",
+      "items": [
+        {
+          "label": "RuntimeContext",
+          "detail": "每次调用显式传入用户与会话身份",
+          "labelAt": 9.54,
+          "detailAt": 9.54
+        },
+        {
+          "label": "HarnessAgent.Builder",
+          "detail": "直接请求按次构建；后台会话保留实例。",
+          "labelAt": 17.14,
+          "detailAt": 22.34
+        },
+        {
+          "label": "AgentState",
+          "detail": "上下文、权限与工具状态随会话走",
+          "labelAt": 26.64,
+          "detailAt": 26.64
+        }
+      ],
+      "pm": "先确认身份键，再谈多租户恢复",
+      "refs": [
+        "java-harness-architecture.md",
+        "java-production.md"
+      ],
+      "essay": "Java Harness 把 Agent 能力嵌入应用。Builder 保存稳定配置，运行实例接收 RuntimeContext；namespace、userId、agentId 和 sessionId 共同参与工作身份。\n\n缺失或复用身份键可能使本应独立的会话共用状态。应用要在请求入口显式确定身份，再把会话记录、工作区和恢复路径关联起来。",
+      "dark": false,
+      "evidence": [
+        {
+          "id": "as-0cf03f3aa25d",
+          "url": "https://java.agentscope.io/v2/en/docs/harness/architecture.md",
+          "snapshot": "vault/snapshots/agentscope-enterprise-20261012/as-0cf03f3aa25d-java-harness-architecture.md.txt",
+          "version": null
+        },
+        {
+          "id": "as-66d70ed869dd",
+          "url": "https://java.agentscope.io/v2/en/docs/others/going-to-production.md",
+          "snapshot": "vault/snapshots/agentscope-enterprise-20261012/as-66d70ed869dd-java-production.md.txt",
+          "version": null
+        }
+      ],
+      "sourceLine": "AgentScope Java Harness v2",
+      "leadAt": 4.5,
+      "pmAt": 33.24,
+      "dur": 40,
+      "events": [
+        {
+          "at": 0,
+          "duration": 1
+        },
+        {
+          "at": 4.5,
+          "duration": 0.85
+        },
+        {
+          "at": 9.54,
+          "duration": 0.85
+        },
+        {
+          "at": 17.14,
+          "duration": 0.85
+        },
+        {
+          "at": 22.34,
+          "duration": 0.85
+        },
+        {
+          "at": 26.64,
+          "duration": 0.85
+        },
+        {
+          "at": 33.24,
+          "duration": 0.85
+        }
+      ]
+    },
+    {
+      "id": "java-02-agent-session",
+      "chapter": [
+        "05",
+        "Java 企业接入"
+      ],
+      "scope": "AgentScope Java Harness v2",
+      "title": "即时调用与后台会话分别选择",
+      "lead": "应用按任务生命周期选择执行入口",
+      "kind": "compare",
+      "items": [
+        {
+          "label": "直接调用",
+          "detail": "call / streamEvents 由应用管理执行。",
+          "labelAt": 8.69,
+          "detailAt": 8.69
+        },
+        {
+          "label": "后台会话",
+          "detail": "AgentSession 接收任务并管理排队。",
+          "labelAt": 15.89,
+          "detailAt": 15.89
+        },
+        {
+          "label": "运行实例",
+          "detail": "会话管理器持有 Agent，关闭时中断工作。",
+          "labelAt": 22.69,
+          "detailAt": 22.69
+        },
+        {
+          "label": "任务继续",
+          "detail": "respond 回答等待，resume 继续未完成任务。",
+          "labelAt": 29.09,
+          "detailAt": 29.09
+        }
+      ],
+      "pm": "观察后台任务时，不再发起另一轮执行。",
+      "refs": [
+        "java-harness-architecture.md",
+        "java-harness-session.md"
+      ],
+      "essay": "直接调用与 AgentSession 是两种执行入口，同一会话选择其中一种。直接调用由应用管理执行；后台任务由会话调度，观察日志不会启动另一次推理。\n\n观察连接断开后，后台工作继续，运行实例仍由会话管理器持有。respond 回答待处理交互，resume 继续未完成任务；已完成或取消的任务不能通过该操作续跑。checkpoint 恢复工作状态，外部结果仍需核对。",
+      "dark": false,
+      "evidence": [
+        {
+          "id": "as-0cf03f3aa25d",
+          "url": "https://java.agentscope.io/v2/en/docs/harness/architecture.md",
+          "snapshot": "vault/snapshots/agentscope-enterprise-20261012/as-0cf03f3aa25d-java-harness-architecture.md.txt",
+          "version": null
+        },
+        {
+          "id": "as-e60a2f6c58b3",
+          "url": "https://java.agentscope.io/v2/en/docs/harness/session-log.md",
+          "snapshot": "vault/snapshots/agentscope-enterprise-20261012/as-e60a2f6c58b3-java-harness-session.md.txt",
+          "version": null
+        }
+      ],
+      "sourceLine": "AgentScope Java Harness v2",
+      "leadAt": 4.5,
+      "pmAt": 36.49,
+      "dur": 43,
+      "events": [
+        {
+          "at": 0,
+          "duration": 1
+        },
+        {
+          "at": 4.5,
+          "duration": 0.85
+        },
+        {
+          "at": 8.69,
+          "duration": 0.85
+        },
+        {
+          "at": 15.89,
+          "duration": 0.85
+        },
+        {
+          "at": 22.69,
+          "duration": 0.85
+        },
+        {
+          "at": 29.09,
+          "duration": 0.85
+        },
+        {
+          "at": 36.49,
+          "duration": 0.85
+        }
+      ]
+    },
+    {
+      "id": "java-03-execution-targets",
+      "chapter": [
+        "05",
+        "Java 企业接入"
+      ],
+      "scope": "AgentScope Java Service 2.1.0-BETA1",
+      "title": "执行目标确定运行所有权",
+      "lead": "Managed、External、Hosted不是同一接入方式",
+      "kind": "compare",
+      "items": [
+        {
+          "label": "Managed",
+          "detail": "Service托管Harness运行时与会话",
+          "labelAt": 11.67,
+          "detailAt": 11.67
+        },
+        {
+          "label": "External",
+          "detail": "应用保留进程并实现执行适配器",
+          "labelAt": 19.27,
+          "detailAt": 19.27
+        },
+        {
+          "label": "Hosted",
+          "detail": "Runtime Host启动Coding Agent进程",
+          "labelAt": 25.47,
+          "detailAt": 25.47
+        },
+        {
+          "label": "共同观察面",
+          "detail": "都走Session/Turn，能力仍需查询",
+          "labelAt": 33.67,
+          "detailAt": 33.67
+        }
+      ],
+      "pm": "先选运行所有权，再选API",
+      "refs": [
+        "java-service-index.md",
+        "java-service-external.md",
+        "java-service-runtime-host.md"
+      ],
+      "essay": "Managed把Agent定义、运行时和会话交给Service平台；External保留已有应用的进程与部署，只把可观察、可执行的能力接入目录；Hosted则由Runtime Host在指定机器上启动Coding Agent提供方。\n\n三种目标可以进入同一Session/Turn观察面，却不代表拥有相同交互能力。注册可见性、会话查询和任务派发要分开验证，不能因能看到Agent就推断它能执行全部工作。",
+      "dark": false,
+      "evidence": [
+        {
+          "id": "as-9d9136196aa8",
+          "url": "https://java.agentscope.io/v2/en/service/index.md",
+          "snapshot": "vault/snapshots/agentscope-enterprise-20261012/as-9d9136196aa8-java-service-index.md.txt",
+          "version": null
+        },
+        {
+          "id": "as-d5dd49d8dc6e",
+          "url": "https://java.agentscope.io/v2/en/service/external-agent.md",
+          "snapshot": "vault/snapshots/agentscope-enterprise-20261012/as-d5dd49d8dc6e-java-service-external.md.txt",
+          "version": null
+        },
+        {
+          "id": "as-556d0c6a5726",
+          "url": "https://java.agentscope.io/v2/en/service/runtime-host.md",
+          "snapshot": "vault/snapshots/agentscope-enterprise-20261012/as-556d0c6a5726-java-service-runtime-host.md.txt",
+          "version": null
+        }
+      ],
+      "sourceLine": "AgentScope Java Service 2.1.0-BETA1",
+      "leadAt": 4.5,
+      "pmAt": 40.27,
+      "dur": 47,
+      "events": [
+        {
+          "at": 0,
+          "duration": 1
+        },
+        {
+          "at": 4.5,
+          "duration": 0.85
+        },
+        {
+          "at": 11.67,
+          "duration": 0.85
+        },
+        {
+          "at": 19.27,
+          "duration": 0.85
+        },
+        {
+          "at": 25.47,
+          "duration": 0.85
+        },
+        {
+          "at": 33.67,
+          "duration": 0.85
+        },
+        {
+          "at": 40.27,
+          "duration": 0.85
+        }
+      ]
+    },
+    {
+      "id": "java-04-session-turn-idempotency",
+      "chapter": [
+        "05",
+        "Java 企业接入"
+      ],
+      "scope": "AgentScope Java Service 2.1.0-BETA1",
+      "title": "Session 固定目标，Turn 承载任务",
+      "lead": "配置冻结后，幂等键守住一次提交",
+      "kind": "rows",
+      "items": [
+        {
+          "label": "Session",
+          "detail": "固定目标配置或已发布的流程版本。",
+          "labelAt": 9.02,
+          "detailAt": 9.02
+        },
+        {
+          "label": "Turn",
+          "detail": "一次提交对应一项工作任务。",
+          "labelAt": 15.22,
+          "detailAt": 15.22
+        },
+        {
+          "label": "Idempotency-Key",
+          "detail": "同键同体重试取回原Turn",
+          "labelAt": 20.22,
+          "detailAt": 20.22
+        },
+        {
+          "label": "queue / approval",
+          "detail": "排队或审批会阻塞后续Turn",
+          "labelAt": 27.42,
+          "detailAt": 27.42
+        }
+      ],
+      "pm": "重试沿用原键，新增任务才换键",
+      "refs": [
+        "java-service-index.md",
+        "java-service-session.md"
+      ],
+      "essay": "Session先选定Agent、Team或Workflow，并冻结创建时的目标配置；Turn才是一次提交的工作单元。这样应用可以把业务对象与Session、Turn建立稳定关联，而不必把页面状态当作任务状态。\n\n网络重试必须保留同一个幂等键与请求体，服务会返回原Turn。只有真正的新任务才换键；排队、审批或前一Turn未结束时，后续Turn可能保持等待。 Managed 在同一 Session 保留上下文；Team 和 Workflow 每个 Turn 启动独立协作或流程。",
+      "dark": false,
+      "evidence": [
+        {
+          "id": "as-9d9136196aa8",
+          "url": "https://java.agentscope.io/v2/en/service/index.md",
+          "snapshot": "vault/snapshots/agentscope-enterprise-20261012/as-9d9136196aa8-java-service-index.md.txt",
+          "version": null
+        },
+        {
+          "id": "as-79adbb1a7334",
+          "url": "https://java.agentscope.io/v2/en/service/session-event-log.md",
+          "snapshot": "vault/snapshots/agentscope-enterprise-20261012/as-79adbb1a7334-java-service-session.md.txt",
+          "version": null
+        }
+      ],
+      "sourceLine": "AgentScope Java Service 2.1.0-BETA1",
+      "leadAt": 5.04,
+      "pmAt": 34.62,
+      "dur": 41,
+      "events": [
+        {
+          "at": 0,
+          "duration": 1
+        },
+        {
+          "at": 5.04,
+          "duration": 0.85
+        },
+        {
+          "at": 9.02,
+          "duration": 0.85
+        },
+        {
+          "at": 15.22,
+          "duration": 0.85
+        },
+        {
+          "at": 20.22,
+          "duration": 0.85
+        },
+        {
+          "at": 27.42,
+          "duration": 0.85
+        },
+        {
+          "at": 34.62,
+          "duration": 0.85
+        }
+      ]
+    },
+    {
+      "id": "java-05-snapshot-sse-cursor",
+      "chapter": [
+        "05",
+        "Java 企业接入"
+      ],
+      "scope": "AgentScope Java Service 2.1.0-BETA1",
+      "title": "快照与事件恢复同一视图",
+      "lead": "快照提供已提交前缀，SSE 补充后续事件",
+      "kind": "replay",
+      "items": [
+        {
+          "label": "Snapshot",
+          "detail": "先载入消息、工具与待处理动作",
+          "labelAt": 9.33,
+          "detailAt": 9.33
+        },
+        {
+          "label": "as_of",
+          "detail": "从快照游标之后订阅事件",
+          "labelAt": 15.33,
+          "detailAt": 15.33
+        },
+        {
+          "label": "Cursor",
+          "detail": "成功应用事件后再保存",
+          "labelAt": 20.13,
+          "detailAt": 20.13
+        },
+        {
+          "label": "游标过期：410",
+          "detail": "读取新快照，从新的 as_of 继续订阅。",
+          "labelAt": 25.13,
+          "detailAt": 25.13
+        }
+      ],
+      "pm": "刷新先恢复状态，不重投任务",
+      "refs": [
+        "java-service-sse.md",
+        "java-service-operations.md"
+      ],
+      "essay": "页面刷新时先读取Session或Turn的Snapshot，再用其中的as_of连接SSE；事件流只负责补上快照之后的变化。游标属于具体资源，不能在Session、Turn和子Agent之间混用。\n\n事件游标过期返回410时，正确动作是加载新Snapshot并从新的as_of继续观察。重新提交任务会制造重复执行，不能用来修复一次观察断线。",
+      "dark": false,
+      "evidence": [
+        {
+          "id": "as-528e3df546ca",
+          "url": "https://java.agentscope.io/v2/en/service/sse-events.md",
+          "snapshot": "vault/snapshots/agentscope-enterprise-20261012/as-528e3df546ca-java-service-sse.md.txt",
+          "version": null
+        },
+        {
+          "id": "as-eb83f48e5259",
+          "url": "https://java.agentscope.io/v2/en/service/operations.md",
+          "snapshot": "vault/snapshots/agentscope-enterprise-20261012/as-eb83f48e5259-java-service-operations.md.txt",
+          "version": null
+        }
+      ],
+      "sourceLine": "AgentScope Java Service 2.1.0-BETA1",
+      "leadAt": 4.5,
+      "pmAt": 31.53,
+      "dur": 38,
+      "events": [
+        {
+          "at": 0,
+          "duration": 1
+        },
+        {
+          "at": 4.5,
+          "duration": 0.85
+        },
+        {
+          "at": 9.33,
+          "duration": 0.85
+        },
+        {
+          "at": 15.33,
+          "duration": 0.85
+        },
+        {
+          "at": 20.13,
+          "duration": 0.85
+        },
+        {
+          "at": 25.13,
+          "duration": 0.85
+        },
+        {
+          "at": 31.53,
+          "duration": 0.85
+        }
+      ]
+    },
+    {
+      "id": "java-06-interaction-capabilities",
+      "chapter": [
+        "05",
+        "Java 企业接入"
+      ],
+      "scope": "AgentScope Java Service 2.1.0-BETA1",
+      "title": "控制入口按目标能力提供",
+      "lead": "Steer与回答动作都要先读capabilities",
+      "kind": "rows",
+      "items": [
+        {
+          "label": "steer",
+          "detail": "修改后续步骤，已发模型请求不变",
+          "labelAt": 11.03,
+          "detailAt": 11.03
+        },
+        {
+          "label": "inject",
+          "detail": "注入背景，不立即触发推理",
+          "labelAt": 16.63,
+          "detailAt": 16.63
+        },
+        {
+          "label": "actions",
+          "detail": "按 request_id 回答待处理动作。",
+          "labelAt": 21.83,
+          "detailAt": 21.83
+        },
+        {
+          "label": "resume",
+          "detail": "动作处理后按能力继续原Turn",
+          "labelAt": 28.43,
+          "detailAt": 28.43
+        }
+      ],
+      "pm": "先看capabilities，再展示按钮",
+      "refs": [
+        "java-service-session.md",
+        "java-service-sse.md",
+        "java-service-runtime-host.md"
+      ],
+      "essay": "Service 把指导、材料注入、动作答复和继续执行分开：steer 影响后续步骤，inject 添加背景，Turn 的 /actions 接收 request_id 与 payload 回答 required action，resume 继续原任务。\n\n前端先读取 Turn 的 /capabilities 和 available_commands 再展示控件。Hosted 目标按提供方能力处理；事件流恢复观察，进程恢复还要有对应运行材料。",
+      "dark": false,
+      "evidence": [
+        {
+          "id": "as-79adbb1a7334",
+          "url": "https://java.agentscope.io/v2/en/service/session-event-log.md",
+          "snapshot": "vault/snapshots/agentscope-enterprise-20261012/as-79adbb1a7334-java-service-session.md.txt",
+          "version": null
+        },
+        {
+          "id": "as-528e3df546ca",
+          "url": "https://java.agentscope.io/v2/en/service/sse-events.md",
+          "snapshot": "vault/snapshots/agentscope-enterprise-20261012/as-528e3df546ca-java-service-sse.md.txt",
+          "version": null
+        },
+        {
+          "id": "as-556d0c6a5726",
+          "url": "https://java.agentscope.io/v2/en/service/runtime-host.md",
+          "snapshot": "vault/snapshots/agentscope-enterprise-20261012/as-556d0c6a5726-java-service-runtime-host.md.txt",
+          "version": null
+        }
+      ],
+      "sourceLine": "AgentScope Java Service 2.1.0-BETA1",
+      "leadAt": 4.5,
+      "pmAt": 34.43,
+      "dur": 41,
+      "events": [
+        {
+          "at": 0,
+          "duration": 1
+        },
+        {
+          "at": 4.5,
+          "duration": 0.85
+        },
+        {
+          "at": 11.03,
+          "duration": 0.85
+        },
+        {
+          "at": 16.63,
+          "duration": 0.85
+        },
+        {
+          "at": 21.83,
+          "duration": 0.85
+        },
+        {
+          "at": 28.43,
+          "duration": 0.85
+        },
+        {
+          "at": 34.43,
+          "duration": 0.85
+        }
+      ]
+    },
+    {
+      "id": "java-07-files-artifacts",
+      "chapter": [
+        "05",
+        "Java 企业接入"
+      ],
+      "scope": "AgentScope Java Service 2.1.0-BETA1",
+      "title": "文件发布为可取得的 Artifact",
+      "lead": "工作目录存在不等于应用可下载",
+      "kind": "stack",
+      "items": [
+        {
+          "label": "Session file",
+          "detail": "上传文件绑定当前Session并受能力限制",
+          "labelAt": 8.6,
+          "detailAt": 8.6
+        },
+        {
+          "label": "Artifact",
+          "detail": "发布实际文件，建立可下载交付记录。",
+          "labelAt": 16.8,
+          "detailAt": 16.8
+        },
+        {
+          "label": "Team / Workflow",
+          "detail": "成员通过 Artifact 交付，文件系统不自动共享。",
+          "labelAt": 23.2,
+          "detailAt": 27.0
+        }
+      ],
+      "pm": "应用按交付记录取得明确版本的文件。",
+      "refs": [
+        "java-service-files.md",
+        "java-service-orchestration.md"
+      ],
+      "essay": "输入文件先上传到Session并取得file_id，再作为结构化任务输入；它属于这个Session，是否可用还取决于目标的file_input能力。Agent工作目录里的文件不会自动变成应用可下载的结果。\n\n交付时要把实际文件显式发布为Artifact，读取记录后再按权限下载。Team与Workflow成员不自动共享文件系统，跨成员传递应使用可访问的Artifact，并核对内容、版本和业务验收。",
+      "dark": false,
+      "evidence": [
+        {
+          "id": "as-69ccfb190c6d",
+          "url": "https://java.agentscope.io/v2/en/service/files.md",
+          "snapshot": "vault/snapshots/agentscope-enterprise-20261012/as-69ccfb190c6d-java-service-files.md.txt",
+          "version": null
+        },
+        {
+          "id": "as-675c5fc9c363",
+          "url": "https://java.agentscope.io/v2/en/service/orchestration.md",
+          "snapshot": "vault/snapshots/agentscope-enterprise-20261012/as-675c5fc9c363-java-service-orchestration.md.txt",
+          "version": null
+        }
+      ],
+      "sourceLine": "AgentScope Java Service 2.1.0-BETA1",
+      "leadAt": 4.62,
+      "pmAt": 32.7,
+      "dur": 39,
+      "events": [
+        {
+          "at": 0,
+          "duration": 1
+        },
+        {
+          "at": 4.62,
+          "duration": 0.85
+        },
+        {
+          "at": 8.6,
+          "duration": 0.85
+        },
+        {
+          "at": 16.8,
+          "duration": 0.85
+        },
+        {
+          "at": 23.2,
+          "duration": 0.85
+        },
+        {
+          "at": 27.0,
+          "duration": 0.85
+        },
+        {
+          "at": 32.7,
+          "duration": 0.85
+        }
+      ]
+    },
+    {
+      "id": "java-08-auth-grant-registration",
+      "chapter": [
+        "05",
+        "Java 企业接入"
+      ],
+      "scope": "AgentScope Java Service 2.1.0-BETA1",
+      "title": "身份、资源与运行通道分别授权",
+      "lead": "应用凭证、Namespace权限与运行凭证各有边界",
+      "kind": "compare",
+      "items": [
+        {
+          "label": "Account / Namespace",
+          "detail": "先确定用户身份与资源作用域",
+          "labelAt": 10.61,
+          "detailAt": 10.61
+        },
+        {
+          "label": "Application key",
+          "detail": "调用Service，不替代用户权限",
+          "labelAt": 18.21,
+          "detailAt": 18.21
+        },
+        {
+          "label": "External registration",
+          "detail": "初始注册端点本身不认证调用者",
+          "labelAt": 26.01,
+          "detailAt": 31.41
+        },
+        {
+          "label": "Runtime credential",
+          "detail": "后续连接凭证需保护与轮换",
+          "labelAt": 35.31,
+          "detailAt": 35.31
+        }
+      ],
+      "pm": "External 注册入口由网关或受控网络保护。",
+      "refs": [
+        "java-service-access.md",
+        "java-service-external.md",
+        "java-service-readme.md"
+      ],
+      "essay": "企业接入至少有三条身份链：平台账户和Namespace决定管理范围，应用凭证决定业务调用，External运行凭证决定已注册实例如何连接。它们不能互相替代，尤其不能把一个应用Key当成终端用户的Namespace授权。\n\nExternal的初始注册端点在预览文档中不负责认证调用者，应限制网络入口；注册后返回的凭证才用于后续运行连接。应用还要分别验证目录可见、Session可用和任务派发能力。",
+      "dark": false,
+      "evidence": [
+        {
+          "id": "as-c4d45549fd7a",
+          "url": "https://java.agentscope.io/v2/en/service/access.md",
+          "snapshot": "vault/snapshots/agentscope-enterprise-20261012/as-c4d45549fd7a-java-service-access.md.txt",
+          "version": null
+        },
+        {
+          "id": "as-d5dd49d8dc6e",
+          "url": "https://java.agentscope.io/v2/en/service/external-agent.md",
+          "snapshot": "vault/snapshots/agentscope-enterprise-20261012/as-d5dd49d8dc6e-java-service-external.md.txt",
+          "version": null
+        },
+        {
+          "id": "as-13473668ae95",
+          "url": "https://github.com/agentscope-ai/agentscope-java/blob/65a35d40abc2925b57c2d23c65f2081a599972a8/agentscope-service/README.md",
+          "snapshot": "vault/snapshots/agentscope-enterprise-20261012/as-13473668ae95-java-service-readme.md.txt",
+          "version": "agentscope-java@65a35d40abc2925b57c2d23c65f2081a599972a8"
+        }
+      ],
+      "sourceLine": "AgentScope Java Service 2.1.0-BETA1",
+      "leadAt": 4.5,
+      "pmAt": 42.91,
+      "dur": 50,
+      "events": [
+        {
+          "at": 0,
+          "duration": 1
+        },
+        {
+          "at": 4.5,
+          "duration": 0.85
+        },
+        {
+          "at": 10.61,
+          "duration": 0.85
+        },
+        {
+          "at": 18.21,
+          "duration": 0.85
+        },
+        {
+          "at": 26.01,
+          "duration": 0.85
+        },
+        {
+          "at": 31.41,
+          "duration": 0.85
+        },
+        {
+          "at": 35.31,
+          "duration": 0.85
+        },
+        {
+          "at": 42.91,
+          "duration": 0.85
+        }
+      ]
+    },
+    {
+      "id": "java-09-recovery-capabilities",
+      "chapter": [
+        "05",
+        "Java 企业接入"
+      ],
+      "scope": "AgentScope Java Service 2.1.0-BETA1",
+      "title": "恢复同时核对状态与副作用",
+      "lead": "Capabilities、存储与副作用共同决定可恢复性",
+      "kind": "stack",
+      "items": [
+        {
+          "label": "Capabilities",
+          "detail": "决定互动、取消与resume是否可用",
+          "labelAt": 11.03,
+          "detailAt": 11.03
+        },
+        {
+          "label": "共享持久层",
+          "detail": "会话日志、工作文件和沙箱快照各有后端。",
+          "labelAt": 18.63,
+          "detailAt": 18.63
+        },
+        {
+          "label": "External effects",
+          "detail": "恢复记录，不撤销已发出的操作",
+          "labelAt": 24.83,
+          "detailAt": 24.83
+        }
+      ],
+      "pm": "恢复是条件分支，不是回到原点",
+      "refs": [
+        "java-harness-session.md",
+        "java-service-runtime-host.md",
+        "java-service-session.md"
+      ],
+      "essay": "跨进程继续需要会话日志、checkpoint、workspace 和 sandbox 状态各自正确保存；调度锁与运行所有权还需要明确协调。共享后端与隔离策略是不同配置，改变隔离范围不会自动迁移既有数据。\n\n恢复前查询目标能力、Turn 状态、待处理动作和不确定结果。事件重连恢复观察，Hosted 统一调用路径标记 checkpoint_restore:false；已发生的外部写入还需业务系统核对。",
+      "dark": false,
+      "evidence": [
+        {
+          "id": "as-e60a2f6c58b3",
+          "url": "https://java.agentscope.io/v2/en/docs/harness/session-log.md",
+          "snapshot": "vault/snapshots/agentscope-enterprise-20261012/as-e60a2f6c58b3-java-harness-session.md.txt",
+          "version": null
+        },
+        {
+          "id": "as-556d0c6a5726",
+          "url": "https://java.agentscope.io/v2/en/service/runtime-host.md",
+          "snapshot": "vault/snapshots/agentscope-enterprise-20261012/as-556d0c6a5726-java-service-runtime-host.md.txt",
+          "version": null
+        },
+        {
+          "id": "as-79adbb1a7334",
+          "url": "https://java.agentscope.io/v2/en/service/session-event-log.md",
+          "snapshot": "vault/snapshots/agentscope-enterprise-20261012/as-79adbb1a7334-java-service-session.md.txt",
+          "version": null
+        }
+      ],
+      "sourceLine": "AgentScope Java Service 2.1.0-BETA1",
+      "leadAt": 4.5,
+      "pmAt": 32.23,
+      "dur": 39,
+      "events": [
+        {
+          "at": 0,
+          "duration": 1
+        },
+        {
+          "at": 4.5,
+          "duration": 0.85
+        },
+        {
+          "at": 11.03,
+          "duration": 0.85
+        },
+        {
+          "at": 18.63,
+          "duration": 0.85
+        },
+        {
+          "at": 24.83,
+          "duration": 0.85
+        },
+        {
+          "at": 32.23,
+          "duration": 0.85
+        }
+      ]
+    },
+    {
+      "id": "java-orchestration",
+      "chapter": [
+        "05",
+        "Java 企业接入"
+      ],
+      "title": "协作有三种不同层次",
+      "lead": "Subagent、Team 与 Workflow 按工作关系选择",
+      "kind": "stack",
+      "items": [
+        {
+          "label": "Subagent",
+          "detail": "当前 Agent 内委派一段有界任务。",
+          "labelAt": 11.46,
+          "detailAt": 11.46
+        },
+        {
+          "label": "Team",
+          "detail": "不同成员分工、沟通与汇总。",
+          "labelAt": 18.06,
+          "detailAt": 18.06
+        },
+        {
+          "label": "Workflow",
+          "detail": "按显式步骤和依赖推进工作。",
+          "labelAt": 22.86,
+          "detailAt": 22.86
+        }
+      ],
+      "pm": "文件共享通过明确交付关系配置。",
+      "refs": [
+        "java-service-orchestration.md"
+      ],
+      "essay": "Subagent 是当前 Agent 内的委派，Team 组织独立成员协作，Workflow 把过程写成明确步骤。三者可以组合，但不是同一层的不同名字。Service 把 Team 和 Workflow 接入 Session API，内部还需要检查成员实际承担的工作与结果。\n\nTeam 的成员并不自动共享文件系统。协作应通过明确的文件或 Artifact 传递关系组织，最后由相应成员汇总。需要人工接受的成果再进入业务工作记录。",
+      "dark": false,
+      "evidence": [
+        {
+          "id": "as-675c5fc9c363",
+          "url": "https://java.agentscope.io/v2/en/service/orchestration.md",
+          "snapshot": "vault/snapshots/agentscope-enterprise-20261012/as-675c5fc9c363-java-service-orchestration.md.txt",
+          "version": null
+        }
+      ],
+      "sourceLine": "java.agentscope.io · Harness v2 / Service 2.1.0-BETA1",
+      "leadAt": 4.5,
+      "pmAt": 28.66,
+      "dur": 35,
+      "events": [
+        {
+          "at": 0,
+          "duration": 1
+        },
+        {
+          "at": 4.5,
+          "duration": 0.85
+        },
+        {
+          "at": 11.46,
+          "duration": 0.85
+        },
+        {
+          "at": 18.06,
+          "duration": 0.85
+        },
+        {
+          "at": 22.86,
+          "duration": 0.85
+        },
+        {
+          "at": 28.66,
+          "duration": 0.85
+        }
+      ]
+    },
+    {
+      "id": "java-issue",
+      "chapter": [
+        "05",
+        "Java 企业接入"
+      ],
+      "title": "Issue 把执行接到工作接受",
+      "lead": "目标、讨论、执行与接收各留一份记录",
+      "kind": "flow",
+      "items": [
+        {
+          "label": "定义 Issue",
+          "detail": "保存目标、负责人和交付标准。",
+          "labelAt": 8.69,
+          "detailAt": 8.69
+        },
+        {
+          "label": "分配执行",
+          "detail": "交给 Agent 或 Team 处理。",
+          "labelAt": 14.29,
+          "detailAt": 14.29
+        },
+        {
+          "label": "跟踪过程",
+          "detail": "检查执行记录、结果与讨论。",
+          "labelAt": 19.69,
+          "detailAt": 19.69
+        },
+        {
+          "label": "人工接收",
+          "detail": "接受或退回需要判断的工作。",
+          "labelAt": 24.49,
+          "detailAt": 24.49
+        }
+      ],
+      "pm": "执行完成与工作被接收分别记录。",
+      "refs": [
+        "java-service-orchestration.md",
+        "java-service-operations.md"
+      ],
+      "essay": "当任务需要负责人、讨论和人工接受时，Issue 提供工作层记录。它保存目标与交付标准，再把执行交给 Agent 或 Team。Run 和相关记录说明系统做了什么，Issue 的接受或退回说明负责人如何判断成果。\n\n用户提出修改要求与启动执行也需要区分。若工作已到达却没有结果，应从 Run、Node 和最新 Attempt 检查依赖、等待批准、缺输入、失败或部分交付，而不是只看最后一条聊天消息。",
+      "dark": false,
+      "evidence": [
+        {
+          "id": "as-675c5fc9c363",
+          "url": "https://java.agentscope.io/v2/en/service/orchestration.md",
+          "snapshot": "vault/snapshots/agentscope-enterprise-20261012/as-675c5fc9c363-java-service-orchestration.md.txt",
+          "version": null
+        },
+        {
+          "id": "as-eb83f48e5259",
+          "url": "https://java.agentscope.io/v2/en/service/operations.md",
+          "snapshot": "vault/snapshots/agentscope-enterprise-20261012/as-eb83f48e5259-java-service-operations.md.txt",
+          "version": null
+        }
+      ],
+      "sourceLine": "java.agentscope.io · Harness v2 / Service 2.1.0-BETA1",
+      "leadAt": 4.5,
+      "pmAt": 29.49,
+      "dur": 36,
+      "events": [
+        {
+          "at": 0,
+          "duration": 1
+        },
+        {
+          "at": 4.5,
+          "duration": 0.85
+        },
+        {
+          "at": 8.69,
+          "duration": 0.85
+        },
+        {
+          "at": 14.29,
+          "duration": 0.85
+        },
+        {
+          "at": 19.69,
+          "duration": 0.85
+        },
+        {
+          "at": 24.49,
+          "duration": 0.85
+        },
+        {
+          "at": 29.49,
+          "duration": 0.85
+        }
+      ]
+    },
+    {
+      "id": "java-auth-scope",
+      "chapter": [
+        "05",
+        "Java 企业接入"
+      ],
+      "title": "调用资源与读取工作分别授权",
+      "lead": "账户、Namespace、资源与工作可见性分层",
+      "kind": "rows",
+      "items": [
+        {
+          "label": "账户身份",
+          "detail": "确认访问者是谁。",
+          "labelAt": 9.97,
+          "detailAt": 9.97
+        },
+        {
+          "label": "Namespace",
+          "detail": "选择资源与授权边界。",
+          "labelAt": 14.77,
+          "detailAt": 14.77
+        },
+        {
+          "label": "资源动作",
+          "detail": "判断是否可以发现、使用或管理。",
+          "labelAt": 20.17,
+          "detailAt": 20.17
+        },
+        {
+          "label": "工作共享",
+          "detail": "决定能否读取某个 Issue、会话或文件。",
+          "labelAt": 25.37,
+          "detailAt": 25.37
+        }
+      ],
+      "pm": "可调用 Agent，不等于可读他人的工作。",
+      "refs": [
+        "java-service-access.md"
+      ],
+      "essay": "Service 区分账户身份、Namespace 角色、资源操作和工作可见性。Namespace 是授权边界，Workspace 则提供运行文件；二者不能用同一种“空间”概念替代。资源发现、use 操作和读取私人工作是不同判断。\n\n访问失败时，按身份和 namespace、资源决策、依赖权限、Issue 分享逐层排查。团队自身有 use 权限，也需要核对成员 Agent 以及 Memory、Vault、Environment 等依赖。",
+      "dark": false,
+      "evidence": [
+        {
+          "id": "as-c4d45549fd7a",
+          "url": "https://java.agentscope.io/v2/en/service/access.md",
+          "snapshot": "vault/snapshots/agentscope-enterprise-20261012/as-c4d45549fd7a-java-service-access.md.txt",
+          "version": null
+        }
+      ],
+      "sourceLine": "java.agentscope.io · Harness v2 / Service 2.1.0-BETA1",
+      "leadAt": 4.5,
+      "pmAt": 31.57,
+      "dur": 38,
+      "events": [
+        {
+          "at": 0,
+          "duration": 1
+        },
+        {
+          "at": 4.5,
+          "duration": 0.85
+        },
+        {
+          "at": 9.97,
+          "duration": 0.85
+        },
+        {
+          "at": 14.77,
+          "duration": 0.85
+        },
+        {
+          "at": 20.17,
+          "duration": 0.85
+        },
+        {
+          "at": 25.37,
+          "duration": 0.85
+        },
+        {
+          "at": 31.57,
+          "duration": 0.85
+        }
+      ]
+    },
+    {
+      "id": "java-budget",
+      "chapter": [
+        "05",
+        "Java 企业接入"
+      ],
+      "title": "预算控制工作能继续到哪一步",
+      "lead": "Managed 用量预算约束后续运行",
+      "kind": "rows",
+      "items": [
+        {
+          "label": "用量归属",
+          "detail": "按 Session 和任务记录消耗。",
+          "labelAt": 9.12,
+          "detailAt": 9.12
+        },
+        {
+          "label": "Managed 预算",
+          "detail": "限制模型调用次数或累计用量。",
+          "labelAt": 14.72,
+          "detailAt": 14.72
+        },
+        {
+          "label": "达到上限",
+          "detail": "按能力和状态决定是否停止。",
+          "labelAt": 20.92,
+          "detailAt": 20.92
+        },
+        {
+          "label": "继续工作",
+          "detail": "调整额度后对原任务执行控制。",
+          "labelAt": 25.92,
+          "detailAt": 25.92
+        }
+      ],
+      "pm": "已启动的并行调用不会被额度强行截断。",
+      "refs": [
+        "java-service-session.md"
+      ],
+      "essay": "Managed Session 的 /budget 限制模型调用次数和已报告的累计用量。Token 与费用预算无法强制截断已经启动的并行调用；费用上限还需要模型定价。\n\n应用级并发与 Token 预算另行管理。预算调整和任务继续是不同操作，续跑仍围绕原任务状态和可用控制进行。",
+      "dark": false,
+      "evidence": [
+        {
+          "id": "as-79adbb1a7334",
+          "url": "https://java.agentscope.io/v2/en/service/session-event-log.md",
+          "snapshot": "vault/snapshots/agentscope-enterprise-20261012/as-79adbb1a7334-java-service-session.md.txt",
+          "version": null
+        }
+      ],
+      "sourceLine": "java.agentscope.io · Harness v2 / Service 2.1.0-BETA1",
+      "leadAt": 4.5,
+      "pmAt": 31.12,
+      "dur": 38,
+      "events": [
+        {
+          "at": 0,
+          "duration": 1
+        },
+        {
+          "at": 4.5,
+          "duration": 0.85
+        },
+        {
+          "at": 9.12,
+          "duration": 0.85
+        },
+        {
+          "at": 14.72,
+          "duration": 0.85
+        },
+        {
+          "at": 20.92,
+          "duration": 0.85
+        },
+        {
+          "at": 25.92,
+          "duration": 0.85
+        },
+        {
+          "at": 31.12,
+          "duration": 0.85
+        }
+      ]
+    },
+    {
+      "id": "java-channels",
+      "chapter": [
+        "05",
+        "Java 企业接入"
+      ],
+      "title": "消息渠道连接外部对话与任务",
+      "lead": "外部消息与执行记录需要稳定关联",
+      "kind": "flow",
+      "items": [
+        {
+          "label": "消息渠道",
+          "detail": "接收外部平台的工作请求。",
+          "labelAt": 8.69,
+          "detailAt": 8.69
+        },
+        {
+          "label": "目标路由",
+          "detail": "关联到配置的 Agent 或 Team。",
+          "labelAt": 13.49,
+          "detailAt": 13.49
+        },
+        {
+          "label": "执行观察",
+          "detail": "跟踪对应会话、Issue 和结果。",
+          "labelAt": 19.29,
+          "detailAt": 19.29
+        },
+        {
+          "label": "渠道回传",
+          "detail": "把结果送回原外部对话。",
+          "labelAt": 24.69,
+          "detailAt": 24.69
+        }
+      ],
+      "pm": "飞书 Issue 路由当前不接 Workflow 目标。",
+      "refs": [
+        "java-service-orchestration.md"
+      ],
+      "essay": "渠道接入负责消息接收、目标路由和结果回传。外部对话与执行记录应保持稳定关联。当前飞书的 Issue 路由支持 Agent 或 Team，其他适配器要分别查询能力。\n\n渠道与 Automation 独立配置。当前 Automation 不能直接以 Workflow 为目标，已有 Workflow 需要通过发布后的 Session API 接入应用。这些具体边界影响产品触发方式的设计。",
+      "dark": false,
+      "evidence": [
+        {
+          "id": "as-675c5fc9c363",
+          "url": "https://java.agentscope.io/v2/en/service/orchestration.md",
+          "snapshot": "vault/snapshots/agentscope-enterprise-20261012/as-675c5fc9c363-java-service-orchestration.md.txt",
+          "version": null
+        }
+      ],
+      "sourceLine": "java.agentscope.io · Harness v2 / Service 2.1.0-BETA1",
+      "leadAt": 4.5,
+      "pmAt": 29.49,
+      "dur": 37,
+      "events": [
+        {
+          "at": 0,
+          "duration": 1
+        },
+        {
+          "at": 4.5,
+          "duration": 0.85
+        },
+        {
+          "at": 8.69,
+          "duration": 0.85
+        },
+        {
+          "at": 13.49,
+          "duration": 0.85
+        },
+        {
+          "at": 19.29,
+          "duration": 0.85
+        },
+        {
+          "at": 24.69,
+          "duration": 0.85
+        },
+        {
+          "at": 29.49,
+          "duration": 0.85
+        }
+      ]
+    },
+    {
+      "id": "java-webhook",
+      "chapter": [
+        "05",
+        "Java 企业接入"
+      ],
+      "title": "Webhook 重复投递按事件身份合并",
+      "lead": "接收通知与执行业务动作分开处理",
+      "kind": "flow",
+      "items": [
+        {
+          "label": "发出事件",
+          "detail": "运行产生带身份的通知。",
+          "labelAt": 9.02,
+          "detailAt": 9.02
+        },
+        {
+          "label": "接收投递",
+          "detail": "同一事件可能重复到达。",
+          "labelAt": 13.82,
+          "detailAt": 13.82
+        },
+        {
+          "label": "身份去重",
+          "detail": "接收方合并同一事件。",
+          "labelAt": 18.62,
+          "detailAt": 18.62
+        },
+        {
+          "label": "业务处理",
+          "detail": "副作用使用自己的幂等契约。",
+          "labelAt": 23.42,
+          "detailAt": 23.42
+        }
+      ],
+      "pm": "通知已接收与业务事务完成分别核对。",
+      "refs": [
+        "java-service-sse.md",
+        "java-service-operations.md"
+      ],
+      "essay": "Webhook 的至少一次投递允许同一事件重试，接收方应按事件身份去重并持久记录处理结果。接收确认只说明通知通道处理到了相应阶段。\n\n通知触发的邮件、系统写入或支付类动作还需要自身幂等与结果查询。重投事件不能直接再次执行副作用，否则通知的可靠性反而带来重复业务操作。 接收方先验证原始请求体签名与时间，再持久化并按事件身份去重。",
+      "dark": false,
+      "evidence": [
+        {
+          "id": "as-528e3df546ca",
+          "url": "https://java.agentscope.io/v2/en/service/sse-events.md",
+          "snapshot": "vault/snapshots/agentscope-enterprise-20261012/as-528e3df546ca-java-service-sse.md.txt",
+          "version": null
+        },
+        {
+          "id": "as-eb83f48e5259",
+          "url": "https://java.agentscope.io/v2/en/service/operations.md",
+          "snapshot": "vault/snapshots/agentscope-enterprise-20261012/as-eb83f48e5259-java-service-operations.md.txt",
+          "version": null
+        }
+      ],
+      "sourceLine": "java.agentscope.io · Harness v2 / Service 2.1.0-BETA1",
+      "leadAt": 4.83,
+      "pmAt": 28.42,
+      "dur": 35,
+      "events": [
+        {
+          "at": 0,
+          "duration": 1
+        },
+        {
+          "at": 4.83,
+          "duration": 0.85
+        },
+        {
+          "at": 9.02,
+          "duration": 0.85
+        },
+        {
+          "at": 13.82,
+          "duration": 0.85
+        },
+        {
+          "at": 18.62,
+          "duration": 0.85
+        },
+        {
+          "at": 23.42,
+          "duration": 0.85
+        },
+        {
+          "at": 28.42,
+          "duration": 0.85
+        }
+      ]
+    },
+    {
+      "id": "java-storage",
+      "chapter": [
+        "05",
+        "Java 企业接入"
+      ],
+      "title": "恢复需要成套的数据与密钥",
+      "lead": "数据库、工作文件和 Artifact 对齐同一备份点",
+      "kind": "stack",
+      "items": [
+        {
+          "label": "数据库",
+          "detail": "保存定义、会话、任务与工作状态。",
+          "labelAt": 10.39,
+          "detailAt": 10.39
+        },
+        {
+          "label": "文件快照",
+          "detail": "保存对应 Workspace 和 Artifact。",
+          "labelAt": 15.39,
+          "detailAt": 15.39
+        },
+        {
+          "label": "Vault 密钥",
+          "detail": "使用原密钥解密已经保存的凭据。",
+          "labelAt": 22.39,
+          "detailAt": 22.39
+        }
+      ],
+      "pm": "恢复后核对历史、文件、解密和新任务。",
+      "refs": [
+        "java-service-operations.md"
+      ],
+      "essay": "运维文档把数据库、共享 Workspaces 和 Artifacts 列为持久数据，同时要求保留加密数据所需的原 Vault master key。恢复需要这些材料对应同一备份点，并使用匹配组件版本。\n\n恢复验收包含登录、已有 Agent、Session 历史、文件、Vault 解密、runtime 连接和一项新工作。只打开知识问答页面不能证明凭据恢复正常；工作接受状态也应与备份点一致。",
+      "dark": false,
+      "evidence": [
+        {
+          "id": "as-eb83f48e5259",
+          "url": "https://java.agentscope.io/v2/en/service/operations.md",
+          "snapshot": "vault/snapshots/agentscope-enterprise-20261012/as-eb83f48e5259-java-service-operations.md.txt",
+          "version": null
+        }
+      ],
+      "sourceLine": "java.agentscope.io · Harness v2 / Service 2.1.0-BETA1",
+      "leadAt": 4.5,
+      "pmAt": 28.39,
+      "dur": 35,
+      "events": [
+        {
+          "at": 0,
+          "duration": 1
+        },
+        {
+          "at": 4.5,
+          "duration": 0.85
+        },
+        {
+          "at": 10.39,
+          "duration": 0.85
+        },
+        {
+          "at": 15.39,
+          "duration": 0.85
+        },
+        {
+          "at": 22.39,
+          "duration": 0.85
+        },
+        {
+          "at": 28.39,
+          "duration": 0.85
+        }
+      ]
+    },
+    {
+      "id": "failure",
+      "chapter": [
+        "06",
+        "从机制到方案"
+      ],
+      "title": "失败处理沿原任务身份闭环",
+      "lead": "缺资料、拒绝、超时与恢复各有去向",
+      "kind": "rows",
+      "items": [
+        {
+          "label": "缺少依据",
+          "detail": "补材料后再推理。",
+          "labelAt": 8.48,
+          "detailAt": 8.48
+        },
+        {
+          "label": "权限拒绝",
+          "detail": "返回拒绝结果，停止外部执行。",
+          "labelAt": 13.28,
+          "detailAt": 13.28
+        },
+        {
+          "label": "结果未知",
+          "detail": "查询下游回执，再决定重试。",
+          "labelAt": 18.28,
+          "detailAt": 18.28
+        },
+        {
+          "label": "输入改变",
+          "detail": "更新后续要求，核对受影响动作。",
+          "labelAt": 23.08,
+          "detailAt": 23.08
+        }
+      ],
+      "pm": "状态、事件和外部回执决定下一步。",
+      "refs": [
+        "building-blocks_agent_overview.md",
+        "java-service-session.md"
+      ],
+      "essay": "企业失败场景可以映射到已有控制点：上下文补件、权限拒绝、回执查询、去重、指导和新任务。业务方把具体规则、责任人与下游接口接入。\n\n执行中、等待确认、已生成、已发布与已接收应分别定义，使用户能够判断下一步，而不只看到一个错误提示。",
+      "dark": false,
+      "evidence": [
+        {
+          "id": "as-f2b9fa0f0bea",
+          "url": "https://docs.agentscope.io/en/versions/2.0.10dev/building-blocks/agent_overview.md",
+          "snapshot": "vault/snapshots/agentscope-enterprise-20261012/as-f2b9fa0f0bea-building-blocks_agent_overview.md.txt",
+          "version": "e4c1e074dee3f0f6cca28ca29e934c4ec0605354"
+        },
+        {
+          "id": "as-79adbb1a7334",
+          "url": "https://java.agentscope.io/v2/en/service/session-event-log.md",
+          "snapshot": "vault/snapshots/agentscope-enterprise-20261012/as-79adbb1a7334-java-service-session.md.txt",
+          "version": null
+        }
+      ],
+      "sourceLine": "docs.agentscope.io · AgentScope 2.0",
+      "leadAt": 4.5,
+      "pmAt": 28.28,
+      "dur": 35,
+      "events": [
+        {
+          "at": 0,
+          "duration": 1
+        },
+        {
+          "at": 4.5,
+          "duration": 0.85
+        },
+        {
+          "at": 8.48,
+          "duration": 0.85
+        },
+        {
+          "at": 13.28,
+          "duration": 0.85
+        },
+        {
+          "at": 18.28,
+          "duration": 0.85
+        },
+        {
+          "at": 23.08,
+          "duration": 0.85
+        },
+        {
+          "at": 28.28,
+          "duration": 0.85
+        }
+      ]
+    },
+    {
+      "id": "delivery",
+      "chapter": [
+        "06",
+        "从机制到方案"
+      ],
+      "title": "合同助手需要可检查的契约",
+      "lead": "输入、动作、状态与交付连接成方案",
+      "kind": "rows",
+      "items": [
+        {
+          "label": "输入契约",
+          "detail": "合同版本、依据与访问范围。",
+          "labelAt": 8.48,
+          "detailAt": 8.48
+        },
+        {
+          "label": "动作契约",
+          "detail": "查询、保存和发布的参数与授权。",
+          "labelAt": 13.28,
+          "detailAt": 13.28
+        },
+        {
+          "label": "状态契约",
+          "detail": "等待、完成、中断与结果未知。",
+          "labelAt": 18.48,
+          "detailAt": 18.48
+        },
+        {
+          "label": "交付契约",
+          "detail": "结果字段、依据与文件版本。",
+          "labelAt": 23.28,
+          "detailAt": 23.28
+        }
+      ],
+      "pm": "每项需求找到对应文档和实现层。",
+      "refs": [
+        "main-agent-service.md",
+        "java-service-files.md"
+      ],
+      "essay": "输入契约定义材料与版本，动作契约定义副作用和授权，状态契约区分暂停、取消和未知结果，交付契约定义结构化结果与文件身份。\n\n这一组契约把合同助手分到构建块、服务、工作区和业务应用。各层可以独立实现，也能沿同一任务回查其关系。",
+      "dark": false,
+      "evidence": [
+        {
+          "id": "as-dc202a66c974",
+          "url": "https://docs.agentscope.io/en/versions/2.0.9/deploy/agent-service.md",
+          "snapshot": "vault/snapshots/agentscope-enterprise-20261012/as-dc202a66c974-main-agent-service.md.txt",
+          "version": null
+        },
+        {
+          "id": "as-69ccfb190c6d",
+          "url": "https://java.agentscope.io/v2/en/service/files.md",
+          "snapshot": "vault/snapshots/agentscope-enterprise-20261012/as-69ccfb190c6d-java-service-files.md.txt",
+          "version": null
+        }
+      ],
+      "sourceLine": "docs.agentscope.io · AgentScope 2.0",
+      "leadAt": 4.5,
+      "pmAt": 28.08,
+      "dur": 35,
+      "events": [
+        {
+          "at": 0,
+          "duration": 1
+        },
+        {
+          "at": 4.5,
+          "duration": 0.85
+        },
+        {
+          "at": 8.48,
+          "duration": 0.85
+        },
+        {
+          "at": 13.28,
+          "duration": 0.85
+        },
+        {
+          "at": 18.48,
+          "duration": 0.85
+        },
+        {
+          "at": 23.28,
+          "duration": 0.85
+        },
+        {
+          "at": 28.08,
+          "duration": 0.85
+        }
+      ]
+    },
+    {
+      "id": "end",
+      "chapter": [
+        "06",
+        "从机制到方案"
+      ],
+      "title": "从 Agent 循环走到企业工作闭环",
+      "lead": "局部机制连接成持续运行的请求链",
+      "kind": "stack",
+      "items": [
+        {
+          "label": "构建能力",
+          "detail": "消息、模型、工具、上下文与权限。",
+          "labelAt": 8.69,
+          "detailAt": 8.69
+        },
+        {
+          "label": "托管执行",
+          "detail": "会话、工作区、事件、状态与恢复。",
+          "labelAt": 13.69,
+          "detailAt": 13.69
+        },
+        {
+          "label": "接入业务",
+          "detail": "身份、任务、副作用与交付。",
+          "labelAt": 18.69,
+          "detailAt": 18.69
+        }
+      ],
+      "pm": "PM 用业务状态提问，研发用契约回答。",
+      "refs": [
+        "main-intro.md",
+        "java-service-index.md"
+      ],
+      "essay": "AgentScope 把推理、工具与持续运行的机制接起来。需求从任务进入，逐层确定输入、动作、暂停、状态保存、执行所有权和交付。\n\nPython 和 Java 各给出对应入口，最终方案把企业已有的身份、审批、权威记录与文件交付接到请求链上。",
+      "dark": true,
+      "evidence": [
+        {
+          "id": "as-13b26f7a4513",
+          "url": "https://docs.agentscope.io/en/versions/2.0.9/index.md",
+          "snapshot": "vault/snapshots/agentscope-enterprise-20261012/as-13b26f7a4513-main-intro.md.txt",
+          "version": null
+        },
+        {
+          "id": "as-9d9136196aa8",
+          "url": "https://java.agentscope.io/v2/en/service/index.md",
+          "snapshot": "vault/snapshots/agentscope-enterprise-20261012/as-9d9136196aa8-java-service-index.md.txt",
+          "version": null
+        }
+      ],
+      "sourceLine": "docs.agentscope.io · AgentScope 2.0",
+      "leadAt": 4.5,
+      "pmAt": 23.49,
+      "dur": 30,
+      "events": [
+        {
+          "at": 0,
+          "duration": 1
+        },
+        {
+          "at": 4.5,
+          "duration": 0.85
+        },
+        {
+          "at": 8.69,
+          "duration": 0.85
+        },
+        {
+          "at": 13.69,
+          "duration": 0.85
+        },
+        {
+          "at": 18.69,
+          "duration": 0.85
+        },
+        {
+          "at": 23.49,
+          "duration": 0.85
+        }
+      ]
+    }
+  ]
+}

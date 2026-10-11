@@ -1,5 +1,7 @@
 # Intake · 材料登记
 
+- [AgentScope 企业线研究](agentscope-enterprise-20261012.json)：本次公开源研究的范围与消费归属。
+
 - [可编辑原生 SVG · 2026-10-04](editable-native-svg-20261004.json)：需求覆盖、独立版本风险与 fresh Opus 工单；[研究入口](../distilled/editable-native-svg-20261004/README.md)，当前未绘制。
 
 - [关系图的两条语法 · 2026-10-04](relation-grammar-20261004.json)：两份仓库内清点与三份外部来源；[研究入口](../distilled/relation-grammar-20261004/README.md)。

@@ -1,0 +1,309 @@
+[
+  {
+    "id": "java-01-harness-context",
+    "chapter": [
+      "05",
+      "Java企业接入"
+    ],
+    "scope": "AgentScope Java Harness v2",
+    "title": "身份键关联每次调用",
+    "lead": "Harness先定义身份，再决定状态落点",
+    "kind": "stack",
+    "items": [
+      {
+        "label": "RuntimeContext",
+        "detail": "每次调用显式传入用户与会话身份"
+      },
+      {
+        "label": "HarnessAgent.Builder",
+        "detail": "直接请求按次构建；后台会话保留实例。"
+      },
+      {
+        "label": "AgentState",
+        "detail": "上下文、权限与工具状态随会话走"
+      }
+    ],
+    "pm": "先确认身份键，再谈多租户恢复",
+    "refs": [
+      "java-harness-architecture.md",
+      "java-production.md"
+    ],
+    "essay": "Java Harness 把 Agent 能力嵌入应用。Builder 保存稳定配置，运行实例接收 RuntimeContext；namespace、userId、agentId 和 sessionId 共同参与工作身份。\n\n缺失或复用身份键可能使本应独立的会话共用状态。应用要在请求入口显式确定身份，再把会话记录、工作区和恢复路径关联起来。"
+  },
+  {
+    "id": "java-02-agent-session",
+    "chapter": [
+      "05",
+      "Java企业接入"
+    ],
+    "scope": "AgentScope Java Harness v2",
+    "title": "即时调用与后台会话分别选择",
+    "lead": "应用按任务生命周期选择执行入口",
+    "kind": "compare",
+    "items": [
+      {
+        "label": "直接调用",
+        "detail": "call / streamEvents 由应用管理执行。"
+      },
+      {
+        "label": "后台会话",
+        "detail": "AgentSession 接收任务并管理排队。"
+      },
+      {
+        "label": "运行实例",
+        "detail": "会话管理器持有 Agent，关闭时中断工作。"
+      },
+      {
+        "label": "任务继续",
+        "detail": "respond 回答等待，resume 继续未完成任务。"
+      }
+    ],
+    "pm": "观察后台任务时，不再发起另一轮执行。",
+    "refs": [
+      "java-harness-architecture.md",
+      "java-harness-session.md"
+    ],
+    "essay": "直接调用与 AgentSession 是两种执行入口，同一会话选择其中一种。直接调用由应用管理执行；后台任务由会话调度，观察日志不会启动另一次推理。\n\n观察连接断开后，后台工作继续，运行实例仍由会话管理器持有。respond 回答待处理交互，resume 继续未完成任务；已完成或取消的任务不能通过该操作续跑。checkpoint 恢复工作状态，外部结果仍需核对。"
+  },
+  {
+    "id": "java-03-execution-targets",
+    "chapter": [
+      "05",
+      "Java企业接入"
+    ],
+    "scope": "AgentScope Java Service 2.1.0-BETA1",
+    "title": "执行目标确定运行所有权",
+    "lead": "Managed、External、Hosted不是同一接入方式",
+    "kind": "compare",
+    "items": [
+      {
+        "label": "Managed",
+        "detail": "Service托管Harness运行时与会话"
+      },
+      {
+        "label": "External",
+        "detail": "应用保留进程并实现执行适配器"
+      },
+      {
+        "label": "Hosted",
+        "detail": "Runtime Host启动Coding Agent进程"
+      },
+      {
+        "label": "共同观察面",
+        "detail": "都走Session/Turn，能力仍需查询"
+      }
+    ],
+    "pm": "先选运行所有权，再选API",
+    "refs": [
+      "java-service-index.md",
+      "java-service-external.md",
+      "java-service-runtime-host.md"
+    ],
+    "essay": "Managed把Agent定义、运行时和会话交给Service平台；External保留已有应用的进程与部署，只把可观察、可执行的能力接入目录；Hosted则由Runtime Host在指定机器上启动Coding Agent提供方。\n\n三种目标可以进入同一Session/Turn观察面，却不代表拥有相同交互能力。注册可见性、会话查询和任务派发要分开验证，不能因能看到Agent就推断它能执行全部工作。"
+  },
+  {
+    "id": "java-04-session-turn-idempotency",
+    "chapter": [
+      "05",
+      "Java企业接入"
+    ],
+    "scope": "AgentScope Java Service 2.1.0-BETA1",
+    "title": "Session 固定目标，Turn 承载任务",
+    "lead": "配置冻结后，幂等键守住一次提交",
+    "kind": "rows",
+    "items": [
+      {
+        "label": "Session",
+        "detail": "固定目标配置或已发布的流程版本。"
+      },
+      {
+        "label": "Turn",
+        "detail": "一次提交对应一项工作任务。"
+      },
+      {
+        "label": "Idempotency-Key",
+        "detail": "同键同体重试取回原Turn"
+      },
+      {
+        "label": "queue / approval",
+        "detail": "排队或审批会阻塞后续Turn"
+      }
+    ],
+    "pm": "重试沿用原键，新增任务才换键",
+    "refs": [
+      "java-service-index.md",
+      "java-service-session.md"
+    ],
+    "essay": "Session先选定Agent、Team或Workflow，并冻结创建时的目标配置；Turn才是一次提交的工作单元。这样应用可以把业务对象与Session、Turn建立稳定关联，而不必把页面状态当作任务状态。\n\n网络重试必须保留同一个幂等键与请求体，服务会返回原Turn。只有真正的新任务才换键；排队、审批或前一Turn未结束时，后续Turn可能保持等待。 Managed 在同一 Session 保留上下文；Team 和 Workflow 每个 Turn 启动独立协作或流程。"
+  },
+  {
+    "id": "java-05-snapshot-sse-cursor",
+    "chapter": [
+      "05",
+      "Java企业接入"
+    ],
+    "scope": "AgentScope Java Service 2.1.0-BETA1",
+    "title": "快照与事件恢复同一视图",
+    "lead": "快照提供已提交前缀，SSE 补充后续事件",
+    "kind": "replay",
+    "items": [
+      {
+        "label": "Snapshot",
+        "detail": "先载入消息、工具与待处理动作"
+      },
+      {
+        "label": "as_of",
+        "detail": "从快照游标之后订阅事件"
+      },
+      {
+        "label": "Cursor",
+        "detail": "成功应用事件后再保存"
+      },
+      {
+        "label": "游标过期：410",
+        "detail": "读取新快照，从新的 as_of 继续订阅。"
+      }
+    ],
+    "pm": "刷新先恢复状态，不重投任务",
+    "refs": [
+      "java-service-sse.md",
+      "java-service-operations.md"
+    ],
+    "essay": "页面刷新时先读取Session或Turn的Snapshot，再用其中的as_of连接SSE；事件流只负责补上快照之后的变化。游标属于具体资源，不能在Session、Turn和子Agent之间混用。\n\n事件游标过期返回410时，正确动作是加载新Snapshot并从新的as_of继续观察。重新提交任务会制造重复执行，不能用来修复一次观察断线。"
+  },
+  {
+    "id": "java-06-interaction-capabilities",
+    "chapter": [
+      "05",
+      "Java企业接入"
+    ],
+    "scope": "AgentScope Java Service 2.1.0-BETA1",
+    "title": "控制入口按目标能力提供",
+    "lead": "Steer与回答动作都要先读capabilities",
+    "kind": "rows",
+    "items": [
+      {
+        "label": "steer",
+        "detail": "修改后续步骤，已发模型请求不变"
+      },
+      {
+        "label": "inject",
+        "detail": "注入背景，不立即触发推理"
+      },
+      {
+        "label": "actions",
+        "detail": "按 request_id 回答待处理动作。"
+      },
+      {
+        "label": "resume",
+        "detail": "动作处理后按能力继续原Turn"
+      }
+    ],
+    "pm": "先看capabilities，再展示按钮",
+    "refs": [
+      "java-service-session.md",
+      "java-service-sse.md",
+      "java-service-runtime-host.md"
+    ],
+    "essay": "Service 把指导、材料注入、动作答复和继续执行分开：steer 影响后续步骤，inject 添加背景，Turn 的 /actions 接收 request_id 与 payload 回答 required action，resume 继续原任务。\n\n前端先读取 Turn 的 /capabilities 和 available_commands 再展示控件。Hosted 目标按提供方能力处理；事件流恢复观察，进程恢复还要有对应运行材料。"
+  },
+  {
+    "id": "java-07-files-artifacts",
+    "chapter": [
+      "05",
+      "Java企业接入"
+    ],
+    "scope": "AgentScope Java Service 2.1.0-BETA1",
+    "title": "文件发布为可取得的 Artifact",
+    "lead": "工作目录存在不等于应用可下载",
+    "kind": "stack",
+    "items": [
+      {
+        "label": "Session file",
+        "detail": "上传文件绑定当前Session并受能力限制"
+      },
+      {
+        "label": "Artifact",
+        "detail": "发布实际文件，建立可下载交付记录。"
+      },
+      {
+        "label": "Team / Workflow",
+        "detail": "成员通过 Artifact 交付，文件系统不自动共享。"
+      }
+    ],
+    "pm": "应用按交付记录取得明确版本的文件。",
+    "refs": [
+      "java-service-files.md",
+      "java-service-orchestration.md"
+    ],
+    "essay": "输入文件先上传到Session并取得file_id，再作为结构化任务输入；它属于这个Session，是否可用还取决于目标的file_input能力。Agent工作目录里的文件不会自动变成应用可下载的结果。\n\n交付时要把实际文件显式发布为Artifact，读取记录后再按权限下载。Team与Workflow成员不自动共享文件系统，跨成员传递应使用可访问的Artifact，并核对内容、版本和业务验收。"
+  },
+  {
+    "id": "java-08-auth-grant-registration",
+    "chapter": [
+      "05",
+      "Java企业接入"
+    ],
+    "scope": "AgentScope Java Service 2.1.0-BETA1",
+    "title": "身份、资源与运行通道分别授权",
+    "lead": "应用凭证、Namespace权限与运行凭证各有边界",
+    "kind": "compare",
+    "items": [
+      {
+        "label": "Account / Namespace",
+        "detail": "先确定用户身份与资源作用域"
+      },
+      {
+        "label": "Application key",
+        "detail": "调用Service，不替代用户权限"
+      },
+      {
+        "label": "External registration",
+        "detail": "初始注册端点本身不认证调用者"
+      },
+      {
+        "label": "Runtime credential",
+        "detail": "后续连接凭证需保护与轮换"
+      }
+    ],
+    "pm": "External 注册入口由网关或受控网络保护。",
+    "refs": [
+      "java-service-access.md",
+      "java-service-external.md",
+      "java-service-readme.md"
+    ],
+    "essay": "企业接入至少有三条身份链：平台账户和Namespace决定管理范围，应用凭证决定业务调用，External运行凭证决定已注册实例如何连接。它们不能互相替代，尤其不能把一个应用Key当成终端用户的Namespace授权。\n\nExternal的初始注册端点在预览文档中不负责认证调用者，应限制网络入口；注册后返回的凭证才用于后续运行连接。应用还要分别验证目录可见、Session可用和任务派发能力。"
+  },
+  {
+    "id": "java-09-recovery-capabilities",
+    "chapter": [
+      "05",
+      "Java企业接入"
+    ],
+    "scope": "AgentScope Java Service 2.1.0-BETA1",
+    "title": "恢复同时核对状态与副作用",
+    "lead": "Capabilities、存储与副作用共同决定可恢复性",
+    "kind": "stack",
+    "items": [
+      {
+        "label": "Capabilities",
+        "detail": "决定互动、取消与resume是否可用"
+      },
+      {
+        "label": "共享持久层",
+        "detail": "会话日志、工作文件和沙箱快照各有后端。"
+      },
+      {
+        "label": "External effects",
+        "detail": "恢复记录，不撤销已发出的操作"
+      }
+    ],
+    "pm": "恢复是条件分支，不是回到原点",
+    "refs": [
+      "java-harness-session.md",
+      "java-service-runtime-host.md",
+      "java-service-session.md"
+    ],
+    "essay": "跨进程继续需要会话日志、checkpoint、workspace 和 sandbox 状态各自正确保存；调度锁与运行所有权还需要明确协调。共享后端与隔离策略是不同配置，改变隔离范围不会自动迁移既有数据。\n\n恢复前查询目标能力、Turn 状态、待处理动作和不确定结果。事件重连恢复观察，Hosted 统一调用路径标记 checkpoint_restore:false；已发生的外部写入还需业务系统核对。"
+  }
+]

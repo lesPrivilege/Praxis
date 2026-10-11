@@ -1,0 +1,209 @@
+> ## Documentation Index
+> Fetch the complete documentation index at: https://docs.agentscope.io/llms.txt
+> Use this file to discover all available pages before exploring further.
+
+> ## Agent Instructions
+> For AgentScope Python, use https://docs.agentscope.io/stable/en/index for new projects. For existing projects, check the installed agentscope version and use matching versioned documentation.
+> The /latest/ alias points to development documentation. Use it only with the matching development source. Do not mix AgentScope 1.x and 2.x APIs.
+> State the AgentScope version when providing installation commands or code examples. ReMe uses its own continuously updated /reme/latest/ documentation.
+
+# Create a new session
+
+> Create (or resume) a session for a given agent and workspace.
+
+At most one session exists per ``(user_id, agent_id, workspace_id)``
+triple — a second call with the same triple updates the existing session
+rather than creating a duplicate.
+
+Args:
+    body (`CreateSessionRequest`): Agent, workspace, and model config.
+    user_id (`str`): Injected authenticated user ID.
+    storage (`StorageBase`): Injected storage backend.
+
+Returns:
+    `CreateSessionResponse`: The session identifier.
+
+Raises:
+    `HTTPException`: 404 if the agent or credential does not exist or
+        does not belong to the authenticated user.
+
+
+
+## OpenAPI
+
+````yaml /en/versions/2.0.2/deploy/openapi.json post /sessions/
+openapi: 3.1.0
+info:
+  title: AgentScope
+  version: 2.0.1
+servers: []
+security: []
+paths:
+  /sessions/:
+    post:
+      tags:
+        - sessions
+      summary: Create a new session
+      description: |-
+        Create (or resume) a session for a given agent and workspace.
+
+        At most one session exists per ``(user_id, agent_id, workspace_id)``
+        triple — a second call with the same triple updates the existing session
+        rather than creating a duplicate.
+
+        Args:
+            body (`CreateSessionRequest`): Agent, workspace, and model config.
+            user_id (`str`): Injected authenticated user ID.
+            storage (`StorageBase`): Injected storage backend.
+
+        Returns:
+            `CreateSessionResponse`: The session identifier.
+
+        Raises:
+            `HTTPException`: 404 if the agent or credential does not exist or
+                does not belong to the authenticated user.
+      operationId: create_session_sessions__post
+      parameters:
+        - name: x-user-id
+          in: header
+          required: true
+          schema:
+            type: string
+            description: >-
+              Caller's user ID. Temporary header-based identity; will be
+              replaced by JWT auth.
+            title: X-User-Id
+          description: >-
+            Caller's user ID. Temporary header-based identity; will be replaced
+            by JWT auth.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateSessionRequest'
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateSessionResponse'
+        '404':
+          description: Not found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+components:
+  schemas:
+    CreateSessionRequest:
+      properties:
+        agent_id:
+          type: string
+          title: Agent Id
+          description: Agent this session belongs to.
+        workspace_id:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Workspace Id
+          description: Workspace this session belongs to.
+        name:
+          anyOf:
+            - type: string
+            - type: 'null'
+          title: Name
+          description: Display name. Defaults to current datetime if omitted.
+        chat_model_config:
+          anyOf:
+            - $ref: '#/components/schemas/ChatModelConfig'
+            - type: 'null'
+          description: Model provider and parameters. Can be set later via PATCH.
+        fallback_chat_model_config:
+          anyOf:
+            - $ref: '#/components/schemas/ChatModelConfig'
+            - type: 'null'
+          description: >-
+            Fallback model used when the primary model fails. Can be set later
+            via PATCH.
+      type: object
+      required:
+        - agent_id
+      title: CreateSessionRequest
+      description: Request body for creating a new session.
+    CreateSessionResponse:
+      properties:
+        session_id:
+          type: string
+          title: Session Id
+          description: Server-assigned session identifier.
+      type: object
+      required:
+        - session_id
+      title: CreateSessionResponse
+      description: Response body after creating a session.
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    ChatModelConfig:
+      properties:
+        type:
+          type: string
+          title: Type
+        credential_id:
+          type: string
+          title: Credential Id
+        model:
+          type: string
+          title: Model
+        parameters:
+          additionalProperties: true
+          type: object
+          title: Parameters
+      type: object
+      required:
+        - type
+        - credential_id
+        - model
+        - parameters
+      title: ChatModelConfig
+      description: The model configuration class.
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+              - type: string
+              - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+        - loc
+        - msg
+        - type
+      title: ValidationError
+
+````
+
+This documentation is built and hosted on [Mintlify](https://mintlify.com), a developer documentation platform.
