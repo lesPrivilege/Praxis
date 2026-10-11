@@ -8,12 +8,11 @@
 |---|---|---|
 | 判断视觉方案是否服务任务 | [Foundations](foundations/README.md) | 目标、约束、取舍与证据范围 |
 | 诉求还说不清属于哪类问题，或涉及色彩、形状、图像、材质、文字方向 | [构成关系与问题地图](foundations/relations.md) | 对应的构成问题、要保住的语义和检验方法 |
-| 字阶、混排、色彩角色或对象的线/面表现 | [Composition 可选参考](composition/README.md) | 排印角色、颜色语义、对象表现取舍 |
-| 编排页面、关系与数量 | [Composition](composition/README.md) | 阅读层级、空间关系与编码选择 |
+| 编排阅读层级、关系与数量，选择字阶、混排、色彩或对象表现 | [Composition](composition/README.md) | 构成关系、编码选择与表现取舍 |
 | 表达对象、操作和状态 | [Interaction](interaction/README.md) | 状态矩阵、反馈与可达性检查 |
 | 选择运动与时间表现 | [Motion](motion/README.md) | 运动目的、连续性、可中断与替代方式 |
 | 从传统、作品、实验或工具生态寻找可试的软件操作 | [艺术与软件操作入口](references/art-software-atlas.md) | 语境、变量、实现取舍与反例 |
-| 按作者或材料找方法，比较不同前提与证据 | [来源书目](../../vault/provenance/design-writing-encyclopedia/README.md) | 自足摘要、实际读取范围、原始定位与语法链接 |
+| 按作者或材料找方法，比较不同前提与证据 | [来源书目选路](references/README.md#按来源进入) | 自足摘要、实际读取范围、原始定位与语法链接 |
 | 查成熟方法、来源或样张 | [References](references/README.md) | 按任务消费的解释、限制和原件来路 |
 | 需求里出现风格名，或要探索一种视觉语言 | [视觉语言参考](references/languages.md) | 名字对应的范围、可以试的构成关系与来源状态 |
 

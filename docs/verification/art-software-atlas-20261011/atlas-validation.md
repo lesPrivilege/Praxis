@@ -1,5 +1,9 @@
 # 图谱生成与验证复现
 
+## 当前复现入口
+
+运行 `python3 scripts/atlas_index.py --check`；修改叶子登记后先运行 `python3 scripts/build_registry.py` 同步身份，再运行 `python3 scripts/atlas_index.py --build` 与仓库验证。查询用法见 [分面查询](../../../vault/provenance/art-software-atlas/facets.md)。脚本是当前实现的唯一维护位置；下方代码保留初次交付及本地修订时的复现证据，不再同步维护。
+
 ## 2026-10-11
 
 交付按授权仅包含 Markdown/JSON 与小型原创图像；以下原始代码作为可复制的检查说明，不安装依赖、不访问网络、不启用 CI。应在仓库根目录执行。索引是静态投影，生成不会重写旧百科或旧来源卡。修改来源、实体或 grammar.json 的叶子登记后，重建本批 index 和既有 registry。grammar 元数据不再藏在生成器的硬编码表中。
