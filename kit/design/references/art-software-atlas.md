@@ -1,6 +1,6 @@
 # 从艺术与设计实践发现软件操作
 
-需要跳出惯用组件或风格名时，从一句意图选路。各条是 normal / reference：提供操作与反例，不给项目预设审美，不把屏幕转译说成原传统的等价物。
+需要跳出惯用组件或风格名时，从一句意图选路，比较可调操作、实现选择与反例。
 
 | 当前意图 | 先读 | 可以形成的最小产物 |
 |---|---|---|
@@ -15,4 +15,4 @@
 
 先读相关条目的意图与反例；同一文件有多项实践时，只展开与对象相符的小节。能做决定就停止。要核对作者语境、作品观看范围或复用条件，再进入条目链接的来源卡。整体 [来源书目](../../../vault/provenance/art-software-atlas/README.md)、[语法交叉索引](../../../vault/provenance/art-software-atlas/index.json)和 [下一轮研究流](../../../vault/provenance/art-software-atlas/streams.md)按需展开；不用一开始读取全部。
 
-原作者术语与本仓库操作词并存。软件实现选择是推导，设计师可以采用、调整或拒绝；局部视觉效果不替代历史语境、材料条件、作者意图或社区意义。[证据与消费边界](../../../docs/verification/art-software-atlas-20261011/README.md)。
+按传统、产物、语言或实现条件组合查找，进入 [分面查询](../../../vault/provenance/art-software-atlas/facets.md)。[证据与消费记录](../../../docs/verification/art-software-atlas-20261011/README.md)供引用、复现和维护时查阅。

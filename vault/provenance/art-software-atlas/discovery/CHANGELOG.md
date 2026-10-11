@@ -9,3 +9,7 @@
 - Observable 原站浏览器与 HTTP 被阻断（tunnel error / 403），D3 官网 HTTP 同样失败；文本工具可读取，不以此填补视觉缺口。
 - 原创六点 D3 探针通过局部运行检查，根代理实际查看输出；依赖取得、环境限制与结果见 [探针回执](../../../../docs/verification/art-software-atlas-20261011/brush-probe.md)。不混为原站示例执行。
 - 架构据 Rhizome variant/actor/provenance 模型增加实体关系，不复制其全套本体，不宣称模型提案已全部部署。
+
+## 2026-10-11 · 分面补正
+
+依既有来源卡与主张定位补作者语境/语言和实体媒介/谱系/runtime；值、未知与不适用的理由在 canonical facets，不扩张原证据范围。来源正文与身份不变，补正前后覆盖及裁决见 [分类回执](../../../../docs/verification/art-software-atlas-20261011/facet-correction.md)。

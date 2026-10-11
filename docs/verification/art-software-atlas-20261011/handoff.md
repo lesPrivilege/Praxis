@@ -13,6 +13,12 @@
 - 唯一交付分支：[cloud/art-software-grammar-atlas-20261011](https://github.com/lesPrivilege/Praxis/tree/cloud/art-software-grammar-atlas-20261011)。精确最终提交由交付消息与远端核验给出；本文件不自引用未生成的 commit SHA。
 - [增量比较](https://github.com/lesPrivilege/Praxis/compare/575fae1b2dbcffdf5c0fdc91713a6cddcd154d5e...cloud/art-software-grammar-atlas-20261011)只表示本轮增量；相对 main 的比较会包含先前百科交付。
 
+## 分类与正文补正
+
+首次交付 f30b158 的分面覆盖不足，已按来源/实体/grammar 的归属补正。[覆盖回执](facet-correction.md)提供前后分母、unknown/不适用/未标注的区别与实际查询；[分面入口](../../../vault/provenance/art-software-atlas/facets.md)可直接运行。新增 [草案裁决](construction-comparison.md)仅保留泛化比较，原附件未入库。[正文审校](concise-body-audit.md)缩短注册与保护旁白，保留决定性条件。
+
+本地独立审阅应覆盖当前 main 到最终分支头的累计变更，包括先前百科，流程见 [本地交接](local-review-handoff.md)。云端不执行合并。
+
 ## 验证、限制与下一步
 
 [验证回执](verification.md)含全仓/Schema/链接检查、独立审阅和三次真实新上下文的发现试用。源图仅两幅 JLReq 图；另有原创 D3 运行探针与编辑合成截图。大部分艺术/建筑条目只读文本，部分网络端点被阻断，无音频试听、现场经验、外部集成或生产验收。没有私有材料、会话副本、批量版权资产或安装产物进入本批。

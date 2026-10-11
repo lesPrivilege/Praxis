@@ -13,12 +13,13 @@
     "reused_sources",
     "entities",
     "relations",
-    "redirects"
+    "redirects",
+    "facet_index"
   ],
   "additionalProperties": false,
   "properties": {
     "schema_version": {
-      "const": "1.0"
+      "const": "1.1"
     },
     "scope": {
       "type": "string",
@@ -84,6 +85,82 @@
           }
         },
         "additionalProperties": false
+      }
+    },
+    "facet_index": {
+      "type": "object",
+      "description": "Generated inverted IDs and per-state coverage; values remain canonical only on source/entity/grammar records. Each omitted facet is indexed as unreviewed.",
+      "propertyNames": {
+        "enum": [
+          "industry_author",
+          "industry_applicability",
+          "task",
+          "artifact",
+          "operation",
+          "stack_runtime",
+          "style_lineage",
+          "language"
+        ]
+      },
+      "additionalProperties": {
+        "type": "object",
+        "required": [
+          "values",
+          "states"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "values": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "uniqueItems": true
+            }
+          },
+          "states": {
+            "type": "object",
+            "required": [
+              "known",
+              "unknown",
+              "not-applicable",
+              "unreviewed"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "known": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "uniqueItems": true
+              },
+              "unknown": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "uniqueItems": true
+              },
+              "not-applicable": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "uniqueItems": true
+              },
+              "unreviewed": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "uniqueItems": true
+              }
+            }
+          }
+        }
       }
     }
   },
@@ -182,22 +259,7 @@
           }
         },
         "facets": {
-          "type": "object",
-          "propertyNames": {
-            "enum": [
-              "industry_author",
-              "industry_applicability",
-              "task",
-              "artifact",
-              "operation",
-              "stack_runtime",
-              "style_lineage",
-              "language"
-            ]
-          },
-          "additionalProperties": {
-            "$ref": "#/$defs/facet"
-          }
+          "$ref": "#/$defs/facets"
         }
       },
       "additionalProperties": true
@@ -262,9 +324,38 @@
             "minLength": 1
           },
           "uniqueItems": true
+        },
+        "rationale": {
+          "type": "string",
+          "minLength": 1
         }
       },
-      "additionalProperties": false
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "const": "known"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "values": {
+                "minItems": 1
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "values": {
+                "maxItems": 0
+              }
+            }
+          }
+        }
+      ]
     },
     "grammar": {
       "type": "object",
@@ -345,6 +436,9 @@
         "section": {
           "type": "string",
           "minLength": 1
+        },
+        "facets": {
+          "$ref": "#/$defs/facets"
         }
       },
       "additionalProperties": false
@@ -441,6 +535,9 @@
             "atlas-selection",
             "external-collection"
           ]
+        },
+        "facets": {
+          "$ref": "#/$defs/facets"
         }
       },
       "additionalProperties": true
@@ -483,6 +580,24 @@
         }
       },
       "additionalProperties": false
+    },
+    "facets": {
+      "type": "object",
+      "propertyNames": {
+        "enum": [
+          "industry_author",
+          "industry_applicability",
+          "task",
+          "artifact",
+          "operation",
+          "stack_runtime",
+          "style_lineage",
+          "language"
+        ]
+      },
+      "additionalProperties": {
+        "$ref": "#/$defs/facet"
+      }
     }
   }
 }

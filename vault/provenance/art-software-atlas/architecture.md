@@ -16,7 +16,7 @@
 | discovery-corpus | 该集合如何收集、分类、连接材料？ | entities 中的集合身份；描述分类的 source-record 独立存在 |
 | exemplar | 哪一件作品、标本、代码示例或具体变体？ | 实体身份及对应来源；不把整个传统写成一件 exemplar |
 | implementation-substrate | 哪个库、引擎、格式、字体系统或工具提供什么接口？ | 实体身份与官方文档来源；许可和依赖不从同目录继承 |
-| derived-grammar | 本仓库从来源推导了哪种关系和可调操作？ | Kit 单一正文及稳定 ID；index 只投影入口、证据边和操作 |
+| derived-grammar | 本仓库从来源推导了哪种关系和可调操作？ | Kit 单一正文及稳定 ID；grammar.json 单点登记元数据，index 生成入口、证据边与分面 |
 
 `documents` 连接证据与对象；`contains` 仅表示集合收录；`discovered-via` 仅表示发现路径；`informs` 表示推导线索；`implements` 需限定实现的是哪一局部操作；`contrasts` 保留反例。每条边写 basis 与 limits，不能由 contains 推出核验、权利或作者认同。原作和变体若尚未获得可识别定位，不伪造实体，只登记缺口；未来需要时追加具体 variant 与参与者关系，不先铺空本体。
 
@@ -40,7 +40,9 @@
 
 证据形态、来源可用性、权利、依赖、实现成熟度、采纳和检索优先级是独立字段，不压成一个质量分。行业/媒介/技术/谱系不能拼成一棵“艺术风格树”。供应方的 Skills/MCP/Agent Harness、档案的 artwork/variant、印刷实践的原术语保留在来源卡与条目里；本地操作名另置，不声称原作者按本书分类。
 
-例如 `operation=retain-context` 与 `artifact=interactive-chart` 可以找到范围选择，再依任务决定 SVG、Canvas 或原生输入；它不会证明任何框选图都适合统计分析。`style_lineage` 命中也不授予挪用某群体符号的文化授权。版权许可、社区/语境适切性与技术可用性分别检查。
+分类按来源、对象与推导各自维护；[分面查询](facets.md)说明所有权、缺省状态、连接语义及实际查询。生成的 `facet_index` 保存值和状态对应的 ID，正文与 canonical 登记不重复编辑。
+
+例如 `grammar.operation=retain-context` 与 `grammar.artifact=interactive-chart` 可以找到范围选择，再依任务决定 SVG、Canvas 或原生输入；它不会证明任何框选图都适合统计分析。`style_lineage` 命中也不授予挪用某群体符号的文化授权。版权许可、社区/语境适切性与技术可用性分别检查。
 
 ## 条目深度与广度边界
 

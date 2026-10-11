@@ -6,100 +6,80 @@ reference_priority: normal
 
 # Spatial light and material · 从感知条件到可读的数码表征
 
-本页供设计者判断作品或建筑怎样用开口、表面、光和身体位置组织观看，并选择适合解释、原型或模拟的数字媒介。它不提供一套光色主题；每次仍由设计者决定要保留什么关系、说明什么假设，以及哪些差异不应被压平。
+本页帮助设计者把开口、表面、光和身体位置转成可解释的图示或原型。目标由具体作品与任务决定；屏幕表征不能代替现场经验。
 
 <a id="asa-g-turrell-skyspace"></a>
 ## ASA-G-TURRELL-SKYSPACE · James Turrell 的 Skyspace
 
-### 来源语境与用词
+### 作品语境
 
-James Turrell 的 Skyspace 是带有天窗开口的建筑空间。UT 的《The Color Inside》项目介绍将屋顶 oculus、自然天空、晨昏约一小时的 programmed light sequence、日光和天气变化并列为观看条件，并强调并非所有 Skyspace 都相同。[ASA-S-02](../../../vault/provenance/art-software-atlas/spatial/cards/asa-s-02-turrell-ut-project.md)、[ASA-S-03](../../../vault/provenance/art-software-atlas/spatial/cards/asa-s-03-landmarks-color-inside.md) ARoS 对《As Seen Below》进一步描述 Open Sky、封闭开口后的 Colour Shift、以及与日出日落相连的 Twilight；这是该件作品的分段模式，不能推广为所有 Skyspace 的统一程序。[ASA-S-01](../../../vault/provenance/art-software-atlas/spatial/cards/asa-s-01-aros-as-seen-below.md)
+UT Landmarks 对《The Color Inside》的介绍把屋顶 oculus、自然天空、晨昏约一小时的 programmed light sequence、日光和天气并列为观看条件，并指出不同 Skyspace 各有差异。[ASA-S-02](../../../vault/provenance/art-software-atlas/spatial/cards/asa-s-02-turrell-ut-project.md)、[ASA-S-03](../../../vault/provenance/art-software-atlas/spatial/cards/asa-s-03-landmarks-color-inside.md) ARoS 对《As Seen Below》另列 Open Sky、封闭开口后的 Colour Shift 和晨昏 Twilight；这是该作的分段模式，不是系列通用程序。[ASA-S-01](../../../vault/provenance/art-software-atlas/spatial/cards/asa-s-01-aros-as-seen-below.md)
 
-艺术家项目站将作品说成与观看有关，馆方则明确把人的视觉经验与“objective camera”作区别。[ASA-S-02](../../../vault/provenance/art-software-atlas/spatial/cards/asa-s-02-turrell-ut-project.md)、[ASA-S-01](../../../vault/provenance/art-software-atlas/spatial/cards/asa-s-01-aros-as-seen-below.md) 因而这里的推导应谨慎：屏幕图像至多能呈现某个时刻的构图和色值，无法替代肉眼暗适应、周边视野、自然光变化、身体停留、共同在场和真实天空。观看者的感知不是可由单一校色照片完整表示的数据集。
+屏幕可以解释某个时刻的构图、视点或状态，无法呈现暗适应、周边视野、天气变化、停留时间和共同在场。故先选定媒介能回答的问题：关系说明、时间序列或视角探索；不把图像称作现场复现。
 
-### 要传达的意图
+### 可操作关系
 
-让人觉察天空与封闭空间、自然和人工光、颜色与观看行为之间会相互改写的关系。不要把任务简化成“画一个发光天窗”或“还原某个渐变”；选择一个可说明的片段，并指出其时刻、视点和介质。
+- **开口与围合：** 同时标出天窗边缘、室内周边和观看方向；省略房间时注明这是色彩示意。
+- **光源分开：** 自然天空与人工灯光各自编码。合并为渐层时，标明它不代表天空色、墙面色或照度测量。
+- **时间作为状态：** 用时间线或切换状态表达变化；单帧只代表所选时刻。
+- **视点有后果：** 标出站坐位置、仰望方向或身体条件；静态图需说明被省略的观看过程。
+- **场地条件保留：** 天气、日照、灯光程序和开放规则是作品具体条件，不能由主题预设替代。
 
-### 可操作的关系与不变量
+### 实现选择
 
-- **开口与围合共同成立。** 交代天窗边缘、室内周边和观看方向；有意省略房间时，说明这是色彩研究或示意图。
-- **自然光和人工光有各自来源。** 若混合成一片均匀渐层，需明确这是抽象化；不让图例误认色块为实际天空色、墙面色或照度读数。
-- **时间是变量。** 用明示的状态或时间线表达晨昏/变化；单张图仅代表选定状态，不冒充整段灯光表演。
-- **观察者位置有后果。** 站、坐、仰望、进入空间和长时间观看都会改变体验。在静态媒介中应标出视点或写明缺失的身体条件。
-- **场地不被抹掉。** 天气、太阳路径、人工照明的时序以及场馆规则都参与真实作品；把它们当作外部条件记录，而非无来源的主题预设。
-
-### 软件实现选择
-
-| 选择 | 可做什么 | 代价、边界与适用情况 |
+| 媒介 | 适合表达 | 代价与边界 |
 |---|---|---|
-| DOM/CSS 色块、圆形开口、状态控件 | 快速比较天空字段、室内光色与明暗关系；可以加上文字说明、键盘操作和替代文字 | 产生的是屏幕像素，不是房间照明。显示器亮度、白点、色域、环境光和色彩管理改变结果；CSS 色值不能报告现场照度或光谱。W3C Color 4 本身是仍在演进的候选草案，实际语法/支持须按目标浏览器检查。[ASA-S-09](../../../vault/provenance/art-software-atlas/spatial/cards/asa-s-09-w3c-css-color.md) |
-| SVG 开口、穹顶剖面与光序图 | 精确表达天窗边界、视线、入射方向、相邻色域和状态序列；适合编辑、打印或作为说明图 | 平面图压缩了空间包围感与周边视觉；渐层或滤镜只是图形编码。须标记为示意，避免“像光”被误认作光测数据。 |
-| WebGL / three.js | 建立剖面或粗略房间体量，移动相机、时间与天空环境变量；适合探索视角和几何关系 | 场景仍是 renderer 的采样、色彩管理和显示结果。屏幕 gamut/动态范围、环境贴图、渲染质量、相机曝光和灯光单位会使同一参数在另一设备上变化。维护配置成本高；绝不能宣称模拟本身就是现场观看。 |
+| DOM/CSS | 对比天空、室内色域和明暗状态；加入文本说明与键盘操作 | 产生屏幕像素，不是房间照明；设备亮度、色域、环境光和色彩管理会改变结果。CSS Color 4 仍需按目标浏览器核对。[ASA-S-09](../../../vault/provenance/art-software-atlas/spatial/cards/asa-s-09-w3c-css-color.md) |
+| SVG | 绘制天窗边界、剖面、视线、入射方向和状态序列 | 平面图压缩空间包围感；渐层和滤镜不是光测数据。 |
+| WebGL / three.js | 探索房间体量、相机、时间与天空变量 | 结果受 renderer、曝光、环境贴图、显示 gamut 和设备影响，须标出模型与光源假设。API 的材质说明见 [ASA-S-08](../../../vault/provenance/art-software-atlas/spatial/cards/asa-s-08-threejs-meshstandardmaterial.md)。 |
 
-CSS Color 4 允许多个色彩空间并规定插值和 gamut mapping，这提高颜色指定的表达能力，却不会把观察者的明暗适应变成统一标准。[ASA-S-09](../../../vault/provenance/art-software-atlas/spatial/cards/asa-s-09-w3c-css-color.md) 实现前先决定目标是**讲解关系、时间序列、视角探索还是设备校准**；这四种任务需要不同证据。
+ASU 的 Air Apparent 记录了另一件 Skyspace 的路径、材料、无障碍与预算约束，可用于比较场地如何改变设计条件，不能移作《The Color Inside》的规格。[ASA-S-04](../../../vault/provenance/art-software-atlas/spatial/cards/asa-s-04-asu-skyspace.md)
 
-### 构造性 fixture
+### 构造夹具
 
-制作一张“选定时段的空间关系”示意：可编辑开口形状、墙面围合、自然天空区、人工光区、视点和状态标签；由作者指定两种灯光关系并列的状态。旁边标清地点和条件（未知值就写未知）、观看方向、是否按数据测量，以及“屏幕模拟，非现场体验”。可交互时再让访客切换状态，不自动播放成暗示作品只有一种固定节奏的动画。设计者决定色彩、比例、时间和不确定性如何标注；这里不规定它们的默认值。
+制作一张“选定时段的空间关系”图：可编辑开口、室内围合、天空区、人工光区、视点与状态标签。明确地点和观看方向，并区分测量值与设计者指定的假设。交互切换状态时保留时间说明，避免动画暗示所有作品只有一种固定节奏。
 
-### 失败与反例
+### 失败与下一步
 
-把一个粉紫色圆形洞、黑底和径向渐变叫作“Turrell 风格”：只剩图像符号，丢失具体作品的天窗与房间关系、时间条件及观看者；同时把艺术家的不同作品揉成单一可套用的效果。另一类失败是用照片平均取色、当成作品真值：图片拍摄曝光、屏幕色域和压缩都会改变颜色，而且相机静帧不提供长时观看中眼睛适应和天空变化。若目的只是做宣传图，应把它作为宣传图说明；不冒充作品重现。
+粉紫色圆洞加黑底渐变只剩下“发光天窗”的图形符号，丢失作品的房间、时间与观看关系。照片取色也不能还原现场：曝光、压缩和屏幕会改变色彩，静帧不包含眼睛适应和天空变化。
 
-### 证据边界与邻接研究
-
-本条是对馆方/项目文字的设计推导，并非 Turrell 的认证软件规范或完整艺术史结论。参考来源详见 [ASA-S-01 至 ASA-S-04](../../../vault/provenance/art-software-atlas/spatial/README.md)；ARoS 的分时体验与 UT/ASU 的具体实例来自不同场地，不应合并成一份统一施工方案。来源正文已读，页面图像没有经浏览器截图或本地图像查看器直接检查；未到场、未运行 WebGL 原型，也未测试色彩设备。
-
-下一步可对照室外光环境的现场测量、HDR 摄影的曝光/色彩校准、不同设备与观者在场观察，并调查不以天窗为核心的 Turrell work；这些相邻证据可以细化“静态再现的边界”，不会自动把屏幕提升成现场替身。
+下一步可加入经许可的现场测量、曝光与色彩校准、观者位置记录，再决定原型能支持哪种判断。ARoS、UT 与 ASU 的文本分别支持具体作品说明，不构成统一施工方案；来源入口见[空间支线目录](../../../vault/provenance/art-software-atlas/spatial/README.md)。
 
 <a id="asa-g-ando-church-of-the-light"></a>
 ## ASA-G-ANDO-CHURCH-OF-THE-LIGHT · Tadao Ando《光之教会》
 
-### 作品语境与来源限定
+### 作品语境
 
-《光之教会》（Church of the Light）是大阪茨木春日丘教会场地内的礼拜堂，由 Tadao Ando 设计。Clark Art 项目说明称，它由朝向太阳的矩形体量、以十五度角穿过室内的独立混凝土墙、深暗礼拜空间中的十字形开口，以及粗脚手架木板铺成的地面和座席共同构成；页面将材料的触感与建筑感知联系起来。[ASA-S-05](../../../vault/provenance/art-software-atlas/spatial/cards/asa-s-05-clark-ando-projects.md) 教会自身的访问页显示，参观开放也依赖教会志愿者安排。[ASA-S-06](../../../vault/provenance/art-software-atlas/spatial/cards/asa-s-06-ibaraki-church.md) 建筑不是一个脱离使用者的渲染资产。
+Clark Art 将《光之教会》描述为朝向太阳的矩形体量、以十五度角穿过室内的独立混凝土墙、深暗礼拜空间中的十字形开口，以及粗脚手架木板地面和座席；其说明把触感与建筑感知相连。[ASA-S-05](../../../vault/provenance/art-software-atlas/spatial/cards/asa-s-05-clark-ando-projects.md) 教会官方页面记录参访受志愿者安排影响，提醒场地仍是礼拜空间，进入须尊重其使用规则。[ASA-S-06](../../../vault/provenance/art-software-atlas/spatial/cards/asa-s-06-ibaraki-church.md)
 
-下文依据这些页面做数码设计推导。关于礼拜、十字架和自然光的宗教意义，只按来源明确陈述的范围保留；不替基督教群体、Ando 或不同访客补写同一解释。PBR 中的 roughness 数值、木纹纹理和“混凝土色”都只是渲染器参数，绝不构成材料、施工或文化意义等价物。
+照片档案与 Commons 元数据未提供本轮可核对的原图，不能据此描述画面或建筑师意图。记录见 [ASA-S-07](../../../vault/provenance/art-software-atlas/spatial/cards/asa-s-07-10plus1-photo-archive.md)、[ASA-S-10](../../../vault/provenance/art-software-atlas/spatial/cards/asa-s-10-commons-ibarakichurch-photo.md) 和 [ASA-S-11](../../../vault/provenance/art-software-atlas/spatial/cards/asa-s-11-commons-image-resource-failure.md)。
 
-### 要传达的意图
+这里的设计推演用于解释和搭建有标注的假设，不是历史重建或工程校核。宗教意义只保留来源明确支持的范围；roughness、木纹和“混凝土色”是 renderer 参数，不等于实际材料、施工或社群解释。
 
-解释**墙的切口、进入路径、室内暗度、日光方向和供人接触的木材**怎样组成一个具体礼拜空间。读者应能分辨空间构成与真实材质信息，并知道哪些细节来自来源、哪些是示意的假设。
+### 可操作关系
 
-### 可操作的关系与不变量
+- **实体与切口：** 把十字形天光画作围护中的开口，而非贴在墙面的灯饰。
+- **进入顺序：** 斜墙将入口与礼拜空间分开；只画正面时，明确进场过程被省略。
+- **明暗依赖周边：** 保留开口所在的墙和室内几何；过曝会遮住孔、窗、灯或投影之间的区别。
+- **材料按接触关系区分：** 混凝土围护与供人接触的木板座席、地面分别表示。来源未给出木种、混凝土配方或反射率，不补写参数。
+- **场地仍在使用：** 访客权限、礼拜隐私、导览安排和不可达位置会约束展示方式。
 
-- **实体与切空并读。** 十字形天光来自混凝土围护中的切口关系；将它画成贴在墙面上的十字灯饰，会误认边界是贴图或灯具。
-- **进场顺序有方向性。** 斜墙介入矩形体量，入口与礼拜空间分出先后；若只画正面图，就说明缺失了进入过程。
-- **明暗依赖周边。** 表现开口时保留足以解释其所在墙和室内的几何；过度发白的发光材质会掩盖开口究竟是孔、窗、灯还是投影。
-- **混凝土与脚手架木板是具体材料决定。** 应将结构围护和供人接触的座席/地面分别编码。文字来源支持脚手架木板事实，不支持猜测木种、混凝土配方、表面反射率或真实纹理细节。
-- **宗教场地仍在使用。** 参观开放不是设计演示的必然条件。尊重礼拜者隐私、场馆许可、导览限制与位置不可达等约束。
+### 实现选择
 
-### 实现选择与物理材料的边界
-
-| 选择 | 可表达什么 | 代价、边界与适用情况 |
+| 媒介 | 适合表达 | 代价与边界 |
 |---|---|---|
-| SVG 平面/剖面图 + DOM 标注 | 斜墙、厚度假设、开口轮廓、入场路线、太阳方向、亮暗区域和材料标签；适用于建筑解说、研究板或结构示意 | 关系容易检查、可访问文本能与图形对应；静态投影不模拟真实反射、遮蔽、视野和人尺度。用图例区分来源事实、绘制简化与未知参数。 |
-| DOM/CSS 分步示意 | 对比“入场—转向—望向祭坛”状态，支持键盘和屏幕阅读器；适用于解释序列而非展示拟真 | CSS 色值、遮罩和渐变控制屏幕像素；环境光、浏览器 gamut 和设备亮度会改变画面。不能以极亮十字、阴影层或纹理图宣称呈现建筑现场。CSS 色彩规范本身并不提供建筑光照测量。[ASA-S-09](../../../vault/provenance/art-software-atlas/spatial/cards/asa-s-09-w3c-css-color.md) |
-| WebGL / three.js PBR 材质 | 建立粗略体量、切口和座席，调节光源方向、相机及表面 roughness/metalness，比较几何遮光或参数假设。MeshStandardMaterial 提供面向 roughness/metalness 工作流的 renderer 材质模型。[ASA-S-08](../../../vault/provenance/art-software-atlas/spatial/cards/asa-s-08-threejs-meshstandardmaterial.md) | 参数模拟的是 shader 对光和表面输入的响应，不自动恢复实际施工、光谱反射、微表面、老化、脚手架再利用的历史或人的触感。错误曝光、色彩空间、法线/粗糙贴图和环境光会带来“像真的”的误导。未校准的 renderer 结果只可叫视觉假设。 |
+| SVG 平面图或剖面 | 墙厚假设、开口、路线、太阳方向、视线和亮暗区域 | 关系易检查，但不模拟反射、遮蔽、视野或人体尺度；区分来源事实、简化和未知值。 |
+| DOM/CSS 分步图 | 对比进入、转向和望向祭坛等状态，并提供可访问说明 | CSS 渐层与遮罩只控制像素；色彩规范不提供建筑光照测量。[ASA-S-09](../../../vault/provenance/art-software-atlas/spatial/cards/asa-s-09-w3c-css-color.md) |
+| WebGL / three.js | 检查体量、切口、视角、遮光与表面参数假设 | `MeshStandardMaterial` 支持 roughness/metalness 参数，但不恢复施工、光谱反射、老化或触感；错误曝光和贴图会让未经核实的模型显得可信。[ASA-S-08](../../../vault/provenance/art-software-atlas/spatial/cards/asa-s-08-threejs-meshstandardmaterial.md) |
 
-需要讨论几何与序列时优先采用可读标注的平面/剖面；需要检查多个视角或遮光关系时再承担 3D 场景维护成本。若渲染看似真实，仍应披露来源参数、未知表面数据、光源假设、色彩管理、渲染器和屏幕限制。它与真实混凝土现场在用途、物理、触觉、时间、施工劳动和文化中介上均不相同。
+先用有标注的剖面解释几何；需要比较视角或遮光时再引入 3D。工程判断还需施工图、尺寸和现场照度等证据，渲染效果不能补足这些缺项。
 
-### 构造性 fixture
+### 构造夹具
 
-构造一幅带不确定值标注的剖面：矩形围护、独立斜墙、朝向十字开口的视线、室内地面/座席、一个由设计者指定的太阳方向和视点。把“原始来源明确”“为图示而简化”“待现场或图纸验证”做三类标记。可附一个灰模与材质预览并排状态：灰模测试开口和遮挡，木/混凝土材质状态只用于对比预设参数；让读者知道材质预览是 renderer 的输出。比例、太阳角、暗部亮度、标签、是否出 3D 都是本次作者要决定的变量，不设固定默认主题。
+建立一个标注三类信息的剖面：“来源明确”“为图示简化”“待现场或图纸验证”。画出矩形围护、独立斜墙、十字开口、地面/座席、一个设计者指定的太阳方向和视点。可并排放置灰模与材质预览：前者检查开口和遮挡，后者只比较 renderer 参数，不称为材料复原。
 
-### 失败与反例
+### 失败与下一步
 
-只铺一张带水泥纹理的盒状模型，再在祭坛墙上贴一个自发光十字：墙体的切口、15 度斜墙和进场关系都消失，发光面还误导读者以为是霓虹灯；PBR 数字和高分辨率纹理只能让错误叙述更可信。另一种失败是用电影化曝光把室内抬到亮堂、将木板换成抽象木贴图，却不交代图示/真实的区分：渲染“好看”掩盖了其未经核实的材料和光线假设。若模型用于工程审核，未验证的结构尺寸、施工图和现场照度是阻断项，不应用风格效果填补。
+盒状模型加水泥贴图，再贴一个自发光十字，会抹掉开口、斜墙和进场关系；高分辨率纹理反而让错误叙述更可信。电影化提亮室内、抽象替换木板也会掩盖未经核实的光线与材料假设。
 
-### 证据边界与邻接研究
-
-本条由 Clark Art 的作品说明、春日丘教会的访问信息、10+1 的图像档案身份说明、Commons 摄影文件记录及 three.js/W3C 官方技术文档推导。[来源卡：ASA-S-05–11](../../../vault/provenance/art-software-atlas/spatial/README.md) 10+1 页将照片分为外墙、内观和天花等类别，但照片未被查看。[ASA-S-07](../../../vault/provenance/art-software-atlas/spatial/cards/asa-s-07-10plus1-photo-archive.md) Commons 文件页标注摄影者 Bergmann、拍摄日、页面所列许可及相机 EXIF；其中记录的 light source 为 unknown，色彩空间标为 sRGB，但从官方上传地址取得图像返回 403，因而无任何视觉观察，也不能检验 metadata 对照片本身的准确性。摄影档案不能证明建筑师意图。[ASA-S-10](../../../vault/provenance/art-software-atlas/spatial/cards/asa-s-10-commons-ibarakichurch-photo.md)、[ASA-S-11](../../../vault/provenance/art-software-atlas/spatial/cards/asa-s-11-commons-image-resource-failure.md) 未读取施工档案、材料样本、礼拜者口述、光照测量或本地 renderer demo。故本条适合解释和搭建有标记的假设，不可用于建筑复刻、工程校核或代表宗教社群发言。
-
-邻接研究应找项目施工/维护文档、木材再利用记录、光照随日期变化的测量、可核实的现场访问规则，以及来自使用场地社群的阐释；之后才能在具体范围内讨论材质参数或复原精度。
-
-## 参考与状态
-
-本页是普通参考，来源卡列出支持的具体主张、正文定位和未覆盖项；它不是作者授权、现场校准或默认视觉语言。未来有现场访问、可用施工档案、经许可的图像查看、renderer 运行或观者研究时，按来源 ID 追加独立消费记录并重审相应限制。来源地图见 [spatial stream README](../../../vault/provenance/art-software-atlas/spatial/README.md)。
-
-ASU 项目的具体路径、材料与场地约束见 [ASA-S-04](../../../vault/provenance/art-software-atlas/spatial/cards/asa-s-04-asu-skyspace.md)；它是另一作品的机构说明，不能直接推给 The Color Inside。
+下一步查施工与维护记录、木材再利用资料、光照测量和使用场地社群的阐释；经许可查看图像后，再核对模型几何。来源记录、许可信息和访问失败分别见上述 ASA-S-05–11 来源卡；照片档案和 Commons 元数据不能代替现场观察。

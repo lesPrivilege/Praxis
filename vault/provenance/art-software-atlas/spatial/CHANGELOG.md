@@ -11,3 +11,7 @@
 ## 2026-10-11 · 实现文档身份修正
 
 旧 hash 路由指向既有 three.js docs index 身份。根代理另外实际读取 class 专属页面 https://threejs.org/docs/pages/MeshStandardMaterial.html，ASA-S-08 以此精确 URL 入账；旧入口复用既有 threejs-docs-index，不新造重复正文。新页面仅验证 API 文本，无渲染运行。
+
+## 2026-10-11 · 分面补正
+
+依既有来源卡与主张定位补作者语境/语言和实体媒介/谱系/runtime；值、未知与不适用的理由在 canonical facets，不扩张原证据范围。来源正文与身份不变，补正前后覆盖及裁决见 [分类回执](../../../../docs/verification/art-software-atlas-20261011/facet-correction.md)。
