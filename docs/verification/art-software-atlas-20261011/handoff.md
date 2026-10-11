@@ -17,6 +17,8 @@
 
 首次交付 f30b158 的分面覆盖不足，已按来源/实体/grammar 的归属补正。[覆盖回执](facet-correction.md)提供前后分母、unknown/不适用/未标注的区别与实际查询；[分面入口](../../../vault/provenance/art-software-atlas/facets.md)可直接运行。新增 [草案裁决](construction-comparison.md)仅保留泛化比较，原附件未入库。[正文审校](concise-body-audit.md)缩短注册与保护旁白，保留决定性条件。
 
+软件工程的全部视觉与交互问题都在收录范围内；[范围矩阵](../../../vault/provenance/art-software-atlas/software-scope.md)为平台与跨平台问题提供现有入口、缺口和有界完成条件，未新增来源或扩张证据覆盖。
+
 本地独立审阅应覆盖当前 main 到最终分支头的累计变更，包括先前百科，流程见 [本地交接](local-review-handoff.md)。云端不执行合并。
 
 ## 验证、限制与下一步

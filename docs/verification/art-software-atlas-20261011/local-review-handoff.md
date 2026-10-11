@@ -22,7 +22,8 @@
 4. 按 [生成与只读校验](atlas-validation.md)提取代码到临时文件；从仓库根运行。生成前后应无非预期差异，尤其不能生成第二份 canonical metadata。
 5. 运行现有 `python3 scripts/validate_repository.py` 与 `python3 scripts/reference_index.py --check`，检查 `git diff --check`。按实际改动补充必要验证，不安装未知依赖或启用 CI。
 6. 复核 [证据范围](verification.md)、逐源读取/观看/运行差别、链接访问失败、权利与依赖缺口。公开交付中不应出现原附件、私有会话、账号数据或下载凭证。
-7. 按 [正文审校](concise-body-audit.md)冷读入口与深条目：保留概念、决定性区别、用途、例子和下一跳；注册清单、反复保护措辞和研究旁白应在索引/日志，不能通过删限定来求简。
+7. 检查 [软件交互范围](../../../vault/provenance/art-software-atlas/software-scope.md)：收录范围覆盖原生、开发者工具、游戏/空间与跨平台问题；已有正文、邻近方法、研究缺口应分开，不能把路由补全当作领域研究完成。
+8. 按 [正文审校](concise-body-audit.md)冷读入口与深条目：保留概念、决定性区别、用途、例子和下一跳；注册清单、反复保护措辞和研究旁白应在索引/日志，不能通过删限定来求简。
 
 ## 合并门槛
 

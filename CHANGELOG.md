@@ -230,3 +230,7 @@
 
 - 补齐有依据的来源/实体/grammar 分面，提供倒排查询、逐状态覆盖与反例；保留原证据身份。
 - 参考建构草案记录最小采纳/延后/拒绝裁决，精简本批挂载正文，并提供本地累计审阅交接。见 [补正记录](docs/verification/art-software-atlas-20261011/facet-correction.md)。
+
+## 2026-10-11 · 软件视觉与交互范围
+
+- 明确目录面向全部软件工程视觉/交互，补齐原生、终端、游戏/空间、触觉与感知性能的发现路线和研究缺口；复用现有正文，不扩张证据覆盖。见 [范围矩阵](vault/provenance/art-software-atlas/software-scope.md)。
