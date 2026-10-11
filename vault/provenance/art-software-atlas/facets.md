@@ -35,53 +35,13 @@ source 沿 grammar 的直接来源关系取值。其他对象沿已有 `informs`
 
 ## 可复现的查询
 
-将下面代码保存到 `/tmp/atlas-facet-query.py`，在仓库根目录运行。只使用 Python 标准库，读取 index，不写仓库或访问网络。值按精确字符串匹配；可先查看 `facet_index` 的词值表。
+在仓库根目录运行以下命令。查询只使用 Python 标准库，读取索引，不写文件或访问网络；值按精确字符串匹配，可先查看 `facet_index` 的词值表。
 
 ```bash
-python3 /tmp/atlas-facet-query.py '{"exemplar.artifact":"woven-garment","exemplar.style_lineage":"Nasca","grammar.industry_applicability":"museum-interpretation"}'
+python3 scripts/atlas_index.py --query '{"exemplar.artifact":"woven-garment","exemplar.style_lineage":"Nasca","grammar.industry_applicability":"museum-interpretation"}'
+python3 scripts/atlas_index.py --query '{"exemplar.style_lineage":{"state":"unknown"}}'
 ```
 
-```python
-import json
-from pathlib import Path
-B=Path('vault/provenance/art-software-atlas')
-def query(index, filters):
-    scopes={'grammar':{'derived-grammar'},'source':{'source-record'},'exemplar':{'exemplar'},'implementation':{'implementation-substrate'},'corpus':{'discovery-corpus'}}
-    nodes={n['id']:n for key in ['sources','reused_sources','entities','grammar'] for n in index[key]}
-    wanted={}
-    for key,criterion in filters.items():
-        scope,dimension=key.split('.',1)
-        if scope not in scopes or dimension not in index['facet_index']:raise ValueError('Unknown query scope/facet: '+key)
-        post=index['facet_index'][dimension]
-        if isinstance(criterion,dict):
-            if set(criterion)!={'state'} or criterion['state'] not in post['states']:raise ValueError('Invalid state query')
-            ids=set(post['states'][criterion['state']])
-        else:
-            values=criterion if isinstance(criterion,list) else [criterion]
-            if not values or not all(isinstance(v,str) for v in values):raise ValueError('Expected nonempty exact values')
-            ids=set(nodes)
-            for value in values:ids &= set(post['values'].get(value,[]))
-        ids={sid for sid in ids if nodes[sid]['kind'] in scopes[scope]}
-        wanted[scope]=ids if scope not in wanted else wanted[scope]&ids
-    out=[]
-    for g in index['grammar']:
-        source_ids=set(g['source_ids'])|{e['from'] for e in index['relations'] if e['to']==g['id'] and e['type']=='informs' and nodes[e['from']]['kind']=='source-record'}
-        direct={e['from']:e for e in index['relations'] if e['to']==g['id'] and e['type'] in ['informs','implements'] and nodes[e['from']]['kind']!='source-record'}
-        lanes={'grammar':{g['id']},'source':source_ids,'exemplar':set(),'implementation':set(),'corpus':set()};routes={}
-        for n in index['entities']:
-            overlap=source_ids&set(n['source_ids'])
-            if n['id'] not in direct and not overlap:continue
-            lane={'exemplar':'exemplar','implementation-substrate':'implementation','discovery-corpus':'corpus'}[n['kind']]
-            lanes[lane].add(n['id'])
-            routes[n['id']]={'route':'typed-relation','relation':direct[n['id']]} if n['id'] in direct else {'route':'shared-evidence','source_ids':sorted(overlap)}
-        witnesses={scope:sorted(ids&lanes[scope]) for scope,ids in wanted.items()}
-        if any(not ids for ids in witnesses.values()):continue
-        out.append({'grammar_id':g['id'],'title':g['title'],'path':g['path']+'#'+g['section'],'witnesses':witnesses,'routes':{sid:routes[sid] for ids in witnesses.values() for sid in ids if sid in routes}})
-    return out
-if __name__=='__main__':
-    import sys
-    index=json.loads((B/'index.json').read_text())
-    print(json.dumps(query(index,json.loads(sys.argv[1])),ensure_ascii=False,indent=2))
-```
+同一值列表表示该记录同时具备这些值；空对象 `{}` 列出所有 grammar。实现单点维护在 [atlas_index.py](../../../scripts/atlas_index.py)；生成与检查命令见 [脚本入口](../../../scripts/README.md#艺术与软件图谱)。
 
-更多实际查询及命中对象见 [查询回执](../../../docs/verification/art-software-atlas-20261011/facet-query-results.json)。这些是索引功能检查；原来的新上下文发现试用另记在 [消费记录](../../../docs/verification/art-software-atlas-20261011/consumption.md)。
+更多实际查询及命中对象见 [查询回执](../../../docs/verification/art-software-atlas-20261011/facet-query-results.json)。这些是索引功能检查；新上下文发现试用另记在 [消费记录](../../../docs/verification/art-software-atlas-20261011/consumption.md)。

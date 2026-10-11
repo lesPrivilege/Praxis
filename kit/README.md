@@ -33,6 +33,6 @@ Write 的 [Shared](write/shared/README.md)贯穿表达模式；具体项目保�
 
 ## 验收、来路与维护
 
-交付读 [Verification](verification/README.md)。设计与写作按来源深入时，可查 [书目摘要与覆盖](../vault/provenance/design-writing-encyclopedia/README.md)；任务语法仍在原分支。研究从 [Vault主题](../vault/distilled/README.md)找，原件再沿索引回查；不让阶段工单成为默认施工指令。
+交付读 [Verification](verification/README.md)。设计与写作按来源深入时，可从 [来源书目](design/references/README.md#按来源进入)选择日常设计/写作方法、艺术实践或软件资源生态；任务语法仍在原分支。研究从 [Vault主题](../vault/distilled/README.md)找，原件再沿索引回查；不让阶段工单成为默认施工指令。
 
 挂载与分工见 [Agent.md](Agent.md)，新增、使用反馈与退出见 [文档体例](../docs/architecture/documentation.md)和 [修订流程](../docs/governance/evolution.md)。职责归属、规则强度与两条入口路径见 [ADR-019](../docs/decisions/019-expression-owners-and-entry-paths.md)，目录迁移见 [ADR-016](../docs/decisions/016-progressive-kit-structure.md)；旧 Writing 和 Design grammar 路径保留导航，不再维护副本。

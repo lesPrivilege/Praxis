@@ -2,6 +2,10 @@
 
 云端只推送 `cloud/art-software-grammar-atlas-20261011`，不合并 main。用户授权本地 Astra 在独立审阅通过后处理合并；本文件是审阅范围与证据清单，不在云端执行本地操作。
 
+## 本次更新
+
+云端已消费 `a3631e1b0567dc296d749e831d6a5b8e99c341b9` 中的本地修订；[累计整合](consolidation.md)记录后续小幅校准、实际命令与新上下文任务，[独立复核](consolidation-review.md)评估最终累计内容。本地记录自述为 Codex，未找到可独立确认的 Claude 原评语。重新获取最终分支头后审阅；此前本地 main 的合并结果不等于已包含这些后续修订。
+
 ## 定位和保护工作区
 
 在用户本机定位真实 Praxis checkout，先读当地 AGENTS 与适用指引。检查 remote 是否为 `lesPrivilege/Praxis`、当前分支与工作区状态；保留所有未提交内容。工作区不干净时采用隔离 worktree 或另一个明确 checkout，不 reset、clean、覆盖或自动 stash 用户工作。
@@ -19,7 +23,7 @@
 1. 从 [交接](handoff.md)、[补正覆盖](facet-correction.md) 和 [草案裁决](construction-comparison.md)掌握范围；旧的 [百科交付](../design-writing-encyclopedia-20261011/README.md)也在累计审阅内。
 2. 检查来源、实体、grammar 的分类所有权；抽查 inferred 的理由、unknown / not-applicable / unreviewed 区别，以及原物与软件候选的分离。
 3. 按 [分面查询](../../../vault/provenance/art-software-atlas/facets.md)重跑真实查询与反例；确认同一实体满足同 scope 条件，共享证据不会自动变成实现或文化等价关系。
-4. 按 [生成与只读校验](atlas-validation.md)提取代码到临时文件；从仓库根运行。生成前后应无非预期差异，尤其不能生成第二份 canonical metadata。
+4. 运行 `python3 scripts/atlas_index.py --check` 与 `python3 scripts/test_atlas_index.py`；修改叶子登记时再按 [生成与只读校验](atlas-validation.md)重建。生成前后应无非预期差异，尤其不能生成第二份 canonical metadata。
 5. 运行现有 `python3 scripts/validate_repository.py` 与 `python3 scripts/reference_index.py --check`，检查 `git diff --check`。按实际改动补充必要验证，不安装未知依赖或启用 CI。
 6. 复核 [证据范围](verification.md)、逐源读取/观看/运行差别、链接访问失败、权利与依赖缺口。公开交付中不应出现原附件、私有会话、账号数据或下载凭证。
 7. 检查 [软件交互范围](../../../vault/provenance/art-software-atlas/software-scope.md)：收录范围覆盖原生、开发者工具、游戏/空间与跨平台问题；已有正文、邻近方法、研究缺口应分开，不能把路由补全当作领域研究完成。

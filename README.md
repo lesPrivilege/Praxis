@@ -11,7 +11,7 @@
 | 写汇报、memo、deck 或 HTML | [Reporting brief](templates/reporting/README.md) → [汇报契约](kit/reporting/grammar.md) | 面向读者与决定的材料 |
 | 整理会议、项目状态与后续工作 | [工作系统](kit/work-system/README.md) | 候选变化、确认状态与下一责任 |
 | 在新环境消费 Kit | [Environment](kit/environment/README.md) | 能力盘点、权限范围与消费计划 |
-| 设计页面、编排可视化或选择界面做法 | [Design](kit/design/README.md)；需要依据时查 [参考路由](kit/design/references/README.md) | 已裁决的做法、依据与可复用产出 |
+| 设计软件视觉与交互、编排可视化 | [Design](kit/design/README.md)；需要依据时查 [参考路由](kit/design/references/README.md) | 可选做法、适用规则、依据与设计产出 |
 | 撰写或改定对外中文成文 | 项目 skill `writing`（`.claude/skills/writing/SKILL.md`）→ [Write / Prose](kit/write/prose/README.md) | 按写作原理成文，附审阅裁决 |
 | 查定义、接口与验收要求 | [Kit](kit/README.md) | 对应契约与检查项 |
 
@@ -46,7 +46,7 @@
 
 | 位置 | 保存内容 |
 |---|---|
-| [kit](kit/README.md) | 已采纳的知识、使用契约和能力目录 |
+| [kit](kit/README.md) | 已采纳规则、可选参考、使用契约和能力目录 |
 | [scenarios](scenarios/README.md) | 独立业务闭环与验收定义，当前提供模板 |
 | [demos](demos/README.md) | 演示实现与施工交接；视觉语法工场与并行施工现场，运行验收见项目回执 |
 | [templates](templates/README.md) | 入账、材料 brief 与 demo 蓝图 |

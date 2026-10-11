@@ -42,3 +42,16 @@ AI 能力测试批次使用专属 intake；来源 catalog 的 snapshot_path / sn
 可用 `--facet task=error-recovery` 或 `--facet artifact=interactive-object --facet stack_runtime=React` 筛选；只输出唯一卡片和语法路径，不写文件。词值来自具体来源的可选 facets；缺字段不等于未知，来源行业不等于已证适用性。
 
 来源 catalog 可显式设 `registry_extensions: true`，把自身稳定 ID 作为 registry alias，并投影主张定位、分面、证据/许可、历史记录与实现成熟度等可选字段。未选择该扩展的历史记录保持原投影，避免新增索引变成全库迁移。
+
+## 艺术与软件图谱
+
+[atlas_index.py](atlas_index.py)提供现有图谱的生成、检查与分面查询，catalog、entities 和 grammar.json 仍是编辑源。
+
+| 任务 | 命令 | 结果 |
+|---|---|---|
+| 修改叶子登记后重建 | `python3 scripts/atlas_index.py --build` | 先运行 `python3 scripts/build_registry.py` 同步来源身份，再生成图谱；校验通过才写 index |
+| 检查当前图谱 | `python3 scripts/atlas_index.py --check` | 只读检查 schema、身份、关系方向、完整投影、分面证据、复用身份与来源/正文引用 |
+| 组合查找 | `python3 scripts/atlas_index.py --query '{"exemplar.style_lineage":"Nasca"}'` | 返回 grammar、各层命中对象与连接依据；[查询语义](../vault/provenance/art-software-atlas/facets.md) |
+| 改动生成或查询逻辑 | `python3 scripts/test_atlas_index.py` | 历史查询回放、无命中反例和损坏数据拒绝检查；使用内存副本 |
+
+查询只需标准库；生成与检查使用环境已有的 `jsonschema`，缺失时报告失败，不自动安装。两套参考索引各有范围，百科用 `reference_index.py --check`，图谱用 `atlas_index.py --check`；仓库的结构检查不能替代这两项或外部主张核查。工具变更后的新上下文试用、命令输出和证据范围放 [整合记录](../docs/verification/art-software-atlas-20261011/consolidation.md)。
