@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-10-11 · Design / Write 参考书目与语法扩展
+
+- 保留现有任务树，增加 13 个可选语法条目、29 个独立公开 URL 记录与 6 份短摘录，覆盖视觉、交互与时间、写作编辑、跨媒介四流；[书目与覆盖](vault/provenance/design-writing-encyclopedia/README.md)连接来源自足摘要和 Kit 操作判断。
+- 版本、取得/复核时间、使用轨迹移到独立记录；历史原件不改，当前缺陷和证据范围仍可见。维护规则与双向索引见 [ADR-029](docs/decisions/029-design-writing-reference-encyclopedia.md)。
+- 四项独立普通任务、一次入口复查与独立编订复核暴露的发现/表述缺口已修复；实际路线、局限与检查见[验收记录](docs/verification/design-writing-encyclopedia-20261011/README.md)。本批不声称组件实测、受众效果或全学科覆盖。
+
 ## 2026-10-05 · 知识片的做法留作可取用的参考
 
 - 把 ADR-027、ADR-028 新增的两种独立审阅写明是可以取用的做法，不是每件任务的必经步骤；口播旁白页的随稿材料改成按任务取用。条文的含义没有变，强度写清了。

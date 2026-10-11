@@ -5,8 +5,8 @@
 | 匹配任务 | 正文带少量口径、补充或限定，宽屏用边注、窄屏仍需邻近解释 |
 | 优先级 / 采纳 | preferred / reference |
 | 证据 | partial；1440与375已存截图、HTML顺序与CSS已复核 |
-| 参考验收 | 2026-09-27 main；仅“结构方法查阅”通过 |
-| 维护位置 | 本页；后续使用与反例追加在下方 |
+| 参考验收 | 仅“结构方法查阅”通过；实现与效果另验 |
+| 维护位置 | 本页；使用反馈记入独立消费记录 |
 
 ## 先消费什么
 
@@ -18,16 +18,10 @@
 
 来路为 [LAB-20260927/W03-b](../../../../vault/distilled/layout-specimens-20260927/atoms/wayfinding.html#W03-b)。[宽屏](../../../../vault/distilled/layout-specimens-20260927/checks/atoms__wayfinding-W03-b-1440.png)中注释在页边，[窄屏](../../../../vault/distilled/layout-specimens-20260927/checks/atoms__wayfinding-W03-b-375.png)中位于所注句后；HTML的注释节点确在完整句后，CSS以容器条件切换空间呈现，不依赖JS搬动节点。
 
-本次只看过每段少量注释的示例。多条或长注释可能碰撞，边栏还可能与其他原子争用；原例640px阈值、15rem边宽和浮动实现都不是本卡推荐的固定参数。没有验证读屏顺序、200%缩放、打印或不同系统字体，不把代码直接推荐为成熟组件；原例中的成本文字也不作为事实或论证范本。
+现有证据只覆盖每段少量注释的示例。多条或长注释可能碰撞，边栏还可能与其他原子争用；原例640px阈值、15rem边宽和浮动实现都不是本卡推荐的固定参数。没有验证读屏顺序、200%缩放、打印或不同系统字体，不把代码直接推荐为成熟组件；原例中的成本文字也不作为事实或论证范本。
 
 ## 消费与维护
 
 消费者记录本ID、实际注释长度/数量、布局容器和宽窄表现。注释远离所限内容、发生碰撞、重排打断句子或复用时被迫手动定位，都是复核触发；新demo可提出插入点、语义关联或槽位契约的增量，main裁决后更新本页。
 
-| 日期 | 消费/证据 | 结果 |
-|---|---|---|
-| 2026-09-27 | [实验局部筛选](../../../../vault/distilled/layout-specimens-20260927/review.md)及HTML/CSS核对 | 邻接与投影结构查阅通过；完整组件与跨域效果未通过此验收 |
-
-2026-09-29的[问卷消费工件](../../../../docs/verification/reference-consumption-20260929/survey-explainer/README.md)通过正常仓库入口找到W03与本卡，将解释保留在数字/主张近处；[设备布局测试](../../../../docs/verification/reference-consumption-20260929/device-comparison/README.md)明确因无局部注释需求而未取用。它们仅验证发现、适用判断与结构消费，不作为产品demo或完整视觉验收。维护和降级见 [参考生命周期](../../../../docs/governance/reference-lifecycle.md)。
-
-2026-10-03 [Palantir 首次设计打样](../../../../demos/palantir-discovery/README.md#kit-消费记录)：入口修订（ADR-023）后核对，请求原句的三条标注和台账变化提示都紧跟所注内容，没有改动；宽屏没有用边注。
+已有验收、使用轨迹和修订缘由见 [历史记录](../../../../docs/verification/design-writing-encyclopedia-20261011/body-history.md)；新反馈按 [参考生命周期](../../../../docs/governance/reference-lifecycle.md)维护，不在本卡追加日志。

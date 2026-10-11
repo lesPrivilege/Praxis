@@ -49,3 +49,5 @@ accepted 表示本仓库当时采纳；技术实现与使用证据在对应契�
 - [ADR-027：成文审阅的目标与结构位置的取形](027-prose-review-goal-and-structural-text.md)（accepted；用户裁决恢复两项：审阅以更接近人类作者为目标，结构位置用凝练、并列的短语；审阅新增句式重复检查和结构文字的独立审阅；修订 ADR-024 的两处，其余不变；新条文尚未在真实任务上用过）。
 
 - [ADR-028：口播旁白体例与独立冷读](028-narration-genre-and-cold-read.md)（accepted；把第五版改稿的做法提炼进 Kit：新增口播旁白文体页，审阅方法新增成文的独立冷读，结构文字审阅补三项产出；使用证据只有一条片子、同一名主笔，审阅由模型完成）。
+
+- [ADR-029：书目摘要与可选语法参考](029-design-writing-reference-encyclopedia.md)（accepted；沿用任务树、双向来源、可选分面与独立历史；新增方法仍是参考）。

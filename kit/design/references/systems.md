@@ -2,7 +2,7 @@
 
 本页是 `ref-*` URL 卡片的 canonical route。它只提供 Design 需要的消费摘要；每条原 URL、canonical URL、原对话主张、核验差异、证据链接和重访触发仍以 Vault 卡片为准。卡片的 `verified`、`partial` 是来源证据状态，不是 Kit 的 `accepted` 状态。返回 [Design 参考路由](README.md) 或 [兼容入口](../references.md)。
 
-这些卡片记录 2026-09-18 的一轮官方入口核查；若卡片或本页注明需要重读，引用前按原 URL 复核。没有保存正文快照时，在线页面不能被当作离线证据。
+这些卡片保留历史官方入口核查；若卡片或本页注明需要重读，引用前按原 URL 复核。没有保存正文快照时，在线页面不能被当作离线证据。
 
 ## Design system 组织
 

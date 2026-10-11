@@ -3,6 +3,9 @@
 内容关系已经确定后，从需要解决的视觉问题进入。
 
 - 层级、阅读顺序、主次与宽窄重排：读 [空间编排](layout.md)。
+- 字阶、字体角色、中西文混排与断行：读 [排印关系](typography.md)。
+- 品牌、状态、强调与数据颜色互相争用：读 [色彩角色](color.md)。
+- 选择平面、线描、浅色实体或白模来解释对象：读 [对象的抽象与表现](object-representation.md)。
 - 数量、状态、变化与关系如何可视化：读 [图形编码](encoding.md)。
 - 窄屏要保留对象比较：先读 [按属性维持比较](../references/curated/comparison-continuity.md)。
 - 注释要跨宽窄保持局部关系：先读 [注释保持邻接](../references/curated/note-adjacency.md)。
