@@ -1,8 +1,10 @@
-# 手动发布 workflow
+# 手动发布 workflow（未启用）
+
+本目录保存 workflow 定义的副本。它不在 `.github/workflows/` 下，GitHub 不会识别，远端没有任何 workflow 或自动化。需要发布时，由维护者决定后再把 `praxis-pages.yml` 放回 `.github/workflows/`。
 
 [Praxis Pages](praxis-pages.yml)只有 `workflow_dispatch` 入口。推送、Pull Request、定时任务和其他 workflow 完成事件均不会触发发布。实际发布需要该文件已进入默认分支，再由维护者手动执行。
 
-构建固定读取检出时已提交的 `main`，将实际 SHA 记入任务摘要，由 [构建脚本](../../scripts/build_drift_pages.py)生成专用临时目录。上传范围只包括 Drift 的 `index.html`、`app.js`、`style.css` 和 `.nojekyll`，不使用仓库根目录作为 Pages artifact。
+构建固定读取检出时已提交的 `main`，将实际 SHA 记入任务摘要，由 [构建脚本](../../../scripts/build_drift_pages.py)生成专用临时目录。上传范围只包括 Drift 的 `index.html`、`app.js`、`style.css` 和 `.nojekyll`，不使用仓库根目录作为 Pages artifact。
 
 2026-10-05 核对的 GitHub 官方依赖：
 

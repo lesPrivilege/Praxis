@@ -6,7 +6,7 @@
 
 仓库 `lesPrivilege/Praxis` 的 Pages 已设置为 `build_type: workflow`，预定地址为 `https://lesprivilege.github.io/Praxis/`。本次配置后 GitHub 返回 `status: null`，尚未部署页面内容。此前 Actions workflow 数量为 0，未发现可停用的自动部署 workflow。
 
-新增 [手动发布 workflow](../../.github/workflows/praxis-pages.yml)只接受 `workflow_dispatch`。推送、合并或定时任务不会发布。该文件及构建代码进入默认分支后，维护者从 GitHub Actions 选择 **Publish Praxis Pages (manual)**，使用 `main` 手动执行。
+[手动发布 workflow](pages-workflow/praxis-pages.yml)只接受 `workflow_dispatch`。2026-10-12 按用户要求不在远端开启任何 workflow 或自动化：该文件保存在 [pages-workflow](pages-workflow/README.md)，不在 `.github/workflows/` 下，GitHub 不会识别。需要发布时，由维护者把它放回 `.github/workflows/` 并进入默认分支，再从 GitHub Actions 选择 **Publish Praxis Pages (manual)**，使用 `main` 手动执行。
 
 workflow 固定构建实际检出时已提交的 `main`，将检出 SHA 记入任务摘要；本机工作区里的未提交改动不会进入发布版本。此次未提交、未执行远端 workflow、未上传静态内容。
 
@@ -43,4 +43,4 @@ PYTHONDONTWRITEBYTECODE=1 python3 scripts/verify_drift_pages.py
 
 ## 核查边界
 
-GitHub 配置由 REST API 创建并重新读取确认，流程依据为[官方 Pages API](https://docs.github.com/en/rest/pages/pages#create-a-github-pages-site)。Action 版本与未快照依赖见[workflow 说明](../../.github/workflows/README.md)。远端部署运行、Pages 实际 HTTP 页面、Worker 接入及公网真实观测尚未验证。
+GitHub 配置由 REST API 创建并重新读取确认，流程依据为[官方 Pages API](https://docs.github.com/en/rest/pages/pages#create-a-github-pages-site)。Action 版本与未快照依赖见[workflow 说明](pages-workflow/README.md)。远端部署运行、Pages 实际 HTTP 页面、Worker 接入及公网真实观测尚未验证。
