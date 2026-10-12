@@ -1,6 +1,6 @@
 # Design 参考路由
 
-本目录承载 Design 参考的分支索引。旧入口 [references.md](../references.md) 保留为兼容导航；稳定 ID、状态、消费语义、边界和证据以本目录对应分支为准。这里的 `accepted` 表示本地消费处置，不表示来源主张已经核实，也不表示当前实现或渲染已经通过。
+本目录按设计任务连接参考说明、外部原件与消费记录。`accepted` 表示本仓库对特定用途的采纳；来源核查与实现验收分别见条目记录。
 
 ## 已验收用途的优先入口
 
@@ -16,6 +16,10 @@
 | 对照已有产出与实验样张 | [specimens.md](specimens.md) | P01、LAB-20260927 | 历史答卷、原子实验及局部筛选；区分结构参考、profile与未验收实现 |
 | 判断营销演示、源码、标准说明和已测行为各能证明什么 | [读来源](reading-sources.md) | DWG-X-SOURCES | 保留证据差别，找到需要补读的具体材料 |
 | 把风格名（Swiss、Bauhaus、Y2K 等）换成可检验的构成关系 | [languages.md](languages.md) | VL01–VL08 | 名称与别名、所指范围、可以试的关系、名字推不出的内容和逐来源状态；不含主题参数 |
+| 查交互模拟、镜头控制或连续缩放的外部作品 | [Skillry 等作品与技术卡](../../../vault/provenance/visual-grammar-external-20260928/cards/README.md) | 卡片内的来源 ID | 水模拟、镜头实验、黑洞与连续缩放，以及对应工具；已读页面说明，媒体和源码运行未验收 |
+| 比较视频表现与制作方法，包括 Opus 作品 | [Motion ceiling 研究](../../../vault/distilled/motion-ceiling-20261004/README.md) | w01–w17、r01–r18 | 作品、模板、渲染与声音线索；按逐源状态选择原件，本地消费见 MC01 |
+
+Opus 作品按上述任务入口查找，模型归属按来源记录；取用价值由作品内容和验证范围判断。已采纳的设计语法见 [Design 各分支](../README.md)，本地制作与失败记录见 [Write / Motion](../../write/motion/README.md#已有制作与消费记录)。
 
 从织物、编辑、空间、乐谱、规则、软件组件或 agent 设计生态探索新方向，先读 [艺术与软件操作入口](art-software-atlas.md)。
 

@@ -1,0 +1,15 @@
+{
+  "describe": "失败输入：写入失败的回执比失败本身早出发 5 秒。",
+  "expect": "拒绝生成，回执不能先于它报告的事件。",
+  "refuse_with": "delay（不小于 0）",
+  "patch": {
+    "director": {
+      "flights": {
+        "req-2.failed": {
+          "delay": -5,
+          "dur": 6
+        }
+      }
+    }
+  }
+}

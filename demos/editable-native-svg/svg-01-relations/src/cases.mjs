@@ -10,9 +10,11 @@ import { scope } from './scope.mjs';
 import { qualify } from './qualify.mjs';
 import { tracks } from './tracks.mjs';
 import { sheet } from './sheet.mjs';
+import { rail } from './rail.mjs';
+import { pair } from './pair.mjs';
 
 export const HERE = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-export const GEN = { 'rel-fan': fan, 'rel-scope': scope, 'rel-qualify': qualify, 'rel-tracks': tracks };
+export const GEN = { 'rel-fan': fan, 'rel-scope': scope, 'rel-qualify': qualify, 'rel-tracks': tracks, 'rel-rail': rail, 'rel-pair': pair };
 GEN['rel-sheet'] = (model, opt) => sheet(model, { ...opt, generators: GEN });
 export const NARROW = 288;
 export const wideOf = (asset) => (asset === 'rel-scope' || asset === 'rel-sheet' ? 480 : 672);
@@ -119,6 +121,31 @@ export function f02ToTracks(f) {
   };
 }
 
+// F04：时刻和区间放到同一条标尺上。各条写的偏移不一样，标尺按 UTC；
+// presentation（播放帧率和时长）是 Motion 的事，静态图不取。
+export const f04ToRail = (f) => ({
+  title: f.task,
+  scale: { kind: 'time', offset: 'Z', note: `${f.timeline.label}。` },
+  rows: [
+    ...f.timeline.events.map((e) => ({ id: e.id, at: e.at, label: e.label })),
+    ...f.timeline.intervals.map((i) => ({ id: i.id, at: i.start, until: i.end, label: i.label })),
+  ],
+});
+
+// F02 的另一半：本次上下文从对象里选了哪些字段。没选的字段照样列出。
+export function f02ToPair(f) {
+  const { versions } = foldF02(f);
+  const current = versions.at(-1);
+  return {
+    title: '本次上下文选入了哪些字段',
+    kind: 'projection',
+    source: { label: '对象', ref: { id: f.object.id, version: current.rev } },
+    view: { label: '本次上下文', basis: { id: f.object.id, version: f.context.basis_revision } },
+    fields: Object.entries(current.fields).map(([k, v]) => ({ id: k, label: k, value: v })),
+    selected: f.context.selected_fields,
+  };
+}
+
 export const f06ToQualify = (f) => ({
   title: f.task,
   claims: f.claims,
@@ -188,6 +215,8 @@ export function cases() {
     fx('f01-next', 'F01', 'rel-tracks', 'stress', ['SVG-R17'], '事项升到 v9，另一条阅读绑定材料 v2；旧阅读不动。', f01ToTracks(edits.f01Next(F.F01))),
     fx('f01-rebound', 'F01', 'rel-tracks', 'counterexample', ['SVG-R17'], '反例输入：旧阅读的依据被改指 v2。图照输入画，错误因此看得见。', f01ToTracks(edits.f01Rebound(F.F01))),
     fx('f02-candidate', 'F02', 'rel-tracks', 'normal', ['SVG-R09', 'SVG-R18'], '候选被拒绝并留在记录里，对象仍是 v2；没有选入的字段仍在。', f02ToTracks(F.F02)),
+    fx('f04-times', 'F04', 'rel-rail', 'normal', ['SVG-R16', 'SVG-R33'], '两个时刻钟面相同、偏移不同，相差一小时；两个区间重叠，其中一个结束时间未知。', f04ToRail(F.F04)),
+    fx('f02-projection', 'F02', 'rel-pair', 'normal', ['SVG-R18'], '上下文只选入“期限”；“付款”没有选入，仍在对象里。', f02ToPair(F.F02)),
     { id: 'qualify-five', synthetic: true, asset: 'rel-qualify', role: 'stress', requirements: ['SVG-R08'], note: '同一项主张上五条来源，有冲突，有一条只是推断。', model: FIVE, input: 'src/cases.mjs' },
     ...fromFiles,
   ].sort((a, b) => order[a.role] - order[b.role] || (a.order ?? 50) - (b.order ?? 50));

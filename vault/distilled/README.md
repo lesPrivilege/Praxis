@@ -4,9 +4,12 @@
 
 - [可编辑原生 SVG · 2026-10-04](editable-native-svg-20261004/README.md)：从表达任务研究编辑与组合边界；施工、合同和分批交接见 demos，未绘制与未运行 Flash。
 
+- [Palantir 阅读清单初次提炼 · 2026-10-06](palantir-reading-20261006/README.md)：七份笔记（八份任务书先写后做）。**已由主会话在 dsh 里串行执行**——本机 claude 未登录、无 codex CLI，派不出 subagent，故不是 Luna 集群。最重要的一条：这七份不是散书，是 Palantir 当年发给新人的入职书单（Qureshi 原文行 45）。
+
 - [Knowledge Film 001 的过程重建 · 2026-10-05](knowledge-film-001-distill-20261005/README.md)：没有参与制作的代理从会话日志重建一条知识片怎样做成，分 dogfooding、distill、architecture 三部分，附十二份任务书原文；24 条建议里已落地的见 ADR-027、ADR-028。
 
 - [关系图的两条语法 · 2026-10-04](relation-grammar-20261004/README.md)：成立程度与归属的标记、精确指向；清点由只读子代理完成，主会话重读了取用的行，没有对照组。
+- [排列与刻度 · 2026-10-04](placement-grammar-20261004/README.md)：位置回答什么、并排的线是否共用一条尺；清点由只读子代理完成，主会话重读了取用的行。
 
 本层按任务和主题保存已经消费的材料、候选语义与研究批次。它不是某一份 Chat 的替代品，也不是把所有内容压成一个扁平知识库；每个目录保留自己的来源、状态、缺口和回查入口。`distilled` 仍不等于 Kit 采纳，采纳以 `docs/decisions` 和当前 `kit` 为准。
 
@@ -87,3 +90,5 @@
 - [Palantir](../../palantir/README.md)：一级方法论提炼成果入口；五本书与两篇背景文章的阅读清单位于其 references，当前尚无完成提炼的文档。
 
 - [Tally · SaaS](../../tally/README.md)：一级 SaaS 提炼成果入口；《清算 SaaS》六部23章书稿的参考登记位于其 references，当前尚无完成提炼的文档。
+
+- [Chat ingestion 与 Astra-era harness audit 讨论 · 2026-10-09](chat-ingestion-harness-20261009/README.md)：区分来源记录、耐久项目状态与后续 worker context；记录减法优先的 harness 审查方法及未裁决边界。两份摘录并非完整会话；audit 不代表已完成或候选规则已采纳。

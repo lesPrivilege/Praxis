@@ -5,6 +5,7 @@
 - [可编辑原生 SVG · 2026-10-04](editable-native-svg-20261004/README.md)：18 个一手 URL 的相关读取与失败记录；外部实际图未看，未快照正文。
 
 - [关系图的两条语法 · 2026-10-04](relation-grammar-20261004/README.md)：三份 W3C 文档的用词对照；主会话读了摘要所列的句子，未通读、未快照。
+- [排列与刻度 · 2026-10-04](placement-grammar-20261004/README.md)：两页 Vega-Lite 文档和两份 W3C 文档的用词对照；主会话核对了摘要引到的句子，未通读、未快照。
 
 登记 51 个来源记录、37 个引用占位映射；状态：3 `partial`、48 `verified`。
 
@@ -58,3 +59,5 @@
 - [Design / Write 书目与语法参考](design-writing-encyclopedia/README.md)：按来源论述或具体操作双向取用，保留证据形态、分歧、覆盖缺口与独立变更记录。
 
 - [艺术、设计与软件语法书目](art-software-atlas/README.md)：跨传统、作品、档案、工具与 agent 设计生态的有界研究，原语境与软件推导分开。
+
+- [Chat ingestion / harness review 补充来源 · 2026-10-09](chat-ingestion-harness-20261009/README.md)：三条后来独立找到的官方 URL；不是原摘录隐藏引用的恢复，具体主张与缺口见逐源卡。

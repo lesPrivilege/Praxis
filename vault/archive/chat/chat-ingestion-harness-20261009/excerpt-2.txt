@@ -1,0 +1,86 @@
+處理時間為 40s
+
+可以，而且这次适合让 Astra 做一次减法优先的 Harness audit，再把真正稳定的结果沉淀回全局 AGENTS.md / Praxis，而不是继续往现有配置上叠 prompt。
+
+目前官方与社区的收敛相当明确：
+
+Skill 应从“教程”退回“路由器”：description 只说明何时触发；复杂内容渐进披露。Skill 太多、描述太长或互相重叠，会直接污染 Astra 的初始上下文。OpenAI 甚至明确指出，过去给 Sol/Luna 有帮助的细致 workflow 可能反过来约束 Astra。
+
+清理 blanket rules：诸如“任何修改前读完整架构”“总是先 plan”“每次都跑全量测试”“任何一步先询问”等，都是重点删除对象。文档应该变成条件式入口，例如只有 schema change 才读取 database guidance。
+
+Astra 需要的反而是少量 permission / completion boundary。它比旧模型更可能因为边界写得太保守而提前停下，因此应告诉它哪些可逆操作可以持续完成、什么才算 done。
+
+multi-agent 不必规定 topology，但可以明确授权并行。官方当前甚至专门建议：如果并行 delegation 能节省时间或提高质量，就明确告诉 Astra 可以这么做。
+
+测试也应按风险缩放，避免旧 harness 里的“为了证明完成而反复验证”。
+
+社区还有一个值得保留的原则：让 reviewer 只修改有具体失败机制的东西，否则 Astra 很容易因为收到“全面 audit”的任务而主动制造问题。也就是 prefer no change over speculative cleanup。
+
+另一个已有实践是 Astra 保持高价值判断，把廉价 recon / mechanical work 下放 Sol/Luna；这与你现在的 Astra adjudicator + Luna explorer 很一致。
+
+
+OpenAI 自己最后甚至直接建议：模型升级正是清理 house 的机会，可以让 Astra 自己完成 audit。 
+
+所以我建议不要现在人工设计“应该删哪些”，直接把当前 Chat ingestion + harness review 合成一次任务：
+
+Consume the attached ChatGPT session as source material for this workspace.
+
+First, ingest the durable parts of the conversation into the repository so future workers can discover and consume them progressively without needing the original chat.
+
+Use Astra for adjudication and synthesis. Use Luna explorers freely for bounded provenance work: recover primary sources, verify external references, compare alternatives, and record why each source matters. Preserve the distinction between raw/session material, durable project state, and later model context. Reuse the repository's existing documentation and indexing structure rather than creating a parallel taxonomy.
+
+The result should be incremental, source-traceable, and discoverable through a thin index. Preserve decisions, rationale, useful hypotheses, rejected or superseded directions, unresolved questions, external references, and implications for future work. Omit conversational repetition and incidental wording.
+
+While doing this, also perform one Astra-era review of the workspace's agent harness: global/project AGENTS.md where visible, skills, reusable prompts, agent profiles, routing guidance, and related instructional Markdown.
+
+Use current OpenAI guidance for GPT-6 Astra and relevant current community practice as external reference material when useful. Luna may investigate these sources in parallel.
+
+Treat this as a subtraction-first audit.
+
+Look specifically for:
+
+- instructions added to compensate for limitations of older models that Astra no longer needs;
+- unconditional document-reading, planning, testing, review, or approval rituals;
+- duplicated or contradictory instructions across AGENTS.md, skills, prompts, and agent profiles;
+- oversized skill descriptions or skills that should instead be thin routers with progressive disclosure;
+- overly broad skill triggers that inject irrelevant context;
+- step-by-step recipes that unnecessarily constrain model judgment;
+- defensive permission boundaries that cause Astra to stop when safe, reversible work could continue;
+- completion rules that encourage premature handoff or repeated user prompting;
+- unnecessary verification or testing loops;
+- model-specific guidance that has accidentally become a universal rule;
+- stale routing assumptions now that Astra, Sol, and Luna have different useful roles;
+- opportunities for bounded parallel exploration or cheap helper delegation without imposing a fixed agent topology.
+
+Do not optimize for a smaller prompt merely for its own sake. Preserve constraints that encode real product intent, safety boundaries, architectural invariants, user preferences, or hard-won failure knowledge.
+
+For every proposed removal or rewrite, require a concrete reason:
+
+1. what the current instruction causes;
+2. why that behavior is now harmful, redundant, or too broad;
+3. what capability or narrower instruction replaces it;
+4. what could regress if it is removed.
+
+Do not invent problems in order to justify a cleanup. Prefer leaving a sound instruction unchanged over speculative simplification.
+
+Where the evidence is strong and the change is local and reversible, make the minimal edit directly. Preserve useful history in git rather than keeping obsolete instructions active as comments. For ambiguous architectural or policy decisions, record the finding and recommendation instead of silently changing semantics.
+
+Keep model routing as capability priors rather than mandatory choreography. Astra may adjudicate or handle unusually difficult work; Sol and Luna may handle suitable execution or exploration. Choose delegation dynamically based on the task instead of satisfying a predefined topology.
+
+At the end, leave the workspace in a state where a fresh capable agent can:
+
+1. discover what matters without loading the whole repository;
+2. find the durable output of this ChatGPT session;
+3. follow provenance back to important external sources;
+4. understand the small set of real operating constraints;
+5. perform ordinary work without fighting legacy harness scaffolding.
+
+Report only the meaningful harness changes, retained invariants, unresolved findings, and where the ingested session artifacts can be discovered.我会把这次 audit 当成一次迁移任务，而不是写进永久 AGENTS.md 要求“每次都 audit”。永久 contract 只需要保留一句类似：
+
+> Keep harness guidance current. When model or harness capabilities materially change, prefer a subtraction-first review of AGENTS.md, skills, and reusable prompts over accumulating compatibility instructions.
+
+
+
+否则“定期清理 prompt 的 prompt”本身很快又会成为新的 prompt debt。
+
+而这次 audit 还有一个额外价值：可以顺便让 Astra 判断你 Praxis/Codex 中哪些过去为 Sol/Luna 手把手 scaffolding 写下的内容，应该继续作为知识参考，哪些应从“instruction”降级成 reference / progressive-disclosure source。这实际上和你之前对 Praxis 的处理方向完全一致：不是删除成熟实践，而是降低不应该常驻 context 的实践的权重。

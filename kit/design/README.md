@@ -16,7 +16,7 @@
 | 查成熟方法、来源或样张 | [References](references/README.md) | 按任务消费的解释、限制和原件来路 |
 | 需求里出现风格名，或要探索一种视觉语言 | [视觉语言参考](references/languages.md) | 名字对应的范围、可以试的构成关系与来源状态 |
 
-图表和界面任务可以直接从这里开始，不必先走 Write 的成文流程；产物上写给读者的成句文字，包括说明、标注、按钮、状态提示和图注，仍按 [Write / Prose](../write/prose/README.md)写和审。纯文字校对不涉及视觉时不用进来。不需要所有任务都先读一遍基础，遇到取舍争议再回 Foundations。
+图表和界面任务从本页开始；说明、标注、按钮、状态提示和图注按 [Write / Prose](../write/prose/README.md)撰写与审阅。设计取舍有争议时，回查 Foundations。
 
 可按更具体的问题继续：
 
@@ -29,7 +29,8 @@
 | 关系图、数据图、导航和页面节奏 | [编排参考 C01–C25](references/composition.md) |
 | 图里或页面里既有已定的、也有未定的、被否的或等人决定的内容 | [成立程度与归属的标记](foundations/standing.md) |
 | 证据、条件、注释或判断要指向某个对象的某个版本、某一处 | [精确指向](foundations/anchoring.md) |
-| 需要可改文字、关系、数据并可组合的原生 SVG | [SVG 需求与绘制项目](../../demos/editable-native-svg/README.md)：候选登记与分批工单；第一批有四个关系图件和一个组合件，仍是候选，未经用户 review |
+| 把步骤、版本、事件、层级或前后对照沿一条线排开，或者把几条线并排 | [排列与刻度](foundations/placement.md) |
+| 需要可改文字、关系、数据并可组合的原生 SVG | [SVG 需求与绘制项目](../../demos/editable-native-svg/README.md)：候选登记与分批工单；第一批有六个关系图件和一个组合件，仍是候选，未经用户 review |
 
 ## 自撰库
 

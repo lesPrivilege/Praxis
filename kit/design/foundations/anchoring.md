@@ -71,4 +71,4 @@ W3C 的 Web Annotation 模型用的是同一种分法：target 是被指的资�
 
 ## 来路与证据边界
 
-本页默认已采纳；与 [注释保持邻接](../references/curated/note-adjacency.md)一起使用时，本页管指向谁，邻接卡管放在哪里。既有实现对原文片段仅覆盖单项主张内唯一匹配，尚无前后文消歧、时间范围与字段集合的完整画法。有限合成图件不证明跨领域效果；来源、实现位置与采纳见 [记录](../../../docs/verification/design-writing-encyclopedia-20261011/body-history.md)。
+本页默认已采纳；与 [注释保持邻接](../references/curated/note-adjacency.md)一起使用时，本页管指向谁，邻接卡管放在哪里。既有实现对原文片段仅覆盖单项主张内唯一匹配，尚无前后文消歧；时间范围与字段集合各有一种画法，见 [排列与刻度](placement.md)。有限合成图件不证明跨领域效果；来源、实现位置与采纳见 [记录](../../../docs/verification/design-writing-encyclopedia-20261011/body-history.md)。

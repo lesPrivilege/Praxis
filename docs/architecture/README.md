@@ -20,10 +20,10 @@ Praxis 由 Enterprise、Reporting、Work System 三个消费域和共享 Environ
 
 ## 一级主题入口
 
-- [palantir](../../palantir/README.md)：一级提炼入口；当前仅有 5 本书、2 篇文章的登记，材料参考见 [`palantir/references`](../../palantir/references/README.md)。
+- [palantir](../../palantir/README.md)：一级提炼入口；7 个对象已有不同范围原件（3 个全文、3 个片段、1 个仅元数据）及 Vault 候选笔记，尚无主题正文与 Kit 采纳，材料参考见 [`palantir/references`](../../palantir/references/README.md)。
 - [tally](../../tally/README.md)：一级提炼入口；当前仅有《清算 SaaS》书稿登记，材料参考见 [`tally/references`](../../tally/references/README.md)。
 
-这两个目录是主题的一级提炼入口；当前尚无完成提炼的成果，不应把登记当作成果。Chat 原文、会话溯源与入账记录由 `vault` 承载；材料自身参考可放对应 `references`，已有快照保留原定位，且不表示内容已经采纳进 Kit。
+主题目录保存已接收的提炼正文，`references` 提供材料入口；Chat 原文、会话溯源、入账记录与快照由 Vault 保存。Kit 采纳结果见决策记录。
 
 ## 表达与设计的跨域消费
 

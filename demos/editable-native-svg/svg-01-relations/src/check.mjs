@@ -8,7 +8,7 @@ import path from 'node:path';
 import { spawn, spawnSync } from 'node:child_process';
 import os from 'node:os';
 import { Refusal } from './kernel.mjs';
-import { HERE, GEN, NARROW, cases, fixtures, edits, f01ToTracks, f02ToTracks, foldF02, f06ToQualify } from './cases.mjs';
+import { HERE, GEN, NARROW, cases, fixtures, edits, f01ToTracks, f02ToTracks, f02ToPair, f04ToRail, foldF02, f06ToQualify } from './cases.mjs';
 
 const results = [];
 const check = (id, name, fn) => {
@@ -23,6 +23,7 @@ const must = (ok, msg) => {
   if (!ok) throw new Error(msg);
 };
 const clone = (o) => structuredClone(o);
+const r1 = (n) => +n.toFixed(1);
 const all = cases();
 const byId = (id) => all.find((c) => c.id === id);
 const draw = (asset, model, width = NARROW, scope = 'chk') => GEN[asset](model, { width, scope });
@@ -94,8 +95,17 @@ check('A02b', '全部产物：没有曲线路径，文字都是文字节点', ()
       must(d.split(/[MLHV]/).length <= 8, `${n}：路径段数异常，像是转了轮廓`);
     }
     texts += (svg.match(/<text/g) ?? []).length;
-    const keys = attrsOf(svg, /data-text="([^"]*)"/g);
-    must(new Set(keys).size === keys.length, `${n}：data-text 有重复`);
+    // 组合图里嵌着几件各自的 <svg>；文字的键在所属的那一件里唯一即可
+    const stack = [];
+    const seen = new Set();
+    for (const [, open, close, key] of svg.matchAll(/<svg[^>]* id="([^"]*)"|(<\/svg>)|data-text="([^"]*)"/g)) {
+      if (open) stack.push(open);
+      else if (close) stack.pop();
+      else {
+        must(!seen.has(`${stack.at(-1)} ${key}`), `${n}：data-text ${key} 在同一件里重复`);
+        seen.add(`${stack.at(-1)} ${key}`);
+      }
+    }
   }
   return `${files.length} 个文件，${texts} 个文字节点，${paths} 条路径，路径全部是直线段`;
 });
@@ -370,6 +380,261 @@ check('A11b', '四个生成器都按文字插入不可信标签', () => {
   return '标题、标签、依据、状态、来源、空缺说明里的 <script> 字样都作为文字输出';
 });
 
+
+// ---------- 排列与刻度（0.3.0） ----------
+
+const T6 = (hm) => `2026-10-06T${hm}+08:00`;
+const noteOf = (svg) => textOf(svg, 'scale#note');
+const flat = (t) => t.replace(/\s/g, '');
+// 文字框（按排版时算出的宽度）两两不相交
+const overlaps = (labels) => labels.flatMap((a, i) => labels.slice(i + 1).filter((b) => Math.min(a.x + a.w, b.x + b.w) - Math.max(a.x, b.x) > 1 && Math.min(a.y + a.h, b.y + b.h) - Math.max(a.y, b.y) > 1).map((b) => `${a.key}×${b.key}`));
+
+check('C01', '位置的含义写在图脚：先后、时间、上下级、并排的栏各说各的', () => {
+  const said = [];
+  for (const id of ['f01-versions', 'tracks-four', 'f02-candidate', 'f04-times', 'rail-day', 'rail-steps', 'rail-tree', 'pair-slip', 'f02-projection']) {
+    const cs = byId(id);
+    for (const w of WIDTHS) {
+      const res = draw(cs.asset, cs.model, w);
+      const note = noteOf(res.svg);
+      must(note && note.length > 8, `${id} 宽 ${w}：图脚没有写位置的读法`);
+      must(res.equivalent.notes.some((t) => flat(t) === flat(note)), `${id} 宽 ${w}：等效文字里没有同一句读法`);
+      must(/data-scale="(list|order|time)"/.test(res.svg), `${id} 宽 ${w}：没有 data-scale`);
+    }
+    said.push(id);
+  }
+  must(noteOf(draw('rel-tracks', byId('tracks-four').model, 672).svg).includes('不表示谁先谁后'), '并排的版本线没有写明互相不表示先后');
+  must(noteOf(draw('rel-rail', byId('rail-steps').model).svg).includes('间距不表示时长'), '先后图没有写明间距不表示时长');
+  // 只有一条版本线时，不提“不同的线”
+  must(flat(noteOf(draw('rel-tracks', byId('f02-candidate').model).svg)) === flat('自上而下是版本先后；间距不表示时长。'), '只有一条版本线的图里写了“不同的线之间”');
+  const lone = draw('rel-rail', { title: 't', scale: { kind: 'list', depth: '隶属' }, rows: [{ id: 'a', label: '甲' }, { id: 'b', label: '乙' }] });
+  must(!noteOf(lone.svg).includes('缩进') && noteOf(lone.svg).includes('没有上下级'), '没有任何下级的清单里写了“缩进表示”');
+  must(noteOf(draw('rel-rail', byId('rail-day').model, 672).svg).includes('同一高度是同一时刻') && !noteOf(draw('rel-rail', byId('rail-day').model, NARROW).svg).includes('同一高度'), '共用标尺这句话应只在并排成栏时出现');
+  must(noteOf(draw('rel-rail', byId('rail-tree').model).svg).includes('缩进表示：下级部门隶属于上级部门'), '上下级图没有写缩进表示什么');
+  // 只有一个时刻、没有让开的行，就不该出现“文字让开”那句
+  const one = draw('rel-rail', { title: 't', scale: { kind: 'time' }, rows: [{ id: 'a', at: T6('09:00'), label: '提交' }] });
+  must(!noteOf(one.svg).includes('让开') && !noteOf(one.svg).includes('结束时间未知'), '读法里写了图上没有的情形');
+  const sh = GEN['rel-sheet'](byId('sheet-day').model, { width: 480, scope: 'chk' });
+  must(textOf(sh.svg, 'sheet#note').includes('不共用标尺') && sh.equivalent.notes.some((t) => t.includes('不共用标尺')), '组合图没有说明各件之间位置表示什么');
+  return `${said.length} 份输入在两种宽度下都带读法，等效文字里是同一句；读法只写图里出现的情形：一条版本线不提“不同的线”，没有下级不提缩进；组合图另有一句说明各件各排各的`;
+});
+
+check('C02', '时间按比例：按时刻排不按字符串排，同钟面不同偏移分得开，未知的结束不补', () => {
+  const m = f04ToRail(F.F04);
+  const notes = [];
+  for (const w of WIDTHS) {
+    const res = draw('rel-rail', m, w);
+    const p = res.positions;
+    const hour = p.t2.y - p.t1.y;
+    must(hour > 20, `宽 ${w}：钟面相同、偏移差一小时的两个时刻画在了一处`);
+    must(Math.abs(p.i1.y2 - p.i1.y - 2 * hour) < 0.6, `宽 ${w}：两小时的区间长 ${p.i1.y2 - p.i1.y}，一小时是 ${hour}`);
+    must(Math.abs(p.i1.y - (p.t1.y + hour / 2)) < 0.6 && Math.abs(p.i2.y - (p.t2.y + hour / 2)) < 0.6, `宽 ${w}：区间的起点不在它的时刻上`);
+    must(p.t1.y < p.i1.y && p.i1.y < p.t2.y && p.t2.y < p.i2.y, `宽 ${w}：次序不是按时刻排的`);
+    must(p.i2.y2 === null && /data-shape="open-interval"/.test(res.svg) && !/data-mark-for="i2"[^>]*data-until-ms/.test(res.svg), `宽 ${w}：结束未知的区间被画出了结束`);
+    must(textOf(res.svg, 'i2.when').includes('结束时间未知') && textOf(res.svg, 't1.when').replace(/\s/g, '').includes('01:30UTC+02:00（标尺10-2423:30）'), `宽 ${w}：时刻的写法不对`);
+    must(res.axis.offset === 0 && res.axis.step === 30, `宽 ${w}：标尺的偏移或格距不对`);
+    must(textOf(res.svg, 'axis#date') === '10-24' && textOf(res.svg, 'axis#0') === '23:30' && textOf(res.svg, 'axis#1') === '10-25' && textOf(res.svg, 'axis#2') === '00:30' && textOf(res.svg, 'axis#5') === '02:00', `宽 ${w}：刻度上写的时刻不对`);
+    notes.push(`宽 ${w}：一小时 ${r1(hour)}px，两小时的区间 ${r1(p.i1.y2 - p.i1.y)}px`);
+  }
+  // 把 t2 的偏移改成和 t1 一样：两个时刻重合
+  const same = clone(m);
+  same.rows.find((x) => x.id === 't2').at = '2026-10-25T01:30:00+02:00';
+  const ps = draw('rel-rail', same).positions;
+  must(ps.t1.y === ps.t2.y, '同一时刻没有落在同一处');
+  // 给未知的结束填上时刻：这一条变成普通区间，读法里那句也跟着消失
+  const closed = clone(m);
+  closed.rows.find((x) => x.id === 'i2').until = '2026-10-25T01:30:00Z';
+  const rc = draw('rel-rail', closed);
+  must(!/open-interval/.test(rc.svg) && !noteOf(rc.svg).includes('结束时间未知') && textOf(rc.svg, 'i2.when').includes('30 分钟'), '补上结束时刻后图没有跟着变');
+  must(flat(noteOf(draw('rel-rail', m).svg)).includes('从2026-10-2423:30起') && flat(noteOf(draw('rel-rail', byId('rail-day').model).svg)).includes('从2026-10-0609:00起'), '读法里没有写标尺从哪一天哪一刻起');
+  // 写了秒的，文字也写到秒；时长不四舍五入
+  const secs = draw('rel-rail', { title: 't', scale: { kind: 'time' }, rows: [{ id: 'a', at: '2026-10-06T09:00:30Z', label: 'a' }, { id: 'b', at: '2026-10-06T09:00:50Z', label: 'b' }, { id: 'c', at: '2026-10-06T09:00:00Z', until: '2026-10-06T09:01:30Z', label: 'c' }] });
+  must(textOf(secs.svg, 'a.when') === '09:00:30' && textOf(secs.svg, 'b.when') === '09:00:50' && flat(textOf(secs.svg, 'c.when')) === flat('09:00:00–09:01:30 · 1 分钟 30 秒'), `带秒的时刻写成了 ${textOf(secs.svg, 'a.when')}、${textOf(secs.svg, 'c.when')}`);
+  // 首尾相接的两个区间分在两个小栏里；很短的区间从它的开始时刻画起，并在读法里说明
+  const touch = draw('rel-rail', { title: 't', scale: { kind: 'time' }, rows: [{ id: 'a', at: '2026-10-06T09:00Z', until: '2026-10-06T10:00Z', label: 'a' }, { id: 'b', at: '2026-10-06T10:00Z', until: '2026-10-06T11:00Z', label: 'b' }, { id: 'c', at: '2026-10-06T10:30Z', until: '2026-10-06T10:31Z', label: 'c' }] });
+  const bar = (id) => touch.svg.match(new RegExp(`<rect x="([\\d.]+)" y="([\\d.]+)"[^>]*data-mark-for="${id}"`)).slice(1).map(Number);
+  must(bar('a')[0] !== bar('b')[0], '首尾相接的两个区间画在同一个小栏里，会并成一条');
+  must(Math.abs(bar('c')[1] - touch.positions.c.y) < 0.11 && noteOf(touch.svg).includes('很短的区间'), '很短的区间没有从它的开始时刻画起，或读法里没有说明');
+  must(!noteOf(draw('rel-rail', m).svg).includes('很短的区间'), '没有短区间的图里写了短区间的说明');
+  const badTimes = [['4 月 31 日', '2026-04-31T09:00Z'], ['2 月 30 日', '2026-02-30T09:00Z'], ['24 点', '2026-10-06T24:00Z'], ['61 分', '2026-10-06T09:61Z'], ['偏移 +99:99', '2026-10-06T09:00+99:99']];
+  for (const [name, at] of badTimes) must(['time', 'offset'].includes(codeOf(() => draw('rel-rail', { title: 't', scale: { kind: 'time' }, rows: [{ id: 'a', at, label: 'a' }] }))), `${name}（${at}）没有被拒用`);
+  must(codeOf(() => draw('rel-rail', { title: 't', scale: { kind: 'time', offset: '+99:99' }, rows: [{ id: 'a', at: '2026-10-06T09:00Z', label: 'a' }] })) === 'offset', 'scale.offset 写成 +99:99 没有被拒用');
+  const zero = clone(m);
+  zero.rows.find((x) => x.id === 'i1').until = zero.rows.find((x) => x.id === 'i1').at;
+  must(textOf(draw('rel-rail', zero).svg, 'i1.when').includes('起止相同'), '零时长的区间没有写明');
+  return `${notes.join('；')}；同一时刻重合；补上结束后变成普通区间；零时长写明“起止相同”；读法写明标尺从哪天哪刻起；带秒的时刻写到秒；首尾相接的区间分栏；${badTimes.length + 1} 种不存在的日期、钟点或偏移被拒用`;
+});
+
+check('C03', '并排的栏共用一条标尺；截止、时刻、区间各有各的形状', () => {
+  const m = byId('rail-day').model;
+  const wide = draw('rel-rail', m, 672);
+  must(/data-layout="columns"/.test(wide.svg) && (wide.svg.match(/data-role="rail"/g) ?? []).length === 3, '宽版应是三栏各一条轨');
+  const two = clone(m);
+  two.rows.push({ id: 'same-time', lane: 'repair', at: T6('10:15'), label: '收到通知' });
+  const p = draw('rel-rail', two, 672).positions;
+  must(p['same-time'].y === p['rule-v3'].y && p['same-time'].lane !== p['rule-v3'].lane, '两栏里同一时刻的记号不在同一高度');
+  const narrow = draw('rel-rail', m, NARROW);
+  must(/data-layout="merged"/.test(narrow.svg) && textOf(narrow.svg, 'rule-v3.when').includes('借阅规则') && !textOf(wide.svg, 'rule-v3.when').includes('借阅规则'), '窄版应并成一条轨，并把栏名写进每一行');
+  const shapes = (svg) => Object.fromEntries(['point', 'interval', 'open-interval', 'deadline'].map((k) => [k, (svg.match(new RegExp(`data-shape="${k}"`, 'g')) ?? []).length]));
+  for (const res of [wide, narrow]) {
+    const s = shapes(res.svg);
+    must(s.point === 5 && s.interval === 2 && s['open-interval'] === 1 && s.deadline === 1, `形状数目不对：${JSON.stringify(s)}`);
+    must(textOf(res.svg, 'cutoff.when').startsWith('截止') && /data-row-id="cutoff"[^>]*data-state="open"/.test(res.svg), '截止没有写成词，或待定没有标出');
+    must(res.svg.split('#1f5fd1').length === 5, '蓝色应只出现在待定的那一处（引线、端点、它的标题）和图例里');
+  }
+  // 栏名长到折行时，标尺从栏名下面开始，栏名不压住第一行
+  const longLane = clone(m);
+  longLane.lanes[0].label = '古籍修复与数字化加工中心的值班安排';
+  const ll = draw('rel-rail', longLane, 672);
+  must(!overlaps(ll.labels).length && ll.axis.y0 > 40, `栏名折行后与别的文字相叠：${overlaps(ll.labels).slice(0, 3).join('、')}`);
+  must(!/data-leader-for/.test(GEN['rel-sheet'](byId('sheet-day').model, { width: 480, scope: 'c' }).svg.match(/<g data-role="cross-link"[\s\S]*?<\/g>/g)?.join('') ?? ''), '组合图的连线里混进了时间图的引线');
+  // 重叠的区间错开，超过三个拒用
+  const over = clone(m);
+  for (let i = 0; i < 3; i++) over.rows.push({ id: `o${i}`, lane: 'slip', at: T6('14:10'), until: T6('14:50'), label: '重叠' });
+  must(codeOf(() => draw('rel-rail', over)) === 'capacity', '四个重叠的区间没有按容量拒用');
+  return '宽版三栏三条轨共用标尺，不同栏里同一时刻同高；窄版并成一条轨，栏名写进每行；四种形状各自计数正确；蓝色只在待定的截止上';
+});
+
+check('C04', '先后与上下级：编号跟着输入走，层级和路径跟着上级走', () => {
+  const steps = clone(byId('rail-steps').model);
+  const a = draw('rel-rail', steps);
+  must(['1.', '2.', '3.', '4.', '5.'].every((n, i) => textOf(a.svg, `${steps.rows[i].id}.n`) === n), '编号与输入次序不一致');
+  [steps.rows[1], steps.rows[2]] = [steps.rows[2], steps.rows[1]];
+  const b = draw('rel-rail', steps);
+  must(textOf(b.svg, 's-repair.n') === '2.' && textOf(b.svg, 's-check.n') === '3.' && b.equivalent.items[1].startsWith('2. 修复室评估'), '调换两步之后编号或等效文字没有跟着变');
+  must((a.svg.match(/<path/g) ?? []).length === (b.svg.match(/<path/g) ?? []).length, '调换次序不应改变路径数');
+
+  const tree = clone(byId('rail-tree').model);
+  const t = draw('rel-rail', tree);
+  const level = (svg, id) => group(svg, 'data-row-id', id).match(/data-level="(\d)"/)[1];
+  must(level(t.svg, 'lib') === '1' && level(t.svg, 'repair-room') === '3' && level(t.svg, 'binding') === '4', '层级不对');
+  must(Object.values(t.positions).every((p) => p.x === 4 + 18 * (p.level - 1)), '缩进与层级不成正比');
+  must((t.svg.match(/data-child=/g) ?? []).length === tree.rows.filter((x) => x.parent).length, '上下级连线的条数不对');
+  must(t.equivalent.items.some((x) => x.startsWith('图书馆 › 典藏部 › 修复室 › 装帧组')), '等效文字里没有完整路径');
+  // 把修复室改挂到读者服务部下面：它和它的下级一起移动
+  tree.rows.find((x) => x.id === 'repair-room').parent = 'service';
+  const t2 = draw('rel-rail', tree);
+  must(t2.equivalent.items.some((x) => x.startsWith('图书馆 › 读者服务部 › 修复室 › 装帧组')) && t2.positions['repair-room'].y < t2.positions.stacks.y, '改了上级之后位置或路径没有跟着变');
+  const wideTree = draw('rel-rail', byId('rail-tree-wide').model);
+  must(textOf(wideTree.svg, 'empty.leaf') === '没有下级' && textOf(wideTree.svg, 'root.leaf') === null && level(wideTree.svg, 'd4') === '5', '空根或深链没有照实画出');
+  const row = (id, parent) => ({ id, label: id, ...(parent ? { parent } : {}) });
+  const depth = { kind: 'list', depth: '隶属' };
+  const table = [
+    ['上下级成环', 'cycle', { title: 't', scale: depth, rows: [row('a', 'b'), row('b', 'a')] }],
+    ['上级不存在', 'unknown-parent', { title: 't', scale: depth, rows: [row('a', 'x')] }],
+    ['六层', 'capacity', { title: 't', scale: depth, rows: [row('a'), row('b', 'a'), row('c', 'b'), row('d', 'c'), row('e', 'd'), row('f', 'e')] }],
+    ['十三行', 'capacity', { title: 't', scale: { kind: 'list' }, rows: Array.from({ length: 13 }, (_, i) => row(`r${i}`)) }],
+    ['先后图里写上级', 'scale', { title: 't', scale: { kind: 'order' }, rows: [row('a'), row('b', 'a')] }],
+    ['先后图里并排几栏', 'scale', { title: 't', scale: { kind: 'order' }, lanes: [{ id: 'x', label: '甲' }], rows: [row('a')] }],
+    ['结束早于开始', 'time', { title: 't', scale: { kind: 'time' }, rows: [{ id: 'a', label: 'a', at: T6('10:00'), until: T6('09:00') }] }],
+    ['截止带了结束时刻', 'time', { title: 't', scale: { kind: 'time' }, rows: [{ id: 'a', label: 'a', kind: 'deadline', at: T6('10:00'), until: T6('11:00') }] }],
+    ['时刻没有偏移', 'time', { title: 't', scale: { kind: 'time' }, rows: [{ id: 'a', label: 'a', at: '2026-10-06T10:00' }] }],
+    ['时间跨度九周', 'capacity', { title: 't', scale: { kind: 'time' }, rows: [{ id: 'a', label: 'a', at: '2026-01-01T00:00Z' }, { id: 'b', label: 'b', at: '2026-03-05T00:00Z' }] }],
+    ['行的栏不存在', 'lane', { title: 't', scale: { kind: 'time' }, lanes: [{ id: 'x', label: '甲' }], rows: [{ id: 'a', label: 'a', lane: 'y', at: T6('10:00') }] }],
+    ['行的状态不认识', 'state', { title: 't', scale: { kind: 'time' }, rows: [{ id: 'a', label: 'a', at: T6('10:00'), state: 'done' }] }],
+    ['行名叫 constructor 的归属', 'origin', { title: 't', scale: { kind: 'time' }, rows: [{ id: 'a', label: 'a', at: T6('10:00'), origin: 'constructor' }] }],
+    ['清单里写了成立程度', 'scale', { title: 't', scale: { kind: 'list' }, rows: [{ id: 'a', label: 'a', state: 'open' }] }],
+    ['正文写成了对象', 'row', { title: 't', scale: { kind: 'order' }, rows: [{ id: 'a', label: 'a', text: {} }] }],
+    ['说明写成了数字 0', 'row', { title: 't', scale: { kind: 'order' }, rows: [{ id: 'a', label: 'a', note: 0 }] }],
+    ['没有并排的栏却写了 cells', 'unsupported', { title: 't', scale: { kind: 'list' }, rows: [{ id: 'a', label: 'a', cells: { x: { text: '1' } } }] }],
+    ['没有栏却写了 lane', 'unsupported', { title: 't', scale: { kind: 'order' }, rows: [{ id: 'a', label: 'a', lane: 'x' }] }],
+    ['并排的栏里行自己带正文', 'unsupported', { title: 't', scale: { kind: 'list' }, lanes: [{ id: 'x', label: '甲' }], rows: [{ id: 'a', label: 'a', text: '正文', cells: { x: { text: '1' } } }] }],
+    ['data 的键不是 data-*', 'data', { title: 't', scale: { kind: 'order' }, rows: [{ id: 'a', label: 'a', data: { 'data-x" onmouseover="alert(1)': 'v' } }] }],
+    ['输入是 null', 'model', null],
+    ['lanes 写成一句话', 'lane', { title: 't', scale: { kind: 'list' }, lanes: 'abc', rows: [row('a')] }],
+    ['行名带一个会被去掉的字符', 'id', { title: 't', scale: { kind: 'list' }, rows: [{ id: 'a\uffff', label: 'a' }] }],
+    ['并排的栏里再写上级', 'scale', { title: 't', scale: depth, lanes: [{ id: 'x', label: '甲' }], rows: [{ id: 'a', label: 'a', cells: { x: { text: '1' } } }, { id: 'b', label: 'b', parent: 'a', cells: { x: { text: '2' } } }] }],
+  ];
+  for (const [name, code, model] of table) must(codeOf(() => draw('rel-rail', model)) === code, `${name}：应为 ${code}，实际 ${codeOf(() => draw('rel-rail', model))}`);
+  // data 里的属性不能盖掉生成器自己写的；名叫 __proto__ 的行照常有位置
+  const own = draw('rel-rail', { title: 't', scale: { kind: 'time' }, rows: [{ id: '__proto__', label: 'p', at: T6('09:00'), data: { 'data-role': 'x', 'data-kind': 'deadline' } }] });
+  must(/data-row-id="__proto__" data-role="row"/.test(own.svg) && /data-kind="point"/.test(own.svg) && !/data-role="x"/.test(own.svg) && Object.hasOwn(own.positions, '__proto__'), 'data 盖掉了生成器写的属性，或 __proto__ 这一行没有位置');
+  return `调换两步，编号和等效文字跟着变；改挂上级，整枝一起移动，路径改写；空根写“没有下级”；${table.length} 种越界输入按预期代码拒用`;
+});
+
+check('C05', '对照与选取：没变的、没选的都留着；单位不同、对象不同不算变化', () => {
+  const m = clone(byId('pair-slip').model);
+  const notes = [];
+  for (const w of WIDTHS) {
+    const res = draw('rel-pair', m, w);
+    must(JSON.stringify(res.count) === JSON.stringify({ same: 2, changed: 2, added: 1, removed: 1, pending: 1 }), `宽 ${w}：五种变化的计数不对 ${JSON.stringify(res.count)}`);
+    must((res.svg.match(/data-role="row"/g) ?? []).length === m.fields.length, `宽 ${w}：行数与字段数不符，有字段被省掉了`);
+    for (const [id, kind] of [['item', 'same'], ['slot', 'changed'], ['companion', 'removed'], ['purpose', 'added'], ['copy', 'pending']]) must(new RegExp(`data-row-id="${id}"[^>]*data-change="${kind}"`).test(res.svg), `宽 ${w}：${id} 没有标为 ${kind}`);
+    must(textOf(res.svg, 'copy.change') === '待定' && textOf(res.svg, 'copy.after').startsWith('提议：') && res.svg.split('#1f5fd1').length === 4, `宽 ${w}：待定的一行没有写成提议，或蓝色不止用在它上面`);
+    must(textOf(res.svg, 'duration.before') === '60 分钟' && textOf(res.svg, 'companion.after') === '这一项已不在' && textOf(res.svg, 'purpose.before') === '原先没有这一项', `宽 ${w}：单位或空缺的写法不对`);
+    notes.push(`宽 ${w}：${m.fields.length} 行`);
+  }
+  m.fields.find((f) => f.id === 'slot').after = m.fields.find((f) => f.id === 'slot').before;
+  must(draw('rel-pair', m).count.same === 3 && draw('rel-pair', m).count.changed === 1, '把值改回去之后没有变成“未变”');
+
+  const pr = f02ToPair(F.F02);
+  const res = draw('rel-pair', pr);
+  must(/data-row-id="期限"[^>]*data-selected="true"/.test(res.svg) && /data-row-id="付款"[^>]*data-selected="false"/.test(res.svg) && textOf(res.svg, '付款.view') === '没有选入，仍在源里' && textOf(res.svg, '付款.source') === '季度', 'F02：没有选入的字段没有照样列出');
+  const brief = clone(byId('pair-brief').model);
+  const br = draw('rel-pair', brief);
+  must(br.stale && noteOf(br.svg).includes('非当前版本') && textOf(br.svg, 'purpose.view').includes('选取时还没有这个字段'), '依据旧版本的选取没有写明');
+  const allSel = { ...brief, view: { ...brief.view, basis: { ...brief.view.basis, version: 2 } }, selected: brief.fields.map((f) => f.id) };
+  const none = { ...brief, selected: [] };
+  must(draw('rel-pair', allSel).equivalent.summary.includes('全部选入') && !draw('rel-pair', allSel).stale, '全选没有写明');
+  must(!draw('rel-pair', allSel).equivalent.summary.includes('没有选入的') && draw('rel-pair', none).equivalent.summary.includes('全部仍在源里'), '全选或空选时的摘要自相矛盾');
+  must(draw('rel-pair', none).equivalent.summary.includes('一个都没有选') && (draw('rel-pair', none).svg.match(/data-role="row"/g) ?? []).length === 4, '空选之后字段行少了');
+  const ch = (fields, o = {}) => ({ title: 't', kind: 'change', before: { label: '原', ref: { id: 'a', version: 1 } }, after: { label: '现', ref: { id: 'a', version: 2 } }, fields, ...o });
+  // 只差空白的值不算改了
+  must(draw('rel-pair', ch([{ id: 'f', label: 'f', before: '60 ', after: 60 }])).count.same === 1, '只差一个空格的两个值被算成“已改”');
+  const table = [
+    ['选入了选取时还没有的字段', 'stale-basis', { ...brief, selected: ['item', 'purpose'] }],
+    ['两边都没有值', 'field', ch([{ id: 'f', label: 'f' }])],
+    ['待定却没有提议的值', 'field', ch([{ id: 'f', label: 'f', before: '1', pending: true }])],
+    ['一边没有写版本', 'no-version', ch([{ id: 'f', label: 'f', before: '1', after: '2' }], { before: { label: '原', ref: { id: 'a' } } })],
+    ['一边只有一句话', 'no-version', ch([{ id: 'f', label: 'f', before: '1', after: '2' }], { before: { label: '原', ref: { text: '上一版' } } })],
+    ['字段重名', 'duplicate-id', ch([{ id: 'f', label: 'f', before: '1', after: '2' }, { id: 'f', label: 'g', before: '1', after: '2' }])],
+    ['字段名与栏重名', 'duplicate-id', ch([{ id: 'before', label: 'f', before: '1', after: '2' }])],
+    ['值是空字符串', 'value', ch([{ id: 'f', label: 'f', before: ' ', after: '2' }])],
+    ['kind 不认识', 'kind', { title: 't', kind: 'diff' }],
+    ['输入是 null', 'model', null],
+    ['后一份的版本比前一份旧', 'version', ch([{ id: 'f', label: 'f', before: '1', after: '2' }], { before: { label: '原', ref: { id: 'a', version: 3 } } })],
+    ['两份是同一个版本', 'version', ch([{ id: 'f', label: 'f', before: '1', after: '2' }], { before: { label: '原', ref: { id: 'a', version: 2 } } })],
+    ['同一个对象两边名字不同', 'inconsistent-label', ch([{ id: 'f', label: 'f', before: '1', after: '2' }], { before: { label: '原', ref: { id: 'a', label: '甲', version: 1 } }, after: { label: '现', ref: { id: 'a', label: '乙', version: 2 } } })],
+    ['pending 写成字符串', 'field', ch([{ id: 'f', label: 'f', before: '1', after: '2', pending: 'false' }])],
+    ['前一份的指向写在 basis 里', 'no-version', ch([{ id: 'f', label: 'f', before: '1', after: '2' }], { before: { label: '原', basis: { id: 'a', version: 1 } } })],
+    ['选取依据的版本比源还新', 'version', { ...brief, view: { ...brief.view, basis: { ...brief.view.basis, version: 5 } } }],
+    ['since 和版本不是数', 'version', { ...brief, source: { label: '源', ref: { id: 'slip-D-12', label: '调阅单 D-12', version: '2026-03' } }, view: { label: '摘要', basis: { id: 'slip-D-12', label: '调阅单 D-12', version: '2026-02' } }, fields: [{ id: 'x', label: 'x', value: '1', since: '2026-03' }], selected: ['x'] }],
+    ['selected 有重复', 'selected', { ...brief, selected: ['item', 'item'] }],
+  ];
+  for (const [name, code, model] of table) must(codeOf(() => draw('rel-pair', model)) === code, `${name}：应为 ${code}，实际 ${codeOf(() => draw('rel-pair', model))}`);
+  return `${notes.join('；')}，五种变化各标各的，蓝色只在待定一行；把值改回去变成“未变”；F02 没选入的“付款”仍列出；全选、空选、旧版本依据都写明；${table.length} 种越界输入按预期代码拒用`;
+});
+
+check('C06', '新的两件：不可信标签按文字插入，多实例不串 ID，能进组合并连上线', () => {
+  const evil = '<script>alert(1)</script>&"';
+  const svgs = [
+    draw('rel-rail', { title: evil, scale: { kind: 'time', note: evil }, lanes: [{ id: 'x', label: evil }], rows: [{ id: 'a', lane: 'x', at: T6('09:00'), until: null, label: evil, text: evil, note: evil, basis: { text: evil } }] }).svg,
+    draw('rel-rail', { title: evil, scale: { kind: 'list', depth: evil }, rows: [{ id: 'a', label: evil }, { id: 'b', parent: 'a', label: evil, note: evil }] }).svg,
+    draw('rel-rail', { title: evil, scale: { kind: 'order' }, rows: [{ id: 'a', label: evil, text: evil }] }).svg,
+    draw('rel-pair', { title: evil, kind: 'change', before: { label: evil, ref: { id: 'a', label: evil, version: 1 } }, after: { label: evil, ref: { id: 'a', label: evil, version: 2 } }, fields: [{ id: 'f', label: evil, note: evil, unit: evil, before: evil, after: 'x' }] }).svg,
+  ];
+  for (const svg of svgs) must(!/<script/i.test(svg) && svg.includes('&lt;script&gt;'), '有标签没有被转义');
+  const many = ['rail-day', 'f04-times', 'rail-tree', 'rail-steps', 'pair-slip', 'pair-brief'].flatMap((id, i) => [draw(byId(id).asset, byId(id).model, NARROW, `m${i}a`).svg, draw(byId(id).asset, byId(id).model, 672, `m${i}b`).svg]);
+  const scan = idScan(many);
+  must(!scan.duplicates.length && !scan.dangling.length, `重复或越界：${[...scan.duplicates, ...scan.dangling].join(', ')}`);
+  // 对照表的两栏各指调阅单的一个版本，版本图里画着它们，组合时连上；
+  // 时间图里的依据只留作文字，不拉横线穿过标尺，但等效文字里说明它画在哪一件里
+  const sh = GEN['rel-sheet'](byId('sheet-day').model, { width: 480, scope: 'chk' });
+  const linked = sh.links.map((l) => `${l.owner}→${l.target}`).sort().join(' ');
+  must(linked === 'after→slip-D-12@2 before→slip-D-12@1', `组合里的连线不对：${linked}`);
+  must(sh.equivalent.notes.some((t) => t.includes('借阅规则 v2 第 8 条') && t.includes('版本与判断') && t.includes('不拉连线')), '时间图里的依据画在别的件里这件事，等效文字没有说');
+  must((sh.svg.match(/data-role="scale-note"/g) ?? []).length === 3, '组合里每一件都应保留自己的读法');
+  // 行的 id、字段的 id 和对象的 id 不是一回事：指向“item”这个对象的依据，不该连到名叫 item 的字段上
+  const trap = GEN['rel-sheet']({ title: 't', pieces: [{ asset: 'rel-rail', heading: '一', model: { title: 'a', scale: { kind: 'order' }, rows: [{ id: 'r', label: '查阅', basis: { id: 'item', label: '某个对象', locator: '第 1 条' } }] } }, { asset: 'rel-pair', heading: '二', model: byId('pair-slip').model }] }, { width: 480, scope: 'trap' });
+  must(!trap.links.some((l) => l.target === 'item'), '指向一个对象的依据被连到了同名的字段上');
+  // 注入的文字不破坏 XML
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'svg01-evil-'));
+  svgs.forEach((svg, i) => fs.writeFileSync(path.join(dir, `evil-${i}.svg`), svg));
+  const lint = spawnSync('xmllint', ['--noout', ...svgs.map((_, i) => path.join(dir, `evil-${i}.svg`))], { encoding: 'utf8' });
+  fs.rmSync(dir, { recursive: true, force: true });
+  must(!lint.error && lint.status === 0, `注入之后不是格式良好的 XML：${lint.stderr?.slice(0, 200)}`);
+  return `四种输入里的 <script> 字样都作为文字输出；12 个实例共 ${scan.ids} 个 ID，无重复、无越界引用，注入后仍是格式良好的 XML；组合里对照表的两栏连到调阅单的两个版本，时间图里的依据只留作文字并在等效文字里说明；同名的字段不被误连`;
+});
+
 check('X01', '全部产物是格式良好的 XML', () => {
   const files = fs.readdirSync(path.join(HERE, 'svg')).filter((n) => n.endsWith('.svg')).map((n) => path.join(HERE, 'svg', n));
   const res = spawnSync('xmllint', ['--noout', ...files], { encoding: 'utf8' });
@@ -405,9 +670,37 @@ for (let i = 0; i < 10; i++) {
   const bad = draw('rel-qualify', longClaim, NARROW, 'control-fragment');
   probeItems.push({ scope: 'control-fragment', group: 'control', w: bad.width, labels: bad.labels, svg: bad.svg.replace(/(<path d=")M(\S+) (\S+) L(\S+) \S+ L\S+ (\S+) L\S+ \S+("[^>]*data-fragment=)/, (m, p, x1, y1, x2, y2, tail) => `${p}M${x1} 3 L${x2} 3 L${x2} 18 L${x1} 18${tail}`) });
 }
+{
+  // 压力：栏名长到折行；一串宽的大写字母（估宽最容易偏窄的字形）
+  const longLane = clone(byId('rail-day').model);
+  longLane.lanes[0].label = '古籍修复与数字化加工中心的值班安排';
+  const ll = draw('rel-rail', longLane, 672, 'long-lane');
+  probeItems.push({ scope: 'long-lane', group: 'case', w: ll.width, labels: ll.labels, svg: ll.svg });
+  const caps = { title: 't', scale: { kind: 'list', depth: '包含' }, rows: [{ id: 'a', label: 'WWWWWWWWWWWWWWWWWWWW MMMMMMMMMMMMM' }, { id: 'b', parent: 'a', label: 'MMMMMMMMMMMMMMMM WWWWWWWWWWWWWWWWWWWWWWW', note: 'WWWWWWWWWWWWWWWWWWWWWWWWWWWW' }] };
+  for (const w of WIDTHS) {
+    const cp = draw('rel-rail', caps, w, `caps-${w}`);
+    probeItems.push({ scope: `caps-${w}`, group: 'case', w: cp.width, labels: cp.labels, svg: cp.svg });
+  }
+  const pc = draw('rel-pair', { title: 't', kind: 'change', before: { label: '原', ref: { id: 'a', version: 1 } }, after: { label: '现', ref: { id: 'a', version: 2 } }, fields: [{ id: 'f', label: 'WWWWWWWWWW', before: 'MMMMMMMMMMMMMMMMMMMM WWWW', after: 'WWWWWWWWWWWWWWWWWWWWWWWWWWWWWW' }] }, 672, 'caps-pair');
+  probeItems.push({ scope: 'caps-pair', group: 'case', w: pc.width, labels: pc.labels, svg: pc.svg });
+  // 对照：窄版对照表里把一格挪到下一行去；把一行的 data-parent 写成别的上级
+  const ps = draw('rel-pair', byId('pair-slip').model, NARROW, 'control-stacked');
+  probeItems.push({ scope: 'control-stacked', group: 'control', w: ps.width, labels: [], svg: ps.svg.replace(/(<text x=")([\d.]+)(" y="[\d.]+"[^>]*data-text="duration\.after")/, (m, a, x, z) => `${a}${+x - 60}${z}`) });
+  const tp = draw('rel-rail', byId('rail-tree').model, NARROW, 'control-parent');
+  probeItems.push({ scope: 'control-parent', group: 'control', w: tp.width, labels: tp.labels, svg: tp.svg.replace('data-row-id="rare-stack" data-role="row" data-parent="stacks"', 'data-row-id="rare-stack" data-role="row" data-parent="service"') });
+}
+{
+  // 对照：把一个时刻的圆点往下挪 20；把“装帧组”的层级写成 2；把对照表里一格往右挪出它那一栏
+  const t = draw('rel-rail', f04ToRail(F.F04), NARROW, 'control-time');
+  probeItems.push({ scope: 'control-time', group: 'control', w: t.width, labels: t.labels, svg: t.svg.replace(/(<circle cx="[\d.]+" cy=")([\d.]+)("[^>]*data-mark-for="t2")/, (m, a, y, z) => `${a}${+y + 20}${z}`) });
+  const tr = draw('rel-rail', byId('rail-tree').model, NARROW, 'control-level');
+  probeItems.push({ scope: 'control-level', group: 'control', w: tr.width, labels: tr.labels, svg: tr.svg.replace(/(data-row-id="binding"[^>]*data-level=")4/, '$12') });
+  const pr = draw('rel-pair', byId('pair-slip').model, 672, 'control-cell');
+  probeItems.push({ scope: 'control-cell', group: 'control', w: pr.width, labels: pr.labels, svg: pr.svg.replace(/(<text x=")([\d.]+)("[^>]*data-text="duration\.after")/, (m, a, x, z) => `${a}${+x + 40}${z}`) });
+}
 const probeScript = `
 const items = JSON.parse(document.getElementById('data').textContent);
-const out = { ua: navigator.userAgent, svgs: 0, texts: 0, overBudget: [], outside: [], collisions: [], missing: [], refs: [], slack: [], strikes: [], brackets: 0, bracketErrors: [], bindings: 0, bindingErrors: [], fragments: 0, fragmentErrors: [], control: { strikes: [], bracketErrors: [], bindingErrors: [], fragmentErrors: [] }, removal: null };
+const out = { ua: navigator.userAgent, svgs: 0, texts: 0, overBudget: [], outside: [], collisions: [], missing: [], refs: [], slack: [], strikes: [], brackets: 0, bracketErrors: [], bindings: 0, bindingErrors: [], fragments: 0, fragmentErrors: [], timeMarks: 0, timeErrors: [], levels: 0, levelErrors: [], cells: 0, cellErrors: [], control: { strikes: [], bracketErrors: [], bindingErrors: [], fragmentErrors: [], timeErrors: [], levelErrors: [], cellErrors: [] }, removal: null };
 const hit = (a, b) => Math.min(a.x + a.width, b.x + b.width) - Math.max(a.x, b.x) > 1 && Math.min(a.y + a.height, b.y + b.height) - Math.max(a.y, b.y) > 1;
 const refsOk = (svg) => {
   const bad = [];
@@ -448,9 +741,16 @@ for (const it of items) {
   for (const p of svg.querySelectorAll('path[d]')) {
     if (p.closest('defs')) continue;
     const ctm = p.getScreenCTM();
-    const pts = [...p.getAttribute('d').matchAll(/[ML]\\s*(-?[\\d.]+)[ ,](-?[\\d.]+)/g)].map((m) => [ctm.a * m[1] + ctm.c * m[2] + ctm.e, ctm.b * m[1] + ctm.d * m[2] + ctm.f]);
-    for (let i = 1; i < pts.length; i++) {
-      const seg = { x: Math.min(pts[i - 1][0], pts[i][0]), y: Math.min(pts[i - 1][1], pts[i][1]), width: Math.abs(pts[i][0] - pts[i - 1][0]), height: Math.abs(pts[i][1] - pts[i - 1][1]) };
+    const segs = [];
+    let px = 0, py = 0, last = null;
+    for (const m of p.getAttribute('d').matchAll(/([MLHV])\\s*(-?[\\d.]+)(?:[ ,](-?[\\d.]+))?/g)) {
+      if (m[1] === 'H') px = +m[2]; else if (m[1] === 'V') py = +m[2]; else { px = +m[2]; py = +m[3]; }
+      const pt = [ctm.a * px + ctm.c * py + ctm.e, ctm.b * px + ctm.d * py + ctm.f];
+      if (m[1] !== 'M' && last) segs.push([last, pt]);
+      last = pt;
+    }
+    for (const [a, z] of segs) {
+      const seg = { x: Math.min(a[0], z[0]), y: Math.min(a[1], z[1]), width: Math.abs(z[0] - a[0]), height: Math.abs(z[1] - a[1]) };
       for (const t of boxes) {
         if (t.key.endsWith('.mark')) continue;
         const b = { x: t.b.x + 1, y: t.b.y + 3, width: t.b.width - 2, height: t.b.height - 6 };
@@ -484,6 +784,78 @@ for (const it of items) {
     const bb = br.getBBox();
     const mid = (r) => r.y + r.height / 2;
     if (mid(a) < bb.y - 1 || mid(z) > bb.y + bb.height + 1) sink.fragmentErrors.push(it.scope + ': 括线没有盖住“' + text + '”所在的行');
+  }
+  // 时间图：每个记号的位置由标尺上的刻度线性推出；引线的一头在记号的高度，另一头在它那一行的首行里
+  for (const rail of svg.querySelectorAll('g[data-role="rail"]')) {
+    const ticks = [...rail.querySelectorAll('path[data-tick-ms]')].map((t) => ({ ms: +t.getAttribute('data-tick-ms'), y: t.getBBox().y }));
+    if (ticks.length < 2) continue;
+    const a = ticks[0], z = ticks[ticks.length - 1];
+    const yOf = (ms) => a.y + ((ms - a.ms) / (z.ms - a.ms)) * (z.y - a.y);
+    for (const mk of rail.querySelectorAll('[data-mark-for]')) {
+      out.timeMarks++;
+      const id = mk.getAttribute('data-mark-for');
+      const bb = mk.getBBox();
+      const shape = mk.getAttribute('data-shape');
+      const want = yOf(+mk.getAttribute('data-at-ms'));
+      const got = shape === 'point' || shape === 'deadline' ? bb.y + bb.height / 2 : bb.y;
+      if (Math.abs(got - want) > 1) sink.timeErrors.push(it.scope + ': ' + id + ' 的记号在 ' + got.toFixed(1) + '，按时刻应在 ' + want.toFixed(1));
+      if (mk.hasAttribute('data-until-ms') && bb.height > 3.01 && Math.abs(bb.y + bb.height - yOf(+mk.getAttribute('data-until-ms'))) > 1) sink.timeErrors.push(it.scope + ': ' + id + ' 的区间长度不按比例');
+      if (shape === 'open-interval' && (bb.height > 24 || mk.hasAttribute('data-until-ms'))) sink.timeErrors.push(it.scope + ': ' + id + ' 结束未知，却画出了长度');
+      const lead = rail.querySelector('path[data-leader-for="' + CSS.escape(id) + '"]');
+      const head = rail.querySelector('g[data-row-id="' + CSS.escape(id) + '"] text');
+      if (!lead || !head) { sink.timeErrors.push(it.scope + ': ' + id + ' 没有引线或没有文字'); continue; }
+      const n = lead.getTotalLength();
+      const p0 = lead.getPointAtLength(0), p1 = lead.getPointAtLength(n);
+      const hb = head.getBBox();
+      if (Math.abs(p0.y - want) > 1) sink.timeErrors.push(it.scope + ': ' + id + ' 的引线没有从它的时刻出发');
+      if (p1.y < hb.y - 1 || p1.y > hb.y + 20 || p1.x > hb.x || p1.x < hb.x - 14) sink.timeErrors.push(it.scope + ': ' + id + ' 的引线没有接到它的文字');
+    }
+  }
+  // 上下级：同一层的文字左缘对齐，层级越深越靠右，下级在上级下面
+  const leveled = [...svg.querySelectorAll('g[data-role="row"][data-level]')].map((g) => ({ id: g.getAttribute('data-row-id'), parent: g.getAttribute('data-parent'), level: +g.getAttribute('data-level'), b: g.querySelector('text').getBBox() }));
+  for (const row of leveled) {
+    out.levels++;
+    const same = leveled.find((o) => o.level === row.level);
+    if (Math.abs(same.b.x - row.b.x) > 0.6) sink.levelErrors.push(it.scope + ': ' + row.id + ' 与同层的 ' + same.id + ' 左缘不齐');
+    if (!row.parent) { if (row.level !== 1) sink.levelErrors.push(it.scope + ': ' + row.id + ' 没有上级，却不在第一层'); continue; }
+    const up = leveled.find((o) => o.id === row.parent);
+    if (!up || up.level !== row.level - 1 || up.b.x >= row.b.x - 6 || up.b.y >= row.b.y) { sink.levelErrors.push(it.scope + ': ' + row.id + ' 的缩进或位置与它的上级对不上'); continue; }
+    // 往上找第一个浅一层的行，它应当就是写着的那个上级
+    const above = leveled.filter((o) => o.b.y < row.b.y && o.level === row.level - 1).sort((p, q) => q.b.y - p.b.y)[0];
+    if (above.id !== row.parent) sink.levelErrors.push(it.scope + ': ' + row.id + ' 画在 ' + above.id + ' 下面，写的上级却是 ' + row.parent);
+  }
+  // 并排的栏：同一行各格的首行同高，各格左缘落在自己那一栏的栏名之下
+  if (svg.getAttribute('data-layout') === 'columns' && svg.getAttribute('data-scale') === 'list') {
+    const lanes = svg.getAttribute('data-lanes').split(' ');
+    const boxOf = (key) => { const t = svg.querySelector('text[data-text="' + CSS.escape(key) + '"]'); return t ? t.getBBox() : null; };
+    for (const g of svg.querySelectorAll('g[data-role="row"]')) {
+      const id = g.getAttribute('data-row-id');
+      const tops = [];
+      for (const ln of lanes) {
+        out.cells++;
+        const cb = boxOf(id + '.' + ln), hb = boxOf(ln + '.lane');
+        if (!cb || !hb) { sink.cellErrors.push(it.scope + ': ' + id + ' 在 ' + ln + ' 一栏没有文字'); continue; }
+        tops.push(cb.y);
+        if (cb.x < hb.x - 0.6 || cb.x > hb.x + 14) sink.cellErrors.push(it.scope + ': ' + id + ' 的 ' + ln + ' 一格不在它那一栏之下');
+      }
+      if (Math.max(...tops) - Math.min(...tops) > 1) sink.cellErrors.push(it.scope + ': ' + id + ' 这一行的几格不在同一高度');
+    }
+  }
+  // 窄版的并排栏：每一格和它的栏名同高，都在这一行的名称之下、下一行的名称之上
+  if (svg.getAttribute('data-layout') === 'stacked') {
+    const lanes = svg.getAttribute('data-lanes').split(' ');
+    const boxOf = (key) => { const t = svg.querySelector('text[data-text="' + CSS.escape(key) + '"]'); return t ? t.getBBox() : null; };
+    const rows = [...svg.querySelectorAll('g[data-role="row"]')].map((g) => g.getAttribute('data-row-id'));
+    rows.forEach((id, i) => {
+      const head = boxOf(id + '.label'), next = rows[i + 1] ? boxOf(rows[i + 1] + '.label') : null;
+      for (const ln of lanes) {
+        out.cells++;
+        const cb = boxOf(id + '.' + ln), nb = boxOf(id + '.' + ln + '.lane');
+        if (!cb || !nb || !head) { sink.cellErrors.push(it.scope + ': ' + id + ' 在 ' + ln + ' 一栏没有文字或没有栏名'); continue; }
+        if (Math.abs(cb.y - nb.y) > 4 || nb.x >= cb.x) sink.cellErrors.push(it.scope + ': ' + id + ' 的 ' + ln + ' 一格和它的栏名不在同一行');
+        if (cb.y < head.y + head.height - 2 || (next && cb.y + cb.height > next.y + 2)) sink.cellErrors.push(it.scope + ': ' + id + ' 的 ' + ln + ' 一格不在这一行里');
+      }
+    });
   }
   // 括线的实际范围落在目标主张的实际文字框内，不碰别的主张
   for (const br of svg.querySelectorAll('path[data-bracket-for]')) {
@@ -564,6 +936,9 @@ if (probe.ran) {
   push('P06', '浏览器实测：括线落在目标主张的文字框内，不碰别的主张', !d.bracketErrors.length && d.control.bracketErrors.length > 0, d.bracketErrors.slice(0, 10).join('；') || `${d.brackets} 条括线；对照图报出 ${d.control.bracketErrors.length} 处`);
   push('P07', '浏览器实测：绑定行落在所绑版本之下', !d.bindingErrors.length && d.control.bindingErrors.length > 0, d.bindingErrors.slice(0, 8).join('；') || `${d.bindings} 条绑定；对照图报出 ${d.control.bindingErrors.length} 处`);
   push('P08', '浏览器实测：片段括线盖住下划线片段所在的行', !d.fragmentErrors.length && d.control.fragmentErrors.length > 0, d.fragmentErrors.slice(0, 8).join('；') || `${d.fragments} 段下划线；对照图报出 ${d.control.fragmentErrors.length} 处`);
+  push('P09', '浏览器实测：时间记号按比例落在标尺上，引线接到自己的文字', !d.timeErrors.length && d.control.timeErrors.length > 0, d.timeErrors.slice(0, 8).join('；') || `${d.timeMarks} 个记号；对照图报出 ${d.control.timeErrors.length} 处`);
+  push('P10', '浏览器实测：缩进与层级一致，下级在上级之下', !d.levelErrors.length && d.control.levelErrors.length > 2, d.levelErrors.slice(0, 8).join('；') || `${d.levels} 行；对照图报出 ${d.control.levelErrors.length} 处`);
+  push('P11', '浏览器实测：并排的栏里同一行同高、各格在自己的栏下', !d.cellErrors.length && d.control.cellErrors.length > 1, d.cellErrors.slice(0, 8).join('；') || `${d.cells} 格；对照图报出 ${d.control.cellErrors.length} 处`);
   probe.ua = d.ua;
 }
 

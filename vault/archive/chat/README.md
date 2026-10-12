@@ -40,3 +40,5 @@
 [建立视觉语法语料库](visual-grammar-20260928.json)：3轮6消息，hasMore=false；1张技术栈截图已保存并目视阅读。6个引用占位仍 missing-original；见 [入账](../../intake/visual-grammar-20260928.json)。
 
 - [提炼Palantir书单方法](palantir-20261001.json)：2026-10-01取回4轮7消息，无截断、无附件，hasMore=false；[登记与覆盖](../../intake/palantir-20261001.json)。
+
+- [Chat ingestion 与 Astra-era harness audit 讨论摘录 · 2026-10-09](chat-ingestion-harness-20261009/README.md)：两份用户提供的完整粘贴文本；无可确认 conversation / turn ID，不代表完整对话导出；字节、hash 与覆盖见 [intake](../../intake/chat-ingestion-harness-20261009.json)。

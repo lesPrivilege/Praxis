@@ -10,3 +10,11 @@
 本分支负责表现方式，不维护一套 renderer API。时长、曲线、镜头、材质与动态排印是具体任务的选择，不能把一次答卷的240ms或淡入写成通用值。来源线索见 [C16–C21](../references/composition.md)；已有动态简报仍是项目 specimen。
 
 讲解页和知识片里常见的十种运动（移动、流向、等待、计时等）有一版写成 t 的函数的参考样张，见 [记号、控件与运动](../marks/README.md)；按需取用。
+
+## 研究与实例
+
+- [外部作品与技术卡](../../../vault/provenance/visual-grammar-external-20260928/cards/README.md)：交互模拟、镜头实验和连续缩放；含 Opus 作品说明及相关工具。页面说明已读，实际媒体与源码运行未验收。
+
+- [Motion ceiling](../../../vault/distilled/motion-ceiling-20261004/README.md)：按空间、拓扑、因果、界面与声音探索表现方式；含逐源卡与已做的 MC01。部分来源仅核对身份或尚未读取，技术表仍是候选；逐源状态见该研究的来源卡。
+- [视觉语法工场](../../../demos/visual-grammar/README.md)：已有动态作品、各自的输入、运行实现与验收。
+- [Write / Motion 的制作记录](../../write/motion/README.md#已有制作与消费记录)：长论证、机制演算与空间表达的选型、实际消费和失败记录。

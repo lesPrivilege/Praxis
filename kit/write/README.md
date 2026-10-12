@@ -1,6 +1,6 @@
 # Write · 内容表达
 
-把事实、判断与证据写成可阅读、可观看、可复核的材料。从需要交付的表达模式进入；跨模式只共享证据和验收，不预读所有分支。
+把事实、判断与证据写成可阅读、可观看、可复核的材料。图文、网页、Slides 和视频同时取用本分支与 [Design](../design/README.md)：Write 负责文字、内容编排和叙事，Design 负责图形、视觉编排、交互和运动。按产物组成选择下列分支。
 
 | 要做什么 | 进入哪里 | 这一支负责什么 |
 |---|---|---|
@@ -11,7 +11,7 @@
 | 只规范空格、标点或链接 | [格式检查](prose/format.md) | 保护范围、可自动修的和只报不改的 |
 | 跨模式引用或交付复核 | [Shared](shared/README.md) | 任何语言和模式都守的底线、证据身份、来源与验收 |
 
-不知道材料要促成什么决定时，先去 [Reporting](../reporting/README.md)填写 brief。需要字体、配色、图形编码或交互取舍时再进入 [Design](../design/README.md)。Write 决定什么信息需要表达及其职责，Design 处理视觉和媒介表现；两者通过这些语义接口协作。只调颜色、字体或间距时不用进来。
+材料目的尚未明确时，从 [Reporting](../reporting/README.md)确定读者、问题与需要的决定。纯文本从 Prose 开始；仅调整视觉样式时从 Design 开始。
 
 要把信息编成图形、跨文字方向排印，或改成可解释的事件乐谱，可按需查 Design 的 [编辑转译](../design/composition/editorial-translations.md) 与 [乐谱语法](../design/motion/score-and-time.md)，内容与证据职责仍留在本分支。
 
@@ -25,4 +25,4 @@
 
 要求相互冲突时，先守住任务的准确、完整、可访问和交付约束，再依次是本次明确的风格要求、语言约定、文体、作者或品牌偏好、通用启发式。两条强要求不能同时满足时写明裁决，不靠谁后加载来决定。
 
-当前为可执行的内容契约。Motion 提供分镜交接与检查，未提供通用 renderer；原子样张仍在 [实验工单](../../vault/distilled/layout-specimens-20260927/README.md)阶段。使用时在项目 index 记录分支、版本、调整与结果；维护要求见 [体例契约](../../docs/architecture/documentation.md)。
+本分支维护内容契约，运行实现留在具体项目。已有 [实验样张与筛选记录](../../vault/distilled/layout-specimens-20260927/README.md)可供比较；视频实例见 [Motion](motion/README.md#已有制作与消费记录)。项目索引记录取用分支、版本、调整和结果，维护要求见 [体例契约](../../docs/architecture/documentation.md)。

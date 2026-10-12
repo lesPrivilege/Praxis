@@ -76,3 +76,34 @@ R1 是本轮委托提供的可复用要求及召回摘要，不是原 Chat 的�
 `skill-creator/scripts/quick_validate.py` 检查现有 writing skill 通过；另查其中四条本地引用路径可达，`git diff --check` 通过。来源生成函数的结果与当前 registry JSON 一致，可从 catalog 重建。本轮新文件与增量文本另作披露筛查，没有新增私有身份、Chat 定位或本机路径；此筛查不声称覆盖历史材料。
 
 仓库验证不遍历 `.claude`，因此 skill 的 frontmatter、引用路径及其任务边界另查。没有安装、Claude 执行或宿主自动发现测试；没有真实读者理解测试、标准合规测试或 STE 全文核验。没有取得原始 Chat 的逐条身份、没有新快照或离线网页依赖。原始个人材料与身份未进入本轮新增文件；历史公开面未清理。
+
+
+## 2026-10-08 复核与文案清理
+
+用户要求按中文技术文档规范与 ASD 收敛死路径和保护性措辞。主代理编辑，Luna 分别检查导航与文案。范围是根入口、Kit 入口、架构与治理文档、Palantir 入口和两个 Motion 分支；历史来源与快照保持原文。
+
+### 来源复核
+
+| 来源 | 访问与读取范围 | 本次用途与边界 |
+|---|---|---|
+| `p04-ruanyf-document-style-guide-text` · [文本正文](https://raw.githubusercontent.com/ruanyf/document-style-guide/master/docs/text.md) | 2026-10-08 读取正文；对应既有 [P04 来源卡](../../vault/provenance/write-present-supplement-20261002/cards/p04-ruanyf-document-style-guide-text.md)的 raw 地址 | 检查指代、术语、直接表达；沿用 Kit 对句长的判断，不采用固定字数上限 |
+| `asd-ste100-ste-faq` · [官方 FAQ](https://www.asd-ste100.org/STE_faq.html) | 直连 403；读取搜索索引返回的官方页面内容，范围为标准组成、受控词汇及一词一义的说明 | 参考术语一致的做法；证据为 `partial`，未读取标准全文 |
+| `asd-ste100-about-ste` · [官方介绍](https://www.asd-ste100.org/about_STE.html) | 直连 403；搜索索引返回了规则、词典和技术术语的概述 | 确认其对象为受控英文；未据此建立中文受控词典 |
+| `asd-ste100-issue9-route` · [PDF 路由](https://www.asd-ste100.org/assets/files/ASD-STE100_ISSUE9.pdf) | 直连 403；搜索索引只返回部分说明 | 保留全文缺口，URL 名称不用于确认现行版本 |
+
+官方首页与旧介绍路由重访仍返回 403。本次没有保存网页或 PDF 快照。中文改写依照 Kit 成文原理执行；以上是参考消费记录，未作 STE 全文合规检查。需要按标准审查英文时，重新取得正式全文。
+
+### 修改与验证范围
+
+- 文档结构契约、修订流程和参考生命周期：将抽象名词改为对象与动作，合并重复说明；保留来源身份、依赖、迁移、权限和验收条件。
+- 架构与 Motion 入口：正文维护详细状态，入口说明用途和关键缺口；删除重复的默认值声明。
+- ADR-033（原编 ADR-029）：校正文句和指代，决定内容不变。Prose 的 ASD 入口改为用途说明，访问结果集中在本记录。
+- Luna 检查 20 份 Markdown 的 227 个本地链接与锚点，未发现断链。任务、规则、来源之间的互返链接有实际用途，保留。未检查全仓外部 URL 的存活状态。
+
+用户随后要求材料施工同时发现 Write、Design、各类设计语法与 Opus 外部实践。本轮据此调整根入口、Kit、Write 和 Design 的任务路由，在 Design 参考表与 Motion 分支连接既有外部作品卡和 Motion ceiling 研究。旧 `kit/design/references.md` 收短为兼容导航，保留四类路由、兼容说明、维护边界三个锚点。Write 中“原子样张仍在工单阶段”改为已有样张与筛选记录。
+
+外部实践沿用已有来源记录；本轮没有重新观看视频、运行源码或核对模型归属。Skillry 的媒体、源码和远端依赖未快照，Motion ceiling 部分来源只核过身份或尚未读取，状态继续由原卡片维护。
+
+最终检查：仓库校验通过（1,207 份 Markdown、478 份 JSON、866 个快照，0 错误），`git diff --check` 通过。主代理核对了 Prose、图形编码、视频消费记录、外部作品卡、Motion 研究五条逐级链接及旧参考页三个锚点，均可达。这是定向导航检查，未制作新材料或验证实际消费效果。
+
+文案复核后，恢复了 Kit 准入的必要性与复用场景，明确提炼、核实与采纳分别记录，校准了用途验收的阻断条件及受影响分支范围。其余重复否定改为直接说明用途、状态与操作条件。

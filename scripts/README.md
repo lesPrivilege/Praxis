@@ -2,6 +2,8 @@
 
 在仓库根目录运行下列命令。catalog 与 intake 是编辑源，registry 和清单是生成投影。来源卡分两种，由每份 catalog 的 `cards` 字段声明，见[来源卡由谁维护](#来源卡由谁维护)。
 
+Drift 的 Pages 产物由 [build_drift_pages.py](build_drift_pages.py)构建，[verify_drift_pages.py](verify_drift_pages.py)验证四文件白名单和实际静态演示；发布方式见 [Praxis Pages 配置](../demos/drift/pages.md)。
+
 | 触发 | 编辑源 | 运行命令 | 生成物 |
 |---|---|---|---|
 | 新 Chat 或对话增量 | `vault/intake/chat-captures.json` 与版本归档 | `python3 scripts/build_chat_inventory.py` | `vault/chat-inventory.json` |

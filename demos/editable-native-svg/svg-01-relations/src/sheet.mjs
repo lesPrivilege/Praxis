@@ -17,11 +17,14 @@ export function sheet(model, { width = 480, scope, generators }) {
 
   const draw = (inner) => m.pieces.map((p, i) => generators[p.asset](p.model, { width: inner, scope: `${scope}-p${i}`, legend: false }));
   // 一处写到的指向落在另一件画出来的对象或版本上，才算连得上
+  // targets：一件里哪些外框是可以被指到的对象或版本。没有声明时是它的全部外框；rel-rail 的行不是对象，声明为空
+  const draws = (res, target) => (res.targets ? res.targets.includes(target) : Object.hasOwn(res.boxes, target));
   const linksOf = (pieces) => {
     const rails = new Map();
     pieces.forEach((res, i) => {
       for (const mt of res.mentions) {
-        const hits = pieces.map((other, k) => k).filter((k) => k !== i && Object.hasOwn(pieces[k].boxes, mt.target));
+        if (mt.quiet) continue;
+        const hits = pieces.map((other, k) => k).filter((k) => k !== i && draws(pieces[k], mt.target));
         need(hits.length <= 1, 'ambiguous-target', `${mt.text} 在另外两件里都画了出来，不知道该连到哪一件`);
         if (!hits.length) continue;
         const j = hits[0];
@@ -83,13 +86,27 @@ export function sheet(model, { width = 480, scope, generators }) {
     c.close();
   });
 
-  const h = c.legend(LEGEND, y + 14, width - 2 * PAD);
-  if (h) y += 14 + h;
+  // 各件叠在一起时，由这一层说明它们的位置互相表示什么
+  const reading = '各件上下叠放，各排各的：不同的件之间，位置不表示先后，也不共用标尺。';
+  c.open({ 'data-role': 'sheet-note' });
+  y += 14;
+  y += c.label('sheet#note', reading, { x: margin, y, w: inner, size: T.small, fill: T.sub }).h;
+  c.close();
+  const h = c.legend(LEGEND, y + 10, width - 2 * PAD);
+  if (h) y += 10 + h;
 
   const name = (i) => m.pieces[i].heading;
   const notes = [
     ...links.map((l) => `“${name(l.piece)}”里写到的“${l.text}”，在“${name(l.target_piece)}”里画了出来，两处有连线`),
-    ...pieces.flatMap((res, i) => res.mentions.filter((mt) => !rails.some((r) => r.target === mt.target)).map((mt) => `“${name(i)}”里写到的“${mt.text}”不在这张图里，只留作文字`)),
+    ...pieces.flatMap((res, i) =>
+      res.mentions
+        .filter((mt) => mt.quiet || !rails.some((r) => r.target === mt.target))
+        .map((mt) => {
+          const k = pieces.findIndex((other, j) => j !== i && draws(other, mt.target));
+          return k >= 0 ? `“${name(i)}”里写到的“${mt.text}”画在“${name(k)}”里；这一件不拉连线，只留作文字` : `“${name(i)}”里写到的“${mt.text}”不在这张图里，只留作文字`;
+        }),
+    ),
+    reading,
   ];
   const summary = `${m.pieces.length} 件图叠成一张，${rails.length} 个对象或版本被别的件指到，各有一条连线。`;
   const done = finish(c, { asset: 'rel-sheet', width, height: y, title: m.title, desc: summary });

@@ -15,6 +15,7 @@ Outputs land in <work>/renders/.
 import base64
 import hashlib
 import json
+import os
 import random
 import subprocess
 import sys
@@ -47,9 +48,10 @@ def sha256(path):
 
 
 def source_hashes(work):
-    files = sorted([*work.glob('*.js'), *work.glob('*.html'), *work.glob('*.wav'), *work.glob('*.py'),
-                    *(work.parent / '_runtime').glob('*'), *HERE.glob('*.js'), *HERE.glob('*.py')])
-    return {str(f.relative_to(work.parent)): sha256(f) for f in files if f.is_file() and f.suffix != '.md'}
+    # the runtime and this pipeline live next to each other; a work may sit in another demo
+    files = sorted([*work.glob('*.js'), *work.glob('*.mjs'), *work.glob('*.json'), *work.glob('*.css'), *work.glob('*.html'),
+                    *work.glob('*.wav'), *work.glob('*.py'), *(HERE.parent / '_runtime').glob('*'), *HERE.glob('*.js'), *HERE.glob('*.py')])
+    return {os.path.relpath(f, work.parent): sha256(f) for f in files if f.is_file() and f.suffix != '.md'}
 
 
 def open_page(pw, work, query='export=1', reduced=False, size=None):

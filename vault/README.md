@@ -9,7 +9,7 @@ Vault 保存研究材料、来源身份、提炼结果和可回查的原件。�
 | 需要完成的事 | 先读 | 产出或下一步 |
 |---|---|---|
 | 消费已经整理的研究结论 | [Distilled](distilled/README.md) | 按主题或批次读取；采纳仍回到 `docs/decisions` 与 `kit` |
-| 进入 Palantir 方法论研究主题 | [palantir 主题入口](../palantir/README.md) | 一级提炼入口；当前仅有 5 本书、2 篇文章的登记，材料参考见 [`../palantir/references/README.md`](../palantir/references/README.md) |
+| 进入 Palantir 方法论研究主题 | [palantir 主题入口](../palantir/README.md) | 一级提炼入口；7 个对象已有不同范围原件及 Vault 候选笔记，尚无主题正文与 Kit 采纳，材料参考见 [`../palantir/references/README.md`](../palantir/references/README.md) |
 | 进入 Tally SaaS 研究主题 | [tally 主题入口](../tally/README.md) | 一级提炼入口；当前仅有《清算 SaaS》书稿登记，材料参考见 [`../tally/references/README.md`](../tally/references/README.md) |
 | 登记新的 Chat、下载或本地材料 | [Intake](intake/README.md) | 材料身份、覆盖、缺口和提炼去向 |
 | 核对已登记的外部 URL | [References](references/README.md) | 按来源卡查看 URL、状态、摘要和用途 |
@@ -39,6 +39,7 @@ Vault 保存研究材料、来源身份、提炼结果和可回查的原件。�
 - 2026-10-04：[可编辑原生 SVG 研究与绘制交接](distilled/editable-native-svg-20261004/README.md)：一手文字参考、五张既有图的观察与表达需求；完整施工项目在 demos，绘制和消费验收未开始。
 
 - 2026-10-04：[关系图的两条语法](distilled/relation-grammar-20261004/README.md)：仓库里虚线、强调色和指向写法的清点，三份 W3C 文档的用词对照；泛化结果在 Kit 的 Design / Foundations，样板在 demos。
+- 2026-10-04：[排列与刻度](distilled/placement-grammar-20261004/README.md)：仓库里沿一条线排开的做法怎样使用位置的清点，四份公开文档的用词对照；泛化结果在 Kit 的 Design / Foundations，样板在 demos。
 
 - 2026-09-20： [架构审阅消费](distilled/themes/architecture-review-2026-09-20.md) · [文档实践与选型](distilled/themes/documentation-practices.md)。
 - 2026-09-25： [Agent Runtime 研究与裁决](distilled/agent-runtime-survey-20260925/README.md)。
