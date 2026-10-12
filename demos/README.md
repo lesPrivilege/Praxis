@@ -34,5 +34,7 @@
 
 - [Knowledge Film 001 ·《金字塔原理》第五版](knowledge-film-001-pyramid-cut5/README.md)：11 分钟的中文知识片，配音先行、网页舞台逐帧渲染；旁白和画面文字按修订后的成文规则重写并经独立审阅。成片检查六项通过；用户看过，认为瓶颈在合成语音。用于内部演示，授权没有核对。[第四版](knowledge-film-001-pyramid/README.md)是冻结的验收版，原样保留。
 
+- [DeerFlow 怎样工作](deerflow-explainer/README.md)：2026-10-12 的交互讲解页，单文件离线 HTML，讲开源项目 DeerFlow 的各局部实现；事实读自固定提交的源码与文档，没有运行；八个交互图件与打印已检查，用户目验通过；没有受众测试。
+
 - 合成消费小样：[退款复核、材料职责与 XMind 往返门槛](consumption-sample/README.md)。20 例合成断言可本地运行；不代表真实业务或模型验收。
 - [A3 机制演算项目](visual-grammar/a3-event-state-context/README.md)：2026-10-02 从旧 VG-01 加工合成输入制作新的交互 HTML 与 Remotion MP4；项目集中保留内容基线、消费摘要、源码、成品和当轮证据。制作与隔离浏览器测试完成，原生屏幕复验有缺项，用户接收待定。

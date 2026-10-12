@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="zh-CN" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>承载稳定语义的运动</title>
+<script>document.documentElement.className = 'js';</script>
+<style>
+/*TOKENS*/
+
+/*BASE*/
+
+.global { display: flex; flex-wrap: wrap; gap: var(--s-2) var(--s-4); align-items: center; font-size: var(--fs-ui); padding: var(--s-3) 0; border-bottom: 1px solid var(--rule); }
+.global label { display: inline-flex; align-items: center; gap: 8px; min-height: var(--target); cursor: pointer; }
+.global input { width: 18px; height: 18px; accent-color: var(--ink); margin: 0; }
+.no-js .global { display: none; }
+
+.stage { max-width: 440px; }
+.stage svg, .strip svg, .frame svg { display: block; width: 100%; height: auto; color: var(--ink); font-family: var(--sans); }
+.stage text, .strip text, .frame text { font-size: 12px; fill: currentColor; }
+svg .cap { font-size: 11px; fill: var(--ink-3); }
+svg .lead { font-weight: 600; }
+svg .mono { font-family: var(--mono); font-size: 10.5px; fill: var(--ink-3); }
+svg .faint { stroke: var(--rule-strong); }
+svg .dim { color: var(--ink-3); }
+svg .dim text { fill: var(--ink-3); }
+svg .chip { fill: var(--paper); stroke: currentColor; stroke-width: 1.5; }
+svg .fill { fill: currentColor; }
+svg .hole { fill: var(--paper); stroke: currentColor; stroke-width: 1.5; }
+svg .ring { fill: none; stroke: var(--accent); stroke-width: 2.5; }
+svg .accent { color: var(--accent); }
+svg .track { fill: var(--wash); stroke: var(--rule-strong); stroke-width: 1; }
+svg .slot { fill: none; stroke: var(--ink); stroke-width: 1.2; }
+svg .slotfill { fill: var(--wash); stroke: var(--rule-strong); stroke-width: 1; }
+
+.demo .ctl { margin-top: var(--s-3); }
+.scrub { display: inline-flex; align-items: center; gap: 8px; flex: 1 1 180px; max-width: 340px; font-family: var(--mono); font-size: var(--fs-ui); }
+.scrub input { flex: 1; min-height: var(--target); margin: 0; accent-color: var(--ink); min-width: 0; }
+.strip { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s-2); max-width: 720px; }
+.strip figure { margin: 0; border: 1px solid var(--rule); }
+.strip figcaption { font: 11px/1.8 var(--mono); color: var(--ink-3); text-align: center; border-top: 1px solid var(--rule); }
+@media (max-width: 560px) { .strip { grid-template-columns: minmax(0, 1fr); } }
+
+.spec { margin: var(--s-4) 0 0; display: grid; grid-template-columns: 7.5em minmax(0, 1fr); font-size: var(--fs-ui); line-height: 1.65; }
+.spec dt, .spec dd { margin: 0; padding: 9px 0; border-bottom: 1px solid var(--rule); }
+.spec dt { font-weight: var(--fw-strong); }
+.spec dd { color: var(--ink-2); }
+.spec pre { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; font-size: 12.5px; line-height: 1.6; color: var(--ink); }
+@media (max-width: 560px) { .spec { grid-template-columns: 1fr; } .spec dt { border-bottom: 0; padding-bottom: 0; } .spec dd { padding-top: 2px; } }
+
+.frame { max-width: 520px; }
+table.plain { border-collapse: collapse; font-size: var(--fs-ui); width: 100%; max-width: var(--measure); }
+table.plain th, table.plain td { text-align: left; vertical-align: top; padding: 8px 14px 8px 0; border-bottom: 1px solid var(--rule); }
+table.plain thead th { border-bottom: 1px solid var(--ink); }
+table.plain td:last-child { color: var(--ink-2); padding-right: 0; }
+
+footer { margin-top: var(--s-7); padding-top: var(--s-4); border-top: 1px solid var(--ink); }
+.js .print-only { display: none; }
+@media print {
+  @page { size: A4; margin: 16mm 15mm; }
+  body { font-size: 10.5pt; }
+  main { max-width: none; padding: 0; }
+  .ctl, .toc, .global, .stage, .js-only { display: none !important; }
+  .js .strip.print-only { display: grid !important; }
+  .js span.print-only { display: inline !important; }
+  section.c { padding-top: 20pt; }
+  .strip figure, .spec dt, .spec dd, .demo { break-inside: avoid; }
+  section.c > header { break-after: avoid; }
+  .strip { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; max-width: none; }
+  h2 { break-after: avoid; }
+  .spec pre { font-size: 8pt; }
+}
+</style>
+</head>
+<body>
+<!--GLYPHS-->
+<main>
+<header class="top">
+  <div class="kind">候选 · 2026-10-12 · 样张内容都是合成的例子</div>
+  <h1>承载稳定语义的运动</h1>
+  <p class="lede">十种运动，各表达一种变化。每种都写成时间 t 的函数：给一个时刻，得到那一刻的画面。网页用它播放，视频用它逐帧渲染，两边是同一个函数。</p>
+  <p class="note">本页的样张都由下面列出的函数逐帧画出，拖动 t 可以停在任意一刻。普通网页不必逐帧画，“网页里的实现”一栏给的是等价的 CSS 写法，<a href="components.html">components.html</a> 里的控件用的就是那种写法。含义与约束见 <a href="README.md">README</a>。</p>
+</header>
+<nav class="toc" aria-label="本页运动"><!--MOTION-TOC--><a href="#frame">11 画面位置与驻留</a></nav>
+<div class="global">
+  <label><input type="checkbox" id="reduced">按减弱动效显示</label>
+  <span class="note" id="reduced-note"></span>
+</div>
+
+<!--MOTIONS-->
+
+<section class="c" id="frame">
+  <header><span class="no">11</span><h2>画面位置与驻留</h2><p>视频没有滚动和点选，读者靠固定的位置找东西。这一节是工单清单之外补的：同一类文字在每个画面里待在同一个位置，每块文字停够读完的时间。</p></header>
+  <div class="demo">
+    <div class="synthetic">示意 · 16 : 9 画面里的五个位置，比例是这一版的画法</div>
+    <div class="frame">
+      <svg viewBox="0 0 320 180" role="img" aria-label="16 比 9 画面里的五个位置：左上是章节位，中间是舞台，舞台左下是图例位，底部是字幕位，右下是来源位">
+        <rect x="1" y="1" width="318" height="178" class="slot"/>
+        <rect x="16" y="14" width="120" height="16" class="slotfill"/><text x="22" y="26">章节位</text>
+        <rect x="16" y="38" width="288" height="96" class="slotfill"/><text x="160" y="84" text-anchor="middle" class="lead">舞台</text><text x="160" y="100" text-anchor="middle" class="cap">对象、关系和运动只在这里</text>
+        <rect x="22" y="112" width="92" height="16" class="slot"/><text x="28" y="124">图例位</text>
+        <rect x="56" y="142" width="208" height="20" class="slotfill"/><text x="160" y="156" text-anchor="middle">字幕位</text>
+        <rect x="244" y="14" width="60" height="16" class="slotfill"/><text x="250" y="26">来源位</text>
+      </svg>
+    </div>
+    <table class="plain" style="margin-top:var(--s-4)">
+      <thead><tr><th>位置</th><th>放什么</th><th>约束</th></tr></thead>
+      <tbody>
+        <tr><th>章节位</th><td>现在讲到哪一章</td><td>整章不动；换章时换字，不做转场特效</td></tr>
+        <tr><th>舞台</th><td>对象、关系、运动</td><td>同一个对象在相邻的镜头里造型不变，位置不变或用“移动”交代</td></tr>
+        <tr><th>图例位</th><td>这个画面实际用到的画法</td><td>画法出现时图例同时出现；画面里没有的画法不列</td></tr>
+        <tr><th>字幕位</th><td>旁白的文字，或无声片的讲解句</td><td>一次一句，最多两行；不遮舞台</td></tr>
+        <tr><th>来源位</th><td>例子是合成的还是实测的，数据出自哪里</td><td>内容的来路变了就换，不省略“合成”二字</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <dl class="spec">
+    <dt>驻留的函数</dt><dd><pre><code>hold = (chars, rate = 9) => Math.max(2, chars / rate)   // 秒</code></pre>一块新出现的文字至少停这么久。12 个字停 2 秒，27 个字停 3 秒，45 个字停 5 秒。每秒 9 字是本仓库一条无声知识片用过的读速，属于项目参数；有旁白时以旁白的时长为准，取两者里长的。</dd>
+    <dt>同时出现的量</dt><dd>运动进行时不换字幕，字幕换的时候舞台不动。读者一次只跟一处变化。</dd>
+    <dt>网页里的对应</dt><dd>网页的读者自己控制时间，所以不需要驻留；位置的约定仍然适用：图例紧挨着图，来路写在图题或标签里。</dd>
+    <dt>不该用的情形</dt><dd>画面比例不是 16 : 9，或一个画面只放一句话时，位置按那个项目重新定。这里的五个位置是参考，不是模板。</dd>
+  </dl>
+</section>
+
+<footer class="note">
+  <p>本页是单个离线文件。脚本关闭或打印时，每种运动显示五个时刻的定格，由同一个函数在生成页面时算出。</p>
+</footer>
+</main>
+
+<script>
+/*MOTION*/
+
+(function () {
+  var mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+  var box = document.getElementById('reduced'), note = document.getElementById('reduced-note');
+  box.checked = mq.matches;
+  note.textContent = mq.matches ? '系统已设为减弱动效，默认勾选。' : '系统没有设减弱动效；勾选可以预览替代方式。';
+  var redraws = [];
+  box.addEventListener('change', function () { redraws.forEach(function (f) { f(); }); });
+
+  document.querySelectorAll('[data-motion]').forEach(function (root) {
+    var m = MOTIONS.find(function (x) { return x.id === root.dataset.motion; });
+    var stage = root.querySelector('[data-stage]'), play = root.querySelector('[data-play]');
+    var range = root.querySelector('[data-t]'), tv = root.querySelector('[data-tv]');
+    var t = 0, raf = 0, last = 0;
+    function draw() {
+      stage.innerHTML = svg(m, Math.round(t * 100) / 100, box.checked);
+      range.value = t; tv.textContent = t.toFixed(2) + ' 秒';
+    }
+    function stop() { cancelAnimationFrame(raf); raf = 0; play.textContent = '播放'; play.setAttribute('aria-pressed', 'false'); }
+    function tick(now) {
+      t = Math.min(m.span, t + (now - last) / 1000); last = now; draw();
+      if (t >= m.span) return stop();
+      raf = requestAnimationFrame(tick);
+    }
+    play.onclick = function () {
+      if (raf) return stop();
+      if (t >= m.span) t = 0;
+      play.textContent = '暂停'; play.setAttribute('aria-pressed', 'true');
+      last = performance.now(); raf = requestAnimationFrame(tick);
+    };
+    range.addEventListener('input', function () { stop(); t = +range.value; draw(); });
+    redraws.push(draw);
+    draw();
+  });
+})();
+</script>
+</body>
+</html>

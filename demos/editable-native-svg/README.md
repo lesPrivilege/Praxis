@@ -10,6 +10,7 @@
 | 接手下一批绘制 | [工单](work-orders.md) → [交付合同](delivery-contract.md) | 完整作品项目及可编辑资产 |
 | 检查陌生 Agent 能否自主找到和使用 | [消费入口与可视索引设计](discovery.md) → [验收任务](acceptance.md) | 实际发现、选择、调整、组合回执 |
 | 核对已有作品和一手技术依据 | [研究结论](../../vault/distilled/editable-native-svg-20261004/README.md) | 读取范围、来路、图像观察与未验证项 |
+| 把稳定语义的记号、控件与运动交给独立的 ClaudeDesign 绘制 | [2026-10-12 工单](claude-design-order-20261012.md)，全文可粘贴 | 已交回并收进 [kit/design/marks](../../kit/design/marks/README.md)（ADR-032） |
 | 开启 fresh Opus 会话 | [最小交接与启动边界](wake-opus.md) | 可直接粘贴的 prompt；本轮不调用 |
 
 ## 已交付作品

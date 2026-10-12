@@ -1,0 +1,59 @@
+/* 两个页面共用的排版与按钮 */
+* { box-sizing: border-box; }
+html { background: var(--paper); }
+body { margin: 0; color: var(--ink); background: var(--paper); font: var(--fs-body)/var(--lh-body) var(--sans); -webkit-text-size-adjust: 100%; }
+main { max-width: 820px; margin: 0 auto; padding: 0 var(--gutter) var(--s-8); }
+h1, h2, h3 { font-weight: var(--fw-strong); line-height: var(--lh-tight); margin: 0; }
+h1 { font-size: clamp(27px, 6vw, var(--fs-h1)); }
+h2 { font-size: var(--fs-h2); }
+h3 { font-size: var(--fs-ui); color: var(--ink-2); margin: var(--s-5) 0 var(--s-2); }
+p { margin: 0 0 .8em; max-width: var(--measure); }
+ul, ol { margin: 0; padding: 0; list-style: none; }
+button, input { font: inherit; color: inherit; }
+code { font-family: var(--mono); font-size: .88em; overflow-wrap: anywhere; }
+a { color: inherit; text-underline-offset: 3px; text-decoration-color: var(--rule-strong); }
+.note { font-size: var(--fs-ui); line-height: 1.65; color: var(--ink-3); }
+:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+.vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+header.top { padding: var(--s-7) 0 var(--s-5); }
+header.top .kind { font-size: var(--fs-ui); color: var(--ink-3); margin-bottom: var(--s-3); }
+header.top .lede { font-size: 18px; margin-top: var(--s-4); }
+.toc { display: flex; flex-wrap: wrap; gap: 2px var(--s-4); font-size: var(--fs-ui); padding: var(--s-3) 0; border-top: 1px solid var(--ink); border-bottom: 1px solid var(--rule); }
+.toc a { text-decoration: none; padding: 6px 0; }
+.toc a:hover { text-decoration: underline; }
+
+section.c { padding-top: var(--s-7); }
+section.c > header { display: grid; grid-template-columns: 2.4em 1fr; margin-bottom: var(--s-4); }
+section.c > header .no { font-family: var(--mono); font-size: var(--fs-ui); color: var(--ink-3); padding-top: 9px; }
+section.c > header p { grid-column: 2; margin: var(--s-2) 0 0; color: var(--ink-2); }
+.demo { border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); padding: var(--s-5) 0; }
+.demo > .synthetic { font-size: var(--fs-note); color: var(--ink-3); margin-bottom: var(--s-3); }
+.legend { display: flex; flex-wrap: wrap; gap: 4px var(--s-4); font-size: var(--fs-note); color: var(--ink-3); margin-top: var(--s-3); align-items: center; }
+.legend svg { vertical-align: middle; margin-right: 6px; color: var(--ink); }
+.legend .acc { color: var(--accent); }
+
+/* 按钮：正常、悬停、焦点、选中、禁用 */
+.btn { border: 1px solid var(--rule-strong); background: var(--paper); border-radius: var(--radius); padding: 4px 14px; min-height: var(--target); min-width: var(--target); cursor: pointer; font-size: var(--fs-ui); display: inline-flex; align-items: center; gap: 6px; transition: background var(--t-feedback) linear; }
+.btn:hover, .btn.is-hover { background: var(--wash); }
+.btn.is-focus { outline: 2px solid var(--ink); outline-offset: 2px; }
+.btn[aria-pressed="true"], .btn.is-on { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: var(--fw-strong); }
+.btn:disabled, .btn.is-off { color: var(--ink-3); border-color: var(--rule); border-style: dashed; cursor: default; background: var(--paper); }
+.ctl { display: flex; flex-wrap: wrap; gap: var(--s-2); align-items: center; }
+.no-js .ctl, .no-js .js-only { display: none; }
+.js .no-js-only:not(.print-only) { display: none; }
+.count { font-size: var(--fs-ui); color: var(--ink-2); margin-left: var(--s-2); font-variant-numeric: tabular-nums; }
+
+/* 状态矩阵 */
+.mx { width: 100%; border-collapse: collapse; font-size: var(--fs-ui); line-height: 1.6; }
+.mx th, .mx td { text-align: left; vertical-align: middle; padding: 9px 12px 9px 0; border-bottom: 1px solid var(--rule); }
+.mx th { font-weight: var(--fw-strong); width: 5.5em; white-space: nowrap; }
+.mx td.s { width: 11em; }
+.mx td:last-child { color: var(--ink-2); padding-right: 0; }
+@media (max-width: 560px) {
+  .mx, .mx tbody, .mx tr { display: block; }
+  .mx tr { display: grid; grid-template-columns: 5.5em 1fr; border-bottom: 1px solid var(--rule); padding: 8px 0; gap: 4px 0; }
+  .mx th, .mx td { border: 0; padding: 0; width: auto; }
+  .mx td:last-child { grid-column: 1 / -1; }
+  .mx td.s:empty { display: none; }
+}

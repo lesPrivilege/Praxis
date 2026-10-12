@@ -1,0 +1,1516 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>DeerFlow 怎样工作</title>
+<style>
+:root {
+  --paper: #ffffff;
+  --wash: #f3f6f9;
+  --rule: #d8dfe7;
+  --rule-strong: #8d9aa9;
+  --ink: #15202b;
+  --ink-2: #3d4a58;
+  --ink-3: #64717f;
+  --accent: #1b58cf;
+  --accent-wash: #e9f0fd;
+  --sans: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Noto Sans CJK SC", "Source Han Sans SC", "Microsoft YaHei", sans-serif;
+  --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --gutter: 16px;
+  --fast: 200ms;
+}
+* { box-sizing: border-box; }
+html { background: var(--paper); scroll-behavior: smooth; scroll-padding-top: 20px; }
+body { margin: 0; background: var(--paper); color: var(--ink); font: 16px/1.75 var(--sans); -webkit-text-size-adjust: 100%; }
+a { color: inherit; text-decoration-color: var(--rule-strong); text-underline-offset: 3px; }
+a:hover { text-decoration-color: var(--ink); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+h1, h2, h3, h4 { font-weight: 600; line-height: 1.35; margin: 0; }
+p { margin: 0 0 .9em; }
+ul, ol { margin: 0 0 .9em; padding-left: 1.3em; }
+li { margin-bottom: .25em; }
+code, .k { font-family: var(--mono); font-size: .88em; background: var(--wash); padding: 1px 5px; border-radius: 3px; overflow-wrap: anywhere; }
+button { font: inherit; color: inherit; }
+.muted { color: var(--ink-3); }
+.small { font-size: 14px; line-height: 1.65; }
+
+/* Progress line */
+.progress { position: fixed; inset: 0 0 auto 0; height: 2px; z-index: 20; background: transparent; }
+.progress i { display: block; height: 100%; width: 0; background: var(--accent); }
+
+/* Shell */
+.shell { max-width: 1180px; margin: 0 auto; padding: 0 var(--gutter); display: grid; grid-template-columns: 216px minmax(0, 1fr); gap: 0 48px; }
+.toc { position: sticky; top: 0; align-self: start; max-height: 100vh; overflow: auto; padding: 36px 0 24px; font-size: 14px; }
+.toc summary { display: none; }
+.toc ol { list-style: none; padding: 0; margin: 0; counter-reset: t; }
+.toc li { margin: 0; }
+.toc a { display: grid; grid-template-columns: 2em 1fr; padding: 5px 0 5px 10px; text-decoration: none; color: var(--ink-3); border-left: 2px solid var(--rule); line-height: 1.45; }
+.toc a .n { font-family: var(--mono); font-size: 12px; padding-top: 1px; }
+.toc a:hover { color: var(--ink); }
+.toc a[aria-current="true"] { color: var(--ink); border-left-color: var(--accent); font-weight: 600; }
+.toc .depth { margin-top: 20px; padding-top: 14px; border-top: 1px solid var(--rule); }
+.toc .depth p { margin: 0 0 6px; color: var(--ink-3); }
+main { min-width: 0; padding-bottom: 96px; }
+
+/* Segmented buttons */
+.seg { display: inline-flex; flex-wrap: wrap; border: 1px solid var(--rule-strong); border-radius: 6px; overflow: hidden; }
+.seg button { border: 0; background: var(--paper); padding: 5px 12px; min-height: 34px; cursor: pointer; border-right: 1px solid var(--rule); font-size: 14px; }
+.seg button:last-child { border-right: 0; }
+.seg button[aria-pressed="true"] { background: var(--accent); color: #fff; }
+.btn { border: 1px solid var(--rule-strong); background: var(--paper); border-radius: 6px; padding: 5px 12px; min-height: 34px; cursor: pointer; font-size: 14px; }
+.btn:hover, .seg button:hover { background: var(--wash); }
+.seg button[aria-pressed="true"]:hover { background: var(--accent); }
+.btn[disabled] { color: var(--ink-3); border-color: var(--rule); cursor: default; background: var(--paper); }
+
+/* Hero */
+.hero { padding: 56px 0 24px; }
+.hero .src { font-size: 14px; color: var(--ink-3); margin-bottom: 14px; }
+.hero h1 { font-size: clamp(34px, 6vw, 54px); letter-spacing: .01em; }
+.hero .lede { font-size: clamp(19px, 2.4vw, 23px); line-height: 1.7; margin: 22px 0 30px; max-width: 34em; }
+.claims { list-style: none; padding: 0; margin: 0; border-top: 1px solid var(--ink); counter-reset: c; }
+.claims li { display: grid; grid-template-columns: 2.4em 11em 1fr auto; gap: 0 14px; padding: 13px 0; border-bottom: 1px solid var(--rule); margin: 0; counter-increment: c; }
+.claims li::before { content: counter(c); font-family: var(--mono); color: var(--ink-3); font-size: 14px; padding-top: 2px; }
+.claims b { font-weight: 600; }
+.claims .to { font-size: 14px; color: var(--ink-3); white-space: nowrap; }
+.claims .to a { margin-left: 6px; }
+.lineage { margin-top: 22px; font-size: 15px; color: var(--ink-2); max-width: 44em; }
+
+/* Chapters */
+.ch { padding: 72px 0 0; }
+.ch > header { display: grid; grid-template-columns: 2.6em 1fr; gap: 0 10px; margin-bottom: 22px; }
+.ch > header .no { font-family: var(--mono); color: var(--ink-3); font-size: 15px; padding-top: 7px; }
+.ch h2 { font-size: 27px; }
+.ch .answer { grid-column: 2; margin: 10px 0 0; font-size: 17.5px; color: var(--ink-2); max-width: 40em; }
+.ch h3 { font-size: 19px; margin: 34px 0 10px; }
+.ch h4 { font-size: 16px; margin: 20px 0 6px; }
+.prose { max-width: 44em; }
+
+/* Figures */
+figure { margin: 26px 0 30px; }
+figure > .fig-title { font-weight: 600; font-size: 15px; margin-bottom: 4px; }
+figure > .fig-intro { font-size: 14px; color: var(--ink-3); margin-bottom: 14px; max-width: 46em; }
+figcaption { font-size: 14px; color: var(--ink-3); margin-top: 12px; max-width: 46em; }
+.legend { display: flex; flex-wrap: wrap; gap: 4px 18px; font-size: 13px; color: var(--ink-3); margin-top: 10px; }
+.legend span::before { content: ""; display: inline-block; width: 22px; height: 0; vertical-align: middle; margin-right: 6px; border-top: 1.5px solid var(--ink-2); }
+.legend .dash::before { border-top-style: dashed; }
+.legend .sel::before { border-top: 3px solid var(--accent); }
+
+/* Tables */
+.tbl { width: 100%; border-collapse: collapse; font-size: 15px; margin: 6px 0 4px; }
+.tbl caption { text-align: left; font-weight: 600; font-size: 15px; padding-bottom: 8px; }
+.tbl th, .tbl td { text-align: left; vertical-align: top; padding: 9px 14px 9px 0; border-bottom: 1px solid var(--rule); }
+.tbl thead th { font-weight: 600; font-size: 14px; color: var(--ink-2); border-bottom: 1px solid var(--ink); }
+.tbl tbody th { font-weight: 600; min-width: 5.5em; }
+.tbl .num { font-family: var(--mono); font-size: 14px; white-space: nowrap; }
+.tbl td:last-child, .tbl th:last-child { padding-right: 0; }
+.scroll-x { overflow-x: auto; }
+
+/* Tags */
+.tag { display: inline-block; font-size: 12px; line-height: 1.5; padding: 0 6px; border: 1px solid var(--rule-strong); border-radius: 3px; color: var(--ink-2); white-space: nowrap; vertical-align: 1px; font-weight: 400; }
+.tag.off { border-style: dashed; color: var(--ink-3); }
+
+/* Deep disclosure */
+details.deep { border-top: 1px solid var(--rule); margin: 0; max-width: 46em; }
+details.deep:last-of-type { border-bottom: 1px solid var(--rule); margin-bottom: 8px; }
+details.deep > summary { cursor: pointer; padding: 11px 0; font-weight: 600; font-size: 15.5px; list-style: none; display: grid; grid-template-columns: 1.3em 1fr; }
+details.deep > summary::-webkit-details-marker { display: none; }
+details.deep > summary::before { content: "+"; font-family: var(--mono); color: var(--ink-3); }
+details.deep[open] > summary::before { content: "−"; }
+details.deep > summary:hover { color: var(--accent); }
+details.deep > .body { padding: 0 0 14px 1.3em; font-size: 15.5px; }
+details.deep > .body > :last-child { margin-bottom: 0; }
+.deep-group { margin: 26px 0 0; }
+.deep-group > .lbl { font-size: 13px; color: var(--ink-3); margin-bottom: 6px; letter-spacing: .04em; }
+
+/* Selector component: buttons choose one panel */
+.js [data-select] [data-panel] { display: none; }
+.js [data-select] [data-panel].on { display: block; }
+[data-select] [data-panel] + [data-panel] { margin-top: 16px; }
+.js [data-select] [data-panel] + [data-panel] { margin-top: 0; }
+.panel { border-left: 3px solid var(--accent); padding: 4px 0 4px 16px; margin-top: 16px; min-height: 5.5em; }
+.no-js-only { display: block; } .js .no-js-only { display: none; }
+.panel h4 { margin: 0 0 6px; font-size: 16.5px; }
+.panel p, .panel ul { font-size: 15.5px; max-width: 44em; }
+.panel > :last-child { margin-bottom: 0; }
+
+/* System map */
+.map { display: grid; gap: 0; }
+.map .row { display: grid; grid-template-columns: 5.2em 1fr; gap: 0 12px; align-items: stretch; }
+.map .row > .rl { font-size: 13px; color: var(--ink-3); padding-top: 9px; line-height: 1.4; }
+.map .cells { display: flex; flex-wrap: wrap; gap: 8px; }
+.map .down { grid-column: 2; height: 22px; position: relative; }
+.map .down::before { content: ""; position: absolute; left: 50%; top: 2px; bottom: 2px; border-left: 1.5px solid var(--ink-2); }
+.map .down::after { content: ""; position: absolute; left: calc(50% - 4px); bottom: 2px; width: 8px; height: 8px; border-right: 1.5px solid var(--ink-2); border-bottom: 1.5px solid var(--ink-2); transform: rotate(45deg); }
+.node { flex: 1 1 100px; border: 1.5px solid var(--ink-2); background: var(--paper); border-radius: 6px; padding: 7px 10px; text-align: left; cursor: pointer; min-height: 44px; line-height: 1.4; font-size: 15px; transition: background var(--fast), border-color var(--fast); }
+.g { width: 18px; height: 18px; vertical-align: -3.5px; margin-right: 6px; color: var(--ink-2); }
+.map .cells .node { flex-basis: 150px; }
+.node small { display: block; font-size: 12px; color: var(--ink-3); font-family: var(--mono); }
+.node.opt { border-style: dashed; }
+.node:hover { background: var(--wash); }
+.node[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-wash); box-shadow: inset 0 0 0 1px var(--accent); }
+.proc { flex: 3 1 420px; border: 1.5px solid var(--ink-2); border-radius: 6px; padding: 8px 10px 10px; }
+.proc > .pl { font-size: 13px; color: var(--ink-2); margin-bottom: 7px; }
+.proc > .pl code { background: none; padding: 0; }
+.proc .cells .node { flex-basis: 132px; border-width: 1px; }
+
+/* Stepper track */
+.track { position: relative; display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; margin: 6px 0 4px; padding-top: 22px; }
+.track::before { content: ""; position: absolute; left: calc(50% / var(--n)); right: calc(50% / var(--n)); top: 28px; border-top: 1.5px solid var(--rule-strong); }
+.track .st { position: relative; text-align: center; font-size: 13px; color: var(--ink-3); line-height: 1.35; padding-top: 18px; transition: color var(--fast); }
+.track .st::before { content: ""; position: absolute; left: calc(50% - 5px); top: 1px; width: 10px; height: 10px; border-radius: 50%; background: var(--paper); border: 1.5px solid var(--rule-strong); transition: border-color var(--fast), background var(--fast); }
+.track .st.on { color: var(--ink); font-weight: 600; }
+.track .st.on::before { border-color: var(--accent); }
+.track .st.to::before { background: var(--accent); }
+.track .dot { position: absolute; top: 20px; width: 16px; height: 16px; margin-left: -8px; border-radius: 50%; border: 2px solid var(--accent); background: transparent; left: 0; transition: left 420ms cubic-bezier(.3,.1,.2,1); pointer-events: none; }
+.track .dot.jump { transition: none; }
+.step-ctl { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 14px 0 6px; }
+.step-ctl .count { font-family: var(--mono); font-size: 14px; color: var(--ink-3); margin-left: 4px; }
+.steps { list-style: none; padding: 0; margin: 12px 0 0; counter-reset: s; }
+.steps li { counter-increment: s; display: grid; grid-template-columns: 2.2em 1fr; padding: 9px 0; border-top: 1px solid var(--rule); margin: 0; cursor: pointer; }
+.steps li::before { content: counter(s); font-family: var(--mono); font-size: 14px; color: var(--ink-3); padding-top: 2px; }
+.steps li b { font-weight: 600; }
+.steps li .d { display: block; color: var(--ink-2); font-size: 15px; }
+.js .steps li .d { display: none; }
+.js .steps li.on .d { display: block; }
+.steps li.on { border-top-color: var(--accent); box-shadow: inset 3px 0 0 var(--accent); padding-left: 12px; }
+.steps li.on::before { color: var(--accent); }
+.steps li .path { font-size: 13px; color: var(--ink-3); margin-left: 8px; font-weight: 400; white-space: nowrap; }
+
+/* Loop figure */
+.loop { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,4.4fr) minmax(0,1fr); gap: 10px; align-items: end; }
+.loop .cyc { border: 1.5px solid var(--ink-2); border-radius: 8px; padding: 26px 10px 10px; position: relative; display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 8px; }
+.loop .cyc > .cl { position: absolute; top: 4px; left: 12px; font-size: 13px; color: var(--ink-2); }
+.loop .node { flex: none; text-align: center; padding: 8px 4px; }
+.loop .node .n2 { display: block; font-size: 12px; color: var(--ink-3); }
+
+/* Mode switches */
+.switches { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 10px; margin-top: 16px; }
+.sw { border-top: 3px solid var(--rule); padding-top: 8px; transition: border-color var(--fast); }
+.sw .sl { font-size: 13px; color: var(--ink-3); }
+.sw .sv { font-weight: 600; font-size: 17px; color: var(--ink-3); transition: color var(--fast); }
+.sw.on { border-top-color: var(--ink); }
+.sw.on .sv { color: var(--ink); }
+.mode-desc { margin: 14px 0 0; max-width: 44em; min-height: 3.4em; }
+
+/* Context layers (skills) */
+.layers { display: grid; gap: 6px; margin-top: 14px; }
+.layer { display: grid; grid-template-columns: 9.5em 1fr; gap: 12px; border: 1.5px dashed var(--rule-strong); border-radius: 6px; padding: 9px 12px; color: var(--ink-3); transition: border-color var(--fast), color var(--fast), background var(--fast); }
+.layer b { font-weight: 600; }
+.layer .lw { font-size: 14px; }
+.layer.in { border-style: solid; border-color: var(--ink-2); color: var(--ink); }
+.layer.new { border-color: var(--accent); background: var(--accent-wash); }
+
+/* Slots (subagents) */
+.calc { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 8px 28px; margin-top: 6px; }
+.calc label { display: block; font-size: 14px; color: var(--ink-2); }
+.calc input[type=range] { width: 100%; accent-color: var(--accent); margin: 4px 0 0; }
+.calc output { font-family: var(--mono); font-weight: 600; color: var(--ink); margin-left: 4px; }
+.slots { display: flex; flex-wrap: wrap; gap: 6px; margin: 16px 0 8px; }
+.slot { width: 66px; border: 1.5px solid var(--ink-2); border-radius: 6px; padding: 5px 0; text-align: center; font-size: 13px; line-height: 1.35; }
+.slot i { display: block; font-style: normal; font-family: var(--mono); font-size: 12px; color: var(--ink-3); }
+.slot.drop { border-style: dashed; color: var(--ink-3); text-decoration: line-through; text-decoration-color: var(--rule-strong); }
+.slot.drop i { text-decoration: none; display: block; }
+.calc-out { font-size: 15.5px; max-width: 44em; }
+
+/* Path mapping */
+.paths { display: grid; gap: 0; margin-top: 14px; font-size: 14.5px; }
+.paths .pr { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr); gap: 0 18px; padding: 9px 0; border-top: 1px solid var(--rule); }
+.paths .pr > div:first-child { font-family: var(--mono); font-size: 13.5px; overflow-wrap: anywhere; }
+.paths .pr .real { font-family: var(--mono); font-size: 13px; color: var(--ink-2); overflow-wrap: anywhere; display: block; }
+.paths .ph { font-size: 13px; color: var(--ink-3); border-top: 0; padding-top: 0; }
+.paths .ph > div:first-child { font-family: var(--sans); font-size: 13px; }
+
+/* Timeline (sandbox life, memory) */
+.tl { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 0; margin-top: 14px; position: relative; }
+.tl::before { content: ""; position: absolute; left: 0; right: 0; top: 6px; border-top: 1.5px solid var(--ink-2); }
+.tl > div { position: relative; padding: 20px 10px 0 0; font-size: 14px; line-height: 1.5; }
+.tl > div::before { content: ""; position: absolute; left: 0; top: 1px; width: 10px; height: 10px; border-radius: 50%; background: var(--ink-2); }
+.tl > div b { display: block; font-weight: 600; font-size: 15px; }
+.tl > div .t { font-family: var(--mono); font-size: 12.5px; color: var(--ink-3); display: block; }
+
+/* Debounce sim */
+.sim { margin-top: 14px; }
+.bar { display: grid; grid-template-columns: 8.5em 1fr 4.2em; gap: 10px; align-items: center; font-size: 14px; margin: 7px 0; }
+.bar .rail { height: 10px; border: 1px solid var(--rule-strong); border-radius: 5px; overflow: hidden; background: var(--paper); }
+.bar .rail i { display: block; height: 100%; width: 0; background: var(--ink-2); }
+.bar .v { font-family: var(--mono); font-size: 13px; color: var(--ink-2); text-align: right; }
+.sim-log { font-size: 14.5px; margin: 10px 0 0; padding: 0; list-style: none; min-height: 4.8em; }
+.sim-log li { padding: 3px 0; border-top: 1px solid var(--rule); margin: 0; }
+.sim-log li:first-child { color: var(--ink); font-weight: 600; }
+.sim-log li { color: var(--ink-3); }
+
+/* Compare by attribute */
+.cmp { display: grid; grid-template-columns: 8em repeat(var(--cols, 3), minmax(0, 1fr)); font-size: 15px; margin-top: 8px; }
+.cmp > div { padding: 9px 14px 9px 0; border-bottom: 1px solid var(--rule); min-width: 0; }
+.cmp .h { font-weight: 600; font-size: 14px; border-bottom: 1px solid var(--ink); }
+.cmp .a { font-weight: 600; }
+.cmp .o { display: none; }
+
+/* Switchboard */
+.board { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 0 36px; margin-top: 8px; }
+.board h4 { margin: 0 0 4px; padding-bottom: 6px; border-bottom: 1px solid var(--ink); }
+.board ul { list-style: none; padding: 0; margin: 0; }
+.board li { padding: 7px 0; border-bottom: 1px solid var(--rule); margin: 0; font-size: 15px; }
+.board li span { display: block; font-size: 13.5px; color: var(--ink-3); }
+
+/* FAQ */
+.faq { margin: 0; max-width: 46em; }
+.faq dt { font-weight: 600; padding-top: 14px; border-top: 1px solid var(--rule); margin-top: 14px; }
+.faq dt:first-child { border-top: 0; margin-top: 0; padding-top: 0; }
+.faq dd { margin: 4px 0 0; color: var(--ink-2); }
+.faq dd a { white-space: nowrap; font-size: 14px; color: var(--ink-3); }
+
+footer { margin-top: 72px; padding-top: 18px; border-top: 1px solid var(--ink); font-size: 14px; color: var(--ink-3); max-width: 46em; }
+
+/* Narrow */
+@media (max-width: 900px) {
+  .shell { display: block; }
+  .toc { position: static; max-height: none; padding: 14px 0 0; border-bottom: 1px solid var(--rule); }
+  .toc summary { display: block; cursor: pointer; padding: 8px 0 12px; font-weight: 600; }
+  .toc .depth { margin: 8px 0 12px; }
+  .hero { padding-top: 32px; }
+  .claims li { grid-template-columns: 2em 1fr; }
+  .claims li > span, .claims li > .to { grid-column: 2; }
+  .ch { padding-top: 56px; }
+  .ch > header { grid-template-columns: 1fr; }
+  .ch .answer { grid-column: 1; }
+  .ch h2 { font-size: 24px; }
+  .map .row { grid-template-columns: 1fr; }
+  .map .row > .rl { padding: 0 0 4px; }
+  .map .down { grid-column: 1; }
+  .loop { grid-template-columns: 1fr; }
+  .loop .cyc { grid-template-columns: repeat(2, minmax(0,1fr)); }
+  .switches { grid-template-columns: repeat(2, minmax(0,1fr)); }
+  .layer { grid-template-columns: 1fr; gap: 2px; }
+  .calc { grid-template-columns: 1fr; }
+  .paths .pr { grid-template-columns: 1fr; }
+  .paths .ph { display: none; }
+  .tl { grid-auto-flow: row; grid-auto-columns: auto; }
+  .tl::before { left: 5px; right: auto; top: 0; bottom: 0; border-top: 0; border-left: 1.5px solid var(--ink-2); }
+  .tl > div { padding: 0 0 14px 22px; }
+  .tl > div::before { top: 7px; }
+  .cmp { grid-template-columns: repeat(var(--cols, 3), minmax(0, 1fr)); }
+  .cmp .h { display: none; }
+  .cmp.c4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .cmp .a { grid-column: 1 / -1; border-bottom: 0; padding-bottom: 0; padding-top: 12px; }
+  .cmp .o { display: block; font-size: 12px; color: var(--ink-3); }
+  .cmp > div { font-size: 14px; padding-right: 10px; }
+  .board { grid-template-columns: 1fr; }
+  .board h4 { margin-top: 18px; }
+  .track .st { font-size: 11.5px; }
+  .bar { grid-template-columns: 6.5em 1fr 3.6em; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  * { transition: none !important; }
+}
+@media print {
+  @page { size: A4; margin: 16mm 14mm; }
+  body { font-size: 10.5pt; line-height: 1.6; }
+  .progress, .toc, .step-ctl, .no-print, .seg, .btn { display: none !important; }
+  .shell { display: block; max-width: none; padding: 0; }
+  .ch { padding-top: 28pt; }
+  .ch > header, .tbl tr, details.deep > summary, .panel, .steps li, .tl, .loop { break-inside: avoid; }
+  #modes .switches, #modes .mode-desc, .sim, .sim-log { display: none; }
+  .js table.no-js-only { display: table !important; }
+  h3, h4 { break-after: avoid; }
+  [data-select] [data-panel] { display: block !important; margin-top: 12pt !important; }
+  .steps li .d { display: block !important; }
+  .steps li.on { box-shadow: none; padding-left: 0; }
+  .node[aria-pressed="true"] { background: none; box-shadow: none; border-color: var(--ink-2); }
+  .track .dot { display: none; }
+  a { text-decoration: none; }
+}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<symbol id="g-agent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="8" width="14" height="11.5" rx="3"/><path d="M12 8V5.5M9.5 12.75v1.75M14.5 12.75v1.75"/><circle cx="12" cy="4.25" r="1.25"/></symbol>
+<symbol id="g-browser" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="15" rx="2"/><path d="M3 9.5h18"/><circle cx="6.2" cy="7" r="1.1" fill="currentColor" stroke="none"/><circle cx="9" cy="7" r="1.1" fill="currentColor" stroke="none"/></symbol>
+<symbol id="g-chat" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4.5h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-6.5L8 20v-3.5H6a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2z"/><path d="M8 9h8M8 12.5h5"/></symbol>
+<symbol id="g-container" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9zM4 7.5l8 4.5 8-4.5M12 12v9"/></symbol>
+<symbol id="g-database" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="6" rx="7" ry="3"/><path d="M5 6v12c0 1.66 3.13 3 7 3s7-1.34 7-3V6M5 12c0 1.66 3.13 3 7 3s7-1.34 7-3"/></symbol>
+<symbol id="g-external" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7.5 18.5a4 4 0 0 1-.7-7.94 5.5 5.5 0 0 1 10.66-.9A4.5 4.5 0 0 1 16.75 18.5z"/></symbol>
+<symbol id="g-folder" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 7a2 2 0 0 1 2-2h3.7l2 2.5h7.3a2 2 0 0 1 2 2V17a2 2 0 0 1-2 2h-13a2 2 0 0 1-2-2z"/></symbol>
+<symbol id="g-gateway" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 20V6a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v14M9 13h6M12.5 10.5L15 13l-2.5 2.5"/></symbol>
+<symbol id="g-middleware" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5l8 4-8 4-8-4zM4 12l8 4 8-4M4 16.5l8 4 8-4"/></symbol>
+<symbol id="g-model" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="7" r="2"/><circle cx="6" cy="17" r="2"/><circle cx="18" cy="7" r="2"/><circle cx="18" cy="17" r="2"/><path d="M8 7h8M8 17h8M7.6 8.3l8.8 7.4M7.6 15.7l8.8-7.4"/></symbol>
+<symbol id="g-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="7" width="19" height="10" rx="5"/><circle cx="7.5" cy="12" r="2.5"/></symbol>
+<symbol id="g-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="7" width="19" height="10" rx="5"/><circle cx="16.5" cy="12" r="2.75" fill="currentColor" stroke="none"/></symbol>
+<symbol id="g-sandbox" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="17" height="17" rx="2.5"/><rect x="8.5" y="8.5" width="7" height="7" rx="1"/></symbol>
+<symbol id="g-service" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4.5" width="16" height="6.5" rx="1.5"/><rect x="4" y="13" width="16" height="6.5" rx="1.5"/><circle cx="7.5" cy="7.75" r="1.1" fill="currentColor" stroke="none"/><circle cx="7.5" cy="16.25" r="1.1" fill="currentColor" stroke="none"/><path d="M12 7.75h4.5M12 16.25h4.5"/></symbol>
+<symbol id="g-subagent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 3.5V11a2 2 0 0 0 2 2H9"/><rect x="9" y="8.5" width="11.5" height="9.5" rx="2.5"/><path d="M13 12.5V14M16.5 12.5V14"/></symbol>
+<symbol id="g-terminal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="15" rx="2"/><path d="M7 9.5l3 2.5-3 2.5M12.5 15h4.5"/></symbol>
+<symbol id="g-timer" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13.5" r="7"/><path d="M12 13.5V9.5M10 3h4M12 3v3.5"/></symbol>
+<symbol id="g-tool" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path transform="rotate(45 12 12)" d="M10.5 10.74V20a1.5 1.5 0 0 0 3 0v-9.26a4.5 4.5 0 0 0 0-8.48V6.5h-3V2.26a4.5 4.5 0 0 0 0 8.48"/></symbol>
+</defs></svg>
+<div class="progress" aria-hidden="true"><i id="progress"></i></div>
+<div class="shell">
+
+<details class="toc" id="toc" open>
+  <summary>目录</summary>
+  <nav aria-label="章节">
+    <ol>
+      <li><a href="#top"><span class="n">0</span><span>结论</span></a></li>
+      <li><a href="#s1"><span class="n">1</span><span>系统全景</span></a></li>
+      <li><a href="#s2"><span class="n">2</span><span>一条消息的行程</span></a></li>
+      <li><a href="#s3"><span class="n">3</span><span>lead agent 与中间件</span></a></li>
+      <li><a href="#s4"><span class="n">4</span><span>上下文与失控防护</span></a></li>
+      <li><a href="#s5"><span class="n">5</span><span>工具、MCP 与 skill</span></a></li>
+      <li><a href="#s6"><span class="n">6</span><span>subagent</span></a></li>
+      <li><a href="#s7"><span class="n">7</span><span>沙箱与文件</span></a></li>
+      <li><a href="#s8"><span class="n">8</span><span>状态与记忆</span></a></li>
+      <li><a href="#s9"><span class="n">9</span><span>网关与其他入口</span></a></li>
+      <li><a href="#s10"><span class="n">10</span><span>前端工作台</span></a></li>
+      <li><a href="#s11"><span class="n">11</span><span>部署与默认值</span></a></li>
+      <li><a href="#s12"><span class="n">12</span><span>常见追问</span></a></li>
+      <li><a href="#s13"><span class="n">13</span><span>来源与核实范围</span></a></li>
+    </ol>
+  </nav>
+  <div class="depth no-print">
+    <p>细节层</p>
+    <div class="seg" role="group" aria-label="细节层">
+      <button type="button" id="depth-close" aria-pressed="true">收起</button>
+      <button type="button" id="depth-open" aria-pressed="false">全部展开</button>
+    </div>
+  </div>
+</details>
+
+<main>
+
+<section class="hero" id="top">
+  <p class="src">依据 <code>bytedance/deer-flow</code> 主分支 2026-10-11 的提交 <code>3f7a076</code> · MIT 许可 · 只读源码与文档，没有部署运行</p>
+  <h1>DeerFlow 怎样工作</h1>
+  <p class="lede">DeerFlow 2.0 是一个开源的 agent harness。一个 lead agent 在“调用模型、执行工具”的循环里工作，harness 替它管理文件、执行环境、上下文、记忆、skill 和分工，任务因此可以持续几分钟到几小时。</p>
+  <ol class="claims">
+    <li><b>一个后端进程</b><span>网关既提供 REST 接口，也运行 agent；nginx 是唯一的对外入口。</span><span class="to">见<a href="#s1">1</a><a href="#s2">2</a></span></li>
+    <li><b>一条中间件链</b><span>模型和工具的每次调用都要穿过一条四十项左右的中间件链。环境准备、上下文保护、工具管控和失控防护都放在这条链上。</span><span class="to">见<a href="#s3">3</a><a href="#s4">4</a></span></li>
+    <li><b>四类可替换的能力</b><span>工具、MCP 服务器、skill 和 subagent 都由配置装入，主循环不用改。</span><span class="to">见<a href="#s5">5</a><a href="#s6">6</a></span></li>
+    <li><b>固定的虚拟路径</b><span>agent 只看到 <code>/mnt/user-data</code> 下的三个目录；背后的执行环境可以是本机、容器或 Kubernetes Pod。</span><span class="to">见<a href="#s7">7</a></span></li>
+    <li><b>四处状态</b><span>thread 文件、checkpoint、数据库和长期记忆分开存放，生命周期各不相同。</span><span class="to">见<a href="#s8">8</a></span></li>
+    <li><b>多个入口，一条 run 路径</b><span>网页、IM 渠道、定时任务和 GitHub webhook 在网关里发起的是同一种 run；终端界面和嵌入式客户端不经过网关，装配的是同一个 lead agent。</span><span class="to">见<a href="#s9">9</a><a href="#s10">10</a></span></li>
+    <li><b>默认面向本机单人</b><span>默认配置假定本地可信环境。隔离执行、限制出网、多副本和细粒度授权都要另行开启。</span><span class="to">见<a href="#s11">11</a></span></li>
+  </ol>
+  <p class="lineage">术语沿用英文原词：run 是从收到一条消息到给出回答的一次执行，thread 是一个会话及其状态，checkpoint 是 thread 状态的快照，artifact 是登记给用户的输出文件，skill 是按需读入的说明文件目录。</p>
+  <p class="lineage">2.0 是重写，与 1.x 不共享代码。1.x 是 Deep Research 多 agent 框架，保留在 <code>main-1.x</code> 分支；在 2.0 里，深度研究是 23 个内置 skill 中的一个。</p>
+</section>
+
+<section class="ch" id="s1">
+  <header>
+    <span class="no">1</span>
+    <h2>系统全景</h2>
+    <p class="answer">浏览器只访问 nginx 的 2026 端口。nginx 把页面请求交给前端，把 <code>/api</code> 请求交给网关；agent 在网关进程里运行，没有独立的 LangGraph 服务。</p>
+  </header>
+
+  <figure data-select="map">
+    <div class="fig-title">运行时的部件与调用方向</div>
+    <div class="fig-intro">自上而下是一次请求经过的层次。点选任一部件，下方给出它的职责和默认值。</div>
+    <div class="map">
+      <div class="row"><div class="rl">入口</div><div class="cells">
+        <button type="button" class="node" data-key="browser"><svg class="g" aria-hidden="true"><use href="#g-browser"/></svg>浏览器</button>
+        <button type="button" class="node" data-key="im"><svg class="g" aria-hidden="true"><use href="#g-chat"/></svg>IM 渠道</button>
+        <button type="button" class="node" data-key="sched"><svg class="g" aria-hidden="true"><use href="#g-timer"/></svg>定时任务</button>
+        <button type="button" class="node" data-key="client"><svg class="g" aria-hidden="true"><use href="#g-terminal"/></svg>终端与嵌入式客户端</button>
+      </div></div>
+      <div class="row"><div class="down"></div></div>
+      <div class="row"><div class="rl">接入</div><div class="cells">
+        <button type="button" class="node" data-key="nginx"><svg class="g" aria-hidden="true"><use href="#g-gateway"/></svg>nginx<small>:2026</small></button>
+      </div></div>
+      <div class="row"><div class="down"></div></div>
+      <div class="row"><div class="rl">应用</div><div class="cells">
+        <button type="button" class="node" data-key="fe" style="flex:1 1 130px"><svg class="g" aria-hidden="true"><use href="#g-service"/></svg>前端<small>:3000</small></button>
+        <div class="proc">
+          <div class="pl">网关进程 <code>:8001</code></div>
+          <div class="cells">
+            <button type="button" class="node" data-key="gw-api">接口与鉴权</button>
+            <button type="button" class="node" data-key="gw-run">run 管理</button>
+            <button type="button" class="node" data-key="gw-agent"><svg class="g" aria-hidden="true"><use href="#g-agent"/></svg>lead agent</button>
+            <button type="button" class="node" data-key="gw-mw"><svg class="g" aria-hidden="true"><use href="#g-middleware"/></svg>中间件链</button>
+            <button type="button" class="node" data-key="gw-tools"><svg class="g" aria-hidden="true"><use href="#g-tool"/></svg>工具与 skill</button>
+            <button type="button" class="node" data-key="gw-sub"><svg class="g" aria-hidden="true"><use href="#g-subagent"/></svg>subagent 执行器</button>
+          </div>
+        </div>
+      </div></div>
+      <div class="row"><div class="down"></div></div>
+      <div class="row"><div class="rl">依赖与存储</div><div class="cells">
+        <button type="button" class="node" data-key="model"><svg class="g" aria-hidden="true"><use href="#g-model"/></svg>模型接口</button>
+        <button type="button" class="node" data-key="sandbox"><svg class="g" aria-hidden="true"><use href="#g-sandbox"/></svg>沙箱</button>
+        <button type="button" class="node" data-key="mcp"><svg class="g" aria-hidden="true"><use href="#g-external"/></svg>MCP 服务器</button>
+        <button type="button" class="node" data-key="db"><svg class="g" aria-hidden="true"><use href="#g-database"/></svg>数据库与 checkpoint</button>
+        <button type="button" class="node" data-key="files"><svg class="g" aria-hidden="true"><use href="#g-folder"/></svg>thread 文件与记忆</button>
+        <button type="button" class="node opt" data-key="redis"><svg class="g" aria-hidden="true"><use href="#g-database"/></svg>Redis<small>可选</small></button>
+        <button type="button" class="node opt" data-key="prov"><svg class="g" aria-hidden="true"><use href="#g-container"/></svg>Provisioner<small>可选 :8002</small></button>
+      </div></div>
+    </div>
+    <div class="legend"><span>实线框：默认启动</span><span class="dash">虚线框：按配置启动</span><span class="sel">蓝色：当前选中</span></div>
+
+    <div data-panels>
+      <div class="panel" data-panel="browser"><h4>浏览器</h4><p>用户打开 <code>http://localhost:2026</code>。页面由前端提供；对话请求通过 LangGraph SDK 发往 <code>/api/langgraph</code>，结果以 SSE 流回。浏览器只保存界面偏好和草稿，消息、待办和 artifact 都以后端的 thread 状态为准。</p></div>
+      <div class="panel" data-panel="im"><h4>IM 渠道</h4><p>十个平台的适配器运行在网关进程里：飞书、Slack、Telegram、钉钉、企业微信、微信、Discord、QQ、Buzz 和 GitHub。除 GitHub 用入站 webhook 外，其余都由网关主动向平台建立长连接，运营者不需要公网回调地址。</p><p>收到消息后，渠道管理器把“平台 + 会话”映射到一个 thread，再像普通客户端一样通过 HTTP 调用网关发起 run。见<a href="#s9">第 9 章</a>。</p></div>
+      <div class="panel" data-panel="sched"><h4>定时任务</h4><p>网关里的调度服务每 5 秒轮询一次到期任务，用一个合成的内部请求发起 run。这类 run 标记为无人值守，不能向人提问。任务可以是一次性、cron 或固定间隔；整个功能默认关闭。见<a href="#s9">第 9 章</a>。</p></div>
+      <div class="panel" data-panel="client"><h4>终端与嵌入式客户端</h4><p>终端界面（<code>deerflow</code> 命令）和嵌入式 Python 客户端不经过 nginx 和网关，在自己的进程里直接装配并运行同一个 lead agent。它们因此也不经过网关的登录和权限检查，适用于本机可信的场景。见<a href="#s9">第 9 章</a>。</p></div>
+      <div class="panel" data-panel="nginx"><h4>nginx · 唯一的对外入口</h4><p><code>/api/langgraph/*</code> 被改写成 <code>/api/*</code> 后转给网关，标准的 LangGraph SDK 客户端因此不需要一个独立的 LangGraph 服务。这条路径关闭了代理缓冲，SSE 事件才能逐条到达。其余 <code>/api/</code> 请求转网关，<code>/</code> 转前端。</p><p>上传类路径单独放宽了请求体上限（thread 上传 100 MB，skill 包 101 MB），长请求的读超时是 600 秒。Docker 部署默认只绑定 <code>127.0.0.1</code>，要对局域网或公网开放，需要自己设置 <code>BIND_HOST</code> 并在前面加 TLS 与认证。</p></div>
+      <div class="panel" data-panel="fe"><h4>前端 · Next.js 应用</h4><p>工作台、落地页、文档站和只读演示在同一个应用里（Next.js 16、React 19）。它是网关的客户端，自己不运行 agent。界面的组成和流式处理见<a href="#s10">第 10 章</a>。</p></div>
+      <div class="panel" data-panel="gw-api"><h4>接口与鉴权</h4><p>网关是一个 FastAPI 应用。thread、run、模型、skill、MCP、记忆、上传、artifact、渠道、定时任务、项目等 REST 接口都在这里，另外提供一组与 LangGraph 兼容的 thread 和 run 接口。</p><p>所有请求默认拒绝，通过认证后才放行；写请求还要通过 CSRF 校验。别人的 thread 返回 404，不返回 403。见<a href="#s9">第 9 章</a>。</p></div>
+      <div class="panel" data-panel="gw-run"><h4>run 管理</h4><p>每个对话请求对应一条 run 记录，放在后台任务里执行，状态有 pending、running、success、error、timeout、interrupted 六种。同一 thread 默认只允许一个在途 run，后到的请求被拒绝；策略可以改成打断或回滚。</p><p>run 产生的事件先写入“StreamBridge”，再由 SSE 推给客户端，两端解耦，所以断线后可以凭 <code>Last-Event-ID</code> 续传。网关重启时还没结束的 run 会被标记为错误。</p></div>
+      <div class="panel" data-panel="gw-agent"><h4>lead agent</h4><p>每次 run 都现场装配：选定模型，拼出工具表，渲染系统提示词，排好中间件链，然后编译成一张 LangGraph 图。请求可以指定模型、是否思考、是否计划、是否允许委派 subagent。见<a href="#s3">第 3 章</a>。</p></div>
+      <div class="panel" data-panel="gw-mw"><h4>中间件链</h4><p>在模型调用前后和工具调用前后插入的处理：准备 thread 目录和沙箱，注入记忆，压缩上下文，拦截越权的工具调用，检测循环。主循环本身很简单，行为差异几乎都来自这条链。见<a href="#s3">第 3 章</a>和<a href="#s4">第 4 章</a>。</p></div>
+      <div class="panel" data-panel="gw-tools"><h4>工具与 skill</h4><p>工具表由配置声明的工具、内置工具、MCP 工具和扩展包的工具依次拼成，重名时先到者保留。skill 是目录里的 <code>SKILL.md</code>，提示词里只列名称和描述，正文在用到时才读入。见<a href="#s5">第 5 章</a>。</p></div>
+      <div class="panel" data-panel="gw-sub"><h4>subagent 执行器</h4><p>lead agent 通过 <code>task</code> 工具把子任务交出去。执行器在网关进程内排队，默认同时运行 3 个、最多排队 64 个；每个 subagent 的上下文与主对话隔离。见<a href="#s6">第 6 章</a>。</p></div>
+      <div class="panel" data-panel="model"><h4>模型接口</h4><p>DeerFlow 不绑定模型。<code>config.yaml</code> 的 <code>models</code> 列表用类路径指定实现，仓库自带 OpenAI 兼容接口、Anthropic、DeepSeek、Gemini、vLLM 等接入方式。README 建议选用上下文在 10 万 token 以上、支持推理和多模态、工具调用稳定的模型。</p></div>
+      <div class="panel" data-panel="sandbox"><h4>沙箱</h4><p>agent 执行命令和读写文件的环境。配置模板默认使用本机提供方，它不构成安全边界，而且 bash 默认禁用；需要隔离时换成 Docker 容器或 Kubernetes Pod。见<a href="#s7">第 7 章</a>。</p></div>
+      <div class="panel" data-panel="mcp"><h4>MCP 服务器</h4><p>外部的工具服务器，支持 stdio、SSE、HTTP 三种传输。配置写在 <code>extensions_config.json</code>，可以通过网关接口修改，各进程不必重启就能发现变化。见<a href="#s5">第 5 章</a>。</p></div>
+      <div class="panel" data-panel="db"><h4>数据库与 checkpoint</h4><p>一个 <code>database.backend</code> 同时决定应用数据（thread、run、用户）和 LangGraph checkpoint（对话状态）存在哪里：内存、SQLite 或 Postgres。见<a href="#s8">第 8 章</a>。</p></div>
+      <div class="panel" data-panel="files"><h4>thread 文件与记忆</h4><p>默认放在 <code>.deer-flow/</code> 目录，按用户和 thread 分层。上传的文件、工作区、artifact 和长期记忆都是这里的普通文件。见<a href="#s7">第 7 章</a>和<a href="#s8">第 8 章</a>。</p></div>
+      <div class="panel" data-panel="redis"><h4>Redis · 可选</h4><p>网关有多个进程时，Redis 作为 StreamBridge 在进程之间传递 SSE 事件，并登记每个沙箱归哪个网关回收。本地 <code>make dev</code> 不启动它，StreamBridge 用进程内存；Docker 和 Helm 部署都会启动。</p></div>
+      <div class="panel" data-panel="prov"><h4>Provisioner · 可选</h4><p>一个独立的小服务，替网关在 Kubernetes 里按需创建和删除沙箱 Pod。这样网关不必持有宿主机的 Docker 套接字。只有沙箱配置了 <code>provisioner_url</code> 才会启动。见<a href="#s7">第 7 章</a>。</p></div>
+    </div>
+  </figure>
+
+  <div class="deep-group">
+    <div class="lbl">细节</div>
+    <details class="deep"><summary>代码的分块</summary><div class="body">
+      <table class="tbl">
+        <thead><tr><th>目录</th><th>内容</th></tr></thead>
+        <tbody>
+          <tr><th><code>backend/packages/harness</code></th><td>可单独发布的 agent 框架：lead agent、中间件、沙箱、subagent、工具、MCP、skill、模型、运行时、持久化、扩展。</td></tr>
+          <tr><th><code>backend/app</code></th><td>不单独发布的应用层：网关、IM 渠道、定时任务调度。</td></tr>
+          <tr><th><code>backend/packages/extension-api</code></th><td>扩展包要实现的公开契约，与宿主实现无关。</td></tr>
+          <tr><th><code>frontend</code></th><td>Next.js 工作台、文档站与演示。</td></tr>
+          <tr><th><code>skills/public</code></th><td>随仓库发布的 23 个 skill。</td></tr>
+          <tr><th><code>docker</code>、<code>deploy/helm</code></th><td>Compose 文件、nginx 配置、Provisioner 镜像；Helm Chart。</td></tr>
+          <tr><th><code>contracts</code>、<code>examples</code></th><td>跨组件的 JSON 契约；六个示例扩展。</td></tr>
+        </tbody>
+      </table>
+      <p>应用层可以依赖框架，框架不能反过来导入应用层，这条边界由 CI 里的一项测试保证。框架里另有一个嵌入式 Python 客户端，定时任务和测试用它驱动同一套 run 流程。</p>
+    </div></details>
+    <details class="deep"><summary>两个配置文件的分工</summary><div class="body">
+      <p><code>config.yaml</code> 是主配置：模型、工具、沙箱、记忆、摘要、数据库、subagent、IM 渠道等都在这里。模板的版本号已到 59，旧文件用 <code>make config-upgrade</code> 合并新字段。多数改动在下次读取时生效；少数在启动时冻结，例如 subagent 并发、批处理和扩展包列表。</p>
+      <p><code>extensions_config.json</code> 只放 MCP 服务器和 skill 的启用状态。它可以经网关接口在运行时改写，所以会引入代码的扩展包列表不允许放在这里。</p>
+    </div></details>
+  </div>
+</section>
+
+<section class="ch" id="s2">
+  <header>
+    <span class="no">2</span>
+    <h2>一条消息的行程</h2>
+    <p class="answer">一条消息变成一次 run：网关建立 run 记录并装配 lead agent，lead agent 在模型和工具之间循环，过程以事件流返回，结束时写入 checkpoint、核对 artifact 并把对话交给记忆队列。</p>
+  </header>
+
+  <figure id="journey">
+    <div class="fig-title">从发送到收尾的十步</div>
+    <div class="fig-intro">圆环标出每一步从哪里到哪里。第 6 至 8 步会重复多次，直到模型不再调用工具。</div>
+    <div class="track" style="--n:7" aria-hidden="true">
+      <div class="st">浏览器</div><div class="st">nginx</div><div class="st">网关</div><div class="st">lead agent</div><div class="st">模型</div><div class="st">工具与沙箱</div><div class="st">存储</div>
+      <span class="dot"></span>
+    </div>
+    <div class="step-ctl no-print">
+      <button type="button" class="btn" data-act="prev">上一步</button>
+      <button type="button" class="btn" data-act="next">下一步</button>
+      <button type="button" class="btn" data-act="play" aria-pressed="false">播放</button>
+      <span class="count" aria-live="polite"></span>
+    </div>
+    <ol class="steps">
+      <li data-from="0" data-to="1"><div><b>发送</b><span class="path">浏览器 → nginx</span><span class="d">前端先在界面上放一条待确认的用户消息，有附件就先上传。随后把所选模式换算成“思考、计划、subagent”三个开关，向 <code>/api/langgraph</code> 发起流式 run 请求，只订阅增量事件。</span></div></li>
+      <li data-from="1" data-to="2"><div><b>转发</b><span class="path">nginx → 网关</span><span class="d">nginx 把路径改写为 <code>/api/*</code>，关闭缓冲后交给网关。</span></div></li>
+      <li data-from="2" data-to="6"><div><b>建立 run</b><span class="path">网关 → 存储</span><span class="d">网关完成认证、CSRF 和 thread 归属检查，确认这个 thread 没有在途的 run，写入 run 记录，并记下 run 开始前的 checkpoint，供取消时回滚。</span></div></li>
+      <li data-from="2" data-to="3"><div><b>装配 lead agent</b><span class="path">网关 → lead agent</span><span class="d">按这次请求解析模型和思考开关，拼出工具表，渲染系统提示词，排好中间件链。</span></div></li>
+      <li data-from="3" data-to="6"><div><b>run 前准备</b><span class="path">lead agent → 存储</span><span class="d">算出 thread 目录的路径；把本轮上传的文件清单写到用户消息之前；如果是对话的第一轮，在第一条用户消息之前注入长期记忆和当天日期。沙箱这时还没有创建。</span></div></li>
+      <li data-from="3" data-to="4"><div><b>调用模型</b><span class="path">lead agent → 模型</span><span class="d">调用前先判断上下文是否需要压缩。接口瞬时失败时自动重试，默认 3 次，退避 1 到 8 秒；连续失败 5 次后熔断 60 秒。</span></div></li>
+      <li data-from="3" data-to="5"><div><b>执行工具</b><span class="path">lead agent → 工具与沙箱</span><span class="d">模型要求调用工具。每个调用先过授权、guardrail 和沙箱命令审计；第一次用到沙箱工具时才获取沙箱。</span></div></li>
+      <li data-from="5" data-to="4"><div><b>回传结果</b><span class="path">工具与沙箱 → 模型</span><span class="d">工具结果作为消息回到上下文；过长的结果（默认超过 12000 字符）改存为 thread 目录里的文件，上下文只留摘要和读取方式。然后回到第 6 步。</span></div></li>
+      <li data-from="3" data-to="0"><div><b>流式返回</b><span class="path">lead agent → 浏览器</span><span class="d">消息增量、状态更新和子任务进度陆续写入 StreamBridge，经 SSE 到达浏览器。前端把它们归成几类：思考与工具步骤、子任务、提问、文件呈现、回答。</span></div></li>
+      <li data-from="3" data-to="6"><div><b>收尾</b><span class="path">lead agent → 存储</span><span class="d">checkpoint 写入数据库；核对本轮新写的输出文件是否都已登记为 artifact，漏登记的 run 按失败处理；记录工作区改动；把对话交给记忆队列，约 30 秒后在后台提炼；沙箱释放。</span></div></li>
+    </ol>
+    <figcaption>第 9 步与第 6 至 8 步同时发生，这里排在后面只为叙述方便。澄清是一条分支：模型调用 <code>ask_clarification</code> 时，本次 run 直接结束，用户的回答开启下一次 run（见<a href="#s4">第 4 章</a>）。</figcaption>
+  </figure>
+</section>
+<section class="ch" id="s3">
+  <header>
+    <span class="no">3</span>
+    <h2>lead agent 与中间件</h2>
+    <p class="answer">lead agent 是一个“调用模型、执行工具”的循环，每次 run 按请求现场装配。循环本身只做这两件事，行为由挂在六个位置上的中间件决定。</p>
+  </header>
+
+  <figure data-select="loop" id="loop">
+    <div class="fig-title">循环的六个位置与各处的中间件</div>
+    <div class="fig-intro">中间四个位置反复执行，直到模型给出不带工具调用的回答。点选一个位置，查看那里发生什么。</div>
+    <div class="loop">
+      <button type="button" class="node" data-key="start">run 开始<span class="n2">每次 run 一次</span></button>
+      <div class="cyc">
+        <span class="cl">循环</span>
+        <button type="button" class="node" data-key="pre">调用模型前</button>
+        <button type="button" class="node" data-key="call">模型调用</button>
+        <button type="button" class="node" data-key="post">模型返回后</button>
+        <button type="button" class="node" data-key="tool">工具执行</button>
+      </div>
+      <button type="button" class="node" data-key="end">run 结束<span class="n2">每次 run 一次</span></button>
+    </div>
+    <div class="step-ctl no-print"><button type="button" class="btn" data-act="play" aria-pressed="false">播放一次 run</button><span class="count" aria-live="polite"></span></div>
+    <div data-panels>
+      <div class="panel" data-panel="start"><h4>run 开始</h4><ul>
+        <li><b>thread 目录</b>：算出工作区、上传、输出三个目录的路径，用到时再创建。</li>
+        <li><b>上传清单</b>：把本轮附带文件的名称、大小、路径和文档大纲写到用户消息之前。往期的上传不重复写，模型需要时用工具查询。</li>
+        <li><b>沙箱</b>：只登记“用到时获取”，第一次调用沙箱工具才真正创建。</li>
+        <li><b>记忆与日期</b>：对话的第一轮注入一次，之后冻结。</li>
+        <li><b>项目上下文</b>：thread 属于某个项目时，带上项目指令和资料索引。</li>
+        <li><b>skill 激活</b>：用户消息以 <code>/skill-name</code> 开头时，把这个 skill 的全文作为本轮的隐藏上下文。</li>
+      </ul></div>
+      <div class="panel" data-panel="pre"><h4>调用模型前</h4><ul>
+        <li><b>输入清理</b>：去掉用户输入里伪装成系统标记的内容。</li>
+        <li><b>摘要压缩</b>：上下文超过阈值时，把较早的消息压成一段摘要。</li>
+        <li><b>待办提醒</b>：计划模式下，待办清单如果已被压缩出上下文，就补一条提醒。</li>
+        <li><b>请求整形</b>：把多条系统消息并成开头的一条；给没有回应的工具调用补上占位结果；把刚查看的图片附进请求；把模型无法接收的内容块降级。</li>
+        <li><b>延迟工具过滤</b>：开启工具搜索后，只把已经取回定义的 MCP 工具交给模型。</li>
+      </ul></div>
+      <div class="panel" data-panel="call"><h4>模型调用</h4><ul>
+        <li><b>重试与熔断</b>：默认重试 3 次，退避 1 到 8 秒；连续失败 5 次后熔断 60 秒；服务端给出 <code>Retry-After</code> 时照办。</li>
+        <li><b>准入限速</b>：可以按模型配置每分钟请求数，超出的请求进入先进先出的队列，默认最多等 300 秒。</li>
+      </ul></div>
+      <div class="panel" data-panel="post"><h4>模型返回后</h4><ul>
+        <li><b>澄清独占</b>：模型在同一次响应里既要提问又要调用别的工具时，只保留提问。</li>
+        <li><b>委派限额</b>：超出并发或总数上限的 <code>task</code> 调用被去掉。</li>
+        <li><b>循环检测</b>：相同的工具调用重复 3 次给出警告，5 次强制停止调用。</li>
+        <li><b>中止识别</b>：模型因为长度或安全策略中止时，按中止处理，不当作正常回答。</li>
+        <li><b>待办收尾</b>：还有未完成的待办而模型准备结束时，把它拉回继续，最多 2 次。</li>
+        <li><b>标题与用量</b>：第一轮往返之后生成标题；累计 token 用量，开启预算时到上限即停。</li>
+      </ul></div>
+      <div class="panel" data-panel="tool"><h4>工具执行</h4><ul>
+        <li><b>回执</b>：给每个工具结果附上工具名、状态、参数与输出的哈希、时间。</li>
+        <li><b>授权与 guardrail</b>：按角色和外部策略放行或拒绝。拒绝以一条出错结果返回，模型可以换一种做法。</li>
+        <li><b>命令审计与先读后写</b>：审计将在沙箱里执行的命令；改写已有文件之前，必须读过它的最新内容。</li>
+        <li><b>错误转换</b>：工具抛出的异常变成一条出错结果，循环不中断。</li>
+        <li><b>输出预算</b>：过长的输出改存为文件，上下文只留摘要。</li>
+        <li><b>远程内容清理</b>：对网页抓取、搜索和 MCP 返回的内容做与用户输入相同的清理。</li>
+      </ul></div>
+      <div class="panel" data-panel="end"><h4>run 结束</h4><ul>
+        <li><b>记忆入队</b>：把用户消息和最终回答交给记忆队列，稍后在后台提炼。</li>
+        <li><b>沙箱释放</b>：归还沙箱，容器类沙箱回到 warm pool 等待复用。</li>
+        <li><b>交付核验</b>：由 run 管理完成，核对本轮写出的文件是否都已登记为 artifact，并记录工作区改动。</li>
+      </ul></div>
+    </div>
+    <figcaption>这里按执行位置归组，没有逐项列出。完整的链有四十项左右，其中近一半按配置或请求条件挂载；扩展包还可以在指定位置插入自己的中间件。</figcaption>
+  </figure>
+
+  <h3>四种模式对应三个开关</h3>
+  <p class="prose">输入框里的四种模式是前端的预设。后端只认三个布尔开关和一个推理强度，通过 API 调用时可以直接传这几个参数。</p>
+  <figure id="modes">
+    <div class="seg no-print" role="group" aria-label="模式">
+      <button type="button" data-mode="flash" aria-pressed="false">Flash</button>
+      <button type="button" data-mode="thinking" aria-pressed="false">Reasoning</button>
+      <button type="button" data-mode="pro" aria-pressed="true">Pro</button>
+      <button type="button" data-mode="ultra" aria-pressed="false">Ultra</button>
+    </div>
+    <div class="switches" aria-live="polite">
+      <div class="sw" data-sw="think"><div class="sl">思考</div><div class="sv">开</div></div>
+      <div class="sw" data-sw="plan"><div class="sl">计划</div><div class="sv">开</div></div>
+      <div class="sw" data-sw="sub"><div class="sl">subagent</div><div class="sv">关</div></div>
+      <div class="sw" data-sw="effort"><div class="sl">默认推理强度</div><div class="sv">medium</div></div>
+    </div>
+    <p class="mode-desc" id="mode-desc">Pro：思考加计划。模型得到待办清单工具，界面显示进度。新对话默认使用这一档。</p>
+    <table class="tbl no-js-only">
+      <thead><tr><th>模式</th><th>思考</th><th>计划</th><th>subagent</th><th>默认推理强度</th></tr></thead>
+      <tbody>
+        <tr><th>Flash</th><td>关</td><td>关</td><td>关</td><td>不传</td></tr>
+        <tr><th>Reasoning</th><td>开</td><td>关</td><td>关</td><td>low</td></tr>
+        <tr><th>Pro</th><td>开</td><td>开</td><td>关</td><td>medium</td></tr>
+        <tr><th>Ultra</th><td>开</td><td>开</td><td>开</td><td>high</td></tr>
+      </tbody>
+    </table>
+    <figcaption>能选哪几档取决于所选模型：不支持思考的模型只能用 Flash；必须思考的模型不会落到 Flash。推理强度可以单独指定，厂商专有的取值原样传给模型。</figcaption>
+  </figure>
+
+  <div class="deep-group">
+    <div class="lbl">细节</div>
+    <details class="deep"><summary>模型与思考开关的选定</summary><div class="body">
+      <p>模型按三级取值：请求里指定的，自定义 agent 配置的，<code>models</code> 列表的第一项。指定的名字不存在时退回默认模型并记一条告警；选出的模型还要通过授权检查，被拒绝时换成第一个允许的模型。</p>
+      <p>思考开关同样三级：请求，自定义 agent 的默认值，全局默认（开）。取到的值再按模型能力校正，模型不支持思考就自动降为不思考，一般不会报错。</p>
+      <p>各家模型开关思考的写法不同。适配写在每个模型的配置里：要么声明一份“推理契约”（是否支持、用哪种方言、有哪些强度取值），要么提供开启和关闭时各自要合并的参数。代码里没有按厂商写死的分支。</p>
+    </div></details>
+    <details class="deep"><summary>系统提示词的组成</summary><div class="body">
+      <p>系统提示词是静态的，对所有用户和所有会话逐字节相同，目的是让模型服务端的前缀缓存能够命中。各段依次是：角色，自定义 agent 的人设（如果有），思考方式，澄清规则，skill 清单，记忆工具说明，延迟工具清单，subagent 说明（仅在开启时出现），工作目录，回答风格，引用规则，关键提醒。</p>
+      <p>会变的内容都不在这里：日期、记忆、上传清单和项目指令由中间件放进消息或每次请求的临时附加部分（见<a href="#s4">第 4 章</a>的表）。</p>
+    </div></details>
+    <details class="deep"><summary>thread 状态的内容</summary><div class="body">
+      <p>thread 状态是随 checkpoint 保存的那部分数据。除了消息历史，还有：沙箱编号，thread 目录路径，标题，artifact 路径列表，待办清单，目标及其结果，本 thread 的上传文件，看过的图片（只存路径、类型、大小和哈希，不存图片内容），已取回定义的延迟工具，subagent 委派台账（最多 50 条），已加载的 skill 引用（最多 8 条），摘要文本，后台任务。</p>
+      <p>并发写入的合并规则按字段定义：artifact 去重并保持顺序，待办后写覆盖，委派台账里已到终态的记录不会被非终态覆盖。</p>
+    </div></details>
+    <details class="deep"><summary>计划模式与步数上限</summary><div class="body">
+      <p>计划模式只在请求打开时生效。模型多得到一个 <code>write_todos</code> 工具和一段使用说明，待办项有待办、进行中、已完成三种状态，保存在 thread 状态里，前端把它显示在输入框上方。</p>
+      <p>一次 run 里图能执行的步数有上限，默认 100，请求可以提高，服务端封顶 1000；网页前端每次请求都传 1000。</p>
+    </div></details>
+    <details class="deep"><summary>自定义 agent</summary><div class="body">
+      <p>自定义 agent 是一份命名的配置：人设文件 <code>SOUL.md</code>、描述、可用的 skill 和工具组白名单、可用的 subagent 白名单、默认模型和思考设置。run 请求带上它的名字，装配时就按这份配置收窄工具、skill 和可委派的类型。用户可以通过内置的 bootstrap skill 在对话里创建，agent 也可以用 <code>update_agent</code> 工具修改自己的配置；由 webhook 触发的 run 不提供这个工具。</p>
+    </div></details>
+  </div>
+</section>
+
+<section class="ch" id="s4">
+  <header>
+    <span class="no">4</span>
+    <h2>上下文与失控防护</h2>
+    <p class="answer">上下文的体积靠静态提示词、一次性注入、输出外置和摘要压缩来控制。失控由循环检测、委派限额、步数和 token 上限拦截。需要人回答时，run 直接结束，等用户的下一条消息。</p>
+  </header>
+
+  <h3>进入上下文的内容</h3>
+  <div class="scroll-x"><table class="tbl">
+    <thead><tr><th>内容</th><th>位置</th><th>写入时机</th><th>是否进入消息历史</th></tr></thead>
+    <tbody>
+      <tr><th>系统提示词</th><td>最前</td><td>装配时渲染，内容固定</td><td>否</td></tr>
+      <tr><th>记忆与日期</th><td>第一条用户消息之前</td><td>对话首轮一次，之后冻结；跨过午夜时补一条日期更新</td><td>是</td></tr>
+      <tr><th>上传清单</th><td>最后一条用户消息之前</td><td>每轮，只含本轮附带的文件</td><td>是</td></tr>
+      <tr><th>skill 全文</th><td>本轮的隐藏上下文</td><td>用户以 <code>/skill-name</code> 开头时</td><td>否</td></tr>
+      <tr><th>项目指令与资料索引</th><td>每次请求临时附加</td><td>run 开始时取最新快照</td><td>否</td></tr>
+      <tr><th>摘要、委派台账、已读 skill</th><td>每次请求临时附加</td><td>压缩发生之后</td><td>否，存在 thread 状态的独立字段里</td></tr>
+      <tr><th>图片内容</th><td>每次请求临时附加</td><td><code>view_image</code> 调用完成后</td><td>否，历史里只留元数据</td></tr>
+    </tbody>
+  </table></div>
+  <p class="prose small muted">记忆在首轮注入后冻结，所以对话中途新提炼出的记忆要到下一个对话才出现。</p>
+
+  <h3>减小上下文的四种做法</h3>
+  <div class="prose">
+    <p><b>工具输出外置。</b>工具结果超过 12000 字符时，全文存进 thread 目录，上下文里只留一段摘要和读取它的方法。沙箱工具自己还有一道截断：bash 20000 字符，读文件 50000，列目录 20000。</p>
+    <p><b>摘要压缩。</b>上下文达到阈值时，较早的消息交给模型压成摘要，近期消息原样保留（默认最近 20 条）。摘要不写回消息历史，而是存在独立字段里，每次请求时附上。一条模型消息和它的工具结果不会被拆开，最新的用户请求不会被压缩。压缩之前，将被压掉的消息先送进记忆队列。用户也可以用 <code>/compact</code> 手动触发。</p>
+    <p><b>按需加载。</b>skill 只列名称和描述，MCP 工具可以只列名字，正文和定义用到时再取（见<a href="#s5">第 5 章</a>）。</p>
+    <p><b>隔离上下文。</b>subagent 在自己的上下文里完成中间过程，只把结果交回主对话（见<a href="#s6">第 6 章</a>）。</p>
+  </div>
+  <p class="prose small muted">摘要压缩在代码里的默认值是关闭、没有触发条件；配置模板把它打开，并设为 32000 token 触发。按模板生成配置的部署是开启的。</p>
+
+  <h3>失控防护</h3>
+  <div class="scroll-x"><table class="tbl">
+    <thead><tr><th>机制</th><th>触发条件</th><th>结果</th><th>默认</th></tr></thead>
+    <tbody>
+      <tr><th>循环检测</th><td>同一组工具调用反复出现</td><td>3 次警告；5 次清空工具调用，要求直接作答</td><td>开</td></tr>
+      <tr><th>单个工具的调用次数</th><td>同一种工具在一次 run 里调用过多</td><td>30 次警告；50 次强制停止</td><td>开，可按工具调整</td></tr>
+      <tr><th>委派限额</th><td><code>task</code> 调用超出上限</td><td>去掉超出的调用；总数用完时要求用已有结果收尾</td><td>每次响应 3 个，每次 run 6 个</td></tr>
+      <tr><th>步数上限</th><td>图的执行步数</td><td>run 终止</td><td>100，可按请求提高，封顶 1000</td></tr>
+      <tr><th>模型调用熔断</th><td>模型接口连续失败 5 次</td><td>暂停调用 60 秒</td><td>开</td></tr>
+      <tr><th>token 预算</th><td>一次 run 累计的 token</td><td>80% 警告，100% 停止</td><td>关；开启后默认 20 万</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>澄清：run 结束后等待回答</h3>
+  <figure>
+    <div class="tl">
+      <div><b>模型提问</b><span class="t">run A</span>模型调用 <code>ask_clarification</code>，同一次响应里的其他工具调用被丢弃。</div>
+      <div><b>run 结束</b><span class="t">run A</span>问题作为一条工具结果写入 thread，checkpoint 保存，本次 run 正常结束。</div>
+      <div style="color:var(--accent)"><b>等用户回答</b><span class="t">thread 空闲</span>界面显示提问卡片，可以带选项或表单。没有时限。</div>
+      <div><b>继续</b><span class="t">run B</span>回答作为新消息发到同一 thread，开启一次新的 run。</div>
+    </div>
+    <figcaption>提问分五类：缺信息、需求有歧义、方案选择、风险确认、建议。定时任务、webhook 等无人值守的 run 不提供这个工具，提示词要求它们按风险最低的假设继续并记下假设，风险高时返回 BLOCKED。</figcaption>
+  </figure>
+
+  <div class="deep-group">
+    <div class="lbl">细节</div>
+    <details class="deep"><summary>guardrail 与授权</summary><div class="body">
+      <p>guardrail 在工具真正执行之前把调用交给一个外部策略判断，默认关闭。策略出错时默认按拒绝处理。内置的策略只有按工具名的允许和禁止名单，更细的规则需要自己接入。每次放行或拒绝都记入 run 事件。</p>
+      <p>细粒度授权（按角色决定能用哪些模型、工具和沙箱）复用同一个拦截点，排在 guardrail 之前，默认也是关闭的。</p>
+    </div></details>
+    <details class="deep"><summary>目标循环</summary><div class="body">
+      <p>用户可以用 <code>/goal</code> 给 thread 设一个完成条件。run 结束时条件还没达成，系统自动续跑，默认最多 8 次，连续 2 次没有进展就停下。</p>
+    </div></details>
+  </div>
+</section>
+<section class="ch" id="s5">
+  <header>
+    <span class="no">5</span>
+    <h2>工具、MCP 与 skill</h2>
+    <p class="answer">工具表在每次装配时由五个来源依次拼成。MCP 把外部服务器的工具并进这张表。skill 是另一层：它是目录里的说明文件，提示词只列名称和描述，正文在用到时才读入。</p>
+  </header>
+
+  <h3>工具表的五个来源</h3>
+  <ol class="prose">
+    <li><b>配置声明的工具。</b><code>config.yaml</code> 的 <code>tools</code> 段逐条写明用哪个实现。配置模板里有沙箱的文件与命令工具、网页搜索（DuckDuckGo）、网页抓取（Jina）和图片搜索。换服务商只改这一条的实现路径。</li>
+    <li><b>内置工具。</b>登记 artifact、向用户提问、审查 skill 包三个始终存在，其余按条件加入（见下表）。</li>
+    <li><b>MCP 工具。</b>来自部署级和用户个人配置的 MCP 服务器；两者同名时保留部署级的。</li>
+    <li><b>ACP agent。</b>配置了外部的 ACP 兼容 agent 时，多一个调用它的工具。</li>
+    <li><b>扩展包的工具。</b>运营者安装的扩展包可以带模型工具，排在最后。</li>
+  </ol>
+  <p class="prose">五个来源按这个顺序合并，重名时先到的保留。合并之后还要裁剪：自定义 agent 的工具组白名单，主机 bash 是否允许，模型是否支持视觉，以及授权策略。被裁掉的工具不会交给模型。</p>
+
+  <div class="scroll-x"><table class="tbl">
+    <caption>模型常用的工具</caption>
+    <thead><tr><th>工具</th><th>用途</th><th>出现条件</th></tr></thead>
+    <tbody>
+      <tr><th><code>bash</code>、<code>ls</code>、<code>read_file</code>、<code>write_file</code>、<code>str_replace</code>、<code>glob</code>、<code>grep</code></th><td>在沙箱里执行命令、读写和查找文件</td><td>配置声明；本机沙箱下 <code>bash</code> 默认不提供</td></tr>
+      <tr><th><code>web_search</code>、<code>web_fetch</code>、<code>image_search</code></th><td>搜索和抓取网页</td><td>配置声明</td></tr>
+      <tr><th><code>present_files</code></th><td>把输出目录里的文件登记为 artifact</td><td>始终</td></tr>
+      <tr><th><code>ask_clarification</code></th><td>向用户提问并结束本次 run</td><td>有人值守的 run</td></tr>
+      <tr><th><code>task</code></th><td>委派 subagent</td><td>请求打开 subagent</td></tr>
+      <tr><th><code>write_todos</code></th><td>维护待办清单</td><td>请求打开计划模式</td></tr>
+      <tr><th><code>view_image</code></th><td>查看沙箱里的图片</td><td>模型支持视觉</td></tr>
+      <tr><th><code>list_uploaded_files</code></th><td>分页查询 thread 里的上传文件</td><td>thread 有上传</td></tr>
+      <tr><th><code>tool_search</code>、<code>describe_skill</code></th><td>按需取回 MCP 工具定义、skill 描述</td><td>开启对应的延迟加载</td></tr>
+      <tr><th><code>schedule_task</code></th><td>在对话里创建定时任务</td><td>定时任务及其工具开关都打开</td></tr>
+    </tbody>
+  </table></div>
+  <p class="prose small muted">仓库的社区目录里有可替换的实现：网页搜索 15 种、网页抓取 10 种，另有 RAGFlow 和 LightRAG 知识库检索、基于 Playwright 的浏览器自动化。同名工具同一时间只能启用一种实现。</p>
+
+  <h3>MCP：接入外部工具服务器</h3>
+  <div class="prose">
+    <p>每个 MCP 服务器是 <code>extensions_config.json</code> 里的一条配置，写明传输方式（stdio、SSE 或 HTTP）、启动命令或地址、认证方式。工具名默认加上服务器名作前缀，避免冲突。一个服务器配置有误只影响它自己。</p>
+    <p>工具定义在第一次用到时加载并缓存。缓存按配置文件的指纹判断是否过期，所以通过网关接口增删服务器之后，各进程不必重启。stdio 服务器的会话放在池里，按“服务器 + 用户或 thread”隔离。</p>
+    <p>认证可以叠加四层，后面的覆盖前面的：静态请求头，OAuth（自动刷新令牌），按 DeerFlow 用户映射的凭据，单次请求带入的密钥。</p>
+  </div>
+
+  <h3>skill：按需读入的说明文件</h3>
+  <figure data-select="skill" id="skill">
+    <div class="fig-title">skill 内容进入上下文的三个阶段</div>
+    <div class="seg no-print" role="group" aria-label="阶段">
+      <button type="button" data-key="l1">平时</button>
+      <button type="button" data-key="l2">任务匹配时</button>
+      <button type="button" data-key="l3">执行到具体步骤时</button>
+    </div>
+    <div class="layers" aria-hidden="true">
+      <div class="layer" data-layer="1"><b>名称与描述</b><span class="lw">每个已启用的 skill 一行，写在系统提示词里</span></div>
+      <div class="layer" data-layer="2"><b>SKILL.md 正文</b><span class="lw">流程、要求和注意事项</span></div>
+      <div class="layer" data-layer="3"><b>脚本、参考资料、模板</b><span class="lw">skill 目录里的其他文件</span></div>
+    </div>
+    <div class="legend"><span>实线框：已在上下文里</span><span class="dash">虚线框：还在磁盘上</span><span class="sel">蓝色：这一阶段新读入</span></div>
+    <div data-panels>
+      <div class="panel" data-panel="l1"><h4>平时：只有名称与描述</h4><p>系统提示词里列出每个已启用 skill 的名称、一段描述和它在沙箱里的路径，并要求模型在任务匹配时先去读对应的 <code>SKILL.md</code>。二十多个 skill 在这一阶段只占二十多行。</p></div>
+      <div class="panel" data-panel="l2"><h4>任务匹配时：读入正文</h4><p>模型判断某个 skill 适用，用 <code>read_file</code> 读它的 <code>SKILL.md</code>。用户也可以在消息开头写 <code>/skill-name</code> 直接指定，这时正文由系统注入本轮。skill 如果声明了允许使用的工具，从这一刻起工具表按它收窄。</p></div>
+      <div class="panel" data-panel="l3"><h4>执行到具体步骤时：读入资源</h4><p>正文里引用的脚本、参考资料和模板，执行到那一步才读或才运行。一个带了几十页参考资料的 skill，实际进入上下文的通常只是其中用到的几份。</p></div>
+    </div>
+  </figure>
+  <div class="prose">
+    <p>一个 skill 就是一个目录，里面必须有 <code>SKILL.md</code>：开头一段 YAML 写名称、描述和可选的声明，后面是 Markdown 正文。skill 有三个来源：随仓库发布的公共 skill，用户自己安装或创建的，以及托管集成带来的只读 skill（例如飞书）。启用状态记在 <code>extensions_config.json</code>，没有记录的视为启用。</p>
+  </div>
+
+  <div class="deep-group">
+    <div class="lbl">细节</div>
+    <details class="deep"><summary>MCP 工具的延迟加载</summary><div class="body">
+      <p>默认情况下，所有 MCP 工具的完整定义都交给模型。服务器一多，定义本身就占去不少上下文。打开 <code>tool_search</code> 之后，提示词里只列工具名字，模型调用 <code>tool_search</code> 取回定义才能使用，每次最多取 5 个。服务器或工具可以配置路由关键词，命中时系统在模型调用前自动取回最相关的几个（默认 3 个）。这个开关默认关闭。</p>
+    </div></details>
+    <details class="deep"><summary>MCP 长任务</summary><div class="body">
+      <p>有些 MCP 工具只是提交一个耗时任务，结果要靠另一个工具反复查询。可以在服务器配置里把“提交、查询、取消”三个工具绑成一组：模型只看到提交，拿到一个本地任务编号后继续做别的；网关在 agent 循环之外每 5 秒轮询一次，完成后通知。模型可以列出和取消后台任务。这个功能默认关闭，开关在启动时读取。</p>
+    </div></details>
+    <details class="deep"><summary>通过接口注册 MCP 服务器的限制</summary><div class="body">
+      <p>stdio 服务器意味着在网关主机上启动一个进程。经 HTTP 接口注册时，命令只允许 <code>npx</code> 和 <code>uvx</code>（可用环境变量扩充），并拒绝能执行任意代码的参数。文档说明这是纵深防御，不构成信任边界：网关管理员权限事实上等同于主机上的代码执行权限。个人 MCP 配置指向非公网地址时需要管理员权限。</p>
+    </div></details>
+    <details class="deep"><summary>能力目录与扩展包的区别</summary><div class="body">
+      <p><b>能力目录</b>是界面上的一组连接器卡片，共 15 张（飞书、钉钉、企业微信、腾讯文档、Notion、GitHub、Atlassian、HubSpot、数据库等）。添加一张卡片，结果就是写入一条普通的 MCP 配置；其中搜索、抓取和浏览器几张只给出配置指引。</p>
+      <p><b>扩展包</b>是运营者安装进网关进程的 Python 包，列在 <code>config.yaml</code> 的 <code>plugins</code> 里，启动时加载。它可以提供中间件、任务生命周期钩子、后台服务、HTTP 路由，以及带页面和模型工具的完整插件。扩展代码以网关的权限运行，不在沙箱里；增删或开关都要重启网关。仓库附带六个示例，其中书签和多 agent 协作两个是带界面的完整插件。</p>
+    </div></details>
+    <details class="deep"><summary>skill 的安装、扫描与自我修改</summary><div class="body">
+      <p>skill 包是扩展名为 <code>.skill</code> 的 ZIP 文件，上传后解压到用户的 skill 目录。解压有上限（4096 个条目，总量 512 MiB），拒绝越界路径、符号链接和可执行二进制；之后先过一遍离线的确定性扫描，发现严重问题直接拦截，再过一遍模型扫描。</p>
+      <p>内置的 skill 评审工具只读地检查一个 skill 包，给出三档结论：阻断、需修改、可发布。它把被审对象当作不可信数据，不激活也不安装。</p>
+      <p>允许 agent 自己创建和修改 skill 的开关默认关闭。打开后，每次写入都要经过安全审查，审查模型不可用时全部拦截。</p>
+    </div></details>
+    <details class="deep"><summary>随仓库发布的 23 个 skill</summary><div class="body">
+      <p><b>研究与报告</b>：deep-research、github-deep-research、systematic-literature-review、academic-paper-review、consulting-analysis。<br><b>内容生成</b>：ppt-generation、podcast-generation、newsletter-generation、image-generation、music-generation、video-generation。<br><b>数据与图表</b>：data-analysis、chart-visualization。<br><b>网页与代码</b>：frontend-design、web-design-guidelines、vercel-deploy、code-documentation。<br><b>skill 与 agent 自身</b>：skill-creator、skill-reviewer、find-skills、bootstrap、claude-to-deerflow、surprise-me。</p>
+    </div></details>
+    <details class="deep"><summary>skill 密钥的传递</summary><div class="body">
+      <p>skill 可以声明自己需要哪些密钥。密钥只随单次请求传入，作为环境变量注入这次激活的 bash 进程，不进入提示词、工具参数、checkpoint 和日志；subagent 不继承。</p>
+    </div></details>
+  </div>
+</section>
+
+<section class="ch" id="s6">
+  <header>
+    <span class="no">6</span>
+    <h2>subagent</h2>
+    <p class="answer">lead agent 用 <code>task</code> 工具把边界清楚的子任务交出去。subagent 有自己的上下文，与父 thread 共用沙箱，不能再往下委派；并发、总数、时长和 token 都有上限。</p>
+  </header>
+
+  <figure id="subcalc">
+    <div class="fig-title">每次响应保留的 task 调用数</div>
+    <div class="fig-intro">规则：保留数取“每次响应上限 3”和“本次 run 剩余额度”中较小的一个，其余调用在执行前被去掉。拖动两个数试算。</div>
+    <div class="calc no-print">
+      <label>模型这次发出的 task 调用<output id="sc-n-out">5</output>
+        <input type="range" id="sc-n" min="1" max="8" value="5"></label>
+      <label>本次 run 此前已委派<output id="sc-u-out">2</output>
+        <input type="range" id="sc-u" min="0" max="6" value="2"></label>
+    </div>
+    <div class="slots" id="sc-slots" aria-hidden="true"></div>
+    <p class="calc-out" id="sc-out" aria-live="polite">保留 3 个，去掉 2 个。本次 run 还剩 1 个委派额度。</p>
+    <figcaption>默认值：每次响应 3 个，每次 run 6 个，两者都可以改，请求也可以覆盖。保留下来的调用再进入全进程共用的执行队列：同时运行 3 个，排队 64 个，排队超过 300 秒按失败返回。</figcaption>
+  </figure>
+
+  <h3>一次委派的过程</h3>
+  <ol class="prose">
+    <li><b>委派。</b>lead agent 给出任务说明、subagent 类型，以及可选的验收条件。上下文有两种给法：默认只给任务说明；也可以附上父对话当时的历史和摘要作为背景，之后父对话的变化不再同步过去。</li>
+    <li><b>执行。</b>执行器取得一个运行槽位，启动 subagent。它的系统提示词末尾附有一份汇报约定。</li>
+    <li><b>进度。</b><code>task</code> 工具在后端每 5 秒查看一次结果，模型不参与轮询。开始、每条新消息和结束各发一个事件，前端据此更新子任务卡片。</li>
+    <li><b>汇报。</b>按约定，subagent 声称做过的动作要引用对应的工具回执编号，交付物要带可核对的标识，例如路径、网址或编号。</li>
+    <li><b>验收。</b>如果传了验收条件，由代码检查，不由模型判断。</li>
+  </ol>
+  <p class="prose">“完成”只表示 subagent 执行结束。代码能核对的验收条件只有几种：文件存在、非空、是合法 JSON、确实被写过，以及一条测试命令通过。其他写法的条件一律标成“未验证”，不会默认算通过。</p>
+
+  <div class="scroll-x"><table class="tbl">
+    <caption>内置的两种 subagent</caption>
+    <thead><tr><th>类型</th><th>可用工具</th><th>轮数上限</th><th>备注</th></tr></thead>
+    <tbody>
+      <tr><th>general-purpose</th><td>继承 lead agent 的全部工具，但不能委派、不能向用户提问、不能登记 artifact</td><td class="num">150</td><td>通用</td></tr>
+      <tr><th>bash</th><td>只有 <code>bash</code>、<code>ls</code>、<code>read_file</code>、<code>write_file</code>、<code>str_replace</code></td><td class="num">60</td><td>主机 bash 未允许时不可用</td></tr>
+    </tbody>
+  </table></div>
+  <p class="prose small muted">运营者可以在配置里或管理界面里定义更多类型，并为每种类型单独设定模型、skill、超时和提示词补充。自定义 agent 可以用白名单限定自己能委派哪些类型。</p>
+
+  <div class="scroll-x"><table class="tbl">
+    <caption>上限与默认值</caption>
+    <thead><tr><th>项目</th><th>默认</th><th>说明</th></tr></thead>
+    <tbody>
+      <tr><th>进程内并发数</th><td class="num">3</td><td>所有用户和 thread 共用；可设 1 到 64；启动时读取，修改要重启</td></tr>
+      <tr><th>排队长度</th><td class="num">64</td><td>队满时新任务被拒绝；也可以改成不排队直接拒绝</td></tr>
+      <tr><th>排队超时</th><td class="num">300 秒</td><td>超时按失败返回</td></tr>
+      <tr><th>每次 run 的委派总数</th><td class="num">6</td><td>可设 1 到 50</td></tr>
+      <tr><th>单个 subagent 时长</th><td class="num">1800 秒</td><td>内置类型的默认值</td></tr>
+      <tr><th>单个 subagent token</th><td class="num">100 万 / 200 万</td><td>前者用于开启摘要压缩时；70% 警告，到顶后停止调用工具并按“已完成、因 token 封顶”返回</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="deep-group">
+    <div class="lbl">细节</div>
+    <details class="deep"><summary>批处理：大量互相独立的小任务</summary><div class="body">
+      <p>lead agent 可以显式调用 <code>batch_task</code>，一次提交一批条目，立即拿到批次编号。条目写入数据库，由网关里的批处理服务逐步领取，交给同一个执行器和同一批槽位。lead agent 用配套工具查看进度、取消批次、分段读取结果。界面上可以暂停、恢复、取消、重试单条，以及导出全部结果。</p>
+      <p>这个功能默认关闭，需要 SQLite 或 Postgres。默认每批最多 5000 条，同时在途 100 条，同时运行 3 条，每条最多尝试 3 次。排队超时本身不消耗尝试次数。批处理不会自动触发：模型不调用这个工具，系统不会把普通委派改成批处理。</p>
+    </div></details>
+    <details class="deep"><summary>失败、超时与共用沙箱</summary><div class="body">
+      <p>subagent 的模型调用如果最终失败，结果按失败返回。超时的结果单独标记。终态只写一次，后到的状态不会覆盖它。</p>
+      <p>并行的 subagent 与 lead agent 共用同一个 thread 沙箱和 thread 目录。沙箱按持有者计数，最后一个持有者释放时才真正归还。subagent 的追踪记录挂在父 thread 的会话之下。</p>
+    </div></details>
+  </div>
+</section>
+
+<section class="ch" id="s7">
+  <header>
+    <span class="no">7</span>
+    <h2>沙箱与文件</h2>
+    <p class="answer">agent 只认识几个固定的虚拟目录。命令在哪里执行由沙箱提供方决定：配置模板默认在网关本机执行并禁用 bash，需要隔离时换成容器或 Pod。沙箱按“用户 + thread”复用，空闲 10 分钟后回收。</p>
+  </header>
+
+  <figure>
+    <div class="fig-title">虚拟路径与主机上的实际位置</div>
+    <div class="paths">
+      <div class="pr ph"><div>agent 看到的路径</div><div>用途与主机位置</div></div>
+      <div class="pr"><div>/mnt/user-data/workspace</div><div>工作区，放中间文件<span class="real">.deer-flow/users/{用户}/threads/{thread}/user-data/workspace</span></div></div>
+      <div class="pr"><div>/mnt/user-data/uploads</div><div>用户上传的文件<span class="real">…/user-data/uploads</span></div></div>
+      <div class="pr"><div>/mnt/user-data/outputs</div><div>交付给用户的成品，只有这里的文件能登记为 artifact<span class="real">…/user-data/outputs</span></div></div>
+      <div class="pr"><div>/mnt/skills</div><div>skill 目录，只读<span class="real">公共 skill 与该用户 skill 合成的视图</span></div></div>
+    </div>
+    <figcaption>提示词和工具只使用左列的路径，所以更换沙箱提供方不需要改提示词。本机提供方在每次调用时把路径翻译成主机位置；容器类提供方把 thread 目录挂载到容器内的同名路径。含 <code>..</code> 的路径直接被拒绝。</figcaption>
+  </figure>
+
+  <h3>四类沙箱提供方</h3>
+  <figure>
+    <div class="cmp c4" style="--cols:4">
+      <div class="h"></div><div class="h">本机</div><div class="h">Docker 容器</div><div class="h">Kubernetes Pod</div><div class="h">云端微虚拟机</div>
+      <div class="a">执行位置</div><div><span class="o">本机</span>网关所在主机</div><div><span class="o">Docker 容器</span>网关主机上的容器</div><div><span class="o">Kubernetes Pod</span>集群里按需创建的 Pod</div><div><span class="o">云端微虚拟机</span>第三方服务，如 E2B</div>
+      <div class="a">隔离</div><div><span class="o">本机</span>没有，不构成安全边界</div><div><span class="o">Docker 容器</span>容器隔离；默认内存 2 GB、CPU 2 核、进程数 512</div><div><span class="o">Kubernetes Pod</span>Pod 隔离；上限 CPU 1 核、内存 1 GiB</div><div><span class="o">云端微虚拟机</span>虚拟机隔离</div>
+      <div class="a">bash</div><div><span class="o">本机</span>默认禁用</div><div><span class="o">Docker 容器</span>可用</div><div><span class="o">Kubernetes Pod</span>可用</div><div><span class="o">云端微虚拟机</span>可用</div>
+      <div class="a">文件传递方式</div><div><span class="o">本机</span>直接读写 thread 目录</div><div><span class="o">Docker 容器</span>卷挂载 thread 目录</div><div><span class="o">Kubernetes Pod</span>挂载主机路径或 PVC；存储不共享时上传文件另行同步</div><div><span class="o">云端微虚拟机</span>上传同步进去，成品写回输出目录</div>
+      <div class="a">前提与代价</div><div><span class="o">本机</span>无</div><div><span class="o">Docker 容器</span>网关要能访问 Docker 套接字，等同于拿到宿主机 root</div><div><span class="o">Kubernetes Pod</span>要部署 Provisioner 并授予集群权限</div><div><span class="o">云端微虚拟机</span>要有对应服务的账号</div>
+    </div>
+    <figcaption>一次部署只用一种提供方，由 <code>sandbox.use</code> 指定。本机一列的两条默认值最容易被忽略：命令直接在网关主机上执行，而且 <code>bash</code> 工具默认不提供，依赖 bash 的 skill 在这种配置下无法运行。</figcaption>
+  </figure>
+
+  <h3>沙箱的生命周期</h3>
+  <figure>
+    <div class="tl">
+      <div><b>获取</b><span class="t">第一次调用沙箱工具</span>先查本进程、再查 warm pool、再找已有容器，都没有才新建。</div>
+      <div><b>释放</b><span class="t">本轮 run 结束</span>健康的容器放进 warm pool，不销毁。</div>
+      <div><b>复用</b><span class="t">同一 thread 的下一轮</span>同一用户、同一 thread 总是得到同一个容器。</div>
+      <div><b>回收</b><span class="t">空闲 600 秒</span>warm pool 里的容器被停掉；warm pool 默认容纳 3 个，满了先淘汰最久没用的。</div>
+    </div>
+    <figcaption>这条时间线针对容器类提供方。warm pool 只淘汰空闲的容器，不动正在使用的。状态不明的容器（例如会话创建结果未知）隔离后销毁重建，不进 warm pool。</figcaption>
+  </figure>
+
+  <h3>上传与 artifact</h3>
+  <div class="prose">
+    <p><b>上传。</b>文件经网关写入 thread 的上传目录，默认限制是每次 10 个、单个 50 MiB、合计 100 MiB。沙箱与网关不共享存储时，文件再同步进沙箱。下一条消息之前，系统把这批文件的名称、大小、路径和文档大纲写给模型。</p>
+    <p><b>文档转换。</b>把 PDF 和 Office 文件自动转成 Markdown 的功能默认关闭，原因是不想在网关主机上解析不受信任的文档。关闭时 thread 里只有原文件。</p>
+    <p><b>artifact。</b>agent 把成品写到输出目录，再调用 <code>present_files</code> 登记，界面才会展示。run 结束时，系统比较输出目录前后的差别：这一轮新写或改过输出文件、却一个都没登记，run 按失败结束。</p>
+    <p><b>改动记录。</b>每轮结束时生成一份工作区改动摘要，列出新增、修改、删除的文件和文本差异，最多 200 个文件。文件名像密钥或凭据的，只记哈希和大小，不记内容。</p>
+  </div>
+
+  <div class="deep-group">
+    <div class="lbl">细节</div>
+    <details class="deep"><summary>限制沙箱出网</summary><div class="body">
+      <p>出网策略有三档，默认是不限制。</p>
+      <ul>
+        <li><b>不限制</b>：容器按 Docker 的普通方式联网。</li>
+        <li><b>完全隔离</b>：每个沙箱一个内部网络，禁止一切出站。</li>
+        <li><b>域名白名单</b>：内部网络加一个代理容器，只放行发往指定域名的 HTTP 和 HTTPS 请求；解析到内网、回环或云元数据地址的目标一律拒绝。</li>
+      </ul>
+      <p>白名单模式可以配合人工审批：被拒的域名在对话里弹出一张卡片，用户可以拒绝、临时允许 300 秒，或在这个沙箱里一直允许。批准后不会自动重放刚才失败的命令。无人值守的 run 和 subagent 一律自动拒绝。</p>
+      <p>后两档只支持本地 Docker，且要求 Docker Engine 28 以上；在不支持的环境里直接报错，不会悄悄降级成不限制。</p>
+    </div></details>
+    <details class="deep"><summary>Provisioner 的职责</summary><div class="body">
+      <p>Provisioner 是一个独立的小服务。网关向它发请求，它在集群的指定命名空间里创建沙箱 Pod 和对应的 Service，挂上 skill 目录（只读）和 thread 目录（读写），并负责查询状态和删除。创建请求是幂等的。这样网关自己不需要 Docker 套接字，也不需要直接持有集群的创建权限。</p>
+    </div></details>
+    <details class="deep"><summary>文件工具的保护措施</summary><div class="body">
+      <p>改写已有文件之前，模型必须读过这个文件的当前版本；写入之后，之前的“已读”标记作废。这是为了防止模型凭旧印象覆盖文件或重复追加。这项检查默认开启。</p>
+      <p>命令默认 600 秒超时。超时的命令不会自动重放，因为不知道它执行到了哪一步。模型的单次输出有长度上限时，写文件工具的说明里会附上估算的安全长度，提示它分段追加。</p>
+    </div></details>
+    <details class="deep"><summary>多个网关实例共用沙箱</summary><div class="body">
+      <p>网关有多个实例时，需要知道每个容器由谁负责回收。这份登记默认放在进程内存，只适合单实例；多实例要改用 Redis。登记只决定谁来回收，不限制谁能使用。登记写不进去时，网关不交付这个沙箱，直接报错。</p>
+    </div></details>
+  </div>
+</section>
+<section class="ch" id="s8">
+  <header>
+    <span class="no">8</span>
+    <h2>状态与记忆</h2>
+    <p class="answer">一次对话的状态存在四处：thread 文件在磁盘目录里，对话状态在 checkpoint 里，thread、run 和用户的记录在数据库里，长期记忆由后台模型从对话中提炼成每个用户的摘要和事实，在下一个对话开头注入。</p>
+  </header>
+
+  <div class="scroll-x"><table class="tbl">
+    <caption>四处状态</caption>
+    <thead><tr><th>状态</th><th>内容</th><th>存放</th><th>可选后端</th></tr></thead>
+    <tbody>
+      <tr><th>thread 文件</th><td>工作区、上传、输出</td><td><code>.deer-flow/users/{用户}/threads/{thread}/</code></td><td>本地磁盘或挂载卷</td></tr>
+      <tr><th>checkpoint</th><td>消息历史和 thread 状态，每一步一份快照</td><td>与数据库同一后端</td><td>内存、SQLite、Postgres</td></tr>
+      <tr><th>数据库记录</th><td>thread 元数据、run、用户、项目、定时任务、渠道绑定；run 事件可以另选存放</td><td>SQLite 时是 <code>.deer-flow/data/deerflow.db</code></td><td>内存、SQLite、Postgres</td></tr>
+      <tr><th>长期记忆</th><td>用户摘要和事实</td><td>用户目录下的 <code>memory.json</code> 加每条事实一个 Markdown 文件</td><td>默认实现 DeerMem；可换 mem0 等适配器</td></tr>
+    </tbody>
+  </table></div>
+  <p class="prose small muted">数据库后端在代码里的默认值是内存，重启后 thread、run 和 checkpoint 全部丢失；配置模板写的是 SQLite。单机用 SQLite，多实例必须用 Postgres。run 事件（消息与执行轨迹的追加记录）在模板里默认只放内存，可以改成入库或写 JSONL 文件。</p>
+
+  <h3>长期记忆的形成</h3>
+  <figure>
+    <div class="fig-title">从一轮对话到下一个对话的开头</div>
+    <div class="tl">
+      <div><b>入队</b><span class="t">每轮 run 结束</span>取用户消息和最终回答，工具调用的中间过程不取。</div>
+      <div><b>等待</b><span class="t">静默 30 秒</span>同一 thread 有新消息就重新计时，最长不超过 300 秒。</div>
+      <div><b>提炼</b><span class="t">一次模型调用</span>模型输出摘要的更新，以及要新增、强化、删除的事实。</div>
+      <div><b>闸门</b><span class="t">由代码判定</span>只接收“用户级、长期、描述性”的事实，标签不全的丢弃。</div>
+      <div><b>存储</b><span class="t">用户目录</span>摘要写入一个文件，事实每条一个文件。</div>
+      <div><b>注入</b><span class="t">下一个对话首轮</span>写在第一条用户消息之前，上限 2000 token。</div>
+    </div>
+  </figure>
+
+  <figure id="debounce">
+    <div class="fig-title">等待阶段的两个计时器</div>
+    <div class="fig-intro">模拟按 10 倍速进行，1 秒相当于 10 秒。连续点击“结束一轮对话”，观察哪个计时器先到。</div>
+    <div class="step-ctl no-print">
+      <button type="button" class="btn" id="db-add">结束一轮对话</button>
+      <button type="button" class="btn" id="db-reset">重置</button>
+      <span class="count" id="db-pending" aria-live="polite">队列为空</span>
+    </div>
+    <div class="sim" aria-hidden="true">
+      <div class="bar"><span>静默计时</span><span class="rail"><i id="db-quiet"></i></span><span class="v" id="db-quiet-v">0 / 30 秒</span></div>
+      <div class="bar"><span>最长等待</span><span class="rail"><i id="db-max"></i></span><span class="v" id="db-max-v">0 / 300 秒</span></div>
+    </div>
+    <ul class="sim-log" id="db-log" aria-live="polite"><li>还没有发生提炼。</li></ul>
+    <figcaption>静默计时保证一连串对话只提炼一次，省下模型调用；最长等待保证对话一直不停时，300 秒内也必有一次。两个数都可以配置。网关正常退出时，会在 30 秒内尽量把队列处理完。</figcaption>
+  </figure>
+
+  <h3>写入长期记忆的条件</h3>
+  <p class="prose">每条候选事实由提炼模型打上三个标签：作用范围（用户、thread、项目）、时效（长期、临时）和性质（描述性、事务性）。只有“用户、长期、描述性”能写入。任务期限、项目约定和一次性授权因此不会进入长期记忆。</p>
+  <div class="scroll-x"><table class="tbl">
+    <caption>闸门判定示例（构造的例子，按提炼提示词的分类规则推演，不是运行结果）</caption>
+    <thead><tr><th>对话中的语句</th><th>范围 · 时效 · 性质</th><th>结果</th></tr></thead>
+    <tbody>
+      <tr><td>我做支付风控，平时写 Python</td><td>用户 · 长期 · 描述性</td><td>写入</td></tr>
+      <tr><td>以后别用表格回答我</td><td>用户 · 长期 · 描述性（纠正类）</td><td>写入，注入时优先</td></tr>
+      <tr><td>这个项目的接口字段一律用下划线命名</td><td>项目 · 长期 · 描述性</td><td>不写入</td></tr>
+      <tr><td>这份报告下午三点前要交</td><td>thread · 临时 · 描述性</td><td>不写入</td></tr>
+      <tr><td>这次可以直接删掉旧分支</td><td>thread · 临时 · 事务性</td><td>不写入</td></tr>
+    </tbody>
+  </table></div>
+  <div class="prose">
+    <p><b>内容。</b>摘要分两部分：用户背景（工作、个人、当前关注、思考风格）和历史（近几个月、更早、长期背景）。事实有七个类别：偏好、知识、背景、行为、认知、目标、纠正；每条带一个 0 到 1 的置信度，低于 0.7 的不保留。</p>
+    <p><b>容量。</b>每个用户在每个 agent 下最多 100 条事实。超出时默认按置信度淘汰。90 天没有再被确认的事实进入复查，每轮最多清理 10 条，纠正类不清理。</p>
+    <p><b>注入。</b>事实按置信度从高到低放入，到 2000 token 为止；纠正类另有 500 token 的保底额度，先于其他类别放入。读取记忆超过 5 秒就跳过这一次，不阻塞对话。</p>
+    <p><b>范围。</b>记忆按用户隔离。摘要在这个用户的所有 agent 之间共享，事实按 agent 分开存放。没有项目级的记忆。</p>
+    <p><b>管理。</b>用户可以在设置页查看全部记忆，增删改单条事实，清空，导出和导入。</p>
+  </div>
+
+  <div class="deep-group">
+    <div class="lbl">细节</div>
+    <details class="deep"><summary>工具方式：让模型自己读写记忆</summary><div class="body">
+      <p>记忆有两种工作方式。默认的中间件方式是上面讲的被动流程。改成工具方式后，对话开头只注入摘要，不注入事实；模型用查找、读取、新增、修改、删除五个工具自己操作记忆。工具方式的写入不经过提炼闸门。</p>
+    </div></details>
+    <details class="deep"><summary>容量淘汰的混合策略</summary><div class="body">
+      <p>只按置信度淘汰时，置信度高但早已过时的事实会挤掉刚被用户纠正过的事实。仓库提供了一个需要手动开启的混合策略，分数由三项相加：置信度占 0.65，最近一次被用户确认的新近程度占 0.25，被检索命中的热度占 0.10；纠正类事实另留一成容量。</p>
+      <p>仓库自带的基准说明给出的数字是：容量为 7 时，45 个测试例中，混合策略全部保住了回答所需的事实，纯置信度保住 27 个；接上真实模型问答后，答对数是 40 对 24。这些数字出自仓库文档，没有复现。</p>
+    </div></details>
+    <details class="deep"><summary>checkpoint 的两种存储方式与保留策略</summary><div class="body">
+      <p>checkpoint 默认每一步存一份完整状态。另一种增量方式只存消息的变化，每 10 步存一次完整快照，体积更小，代价是增量 thread 不能直接分叉。两种方式在进程启动时选定，所有共用数据库的进程必须一致。</p>
+      <p>分支、重新生成和编辑重发都沿着 checkpoint 的父子链回溯，删掉中间的 checkpoint 会让这些功能报错。仓库里关于 checkpoint 保留策略的文档仍是草案，没有看到已经落地的自动清理。</p>
+    </div></details>
+    <details class="deep"><summary>项目：一组 thread 共用的指令和资料</summary><div class="body">
+      <p>项目把相关的 thread 归在一起，带一段项目指令（最多 8192 字节）和一个资料架。属于项目的 thread 每次 run 开始时，系统取一份最新的项目指令和资料索引（最多 50 条）临时附在请求上，不写进消息历史。agent 用两个工具列出和读取资料。资料按内容寻址，内容相同的文件只存一份；删除的资料进回收站，保留 30 天。</p>
+    </div></details>
+  </div>
+</section>
+
+<section class="ch" id="s9">
+  <header>
+    <span class="no">9</span>
+    <h2>网关与其他入口</h2>
+    <p class="answer">网页、IM、定时任务和 GitHub webhook 在网关里变成同一种 run，差别在于谁发起、能否向人提问、结果送到哪里。终端界面和嵌入式客户端不经过网关。</p>
+  </header>
+
+  <div class="scroll-x"><table class="tbl">
+    <caption>六种入口</caption>
+    <thead><tr><th>入口</th><th>触发</th><th>身份</th><th>向人提问</th><th>结果去向</th></tr></thead>
+    <tbody>
+      <tr><th>网页</th><td>用户发送消息</td><td>登录用户</td><td>可以</td><td>事件流到页面</td></tr>
+      <tr><th>IM 渠道</th><td>平台长连接收到消息</td><td>启用账号绑定后，是绑定的 DeerFlow 用户</td><td>可以，以消息往返</td><td>回到原会话；飞书、Telegram、企业微信、Buzz 支持边生成边更新</td></tr>
+      <tr><th>定时任务</th><td>调度服务轮询到期任务</td><td>任务的所有者</td><td>不可以</td><td>写入 thread；可经企业微信推送通知</td></tr>
+      <tr><th>GitHub</th><td>issue、PR、评论的 webhook</td><td>绑定仓库的自定义 agent</td><td>不可以</td><td>agent 在沙箱里用 <code>gh</code> 自己回写</td></tr>
+      <tr><th>终端界面</th><td>本机 <code>deerflow</code> 命令</td><td>本机默认用户，不登录</td><td class="muted">未核实</td><td>终端</td></tr>
+      <tr><th>嵌入式客户端</th><td>Python 代码调用</td><td>本机默认用户，不登录</td><td class="muted">未核实</td><td>函数返回值或事件生成器</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>从 IM 消息到一次 run</h3>
+  <ol class="prose">
+    <li>平台适配器从长连接收到消息，放进网关内部的消息队列。</li>
+    <li>渠道管理器取出消息，先去重：同一条消息 10 分钟内只处理一次。</li>
+    <li>处理命令。<code>/new</code> 开新 thread，<code>/model</code> 换模型，<code>/agent</code> 换 agent，<code>/goal</code> 设目标，<code>/skill-name</code> 激活 skill，<code>/connect 绑定码</code> 绑定账号。</li>
+    <li>按“平台 + 会话（+ 话题）”查到对应的 thread，没有就新建。</li>
+    <li>像普通客户端一样通过 HTTP 调用网关的 run 接口，请求里带内部令牌和所有者的用户编号。</li>
+    <li>支持流式的平台，每隔至少 1 秒或每累积 60 个字符更新一次同一条消息或卡片；其他平台等 run 结束后一次发出。</li>
+    <li>结束时，把登记为 artifact 的文件从这个用户的输出目录取出，随最终消息发回平台。</li>
+  </ol>
+  <p class="prose">渠道管理器默认 5 个并发工作单元。同一 thread 正在运行时，新消息得到一条“正忙”的回复。IM 入口的默认配置是开思考、不开 subagent。多副本部署时，同一个机器人只能由一个实例连接。</p>
+  <p class="prose"><b>账号绑定</b>默认关闭。启用后，用户在网页上生成一次性绑定码（600 秒内有效），到 IM 里发给机器人完成绑定；之后这个 IM 身份发起的 run 都算在该用户名下，没有绑定的身份发来的消息被拒绝。一个 IM 身份只能绑定一个账号，后绑定的覆盖先绑定的。</p>
+
+  <h3>定时任务</h3>
+  <div class="prose">
+    <p>一个任务包含提示词、计划（一次性、五段 cron 或固定间隔）、时区、使用哪个 agent，以及每次触发是开新 thread 还是沿用同一个。可以附带一个目标和停止条件、最多运行次数、截止时间。</p>
+    <p>调度服务每 5 秒轮询。到期的触发先写成一条持久化的排队记录，再在并发上限之内启动：全局同时 3 个，每个用户同时 2 个，排队超过 1 小时作废。run 结束后归为成功、目标未达成、失败或中断；目标连续 3 次未达成，任务自动暂停。固定间隔的任务不补跑错过的触发。</p>
+    <p>有两个开关，默认都关：一个开启调度功能本身，另一个允许 agent 在对话里自己创建定时任务。</p>
+  </div>
+
+  <h3>登录、权限与数据隔离</h3>
+  <div class="prose">
+    <p><b>登录。</b>首次启动时没有管理员，第一个管理员在设置页创建。之后可以用邮箱加密码登录，也可以接 OIDC 单点登录。登录状态是一个有效期 7 天的令牌，放在脚本读不到的 cookie 里；改密码会让旧令牌全部失效。同一账号连续输错 5 次，锁定 300 秒。供脚本使用的个人访问令牌只能操作 thread、run 和项目，不能访问记忆、agent 和渠道配置。</p>
+    <p><b>隔离。</b>文件、记忆和自定义 agent 都放在各自的用户目录下；数据库查询自动按当前用户过滤；访问别人的 thread 得到 404。客户端在请求里自报的用户编号会被去掉。</p>
+    <p><b>授权。</b>细粒度授权默认关闭，这时所有登录用户拥有全部接口权限（用户管理等管理员专用接口除外）。开启后，按“角色 → 资源类型 → 允许或拒绝”的表判定，拒绝优先；资源类型包括工具、模型、skill、沙箱、MCP 服务器、接口和插件。判定在两处执行：装配时，不允许的工具不交给模型；运行时，工具调用再拦一次。</p>
+  </div>
+
+  <div class="deep-group">
+    <div class="lbl">细节</div>
+    <details class="deep"><summary>run 接口的默认行为</summary><div class="body">
+      <ul>
+        <li>同一 thread 已有在途 run 时，新的 run 请求被拒绝。可按请求改为打断旧 run，或回滚到旧 run 开始之前。</li>
+        <li>发起 run 的那条连接断开时，接口的默认行为是取消 run，可按请求改为继续。旁观的连接断开不影响 run。网页前端是否改写了这个默认值，没有核实。</li>
+        <li>取消有两种：保留已有进度，或回滚到 run 之前。</li>
+        <li>事件流每 15 秒发一次心跳。断线重连时凭最后收到的事件编号续传；缺口超出保留范围时，服务端发一个专门的事件，客户端改为重新加载已保存的状态。</li>
+      </ul>
+    </div></details>
+    <details class="deep"><summary>GitHub 集成</summary><div class="body">
+      <p>每个自定义 agent 可以在自己的配置里绑定仓库和触发条件。GitHub 把事件投递到网关，签名校验通过后，每个匹配的 agent 各收到一条消息；同一个 PR 上的不同 agent 各用各的 thread。run 之前，网关签发一个约 1 小时有效的 GitHub App 安装令牌放进沙箱环境，agent 用 <code>gh</code> 命令自己决定是否评论或提交。</p>
+      <p>默认只在 PR 新建时触发，评论类事件要 @ 到机器人才触发。没有配置 webhook 密钥时，这条路由不存在。</p>
+    </div></details>
+    <details class="deep"><summary>终端界面与嵌入式客户端</summary><div class="body">
+      <p>终端界面是一个全屏的终端应用，也有不带界面的单次问答和逐行 JSON 输出模式，可以续接上一个会话。它把 thread 写进网关读取的同一个数据库，所以终端里的会话会出现在网页的侧栏里；数据库后端是内存时不写。</p>
+      <p>嵌入式客户端把 agent 当作普通的 Python 对象使用：一个方法返回完整回答，另一个方法逐个产出事件。它没有 run 管理和 StreamBridge；不传入 checkpoint 存储时，没有多轮记忆。IM 渠道不使用这个客户端，而是经 HTTP 回调网关。</p>
+    </div></details>
+    <details class="deep"><summary>多实例部署的前提</summary><div class="body">
+      <p>网关开多个进程或多个副本时，启动检查要求四项同时满足：数据库用 Postgres，run 事件入库，开启 run 租约心跳，StreamBridge 用 Redis。缺任何一项，启动失败。IM 渠道、微信扫码登录和浏览器工具仍然只能单实例运行。</p>
+    </div></details>
+  </div>
+</section>
+<section class="ch" id="s10">
+  <header>
+    <span class="no">10</span>
+    <h2>前端工作台</h2>
+    <p class="answer">前端是网关的客户端。它只订阅增量事件，把消息归成几类来渲染；对话状态全部来自后端，浏览器只保存界面偏好和草稿。</p>
+  </header>
+
+  <div class="scroll-x"><table class="tbl">
+    <caption>工作台的区域</caption>
+    <thead><tr><th>区域</th><th>内容</th><th>数据来源</th></tr></thead>
+    <tbody>
+      <tr><th>侧栏</th><td>导航、项目、最近对话、IM 渠道</td><td>thread 搜索接口；未读标记靠轮询</td></tr>
+      <tr><th>消息流</th><td>用户消息、思考与工具步骤、子任务卡片、提问卡片、文件、回答</td><td>实时事件与已保存的历史合并</td></tr>
+      <tr><th>输入框</th><td>模式、模型、推理强度、附件、<code>@</code> 引用 skill、<code>/goal</code> 与 <code>/compact</code>、润色、语音</td><td>本地设置；模型列表接口</td></tr>
+      <tr><th>待办</th><td>计划模式下的待办清单，在输入框上方</td><td>thread 状态</td></tr>
+      <tr><th>右侧面板</th><td>artifact、侧聊、浏览器，一次打开一个</td><td>thread 状态里的 artifact 列表；artifact 内容接口</td></tr>
+      <tr><th>页头</th><td>token 用量、上下文占用、后台任务、批处理、导出</td><td>对应接口</td></tr>
+      <tr><th>设置</th><td>模型、账号、外观、通知、渠道、记忆、subagent；管理员另有用户管理</td><td>对应接口</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>流式显示</h3>
+  <div class="prose">
+    <p>前端用 LangGraph 的官方 SDK 连接网关，只订阅三种流：消息增量、状态更新和自定义事件，不订阅每一步的全量状态。子任务的进度走自定义事件，subagent 内部的消息因此不会混进主对话。</p>
+    <p>收到的消息被归成七类：用户消息，思考与工具步骤，回答，文件呈现，子任务，提问，定时任务。一轮还在进行时，只有正文的模型消息暂时留在“思考与工具步骤”里，这一轮结束才变成回答气泡。</p>
+    <p>刷新页面后，前端查到 thread 还有在途的 run，就重新加入它的事件流。服务端报告事件有缺口时，前端重新加载已保存的状态再加入，最多重连 5 次。创建 run 的那个请求不做自动重试，以免同一条消息建出两次 run。</p>
+    <p>已保存的消息带有 thread 内的全局序号，显示顺序以它为准。重新生成针对最后一轮；编辑后重发也只限最近一轮，要改更早的轮次，需从那里分支出一个新 thread。</p>
+  </div>
+
+  <h3>artifact 预览</h3>
+  <div class="scroll-x"><table class="tbl">
+    <thead><tr><th>文件类型</th><th>处理方式</th></tr></thead>
+    <tbody>
+      <tr><th>代码与纯文本</th><td>编辑器查看；输出目录里的文本 artifact 可以直接修改保存，run 进行中不能保存</td></tr>
+      <tr><th>Markdown</th><td>渲染显示</td></tr>
+      <tr><th>HTML</th><td>代码与预览切换；预览放在受限的 iframe 里，可以执行脚本</td></tr>
+      <tr><th>CSV、TSV</th><td>表格预览，最多 200 行、50 列</td></tr>
+      <tr><th>图片、音视频、PDF</th><td>内嵌查看</td></tr>
+      <tr><th>Word、PowerPoint、Excel</th><td>不预览，只能下载</td></tr>
+    </tbody>
+  </table></div>
+  <p class="prose small muted">文本预览默认只取前 1 MiB，超出时提供“加载完整文件”。每次 run 的 artifact 可以打包下载。skill 包 artifact 带一个“安装 skill”按钮。</p>
+
+  <div class="deep-group">
+    <div class="lbl">细节</div>
+    <details class="deep"><summary>离线演示</summary><div class="body">
+      <p>公开的演示页回放 13 条内置的对话记录，消息和 artifact 都是随前端发布的静态文件，不需要后端。前端还可以整站构建成静态模式：读取用本地数据应答，所有写操作被禁用。</p>
+    </div></details>
+    <details class="deep"><summary>按功能开关显示入口</summary><div class="body">
+      <p>自定义 agent、浏览器、后台任务、批处理、定时任务等入口是否出现，取决于后端的功能探测接口。后端没有开启的功能，前端隐藏入口。</p>
+    </div></details>
+    <details class="deep"><summary>语言、主题与前端插件</summary><div class="body">
+      <p>界面支持中文和英文，默认英文，选择记在 cookie 里。主题跟随系统，也可以手动选浅色或深色。</p>
+      <p>扩展包可以给前端提供三类内容：侧栏里的独立页面，会话工具栏上的动作，以及 <code>@</code> 提及的数据来源。插件页面用 Shadow DOM 隔离样式，这只是样式隔离，不是安全沙箱。</p>
+    </div></details>
+  </div>
+</section>
+
+<section class="ch" id="s11">
+  <header>
+    <span class="no">11</span>
+    <h2>部署与默认值</h2>
+    <p class="answer">三种部署方式的差别在配套服务：本地只有网关、前端和 nginx；Docker 加上 Redis；Helm 再加上 Postgres，并默认用 Provisioner 创建沙箱 Pod。默认配置按本机可信环境设计，对外提供服务之前有几处必须改。</p>
+  </header>
+
+  <figure>
+    <div class="cmp" style="--cols:3">
+      <div class="h"></div><div class="h">本地 <code>make dev</code></div><div class="h">Docker <code>make up</code></div><div class="h">Helm</div>
+      <div class="a">启动的服务</div><div><span class="o">本地</span>网关、前端、nginx</div><div><span class="o">Docker</span>再加 Redis；按沙箱配置加 Provisioner</div><div><span class="o">Helm</span>再加 Postgres；Provisioner 默认启用</div>
+      <div class="a">数据库</div><div><span class="o">本地</span>按配置，模板为 SQLite</div><div><span class="o">Docker</span>按配置，模板为 SQLite</div><div><span class="o">Helm</span>Postgres</div>
+      <div class="a">StreamBridge</div><div><span class="o">本地</span>进程内存</div><div><span class="o">Docker</span>Redis</div><div><span class="o">Helm</span>Redis</div>
+      <div class="a">沙箱</div><div><span class="o">本地</span>按配置，模板为本机</div><div><span class="o">Docker</span>本机、容器或 Provisioner 之一</div><div><span class="o">Helm</span>Provisioner 创建 Pod</div>
+      <div class="a">网关副本</div><div><span class="o">本地</span>单进程</div><div><span class="o">Docker</span>默认单进程</div><div><span class="o">Helm</span>满足前提后可以多副本；启用 IM 渠道时只能 1 个</div>
+      <div class="a">对外入口</div><div><span class="o">本地</span><code>127.0.0.1:2026</code></div><div><span class="o">Docker</span>默认 <code>127.0.0.1:2026</code></div><div><span class="o">Helm</span>Ingress</div>
+    </div>
+    <figcaption>README 给出的资源参考：本地试用起步 4 核 8 GB，推荐 8 核 16 GB；长期运行的服务器起步 8 核 16 GB 加 40 GB SSD。2 核 4 GB 通常不够。</figcaption>
+  </figure>
+
+  <h3>默认开启与默认关闭的功能</h3>
+  <div class="board">
+    <div>
+      <h4><svg class="g" aria-hidden="true"><use href="#g-on"/></svg>默认开</h4>
+      <ul>
+        <li>长期记忆<span>被动提炼，对话首轮注入</span></li>
+        <li>摘要压缩<span>配置模板开启，32000 token 触发；代码默认关</span></li>
+        <li>循环检测<span>3 次警告，5 次强制停止</span></li>
+        <li>先读后写<span>改写已有文件前必须读过</span></li>
+        <li>工具输出外置<span>超过 12000 字符</span></li>
+        <li>工具回执<span>每个工具结果附哈希与时间</span></li>
+        <li>标题生成、token 用量统计<span>&nbsp;</span></li>
+        <li>跟进建议、输入润色<span>建议最多 3 条</span></li>
+        <li>开放注册<span>可以关闭</span></li>
+      </ul>
+    </div>
+    <div>
+      <h4><svg class="g" aria-hidden="true"><use href="#g-off"/></svg>默认关</h4>
+      <ul>
+        <li>主机 bash<span>本机沙箱下不提供 bash 工具</span></li>
+        <li>沙箱出网限制<span>默认不限制</span></li>
+        <li>文档自动转 Markdown<span>PDF 与 Office 文件</span></li>
+        <li>细粒度授权、guardrail、个人信息脱敏<span>&nbsp;</span></li>
+        <li>token 预算<span>开启后默认每次 run 20 万</span></li>
+        <li>定时任务<span>功能本身与对话内创建任务各一个开关</span></li>
+        <li>subagent 批处理、MCP 长任务<span>&nbsp;</span></li>
+        <li>MCP 工具延迟加载<span>默认把全部定义交给模型</span></li>
+        <li>skill 自我修改、IM 账号绑定、知识库<span>&nbsp;</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>对外提供服务前的必改项</h3>
+  <ol class="prose">
+    <li><b>更换本机沙箱。</b>默认配置下，agent 的文件操作直接发生在网关主机上。换成容器或 Pod；同时要注意，容器方案要求网关持有 Docker 套接字。</li>
+    <li><b>给入口加 TLS 和访问控制。</b>默认只监听本机回环地址；README 的安全说明写明，默认配置按本地可信环境设计。</li>
+    <li><b>固定几个密钥。</b>登录令牌的签名密钥、内部调用令牌和凭据加密密钥不设置时会自动生成；多进程或重建容器时要显式固定，否则登录状态和已存的凭据会失效。</li>
+    <li><b>确认数据库后端。</b>不能留在内存；多实例用 Postgres。</li>
+    <li><b>按主机权限管理管理员账号。</b>管理员可以注册 stdio 类型的 MCP 服务器，等于能在网关主机上启动进程。</li>
+    <li><b>按需打开授权和出网限制。</b>两者默认都关。</li>
+  </ol>
+</section>
+
+<section class="ch" id="s12">
+  <header>
+    <span class="no">12</span>
+    <h2>常见追问</h2>
+    <p class="answer">十二个常见问题的简答与对应章节。</p>
+  </header>
+  <dl class="faq">
+    <dt>DeerFlow 和 LangGraph 是什么关系</dt>
+    <dd>lead agent 是用 LangChain 和 LangGraph 编译出来的一张图，checkpoint、流式事件和 thread 接口都沿用 LangGraph 的约定。但部署里没有独立的 LangGraph 服务，运行时嵌在网关进程里。<a href="#s1">第 1 章</a></dd>
+    <dt>Ultra 模式比 Pro 多了什么</dt>
+    <dd>多一个开关：模型得到 <code>task</code> 工具，可以委派 subagent。模型本身没有变，默认推理强度从 medium 升到 high。<a href="#s3">第 3 章</a></dd>
+    <dt>上一个对话里说过的偏好，新对话为什么没用上</dt>
+    <dd>记忆在对话结束后 30 秒到 5 分钟才提炼，而且只在新对话的第一轮注入一次。新对话开得太快，或者那句话被判成了项目约定或临时要求，就不会出现。<a href="#s8">第 8 章</a></dd>
+    <dt>agent 说生成了文件，界面上为什么没有</dt>
+    <dd>文件必须写在输出目录并用 <code>present_files</code> 登记才会显示。写了输出文件却没有登记的 run，会按失败结束。<a href="#s7">第 7 章</a></dd>
+    <dt>默认配置下 agent 能执行命令吗</dt>
+    <dd>不能。配置模板用本机沙箱，bash 默认禁用，只有文件读写工具。要执行命令，换成容器类沙箱，或显式允许主机 bash。<a href="#s7">第 7 章</a></dd>
+    <dt>对话很长时会怎样</dt>
+    <dd>按配置模板，上下文到 32000 token 时，较早的消息被压成摘要，最近的消息原样保留。过长的工具输出在此之前已经改存为文件。<a href="#s4">第 4 章</a></dd>
+    <dt>最多能同时跑几个 subagent</dt>
+    <dd>默认整个网关进程同时运行 3 个，所有用户共用；一次响应最多委派 3 个，一次 run 最多 6 个，超出的调用被去掉。这几个数都能调。<a href="#s6">第 6 章</a></dd>
+    <dt>换模型或换搜索服务商要改代码吗</dt>
+    <dd>不用。模型和工具都在 <code>config.yaml</code> 里用实现路径指定，换一家改一条配置。<a href="#s5">第 5 章</a></dd>
+    <dt>agent 陷入循环怎么办</dt>
+    <dd>相同的工具调用重复 3 次会收到警告，5 次被强制停止调用并要求直接作答；另有每次 run 100 步的上限。<a href="#s4">第 4 章</a></dd>
+    <dt>无人值守的 run 遇到需要确认的事怎么办</dt>
+    <dd>定时任务和 webhook 触发的 run 不提供提问工具。提示词要求它们按风险最低的假设继续并写明假设，风险高时停下并返回 BLOCKED。<a href="#s4">第 4 章</a></dd>
+    <dt>多用户之间隔离到什么程度</dt>
+    <dd>文件、记忆、thread 和自定义 agent 按用户隔离。但细粒度授权默认关闭；用本机沙箱时，所有用户的命令和文件操作都发生在同一台主机上。<a href="#s9">第 9 章</a></dd>
+    <dt>能水平扩展吗</dt>
+    <dd>网关可以多副本，前提是 Postgres、Redis StreamBridge、run 事件入库和 run 租约心跳四项齐备。IM 渠道和浏览器工具仍然只能单实例。<a href="#s9">第 9 章</a></dd>
+  </dl>
+</section>
+
+<section class="ch" id="s13">
+  <header>
+    <span class="no">13</span>
+    <h2>来源与核实范围</h2>
+    <p class="answer">全部内容来自对一个固定提交的只读阅读。没有克隆、安装或运行；涉及行为的陈述都是从文档和源码读出来的，不是观察到的。</p>
+  </header>
+  <div class="prose">
+    <p><b>来源。</b>GitHub 仓库 <code>bytedance/deer-flow</code>，主分支提交 <code>3f7a076972a927b4256df3e3c18b829186dd1355</code>，提交时间 2026-10-11。这个项目更新很快，配置模板版本号已到 59，之后的提交可能改变这里的默认值。</p>
+    <p><b>读法。</b>仓库按六个区域分开阅读：总览与部署，lead agent 与中间件，subagent、工具与 skill，沙箱、存储与记忆，网关与渠道，前端。每个区域先读目录下的说明文档，再对照源码里的配置定义和关键流程。六份分区底稿带文件路径，放在本页同目录的 <code>research/</code> 下。</p>
+    <p><b>“默认”的含义。</b>正文里的默认值，没有另外注明时取自配置定义和配置模板。两者不一致的有两处，正文已分别写明：摘要压缩（代码默认关，模板开）和数据库后端（代码默认内存，模板为 SQLite）。</p>
+    <p><b>构造的内容。</b>第 8 章的闸门判定表是按提炼提示词的分类规则推演的例子，没有实际运行。第 6 章的试算和第 8 章的计时模拟，按源码里的规则和默认值实现。</p>
+  </div>
+
+  <h3>文档与源码的出入</h3>
+  <ul class="prose">
+    <li>后端文档里那张十四项的中间件流程图，描述的是另一个较简的装配入口；lead agent 实际使用的链有四十项左右。</li>
+    <li>架构文档说有“四个协作服务”，没有算上 Docker 和 Helm 部署里都会启动的 Redis。</li>
+    <li>鉴权设计文档写着“尚未实现细粒度权限”，源码里已经有可插拔的角色授权、账号停用和个人访问令牌。</li>
+    <li>文件上传文档里的路径示例还是没有用户层级的旧布局。</li>
+    <li>前端 README 的站点地图只列了旧路由，实际的工作台路由更多。</li>
+  </ul>
+
+  <h3>未核实的部分</h3>
+  <ul class="prose">
+    <li>中间件各自挂在循环的哪个位置，多数取自说明文档，没有逐个对照类的实现。</li>
+    <li>本机之外的沙箱提供方里，E2B、BoxLite、Tenki、OpenSandbox 只读了文档。</li>
+    <li>run 管理里的租约时长、回滚细节，批处理的完整状态机，分支与重新生成的内部机制。</li>
+    <li>网页前端在连接断开时是否沿用“取消 run”的接口默认值。</li>
+    <li>终端界面和嵌入式客户端下提问工具的行为。</li>
+    <li>记忆的其他适配器（mem0、OpenViking、Honcho），以及记忆设置页的具体交互。</li>
+    <li>1.x 的架构。这个提交里没有 1.x 的代码。</li>
+    <li>全部性能与效果数字。第 8 章引用的基准结果出自仓库文档，没有复现。</li>
+  </ul>
+
+  <footer>
+    <p>这是一份第三方讲解，不代表 DeerFlow 项目方。DeerFlow 以 MIT 许可发布，版权归 Bytedance Ltd. 及 DeerFlow 作者。页面不依赖网络，可以直接打印。</p>
+  </footer>
+</section>
+
+</main>
+</div>
+<script>
+(function () {
+  'use strict';
+  var doc = document, root = doc.documentElement;
+  root.classList.add('js');
+  var $ = function (s, el) { return (el || doc).querySelector(s); };
+  var $$ = function (s, el) { return Array.prototype.slice.call((el || doc).querySelectorAll(s)); };
+  var narrow = window.matchMedia('(max-width: 900px)');
+
+  /* Table of contents, progress line */
+  var toc = $('#toc');
+  if (narrow.matches) toc.removeAttribute('open');
+  narrow.addEventListener('change', function (e) { if (e.matches) toc.removeAttribute('open'); else toc.setAttribute('open', ''); });
+  var links = $$('.toc a');
+  links.forEach(function (a) { a.addEventListener('click', function () { if (narrow.matches) toc.removeAttribute('open'); }); });
+  var sections = links.map(function (a) { return $(a.getAttribute('href')); });
+  var bar = $('#progress');
+  function onScroll() {
+    var h = root.scrollHeight - window.innerHeight;
+    bar.style.width = (h > 0 ? Math.min(100, window.scrollY / h * 100) : 0) + '%';
+    var cur = 0, line = window.innerHeight * 0.3;
+    sections.forEach(function (s, i) { if (s && s.getBoundingClientRect().top <= line) cur = i; });
+    links.forEach(function (a, i) { if (i === cur) a.setAttribute('aria-current', 'true'); else a.removeAttribute('aria-current'); });
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll);
+  onScroll();
+
+  /* Detail layer: open or close every disclosure */
+  var deeps = $$('details.deep'), bOpen = $('#depth-open'), bClose = $('#depth-close');
+  function setDepth(open) {
+    deeps.forEach(function (d) { d.open = open; });
+    bOpen.setAttribute('aria-pressed', String(open));
+    bClose.setAttribute('aria-pressed', String(!open));
+  }
+  bOpen.addEventListener('click', function () { setDepth(true); });
+  bClose.addEventListener('click', function () { setDepth(false); });
+  var before = [];
+  window.addEventListener('beforeprint', function () { before = deeps.map(function (d) { return d.open; }); deeps.forEach(function (d) { d.open = true; }); });
+  window.addEventListener('afterprint', function () { deeps.forEach(function (d, i) { d.open = before[i]; }); });
+
+  /* Selector: one button, one panel */
+  var selectors = {};
+  $$('[data-select]').forEach(function (el) {
+    var btns = $$('button[data-key]', el), panels = $$('[data-panel]', el), hooks = [];
+    function select(key) {
+      btns.forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.key === key)); });
+      panels.forEach(function (p) { p.classList.toggle('on', p.dataset.panel === key); });
+      hooks.forEach(function (h) { h(key); });
+    }
+    btns.forEach(function (b) { b.addEventListener('click', function () { select(b.dataset.key); }); });
+    selectors[el.dataset.select] = { select: select, onSelect: function (h) { hooks.push(h); } };
+    select(el.dataset.default || btns[0].dataset.key);
+  });
+
+  /* Skill stages: which layers are in context */
+  (function () {
+    var layers = $$('#skill .layer');
+    function paint(key) {
+      var n = Number(key.slice(1));
+      layers.forEach(function (l) {
+        var i = Number(l.dataset.layer);
+        l.classList.toggle('in', i <= n);
+        l.classList.toggle('new', i === n);
+      });
+    }
+    selectors.skill.onSelect(paint);
+    paint('l1');
+  })();
+
+  /* Loop: play one run through the six positions */
+  (function () {
+    var fig = $('#loop'), btn = $('[data-act="play"]', fig), count = $('.count', fig), timer = null;
+    var seq = [['start', 'run 开始'], ['pre', '第 1 次调用模型之前'], ['call', '第 1 次模型调用'], ['post', '模型要求调用工具'], ['tool', '执行工具'],
+               ['pre', '第 2 次调用模型之前'], ['call', '第 2 次模型调用'], ['post', '模型给出回答，不再调用工具'], ['end', 'run 结束']];
+    function stop() { clearInterval(timer); timer = null; btn.setAttribute('aria-pressed', 'false'); btn.textContent = '播放一次 run'; }
+    btn.addEventListener('click', function () {
+      if (timer) { stop(); return; }
+      var i = 0;
+      btn.setAttribute('aria-pressed', 'true'); btn.textContent = '停止';
+      function tick() {
+        if (i >= seq.length) { stop(); return; }
+        selectors.loop.select(seq[i][0]); count.textContent = seq[i][1]; i++;
+      }
+      tick(); timer = setInterval(tick, 1300);
+    });
+    $$('button[data-key]', fig).forEach(function (b) { b.addEventListener('click', function () { if (timer) stop(); count.textContent = ''; }); });
+  })();
+
+  /* Journey stepper */
+  (function () {
+    var fig = $('#journey'), steps = $$('.steps li', fig), stations = $$('.track .st', fig), dot = $('.track .dot', fig);
+    var count = $('.count', fig), prev = $('[data-act="prev"]', fig), next = $('[data-act="next"]', fig), play = $('[data-act="play"]', fig);
+    var n = stations.length, cur = 0, timer = null;
+    function pos(i) { return ((i + 0.5) / n * 100) + '%'; }
+    function show(i) {
+      cur = Math.max(0, Math.min(steps.length - 1, i));
+      var li = steps[cur], from = Number(li.dataset.from), to = Number(li.dataset.to);
+      steps.forEach(function (s, k) { s.classList.toggle('on', k === cur); });
+      stations.forEach(function (s, k) { s.classList.toggle('on', k === from || k === to); s.classList.toggle('to', k === to); });
+      dot.classList.add('jump'); dot.style.left = pos(from);
+      void dot.offsetWidth;
+      dot.classList.remove('jump'); dot.style.left = pos(to);
+      count.textContent = (cur + 1) + ' / ' + steps.length;
+      prev.disabled = cur === 0; next.disabled = cur === steps.length - 1;
+    }
+    function stop() { clearInterval(timer); timer = null; play.setAttribute('aria-pressed', 'false'); play.textContent = '播放'; }
+    prev.addEventListener('click', function () { stop(); show(cur - 1); });
+    next.addEventListener('click', function () { stop(); show(cur + 1); });
+    play.addEventListener('click', function () {
+      if (timer) { stop(); return; }
+      if (cur === steps.length - 1) show(0);
+      play.setAttribute('aria-pressed', 'true'); play.textContent = '暂停';
+      timer = setInterval(function () { if (cur >= steps.length - 1) stop(); else show(cur + 1); }, 2800);
+    });
+    steps.forEach(function (li, k) { li.addEventListener('click', function () { stop(); show(k); }); });
+    fig.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowRight') { stop(); show(cur + 1); e.preventDefault(); }
+      if (e.key === 'ArrowLeft') { stop(); show(cur - 1); e.preventDefault(); }
+    });
+    show(0);
+  })();
+
+  /* Modes: four presets, three switches */
+  (function () {
+    var fig = $('#modes'), btns = $$('button[data-mode]', fig), desc = $('#mode-desc');
+    var M = {
+      flash:    { think: 0, plan: 0, sub: 0, effort: '不传',   d: 'Flash：三个开关都关，直接作答。所选模型不支持思考时，只能用这一档。' },
+      thinking: { think: 1, plan: 0, sub: 0, effort: 'low',    d: 'Reasoning：只开思考，模型先推理再行动。' },
+      pro:      { think: 1, plan: 1, sub: 0, effort: 'medium', d: 'Pro：思考加计划。模型得到待办清单工具，界面显示进度。新对话默认使用这一档。' },
+      ultra:    { think: 1, plan: 1, sub: 1, effort: 'high',   d: 'Ultra：再打开 subagent。模型得到 task 工具，可以把子任务分出去并行处理。' }
+    };
+    function set(m) {
+      var c = M[m];
+      btns.forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.mode === m)); });
+      ['think', 'plan', 'sub'].forEach(function (k) {
+        var sw = $('[data-sw="' + k + '"]', fig);
+        sw.classList.toggle('on', !!c[k]); $('.sv', sw).textContent = c[k] ? '开' : '关';
+      });
+      var ef = $('[data-sw="effort"]', fig);
+      ef.classList.toggle('on', c.effort !== '不传'); $('.sv', ef).textContent = c.effort;
+      desc.textContent = c.d;
+    }
+    btns.forEach(function (b) { b.addEventListener('click', function () { set(b.dataset.mode); }); });
+    set('pro');
+  })();
+
+  /* Delegation: how many task calls survive */
+  (function () {
+    var PER_RESPONSE = 3, PER_RUN = 6;
+    var n = $('#sc-n'), u = $('#sc-u'), slots = $('#sc-slots'), out = $('#sc-out');
+    function calc() {
+      var asked = Number(n.value), used = Number(u.value), left = PER_RUN - used;
+      var keep = Math.max(0, Math.min(asked, PER_RESPONSE, left)), drop = asked - keep, after = left - keep;
+      $('#sc-n-out').textContent = asked; $('#sc-u-out').textContent = used;
+      var html = '';
+      for (var i = 1; i <= asked; i++) html += '<div class="slot' + (i > keep ? ' drop' : '') + '">task ' + i + '<i>' + (i > keep ? '去掉' : '保留') + '</i></div>';
+      slots.innerHTML = html;
+      var t = '保留 ' + keep + ' 个，去掉 ' + drop + ' 个。';
+      if (left === 0) t += '本次 run 的委派额度已经用完，lead agent 被要求用已有结果收尾。';
+      else if (after === 0) t += '本次 run 的委派额度到此用完。';
+      else t += '本次 run 还剩 ' + after + ' 个委派额度。';
+      out.textContent = t;
+    }
+    n.addEventListener('input', calc); u.addEventListener('input', calc); calc();
+  })();
+
+  /* Memory queue: debounce and maximum wait, at ten times speed */
+  (function () {
+    var SCALE = 10, QUIET = 30, MAX = 300;
+    var add = $('#db-add'), reset = $('#db-reset'), pend = $('#db-pending'), log = $('#db-log');
+    var q = $('#db-quiet'), qv = $('#db-quiet-v'), m = $('#db-max'), mv = $('#db-max-v');
+    var pending = 0, first = 0, last = 0, fired = 0, raf = null;
+    function paint(quiet, max) {
+      q.style.width = Math.min(100, quiet / QUIET * 100) + '%'; qv.textContent = Math.floor(quiet) + ' / ' + QUIET + ' 秒';
+      m.style.width = Math.min(100, max / MAX * 100) + '%'; mv.textContent = Math.floor(max) + ' / ' + MAX + ' 秒';
+      pend.textContent = pending ? '队列里有 ' + pending + ' 轮对话' : '队列为空';
+    }
+    function fire(why) {
+      fired++;
+      var li = doc.createElement('li');
+      li.textContent = '第 ' + fired + ' 次提炼：合并 ' + pending + ' 轮对话，原因是' + why + '。';
+      if (fired === 1) log.innerHTML = '';
+      log.insertBefore(li, log.firstChild);
+      while (log.children.length > 4) log.removeChild(log.lastChild);
+      pending = 0; raf = null; paint(0, 0);
+    }
+    function loop() {
+      var now = performance.now(), quiet = (now - last) / 1000 * SCALE, max = (now - first) / 1000 * SCALE;
+      if (max >= MAX) { fire('最长等待到了 ' + MAX + ' 秒'); return; }
+      if (quiet >= QUIET) { fire('静默满了 ' + QUIET + ' 秒'); return; }
+      paint(quiet, max); raf = requestAnimationFrame(loop);
+    }
+    add.addEventListener('click', function () {
+      var now = performance.now();
+      if (!pending) first = now;
+      pending++; last = now;
+      if (!raf) raf = requestAnimationFrame(loop);
+    });
+    reset.addEventListener('click', function () {
+      if (raf) cancelAnimationFrame(raf);
+      raf = null; pending = 0; fired = 0; log.innerHTML = '<li>还没有发生提炼。</li>'; paint(0, 0);
+    });
+    paint(0, 0);
+  })();
+})();
+</script>
+</body>
+</html>

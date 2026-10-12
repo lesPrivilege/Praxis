@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-10-12 · 术语与讲解页的编排
+
+- [成文原理](kit/write/prose/grammar.md)第 6 条：术语取目标读者之间最稳定的说法；在 AI 与 agent 这类术语主要以英文流通的领域用英文原词，不临时造译名，首次出现时交代含义。[审阅方法](kit/write/prose/review.md)偏差表加一行。兼容扩展，强度不变。见 [ADR-031](docs/decisions/031-stable-terms-and-explainer-page.md)。
+- Write / Publish 新增 [讲解页的编排](kit/write/publish/explainer.md)：每个局部回答四问、四层的可见性、事实底稿、可调之处与反例。可取用的参考，不是必经步骤。
+- [成立程度的标记](kit/design/foundations/standing.md)可调情形加一句：交互图里强调色可作“当前选中”。
+- 新增演示 [DeerFlow 怎样工作](demos/deerflow-explainer/README.md)；稳定语义的记号、控件与运动写成 [工单](demos/editable-native-svg/claude-design-order-20261012.md)，交给独立的 ClaudeDesign。
+- 交付收进 Design 的 [记号、控件与运动](kit/design/marks/README.md)：57 个原生 SVG 记号、11 个控件、10 种运动，grammar 与这一版画法分开；normal/reference，按需取用。讲解页的系统全景图取用了 18 个记号，效果与缺口记在该包的 [检查与取用记录](kit/design/marks/checks.md)。见 [ADR-032](docs/decisions/032-semantic-marks-library.md)。
 ## 2026-10-12 · AgentScope 企业线视频与封面交付
 
 - 新增 [AgentScope 企业线知识片](demos/agentscope-enterprise-film/README.md)：公开文档与固定源码研究形成 53 场、横屏无 TTS 视频，以及可暂停舞台、详尽阅读稿和两张原生绘制封面。Python 2.0 与 Java Harness/Service 分开讲解，旧 Runtime/Studio 只讲迁移。

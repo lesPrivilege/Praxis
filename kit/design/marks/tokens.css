@@ -1,0 +1,65 @@
+/* 这一版画法的变量。含义不在这里：换掉任何一个值，grammar 不变。
+   消费者可以整份取用、只取几项，或在自己的项目里重新定值。 */
+:root {
+  /* 色：浅色、冷调，一种强调色 */
+  --paper: #ffffff;        /* 底 */
+  --wash: #f2f5f9;         /* 淡灰蓝，只作大面积的区分 */
+  --rule: #d6dde6;         /* 分隔线，不承担含义 */
+  --rule-strong: #74828f;  /* 控件边界，对白底 4.0:1 */
+  --ink: #15202b;          /* 正文与记号 */
+  --ink-2: #3d4a58;        /* 次一级的文字 */
+  --ink-3: #5d6a78;        /* 说明与标注，对白底 5.6:1 */
+  --accent: #1b58cf;       /* 强调：一张图里只回答一个问题 */
+  --accent-wash: #e8effc;
+
+  /* 字 */
+  --sans: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Noto Sans CJK SC", "Source Han Sans SC", "Microsoft YaHei", sans-serif;
+  --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --fs-note: 13px;
+  --fs-ui: 14px;
+  --fs-body: 16px;
+  --fs-h3: 19px;
+  --fs-h2: 25px;
+  --fs-h1: 34px;
+  --lh-body: 1.75;
+  --lh-tight: 1.35;
+  --fw-strong: 600;
+
+  /* 距 */
+  --s-1: 4px;
+  --s-2: 8px;
+  --s-3: 12px;
+  --s-4: 16px;
+  --s-5: 24px;
+  --s-6: 36px;
+  --s-7: 56px;
+  --s-8: 80px;
+  --gutter: 16px;
+  --measure: 44em;
+  --radius: 6px;
+
+  /* 记号与线 */
+  --glyph: 24px;           /* 网格边长；描边 1.5 随它缩放 */
+  --stroke: 1.5px;
+  --dash: 5 4;             /* 虚线的线段与间隔 */
+  --target: 36px;          /* 可点目标的最小边长 */
+
+  /* 时长与曲线（界面）。视频里的秒数是每种运动自己的参数，见 motion.html */
+  --t-feedback: 120ms;     /* 悬停、按下 */
+  --t-state: 200ms;        /* 状态切换、出现与退出 */
+  --t-move: 240ms;         /* 位置移动 */
+  --t-pulse: 1600ms;       /* 等待的一次明暗 */
+  --ease-out: cubic-bezier(.2, 0, 0, 1);
+  --ease-in-out: cubic-bezier(.45, 0, .25, 1);
+}
+
+/* 关系线的两种线型：回答“生效了吗” */
+.g-line { fill: none; stroke: currentColor; stroke-width: var(--stroke); stroke-linecap: round; }
+.g-line--pending { stroke-dasharray: var(--dash); }
+
+/* 记号的默认尺寸 */
+.g { width: var(--glyph); height: var(--glyph); flex: none; vertical-align: -0.28em; }
+
+@media (prefers-reduced-motion: reduce) {
+  :root { --t-feedback: 0ms; --t-state: 0ms; --t-move: 0ms; }
+}

@@ -57,3 +57,4 @@
 - [Design / Write 参考编订](design-writing-encyclopedia-20261011/README.md)：来源证据、独立发现任务、分面示例与静态检查；[薄消费记录模板](reference-consumption-template.md)可用于后续回流。
 
 - [艺术与软件语法参考书](art-software-atlas-20261011/README.md)：独立分支的证据、发现试用、审阅与交接。
+- [2026-10-12 DeerFlow 讲解页的提炼](explainer-distill-20261012.md)：用户目验通过并要求 distill；三处 Kit 修订（术语、讲解页的编排、强调色的可调情形）和一份交给 ClaudeDesign 的工单；未对照，新条文尚未在别的任务上使用；仓库验证的报错都在本次范围之外。

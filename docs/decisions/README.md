@@ -51,3 +51,5 @@ accepted 表示本仓库当时采纳；技术实现与使用证据在对应契�
 - [ADR-028：口播旁白体例与独立冷读](028-narration-genre-and-cold-read.md)（accepted；把第五版改稿的做法提炼进 Kit：新增口播旁白文体页，审阅方法新增成文的独立冷读，结构文字审阅补三项产出；使用证据只有一条片子、同一名主笔，审阅由模型完成）。
 
 - [ADR-029：书目摘要与可选语法参考](029-design-writing-reference-encyclopedia.md)（accepted；沿用任务树、双向来源、可选分面与独立历史；新增方法仍是参考）。
+- [ADR-031：术语取最稳定的说法；讲解页的编排留作参考](031-stable-terms-and-explainer-page.md)（accepted；成文原理第 6 条写明 AI 与 agent 等领域的术语用英文原词；Publish 新增讲解页的编排，是可取用的参考；强调色在交互图里可作当前选中；稳定语义的记号、控件与运动写成工单交给独立的 ClaudeDesign，Kit 暂不新增；使用证据只有一页、一名主笔，未对照）。
+- [ADR-032：承载稳定语义的记号、控件与运动收进 Design](032-semantic-marks-library.md)（accepted；整包在 kit/design/marks，normal/reference，按需取用，可改用外部库或重画）。

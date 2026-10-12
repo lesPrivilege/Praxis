@@ -9,6 +9,7 @@
 - 要放入图表、引文、截图或证据：读 [展项与说明](exhibits.md)。
 - 要选择具体图形、尺度、字体或表现方式：进入 [Design / Composition](../../design/composition/README.md)。
 - 窄屏比较或局部注释有困难时，先比对 [按属性维持比较](../../design/references/curated/comparison-continuity.md)与 [注释保持邻接](../../design/references/curated/note-adjacency.md)；内容职责仍由本分支维护，样张数字和代码不直接继承。
+- 要向不读原件的读者讲清一个系统、项目或机制的各个局部：可以取用 [讲解页的编排](explainer.md)，它是一份做过一次的参考，不是必经步骤。
 - 需要检验真实输出：用 [共享验收](../shared/verification.md)。
 
 本分支定义内容职责，不固定主题和 renderer。需要比较原子化编排，读 [实验样张](../../../vault/distilled/layout-specimens-20260927/README.md)和 [局部筛选](../../../vault/distilled/layout-specimens-20260927/review.md)；可直接取样、改编并比较失败对照，无需先获main批准；审阅范围按记录消费，尚未形成已采纳组件库。

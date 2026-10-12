@@ -1,0 +1,849 @@
+<!doctype html>
+<html lang="zh-CN" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>承载稳定语义的控件</title>
+<script>document.documentElement.className = 'js';</script>
+<style>
+/* 这一版画法的变量。含义不在这里：换掉任何一个值，grammar 不变。
+   消费者可以整份取用、只取几项，或在自己的项目里重新定值。 */
+:root {
+  /* 色：浅色、冷调，一种强调色 */
+  --paper: #ffffff;        /* 底 */
+  --wash: #f2f5f9;         /* 淡灰蓝，只作大面积的区分 */
+  --rule: #d6dde6;         /* 分隔线，不承担含义 */
+  --rule-strong: #74828f;  /* 控件边界，对白底 4.0:1 */
+  --ink: #15202b;          /* 正文与记号 */
+  --ink-2: #3d4a58;        /* 次一级的文字 */
+  --ink-3: #5d6a78;        /* 说明与标注，对白底 5.6:1 */
+  --accent: #1b58cf;       /* 强调：一张图里只回答一个问题 */
+  --accent-wash: #e8effc;
+
+  /* 字 */
+  --sans: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Noto Sans CJK SC", "Source Han Sans SC", "Microsoft YaHei", sans-serif;
+  --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --fs-note: 13px;
+  --fs-ui: 14px;
+  --fs-body: 16px;
+  --fs-h3: 19px;
+  --fs-h2: 25px;
+  --fs-h1: 34px;
+  --lh-body: 1.75;
+  --lh-tight: 1.35;
+  --fw-strong: 600;
+
+  /* 距 */
+  --s-1: 4px;
+  --s-2: 8px;
+  --s-3: 12px;
+  --s-4: 16px;
+  --s-5: 24px;
+  --s-6: 36px;
+  --s-7: 56px;
+  --s-8: 80px;
+  --gutter: 16px;
+  --measure: 44em;
+  --radius: 6px;
+
+  /* 记号与线 */
+  --glyph: 24px;           /* 网格边长；描边 1.5 随它缩放 */
+  --stroke: 1.5px;
+  --dash: 5 4;             /* 虚线的线段与间隔 */
+  --target: 36px;          /* 可点目标的最小边长 */
+
+  /* 时长与曲线（界面）。视频里的秒数是每种运动自己的参数，见 motion.html */
+  --t-feedback: 120ms;     /* 悬停、按下 */
+  --t-state: 200ms;        /* 状态切换、出现与退出 */
+  --t-move: 240ms;         /* 位置移动 */
+  --t-pulse: 1600ms;       /* 等待的一次明暗 */
+  --ease-out: cubic-bezier(.2, 0, 0, 1);
+  --ease-in-out: cubic-bezier(.45, 0, .25, 1);
+}
+
+/* 关系线的两种线型：回答“生效了吗” */
+.g-line { fill: none; stroke: currentColor; stroke-width: var(--stroke); stroke-linecap: round; }
+.g-line--pending { stroke-dasharray: var(--dash); }
+
+/* 记号的默认尺寸 */
+.g { width: var(--glyph); height: var(--glyph); flex: none; vertical-align: -0.28em; }
+
+@media (prefers-reduced-motion: reduce) {
+  :root { --t-feedback: 0ms; --t-state: 0ms; --t-move: 0ms; }
+}
+
+
+/* 两个页面共用的排版与按钮 */
+* { box-sizing: border-box; }
+html { background: var(--paper); }
+body { margin: 0; color: var(--ink); background: var(--paper); font: var(--fs-body)/var(--lh-body) var(--sans); -webkit-text-size-adjust: 100%; }
+main { max-width: 820px; margin: 0 auto; padding: 0 var(--gutter) var(--s-8); }
+h1, h2, h3 { font-weight: var(--fw-strong); line-height: var(--lh-tight); margin: 0; }
+h1 { font-size: clamp(27px, 6vw, var(--fs-h1)); }
+h2 { font-size: var(--fs-h2); }
+h3 { font-size: var(--fs-ui); color: var(--ink-2); margin: var(--s-5) 0 var(--s-2); }
+p { margin: 0 0 .8em; max-width: var(--measure); }
+ul, ol { margin: 0; padding: 0; list-style: none; }
+button, input { font: inherit; color: inherit; }
+code { font-family: var(--mono); font-size: .88em; overflow-wrap: anywhere; }
+a { color: inherit; text-underline-offset: 3px; text-decoration-color: var(--rule-strong); }
+.note { font-size: var(--fs-ui); line-height: 1.65; color: var(--ink-3); }
+:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+.vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+header.top { padding: var(--s-7) 0 var(--s-5); }
+header.top .kind { font-size: var(--fs-ui); color: var(--ink-3); margin-bottom: var(--s-3); }
+header.top .lede { font-size: 18px; margin-top: var(--s-4); }
+.toc { display: flex; flex-wrap: wrap; gap: 2px var(--s-4); font-size: var(--fs-ui); padding: var(--s-3) 0; border-top: 1px solid var(--ink); border-bottom: 1px solid var(--rule); }
+.toc a { text-decoration: none; padding: 6px 0; }
+.toc a:hover { text-decoration: underline; }
+
+section.c { padding-top: var(--s-7); }
+section.c > header { display: grid; grid-template-columns: 2.4em 1fr; margin-bottom: var(--s-4); }
+section.c > header .no { font-family: var(--mono); font-size: var(--fs-ui); color: var(--ink-3); padding-top: 9px; }
+section.c > header p { grid-column: 2; margin: var(--s-2) 0 0; color: var(--ink-2); }
+.demo { border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); padding: var(--s-5) 0; }
+.demo > .synthetic { font-size: var(--fs-note); color: var(--ink-3); margin-bottom: var(--s-3); }
+.legend { display: flex; flex-wrap: wrap; gap: 4px var(--s-4); font-size: var(--fs-note); color: var(--ink-3); margin-top: var(--s-3); align-items: center; }
+.legend svg { vertical-align: middle; margin-right: 6px; color: var(--ink); }
+.legend .acc { color: var(--accent); }
+
+/* 按钮：正常、悬停、焦点、选中、禁用 */
+.btn { border: 1px solid var(--rule-strong); background: var(--paper); border-radius: var(--radius); padding: 4px 14px; min-height: var(--target); min-width: var(--target); cursor: pointer; font-size: var(--fs-ui); display: inline-flex; align-items: center; gap: 6px; transition: background var(--t-feedback) linear; }
+.btn:hover, .btn.is-hover { background: var(--wash); }
+.btn.is-focus { outline: 2px solid var(--ink); outline-offset: 2px; }
+.btn[aria-pressed="true"], .btn.is-on { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: var(--fw-strong); }
+.btn:disabled, .btn.is-off { color: var(--ink-3); border-color: var(--rule); border-style: dashed; cursor: default; background: var(--paper); }
+.ctl { display: flex; flex-wrap: wrap; gap: var(--s-2); align-items: center; }
+.no-js .ctl, .no-js .js-only { display: none; }
+.js .no-js-only:not(.print-only) { display: none; }
+.count { font-size: var(--fs-ui); color: var(--ink-2); margin-left: var(--s-2); font-variant-numeric: tabular-nums; }
+
+/* 状态矩阵 */
+.mx { width: 100%; border-collapse: collapse; font-size: var(--fs-ui); line-height: 1.6; }
+.mx th, .mx td { text-align: left; vertical-align: middle; padding: 9px 12px 9px 0; border-bottom: 1px solid var(--rule); }
+.mx th { font-weight: var(--fw-strong); width: 5.5em; white-space: nowrap; }
+.mx td.s { width: 11em; }
+.mx td:last-child { color: var(--ink-2); padding-right: 0; }
+@media (max-width: 560px) {
+  .mx, .mx tbody, .mx tr { display: block; }
+  .mx tr { display: grid; grid-template-columns: 5.5em 1fr; border-bottom: 1px solid var(--rule); padding: 8px 0; gap: 4px 0; }
+  .mx th, .mx td { border: 0; padding: 0; width: auto; }
+  .mx td:last-child { grid-column: 1 / -1; }
+  .mx td.s:empty { display: none; }
+}
+
+
+/* 1 步进器 */
+.steps { counter-reset: st; }
+.steps > li { display: grid; grid-template-columns: 2em 1fr; padding: var(--s-2) 0; counter-increment: st; }
+.steps > li::before { content: counter(st); font-family: var(--mono); font-size: var(--fs-ui); color: var(--ink-3); padding-top: 3px; }
+.steps b { font-weight: var(--fw-strong); display: block; }
+.steps span { color: var(--ink-2); font-size: 15px; }
+.js .stepper .steps > li { display: none; }
+.js .stepper .steps > li.on { display: grid; min-height: 5.4em; }
+.stepper .ctl { margin-top: var(--s-3); }
+
+/* 2 轨道 */
+.railwrap { position: relative; }
+.rail { position: relative; display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; }
+.rail::before { content: ""; position: absolute; left: 10%; right: 10%; top: 17px; border-top: var(--stroke) solid var(--ink); }
+.rail li { position: relative; text-align: center; }
+.rail button { border: 0; background: none; padding: 0 2px 4px; width: 100%; min-height: var(--target); cursor: pointer; font-size: var(--fs-note); line-height: 1.4; border-radius: var(--radius); }
+.rail .dot { display: block; width: 11px; height: 11px; margin: 12px auto 10px; border-radius: 50%; border: var(--stroke) solid var(--ink); background: var(--paper); position: relative; }
+.rail li.passed .dot { background: var(--ink); }
+.rail button:hover, .rail button.is-hover { background: var(--wash); }
+.rail li.current button { font-weight: var(--fw-strong); }
+.railwrap .marker { position: absolute; left: 0; top: 0; width: 23px; height: 23px; margin: -11.5px 0 0 -11.5px; border: 2.5px solid var(--accent); border-radius: 50%; pointer-events: none; transition: transform var(--t-move) var(--ease-in-out); }
+.no-js .railwrap .marker { display: none; }
+@media (max-width: 520px) {
+  .rail { grid-auto-flow: row; }
+  .rail::before { left: 17px; right: auto; top: 18px; bottom: 18px; border-top: 0; border-left: var(--stroke) solid var(--ink); }
+  .rail li { text-align: left; }
+  .rail button { display: grid; grid-template-columns: 36px 1fr; align-items: center; text-align: left; font-size: var(--fs-ui); padding: 0; }
+  .rail .dot { margin: 0 0 0 12px; }
+}
+
+/* 3 分段单选 */
+.seg { display: inline-flex; flex-wrap: wrap; border: 1px solid var(--rule-strong); border-radius: var(--radius); padding: 0; margin: 0; overflow: hidden; }
+.seg legend { float: left; }
+.seg label, .seg .o { position: relative; display: inline-flex; align-items: center; min-height: var(--target); padding: 4px 14px; font-size: var(--fs-ui); cursor: pointer; border-right: 1px solid var(--rule); background: var(--paper); transition: background var(--t-feedback) linear; }
+.seg label:last-child, .seg .o:last-child { border-right: 0; }
+.seg input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; }
+.seg label:hover, .seg .o.is-hover { background: var(--wash); }
+.seg label:has(:checked), .seg .o.is-on { background: var(--accent); color: #fff; font-weight: var(--fw-strong); }
+.seg label:has(:focus-visible), .seg .o.is-focus { outline: 2px solid var(--ink); outline-offset: -4px; }
+.seg label:has(:disabled), .seg .o.is-off { color: var(--ink-3); cursor: default; text-decoration: line-through; }
+.presets { margin-top: var(--s-4); }
+.presets > div { display: none; border-left: 3px solid var(--accent); padding-left: var(--s-4); }
+.presets b { display: block; }
+.pick:has(#p1:checked) [data-p="p1"], .pick:has(#p2:checked) [data-p="p2"], .pick:has(#p3:checked) [data-p="p3"] { display: block; }
+
+/* 4 可点选的节点与说明面板 */
+.nodes { display: flex; flex-wrap: wrap; gap: var(--s-2) 0; align-items: center; }
+.nodes li { display: flex; align-items: center; }
+.nodes li + li::before { content: ""; width: 28px; border-top: var(--stroke) solid var(--ink); }
+.node { border: var(--stroke) solid var(--ink); background: var(--paper); border-radius: var(--radius); padding: 6px 12px 6px 10px; min-height: 44px; display: inline-flex; align-items: center; gap: 8px; font-size: var(--fs-ui); cursor: pointer; transition: background var(--t-feedback) linear; }
+.node:hover, .node.is-hover { background: var(--wash); }
+.node.is-focus { outline: 2px solid var(--ink); outline-offset: 2px; }
+.node[aria-pressed="true"], .node.is-on { border-color: var(--accent); box-shadow: inset 0 0 0 1.5px var(--accent); color: var(--accent); font-weight: var(--fw-strong); }
+.node:disabled, .node.is-off { border-style: dashed; color: var(--ink-3); cursor: default; }
+.no-js .node { cursor: default; pointer-events: none; }
+.info { margin-top: var(--s-4); }
+.info > div { padding: var(--s-2) 0 var(--s-2) var(--s-4); border-left: 3px solid var(--rule); }
+.info > div + div { margin-top: var(--s-3); }
+.info b { display: block; }
+.js .info > div { display: none; }
+.js .info > div.on { display: block; border-left-color: var(--accent); min-height: 5em; }
+@media (max-width: 520px) {
+  .nodes { flex-direction: column; align-items: stretch; gap: 0; }
+  .nodes li { flex-direction: column; align-items: flex-start; }
+  .nodes li + li::before { width: 0; height: 14px; border-top: 0; border-left: var(--stroke) solid var(--ink); margin-left: 22px; }
+}
+
+/* 5 展开与收起 */
+details.d { border-top: 1px solid var(--rule); max-width: var(--measure); }
+details.d:last-of-type { border-bottom: 1px solid var(--rule); }
+details.d > summary, .sum { cursor: pointer; padding: 10px 6px 10px 0; font-weight: var(--fw-strong); list-style: none; display: grid; grid-template-columns: 1.5em 1fr; min-height: var(--target); align-items: center; }
+details.d > summary::-webkit-details-marker { display: none; }
+details.d > summary::before, .sum::before { content: "+"; font-family: var(--mono); color: var(--ink-3); }
+details.d[open] > summary::before, .sum.is-open::before { content: "−"; }
+details.d > summary:hover, .sum.is-hover { background: var(--wash); }
+.sum.is-focus { outline: 2px solid var(--ink); outline-offset: 2px; }
+details.d > div { padding: 0 0 var(--s-3) 1.5em; font-size: 15px; color: var(--ink-2); }
+.sum { font-size: var(--fs-ui); }
+
+/* 6 标签 */
+.tag { display: inline-flex; align-items: center; gap: 4px; font-size: var(--fs-note); line-height: 1.5; padding: 1px 8px 1px 5px; border: 1px solid var(--rule-strong); border-radius: 4px; white-space: nowrap; }
+.tag svg { width: 16px; height: 16px; }
+.tag.dash { border-style: dashed; }
+.tags { display: flex; flex-wrap: wrap; gap: var(--s-2); }
+.rows { max-width: var(--measure); }
+.rows li { display: flex; flex-wrap: wrap; gap: 4px var(--s-3); align-items: center; padding: 8px 0; border-bottom: 1px solid var(--rule); }
+.rows li b { font-weight: var(--fw-strong); min-width: 9em; }
+
+/* 7 按属性对照 */
+.cmp { width: 100%; border-collapse: collapse; font-size: 15px; }
+.cmp th, .cmp td { text-align: left; vertical-align: top; padding: 9px 14px 9px 0; border-bottom: 1px solid var(--rule); }
+.cmp thead th { border-bottom: 1px solid var(--ink); font-size: var(--fs-ui); }
+.cmp tbody th { font-weight: var(--fw-strong); white-space: nowrap; }
+.cmp .obj { display: none; }
+.cmp .nv { color: var(--ink-3); display: inline-flex; align-items: center; gap: 4px; }
+.cmp .nv svg { width: 16px; height: 16px; }
+@media (max-width: 560px) {
+  .cmp, .cmp tbody { display: block; }
+  .cmp thead { display: none; }
+  .cmp tr { display: grid; grid-template-columns: 5.5em 1fr; padding: var(--s-3) 0; border-bottom: 1px solid var(--rule); gap: 3px 0; }
+  .cmp th, .cmp td { display: contents; }
+  .cmp tbody th > span { grid-column: 1 / -1; font-weight: var(--fw-strong); }
+  .cmp .obj { display: block; color: var(--ink-3); font-size: var(--fs-ui); }
+}
+
+/* 8 时间线 */
+.tl { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; }
+.tl li { position: relative; padding: 26px 12px 0 0; font-size: var(--fs-ui); line-height: 1.5; }
+.tl li::before { content: ""; position: absolute; left: 0; right: 0; top: 8px; border-top: var(--stroke) solid var(--ink); }
+.tl li::after { content: ""; position: absolute; left: 0; top: 3px; width: 11px; height: 11px; border-radius: 50%; background: var(--ink); border: var(--stroke) solid var(--ink); }
+.tl li:last-child::before { display: none; }
+.tl li.later::after { background: var(--paper); }
+.tl li.to-later::before { border-top-style: dashed; }
+.tl time { display: block; font-family: var(--mono); font-size: var(--fs-note); color: var(--ink-3); }
+.tl b { font-weight: var(--fw-strong); display: block; }
+.tl i { font-style: normal; color: var(--ink-3); font-size: var(--fs-note); }
+@media (max-width: 560px) {
+  .tl { grid-auto-flow: row; }
+  .tl li { padding: 0 0 var(--s-4) 28px; }
+  .tl li::before { left: 5px; right: auto; top: 8px; bottom: -8px; border-top: 0; border-left: var(--stroke) solid var(--ink); }
+  .tl li.to-later::before { border-left-style: dashed; }
+  .tl li::after { top: 6px; }
+}
+
+/* 9 阅读进度线 */
+.progress { position: fixed; inset: 0 0 auto 0; height: 3px; z-index: 5; pointer-events: none; }
+.progress i { display: block; height: 100%; width: 100%; background: var(--ink); transform-origin: 0 50%; transform: scaleX(0); }
+.no-js .progress { display: none; }
+.bar-sample { height: 3px; background: var(--rule); width: 100%; max-width: 9em; }
+.bar-sample i { display: block; height: 100%; background: var(--ink); }
+
+/* 10 试算 */
+.calc { display: grid; gap: var(--s-3); max-width: var(--measure); }
+.calc label { font-size: var(--fs-ui); display: flex; flex-wrap: wrap; gap: 4px var(--s-3); align-items: center; }
+.calc input[type=range] { flex: 1 1 200px; min-height: var(--target); accent-color: var(--ink); margin: 0; }
+.calc output { display: block; font-variant-numeric: tabular-nums; }
+.calc .big { font-size: 22px; font-weight: var(--fw-strong); }
+.scale { position: relative; height: 22px; margin-top: 2px; }
+.scale .track { position: absolute; left: 0; right: 0; top: 4px; height: 8px; background: var(--wash); border: 1px solid var(--rule-strong); }
+.scale .fill { position: absolute; left: 0; top: 4px; height: 8px; background: var(--ink); }
+.scale .cap { position: absolute; top: 0; bottom: 0; border-left: var(--stroke) solid var(--ink); }
+.scale-lbl { display: flex; justify-content: space-between; font-size: var(--fs-note); color: var(--ink-3); font-family: var(--mono); }
+table.worked { border-collapse: collapse; font-size: var(--fs-ui); }
+table.worked th, table.worked td { text-align: left; padding: 6px 16px 6px 0; border-bottom: 1px solid var(--rule); }
+
+/* 11 计时条 */
+.timer .read { font-size: 22px; font-weight: var(--fw-strong); font-variant-numeric: tabular-nums; }
+.timer .state { font-size: var(--fs-ui); color: var(--ink-2); margin-left: var(--s-3); }
+.timer .scale { max-width: var(--measure); margin: var(--s-2) 0 2px; }
+.timer .scale-lbl { max-width: var(--measure); margin-bottom: var(--s-3); }
+
+/* 12 关系与图例 */
+.rel { max-width: var(--measure); }
+.rel li { display: grid; grid-template-columns: minmax(0, 9.5em) 108px minmax(0, 1fr); align-items: center; gap: 2px 8px; padding: 9px 0; border-bottom: 1px solid var(--rule); font-size: 15px; }
+.rel .w { grid-column: 1 / -1; font-size: var(--fs-note); color: var(--ink-3); }
+.rel svg { width: 108px; height: 14px; display: block; }
+.rel .acc, .rel .acc .w { color: var(--accent); }
+.rel .n { display: inline-grid; place-items: center; width: 1.5em; height: 1.5em; border: 1px solid currentColor; border-radius: 50%; font-size: 12px; margin-left: 4px; font-family: var(--mono); }
+.refuse { font-size: var(--fs-ui); border-left: 3px solid var(--ink); padding-left: var(--s-3); margin-top: var(--s-3); }
+.scope { border: var(--stroke) solid var(--ink); border-radius: 8px; padding: var(--s-3) var(--s-4) var(--s-4); max-width: var(--measure); }
+.scope + .scope, .scope .scope { margin-top: var(--s-3); }
+.scope.pending { border-style: dashed; }
+.scope > .lbl { font-size: var(--fs-note); color: var(--ink-2); display: block; margin-bottom: var(--s-2); }
+.scope .in { display: flex; flex-wrap: wrap; gap: var(--s-2) var(--s-4); font-size: var(--fs-ui); }
+.scope .in span { display: inline-flex; align-items: center; gap: 6px; }
+
+footer { margin-top: var(--s-7); padding-top: var(--s-4); border-top: 1px solid var(--ink); }
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition-duration: 0s !important; }
+}
+@media print {
+  @page { size: A4; margin: 16mm 15mm; }
+  body { font-size: 10.5pt; }
+  main { max-width: none; padding: 0; }
+  .ctl, .progress, .toc, .js-only, .no-print { display: none !important; }
+  section.c { padding-top: 22pt; }
+  section.c > header, .mx tr, .rows li, .rel li { break-inside: avoid; }
+  h2, h3 { break-after: avoid; }
+  .js .stepper .steps > li, .js .info > div { display: grid !important; min-height: 0 !important; }
+  .js .info > div { display: block !important; }
+  .presets > div { display: block !important; margin-bottom: 8pt; }
+  details.d::details-content { content-visibility: visible; display: block; }
+  .railwrap .marker { display: none; }
+  .js .print-only { display: revert !important; }
+}
+.js .print-only { display: none; }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<symbol id="g-gateway" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><title>网关</title><path d="M5 20V6a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v14M9 13h6M12.5 10.5L15 13l-2.5 2.5"/></symbol>
+<symbol id="g-external" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><title>外部服务</title><path d="M7.5 18.5a4 4 0 0 1-.7-7.94 5.5 5.5 0 0 1 10.66-.9A4.5 4.5 0 0 1 16.75 18.5z"/></symbol>
+<symbol id="g-agent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><title>agent</title><rect x="5" y="8" width="14" height="11.5" rx="3"/><path d="M12 8V5.5M9.5 12.75v1.75M14.5 12.75v1.75"/><circle cx="12" cy="4.25" r="1.25"/></symbol>
+<symbol id="g-tool" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><title>工具</title><path transform="rotate(45 12 12)" d="M10.5 10.74V20a1.5 1.5 0 0 0 3 0v-9.26a4.5 4.5 0 0 0 0-8.48V6.5h-3V2.26a4.5 4.5 0 0 0 0 8.48"/></symbol>
+<symbol id="g-database" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><title>数据库</title><ellipse cx="12" cy="6" rx="7" ry="3"/><path d="M5 6v12c0 1.66 3.13 3 7 3s7-1.34 7-3V6M5 12c0 1.66 3.13 3 7 3s7-1.34 7-3"/></symbol>
+<symbol id="g-folder" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><title>目录</title><path d="M3.5 7a2 2 0 0 1 2-2h3.7l2 2.5h7.3a2 2 0 0 1 2 2V17a2 2 0 0 1-2 2h-13a2 2 0 0 1-2-2z"/></symbol>
+<symbol id="g-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><title>默认开</title><rect x="2.5" y="7" width="19" height="10" rx="5"/><circle cx="16.5" cy="12" r="2.75" fill="currentColor" stroke="none"/></symbol>
+<symbol id="g-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><title>默认关</title><rect x="2.5" y="7" width="19" height="10" rx="5"/><circle cx="7.5" cy="12" r="2.5"/></symbol>
+<symbol id="g-optional" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><title>可选</title><rect x="2.5" y="7" width="19" height="10" rx="5" stroke-dasharray="2.6 2.6"/><circle cx="12" cy="12" r="2.5"/></symbol>
+<symbol id="g-unverified" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><title>未核实</title><path d="M2.5 12h8"/><circle cx="15.5" cy="12" r="5"/></symbol>
+<symbol id="g-missing" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><title>缺失</title><path d="M9 6H6v12h3M15 6h3v12h-3"/></symbol>
+<symbol id="g-na" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><title>不适用</title><rect x="4.5" y="4.5" width="15" height="15" rx="2"/><path d="M8 16l8-8"/></symbol>
+<symbol id="g-end-solid" viewBox="-6 -6 12 12" overflow="visible" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><title>已确认</title><circle r="3.25" fill="currentColor" stroke="none"/></symbol>
+<symbol id="g-end-hollow" viewBox="-6 -6 12 12" overflow="visible" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><title>未确认</title><circle r="3.25" style="fill:var(--paper,#fff)"/></symbol>
+<symbol id="g-end-cross" viewBox="-6 -6 12 12" overflow="visible" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><title>已拒绝</title><path d="M-3-3l6 6M3-3l-6 6"/></symbol>
+<symbol id="g-arrow" viewBox="-6 -6 12 12" overflow="visible" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><title>方向</title><path d="M-4.5-3.5L0 0l-4.5 3.5"/></symbol>
+</defs></svg>
+<div class="progress" aria-hidden="true"><i></i></div>
+<main>
+<header class="top">
+  <div class="kind">候选 · 2026-10-12 · 样张内容都是合成的例子</div>
+  <h1>承载稳定语义的控件</h1>
+  <p class="lede">每个控件承载一种含义，下面各给一个最小实例和它的状态矩阵。实例里说的“一次请求怎样走完”是合成的，不描述任何真实产品。</p>
+  <p class="note">含义与约束见 <a href="README.md">README</a> 的 grammar 部分，色值、字号和时长在 <a href="tokens.css">tokens.css</a>，记号在 <a href="glyphs.svg">glyphs.svg</a>，运动在 <a href="motion.html">motion.html</a>。本页的强调色只表示“当前选中”；第 12 节单独一张图，那里的强调色表示“等人决定”。键盘焦点一律用墨色外框，不占强调色。</p>
+</header>
+<nav class="toc" aria-label="本页控件">
+  <a href="#c1">1 步进器</a><a href="#c2">2 轨道</a><a href="#c3">3 分段单选</a><a href="#c4">4 节点与说明面板</a><a href="#c5">5 展开与收起</a><a href="#c6">6 标签</a><a href="#c7">7 按属性对照</a><a href="#c8">8 时间线</a><a href="#c9">9 阅读进度线</a><a href="#c10">10 试算</a><a href="#c11">11 计时条</a><a href="#c12">12 关系、范围与图例</a>
+</nav>
+
+<!-- 1 -->
+<section class="c" id="c1">
+  <header><span class="no">1</span><h2>步进器</h2><p>有先后的几步，一次只看一步。读者知道现在是第几步、一共几步，可以前进、后退，也可以让它自己走。</p></header>
+  <div class="demo stepper" data-stepper>
+    <div class="synthetic">合成例子 · 一次请求的五步</div>
+    <ol class="steps">
+      <li><div><b>用户提问</b><span>问题从浏览器发出，带着这一轮对话的编号。</span></div></li>
+      <li><div><b>网关接收</b><span>网关核对身份，把请求排进队列。</span></div></li>
+      <li><div><b>agent 规划</b><span>agent 读入问题和记忆，决定先调用哪个工具。</span></div></li>
+      <li><div><b>等人确认</b><span>要写文件的那一步停下来，等人点头。</span></div></li>
+      <li><div><b>交付</b><span>结果写成 artifact，连同来源一起交回。</span></div></li>
+    </ol>
+    <div class="ctl">
+      <button class="btn" type="button" data-prev>上一步</button>
+      <button class="btn" type="button" data-next>下一步</button>
+      <button class="btn" type="button" data-play aria-pressed="false">播放</button>
+      <span class="count" data-count aria-live="polite"></span>
+    </div>
+  </div>
+  <h3>状态矩阵</h3>
+  <table class="mx"><tbody>
+    <tr><th>正常</th><td class="s"><span class="btn" aria-hidden="true">下一步</span></td><td>三个按钮加一句“第 2 步，共 5 步”。计数是文字，不画进度条。</td></tr>
+    <tr><th>悬停</th><td class="s"><span class="btn is-hover" aria-hidden="true">下一步</span></td><td>底色变淡灰蓝。</td></tr>
+    <tr><th>键盘焦点</th><td class="s"><span class="btn is-focus" aria-hidden="true">下一步</span></td><td>墨色外框。Tab 依次到三个按钮，Enter 或空格触发；换步之后焦点留在原按钮上。</td></tr>
+    <tr><th>选中</th><td class="s"><span class="btn is-on" aria-hidden="true">暂停</span></td><td>播放中，按钮文字换成“暂停”。每步停 2.4 秒，走到最后一步自己停下；按任何一个按钮都会打断播放。</td></tr>
+    <tr><th>禁用</th><td class="s"><span class="btn is-off" aria-hidden="true">上一步</span></td><td>第一步没有“上一步”，最后一步没有“下一步”。虚线边框加灰字，不只靠颜色。</td></tr>
+    <tr><th>无脚本</th><td class="s"></td><td>五步排成一张编号列表，按钮不出现。</td></tr>
+    <tr><th>打印</th><td class="s"></td><td>与无脚本相同：五步全部印出。</td></tr>
+  </tbody></table>
+</section>
+
+<!-- 2 -->
+<section class="c" id="c2">
+  <header><span class="no">2</span><h2>轨道</h2><p>一排站点和一个移动的标记，回答“从哪里到哪里”。标记经过的站是实心，没到的是空心。</p></header>
+  <div class="demo" data-rail>
+    <div class="synthetic">合成例子 · 请求此刻在哪一站，点站名可以移过去</div>
+    <div class="railwrap"><ol class="rail">
+      <li><button type="button"><span class="dot"></span>浏览器</button></li>
+      <li><button type="button"><span class="dot"></span>网关</button></li>
+      <li><button type="button"><span class="dot"></span>队列</button></li>
+      <li><button type="button"><span class="dot"></span>agent</button></li>
+      <li><button type="button"><span class="dot"></span>工具</button></li>
+    </ol><span class="marker" aria-hidden="true"></span></div>
+    <p class="count js-only" data-count aria-live="polite" style="margin:var(--s-3) 0 0"></p>
+    <div class="legend"><span class="js-only"><svg width="12" height="12"><circle cx="6" cy="6" r="4.5" fill="currentColor"/></svg>已过</span><span class="acc js-only"><svg width="18" height="18" style="color:var(--accent)"><circle cx="9" cy="9" r="7.5" fill="none" stroke="currentColor" stroke-width="2.5"/></svg>当前</span><span><svg width="12" height="12"><circle cx="6" cy="6" r="4.5" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>未到</span></div>
+  </div>
+  <h3>状态矩阵</h3>
+  <table class="mx"><tbody>
+    <tr><th>正常</th><td class="s"></td><td>站名是文字，站点是圆点；已过实心、未到空心，去色后仍分得开。</td></tr>
+    <tr><th>悬停</th><td class="s"></td><td>站名下出现淡灰蓝底色。</td></tr>
+    <tr><th>键盘焦点</th><td class="s"></td><td>每个站是一个按钮，Tab 到达，Enter 移过去；墨色外框。</td></tr>
+    <tr><th>选中</th><td class="s"></td><td>标记移到这一站，站名加粗，下方的文字写出“当前在第几站”。标记移动 240 毫秒，中途再点会从当前位置转向。</td></tr>
+    <tr><th>禁用</th><td class="s"></td><td>本例没有不可到达的站。需要时该站用虚线圆点，并在站名后写明原因。</td></tr>
+    <tr><th>无脚本</th><td class="s"></td><td>站点和站名照常排列，没有标记，全部按“未到”画。</td></tr>
+    <tr><th>打印</th><td class="s"></td><td>印出当时的已过与未到，标记不印，“当前”由下方的文字说明。</td></tr>
+    <tr><th>窄屏</th><td class="s"></td><td>520 px 以下改成竖排，站的顺序不变，标记沿竖线移动。</td></tr>
+  </tbody></table>
+</section>
+
+<!-- 3 -->
+<section class="c" id="c3">
+  <header><span class="no">3</span><h2>分段单选</h2><p>几个互斥的预设，任何时候恰好选中一个。选项少而且名字短时用；多于五个或名字长时改用列表。</p></header>
+  <div class="demo pick">
+    <div class="synthetic">合成例子 · agent 遇到要写文件的步骤时怎样处理</div>
+    <fieldset class="seg">
+      <legend class="vh">写文件前的处理方式</legend>
+      <label><input type="radio" name="p" id="p1" checked>每次都问</label>
+      <label><input type="radio" name="p" id="p2">只问一次</label>
+      <label><input type="radio" name="p" id="p3">不问</label>
+      <label><input type="radio" name="p" disabled>按目录（未提供）</label>
+    </fieldset>
+    <div class="presets">
+      <div data-p="p1"><b>每次都问</b>每一次写文件都停下来等人确认。最稳，也最慢。</div>
+      <div data-p="p2"><b>只问一次</b>第一次写文件时问，这一轮对话里之后不再问。</div>
+      <div data-p="p3"><b>不问</b>直接写。只适合放在沙箱里跑。</div>
+    </div>
+  </div>
+  <h3>状态矩阵</h3>
+  <table class="mx"><tbody>
+    <tr><th>正常</th><td class="s"><span class="seg" aria-hidden="true"><span class="o">只问一次</span></span></td><td>一个框里并排几段，段与段之间一条细线。</td></tr>
+    <tr><th>悬停</th><td class="s"><span class="seg" aria-hidden="true"><span class="o is-hover">只问一次</span></span></td><td>底色变淡灰蓝。</td></tr>
+    <tr><th>键盘焦点</th><td class="s"><span class="seg" aria-hidden="true"><span class="o is-focus">只问一次</span></span></td><td>整组是一个停靠点，左右方向键换选项，墨色内框。</td></tr>
+    <tr><th>选中</th><td class="s"><span class="seg" aria-hidden="true"><span class="o is-on">每次都问</span></span></td><td>深底白字加粗，去色后是全组最深的一段。对应的说明立即换成这一项。</td></tr>
+    <tr><th>禁用</th><td class="s"><span class="seg" aria-hidden="true"><span class="o is-off">按目录</span></span></td><td>灰字加删除线，名字后面写明原因；方向键跳过它。</td></tr>
+    <tr><th>无脚本</th><td class="s"></td><td>照常可用：单选框和说明的切换都不依赖脚本。</td></tr>
+    <tr><th>打印</th><td class="s"></td><td>选中的一段照样印出深底，三项说明全部印出。</td></tr>
+  </tbody></table>
+</section>
+
+<!-- 4 -->
+<section class="c" id="c4">
+  <header><span class="no">4</span><h2>可点选的节点与说明面板</h2><p>选中图里的一个对象，在旁边看它的说明。说明不放在悬停提示里。</p></header>
+  <div class="demo" data-select>
+    <div class="synthetic">合成例子 · 四个对象</div>
+    <ul class="nodes">
+      <li><button class="node" type="button" aria-pressed="false"><svg class="g" aria-hidden="true"><use href="#g-gateway"/></svg>网关</button></li>
+      <li><button class="node" type="button" aria-pressed="false"><svg class="g" aria-hidden="true"><use href="#g-agent"/></svg>agent</button></li>
+      <li><button class="node" type="button" aria-pressed="false"><svg class="g" aria-hidden="true"><use href="#g-tool"/></svg>工具</button></li>
+      <li><button class="node" type="button" aria-pressed="false"><svg class="g" aria-hidden="true"><use href="#g-database"/></svg>数据库</button></li>
+    </ul>
+    <div class="info" aria-live="polite">
+      <div><b>网关</b>所有请求的唯一入口。它核对身份、限制频率，再把请求交给 agent。</div>
+      <div><b>agent</b>读入问题、记忆和可用的工具，一轮一轮地决定下一步做什么。</div>
+      <div><b>工具</b>agent 能调用的一个动作，例如读文件或查询。每个工具有自己的权限。</div>
+      <div><b>数据库</b>保存对话和 checkpoint。agent 重启之后从这里接着做。</div>
+    </div>
+    <div class="legend js-only"><span class="acc"><svg width="22" height="14"><rect x="1.5" y="1.5" width="19" height="11" rx="3" fill="none" stroke="currentColor" stroke-width="3"/></svg>当前选中</span></div>
+  </div>
+  <h3>状态矩阵</h3>
+  <table class="mx"><tbody>
+    <tr><th>正常</th><td class="s"><span class="node" aria-hidden="true"><svg class="g"><use href="#g-agent"/></svg>agent</span></td><td>记号加名字，墨色边框。记号只是名字的重复。</td></tr>
+    <tr><th>悬停</th><td class="s"><span class="node is-hover" aria-hidden="true"><svg class="g"><use href="#g-agent"/></svg>agent</span></td><td>底色变淡灰蓝。悬停不显示任何别处看不到的内容。</td></tr>
+    <tr><th>键盘焦点</th><td class="s"><span class="node is-focus" aria-hidden="true"><svg class="g"><use href="#g-agent"/></svg>agent</span></td><td>每个节点是一个按钮，Tab 到达，Enter 或空格选中；墨色外框。</td></tr>
+    <tr><th>选中</th><td class="s"><span class="node is-on" aria-hidden="true"><svg class="g"><use href="#g-agent"/></svg>agent</span></td><td>边框加粗并换成强调色，名字加粗；面板换成这个对象的说明，读屏会念出来。</td></tr>
+    <tr><th>禁用</th><td class="s"><span class="node is-off" aria-hidden="true"><svg class="g"><use href="#g-agent"/></svg>agent</span></td><td>没有说明的对象用虚线边框和灰字，不能选中。</td></tr>
+    <tr><th>无脚本</th><td class="s"></td><td>四个对象的说明依次全部列出，节点不可点。</td></tr>
+    <tr><th>打印</th><td class="s"></td><td>与无脚本相同：四段说明全部印出。</td></tr>
+    <tr><th>窄屏</th><td class="s"></td><td>520 px 以下节点竖排，连线跟着转成竖线，顺序不变。</td></tr>
+  </tbody></table>
+</section>
+
+<!-- 5 -->
+<section class="c" id="c5">
+  <header><span class="no">5</span><h2>展开与收起</h2><p>细节层。标题说清里面是什么，读者不展开也知道自己略过了什么；可以一次全部展开。</p></header>
+  <div class="demo" data-details>
+    <div class="synthetic">合成例子 · 三条细节</div>
+    <div class="ctl" style="margin-bottom:var(--s-3)"><button class="btn" type="button" data-all aria-pressed="false">全部展开</button></div>
+    <details class="d"><summary>队列满了怎么办</summary><div>新的请求收到“稍后再试”，已经排上的不受影响。</div></details>
+    <details class="d"><summary>checkpoint 多久存一次</summary><div>每完成一次工具调用存一次，所以最多重做一步。</div></details>
+    <details class="d"><summary>记忆和对话有什么不同</summary><div>对话只属于这一轮，记忆跨越多轮，并且可以被人改写。</div></details>
+  </div>
+  <h3>状态矩阵</h3>
+  <table class="mx"><tbody>
+    <tr><th>正常</th><td class="s"><span class="sum" aria-hidden="true">队列满了怎么办</span></td><td>收起时只有标题，前面一个加号。</td></tr>
+    <tr><th>悬停</th><td class="s"><span class="sum is-hover" aria-hidden="true">队列满了怎么办</span></td><td>标题行底色变淡灰蓝。</td></tr>
+    <tr><th>键盘焦点</th><td class="s"><span class="sum is-focus" aria-hidden="true">队列满了怎么办</span></td><td>标题行是停靠点，Enter 或空格开合；墨色外框。</td></tr>
+    <tr><th>选中</th><td class="s"><span class="sum is-open" aria-hidden="true">队列满了怎么办</span></td><td>展开后加号变减号，内容出现在标题正下方。“全部展开”按下后文字换成“全部收起”。</td></tr>
+    <tr><th>禁用</th><td class="s"></td><td>不设禁用。没有细节的条目不做成可展开的样子。</td></tr>
+    <tr><th>无脚本</th><td class="s"></td><td>每条仍可单独开合，“全部展开”按钮不出现。</td></tr>
+    <tr><th>打印</th><td class="s"></td><td>全部展开后印出。</td></tr>
+  </tbody></table>
+</section>
+
+<!-- 6 -->
+<section class="c" id="c6">
+  <header><span class="no">6</span><h2>标签</h2><p>紧挨着一项内容，用一个词说明它的状态或来路。标签不可操作。</p></header>
+  <div class="demo">
+    <div class="synthetic">合成例子 · 四个配置项和一条说法</div>
+    <ul class="rows">
+      <li><b>记录每次工具调用</b><span class="tag"><svg aria-hidden="true"><use href="#g-on"/></svg>默认开</span></li>
+      <li><b>自动压缩长对话</b><span class="tag dash"><svg aria-hidden="true"><use href="#g-off"/></svg>默认关</span></li>
+      <li><b>接入聊天渠道</b><span class="tag dash"><svg aria-hidden="true"><use href="#g-optional"/></svg>可选</span></li>
+      <li><b>“压缩后回答质量不变”</b><span class="tag"><svg aria-hidden="true"><use href="#g-unverified"/></svg>未核实</span><span class="tag">转述</span></li>
+      <li><b>本页的全部例子</b><span class="tag">合成</span></li>
+    </ul>
+  </div>
+  <h3>状态矩阵</h3>
+  <table class="mx"><tbody>
+    <tr><th>正常</th><td class="s"><span class="tag" aria-hidden="true"><svg><use href="#g-on"/></svg>默认开</span></td><td>记号加一个词。不默认生效的两种（默认关、可选）用虚线边框，与关系线的虚线同一个意思。</td></tr>
+    <tr><th>悬停、焦点、选中、禁用</th><td class="s"></td><td>都没有。标签不可操作，不进入 Tab 顺序，也不做成按钮的样子。</td></tr>
+    <tr><th>无脚本</th><td class="s"></td><td>没有区别。</td></tr>
+    <tr><th>打印</th><td class="s"></td><td>没有区别；去色后靠词、记号和边框的虚实区分。</td></tr>
+  </tbody></table>
+  <p class="note" style="margin-top:var(--s-3)">“转述”“合成”这类来路标签只有文字，没有记号：“是谁说的”不占画法。</p>
+</section>
+
+<!-- 7 -->
+<section class="c" id="c7">
+  <header><span class="no">7</span><h2>按属性对照</h2><p>少量对象在共同属性上比较。读者的问题是“同一个属性下谁不一样”，所以窄屏按属性分块，对象的位置和顺序不变。</p></header>
+  <div class="demo">
+    <div class="synthetic">合成例子 · 三种存放方式，四个属性</div>
+    <table class="cmp">
+      <thead><tr><th scope="col">属性</th><th scope="col">记忆</th><th scope="col">checkpoint</th><th scope="col">artifact</th></tr></thead>
+      <tbody>
+        <tr><th scope="row"><span>保存多久</span></th><td><span class="obj">记忆</span>跨越多轮对话</td><td><span class="obj">checkpoint</span>这一轮对话之内</td><td><span class="obj">artifact</span>直到被删除</td></tr>
+        <tr><th scope="row"><span>谁能改写</span></th><td><span class="obj">记忆</span>人和 agent</td><td><span class="obj">checkpoint</span>只有系统</td><td><span class="obj">artifact</span>人</td></tr>
+        <tr><th scope="row"><span>条数上限</span></th><td><span class="obj">记忆</span>200 条</td><td><span class="obj">checkpoint</span><span class="nv"><svg aria-hidden="true"><use href="#g-missing"/></svg>缺失</span></td><td><span class="obj">artifact</span><span class="nv"><svg aria-hidden="true"><use href="#g-na"/></svg>不适用</span></td></tr>
+        <tr><th scope="row"><span>回滚后</span></th><td><span class="obj">记忆</span>保留</td><td><span class="obj">checkpoint</span>退回到所选的一份</td><td><span class="obj">artifact</span>保留</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <h3>状态矩阵</h3>
+  <table class="mx"><tbody>
+    <tr><th>正常</th><td class="s"></td><td>一行一个属性，一列一个对象。没有值的格子写明是哪一种没有：“缺失”是应该有而没查到，“不适用”是这个属性对它没有意义。</td></tr>
+    <tr><th>悬停、焦点、选中、禁用</th><td class="s"></td><td>都没有。这是一张静态的表。</td></tr>
+    <tr><th>窄屏</th><td class="s"></td><td>560 px 以下每个属性成一块，块里三个对象仍按“记忆、checkpoint、artifact”的顺序各占一行，对象名每行都写。</td></tr>
+    <tr><th>无脚本</th><td class="s"></td><td>没有区别，重排只靠样式。</td></tr>
+    <tr><th>打印</th><td class="s"></td><td>按宽屏的表印出。</td></tr>
+  </tbody></table>
+</section>
+
+<!-- 8 -->
+<section class="c" id="c8">
+  <header><span class="no">8</span><h2>时间线</h2><p>有先后的几个节点。位置只表示先后，间距不表示相隔多久；要表示时长就得换成有刻度的图。</p></header>
+  <div class="demo">
+    <div class="synthetic">合成例子 · 一个功能的四个节点</div>
+    <ol class="tl">
+      <li><time>3 月</time><b>提出</b>只在内部试用</li>
+      <li><time>5 月</time><b>默认关</b>文档里写明怎样打开</li>
+      <li class="to-later"><time>8 月</time><b>默认开</b>旧配置继续有效</li>
+      <li class="later"><time>未定</time><b>移除旧配置</b><i>尚未发生</i></li>
+    </ol>
+    <div class="legend"><span><svg width="26" height="12"><path class="g-line" d="M1 6h24"/></svg>已经发生</span><span><svg width="26" height="12"><path class="g-line g-line--pending" d="M1 6h24"/></svg>尚未发生</span></div>
+  </div>
+  <h3>状态矩阵</h3>
+  <table class="mx"><tbody>
+    <tr><th>正常</th><td class="s"></td><td>已经发生的节点实心，线是实线；还没发生的节点空心，通向它的线是虚线，并且写着“尚未发生”。</td></tr>
+    <tr><th>悬停、焦点、选中、禁用</th><td class="s"></td><td>都没有。节点需要点开看说明时，改用第 4 节的节点与说明面板。</td></tr>
+    <tr><th>窄屏</th><td class="s"></td><td>560 px 以下改成竖排，从上到下是从早到晚。</td></tr>
+    <tr><th>无脚本</th><td class="s"></td><td>没有区别。</td></tr>
+    <tr><th>打印</th><td class="s"></td><td>按宽屏横排印出。</td></tr>
+  </tbody></table>
+</section>
+
+<!-- 9 -->
+<section class="c" id="c9">
+  <header><span class="no">9</span><h2>阅读进度线</h2><p>页面顶上的一条细线，表示读到了哪里。它画的是真实的滚动位置，本页顶上那条就是实例。</p></header>
+  <h3>状态矩阵</h3>
+  <table class="mx"><tbody>
+    <tr><th>正常</th><td class="s"><div class="bar-sample" aria-hidden="true"><i style="width:38%"></i></div></td><td>3 px 高的墨色线，长度等于已经滚过的比例。不用强调色，它不是读者要处理的事。</td></tr>
+    <tr><th>悬停、焦点、选中、禁用</th><td class="s"></td><td>都没有。它不可操作，不接收点击，对读屏隐藏：滚动条已经提供了同样的信息。</td></tr>
+    <tr><th>减弱动效</th><td class="s"></td><td>没有区别。线的长度直接跟随滚动，本来就没有补间。</td></tr>
+    <tr><th>无脚本</th><td class="s"></td><td>不出现。</td></tr>
+    <tr><th>打印</th><td class="s"></td><td>不印。</td></tr>
+  </tbody></table>
+</section>
+
+<!-- 10 -->
+<section class="c" id="c10">
+  <header><span class="no">10</span><h2>试算</h2><p>读者改一个输入，按写明的规则算出结果。规则和结果一起给出，读者可以自己验算。</p></header>
+  <div class="demo">
+    <div class="synthetic">合成例子 · 规则和数字都是为演示编的</div>
+    <p style="font-size:15px">规则：每条消息按 400 token 计，窗口上限 8,000 token。占用超过上限时，最早的消息被压缩。</p>
+    <div class="calc js-only" data-calc>
+      <label><span>保留的消息条数</span><input type="range" min="1" max="40" value="12" step="1" data-n><span class="count" data-nv></span></label>
+      <output data-out aria-live="polite"></output>
+      <div>
+        <div class="scale" aria-hidden="true"><div class="track"></div><div class="fill" data-fill></div><div class="cap" style="left:50%"></div></div>
+        <div class="scale-lbl" aria-hidden="true"><span>0</span><span>上限 8,000</span><span>16,000</span></div>
+      </div>
+    </div>
+    <table class="worked no-js-only print-only">
+      <caption class="note" style="text-align:left">按规则算出的三个例子</caption>
+      <thead><tr><th>消息条数</th><th>占用</th><th>结果</th></tr></thead>
+      <tbody><tr><td>12</td><td>4,800</td><td>未超过上限</td></tr><tr><td>20</td><td>8,000</td><td>正好到上限</td></tr><tr><td>30</td><td>12,000</td><td>超过 4,000，最早的 10 条被压缩</td></tr></tbody>
+    </table>
+  </div>
+  <h3>状态矩阵</h3>
+  <table class="mx"><tbody>
+    <tr><th>正常</th><td class="s"></td><td>滑杆、当前取值、一句结果和一条有刻度的量条。量条从 0 开始，上限画成一条竖线，并标着数值。</td></tr>
+    <tr><th>悬停</th><td class="s"></td><td>滑块沿用浏览器的悬停样式。</td></tr>
+    <tr><th>键盘焦点</th><td class="s"></td><td>滑杆是停靠点，左右方向键每次加减 1，Home 和 End 到两端；墨色外框。</td></tr>
+    <tr><th>选中</th><td class="s"></td><td>没有“选中”。每次改动结果立即更新，数字不做滚动动画：中间值不是数据。</td></tr>
+    <tr><th>禁用</th><td class="s"></td><td>输入由别处决定时，滑杆禁用并写明由谁决定；结果照常显示。</td></tr>
+    <tr><th>无脚本</th><td class="s"></td><td>滑杆不出现，改为规则加三个算好的例子。</td></tr>
+    <tr><th>打印</th><td class="s"></td><td>印出规则、当时的结果和三个算好的例子。</td></tr>
+  </tbody></table>
+</section>
+
+<!-- 11 -->
+<section class="c" id="c11">
+  <header><span class="no">11</span><h2>计时条</h2><p>真实在走的时间。只在确实有一个钟在走、并且有一个已知的时限时用；不知道还要多久的等待不用它。</p></header>
+  <div class="demo timer" data-timer>
+    <div class="synthetic">合成例子 · 时限 20 秒是为演示定的，计时是真的</div>
+    <div class="js-only">
+      <div><span class="read" data-read>0 秒</span><span class="state" data-state aria-live="polite">未开始</span></div>
+      <div class="scale" aria-hidden="true"><div class="track"></div><div class="fill" data-fill style="width:0"></div><div class="cap" style="left:100%"></div></div>
+      <div class="scale-lbl" aria-hidden="true"><span>0</span><span>时限 20 秒</span></div>
+      <div class="ctl"><button class="btn" type="button" data-start>开始</button><button class="btn" type="button" data-reset disabled>归零</button></div>
+    </div>
+    <p class="no-js-only note">计时需要脚本。时限是 20 秒，到时显示“已到时限”。</p>
+  </div>
+  <h3>状态矩阵</h3>
+  <table class="mx"><tbody>
+    <tr><th>正常</th><td class="s"></td><td>读数、状态词和量条。状态词有四个：未开始、计时中、已停止、已到时限。</td></tr>
+    <tr><th>悬停、焦点</th><td class="s"></td><td>两个按钮与第 1 节的按钮相同。</td></tr>
+    <tr><th>选中</th><td class="s"></td><td>计时中，“开始”换成“停止”。量条按真实经过的时间加长；到时限后停在满格，状态词换成“已到时限”，不自动重来。</td></tr>
+    <tr><th>禁用</th><td class="s"></td><td>读数为 0 时“归零”禁用。</td></tr>
+    <tr><th>减弱动效</th><td class="s"></td><td>量条和读数每秒跳一次，不连续加长。计时本身照常。</td></tr>
+    <tr><th>无脚本</th><td class="s"></td><td>只有一句话：时限多少，到时会怎样。</td></tr>
+    <tr><th>打印</th><td class="s"></td><td>印出当时的读数和状态词。</td></tr>
+  </tbody></table>
+</section>
+
+<!-- 12 -->
+<section class="c" id="c12">
+  <header><span class="no">12</span><h2>关系、范围与图例</h2><p>线、端点和边界各回答一个问题，图例由画图的同一份输入得出。这一节的强调色表示“等人决定”。</p></header>
+  <div class="demo">
+    <div class="synthetic">合成例子 · 六条关系；每条下面的词是它的等效文字</div>
+    <ul class="rel" data-rel>
+      <li><span>人 · 批准记录</span><span></span><span>合同第 3 版</span><span class="w">已经成立 · 已确认</span></li>
+      <li><span>机器 · 条款摘要</span><span></span><span>合同第 3 版</span><span class="w">已经成立 · 未确认</span></li>
+      <li><span>机器 · 修改建议</span><span></span><span>合同第 3 版</span><span class="w">尚未成立 · 未确认</span></li>
+      <li><span>机器 · 删除建议</span><span></span><span>合同第 3 版</span><span class="w">已拒绝，没有生效</span></li>
+      <li><span>法务意见</span><span></span><span>合同第 3 版</span><span class="w">这一项还不存在</span></li>
+      <li><span>人 · 是否放行</span><span></span><span>合同第 3 版</span><span class="w">等人决定</span></li>
+    </ul>
+    <div class="legend js-only" data-legend></div>
+    <p class="note js-only" style="margin-top:var(--s-3)">图例只列上面实际出现的画法。输入里少一种，图例就少一行。</p>
+    <div class="refuse js-only" data-refuse></div>
+    <p class="note no-js-only">没有脚本时不画线，每条关系靠下面的词说明，内容不少。</p>
+  </div>
+  <h3>范围</h3>
+  <div class="demo">
+    <div class="synthetic">合成例子 · 谁在谁里面</div>
+    <div class="scope"><span class="lbl">范围 · 沙箱 · 已经成立</span>
+      <div class="in"><span><svg class="g" aria-hidden="true"><use href="#g-agent"/></svg>agent</span><span><svg class="g" aria-hidden="true"><use href="#g-tool"/></svg>工具</span><span><svg class="g" aria-hidden="true"><use href="#g-folder"/></svg>工作目录</span></div>
+      <div class="scope pending"><span class="lbl">范围 · 联网许可 · 尚未成立</span>
+        <div class="in"><span><svg class="g" aria-hidden="true"><use href="#g-external"/></svg>外部服务</span></div>
+      </div>
+    </div>
+    <p class="note" style="margin-top:var(--s-3)">边界是一条闭合的线，虚实与关系线同义。边界的名字写在边界里面的左上角；边界不靠底色区分，所以可以套两层而不成为嵌套的卡片。</p>
+  </div>
+  <h3>状态矩阵</h3>
+  <table class="mx"><tbody>
+    <tr><th>正常</th><td class="s"></td><td>每条关系一行：左边是说话的一方，右边是它指向的对象，下面两个词是它的状态。画法只是这两个词的重复。</td></tr>
+    <tr><th>悬停、焦点、选中、禁用</th><td class="s"></td><td>都没有。这是静态的图。</td></tr>
+    <tr><th>输入不全</th><td class="s"></td><td>状态没写或写了不认识的词时拒绝画，并说明是哪一条，不当成“已经成立”。</td></tr>
+    <tr><th>无脚本</th><td class="s"></td><td>只剩文字：两端的名字和状态词。</td></tr>
+    <tr><th>打印</th><td class="s"></td><td>照屏幕印出；强调色去色后，“等人决定”靠词辨认。</td></tr>
+  </tbody></table>
+</section>
+
+<footer class="note">
+  <p>本页是单个离线文件，不引用外部脚本、字体或图片。脚本关闭时每个实例仍给出全部内容。记号定义取自同目录的 glyphs.svg，由 <code>node src/build.mjs</code> 内联进来。</p>
+</footer>
+</main>
+
+<script>
+(function () {
+  var $ = function (s, r) { return (r || document).querySelector(s); };
+  var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
+
+  // 1 步进器
+  $$('[data-stepper]').forEach(function (root) {
+    var items = $$('.steps > li', root), i = 0, timer = null;
+    var prev = $('[data-prev]', root), next = $('[data-next]', root), play = $('[data-play]', root), count = $('[data-count]', root);
+    function show(n) {
+      i = Math.max(0, Math.min(items.length - 1, n));
+      items.forEach(function (li, k) { li.classList.toggle('on', k === i); });
+      prev.disabled = i === 0; next.disabled = i === items.length - 1;
+      count.textContent = '第 ' + (i + 1) + ' 步，共 ' + items.length + ' 步';
+    }
+    function stop() { clearInterval(timer); timer = null; play.setAttribute('aria-pressed', 'false'); play.textContent = '播放'; }
+    prev.onclick = function () { stop(); show(i - 1); };
+    next.onclick = function () { stop(); show(i + 1); };
+    play.onclick = function () {
+      if (timer) return stop();
+      if (i === items.length - 1) show(0);
+      play.setAttribute('aria-pressed', 'true'); play.textContent = '暂停';
+      timer = setInterval(function () { show(i + 1); if (i === items.length - 1) stop(); }, 2400);
+    };
+    show(0);
+  });
+
+  // 2 轨道
+  $$('[data-rail]').forEach(function (root) {
+    var lis = $$('.rail li', root), marker = $('.marker', root), count = $('[data-count]', root), cur = 1;
+    // 只有换站才滑动；首次摆放和窗口改变是重新排版，不是状态变化，直接到位。
+    function place(slide) {
+      var dot = $('.dot', lis[cur]), a = dot.getBoundingClientRect(), b = marker.parentNode.getBoundingClientRect();
+      marker.style.transition = slide === true ? '' : 'none';
+      marker.style.transform = 'translate(' + (a.left - b.left + a.width / 2) + 'px,' + (a.top - b.top + a.height / 2) + 'px)';
+    }
+    function go(n, slide) {
+      cur = n;
+      lis.forEach(function (li, k) {
+        li.classList.toggle('passed', k <= cur); li.classList.toggle('current', k === cur);
+        var b = $('button', li);
+        if (k === cur) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
+      });
+      count.textContent = '当前在第 ' + (cur + 1) + ' 站，共 ' + lis.length + ' 站：' + lis[cur].textContent.trim();
+      place(slide);
+    }
+    lis.forEach(function (li, k) { $('button', li).onclick = function () { go(k, true); }; });
+    window.addEventListener('resize', place); window.addEventListener('load', place);
+    if (window.ResizeObserver) new ResizeObserver(place).observe(marker.parentNode);
+    go(cur);
+  });
+
+  // 4 节点与说明面板
+  $$('[data-select]').forEach(function (root) {
+    var nodes = $$('.node', root), infos = $$('.info > div', root);
+    nodes.forEach(function (b, k) {
+      b.onclick = function () {
+        nodes.forEach(function (x, j) { x.setAttribute('aria-pressed', j === k ? 'true' : 'false'); });
+        infos.forEach(function (x, j) { x.classList.toggle('on', j === k); });
+      };
+    });
+    nodes[0].onclick();
+  });
+
+  // 5 展开与收起
+  $$('[data-details]').forEach(function (root) {
+    var all = $('[data-all]', root), ds = $$('details', root);
+    function sync() {
+      var open = ds.every(function (d) { return d.open; });
+      all.setAttribute('aria-pressed', open ? 'true' : 'false'); all.textContent = open ? '全部收起' : '全部展开';
+    }
+    all.onclick = function () { var to = !ds.every(function (d) { return d.open; }); ds.forEach(function (d) { d.open = to; }); sync(); };
+    ds.forEach(function (d) { d.addEventListener('toggle', sync); });
+  });
+  var reopened = [];
+  window.addEventListener('beforeprint', function () { $$('details').forEach(function (d) { if (!d.open) { d.open = true; reopened.push(d); } }); });
+  window.addEventListener('afterprint', function () { reopened.forEach(function (d) { d.open = false; }); reopened = []; });
+
+  // 9 阅读进度线
+  var bar = $('.progress i');
+  function progress() {
+    var h = document.documentElement, max = h.scrollHeight - h.clientHeight;
+    bar.style.transform = 'scaleX(' + (max > 0 ? Math.min(1, h.scrollTop / max) : 0) + ')';
+  }
+  window.addEventListener('scroll', progress, { passive: true }); window.addEventListener('resize', progress); progress();
+
+  // 10 试算
+  var fmt = function (n) { return n.toLocaleString('en-US'); };
+  $$('[data-calc]').forEach(function (root) {
+    var n = $('[data-n]', root), nv = $('[data-nv]', root), out = $('[data-out]', root), fill = $('[data-fill]', root);
+    var PER = 400, CAP = 8000, MAX = 16000;
+    function calc() {
+      var k = +n.value, used = k * PER, over = used - CAP;
+      nv.textContent = k + ' 条';
+      out.innerHTML = '<span class="big">占用 ' + fmt(used) + ' token</span><br>' + k + ' × ' + PER + ' = ' + fmt(used) + '，' +
+        (over < 0 ? '未超过上限，还差 ' + fmt(-over) + '。' : over === 0 ? '正好到上限。' : '超过上限 ' + fmt(over) + '，最早的 ' + Math.ceil(over / PER) + ' 条被压缩。');
+      fill.style.width = (used / MAX * 100) + '%';
+    }
+    n.addEventListener('input', calc); calc();
+  });
+
+  // 11 计时条
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+  $$('[data-timer]').forEach(function (root) {
+    var LIMIT = 20, read = $('[data-read]', root), state = $('[data-state]', root), fill = $('[data-fill]', root);
+    var start = $('[data-start]', root), reset = $('[data-reset]', root), t0 = 0, acc = 0, raf = 0, running = false;
+    function elapsed() { return Math.min(LIMIT, acc + (running ? (performance.now() - t0) / 1000 : 0)); }
+    function draw() {
+      var e = elapsed(), shown = reduce.matches ? Math.floor(e) : e;
+      read.textContent = Math.floor(e) + ' 秒';
+      fill.style.width = (shown / LIMIT * 100) + '%';
+      reset.disabled = e === 0;
+      if (running && e >= LIMIT) { halt('已到时限'); start.disabled = true; }
+    }
+    function tick() { draw(); if (running) raf = requestAnimationFrame(tick); }
+    function halt(word) { acc = elapsed(); running = false; cancelAnimationFrame(raf); start.textContent = '开始'; start.setAttribute('aria-pressed', 'false'); state.textContent = word; draw(); }
+    start.onclick = function () {
+      if (running) return halt('已停止');
+      running = true; t0 = performance.now(); start.textContent = '停止'; start.setAttribute('aria-pressed', 'true'); state.textContent = '计时中'; tick();
+    };
+    reset.onclick = function () { running = false; cancelAnimationFrame(raf); acc = 0; start.disabled = false; start.textContent = '开始'; start.setAttribute('aria-pressed', 'false'); state.textContent = '未开始'; draw(); };
+    draw();
+  });
+
+  // 12 关系与图例：一份输入，画线，也得出图例
+  var WORDS = {
+    effect: { solid: '已经成立', pending: '尚未成立或没有生效' },
+    confirm: { solid: '已确认', hollow: '未确认', cross: '已拒绝', none: '这一项还不存在' }
+  };
+  var REL = [
+    { effect: 'solid', confirm: 'solid' },
+    { effect: 'solid', confirm: 'hollow' },
+    { effect: 'pending', confirm: 'hollow' },
+    { effect: 'pending', confirm: 'cross' },
+    { effect: 'pending', confirm: 'none' },
+    { effect: 'pending', confirm: 'hollow', awaiting: true }
+  ];
+  function mark(r, w) {
+    if (!WORDS.effect[r.effect] || !WORDS.confirm[r.confirm]) throw new Error('状态没有写明，或写了不认识的词：' + JSON.stringify(r));
+    var end = r.confirm === 'none' ? '' : '<use href="#g-end-' + r.confirm + '" x="' + (w - 13) + '" y="1" width="12" height="12"/>';
+    return '<svg viewBox="0 0 ' + w + ' 14" width="' + w + '" height="14" aria-hidden="true"><path class="g-line' + (r.effect === 'pending' ? ' g-line--pending' : '') + '" d="M1 7H' + (w - (end ? 10 : 1)) + '"/>' + end + '</svg>';
+  }
+  $$('[data-rel]').forEach(function (root) {
+    var rows = $$('li', root), seen = { effect: {}, confirm: {}, awaiting: false };
+    REL.forEach(function (r, k) {
+      rows[k].children[1].innerHTML = mark(r, 108);
+      if (r.awaiting) { rows[k].classList.add('acc'); seen.awaiting = true; }
+      seen.effect[r.effect] = 1; seen.confirm[r.confirm] = 1;
+    });
+    var html = '';
+    Object.keys(WORDS.effect).forEach(function (k) { if (seen.effect[k]) html += '<span>' + mark({ effect: k, confirm: 'none' }, 30) + WORDS.effect[k] + '</span>'; });
+    Object.keys(WORDS.confirm).forEach(function (k) {
+      if (!seen.confirm[k]) return;
+      html += k === 'none' ? '<span>没有端点：' + WORDS.confirm[k] + '</span>' : '<span><svg width="14" height="14" aria-hidden="true"><use href="#g-end-' + k + '" x="1" y="1" width="12" height="12"/></svg>' + WORDS.confirm[k] + '</span>';
+    });
+    if (seen.awaiting) html += '<span class="acc"><svg width="14" height="14" aria-hidden="true"><rect x="2" y="2" width="10" height="10" fill="currentColor"/></svg>强调色：等人决定</span>';
+    $('[data-legend]').innerHTML = html;
+    try { mark({ effect: 'maybe', confirm: 'solid' }, 108); }
+    catch (e) { $('[data-refuse]').textContent = '输入不全时的结果（故意给了一条写着 "maybe" 的输入）：拒绝画。' + e.message; }
+  });
+})();
+</script>
+</body>
+</html>

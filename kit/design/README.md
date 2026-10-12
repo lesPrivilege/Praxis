@@ -31,6 +31,12 @@
 | 证据、条件、注释或判断要指向某个对象的某个版本、某一处 | [精确指向](foundations/anchoring.md) |
 | 需要可改文字、关系、数据并可组合的原生 SVG | [SVG 需求与绘制项目](../../demos/editable-native-svg/README.md)：候选登记与分批工单；第一批有四个关系图件和一个组合件，仍是候选，未经用户 review |
 
+## 自撰库
+
+本仓库自己画的、可以直接拷走的图形和页面放在这里，与外部参考分开：它们没有外部来源，不走来源书目；可以整套用、只取几项，或按同一套含义重画。改用外部图标库同样可以。
+
+- [记号、控件与运动](marks/README.md)：57 个原生 SVG 记号、11 个控件、10 种运动，含义与一版参考画法分开写。给节点、状态或步骤配小记号，或取用讲解页常见的控件时看；较重的编排仍按内容绘制。
+
 文字、图、可操作对象或运动之间拿不定时，读 [媒介选择](../write/publish/media-choice.md)。想知道当前有哪些可用判断和盲区，查 [覆盖地图](../../vault/provenance/design-writing-encyclopedia/coverage.md)。
 
 其余情形依据不足时，再展开 [References](references/README.md) 和 Vault。配色、字体、密度与媒介参数在消费者项目决定，历史 accepted 不自动扩散为全局规则。
