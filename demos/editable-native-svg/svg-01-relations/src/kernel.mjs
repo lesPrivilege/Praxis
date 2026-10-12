@@ -1,7 +1,7 @@
-// 四个件共用的底层：文字估宽与换行、SVG 节点、作用域内的 ID、拒用。
+// 各件共用的底层：文字估宽与换行、SVG 节点、作用域内的 ID、拒用。
 // 没有依赖。文字宽度是估算值，实际宽度由 probe 在浏览器里核对。
 
-export const VERSION = '0.2.0';
+export const VERSION = '0.3.0';
 
 export const T = {
   font: "system-ui, -apple-system, 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif",
@@ -31,8 +31,10 @@ export function need(ok, code, message) {
 }
 
 // 业务 ID 会进属性值和以空格分隔的列表，不能为空，也不能含空白
+// 会被 esc 去掉的字符（控制字符、落单的代理项）也不能出现在 ID 里，否则两个不同的 ID 会写成同一个属性值
+const STRIPPED = /[\u0000-\u0008\u000b\u000c\u000e-\u001f\ufffe\uffff]|[\ud800-\udbff](?![\udc00-\udfff])|(?<![\ud800-\udbff])[\udc00-\udfff]/;
 export function needId(id, what) {
-  need(typeof id === 'string' && /^[^\s@#]+$/.test(id), 'id', `${what}的 id 须是非空字符串，不含空白、@ 和 #（后两个留给“对象@版本#位置”）：${JSON.stringify(id)}`);
+  need(typeof id === 'string' && /^[^\s@#]+$/.test(id) && !STRIPPED.test(id), 'id', `${what}的 id 须是非空字符串，不含空白、@ 和 #（后两个留给“对象@版本#位置”）：${JSON.stringify(id)}`);
 }
 
 // 一条指向：指到哪个对象、哪个版本、哪一处。没有 id 只有 text 的，算“未定位”。
@@ -85,7 +87,7 @@ function charW(ch, bold) {
   let w;
   if (ch === ' ') w = 0.3;
   else if (/[0-9]/.test(ch)) w = 0.62;
-  else if (/[A-Z]/.test(ch)) w = ch === 'I' ? 0.32 : /[MW]/.test(ch) ? 0.92 : 0.72;
+  else if (/[A-Z]/.test(ch)) w = ch === 'I' ? 0.32 : /[MW]/.test(ch) ? 1 : 0.72;
   else if (/[a-z]/.test(ch)) w = /[ijl]/.test(ch) ? 0.3 : /[mw]/.test(ch) ? 0.9 : /[frt]/.test(ch) ? 0.42 : 0.6;
   else if (/[.,:;'|!]/.test(ch)) w = 0.32;
   else if (/[@%]/.test(ch)) w = 0.95;
@@ -271,8 +273,9 @@ export function canvas(scope, seed = []) {
       return top + LH - y;
     },
     // 记下一处指向出现在哪段文字里，组合时用它找位置。
-    mention(owner, a, labelKey) {
-      if (a.located) mentions.push({ owner, key: anchorKey(a), target: anchorTarget(a), id: a.id, name: a.label ?? a.id, text: anchorText(a), label: labelKey });
+    // quiet：这处指向只留作文字，组合时不向它拉线（时间图里横线会被读成刻度）
+    mention(owner, a, labelKey, quiet = false) {
+      if (a.located) mentions.push({ owner, key: anchorKey(a), target: anchorTarget(a), id: a.id, name: a.label ?? a.id, text: anchorText(a), label: labelKey, quiet });
     },
     rect(b, a = {}) {
       parts.push(`<rect${attrs({ x: b.x, y: b.y, width: b.w, height: b.h, rx: 4, fill: T.paper, stroke: T.line, 'stroke-width': 1, ...a })}/>`);

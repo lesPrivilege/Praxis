@@ -1,0 +1,37 @@
+{
+  "describe": "失败输入：两条请求在同一时刻发出。",
+  "expect": "拒绝生成，两个方块会画在同一个位置上。",
+  "refuse_with": "同一时刻发出",
+  "fixture": [
+    {
+      "id": "req-1",
+      "time": 0,
+      "state": "pending"
+    },
+    {
+      "id": "req-2",
+      "time": 0,
+      "state": "pending"
+    },
+    {
+      "id": "req-1",
+      "time": 1,
+      "state": "ack"
+    },
+    {
+      "id": "req-2",
+      "time": 1,
+      "state": "ack"
+    },
+    {
+      "id": "req-1",
+      "time": 4,
+      "state": "durable"
+    },
+    {
+      "id": "req-2",
+      "time": 4,
+      "state": "durable"
+    }
+  ]
+}

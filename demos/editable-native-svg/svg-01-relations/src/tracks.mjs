@@ -1,8 +1,9 @@
 // rel-tracks：每个对象有自己的版本线，判断、建议和候选各自绑定到某条线上的某个版本。
-// 版本按先后排列，间距不表示时长。成立程度的画法见 standing.mjs。
+// 版本按先后排列，间距不表示时长，各条线之间位置不表示先后；这句读法画在图脚，只有一条线时不提“各条线”。成立程度的画法见 standing.mjs。
 
 import { T, PAD, anchor, anchorKey, anchorTarget, anchorText, canvas, finish, lineH, need, needId } from './kernel.mjs';
 import { LEGEND, standing, who } from './standing.mjs';
+import { READING, spine } from './rail.mjs';
 
 const STATES = ['recorded', 'proposed', 'rejected', 'open', 'decided'];
 
@@ -125,8 +126,7 @@ export function tracks(model, { width = 672, scope, legend = true } = {}) {
       c.close();
       y += 14;
     }
-    const marks = ticks.map((t) => `<circle cx="${x + 6}" cy="${t.y}" r="5" fill="${t.v.current ? T.ink : T.paper}" stroke="${T.ink}" stroke-width="1.5"/>`).join('');
-    c.insert(rail, `<path d="M${x + 6} ${ticks[0].y}V${ticks.at(-1).y}" fill="none" stroke="${T.ink}" stroke-width="1.5"/>${marks}`);
+    spine(c, rail, x + 6, ticks.map((t) => ({ y: t.y, filled: t.v.current })));
     c.close();
     return y - 14;
   };
@@ -140,9 +140,15 @@ export function tracks(model, { width = 672, scope, legend = true } = {}) {
       y = height + 20;
     }
   });
+  // 位置的读法：各条线各排各的，同一高度不是同一时刻
+  c.open({ 'data-role': 'scale-note' });
+  height += 14;
+  const reading = m.lanes.length > 1 ? READING.own : READING.single;
+  height += c.label('scale#note', reading, { x: 0, y: height, w: W, size: T.small, fill: T.sub }).h;
+  c.close();
   if (legend) {
-    const h = c.legend(LEGEND, height + 14, W);
-    if (h) height += 14 + h;
+    const h = c.legend(LEGEND, height + 10, W);
+    if (h) height += 10 + h;
   }
 
   const items = m.lanes.map((ln) => {
@@ -155,7 +161,7 @@ export function tracks(model, { width = 672, scope, legend = true } = {}) {
   ];
   const summary = `${m.lanes.length} 个对象各有自己的版本，${bindings.length} 条判断、建议或候选分别绑定到具体版本。`;
   return {
-    ...finish(c, { asset: 'rel-tracks', width, height, title: m.title, desc: summary }),
-    equivalent: { summary, items, notes },
+    ...finish(c, { asset: 'rel-tracks', width, height, title: m.title, desc: summary, data: { 'data-scale': 'order' } }),
+    equivalent: { summary, items, notes: [...notes, reading] },
   };
 }

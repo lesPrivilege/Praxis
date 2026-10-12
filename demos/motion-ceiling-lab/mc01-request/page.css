@@ -1,0 +1,48 @@
+/* text version and camera stations; the stage shell comes from vg-stage.css */
+.mc-stations { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; margin-top: 10px; }
+.mc-stations .mc-k { font: 500 12px/1 var(--mono); color: var(--ink-3); margin-right: 4px; }
+.mc-stations button { font: 500 12px/1 var(--font); color: var(--ink-2); background: var(--panel); border: 1px solid var(--line); border-radius: 4px; padding: 6px 10px; cursor: pointer; }
+.mc-stations button[aria-pressed="true"] { color: var(--ink); border-color: var(--ink-2); }
+.mc-stations button:focus-visible, .mc button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.mc-stations .mc-hint { font-size: 12px; color: var(--ink-3); margin-left: 6px; }
+.mc-lookback { margin: 10px 0 0; padding: 8px 12px; border-left: 3px solid var(--ink-2); background: var(--panel); font-size: 14px; line-height: 1.6; color: var(--ink); }
+.vg-is-static .mc-stations, .vg-is-static .mc-lookback { display: none; }
+/* static plates: nothing to seek to; no picture: nothing to hold a camera on, and no plates worth showing */
+.vg-is-static ~ .mc .mc-ledger button, .mc-nogl ~ .mc .mc-ledger button { display: none; }
+.mc-nogl .mc-stations, .mc-nogl .vg-static, .mc-nogl [data-act=static] { display: none !important; }
+.mc-stations kbd { font: 500 11px var(--mono); color: var(--ink-3); margin-right: 2px; }
+html.vg-export .mc, html.vg-export .mc-stations, html.vg-export .mc-lookback { display: none !important; }
+
+.mc { max-width: 1280px; margin: 0 auto; padding: 0 16px 72px; color: var(--ink); line-height: 1.7; }
+.mc h2 { font-size: 22px; font-weight: 600; margin: 8px 0 6px; padding-top: 24px; border-top: 1px solid var(--line); }
+.mc h3 { font-size: 16px; font-weight: 600; margin: 28px 0 8px; }
+.mc p { margin: 0 0 10px; max-width: 62em; color: var(--ink-2); }
+.mc code, .mc .mc-t { font: 500 0.92em var(--mono); color: var(--ink); }
+.mc .mc-t { color: var(--ink-2); margin-right: 4px; }
+.mc-findings { margin: 12px 0 0; padding-left: 1.2em; max-width: 62em; }
+.mc-findings li { margin: 4px 0; }
+.mc table { border-collapse: collapse; width: 100%; font-size: 14px; }
+.mc th, .mc td { text-align: left; vertical-align: top; padding: 9px 12px 9px 0; border-top: 1px solid var(--line); overflow-wrap: anywhere; }
+.mc thead th { border-top: 0; font-weight: 500; font-size: 12px; color: var(--ink-3); padding-bottom: 6px; }
+.mc tbody th { font-weight: 600; white-space: nowrap; }
+.mc tbody th small { display: block; font-weight: 400; font-size: 12px; color: var(--ink-3); white-space: normal; }
+.mc-section ul { list-style: none; margin: 0; padding: 0; }
+.mc-section .mc-none { color: var(--ink-3); font-size: 13px; }
+.mc-ledger tbody tr { color: var(--ink-3); }
+.mc-ledger tbody tr.on { color: var(--ink); }
+.mc-ledger tbody tr[aria-current="true"] td:first-child { box-shadow: inset 3px 0 0 var(--ink); padding-left: 10px; }
+.mc-ledger button { font: 500 12px/1 var(--font); color: var(--ink-2); background: var(--panel); border: 1px solid var(--line); border-radius: 4px; padding: 6px 9px; cursor: pointer; white-space: nowrap; }
+.mc-legend, .mc-warn { font-size: 13px; margin-top: 14px; }
+.mc-warn { color: var(--ink); border-left: 3px solid var(--ink-2); padding-left: 12px; }
+@media (max-width: 720px) {
+  .mc-ledger thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+  .mc-ledger tr { display: block; padding: 8px 0; border-top: 1px solid var(--line); }
+  .mc-ledger td { display: flex; gap: 10px; border: 0; padding: 2px 0; }
+  .mc-ledger td[data-label]::before { content: attr(data-label); flex: 0 0 7.5em; font-size: 12px; color: var(--ink-3); }
+  .mc-ledger tbody tr[aria-current="true"] td:first-child { box-shadow: none; padding-left: 0; }
+  .mc-ledger tbody tr[aria-current="true"] { box-shadow: inset 3px 0 0 var(--ink); padding-left: 10px; }
+  .mc-stations .mc-hint { flex-basis: 100%; margin-left: 0; }
+}
+@media print {
+  .mc-stations, .mc-lookback, .mc-ledger button { display: none; }
+}

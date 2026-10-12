@@ -11,7 +11,8 @@ Kit 通过目录逐层展开工作语境。先选这次工作，再读有关分�
 | 当前任务 | 第一入口 | 需要时再展开 |
 |---|---|---|
 | 不确定材料要促成什么理解或决定 | [Reporting](reporting/README.md) | brief、文体和组织动作 |
-| 写作、改写、编排，把一份内容改成另一种媒介，或制作视听内容 | [Write](write/README.md) | [Prose](write/prose/README.md) / [Publish](write/publish/README.md) / [Motion](write/motion/README.md) |
+| 制作图文、网页、Slides 或视频 | [Write](write/README.md) + [Design](design/README.md) | 文字与叙事、视觉与交互；各按产物组成进入分支 |
+| 写作、改写或审校纯文本 | [Write / Prose](write/prose/README.md) | 成文原理、审阅与文体 |
 | 只规范空格、标点或链接，不动措辞 | [格式检查](write/prose/format.md) | 不需要成文原理 |
 | 判断如何表现内容、数据或交互；图表与界面任务可以直接从这里开始 | [Design](design/README.md) | Foundations / Composition / Interaction / Motion / References |
 

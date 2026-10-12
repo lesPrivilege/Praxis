@@ -1,6 +1,7 @@
 "use strict";
 
 const $ = id => document.getElementById(id);
+const staticDemo = document.documentElement.hasAttribute("data-drift-static");
 const escapeHTML = value => String(value ?? "").replace(/[&<>"']/g, char => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[char]);
 const phaseLabels = { pending:"等待采集", running:"采集中", success:"已观测", unknown:"未知", error:"失败", unsupported:"不支持" };
 const scanLabels = { queued:"等待采集", running:"采集中", complete:"采集结束", error:"采集失败" };
@@ -12,7 +13,7 @@ const titles = {
   history:["记录","观测记录","选择记录查看当时结果，不会重新发起外部请求。"]
 };
 const state = {
-  mode:"real", view:"observations", sample:"B", filter:"all", selected:null, reveal:false,
+  mode:staticDemo ? "demo" : "real", view:"observations", sample:"B", filter:"all", selected:null, reveal:false,
   connected:false, busy:false, csrf:null, sources:[], history:[], scans:new Map(), currentId:null,
   activeId:null, baseline:null, error:"", pollTimer:null, requestGeneration:0,
   signatures:{id:null,items:new Map()}, fresh:new Set()
@@ -119,6 +120,13 @@ function timeLabel(time, short = false) {
   const date = new Date(time);
   return Number.isNaN(date.getTime()) ? "时间未知" : date.toLocaleString("zh-CN", short ? {month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"} : {year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:false});
 }
+function comparisonTimeHTML(item) {
+  const time = item?.observed_at;
+  const label = time ? timeLabel(time) : state.mode === "demo" ? "演示样本" : "采集时间未提供";
+  const text = time && label !== "时间未知" ? `采集时间 ${label}` : label;
+  return `<span class="reading-time">${escapeHTML(text)}</span>`;
+}
+
 function visibleItems() {
   const scan = state.view === "baseline" ? baselineScan() : currentScan();
   const items = scan?.observations || [];
@@ -159,7 +167,7 @@ function providerComparisonPanel(scan) {
 
 function overviewPanel() {
   const scan = currentScan();
-  if (!scan) return emptyPanel(state.connected ? "从一次观测开始" : "采集器尚未连接", state.connected ? "点击开始采集，记录本机信息与固定数据源所观察的服务端出口 IP。" : "连接本地 Drift 服务后可以采集；也可以切换到演示样本查看界面。");
+  if (!scan) return emptyPanel(state.connected ? "从一次观测开始" : "本机服务端尚未连接", state.connected ? "点击开始采集，记录本机信息与固定数据源所观察的服务端出口 IP。" : "连接本机 Drift 服务后可以采集；也可以切换到演示样本查看界面。");
   const count = counts(scan);
   const name = state.mode === "demo" ? `样本 ${state.sample}` : scan.id === state.activeId || scan.id === state.history[0]?.id ? "本次观测" : "历史观测";
   const pinned = state.mode === "real" && scan.id === state.baseline?.id ? '<span class="panel-tag">固定基线</span>' : "";
@@ -184,8 +192,8 @@ function observationTable() {
   const rows = items.map(item => {
     const selected = state.selected === item.id;
     const status = compare ? statusHTML(resultKind(item),resultLabel(item)) : statusHTML(phaseKind(item),phaseLabels[item.status] || "未知");
-    const tail = compare ? `<td role="cell" class="col-baseline" data-label="基线"><div class="cell-value">${valueHTML(baselineItem(item))}</div></td><td role="cell" class="col-result">${status}</td>` : `<td role="cell" class="col-status">${status}</td><td role="cell" class="col-time">${item.observed_at ? escapeHTML(timeLabel(item.observed_at,true)) : '<span aria-hidden="true">—</span>'}</td>`;
-    return `<tr role="row" class="${[selected ? "selected" : "",!isBaseline && state.fresh.has(item.id) ? "arrived" : ""].filter(Boolean).join(" ")}"><td role="cell" class="col-name"><button class="signal-name" data-item="${escapeHTML(item.id)}" aria-pressed="${selected}">${escapeHTML(observationName(item))}</button><span class="row-source">${escapeHTML(sourceFor(item)?.label || "来源未提供")}</span></td><td role="cell" class="col-value" data-label="当前"><div class="cell-value">${valueHTML(item,!compare)}</div></td>${tail}</tr>`;
+    const tail = compare ? `<td role="cell" class="col-baseline" data-label="基线"><div class="cell-value">${valueHTML(baselineItem(item))}${comparisonTimeHTML(baselineItem(item))}</div></td><td role="cell" class="col-result">${status}</td>` : `<td role="cell" class="col-status">${status}</td><td role="cell" class="col-time">${item.observed_at ? escapeHTML(timeLabel(item.observed_at,true)) : '<span aria-hidden="true">—</span>'}</td>`;
+    return `<tr role="row" class="${[selected ? "selected" : "",!isBaseline && state.fresh.has(item.id) ? "arrived" : ""].filter(Boolean).join(" ")}"><td role="cell" class="col-name"><button class="signal-name" data-item="${escapeHTML(item.id)}" aria-pressed="${selected}">${escapeHTML(observationName(item))}</button><span class="row-source">${escapeHTML(sourceFor(item)?.label || "来源未提供")}</span></td><td role="cell" class="col-value" data-label="当前"><div class="cell-value">${valueHTML(item,!compare)}${compare ? comparisonTimeHTML(item) : ""}</div></td>${tail}</tr>`;
   });
   return `<div class="section-heading" id="observation-list"><h2>${isBaseline ? "基线观测项" : compare ? "已确认的变化" : "观测项"}<span>${items.length}</span></h2>${filters}</div><section class="panel" aria-label="${compare ? "观测对照" : "观测读数"}">${items.length ? `<table role="table" class="signal-table ${compare ? "comparison-table" : "reading-table"}"><thead role="rowgroup"><tr role="row">${heads.map(([label,column]) => `<th role="columnheader" scope="col" class="${column}">${label}</th>`).join("")}</tr></thead><tbody role="rowgroup">${rows.join("")}</tbody></table>` : `<div class="empty-state"><strong>${escapeHTML(emptyTitle)}</strong>${escapeHTML(emptyBody)}</div>`}<div class="table-footer"><span>选择观测项查看详细值与来源</span><span>未知 / 失败 / 不支持分别保留</span></div></section>`;
 }
@@ -198,7 +206,7 @@ function baselinePanel() {
 
 function sourcePanel() {
   const sources = currentSources();
-  if (!sources.length) return emptyPanel("来源尚不可用","连接本地采集器后会列出固定来源、请求方式与测量边界。");
+  if (!sources.length) return emptyPanel("来源尚不可用","连接本机服务端后会列出固定来源、请求方式与测量边界。");
   return `<section class="panel">${sources.map(source => {
     const link = safeLink(source.url);
     return `<article class="source-card"><div class="source-card-head"><h2>${escapeHTML(source.label)}</h2>${link ? '<span class="panel-tag">HTTPS 数据源</span>' : ""}</div><dl class="source-facts"><dt>读取方法</dt><dd>${escapeHTML(source.method || "方法未提供")}</dd><dt>字段范围</dt><dd>${escapeHTML(source.scope || "范围未提供")}</dd><dt>测量限制</dt><dd>${escapeHTML(Array.isArray(source.limitations) ? source.limitations.join("；") : source.limitations || "边界未提供")}</dd>${link ? `<dt>来源地址</dt><dd><a href="${escapeHTML(link)}" target="_blank" rel="noopener noreferrer">${escapeHTML(link)} <span aria-hidden="true">↗</span></a></dd>` : ""}</dl></article>`;
@@ -225,7 +233,8 @@ function renderInspector(swap = false) {
   }
   const source = sourceFor(item);
   const previous = baselineItem(item);
-  inspector.innerHTML = `<div class="inspector-heading"><span>${baseline ? "基线明细" : "观测明细"}</span>${item.sensitive ? "<span>默认隐藏</span>" : ""}</div><div class="inspector-body${swap ? " swap" : ""}"><div class="detail-intro"><h2 class="inspector-title" tabindex="-1">${escapeHTML(observationName(item))}</h2>${statusHTML(phaseKind(item),phaseLabels[item.status] || "未知")}</div><div class="detail-reading"><p class="inspector-label">${baseline ? "基线读数" : "当前读数"}</p><div class="detail-value">${valueHTML(item)}</div>${item.sensitive ? `<button class="text-button" data-action="privacy">${state.reveal ? "隐藏本页详细值" : "显示本页详细值"}</button>` : ""}${!baseline && state.view === "changes" && previous ? `<p class="inspector-label">基线读数</p><div class="detail-value">${valueHTML(previous)}</div><p class="inspector-label">对照结果</p>${statusHTML(resultKind(item),resultLabel(item))}` : ""}${item.error ? `<p class="item-error">${escapeHTML(errorText(item.error))}</p>` : ""}</div><div class="detail-section detail-evidence"><div class="detail-meta"><span>观测来源</span><strong>${escapeHTML(source?.label || "来源未提供")}</strong></div><div class="detail-meta"><span>采集时间</span><strong>${escapeHTML(timeLabel(item.observed_at))}</strong></div><div class="detail-meta"><span>采集耗时</span><strong>${Number.isFinite(item.duration_ms) ? `${Math.round(item.duration_ms)} ms` : "—"}</strong></div></div><details class="detail-section technical-details"><summary>方法与测量限制</summary><p class="detail-description">${escapeHTML(source?.method || "方法未提供")}</p><p class="detail-description">${escapeHTML(observationNote(item))}</p><p class="detail-description">${escapeHTML(source?.limitations || "边界未提供")}</p><p class="detail-description">采集时间由本机在此项结束时记录，按当前浏览器时区显示；采集耗时以 ms 计，包括探针启动、请求与解析等整段开销。</p><div class="detail-meta"><span>比较方法标识</span><strong>${escapeHTML(item.comparison_key || "未提供")}</strong></div>${item.error ? `<div class="detail-meta"><span>错误标识</span><strong>${escapeHTML(item.error)}</strong></div>` : ""}<button class="source-link" data-view="sources"><span>查看观测来源</span><span aria-hidden="true">→</span></button></details></div><div class="inspector-footnote">${state.mode === "demo" ? "演示样本 · 人为编写的静态读数" : "值、状态与采集时间来自所选记录。"}<button class="text-button back-to-list" data-action="back-to-list">返回观测列表 ↑</button></div>`;
+  const comparing = !baseline && state.view === "changes" && previous;
+  inspector.innerHTML = `<div class="inspector-heading"><span>${baseline ? "基线明细" : "观测明细"}</span>${item.sensitive ? "<span>默认隐藏</span>" : ""}</div><div class="inspector-body${swap ? " swap" : ""}"><div class="detail-intro"><h2 class="inspector-title" tabindex="-1">${escapeHTML(observationName(item))}</h2>${statusHTML(phaseKind(item),phaseLabels[item.status] || "未知")}</div><div class="detail-reading"><p class="inspector-label">${baseline ? "基线读数" : "当前读数"}</p><div class="detail-value">${valueHTML(item)}${comparing ? comparisonTimeHTML(item) : ""}</div>${item.sensitive ? `<button class="text-button" data-action="privacy">${state.reveal ? "隐藏本页详细值" : "显示本页详细值"}</button>` : ""}${comparing ? `<p class="inspector-label">基线读数</p><div class="detail-value">${valueHTML(previous)}${comparisonTimeHTML(previous)}</div><p class="inspector-label">对照结果</p>${statusHTML(resultKind(item),resultLabel(item))}` : ""}${item.error ? `<p class="item-error">${escapeHTML(errorText(item.error))}</p>` : ""}</div><div class="detail-section detail-evidence"><div class="detail-meta"><span>观测来源</span><strong>${escapeHTML(source?.label || "来源未提供")}</strong></div>${comparing ? "" : `<div class="detail-meta"><span>采集时间</span><strong>${escapeHTML(timeLabel(item.observed_at))}</strong></div>`}<div class="detail-meta"><span>采集耗时</span><strong>${Number.isFinite(item.duration_ms) ? `${Math.round(item.duration_ms)} ms` : "—"}</strong></div></div><details class="detail-section technical-details"><summary>方法与测量限制</summary><p class="detail-description">${escapeHTML(source?.method || "方法未提供")}</p><p class="detail-description">${escapeHTML(observationNote(item))}</p><p class="detail-description">${escapeHTML(source?.limitations || "边界未提供")}</p><p class="detail-description">采集时间由本机在此项结束时记录，按当前浏览器时区显示；采集耗时以 ms 计，包括探针启动、请求与解析等整段开销。</p><div class="detail-meta"><span>比较方法标识</span><strong>${escapeHTML(item.comparison_key || "未提供")}</strong></div>${item.error ? `<div class="detail-meta"><span>错误标识</span><strong>${escapeHTML(item.error)}</strong></div>` : ""}<button class="source-link" data-view="sources"><span>查看观测来源</span><span aria-hidden="true">→</span></button></details></div><div class="inspector-footnote">${state.mode === "demo" ? "演示样本 · 人为编写的静态读数" : "值、状态与采集时间来自所选记录。"}<button class="text-button back-to-list" data-action="back-to-list">返回观测列表 ↑</button></div>`;
 }
 
 function renderChrome() {
@@ -236,7 +245,7 @@ function renderChrome() {
   $("breadcrumb-workspace").textContent = real ? "本机" : "演示";
   $("mode-badge").textContent = !real ? "演示数据" : scan ? "本机实测" : "尚未采集";
   $("mode-badge").hidden = !real || Boolean(scan);
-  $("collector-state").textContent = !real ? "演示模式" : state.connected ? "本地采集器已连接" : "未连接采集器";
+  $("collector-state").textContent = !real ? "演示模式" : state.connected ? "本机服务端已连接" : "未连接本机服务端";
   $("collector-dot").classList.toggle("connected",real && state.connected);
   $("scope-notice").textContent = !real ? (state.activeId ? "演示模式不会新增采集；先前发起的本机采集仍在后台进行。" : "演示样本 · 人为编写的静态读数") : "采集由本机服务端执行；外部数据源收到该次请求的出口 IP，敏感值默认隐藏。";
   $("footer-scope").textContent = !real ? "演示样本 · 不产生采集或历史记录" : "网络 · 设备 · 浏览器观测";
@@ -302,16 +311,16 @@ async function api(path, options = {}) {
   try {
     const response = await fetch(`/api/${path}`,{credentials:"same-origin",cache:"no-store",...options,headers:{"Accept":"application/json",...(options.method ? {"Content-Type":"application/json","X-Drift-CSRF":state.csrf || ""} : {}),...options.headers},signal:controller.signal});
     let body;
-    try { body = await response.json(); } catch { throw new Error("本地服务未返回有效结果。请确认已启动 Drift 采集服务。"); }
+    try { body = await response.json(); } catch { throw new Error("本机服务端未返回有效结果。请确认已启动 Drift 采集服务。"); }
     if (!response.ok) {
-      const failure = new Error(body.error?.message || `本地服务返回 ${response.status}`);
+      const failure = new Error(body.error?.message || `本机服务端返回 ${response.status}`);
       failure.code = body.error?.code;
       failure.scanId = body.error?.scan_id;
       throw failure;
     }
     return body;
   } catch (error) {
-    if (error.name === "AbortError") throw new Error("等待本地服务超时。结果尚未确认；重新连接后核对已有记录。");
+    if (error.name === "AbortError") throw new Error("等待本机服务端超时。结果尚未确认；重新连接后核对已有记录。");
     throw error;
   } finally { clearTimeout(timer); }
 }
@@ -449,7 +458,8 @@ function togglePrivacy() { state.reveal = !state.reveal; render(); announce(stat
 
 $("mode-select").addEventListener("change",event => {
   state.requestGeneration += 1;
-  state.mode = event.target.value;
+  state.mode = staticDemo ? "demo" : event.target.value;
+  event.target.value = state.mode;
   state.reveal = false;
   state.filter = "all";
   state.selected = null;
@@ -522,5 +532,7 @@ document.addEventListener("click",async event => {
   }
 });
 
+$("mode-select").value = state.mode;
+$("mode-select").querySelector('option[value="real"]').disabled = staticDemo;
 render();
-connect();
+if (!staticDemo) connect();

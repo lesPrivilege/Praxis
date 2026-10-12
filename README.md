@@ -8,11 +8,12 @@
 |---|---|---|
 | 了解陌生业务、判断机会 | [工作全景](kit/landscape.md) → [现场闭环](kit/work-system/field-loop.md) | 问题、基线、替代方案与启动条件 |
 | 定义一次验证或试点 | [场景模板](scenarios/_template/README.md) | 对象、动作、证据、验收与接收责任 |
-| 写汇报、memo、deck 或 HTML | [Reporting brief](templates/reporting/README.md) → [汇报契约](kit/reporting/grammar.md) | 面向读者与决定的材料 |
+| 写汇报、memo、deck 或 HTML | [Reporting brief](templates/reporting/README.md) → [Write](kit/write/README.md) + [Design](kit/design/README.md) | 明确材料目的，完成文字、编排与视觉表达 |
 | 整理会议、项目状态与后续工作 | [工作系统](kit/work-system/README.md) | 候选变化、确认状态与下一责任 |
 | 在新环境消费 Kit | [Environment](kit/environment/README.md) | 能力盘点、权限范围与消费计划 |
 | 设计页面、编排可视化或选择界面做法 | [Design](kit/design/README.md) → [参考路由](kit/design/references/README.md) | 已裁决的做法、依据与可复用产出 |
 | 撰写或改定对外中文成文 | 项目 skill `writing`（`.claude/skills/writing/SKILL.md`）→ [Write / Prose](kit/write/prose/README.md) | 按写作原理成文，附审阅裁决 |
+| 将阅读材料制成视频、查旧片的施工经验 | [Write / Motion](kit/write/motion/README.md) | 分镜、表现参考、旧项目的消费与验收 |
 | 查定义、接口与验收要求 | [Kit](kit/README.md) | 对应契约与检查项 |
 
 ## 研究与维护
@@ -20,8 +21,9 @@
 | 需要 | 入口 |
 |---|---|
 | 阅读已消费材料、查证来源 | [Vault](vault/README.md) → [主题提炼](vault/distilled/README.md) |
-| 进入 Palantir 方法论主题 | [palantir](palantir/README.md)：一级提炼入口；当前仅有 5 本书、2 篇文章的登记，材料参考见 `palantir/references/README.md`，来源登记与原件仍在 Vault |
+| 进入 Palantir 方法论主题 | [palantir](palantir/README.md)：一级提炼入口；7 个对象已有不同范围原件及候选笔记，材料参考见 [reading list](palantir/references/README.md)，来源登记与原件仍在 Vault |
 | 进入 Tally SaaS 研究主题 | [tally](tally/README.md)：一级提炼入口；当前仅有《清算 SaaS》书稿登记，材料参考见 `tally/references/README.md`，来源登记与原件仍在 Vault |
+| 会话如何入账、agent 指引如何维护 | [本轮提炼](vault/distilled/chat-ingestion-harness-20261009/README.md) / [采纳边界](docs/decisions/030-session-ingestion-and-harness-boundaries.md) / [审计](docs/verification/harness-audit-20261009.md) |
 | 增补材料或启动研究 | [入账](docs/governance/intake.md) / [研究问题](docs/governance/research-agenda.md) |
 | 修改规则、迁移或撤回推荐 | [修订流程](docs/governance/evolution.md) |
 | 登记新的设计或写作参考 | [Design 的增量规则](docs/governance/reference-lifecycle.md) / [Writing](kit/write/prose/review.md#增量) |
@@ -52,7 +54,7 @@
 | [templates](templates/README.md) | 入账、材料 brief 与 demo 蓝图 |
 | [docs](docs/README.md) | 架构理由、治理规则、裁决和验收回执 |
 | [vault](vault/README.md) | 研究登记、提炼、来源、快照与 Chat 备查 |
-| [palantir](palantir/README.md) | 一级主题/提炼入口；材料参考见 [references](palantir/references/README.md)，当前仅登记，尚无完成提炼 |
+| [palantir](palantir/README.md) | 一级主题/提炼入口；材料参考见 [references](palantir/references/README.md)，已有候选笔记，尚无主题正文与 Kit 采纳 |
 | [tally](tally/README.md) | 一级主题/提炼入口；材料参考见 [references](tally/references/README.md)，当前仅登记，尚无完成提炼 |
 | [scripts](scripts/README.md) | 生成消费索引与检查仓库一致性 |
 

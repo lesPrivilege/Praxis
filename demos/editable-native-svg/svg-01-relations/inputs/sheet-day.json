@@ -1,0 +1,316 @@
+{
+  "id": "sheet-day",
+  "synthetic": true,
+  "asset": "rel-sheet",
+  "role": "normal",
+  "order": 60,
+  "requirements": [
+    "SVG-R10",
+    "SVG-R17",
+    "SVG-R27",
+    "SVG-R33"
+  ],
+  "note": "时间、对照、版本三件叠成一张。对照表的两栏连到调阅单的两个版本；时间图里审核的依据只留作文字，不拉横线穿过标尺。",
+  "model": {
+    "title": "调阅单 D-12：什么时候、改了什么、各绑在哪一版",
+    "pieces": [
+      {
+        "asset": "rel-rail",
+        "heading": "这一天",
+        "model": {
+          "title": "调阅单 D-12 的一天",
+          "scale": {
+            "kind": "time"
+          },
+          "lanes": [
+            {
+              "id": "slip",
+              "label": "调阅单 D-12"
+            },
+            {
+              "id": "rule",
+              "label": "借阅规则"
+            },
+            {
+              "id": "repair",
+              "label": "修复室"
+            }
+          ],
+          "rows": [
+            {
+              "id": "submit",
+              "lane": "slip",
+              "at": "2026-10-06T09:10+08:00",
+              "label": "提交调阅单",
+              "note": "v1，申请调阅馆藏 0871"
+            },
+            {
+              "id": "check",
+              "lane": "slip",
+              "at": "2026-10-06T09:40+08:00",
+              "label": "审核通过",
+              "origin": "human",
+              "state": "recorded",
+              "basis": {
+                "id": "rule-loan",
+                "label": "借阅规则",
+                "version": 2,
+                "locator": "第 8 条"
+              }
+            },
+            {
+              "id": "rule-v3",
+              "lane": "rule",
+              "at": "2026-10-06T10:15+08:00",
+              "label": "v3 生效",
+              "text": "品相受损的古籍须经修复室同意才能调阅"
+            },
+            {
+              "id": "edit",
+              "lane": "slip",
+              "at": "2026-10-06T11:05+08:00",
+              "label": "改了取书时间",
+              "note": "v2；这个版本没有审核记录"
+            },
+            {
+              "id": "hint",
+              "lane": "slip",
+              "at": "2026-10-06T11:06+08:00",
+              "label": "建议重新审核",
+              "origin": "machine",
+              "state": "proposed",
+              "basis": {
+                "id": "rule-loan",
+                "label": "借阅规则",
+                "version": 3,
+                "locator": "第 8 条"
+              }
+            },
+            {
+              "id": "assess",
+              "lane": "repair",
+              "at": "2026-10-06T11:30+08:00",
+              "until": null,
+              "label": "评估馆藏 0871 的品相"
+            },
+            {
+              "id": "slot-old",
+              "lane": "slip",
+              "at": "2026-10-06T14:00+08:00",
+              "until": "2026-10-06T15:00+08:00",
+              "label": "原定的取书时段"
+            },
+            {
+              "id": "slot-new",
+              "lane": "slip",
+              "at": "2026-10-06T15:30+08:00",
+              "until": "2026-10-06T16:30+08:00",
+              "label": "改后的取书时段"
+            },
+            {
+              "id": "cutoff",
+              "lane": "slip",
+              "at": "2026-10-06T17:00+08:00",
+              "kind": "deadline",
+              "label": "是否放行",
+              "origin": "human",
+              "state": "open",
+              "note": "过了这个时刻当日不再放行"
+            }
+          ]
+        }
+      },
+      {
+        "asset": "rel-pair",
+        "heading": "调阅单改了什么",
+        "model": {
+          "title": "调阅单 D-12 改了什么",
+          "kind": "change",
+          "before": {
+            "label": "提交时",
+            "ref": {
+              "id": "slip-D-12",
+              "label": "调阅单 D-12",
+              "version": 1
+            }
+          },
+          "after": {
+            "label": "现在",
+            "ref": {
+              "id": "slip-D-12",
+              "label": "调阅单 D-12",
+              "version": 2
+            }
+          },
+          "fields": [
+            {
+              "id": "item",
+              "label": "馆藏",
+              "before": "0871",
+              "after": "0871"
+            },
+            {
+              "id": "slot",
+              "label": "取书时段",
+              "before": "10 月 6 日 14:00–15:00",
+              "after": "10 月 6 日 15:30–16:30"
+            },
+            {
+              "id": "duration",
+              "label": "预计阅览时长",
+              "unit": "分钟",
+              "before": 60,
+              "after": 90
+            },
+            {
+              "id": "place",
+              "label": "阅览地点",
+              "before": "古籍阅览室",
+              "after": "古籍阅览室"
+            },
+            {
+              "id": "companion",
+              "label": "陪同人",
+              "before": "导师一名",
+              "after": null
+            },
+            {
+              "id": "purpose",
+              "label": "用途说明",
+              "before": null,
+              "after": "核对卷三眉批的墨色与笔迹 (ink and hand)"
+            },
+            {
+              "id": "copy",
+              "label": "复制方式",
+              "before": "不复制",
+              "after": "拍照三页",
+              "pending": true,
+              "note": "读者提出，等值班主任决定"
+            }
+          ]
+        }
+      },
+      {
+        "asset": "rel-tracks",
+        "heading": "版本与判断",
+        "model": {
+          "title": "规则和调阅单各自的版本",
+          "lanes": [
+            {
+              "id": "rule-loan",
+              "role": "规则",
+              "label": "借阅规则",
+              "versions": [
+                {
+                  "version": 2,
+                  "label": "古籍可以在阅览室调阅"
+                },
+                {
+                  "version": 3,
+                  "label": "品相受损的古籍，须经修复室同意才能调阅",
+                  "current": true
+                }
+              ]
+            },
+            {
+              "id": "slip-D-12",
+              "role": "调阅单",
+              "label": "调阅单 D-12",
+              "versions": [
+                {
+                  "version": 1,
+                  "label": "申请调阅馆藏 0871"
+                },
+                {
+                  "version": 2,
+                  "label": "改了取书时间",
+                  "current": true
+                }
+              ]
+            }
+          ],
+          "bindings": [
+            {
+              "id": "check-01",
+              "origin": "human",
+              "kind": "审核",
+              "state": "recorded",
+              "text": "审核通过",
+              "basis": [
+                {
+                  "id": "slip-D-12",
+                  "label": "调阅单 D-12",
+                  "version": 1
+                },
+                {
+                  "id": "rule-loan",
+                  "label": "借阅规则",
+                  "version": 2,
+                  "locator": "第 8 条"
+                }
+              ]
+            },
+            {
+              "id": "hint-01",
+              "origin": "machine",
+              "kind": "建议",
+              "state": "proposed",
+              "text": "规则已经更新，建议重新审核",
+              "basis": [
+                {
+                  "id": "rule-loan",
+                  "label": "借阅规则",
+                  "version": 3,
+                  "locator": "第 8 条"
+                }
+              ]
+            },
+            {
+              "id": "swap-01",
+              "origin": "machine",
+              "kind": "候选",
+              "state": "rejected",
+              "text": "改为提供影印件",
+              "basis": [
+                {
+                  "id": "slip-D-12",
+                  "label": "调阅单 D-12",
+                  "version": 2
+                }
+              ],
+              "resolution": {
+                "id": "swap-01-r",
+                "origin": "human",
+                "kind": "拒绝",
+                "text": "读者需要看原件上的批注"
+              }
+            },
+            {
+              "id": "decision-01",
+              "origin": "human",
+              "kind": "决定",
+              "state": "open",
+              "text": "是否放行",
+              "basis": [
+                {
+                  "id": "slip-D-12",
+                  "label": "调阅单 D-12",
+                  "version": 2
+                }
+              ]
+            }
+          ],
+          "absences": [
+            {
+              "id": "slip-D-12",
+              "version": 2,
+              "text": "这个版本没有审核记录",
+              "label": "调阅单 D-12"
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

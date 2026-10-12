@@ -1,0 +1,297 @@
+{
+  "schema_version": "0.1",
+  "provenance": {
+    "kind": "synthetic",
+    "license": "project-authored synthetic fixtures; no external media",
+    "private_data": false,
+    "seed": 41004
+  },
+  "request_chain": [
+    {
+      "id": "req-1",
+      "time": 0,
+      "state": "pending"
+    },
+    {
+      "id": "req-1",
+      "time": 1,
+      "state": "ack",
+      "meaning": "queued, not durable"
+    },
+    {
+      "id": "req-1",
+      "time": 4,
+      "state": "durable"
+    },
+    {
+      "id": "req-2",
+      "time": 5,
+      "state": "pending"
+    },
+    {
+      "id": "req-2",
+      "time": 6,
+      "state": "ack"
+    },
+    {
+      "id": "req-2",
+      "time": 8,
+      "state": "failed"
+    }
+  ],
+  "responsibility_graph": {
+    "objects": [
+      {
+        "id": "team-a",
+        "label": "团队 A"
+      },
+      {
+        "id": "team-b",
+        "label": "团队 B"
+      },
+      {
+        "id": "decision-1",
+        "label": "选择公开演示的数据范围"
+      }
+    ],
+    "before": [
+      {
+        "from": "team-a",
+        "to": "decision-1",
+        "role": "owner"
+      },
+      {
+        "from": "team-b",
+        "to": "decision-1",
+        "role": "owner"
+      }
+    ],
+    "after": [
+      {
+        "from": "team-a",
+        "to": "decision-1",
+        "role": "owner"
+      },
+      {
+        "from": "team-b",
+        "to": "decision-1",
+        "role": "reviewer"
+      }
+    ]
+  },
+  "queue_model": {
+    "unit": "jobs",
+    "initial": [
+      0,
+      0
+    ],
+    "inflow_per_tick": [
+      2,
+      2,
+      7,
+      2,
+      2,
+      0,
+      0
+    ],
+    "capacity_baseline": [
+      3,
+      3
+    ],
+    "intervention": {
+      "tick": 2,
+      "queue": 1,
+      "capacity": 1
+    },
+    "restore": {
+      "tick": 4,
+      "queue": 1,
+      "capacity": 3
+    },
+    "assertion": "input_total = completed_total + backlog_total + explicit_dropped_total"
+  },
+  "save_states": {
+    "initial": "local-draft",
+    "events": [
+      {
+        "time": 0,
+        "id": "a1",
+        "action": "save",
+        "version": 1
+      },
+      {
+        "time": 0.3,
+        "id": "a2",
+        "action": "edit",
+        "version": 2
+      },
+      {
+        "time": 1,
+        "id": "e1",
+        "result": "failed",
+        "for": "a1"
+      },
+      {
+        "time": 2,
+        "id": "a3",
+        "action": "retry",
+        "version": 2
+      },
+      {
+        "time": 2.2,
+        "id": "late-ack",
+        "result": "ack",
+        "for": "a1",
+        "version": 1
+      },
+      {
+        "time": 3,
+        "id": "e3",
+        "result": "durable",
+        "for": "a3",
+        "version": 2
+      }
+    ]
+  },
+  "score_events": {
+    "unit": "seconds",
+    "original_procedural_audio_only": true,
+    "tempo_segments": [
+      {
+        "start": 0,
+        "bpm": 90
+      },
+      {
+        "start": 8,
+        "bpm": 120
+      }
+    ],
+    "events": [
+      {
+        "id": "s1",
+        "time": 0,
+        "kind": "pulse"
+      },
+      {
+        "id": "s2",
+        "time": 2,
+        "kind": "hold"
+      },
+      {
+        "id": "s3",
+        "time": 4,
+        "kind": "release"
+      },
+      {
+        "id": "s4",
+        "time": 8,
+        "kind": "tempo-change"
+      }
+    ],
+    "caption_tokens": [
+      {
+        "id": "word-1",
+        "time": 1,
+        "text": "收到"
+      },
+      {
+        "id": "word-2",
+        "time": 4,
+        "text": "还没证明"
+      },
+      {
+        "id": "word-3",
+        "time": 9,
+        "text": "继续核对"
+      }
+    ]
+  },
+  "repo_history": {
+    "unit": "lines",
+    "commits": [
+      {
+        "id": "c1",
+        "parents": [],
+        "time": "2026-01-01T00:00:00Z",
+        "events": [
+          {
+            "file": "f1",
+            "kind": "add",
+            "path": "src/request.ts",
+            "lines": 40
+          }
+        ]
+      },
+      {
+        "id": "c2",
+        "parents": [
+          "c1"
+        ],
+        "time": "2026-01-02T00:00:00Z",
+        "events": [
+          {
+            "file": "f1",
+            "kind": "rename",
+            "path": "src/queue.ts",
+            "lines": 40
+          },
+          {
+            "file": "f2",
+            "kind": "add",
+            "path": "generated/schema.ts",
+            "lines": 900,
+            "generated": true
+          }
+        ]
+      },
+      {
+        "id": "c3",
+        "parents": [
+          "c1"
+        ],
+        "time": "2026-01-02T02:00:00Z",
+        "events": [
+          {
+            "file": "f3",
+            "kind": "add",
+            "path": "src/save.ts",
+            "lines": 50
+          }
+        ]
+      },
+      {
+        "id": "c4",
+        "parents": [
+          "c2",
+          "c3"
+        ],
+        "time": "2026-01-03T00:00:00Z",
+        "events": []
+      },
+      {
+        "id": "c5",
+        "parents": [
+          "c4"
+        ],
+        "time": "2026-01-04T00:00:00Z",
+        "events": [
+          {
+            "file": "f2",
+            "kind": "remove",
+            "reverts": "c2",
+            "lines": 0
+          }
+        ]
+      }
+    ],
+    "unknown_author": [
+      "c3"
+    ],
+    "assertions": [
+      "deduplicate commit IDs",
+      "rename preserves file ID",
+      "generated lines separate from handwritten",
+      "line growth is not value judgment"
+    ]
+  }
+}

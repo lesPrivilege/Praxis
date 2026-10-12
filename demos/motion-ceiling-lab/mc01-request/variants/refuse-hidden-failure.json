@@ -1,0 +1,42 @@
+{
+  "describe": "失败输入：req-2 写入失败时，更晚的 req-3 已经在途，界面的一行状态只说 req-3。",
+  "expect": "拒绝生成，不把一次失败藏在别的请求的状态后面。",
+  "refuse_with": "一行状态提示说不出这次失败",
+  "fixture": [
+    {
+      "id": "req-1",
+      "time": 0,
+      "state": "pending"
+    },
+    {
+      "id": "req-1",
+      "time": 1,
+      "state": "ack"
+    },
+    {
+      "id": "req-1",
+      "time": 4,
+      "state": "durable"
+    },
+    {
+      "id": "req-2",
+      "time": 5,
+      "state": "pending"
+    },
+    {
+      "id": "req-2",
+      "time": 6,
+      "state": "ack"
+    },
+    {
+      "id": "req-3",
+      "time": 6,
+      "state": "pending"
+    },
+    {
+      "id": "req-2",
+      "time": 8,
+      "state": "failed"
+    }
+  ]
+}

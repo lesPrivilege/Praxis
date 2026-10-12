@@ -43,6 +43,20 @@ class FixtureRunner:
         return backend.result(value=values[id_])
 
 
+def settle_finite_motion(page):
+    """Wait for existing finite motion; keep the running progress pulse active."""
+    page.evaluate("""async () => {
+        const finite = document.getAnimations().filter(animation => animation.effect?.getTiming().iterations !== Infinity);
+        let timer;
+        try {
+            await Promise.race([
+                Promise.all(finite.map(animation => animation.finished.catch(() => {}))),
+                new Promise((_, reject) => { timer = setTimeout(() => reject(new Error("Finite motion did not settle within 1 second")), 1000); })
+            ]);
+        } finally { clearTimeout(timer); }
+    }""")
+
+
 def nav(page, view):
     page.locator(f'.nav-item[data-view="{view}"]').click()
 
@@ -69,6 +83,7 @@ def check(page, server, runner, output, name):
     expect(page.locator('.signal-table th')).to_have_text(['观测项','当前读数','观测状态','采集时间'])
     disclosure_check(page)
     assert page.locator('.signal-table tbody tr').first.bounding_box()['y'] < page.viewport_size['height'], 'First reading must enter the initial viewport'
+    settle_finite_motion(page)
     page.screenshot(path=str(output / f'{name}-top.png'))
     # The whole row selects its observation, not only the name button.
     page.locator('.signal-table tbody tr').nth(3).locator('.col-status').click()
@@ -95,6 +110,7 @@ def check(page, server, runner, output, name):
     else:
         assert current['y'] == reference['y'] and reference['x'] >= current['x'] + current['width'], 'Wide comparison keeps current and baseline in adjacent columns'
     page.mouse.move(0,0)
+    settle_finite_motion(page)
     page.screenshot(path=str(output / f'{name}-changes.png'))
     nav(page, 'observations')
     page.locator('[data-filter="missing"]').click()
@@ -169,6 +185,7 @@ def check(page, server, runner, output, name):
     page.locator('#main').focus()
     page.evaluate('window.scrollTo(0,0)')
     page.mouse.move(0,0)
+    settle_finite_motion(page)
     page.screenshot(path=str(output / f'{name}.png'), full_page=True)
 
 
@@ -178,7 +195,7 @@ def reconnect(page, server):
     expect(page.locator('#scan-button')).to_have_text('重新连接')
     page.locator('#scan-button').click()
     expect(page.locator('#scan-button')).to_be_enabled()
-    expect(page.locator('#collector-state')).to_have_text('本地采集器已连接')
+    expect(page.locator('#collector-state')).to_have_text('本机服务端已连接')
     expect(page.locator('#operation-error')).to_be_hidden()
 
 
@@ -233,7 +250,7 @@ def pruned_history_response_check(page, server, runner):
             release.set()
         response.value.json()
         expect(page.locator('#operation-error')).to_contain_text('这份记录已不在可用记录中')
-        expect(page.locator('#collector-state')).to_have_text('本地采集器已连接')
+        expect(page.locator('#collector-state')).to_have_text('本机服务端已连接')
         nav(page, 'observations')
         expect(page.locator('button[data-item="local.os"]')).to_be_visible()
         assert page.evaluate('state.currentId !== "pruning-history-0" && !state.scans.has("pruning-history-0")')
@@ -399,6 +416,81 @@ def retention_check(page, server, runner):
     assert runner.generation == 7, 'Reconnect never starts a probe'
 
 
+def accessibility_structure_check(page):
+    nav(page, 'observations')
+    session = page.context.new_cdp_session(page)
+    nodes = session.send('Accessibility.getFullAXTree')['nodes']
+    mapping = {node['nodeId']:node for node in nodes}
+    rows = []
+    for node in nodes:
+        if node.get('role',{}).get('value') != 'row':
+            continue
+        cells = [mapping[id_] for id_ in node.get('childIds',[]) if id_ in mapping and mapping[id_].get('role',{}).get('value') == 'cell' and not mapping[id_]['ignored']]
+        if any('系统 DNS 配置' in cell.get('name',{}).get('value','') for cell in cells):
+            rows.append(cells)
+    session.detach()
+    assert len(rows) == 1 and len(rows[0]) == 4, 'Unsupported observation must retain four accessible cells, including the empty reading'
+    nav(page, 'sources')
+    for link in page.locator('.source-facts a,.brand').all():
+        bounds = link.bounding_box()
+        assert bounds and bounds['width'] >= 24 and bounds['height'] >= 24, 'Source and brand links must retain the selected 24 px target size'
+    page.locator('.skip-link').focus()
+    bounds = page.locator('.skip-link').bounding_box()
+    assert bounds and bounds['width'] >= 24 and bounds['height'] >= 24
+    nav(page, 'observations')
+
+
+def comparison_time_check(page, server, output, name):
+    current = server.collector.scans[-1]
+    baseline = server.collector.baseline
+    current_times = [item['observed_at'] for item in current['observations']]
+    baseline_times = [item['observed_at'] for item in baseline['observations']]
+    current_time, baseline_time = '2026-10-03T04:05:06+00:00', '2026-10-02T01:02:03+00:00'
+    try:
+        for item in current['observations']:
+            item['observed_at'] = current_time
+        for item in baseline['observations']:
+            item['observed_at'] = baseline_time
+        page.reload(wait_until='networkidle')
+        expect(page.locator('#scan-button')).to_be_enabled()
+        nav(page, 'changes')
+        row = page.locator('.comparison-table tr').filter(has=page.locator('button[data-item="egress.ipify"]'))
+        expect(row.locator('.col-value .reading-time')).to_have_text('采集时间 2026/10/03 04:05:06')
+        expect(row.locator('.col-baseline .reading-time')).to_have_text('采集时间 2026/10/02 01:02:03')
+        expect(row.locator('.col-value')).to_contain_text('已隐藏')
+        expect(row.locator('.col-value')).not_to_contain_text('192.0.2.')
+        row.locator('button').click()
+        expect(page.locator('#inspector .detail-value .reading-time')).to_have_text(['采集时间 2026/10/03 04:05:06','采集时间 2026/10/02 01:02:03'])
+        assert page.evaluate('document.documentElement.scrollWidth <= innerWidth')
+        current_box, baseline_box = row.locator('.col-value').bounding_box(), row.locator('.col-baseline').bounding_box()
+        if name == 'mobile':
+            assert current_box['x'] == baseline_box['x'] and 0 <= baseline_box['y'] - current_box['y'] - current_box['height'] <= 8
+        else:
+            assert current_box['y'] == baseline_box['y'] and baseline_box['x'] >= current_box['x'] + current_box['width']
+        page.evaluate('window.scrollTo(0,0)')
+        settle_finite_motion(page)
+        page.screenshot(path=str(output / f'{name}-comparison-times.png'), full_page=True)
+        for item in current['observations']:
+            item['observed_at'] = None
+        for item in baseline['observations']:
+            item['observed_at'] = 'not-a-date'
+        page.reload(wait_until='networkidle')
+        expect(page.locator('#scan-button')).to_be_enabled()
+        nav(page, 'changes')
+        expect(page.locator('.comparison-table .col-value .reading-time')).to_have_text(['采集时间未提供','采集时间未提供'])
+        expect(page.locator('.comparison-table .col-baseline .reading-time')).to_have_text(['时间未知','时间未知'])
+        page.locator('#mode-select').select_option('demo')
+        expect(page.locator('.comparison-table .reading-time')).to_have_text(['演示样本'] * 4)
+    finally:
+        for item, time_ in zip(current['observations'],current_times):
+            item['observed_at'] = time_
+        for item, time_ in zip(baseline['observations'],baseline_times):
+            item['observed_at'] = time_
+        page.locator('#mode-select').select_option('real')
+        page.reload(wait_until='networkidle')
+        expect(page.locator('#scan-button')).to_be_enabled()
+
+
 def accessibility_and_capture(page, output, name):
     nav(page, 'history')
     page.locator('.history-item').first.click()
@@ -412,6 +504,7 @@ def accessibility_and_capture(page, output, name):
     expect(page.locator('#inspector')).to_contain_text('服务端代理配置')
     expect(page.locator('#inspector .detail-value').first).to_have_text('未检出配置')
     page.locator('#inspector').scroll_into_view_if_needed()
+    settle_finite_motion(page)
     page.screenshot(path=str(output / f'{name}-detail.png'))
     # Method disclosure is reachable by keyboard and must expose its content.
     page.locator('#inspector summary').focus()
@@ -422,6 +515,7 @@ def accessibility_and_capture(page, output, name):
         page.locator('[data-action="back-to-list"]').focus()
         page.keyboard.press('Enter')
         expect(page.locator('button[data-item="local.proxy"]')).to_be_focused()
+        settle_finite_motion(page)
         page.screenshot(path=str(output / f'{name}-return.png'))
     page.emulate_media(reduced_motion='reduce')
     assert page.evaluate('matchMedia("(prefers-reduced-motion: reduce)").matches')
@@ -442,6 +536,7 @@ def accessibility_and_capture(page, output, name):
     nav(page, 'observations')
     page.locator('#main').focus()
     page.evaluate('window.scrollTo(0,0)')
+    settle_finite_motion(page)
     page.screenshot(path=str(output / f'{name}.png'), full_page=True)
     if name == 'desktop':
         # Half-width CSS viewport checks reflow pressure equivalent to 200% zoom.
@@ -454,6 +549,7 @@ def accessibility_and_capture(page, output, name):
         expect(page.locator('.inspector-title')).to_be_focused()
         page.locator('[data-action="back-to-list"]').click()
         expect(page.locator('button[data-item="local.proxy"]')).to_be_focused()
+        settle_finite_motion(page)
         page.screenshot(path=str(output / 'desktop-reflow-720.png'))
         page.set_viewport_size({'width':1440,'height':1000})
 
@@ -491,6 +587,8 @@ def main():
                     check(page, server, runner, output, name)
                     old_snapshot_copy_check(page, server)
                     pruned_history_response_check(page, server, runner)
+                    accessibility_structure_check(page)
+                    comparison_time_check(page, server, output, name)
                     accessibility_and_capture(page, output, name)
                     delayed_restore_check(page, server)
                     retention_check(page, server, runner)

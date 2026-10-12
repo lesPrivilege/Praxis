@@ -1,0 +1,170 @@
+處理時間為 51s
+
+是，而且这很适合固化进 AGENTS.md，因为它已经不是一次性的 prompt，而是你现在对 Codex 的长期职责定义。
+
+但有一个边界要写清：AGENTS.md 能规定 Codex 拿到 ChatGPT session 后如何消费，不能赋予它本来没有的 ChatGPT 历史读取权限。OpenAI 当前仍明确说明 Codex history 与 ChatGPT history 分离。因此规则应写成 “when a ChatGPT session/transcript is attached or otherwise available”，而不是假设 Codex 永远能主动读取所有网页端历史。
+
+同时，Codex 会依次加载全局 ~/.codex/AGENTS.md 和 repo 内逐层的 AGENTS.md，所以非常适合做成：
+
+全局 AGENTS.md：定义 Codex = ingestion / provenance / repository librarian。
+
+repo AGENTS.md：只告诉它这个项目的知识落在哪里、已有 taxonomy 是什么、哪些文档是 canonical。
+
+不把具体的“先读 17 个文件、然后运行某命令”之类 workflow 写进去。Astra 的最新官方 prompting guidance 也正好倾向这种薄约束。
+
+
+而且我会把你现在的架构原则直接应用过来：
+
+Chat transcript ≠ durable project state ≠ worker context。
+
+也就是：
+
+ChatGPT session / raw discussion → Astra adjudication → Luna provenance exploration → durable artifact + source ledger → thin progressive-disclosure index → 后续 worker 按需消费
+
+这样它不是“把 chat summary 存进 repo”，而是真正完成一次 ingestion / compilation。
+
+建议直接放进全局 ~/.codex/AGENTS.md
+
+ChatGPT session ingestion
+
+When a ChatGPT conversation, session, transcript, or substantial discussion is attached to or otherwise available in the current workspace, treat it as source material that may need to be made durable and discoverable in the repository.
+
+Codex's default role for this material is ingestion, provenance, and knowledge maintenance, not implementation unless implementation is explicitly requested.
+
+Goal
+
+Convert useful ChatGPT discussion and exploration into repository artifacts that future agents can discover and consume progressively without needing the original conversation.
+
+Preserve the distinction between:
+
+- source / event record — what was actually discussed or observed;
+- durable project state — decisions, hypotheses, constraints, references, unresolved questions, and reusable findings;
+- model context — the smallest index or artifact a later worker needs to read for its task.
+
+Do not collapse these layers into one large summary.
+
+Default behavior
+
+When relevant session context is available:
+
+1. Read the available conversation as a whole before deciding what is durable.
+2. Identify material relevant to the current workspace: decisions, design directions, constraints, rejected alternatives, external references, unresolved questions, implementation implications, and reusable research.
+3. Use Astra as the adjudicator of what belongs in durable project state.
+4. When claims, products, libraries, papers, implementations, community practices, or other external references should be recoverable or verified, delegate focused provenance work to Luna explorer(s) when useful.
+   - Prefer primary/original sources where available.
+   - Record enough provenance for a later agent to recover the source and understand why it matters.
+   - Do not turn every statement in the conversation into a research task.
+5. Write or update compact repository artifacts using the project's existing documentation conventions.
+6. Maintain a thin discovery/index layer so later workers can find the relevant artifact before reading raw material.
+7. Preserve unresolved or weakly supported claims as such rather than silently converting them into facts.
+8. Make ingestion incremental and idempotent: update existing artifacts when the same session or topic has already been consumed instead of creating duplicates.
+9. Finish the ingestion itself without requiring the user to repeatedly prompt each intermediate step.
+
+Progressive disclosure
+
+Prefer artifacts that allow a later worker to move approximately:
+
+"index → topic/session artifact → specific provenance/reference → raw source"
+
+rather than loading an entire session or research corpus by default.
+
+A useful durable artifact normally contains only what is needed to recover the work:
+
+- what changed or was learned;
+- decisions and their rationale;
+- important hypotheses or rejected alternatives;
+- implications for the workspace;
+- unresolved questions;
+- pointers to external sources and deeper/raw material.
+
+Do not preserve conversational filler, repeated reasoning, or wording merely because it appeared in the chat.
+
+External exploration
+
+Luna is well suited to parallel, bounded provenance and exploration work. Astra remains responsible for synthesis and final inclusion decisions.
+
+Use multiple explorers when independent references or alternatives can be investigated separately. Do not impose a fixed sub-agent topology when a simpler approach is sufficient.
+
+Scope and access
+
+Do not assume access to ChatGPT conversations that are not actually present in the current task context. If only part of a session is available, ingest what is available and make the coverage limitation explicit rather than reconstructing missing turns.
+
+Do not begin product or code implementation merely because the discussion contains implementation ideas. The default deliverable is a durable, source-traceable artifact that later workers can consume.这基本就能消掉你现在大部分的手动 loop。
+
+我还会在每个 repo 的 AGENTS.md 里只加 3–5 行，例如：
+
+> Chat/session ingestion follows the global contract.
+Reuse the repository's existing knowledge/document structure rather than creating a parallel taxonomy.
+<某 index> is the canonical discovery entry point.
+Preserve primary/raw materials separately from distilled project state.
+New external references must remain traceable to their source.
+
+
+
+最关键的是把输出从“summary”改成“artifact”
+
+你现在 Codex 做得不够好的地方，我认为很可能就在这里。
+
+如果 prompt 只是：
+
+> 把这次 ChatGPT 讨论登记一下。
+
+
+
+它非常容易产出一篇漂亮但死掉的 Markdown summary。
+
+真正需要的是一份可编译的知识工件：
+
+Session Artifact
+
+Scope / why this session matters
+
+Accepted decisions
+
+Working hypotheses
+
+Rejected / superseded directions
+
+New vocabulary / primitives
+
+External reference ledger
+
+Implications for architecture/design
+
+Open questions
+
+Links into existing repo state
+
+
+Reference entry
+
+source
+
+source type / authority
+
+what it supports
+
+what was actually learned from it
+
+related project concept
+
+retrieval pointer
+
+verification status
+
+
+然后最上面只有一层很薄的：
+
+INDEX
+
+> Seal visual grammar → 设计方向、物理刻制、闲章案例、相关 reference
+Multi-model orchestration → Fable/Opus/Sonnet/Haiku role priors 与来源
+Chat projection → MCP/schema projection 的讨论与 Gemini reference
+
+
+
+worker 以后先看 INDEX，只在自己的任务需要时继续往下钻。
+
+这与你已经形成的 Store → Govern → Retrieve → Compile 以及 Event Log ≠ Matter State ≠ Model Context 是同一件事：网页端 ChatGPT 负责高带宽 exploration；Codex 不再重复思考，而负责把 exploration 编译进一个可追溯、可渐进披露的 workspace。
+
+另外我会明确让 Astra 做 inclusion / state transition 的裁决，Luna 做 provenance retrieval。这样 Codex 即使未来施工能力仍然不稳定，这条管线本身也很有价值；它的成功标准不再是“有没有替你把东西做出来”，而是 这轮 Chat 关闭以后，一个 fresh worker 能否只靠 repo 自然找到并继续工作。

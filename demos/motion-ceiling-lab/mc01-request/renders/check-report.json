@@ -1,0 +1,202 @@
+{
+ "work": "mc01-request",
+ "git_head": "49277957439ab453c8e7d3f05d0d1f6bd2cbdac1",
+ "checked_at": "2026-10-04T16:21:48+0800",
+ "fixture": {
+  "fixture_id": "mc01-request",
+  "fixture_revision": "r1"
+ },
+ "gl_renderer": "ANGLE (Apple, ANGLE Metal Renderer: Apple M2, Unspecified Version)",
+ "self_test": {
+  "pass": true,
+  "checks": [
+   {
+    "name": "block_state_matches_fixture_at_every_sample",
+    "got": 0,
+    "want": 0,
+    "pass": true
+   },
+   {
+    "name": "label_text_matches_fixture_at_every_sample",
+    "got": 0,
+    "want": 0,
+    "pass": true
+   },
+   {
+    "name": "label_present_for_every_live_request",
+    "got": 0,
+    "want": 0,
+    "pass": true
+   },
+   {
+    "name": "label_inside_stage",
+    "got": 0,
+    "want": 0,
+    "pass": true
+   },
+   {
+    "name": "labels_clear_of_the_level_gauge",
+    "got": 0,
+    "want": 0,
+    "pass": true
+   },
+   {
+    "name": "labels_do_not_overlap",
+    "got": 0,
+    "want": 0,
+    "pass": true
+   },
+   {
+    "name": "request_labelled_while_something_stands_in_front",
+    "got": 191,
+    "want": "> 0 samples",
+    "pass": true
+   },
+   {
+    "name": "record_panel_fits_above_caption",
+    "got": true,
+    "want": true,
+    "pass": true
+   },
+   {
+    "name": "labels_correct_and_apart_under_every_station",
+    "got": 0,
+    "want": 0,
+    "pass": true
+   },
+   {
+    "name": "states_flip_at_reported_story_times",
+    "got": [],
+    "want": [],
+    "pass": true
+   },
+   {
+    "name": "truthful_wording_never_early",
+    "got": 0,
+    "want": 0,
+    "pass": true
+   },
+   {
+    "name": "naive_wording_is_early_somewhere",
+    "got": 469,
+    "want": "> 0 samples",
+    "pass": true
+   },
+   {
+    "name": "interface_never_ahead_of_events",
+    "got": 0,
+    "want": 0,
+    "pass": true
+   },
+   {
+    "name": "token_motion_continuous",
+    "got": 0,
+    "want": 0,
+    "pass": true
+   },
+   {
+    "name": "interface_body_fits",
+    "got": true,
+    "want": true,
+    "pass": true
+   }
+  ],
+  "skipped": []
+ },
+ "seek_consistency": {
+  "times": 39,
+  "orders": 3,
+  "mismatched_times": [],
+  "pass": true
+ },
+ "interactive_play": {
+  "advanced_to_s": 1.2,
+  "pass": true
+ },
+ "transcript_samples": {
+  "3.90": "点“保存”。",
+  "5.80": "界面发出一条请求，编号 req-1。",
+  "12.50": "界面只是最上面的一层。请求还要经过队列、处理、存储三层，才写进磁盘。",
+  "18.80": "req-1 穿过界面，落进队列。",
+  "22.00": "t=1，队列收下请求，发回一张回执：已入队。",
+  "24.50": "回执一到，界面就显示“已保存 ✓”。这时 req-1 还在队列里，数据没有落盘。",
+  "30.50": "从这里到落盘，记录里没有中间的时刻，下面的路径是示意。请求先到处理层。",
+  "36.60": "处理层的机壳挡住了请求。灰影标着它此刻的位置，编号仍是 req-1。",
+  "43.00": "再到存储层。",
+  "49.00": "t=4，数据落盘，数据块变成实心。从这一刻起，“已保存 ✓”才成立。",
+  "54.00": "存储发回第二张回执：已落盘。它要上行三层才到界面，第一张只上行了一层。",
+  "58.60": "界面没有任何变化。“已保存 ✓”在 t=1 就显示了，比事实早了 3 个时间单位。",
+  "61.50": "改法：让提示跟着回执走。收到“已入队”只显示“已收到，等待写入”，收到“已落盘”才显示“已保存 ✓”。",
+  "67.50": "再改一处，再点保存。这是另一条请求，编号 req-2。",
+  "73.50": "回执到了。界面这次显示“已收到，等待写入”；旧提示会在这里显示“已保存 ✓”。",
+  "80.00": "req-2 沿同一条路下到存储。",
+  "85.00": "t=8，写入失败。数据块打上叉，req-2 没有落盘；req-1 的数据块不受影响。",
+  "88.00": "失败回执回到界面：“未保存：写入失败，修改仍在本机”。要不要重试，等人决定。",
+  "93.00": "回执只能证明它出发的那一层。“已保存 ✓”要等最底层的回执。"
+ },
+ "console_errors": [],
+ "static_param": {
+  "plates": 19,
+  "expected": 19,
+  "static_visible": true,
+  "horizontal_overflow_390px": false,
+  "pass": true
+ },
+ "reduced_motion": {
+  "plates": 19,
+  "expected": 19,
+  "static_visible": true,
+  "horizontal_overflow_390px": false,
+  "pass": true
+ },
+ "video_decode": {
+  "decoder": "OpenCV 5.0.0",
+  "frames_decoded": 2821,
+  "frames_expected": 2821,
+  "psnr_vs_fresh_render_db": {
+   "3.90": 42.93,
+   "5.80": 43.36,
+   "12.50": 43.9,
+   "18.80": 45.24,
+   "22.00": 44.38,
+   "24.50": 44.34,
+   "30.50": 43.73,
+   "36.60": 44.95,
+   "43.00": 43.26,
+   "49.00": 43.28,
+   "54.00": 44.1,
+   "58.60": 44.0,
+   "61.50": 43.74,
+   "67.50": 43.94,
+   "73.50": 43.87,
+   "80.00": 44.07,
+   "85.00": 43.91,
+   "88.00": 43.64,
+   "93.00": 42.83
+  },
+  "pass": true
+ },
+ "contact_sheet": "renders/contact-sheet.png (decoded video frames, every 4 s)",
+ "browser_playback": {
+  "ended": true,
+  "duration": 94.033333,
+  "width": 1920,
+  "height": 1080,
+  "audio_bytes_decoded": 0,
+  "video_bytes_decoded": 58232939,
+  "wall_s": 23.5465,
+  "playback_rate": 4,
+  "pass": true
+ },
+ "summary": {
+  "self_test": true,
+  "seek_consistency": true,
+  "interactive_play": true,
+  "static_param": true,
+  "reduced_motion": true,
+  "video_decode": true,
+  "browser_playback": true,
+  "audio_sync": null,
+  "console_errors": 0
+ }
+}

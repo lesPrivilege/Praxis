@@ -1,0 +1,61 @@
+{
+  "describe": "文字替换：层名、状态词和界面提示都换成约两倍长的写法；字幕里引用的提示跟着换，镜头和时间线不动。",
+  "expect": "标签仍在画面内、不互相遮住，界面状态行自动缩小字号，左侧层级的说明换行。",
+  "patch": {
+    "levels": [
+      {
+        "id": "ui",
+        "label": "界面（浏览器里的页面）",
+        "gloss": "人看得到、点得到的这一层"
+      },
+      {
+        "id": "queue",
+        "label": "消息队列",
+        "gloss": "收下请求并排队，还没有处理"
+      },
+      {
+        "id": "worker",
+        "label": "处理进程",
+        "gloss": "从队列取出请求，校验后准备写入"
+      },
+      {
+        "id": "storage",
+        "label": "存储（磁盘）",
+        "gloss": "把数据写进磁盘并确认落盘"
+      }
+    ],
+    "states": {
+      "pending": {
+        "word": "请求已经从界面发出",
+        "standing": "数据尚未落盘",
+        "level": "ui"
+      },
+      "ack": {
+        "word": "队列已经收下请求",
+        "standing": "数据尚未落盘",
+        "level": "queue"
+      },
+      "durable": {
+        "word": "数据已经落盘并确认",
+        "standing": "",
+        "level": "storage"
+      },
+      "failed": {
+        "word": "写入磁盘时失败",
+        "standing": "数据没有落盘",
+        "level": "storage"
+      }
+    },
+    "ui": {
+      "policies": {
+        "truthful": {
+          "idle": "有尚未保存的修改",
+          "pending": "正在保存，请稍候…",
+          "ack": "服务器已收到，正在等待写入磁盘",
+          "durable": "已保存到磁盘 ✓",
+          "failed": "没有保存成功：写入磁盘失败，你的修改仍留在本机"
+        }
+      }
+    }
+  }
+}

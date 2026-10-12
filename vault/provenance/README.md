@@ -3,6 +3,7 @@
 - [可编辑原生 SVG · 2026-10-04](editable-native-svg-20261004/README.md)：18 个一手 URL 的相关读取与失败记录；外部实际图未看，未快照正文。
 
 - [关系图的两条语法 · 2026-10-04](relation-grammar-20261004/README.md)：三份 W3C 文档的用词对照；主会话读了摘要所列的句子，未通读、未快照。
+- [排列与刻度 · 2026-10-04](placement-grammar-20261004/README.md)：两页 Vega-Lite 文档和两份 W3C 文档的用词对照；主会话核对了摘要引到的句子，未通读、未快照。
 
 登记 51 个来源记录、37 个引用占位映射；状态：3 `partial`、48 `verified`。
 
@@ -52,3 +53,5 @@
 - [Writing 审阅的官方访问缺口 · 2026-10-03](writing-review-20261003/README.md)：三个 ASD-STE100 官方路由均返回 403，未读取标准正文，不支持版本或合规结论；既有写作指南重访不重复登记。
 
 - 视觉语法定向召回：[Courtwork](visual-grammar-courtwork-20260928/README.md)、[Schema Engineering](visual-grammar-schema-20260928/README.md)、[Praxis及相邻项目](visual-grammar-praxis-20260928/README.md)、[外部参考](visual-grammar-external-20260928/README.md)。施工消费见 [演示工场](../../demos/visual-grammar/README.md)。
+
+- [Chat ingestion / harness review 补充来源 · 2026-10-09](chat-ingestion-harness-20261009/README.md)：三条后来独立找到的官方 URL；不是原摘录隐藏引用的恢复，具体主张与缺口见逐源卡。

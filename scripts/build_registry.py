@@ -161,7 +161,8 @@ def build():
                 'vault/intake/content-architecture-review-20261002.json',
                 'vault/intake/community-grammar-20261002.json',
                 'vault/intake/self-contained-review-20261002.json',
-                'vault/intake/palantir-design-handoff-20261003.json']:
+                'vault/intake/palantir-design-handoff-20261003.json',
+                'vault/intake/chat-ingestion-harness-20261009.json']:
         data = read(rel)
         sources.append({
             'id': data['id'], 'kind': data['kind'], 'collection': data['topic'],

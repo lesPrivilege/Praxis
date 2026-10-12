@@ -68,7 +68,7 @@ h1{font-size:22px;font-weight:650;letter-spacing:-.3px;line-height:1.3}
 .quiet-button[aria-pressed=true]{border-color:#b9c2cd;background:var(--wash)}
 .scope-note{margin-bottom:18px;padding:9px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);font-size:12px;line-height:1.7;color:var(--muted)}
 .scope-note details p{max-width:76em;margin-top:6px}
-summary{width:fit-content;padding:2px 0;line-height:20px;cursor:pointer;color:var(--ink);border-radius:2px}
+summary{width:fit-content;min-height:24px;padding:2px 0;line-height:20px;cursor:pointer;color:var(--ink);border-radius:2px}
 .collection-bar{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:baseline;gap:6px 16px;margin-bottom:18px;font-size:12px}
 .collection-bar strong{font-weight:600}
 .collection-bar span{color:var(--muted);font-variant-numeric:tabular-nums}
@@ -115,7 +115,7 @@ progress::-moz-progress-bar{background:var(--ink)}
 .signal-table tr.selected td:first-child{box-shadow:inset 3px 0 0 var(--accent)}
 th.col-name{width:30%}th.col-value{width:38%}th.col-status{width:14%}th.col-time{width:18%}
 .comparison-table th.col-value,th.col-baseline{width:28%}th.col-result{width:14%}
-.signal-name{display:block;width:100%;padding:2px 0;border:0;border-radius:2px;background:none;font-size:13px;font-weight:600;line-height:20px;color:var(--ink);text-align:left}
+.signal-name{display:block;width:100%;min-height:24px;padding:2px 0;border:0;border-radius:2px;background:none;font-size:13px;font-weight:600;line-height:20px;color:var(--ink);text-align:left}
 .row-source{display:block;font-size:12px;color:var(--muted)}
 .col-time{font-size:12px;line-height:20px;color:var(--muted);font-variant-numeric:tabular-nums}
 .cell-value,.detail-value{line-height:20px;cursor:auto}
@@ -124,6 +124,7 @@ th.col-name{width:30%}th.col-value{width:38%}th.col-status{width:14%}th.col-time
 .reading-field{display:block}
 .reading-key{font-size:12px;color:var(--muted)}
 .reading-note{display:block;color:var(--muted)}
+.reading-time{display:block;margin-top:4px;font-size:12px;line-height:1.6;color:var(--muted);font-variant-numeric:tabular-nums}
 .table-footer{display:flex;justify-content:space-between;gap:4px 12px;flex-wrap:wrap;padding:8px 14px;border-top:1px solid var(--line);background:var(--wash);font-size:12px;color:var(--muted)}
 
 /* State marks: shape and label carry the state; colour repeats it */
@@ -182,6 +183,7 @@ th.col-name{width:30%}th.col-value{width:38%}th.col-status{width:14%}th.col-time
 .source-facts{display:grid;grid-template-columns:5em minmax(0,1fr);gap:3px 12px;margin-top:8px;font-size:12px;line-height:1.7}
 .source-facts dt{color:var(--muted)}
 .source-facts dd{overflow-wrap:anywhere}
+.source-facts a{display:inline-block;min-height:24px;max-width:100%;vertical-align:middle}
 .view-note{margin-bottom:10px;font-size:12px;color:var(--muted)}
 .history-item{display:flex;justify-content:space-between;align-items:center;gap:16px;width:100%;padding:10px 18px;border:0;border-top:1px solid var(--line-soft);background:none;font-size:12px;color:var(--muted);text-align:left}
 .history-item:first-child{border-top:0}
@@ -233,7 +235,7 @@ th.col-name{width:30%}th.col-value{width:38%}th.col-status{width:14%}th.col-time
   .reading-table .col-status{grid-area:1/2;justify-self:end;padding-top:2px}
   .reading-table .col-time{grid-area:2/2;justify-self:end}
   .reading-table .col-value{grid-area:3/1/4/3;margin-top:4px}
-  .reading-table .col-value:has(.reading-empty){display:none}
+  .reading-table .col-value:has(.reading-empty){position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);margin:0;white-space:nowrap}
   .comparison-table .col-name{grid-area:1/1}
   .comparison-table .col-result{grid-area:1/2;justify-self:end;padding-top:2px}
   .comparison-table .col-value{grid-area:2/1/3/3}

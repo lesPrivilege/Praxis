@@ -1,5 +1,61 @@
 # Changelog
 
+## 2026-10-12 · 无配音知识片
+
+- 新增 [Write 分支知识片](demos/write-kit-film/README.md)：只给题目（编译成知识讲解视频，不做配音），由主会话沿 Kit 入口取用 Write 各页，引用 Netflix 简体中文字幕规范的读速上限（成人每秒 9 字），沿用薪酬基线说明片的管线、去掉配音与混音，做成 245 秒的无声片。时间由人定，读速写成检查：任意 4 秒窗口新出现的字不超过 36 个。
+- 画面文字由一位未参与撰写的 Opus 审阅者做结构审阅并对照 Kit 原文核对事实，主会话裁决：13 项采纳（含 1 项改写后采纳）、2 项保留；其中四条底线、三档强度与验收表的几处措辞回到原文，一处页面没有的说法（“无对照组”）去掉。
+- Kit 只动一处入口：[Write / Motion](kit/write/motion/README.md)的制作记录加一行，写明无声片怎样定时。规则含义没有改，没有新增目录、ADR 或依赖；观察和复用说明留在项目说明里。
+- 成片检查六项通过（流、保真、静止、空白、读速、字号）；制作方没有按实际速度完整看过，没有受众测试，审阅只有一位审阅者、一轮。验证：`python3 scripts/validate_repository.py`。
+
+## 2026-10-10 · 视频能力测试与一次回流
+
+- 新增 [薪酬基线说明片](demos/role-baseline-film/README.md)：只给题目，由主会话沿 Kit 入口取用规则、参考和金字塔片的管线，做成 97 秒说明片与一份 txt（另编 Word 与 PDF），材料合成。成片检查七项通过；制作方没有听过声音，独立冷读没有完成，没有受众测试。
+- Kit 只动两处入口：[内容验收](kit/write/shared/verification.md)加一句，指向“感知不到的部分”和“自查通过之后”两条备用做法，这次从内容表达的入口读不到它们；[Write / Motion](kit/write/motion/README.md)的制作记录加一行，写明短片从哪个项目起步。规则含义没有改，没有新增目录、ADR 或依赖。
+- 取用记录、观察和复用说明都留在项目说明里，没有写进各规则页。引擎与管线仍是从金字塔片拷来的一份，没有抽公共层。
+- 主会话（Opus）完成；交给独立审阅者的一次冷读随会话中断，没有交回。验证：`python3 scripts/validate_repository.py` 通过。
+
+## 2026-10-09 · 会话入账与 harness 边界
+
+- 两份讨论摘录按现有 Vault 结构归档、提炼与登记；原会话历史未提供，外部官方来源作为补充来源，不冒充原引用恢复。
+- 全局指引新增薄会话入账契约；Praxis 收窄维护前必读范围，将固定模型分工与会话授权改为能力偏好和当前授权判断。保留工作规则、来源边界和仓库验证，见 [ADR-030](docs/decisions/030-session-ingestion-and-harness-boundaries.md)。
+- 具体改动、风险、验证及未决项见 [审计回执](docs/verification/harness-audit-20261009.md)。
+
+## 2026-10-08 · 技术文档文案收敛
+
+- 精简架构与治理文档中的重复提醒、抽象术语和保护性措辞；将动作、条件、去向和必要依赖写明。架构与 Motion 入口按用途链接正文，ADR-029 校正文句，规则含义保持不变。
+- 按仓库中文成文规范审校，重访中文技术文档指南和 ASD 官方说明；来源取得范围、消费方式和缺口见 [复核记录](docs/verification/writing-review-20261003.md#2026-10-08-复核与文案清理)。
+- 图文、网页、Slides 与视频入口同时连接 Write 和 Design；Design 参考表补外部作品与 Opus 制作研究，语法仍按分支维护。旧参考页收为兼容导航，保留既有锚点；修正 Write 的样张阶段描述。
+- 仓库校验与 `git diff --check` 通过；首轮检查的 227 个本地链接与锚点可达，改后五条定向导航与三个兼容锚点检查通过。未制作新材料或复验外部作品。
+
+## 2026-10-08 · 持续维护与互著别裁
+
+- 按用户要求，在既有文档结构与修订流程中补充多入口单正文、按用途提炼、显式必要依赖，以及增量、合并、迁移、移交和清退的去向记录，见 [ADR-029](docs/decisions/029-content-discovery-and-retirement.md)。没有新增目录、索引系统或运行依赖，没有实际迁移或删除材料。
+- 主代理编订，Luna 核对既有规则；三种维护情形的条文走读未发现职责冲突，未做真实生命周期操作或对照实验。来源与快照覆盖没有变化，既有未核实来源及未快照依赖仍按原记录保留。
+- 验证：`python3 scripts/validate_repository.py` 通过（1,207 份 Markdown、478 份 JSON、866 个快照，0 错误）；本轮既有文件的 `git diff --check` 通过。
+
+## 2026-10-08 · 发现入口与消费记录
+
+- 保留现有目录；在 [Write / Motion](kit/write/motion/README.md)连接长片、机制演算、空间表达的施工与消费记录，[Design / Motion](kit/design/motion/README.md)补外部研究入口，[demos](demos/README.md)补 Motion ceiling 工场。各项目的技术与参数继续留在项目内。
+- [Palantir reading list](palantir/references/README.md)逐项链接已有候选笔记；上层入口区分候选提炼与已采纳正文，历史任务书标明已经执行，主题入口补已有消费项目。补金字塔过程重建的 intake 导航。
+- 本轮由主代理编订、两位 Luna 只读追溯；只核对仓库内记录，没有重新访问外部来源、补快照、运行渲染或制作视频。金字塔主日志与研究网页未快照，A3 部分运行依赖未快照，Motion ceiling 多数外部来源仍未读；四本阅读材料全文仍缺。未新增专用交接文档或重复的制作流程。
+- 验证：`python3 scripts/validate_repository.py` 通过；Luna 定向走读 Dalio 已读边界、Impro 缺正文、机制类视频选型与金字塔过程追溯四条路径，无断链。属于维护走读，未做新主笔制作或对照实验。
+
+## 2026-10-06 · Palantir 阅读清单拿到原本
+
+- 逐条实访阅读清单的 8 个 URL，取得 9 个文件、3,998,632 字节：[原件快照](vault/snapshots/local/palantir-20261006/README.md)。此前 8 个 URL 全部 `unverified`、7 个对象都没有本地原件。
+- 三份是全文：Qureshi、Lonsdale，以及 Dalio 的 2011 版权 106 页 PDF。四本书只有片段：Portigal 的第 2 版第 1 章、Wright 的出版方授权节选、Allen 的官方节选，Johnstone 只有出版方描述与目录。
+- 原站直连两个被拒：Qureshi 返回 429，Rosenfeld 与 Bloomsbury 返回 403，都没有绕过；这三份经 Internet Archive 存档取得。Dalio 的登记 URL 已失效为官网首页，PDF 是经 2016 年存档取回的。
+- 阅读清单与[主题入口](palantir/README.md)改写为按实际证据边界登记；`unverified` 归零，改为 3 个 `verified`、5 个 `partial`。GTD 的节选据版权页为 2001 年版，与登记 URL 所指 2015 版不同，已写明。
+- 另取得 Portigal 自行免费发布的 6 份实践 PDF（363,054 字节：筛选问卷、访谈提纲、现场参与说明、两份复盘表、顶部摘要），取自作者自己站点的媒体库，不是第三方转载。共 15 个文件、4,365,133 字节。
+- Internet Archive 有 Impro、The Looming Tower、Getting Things Done 三份扫描件，但都是受控借阅（`access-restricted-item`，抓取全文返回 401），需用使用者自己的账号借阅；本轮没有登录、没有替借、没有绕过闸门。
+- 影子图书馆（zlib、Anna’s Archive、libgen 等）未接触：所涉四本为版权期内商业书，是来源不授权，个人学习用途不构成豁免。补齐只走购买、借阅或使用者提供合法副本。
+- [回执](docs/verification/palantir-source-acquisition-20261006.md)记录逐件核对、取得依据、放弃的路径与未做项。没有提炼，没有 Kit 采纳。
+- 随后按先写好的八份任务书完成初次提炼，在 dsh 里由主会话串行执行（claude 未登录、无 codex CLI，派不出 subagent，故不是 Luna 集群）。七份笔记见 [Palantir 初次提炼](vault/distilled/palantir-reading-20261006/README.md)。
+- **最主要的发现：这七份材料不是散书。** Qureshi 原文说明 Impro、The Looming Tower、Interviewing Users、Getting Things Done 加 Dalio 早期 PDF，是 Palantir 当年发给新人的入职书单；Lonsdale 那篇曾是对内文件。清单的关联来自这份书单本身。
+- 核对确认两条旧记录：Lonsdale 第 5、6 条（第 5 条用细小迹象看整体，第 6 条当场想清楚）；Portigal 高层计划只有三项、参与者提问另列。
+- **更正两处数字**：Looming Tower 的节选是 2,470 词，不是回执记的 3,448 词（旧值把出版方奖项与评价文案算进去了）；Dalio 106 页在手但 Part 3 的 210 条基本未读。
+- 三处如实记下「不足以支撑」：Impro 的三个关注维度与目录标题重合，目前是循环论证；Looming Tower 的四个维度在节选中一个都支撑不了；GTD 的四类边界在节选中未出现。
+
 ## 2026-10-05 · 知识片的做法留作可取用的参考
 
 - 把 ADR-027、ADR-028 新增的两种独立审阅写明是可以取用的做法，不是每件任务的必经步骤；口播旁白页的随稿材料改成按任务取用。条文的含义没有变，强度写清了。
@@ -20,6 +76,12 @@
 - 审阅新增两步：通篇检查句式是否重复；结构文字多的材料由没有参与撰写的审阅者单独审。
 - Write / Motion 的 [叙事与分镜交接](kit/write/motion/narrative.md)新增“旁白与屏幕文字的审阅”一节，把旁白接到成文审阅、屏幕上的结构文字接到独立审阅，并要求写进撰写者的任务书。属于兼容扩展。
 - 属于规则含义的变化，修订 ADR-024 的两处。新任务适用；ADR-024 生效期间按旧条文审过的材料没有重审。[回执](docs/verification/prose-review-restoration-20261005.md)记录召回、核对、改动和未做的事。
+
+## 2026-10-04 · 排列与刻度
+
+- Design / Foundations 新增 [排列与刻度](kit/design/foundations/placement.md)：把几项内容沿一条线排开时，位置回答了哪几个问题要写成一句读法放进图里；没有量就不按比例画；并排的线要么共用一条标尺，要么写明各排各的。见 [ADR-026](docs/decisions/026-placement-and-scale.md)。属于兼容扩展：新增一页和几处入口链接；[图形编码](kit/design/composition/encoding.md)、[成立程度与归属的标记](kit/design/foundations/standing.md)、[精确指向](kit/design/foundations/anchoring.md)各补了半句，原有规则的含义没有变。
+- 可编辑原生 SVG 的图件升到 0.3.0：新增 `rel-rail` 和 `rel-pair` 两件，版本图在图脚补上位置的读法；样板页加第三节。它们是 demo 里的候选实现，不是 Kit 的共享组件。
+- [回执](docs/verification/placement-grammar-20261004.md)记录检查、独立复查、两次冷读与对照、未做的事。使用证据只有合成内容和同一名制作者。
 
 ## 2026-10-04 · 关系图的成立程度与精确指向
 
@@ -214,4 +276,3 @@
 - 用户另找的执行者在 `9514ce4` 上做了独立复验（交接稿未入账），只到代码和后端。它报告的两处 fixture 检查漏检属实并已修：状态与记录是否一致改为把记录按动作允许的步骤走一遍；付款复核台的记录不能指向不存在的机器提议。测试 43 项变 45 项。
 - 它报告的另外两处是已记录的未修项（材料版本不带动事项版本；切换身份和整页离开绕过离开前的拦截），没有改；后一处补了浏览器实测。记录见 [合并后的独立复验](demos/enterprise-grammar-lab/evals/reverification.md)。
 - 用户随后决定给关标签页和刷新加离开确认：有未提交的填写或结果未知时页面请求浏览器确认。页面侧的行为已验证；确认框本身在内置浏览器面板里不显示，没有在普通浏览器里看过。
-

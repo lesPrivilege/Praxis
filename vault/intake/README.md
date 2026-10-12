@@ -1,8 +1,11 @@
 # Intake · 材料登记
 
+- [Palantir 阅读清单 · 2026-10-01 登记，10-06 取得原件](palantir-20261001.json)：7 个对象、8 个显式 URL；当前对象证据为 3 个 `verified`、4 个 `partial`，URL 记录为 4 个 `verified`、4 个 `partial`，四本书正文仍缺。[阅读入口与候选笔记](../../palantir/references/README.md)，[原件快照](../snapshots/local/palantir-20261006/README.md)，[回执](../../docs/verification/palantir-source-acquisition-20261006.md)。
+
 - [可编辑原生 SVG · 2026-10-04](editable-native-svg-20261004.json)：需求覆盖、独立版本风险与 fresh Opus 工单；[研究入口](../distilled/editable-native-svg-20261004/README.md)，当前未绘制。
 
 - [关系图的两条语法 · 2026-10-04](relation-grammar-20261004.json)：两份仓库内清点与三份外部来源；[研究入口](../distilled/relation-grammar-20261004/README.md)。
+- [排列与刻度 · 2026-10-04](placement-grammar-20261004.json)：两份仓库内清点与四份外部来源；[研究入口](../distilled/placement-grammar-20261004/README.md)。
 
 Intake 只登记材料身份、覆盖、处理状态、附件和缺口，不重复保存 raw 对话全文，也不把登记结果写成 Kit 规范。需要消费时进入对应的 `vault/distilled` 目录；需要逐 URL 证据时进入 `vault/references` 或 `vault/provenance`。
 
@@ -76,3 +79,7 @@ Intake 只登记材料身份、覆盖、处理状态、附件和缺口，不重�
 - [社区 Skills 与 Prompts 研究包 · 2026-10-02](community-grammar-20261002.json)：三个文件的快照与 hash，45 个外部链接里主会话读了 8 个；[对照与裁决](../distilled/community-grammar-20261002/README.md)。
 - [自足性审查 · 2026-10-02](self-contained-review-20261002.json)：单文件审查的快照与 hash，引用的都是本仓库自己的文件，没有外部来源；[对照与裁决](../distilled/self-contained-review-20261002/README.md)。
 - [Palantir 设计交接包 · 2026-10-03](palantir-design-handoff-20261003.json)：七个文件的快照与 hash，9 个外部链接复查了作品用到的 3 个；据此做的作品见 [demos/palantir-discovery](../../demos/palantir-discovery/README.md)。
+
+- [Knowledge Film 001 过程重建登记](knowledge-film-001-distill-20261005.json) → [消费与失败记录](../distilled/knowledge-film-001-distill-20261005/README.md)：原工单及主日志只登记定位与 hash，未快照入库；本地批次未进入通用 registry，按本入口发现。
+
+- [Chat ingestion 与 Astra-era harness audit 讨论摘录 · 2026-10-09](chat-ingestion-harness-20261009.json)：两份粘贴文本、无会话身份；[原件](../archive/chat/chat-ingestion-harness-20261009/README.md)、[提炼](../distilled/chat-ingestion-harness-20261009/README.md)、[来源账本](../provenance/chat-ingestion-harness-20261009/README.md)。
