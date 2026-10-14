@@ -1,0 +1,842 @@
+{
+  "contract_version": "1.0",
+  "case_id": "V09",
+  "title": "芯片设计的证据依赖与发布",
+  "scope": "一个数字模块的合成编排与证据管理；不实现EDA工具、晶圆厂验收、真实IP授权或制造结算。",
+  "synthetic": true,
+  "source_ids": [
+    "CADENCE",
+    "P06-SRC-openroad-overview",
+    "P06-SRC-opensta-readme",
+    "P06-SRC-orfs-tutorial"
+  ],
+  "nodes": [
+    {
+      "id": "V09:actor:engineer",
+      "type": "actor",
+      "label": "设计工程师",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + project; external job mapping also binds executor account"
+    },
+    {
+      "id": "V09:actor:release-manager",
+      "type": "actor",
+      "label": "发布负责人",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + project; external job mapping also binds executor account"
+    },
+    {
+      "id": "V09:ui:workbench",
+      "type": "ui",
+      "label": "基线、任务与证据矩阵",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + project; external job mapping also binds executor account"
+    },
+    {
+      "id": "V09:service:baseline",
+      "type": "service",
+      "label": "基线服务",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + project; external job mapping also binds executor account"
+    },
+    {
+      "id": "V09:service:orchestrator",
+      "type": "service",
+      "label": "任务编排服务",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + project; external job mapping also binds executor account"
+    },
+    {
+      "id": "V09:service:evidence",
+      "type": "service",
+      "label": "证据核验服务",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + project; external job mapping also binds executor account"
+    },
+    {
+      "id": "V09:service:release",
+      "type": "service",
+      "label": "发布服务",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + project; external job mapping also binds executor account"
+    },
+    {
+      "id": "V09:store:metadata",
+      "type": "store",
+      "label": "版本、依赖、审批与操作库",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + project; external job mapping also binds executor account"
+    },
+    {
+      "id": "V09:store:artifacts",
+      "type": "store",
+      "label": "报告与版图对象库",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + project; external job mapping also binds executor account"
+    },
+    {
+      "id": "V09:store:inbox",
+      "type": "store",
+      "label": "持久回执收件箱",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + project; external job mapping also binds executor account"
+    },
+    {
+      "id": "V09:external_system:executor",
+      "type": "external_system",
+      "label": "合成 EDA 执行器适配边界",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + project; external job mapping also binds executor account"
+    },
+    {
+      "id": "V09:external_system:recipient",
+      "type": "external_system",
+      "label": "合成发布包接收系统",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + project; external job mapping also binds executor account"
+    },
+    {
+      "id": "V09:object:baseline",
+      "type": "object",
+      "label": "Baseline",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + project; external job mapping also binds executor account"
+    },
+    {
+      "id": "V09:object:run",
+      "type": "object",
+      "label": "Run",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + project; external job mapping also binds executor account"
+    },
+    {
+      "id": "V09:object:evidence",
+      "type": "object",
+      "label": "Evidence",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + project; external job mapping also binds executor account"
+    },
+    {
+      "id": "V09:object:release",
+      "type": "object",
+      "label": "Release manifest",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + project; external job mapping also binds executor account"
+    },
+    {
+      "id": "V09:event:completion",
+      "type": "event",
+      "label": "任务完成回执",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + project; external job mapping also binds executor account"
+    },
+    {
+      "id": "V09:rule:coverage",
+      "type": "rule",
+      "label": "完整覆盖与版本匹配规则",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + project; external job mapping also binds executor account"
+    }
+  ],
+  "edges": [
+    {
+      "id": "V09:edge:engineer-ui",
+      "type": "operates",
+      "from": "V09:actor:engineer",
+      "to": "V09:ui:workbench",
+      "payload": "查看候选差异、队列与报告条件",
+      "timing": "sync",
+      "invariant": "项目授权后展示",
+      "failure": "权限过期重新认证，不展示他方摘要",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V09:claim:manifest-policy"
+      ]
+    },
+    {
+      "id": "V09:edge:approver-ui",
+      "type": "operates",
+      "from": "V09:actor:release-manager",
+      "to": "V09:ui:workbench",
+      "payload": "预览当前 manifest 和逐项检查结果",
+      "timing": "sync",
+      "invariant": "审批者与设计者权限不同",
+      "failure": "无权限不能提交签核",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V09:claim:manifest-policy"
+      ]
+    },
+    {
+      "id": "V09:edge:freeze",
+      "type": "commands",
+      "from": "V09:ui:workbench",
+      "to": "V09:service:baseline",
+      "payload": "tenant/project + expected_version + operation_id + manifest",
+      "timing": "sync",
+      "invariant": "冻结输入不可就地替换",
+      "failure": "旧版本返回冲突",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V09:claim:manifest-policy"
+      ]
+    },
+    {
+      "id": "V09:edge:run",
+      "type": "commands",
+      "from": "V09:ui:workbench",
+      "to": "V09:service:orchestrator",
+      "payload": "baseline_id + operation_id + task policy",
+      "timing": "sync",
+      "invariant": "先持久化运行，再发外部请求",
+      "failure": "重试返回同一运行",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V09:claim:manifest-policy"
+      ]
+    },
+    {
+      "id": "V09:edge:approve",
+      "type": "commands",
+      "from": "V09:ui:workbench",
+      "to": "V09:service:release",
+      "payload": "candidate_version + manifest_hash + decision",
+      "timing": "sync",
+      "invariant": "服务端重新验证覆盖与版本",
+      "failure": "不完整、过期或无权则拒绝",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V09:claim:manifest-policy"
+      ]
+    },
+    {
+      "id": "V09:edge:owner-baseline",
+      "type": "owns",
+      "from": "V09:service:baseline",
+      "to": "V09:object:baseline",
+      "payload": "冻结输入集合",
+      "timing": "static",
+      "invariant": "基线身份不可变",
+      "failure": "修正产生新版本",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V09:claim:manifest-policy"
+      ]
+    },
+    {
+      "id": "V09:edge:owner-run",
+      "type": "owns",
+      "from": "V09:service:orchestrator",
+      "to": "V09:object:run",
+      "payload": "run与外部job映射",
+      "timing": "static",
+      "invariant": "一个attempt可回查",
+      "failure": "未知保持待核对",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V09:claim:manifest-policy"
+      ]
+    },
+    {
+      "id": "V09:edge:owner-evidence",
+      "type": "owns",
+      "from": "V09:service:evidence",
+      "to": "V09:object:evidence",
+      "payload": "报告有效性及输入依据",
+      "timing": "static",
+      "invariant": "success不替代valid",
+      "failure": "缺项或损坏标invalid",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V09:claim:manifest-policy"
+      ]
+    },
+    {
+      "id": "V09:edge:owner-release",
+      "type": "owns",
+      "from": "V09:service:release",
+      "to": "V09:object:release",
+      "payload": "manifest与审批、发送、接收记录",
+      "timing": "static",
+      "invariant": "批准与接收分离",
+      "failure": "已发出错误包追加withdrawal",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V09:claim:manifest-policy"
+      ]
+    },
+    {
+      "id": "V09:edge:store-baseline",
+      "type": "stores",
+      "from": "V09:store:metadata",
+      "to": "V09:object:baseline",
+      "payload": "manifest metadata",
+      "timing": "sync",
+      "invariant": "版本与哈希对应",
+      "failure": "事务失败不确认冻结",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V09:claim:manifest-policy"
+      ]
+    },
+    {
+      "id": "V09:edge:store-run",
+      "type": "stores",
+      "from": "V09:store:metadata",
+      "to": "V09:object:run",
+      "payload": "attempt/job/state/version",
+      "timing": "sync",
+      "invariant": "唯一运行身份",
+      "failure": "崩溃后恢复既有attempt",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V09:claim:manifest-policy"
+      ]
+    },
+    {
+      "id": "V09:edge:store-release",
+      "type": "stores",
+      "from": "V09:store:metadata",
+      "to": "V09:object:release",
+      "payload": "审批与发送操作",
+      "timing": "sync",
+      "invariant": "审批和待发项原子保存",
+      "failure": "worker重放同一M1",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V09:claim:manifest-policy"
+      ]
+    },
+    {
+      "id": "V09:edge:store-evidence",
+      "type": "stores",
+      "from": "V09:store:artifacts",
+      "to": "V09:object:evidence",
+      "payload": "报告附件及摘要",
+      "timing": "async",
+      "invariant": "附件完整且摘要相符",
+      "failure": "部分上传保持candidate",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V09:claim:manifest-policy"
+      ]
+    },
+    {
+      "id": "V09:edge:run-baseline",
+      "type": "depends_on",
+      "from": "V09:object:run",
+      "to": "V09:object:baseline",
+      "payload": "frozen input manifest",
+      "timing": "static",
+      "invariant": "只运行指定输入",
+      "failure": "候选变化不改变既有任务",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V09:claim:manifest-policy"
+      ]
+    },
+    {
+      "id": "V09:edge:evidence-baseline",
+      "type": "derived_from",
+      "from": "V09:object:evidence",
+      "to": "V09:object:baseline",
+      "payload": "input digests + tools + rules + corner",
+      "timing": "static",
+      "invariant": "依据可追溯",
+      "failure": "变化形成新候选失效集合",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V09:claim:manifest-policy"
+      ]
+    },
+    {
+      "id": "V09:edge:evidence-run",
+      "type": "derived_from",
+      "from": "V09:object:evidence",
+      "to": "V09:object:run",
+      "payload": "job/attempt/output hashes",
+      "timing": "static",
+      "invariant": "输出属于本次运行",
+      "failure": "迟到记录不能归新attempt",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V09:claim:manifest-policy"
+      ]
+    },
+    {
+      "id": "V09:edge:release-evidence",
+      "type": "depends_on",
+      "from": "V09:object:release",
+      "to": "V09:object:evidence",
+      "payload": "required checks and evidence references",
+      "timing": "static",
+      "invariant": "全部必需条件有匹配有效证据",
+      "failure": "缺失条件不能当空集合通过",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V09:claim:manifest-policy"
+      ]
+    },
+    {
+      "id": "V09:edge:coverage",
+      "type": "authorizes",
+      "from": "V09:rule:coverage",
+      "to": "V09:service:release",
+      "payload": "完整集合、摘要、最差指标检查",
+      "timing": "sync",
+      "invariant": "全量guard，不由Top-K或平均指标批准",
+      "failure": "缺项或负slack拒绝",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V09:claim:manifest-policy"
+      ]
+    },
+    {
+      "id": "V09:edge:authority",
+      "type": "authorizes",
+      "from": "V09:actor:release-manager",
+      "to": "V09:service:release",
+      "payload": "project role + signed decision",
+      "timing": "sync",
+      "invariant": "审批绑定manifest",
+      "failure": "权限撤销或候选变化时拒绝",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V09:claim:manifest-policy"
+      ]
+    },
+    {
+      "id": "V09:edge:submit-job",
+      "type": "requests",
+      "from": "V09:service:orchestrator",
+      "to": "V09:external_system:executor",
+      "payload": "persisted operation/run/attempt + input manifest",
+      "timing": "async",
+      "invariant": "提交身份与项目绑定",
+      "failure": "timeout先按job标签查询",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V09:claim:manifest-policy"
+      ]
+    },
+    {
+      "id": "V09:edge:query-job",
+      "type": "reads",
+      "from": "V09:service:orchestrator",
+      "to": "V09:external_system:executor",
+      "payload": "既有job或operation标签",
+      "timing": "sync",
+      "invariant": "核对后才断言未受理",
+      "failure": "不支持查询则人工接管，不盲目重提",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V09:claim:manifest-policy"
+      ]
+    },
+    {
+      "id": "V09:edge:completion",
+      "type": "emits",
+      "from": "V09:external_system:executor",
+      "to": "V09:event:completion",
+      "payload": "job/attempt/input/output hashes + status",
+      "timing": "async",
+      "invariant": "回执仅说明其对应尝试",
+      "failure": "重复或旧attempt不能污染新候选",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V09:claim:manifest-policy"
+      ]
+    },
+    {
+      "id": "V09:edge:inbox",
+      "type": "delivers",
+      "from": "V09:event:completion",
+      "to": "V09:store:inbox",
+      "payload": "回执身份与payload",
+      "timing": "async",
+      "invariant": "确认接收前持久化",
+      "failure": "写入失败允许再次送达",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V09:claim:manifest-policy"
+      ]
+    },
+    {
+      "id": "V09:edge:read-inbox",
+      "type": "reads",
+      "from": "V09:service:evidence",
+      "to": "V09:store:inbox",
+      "payload": "未核对回执",
+      "timing": "async",
+      "invariant": "按当前对象身份和摘要核验",
+      "failure": "失败可重放，不凭到达顺序覆盖",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V09:claim:manifest-policy"
+      ]
+    },
+    {
+      "id": "V09:edge:dispatch",
+      "type": "requests",
+      "from": "V09:service:release",
+      "to": "V09:external_system:recipient",
+      "payload": "approved manifest_hash + dispatch_id",
+      "timing": "async",
+      "invariant": "只发送批准版本",
+      "failure": "受理未知保留unknown并查询既有dispatch",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V09:claim:manifest-policy"
+      ]
+    },
+    {
+      "id": "V09:edge:reconcile-dispatch",
+      "type": "reads",
+      "from": "V09:service:release",
+      "to": "V09:external_system:recipient",
+      "payload": "dispatch_id + expected_hash",
+      "timing": "sync",
+      "invariant": "收到匹配摘要确认才acknowledged",
+      "failure": "无法核对保持unknown",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V09:claim:manifest-policy"
+      ]
+    },
+    {
+      "id": "V09:edge:project-run",
+      "type": "projects",
+      "from": "V09:object:run",
+      "to": "V09:ui:workbench",
+      "payload": "排队原因、状态、last_checked",
+      "timing": "async",
+      "invariant": "显示新鲜度及未知状态",
+      "failure": "迟到投影不能授权",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V09:claim:manifest-policy"
+      ]
+    },
+    {
+      "id": "V09:edge:project-release",
+      "type": "projects",
+      "from": "V09:object:release",
+      "to": "V09:ui:workbench",
+      "payload": "当前候选及审批/接收分别显示",
+      "timing": "async",
+      "invariant": "投影不取代guard",
+      "failure": "提交重新读取权威版本",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V09:claim:manifest-policy"
+      ]
+    }
+  ],
+  "lifecycles": [
+    {
+      "object_id": "V09:object:baseline",
+      "states": [
+        "draft",
+        "frozen",
+        "superseded"
+      ],
+      "transitions": [
+        {
+          "from": "draft",
+          "to": "frozen",
+          "trigger": "冻结",
+          "guard": "设计权限、输入齐全、摘要通过",
+          "durable_effect": "不可变manifest及版本",
+          "recovery": "失败仍draft；重试同operation"
+        },
+        {
+          "from": "frozen",
+          "to": "superseded",
+          "trigger": "新基线成为候选",
+          "guard": "明确新版本关系",
+          "durable_effect": "追加候选替换关系；历史保持",
+          "recovery": "旧回执归旧版本"
+        }
+      ]
+    },
+    {
+      "object_id": "V09:object:run",
+      "states": [
+        "queued",
+        "running",
+        "succeeded",
+        "failed",
+        "unknown",
+        "cancelled"
+      ],
+      "transitions": [
+        {
+          "from": "queued",
+          "to": "running",
+          "trigger": "job已确认运行",
+          "guard": "外部身份与输入匹配",
+          "durable_effect": "job映射与开始事实",
+          "recovery": "重复回执合并同attempt"
+        },
+        {
+          "from": "queued",
+          "to": "unknown",
+          "trigger": "提交响应丢失",
+          "guard": "既有提交已登记",
+          "durable_effect": "unknown及核对责任",
+          "recovery": "先查operation标签"
+        },
+        {
+          "from": "unknown",
+          "to": "running",
+          "trigger": "查询发现job运行",
+          "guard": "身份匹配",
+          "durable_effect": "接回既有job",
+          "recovery": "继续观察，不重建任务"
+        },
+        {
+          "from": "unknown",
+          "to": "failed",
+          "trigger": "核对确认未受理或已失败",
+          "guard": "有明确核对证据",
+          "durable_effect": "失败原因与核对记录",
+          "recovery": "允许新attempt，保持原记录"
+        },
+        {
+          "from": "running",
+          "to": "succeeded",
+          "trigger": "工具结束且产物登记",
+          "guard": "退出、产物、摘要一致",
+          "durable_effect": "完成事实；尚不等于证据valid",
+          "recovery": "缺报告交证据核验拒绝"
+        },
+        {
+          "from": "unknown",
+          "to": "succeeded",
+          "trigger": "查询发现完成产物",
+          "guard": "身份与摘要一致",
+          "durable_effect": "补记完成及核对证据",
+          "recovery": "证据另行验证"
+        },
+        {
+          "from": "running",
+          "to": "failed",
+          "trigger": "工具失败",
+          "guard": "可信job状态",
+          "durable_effect": "错误与剩余产物记录",
+          "recovery": "新attempt引用原失败"
+        },
+        {
+          "from": "running",
+          "to": "unknown",
+          "trigger": "执行器状态失联",
+          "guard": "先前job存在",
+          "durable_effect": "未知与最后核对时间",
+          "recovery": "查询或人工接管"
+        },
+        {
+          "from": "running",
+          "to": "cancelled",
+          "trigger": "外部确认取消",
+          "guard": "已核对执行器停止",
+          "durable_effect": "取消证据与资源释放",
+          "recovery": "未确认前不得宣称释放"
+        }
+      ]
+    },
+    {
+      "object_id": "V09:object:evidence",
+      "states": [
+        "candidate",
+        "valid",
+        "invalid",
+        "stale"
+      ],
+      "transitions": [
+        {
+          "from": "candidate",
+          "to": "valid",
+          "trigger": "报告核验",
+          "guard": "完整、输入匹配、检查确实运行且政策通过",
+          "durable_effect": "有效性与核验版本",
+          "recovery": "幂等核验同报告"
+        },
+        {
+          "from": "candidate",
+          "to": "invalid",
+          "trigger": "检查不通过或附件损坏",
+          "guard": "有可解释错误",
+          "durable_effect": "拒绝原因",
+          "recovery": "补传或重跑产生新证据身份"
+        },
+        {
+          "from": "valid",
+          "to": "stale",
+          "trigger": "候选依赖改变",
+          "guard": "影响图遍历确认",
+          "durable_effect": "对新候选不可复用关系",
+          "recovery": "旧基线历史仍保留"
+        }
+      ]
+    },
+    {
+      "object_id": "V09:object:release",
+      "states": [
+        "draft",
+        "approved",
+        "dispatched",
+        "unknown",
+        "acknowledged",
+        "withdrawn"
+      ],
+      "transitions": [
+        {
+          "from": "draft",
+          "to": "approved",
+          "trigger": "审批",
+          "guard": "有权且版本匹配、全部证据满足",
+          "durable_effect": "签核记录与不可变manifest",
+          "recovery": "并发冲突不混合版本"
+        },
+        {
+          "from": "approved",
+          "to": "dispatched",
+          "trigger": "外部受理明确",
+          "guard": "dispatch对应manifest",
+          "durable_effect": "受理ID",
+          "recovery": "重放查询同发送"
+        },
+        {
+          "from": "approved",
+          "to": "unknown",
+          "trigger": "发送超时",
+          "guard": "持久发送尝试存在",
+          "durable_effect": "未知及回查依据",
+          "recovery": "先核对接收系统"
+        },
+        {
+          "from": "dispatched",
+          "to": "acknowledged",
+          "trigger": "接收核验确认",
+          "guard": "摘要相同",
+          "durable_effect": "接收证明",
+          "recovery": "迟到重复不重复记账"
+        },
+        {
+          "from": "unknown",
+          "to": "acknowledged",
+          "trigger": "核对接收成功",
+          "guard": "dispatch与摘要相同",
+          "durable_effect": "核对证明",
+          "recovery": "继续下游独立义务"
+        },
+        {
+          "from": "acknowledged",
+          "to": "withdrawn",
+          "trigger": "发现缺陷",
+          "guard": "有权人发起并关联原包",
+          "durable_effect": "撤回要求与接收确认状态",
+          "recovery": "不能数据库删除冒充已阻止制造"
+        }
+      ]
+    }
+  ],
+  "algorithm_ids": [
+    "ALG:scheduling",
+    "ALG:graph-paths",
+    "ALG:top-k",
+    "ALG:caches"
+  ],
+  "claim_ids": [
+    "V09:claim:cadence-flow",
+    "V09:claim:openroad-stages",
+    "V09:claim:opensta-inputs",
+    "V09:claim:orfs-evidence",
+    "V09:claim:manifest-policy",
+    "V09:claim:dag-calculation",
+    "V09:claim:slack-example",
+    "V09:claim:evidence-transfer"
+  ],
+  "checks": [
+    {
+      "id": "V09:check:release",
+      "kind": "happy_path",
+      "given": "B1全部必需证据通过",
+      "when": "审批并发送M1",
+      "then": "一个manifest，批准与接收摘要一致",
+      "evidence_required": "UI操作、权威版本、审批记录、接收回执"
+    },
+    {
+      "id": "V09:check:completion-replay",
+      "kind": "duplicate",
+      "given": "同一完成事件两次",
+      "when": "两次消费",
+      "then": "一个有效报告引用及业务效果",
+      "evidence_required": "inbox及证据唯一键"
+    },
+    {
+      "id": "V09:check:late-old-run",
+      "kind": "out_of_order",
+      "given": "候选B2，B1回执未到",
+      "when": "B1成功迟到",
+      "then": "只更新B1历史，不使B2通过",
+      "evidence_required": "两基线manifest和投影"
+    },
+    {
+      "id": "V09:check:approval-race",
+      "kind": "concurrency",
+      "given": "两审批者及候选变更竞争",
+      "when": "提交旧expected_version",
+      "then": "唯一批准或明确冲突，无混合包",
+      "evidence_required": "事务版本、响应、签核记录"
+    },
+    {
+      "id": "V09:check:project-scope",
+      "kind": "tenant_isolation",
+      "given": "两租户同project/run号",
+      "when": "读列表、缓存、附件、job",
+      "then": "均按tenant/project授权",
+      "evidence_required": "命中与未命中响应、对象访问拒绝记录"
+    },
+    {
+      "id": "V09:check:job-timeout",
+      "kind": "unknown_outcome",
+      "given": "执行器已接单、响应丢失",
+      "when": "恢复worker查询job标签",
+      "then": "同一job被接回，不再执行第二次",
+      "evidence_required": "操作记录、外部job数量与核对轨迹"
+    },
+    {
+      "id": "V09:check:crash-and-corrupt",
+      "kind": "recovery",
+      "given": "审批后worker崩溃；另有损坏附件",
+      "when": "重放及附件核验",
+      "then": "不重复签核；损坏附件拒绝，不发布",
+      "evidence_required": "审批数、hash失败记录、发送数"
+    },
+    {
+      "id": "V09:check:negative-slack",
+      "kind": "policy_rejection",
+      "given": "setup+0.08/-0.05；平均+0.015",
+      "when": "申请批准",
+      "then": "因负slack拒绝",
+      "evidence_required": "逐条件指标、拒绝理由"
+    },
+    {
+      "id": "V09:check:missing-corner",
+      "kind": "coverage",
+      "given": "新增required corner但无报告",
+      "when": "申请批准",
+      "then": "incomplete拒绝",
+      "evidence_required": "required与actual集合差"
+    },
+    {
+      "id": "V09:check:critical-path",
+      "kind": "calculation",
+      "given": "S4 E3 P6 T2 D5 R1及文中DAG",
+      "when": "求无资源关键路径、单检查槽排程",
+      "then": "16与18分钟；P失效传播P/T/D/R",
+      "evidence_required": "固定fixture及本地计算记录"
+    }
+  ]
+}
