@@ -1,0 +1,134 @@
+{
+  "package_id": "P02",
+  "sources": [
+    {
+      "id": "P02-SRC-postgres-ranges",
+      "url": "https://www.postgresql.org/docs/current/rangetypes.html",
+      "title": "PostgreSQL — Range Types",
+      "provider": "PostgreSQL Global Development Group",
+      "original_url": "https://www.postgresql.org/docs/current/rangetypes.html",
+      "status": "verified-scoped"
+    }
+  ],
+  "reviews": [
+    {
+      "source_id": "D365_FS",
+      "date": "2026-10-14",
+      "status": "verified-scoped",
+      "method": "direct-public-web-read",
+      "locator": "https://learn.microsoft.com/en-us/dynamics365/field-service/work-order-status-booking-status#statuses-in-the-work-order-lifecycle",
+      "read_scope": "完整公开正文；重点 Statuses in the work order lifecycle、Posted、Complete your booking without completing your work order；页面标示更新 2026-08-10。",
+      "supported_claims": [
+        "V20:claim:status-boundary"
+      ],
+      "limitations": "网页有通用授权提示，但正文可读取。未读取或复制图片，未运行租户配置；仅核实声明的默认规则及配置边界。"
+    },
+    {
+      "source_id": "D365_FS_ARCH",
+      "date": "2026-10-14",
+      "status": "verified-scoped",
+      "method": "direct-public-web-read",
+      "locator": "https://learn.microsoft.com/en-us/dynamics365/field-service/field-service-architecture#the-work-order-is-scheduled-to-resources",
+      "read_scope": "完整公开正文；重点 Resource Requirement、Bookable Resource、Booking 与多次预约；页面标示更新 2026-08-26。",
+      "supported_claims": [
+        "V20:claim:requirement-booking"
+      ],
+      "limitations": "未复制架构图，未据图断言隐藏内部实现；正文用于对象职责，不用于支持具体存储栈或优化算法。"
+    },
+    {
+      "source_id": "P02-SRC-postgres-ranges",
+      "date": "2026-10-14",
+      "status": "verified-scoped",
+      "method": "direct-public-web-read",
+      "locator": "https://www.postgresql.org/docs/current/rangetypes.html#RANGETYPES-CONSTRAINT",
+      "read_scope": "Range Types 的区间边界与 8.17.10 Constraints on Ranges；访问时 current 标示 PostgreSQL 18。",
+      "supported_claims": [
+        "V20:claim:range-exclusion"
+      ],
+      "limitations": "未安装依赖或执行 SQL；选项落地仍需迁移与并发事务测试。"
+    }
+  ],
+  "claims": [
+    {
+      "id": "V20:claim:requirement-booking",
+      "case_id": "V20",
+      "kind": "source_fact",
+      "statement": "Resource Requirement 表达安排需求；Booking 表达资源时段，同一需求可多次预约；自动同步针对主要需求，手工多需求需另行处理。",
+      "source_ids": [
+        "D365_FS_ARCH"
+      ],
+      "locator": "The work order is scheduled to resources，正文第 1—4 段",
+      "limitations": "Dynamics 365 文档的对象说明；不支持本例自建排程算法、接收规则或 provider 内部栈。"
+    },
+    {
+      "id": "V20:claim:status-boundary",
+      "case_id": "V20",
+      "kind": "source_fact",
+      "statement": "工单和 booking 生命周期独立；默认多 booking 完成/取消组合影响 Completed，Posted 的 Invoice/Actuals 受配置影响。",
+      "source_ids": [
+        "D365_FS"
+      ],
+      "locator": "Statuses in the work order lifecycle，步骤 3 注记及步骤 6—7；Work order system status processes / Posted；Complete your booking without completing your work order for follow-up activity",
+      "limitations": "不是任何自定义状态下的通用聚合定理；不证明客户验收、零欠款或所有配置均开票。"
+    },
+    {
+      "id": "V20:claim:range-exclusion",
+      "case_id": "V20",
+      "kind": "source_fact",
+      "statement": "PostgreSQL 区间排他约束可拒绝重叠值；文档用 btree_gist 将房间相等与时间重叠组合。",
+      "source_ids": [
+        "P02-SRC-postgres-ranges"
+      ],
+      "locator": "8.17.10 Constraints on Ranges，reservation 与 room_reservation 示例",
+      "limitations": "仅支持技术选项可行性；没有运行 PostgreSQL，未验证本例租户、状态过滤、时区、锁或吞吐。"
+    },
+    {
+      "id": "V20:claim:acceptance-policy",
+      "case_id": "V20",
+      "kind": "synthetic",
+      "statement": "本例要求安装与校准均有合格结果、证据齐备且主管接受当前范围版本；取消 booking 不取消需求。",
+      "source_ids": [],
+      "locator": "V20.md：工单、需求、预约与接收各管什么；一条正常路径与三次中断",
+      "limitations": "教学策略，不能冒充 Microsoft 默认行为或合同/法定验收规则。"
+    },
+    {
+      "id": "V20:claim:scheduling-example",
+      "case_id": "V20",
+      "kind": "synthetic",
+      "statement": "安装90分钟、稳定30分钟、校准60分钟；林[0,120)、[180,300)，陈[60,240)；首选陈[120,180)，安装晚10分钟后改为[130,190)。",
+      "source_ids": [],
+      "locator": "V20.md：手算排程；checks-v20.py 的 scheduling fixtures",
+      "limitations": "静态可用窗口已扣路程；无全局最优证明，未接真实调度引擎。"
+    },
+    {
+      "id": "V20:claim:billing-example",
+      "case_id": "V20",
+      "kind": "synthetic",
+      "statement": "工作区间40+50+60=150分钟，每小时120，零件200，总应收500；300到账后仍欠200。",
+      "source_ids": [],
+      "locator": "V20.md：手算计费；checks-v20.py 的 journal fixtures",
+      "limitations": "不含税、质保、贷项、费用分摊和货币舍入；金额为记账单位。"
+    },
+    {
+      "id": "V20:claim:implementation",
+      "case_id": "V20",
+      "kind": "synthetic",
+      "statement": "自建应用以版本化需求、booking、接收、费用和 posting ledger 协调 UI 命令与外部核对；所列前后端、存储和队列为选项。",
+      "source_ids": [],
+      "locator": "V20.md：从排班板到现场回执；V20.json 全部 synthetic 边",
+      "limitations": "并非 provider 架构披露；本地 checks 不验证生产数据库、浏览器、网络或安全边界。"
+    },
+    {
+      "id": "V20:claim:closure-inference",
+      "case_id": "V20",
+      "kind": "inference",
+      "statement": "技术状态无法单独证明业务承诺全部兑现，应逐项检查范围与接收证据，并与到账分开。",
+      "source_ids": [
+        "D365_FS",
+        "D365_FS_ARCH"
+      ],
+      "locator": "V20.md：两段产品事实之后的模型分析；取消校准反例",
+      "limitations": "由对象与状态区别作出的原创推论，具体接收和付款规则仍属本例假设。"
+    }
+  ]
+}
