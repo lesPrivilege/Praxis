@@ -1,0 +1,1816 @@
+{
+  "contract_version": "1.0",
+  "case_id": "V03",
+  "title": "Sample → 校准分析 → 结果复核 → lot certificate",
+  "scope": "非药典液体材料的原创教学实验室；一项测定。LabWare仅公开功能参照；无真实仪器/ERP/签署集成；不构成专业或合规验证。",
+  "synthetic": true,
+  "source_ids": [
+    "LABWARE",
+    "P04-SRC-fda-oos-2022",
+    "P04-SRC-fda-data-integrity",
+    "P04-SRC-who-qcl-2024",
+    "P04-SRC-postgresql-rls"
+  ],
+  "nodes": [
+    {
+      "id": "V03:actor:receiver",
+      "type": "actor",
+      "label": "接样员",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + laboratory scope; role authorization required"
+    },
+    {
+      "id": "V03:actor:analyst",
+      "type": "actor",
+      "label": "分析员",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + laboratory scope; role authorization required"
+    },
+    {
+      "id": "V03:actor:reviewer",
+      "type": "actor",
+      "label": "合格复核员",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + laboratory scope; role authorization required"
+    },
+    {
+      "id": "V03:actor:qa",
+      "type": "actor",
+      "label": "质量负责人",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + laboratory scope; role authorization required"
+    },
+    {
+      "id": "V03:ui:workbench",
+      "type": "ui",
+      "label": "实验室工作台",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + laboratory scope; role authorization required"
+    },
+    {
+      "id": "V03:service:lab",
+      "type": "service",
+      "label": "实验室与质量服务",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + laboratory scope; role authorization required"
+    },
+    {
+      "id": "V03:store:records",
+      "type": "store",
+      "label": "关系记录与证据版本",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + laboratory scope; role authorization required"
+    },
+    {
+      "id": "V03:store:raw",
+      "type": "store",
+      "label": "原始文件对象存储",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + laboratory scope; role authorization required"
+    },
+    {
+      "id": "V03:store:inbox",
+      "type": "store",
+      "label": "持久通知 inbox",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + laboratory scope; role authorization required"
+    },
+    {
+      "id": "V03:external_system:instrument",
+      "type": "external_system",
+      "label": "合成仪器数据系统；未实际接入",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + laboratory scope; role authorization required"
+    },
+    {
+      "id": "V03:external_system:erp",
+      "type": "external_system",
+      "label": "合成库存/交付系统；未实际接入",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + laboratory scope; role authorization required"
+    },
+    {
+      "id": "V03:event:acquired",
+      "type": "event",
+      "label": "采集完成通知",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + laboratory scope; role authorization required"
+    },
+    {
+      "id": "V03:rule:release-guard",
+      "type": "rule",
+      "label": "版本、授权、身份、QC、OOS 放行 guard",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + laboratory scope; role authorization required"
+    },
+    {
+      "id": "V03:object:lot",
+      "type": "object",
+      "label": "Lot L1 与质量处置",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + laboratory scope; role authorization required"
+    },
+    {
+      "id": "V03:object:sample",
+      "type": "object",
+      "label": "Sample S1 与保管链",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + laboratory scope; role authorization required"
+    },
+    {
+      "id": "V03:object:aliquot",
+      "type": "object",
+      "label": "Aliquot A1/A2 与分样记录",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + laboratory scope; role authorization required"
+    },
+    {
+      "id": "V03:object:method",
+      "type": "object",
+      "label": "Method M1@3",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + laboratory scope; role authorization required"
+    },
+    {
+      "id": "V03:object:qualification",
+      "type": "object",
+      "label": "Instrument qualification I1@2",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + laboratory scope; role authorization required"
+    },
+    {
+      "id": "V03:object:calibration",
+      "type": "object",
+      "label": "Calibration C1@1 分析曲线",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + laboratory scope; role authorization required"
+    },
+    {
+      "id": "V03:object:run",
+      "type": "object",
+      "label": "Run R1 与采集身份",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + laboratory scope; role authorization required"
+    },
+    {
+      "id": "V03:object:qc",
+      "type": "object",
+      "label": "Independent QC Q1",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + laboratory scope; role authorization required"
+    },
+    {
+      "id": "V03:object:result",
+      "type": "object",
+      "label": "Result T1@1",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + laboratory scope; role authorization required"
+    },
+    {
+      "id": "V03:object:specification",
+      "type": "object",
+      "label": "Specification SP1@2 与 decision rule",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + laboratory scope; role authorization required"
+    },
+    {
+      "id": "V03:object:investigation",
+      "type": "object",
+      "label": "OOS investigation OOS1",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + laboratory scope; role authorization required"
+    },
+    {
+      "id": "V03:object:coa",
+      "type": "object",
+      "label": "CoA COA1@1 内容快照",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + laboratory scope; role authorization required"
+    },
+    {
+      "id": "V03:object:raw-file",
+      "type": "object",
+      "label": "Raw file F1 与摘要",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + laboratory scope; role authorization required"
+    },
+    {
+      "id": "V03:object:operation",
+      "type": "object",
+      "label": "Operation OP1 与外部结果核对",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + laboratory scope; role authorization required"
+    }
+  ],
+  "edges": [
+    {
+      "id": "V03:edge:receiver-workbench",
+      "type": "operates",
+      "from": "V03:actor:receiver",
+      "to": "V03:ui:workbench",
+      "payload": "本角色允许的任务、证据和动作",
+      "timing": "sync",
+      "invariant": "UI 可见性不代替服务端授权",
+      "failure": "无权或过期会话拒绝操作",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V03:claim:model",
+        "V03:claim:interaction"
+      ]
+    },
+    {
+      "id": "V03:edge:analyst-workbench",
+      "type": "operates",
+      "from": "V03:actor:analyst",
+      "to": "V03:ui:workbench",
+      "payload": "本角色允许的任务、证据和动作",
+      "timing": "sync",
+      "invariant": "UI 可见性不代替服务端授权",
+      "failure": "无权或过期会话拒绝操作",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V03:claim:model",
+        "V03:claim:interaction"
+      ]
+    },
+    {
+      "id": "V03:edge:reviewer-workbench",
+      "type": "operates",
+      "from": "V03:actor:reviewer",
+      "to": "V03:ui:workbench",
+      "payload": "本角色允许的任务、证据和动作",
+      "timing": "sync",
+      "invariant": "UI 可见性不代替服务端授权",
+      "failure": "无权或过期会话拒绝操作",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V03:claim:model",
+        "V03:claim:interaction"
+      ]
+    },
+    {
+      "id": "V03:edge:qa-workbench",
+      "type": "operates",
+      "from": "V03:actor:qa",
+      "to": "V03:ui:workbench",
+      "payload": "本角色允许的任务、证据和动作",
+      "timing": "sync",
+      "invariant": "UI 可见性不代替服务端授权",
+      "failure": "无权或过期会话拒绝操作",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V03:claim:model",
+        "V03:claim:interaction"
+      ]
+    },
+    {
+      "id": "V03:edge:command",
+      "type": "commands",
+      "from": "V03:ui:workbench",
+      "to": "V03:service:lab",
+      "payload": "tenant、身份、operation ID、对象版本、证据 epoch 和请求内容",
+      "timing": "sync",
+      "invariant": "同一签署绑定同一内容快照",
+      "failure": "冲突返回变更摘要；请求结果未知时回查 operation",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V03:claim:interaction",
+        "V03:claim:recovery"
+      ]
+    },
+    {
+      "id": "V03:edge:quality-authority",
+      "type": "authorizes",
+      "from": "V03:actor:qa",
+      "to": "V03:service:lab",
+      "payload": "签署责任与批准范围",
+      "timing": "static",
+      "invariant": "管理员与集成账号不得借用签署权限",
+      "failure": "权限缺失拒绝，保留审计",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V03:claim:model"
+      ]
+    },
+    {
+      "id": "V03:edge:guard",
+      "type": "authorizes",
+      "from": "V03:rule:release-guard",
+      "to": "V03:service:lab",
+      "payload": "未解决 OOS、有效分析与证据版本前提",
+      "timing": "sync",
+      "invariant": "计算通过仍需专业复核和质量批准",
+      "failure": "guard 不满足保持 on_hold",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V03:claim:oos-policy",
+        "V03:claim:decision-policy"
+      ]
+    },
+    {
+      "id": "V03:edge:owns-lot",
+      "type": "owns",
+      "from": "V03:service:lab",
+      "to": "V03:object:lot",
+      "payload": "对象的版本、状态与决定依据",
+      "timing": "static",
+      "invariant": "指定服务保存合成业务权威",
+      "failure": "冲突不覆盖旧版本",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V03:claim:model"
+      ]
+    },
+    {
+      "id": "V03:edge:owns-sample",
+      "type": "owns",
+      "from": "V03:service:lab",
+      "to": "V03:object:sample",
+      "payload": "对象的版本、状态与决定依据",
+      "timing": "static",
+      "invariant": "指定服务保存合成业务权威",
+      "failure": "冲突不覆盖旧版本",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V03:claim:model"
+      ]
+    },
+    {
+      "id": "V03:edge:owns-aliquot",
+      "type": "owns",
+      "from": "V03:service:lab",
+      "to": "V03:object:aliquot",
+      "payload": "对象的版本、状态与决定依据",
+      "timing": "static",
+      "invariant": "指定服务保存合成业务权威",
+      "failure": "冲突不覆盖旧版本",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V03:claim:model"
+      ]
+    },
+    {
+      "id": "V03:edge:owns-method",
+      "type": "owns",
+      "from": "V03:service:lab",
+      "to": "V03:object:method",
+      "payload": "对象的版本、状态与决定依据",
+      "timing": "static",
+      "invariant": "指定服务保存合成业务权威",
+      "failure": "冲突不覆盖旧版本",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V03:claim:model"
+      ]
+    },
+    {
+      "id": "V03:edge:owns-qualification",
+      "type": "owns",
+      "from": "V03:service:lab",
+      "to": "V03:object:qualification",
+      "payload": "对象的版本、状态与决定依据",
+      "timing": "static",
+      "invariant": "指定服务保存合成业务权威",
+      "failure": "冲突不覆盖旧版本",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V03:claim:model"
+      ]
+    },
+    {
+      "id": "V03:edge:owns-calibration",
+      "type": "owns",
+      "from": "V03:service:lab",
+      "to": "V03:object:calibration",
+      "payload": "对象的版本、状态与决定依据",
+      "timing": "static",
+      "invariant": "指定服务保存合成业务权威",
+      "failure": "冲突不覆盖旧版本",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V03:claim:model"
+      ]
+    },
+    {
+      "id": "V03:edge:owns-qc",
+      "type": "owns",
+      "from": "V03:service:lab",
+      "to": "V03:object:qc",
+      "payload": "对象的版本、状态与决定依据",
+      "timing": "static",
+      "invariant": "指定服务保存合成业务权威",
+      "failure": "冲突不覆盖旧版本",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V03:claim:model"
+      ]
+    },
+    {
+      "id": "V03:edge:owns-result",
+      "type": "owns",
+      "from": "V03:service:lab",
+      "to": "V03:object:result",
+      "payload": "对象的版本、状态与决定依据",
+      "timing": "static",
+      "invariant": "指定服务保存合成业务权威",
+      "failure": "冲突不覆盖旧版本",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V03:claim:model"
+      ]
+    },
+    {
+      "id": "V03:edge:owns-specification",
+      "type": "owns",
+      "from": "V03:service:lab",
+      "to": "V03:object:specification",
+      "payload": "对象的版本、状态与决定依据",
+      "timing": "static",
+      "invariant": "指定服务保存合成业务权威",
+      "failure": "冲突不覆盖旧版本",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V03:claim:model"
+      ]
+    },
+    {
+      "id": "V03:edge:owns-investigation",
+      "type": "owns",
+      "from": "V03:service:lab",
+      "to": "V03:object:investigation",
+      "payload": "对象的版本、状态与决定依据",
+      "timing": "static",
+      "invariant": "指定服务保存合成业务权威",
+      "failure": "冲突不覆盖旧版本",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V03:claim:model"
+      ]
+    },
+    {
+      "id": "V03:edge:owns-coa",
+      "type": "owns",
+      "from": "V03:service:lab",
+      "to": "V03:object:coa",
+      "payload": "对象的版本、状态与决定依据",
+      "timing": "static",
+      "invariant": "指定服务保存合成业务权威",
+      "failure": "冲突不覆盖旧版本",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V03:claim:model"
+      ]
+    },
+    {
+      "id": "V03:edge:owns-operation",
+      "type": "owns",
+      "from": "V03:service:lab",
+      "to": "V03:object:operation",
+      "payload": "对象的版本、状态与决定依据",
+      "timing": "static",
+      "invariant": "指定服务保存合成业务权威",
+      "failure": "冲突不覆盖旧版本",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V03:claim:model"
+      ]
+    },
+    {
+      "id": "V03:edge:acquisition-authority",
+      "type": "owns",
+      "from": "V03:external_system:instrument",
+      "to": "V03:object:run",
+      "payload": "真实采集身份、进度与结束事实的合成外部权威",
+      "timing": "static",
+      "invariant": "接入通知不自行证明采集完成",
+      "failure": "外部不可读时保持 unknown",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V03:claim:recovery"
+      ]
+    },
+    {
+      "id": "V03:edge:raw-authority",
+      "type": "owns",
+      "from": "V03:external_system:instrument",
+      "to": "V03:object:raw-file",
+      "payload": "采集原始字节与相关元数据",
+      "timing": "static",
+      "invariant": "本地副本保留来源与摘要",
+      "failure": "缺少文件或格式不可读阻断复核",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V03:claim:implementation"
+      ]
+    },
+    {
+      "id": "V03:edge:store-lot",
+      "type": "stores",
+      "from": "V03:store:records",
+      "to": "V03:object:lot",
+      "payload": "稳定身份、版本、审核和状态记录；run 为已核对映射",
+      "timing": "sync",
+      "invariant": "tenant 与对象身份一起保存；修改保留历史",
+      "failure": "事务失败不显示已完成",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V03:claim:implementation"
+      ]
+    },
+    {
+      "id": "V03:edge:store-sample",
+      "type": "stores",
+      "from": "V03:store:records",
+      "to": "V03:object:sample",
+      "payload": "稳定身份、版本、审核和状态记录；run 为已核对映射",
+      "timing": "sync",
+      "invariant": "tenant 与对象身份一起保存；修改保留历史",
+      "failure": "事务失败不显示已完成",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V03:claim:implementation"
+      ]
+    },
+    {
+      "id": "V03:edge:store-aliquot",
+      "type": "stores",
+      "from": "V03:store:records",
+      "to": "V03:object:aliquot",
+      "payload": "稳定身份、版本、审核和状态记录；run 为已核对映射",
+      "timing": "sync",
+      "invariant": "tenant 与对象身份一起保存；修改保留历史",
+      "failure": "事务失败不显示已完成",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V03:claim:implementation"
+      ]
+    },
+    {
+      "id": "V03:edge:store-method",
+      "type": "stores",
+      "from": "V03:store:records",
+      "to": "V03:object:method",
+      "payload": "稳定身份、版本、审核和状态记录；run 为已核对映射",
+      "timing": "sync",
+      "invariant": "tenant 与对象身份一起保存；修改保留历史",
+      "failure": "事务失败不显示已完成",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V03:claim:implementation"
+      ]
+    },
+    {
+      "id": "V03:edge:store-qualification",
+      "type": "stores",
+      "from": "V03:store:records",
+      "to": "V03:object:qualification",
+      "payload": "稳定身份、版本、审核和状态记录；run 为已核对映射",
+      "timing": "sync",
+      "invariant": "tenant 与对象身份一起保存；修改保留历史",
+      "failure": "事务失败不显示已完成",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V03:claim:implementation"
+      ]
+    },
+    {
+      "id": "V03:edge:store-calibration",
+      "type": "stores",
+      "from": "V03:store:records",
+      "to": "V03:object:calibration",
+      "payload": "稳定身份、版本、审核和状态记录；run 为已核对映射",
+      "timing": "sync",
+      "invariant": "tenant 与对象身份一起保存；修改保留历史",
+      "failure": "事务失败不显示已完成",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V03:claim:implementation"
+      ]
+    },
+    {
+      "id": "V03:edge:store-run",
+      "type": "stores",
+      "from": "V03:store:records",
+      "to": "V03:object:run",
+      "payload": "稳定身份、版本、审核和状态记录；run 为已核对映射",
+      "timing": "sync",
+      "invariant": "tenant 与对象身份一起保存；修改保留历史",
+      "failure": "事务失败不显示已完成",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V03:claim:implementation"
+      ]
+    },
+    {
+      "id": "V03:edge:store-qc",
+      "type": "stores",
+      "from": "V03:store:records",
+      "to": "V03:object:qc",
+      "payload": "稳定身份、版本、审核和状态记录；run 为已核对映射",
+      "timing": "sync",
+      "invariant": "tenant 与对象身份一起保存；修改保留历史",
+      "failure": "事务失败不显示已完成",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V03:claim:implementation"
+      ]
+    },
+    {
+      "id": "V03:edge:store-result",
+      "type": "stores",
+      "from": "V03:store:records",
+      "to": "V03:object:result",
+      "payload": "稳定身份、版本、审核和状态记录；run 为已核对映射",
+      "timing": "sync",
+      "invariant": "tenant 与对象身份一起保存；修改保留历史",
+      "failure": "事务失败不显示已完成",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V03:claim:implementation"
+      ]
+    },
+    {
+      "id": "V03:edge:store-specification",
+      "type": "stores",
+      "from": "V03:store:records",
+      "to": "V03:object:specification",
+      "payload": "稳定身份、版本、审核和状态记录；run 为已核对映射",
+      "timing": "sync",
+      "invariant": "tenant 与对象身份一起保存；修改保留历史",
+      "failure": "事务失败不显示已完成",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V03:claim:implementation"
+      ]
+    },
+    {
+      "id": "V03:edge:store-investigation",
+      "type": "stores",
+      "from": "V03:store:records",
+      "to": "V03:object:investigation",
+      "payload": "稳定身份、版本、审核和状态记录；run 为已核对映射",
+      "timing": "sync",
+      "invariant": "tenant 与对象身份一起保存；修改保留历史",
+      "failure": "事务失败不显示已完成",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V03:claim:implementation"
+      ]
+    },
+    {
+      "id": "V03:edge:store-coa",
+      "type": "stores",
+      "from": "V03:store:records",
+      "to": "V03:object:coa",
+      "payload": "稳定身份、版本、审核和状态记录；run 为已核对映射",
+      "timing": "sync",
+      "invariant": "tenant 与对象身份一起保存；修改保留历史",
+      "failure": "事务失败不显示已完成",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V03:claim:implementation"
+      ]
+    },
+    {
+      "id": "V03:edge:store-operation",
+      "type": "stores",
+      "from": "V03:store:records",
+      "to": "V03:object:operation",
+      "payload": "稳定身份、版本、审核和状态记录；run 为已核对映射",
+      "timing": "sync",
+      "invariant": "tenant 与对象身份一起保存；修改保留历史",
+      "failure": "事务失败不显示已完成",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V03:claim:implementation"
+      ]
+    },
+    {
+      "id": "V03:edge:store-raw",
+      "type": "stores",
+      "from": "V03:store:raw",
+      "to": "V03:object:raw-file",
+      "payload": "原始文件及格式版本",
+      "timing": "async",
+      "invariant": "先验证完整性，再挂接结果",
+      "failure": "暂存孤儿可清理，已引用证据不可误删",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V03:claim:implementation"
+      ]
+    },
+    {
+      "id": "V03:edge:read-records",
+      "type": "reads",
+      "from": "V03:service:lab",
+      "to": "V03:store:records",
+      "payload": "授权 scope 下的状态、版本与证据 epoch",
+      "timing": "sync",
+      "invariant": "签署不从 UI 缓存取授权事实",
+      "failure": "冲突后重新读取",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V03:claim:recovery"
+      ]
+    },
+    {
+      "id": "V03:edge:read-raw",
+      "type": "reads",
+      "from": "V03:service:lab",
+      "to": "V03:store:raw",
+      "payload": "按 tenant 授权取得原始文件，校验摘要",
+      "timing": "async",
+      "invariant": "元数据关系与字节均可重建",
+      "failure": "不可读或摘要冲突进入阻断",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V03:claim:implementation"
+      ]
+    },
+    {
+      "id": "V03:edge:start-acquisition",
+      "type": "requests",
+      "from": "V03:service:lab",
+      "to": "V03:external_system:instrument",
+      "payload": "OP1、R1、冻结的 aliquot manifest 与方法版本",
+      "timing": "async",
+      "invariant": "重试不能重新消耗样品",
+      "failure": "超时按同一 operation/run 核对，无法核对人工接管",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V03:claim:recovery"
+      ]
+    },
+    {
+      "id": "V03:edge:query-instrument",
+      "type": "reads",
+      "from": "V03:service:lab",
+      "to": "V03:external_system:instrument",
+      "payload": "按 operation/run 查询当前采集与文件",
+      "timing": "sync",
+      "invariant": "按采集时点评价校准，而非导入时间",
+      "failure": "保留 unknown 或 waiting_for_file",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V03:claim:lineage",
+        "V03:claim:recovery"
+      ]
+    },
+    {
+      "id": "V03:edge:emit-acquired",
+      "type": "emits",
+      "from": "V03:external_system:instrument",
+      "to": "V03:event:acquired",
+      "payload": "采集 ID、run、分样映射、采集时间、文件引用",
+      "timing": "async",
+      "invariant": "事件只是通知，不证明已完成本地复核",
+      "failure": "缺失通过轮询/对账发现",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V03:claim:recovery"
+      ]
+    },
+    {
+      "id": "V03:edge:deliver-acquired",
+      "type": "delivers",
+      "from": "V03:event:acquired",
+      "to": "V03:store:inbox",
+      "payload": "原通知、身份、摘要及接收信息",
+      "timing": "async",
+      "invariant": "同身份同内容幂等；异内容隔离",
+      "failure": "重复回原结果，冲突保留证据",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V03:claim:implementation"
+      ]
+    },
+    {
+      "id": "V03:edge:read-inbox",
+      "type": "reads",
+      "from": "V03:service:lab",
+      "to": "V03:store:inbox",
+      "payload": "待处理或未完成核对的通知",
+      "timing": "async",
+      "invariant": "提交后重放不重复生成结果",
+      "failure": "恢复补齐消费状态",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V03:claim:recovery"
+      ]
+    },
+    {
+      "id": "V03:edge:sample-in-lot",
+      "type": "contains",
+      "from": "V03:object:lot",
+      "to": "V03:object:sample",
+      "payload": "取样计划规定的样品及来源关联",
+      "timing": "static",
+      "invariant": "样品证据不独自证明全 lot 代表性",
+      "failure": "来源不明暂停批次判断",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V03:claim:model"
+      ]
+    },
+    {
+      "id": "V03:edge:aliquot-in-sample",
+      "type": "contains",
+      "from": "V03:object:sample",
+      "to": "V03:object:aliquot",
+      "payload": "母样、分样量、容器与保管信息",
+      "timing": "sync",
+      "invariant": "tenant/母样一致且数量可解释",
+      "failure": "混样或超量分样拒绝",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V03:claim:model"
+      ]
+    },
+    {
+      "id": "V03:edge:result-from-aliquot",
+      "type": "derived_from",
+      "from": "V03:object:result",
+      "to": "V03:object:aliquot",
+      "payload": "具体分样与制备版本",
+      "timing": "static",
+      "invariant": "不得按相近名称推测身份",
+      "failure": "manifest 不符进入 unmatched",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V03:claim:implementation"
+      ]
+    },
+    {
+      "id": "V03:edge:result-from-method",
+      "type": "derived_from",
+      "from": "V03:object:result",
+      "to": "V03:object:method",
+      "payload": "计算/采集依据的精确版本和时间",
+      "timing": "batch",
+      "invariant": "固定输入可重演，重新处理生成新版本",
+      "failure": "上游失效生成复查候选",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V03:claim:calculation",
+        "V03:claim:lineage"
+      ]
+    },
+    {
+      "id": "V03:edge:result-from-calibration",
+      "type": "derived_from",
+      "from": "V03:object:result",
+      "to": "V03:object:calibration",
+      "payload": "计算/采集依据的精确版本和时间",
+      "timing": "batch",
+      "invariant": "固定输入可重演，重新处理生成新版本",
+      "failure": "上游失效生成复查候选",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V03:claim:calculation",
+        "V03:claim:lineage"
+      ]
+    },
+    {
+      "id": "V03:edge:result-from-raw-file",
+      "type": "derived_from",
+      "from": "V03:object:result",
+      "to": "V03:object:raw-file",
+      "payload": "计算/采集依据的精确版本和时间",
+      "timing": "batch",
+      "invariant": "固定输入可重演，重新处理生成新版本",
+      "failure": "上游失效生成复查候选",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V03:claim:calculation",
+        "V03:claim:lineage"
+      ]
+    },
+    {
+      "id": "V03:edge:result-needs-qualification",
+      "type": "depends_on",
+      "from": "V03:object:result",
+      "to": "V03:object:qualification",
+      "payload": "分析有效性的独立前提",
+      "timing": "static",
+      "invariant": "仪器资质、曲线拟合与 QC 各自成立",
+      "failure": "失败先阻断分析，不等同产品 OOS",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V03:claim:model",
+        "V03:claim:calculation"
+      ]
+    },
+    {
+      "id": "V03:edge:result-needs-qc",
+      "type": "depends_on",
+      "from": "V03:object:result",
+      "to": "V03:object:qc",
+      "payload": "分析有效性的独立前提",
+      "timing": "static",
+      "invariant": "仪器资质、曲线拟合与 QC 各自成立",
+      "failure": "失败先阻断分析，不等同产品 OOS",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V03:claim:model",
+        "V03:claim:calculation"
+      ]
+    },
+    {
+      "id": "V03:edge:result-needs-specification",
+      "type": "depends_on",
+      "from": "V03:object:result",
+      "to": "V03:object:specification",
+      "payload": "限值、单位、decision rule 与适用范围",
+      "timing": "static",
+      "invariant": "不能事后改规则静默改变历史结论",
+      "failure": "规则不适用需专业裁定",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V03:claim:decision-policy"
+      ]
+    },
+    {
+      "id": "V03:edge:lot-needs-result",
+      "type": "depends_on",
+      "from": "V03:object:lot",
+      "to": "V03:object:result",
+      "payload": "批准取样计划要求的全部检验与复核",
+      "timing": "sync",
+      "invariant": "一项通过不掩盖未完成/OOS 项",
+      "failure": "未解决调查阻止正常放行",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V03:claim:oos-policy"
+      ]
+    },
+    {
+      "id": "V03:edge:coa-from-result",
+      "type": "derived_from",
+      "from": "V03:object:coa",
+      "to": "V03:object:result",
+      "payload": "签署时冻结的结果版本清单",
+      "timing": "sync",
+      "invariant": "旧证书可回查旧结果，修订有新身份",
+      "failure": "影响传播暂停分发并转质量复核",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V03:claim:lineage",
+        "V03:claim:recovery"
+      ]
+    },
+    {
+      "id": "V03:edge:coa-from-specification",
+      "type": "derived_from",
+      "from": "V03:object:coa",
+      "to": "V03:object:specification",
+      "payload": "证书上的规格及判定版本",
+      "timing": "sync",
+      "invariant": "签署后不漂移到最新规则",
+      "failure": "规则变更产生可追踪修订",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V03:claim:model"
+      ]
+    },
+    {
+      "id": "V03:edge:send-certificate",
+      "type": "requests",
+      "from": "V03:service:lab",
+      "to": "V03:external_system:erp",
+      "payload": "证书 ID/版本、摘要、批次质量处置及传送身份",
+      "timing": "async",
+      "invariant": "实际发送前核对当前分发资格/epoch；本地放行与外部库存状态分别确认",
+      "failure": "撤销取消未开始任务；已发请求或超时留unknown，查询后决定通知/重试/人工核对",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V03:claim:recovery"
+      ]
+    },
+    {
+      "id": "V03:edge:query-erp",
+      "type": "reads",
+      "from": "V03:service:lab",
+      "to": "V03:external_system:erp",
+      "payload": "按证书及传送身份核对外部受理/库存映射",
+      "timing": "sync",
+      "invariant": "受理通知不自动等同已解除库存冻结",
+      "failure": "差异进入责任人对账",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V03:claim:recovery"
+      ]
+    },
+    {
+      "id": "V03:edge:project-sample",
+      "type": "projects",
+      "from": "V03:object:sample",
+      "to": "V03:ui:workbench",
+      "payload": "状态、版本、阻断原因与最后核对时间",
+      "timing": "async",
+      "invariant": "投影新鲜度可见，不授权放行",
+      "failure": "撤销后刷新；权威 guard 即时阻断",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V03:claim:interaction"
+      ]
+    },
+    {
+      "id": "V03:edge:project-run",
+      "type": "projects",
+      "from": "V03:object:run",
+      "to": "V03:ui:workbench",
+      "payload": "状态、版本、阻断原因与最后核对时间",
+      "timing": "async",
+      "invariant": "投影新鲜度可见，不授权放行",
+      "failure": "撤销后刷新；权威 guard 即时阻断",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V03:claim:interaction"
+      ]
+    },
+    {
+      "id": "V03:edge:project-result",
+      "type": "projects",
+      "from": "V03:object:result",
+      "to": "V03:ui:workbench",
+      "payload": "状态、版本、阻断原因与最后核对时间",
+      "timing": "async",
+      "invariant": "投影新鲜度可见，不授权放行",
+      "failure": "撤销后刷新；权威 guard 即时阻断",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V03:claim:interaction"
+      ]
+    },
+    {
+      "id": "V03:edge:project-lot",
+      "type": "projects",
+      "from": "V03:object:lot",
+      "to": "V03:ui:workbench",
+      "payload": "状态、版本、阻断原因与最后核对时间",
+      "timing": "async",
+      "invariant": "投影新鲜度可见，不授权放行",
+      "failure": "撤销后刷新；权威 guard 即时阻断",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V03:claim:interaction"
+      ]
+    },
+    {
+      "id": "V03:edge:project-coa",
+      "type": "projects",
+      "from": "V03:object:coa",
+      "to": "V03:ui:workbench",
+      "payload": "状态、版本、阻断原因与最后核对时间",
+      "timing": "async",
+      "invariant": "投影新鲜度可见，不授权放行",
+      "failure": "撤销后刷新；权威 guard 即时阻断",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V03:claim:interaction"
+      ]
+    },
+    {
+      "id": "V03:edge:project-operation",
+      "type": "projects",
+      "from": "V03:object:operation",
+      "to": "V03:ui:workbench",
+      "payload": "状态、版本、阻断原因与最后核对时间",
+      "timing": "async",
+      "invariant": "投影新鲜度可见，不授权放行",
+      "failure": "撤销后刷新；权威 guard 即时阻断",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V03:claim:interaction"
+      ]
+    }
+  ],
+  "lifecycles": [
+    {
+      "object_id": "V03:object:sample",
+      "states": [
+        "expected",
+        "received",
+        "quarantined",
+        "prepared",
+        "retained",
+        "disposed",
+        "rejected"
+      ],
+      "transitions": [
+        {
+          "from": "expected",
+          "to": "received",
+          "trigger": "接样确认",
+          "guard": "身份、量与接收条件核对",
+          "durable_effect": "接收及交接记录同事务保存",
+          "recovery": "重复请求回原接收"
+        },
+        {
+          "from": "expected",
+          "to": "quarantined",
+          "trigger": "身份或条件异常",
+          "guard": "异常依据已记录",
+          "durable_effect": "隔离原因与责任人",
+          "recovery": "确认后接收或拒收"
+        },
+        {
+          "from": "quarantined",
+          "to": "received",
+          "trigger": "异常调查关闭",
+          "guard": "授权结论允许接收",
+          "durable_effect": "保留异常及处置",
+          "recovery": "不得静默删除异常"
+        },
+        {
+          "from": "quarantined",
+          "to": "rejected",
+          "trigger": "拒收决定",
+          "guard": "合格人员授权",
+          "durable_effect": "拒收依据与交接",
+          "recovery": "实物另行交接"
+        },
+        {
+          "from": "received",
+          "to": "prepared",
+          "trigger": "分样制备",
+          "guard": "母样/tenant/量/方法有效",
+          "durable_effect": "分样身份与量平衡",
+          "recovery": "混样或超量拒绝"
+        },
+        {
+          "from": "prepared",
+          "to": "retained",
+          "trigger": "本轮使用结束",
+          "guard": "剩余量与保存条件确认",
+          "durable_effect": "位置与保留安排",
+          "recovery": "位置不明转调查"
+        },
+        {
+          "from": "retained",
+          "to": "disposed",
+          "trigger": "到达处置条件",
+          "guard": "保留政策及授权允许",
+          "durable_effect": "量、人员和处置记录",
+          "recovery": "实物不可回滚，误处置调查"
+        }
+      ]
+    },
+    {
+      "object_id": "V03:object:aliquot",
+      "states": [
+        "prepared",
+        "allocated",
+        "consumed",
+        "retained",
+        "disposed"
+      ],
+      "transitions": [
+        {
+          "from": "prepared",
+          "to": "allocated",
+          "trigger": "安排运行",
+          "guard": "正确母样、容器与方法",
+          "durable_effect": "绑定 run manifest",
+          "recovery": "冲突拒绝"
+        },
+        {
+          "from": "allocated",
+          "to": "consumed",
+          "trigger": "采集实际使用",
+          "guard": "外部采集证据已核对",
+          "durable_effect": "记录消耗与采集身份",
+          "recovery": "unknown 先核对不再次消耗"
+        },
+        {
+          "from": "prepared",
+          "to": "retained",
+          "trigger": "留样安排",
+          "guard": "保存量与位置确认",
+          "durable_effect": "留样记录",
+          "recovery": "位置变更保留交接"
+        },
+        {
+          "from": "retained",
+          "to": "disposed",
+          "trigger": "授权处置",
+          "guard": "保留期限/条件满足",
+          "durable_effect": "处置证据",
+          "recovery": "不可伪造恢复实物"
+        }
+      ]
+    },
+    {
+      "object_id": "V03:object:method",
+      "states": [
+        "draft",
+        "approved",
+        "retired"
+      ],
+      "transitions": [
+        {
+          "from": "draft",
+          "to": "approved",
+          "trigger": "批准版本",
+          "guard": "专业授权、适用范围和规则完整",
+          "durable_effect": "不可变已批准版本",
+          "recovery": "重新批准创建新版本"
+        },
+        {
+          "from": "approved",
+          "to": "retired",
+          "trigger": "停止用于新任务",
+          "guard": "授权变更及生效范围",
+          "durable_effect": "旧版仍被历史记录引用",
+          "recovery": "不得重写旧报告"
+        }
+      ]
+    },
+    {
+      "object_id": "V03:object:specification",
+      "states": [
+        "draft",
+        "approved",
+        "retired"
+      ],
+      "transitions": [
+        {
+          "from": "draft",
+          "to": "approved",
+          "trigger": "批准版本",
+          "guard": "专业授权、适用范围和规则完整",
+          "durable_effect": "不可变已批准版本",
+          "recovery": "重新批准创建新版本"
+        },
+        {
+          "from": "approved",
+          "to": "retired",
+          "trigger": "停止用于新任务",
+          "guard": "授权变更及生效范围",
+          "durable_effect": "旧版仍被历史记录引用",
+          "recovery": "不得重写旧报告"
+        }
+      ]
+    },
+    {
+      "object_id": "V03:object:qualification",
+      "states": [
+        "draft",
+        "qualified",
+        "expired",
+        "suspended"
+      ],
+      "transitions": [
+        {
+          "from": "draft",
+          "to": "qualified",
+          "trigger": "仪器资格批准",
+          "guard": "人员与依据有效",
+          "durable_effect": "功能范围与有效区间",
+          "recovery": "未确认不准用"
+        },
+        {
+          "from": "qualified",
+          "to": "expired",
+          "trigger": "到达使用终点",
+          "guard": "资格区间已结束",
+          "durable_effect": "停止新使用",
+          "recovery": "历史按采集时点核对"
+        },
+        {
+          "from": "qualified",
+          "to": "suspended",
+          "trigger": "设备异常",
+          "guard": "记录原因与影响范围",
+          "durable_effect": "设备停用与复查任务",
+          "recovery": "专业确认后新资格记录"
+        }
+      ]
+    },
+    {
+      "object_id": "V03:object:calibration",
+      "states": [
+        "draft",
+        "approved",
+        "expired",
+        "revoked"
+      ],
+      "transitions": [
+        {
+          "from": "draft",
+          "to": "approved",
+          "trigger": "批准分析曲线",
+          "guard": "方法、标准物质、范围及性能通过",
+          "durable_effect": "参数、输入与有效区间",
+          "recovery": "退化/外推条件拒绝"
+        },
+        {
+          "from": "approved",
+          "to": "expired",
+          "trigger": "有效区间终点",
+          "guard": "时间到达",
+          "durable_effect": "禁止后续使用",
+          "recovery": "旧测量按原采集时点核对"
+        },
+        {
+          "from": "approved",
+          "to": "revoked",
+          "trigger": "发现追溯问题",
+          "guard": "有责任人的原因与影响区间",
+          "durable_effect": "更新 evidence epoch 与影响任务",
+          "recovery": "先阻断签署，图任务可重放"
+        },
+        {
+          "from": "expired",
+          "to": "revoked",
+          "trigger": "到期后发现既往问题",
+          "guard": "专业认定影响区间",
+          "durable_effect": "保留到期与撤销两种事实",
+          "recovery": "不得遗漏历史证书"
+        }
+      ]
+    },
+    {
+      "object_id": "V03:object:run",
+      "states": [
+        "planned",
+        "acquiring",
+        "acquired",
+        "evaluated",
+        "aborted"
+      ],
+      "transitions": [
+        {
+          "from": "planned",
+          "to": "acquiring",
+          "trigger": "启动请求获仪器确认",
+          "guard": "manifest、方法及权限有效",
+          "durable_effect": "保存外部采集身份",
+          "recovery": "超时留 unknown operation"
+        },
+        {
+          "from": "acquiring",
+          "to": "acquired",
+          "trigger": "核对采集完成",
+          "guard": "原采集身份一致",
+          "durable_effect": "完成事实和原始文件映射",
+          "recovery": "文件未到保留待文件状态"
+        },
+        {
+          "from": "acquiring",
+          "to": "aborted",
+          "trigger": "采集中断",
+          "guard": "外部/人工中断证据",
+          "durable_effect": "保留已采数据及原因",
+          "recovery": "新采集使用新 run 身份"
+        },
+        {
+          "from": "acquired",
+          "to": "evaluated",
+          "trigger": "评价运行",
+          "guard": "原文件完整且适用规则存在",
+          "durable_effect": "QC、分析评价与计算版本",
+          "recovery": "异常不删除原数据"
+        }
+      ]
+    },
+    {
+      "object_id": "V03:object:qc",
+      "states": [
+        "pending",
+        "passed",
+        "failed"
+      ],
+      "transitions": [
+        {
+          "from": "pending",
+          "to": "passed",
+          "trigger": "独立 QC 计算",
+          "guard": "按预定规则通过",
+          "durable_effect": "输入和计算依据",
+          "recovery": "重算留版本"
+        },
+        {
+          "from": "pending",
+          "to": "failed",
+          "trigger": "独立 QC 越界",
+          "guard": "有效 QC 观测",
+          "durable_effect": "阻断相关分析并调查",
+          "recovery": "不得只保留通过的 QC"
+        }
+      ]
+    },
+    {
+      "object_id": "V03:object:result",
+      "states": [
+        "captured",
+        "calculated",
+        "submitted",
+        "reviewed",
+        "blocked",
+        "oos",
+        "review_required",
+        "superseded"
+      ],
+      "transitions": [
+        {
+          "from": "captured",
+          "to": "calculated",
+          "trigger": "确定性计算",
+          "guard": "原文件、单位、范围、校准、QC 有效",
+          "durable_effect": "不可变计算版本",
+          "recovery": "无效前提进入 blocked"
+        },
+        {
+          "from": "captured",
+          "to": "blocked",
+          "trigger": "前提校验失败",
+          "guard": "失败原因明确",
+          "durable_effect": "保留原始观测及阻断",
+          "recovery": "修复依据后创建合适的新计算版本"
+        },
+        {
+          "from": "calculated",
+          "to": "oos",
+          "trigger": "规格评价",
+          "guard": "有效结果超限",
+          "durable_effect": "异常与调查关联",
+          "recovery": "后续合格不抹去 OOS"
+        },
+        {
+          "from": "calculated",
+          "to": "review_required",
+          "trigger": "自定义 uncertainty guard 未满足",
+          "guard": "数值未超限且边界不足",
+          "durable_effect": "人工判断入口",
+          "recovery": "不能自动降为合格"
+        },
+        {
+          "from": "calculated",
+          "to": "submitted",
+          "trigger": "提交复核",
+          "guard": "数值条件通过且证据齐备",
+          "durable_effect": "冻结复核版本",
+          "recovery": "并发变化返回冲突"
+        },
+        {
+          "from": "submitted",
+          "to": "reviewed",
+          "trigger": "合格复核员批准",
+          "guard": "身份、原数据、计算、异常和轨迹核对",
+          "durable_effect": "具名复核与证据清单",
+          "recovery": "新问题转调查，禁止覆盖"
+        },
+        {
+          "from": "reviewed",
+          "to": "superseded",
+          "trigger": "批准修订结果",
+          "guard": "新版本已复核及原因成立",
+          "durable_effect": "保存替代关系",
+          "recovery": "影响旧证书需另行处置"
+        }
+      ]
+    },
+    {
+      "object_id": "V03:object:investigation",
+      "states": [
+        "opened",
+        "planned",
+        "investigating",
+        "closed"
+      ],
+      "transitions": [
+        {
+          "from": "opened",
+          "to": "planned",
+          "trigger": "批准调查/重测计划",
+          "guard": "科学问题、停止条件、责任人明确",
+          "durable_effect": "预定计划版本",
+          "recovery": "不得依据结果随意增加次数"
+        },
+        {
+          "from": "planned",
+          "to": "investigating",
+          "trigger": "执行获准调查",
+          "guard": "按计划且实物仍可用",
+          "durable_effect": "保留全部新增证据",
+          "recovery": "偏离计划要记录和批准"
+        },
+        {
+          "from": "investigating",
+          "to": "closed",
+          "trigger": "质量负责人处置",
+          "guard": "全部证据、根因/未明原因及措施已审",
+          "durable_effect": "具名结论与对批次影响",
+          "recovery": "未解决结论不得自动放行"
+        }
+      ]
+    },
+    {
+      "object_id": "V03:object:lot",
+      "states": [
+        "on_hold",
+        "review_ready",
+        "released",
+        "rejected",
+        "reassessment_hold"
+      ],
+      "transitions": [
+        {
+          "from": "on_hold",
+          "to": "review_ready",
+          "trigger": "检验与复核齐备",
+          "guard": "全部必需项和调查政策满足",
+          "durable_effect": "待签署证据快照",
+          "recovery": "证据改变撤回就绪"
+        },
+        {
+          "from": "review_ready",
+          "to": "released",
+          "trigger": "质量批准",
+          "guard": "权限、lot version、epoch 和全部依赖原子核对",
+          "durable_effect": "决定、证书快照及 outbox 同事务",
+          "recovery": "冲突重新读取；外部结果另核对"
+        },
+        {
+          "from": "on_hold",
+          "to": "rejected",
+          "trigger": "质量拒绝",
+          "guard": "专业调查结论有效",
+          "durable_effect": "拒绝与库存交接任务",
+          "recovery": "不覆盖测量数据"
+        },
+        {
+          "from": "released",
+          "to": "reassessment_hold",
+          "trigger": "依赖失效",
+          "guard": "有影响依据的校准/结果异常",
+          "durable_effect": "保留旧签署并暂停分发",
+          "recovery": "复查后新决定，通知已接收方"
+        },
+        {
+          "from": "reassessment_hold",
+          "to": "review_ready",
+          "trigger": "复查允许再批准",
+          "guard": "新证据及专业结论完整",
+          "durable_effect": "新版本证据快照",
+          "recovery": "旧证书不自动复活"
+        }
+      ]
+    },
+    {
+      "object_id": "V03:object:coa",
+      "states": [
+        "draft",
+        "approved",
+        "issued",
+        "distribution_hold",
+        "withdrawn",
+        "superseded"
+      ],
+      "transitions": [
+        {
+          "from": "draft",
+          "to": "approved",
+          "trigger": "批准报告内容",
+          "guard": "具名签署与快照一致",
+          "durable_effect": "不可变内容及摘要",
+          "recovery": "内容变更需重签"
+        },
+        {
+          "from": "approved",
+          "to": "issued",
+          "trigger": "文件生成完成",
+          "guard": "字节与已批准内容一致；当前分发资格、证据 epoch 与依赖重新核对有效",
+          "durable_effect": "文件版本及分发任务",
+          "recovery": "撤销或epoch变化暂停并重评；不能仅凭旧签署继续发送"
+        },
+        {
+          "from": "approved",
+          "to": "distribution_hold",
+          "trigger": "批准后、发出前发现依赖异常",
+          "guard": "影响依据已记录或当前分发资格失效",
+          "durable_effect": "暂停证书生成/发送，取消未开始任务并保留签署",
+          "recovery": "新依据重评；已发出请求按unknown核对，不能保证远程撤回"
+        },
+        {
+          "from": "issued",
+          "to": "distribution_hold",
+          "trigger": "上游依据需复查",
+          "guard": "影响证据与责任人已记录",
+          "durable_effect": "暂停继续分发及通知任务",
+          "recovery": "已下载文件不能远程擦除"
+        },
+        {
+          "from": "distribution_hold",
+          "to": "withdrawn",
+          "trigger": "质量撤销",
+          "guard": "专业处置决定",
+          "durable_effect": "撤销原因和接收确认记录",
+          "recovery": "外部未知继续对账"
+        },
+        {
+          "from": "distribution_hold",
+          "to": "superseded",
+          "trigger": "新报告获批",
+          "guard": "新身份引用原报告且解释变更",
+          "durable_effect": "替代关系",
+          "recovery": "旧报告保留可审计"
+        }
+      ]
+    },
+    {
+      "object_id": "V03:object:operation",
+      "states": [
+        "saved",
+        "unknown",
+        "accepted",
+        "reconciled",
+        "manual_review"
+      ],
+      "transitions": [
+        {
+          "from": "saved",
+          "to": "unknown",
+          "trigger": "调用超时",
+          "guard": "外部可能已执行",
+          "durable_effect": "尝试身份、payload 与未知事实",
+          "recovery": "按原身份查询，不盲目新建"
+        },
+        {
+          "from": "saved",
+          "to": "accepted",
+          "trigger": "外部返回受理身份",
+          "guard": "返回身份和请求匹配",
+          "durable_effect": "保存 receipt",
+          "recovery": "受理仍不等于业务完成"
+        },
+        {
+          "from": "unknown",
+          "to": "reconciled",
+          "trigger": "外部核对成功",
+          "guard": "按 operation/run/证书身份确认",
+          "durable_effect": "保存权威观察",
+          "recovery": "旧消息不回退"
+        },
+        {
+          "from": "unknown",
+          "to": "manual_review",
+          "trigger": "缺少可查身份或长期不可确认",
+          "guard": "自动核对无法确定",
+          "durable_effect": "具名人工任务",
+          "recovery": "不得把未知写为失败并自动再执行"
+        },
+        {
+          "from": "accepted",
+          "to": "reconciled",
+          "trigger": "核对最终事实",
+          "guard": "采集或分发/库存实际状态可查",
+          "durable_effect": "闭环确认",
+          "recovery": "差异保留待处置"
+        }
+      ]
+    }
+  ],
+  "algorithm_ids": [
+    "ALG:approximate",
+    "ALG:lookup",
+    "ALG:graph-paths",
+    "ALG:windows",
+    "ALG:caches"
+  ],
+  "claim_ids": [
+    "V03:claim:labware-workflow",
+    "V03:claim:labware-instruments",
+    "V03:claim:fda-oos",
+    "V03:claim:fda-records",
+    "V03:claim:who-report",
+    "V03:claim:who-decision",
+    "V03:claim:who-equipment",
+    "V03:claim:postgres-rls",
+    "V03:claim:model",
+    "V03:claim:oos-policy",
+    "V03:claim:interaction",
+    "V03:claim:calculation",
+    "V03:claim:decision-policy",
+    "V03:claim:lineage",
+    "V03:claim:implementation",
+    "V03:claim:recovery",
+    "V03:claim:workload",
+    "V03:claim:transfers"
+  ],
+  "checks": [
+    {
+      "id": "V03:check:normal",
+      "kind": "happy_path",
+      "given": "固定标准点、18AU样品、11.2AU QC及有效全部证据",
+      "when": "计算、专业复核、质量签署和外部确认",
+      "then": "8.5mg/L；一个批准版本；库存动作单独核对",
+      "evidence_required": "公式与版本清单、签署及接收记录；local test_01只验证计算，实际UI/provider未运行"
+    },
+    {
+      "id": "V03:check:duplicate",
+      "kind": "duplicate",
+      "given": "完整键tenant A / instrument I1 / run R1 / ACQ1已导入；另一仪器及run可复用ACQ1",
+      "when": "相同内容重复，再同ID异内容",
+      "then": "同完整键同内容仅一个结果；异内容拒绝；不同instrument/run独立保存",
+      "evidence_required": "test_12/21 local SQLite；生产 inbox/隔离日志尚需实现"
+    },
+    {
+      "id": "V03:check:reorder",
+      "kind": "out_of_order",
+      "given": "外部当前 acquired",
+      "when": "迟到 acquiring 通知抵达",
+      "then": "重新核对当前采集；不按到达顺序回退",
+      "evidence_required": "test_18 explicit stub；真实通知适配器未运行"
+    },
+    {
+      "id": "V03:check:race",
+      "kind": "concurrency",
+      "given": "两连接读取 lot version1 epoch0",
+      "when": "依次尝试两个旧版本批准",
+      "then": "一份证书，第二次冲突",
+      "evidence_required": "test_15 deterministic SQLite interleaving；未测真实同时请求/PG锁"
+    },
+    {
+      "id": "V03:check:tenant",
+      "kind": "tenant_isolation",
+      "given": "两个tenant都用S1/ACQ1",
+      "when": "查询A并尝试跨tenant/母样分样",
+      "then": "只读A，交叉关系拒绝",
+      "evidence_required": "test_10/13局部fixture；对象存储、缓存、RLS、UI隔离未运行"
+    },
+    {
+      "id": "V03:check:unknown",
+      "kind": "unknown_outcome",
+      "given": "仪器stub已受理后超时",
+      "when": "按原operation查询",
+      "then": "同一R1被找回，start_calls=1",
+      "evidence_required": "test_18 stub calls；真实仪器文件同步未运行"
+    },
+    {
+      "id": "V03:check:recovery",
+      "kind": "recovery",
+      "given": "结果落入SQLite后未确认消费",
+      "when": "关闭并重开连接，再投递",
+      "then": "一个结果，补齐消费标记",
+      "evidence_required": "test_14 SQLite文件重开；不是进程kill、主机宕机或对象存储恢复"
+    },
+    {
+      "id": "V03:check:oos",
+      "kind": "domain_failure",
+      "given": "先9.2再8.5，调查未解决",
+      "when": "尝试按最后一次放行",
+      "then": "全部结果保留，拒绝放行",
+      "evidence_required": "test_08/09/19 known-bad最后一次策略被反例击穿"
+    },
+    {
+      "id": "V03:check:guard",
+      "kind": "algorithm",
+      "given": "18/18.6/19.4AU，U0.30mg/L",
+      "when": "自定义非药典规则计算",
+      "then": "eligible / review_required / oos 三者区分",
+      "evidence_required": "test_01/02/19；真实方法/不确定度未验证"
+    },
+    {
+      "id": "V03:check:calibration",
+      "kind": "domain_failure",
+      "given": "采集59/60分钟，晚导入90分钟",
+      "when": "检查[0,60)及第40分钟起追溯撤销",
+      "then": "终点拒绝；迟到不改变采集时点；追溯范围正确",
+      "evidence_required": "test_06/07/19；仪器时钟/可信时间未实测"
+    },
+    {
+      "id": "V03:check:qc",
+      "kind": "domain_failure",
+      "given": "样品18AU但独立QC12AU",
+      "when": "运行有效性检查",
+      "then": "qc_blocked，不能把样品数值合格当可放行",
+      "evidence_required": "test_05"
+    },
+    {
+      "id": "V03:check:lineage",
+      "kind": "algorithm",
+      "given": "C1只影响T1与COA1，C2独立；包含坏循环",
+      "when": "反向遍历结合时间过滤",
+      "then": "仅候选集合；循环遍历终止；不是自动宣布产品不合格",
+      "evidence_required": "test_11；业务层图写入合法性和大图性能未实现"
+    },
+    {
+      "id": "V03:check:epoch",
+      "kind": "concurrency",
+      "given": "旧快照与校准撤销竞争",
+      "when": "分别执行撤销在先/签署在先的确定性交错",
+      "then": "前者拒绝新签；后者保留签署并暂停分发",
+      "evidence_required": "test_16/17；异步传播队列和分布式外部通知未运行"
+    },
+    {
+      "id": "V03:check:pre-issue-revocation",
+      "kind": "domain_failure",
+      "given": "CoA已approved但尚未issued",
+      "when": "先撤销校准，再尝试分发",
+      "then": "证书distribution_hold；无新分发意图；旧签署留存",
+      "evidence_required": "test_20 local SQLite gate；未运行真实文件生成/外发，已在途网络请求另行对账"
+    }
+  ]
+}

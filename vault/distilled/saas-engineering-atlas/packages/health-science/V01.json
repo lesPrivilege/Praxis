@@ -1,0 +1,1310 @@
+{
+  "contract_version": "1.0",
+  "case_id": "V01",
+  "title": "从检查请求到一笔可核销的收款",
+  "scope": "单机构单就诊两服务行的合成闭环；临床请求/报告与理赔/收款分离。无真实集成、医学或合规判断。",
+  "synthetic": true,
+  "source_ids": [
+    "FHIR_ORDER",
+    "FHIR_REPORT",
+    "P04-SRC-fhir-observation",
+    "P04-SRC-fhir-claim",
+    "P04-SRC-fhir-claimresponse",
+    "P04-SRC-fhir-paymentreconciliation",
+    "P04-SRC-fhir-imagingstudy",
+    "P04-SRC-dicomweb",
+    "DICOM",
+    "STRIPE_INV",
+    "P04-SRC-postgresql-constraints",
+    "P04-SRC-postgresql-locking",
+    "P04-SRC-tanstack-invalidation",
+    "P04-SRC-hapi-jpa"
+  ],
+  "nodes": [
+    {
+      "id": "V01:actor:clinician",
+      "type": "actor",
+      "label": "临床人员",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + authorized care/finance scope"
+    },
+    {
+      "id": "V01:actor:specialist",
+      "type": "actor",
+      "label": "报告复核人员",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + authorized care/finance scope"
+    },
+    {
+      "id": "V01:actor:biller",
+      "type": "actor",
+      "label": "收费人员",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + authorized care/finance scope"
+    },
+    {
+      "id": "V01:actor:finance",
+      "type": "actor",
+      "label": "财务人员",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + authorized care/finance scope"
+    },
+    {
+      "id": "V01:actor:patient",
+      "type": "actor",
+      "label": "病人",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + own patient identity"
+    },
+    {
+      "id": "V01:ui:workbench",
+      "type": "ui",
+      "label": "就诊与费用工作台",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + authorized care/finance scope"
+    },
+    {
+      "id": "V01:ui:patient-portal",
+      "type": "ui",
+      "label": "病人结果与费用视图",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + authorized care/finance scope"
+    },
+    {
+      "id": "V01:service:orders",
+      "type": "service",
+      "label": "请求服务",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + authorized care/finance scope"
+    },
+    {
+      "id": "V01:service:claims",
+      "type": "service",
+      "label": "理赔服务",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + authorized care/finance scope"
+    },
+    {
+      "id": "V01:service:ledger",
+      "type": "service",
+      "label": "财务服务",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + authorized care/finance scope"
+    },
+    {
+      "id": "V01:external_system:report-authority",
+      "type": "external_system",
+      "label": "报告权威系统",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + authorized care/finance scope"
+    },
+    {
+      "id": "V01:external_system:pacs",
+      "type": "external_system",
+      "label": "PACS 影像系统",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + authorized care/finance scope"
+    },
+    {
+      "id": "V01:external_system:payer",
+      "type": "external_system",
+      "label": "合成支付方",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + authorized care/finance scope"
+    },
+    {
+      "id": "V01:external_system:bank-evidence",
+      "type": "external_system",
+      "label": "合成资金凭证源",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + authorized care/finance scope"
+    },
+    {
+      "id": "V01:store:database",
+      "type": "store",
+      "label": "关系数据库",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + authorized care/finance scope"
+    },
+    {
+      "id": "V01:store:inbox",
+      "type": "store",
+      "label": "持久 inbox",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + authorized care/finance scope"
+    },
+    {
+      "id": "V01:store:attachments",
+      "type": "store",
+      "label": "受控附件存储",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + authorized care/finance scope"
+    },
+    {
+      "id": "V01:object:encounter",
+      "type": "object",
+      "label": "就诊",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + authorized care/finance scope"
+    },
+    {
+      "id": "V01:object:request",
+      "type": "object",
+      "label": "ServiceRequest",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + authorized care/finance scope"
+    },
+    {
+      "id": "V01:object:observation",
+      "type": "object",
+      "label": "Observation",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + authorized care/finance scope"
+    },
+    {
+      "id": "V01:object:report",
+      "type": "object",
+      "label": "DiagnosticReport",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + authorized care/finance scope"
+    },
+    {
+      "id": "V01:object:imaging-study",
+      "type": "object",
+      "label": "影像检查引用",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + authorized care/finance scope"
+    },
+    {
+      "id": "V01:object:submission",
+      "type": "object",
+      "label": "理赔提交包与行映射",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + authorized care/finance scope"
+    },
+    {
+      "id": "V01:object:adjudication",
+      "type": "object",
+      "label": "支付方裁决",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + authorized care/finance scope"
+    },
+    {
+      "id": "V01:object:remittance",
+      "type": "object",
+      "label": "付款分配通知",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + authorized care/finance scope"
+    },
+    {
+      "id": "V01:object:receipt",
+      "type": "object",
+      "label": "经核对收款凭证",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + authorized care/finance scope"
+    },
+    {
+      "id": "V01:object:allocation",
+      "type": "object",
+      "label": "就诊应收核销聚合与独立分配项",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + authorized care/finance scope"
+    },
+    {
+      "id": "V01:event:adjudicated",
+      "type": "event",
+      "label": "裁决通知",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + authorized care/finance scope"
+    },
+    {
+      "id": "V01:event:report-revised",
+      "type": "event",
+      "label": "报告修订通知",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + authorized care/finance scope"
+    },
+    {
+      "id": "V01:rule:role-policy",
+      "type": "rule",
+      "label": "角色与版本前提",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + authorized care/finance scope"
+    },
+    {
+      "id": "V01:object:payment-budget",
+      "type": "object",
+      "label": "单笔收款的分配预算",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + payer account + confirmed receipt identity"
+    }
+  ],
+  "edges": [
+    {
+      "id": "V01:edge:clinician-workbench",
+      "type": "operates",
+      "from": "V01:actor:clinician",
+      "to": "V01:ui:workbench",
+      "payload": "按角色授权的对象与动作",
+      "timing": "sync",
+      "invariant": "工作列表只展示授权对象",
+      "failure": "超出scope的对象不可通过搜索或计数泄露",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V01:claim:topology"
+      ]
+    },
+    {
+      "id": "V01:edge:specialist-workbench",
+      "type": "operates",
+      "from": "V01:actor:specialist",
+      "to": "V01:ui:workbench",
+      "payload": "按角色授权的对象与动作",
+      "timing": "sync",
+      "invariant": "工作列表只展示授权对象",
+      "failure": "超出scope的对象不可通过搜索或计数泄露",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V01:claim:topology"
+      ]
+    },
+    {
+      "id": "V01:edge:biller-workbench",
+      "type": "operates",
+      "from": "V01:actor:biller",
+      "to": "V01:ui:workbench",
+      "payload": "按角色授权的对象与动作",
+      "timing": "sync",
+      "invariant": "工作列表只展示授权对象",
+      "failure": "超出scope的对象不可通过搜索或计数泄露",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V01:claim:topology"
+      ]
+    },
+    {
+      "id": "V01:edge:finance-workbench",
+      "type": "operates",
+      "from": "V01:actor:finance",
+      "to": "V01:ui:workbench",
+      "payload": "按角色授权的对象与动作",
+      "timing": "sync",
+      "invariant": "工作列表只展示授权对象",
+      "failure": "超出scope的对象不可通过搜索或计数泄露",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V01:claim:topology"
+      ]
+    },
+    {
+      "id": "V01:edge:patient-portal",
+      "type": "operates",
+      "from": "V01:actor:patient",
+      "to": "V01:ui:patient-portal",
+      "payload": "本人结果与费用摘要",
+      "timing": "sync",
+      "invariant": "病人身份与tenant同时匹配",
+      "failure": "错配时拒绝并交人工身份核对",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V01:claim:topology"
+      ]
+    },
+    {
+      "id": "V01:edge:request-command",
+      "type": "commands",
+      "from": "V01:ui:workbench",
+      "to": "V01:service:orders",
+      "payload": "request ID、内容、预期版本、operation ID",
+      "timing": "sync",
+      "invariant": "临床角色有权发起且版本未变",
+      "failure": "拒绝越权或返回版本冲突",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V01:claim:topology"
+      ]
+    },
+    {
+      "id": "V01:edge:submit-command",
+      "type": "commands",
+      "from": "V01:ui:workbench",
+      "to": "V01:service:claims",
+      "payload": "claim版本、报告引用、operation ID",
+      "timing": "sync",
+      "invariant": "两份合格报告与费用审核完成",
+      "failure": "只显示本地持久化；外部未确认留等待",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V01:claim:topology"
+      ]
+    },
+    {
+      "id": "V01:edge:allocate-command",
+      "type": "commands",
+      "from": "V01:ui:workbench",
+      "to": "V01:service:ledger",
+      "payload": "收款ID、分配项ID、目标行、金额与币种",
+      "timing": "sync",
+      "invariant": "权限、可信身份、付款预算与应收余额同时成立；同事务稳定顺序锁定两侧预算",
+      "failure": "内容冲突/超额拒绝，原余额不变",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V01:claim:topology"
+      ]
+    },
+    {
+      "id": "V01:edge:authorize-claims",
+      "type": "authorizes",
+      "from": "V01:rule:role-policy",
+      "to": "V01:service:claims",
+      "payload": "角色、scope、冻结输入版本",
+      "timing": "static",
+      "invariant": "UI可见不替代服务端授权",
+      "failure": "前提改变则重新预览确认",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V01:claim:topology"
+      ]
+    },
+    {
+      "id": "V01:edge:encounter-owner",
+      "type": "owns",
+      "from": "V01:service:orders",
+      "to": "V01:object:encounter",
+      "payload": "对象身份、状态与当前版本",
+      "timing": "static",
+      "invariant": "权威记录与本地副本区分",
+      "failure": "失联时保留最后核对状态和未确认标记",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V01:claim:topology"
+      ]
+    },
+    {
+      "id": "V01:edge:request-owner",
+      "type": "owns",
+      "from": "V01:service:orders",
+      "to": "V01:object:request",
+      "payload": "对象身份、状态与当前版本",
+      "timing": "static",
+      "invariant": "权威记录与本地副本区分",
+      "failure": "失联时保留最后核对状态和未确认标记",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V01:claim:topology"
+      ]
+    },
+    {
+      "id": "V01:edge:report-owner",
+      "type": "owns",
+      "from": "V01:external_system:report-authority",
+      "to": "V01:object:report",
+      "payload": "对象身份、状态与当前版本",
+      "timing": "static",
+      "invariant": "权威记录与本地副本区分",
+      "failure": "失联时保留最后核对状态和未确认标记",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V01:claim:topology"
+      ]
+    },
+    {
+      "id": "V01:edge:observation-owner",
+      "type": "owns",
+      "from": "V01:external_system:report-authority",
+      "to": "V01:object:observation",
+      "payload": "对象身份、状态与当前版本",
+      "timing": "static",
+      "invariant": "权威记录与本地副本区分",
+      "failure": "失联时保留最后核对状态和未确认标记",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V01:claim:topology"
+      ]
+    },
+    {
+      "id": "V01:edge:study-owner",
+      "type": "owns",
+      "from": "V01:external_system:pacs",
+      "to": "V01:object:imaging-study",
+      "payload": "对象身份、状态与当前版本",
+      "timing": "static",
+      "invariant": "权威记录与本地副本区分",
+      "failure": "失联时保留最后核对状态和未确认标记",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V01:claim:topology"
+      ]
+    },
+    {
+      "id": "V01:edge:claim-owner",
+      "type": "owns",
+      "from": "V01:service:claims",
+      "to": "V01:object:submission",
+      "payload": "对象身份、状态与当前版本",
+      "timing": "static",
+      "invariant": "权威记录与本地副本区分",
+      "failure": "失联时保留最后核对状态和未确认标记",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V01:claim:topology"
+      ]
+    },
+    {
+      "id": "V01:edge:decision-owner",
+      "type": "owns",
+      "from": "V01:external_system:payer",
+      "to": "V01:object:adjudication",
+      "payload": "对象身份、状态与当前版本",
+      "timing": "static",
+      "invariant": "权威记录与本地副本区分",
+      "failure": "失联时保留最后核对状态和未确认标记",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V01:claim:topology"
+      ]
+    },
+    {
+      "id": "V01:edge:remittance-owner",
+      "type": "owns",
+      "from": "V01:external_system:payer",
+      "to": "V01:object:remittance",
+      "payload": "对象身份、状态与当前版本",
+      "timing": "static",
+      "invariant": "权威记录与本地副本区分",
+      "failure": "失联时保留最后核对状态和未确认标记",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V01:claim:topology"
+      ]
+    },
+    {
+      "id": "V01:edge:receipt-owner",
+      "type": "owns",
+      "from": "V01:external_system:bank-evidence",
+      "to": "V01:object:receipt",
+      "payload": "对象身份、状态与当前版本",
+      "timing": "static",
+      "invariant": "权威记录与本地副本区分",
+      "failure": "失联时保留最后核对状态和未确认标记",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V01:claim:topology"
+      ]
+    },
+    {
+      "id": "V01:edge:allocation-owner",
+      "type": "owns",
+      "from": "V01:service:ledger",
+      "to": "V01:object:allocation",
+      "payload": "对象身份、状态与当前版本",
+      "timing": "static",
+      "invariant": "权威记录与本地副本区分",
+      "failure": "失联时保留最后核对状态和未确认标记",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V01:claim:topology"
+      ]
+    },
+    {
+      "id": "V01:edge:encounter-requests",
+      "type": "contains",
+      "from": "V01:object:encounter",
+      "to": "V01:object:request",
+      "payload": "同就诊下的检验/影像请求引用",
+      "timing": "static",
+      "invariant": "一个请求的subject关联经核对",
+      "failure": "同名不自动合并",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V01:claim:topology"
+      ]
+    },
+    {
+      "id": "V01:edge:report-results",
+      "type": "derived_from",
+      "from": "V01:object:report",
+      "to": "V01:object:observation",
+      "payload": "单项结果引用与报告修订",
+      "timing": "static",
+      "invariant": "结果版本和报告解释可追溯",
+      "failure": "错误结果触发报告复核，不静默替换",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V01:claim:topology"
+      ]
+    },
+    {
+      "id": "V01:edge:report-request",
+      "type": "derived_from",
+      "from": "V01:object:report",
+      "to": "V01:object:request",
+      "payload": "basedOn语义参照的请求引用",
+      "timing": "static",
+      "invariant": "报告所响应的请求身份正确",
+      "failure": "缺失或冲突引用进入核对队列",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V01:claim:topology"
+      ]
+    },
+    {
+      "id": "V01:edge:report-study",
+      "type": "depends_on",
+      "from": "V01:object:report",
+      "to": "V01:object:imaging-study",
+      "payload": "影像报告的检查引用",
+      "timing": "static",
+      "invariant": "有图像不等于已有临床解释",
+      "failure": "不可检索时提示证据不可用",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V01:claim:topology"
+      ]
+    },
+    {
+      "id": "V01:edge:claim-report",
+      "type": "depends_on",
+      "from": "V01:object:submission",
+      "to": "V01:object:report",
+      "payload": "提交使用的报告版本集合",
+      "timing": "static",
+      "invariant": "提交快照固定证据版本",
+      "failure": "报告更正后标为review-required",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V01:claim:topology"
+      ]
+    },
+    {
+      "id": "V01:edge:decision-claim",
+      "type": "depends_on",
+      "from": "V01:object:adjudication",
+      "to": "V01:object:submission",
+      "payload": "外部受理号、claim版本和行号",
+      "timing": "static",
+      "invariant": "裁决不能套到不同提交版本",
+      "failure": "无法匹配时隔离响应",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V01:claim:topology"
+      ]
+    },
+    {
+      "id": "V01:edge:allocation-decision",
+      "type": "derived_from",
+      "from": "V01:object:allocation",
+      "to": "V01:object:adjudication",
+      "payload": "目标责任金额与裁决版本",
+      "timing": "static",
+      "invariant": "核销不超过应收责任",
+      "failure": "新裁决重审差额，不删除历史",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V01:claim:topology"
+      ]
+    },
+    {
+      "id": "V01:edge:allocation-receipt",
+      "type": "derived_from",
+      "from": "V01:object:allocation",
+      "to": "V01:object:receipt",
+      "payload": "实际收款与可用金额",
+      "timing": "static",
+      "invariant": "已分配金额不超过已确认资金",
+      "failure": "分配记录与银行金额不符时留争议",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V01:claim:topology"
+      ]
+    },
+    {
+      "id": "V01:edge:allocation-remittance",
+      "type": "derived_from",
+      "from": "V01:object:allocation",
+      "to": "V01:object:remittance",
+      "payload": "付款到理赔行的明确引用",
+      "timing": "static",
+      "invariant": "相同金额不作为自动匹配依据",
+      "failure": "缺行号的资金留未分配",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V01:claim:topology"
+      ]
+    },
+    {
+      "id": "V01:edge:read-report",
+      "type": "reads",
+      "from": "V01:service:claims",
+      "to": "V01:external_system:report-authority",
+      "payload": "按授权核对报告版本及撤回状态",
+      "timing": "sync",
+      "invariant": "仅发送最小必要对象引用",
+      "failure": "源不可用不从陈旧缓存授权提交",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V01:claim:topology"
+      ]
+    },
+    {
+      "id": "V01:edge:read-inbox",
+      "type": "reads",
+      "from": "V01:service:claims",
+      "to": "V01:store:inbox",
+      "payload": "已经验证并持久化的裁决通知",
+      "timing": "async",
+      "invariant": "接收事实与业务效果分别记录",
+      "failure": "失败从同一事件或业务身份恢复",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V01:claim:topology"
+      ]
+    },
+    {
+      "id": "V01:edge:payer-request",
+      "type": "requests",
+      "from": "V01:service:claims",
+      "to": "V01:external_system:payer",
+      "payload": "冻结claim快照、operation key",
+      "timing": "async",
+      "invariant": "重放语义必须由provider支持或先核对",
+      "failure": "超时unknown；不可盲目新建claim",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V01:claim:topology"
+      ]
+    },
+    {
+      "id": "V01:edge:read-payer",
+      "type": "reads",
+      "from": "V01:service:claims",
+      "to": "V01:external_system:payer",
+      "payload": "操作引用、当前裁决和受理号",
+      "timing": "sync",
+      "invariant": "以准确对象身份核对结果",
+      "failure": "不完整查询的无结果不能证明未受理",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V01:claim:topology"
+      ]
+    },
+    {
+      "id": "V01:edge:read-cash",
+      "type": "reads",
+      "from": "V01:service:ledger",
+      "to": "V01:external_system:bank-evidence",
+      "payload": "受控财务凭证、币种、金额、引用",
+      "timing": "batch",
+      "invariant": "账面裁决不代替资金凭证",
+      "failure": "金额/身份不符转人工核对",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V01:claim:topology"
+      ]
+    },
+    {
+      "id": "V01:edge:payer-event",
+      "type": "emits",
+      "from": "V01:external_system:payer",
+      "to": "V01:event:adjudicated",
+      "payload": "裁决身份、关联claim、事件ID",
+      "timing": "async",
+      "invariant": "发出不等于本地已处理",
+      "failure": "重复乱序均可发生（合成故障假设）",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V01:claim:topology"
+      ]
+    },
+    {
+      "id": "V01:edge:event-inbox",
+      "type": "delivers",
+      "from": "V01:event:adjudicated",
+      "to": "V01:store:inbox",
+      "payload": "经验证的事件及接收时间",
+      "timing": "async",
+      "invariant": "持久化后才承认接收",
+      "failure": "写入失败可重送，不先改投影",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V01:claim:topology"
+      ]
+    },
+    {
+      "id": "V01:edge:report-revised",
+      "type": "emits",
+      "from": "V01:external_system:report-authority",
+      "to": "V01:event:report-revised",
+      "payload": "报告身份、版本、替代关系",
+      "timing": "async",
+      "invariant": "版本ID不靠字符串或到达顺序排序",
+      "failure": "缺前序关系需回查源",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V01:claim:topology"
+      ]
+    },
+    {
+      "id": "V01:edge:revision-inbox",
+      "type": "delivers",
+      "from": "V01:event:report-revised",
+      "to": "V01:store:inbox",
+      "payload": "修订事件与源核对线索",
+      "timing": "async",
+      "invariant": "旧事件保留但不回退当前指针",
+      "failure": "断链时保持待核对并提示责任人",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V01:claim:topology"
+      ]
+    },
+    {
+      "id": "V01:edge:store-claim",
+      "type": "stores",
+      "from": "V01:store:database",
+      "to": "V01:object:submission",
+      "payload": "版本、决定、身份、审计与操作记录",
+      "timing": "sync",
+      "invariant": "业务更改与待发送记录相容提交",
+      "failure": "崩溃恢复不重复产生业务效果",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V01:claim:topology"
+      ]
+    },
+    {
+      "id": "V01:edge:store-allocation",
+      "type": "stores",
+      "from": "V01:store:database",
+      "to": "V01:object:allocation",
+      "payload": "版本、决定、身份、审计与操作记录",
+      "timing": "sync",
+      "invariant": "业务更改与待发送记录相容提交",
+      "failure": "崩溃恢复不重复产生业务效果",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V01:claim:topology"
+      ]
+    },
+    {
+      "id": "V01:edge:store-report-copy",
+      "type": "stores",
+      "from": "V01:store:attachments",
+      "to": "V01:object:report",
+      "payload": "报告附件副本与源身份，不含长期签名URL",
+      "timing": "async",
+      "invariant": "附件副本不能替代源权威",
+      "failure": "不可取用时显示证据缺失",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V01:claim:topology"
+      ]
+    },
+    {
+      "id": "V01:edge:show-report",
+      "type": "projects",
+      "from": "V01:object:report",
+      "to": "V01:ui:workbench",
+      "payload": "当前状态、版本、核对时间、下一责任",
+      "timing": "async",
+      "invariant": "投影显示各自完成条件",
+      "failure": "旧投影可见陈旧标记；提交重查权威",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V01:claim:topology"
+      ]
+    },
+    {
+      "id": "V01:edge:show-claim",
+      "type": "projects",
+      "from": "V01:object:submission",
+      "to": "V01:ui:workbench",
+      "payload": "当前状态、版本、核对时间、下一责任",
+      "timing": "async",
+      "invariant": "投影显示各自完成条件",
+      "failure": "旧投影可见陈旧标记；提交重查权威",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V01:claim:topology"
+      ]
+    },
+    {
+      "id": "V01:edge:show-allocation",
+      "type": "projects",
+      "from": "V01:object:allocation",
+      "to": "V01:ui:workbench",
+      "payload": "当前状态、版本、核对时间、下一责任",
+      "timing": "async",
+      "invariant": "投影显示各自完成条件",
+      "failure": "旧投影可见陈旧标记；提交重查权威",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V01:claim:topology"
+      ]
+    },
+    {
+      "id": "V01:edge:patient-fee-view",
+      "type": "projects",
+      "from": "V01:object:allocation",
+      "to": "V01:ui:patient-portal",
+      "payload": "经授权裁剪的本人费用与已收信息",
+      "timing": "async",
+      "invariant": "不直接暴露支付方内部响应",
+      "failure": "权限改变清理缓存并拒绝旧链接",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V01:claim:topology"
+      ]
+    },
+    {
+      "id": "V01:edge:budget-owner",
+      "type": "owns",
+      "from": "V01:service:ledger",
+      "to": "V01:object:payment-budget",
+      "payload": "每笔确认收款的可用额、已分配额与版本",
+      "timing": "static",
+      "invariant": "与资金凭证源区分，属于本地分配权威",
+      "failure": "更正不覆盖既有分配历史",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V01:claim:reconciliation-algorithm"
+      ]
+    },
+    {
+      "id": "V01:edge:budget-receipt",
+      "type": "derived_from",
+      "from": "V01:object:payment-budget",
+      "to": "V01:object:receipt",
+      "payload": "确认资金总额与凭证引用",
+      "timing": "static",
+      "invariant": "未核对资金不能进入可分配预算",
+      "failure": "资金差异进入disputed",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V01:claim:reconciliation-algorithm"
+      ]
+    },
+    {
+      "id": "V01:edge:allocation-budget",
+      "type": "depends_on",
+      "from": "V01:object:allocation",
+      "to": "V01:object:payment-budget",
+      "payload": "分配项引用付款预算与应收",
+      "timing": "static",
+      "invariant": "同一事务核对并锁定付款预算和应收，双方不透支",
+      "failure": "不同应收争用同一付款也必须互斥",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V01:claim:reconciliation-algorithm"
+      ]
+    },
+    {
+      "id": "V01:edge:show-budget",
+      "type": "projects",
+      "from": "V01:object:payment-budget",
+      "to": "V01:ui:workbench",
+      "payload": "这笔付款的分配进度",
+      "timing": "async",
+      "invariant": "付款fully-allocated不等于就诊应收reconciled",
+      "failure": "两种进度分别展示",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V01:claim:reconciliation-algorithm"
+      ]
+    }
+  ],
+  "lifecycles": [
+    {
+      "object_id": "V01:object:request",
+      "states": [
+        "draft",
+        "active",
+        "completed",
+        "revoked"
+      ],
+      "transitions": [
+        {
+          "from": "draft",
+          "to": "active",
+          "trigger": "临床人员确认请求",
+          "guard": "身份、权限、内容和预期版本有效",
+          "durable_effect": "保存请求版本及动作责任人",
+          "recovery": "冲突重新核对；未保存可重试同一operation"
+        },
+        {
+          "from": "active",
+          "to": "completed",
+          "trigger": "执行证据核对完成",
+          "guard": "本次请求执行已确认",
+          "durable_effect": "保存执行关联，保留报告独立状态",
+          "recovery": "证据错误进入专业更正流程，不依账单回滚"
+        },
+        {
+          "from": "active",
+          "to": "revoked",
+          "trigger": "撤销尚未执行的请求",
+          "guard": "授权且确认未执行",
+          "durable_effect": "撤销原因与时间",
+          "recovery": "执行结果未知时先核对，不假装撤销已生效"
+        }
+      ]
+    },
+    {
+      "object_id": "V01:object:report",
+      "states": [
+        "preliminary",
+        "final",
+        "amended",
+        "entered-in-error"
+      ],
+      "transitions": [
+        {
+          "from": "preliminary",
+          "to": "final",
+          "trigger": "专业人员复核发布",
+          "guard": "身份、结果与权限经核对",
+          "durable_effect": "保存源报告版本与复核证据",
+          "recovery": "源结果未知先核对"
+        },
+        {
+          "from": "final",
+          "to": "amended",
+          "trigger": "源发布修订",
+          "guard": "可信修订关系及专业确认",
+          "durable_effect": "保留旧版与新当前指针，生成影响清单",
+          "recovery": "迟到旧通知不回退"
+        },
+        {
+          "from": "final",
+          "to": "entered-in-error",
+          "trigger": "源撤回报告",
+          "guard": "授权的错误报告声明",
+          "durable_effect": "保留撤回原因并通知受影响责任人",
+          "recovery": "不自动冲销资金，后续专业重审"
+        },
+        {
+          "from": "amended",
+          "to": "entered-in-error",
+          "trigger": "修订报告被撤回",
+          "guard": "相同的源权威核对",
+          "durable_effect": "保留完整修订链与撤回",
+          "recovery": "重新取得报告需独立复核"
+        }
+      ]
+    },
+    {
+      "object_id": "V01:object:submission",
+      "states": [
+        "draft",
+        "ready",
+        "submitted",
+        "unknown",
+        "adjudicated",
+        "review-required"
+      ],
+      "transitions": [
+        {
+          "from": "draft",
+          "to": "ready",
+          "trigger": "收费人员确认预览",
+          "guard": "两份最终报告及合法费用依据（合成政策）",
+          "durable_effect": "冻结行映射和证据版本",
+          "recovery": "修改输入需新预览"
+        },
+        {
+          "from": "ready",
+          "to": "submitted",
+          "trigger": "支付方明确受理",
+          "guard": "operation身份与请求内容一致",
+          "durable_effect": "记录受理号和提交快照",
+          "recovery": "重复关联同一受理对象"
+        },
+        {
+          "from": "ready",
+          "to": "unknown",
+          "trigger": "发送后超时",
+          "guard": "请求已持久化但外部是否受理不明",
+          "durable_effect": "保存unknown及核对线索",
+          "recovery": "先按业务引用查源，不盲重送"
+        },
+        {
+          "from": "unknown",
+          "to": "submitted",
+          "trigger": "查到对应外部受理",
+          "guard": "源对象与冻结内容一致",
+          "durable_effect": "补记受理号",
+          "recovery": "查无确定结果继续unknown"
+        },
+        {
+          "from": "submitted",
+          "to": "adjudicated",
+          "trigger": "裁决响应核对",
+          "guard": "关联受理号、提交版本、行号正确",
+          "durable_effect": "保存裁决版本、责任分配与拒绝原因",
+          "recovery": "不将裁决当到账"
+        },
+        {
+          "from": "submitted",
+          "to": "review-required",
+          "trigger": "报告更正",
+          "guard": "影响遍历确认依赖旧报告",
+          "durable_effect": "重审任务及证据修订引用",
+          "recovery": "收费人员判断补件或更正"
+        },
+        {
+          "from": "adjudicated",
+          "to": "review-required",
+          "trigger": "报告或费用前提改变",
+          "guard": "负责人员确认变化与当前claim有关",
+          "durable_effect": "保留旧裁决和资金历史",
+          "recovery": "经外部正式更正处理差额"
+        },
+        {
+          "from": "review-required",
+          "to": "ready",
+          "trigger": "重审形成新提交版本",
+          "guard": "修改与外部更正策略已确认",
+          "durable_effect": "新版本和旧提交关系",
+          "recovery": "禁止把新请求冒充原有重试"
+        }
+      ]
+    },
+    {
+      "object_id": "V01:object:allocation",
+      "states": [
+        "unmatched",
+        "partly-allocated",
+        "reconciled",
+        "disputed"
+      ],
+      "transitions": [
+        {
+          "from": "unmatched",
+          "to": "partly-allocated",
+          "trigger": "收到可信付款与部分分配",
+          "guard": "币种、tenant、行引用和金额上限满足",
+          "durable_effect": "追加核销项与余额",
+          "recovery": "缺引用金额留未分配"
+        },
+        {
+          "from": "partly-allocated",
+          "to": "partly-allocated",
+          "trigger": "继续分配部分金额",
+          "guard": "仍有经确认的可用款项及应收",
+          "durable_effect": "追加唯一分配项",
+          "recovery": "重复无新效果；改内容拒绝"
+        },
+        {
+          "from": "partly-allocated",
+          "to": "reconciled",
+          "trigger": "全部责任金额核销",
+          "guard": "相关未收与未分配差异均解释清楚",
+          "durable_effect": "保存核对完成证据",
+          "recovery": "新证据争议进入disputed"
+        },
+        {
+          "from": "partly-allocated",
+          "to": "disputed",
+          "trigger": "发现错配或资金不符",
+          "guard": "有可追溯差异证据",
+          "durable_effect": "锁定争议并创建核查任务",
+          "recovery": "不能覆盖原分配历史"
+        },
+        {
+          "from": "reconciled",
+          "to": "disputed",
+          "trigger": "后续更正发现旧核销错误",
+          "guard": "财务权限和明确更正依据",
+          "durable_effect": "保存争议与所依赖历史版本",
+          "recovery": "由有权人员作冲销"
+        },
+        {
+          "from": "disputed",
+          "to": "partly-allocated",
+          "trigger": "完成调查与更正分配",
+          "guard": "差异已说明、冲销依据有效",
+          "durable_effect": "追加冲销/新分配，重新计算余额",
+          "recovery": "余额仍未清则继续核对"
+        }
+      ]
+    },
+    {
+      "object_id": "V01:object:payment-budget",
+      "states": [
+        "unallocated",
+        "partly-allocated",
+        "fully-allocated",
+        "disputed"
+      ],
+      "transitions": [
+        {
+          "from": "unallocated",
+          "to": "partly-allocated",
+          "trigger": "确认第一项部分分配",
+          "guard": "同一事务锁定付款预算和应收，版本与双方余额满足",
+          "durable_effect": "追加分配项并更新预算/应收累计",
+          "recovery": "相同分配项重复无额外效果"
+        },
+        {
+          "from": "unallocated",
+          "to": "fully-allocated",
+          "trigger": "一次分配全部可用资金",
+          "guard": "总分配等于确认资金且目标应收足够",
+          "durable_effect": "付款已全分配，就诊应收状态单独计算",
+          "recovery": "差异通过冲销与重新分配处理"
+        },
+        {
+          "from": "partly-allocated",
+          "to": "fully-allocated",
+          "trigger": "分配剩余资金",
+          "guard": "同一预算与应收锁内重查，全部资金分配到可信目标",
+          "durable_effect": "记录付款侧分配完成",
+          "recovery": "不能由此关闭仍欠款的就诊"
+        },
+        {
+          "from": "fully-allocated",
+          "to": "disputed",
+          "trigger": "发现原资金或映射差异",
+          "guard": "有财务更正依据",
+          "durable_effect": "保存争议及原分配历史",
+          "recovery": "追加冲销后重新计算两侧余额"
+        },
+        {
+          "from": "disputed",
+          "to": "partly-allocated",
+          "trigger": "调查完成并作冲销",
+          "guard": "有权人员批准修订且双方余额可解释",
+          "durable_effect": "新预算版本及剩余可分配额",
+          "recovery": "保留此前全分配状态与更正依据"
+        }
+      ]
+    }
+  ],
+  "algorithm_ids": [
+    "ALG:lookup",
+    "ALG:graph-paths",
+    "ALG:caches"
+  ],
+  "claim_ids": [
+    "V01:claim:fhir-request",
+    "V01:claim:fhir-report",
+    "V01:claim:report-correction",
+    "V01:claim:fhir-observation",
+    "V01:claim:fhir-claim",
+    "V01:claim:fhir-adjudication",
+    "V01:claim:fhir-remittance",
+    "V01:claim:imaging-reference",
+    "V01:claim:dicomweb",
+    "V01:claim:stripe-paid",
+    "V01:claim:postgres-constraints",
+    "V01:claim:postgres-locks",
+    "V01:claim:query-invalidation",
+    "V01:claim:hapi-server",
+    "V01:claim:synthetic-policy",
+    "V01:claim:identity-analysis",
+    "V01:claim:topology",
+    "V01:claim:implementation-analysis",
+    "V01:claim:reconciliation-algorithm",
+    "V01:claim:impact-analysis",
+    "V01:claim:workload",
+    "V01:claim:ai-eval-plan"
+  ],
+  "checks": [
+    {
+      "id": "V01:check:partial-payment",
+      "kind": "happy_path",
+      "given": "两报告、两收费行300，裁决责任200+50，调整50",
+      "when": "实际支付方180、病人50到款并核销",
+      "then": "报告/裁决/核销分别显示；未收20，300=50+230+20",
+      "evidence_required": "UI、源报告、提交快照、裁决、收款凭证与行分配；本地演算见synthetic-v01.py"
+    },
+    {
+      "id": "V01:check:allocation-replay",
+      "kind": "duplicate",
+      "given": "相同收款与分配项身份",
+      "when": "重复相同内容；另试相同key不同内容",
+      "then": "相同内容一次效果，不同内容拒绝且余额不变",
+      "evidence_required": "分配唯一键及前后余额；本地模型已覆盖"
+    },
+    {
+      "id": "V01:check:old-report",
+      "kind": "out_of_order",
+      "given": "当前报告是已核对的r2，明确替代r1",
+      "when": "r1通知迟到",
+      "then": "当前保持r2，r1接收记录可查，不按版本字符串排序",
+      "evidence_required": "源核对与投影；本地显式关系模型已覆盖"
+    },
+    {
+      "id": "V01:check:two-submitters",
+      "kind": "concurrency",
+      "given": "两收费人员读同一版本；或两财务人员读同一剩余额度",
+      "when": "竞争提交或核销",
+      "then": "一个有效提交；额度不能超分；冲突显示变化原因",
+      "evidence_required": "真实双会话UI和数据库事务轨迹待执行；本地仅顺序交错CAS"
+    },
+    {
+      "id": "V01:check:tenant-boundary",
+      "kind": "tenant_isolation",
+      "given": "两个tenant复用就诊号和claim号",
+      "when": "查询、缓存、导出和后台处理",
+      "then": "仅授权tenant数据；不可跨tenant匹配款项",
+      "evidence_required": "所有边界的访问拒绝日志待实现；本地复合键/授权模型已覆盖"
+    },
+    {
+      "id": "V01:check:accepted-timeout",
+      "kind": "unknown_outcome",
+      "given": "支付方接受请求但响应丢失",
+      "when": "本地超时且查源暂缺结果",
+      "then": "unknown持续；不创建第二提交",
+      "evidence_required": "outbox、操作记录、支付方日志；本地SQLite未知状态重启已覆盖"
+    },
+    {
+      "id": "V01:check:journal-restart",
+      "kind": "recovery",
+      "given": "已持久化操作及外部受理",
+      "when": "worker重启并按原引用核对",
+      "then": "恢复原受理号；业务对象仍一个",
+      "evidence_required": "操作表重启与源对象关联；本地SQLite已覆盖，provider未执行"
+    },
+    {
+      "id": "V01:check:ambiguous-payment",
+      "kind": "missing_evidence",
+      "given": "金额相同但缺claim行引用",
+      "when": "尝试自动核销",
+      "then": "拒绝猜测，资金留未分配并解释文件合计",
+      "evidence_required": "隔离项/原文件与财务队列；本地缺身份拒绝已覆盖"
+    },
+    {
+      "id": "V01:check:cash-limit",
+      "kind": "partial_completion",
+      "given": "裁决200、分配通知180但确认到账170",
+      "when": "尝试核销180",
+      "then": "超过确认款项的分配被拒绝，不自动改成调整",
+      "evidence_required": "入账凭证、核销余额与争议；本地边界已覆盖"
+    },
+    {
+      "id": "V01:check:withdrawn-report",
+      "kind": "correction",
+      "given": "已部分收款的claim依赖报告r1",
+      "when": "r1撤回或更正",
+      "then": "只生成受影响claim重审，原资金流水保留",
+      "evidence_required": "修订链与重审任务；本地图模型覆盖影响集合，UI未实现"
+    },
+    {
+      "id": "V01:check:bad-shortcuts",
+      "kind": "negative_control",
+      "given": "故意错误的裁决即现金/去tenant键实现",
+      "when": "运行相同合成fixture",
+      "then": "错误实现分别多计20、将2行合为1，被断言识别",
+      "evidence_required": "synthetic-v01.py negative-control断言；不是生产故障"
+    },
+    {
+      "id": "V01:check:shared-cash-budget",
+      "kind": "concurrency",
+      "given": "一个180收款，两个独立应收80与120，两人读取旧预算",
+      "when": "并发核销两个不同应收",
+      "then": "付款预算与应收同时受事务保护；任一先行成功后，第二项因现金不足被拒绝；付款分配进度与应收进度分别显示",
+      "evidence_required": "实际数据库双会话事务及锁轨迹待实现；synthetic-v01.py覆盖两个串行结果和无共同gate的坏实现反例"
+    }
+  ]
+}

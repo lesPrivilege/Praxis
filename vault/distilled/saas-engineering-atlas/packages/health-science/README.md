@@ -30,16 +30,16 @@
 
 先读 V01 的“申请、证据、支付责任与到账分离”，再读 V02 的“人对指定版本作出决定”，最后读 V03 的“测量模型与证据谱系”。每例给出合成演算、失败轨迹、技术选项和条件变化题。产品或标准事实在主张旁引用公开来源；状态机、数值、工程栈与业务策略有明确的 synthetic 边界。本文讨论软件建模，不给出临床诊断、法定合规或质量放行结论。
 
-唯一写入范围：`vault/distilled/saas-engineering-atlas/packages/health-science/`。建议 branch：`cloud/saas-atlas-health-science-20261014`。公共文件只读；从父线程给出的 checkpoint SHA 开始，不跟随移动中的 main。
+| 案例正文与结构 | 工作链 | 学会辨认的成熟方案族 |
+|---|---|---|
+| [V01 教材](V01.md) · [拓扑](V01.json) | 就诊 → 检验/影像证据 → 理赔 → 结算 | EHR/HIS、LIS、PACS、理赔接口与应收核销 |
+| [V02 教材](V02.md) · [拓扑](V02.json) | Protocol → consent → eCRF query → signed data lock | CTMS、eConsent、EDC、数据清理与受控导出 |
+| [V03 教材](V03.md) · [拓扑](V03.json) | Sample → 校准分析 → 结果复核 → lot certificate | LIMS、仪器数据系统、方法/质量管理与 ERP 接口 |
 
-先读 [worker 契约](../../worker-contract.md)、[案例模板](../../case-template.md)、[验证方法](../../validation.md)。
+## 从教材到探索与演示
 
-| Case ID | 工作链 |
-|---|---|
-| V01 | 就诊 → 检验/影像证据 → 理赔 → 结算 |
-| V02 | Protocol → consent → eCRF query → signed data lock |
-| V03 | Sample → 校准分析 → 结果复核 → lot certificate |
+进入陌生行业，先选一条带例外的工作链，问清对象怎样编号、谁拥有哪项事实、哪些规则来自专业决定、外部系统如何承认结果。再识别现成方案能承担哪部分工作，查明所需版本、接口和限制，最后选一个能够观察不变量的最小验证切片。三篇文末的探索方向分别给出应询问的人、应取回的资料和应先验证的失败路径；它们没有把本例栈当作唯一答案。
 
-来源种子：`CTMS`, `DICOM`, `EDC`, `FHIR_ORDER`, `FHIR_REPORT`, `LABWARE`, `STRIPE_INV`。公共 [来源登记](../../../../provenance/saas-engineering-atlas/catalog.json)的未读条目必须实际核查后才能支持事实。
+本包供 Claude 在既有 Praxis 中继续编订和制作互动教材。稳定 case/node/edge/claim/check ID、typed relation、并行生命周期与合成事件可作为共同素材；具体 UI、布局、动效和多代理组织由实现者决定。切换一个输入时，应能解释哪些状态变了、哪些尚待确认，而不是把整条链一次点亮。三份 Python 脚本只用于可复跑的局部推理检查，不是现成业务应用。
 
-逐例交付 `<case-id>.md` / `<case-id>.json`，公共证据写本包 `evidence.json`，执行与缺口写 `CHANGELOG.md`，最后写 `handoff.md`。未核实的来源留缺口；本包没有市场排名或跨产品能力评测任务。
+证据与执行入口：[统一证据](evidence.json)、[变更与验收记录](CHANGELOG.md)、[交接](handoff.md)。合成检查：[V01](synthetic-v01.py)、[V02](synthetic-v02.py)、[V03](synthetic-v03.py)。维护时沿用 [worker 契约](../../worker-contract.md)、[案例模板](../../case-template.md)和[验证方法](../../validation.md)，来源种子身份保留在[公共登记](../../../../provenance/saas-engineering-atlas/catalog.json)。本包不提供市场排名或跨产品能力评测。
