@@ -34,7 +34,7 @@
 | caches | 复用以前的计算，减少反复读取 | 命中率之外还要看失效、租户隔离、冷启动和最坏陈旧时间 |
 | approximate computation | 用可说明的误差换空间或速度 | 估计可用于探索，不未经确认用于付款、放行或安全决策 |
 
-上表是本研究的教学分类。复杂度描述的是给定计算模型下的推理，不是服务延迟实测；具体产品算法要另有公开证据。worker 每例选择有实际作用的家族，写一组小输入、一遍人工演算和一个反例，不凑齐八类。
+上表是本研究的教学分类。复杂度描述的是给定计算模型下的推理，不是服务延迟实测；具体产品算法要另有公开证据。每例选择有实际作用的家族，用一组小输入、一遍人工演算和一个反例说明；按问题查找见 [解题索引](problem-index.md)。
 
 ## 从点击走到可观察的业务结果
 
@@ -44,6 +44,6 @@
 
 ## 在 Praxis 中落位
 
-研究正文与工作包放在本目录，来源身份和读取记录放在 `vault/provenance/saas-engineering-atlas`，批次范围进 `vault/intake`，验收记录进 `docs/verification`。既有 [工作语法](../../../kit/grammar/work.md) 和 [场景模板](../../../scenarios/_template/README.md)作为后续消费入口，不在本轮改写 Kit 权威定义。Tally 仍保留原书稿主题入口，本研究通过 Vault 索引发现，不为 SaaS 再建一级分类。
+研究正文与工作包放在本目录，来源身份和读取记录放在 `vault/provenance/saas-engineering-atlas`，批次范围进 `vault/intake`，验收记录进 `docs/verification`。既有 [工作语法](../../../kit/grammar/work.md) 和 [场景模板](../../../scenarios/_template/README.md)作为后续消费入口，研究结论不自动成为 Kit 权威定义。Tally 仍保留原书稿主题入口，本研究通过 Vault 索引发现，不为 SaaS 再建一级分类。
 
 本地 Claude 可以自由选择布局、交互、动效和技术栈。交接约束只要求保留 case/object/claim ID、原语言术语、provider 身份、synthetic 标签、前提和证据强度。演示若省略恢复步骤，必须在相应动作处说明省略。建立 demo 时再按 Praxis 的 scenario/demo 规则记录实现与运行验收。

@@ -33,7 +33,7 @@
 
 AI 在这套模型中可以建议映射、整理告警、抽取条款或回答问题。模型输出是需要验证的输入；工具执行能力仍受身份、租户、对象版本和动作许可约束。确定性规则检验权限和金额，AI eval 检验答案是否有依据、该拒答时是否拒答。二者各自有失败标准，不能把“模型答得像”当作“业务做对了”。
 
-四例中的业务数值、内部架构与策略明确作为 synthetic 教学设计；provider 事实在主张附近给出公共链接。结构 JSON 为后续 HTML / motion 保留稳定节点和边，不规定视觉形式。来源定位与核查边界见 [evidence.json](evidence.json)，实际检查与未执行范围见 [CHANGELOG](CHANGELOG.md)，整合事项见 [handoff](handoff.md)。公共 [契约](../../worker-contract.md)与 [来源目录](../../../../provenance/saas-engineering-atlas/catalog.json)保持只读。
+四例中的业务数值、内部架构与策略明确作为 synthetic 教学设计；provider 事实在主张附近给出公共链接。结构 JSON 为后续 HTML / motion 保留稳定节点和边，不规定视觉形式。来源定位与核查边界见 [evidence.json](evidence.json)，实际检查与未执行范围见 [CHANGELOG](CHANGELOG.md)，整合事项见 [handoff](handoff.md)。共同语义见 [词表与图语义](../../semantics.md)，合并后的材料见 [来源目录](../../../../provenance/saas-engineering-atlas/catalog.json)。
 
 本地可运行的合成检查分别见 [H07](check_h07.py)、[H08](check_h08.py)、[H09](check_h09.py)、[X01](check_x01.py)。它们使用 Python 标准库，展示正确演算和会被拒绝的反例；实际执行范围由验收记录说明。
 

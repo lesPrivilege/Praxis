@@ -1,30 +1,34 @@
-# 验证与接收
+# 验证与继续实现
 
-从 Praxis 根目录运行以下命令，均使用 Python 标准库，不联网、不安装依赖、不触发 CI。
+从 Praxis 根目录运行，均使用 Python 标准库；这些命令不安装依赖、联网、触发 CI 或部署。
 
 ```bash
-python3 scripts/validate_saas_atlas.py
+python3 scripts/build_saas_atlas_indexes.py --check
+python3 scripts/validate_saas_atlas.py --self-test
+python3 scripts/validate_saas_atlas_integration.py --self-test
+python3 scripts/run_saas_atlas_checks.py
 python3 scripts/build_registry.py
 python3 scripts/validate_repository.py
 git diff --check
 ```
 
-公共 registry 只由整合者生成。worker 本地可生成以检查，但只提交自己 package 的路径；交接标明这一点。结构 validator 检查 33 个 case ID 的一次性分配、source 引用、包边界、共同算法 ID、typed edge 端点、生命周期、claim 引用和必需失败检查；也接受包内新增案例。它不访问网站、不验证正文真实性、不执行业务状态机。
+来源编辑发生在包内 evidence；种子历史由 provenance 的 seed-catalog 保存。编辑后先去掉 `--check` 重建来源投影，再生成公共 registry。结构校验检验 33 个稳定案例、别名解析、typed edge 端点、生命周期、主张引用、失败检查定义，以及迁移图的方向、前提、反例与全案例连接。索引校验还逐字段比较原始 claims 和 reviews，避免合并时丢掉限定。
 
-## 内容接收
+`run_saas_atlas_checks.py` 执行所有交付的合成脚本及包内验证器。它把命令、退出码和实际输出写到指定路径；不把 Markdown 的验收表算作已运行测试。各脚本的测试分母不同：有 unittest、有限输入枚举、纯函数断言和本地 SQLite 事务，不能把它们当成同一种生产覆盖率。
 
-人工沿一个案例走读：从谁的需要开始，为什么有这个对象，什么权限和证据允许变化，页面显示的是何种事实，后端如何持久化，外部如何确认，算法怎样得出结果，失败后谁负责恢复。随机挑一条 provider 主张，必须能由 claim ID 回到公开 primary source 的具体章节。种子 URL 的可访问性和完整内容尚待逐源研究。
+## 人工走读
 
-一个案例至少有 happy path、duplicate、out_of_order、concurrency、tenant_isolation、unknown_outcome、recovery 七类检查定义。它们只是验收设计；执行者应另行提供固定 fixture、实际观察、日志/截图或对账数据。不能用预期结果填写实际结果。
+先从入口找到一例，独立算出小输入的结果，再读短答。依次检查对象、权威、guard、界面反馈、持久化、外部确认与恢复；用一条迁移边替换条件，寻找会使旧解法失效的输入。来源抽查沿 claim ID → 原 evidence → review locator → 公共 URL 回查，URL 聚合不替代阅读具体范围。
 
-## 后续 demo 的执行边界
+## 后续应用的检查层次
 
-本地 Claude 建立实现后，分别记录纯计算检查、状态与持久化检查、provider sandbox integration、端到端 UI、故障注入、负载与恢复。合成 stub 的成功只说明 stub 路径可运行；真实网络 timeout、重复事件、跨租户读取与到账结果需要各自证据。没有测试账号、外部文档或专业复核时，记录具体缺项而不是自动扩大授权。
+| 层次 | 需要取得的证据 |
+|---|---|
+| 计算与状态 | 固定输入、实际输出、反例、版本与单位 |
+| 数据库与恢复 | 真实数据库隔离、竞争、崩溃、重开与去重证据 |
+| provider 接入 | 版本固定的 schema、sandbox 请求和可核对外部结果 |
+| 浏览器端到端 | UI 命令至权威结果再到投影的证据，含键盘与错误恢复 |
+| 负载 | workload、租户分布、冷/热缓存、延迟分位数与积压年龄 |
+| AI eval | 冻结数据、标签、模型配置、分母、留出集、错判后果与拒绝条件 |
 
-AI eval 如适用，要冻结输入、标签标准、模型/配置与样本分母，设置独立留出集，并观察错判带来的业务后果。没有 AI 决策的案例写不适用，不为了“AI SaaS”名称插入不必要模型步骤。
-
-## 分包和集成检查
-
-worker 对照 `git diff --name-only <checkpoint-sha>...HEAD` 检查文件所有权。父线程在整合时检查每包 source review 与公共 source ID 的一致性，保留新证据与旧结论差异，再统一重建 registry。来源正文不复制到 Git；公开交付仅包含原创解释、合成对象、公共 citations 与必要元数据。
-
-本轮执行结果与未运行项见 [验收回执](../../../docs/verification/saas-engineering-atlas-20261014.md)。
+各例中的端到端表是未来实现的定义；真实测试执行另留回执。无 AI 决策的案例不需要为了名称加入模型。专业同意、放行、信贷、保险、押金与财务政策按实际行业和法域继续确认。实际运行与缺口见 [验收回执](../../../docs/verification/saas-engineering-atlas-20261014.md)。

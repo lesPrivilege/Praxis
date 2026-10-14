@@ -67,4 +67,4 @@ python3 vault/distilled/saas-engineering-atlas/packages/commercial-finance/valid
 
 第一条覆盖七章的固定算术、区间可加性、数量占用、配对、依赖图和不可行条件；它没有建立服务或模拟实际并发数据库。第二条验证共同结构契约并拒绝损坏的结构样本；第三条补查证据侧车的唯一身份、成功读取范围、主张链接与正文引用。所有外部集成、权限执行、浏览器端到端、故障注入、负载与 AI eval 仍须在实施后单独执行。
 
-来源定位与复核范围见 [evidence.json](evidence.json)，实际命令、反例和覆盖边界见 [CHANGELOG](CHANGELOG.md)，跨包建议与交付记录见 [handoff](handoff.md)。本包的写入边界及共同结构由 [worker 契约](../../worker-contract.md)规定。
+来源定位与复核范围见 [evidence.json](evidence.json)，实际命令、反例和覆盖边界见 [CHANGELOG](CHANGELOG.md)，跨包建议与交付记录见 [handoff](handoff.md)。共同结构见 [词表与图语义](../../semantics.md)，跨包迁移见 [迁移地图](../../transfer-map.md)。

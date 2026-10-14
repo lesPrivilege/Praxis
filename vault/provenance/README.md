@@ -1,6 +1,6 @@
 # Enterprise 早期来源
 
-- [SaaS 工程全景来源](saas-engineering-atlas/README.md)：63 个公共 URL 种子与局部核查范围。
+- [SaaS 工程全景来源](saas-engineering-atlas/README.md)：按 canonical URL 汇总来源、保留原 ID 与各次读取范围。
 
 - [AgentScope 企业线来源 · 2026-10-12](agentscope-enterprise-20261012/README.md)：230 个独立 URL 的读取、快照与局部支持范围。
 

@@ -42,4 +42,4 @@
 
 本包供 Claude 在既有 Praxis 中继续编订和制作互动教材。稳定 case/node/edge/claim/check ID、typed relation、并行生命周期与合成事件可作为共同素材；具体 UI、布局、动效和多代理组织由实现者决定。切换一个输入时，应能解释哪些状态变了、哪些尚待确认，而不是把整条链一次点亮。三份 Python 脚本只用于可复跑的局部推理检查，不是现成业务应用。
 
-证据与执行入口：[统一证据](evidence.json)、[变更与验收记录](CHANGELOG.md)、[交接](handoff.md)。合成检查：[V01](synthetic-v01.py)、[V02](synthetic-v02.py)、[V03](synthetic-v03.py)。维护时沿用 [worker 契约](../../worker-contract.md)、[案例模板](../../case-template.md)和[验证方法](../../validation.md)，来源种子身份保留在[公共登记](../../../../provenance/saas-engineering-atlas/catalog.json)。本包不提供市场排名或跨产品能力评测。
+证据与执行入口：[统一证据](evidence.json)、[变更与验收记录](CHANGELOG.md)、[交接](handoff.md)。合成检查：[V01](synthetic-v01.py)、[V02](synthetic-v02.py)、[V03](synthetic-v03.py)。共同语义见 [词表与图语义](../../semantics.md)，检查层次见 [验证方法](../../validation.md)，来源身份保留在[公共登记](../../../../provenance/saas-engineering-atlas/catalog.json)。本包不提供市场排名或跨产品能力评测。

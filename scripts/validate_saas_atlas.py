@@ -126,10 +126,12 @@ def main():
     args = parser.parse_args()
     definitions, relations = read(ATLAS / 'identifiers.json'), read(ATLAS / 'relation-types.json')
     sources = read(PROVENANCE / 'catalog.json')['sources']
-    source_ids = {s['id'] for s in sources}
+    source_ids = {sid for s in sources for sid in [s['id'], *s.get('aliases', [])]}
+    # A canonical record may preserve several source-owned identities.
+    # All aliases must be globally unique and resolve to this one record.
     claims = {c['claim_id'] for s in sources for c in s['supported_claims']}
     errors = []
-    unique([s['id'] for s in sources], 'sources', errors)
+    unique([sid for s in sources for sid in [s['id'], *s.get('aliases', [])]], 'source identities and aliases', errors)
     unique([s['url'] for s in sources], 'source URLs', errors)
     for s in sources:
         if not s['url'].startswith('https://'):

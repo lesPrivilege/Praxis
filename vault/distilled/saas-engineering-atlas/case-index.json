@@ -10,18 +10,37 @@
         "IRONCLAD",
         "STRIPE_INV",
         "STRIPE_WEBHOOK",
-        "STRIPE_REV"
+        "STRIPE_REV",
+        "P01-SRC-stripe-payment-application",
+        "P01-SRC-stripe-idempotency",
+        "P01-SRC-stripe-credit-notes",
+        "P01-SRC-postgres-constraints"
       ],
-      "status": "example-available"
+      "status": "textbook-available",
+      "prose_path": "packages/commercial-finance/H01.md",
+      "topology_path": "packages/commercial-finance/H01.json",
+      "algorithm_ids": [
+        "ALG:lookup",
+        "ALG:windows",
+        "ALG:caches"
+      ]
     },
     {
       "case_id": "H02",
       "title": "请购 → 验收 → 发票匹配 → 付款",
       "package_id": "P01",
       "source_ids": [
-        "ORACLE_MATCH"
+        "ORACLE_MATCH",
+        "P01-SRC-oracle-invoice-tolerances",
+        "P01-SRC-postgresql-locking"
       ],
-      "status": "seed-only"
+      "status": "textbook-available",
+      "prose_path": "packages/commercial-finance/H02.md",
+      "topology_path": "packages/commercial-finance/H02.json",
+      "algorithm_ids": [
+        "ALG:lookup",
+        "ALG:caches"
+      ]
     },
     {
       "case_id": "H03",
@@ -29,9 +48,18 @@
       "package_id": "P01",
       "source_ids": [
         "D365_CLOSE",
-        "STRIPE_REV"
+        "P01-SRC-d365-period-status",
+        "P01-SRC-postgresql-numeric"
       ],
-      "status": "seed-only"
+      "status": "textbook-available",
+      "prose_path": "packages/commercial-finance/H03.md",
+      "topology_path": "packages/commercial-finance/H03.json",
+      "algorithm_ids": [
+        "ALG:lookup",
+        "ALG:windows",
+        "ALG:scheduling",
+        "ALG:caches"
+      ]
     },
     {
       "case_id": "H04",
@@ -42,16 +70,32 @@
         "OKTA",
         "OKTA_SCIM"
       ],
-      "status": "seed-only"
+      "status": "textbook-available",
+      "prose_path": "packages/people-service/H04.md",
+      "topology_path": "packages/people-service/H04.json",
+      "algorithm_ids": [
+        "ALG:lookup",
+        "ALG:windows",
+        "ALG:caches"
+      ]
     },
     {
       "case_id": "H05",
       "title": "Incident → 受控变更 → 恢复 → 关闭",
       "package_id": "P02",
       "source_ids": [
-        "SERVICENOW"
+        "SERVICENOW",
+        "P02-SRC-servicenow-resolution",
+        "P02-SRC-servicenow-change-states"
       ],
-      "status": "seed-only"
+      "status": "textbook-available",
+      "prose_path": "packages/people-service/H05.md",
+      "topology_path": "packages/people-service/H05.json",
+      "algorithm_ids": [
+        "ALG:windows",
+        "ALG:graph-paths",
+        "ALG:caches"
+      ]
     },
     {
       "case_id": "H06",
@@ -61,7 +105,15 @@
         "ZENDESK",
         "ZENDESK_AI_FAILURE"
       ],
-      "status": "seed-only"
+      "status": "textbook-available",
+      "prose_path": "packages/people-service/H06.md",
+      "topology_path": "packages/people-service/H06.json",
+      "algorithm_ids": [
+        "ALG:windows",
+        "ALG:top-k",
+        "ALG:lookup",
+        "ALG:caches"
+      ]
     },
     {
       "case_id": "H07",
@@ -69,9 +121,18 @@
       "package_id": "P03",
       "source_ids": [
         "SNOWFLAKE",
-        "APQC"
+        "P03-SRC-snowflake-row-access",
+        "P03-SRC-snowflake-lineage"
       ],
-      "status": "seed-only"
+      "status": "textbook-available",
+      "prose_path": "packages/data-ai-control/H07.md",
+      "topology_path": "packages/data-ai-control/H07.json",
+      "algorithm_ids": [
+        "ALG:lookup",
+        "ALG:windows",
+        "ALG:graph-paths",
+        "ALG:caches"
+      ]
     },
     {
       "case_id": "H08",
@@ -79,20 +140,43 @@
       "package_id": "P03",
       "source_ids": [
         "SENTINEL",
-        "OKTA_SCIM"
+        "OKTA",
+        "P03-SRC-sentinel-playbooks",
+        "P03-SRC-okta-revoke-tokens"
       ],
-      "status": "seed-only"
+      "status": "textbook-available",
+      "prose_path": "packages/data-ai-control/H08.md",
+      "topology_path": "packages/data-ai-control/H08.json",
+      "algorithm_ids": [
+        "ALG:lookup",
+        "ALG:windows",
+        "ALG:top-k",
+        "ALG:graph-paths",
+        "ALG:caches"
+      ]
     },
     {
       "case_id": "H09",
       "title": "文档版本 → 审批 → 下游集成记录",
       "package_id": "P03",
       "source_ids": [
-        "STRIPE_WEBHOOK",
         "IRONCLAD",
-        "OKTA"
+        "P03-SRC-ironclad-approval-resets",
+        "P03-SRC-ironclad-api-model",
+        "P03-SRC-ironclad-webhooks",
+        "P03-SRC-ironclad-cancel-signatures",
+        "P03-SRC-postgresql-constraints",
+        "P03-SRC-pdfjs",
+        "P03-SRC-temporal-activities"
       ],
-      "status": "seed-only"
+      "status": "textbook-available",
+      "prose_path": "packages/data-ai-control/H09.md",
+      "topology_path": "packages/data-ai-control/H09.json",
+      "algorithm_ids": [
+        "ALG:scheduling",
+        "ALG:lookup",
+        "ALG:caches"
+      ]
     },
     {
       "case_id": "V01",
@@ -101,10 +185,27 @@
       "source_ids": [
         "FHIR_ORDER",
         "FHIR_REPORT",
+        "P04-SRC-fhir-observation",
+        "P04-SRC-fhir-claim",
+        "P04-SRC-fhir-claimresponse",
+        "P04-SRC-fhir-paymentreconciliation",
+        "P04-SRC-fhir-imagingstudy",
+        "P04-SRC-dicomweb",
         "DICOM",
-        "STRIPE_INV"
+        "STRIPE_INV",
+        "P04-SRC-postgresql-constraints",
+        "P04-SRC-postgresql-locking",
+        "P04-SRC-tanstack-invalidation",
+        "P04-SRC-hapi-jpa"
       ],
-      "status": "seed-only"
+      "status": "textbook-available",
+      "prose_path": "packages/health-science/V01.md",
+      "topology_path": "packages/health-science/V01.json",
+      "algorithm_ids": [
+        "ALG:lookup",
+        "ALG:graph-paths",
+        "ALG:caches"
+      ]
     },
     {
       "case_id": "V02",
@@ -112,18 +213,47 @@
       "package_id": "P04",
       "source_ids": [
         "CTMS",
-        "EDC"
+        "EDC",
+        "P04-SRC-fda-eic-guidance",
+        "P04-SRC-sitevault-consent-status",
+        "P04-SRC-sitevault-reconsent",
+        "P04-SRC-veeva-edc-queries",
+        "P04-SRC-veeva-edc-signatures",
+        "P04-SRC-veeva-edc-locking",
+        "P04-SRC-veeva-edc-freezing",
+        "P04-SRC-postgresql-locking",
+        "P04-SRC-postgresql-rls"
       ],
-      "status": "seed-only"
+      "status": "textbook-available",
+      "prose_path": "packages/health-science/V02.md",
+      "topology_path": "packages/health-science/V02.json",
+      "algorithm_ids": [
+        "ALG:lookup",
+        "ALG:graph-paths",
+        "ALG:caches"
+      ]
     },
     {
       "case_id": "V03",
       "title": "Sample → 校准分析 → 结果复核 → lot certificate",
       "package_id": "P04",
       "source_ids": [
-        "LABWARE"
+        "LABWARE",
+        "P04-SRC-fda-oos-2022",
+        "P04-SRC-fda-data-integrity",
+        "P04-SRC-who-qcl-2024",
+        "P04-SRC-postgresql-rls"
       ],
-      "status": "seed-only"
+      "status": "textbook-available",
+      "prose_path": "packages/health-science/V03.md",
+      "topology_path": "packages/health-science/V03.json",
+      "algorithm_ids": [
+        "ALG:approximate",
+        "ALG:lookup",
+        "ALG:graph-paths",
+        "ALG:windows",
+        "ALG:caches"
+      ]
     },
     {
       "case_id": "V04",
@@ -131,18 +261,39 @@
       "package_id": "P05",
       "source_ids": [
         "SHOPIFY",
-        "STRIPE_WEBHOOK"
+        "STRIPE_WEBHOOK",
+        "P05-SRC-shopify-returns",
+        "P05-SRC-shopify-refund"
       ],
-      "status": "seed-only"
+      "status": "textbook-available",
+      "prose_path": "packages/commerce-property/V04.md",
+      "topology_path": "packages/commerce-property/V04.json",
+      "algorithm_ids": [
+        "ALG:lookup",
+        "ALG:optimization",
+        "ALG:top-k",
+        "ALG:caches"
+      ]
     },
     {
       "case_id": "V05",
       "title": "菜单选择 → 出餐 → split tender → 结账",
       "package_id": "P05",
       "source_ids": [
-        "TOAST"
+        "TOAST",
+        "STRIPE_WEBHOOK",
+        "P05-SRC-toast-modifiers",
+        "P05-SRC-toast-split"
       ],
-      "status": "seed-only"
+      "status": "textbook-available",
+      "prose_path": "packages/commerce-property/V05.md",
+      "topology_path": "packages/commerce-property/V05.json",
+      "algorithm_ids": [
+        "ALG:lookup",
+        "ALG:graph-paths",
+        "ALG:top-k",
+        "ALG:caches"
+      ]
     },
     {
       "case_id": "V06",
@@ -150,9 +301,23 @@
       "package_id": "P05",
       "source_ids": [
         "MEWS_RES",
-        "MEWS_POS"
+        "MEWS_POS",
+        "P05-SRC-mews-preauthorizations",
+        "P05-SRC-mews-payments",
+        "P05-SRC-mews-bills",
+        "P05-SRC-stripe-hold",
+        "P05-SRC-postgresql-ranges",
+        "P05-SRC-postgresql-isolation"
       ],
-      "status": "seed-only"
+      "status": "textbook-available",
+      "prose_path": "packages/commerce-property/V06.md",
+      "topology_path": "packages/commerce-property/V06.json",
+      "algorithm_ids": [
+        "ALG:windows",
+        "ALG:lookup",
+        "ALG:scheduling",
+        "ALG:caches"
+      ]
     },
     {
       "case_id": "V07",
@@ -161,44 +326,76 @@
       "source_ids": [
         "AUTODESK",
         "AUTODESK_CAE",
-        "ISA95",
         "SAP_PP",
-        "SAP_PP_DETAIL",
         "SAP_GI",
-        "SAP_O2C"
+        "SAP_O2C",
+        "ISA95"
       ],
-      "status": "seed-only"
+      "status": "textbook-available",
+      "prose_path": "packages/industry-networks/V07.md",
+      "topology_path": "packages/industry-networks/V07.json",
+      "algorithm_ids": [
+        "ALG:lookup",
+        "ALG:graph-paths",
+        "ALG:scheduling",
+        "ALG:caches"
+      ]
     },
     {
       "case_id": "V08",
       "title": "Recipe → batch record → 质量处置 → lot release",
       "package_id": "P06",
       "source_ids": [
-        "ISA95",
         "LABWARE",
-        "SAP_PP_DETAIL"
+        "P06-SRC-epcis-guideline"
       ],
-      "status": "seed-only"
+      "status": "textbook-available",
+      "prose_path": "packages/industry-networks/V08.md",
+      "topology_path": "packages/industry-networks/V08.json",
+      "algorithm_ids": [
+        "ALG:lookup",
+        "ALG:graph-paths",
+        "ALG:caches"
+      ]
     },
     {
       "case_id": "V09",
       "title": "RTL baseline → 实现证据 → signoff → release",
       "package_id": "P06",
       "source_ids": [
-        "CADENCE"
+        "CADENCE",
+        "P06-SRC-openroad-overview",
+        "P06-SRC-opensta-readme",
+        "P06-SRC-orfs-tutorial"
       ],
-      "status": "seed-only"
+      "status": "textbook-available",
+      "prose_path": "packages/industry-networks/V09.md",
+      "topology_path": "packages/industry-networks/V09.json",
+      "algorithm_ids": [
+        "ALG:scheduling",
+        "ALG:graph-paths",
+        "ALG:top-k",
+        "ALG:caches"
+      ]
     },
     {
       "case_id": "V10",
       "title": "资产信号 → 获许可工作 → 维护确认 → 关闭",
       "package_id": "P06",
       "source_ids": [
-        "MAXIMO",
         "D365_FS_ARCH",
+        "MAXIMO",
         "IFS"
       ],
-      "status": "seed-only"
+      "status": "textbook-available",
+      "prose_path": "packages/industry-networks/V10.md",
+      "topology_path": "packages/industry-networks/V10.json",
+      "algorithm_ids": [
+        "ALG:lookup",
+        "ALG:windows",
+        "ALG:scheduling",
+        "ALG:caches"
+      ]
     },
     {
       "case_id": "V11",
@@ -206,9 +403,17 @@
       "package_id": "P06",
       "source_ids": [
         "ORACLE_VEE",
-        "EPCIS"
+        "P06-SRC-oracle-imd",
+        "P06-SRC-oracle-usage-transactions"
       ],
-      "status": "seed-only"
+      "status": "textbook-available",
+      "prose_path": "packages/industry-networks/V11.md",
+      "topology_path": "packages/industry-networks/V11.json",
+      "algorithm_ids": [
+        "ALG:lookup",
+        "ALG:windows",
+        "ALG:caches"
+      ]
     },
     {
       "case_id": "V12",
@@ -218,7 +423,14 @@
         "MAMBU",
         "MAMBU_APPROVE"
       ],
-      "status": "seed-only"
+      "status": "textbook-available",
+      "prose_path": "packages/commercial-finance/V12.md",
+      "topology_path": "packages/commercial-finance/V12.json",
+      "algorithm_ids": [
+        "ALG:lookup",
+        "ALG:windows",
+        "ALG:caches"
+      ]
     },
     {
       "case_id": "V13",
@@ -226,39 +438,74 @@
       "package_id": "P01",
       "source_ids": [
         "GUIDEWIRE",
-        "ACORD"
+        "ACORD",
+        "P01-SRC-guidewire-reserves",
+        "P01-SRC-guidewire-create-reserves",
+        "P01-SRC-guidewire-financial-calculations"
       ],
-      "status": "seed-only"
+      "status": "textbook-available",
+      "prose_path": "packages/commercial-finance/V13.md",
+      "topology_path": "packages/commercial-finance/V13.json",
+      "algorithm_ids": [
+        "ALG:lookup",
+        "ALG:graph-paths",
+        "ALG:caches"
+      ]
     },
     {
       "case_id": "V14",
       "title": "投资订单 → fills/cancel → allocation → settlement",
       "package_id": "P01",
       "source_ids": [
-        "FIX"
+        "FIX",
+        "P01-SRC-fix-order-states-ep284",
+        "P01-SRC-fix-allocation-instruction",
+        "P01-SRC-fix-settlement-instructions"
       ],
-      "status": "seed-only"
+      "status": "textbook-available",
+      "prose_path": "packages/commercial-finance/V14.md",
+      "topology_path": "packages/commercial-finance/V14.json",
+      "algorithm_ids": [
+        "ALG:lookup",
+        "ALG:top-k"
+      ]
     },
     {
       "case_id": "V15",
       "title": "发布设计 → RFI → change event → approved variation → 付款",
       "package_id": "P05",
       "source_ids": [
+        "AUTODESK",
         "PROCORE_CHANGE",
         "PROCORE_ORDER",
-        "AUTODESK"
+        "P05-SRC-autodesk-rfi",
+        "P05-SRC-procore-pcco-review"
       ],
-      "status": "seed-only"
+      "status": "textbook-available",
+      "prose_path": "packages/commerce-property/V15.md",
+      "topology_path": "packages/commerce-property/V15.json",
+      "algorithm_ids": [
+        "ALG:graph-paths",
+        "ALG:lookup",
+        "ALG:caches"
+      ]
     },
     {
       "case_id": "V16",
       "title": "租约 → 入住 → 维护 → 押金对账",
       "package_id": "P05",
       "source_ids": [
-        "IWMS",
-        "D365_FS_ARCH"
+        "D365_FS_ARCH",
+        "IWMS"
       ],
-      "status": "seed-only"
+      "status": "textbook-available",
+      "prose_path": "packages/commerce-property/V16.md",
+      "topology_path": "packages/commerce-property/V16.json",
+      "algorithm_ids": [
+        "ALG:lookup",
+        "ALG:windows",
+        "ALG:caches"
+      ]
     },
     {
       "case_id": "V17",
@@ -266,9 +513,19 @@
       "package_id": "P02",
       "source_ids": [
         "ONEROSTER",
-        "EDU_PORTAL"
+        "EDU_PORTAL",
+        "P02-SRC-oneroster-roster-model",
+        "P02-SRC-oneroster-gradebook-model",
+        "P02-SRC-oneroster-csv"
       ],
-      "status": "seed-only"
+      "status": "textbook-available",
+      "prose_path": "packages/people-service/V17.md",
+      "topology_path": "packages/people-service/V17.json",
+      "algorithm_ids": [
+        "ALG:lookup",
+        "ALG:windows",
+        "ALG:caches"
+      ]
     },
     {
       "case_id": "V18",
@@ -276,9 +533,18 @@
       "package_id": "P02",
       "source_ids": [
         "EDRM2",
-        "ELM"
+        "ELM",
+        "P02-SRC-relativity-processing-profile",
+        "P02-SRC-purview-edisc"
       ],
-      "status": "seed-only"
+      "status": "textbook-available",
+      "prose_path": "packages/people-service/V18.md",
+      "topology_path": "packages/people-service/V18.json",
+      "algorithm_ids": [
+        "ALG:lookup",
+        "ALG:graph-paths",
+        "ALG:caches"
+      ]
     },
     {
       "case_id": "V19",
@@ -286,9 +552,20 @@
       "package_id": "P02",
       "source_ids": [
         "CERTINIA",
-        "CERTINIA_BILL"
+        "CERTINIA_BILL",
+        "P02-SRC-certinia-approval",
+        "P02-SRC-certinia-budget-cap"
       ],
-      "status": "seed-only"
+      "status": "textbook-available",
+      "prose_path": "packages/people-service/V19.md",
+      "topology_path": "packages/people-service/V19.json",
+      "algorithm_ids": [
+        "ALG:scheduling",
+        "ALG:optimization",
+        "ALG:windows",
+        "ALG:lookup",
+        "ALG:caches"
+      ]
     },
     {
       "case_id": "V20",
@@ -296,9 +573,19 @@
       "package_id": "P02",
       "source_ids": [
         "D365_FS",
-        "D365_FS_ARCH"
+        "D365_FS_ARCH",
+        "P02-SRC-postgres-ranges"
       ],
-      "status": "seed-only"
+      "status": "textbook-available",
+      "prose_path": "packages/people-service/V20.md",
+      "topology_path": "packages/people-service/V20.json",
+      "algorithm_ids": [
+        "ALG:scheduling",
+        "ALG:optimization",
+        "ALG:windows",
+        "ALG:caches",
+        "ALG:lookup"
+      ]
     },
     {
       "case_id": "V21",
@@ -307,10 +594,19 @@
       "source_ids": [
         "IBP",
         "IBP_SAMPLE",
-        "SAP_O2C",
-        "EPCIS"
+        "EPCIS",
+        "P06-SRC-ibp-overview",
+        "P06-SRC-epcis-standard"
       ],
-      "status": "seed-only"
+      "status": "textbook-available",
+      "prose_path": "packages/industry-networks/V21.md",
+      "topology_path": "packages/industry-networks/V21.json",
+      "algorithm_ids": [
+        "ALG:optimization",
+        "ALG:scheduling",
+        "ALG:lookup",
+        "ALG:caches"
+      ]
     },
     {
       "case_id": "V22",
@@ -318,30 +614,58 @@
       "package_id": "P06",
       "source_ids": [
         "TMF622",
-        "TMF_DIR"
+        "TMF_DIR",
+        "P06-SRC-tmf640",
+        "P06-SRC-tmf635",
+        "P06-SRC-tmf678"
       ],
-      "status": "seed-only"
+      "status": "textbook-available",
+      "prose_path": "packages/industry-networks/V22.md",
+      "topology_path": "packages/industry-networks/V22.json",
+      "algorithm_ids": [
+        "ALG:windows",
+        "ALG:lookup",
+        "ALG:caches"
+      ]
     },
     {
       "case_id": "X01",
       "title": "Tenant onboarding → isolated service → metering → bill → offboard",
       "package_id": "P03",
       "source_ids": [
+        "FRONTIER",
+        "OKTA_SCIM",
+        "P03-SRC-postgresql-rls",
+        "P03-SRC-stripe-meter-events",
         "SAAS_LENS",
         "SAAS_SILO",
-        "STRIPE_WEBHOOK",
-        "FRONTIER"
+        "STRIPE_WEBHOOK"
       ],
-      "status": "seed-only"
+      "status": "textbook-available",
+      "prose_path": "packages/data-ai-control/X01.md",
+      "topology_path": "packages/data-ai-control/X01.json",
+      "algorithm_ids": [
+        "ALG:lookup",
+        "ALG:windows",
+        "ALG:scheduling",
+        "ALG:caches"
+      ]
     },
     {
       "case_id": "X02",
       "title": "Intercompany operations：集团销售 → 实物流/虚单 → 内外结算 → 合并核对",
       "package_id": "P01",
       "source_ids": [
-        "KINGDEE"
+        "KINGDEE",
+        "P01-SRC-d365-consolidation-overview"
       ],
-      "status": "seed-only"
+      "status": "textbook-available",
+      "prose_path": "packages/commercial-finance/X02.md",
+      "topology_path": "packages/commercial-finance/X02.json",
+      "algorithm_ids": [
+        "ALG:graph-paths",
+        "ALG:lookup"
+      ]
     }
   ]
 }

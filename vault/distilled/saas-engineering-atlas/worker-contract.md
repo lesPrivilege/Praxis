@@ -1,3 +1,5 @@
+> 历史研究编写契约。当前阅读从 [全景入口](README.md)开始；本页不派发新的任务。
+
 # Cloud worker 契约
 
 每个 worker 领取 [工作包](packages/README.md)中的一个 package ID，基于父线程提供的 checkpoint commit 创建独立 branch。任务是写出能支持理解与判断的案例，交付给父线程整合。checkpoint 阶段只完成分包，不启动全部案例研究。

@@ -1,0 +1,1121 @@
+{
+  "contract_version": "1.0",
+  "proposals": [
+    {
+      "id": "TR:H01:H02:evidence-before-effect",
+      "selection": "integrated",
+      "occurrences": [
+        {
+          "path": "packages/commercial-finance/H01.md",
+          "context": "`TR:H01:H02:evidence-before-effect` 将“有证据才确认本地效果”迁到采购付款，但 H02 需要核对收货、验收和累计已匹配数量，付款本身不能作为验收证据。`TR:H01:H03:versioned-periods` 把期间与输入版本迁到关账，H03 还要解决整批完整性与截止后补录，单合同算对不保证报表完整。`TR:H01:V12:effective-time` 可迁移生效时间与现金确认的区分，贷款本金和计息余额依还款分配变化，不能直接套固定服务额的直线摊分。"
+        },
+        {
+          "path": "packages/commercial-finance/handoff.md",
+          "context": "| 关系 | 保留的机制 | 类比失效的位置与整合建议 |\n|---|---|---|\n| `TR:H01:H02:evidence-before-effect` | 动作绑定权限、版本与证据 | 收款不证明商品验收；H02还需累计占用与质量证据 |\n| `TR:H01:H03:versioned-periods`、`TR:V12:H01:effective-time` | 生效时间、输入版本与区间重演 | 服务价款、本金余额、会计期间有不同基数和完整性条件 |\n| `TR:H02:H03:matched-to-posted` | 来源身份、币种与修订链 | 匹配通过不证明科目分类正确；保留子账到总账映射 |\n| `TR:H03:X02:reconcile-before-consolidate` | 按来源配对并保留差异 | 合并范围、币种、估值与抵销规则需要另外判定 |\n| `TR:V13:H03:responsibility-dimensions` | 按责任维度核对金额与修订 | reserve是可修订估计，不等于已确定应付款或银行余额 |\n| `TR:V14:H03:execution-reconciliation` | 唯一执行身份与纠正链 | 累计成交量可以真实减少，不能把单调增加作为完整性条件 |\n| `TR:X02:H02:receipt-evidence-boundary` | 来源行、数量与结算关系 | 虚拟采购入库不能证明实体收货或验收 |\n| `TR:X02:V04:direct-shipment-lineage`、`TR:V14:V04:partial-obligations` | 子项数量守恒与部分完成 | 跨法人权限、内部定价、交易纠正与实物退货各自有边界 |\n| 后续接X01多租户控制 | 复合身份及服务端授权 | tenant、法人、provider account、客户可见字段不能合并为一个scope |"
+        }
+      ]
+    },
+    {
+      "id": "TR:H01:H03:versioned-periods",
+      "selection": "additional-reading",
+      "occurrences": [
+        {
+          "path": "packages/commercial-finance/H01.md",
+          "context": "`TR:H01:H02:evidence-before-effect` 将“有证据才确认本地效果”迁到采购付款，但 H02 需要核对收货、验收和累计已匹配数量，付款本身不能作为验收证据。`TR:H01:H03:versioned-periods` 把期间与输入版本迁到关账，H03 还要解决整批完整性与截止后补录，单合同算对不保证报表完整。`TR:H01:V12:effective-time` 可迁移生效时间与现金确认的区分，贷款本金和计息余额依还款分配变化，不能直接套固定服务额的直线摊分。"
+        },
+        {
+          "path": "packages/commercial-finance/handoff.md",
+          "context": "| 关系 | 保留的机制 | 类比失效的位置与整合建议 |\n|---|---|---|\n| `TR:H01:H02:evidence-before-effect` | 动作绑定权限、版本与证据 | 收款不证明商品验收；H02还需累计占用与质量证据 |\n| `TR:H01:H03:versioned-periods`、`TR:V12:H01:effective-time` | 生效时间、输入版本与区间重演 | 服务价款、本金余额、会计期间有不同基数和完整性条件 |\n| `TR:H02:H03:matched-to-posted` | 来源身份、币种与修订链 | 匹配通过不证明科目分类正确；保留子账到总账映射 |\n| `TR:H03:X02:reconcile-before-consolidate` | 按来源配对并保留差异 | 合并范围、币种、估值与抵销规则需要另外判定 |\n| `TR:V13:H03:responsibility-dimensions` | 按责任维度核对金额与修订 | reserve是可修订估计，不等于已确定应付款或银行余额 |\n| `TR:V14:H03:execution-reconciliation` | 唯一执行身份与纠正链 | 累计成交量可以真实减少，不能把单调增加作为完整性条件 |\n| `TR:X02:H02:receipt-evidence-boundary` | 来源行、数量与结算关系 | 虚拟采购入库不能证明实体收货或验收 |\n| `TR:X02:V04:direct-shipment-lineage`、`TR:V14:V04:partial-obligations` | 子项数量守恒与部分完成 | 跨法人权限、内部定价、交易纠正与实物退货各自有边界 |\n| 后续接X01多租户控制 | 复合身份及服务端授权 | tenant、法人、provider account、客户可见字段不能合并为一个scope |"
+        }
+      ]
+    },
+    {
+      "id": "TR:H01:V12:effective-time",
+      "selection": "additional-reading",
+      "occurrences": [
+        {
+          "path": "packages/commercial-finance/H01.md",
+          "context": "`TR:H01:H02:evidence-before-effect` 将“有证据才确认本地效果”迁到采购付款，但 H02 需要核对收货、验收和累计已匹配数量，付款本身不能作为验收证据。`TR:H01:H03:versioned-periods` 把期间与输入版本迁到关账，H03 还要解决整批完整性与截止后补录，单合同算对不保证报表完整。`TR:H01:V12:effective-time` 可迁移生效时间与现金确认的区分，贷款本金和计息余额依还款分配变化，不能直接套固定服务额的直线摊分。"
+        }
+      ]
+    },
+    {
+      "id": "TR:H02:H03:matched-to-posted",
+      "selection": "integrated",
+      "occurrences": [
+        {
+          "path": "packages/commercial-finance/H02.md",
+          "context": "`TR:H02:H03:matched-to-posted` 把已确认发票、付款与来源关系交给 [H03](H03.md) 形成子账。迁移时保留身份、金额、币种和修订历史；H03 的会计期间与科目规则仍须另定，匹配通过不能证明费用分类或关账正确。`TR:H02:V12:evidence-before-disbursement` 可迁移到放款前条件校验，但贷款的信用批准与本金偿还不是商品验收与数量消费，不能套用“收到多少就付多少”。演示可让读者拖动验收量、并发分配最后 5 件、切换银行超时，观察数量、应付与现金各自变化。证据及执行边界见 [evidence.json](evidence.json) 与 [CHANGELOG.md](CHANGELOG.md)。\n"
+        },
+        {
+          "path": "packages/commercial-finance/handoff.md",
+          "context": "| 关系 | 保留的机制 | 类比失效的位置与整合建议 |\n|---|---|---|\n| `TR:H01:H02:evidence-before-effect` | 动作绑定权限、版本与证据 | 收款不证明商品验收；H02还需累计占用与质量证据 |\n| `TR:H01:H03:versioned-periods`、`TR:V12:H01:effective-time` | 生效时间、输入版本与区间重演 | 服务价款、本金余额、会计期间有不同基数和完整性条件 |\n| `TR:H02:H03:matched-to-posted` | 来源身份、币种与修订链 | 匹配通过不证明科目分类正确；保留子账到总账映射 |\n| `TR:H03:X02:reconcile-before-consolidate` | 按来源配对并保留差异 | 合并范围、币种、估值与抵销规则需要另外判定 |\n| `TR:V13:H03:responsibility-dimensions` | 按责任维度核对金额与修订 | reserve是可修订估计，不等于已确定应付款或银行余额 |\n| `TR:V14:H03:execution-reconciliation` | 唯一执行身份与纠正链 | 累计成交量可以真实减少，不能把单调增加作为完整性条件 |\n| `TR:X02:H02:receipt-evidence-boundary` | 来源行、数量与结算关系 | 虚拟采购入库不能证明实体收货或验收 |\n| `TR:X02:V04:direct-shipment-lineage`、`TR:V14:V04:partial-obligations` | 子项数量守恒与部分完成 | 跨法人权限、内部定价、交易纠正与实物退货各自有边界 |\n| 后续接X01多租户控制 | 复合身份及服务端授权 | tenant、法人、provider account、客户可见字段不能合并为一个scope |"
+        }
+      ]
+    },
+    {
+      "id": "TR:H02:V12:evidence-before-disbursement",
+      "selection": "additional-reading",
+      "occurrences": [
+        {
+          "path": "packages/commercial-finance/H02.md",
+          "context": "`TR:H02:H03:matched-to-posted` 把已确认发票、付款与来源关系交给 [H03](H03.md) 形成子账。迁移时保留身份、金额、币种和修订历史；H03 的会计期间与科目规则仍须另定，匹配通过不能证明费用分类或关账正确。`TR:H02:V12:evidence-before-disbursement` 可迁移到放款前条件校验，但贷款的信用批准与本金偿还不是商品验收与数量消费，不能套用“收到多少就付多少”。演示可让读者拖动验收量、并发分配最后 5 件、切换银行超时，观察数量、应付与现金各自变化。证据及执行边界见 [evidence.json](evidence.json) 与 [CHANGELOG.md](CHANGELOG.md)。\n"
+        }
+      ]
+    },
+    {
+      "id": "TR:H03:H07:dependency-not-capacity",
+      "selection": "additional-reading",
+      "occurrences": [
+        {
+          "path": "packages/commercial-finance/H03.md",
+          "context": "`TR:H03:X02:reconcile-before-consolidate` 可迁移到集团内部往来核对，保留身份、两侧金额、期间与差异责任；跨法人可能有汇率、内部交易双方确认与抵销规则，不能把同币种子账—总账等额关系直接当作抵销分录。`TR:H03:H07:dependency-not-capacity` 可迁移关账任务的依赖图；生产排程还须考虑设备、物料与工艺约束，拓扑有序并不保证可生产。演示可切换“净额匹配/来源匹配”、注入晚到记录或给依赖图添加环，让读者观察为何数字相等、任务完成、报告发布是三个不同判断。证据与执行范围见 [evidence.json](evidence.json) 与 [CHANGELOG.md](CHANGELOG.md)。\n"
+        }
+      ]
+    },
+    {
+      "id": "TR:H03:X02:reconcile-before-consolidate",
+      "selection": "integrated",
+      "occurrences": [
+        {
+          "path": "packages/commercial-finance/H03.md",
+          "context": "`TR:H03:X02:reconcile-before-consolidate` 可迁移到集团内部往来核对，保留身份、两侧金额、期间与差异责任；跨法人可能有汇率、内部交易双方确认与抵销规则，不能把同币种子账—总账等额关系直接当作抵销分录。`TR:H03:H07:dependency-not-capacity` 可迁移关账任务的依赖图；生产排程还须考虑设备、物料与工艺约束，拓扑有序并不保证可生产。演示可切换“净额匹配/来源匹配”、注入晚到记录或给依赖图添加环，让读者观察为何数字相等、任务完成、报告发布是三个不同判断。证据与执行范围见 [evidence.json](evidence.json) 与 [CHANGELOG.md](CHANGELOG.md)。\n"
+        },
+        {
+          "path": "packages/commercial-finance/handoff.md",
+          "context": "| 关系 | 保留的机制 | 类比失效的位置与整合建议 |\n|---|---|---|\n| `TR:H01:H02:evidence-before-effect` | 动作绑定权限、版本与证据 | 收款不证明商品验收；H02还需累计占用与质量证据 |\n| `TR:H01:H03:versioned-periods`、`TR:V12:H01:effective-time` | 生效时间、输入版本与区间重演 | 服务价款、本金余额、会计期间有不同基数和完整性条件 |\n| `TR:H02:H03:matched-to-posted` | 来源身份、币种与修订链 | 匹配通过不证明科目分类正确；保留子账到总账映射 |\n| `TR:H03:X02:reconcile-before-consolidate` | 按来源配对并保留差异 | 合并范围、币种、估值与抵销规则需要另外判定 |\n| `TR:V13:H03:responsibility-dimensions` | 按责任维度核对金额与修订 | reserve是可修订估计，不等于已确定应付款或银行余额 |\n| `TR:V14:H03:execution-reconciliation` | 唯一执行身份与纠正链 | 累计成交量可以真实减少，不能把单调增加作为完整性条件 |\n| `TR:X02:H02:receipt-evidence-boundary` | 来源行、数量与结算关系 | 虚拟采购入库不能证明实体收货或验收 |\n| `TR:X02:V04:direct-shipment-lineage`、`TR:V14:V04:partial-obligations` | 子项数量守恒与部分完成 | 跨法人权限、内部定价、交易纠正与实物退货各自有边界 |\n| 后续接X01多租户控制 | 复合身份及服务端授权 | tenant、法人、provider account、客户可见字段不能合并为一个scope |"
+        }
+      ]
+    },
+    {
+      "id": "TR:H04:V17:person-membership",
+      "selection": "additional-reading",
+      "occurrences": [
+        {
+          "path": "packages/people-service/H04.md",
+          "context": "`TR:H04:V17:person-membership` 可把 person 与 employment 的分离迁到人员与课程 roster：身份连续，成员关系有范围与有效期。但课程退选不自动等于工资终止，历史成绩是否保留也不能从 HR 规则继承。`TR:H04:V19:effective-rate` 可迁移有效费率与冻结批次到专业服务计费；计费还需获准工时、合同上限和客户约定，雇佣存续不能替代可计费证据。演示可让读者移动入职、调薪与终止三个时间点，再故意颠倒撤权消息顺序，观察金额与账号状态为何分别变化。"
+        },
+        {
+          "path": "packages/people-service/handoff.md",
+          "context": "| 稳定迁移 ID | 保留机制 | 不能继承的条件 |\n|---|---|---|\n| `TR:H04:V17:person-membership` / `TR:V17:H04:membership-lifecycle` | 人员与有期间的成员关系分别建模 | 学籍、任职、历史保留与访问规则不同 |\n| `TR:H04:V19:effective-rate` | 有效费率、冻结计算输入与修正 | 任职存续不等于客户可计费工时 |\n| `TR:H05:H06:resolution-acceptance` / `TR:H06:H05:responsibility-handoff` | 动作、结果、接收与责任交接独立 | 服务探测与客户明确确认的权威不同 |\n| `TR:H05:V20:partial-completion` / `TR:H06:V20:acceptance-evidence` | 子动作证据不能自动关闭总义务 | 现场技能、签认和需求范围需重查 |\n| `TR:H05:V18:evidence-state` / `TR:V18:H04:release-versus-retention` | 局部关闭不消灭其他有效义务 | legal hold 的解除、数据处置不继承工单超时关闭 |\n| `TR:V18:V17:identity-and-decision` / `TR:V17:V19:approved-inputs` | 内容/数值身份与决定版本分别保存 | 法律特权、成绩与费用批准依据不同 |\n| `TR:V18:V19:delivery-and-spend` / `TR:V19:V18:effort-versus-acceptance` | 交付、工作量、收费与到账分别核对 | 专业裁决不能由费用审批代替 |\n| `TR:V19:V20:capacity-and-window` / `TR:V20:V19:versioned-labor` | 资源约束与工作输入版本 | 日容量不保证现场时窗/路程可行；作业日志不自动成为获批timecard |\n| `TR:H06:H01:unknown-action` / `TR:V19:H01:versioned-billing` / `TR:V20:H01:invoice-and-receipt` | 外部未知结果、账务身份、版本与付款分离 | 财务权限、合同额度与预付开通guard需分别决定 |\n| `TR:V17:X01:scoped-identity` | 租户/来源/对象复合身份 | 同租户仍需课班与个人授权，key不替代权限 |\n| `TR:V20:H06:acceptance-boundary` | 执行与接收分开 | 支持请求可能无booking，关闭依据需按业务重定 |"
+        }
+      ]
+    },
+    {
+      "id": "TR:H04:V19:effective-rate",
+      "selection": "integrated",
+      "occurrences": [
+        {
+          "path": "packages/people-service/H04.md",
+          "context": "`TR:H04:V17:person-membership` 可把 person 与 employment 的分离迁到人员与课程 roster：身份连续，成员关系有范围与有效期。但课程退选不自动等于工资终止，历史成绩是否保留也不能从 HR 规则继承。`TR:H04:V19:effective-rate` 可迁移有效费率与冻结批次到专业服务计费；计费还需获准工时、合同上限和客户约定，雇佣存续不能替代可计费证据。演示可让读者移动入职、调薪与终止三个时间点，再故意颠倒撤权消息顺序，观察金额与账号状态为何分别变化。"
+        },
+        {
+          "path": "packages/people-service/handoff.md",
+          "context": "| 稳定迁移 ID | 保留机制 | 不能继承的条件 |\n|---|---|---|\n| `TR:H04:V17:person-membership` / `TR:V17:H04:membership-lifecycle` | 人员与有期间的成员关系分别建模 | 学籍、任职、历史保留与访问规则不同 |\n| `TR:H04:V19:effective-rate` | 有效费率、冻结计算输入与修正 | 任职存续不等于客户可计费工时 |\n| `TR:H05:H06:resolution-acceptance` / `TR:H06:H05:responsibility-handoff` | 动作、结果、接收与责任交接独立 | 服务探测与客户明确确认的权威不同 |\n| `TR:H05:V20:partial-completion` / `TR:H06:V20:acceptance-evidence` | 子动作证据不能自动关闭总义务 | 现场技能、签认和需求范围需重查 |\n| `TR:H05:V18:evidence-state` / `TR:V18:H04:release-versus-retention` | 局部关闭不消灭其他有效义务 | legal hold 的解除、数据处置不继承工单超时关闭 |\n| `TR:V18:V17:identity-and-decision` / `TR:V17:V19:approved-inputs` | 内容/数值身份与决定版本分别保存 | 法律特权、成绩与费用批准依据不同 |\n| `TR:V18:V19:delivery-and-spend` / `TR:V19:V18:effort-versus-acceptance` | 交付、工作量、收费与到账分别核对 | 专业裁决不能由费用审批代替 |\n| `TR:V19:V20:capacity-and-window` / `TR:V20:V19:versioned-labor` | 资源约束与工作输入版本 | 日容量不保证现场时窗/路程可行；作业日志不自动成为获批timecard |\n| `TR:H06:H01:unknown-action` / `TR:V19:H01:versioned-billing` / `TR:V20:H01:invoice-and-receipt` | 外部未知结果、账务身份、版本与付款分离 | 财务权限、合同额度与预付开通guard需分别决定 |\n| `TR:V17:X01:scoped-identity` | 租户/来源/对象复合身份 | 同租户仍需课班与个人授权，key不替代权限 |\n| `TR:V20:H06:acceptance-boundary` | 执行与接收分开 | 支持请求可能无booking，关闭依据需按业务重定 |"
+        }
+      ]
+    },
+    {
+      "id": "TR:H05:H06:resolution-acceptance",
+      "selection": "integrated",
+      "occurrences": [
+        {
+          "path": "packages/people-service/H05.md",
+          "context": "`TR:H05:H06:resolution-acceptance` 可迁到支持工单的动作、解决与客户确认，但客户回复“谢谢”未必满足技术恢复判据，支持产品的自动关闭与重开语义也须另查。`TR:H05:V20:partial-completion` 可迁到多次现场 booking：一个子动作完成不足以关闭总责任；现场接收还可能需要签字、材料与实际到场证据，不能用监测曲线替代。`TR:H05:V18:evidence-state` 可迁移“处理状态不消灭未结义务”的原则到法律事项，但事故的自动关闭计时不能迁到 legal hold 的解除权限。演示可切换暂停理由、拖动重叠区间、删掉一条依赖边或让执行回执丢失；读者应能看到哪一项证据改变了哪个决定。"
+        },
+        {
+          "path": "packages/people-service/handoff.md",
+          "context": "| 稳定迁移 ID | 保留机制 | 不能继承的条件 |\n|---|---|---|\n| `TR:H04:V17:person-membership` / `TR:V17:H04:membership-lifecycle` | 人员与有期间的成员关系分别建模 | 学籍、任职、历史保留与访问规则不同 |\n| `TR:H04:V19:effective-rate` | 有效费率、冻结计算输入与修正 | 任职存续不等于客户可计费工时 |\n| `TR:H05:H06:resolution-acceptance` / `TR:H06:H05:responsibility-handoff` | 动作、结果、接收与责任交接独立 | 服务探测与客户明确确认的权威不同 |\n| `TR:H05:V20:partial-completion` / `TR:H06:V20:acceptance-evidence` | 子动作证据不能自动关闭总义务 | 现场技能、签认和需求范围需重查 |\n| `TR:H05:V18:evidence-state` / `TR:V18:H04:release-versus-retention` | 局部关闭不消灭其他有效义务 | legal hold 的解除、数据处置不继承工单超时关闭 |\n| `TR:V18:V17:identity-and-decision` / `TR:V17:V19:approved-inputs` | 内容/数值身份与决定版本分别保存 | 法律特权、成绩与费用批准依据不同 |\n| `TR:V18:V19:delivery-and-spend` / `TR:V19:V18:effort-versus-acceptance` | 交付、工作量、收费与到账分别核对 | 专业裁决不能由费用审批代替 |\n| `TR:V19:V20:capacity-and-window` / `TR:V20:V19:versioned-labor` | 资源约束与工作输入版本 | 日容量不保证现场时窗/路程可行；作业日志不自动成为获批timecard |\n| `TR:H06:H01:unknown-action` / `TR:V19:H01:versioned-billing` / `TR:V20:H01:invoice-and-receipt` | 外部未知结果、账务身份、版本与付款分离 | 财务权限、合同额度与预付开通guard需分别决定 |\n| `TR:V17:X01:scoped-identity` | 租户/来源/对象复合身份 | 同租户仍需课班与个人授权，key不替代权限 |\n| `TR:V20:H06:acceptance-boundary` | 执行与接收分开 | 支持请求可能无booking，关闭依据需按业务重定 |"
+        }
+      ]
+    },
+    {
+      "id": "TR:H05:V18:evidence-state",
+      "selection": "integrated",
+      "occurrences": [
+        {
+          "path": "packages/people-service/H05.md",
+          "context": "`TR:H05:H06:resolution-acceptance` 可迁到支持工单的动作、解决与客户确认，但客户回复“谢谢”未必满足技术恢复判据，支持产品的自动关闭与重开语义也须另查。`TR:H05:V20:partial-completion` 可迁到多次现场 booking：一个子动作完成不足以关闭总责任；现场接收还可能需要签字、材料与实际到场证据，不能用监测曲线替代。`TR:H05:V18:evidence-state` 可迁移“处理状态不消灭未结义务”的原则到法律事项，但事故的自动关闭计时不能迁到 legal hold 的解除权限。演示可切换暂停理由、拖动重叠区间、删掉一条依赖边或让执行回执丢失；读者应能看到哪一项证据改变了哪个决定。"
+        },
+        {
+          "path": "packages/people-service/handoff.md",
+          "context": "| 稳定迁移 ID | 保留机制 | 不能继承的条件 |\n|---|---|---|\n| `TR:H04:V17:person-membership` / `TR:V17:H04:membership-lifecycle` | 人员与有期间的成员关系分别建模 | 学籍、任职、历史保留与访问规则不同 |\n| `TR:H04:V19:effective-rate` | 有效费率、冻结计算输入与修正 | 任职存续不等于客户可计费工时 |\n| `TR:H05:H06:resolution-acceptance` / `TR:H06:H05:responsibility-handoff` | 动作、结果、接收与责任交接独立 | 服务探测与客户明确确认的权威不同 |\n| `TR:H05:V20:partial-completion` / `TR:H06:V20:acceptance-evidence` | 子动作证据不能自动关闭总义务 | 现场技能、签认和需求范围需重查 |\n| `TR:H05:V18:evidence-state` / `TR:V18:H04:release-versus-retention` | 局部关闭不消灭其他有效义务 | legal hold 的解除、数据处置不继承工单超时关闭 |\n| `TR:V18:V17:identity-and-decision` / `TR:V17:V19:approved-inputs` | 内容/数值身份与决定版本分别保存 | 法律特权、成绩与费用批准依据不同 |\n| `TR:V18:V19:delivery-and-spend` / `TR:V19:V18:effort-versus-acceptance` | 交付、工作量、收费与到账分别核对 | 专业裁决不能由费用审批代替 |\n| `TR:V19:V20:capacity-and-window` / `TR:V20:V19:versioned-labor` | 资源约束与工作输入版本 | 日容量不保证现场时窗/路程可行；作业日志不自动成为获批timecard |\n| `TR:H06:H01:unknown-action` / `TR:V19:H01:versioned-billing` / `TR:V20:H01:invoice-and-receipt` | 外部未知结果、账务身份、版本与付款分离 | 财务权限、合同额度与预付开通guard需分别决定 |\n| `TR:V17:X01:scoped-identity` | 租户/来源/对象复合身份 | 同租户仍需课班与个人授权，key不替代权限 |\n| `TR:V20:H06:acceptance-boundary` | 执行与接收分开 | 支持请求可能无booking，关闭依据需按业务重定 |"
+        }
+      ]
+    },
+    {
+      "id": "TR:H05:V20:partial-completion",
+      "selection": "additional-reading",
+      "occurrences": [
+        {
+          "path": "packages/people-service/H05.md",
+          "context": "`TR:H05:H06:resolution-acceptance` 可迁到支持工单的动作、解决与客户确认，但客户回复“谢谢”未必满足技术恢复判据，支持产品的自动关闭与重开语义也须另查。`TR:H05:V20:partial-completion` 可迁到多次现场 booking：一个子动作完成不足以关闭总责任；现场接收还可能需要签字、材料与实际到场证据，不能用监测曲线替代。`TR:H05:V18:evidence-state` 可迁移“处理状态不消灭未结义务”的原则到法律事项，但事故的自动关闭计时不能迁到 legal hold 的解除权限。演示可切换暂停理由、拖动重叠区间、删掉一条依赖边或让执行回执丢失；读者应能看到哪一项证据改变了哪个决定。"
+        },
+        {
+          "path": "packages/people-service/handoff.md",
+          "context": "| 稳定迁移 ID | 保留机制 | 不能继承的条件 |\n|---|---|---|\n| `TR:H04:V17:person-membership` / `TR:V17:H04:membership-lifecycle` | 人员与有期间的成员关系分别建模 | 学籍、任职、历史保留与访问规则不同 |\n| `TR:H04:V19:effective-rate` | 有效费率、冻结计算输入与修正 | 任职存续不等于客户可计费工时 |\n| `TR:H05:H06:resolution-acceptance` / `TR:H06:H05:responsibility-handoff` | 动作、结果、接收与责任交接独立 | 服务探测与客户明确确认的权威不同 |\n| `TR:H05:V20:partial-completion` / `TR:H06:V20:acceptance-evidence` | 子动作证据不能自动关闭总义务 | 现场技能、签认和需求范围需重查 |\n| `TR:H05:V18:evidence-state` / `TR:V18:H04:release-versus-retention` | 局部关闭不消灭其他有效义务 | legal hold 的解除、数据处置不继承工单超时关闭 |\n| `TR:V18:V17:identity-and-decision` / `TR:V17:V19:approved-inputs` | 内容/数值身份与决定版本分别保存 | 法律特权、成绩与费用批准依据不同 |\n| `TR:V18:V19:delivery-and-spend` / `TR:V19:V18:effort-versus-acceptance` | 交付、工作量、收费与到账分别核对 | 专业裁决不能由费用审批代替 |\n| `TR:V19:V20:capacity-and-window` / `TR:V20:V19:versioned-labor` | 资源约束与工作输入版本 | 日容量不保证现场时窗/路程可行；作业日志不自动成为获批timecard |\n| `TR:H06:H01:unknown-action` / `TR:V19:H01:versioned-billing` / `TR:V20:H01:invoice-and-receipt` | 外部未知结果、账务身份、版本与付款分离 | 财务权限、合同额度与预付开通guard需分别决定 |\n| `TR:V17:X01:scoped-identity` | 租户/来源/对象复合身份 | 同租户仍需课班与个人授权，key不替代权限 |\n| `TR:V20:H06:acceptance-boundary` | 执行与接收分开 | 支持请求可能无booking，关闭依据需按业务重定 |"
+        }
+      ]
+    },
+    {
+      "id": "TR:H06:H01:unknown-action",
+      "selection": "integrated",
+      "occurrences": [
+        {
+          "path": "packages/people-service/H06.md",
+          "context": "**练习二：动作从重新导出变成退款，超时后能否重试？** 短答：窗口算法仍可用于队列，副作用边界改变了。必须先按付款方定义的幂等键或原退款引用核对结果；无法核对就交财务处理，不能因客户着急创建第二笔。不变量是一次授权退款的经济效果只发生一次；失效条件是只有工单 ID、没有资金操作身份。检查应在 provider 已退款而本地未收到响应时确认没有双退。`TR:H06:H01:unknown-action` 保留未知结果核对机制，不能把支持人员的权限迁移成财务审批权。"
+        },
+        {
+          "path": "packages/people-service/handoff.md",
+          "context": "| 稳定迁移 ID | 保留机制 | 不能继承的条件 |\n|---|---|---|\n| `TR:H04:V17:person-membership` / `TR:V17:H04:membership-lifecycle` | 人员与有期间的成员关系分别建模 | 学籍、任职、历史保留与访问规则不同 |\n| `TR:H04:V19:effective-rate` | 有效费率、冻结计算输入与修正 | 任职存续不等于客户可计费工时 |\n| `TR:H05:H06:resolution-acceptance` / `TR:H06:H05:responsibility-handoff` | 动作、结果、接收与责任交接独立 | 服务探测与客户明确确认的权威不同 |\n| `TR:H05:V20:partial-completion` / `TR:H06:V20:acceptance-evidence` | 子动作证据不能自动关闭总义务 | 现场技能、签认和需求范围需重查 |\n| `TR:H05:V18:evidence-state` / `TR:V18:H04:release-versus-retention` | 局部关闭不消灭其他有效义务 | legal hold 的解除、数据处置不继承工单超时关闭 |\n| `TR:V18:V17:identity-and-decision` / `TR:V17:V19:approved-inputs` | 内容/数值身份与决定版本分别保存 | 法律特权、成绩与费用批准依据不同 |\n| `TR:V18:V19:delivery-and-spend` / `TR:V19:V18:effort-versus-acceptance` | 交付、工作量、收费与到账分别核对 | 专业裁决不能由费用审批代替 |\n| `TR:V19:V20:capacity-and-window` / `TR:V20:V19:versioned-labor` | 资源约束与工作输入版本 | 日容量不保证现场时窗/路程可行；作业日志不自动成为获批timecard |\n| `TR:H06:H01:unknown-action` / `TR:V19:H01:versioned-billing` / `TR:V20:H01:invoice-and-receipt` | 外部未知结果、账务身份、版本与付款分离 | 财务权限、合同额度与预付开通guard需分别决定 |\n| `TR:V17:X01:scoped-identity` | 租户/来源/对象复合身份 | 同租户仍需课班与个人授权，key不替代权限 |\n| `TR:V20:H06:acceptance-boundary` | 执行与接收分开 | 支持请求可能无booking，关闭依据需按业务重定 |"
+        }
+      ]
+    },
+    {
+      "id": "TR:H06:H05:responsibility-handoff",
+      "selection": "additional-reading",
+      "occurrences": [
+        {
+          "path": "packages/people-service/H06.md",
+          "context": "**练习三：客户新增问题与旧问题无关，是否让旧请求永远重开？** 短答：应确认问题边界，创建关联新请求并保留原结果的接受证据。否则平均处理时长会混合不同承诺。检查新问题有独立负责者与期限，而原请求保留可回查关联。`TR:H06:H05:responsibility-handoff` 迁移的是责任交接与证据链；事故恢复通常由技术监测与事故指挥判断，不能照搬客户点击确认的结束条件。"
+        },
+        {
+          "path": "packages/people-service/handoff.md",
+          "context": "| 稳定迁移 ID | 保留机制 | 不能继承的条件 |\n|---|---|---|\n| `TR:H04:V17:person-membership` / `TR:V17:H04:membership-lifecycle` | 人员与有期间的成员关系分别建模 | 学籍、任职、历史保留与访问规则不同 |\n| `TR:H04:V19:effective-rate` | 有效费率、冻结计算输入与修正 | 任职存续不等于客户可计费工时 |\n| `TR:H05:H06:resolution-acceptance` / `TR:H06:H05:responsibility-handoff` | 动作、结果、接收与责任交接独立 | 服务探测与客户明确确认的权威不同 |\n| `TR:H05:V20:partial-completion` / `TR:H06:V20:acceptance-evidence` | 子动作证据不能自动关闭总义务 | 现场技能、签认和需求范围需重查 |\n| `TR:H05:V18:evidence-state` / `TR:V18:H04:release-versus-retention` | 局部关闭不消灭其他有效义务 | legal hold 的解除、数据处置不继承工单超时关闭 |\n| `TR:V18:V17:identity-and-decision` / `TR:V17:V19:approved-inputs` | 内容/数值身份与决定版本分别保存 | 法律特权、成绩与费用批准依据不同 |\n| `TR:V18:V19:delivery-and-spend` / `TR:V19:V18:effort-versus-acceptance` | 交付、工作量、收费与到账分别核对 | 专业裁决不能由费用审批代替 |\n| `TR:V19:V20:capacity-and-window` / `TR:V20:V19:versioned-labor` | 资源约束与工作输入版本 | 日容量不保证现场时窗/路程可行；作业日志不自动成为获批timecard |\n| `TR:H06:H01:unknown-action` / `TR:V19:H01:versioned-billing` / `TR:V20:H01:invoice-and-receipt` | 外部未知结果、账务身份、版本与付款分离 | 财务权限、合同额度与预付开通guard需分别决定 |\n| `TR:V17:X01:scoped-identity` | 租户/来源/对象复合身份 | 同租户仍需课班与个人授权，key不替代权限 |\n| `TR:V20:H06:acceptance-boundary` | 执行与接收分开 | 支持请求可能无booking，关闭依据需按业务重定 |"
+        }
+      ]
+    },
+    {
+      "id": "TR:H06:V20:acceptance-evidence",
+      "selection": "additional-reading",
+      "occurrences": [
+        {
+          "path": "packages/people-service/H06.md",
+          "context": "**练习一：客户三天没有回复，产品要求自动结案。** 能否沿用“客户已确认”标签？短答：不能。可以新增 `administratively_closed` 或独立 closure reason，记录提醒次数、无响应期限和重开路径；它证明流程按政策结束，不能证明结果被认可。不变量是结案依据如实可追溯；失效条件是把沉默当同意。观察检查应让未读提醒、退信及客户超时后反馈分别得到不同处理。`TR:H06:V20:acceptance-evidence` 可迁移到现场接收，但现场安全检验或法定验收不能仅靠客服式无响应政策替代。"
+        },
+        {
+          "path": "packages/people-service/handoff.md",
+          "context": "| 稳定迁移 ID | 保留机制 | 不能继承的条件 |\n|---|---|---|\n| `TR:H04:V17:person-membership` / `TR:V17:H04:membership-lifecycle` | 人员与有期间的成员关系分别建模 | 学籍、任职、历史保留与访问规则不同 |\n| `TR:H04:V19:effective-rate` | 有效费率、冻结计算输入与修正 | 任职存续不等于客户可计费工时 |\n| `TR:H05:H06:resolution-acceptance` / `TR:H06:H05:responsibility-handoff` | 动作、结果、接收与责任交接独立 | 服务探测与客户明确确认的权威不同 |\n| `TR:H05:V20:partial-completion` / `TR:H06:V20:acceptance-evidence` | 子动作证据不能自动关闭总义务 | 现场技能、签认和需求范围需重查 |\n| `TR:H05:V18:evidence-state` / `TR:V18:H04:release-versus-retention` | 局部关闭不消灭其他有效义务 | legal hold 的解除、数据处置不继承工单超时关闭 |\n| `TR:V18:V17:identity-and-decision` / `TR:V17:V19:approved-inputs` | 内容/数值身份与决定版本分别保存 | 法律特权、成绩与费用批准依据不同 |\n| `TR:V18:V19:delivery-and-spend` / `TR:V19:V18:effort-versus-acceptance` | 交付、工作量、收费与到账分别核对 | 专业裁决不能由费用审批代替 |\n| `TR:V19:V20:capacity-and-window` / `TR:V20:V19:versioned-labor` | 资源约束与工作输入版本 | 日容量不保证现场时窗/路程可行；作业日志不自动成为获批timecard |\n| `TR:H06:H01:unknown-action` / `TR:V19:H01:versioned-billing` / `TR:V20:H01:invoice-and-receipt` | 外部未知结果、账务身份、版本与付款分离 | 财务权限、合同额度与预付开通guard需分别决定 |\n| `TR:V17:X01:scoped-identity` | 租户/来源/对象复合身份 | 同租户仍需课班与个人授权，key不替代权限 |\n| `TR:V20:H06:acceptance-boundary` | 执行与接收分开 | 支持请求可能无booking，关闭依据需按业务重定 |"
+        }
+      ]
+    },
+    {
+      "id": "TR:H07:H08:lineage-impact",
+      "selection": "integrated",
+      "occurrences": [
+        {
+          "path": "packages/data-ai-control/handoff.md",
+          "context": "| 迁移 ID | 保留的机制 | 类比的失效点 |\n|---|---|---|\n| `TR:H07:H09:release-approval` | 批准绑定固定输入与版本 | 数据重述不能决定签署文件的法律效力 |\n| `TR:H07:X01:window-revisions` | 事件时间、修订与去重身份分开 | BI 可重述，已定稿账单需另行调整和核对 |\n| `TR:H07:H08:lineage-impact` | 图路径定位待检查的影响范围 | 数据依赖不证明攻击因果，也不产生响应权限 |\n| `TR:H08:X01:containment-vs-offboard` | 每项外部效果单独确认 | 解除临时限制不等于重新开通已结束的服务权利 |\n| `TR:H08:H09:version-bound-authority` | 授权绑定对象版本、范围和当前身份 | 紧急响应的期限和恢复政策不等于合同撤回规则 |\n| `TR:H09:H03:dependency-versus-capacity` | 依赖先后与资源不重叠分别求解 | 拓扑最早完成时间不是人员排程或业务 SLA |\n| `TR:H09:H01:commitment-evidence` | 版本化承诺与履约证据分离 | 内部批准不等于客户接受，撤回不等于退款 |\n| `TR:X01:H01:bill-payment-separation` | 用量、账单、付款分别可核对 | 可计费不等于已收款，更不等于收入确认 |"
+        }
+      ]
+    },
+    {
+      "id": "TR:H07:H09:release-approval",
+      "selection": "integrated",
+      "occurrences": [
+        {
+          "path": "packages/data-ai-control/handoff.md",
+          "context": "| 迁移 ID | 保留的机制 | 类比的失效点 |\n|---|---|---|\n| `TR:H07:H09:release-approval` | 批准绑定固定输入与版本 | 数据重述不能决定签署文件的法律效力 |\n| `TR:H07:X01:window-revisions` | 事件时间、修订与去重身份分开 | BI 可重述，已定稿账单需另行调整和核对 |\n| `TR:H07:H08:lineage-impact` | 图路径定位待检查的影响范围 | 数据依赖不证明攻击因果，也不产生响应权限 |\n| `TR:H08:X01:containment-vs-offboard` | 每项外部效果单独确认 | 解除临时限制不等于重新开通已结束的服务权利 |\n| `TR:H08:H09:version-bound-authority` | 授权绑定对象版本、范围和当前身份 | 紧急响应的期限和恢复政策不等于合同撤回规则 |\n| `TR:H09:H03:dependency-versus-capacity` | 依赖先后与资源不重叠分别求解 | 拓扑最早完成时间不是人员排程或业务 SLA |\n| `TR:H09:H01:commitment-evidence` | 版本化承诺与履约证据分离 | 内部批准不等于客户接受，撤回不等于退款 |\n| `TR:X01:H01:bill-payment-separation` | 用量、账单、付款分别可核对 | 可计费不等于已收款，更不等于收入确认 |"
+        }
+      ]
+    },
+    {
+      "id": "TR:H07:X01:window-revisions",
+      "selection": "integrated",
+      "occurrences": [
+        {
+          "path": "packages/data-ai-control/handoff.md",
+          "context": "| 迁移 ID | 保留的机制 | 类比的失效点 |\n|---|---|---|\n| `TR:H07:H09:release-approval` | 批准绑定固定输入与版本 | 数据重述不能决定签署文件的法律效力 |\n| `TR:H07:X01:window-revisions` | 事件时间、修订与去重身份分开 | BI 可重述，已定稿账单需另行调整和核对 |\n| `TR:H07:H08:lineage-impact` | 图路径定位待检查的影响范围 | 数据依赖不证明攻击因果，也不产生响应权限 |\n| `TR:H08:X01:containment-vs-offboard` | 每项外部效果单独确认 | 解除临时限制不等于重新开通已结束的服务权利 |\n| `TR:H08:H09:version-bound-authority` | 授权绑定对象版本、范围和当前身份 | 紧急响应的期限和恢复政策不等于合同撤回规则 |\n| `TR:H09:H03:dependency-versus-capacity` | 依赖先后与资源不重叠分别求解 | 拓扑最早完成时间不是人员排程或业务 SLA |\n| `TR:H09:H01:commitment-evidence` | 版本化承诺与履约证据分离 | 内部批准不等于客户接受，撤回不等于退款 |\n| `TR:X01:H01:bill-payment-separation` | 用量、账单、付款分别可核对 | 可计费不等于已收款，更不等于收入确认 |"
+        }
+      ]
+    },
+    {
+      "id": "TR:H08:H09:version-bound-authority",
+      "selection": "additional-reading",
+      "occurrences": [
+        {
+          "path": "packages/data-ai-control/H08.md",
+          "context": "简答：保留批准绑定不可变内容版本的机制；修改后的 URL 可能改变履约目标，必须按新版本判断是否重新审批，不能因为页面标题未变就复用旧摘要。反例是旧批准被用于新收件人或新义务。检查向下游写出的内容摘要是否等于获批版本，并验证旧版本重试不会覆盖新版本。但两例的破界也要保留：安全许可通常很短，允许的紧急限制和恢复职责不等于合同文本的签署、撤回或法律效果；后者必须独立查证。迁移 ID：`TR:H08:H09:version-bound-authority`。"
+        },
+        {
+          "path": "packages/data-ai-control/handoff.md",
+          "context": "| 迁移 ID | 保留的机制 | 类比的失效点 |\n|---|---|---|\n| `TR:H07:H09:release-approval` | 批准绑定固定输入与版本 | 数据重述不能决定签署文件的法律效力 |\n| `TR:H07:X01:window-revisions` | 事件时间、修订与去重身份分开 | BI 可重述，已定稿账单需另行调整和核对 |\n| `TR:H07:H08:lineage-impact` | 图路径定位待检查的影响范围 | 数据依赖不证明攻击因果，也不产生响应权限 |\n| `TR:H08:X01:containment-vs-offboard` | 每项外部效果单独确认 | 解除临时限制不等于重新开通已结束的服务权利 |\n| `TR:H08:H09:version-bound-authority` | 授权绑定对象版本、范围和当前身份 | 紧急响应的期限和恢复政策不等于合同撤回规则 |\n| `TR:H09:H03:dependency-versus-capacity` | 依赖先后与资源不重叠分别求解 | 拓扑最早完成时间不是人员排程或业务 SLA |\n| `TR:H09:H01:commitment-evidence` | 版本化承诺与履约证据分离 | 内部批准不等于客户接受，撤回不等于退款 |\n| `TR:X01:H01:bill-payment-separation` | 用量、账单、付款分别可核对 | 可计费不等于已收款，更不等于收入确认 |"
+        }
+      ]
+    },
+    {
+      "id": "TR:H08:X01:containment-vs-offboard",
+      "selection": "integrated",
+      "occurrences": [
+        {
+          "path": "packages/data-ai-control/H08.md",
+          "context": "简答：保持不变的是“每个外部效果独立确认”，改变的是权利依据。临时限制的解除依赖当前身份与业务职责；退租后的服务权利已经结束，恢复访问需要新的合同或租户开通授权。不能把“事件关闭”连到“租户重新开通”。反例是离职员工被误报事件关闭后重新获得账号。可观察检查是同一账号仍处于退租或离职状态时，恢复计划必须拒绝，并展示缺少的权利依据。迁移 ID：`TR:H08:X01:containment-vs-offboard`。"
+        },
+        {
+          "path": "packages/data-ai-control/handoff.md",
+          "context": "| 迁移 ID | 保留的机制 | 类比的失效点 |\n|---|---|---|\n| `TR:H07:H09:release-approval` | 批准绑定固定输入与版本 | 数据重述不能决定签署文件的法律效力 |\n| `TR:H07:X01:window-revisions` | 事件时间、修订与去重身份分开 | BI 可重述，已定稿账单需另行调整和核对 |\n| `TR:H07:H08:lineage-impact` | 图路径定位待检查的影响范围 | 数据依赖不证明攻击因果，也不产生响应权限 |\n| `TR:H08:X01:containment-vs-offboard` | 每项外部效果单独确认 | 解除临时限制不等于重新开通已结束的服务权利 |\n| `TR:H08:H09:version-bound-authority` | 授权绑定对象版本、范围和当前身份 | 紧急响应的期限和恢复政策不等于合同撤回规则 |\n| `TR:H09:H03:dependency-versus-capacity` | 依赖先后与资源不重叠分别求解 | 拓扑最早完成时间不是人员排程或业务 SLA |\n| `TR:H09:H01:commitment-evidence` | 版本化承诺与履约证据分离 | 内部批准不等于客户接受，撤回不等于退款 |\n| `TR:X01:H01:bill-payment-separation` | 用量、账单、付款分别可核对 | 可计费不等于已收款，更不等于收入确认 |"
+        }
+      ]
+    },
+    {
+      "id": "TR:H09:H01:commitment-evidence",
+      "selection": "additional-reading",
+      "occurrences": [
+        {
+          "path": "packages/data-ai-control/H09.md",
+          "context": "**练习三：合同已归档并开通服务，后来审批人撤回了批准，能否直接停服并删合同？** 简答：先记录撤回及争议，后续效果按各对象的权限与政策处理。本例中撤回不是对方合同终止确认，也不是 H01 的退款证明；服务暂停、退款、ERP 作废分别需要独立命令及回执。不变量是保留已经发生的事实和因果关系。失效条件是把审批当作一种可无条件逆转所有下游效果的开关；检查已有付款、交付和签署记录是否被误删。`TR:H09:H01:commitment-evidence` 保留版本化承诺与独立履约状态，不能把内部审阅等同于客户接受；`TR:H09:H08:bounded-authorization` 可复用绑定对象、权限和期限的授权，但安全响应允许的紧急动作与合同撤回的责任边界仍须分别定义。"
+        },
+        {
+          "path": "packages/data-ai-control/handoff.md",
+          "context": "| 迁移 ID | 保留的机制 | 类比的失效点 |\n|---|---|---|\n| `TR:H07:H09:release-approval` | 批准绑定固定输入与版本 | 数据重述不能决定签署文件的法律效力 |\n| `TR:H07:X01:window-revisions` | 事件时间、修订与去重身份分开 | BI 可重述，已定稿账单需另行调整和核对 |\n| `TR:H07:H08:lineage-impact` | 图路径定位待检查的影响范围 | 数据依赖不证明攻击因果，也不产生响应权限 |\n| `TR:H08:X01:containment-vs-offboard` | 每项外部效果单独确认 | 解除临时限制不等于重新开通已结束的服务权利 |\n| `TR:H08:H09:version-bound-authority` | 授权绑定对象版本、范围和当前身份 | 紧急响应的期限和恢复政策不等于合同撤回规则 |\n| `TR:H09:H03:dependency-versus-capacity` | 依赖先后与资源不重叠分别求解 | 拓扑最早完成时间不是人员排程或业务 SLA |\n| `TR:H09:H01:commitment-evidence` | 版本化承诺与履约证据分离 | 内部批准不等于客户接受，撤回不等于退款 |\n| `TR:X01:H01:bill-payment-separation` | 用量、账单、付款分别可核对 | 可计费不等于已收款，更不等于收入确认 |"
+        }
+      ]
+    },
+    {
+      "id": "TR:H09:H03:dependency-versus-capacity",
+      "selection": "integrated",
+      "occurrences": [
+        {
+          "path": "packages/data-ai-control/H09.md",
+          "context": "**练习二：财务和法务由同一个人承担，时间还会是 3.5 小时吗？** 简答：前提图仍合法，但资源假设改变。若同一人负责 L 的 3 小时和 F 的 1 小时，P 由他人负责且需 2 小时，可以先在 `[0,3)` 做 L，再于 `[3,4)` 做 F，R 于 `[4,4.5)` 完成，总计 4.5 小时；另一合法安排未必更快。保留的是依赖约束，新增的是人的不重叠时间约束。反例是同时给同一人安排 L 与 F；检查甘特时间段有无重叠，并区分队列时间与处理时间。`TR:H09:H03:dependency-versus-capacity` 只迁移“先后与资源分开”的机制，不继承本例时长或审批规则。"
+        },
+        {
+          "path": "packages/data-ai-control/handoff.md",
+          "context": "| 迁移 ID | 保留的机制 | 类比的失效点 |\n|---|---|---|\n| `TR:H07:H09:release-approval` | 批准绑定固定输入与版本 | 数据重述不能决定签署文件的法律效力 |\n| `TR:H07:X01:window-revisions` | 事件时间、修订与去重身份分开 | BI 可重述，已定稿账单需另行调整和核对 |\n| `TR:H07:H08:lineage-impact` | 图路径定位待检查的影响范围 | 数据依赖不证明攻击因果，也不产生响应权限 |\n| `TR:H08:X01:containment-vs-offboard` | 每项外部效果单独确认 | 解除临时限制不等于重新开通已结束的服务权利 |\n| `TR:H08:H09:version-bound-authority` | 授权绑定对象版本、范围和当前身份 | 紧急响应的期限和恢复政策不等于合同撤回规则 |\n| `TR:H09:H03:dependency-versus-capacity` | 依赖先后与资源不重叠分别求解 | 拓扑最早完成时间不是人员排程或业务 SLA |\n| `TR:H09:H01:commitment-evidence` | 版本化承诺与履约证据分离 | 内部批准不等于客户接受，撤回不等于退款 |\n| `TR:X01:H01:bill-payment-separation` | 用量、账单、付款分别可核对 | 可计费不等于已收款，更不等于收入确认 |"
+        }
+      ]
+    },
+    {
+      "id": "TR:H09:H07:versioned-approval-inputs",
+      "selection": "additional-reading",
+      "occurrences": [
+        {
+          "path": "packages/data-ai-control/H09.md",
+          "context": "**练习一：只改了联系方式，能否复用旧批准？** 假设联系人字段不出现在签署文件、金额或审批路由中。简答：本例的整体版本绑定仍会要求新轮次，这是保守策略带来的审阅成本。若要优化，必须把各审批的输入依赖明确登记，证明该字段不影响它们，产生可审计的“沿用决定”记录，指向旧决定与新包，而不能把原批准改成批准了新版本。不变量是每次放行都能证明当前执行输入被有效决定覆盖。失效条件是联系人同时决定通知对象或签署人；检查把联系人改成签署人后，旧批准能否仍错误地放行。`TR:H09:H07:versioned-approval-inputs` 可迁移到 BI 发布，但报表的受影响范围可以沿 lineage 计算，合同条款的语义依赖未必能由结构化字段穷尽。"
+        }
+      ]
+    },
+    {
+      "id": "TR:H09:H08:bounded-authorization",
+      "selection": "additional-reading",
+      "occurrences": [
+        {
+          "path": "packages/data-ai-control/H09.md",
+          "context": "**练习三：合同已归档并开通服务，后来审批人撤回了批准，能否直接停服并删合同？** 简答：先记录撤回及争议，后续效果按各对象的权限与政策处理。本例中撤回不是对方合同终止确认，也不是 H01 的退款证明；服务暂停、退款、ERP 作废分别需要独立命令及回执。不变量是保留已经发生的事实和因果关系。失效条件是把审批当作一种可无条件逆转所有下游效果的开关；检查已有付款、交付和签署记录是否被误删。`TR:H09:H01:commitment-evidence` 保留版本化承诺与独立履约状态，不能把内部审阅等同于客户接受；`TR:H09:H08:bounded-authorization` 可复用绑定对象、权限和期限的授权，但安全响应允许的紧急动作与合同撤回的责任边界仍须分别定义。"
+        }
+      ]
+    },
+    {
+      "id": "TR:V01:H01:adjudication-payment-separation",
+      "selection": "integrated",
+      "occurrences": [
+        {
+          "path": "packages/health-science/V01.md",
+          "context": "向 H01 可迁移“请求、外部确认、权利或余额分别保存”（`TR:V01:H01:adjudication-payment-separation`），但订阅付费后开通的策略不能套到诊疗处置。Stripe 发票文档也提醒 `paid` 可来自余额抵扣或线下标记等情况；它只能支持“状态须读清证据来源”的产品例子，不能用 Stripe 代替医疗支付方裁决。[Invoice lifecycle / Paid invoices](https://docs.stripe.com/invoicing/overview)。`V01:claim:stripe-paid`"
+        },
+        {
+          "path": "packages/health-science/handoff.md",
+          "context": "- `TR:V01:H01:adjudication-payment-separation`：裁决、到账与最终业务完成分别建模；H01 的付款开通 guard 不继承到诊疗处置。\n- `TR:V01:V03:evidence-revision`、`TR:V02:V01:amended-evidence`、`TR:V02:V03:versioned-release`、`TR:V03:V02:version-bound-review`：共用版本绑定与影响查询，保留临床报告、研究签名、批次证书各自的专业权威和取样范围。\n- `TR:V02:H08:scoped-authorization`：可复用作用域、动作权限与拒绝原因；研究同意的自主性、持续沟通不能简化为安全响应授权。\n- `TR:V03:V09:dependency-invalidation`、`TR:V03:V10:equipment-eligibility`：依赖与设备状态可以迁移，测量不确定度、样品代表性和调查程序须另取证。\n- `TR:V03:X01:scoped-evidence`：租户隔离贯穿库、对象存储、缓存、队列和导出；合法跨机构交接应显式建模，不能只共享一个 tenant 值。\n- 同一“完成”必须带对象：付款全分配、应收收清、query closed、signature current、data locked、lot released、CoA issued 均不能合并成共同状态码。\n- 父线程按 canonical URL 整合 21 个包内新增来源，保留源 ID 或显式 alias；补充主张用 case claim ID 满足当前 validator，种子 ID 不变。公共来源总表仍保持 checkpoint 状态，不能把本包已读记录自动视为共享总表已更新。\n- 本包未修改全局学习主线、case-index 与 registry。整合者决定正文入口、来源去重、跨包关系和术语注册，并统一重建 registry。"
+        }
+      ]
+    },
+    {
+      "id": "TR:V01:V03:evidence-revision",
+      "selection": "integrated",
+      "occurrences": [
+        {
+          "path": "packages/health-science/V01.md",
+          "context": "短答：可以保留“决定绑定证据版本，变更生成重审清单”的关系（`TR:V01:V03:evidence-revision`）。V03 还必须追溯 sample 与 lot 的代表性、方法、校准和 QC；一个 sample 的结果不能代表任意批次。检查受影响证书是否都能追到失效输入，同时未关联的 lot 不被误停。医疗报告的更正并不自动具有批次召回或证书撤销的法律效力。"
+        },
+        {
+          "path": "packages/health-science/handoff.md",
+          "context": "- `TR:V01:H01:adjudication-payment-separation`：裁决、到账与最终业务完成分别建模；H01 的付款开通 guard 不继承到诊疗处置。\n- `TR:V01:V03:evidence-revision`、`TR:V02:V01:amended-evidence`、`TR:V02:V03:versioned-release`、`TR:V03:V02:version-bound-review`：共用版本绑定与影响查询，保留临床报告、研究签名、批次证书各自的专业权威和取样范围。\n- `TR:V02:H08:scoped-authorization`：可复用作用域、动作权限与拒绝原因；研究同意的自主性、持续沟通不能简化为安全响应授权。\n- `TR:V03:V09:dependency-invalidation`、`TR:V03:V10:equipment-eligibility`：依赖与设备状态可以迁移，测量不确定度、样品代表性和调查程序须另取证。\n- `TR:V03:X01:scoped-evidence`：租户隔离贯穿库、对象存储、缓存、队列和导出；合法跨机构交接应显式建模，不能只共享一个 tenant 值。\n- 同一“完成”必须带对象：付款全分配、应收收清、query closed、signature current、data locked、lot released、CoA issued 均不能合并成共同状态码。\n- 父线程按 canonical URL 整合 21 个包内新增来源，保留源 ID 或显式 alias；补充主张用 case claim ID 满足当前 validator，种子 ID 不变。公共来源总表仍保持 checkpoint 状态，不能把本包已读记录自动视为共享总表已更新。\n- 本包未修改全局学习主线、case-index 与 registry。整合者决定正文入口、来源去重、跨包关系和术语注册，并统一重建 registry。"
+        }
+      ]
+    },
+    {
+      "id": "TR:V02:H08:scoped-authorization",
+      "selection": "integrated",
+      "occurrences": [
+        {
+          "path": "packages/health-science/V02.md",
+          "context": "版本化证据可迁到 V03 的结果复核与 lot certificate：`TR:V02:V03:versioned-release` 保留“确认绑定输入版本、变更后重查依赖”的关系；但批次证书的放行责任、抽样与检验方法不能从 consent 或 PI 权限继承。可迁到 V01 的报告修订：`TR:V02:V01:amended-evidence` 保留原记录及替代关系；临床报告更正后的通知责任和紧急处理需要自己的证据。可迁到 H08 的安全响应授权：`TR:V02:H08:scoped-authorization` 保留动作作用域、有效依据与拒绝原因；隔离账号或设备依赖响应权限和影响范围，不能由参与者同意模型推出。紧急处置的先执行后复核规则也必须单独确认，知情同意的自主性和持续沟通不能直接替换为组织内部审批。迁移时先保留不变量，再重查专业权威。"
+        },
+        {
+          "path": "packages/health-science/handoff.md",
+          "context": "- `TR:V01:H01:adjudication-payment-separation`：裁决、到账与最终业务完成分别建模；H01 的付款开通 guard 不继承到诊疗处置。\n- `TR:V01:V03:evidence-revision`、`TR:V02:V01:amended-evidence`、`TR:V02:V03:versioned-release`、`TR:V03:V02:version-bound-review`：共用版本绑定与影响查询，保留临床报告、研究签名、批次证书各自的专业权威和取样范围。\n- `TR:V02:H08:scoped-authorization`：可复用作用域、动作权限与拒绝原因；研究同意的自主性、持续沟通不能简化为安全响应授权。\n- `TR:V03:V09:dependency-invalidation`、`TR:V03:V10:equipment-eligibility`：依赖与设备状态可以迁移，测量不确定度、样品代表性和调查程序须另取证。\n- `TR:V03:X01:scoped-evidence`：租户隔离贯穿库、对象存储、缓存、队列和导出；合法跨机构交接应显式建模，不能只共享一个 tenant 值。\n- 同一“完成”必须带对象：付款全分配、应收收清、query closed、signature current、data locked、lot released、CoA issued 均不能合并成共同状态码。\n- 父线程按 canonical URL 整合 21 个包内新增来源，保留源 ID 或显式 alias；补充主张用 case claim ID 满足当前 validator，种子 ID 不变。公共来源总表仍保持 checkpoint 状态，不能把本包已读记录自动视为共享总表已更新。\n- 本包未修改全局学习主线、case-index 与 registry。整合者决定正文入口、来源去重、跨包关系和术语注册，并统一重建 registry。"
+        }
+      ]
+    },
+    {
+      "id": "TR:V02:V01:amended-evidence",
+      "selection": "integrated",
+      "occurrences": [
+        {
+          "path": "packages/health-science/V02.md",
+          "context": "版本化证据可迁到 V03 的结果复核与 lot certificate：`TR:V02:V03:versioned-release` 保留“确认绑定输入版本、变更后重查依赖”的关系；但批次证书的放行责任、抽样与检验方法不能从 consent 或 PI 权限继承。可迁到 V01 的报告修订：`TR:V02:V01:amended-evidence` 保留原记录及替代关系；临床报告更正后的通知责任和紧急处理需要自己的证据。可迁到 H08 的安全响应授权：`TR:V02:H08:scoped-authorization` 保留动作作用域、有效依据与拒绝原因；隔离账号或设备依赖响应权限和影响范围，不能由参与者同意模型推出。紧急处置的先执行后复核规则也必须单独确认，知情同意的自主性和持续沟通不能直接替换为组织内部审批。迁移时先保留不变量，再重查专业权威。"
+        },
+        {
+          "path": "packages/health-science/handoff.md",
+          "context": "- `TR:V01:H01:adjudication-payment-separation`：裁决、到账与最终业务完成分别建模；H01 的付款开通 guard 不继承到诊疗处置。\n- `TR:V01:V03:evidence-revision`、`TR:V02:V01:amended-evidence`、`TR:V02:V03:versioned-release`、`TR:V03:V02:version-bound-review`：共用版本绑定与影响查询，保留临床报告、研究签名、批次证书各自的专业权威和取样范围。\n- `TR:V02:H08:scoped-authorization`：可复用作用域、动作权限与拒绝原因；研究同意的自主性、持续沟通不能简化为安全响应授权。\n- `TR:V03:V09:dependency-invalidation`、`TR:V03:V10:equipment-eligibility`：依赖与设备状态可以迁移，测量不确定度、样品代表性和调查程序须另取证。\n- `TR:V03:X01:scoped-evidence`：租户隔离贯穿库、对象存储、缓存、队列和导出；合法跨机构交接应显式建模，不能只共享一个 tenant 值。\n- 同一“完成”必须带对象：付款全分配、应收收清、query closed、signature current、data locked、lot released、CoA issued 均不能合并成共同状态码。\n- 父线程按 canonical URL 整合 21 个包内新增来源，保留源 ID 或显式 alias；补充主张用 case claim ID 满足当前 validator，种子 ID 不变。公共来源总表仍保持 checkpoint 状态，不能把本包已读记录自动视为共享总表已更新。\n- 本包未修改全局学习主线、case-index 与 registry。整合者决定正文入口、来源去重、跨包关系和术语注册，并统一重建 registry。"
+        }
+      ]
+    },
+    {
+      "id": "TR:V02:V03:versioned-release",
+      "selection": "additional-reading",
+      "occurrences": [
+        {
+          "path": "packages/health-science/V02.md",
+          "context": "版本化证据可迁到 V03 的结果复核与 lot certificate：`TR:V02:V03:versioned-release` 保留“确认绑定输入版本、变更后重查依赖”的关系；但批次证书的放行责任、抽样与检验方法不能从 consent 或 PI 权限继承。可迁到 V01 的报告修订：`TR:V02:V01:amended-evidence` 保留原记录及替代关系；临床报告更正后的通知责任和紧急处理需要自己的证据。可迁到 H08 的安全响应授权：`TR:V02:H08:scoped-authorization` 保留动作作用域、有效依据与拒绝原因；隔离账号或设备依赖响应权限和影响范围，不能由参与者同意模型推出。紧急处置的先执行后复核规则也必须单独确认，知情同意的自主性和持续沟通不能直接替换为组织内部审批。迁移时先保留不变量，再重查专业权威。"
+        },
+        {
+          "path": "packages/health-science/handoff.md",
+          "context": "- `TR:V01:H01:adjudication-payment-separation`：裁决、到账与最终业务完成分别建模；H01 的付款开通 guard 不继承到诊疗处置。\n- `TR:V01:V03:evidence-revision`、`TR:V02:V01:amended-evidence`、`TR:V02:V03:versioned-release`、`TR:V03:V02:version-bound-review`：共用版本绑定与影响查询，保留临床报告、研究签名、批次证书各自的专业权威和取样范围。\n- `TR:V02:H08:scoped-authorization`：可复用作用域、动作权限与拒绝原因；研究同意的自主性、持续沟通不能简化为安全响应授权。\n- `TR:V03:V09:dependency-invalidation`、`TR:V03:V10:equipment-eligibility`：依赖与设备状态可以迁移，测量不确定度、样品代表性和调查程序须另取证。\n- `TR:V03:X01:scoped-evidence`：租户隔离贯穿库、对象存储、缓存、队列和导出；合法跨机构交接应显式建模，不能只共享一个 tenant 值。\n- 同一“完成”必须带对象：付款全分配、应收收清、query closed、signature current、data locked、lot released、CoA issued 均不能合并成共同状态码。\n- 父线程按 canonical URL 整合 21 个包内新增来源，保留源 ID 或显式 alias；补充主张用 case claim ID 满足当前 validator，种子 ID 不变。公共来源总表仍保持 checkpoint 状态，不能把本包已读记录自动视为共享总表已更新。\n- 本包未修改全局学习主线、case-index 与 registry。整合者决定正文入口、来源去重、跨包关系和术语注册，并统一重建 registry。"
+        }
+      ]
+    },
+    {
+      "id": "TR:V03:V02:version-bound-review",
+      "selection": "additional-reading",
+      "occurrences": [
+        {
+          "path": "packages/health-science/V03.md",
+          "context": "`TR:V03:V02:version-bound-review` 把“签署绑定证据版本，修订保留旧依据”迁到 eCRF 数据锁；类比止于证据与签署，受试者同意的范围和撤回不能用实验室校准有效期代替。`TR:V03:V09:dependency-invalidation` 把依赖版本及失效影响查询迁到设计 signoff；制造样品的代表性和测量不确定度不能由软件构建可重现性替代。`TR:V03:V10:equipment-eligibility` 把设备状态限制未来任务、异常追溯既往工作迁到维护；检修完成不自动证明用该设备生产的批次有效。`TR:V03:X01:scoped-evidence` 把 tenant 范围贯穿业务 ID、文件、缓存和后台任务；合法跨机构送样需要显式授权交接，不能用“共享一条租户记录”省略责任边界。以上均为机制迁移分析，不继承其他案例的 provider 事实。`V03:claim:transfers`。"
+        },
+        {
+          "path": "packages/health-science/handoff.md",
+          "context": "- `TR:V01:H01:adjudication-payment-separation`：裁决、到账与最终业务完成分别建模；H01 的付款开通 guard 不继承到诊疗处置。\n- `TR:V01:V03:evidence-revision`、`TR:V02:V01:amended-evidence`、`TR:V02:V03:versioned-release`、`TR:V03:V02:version-bound-review`：共用版本绑定与影响查询，保留临床报告、研究签名、批次证书各自的专业权威和取样范围。\n- `TR:V02:H08:scoped-authorization`：可复用作用域、动作权限与拒绝原因；研究同意的自主性、持续沟通不能简化为安全响应授权。\n- `TR:V03:V09:dependency-invalidation`、`TR:V03:V10:equipment-eligibility`：依赖与设备状态可以迁移，测量不确定度、样品代表性和调查程序须另取证。\n- `TR:V03:X01:scoped-evidence`：租户隔离贯穿库、对象存储、缓存、队列和导出；合法跨机构交接应显式建模，不能只共享一个 tenant 值。\n- 同一“完成”必须带对象：付款全分配、应收收清、query closed、signature current、data locked、lot released、CoA issued 均不能合并成共同状态码。\n- 父线程按 canonical URL 整合 21 个包内新增来源，保留源 ID 或显式 alias；补充主张用 case claim ID 满足当前 validator，种子 ID 不变。公共来源总表仍保持 checkpoint 状态，不能把本包已读记录自动视为共享总表已更新。\n- 本包未修改全局学习主线、case-index 与 registry。整合者决定正文入口、来源去重、跨包关系和术语注册，并统一重建 registry。"
+        },
+        {
+          "path": "packages/health-science/review-v03.md",
+          "context": "跨包建议保留 `TR:V03:V02:version-bound-review`、`TR:V03:V09:dependency-invalidation`、`TR:V03:V10:equipment-eligibility`、`TR:V03:X01:scoped-evidence`，并分别保留同意/校准、构建/样品、维护完成/批次有效、共享数据/授权交接的类比断点。\n"
+        }
+      ]
+    },
+    {
+      "id": "TR:V03:V09:dependency-invalidation",
+      "selection": "integrated",
+      "occurrences": [
+        {
+          "path": "packages/health-science/V03.md",
+          "context": "`TR:V03:V02:version-bound-review` 把“签署绑定证据版本，修订保留旧依据”迁到 eCRF 数据锁；类比止于证据与签署，受试者同意的范围和撤回不能用实验室校准有效期代替。`TR:V03:V09:dependency-invalidation` 把依赖版本及失效影响查询迁到设计 signoff；制造样品的代表性和测量不确定度不能由软件构建可重现性替代。`TR:V03:V10:equipment-eligibility` 把设备状态限制未来任务、异常追溯既往工作迁到维护；检修完成不自动证明用该设备生产的批次有效。`TR:V03:X01:scoped-evidence` 把 tenant 范围贯穿业务 ID、文件、缓存和后台任务；合法跨机构送样需要显式授权交接，不能用“共享一条租户记录”省略责任边界。以上均为机制迁移分析，不继承其他案例的 provider 事实。`V03:claim:transfers`。"
+        },
+        {
+          "path": "packages/health-science/handoff.md",
+          "context": "- `TR:V01:H01:adjudication-payment-separation`：裁决、到账与最终业务完成分别建模；H01 的付款开通 guard 不继承到诊疗处置。\n- `TR:V01:V03:evidence-revision`、`TR:V02:V01:amended-evidence`、`TR:V02:V03:versioned-release`、`TR:V03:V02:version-bound-review`：共用版本绑定与影响查询，保留临床报告、研究签名、批次证书各自的专业权威和取样范围。\n- `TR:V02:H08:scoped-authorization`：可复用作用域、动作权限与拒绝原因；研究同意的自主性、持续沟通不能简化为安全响应授权。\n- `TR:V03:V09:dependency-invalidation`、`TR:V03:V10:equipment-eligibility`：依赖与设备状态可以迁移，测量不确定度、样品代表性和调查程序须另取证。\n- `TR:V03:X01:scoped-evidence`：租户隔离贯穿库、对象存储、缓存、队列和导出；合法跨机构交接应显式建模，不能只共享一个 tenant 值。\n- 同一“完成”必须带对象：付款全分配、应收收清、query closed、signature current、data locked、lot released、CoA issued 均不能合并成共同状态码。\n- 父线程按 canonical URL 整合 21 个包内新增来源，保留源 ID 或显式 alias；补充主张用 case claim ID 满足当前 validator，种子 ID 不变。公共来源总表仍保持 checkpoint 状态，不能把本包已读记录自动视为共享总表已更新。\n- 本包未修改全局学习主线、case-index 与 registry。整合者决定正文入口、来源去重、跨包关系和术语注册，并统一重建 registry。"
+        },
+        {
+          "path": "packages/health-science/review-v03.md",
+          "context": "跨包建议保留 `TR:V03:V02:version-bound-review`、`TR:V03:V09:dependency-invalidation`、`TR:V03:V10:equipment-eligibility`、`TR:V03:X01:scoped-evidence`，并分别保留同意/校准、构建/样品、维护完成/批次有效、共享数据/授权交接的类比断点。\n"
+        }
+      ]
+    },
+    {
+      "id": "TR:V03:V10:equipment-eligibility",
+      "selection": "integrated",
+      "occurrences": [
+        {
+          "path": "packages/health-science/V03.md",
+          "context": "`TR:V03:V02:version-bound-review` 把“签署绑定证据版本，修订保留旧依据”迁到 eCRF 数据锁；类比止于证据与签署，受试者同意的范围和撤回不能用实验室校准有效期代替。`TR:V03:V09:dependency-invalidation` 把依赖版本及失效影响查询迁到设计 signoff；制造样品的代表性和测量不确定度不能由软件构建可重现性替代。`TR:V03:V10:equipment-eligibility` 把设备状态限制未来任务、异常追溯既往工作迁到维护；检修完成不自动证明用该设备生产的批次有效。`TR:V03:X01:scoped-evidence` 把 tenant 范围贯穿业务 ID、文件、缓存和后台任务；合法跨机构送样需要显式授权交接，不能用“共享一条租户记录”省略责任边界。以上均为机制迁移分析，不继承其他案例的 provider 事实。`V03:claim:transfers`。"
+        },
+        {
+          "path": "packages/health-science/handoff.md",
+          "context": "- `TR:V01:H01:adjudication-payment-separation`：裁决、到账与最终业务完成分别建模；H01 的付款开通 guard 不继承到诊疗处置。\n- `TR:V01:V03:evidence-revision`、`TR:V02:V01:amended-evidence`、`TR:V02:V03:versioned-release`、`TR:V03:V02:version-bound-review`：共用版本绑定与影响查询，保留临床报告、研究签名、批次证书各自的专业权威和取样范围。\n- `TR:V02:H08:scoped-authorization`：可复用作用域、动作权限与拒绝原因；研究同意的自主性、持续沟通不能简化为安全响应授权。\n- `TR:V03:V09:dependency-invalidation`、`TR:V03:V10:equipment-eligibility`：依赖与设备状态可以迁移，测量不确定度、样品代表性和调查程序须另取证。\n- `TR:V03:X01:scoped-evidence`：租户隔离贯穿库、对象存储、缓存、队列和导出；合法跨机构交接应显式建模，不能只共享一个 tenant 值。\n- 同一“完成”必须带对象：付款全分配、应收收清、query closed、signature current、data locked、lot released、CoA issued 均不能合并成共同状态码。\n- 父线程按 canonical URL 整合 21 个包内新增来源，保留源 ID 或显式 alias；补充主张用 case claim ID 满足当前 validator，种子 ID 不变。公共来源总表仍保持 checkpoint 状态，不能把本包已读记录自动视为共享总表已更新。\n- 本包未修改全局学习主线、case-index 与 registry。整合者决定正文入口、来源去重、跨包关系和术语注册，并统一重建 registry。"
+        },
+        {
+          "path": "packages/health-science/review-v03.md",
+          "context": "跨包建议保留 `TR:V03:V02:version-bound-review`、`TR:V03:V09:dependency-invalidation`、`TR:V03:V10:equipment-eligibility`、`TR:V03:X01:scoped-evidence`，并分别保留同意/校准、构建/样品、维护完成/批次有效、共享数据/授权交接的类比断点。\n"
+        }
+      ]
+    },
+    {
+      "id": "TR:V03:X01:scoped-evidence",
+      "selection": "additional-reading",
+      "occurrences": [
+        {
+          "path": "packages/health-science/V03.md",
+          "context": "`TR:V03:V02:version-bound-review` 把“签署绑定证据版本，修订保留旧依据”迁到 eCRF 数据锁；类比止于证据与签署，受试者同意的范围和撤回不能用实验室校准有效期代替。`TR:V03:V09:dependency-invalidation` 把依赖版本及失效影响查询迁到设计 signoff；制造样品的代表性和测量不确定度不能由软件构建可重现性替代。`TR:V03:V10:equipment-eligibility` 把设备状态限制未来任务、异常追溯既往工作迁到维护；检修完成不自动证明用该设备生产的批次有效。`TR:V03:X01:scoped-evidence` 把 tenant 范围贯穿业务 ID、文件、缓存和后台任务；合法跨机构送样需要显式授权交接，不能用“共享一条租户记录”省略责任边界。以上均为机制迁移分析，不继承其他案例的 provider 事实。`V03:claim:transfers`。"
+        },
+        {
+          "path": "packages/health-science/handoff.md",
+          "context": "- `TR:V01:H01:adjudication-payment-separation`：裁决、到账与最终业务完成分别建模；H01 的付款开通 guard 不继承到诊疗处置。\n- `TR:V01:V03:evidence-revision`、`TR:V02:V01:amended-evidence`、`TR:V02:V03:versioned-release`、`TR:V03:V02:version-bound-review`：共用版本绑定与影响查询，保留临床报告、研究签名、批次证书各自的专业权威和取样范围。\n- `TR:V02:H08:scoped-authorization`：可复用作用域、动作权限与拒绝原因；研究同意的自主性、持续沟通不能简化为安全响应授权。\n- `TR:V03:V09:dependency-invalidation`、`TR:V03:V10:equipment-eligibility`：依赖与设备状态可以迁移，测量不确定度、样品代表性和调查程序须另取证。\n- `TR:V03:X01:scoped-evidence`：租户隔离贯穿库、对象存储、缓存、队列和导出；合法跨机构交接应显式建模，不能只共享一个 tenant 值。\n- 同一“完成”必须带对象：付款全分配、应收收清、query closed、signature current、data locked、lot released、CoA issued 均不能合并成共同状态码。\n- 父线程按 canonical URL 整合 21 个包内新增来源，保留源 ID 或显式 alias；补充主张用 case claim ID 满足当前 validator，种子 ID 不变。公共来源总表仍保持 checkpoint 状态，不能把本包已读记录自动视为共享总表已更新。\n- 本包未修改全局学习主线、case-index 与 registry。整合者决定正文入口、来源去重、跨包关系和术语注册，并统一重建 registry。"
+        },
+        {
+          "path": "packages/health-science/review-v03.md",
+          "context": "跨包建议保留 `TR:V03:V02:version-bound-review`、`TR:V03:V09:dependency-invalidation`、`TR:V03:V10:equipment-eligibility`、`TR:V03:X01:scoped-evidence`，并分别保留同意/校准、构建/样品、维护完成/批次有效、共享数据/授权交接的类比断点。\n"
+        }
+      ]
+    },
+    {
+      "id": "TR:V04:V05:irreversible-handoff",
+      "selection": "integrated",
+      "occurrences": [
+        {
+          "path": "packages/commerce-property/V04.md",
+          "context": "简答：保持“每一份数量只有一个当前去处”。本地缺回执不证明实物未动，先把该分配放入待核对，查询仓库交接身份；确认未交接才取消并释放，已交接则转拦截或退货政策。反例是先释放后收到交接回执，两个订单共占一件不存在的货。可观察检查是回执迟到后数量不变负、没有第二次售出，顾客页面保留取消待确认的原因。若仓库无法提供身份或交接证据，自动恢复条件失效，交给仓库主管核查。（`TR:V04:V05:irreversible-handoff`）"
+        }
+      ]
+    },
+    {
+      "id": "TR:V04:V06:partitioned-obligation",
+      "selection": "integrated",
+      "occurrences": [
+        {
+          "path": "packages/commerce-property/V04.md",
+          "context": "`TR:V04:V06:partitioned-obligation` 把“总承诺拆成可核对部分”迁到住宿房晚，但商品占量释放与日历时间不同：过去的一晚不能重新卖回库存，日期变化须重新检查容量。`TR:V04:V16:return-and-money` 把“实物验收与资金处置分离”迁到退租和押金；类比止于结构，不能把电商退款期限或可退价套给押金扣款。后续演示可以让读者调仓库库存、移动回执顺序、逐件退货，并同时观察数量守恒和结算桥；HTML 与 motion 的实现形式由本地制作者选择。"
+        }
+      ]
+    },
+    {
+      "id": "TR:V04:V16:return-and-money",
+      "selection": "additional-reading",
+      "occurrences": [
+        {
+          "path": "packages/commerce-property/V04.md",
+          "context": "`TR:V04:V06:partitioned-obligation` 把“总承诺拆成可核对部分”迁到住宿房晚，但商品占量释放与日历时间不同：过去的一晚不能重新卖回库存，日期变化须重新检查容量。`TR:V04:V16:return-and-money` 把“实物验收与资金处置分离”迁到退租和押金；类比止于结构，不能把电商退款期限或可退价套给押金扣款。后续演示可以让读者调仓库库存、移动回执顺序、逐件退货，并同时观察数量守恒和结算桥；HTML 与 motion 的实现形式由本地制作者选择。"
+        }
+      ]
+    },
+    {
+      "id": "TR:V05:V04:allocation-conservation",
+      "selection": "additional-reading",
+      "occurrences": [
+        {
+          "path": "packages/commerce-property/V05.md",
+          "context": "`TR:V05:V04:allocation-conservation` 把账单份额守恒迁到商品拆单；共同点是子对象必须能加回父对象，失效处是共享菜可以分摊金额但不能按付款份额重新制造实物。`TR:V05:V06:charges-versus-payments` 把消费项目与付款分离迁到住宿 folio；住宿包含多日记账、押金、离店后调整，不能照搬本例“本次应付已付即可关账”。演示可让读者改变 modifier、晚发撤菜、切换拆账与多次付款、延迟卡回执，看见制作数量不变而收款权限随证据改变。"
+        }
+      ]
+    },
+    {
+      "id": "TR:V05:V06:charges-versus-payments",
+      "selection": "additional-reading",
+      "occurrences": [
+        {
+          "path": "packages/commerce-property/V05.md",
+          "context": "`TR:V05:V04:allocation-conservation` 把账单份额守恒迁到商品拆单；共同点是子对象必须能加回父对象，失效处是共享菜可以分摊金额但不能按付款份额重新制造实物。`TR:V05:V06:charges-versus-payments` 把消费项目与付款分离迁到住宿 folio；住宿包含多日记账、押金、离店后调整，不能照搬本例“本次应付已付即可关账”。演示可让读者改变 modifier、晚发撤菜、切换拆账与多次付款、延迟卡回执，看见制作数量不变而收款权限随证据改变。"
+        }
+      ]
+    },
+    {
+      "id": "TR:V06:V04:capacity-commitment",
+      "selection": "additional-reading",
+      "occurrences": [
+        {
+          "path": "packages/commerce-property/V06.md",
+          "context": "简答：先重新核对 `[27,28)` 的容量与实体配房。原“不可换房”条件下不能只在 UI 把结束日加一；可以提出换房新版本，由客人确认后增加一段住宿、房价与准备任务。授权额度是否还够、是否仍有效另查，不通过延长日期自动延长付款授权。检查旧版本仍可恢复、变更失败时原三晚不丢失，新版本只追加获准的一晚。`TR:V06:V04:capacity-commitment` 保留确认前的资源承诺与数量不变量；实物库存通常可移库或补货，已经过去的房晚不能补造，因此缺房补偿不能等同于稍后补发商品。"
+        }
+      ]
+    },
+    {
+      "id": "TR:V06:V05:charge-routing",
+      "selection": "additional-reading",
+      "occurrences": [
+        {
+          "path": "packages/commerce-property/V06.md",
+          "context": "简答：不应。公司应收 400，个人净余额 `60-100=-40`，应退个人 40，并按本例政策释放不需要的 80 授权。公司承担安排必须有效，不能把余额汇总为全店零就跨账户抵消。检查各账户分别对平、每笔消费恰好路由一次、授权未计实收、退款 40 有单独完成证据。`TR:V06:V05:charge-routing` 可以迁移餐饮分账的金额守恒；但 split tender 分的是实际付款工具，folio routing 分的是债务承担者，公司应收不等于一笔刷卡成功。"
+        }
+      ]
+    },
+    {
+      "id": "TR:V06:V16:resource-time-and-handover",
+      "selection": "integrated",
+      "occurrences": [
+        {
+          "path": "packages/commerce-property/V06.md",
+          "context": "简答：房型容量条件不变；可行解变为第一晚 B、第二晚 A，assignment 要拆为两个半开片段，共覆盖 `[24,26)` 且无重叠、无缺夜。新增换房同意、钥匙回收与交接任务，第二间房仍须 inspected。反例是第一晚用 B 的入住成功证据直接授权第二晚 A。检查两段总覆盖两晚、每段无占用冲突、换房动作在第二间准备失败时被拒绝，而原住宿与责任人仍可找到。`TR:V06:V16:resource-time-and-handover` 保留时间占用与交接证据；迁到租赁后，长期占有、租约权利与终止程序不能靠每日换房算法决定。"
+        }
+      ]
+    },
+    {
+      "id": "TR:V07:H01:fulfilment-settlement",
+      "selection": "additional-reading",
+      "occurrences": [
+        {
+          "path": "packages/industry-networks/V07.md",
+          "context": "迁到 V09 的 `TR:V07:V09:baseline-evidence` 保留“固定基线与验证证据绑定”，但芯片 signoff 不能证明某批实物制造良率，发布条件要重新定义。迁到 V08 的 `TR:V07:V08:actual-genealogy` 保留计划与实际投入分离；离散件常能逐件识别，混合后却通常无法把某一原料公斤直接对应到某一产出公斤，不能照搬单件追溯。迁到 H01 的 `TR:V07:H01:fulfilment-settlement` 保留履约与收款独立，但本例允许赊销，不能沿用预付开通 guard。演示可让读者改 BOM 版本、打乱复检事件、并发预留最后一份材料，再观察欠交与欠款如何独立变化；本地 Claude 可自由安排布局和动效。"
+        }
+      ]
+    },
+    {
+      "id": "TR:V07:V08:actual-genealogy",
+      "selection": "integrated",
+      "occurrences": [
+        {
+          "path": "packages/industry-networks/V07.md",
+          "context": "迁到 V09 的 `TR:V07:V09:baseline-evidence` 保留“固定基线与验证证据绑定”，但芯片 signoff 不能证明某批实物制造良率，发布条件要重新定义。迁到 V08 的 `TR:V07:V08:actual-genealogy` 保留计划与实际投入分离；离散件常能逐件识别，混合后却通常无法把某一原料公斤直接对应到某一产出公斤，不能照搬单件追溯。迁到 H01 的 `TR:V07:H01:fulfilment-settlement` 保留履约与收款独立，但本例允许赊销，不能沿用预付开通 guard。演示可让读者改 BOM 版本、打乱复检事件、并发预留最后一份材料，再观察欠交与欠款如何独立变化；本地 Claude 可自由安排布局和动效。"
+        }
+      ]
+    },
+    {
+      "id": "TR:V07:V09:baseline-evidence",
+      "selection": "integrated",
+      "occurrences": [
+        {
+          "path": "packages/industry-networks/V07.md",
+          "context": "迁到 V09 的 `TR:V07:V09:baseline-evidence` 保留“固定基线与验证证据绑定”，但芯片 signoff 不能证明某批实物制造良率，发布条件要重新定义。迁到 V08 的 `TR:V07:V08:actual-genealogy` 保留计划与实际投入分离；离散件常能逐件识别，混合后却通常无法把某一原料公斤直接对应到某一产出公斤，不能照搬单件追溯。迁到 H01 的 `TR:V07:H01:fulfilment-settlement` 保留履约与收款独立，但本例允许赊销，不能沿用预付开通 guard。演示可让读者改 BOM 版本、打乱复检事件、并发预留最后一份材料，再观察欠交与欠款如何独立变化；本地 Claude 可自由安排布局和动效。"
+        }
+      ]
+    },
+    {
+      "id": "TR:V08:V07:baseline-versus-actual",
+      "selection": "additional-reading",
+      "occurrences": [
+        {
+          "path": "packages/industry-networks/V08.md",
+          "context": "`TR:V08:V21:traceability-boundary` 可把转换与流转证据接到供应运输，但运输拆箱通常不改变物料本质，不能都记成不可逆转换。`TR:V08:V10:evidence-based-release` 保留证据与专业授权分离；资产复机许可还受现场隔离和设备状态约束，合格样品不能替代检修许可。`TR:V08:V07:baseline-versus-actual` 保留版本与实际记录的分离；混合物的可能影响集合不能缩成离散零件的一对一序列号路径。演示可调损耗、拆分量、事件顺序和下游可见范围，同时展示数量平衡与追溯覆盖为何是两个问题；布局与动效留给本地 Claude。"
+        }
+      ]
+    },
+    {
+      "id": "TR:V08:V10:evidence-based-release",
+      "selection": "additional-reading",
+      "occurrences": [
+        {
+          "path": "packages/industry-networks/V08.md",
+          "context": "`TR:V08:V21:traceability-boundary` 可把转换与流转证据接到供应运输，但运输拆箱通常不改变物料本质，不能都记成不可逆转换。`TR:V08:V10:evidence-based-release` 保留证据与专业授权分离；资产复机许可还受现场隔离和设备状态约束，合格样品不能替代检修许可。`TR:V08:V07:baseline-versus-actual` 保留版本与实际记录的分离；混合物的可能影响集合不能缩成离散零件的一对一序列号路径。演示可调损耗、拆分量、事件顺序和下游可见范围，同时展示数量平衡与追溯覆盖为何是两个问题；布局与动效留给本地 Claude。"
+        }
+      ]
+    },
+    {
+      "id": "TR:V08:V21:traceability-boundary",
+      "selection": "integrated",
+      "occurrences": [
+        {
+          "path": "packages/industry-networks/V08.md",
+          "context": "`TR:V08:V21:traceability-boundary` 可把转换与流转证据接到供应运输，但运输拆箱通常不改变物料本质，不能都记成不可逆转换。`TR:V08:V10:evidence-based-release` 保留证据与专业授权分离；资产复机许可还受现场隔离和设备状态约束，合格样品不能替代检修许可。`TR:V08:V07:baseline-versus-actual` 保留版本与实际记录的分离；混合物的可能影响集合不能缩成离散零件的一对一序列号路径。演示可调损耗、拆分量、事件顺序和下游可见范围，同时展示数量平衡与追溯覆盖为何是两个问题；布局与动效留给本地 Claude。"
+        }
+      ]
+    },
+    {
+      "id": "TR:V09:V07:baseline-evidence",
+      "selection": "additional-reading",
+      "occurrences": [
+        {
+          "path": "packages/industry-networks/V09.md",
+          "context": "`TR:V09:V07:baseline-evidence` 保留版本、证据、批准的绑定，但已经制造的在制品需要逐件或逐批处置，不能仅失效数字缓存。`TR:V09:V21:dependency-capacity` 保留依赖与容量的分离，但长任务取消与实体运输改道有不同成本。演示可拖动任务耗时、减少许可证、替换约束摘要和延迟旧回执，同时观察结束时间与发布资格分别变化；HTML 和动效不限定。"
+        }
+      ]
+    },
+    {
+      "id": "TR:V09:V21:dependency-capacity",
+      "selection": "additional-reading",
+      "occurrences": [
+        {
+          "path": "packages/industry-networks/V09.md",
+          "context": "`TR:V09:V07:baseline-evidence` 保留版本、证据、批准的绑定，但已经制造的在制品需要逐件或逐批处置，不能仅失效数字缓存。`TR:V09:V21:dependency-capacity` 保留依赖与容量的分离，但长任务取消与实体运输改道有不同成本。演示可拖动任务耗时、减少许可证、替换约束摘要和延迟旧回执，同时观察结束时间与发布资格分别变化；HTML 和动效不限定。"
+        }
+      ]
+    },
+    {
+      "id": "TR:V10:V07:execution-evidence",
+      "selection": "additional-reading",
+      "occurrences": [
+        {
+          "path": "packages/industry-networks/V10.md",
+          "context": "`TR:V10:V20:booking-completion` 可把“多次到场证据汇总后接受”迁到现场服务；客户签收不能自动替代资产投运许可。`TR:V10:V07:execution-evidence` 可迁移“计划、执行、验收分离”；生产订单的合格数量守恒并不能直接判断维修是否有效。`TR:V10:V11:observed-versus-authorized` 可共享原始信号与经处理结果的版本链；VEE 数据通过不是施工授权，维护许可也不是电费计量依据。"
+        }
+      ]
+    },
+    {
+      "id": "TR:V10:V11:observed-versus-authorized",
+      "selection": "additional-reading",
+      "occurrences": [
+        {
+          "path": "packages/industry-networks/V10.md",
+          "context": "`TR:V10:V20:booking-completion` 可把“多次到场证据汇总后接受”迁到现场服务；客户签收不能自动替代资产投运许可。`TR:V10:V07:execution-evidence` 可迁移“计划、执行、验收分离”；生产订单的合格数量守恒并不能直接判断维修是否有效。`TR:V10:V11:observed-versus-authorized` 可共享原始信号与经处理结果的版本链；VEE 数据通过不是施工授权，维护许可也不是电费计量依据。"
+        }
+      ]
+    },
+    {
+      "id": "TR:V10:V20:booking-completion",
+      "selection": "integrated",
+      "occurrences": [
+        {
+          "path": "packages/industry-networks/V10.md",
+          "context": "`TR:V10:V20:booking-completion` 可把“多次到场证据汇总后接受”迁到现场服务；客户签收不能自动替代资产投运许可。`TR:V10:V07:execution-evidence` 可迁移“计划、执行、验收分离”；生产订单的合格数量守恒并不能直接判断维修是否有效。`TR:V10:V11:observed-versus-authorized` 可共享原始信号与经处理结果的版本链；VEE 数据通过不是施工授权，维护许可也不是电费计量依据。"
+        }
+      ]
+    },
+    {
+      "id": "TR:V11:H01:bill-versus-cash",
+      "selection": "integrated",
+      "occurrences": [
+        {
+          "path": "packages/industry-networks/V11.md",
+          "context": "`TR:V11:V22:usage-revision` 可迁到通信 usage 计费：保留原始记录、去重、版本与调整链；通信套餐可能包含免费量、漫游或跨周期封顶，不能直接照搬 TOU 求和。`TR:V11:H01:bill-versus-cash` 保留应收与收款独立状态；服务收入不能由电量 VEE 推导。`TR:V11:V10:quality-versus-action` 保留信号质量与业务动作的分界；电量估算获准发布不能类比为允许估算一次安全检查结果。"
+        }
+      ]
+    },
+    {
+      "id": "TR:V11:V10:quality-versus-action",
+      "selection": "additional-reading",
+      "occurrences": [
+        {
+          "path": "packages/industry-networks/V11.md",
+          "context": "`TR:V11:V22:usage-revision` 可迁到通信 usage 计费：保留原始记录、去重、版本与调整链；通信套餐可能包含免费量、漫游或跨周期封顶，不能直接照搬 TOU 求和。`TR:V11:H01:bill-versus-cash` 保留应收与收款独立状态；服务收入不能由电量 VEE 推导。`TR:V11:V10:quality-versus-action` 保留信号质量与业务动作的分界；电量估算获准发布不能类比为允许估算一次安全检查结果。"
+        }
+      ]
+    },
+    {
+      "id": "TR:V11:V22:usage-revision",
+      "selection": "additional-reading",
+      "occurrences": [
+        {
+          "path": "packages/industry-networks/V11.md",
+          "context": "`TR:V11:V22:usage-revision` 可迁到通信 usage 计费：保留原始记录、去重、版本与调整链；通信套餐可能包含免费量、漫游或跨周期封顶，不能直接照搬 TOU 求和。`TR:V11:H01:bill-versus-cash` 保留应收与收款独立状态；服务收入不能由电量 VEE 推导。`TR:V11:V10:quality-versus-action` 保留信号质量与业务动作的分界；电量估算获准发布不能类比为允许估算一次安全检查结果。"
+        }
+      ]
+    },
+    {
+      "id": "TR:V12:H01:effective-time",
+      "selection": "integrated",
+      "occurrences": [
+        {
+          "path": "packages/commercial-finance/V12.md",
+          "context": "`TR:V12:H01:effective-time` 标记前一练习的时间窗口迁移；`TR:V12:H02:unknown-funding` 与 `TR:V12:V14:unknown-funding` 标记下述资金核对迁移。V12 与 H02、V14 可以共用“外部资金结果未知先核对”的操作模型；它们不能共用债权关闭条件，因为采购付款还依赖验收，而证券结算还依赖成交与资产交割。与 V13 共用审批版本和金额权限也不意味着共用金额含义：贷款本金是已经交付后应收的债权，保险 reserve 是对潜在赔付的估计记录。后续演示可拖动还款生效日、延迟回执、触发退票，观察本金、利息、现金和 payoff 四个数为何不同步；视觉实现可自由改写。"
+        },
+        {
+          "path": "packages/commercial-finance/handoff.md",
+          "context": "| 关系 | 保留的机制 | 类比失效的位置与整合建议 |\n|---|---|---|\n| `TR:H01:H02:evidence-before-effect` | 动作绑定权限、版本与证据 | 收款不证明商品验收；H02还需累计占用与质量证据 |\n| `TR:H01:H03:versioned-periods`、`TR:V12:H01:effective-time` | 生效时间、输入版本与区间重演 | 服务价款、本金余额、会计期间有不同基数和完整性条件 |\n| `TR:H02:H03:matched-to-posted` | 来源身份、币种与修订链 | 匹配通过不证明科目分类正确；保留子账到总账映射 |\n| `TR:H03:X02:reconcile-before-consolidate` | 按来源配对并保留差异 | 合并范围、币种、估值与抵销规则需要另外判定 |\n| `TR:V13:H03:responsibility-dimensions` | 按责任维度核对金额与修订 | reserve是可修订估计，不等于已确定应付款或银行余额 |\n| `TR:V14:H03:execution-reconciliation` | 唯一执行身份与纠正链 | 累计成交量可以真实减少，不能把单调增加作为完整性条件 |\n| `TR:X02:H02:receipt-evidence-boundary` | 来源行、数量与结算关系 | 虚拟采购入库不能证明实体收货或验收 |\n| `TR:X02:V04:direct-shipment-lineage`、`TR:V14:V04:partial-obligations` | 子项数量守恒与部分完成 | 跨法人权限、内部定价、交易纠正与实物退货各自有边界 |\n| 后续接X01多租户控制 | 复合身份及服务端授权 | tenant、法人、provider account、客户可见字段不能合并为一个scope |"
+        }
+      ]
+    },
+    {
+      "id": "TR:V12:H02:unknown-funding",
+      "selection": "additional-reading",
+      "occurrences": [
+        {
+          "path": "packages/commercial-finance/V12.md",
+          "context": "`TR:V12:H01:effective-time` 标记前一练习的时间窗口迁移；`TR:V12:H02:unknown-funding` 与 `TR:V12:V14:unknown-funding` 标记下述资金核对迁移。V12 与 H02、V14 可以共用“外部资金结果未知先核对”的操作模型；它们不能共用债权关闭条件，因为采购付款还依赖验收，而证券结算还依赖成交与资产交割。与 V13 共用审批版本和金额权限也不意味着共用金额含义：贷款本金是已经交付后应收的债权，保险 reserve 是对潜在赔付的估计记录。后续演示可拖动还款生效日、延迟回执、触发退票，观察本金、利息、现金和 payoff 四个数为何不同步；视觉实现可自由改写。"
+        }
+      ]
+    },
+    {
+      "id": "TR:V12:V14:unknown-funding",
+      "selection": "additional-reading",
+      "occurrences": [
+        {
+          "path": "packages/commercial-finance/V12.md",
+          "context": "`TR:V12:H01:effective-time` 标记前一练习的时间窗口迁移；`TR:V12:H02:unknown-funding` 与 `TR:V12:V14:unknown-funding` 标记下述资金核对迁移。V12 与 H02、V14 可以共用“外部资金结果未知先核对”的操作模型；它们不能共用债权关闭条件，因为采购付款还依赖验收，而证券结算还依赖成交与资产交割。与 V13 共用审批版本和金额权限也不意味着共用金额含义：贷款本金是已经交付后应收的债权，保险 reserve 是对潜在赔付的估计记录。后续演示可拖动还款生效日、延迟回执、触发退票，观察本金、利息、现金和 payoff 四个数为何不同步；视觉实现可自由改写。"
+        }
+      ]
+    },
+    {
+      "id": "TR:V13:H01:versioned-coverage",
+      "selection": "additional-reading",
+      "occurrences": [
+        {
+          "path": "packages/commercial-finance/V13.md",
+          "context": "`TR:V13:H01:versioned-coverage`、`TR:V13:V14:reserved-capacity` 与 `TR:V13:H03:responsibility-dimensions` 分别标记下述迁移。V13 的版本化承诺可迁到 H01 的合同变更，额度占用可迁到 V14 的订单预留，按责任维度核对可迁到 H03 的分户账。但保单责任不能等同于购买的服务权利，reserve 也不能等同于银行余额或已确定应付款；它允许在事实不全时记录估计，还要持续修订。V12 的 payoff 追求消灭已存在债权，V13 的结案则需检查所有 exposure 和未决责任，因此不能把“余额归零”作为跨行业通用结束条件。演示可调免赔额、限额、事故日、审批权限与未知付款，逐步观察是哪一条前提改变了结论。"
+        }
+      ]
+    },
+    {
+      "id": "TR:V13:H03:responsibility-dimensions",
+      "selection": "integrated",
+      "occurrences": [
+        {
+          "path": "packages/commercial-finance/V13.md",
+          "context": "`TR:V13:H01:versioned-coverage`、`TR:V13:V14:reserved-capacity` 与 `TR:V13:H03:responsibility-dimensions` 分别标记下述迁移。V13 的版本化承诺可迁到 H01 的合同变更，额度占用可迁到 V14 的订单预留，按责任维度核对可迁到 H03 的分户账。但保单责任不能等同于购买的服务权利，reserve 也不能等同于银行余额或已确定应付款；它允许在事实不全时记录估计，还要持续修订。V12 的 payoff 追求消灭已存在债权，V13 的结案则需检查所有 exposure 和未决责任，因此不能把“余额归零”作为跨行业通用结束条件。演示可调免赔额、限额、事故日、审批权限与未知付款，逐步观察是哪一条前提改变了结论。"
+        },
+        {
+          "path": "packages/commercial-finance/handoff.md",
+          "context": "| 关系 | 保留的机制 | 类比失效的位置与整合建议 |\n|---|---|---|\n| `TR:H01:H02:evidence-before-effect` | 动作绑定权限、版本与证据 | 收款不证明商品验收；H02还需累计占用与质量证据 |\n| `TR:H01:H03:versioned-periods`、`TR:V12:H01:effective-time` | 生效时间、输入版本与区间重演 | 服务价款、本金余额、会计期间有不同基数和完整性条件 |\n| `TR:H02:H03:matched-to-posted` | 来源身份、币种与修订链 | 匹配通过不证明科目分类正确；保留子账到总账映射 |\n| `TR:H03:X02:reconcile-before-consolidate` | 按来源配对并保留差异 | 合并范围、币种、估值与抵销规则需要另外判定 |\n| `TR:V13:H03:responsibility-dimensions` | 按责任维度核对金额与修订 | reserve是可修订估计，不等于已确定应付款或银行余额 |\n| `TR:V14:H03:execution-reconciliation` | 唯一执行身份与纠正链 | 累计成交量可以真实减少，不能把单调增加作为完整性条件 |\n| `TR:X02:H02:receipt-evidence-boundary` | 来源行、数量与结算关系 | 虚拟采购入库不能证明实体收货或验收 |\n| `TR:X02:V04:direct-shipment-lineage`、`TR:V14:V04:partial-obligations` | 子项数量守恒与部分完成 | 跨法人权限、内部定价、交易纠正与实物退货各自有边界 |\n| 后续接X01多租户控制 | 复合身份及服务端授权 | tenant、法人、provider account、客户可见字段不能合并为一个scope |"
+        }
+      ]
+    },
+    {
+      "id": "TR:V13:V14:reserved-capacity",
+      "selection": "additional-reading",
+      "occurrences": [
+        {
+          "path": "packages/commercial-finance/V13.md",
+          "context": "`TR:V13:H01:versioned-coverage`、`TR:V13:V14:reserved-capacity` 与 `TR:V13:H03:responsibility-dimensions` 分别标记下述迁移。V13 的版本化承诺可迁到 H01 的合同变更，额度占用可迁到 V14 的订单预留，按责任维度核对可迁到 H03 的分户账。但保单责任不能等同于购买的服务权利，reserve 也不能等同于银行余额或已确定应付款；它允许在事实不全时记录估计，还要持续修订。V12 的 payoff 追求消灭已存在债权，V13 的结案则需检查所有 exposure 和未决责任，因此不能把“余额归零”作为跨行业通用结束条件。演示可调免赔额、限额、事故日、审批权限与未知付款，逐步观察是哪一条前提改变了结论。"
+        }
+      ]
+    },
+    {
+      "id": "TR:V14:H01:cancel-boundary",
+      "selection": "additional-reading",
+      "occurrences": [
+        {
+          "path": "packages/commercial-finance/V14.md",
+          "context": "机制可以迁到 V04 的部分发货：子项的数量守恒和父对象不能过早完成仍成立；差异在于证券成交、订单撤销、交易纠正具有独立消息语义，不能用仓库退货直接解释。迁到 H03 的对账时，成交身份与纠正链可以作为外部明细来源；关账不能靠累计数量单调增长来判断完整。迁到 H01 时，“点击取消并不消除已有义务”的思路仍成立，但订阅退款、证券卖出与成交撤销不是同一种补偿。对应迁移身份为 `TR:V14:V04:partial-obligations`、`TR:V14:H03:execution-reconciliation`、`TR:V14:H01:cancel-boundary`。"
+        }
+      ]
+    },
+    {
+      "id": "TR:V14:H03:execution-reconciliation",
+      "selection": "additional-reading",
+      "occurrences": [
+        {
+          "path": "packages/commercial-finance/V14.md",
+          "context": "机制可以迁到 V04 的部分发货：子项的数量守恒和父对象不能过早完成仍成立；差异在于证券成交、订单撤销、交易纠正具有独立消息语义，不能用仓库退货直接解释。迁到 H03 的对账时，成交身份与纠正链可以作为外部明细来源；关账不能靠累计数量单调增长来判断完整。迁到 H01 时，“点击取消并不消除已有义务”的思路仍成立，但订阅退款、证券卖出与成交撤销不是同一种补偿。对应迁移身份为 `TR:V14:V04:partial-obligations`、`TR:V14:H03:execution-reconciliation`、`TR:V14:H01:cancel-boundary`。"
+        },
+        {
+          "path": "packages/commercial-finance/handoff.md",
+          "context": "| 关系 | 保留的机制 | 类比失效的位置与整合建议 |\n|---|---|---|\n| `TR:H01:H02:evidence-before-effect` | 动作绑定权限、版本与证据 | 收款不证明商品验收；H02还需累计占用与质量证据 |\n| `TR:H01:H03:versioned-periods`、`TR:V12:H01:effective-time` | 生效时间、输入版本与区间重演 | 服务价款、本金余额、会计期间有不同基数和完整性条件 |\n| `TR:H02:H03:matched-to-posted` | 来源身份、币种与修订链 | 匹配通过不证明科目分类正确；保留子账到总账映射 |\n| `TR:H03:X02:reconcile-before-consolidate` | 按来源配对并保留差异 | 合并范围、币种、估值与抵销规则需要另外判定 |\n| `TR:V13:H03:responsibility-dimensions` | 按责任维度核对金额与修订 | reserve是可修订估计，不等于已确定应付款或银行余额 |\n| `TR:V14:H03:execution-reconciliation` | 唯一执行身份与纠正链 | 累计成交量可以真实减少，不能把单调增加作为完整性条件 |\n| `TR:X02:H02:receipt-evidence-boundary` | 来源行、数量与结算关系 | 虚拟采购入库不能证明实体收货或验收 |\n| `TR:X02:V04:direct-shipment-lineage`、`TR:V14:V04:partial-obligations` | 子项数量守恒与部分完成 | 跨法人权限、内部定价、交易纠正与实物退货各自有边界 |\n| 后续接X01多租户控制 | 复合身份及服务端授权 | tenant、法人、provider account、客户可见字段不能合并为一个scope |"
+        }
+      ]
+    },
+    {
+      "id": "TR:V14:V04:partial-obligations",
+      "selection": "integrated",
+      "occurrences": [
+        {
+          "path": "packages/commercial-finance/V14.md",
+          "context": "机制可以迁到 V04 的部分发货：子项的数量守恒和父对象不能过早完成仍成立；差异在于证券成交、订单撤销、交易纠正具有独立消息语义，不能用仓库退货直接解释。迁到 H03 的对账时，成交身份与纠正链可以作为外部明细来源；关账不能靠累计数量单调增长来判断完整。迁到 H01 时，“点击取消并不消除已有义务”的思路仍成立，但订阅退款、证券卖出与成交撤销不是同一种补偿。对应迁移身份为 `TR:V14:V04:partial-obligations`、`TR:V14:H03:execution-reconciliation`、`TR:V14:H01:cancel-boundary`。"
+        },
+        {
+          "path": "packages/commercial-finance/handoff.md",
+          "context": "| 关系 | 保留的机制 | 类比失效的位置与整合建议 |\n|---|---|---|\n| `TR:H01:H02:evidence-before-effect` | 动作绑定权限、版本与证据 | 收款不证明商品验收；H02还需累计占用与质量证据 |\n| `TR:H01:H03:versioned-periods`、`TR:V12:H01:effective-time` | 生效时间、输入版本与区间重演 | 服务价款、本金余额、会计期间有不同基数和完整性条件 |\n| `TR:H02:H03:matched-to-posted` | 来源身份、币种与修订链 | 匹配通过不证明科目分类正确；保留子账到总账映射 |\n| `TR:H03:X02:reconcile-before-consolidate` | 按来源配对并保留差异 | 合并范围、币种、估值与抵销规则需要另外判定 |\n| `TR:V13:H03:responsibility-dimensions` | 按责任维度核对金额与修订 | reserve是可修订估计，不等于已确定应付款或银行余额 |\n| `TR:V14:H03:execution-reconciliation` | 唯一执行身份与纠正链 | 累计成交量可以真实减少，不能把单调增加作为完整性条件 |\n| `TR:X02:H02:receipt-evidence-boundary` | 来源行、数量与结算关系 | 虚拟采购入库不能证明实体收货或验收 |\n| `TR:X02:V04:direct-shipment-lineage`、`TR:V14:V04:partial-obligations` | 子项数量守恒与部分完成 | 跨法人权限、内部定价、交易纠正与实物退货各自有边界 |\n| 后续接X01多租户控制 | 复合身份及服务端授权 | tenant、法人、provider account、客户可见字段不能合并为一个scope |"
+        }
+      ]
+    },
+    {
+      "id": "TR:V15:V07:version-impact",
+      "selection": "integrated",
+      "occurrences": [
+        {
+          "path": "packages/commerce-property/V15.md",
+          "context": "`TR:V15:V16:evidence-liability` 可迁移到 V16：维修事实、责任判断和扣款权分开，照片和工单只能提供证据。建造的合同变更单不能原样替代居民对押金的异议程序。`TR:V15:V07:version-impact` 可把版本追溯迁到 V07 的设计、生产与检验链，但可达不等于库存批次已返工，也不证明质量放行。演示可以改变图中的第二条路径、累计计量或批准上限，同时观察四个金额与拒绝理由；HTML 和 motion 的组织方式留给本地实现者。"
+        },
+        {
+          "path": "packages/commerce-property/handoff.md",
+          "context": "1. 将包内 12 个新 URL 按 canonical URL 去重后并入全局来源。保留已有 10 个 source ID，以本包 review 新增核查历史，不覆盖旧的 seed-only 历史；本包局部 claim ID 与 `source_claim_id` 同时保留，避免把局部案例设计提升成产品事实。\n2. 更新总 README、learning-path 和 case-index 的可用状态，再统一重建 registry。这些共享文件本包未改。状态迁移只表示教材可读，不表示应用实现或 Praxis 规范已采纳。\n3. H01/P01 可接 V04 的部分履约与净资金桥；净支付、净结算和利润不可合并。V05 的金额分摊可借用 V04 的守恒，但不能按付钱份额重复制作食物。\n4. V20/P02 可复用 V16 的一工单多 booking 与独立经理验收；只迁移完成证据，不能继承住宅进入许可、租约或押金规则。\n5. V07/P06 可接 `TR:V15:V07:version-impact`。源版本沿 typed edge 原方向回查，下游影响用反向邻接；可达不代表已返工、已放行或已获商业批准。\n6. X01/P03 统一 SaaS `tenant_id/org_id` 与业务 `party_id/tenancy_id` 的区别。物业中一个承租人可以跨多个 tenancy，不能以人的 ID 或房号代替账户隔离。\n7. V06→V16 保留半开区间、资源承诺与实际交接的区分；房晚计价、酒店换房和长期独占权有各自前提。入住、退房、工单关闭、账单关闭和押金结清不能统一成一个 `completed` 枚举。"
+        }
+      ]
+    },
+    {
+      "id": "TR:V15:V16:evidence-liability",
+      "selection": "integrated",
+      "occurrences": [
+        {
+          "path": "packages/commerce-property/V15.md",
+          "context": "`TR:V15:V16:evidence-liability` 可迁移到 V16：维修事实、责任判断和扣款权分开，照片和工单只能提供证据。建造的合同变更单不能原样替代居民对押金的异议程序。`TR:V15:V07:version-impact` 可把版本追溯迁到 V07 的设计、生产与检验链，但可达不等于库存批次已返工，也不证明质量放行。演示可以改变图中的第二条路径、累计计量或批准上限，同时观察四个金额与拒绝理由；HTML 和 motion 的组织方式留给本地实现者。"
+        }
+      ]
+    },
+    {
+      "id": "TR:V16:V06:temporal-rights",
+      "selection": "additional-reading",
+      "occurrences": [
+        {
+          "path": "packages/commerce-property/V16.md",
+          "context": "`TR:V16:V06:temporal-rights` 可把时间区间与占用权带到 V06 的住宿预订；失效点是酒店通常还涉及房型容量、换房与按夜计价，不能照搬本例“单单元独占租约”的全部 guard。`TR:V16:V20:booking-work` 可把一工单多 booking 与复核关闭带到现场服务；资产服务未必有居民占用关系，所以不继承租约与押金规则。演示可拖动交接时间、改变责任金额、制造一次 no_access 或退款 unknown，观察哪些对象变化、哪些证据保持不变；无需先做三维房屋浏览器才能呈现这些因果关系。"
+        }
+      ]
+    },
+    {
+      "id": "TR:V16:V20:booking-work",
+      "selection": "integrated",
+      "occurrences": [
+        {
+          "path": "packages/commerce-property/V16.md",
+          "context": "`TR:V16:V06:temporal-rights` 可把时间区间与占用权带到 V06 的住宿预订；失效点是酒店通常还涉及房型容量、换房与按夜计价，不能照搬本例“单单元独占租约”的全部 guard。`TR:V16:V20:booking-work` 可把一工单多 booking 与复核关闭带到现场服务；资产服务未必有居民占用关系，所以不继承租约与押金规则。演示可拖动交接时间、改变责任金额、制造一次 no_access 或退款 unknown，观察哪些对象变化、哪些证据保持不变；无需先做三维房屋浏览器才能呈现这些因果关系。"
+        }
+      ]
+    },
+    {
+      "id": "TR:V17:H04:membership-lifecycle",
+      "selection": "integrated",
+      "occurrences": [
+        {
+          "path": "packages/people-service/V17.md",
+          "context": "**练习一：同一学生退选后又重新加入同一课班，能否重用 enrollment 行并清空旧成绩？** 短答：可以保留稳定人员身份，但参与期间与批准决定必须可区分；本例建立新的参与版本或 enrollment identity，并由学校决定过去成绩能否延用。不变量是每条成绩可回到当时的参与与评价依据；失效条件是单一 active 布尔值抹去时间区间。检查在退选间隔提交的活动不能自动计入新期间，历史 transcript 也不能消失。`TR:V17:H04:membership-lifecycle` 保留成员关系与访问资格分离；雇佣关系、薪资与学生成绩的法定权利不能互相类推。"
+        },
+        {
+          "path": "packages/people-service/handoff.md",
+          "context": "| 稳定迁移 ID | 保留机制 | 不能继承的条件 |\n|---|---|---|\n| `TR:H04:V17:person-membership` / `TR:V17:H04:membership-lifecycle` | 人员与有期间的成员关系分别建模 | 学籍、任职、历史保留与访问规则不同 |\n| `TR:H04:V19:effective-rate` | 有效费率、冻结计算输入与修正 | 任职存续不等于客户可计费工时 |\n| `TR:H05:H06:resolution-acceptance` / `TR:H06:H05:responsibility-handoff` | 动作、结果、接收与责任交接独立 | 服务探测与客户明确确认的权威不同 |\n| `TR:H05:V20:partial-completion` / `TR:H06:V20:acceptance-evidence` | 子动作证据不能自动关闭总义务 | 现场技能、签认和需求范围需重查 |\n| `TR:H05:V18:evidence-state` / `TR:V18:H04:release-versus-retention` | 局部关闭不消灭其他有效义务 | legal hold 的解除、数据处置不继承工单超时关闭 |\n| `TR:V18:V17:identity-and-decision` / `TR:V17:V19:approved-inputs` | 内容/数值身份与决定版本分别保存 | 法律特权、成绩与费用批准依据不同 |\n| `TR:V18:V19:delivery-and-spend` / `TR:V19:V18:effort-versus-acceptance` | 交付、工作量、收费与到账分别核对 | 专业裁决不能由费用审批代替 |\n| `TR:V19:V20:capacity-and-window` / `TR:V20:V19:versioned-labor` | 资源约束与工作输入版本 | 日容量不保证现场时窗/路程可行；作业日志不自动成为获批timecard |\n| `TR:H06:H01:unknown-action` / `TR:V19:H01:versioned-billing` / `TR:V20:H01:invoice-and-receipt` | 外部未知结果、账务身份、版本与付款分离 | 财务权限、合同额度与预付开通guard需分别决定 |\n| `TR:V17:X01:scoped-identity` | 租户/来源/对象复合身份 | 同租户仍需课班与个人授权，key不替代权限 |\n| `TR:V20:H06:acceptance-boundary` | 执行与接收分开 | 支持请求可能无booking，关闭依据需按业务重定 |"
+        }
+      ]
+    },
+    {
+      "id": "TR:V17:V19:approved-inputs",
+      "selection": "additional-reading",
+      "occurrences": [
+        {
+          "path": "packages/people-service/V17.md",
+          "context": "**练习二：项目从百分制改成 pass/fail，怎样计算期末分？** 短答：原来“分数除以满分再加权”的前提失效。先由学校决定 pass/fail 是独立完成条件、映射到数值，还是不计入平均；没有规则就不能输出数值总分。若它成为完成条件，测验分与项目是否通过并列，不能把 pass 默认为 100。不变量是输出有经批准的政策依据；检查给同样 pass、不同测验成绩的学生，确认结果符合新规则且旧版本可重演。`TR:V17:V19:approved-inputs` 迁移到工时批准的是冻结输入再授权的机制，成绩权重不能换成计费费率后就声称专业规则相同。"
+        },
+        {
+          "path": "packages/people-service/handoff.md",
+          "context": "| 稳定迁移 ID | 保留机制 | 不能继承的条件 |\n|---|---|---|\n| `TR:H04:V17:person-membership` / `TR:V17:H04:membership-lifecycle` | 人员与有期间的成员关系分别建模 | 学籍、任职、历史保留与访问规则不同 |\n| `TR:H04:V19:effective-rate` | 有效费率、冻结计算输入与修正 | 任职存续不等于客户可计费工时 |\n| `TR:H05:H06:resolution-acceptance` / `TR:H06:H05:responsibility-handoff` | 动作、结果、接收与责任交接独立 | 服务探测与客户明确确认的权威不同 |\n| `TR:H05:V20:partial-completion` / `TR:H06:V20:acceptance-evidence` | 子动作证据不能自动关闭总义务 | 现场技能、签认和需求范围需重查 |\n| `TR:H05:V18:evidence-state` / `TR:V18:H04:release-versus-retention` | 局部关闭不消灭其他有效义务 | legal hold 的解除、数据处置不继承工单超时关闭 |\n| `TR:V18:V17:identity-and-decision` / `TR:V17:V19:approved-inputs` | 内容/数值身份与决定版本分别保存 | 法律特权、成绩与费用批准依据不同 |\n| `TR:V18:V19:delivery-and-spend` / `TR:V19:V18:effort-versus-acceptance` | 交付、工作量、收费与到账分别核对 | 专业裁决不能由费用审批代替 |\n| `TR:V19:V20:capacity-and-window` / `TR:V20:V19:versioned-labor` | 资源约束与工作输入版本 | 日容量不保证现场时窗/路程可行；作业日志不自动成为获批timecard |\n| `TR:H06:H01:unknown-action` / `TR:V19:H01:versioned-billing` / `TR:V20:H01:invoice-and-receipt` | 外部未知结果、账务身份、版本与付款分离 | 财务权限、合同额度与预付开通guard需分别决定 |\n| `TR:V17:X01:scoped-identity` | 租户/来源/对象复合身份 | 同租户仍需课班与个人授权，key不替代权限 |\n| `TR:V20:H06:acceptance-boundary` | 执行与接收分开 | 支持请求可能无booking，关闭依据需按业务重定 |"
+        }
+      ]
+    },
+    {
+      "id": "TR:V17:X01:scoped-identity",
+      "selection": "integrated",
+      "occurrences": [
+        {
+          "path": "packages/people-service/V17.md",
+          "context": "**练习三：名单只传 delta，未出现的学生能否删除？** 短答：不能。delta 中缺席表示本次没有变化，明确撤销才改变成员关系；只有范围完整、语义正确的 bulk 才能按约定做全量差异。不变量是交换模式决定缺席语义；失效条件是把增量当全集。观察检查让旧集合 `{S1,S2}` 接收新增 S3 的 delta，结果应为 `{S1,S2,S3}`；若是经验证的完整 bulk `{S3}`，当前名单才变为 `{S3}`，历史成绩仍保留。`TR:V17:X01:scoped-identity` 可复用租户与来源复合键；键正确也不证明老师有权看同租户所有学生。"
+        },
+        {
+          "path": "packages/people-service/handoff.md",
+          "context": "| 稳定迁移 ID | 保留机制 | 不能继承的条件 |\n|---|---|---|\n| `TR:H04:V17:person-membership` / `TR:V17:H04:membership-lifecycle` | 人员与有期间的成员关系分别建模 | 学籍、任职、历史保留与访问规则不同 |\n| `TR:H04:V19:effective-rate` | 有效费率、冻结计算输入与修正 | 任职存续不等于客户可计费工时 |\n| `TR:H05:H06:resolution-acceptance` / `TR:H06:H05:responsibility-handoff` | 动作、结果、接收与责任交接独立 | 服务探测与客户明确确认的权威不同 |\n| `TR:H05:V20:partial-completion` / `TR:H06:V20:acceptance-evidence` | 子动作证据不能自动关闭总义务 | 现场技能、签认和需求范围需重查 |\n| `TR:H05:V18:evidence-state` / `TR:V18:H04:release-versus-retention` | 局部关闭不消灭其他有效义务 | legal hold 的解除、数据处置不继承工单超时关闭 |\n| `TR:V18:V17:identity-and-decision` / `TR:V17:V19:approved-inputs` | 内容/数值身份与决定版本分别保存 | 法律特权、成绩与费用批准依据不同 |\n| `TR:V18:V19:delivery-and-spend` / `TR:V19:V18:effort-versus-acceptance` | 交付、工作量、收费与到账分别核对 | 专业裁决不能由费用审批代替 |\n| `TR:V19:V20:capacity-and-window` / `TR:V20:V19:versioned-labor` | 资源约束与工作输入版本 | 日容量不保证现场时窗/路程可行；作业日志不自动成为获批timecard |\n| `TR:H06:H01:unknown-action` / `TR:V19:H01:versioned-billing` / `TR:V20:H01:invoice-and-receipt` | 外部未知结果、账务身份、版本与付款分离 | 财务权限、合同额度与预付开通guard需分别决定 |\n| `TR:V17:X01:scoped-identity` | 租户/来源/对象复合身份 | 同租户仍需课班与个人授权，key不替代权限 |\n| `TR:V20:H06:acceptance-boundary` | 执行与接收分开 | 支持请求可能无booking，关闭依据需按业务重定 |"
+        }
+      ]
+    },
+    {
+      "id": "TR:V18:H04:release-versus-retention",
+      "selection": "additional-reading",
+      "occurrences": [
+        {
+          "path": "packages/people-service/V18.md",
+          "context": "**练习二：把 H1 解除，案件已经关闭，但 H2 仍有效。** 是否可以删除共同内容？简答：不可以，保留依赖图仍有活动边。保持“不丢失仍被有效义务引用的数据”；失效条件是只有一个 `is_on_hold` 布尔值且解除 H1 把它清零。检查先解除 H1，删除候选仍为空，再解除 H2 并满足独立保留规则才出现候选。它可以迁到 H04 的离职后数据保留，但员工停用账号只是访问决定，不是数据处置授权。`TR:V18:H04:release-versus-retention`。"
+        },
+        {
+          "path": "packages/people-service/handoff.md",
+          "context": "| 稳定迁移 ID | 保留机制 | 不能继承的条件 |\n|---|---|---|\n| `TR:H04:V17:person-membership` / `TR:V17:H04:membership-lifecycle` | 人员与有期间的成员关系分别建模 | 学籍、任职、历史保留与访问规则不同 |\n| `TR:H04:V19:effective-rate` | 有效费率、冻结计算输入与修正 | 任职存续不等于客户可计费工时 |\n| `TR:H05:H06:resolution-acceptance` / `TR:H06:H05:responsibility-handoff` | 动作、结果、接收与责任交接独立 | 服务探测与客户明确确认的权威不同 |\n| `TR:H05:V20:partial-completion` / `TR:H06:V20:acceptance-evidence` | 子动作证据不能自动关闭总义务 | 现场技能、签认和需求范围需重查 |\n| `TR:H05:V18:evidence-state` / `TR:V18:H04:release-versus-retention` | 局部关闭不消灭其他有效义务 | legal hold 的解除、数据处置不继承工单超时关闭 |\n| `TR:V18:V17:identity-and-decision` / `TR:V17:V19:approved-inputs` | 内容/数值身份与决定版本分别保存 | 法律特权、成绩与费用批准依据不同 |\n| `TR:V18:V19:delivery-and-spend` / `TR:V19:V18:effort-versus-acceptance` | 交付、工作量、收费与到账分别核对 | 专业裁决不能由费用审批代替 |\n| `TR:V19:V20:capacity-and-window` / `TR:V20:V19:versioned-labor` | 资源约束与工作输入版本 | 日容量不保证现场时窗/路程可行；作业日志不自动成为获批timecard |\n| `TR:H06:H01:unknown-action` / `TR:V19:H01:versioned-billing` / `TR:V20:H01:invoice-and-receipt` | 外部未知结果、账务身份、版本与付款分离 | 财务权限、合同额度与预付开通guard需分别决定 |\n| `TR:V17:X01:scoped-identity` | 租户/来源/对象复合身份 | 同租户仍需课班与个人授权，key不替代权限 |\n| `TR:V20:H06:acceptance-boundary` | 执行与接收分开 | 支持请求可能无booking，关闭依据需按业务重定 |"
+        }
+      ]
+    },
+    {
+      "id": "TR:V18:V17:identity-and-decision",
+      "selection": "integrated",
+      "occurrences": [
+        {
+          "path": "packages/people-service/V18.md",
+          "context": "**练习一：从 M1 扩展到 M2。** A 的字节没变，但 M2 的负责人只允许另一组人访问，能否直接复制 M1 的审阅结论？简答：blob 可复用的前提是内部授权安全，结论必须在 M2 的范围、协议和专业权限下确认。不变量是每个交付决定都有案件与依据版本；失效条件是把 hash 当决定主键。检查让同一 hash 在两个案件分别为 produce 和 needs_resolution，确认冻结 M2 仍被阻止。这一机制可迁到 V17 的成绩更正：成绩值相同不等于修订依据相同；成绩没有文件保全和特权语义，不能照搬解除规则。`TR:V18:V17:identity-and-decision`。"
+        },
+        {
+          "path": "packages/people-service/handoff.md",
+          "context": "| 稳定迁移 ID | 保留机制 | 不能继承的条件 |\n|---|---|---|\n| `TR:H04:V17:person-membership` / `TR:V17:H04:membership-lifecycle` | 人员与有期间的成员关系分别建模 | 学籍、任职、历史保留与访问规则不同 |\n| `TR:H04:V19:effective-rate` | 有效费率、冻结计算输入与修正 | 任职存续不等于客户可计费工时 |\n| `TR:H05:H06:resolution-acceptance` / `TR:H06:H05:responsibility-handoff` | 动作、结果、接收与责任交接独立 | 服务探测与客户明确确认的权威不同 |\n| `TR:H05:V20:partial-completion` / `TR:H06:V20:acceptance-evidence` | 子动作证据不能自动关闭总义务 | 现场技能、签认和需求范围需重查 |\n| `TR:H05:V18:evidence-state` / `TR:V18:H04:release-versus-retention` | 局部关闭不消灭其他有效义务 | legal hold 的解除、数据处置不继承工单超时关闭 |\n| `TR:V18:V17:identity-and-decision` / `TR:V17:V19:approved-inputs` | 内容/数值身份与决定版本分别保存 | 法律特权、成绩与费用批准依据不同 |\n| `TR:V18:V19:delivery-and-spend` / `TR:V19:V18:effort-versus-acceptance` | 交付、工作量、收费与到账分别核对 | 专业裁决不能由费用审批代替 |\n| `TR:V19:V20:capacity-and-window` / `TR:V20:V19:versioned-labor` | 资源约束与工作输入版本 | 日容量不保证现场时窗/路程可行；作业日志不自动成为获批timecard |\n| `TR:H06:H01:unknown-action` / `TR:V19:H01:versioned-billing` / `TR:V20:H01:invoice-and-receipt` | 外部未知结果、账务身份、版本与付款分离 | 财务权限、合同额度与预付开通guard需分别决定 |\n| `TR:V17:X01:scoped-identity` | 租户/来源/对象复合身份 | 同租户仍需课班与个人授权，key不替代权限 |\n| `TR:V20:H06:acceptance-boundary` | 执行与接收分开 | 支持请求可能无booking，关闭依据需按业务重定 |"
+        }
+      ]
+    },
+    {
+      "id": "TR:V18:V19:delivery-and-spend",
+      "selection": "additional-reading",
+      "occurrences": [
+        {
+          "path": "packages/people-service/V18.md",
+          "context": "**练习三：P1 已接收，S1 费用被驳回。** 能否把 production 回退到未完成？简答：不能。交付义务和费用争议分别存在；新增费用异议与补正单，保留接收事实。检查账单状态变动不得改写 P1 的清单与回执。这可接到 V19 的“批准工时、开票、收款分别核对”，但案件特权判断不能被服务费用审批替代。`TR:V18:V19:delivery-and-spend`。"
+        },
+        {
+          "path": "packages/people-service/handoff.md",
+          "context": "| 稳定迁移 ID | 保留机制 | 不能继承的条件 |\n|---|---|---|\n| `TR:H04:V17:person-membership` / `TR:V17:H04:membership-lifecycle` | 人员与有期间的成员关系分别建模 | 学籍、任职、历史保留与访问规则不同 |\n| `TR:H04:V19:effective-rate` | 有效费率、冻结计算输入与修正 | 任职存续不等于客户可计费工时 |\n| `TR:H05:H06:resolution-acceptance` / `TR:H06:H05:responsibility-handoff` | 动作、结果、接收与责任交接独立 | 服务探测与客户明确确认的权威不同 |\n| `TR:H05:V20:partial-completion` / `TR:H06:V20:acceptance-evidence` | 子动作证据不能自动关闭总义务 | 现场技能、签认和需求范围需重查 |\n| `TR:H05:V18:evidence-state` / `TR:V18:H04:release-versus-retention` | 局部关闭不消灭其他有效义务 | legal hold 的解除、数据处置不继承工单超时关闭 |\n| `TR:V18:V17:identity-and-decision` / `TR:V17:V19:approved-inputs` | 内容/数值身份与决定版本分别保存 | 法律特权、成绩与费用批准依据不同 |\n| `TR:V18:V19:delivery-and-spend` / `TR:V19:V18:effort-versus-acceptance` | 交付、工作量、收费与到账分别核对 | 专业裁决不能由费用审批代替 |\n| `TR:V19:V20:capacity-and-window` / `TR:V20:V19:versioned-labor` | 资源约束与工作输入版本 | 日容量不保证现场时窗/路程可行；作业日志不自动成为获批timecard |\n| `TR:H06:H01:unknown-action` / `TR:V19:H01:versioned-billing` / `TR:V20:H01:invoice-and-receipt` | 外部未知结果、账务身份、版本与付款分离 | 财务权限、合同额度与预付开通guard需分别决定 |\n| `TR:V17:X01:scoped-identity` | 租户/来源/对象复合身份 | 同租户仍需课班与个人授权，key不替代权限 |\n| `TR:V20:H06:acceptance-boundary` | 执行与接收分开 | 支持请求可能无booking，关闭依据需按业务重定 |"
+        }
+      ]
+    },
+    {
+      "id": "TR:V19:H01:versioned-billing",
+      "selection": "additional-reading",
+      "occurrences": [
+        {
+          "path": "packages/people-service/V19.md",
+          "context": "**练习二：客户把合同 cap 提高到 10,600，变更今天才接受。** 600 能否立即重写进原账单？简答：不应改已冻结/已发的 I1。保留旧 cap 版本及 3,000 的分配，以新授权创建剩余 600 的新计费尝试；先检查其适用服务期间和同一源行尚未计费部分。若 B1 还 unknown，旧预留 3,000 同样进入新版本的共同占用账本，新上限 10,600 减已释放 7,000 减预留 3,000，仍只剩 600。不变量是每次计费可追溯合同版本且不能重复；失效条件是以最新上限重新解释历史。检查 T2 两次分配合计最多 1,600，旧 I1 的金额保持 3,000。可迁到 H01 的合同版本，但订阅权利的开通时点需另外决定。`TR:V19:H01:versioned-billing`。"
+        },
+        {
+          "path": "packages/people-service/handoff.md",
+          "context": "| 稳定迁移 ID | 保留机制 | 不能继承的条件 |\n|---|---|---|\n| `TR:H04:V17:person-membership` / `TR:V17:H04:membership-lifecycle` | 人员与有期间的成员关系分别建模 | 学籍、任职、历史保留与访问规则不同 |\n| `TR:H04:V19:effective-rate` | 有效费率、冻结计算输入与修正 | 任职存续不等于客户可计费工时 |\n| `TR:H05:H06:resolution-acceptance` / `TR:H06:H05:responsibility-handoff` | 动作、结果、接收与责任交接独立 | 服务探测与客户明确确认的权威不同 |\n| `TR:H05:V20:partial-completion` / `TR:H06:V20:acceptance-evidence` | 子动作证据不能自动关闭总义务 | 现场技能、签认和需求范围需重查 |\n| `TR:H05:V18:evidence-state` / `TR:V18:H04:release-versus-retention` | 局部关闭不消灭其他有效义务 | legal hold 的解除、数据处置不继承工单超时关闭 |\n| `TR:V18:V17:identity-and-decision` / `TR:V17:V19:approved-inputs` | 内容/数值身份与决定版本分别保存 | 法律特权、成绩与费用批准依据不同 |\n| `TR:V18:V19:delivery-and-spend` / `TR:V19:V18:effort-versus-acceptance` | 交付、工作量、收费与到账分别核对 | 专业裁决不能由费用审批代替 |\n| `TR:V19:V20:capacity-and-window` / `TR:V20:V19:versioned-labor` | 资源约束与工作输入版本 | 日容量不保证现场时窗/路程可行；作业日志不自动成为获批timecard |\n| `TR:H06:H01:unknown-action` / `TR:V19:H01:versioned-billing` / `TR:V20:H01:invoice-and-receipt` | 外部未知结果、账务身份、版本与付款分离 | 财务权限、合同额度与预付开通guard需分别决定 |\n| `TR:V17:X01:scoped-identity` | 租户/来源/对象复合身份 | 同租户仍需课班与个人授权，key不替代权限 |\n| `TR:V20:H06:acceptance-boundary` | 执行与接收分开 | 支持请求可能无booking，关闭依据需按业务重定 |"
+        }
+      ]
+    },
+    {
+      "id": "TR:V19:V18:effort-versus-acceptance",
+      "selection": "additional-reading",
+      "occurrences": [
+        {
+          "path": "packages/people-service/V19.md",
+          "context": "**练习三：合同变成固定费 10,000，实际做了 25 小时。** 能否仍按小时×费率生成客户账单？简答：不可以。工时继续支持产能和成本分析，计费来源改为合同约定的里程碑/交付验收；若规定 40%/60%，两次候选额为 4,000、6,000，与工时变化不直接联动。保持“计费依据显式”；失效条件是把 timecard 当所有合同的唯一计费依据。检查额外 5 小时不能自动增加固定费账单，未完成里程碑也不能因工时已批准就 release。这个边界能帮助 V18 区分审阅工作量、交付接收与费用批准。`TR:V19:V18:effort-versus-acceptance`。"
+        },
+        {
+          "path": "packages/people-service/handoff.md",
+          "context": "| 稳定迁移 ID | 保留机制 | 不能继承的条件 |\n|---|---|---|\n| `TR:H04:V17:person-membership` / `TR:V17:H04:membership-lifecycle` | 人员与有期间的成员关系分别建模 | 学籍、任职、历史保留与访问规则不同 |\n| `TR:H04:V19:effective-rate` | 有效费率、冻结计算输入与修正 | 任职存续不等于客户可计费工时 |\n| `TR:H05:H06:resolution-acceptance` / `TR:H06:H05:responsibility-handoff` | 动作、结果、接收与责任交接独立 | 服务探测与客户明确确认的权威不同 |\n| `TR:H05:V20:partial-completion` / `TR:H06:V20:acceptance-evidence` | 子动作证据不能自动关闭总义务 | 现场技能、签认和需求范围需重查 |\n| `TR:H05:V18:evidence-state` / `TR:V18:H04:release-versus-retention` | 局部关闭不消灭其他有效义务 | legal hold 的解除、数据处置不继承工单超时关闭 |\n| `TR:V18:V17:identity-and-decision` / `TR:V17:V19:approved-inputs` | 内容/数值身份与决定版本分别保存 | 法律特权、成绩与费用批准依据不同 |\n| `TR:V18:V19:delivery-and-spend` / `TR:V19:V18:effort-versus-acceptance` | 交付、工作量、收费与到账分别核对 | 专业裁决不能由费用审批代替 |\n| `TR:V19:V20:capacity-and-window` / `TR:V20:V19:versioned-labor` | 资源约束与工作输入版本 | 日容量不保证现场时窗/路程可行；作业日志不自动成为获批timecard |\n| `TR:H06:H01:unknown-action` / `TR:V19:H01:versioned-billing` / `TR:V20:H01:invoice-and-receipt` | 外部未知结果、账务身份、版本与付款分离 | 财务权限、合同额度与预付开通guard需分别决定 |\n| `TR:V17:X01:scoped-identity` | 租户/来源/对象复合身份 | 同租户仍需课班与个人授权，key不替代权限 |\n| `TR:V20:H06:acceptance-boundary` | 执行与接收分开 | 支持请求可能无booking，关闭依据需按业务重定 |"
+        }
+      ]
+    },
+    {
+      "id": "TR:V19:V20:capacity-and-window",
+      "selection": "additional-reading",
+      "occurrences": [
+        {
+          "path": "packages/people-service/V19.md",
+          "context": "**练习一：乙改为只能周二上班，J1 仍要求周一完成。** 能否沿用原排班？简答：不能，SQL 技能仍在，但时间窗删掉 J1→乙 这条可行边，周一 8 小时需求只剩甲的 4 小时。保持不变量“资格与时间同时满足”；失效条件是只按技能匹配。检查 UI 不应显示“总计两人足够”，应列出 J1/J2 的竞争资源，要求改期限、找替代人员或调整范围。可迁到 V20 的 booking，现场任务还可能受地点、行程与设备约束，按日工时匹配不足以保证可达。`TR:V19:V20:capacity-and-window`。"
+        },
+        {
+          "path": "packages/people-service/handoff.md",
+          "context": "| 稳定迁移 ID | 保留机制 | 不能继承的条件 |\n|---|---|---|\n| `TR:H04:V17:person-membership` / `TR:V17:H04:membership-lifecycle` | 人员与有期间的成员关系分别建模 | 学籍、任职、历史保留与访问规则不同 |\n| `TR:H04:V19:effective-rate` | 有效费率、冻结计算输入与修正 | 任职存续不等于客户可计费工时 |\n| `TR:H05:H06:resolution-acceptance` / `TR:H06:H05:responsibility-handoff` | 动作、结果、接收与责任交接独立 | 服务探测与客户明确确认的权威不同 |\n| `TR:H05:V20:partial-completion` / `TR:H06:V20:acceptance-evidence` | 子动作证据不能自动关闭总义务 | 现场技能、签认和需求范围需重查 |\n| `TR:H05:V18:evidence-state` / `TR:V18:H04:release-versus-retention` | 局部关闭不消灭其他有效义务 | legal hold 的解除、数据处置不继承工单超时关闭 |\n| `TR:V18:V17:identity-and-decision` / `TR:V17:V19:approved-inputs` | 内容/数值身份与决定版本分别保存 | 法律特权、成绩与费用批准依据不同 |\n| `TR:V18:V19:delivery-and-spend` / `TR:V19:V18:effort-versus-acceptance` | 交付、工作量、收费与到账分别核对 | 专业裁决不能由费用审批代替 |\n| `TR:V19:V20:capacity-and-window` / `TR:V20:V19:versioned-labor` | 资源约束与工作输入版本 | 日容量不保证现场时窗/路程可行；作业日志不自动成为获批timecard |\n| `TR:H06:H01:unknown-action` / `TR:V19:H01:versioned-billing` / `TR:V20:H01:invoice-and-receipt` | 外部未知结果、账务身份、版本与付款分离 | 财务权限、合同额度与预付开通guard需分别决定 |\n| `TR:V17:X01:scoped-identity` | 租户/来源/对象复合身份 | 同租户仍需课班与个人授权，key不替代权限 |\n| `TR:V20:H06:acceptance-boundary` | 执行与接收分开 | 支持请求可能无booking，关闭依据需按业务重定 |"
+        }
+      ]
+    },
+    {
+      "id": "TR:V20:H01:invoice-and-receipt",
+      "selection": "additional-reading",
+      "occurrences": [
+        {
+          "path": "packages/people-service/V20.md",
+          "context": "`TR:V20:V19:versioned-labor` 向 V19 迁移时，工作区间与计费输入绑定版本的机制仍成立，但现场时段不能自动代替获得批准的项目工时，capped bill 还多出跨条目的额度竞争。`TR:V20:H06:acceptance-boundary` 向 H06 迁移时，接收与执行分离仍有用，但客服可能通过文字解决问题，不必有 booking。`TR:V20:H01:invoice-and-receipt` 向 H01 迁移时，发票与付款分离保持不变；本例后付款不能继承预付订阅的开通 guard。对应迁移 ID 和专业边界由 [handoff](handoff.md)交给整合者。"
+        },
+        {
+          "path": "packages/people-service/handoff.md",
+          "context": "| 稳定迁移 ID | 保留机制 | 不能继承的条件 |\n|---|---|---|\n| `TR:H04:V17:person-membership` / `TR:V17:H04:membership-lifecycle` | 人员与有期间的成员关系分别建模 | 学籍、任职、历史保留与访问规则不同 |\n| `TR:H04:V19:effective-rate` | 有效费率、冻结计算输入与修正 | 任职存续不等于客户可计费工时 |\n| `TR:H05:H06:resolution-acceptance` / `TR:H06:H05:responsibility-handoff` | 动作、结果、接收与责任交接独立 | 服务探测与客户明确确认的权威不同 |\n| `TR:H05:V20:partial-completion` / `TR:H06:V20:acceptance-evidence` | 子动作证据不能自动关闭总义务 | 现场技能、签认和需求范围需重查 |\n| `TR:H05:V18:evidence-state` / `TR:V18:H04:release-versus-retention` | 局部关闭不消灭其他有效义务 | legal hold 的解除、数据处置不继承工单超时关闭 |\n| `TR:V18:V17:identity-and-decision` / `TR:V17:V19:approved-inputs` | 内容/数值身份与决定版本分别保存 | 法律特权、成绩与费用批准依据不同 |\n| `TR:V18:V19:delivery-and-spend` / `TR:V19:V18:effort-versus-acceptance` | 交付、工作量、收费与到账分别核对 | 专业裁决不能由费用审批代替 |\n| `TR:V19:V20:capacity-and-window` / `TR:V20:V19:versioned-labor` | 资源约束与工作输入版本 | 日容量不保证现场时窗/路程可行；作业日志不自动成为获批timecard |\n| `TR:H06:H01:unknown-action` / `TR:V19:H01:versioned-billing` / `TR:V20:H01:invoice-and-receipt` | 外部未知结果、账务身份、版本与付款分离 | 财务权限、合同额度与预付开通guard需分别决定 |\n| `TR:V17:X01:scoped-identity` | 租户/来源/对象复合身份 | 同租户仍需课班与个人授权，key不替代权限 |\n| `TR:V20:H06:acceptance-boundary` | 执行与接收分开 | 支持请求可能无booking，关闭依据需按业务重定 |"
+        }
+      ]
+    },
+    {
+      "id": "TR:V20:H06:acceptance-boundary",
+      "selection": "integrated",
+      "occurrences": [
+        {
+          "path": "packages/people-service/V20.md",
+          "context": "`TR:V20:V19:versioned-labor` 向 V19 迁移时，工作区间与计费输入绑定版本的机制仍成立，但现场时段不能自动代替获得批准的项目工时，capped bill 还多出跨条目的额度竞争。`TR:V20:H06:acceptance-boundary` 向 H06 迁移时，接收与执行分离仍有用，但客服可能通过文字解决问题，不必有 booking。`TR:V20:H01:invoice-and-receipt` 向 H01 迁移时，发票与付款分离保持不变；本例后付款不能继承预付订阅的开通 guard。对应迁移 ID 和专业边界由 [handoff](handoff.md)交给整合者。"
+        },
+        {
+          "path": "packages/people-service/handoff.md",
+          "context": "| 稳定迁移 ID | 保留机制 | 不能继承的条件 |\n|---|---|---|\n| `TR:H04:V17:person-membership` / `TR:V17:H04:membership-lifecycle` | 人员与有期间的成员关系分别建模 | 学籍、任职、历史保留与访问规则不同 |\n| `TR:H04:V19:effective-rate` | 有效费率、冻结计算输入与修正 | 任职存续不等于客户可计费工时 |\n| `TR:H05:H06:resolution-acceptance` / `TR:H06:H05:responsibility-handoff` | 动作、结果、接收与责任交接独立 | 服务探测与客户明确确认的权威不同 |\n| `TR:H05:V20:partial-completion` / `TR:H06:V20:acceptance-evidence` | 子动作证据不能自动关闭总义务 | 现场技能、签认和需求范围需重查 |\n| `TR:H05:V18:evidence-state` / `TR:V18:H04:release-versus-retention` | 局部关闭不消灭其他有效义务 | legal hold 的解除、数据处置不继承工单超时关闭 |\n| `TR:V18:V17:identity-and-decision` / `TR:V17:V19:approved-inputs` | 内容/数值身份与决定版本分别保存 | 法律特权、成绩与费用批准依据不同 |\n| `TR:V18:V19:delivery-and-spend` / `TR:V19:V18:effort-versus-acceptance` | 交付、工作量、收费与到账分别核对 | 专业裁决不能由费用审批代替 |\n| `TR:V19:V20:capacity-and-window` / `TR:V20:V19:versioned-labor` | 资源约束与工作输入版本 | 日容量不保证现场时窗/路程可行；作业日志不自动成为获批timecard |\n| `TR:H06:H01:unknown-action` / `TR:V19:H01:versioned-billing` / `TR:V20:H01:invoice-and-receipt` | 外部未知结果、账务身份、版本与付款分离 | 财务权限、合同额度与预付开通guard需分别决定 |\n| `TR:V17:X01:scoped-identity` | 租户/来源/对象复合身份 | 同租户仍需课班与个人授权，key不替代权限 |\n| `TR:V20:H06:acceptance-boundary` | 执行与接收分开 | 支持请求可能无booking，关闭依据需按业务重定 |"
+        }
+      ]
+    },
+    {
+      "id": "TR:V20:V19:versioned-labor",
+      "selection": "integrated",
+      "occurrences": [
+        {
+          "path": "packages/people-service/V20.md",
+          "context": "`TR:V20:V19:versioned-labor` 向 V19 迁移时，工作区间与计费输入绑定版本的机制仍成立，但现场时段不能自动代替获得批准的项目工时，capped bill 还多出跨条目的额度竞争。`TR:V20:H06:acceptance-boundary` 向 H06 迁移时，接收与执行分离仍有用，但客服可能通过文字解决问题，不必有 booking。`TR:V20:H01:invoice-and-receipt` 向 H01 迁移时，发票与付款分离保持不变；本例后付款不能继承预付订阅的开通 guard。对应迁移 ID 和专业边界由 [handoff](handoff.md)交给整合者。"
+        },
+        {
+          "path": "packages/people-service/handoff.md",
+          "context": "| 稳定迁移 ID | 保留机制 | 不能继承的条件 |\n|---|---|---|\n| `TR:H04:V17:person-membership` / `TR:V17:H04:membership-lifecycle` | 人员与有期间的成员关系分别建模 | 学籍、任职、历史保留与访问规则不同 |\n| `TR:H04:V19:effective-rate` | 有效费率、冻结计算输入与修正 | 任职存续不等于客户可计费工时 |\n| `TR:H05:H06:resolution-acceptance` / `TR:H06:H05:responsibility-handoff` | 动作、结果、接收与责任交接独立 | 服务探测与客户明确确认的权威不同 |\n| `TR:H05:V20:partial-completion` / `TR:H06:V20:acceptance-evidence` | 子动作证据不能自动关闭总义务 | 现场技能、签认和需求范围需重查 |\n| `TR:H05:V18:evidence-state` / `TR:V18:H04:release-versus-retention` | 局部关闭不消灭其他有效义务 | legal hold 的解除、数据处置不继承工单超时关闭 |\n| `TR:V18:V17:identity-and-decision` / `TR:V17:V19:approved-inputs` | 内容/数值身份与决定版本分别保存 | 法律特权、成绩与费用批准依据不同 |\n| `TR:V18:V19:delivery-and-spend` / `TR:V19:V18:effort-versus-acceptance` | 交付、工作量、收费与到账分别核对 | 专业裁决不能由费用审批代替 |\n| `TR:V19:V20:capacity-and-window` / `TR:V20:V19:versioned-labor` | 资源约束与工作输入版本 | 日容量不保证现场时窗/路程可行；作业日志不自动成为获批timecard |\n| `TR:H06:H01:unknown-action` / `TR:V19:H01:versioned-billing` / `TR:V20:H01:invoice-and-receipt` | 外部未知结果、账务身份、版本与付款分离 | 财务权限、合同额度与预付开通guard需分别决定 |\n| `TR:V17:X01:scoped-identity` | 租户/来源/对象复合身份 | 同租户仍需课班与个人授权，key不替代权限 |\n| `TR:V20:H06:acceptance-boundary` | 执行与接收分开 | 支持请求可能无booking，关闭依据需按业务重定 |"
+        }
+      ]
+    },
+    {
+      "id": "TR:V21:V07:evidence-before-settlement",
+      "selection": "integrated",
+      "occurrences": [
+        {
+          "path": "packages/industry-networks/V21.md",
+          "context": "**练习三：签收 10 改为 9 时，200 已付。** 保持原付款与原证据历史，修正交付余额并发起合同约定的争议流程；不回退成“从未支付”，也不自动发起负向付款。核对原结算参考号仍可找到、待处理数量为 1，调整对象指向更正原因。这个机制能迁到 V07 的发货收款链，前提是区分客户应收与承运商应付；二者的收款方、计价和抵扣权不能混用。`TR:V21:V07:evidence-before-settlement`。"
+        }
+      ]
+    },
+    {
+      "id": "TR:V21:V10:capacity-with-travel",
+      "selection": "additional-reading",
+      "occurrences": [
+        {
+          "path": "packages/industry-networks/V21.md",
+          "context": "**练习二：把运输模型迁到 V10 维护排班，两项任务占 5 小时、5 小时，班次 10 小时。** 容量约束可以保留，但两项任务若必须由同一技师在相距两小时的地点完成，10 小时并不可行。必须增加行程、技能、许可及设备可用窗口；反例是只把工时相加。检查在时间线插入行程后能发现超窗，不能直接沿用货物装箱结果。`TR:V21:V10:capacity-with-travel`。"
+        }
+      ]
+    },
+    {
+      "id": "TR:V22:H01:entitlement-and-billing",
+      "selection": "additional-reading",
+      "occurrences": [
+        {
+          "path": "packages/industry-networks/V22.md",
+          "context": "`TR:V22:V11:late-usage-window` 将事件时间、有效修订与计价输入的分离迁到 meter/VEE；通信记录可能含会话、套餐和多种服务单位，表计读数则可能是累计量、估算和周期差值，不能把一次会话去重直接当成 meter reset 处理。`TR:V22:H01:entitlement-and-billing` 保留承诺、使用权与账单分离；H01 的预付开通 guard 不适用于本文后付政策。演示可拖动激活/退役区间、调整额度政策、迟送 U2 和重放旧 active 回执，观察服务条带、用量窗口和账单行各自变化。来源边界见 [evidence.json](evidence.json)，结构与检查身份见 [V22.json](V22.json)。"
+        }
+      ]
+    },
+    {
+      "id": "TR:V22:V10:release-after-confirmation",
+      "selection": "integrated",
+      "occurrences": [
+        {
+          "path": "packages/industry-networks/V22.md",
+          "context": "**练习三：退订后网络仍活跃，能否按“没有用量”释放号码？** 不能；缺少观测不证明配置撤销。必须取得旧配置不存在的证据，或由有权限的人工流程确认处置，资源才进入 released。可观察检查是持续制造空用量流，资源仍保持 releasing；加入确认撤销事件后才允许下一客户预留。这个 guard 可迁到 V10 的设备安全复归，但设备现场隔离的专业证据不能替换为通信 monitor。`TR:V22:V10:release-after-confirmation`。"
+        }
+      ]
+    },
+    {
+      "id": "TR:V22:V11:late-usage-window",
+      "selection": "integrated",
+      "occurrences": [
+        {
+          "path": "packages/industry-networks/V22.md",
+          "context": "`TR:V22:V11:late-usage-window` 将事件时间、有效修订与计价输入的分离迁到 meter/VEE；通信记录可能含会话、套餐和多种服务单位，表计读数则可能是累计量、估算和周期差值，不能把一次会话去重直接当成 meter reset 处理。`TR:V22:H01:entitlement-and-billing` 保留承诺、使用权与账单分离；H01 的预付开通 guard 不适用于本文后付政策。演示可拖动激活/退役区间、调整额度政策、迟送 U2 和重放旧 active 回执，观察服务条带、用量窗口和账单行各自变化。来源边界见 [evidence.json](evidence.json)，结构与检查身份见 [V22.json](V22.json)。"
+        }
+      ]
+    },
+    {
+      "id": "TR:X01:H01:bill-payment-separation",
+      "selection": "integrated",
+      "occurrences": [
+        {
+          "path": "packages/data-ai-control/X01.md",
+          "context": "迁移到 H07 时，账本输入版本与发布快照都要求可追溯；但 BI 可以探索性近似，客户费用不能凭近似值定稿（`TR:X01:H07:versioned-inputs`）。迁移到 H08 时，最终执行前复检授权可复用；账号隔离的误伤恢复不能用租户永久退出替代（`TR:X01:H08:execution-authority`）。迁移到 H09 时，frozen bill 与已批准文档都绑定确定版本；但签署的外部效力不同于账单汇总，不能套用相同撤销状态（`TR:X01:H09:version-bound-decision`）。与 H01 相接时，计费依据产生的 bill 不等于付款，更不等于收入确认（`TR:X01:H01:bill-payment-separation`）。"
+        },
+        {
+          "path": "packages/data-ai-control/handoff.md",
+          "context": "| 迁移 ID | 保留的机制 | 类比的失效点 |\n|---|---|---|\n| `TR:H07:H09:release-approval` | 批准绑定固定输入与版本 | 数据重述不能决定签署文件的法律效力 |\n| `TR:H07:X01:window-revisions` | 事件时间、修订与去重身份分开 | BI 可重述，已定稿账单需另行调整和核对 |\n| `TR:H07:H08:lineage-impact` | 图路径定位待检查的影响范围 | 数据依赖不证明攻击因果，也不产生响应权限 |\n| `TR:H08:X01:containment-vs-offboard` | 每项外部效果单独确认 | 解除临时限制不等于重新开通已结束的服务权利 |\n| `TR:H08:H09:version-bound-authority` | 授权绑定对象版本、范围和当前身份 | 紧急响应的期限和恢复政策不等于合同撤回规则 |\n| `TR:H09:H03:dependency-versus-capacity` | 依赖先后与资源不重叠分别求解 | 拓扑最早完成时间不是人员排程或业务 SLA |\n| `TR:H09:H01:commitment-evidence` | 版本化承诺与履约证据分离 | 内部批准不等于客户接受，撤回不等于退款 |\n| `TR:X01:H01:bill-payment-separation` | 用量、账单、付款分别可核对 | 可计费不等于已收款，更不等于收入确认 |"
+        }
+      ]
+    },
+    {
+      "id": "TR:X01:H07:versioned-inputs",
+      "selection": "additional-reading",
+      "occurrences": [
+        {
+          "path": "packages/data-ai-control/X01.md",
+          "context": "迁移到 H07 时，账本输入版本与发布快照都要求可追溯；但 BI 可以探索性近似，客户费用不能凭近似值定稿（`TR:X01:H07:versioned-inputs`）。迁移到 H08 时，最终执行前复检授权可复用；账号隔离的误伤恢复不能用租户永久退出替代（`TR:X01:H08:execution-authority`）。迁移到 H09 时，frozen bill 与已批准文档都绑定确定版本；但签署的外部效力不同于账单汇总，不能套用相同撤销状态（`TR:X01:H09:version-bound-decision`）。与 H01 相接时，计费依据产生的 bill 不等于付款，更不等于收入确认（`TR:X01:H01:bill-payment-separation`）。"
+        }
+      ]
+    },
+    {
+      "id": "TR:X01:H08:execution-authority",
+      "selection": "additional-reading",
+      "occurrences": [
+        {
+          "path": "packages/data-ai-control/X01.md",
+          "context": "迁移到 H07 时，账本输入版本与发布快照都要求可追溯；但 BI 可以探索性近似，客户费用不能凭近似值定稿（`TR:X01:H07:versioned-inputs`）。迁移到 H08 时，最终执行前复检授权可复用；账号隔离的误伤恢复不能用租户永久退出替代（`TR:X01:H08:execution-authority`）。迁移到 H09 时，frozen bill 与已批准文档都绑定确定版本；但签署的外部效力不同于账单汇总，不能套用相同撤销状态（`TR:X01:H09:version-bound-decision`）。与 H01 相接时，计费依据产生的 bill 不等于付款，更不等于收入确认（`TR:X01:H01:bill-payment-separation`）。"
+        }
+      ]
+    },
+    {
+      "id": "TR:X01:H09:version-bound-decision",
+      "selection": "additional-reading",
+      "occurrences": [
+        {
+          "path": "packages/data-ai-control/X01.md",
+          "context": "迁移到 H07 时，账本输入版本与发布快照都要求可追溯；但 BI 可以探索性近似，客户费用不能凭近似值定稿（`TR:X01:H07:versioned-inputs`）。迁移到 H08 时，最终执行前复检授权可复用；账号隔离的误伤恢复不能用租户永久退出替代（`TR:X01:H08:execution-authority`）。迁移到 H09 时，frozen bill 与已批准文档都绑定确定版本；但签署的外部效力不同于账单汇总，不能套用相同撤销状态（`TR:X01:H09:version-bound-decision`）。与 H01 相接时，计费依据产生的 bill 不等于付款，更不等于收入确认（`TR:X01:H01:bill-payment-separation`）。"
+        }
+      ]
+    },
+    {
+      "id": "TR:X02:H02:receipt-evidence-boundary",
+      "selection": "additional-reading",
+      "occurrences": [
+        {
+          "path": "packages/commercial-finance/X02.md",
+          "context": "机制迁到 H02 时，可沿源行追踪验收、发票与付款，但“采购入库单”在 X02 可以是虚单，不能直接拿来证明实物验收；对应 `TR:X02:H02:receipt-evidence-boundary`。迁到 H03 时，可把配对快照和调整版本作为关账输入，但个别账平衡不能证明集团内部交易已消除，对应 `TR:X02:H03:consolidation-scope`。迁到 V04 时，批次与部分履约数量关系仍成立，跨法人权限和内部定价则是新增约束，对应 `TR:X02:V04:direct-shipment-lineage`。"
+        },
+        {
+          "path": "packages/commercial-finance/handoff.md",
+          "context": "| 关系 | 保留的机制 | 类比失效的位置与整合建议 |\n|---|---|---|\n| `TR:H01:H02:evidence-before-effect` | 动作绑定权限、版本与证据 | 收款不证明商品验收；H02还需累计占用与质量证据 |\n| `TR:H01:H03:versioned-periods`、`TR:V12:H01:effective-time` | 生效时间、输入版本与区间重演 | 服务价款、本金余额、会计期间有不同基数和完整性条件 |\n| `TR:H02:H03:matched-to-posted` | 来源身份、币种与修订链 | 匹配通过不证明科目分类正确；保留子账到总账映射 |\n| `TR:H03:X02:reconcile-before-consolidate` | 按来源配对并保留差异 | 合并范围、币种、估值与抵销规则需要另外判定 |\n| `TR:V13:H03:responsibility-dimensions` | 按责任维度核对金额与修订 | reserve是可修订估计，不等于已确定应付款或银行余额 |\n| `TR:V14:H03:execution-reconciliation` | 唯一执行身份与纠正链 | 累计成交量可以真实减少，不能把单调增加作为完整性条件 |\n| `TR:X02:H02:receipt-evidence-boundary` | 来源行、数量与结算关系 | 虚拟采购入库不能证明实体收货或验收 |\n| `TR:X02:V04:direct-shipment-lineage`、`TR:V14:V04:partial-obligations` | 子项数量守恒与部分完成 | 跨法人权限、内部定价、交易纠正与实物退货各自有边界 |\n| 后续接X01多租户控制 | 复合身份及服务端授权 | tenant、法人、provider account、客户可见字段不能合并为一个scope |"
+        }
+      ]
+    },
+    {
+      "id": "TR:X02:H03:consolidation-scope",
+      "selection": "additional-reading",
+      "occurrences": [
+        {
+          "path": "packages/commercial-finance/X02.md",
+          "context": "机制迁到 H02 时，可沿源行追踪验收、发票与付款，但“采购入库单”在 X02 可以是虚单，不能直接拿来证明实物验收；对应 `TR:X02:H02:receipt-evidence-boundary`。迁到 H03 时，可把配对快照和调整版本作为关账输入，但个别账平衡不能证明集团内部交易已消除，对应 `TR:X02:H03:consolidation-scope`。迁到 V04 时，批次与部分履约数量关系仍成立，跨法人权限和内部定价则是新增约束，对应 `TR:X02:V04:direct-shipment-lineage`。"
+        }
+      ]
+    },
+    {
+      "id": "TR:X02:V04:direct-shipment-lineage",
+      "selection": "integrated",
+      "occurrences": [
+        {
+          "path": "packages/commercial-finance/X02.md",
+          "context": "机制迁到 H02 时，可沿源行追踪验收、发票与付款，但“采购入库单”在 X02 可以是虚单，不能直接拿来证明实物验收；对应 `TR:X02:H02:receipt-evidence-boundary`。迁到 H03 时，可把配对快照和调整版本作为关账输入，但个别账平衡不能证明集团内部交易已消除，对应 `TR:X02:H03:consolidation-scope`。迁到 V04 时，批次与部分履约数量关系仍成立，跨法人权限和内部定价则是新增约束，对应 `TR:X02:V04:direct-shipment-lineage`。"
+        },
+        {
+          "path": "packages/commercial-finance/handoff.md",
+          "context": "| 关系 | 保留的机制 | 类比失效的位置与整合建议 |\n|---|---|---|\n| `TR:H01:H02:evidence-before-effect` | 动作绑定权限、版本与证据 | 收款不证明商品验收；H02还需累计占用与质量证据 |\n| `TR:H01:H03:versioned-periods`、`TR:V12:H01:effective-time` | 生效时间、输入版本与区间重演 | 服务价款、本金余额、会计期间有不同基数和完整性条件 |\n| `TR:H02:H03:matched-to-posted` | 来源身份、币种与修订链 | 匹配通过不证明科目分类正确；保留子账到总账映射 |\n| `TR:H03:X02:reconcile-before-consolidate` | 按来源配对并保留差异 | 合并范围、币种、估值与抵销规则需要另外判定 |\n| `TR:V13:H03:responsibility-dimensions` | 按责任维度核对金额与修订 | reserve是可修订估计，不等于已确定应付款或银行余额 |\n| `TR:V14:H03:execution-reconciliation` | 唯一执行身份与纠正链 | 累计成交量可以真实减少，不能把单调增加作为完整性条件 |\n| `TR:X02:H02:receipt-evidence-boundary` | 来源行、数量与结算关系 | 虚拟采购入库不能证明实体收货或验收 |\n| `TR:X02:V04:direct-shipment-lineage`、`TR:V14:V04:partial-obligations` | 子项数量守恒与部分完成 | 跨法人权限、内部定价、交易纠正与实物退货各自有边界 |\n| 后续接X01多租户控制 | 复合身份及服务端授权 | tenant、法人、provider account、客户可见字段不能合并为一个scope |"
+        }
+      ]
+    }
+  ]
+}

@@ -58,4 +58,4 @@ H01 的承诺、付款与服务权利到了 V04，需要增加数量及反向流
 
 迁移时保留对象关系和证据要求，重新验证领域政策。具体 transfer ID、失效条件和交接建议见各例及 [handoff.md](handoff.md)。本地 Claude 可自由改写、排版和制作 HTML/motion；应保留 stable IDs、数量单位、synthetic 边界、产品名和来源强度，使视觉简化不会改变业务含义。
 
-来源定位见 [evidence.json](evidence.json)，变更与历史见 [CHANGELOG.md](CHANGELOG.md)。本包遵循 [worker 契约](../../worker-contract.md)；唯一写入范围为 `packages/commerce-property/`。
+来源定位见 [evidence.json](evidence.json)，变更与历史见 [CHANGELOG.md](CHANGELOG.md)。共同语义见 [词表与图语义](../../semantics.md)，跨行业关系见 [迁移地图](../../transfer-map.md)。

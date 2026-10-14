@@ -2,21 +2,21 @@
 
 一家企业不断接受承诺、安排资源、完成交付、取得证据并结清义务。销售订单让客户与企业对交付形成共同约定；生产单安排如何履约；检验结果决定能否放行；发票与付款记录各自回答应收多少和实际收到多少。SaaS 把这些对象交给不同角色处理，又使它们能互相核对。页面是人进入这条链的地方，接口连接不同权威系统，存储保留已经作出的决定。
 
-全景图首先要让读者看见这些连接，再进入行业细节。案例编号保留已有身份；教材章节按理解依赖组织，不按编号顺序堆放案例。下面是后续编写的主线，只有 H01 具有本轮完整示范，其余为研究入口。
+全景图首先要让读者看见这些连接，再进入行业细节。案例编号保留已有身份；教材章节按理解依赖组织，不按编号顺序堆放案例。下面的七章从简单承诺逐步走向时间、资源与跨组织责任。每章选一例完成五步，再用另一例改变条件；无需顺序读完所有行业。
 
 ## 由共同图景走向案例
 
 | 章 | 逐步建立的理解 | 案例入口 | 本章应能完成的判断 |
 |---|---|---|---|
-| 1. 承诺、资源与证据 | 企业为何需要独立对象、角色与状态 | H01、V07、V20 | 解释“已提交”“已完成”“已收款”为何分别需要证据 |
-| 2. 状态与权威 | 谁能改什么；哪个系统对哪项事实负责 | H02、H04、V01、V03 | 给一次状态变化列出身份、权限、guard 和接收人 |
-| 3. 交接与边界 | UI command、API、event、read model 如何连接 | H05、H06、H09、X01 | 找到同步调用结束后仍未完成的业务责任 |
-| 4. 时间、数量与约束 | lookup、Top-K、window、graph、scheduling、optimization | H03、H07、V09、V11、V21 | 用小输入演算，说明时间、规模和目标改变后的结果 |
-| 5. 部分完成与失败 | 拆单、重试、竞争、回滚、补偿、核对 | V04、V05、V06、V12、V14 | 区分安全重试与必须先核对的未知结果 |
-| 6. 专业判断与责任 | 同意、放行、保全、审批和人工接管 | H08、V02、V13、V17、V18 | 指出自动化可提供什么证据、谁仍须作决定 |
-| 7. 跨对象与跨组织闭环 | 变更、工时、资产、供应、计量和内部结算 | V08、V10、V15、V16、V19、V22、X02 | 沿关系检查局部完成是否真的关闭全局义务 |
+| 1. 承诺、资源与证据 | 企业为何需要独立对象、角色与状态 | [H01](packages/commercial-finance/H01.md)、[V07](packages/industry-networks/V07.md)、[V20](packages/people-service/V20.md) | 解释“已提交”“已完成”“已收款”为何分别需要证据 |
+| 2. 状态与权威 | 谁能改什么；哪个系统对哪项事实负责 | [H02](packages/commercial-finance/H02.md)、[H04](packages/people-service/H04.md)、[V01](packages/health-science/V01.md)、[V03](packages/health-science/V03.md) | 给一次状态变化列出身份、权限、guard 和接收人 |
+| 3. 交接与边界 | UI command、API、event、read model 如何连接 | [H05](packages/people-service/H05.md)、[H06](packages/people-service/H06.md)、[H09](packages/data-ai-control/H09.md)、[X01](packages/data-ai-control/X01.md) | 找到同步调用结束后仍未完成的业务责任 |
+| 4. 时间、数量与约束 | lookup、Top-K、window、graph、scheduling、optimization | [H03](packages/commercial-finance/H03.md)、[H07](packages/data-ai-control/H07.md)、[V09](packages/industry-networks/V09.md)、[V11](packages/industry-networks/V11.md)、[V21](packages/industry-networks/V21.md) | 用小输入演算，说明时间、规模和目标改变后的结果 |
+| 5. 部分完成与失败 | 拆单、重试、竞争、回滚、补偿、核对 | [V04](packages/commerce-property/V04.md)、[V05](packages/commerce-property/V05.md)、[V06](packages/commerce-property/V06.md)、[V12](packages/commercial-finance/V12.md)、[V14](packages/commercial-finance/V14.md) | 区分安全重试与必须先核对的未知结果 |
+| 6. 专业判断与责任 | 同意、放行、保全、审批和人工接管 | [H08](packages/data-ai-control/H08.md)、[V02](packages/health-science/V02.md)、[V13](packages/commercial-finance/V13.md)、[V17](packages/people-service/V17.md)、[V18](packages/people-service/V18.md) | 指出自动化可提供什么证据、谁仍须作决定 |
+| 7. 跨对象与跨组织闭环 | 变更、工时、资产、供应、计量和内部结算 | [V08](packages/industry-networks/V08.md)、[V10](packages/industry-networks/V10.md)、[V15](packages/commerce-property/V15.md)、[V16](packages/commerce-property/V16.md)、[V19](packages/people-service/V19.md)、[V22](packages/industry-networks/V22.md)、[X02](packages/commercial-finance/X02.md) | 沿关系检查局部完成是否真的关闭全局义务 |
 
-每章沿“直觉 → 共同模型 → 手算例 → 条件变化 → 反例 → 验收”展开。每例先接回共同图景，再讲该行业为什么需要自己的对象；具体源词不被统一术语抹平。一个病例的 consent、一个采购单的 approval 和一次安全响应的 authorization 都可能是执行前提，但它们的撤回、有效期和专业责任必须分别查证。
+每章沿“识题 → 解法 → 演算 → 验算 → 变式”展开。每例先接回共同图景，再讲该行业为什么需要自己的对象；具体源词不被统一术语抹平。一个病例的 consent、一个采购单的 approval 和一次安全响应的 authorization 都可能是执行前提，但它们的撤回、有效期和专业责任必须分别查证。
 
 ## 共同机制的迁移方法
 
@@ -42,4 +42,12 @@
 
 简答：排序能产生顺序，不能保证运输可行。资源约束改变后，容量、路线、时间窗和不可拆分条件成为约束；要先找可行方案，再比较成本或延迟。反例是金额最大的货占满车后，剩余冷链订单超过时间窗。检查每个约束，并将所得方案与小规模穷举或人工可行解对照；启发式不能称为最优。
 
-以上为 synthetic 推理题，未声称 Shopify、Dynamics 365、AWS 或 SAP 采用这些具体实现。每个 worker 至少交付两道同结构的条件变化题及简答；父线程整合时选择能连接章节、而不是重复同一答案的练习。
+以上为 synthetic 推理题，未声称 Shopify、Dynamics 365、AWS 或 SAP 采用这些具体实现。各案例末尾还有领域变式与继续研究方向。先独立作答，再对照短答；遇到陌生制度时保留待确认条件。
+
+## 三条可完成的学习路线
+
+- **从一个按钮到一次履约**：H01 → V04 → V20 → X01。每步画出承诺、动作与确认者；分别改变“已付款但未发货”“第一次上门完成”“同号跨租户”条件。交付一张对象表和一个拒绝关闭的反例。
+- **从更正到可信发布**：H07 → H09 → V03 → V09。沿 `derived_from` 找依据，反向找受影响结果；把一项已签证据的输入换版。交付受影响集合和需要重新决定的对象，勿把可达性写成自动撤销权限。
+- **从时间窗口到资源计划**：H03 → V06 → V19 → V21 → V22。先求依赖和区间，再加房间、人员、车辆与商业时窗；改变一项容量或迟到事件。交付一个可行方案、一个失败方案及其违反的约束。
+
+每条路线的人工走读与解题记录见 [整合验收](../../../docs/verification/saas-engineering-atlas-20261014.md)。按需展开 [迁移地图](transfer-map.md)，它连接题型而不替各行业继承批准权。
