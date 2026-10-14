@@ -15,7 +15,7 @@
 | 看懂业务、页面与后端的连接 | [共同系统图景](architecture.md) | 一次动作的对象、权威与确认链 |
 | 从问题选解法、算法或技术栈 | [解题索引](problem-index.md) | 一例演算与首轮查证问题 |
 | 按行业寻找熟悉的起点 | [33 例目录](case-catalog.md)、[六组业务对象](packages/README.md) | 具体案例及原语言术语 |
-| 避免术语和箭头混淆 | [共同词表与图语义](semantics.md) | 有类型的关系与对象自己的状态 |
+| 避免术语和箭头混淆 | [共同词表与图语义](semantics.md)、[缩写与原词](terminology.md) | 有类型的关系与对象自己的状态 |
 | 把一种解法迁到另一行业 | [迁移地图](transfer-map.md) | 保留机制、改变条件、反例和检查 |
 | 查来源和实现边界 | [逐 URL 来源](../../vault/provenance/saas-engineering-atlas/README.md)、[验证方法](validation.md) | 主张、读取范围与复查方向 |
 | 交给 Claude 编订为交互 HTML | [消费交接](claude-handoff.md) | 沿 Praxis 场景与设计入口继续制作 |

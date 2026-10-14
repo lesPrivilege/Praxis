@@ -2,6 +2,8 @@
 
 一项 SaaS 服务使不同的人能围绕同一件工作作出相容的决定。销售承诺交付，运营证明交付，财务核对收款。各方看的是同一业务的不同部分；系统要保存足够的身份、状态与证据，使一次点击不会悄悄替另一方作出决定。这是本百科组织案例的起点。
 
+本书中的软件即服务（Software as a Service，SaaS）通过持续服务提供软件能力。用户界面（user interface，UI）承接人的观察与请求；应用程序接口（application programming interface，API）规定系统之间怎样读写。人工智能（artificial intelligence，AI）可以帮助生成候选与解释，动作仍受对象、权限和确认条件约束。标识符（identifier，ID）定位对象，唯一性取决于租户与来源等范围；JSON（JavaScript Object Notation）保存配套结构数据。其他缩写在各行业首次使用处展开，集中查阅见 [术语索引](terminology.md)。
+
 ## 工作对象连接整条链
 
 每个案例先写一个承诺与一个可检查的结束条件。例如，工单关闭需要完成记录与接收确认，不能只凭列表里消失的一行。接着找出 actor、object、state、action、event：谁有权提出动作，动作针对哪个版本，什么事实允许状态变化，谁能确认变化已经发生。

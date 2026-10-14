@@ -31,7 +31,7 @@
 | 合成检查分母 | P01 18；P02 77；P03 71；P04 53；P05 16；P06 34，合计 269；类型含 unittest、断言、有限枚举和本地 SQLite，不折算生产覆盖率 |
 | Atlas 结构校验 | 通过；8 个损坏副本被拒绝 |
 | 整合校验 | 通过；6 个迁移图损坏副本被拒绝，检查别名、主张保留、导航与全案例连接 |
-| Registry 重建与仓库校验 | 通过；Books 新文件暂存后仍需在最终交付重跑 |
+| Registry 重建与仓库校验 | 通过；Books 已加入仓库维护范围；当前 1,800 Markdown、459 JSON、1,105 snapshot 检查通过 |
 | 白名单与公开面 | 只检查本任务增量；不对历史仓库已存内容作新的披露判断 |
 
 机器命令与原始输出另见 [执行回执](saas-engineering-atlas-20261014-checks.json)。375 条案例验收定义与 269 条已运行合成检查分别计数；没有将 AI 留出集设计或 E2E 表格当成执行结果。
@@ -55,4 +55,11 @@
 - URL 只按精确 canonical 或明确跳转合并；保留全部旧 ID。PostgreSQL current 与18的不同登记未凭猜测合并。Stripe invoice 总览与 payment application 的差异保留限定，不把重开规则扩大到所有发票。
 - 真实 provider/sandbox、浏览器 E2E、生产数据库隔离、负载、AI eval、专业法域政策与现场制度均未执行或裁定。部分脚本执行了 SQLite，本条不能误写成“完全未运行数据库”。
 - 公开来源全文未快照；ACORD、DICOM overview、部分 SAP/标准门户和动态 API 文本缺口保留在 reviews。一个替代官方页面成功不消除原入口失败。
+- 缩写首用与独立标签按 [术语回执](saas-engineering-atlas-terminology-review.json)复核：保留原语言、产品名和代码身份，中文解释仅进入编订层。
 - 完整书稿还须接收 foundations 与 enterprise-mechanisms 最终提交，完成章节之间的连续阅读与最终两类独立审阅。
+
+## 读者正文的编订
+
+按后续用户要求移除分工说明、可视化制作指令、重复的测试免责声明和正文中的不透明 claim 编号；完整主张身份仍在 JSON 与 evidence，读者保留直接公共引用和按需证据入口。公式、数值、领域政策、重要反例及来源限定保留。部分定点调整见 [编辑侧车](saas-engineering-atlas-editorial-changes.json)，完整差异以 Git 为准。
+
+编订区分解释正文、标题、图内标签、图注与操作文字；未把段落机械拆块，也未提前生成固定 UI 文案。Claude 最终可根据图文分工重写，证据和论证保持可追溯。

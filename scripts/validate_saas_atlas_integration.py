@@ -59,6 +59,9 @@ def main():
                     if not matching:errors.append('claim lacks scoped supporting review '+c['id']+' '+sid)
     index=read(ATLAS/'case-index.json')['cases']; cases={c['case_id']:c for c in index}
     if set(cases)!=EXPECTED_CASES or len(index)!=33:errors.append('case coverage')
+    terms=read(ATLAS/'terminology.json')['terms']
+    term_ids={t['id'] for t in terms}
+    if len(term_ids)!=len(terms):errors.append('duplicate terminology identity')
     nodes=edges=lives=checks=0
     for c in index:
         for k in ['prose_path','topology_path']:
@@ -68,6 +71,8 @@ def main():
         if not set(d['source_ids'])<=set(aliases):errors.append('unresolved case source '+c['case_id'])
         refs=set(re.findall(r'(?:H\d{2}|V\d{2}|X\d{2}):claim:[a-z0-9-]+',prose))
         if not refs<=set(d['claim_ids']):errors.append('prose claim mismatch '+c['case_id'])
+        for node in d['nodes']:
+            if not set(node.get('reader_term_ids',[]))<=term_ids:errors.append('unknown reader term '+node['id'])
         nodes+=len(d['nodes']);edges+=len(d['edges']);lives+=len(d['lifecycles']);checks+=len(d['checks'])
     graph=read(ATLAS/'transfer-map.json'); errors+=check_transfers(graph,cases)
     proposals={p['id']:p for p in read(ATLAS/'transfer-proposals.json')['proposals']}
