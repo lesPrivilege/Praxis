@@ -29,4 +29,8 @@ Package：P03，`data-ai-control`。案例：H07、H08、H09、X01。唯一改�
 
 实际检查：H07为15断言/4负例，H08为24检查（12预期拒绝、4反例，并执行本地SQLite双线程唯一约束），H09为18纯内存检查，X01为14 unittest。Atlas含8负向自检通过；仓库验证通过；registry在内存重建与原文件逐字节一致。具体命令、结果及未执行范围见CHANGELOG。
 
-精确内容 checkpoint 和远端核验将在本包内容提交后补记，避免把文件自身的提交SHA写成循环依赖。未核实与未执行范围已列于CHANGELOG；没有权限或授权阻碍。
+起点：`ae1827f34c6df067348d2454d7e5c9331ceda25d`。交付分支：`cloud/saas-atlas-data-ai-control-20261014`。
+
+教材、拓扑、脚本与识题导航的精确内容 checkpoint：`ab8fa2b7f74e207a52044709c72f953c4f44339d`，已推送并用 `git ls-remote --heads origin cloud/saas-atlas-data-ai-control-20261014` 核验一致。此前完整内容 checkpoint 为 `55cb66980380c39691969a7f55a2277de07c347d`；早期共同模型 checkpoint 为 `e8e039772b5272721764fda97bdd9a3fc989405b`。本交接元数据随后单独提交，最终 branch tip 的完整 SHA 与远端核验结果随交付消息提供，避免自引用。
+
+最终确认全部改动仅位于本包；已暂存 diff 检查通过。未核实与未执行范围已列于 CHANGELOG；没有权限或授权阻碍。平台曾提示环境断连，本线程实际验证了文件读取、Git 和远端访问可用，工作与提交均正常完成。
