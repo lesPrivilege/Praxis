@@ -395,7 +395,14 @@
             7
           ]
         ],
-        "start": "A"
+        "start": "A",
+        "nodes": [
+          "A",
+          "B",
+          "C",
+          "D"
+        ],
+        "target": "D"
       },
       "expected": {
         "distances": {
@@ -689,10 +696,43 @@
           "A",
           "B"
         ],
-        "hits": 2,
-        "misses": 4
+        "lru_hits": 2,
+        "lru_misses": 4,
+        "lfu_hits": 2,
+        "lfu_misses": 4
       },
-      "invariant": "精确教学策略，不声称 Redis 淘汰顺序"
+      "invariant": "精确教学策略，不声称 Redis 淘汰顺序",
+      "variants": [
+        {
+          "name": "seventh request A",
+          "input": {
+            "requests": [
+              "A",
+              "A",
+              "B",
+              "A",
+              "C",
+              "B",
+              "A"
+            ],
+            "capacity": 2
+          },
+          "expected": {
+            "lru_keys_old_to_new": [
+              "B",
+              "A"
+            ],
+            "lfu_keys": [
+              "A",
+              "B"
+            ],
+            "lru_hits": 2,
+            "lru_misses": 5,
+            "lfu_hits": 3,
+            "lfu_misses": 4
+          }
+        }
+      ]
     },
     {
       "id": "FDN:example:bloom",
@@ -811,7 +851,8 @@
         ],
         "recall": 0.5
       },
-      "invariant": "候选过程是假设，未运行 ANN 索引"
+      "invariant": "候选过程是假设，未运行 ANN 索引",
+      "input_contract": "All coordinates finite numeric and same positive dimension; candidates unique known IDs; integer 1<=k<=vector count."
     },
     {
       "id": "FDN:example:recovery",
@@ -879,7 +920,34 @@
           40
         ]
       },
-      "invariant": "合成混淆矩阵；没有调用模型"
+      "invariant": "合成混淆矩阵；没有调用模型",
+      "input_contract": "Nonnegative integer confusion counts; a zero denominator returns null for that metric.",
+      "variants": [
+        {
+          "name": "1 percent prevalence with hypothetical stable conditional rates",
+          "input": {
+            "tp": 9,
+            "fn": 1,
+            "fp": 198,
+            "tn": 792
+          },
+          "expected": {
+            "n": 1000,
+            "precision_fraction": [
+              9,
+              207
+            ],
+            "recall_fraction": [
+              9,
+              10
+            ],
+            "accuracy_fraction": [
+              801,
+              1000
+            ]
+          }
+        }
+      ]
     }
   ]
 }

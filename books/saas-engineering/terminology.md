@@ -20,6 +20,7 @@
 | CMDB | configuration management database | 配置管理数据库；保存配置项及关系 |
 | DB | database | 数据库；具体存储不自动取得业务权威 |
 | DAG | directed acyclic graph | 有向无环图；有方向且没有有向环的依赖结构 |
+| GiST | Generalized Search Tree | 通用搜索树；树形访问方法，标量与范围组合需相应运算符类 |
 | SQL | Structured Query Language | 结构化查询语言；关系数据查询和操作语言 |
 | HTTP | Hypertext Transfer Protocol | 超文本传输协议；请求与响应协议，响应成功的含义取决于应用契约 |
 | SSE | Server-Sent Events | 服务器发送事件；服务器向浏览器推送事件的机制 |

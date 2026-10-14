@@ -15,3 +15,5 @@
 正文快照与 provider 运行证据未保存。这里的可用事实只覆盖作者实际读取的 locator；整合没有把同 URL 的一次成功扩展成整页已读，也没有将合成模型提升为厂商实现。消费入口见 [全景教材](../../../books/saas-engineering/README.md)。
 
 Foundations 的原始证据保留在 [evidence](../../distilled/saas-engineering-atlas/foundations/evidence.json)。全局 `claims.json` 保留原 `kind`，附加 `evidence_kind` 供统一筛选；`source-backed → source_fact`、`synthetic-example → synthetic`、`derivation → inference` 只是类别映射，不改变原主张或读取范围。
+
+[修订证据](repair-evidence.json)追加版本固定的来源复读与合成变式，和[编订流程证据](editorial-evidence.json)一起作为索引输入。两者均保留自己的scope，不改写包内作者证据。

@@ -1094,7 +1094,10 @@
 
 [FHIR Observation](https://hl7.org/fhir/R5/observation.html)
 
+同源 ID：`REPAIR-SRC-fhir-observation-r5`。
+
 - `V01:claim:fhir-observation`：Observation 表达测量或简单断言，可作为 DiagnosticReport 的原子结果。 定位：R5 §10.1.1 Scope and Usage。边界：Observation 不是完整报告或自动诊断；不验证测量解释。
+- `REPAIR:claim:fhir-observation-r5`：Observation 表达测量与简单断言，可被 DiagnosticReport 引用为原子结果。 定位：§10.1.1 Scope and Usage; §10.1.2 Boundaries and Relationships。边界：仅核对所列资源角色与关联，不证明临床完成、正确性、整合实现或其他版本等价。
 
 消费：[README](../../../books/saas-engineering/README.md)、[V01](../../../books/saas-engineering/packages/health-science/V01.md)。
 
@@ -2103,5 +2106,45 @@
 - `EDITORIAL:claim:3`：全章复核记录把重复解释、突入案例和缺少定义逐项定位，保留独有算例，并将修订与检查产物关联。 定位：全篇20行：逐节调整、重复推导、定义补充及最终检查说明。边界：本次只读复核记录，未复跑该书计算、PDF构建或渲染；其通过数不作为本书测试证据。
 
 消费：[README](../../../books/saas-engineering/README.md)。
+
+复查：实现前按具体版本、字段、制度与部署范围重新核查；来源变更或主张冲突时复读。
+
+## REPAIR-SRC-fhir-servicerequest-r5
+
+[ServiceRequest - FHIR v5.0.0](https://hl7.org/fhir/R5/servicerequest.html)
+
+- `REPAIR:claim:fhir-servicerequest-r5`：ServiceRequest 表达请求、提议或计划，执行后的诊断结果可通过报告或观察关联请求。 定位：§12.18.1 Scope and Usage; §12.18.2 Boundaries and Relationships。边界：仅核对所列资源角色与关联，不证明临床完成、正确性、整合实现或其他版本等价。
+
+消费：[README](../../../books/saas-engineering/README.md)、[V01](../../../books/saas-engineering/packages/health-science/V01.md)。
+
+复查：实现前按具体版本、字段、制度与部署范围重新核查；来源变更或主张冲突时复读。
+
+## REPAIR-SRC-fhir-diagnosticreport-r5
+
+[DiagnosticReport - FHIR v5.0.0](https://hl7.org/fhir/R5/diagnosticreport.html)
+
+- `REPAIR:claim:fhir-diagnosticreport-r5`：DiagnosticReport 包含报告上下文、结果与解释，可关联请求和原子观察。 定位：§10.3.1 Scope and Usage; §10.3.2 Background and Context; §10.3.3 Boundaries and Relationships。边界：仅核对所列资源角色与关联，不证明临床完成、正确性、整合实现或其他版本等价。
+
+消费：[README](../../../books/saas-engineering/README.md)、[V01](../../../books/saas-engineering/packages/health-science/V01.md)。
+
+复查：实现前按具体版本、字段、制度与部署范围重新核查；来源变更或主张冲突时复读。
+
+## REPAIR-SRC-postgres-range-18
+
+[PostgreSQL 18 — 8.17. Range Types](https://www.postgresql.org/docs/18/rangetypes.html#RANGETYPES-CONSTRAINT)
+
+- `REPAIR:claim:postgres-range-18`：标量相等与范围重叠可组合成 GiST 排斥约束，普通标量类型需合适运算符类，文档以 btree_gist 为例。 定位：§8.17.10 Constraints on Ranges; room_reservation example after CREATE EXTENSION btree_gist。边界：仅核对文档先决条件；未创建 PostgreSQL DDL、安装扩展或运行排斥约束实验。
+
+消费：[README](../../../books/saas-engineering/README.md)、[V06](../../../books/saas-engineering/packages/commerce-property/V06.md)。
+
+复查：实现前按具体版本、字段、制度与部署范围重新核查；来源变更或主张冲突时复读。
+
+## REPAIR-SRC-postgres-gist-18
+
+[PostgreSQL 18 — 65.2. GiST Indexes](https://www.postgresql.org/docs/18/gist.html#GIST-INTRO)
+
+- `REPAIR:claim:postgres-gist-18`：GiST 是 Generalized Search Tree 的缩写；PostgreSQL 将其描述为可供实现不同索引方案的平衡树形访问方法。 定位：§65.2.1 Introduction, opening definition。边界：仅核对名称与访问方法类别，不声称安装扩展、运行数据库或复核后续实现章节。
+
+消费：[README](../../../books/saas-engineering/README.md)、[V06](../../../books/saas-engineering/packages/commerce-property/V06.md)、[terminology](../../../books/saas-engineering/terminology.md)。
 
 复查：实现前按具体版本、字段、制度与部署范围重新核查；来源变更或主张冲突时复读。

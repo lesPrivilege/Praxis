@@ -31,3 +31,9 @@ Merged exact author commit `ee597ceaa3675f818746c6122353858872af17e4`. Moved14 t
 ## Enterprise integration · 2026-10-14
 
 Merged exact author commit `dc37f49302d8145006e62a111a7a06d10e1d6ca2`. Moved8 teaching pages to Books and connected all33 canonical case pages while preserving frozen source paths. Shared catalog now has205 canonical URLs,210 original source identities,222 reviews and386 claims. All19 delivered executable check entry points passed. Reproduced and repaired a late sender-error race, adding one regression method (37enterprise methods total); original36-test author records remain preserved. All inputs are integrated; independent technical and whole-book reviews are pending.
+
+## Independent-review repairs · 2026-10-14
+
+Imported the two exact independent-review directories unchanged (13 files), reproduced their original outputs against isolated frozen inputs, and resolved all eight case findings plus six foundations findings. Original eight package/supplement evidence files are unchanged. New versioned source rereads and five synthetic refinements live in repair-evidence.json; the projection now has209canonical URLs,215source identities,227reviews and396claims. Seven historical Vault navigation records preserve audit links without duplicating Books chapters.
+
+All20 current check entry points passed. The new15-method regression suite includes12,288 directed graph/source cases and3 rejected recovery implementation mutants; H04 adds2 fake-dispatch/reconciliation methods. The18 foundations examples,18,462 finite scenarios and18 bad-expected-answer controls remain separate. Dispositions are fixed-pending-independent-recheck; final whole-book editorial acceptance remains outside this repair pass. No main merge, CI or deployment.

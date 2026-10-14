@@ -1,0 +1,89 @@
+{
+  "status": "pass",
+  "test_methods": 15,
+  "observations": {
+    "IR-01": "M1=20000, M2=30000; both reject both conflict orders; later identical reception harmless",
+    "IR-02": "identical replay one signal; content/identity-subject conflicts reject scoring and grouping in both orders",
+    "IR-03": "strict API domains reject before write; allowed boolean/0/1 inputs retain exact Decimal amount",
+    "R4": {
+      "directed_graph_source_cases": 12288,
+      "domain": "all non-self arcs on 3 nodes absent or weight 0/1/2; all sources; simple-path oracle",
+      "invalid_inputs": "ANN dimensions/candidates/k/nonfinite; confusion counts; graph negative/nonfinite/missing endpoints",
+      "valid_boundaries": "isolated source, unreachable target, zero metrics denominators, parallel edges and cycles"
+    },
+    "R5": "original tree valid; unbalanced, underfilled, overfilled and wrong-partition trees rejected; empty root allowed",
+    "R2": {
+      "LRU": [
+        2,
+        5
+      ],
+      "LFU": [
+        3,
+        4
+      ],
+      "sequence": [
+        "A",
+        "A",
+        "B",
+        "A",
+        "C",
+        "B",
+        "A"
+      ]
+    },
+    "R3_graph_union": {
+      "chain_nodes": 2000,
+      "graph_hash_calls": 27995,
+      "union_hash_calls": 29982,
+      "limit_each": 200000,
+      "scope": "finite operation-count regression, not a benchmark or universal complexity proof"
+    },
+    "R6": {
+      "hypothetical_matrix": {
+        "TP": 9,
+        "FN": 1,
+        "FP": 198,
+        "TN": 792
+      },
+      "precision_fraction": [
+        9,
+        207
+      ],
+      "accuracy_one_corrected_case_pp": 2.5,
+      "recall_one_recovered_positive_pp": 5,
+      "scope": "assumed conditional rates; no model inference"
+    },
+    "R1": {
+      "actual_baseline_trace": [
+        {
+          "step": "local_commit",
+          "object_version": 3,
+          "operation_state": "awaiting_external",
+          "outbox_exists": true
+        },
+        {
+          "step": "external_accept_response_lost",
+          "operation_state": "unknown"
+        },
+        {
+          "step": "reconcile_same_operation",
+          "operation_state": "confirmed",
+          "external_id": "R1",
+          "effect_count": 1
+        }
+      ],
+      "implementation_mutants_rejected": [
+        "missing_outbox_insert",
+        "missing_confirmation_update",
+        "lost_outbox_after_commit"
+      ]
+    },
+    "R3_top_k": {
+      "stream_records": 5000,
+      "retained_heap_max": 7,
+      "k": 7
+    },
+    "IR-05-08": "all chapter residue checks pass; three FHIR R5 URLs, scalar GiST prerequisite and locking alternative present"
+  },
+  "scope": "Regression evidence for the imported reviews; standard-library synthetic tests.\n\nOriginal audit scripts remain frozen defect reproducers. This suite tests repairs.\nNo provider, model, browser, PostgreSQL, load, or process-crash execution.\n"
+}

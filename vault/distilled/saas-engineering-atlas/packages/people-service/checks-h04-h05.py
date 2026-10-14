@@ -93,6 +93,36 @@ class ExternalStub:
         return self.effects.get((tenant, operation))
 
 
+class AccessTarget(ExternalStub):
+    """Synthetic target with revision-aware writes; not a SCIM guarantee."""
+    def __init__(self):
+        super().__init__()
+        self.active = None
+        self.revision = 0
+
+    def accept(self, tenant, operation, payload):
+        command = json.loads(payload)
+        if command['revision'] < self.revision:
+            raise ValueError('stale target revision')
+        result = super().accept(tenant, operation, payload)
+        self.active, self.revision = command['active'], command['revision']
+        return result
+
+
+def dispatch_access(current, task, ledger, external, lose_reply=False):
+    payload = {'revision': task['revision'], 'active': task['active']}
+    known = ledger.status(task['tenant'], task['operation'])
+    if known is not None:
+        # Validate the same operation's parameters before returning its state.
+        # Ledger.submit preserves unknown and does not send another effect.
+        return ledger.submit(task['tenant'], task['operation'], payload,
+                             external, lose_reply=lose_reply)
+    if (task['revision'], task['active']) != (current['revision'], current['active']):
+        return 'stale_task'
+    return ledger.submit(task['tenant'], task['operation'], payload,
+                         external, lose_reply=lose_reply)
+
+
 class Ledger:
     def __init__(self, path):
         self.db = sqlite3.connect(path)
@@ -180,7 +210,7 @@ class H04Checks(unittest.TestCase):
         self.assertTrue(can_close_offboarding(['A','B'],{'A':'revoked','B':'revoked'},True,True))
         self.assertFalse(can_close_offboarding(['A'],{'A':'revoked'},False,True))
 
-    def test_old_employment_does_not_override_rehire(self):
+    def test_desired_state_after_rehire(self):
         # Model the source of desired state, not a claim of atomic SCIM operations.
         spells = {'E1': {'start':6,'end':26,'approved':True},
                   'E2': {'start':30,'end':50,'approved':True}}
@@ -190,6 +220,41 @@ class H04Checks(unittest.TestCase):
         self.assertTrue(desired(32))
         historical_e1_revoke = False
         self.assertNotEqual(historical_e1_revoke,desired(32))
+
+    def test_revision_aware_delivery_in_both_orders(self):
+        old = dict(tenant='T', operation='E1-revoke', revision=1, active=False)
+        new = dict(tenant='T', operation='E2-enable', revision=2, active=True)
+        current = dict(revision=2, active=True)
+        for tasks in ((new, old), (old, new)):
+            ledger, target = Ledger(':memory:'), AccessTarget()
+            try:
+                outcomes = [dispatch_access(current, task, ledger, target) for task in tasks]
+                self.assertCountEqual(outcomes, ['confirmed', 'stale_task'])
+                self.assertTrue(target.active)
+                self.assertEqual(target.accepted_count, 1)
+            finally:
+                ledger.close()
+        naive_active = None
+        for task in (new, old):
+            naive_active = task['active']
+        self.assertFalse(naive_active)  # The same schedule defeats blind replay.
+
+    def test_access_unknown_requires_original_operation_reconciliation(self):
+        task = dict(tenant='T', operation='E2-enable', revision=2, active=True)
+        current = dict(revision=2, active=True)
+        ledger, target = Ledger(':memory:'), AccessTarget()
+        try:
+            self.assertEqual(dispatch_access(current, task, ledger, target, lose_reply=True), 'unknown')
+            self.assertEqual(dispatch_access(current, task, ledger, target), 'unknown')
+            self.assertEqual(target.accepted_count, 1)
+            with self.assertRaisesRegex(ValueError, 'changed payload'):
+                dispatch_access(current, dict(task, active=False), ledger, target)
+            self.assertEqual(ledger.status('T', 'E2-enable'), 'unknown')
+            self.assertEqual(target.accepted_count, 1)
+            self.assertEqual(ledger.reconcile('T', 'E2-enable', target), 'confirmed')
+            self.assertTrue(target.active)
+        finally:
+            ledger.close()
 
 
 class H05Checks(unittest.TestCase):

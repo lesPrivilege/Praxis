@@ -1,0 +1,298 @@
+{
+  "reviewed_commit": "6d9e6c1807f7f77f36ef1cbd4e5c1a090d6a8cc8",
+  "severity_definitions": {
+    "high": "Wrong or unsafe core conclusion under stated valid conditions; blocks reuse.",
+    "medium": "Material factual, semantic or example error affecting the taught method.",
+    "low": "Bounded helper robustness/coverage, navigation, reproducibility or editorial improvement; normal worked example remains valid."
+  },
+  "findings": [
+    {
+      "id": "IR-01",
+      "severity": "low",
+      "category": "teaching-model",
+      "title": "H07 M2 bypasses the conflict guard used by M1",
+      "locations": [
+        {
+          "path": "vault/distilled/saas-engineering-atlas/packages/data-ai-control/check_h07.py",
+          "start_line": 37,
+          "end_line": 70
+        },
+        {
+          "path": "books/saas-engineering/packages/data-ai-control/H07.md",
+          "start_line": 144,
+          "end_line": 148
+        }
+      ],
+      "evidence": "first_completed selects the first encountered lowest revision without validating duplicate business contents. Two B:r1 inputs differing only in cents yield 8000 or 8100 as input order changes; current_completed rejects the same pair. See probes-results.json IR-01.",
+      "impact": "The alternate metric silently weakens the revision-identity rule while the lesson changes only which completion to count. This is a small synthetic-helper inconsistency on invalid/conflicting input, not a failure of the shown 30000-cent example.",
+      "repair": "Factor revision-content validation ahead of both metric selectors, or explicitly require and demonstrate a shared validated-input stage. Preserve the complete M1/M2 explanation.",
+      "acceptance_check": "Both input permutations reject/quarantine a conflicting same revision; equal-content redelivery with a different received time remains harmless; M1=20000 and M2=30000 remain unchanged.",
+      "source_urls": [],
+      "status": "open; review only, no content changes"
+    },
+    {
+      "id": "IR-02",
+      "severity": "low",
+      "category": "teaching-model",
+      "title": "H08 conflicting event identity has no explicit policy",
+      "locations": [
+        {
+          "path": "vault/distilled/saas-engineering-atlas/packages/data-ai-control/check_h08.py",
+          "start_line": 23,
+          "end_line": 28
+        },
+        {
+          "path": "books/saas-engineering/packages/data-ai-control/H08.md",
+          "start_line": 27,
+          "end_line": 34
+        },
+        {
+          "path": "books/saas-engineering/packages/data-ai-control/H08.md",
+          "start_line": 79,
+          "end_line": 79
+        }
+      ],
+      "evidence": "deduplicate uses setdefault. Same tenant/connection/event with severity 40 then 99 yields score 40; reverse the order and it yields 99. Equal-content replay correctly leaves one signal.",
+      "impact": "A reader can reuse first-wins deduplication without deciding how evidence collisions are handled. The chapter names source identity and raw-digest references, but does not explicitly promise collision quarantine; this is an omitted precondition/robustness lesson, not a demonstrated provider or live security defect.",
+      "repair": "Specify immutable-content requirements and quarantine conflicting same-key input, or require verified immutable upstream events before this helper. Keep normalization version distinct from event identity.",
+      "acceptance_check": "Identical replay stays one signal; conflicting contents block trusted scoring in either order, or fail a documented upstream validator.",
+      "source_urls": [],
+      "status": "open; review only, no content changes"
+    },
+    {
+      "id": "IR-03",
+      "severity": "low",
+      "category": "input-validation",
+      "title": "X01 eligibility accepts values outside the boolean domain",
+      "locations": [
+        {
+          "path": "vault/distilled/saas-engineering-atlas/packages/data-ai-control/check_x01.py",
+          "start_line": 15,
+          "end_line": 24
+        },
+        {
+          "path": "vault/distilled/saas-engineering-atlas/packages/data-ai-control/check_x01.py",
+          "start_line": 51,
+          "end_line": 56
+        },
+        {
+          "path": "books/saas-engineering/packages/data-ai-control/X01.md",
+          "start_line": 64,
+          "end_line": 68
+        }
+      ],
+      "evidence": "record coerces eligible with int(), and the schema has no eligible IN (0,1) constraint. For 400 units, eligible=2 gives 800 billable and 1.6 amount; eligible=-1 gives -400 and -0.8.",
+      "impact": "The helper can manufacture negative or excess billable units from malformed eligibility. All supplied boolean fixtures still pass; no exposed production ingestion endpoint is present.",
+      "repair": "Validate the eligibility domain at ingestion and add a matching SQLite check. State the accepted usage numeric type and rounding policy separately; INTEGER affinity alone does not enforce integer inputs.",
+      "acceptance_check": "True/False or explicitly permitted 0/1 retain outputs; 2, -1, malformed strings and null are rejected without a persisted charge.",
+      "source_urls": [],
+      "status": "open; review only, no content changes"
+    },
+    {
+      "id": "IR-04",
+      "severity": "low",
+      "category": "test-coverage",
+      "title": "H04 rehire test demonstrates desired state, not stale-task delivery",
+      "locations": [
+        {
+          "path": "vault/distilled/saas-engineering-atlas/packages/people-service/checks-h04-h05.py",
+          "start_line": 183,
+          "end_line": 192
+        },
+        {
+          "path": "books/saas-engineering/packages/people-service/H04.md",
+          "start_line": 68,
+          "end_line": 68
+        },
+        {
+          "path": "books/saas-engineering/packages/people-service/H04.md",
+          "start_line": 96,
+          "end_line": 96
+        }
+      ],
+      "evidence": "The test computes desired(27)/desired(32), assigns historical_e1_revoke=False and asserts it differs from desired(32). It never delivers E1 after E2, calls an apply/dispatch handler, or observes target state.",
+      "impact": "This test cannot catch a stale-task handler that deactivates the rehired account. Its comment explicitly limits it to desired-state modeling; the chapter correctly lists delivery-order behavior as a future check. The gap is coverage clarity, not evidence of an implemented unsafe SCIM connector.",
+      "repair": "Rename/report this as a desired-state counterexample; add a small revision-aware fake dispatch/reconciliation exercise if stale-task safety is to be presented as executed.",
+      "acceptance_check": "Deliver E2 enable then E1 revoke (and reverse order), check final current-authorized state, and show a naive handler failing. Unknown external effects remain unresolved until reconciled.",
+      "source_urls": [],
+      "status": "open; review only, no content changes"
+    },
+    {
+      "id": "IR-05",
+      "severity": "low",
+      "category": "navigation",
+      "title": "Five references have empty destinations",
+      "locations": [
+        {
+          "path": "books/saas-engineering/packages/data-ai-control/H07.md",
+          "start_line": 22,
+          "end_line": 22
+        },
+        {
+          "path": "books/saas-engineering/packages/data-ai-control/H07.md",
+          "start_line": 82,
+          "end_line": 82
+        },
+        {
+          "path": "books/saas-engineering/packages/data-ai-control/H07.md",
+          "start_line": 96,
+          "end_line": 96
+        },
+        {
+          "path": "books/saas-engineering/packages/data-ai-control/X01.md",
+          "start_line": 5,
+          "end_line": 5
+        },
+        {
+          "path": "books/saas-engineering/packages/people-service/H06.md",
+          "start_line": 28,
+          "end_line": 28
+        }
+      ],
+      "evidence": "These lines contain respectively ‘这个模型是本例的设计约束，见 。’, ‘这个演算与修订政策见 。’, ‘这个补充是原创分析，见 。’, and ‘设计政策见 。’. The empty phrase is visible in the published chapter text and does not link to evidence or a local definition. The chapter link scan independently found these four blanks; H08 had no corresponding blank (one regex match there was ordinary prose, not a broken reference). H06:28 additionally ends with “合成模型与关闭 guard 对应 。” and likewise has no destination.",
+      "impact": "Readers reach an incomplete “见 。” or “对应 。” reference instead of the intended model or policy explanation. Existing case/evidence footer links still work.",
+      "repair": "Restore the specific local link, or remove the dangling phrase when the design is already explained in place. Do not send the reader to re-audit a whole source ledger.",
+      "acceptance_check": "Read H07:22,82,96, X01:5 and H06:28 after rendering; every reference either reaches its intended explanation or is removed.",
+      "source_urls": [],
+      "status": "open; review only, no content changes"
+    },
+    {
+      "id": "IR-06",
+      "severity": "low",
+      "category": "source-reproducibility",
+      "title": "FHIR citations mix explicit R5 and moving release URLs",
+      "locations": [
+        {
+          "path": "books/saas-engineering/packages/health-science/V01.md",
+          "start_line": 16,
+          "end_line": 16
+        }
+      ],
+      "evidence": "The same paragraph uses /R5/ for Observation but moving /fhir/ links for ServiceRequest and DiagnosticReport. The primary R5 ServiceRequest page supports the scoped request/result distinction.",
+      "impact": "No incorrect resource meaning was established. The mixed citation boundary makes the checked release less reproducible.",
+      "repair": "Pin all resources in the paragraph to the intended release, or label intentional mixed versions and their limitations in the evidence record.",
+      "acceptance_check": "Reopen the three chosen release pages and retain resource-specific locators.",
+      "source_urls": [
+        "https://hl7.org/fhir/R5/servicerequest.html",
+        "https://hl7.org/fhir/R5/observation.html",
+        "https://hl7.org/fhir/R5/diagnosticreport.html"
+      ],
+      "status": "open; review only, no content changes"
+    },
+    {
+      "id": "IR-07",
+      "severity": "low",
+      "category": "editorial",
+      "title": "Authoring residue and malformed citation punctuation remain in prose",
+      "locations": [
+        {
+          "path": "books/saas-engineering/packages/commerce-property/V06.md",
+          "start_line": 77,
+          "end_line": 77
+        },
+        {
+          "path": "books/saas-engineering/packages/commerce-property/V16.md",
+          "start_line": 78,
+          "end_line": 78
+        },
+        {
+          "path": "books/saas-engineering/packages/commerce-property/V15.md",
+          "start_line": 73,
+          "end_line": 73
+        },
+        {
+          "path": "books/saas-engineering/packages/health-science/V01.md",
+          "start_line": 16,
+          "end_line": 16
+        },
+        {
+          "path": "books/saas-engineering/packages/health-science/V01.md",
+          "start_line": 18,
+          "end_line": 18
+        },
+        {
+          "path": "books/saas-engineering/packages/health-science/V01.md",
+          "start_line": 20,
+          "end_line": 20
+        },
+        {
+          "path": "books/saas-engineering/packages/health-science/V01.md",
+          "start_line": 73,
+          "end_line": 73
+        },
+        {
+          "path": "books/saas-engineering/packages/health-science/V01.md",
+          "start_line": 97,
+          "end_line": 97
+        },
+        {
+          "path": "books/saas-engineering/packages/health-science/V02.md",
+          "start_line": 9,
+          "end_line": 9
+        },
+        {
+          "path": "books/saas-engineering/packages/health-science/V02.md",
+          "start_line": 25,
+          "end_line": 25
+        },
+        {
+          "path": "books/saas-engineering/packages/health-science/V02.md",
+          "start_line": 55,
+          "end_line": 55
+        },
+        {
+          "path": "books/saas-engineering/packages/health-science/V02.md",
+          "start_line": 104,
+          "end_line": 104
+        },
+        {
+          "path": "books/saas-engineering/packages/health-science/V03.md",
+          "start_line": 11,
+          "end_line": 11
+        },
+        {
+          "path": "books/saas-engineering/packages/industry-networks/V07.md",
+          "start_line": 19,
+          "end_line": 19
+        },
+        {
+          "path": "books/saas-engineering/packages/industry-networks/V21.md",
+          "start_line": 56,
+          "end_line": 56
+        },
+        {
+          "path": "books/saas-engineering/packages/people-service/V19.md",
+          "start_line": 23,
+          "end_line": 23
+        }
+      ],
+      "evidence": "V15:73 ends with an imperative authoring fragment “记录这组原创演算。”; V16:78 appends a broken scope-note fragment. V01/V02/V03, V06, V07, V19 and V21 contain orphan enumeration punctuation around citations.",
+      "impact": "The process fragments interrupt the teaching voice. These are local copyedits, not reasons to compress or remove full worked explanations.",
+      "repair": "Delete the authoring instruction; integrate or remove the already-redundant synthetic note; repair separators/spacing while preserving source links, numbers, qualifications and explanations.",
+      "acceptance_check": "Read the exact locations as connected prose and render links; no domain meaning changes.",
+      "source_urls": [],
+      "status": "open; review only, no content changes"
+    },
+    {
+      "id": "IR-08",
+      "severity": "low",
+      "category": "implementation-note",
+      "title": "Room-range exclusion option omits its scalar GiST prerequisite",
+      "locations": [
+        {
+          "path": "books/saas-engineering/packages/commerce-property/V06.md",
+          "start_line": 87,
+          "end_line": 87
+        }
+      ],
+      "evidence": "The sample proposes an exclusion constraint over hotel_id, room_id, and daterange to block same-room overlap. PostgreSQL's range documentation confirms range exclusion and explains that combining scalar equality with a range exclusion may require the btree_gist extension (or an appropriate operator class). Without this prerequisite, the DDL implied by the example may not be available for ordinary scalar room identifiers.",
+      "impact": "A reader implementing this optional stack choice may not have an equality operator class for ordinary hotel/room IDs. No failing DDL was published or executed, and a locking alternative is already given.",
+      "repair": "Mention btree_gist or appropriate operator classes if implementing scalar equality plus range overlap. Keep the locking alternative.",
+      "acceptance_check": "If a runnable DDL example is added, create it on the stated PostgreSQL version and verify same-room overlaps reject while distinct rooms and adjacent dates pass.",
+      "source_urls": [
+        "https://www.postgresql.org/docs/18/rangetypes.html#RANGETYPES-CONSTRAINT"
+      ],
+      "status": "open; review only, no content changes"
+    }
+  ]
+}

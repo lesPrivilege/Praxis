@@ -8,7 +8,7 @@
 |---|---|---|---|
 | 散列、散列表 | hash, hash table | 从完整键定位桶，碰撞后仍比较键；短 hash 不能代替业务身份 | [2](02-lookup-and-indexes.md) |
 | 二分查找、下边界 | binary search, lower bound | 在有序序列找第一个不小于目标的位置；插入成本另算 | [2](02-lookup-and-indexes.md) |
-| B 树 | B-tree | 一个节点容纳多键、多分支；与二叉树不同，B 不在本书臆作缩写展开 | [2](02-lookup-and-indexes.md) |
+| B 树 | B-tree | 多键、多分支，叶子同深且非根占用有下界；与二叉树不同，B 不在本书臆作缩写展开 | [2](02-lookup-and-indexes.md) |
 | 前缀树 | trie | 沿符号路径共享前缀；BinaryTrie 的符号是位，字符 trie 的符号是字符 | [2](02-lookup-and-indexes.md) |
 | 前 K 项 | Top-K | 按完整比较规则选择 K 项；并列处理决定是否恰好 K 项 | [3](03-order-and-intervals.md) |
 | 堆、优先队列 | heap, priority queue | 堆是优先队列的一种实现；堆顶有序不等于整数组已排序 | [3](03-order-and-intervals.md) |
@@ -45,7 +45,7 @@
 | 故障注入、负载测试 | failure injection, load testing | 改变运行条件或工作到达量，再观察业务与性能判据 | [10](10-verification-and-evals.md) |
 | AI 评估、语言模型综合评估 | artificial intelligence evaluation (AI eval), Holistic Evaluation of Language Models (HELM) | eval 是评估活动；HELM 是特定研究项目 | [10](10-verification-and-evals.md) |
 | 真 / 假阳性，真 / 假阴性 | true positive (TP), false positive (FP), true negative (TN), false negative (FN) | 正类须先定义；本书正类为应建议退款核查 | [10](10-verification-and-evals.md) |
-| 精确率、召回率、准确率 | precision, recall, accuracy | TP/(TP+FP)、TP/(TP+FN)、(TP+TN)/总数；三种分母不同 | [10](10-verification-and-evals.md) |
+| 精确率、召回率、准确率 | precision, recall, accuracy | TP/(TP+FP)、TP/(TP+FN)、(TP+TN)/总数；三种分母不同；零分母未定义，precision 随阳性比例变化 | [10](10-verification-and-evals.md) |
 | 前 K 项召回率 | recall@k | 本书 ANN 算例分母为精确近邻数 k；业务相关文档召回需另定义标注全集 | [8](08-approximation-and-search.md) |
 | 尾延迟、分位数 | tail latency, percentile (p95/p99) | p95/p99 分别对应 95%/99% 的观测分位；不等于最大耗时 | [10](10-verification-and-evals.md) |
 | 接口描述、数据结构约束 | OpenAPI, JSON Schema | OpenAPI 是接口描述规范名；JSON（JavaScript Object Notation）是数据格式，Schema 表达数据约束 | [11](11-stacks-and-research.md) |

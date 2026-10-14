@@ -35,17 +35,24 @@ ROWS = (
 )
 
 
-def select_latest(rows, tenant, cutoff):
-    latest, versions = {}, {}
+def validated_revisions(rows, tenant, cutoff):
+    versions = {}
     for row in rows:
         if row.tenant != tenant or row.received > cutoff:
             continue
         identity = (row.tenant, row.order, row.revision)
-        # A redelivery may have another received time; business content must agree.
         content = (row.completed, row.status, row.cents)
-        if identity in versions and versions[identity] != content:
-            raise ValueError('same revision identity has conflicting business content')
+        if identity in versions:
+            if versions[identity] != content:
+                raise ValueError('same revision identity has conflicting business content')
+            continue
         versions[identity] = content
+        yield row
+
+
+def select_latest(rows, tenant, cutoff):
+    latest = {}
+    for row in validated_revisions(rows, tenant, cutoff):
         key = (row.tenant, row.order)
         if key not in latest or row.revision > latest[key].revision:
             latest[key] = row
@@ -60,8 +67,8 @@ def current_completed(rows, tenant, cutoff, start=START, end=END):
 def first_completed(rows, tenant, cutoff):
     # M2 requires retained revision history; do not invoke on a current-row-only store.
     first = {}
-    for row in rows:
-        if row.tenant != tenant or row.received > cutoff or row.status != 'completed':
+    for row in validated_revisions(rows, tenant, cutoff):
+        if row.status != 'completed':
             continue
         key = (row.tenant, row.order)
         if key not in first or row.revision < first[key].revision:

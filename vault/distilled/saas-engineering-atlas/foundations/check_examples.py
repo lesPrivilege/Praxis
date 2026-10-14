@@ -13,6 +13,7 @@ from graphlib import TopologicalSorter, CycleError
 from heapq import heappush, heappop, heapreplace
 from itertools import combinations, product, permutations
 import json
+from math import isfinite
 from pathlib import Path
 import sqlite3
 
@@ -28,18 +29,27 @@ def equal(actual, expected, where):
     require(actual == expected, f'{where}: actual={actual!r}, expected={expected!r}')
 
 
+class HeapEntry:
+    """Worst retained candidate compares smallest: low score, then larger ID."""
+    __slots__ = ('name', 'score')
+    def __init__(self, name, score):
+        self.name, self.score = name, score
+    def __lt__(self, other):
+        return self.score < other.score or (self.score == other.score and self.name > other.name)
+
+
 def top_k(records, k):
-    if k <= 0:
+    require(type(k) is int and k >= 0, 'nonnegative integer k')
+    if k == 0:
         return []
-    rank = {name: i for i, name in enumerate(sorted({r[0] for r in records}))}
     heap = []
     for name, score in records:
-        entry = (score, -rank[name], name)
+        entry = HeapEntry(name, score)
         if len(heap) < k:
             heappush(heap, entry)
-        elif entry > heap[0]:
+        elif heap[0] < entry:
             heapreplace(heap, entry)
-    return [e[2] for e in sorted(heap, reverse=True)]
+    return [e.name for e in sorted(heap, key=lambda e: (-e.score, e.name))]
 
 
 def pair_sum(values, target):
@@ -98,20 +108,29 @@ def trie_matches(words, query):
     return result
 
 
-def btree_values(node):
-    keys, children = node['keys'], node.get('children', [])
-    require(keys == sorted(set(keys)), 'B-tree node keys')
-    if not children:
-        return keys[:]
-    require(len(children) == len(keys) + 1, 'B-tree child count')
-    values = []
-    for i, child in enumerate(children):
-        part = btree_values(child)
-        require(not part or (i == 0 or part[0] > keys[i - 1]) and
-                (i == len(keys) or part[-1] < keys[i]), 'B-tree partition')
-        values.extend(part)
-        if i < len(keys):
-            values.append(keys[i])
+def btree_values(node, minimum_degree=2):
+    """Validate a B-tree with minimum degree t, then return its inorder values."""
+    require(type(minimum_degree) is int and minimum_degree >= 2, 'B-tree minimum degree')
+    values, leaf_depth = [], None
+    def visit(current, depth, lower, upper, root=False):
+        nonlocal leaf_depth
+        keys, children = current['keys'], current.get('children', [])
+        require(keys == sorted(set(keys)), 'B-tree node keys')
+        minimum = (1 if children else 0) if root else minimum_degree - 1
+        require(minimum <= len(keys) <= 2 * minimum_degree - 1, 'B-tree occupancy')
+        require(all((lower is None or lower < key) and (upper is None or key < upper) for key in keys), 'B-tree partition')
+        if not children:
+            if leaf_depth is None:
+                leaf_depth = depth
+            require(depth == leaf_depth, 'B-tree equal leaf depth')
+            values.extend(keys)
+            return
+        require(len(children) == len(keys) + 1, 'B-tree child count')
+        for i, child in enumerate(children):
+            visit(child, depth + 1, lower if i == 0 else keys[i-1], upper if i == len(keys) else keys[i])
+            if i < len(keys):
+                values.append(keys[i])
+    visit(node, 0, None, None, True)
     return values
 
 
@@ -128,37 +147,46 @@ def btree_search(node, target):
 
 def graph_walk(nodes, edges, start):
     adj = {n: [] for n in nodes}
+    require(start in adj, 'graph source must exist')
     for a, b in edges:
+        require(a in adj and b in adj, 'graph endpoints must exist')
         adj[a].append(b)
-    distance, queue = {start: 0}, deque([start])
+    distance, queue, layers = {start: 0}, deque([start]), [[start]]
     while queue:
         a = queue.popleft()
         for b in adj[a]:
             if b not in distance:
-                distance[b] = distance[a] + 1
+                d = distance[a] + 1
+                distance[b] = d
+                if len(layers) == d:
+                    layers.append([])
+                layers[d].append(b)
                 queue.append(b)
-    layers = [[n for n in distance if distance[n] == d]
-              for d in range(max(distance.values()) + 1)]
-    color, order, cycle = {}, [], []
-
-    def visit(a, stack):
-        color[a] = 1
-        order.append(a)
-        for b in adj[a]:
-            if color.get(b, 0) == 0:
-                visit(b, stack + [b])
-            elif color[b] == 1 and not cycle:
-                cycle.extend(stack[stack.index(b):] + [b])
-        color[a] = 2
-
-    visit(start, [start])
+    color, order, cycle = {start: 1}, [start], []
+    path, positions, stack = [start], {start: 0}, [(start, iter(adj[start]))]
+    while stack:
+        a, neighbors = stack[-1]
+        try:
+            b = next(neighbors)
+        except StopIteration:
+            stack.pop(); path.pop(); positions.pop(a); color[a] = 2
+            continue
+        if color.get(b, 0) == 0:
+            color[b] = 1; order.append(b); positions[b] = len(path); path.append(b)
+            stack.append((b, iter(adj[b])))
+        elif color[b] == 1 and not cycle:
+            cycle = path[positions[b]:] + [b]
     return layers, order, cycle
 
 
-def dijkstra(edges, start):
-    require(all(w >= 0 for _, _, w in edges), 'Dijkstra requires nonnegative weights')
-    adj = {n: [] for edge in edges for n in edge[:2]}
+def dijkstra(edges, start, nodes=None):
+    edges = list(edges)
+    require(all(type(w) in (int, float) and isfinite(w) and w >= 0 for _, _, w in edges), 'Dijkstra requires finite nonnegative weights')
+    known = set(nodes) if nodes is not None else {start} | {n for edge in edges for n in edge[:2]}
+    require(start in known, 'source must be in node set')
+    adj = {n: [] for n in known}
     for a, b, w in edges:
+        require(a in known and b in known, 'edge endpoint outside node set')
         adj[a].append((b, w))
     dist, parent, heap = {start: 0}, {}, [(0, start)]
     while heap:
@@ -181,14 +209,16 @@ def union_counts(nodes, edges):
             n = parent[n]
         return n
 
-    counts = [len(nodes)]
+    components = len(nodes)
+    counts = [components]
     for a, b in edges:
         a, b = find(a), find(b)
         if a != b:
             if size[a] < size[b]:
                 a, b = b, a
             parent[b], size[a] = a, size[a] + size[b]
-        counts.append(len({find(n) for n in nodes}))
+            components -= 1
+        counts.append(components)
     return counts
 
 
@@ -306,10 +336,17 @@ def recovery_model(inp):
             pass
         equal(local.execute('SELECT version,state FROM objects').fetchone(), (v, 'pending'), 'rollback')
         equal(local.execute('SELECT COUNT(*) FROM operations').fetchone()[0], 0, 'atomic operation rollback')
+        equal(local.execute('SELECT tenant,operation FROM outbox').fetchall(), [], 'atomic outbox rollback')
         submit(amount)
         submit(amount)  # replay same command
-        trace = [dict(step='local_commit', object_version=v + 1,
-                      operation_state='awaiting_external', outbox_exists=True)]
+        object_row = local.execute('SELECT version,state FROM objects WHERE tenant=? AND id=?', (tenant,obj)).fetchone()
+        operation_row = local.execute('SELECT amount,state,external_id FROM operations WHERE tenant=? AND id=?', (tenant,op)).fetchone()
+        handoff = local.execute('SELECT tenant,operation FROM outbox WHERE tenant=? AND operation=?', (tenant,op)).fetchall()
+        equal(object_row, (v+1,'cancelled'), 'committed object')
+        equal(operation_row, (amount,'awaiting_external',None), 'committed operation')
+        equal(handoff, [(tenant,op)], 'committed scoped outbox')
+        trace = [dict(step='local_commit', object_version=object_row[0],
+                      operation_state=operation_row[1], outbox_exists=bool(handoff))]
         try:
             submit(amount + 1)
         except AssertionError:
@@ -317,12 +354,15 @@ def recovery_model(inp):
         else:
             raise AssertionError('changed parameters accepted')
         equal(local.execute('UPDATE objects SET version=version+1 WHERE tenant=? AND id=? AND version=?', (tenant, obj, v)).rowcount, 0, 'stale writer')
+        dispatch = local.execute('SELECT o.tenant,o.operation,p.amount FROM outbox o JOIN operations p ON p.tenant=o.tenant AND p.id=o.operation WHERE o.tenant=? AND o.operation=?', (tenant,op)).fetchall()
+        equal(dispatch, [(tenant,op,amount)], 'dispatch must consume durable handoff')
         with provider:
-            provider.execute('INSERT INTO effects VALUES(?,?,?,?)', (tenant, op, amount, 'R1'))
+            provider.execute('INSERT INTO effects VALUES(?,?,?,?)', (*dispatch[0], 'R1'))
         # Response lost: local state knows nothing about provider success yet.
         with local:
             local.execute('UPDATE operations SET state=?', ('unknown',))
-        trace.append(dict(step='external_accept_response_lost', operation_state='unknown'))
+        observed_state = local.execute('SELECT state FROM operations WHERE tenant=? AND id=?', (tenant,op)).fetchone()[0]
+        trace.append(dict(step='external_accept_response_lost', operation_state=observed_state))
         effect = provider.execute('SELECT external_id,amount FROM effects WHERE tenant=? AND operation=?', (tenant, op)).fetchone()
         require(effect and effect[1] == amount, 'reconciliation identity and amount')
         with local:
@@ -331,13 +371,23 @@ def recovery_model(inp):
         with provider:
             provider.execute('INSERT OR IGNORE INTO effects VALUES(?,?,?,?)', (tenant, op, amount, 'R1'))
         count, total = provider.execute('SELECT COUNT(*),SUM(amount) FROM effects').fetchone()
-        trace.append(dict(step='reconcile_same_operation', operation_state='confirmed', external_id=effect[0], effect_count=count))
+        confirmed = local.execute('SELECT state,external_id FROM operations WHERE tenant=? AND id=?', (tenant,op)).fetchone()
+        equal(confirmed, ('confirmed',effect[0]), 'persisted reconciliation')
+        trace.append(dict(step='reconcile_same_operation', operation_state=confirmed[0], external_id=confirmed[1], effect_count=count))
         # Same display ID in another tenant must not resolve to this object/effect.
         equal(local.execute('SELECT * FROM objects WHERE tenant=? AND id=?', ('other-tenant', obj)).fetchall(), [], 'tenant lookup')
         return dict(refund_total=total, effect_count=count), trace
     finally:
         local.close()
         provider.close()
+
+
+def confusion_metrics(x):
+    tp, fn, fp, tn = (x[k] for k in ('tp', 'fn', 'fp', 'tn'))
+    require(all(type(v) is int and v >= 0 for v in (tp,fn,fp,tn)), 'confusion counts must be nonnegative integers')
+    n = tp+fn+fp+tn
+    fraction = lambda numerator, denominator: [numerator, denominator] if denominator else None
+    return dict(n=n, precision_fraction=fraction(tp,tp+fp), recall_fraction=fraction(tp,tp+fn), accuracy_fraction=fraction(tp+tn,n))
 
 
 def evaluate(example):
@@ -390,12 +440,15 @@ def evaluate(example):
         for variant in example['variants']:
             equal(graph_walk(x['nodes'], x['edges'] + [variant['added_edge']], x['start'])[2], variant['cycle'], 'cycle witness')
     elif name == 'shortest-path':
-        distances, parents = dijkstra(x['edges'], x['start'])
-        # The teaching query's destination is D, independent of the expected path.
-        path = ['D']
-        while path[-1] != x['start']:
-            path.append(parents[path[-1]])
-        actual = dict(distances=distances, path=path[::-1])
+        require(x['target'] in x['nodes'], 'target must be in node set')
+        distances, parents = dijkstra(x['edges'], x['start'], x['nodes'])
+        path = []
+        if x['target'] in distances:
+            path = [x['target']]
+            while path[-1] != x['start']:
+                path.append(parents[path[-1]])
+            path.reverse()
+        actual = dict(distances={n: distances.get(n) for n in x['nodes']}, path=path)
     elif name == 'union-find':
         actual = dict(component_counts=union_counts(x['nodes'], x['unions']))
     elif name == 'dag':
@@ -438,8 +491,11 @@ def evaluate(example):
         equal(trace[2]['assign'], actual['assignment'], 'backtracking result trace')
     elif name == 'caches':
         lru, lfu, hits = caches(x['requests'], x['capacity'])
-        equal(hits[0], hits[1], 'fixture both policies same hit count')
-        actual = dict(lru_keys_old_to_new=lru, lfu_keys=lfu, hits=hits[0], misses=len(x['requests']) - hits[0])
+        actual = dict(lru_keys_old_to_new=lru, lfu_keys=lfu,
+                      lru_hits=hits[0], lru_misses=len(x['requests'])-hits[0],
+                      lfu_hits=hits[1], lfu_misses=len(x['requests'])-hits[1])
+        for variant in example.get('variants', []):
+            evaluate({**example, 'input': variant['input'], 'expected': variant['expected'], 'variants': []})
     elif name == 'bloom':
         bits = {b for key in x['inserted'] for b in x['hash_positions'][key]}
         require(all(0 <= b < x['m'] for b in bits), 'bit bounds')
@@ -452,6 +508,11 @@ def evaluate(example):
             registers[i] = max(registers[i], rank)
         actual = dict(registers=registers)
     elif name == 'ann':
+        dimension = len(x['query'])
+        require(dimension > 0 and all(len(v) == dimension for v in x['vectors'].values()), 'ANN vector dimensions must agree')
+        require(all(type(v) in (int,float) and isfinite(v) for vector in [x['query'], *x['vectors'].values()] for v in vector), 'ANN finite numeric coordinates')
+        require(type(x['k']) is int and 0 < x['k'] <= len(x['vectors']), 'ANN k must be within vector count')
+        require(len(set(x['candidate_ids'])) == len(x['candidate_ids']) and set(x['candidate_ids']) <= x['vectors'].keys(), 'ANN candidate identities')
         def distance(k):
             return sum((a - b) ** 2 for a, b in zip(x['query'], x['vectors'][k]))
         exact = sorted(x['vectors'], key=lambda k: (distance(k), k))[:x['k']]
@@ -461,8 +522,9 @@ def evaluate(example):
         actual, trace = recovery_model(x)
         equal(trace, example['trace'], 'recovery stages')
     elif name == 'ai-eval':
-        tp, fn, fp, tn = (x[k] for k in ('tp', 'fn', 'fp', 'tn'))
-        actual = dict(n=tp+fn+fp+tn, precision_fraction=[tp,tp+fp], recall_fraction=[tp,tp+fn], accuracy_fraction=[tp+tn,tp+fn+fp+tn])
+        actual = confusion_metrics(x)
+        for variant in example.get('variants', []):
+            equal(confusion_metrics(variant['input']), variant['expected'], 'eval prevalence variant')
     else:
         raise AssertionError(f'unknown example {name}')
     equal(actual, example['expected'], example['id'])
@@ -509,6 +571,7 @@ def properties():
                 rows, selected = knapsack(items, budget)
                 equal(rows[-1][-1], brute_value(items, budget), 'DP vs all subsets')
                 require(sum(i['cost'] for i in items if i['id'] in selected) <= budget, 'reconstruction cost')
+                equal(sum(i['value'] for i in items if i['id'] in selected), rows[-1][-1], 'reconstruction value')
                 count += 1
     counts['knapsack_oracle'] = count
     # Every undirected graph on four vertices: union-find vs explicit reachability.

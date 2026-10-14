@@ -2,7 +2,7 @@
 
 ## 交付范围与当前状态
 
-2026-10-14。交付分支 `cloud/saas-engineering-atlas-20261014`，整合起点 `ae1827f34c6df067348d2454d7e5c9331ceda25d`。六个固定案例提交、foundations 与 enterprise-mechanisms 最终提交均已合并。当前是完整整合稿的复核冻结点，独立技术与全书教学审阅尚未完成，不能作为最终验收结论。原始架构检查点记录见 [baseline](saas-engineering-atlas-20261014-baseline.md)。
+2026-10-14。交付分支 `cloud/saas-engineering-atlas-20261014`，整合起点 `ae1827f34c6df067348d2454d7e5c9331ceda25d`。六个固定案例提交、foundations 与 enterprise-mechanisms 最终提交均已合并。当前已接收案例与基础章的两份独立技术复核，14项问题均完成定点修复并通过回归；修复后独立复查与全书教学审阅仍待后续，不能作为最终验收结论。原始架构检查点记录见 [baseline](saas-engineering-atlas-20261014-baseline.md)。
 
 教材唯一正文在 [Books / SaaS 工程全景](../../books/saas-engineering/README.md)。Vault 保留结构、证据、合成脚本与作者历史。整合已建立共同开篇、4章企业机制、12章计算方法主线、七个业务问题、三条阅读路径、题型/解法/算法/栈索引、共同语义与 typed transfer 图；没有 HTML、main merge、CI 或部署。
 
@@ -27,20 +27,20 @@
 
 来源数量以 [整合检查脚本](../../scripts/validate_saas_atlas_integration.py)实际输出为准：案例来源整合为 146 canonical URL、150 原 ID、162 条包内 reviews；另有三个直接读取的编订流程来源。295 条案例及基线主张保留原范围，编订流程另有三条，不为 URL 去重合并各 claim 限制。基础种子、包内新增、当前可变 URL、固定版本及失败记录均有身份。
 
-两部分加入后，统一目录为205 canonical URL、210原 source ID、222 reviews、386 claims；按 `evidence_kind` 为221 source_fact、136 synthetic、29 inference。Foundations有40个来源，enterprise有17个；原 source/claim/review 身份和范围全部保留。Foundations 的原 `kind` 另以明确映射供统一筛选，不改写原证据字段。
+两部分加入及复核修订后，统一目录为209 canonical URL、215原 source ID、227 reviews、396 claims；按 `evidence_kind` 为226 source_fact、141 synthetic、29 inference。Foundations有40个来源，enterprise有17个；原 source/claim/review 身份和范围全部保留。Foundations 的原 `kind` 另以明确映射供统一筛选，不改写原证据字段。
 
 | 执行动作 | 本轮实际结果与边界 |
 |---|---|
-| 所有已交付 Python 入口 | 19个入口通过：六包15个，foundations2个，enterprise行为与内容验证2个 |
+| 所有已交付 Python 入口 | 20个入口通过：六包15个，foundations2个，enterprise行为与内容验证2个，复核修复回归1个 |
 | Foundations复跑 | 12章、18组样例、33案例与8算法家族覆盖；18,462组小输入/场景对照通过，18个损坏期望值被拒绝 |
-| 合成检查分母 | P01 18；P02 77；P03 71；P04 53；P05 16；P06 34，合计 269；类型含 unittest、断言、有限枚举和本地 SQLite，不折算生产覆盖率 |
+| 合成检查分母 | P01 18；P02 79；P03 71；P04 53；P05 16；P06 34，合计 271；类型含 unittest、断言、有限枚举和本地 SQLite，不折算生产覆盖率 |
 | Enterprise复跑 | 4章、2工作链、14变式、33案例连接、17来源/17reviews/27claims通过；37个unittest方法通过（含新增回归），两条工作链均使用fake和本机HTTP适配器，SQLite双连接竞争与持久化重开已执行 |
 | Atlas 结构校验 | 通过；8 个损坏副本被拒绝 |
 | 整合校验 | 通过；6 个迁移图损坏副本被拒绝，检查别名、主张保留、导航与全案例连接 |
-| Registry 重建与仓库校验 | 通过；Books 已加入仓库维护范围；当前 1,831 Markdown、470 JSON、1,105 snapshot 检查通过 |
+| Registry 重建与仓库校验 | 通过；Books 已加入仓库维护范围；当前 1,844 Markdown、482 JSON、1,105 snapshot 检查通过 |
 | 白名单与公开面 | 只检查本任务增量；不对历史仓库已存内容作新的披露判断 |
 
-机器命令与原始输出另见 [执行回执](saas-engineering-atlas-20261014-checks.json)。375 条案例验收定义与 269 条已运行合成检查分别计数；没有将 AI 留出集设计或浏览器 E2E 表格当成执行结果。Enterprise的本地工作链闭环与loopback HTTP确实执行，但没有连接外部provider。
+机器命令与原始输出另见 [执行回执](saas-engineering-atlas-20261014-checks.json)。375 条案例验收定义与 271 条已运行合成检查分别计数；没有将 AI 留出集设计或浏览器 E2E 表格当成执行结果。Enterprise的本地工作链闭环与loopback HTTP确实执行，但没有连接外部provider。
 
 ## 人工阅读与复算
 
@@ -64,7 +64,7 @@
 - 真实 provider/sandbox、浏览器 E2E、生产数据库隔离、负载、AI eval、专业法域政策与现场制度均未执行或裁定。部分脚本执行了SQLite，enterprise还实际运行loopback HTTP、两个SQLite连接的竞争和关闭重开；不能误写成完全未运行数据库或网络。
 - 公开来源全文未快照；ACORD、DICOM overview、部分 SAP/标准门户和动态 API 文本缺口保留在 reviews。一个替代官方页面成功不消除原入口失败。
 - 缩写首用与独立标签按 [术语回执](saas-engineering-atlas-terminology-review.json)复核：保留原语言、产品名和代码身份，中文解释仅进入编订层。
-- Foundations 最终提交已接收且移入 Books；其首次导航检查发现旧 Vault learning-path 链接，随章节迁移修复，覆盖验证器改为解析 curriculum.reader_root，未放松12章/33案例/8算法/40来源的检查。Enterprise最终提交也已接收，8页教学正文迁入Books。其内容验证仍检查4章/33案例/17来源；原作者写入范围改为检查固定author SHA，读者引用按章验证公共URL、claim与来源映射。完整稿等待两类独立审阅。
+- Foundations 最终提交已接收且移入 Books；其首次导航检查发现旧 Vault learning-path 链接，随章节迁移修复，覆盖验证器改为解析 curriculum.reader_root，未放松12章/33案例/8算法/40来源的检查。Enterprise最终提交也已接收，8页教学正文迁入Books。其内容验证仍检查4章/33案例/17来源；原作者写入范围改为检查固定author SHA，读者引用按章验证公共URL、claim与来源映射。两份独立技术复核已导入；修复后复查与全书教学审阅待后续。
 
 ## 读者正文的编订
 
@@ -76,4 +76,14 @@
 
 整合者发现 `OperationJournal.dispatch` 的迟到异常会无条件写入unknown：若另一个核对者已经保存applied，确认可能被覆盖。先增加确定性交错回归，UnknownResult、ContractError、RuleError三个子情形均失败；再用事务内条件更新，仅允许sending→unknown，已有外部证据保持。原36个方法与新增1个方法共37个全部通过。回归位于企业机制的 `test_late_send_failure_preserves_concurrent_confirmation`，不是生产并发穷尽证明。
 
-Enterprise原始 `verification.md` 与 `validation-results.json` 保留作者36项结果；本轮37项及完整命令输出以本页和统一执行回执为准。独立审阅修复将另记，不把这次整合者自查冒充独立终审。
+Enterprise原始 `verification.md` 与 `validation-results.json` 保留作者36项结果；本轮37项及完整命令输出以本页和统一执行回执为准。后续独立技术复核的修复记录见下节；整合者修复不冒充独立终审。
+
+## 独立技术复核与定点修复
+
+从案例复核 `5c5f7098561d4d87403986d6c3edf58cde20a5e7`、基础章复核 `b97d728bd2a2abe4687203592ac1341242f07333` 仅导入各自的 review 目录，13个原文件逐字节比对一致，未合并它们的其他分支内容。两份原脚本在各自冻结输入的临时隔离目录复跑，历史数值与已发现缺陷均复现；这些脚本不是修复后通过标准。[历史复现记录](../reviews/saas-atlas-repairs-20261014/historical-reproduction.json)与[逐项处置](../reviews/saas-atlas-repairs-20261014/dispositions.json)分别保留。
+
+IR-01–08修复两个身份冲突 guard、计费输入域、返聘旧任务派发验证、空引用、FHIR版本、残留标点和GiST前提。R1–R6修复恢复轨迹的实际数据库观察、缓存变式计数、helper复杂度、输入条件、B-tree平衡与占用解释，以及稀少阳性评估变式。原示例推导、33例身份、provider名称与8份作者原始evidence均保留。7个旧Vault路径仅为原审阅的历史导航记录，不含第二份教材正文。
+
+新增回归入口的15个unittest方法通过，包含12,288个三节点有向图/起点组合与独立简单路径枚举的比较，以及3个必须失败的恢复实现变异。H04另增加2个实际假目标派发/核对方法，纳入P02的79项。基础章原18,462组对照与18个损坏期望值检查继续通过；它们和新回归分母分别报告，不把数量相加为覆盖率。精确结果见[修复回归](../reviews/saas-atlas-repairs-20261014/regression-results.json)。
+
+重新打开三份FHIR R5资源页及PostgreSQL18范围约束、GiST名称定义页，仅新增所读范围和主张；先前source ID、URL和失败记录不改写。规范化结果见[修订证据](../../vault/provenance/saas-engineering-atlas/repair-evidence.json)。没有执行PostgreSQL DDL，也没有由文档阅读推断真实医疗或订房流程通过。当前14项状态为fixed-pending-independent-recheck；整本教学连贯性复核仍由独立流程完成。

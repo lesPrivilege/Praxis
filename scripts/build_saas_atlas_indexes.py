@@ -28,8 +28,9 @@ def evidence_inputs():
         path = ATLAS / section / 'evidence.json'
         if path.is_file():
             paths.append(path)
-    if (PROV / 'editorial-evidence.json').is_file():
-        paths.append(PROV / 'editorial-evidence.json')
+    for name in ['editorial-evidence.json', 'repair-evidence.json']:
+        if (PROV / name).is_file():
+            paths.append(PROV / name)
     return paths
 
 def evidence_kind(claim):
@@ -133,7 +134,7 @@ def build():
     catalog = {**seed, 'origin': 'integrated-public-source-reviews', 'sources': sources,
                'generation': 'scripts/build_saas_atlas_indexes.py; edit source-owned inputs, not this projection'}
     history = {
-        'contract_version': '1.0', 'scope': 'Author reading records preserved verbatim; integration did not re-browse.',
+        'contract_version': '1.0', 'scope': 'Original author reading records preserved verbatim; scoped integration rereads are separate evidence inputs.',
         'canonicalization': 'Exact canonical URL; preserve explicit version paths and page scope. Redirects require recorded evidence.',
         'redirect_decisions': [{'source_id': k, 'canonical_url': v[0], 'basis': v[1]} for k, v in redirects.items()],
         'source_records': [{'source_id': s['id'], 'canonical_source_id': aliases[s['id']],

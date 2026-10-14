@@ -24,7 +24,14 @@ def deduplicate(rows):
     result = {}
     for row in rows:
         key = (row['tenant'], row['connection'], row['event'])
-        result.setdefault(key, row)
+        # Arrival metadata may differ; immutable event content may not.
+        content = {k: v for k, v in row.items() if k not in {'received', 'received_at'}}
+        if key in result:
+            prior = {k: v for k, v in result[key].items() if k not in {'received', 'received_at'}}
+            if prior != content:
+                raise ValueError('quarantine: same event identity has conflicting content')
+        else:
+            result[key] = row
     return list(result.values())
 
 
@@ -46,6 +53,7 @@ def windows(rows, width=10):
 
 
 def score(rows):
+    rows = deduplicate(rows)
     if not rows:
         raise ValueError('empty incident')
     families = len({row['family'] for row in rows})

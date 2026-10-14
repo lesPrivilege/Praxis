@@ -1,0 +1,108 @@
+{
+  "date": "2026-10-14",
+  "repair_base_sha": "cd8d77b6166a6fc566f6aa09b4d9af3e11537408",
+  "status": "pass",
+  "commands": [
+    {
+      "command": [
+        "python3",
+        "scripts/build_saas_atlas_indexes.py",
+        "--check"
+      ],
+      "exit_code": 0,
+      "stdout": "{\n  \"status\": \"pass\",\n  \"stale\": []\n}\n\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/validate_saas_atlas.py",
+        "--self-test"
+      ],
+      "exit_code": 0,
+      "stdout": "{\n  \"status\": \"pass\",\n  \"cases\": 33,\n  \"packages\": 6,\n  \"sources\": 209,\n  \"structured_examples\": 34,\n  \"negative_self_tests\": 8,\n  \"errors\": [],\n  \"scope\": \"structural validation only; no provider, demo, factual, performance or end-to-end execution\"\n}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/validate_saas_atlas_integration.py",
+        "--self-test"
+      ],
+      "exit_code": 0,
+      "stdout": "{\n  \"status\": \"pass\",\n  \"case_count\": 33,\n  \"case_nodes\": 765,\n  \"case_edges\": 1376,\n  \"lifecycles\": 215,\n  \"defined_checks\": 375,\n  \"canonical_sources\": 209,\n  \"source_identities\": 215,\n  \"source_reviews\": 227,\n  \"claims\": 396,\n  \"claim_kinds\": {\n    \"source_fact\": 226,\n    \"synthetic\": 141,\n    \"inference\": 29\n  },\n  \"transfers\": 42,\n  \"proposals\": 92,\n  \"negative_self_tests\": 6,\n  \"errors\": [],\n  \"scope\": \"structure, navigation and evidence preservation; no provider, browser, load or AI execution\"\n}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/validate_repository.py"
+      ],
+      "exit_code": 0,
+      "stdout": "{\n  \"counts\": {\n    \"markdown\": 1844,\n    \"json\": 482,\n    \"snapshots\": 1105,\n    \"distilled_messages\": 127,\n    \"source_records\": 1163,\n    \"citation_mappings\": 229,\n    \"generated_source_cards\": 620\n  },\n  \"errors\": [],\n  \"status\": \"pass\"\n}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "original_author_evidence_sha256": {
+    "vault/distilled/saas-engineering-atlas/packages/commerce-property/evidence.json": "50f79ecfff73ef5018b5de23caf15e5f6364a22520370e6e7131f8667802af89",
+    "vault/distilled/saas-engineering-atlas/packages/commercial-finance/evidence.json": "c10c92c794087c7f5a2426fc9960d0d777963738fda34ffa57fc913646b737f0",
+    "vault/distilled/saas-engineering-atlas/packages/data-ai-control/evidence.json": "f6c9bf742d931886c4f6720ce0ca49650818377d1a0ad172fb039d1bb6c5087d",
+    "vault/distilled/saas-engineering-atlas/packages/health-science/evidence.json": "57dfd01d87e8bd551b037a3a17d14263d38d65a66a4f94284d00e303a8a6f6db",
+    "vault/distilled/saas-engineering-atlas/packages/industry-networks/evidence.json": "9463fc4f662d77b9de4f6839ddf44d919362185b6e72aa8235f69e4da6dbef05",
+    "vault/distilled/saas-engineering-atlas/packages/people-service/evidence.json": "ef8debd9141cbfb39ee100f77ee334059fb32f8bcef7caa0c94a4ca53750dd30",
+    "vault/distilled/saas-engineering-atlas/foundations/evidence.json": "a844681631076947ad01bc51efb06b173ef42f7e5acf679ec89a50719a30190f",
+    "vault/distilled/saas-engineering-atlas/enterprise-mechanisms/evidence.json": "60e4d2b65134f2e96b10b9222a945cd78551f28ab6c4170f0861aa2fb6a0efc2"
+  },
+  "public_delta_check": {
+    "scope": "readable added/modified paths since integration start plus untracked deliverables; historical unchanged repository content not rescanned",
+    "paths_scanned": 244,
+    "patterns": [
+      "private_chat_url",
+      "signed_url",
+      "credential_shape",
+      "private_key",
+      "library_transfer"
+    ],
+    "hits": [],
+    "limit": "heuristic disclosure scan plus manual review of repair/source additions; not a credential detector guarantee"
+  },
+  "all_executable_checks": {
+    "receipt": "docs/verification/saas-engineering-atlas-20261014-checks.json",
+    "entry_points": 20,
+    "status": "pass",
+    "repair_suite_methods": 15,
+    "h04_added_methods": 2,
+    "foundation_finite_inputs": 18462,
+    "repair_graph_source_cases": 12288,
+    "foundation_bad_expected_controls": 18,
+    "recovery_implementation_mutants_rejected": 3,
+    "enterprise_methods": 37
+  },
+  "coverage": {
+    "cases": 33,
+    "enterprise_chapters": 4,
+    "foundation_chapters": 12,
+    "case_nodes": 765,
+    "case_edges": 1376,
+    "case_lifecycles": 215,
+    "case_defined_checks": 375,
+    "typed_transfers": 42,
+    "retained_transfer_proposals": 92,
+    "source_urls": 209,
+    "source_identities": 215,
+    "source_reviews": 227,
+    "claims": 396,
+    "case_synthetic_check_units": 271
+  },
+  "remaining": "Independent recheck of these repairs and whole-book pedagogical/editorial review; no current implementation/test blocker. No main merge, CI, deployment, HTML or external provider/model/browser/load execution."
+}

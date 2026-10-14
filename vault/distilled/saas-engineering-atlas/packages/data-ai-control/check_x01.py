@@ -14,13 +14,20 @@ class Ledger:
         self.db = sqlite3.connect(path)
         self.db.execute('''CREATE TABLE IF NOT EXISTS usage (
             tenant TEXT, run TEXT, meter TEXT, revision INTEGER,
-            units INTEGER CHECK(units >= 0), eligible INTEGER, event_time INTEGER,
+            units INTEGER NOT NULL CHECK(typeof(units)='integer' AND units >= 0),
+            eligible INTEGER NOT NULL CHECK(typeof(eligible)='integer' AND eligible IN (0,1)), event_time INTEGER,
             PRIMARY KEY(tenant, run, meter, revision))''')
         self.db.execute('''CREATE TABLE IF NOT EXISTS conflicts (
             tenant TEXT, run TEXT, meter TEXT, revision INTEGER,
             observed_payload TEXT, PRIMARY KEY(tenant, run, meter, revision))''')
 
     def record(self, tenant, run, units, eligible, event_time, revision=1):
+        if type(eligible) not in (bool, int) or eligible not in (0, 1):
+            raise ValueError('eligible must be boolean or integer 0/1')
+        if type(units) is not int or not 0 <= units <= 2**63 - 1:
+            raise ValueError('units must be a nonnegative 64-bit integer')
+        if type(revision) is not int or revision < 1 or type(event_time) is not int:
+            raise ValueError('revision and event_time must be integer coordinates')
         row = (tenant, run, 'work', revision, units, int(eligible), event_time)
         conflict = False
         with self.db:
@@ -181,7 +188,7 @@ class Invariants(unittest.TestCase):
         self.assertEqual(self.ledger.totals('A', 10, 20)[1], 1000)
 
     def test_negative_usage_is_rejected(self):
-        with self.assertRaises(sqlite3.IntegrityError):
+        with self.assertRaises(ValueError):
             self.ledger.record('A', 'a', -1, True, 0)
 
     def test_both_serialized_admission_orders(self):
