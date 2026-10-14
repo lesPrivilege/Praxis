@@ -1,0 +1,885 @@
+{
+  "schema_version": "1.0-local",
+  "namespace": "FDN",
+  "synthetic": true,
+  "scope": "教学输入、状态步与期望值；无布局、坐标、动效或 UI 指定",
+  "examples": [
+    {
+      "id": "FDN:example:order",
+      "chapter": "01-problems-and-objects.md",
+      "case_ids": [
+        "H01",
+        "V04",
+        "V20"
+      ],
+      "input": {
+        "ordered": 3,
+        "unit_price": 40,
+        "delivered": 2,
+        "pending": 1,
+        "cancelled": 0
+      },
+      "trace": [
+        {
+          "action": "cancel_pending",
+          "delivered": 2,
+          "pending": 0,
+          "cancelled": 1,
+          "refund_due": 40,
+          "refund_confirmed": 0
+        }
+      ],
+      "expected": {
+        "quantity_total": 3,
+        "refund_due": 40
+      },
+      "invariant": "delivered + pending + cancelled = ordered；refund_due 与 confirmed 分开"
+    },
+    {
+      "id": "FDN:example:lookup",
+      "chapter": "02-lookup-and-indexes.md",
+      "case_ids": [
+        "H01",
+        "V03",
+        "X01"
+      ],
+      "input": {
+        "keys": [
+          [
+            "A",
+            "O7"
+          ],
+          [
+            "A",
+            "O9"
+          ],
+          [
+            "B",
+            "O7"
+          ]
+        ],
+        "teaching_buckets": [
+          2,
+          2,
+          5
+        ],
+        "sorted_days": [
+          2,
+          5,
+          8,
+          12,
+          17
+        ],
+        "threshold": 9,
+        "trie_words": [
+          "car",
+          "cart",
+          "cat",
+          "dog"
+        ],
+        "prefix": "ca",
+        "btree": {
+          "keys": [
+            10,
+            20
+          ],
+          "children": [
+            {
+              "keys": [
+                2,
+                5
+              ]
+            },
+            {
+              "keys": [
+                12,
+                17
+              ]
+            },
+            {
+              "keys": [
+                23,
+                29
+              ]
+            }
+          ]
+        },
+        "btree_target": 17,
+        "btree_range": [
+          12,
+          24
+        ]
+      },
+      "expected": {
+        "lower_bound_value": 12,
+        "prefix_matches": [
+          "car",
+          "cart",
+          "cat"
+        ],
+        "btree_visited": [
+          [
+            10,
+            20
+          ],
+          [
+            12,
+            17
+          ]
+        ],
+        "btree_range_values": [
+          12,
+          17,
+          20,
+          23
+        ]
+      },
+      "invariant": "完整 key 相等才为同对象；查找索引不能扩大授权范围"
+    },
+    {
+      "id": "FDN:example:top-k",
+      "chapter": "03-order-and-intervals.md",
+      "case_ids": [
+        "H03",
+        "H06"
+      ],
+      "input": {
+        "records": [
+          [
+            "A",
+            70
+          ],
+          [
+            "B",
+            20
+          ],
+          [
+            "C",
+            70
+          ],
+          [
+            "D",
+            50
+          ],
+          [
+            "E",
+            90
+          ]
+        ],
+        "k": 2,
+        "order": "score DESC, id ASC"
+      },
+      "expected": {
+        "sorted_ids": [
+          "E",
+          "A",
+          "C",
+          "D",
+          "B"
+        ],
+        "top_ids": [
+          "E",
+          "A"
+        ]
+      },
+      "invariant": "保留多重集；Top-K 与相同规则全排序前 k 项相同"
+    },
+    {
+      "id": "FDN:example:two-pointers",
+      "chapter": "03-order-and-intervals.md",
+      "case_ids": [
+        "H03",
+        "X02"
+      ],
+      "input": {
+        "amounts": [
+          1,
+          3,
+          4,
+          7,
+          9
+        ],
+        "target": 11
+      },
+      "trace": [
+        [
+          1,
+          9,
+          10
+        ],
+        [
+          3,
+          9,
+          12
+        ],
+        [
+          3,
+          7,
+          10
+        ],
+        [
+          4,
+          7,
+          11
+        ]
+      ],
+      "expected": {
+        "pair": [
+          4,
+          7
+        ]
+      },
+      "invariant": "两笔必须来自不同记录；金额匹配仅产生候选"
+    },
+    {
+      "id": "FDN:example:intervals",
+      "chapter": "03-order-and-intervals.md",
+      "case_ids": [
+        "V11",
+        "V19"
+      ],
+      "input": {
+        "values": [
+          2,
+          1,
+          3,
+          0,
+          4
+        ],
+        "width": 3,
+        "range": [
+          1,
+          4
+        ]
+      },
+      "expected": {
+        "prefix": [
+          0,
+          2,
+          3,
+          6,
+          6,
+          10
+        ],
+        "rolling": [
+          6,
+          4,
+          7
+        ],
+        "range_sum": 4
+      },
+      "variants": [
+        {
+          "values": [
+            6,
+            -3,
+            2
+          ],
+          "budget": 5,
+          "expected_longest_length": 3,
+          "invalid_method": "非负前提下的超额立即缩左窗口"
+        }
+      ],
+      "invariant": "sum[a,c) = sum[a,b) + sum[b,c)"
+    },
+    {
+      "id": "FDN:example:graph",
+      "chapter": "04-graphs-and-connectivity.md",
+      "case_ids": [
+        "H07",
+        "V08"
+      ],
+      "input": {
+        "nodes": [
+          "A",
+          "B",
+          "C",
+          "D",
+          "E"
+        ],
+        "edges": [
+          [
+            "A",
+            "B"
+          ],
+          [
+            "A",
+            "C"
+          ],
+          [
+            "B",
+            "D"
+          ],
+          [
+            "C",
+            "D"
+          ],
+          [
+            "D",
+            "E"
+          ]
+        ],
+        "start": "A"
+      },
+      "expected": {
+        "bfs_layers": [
+          [
+            "A"
+          ],
+          [
+            "B",
+            "C"
+          ],
+          [
+            "D"
+          ],
+          [
+            "E"
+          ]
+        ],
+        "dfs_preorder": [
+          "A",
+          "B",
+          "D",
+          "E",
+          "C"
+        ]
+      },
+      "variants": [
+        {
+          "added_edge": [
+            "E",
+            "B"
+          ],
+          "cycle": [
+            "B",
+            "D",
+            "E",
+            "B"
+          ]
+        }
+      ],
+      "invariant": "计算边为前提→受影响对象；不改公共 depends_on 的语义方向"
+    },
+    {
+      "id": "FDN:example:shortest-path",
+      "chapter": "04-graphs-and-connectivity.md",
+      "case_ids": [
+        "V21"
+      ],
+      "input": {
+        "edges": [
+          [
+            "A",
+            "B",
+            4
+          ],
+          [
+            "A",
+            "C",
+            1
+          ],
+          [
+            "C",
+            "B",
+            2
+          ],
+          [
+            "B",
+            "D",
+            1
+          ],
+          [
+            "C",
+            "D",
+            7
+          ]
+        ],
+        "start": "A"
+      },
+      "expected": {
+        "distances": {
+          "A": 0,
+          "B": 3,
+          "C": 1,
+          "D": 4
+        },
+        "path": [
+          "A",
+          "C",
+          "B",
+          "D"
+        ]
+      },
+      "invariant": "本例权重为非负分钟"
+    },
+    {
+      "id": "FDN:example:union-find",
+      "chapter": "04-graphs-and-connectivity.md",
+      "case_ids": [
+        "V22"
+      ],
+      "input": {
+        "nodes": [
+          "A",
+          "B",
+          "C",
+          "D"
+        ],
+        "unions": [
+          [
+            "A",
+            "B"
+          ],
+          [
+            "C",
+            "D"
+          ],
+          [
+            "B",
+            "C"
+          ]
+        ]
+      },
+      "expected": {
+        "component_counts": [
+          4,
+          3,
+          2,
+          1
+        ]
+      },
+      "invariant": "仅无向增量连通；不支持直接删除连接或推出权限"
+    },
+    {
+      "id": "FDN:example:dag",
+      "chapter": "05-dependencies-and-queues.md",
+      "case_ids": [
+        "H09",
+        "V09",
+        "V20"
+      ],
+      "input": {
+        "durations": {
+          "A": 2,
+          "B": 3,
+          "C": 4,
+          "D": 1
+        },
+        "predecessors": {
+          "A": [],
+          "B": [
+            "A"
+          ],
+          "C": [
+            "A"
+          ],
+          "D": [
+            "B",
+            "C"
+          ]
+        }
+      },
+      "expected": {
+        "earliest_finish": {
+          "A": 2,
+          "B": 5,
+          "C": 6,
+          "D": 7
+        },
+        "one_shared_worker_finish": 10
+      },
+      "invariant": "全部前提完成才就绪；资源约束另算"
+    },
+    {
+      "id": "FDN:example:optimization",
+      "chapter": "06-choices-and-optimization.md",
+      "case_ids": [
+        "V07",
+        "V19",
+        "V21"
+      ],
+      "input": {
+        "items": [
+          {
+            "id": "A",
+            "cost": 2,
+            "value": 3
+          },
+          {
+            "id": "B",
+            "cost": 3,
+            "value": 4
+          },
+          {
+            "id": "C",
+            "cost": 4,
+            "value": 5
+          }
+        ],
+        "budget": 5
+      },
+      "expected": {
+        "value": 7,
+        "selected": [
+          "A",
+          "B"
+        ],
+        "dp_rows": [
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            3,
+            3,
+            3,
+            3
+          ],
+          [
+            0,
+            0,
+            3,
+            4,
+            4,
+            7
+          ],
+          [
+            0,
+            0,
+            3,
+            4,
+            5,
+            7
+          ]
+        ],
+        "branch_c_upper_bound": 6.5
+      },
+      "invariant": "每件至多一次；界须乐观且有效"
+    },
+    {
+      "id": "FDN:example:greedy",
+      "chapter": "06-choices-and-optimization.md",
+      "case_ids": [
+        "V20"
+      ],
+      "input": {
+        "intervals": [
+          [
+            "A",
+            0,
+            3
+          ],
+          [
+            "B",
+            2,
+            4
+          ],
+          [
+            "C",
+            3,
+            5
+          ],
+          [
+            "D",
+            5,
+            7
+          ]
+        ]
+      },
+      "expected": {
+        "max_count_ids": [
+          "A",
+          "C",
+          "D"
+        ]
+      },
+      "variants": [
+        {
+          "values": {
+            "A": 1,
+            "B": 100,
+            "C": 1,
+            "D": 1
+          },
+          "best_ids": [
+            "B",
+            "D"
+          ],
+          "best_value": 101
+        }
+      ],
+      "invariant": "最早结束策略仅在此等价值最大数量题有保证"
+    },
+    {
+      "id": "FDN:example:backtracking",
+      "chapter": "06-choices-and-optimization.md",
+      "case_ids": [
+        "V19"
+      ],
+      "input": {
+        "eligible": {
+          "J1": [
+            "甲",
+            "乙"
+          ],
+          "J2": [
+            "甲"
+          ]
+        }
+      },
+      "trace": [
+        {
+          "assign": {
+            "J1": "甲"
+          },
+          "remaining_J2": []
+        },
+        {
+          "backtrack": "J1"
+        },
+        {
+          "assign": {
+            "J1": "乙",
+            "J2": "甲"
+          }
+        }
+      ],
+      "expected": {
+        "assignment": {
+          "J1": "乙",
+          "J2": "甲"
+        }
+      },
+      "invariant": "同一时段每人至多承担一项"
+    },
+    {
+      "id": "FDN:example:caches",
+      "chapter": "07-reuse-and-invalidation.md",
+      "case_ids": [
+        "H07",
+        "H09",
+        "X01"
+      ],
+      "input": {
+        "capacity": 2,
+        "requests": [
+          "A",
+          "A",
+          "B",
+          "A",
+          "C",
+          "B"
+        ],
+        "lfu_tie_rule": "LRU",
+        "lfu_count_scope": "驻留期间"
+      },
+      "expected": {
+        "lru_keys_old_to_new": [
+          "C",
+          "B"
+        ],
+        "lfu_keys": [
+          "A",
+          "B"
+        ],
+        "hits": 2,
+        "misses": 4
+      },
+      "invariant": "精确教学策略，不声称 Redis 淘汰顺序"
+    },
+    {
+      "id": "FDN:example:bloom",
+      "chapter": "08-approximation-and-search.md",
+      "case_ids": [
+        "V04",
+        "V12"
+      ],
+      "input": {
+        "m": 8,
+        "hash_positions": {
+          "A": [
+            1,
+            4
+          ],
+          "B": [
+            4,
+            6
+          ],
+          "C": [
+            1,
+            6
+          ],
+          "D": [
+            2,
+            6
+          ]
+        },
+        "inserted": [
+          "A",
+          "B"
+        ]
+      },
+      "expected": {
+        "set_bits": [
+          1,
+          4,
+          6
+        ],
+        "possibly_present_C": true,
+        "possibly_present_D": false
+      },
+      "invariant": "阳性必须精确核对；本例为固定合成 hash"
+    },
+    {
+      "id": "FDN:example:hll",
+      "chapter": "08-approximation-and-search.md",
+      "case_ids": [
+        "H07",
+        "X01"
+      ],
+      "input": {
+        "register_count": 4,
+        "hashes": [
+          "00|0011",
+          "00|0111",
+          "00|0011",
+          "10|0001"
+        ]
+      },
+      "expected": {
+        "registers": [
+          3,
+          0,
+          4,
+          0
+        ]
+      },
+      "invariant": "仅演示寄存器更新；不把四桶示意当作生产基数估计"
+    },
+    {
+      "id": "FDN:example:ann",
+      "chapter": "08-approximation-and-search.md",
+      "case_ids": [
+        "H06",
+        "V18"
+      ],
+      "input": {
+        "query": [
+          0,
+          0
+        ],
+        "vectors": {
+          "A": [
+            1,
+            0
+          ],
+          "B": [
+            0,
+            2
+          ],
+          "C": [
+            3,
+            0
+          ],
+          "D": [
+            4,
+            0
+          ]
+        },
+        "candidate_ids": [
+          "A",
+          "C",
+          "D"
+        ],
+        "k": 2
+      },
+      "expected": {
+        "exact_top": [
+          "A",
+          "B"
+        ],
+        "approximate_top": [
+          "A",
+          "C"
+        ],
+        "recall": 0.5
+      },
+      "invariant": "候选过程是假设，未运行 ANN 索引"
+    },
+    {
+      "id": "FDN:example:recovery",
+      "chapter": "09-from-ui-to-recovery.md",
+      "case_ids": [
+        "V04",
+        "V12"
+      ],
+      "input": {
+        "operation": "OP7",
+        "tenant": "A",
+        "object": "S3",
+        "expected_version": 2,
+        "refund_amount": 40
+      },
+      "trace": [
+        {
+          "step": "local_commit",
+          "object_version": 3,
+          "operation_state": "awaiting_external",
+          "outbox_exists": true
+        },
+        {
+          "step": "external_accept_response_lost",
+          "operation_state": "unknown"
+        },
+        {
+          "step": "reconcile_same_operation",
+          "operation_state": "confirmed",
+          "external_id": "R1",
+          "effect_count": 1
+        }
+      ],
+      "expected": {
+        "refund_total": 40,
+        "effect_count": 1
+      },
+      "invariant": "超时后核对原尝试，不生成新逻辑退款"
+    },
+    {
+      "id": "FDN:example:ai-eval",
+      "chapter": "10-verification-and-evals.md",
+      "case_ids": [
+        "H06",
+        "X01"
+      ],
+      "input": {
+        "tp": 18,
+        "fn": 2,
+        "fp": 4,
+        "tn": 16
+      },
+      "expected": {
+        "n": 40,
+        "precision_fraction": [
+          18,
+          22
+        ],
+        "recall_fraction": [
+          18,
+          20
+        ],
+        "accuracy_fraction": [
+          34,
+          40
+        ]
+      },
+      "invariant": "合成混淆矩阵；没有调用模型"
+    }
+  ]
+}
