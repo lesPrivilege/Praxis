@@ -1,0 +1,1065 @@
+{
+  "contract_version": "1.0",
+  "case_id": "V19",
+  "title": "专业服务怎样从配员走到收款",
+  "scope": "Synthetic engagement E1: two 4-hour tasks, two consultants; cap=10000, previously released=7000; approved lines=2000+1600, new release=3000, over_cap=600. Integer minor currency units, no tolerance, tax, FX, expenses, revenue recognition, refund or prepayment. Split-line billing is case policy.",
+  "synthetic": true,
+  "source_ids": [
+    "CERTINIA",
+    "CERTINIA_BILL",
+    "P02-SRC-certinia-approval",
+    "P02-SRC-certinia-budget-cap"
+  ],
+  "nodes": [
+    {
+      "id": "V19:actor:manager",
+      "type": "actor",
+      "label": "项目及资源经理",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + engagement; mapping additionally includes ledger account; staffing capacity includes person/day"
+    },
+    {
+      "id": "V19:actor:consultant",
+      "type": "actor",
+      "label": "顾问",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + engagement; mapping additionally includes ledger account; staffing capacity includes person/day"
+    },
+    {
+      "id": "V19:actor:approver",
+      "type": "actor",
+      "label": "工时审批人",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + engagement; mapping additionally includes ledger account; staffing capacity includes person/day"
+    },
+    {
+      "id": "V19:actor:billing",
+      "type": "actor",
+      "label": "开票与财务操作员",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + engagement; mapping additionally includes ledger account; staffing capacity includes person/day"
+    },
+    {
+      "id": "V19:ui:workbench",
+      "type": "ui",
+      "label": "排班、工时与计费工作台",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + engagement; mapping additionally includes ledger account; staffing capacity includes person/day"
+    },
+    {
+      "id": "V19:service:staffing",
+      "type": "service",
+      "label": "委托与排班服务",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + engagement; mapping additionally includes ledger account; staffing capacity includes person/day"
+    },
+    {
+      "id": "V19:service:time",
+      "type": "service",
+      "label": "工时与批准服务",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + engagement; mapping additionally includes ledger account; staffing capacity includes person/day"
+    },
+    {
+      "id": "V19:service:billing",
+      "type": "service",
+      "label": "限额与计费服务",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + engagement; mapping additionally includes ledger account; staffing capacity includes person/day"
+    },
+    {
+      "id": "V19:store:ledger",
+      "type": "store",
+      "label": "PostgreSQL业务记录与inbox/outbox",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + engagement; mapping additionally includes ledger account; staffing capacity includes person/day"
+    },
+    {
+      "id": "V19:external_system:accounting",
+      "type": "external_system",
+      "label": "合成账务系统",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + engagement; mapping additionally includes ledger account; staffing capacity includes person/day"
+    },
+    {
+      "id": "V19:event:accounting",
+      "type": "event",
+      "label": "发票与付款相关通知",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + engagement; mapping additionally includes ledger account; staffing capacity includes person/day"
+    },
+    {
+      "id": "V19:object:engagement",
+      "type": "object",
+      "label": "Engagement E1 and accepted contract version",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + engagement; mapping additionally includes ledger account; staffing capacity includes person/day"
+    },
+    {
+      "id": "V19:object:assignment",
+      "type": "object",
+      "label": "Assignment with person/day capacity",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + engagement; mapping additionally includes ledger account; staffing capacity includes person/day"
+    },
+    {
+      "id": "V19:object:timecard",
+      "type": "object",
+      "label": "Timecard T1/T2",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + engagement; mapping additionally includes ledger account; staffing capacity includes person/day"
+    },
+    {
+      "id": "V19:object:cap",
+      "type": "object",
+      "label": "Contract cap and reservations",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + engagement; mapping additionally includes ledger account; staffing capacity includes person/day"
+    },
+    {
+      "id": "V19:object:billing-event",
+      "type": "object",
+      "label": "Billing event B1",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + engagement; mapping additionally includes ledger account; staffing capacity includes person/day"
+    },
+    {
+      "id": "V19:object:invoice",
+      "type": "object",
+      "label": "Invoice I1 projection",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + engagement; mapping additionally includes ledger account; staffing capacity includes person/day"
+    },
+    {
+      "id": "V19:object:payment",
+      "type": "object",
+      "label": "Payment allocations",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + engagement; mapping additionally includes ledger account; staffing capacity includes person/day"
+    }
+  ],
+  "edges": [
+    {
+      "id": "V19:edge:manager-ui",
+      "type": "operates",
+      "from": "V19:actor:manager",
+      "to": "V19:ui:workbench",
+      "payload": "对应角色的数据和操作",
+      "timing": "sync",
+      "invariant": "服务端职责分离",
+      "failure": "越权拒绝，权限刷新",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V19:claim:workflow-policy"
+      ]
+    },
+    {
+      "id": "V19:edge:consultant-ui",
+      "type": "operates",
+      "from": "V19:actor:consultant",
+      "to": "V19:ui:workbench",
+      "payload": "对应角色的数据和操作",
+      "timing": "sync",
+      "invariant": "服务端职责分离",
+      "failure": "越权拒绝，权限刷新",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V19:claim:workflow-policy"
+      ]
+    },
+    {
+      "id": "V19:edge:approver-ui",
+      "type": "operates",
+      "from": "V19:actor:approver",
+      "to": "V19:ui:workbench",
+      "payload": "对应角色的数据和操作",
+      "timing": "sync",
+      "invariant": "服务端职责分离",
+      "failure": "越权拒绝，权限刷新",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V19:claim:workflow-policy"
+      ]
+    },
+    {
+      "id": "V19:edge:billing-ui",
+      "type": "operates",
+      "from": "V19:actor:billing",
+      "to": "V19:ui:workbench",
+      "payload": "对应角色的数据和操作",
+      "timing": "sync",
+      "invariant": "服务端职责分离",
+      "failure": "越权拒绝，权限刷新",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V19:claim:workflow-policy"
+      ]
+    },
+    {
+      "id": "V19:edge:staff-command",
+      "type": "commands",
+      "from": "V19:ui:workbench",
+      "to": "V19:service:staffing",
+      "payload": "person + task + date + hours + capacity version",
+      "timing": "sync",
+      "invariant": "技能、窗口、容量一起校验",
+      "failure": "冲突返回新容量与重算入口",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V19:claim:scheduling-policy"
+      ]
+    },
+    {
+      "id": "V19:edge:time-command",
+      "type": "commands",
+      "from": "V19:ui:workbench",
+      "to": "V19:service:time",
+      "payload": "timecard ID + version + hours + submit/approve",
+      "timing": "sync",
+      "invariant": "编辑、提交、批准按角色区分",
+      "failure": "旧版本不能覆盖已批准行",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V19:claim:workflow-policy"
+      ]
+    },
+    {
+      "id": "V19:edge:billing-command",
+      "type": "commands",
+      "from": "V19:ui:workbench",
+      "to": "V19:service:billing",
+      "payload": "候选行 + cap version + operation ID",
+      "timing": "sync",
+      "invariant": "审批、合同、源行可用余额核对",
+      "failure": "冲突重做预览，不静默超额",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V19:claim:cap-policy"
+      ]
+    },
+    {
+      "id": "V19:edge:owner-engagement",
+      "type": "owns",
+      "from": "V19:service:staffing",
+      "to": "V19:object:engagement",
+      "payload": "权威对象版本与决定依据",
+      "timing": "static",
+      "invariant": "指定单一事实权威",
+      "failure": "修订保留历史依据",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V19:claim:workflow-policy"
+      ]
+    },
+    {
+      "id": "V19:edge:owner-assignment",
+      "type": "owns",
+      "from": "V19:service:staffing",
+      "to": "V19:object:assignment",
+      "payload": "权威对象版本与决定依据",
+      "timing": "static",
+      "invariant": "指定单一事实权威",
+      "failure": "修订保留历史依据",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V19:claim:workflow-policy"
+      ]
+    },
+    {
+      "id": "V19:edge:owner-timecard",
+      "type": "owns",
+      "from": "V19:service:time",
+      "to": "V19:object:timecard",
+      "payload": "权威对象版本与决定依据",
+      "timing": "static",
+      "invariant": "指定单一事实权威",
+      "failure": "修订保留历史依据",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V19:claim:workflow-policy"
+      ]
+    },
+    {
+      "id": "V19:edge:owner-cap",
+      "type": "owns",
+      "from": "V19:service:billing",
+      "to": "V19:object:cap",
+      "payload": "权威对象版本与决定依据",
+      "timing": "static",
+      "invariant": "指定单一事实权威",
+      "failure": "修订保留历史依据",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V19:claim:workflow-policy"
+      ]
+    },
+    {
+      "id": "V19:edge:owner-billing-event",
+      "type": "owns",
+      "from": "V19:service:billing",
+      "to": "V19:object:billing-event",
+      "payload": "权威对象版本与决定依据",
+      "timing": "static",
+      "invariant": "指定单一事实权威",
+      "failure": "修订保留历史依据",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V19:claim:workflow-policy"
+      ]
+    },
+    {
+      "id": "V19:edge:owner-invoice",
+      "type": "owns",
+      "from": "V19:external_system:accounting",
+      "to": "V19:object:invoice",
+      "payload": "合成账务发票及实际付款分配",
+      "timing": "static",
+      "invariant": "本地只保留核对副本",
+      "failure": "通知迟到查询账务当前对象",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V19:claim:workflow-policy"
+      ]
+    },
+    {
+      "id": "V19:edge:owner-payment",
+      "type": "owns",
+      "from": "V19:external_system:accounting",
+      "to": "V19:object:payment",
+      "payload": "合成账务发票及实际付款分配",
+      "timing": "static",
+      "invariant": "本地只保留核对副本",
+      "failure": "通知迟到查询账务当前对象",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V19:claim:workflow-policy"
+      ]
+    },
+    {
+      "id": "V19:edge:store-engagement",
+      "type": "stores",
+      "from": "V19:store:ledger",
+      "to": "V19:object:engagement",
+      "payload": "版本、操作、映射及证据",
+      "timing": "sync",
+      "invariant": "tenant作用域与关系唯一键",
+      "failure": "恢复按明细重算与外部核对",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V19:claim:workflow-policy"
+      ]
+    },
+    {
+      "id": "V19:edge:store-assignment",
+      "type": "stores",
+      "from": "V19:store:ledger",
+      "to": "V19:object:assignment",
+      "payload": "版本、操作、映射及证据",
+      "timing": "sync",
+      "invariant": "tenant作用域与关系唯一键",
+      "failure": "恢复按明细重算与外部核对",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V19:claim:workflow-policy"
+      ]
+    },
+    {
+      "id": "V19:edge:store-timecard",
+      "type": "stores",
+      "from": "V19:store:ledger",
+      "to": "V19:object:timecard",
+      "payload": "版本、操作、映射及证据",
+      "timing": "sync",
+      "invariant": "tenant作用域与关系唯一键",
+      "failure": "恢复按明细重算与外部核对",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V19:claim:workflow-policy"
+      ]
+    },
+    {
+      "id": "V19:edge:store-cap",
+      "type": "stores",
+      "from": "V19:store:ledger",
+      "to": "V19:object:cap",
+      "payload": "版本、操作、映射及证据",
+      "timing": "sync",
+      "invariant": "tenant作用域与关系唯一键",
+      "failure": "恢复按明细重算与外部核对",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V19:claim:workflow-policy"
+      ]
+    },
+    {
+      "id": "V19:edge:store-billing-event",
+      "type": "stores",
+      "from": "V19:store:ledger",
+      "to": "V19:object:billing-event",
+      "payload": "版本、操作、映射及证据",
+      "timing": "sync",
+      "invariant": "tenant作用域与关系唯一键",
+      "failure": "恢复按明细重算与外部核对",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V19:claim:workflow-policy"
+      ]
+    },
+    {
+      "id": "V19:edge:store-invoice",
+      "type": "stores",
+      "from": "V19:store:ledger",
+      "to": "V19:object:invoice",
+      "payload": "版本、操作、映射及证据",
+      "timing": "sync",
+      "invariant": "tenant作用域与关系唯一键",
+      "failure": "恢复按明细重算与外部核对",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V19:claim:workflow-policy"
+      ]
+    },
+    {
+      "id": "V19:edge:store-payment",
+      "type": "stores",
+      "from": "V19:store:ledger",
+      "to": "V19:object:payment",
+      "payload": "版本、操作、映射及证据",
+      "timing": "sync",
+      "invariant": "tenant作用域与关系唯一键",
+      "failure": "恢复按明细重算与外部核对",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V19:claim:workflow-policy"
+      ]
+    },
+    {
+      "id": "V19:edge:assignment-engagement",
+      "type": "depends_on",
+      "from": "V19:object:assignment",
+      "to": "V19:object:engagement",
+      "payload": "生效范围与任务要求",
+      "timing": "static",
+      "invariant": "排班不证明工作已发生",
+      "failure": "范围变更重新校验资源",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V19:claim:scheduling-policy"
+      ]
+    },
+    {
+      "id": "V19:edge:time-assignment",
+      "type": "derived_from",
+      "from": "V19:object:timecard",
+      "to": "V19:object:assignment",
+      "payload": "人员、任务与申报偏差",
+      "timing": "static",
+      "invariant": "实际工时独立申报，不直接复制排班",
+      "failure": "超出排班显示差异等待解释",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V19:claim:workflow-policy"
+      ]
+    },
+    {
+      "id": "V19:edge:billing-time",
+      "type": "derived_from",
+      "from": "V19:object:billing-event",
+      "to": "V19:object:timecard",
+      "payload": "已批准可计费行、审批版本、剩余未分配金额",
+      "timing": "batch",
+      "invariant": "源明细不能重复分配",
+      "failure": "批准更正触发独立调整",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V19:claim:cap-policy"
+      ]
+    },
+    {
+      "id": "V19:edge:billing-cap",
+      "type": "depends_on",
+      "from": "V19:object:billing-event",
+      "to": "V19:object:cap",
+      "payload": "合同级跨版本账本、授权cap版本、已释放及所有有效预留",
+      "timing": "sync",
+      "invariant": "所有版本共享released+reserved<=当前有效cap；转移互斥；旧版本禁新预留",
+      "failure": "未知reserve跨版本保留；切换/扣额同合同级并发控制",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V19:claim:cap-policy"
+      ]
+    },
+    {
+      "id": "V19:edge:cap-contract",
+      "type": "derived_from",
+      "from": "V19:object:cap",
+      "to": "V19:object:engagement",
+      "payload": "客户接受的上限及适用期间",
+      "timing": "static",
+      "invariant": "新cap承接released及所有有效reserve，不重写历史且旧版本禁新增",
+      "failure": "切换与预留共享合同级锁；拒绝低于占用总额的新cap",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V19:claim:cap-policy"
+      ]
+    },
+    {
+      "id": "V19:edge:billing-read",
+      "type": "reads",
+      "from": "V19:service:billing",
+      "to": "V19:store:ledger",
+      "payload": "工时审批、cap及分配账本",
+      "timing": "sync",
+      "invariant": "release读取权威状态，不用报表缓存",
+      "failure": "冲突刷新或核对",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V19:claim:cap-policy"
+      ]
+    },
+    {
+      "id": "V19:edge:invoice-request",
+      "type": "requests",
+      "from": "V19:service:billing",
+      "to": "V19:external_system:accounting",
+      "payload": "B1 operation ID + account + frozen lines",
+      "timing": "async",
+      "invariant": "未知结果不得返还预留",
+      "failure": "先查相关键；不支持则人工核对",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V19:claim:workflow-policy"
+      ]
+    },
+    {
+      "id": "V19:edge:accounting-notify",
+      "type": "emits",
+      "from": "V19:external_system:accounting",
+      "to": "V19:event:accounting",
+      "payload": "invoice/payment reference + event identity",
+      "timing": "async",
+      "invariant": "通知只是核对触发器",
+      "failure": "认证失败隔离",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V19:claim:workflow-policy"
+      ]
+    },
+    {
+      "id": "V19:edge:inbox",
+      "type": "delivers",
+      "from": "V19:event:accounting",
+      "to": "V19:store:ledger",
+      "payload": "原始事件身份与接收证据",
+      "timing": "async",
+      "invariant": "持久化后确认接收",
+      "failure": "重复投递业务效果仍唯一",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V19:claim:workflow-policy"
+      ]
+    },
+    {
+      "id": "V19:edge:notify-worker",
+      "type": "delivers",
+      "from": "V19:event:accounting",
+      "to": "V19:service:billing",
+      "payload": "持久事件引用",
+      "timing": "async",
+      "invariant": "读取当前账务分配而非按到达顺序覆盖",
+      "failure": "迟到事件不倒退paid",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V19:claim:workflow-policy"
+      ]
+    },
+    {
+      "id": "V19:edge:reconcile",
+      "type": "reads",
+      "from": "V19:service:billing",
+      "to": "V19:external_system:accounting",
+      "payload": "tenant+ledger_account+operation/invoice ID",
+      "timing": "async",
+      "invariant": "核对外部结果后转reserve/release",
+      "failure": "未知保持预留并由财务接管",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V19:claim:workflow-policy"
+      ]
+    },
+    {
+      "id": "V19:edge:invoice-billing",
+      "type": "derived_from",
+      "from": "V19:object:invoice",
+      "to": "V19:object:billing-event",
+      "payload": "冻结金额、源行及合同版本",
+      "timing": "static",
+      "invariant": "发票不修改原始批准工时",
+      "failure": "错误票走更正流程",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V19:claim:workflow-policy"
+      ]
+    },
+    {
+      "id": "V19:edge:payment-invoice",
+      "type": "depends_on",
+      "from": "V19:object:payment",
+      "to": "V19:object:invoice",
+      "payload": "到账资金与发票分配关系",
+      "timing": "static",
+      "invariant": "收到款必须核对并分配",
+      "failure": "未匹配资金不能直接标paid",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V19:claim:workflow-policy"
+      ]
+    },
+    {
+      "id": "V19:edge:project-assignment",
+      "type": "projects",
+      "from": "V19:object:assignment",
+      "to": "V19:ui:workbench",
+      "payload": "状态、余额、异常及投影水位",
+      "timing": "async",
+      "invariant": "预测、已批准、已开票、已收分列",
+      "failure": "陈旧投影不能授权release",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V19:claim:workflow-policy"
+      ]
+    },
+    {
+      "id": "V19:edge:project-timecard",
+      "type": "projects",
+      "from": "V19:object:timecard",
+      "to": "V19:ui:workbench",
+      "payload": "状态、余额、异常及投影水位",
+      "timing": "async",
+      "invariant": "预测、已批准、已开票、已收分列",
+      "failure": "陈旧投影不能授权release",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V19:claim:workflow-policy"
+      ]
+    },
+    {
+      "id": "V19:edge:project-cap",
+      "type": "projects",
+      "from": "V19:object:cap",
+      "to": "V19:ui:workbench",
+      "payload": "状态、余额、异常及投影水位",
+      "timing": "async",
+      "invariant": "预测、已批准、已开票、已收分列",
+      "failure": "陈旧投影不能授权release",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V19:claim:workflow-policy"
+      ]
+    },
+    {
+      "id": "V19:edge:project-billing-event",
+      "type": "projects",
+      "from": "V19:object:billing-event",
+      "to": "V19:ui:workbench",
+      "payload": "状态、余额、异常及投影水位",
+      "timing": "async",
+      "invariant": "预测、已批准、已开票、已收分列",
+      "failure": "陈旧投影不能授权release",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V19:claim:workflow-policy"
+      ]
+    },
+    {
+      "id": "V19:edge:project-invoice",
+      "type": "projects",
+      "from": "V19:object:invoice",
+      "to": "V19:ui:workbench",
+      "payload": "状态、余额、异常及投影水位",
+      "timing": "async",
+      "invariant": "预测、已批准、已开票、已收分列",
+      "failure": "陈旧投影不能授权release",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V19:claim:workflow-policy"
+      ]
+    },
+    {
+      "id": "V19:edge:project-payment",
+      "type": "projects",
+      "from": "V19:object:payment",
+      "to": "V19:ui:workbench",
+      "payload": "状态、余额、异常及投影水位",
+      "timing": "async",
+      "invariant": "预测、已批准、已开票、已收分列",
+      "failure": "陈旧投影不能授权release",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V19:claim:workflow-policy"
+      ]
+    }
+  ],
+  "lifecycles": [
+    {
+      "object_id": "V19:object:engagement",
+      "states": [
+        "draft",
+        "accepted",
+        "active",
+        "closed"
+      ],
+      "transitions": [
+        {
+          "from": "draft",
+          "to": "accepted",
+          "trigger": "客户接受",
+          "guard": "范围、费率、cap版本明确",
+          "durable_effect": "保存接受证据",
+          "recovery": "变更需新授权"
+        },
+        {
+          "from": "accepted",
+          "to": "active",
+          "trigger": "启动交付",
+          "guard": "资源及任务责任建立",
+          "durable_effect": "启动记录",
+          "recovery": "排班未完成可保留缺口"
+        },
+        {
+          "from": "active",
+          "to": "closed",
+          "trigger": "负责人关闭交付",
+          "guard": "客户验收及剩余责任明确",
+          "durable_effect": "保存交付关闭",
+          "recovery": "未收款和超额队列仍独立"
+        }
+      ]
+    },
+    {
+      "object_id": "V19:object:assignment",
+      "states": [
+        "proposed",
+        "confirmed",
+        "completed",
+        "cancelled"
+      ],
+      "transitions": [
+        {
+          "from": "proposed",
+          "to": "confirmed",
+          "trigger": "经理确认",
+          "guard": "技能、日期与容量在事务内满足",
+          "durable_effect": "原子记录person/day占用",
+          "recovery": "竞争返回冲突"
+        },
+        {
+          "from": "confirmed",
+          "to": "completed",
+          "trigger": "任务执行确认",
+          "guard": "执行证据可核对",
+          "durable_effect": "保存完成",
+          "recovery": "不自动造工时或开票"
+        },
+        {
+          "from": "confirmed",
+          "to": "cancelled",
+          "trigger": "改期或取消",
+          "guard": "权限及历史引用确认",
+          "durable_effect": "释放未来占用，保留历史",
+          "recovery": "已发生工时不得删除"
+        }
+      ]
+    },
+    {
+      "object_id": "V19:object:timecard",
+      "states": [
+        "draft",
+        "submitted",
+        "approved",
+        "rejected",
+        "adjusted"
+      ],
+      "transitions": [
+        {
+          "from": "draft",
+          "to": "submitted",
+          "trigger": "顾问提交",
+          "guard": "合法日期、任务、小时及版本",
+          "durable_effect": "保存审批版本",
+          "recovery": "重复提交返回同版本"
+        },
+        {
+          "from": "submitted",
+          "to": "approved",
+          "trigger": "审批人批准",
+          "guard": "职责分离、任务与偏差解释",
+          "durable_effect": "保存批准证据",
+          "recovery": "并发编辑冲突"
+        },
+        {
+          "from": "submitted",
+          "to": "rejected",
+          "trigger": "审批人拒绝",
+          "guard": "明确原因",
+          "durable_effect": "保存拒绝与理由",
+          "recovery": "回草稿修改"
+        },
+        {
+          "from": "rejected",
+          "to": "draft",
+          "trigger": "顾问修正",
+          "guard": "沿用来源并增加版本",
+          "durable_effect": "保存新草稿",
+          "recovery": "旧审批通知不能批准新版本"
+        },
+        {
+          "from": "approved",
+          "to": "adjusted",
+          "trigger": "批准后更正",
+          "guard": "更正授权及原行关系",
+          "durable_effect": "追加调整，原批准保留",
+          "recovery": "已开票需独立账务更正"
+        }
+      ]
+    },
+    {
+      "object_id": "V19:object:cap",
+      "states": [
+        "draft",
+        "active",
+        "superseded"
+      ],
+      "transitions": [
+        {
+          "from": "draft",
+          "to": "active",
+          "trigger": "合同接受",
+          "guard": "上限与币种及适用范围明确",
+          "durable_effect": "固定cap版本",
+          "recovery": "拒绝重复有效范围"
+        },
+        {
+          "from": "active",
+          "to": "superseded",
+          "trigger": "合同变更接受",
+          "guard": "合同级并发控制下新cap覆盖released+所有有效reserve；接受证据明确",
+          "durable_effect": "旧版禁新增；新授权版本引用同一合同占用账本",
+          "recovery": "unknown reserve不得丢失；7000+3000占用变10600后仅余600"
+        }
+      ]
+    },
+    {
+      "object_id": "V19:object:billing-event",
+      "states": [
+        "draft",
+        "reserved",
+        "unknown",
+        "released",
+        "invoiced",
+        "cancelled"
+      ],
+      "transitions": [
+        {
+          "from": "draft",
+          "to": "reserved",
+          "trigger": "计费确认",
+          "guard": "当前有效合同版本、源行未重复、审批有效；合同共同账本cap剩余额足够",
+          "durable_effect": "allocation+reserve+outbox同事务",
+          "recovery": "竞争拒绝并重算"
+        },
+        {
+          "from": "reserved",
+          "to": "unknown",
+          "trigger": "开票请求超时",
+          "guard": "外部受理状态不明",
+          "durable_effect": "保留预留与稳定操作身份",
+          "recovery": "核对成功/失败前不得返还额度"
+        },
+        {
+          "from": "unknown",
+          "to": "released",
+          "trigger": "核对账务受理",
+          "guard": "账务受理身份与冻结金额已核对；此状态尚不等于具体发票或收款确认",
+          "durable_effect": "reserve转released互斥计数",
+          "recovery": "重放不重复扣cap"
+        },
+        {
+          "from": "reserved",
+          "to": "released",
+          "trigger": "账务受理核对",
+          "guard": "账务受理身份与冻结金额已核对；此状态尚不等于具体发票或收款确认",
+          "durable_effect": "reserve转released",
+          "recovery": "未知则保持预留"
+        },
+        {
+          "from": "released",
+          "to": "invoiced",
+          "trigger": "确认发票",
+          "guard": "对应invoice ID已核对",
+          "durable_effect": "保存I1映射",
+          "recovery": "不标记paid"
+        },
+        {
+          "from": "reserved",
+          "to": "cancelled",
+          "trigger": "确认未受理后取消",
+          "guard": "确定无外部副作用并获授权",
+          "durable_effect": "取消reserve保留历史",
+          "recovery": "未知不能走此路径"
+        },
+        {
+          "from": "unknown",
+          "to": "cancelled",
+          "trigger": "人工证实未受理",
+          "guard": "可靠外部核对证据",
+          "durable_effect": "返还预留并记录理由",
+          "recovery": "不凭超时时长猜失败"
+        }
+      ]
+    },
+    {
+      "object_id": "V19:object:invoice",
+      "states": [
+        "open",
+        "partially_paid",
+        "paid"
+      ],
+      "transitions": [
+        {
+          "from": "open",
+          "to": "partially_paid",
+          "trigger": "核对部分收款",
+          "guard": "本例1800已到账并分配给3000发票",
+          "durable_effect": "记录支付及未收1200",
+          "recovery": "重复支付通知不重复累计"
+        },
+        {
+          "from": "partially_paid",
+          "to": "paid",
+          "trigger": "核对剩余收款",
+          "guard": "本例第二笔1200已到账且总计3000",
+          "durable_effect": "保存余额0与付款依据",
+          "recovery": "旧open通知触发核对不回退"
+        }
+      ]
+    },
+    {
+      "object_id": "V19:object:payment",
+      "states": [
+        "unmatched",
+        "allocated",
+        "corrected"
+      ],
+      "transitions": [
+        {
+          "from": "unmatched",
+          "to": "allocated",
+          "trigger": "财务匹配",
+          "guard": "权威到账、金额、账户、发票一致",
+          "durable_effect": "保存支付分配唯一键",
+          "recovery": "不明归属保留unmatched"
+        },
+        {
+          "from": "allocated",
+          "to": "corrected",
+          "trigger": "匹配错误更正",
+          "guard": "财务授权与可追溯依据",
+          "durable_effect": "追加更正关系",
+          "recovery": "不删除原到账证据"
+        }
+      ]
+    }
+  ],
+  "algorithm_ids": [
+    "ALG:scheduling",
+    "ALG:optimization",
+    "ALG:windows",
+    "ALG:lookup",
+    "ALG:caches"
+  ],
+  "claim_ids": [
+    "V19:claim:certinia-timecards",
+    "V19:claim:certinia-approval",
+    "V19:claim:certinia-billing",
+    "V19:claim:certinia-cap",
+    "V19:claim:scheduling-policy",
+    "V19:claim:cap-policy",
+    "V19:claim:workflow-policy",
+    "V19:claim:ai-boundary"
+  ],
+  "checks": [
+    {
+      "id": "V19:check:happy",
+      "kind": "happy_path",
+      "given": "甲SQL/Python4h，乙SQL4h；cap10000、released7000；候选3600",
+      "when": "稀缺任务先配、审批18h、release3000、收1800再1200",
+      "then": "任务均完成；over_cap600；先欠1200后paid",
+      "evidence_required": "排班、审批、分配、发票、支付、UI分别取证"
+    },
+    {
+      "id": "V19:check:duplicate",
+      "kind": "duplicate",
+      "given": "同一审批/计费操作/付款事件",
+      "when": "重复处理",
+      "then": "一个审批版本、一次分配、一个支付效果",
+      "evidence_required": "唯一源键、operation ledger及支付分配"
+    },
+    {
+      "id": "V19:check:reorder",
+      "kind": "out_of_order",
+      "given": "账务当前paid",
+      "when": "迟到open信息",
+      "then": "查询当前账务分配不回退",
+      "evidence_required": "事件日志与权威查询"
+    },
+    {
+      "id": "V19:check:race",
+      "kind": "concurrency",
+      "given": "甲仅4h、cap只余3000",
+      "when": "两个经理各分4h；两个worker各扣2000",
+      "then": "各领域一个成功及明确冲突，无超配超额",
+      "evidence_required": "事务序列和容量/金额不变量"
+    },
+    {
+      "id": "V19:check:tenant",
+      "kind": "tenant_isolation",
+      "given": "两租户业务编号相同",
+      "when": "缓存、查询、账务映射核对",
+      "then": "无串账与成本越权",
+      "evidence_required": "作用域键及响应"
+    },
+    {
+      "id": "V19:check:timeout",
+      "kind": "unknown_outcome",
+      "given": "账务已创建I1",
+      "when": "请求超时",
+      "then": "unknown保留3000预留，核对一个I1",
+      "evidence_required": "操作账本、外部相关键及余额"
+    },
+    {
+      "id": "V19:check:recovery",
+      "kind": "recovery",
+      "given": "预留及outbox已提交",
+      "when": "完成标记前崩溃并重放",
+      "then": "reserve0、release累计10000、一次I1",
+      "evidence_required": "恢复序列、allocation、账务证据"
+    },
+    {
+      "id": "V19:check:counterexample",
+      "kind": "algorithm",
+      "given": "广技能优先、成本代cap、并发旧余额",
+      "when": "运行故意坏实现",
+      "then": "分别暴露不可行排班、错误1000、超额11000",
+      "evidence_required": "固定合成输入与反例输出"
+    },
+    {
+      "id": "V19:check:cap-version-unknown",
+      "kind": "recovery",
+      "given": "cap10000、released7000、unknown reserve3000",
+      "when": "接受新cap10600并尝试旧版本/新版本预留",
+      "then": "新版本仅余600；旧版本拒绝新增；未知3000仍占额度",
+      "evidence_required": "合同共同账本、版本切换事务、失败/成功预留结果"
+    }
+  ]
+}

@@ -1,0 +1,935 @@
+{
+  "contract_version": "1.0",
+  "case_id": "V17",
+  "title": "从注册到获批准的学习记录",
+  "scope": "synthetic 中学 SIS/LMS 工作流；OneRoster 1.2/CSV1.2.1 仅支持交换模型事实，学校批准与 transcript 策略为合成",
+  "synthetic": true,
+  "source_ids": [
+    "ONEROSTER",
+    "EDU_PORTAL",
+    "P02-SRC-oneroster-roster-model",
+    "P02-SRC-oneroster-gradebook-model",
+    "P02-SRC-oneroster-csv"
+  ],
+  "nodes": [
+    {
+      "id": "V17:actor:student",
+      "type": "actor",
+      "label": "学生",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; service-side object and role authorization"
+    },
+    {
+      "id": "V17:actor:teacher",
+      "type": "actor",
+      "label": "教师",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; service-side object and role authorization"
+    },
+    {
+      "id": "V17:actor:registrar",
+      "type": "actor",
+      "label": "教务与授权审核人",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; service-side object and role authorization"
+    },
+    {
+      "id": "V17:actor:integrator",
+      "type": "actor",
+      "label": "集成管理员",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; service-side object and role authorization"
+    },
+    {
+      "id": "V17:ui:portal",
+      "type": "ui",
+      "label": "注册与已发行成绩页",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; service-side object and role authorization"
+    },
+    {
+      "id": "V17:ui:review",
+      "type": "ui",
+      "label": "教师与审核工作台",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; service-side object and role authorization"
+    },
+    {
+      "id": "V17:ui:sync",
+      "type": "ui",
+      "label": "名单导入预览",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; service-side object and role authorization"
+    },
+    {
+      "id": "V17:service:sis",
+      "type": "service",
+      "label": "合成 SIS 注册服务",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; service-side object and role authorization"
+    },
+    {
+      "id": "V17:service:sync",
+      "type": "service",
+      "label": "名单同步服务",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; service-side object and role authorization"
+    },
+    {
+      "id": "V17:service:approval",
+      "type": "service",
+      "label": "成绩审核服务",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; service-side object and role authorization"
+    },
+    {
+      "id": "V17:service:issuer",
+      "type": "service",
+      "label": "成绩记录发行服务",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; service-side object and role authorization"
+    },
+    {
+      "id": "V17:external_system:lms",
+      "type": "external_system",
+      "label": "合成 LMS provider",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; service-side object and role authorization"
+    },
+    {
+      "id": "V17:store:sis",
+      "type": "store",
+      "label": "SIS 记录库",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; service-side object and role authorization"
+    },
+    {
+      "id": "V17:store:staging",
+      "type": "store",
+      "label": "名单暂存与批次记录",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; service-side object and role authorization"
+    },
+    {
+      "id": "V17:store:archive",
+      "type": "store",
+      "label": "受控文件与发行快照存储",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; service-side object and role authorization"
+    },
+    {
+      "id": "V17:object:registration",
+      "type": "object",
+      "label": "注册申请",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; service-side object and role authorization"
+    },
+    {
+      "id": "V17:object:enrollment",
+      "type": "object",
+      "label": "课程参与关系",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; service-side object and role authorization"
+    },
+    {
+      "id": "V17:object:roster-batch",
+      "type": "object",
+      "label": "名单同步批次",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; service-side object and role authorization"
+    },
+    {
+      "id": "V17:object:activity",
+      "type": "object",
+      "label": "学习活动",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; service-side object and role authorization"
+    },
+    {
+      "id": "V17:object:assessment-result",
+      "type": "object",
+      "label": "原始评阅结果",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; service-side object and role authorization"
+    },
+    {
+      "id": "V17:object:grade-package",
+      "type": "object",
+      "label": "冻结成绩包",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; service-side object and role authorization"
+    },
+    {
+      "id": "V17:object:transcript",
+      "type": "object",
+      "label": "成绩记录发行版本",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; service-side object and role authorization"
+    },
+    {
+      "id": "V17:event:grade-result",
+      "type": "event",
+      "label": "成绩交换事件",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; service-side object and role authorization"
+    },
+    {
+      "id": "V17:event:issued",
+      "type": "event",
+      "label": "发行事实通知",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; service-side object and role authorization"
+    },
+    {
+      "id": "V17:rule:approval-policy",
+      "type": "rule",
+      "label": "成绩与发行授权规则",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; service-side object and role authorization"
+    }
+  ],
+  "edges": [
+    {
+      "id": "V17:edge:student-ui",
+      "type": "operates",
+      "from": "V17:actor:student",
+      "to": "V17:ui:portal",
+      "payload": "选择课班、查看本人注册和已发行记录",
+      "timing": "sync",
+      "invariant": "只显示有授权的个人记录",
+      "failure": "访问关系无效则拒绝",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V17:edge:teacher-ui",
+      "type": "operates",
+      "from": "V17:actor:teacher",
+      "to": "V17:ui:review",
+      "payload": "评阅、缺项解释和提交成绩包",
+      "timing": "sync",
+      "invariant": "只处理所授课班，角色不等于全校访问",
+      "failure": "越权请求服务端拒绝",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V17:edge:registrar-ui",
+      "type": "operates",
+      "from": "V17:actor:registrar",
+      "to": "V17:ui:review",
+      "payload": "批准确定成绩包版本",
+      "timing": "sync",
+      "invariant": "批准权与导入权限分开",
+      "failure": "无批准权限不给生效结果",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V17:edge:integrator-ui",
+      "type": "operates",
+      "from": "V17:actor:integrator",
+      "to": "V17:ui:sync",
+      "payload": "上传、预览模式与批次差异",
+      "timing": "sync",
+      "invariant": "集成管理员不能批准成绩",
+      "failure": "被拒绝项进入隔离列表",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V17:edge:register",
+      "type": "commands",
+      "from": "V17:ui:portal",
+      "to": "V17:service:sis",
+      "payload": "student、class、term、expected_version、operation ID",
+      "timing": "sync",
+      "invariant": "资格与容量在同一授权事务确认",
+      "failure": "已满则拒绝或进入明确候补",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V17:edge:import",
+      "type": "commands",
+      "from": "V17:ui:sync",
+      "to": "V17:service:sync",
+      "payload": "provider scope、manifest hash、bulk/delta、batch ID",
+      "timing": "sync",
+      "invariant": "处理模式和来源范围必须明确",
+      "failure": "引用缺失则隔离，不发布半批",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V17:edge:approve",
+      "type": "commands",
+      "from": "V17:ui:review",
+      "to": "V17:service:approval",
+      "payload": "grade-package ID、input hash、policy hash、actor",
+      "timing": "sync",
+      "invariant": "批准绑定冻结输入，并在同一事务核对该包未因已提交修订而过时",
+      "failure": "修订先提交则冲突重建；批准先提交则旧包有效，后续修订另起包",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V17:edge:registration-owner",
+      "type": "owns",
+      "from": "V17:service:sis",
+      "to": "V17:object:registration",
+      "payload": "申请与教务决定",
+      "timing": "static",
+      "invariant": "LMS 导入失败不推翻已批准注册",
+      "failure": "保留批准并转访问异常处理",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V17:edge:enrollment-owner",
+      "type": "owns",
+      "from": "V17:service:sis",
+      "to": "V17:object:enrollment",
+      "payload": "参与身份、期间、课班、角色",
+      "timing": "static",
+      "invariant": "人员身份和参与关系分开",
+      "failure": "退选后历史活动仍可回查",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V17:edge:batch-owner",
+      "type": "owns",
+      "from": "V17:service:sync",
+      "to": "V17:object:roster-batch",
+      "payload": "接收、验证、应用与外部交付状态",
+      "timing": "static",
+      "invariant": "接收成功不等于名单已应用",
+      "failure": "交付 unknown 留待核对",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V17:edge:activity-owner",
+      "type": "owns",
+      "from": "V17:external_system:lms",
+      "to": "V17:object:activity",
+      "payload": "作业定义和学习提交",
+      "timing": "static",
+      "invariant": "平台活动不证明学校最终成绩",
+      "failure": "缺记录向平台核对",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V17:edge:result-owner",
+      "type": "owns",
+      "from": "V17:external_system:lms",
+      "to": "V17:object:assessment-result",
+      "payload": "评分、状态、attempt 和版本",
+      "timing": "static",
+      "invariant": "改分不直接覆盖获批学校成绩",
+      "failure": "修订建立新输入包",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V17:edge:package-owner",
+      "type": "owns",
+      "from": "V17:service:approval",
+      "to": "V17:object:grade-package",
+      "payload": "冻结输入集合和批准依据",
+      "timing": "static",
+      "invariant": "教师提交与审核批准分离；不能批准已知过时的输入包",
+      "failure": "旧 hash 不能批准混合新输入",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V17:edge:transcript-owner",
+      "type": "owns",
+      "from": "V17:service:issuer",
+      "to": "V17:object:transcript",
+      "payload": "学校发行身份、内容、替代关系",
+      "timing": "static",
+      "invariant": "签发内容不可静默变更",
+      "failure": "新获批包产生替代发行版本",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V17:edge:registration-store",
+      "type": "stores",
+      "from": "V17:store:sis",
+      "to": "V17:object:registration",
+      "payload": "申请、资格校验和决定",
+      "timing": "sync",
+      "invariant": "占位与批准相容提交",
+      "failure": "重复操作读回已有决定",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V17:edge:enrollment-store",
+      "type": "stores",
+      "from": "V17:store:sis",
+      "to": "V17:object:enrollment",
+      "payload": "来源映射、参与期间和版本",
+      "timing": "sync",
+      "invariant": "tenant/source/object type/sourcedId 联合识别",
+      "failure": "禁止按姓名合并",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V17:edge:batch-stage",
+      "type": "stores",
+      "from": "V17:store:staging",
+      "to": "V17:object:roster-batch",
+      "payload": "manifest、校验错误、差异、发布 revision",
+      "timing": "batch",
+      "invariant": "校验通过才发布 revision",
+      "failure": "坏批次隔离且旧名单继续服务",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V17:edge:sync-read",
+      "type": "reads",
+      "from": "V17:service:sync",
+      "to": "V17:store:sis",
+      "payload": "指定来源范围的确定注册快照",
+      "timing": "batch",
+      "invariant": "完整快照与增量不能混用",
+      "failure": "来源无一致快照则保留未核对",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V17:edge:roster-deliver",
+      "type": "requests",
+      "from": "V17:service:sync",
+      "to": "V17:external_system:lms",
+      "payload": "确定批次与 enrollment 映射",
+      "timing": "batch",
+      "invariant": "一 revision 只产生一逻辑应用",
+      "failure": "timeout 按原批次或逐对象核对",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V17:edge:roster-reconcile",
+      "type": "reads",
+      "from": "V17:service:sync",
+      "to": "V17:external_system:lms",
+      "payload": "当前 roster revision 与参与对象",
+      "timing": "async",
+      "invariant": "不能用本地发送成功推断远端应用",
+      "failure": "差异进入恢复队列",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V17:edge:grade-emits",
+      "type": "emits",
+      "from": "V17:external_system:lms",
+      "to": "V17:event:grade-result",
+      "payload": "student、lineItem、attempt、score、status、version",
+      "timing": "async",
+      "invariant": "分数与上下文一起交换",
+      "failure": "未知映射隔离，不按显示名猜测",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V17:edge:grade-delivers",
+      "type": "delivers",
+      "from": "V17:event:grade-result",
+      "to": "V17:service:approval",
+      "payload": "已校验的结果与来源身份",
+      "timing": "async",
+      "invariant": "旧评分版本不能覆盖当前输入",
+      "failure": "来源不保证序号则重新读取确定版本",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V17:edge:results-read",
+      "type": "reads",
+      "from": "V17:service:approval",
+      "to": "V17:external_system:lms",
+      "payload": "按原映射回查成绩与修订",
+      "timing": "async",
+      "invariant": "审核依据能追到确定结果版本",
+      "failure": "无法确认则不发行新记录",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V17:edge:result-origin",
+      "type": "derived_from",
+      "from": "V17:object:assessment-result",
+      "to": "V17:object:activity",
+      "payload": "对应活动、attempt 与教师评阅",
+      "timing": "static",
+      "invariant": "分数不是无上下文标量",
+      "failure": "缺活动或 attempt 则隔离",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V17:edge:enrollment-registration",
+      "type": "derived_from",
+      "from": "V17:object:enrollment",
+      "to": "V17:object:registration",
+      "payload": "获批注册及有效期间",
+      "timing": "static",
+      "invariant": "注册批准与访问同步分离",
+      "failure": "同步失败处理访问异常",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V17:edge:package-results",
+      "type": "derived_from",
+      "from": "V17:object:grade-package",
+      "to": "V17:object:assessment-result",
+      "payload": "确定结果版本、权重、缺项解释",
+      "timing": "batch",
+      "invariant": "missing 不自动作为零分",
+      "failure": "缺必需项或分母为零则拒绝提交",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V17:edge:transcript-package",
+      "type": "depends_on",
+      "from": "V17:object:transcript",
+      "to": "V17:object:grade-package",
+      "payload": "approved package ID 与 hash",
+      "timing": "static",
+      "invariant": "只有获授权批准的冻结包能发行",
+      "failure": "修订需新批准，旧版保留",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V17:edge:approval-rule",
+      "type": "authorizes",
+      "from": "V17:rule:approval-policy",
+      "to": "V17:service:approval",
+      "payload": "课班权限、评分规则和可批准状态",
+      "timing": "sync",
+      "invariant": "同步管理员不取得成绩批准权",
+      "failure": "角色或规则过期拒绝",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V17:edge:package-store",
+      "type": "stores",
+      "from": "V17:store:sis",
+      "to": "V17:object:grade-package",
+      "payload": "输入 hash、规则 hash、审批记录",
+      "timing": "sync",
+      "invariant": "批准和版本校验同一事务",
+      "failure": "冲突返回重新审阅",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V17:edge:transcript-store",
+      "type": "stores",
+      "from": "V17:store:archive",
+      "to": "V17:object:transcript",
+      "payload": "不可变发行快照与校验摘要",
+      "timing": "sync",
+      "invariant": "发行唯一键与内容对应",
+      "failure": "已写快照重试复用原逻辑发行",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V17:edge:issued-emits",
+      "type": "emits",
+      "from": "V17:service:issuer",
+      "to": "V17:event:issued",
+      "payload": "学生、发行 ID、版本与替代关系",
+      "timing": "async",
+      "invariant": "通知不重复创造发行",
+      "failure": "失败重送同一发行通知",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V17:edge:issued-inbox",
+      "type": "delivers",
+      "from": "V17:event:issued",
+      "to": "V17:store:sis",
+      "payload": "发布通知与消费状态",
+      "timing": "async",
+      "invariant": "个人通知按授权渠道投递",
+      "failure": "重放找回原 T1",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V17:edge:registration-projection",
+      "type": "projects",
+      "from": "V17:object:registration",
+      "to": "V17:ui:portal",
+      "payload": "批准事实与名单同步进度",
+      "timing": "async",
+      "invariant": "不把批准和访问可用合成一个状态",
+      "failure": "显示访问待处理责任人",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V17:edge:transcript-projection",
+      "type": "projects",
+      "from": "V17:object:transcript",
+      "to": "V17:ui:portal",
+      "payload": "发行号、内容版本、替代指向",
+      "timing": "async",
+      "invariant": "学生不看 draft 或他人记录",
+      "failure": "缓存权限和发行 revision 共同失效",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V17:edge:package-projection",
+      "type": "projects",
+      "from": "V17:object:grade-package",
+      "to": "V17:ui:review",
+      "payload": "逐学生分数、分母、缺项、版本差异",
+      "timing": "async",
+      "invariant": "批准人看的是将批准的同一快照",
+      "failure": "更改后提示必须重新提交",
+      "basis": "synthetic",
+      "claim_ids": []
+    }
+  ],
+  "lifecycles": [
+    {
+      "object_id": "V17:object:registration",
+      "states": [
+        "requested",
+        "approved",
+        "rejected"
+      ],
+      "transitions": [
+        {
+          "from": "requested",
+          "to": "approved",
+          "trigger": "教务确认",
+          "guard": "资格、容量、课班与版本有效",
+          "durable_effect": "保存批准并占位",
+          "recovery": "重复 command 返回同一申请"
+        },
+        {
+          "from": "requested",
+          "to": "rejected",
+          "trigger": "条件不满足",
+          "guard": "明确拒绝理由",
+          "durable_effect": "拒绝记录和候补选项",
+          "recovery": "条件改变另起申请或授权复核"
+        }
+      ]
+    },
+    {
+      "object_id": "V17:object:enrollment",
+      "states": [
+        "active",
+        "withdrawn",
+        "completed"
+      ],
+      "transitions": [
+        {
+          "from": "active",
+          "to": "withdrawn",
+          "trigger": "教务批准退选",
+          "guard": "身份、权限、有效期明确",
+          "durable_effect": "退选决定并安排访问撤销",
+          "recovery": "访问未知时核对，不删历史"
+        },
+        {
+          "from": "active",
+          "to": "completed",
+          "trigger": "学期学习结束",
+          "guard": "学校定义的完成条件满足",
+          "durable_effect": "完成参与期间",
+          "recovery": "缺成绩仍保留待审核"
+        },
+        {
+          "from": "withdrawn",
+          "to": "active",
+          "trigger": "批准重新参与",
+          "guard": "新参与版本与期间有效",
+          "durable_effect": "新决定关联历史版本",
+          "recovery": "不得抹去退选间隔"
+        }
+      ]
+    },
+    {
+      "object_id": "V17:object:roster-batch",
+      "states": [
+        "received",
+        "validated",
+        "quarantined",
+        "applied"
+      ],
+      "transitions": [
+        {
+          "from": "received",
+          "to": "validated",
+          "trigger": "验证 manifest 与引用",
+          "guard": "模式、scope、唯一性、外键均通过",
+          "durable_effect": "校验结果和差异",
+          "recovery": "崩溃从 staging 重建"
+        },
+        {
+          "from": "received",
+          "to": "quarantined",
+          "trigger": "发现坏引用或模式不明",
+          "guard": "校验失败",
+          "durable_effect": "隔离原因和原摘要",
+          "recovery": "修正后新批次，旧名单保留"
+        },
+        {
+          "from": "validated",
+          "to": "applied",
+          "trigger": "发布 roster revision",
+          "guard": "外部应用已核对或本地发布条件满足",
+          "durable_effect": "唯一 revision 与应用证据",
+          "recovery": "超时保持交付子状态 unknown，先核对"
+        },
+        {
+          "from": "validated",
+          "to": "quarantined",
+          "trigger": "发现来源范围不可信",
+          "guard": "不能安全执行差异",
+          "durable_effect": "阻断应用原因",
+          "recovery": "人工核实再建新批次"
+        }
+      ]
+    },
+    {
+      "object_id": "V17:object:assessment-result",
+      "states": [
+        "assigned",
+        "submitted",
+        "graded",
+        "revised"
+      ],
+      "transitions": [
+        {
+          "from": "assigned",
+          "to": "submitted",
+          "trigger": "学生提交",
+          "guard": "参与与活动权限有效",
+          "durable_effect": "attempt 与提交证据",
+          "recovery": "重复提交按原 attempt 核对"
+        },
+        {
+          "from": "submitted",
+          "to": "graded",
+          "trigger": "教师评分",
+          "guard": "有教师权限、量表和确定提交",
+          "durable_effect": "评分及状态版本",
+          "recovery": "缺依据转教师复核"
+        },
+        {
+          "from": "graded",
+          "to": "revised",
+          "trigger": "批准评分修正",
+          "guard": "原因与新版本明确",
+          "durable_effect": "保留旧分及修正关系",
+          "recovery": "已经发行内容等待新批准"
+        },
+        {
+          "from": "revised",
+          "to": "revised",
+          "trigger": "再次修正",
+          "guard": "新评分版本和原因",
+          "durable_effect": "追加版本历史",
+          "recovery": "不按到达次序覆盖"
+        }
+      ]
+    },
+    {
+      "object_id": "V17:object:grade-package",
+      "states": [
+        "draft",
+        "submitted",
+        "approved",
+        "rejected",
+        "superseded"
+      ],
+      "transitions": [
+        {
+          "from": "draft",
+          "to": "submitted",
+          "trigger": "教师提交",
+          "guard": "项目完整或免交有依据；非零有效分母",
+          "durable_effect": "冻结输入和规则 hash",
+          "recovery": "变更产生新草稿"
+        },
+        {
+          "from": "submitted",
+          "to": "approved",
+          "trigger": "审核人批准",
+          "guard": "权限及输入 hash 一致，包未被先提交的修订标为过时；事务内核验",
+          "durable_effect": "批准 actor、时间和 hash",
+          "recovery": "修订先提交则旧批准冲突；批准先提交则旧包有效，后续修订另起新包"
+        },
+        {
+          "from": "submitted",
+          "to": "rejected",
+          "trigger": "审核人指出问题",
+          "guard": "具体原因",
+          "durable_effect": "拒绝和待修正项",
+          "recovery": "修正后新包"
+        },
+        {
+          "from": "approved",
+          "to": "superseded",
+          "trigger": "修订包获批准",
+          "guard": "新包完整复核",
+          "durable_effect": "新旧包替代关系",
+          "recovery": "旧版保留"
+        }
+      ]
+    },
+    {
+      "object_id": "V17:object:transcript",
+      "states": [
+        "prepared",
+        "issued",
+        "superseded"
+      ],
+      "transitions": [
+        {
+          "from": "prepared",
+          "to": "issued",
+          "trigger": "发行任务",
+          "guard": "获批包有效且逻辑发行唯一",
+          "durable_effect": "不可变内容、发行 ID、outbox",
+          "recovery": "崩溃重放复用同一发行"
+        },
+        {
+          "from": "issued",
+          "to": "superseded",
+          "trigger": "新批准修订发行",
+          "guard": "新发行证据已保存",
+          "durable_effect": "替代关联并保留旧内容",
+          "recovery": "外部旧文件不会自动撤回，另行核对通知"
+        }
+      ]
+    }
+  ],
+  "algorithm_ids": [
+    "ALG:lookup",
+    "ALG:windows",
+    "ALG:caches"
+  ],
+  "claim_ids": [
+    "V17:claim:exchange-scope",
+    "V17:claim:standards-boundary",
+    "V17:claim:roster-identity",
+    "V17:claim:result-context",
+    "V17:claim:csv-integrity",
+    "V17:claim:design",
+    "V17:claim:calculation"
+  ],
+  "checks": [
+    {
+      "id": "V17:check:happy",
+      "kind": "happy_path",
+      "given": "S1=18/20和70/100；40/60权重",
+      "when": "注册、应用名单、评分、批准并发行",
+      "then": "T1=78；原始结果、批准和发行相互可追溯",
+      "evidence_required": "UI、roster revision、input hash、批准与发行记录"
+    },
+    {
+      "id": "V17:check:duplicate",
+      "kind": "duplicate",
+      "given": "同 batch ID 与 approved package ID",
+      "when": "重复导入与发行",
+      "then": "一个逻辑 roster revision、一个 T1",
+      "evidence_required": "批次摘要、唯一发行键、重试记录"
+    },
+    {
+      "id": "V17:check:reorder",
+      "kind": "out_of_order",
+      "given": "当前 roster v5 与评分v3",
+      "when": "迟到 roster v4 与评分v2",
+      "then": "拒绝旧版覆盖并保留解释",
+      "evidence_required": "来源次序或权威核对、拒绝原因"
+    },
+    {
+      "id": "V17:check:race",
+      "kind": "concurrency",
+      "given": "审核 hash G1；教师准备修正",
+      "when": "同时批准和改分",
+      "then": "修订先提交则旧批准 hash/版本冲突；批准先提交则旧包有效，随后另建修订；无混合输入",
+      "evidence_required": "锁/版本结果、hash 与批准记录"
+    },
+    {
+      "id": "V17:check:tenant",
+      "kind": "tenant_isolation",
+      "given": "学校A/B 均有 S1；同校不同课班",
+      "when": "名单读、缓存读、成绩导出",
+      "then": "只出现学校和课班授权范围",
+      "evidence_required": "查询 scope、cache key、输出和拒绝"
+    },
+    {
+      "id": "V17:check:unknown",
+      "kind": "unknown_outcome",
+      "given": "LMS 已应用批次",
+      "when": "响应丢失",
+      "then": "交付 unknown，按原引用核对；注册决定保留",
+      "evidence_required": "批次状态、LMS查询、无二次覆盖"
+    },
+    {
+      "id": "V17:check:recovery",
+      "kind": "recovery",
+      "given": "revision 已发布；T1 已存而通知未发送",
+      "when": "worker 重启",
+      "then": "不重复应用或发行；补发同 T1 通知",
+      "evidence_required": "持久 revision、唯一键、outbox"
+    },
+    {
+      "id": "V17:check:missing",
+      "kind": "negative_path",
+      "given": "必需项目 missing 或全部 excused",
+      "when": "请求计算并提交",
+      "then": "incomplete 或无有效分母，不造零分/100分",
+      "evidence_required": "输入状态、拒绝原因"
+    },
+    {
+      "id": "V17:check:weighted",
+      "kind": "algorithm",
+      "given": "18/20×40% 与70/100×60%",
+      "when": "加权并比较原始分数相加的坏实现",
+      "then": "正确78；坏实现73.3，明确政策差异",
+      "evidence_required": "固定 fixture 和 Decimal 结果"
+    },
+    {
+      "id": "V17:check:snapshot",
+      "kind": "revision",
+      "given": "T1=78 已发行；项目改80",
+      "when": "计算并批准新包",
+      "then": "T1仍78，T2=84 且有替代关联",
+      "evidence_required": "两个冻结内容、批准及替代关系"
+    },
+    {
+      "id": "V17:check:delta",
+      "kind": "algorithm",
+      "given": "当前S1/S2；delta仅新增S3",
+      "when": "应用增量",
+      "then": "三名学生均保留；把delta当bulk的坏实现会丢S1/S2",
+      "evidence_required": "模式、差异和固定集合结果"
+    }
+  ]
+}

@@ -1,0 +1,1030 @@
+{
+  "contract_version": "1.0",
+  "case_id": "H04",
+  "title": "从录用承诺到离职结清",
+  "scope": "Synthetic 30-day month; one employment spell; effective-dated gross accrual, access reconciliation and offboarding. No taxes, benefits, real payroll API, bank or session-revocation guarantee. Provider facts support only explicitly cited documentation claims.",
+  "synthetic": true,
+  "source_ids": [
+    "GREENHOUSE",
+    "OKTA",
+    "OKTA_SCIM"
+  ],
+  "nodes": [
+    {
+      "id": "H04:actor:hr",
+      "type": "actor",
+      "label": "HR 负责人",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound；外部映射包含组织、应用与对象身份"
+    },
+    {
+      "id": "H04:actor:payroll",
+      "type": "actor",
+      "label": "薪资批准人",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound；外部映射包含组织、应用与对象身份"
+    },
+    {
+      "id": "H04:actor:app-owner",
+      "type": "actor",
+      "label": "应用负责人",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound；外部映射包含组织、应用与对象身份"
+    },
+    {
+      "id": "H04:actor:employee",
+      "type": "actor",
+      "label": "员工／接收人",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound；外部映射包含组织、应用与对象身份"
+    },
+    {
+      "id": "H04:ui:people",
+      "type": "ui",
+      "label": "人员与离职工作台",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound；外部映射包含组织、应用与对象身份"
+    },
+    {
+      "id": "H04:ui:payroll",
+      "type": "ui",
+      "label": "薪资预览与批准页",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound；外部映射包含组织、应用与对象身份"
+    },
+    {
+      "id": "H04:service:hr",
+      "type": "service",
+      "label": "雇佣协调服务",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound；外部映射包含组织、应用与对象身份"
+    },
+    {
+      "id": "H04:service:access",
+      "type": "service",
+      "label": "身份与权限协调服务",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound；外部映射包含组织、应用与对象身份"
+    },
+    {
+      "id": "H04:service:payroll",
+      "type": "service",
+      "label": "薪资计算与核对服务",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound；外部映射包含组织、应用与对象身份"
+    },
+    {
+      "id": "H04:external_system:greenhouse",
+      "type": "external_system",
+      "label": "Greenhouse Harvest",
+      "authority": "Greenhouse application 与 offer 记录",
+      "tenant_scope": "tenant-bound；外部映射包含组织、应用与对象身份"
+    },
+    {
+      "id": "H04:external_system:okta",
+      "type": "external_system",
+      "label": "Okta / SCIM 适配边界",
+      "authority": "Okta 身份配置与目标应用响应；非工资权威",
+      "tenant_scope": "tenant-bound；外部映射包含组织、应用与对象身份"
+    },
+    {
+      "id": "H04:external_system:target-app",
+      "type": "external_system",
+      "label": "合成目标应用",
+      "authority": "synthetic-design；目标账号实际状态",
+      "tenant_scope": "tenant-bound；外部映射包含组织、应用与对象身份"
+    },
+    {
+      "id": "H04:external_system:payment",
+      "type": "external_system",
+      "label": "合成支付执行器",
+      "authority": "synthetic-design；已受理与结算结果",
+      "tenant_scope": "tenant-bound；外部映射包含组织、应用与对象身份"
+    },
+    {
+      "id": "H04:object:person",
+      "type": "object",
+      "label": "Person",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound；外部映射包含组织、应用与对象身份"
+    },
+    {
+      "id": "H04:object:offer",
+      "type": "object",
+      "label": "Offer version",
+      "authority": "Greenhouse offer 身份与版本；本地只保存核对投影",
+      "tenant_scope": "tenant-bound；外部映射包含组织、应用与对象身份"
+    },
+    {
+      "id": "H04:object:employment",
+      "type": "object",
+      "label": "Employment spell",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound；外部映射包含组织、应用与对象身份"
+    },
+    {
+      "id": "H04:object:rate",
+      "type": "object",
+      "label": "Effective rate",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound；外部映射包含组织、应用与对象身份"
+    },
+    {
+      "id": "H04:object:assignment",
+      "type": "object",
+      "label": "Access assignment",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound；外部映射包含组织、应用与对象身份"
+    },
+    {
+      "id": "H04:object:payroll",
+      "type": "object",
+      "label": "Payroll run",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound；外部映射包含组织、应用与对象身份"
+    },
+    {
+      "id": "H04:object:offboarding",
+      "type": "object",
+      "label": "Offboarding case",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound；外部映射包含组织、应用与对象身份"
+    },
+    {
+      "id": "H04:object:operation",
+      "type": "object",
+      "label": "Operation ledger",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound；外部映射包含组织、应用与对象身份"
+    },
+    {
+      "id": "H04:store:records",
+      "type": "store",
+      "label": "PostgreSQL 业务记录与版本",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound；外部映射包含组织、应用与对象身份"
+    },
+    {
+      "id": "H04:store:outbox",
+      "type": "store",
+      "label": "持久任务与回执 inbox",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound；外部映射包含组织、应用与对象身份"
+    },
+    {
+      "id": "H04:event:employment-revised",
+      "type": "event",
+      "label": "Employment revision recorded",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound；外部映射包含组织、应用与对象身份"
+    },
+    {
+      "id": "H04:event:access-observed",
+      "type": "event",
+      "label": "Access state observed",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound；外部映射包含组织、应用与对象身份"
+    },
+    {
+      "id": "H04:rule:access-effective",
+      "type": "rule",
+      "label": "当前有效关系与权限策略",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound；外部映射包含组织、应用与对象身份"
+    }
+  ],
+  "edges": [
+    {
+      "id": "H04:edge:hr-workbench",
+      "type": "operates",
+      "from": "H04:actor:hr",
+      "to": "H04:ui:people",
+      "payload": "经字段权限过滤的对象与操作",
+      "timing": "sync",
+      "invariant": "只能查看本职权范围",
+      "failure": "拒绝越权并保留操作身份",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H04:edge:owner-workbench",
+      "type": "operates",
+      "from": "H04:actor:app-owner",
+      "to": "H04:ui:people",
+      "payload": "经字段权限过滤的对象与操作",
+      "timing": "sync",
+      "invariant": "只能查看本职权范围",
+      "failure": "拒绝越权并保留操作身份",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H04:edge:employee-workbench",
+      "type": "operates",
+      "from": "H04:actor:employee",
+      "to": "H04:ui:people",
+      "payload": "经字段权限过滤的对象与操作",
+      "timing": "sync",
+      "invariant": "只能查看本职权范围",
+      "failure": "拒绝越权并保留操作身份",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H04:edge:payroll-workbench",
+      "type": "operates",
+      "from": "H04:actor:payroll",
+      "to": "H04:ui:payroll",
+      "payload": "经字段权限过滤的对象与操作",
+      "timing": "sync",
+      "invariant": "只能查看本职权范围",
+      "failure": "拒绝越权并保留操作身份",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H04:edge:confirm-employment",
+      "type": "commands",
+      "from": "H04:ui:people",
+      "to": "H04:service:hr",
+      "payload": "employment ID + version + operation ID + effective interval",
+      "timing": "sync",
+      "invariant": "租户、权限、批准与有效区间一致",
+      "failure": "过期版本返回冲突和新差异",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H04:edge:approve-payroll",
+      "type": "commands",
+      "from": "H04:ui:payroll",
+      "to": "H04:service:payroll",
+      "payload": "run ID + frozen input hash + expected version",
+      "timing": "sync",
+      "invariant": "薪资批准绑定确定的输入",
+      "failure": "重算输入改变则重新批准",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H04:edge:read-offer",
+      "type": "reads",
+      "from": "H04:service:hr",
+      "to": "H04:external_system:greenhouse",
+      "payload": "按组织映射读取 offer/application 与版本",
+      "timing": "sync",
+      "invariant": "ATS 状态不直接替代 HR 生效决定",
+      "failure": "读取失败保留未核对，不猜测已录用",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H04:edge:offer-owned",
+      "type": "owns",
+      "from": "H04:external_system:greenhouse",
+      "to": "H04:object:offer",
+      "payload": "offer ID/version/application_id/starts_at",
+      "timing": "static",
+      "invariant": "保留不同对象身份与版本",
+      "failure": "新版本重新核对",
+      "basis": "source_fact",
+      "claim_ids": [
+        "H04:claim:offer-identity"
+      ]
+    },
+    {
+      "id": "H04:edge:person-owner",
+      "type": "owns",
+      "from": "H04:service:hr",
+      "to": "H04:object:person",
+      "payload": "指定 HR 事实及其版本",
+      "timing": "static",
+      "invariant": "协调权不扩大为支付或应用状态权威",
+      "failure": "缺少外部依据保持待核对",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H04:edge:employment-owner",
+      "type": "owns",
+      "from": "H04:service:hr",
+      "to": "H04:object:employment",
+      "payload": "指定 HR 事实及其版本",
+      "timing": "static",
+      "invariant": "协调权不扩大为支付或应用状态权威",
+      "failure": "缺少外部依据保持待核对",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H04:edge:rate-owner",
+      "type": "owns",
+      "from": "H04:service:hr",
+      "to": "H04:object:rate",
+      "payload": "指定 HR 事实及其版本",
+      "timing": "static",
+      "invariant": "协调权不扩大为支付或应用状态权威",
+      "failure": "缺少外部依据保持待核对",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H04:edge:offboarding-owner",
+      "type": "owns",
+      "from": "H04:service:hr",
+      "to": "H04:object:offboarding",
+      "payload": "指定 HR 事实及其版本",
+      "timing": "static",
+      "invariant": "协调权不扩大为支付或应用状态权威",
+      "failure": "缺少外部依据保持待核对",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H04:edge:operation-owner",
+      "type": "owns",
+      "from": "H04:service:hr",
+      "to": "H04:object:operation",
+      "payload": "指定 HR 事实及其版本",
+      "timing": "static",
+      "invariant": "协调权不扩大为支付或应用状态权威",
+      "failure": "缺少外部依据保持待核对",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H04:edge:assignment-owner",
+      "type": "owns",
+      "from": "H04:service:access",
+      "to": "H04:object:assignment",
+      "payload": "本地 desired revision 和各应用 observed 状态",
+      "timing": "static",
+      "invariant": "期望和观察分开",
+      "failure": "未知应用单独升级处理",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H04:edge:payroll-owner",
+      "type": "owns",
+      "from": "H04:service:payroll",
+      "to": "H04:object:payroll",
+      "payload": "冻结输入、金额与支付核对",
+      "timing": "static",
+      "invariant": "批准、提交、结算分开",
+      "failure": "修正产生新批次不覆盖已结算记录",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H04:edge:person-store",
+      "type": "stores",
+      "from": "H04:store:records",
+      "to": "H04:object:person",
+      "payload": "身份、版本、有效时间、记录时间与依据",
+      "timing": "sync",
+      "invariant": "tenant 与对象业务键唯一",
+      "failure": "事务失败不发布待执行消息",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H04:edge:offer-store",
+      "type": "stores",
+      "from": "H04:store:records",
+      "to": "H04:object:offer",
+      "payload": "身份、版本、有效时间、记录时间与依据",
+      "timing": "sync",
+      "invariant": "tenant 与对象业务键唯一",
+      "failure": "事务失败不发布待执行消息",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H04:edge:employment-store",
+      "type": "stores",
+      "from": "H04:store:records",
+      "to": "H04:object:employment",
+      "payload": "身份、版本、有效时间、记录时间与依据",
+      "timing": "sync",
+      "invariant": "tenant 与对象业务键唯一",
+      "failure": "事务失败不发布待执行消息",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H04:edge:rate-store",
+      "type": "stores",
+      "from": "H04:store:records",
+      "to": "H04:object:rate",
+      "payload": "身份、版本、有效时间、记录时间与依据",
+      "timing": "sync",
+      "invariant": "tenant 与对象业务键唯一",
+      "failure": "事务失败不发布待执行消息",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H04:edge:access-store",
+      "type": "stores",
+      "from": "H04:store:records",
+      "to": "H04:object:assignment",
+      "payload": "身份、版本、有效时间、记录时间与依据",
+      "timing": "sync",
+      "invariant": "tenant 与对象业务键唯一",
+      "failure": "事务失败不发布待执行消息",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H04:edge:payroll-store",
+      "type": "stores",
+      "from": "H04:store:records",
+      "to": "H04:object:payroll",
+      "payload": "身份、版本、有效时间、记录时间与依据",
+      "timing": "sync",
+      "invariant": "tenant 与对象业务键唯一",
+      "failure": "事务失败不发布待执行消息",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H04:edge:offboarding-store",
+      "type": "stores",
+      "from": "H04:store:records",
+      "to": "H04:object:offboarding",
+      "payload": "身份、版本、有效时间、记录时间与依据",
+      "timing": "sync",
+      "invariant": "tenant 与对象业务键唯一",
+      "failure": "事务失败不发布待执行消息",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H04:edge:operation-store",
+      "type": "stores",
+      "from": "H04:store:records",
+      "to": "H04:object:operation",
+      "payload": "身份、版本、有效时间、记录时间与依据",
+      "timing": "sync",
+      "invariant": "tenant 与对象业务键唯一",
+      "failure": "事务失败不发布待执行消息",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H04:edge:revision",
+      "type": "emits",
+      "from": "H04:service:hr",
+      "to": "H04:event:employment-revised",
+      "payload": "employment ID + revision + effective interval",
+      "timing": "async",
+      "invariant": "事件只宣告已保存的 HR 变化",
+      "failure": "通过同一事务 outbox 重放",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H04:edge:outbox",
+      "type": "delivers",
+      "from": "H04:event:employment-revised",
+      "to": "H04:store:outbox",
+      "payload": "可重放的雇佣变化与任务身份",
+      "timing": "async",
+      "invariant": "确认接收前持久化",
+      "failure": "写入失败允许重送",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H04:edge:read-tasks",
+      "type": "reads",
+      "from": "H04:service:access",
+      "to": "H04:store:outbox",
+      "payload": "按租户和应用领取任务",
+      "timing": "async",
+      "invariant": "每应用账号串行且发送前重算期望",
+      "failure": "旧任务不得按邮箱停用新雇佣",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H04:edge:effective-access",
+      "type": "authorizes",
+      "from": "H04:rule:access-effective",
+      "to": "H04:service:access",
+      "payload": "当前有效雇佣与已批准岗位",
+      "timing": "static",
+      "invariant": "旧消息不是当前授权",
+      "failure": "无有效关系先阻断本地授权",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H04:edge:provision",
+      "type": "requests",
+      "from": "H04:service:access",
+      "to": "H04:external_system:okta",
+      "payload": "账号映射 + desired revision + operation ID",
+      "timing": "async",
+      "invariant": "只请求当前期望状态",
+      "failure": "超时保持 unknown 并核对原身份",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H04:edge:read-target",
+      "type": "reads",
+      "from": "H04:service:access",
+      "to": "H04:external_system:target-app",
+      "payload": "按租户、应用与外部账号核对 active",
+      "timing": "async",
+      "invariant": "active=false 不推断会话/token 全部撤销",
+      "failure": "未提供会话能力的接入留明确缺口",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H04:edge:observe",
+      "type": "emits",
+      "from": "H04:service:access",
+      "to": "H04:event:access-observed",
+      "payload": "应用实际状态与观察时间",
+      "timing": "async",
+      "invariant": "观察绑定目标账号与 revision",
+      "failure": "过期观察只作历史，不覆盖新期望",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H04:edge:observation-inbox",
+      "type": "delivers",
+      "from": "H04:event:access-observed",
+      "to": "H04:store:outbox",
+      "payload": "回执身份与外部状态",
+      "timing": "async",
+      "invariant": "同一效果不因重复回执重复执行",
+      "failure": "已保存结果可恢复投影",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H04:edge:assignment-requires-employment",
+      "type": "depends_on",
+      "from": "H04:object:assignment",
+      "to": "H04:object:employment",
+      "payload": "当前有效 employment",
+      "timing": "static",
+      "invariant": "预建账号与可登录分离",
+      "failure": "终止先改本地授权再核对下游",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H04:edge:employment-source",
+      "type": "derived_from",
+      "from": "H04:object:employment",
+      "to": "H04:object:offer",
+      "payload": "已核对 offer 版本及 HR 批准",
+      "timing": "static",
+      "invariant": "不会把 offer accepted 当作付款证据",
+      "failure": "无接受或版本冲突转 HR",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H04:edge:payroll-employment",
+      "type": "derived_from",
+      "from": "H04:object:payroll",
+      "to": "H04:object:employment",
+      "payload": "冻结雇佣区间与版本",
+      "timing": "batch",
+      "invariant": "不得按消息接收时间计薪",
+      "failure": "补录产生差额依据",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H04:edge:payroll-rate",
+      "type": "derived_from",
+      "from": "H04:object:payroll",
+      "to": "H04:object:rate",
+      "payload": "不重叠有效费率区间",
+      "timing": "batch",
+      "invariant": "同一项目同一时刻仅一个费率",
+      "failure": "重叠阻断批准",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H04:edge:payment-request",
+      "type": "requests",
+      "from": "H04:service:payroll",
+      "to": "H04:external_system:payment",
+      "payload": "run identity + approved amount + operation ID",
+      "timing": "async",
+      "invariant": "同一业务支付不能盲目再建",
+      "failure": "超时查原 operation，无法核对转人工",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H04:edge:payment-read",
+      "type": "reads",
+      "from": "H04:service:payroll",
+      "to": "H04:external_system:payment",
+      "payload": "外部受理与结算身份",
+      "timing": "async",
+      "invariant": "外部接受与最终结算分开",
+      "failure": "拒付保留原批次并创建后续处理",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H04:edge:off-access",
+      "type": "depends_on",
+      "from": "H04:object:offboarding",
+      "to": "H04:object:assignment",
+      "payload": "所有必需应用撤权证据",
+      "timing": "static",
+      "invariant": "部分完成不汇总为全部完成",
+      "failure": "列出责任人与未确认应用",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H04:edge:off-payroll",
+      "type": "depends_on",
+      "from": "H04:object:offboarding",
+      "to": "H04:object:payroll",
+      "payload": "最终薪资结果已解释",
+      "timing": "static",
+      "invariant": "工资结清不证明账号撤销",
+      "failure": "独立处理未知或拒付",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H04:edge:employment-projection",
+      "type": "projects",
+      "from": "H04:object:employment",
+      "to": "H04:ui:people",
+      "payload": "状态、依据、新鲜度、未完成责任",
+      "timing": "async",
+      "invariant": "UI 投影不作为授权判据",
+      "failure": "刷新重新读取权威版本",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H04:edge:access-projection",
+      "type": "projects",
+      "from": "H04:object:assignment",
+      "to": "H04:ui:people",
+      "payload": "状态、依据、新鲜度、未完成责任",
+      "timing": "async",
+      "invariant": "UI 投影不作为授权判据",
+      "failure": "刷新重新读取权威版本",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H04:edge:offboarding-projection",
+      "type": "projects",
+      "from": "H04:object:offboarding",
+      "to": "H04:ui:people",
+      "payload": "状态、依据、新鲜度、未完成责任",
+      "timing": "async",
+      "invariant": "UI 投影不作为授权判据",
+      "failure": "刷新重新读取权威版本",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H04:edge:payroll-projection",
+      "type": "projects",
+      "from": "H04:object:payroll",
+      "to": "H04:ui:payroll",
+      "payload": "应计、差额、批准、提交、结算",
+      "timing": "async",
+      "invariant": "金额与输入快照可回查",
+      "failure": "迟到结果显示同一 operation",
+      "basis": "synthetic",
+      "claim_ids": []
+    }
+  ],
+  "lifecycles": [
+    {
+      "object_id": "H04:object:offer",
+      "states": [
+        "unresolved",
+        "accepted",
+        "rejected",
+        "deprecated"
+      ],
+      "transitions": [
+        {
+          "from": "unresolved",
+          "to": "accepted",
+          "trigger": "来源确认接受",
+          "guard": "具体 offer 身份与版本匹配",
+          "durable_effect": "保存核对投影",
+          "recovery": "版本变化重新读取"
+        },
+        {
+          "from": "unresolved",
+          "to": "rejected",
+          "trigger": "来源确认拒绝",
+          "guard": "来源对象匹配",
+          "durable_effect": "保存拒绝投影",
+          "recovery": "不得据此创建有效雇佣"
+        },
+        {
+          "from": "accepted",
+          "to": "deprecated",
+          "trigger": "来源明确旧版失效",
+          "guard": "保留替代关系",
+          "durable_effect": "保存历史版本",
+          "recovery": "不改写已批准历史批次"
+        }
+      ]
+    },
+    {
+      "object_id": "H04:object:employment",
+      "states": [
+        "planned",
+        "active",
+        "ended",
+        "cancelled"
+      ],
+      "transitions": [
+        {
+          "from": "planned",
+          "to": "active",
+          "trigger": "有效期开始",
+          "guard": "HR 已批准；时钟到达生效点",
+          "durable_effect": "保存 active 与区间依据",
+          "recovery": "迟到任务按有效时间重建"
+        },
+        {
+          "from": "planned",
+          "to": "cancelled",
+          "trigger": "HR 撤销入职",
+          "guard": "版本与权限匹配",
+          "durable_effect": "撤销期望权限并保留记录",
+          "recovery": "核对已预建的账号"
+        },
+        {
+          "from": "active",
+          "to": "ended",
+          "trigger": "终止生效",
+          "guard": "终止版本已批准",
+          "durable_effect": "本地授权终止；发撤权任务",
+          "recovery": "逐应用核对，不等待工资才终止"
+        }
+      ]
+    },
+    {
+      "object_id": "H04:object:assignment",
+      "states": [
+        "pending",
+        "active",
+        "revoking",
+        "revoked",
+        "unknown"
+      ],
+      "transitions": [
+        {
+          "from": "pending",
+          "to": "active",
+          "trigger": "目标确认配置",
+          "guard": "当前 desired revision 与有效关系仍允许",
+          "durable_effect": "保存 observed active 与时间",
+          "recovery": "旧回执只入历史"
+        },
+        {
+          "from": "active",
+          "to": "revoking",
+          "trigger": "终止生效",
+          "guard": "当前期望无权限",
+          "durable_effect": "本地阻断并保存任务",
+          "recovery": "目标失败则保持 revoking"
+        },
+        {
+          "from": "revoking",
+          "to": "unknown",
+          "trigger": "响应丢失",
+          "guard": "已存在 operation",
+          "durable_effect": "保存未知结果",
+          "recovery": "先查原目标账号"
+        },
+        {
+          "from": "unknown",
+          "to": "revoked",
+          "trigger": "核对停用",
+          "guard": "账号身份正确且期望仍停用",
+          "durable_effect": "保存观察证据",
+          "recovery": "会话能力另验"
+        },
+        {
+          "from": "revoking",
+          "to": "revoked",
+          "trigger": "目标确认停用",
+          "guard": "同一应用和账号",
+          "durable_effect": "保存确认",
+          "recovery": "重复回执不重复效果"
+        },
+        {
+          "from": "revoked",
+          "to": "pending",
+          "trigger": "返聘或重新授权",
+          "guard": "新 employment 与 desired revision 获批",
+          "durable_effect": "新配置任务保留旧期间",
+          "recovery": "旧撤权任务重算当前期望"
+        }
+      ]
+    },
+    {
+      "object_id": "H04:object:payroll",
+      "states": [
+        "draft",
+        "approved",
+        "submitted",
+        "unknown",
+        "settled",
+        "rejected"
+      ],
+      "transitions": [
+        {
+          "from": "draft",
+          "to": "approved",
+          "trigger": "薪资人员批准",
+          "guard": "有效区间不重叠、输入 hash 一致",
+          "durable_effect": "冻结规则、输入与金额",
+          "recovery": "输入修订生成新草稿"
+        },
+        {
+          "from": "approved",
+          "to": "submitted",
+          "trigger": "任务发送",
+          "guard": "operation 已持久化",
+          "durable_effect": "保存提交身份",
+          "recovery": "重复发送前查状态"
+        },
+        {
+          "from": "submitted",
+          "to": "unknown",
+          "trigger": "超时",
+          "guard": "请求可能已受理",
+          "durable_effect": "保存未知",
+          "recovery": "核对原 operation"
+        },
+        {
+          "from": "submitted",
+          "to": "settled",
+          "trigger": "外部确认结算",
+          "guard": "批次金额与身份匹配",
+          "durable_effect": "保存结算依据",
+          "recovery": "重复结果不再付款"
+        },
+        {
+          "from": "unknown",
+          "to": "settled",
+          "trigger": "核对已结算",
+          "guard": "权威结果匹配",
+          "durable_effect": "保存核对记录",
+          "recovery": "投影可重建"
+        },
+        {
+          "from": "submitted",
+          "to": "rejected",
+          "trigger": "外部明确拒绝",
+          "guard": "可核对的拒绝结果",
+          "durable_effect": "保留失败原因",
+          "recovery": "修正后按明确授权另行处理"
+        }
+      ]
+    },
+    {
+      "object_id": "H04:object:offboarding",
+      "states": [
+        "open",
+        "partial",
+        "complete"
+      ],
+      "transitions": [
+        {
+          "from": "open",
+          "to": "partial",
+          "trigger": "部分交接或撤权完成",
+          "guard": "至少一项确认",
+          "durable_effect": "逐项结果与责任人",
+          "recovery": "未完成不隐藏"
+        },
+        {
+          "from": "partial",
+          "to": "complete",
+          "trigger": "HR 核对关闭",
+          "guard": "必需撤权、交接接收、薪资结果均解释清楚",
+          "durable_effect": "保存关闭证据",
+          "recovery": "后续新事实另开纠正记录"
+        }
+      ]
+    }
+  ],
+  "algorithm_ids": [
+    "ALG:lookup",
+    "ALG:windows",
+    "ALG:caches"
+  ],
+  "claim_ids": [
+    "H04:claim:offer-identity",
+    "H04:claim:hire-guard",
+    "H04:claim:deprovision-not-delete",
+    "H04:claim:suspend-boundary",
+    "H04:claim:effective-obligations",
+    "H04:claim:architecture"
+  ],
+  "checks": [
+    {
+      "id": "H04:check:happy",
+      "kind": "happy_path",
+      "given": "offer v2; employment [6,26); rates 300/400 at day16",
+      "when": "确认、计算、外部结算",
+      "then": "7000；确认后 settled",
+      "evidence_required": "版本、冻结输入、外部结果、UI"
+    },
+    {
+      "id": "H04:check:duplicate",
+      "kind": "duplicate",
+      "given": "同一入职和支付 operation",
+      "when": "重复提交与回执",
+      "then": "一份雇佣、一项支付效果",
+      "evidence_required": "唯一键与适配器实际调用数"
+    },
+    {
+      "id": "H04:check:ordering",
+      "kind": "out_of_order",
+      "given": "当前 revision8 ended",
+      "when": "迟到 revision7 active",
+      "then": "不得复活旧雇佣",
+      "evidence_required": "revision 决策与下游核对"
+    },
+    {
+      "id": "H04:check:race",
+      "kind": "concurrency",
+      "given": "同一 employment version",
+      "when": "并发修改终止时间",
+      "then": "一方成功另一方冲突",
+      "evidence_required": "条件更新行数及页面差异"
+    },
+    {
+      "id": "H04:check:tenant",
+      "kind": "tenant_isolation",
+      "given": "两租户 employee42",
+      "when": "查工资/缓存/下载",
+      "then": "只能见本租户获准字段",
+      "evidence_required": "query scope、下载授权与返回内容"
+    },
+    {
+      "id": "H04:check:unknown",
+      "kind": "unknown_outcome",
+      "given": "支付已受理",
+      "when": "网络超时再提交",
+      "then": "查原 operation；不重复支付",
+      "evidence_required": "operation、外部查询、调用计数"
+    },
+    {
+      "id": "H04:check:crash",
+      "kind": "recovery",
+      "given": "账号已停用",
+      "when": "本地确认前崩溃重放",
+      "then": "重建结果且不重新开启",
+      "evidence_required": "重放与目标状态"
+    },
+    {
+      "id": "H04:check:windows",
+      "kind": "algorithm",
+      "given": "[6,26), day16 调薪",
+      "when": "交集计算",
+      "then": "7000；终止改24则6200",
+      "evidence_required": "整数分手算及区间输入"
+    },
+    {
+      "id": "H04:check:partial",
+      "kind": "partial_completion",
+      "given": "应用A revoked；B unknown",
+      "when": "尝试关闭离职",
+      "then": "拒绝 complete",
+      "evidence_required": "必需清单与未确认项"
+    },
+    {
+      "id": "H04:check:rehire",
+      "kind": "out_of_order",
+      "given": "E2 已获新授权",
+      "when": "E1 旧撤权迟到",
+      "then": "重算当前期望，不按邮箱覆盖",
+      "evidence_required": "雇佣身份与 desired revision"
+    }
+  ]
+}
