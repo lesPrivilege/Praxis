@@ -1,0 +1,1020 @@
+{
+  "contract_version": "1.0",
+  "case_id": "H07",
+  "title": "数据变化如何成为可信的 BI 发布",
+  "scope": "Synthetic operational completed-order metric; event-time daily windows in UTC; excludes financial revenue recognition, taxes, FX and actual provider integrations. Snowflake public stream, row-policy and lineage facts are scoped separately.",
+  "synthetic": true,
+  "source_ids": [
+    "SNOWFLAKE",
+    "P03-SRC-snowflake-row-access",
+    "P03-SRC-snowflake-lineage"
+  ],
+  "nodes": [
+    {
+      "id": "H07:actor:analyst",
+      "type": "actor",
+      "label": "运营分析员",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; metadata, cache, exports and tasks retain tenant and current authorization scope"
+    },
+    {
+      "id": "H07:actor:owner",
+      "type": "actor",
+      "label": "指标负责人",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; metadata, cache, exports and tasks retain tenant and current authorization scope"
+    },
+    {
+      "id": "H07:actor:steward",
+      "type": "actor",
+      "label": "数据管理员",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; metadata, cache, exports and tasks retain tenant and current authorization scope"
+    },
+    {
+      "id": "H07:ui:governance",
+      "type": "ui",
+      "label": "治理工作台",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; metadata, cache, exports and tasks retain tenant and current authorization scope"
+    },
+    {
+      "id": "H07:service:ingest",
+      "type": "service",
+      "label": "接入与计算服务",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; metadata, cache, exports and tasks retain tenant and current authorization scope"
+    },
+    {
+      "id": "H07:service:governance",
+      "type": "service",
+      "label": "治理与发布服务",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; metadata, cache, exports and tasks retain tenant and current authorization scope"
+    },
+    {
+      "id": "H07:store:raw",
+      "type": "store",
+      "label": "修订证据库",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; metadata, cache, exports and tasks retain tenant and current authorization scope"
+    },
+    {
+      "id": "H07:store:control",
+      "type": "store",
+      "label": "发布控制记录库",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; metadata, cache, exports and tasks retain tenant and current authorization scope"
+    },
+    {
+      "id": "H07:external_system:source",
+      "type": "external_system",
+      "label": "合成业务源系统",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; metadata, cache, exports and tasks retain tenant and current authorization scope"
+    },
+    {
+      "id": "H07:external_system:snowflake",
+      "type": "external_system",
+      "label": "Snowflake",
+      "authority": "Snowflake documented stream behavior; integration design is synthetic",
+      "tenant_scope": "tenant-bound; metadata, cache, exports and tasks retain tenant and current authorization scope"
+    },
+    {
+      "id": "H07:external_system:bi",
+      "type": "external_system",
+      "label": "合成 BI 适配器",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; metadata, cache, exports and tasks retain tenant and current authorization scope"
+    },
+    {
+      "id": "H07:object:revision",
+      "type": "object",
+      "label": "原始订单修订",
+      "authority": "synthetic source system; immutable received evidence replica",
+      "tenant_scope": "tenant-bound; metadata, cache, exports and tasks retain tenant and current authorization scope"
+    },
+    {
+      "id": "H07:object:stream",
+      "type": "object",
+      "label": "Stream 消费位置",
+      "authority": "Snowflake",
+      "tenant_scope": "tenant-bound; metadata, cache, exports and tasks retain tenant and current authorization scope"
+    },
+    {
+      "id": "H07:object:dataset",
+      "type": "object",
+      "label": "数据版本 D",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; metadata, cache, exports and tasks retain tenant and current authorization scope"
+    },
+    {
+      "id": "H07:object:metric",
+      "type": "object",
+      "label": "指标定义 M",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; metadata, cache, exports and tasks retain tenant and current authorization scope"
+    },
+    {
+      "id": "H07:object:policy",
+      "type": "object",
+      "label": "受众策略 P",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; metadata, cache, exports and tasks retain tenant and current authorization scope"
+    },
+    {
+      "id": "H07:object:quality",
+      "type": "object",
+      "label": "质量检查结果",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; metadata, cache, exports and tasks retain tenant and current authorization scope"
+    },
+    {
+      "id": "H07:object:release",
+      "type": "object",
+      "label": "发布 R",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; metadata, cache, exports and tasks retain tenant and current authorization scope"
+    },
+    {
+      "id": "H07:object:attempt",
+      "type": "object",
+      "label": "BI 集成尝试 A",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; metadata, cache, exports and tasks retain tenant and current authorization scope"
+    },
+    {
+      "id": "H07:event:source-change",
+      "type": "event",
+      "label": "订单修订通知",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; metadata, cache, exports and tasks retain tenant and current authorization scope"
+    },
+    {
+      "id": "H07:rule:publish-gate",
+      "type": "rule",
+      "label": "版本、质量与批准条件",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; metadata, cache, exports and tasks retain tenant and current authorization scope"
+    }
+  ],
+  "edges": [
+    {
+      "id": "H07:edge:analyst-ui",
+      "type": "operates",
+      "from": "H07:actor:analyst",
+      "to": "H07:ui:governance",
+      "payload": "按角色查看候选、批准或受众配置",
+      "timing": "sync",
+      "invariant": "权限来自服务端身份；不显示无权对象",
+      "failure": "拒绝后保留同一候选身份供获授权者处理",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H07:claim:release-contract"
+      ]
+    },
+    {
+      "id": "H07:edge:owner-ui",
+      "type": "operates",
+      "from": "H07:actor:owner",
+      "to": "H07:ui:governance",
+      "payload": "按角色查看候选、批准或受众配置",
+      "timing": "sync",
+      "invariant": "权限来自服务端身份；不显示无权对象",
+      "failure": "拒绝后保留同一候选身份供获授权者处理",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H07:claim:release-contract"
+      ]
+    },
+    {
+      "id": "H07:edge:steward-ui",
+      "type": "operates",
+      "from": "H07:actor:steward",
+      "to": "H07:ui:governance",
+      "payload": "按角色查看候选、批准或受众配置",
+      "timing": "sync",
+      "invariant": "权限来自服务端身份；不显示无权对象",
+      "failure": "拒绝后保留同一候选身份供获授权者处理",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H07:claim:release-contract"
+      ]
+    },
+    {
+      "id": "H07:edge:submit",
+      "type": "commands",
+      "from": "H07:ui:governance",
+      "to": "H07:service:governance",
+      "payload": "tenant context, release ID, expected_version, D/M/W/P 摘要, operation ID",
+      "timing": "sync",
+      "invariant": "提交绑定不可变输入；租户不由未经核验的客户端字段决定",
+      "failure": "过期版本明确冲突；重复命令找回同一尝试",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H07:claim:release-contract"
+      ]
+    },
+    {
+      "id": "H07:edge:source-owner",
+      "type": "owns",
+      "from": "H07:external_system:source",
+      "to": "H07:object:revision",
+      "payload": "订单身份、revision、完成时间、状态和金额",
+      "timing": "static",
+      "invariant": "仓库副本不改写源业务事实",
+      "failure": "源更正通过新修订传入",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H07:claim:window-policy"
+      ]
+    },
+    {
+      "id": "H07:edge:source-notice",
+      "type": "emits",
+      "from": "H07:external_system:source",
+      "to": "H07:event:source-change",
+      "payload": "tenant, order ID, revision, event time, received metadata",
+      "timing": "async",
+      "invariant": "通知有修订身份但到达不保证顺序",
+      "failure": "重复、缺口和无效签发者分别记录",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H07:claim:window-policy"
+      ]
+    },
+    {
+      "id": "H07:edge:ingest-notice",
+      "type": "delivers",
+      "from": "H07:event:source-change",
+      "to": "H07:service:ingest",
+      "payload": "带来源身份的修订消息",
+      "timing": "async",
+      "invariant": "确认前持久接入；修订唯一性与业务 key 相同",
+      "failure": "存储失败不确认；重放按修订去重",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H07:claim:window-policy"
+      ]
+    },
+    {
+      "id": "H07:edge:raw-revision",
+      "type": "stores",
+      "from": "H07:store:raw",
+      "to": "H07:object:revision",
+      "payload": "原始 payload 摘要、来源位置和接收时间",
+      "timing": "sync",
+      "invariant": "保留每个修订而非只覆盖当前行",
+      "failure": "链缺口隔离并补数",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H07:claim:window-policy"
+      ]
+    },
+    {
+      "id": "H07:edge:load-warehouse",
+      "type": "requests",
+      "from": "H07:service:ingest",
+      "to": "H07:external_system:snowflake",
+      "payload": "固定导入批次、修订身份与转换版本",
+      "timing": "batch",
+      "invariant": "导入重复可核对；接入位置与效果有对应证据",
+      "failure": "timeout 后按批次核对；不凭客户端错误判断未提交",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H07:claim:window-policy"
+      ]
+    },
+    {
+      "id": "H07:edge:stream-owner",
+      "type": "owns",
+      "from": "H07:external_system:snowflake",
+      "to": "H07:object:stream",
+      "payload": "源对象 offset 和可访问历史边界",
+      "timing": "static",
+      "invariant": "单纯查询不推进；消费 DML 的提交决定推进",
+      "failure": "事务回滚保留位置；stale 另行恢复",
+      "basis": "source_fact",
+      "claim_ids": [
+        "H07:claim:stream-offset",
+        "H07:claim:stream-stale"
+      ]
+    },
+    {
+      "id": "H07:edge:compute-input",
+      "type": "reads",
+      "from": "H07:service:ingest",
+      "to": "H07:external_system:snowflake",
+      "payload": "冻结读取边界下的最高有效修订与窗口输入",
+      "timing": "batch",
+      "invariant": "M1 当前状态聚合与 M2 事件历史不混用",
+      "failure": "缺旧贡献或 schema 不兼容时重算/隔离",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H07:claim:window-policy"
+      ]
+    },
+    {
+      "id": "H07:edge:dataset-owner",
+      "type": "owns",
+      "from": "H07:service:ingest",
+      "to": "H07:object:dataset",
+      "payload": "D 的源位置、内容摘要和构建版本",
+      "timing": "static",
+      "invariant": "同一 D 不换输入",
+      "failure": "有修订则新建 D",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H07:claim:release-contract"
+      ]
+    },
+    {
+      "id": "H07:edge:dataset-origin",
+      "type": "derived_from",
+      "from": "H07:object:dataset",
+      "to": "H07:object:revision",
+      "payload": "修订集合与转换规则",
+      "timing": "batch",
+      "invariant": "可解释某修订纳入或排除的原因",
+      "failure": "丢失源历史时拒绝声称可重演",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H07:claim:window-policy"
+      ]
+    },
+    {
+      "id": "H07:edge:metric-owner",
+      "type": "owns",
+      "from": "H07:service:governance",
+      "to": "H07:object:metric",
+      "payload": "口径版本与负责人批准",
+      "timing": "static",
+      "invariant": "已批准版本不可变",
+      "failure": "口径变化新建草稿",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H07:claim:release-contract"
+      ]
+    },
+    {
+      "id": "H07:edge:policy-owner",
+      "type": "owns",
+      "from": "H07:actor:steward",
+      "to": "H07:object:policy",
+      "payload": "受众策略与权限修订",
+      "timing": "static",
+      "invariant": "批准者与计算服务权限职责分开",
+      "failure": "撤权影响当前读取，保留历史审批证据",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H07:claim:release-contract"
+      ]
+    },
+    {
+      "id": "H07:edge:release-owner",
+      "type": "owns",
+      "from": "H07:service:governance",
+      "to": "H07:object:release",
+      "payload": "批准输入与发布状态",
+      "timing": "static",
+      "invariant": "validated 与 approved、published 分别取证",
+      "failure": "证据不足保持 blocked 或 unknown",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H07:claim:release-contract"
+      ]
+    },
+    {
+      "id": "H07:edge:attempt-owner",
+      "type": "owns",
+      "from": "H07:service:governance",
+      "to": "H07:object:attempt",
+      "payload": "持久尝试身份及外部核对结果",
+      "timing": "static",
+      "invariant": "同一 release 重试找回同一尝试",
+      "failure": "未知结果先核对",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H07:claim:release-contract"
+      ]
+    },
+    {
+      "id": "H07:edge:quality-owner",
+      "type": "owns",
+      "from": "H07:service:ingest",
+      "to": "H07:object:quality",
+      "payload": "固定输入上的质量检查与差异桥",
+      "timing": "static",
+      "invariant": "检查结果绑定 D 和代码摘要",
+      "failure": "单位或修订链异常使候选 blocked",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H07:claim:window-policy"
+      ]
+    },
+    {
+      "id": "H07:edge:persist-metric",
+      "type": "stores",
+      "from": "H07:store:control",
+      "to": "H07:object:metric",
+      "payload": "版本、摘要、证据引用和状态",
+      "timing": "sync",
+      "invariant": "批准与待执行任务在本地事务中保持一致",
+      "failure": "恢复读取持久状态，不由缓存补写成功",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H07:claim:release-contract"
+      ]
+    },
+    {
+      "id": "H07:edge:persist-policy",
+      "type": "stores",
+      "from": "H07:store:control",
+      "to": "H07:object:policy",
+      "payload": "版本、摘要、证据引用和状态",
+      "timing": "sync",
+      "invariant": "批准与待执行任务在本地事务中保持一致",
+      "failure": "恢复读取持久状态，不由缓存补写成功",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H07:claim:release-contract"
+      ]
+    },
+    {
+      "id": "H07:edge:persist-dataset",
+      "type": "stores",
+      "from": "H07:store:control",
+      "to": "H07:object:dataset",
+      "payload": "版本、摘要、证据引用和状态",
+      "timing": "sync",
+      "invariant": "批准与待执行任务在本地事务中保持一致",
+      "failure": "恢复读取持久状态，不由缓存补写成功",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H07:claim:release-contract"
+      ]
+    },
+    {
+      "id": "H07:edge:persist-quality",
+      "type": "stores",
+      "from": "H07:store:control",
+      "to": "H07:object:quality",
+      "payload": "版本、摘要、证据引用和状态",
+      "timing": "sync",
+      "invariant": "批准与待执行任务在本地事务中保持一致",
+      "failure": "恢复读取持久状态，不由缓存补写成功",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H07:claim:release-contract"
+      ]
+    },
+    {
+      "id": "H07:edge:persist-release",
+      "type": "stores",
+      "from": "H07:store:control",
+      "to": "H07:object:release",
+      "payload": "版本、摘要、证据引用和状态",
+      "timing": "sync",
+      "invariant": "批准与待执行任务在本地事务中保持一致",
+      "failure": "恢复读取持久状态，不由缓存补写成功",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H07:claim:release-contract"
+      ]
+    },
+    {
+      "id": "H07:edge:persist-attempt",
+      "type": "stores",
+      "from": "H07:store:control",
+      "to": "H07:object:attempt",
+      "payload": "版本、摘要、证据引用和状态",
+      "timing": "sync",
+      "invariant": "批准与待执行任务在本地事务中保持一致",
+      "failure": "恢复读取持久状态，不由缓存补写成功",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H07:claim:release-contract"
+      ]
+    },
+    {
+      "id": "H07:edge:release-data",
+      "type": "derived_from",
+      "from": "H07:object:release",
+      "to": "H07:object:dataset",
+      "payload": "按 M/W/P 计算的结果与差异桥",
+      "timing": "batch",
+      "invariant": "D1=220，D2=200；重复不增量",
+      "failure": "异常修订隔离；按受影响窗口重算",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H07:claim:window-policy"
+      ]
+    },
+    {
+      "id": "H07:edge:release-metric",
+      "type": "depends_on",
+      "from": "H07:object:release",
+      "to": "H07:object:metric",
+      "payload": "approved M 与代码摘要",
+      "timing": "static",
+      "invariant": "口径修改需要新候选",
+      "failure": "拒绝批准后换 SQL",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H07:claim:release-contract"
+      ]
+    },
+    {
+      "id": "H07:edge:release-policy",
+      "type": "depends_on",
+      "from": "H07:object:release",
+      "to": "H07:object:policy",
+      "payload": "受众策略 P 和当前授权检查",
+      "timing": "static",
+      "invariant": "冻结历史策略不固化已撤销的用户权限",
+      "failure": "撤权后拒绝缓存和导出",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H07:claim:release-contract"
+      ]
+    },
+    {
+      "id": "H07:edge:release-quality",
+      "type": "depends_on",
+      "from": "H07:object:release",
+      "to": "H07:object:quality",
+      "payload": "检查通过证据与输入摘要",
+      "timing": "static",
+      "invariant": "检查数据与批准数据相同",
+      "failure": "质量结果过期时重跑",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H07:claim:release-contract"
+      ]
+    },
+    {
+      "id": "H07:edge:publish-guard",
+      "type": "authorizes",
+      "from": "H07:rule:publish-gate",
+      "to": "H07:service:governance",
+      "payload": "口径、受众、版本、质量与批准条件",
+      "timing": "sync",
+      "invariant": "允许执行不等于外部已经执行",
+      "failure": "缺批准或版本冲突拒绝执行",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H07:claim:release-contract"
+      ]
+    },
+    {
+      "id": "H07:edge:attempt-release",
+      "type": "depends_on",
+      "from": "H07:object:attempt",
+      "to": "H07:object:release",
+      "payload": "release ID、输入摘要及预期旧外部版本",
+      "timing": "static",
+      "invariant": "重试不能携带新输入冒用旧尝试",
+      "failure": "变更先建立新发布；旧 unknown 先核对",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H07:claim:release-contract"
+      ]
+    },
+    {
+      "id": "H07:edge:read-control",
+      "type": "reads",
+      "from": "H07:service:governance",
+      "to": "H07:store:control",
+      "payload": "候选、批准、任务、外部映射",
+      "timing": "sync",
+      "invariant": "读模型不替代权威批准",
+      "failure": "查询陈旧时显示待核对并读取记录",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H07:claim:release-contract"
+      ]
+    },
+    {
+      "id": "H07:edge:bi-switch",
+      "type": "requests",
+      "from": "H07:service:governance",
+      "to": "H07:external_system:bi",
+      "payload": "release ID, expected external version, audience digest",
+      "timing": "async",
+      "invariant": "合成适配器按版本条件切换；旧请求不能覆盖新版本",
+      "failure": "timeout 保留 unknown；无核对接口则人工接管",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H07:claim:release-contract"
+      ]
+    },
+    {
+      "id": "H07:edge:bi-reconcile",
+      "type": "reads",
+      "from": "H07:service:governance",
+      "to": "H07:external_system:bi",
+      "payload": "按 release ID 查询生效数据集与受众",
+      "timing": "async",
+      "invariant": "读回一致才确认 published",
+      "failure": "不可用时继续 unknown；明确未受理后安全重试",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H07:claim:release-contract"
+      ]
+    },
+    {
+      "id": "H07:edge:release-ui",
+      "type": "projects",
+      "from": "H07:object:release",
+      "to": "H07:ui:governance",
+      "payload": "当前确认发布、候选状态、总额、差异与新鲜度",
+      "timing": "async",
+      "invariant": "本地确认状态与 BI 待核对状态分别显示",
+      "failure": "晚回执不能使当前发布倒退",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H07:claim:release-contract"
+      ]
+    },
+    {
+      "id": "H07:edge:attempt-ui",
+      "type": "projects",
+      "from": "H07:object:attempt",
+      "to": "H07:ui:governance",
+      "payload": "已保存、发送中、待核对、失败或确认",
+      "timing": "async",
+      "invariant": "换页不丢操作身份",
+      "failure": "重新读取同一尝试恢复界面",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H07:claim:release-contract"
+      ]
+    }
+  ],
+  "lifecycles": [
+    {
+      "object_id": "H07:object:metric",
+      "states": [
+        "draft",
+        "approved",
+        "retired"
+      ],
+      "transitions": [
+        {
+          "from": "draft",
+          "to": "approved",
+          "trigger": "负责人接受口径",
+          "guard": "定义摘要固定且批准人与提交者职责分离",
+          "durable_effect": "保存批准身份及 M 版本",
+          "recovery": "记录不完整则不进入 approved"
+        },
+        {
+          "from": "approved",
+          "to": "retired",
+          "trigger": "新口径替代",
+          "guard": "新 M 已批准且引用范围明确",
+          "durable_effect": "保留旧版用于历史重演",
+          "recovery": "原发布仍使用原 M，不迁移重写"
+        }
+      ]
+    },
+    {
+      "object_id": "H07:object:dataset",
+      "states": [
+        "captured",
+        "validated",
+        "quarantined"
+      ],
+      "transitions": [
+        {
+          "from": "captured",
+          "to": "validated",
+          "trigger": "质量检查完成",
+          "guard": "来源完整、修订链及金额单位可解释",
+          "durable_effect": "保存 D 摘要和检查证据",
+          "recovery": "同一输入重放取同一结果"
+        },
+        {
+          "from": "captured",
+          "to": "quarantined",
+          "trigger": "schema 或修订异常",
+          "guard": "检查失败或历史缺口",
+          "durable_effect": "保存异常与受影响窗口",
+          "recovery": "补数或修复转换后产生新的 D"
+        },
+        {
+          "from": "validated",
+          "to": "quarantined",
+          "trigger": "发现原检查未覆盖问题",
+          "guard": "异常关联到确定 D",
+          "durable_effect": "阻断未发布候选并记录已发布影响",
+          "recovery": "保留旧历史，创建修订发布"
+        }
+      ]
+    },
+    {
+      "object_id": "H07:object:release",
+      "states": [
+        "candidate",
+        "validated",
+        "approved",
+        "publishing",
+        "published",
+        "unknown",
+        "blocked",
+        "superseded"
+      ],
+      "transitions": [
+        {
+          "from": "candidate",
+          "to": "validated",
+          "trigger": "检查成功",
+          "guard": "D/M/W/P/code 完全绑定且无质量异常",
+          "durable_effect": "固定结果和差异桥",
+          "recovery": "输入变化产生新候选"
+        },
+        {
+          "from": "candidate",
+          "to": "blocked",
+          "trigger": "质量检查失败",
+          "guard": "空值、金额单位、租户或修订链异常",
+          "durable_effect": "保存阻断原因",
+          "recovery": "修复后新候选，不覆盖失败证据"
+        },
+        {
+          "from": "validated",
+          "to": "approved",
+          "trigger": "负责人批准",
+          "guard": "expected_version 相同；口径与受众批准有效",
+          "durable_effect": "保存批准及本地待执行任务",
+          "recovery": "事务未提交不推测批准"
+        },
+        {
+          "from": "approved",
+          "to": "publishing",
+          "trigger": "worker 执行待发布任务",
+          "guard": "批准有效；唯一 release 尝试存在",
+          "durable_effect": "保存 publishing 与 attempt 关联",
+          "recovery": "重启读取已有尝试"
+        },
+        {
+          "from": "approved",
+          "to": "blocked",
+          "trigger": "发布前质量撤回或批准条件失效",
+          "guard": "发现确定输入异常、受众或批准已失效",
+          "durable_effect": "保存阻断原因并停止尚未发出的任务",
+          "recovery": "修复后创建新候选并重新审核，不沿用旧批准"
+        },
+        {
+          "from": "publishing",
+          "to": "published",
+          "trigger": "BI 读回确认",
+          "guard": "外部 release 与受众摘要一致",
+          "durable_effect": "保存确认证据并切换当前发布投影",
+          "recovery": "旧回执不回退当前版本"
+        },
+        {
+          "from": "publishing",
+          "to": "blocked",
+          "trigger": "BI 明确拒绝",
+          "guard": "有与同一尝试对应的拒绝证据，排除 unknown",
+          "durable_effect": "保存拒绝并保留最后确认的旧发布",
+          "recovery": "按拒绝原因修复；输入变化则新建候选，未变化按适配器语义恢复"
+        },
+        {
+          "from": "publishing",
+          "to": "unknown",
+          "trigger": "外部调用超时",
+          "guard": "未取得确定结果",
+          "durable_effect": "保存未知状态及查询身份",
+          "recovery": "按 release ID 核对，不新建发布"
+        },
+        {
+          "from": "unknown",
+          "to": "published",
+          "trigger": "核对发现已生效",
+          "guard": "外部身份与预期一致",
+          "durable_effect": "补写确认证据",
+          "recovery": "再次核对可幂等处理"
+        },
+        {
+          "from": "unknown",
+          "to": "publishing",
+          "trigger": "核对明确未受理后重试",
+          "guard": "适配器支持安全重试且原批准仍有效",
+          "durable_effect": "同一尝试重新发送",
+          "recovery": "再次超时回 unknown"
+        },
+        {
+          "from": "published",
+          "to": "superseded",
+          "trigger": "新发布完成确认",
+          "guard": "新 R 已确认且版本切换顺序有效",
+          "durable_effect": "保留旧结果及替代关系",
+          "recovery": "旧版可重演；不无痕覆盖"
+        }
+      ]
+    },
+    {
+      "object_id": "H07:object:attempt",
+      "states": [
+        "prepared",
+        "sent",
+        "confirmed",
+        "unknown",
+        "failed"
+      ],
+      "transitions": [
+        {
+          "from": "prepared",
+          "to": "sent",
+          "trigger": "发出切换请求",
+          "guard": "release 已批准且请求已持久化",
+          "durable_effect": "保存发送身份和预期旧版本",
+          "recovery": "崩溃先按身份核对再重发"
+        },
+        {
+          "from": "sent",
+          "to": "confirmed",
+          "trigger": "收到且核对成功",
+          "guard": "外部对象与 release 和受众一致",
+          "durable_effect": "保存外部确认身份",
+          "recovery": "重复回执不重复切换"
+        },
+        {
+          "from": "sent",
+          "to": "unknown",
+          "trigger": "无确定回执",
+          "guard": "请求可能已受理",
+          "durable_effect": "保存核对待办",
+          "recovery": "不把 timeout 当失败"
+        },
+        {
+          "from": "sent",
+          "to": "failed",
+          "trigger": "外部明确拒绝",
+          "guard": "有可定位拒绝证据",
+          "durable_effect": "保存失败原因",
+          "recovery": "修复后按协议重试或新候选"
+        },
+        {
+          "from": "unknown",
+          "to": "confirmed",
+          "trigger": "读回已生效",
+          "guard": "release 和受众匹配",
+          "durable_effect": "补写确认结果",
+          "recovery": "确认可重复读取"
+        },
+        {
+          "from": "unknown",
+          "to": "sent",
+          "trigger": "读回明确未受理",
+          "guard": "安全重试条件满足",
+          "durable_effect": "保存同一尝试的重试记录",
+          "recovery": "重试结果仍单独核对"
+        }
+      ]
+    },
+    {
+      "object_id": "H07:object:policy",
+      "states": [
+        "draft",
+        "active",
+        "superseded"
+      ],
+      "transitions": [
+        {
+          "from": "draft",
+          "to": "active",
+          "trigger": "管理员批准",
+          "guard": "策略表达与受众范围已复核",
+          "durable_effect": "保存 P 及批准证据",
+          "recovery": "不使用未批准策略发布"
+        },
+        {
+          "from": "active",
+          "to": "superseded",
+          "trigger": "权限策略更新",
+          "guard": "新 P 已生效",
+          "durable_effect": "保留历史 P，更新当前授权版本",
+          "recovery": "旧缓存按当前授权重新检查"
+        }
+      ]
+    }
+  ],
+  "algorithm_ids": [
+    "ALG:lookup",
+    "ALG:windows",
+    "ALG:graph-paths",
+    "ALG:caches"
+  ],
+  "claim_ids": [
+    "H07:claim:stream-offset",
+    "H07:claim:stream-net-delta",
+    "H07:claim:stream-stale",
+    "H07:claim:row-policy-scope",
+    "H07:claim:lineage-scope",
+    "H07:claim:release-contract",
+    "H07:claim:window-policy",
+    "H07:claim:lineage-inference",
+    "H07:claim:scale-policy"
+  ],
+  "checks": [
+    {
+      "id": "H07:check:happy",
+      "kind": "happy_path",
+      "given": "同租户 A:r1=100、B:r1=80、C:r1=50、D:r1=120、A:r2=cancelled；D2 已收齐",
+      "when": "按 M1 与 W 计算，批准并读回 BI",
+      "then": "W=200；D2/M1/W/P1 与 BI 生效 release 一致",
+      "evidence_required": "固定修订表、结果、批准记录、外部读回与 UI 状态"
+    },
+    {
+      "id": "H07:check:duplicate",
+      "kind": "duplicate",
+      "given": "B:r1 已入库，R2 已有准备尝试",
+      "when": "重复投递 B:r1 两次并重复点击发布",
+      "then": "业务修订唯一、总额=200、一个 release 尝试",
+      "evidence_required": "接入日志、唯一键结果、命令返回身份"
+    },
+    {
+      "id": "H07:check:reordering",
+      "kind": "out_of_order",
+      "given": "已存 A:r2，已确认 R2",
+      "when": "再送 A:r1 与旧 R1 回执",
+      "then": "A 保持 cancelled；当前发布保持 R2",
+      "evidence_required": "接收次序、条件更新拒绝原因、最终修订与 release"
+    },
+    {
+      "id": "H07:check:race",
+      "kind": "concurrency",
+      "given": "同一候选版本，两个批准人及两个发布 worker",
+      "when": "同时批准并竞争 BI 条件切换",
+      "then": "一个条件更新生效，另一个返回同结果或冲突；外部不倒退",
+      "evidence_required": "并发调用轨迹、数据库更新计数、外部版本轨迹"
+    },
+    {
+      "id": "H07:check:tenant",
+      "kind": "tenant_isolation",
+      "given": "两个租户同订单 ID A、同指标和日期；一人随后撤权",
+      "when": "读取列表、热/冷缓存、lineage、导出",
+      "then": "各入口不跨租户；撤权后旧缓存也拒绝",
+      "evidence_required": "身份/策略版本、实际返回记录、缓存 key 和导出权限证据"
+    },
+    {
+      "id": "H07:check:timeout",
+      "kind": "unknown_outcome",
+      "given": "BI 已切换 R2，但成功回执丢失",
+      "when": "worker 超时后按 release ID 查询",
+      "then": "核对前 unknown；读回后 confirmed；不新建 R3",
+      "evidence_required": "外部切换记录、尝试状态序列、核对结果"
+    },
+    {
+      "id": "H07:check:crash",
+      "kind": "recovery",
+      "given": "D2 结果已保存，完成标记未写",
+      "when": "worker 崩溃并重放同一计算",
+      "then": "同一候选身份与结果=200，不重复增减贡献",
+      "evidence_required": "持久化边界、重启日志、结果摘要及候选数量"
+    },
+    {
+      "id": "H07:check:stale-gap",
+      "kind": "recovery",
+      "given": "源历史缺口，stream 已 stale",
+      "when": "重建 stream 并尝试继续发布",
+      "then": "后续变化可另跟踪；缺口未补数核对前阻断完整性声明",
+      "evidence_required": "stale 证据、缺失区间、补数对账和发布 guard"
+    },
+    {
+      "id": "H07:check:window",
+      "kind": "algorithm",
+      "given": "W 半开区间；C 完成于右边界；D1 未收 B/A:r2，D2 收齐",
+      "when": "计算两个版本与差异桥",
+      "then": "D1=220，D2=200，差异 +80−100；C 归次日",
+      "evidence_required": "可重放输入、人工计算和本地 synthetic 运行结果"
+    },
+    {
+      "id": "H07:check:semantic-change",
+      "kind": "algorithm",
+      "given": "M1 当前有效完成金额；M2 首次完成金额；相同 D2",
+      "when": "分别使用两份已批准口径计算",
+      "then": "M1=200，M2=300；历史事件不足则 M2 不得发布",
+      "evidence_required": "口径版本、历史证据和两个独立计算结果"
+    },
+    {
+      "id": "H07:check:schema-unit",
+      "kind": "quality",
+      "given": "源 amount 从分改元但名称及数字类型不变",
+      "when": "执行输入契约与分布核对",
+      "then": "候选 blocked；旧发布保留并显示新鲜度中断",
+      "evidence_required": "异常 fixture、检查失败原因、UI 与发布库状态"
+    },
+    {
+      "id": "H07:check:filter-lineage",
+      "kind": "algorithm",
+      "given": "eligible_regions 仅用于过滤，无输出列",
+      "when": "变更该过滤表并遍历 manifest 的反向依赖",
+      "then": "daily_completed 与其下游进入重验范围；不据无 provider 边宣告无影响",
+      "evidence_required": "固定依赖图、遍历结果、manifest 与可见性过滤结果"
+    }
+  ]
+}

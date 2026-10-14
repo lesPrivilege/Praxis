@@ -1,0 +1,1103 @@
+{
+  "contract_version": "1.0",
+  "case_id": "H09",
+  "title": "文档版本、审批与下游记录",
+  "scope": "自建合成CLM；年度服务合同、正文与附件、两名签署人、独立审批和合成ERP原子外部键条件写入（单调export_generation及目标版本CAS）。Ironclad仅为公开产品事实对照；无法律效力、真实部署或SLA结论。",
+  "synthetic": true,
+  "source_ids": [
+    "IRONCLAD",
+    "P03-SRC-ironclad-approval-resets",
+    "P03-SRC-ironclad-api-model",
+    "P03-SRC-ironclad-webhooks",
+    "P03-SRC-ironclad-cancel-signatures",
+    "P03-SRC-postgresql-constraints",
+    "P03-SRC-pdfjs",
+    "P03-SRC-temporal-activities"
+  ],
+  "nodes": [
+    {
+      "id": "H09:actor:reviewer",
+      "type": "actor",
+      "label": "合同负责人及独立审批人",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; external identity includes provider account; explicit role authorization"
+    },
+    {
+      "id": "H09:actor:signer",
+      "type": "actor",
+      "label": "双方签署人",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; external identity includes provider account; explicit role authorization"
+    },
+    {
+      "id": "H09:ui:desk",
+      "type": "ui",
+      "label": "合同工作台",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; external identity includes provider account; explicit role authorization"
+    },
+    {
+      "id": "H09:ui:signing",
+      "type": "ui",
+      "label": "签署界面",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; external identity includes provider account; explicit role authorization"
+    },
+    {
+      "id": "H09:service:contract",
+      "type": "service",
+      "label": "合同与审批服务",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; external identity includes provider account; explicit role authorization"
+    },
+    {
+      "id": "H09:service:integration",
+      "type": "service",
+      "label": "归档与集成服务",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; external identity includes provider account; explicit role authorization"
+    },
+    {
+      "id": "H09:store:metadata",
+      "type": "store",
+      "label": "事务元数据及 outbox",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; external identity includes provider account; explicit role authorization"
+    },
+    {
+      "id": "H09:store:files",
+      "type": "store",
+      "label": "不可变文件仓",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; external identity includes provider account; explicit role authorization"
+    },
+    {
+      "id": "H09:store:inbox",
+      "type": "store",
+      "label": "持久接收箱",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; external identity includes provider account; explicit role authorization"
+    },
+    {
+      "id": "H09:external_system:signature",
+      "type": "external_system",
+      "label": "签署系统（合成接口）",
+      "authority": "synthetic-design; external signature/request state authority",
+      "tenant_scope": "tenant-bound; external identity includes provider account; explicit role authorization"
+    },
+    {
+      "id": "H09:external_system:erp",
+      "type": "external_system",
+      "label": "ERP（合成接口）",
+      "authority": "synthetic-design; external business record authority",
+      "tenant_scope": "tenant-bound; external identity includes provider account; explicit role authorization"
+    },
+    {
+      "id": "H09:object:bundle",
+      "type": "object",
+      "label": "冻结送审包",
+      "authority": "synthetic-design; contract service",
+      "tenant_scope": "tenant-bound; external identity includes provider account; explicit role authorization"
+    },
+    {
+      "id": "H09:object:approval",
+      "type": "object",
+      "label": "版本绑定审批决定",
+      "authority": "synthetic-design; authorized reviewer via contract service",
+      "tenant_scope": "tenant-bound; external identity includes provider account; explicit role authorization"
+    },
+    {
+      "id": "H09:object:signature",
+      "type": "object",
+      "label": "签署请求",
+      "authority": "synthetic-design; signature provider confirms external state",
+      "tenant_scope": "tenant-bound; external identity includes provider account; explicit role authorization"
+    },
+    {
+      "id": "H09:object:archive",
+      "type": "object",
+      "label": "签署归档",
+      "authority": "synthetic-design; integration service preserves evidence",
+      "tenant_scope": "tenant-bound; external identity includes provider account; explicit role authorization"
+    },
+    {
+      "id": "H09:object:sync",
+      "type": "object",
+      "label": "下游同步尝试",
+      "authority": "synthetic-design; local attempt ledger",
+      "tenant_scope": "tenant-bound; external identity includes provider account; explicit role authorization"
+    },
+    {
+      "id": "H09:object:downstream",
+      "type": "object",
+      "label": "下游合同记录",
+      "authority": "synthetic-design; ERP authoritative state",
+      "tenant_scope": "tenant-bound; external identity includes provider account; explicit role authorization"
+    },
+    {
+      "id": "H09:event:receipt",
+      "type": "event",
+      "label": "签署相关通知",
+      "authority": "synthetic-design; signal requires request reconciliation",
+      "tenant_scope": "tenant-bound; external identity includes provider account; explicit role authorization"
+    },
+    {
+      "id": "H09:rule:approval-policy",
+      "type": "rule",
+      "label": "冻结审批政策与权限",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; external identity includes provider account; explicit role authorization"
+    }
+  ],
+  "edges": [
+    {
+      "id": "H09:edge:reviewer-desk",
+      "type": "operates",
+      "from": "H09:actor:reviewer",
+      "to": "H09:ui:desk",
+      "payload": "查看本角色待审版本；批准/拒绝/撤回",
+      "timing": "sync",
+      "invariant": "用户只看到获授权合同",
+      "failure": "重开页面按操作身份找回决定",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H09:claim:execution"
+      ]
+    },
+    {
+      "id": "H09:edge:signer-page",
+      "type": "operates",
+      "from": "H09:actor:signer",
+      "to": "H09:ui:signing",
+      "payload": "查看确定签署包并签署",
+      "timing": "sync",
+      "invariant": "不替换签署字节与签署人身份",
+      "failure": "拒绝或缺页则不提交",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H09:claim:execution"
+      ]
+    },
+    {
+      "id": "H09:edge:signature-submit",
+      "type": "commands",
+      "from": "H09:ui:signing",
+      "to": "H09:external_system:signature",
+      "payload": "请求ID、签署人决定",
+      "timing": "sync",
+      "invariant": "浏览器提交不是签署确认",
+      "failure": "结果未知查询原请求",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H09:claim:execution"
+      ]
+    },
+    {
+      "id": "H09:edge:approval-command",
+      "type": "commands",
+      "from": "H09:ui:desk",
+      "to": "H09:service:contract",
+      "payload": "operation_id、bundle_version、round、decision、comment",
+      "timing": "sync",
+      "invariant": "服务端校验租户角色当前包与政策",
+      "failure": "过期版本冲突；重复键不同payload拒绝",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H09:claim:execution"
+      ]
+    },
+    {
+      "id": "H09:edge:policy-gate",
+      "type": "authorizes",
+      "from": "H09:rule:approval-policy",
+      "to": "H09:service:contract",
+      "payload": "角色权限及冻结政策版本",
+      "timing": "static",
+      "invariant": "显示按钮不替代服务端授权",
+      "failure": "政策变更新一轮审阅",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H09:claim:version-binding"
+      ]
+    },
+    {
+      "id": "H09:edge:bundle-owner",
+      "type": "owns",
+      "from": "H09:service:contract",
+      "to": "H09:object:bundle",
+      "payload": "文件清单摘要、字段schema、政策版本",
+      "timing": "static",
+      "invariant": "提交冻结后不原地修改",
+      "failure": "新包替代旧包并保留历史",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H09:claim:version-binding"
+      ]
+    },
+    {
+      "id": "H09:edge:approval-owner",
+      "type": "owns",
+      "from": "H09:service:contract",
+      "to": "H09:object:approval",
+      "payload": "审批人、决定、包版本与轮次",
+      "timing": "static",
+      "invariant": "决定不可静默移到新包",
+      "failure": "保留旧决定并标记无效",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H09:claim:version-binding"
+      ]
+    },
+    {
+      "id": "H09:edge:decision-input",
+      "type": "depends_on",
+      "from": "H09:object:approval",
+      "to": "H09:object:bundle",
+      "payload": "被审阅的确定输入",
+      "timing": "static",
+      "invariant": "本例全包变更使原轮次不能放行",
+      "failure": "重新审阅新版本",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H09:claim:version-binding"
+      ]
+    },
+    {
+      "id": "H09:edge:bundle-store",
+      "type": "stores",
+      "from": "H09:store:metadata",
+      "to": "H09:object:bundle",
+      "payload": "包身份、文件引用、当前指针",
+      "timing": "sync",
+      "invariant": "当前版本变更与旧轮失效事务相容",
+      "failure": "崩溃后读取已提交当前指针",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H09:claim:version-binding"
+      ]
+    },
+    {
+      "id": "H09:edge:file-store",
+      "type": "stores",
+      "from": "H09:store:files",
+      "to": "H09:object:bundle",
+      "payload": "原始文件与不可变字节引用",
+      "timing": "sync",
+      "invariant": "摘要与登记清单一致且可取回",
+      "failure": "孤儿文件清理；缺失字节阻断审阅",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H09:claim:version-binding"
+      ]
+    },
+    {
+      "id": "H09:edge:decision-store",
+      "type": "stores",
+      "from": "H09:store:metadata",
+      "to": "H09:object:approval",
+      "payload": "决定与审计元数据",
+      "timing": "sync",
+      "invariant": "唯一轮次角色决定及操作ID",
+      "failure": "重复查询原决定",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H09:claim:execution"
+      ]
+    },
+    {
+      "id": "H09:edge:read-current",
+      "type": "reads",
+      "from": "H09:service:contract",
+      "to": "H09:store:metadata",
+      "payload": "当前版本、角色、有效决定、outbox",
+      "timing": "sync",
+      "invariant": "发签在权威数据上重新检查",
+      "failure": "并发版本冲突拒绝",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H09:claim:execution"
+      ]
+    },
+    {
+      "id": "H09:edge:send-signature",
+      "type": "requests",
+      "from": "H09:service:contract",
+      "to": "H09:external_system:signature",
+      "payload": "已持久认领到dispatching的尝试、冻结包引用与签署人清单",
+      "timing": "async",
+      "invariant": "不重新读取最新编辑稿替换payload",
+      "failure": "发出后崩溃/timeout进入unknown；不得按queued本地取消；带取消意图核对实际终态",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H09:claim:execution"
+      ]
+    },
+    {
+      "id": "H09:edge:signature-owner",
+      "type": "owns",
+      "from": "H09:external_system:signature",
+      "to": "H09:object:signature",
+      "payload": "请求ID及签署状态",
+      "timing": "static",
+      "invariant": "本地状态不能自证外部签署",
+      "failure": "按请求映射读取外部状态",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H09:claim:execution"
+      ]
+    },
+    {
+      "id": "H09:edge:signature-bundle",
+      "type": "depends_on",
+      "from": "H09:object:signature",
+      "to": "H09:object:bundle",
+      "payload": "确定版本与有效审批覆盖",
+      "timing": "static",
+      "invariant": "签署包与已批准输入一致",
+      "failure": "任何变化新请求且重新批准",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H09:claim:version-binding"
+      ]
+    },
+    {
+      "id": "H09:edge:receipt-emission",
+      "type": "emits",
+      "from": "H09:external_system:signature",
+      "to": "H09:event:receipt",
+      "payload": "请求ID、发生事实、来源账户",
+      "timing": "async",
+      "invariant": "通知本身不证明当前包完成",
+      "failure": "重新核对该请求的权威状态",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H09:claim:execution"
+      ]
+    },
+    {
+      "id": "H09:edge:durable-reception",
+      "type": "delivers",
+      "from": "H09:event:receipt",
+      "to": "H09:store:inbox",
+      "payload": "原始事件摘要、映射身份、接收序号",
+      "timing": "async",
+      "invariant": "先持久化再确认收到",
+      "failure": "持久化失败不虚假应答成功",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H09:claim:execution"
+      ]
+    },
+    {
+      "id": "H09:edge:consume",
+      "type": "reads",
+      "from": "H09:service:integration",
+      "to": "H09:store:inbox",
+      "payload": "待核对签署通知",
+      "timing": "async",
+      "invariant": "重复通知和业务唯一性分别处理",
+      "failure": "重放可核对已有结果",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H09:claim:execution"
+      ]
+    },
+    {
+      "id": "H09:edge:reconcile-signatures",
+      "type": "reads",
+      "from": "H09:service:integration",
+      "to": "H09:external_system:signature",
+      "payload": "按账户及请求ID读取所有签署证据",
+      "timing": "async",
+      "invariant": "旧请求事实不覆盖新请求",
+      "failure": "不可查询则保持unknown",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H09:claim:execution"
+      ]
+    },
+    {
+      "id": "H09:edge:archive-owner",
+      "type": "owns",
+      "from": "H09:service:integration",
+      "to": "H09:object:archive",
+      "payload": "最终文件与证据路径",
+      "timing": "static",
+      "invariant": "必需签署齐备、无取消争议且手工上传经复核",
+      "failure": "缺签或争议不归档放行",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H09:claim:downstream"
+      ]
+    },
+    {
+      "id": "H09:edge:archive-derived",
+      "type": "derived_from",
+      "from": "H09:object:archive",
+      "to": "H09:object:signature",
+      "payload": "核对后的请求、签署文件和人工复核",
+      "timing": "async",
+      "invariant": "归档追溯具体版本",
+      "failure": "取消竞争进入争议",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H09:claim:downstream"
+      ]
+    },
+    {
+      "id": "H09:edge:archive-store",
+      "type": "stores",
+      "from": "H09:store:metadata",
+      "to": "H09:object:archive",
+      "payload": "归档索引与证据文件引用",
+      "timing": "sync",
+      "invariant": "原始证据可回查",
+      "failure": "恢复验证文件可读与摘要",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H09:claim:downstream"
+      ]
+    },
+    {
+      "id": "H09:edge:sync-owner",
+      "type": "owns",
+      "from": "H09:service:integration",
+      "to": "H09:object:sync",
+      "payload": "每个目的地、映射版本与尝试身份",
+      "timing": "static",
+      "invariant": "归档完成与各目的地同步状态分开",
+      "failure": "单独恢复失败目的地",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H09:claim:downstream"
+      ]
+    },
+    {
+      "id": "H09:edge:sync-source",
+      "type": "derived_from",
+      "from": "H09:object:sync",
+      "to": "H09:object:archive",
+      "payload": "来源版本、字段映射版本与payload摘要、单调导出代次",
+      "timing": "sync",
+      "invariant": "缺字段或单位冲突阻止发送",
+      "failure": "修正映射产生新尝试并保留原尝试",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H09:claim:downstream"
+      ]
+    },
+    {
+      "id": "H09:edge:sync-store",
+      "type": "stores",
+      "from": "H09:store:metadata",
+      "to": "H09:object:sync",
+      "payload": "固定payload、结果状态、对账证据、export_generation及expected_destination_version；固定写前expected_destination_version；核对写后committed_destination_version（本例=expected+1），重复返回原提交版本",
+      "timing": "sync",
+      "invariant": "unknown不能冒充失败或确认",
+      "failure": "按相同外部键核对",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H09:claim:downstream"
+      ]
+    },
+    {
+      "id": "H09:edge:erp-request",
+      "type": "requests",
+      "from": "H09:service:integration",
+      "to": "H09:external_system:erp",
+      "payload": "租户外部键、单调export_generation、expected_destination_version、冻结payload",
+      "timing": "async",
+      "invariant": "合成ERP原子拒绝旧代次与版本冲突；同代次同payload复用已有结果",
+      "failure": "超时先查回；发现更高代次标superseded；不允许旧写覆盖新值",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H09:claim:downstream"
+      ]
+    },
+    {
+      "id": "H09:edge:erp-read",
+      "type": "reads",
+      "from": "H09:service:integration",
+      "to": "H09:external_system:erp",
+      "payload": "按租户、账户、外部键核对实际记录；固定写前expected_destination_version；核对写后committed_destination_version（本例=expected+1），重复返回原提交版本",
+      "timing": "async",
+      "invariant": "字段、目标版本和export_generation全部匹配才确认；更高代次使旧尝试superseded",
+      "failure": "无可靠查回能力则转人工",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H09:claim:downstream"
+      ]
+    },
+    {
+      "id": "H09:edge:erp-owner",
+      "type": "owns",
+      "from": "H09:external_system:erp",
+      "to": "H09:object:downstream",
+      "payload": "目标记录ID、版本和业务字段",
+      "timing": "static",
+      "invariant": "本地尝试不能代替外部接受事实",
+      "failure": "补偿独立确认并保留历史",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H09:claim:downstream"
+      ]
+    },
+    {
+      "id": "H09:edge:bundle-projection",
+      "type": "projects",
+      "from": "H09:object:bundle",
+      "to": "H09:ui:desk",
+      "payload": "当前版本、差异和预览可用性",
+      "timing": "async",
+      "invariant": "显示版本与内容有对应",
+      "failure": "缺页不标记完整预览",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H09:claim:version-binding"
+      ]
+    },
+    {
+      "id": "H09:edge:decision-projection",
+      "type": "projects",
+      "from": "H09:object:approval",
+      "to": "H09:ui:desk",
+      "payload": "本轮必要审批及拒绝理由",
+      "timing": "async",
+      "invariant": "每个决定标明适用版本",
+      "failure": "过期投影需重读",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H09:claim:execution"
+      ]
+    },
+    {
+      "id": "H09:edge:sync-projection",
+      "type": "projects",
+      "from": "H09:object:sync",
+      "to": "H09:ui:desk",
+      "payload": "每个目的地状态、尝试ID、最后核对",
+      "timing": "async",
+      "invariant": "已归档不等于ERP确认",
+      "failure": "unknown展示人工查回入口",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H09:claim:downstream"
+      ]
+    }
+  ],
+  "lifecycles": [
+    {
+      "object_id": "H09:object:bundle",
+      "states": [
+        "draft",
+        "frozen",
+        "superseded"
+      ],
+      "transitions": [
+        {
+          "from": "draft",
+          "to": "frozen",
+          "trigger": "提交审阅",
+          "guard": "授权负责人；文件齐备；结构字段与正文一致；政策无环",
+          "durable_effect": "保存不可变清单摘要与新审批轮次",
+          "recovery": "失败不产生可放行轮次"
+        },
+        {
+          "from": "frozen",
+          "to": "superseded",
+          "trigger": "新版本提交或撤回",
+          "guard": "获授权操作；条件更新当前指针",
+          "durable_effect": "保留旧包并使旧批准不能放行新包",
+          "recovery": "竞争时返回冲突并重新取当前版本"
+        }
+      ]
+    },
+    {
+      "object_id": "H09:object:approval",
+      "states": [
+        "pending",
+        "approved",
+        "rejected",
+        "invalidated"
+      ],
+      "transitions": [
+        {
+          "from": "pending",
+          "to": "approved",
+          "trigger": "审批人批准",
+          "guard": "角色被指派；当前包轮次一致；前提满足",
+          "durable_effect": "保存批准及审计记录",
+          "recovery": "重复操作返回同一决定"
+        },
+        {
+          "from": "pending",
+          "to": "rejected",
+          "trigger": "审批人拒绝",
+          "guard": "相同权限和版本校验；原因已填",
+          "durable_effect": "保存拒绝并阻止本轮发签",
+          "recovery": "修改产生新包新轮次"
+        },
+        {
+          "from": "pending",
+          "to": "invalidated",
+          "trigger": "包或政策被替代",
+          "guard": "替代与当前指针事务已提交",
+          "durable_effect": "取消未决定节点的放行资格",
+          "recovery": "保留待办历史"
+        },
+        {
+          "from": "approved",
+          "to": "invalidated",
+          "trigger": "包或政策被替代或获授权撤回",
+          "guard": "当前版本和操作权限正确",
+          "durable_effect": "原批准保留并结束适用性",
+          "recovery": "已发签另行取消/查回，非删除批准"
+        },
+        {
+          "from": "rejected",
+          "to": "invalidated",
+          "trigger": "修订提交",
+          "guard": "新版本完成提交校验",
+          "durable_effect": "旧拒绝仅属于历史轮次",
+          "recovery": "新轮次不能继承旧批准"
+        }
+      ]
+    },
+    {
+      "object_id": "H09:object:signature",
+      "states": [
+        "queued",
+        "dispatching",
+        "sent",
+        "partially_signed",
+        "fully_signed",
+        "unknown",
+        "cancel_pending",
+        "cancelled",
+        "disputed"
+      ],
+      "transitions": [
+        {
+          "from": "dispatching",
+          "to": "sent",
+          "trigger": "worker发签且外部确认",
+          "guard": "尝试已持久认领；外部确认绑定固定payload",
+          "durable_effect": "保存外部请求ID",
+          "recovery": "确认丢失或crash进入unknown，不回退queued"
+        },
+        {
+          "from": "dispatching",
+          "to": "unknown",
+          "trigger": "发送超时、执行者失联或认领后撤回",
+          "guard": "不能证明外部未受理",
+          "durable_effect": "保留派发尝试、unknown及取消意图",
+          "recovery": "查回实际状态；无可靠未受理证明不重发"
+        },
+        {
+          "from": "unknown",
+          "to": "sent",
+          "trigger": "查回请求",
+          "guard": "外部证据证明已受理且仍待签；不存在取消意图",
+          "durable_effect": "保存外部请求映射与核对证据",
+          "recovery": "继续原请求"
+        },
+        {
+          "from": "sent",
+          "to": "partially_signed",
+          "trigger": "部分签署核对",
+          "guard": "请求ID和版本匹配",
+          "durable_effect": "保存已完成签署人的证据",
+          "recovery": "核对全部签署人而非只累计事件"
+        },
+        {
+          "from": "sent",
+          "to": "fully_signed",
+          "trigger": "全部签署核对",
+          "guard": "所有签署人证据齐备；手工上传已复核",
+          "durable_effect": "保存最终状态证据",
+          "recovery": "归档按唯一请求键执行"
+        },
+        {
+          "from": "partially_signed",
+          "to": "fully_signed",
+          "trigger": "其余签署完成",
+          "guard": "请求、版本、签署人齐备",
+          "durable_effect": "保存最终证据",
+          "recovery": "重复通知不重复归档"
+        },
+        {
+          "from": "queued",
+          "to": "cancelled",
+          "trigger": "撤回且尚未发送",
+          "guard": "同一条件更新证明尚未被claim；与queued→dispatching竞争",
+          "durable_effect": "原子抑制未认领outbox并保存撤回",
+          "recovery": "worker发送前再检查"
+        },
+        {
+          "from": "sent",
+          "to": "cancel_pending",
+          "trigger": "请求取消",
+          "guard": "授权及原因明确",
+          "durable_effect": "保存取消尝试",
+          "recovery": "未确认前禁止宣告已取消"
+        },
+        {
+          "from": "partially_signed",
+          "to": "cancel_pending",
+          "trigger": "请求取消",
+          "guard": "授权及原因明确",
+          "durable_effect": "保存取消尝试",
+          "recovery": "保留已有签名"
+        },
+        {
+          "from": "cancel_pending",
+          "to": "cancelled",
+          "trigger": "外部确认取消",
+          "guard": "确认关联原签署请求",
+          "durable_effect": "保存外部取消证据",
+          "recovery": "保留历史签名及请求"
+        },
+        {
+          "from": "cancel_pending",
+          "to": "disputed",
+          "trigger": "取消时核对发现已全部签署",
+          "guard": "外部事实与本地撤回意图冲突",
+          "durable_effect": "保存已签证据并阻止自动下游发布",
+          "recovery": "交负责人判断后续修订与补偿"
+        },
+        {
+          "from": "unknown",
+          "to": "fully_signed",
+          "trigger": "查回已完成请求",
+          "guard": "全部签署和版本证据核对且无撤回争议",
+          "durable_effect": "保存完整外部证据",
+          "recovery": "按原请求身份归档"
+        },
+        {
+          "from": "cancelled",
+          "to": "disputed",
+          "trigger": "后续外部证据与取消记录矛盾",
+          "guard": "确属同一请求且证据冲突待复核",
+          "durable_effect": "保留两方证据并阻止自动下游发布",
+          "recovery": "转负责人核对外部历史，不回写新请求"
+        },
+        {
+          "from": "queued",
+          "to": "dispatching",
+          "trigger": "worker持久认领",
+          "guard": "当前包有效且未被取消；条件更新仅一worker成功",
+          "durable_effect": "保存固定尝试及dispatching后才允许网络调用",
+          "recovery": "crash或租约过期不能回退queued，先查外部"
+        },
+        {
+          "from": "unknown",
+          "to": "partially_signed",
+          "trigger": "查回部分签署",
+          "guard": "请求版本匹配；无取消意图",
+          "durable_effect": "保存已签证据和仍待签人员",
+          "recovery": "继续同一请求，禁止重建"
+        },
+        {
+          "from": "unknown",
+          "to": "cancelled",
+          "trigger": "查回已取消",
+          "guard": "外部请求身份及取消证据匹配",
+          "durable_effect": "保存外部取消回执",
+          "recovery": "保留原尝试历史"
+        },
+        {
+          "from": "unknown",
+          "to": "cancel_pending",
+          "trigger": "查回仍待签或部分签署且已有取消意图",
+          "guard": "同一外部请求尚可取消",
+          "durable_effect": "保存取消尝试与已发生签名",
+          "recovery": "取消超时继续核对，不声称成功"
+        },
+        {
+          "from": "unknown",
+          "to": "disputed",
+          "trigger": "查回全部签署且已有取消意图",
+          "guard": "终态证据与撤回意图冲突",
+          "durable_effect": "保存全部签署证据并阻止自动下游发布",
+          "recovery": "交负责人判断，不抹去签名"
+        }
+      ]
+    },
+    {
+      "object_id": "H09:object:archive",
+      "states": [
+        "pending",
+        "recorded",
+        "disputed",
+        "superseded"
+      ],
+      "transitions": [
+        {
+          "from": "pending",
+          "to": "recorded",
+          "trigger": "归档事务",
+          "guard": "最终请求与原始文件一致；全部签署证据核对；手动路径人工复核；无取消意图与已签事实的冲突",
+          "durable_effect": "保存证据引用及唯一归档身份",
+          "recovery": "重复消费返回已有归档"
+        },
+        {
+          "from": "recorded",
+          "to": "disputed",
+          "trigger": "发现版本或签署争议",
+          "guard": "有具体异常证据和获授权复核人",
+          "durable_effect": "保留文件并标记争议",
+          "recovery": "暂停新同步；已发生效果另行补偿"
+        },
+        {
+          "from": "recorded",
+          "to": "superseded",
+          "trigger": "修订归档被批准采用",
+          "guard": "新归档完整且替代关系经授权",
+          "durable_effect": "保留原归档和下游修订链",
+          "recovery": "按源版本核对已有副作用"
+        }
+      ]
+    },
+    {
+      "object_id": "H09:object:sync",
+      "states": [
+        "queued",
+        "sending",
+        "unknown",
+        "confirmed",
+        "blocked",
+        "compensation_pending",
+        "compensated",
+        "superseded"
+      ],
+      "transitions": [
+        {
+          "from": "queued",
+          "to": "blocked",
+          "trigger": "映射验证失败",
+          "guard": "字段、单位或实体映射不满足要求",
+          "durable_effect": "保存错误字段和来源位置",
+          "recovery": "人工修正后用新映射版本重试"
+        },
+        {
+          "from": "blocked",
+          "to": "queued",
+          "trigger": "修正已确认",
+          "guard": "获授权修复；固定新的payload和映射版本",
+          "durable_effect": "保留原错误并登记修订尝试",
+          "recovery": "不重试已成功的其他目的地"
+        },
+        {
+          "from": "queued",
+          "to": "sending",
+          "trigger": "worker派发",
+          "guard": "归档可用；目标权限有效；映射验证通过",
+          "durable_effect": "保存尝试状态",
+          "recovery": "中断后先核对是否已发送"
+        },
+        {
+          "from": "sending",
+          "to": "unknown",
+          "trigger": "外部响应丢失",
+          "guard": "可能已发生外部效果",
+          "durable_effect": "保留原操作与外部键",
+          "recovery": "查询目标；不得盲目新建"
+        },
+        {
+          "from": "sending",
+          "to": "confirmed",
+          "trigger": "返回并核对外部结果",
+          "guard": "对象ID、export_generation和payload与原请求相符；查回/回执的committed_destination_version等于该尝试写前expected_destination_version+1；同代重复使用原提交回执",
+          "durable_effect": "分别保存写前CAS条件、写后提交版本与核对回执",
+          "recovery": "重复执行返回同一业务结果"
+        },
+        {
+          "from": "unknown",
+          "to": "confirmed",
+          "trigger": "按外部键查回",
+          "guard": "对象ID、export_generation和payload与原请求相符；查回/回执的committed_destination_version等于该尝试写前expected_destination_version+1；同代重复使用原提交回执",
+          "durable_effect": "分别保存写前CAS条件、写后提交版本与核对回执",
+          "recovery": "无可靠查回则保持unknown交人工"
+        },
+        {
+          "from": "confirmed",
+          "to": "compensation_pending",
+          "trigger": "获授权修订或作废",
+          "guard": "原因、权限与下游依赖复核完成",
+          "durable_effect": "保存独立补偿命令",
+          "recovery": "不删除原成功事实"
+        },
+        {
+          "from": "compensation_pending",
+          "to": "compensated",
+          "trigger": "下游补偿核对",
+          "guard": "外部确认目标修订或作废",
+          "durable_effect": "保存补偿回执与原记录关系",
+          "recovery": "补偿超时继续查原补偿尝试"
+        },
+        {
+          "from": "sending",
+          "to": "superseded",
+          "trigger": "旧代次被拒绝或查回更高代次",
+          "guard": "目标已证实保存更高export_generation",
+          "durable_effect": "保存拒绝或查回证据及替代关系",
+          "recovery": "不得把旧payload重试成新代次；必要修订另获授权"
+        },
+        {
+          "from": "unknown",
+          "to": "superseded",
+          "trigger": "旧代次被拒绝或查回更高代次",
+          "guard": "目标已证实保存更高export_generation",
+          "durable_effect": "保存拒绝或查回证据及替代关系",
+          "recovery": "不得把旧payload重试成新代次；必要修订另获授权"
+        }
+      ]
+    }
+  ],
+  "algorithm_ids": [
+    "ALG:scheduling",
+    "ALG:lookup",
+    "ALG:caches"
+  ],
+  "claim_ids": [
+    "H09:claim:provider-ai",
+    "H09:claim:provider-resets",
+    "H09:claim:provider-records",
+    "H09:claim:provider-webhooks",
+    "H09:claim:provider-cancel",
+    "H09:claim:storage-constraints",
+    "H09:claim:preview-capability",
+    "H09:claim:durable-activities",
+    "H09:claim:scenario",
+    "H09:claim:version-binding",
+    "H09:claim:execution",
+    "H09:claim:scheduling",
+    "H09:claim:downstream",
+    "H09:claim:withdrawal",
+    "H09:claim:scale",
+    "H09:claim:ai-eval",
+    "H09:claim:technology"
+  ],
+  "checks": [
+    {
+      "id": "H09:check:happy",
+      "kind": "happy_path",
+      "given": "v7有效批准、两位签署人、映射M3完整",
+      "when": "全部签完并同步ERP",
+      "then": "包、归档、下游字段一致；各对象分别确认",
+      "evidence_required": "UI操作证据、原包摘要、审批记录、签署回执、ERP查回与映射版本"
+    },
+    {
+      "id": "H09:check:duplicate",
+      "kind": "duplicate",
+      "given": "同一批准operation和签署完成通知",
+      "when": "分别发送两次",
+      "then": "同一决定、唯一归档及一个目标业务效果",
+      "evidence_required": "操作账本、唯一键结果、目标记录数；不能只检查消息次数"
+    },
+    {
+      "id": "H09:check:old-signature",
+      "kind": "out_of_order",
+      "given": "S7已申请取消；S8待签",
+      "when": "旧S7完成通知晚到",
+      "then": "核对S7并可能转争议；S8不变",
+      "evidence_required": "接收顺序、外部S7/S8查回及本地版本映射"
+    },
+    {
+      "id": "H09:check:approval-race",
+      "kind": "concurrency",
+      "given": "法务正在预览v7",
+      "when": "批准v7与提交v8同时发生",
+      "then": "旧批准仅属v7；v8不能放行；冲突可见",
+      "evidence_required": "数据库事务结果、决定包ID及UI版本冲突"
+    },
+    {
+      "id": "H09:check:tenant",
+      "kind": "tenant_isolation",
+      "given": "两个租户都用C100",
+      "when": "读列表、预览、下载和目标映射，含cache hit/miss",
+      "then": "无跨租户内容或签署/ERP映射",
+      "evidence_required": "租户授权查询、文件访问检查、缓存键、目标请求身份"
+    },
+    {
+      "id": "H09:check:timeout",
+      "kind": "unknown_outcome",
+      "given": "合成ERP已创建但响应丢失",
+      "when": "本地超时并恢复worker",
+      "then": "保持unknown后按外部键查回同一记录，不新建第二条",
+      "evidence_required": "原操作payload、外部键查回、最终记录计数与尝试状态"
+    },
+    {
+      "id": "H09:check:crash",
+      "kind": "recovery",
+      "given": "归档事务已提交，outbox完成标记未写",
+      "when": "worker重启重放",
+      "then": "找到原归档并继续未确认任务；已确认效果不重复",
+      "evidence_required": "崩溃点记录、数据库状态、重放日志、ERP对账"
+    },
+    {
+      "id": "H09:check:cancel-race",
+      "kind": "withdrawal",
+      "given": "签署请求正在收集最后一人签名",
+      "when": "取消与完成竞争",
+      "then": "保留最终签署事实；未知期间不新同步；冲突交人工",
+      "evidence_required": "取消尝试、签署证据及争议/下游抑制记录"
+    },
+    {
+      "id": "H09:check:rejection",
+      "kind": "rejection",
+      "given": "必要审批尚未全通过",
+      "when": "任一审批拒绝",
+      "then": "阻止发签并展示理由，修订生成新轮次",
+      "evidence_required": "拒绝审计、发签guard结果与UI反馈"
+    },
+    {
+      "id": "H09:check:dag",
+      "kind": "algorithm",
+      "given": "P2、L3、F1依赖P、R0.5依赖F/L",
+      "when": "拓扑最早完成计算；高金额增加E1",
+      "then": "串行6.5h，并行3.5h，加E后4.5h；环被拒绝",
+      "evidence_required": "固定fixture、计算结果及cycle异常，不替代负载测量"
+    },
+    {
+      "id": "H09:check:stale-metadata",
+      "kind": "input_integrity",
+      "given": "正文80000与metadata80000且批准v7",
+      "when": "正文变120000而metadata不变",
+      "then": "冻结校验拒绝不一致；旧批准不能放行新字节",
+      "evidence_required": "固定输入、包摘要变化、字段一致性拒绝、发签guard"
+    },
+    {
+      "id": "H09:check:partial-destinations",
+      "kind": "partial_completion",
+      "given": "CRM已确认、ERP字段失败",
+      "when": "修正ERP映射后重试",
+      "then": "CRM不重复写入；ERP独立恢复",
+      "evidence_required": "各目的地操作ID、映射版本、实际目标记录"
+    },
+    {
+      "id": "H09:check:ai-metrics",
+      "kind": "ai_eval",
+      "given": "synthetic 40条升级标签及40个金额字段计数",
+      "when": "计算独立指标而非用总体正确率放行",
+      "then": "精确率8/12、召回8/10；覆盖36/40、覆盖正确34/36、修正6/40",
+      "evidence_required": "冻结标签与配置；本例只运行计数算术，不宣称运行真实模型"
+    },
+    {
+      "id": "H09:check:stale-export",
+      "kind": "out_of_order",
+      "given": "ERP已经保存export_generation=2、金额120000；旧代次1金额80000仍可能到达",
+      "when": "重投旧请求，包含旧expected_destination_version；再故意刷新expected版本仍保留旧代次",
+      "then": "旧代次或CAS冲突均拒绝；目标金额120000和新代次不变；旧尝试superseded",
+      "evidence_required": "固定请求、合成条件写结果、目标版本与金额快照；真实ERP能力未验证"
+    },
+    {
+      "id": "H09:check:dispatch-crash",
+      "kind": "recovery",
+      "given": "queued已被worker持久claim为dispatching，外部ID还未落库",
+      "when": "崩溃后用户请求撤回，并查回部分/完整/已取消结果",
+      "then": "不能本地直接cancelled；记录取消意图；按实际状态进入cancel_pending/disputed/cancelled；无取消意图的完整结果可恢复fully_signed",
+      "evidence_required": "固定合成状态转换、claim竞争结果及查回响应；不证明真实网络重试安全"
+    }
+  ]
+}

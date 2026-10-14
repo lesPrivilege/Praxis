@@ -1,0 +1,1094 @@
+{
+  "contract_version": "1.0",
+  "case_id": "H08",
+  "title": "安全信号、授权响应与恢复",
+  "scope": "Synthetic multi-tenant security response teaching model. Sentinel and Okta docs support only cited product distinctions. Scoring, grouping, authorization TTL, storage and recovery are original synthetic design; no live connectors, offensive detection system, production security claim or actual AI eval.",
+  "synthetic": true,
+  "source_ids": [
+    "SENTINEL",
+    "OKTA",
+    "P03-SRC-sentinel-playbooks",
+    "P03-SRC-okta-revoke-tokens"
+  ],
+  "nodes": [
+    {
+      "id": "H08:actor:analyst",
+      "type": "actor",
+      "label": "安全分析员",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; external mapping includes provider organization and connection"
+    },
+    {
+      "id": "H08:actor:approver",
+      "type": "actor",
+      "label": "响应负责人",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; external mapping includes provider organization and connection"
+    },
+    {
+      "id": "H08:actor:recovery-owner",
+      "type": "actor",
+      "label": "恢复负责人",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; external mapping includes provider organization and connection"
+    },
+    {
+      "id": "H08:ui:incident-console",
+      "type": "ui",
+      "label": "事件工作台",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; external mapping includes provider organization and connection"
+    },
+    {
+      "id": "H08:service:case-manager",
+      "type": "service",
+      "label": "调查与计划服务",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; external mapping includes provider organization and connection"
+    },
+    {
+      "id": "H08:service:response-executor",
+      "type": "service",
+      "label": "响应执行器",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; external mapping includes provider organization and connection"
+    },
+    {
+      "id": "H08:service:signal-intake",
+      "type": "service",
+      "label": "信号接收与关联服务",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; external mapping includes provider organization and connection"
+    },
+    {
+      "id": "H08:store:operation-ledger",
+      "type": "store",
+      "label": "授权与操作账本",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; external mapping includes provider organization and connection"
+    },
+    {
+      "id": "H08:store:signal-store",
+      "type": "store",
+      "label": "不可变信号与接收记录",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; external mapping includes provider organization and connection"
+    },
+    {
+      "id": "H08:rule:scope-validity",
+      "type": "rule",
+      "label": "范围、版本与有效期规则",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; external mapping includes provider organization and connection"
+    },
+    {
+      "id": "H08:external_system:identity-apps",
+      "type": "external_system",
+      "label": "身份与应用系统（参照 Okta）",
+      "authority": "external authority for scoped account/session/access effects; exact adapters are synthetic",
+      "tenant_scope": "tenant-bound; external mapping includes provider organization and connection"
+    },
+    {
+      "id": "H08:external_system:telemetry-source",
+      "type": "external_system",
+      "label": "已配置的遥测来源",
+      "authority": "source observations, not proof of compromise",
+      "tenant_scope": "tenant-bound; external mapping includes provider organization and connection"
+    },
+    {
+      "id": "H08:event:telemetry",
+      "type": "event",
+      "label": "遥测投递",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; external mapping includes provider organization and connection"
+    },
+    {
+      "id": "H08:object:signal",
+      "type": "object",
+      "label": "Signal",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; external mapping includes provider organization and connection"
+    },
+    {
+      "id": "H08:object:incident",
+      "type": "object",
+      "label": "Incident",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; external mapping includes provider organization and connection"
+    },
+    {
+      "id": "H08:object:response-plan",
+      "type": "object",
+      "label": "ResponsePlan",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; external mapping includes provider organization and connection"
+    },
+    {
+      "id": "H08:object:authorization",
+      "type": "object",
+      "label": "Authorization",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; external mapping includes provider organization and connection"
+    },
+    {
+      "id": "H08:object:response-run",
+      "type": "object",
+      "label": "ResponseRun",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; external mapping includes provider organization and connection"
+    },
+    {
+      "id": "H08:object:response-step",
+      "type": "object",
+      "label": "ResponseStep",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; external mapping includes provider organization and connection"
+    },
+    {
+      "id": "H08:object:recovery-plan",
+      "type": "object",
+      "label": "RecoveryPlan",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; external mapping includes provider organization and connection"
+    },
+    {
+      "id": "H08:object:external-access-state",
+      "type": "object",
+      "label": "分范围外部访问状态",
+      "authority": "relevant identity/application provider; local record is a timestamped observation",
+      "tenant_scope": "tenant-bound; external mapping includes provider organization and connection"
+    }
+  ],
+  "edges": [
+    {
+      "id": "H08:edge:analyst-console",
+      "type": "operates",
+      "from": "H08:actor:analyst",
+      "to": "H08:ui:incident-console",
+      "payload": "租户内事件、证据、响应计划",
+      "timing": "sync",
+      "invariant": "读权限不含执行权",
+      "failure": "重新认证并按稳定 ID 找回事件",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H08:claim:synthetic-policy"
+      ]
+    },
+    {
+      "id": "H08:edge:approver-console",
+      "type": "operates",
+      "from": "H08:actor:approver",
+      "to": "H08:ui:incident-console",
+      "payload": "计划内容、影响、有效期及目标预览",
+      "timing": "sync",
+      "invariant": "显示名之外展示租户与稳定主体 ID",
+      "failure": "版本变化后重新预览",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H08:claim:synthetic-policy"
+      ]
+    },
+    {
+      "id": "H08:edge:recovery-console",
+      "type": "operates",
+      "from": "H08:actor:recovery-owner",
+      "to": "H08:ui:incident-console",
+      "payload": "当前职责和分项恢复证据",
+      "timing": "sync",
+      "invariant": "恢复基于当前权利",
+      "failure": "冲突时停止恢复并人工核查",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H08:claim:synthetic-recovery"
+      ]
+    },
+    {
+      "id": "H08:edge:propose-plan",
+      "type": "commands",
+      "from": "H08:ui:incident-console",
+      "to": "H08:service:case-manager",
+      "payload": "tenant + incident version + target IDs + desired effects + request ID",
+      "timing": "sync",
+      "invariant": "每次批准只绑定具体不可变计划",
+      "failure": "409 版本冲突；重复 request ID 返回已有操作",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H08:claim:synthetic-policy"
+      ]
+    },
+    {
+      "id": "H08:edge:collect",
+      "type": "emits",
+      "from": "H08:external_system:telemetry-source",
+      "to": "H08:event:telemetry",
+      "payload": "source connection + source event ID + event_time + observation",
+      "timing": "async",
+      "invariant": "来源观察不自动等于恶意事实",
+      "failure": "缺少身份或签名验证时隔离",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H08:claim:synthetic-policy"
+      ]
+    },
+    {
+      "id": "H08:edge:receive",
+      "type": "delivers",
+      "from": "H08:event:telemetry",
+      "to": "H08:service:signal-intake",
+      "payload": "经连接边界验证的遥测",
+      "timing": "async",
+      "invariant": "tenant 由受信连接映射确定，不信 payload 自报",
+      "failure": "持久化失败不确认消费",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H08:claim:synthetic-policy"
+      ]
+    },
+    {
+      "id": "H08:edge:signal-owner",
+      "type": "owns",
+      "from": "H08:service:signal-intake",
+      "to": "H08:object:signal",
+      "payload": "不可变规范化信号及处理版本",
+      "timing": "static",
+      "invariant": "去重身份包括租户和来源连接",
+      "failure": "更正产生新规范化版本",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H08:claim:synthetic-policy"
+      ]
+    },
+    {
+      "id": "H08:edge:signal-store",
+      "type": "stores",
+      "from": "H08:store:signal-store",
+      "to": "H08:object:signal",
+      "payload": "event_time, received_at, original reference, normalized version",
+      "timing": "async",
+      "invariant": "重投不增加独立证据数",
+      "failure": "重放依据源 ID 合并处理记录",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H08:claim:synthetic-algorithm"
+      ]
+    },
+    {
+      "id": "H08:edge:read-signals",
+      "type": "reads",
+      "from": "H08:service:case-manager",
+      "to": "H08:store:signal-store",
+      "payload": "按租户和主体分桶的候选信号",
+      "timing": "async",
+      "invariant": "同 IP 不自动合并主体",
+      "failure": "晚到信号重算受影响分组",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H08:claim:synthetic-algorithm"
+      ]
+    },
+    {
+      "id": "H08:edge:incident-owner",
+      "type": "owns",
+      "from": "H08:service:case-manager",
+      "to": "H08:object:incident",
+      "payload": "调查版本、负责人、结论与未决风险",
+      "timing": "static",
+      "invariant": "关闭事件不改变外部访问状态",
+      "failure": "新证据重开并保留原结论",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H08:claim:synthetic-policy"
+      ]
+    },
+    {
+      "id": "H08:edge:incident-evidence",
+      "type": "derived_from",
+      "from": "H08:object:incident",
+      "to": "H08:object:signal",
+      "payload": "事件引用、分组规则 R1 与证据关系",
+      "timing": "batch",
+      "invariant": "分数与关系均可追溯且不是授权",
+      "failure": "弱关联可拆分，形成新版本",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H08:claim:synthetic-algorithm"
+      ]
+    },
+    {
+      "id": "H08:edge:plan-owner",
+      "type": "owns",
+      "from": "H08:service:case-manager",
+      "to": "H08:object:response-plan",
+      "payload": "不可变动作目标和范围",
+      "timing": "static",
+      "invariant": "修改产生新计划版本",
+      "failure": "旧计划 superseded 后停止新派发",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H08:claim:synthetic-policy"
+      ]
+    },
+    {
+      "id": "H08:edge:plan-incident",
+      "type": "derived_from",
+      "from": "H08:object:response-plan",
+      "to": "H08:object:incident",
+      "payload": "incident ID + evidence version + rationale",
+      "timing": "sync",
+      "invariant": "批准针对明确证据版本和影响范围",
+      "failure": "新证据触发重新判断而非静默扩大动作",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H08:claim:synthetic-policy"
+      ]
+    },
+    {
+      "id": "H08:edge:approval-authority",
+      "type": "authorizes",
+      "from": "H08:actor:approver",
+      "to": "H08:service:response-executor",
+      "payload": "响应负责人对指定 plan hash 的批准",
+      "timing": "sync",
+      "invariant": "当前权限、目标、租户、有效期必须同时有效",
+      "failure": "已撤权或过期则拒绝新派发",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H08:claim:synthetic-policy"
+      ]
+    },
+    {
+      "id": "H08:edge:policy-authority",
+      "type": "authorizes",
+      "from": "H08:rule:scope-validity",
+      "to": "H08:service:response-executor",
+      "payload": "当前 policy version、范围限制、不可停用目标",
+      "timing": "sync",
+      "invariant": "风险分数不是权限输入",
+      "failure": "高风险但无授权进入人工接管",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H08:claim:synthetic-policy"
+      ]
+    },
+    {
+      "id": "H08:edge:authorization-store",
+      "type": "stores",
+      "from": "H08:store:operation-ledger",
+      "to": "H08:object:authorization",
+      "payload": "批准者、plan hash、有效期、撤回和绑定 run",
+      "timing": "sync",
+      "invariant": "消费绑定一个 run，仍能到期或撤回",
+      "failure": "不能把 consumed 误作永不过期",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H08:claim:synthetic-policy"
+      ]
+    },
+    {
+      "id": "H08:edge:read-authorization",
+      "type": "reads",
+      "from": "H08:service:response-executor",
+      "to": "H08:store:operation-ledger",
+      "payload": "计划、授权、操作身份及已确认步骤",
+      "timing": "sync",
+      "invariant": "每个新派发前读取权威有效性",
+      "failure": "旧缓存不能放行；冲突暂停",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H08:claim:synthetic-policy"
+      ]
+    },
+    {
+      "id": "H08:edge:run-owner",
+      "type": "owns",
+      "from": "H08:service:response-executor",
+      "to": "H08:object:response-run",
+      "payload": "唯一计划版本对应的响应运行",
+      "timing": "static",
+      "invariant": "同计划版本至多一个 run",
+      "failure": "唯一约束返回既有运行",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H08:claim:synthetic-policy"
+      ]
+    },
+    {
+      "id": "H08:edge:run-store",
+      "type": "stores",
+      "from": "H08:store:operation-ledger",
+      "to": "H08:object:response-run",
+      "payload": "request ID、计划版本、步骤汇总",
+      "timing": "sync",
+      "invariant": "创建 run 与待派发任务事务一致",
+      "failure": "提交前失败可重试；提交后查同一身份",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H08:claim:synthetic-policy"
+      ]
+    },
+    {
+      "id": "H08:edge:run-contains-step",
+      "type": "contains",
+      "from": "H08:object:response-run",
+      "to": "H08:object:response-step",
+      "payload": "各外部效果独立的执行步骤",
+      "timing": "static",
+      "invariant": "一个成功不能代替全部成功",
+      "failure": "partial 展示已成功与 unknown",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H08:claim:synthetic-policy"
+      ]
+    },
+    {
+      "id": "H08:edge:step-store",
+      "type": "stores",
+      "from": "H08:store:operation-ledger",
+      "to": "H08:object:response-step",
+      "payload": "目标、尝试、外部请求引用、结果与核对时间",
+      "timing": "sync",
+      "invariant": "超时后保留 unknown",
+      "failure": "恢复先读取账本再决定是否核对或重试",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H08:claim:synthetic-policy"
+      ]
+    },
+    {
+      "id": "H08:edge:step-authorization",
+      "type": "depends_on",
+      "from": "H08:object:response-step",
+      "to": "H08:object:authorization",
+      "payload": "目标、plan version、scope 和 valid_until",
+      "timing": "sync",
+      "invariant": "同一 run 内每步仍须有效许可",
+      "failure": "过期保留已确认效果；缺项另申请许可",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H08:claim:synthetic-policy"
+      ]
+    },
+    {
+      "id": "H08:edge:dispatch",
+      "type": "requests",
+      "from": "H08:service:response-executor",
+      "to": "H08:external_system:identity-apps",
+      "payload": "固定 provider connection、目标、动作及本地 attempt ID",
+      "timing": "async",
+      "invariant": "只发送获批范围；本地身份不假装是外部幂等保证",
+      "failure": "timeout 留 unknown；禁止盲目扩大为所有新会话",
+      "basis": "inference",
+      "claim_ids": [
+        "H08:claim:replay-boundary"
+      ]
+    },
+    {
+      "id": "H08:edge:reconcile",
+      "type": "reads",
+      "from": "H08:service:response-executor",
+      "to": "H08:external_system:identity-apps",
+      "payload": "外部请求引用、目标当前状态、相关审计与访问核验",
+      "timing": "async",
+      "invariant": "HTTP 接收与目标效果分别确认",
+      "failure": "无法归因或状态冲突时保持人工核对",
+      "basis": "inference",
+      "claim_ids": [
+        "H08:claim:replay-boundary"
+      ]
+    },
+    {
+      "id": "H08:edge:external-owner",
+      "type": "owns",
+      "from": "H08:external_system:identity-apps",
+      "to": "H08:object:external-access-state",
+      "payload": "账号、会话与应用权限各自的状态",
+      "timing": "static",
+      "invariant": "本地投影不能自行确认外部效果",
+      "failure": "缺少对应读回证据则 unknown",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H08:claim:synthetic-policy"
+      ]
+    },
+    {
+      "id": "H08:edge:recovery-owner",
+      "type": "owns",
+      "from": "H08:service:case-manager",
+      "to": "H08:object:recovery-plan",
+      "payload": "当前职责、残余效果、恢复批准",
+      "timing": "static",
+      "invariant": "恢复是新决策，不复活旧凭证",
+      "failure": "转岗或未决停用请求必须重新判断",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H08:claim:synthetic-recovery"
+      ]
+    },
+    {
+      "id": "H08:edge:recovery-run",
+      "type": "depends_on",
+      "from": "H08:object:recovery-plan",
+      "to": "H08:object:response-run",
+      "payload": "每个原始步骤的已知或未知结果",
+      "timing": "sync",
+      "invariant": "先识别未决副作用再执行相反动作",
+      "failure": "late confirmation 触发重新核查",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H08:claim:synthetic-recovery"
+      ]
+    },
+    {
+      "id": "H08:edge:recovery-store",
+      "type": "stores",
+      "from": "H08:store:operation-ledger",
+      "to": "H08:object:recovery-plan",
+      "payload": "当前权限依据、恢复步骤与新授权引用",
+      "timing": "sync",
+      "invariant": "恢复保留原始响应历史",
+      "failure": "重启后按新计划身份继续核查",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H08:claim:synthetic-recovery"
+      ]
+    },
+    {
+      "id": "H08:edge:incident-view",
+      "type": "projects",
+      "from": "H08:object:incident",
+      "to": "H08:ui:incident-console",
+      "payload": "证据时间、排序、版本、结论与残余风险",
+      "timing": "async",
+      "invariant": "缓存 key 含 tenant 与过滤权限版本",
+      "failure": "缺少信号或过期投影明确显示",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H08:claim:synthetic-policy"
+      ]
+    },
+    {
+      "id": "H08:edge:run-view",
+      "type": "projects",
+      "from": "H08:object:response-run",
+      "to": "H08:ui:incident-console",
+      "payload": "prepared/partial/unknown/confirmed 与各步证据",
+      "timing": "async",
+      "invariant": "总体 confirmed 只在预期效果全部确认后展示",
+      "failure": "断线按 request ID 找回",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H08:claim:synthetic-policy"
+      ]
+    },
+    {
+      "id": "H08:edge:step-view",
+      "type": "projects",
+      "from": "H08:object:response-step",
+      "to": "H08:ui:incident-console",
+      "payload": "目标、尝试和最后核对时间",
+      "timing": "async",
+      "invariant": "迟到回执不能覆盖较新恢复观察",
+      "failure": "先重新核对权威系统",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H08:claim:synthetic-recovery"
+      ]
+    }
+  ],
+  "lifecycles": [
+    {
+      "object_id": "H08:object:signal",
+      "states": [
+        "received",
+        "validated",
+        "linked",
+        "quarantined"
+      ],
+      "transitions": [
+        {
+          "from": "received",
+          "to": "validated",
+          "trigger": "接收校验",
+          "guard": "连接、tenant、事件 ID 与必需字段有效",
+          "durable_effect": "保存规范化版本与原始引用",
+          "recovery": "缺字段转隔离"
+        },
+        {
+          "from": "received",
+          "to": "quarantined",
+          "trigger": "校验失败",
+          "guard": "来源或字段不满足要求",
+          "durable_effect": "保存隔离原因及接收记录",
+          "recovery": "修正后重新验证"
+        },
+        {
+          "from": "quarantined",
+          "to": "validated",
+          "trigger": "获准重处理",
+          "guard": "来源及字段已补全",
+          "durable_effect": "保存新处理版本，不改原观察",
+          "recovery": "仍不满足则继续隔离"
+        },
+        {
+          "from": "validated",
+          "to": "linked",
+          "trigger": "R1 分组或人工确认",
+          "guard": "同租户且实体关系可追溯",
+          "durable_effect": "保存事件引用与分组版本",
+          "recovery": "迟到证据重算，不覆盖已批准计划"
+        }
+      ]
+    },
+    {
+      "object_id": "H08:object:incident",
+      "states": [
+        "new",
+        "investigating",
+        "monitoring",
+        "closed"
+      ],
+      "transitions": [
+        {
+          "from": "new",
+          "to": "investigating",
+          "trigger": "分析员接案",
+          "guard": "具备本租户调查权限",
+          "durable_effect": "保存负责人和事件版本",
+          "recovery": "交接保留历史"
+        },
+        {
+          "from": "investigating",
+          "to": "monitoring",
+          "trigger": "响应效果核验",
+          "guard": "预期遏制效果已确认；未决风险记录明确",
+          "durable_effect": "保存各步证据与观察责任",
+          "recovery": "有 unknown 时保持调查"
+        },
+        {
+          "from": "monitoring",
+          "to": "closed",
+          "trigger": "调查负责人结案",
+          "guard": "调查结论、恢复与残余风险已由责任人接收",
+          "durable_effect": "保存结案原因与证据版本",
+          "recovery": "缺项拒绝结案"
+        },
+        {
+          "from": "investigating",
+          "to": "closed",
+          "trigger": "确认误报且无需响应",
+          "guard": "无在途或未知副作用；负责人接受结论",
+          "durable_effect": "保存误报理由及范围",
+          "recovery": "若已有响应则先走恢复核查"
+        },
+        {
+          "from": "closed",
+          "to": "investigating",
+          "trigger": "新有效证据",
+          "guard": "已验证新信号与同事件相关",
+          "durable_effect": "保存重开原因和新版本",
+          "recovery": "旧结论保持可查"
+        }
+      ]
+    },
+    {
+      "object_id": "H08:object:response-plan",
+      "states": [
+        "draft",
+        "awaiting_approval",
+        "approved",
+        "superseded",
+        "rejected"
+      ],
+      "transitions": [
+        {
+          "from": "draft",
+          "to": "awaiting_approval",
+          "trigger": "预览完成",
+          "guard": "目标稳定 ID 与影响范围齐全",
+          "durable_effect": "冻结内容摘要并保存版本",
+          "recovery": "输入变化生成新版本"
+        },
+        {
+          "from": "awaiting_approval",
+          "to": "approved",
+          "trigger": "负责人批准",
+          "guard": "当前权限与计划摘要匹配",
+          "durable_effect": "保存批准引用",
+          "recovery": "过期许可仍不能派发"
+        },
+        {
+          "from": "awaiting_approval",
+          "to": "rejected",
+          "trigger": "负责人拒绝",
+          "guard": "有拒绝原因",
+          "durable_effect": "保存拒绝与原计划",
+          "recovery": "修改内容重新申请"
+        },
+        {
+          "from": "approved",
+          "to": "superseded",
+          "trigger": "动作或目标改变",
+          "guard": "新版本已持久化并显式替代",
+          "durable_effect": "旧计划停止新派发",
+          "recovery": "已确认或在途步骤不被抹去"
+        },
+        {
+          "from": "awaiting_approval",
+          "to": "superseded",
+          "trigger": "待批内容改变",
+          "guard": "新计划版本成立",
+          "durable_effect": "取消旧版本批准入口",
+          "recovery": "拒绝迟到的旧批准"
+        }
+      ]
+    },
+    {
+      "object_id": "H08:object:authorization",
+      "states": [
+        "pending",
+        "granted",
+        "consumed",
+        "expired",
+        "revoked"
+      ],
+      "transitions": [
+        {
+          "from": "pending",
+          "to": "granted",
+          "trigger": "批准通过",
+          "guard": "tenant、plan hash、目标、有效期和角色有效",
+          "durable_effect": "保存当前策略版本及期限",
+          "recovery": "无完整授权记录即不执行"
+        },
+        {
+          "from": "granted",
+          "to": "consumed",
+          "trigger": "唯一 run 获得绑定",
+          "guard": "run 身份与计划一致且未过期",
+          "durable_effect": "授权绑定该 run；不再创建第二个 run",
+          "recovery": "consumed 仍须逐步验证期限与撤回"
+        },
+        {
+          "from": "granted",
+          "to": "expired",
+          "trigger": "派发前读取时间",
+          "guard": "now >= valid_until",
+          "durable_effect": "保存过期判定",
+          "recovery": "未执行项重新申请"
+        },
+        {
+          "from": "consumed",
+          "to": "expired",
+          "trigger": "后续步骤准备派发",
+          "guard": "now >= valid_until",
+          "durable_effect": "保存过期，暂停新步骤",
+          "recovery": "已发生效果继续核验"
+        },
+        {
+          "from": "granted",
+          "to": "revoked",
+          "trigger": "负责人撤回或策略变化",
+          "guard": "有效撤回身份或权限已失效",
+          "durable_effect": "保存撤回与新策略版本",
+          "recovery": "派发前检查防止旧许可放行"
+        },
+        {
+          "from": "consumed",
+          "to": "revoked",
+          "trigger": "执行中撤回",
+          "guard": "当前授权已撤回",
+          "durable_effect": "停止未发送步骤",
+          "recovery": "在途步骤保持待核验"
+        }
+      ]
+    },
+    {
+      "object_id": "H08:object:response-step",
+      "states": [
+        "prepared",
+        "dispatching",
+        "unknown",
+        "confirmed",
+        "rejected"
+      ],
+      "transitions": [
+        {
+          "from": "prepared",
+          "to": "dispatching",
+          "trigger": "执行器派发",
+          "guard": "授权有效；当前计划未替代；固定目标与当前策略匹配",
+          "durable_effect": "先保存 attempt ID 和派发意图",
+          "recovery": "崩溃后不能假定未发出"
+        },
+        {
+          "from": "prepared",
+          "to": "rejected",
+          "trigger": "派发检查失败",
+          "guard": "过期、撤回、版本冲突或目标不可执行",
+          "durable_effect": "保存明确拒绝；无外部调用",
+          "recovery": "新授权仅处理缺失效果"
+        },
+        {
+          "from": "dispatching",
+          "to": "confirmed",
+          "trigger": "效果核验完成",
+          "guard": "具有覆盖该目标效果的可追溯证据",
+          "durable_effect": "保存结果与核对范围",
+          "recovery": "迟到旧回执不能覆盖新恢复观察"
+        },
+        {
+          "from": "dispatching",
+          "to": "rejected",
+          "trigger": "外部明确拒绝",
+          "guard": "已知请求未执行",
+          "durable_effect": "保存拒绝原因与外部引用",
+          "recovery": "修复原因并重新验证授权"
+        },
+        {
+          "from": "dispatching",
+          "to": "unknown",
+          "trigger": "超时或无法确定派发结果",
+          "guard": "请求可能已执行",
+          "durable_effect": "保存未知范围",
+          "recovery": "先核对；不能盲目重试动态目标"
+        },
+        {
+          "from": "unknown",
+          "to": "confirmed",
+          "trigger": "核对得到充分证据",
+          "guard": "请求身份或已验目标范围足够明确",
+          "durable_effect": "保存核对证据与限制",
+          "recovery": "无法归因则保持 unknown"
+        },
+        {
+          "from": "unknown",
+          "to": "rejected",
+          "trigger": "核对证明未执行且不再派发",
+          "guard": "明确拒绝或未执行证据",
+          "durable_effect": "保存最终未执行依据",
+          "recovery": "仍需要该效果则重新申请计划"
+        }
+      ]
+    },
+    {
+      "object_id": "H08:object:response-run",
+      "states": [
+        "prepared",
+        "running",
+        "partial",
+        "confirmed",
+        "rejected"
+      ],
+      "transitions": [
+        {
+          "from": "prepared",
+          "to": "running",
+          "trigger": "首步派发",
+          "guard": "唯一 run 身份与授权绑定",
+          "durable_effect": "保存运行开始",
+          "recovery": "重新读取步骤账本"
+        },
+        {
+          "from": "prepared",
+          "to": "rejected",
+          "trigger": "所有步骤均被派发前拒绝",
+          "guard": "没有外部调用或在途步骤",
+          "durable_effect": "保存拒绝原因",
+          "recovery": "重新预览授权"
+        },
+        {
+          "from": "running",
+          "to": "partial",
+          "trigger": "出现混合结果",
+          "guard": "至少一个确认和一个未确认/拒绝步骤",
+          "durable_effect": "保存逐步汇总",
+          "recovery": "继续核对，不覆盖已知效果"
+        },
+        {
+          "from": "running",
+          "to": "confirmed",
+          "trigger": "所有预期效果确认",
+          "guard": "每步都有明确确认且计划版本一致",
+          "durable_effect": "保存完成和证据引用",
+          "recovery": "恢复另建计划"
+        },
+        {
+          "from": "running",
+          "to": "rejected",
+          "trigger": "全部步骤明确拒绝",
+          "guard": "没有未知或已确认效果",
+          "durable_effect": "保存完整拒绝",
+          "recovery": "改计划重新批准"
+        },
+        {
+          "from": "partial",
+          "to": "confirmed",
+          "trigger": "剩余步骤核验完成",
+          "guard": "所有预期效果最终确认",
+          "durable_effect": "保存对账后汇总",
+          "recovery": "权限过期时不能靠重试凑齐成功"
+        }
+      ]
+    },
+    {
+      "object_id": "H08:object:recovery-plan",
+      "states": [
+        "draft",
+        "authorized",
+        "executing",
+        "needs_review",
+        "verified"
+      ],
+      "transitions": [
+        {
+          "from": "draft",
+          "to": "authorized",
+          "trigger": "恢复负责人批准",
+          "guard": "当前职责与每项原始效果已核对；不复用旧授权",
+          "durable_effect": "保存最小恢复计划与新授权",
+          "recovery": "未决副作用先人工核查"
+        },
+        {
+          "from": "authorized",
+          "to": "executing",
+          "trigger": "开始恢复",
+          "guard": "新授权当前有效且外部状态未冲突",
+          "durable_effect": "保存恢复尝试",
+          "recovery": "新凭证只由重新认证取得"
+        },
+        {
+          "from": "executing",
+          "to": "verified",
+          "trigger": "恢复行为核验完成",
+          "guard": "当前权限与受测路径符合计划",
+          "durable_effect": "保存核验范围及接收人",
+          "recovery": "不推断未测路径"
+        },
+        {
+          "from": "executing",
+          "to": "needs_review",
+          "trigger": "旧停用或并发角色改变",
+          "guard": "外部结果冲突或无条件写入保护",
+          "durable_effect": "保存冲突，暂停自动恢复",
+          "recovery": "读取当前外部状态并重新批准"
+        },
+        {
+          "from": "needs_review",
+          "to": "authorized",
+          "trigger": "重新裁决",
+          "guard": "当前状态、职责与在途效果已确认",
+          "durable_effect": "生成新版本恢复计划",
+          "recovery": "保留旧失败与未知记录"
+        }
+      ]
+    }
+  ],
+  "algorithm_ids": [
+    "ALG:lookup",
+    "ALG:windows",
+    "ALG:top-k",
+    "ALG:graph-paths",
+    "ALG:caches"
+  ],
+  "claim_ids": [
+    "H08:claim:sentinel-incident",
+    "H08:claim:playbook-authority",
+    "H08:claim:okta-scim",
+    "H08:claim:okta-revoke",
+    "H08:claim:synthetic-policy",
+    "H08:claim:synthetic-algorithm",
+    "H08:claim:replay-boundary",
+    "H08:claim:synthetic-recovery",
+    "H08:claim:synthetic-eval"
+  ],
+  "checks": [
+    {
+      "id": "H08:check:happy",
+      "kind": "happy_path",
+      "given": "T-A U17 的三族证据；P3 有效授权",
+      "when": "预览、批准、执行并逐步核验",
+      "then": "一个 run；三个效果分别确认；之后进入 monitoring",
+      "evidence_required": "UI plan hash、授权账本、外部目标读回与受控访问核验"
+    },
+    {
+      "id": "H08:check:duplicate",
+      "kind": "duplicate",
+      "given": "同一个源事件 a1 和同一批准 request ID",
+      "when": "分别重复投递/提交",
+      "then": "一个独立信号、一个 run；P 分数不增加",
+      "evidence_required": "原始接收记录、唯一键冲突/返回值、评分输入"
+    },
+    {
+      "id": "H08:check:late-receipt",
+      "kind": "out_of_order",
+      "given": "已恢复目标后收到旧停用回执；迟到窗口内信号",
+      "when": "处理旧回执和晚到数据",
+      "then": "不盲目覆盖当前访问状态；重算生成新分组版本",
+      "evidence_required": "事件时间、接收时间、attempt ID、当前外部读回、分组版本"
+    },
+    {
+      "id": "H08:check:plan-race",
+      "kind": "concurrency",
+      "given": "两人批准 P3，同时另一操作生成目标 U22 的 P4",
+      "when": "并发提交与派发",
+      "then": "P3 至多一个 run；P4 需新许可；P3 替代后不得新派发",
+      "evidence_required": "事务日志、唯一约束、409 冲突及实际请求目标"
+    },
+    {
+      "id": "H08:check:tenant",
+      "kind": "tenant_isolation",
+      "given": "T-A/T-B 使用相同显示名和事件号",
+      "when": "冷/热缓存查询、图遍历与执行",
+      "then": "数据及 provider connection 均不跨租户",
+      "evidence_required": "认证上下文、查询过滤、cache key、外部连接引用"
+    },
+    {
+      "id": "H08:check:unknown",
+      "kind": "unknown_outcome",
+      "given": "provider 已完成撤销但响应丢失",
+      "when": "执行器收到 timeout，用户又建立新会话",
+      "then": "保持 unknown 并核查；不盲目撤销新会话",
+      "evidence_required": "操作账本、provider 审计/读回、后续调用清单"
+    },
+    {
+      "id": "H08:check:crash",
+      "kind": "recovery",
+      "given": "步骤结果已提交但任务未标完成",
+      "when": "worker 崩溃重启",
+      "then": "读取 confirmed 并跳过副作用；消费最终完成",
+      "evidence_required": "提交记录、重启日志及外部调用计数"
+    },
+    {
+      "id": "H08:check:expired",
+      "kind": "authorization",
+      "given": "授权有效期 5 分钟，任务排队 6 分钟或已撤回",
+      "when": "执行器准备派发",
+      "then": "拒绝且无外部调用；已有效果仍展示",
+      "evidence_required": "权威时间、授权/策略版本和请求记录"
+    },
+    {
+      "id": "H08:check:false-block",
+      "kind": "recovery",
+      "given": "误封用户转岗；旧停用仍 unknown",
+      "when": "请求恢复并收到迟到结果",
+      "then": "当前职责决定最小恢复；旧凭证不复活；冲突人工接管",
+      "evidence_required": "角色版本、原 run、恢复计划及权限核验"
+    },
+    {
+      "id": "H08:check:calculation",
+      "kind": "algorithm",
+      "given": "R1 表中信号及 0/9/10/18 分钟边界",
+      "when": "去重、锚定窗口与评分",
+      "then": "W1=100 W2=70；共享 IP 不合并；10 在新窗口",
+      "evidence_required": "固定 fixture、手算与纯函数结果；不等于检测性能"
+    },
+    {
+      "id": "H08:check:triage-eval",
+      "kind": "ai_eval",
+      "given": "100 个留出 fixture：20 应升级、80 不应升级",
+      "when": "计数升级/常规/拒答结果与人工路由",
+      "then": "16/24 precision；16/20 recall；19/20 人工队列覆盖；32 待审；分母 100",
+      "evidence_required": "冻结标签、模型/提示版本及逐样本输出；当前只有 synthetic 手算"
+    }
+  ]
+}
