@@ -1,0 +1,166 @@
+{
+  "contract_version": "1.0",
+  "direction": "from → to；禁止用无类型箭头代替含义",
+  "relations": [
+    {
+      "id": "owns",
+      "from_types": [
+        "actor",
+        "service",
+        "external_system"
+      ],
+      "to_types": [
+        "object"
+      ],
+      "meaning_zh": "声明对象事实的权威归属；不是存储副本。"
+    },
+    {
+      "id": "contains",
+      "from_types": [
+        "object"
+      ],
+      "to_types": [
+        "object"
+      ],
+      "meaning_zh": "组成关系；不推断处理顺序。"
+    },
+    {
+      "id": "operates",
+      "from_types": [
+        "actor"
+      ],
+      "to_types": [
+        "ui"
+      ],
+      "meaning_zh": "人通过界面观察或发起动作。"
+    },
+    {
+      "id": "commands",
+      "from_types": [
+        "ui"
+      ],
+      "to_types": [
+        "service",
+        "external_system"
+      ],
+      "meaning_zh": "界面提出动作请求，成功需另有确认。"
+    },
+    {
+      "id": "stores",
+      "from_types": [
+        "store"
+      ],
+      "to_types": [
+        "object",
+        "event"
+      ],
+      "meaning_zh": "持久化对象或事件；不自动成为业务权威。"
+    },
+    {
+      "id": "reads",
+      "from_types": [
+        "service"
+      ],
+      "to_types": [
+        "store",
+        "external_system"
+      ],
+      "meaning_zh": "读取状态或核对外部结果。"
+    },
+    {
+      "id": "emits",
+      "from_types": [
+        "service",
+        "external_system"
+      ],
+      "to_types": [
+        "event"
+      ],
+      "meaning_zh": "产生事实通知；不保证接收方已处理。"
+    },
+    {
+      "id": "delivers",
+      "from_types": [
+        "event"
+      ],
+      "to_types": [
+        "service",
+        "store"
+      ],
+      "meaning_zh": "异步通知交接；接收与完成分开。"
+    },
+    {
+      "id": "projects",
+      "from_types": [
+        "object"
+      ],
+      "to_types": [
+        "ui"
+      ],
+      "meaning_zh": "对象被投影为可见内容，注明新鲜度。"
+    },
+    {
+      "id": "depends_on",
+      "from_types": [
+        "object",
+        "service"
+      ],
+      "to_types": [
+        "object",
+        "service",
+        "external_system"
+      ],
+      "meaning_zh": "目标是前提或依赖，不表示已有数据传输。"
+    },
+    {
+      "id": "derived_from",
+      "from_types": [
+        "object"
+      ],
+      "to_types": [
+        "object",
+        "event"
+      ],
+      "meaning_zh": "计算或证据派生；注明规则与版本。"
+    },
+    {
+      "id": "authorizes",
+      "from_types": [
+        "actor",
+        "rule"
+      ],
+      "to_types": [
+        "service"
+      ],
+      "meaning_zh": "允许执行动作的权限/规则关系，不表示动作发生。"
+    },
+    {
+      "id": "requests",
+      "from_types": [
+        "service"
+      ],
+      "to_types": [
+        "external_system"
+      ],
+      "meaning_zh": "发给外部 provider 的请求；timeout 可能留下未知结果。"
+    }
+  ],
+  "edge_required": [
+    "id",
+    "type",
+    "from",
+    "to",
+    "payload",
+    "timing",
+    "invariant",
+    "failure",
+    "basis",
+    "claim_ids"
+  ],
+  "rules": [
+    "节点 ID 可复用到图和正文；不同 node type 不能用同一 ID。",
+    "状态转换在 lifecycles 中，不与调用或因果关系混画。",
+    "现金流和实物流在业务对象与正文解释；本版本不将消息交付箭头冒充物理转移。",
+    "source_fact 必须引用支持该边含义的已读 claim；synthetic 边是演示设计。"
+  ]
+}

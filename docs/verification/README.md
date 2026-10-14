@@ -1,5 +1,7 @@
 # 验收回执
 
+- [SaaS 工程全景 checkpoint](saas-engineering-atlas-20261014.md)：契约与分包检查、仓库验证和未执行范围。
+
 - [AgentScope 知识片 · 2026-10-12](agentscope-enterprise-film-20261012.md)：内容、原生封面、渲染、来源索引与仓库验证范围。
 
 - [排列与刻度 · 2026-10-04](placement-grammar-20261004.md)：一页 Design Foundations 条目、0.3.0 图件与样板第三节；仓库校验和 32 项自动检查通过，一次独立复查（13 组问题，修了 11 组中的绝大部分），两个任务各一次冷读加一次对照，没有读者或专业人员看过。

@@ -1,0 +1,120 @@
+{
+  "contract_version": "1.0",
+  "identity_rules": {
+    "case": "沿用 H01-H09、V01-V22、X01-X02，不因分包或标题变化重新编号。",
+    "package": "P01-P06 仅表达写入所有权，不是行业或地域等级。",
+    "node": "<case-id>:<node-type>:<slug>；系统内部运行 ID 另外记录。",
+    "edge": "<case-id>:edge:<slug>",
+    "claim": "<case-id>:claim:<slug>；外部已核查来源主张保留 <source-id>-C<n>。",
+    "term": "TERM:<source-id>:<original-term-slug> 或 TERM:COMMON:<slug>；同义词显式 aliases，不能合并不同语义。",
+    "transfer": "TR:<from-case>:<to-case>:<slug>；记录保留机制、前提、变化与反例，由父线程合并。",
+    "check": "<case-id>:check:<slug>",
+    "source": "保留种子 ID；新来源用 <package-id>-SRC-<slug>，父线程按 canonical URL 去重。"
+  },
+  "node_types": [
+    "actor",
+    "object",
+    "ui",
+    "service",
+    "store",
+    "external_system",
+    "event",
+    "rule"
+  ],
+  "basis_values": [
+    "source_fact",
+    "inference",
+    "synthetic"
+  ],
+  "timing_values": [
+    "static",
+    "sync",
+    "async",
+    "batch"
+  ],
+  "algorithms": [
+    {
+      "id": "ALG:lookup",
+      "label": "lookup / 查找"
+    },
+    {
+      "id": "ALG:top-k",
+      "label": "sorting / Top-K"
+    },
+    {
+      "id": "ALG:windows",
+      "label": "windows / 窗口计算"
+    },
+    {
+      "id": "ALG:graph-paths",
+      "label": "graph paths / 图路径"
+    },
+    {
+      "id": "ALG:scheduling",
+      "label": "dependencies / scheduling"
+    },
+    {
+      "id": "ALG:optimization",
+      "label": "optimization / 优化"
+    },
+    {
+      "id": "ALG:caches",
+      "label": "caches / 缓存"
+    },
+    {
+      "id": "ALG:approximate",
+      "label": "approximate computation / 近似计算"
+    }
+  ],
+  "terms": [
+    {
+      "id": "TERM:COMMON:actor",
+      "original": "actor",
+      "meaning_zh": "承担动作、权限或责任的人或角色",
+      "basis": "teaching-definition"
+    },
+    {
+      "id": "TERM:COMMON:object",
+      "original": "object",
+      "meaning_zh": "具有稳定身份、状态与业务约束的工作对象",
+      "basis": "teaching-definition"
+    },
+    {
+      "id": "TERM:COMMON:state",
+      "original": "state",
+      "meaning_zh": "某一对象在其生命周期中的明确状态",
+      "basis": "teaching-definition"
+    },
+    {
+      "id": "TERM:COMMON:command",
+      "original": "command",
+      "meaning_zh": "请求系统执行动作，尚不证明动作完成",
+      "basis": "teaching-definition"
+    },
+    {
+      "id": "TERM:COMMON:event",
+      "original": "event",
+      "meaning_zh": "已经发生的事实通知；送达可能迟到或重复",
+      "basis": "teaching-definition"
+    },
+    {
+      "id": "TERM:COMMON:system-of-record",
+      "original": "system of record",
+      "meaning_zh": "指定对象或事实的权威记录系统",
+      "basis": "teaching-definition"
+    },
+    {
+      "id": "TERM:COMMON:read-model",
+      "original": "read model",
+      "meaning_zh": "为查询构造的投影，需说明新鲜度",
+      "basis": "teaching-definition"
+    },
+    {
+      "id": "TERM:COMMON:idempotency",
+      "original": "idempotency",
+      "meaning_zh": "同一操作身份重复尝试仍保持规定的业务效果",
+      "basis": "teaching-definition"
+    }
+  ],
+  "historical_term_import": "未导入旧 383 条术语；这些教学定义不冒充旧锚点恢复。"
+}

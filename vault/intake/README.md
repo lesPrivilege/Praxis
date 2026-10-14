@@ -1,5 +1,7 @@
 # Intake · 材料登记
 
+- [SaaS 工程全景 checkpoint](saas-engineering-atlas-20261014.json)：架构范围、旧基线与未复现边界。
+
 - [AgentScope 企业线研究](agentscope-enterprise-20261012.json)：本次公开源研究的范围与消费归属。
 
 - [Palantir 阅读清单 · 2026-10-01 登记，10-06 取得原件](palantir-20261001.json)：7 个对象、8 个显式 URL；当前对象证据为 3 个 `verified`、4 个 `partial`，URL 记录为 4 个 `verified`、4 个 `partial`，四本书正文仍缺。[阅读入口与候选笔记](../../palantir/references/README.md)，[原件快照](../snapshots/local/palantir-20261006/README.md)，[回执](../../docs/verification/palantir-source-acquisition-20261006.md)。

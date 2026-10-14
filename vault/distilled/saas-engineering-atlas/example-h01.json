@@ -1,0 +1,518 @@
+{
+  "contract_version": "1.0",
+  "case_id": "H01",
+  "title": "承诺、收款与履约",
+  "scope": "Synthetic prepaid subscription; equal 30 service days; excludes tax, fees, FX, partial payment, refunds and credit balance. Invoice transitions are a deliberate subset, not a complete provider model.",
+  "synthetic": true,
+  "source_ids": [
+    "STRIPE_INV",
+    "STRIPE_WEBHOOK",
+    "STRIPE_REV"
+  ],
+  "nodes": [
+    {
+      "id": "H01:actor:operator",
+      "type": "actor",
+      "label": "财务操作员",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; external mapping also includes provider account"
+    },
+    {
+      "id": "H01:ui:billing",
+      "type": "ui",
+      "label": "账单工作台",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; external mapping also includes provider account"
+    },
+    {
+      "id": "H01:service:business",
+      "type": "service",
+      "label": "合同与权利服务",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; external mapping also includes provider account"
+    },
+    {
+      "id": "H01:external_system:stripe",
+      "type": "external_system",
+      "label": "Stripe",
+      "authority": "provider invoice and payment state",
+      "tenant_scope": "tenant-bound; external mapping also includes provider account"
+    },
+    {
+      "id": "H01:object:contract",
+      "type": "object",
+      "label": "Contract",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; external mapping also includes provider account"
+    },
+    {
+      "id": "H01:object:invoice",
+      "type": "object",
+      "label": "Invoice",
+      "authority": "Stripe",
+      "tenant_scope": "tenant-bound; external mapping also includes provider account"
+    },
+    {
+      "id": "H01:object:entitlement",
+      "type": "object",
+      "label": "Entitlement",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; external mapping also includes provider account"
+    },
+    {
+      "id": "H01:object:revenue",
+      "type": "object",
+      "label": "Revenue schedule",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; external mapping also includes provider account"
+    },
+    {
+      "id": "H01:store:ledger",
+      "type": "store",
+      "label": "业务记录库",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; external mapping also includes provider account"
+    },
+    {
+      "id": "H01:store:inbox",
+      "type": "store",
+      "label": "Durable inbox",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; external mapping also includes provider account"
+    },
+    {
+      "id": "H01:event:paid",
+      "type": "event",
+      "label": "支付相关通知",
+      "authority": "provider event",
+      "tenant_scope": "tenant-bound; external mapping also includes provider account"
+    },
+    {
+      "id": "H01:service:recognition",
+      "type": "service",
+      "label": "教学账务服务",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; external mapping also includes provider account"
+    }
+  ],
+  "edges": [
+    {
+      "id": "H01:edge:operator-ui",
+      "type": "operates",
+      "from": "H01:actor:operator",
+      "to": "H01:ui:billing",
+      "payload": "查看合同、金额、操作状态",
+      "timing": "sync",
+      "invariant": "只展示获授权 tenant 的数据",
+      "failure": "重新认证后找回同一操作",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H01:edge:submit",
+      "type": "commands",
+      "from": "H01:ui:billing",
+      "to": "H01:service:business",
+      "payload": "contract version + operation ID",
+      "timing": "sync",
+      "invariant": "动作与版本、权限绑定",
+      "failure": "拒绝过期版本；重复点击返回同一操作",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H01:edge:invoice-request",
+      "type": "requests",
+      "from": "H01:service:business",
+      "to": "H01:external_system:stripe",
+      "payload": "已持久化的开票请求身份与金额",
+      "timing": "sync",
+      "invariant": "同一购买不得盲目创建第二张 invoice",
+      "failure": "timeout 后保留 unknown 并核对外部对象",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H01:edge:provider-owner",
+      "type": "owns",
+      "from": "H01:external_system:stripe",
+      "to": "H01:object:invoice",
+      "payload": "provider object identity",
+      "timing": "static",
+      "invariant": "本地投影不能自行宣布外部付款",
+      "failure": "读取 provider 核对状态",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H01:edge:event",
+      "type": "emits",
+      "from": "H01:external_system:stripe",
+      "to": "H01:event:paid",
+      "payload": "签名事件与 invoice 引用",
+      "timing": "async",
+      "invariant": "收到消息不等于后续动作完成",
+      "failure": "验证签名；记录重复与乱序风险",
+      "basis": "source_fact",
+      "claim_ids": [
+        "STRIPE_WEBHOOK-C1"
+      ]
+    },
+    {
+      "id": "H01:edge:inbox",
+      "type": "delivers",
+      "from": "H01:event:paid",
+      "to": "H01:store:inbox",
+      "payload": "event identity + payload",
+      "timing": "async",
+      "invariant": "确认接收前先持久化",
+      "failure": "写入失败不假装已接收；允许再次投递",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H01:edge:consume",
+      "type": "reads",
+      "from": "H01:service:business",
+      "to": "H01:store:inbox",
+      "payload": "待处理事件",
+      "timing": "async",
+      "invariant": "消费与业务唯一性约束相容",
+      "failure": "崩溃后重放并核对已完成效果",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H01:edge:reconcile",
+      "type": "reads",
+      "from": "H01:service:business",
+      "to": "H01:external_system:stripe",
+      "payload": "按映射身份核对 invoice",
+      "timing": "async",
+      "invariant": "不按到达次序盲目覆盖权威状态",
+      "failure": "provider 不可用时保留待核对",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H01:edge:contract-owner",
+      "type": "owns",
+      "from": "H01:service:business",
+      "to": "H01:object:contract",
+      "payload": "合同版本",
+      "timing": "static",
+      "invariant": "accepted 绑定具体版本",
+      "failure": "修改产生新版本并重新确认",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H01:edge:rights-owner",
+      "type": "owns",
+      "from": "H01:service:business",
+      "to": "H01:object:entitlement",
+      "payload": "购买对应的使用权",
+      "timing": "static",
+      "invariant": "每个购买只产生一份权利",
+      "failure": "重放不重复开通",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H01:edge:contract-store",
+      "type": "stores",
+      "from": "H01:store:ledger",
+      "to": "H01:object:contract",
+      "payload": "版本与接受证据",
+      "timing": "sync",
+      "invariant": "历史依据可追溯",
+      "failure": "恢复后检查版本关系",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H01:edge:invoice-store",
+      "type": "stores",
+      "from": "H01:store:ledger",
+      "to": "H01:object:invoice",
+      "payload": "外部映射与本地投影",
+      "timing": "async",
+      "invariant": "tenant 与 provider account 在 key 内",
+      "failure": "重新同步，不无痕改写证据",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H01:edge:rights-store",
+      "type": "stores",
+      "from": "H01:store:ledger",
+      "to": "H01:object:entitlement",
+      "payload": "权利状态与生效依据",
+      "timing": "sync",
+      "invariant": "唯一业务键",
+      "failure": "冲突时读取已有权利",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H01:edge:rights-contract",
+      "type": "depends_on",
+      "from": "H01:object:entitlement",
+      "to": "H01:object:contract",
+      "payload": "accepted version",
+      "timing": "static",
+      "invariant": "有效合同是前提",
+      "failure": "版本无效时暂停并人工复核",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H01:edge:rights-invoice",
+      "type": "depends_on",
+      "from": "H01:object:entitlement",
+      "to": "H01:object:invoice",
+      "payload": "经核对的付款确认",
+      "timing": "static",
+      "invariant": "只在本例预付前提下要求付款",
+      "failure": "unknown 时不按缓存开通",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H01:edge:read-ledger",
+      "type": "reads",
+      "from": "H01:service:recognition",
+      "to": "H01:store:ledger",
+      "payload": "金额、服务区间与规则版本",
+      "timing": "batch",
+      "invariant": "按固定输入重演",
+      "failure": "输入修订后重算受影响窗口",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H01:edge:revenue-owner",
+      "type": "owns",
+      "from": "H01:service:recognition",
+      "to": "H01:object:revenue",
+      "payload": "教学累计表",
+      "timing": "static",
+      "invariant": "结果绑定规则与输入版本",
+      "failure": "保留修正历史",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H01:edge:revenue-input",
+      "type": "derived_from",
+      "from": "H01:object:revenue",
+      "to": "H01:object:invoice",
+      "payload": "金额与 line item 服务区间",
+      "timing": "batch",
+      "invariant": "相邻半开窗口不重复计数",
+      "failure": "重叠或无效区间进入人工核对",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H01:edge:invoice-ui",
+      "type": "projects",
+      "from": "H01:object:invoice",
+      "to": "H01:ui:billing",
+      "payload": "状态与最后核对时间",
+      "timing": "async",
+      "invariant": "状态和新鲜度一起展示",
+      "failure": "过期时提示重新核对",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H01:edge:rights-ui",
+      "type": "projects",
+      "from": "H01:object:entitlement",
+      "to": "H01:ui:billing",
+      "payload": "使用权与操作状态",
+      "timing": "async",
+      "invariant": "UI 投影不成为授权依据",
+      "failure": "读取权威状态恢复显示",
+      "basis": "synthetic",
+      "claim_ids": []
+    }
+  ],
+  "lifecycles": [
+    {
+      "object_id": "H01:object:contract",
+      "states": [
+        "draft",
+        "accepted",
+        "superseded"
+      ],
+      "transitions": [
+        {
+          "from": "draft",
+          "to": "accepted",
+          "trigger": "客户接受",
+          "guard": "具体版本与身份已确认",
+          "durable_effect": "保存 accepted 与版本",
+          "recovery": "记录缺失则重新确认，不推测接受"
+        },
+        {
+          "from": "accepted",
+          "to": "superseded",
+          "trigger": "新合同版本生效",
+          "guard": "新版本已获授权接受",
+          "durable_effect": "保留旧版与替代关系",
+          "recovery": "按原版本核对历史 invoice"
+        }
+      ]
+    },
+    {
+      "object_id": "H01:object:invoice",
+      "states": [
+        "draft",
+        "open",
+        "paid",
+        "void",
+        "uncollectible"
+      ],
+      "transitions": [
+        {
+          "from": "draft",
+          "to": "open",
+          "trigger": "finalization",
+          "guard": "合法金额与期间；provider 受理",
+          "durable_effect": "保存外部 invoice 状态映射",
+          "recovery": "timeout 后读取外部对象"
+        },
+        {
+          "from": "open",
+          "to": "paid",
+          "trigger": "付款确认",
+          "guard": "本例排除 credit/partial/refund；核对权威对象",
+          "durable_effect": "保存 paid 证据并安排开通",
+          "recovery": "投递乱序时重新读取；不回退旧状态"
+        }
+      ]
+    },
+    {
+      "object_id": "H01:object:entitlement",
+      "states": [
+        "pending",
+        "active",
+        "suspended",
+        "ended"
+      ],
+      "transitions": [
+        {
+          "from": "pending",
+          "to": "active",
+          "trigger": "开通任务",
+          "guard": "accepted 合同及本例核对后的付款确认",
+          "durable_effect": "唯一业务键下保存 active",
+          "recovery": "崩溃后读取已完成效果"
+        },
+        {
+          "from": "active",
+          "to": "ended",
+          "trigger": "服务区间结束",
+          "guard": "结束时间已到",
+          "durable_effect": "保存 ended 与时间",
+          "recovery": "迟到任务重放不延长服务"
+        },
+        {
+          "from": "active",
+          "to": "suspended",
+          "trigger": "人工暂停",
+          "guard": "权限和原因已记录",
+          "durable_effect": "保存暂停证据",
+          "recovery": "不自动退款；转人工核对"
+        },
+        {
+          "from": "suspended",
+          "to": "active",
+          "trigger": "人工恢复",
+          "guard": "异常已解决且区间未结束",
+          "durable_effect": "保存恢复依据",
+          "recovery": "并发恢复使用版本检查"
+        }
+      ]
+    }
+  ],
+  "algorithm_ids": [
+    "ALG:lookup",
+    "ALG:top-k",
+    "ALG:windows",
+    "ALG:caches"
+  ],
+  "claim_ids": [
+    "STRIPE_INV-C1",
+    "STRIPE_WEBHOOK-C1",
+    "STRIPE_REV-C1"
+  ],
+  "checks": [
+    {
+      "id": "H01:check:happy",
+      "kind": "happy_path",
+      "given": "accepted contract; amount=300; [0,30)",
+      "when": "confirmed payment; observe day 10",
+      "then": "one active entitlement; synthetic accrued amount=100",
+      "evidence_required": "provider confirmation, local state, UI projection, arithmetic result"
+    },
+    {
+      "id": "H01:check:duplicate",
+      "kind": "duplicate",
+      "given": "one valid payment event",
+      "when": "deliver twice",
+      "then": "one entitlement effect",
+      "evidence_required": "inbox records plus business uniqueness evidence"
+    },
+    {
+      "id": "H01:check:reordering",
+      "kind": "out_of_order",
+      "given": "provider currently paid",
+      "when": "deliver paid then old open information",
+      "then": "reconcile current provider state; do not regress blindly",
+      "evidence_required": "event arrival log and authoritative read"
+    },
+    {
+      "id": "H01:check:race",
+      "kind": "concurrency",
+      "given": "same contract version",
+      "when": "two operators submit concurrently",
+      "then": "one operation or explicit version conflict",
+      "evidence_required": "operation identity, rejection/return result"
+    },
+    {
+      "id": "H01:check:tenant",
+      "kind": "tenant_isolation",
+      "given": "same invoice number in two tenants",
+      "when": "read with cache hit and miss",
+      "then": "only authorized tenant data",
+      "evidence_required": "query scope and returned data"
+    },
+    {
+      "id": "H01:check:timeout",
+      "kind": "unknown_outcome",
+      "given": "provider accepted request",
+      "when": "client times out",
+      "then": "unknown remains until reconciliation; no blind second invoice",
+      "evidence_required": "operation ledger and provider lookup"
+    },
+    {
+      "id": "H01:check:crash",
+      "kind": "recovery",
+      "given": "business update committed",
+      "when": "worker crashes before consume marker",
+      "then": "one entitlement after replay; eventual explained consumption",
+      "evidence_required": "restart log, final state and reconciliation"
+    },
+    {
+      "id": "H01:check:windows",
+      "kind": "algorithm",
+      "given": "amount=300; service=[0,30)",
+      "when": "sum [0,10) and [10,15)",
+      "then": "100+50=150; no duplicate boundary",
+      "evidence_required": "fixed synthetic input and hand calculation"
+    }
+  ]
+}
