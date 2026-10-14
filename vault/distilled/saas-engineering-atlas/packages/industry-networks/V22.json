@@ -1,0 +1,1339 @@
+{
+  "contract_version": "1.0",
+  "case_id": "V22",
+  "title": "通信产品从下单到退役，为什么仍会留下账务工作",
+  "scope": "Synthetic postpaid IoT service: versioned product order, asynchronous activation and retirement, event-time usage rating, final bill and corrections. TM Forum public API overviews are conceptual references; no certified implementation or live integration.",
+  "synthetic": true,
+  "source_ids": [
+    "TMF622",
+    "TMF_DIR",
+    "P06-SRC-tmf640",
+    "P06-SRC-tmf635",
+    "P06-SRC-tmf678"
+  ],
+  "nodes": [
+    {
+      "id": "V22:actor:customer",
+      "type": "actor",
+      "label": "客户",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant; external references additionally scoped by partner account/domain"
+    },
+    {
+      "id": "V22:actor:support",
+      "type": "actor",
+      "label": "客服",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant; external references additionally scoped by partner account/domain"
+    },
+    {
+      "id": "V22:actor:network-operator",
+      "type": "actor",
+      "label": "网络操作员",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant; external references additionally scoped by partner account/domain"
+    },
+    {
+      "id": "V22:actor:billing-operator",
+      "type": "actor",
+      "label": "计费操作员",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant; external references additionally scoped by partner account/domain"
+    },
+    {
+      "id": "V22:ui:service-desk",
+      "type": "ui",
+      "label": "订购、服务与账单工作台",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant; external references additionally scoped by partner account/domain"
+    },
+    {
+      "id": "V22:service:order",
+      "type": "service",
+      "label": "产品订单服务",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant; external references additionally scoped by partner account/domain"
+    },
+    {
+      "id": "V22:service:orchestration",
+      "type": "service",
+      "label": "长时开通/退役编排",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant; external references additionally scoped by partner account/domain"
+    },
+    {
+      "id": "V22:service:service-inventory",
+      "type": "service",
+      "label": "服务与资源库存",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant; external references additionally scoped by partner account/domain"
+    },
+    {
+      "id": "V22:service:usage",
+      "type": "service",
+      "label": "用量校验与修订",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant; external references additionally scoped by partner account/domain"
+    },
+    {
+      "id": "V22:service:billing",
+      "type": "service",
+      "label": "版本化计价与账单服务",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant; external references additionally scoped by partner account/domain"
+    },
+    {
+      "id": "V22:external_system:network",
+      "type": "external_system",
+      "label": "合成网络控制器/monitor",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant; external references additionally scoped by partner account/domain"
+    },
+    {
+      "id": "V22:external_system:usage-producer",
+      "type": "external_system",
+      "label": "合成网络用量来源",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant; external references additionally scoped by partner account/domain"
+    },
+    {
+      "id": "V22:store:transactional",
+      "type": "store",
+      "label": "PostgreSQL 订单、库存、账务与操作账",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant; external references additionally scoped by partner account/domain"
+    },
+    {
+      "id": "V22:store:inbox-outbox",
+      "type": "store",
+      "label": "持久事件与任务边界",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant; external references additionally scoped by partner account/domain"
+    },
+    {
+      "id": "V22:store:usage-evidence",
+      "type": "store",
+      "label": "对象存储原始用量证据",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant; external references additionally scoped by partner account/domain"
+    },
+    {
+      "id": "V22:object:offer",
+      "type": "object",
+      "label": "Offer O3 与政策版本",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant; external references additionally scoped by partner account/domain"
+    },
+    {
+      "id": "V22:object:product-order",
+      "type": "object",
+      "label": "PO1 购买 / PO2 退订（独立实例）",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant; external references additionally scoped by partner account/domain"
+    },
+    {
+      "id": "V22:object:service",
+      "type": "object",
+      "label": "Service SV1",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant; external references additionally scoped by partner account/domain"
+    },
+    {
+      "id": "V22:object:resource",
+      "type": "object",
+      "label": "Resource assignment RA1",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant; external references additionally scoped by partner account/domain"
+    },
+    {
+      "id": "V22:object:activation-operation",
+      "type": "object",
+      "label": "激活/退役操作身份及结果",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant; external references additionally scoped by partner account/domain"
+    },
+    {
+      "id": "V22:object:usage",
+      "type": "object",
+      "label": "Usage identity + revision",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant; external references additionally scoped by partner account/domain"
+    },
+    {
+      "id": "V22:object:bill",
+      "type": "object",
+      "label": "Bill B1",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant; external references additionally scoped by partner account/domain"
+    },
+    {
+      "id": "V22:object:adjustment",
+      "type": "object",
+      "label": "ADJ1 更正调整",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant; external references additionally scoped by partner account/domain"
+    },
+    {
+      "id": "V22:event:network-result",
+      "type": "event",
+      "label": "网络执行与核对事件",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant; external references additionally scoped by partner account/domain"
+    },
+    {
+      "id": "V22:event:usage-record",
+      "type": "event",
+      "label": "发生时间/到达时间用量事件",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant; external references additionally scoped by partner account/domain"
+    },
+    {
+      "id": "V22:object:billing-interval",
+      "type": "object",
+      "label": "Billing interval BI1，独立于技术活动区间",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant; partner/domain-scoped references"
+    }
+  ],
+  "edges": [
+    {
+      "id": "V22:edge:operate-customer",
+      "type": "operates",
+      "from": "V22:actor:customer",
+      "to": "V22:ui:service-desk",
+      "payload": "角色范围内的订购、核对、例外与调整",
+      "timing": "sync",
+      "invariant": "角色的目的与授权边界保持独立",
+      "failure": "后端拒绝越权而非只隐藏按钮",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V22:edge:operate-support",
+      "type": "operates",
+      "from": "V22:actor:support",
+      "to": "V22:ui:service-desk",
+      "payload": "角色范围内的订购、核对、例外与调整",
+      "timing": "sync",
+      "invariant": "角色的目的与授权边界保持独立",
+      "failure": "后端拒绝越权而非只隐藏按钮",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V22:edge:operate-network",
+      "type": "operates",
+      "from": "V22:actor:network-operator",
+      "to": "V22:ui:service-desk",
+      "payload": "角色范围内的订购、核对、例外与调整",
+      "timing": "sync",
+      "invariant": "角色的目的与授权边界保持独立",
+      "failure": "后端拒绝越权而非只隐藏按钮",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V22:edge:operate-billing",
+      "type": "operates",
+      "from": "V22:actor:billing-operator",
+      "to": "V22:ui:service-desk",
+      "payload": "角色范围内的订购、核对、例外与调整",
+      "timing": "sync",
+      "invariant": "角色的目的与授权边界保持独立",
+      "failure": "后端拒绝越权而非只隐藏按钮",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V22:edge:order-command",
+      "type": "commands",
+      "from": "V22:ui:service-desk",
+      "to": "V22:service:order",
+      "payload": "tenant, offer version, requested effectiveAt, operation ID",
+      "timing": "sync",
+      "invariant": "接受的是确定商业版本",
+      "failure": "旧版冲突要求确认；断网按同operation找回",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V22:claim:orchestration-design"
+      ]
+    },
+    {
+      "id": "V22:edge:repair-command",
+      "type": "commands",
+      "from": "V22:ui:service-desk",
+      "to": "V22:service:orchestration",
+      "payload": "service ID, operation revision, authorized recovery action",
+      "timing": "sync",
+      "invariant": "人工处置不得绕过网络确认与资源唯一性",
+      "failure": "解释未满足guard并保留责任人",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V22:edge:adjust-command",
+      "type": "commands",
+      "from": "V22:ui:service-desk",
+      "to": "V22:service:billing",
+      "payload": "bill version, corrected usage revision, approval evidence",
+      "timing": "sync",
+      "invariant": "issued账单不无痕改写",
+      "failure": "版本冲突显示既有调整",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V22:edge:owner-offer",
+      "type": "owns",
+      "from": "V22:service:order",
+      "to": "V22:object:offer",
+      "payload": "权威事实、版本、生效时间与审核轨迹",
+      "timing": "static",
+      "invariant": "状态与事实来源明确",
+      "failure": "其它系统镜像不直接覆盖本地权威决定",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V22:edge:owner-order",
+      "type": "owns",
+      "from": "V22:service:order",
+      "to": "V22:object:product-order",
+      "payload": "权威事实、版本、生效时间与审核轨迹",
+      "timing": "static",
+      "invariant": "状态与事实来源明确",
+      "failure": "其它系统镜像不直接覆盖本地权威决定",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V22:edge:owner-service",
+      "type": "owns",
+      "from": "V22:service:service-inventory",
+      "to": "V22:object:service",
+      "payload": "权威事实、版本、生效时间与审核轨迹",
+      "timing": "static",
+      "invariant": "状态与事实来源明确",
+      "failure": "其它系统镜像不直接覆盖本地权威决定",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V22:edge:owner-resource",
+      "type": "owns",
+      "from": "V22:service:service-inventory",
+      "to": "V22:object:resource",
+      "payload": "权威事实、版本、生效时间与审核轨迹",
+      "timing": "static",
+      "invariant": "状态与事实来源明确",
+      "failure": "其它系统镜像不直接覆盖本地权威决定",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V22:edge:owner-operation",
+      "type": "owns",
+      "from": "V22:service:orchestration",
+      "to": "V22:object:activation-operation",
+      "payload": "权威事实、版本、生效时间与审核轨迹",
+      "timing": "static",
+      "invariant": "状态与事实来源明确",
+      "failure": "其它系统镜像不直接覆盖本地权威决定",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V22:edge:owner-usage",
+      "type": "owns",
+      "from": "V22:service:usage",
+      "to": "V22:object:usage",
+      "payload": "权威事实、版本、生效时间与审核轨迹",
+      "timing": "static",
+      "invariant": "状态与事实来源明确",
+      "failure": "其它系统镜像不直接覆盖本地权威决定",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V22:edge:owner-bill",
+      "type": "owns",
+      "from": "V22:service:billing",
+      "to": "V22:object:bill",
+      "payload": "权威事实、版本、生效时间与审核轨迹",
+      "timing": "static",
+      "invariant": "状态与事实来源明确",
+      "failure": "其它系统镜像不直接覆盖本地权威决定",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V22:edge:owner-adjustment",
+      "type": "owns",
+      "from": "V22:service:billing",
+      "to": "V22:object:adjustment",
+      "payload": "权威事实、版本、生效时间与审核轨迹",
+      "timing": "static",
+      "invariant": "状态与事实来源明确",
+      "failure": "其它系统镜像不直接覆盖本地权威决定",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V22:edge:store-offer",
+      "type": "stores",
+      "from": "V22:store:transactional",
+      "to": "V22:object:offer",
+      "payload": "tenant + stable object ID + revision + durable evidence",
+      "timing": "sync",
+      "invariant": "提交的对象身份与依据可以恢复",
+      "failure": "重放先查已提交效果",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V22:edge:store-order",
+      "type": "stores",
+      "from": "V22:store:transactional",
+      "to": "V22:object:product-order",
+      "payload": "tenant + stable object ID + revision + durable evidence",
+      "timing": "sync",
+      "invariant": "提交的对象身份与依据可以恢复",
+      "failure": "重放先查已提交效果",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V22:edge:store-service",
+      "type": "stores",
+      "from": "V22:store:transactional",
+      "to": "V22:object:service",
+      "payload": "tenant + stable object ID + revision + durable evidence",
+      "timing": "sync",
+      "invariant": "提交的对象身份与依据可以恢复",
+      "failure": "重放先查已提交效果",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V22:edge:store-resource",
+      "type": "stores",
+      "from": "V22:store:transactional",
+      "to": "V22:object:resource",
+      "payload": "tenant + stable object ID + revision + durable evidence",
+      "timing": "sync",
+      "invariant": "提交的对象身份与依据可以恢复",
+      "failure": "重放先查已提交效果",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V22:edge:store-operation",
+      "type": "stores",
+      "from": "V22:store:transactional",
+      "to": "V22:object:activation-operation",
+      "payload": "tenant + stable object ID + revision + durable evidence",
+      "timing": "sync",
+      "invariant": "提交的对象身份与依据可以恢复",
+      "failure": "重放先查已提交效果",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V22:edge:store-usage",
+      "type": "stores",
+      "from": "V22:store:transactional",
+      "to": "V22:object:usage",
+      "payload": "tenant + stable object ID + revision + durable evidence",
+      "timing": "sync",
+      "invariant": "提交的对象身份与依据可以恢复",
+      "failure": "重放先查已提交效果",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V22:edge:store-bill",
+      "type": "stores",
+      "from": "V22:store:transactional",
+      "to": "V22:object:bill",
+      "payload": "tenant + stable object ID + revision + durable evidence",
+      "timing": "sync",
+      "invariant": "提交的对象身份与依据可以恢复",
+      "failure": "重放先查已提交效果",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V22:edge:store-adjustment",
+      "type": "stores",
+      "from": "V22:store:transactional",
+      "to": "V22:object:adjustment",
+      "payload": "tenant + stable object ID + revision + durable evidence",
+      "timing": "sync",
+      "invariant": "提交的对象身份与依据可以恢复",
+      "failure": "重放先查已提交效果",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V22:edge:order-offer",
+      "type": "depends_on",
+      "from": "V22:object:product-order",
+      "to": "V22:object:offer",
+      "payload": "O3价格、额度、商业规则版本",
+      "timing": "static",
+      "invariant": "不能用当前套餐重算历史承诺",
+      "failure": "版本缺失停止接单与收费",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V22:edge:service-order",
+      "type": "derived_from",
+      "from": "V22:object:service",
+      "to": "V22:object:product-order",
+      "payload": "已接受订单与商业开始/结束决定",
+      "timing": "async",
+      "invariant": "订单受理不等于网络激活",
+      "failure": "等待可解释的网络完成证据",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V22:edge:service-resource",
+      "type": "depends_on",
+      "from": "V22:object:service",
+      "to": "V22:object:resource",
+      "payload": "独占资源与配置确认",
+      "timing": "static",
+      "invariant": "释放旧配置前不分给新客户",
+      "failure": "失败保留reserved/releasing并接管",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V22:edge:workflow-read",
+      "type": "reads",
+      "from": "V22:service:orchestration",
+      "to": "V22:store:transactional",
+      "payload": "订单、操作身份、资源版本及已完成步骤",
+      "timing": "async",
+      "invariant": "恢复沿同一工作流而非创建新购买",
+      "failure": "查清外部未知结果后再继续",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V22:edge:activate-request",
+      "type": "requests",
+      "from": "V22:service:orchestration",
+      "to": "V22:external_system:network",
+      "payload": "tenant/network-domain/service/operation scoped config",
+      "timing": "async",
+      "invariant": "激活与撤销命令绑定独立操作与配置版本",
+      "failure": "超时unknown；不重复配置或提前释放",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V22:claim:orchestration-design"
+      ]
+    },
+    {
+      "id": "V22:edge:monitor-read",
+      "type": "reads",
+      "from": "V22:service:orchestration",
+      "to": "V22:external_system:network",
+      "payload": "monitor reference or authoritative network inventory",
+      "timing": "async",
+      "invariant": "受理与实际成功分别判断",
+      "failure": "无结果或矛盾转网络人工核对",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V22:edge:network-emits",
+      "type": "emits",
+      "from": "V22:external_system:network",
+      "to": "V22:event:network-result",
+      "payload": "operation/config revision, execution result, effectiveAt",
+      "timing": "async",
+      "invariant": "旧active通知不能覆盖较新退役",
+      "failure": "比较操作身份并核对网络当前状态",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V22:edge:network-inbox",
+      "type": "delivers",
+      "from": "V22:event:network-result",
+      "to": "V22:store:inbox-outbox",
+      "payload": "来源校验后的网络执行通知",
+      "timing": "async",
+      "invariant": "持久化接收不代表服务完成",
+      "failure": "处理失败可重放且副作用不重复",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V22:edge:network-consume",
+      "type": "reads",
+      "from": "V22:service:orchestration",
+      "to": "V22:store:inbox-outbox",
+      "payload": "已持久网络事件与核对任务",
+      "timing": "async",
+      "invariant": "健康检查与配置确认均满足才active",
+      "failure": "失败按反依赖撤销/保留维修政策处理",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V22:edge:usage-emits",
+      "type": "emits",
+      "from": "V22:external_system:usage-producer",
+      "to": "V22:event:usage-record",
+      "payload": "usage ID/revision, service reference, occurrence time, quantity, unit",
+      "timing": "async",
+      "invariant": "源时间与接收时间分别保存",
+      "failure": "不可信时间/归属/单位隔离",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V22:edge:usage-inbox",
+      "type": "delivers",
+      "from": "V22:event:usage-record",
+      "to": "V22:store:inbox-outbox",
+      "payload": "网络域限定来源身份与原始事件",
+      "timing": "async",
+      "invariant": "传输重放不产生新用量",
+      "failure": "按来源、usage ID与revision去重",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V22:edge:usage-read",
+      "type": "reads",
+      "from": "V22:service:usage",
+      "to": "V22:store:inbox-outbox",
+      "payload": "usage事件及纠错引用",
+      "timing": "async",
+      "invariant": "有效修订仅一份，不把更正当新增",
+      "failure": "断裂修订链隔离补证",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V22:claim:usage-revision"
+      ]
+    },
+    {
+      "id": "V22:edge:usage-raw",
+      "type": "stores",
+      "from": "V22:store:usage-evidence",
+      "to": "V22:event:usage-record",
+      "payload": "原始证据与完整性摘要",
+      "timing": "async",
+      "invariant": "数据保留与访问范围独立于分析副本",
+      "failure": "缺证据保留缺口，不伪造原始明细",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V22:edge:usage-service",
+      "type": "depends_on",
+      "from": "V22:object:usage",
+      "to": "V22:object:billing-interval",
+      "payload": "事件发生时的billable_interval与价格生效区间",
+      "timing": "static",
+      "invariant": "晚到历史记录按商业窗口归属；技术active不延长收费",
+      "failure": "商业截止后的残留usage隔离，不自动入账",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V22:claim:rating-fixture"
+      ]
+    },
+    {
+      "id": "V22:edge:bill-usage",
+      "type": "derived_from",
+      "from": "V22:object:bill",
+      "to": "V22:object:usage",
+      "payload": "有效用量修订集合、rating run与共享周期额度",
+      "timing": "batch",
+      "invariant": "周期级扣一次额度；重复不增量",
+      "failure": "修订影响旧窗则重算并保留旧结果",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V22:claim:rating-fixture"
+      ]
+    },
+    {
+      "id": "V22:edge:bill-offer",
+      "type": "depends_on",
+      "from": "V22:object:bill",
+      "to": "V22:object:offer",
+      "payload": "历史价格、单位与额度政策",
+      "timing": "static",
+      "invariant": "O3规则版本与服务区间一并冻结",
+      "failure": "版本缺失或冲突禁止出账",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V22:edge:bill-service",
+      "type": "derived_from",
+      "from": "V22:object:bill",
+      "to": "V22:object:billing-interval",
+      "payload": "独立BI1与周期交集",
+      "timing": "batch",
+      "invariant": "billable_interval=[5,20)即使technical_active_interval=[5,22)仍不延长",
+      "failure": "技术残留单列异常，截止后usage隔离",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V22:claim:retirement-policy"
+      ]
+    },
+    {
+      "id": "V22:edge:adjust-original",
+      "type": "derived_from",
+      "from": "V22:object:adjustment",
+      "to": "V22:object:bill",
+      "payload": "原issued金额与修订后的应计差额",
+      "timing": "batch",
+      "invariant": "保留客户已见原账单；差额独立批准",
+      "failure": "重复重算沿修订唯一关系不重复调整",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V22:claim:usage-revision"
+      ]
+    },
+    {
+      "id": "V22:edge:project-order",
+      "type": "projects",
+      "from": "V22:object:product-order",
+      "to": "V22:ui:service-desk",
+      "payload": "状态、生效区间、最后核对时间、金额分解和证据链接",
+      "timing": "async",
+      "invariant": "订单/网络/计费状态不能合成单一成功灯",
+      "failure": "陈旧标识与人工接管在界面可见",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V22:edge:project-service",
+      "type": "projects",
+      "from": "V22:object:service",
+      "to": "V22:ui:service-desk",
+      "payload": "状态、生效区间、最后核对时间、金额分解和证据链接",
+      "timing": "async",
+      "invariant": "订单/网络/计费状态不能合成单一成功灯",
+      "failure": "陈旧标识与人工接管在界面可见",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V22:edge:project-resource",
+      "type": "projects",
+      "from": "V22:object:resource",
+      "to": "V22:ui:service-desk",
+      "payload": "状态、生效区间、最后核对时间、金额分解和证据链接",
+      "timing": "async",
+      "invariant": "订单/网络/计费状态不能合成单一成功灯",
+      "failure": "陈旧标识与人工接管在界面可见",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V22:edge:project-operation",
+      "type": "projects",
+      "from": "V22:object:activation-operation",
+      "to": "V22:ui:service-desk",
+      "payload": "状态、生效区间、最后核对时间、金额分解和证据链接",
+      "timing": "async",
+      "invariant": "订单/网络/计费状态不能合成单一成功灯",
+      "failure": "陈旧标识与人工接管在界面可见",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V22:edge:project-usage",
+      "type": "projects",
+      "from": "V22:object:usage",
+      "to": "V22:ui:service-desk",
+      "payload": "状态、生效区间、最后核对时间、金额分解和证据链接",
+      "timing": "async",
+      "invariant": "订单/网络/计费状态不能合成单一成功灯",
+      "failure": "陈旧标识与人工接管在界面可见",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V22:edge:project-bill",
+      "type": "projects",
+      "from": "V22:object:bill",
+      "to": "V22:ui:service-desk",
+      "payload": "状态、生效区间、最后核对时间、金额分解和证据链接",
+      "timing": "async",
+      "invariant": "订单/网络/计费状态不能合成单一成功灯",
+      "failure": "陈旧标识与人工接管在界面可见",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V22:edge:project-adjustment",
+      "type": "projects",
+      "from": "V22:object:adjustment",
+      "to": "V22:ui:service-desk",
+      "payload": "状态、生效区间、最后核对时间、金额分解和证据链接",
+      "timing": "async",
+      "invariant": "订单/网络/计费状态不能合成单一成功灯",
+      "failure": "陈旧标识与人工接管在界面可见",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V22:edge:billing-interval-owner",
+      "type": "owns",
+      "from": "V22:service:billing",
+      "to": "V22:object:billing-interval",
+      "payload": "商业计费开始/结束与生效依据",
+      "timing": "static",
+      "invariant": "技术active不自动延长获批商业计费区间",
+      "failure": "技术残留进入运营异常",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V22:claim:retirement-policy"
+      ]
+    },
+    {
+      "id": "V22:edge:billing-interval-store",
+      "type": "stores",
+      "from": "V22:store:transactional",
+      "to": "V22:object:billing-interval",
+      "payload": "BI1 revision, billable_interval, policy version, start/stop evidence",
+      "timing": "sync",
+      "invariant": "商业窗口与technical_active_interval各自保存",
+      "failure": "重放不改变已批准商业截止",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V22:claim:retirement-policy"
+      ]
+    },
+    {
+      "id": "V22:edge:billing-interval-order",
+      "type": "derived_from",
+      "from": "V22:object:billing-interval",
+      "to": "V22:object:product-order",
+      "payload": "O3价格政策和PO2批准商业截止",
+      "timing": "sync",
+      "invariant": "PO1历史与PO2退订分别保留",
+      "failure": "冲突必须重新确认具体版本",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V22:claim:retirement-policy"
+      ]
+    },
+    {
+      "id": "V22:edge:billing-interval-activation",
+      "type": "depends_on",
+      "from": "V22:object:billing-interval",
+      "to": "V22:object:service",
+      "payload": "计费开始的实际开通确认",
+      "timing": "static",
+      "invariant": "不能在未开通前计本例固定费；结束另依PO2政策",
+      "failure": "unknown时不猜测开通起点",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V22:claim:retirement-policy"
+      ]
+    },
+    {
+      "id": "V22:edge:billing-interval-ui",
+      "type": "projects",
+      "from": "V22:object:billing-interval",
+      "to": "V22:ui:service-desk",
+      "payload": "商业起止与网络实际起止并列",
+      "timing": "async",
+      "invariant": "可看到商业已结束而技术仍terminating",
+      "failure": "显示接管任务而非假装全局已关闭",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V22:claim:retirement-policy"
+      ]
+    }
+  ],
+  "lifecycles": [
+    {
+      "object_id": "V22:object:product-order",
+      "states": [
+        "draft",
+        "acknowledged",
+        "in_progress",
+        "completed",
+        "failed"
+      ],
+      "transitions": [
+        {
+          "from": "draft",
+          "to": "acknowledged",
+          "trigger": "客户提交并接受O3",
+          "guard": "身份权限、offer版本和操作唯一键正确",
+          "durable_effect": "冻结商业条款与outbox",
+          "recovery": "重试返回原订单或版本冲突"
+        },
+        {
+          "from": "acknowledged",
+          "to": "in_progress",
+          "trigger": "编排开始",
+          "guard": "所需订单与资源前提具备",
+          "durable_effect": "关联任务与目标服务",
+          "recovery": "重启沿同工作流恢复"
+        },
+        {
+          "from": "in_progress",
+          "to": "completed",
+          "trigger": "本订单要求的动作完成",
+          "guard": "购买需配置和健康证据，退订需本例结束动作证据",
+          "durable_effect": "记录完成依据；PO1与PO2分别保留",
+          "recovery": "迟到旧事件不修改另一订单"
+        },
+        {
+          "from": "in_progress",
+          "to": "failed",
+          "trigger": "确认无法执行且完成处置",
+          "guard": "明确失败而非timeout，补偿/保留资源政策已记录",
+          "durable_effect": "失败原因及后续责任",
+          "recovery": "需要新请求时建立新关联，不擦历史"
+        }
+      ]
+    },
+    {
+      "object_id": "V22:object:service",
+      "states": [
+        "designed",
+        "activating",
+        "active",
+        "terminating",
+        "retired",
+        "failed"
+      ],
+      "transitions": [
+        {
+          "from": "designed",
+          "to": "activating",
+          "trigger": "资源预留完成并请求配置",
+          "guard": "有效订单与资源占用",
+          "durable_effect": "激活任务与等待状态",
+          "recovery": "请求超时保持等待+operation unknown"
+        },
+        {
+          "from": "activating",
+          "to": "active",
+          "trigger": "网络与健康检查通过",
+          "guard": "配置版本、服务身份与本例检查符合",
+          "durable_effect": "effectiveAt与证据",
+          "recovery": "成功响应丢失可核对后补记"
+        },
+        {
+          "from": "activating",
+          "to": "failed",
+          "trigger": "确认失败与补偿决定",
+          "guard": "不是结果未知，处置责任清楚",
+          "durable_effect": "失败与资源占用说明",
+          "recovery": "确认撤销后才可释放"
+        },
+        {
+          "from": "active",
+          "to": "terminating",
+          "trigger": "PO2获授权",
+          "guard": "客户身份、有效退订版本、商业截止政策明确",
+          "durable_effect": "requested stop与任务",
+          "recovery": "网络延误保留技术异常"
+        },
+        {
+          "from": "terminating",
+          "to": "retired",
+          "trigger": "网络停用确认",
+          "guard": "当前配置已撤销与执行身份匹配",
+          "durable_effect": "技术结束时间与证据",
+          "recovery": "旧active通知核对后忽略，不复活"
+        }
+      ]
+    },
+    {
+      "object_id": "V22:object:resource",
+      "states": [
+        "reserved",
+        "configured",
+        "releasing",
+        "released"
+      ],
+      "transitions": [
+        {
+          "from": "reserved",
+          "to": "configured",
+          "trigger": "网络配置核对",
+          "guard": "唯一资源绑定SV1且配置一致",
+          "durable_effect": "网络域、资源与配置版本",
+          "recovery": "超时不释放资源"
+        },
+        {
+          "from": "configured",
+          "to": "releasing",
+          "trigger": "执行退役或失败补偿",
+          "guard": "授权结束决定与依赖顺序正确",
+          "durable_effect": "释放任务及当前占用",
+          "recovery": "撤销失败仍占用并人工接管"
+        },
+        {
+          "from": "releasing",
+          "to": "released",
+          "trigger": "确认旧配置不存在",
+          "guard": "权威网络证据有效",
+          "durable_effect": "释放时点与可重新分配标识",
+          "recovery": "无usage不是证据，不提前重用"
+        },
+        {
+          "from": "reserved",
+          "to": "released",
+          "trigger": "确认未配置且取消",
+          "guard": "明确外部未执行的证据",
+          "durable_effect": "取消预留与依据",
+          "recovery": "若结果未知必须保持reserved"
+        }
+      ]
+    },
+    {
+      "object_id": "V22:object:activation-operation",
+      "states": [
+        "prepared",
+        "pending",
+        "unknown",
+        "succeeded",
+        "failed"
+      ],
+      "transitions": [
+        {
+          "from": "prepared",
+          "to": "pending",
+          "trigger": "发送配置/撤销请求",
+          "guard": "稳定操作ID与冻结请求",
+          "durable_effect": "发送尝试与monitor引用",
+          "recovery": "先查已发效果"
+        },
+        {
+          "from": "pending",
+          "to": "unknown",
+          "trigger": "网络响应丢失",
+          "guard": "无法判定已执行与否",
+          "durable_effect": "未知原因与核对计划",
+          "recovery": "按monitor/库存查，禁止换ID重复"
+        },
+        {
+          "from": "unknown",
+          "to": "succeeded",
+          "trigger": "权威核对完成",
+          "guard": "匹配配置版本与操作身份",
+          "durable_effect": "补记成功证据",
+          "recovery": "再推进相关状态，不重复副作用"
+        },
+        {
+          "from": "pending",
+          "to": "succeeded",
+          "trigger": "正常确认",
+          "guard": "权威来源且操作匹配",
+          "durable_effect": "完成证据",
+          "recovery": "重复通知读既有结果"
+        },
+        {
+          "from": "unknown",
+          "to": "failed",
+          "trigger": "确认未执行或失败",
+          "guard": "明确失败证据",
+          "durable_effect": "失败类型与可重试条件",
+          "recovery": "新尝试保持关联与授权"
+        }
+      ]
+    },
+    {
+      "object_id": "V22:object:usage",
+      "states": [
+        "received",
+        "validated",
+        "quarantined",
+        "rated",
+        "superseded"
+      ],
+      "transitions": [
+        {
+          "from": "received",
+          "to": "validated",
+          "trigger": "归属、时间与单位校验",
+          "guard": "稳定来源身份与正确服务区间",
+          "durable_effect": "校验版本及输入证据",
+          "recovery": "晚到按发生时间处理"
+        },
+        {
+          "from": "received",
+          "to": "quarantined",
+          "trigger": "校验失败或day20边界",
+          "guard": "保存原始证据及具体不确定性",
+          "durable_effect": "隔离原因与责任",
+          "recovery": "补证后才允许进入计价"
+        },
+        {
+          "from": "quarantined",
+          "to": "validated",
+          "trigger": "补证完成",
+          "guard": "授权校验且输入可解释",
+          "durable_effect": "补证与校验依据",
+          "recovery": "无法解释不猜测收费"
+        },
+        {
+          "from": "validated",
+          "to": "rated",
+          "trigger": "周期计算",
+          "guard": "历史规则与有效修订集合明确",
+          "durable_effect": "rating run和金额归属",
+          "recovery": "重放不重复增加周期用量"
+        },
+        {
+          "from": "rated",
+          "to": "superseded",
+          "trigger": "来源合法更正",
+          "guard": "旧revision、新revision关系清楚",
+          "durable_effect": "旧版保留，新版独立校验",
+          "recovery": "已issued产生调整，不追加旧新两份"
+        }
+      ]
+    },
+    {
+      "object_id": "V22:object:bill",
+      "states": [
+        "accumulating",
+        "frozen",
+        "issued"
+      ],
+      "transitions": [
+        {
+          "from": "accumulating",
+          "to": "frozen",
+          "trigger": "day23合成出账截点",
+          "guard": "生效区间、规则、有效修订与缺口政策明确",
+          "durable_effect": "输入集合、规则版本与金额冻结",
+          "recovery": "迟到更正须解冻新run或出账后调整"
+        },
+        {
+          "from": "frozen",
+          "to": "issued",
+          "trigger": "出账确认",
+          "guard": "金额校验和授权通过",
+          "durable_effect": "保存客户可见账单版本",
+          "recovery": "重试返回同bill；更正不无痕覆盖"
+        }
+      ]
+    },
+    {
+      "object_id": "V22:object:adjustment",
+      "states": [
+        "proposed",
+        "approved",
+        "posted"
+      ],
+      "transitions": [
+        {
+          "from": "proposed",
+          "to": "approved",
+          "trigger": "审核有效更正",
+          "guard": "新应计1500与原issued1900可复算",
+          "durable_effect": "批准-400与责任人",
+          "recovery": "冲突核对既有修订调整"
+        },
+        {
+          "from": "approved",
+          "to": "posted",
+          "trigger": "记账调整",
+          "guard": "同bill/usage revision只记一次",
+          "durable_effect": "独立-400调整与原账单引用",
+          "recovery": "崩溃重放按唯一关系读取已记效果"
+        }
+      ]
+    },
+    {
+      "object_id": "V22:object:billing-interval",
+      "states": [
+        "pending",
+        "running",
+        "ended"
+      ],
+      "transitions": [
+        {
+          "from": "pending",
+          "to": "running",
+          "trigger": "核对实际开通",
+          "guard": "O3已接受且实际激活与健康证据齐全",
+          "durable_effect": "billable_start=5及技术开通依据",
+          "recovery": "unknown不得猜测计费开始"
+        },
+        {
+          "from": "running",
+          "to": "ended",
+          "trigger": "到达PO2核准商业截止",
+          "guard": "客户授权、政策版本、结束时点确定",
+          "durable_effect": "billable_end=20；技术关闭可以仍待确认",
+          "recovery": "固定费停止，截止后usage隔离，网络任务继续"
+        }
+      ]
+    }
+  ],
+  "algorithm_ids": [
+    "ALG:windows",
+    "ALG:lookup",
+    "ALG:caches"
+  ],
+  "claim_ids": [
+    "V22:claim:product-order",
+    "V22:claim:activation-monitor",
+    "V22:claim:usage-separation",
+    "V22:claim:bill-query",
+    "V22:claim:orchestration-design",
+    "V22:claim:rating-fixture",
+    "V22:claim:retirement-policy",
+    "V22:claim:usage-revision"
+  ],
+  "checks": [
+    {
+      "id": "V22:check:happy",
+      "kind": "happy_path",
+      "given": "O3:3000分/30天，10GB，超量200分；BI1=[5,20),technical_active=[5,20),U1day6=4,U2day18=8",
+      "when": "完成激活、用量校验、退役和最终出账",
+      "then": "固定1500+超量400=1900；各对象可互查",
+      "evidence_required": "订单版本、network monitor/健康记录、usage明细、rating run与账单UI"
+    },
+    {
+      "id": "V22:check:duplicates",
+      "kind": "duplicate",
+      "given": "同activation operation和同usage ID/revision",
+      "when": "多次重发请求与用量",
+      "then": "一个资源配置，一个有效用量效果，金额不增",
+      "evidence_required": "操作唯一键、外部资源核对、周期累计与账单行"
+    },
+    {
+      "id": "V22:check:late-and-old",
+      "kind": "out_of_order",
+      "given": "day20退役已确认，U2发生day18到达day22",
+      "when": "先收到旧active通知，再收到U2",
+      "then": "服务不复活；U2仍入旧有效窗口并最终1900",
+      "evidence_required": "配置版本核对、occurrence/arrival、有效修订与计价结果"
+    },
+    {
+      "id": "V22:check:offer-race",
+      "kind": "concurrency",
+      "given": "两个客服使用同O3版本",
+      "when": "同时改套餐与提交订购",
+      "then": "原版或新版明确接受，无价格/额度混合版本",
+      "evidence_required": "乐观并发返回、冻结offer和客户确认"
+    },
+    {
+      "id": "V22:check:tenant",
+      "kind": "tenant_isolation",
+      "given": "两个租户同SV1/U1，网络域不同",
+      "when": "详情、缓存、附件、usage和网络查询",
+      "then": "数据与外部资源映射都受tenant/domain约束",
+      "evidence_required": "cache hit/miss、授权拒绝、查询条件与返回对象"
+    },
+    {
+      "id": "V22:check:network-timeout",
+      "kind": "unknown_outcome",
+      "given": "网络已配置但HTTP响应丢失",
+      "when": "编排重启查monitor",
+      "then": "unknown核对为成功；不二次配置、不释放已配置资源",
+      "evidence_required": "持久操作状态、monitor与资源唯一性"
+    },
+    {
+      "id": "V22:check:rating-crash",
+      "kind": "recovery",
+      "given": "1900计价已提交但消费标记未提交",
+      "when": "崩溃重放，然后U2从8更正为5",
+      "then": "重放仍1900；有效总量9，独立调整-400，不变为17GB",
+      "evidence_required": "事务日志、有效修订链、原issued账单与调整"
+    },
+    {
+      "id": "V22:check:boundary",
+      "kind": "algorithm",
+      "given": "billable_interval=[5,20)，技术残留至22，usage发生day20",
+      "when": "校验归属",
+      "then": "day20记录隔离，不自动计入BI1，技术仍active不改变商业截止",
+      "evidence_required": "区间判断、隔离原因、无新增账单费用"
+    },
+    {
+      "id": "V22:check:retirement-failure",
+      "kind": "recovery",
+      "given": "billable_interval=[5,20)获准，网络撤销失败至22且可存在day21 usage",
+      "when": "客户请求资源关闭",
+      "then": "固定费按[5,20)；day21 usage隔离；RA1仍releasing且可见接管人，后续确认停用才released",
+      "evidence_required": "商业结束依据、网络失败、资源占用与UI"
+    }
+  ],
+  "fixtures": {
+    "rating": {
+      "cycle": [
+        0,
+        30
+      ],
+      "monthly_fee_minor": 3000,
+      "included_gb": 10,
+      "allowance_prorated": false,
+      "overage_minor_per_gb": 200,
+      "usage": [
+        {
+          "id": "U1",
+          "revision": 1,
+          "occurred_day": 6,
+          "arrived_day": 6,
+          "gb": 4
+        },
+        {
+          "id": "U2",
+          "revision": 1,
+          "occurred_day": 18,
+          "arrived_day": 22,
+          "gb": 8
+        }
+      ],
+      "final_bill_cutoff_day": 23,
+      "expected_fixed_minor": 1500,
+      "expected_overage_minor": 400,
+      "expected_total_minor": 1900,
+      "prorated_allowance_expected_total_minor": 2900,
+      "correction": {
+        "id": "U2",
+        "revision": 2,
+        "gb": 5,
+        "expected_valid_total_gb": 9,
+        "expected_total_minor": 1500,
+        "expected_adjustment_minor": -400
+      },
+      "boundary_event": {
+        "occurred_day": 20,
+        "gb": 1,
+        "expected": "quarantined"
+      },
+      "billable_interval": [
+        5,
+        20
+      ],
+      "technical_active_interval": [
+        5,
+        20
+      ],
+      "delayed_technical_retirement": {
+        "billable_interval": [
+          5,
+          20
+        ],
+        "technical_active_interval": [
+          5,
+          22
+        ],
+        "occurred_day": 21,
+        "expected": "quarantined; fixed fee remains 1500"
+      }
+    }
+  }
+}

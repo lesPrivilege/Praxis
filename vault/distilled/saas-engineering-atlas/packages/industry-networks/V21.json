@@ -1,0 +1,1249 @@
+{
+  "contract_version": "1.0",
+  "case_id": "V21",
+  "title": "约束计划怎样走到交付与运费支付",
+  "scope": "Synthetic distribution network: two-day indivisible-order planning; supply approval; transport evidence; line-level freight matching and payment. No live SAP, GS1 repository, carrier or bank implementation.",
+  "synthetic": true,
+  "source_ids": [
+    "IBP",
+    "IBP_SAMPLE",
+    "EPCIS",
+    "P06-SRC-ibp-overview",
+    "P06-SRC-epcis-standard"
+  ],
+  "nodes": [
+    {
+      "id": "V21:actor:planner",
+      "type": "actor",
+      "label": "计划员",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant; external references additionally scoped by partner account/domain"
+    },
+    {
+      "id": "V21:actor:approver",
+      "type": "actor",
+      "label": "采购批准人",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant; external references additionally scoped by partner account/domain"
+    },
+    {
+      "id": "V21:actor:receiver",
+      "type": "actor",
+      "label": "仓库/收货人",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant; external references additionally scoped by partner account/domain"
+    },
+    {
+      "id": "V21:actor:finance",
+      "type": "actor",
+      "label": "应付操作员",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant; external references additionally scoped by partner account/domain"
+    },
+    {
+      "id": "V21:ui:network-desk",
+      "type": "ui",
+      "label": "情景、发运与应付工作台",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant; external references additionally scoped by partner account/domain"
+    },
+    {
+      "id": "V21:service:planning",
+      "type": "service",
+      "label": "计划服务",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant; external references additionally scoped by partner account/domain"
+    },
+    {
+      "id": "V21:service:supply",
+      "type": "service",
+      "label": "供给与库存预留服务",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant; external references additionally scoped by partner account/domain"
+    },
+    {
+      "id": "V21:service:transport",
+      "type": "service",
+      "label": "运输服务",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant; external references additionally scoped by partner account/domain"
+    },
+    {
+      "id": "V21:service:evidence",
+      "type": "service",
+      "label": "证据核对服务",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant; external references additionally scoped by partner account/domain"
+    },
+    {
+      "id": "V21:service:payables",
+      "type": "service",
+      "label": "运费应付服务",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant; external references additionally scoped by partner account/domain"
+    },
+    {
+      "id": "V21:store:ledger",
+      "type": "store",
+      "label": "PostgreSQL 批准、预留与费用账",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant; external references additionally scoped by partner account/domain"
+    },
+    {
+      "id": "V21:store:inbox-outbox",
+      "type": "store",
+      "label": "持久 inbox / outbox",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant; external references additionally scoped by partner account/domain"
+    },
+    {
+      "id": "V21:store:evidence-files",
+      "type": "store",
+      "label": "证据对象存储",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant; external references additionally scoped by partner account/domain"
+    },
+    {
+      "id": "V21:external_system:supplier",
+      "type": "external_system",
+      "label": "合成供应商接口",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant; external references additionally scoped by partner account/domain"
+    },
+    {
+      "id": "V21:external_system:carrier",
+      "type": "external_system",
+      "label": "合成承运商接口",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant; external references additionally scoped by partner account/domain"
+    },
+    {
+      "id": "V21:external_system:payment",
+      "type": "external_system",
+      "label": "合成支付与结算接口",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant; external references additionally scoped by partner account/domain"
+    },
+    {
+      "id": "V21:object:plan",
+      "type": "object",
+      "label": "Plan P7",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant; external references additionally scoped by partner account/domain"
+    },
+    {
+      "id": "V21:object:supply-commitment",
+      "type": "object",
+      "label": "Supply commitment SC1",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant; external references additionally scoped by partner account/domain"
+    },
+    {
+      "id": "V21:object:shipment",
+      "type": "object",
+      "label": "Shipment S1/S2（各自实例）",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant; external references additionally scoped by partner account/domain"
+    },
+    {
+      "id": "V21:object:delivery-evidence",
+      "type": "object",
+      "label": "交付证据及更正链",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant; external references additionally scoped by partner account/domain"
+    },
+    {
+      "id": "V21:object:freight-invoice",
+      "type": "object",
+      "label": "FI1 收费行与匹配结果",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant; external references additionally scoped by partner account/domain"
+    },
+    {
+      "id": "V21:object:payment-attempt",
+      "type": "object",
+      "label": "PAY1 付款尝试",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant; external references additionally scoped by partner account/domain"
+    },
+    {
+      "id": "V21:event:carrier-evidence",
+      "type": "event",
+      "label": "承运/交付证据事件",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant; external references additionally scoped by partner account/domain"
+    },
+    {
+      "id": "V21:event:settlement",
+      "type": "event",
+      "label": "结算确认事件",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant; external references additionally scoped by partner account/domain"
+    },
+    {
+      "id": "V21:object:physical-reservation",
+      "type": "object",
+      "label": "Physical inventory reservation IR1",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant; partner/domain-scoped references"
+    }
+  ],
+  "edges": [
+    {
+      "id": "V21:edge:operate-planner",
+      "type": "operates",
+      "from": "V21:actor:planner",
+      "to": "V21:ui:network-desk",
+      "payload": "权限范围内的查询与动作",
+      "timing": "sync",
+      "invariant": "界面可见不等于后端已授权",
+      "failure": "服务端重新校验身份与scope",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V21:edge:operate-approver",
+      "type": "operates",
+      "from": "V21:actor:approver",
+      "to": "V21:ui:network-desk",
+      "payload": "权限范围内的查询与动作",
+      "timing": "sync",
+      "invariant": "界面可见不等于后端已授权",
+      "failure": "服务端重新校验身份与scope",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V21:edge:operate-receiver",
+      "type": "operates",
+      "from": "V21:actor:receiver",
+      "to": "V21:ui:network-desk",
+      "payload": "权限范围内的查询与动作",
+      "timing": "sync",
+      "invariant": "界面可见不等于后端已授权",
+      "failure": "服务端重新校验身份与scope",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V21:edge:operate-finance",
+      "type": "operates",
+      "from": "V21:actor:finance",
+      "to": "V21:ui:network-desk",
+      "payload": "权限范围内的查询与动作",
+      "timing": "sync",
+      "invariant": "界面可见不等于后端已授权",
+      "failure": "服务端重新校验身份与scope",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V21:edge:plan-command",
+      "type": "commands",
+      "from": "V21:ui:network-desk",
+      "to": "V21:service:planning",
+      "payload": "tenant, plan revision, input hash, conditional supply allocations, operation ID",
+      "timing": "sync",
+      "invariant": "审批针对冻结输入版本",
+      "failure": "冲突返回当前版本并保留预览",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V21:claim:execution-design"
+      ]
+    },
+    {
+      "id": "V21:edge:approve-command",
+      "type": "commands",
+      "from": "V21:ui:network-desk",
+      "to": "V21:service:supply",
+      "payload": "SC1 version, quantity=12, approver, conditional supply allocation, operation ID",
+      "timing": "sync",
+      "invariant": "采购批准及条件供给份额防止重复承诺；不是物理预留",
+      "failure": "检查承诺份额及版本，实物预留另作事务",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V21:edge:freight-command",
+      "type": "commands",
+      "from": "V21:ui:network-desk",
+      "to": "V21:service:payables",
+      "payload": "FI1 line IDs, matched amount, invoice version",
+      "timing": "sync",
+      "invariant": "只批准具备匹配依据的收费行",
+      "failure": "未授权50保持disputed",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V21:claim:freight-policy"
+      ]
+    },
+    {
+      "id": "V21:edge:plan-owner",
+      "type": "owns",
+      "from": "V21:service:planning",
+      "to": "V21:object:plan",
+      "payload": "输入快照、方案、审批版本",
+      "timing": "static",
+      "invariant": "每种事实具有独立权威与历史",
+      "failure": "其它投影不能覆盖权威记录",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V21:edge:supply-owner",
+      "type": "owns",
+      "from": "V21:service:supply",
+      "to": "V21:object:supply-commitment",
+      "payload": "采购义务与供方确认映射",
+      "timing": "static",
+      "invariant": "每种事实具有独立权威与历史",
+      "failure": "其它投影不能覆盖权威记录",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V21:edge:shipment-owner",
+      "type": "owns",
+      "from": "V21:service:transport",
+      "to": "V21:object:shipment",
+      "payload": "运输身份、数量与承运状态",
+      "timing": "static",
+      "invariant": "每种事实具有独立权威与历史",
+      "failure": "其它投影不能覆盖权威记录",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V21:edge:evidence-owner",
+      "type": "owns",
+      "from": "V21:service:evidence",
+      "to": "V21:object:delivery-evidence",
+      "payload": "报告、来源、核对与更正",
+      "timing": "static",
+      "invariant": "每种事实具有独立权威与历史",
+      "failure": "其它投影不能覆盖权威记录",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V21:edge:invoice-owner",
+      "type": "owns",
+      "from": "V21:service:payables",
+      "to": "V21:object:freight-invoice",
+      "payload": "收费行、争议与批准依据",
+      "timing": "static",
+      "invariant": "每种事实具有独立权威与历史",
+      "failure": "其它投影不能覆盖权威记录",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V21:edge:attempt-owner",
+      "type": "owns",
+      "from": "V21:service:payables",
+      "to": "V21:object:payment-attempt",
+      "payload": "稳定操作身份与已知/未知结果",
+      "timing": "static",
+      "invariant": "每种事实具有独立权威与历史",
+      "failure": "其它投影不能覆盖权威记录",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V21:edge:store-plan",
+      "type": "stores",
+      "from": "V21:store:ledger",
+      "to": "V21:object:plan",
+      "payload": "tenant + object ID + version + audit evidence",
+      "timing": "sync",
+      "invariant": "提交时保存决定与依据",
+      "failure": "崩溃后按对象身份读取已提交效果",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V21:edge:store-supply",
+      "type": "stores",
+      "from": "V21:store:ledger",
+      "to": "V21:object:supply-commitment",
+      "payload": "tenant + object ID + version + audit evidence",
+      "timing": "sync",
+      "invariant": "提交时保存决定与依据",
+      "failure": "崩溃后按对象身份读取已提交效果",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V21:edge:store-shipment",
+      "type": "stores",
+      "from": "V21:store:ledger",
+      "to": "V21:object:shipment",
+      "payload": "tenant + object ID + version + audit evidence",
+      "timing": "sync",
+      "invariant": "提交时保存决定与依据",
+      "failure": "崩溃后按对象身份读取已提交效果",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V21:edge:store-invoice",
+      "type": "stores",
+      "from": "V21:store:ledger",
+      "to": "V21:object:freight-invoice",
+      "payload": "tenant + object ID + version + audit evidence",
+      "timing": "sync",
+      "invariant": "提交时保存决定与依据",
+      "failure": "崩溃后按对象身份读取已提交效果",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V21:edge:store-payment-attempt",
+      "type": "stores",
+      "from": "V21:store:ledger",
+      "to": "V21:object:payment-attempt",
+      "payload": "tenant + object ID + version + audit evidence",
+      "timing": "sync",
+      "invariant": "提交时保存决定与依据",
+      "failure": "崩溃后按对象身份读取已提交效果",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V21:edge:store-evidence",
+      "type": "stores",
+      "from": "V21:store:evidence-files",
+      "to": "V21:object:delivery-evidence",
+      "payload": "受控对象引用、内容摘要与原始证据版本",
+      "timing": "async",
+      "invariant": "附件归属和访问检查独立于猜测URL",
+      "failure": "缺附件维持待核对，下载需授权",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V21:edge:approved-supply",
+      "type": "depends_on",
+      "from": "V21:object:plan",
+      "to": "V21:object:supply-commitment",
+      "payload": "有条件供给12及确认状态",
+      "timing": "static",
+      "invariant": "供给修改使原输入快照过期",
+      "failure": "重算并重新批准",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V21:claim:execution-design"
+      ]
+    },
+    {
+      "id": "V21:edge:shipment-plan",
+      "type": "derived_from",
+      "from": "V21:object:shipment",
+      "to": "V21:object:plan",
+      "payload": "获批分配与输入摘要",
+      "timing": "sync",
+      "invariant": "出车前复核物料可用，计划不证明实物移动",
+      "failure": "缺料阻断相应运输，记录例外",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V21:edge:supply-request",
+      "type": "requests",
+      "from": "V21:service:supply",
+      "to": "V21:external_system:supplier",
+      "payload": "采购参考、批准版本、数量和到货要求",
+      "timing": "async",
+      "invariant": "批准是本地义务，供方接受另有回执",
+      "failure": "未知时按客户参考核对，不猜测接受",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V21:edge:carrier-request",
+      "type": "requests",
+      "from": "V21:service:transport",
+      "to": "V21:external_system:carrier",
+      "payload": "tenant/account-scoped client shipment reference, load, date",
+      "timing": "async",
+      "invariant": "同一运输副作用保持稳定业务身份",
+      "failure": "超时记unknown并按参考核对",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V21:edge:carrier-lookup",
+      "type": "reads",
+      "from": "V21:service:transport",
+      "to": "V21:external_system:carrier",
+      "payload": "client shipment reference 与外部订单映射",
+      "timing": "async",
+      "invariant": "核对先于结果未知后的再订车",
+      "failure": "无查询能力交调度人工处理",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V21:edge:carrier-event",
+      "type": "emits",
+      "from": "V21:external_system:carrier",
+      "to": "V21:event:carrier-evidence",
+      "payload": "来源身份、eventTime、recordTime、数量、错误声明",
+      "timing": "async",
+      "invariant": "报告是证据输入，非默认真实签收",
+      "failure": "来源校验失败隔离；保留原文身份",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V21:edge:event-inbox",
+      "type": "delivers",
+      "from": "V21:event:carrier-evidence",
+      "to": "V21:store:inbox-outbox",
+      "payload": "传输身份 + 事件及错误声明内容",
+      "timing": "async",
+      "invariant": "同eventID合法ErrorDeclaration不能被普通去重抛弃",
+      "failure": "验证除errorDeclaration/recordTime外与原事件字段完全一致；伪声明隔离",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V21:claim:evidence-separation"
+      ]
+    },
+    {
+      "id": "V21:edge:evidence-consume",
+      "type": "reads",
+      "from": "V21:service:evidence",
+      "to": "V21:store:inbox-outbox",
+      "payload": "未处理证据、传输去重与修订关系",
+      "timing": "async",
+      "invariant": "传输去重与业务更正分开",
+      "failure": "重放不得重复增加交付数量",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V21:edge:delivery-source",
+      "type": "derived_from",
+      "from": "V21:object:delivery-evidence",
+      "to": "V21:event:carrier-evidence",
+      "payload": "来源事件、收货方确认、核对政策",
+      "timing": "async",
+      "invariant": "缺失或矛盾证据保持disputed",
+      "failure": "人工核对，区分补送与数据纠错",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V21:edge:invoice-shipment",
+      "type": "depends_on",
+      "from": "V21:object:freight-invoice",
+      "to": "V21:object:shipment",
+      "payload": "收费行关联运输与费率版本",
+      "timing": "static",
+      "invariant": "收费行不能凭发票总额自动放行",
+      "failure": "50附加费单独争议",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V21:claim:freight-policy"
+      ]
+    },
+    {
+      "id": "V21:edge:invoice-evidence",
+      "type": "depends_on",
+      "from": "V21:object:freight-invoice",
+      "to": "V21:object:delivery-evidence",
+      "payload": "已核对的履约数量与可审收费依据",
+      "timing": "static",
+      "invariant": "修改证据不擦除既有付款",
+      "failure": "已付款产生独立争议/调整",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V21:edge:payment-request",
+      "type": "requests",
+      "from": "V21:service:payables",
+      "to": "V21:external_system:payment",
+      "payload": "PAY1 stable identity, approved lines, amount=200",
+      "timing": "async",
+      "invariant": "目标中的迟交权重54不自动扣减合同运费",
+      "failure": "timeout保持unknown，先查结算参考",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V21:claim:freight-policy"
+      ]
+    },
+    {
+      "id": "V21:edge:payment-query",
+      "type": "reads",
+      "from": "V21:service:payables",
+      "to": "V21:external_system:payment",
+      "payload": "PAY1 reference, provider account, amount",
+      "timing": "async",
+      "invariant": "外部结算确认才支持paid",
+      "failure": "不可用维持pending/unknown并升级人工",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V21:edge:settlement-event",
+      "type": "emits",
+      "from": "V21:external_system:payment",
+      "to": "V21:event:settlement",
+      "payload": "PAY1 settlement reference and settled amount",
+      "timing": "async",
+      "invariant": "消息要核对收款方、币种、金额与身份",
+      "failure": "不匹配转异常，不自动paid",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V21:edge:settlement-delivery",
+      "type": "delivers",
+      "from": "V21:event:settlement",
+      "to": "V21:service:payables",
+      "payload": "经验证的结算证据",
+      "timing": "async",
+      "invariant": "同付款效果只入账一次",
+      "failure": "事务重放沿付款唯一键核对",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V21:edge:project-plan",
+      "type": "projects",
+      "from": "V21:object:plan",
+      "to": "V21:ui:network-desk",
+      "payload": "状态、原因、版本、最后核对时间与接管人",
+      "timing": "async",
+      "invariant": "预览、承诺、现场与现金分别显示",
+      "failure": "陈旧读模型不得作为批准或支付依据",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V21:edge:project-supply",
+      "type": "projects",
+      "from": "V21:object:supply-commitment",
+      "to": "V21:ui:network-desk",
+      "payload": "状态、原因、版本、最后核对时间与接管人",
+      "timing": "async",
+      "invariant": "预览、承诺、现场与现金分别显示",
+      "failure": "陈旧读模型不得作为批准或支付依据",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V21:edge:project-shipment",
+      "type": "projects",
+      "from": "V21:object:shipment",
+      "to": "V21:ui:network-desk",
+      "payload": "状态、原因、版本、最后核对时间与接管人",
+      "timing": "async",
+      "invariant": "预览、承诺、现场与现金分别显示",
+      "failure": "陈旧读模型不得作为批准或支付依据",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V21:edge:project-evidence",
+      "type": "projects",
+      "from": "V21:object:delivery-evidence",
+      "to": "V21:ui:network-desk",
+      "payload": "状态、原因、版本、最后核对时间与接管人",
+      "timing": "async",
+      "invariant": "预览、承诺、现场与现金分别显示",
+      "failure": "陈旧读模型不得作为批准或支付依据",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V21:edge:project-invoice",
+      "type": "projects",
+      "from": "V21:object:freight-invoice",
+      "to": "V21:ui:network-desk",
+      "payload": "状态、原因、版本、最后核对时间与接管人",
+      "timing": "async",
+      "invariant": "预览、承诺、现场与现金分别显示",
+      "failure": "陈旧读模型不得作为批准或支付依据",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V21:edge:project-attempt",
+      "type": "projects",
+      "from": "V21:object:payment-attempt",
+      "to": "V21:ui:network-desk",
+      "payload": "状态、原因、版本、最后核对时间与接管人",
+      "timing": "async",
+      "invariant": "预览、承诺、现场与现金分别显示",
+      "failure": "陈旧读模型不得作为批准或支付依据",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V21:edge:physical-owner",
+      "type": "owns",
+      "from": "V21:service:supply",
+      "to": "V21:object:physical-reservation",
+      "payload": "实收后库存预留、分批消耗和释放",
+      "timing": "static",
+      "invariant": "条件供给份额不等于可出库实物",
+      "failure": "实收不足等待或重算",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V21:claim:execution-design"
+      ]
+    },
+    {
+      "id": "V21:edge:physical-store",
+      "type": "stores",
+      "from": "V21:store:ledger",
+      "to": "V21:object:physical-reservation",
+      "payload": "tenant, stock version, shipment allocations, remaining quantity",
+      "timing": "sync",
+      "invariant": "预留仅占用已在库可用量",
+      "failure": "事务冲突返回实际余量",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V21:claim:execution-design"
+      ]
+    },
+    {
+      "id": "V21:edge:physical-supply",
+      "type": "depends_on",
+      "from": "V21:object:physical-reservation",
+      "to": "V21:object:supply-commitment",
+      "payload": "已实际点收的12托盘与原有4托盘",
+      "timing": "static",
+      "invariant": "SC1 acknowledged不能充当received",
+      "failure": "部分到货只允许预留实际可用量",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V21:claim:execution-design"
+      ]
+    },
+    {
+      "id": "V21:edge:shipment-reservation",
+      "type": "depends_on",
+      "from": "V21:object:shipment",
+      "to": "V21:object:physical-reservation",
+      "payload": "每趟实际装载前对应的物理预留",
+      "timing": "static",
+      "invariant": "出车不能只依靠已批准计划",
+      "failure": "缺预留阻断dispatch，不伪造交付",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V21:claim:execution-design"
+      ]
+    },
+    {
+      "id": "V21:edge:physical-ui",
+      "type": "projects",
+      "from": "V21:object:physical-reservation",
+      "to": "V21:ui:network-desk",
+      "payload": "条件供给、实有、预留、可用与已消耗分别展示",
+      "timing": "async",
+      "invariant": "IR1 waiting不显示成16已在库",
+      "failure": "陈旧投影不可授权出库",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V21:claim:execution-design"
+      ]
+    }
+  ],
+  "lifecycles": [
+    {
+      "object_id": "V21:object:plan",
+      "states": [
+        "draft",
+        "feasible",
+        "approved",
+        "superseded"
+      ],
+      "transitions": [
+        {
+          "from": "draft",
+          "to": "feasible",
+          "trigger": "求解完成",
+          "guard": "固定输入与每条硬约束通过",
+          "durable_effect": "保存可行解、目标值、求解状态与版本",
+          "recovery": "预算耗尽但无解时留draft，不宣称业务不可行"
+        },
+        {
+          "from": "feasible",
+          "to": "approved",
+          "trigger": "批准人提交",
+          "guard": "权限、输入版本、采购批准与条件供给份额检查通过；不要求把未来供给冒充实物",
+          "durable_effect": "批准证据、条件份额占用与outbox同事务提交；IR1等待实际收货",
+          "recovery": "并发冲突返回当前版本"
+        },
+        {
+          "from": "approved",
+          "to": "superseded",
+          "trigger": "供给或需求变更",
+          "guard": "新版本被明确采用",
+          "durable_effect": "保留旧批准与替代关系",
+          "recovery": "已执行运输不自动撤销；逐单处置"
+        }
+      ]
+    },
+    {
+      "object_id": "V21:object:supply-commitment",
+      "states": [
+        "proposed",
+        "approved",
+        "acknowledged",
+        "received",
+        "rejected"
+      ],
+      "transitions": [
+        {
+          "from": "proposed",
+          "to": "approved",
+          "trigger": "采购批准",
+          "guard": "权限限额与版本正确",
+          "durable_effect": "采购义务、数量、批准人",
+          "recovery": "失败不发送外部请求"
+        },
+        {
+          "from": "approved",
+          "to": "acknowledged",
+          "trigger": "供方回执核对",
+          "guard": "客户参考、数量、到货条件一致",
+          "durable_effect": "保存供方接受证据",
+          "recovery": "超时先查询，拒绝保持缺口"
+        },
+        {
+          "from": "approved",
+          "to": "rejected",
+          "trigger": "供方拒绝",
+          "guard": "来源与SC1映射确认",
+          "durable_effect": "保留拒绝原因并令计划过期",
+          "recovery": "补供需新决定"
+        },
+        {
+          "from": "acknowledged",
+          "to": "received",
+          "trigger": "仓库点收完成",
+          "guard": "已收数量等于承诺量；分次记录累计",
+          "durable_effect": "实际可用库存增加及证据",
+          "recovery": "部分收货停留acknowledged并显示余额"
+        }
+      ]
+    },
+    {
+      "object_id": "V21:object:shipment",
+      "states": [
+        "planned",
+        "tendered",
+        "accepted",
+        "dispatched",
+        "delivered",
+        "exception",
+        "cancelled"
+      ],
+      "transitions": [
+        {
+          "from": "planned",
+          "to": "tendered",
+          "trigger": "outbox发出招标/订舱",
+          "guard": "获批计划与稳定运输身份",
+          "durable_effect": "请求与发送尝试",
+          "recovery": "未知先查询同参考"
+        },
+        {
+          "from": "tendered",
+          "to": "accepted",
+          "trigger": "承运商接受",
+          "guard": "账号、参考、日期与装载匹配",
+          "durable_effect": "保存外部运输ID与接受证据",
+          "recovery": "回执丢失按参考补记"
+        },
+        {
+          "from": "accepted",
+          "to": "dispatched",
+          "trigger": "现场发车确认",
+          "guard": "已有对应物理预留且装载数量身份核对",
+          "durable_effect": "发车时点、装载清单与IR1分批消耗",
+          "recovery": "缺料进入exception"
+        },
+        {
+          "from": "dispatched",
+          "to": "delivered",
+          "trigger": "收货核对",
+          "guard": "分单交付数量与有效证据一致",
+          "durable_effect": "已交付数量及签收引用",
+          "recovery": "部分交付停留dispatched并留余额"
+        },
+        {
+          "from": "dispatched",
+          "to": "exception",
+          "trigger": "货差或失联",
+          "guard": "异常来源可追踪",
+          "durable_effect": "异常数量、原因与接管人",
+          "recovery": "补送形成新事件；数据错误另作更正"
+        },
+        {
+          "from": "exception",
+          "to": "delivered",
+          "trigger": "异常处理完成",
+          "guard": "差异已解决且收货确认完整",
+          "durable_effect": "补送或更正关系及完整数量",
+          "recovery": "重放核对业务唯一键"
+        },
+        {
+          "from": "tendered",
+          "to": "cancelled",
+          "trigger": "撤销运输",
+          "guard": "确认外部尚未执行且已撤销",
+          "durable_effect": "外部取消证据",
+          "recovery": "结果未知不得把资源重复释放"
+        }
+      ]
+    },
+    {
+      "object_id": "V21:object:delivery-evidence",
+      "states": [
+        "reported",
+        "verified",
+        "disputed",
+        "corrected"
+      ],
+      "transitions": [
+        {
+          "from": "reported",
+          "to": "verified",
+          "trigger": "收货方与来源核对",
+          "guard": "数量身份和授权一致",
+          "durable_effect": "保存核对人及证据版本",
+          "recovery": "证据缺失留reported"
+        },
+        {
+          "from": "reported",
+          "to": "disputed",
+          "trigger": "发现差异",
+          "guard": "矛盾内容与来源保存",
+          "durable_effect": "差额与调查责任",
+          "recovery": "不把运输报告直接用于付款"
+        },
+        {
+          "from": "verified",
+          "to": "disputed",
+          "trigger": "后续证据否定",
+          "guard": "关联原记录和具体争议",
+          "durable_effect": "暂停未支付相关收费行",
+          "recovery": "已付保留并另立争议"
+        },
+        {
+          "from": "disputed",
+          "to": "corrected",
+          "trigger": "确认原数据错误",
+          "guard": "错误声明或授权纠错证据有效",
+          "durable_effect": "原记录保留与修订链新增",
+          "recovery": "区分实物补送，不能伪造更正"
+        }
+      ]
+    },
+    {
+      "object_id": "V21:object:freight-invoice",
+      "states": [
+        "received",
+        "matched",
+        "disputed",
+        "approved",
+        "payment_pending",
+        "paid"
+      ],
+      "transitions": [
+        {
+          "from": "received",
+          "to": "matched",
+          "trigger": "行级运费匹配",
+          "guard": "运输、费率、签收证据完整",
+          "durable_effect": "匹配结果与金额200",
+          "recovery": "50未批准附加费另入disputed行"
+        },
+        {
+          "from": "received",
+          "to": "disputed",
+          "trigger": "发现未授权收费",
+          "guard": "保存收费行和缺失依据",
+          "durable_effect": "争议行50及责任人",
+          "recovery": "人工补证后独立重审"
+        },
+        {
+          "from": "disputed",
+          "to": "matched",
+          "trigger": "争议解决",
+          "guard": "合同或调整证据已批准",
+          "durable_effect": "保存处理依据和新金额",
+          "recovery": "不无痕覆盖旧收费"
+        },
+        {
+          "from": "matched",
+          "to": "approved",
+          "trigger": "财务批准",
+          "guard": "角色权限、版本、行级依据",
+          "durable_effect": "批准金额与人员",
+          "recovery": "并发只批准一个版本"
+        },
+        {
+          "from": "approved",
+          "to": "payment_pending",
+          "trigger": "发起付款",
+          "guard": "PAY1唯一身份与准确收款信息",
+          "durable_effect": "付款请求及outbox",
+          "recovery": "超时保存unknown于PAY1"
+        },
+        {
+          "from": "payment_pending",
+          "to": "paid",
+          "trigger": "结算核对完成",
+          "guard": "金额、账号、结算参考相符",
+          "durable_effect": "已付记录与权威证据",
+          "recovery": "迟到或重复事件不重复付款"
+        }
+      ]
+    },
+    {
+      "object_id": "V21:object:payment-attempt",
+      "states": [
+        "prepared",
+        "pending",
+        "unknown",
+        "confirmed",
+        "failed"
+      ],
+      "transitions": [
+        {
+          "from": "prepared",
+          "to": "pending",
+          "trigger": "发送付款请求",
+          "guard": "已批准收费行和唯一操作身份",
+          "durable_effect": "请求摘要与发送尝试",
+          "recovery": "先核对提交是否发生"
+        },
+        {
+          "from": "pending",
+          "to": "unknown",
+          "trigger": "响应超时",
+          "guard": "无法判定外部执行结果",
+          "durable_effect": "未知原因、最后检查与重查期限",
+          "recovery": "不换ID重付"
+        },
+        {
+          "from": "unknown",
+          "to": "confirmed",
+          "trigger": "查询结算成功",
+          "guard": "参考、金额、收款方一致",
+          "durable_effect": "外部确认与invoice投影",
+          "recovery": "崩溃后按同操作读结果"
+        },
+        {
+          "from": "pending",
+          "to": "confirmed",
+          "trigger": "结算确认",
+          "guard": "权威来源校验通过",
+          "durable_effect": "确认记录",
+          "recovery": "重复确认只保留一个效果"
+        },
+        {
+          "from": "unknown",
+          "to": "failed",
+          "trigger": "确认未执行且拒绝",
+          "guard": "外部明确结果",
+          "durable_effect": "失败原因与可重试条件",
+          "recovery": "修正输入后新批准/尝试关系"
+        }
+      ]
+    },
+    {
+      "object_id": "V21:object:physical-reservation",
+      "states": [
+        "waiting",
+        "reserved",
+        "consumed",
+        "released"
+      ],
+      "transitions": [
+        {
+          "from": "waiting",
+          "to": "reserved",
+          "trigger": "SC1实收后申请物理预留",
+          "guard": "已点收库存4+12足够，版本与剩余量检查通过",
+          "durable_effect": "预留16并记录S1=10/S2=6分配",
+          "recovery": "并发只有一个成功；不足保持waiting"
+        },
+        {
+          "from": "reserved",
+          "to": "consumed",
+          "trigger": "两趟运输完成出库",
+          "guard": "逐趟装载数量与预留一致且合计16",
+          "durable_effect": "分批消耗记录与最终余额0",
+          "recovery": "部分发车保留reserved及剩余量，不重复消耗"
+        },
+        {
+          "from": "reserved",
+          "to": "released",
+          "trigger": "授权取消未出库部分",
+          "guard": "核对未实际装载及关联运输已取消",
+          "durable_effect": "释放剩余数量与取消证据",
+          "recovery": "已出库部分不得回增库存"
+        }
+      ]
+    }
+  ],
+  "algorithm_ids": [
+    "ALG:optimization",
+    "ALG:scheduling",
+    "ALG:lookup",
+    "ALG:caches"
+  ],
+  "claim_ids": [
+    "V21:claim:ibp-scope",
+    "V21:claim:epcis-time",
+    "V21:claim:epcis-correction",
+    "V21:claim:packing-fixture",
+    "V21:claim:execution-design",
+    "V21:claim:freight-policy",
+    "V21:claim:evidence-separation"
+  ],
+  "checks": [
+    {
+      "id": "V21:check:happy",
+      "kind": "happy_path",
+      "given": "库存4+实际收货12；A6/B5/C5；capacity10/day；已批计划",
+      "when": "按最优方案发两车、收货确认16、发票基本费200",
+      "then": "D1 B+C、D2 A，目标254；应付200与内部迟交成本54分开",
+      "evidence_required": "计划输入与求解输出、SC1收货、两运输与签收、收费行及结算参考"
+    },
+    {
+      "id": "V21:check:duplicate-correction",
+      "kind": "duplicate",
+      "given": "一份交付事件E及同eventID合法ErrorDeclaration，除errorDeclaration/recordTime外全部字段一致",
+      "when": "重复投递E，再投递错误声明",
+      "then": "普通重复一个效果；错误声明保存且撤销旧断言，不被eventID去重丢弃",
+      "evidence_required": "传输inbox身份、声明语义校验、修订链和数量结果"
+    },
+    {
+      "id": "V21:check:reordering",
+      "kind": "out_of_order",
+      "given": "权威已确认delivered",
+      "when": "迟到dispatched事件抵达",
+      "then": "保留时间证据，状态不按到达次序回退",
+      "evidence_required": "eventTime/recordTime及当前权威核对"
+    },
+    {
+      "id": "V21:check:stock-race",
+      "kind": "concurrency",
+      "given": "SC1实际收货完成，现有可用库存16，两项发运各申请物理预留16",
+      "when": "并发执行物理预留事务；各自P7条件批准已存在",
+      "then": "仅一个IR成功，另一个明确冲突；条件批准不替代实物预留",
+      "evidence_required": "事务提交、预留唯一键、冲突返回与UI"
+    },
+    {
+      "id": "V21:check:tenant",
+      "kind": "tenant_isolation",
+      "given": "两租户同shipment S1，不同承运商账号",
+      "when": "缓存命中、详情、附件与回执映射",
+      "then": "只能返回授权tenant/account数据",
+      "evidence_required": "授权拒绝、query scope、cache key、附件访问结果"
+    },
+    {
+      "id": "V21:check:carrier-timeout",
+      "kind": "unknown_outcome",
+      "given": "承运商接受订车但响应丢失",
+      "when": "同operation重开页面并恢复worker",
+      "then": "unknown经客户参考核对成accepted；没有第二辆车",
+      "evidence_required": "操作台账、承运方查询、外部订单数"
+    },
+    {
+      "id": "V21:check:crash",
+      "kind": "recovery",
+      "given": "交付数量已提交，消费标记尚未保存",
+      "when": "崩溃后重放签收",
+      "then": "数量与收费匹配各一次，消费最终可解释",
+      "evidence_required": "事务日志、重启日志、数量守恒和收费行数"
+    },
+    {
+      "id": "V21:check:infeasible-capacity",
+      "kind": "algorithm",
+      "given": "A6/B5/C5不可拆，2天每天9",
+      "when": "枚举8种日期分配",
+      "then": "0可行解，即使总容量18>=16",
+      "evidence_required": "完整枚举与约束违规说明"
+    },
+    {
+      "id": "V21:check:freight-dispute",
+      "kind": "partial_completion",
+      "given": "FI1=250，其中200合同运费、50未批准附加费",
+      "when": "行级匹配与批准",
+      "then": "200可批准，50争议；54计划迟交权重不能抵扣付款",
+      "evidence_required": "匹配规则、收费行状态、批准金额和付款请求"
+    },
+    {
+      "id": "V21:check:forged-error-declaration",
+      "kind": "negative",
+      "given": "原事件quantity=10；同eventID声明把quantity改成9且添加errorDeclaration",
+      "when": "校验错误声明",
+      "then": "隔离；错误声明必须保留原字段，正确的9应通过corrective event另行表达",
+      "evidence_required": "字段比较结果、拒绝原因、原证据未改变"
+    }
+  ],
+  "fixtures": {
+    "planning": {
+      "orders": [
+        {
+          "id": "A",
+          "pallets": 6,
+          "due_day": 1,
+          "late_cost_per_pallet_day": 9
+        },
+        {
+          "id": "B",
+          "pallets": 5,
+          "due_day": 1,
+          "late_cost_per_pallet_day": 7
+        },
+        {
+          "id": "C",
+          "pallets": 5,
+          "due_day": 1,
+          "late_cost_per_pallet_day": 7
+        }
+      ],
+      "days": [
+        1,
+        2
+      ],
+      "daily_capacity": 10,
+      "truck_cost_per_used_day": 100,
+      "indivisible": true,
+      "expected_feasible_count": 2,
+      "expected_best_assignment": {
+        "A": 2,
+        "B": 1,
+        "C": 1
+      },
+      "expected_best_cost": 254,
+      "greedy_a_first_cost": 270,
+      "capacity_9_expected_feasible_count": 0
+    },
+    "freight": {
+      "invoice_total": 250,
+      "matched_contract_freight": 200,
+      "disputed_surcharge": 50,
+      "planning_penalty_not_a_deduction": 54
+    },
+    "inventory": {
+      "initial_physical": 4,
+      "conditional_supply": 12,
+      "approved_plan_demand": 16,
+      "physical_before_receipt": 4,
+      "physical_after_receipt": 16,
+      "reservation_before_receipt_allowed": false,
+      "reservation_after_receipt_allowed": true
+    }
+  }
+}
