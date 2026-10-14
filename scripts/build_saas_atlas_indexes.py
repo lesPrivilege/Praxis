@@ -28,7 +28,7 @@ def evidence_inputs():
         path = ATLAS / section / 'evidence.json'
         if path.is_file():
             paths.append(path)
-    for name in ['editorial-evidence.json', 'repair-evidence.json']:
+    for name in ['editorial-evidence.json', 'repair-evidence.json', 'whole-book-repair-evidence.json']:
         if (PROV / name).is_file():
             paths.append(PROV / name)
     return paths

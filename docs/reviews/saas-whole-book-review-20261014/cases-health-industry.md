@@ -1,0 +1,68 @@
+# Health, science, and industry cases: independent reading review
+
+Reviewed frozen commit `cd8d77b6166a6fc566f6aa09b4d9af3e11537408`. Scope: complete prose of V01, V02, V03, V07, V08, V09, V10, V11, V21, V22 and their two package introductions; all ten corresponding JSON check definitions; relevant terminology and verification routes. This is a reading and contract-comparison review, not a provider integration, rendered-layout, or live-domain audit. No case content or delivery branch was changed. Claude retains final writing and visual design authority.
+
+The cases generally support the complete learning sequence: identify a failure, select a method, calculate a small example, inspect a counterexample, then change a premise before transferring. No new arithmetic defect was found in these ten worked examples. The principal new defect is a lost fixture qualifier in V21. The remaining findings concern navigation, vocabulary, and production instructions left in reader text.
+
+## New findings
+
+### HI-01 — Medium: V21 loses the competing reservation quantities
+
+- **Reader location:** `books/saas-engineering/packages/industry-networks/V21.md:73`.
+- **Contract location:** `vault/distilled/saas-engineering-atlas/packages/industry-networks/V21.json:1140`.
+- **Evidence:** The chapter describes “两项发运同时预留最后 16 托盘” and expects only one reservation to succeed. The JSON explicitly specifies “两项发运各申请物理预留16”: two requests of 16, or 32 requested against 16 available. Earlier chapter prose describes the normal shipments as S1=10 and S2=6 (`V21.md:19`, `V21.md:60`); those two requests can both fit.
+- **Reader impact:** A learner following the normal fixture can infer that concurrent access itself requires rejecting one valid shipment. The omitted per-request quantity changes the acceptance oracle, rather than merely shortening the text.
+- **Remedy:** Restore “各申请 16 托盘” and distinguish these competing requests from the normal S1=10/S2=6 allocation. If retaining optimistic-version rejection as a separate exercise, explain that a conflict can be retried after re-reading and is not evidence of inventory shortage.
+- **Acceptance:** From the chapter alone, a reader can state available=16, request A=16, request B=16, and explain why both cannot commit. A complementary 10+6 fixture permits both reservations after appropriate serialization/retry and ends at zero available. Keep source JSON and prose aligned.
+
+### HI-02 — Low: method-selection routes rely on unexplained system categories
+
+- **Primary locations:** `books/saas-engineering/packages/industry-networks/V10.md:15`, `V10.md:89`; `books/saas-engineering/packages/industry-networks/V07.md:13`, `V07.md:19`, `V07.md:106`; `books/saas-engineering/packages/health-science/README.md:35`, `books/saas-engineering/packages/health-science/V01.md:150`.
+- **Additional examples:** `books/saas-engineering/packages/health-science/V02.md:32` (CRA); `books/saas-engineering/packages/industry-networks/V09.md:30` and `V09.md:64` (SDC/SPEF, then SDC as the changed dependency); `books/saas-engineering/packages/industry-networks/V22.md:37` (OSS/BSS).
+- **Evidence:** EAM/CMMS/FSM are the proposed categories a novice should investigate for maintenance, but neither V10 nor `books/saas-engineering/terminology.md` expands them. PLM/MES/CAE and EHR/HIS/LIS have the same gap at research-selection points. Searches of the main terminology, foundations terms, enterprise-mechanisms terms, and machine terminology did not provide these missing entries.
+- **Reader impact:** The prose teaches the responsibility split but leaves the learner without enough vocabulary to recognize or search for the corresponding mature system family. SDC is additionally used in a correctness counterexample before its role as a timing-constraint input is explained.
+- **Remedy:** At the first point where each category matters, give its expansion and one short responsibility definition; link reusable definitions to the terminology index. Explain input-file roles in V09 locally. Do not insert expansions into every repeated occurrence or rename stable identifiers.
+- **Acceptance:** A cold reader can distinguish asset management, maintenance work management, and field-service scheduling from V10 alone; distinguish design lifecycle, execution, and resource planning from V07; and identify why an SDC change invalidates a timing report without following an external product link.
+
+### HI-03 — Low: V02 points to a Python script in the wrong directory
+
+- **Location:** `books/saas-engineering/packages/health-science/V02.md:122`.
+- **Evidence:** “本目录的 Python 脚本” refers to local model checks, but the Books directory contains only README/V01/V02/V03 Markdown. The actual file is `vault/distilled/saas-engineering-atlas/packages/health-science/synthetic-v02.py`; it is not directly linked in V02. V01 provides the stronger pattern at `V01.md:130`, naming and linking its actual script.
+- **Reader impact:** The reader reaches the verification stage but cannot follow the stated local route. The global `books/saas-engineering/validation.md` runner remains available, so this is a bounded discovery problem, not missing test implementation.
+- **Remedy:** Replace the directory-relative claim with a direct script link and a short scope sentence, retaining that local model checks do not execute the entire end-to-end table. Optionally link the central verification instructions rather than repeat maintenance commands in every case.
+- **Acceptance:** The case provides a working path to `synthetic-v02.py` and accurately distinguishes the three-form local fixture from the twelve-form/UI/export scenario.
+
+### HI-04 — Low: production directions remain in the case endings
+
+- **Locations:** `books/saas-engineering/packages/industry-networks/V09.md:97`, `V21.md:89`, `V22.md:90`.
+- **Evidence:** These endings say “HTML 和动效不限定”, describe the text as “教材与目录底稿” whose later visual layout is left to an implementer, and specify that later visualization, motion, or “多 agent” implementation is unrestricted.
+- **Reader impact:** After useful domain investigation advice, the voice switches to instructions for the book-production team. This does not help the learner decide which evidence or method to use.
+- **Remedy:** Move production discretion to `claude-handoff.md` or the project handoff. Preserve concrete suggested interactions when they teach a mechanism, such as changing a license count or delaying a receipt, and preserve the explicit synthetic, unmeasured, and not-yet-executed boundaries.
+- **Acceptance:** Each ending still names the domain questions, required inputs, and first verification slice, without directions about who will later render or implement the book.
+
+## Per-case coverage and explanations to preserve
+
+| Case | Recognition and selection | Calculation and verification read | Transfer and preservation judgment |
+|---|---|---|---|
+| V01 | Identity-aware matching versus report-revision influence | 300=50+230+20; 200 payer liability, 180 received, 20 remaining; duplicate and changed-content keys; shared payment-budget race | Keep the two-sided budget explanation, reporting-versus-money distinction, and transfer limit on clinical decisions. Mixed FHIR release URLs and punctuation are already prior-audit items. |
+| V02 | Version-bound signatures, exact-set coverage, common transaction gate | Current A2 revision 8 versus signature revision 7; required {A1,A2,A3} versus signed {A1,A2,X9}; both gate orderings and inserted-query counterexample | Keep the full explanation of unchanged value with changed definition, purpose-specific consent, and controlled unlock/export history. New finding HI-03 affects the script route. |
+| V03 | Sample identity, curve inversion, independent QC, uncertainty decision rule, dependency/time scope | Slope 2 AU/(mg/L), intercept 1 AU, sample 8.5 mg/L; QC 5.1 versus 5.5; 8.5/8.8/9.2 decisions; [0,60) and retrospective start 40 | Keep units, independent QC, non-pharmacopoeial scope, and evidence-epoch reasoning before/after approval. Do not shorten the professional-authority or sample-representativeness limitations. |
+| V07 | Baseline change, material completeness, separate fulfillment and receivables | min(14,22/2)=11; missing 2 fasteners; final 10 accepted + 2 scrap; 500=300+200; shared-machine scheduling; changed BOM needs 36, shortage 14 | Keep rework as a new attempt on the same physical item, plus the difference between topology and resource feasibility. HI-02 affects research vocabulary. |
+| V08 | Multi-input transformation, mass balance, evidence-set release | 150=145+3+2; yield 96.67%; current descendants 80+45+49=174; delivered/in-stock split 30/144; 100 g becomes 0.1 kg | Keep the long late-release-versus-block recovery explanation and why affected product mass can exceed one input mass. Its reasoning carries the transfer boundary. |
+| V09 | Critical path versus finite resource schedule; complete conditions versus top-k display | Critical path 16 minutes; one shared check slot 18; setup +0.08/-0.05, average +0.015 insufficient; hold -0.03; P/T/D/R invalidation | Keep the full timing counterexample and explicit limits of toy formulas, as well as the missing-condition example. Define the named dependency inputs; move production directions per HI-04. |
+| V10 | Event-time windows, unresolved episodes, permission versus execution | Three high values in five complete minute slots; duplicate/late samples; 55 versus 75 minute schedules; shared isolation; untrusted device-clock exercise | Keep “unknown reading is not zero”, the watermark/history distinction, and on-site authority boundaries. V10:83's “新增…guard” is a minor phrasing inconsistency: the same paragraph and V10:19 already identify that shared-scope guard as existing. Prefer “在这个情境中检查…” rather than implying a new policy. |
+| V11 | Interval versus cumulative metering; quality fractions; revision and billing | 14 kWh, valley 5/peak 9, 1/4 versus 4/14, bill 13.50; actual 6 gives 15.50 and +2 adjustment; meter replacement produces same charge with different evidence | Keep the same-number/different-evidence exercise, 00:37 resolution limit, and the separate 100=96+4 network discrepancy. These prevent false transfer from “sum” to “bill”. |
+| V21 | Indivisible assignment, conditional supply, physical reservation, charge evidence | All eight assignments; feasible costs 270/254; capacity 9 gives no feasible solution; supply 4+12 versus 4+8; payable 200 distinct from internal 54 and disputed 50 | Keep full objective-versus-payable reasoning and EPCIS correction versus a new physical delivery. HI-01 repairs the lost competing-request quantity; HI-04 cleans the ending. |
+| V22 | Commercial interval versus technical activity; shared allowance; late revision | [5,20) gives 1500 fixed + 400 excess=1900; revised 9 GB gives -400; prorated allowance yields 2900; day 20 excluded; activity until day 22 does not extend billing | Keep the parallel commercial/technical intervals and resource-release confirmation. The chapter successfully makes retirement and financial closure independent. HI-02/04 affect terminology and ending. |
+
+All ten case prose documents and their complete JSON `checks` arrays were read. Vault package READMEs route to Books; no second prose copy of these cases was found under the corresponding source packages. The comparison is therefore between Books and the retained structured contracts, not byte-for-byte prose duplication. All ten contain useful negative examples and explicit transfer limitations. The short repeated “先辨认眼前卡住的关系…” introductions in the seven industry cases can be tightened if Claude judges them unnecessary; the recognisable stage structure and local reminders should remain.
+
+The H1 and section headings were read separately for concision and continuity. Some H1s and sections use full-question or sentence forms (notably V03, V07, V22); this is an editorial consistency opportunity, not a correctness finding. Shortening should retain the actual distinction being taught. Package introductions provide a coherent sequence, while case prose can also be read independently once its missing vocabulary is supplied.
+
+## Evidence boundaries and prior-audit deduplication
+
+Read root `AGENTS.md`, the Kit task entrance, Prose README/grammar/review, and shared evidence guidance. Read the previous case audit at `5c5f7098561d4d87403986d6c3edf58cde20a5e7:docs/reviews/saas-case-independent-review-20261014/findings.json`. Its IR-06 FHIR release-link issue and IR-07 punctuation/authoring findings in V01/V02/V03/V07/V21 are acknowledged, not reissued here. Its other technical findings concern cases outside this assigned set. No current provider pages were reopened and no provider claim was independently revalidated in this pass.
+
+The examined chapters generally keep evidence identity explicit: FHIR/DICOM/EPCIS/ISA-95/TM Forum are used as scoped standards references; LabWare, SAP, Veeva, Medidata, Oracle, Microsoft, IBM, Cadence and related documentation remain provider-specific statements; the state machines, numerical examples, architecture choices, permissions, and transfer recommendations are labelled synthetic or editorial analysis. This review does not turn those labels into a new factual validation or compliance conclusion.
+
+Hand calculations and source/reader comparisons support the findings above. The existing Python suites were not rerun in this reading subtask, and no UI, database deployment, external integration, load test, or AI evaluation was executed. The root reviewer owns combined validation, report integration, commit and push. No blocker remains for this subtask.

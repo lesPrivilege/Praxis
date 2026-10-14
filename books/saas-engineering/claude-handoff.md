@@ -17,7 +17,7 @@ Vault 结构目录中的 [`case-index.json`](../../vault/distilled/saas-engineer
 
 `transfer-map.json` 的 node 是 case，edge 是教学迁移。每条边有 `type/from/to/preserved_mechanism/precondition/changed_condition/counterexample/observable_check`，全部是教学推理；它不继承来源事实、运行权限或专业决定。`transfer-proposals.json` 保留其余建议及出处，可继续编辑或选择。
 
-包内 `evidence.json` 保存原主张和读取记录。复核追加的 `provenance/repair-evidence.json` 保留新版本读取和模型澄清；原审阅与14项处置见 [复核记录](../../docs/reviews/README.md)，原记录不覆盖。provenance 的 `catalog.json` 按 canonical URL 去重；`source-aliases.json` 让全部原 source ID 可解析；`claims.json` 保留全部主张、类别与限制；`reviews.json` 保留原始记录、读取日期和失败范围。同一 URL 的不同 claim、版本限制及失败记录不能互相覆盖。enterprise-mechanisms 的 `case-links.json` 连接33例并保留作者所读固定SHA；`reader_root` 与 `reader_path` 指向当前 Books。其 `examples.json` 保留两条工作链，实验指南明确本机 HTTP/SQLite 与真实 provider 的边界。
+包内 `evidence.json` 保存原主张和读取记录。复核追加的 `provenance/repair-evidence.json` 与 `provenance/whole-book-repair-evidence.json` 保留新版本读取和模型澄清；原审阅与26项处置见 [复核记录](../../docs/reviews/README.md)，原记录不覆盖。provenance 的 `catalog.json` 按 canonical URL 去重；`source-aliases.json` 让全部原 source ID 可解析；`claims.json` 保留全部主张、类别与限制；`reviews.json` 保留原始记录、读取日期和失败范围。同一 URL 的不同 claim、版本限制及失败记录不能互相覆盖。enterprise-mechanisms 的 `case-links.json` 连接33例并保留作者所读固定SHA；`reader_root` 与 `reader_path` 指向当前 Books。其 `examples.json` 保留两条工作链，实验指南明确本机 HTTP/SQLite 与真实 provider 的边界。
 
 foundations 的 `curriculum.json` 以 `reader_root` 加章节 `path` 定位 Books，`examples.json` 保存输入、步骤与结果。全局 claims 保留作者原 `kind`，另以 `evidence_kind` 映射为 `source_fact/synthetic/inference`；`source-backed` 与 `synthetic-example` 的原类别不被抹去。
 
@@ -31,7 +31,7 @@ Claude 可以重写正文、调整主次和渐进展开，自由选择统一 UI�
 
 ## 覆盖与继续研究
 
-编订基线、已解决问题和确实影响写作的未决项见 [整合验收](../../docs/verification/saas-engineering-atlas-20261014.md)。本轮已完成两份独立技术复核的定点修复，修复后独立复查与整书教学审阅状态另由验收回执记录；这不增加 Claude 全量重审来源的任务。下一步研究从所选行业的对象身份、真实状态及批准权、接口版本和不确定结果查询能力开始，再补专业制度、持久化故障、容量与应用级验收。这些问题服务于读者将方法用到真实项目时的下一步探索；不把专业实施验证转成 Claude 重审整份稿件的任务。
+编订基线、已解决问题和确实影响写作的未决项见 [整合验收](../../docs/verification/saas-engineering-atlas-20261014.md)。案例、基础章与全书的三份独立复核均已接收，26项意见已完成修复；最终定点独立复查状态另由验收回执记录；这不增加 Claude 全量重审来源的任务。下一步研究从所选行业的对象身份、真实状态及批准权、接口版本和不确定结果查询能力开始，再补专业制度、持久化故障、容量与应用级验收。这些问题服务于读者将方法用到真实项目时的下一步探索；不把专业实施验证转成 Claude 重审整份稿件的任务。
 
 验证命令与各层边界在 [验证方法](validation.md)。合成脚本成功不等于 provider、浏览器端到端、负载或 AI eval 已执行。公共仓库只接收原创泛化解释、合成数据和公共来源；真实用户数据、私密对话、凭据与签名地址不进入消费产物。
 

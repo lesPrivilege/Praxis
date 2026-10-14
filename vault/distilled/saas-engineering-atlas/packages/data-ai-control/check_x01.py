@@ -95,6 +95,29 @@ def may_deliver(tenant, member_tenant, captured_epoch, current_epoch, active):
     return tenant == member_tenant and active and captured_epoch == current_epoch
 
 
+class BufferedAnswer:
+    """Synchronous fake receiver observes each returned chunk; no SSE transport."""
+    def __init__(self, tenant, member_tenant, captured_epoch, chunks, consumed_units):
+        self.tenant, self.member_tenant = tenant, member_tenant
+        self.captured_epoch, self.chunks = captured_epoch, tuple(chunks)
+        self.consumed_units = consumed_units
+        self.verified = False
+        self.delivered_indices = set()
+        self.delivery_attempts = []
+
+    def emit(self, index, current_epoch, active):
+        if not self.verified:
+            raise ValueError('answer_not_verified')
+        if not may_deliver(self.tenant, self.member_tenant, self.captured_epoch, current_epoch, active):
+            raise PermissionError('current_authorization_denied')
+        if type(index) is not int or not 0 <= index < len(self.chunks):
+            raise ValueError('invalid_chunk_index')
+        chunk = self.chunks[index]
+        self.delivered_indices.add(index)
+        self.delivery_attempts.append(index)  # authorized replay is still a delivery attempt
+        return chunk
+
+
 def queued_exit_trace(order):
     """Enumerate serialized conditional claims, not real concurrent workers."""
     quota, active, state = Quota(), True, 'queued'

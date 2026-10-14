@@ -4,6 +4,31 @@
 
 | 原词 | 英文展开 | 中文与用途 |
 |---|---|---|
+| EAM | enterprise asset management | 企业资产管理；长期资产、维护与生命周期管理 |
+| CMMS | computerized maintenance management system | 计算机化维护管理系统；维护计划、工单与维护记录 |
+| FSM | field service management | 现场服务管理；跨地点预约、派工和技师到场 |
+| PLM | product lifecycle management | 产品生命周期管理；设计版本、基线与生命周期协作 |
+| MES | manufacturing execution system | 制造执行系统；工序执行与现场生产记录 |
+| CAE | computer-aided engineering | 计算机辅助工程；以计算模型分析设计行为 |
+| SDC | Synopsys Design Constraints | Synopsys 设计约束格式；时钟、时序等设计约束输入 |
+| SPEF | Standard Parasitic Exchange Format | 标准寄生参数交换格式；连接线寄生参数输入 |
+| OSS | operations support systems | 运营支撑系统；通信网络与服务运行管理 |
+| BSS | business support systems | 业务支撑系统；通信客户、商业订单与计费管理 |
+| EHR | electronic health record | 电子健康记录；跨医疗过程的健康信息记录 |
+| HIS | hospital information system | 医院信息系统；医院诊疗与运营信息管理 |
+| LIS | laboratory information system | 检验信息系统；医疗检验请求、样本与结果管理 |
+| CRA | clinical research associate | 临床研究监查员；按授权监查研究执行与记录 |
+| ITSM | IT service management | IT 服务管理；服务责任、请求、事故与变更管理 |
+| PSA | professional services automation | 专业服务自动化；项目资源、工时与服务计费支持 |
+| SIEM | security information and event management | 安全信息与事件管理；汇集关联安全事件供调查 |
+| SOAR | security orchestration, automation and response | 安全编排、自动化与响应；组织响应步骤与工具交接 |
+| CAS | compare-and-swap | 比较并交换；值或版本仍匹配才条件写入 |
+| CLM | contract lifecycle management | 合同生命周期管理；合同起草、审批、签署与履行管理 |
+| DML | data manipulation language | 数据操作语言；插入、修改、删除等数据操作 |
+| REST | representational state transfer | 表述性状态转移；一种围绕资源与统一接口的架构风格；不是完整互操作保证 |
+| CU | currency unit | 合成记账单位；本例自定金额符号，不是标准货币代码 |
+| PCCO | Prime Contract Change Order | 业主合同变更单；Procore 所指的 Prime Contract 变更单 |
+| IWMS | integrated workplace management system | 集成工作场所管理系统；关联空间、设施、维护和房地产信息 |
 | SaaS | Software as a Service | 软件即服务；通过服务持续提供软件能力 |
 | AI | artificial intelligence | 人工智能；本书区分模型建议与获授权动作 |
 | UI | user interface | 用户界面；人观察状态和发起动作的入口 |

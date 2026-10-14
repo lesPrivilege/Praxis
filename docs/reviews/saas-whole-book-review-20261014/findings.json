@@ -1,0 +1,395 @@
+{
+  "reviewed_commit": "cd8d77b6166a6fc566f6aa09b4d9af3e11537408",
+  "date": "2026-10-14",
+  "review_branch": "cloud/saas-whole-book-review-20261014",
+  "severity_counts": {
+    "high": 0,
+    "medium": 4,
+    "low": 8
+  },
+  "status": "review recommendations only; no content repairs",
+  "prior_audits_read": [
+    "5c5f7098561d4d87403986d6c3edf58cde20a5e7",
+    "b97d728bd2a2abe4687203592ac1341242f07333"
+  ],
+  "findings": [
+    {
+      "id": "WB-01",
+      "severity": "medium",
+      "title": "Fixed acceptance denominator is caller-controlled",
+      "locations": [
+        {
+          "path": "vault/distilled/saas-engineering-atlas/enterprise-mechanisms/mechanism_lab.py",
+          "line": 371,
+          "end_line": 383
+        },
+        {
+          "path": "vault/distilled/saas-engineering-atlas/enterprise-mechanisms/examples.json",
+          "line": 170,
+          "end_line": 181
+        },
+        {
+          "path": "books/saas-engineering/enterprise-mechanisms/03-schema-tools-completion.md",
+          "line": 111
+        }
+      ],
+      "evidence": "After the normal confirmed effect, accept(1,1) and accept(9,9) both close the operation despite the fixed 10/10 policy; baseline tests only reject 8/10 and accept 10/10.",
+      "remedy": "Bind required total/pass count to persisted work policy; fixed lab can require exactly 10/10.",
+      "acceptance": "1/1, 9/9 and 8/10 reject; 10/10 with confirmed effect and authorized owner succeeds.",
+      "support": "enterprise-review.md: EMR-01; enterprise-results.json: EMR-01"
+    },
+    {
+      "id": "WB-02",
+      "severity": "low",
+      "title": "Contradictory terminal observations have no visible diagnostic",
+      "locations": [
+        {
+          "path": "vault/distilled/saas-engineering-atlas/enterprise-mechanisms/mechanism_lab.py",
+          "line": 319,
+          "end_line": 330
+        },
+        {
+          "path": "vault/distilled/saas-engineering-atlas/enterprise-mechanisms/mechanism_lab.py",
+          "line": 358,
+          "end_line": 369
+        }
+      ],
+      "evidence": "A deliberately faulty provider returns rejected then applied; reconciliation retains rejected without reporting conflict. Same-state changed receipt also leaves the full journal row unchanged and returns awaiting_acceptance. Normal immutable provider observations remain correct.",
+      "remedy": "Preserve established facts and expose/store contradictory observations; distinguish stale accepted from applied-versus-rejected conflict.",
+      "acceptance": "Both contradictory terminal arrival orders and changed same-state receipt create a visible conflict; late accepted does not erase applied; no replacement operation is generated.",
+      "support": "enterprise-review.md: EMR-02; enterprise-results.json: EMR-02"
+    },
+    {
+      "id": "WB-03",
+      "severity": "medium",
+      "title": "V21 reservation exercise loses per-request quantity",
+      "locations": [
+        {
+          "path": "books/saas-engineering/packages/industry-networks/V21.md",
+          "line": 60
+        },
+        {
+          "path": "books/saas-engineering/packages/industry-networks/V21.md",
+          "line": 73
+        },
+        {
+          "path": "vault/distilled/saas-engineering-atlas/packages/industry-networks/V21.json",
+          "line": 1140
+        }
+      ],
+      "evidence": "Normal S1/S2 quantities are 10+6. Prose requires one success for two reservations of the remaining 16 without saying each requests 16; JSON specifies two requests of 16 each.",
+      "remedy": "Restore per-request quantities and distinguish competing test requests from normal S1/S2. Explain version-conflict retry separately from shortage.",
+      "acceptance": "16+16 against 16 cannot both commit; 10+6 can both succeed after appropriate serialization/retry and leave zero.",
+      "support": "cases-health-industry.md: HI-01"
+    },
+    {
+      "id": "WB-04",
+      "severity": "medium",
+      "title": "H03 manufacturing transfer names H07 BI",
+      "locations": [
+        {
+          "path": "books/saas-engineering/packages/commercial-finance/H03.md",
+          "line": 143
+        },
+        {
+          "path": "vault/distilled/saas-engineering-atlas/transfer-proposals.json",
+          "line": 67
+        }
+      ],
+      "evidence": "TR:H03:H07:dependency-not-capacity is described using production equipment/material/process constraints, but H07 is BI and V07 is manufacturing. The additional-reading proposal repeats the same context; this is not one of the 42 selected map edges.",
+      "remedy": "Either retarget consistently to V07, or retain H07 with its actual conditions. Add clickable destination and update every affected stable reference.",
+      "acceptance": "Destination chapter matches the described transfer; proposal ID and stored occurrence agree; preserve dependency-versus-capacity reasoning.",
+      "support": "cases-finance-commerce.md: FC-01"
+    },
+    {
+      "id": "WB-05",
+      "severity": "medium",
+      "title": "Promised executable verification route disappears after Books migration",
+      "locations": [
+        {
+          "path": "books/saas-engineering/packages/commercial-finance/README.md",
+          "line": 60,
+          "end_line": 63
+        },
+        {
+          "path": "books/saas-engineering/packages/health-science/V02.md",
+          "line": 122
+        },
+        {
+          "path": "books/saas-engineering/packages/README.md",
+          "line": 3
+        }
+      ],
+      "evidence": "P01 introduction has no commands between its Python introduction and first/second/third descriptions. V02 says scripts are in this directory, but they are in Vault. Package index calls JSON adjacent to prose although retained JSON is in Vault. All-book runner exists.",
+      "remedy": "Restore named linked commands with working directory and scope, or one concise case-to-command table. Correct directory-relative wording. Keep learner checks distinct from registry maintenance.",
+      "acceptance": "A reader can reach the arithmetic check from the advertised entry, run it without installing dependencies, and identify its limited scope.",
+      "support": "cases-finance-commerce.md: FC-02; cases-health-industry.md: HI-03; cases-people-data.md: PD-04"
+    },
+    {
+      "id": "WB-06",
+      "severity": "low",
+      "title": "First-use vocabulary is missing at method-selection points",
+      "locations": [
+        {
+          "path": "books/saas-engineering/packages/industry-networks/V10.md",
+          "line": 15
+        },
+        {
+          "path": "books/saas-engineering/packages/industry-networks/V07.md",
+          "line": 13
+        },
+        {
+          "path": "books/saas-engineering/packages/industry-networks/V09.md",
+          "line": 30
+        },
+        {
+          "path": "books/saas-engineering/packages/industry-networks/V22.md",
+          "line": 37
+        },
+        {
+          "path": "books/saas-engineering/packages/health-science/README.md",
+          "line": 35
+        },
+        {
+          "path": "books/saas-engineering/packages/health-science/V02.md",
+          "line": 32
+        },
+        {
+          "path": "books/saas-engineering/packages/people-service/H05.md",
+          "line": 108
+        },
+        {
+          "path": "books/saas-engineering/packages/people-service/V19.md",
+          "line": 65
+        },
+        {
+          "path": "books/saas-engineering/packages/data-ai-control/H08.md",
+          "line": 158
+        },
+        {
+          "path": "books/saas-engineering/packages/data-ai-control/H09.md",
+          "line": 17
+        },
+        {
+          "path": "books/saas-engineering/packages/data-ai-control/H09.md",
+          "line": 67
+        },
+        {
+          "path": "books/saas-engineering/packages/data-ai-control/H07.md",
+          "line": 36
+        },
+        {
+          "path": "books/saas-engineering/packages/people-service/V17.md",
+          "line": 5
+        },
+        {
+          "path": "books/saas-engineering/packages/commercial-finance/V12.md",
+          "line": 5
+        },
+        {
+          "path": "books/saas-engineering/packages/commercial-finance/V13.md",
+          "line": 5
+        },
+        {
+          "path": "books/saas-engineering/packages/commerce-property/V15.md",
+          "line": 25
+        },
+        {
+          "path": "books/saas-engineering/packages/commerce-property/V16.md",
+          "line": 23
+        }
+      ],
+      "evidence": "Examples absent from inspected local/index definitions include EAM/CMMS/FSM, PLM/MES/CAE, SDC/SPEF, OSS/BSS, EHR/HIS/LIS, CRA, ITSM, PSA, SIEM/SOAR, CAS/CLM, DML, REST, CU, PCCO and IWMS. These have different system, method, provider or synthetic-unit roles.",
+      "remedy": "Expand at first explanatory use, define the role briefly, and provide stable glossary entries where useful. Verify provider-specific expansions from their primary source before adopting them.",
+      "acceptance": "A reader can select/search the named family or explain a changed input without guessing the acronym, and distinguish synthetic CU from a currency standard.",
+      "support": "cases-health-industry.md: HI-02; cases-people-data.md: PD-02; cases-finance-commerce.md: FC-04"
+    },
+    {
+      "id": "WB-07",
+      "severity": "low",
+      "title": "Two calculation conventions are unstated",
+      "locations": [
+        {
+          "path": "books/saas-engineering/packages/commercial-finance/H01.md",
+          "line": 63
+        },
+        {
+          "path": "books/saas-engineering/foundations/03-order-and-intervals.md",
+          "line": 45
+        }
+      ],
+      "evidence": "H01 uses floor and clamp without definition. Foundations uses [1,4) to select 1,3,0 from [2,1,3,0,4] without saying positions start at zero, after discussing numbered days. Both numerical examples are correct.",
+      "remedy": "Define clipping and rounding operators beside the formula; state zero-based array positions with a small indexed row or sentence.",
+      "acceptance": "Reader obtains zero before s, full amount after e and original 33/33/34 allocation; reader identifies positions 1,2,3 and prefix values correctly.",
+      "support": "cases-finance-commerce.md: FC-03; coordinator full foundations reading"
+    },
+    {
+      "id": "WB-08",
+      "severity": "low",
+      "title": "Production narration remains in additional reader-text locations",
+      "locations": [
+        {
+          "path": "books/saas-engineering/packages/people-service/README.md",
+          "line": 45
+        },
+        {
+          "path": "books/saas-engineering/packages/people-service/H05.md",
+          "line": 43
+        },
+        {
+          "path": "books/saas-engineering/packages/people-service/H06.md",
+          "line": 106
+        },
+        {
+          "path": "books/saas-engineering/packages/people-service/V18.md",
+          "line": 102
+        },
+        {
+          "path": "books/saas-engineering/packages/data-ai-control/H07.md",
+          "line": 162
+        },
+        {
+          "path": "books/saas-engineering/packages/data-ai-control/H08.md",
+          "line": 160
+        },
+        {
+          "path": "books/saas-engineering/packages/industry-networks/V09.md",
+          "line": 97
+        },
+        {
+          "path": "books/saas-engineering/packages/industry-networks/V21.md",
+          "line": 89
+        },
+        {
+          "path": "books/saas-engineering/packages/industry-networks/V22.md",
+          "line": 90
+        },
+        {
+          "path": "books/saas-engineering/packages/commerce-property/V15.md",
+          "line": 117
+        }
+      ],
+      "evidence": "Clauses address later HTML/motion implementation, unrestricted multi-agent implementation, draft status or integration handoff after useful learner material. These are additional locations in the earlier IR-07 category, not reissued old locations.",
+      "remedy": "Move production-authority clauses to existing handoff. Keep learner experiments, evidence links, synthetic labels and actual-versus-planned limitations.",
+      "acceptance": "Reader text remains a connected explanation; surrounding changed-input exercises and qualifications are preserved.",
+      "support": "cases-people-data.md: PD-03; cases-health-industry.md: HI-04; cases-finance-commerce.md: additional IR-07 locations"
+    },
+    {
+      "id": "WB-09",
+      "severity": "low",
+      "title": "Enterprise sidecar conflates undelivered and pending-inspection quantity",
+      "locations": [
+        {
+          "path": "vault/distilled/saas-engineering-atlas/enterprise-mechanisms/examples.json",
+          "line": 113
+        },
+        {
+          "path": "books/saas-engineering/enterprise-mechanisms/01-organization-to-system.md",
+          "line": 76
+        },
+        {
+          "path": "books/saas-engineering/enterprise-mechanisms/01-organization-to-system.md",
+          "line": 82
+        }
+      ],
+      "evidence": "remaining_delivery_qty=3, but requested=12 and received=10 mean two undelivered; the third unit is already received and pending inspection. Prose correctly separates them.",
+      "remedy": "Use pending_inspection_qty=1 and not_received_qty=2 or a clearly named remaining-fulfillment quantity.",
+      "acceptance": "Text, machine fields and any visualization show 9 accepted +1 pending inspection +2 not received =12.",
+      "support": "enterprise-review.md: EMR-04; enterprise-results.json: data_alignment"
+    },
+    {
+      "id": "WB-10",
+      "severity": "low",
+      "title": "Enterprise prose describes an unechoed prerequisite-version receipt field",
+      "locations": [
+        {
+          "path": "books/saas-engineering/enterprise-mechanisms/03-schema-tools-completion.md",
+          "line": 109
+        },
+        {
+          "path": "vault/distilled/saas-engineering-atlas/enterprise-mechanisms/mechanism_lab.py",
+          "line": 166,
+          "end_line": 186
+        },
+        {
+          "path": "vault/distilled/saas-engineering-atlas/enterprise-mechanisms/mechanism_lab.py",
+          "line": 207,
+          "end_line": 217
+        },
+        {
+          "path": "vault/distilled/saas-engineering-atlas/enterprise-mechanisms/test_mechanism_lab.py",
+          "line": 32,
+          "end_line": 44
+        },
+        {
+          "path": "books/saas-engineering/enterprise-mechanisms/lab-guide.md",
+          "line": 35
+        }
+      ],
+      "evidence": "Chapter receipt claims used prerequisite version 8 and result version 9; fake/HTTP return result version only. Validation compares returned version with persisted expected_version+1; lab-guide narrower wire description agrees with code.",
+      "remedy": "Describe the implemented comparison accurately or add expected-version echo to both adapters and independent provider/checks.",
+      "acceptance": "A reader comparing chapter, wire fields and validator can locate every claimed observation, with no inferred value described as returned evidence.",
+      "support": "enterprise-review.md: EMR-05; enterprise-results.json: data_alignment"
+    },
+    {
+      "id": "WB-11",
+      "severity": "low",
+      "title": "Changed enterprise revision keeps fixed r3 identities",
+      "locations": [
+        {
+          "path": "vault/distilled/saas-engineering-atlas/enterprise-mechanisms/mechanism_lab.py",
+          "line": 134,
+          "end_line": 163
+        },
+        {
+          "path": "books/saas-engineering/enterprise-mechanisms/03-schema-tools-completion.md",
+          "line": 139
+        },
+        {
+          "path": "books/saas-engineering/enterprise-mechanisms/lab-guide.md",
+          "line": 62
+        }
+      ],
+      "evidence": "A reapproved revision 4 still uses APR-42-r3, CHG-42/r3/apply and OP-42 and conflicts with the original persisted intent. The lab explicitly covers one fixed example, so its original chain remains valid.",
+      "remedy": "Either enforce/document fixed r3 input or derive identities from change/revision and use a distinct operation for a genuinely new approved intent.",
+      "acceptance": "The stated domain is enforced; if r4 is supported it can proceed after reapproval while stale approval, same-key changed-content and duplicate-intent checks remain effective.",
+      "support": "enterprise-review.md: EMR-03; enterprise-results.json: EMR-03"
+    },
+    {
+      "id": "WB-12",
+      "severity": "low",
+      "title": "X01 answer streaming and authorization boundary is ambiguous",
+      "locations": [
+        {
+          "path": "books/saas-engineering/packages/data-ai-control/X01.md",
+          "line": 3
+        },
+        {
+          "path": "books/saas-engineering/packages/data-ai-control/X01.md",
+          "line": 40,
+          "end_line": 42
+        },
+        {
+          "path": "books/saas-engineering/packages/data-ai-control/X01.md",
+          "line": 102
+        },
+        {
+          "path": "books/saas-engineering/packages/data-ai-control/X01.md",
+          "line": 125
+        },
+        {
+          "path": "vault/distilled/saas-engineering-atlas/packages/data-ai-control/check_x01.py",
+          "line": 87
+        },
+        {
+          "path": "vault/distilled/saas-engineering-atlas/packages/data-ai-control/check_x01.py",
+          "line": 213
+        }
+      ],
+      "evidence": "SSE/resumable tokens coexist with a generation-then-authorization-then-delivery sequence. Buffered progress-only or per-emission interpretations are possible. Boolean may_deliver checks do not model chunk or replay boundaries; the chapter honestly says SSE is untested.",
+      "remedy": "Choose buffered answer versus incremental content semantics, define current authorization for initial/subsequent/replayed content and keep consumed usage separate from delivery success.",
+      "acceptance": "Synthetic traces cover revocation before first byte, between chunks and before reconnect; prior authorized delivery remains recorded and subsequent delivery obeys the chosen policy.",
+      "support": "cases-people-data.md: PD-01; coordinator rating low (ambiguity, no demonstrated leak)"
+    }
+  ]
+}

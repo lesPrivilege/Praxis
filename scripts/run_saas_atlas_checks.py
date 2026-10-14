@@ -20,6 +20,7 @@ def main():
     if enterprise.is_dir():
         paths += [enterprise/'test_mechanism_lab.py', enterprise/'validate_content.py']
     paths.append(ROOT/'docs/reviews/saas-atlas-repairs-20261014/regression_checks.py')
+    paths.append(ROOT/'docs/reviews/saas-whole-book-repairs-20261014/regression_checks.py')
     results=[]
     for p in paths:
         cmd=[sys.executable,str(p.relative_to(ROOT))]

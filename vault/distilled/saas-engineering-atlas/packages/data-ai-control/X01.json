@@ -421,8 +421,8 @@
       "to": "X01:service:runtime",
       "payload": "当前tenant、membership、epoch、额度",
       "timing": "sync",
-      "invariant": "准入与交付复检",
-      "failure": "检索后撤销阻断交付",
+      "invariant": "准入、完整答案开放及每块发送/重连回放均检查当前租户、membership和epoch",
+      "failure": "撤销阻断后续与回放；保留此前合法交付和已消耗成本",
       "basis": "synthetic",
       "claim_ids": [
         "X01:claim:quota-design"
@@ -785,9 +785,9 @@
         {
           "from": "running",
           "to": "succeeded",
-          "trigger": "结果确认",
-          "guard": "引用合法且epoch复检通过",
-          "durable_effect": "结果/用量/outbox同事务",
+          "trigger": "完整结果交付已确认",
+          "guard": "引用合法；每块发送时epoch复检通过；完整接收证据存在",
+          "durable_effect": "保留生成结果/消耗，交付终态/最终计费资格/outbox同事务",
           "recovery": "重放outbox"
         },
         {
@@ -810,7 +810,7 @@
           "from": "unknown",
           "to": "succeeded",
           "trigger": "回查确认",
-          "guard": "结果仍可授权交付",
+          "guard": "原结果与完整交付证据均已核对；新增发送必须经过当前授权",
           "durable_effect": "结算一次",
           "recovery": "已撤销则进入failed"
         },
@@ -999,10 +999,10 @@
     {
       "id": "X01:check:revoke-before-delivery",
       "kind": "authorization",
-      "given": "已检索后提高epoch",
-      "when": "交付前复检",
-      "then": "阻止交付，实际成本仍可记录",
-      "evidence_required": "本地epoch guard；服务端实际拦截未执行"
+      "given": "完整答案缓冲校核；分别在首块前、两块之间、断线重连前提高epoch",
+      "when": "首块、后续块和回放发送前复检当前授权",
+      "then": "后续内容被拒绝；先前合法交付仍留记录，消耗成本不因拒绝而消失",
+      "evidence_required": "本地分块合成轨迹已执行；真实SSE传输、会话撤销与分布式竞态仍待服务测试"
     },
     {
       "id": "X01:check:eval-failures-visible",

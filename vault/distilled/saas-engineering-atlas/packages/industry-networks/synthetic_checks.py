@@ -102,6 +102,29 @@ def supply_candidates(capacity=10):
     return sorted(result)
 
 
+class StockReservation:
+    """Serial conditional-update model; version conflict is not stock shortage."""
+    def __init__(self, available=16):
+        self.available, self.version = available, 1
+        self.reserved = {}
+
+    def reserve(self, identity, qty, expected_version):
+        if type(qty) is not int or qty <= 0:
+            raise ValueError('invalid_quantity')
+        if identity in self.reserved:
+            if self.reserved[identity] != qty:
+                raise ValueError('identity_conflict')
+            return 'reserved'
+        if expected_version != self.version:
+            return 'version_conflict'
+        if qty > self.available:
+            return 'insufficient_stock'
+        self.available -= qty
+        self.version += 1
+        self.reserved[identity] = qty
+        return 'reserved'
+
+
 class ManufacturingTests(unittest.TestCase):
     def test_v07_component_bottleneck(self):
         self.assertEqual(manufacturable({'blank': 1, 'fastener': 2}, {'blank': 14, 'fastener': 22}), 11)

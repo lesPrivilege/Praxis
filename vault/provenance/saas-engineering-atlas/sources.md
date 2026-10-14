@@ -604,9 +604,12 @@
 
 [What is IWMS?](https://www.servicenow.com/in/workflows/employee-workflows/what-is-iwms.html)
 
-- `V16:claim:iwms-scope`：ServiceNow 的 IWMS 介绍将空间/占用、租约信息与维护请求、工单等列为工作场所管理关注范围。 定位：Functional areas > Facilities management; Facilities maintenance; Real estate lifecycle management。边界：类别说明，不支持住宅押金、责任归属或退款法律主张。
+同源 ID：`WB-SRC-iwms`。
 
-消费：[README](../../../books/saas-engineering/README.md)、[V16](../../../books/saas-engineering/packages/commerce-property/V16.md)。
+- `V16:claim:iwms-scope`：ServiceNow 的 IWMS 介绍将空间/占用、租约信息与维护请求、工单等列为工作场所管理关注范围。 定位：Functional areas > Facilities management; Facilities maintenance; Real estate lifecycle management。边界：类别说明，不支持住宅押金、责任归属或退款法律主张。
+- `WB:claim:term-iwms`：IWMS 在该 ServiceNow 说明中指 integrated workplace management systems，关联工作场所设施、维护和房地产管理。 定位：Opening definition; functional areas。边界：名称与所述用途；未把厂商定义扩为本例全部内部实现。
+
+消费：[README](../../../books/saas-engineering/README.md)、[V16](../../../books/saas-engineering/packages/commerce-property/V16.md)、[terminology](../../../books/saas-engineering/terminology.md)。
 
 复查：实现前按具体版本、字段、制度与部署范围重新核查；来源变更或主张冲突时复读。
 
@@ -757,9 +760,12 @@
 
 [Approve or Reject Prime Contract Change Orders](https://support.procore.com/products/online/user-guide/project-level/change-orders/tutorials/approve-or-reject-prime-contract-change-orders)
 
-- `V15:claim:pcco-review`：Procore 文档的 PCCO review flow 要求指定审核人、相应权限及 Pending - In Review 或 Pending - Revised 状态；批准或拒绝会更新状态及审核记录。 定位：Background; Things to Consider; Steps > after approve/reject。边界：仅文档对应流程；不证明任何合同的法律效力或付款已发生。
+同源 ID：`WB-SRC-pcco`。
 
-消费：[README](../../../books/saas-engineering/README.md)、[V15](../../../books/saas-engineering/packages/commerce-property/V15.md)。
+- `V15:claim:pcco-review`：Procore 文档的 PCCO review flow 要求指定审核人、相应权限及 Pending - In Review 或 Pending - Revised 状态；批准或拒绝会更新状态及审核记录。 定位：Background; Things to Consider; Steps > after approve/reject。边界：仅文档对应流程；不证明任何合同的法律效力或付款已发生。
+- `WB:claim:term-pcco`：PCCO 在该 Procore 文档中展开为 Prime Contract Change Order。 定位：Objective; opening Background。边界：名称与所述用途；未把厂商定义扩为本例全部内部实现。
+
+消费：[README](../../../books/saas-engineering/README.md)、[V15](../../../books/saas-engineering/packages/commerce-property/V15.md)、[terminology](../../../books/saas-engineering/terminology.md)。
 
 复查：实现前按具体版本、字段、制度与部署范围重新核查；来源变更或主张冲突时复读。
 
@@ -2146,5 +2152,25 @@
 - `REPAIR:claim:postgres-gist-18`：GiST 是 Generalized Search Tree 的缩写；PostgreSQL 将其描述为可供实现不同索引方案的平衡树形访问方法。 定位：§65.2.1 Introduction, opening definition。边界：仅核对名称与访问方法类别，不声称安装扩展、运行数据库或复核后续实现章节。
 
 消费：[README](../../../books/saas-engineering/README.md)、[V06](../../../books/saas-engineering/packages/commerce-property/V06.md)、[terminology](../../../books/saas-engineering/terminology.md)。
+
+复查：实现前按具体版本、字段、制度与部署范围重新核查；来源变更或主张冲突时复读。
+
+## WB-SRC-sdc
+
+[Technology Access Program (TAP-in)](https://www.synopsys.com/community/interoperability-programs/tap-in.html)
+
+- `WB:claim:term-sdc`：SDC 展开为 Synopsys Design Constraints，用于描述设计意图及其时序等约束。 定位：Synopsys Design Constraints (SDC) entry。边界：名称与所述用途；未把厂商定义扩为本例全部内部实现。
+
+消费：[README](../../../books/saas-engineering/README.md)、[V09](../../../books/saas-engineering/packages/industry-networks/V09.md)、[terminology](../../../books/saas-engineering/terminology.md)。
+
+复查：实现前按具体版本、字段、制度与部署范围重新核查；来源变更或主张冲突时复读。
+
+## WB-SRC-spef
+
+[Synopsys Donation of Variation-Aware Extension to SPEF Format Approved by IEEE 1481 Working Group](https://news.synopsys.com/home?item=122632)
+
+- `WB:claim:term-spef`：SPEF 展开为 Standard Parasitic Exchange Format；该公告说明其用于工具间寄生参数信息交换。 定位：Opening announcement, first paragraph。边界：名称与所述用途；未把厂商定义扩为本例全部内部实现。
+
+消费：[README](../../../books/saas-engineering/README.md)、[V09](../../../books/saas-engineering/packages/industry-networks/V09.md)、[terminology](../../../books/saas-engineering/terminology.md)。
 
 复查：实现前按具体版本、字段、制度与部署范围重新核查；来源变更或主张冲突时复读。

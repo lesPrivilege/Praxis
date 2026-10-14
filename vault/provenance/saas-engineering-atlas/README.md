@@ -17,3 +17,5 @@
 Foundations 的原始证据保留在 [evidence](../../distilled/saas-engineering-atlas/foundations/evidence.json)。全局 `claims.json` 保留原 `kind`，附加 `evidence_kind` 供统一筛选；`source-backed → source_fact`、`synthetic-example → synthetic`、`derivation → inference` 只是类别映射，不改变原主张或读取范围。
 
 [修订证据](repair-evidence.json)追加版本固定的来源复读与合成变式，和[编订流程证据](editorial-evidence.json)一起作为索引输入。两者均保留自己的scope，不改写包内作者证据。
+
+[全书复核补充](whole-book-repair-evidence.json)保存术语的一手来源复读和五项合成规则澄清，也参与统一索引。原 source、review、claim 身份与限制保持。

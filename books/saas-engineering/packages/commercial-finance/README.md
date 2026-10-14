@@ -57,9 +57,18 @@
 
 先手算例子，再改变一个条件：时间、数量、价格、权限或外部确认。每章给出至少两道有简答的练习；观察不变量在哪一步遭到破坏，比增加更多页面更有助于判断系统是否完整。
 
-本地可执行计算与反例检查使用 Python 标准库：
+从 Praxis 仓库根目录运行以下命令，无须安装第三方依赖。先读 [checks.py](../../../../vault/distilled/saas-engineering-atlas/packages/commercial-finance/checks.py) 的输入与断言，再改一项条件复算：
 
+```bash
+python3 vault/distilled/saas-engineering-atlas/packages/commercial-finance/checks.py
+```
 
-第一条覆盖七章的固定算术、区间可加性、数量占用、配对、依赖图和不可行条件；它没有建立服务或模拟实际并发数据库。第二条验证共同结构契约并拒绝损坏的结构样本；第三条补查证据侧车的唯一身份、成功读取范围、主张链接与正文引用。所有外部集成、权限执行、浏览器端到端、故障注入、负载与 AI eval 仍须在实施后单独执行。
+它覆盖七章的固定算术、区间可加性、数量占用、配对、依赖图和不可行条件，没有建立服务或模拟实际并发数据库。维护者另外用 `python3 scripts/validate_saas_atlas.py --self-test` 验证共同结构，用 [validate-package.py](../../../../vault/distilled/saas-engineering-atlas/packages/commercial-finance/validate-package.py) 检查证据身份与引用：
+
+```bash
+python3 vault/distilled/saas-engineering-atlas/packages/commercial-finance/validate-package.py
+```
+
+所有外部集成、权限执行、浏览器端到端、故障注入、负载与 AI eval 仍须在实施后单独执行。
 
 [来源与模型说明](../../../../vault/distilled/saas-engineering-atlas/packages/commercial-finance/evidence.json) · [共同语义](../../semantics.md) · [跨行业迁移](../../transfer-map.md)

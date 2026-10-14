@@ -110,7 +110,8 @@
           "effect": {
             "payment_state": "settled",
             "amount_minor": 720000,
-            "remaining_delivery_qty": 3
+            "pending_inspection_qty": 1,
+            "not_received_qty": 2
           }
         }
       ],
@@ -178,7 +179,8 @@
         "desired_worker_limit": 6,
         "acceptance_role": "service-owner",
         "required_probes_passed": 10,
-        "probe_total": 10
+        "probe_total": 10,
+        "acceptance_policy_version": "SVC-ACCEPT-1"
       },
       "steps": [
         {
@@ -234,13 +236,15 @@
         "response_lost_after_effect",
         "query_not_observed",
         "acceptance_failed",
-        "unknown_provider_state"
+        "unknown_provider_state",
+        "contradictory_terminal_evidence"
       ],
       "invariants": [
         "approved scope equals submitted scope",
         "external receipt matches tenant operation target and effect",
         "applied does not imply accepted by business",
-        "late accepted receipt cannot regress applied state"
+        "late accepted receipt cannot regress applied state",
+        "conflicting terminal observations preserve prior result, block acceptance and expose evidence_conflict"
       ],
       "claim_ids": [
         "EM-S03",

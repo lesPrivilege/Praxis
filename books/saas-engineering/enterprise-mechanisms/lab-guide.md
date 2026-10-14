@@ -32,7 +32,7 @@ python3 vault/distilled/saas-engineering-atlas/enterprise-mechanisms/test_mechan
 
 应用端口只暴露 `submit(intent)` 与 `lookup(tenant, operation_id)`。提交意图包括租户、操作 ID、业务意图键、动作类型和目标；变更额外带期望版本、目标值、批准引用和窗口，付款额外带金额与币种。业务意图键阻止调用方仅换一个操作 ID 就重复执行同一笔义务。
 
-HTTP 线协议使用 `POST /operations` 与 `GET /operations?tenant=...&operation_id=...`。结果必须提供 `tenant、operation_id、target、state、receipt`。applied 的变更结果还要有正确的 `version、desired`，付款结果要有正确的 `amount_minor、currency`。本教学协议把付款的 applied 定义为已有结算事实；实际支付接口可能区分更多阶段，不能照搬映射。
+HTTP 线协议使用 `POST /operations` 与 `GET /operations?tenant=...&operation_id=...`。结果必须提供 `tenant、operation_id、target、state、receipt`。applied 的变更结果还要有正确的 `version、desired`；前提版本来自持久化请求，检查 `version = expected_version + 1`，不声称 provider 回传了前提版本。付款结果要有正确的 `amount_minor、currency`。本教学协议把付款的 applied 定义为已有结算事实；实际支付接口可能区分更多阶段，不能照搬映射。
 
 | 情境 | 契约要求 | 实际测试 |
 |---|---|---|
@@ -59,4 +59,6 @@ HTTP 线协议使用 `POST /operations` 与 `GET /operations?tenant=...&operatio
 
 本实验的 HTTP 适配器是实际传输代码，提供方是本机合成服务。它没有连接银行、Palantir、Camunda 或任何生产账户；Pact 被用作契约思想的来源，未安装其框架。角色字符串是来自测试夹具的已验证身份假设，没有实现身份认证、真实权限撤回或跨租户数据访问控制。
 
-SQLite 检查覆盖局部事务与持久化意图，没有模拟分布式数据库、外部 provider 持久化、服务崩溃的所有时序、支付退款、审批撤回广播、浏览器或负载。分钟值 1200–1230 表示本例 UTC 日内执行窗口；真实运行需要完整日期、时区与可信时钟。对象模型保留本次演算需要的证据，未实现完整单据管理系统。上述边界不影响已经执行的局部结论；各项实际结果见 [验证记录](../../../vault/distilled/saas-engineering-atlas/enterprise-mechanisms/verification.md)。
+SQLite 检查覆盖局部事务与持久化意图，没有模拟分布式数据库、外部 provider 持久化、服务崩溃的所有时序、支付退款、审批撤回广播、浏览器或负载。分钟值 1200–1230 表示本例 UTC 日内执行窗口；真实运行需要完整日期、时区与可信时钟。对象模型保留本次演算需要的证据，未实现完整单据管理系统。上述边界不影响已经执行的局部结论；初始实验结果见 [作者验证记录](../../../vault/distilled/saas-engineering-atlas/enterprise-mechanisms/verification.md)，追加验收、回执与修订身份回归见 [复核修复记录](../../../docs/reviews/saas-whole-book-repairs-20261014/README.md)。
+
+同一 CHG-42 的后续修订使用自己的批准、业务键和操作身份：r3 保留原 OP-42，重新批准的 r4 使用 OP-42-r4；同一修订的重试不得改内容或换键。验收读取已保存的 SVC-ACCEPT-1 政策，固定要求10/10。终态观察矛盾另记入 observation_conflicts，界面状态返回 evidence_conflict；原效果保留，冲突未处理时不能接收。

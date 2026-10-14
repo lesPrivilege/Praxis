@@ -131,6 +131,9 @@ class PurchaseLedger:
                 "amount_minor":allocation["amount"], "currency":"CNY"}
 
 
+CHANGE_ACCEPTANCE_POLICY = {"version":"SVC-ACCEPT-1", "required_probes_passed":10, "probe_total":10}
+
+
 @dataclass
 class Change:
     tenant: str = "T-1"
@@ -142,13 +145,14 @@ class Change:
 
     def scope(self):
         return {"revision":self.revision, "config_version":self.config_version,
-                "desired":self.desired, "target":"SVC-7", "tenant":self.tenant}
+                "desired":self.desired, "target":"SVC-7", "tenant":self.tenant,
+                "acceptance_policy":dict(CHANGE_ACCEPTANCE_POLICY)}
 
     def approve(self, actor, role):
         if role != "service-owner" or actor == self.requester:
             raise RuleError("not_authorized")
         self.approval = {"scope":canonical(self.scope()), "valid_from":1200, "valid_until":1230,
-                         "approver":actor, "ref":"APR-42-r3"}
+                         "approver":actor, "ref":f"APR-42-r{self.revision}"}
 
     def intent(self, actor, role, now=1205):
         if role != "executor":
@@ -157,10 +161,15 @@ class Change:
             raise RuleError("approval_stale")
         if not self.approval["valid_from"] <= now < self.approval["valid_until"]:
             raise RuleError("approval_expired")
-        return {"tenant":self.tenant, "operation_id":"OP-42", "business_key":"CHG-42/r3/apply",
+        if type(self.revision) is not int or self.revision < 3:
+            raise RuleError("unsupported_change_revision")
+        # Preserve the original r3 fixture label; each later revision is a new intent.
+        operation_id = "OP-42" if self.revision == 3 else f"OP-42-r{self.revision}"
+        return {"tenant":self.tenant, "operation_id":operation_id, "business_key":f"CHG-42/r{self.revision}/apply",
                 "kind":"change", "target":"SVC-7", "expected_version":self.config_version,
                 "desired":self.desired, "approval_ref":self.approval["ref"],
-                "valid_from":1200, "valid_until":1230}
+                "valid_from":1200, "valid_until":1230,
+                "acceptance_policy":dict(CHANGE_ACCEPTANCE_POLICY)}
 
 
 def validate_result(result, intent=None):
@@ -280,11 +289,16 @@ class OperationJournal:
           tenant TEXT, id TEXT, business_key TEXT, payload TEXT, state TEXT,
           result TEXT, acceptance TEXT,
           PRIMARY KEY(tenant,id), UNIQUE(tenant,business_key))""")
+        self.db.execute("""CREATE TABLE IF NOT EXISTS observation_conflicts(
+          tenant TEXT, operation_id TEXT, prior_result TEXT, observed_result TEXT,
+          reason TEXT, PRIMARY KEY(tenant,operation_id,observed_result))""")
 
     def close(self):
         self.db.close()
 
     def enqueue(self, intent):
+        if intent["kind"] == "change" and intent.get("acceptance_policy") != CHANGE_ACCEPTANCE_POLICY:
+            raise RuleError("invalid_acceptance_policy")
         with transaction(self.db):
             old = self.db.execute("SELECT * FROM operations WHERE tenant=? AND id=?",
                                   (intent["tenant"],intent["operation_id"])).fetchone()
@@ -303,7 +317,20 @@ class OperationJournal:
         row = self.db.execute("SELECT * FROM operations WHERE tenant=? AND id=?", (tenant,operation_id)).fetchone()
         if row is None:
             raise RuleError("operation_not_found")
-        return dict(row)
+        result = dict(row)
+        result["conflict_count"] = self.db.execute(
+            "SELECT count(*) FROM observation_conflicts WHERE tenant=? AND operation_id=?",
+            (tenant,operation_id)).fetchone()[0]
+        return result
+
+    def conflicts(self, tenant, operation_id):
+        return [dict(r) for r in self.db.execute(
+            "SELECT * FROM observation_conflicts WHERE tenant=? AND operation_id=? ORDER BY observed_result",
+            (tenant,operation_id))]
+
+    @staticmethod
+    def visible_state(row):
+        return "evidence_conflict" if row["conflict_count"] else row["state"]
 
     def _state(self, tenant, operation_id, state, result=None):
         self.db.execute("UPDATE operations SET state=?, result=coalesce(?,result) WHERE tenant=? AND id=?",
@@ -314,7 +341,7 @@ class OperationJournal:
         with transaction(self.db):
             self.db.execute("UPDATE operations SET state='unknown' WHERE tenant=? AND id=? AND state='sending'",
                             (tenant,operation_id))
-            return self.row(tenant, operation_id)['state']
+            return self.visible_state(self.row(tenant, operation_id))
 
     def _observe(self, tenant, operation_id, result):
         with transaction(self.db):
@@ -324,11 +351,14 @@ class OperationJournal:
             terminal = {"closed", "settled", "awaiting_acceptance", "rejected"}
             if row["state"] in terminal:
                 prior = json.loads(row["result"])
-                if prior["state"] != result["state"]:
-                    return row["state"]  # late weaker evidence cannot regress a known result
+                if result["state"] == "accepted":
+                    return self.visible_state(row)  # weaker receipt, no terminal contradiction
                 if prior != result:
-                    raise ContractError("contradictory_terminal_evidence")
-                return row["state"]
+                    self.db.execute("INSERT OR IGNORE INTO observation_conflicts VALUES(?,?,?,?,?)",
+                                    (tenant,operation_id,canonical(prior),canonical(result),
+                                     "contradictory_terminal_evidence"))
+                    return "evidence_conflict"  # commit the diagnostic; preserve established facts
+                return self.visible_state(row)
             state = result["state"]
             if state == "applied":
                 state = "settled" if intent["kind"] == "payment" else "awaiting_acceptance"
@@ -362,11 +392,11 @@ class OperationJournal:
         try:
             result = adapter.lookup(tenant, operation_id)
             if result is None:
-                return row["state"]  # absence of observation is not proof of failure
+                return self.visible_state(row)  # absence of observation is not proof of failure
             return self._observe(tenant, operation_id, result)
         except (UnknownResult, ContractError):
-            # Preserve already confirmed evidence; unknown queries cannot erase it.
-            return row["state"]
+            # Preserve established evidence and any previously recorded conflict.
+            return self.visible_state(self.row(tenant, operation_id))
 
     def accept(self, tenant, operation_id, actor, role, passed, total, evidence_ref):
         if role != "service-owner" or actor == "operator":
@@ -375,9 +405,14 @@ class OperationJournal:
             row = self.row(tenant, operation_id)
             if row["state"] != "awaiting_acceptance":
                 raise RuleError("effect_not_confirmed")
-            if type(passed) is not int or type(total) is not int or total <= 0 or passed != total or not evidence_ref:
+            if row["conflict_count"]:
+                raise RuleError("evidence_conflict")
+            policy = json.loads(row["payload"])["acceptance_policy"]
+            if (type(passed) is not int or type(total) is not int or
+                passed != policy["required_probes_passed"] or total != policy["probe_total"] or not evidence_ref):
                 raise RuleError("acceptance_failed")
-            record = {"actor":actor,"passed":passed,"total":total,"evidence_ref":evidence_ref}
+            record = {"actor":actor,"passed":passed,"total":total,"evidence_ref":evidence_ref,
+                      "policy_version":policy["version"]}
             self.db.execute("UPDATE operations SET state='closed',acceptance=? WHERE tenant=? AND id=?",
                             (canonical(record),tenant,operation_id))
         return "closed"

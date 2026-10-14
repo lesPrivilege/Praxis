@@ -1,0 +1,126 @@
+{
+  "reviewed_commit": "cd8d77b6166a6fc566f6aa09b4d9af3e11537408",
+  "review_branch": "cloud/saas-whole-book-review-20261014",
+  "date": "2026-10-14",
+  "runtime": "Python 3.12.14",
+  "write_scope": "docs/reviews/saas-whole-book-review-20261014/ only",
+  "commands": [
+    {
+      "command": [
+        "python3",
+        "-B",
+        "scripts/validate_repository.py"
+      ],
+      "exit_code": 1,
+      "stdout": "{\n  \"counts\": {\n    \"markdown\": 1839,\n    \"json\": 475,\n    \"snapshots\": 1105,\n    \"distilled_messages\": 127,\n    \"source_records\": 1159,\n    \"citation_mappings\": 229,\n    \"generated_source_cards\": 620\n  },\n  \"errors\": [\n    \"Missing README: docs/reviews\"\n  ],\n  \"status\": \"fail\"\n}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "diff",
+        "--name-only",
+        "cd8d77b6166a6fc566f6aa09b4d9af3e11537408",
+        "--",
+        "."
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "branch",
+        "--show-current"
+      ],
+      "exit_code": 0,
+      "stdout": "cloud/saas-whole-book-review-20261014\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "diff",
+        "--cached",
+        "--check"
+      ],
+      "exit_code": 2,
+      "stdout": "cases-people-data.md:85: new blank line at EOF",
+      "resolution": "Removed the final extra blank line; final cached check recorded in delivery response."
+    },
+    {
+      "command": [
+        "git",
+        "diff",
+        "--cached",
+        "--check"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": "",
+      "scope": "All 15 new review files staged; prior trailing blank line removed."
+    }
+  ],
+  "scope": {
+    "dependencies_installed": false,
+    "main_merged": false,
+    "ci_triggered": false,
+    "deployed": false,
+    "private_data_used": false,
+    "tracked_content_diff_from_frozen": "empty before staging review-only new files",
+    "active_workflow_files_at_frozen_commit": []
+  },
+  "remaining_blockers": [
+    {
+      "action": "Add required parent directory index to obtain a clean repository-validator result",
+      "target": "docs/reviews/README.md",
+      "reason": "Frozen tree lacks the parent index; user explicitly permits writes only inside docs/reviews/saas-whole-book-review-20261014/",
+      "status": "not attempted; outside authorized write scope",
+      "already_completed": "Whole-book review, current directory README, review artifact validation and independent probe reproduction",
+      "automatic_approval_denial": false
+    }
+  ],
+  "review_artifact_check": {
+    "status": "pass",
+    "errors": []
+  },
+  "coordinator_probe_reproduction": {
+    "command": "python3 -B docs/reviews/saas-whole-book-review-20261014/enterprise-probes.py > /tmp/whole-book-enterprise-reproduced.json",
+    "exit_code": 0,
+    "comparison": "cmp with committed enterprise-results.json: byte-identical, exit 0"
+  },
+  "validation_status": "one known scope-blocked parent README error; review artifact checks pass",
+  "staged_scope_check": {
+    "status": "pass",
+    "files": [
+      "docs/reviews/saas-whole-book-review-20261014/README.md",
+      "docs/reviews/saas-whole-book-review-20261014/book-check-results.json",
+      "docs/reviews/saas-whole-book-review-20261014/book_checks.py",
+      "docs/reviews/saas-whole-book-review-20261014/cases-finance-commerce.md",
+      "docs/reviews/saas-whole-book-review-20261014/cases-health-industry.md",
+      "docs/reviews/saas-whole-book-review-20261014/cases-people-data.md",
+      "docs/reviews/saas-whole-book-review-20261014/coverage.md",
+      "docs/reviews/saas-whole-book-review-20261014/delivery-checks.json",
+      "docs/reviews/saas-whole-book-review-20261014/enterprise-probes.py",
+      "docs/reviews/saas-whole-book-review-20261014/enterprise-results.json",
+      "docs/reviews/saas-whole-book-review-20261014/enterprise-review.md",
+      "docs/reviews/saas-whole-book-review-20261014/findings.json",
+      "docs/reviews/saas-whole-book-review-20261014/review.md",
+      "docs/reviews/saas-whole-book-review-20261014/sources.md",
+      "docs/reviews/saas-whole-book-review-20261014/structural-checks.json"
+    ],
+    "files_outside_authorized_directory": [],
+    "book_source_or_integrator_edits": false
+  }
+}

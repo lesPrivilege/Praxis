@@ -32,7 +32,7 @@
 
 | 案例正文与结构 | 工作链 | 学会辨认的成熟方案族 |
 |---|---|---|
-| [V01 教材](V01.md) · [拓扑](../../../../vault/distilled/saas-engineering-atlas/packages/health-science/V01.json) | 就诊 → 检验/影像证据 → 理赔 → 结算 | EHR/HIS、LIS、PACS、理赔接口与应收核销 |
+| [V01 教材](V01.md) · [拓扑](../../../../vault/distilled/saas-engineering-atlas/packages/health-science/V01.json) | 就诊 → 检验/影像证据 → 理赔 → 结算 | 电子健康记录（electronic health record，EHR）/医院信息系统（hospital information system，HIS）、检验信息系统（laboratory information system，LIS）、PACS、理赔接口与应收核销 |
 | [V02 教材](V02.md) · [拓扑](../../../../vault/distilled/saas-engineering-atlas/packages/health-science/V02.json) | Protocol → consent → eCRF query → signed data lock | CTMS、eConsent、EDC、数据清理与受控导出 |
 | [V03 教材](V03.md) · [拓扑](../../../../vault/distilled/saas-engineering-atlas/packages/health-science/V03.json) | Sample → 校准分析 → 结果复核 → lot certificate | LIMS、仪器数据系统、方法/质量管理与 ERP 接口 |
 
