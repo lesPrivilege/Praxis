@@ -1,0 +1,907 @@
+{
+  "contract_version": "1.0",
+  "case_id": "V12",
+  "title": "贷款：申请、审批、放款、贷后与 payoff",
+  "scope": "单币种一次放款；按未偿本金日单利；资金事实与账务效果分开；全部实现为教学设计",
+  "synthetic": true,
+  "source_ids": [
+    "MAMBU",
+    "MAMBU_APPROVE"
+  ],
+  "nodes": [
+    {
+      "id": "V12:actor:borrower",
+      "type": "actor",
+      "label": "借款申请人",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + object identity; service-side authorization"
+    },
+    {
+      "id": "V12:actor:approver",
+      "type": "actor",
+      "label": "信贷审批员",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + object identity; service-side authorization"
+    },
+    {
+      "id": "V12:actor:funding-operator",
+      "type": "actor",
+      "label": "资金与贷后操作员",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + object identity; service-side authorization"
+    },
+    {
+      "id": "V12:ui:loan-workbench",
+      "type": "ui",
+      "label": "贷款工作台",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + object identity; service-side authorization"
+    },
+    {
+      "id": "V12:service:origination",
+      "type": "service",
+      "label": "申请与审批服务",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + object identity; service-side authorization"
+    },
+    {
+      "id": "V12:service:funding",
+      "type": "service",
+      "label": "资金操作服务",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + object identity; service-side authorization"
+    },
+    {
+      "id": "V12:service:servicing",
+      "type": "service",
+      "label": "贷后与结清服务",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + object identity; service-side authorization"
+    },
+    {
+      "id": "V12:store:ledger",
+      "type": "store",
+      "label": "版本、分户账、操作与 outbox",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + object identity; service-side authorization"
+    },
+    {
+      "id": "V12:store:inbox",
+      "type": "store",
+      "label": "资金回执接收表",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + object identity; service-side authorization"
+    },
+    {
+      "id": "V12:external_system:bank",
+      "type": "external_system",
+      "label": "合成银行参照接口",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + object identity; service-side authorization"
+    },
+    {
+      "id": "V12:event:cash-result",
+      "type": "event",
+      "label": "资金结果回执",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + object identity; service-side authorization"
+    },
+    {
+      "id": "V12:object:application",
+      "type": "object",
+      "label": "申请与条款版本",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + object identity; service-side authorization"
+    },
+    {
+      "id": "V12:object:disbursement",
+      "type": "object",
+      "label": "放款操作",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + object identity; service-side authorization"
+    },
+    {
+      "id": "V12:object:loan",
+      "type": "object",
+      "label": "贷款余额与债权条目",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + object identity; service-side authorization"
+    },
+    {
+      "id": "V12:object:repayment",
+      "type": "object",
+      "label": "到账与还款分配",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + object identity; service-side authorization"
+    },
+    {
+      "id": "V12:object:payoff",
+      "type": "object",
+      "label": "结清报价",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + object identity; service-side authorization"
+    },
+    {
+      "id": "V12:rule:approval",
+      "type": "rule",
+      "label": "审批版本与职责分离规则",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + object identity; service-side authorization"
+    }
+  ],
+  "edges": [
+    {
+      "id": "V12:edge:borrower",
+      "type": "operates",
+      "from": "V12:actor:borrower",
+      "to": "V12:ui:loan-workbench",
+      "payload": "本角色允许的数据与动作",
+      "timing": "static",
+      "invariant": "角色权限与对象范围共同限制",
+      "failure": "服务端仍校验；拒绝越权",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V12:claim:design"
+      ]
+    },
+    {
+      "id": "V12:edge:approver",
+      "type": "operates",
+      "from": "V12:actor:approver",
+      "to": "V12:ui:loan-workbench",
+      "payload": "本角色允许的数据与动作",
+      "timing": "static",
+      "invariant": "角色权限与对象范围共同限制",
+      "failure": "服务端仍校验；拒绝越权",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V12:claim:design"
+      ]
+    },
+    {
+      "id": "V12:edge:operator",
+      "type": "operates",
+      "from": "V12:actor:funding-operator",
+      "to": "V12:ui:loan-workbench",
+      "payload": "本角色允许的数据与动作",
+      "timing": "static",
+      "invariant": "角色权限与对象范围共同限制",
+      "failure": "服务端仍校验；拒绝越权",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V12:claim:design"
+      ]
+    },
+    {
+      "id": "V12:edge:submit",
+      "type": "commands",
+      "from": "V12:ui:loan-workbench",
+      "to": "V12:service:origination",
+      "payload": "application version + command ID",
+      "timing": "sync",
+      "invariant": "批准绑定条款版本",
+      "failure": "旧版本返回冲突与差异",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V12:claim:design"
+      ]
+    },
+    {
+      "id": "V12:edge:authorize",
+      "type": "authorizes",
+      "from": "V12:rule:approval",
+      "to": "V12:service:origination",
+      "payload": "批准权限、申请人身份与版本",
+      "timing": "static",
+      "invariant": "申请人不得批准自身申请；条款变化重新审批",
+      "failure": "拒绝并保留原因",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V12:claim:design"
+      ]
+    },
+    {
+      "id": "V12:edge:application-owner",
+      "type": "owns",
+      "from": "V12:service:origination",
+      "to": "V12:object:application",
+      "payload": "版本与批准证据",
+      "timing": "static",
+      "invariant": "先批准后执行",
+      "failure": "变更产生新版本",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V12:claim:design"
+      ]
+    },
+    {
+      "id": "V12:edge:fund-command",
+      "type": "commands",
+      "from": "V12:ui:loan-workbench",
+      "to": "V12:service:funding",
+      "payload": "批准版本、收款人版本、operation ID",
+      "timing": "sync",
+      "invariant": "动作参数固定，重复点击关联原操作",
+      "failure": "冲突拒绝，unknown 先核对",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V12:claim:design"
+      ]
+    },
+    {
+      "id": "V12:edge:fund-approval",
+      "type": "depends_on",
+      "from": "V12:object:disbursement",
+      "to": "V12:object:application",
+      "payload": "有效已批准条款",
+      "timing": "static",
+      "invariant": "放款金额不得从旧页面自行生成",
+      "failure": "批准版本失效则挂起",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V12:claim:design"
+      ]
+    },
+    {
+      "id": "V12:edge:fund-owner",
+      "type": "owns",
+      "from": "V12:service:funding",
+      "to": "V12:object:disbursement",
+      "payload": "请求、尝试与结果",
+      "timing": "static",
+      "invariant": "一条操作身份只能有一组金额币种收款人",
+      "failure": "查原操作，不改参数盲重试",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V12:claim:design"
+      ]
+    },
+    {
+      "id": "V12:edge:fund-request",
+      "type": "requests",
+      "from": "V12:service:funding",
+      "to": "V12:external_system:bank",
+      "payload": "持久 operation ID + CU 金额 + 收款人映射",
+      "timing": "sync",
+      "invariant": "timeout 不创建第二次转账",
+      "failure": "保留 unknown，原参考号查询",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V12:claim:design"
+      ]
+    },
+    {
+      "id": "V12:edge:bank-event",
+      "type": "emits",
+      "from": "V12:external_system:bank",
+      "to": "V12:event:cash-result",
+      "payload": "外部交易 ID、币种、金额、生效日、结果版本",
+      "timing": "async",
+      "invariant": "现金事实不同于账务应用",
+      "failure": "重复或乱序交给核对",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V12:claim:design"
+      ]
+    },
+    {
+      "id": "V12:edge:receive",
+      "type": "delivers",
+      "from": "V12:event:cash-result",
+      "to": "V12:store:inbox",
+      "payload": "已验证来源与租户映射的回执",
+      "timing": "async",
+      "invariant": "接收持久化先于确认",
+      "failure": "写入失败保持可重送",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V12:claim:design"
+      ]
+    },
+    {
+      "id": "V12:edge:consume",
+      "type": "reads",
+      "from": "V12:service:servicing",
+      "to": "V12:store:inbox",
+      "payload": "未处理或待核对资金事件",
+      "timing": "async",
+      "invariant": "银行交易 ID 与业务唯一键都保留",
+      "failure": "崩溃重放读取既有分配",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V12:claim:design"
+      ]
+    },
+    {
+      "id": "V12:edge:reconcile",
+      "type": "reads",
+      "from": "V12:service:funding",
+      "to": "V12:external_system:bank",
+      "payload": "原 operation 的外部状态",
+      "timing": "async",
+      "invariant": "未知结果不得用新请求猜测",
+      "failure": "不可查询则交人工流水核对",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V12:claim:design"
+      ]
+    },
+    {
+      "id": "V12:edge:loan-owner",
+      "type": "owns",
+      "from": "V12:service:servicing",
+      "to": "V12:object:loan",
+      "payload": "本金、应计利息与规则版本",
+      "timing": "static",
+      "invariant": "同一 D1 只登记一次本金",
+      "failure": "版本冲突重读；差额调整保留历史",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V12:claim:design"
+      ]
+    },
+    {
+      "id": "V12:edge:repayment-owner",
+      "type": "owns",
+      "from": "V12:service:servicing",
+      "to": "V12:object:repayment",
+      "payload": "到账、分配与反向分配",
+      "timing": "static",
+      "invariant": "实际现金不得因业务冲突丢弃",
+      "failure": "无法匹配进入 unmatched",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V12:claim:design"
+      ]
+    },
+    {
+      "id": "V12:edge:payoff-owner",
+      "type": "owns",
+      "from": "V12:service:servicing",
+      "to": "V12:object:payoff",
+      "payload": "as-of day、余额版本、金额与失效原因",
+      "timing": "static",
+      "invariant": "接受报价不等于结清",
+      "failure": "收款、回填、退票后重算",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V12:claim:design"
+      ]
+    },
+    {
+      "id": "V12:edge:activate",
+      "type": "depends_on",
+      "from": "V12:object:loan",
+      "to": "V12:object:disbursement",
+      "payload": "银行确认与唯一放款入账",
+      "timing": "static",
+      "invariant": "两项证据齐备才激活教学账户",
+      "failure": "资金已出账但未入账进入核对",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V12:claim:design"
+      ]
+    },
+    {
+      "id": "V12:edge:allocation",
+      "type": "depends_on",
+      "from": "V12:object:repayment",
+      "to": "V12:object:loan",
+      "payload": "目标贷款及规则版本",
+      "timing": "static",
+      "invariant": "先利息再本金；禁止跨租户分配",
+      "failure": "冲正后重演，不删原款",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V12:claim:design"
+      ]
+    },
+    {
+      "id": "V12:edge:quote-input",
+      "type": "derived_from",
+      "from": "V12:object:payoff",
+      "to": "V12:object:loan",
+      "payload": "本金变化事件、生效日、规则与舍入点",
+      "timing": "sync",
+      "invariant": "按生效日区间计算；报价引用余额版本",
+      "failure": "早于 checkpoint 的补录触发回溯重演",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V12:claim:calculation"
+      ]
+    },
+    {
+      "id": "V12:edge:store-application",
+      "type": "stores",
+      "from": "V12:store:ledger",
+      "to": "V12:object:application",
+      "payload": "对象版本、变化依据及关联身份",
+      "timing": "sync",
+      "invariant": "持久化证据和操作可关联",
+      "failure": "恢复时以唯一键及版本核对",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V12:claim:design"
+      ]
+    },
+    {
+      "id": "V12:edge:project-application",
+      "type": "projects",
+      "from": "V12:object:application",
+      "to": "V12:ui:loan-workbench",
+      "payload": "状态、金额、版本与核对时间",
+      "timing": "async",
+      "invariant": "投影不作付款或关闭授权",
+      "failure": "显示 stale 或 unknown，并查询权威状态",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V12:claim:design"
+      ]
+    },
+    {
+      "id": "V12:edge:store-disbursement",
+      "type": "stores",
+      "from": "V12:store:ledger",
+      "to": "V12:object:disbursement",
+      "payload": "对象版本、变化依据及关联身份",
+      "timing": "sync",
+      "invariant": "持久化证据和操作可关联",
+      "failure": "恢复时以唯一键及版本核对",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V12:claim:design"
+      ]
+    },
+    {
+      "id": "V12:edge:project-disbursement",
+      "type": "projects",
+      "from": "V12:object:disbursement",
+      "to": "V12:ui:loan-workbench",
+      "payload": "状态、金额、版本与核对时间",
+      "timing": "async",
+      "invariant": "投影不作付款或关闭授权",
+      "failure": "显示 stale 或 unknown，并查询权威状态",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V12:claim:design"
+      ]
+    },
+    {
+      "id": "V12:edge:store-loan",
+      "type": "stores",
+      "from": "V12:store:ledger",
+      "to": "V12:object:loan",
+      "payload": "对象版本、变化依据及关联身份",
+      "timing": "sync",
+      "invariant": "持久化证据和操作可关联",
+      "failure": "恢复时以唯一键及版本核对",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V12:claim:design"
+      ]
+    },
+    {
+      "id": "V12:edge:project-loan",
+      "type": "projects",
+      "from": "V12:object:loan",
+      "to": "V12:ui:loan-workbench",
+      "payload": "状态、金额、版本与核对时间",
+      "timing": "async",
+      "invariant": "投影不作付款或关闭授权",
+      "failure": "显示 stale 或 unknown，并查询权威状态",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V12:claim:design"
+      ]
+    },
+    {
+      "id": "V12:edge:store-repayment",
+      "type": "stores",
+      "from": "V12:store:ledger",
+      "to": "V12:object:repayment",
+      "payload": "对象版本、变化依据及关联身份",
+      "timing": "sync",
+      "invariant": "持久化证据和操作可关联",
+      "failure": "恢复时以唯一键及版本核对",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V12:claim:design"
+      ]
+    },
+    {
+      "id": "V12:edge:project-repayment",
+      "type": "projects",
+      "from": "V12:object:repayment",
+      "to": "V12:ui:loan-workbench",
+      "payload": "状态、金额、版本与核对时间",
+      "timing": "async",
+      "invariant": "投影不作付款或关闭授权",
+      "failure": "显示 stale 或 unknown，并查询权威状态",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V12:claim:design"
+      ]
+    },
+    {
+      "id": "V12:edge:store-payoff",
+      "type": "stores",
+      "from": "V12:store:ledger",
+      "to": "V12:object:payoff",
+      "payload": "对象版本、变化依据及关联身份",
+      "timing": "sync",
+      "invariant": "持久化证据和操作可关联",
+      "failure": "恢复时以唯一键及版本核对",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V12:claim:design"
+      ]
+    },
+    {
+      "id": "V12:edge:project-payoff",
+      "type": "projects",
+      "from": "V12:object:payoff",
+      "to": "V12:ui:loan-workbench",
+      "payload": "状态、金额、版本与核对时间",
+      "timing": "async",
+      "invariant": "投影不作付款或关闭授权",
+      "failure": "显示 stale 或 unknown，并查询权威状态",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V12:claim:design"
+      ]
+    }
+  ],
+  "lifecycles": [
+    {
+      "object_id": "V12:object:application",
+      "states": [
+        "draft",
+        "review",
+        "approved",
+        "rejected",
+        "superseded"
+      ],
+      "transitions": [
+        {
+          "from": "draft",
+          "to": "review",
+          "trigger": "送审",
+          "guard": "资料完整且有权限",
+          "durable_effect": "固定条款版本与请求 ID",
+          "recovery": "缺资料返回 draft"
+        },
+        {
+          "from": "review",
+          "to": "draft",
+          "trigger": "补资料",
+          "guard": "审批员确认缺项",
+          "durable_effect": "保存缺项及退回原因",
+          "recovery": "原提交历史保留"
+        },
+        {
+          "from": "review",
+          "to": "approved",
+          "trigger": "批准",
+          "guard": "批准角色、版本一致、非申请人自批",
+          "durable_effect": "批准证据与放款待办同事务",
+          "recovery": "冲突重读，禁止套用旧批准"
+        },
+        {
+          "from": "review",
+          "to": "rejected",
+          "trigger": "拒绝",
+          "guard": "授权判断及理由",
+          "durable_effect": "保存拒绝决定",
+          "recovery": "重新申请用新版本"
+        },
+        {
+          "from": "approved",
+          "to": "superseded",
+          "trigger": "批准后改条款",
+          "guard": "创建新草案并撤销旧版待执行资格",
+          "durable_effect": "旧版本及替代关系",
+          "recovery": "已执行资金仍按原记录核对"
+        }
+      ]
+    },
+    {
+      "object_id": "V12:object:disbursement",
+      "states": [
+        "prepared",
+        "submitted",
+        "unknown",
+        "settled",
+        "failed"
+      ],
+      "transitions": [
+        {
+          "from": "prepared",
+          "to": "submitted",
+          "trigger": "发起银行请求",
+          "guard": "批准版本有效且操作已持久化",
+          "durable_effect": "固定参考号与请求摘要",
+          "recovery": "进程退出后先查询是否已发送"
+        },
+        {
+          "from": "submitted",
+          "to": "unknown",
+          "trigger": "超时",
+          "guard": "未能确定执行结果",
+          "durable_effect": "保留原操作占位",
+          "recovery": "查询原参考号，不新建转账"
+        },
+        {
+          "from": "submitted",
+          "to": "settled",
+          "trigger": "银行确认",
+          "guard": "匹配金额币种收款人",
+          "durable_effect": "保存资金证据",
+          "recovery": "贷后入账幂等重放"
+        },
+        {
+          "from": "unknown",
+          "to": "settled",
+          "trigger": "核对成功",
+          "guard": "外部原操作确认执行",
+          "durable_effect": "补记结果与贷后待办",
+          "recovery": "人工核对未明则继续 unknown"
+        },
+        {
+          "from": "unknown",
+          "to": "failed",
+          "trigger": "确认未执行",
+          "guard": "可证明原请求失败",
+          "durable_effect": "保存失败证据",
+          "recovery": "获准后用明确的新尝试"
+        },
+        {
+          "from": "submitted",
+          "to": "failed",
+          "trigger": "银行拒绝",
+          "guard": "可信拒绝原因",
+          "durable_effect": "保存无现金效果的失败",
+          "recovery": "修正收款人后需新授权"
+        }
+      ]
+    },
+    {
+      "object_id": "V12:object:loan",
+      "states": [
+        "pending-funding",
+        "active",
+        "arrears",
+        "paid-off"
+      ],
+      "transitions": [
+        {
+          "from": "pending-funding",
+          "to": "active",
+          "trigger": "登记放款",
+          "guard": "资金确认与 D1 唯一分录",
+          "durable_effect": "本金增加一次",
+          "recovery": "已入账但未标记消费则补标记"
+        },
+        {
+          "from": "active",
+          "to": "arrears",
+          "trigger": "到期检查",
+          "guard": "本例还款计划有未清偿到期义务",
+          "durable_effect": "逾期状态与计算依据",
+          "recovery": "到账或修正后重算"
+        },
+        {
+          "from": "arrears",
+          "to": "active",
+          "trigger": "应用还款",
+          "guard": "到期义务已全部补齐",
+          "durable_effect": "逾期解除依据",
+          "recovery": "迟到回执按生效日重演"
+        },
+        {
+          "from": "active",
+          "to": "paid-off",
+          "trigger": "确认结清",
+          "guard": "本金利息均零、报价有效、无未知或未分配款",
+          "durable_effect": "结清引用所有相关现金证据",
+          "recovery": "后续退票进入人工重开与冲正"
+        },
+        {
+          "from": "arrears",
+          "to": "paid-off",
+          "trigger": "全额结清",
+          "guard": "所有到期与未到期义务清偿且无未决操作",
+          "durable_effect": "保留逾期历史与结清证据",
+          "recovery": "不得无授权减免差额"
+        },
+        {
+          "from": "paid-off",
+          "to": "active",
+          "trigger": "结清依据退票",
+          "guard": "人工授权重开并有退票证据",
+          "durable_effect": "恢复债权与新版本",
+          "recovery": "旧结清证明保留失效关系"
+        }
+      ]
+    },
+    {
+      "object_id": "V12:object:repayment",
+      "states": [
+        "received",
+        "unmatched",
+        "applied",
+        "reversed"
+      ],
+      "transitions": [
+        {
+          "from": "received",
+          "to": "applied",
+          "trigger": "核对并分配",
+          "guard": "现金身份唯一、贷款与币种匹配",
+          "durable_effect": "本金利息分配同事务",
+          "recovery": "重复事件读取已分配结果"
+        },
+        {
+          "from": "received",
+          "to": "unmatched",
+          "trigger": "无法定位目标",
+          "guard": "真实到账但映射未确定",
+          "durable_effect": "保存未分配现金",
+          "recovery": "人工核对后应用"
+        },
+        {
+          "from": "unmatched",
+          "to": "applied",
+          "trigger": "人工匹配",
+          "guard": "授权及目标验证",
+          "durable_effect": "分配与匹配理由",
+          "recovery": "冲突保留资金等待处理"
+        },
+        {
+          "from": "applied",
+          "to": "reversed",
+          "trigger": "确认退票或错误更正",
+          "guard": "明确外部证据与权限",
+          "durable_effect": "追加反向条目并失效报价",
+          "recovery": "从受影响日期重演"
+        }
+      ]
+    },
+    {
+      "object_id": "V12:object:payoff",
+      "states": [
+        "quoted",
+        "accepted",
+        "expired",
+        "settled"
+      ],
+      "transitions": [
+        {
+          "from": "quoted",
+          "to": "accepted",
+          "trigger": "接受报价",
+          "guard": "余额版本一致且在有效日",
+          "durable_effect": "保存接受版本",
+          "recovery": "实际到账仍需核对"
+        },
+        {
+          "from": "quoted",
+          "to": "expired",
+          "trigger": "余额或时点变化",
+          "guard": "收款、冲正、回填或过期",
+          "durable_effect": "失效原因及替代版本",
+          "recovery": "重新计算并明确差额"
+        },
+        {
+          "from": "accepted",
+          "to": "expired",
+          "trigger": "付款前余额变化",
+          "guard": "生效日、余额或规则不再匹配",
+          "durable_effect": "保留旧接受记录但阻止按旧额关闭",
+          "recovery": "新报价或授权差额处理"
+        },
+        {
+          "from": "accepted",
+          "to": "settled",
+          "trigger": "结清收款应用",
+          "guard": "有效报价且全部债权已清",
+          "durable_effect": "关联付款与关闭依据",
+          "recovery": "失败保留 quote 和资金独立状态"
+        }
+      ]
+    }
+  ],
+  "algorithm_ids": [
+    "ALG:lookup",
+    "ALG:windows",
+    "ALG:caches"
+  ],
+  "claim_ids": [
+    "V12:claim:mambu-states",
+    "V12:claim:mambu-approval",
+    "V12:claim:separate-authorities",
+    "V12:claim:design",
+    "V12:claim:calculation"
+  ],
+  "checks": [
+    {
+      "id": "V12:check:happy",
+      "kind": "happy_path",
+      "given": "1,000 CU; 日利率 .001; 日10付款310; 日15付款703.50",
+      "when": "从批准到结清走完 UI/API/资金核对",
+      "then": "本金0、累计利息13.50、两个到账分配各一次",
+      "evidence_required": "UI记录、请求与回执、分户条目、最终投影；尚未执行"
+    },
+    {
+      "id": "V12:check:duplicate",
+      "kind": "duplicate",
+      "given": "同一银行交易R1与同额不同交易R3",
+      "when": "R1重投两次；再投R3",
+      "then": "R1只应用一次，R3仍是独立资金事实",
+      "evidence_required": "inbox、唯一键、分配条目；尚未执行"
+    },
+    {
+      "id": "V12:check:late-value-date",
+      "kind": "out_of_order",
+      "given": "日11收到生效日8的310 CU",
+      "when": "重演至日15",
+      "then": "本金698、利息4.89、payoff702.89、旧报价失效",
+      "evidence_required": "原事件、重演区间、差额条目与UI；仅算术可由本地脚本验证"
+    },
+    {
+      "id": "V12:check:payoff-race",
+      "kind": "concurrency",
+      "given": "相同贷款余额版本",
+      "when": "两人提交结清",
+      "then": "一个版本消耗成功；第二笔真实到账留未分配",
+      "evidence_required": "并发事务日志与现金核对；尚未执行"
+    },
+    {
+      "id": "V12:check:tenant",
+      "kind": "tenant_isolation",
+      "given": "两个tenant相同loan ID及银行参考号",
+      "when": "访问列表详情缓存导出和恢复",
+      "then": "仅本租户授权资料",
+      "evidence_required": "服务端查询范围、返回值与缓存键；尚未执行"
+    },
+    {
+      "id": "V12:check:bank-timeout",
+      "kind": "unknown_outcome",
+      "given": "银行已受理D1",
+      "when": "客户端超时",
+      "then": "D1保持unknown且不再次出账",
+      "evidence_required": "原请求、银行查询及操作记录；尚未执行"
+    },
+    {
+      "id": "V12:check:crash",
+      "kind": "recovery",
+      "given": "D1本金分录已提交",
+      "when": "消费标记前崩溃重启",
+      "then": "仍仅1,000本金且消费可解释",
+      "evidence_required": "持久化故障注入与重启证据；尚未执行"
+    },
+    {
+      "id": "V12:check:quote-expiry",
+      "kind": "domain",
+      "given": "日15报价703.50",
+      "when": "日16收到703.50",
+      "then": "应付704.20，保留差额0.70，不关闭",
+      "evidence_required": "规则输入、报价版本与资金分配；仅算术可运行"
+    },
+    {
+      "id": "V12:check:repayment-return",
+      "kind": "domain",
+      "given": "日10付款R1已应用",
+      "when": "确认退票并重演至日15",
+      "then": "无其他付款时应付1,015，原R1和反向条目保留",
+      "evidence_required": "退回证据、调整链；仅金额重演可运行"
+    },
+    {
+      "id": "V12:check:approval",
+      "kind": "authorization",
+      "given": "未批准或v3批准被v4替代",
+      "when": "尝试放款",
+      "then": "拒绝且无银行新请求",
+      "evidence_required": "拒绝日志、版本证据、外部请求计数；尚未执行"
+    }
+  ]
+}

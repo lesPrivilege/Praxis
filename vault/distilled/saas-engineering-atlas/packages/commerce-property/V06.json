@@ -1,0 +1,1430 @@
+{
+  "contract_version": "1.0",
+  "case_id": "V06",
+  "title": "一间房、三个夜晚与尚未结束的账",
+  "scope": "Synthetic hotel PMS: one room, three local nights [2026-10-24,2026-10-27), Europe/Berlin; EUR minor units; distinct room-night capacity, physical assignment, readiness, stay, folio, authorization, payment and refund. No tax, FX, fees, statutory invoice or deposit-law conclusions. Mews is a documented product reference, not the asserted implementer of this design. Stripe explains its own authorization/capture contract; no Mews-Stripe integration is claimed.",
+  "synthetic": true,
+  "source_ids": [
+    "MEWS_RES",
+    "MEWS_POS",
+    "P05-SRC-mews-preauthorizations",
+    "P05-SRC-mews-payments",
+    "P05-SRC-mews-bills",
+    "P05-SRC-stripe-hold",
+    "P05-SRC-postgresql-ranges",
+    "P05-SRC-postgresql-isolation"
+  ],
+  "nodes": [
+    {
+      "id": "V06:actor:frontdesk",
+      "type": "actor",
+      "label": "前台与预订员",
+      "authority": "synthetic-design",
+      "tenant_scope": "hotel-bound; external identity also includes provider account/outlet; cross-hotel access requires explicit authorization"
+    },
+    {
+      "id": "V06:actor:housekeeping",
+      "type": "actor",
+      "label": "清洁员与检查员，权限分开",
+      "authority": "synthetic-design",
+      "tenant_scope": "hotel-bound; external identity also includes provider account/outlet; cross-hotel access requires explicit authorization"
+    },
+    {
+      "id": "V06:actor:finance",
+      "type": "actor",
+      "label": "经理与财务，按动作授权",
+      "authority": "synthetic-design",
+      "tenant_scope": "hotel-bound; external identity also includes provider account/outlet; cross-hotel access requires explicit authorization"
+    },
+    {
+      "id": "V06:actor:cashier",
+      "type": "actor",
+      "label": "餐厅收银员",
+      "authority": "synthetic-design",
+      "tenant_scope": "hotel-bound; external identity also includes provider account/outlet; cross-hotel access requires explicit authorization"
+    },
+    {
+      "id": "V06:ui:desk",
+      "type": "ui",
+      "label": "预订、房态与退房工作台",
+      "authority": "synthetic-design",
+      "tenant_scope": "hotel-bound; external identity also includes provider account/outlet; cross-hotel access requires explicit authorization"
+    },
+    {
+      "id": "V06:ui:readiness",
+      "type": "ui",
+      "label": "客房准备工作台",
+      "authority": "synthetic-design",
+      "tenant_scope": "hotel-bound; external identity also includes provider account/outlet; cross-hotel access requires explicit authorization"
+    },
+    {
+      "id": "V06:ui:pos",
+      "type": "ui",
+      "label": "挂账工作台",
+      "authority": "synthetic-design",
+      "tenant_scope": "hotel-bound; external identity also includes provider account/outlet; cross-hotel access requires explicit authorization"
+    },
+    {
+      "id": "V06:service:reservation",
+      "type": "service",
+      "label": "预订与容量模块",
+      "authority": "synthetic-design",
+      "tenant_scope": "hotel-bound; external identity also includes provider account/outlet; cross-hotel access requires explicit authorization"
+    },
+    {
+      "id": "V06:service:stay",
+      "type": "service",
+      "label": "配房与入住模块",
+      "authority": "synthetic-design",
+      "tenant_scope": "hotel-bound; external identity also includes provider account/outlet; cross-hotel access requires explicit authorization"
+    },
+    {
+      "id": "V06:service:housekeeping",
+      "type": "service",
+      "label": "客房证据模块",
+      "authority": "synthetic-design",
+      "tenant_scope": "hotel-bound; external identity also includes provider account/outlet; cross-hotel access requires explicit authorization"
+    },
+    {
+      "id": "V06:service:billing",
+      "type": "service",
+      "label": "费用路由与账务模块",
+      "authority": "synthetic-design",
+      "tenant_scope": "hotel-bound; external identity also includes provider account/outlet; cross-hotel access requires explicit authorization"
+    },
+    {
+      "id": "V06:service:adapter",
+      "type": "service",
+      "label": "持久化操作与外部核对 worker",
+      "authority": "synthetic-design",
+      "tenant_scope": "hotel-bound; external identity also includes provider account/outlet; cross-hotel access requires explicit authorization"
+    },
+    {
+      "id": "V06:store:database",
+      "type": "store",
+      "label": "PostgreSQL 业务表与操作账",
+      "authority": "synthetic-design",
+      "tenant_scope": "hotel-bound; external identity also includes provider account/outlet; cross-hotel access requires explicit authorization"
+    },
+    {
+      "id": "V06:store:messages",
+      "type": "store",
+      "label": "事务 outbox 与 durable inbox",
+      "authority": "synthetic-design",
+      "tenant_scope": "hotel-bound; external identity also includes provider account/outlet; cross-hotel access requires explicit authorization"
+    },
+    {
+      "id": "V06:external_system:pos",
+      "type": "external_system",
+      "label": "合成餐厅 POS",
+      "authority": "synthetic-design",
+      "tenant_scope": "hotel-bound; external identity also includes provider account/outlet; cross-hotel access requires explicit authorization"
+    },
+    {
+      "id": "V06:external_system:payment",
+      "type": "external_system",
+      "label": "合成支付系统",
+      "authority": "synthetic-design",
+      "tenant_scope": "hotel-bound; external identity also includes provider account/outlet; cross-hotel access requires explicit authorization"
+    },
+    {
+      "id": "V06:event:ticket",
+      "type": "event",
+      "label": "含旧客身份的 POS 消费通知",
+      "authority": "synthetic-design",
+      "tenant_scope": "hotel-bound; external identity also includes provider account/outlet; cross-hotel access requires explicit authorization"
+    },
+    {
+      "id": "V06:event:payment-result",
+      "type": "event",
+      "label": "支付结果通知",
+      "authority": "synthetic-design",
+      "tenant_scope": "hotel-bound; external identity also includes provider account/outlet; cross-hotel access requires explicit authorization"
+    },
+    {
+      "id": "V06:object:reservation",
+      "type": "object",
+      "label": "Reservation",
+      "authority": "synthetic-design",
+      "tenant_scope": "hotel-bound; external identity also includes provider account/outlet; cross-hotel access requires explicit authorization"
+    },
+    {
+      "id": "V06:object:night-allocation",
+      "type": "object",
+      "label": "逐夜容量占用",
+      "authority": "synthetic-design",
+      "tenant_scope": "hotel-bound; external identity also includes provider account/outlet; cross-hotel access requires explicit authorization"
+    },
+    {
+      "id": "V06:object:assignment",
+      "type": "object",
+      "label": "实体房分配片段",
+      "authority": "synthetic-design",
+      "tenant_scope": "hotel-bound; external identity also includes provider account/outlet; cross-hotel access requires explicit authorization"
+    },
+    {
+      "id": "V06:object:readiness",
+      "type": "object",
+      "label": "房间检查证据",
+      "authority": "synthetic-design",
+      "tenant_scope": "hotel-bound; external identity also includes provider account/outlet; cross-hotel access requires explicit authorization"
+    },
+    {
+      "id": "V06:object:stay",
+      "type": "object",
+      "label": "实际住宿",
+      "authority": "synthetic-design",
+      "tenant_scope": "hotel-bound; external identity also includes provider account/outlet; cross-hotel access requires explicit authorization"
+    },
+    {
+      "id": "V06:object:folio",
+      "type": "object",
+      "label": "按责任账户划分的 Folio",
+      "authority": "synthetic-design",
+      "tenant_scope": "hotel-bound; external identity also includes provider account/outlet; cross-hotel access requires explicit authorization"
+    },
+    {
+      "id": "V06:object:charge",
+      "type": "object",
+      "label": "来源唯一的消费明细",
+      "authority": "synthetic-design",
+      "tenant_scope": "hotel-bound; external identity also includes provider account/outlet; cross-hotel access requires explicit authorization"
+    },
+    {
+      "id": "V06:object:authorization",
+      "type": "object",
+      "label": "预授权",
+      "authority": "synthetic-design",
+      "tenant_scope": "hotel-bound; external identity also includes provider account/outlet; cross-hotel access requires explicit authorization"
+    },
+    {
+      "id": "V06:object:payment",
+      "type": "object",
+      "label": "实际收款",
+      "authority": "synthetic-design",
+      "tenant_scope": "hotel-bound; external identity also includes provider account/outlet; cross-hotel access requires explicit authorization"
+    },
+    {
+      "id": "V06:object:refund",
+      "type": "object",
+      "label": "独立退款",
+      "authority": "synthetic-design",
+      "tenant_scope": "hotel-bound; external identity also includes provider account/outlet; cross-hotel access requires explicit authorization"
+    },
+    {
+      "id": "V06:object:operation",
+      "type": "object",
+      "label": "持久化操作与未知结果",
+      "authority": "synthetic-design",
+      "tenant_scope": "hotel-bound; external identity also includes provider account/outlet; cross-hotel access requires explicit authorization"
+    }
+  ],
+  "edges": [
+    {
+      "id": "V06:edge:desk-actor",
+      "type": "operates",
+      "from": "V06:actor:frontdesk",
+      "to": "V06:ui:desk",
+      "payload": "日期、房型、版本、候选房与操作状态",
+      "timing": "sync",
+      "invariant": "只展示获授权酒店",
+      "failure": "重新认证后找回 operation",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V06:edge:housekeeping-actor",
+      "type": "operates",
+      "from": "V06:actor:housekeeping",
+      "to": "V06:ui:readiness",
+      "payload": "房间、准备状态与检查证据",
+      "timing": "sync",
+      "invariant": "清洁与检查动作按角色授权",
+      "failure": "未获检查权限不能把 cleaned 改 inspected",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V06:edge:finance-actor",
+      "type": "operates",
+      "from": "V06:actor:finance",
+      "to": "V06:ui:desk",
+      "payload": "账户路由、欠款例外与退款审批",
+      "timing": "sync",
+      "invariant": "原因、责任人和金额版本需保存",
+      "failure": "过期版本拒绝并重算",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V06:edge:cashier-actor",
+      "type": "operates",
+      "from": "V06:actor:cashier",
+      "to": "V06:ui:pos",
+      "payload": "客人、房间查询与来源 ticket",
+      "timing": "sync",
+      "invariant": "房号仅是查询条件",
+      "failure": "多匹配要求确认账户，不自动选择",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V06:edge:reserve",
+      "type": "commands",
+      "from": "V06:ui:desk",
+      "to": "V06:service:reservation",
+      "payload": "operation ID、hotel、日期范围、房型、报价版本",
+      "timing": "sync",
+      "invariant": "全部夜晚检查及扣减原子完成",
+      "failure": "冲突返回具体日期；不能部分扣减",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V06:edge:check-in",
+      "type": "commands",
+      "from": "V06:ui:desk",
+      "to": "V06:service:stay",
+      "payload": "住宿版本、配房版本、入住或离店动作",
+      "timing": "sync",
+      "invariant": "入住要求 assigned、inspected、confirmed、时间与身份 guard",
+      "failure": "等待检查或拒绝冲突；不假装已入住",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V06:edge:inspect",
+      "type": "commands",
+      "from": "V06:ui:readiness",
+      "to": "V06:service:housekeeping",
+      "payload": "房间、版本、检查人、结果",
+      "timing": "sync",
+      "invariant": "检查证据由授权人员保存",
+      "failure": "故障版本使旧预览失效",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V06:edge:route-close",
+      "type": "commands",
+      "from": "V06:ui:desk",
+      "to": "V06:service:billing",
+      "payload": "账夹版本、责任账户、退款或关闭请求",
+      "timing": "sync",
+      "invariant": "路由不产生现金；关闭不抹去欠款和退款义务",
+      "failure": "未知支付与迟到账目保留待核对",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V06:edge:post-room-charge",
+      "type": "commands",
+      "from": "V06:ui:pos",
+      "to": "V06:service:billing",
+      "payload": "hotel、customer、stay、ticket/line、发生时间、金额、规则版本",
+      "timing": "sync",
+      "invariant": "再查 in_house、no-post、身份及额度；消费只归一个账户",
+      "failure": "资格变化明确拒绝；不按旧 UI 直接入账",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V06:claim:mews-pos-routing"
+      ]
+    },
+    {
+      "id": "V06:edge:reservation-owner",
+      "type": "owns",
+      "from": "V06:service:reservation",
+      "to": "V06:object:reservation",
+      "payload": "对象权威与版本",
+      "timing": "static",
+      "invariant": "只有所属服务通过 guard 改变事实",
+      "failure": "恢复按历史版本核对",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V06:edge:capacity-owner",
+      "type": "owns",
+      "from": "V06:service:reservation",
+      "to": "V06:object:night-allocation",
+      "payload": "对象权威与版本",
+      "timing": "static",
+      "invariant": "只有所属服务通过 guard 改变事实",
+      "failure": "恢复按历史版本核对",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V06:edge:assignment-owner",
+      "type": "owns",
+      "from": "V06:service:stay",
+      "to": "V06:object:assignment",
+      "payload": "对象权威与版本",
+      "timing": "static",
+      "invariant": "只有所属服务通过 guard 改变事实",
+      "failure": "恢复按历史版本核对",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V06:edge:stay-owner",
+      "type": "owns",
+      "from": "V06:service:stay",
+      "to": "V06:object:stay",
+      "payload": "对象权威与版本",
+      "timing": "static",
+      "invariant": "只有所属服务通过 guard 改变事实",
+      "failure": "恢复按历史版本核对",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V06:edge:readiness-owner",
+      "type": "owns",
+      "from": "V06:service:housekeeping",
+      "to": "V06:object:readiness",
+      "payload": "对象权威与版本",
+      "timing": "static",
+      "invariant": "只有所属服务通过 guard 改变事实",
+      "failure": "恢复按历史版本核对",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V06:edge:folio-owner",
+      "type": "owns",
+      "from": "V06:service:billing",
+      "to": "V06:object:folio",
+      "payload": "对象权威与版本",
+      "timing": "static",
+      "invariant": "只有所属服务通过 guard 改变事实",
+      "failure": "恢复按历史版本核对",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V06:edge:charge-owner",
+      "type": "owns",
+      "from": "V06:service:billing",
+      "to": "V06:object:charge",
+      "payload": "对象权威与版本",
+      "timing": "static",
+      "invariant": "只有所属服务通过 guard 改变事实",
+      "failure": "恢复按历史版本核对",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V06:edge:operation-owner",
+      "type": "owns",
+      "from": "V06:service:adapter",
+      "to": "V06:object:operation",
+      "payload": "对象权威与版本",
+      "timing": "static",
+      "invariant": "只有所属服务通过 guard 改变事实",
+      "failure": "恢复按历史版本核对",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V06:edge:authorization-owner",
+      "type": "owns",
+      "from": "V06:external_system:payment",
+      "to": "V06:object:authorization",
+      "payload": "外部资金事实；本地保留映射",
+      "timing": "static",
+      "invariant": "本地点击或超时不证明成功",
+      "failure": "按外部身份查询；未知不能重复创建",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V06:claim:money-separation"
+      ]
+    },
+    {
+      "id": "V06:edge:payment-owner",
+      "type": "owns",
+      "from": "V06:external_system:payment",
+      "to": "V06:object:payment",
+      "payload": "外部资金事实；本地保留映射",
+      "timing": "static",
+      "invariant": "本地点击或超时不证明成功",
+      "failure": "按外部身份查询；未知不能重复创建",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V06:claim:money-separation"
+      ]
+    },
+    {
+      "id": "V06:edge:refund-owner",
+      "type": "owns",
+      "from": "V06:external_system:payment",
+      "to": "V06:object:refund",
+      "payload": "外部资金事实；本地保留映射",
+      "timing": "static",
+      "invariant": "本地点击或超时不证明成功",
+      "failure": "按外部身份查询；未知不能重复创建",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V06:claim:money-separation"
+      ]
+    },
+    {
+      "id": "V06:edge:persist-reservation",
+      "type": "stores",
+      "from": "V06:store:database",
+      "to": "V06:object:reservation",
+      "payload": "hotel scope、版本、依据及关联身份",
+      "timing": "sync",
+      "invariant": "本地存储外部对象时只是投影",
+      "failure": "通过版本、唯一键与外部回查恢复",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V06:edge:persist-night-allocation",
+      "type": "stores",
+      "from": "V06:store:database",
+      "to": "V06:object:night-allocation",
+      "payload": "hotel scope、版本、依据及关联身份",
+      "timing": "sync",
+      "invariant": "本地存储外部对象时只是投影",
+      "failure": "通过版本、唯一键与外部回查恢复",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V06:edge:persist-assignment",
+      "type": "stores",
+      "from": "V06:store:database",
+      "to": "V06:object:assignment",
+      "payload": "hotel scope、版本、依据及关联身份",
+      "timing": "sync",
+      "invariant": "本地存储外部对象时只是投影",
+      "failure": "通过版本、唯一键与外部回查恢复",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V06:edge:persist-readiness",
+      "type": "stores",
+      "from": "V06:store:database",
+      "to": "V06:object:readiness",
+      "payload": "hotel scope、版本、依据及关联身份",
+      "timing": "sync",
+      "invariant": "本地存储外部对象时只是投影",
+      "failure": "通过版本、唯一键与外部回查恢复",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V06:edge:persist-stay",
+      "type": "stores",
+      "from": "V06:store:database",
+      "to": "V06:object:stay",
+      "payload": "hotel scope、版本、依据及关联身份",
+      "timing": "sync",
+      "invariant": "本地存储外部对象时只是投影",
+      "failure": "通过版本、唯一键与外部回查恢复",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V06:edge:persist-folio",
+      "type": "stores",
+      "from": "V06:store:database",
+      "to": "V06:object:folio",
+      "payload": "hotel scope、版本、依据及关联身份",
+      "timing": "sync",
+      "invariant": "本地存储外部对象时只是投影",
+      "failure": "通过版本、唯一键与外部回查恢复",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V06:edge:persist-charge",
+      "type": "stores",
+      "from": "V06:store:database",
+      "to": "V06:object:charge",
+      "payload": "hotel scope、版本、依据及关联身份",
+      "timing": "sync",
+      "invariant": "本地存储外部对象时只是投影",
+      "failure": "通过版本、唯一键与外部回查恢复",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V06:edge:persist-authorization",
+      "type": "stores",
+      "from": "V06:store:database",
+      "to": "V06:object:authorization",
+      "payload": "hotel scope、版本、依据及关联身份",
+      "timing": "async",
+      "invariant": "本地存储外部对象时只是投影",
+      "failure": "通过版本、唯一键与外部回查恢复",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V06:edge:persist-payment",
+      "type": "stores",
+      "from": "V06:store:database",
+      "to": "V06:object:payment",
+      "payload": "hotel scope、版本、依据及关联身份",
+      "timing": "async",
+      "invariant": "本地存储外部对象时只是投影",
+      "failure": "通过版本、唯一键与外部回查恢复",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V06:edge:persist-refund",
+      "type": "stores",
+      "from": "V06:store:database",
+      "to": "V06:object:refund",
+      "payload": "hotel scope、版本、依据及关联身份",
+      "timing": "async",
+      "invariant": "本地存储外部对象时只是投影",
+      "failure": "通过版本、唯一键与外部回查恢复",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V06:edge:persist-operation",
+      "type": "stores",
+      "from": "V06:store:database",
+      "to": "V06:object:operation",
+      "payload": "hotel scope、版本、依据及关联身份",
+      "timing": "sync",
+      "invariant": "本地存储外部对象时只是投影",
+      "failure": "通过版本、唯一键与外部回查恢复",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V06:edge:capacity-dependency",
+      "type": "depends_on",
+      "from": "V06:object:reservation",
+      "to": "V06:object:night-allocation",
+      "payload": "覆盖每个当地住宿夜的有效容量承诺",
+      "timing": "static",
+      "invariant": "确认或改期不能忽略任何一晚",
+      "failure": "任一晚不足则整个提交拒绝",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V06:claim:night-window"
+      ]
+    },
+    {
+      "id": "V06:edge:stay-assignment",
+      "type": "depends_on",
+      "from": "V06:object:stay",
+      "to": "V06:object:assignment",
+      "payload": "无冲突且覆盖住宿区间的实体房",
+      "timing": "static",
+      "invariant": "逐夜余量不代替同房连续性",
+      "failure": "无同房可行解时拒绝或请求获批换房",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V06:claim:room-continuity"
+      ]
+    },
+    {
+      "id": "V06:edge:stay-readiness",
+      "type": "depends_on",
+      "from": "V06:object:stay",
+      "to": "V06:object:readiness",
+      "payload": "当前房间 inspected 版本",
+      "timing": "static",
+      "invariant": "已清洁不等于获准交付",
+      "failure": "等待检查或重新配房",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V06:edge:folio-lines",
+      "type": "contains",
+      "from": "V06:object:folio",
+      "to": "V06:object:charge",
+      "payload": "当前责任账户的费用归属",
+      "timing": "static",
+      "invariant": "一笔费用只有一个当前归属；转账留痕",
+      "failure": "路由冲突时拒绝，不复制消费",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V06:edge:payment-refund",
+      "type": "derived_from",
+      "from": "V06:object:refund",
+      "to": "V06:object:payment",
+      "payload": "原支付 ID、退款金额与原因",
+      "timing": "static",
+      "invariant": "累计退款不超过已确认可退金额",
+      "failure": "Pending/Failed 不冲销原收款证据",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V06:edge:pos-emission",
+      "type": "emits",
+      "from": "V06:external_system:pos",
+      "to": "V06:event:ticket",
+      "payload": "原账户、住宿、ticket/line、消费时间",
+      "timing": "async",
+      "invariant": "原身份不被当前房客替代",
+      "failure": "缺少可验证身份进入人工核对",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V06:claim:late-posting"
+      ]
+    },
+    {
+      "id": "V06:edge:ticket-inbox",
+      "type": "delivers",
+      "from": "V06:event:ticket",
+      "to": "V06:store:messages",
+      "payload": "原始通知及接收身份",
+      "timing": "async",
+      "invariant": "确认接收前持久化",
+      "failure": "写失败允许重投",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V06:edge:worker-read",
+      "type": "reads",
+      "from": "V06:service:adapter",
+      "to": "V06:store:messages",
+      "payload": "未核对请求、回执与重试依据",
+      "timing": "async",
+      "invariant": "重放遵守业务唯一键",
+      "failure": "崩溃恢复先查效果",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V06:edge:provider-command",
+      "type": "requests",
+      "from": "V06:service:adapter",
+      "to": "V06:external_system:payment",
+      "payload": "已持久化的授权、capture、取消授权或退款尝试",
+      "timing": "sync",
+      "invariant": "外部未知结果先核对，不能盲目新建",
+      "failure": "timeout 保留 unknown 与人工接管入口",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V06:edge:provider-emission",
+      "type": "emits",
+      "from": "V06:external_system:payment",
+      "to": "V06:event:payment-result",
+      "payload": "外部支付/退款身份与状态通知",
+      "timing": "async",
+      "invariant": "通知只是核对输入",
+      "failure": "迟到状态不无依据覆盖新事实",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V06:edge:result-inbox",
+      "type": "delivers",
+      "from": "V06:event:payment-result",
+      "to": "V06:store:messages",
+      "payload": "通知身份与 payload",
+      "timing": "async",
+      "invariant": "接收与业务完成分开",
+      "failure": "持久化失败不确认完成",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V06:edge:provider-reconcile",
+      "type": "reads",
+      "from": "V06:service:adapter",
+      "to": "V06:external_system:payment",
+      "payload": "按 hotel/provider account/object ID 核对当前状态",
+      "timing": "async",
+      "invariant": "确认 capture/refund 后才改变实收",
+      "failure": "不可用保留 unknown，不据超时推测失败",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V06:edge:view-reservation",
+      "type": "projects",
+      "from": "V06:object:reservation",
+      "to": "V06:ui:desk",
+      "payload": "状态、版本、最后核对时间与恢复动作",
+      "timing": "async",
+      "invariant": "UI 新鲜度不替代命令校验",
+      "failure": "重新查询权威对象恢复等待状态",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V06:edge:view-assignment",
+      "type": "projects",
+      "from": "V06:object:assignment",
+      "to": "V06:ui:desk",
+      "payload": "状态、版本、最后核对时间与恢复动作",
+      "timing": "async",
+      "invariant": "UI 新鲜度不替代命令校验",
+      "failure": "重新查询权威对象恢复等待状态",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V06:edge:view-readiness",
+      "type": "projects",
+      "from": "V06:object:readiness",
+      "to": "V06:ui:desk",
+      "payload": "状态、版本、最后核对时间与恢复动作",
+      "timing": "async",
+      "invariant": "UI 新鲜度不替代命令校验",
+      "failure": "重新查询权威对象恢复等待状态",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V06:edge:view-stay",
+      "type": "projects",
+      "from": "V06:object:stay",
+      "to": "V06:ui:desk",
+      "payload": "状态、版本、最后核对时间与恢复动作",
+      "timing": "async",
+      "invariant": "UI 新鲜度不替代命令校验",
+      "failure": "重新查询权威对象恢复等待状态",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V06:edge:view-folio",
+      "type": "projects",
+      "from": "V06:object:folio",
+      "to": "V06:ui:desk",
+      "payload": "状态、版本、最后核对时间与恢复动作",
+      "timing": "async",
+      "invariant": "UI 新鲜度不替代命令校验",
+      "failure": "重新查询权威对象恢复等待状态",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V06:edge:view-authorization",
+      "type": "projects",
+      "from": "V06:object:authorization",
+      "to": "V06:ui:desk",
+      "payload": "状态、版本、最后核对时间与恢复动作",
+      "timing": "async",
+      "invariant": "UI 新鲜度不替代命令校验",
+      "failure": "重新查询权威对象恢复等待状态",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V06:edge:view-payment",
+      "type": "projects",
+      "from": "V06:object:payment",
+      "to": "V06:ui:desk",
+      "payload": "状态、版本、最后核对时间与恢复动作",
+      "timing": "async",
+      "invariant": "UI 新鲜度不替代命令校验",
+      "failure": "重新查询权威对象恢复等待状态",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V06:edge:view-refund",
+      "type": "projects",
+      "from": "V06:object:refund",
+      "to": "V06:ui:desk",
+      "payload": "状态、版本、最后核对时间与恢复动作",
+      "timing": "async",
+      "invariant": "UI 新鲜度不替代命令校验",
+      "failure": "重新查询权威对象恢复等待状态",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V06:edge:view-operation",
+      "type": "projects",
+      "from": "V06:object:operation",
+      "to": "V06:ui:desk",
+      "payload": "状态、版本、最后核对时间与恢复动作",
+      "timing": "async",
+      "invariant": "UI 新鲜度不替代命令校验",
+      "failure": "重新查询权威对象恢复等待状态",
+      "basis": "synthetic",
+      "claim_ids": []
+    }
+  ],
+  "lifecycles": [
+    {
+      "object_id": "V06:object:reservation",
+      "states": [
+        "quoted",
+        "held",
+        "confirmed",
+        "expired",
+        "canceled"
+      ],
+      "transitions": [
+        {
+          "from": "quoted",
+          "to": "held",
+          "trigger": "提交报价",
+          "guard": "权限、报价版本、逐夜容量与同房候选通过",
+          "durable_effect": "同事务保存 hold 有效期、逐夜占用与全程暂定实体房分配；不换房承诺不能只依赖汇总容量",
+          "recovery": "响应丢失按 operation 找回原 hold"
+        },
+        {
+          "from": "held",
+          "to": "confirmed",
+          "trigger": "客人确认",
+          "guard": "hold 未过期；付款/担保满足本例策略",
+          "durable_effect": "保存确认及容量承诺",
+          "recovery": "支付迟到先查 hold 与容量"
+        },
+        {
+          "from": "held",
+          "to": "expired",
+          "trigger": "到期任务",
+          "guard": "当前 hold 仍有效且已到期",
+          "durable_effect": "释放全部日期及暂定实体房区间，保留到期事实",
+          "recovery": "同一任务重放不二次加库存"
+        },
+        {
+          "from": "confirmed",
+          "to": "canceled",
+          "trigger": "获准取消",
+          "guard": "取消规则版本、权限与客人确认",
+          "durable_effect": "释放容量并建立可能的退款义务",
+          "recovery": "退款失败不把取消伪装成未发生"
+        },
+        {
+          "from": "confirmed",
+          "to": "confirmed",
+          "trigger": "改期提交",
+          "guard": "原版本有效；新日期容量及配房约束均满足",
+          "durable_effect": "原子替换受影响夜晚；保存新版本",
+          "recovery": "新日期失败则原承诺完整保留"
+        }
+      ]
+    },
+    {
+      "object_id": "V06:object:night-allocation",
+      "states": [
+        "held",
+        "committed",
+        "released"
+      ],
+      "transitions": [
+        {
+          "from": "held",
+          "to": "committed",
+          "trigger": "确认预订",
+          "guard": "hold 有效且关联预订确认",
+          "durable_effect": "逐夜占用类型改变，不重复扣减",
+          "recovery": "唯一 (hotel,reservation,date) 业务键拒绝重复效果；容量桶身份另为 (hotel,category,date)"
+        },
+        {
+          "from": "held",
+          "to": "released",
+          "trigger": "hold 到期或取消",
+          "guard": "尚未 committed",
+          "durable_effect": "全部 hold 夜晚原子释放",
+          "recovery": "检查已释放版本后跳过"
+        },
+        {
+          "from": "committed",
+          "to": "released",
+          "trigger": "取消或日期缩短",
+          "guard": "获准变更及版本检查",
+          "durable_effect": "受影响承诺解除，历史保留",
+          "recovery": "事务失败保留原占用"
+        }
+      ]
+    },
+    {
+      "object_id": "V06:object:assignment",
+      "states": [
+        "unassigned",
+        "assigned",
+        "released"
+      ],
+      "transitions": [
+        {
+          "from": "unassigned",
+          "to": "assigned",
+          "trigger": "配房",
+          "guard": "实体房无重叠、符合房型设施及完整区间",
+          "durable_effect": "保存 room ID、区间、锁定及版本",
+          "recovery": "冲突重选；不借平均余量绕过"
+        },
+        {
+          "from": "assigned",
+          "to": "assigned",
+          "trigger": "换房或改期",
+          "guard": "权限、客人同意及新片段可行",
+          "durable_effect": "版本化替换片段，保留转移记录",
+          "recovery": "准备失败保留原承诺或人工安置"
+        },
+        {
+          "from": "assigned",
+          "to": "released",
+          "trigger": "实际离店",
+          "guard": "住宿离店确认",
+          "durable_effect": "释放实际使用并触发准备任务",
+          "recovery": "任务重放不重复建立占用"
+        },
+        {
+          "from": "assigned",
+          "to": "released",
+          "trigger": "hold 到期或预订获准取消",
+          "guard": "确认对应占用未被有效续期或转为其他承诺",
+          "durable_effect": "与夜容量原子释放暂定房区间",
+          "recovery": "检查 hold/预订版本；迟到释放不能解除已确认占用"
+        }
+      ]
+    },
+    {
+      "object_id": "V06:object:readiness",
+      "states": [
+        "dirty",
+        "cleaned",
+        "inspected",
+        "out_of_service"
+      ],
+      "transitions": [
+        {
+          "from": "dirty",
+          "to": "cleaned",
+          "trigger": "清洁员报完成",
+          "guard": "角色有权且对象版本有效",
+          "durable_effect": "保存清洁完成证据",
+          "recovery": "未检验不得直接入住"
+        },
+        {
+          "from": "cleaned",
+          "to": "inspected",
+          "trigger": "检查员确认",
+          "guard": "检查员权限与检查结果通过",
+          "durable_effect": "保存检查证据与新版本",
+          "recovery": "重复动作返回现有结果"
+        },
+        {
+          "from": "inspected",
+          "to": "dirty",
+          "trigger": "客人离店",
+          "guard": "关联住宿已离店",
+          "durable_effect": "新一轮准备版本",
+          "recovery": "迟到旧 inspected 通知不覆盖 dirty"
+        },
+        {
+          "from": "inspected",
+          "to": "out_of_service",
+          "trigger": "发现故障",
+          "guard": "故障事实与权限",
+          "durable_effect": "阻止新入住并更新可售容量",
+          "recovery": "已接承诺进入重配/安置队列"
+        },
+        {
+          "from": "out_of_service",
+          "to": "dirty",
+          "trigger": "维修完成",
+          "guard": "维修验收证据",
+          "durable_effect": "恢复可准备状态，仍需清洁检查",
+          "recovery": "未通过不恢复出售"
+        }
+      ]
+    },
+    {
+      "object_id": "V06:object:stay",
+      "states": [
+        "expected",
+        "in_house",
+        "departed"
+      ],
+      "transitions": [
+        {
+          "from": "expected",
+          "to": "in_house",
+          "trigger": "前台入住",
+          "guard": "confirmed；分配无冲突；inspected；时间及身份满足",
+          "durable_effect": "保存实际入住 UTC 与关联房间版本",
+          "recovery": "超时查原 operation；不新建第二次住宿"
+        },
+        {
+          "from": "in_house",
+          "to": "departed",
+          "trigger": "前台退房",
+          "guard": "已知费用结清或明确获批承担/欠款例外；待办可见",
+          "durable_effect": "记录离店、冻结账夹快照、触发清洁及对账",
+          "recovery": "迟到消费保留旧客补账义务，不恢复在住"
+        }
+      ]
+    },
+    {
+      "object_id": "V06:object:folio",
+      "states": [
+        "open",
+        "frozen",
+        "closed"
+      ],
+      "transitions": [
+        {
+          "from": "open",
+          "to": "frozen",
+          "trigger": "退房核对",
+          "guard": "费用路由、待投递与付款状态已经列明",
+          "durable_effect": "保存核对快照并停止新即时挂账",
+          "recovery": "外部未知保持待核对，可撤回冻结"
+        },
+        {
+          "from": "frozen",
+          "to": "open",
+          "trigger": "核对发现遗漏",
+          "guard": "授权重开且尚未 closed",
+          "durable_effect": "保留前次快照并增加新版本",
+          "recovery": "已关闭改用关联调整，不无痕改写"
+        },
+        {
+          "from": "frozen",
+          "to": "closed",
+          "trigger": "财务关闭",
+          "guard": "费用已结清或应收承担安排有效；未知项有独立待办",
+          "durable_effect": "冻结已出账记录并保留收款/退款任务",
+          "recovery": "晚到消费进入补账审查，不改 closed 历史"
+        }
+      ]
+    },
+    {
+      "object_id": "V06:object:authorization",
+      "states": [
+        "pending",
+        "authorized",
+        "capture_pending",
+        "captured",
+        "expired",
+        "released",
+        "failed"
+      ],
+      "transitions": [
+        {
+          "from": "pending",
+          "to": "authorized",
+          "trigger": "外部授权确认",
+          "guard": "匹配同一 operation 与金额",
+          "durable_effect": "保存有效授权额及期限，不增加实收",
+          "recovery": "未知继续查询，不猜测成功"
+        },
+        {
+          "from": "pending",
+          "to": "failed",
+          "trigger": "外部明确拒绝",
+          "guard": "同一外部对象核对",
+          "durable_effect": "保存原因",
+          "recovery": "客人选择其他方式创建新尝试"
+        },
+        {
+          "from": "authorized",
+          "to": "capture_pending",
+          "trigger": "请求 capture",
+          "guard": "金额不超过可用额度且授权有效",
+          "durable_effect": "保存 capture operation",
+          "recovery": "超时核对；不再次 capture"
+        },
+        {
+          "from": "capture_pending",
+          "to": "captured",
+          "trigger": "外部请款确认",
+          "guard": "核对已收金额",
+          "durable_effect": "产生关联实际收款一次",
+          "recovery": "旧 pending 回执不得回退"
+        },
+        {
+          "from": "authorized",
+          "to": "expired",
+          "trigger": "外部确认过期",
+          "guard": "尚未 capture 且期限已过",
+          "durable_effect": "清除可用授权，不改实收",
+          "recovery": "重新授权必须新 operation"
+        },
+        {
+          "from": "authorized",
+          "to": "released",
+          "trigger": "取消不再需要的授权",
+          "guard": "尚未 capture；外部取消确认",
+          "durable_effect": "保存释放确认，不产生退款",
+          "recovery": "已 capture 则走退款对象"
+        },
+        {
+          "from": "capture_pending",
+          "to": "failed",
+          "trigger": "外部明确请款失败",
+          "guard": "同一请款尝试已核对为失败",
+          "durable_effect": "记录原因，不增加实收；应收仍存在",
+          "recovery": "由前台取得新支付方式或新授权，不复用已失效授权"
+        }
+      ]
+    },
+    {
+      "object_id": "V06:object:payment",
+      "states": [
+        "pending",
+        "confirmed",
+        "failed"
+      ],
+      "transitions": [
+        {
+          "from": "pending",
+          "to": "confirmed",
+          "trigger": "外部收款确认",
+          "guard": "身份金额与责任账户匹配",
+          "durable_effect": "增加实收一次；保存 provider ID",
+          "recovery": "崩溃重放读取已有支付"
+        },
+        {
+          "from": "pending",
+          "to": "failed",
+          "trigger": "外部明确失败",
+          "guard": "当前权威状态核对",
+          "durable_effect": "保存失败，无资金效果",
+          "recovery": "新尝试不覆盖失败历史"
+        }
+      ]
+    },
+    {
+      "object_id": "V06:object:refund",
+      "states": [
+        "requested",
+        "pending",
+        "confirmed",
+        "failed"
+      ],
+      "transitions": [
+        {
+          "from": "requested",
+          "to": "pending",
+          "trigger": "外部受理退款",
+          "guard": "批准原因、原收款及可退金额检查",
+          "durable_effect": "保存独立 refund ID",
+          "recovery": "响应未知先核对，不新开退款"
+        },
+        {
+          "from": "pending",
+          "to": "confirmed",
+          "trigger": "外部退款确认",
+          "guard": "核对同一 refund 当前状态",
+          "durable_effect": "减少净实收一次，关闭该退款义务",
+          "recovery": "回放不可重复减少"
+        },
+        {
+          "from": "pending",
+          "to": "failed",
+          "trigger": "外部明确退款失败",
+          "guard": "当前状态核对",
+          "durable_effect": "义务仍存在，保存失败原因",
+          "recovery": "财务选择可行新尝试，不显示已到账"
+        }
+      ]
+    },
+    {
+      "object_id": "V06:object:operation",
+      "states": [
+        "saved",
+        "sent",
+        "unknown",
+        "confirmed",
+        "rejected"
+      ],
+      "transitions": [
+        {
+          "from": "saved",
+          "to": "sent",
+          "trigger": "worker 发送",
+          "guard": "请求已持久化且无已完成效果",
+          "durable_effect": "记录发送尝试",
+          "recovery": "发送前崩溃可恢复原请求"
+        },
+        {
+          "from": "sent",
+          "to": "unknown",
+          "trigger": "调用超时",
+          "guard": "无法确认是否受理",
+          "durable_effect": "保存未知与下一核对时间",
+          "recovery": "按外部身份核对，不盲目重复"
+        },
+        {
+          "from": "sent",
+          "to": "confirmed",
+          "trigger": "成功回执",
+          "guard": "核对业务结果",
+          "durable_effect": "保存结果并更新投影",
+          "recovery": "崩溃后重放读取已完成效果"
+        },
+        {
+          "from": "sent",
+          "to": "rejected",
+          "trigger": "明确拒绝",
+          "guard": "确认该尝试未成功",
+          "durable_effect": "保存原因供重选",
+          "recovery": "不得把 rejected 自动改成功"
+        },
+        {
+          "from": "unknown",
+          "to": "confirmed",
+          "trigger": "核对外部已成功",
+          "guard": "同一业务尝试的权威证据",
+          "durable_effect": "补齐本地结果一次",
+          "recovery": "迟到回执只补证据"
+        },
+        {
+          "from": "unknown",
+          "to": "rejected",
+          "trigger": "核对外部明确失败",
+          "guard": "有明确失败或不存在且安全重试依据",
+          "durable_effect": "结束原尝试",
+          "recovery": "无法确定则继续 unknown，交人工"
+        }
+      ]
+    }
+  ],
+  "algorithm_ids": [
+    "ALG:windows",
+    "ALG:lookup",
+    "ALG:scheduling",
+    "ALG:caches"
+  ],
+  "claim_ids": [
+    "V06:claim:mews-res-model",
+    "V06:claim:mews-start",
+    "V06:claim:mews-process",
+    "V06:claim:mews-pos-routing",
+    "V06:claim:mews-preauth",
+    "V06:claim:mews-refund",
+    "V06:claim:mews-bill-close",
+    "V06:claim:stripe-hold",
+    "V06:claim:night-window",
+    "V06:claim:room-continuity",
+    "V06:claim:late-posting",
+    "V06:claim:money-separation",
+    "V06:claim:range-constraint",
+    "V06:claim:serializable-retry"
+  ],
+  "checks": [
+    {
+      "id": "V06:check:happy",
+      "kind": "happy_path",
+      "given": "R1 three nights; prices 12000/15000/13000; POS 6000; collected deposit 10000; valid auth 8000; room inspected",
+      "when": "check in; post POS; confirm capture 8000 and separate payment 28000; check out",
+      "then": "departed; charge=46000; confirmed receipts=46000; folio reconciled; readiness task exists",
+      "evidence_required": "UI states; authoritative stay, charge and payment records; operation history; arithmetic fixture"
+    },
+    {
+      "id": "V06:check:duplicate",
+      "kind": "duplicate",
+      "given": "one ticket line for 6000 with stable hotel/outlet/ticket/line key",
+      "when": "deliver twice, including distinct delivery IDs",
+      "then": "one business charge of 6000, with delivery history retained",
+      "evidence_required": "inbox identities; unique business key; folio sum"
+    },
+    {
+      "id": "V06:check:reordering",
+      "kind": "out_of_order",
+      "given": "capture already confirmed by external system",
+      "when": "old pending message arrives after confirmed message",
+      "then": "reconcile current external object; no unjustified regression or second receipt",
+      "evidence_required": "arrival log, external read and final payment version"
+    },
+    {
+      "id": "V06:check:last-room",
+      "kind": "concurrency",
+      "given": "capacity 1 for each requested night; two valid requests view remaining=1",
+      "when": "submit both concurrently",
+      "then": "one accepted; other conflict; no negative count or partially consumed dates",
+      "evidence_required": "transaction outcomes; all affected nightly rows; rejected UI action"
+    },
+    {
+      "id": "V06:check:hotel-isolation",
+      "kind": "tenant_isolation",
+      "given": "two hotels use room A and ticket 17",
+      "when": "lookup and posting with cache hit and miss in hotel H1",
+      "then": "only H1 identities and authorized data; no H2 mutation",
+      "evidence_required": "query scope, cache keys, denied cross-hotel action and resulting rows"
+    },
+    {
+      "id": "V06:check:capture-timeout",
+      "kind": "unknown_outcome",
+      "given": "external system captured 8000 but response is lost",
+      "when": "frontdesk reloads and requests retry",
+      "then": "operation unknown until authoritative reconciliation; one capture and one receipt",
+      "evidence_required": "operation ledger; provider lookup; UI waiting/recovery path"
+    },
+    {
+      "id": "V06:check:worker-crash",
+      "kind": "recovery",
+      "given": "charge committed but inbox marker not yet written",
+      "when": "crash worker and replay ticket",
+      "then": "one charge; processed marker eventually explained",
+      "evidence_required": "before/after persisted state, restart/replay log and final totals"
+    },
+    {
+      "id": "V06:check:calendar-nights",
+      "kind": "algorithm",
+      "given": "Europe/Berlin [2026-10-24,2026-10-27); scheduled 15:00 arrival and 11:00 departure",
+      "when": "count local dates and sum per-night rate",
+      "then": "3 nights; 40000 cents; midnight UTC elapsed 73h and planned elapsed 69h do not replace date count",
+      "evidence_required": "fixed timezone input, local dates, UTC conversions and hand calculation"
+    },
+    {
+      "id": "V06:check:capacity-v-continuity",
+      "kind": "negative",
+      "given": "A occupied [24,25), B occupied [25,26); requested [24,26); no moves",
+      "when": "check daily spare capacity then full-room feasibility",
+      "then": "daily spare [1,1] but candidate intersection empty; reject same-room promise",
+      "evidence_required": "room/day fixture; empty intersection; explicit refusal"
+    },
+    {
+      "id": "V06:check:readiness-no-post",
+      "kind": "negative",
+      "given": "room cleaned but not inspected; separate guest has no-post flag",
+      "when": "force direct API check-in or room-charge command",
+      "then": "both refused by their respective guards; no stay or charge side effect",
+      "evidence_required": "server authorization/guard log; object versions; UI feedback"
+    },
+    {
+      "id": "V06:check:late-pos",
+      "kind": "negative",
+      "given": "G/R1 consumed at 10:00, departed 11:00; same room later belongs to H/R2",
+      "when": "G ticket arrives 11:10 or after room reassignment",
+      "then": "preserve G/R1; review late charge; H folio unchanged; closed original snapshot unchanged",
+      "evidence_required": "source ticket account/stay/time, review task and both folios"
+    },
+    {
+      "id": "V06:check:refund-fails",
+      "kind": "negative",
+      "given": "40 EUR refund requested for guest overpayment",
+      "when": "external refund Pending becomes Failed",
+      "then": "departure unchanged; refund obligation remains open; no confirmed refund amount",
+      "evidence_required": "refund ID/state history; UI text; personal account reconciliation"
+    },
+    {
+      "id": "V06:check:paid-after-expiry",
+      "kind": "negative",
+      "given": "hold expired and last capacity sold elsewhere; original payment later succeeds",
+      "when": "reconcile delayed payment",
+      "then": "no negative capacity or automatic reservation confirmation; refund/accommodation task created",
+      "evidence_required": "hold and capacity versions; late payment record; compensation task"
+    },
+    {
+      "id": "V06:check:routing-exercise",
+      "kind": "algorithm",
+      "given": "company accepts room 40000; guest food 6000; guest deposit 10000; authorization 8000 uncharged",
+      "when": "route charges and reconcile each payer separately",
+      "then": "company receivable 40000; guest refund due 4000; release unused auth; no personal collection 28000",
+      "evidence_required": "routing rule/version; per-account ledger; refund and authorization operations"
+    }
+  ]
+}

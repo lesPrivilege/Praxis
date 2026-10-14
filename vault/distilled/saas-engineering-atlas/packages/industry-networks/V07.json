@@ -1,0 +1,1083 @@
+{
+  "contract_version": "1.0",
+  "case_id": "V07",
+  "title": "一件产品怎样带着设计依据走到收款",
+  "scope": "合成12件支架；设计基线、生产执行、逐件质量、部分交付与应收核销；不含税运费或收入确认",
+  "synthetic": true,
+  "source_ids": [
+    "AUTODESK",
+    "AUTODESK_CAE",
+    "SAP_PP",
+    "SAP_GI",
+    "SAP_O2C",
+    "ISA95"
+  ],
+  "nodes": [
+    {
+      "id": "V07:actor:planner",
+      "type": "actor",
+      "label": "计划员",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + plant; provider mappings additionally include external account"
+    },
+    {
+      "id": "V07:actor:engineer",
+      "type": "actor",
+      "label": "工程授权人",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + plant; provider mappings additionally include external account"
+    },
+    {
+      "id": "V07:actor:quality",
+      "type": "actor",
+      "label": "质量人员",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + plant; provider mappings additionally include external account"
+    },
+    {
+      "id": "V07:actor:warehouse",
+      "type": "actor",
+      "label": "仓储操作员",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + plant; provider mappings additionally include external account"
+    },
+    {
+      "id": "V07:actor:finance",
+      "type": "actor",
+      "label": "财务人员",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + plant; provider mappings additionally include external account"
+    },
+    {
+      "id": "V07:ui:workbench",
+      "type": "ui",
+      "label": "生产工作台",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + plant; provider mappings additionally include external account"
+    },
+    {
+      "id": "V07:service:execution",
+      "type": "service",
+      "label": "生产执行服务",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + plant; provider mappings additionally include external account"
+    },
+    {
+      "id": "V07:service:engineering",
+      "type": "service",
+      "label": "工程服务",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + plant; provider mappings additionally include external account"
+    },
+    {
+      "id": "V07:service:quality",
+      "type": "service",
+      "label": "质量服务",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + plant; provider mappings additionally include external account"
+    },
+    {
+      "id": "V07:service:shipping",
+      "type": "service",
+      "label": "仓储服务",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + plant; provider mappings additionally include external account"
+    },
+    {
+      "id": "V07:service:finance",
+      "type": "service",
+      "label": "财务适配服务",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + plant; provider mappings additionally include external account"
+    },
+    {
+      "id": "V07:external_system:erp",
+      "type": "external_system",
+      "label": "ERP 适配边界",
+      "authority": "外部系统仅对其确认的库存和会计单据负责；不指定实际产品集成",
+      "tenant_scope": "tenant + plant; provider mappings additionally include external account"
+    },
+    {
+      "id": "V07:object:baseline",
+      "type": "object",
+      "label": "设计基线 D3",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + plant; provider mappings additionally include external account"
+    },
+    {
+      "id": "V07:object:order",
+      "type": "object",
+      "label": "生产单 PO1",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + plant; provider mappings additionally include external account"
+    },
+    {
+      "id": "V07:object:units",
+      "type": "object",
+      "label": "12个独立序列号单件",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + plant; provider mappings additionally include external account"
+    },
+    {
+      "id": "V07:object:disposition",
+      "type": "object",
+      "label": "逐件质量处置",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + plant; provider mappings additionally include external account"
+    },
+    {
+      "id": "V07:object:shipment",
+      "type": "object",
+      "label": "发运单 SH1",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + plant; provider mappings additionally include external account"
+    },
+    {
+      "id": "V07:object:receivable",
+      "type": "object",
+      "label": "应收项 AR1",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + plant; provider mappings additionally include external account"
+    },
+    {
+      "id": "V07:object:operation",
+      "type": "object",
+      "label": "外部过账操作",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + plant; provider mappings additionally include external account"
+    },
+    {
+      "id": "V07:event:posting-receipt",
+      "type": "event",
+      "label": "外部过账回执",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + plant; provider mappings additionally include external account"
+    },
+    {
+      "id": "V07:store:ledger",
+      "type": "store",
+      "label": "事务与数量账本",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + plant; provider mappings additionally include external account"
+    },
+    {
+      "id": "V07:store:inbox",
+      "type": "store",
+      "label": "持久收件箱",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + plant; provider mappings additionally include external account"
+    },
+    {
+      "id": "V07:store:files",
+      "type": "store",
+      "label": "版本文件与检验附件",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + plant; provider mappings additionally include external account"
+    }
+  ],
+  "edges": [
+    {
+      "id": "V07:edge:planner-ui",
+      "type": "operates",
+      "from": "V07:actor:planner",
+      "to": "V07:ui:workbench",
+      "payload": "按角色查看订单、单件、版本和异常",
+      "timing": "sync",
+      "invariant": "tenant/plant及动作权限分别核验",
+      "failure": "重新认证后恢复相同操作身份",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V07:edge:engineer-ui",
+      "type": "operates",
+      "from": "V07:actor:engineer",
+      "to": "V07:ui:workbench",
+      "payload": "按角色查看订单、单件、版本和异常",
+      "timing": "sync",
+      "invariant": "tenant/plant及动作权限分别核验",
+      "failure": "重新认证后恢复相同操作身份",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V07:edge:quality-ui",
+      "type": "operates",
+      "from": "V07:actor:quality",
+      "to": "V07:ui:workbench",
+      "payload": "按角色查看订单、单件、版本和异常",
+      "timing": "sync",
+      "invariant": "tenant/plant及动作权限分别核验",
+      "failure": "重新认证后恢复相同操作身份",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V07:edge:warehouse-ui",
+      "type": "operates",
+      "from": "V07:actor:warehouse",
+      "to": "V07:ui:workbench",
+      "payload": "按角色查看订单、单件、版本和异常",
+      "timing": "sync",
+      "invariant": "tenant/plant及动作权限分别核验",
+      "failure": "重新认证后恢复相同操作身份",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V07:edge:finance-ui",
+      "type": "operates",
+      "from": "V07:actor:finance",
+      "to": "V07:ui:workbench",
+      "payload": "按角色查看订单、单件、版本和异常",
+      "timing": "sync",
+      "invariant": "tenant/plant及动作权限分别核验",
+      "failure": "重新认证后恢复相同操作身份",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V07:edge:command-release",
+      "type": "commands",
+      "from": "V07:ui:workbench",
+      "to": "V07:service:execution",
+      "payload": "放行请求：order/expected_version/baseline/operation_id",
+      "timing": "sync",
+      "invariant": "提交时重检权限、对象版本与业务guard",
+      "failure": "拒绝冲突并显示权威现状",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V07:edge:command-publish",
+      "type": "commands",
+      "from": "V07:ui:workbench",
+      "to": "V07:service:engineering",
+      "payload": "基线发布：版本清单与摘要",
+      "timing": "sync",
+      "invariant": "提交时重检权限、对象版本与业务guard",
+      "failure": "拒绝冲突并显示权威现状",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V07:edge:command-disposition",
+      "type": "commands",
+      "from": "V07:ui:workbench",
+      "to": "V07:service:quality",
+      "payload": "检验尝试与处置理由",
+      "timing": "sync",
+      "invariant": "提交时重检权限、对象版本与业务guard",
+      "failure": "拒绝冲突并显示权威现状",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V07:edge:command-dispatch",
+      "type": "commands",
+      "from": "V07:ui:workbench",
+      "to": "V07:service:shipping",
+      "payload": "序列号集合与发运版本",
+      "timing": "sync",
+      "invariant": "提交时重检权限、对象版本与业务guard",
+      "failure": "拒绝冲突并显示权威现状",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V07:edge:command-settle",
+      "type": "commands",
+      "from": "V07:ui:workbench",
+      "to": "V07:service:finance",
+      "payload": "到账引用、金额与应收项",
+      "timing": "sync",
+      "invariant": "提交时重检权限、对象版本与业务guard",
+      "failure": "拒绝冲突并显示权威现状",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V07:edge:authorize-engineering",
+      "type": "authorizes",
+      "from": "V07:actor:engineer",
+      "to": "V07:service:engineering",
+      "payload": "有工程发布权",
+      "timing": "static",
+      "invariant": "UI可见性不能代替服务端授权",
+      "failure": "拒绝并保留动作身份",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V07:edge:authorize-quality",
+      "type": "authorizes",
+      "from": "V07:actor:quality",
+      "to": "V07:service:quality",
+      "payload": "有独立质量处置权",
+      "timing": "static",
+      "invariant": "UI可见性不能代替服务端授权",
+      "failure": "拒绝并保留动作身份",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V07:edge:authorize-warehouse",
+      "type": "authorizes",
+      "from": "V07:actor:warehouse",
+      "to": "V07:service:shipping",
+      "payload": "有出库权且单件处置允许",
+      "timing": "static",
+      "invariant": "UI可见性不能代替服务端授权",
+      "failure": "拒绝并保留动作身份",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V07:edge:authorize-finance",
+      "type": "authorizes",
+      "from": "V07:actor:finance",
+      "to": "V07:service:finance",
+      "payload": "有核销权且到账证据存在",
+      "timing": "static",
+      "invariant": "UI可见性不能代替服务端授权",
+      "failure": "拒绝并保留动作身份",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V07:edge:owns-baseline",
+      "type": "owns",
+      "from": "V07:service:engineering",
+      "to": "V07:object:baseline",
+      "payload": "权威对象及版本",
+      "timing": "static",
+      "invariant": "修改留历史且不扩大角色权限",
+      "failure": "冲突时读取当前版本",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V07:edge:owns-order",
+      "type": "owns",
+      "from": "V07:service:execution",
+      "to": "V07:object:order",
+      "payload": "权威对象及版本",
+      "timing": "static",
+      "invariant": "修改留历史且不扩大角色权限",
+      "failure": "冲突时读取当前版本",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V07:edge:owns-units",
+      "type": "owns",
+      "from": "V07:service:execution",
+      "to": "V07:object:units",
+      "payload": "权威对象及版本",
+      "timing": "static",
+      "invariant": "修改留历史且不扩大角色权限",
+      "failure": "冲突时读取当前版本",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V07:edge:owns-disposition",
+      "type": "owns",
+      "from": "V07:service:quality",
+      "to": "V07:object:disposition",
+      "payload": "权威对象及版本",
+      "timing": "static",
+      "invariant": "修改留历史且不扩大角色权限",
+      "failure": "冲突时读取当前版本",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V07:edge:owns-shipment",
+      "type": "owns",
+      "from": "V07:service:shipping",
+      "to": "V07:object:shipment",
+      "payload": "权威对象及版本",
+      "timing": "static",
+      "invariant": "修改留历史且不扩大角色权限",
+      "failure": "冲突时读取当前版本",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V07:edge:owns-receivable",
+      "type": "owns",
+      "from": "V07:service:finance",
+      "to": "V07:object:receivable",
+      "payload": "权威对象及版本",
+      "timing": "static",
+      "invariant": "修改留历史且不扩大角色权限",
+      "failure": "冲突时读取当前版本",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V07:edge:owns-operation",
+      "type": "owns",
+      "from": "V07:service:execution",
+      "to": "V07:object:operation",
+      "payload": "权威对象及版本",
+      "timing": "static",
+      "invariant": "修改留历史且不扩大角色权限",
+      "failure": "冲突时读取当前版本",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V07:edge:order-baseline",
+      "type": "depends_on",
+      "from": "V07:object:order",
+      "to": "V07:object:baseline",
+      "payload": "发布时固定D3引用",
+      "timing": "static",
+      "invariant": "已执行记录不随最新版改写",
+      "failure": "D4经影响评估后切换；需要时hold",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V07:edge:order-units",
+      "type": "contains",
+      "from": "V07:object:order",
+      "to": "V07:object:units",
+      "payload": "12个唯一序列号",
+      "timing": "static",
+      "invariant": "返工增加尝试而非增加产品计数",
+      "failure": "按单件核对数量",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V07:edge:disposition-unit",
+      "type": "derived_from",
+      "from": "V07:object:disposition",
+      "to": "V07:object:units",
+      "payload": "检验尝试、测量与原因",
+      "timing": "async",
+      "invariant": "旧失败记录保留；不得选最佳结果覆盖",
+      "failure": "复检缺前序时待核对",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V07:edge:shipment-quality",
+      "type": "depends_on",
+      "from": "V07:object:shipment",
+      "to": "V07:object:disposition",
+      "payload": "本次出库序列号的当前质量版本",
+      "timing": "static",
+      "invariant": "仅accepted且未冻结未占用的单件可出库",
+      "failure": "过期列表仍须服务端拒绝",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V07:edge:receivable-shipment",
+      "type": "derived_from",
+      "from": "V07:object:receivable",
+      "to": "V07:object:shipment",
+      "payload": "10件已确认发运按50记账单位开票；客户接收仍为独立事实",
+      "timing": "async",
+      "invariant": "付款、发运与应收状态分离",
+      "failure": "争议与冲销新增记录",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V07:edge:erp-request",
+      "type": "requests",
+      "from": "V07:service:execution",
+      "to": "V07:external_system:erp",
+      "payload": "持久operation_id与具体耗料过账载荷",
+      "timing": "sync",
+      "invariant": "同一尝试不得盲目新增外部扣料",
+      "failure": "timeout保留unknown后按外部关联号核对",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V07:edge:erp-event",
+      "type": "emits",
+      "from": "V07:external_system:erp",
+      "to": "V07:event:posting-receipt",
+      "payload": "外部单据号、状态与操作引用",
+      "timing": "async",
+      "invariant": "消息不代表本地后续完成",
+      "failure": "回查权威对象",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V07:edge:receipt-inbox",
+      "type": "delivers",
+      "from": "V07:event:posting-receipt",
+      "to": "V07:store:inbox",
+      "payload": "原始回执与接收身份",
+      "timing": "async",
+      "invariant": "先持久化再确认接收",
+      "failure": "失败保留重投可能",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V07:edge:consume-inbox",
+      "type": "reads",
+      "from": "V07:service:execution",
+      "to": "V07:store:inbox",
+      "payload": "待处理回执",
+      "timing": "async",
+      "invariant": "事件去重与业务唯一性都需要",
+      "failure": "崩溃后重放并核对已有效果",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V07:edge:reconcile",
+      "type": "reads",
+      "from": "V07:service:execution",
+      "to": "V07:external_system:erp",
+      "payload": "按外部账户+租户+单据/操作引用查询",
+      "timing": "async",
+      "invariant": "不凭超时推断失败",
+      "failure": "不可唯一匹配转人工",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V07:edge:store-baseline",
+      "type": "stores",
+      "from": "V07:store:ledger",
+      "to": "V07:object:baseline",
+      "payload": "版本、身份、数量或决定证据",
+      "timing": "sync",
+      "invariant": "事务边界内保存可解释效果",
+      "failure": "恢复后按唯一业务键核对",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V07:edge:store-order",
+      "type": "stores",
+      "from": "V07:store:ledger",
+      "to": "V07:object:order",
+      "payload": "版本、身份、数量或决定证据",
+      "timing": "sync",
+      "invariant": "事务边界内保存可解释效果",
+      "failure": "恢复后按唯一业务键核对",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V07:edge:store-units",
+      "type": "stores",
+      "from": "V07:store:ledger",
+      "to": "V07:object:units",
+      "payload": "版本、身份、数量或决定证据",
+      "timing": "sync",
+      "invariant": "事务边界内保存可解释效果",
+      "failure": "恢复后按唯一业务键核对",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V07:edge:store-disposition",
+      "type": "stores",
+      "from": "V07:store:ledger",
+      "to": "V07:object:disposition",
+      "payload": "版本、身份、数量或决定证据",
+      "timing": "sync",
+      "invariant": "事务边界内保存可解释效果",
+      "failure": "恢复后按唯一业务键核对",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V07:edge:store-shipment",
+      "type": "stores",
+      "from": "V07:store:ledger",
+      "to": "V07:object:shipment",
+      "payload": "版本、身份、数量或决定证据",
+      "timing": "sync",
+      "invariant": "事务边界内保存可解释效果",
+      "failure": "恢复后按唯一业务键核对",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V07:edge:store-receivable",
+      "type": "stores",
+      "from": "V07:store:ledger",
+      "to": "V07:object:receivable",
+      "payload": "版本、身份、数量或决定证据",
+      "timing": "sync",
+      "invariant": "事务边界内保存可解释效果",
+      "failure": "恢复后按唯一业务键核对",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V07:edge:store-operation",
+      "type": "stores",
+      "from": "V07:store:ledger",
+      "to": "V07:object:operation",
+      "payload": "版本、身份、数量或决定证据",
+      "timing": "sync",
+      "invariant": "事务边界内保存可解释效果",
+      "failure": "恢复后按唯一业务键核对",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V07:edge:baseline-file",
+      "type": "stores",
+      "from": "V07:store:files",
+      "to": "V07:object:baseline",
+      "payload": "图纸/BOM/路线/检验要求的版本文件与摘要",
+      "timing": "sync",
+      "invariant": "文件引用不可变；授权覆盖下载",
+      "failure": "摘要不符阻断使用",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V07:edge:project-order",
+      "type": "projects",
+      "from": "V07:object:order",
+      "to": "V07:ui:workbench",
+      "payload": "状态、数量、原因、最后核对时间",
+      "timing": "async",
+      "invariant": "投影不能授权动作",
+      "failure": "旧缓存提示刷新并以权威版本校验",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V07:edge:project-quality",
+      "type": "projects",
+      "from": "V07:object:disposition",
+      "to": "V07:ui:workbench",
+      "payload": "状态、数量、原因、最后核对时间",
+      "timing": "async",
+      "invariant": "投影不能授权动作",
+      "failure": "旧缓存提示刷新并以权威版本校验",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V07:edge:project-shipment",
+      "type": "projects",
+      "from": "V07:object:shipment",
+      "to": "V07:ui:workbench",
+      "payload": "状态、数量、原因、最后核对时间",
+      "timing": "async",
+      "invariant": "投影不能授权动作",
+      "failure": "旧缓存提示刷新并以权威版本校验",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V07:edge:project-receivable",
+      "type": "projects",
+      "from": "V07:object:receivable",
+      "to": "V07:ui:workbench",
+      "payload": "状态、数量、原因、最后核对时间",
+      "timing": "async",
+      "invariant": "投影不能授权动作",
+      "failure": "旧缓存提示刷新并以权威版本校验",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V07:edge:project-operation",
+      "type": "projects",
+      "from": "V07:object:operation",
+      "to": "V07:ui:workbench",
+      "payload": "状态、数量、原因、最后核对时间",
+      "timing": "async",
+      "invariant": "投影不能授权动作",
+      "failure": "旧缓存提示刷新并以权威版本校验",
+      "basis": "synthetic",
+      "claim_ids": []
+    }
+  ],
+  "lifecycles": [
+    {
+      "object_id": "V07:object:baseline",
+      "states": [
+        "draft",
+        "released",
+        "superseded"
+      ],
+      "transitions": [
+        {
+          "from": "draft",
+          "to": "released",
+          "trigger": "工程人发布",
+          "guard": "有授权且引用完整",
+          "durable_effect": "固定版本与摘要",
+          "recovery": "缺项拒绝"
+        },
+        {
+          "from": "released",
+          "to": "superseded",
+          "trigger": "D4批准生效",
+          "guard": "新版本完整且影响范围已说明",
+          "durable_effect": "保留D3和替代关系",
+          "recovery": "历史仍指向D3"
+        }
+      ]
+    },
+    {
+      "object_id": "V07:object:order",
+      "states": [
+        "planned",
+        "released",
+        "running",
+        "completed",
+        "closed",
+        "held"
+      ],
+      "transitions": [
+        {
+          "from": "planned",
+          "to": "released",
+          "trigger": "放行",
+          "guard": "基线有效、材料预留成功、设备许可",
+          "durable_effect": "记录版本与预留",
+          "recovery": "缺料或冲突拒绝"
+        },
+        {
+          "from": "released",
+          "to": "running",
+          "trigger": "开工",
+          "guard": "实物到位确认",
+          "durable_effect": "首个实际工序记录",
+          "recovery": "电子与现场不一致转偏差"
+        },
+        {
+          "from": "running",
+          "to": "held",
+          "trigger": "工程或质量暂停",
+          "guard": "有权限且范围明确",
+          "durable_effect": "冻结后续动作但保留事实",
+          "recovery": "获批准后按原版本恢复"
+        },
+        {
+          "from": "held",
+          "to": "running",
+          "trigger": "恢复生产",
+          "guard": "暂停原因已解决并记录许可",
+          "durable_effect": "恢复依据",
+          "recovery": "版本冲突拒绝"
+        },
+        {
+          "from": "running",
+          "to": "completed",
+          "trigger": "最后工序完成",
+          "guard": "所有单件加工尝试已归属",
+          "durable_effect": "完成数量与待处置可见",
+          "recovery": "缺失尝试进入核对"
+        },
+        {
+          "from": "completed",
+          "to": "closed",
+          "trigger": "核对关闭",
+          "guard": "12=accepted+scrap且耗料异常已处理",
+          "durable_effect": "关闭证据；销售欠交仍独立",
+          "recovery": "差异未解不关闭"
+        }
+      ]
+    },
+    {
+      "object_id": "V07:object:disposition",
+      "states": [
+        "pending",
+        "accepted",
+        "rework",
+        "scrap",
+        "blocked"
+      ],
+      "transitions": [
+        {
+          "from": "pending",
+          "to": "accepted",
+          "trigger": "质量通过",
+          "guard": "检验有效且有处置权",
+          "durable_effect": "单件accepted与证据",
+          "recovery": "撤销另建冻结证据"
+        },
+        {
+          "from": "pending",
+          "to": "rework",
+          "trigger": "首检失败需返工",
+          "guard": "有授权返工路径",
+          "durable_effect": "保留失败并建返工尝试",
+          "recovery": "无路径则转人工"
+        },
+        {
+          "from": "pending",
+          "to": "scrap",
+          "trigger": "质量报废",
+          "guard": "有批准与原因",
+          "durable_effect": "报废记录",
+          "recovery": "不得作为可发库存"
+        },
+        {
+          "from": "rework",
+          "to": "accepted",
+          "trigger": "复检通过",
+          "guard": "绑定同一单件及新尝试",
+          "durable_effect": "复检结果及合格处置",
+          "recovery": "旧rework事件不得回退"
+        },
+        {
+          "from": "rework",
+          "to": "scrap",
+          "trigger": "复检失败",
+          "guard": "有质量批准",
+          "durable_effect": "追加报废依据",
+          "recovery": "不重复增加单件数量"
+        },
+        {
+          "from": "accepted",
+          "to": "blocked",
+          "trigger": "发现新质量异常",
+          "guard": "范围明确且质量权限有效",
+          "durable_effect": "新冻结版本保留原合格证据",
+          "recovery": "出库重检当前版本"
+        },
+        {
+          "from": "blocked",
+          "to": "accepted",
+          "trigger": "解除冻结",
+          "guard": "新复核证据获质量批准",
+          "durable_effect": "解除原因与版本",
+          "recovery": "并发新异常拒绝解除"
+        },
+        {
+          "from": "blocked",
+          "to": "rework",
+          "trigger": "要求返工",
+          "guard": "批准新的返工路线",
+          "durable_effect": "关联原件的新返工尝试",
+          "recovery": "不以撤回旧验收代替实际返工"
+        }
+      ]
+    },
+    {
+      "object_id": "V07:object:shipment",
+      "states": [
+        "draft",
+        "reserved",
+        "dispatched",
+        "received",
+        "cancelled"
+      ],
+      "transitions": [
+        {
+          "from": "draft",
+          "to": "reserved",
+          "trigger": "预留合格件",
+          "guard": "当前accepted且未占用",
+          "durable_effect": "锁定10个序列号",
+          "recovery": "并发冲突拒绝"
+        },
+        {
+          "from": "reserved",
+          "to": "cancelled",
+          "trigger": "取消待发",
+          "guard": "未出库且有权限",
+          "durable_effect": "释放预留",
+          "recovery": "已实发须另建退回流程"
+        },
+        {
+          "from": "reserved",
+          "to": "dispatched",
+          "trigger": "仓库出库",
+          "guard": "质量版本仍有效且交付约定允许",
+          "durable_effect": "逐件出库及交接记录",
+          "recovery": "unknown先核对"
+        },
+        {
+          "from": "dispatched",
+          "to": "received",
+          "trigger": "客户接收",
+          "guard": "有接收证据",
+          "durable_effect": "接收记录",
+          "recovery": "部分接收逐件处理"
+        }
+      ]
+    },
+    {
+      "object_id": "V07:object:receivable",
+      "states": [
+        "open",
+        "partially_settled",
+        "settled"
+      ],
+      "transitions": [
+        {
+          "from": "open",
+          "to": "partially_settled",
+          "trigger": "收到300",
+          "guard": "500应收与到账引用匹配",
+          "durable_effect": "实收300余额200",
+          "recovery": "重复引用不重复核销"
+        },
+        {
+          "from": "partially_settled",
+          "to": "settled",
+          "trigger": "收到剩余200",
+          "guard": "权威到账匹配余额",
+          "durable_effect": "余额0及核销证据",
+          "recovery": "冲突或差额人工核对"
+        }
+      ]
+    },
+    {
+      "object_id": "V07:object:operation",
+      "states": [
+        "pending",
+        "unknown",
+        "confirmed",
+        "failed"
+      ],
+      "transitions": [
+        {
+          "from": "pending",
+          "to": "unknown",
+          "trigger": "请求超时",
+          "guard": "已持久化请求且无法判断外部结果",
+          "durable_effect": "保留同一操作等待核对",
+          "recovery": "不得盲目重建"
+        },
+        {
+          "from": "pending",
+          "to": "confirmed",
+          "trigger": "外部确认",
+          "guard": "外部身份与请求一致",
+          "durable_effect": "保存映射与结果",
+          "recovery": "回执重放无重复效果"
+        },
+        {
+          "from": "unknown",
+          "to": "confirmed",
+          "trigger": "核对发现成功",
+          "guard": "唯一外部单据与输入匹配",
+          "durable_effect": "补写确认",
+          "recovery": "疑似多个匹配转人工"
+        },
+        {
+          "from": "unknown",
+          "to": "failed",
+          "trigger": "确认没有发生",
+          "guard": "已查明失败且核对依据完整",
+          "durable_effect": "失败原因",
+          "recovery": "需要时按受支持语义安全重试"
+        }
+      ]
+    }
+  ],
+  "algorithm_ids": [
+    "ALG:lookup",
+    "ALG:graph-paths",
+    "ALG:scheduling",
+    "ALG:caches"
+  ],
+  "claim_ids": [
+    "V07:claim:cad-cam",
+    "V07:claim:cae-scope",
+    "V07:claim:production-steps",
+    "V07:claim:goods-movement-boundary",
+    "V07:claim:sales-schedule-lines",
+    "V07:claim:enterprise-control-boundary",
+    "V07:claim:versioned-quantity-policy"
+  ],
+  "checks": [
+    {
+      "id": "V07:check:happy",
+      "kind": "happy_path",
+      "given": "D3;12件;补齐到24紧固件;单价50",
+      "when": "首检9合格2返工1报废；复检1合格1报废；发10件收300",
+      "then": "10合格+2报废=12；发10；应收500=实收300+余额200；仍欠交2",
+      "evidence_required": "单件状态、发运清单、财务引用与UI四种独立状态"
+    },
+    {
+      "id": "V07:check:duplicate",
+      "kind": "duplicate",
+      "given": "同一单件同一工序尝试",
+      "when": "同事件投两次再换事件ID重发同业务尝试",
+      "then": "工序和耗料效果各一次",
+      "evidence_required": "inbox与业务唯一键冲突/返回记录"
+    },
+    {
+      "id": "V07:check:reordered-inspection",
+      "kind": "out_of_order",
+      "given": "同一件首检rework、复检accepted",
+      "when": "先送复检再送首检",
+      "then": "按尝试依赖核对；最终accepted不被旧状态覆盖",
+      "evidence_required": "尝试链和当前处置证据"
+    },
+    {
+      "id": "V07:check:last-material",
+      "kind": "concurrency",
+      "given": "紧固件仅余2；两订单各需2",
+      "when": "同时预留",
+      "then": "一成功一缺料；余额0",
+      "evidence_required": "两操作返回、提交顺序、库存分录"
+    },
+    {
+      "id": "V07:check:tenant",
+      "kind": "tenant_isolation",
+      "given": "两租户同S001",
+      "when": "扫描、缓存命中与附件下载",
+      "then": "只返回本租户且被授权工厂的数据",
+      "evidence_required": "查询范围、下载授权和返回内容"
+    },
+    {
+      "id": "V07:check:external-timeout",
+      "kind": "unknown_outcome",
+      "given": "ERP已成功扣料",
+      "when": "返回前断网",
+      "then": "unknown持续至唯一回查；不重复扣料",
+      "evidence_required": "操作账本、外部关联号与最终库存"
+    },
+    {
+      "id": "V07:check:crash-after-dispatch",
+      "kind": "recovery",
+      "given": "10件出库事务已提交",
+      "when": "消费标记前崩溃并重放",
+      "then": "仍只有10件发出且能对照实物交接",
+      "evidence_required": "崩溃注入点、重放日志、单件出库唯一性"
+    },
+    {
+      "id": "V07:check:quantity",
+      "kind": "algorithm",
+      "given": "14毛坯22紧固件；每件1+2",
+      "when": "计算12件需求及齐套上限",
+      "then": "上限11；缺紧固件2；不用库存总件数代替齐套",
+      "evidence_required": "固定fixture与逐项手算"
+    },
+    {
+      "id": "V07:check:quality-hold",
+      "kind": "release_guard",
+      "given": "旧列表显示accepted但权威记录已blocked",
+      "when": "提交出库",
+      "then": "服务端拒绝并列出冻结序列号",
+      "evidence_required": "请求版本、拒绝原因与无出库副作用"
+    },
+    {
+      "id": "V07:check:shared-machine",
+      "kind": "algorithm",
+      "given": "A2h→B3h→C1h；D2h和A同机台",
+      "when": "拓扑排序后做资源安排",
+      "then": "A[0,2),D[2,4),B[2,5),C[5,6)可行；A/D不能同时开始",
+      "evidence_required": "资源时间区间与容量不重叠断言"
+    }
+  ]
+}

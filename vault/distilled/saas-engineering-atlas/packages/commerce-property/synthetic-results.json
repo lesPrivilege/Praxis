@@ -1,0 +1,275 @@
+{
+  "suite": "P05 synthetic teaching models",
+  "python": "3.12.14",
+  "status": "pass",
+  "tests": 16,
+  "failures": 0,
+  "scope": "fixed invented data, pure computations, finite states and local SQLite; no UI, provider, AI, load, PostgreSQL or legal validation",
+  "results": [
+    {
+      "id": "V04-money",
+      "kind": "worked_example_and_counterexample",
+      "status": "pass",
+      "observed": {
+        "line_discounts": [
+          858,
+          143
+        ],
+        "unit_discounts": [
+          [
+            286,
+            286,
+            286
+          ],
+          [
+            72,
+            71
+          ]
+        ],
+        "refund": 4642,
+        "net_after_synthetic_fee": 8097,
+        "counterexample": {
+          "recomputed_second_lid": 928,
+          "frozen_second_lid": 929
+        }
+      }
+    },
+    {
+      "id": "V04-apportion-exhaustive",
+      "kind": "finite_model_check",
+      "status": "pass",
+      "observed": {
+        "finite_inputs": 819,
+        "invalid_inputs_rejected": 3,
+        "scope": "quota/conservation only; no claim of fairness across changing inputs"
+      }
+    },
+    {
+      "id": "V04-quantities",
+      "kind": "negative_invariants",
+      "status": "pass",
+      "observed": {
+        "gross_shipped": 2,
+        "result": {
+          "pending": 0,
+          "net_kept": 1
+        },
+        "invalid_states_rejected": 3,
+        "counterexample_pending_after_erasing_return": 1
+      }
+    },
+    {
+      "id": "V05-split",
+      "kind": "worked_example",
+      "status": "pass",
+      "observed": {
+        "discounts": [
+          263,
+          238
+        ],
+        "checks": [
+          3887,
+          3512
+        ],
+        "total_due": 7399
+      }
+    },
+    {
+      "id": "V05-unknown-tender",
+      "kind": "unknown_duplicate_out_of_order",
+      "status": "pass",
+      "observed": {
+        "rejected": [
+          "second collection while unknown",
+          "key with changed amount"
+        ],
+        "final_received": 7399,
+        "closed": true
+      }
+    },
+    {
+      "id": "V05-confirmed-failure",
+      "kind": "failure_recovery",
+      "status": "pass",
+      "observed": {
+        "attempts": {
+          "try-1": [
+            1000,
+            "failed"
+          ],
+          "try-2": [
+            1000,
+            "succeeded"
+          ]
+        },
+        "conflicting_terminal_evidence": "rejected for reconciliation"
+      }
+    },
+    {
+      "id": "V06-calendar",
+      "kind": "worked_example_and_counterexample",
+      "status": "pass",
+      "observed": {
+        "calendar_nights": 3,
+        "midnight_elapsed_hours": 73.0,
+        "planned_elapsed_hours": 69.0,
+        "counterexample_elapsed_divided_by_24": 3.0416666666666665,
+        "room_charge": 40000
+      }
+    },
+    {
+      "id": "V06-continuity",
+      "kind": "negative_invariants",
+      "status": "pass",
+      "observed": {
+        "nightly_free_rooms": [
+          [
+            "B"
+          ],
+          [
+            "A"
+          ]
+        ],
+        "continuous_free_rooms": [],
+        "residual": [
+          1,
+          0,
+          2
+        ],
+        "two_night_request": "rejected"
+      }
+    },
+    {
+      "id": "V06-folio",
+      "kind": "worked_example_and_counterexample",
+      "status": "pass",
+      "observed": {
+        "before_capture_due": 36000,
+        "after_capture_due": 28000,
+        "company_room_route_personal_refund": 4000,
+        "counterexample_counting_hold_as_cash_understates_due_by": 8000
+      }
+    },
+    {
+      "id": "V15-revisions",
+      "kind": "negative_invariants",
+      "status": "pass",
+      "observed": {
+        "active_approved": 15000,
+        "counterexample_sum_all_records": 33000,
+        "duplicate_active_origin": "rejected"
+      }
+    },
+    {
+      "id": "V15-dependencies",
+      "kind": "graph_and_cycle_rejection",
+      "status": "pass",
+      "observed": {
+        "reachable_ids": [
+          "CE-1",
+          "CE-2",
+          "CERT-1",
+          "RFI-1",
+          "VAR-1"
+        ],
+        "shared_variation_count": 1,
+        "cyclic_dependency": "rejected"
+      }
+    },
+    {
+      "id": "V15-certificate",
+      "kind": "worked_example_and_counterexample",
+      "status": "pass",
+      "observed": {
+        "approved": 6000,
+        "cumulative_certificates": [
+          3400,
+          5750
+        ],
+        "second_increment": 2350,
+        "certified_unpaid": 350,
+        "approved_uncertified": 250,
+        "counterexample_sum_cumulative": 9150,
+        "change_quantity_21": "rejected"
+      }
+    },
+    {
+      "id": "V16-deposit",
+      "kind": "unknown_refund_and_dispute",
+      "status": "pass",
+      "observed": {
+        "initial": {
+          "decided": 500,
+          "disputed": 600,
+          "refunded": 0,
+          "refund_pending": 0,
+          "refundable": 1900
+        },
+        "refund_unknown": {
+          "decided": 500,
+          "disputed": 600,
+          "refunded": 0,
+          "refund_pending": 1900,
+          "refundable": 0
+        },
+        "resolved_while_first_refund_unknown": {
+          "decided": 800,
+          "disputed": 0,
+          "refunded": 0,
+          "refund_pending": 1900,
+          "refundable": 300
+        },
+        "final": {
+          "decided": 800,
+          "disputed": 0,
+          "refunded": 2200,
+          "refund_pending": 0,
+          "refundable": 0
+        },
+        "double_refund_allocation": "rejected"
+      }
+    },
+    {
+      "id": "V16-liability",
+      "kind": "counterexample",
+      "status": "pass",
+      "observed": {
+        "repair_total": 65000,
+        "approved_deduction": 12000,
+        "counterexample_blanket_repair_deduction_overstates": 53000,
+        "overlapping_signed_future_lease": "rejected",
+        "counterexample_active_only_filter_misses_conflict": true
+      }
+    },
+    {
+      "id": "P05-stale-writers",
+      "kind": "sqlite_interleaving",
+      "status": "pass",
+      "observed": {
+        "read_versions": [
+          0,
+          0
+        ],
+        "accepted_rows": [
+          1,
+          0
+        ],
+        "free": 0,
+        "scope": "real SQLite CAS interleaving; not PostgreSQL/HTTP load"
+      }
+    },
+    {
+      "id": "P05-local-recovery",
+      "kind": "sqlite_failure_injection_isolation",
+      "status": "pass",
+      "observed": {
+        "injected_local_failure": "rolled back",
+        "reopen": "one T1 effect persisted",
+        "duplicate_effect": "unique constraint rejected",
+        "T2_scoped_amount": 777,
+        "counterexample_unscoped_matches": 2,
+        "scope": "local SQLite atomic transaction; external payment is not in this transaction"
+      }
+    }
+  ]
+}

@@ -1,0 +1,1018 @@
+{
+  "contract_version": "1.0",
+  "case_id": "X01",
+  "title": "从租户开通到 AI 服务退出",
+  "scope": "synthetic 内部文档问答的开通、隔离、配额、计量与退出；不实现真实付款或法律保留判断",
+  "synthetic": true,
+  "source_ids": [
+    "FRONTIER",
+    "OKTA_SCIM",
+    "P03-SRC-postgresql-rls",
+    "P03-SRC-stripe-meter-events",
+    "SAAS_LENS",
+    "SAAS_SILO",
+    "STRIPE_WEBHOOK"
+  ],
+  "nodes": [
+    {
+      "id": "X01:actor:admin",
+      "type": "actor",
+      "label": "租户管理员",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound"
+    },
+    {
+      "id": "X01:actor:member",
+      "type": "actor",
+      "label": "员工",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound"
+    },
+    {
+      "id": "X01:ui:console",
+      "type": "ui",
+      "label": "租户控制台",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound"
+    },
+    {
+      "id": "X01:ui:chat",
+      "type": "ui",
+      "label": "问答与用量",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound"
+    },
+    {
+      "id": "X01:service:control",
+      "type": "service",
+      "label": "租户控制服务",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound"
+    },
+    {
+      "id": "X01:service:runtime",
+      "type": "service",
+      "label": "授权检索与执行服务",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound"
+    },
+    {
+      "id": "X01:service:billing",
+      "type": "service",
+      "label": "计量与账务服务",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound"
+    },
+    {
+      "id": "X01:store:db",
+      "type": "store",
+      "label": "事务数据库/操作与outbox",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound"
+    },
+    {
+      "id": "X01:store:docs",
+      "type": "store",
+      "label": "文档与ACL存储",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound"
+    },
+    {
+      "id": "X01:store:ledger",
+      "type": "store",
+      "label": "持久计量inbox与账本",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound"
+    },
+    {
+      "id": "X01:object:tenant",
+      "type": "object",
+      "label": "Tenant",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound"
+    },
+    {
+      "id": "X01:object:membership",
+      "type": "object",
+      "label": "Membership",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound"
+    },
+    {
+      "id": "X01:object:run",
+      "type": "object",
+      "label": "Run",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound"
+    },
+    {
+      "id": "X01:object:usage-entry",
+      "type": "object",
+      "label": "Usage entry",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound"
+    },
+    {
+      "id": "X01:object:bill",
+      "type": "object",
+      "label": "Bill",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound"
+    },
+    {
+      "id": "X01:event:usage-event",
+      "type": "event",
+      "label": "终态用量事件",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound"
+    },
+    {
+      "id": "X01:event:bill-event",
+      "type": "event",
+      "label": "provider通知",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound"
+    },
+    {
+      "id": "X01:rule:policy",
+      "type": "rule",
+      "label": "租户/成员epoch与预留guard",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound"
+    },
+    {
+      "id": "X01:external_system:model",
+      "type": "external_system",
+      "label": "未指定模型 provider",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound"
+    },
+    {
+      "id": "X01:external_system:provisioner",
+      "type": "external_system",
+      "label": "未指定资源开通系统",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound"
+    },
+    {
+      "id": "X01:external_system:identity",
+      "type": "external_system",
+      "label": "Okta SCIM 参照",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound"
+    },
+    {
+      "id": "X01:external_system:stripe",
+      "type": "external_system",
+      "label": "Stripe计量参照",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound"
+    }
+  ],
+  "edges": [
+    {
+      "id": "X01:edge:admin-console",
+      "type": "operates",
+      "from": "X01:actor:admin",
+      "to": "X01:ui:console",
+      "payload": "当前tenant与管理员会话",
+      "timing": "sync",
+      "invariant": "动作在后端重检",
+      "failure": "UI stale时拒绝",
+      "basis": "synthetic",
+      "claim_ids": [
+        "X01:claim:policy"
+      ]
+    },
+    {
+      "id": "X01:edge:member-chat",
+      "type": "operates",
+      "from": "X01:actor:member",
+      "to": "X01:ui:chat",
+      "payload": "tenant选择与提问",
+      "timing": "sync",
+      "invariant": "不能继承上个工作区响应",
+      "failure": "切换时清空视图并丢弃旧请求结果",
+      "basis": "synthetic",
+      "claim_ids": [
+        "X01:claim:policy"
+      ]
+    },
+    {
+      "id": "X01:edge:onboard",
+      "type": "commands",
+      "from": "X01:ui:console",
+      "to": "X01:service:control",
+      "payload": "operation_id、plan_version、expected_tenant_version",
+      "timing": "sync",
+      "invariant": "保存operation后才调外部",
+      "failure": "重复点击返回同一operation",
+      "basis": "synthetic",
+      "claim_ids": [
+        "X01:claim:policy"
+      ]
+    },
+    {
+      "id": "X01:edge:query",
+      "type": "commands",
+      "from": "X01:ui:chat",
+      "to": "X01:service:runtime",
+      "payload": "run_id、question、document_scope",
+      "timing": "sync",
+      "invariant": "tenant来自可信membership",
+      "failure": "不信任客户端tenant与提示词指令",
+      "basis": "synthetic",
+      "claim_ids": [
+        "X01:claim:authority-design"
+      ]
+    },
+    {
+      "id": "X01:edge:control-tenant",
+      "type": "owns",
+      "from": "X01:service:control",
+      "to": "X01:object:tenant",
+      "payload": "租户状态、generation、保留清单",
+      "timing": "static",
+      "invariant": "purged须清单全部核对",
+      "failure": "部分失败保持retained",
+      "basis": "synthetic",
+      "claim_ids": [
+        "X01:claim:policy"
+      ]
+    },
+    {
+      "id": "X01:edge:control-membership",
+      "type": "owns",
+      "from": "X01:service:control",
+      "to": "X01:object:membership",
+      "payload": "成员与epoch",
+      "timing": "static",
+      "invariant": "撤销先挡本地入口",
+      "failure": "迟到激活不得越过epoch",
+      "basis": "synthetic",
+      "claim_ids": [
+        "X01:claim:authority-design"
+      ]
+    },
+    {
+      "id": "X01:edge:run-owner",
+      "type": "owns",
+      "from": "X01:service:runtime",
+      "to": "X01:object:run",
+      "payload": "执行终态与provider request映射",
+      "timing": "static",
+      "invariant": "最终授权复检",
+      "failure": "unknown不伪装failed",
+      "basis": "synthetic",
+      "claim_ids": [
+        "X01:claim:authority-design"
+      ]
+    },
+    {
+      "id": "X01:edge:usage-owner",
+      "type": "owns",
+      "from": "X01:service:billing",
+      "to": "X01:object:usage-entry",
+      "payload": "消费身份和revision",
+      "timing": "static",
+      "invariant": "唯一且冲突隔离",
+      "failure": "冲突阻断账单",
+      "basis": "synthetic",
+      "claim_ids": [
+        "X01:claim:ledger-design"
+      ]
+    },
+    {
+      "id": "X01:edge:bill-owner",
+      "type": "owns",
+      "from": "X01:service:billing",
+      "to": "X01:object:bill",
+      "payload": "窗口、明细摘要与价格版本",
+      "timing": "static",
+      "invariant": "冻结后用调整记录",
+      "failure": "迟到不静默重写",
+      "basis": "synthetic",
+      "claim_ids": [
+        "X01:claim:ledger-design"
+      ]
+    },
+    {
+      "id": "X01:edge:persist-tenant",
+      "type": "stores",
+      "from": "X01:store:db",
+      "to": "X01:object:tenant",
+      "payload": "含tenant的对象版本与审计记录",
+      "timing": "sync",
+      "invariant": "同事务持久操作和本地效果",
+      "failure": "提交失败不宣告成功",
+      "basis": "synthetic",
+      "claim_ids": [
+        "X01:claim:policy"
+      ]
+    },
+    {
+      "id": "X01:edge:persist-membership",
+      "type": "stores",
+      "from": "X01:store:db",
+      "to": "X01:object:membership",
+      "payload": "含tenant的对象版本与审计记录",
+      "timing": "sync",
+      "invariant": "同事务持久操作和本地效果",
+      "failure": "提交失败不宣告成功",
+      "basis": "synthetic",
+      "claim_ids": [
+        "X01:claim:policy"
+      ]
+    },
+    {
+      "id": "X01:edge:persist-run",
+      "type": "stores",
+      "from": "X01:store:db",
+      "to": "X01:object:run",
+      "payload": "含tenant的对象版本与审计记录",
+      "timing": "sync",
+      "invariant": "同事务持久操作和本地效果",
+      "failure": "提交失败不宣告成功",
+      "basis": "synthetic",
+      "claim_ids": [
+        "X01:claim:policy"
+      ]
+    },
+    {
+      "id": "X01:edge:persist-bill",
+      "type": "stores",
+      "from": "X01:store:db",
+      "to": "X01:object:bill",
+      "payload": "含tenant的对象版本与审计记录",
+      "timing": "sync",
+      "invariant": "同事务持久操作和本地效果",
+      "failure": "提交失败不宣告成功",
+      "basis": "synthetic",
+      "claim_ids": [
+        "X01:claim:policy"
+      ]
+    },
+    {
+      "id": "X01:edge:persist-entry",
+      "type": "stores",
+      "from": "X01:store:ledger",
+      "to": "X01:object:usage-entry",
+      "payload": "run/meter/revision/实际量/资格",
+      "timing": "sync",
+      "invariant": "键冲突比较payload",
+      "failure": "quarantine可见",
+      "basis": "synthetic",
+      "claim_ids": [
+        "X01:claim:ledger-design"
+      ]
+    },
+    {
+      "id": "X01:edge:read-control",
+      "type": "reads",
+      "from": "X01:service:control",
+      "to": "X01:store:db",
+      "payload": "状态、epoch、开通清单",
+      "timing": "sync",
+      "invariant": "读权威状态",
+      "failure": "禁止用过期cache授权",
+      "basis": "synthetic",
+      "claim_ids": [
+        "X01:claim:authority-design"
+      ]
+    },
+    {
+      "id": "X01:edge:read-runtime",
+      "type": "reads",
+      "from": "X01:service:runtime",
+      "to": "X01:store:db",
+      "payload": "membership、quota、预留",
+      "timing": "sync",
+      "invariant": "准入原子检查额度",
+      "failure": "竞争时排队或拒绝",
+      "basis": "synthetic",
+      "claim_ids": [
+        "X01:claim:quota-design"
+      ]
+    },
+    {
+      "id": "X01:edge:read-docs",
+      "type": "reads",
+      "from": "X01:service:runtime",
+      "to": "X01:store:docs",
+      "payload": "tenant、document_id、ACL版本",
+      "timing": "sync",
+      "invariant": "候选和最终来源均授权",
+      "failure": "无权限文档不得进入模型上下文",
+      "basis": "synthetic",
+      "claim_ids": [
+        "X01:claim:authority-design"
+      ]
+    },
+    {
+      "id": "X01:edge:authorize",
+      "type": "authorizes",
+      "from": "X01:rule:policy",
+      "to": "X01:service:runtime",
+      "payload": "当前tenant、membership、epoch、额度",
+      "timing": "sync",
+      "invariant": "准入与交付复检",
+      "failure": "检索后撤销阻断交付",
+      "basis": "synthetic",
+      "claim_ids": [
+        "X01:claim:quota-design"
+      ]
+    },
+    {
+      "id": "X01:edge:provision",
+      "type": "requests",
+      "from": "X01:service:control",
+      "to": "X01:external_system:provisioner",
+      "payload": "operation、tenant generation、目标配置",
+      "timing": "async",
+      "invariant": "资源归属原operation",
+      "failure": "timeout按operation清单回查",
+      "basis": "synthetic",
+      "claim_ids": [
+        "X01:claim:policy"
+      ]
+    },
+    {
+      "id": "X01:edge:provision-check",
+      "type": "reads",
+      "from": "X01:service:control",
+      "to": "X01:external_system:provisioner",
+      "payload": "原operation资源清单与探针",
+      "timing": "async",
+      "invariant": "全部确认才active",
+      "failure": "无法确认保持provisioning",
+      "basis": "synthetic",
+      "claim_ids": [
+        "X01:claim:policy"
+      ]
+    },
+    {
+      "id": "X01:edge:identity-sync",
+      "type": "requests",
+      "from": "X01:service:control",
+      "to": "X01:external_system:identity",
+      "payload": "应用成员停用请求与映射",
+      "timing": "async",
+      "invariant": "停用不表示数据擦除",
+      "failure": "按实际适配协议核对，不声称存在本例endpoint",
+      "basis": "synthetic",
+      "claim_ids": [
+        "X01:claim:policy"
+      ]
+    },
+    {
+      "id": "X01:edge:identity-check",
+      "type": "reads",
+      "from": "X01:service:control",
+      "to": "X01:external_system:identity",
+      "payload": "成员同步回执",
+      "timing": "async",
+      "invariant": "与本地epoch核对",
+      "failure": "无法读取则人工接管",
+      "basis": "synthetic",
+      "claim_ids": [
+        "X01:claim:policy"
+      ]
+    },
+    {
+      "id": "X01:edge:model-request",
+      "type": "requests",
+      "from": "X01:service:runtime",
+      "to": "X01:external_system:model",
+      "payload": "授权片段、run、限制预算",
+      "timing": "async",
+      "invariant": "不含他租户资料",
+      "failure": "unknown保留预留并查provider请求",
+      "basis": "synthetic",
+      "claim_ids": [
+        "X01:claim:authority-design"
+      ]
+    },
+    {
+      "id": "X01:edge:model-reconcile",
+      "type": "reads",
+      "from": "X01:service:runtime",
+      "to": "X01:external_system:model",
+      "payload": "原provider request的状态/用量",
+      "timing": "async",
+      "invariant": "只有provider支持时自动查",
+      "failure": "无查询能力转人工",
+      "basis": "synthetic",
+      "claim_ids": [
+        "X01:claim:quota-design"
+      ]
+    },
+    {
+      "id": "X01:edge:emit-usage",
+      "type": "emits",
+      "from": "X01:service:runtime",
+      "to": "X01:event:usage-event",
+      "payload": "tenant/run/meter/revision/actual/status/time",
+      "timing": "async",
+      "invariant": "本地终态与outbox同事务",
+      "failure": "提交后崩溃可重放",
+      "basis": "synthetic",
+      "claim_ids": [
+        "X01:claim:ledger-design"
+      ]
+    },
+    {
+      "id": "X01:edge:deliver-usage",
+      "type": "delivers",
+      "from": "X01:event:usage-event",
+      "to": "X01:store:ledger",
+      "payload": "不可变用量payload",
+      "timing": "async",
+      "invariant": "重复不得累加",
+      "failure": "相同键不同值quarantine",
+      "basis": "synthetic",
+      "claim_ids": [
+        "X01:claim:ledger-design"
+      ]
+    },
+    {
+      "id": "X01:edge:read-ledger",
+      "type": "reads",
+      "from": "X01:service:billing",
+      "to": "X01:store:ledger",
+      "payload": "窗口内最新连续revision的用量",
+      "timing": "batch",
+      "invariant": "业务时间半开窗口",
+      "failure": "版本缺口阻断冻结",
+      "basis": "synthetic",
+      "claim_ids": [
+        "X01:claim:ledger-design"
+      ]
+    },
+    {
+      "id": "X01:edge:derive-bill",
+      "type": "derived_from",
+      "from": "X01:object:bill",
+      "to": "X01:object:usage-entry",
+      "payload": "明细摘要和价格版本",
+      "timing": "batch",
+      "invariant": "失败成本与计费量分开",
+      "failure": "错误资格造成多收费",
+      "basis": "synthetic",
+      "claim_ids": [
+        "X01:claim:ledger-design"
+      ]
+    },
+    {
+      "id": "X01:edge:send-meter",
+      "type": "requests",
+      "from": "X01:service:billing",
+      "to": "X01:external_system:stripe",
+      "payload": "稳定delivery ID、customer映射、meter量",
+      "timing": "async",
+      "invariant": "安全重试遵循实际provider范围",
+      "failure": "timeout不新建业务消费",
+      "basis": "synthetic",
+      "claim_ids": [
+        "X01:claim:ledger-design"
+      ]
+    },
+    {
+      "id": "X01:edge:meter-notice",
+      "type": "emits",
+      "from": "X01:external_system:stripe",
+      "to": "X01:event:bill-event",
+      "payload": "event ID、对象与账户映射",
+      "timing": "async",
+      "invariant": "通知不等于完整账单确认",
+      "failure": "可能重复或乱序",
+      "basis": "synthetic",
+      "claim_ids": [
+        "X01:claim:ledger-design"
+      ]
+    },
+    {
+      "id": "X01:edge:verify-notice",
+      "type": "delivers",
+      "from": "X01:event:bill-event",
+      "to": "X01:service:billing",
+      "payload": "已验签通知、raw body处理边界",
+      "timing": "async",
+      "invariant": "验签后durable inbox再处理",
+      "failure": "签名失败拒收；持久化失败不确认",
+      "basis": "synthetic",
+      "claim_ids": [
+        "X01:claim:ledger-design"
+      ]
+    },
+    {
+      "id": "X01:edge:bill-reconcile",
+      "type": "reads",
+      "from": "X01:service:billing",
+      "to": "X01:external_system:stripe",
+      "payload": "原请求、汇总、账单与错误报告",
+      "timing": "async",
+      "invariant": "受理不等于已计入账单",
+      "failure": "unknown人工核对",
+      "basis": "synthetic",
+      "claim_ids": [
+        "X01:claim:ledger-design"
+      ]
+    },
+    {
+      "id": "X01:edge:tenant-progress",
+      "type": "projects",
+      "from": "X01:object:tenant",
+      "to": "X01:ui:console",
+      "payload": "状态、阶段、operation、核对时间",
+      "timing": "async",
+      "invariant": "不提前active/purged",
+      "failure": "陈旧投影显示更新时间",
+      "basis": "synthetic",
+      "claim_ids": [
+        "X01:claim:policy"
+      ]
+    },
+    {
+      "id": "X01:edge:run-progress",
+      "type": "projects",
+      "from": "X01:object:run",
+      "to": "X01:ui:chat",
+      "payload": "分段序号、终态、引用、run ID",
+      "timing": "async",
+      "invariant": "授权撤销后不给答案",
+      "failure": "断网按run找回",
+      "basis": "synthetic",
+      "claim_ids": [
+        "X01:claim:authority-design"
+      ]
+    },
+    {
+      "id": "X01:edge:bill-view",
+      "type": "projects",
+      "from": "X01:object:bill",
+      "to": "X01:ui:chat",
+      "payload": "成本量/计费量/核对状态",
+      "timing": "async",
+      "invariant": "显示各自含义",
+      "failure": "未核对标pending",
+      "basis": "synthetic",
+      "claim_ids": [
+        "X01:claim:ledger-design"
+      ]
+    }
+  ],
+  "lifecycles": [
+    {
+      "object_id": "X01:object:tenant",
+      "states": [
+        "requested",
+        "provisioning",
+        "blocked",
+        "active",
+        "draining",
+        "retained",
+        "purged"
+      ],
+      "transitions": [
+        {
+          "from": "requested",
+          "to": "provisioning",
+          "trigger": "接受开通",
+          "guard": "管理员与套餐版本有效",
+          "durable_effect": "保存operation/资源任务",
+          "recovery": "原operation续跑"
+        },
+        {
+          "from": "provisioning",
+          "to": "blocked",
+          "trigger": "确定配置失败",
+          "guard": "已记录错误",
+          "durable_effect": "保存失败阶段",
+          "recovery": "修正后重新检查"
+        },
+        {
+          "from": "blocked",
+          "to": "provisioning",
+          "trigger": "恢复配置",
+          "guard": "变更获准",
+          "durable_effect": "记录修正",
+          "recovery": "继续原清单"
+        },
+        {
+          "from": "provisioning",
+          "to": "active",
+          "trigger": "探针完成",
+          "guard": "资源/成员/隔离全部确认",
+          "durable_effect": "提交active",
+          "recovery": "若投影迟到查询权威"
+        },
+        {
+          "from": "active",
+          "to": "draining",
+          "trigger": "退出请求",
+          "guard": "管理员授权及版本匹配",
+          "durable_effect": "提高epoch并禁止新run",
+          "recovery": "继续核对在途"
+        },
+        {
+          "from": "draining",
+          "to": "retained",
+          "trigger": "排空完成",
+          "guard": "run终态/费用核对齐全",
+          "durable_effect": "保存截止与清单",
+          "recovery": "缺项保持draining"
+        },
+        {
+          "from": "retained",
+          "to": "purged",
+          "trigger": "保留条件满足",
+          "guard": "无hold且所有清理回执齐备",
+          "durable_effect": "保存最小擦除回执",
+          "recovery": "失败项重试，不提前声明完成"
+        }
+      ]
+    },
+    {
+      "object_id": "X01:object:membership",
+      "states": [
+        "pending",
+        "active",
+        "revoked"
+      ],
+      "transitions": [
+        {
+          "from": "pending",
+          "to": "active",
+          "trigger": "绑定确认",
+          "guard": "tenant及generation匹配",
+          "durable_effect": "保存身份映射与epoch",
+          "recovery": "重复返回同一绑定"
+        },
+        {
+          "from": "active",
+          "to": "revoked",
+          "trigger": "撤销/退出",
+          "guard": "控制服务授权",
+          "durable_effect": "提高epoch并挡运行入口",
+          "recovery": "旧激活消息不得复活"
+        }
+      ]
+    },
+    {
+      "object_id": "X01:object:run",
+      "states": [
+        "queued",
+        "running",
+        "succeeded",
+        "failed",
+        "unknown"
+      ],
+      "transitions": [
+        {
+          "from": "queued",
+          "to": "running",
+          "trigger": "worker取任务",
+          "guard": "membership有效且预留成功",
+          "durable_effect": "保存开始与尝试身份",
+          "recovery": "重放同一run"
+        },
+        {
+          "from": "running",
+          "to": "succeeded",
+          "trigger": "结果确认",
+          "guard": "引用合法且epoch复检通过",
+          "durable_effect": "结果/用量/outbox同事务",
+          "recovery": "重放outbox"
+        },
+        {
+          "from": "running",
+          "to": "failed",
+          "trigger": "明确拒绝或交付权限失效",
+          "guard": "记录已消耗量",
+          "durable_effect": "终态/成本/非计费标记",
+          "recovery": "按已知量释放多余预留"
+        },
+        {
+          "from": "running",
+          "to": "unknown",
+          "trigger": "调用timeout",
+          "guard": "外部结果不明",
+          "durable_effect": "保存provider请求身份/预留",
+          "recovery": "回查或人工"
+        },
+        {
+          "from": "unknown",
+          "to": "succeeded",
+          "trigger": "回查确认",
+          "guard": "结果仍可授权交付",
+          "durable_effect": "结算一次",
+          "recovery": "已撤销则进入failed"
+        },
+        {
+          "from": "unknown",
+          "to": "failed",
+          "trigger": "确认终止或不可交付",
+          "guard": "消耗已核定",
+          "durable_effect": "成本入账/释放余额",
+          "recovery": "不得无依据假设零消耗"
+        },
+        {
+          "from": "queued",
+          "to": "failed",
+          "trigger": "排队期间退出、撤权或取消",
+          "guard": "同run条件更新证明尚未派发；已知准备成本可核定",
+          "durable_effect": "保存未交付原因、零或已知成本、结算并释放预留",
+          "recovery": "若并发worker已派发则不能走此转换，转running/unknown核对"
+        }
+      ]
+    },
+    {
+      "object_id": "X01:object:usage-entry",
+      "states": [
+        "recorded",
+        "reconciled",
+        "quarantined"
+      ],
+      "transitions": [
+        {
+          "from": "recorded",
+          "to": "reconciled",
+          "trigger": "窗口核对",
+          "guard": "payload与最新连续revision一致",
+          "durable_effect": "记录核对依据",
+          "recovery": "重复不新增"
+        },
+        {
+          "from": "recorded",
+          "to": "quarantined",
+          "trigger": "冲突/缺版本",
+          "guard": "相同键不同payload或链不全",
+          "durable_effect": "保存冲突证据",
+          "recovery": "人工确认后新revision"
+        },
+        {
+          "from": "quarantined",
+          "to": "reconciled",
+          "trigger": "补齐依据",
+          "guard": "无未解冲突",
+          "durable_effect": "保留修正链",
+          "recovery": "未解保持隔离"
+        }
+      ]
+    },
+    {
+      "object_id": "X01:object:bill",
+      "states": [
+        "open",
+        "frozen",
+        "submitted",
+        "unknown",
+        "reconciled"
+      ],
+      "transitions": [
+        {
+          "from": "open",
+          "to": "frozen",
+          "trigger": "结算窗口关闭",
+          "guard": "明细/价格固定且无quarantine",
+          "durable_effect": "保存摘要与金额",
+          "recovery": "迟到走调整"
+        },
+        {
+          "from": "frozen",
+          "to": "submitted",
+          "trigger": "provider受理",
+          "guard": "请求身份与映射有效",
+          "durable_effect": "保存受理回执",
+          "recovery": "继续查汇总"
+        },
+        {
+          "from": "frozen",
+          "to": "unknown",
+          "trigger": "外部timeout",
+          "guard": "无法确认受理",
+          "durable_effect": "保留delivery ID",
+          "recovery": "先核对不新建"
+        },
+        {
+          "from": "unknown",
+          "to": "submitted",
+          "trigger": "回查受理",
+          "guard": "原请求一致",
+          "durable_effect": "保存回执",
+          "recovery": "受理仍未代表账单正确"
+        },
+        {
+          "from": "submitted",
+          "to": "reconciled",
+          "trigger": "明细对账",
+          "guard": "本地/外部汇总/账单相符",
+          "durable_effect": "保存核对记录",
+          "recovery": "差异留submitted并调查"
+        }
+      ]
+    }
+  ],
+  "algorithm_ids": [
+    "ALG:lookup",
+    "ALG:windows",
+    "ALG:scheduling",
+    "ALG:caches"
+  ],
+  "claim_ids": [
+    "X01:claim:tenant-context",
+    "X01:claim:silo-model",
+    "X01:claim:scim-deactivate",
+    "X01:claim:metering-api",
+    "X01:claim:rls-boundary",
+    "X01:claim:frontier-identity",
+    "X01:claim:webhook-boundary",
+    "X01:claim:policy",
+    "X01:claim:ledger-design",
+    "X01:claim:quota-design",
+    "X01:claim:ai-eval-design",
+    "X01:claim:authority-design"
+  ],
+  "checks": [
+    {
+      "id": "X01:check:onboard-to-bill",
+      "kind": "happy_path",
+      "given": "A获准开通，a400 b600成功，c300失败",
+      "when": "UI提交到外部账单核对",
+      "then": "成本1300、计费1000、金额2，来源均有权",
+      "evidence_required": "UI trace、事务明细、provider汇总和账单；未执行"
+    },
+    {
+      "id": "X01:check:duplicate-payload",
+      "kind": "duplicate",
+      "given": "同一tenant/run/meter/revision重复",
+      "when": "相同payload与不同payload分别投递",
+      "then": "相同忽略；不同隔离，不多收费",
+      "evidence_required": "本地check_x01.py仅验证SQLite合成账本"
+    },
+    {
+      "id": "X01:check:reordered-revision",
+      "kind": "out_of_order",
+      "given": "revision2先于1；旧激活晚于撤销",
+      "when": "回放乱序与跨账期迟到",
+      "then": "版本缺口不得冻结；epoch不回退；不改业务窗口",
+      "evidence_required": "消息fixture、版本记录；完整集成未执行"
+    },
+    {
+      "id": "X01:check:quota-race",
+      "kind": "concurrency",
+      "given": "额度1500，两请求各800",
+      "when": "竞争预留",
+      "then": "最多一个先通过；实际400结算后第二个通过",
+      "evidence_required": "真实并发事务尚未执行；本地只穷举两种串行化顺序"
+    },
+    {
+      "id": "X01:check:same-object-two-tenants",
+      "kind": "tenant_isolation",
+      "given": "A B同时有run a与doc d1",
+      "when": "检索、缓存、导出及meter重放",
+      "then": "账本分开且模型输入无越权片段",
+      "evidence_required": "SQLite键与人工AI样本已检；真实检索/RLS/cache未执行"
+    },
+    {
+      "id": "X01:check:provider-timeout",
+      "kind": "unknown_outcome",
+      "given": "provider受理后timeout",
+      "when": "恢复worker查询原尝试",
+      "then": "不再建独立消费，不擅自释放预留",
+      "evidence_required": "provider stub/真实sandbox回执未执行"
+    },
+    {
+      "id": "X01:check:outbox-restart",
+      "kind": "recovery",
+      "given": "事务提交后发送前worker中断",
+      "when": "恢复重送同一entry",
+      "then": "终态和用量均一次业务效果",
+      "evidence_required": "本地SQLite close/reopen与重复插入；无跨进程故障注入"
+    },
+    {
+      "id": "X01:check:revoke-before-delivery",
+      "kind": "authorization",
+      "given": "已检索后提高epoch",
+      "when": "交付前复检",
+      "then": "阻止交付，实际成本仍可记录",
+      "evidence_required": "本地epoch guard；服务端实际拦截未执行"
+    },
+    {
+      "id": "X01:check:eval-failures-visible",
+      "kind": "ai_eval",
+      "given": "六条固定人工预测含缺引用/编造/越权",
+      "when": "运行评分器",
+      "then": "strict3/6且权限违规1/2，不能放行",
+      "evidence_required": "check_x01.py人工fixture；非模型eval"
+    },
+    {
+      "id": "X01:check:offboard-queued",
+      "kind": "recovery",
+      "given": "tenant进入draining时仍有queued run与额度预留",
+      "when": "退出处理器与worker竞争同一run",
+      "then": "未派发则failed且结算释放；已派发则继续核对；无永远queued的阻塞",
+      "evidence_required": "本地两种串行顺序模型检查；真实并发事务与UI尚未执行"
+    }
+  ]
+}

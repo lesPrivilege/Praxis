@@ -1,0 +1,1273 @@
+{
+  "contract_version": "1.0",
+  "case_id": "V16",
+  "title": "租约、维修与押金对账",
+  "scope": "Synthetic residential unit with exclusive half-open occupancy interval, one currency; no tax, interest or FX. Case policy: release undisputed deposit while retaining a disputed amount for review; not a legal claim. IWMS is category context; Field Service supports work/booking distinctions only.",
+  "synthetic": true,
+  "source_ids": [
+    "D365_FS_ARCH",
+    "IWMS"
+  ],
+  "nodes": [
+    {
+      "id": "V16:actor:resident",
+      "type": "actor",
+      "label": "承租当事人",
+      "authority": "synthetic-design",
+      "tenant_scope": "org_id + tenancy_id; party_id and unit_id never replace tenancy identity"
+    },
+    {
+      "id": "V16:actor:manager",
+      "type": "actor",
+      "label": "物业经理与责任审核人",
+      "authority": "synthetic-design",
+      "tenant_scope": "org_id + tenancy_id; party_id and unit_id never replace tenancy identity"
+    },
+    {
+      "id": "V16:actor:dispatcher",
+      "type": "actor",
+      "label": "维护调度员",
+      "authority": "synthetic-design",
+      "tenant_scope": "org_id + tenancy_id; party_id and unit_id never replace tenancy identity"
+    },
+    {
+      "id": "V16:actor:technician",
+      "type": "actor",
+      "label": "维修技师",
+      "authority": "synthetic-design",
+      "tenant_scope": "org_id + tenancy_id; party_id and unit_id never replace tenancy identity"
+    },
+    {
+      "id": "V16:actor:finance",
+      "type": "actor",
+      "label": "结算财务",
+      "authority": "synthetic-design",
+      "tenant_scope": "org_id + tenancy_id; party_id and unit_id never replace tenancy identity"
+    },
+    {
+      "id": "V16:ui:resident-portal",
+      "type": "ui",
+      "label": "住户租约、报修与结算界面",
+      "authority": "synthetic-design",
+      "tenant_scope": "org_id + tenancy_id; party_id and unit_id never replace tenancy identity"
+    },
+    {
+      "id": "V16:ui:operations-desk",
+      "type": "ui",
+      "label": "调度、验收与押金工作台",
+      "authority": "synthetic-design",
+      "tenant_scope": "org_id + tenancy_id; party_id and unit_id never replace tenancy identity"
+    },
+    {
+      "id": "V16:service:housing",
+      "type": "service",
+      "label": "租约、占用与交接服务",
+      "authority": "synthetic-design",
+      "tenant_scope": "org_id + tenancy_id; party_id and unit_id never replace tenancy identity"
+    },
+    {
+      "id": "V16:service:maintenance",
+      "type": "service",
+      "label": "工单与预约服务",
+      "authority": "synthetic-design",
+      "tenant_scope": "org_id + tenancy_id; party_id and unit_id never replace tenancy identity"
+    },
+    {
+      "id": "V16:service:settlement",
+      "type": "service",
+      "label": "责任与押金结算服务",
+      "authority": "synthetic-design",
+      "tenant_scope": "org_id + tenancy_id; party_id and unit_id never replace tenancy identity"
+    },
+    {
+      "id": "V16:object:lease",
+      "type": "object",
+      "label": "Lease signed version",
+      "authority": "synthetic-design",
+      "tenant_scope": "org_id + tenancy_id; party_id and unit_id never replace tenancy identity"
+    },
+    {
+      "id": "V16:object:tenancy",
+      "type": "object",
+      "label": "Tenancy occupancy relation",
+      "authority": "synthetic-design",
+      "tenant_scope": "org_id + tenancy_id; party_id and unit_id never replace tenancy identity"
+    },
+    {
+      "id": "V16:object:condition-report",
+      "type": "object",
+      "label": "Inventory and condition report",
+      "authority": "synthetic-design",
+      "tenant_scope": "org_id + tenancy_id; party_id and unit_id never replace tenancy identity"
+    },
+    {
+      "id": "V16:object:work-order",
+      "type": "object",
+      "label": "Work order",
+      "authority": "synthetic-design",
+      "tenant_scope": "org_id + tenancy_id; party_id and unit_id never replace tenancy identity"
+    },
+    {
+      "id": "V16:object:booking",
+      "type": "object",
+      "label": "Booking",
+      "authority": "synthetic-design",
+      "tenant_scope": "org_id + tenancy_id; party_id and unit_id never replace tenancy identity"
+    },
+    {
+      "id": "V16:object:liability-item",
+      "type": "object",
+      "label": "Liability item",
+      "authority": "synthetic-design",
+      "tenant_scope": "org_id + tenancy_id; party_id and unit_id never replace tenancy identity"
+    },
+    {
+      "id": "V16:object:deposit-settlement",
+      "type": "object",
+      "label": "Deposit settlement",
+      "authority": "synthetic-design",
+      "tenant_scope": "org_id + tenancy_id; party_id and unit_id never replace tenancy identity"
+    },
+    {
+      "id": "V16:object:refund-operation",
+      "type": "object",
+      "label": "Refund operation",
+      "authority": "synthetic-design",
+      "tenant_scope": "org_id + tenancy_id; party_id and unit_id never replace tenancy identity"
+    },
+    {
+      "id": "V16:store:records",
+      "type": "store",
+      "label": "租约、有效时间与押金流水库",
+      "authority": "synthetic-design",
+      "tenant_scope": "org_id + tenancy_id; party_id and unit_id never replace tenancy identity"
+    },
+    {
+      "id": "V16:store:evidence",
+      "type": "store",
+      "label": "状况照片与附件存储",
+      "authority": "synthetic-design",
+      "tenant_scope": "org_id + tenancy_id; party_id and unit_id never replace tenancy identity"
+    },
+    {
+      "id": "V16:store:inbox",
+      "type": "store",
+      "label": "外部结果 inbox",
+      "authority": "synthetic-design",
+      "tenant_scope": "org_id + tenancy_id; party_id and unit_id never replace tenancy identity"
+    },
+    {
+      "id": "V16:external_system:funds",
+      "type": "external_system",
+      "label": "外部资金系统（未指定厂商）",
+      "authority": "external refund result; no integration executed",
+      "tenant_scope": "org_id + tenancy_id; party_id and unit_id never replace tenancy identity"
+    },
+    {
+      "id": "V16:event:refund-result",
+      "type": "event",
+      "label": "退款结果通知",
+      "authority": "external result verified by synthetic adapter",
+      "tenant_scope": "org_id + tenancy_id; party_id and unit_id never replace tenancy identity"
+    },
+    {
+      "id": "V16:rule:entry-window",
+      "type": "rule",
+      "label": "占用、预约与进入许可规则",
+      "authority": "synthetic-design",
+      "tenant_scope": "org_id + tenancy_id; party_id and unit_id never replace tenancy identity"
+    },
+    {
+      "id": "V16:rule:liability-policy",
+      "type": "rule",
+      "label": "合成责任认定与异议政策",
+      "authority": "synthetic-design",
+      "tenant_scope": "org_id + tenancy_id; party_id and unit_id never replace tenancy identity"
+    }
+  ],
+  "edges": [
+    {
+      "id": "V16:edge:resident-ui",
+      "type": "operates",
+      "from": "V16:actor:resident",
+      "to": "V16:ui:resident-portal",
+      "payload": "本人 tenancy 的租约、请求、清单与押金",
+      "timing": "sync",
+      "invariant": "不能凭共享房号读取前任住户档案",
+      "failure": "拒绝并记录授权失败",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V16:edge:manager-ui",
+      "type": "operates",
+      "from": "V16:actor:manager",
+      "to": "V16:ui:operations-desk",
+      "payload": "职责范围内的工作与记录",
+      "timing": "sync",
+      "invariant": "技师不默认访问押金争议和私人档案",
+      "failure": "角色权限变化立即重新核验",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V16:edge:dispatcher-ui",
+      "type": "operates",
+      "from": "V16:actor:dispatcher",
+      "to": "V16:ui:operations-desk",
+      "payload": "职责范围内的工作与记录",
+      "timing": "sync",
+      "invariant": "技师不默认访问押金争议和私人档案",
+      "failure": "角色权限变化立即重新核验",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V16:edge:technician-ui",
+      "type": "operates",
+      "from": "V16:actor:technician",
+      "to": "V16:ui:operations-desk",
+      "payload": "职责范围内的工作与记录",
+      "timing": "sync",
+      "invariant": "技师不默认访问押金争议和私人档案",
+      "failure": "角色权限变化立即重新核验",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V16:edge:finance-ui",
+      "type": "operates",
+      "from": "V16:actor:finance",
+      "to": "V16:ui:operations-desk",
+      "payload": "职责范围内的工作与记录",
+      "timing": "sync",
+      "invariant": "技师不默认访问押金争议和私人档案",
+      "failure": "角色权限变化立即重新核验",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V16:edge:housing-command",
+      "type": "commands",
+      "from": "V16:ui:resident-portal",
+      "to": "V16:service:housing",
+      "payload": "lease/tenancy/report ID + version + operation ID",
+      "timing": "sync",
+      "invariant": "同一人不同 tenancy 不能合并历史",
+      "failure": "过期版本返回差异",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V16:edge:maintenance-command",
+      "type": "commands",
+      "from": "V16:ui:resident-portal",
+      "to": "V16:service:maintenance",
+      "payload": "空间、资产、症状、进入窗口与附件",
+      "timing": "sync",
+      "invariant": "提交请求不代表预约成功",
+      "failure": "显示请求已保存及待分配状态",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V16:edge:booking-command",
+      "type": "commands",
+      "from": "V16:ui:operations-desk",
+      "to": "V16:service:maintenance",
+      "payload": "resource/time window + entry permission version",
+      "timing": "sync",
+      "invariant": "服务器检查资源与进入许可",
+      "failure": "返回冲突区间或许可失效原因",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V16:edge:settlement-command",
+      "type": "commands",
+      "from": "V16:ui:operations-desk",
+      "to": "V16:service:settlement",
+      "payload": "liability or refund action + settlement version",
+      "timing": "sync",
+      "invariant": "扣除需责任依据，退款需余额预留",
+      "failure": "并发冲突返回已提交操作",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V16:edge:dispute-command",
+      "type": "commands",
+      "from": "V16:ui:resident-portal",
+      "to": "V16:service:settlement",
+      "payload": "liability item + response + supporting evidence",
+      "timing": "sync",
+      "invariant": "争议响应不撤销已发生维修事实",
+      "failure": "保留双方意见并等待复核",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V16:edge:owns-lease",
+      "type": "owns",
+      "from": "V16:service:housing",
+      "to": "V16:object:lease",
+      "payload": "签署、占用与交接权威记录",
+      "timing": "static",
+      "invariant": "空间、当事人、占用关系身份独立",
+      "failure": "修订保留原版本",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V16:edge:owns-tenancy",
+      "type": "owns",
+      "from": "V16:service:housing",
+      "to": "V16:object:tenancy",
+      "payload": "签署、占用与交接权威记录",
+      "timing": "static",
+      "invariant": "空间、当事人、占用关系身份独立",
+      "failure": "修订保留原版本",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V16:edge:owns-condition",
+      "type": "owns",
+      "from": "V16:service:housing",
+      "to": "V16:object:condition-report",
+      "payload": "签署、占用与交接权威记录",
+      "timing": "static",
+      "invariant": "空间、当事人、占用关系身份独立",
+      "failure": "修订保留原版本",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V16:edge:owns-work",
+      "type": "owns",
+      "from": "V16:service:maintenance",
+      "to": "V16:object:work-order",
+      "payload": "任务与单次预约的权威状态",
+      "timing": "static",
+      "invariant": "完成一个预约不代表总工单关闭",
+      "failure": "重排保留失败预约",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V16:edge:owns-booking",
+      "type": "owns",
+      "from": "V16:service:maintenance",
+      "to": "V16:object:booking",
+      "payload": "任务与单次预约的权威状态",
+      "timing": "static",
+      "invariant": "完成一个预约不代表总工单关闭",
+      "failure": "重排保留失败预约",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V16:edge:owns-liability",
+      "type": "owns",
+      "from": "V16:service:settlement",
+      "to": "V16:object:liability-item",
+      "payload": "责任决定、金额分桶与操作身份",
+      "timing": "static",
+      "invariant": "维修支出不自动成为押金扣除",
+      "failure": "争议不强制改为已接受",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V16:edge:owns-settlement",
+      "type": "owns",
+      "from": "V16:service:settlement",
+      "to": "V16:object:deposit-settlement",
+      "payload": "责任决定、金额分桶与操作身份",
+      "timing": "static",
+      "invariant": "维修支出不自动成为押金扣除",
+      "failure": "争议不强制改为已接受",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V16:edge:owns-refund",
+      "type": "owns",
+      "from": "V16:service:settlement",
+      "to": "V16:object:refund-operation",
+      "payload": "责任决定、金额分桶与操作身份",
+      "timing": "static",
+      "invariant": "维修支出不自动成为押金扣除",
+      "failure": "争议不强制改为已接受",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V16:edge:tenancy-lease",
+      "type": "derived_from",
+      "from": "V16:object:tenancy",
+      "to": "V16:object:lease",
+      "payload": "签署版本、有效区间与当事人",
+      "timing": "static",
+      "invariant": "实际交接与合同期间分别记录",
+      "failure": "迟到记录创建复核项，不改历史遮蔽冲突",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V16:edge:condition-tenancy",
+      "type": "depends_on",
+      "from": "V16:object:condition-report",
+      "to": "V16:object:tenancy",
+      "payload": "资产与入住/退租时间上下文",
+      "timing": "static",
+      "invariant": "照片归属确定 tenancy",
+      "failure": "缺证保留 contested，不移用别段入住证据",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V16:edge:work-tenancy",
+      "type": "depends_on",
+      "from": "V16:object:work-order",
+      "to": "V16:object:tenancy",
+      "payload": "本例室内工作所需占用和进入上下文",
+      "timing": "static",
+      "invariant": "仅限需核对居民进入权的工作；不泛化公共设施",
+      "failure": "租期改变后重新核对进入许可",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V16:edge:booking-work",
+      "type": "depends_on",
+      "from": "V16:object:booking",
+      "to": "V16:object:work-order",
+      "payload": "任务需求、技能、必需次数",
+      "timing": "static",
+      "invariant": "本次预约结果不能替代全部工作验收",
+      "failure": "no_access 触发重排且工单未关闭",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V16:edge:liability-condition",
+      "type": "derived_from",
+      "from": "V16:object:liability-item",
+      "to": "V16:object:condition-report",
+      "payload": "前后状态、证据时刻与双方意见",
+      "timing": "static",
+      "invariant": "证据不足不自动归责",
+      "failure": "保留争议和补证请求",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V16:edge:liability-work",
+      "type": "derived_from",
+      "from": "V16:object:liability-item",
+      "to": "V16:object:work-order",
+      "payload": "实际维修及支出证据",
+      "timing": "static",
+      "invariant": "成本900不自动等于责任900",
+      "failure": "责任金额单独批准或裁定",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V16:claim:separate-liability"
+      ]
+    },
+    {
+      "id": "V16:edge:settlement-liability",
+      "type": "depends_on",
+      "from": "V16:object:deposit-settlement",
+      "to": "V16:object:liability-item",
+      "payload": "已接受、争议、已解决的责任金额",
+      "timing": "static",
+      "invariant": "争议桶与已扣除桶分开",
+      "failure": "解决争议仅释放差额一次",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V16:claim:computation"
+      ]
+    },
+    {
+      "id": "V16:edge:refund-settlement",
+      "type": "depends_on",
+      "from": "V16:object:refund-operation",
+      "to": "V16:object:deposit-settlement",
+      "payload": "可退余额、版本与唯一操作身份",
+      "timing": "static",
+      "invariant": "unknown 金额仍预留",
+      "failure": "查询原操作不能重新释放同一金额",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V16:edge:entry-guard",
+      "type": "authorizes",
+      "from": "V16:rule:entry-window",
+      "to": "V16:service:maintenance",
+      "payload": "半开占用区间、资源可用性与普通入户同意",
+      "timing": "sync",
+      "invariant": "变更 booking 需重新核验许可",
+      "failure": "紧急动作本例不自动授权",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V16:edge:liability-guard",
+      "type": "authorizes",
+      "from": "V16:rule:liability-policy",
+      "to": "V16:service:settlement",
+      "payload": "证据、当事人答复和人工复核",
+      "timing": "sync",
+      "invariant": "无争议先退只是合成政策",
+      "failure": "规则不适用时停止自动结算并交专业复核",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V16:edge:review-authority",
+      "type": "authorizes",
+      "from": "V16:actor:manager",
+      "to": "V16:service:maintenance",
+      "payload": "完工复核权限",
+      "timing": "sync",
+      "invariant": "全部必需任务完成才关闭",
+      "failure": "缺件/未进入仍待处理",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V16:edge:refund-authority",
+      "type": "authorizes",
+      "from": "V16:actor:finance",
+      "to": "V16:service:settlement",
+      "payload": "退款权限与可用余额",
+      "timing": "sync",
+      "invariant": "操作权限不替代余额与版本检查",
+      "failure": "权限撤回或余额冲突拒绝",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V16:edge:store-lease",
+      "type": "stores",
+      "from": "V16:store:records",
+      "to": "V16:object:lease",
+      "payload": "org/tenancy 作用域、版本、有效时间与记录时间",
+      "timing": "sync",
+      "invariant": "金额预留与业务操作同事务",
+      "failure": "提交失败不展示成功，重放按唯一键核对",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V16:edge:store-tenancy",
+      "type": "stores",
+      "from": "V16:store:records",
+      "to": "V16:object:tenancy",
+      "payload": "org/tenancy 作用域、版本、有效时间与记录时间",
+      "timing": "sync",
+      "invariant": "金额预留与业务操作同事务",
+      "failure": "提交失败不展示成功，重放按唯一键核对",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V16:edge:store-condition",
+      "type": "stores",
+      "from": "V16:store:records",
+      "to": "V16:object:condition-report",
+      "payload": "org/tenancy 作用域、版本、有效时间与记录时间",
+      "timing": "sync",
+      "invariant": "金额预留与业务操作同事务",
+      "failure": "提交失败不展示成功，重放按唯一键核对",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V16:edge:store-work",
+      "type": "stores",
+      "from": "V16:store:records",
+      "to": "V16:object:work-order",
+      "payload": "org/tenancy 作用域、版本、有效时间与记录时间",
+      "timing": "sync",
+      "invariant": "金额预留与业务操作同事务",
+      "failure": "提交失败不展示成功，重放按唯一键核对",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V16:edge:store-booking",
+      "type": "stores",
+      "from": "V16:store:records",
+      "to": "V16:object:booking",
+      "payload": "org/tenancy 作用域、版本、有效时间与记录时间",
+      "timing": "sync",
+      "invariant": "金额预留与业务操作同事务",
+      "failure": "提交失败不展示成功，重放按唯一键核对",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V16:edge:store-liability",
+      "type": "stores",
+      "from": "V16:store:records",
+      "to": "V16:object:liability-item",
+      "payload": "org/tenancy 作用域、版本、有效时间与记录时间",
+      "timing": "sync",
+      "invariant": "金额预留与业务操作同事务",
+      "failure": "提交失败不展示成功，重放按唯一键核对",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V16:edge:store-settlement",
+      "type": "stores",
+      "from": "V16:store:records",
+      "to": "V16:object:deposit-settlement",
+      "payload": "org/tenancy 作用域、版本、有效时间与记录时间",
+      "timing": "sync",
+      "invariant": "金额预留与业务操作同事务",
+      "failure": "提交失败不展示成功，重放按唯一键核对",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V16:edge:store-refund",
+      "type": "stores",
+      "from": "V16:store:records",
+      "to": "V16:object:refund-operation",
+      "payload": "org/tenancy 作用域、版本、有效时间与记录时间",
+      "timing": "sync",
+      "invariant": "金额预留与业务操作同事务",
+      "failure": "提交失败不展示成功，重放按唯一键核对",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V16:edge:store-photos",
+      "type": "stores",
+      "from": "V16:store:evidence",
+      "to": "V16:object:condition-report",
+      "payload": "照片、资产、采集时间、tenancy 与摘要",
+      "timing": "async",
+      "invariant": "访问按目的与关系检查，不仅按 URL",
+      "failure": "未上传附件显示缺证，不静默确认清单",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V16:edge:housing-read",
+      "type": "reads",
+      "from": "V16:service:housing",
+      "to": "V16:store:records",
+      "payload": "对象版本与作用域内权威状态",
+      "timing": "sync",
+      "invariant": "guard 不读取陈旧缓存授权",
+      "failure": "冲突重读并保持原请求身份",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V16:edge:maintenance-read",
+      "type": "reads",
+      "from": "V16:service:maintenance",
+      "to": "V16:store:records",
+      "payload": "对象版本与作用域内权威状态",
+      "timing": "sync",
+      "invariant": "guard 不读取陈旧缓存授权",
+      "failure": "冲突重读并保持原请求身份",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V16:edge:ledger-read",
+      "type": "reads",
+      "from": "V16:service:settlement",
+      "to": "V16:store:records",
+      "payload": "对象版本与作用域内权威状态",
+      "timing": "sync",
+      "invariant": "guard 不读取陈旧缓存授权",
+      "failure": "冲突重读并保持原请求身份",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V16:edge:refund-request",
+      "type": "requests",
+      "from": "V16:service:settlement",
+      "to": "V16:external_system:funds",
+      "payload": "固定 refund operation、金额与收款人映射",
+      "timing": "sync",
+      "invariant": "请求前预留；超时不产生新身份",
+      "failure": "核对原操作或人工处理",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V16:edge:refund-reconcile",
+      "type": "reads",
+      "from": "V16:service:settlement",
+      "to": "V16:external_system:funds",
+      "payload": "provider account + refund operation reference",
+      "timing": "async",
+      "invariant": "只核对匹配身份与金额的结果",
+      "failure": "无结果不等于失败",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V16:edge:refund-event",
+      "type": "emits",
+      "from": "V16:external_system:funds",
+      "to": "V16:event:refund-result",
+      "payload": "外部退款状态与引用",
+      "timing": "async",
+      "invariant": "结果通知不是已处理证明",
+      "failure": "适配器验证可信来源，未指定厂商协议",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V16:edge:refund-inbox",
+      "type": "delivers",
+      "from": "V16:event:refund-result",
+      "to": "V16:store:inbox",
+      "payload": "结果身份、载荷与内容摘要",
+      "timing": "async",
+      "invariant": "持久化后确认接收",
+      "failure": "写失败允许重投；异内容冲突审查",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V16:edge:consume-refund",
+      "type": "reads",
+      "from": "V16:service:settlement",
+      "to": "V16:store:inbox",
+      "payload": "待核对外部结果",
+      "timing": "async",
+      "invariant": "已确认退款不得再次扣减余额",
+      "failure": "业务更新后崩溃重放不重复",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V16:edge:view-tenancy",
+      "type": "projects",
+      "from": "V16:object:tenancy",
+      "to": "V16:ui:resident-portal",
+      "payload": "本人数据、状态、未决项与最近核对时间",
+      "timing": "async",
+      "invariant": "vacated、closed、partial 可以并存",
+      "failure": "显示待核对，不能把请求标记当作到账",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V16:edge:view-condition",
+      "type": "projects",
+      "from": "V16:object:condition-report",
+      "to": "V16:ui:resident-portal",
+      "payload": "本人数据、状态、未决项与最近核对时间",
+      "timing": "async",
+      "invariant": "vacated、closed、partial 可以并存",
+      "failure": "显示待核对，不能把请求标记当作到账",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V16:edge:view-work",
+      "type": "projects",
+      "from": "V16:object:work-order",
+      "to": "V16:ui:resident-portal",
+      "payload": "本人数据、状态、未决项与最近核对时间",
+      "timing": "async",
+      "invariant": "vacated、closed、partial 可以并存",
+      "failure": "显示待核对，不能把请求标记当作到账",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V16:edge:view-booking",
+      "type": "projects",
+      "from": "V16:object:booking",
+      "to": "V16:ui:resident-portal",
+      "payload": "本人数据、状态、未决项与最近核对时间",
+      "timing": "async",
+      "invariant": "vacated、closed、partial 可以并存",
+      "failure": "显示待核对，不能把请求标记当作到账",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V16:edge:view-liability",
+      "type": "projects",
+      "from": "V16:object:liability-item",
+      "to": "V16:ui:resident-portal",
+      "payload": "本人数据、状态、未决项与最近核对时间",
+      "timing": "async",
+      "invariant": "vacated、closed、partial 可以并存",
+      "failure": "显示待核对，不能把请求标记当作到账",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V16:edge:view-settlement",
+      "type": "projects",
+      "from": "V16:object:deposit-settlement",
+      "to": "V16:ui:resident-portal",
+      "payload": "本人数据、状态、未决项与最近核对时间",
+      "timing": "async",
+      "invariant": "vacated、closed、partial 可以并存",
+      "failure": "显示待核对，不能把请求标记当作到账",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V16:edge:view-refund",
+      "type": "projects",
+      "from": "V16:object:refund-operation",
+      "to": "V16:ui:resident-portal",
+      "payload": "本人数据、状态、未决项与最近核对时间",
+      "timing": "async",
+      "invariant": "vacated、closed、partial 可以并存",
+      "failure": "显示待核对，不能把请求标记当作到账",
+      "basis": "synthetic",
+      "claim_ids": []
+    }
+  ],
+  "lifecycles": [
+    {
+      "object_id": "V16:object:lease",
+      "states": [
+        "draft",
+        "signed",
+        "ended"
+      ],
+      "transitions": [
+        {
+          "from": "draft",
+          "to": "signed",
+          "trigger": "双方确认",
+          "guard": "确定版本、当事人与空间；签署记录完整；锁定空间后检查整个有效区间与所有已签未来/当前独占权利不重叠",
+          "durable_effect": "同一事务固定签署快照、预留整段独占空间权利并建立 planned tenancy；未入住仍占未来承诺",
+          "recovery": "重叠则拒绝本例系统签署确认；并发仅一份成功，同操作返回原结果；外部已经签署的冲突文件另记人工异常，不能删除事实"
+        },
+        {
+          "from": "signed",
+          "to": "ended",
+          "trigger": "租约结束或有效终止",
+          "guard": "满足本例配置规则和人工授权",
+          "durable_effect": "记录有效结束时刻及依据",
+          "recovery": "不直接清空占用事实或押金债务"
+        }
+      ]
+    },
+    {
+      "object_id": "V16:object:tenancy",
+      "states": [
+        "planned",
+        "active",
+        "vacated"
+      ],
+      "transitions": [
+        {
+          "from": "planned",
+          "to": "active",
+          "trigger": "完成入住交接",
+          "guard": "签署租约及已预留独占权利有效；复核交接、当前区间和迟到变更；入住条件满足",
+          "durable_effect": "记录进入时刻与交接报告",
+          "recovery": "锁空间核验既有权利；发现实际交接冲突保留事实并转人工，不能把已签 planned 权利当空档"
+        },
+        {
+          "from": "active",
+          "to": "vacated",
+          "trigger": "记录交还空间",
+          "guard": "有交接时间、记录人和钥匙情况",
+          "durable_effect": "保留实际迁出与合同结束分别的事实",
+          "recovery": "迟到记录触发冲突复核；不按通知次序复活"
+        }
+      ]
+    },
+    {
+      "object_id": "V16:object:condition-report",
+      "states": [
+        "draft",
+        "acknowledged",
+        "contested"
+      ],
+      "transitions": [
+        {
+          "from": "draft",
+          "to": "acknowledged",
+          "trigger": "双方确认状况记录",
+          "guard": "资产、时间、照片状态与意见可查",
+          "durable_effect": "固定报告内容及双方确认范围",
+          "recovery": "附件缺失不能静默确认"
+        },
+        {
+          "from": "draft",
+          "to": "contested",
+          "trigger": "一方异议或缺证",
+          "guard": "记录具体争议与所需补证",
+          "durable_effect": "保留双方意见",
+          "recovery": "补证新版本，不覆盖旧照片"
+        },
+        {
+          "from": "contested",
+          "to": "acknowledged",
+          "trigger": "完成复核",
+          "guard": "双方确认修订内容或有明确解决依据",
+          "durable_effect": "记录新报告与旧报告关系",
+          "recovery": "责任仍另行判定"
+        }
+      ]
+    },
+    {
+      "object_id": "V16:object:work-order",
+      "states": [
+        "open",
+        "scheduled",
+        "in_progress",
+        "awaiting_review",
+        "closed"
+      ],
+      "transitions": [
+        {
+          "from": "open",
+          "to": "scheduled",
+          "trigger": "安排必需 booking",
+          "guard": "资源、技能与进入许可满足",
+          "durable_effect": "保存计划及必需任务",
+          "recovery": "无可行时间则保持 open"
+        },
+        {
+          "from": "scheduled",
+          "to": "in_progress",
+          "trigger": "技师开始工作",
+          "guard": "有效预约及进入条件",
+          "durable_effect": "记录工作开始与任务上下文",
+          "recovery": "未能进入保留 booking 失败"
+        },
+        {
+          "from": "in_progress",
+          "to": "scheduled",
+          "trigger": "需要配件或再次到场",
+          "guard": "说明未完成任务与原因",
+          "durable_effect": "新建后续预约需求，保留已做工作",
+          "recovery": "不能把首个 booking 完成当总工单关闭"
+        },
+        {
+          "from": "in_progress",
+          "to": "awaiting_review",
+          "trigger": "技师报告完成",
+          "guard": "全部必需任务有完成证据",
+          "durable_effect": "记录材料、工时与验收请求",
+          "recovery": "缺项退回任务"
+        },
+        {
+          "from": "awaiting_review",
+          "to": "closed",
+          "trigger": "经理验收",
+          "guard": "全部必需任务通过审核",
+          "durable_effect": "保存验收人与结果，不自动生成押金扣款",
+          "recovery": "退款争议独立处理"
+        },
+        {
+          "from": "awaiting_review",
+          "to": "scheduled",
+          "trigger": "经理要求返工",
+          "guard": "明确拒绝原因与剩余工作",
+          "durable_effect": "保留拒绝及后续需求",
+          "recovery": "重排重新核验进入权"
+        }
+      ]
+    },
+    {
+      "object_id": "V16:object:booking",
+      "states": [
+        "proposed",
+        "confirmed",
+        "completed",
+        "cancelled",
+        "no_access"
+      ],
+      "transitions": [
+        {
+          "from": "proposed",
+          "to": "confirmed",
+          "trigger": "调度确认",
+          "guard": "资源时段不冲突、普通入户许可覆盖",
+          "durable_effect": "事务保存资源时段与许可版本",
+          "recovery": "冲突返回可选时段"
+        },
+        {
+          "from": "confirmed",
+          "to": "completed",
+          "trigger": "技师提交本次结果",
+          "guard": "有到场与本次任务证据",
+          "durable_effect": "记录完成时间和结果",
+          "recovery": "重复事件不重复工时/耗材"
+        },
+        {
+          "from": "confirmed",
+          "to": "no_access",
+          "trigger": "现场无法进入",
+          "guard": "有到场说明",
+          "durable_effect": "保留失败和通知任务",
+          "recovery": "新预约重新取得许可"
+        },
+        {
+          "from": "confirmed",
+          "to": "cancelled",
+          "trigger": "取消本次预约",
+          "guard": "权限与理由完整",
+          "durable_effect": "释放时段且保留历史",
+          "recovery": "工单未自动完成"
+        }
+      ]
+    },
+    {
+      "object_id": "V16:object:liability-item",
+      "states": [
+        "proposed",
+        "accepted",
+        "disputed",
+        "resolved"
+      ],
+      "transitions": [
+        {
+          "from": "proposed",
+          "to": "accepted",
+          "trigger": "当事人接受责任金额",
+          "guard": "证据与金额可见；身份有效",
+          "durable_effect": "将金额列为已接受责任",
+          "recovery": "修改金额需新版本重新确认"
+        },
+        {
+          "from": "proposed",
+          "to": "disputed",
+          "trigger": "当事人异议或证据不足",
+          "guard": "保存意见与争议金额",
+          "durable_effect": "移入争议桶，不自动成为扣除",
+          "recovery": "保留复核入口和责任人"
+        },
+        {
+          "from": "disputed",
+          "to": "resolved",
+          "trigger": "人工复核或双方确认",
+          "guard": "有明确决定、金额及依据",
+          "durable_effect": "争议金额拆分为责任与释放额",
+          "recovery": "同一决定版本只能应用一次"
+        }
+      ]
+    },
+    {
+      "object_id": "V16:object:deposit-settlement",
+      "states": [
+        "open",
+        "partial",
+        "reconciled"
+      ],
+      "transitions": [
+        {
+          "from": "open",
+          "to": "partial",
+          "trigger": "形成可退/扣除/争议分配",
+          "guard": "已收押金可核对，金额分桶守恒",
+          "durable_effect": "保留扣除、争议、预留、未分配与已退余额",
+          "recovery": "缺证或未知金额留未决项"
+        },
+        {
+          "from": "partial",
+          "to": "reconciled",
+          "trigger": "完成所有责任和退款核对",
+          "guard": "争议=0、预留=0、未分配=0；已退外部确认；收取=扣除+已退",
+          "durable_effect": "固定结清快照与所有操作引用",
+          "recovery": "后续更正另记调整，不改已确认资金历史"
+        }
+      ]
+    },
+    {
+      "object_id": "V16:object:refund-operation",
+      "states": [
+        "prepared",
+        "submitted",
+        "unknown",
+        "confirmed",
+        "failed"
+      ],
+      "transitions": [
+        {
+          "from": "prepared",
+          "to": "submitted",
+          "trigger": "财务发送退款",
+          "guard": "可退余额足够、权限与版本有效",
+          "durable_effect": "原子预留金额并保存唯一操作后发送",
+          "recovery": "崩溃先核对原 operation"
+        },
+        {
+          "from": "submitted",
+          "to": "unknown",
+          "trigger": "响应超时",
+          "guard": "存在发送尝试但无确定结果",
+          "durable_effect": "保留预留及核对任务",
+          "recovery": "不能把 unknown 金额再释放"
+        },
+        {
+          "from": "submitted",
+          "to": "confirmed",
+          "trigger": "核对成功回执",
+          "guard": "身份金额收款对象匹配",
+          "durable_effect": "预留转已退，保存外部引用",
+          "recovery": "重复回执无再次扣减"
+        },
+        {
+          "from": "unknown",
+          "to": "confirmed",
+          "trigger": "查询原操作确认成功",
+          "guard": "结果确证匹配",
+          "durable_effect": "预留转已退",
+          "recovery": "迟到回执仍为同一操作"
+        },
+        {
+          "from": "submitted",
+          "to": "failed",
+          "trigger": "确定失败",
+          "guard": "外部证据证明无退款效果",
+          "durable_effect": "释放预留并记录原因",
+          "recovery": "新尝试必须明确授权和余额校验"
+        },
+        {
+          "from": "unknown",
+          "to": "failed",
+          "trigger": "核对确定未执行",
+          "guard": "外部确认或充分人工证据",
+          "durable_effect": "释放原预留",
+          "recovery": "仅暂时查不到不能判为失败"
+        }
+      ]
+    }
+  ],
+  "algorithm_ids": [
+    "ALG:lookup",
+    "ALG:windows",
+    "ALG:caches"
+  ],
+  "claim_ids": [
+    "V16:claim:iwms-scope",
+    "V16:claim:booking-work",
+    "V16:claim:separate-liability",
+    "V16:claim:computation",
+    "V16:claim:design"
+  ],
+  "checks": [
+    {
+      "id": "V16:check:happy",
+      "kind": "happy_path",
+      "given": "signed lease, acknowledged inventory, two required bookings, deposit3000",
+      "when": "move in -> repair both visits -> manager review -> move out -> settlement",
+      "then": "work closed; tenancy vacated; deposit independent; first refund1900 then300 after dispute decision",
+      "evidence_required": "UI states, report references, review, ledger buckets and external refunds"
+    },
+    {
+      "id": "V16:check:duplicate",
+      "kind": "duplicate",
+      "given": "one booking completed with a part consumption",
+      "when": "deliver completion twice",
+      "then": "one completion, one consumption, no automatic deposit deduction",
+      "evidence_required": "booking journal, consumed quantity and ledger"
+    },
+    {
+      "id": "V16:check:reordering",
+      "kind": "out_of_order",
+      "given": "authoritative tenancy vacated",
+      "when": "deliver old active notice after move-out notice",
+      "then": "no reactivation; effective/recorded times retained",
+      "evidence_required": "event arrival sequence, authority version and portal state"
+    },
+    {
+      "id": "V16:check:race",
+      "kind": "concurrency",
+      "given": "available refund1900 in same settlement version",
+      "when": "two finance operators submit1900 concurrently",
+      "then": "one reservation/operation or conflict; never3800 reserved",
+      "evidence_required": "concurrent responses and transactional balance"
+    },
+    {
+      "id": "V16:check:tenant",
+      "kind": "tenant_isolation",
+      "given": "org A/B each unit U7; person has two tenancies in A",
+      "when": "read lease, cached statements and photos",
+      "then": "org separation and tenancy association hold; person/unit key alone insufficient",
+      "evidence_required": "query scope, cache hit/miss results and attachment access"
+    },
+    {
+      "id": "V16:check:timeout",
+      "kind": "unknown_outcome",
+      "given": "funds accepted refund1900",
+      "when": "client times out then dispute releases another300",
+      "then": "original1900 remains reserved; at most new300 available, no repeated1900",
+      "evidence_required": "operation ledger, bucket conservation and provider lookup"
+    },
+    {
+      "id": "V16:check:crash",
+      "kind": "recovery",
+      "given": "refund confirmation committed before projection",
+      "when": "crash worker and replay",
+      "then": "confirmed1900 once; UI eventually reflects it",
+      "evidence_required": "commit record, replay log, UI and ledger"
+    },
+    {
+      "id": "V16:check:no-access",
+      "kind": "domain_failure",
+      "given": "work requires two completed tasks; first booking no_access",
+      "when": "attempt manager close",
+      "then": "reject closure; new booking rechecks entry permission",
+      "evidence_required": "remaining task evidence and guard rejection"
+    },
+    {
+      "id": "V16:check:liability",
+      "kind": "algorithm",
+      "given": "deposit3000, accepted500, disputed600, repair cost900",
+      "when": "reserve1900; settle dispute liability300; confirm refunds",
+      "then": "deductions800,refunds2200,unresolved0; repair expense remains900",
+      "evidence_required": "fixed amount buckets and external confirmation references"
+    },
+    {
+      "id": "V16:check:boundary",
+      "kind": "algorithm",
+      "given": "exclusive intervals [0,10),[10,20)",
+      "when": "check overlap then change second start to9",
+      "then": "adjacent allowed; [0,10),[9,20) rejected",
+      "evidence_required": "interval fixture, server conflict response and final assignments"
+    },
+    {
+      "id": "V16:check:entry-expiry",
+      "kind": "authorization",
+      "given": "ordinary entry consent Monday09-10",
+      "when": "move booking to Tuesday09-10",
+      "then": "old consent does not authorize Tuesday; needs renewed basis",
+      "evidence_required": "permission versions and rejected scheduling command"
+    },
+    {
+      "id": "V16:check:same-person",
+      "kind": "domain_failure",
+      "given": "old tenancy disputed600, new tenancy deposit required3000",
+      "when": "move person to new unit",
+      "then": "old dispute retained; new account independent; transfer only through authorized paired entries",
+      "evidence_required": "two account identities, paired transfer if any and unchanged old evidence"
+    },
+    {
+      "id": "V16:check:future-commitment",
+      "kind": "domain_failure",
+      "given": "unit U7 has signed future lease [10,20) and planned tenancy; nobody has moved in",
+      "when": "another signer requests same unit [15,25), including concurrent finalization",
+      "then": "second exclusive commitment rejected in signing transaction; first planned right stays reserved; adjacent [20,30) can pass",
+      "evidence_required": "signed version, persisted reserved interval, concurrent responses and unchanged first tenancy"
+    }
+  ]
+}

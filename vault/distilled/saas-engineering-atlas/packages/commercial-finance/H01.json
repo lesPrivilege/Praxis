@@ -1,0 +1,1088 @@
+{
+  "contract_version": "1.0",
+  "case_id": "H01",
+  "title": "报价、合同、服务、收款与收入",
+  "scope": "Synthetic 10-seat prepaid 30 equal-day contract 27000 minor units; 5 seats added day12 for 9000; approved future-service credit at day20 5000. No tax/FX/fees. Product facts scoped to read documentation; provider transitions not exhaustively modeled.",
+  "synthetic": true,
+  "source_ids": [
+    "SF_QTC",
+    "IRONCLAD",
+    "STRIPE_INV",
+    "STRIPE_WEBHOOK",
+    "STRIPE_REV",
+    "P01-SRC-stripe-payment-application",
+    "P01-SRC-stripe-idempotency",
+    "P01-SRC-stripe-credit-notes",
+    "P01-SRC-postgres-constraints"
+  ],
+  "nodes": [
+    {
+      "id": "H01:actor:operator",
+      "type": "actor",
+      "label": "财务操作员",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; external mapping also includes provider account"
+    },
+    {
+      "id": "H01:ui:billing",
+      "type": "ui",
+      "label": "账单工作台",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; external mapping also includes provider account"
+    },
+    {
+      "id": "H01:service:business",
+      "type": "service",
+      "label": "合同与权利服务",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; external mapping also includes provider account"
+    },
+    {
+      "id": "H01:external_system:stripe",
+      "type": "external_system",
+      "label": "Stripe",
+      "authority": "provider invoice and payment state",
+      "tenant_scope": "tenant-bound; external mapping also includes provider account"
+    },
+    {
+      "id": "H01:object:contract",
+      "type": "object",
+      "label": "Contract",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; external mapping also includes provider account"
+    },
+    {
+      "id": "H01:object:invoice",
+      "type": "object",
+      "label": "Invoice",
+      "authority": "Stripe",
+      "tenant_scope": "tenant-bound; external mapping also includes provider account"
+    },
+    {
+      "id": "H01:object:entitlement",
+      "type": "object",
+      "label": "Entitlement",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; external mapping also includes provider account"
+    },
+    {
+      "id": "H01:object:revenue",
+      "type": "object",
+      "label": "Revenue schedule",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; external mapping also includes provider account"
+    },
+    {
+      "id": "H01:store:ledger",
+      "type": "store",
+      "label": "业务记录库",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; external mapping also includes provider account"
+    },
+    {
+      "id": "H01:store:inbox",
+      "type": "store",
+      "label": "Durable inbox",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; external mapping also includes provider account"
+    },
+    {
+      "id": "H01:event:paid",
+      "type": "event",
+      "label": "支付相关通知",
+      "authority": "provider event",
+      "tenant_scope": "tenant-bound; external mapping also includes provider account"
+    },
+    {
+      "id": "H01:service:recognition",
+      "type": "service",
+      "label": "教学账务服务",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; external mapping also includes provider account"
+    },
+    {
+      "id": "H01:actor:customer",
+      "type": "actor",
+      "label": "客户",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; legal entity, currency and provider account retained"
+    },
+    {
+      "id": "H01:actor:sales",
+      "type": "actor",
+      "label": "销售",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; legal entity, currency and provider account retained"
+    },
+    {
+      "id": "H01:actor:reviewer",
+      "type": "actor",
+      "label": "退款复核人",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; legal entity, currency and provider account retained"
+    },
+    {
+      "id": "H01:object:quote",
+      "type": "object",
+      "label": "冻结报价版本",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; legal entity, currency and provider account retained"
+    },
+    {
+      "id": "H01:object:amendment",
+      "type": "object",
+      "label": "独立接受的修订协议",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; legal entity, currency and provider account retained"
+    },
+    {
+      "id": "H01:object:adjustment",
+      "type": "object",
+      "label": "贷项与退款义务",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; legal entity, currency and provider account retained"
+    },
+    {
+      "id": "H01:object:operation",
+      "type": "object",
+      "label": "持久操作尝试",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; legal entity, currency and provider account retained"
+    }
+  ],
+  "edges": [
+    {
+      "id": "H01:edge:operator-ui",
+      "type": "operates",
+      "from": "H01:actor:operator",
+      "to": "H01:ui:billing",
+      "payload": "查看合同、金额、操作状态",
+      "timing": "sync",
+      "invariant": "只展示获授权 tenant 的数据",
+      "failure": "重新认证后找回同一操作",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H01:edge:submit",
+      "type": "commands",
+      "from": "H01:ui:billing",
+      "to": "H01:service:business",
+      "payload": "contract version + operation ID",
+      "timing": "sync",
+      "invariant": "动作与版本、权限绑定",
+      "failure": "拒绝过期版本；重复点击返回同一操作",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H01:edge:invoice-request",
+      "type": "requests",
+      "from": "H01:service:business",
+      "to": "H01:external_system:stripe",
+      "payload": "已持久化的开票请求身份与金额",
+      "timing": "sync",
+      "invariant": "同一购买不得盲目创建第二张 invoice",
+      "failure": "timeout 后保留 unknown 并核对外部对象",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H01:edge:provider-owner",
+      "type": "owns",
+      "from": "H01:external_system:stripe",
+      "to": "H01:object:invoice",
+      "payload": "provider object identity",
+      "timing": "static",
+      "invariant": "本地投影不能自行宣布外部付款",
+      "failure": "读取 provider 核对状态",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H01:edge:event",
+      "type": "emits",
+      "from": "H01:external_system:stripe",
+      "to": "H01:event:paid",
+      "payload": "签名事件与 invoice 引用",
+      "timing": "async",
+      "invariant": "收到消息不等于后续动作完成",
+      "failure": "验证签名；记录重复与乱序风险",
+      "basis": "source_fact",
+      "claim_ids": [
+        "STRIPE_WEBHOOK-C1"
+      ]
+    },
+    {
+      "id": "H01:edge:inbox",
+      "type": "delivers",
+      "from": "H01:event:paid",
+      "to": "H01:store:inbox",
+      "payload": "event identity + payload",
+      "timing": "async",
+      "invariant": "确认接收前先持久化",
+      "failure": "写入失败不假装已接收；允许再次投递",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H01:edge:consume",
+      "type": "reads",
+      "from": "H01:service:business",
+      "to": "H01:store:inbox",
+      "payload": "待处理事件",
+      "timing": "async",
+      "invariant": "消费与业务唯一性约束相容",
+      "failure": "崩溃后重放并核对已完成效果",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H01:edge:reconcile",
+      "type": "reads",
+      "from": "H01:service:business",
+      "to": "H01:external_system:stripe",
+      "payload": "按映射身份核对 invoice",
+      "timing": "async",
+      "invariant": "不按到达次序盲目覆盖权威状态",
+      "failure": "provider 不可用时保留待核对",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H01:edge:contract-owner",
+      "type": "owns",
+      "from": "H01:service:business",
+      "to": "H01:object:contract",
+      "payload": "合同版本",
+      "timing": "static",
+      "invariant": "生效依据绑定具体接受版本",
+      "failure": "修改产生新版本并重新确认",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H01:edge:rights-owner",
+      "type": "owns",
+      "from": "H01:service:business",
+      "to": "H01:object:entitlement",
+      "payload": "购买对应的使用权",
+      "timing": "static",
+      "invariant": "每个购买只产生一份权利",
+      "failure": "重放不重复开通",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H01:edge:contract-store",
+      "type": "stores",
+      "from": "H01:store:ledger",
+      "to": "H01:object:contract",
+      "payload": "版本与接受证据",
+      "timing": "sync",
+      "invariant": "历史依据可追溯",
+      "failure": "恢复后检查版本关系",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H01:edge:invoice-store",
+      "type": "stores",
+      "from": "H01:store:ledger",
+      "to": "H01:object:invoice",
+      "payload": "外部映射与本地投影",
+      "timing": "async",
+      "invariant": "tenant 与 provider account 在 key 内",
+      "failure": "重新同步，不无痕改写证据",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H01:edge:rights-store",
+      "type": "stores",
+      "from": "H01:store:ledger",
+      "to": "H01:object:entitlement",
+      "payload": "权利状态与生效依据",
+      "timing": "sync",
+      "invariant": "唯一业务键",
+      "failure": "冲突时读取已有权利",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H01:edge:rights-contract",
+      "type": "depends_on",
+      "from": "H01:object:entitlement",
+      "to": "H01:object:contract",
+      "payload": "effective contract version",
+      "timing": "static",
+      "invariant": "有效合同是前提",
+      "failure": "版本无效时暂停并人工复核",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H01:edge:rights-invoice",
+      "type": "depends_on",
+      "from": "H01:object:entitlement",
+      "to": "H01:object:invoice",
+      "payload": "经核对的付款确认",
+      "timing": "static",
+      "invariant": "只在本例预付前提下要求付款",
+      "failure": "unknown 时不按缓存开通",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H01:edge:read-ledger",
+      "type": "reads",
+      "from": "H01:service:recognition",
+      "to": "H01:store:ledger",
+      "payload": "金额、服务区间与规则版本",
+      "timing": "batch",
+      "invariant": "按固定输入重演",
+      "failure": "输入修订后重算受影响窗口",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H01:edge:revenue-owner",
+      "type": "owns",
+      "from": "H01:service:recognition",
+      "to": "H01:object:revenue",
+      "payload": "教学累计表",
+      "timing": "static",
+      "invariant": "结果绑定规则与输入版本",
+      "failure": "保留修正历史",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H01:edge:revenue-input",
+      "type": "derived_from",
+      "from": "H01:object:revenue",
+      "to": "H01:object:invoice",
+      "payload": "金额与 line item 服务区间",
+      "timing": "batch",
+      "invariant": "相邻半开窗口不重复计数",
+      "failure": "重叠或无效区间进入人工核对",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H01:edge:invoice-ui",
+      "type": "projects",
+      "from": "H01:object:invoice",
+      "to": "H01:ui:billing",
+      "payload": "状态与最后核对时间",
+      "timing": "async",
+      "invariant": "状态和新鲜度一起展示",
+      "failure": "过期时提示重新核对",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H01:edge:rights-ui",
+      "type": "projects",
+      "from": "H01:object:entitlement",
+      "to": "H01:ui:billing",
+      "payload": "使用权与操作状态",
+      "timing": "async",
+      "invariant": "UI 投影不成为授权依据",
+      "failure": "读取权威状态恢复显示",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H01:edge:customer-ui",
+      "type": "operates",
+      "from": "H01:actor:customer",
+      "to": "H01:ui:billing",
+      "payload": "接受报价或修订",
+      "timing": "sync",
+      "invariant": "仅客户授权身份接受确定版本",
+      "failure": "失效版本重新预览",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H01:edge:sales-ui",
+      "type": "operates",
+      "from": "H01:actor:sales",
+      "to": "H01:ui:billing",
+      "payload": "准备报价",
+      "timing": "sync",
+      "invariant": "不修改已接受版本",
+      "failure": "生成新草稿",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H01:edge:refund-authority",
+      "type": "authorizes",
+      "from": "H01:actor:reviewer",
+      "to": "H01:service:business",
+      "payload": "对调整版本批准退款",
+      "timing": "static",
+      "invariant": "权限和剩余可退额核验",
+      "failure": "越权或并发超额拒绝",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H01:edge:quote-owner",
+      "type": "owns",
+      "from": "H01:service:business",
+      "to": "H01:object:quote",
+      "payload": "对象版本及证据",
+      "timing": "static",
+      "invariant": "与合同/购买身份一致",
+      "failure": "按操作与版本回查",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H01:edge:quote-store",
+      "type": "stores",
+      "from": "H01:store:ledger",
+      "to": "H01:object:quote",
+      "payload": "持久状态、依据及版本",
+      "timing": "sync",
+      "invariant": "本地事务保存，不抹去旧证据",
+      "failure": "冲突时读取已有版本",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H01:edge:quote-ui",
+      "type": "projects",
+      "from": "H01:object:quote",
+      "to": "H01:ui:billing",
+      "payload": "状态、范围、差异和未决动作",
+      "timing": "async",
+      "invariant": "投影附版本；不自行授权",
+      "failure": "重新读取权威对象",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H01:edge:amendment-owner",
+      "type": "owns",
+      "from": "H01:service:business",
+      "to": "H01:object:amendment",
+      "payload": "对象版本及证据",
+      "timing": "static",
+      "invariant": "与合同/购买身份一致",
+      "failure": "按操作与版本回查",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H01:edge:amendment-store",
+      "type": "stores",
+      "from": "H01:store:ledger",
+      "to": "H01:object:amendment",
+      "payload": "持久状态、依据及版本",
+      "timing": "sync",
+      "invariant": "本地事务保存，不抹去旧证据",
+      "failure": "冲突时读取已有版本",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H01:edge:amendment-ui",
+      "type": "projects",
+      "from": "H01:object:amendment",
+      "to": "H01:ui:billing",
+      "payload": "状态、范围、差异和未决动作",
+      "timing": "async",
+      "invariant": "投影附版本；不自行授权",
+      "failure": "重新读取权威对象",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H01:edge:adjustment-owner",
+      "type": "owns",
+      "from": "H01:service:business",
+      "to": "H01:object:adjustment",
+      "payload": "对象版本及证据",
+      "timing": "static",
+      "invariant": "与合同/购买身份一致",
+      "failure": "按操作与版本回查",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H01:edge:adjustment-store",
+      "type": "stores",
+      "from": "H01:store:ledger",
+      "to": "H01:object:adjustment",
+      "payload": "持久状态、依据及版本",
+      "timing": "sync",
+      "invariant": "本地事务保存，不抹去旧证据",
+      "failure": "冲突时读取已有版本",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H01:edge:adjustment-ui",
+      "type": "projects",
+      "from": "H01:object:adjustment",
+      "to": "H01:ui:billing",
+      "payload": "状态、范围、差异和未决动作",
+      "timing": "async",
+      "invariant": "投影附版本；不自行授权",
+      "failure": "重新读取权威对象",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H01:edge:operation-owner",
+      "type": "owns",
+      "from": "H01:service:business",
+      "to": "H01:object:operation",
+      "payload": "对象版本及证据",
+      "timing": "static",
+      "invariant": "与合同/购买身份一致",
+      "failure": "按操作与版本回查",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H01:edge:operation-store",
+      "type": "stores",
+      "from": "H01:store:ledger",
+      "to": "H01:object:operation",
+      "payload": "持久状态、依据及版本",
+      "timing": "sync",
+      "invariant": "本地事务保存，不抹去旧证据",
+      "failure": "冲突时读取已有版本",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H01:edge:operation-ui",
+      "type": "projects",
+      "from": "H01:object:operation",
+      "to": "H01:ui:billing",
+      "payload": "状态、范围、差异和未决动作",
+      "timing": "async",
+      "invariant": "投影附版本；不自行授权",
+      "failure": "重新读取权威对象",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H01:edge:contract-quote",
+      "type": "derived_from",
+      "from": "H01:object:contract",
+      "to": "H01:object:quote",
+      "payload": "已接受价量期间",
+      "timing": "static",
+      "invariant": "价格版本被冻结",
+      "failure": "旧报价无效则重新接受",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H01:edge:amendment-contract",
+      "type": "depends_on",
+      "from": "H01:object:amendment",
+      "to": "H01:object:contract",
+      "payload": "原合同身份与增购期间",
+      "timing": "static",
+      "invariant": "修订只改变指定行",
+      "failure": "保留原合同解释历史",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H01:edge:adjustment-amendment",
+      "type": "derived_from",
+      "from": "H01:object:adjustment",
+      "to": "H01:object:amendment",
+      "payload": "未履行10日和5000分批准额",
+      "timing": "sync",
+      "invariant": "原10席不受影响；退款不超未退授权",
+      "failure": "未知时不再发新退款",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H01:edge:revenue-amendment",
+      "type": "derived_from",
+      "from": "H01:object:revenue",
+      "to": "H01:object:amendment",
+      "payload": "9000分 [12,30) 行",
+      "timing": "batch",
+      "invariant": "输入有版本且区间有效",
+      "failure": "修订后重算受影响窗口",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H01:edge:revenue-adjustment",
+      "type": "derived_from",
+      "from": "H01:object:revenue",
+      "to": "H01:object:adjustment",
+      "payload": "获批未履行部分修正",
+      "timing": "batch",
+      "invariant": "历史已履行4000分保留",
+      "failure": "现金确认独立核对",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H01:edge:operation-invoice",
+      "type": "depends_on",
+      "from": "H01:object:entitlement",
+      "to": "H01:object:operation",
+      "payload": "外部确认和本地效果进度",
+      "timing": "static",
+      "invariant": "未确认动作不能当完成",
+      "failure": "按原操作恢复",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H01:edge:refund-request",
+      "type": "requests",
+      "from": "H01:service:business",
+      "to": "H01:external_system:stripe",
+      "payload": "已批准调整的外部请求身份",
+      "timing": "sync",
+      "invariant": "贷项/退款映射分别保存",
+      "failure": "保留 unknown 先核对",
+      "basis": "synthetic",
+      "claim_ids": []
+    }
+  ],
+  "lifecycles": [
+    {
+      "object_id": "H01:object:contract",
+      "states": [
+        "pending",
+        "effective",
+        "ended"
+      ],
+      "transitions": [
+        {
+          "from": "pending",
+          "to": "effective",
+          "trigger": "报价已接受",
+          "guard": "身份与版本确认",
+          "durable_effect": "保存生效合同与报价引用",
+          "recovery": "缺证据则保持pending"
+        },
+        {
+          "from": "effective",
+          "to": "ended",
+          "trigger": "原服务期结束",
+          "guard": "到第30天",
+          "durable_effect": "原合同结束，历史仍可查",
+          "recovery": "迟到任务不能延长服务"
+        }
+      ]
+    },
+    {
+      "object_id": "H01:object:invoice",
+      "states": [
+        "draft",
+        "open",
+        "paid",
+        "void",
+        "uncollectible"
+      ],
+      "transitions": [
+        {
+          "from": "draft",
+          "to": "open",
+          "trigger": "finalization",
+          "guard": "合法金额与期间；provider 受理",
+          "durable_effect": "保存外部 invoice 状态映射",
+          "recovery": "timeout 后读取外部对象"
+        },
+        {
+          "from": "open",
+          "to": "paid",
+          "trigger": "付款确认",
+          "guard": "本例排除 credit/partial/refund；核对权威对象",
+          "durable_effect": "保存 paid 证据并安排开通",
+          "recovery": "投递乱序时重新读取；不回退旧状态"
+        },
+        {
+          "from": "paid",
+          "to": "open",
+          "trigger": "外部取消付款分配确认",
+          "guard": "send_invoice 且 API/账户支持，权威读取确认修正",
+          "durable_effect": "保留分配历史，更新投影并安排权利复核",
+          "recovery": "不误认旧事件；不自动撤销历史履行"
+        }
+      ]
+    },
+    {
+      "object_id": "H01:object:entitlement",
+      "states": [
+        "pending",
+        "active",
+        "suspended",
+        "ended"
+      ],
+      "transitions": [
+        {
+          "from": "pending",
+          "to": "active",
+          "trigger": "开通任务",
+          "guard": "effective 合同及本例核对后的付款确认",
+          "durable_effect": "唯一业务键下保存 active",
+          "recovery": "崩溃后读取已完成效果"
+        },
+        {
+          "from": "active",
+          "to": "ended",
+          "trigger": "服务区间结束",
+          "guard": "结束时间已到",
+          "durable_effect": "保存 ended 与时间",
+          "recovery": "迟到任务重放不延长服务"
+        },
+        {
+          "from": "active",
+          "to": "suspended",
+          "trigger": "人工暂停",
+          "guard": "权限和原因已记录",
+          "durable_effect": "保存暂停证据",
+          "recovery": "不自动退款；转人工核对"
+        },
+        {
+          "from": "suspended",
+          "to": "active",
+          "trigger": "人工恢复",
+          "guard": "异常已解决且区间未结束",
+          "durable_effect": "保存恢复依据",
+          "recovery": "并发恢复使用版本检查"
+        },
+        {
+          "from": "suspended",
+          "to": "ended",
+          "trigger": "服务期结束",
+          "guard": "本次购买期间已结束",
+          "durable_effect": "记录结束并保留暂停历史",
+          "recovery": "迟到恢复不能延长已结束期间"
+        }
+      ]
+    },
+    {
+      "object_id": "H01:object:quote",
+      "states": [
+        "draft",
+        "offered",
+        "accepted",
+        "expired"
+      ],
+      "transitions": [
+        {
+          "from": "draft",
+          "to": "offered",
+          "trigger": "销售发布",
+          "guard": "折扣权限及价格规则通过",
+          "durable_effect": "冻结价量期间与有效期",
+          "recovery": "修改生成新版本"
+        },
+        {
+          "from": "offered",
+          "to": "accepted",
+          "trigger": "客户接受",
+          "guard": "身份正确、版本未变且未过期",
+          "durable_effect": "接受证据与合同引用",
+          "recovery": "超时查原接受操作"
+        },
+        {
+          "from": "offered",
+          "to": "expired",
+          "trigger": "有效期结束",
+          "guard": "尚未接受",
+          "durable_effect": "记录失效",
+          "recovery": "重新报价"
+        }
+      ]
+    },
+    {
+      "object_id": "H01:object:amendment",
+      "states": [
+        "pending",
+        "effective",
+        "ended"
+      ],
+      "transitions": [
+        {
+          "from": "pending",
+          "to": "effective",
+          "trigger": "接受并核对增购付款",
+          "guard": "确定原合同、5席、9000分和期间",
+          "durable_effect": "新增行独立生效",
+          "recovery": "未知则不增席"
+        },
+        {
+          "from": "effective",
+          "to": "ended",
+          "trigger": "期满或批准未来取消",
+          "guard": "指定期间和取消依据",
+          "durable_effect": "保存结束及调整引用",
+          "recovery": "原10席仍保持其生命周期"
+        }
+      ]
+    },
+    {
+      "object_id": "H01:object:revenue",
+      "states": [
+        "proposed",
+        "approved",
+        "superseded"
+      ],
+      "transitions": [
+        {
+          "from": "proposed",
+          "to": "approved",
+          "trigger": "财务批准",
+          "guard": "输入行期间有效且计算守恒",
+          "durable_effect": "冻结规则与输入版本",
+          "recovery": "不合格留草稿"
+        },
+        {
+          "from": "approved",
+          "to": "superseded",
+          "trigger": "有新批准修正",
+          "guard": "修正可追溯原依据",
+          "durable_effect": "旧计划保留、新计划替代",
+          "recovery": "失败时继续展示原版与待处理差异"
+        }
+      ]
+    },
+    {
+      "object_id": "H01:object:adjustment",
+      "states": [
+        "requested",
+        "authorized",
+        "unknown",
+        "externally-confirmed",
+        "rejected"
+      ],
+      "transitions": [
+        {
+          "from": "requested",
+          "to": "authorized",
+          "trigger": "复核人批准",
+          "guard": "版本未变且不超可退额",
+          "durable_effect": "保存5000分义务",
+          "recovery": "并发超额拒绝"
+        },
+        {
+          "from": "requested",
+          "to": "rejected",
+          "trigger": "拒绝调整",
+          "guard": "权限或业务条件不满足",
+          "durable_effect": "理由和原申请保留",
+          "recovery": "补证后另建版本"
+        },
+        {
+          "from": "authorized",
+          "to": "unknown",
+          "trigger": "外部请求超时",
+          "guard": "请求已发出无确定结果",
+          "durable_effect": "保留尝试身份",
+          "recovery": "按原请求核对"
+        },
+        {
+          "from": "authorized",
+          "to": "externally-confirmed",
+          "trigger": "正常外部确认",
+          "guard": "金额、对象及结果对应",
+          "durable_effect": "保存贷项及退款结果",
+          "recovery": "回执缺失转核对"
+        },
+        {
+          "from": "unknown",
+          "to": "externally-confirmed",
+          "trigger": "对账找到结果",
+          "guard": "权威结果与操作吻合",
+          "durable_effect": "现金净额与义务一起解释",
+          "recovery": "无法确认则人工接管"
+        }
+      ]
+    },
+    {
+      "object_id": "H01:object:operation",
+      "states": [
+        "saved",
+        "dispatched",
+        "unknown",
+        "confirmed",
+        "rejected"
+      ],
+      "transitions": [
+        {
+          "from": "saved",
+          "to": "dispatched",
+          "trigger": "worker发送",
+          "guard": "授权版本仍有效",
+          "durable_effect": "记录发送身份",
+          "recovery": "未发送可安全继续"
+        },
+        {
+          "from": "dispatched",
+          "to": "confirmed",
+          "trigger": "收到并核对结果",
+          "guard": "外部对象与金额吻合",
+          "durable_effect": "保存映射",
+          "recovery": "已确认重放读取结果"
+        },
+        {
+          "from": "dispatched",
+          "to": "unknown",
+          "trigger": "响应缺失",
+          "guard": "无法证明成功或失败",
+          "durable_effect": "保存未知及接管时间",
+          "recovery": "原key语义安全时核对/重试"
+        },
+        {
+          "from": "unknown",
+          "to": "confirmed",
+          "trigger": "核对完成",
+          "guard": "有外部事实",
+          "durable_effect": "保存确认依据",
+          "recovery": "不同结果人工处理"
+        },
+        {
+          "from": "saved",
+          "to": "rejected",
+          "trigger": "服务端复核拒绝",
+          "guard": "版本/权限不满足",
+          "durable_effect": "保存拒绝原因",
+          "recovery": "用户修正后新业务版本"
+        }
+      ]
+    }
+  ],
+  "algorithm_ids": [
+    "ALG:lookup",
+    "ALG:windows",
+    "ALG:caches"
+  ],
+  "claim_ids": [
+    "STRIPE_INV-C1",
+    "STRIPE_WEBHOOK-C1",
+    "STRIPE_REV-C1",
+    "H01:claim:qtc-scope",
+    "H01:claim:contract-workspace",
+    "H01:claim:paid-evidence",
+    "H01:claim:period-input",
+    "H01:claim:invoice-reopen",
+    "H01:claim:provider-idempotency",
+    "H01:claim:credit-note",
+    "H01:claim:db-identity",
+    "H01:claim:separate-obligations",
+    "H01:claim:scenario-policy",
+    "H01:claim:cumulative-windows",
+    "H01:claim:recovery-design",
+    "H01:claim:technology-workload"
+  ],
+  "checks": [
+    {
+      "id": "H01:check:happy",
+      "kind": "happy_path",
+      "given": "accepted 27000分原合同 [0,30); day12增购9000分 [12,30)",
+      "when": "付款核对完成且观察day20",
+      "then": "原10席+新增5席分别有唯一来源；教学累计22000分，未来14000分",
+      "evidence_required": "合同修订、外部确认、权利效果、UI和计划版本"
+    },
+    {
+      "id": "H01:check:duplicate",
+      "kind": "duplicate",
+      "given": "one valid payment event",
+      "when": "deliver twice",
+      "then": "one entitlement effect",
+      "evidence_required": "inbox records plus business uniqueness evidence"
+    },
+    {
+      "id": "H01:check:reordering",
+      "kind": "out_of_order",
+      "given": "provider currently paid",
+      "when": "deliver paid then old open information",
+      "then": "reconcile current provider state; do not regress blindly",
+      "evidence_required": "event arrival log and authoritative read"
+    },
+    {
+      "id": "H01:check:race",
+      "kind": "concurrency",
+      "given": "same contract version",
+      "when": "two operators submit concurrently",
+      "then": "one operation or explicit version conflict",
+      "evidence_required": "operation identity, rejection/return result"
+    },
+    {
+      "id": "H01:check:tenant",
+      "kind": "tenant_isolation",
+      "given": "same invoice number in two tenants",
+      "when": "read with cache hit and miss",
+      "then": "only authorized tenant data",
+      "evidence_required": "query scope and returned data"
+    },
+    {
+      "id": "H01:check:timeout",
+      "kind": "unknown_outcome",
+      "given": "provider accepted request",
+      "when": "client times out",
+      "then": "unknown remains until reconciliation; no blind second invoice",
+      "evidence_required": "operation ledger and provider lookup"
+    },
+    {
+      "id": "H01:check:crash",
+      "kind": "recovery",
+      "given": "business update committed",
+      "when": "worker crashes before consume marker",
+      "then": "one entitlement after replay; eventual explained consumption",
+      "evidence_required": "restart log, final state and reconciliation"
+    },
+    {
+      "id": "H01:check:windows",
+      "kind": "algorithm",
+      "given": "100分 [0,3)",
+      "when": "按累计向下取整求三日窗口差",
+      "then": "33+33+34=100，任意相邻窗口可加",
+      "evidence_required": "合成固定输入、手算及checks.py输出"
+    },
+    {
+      "id": "H01:check:adjustment",
+      "kind": "partial_cancellation",
+      "given": "day20仅新增5席取消并获批5000分",
+      "when": "退款回执缺失",
+      "then": "原10席继续；现金净额36000分并列5000分义务，不能显示已到账",
+      "evidence_required": "固定输入、状态/拒绝依据与可见结果；执行范围另记"
+    },
+    {
+      "id": "H01:check:reopen",
+      "kind": "correction",
+      "given": "send_invoice且支持取消分配，当前已paid",
+      "when": "收到真正分配撤销并权威核对",
+      "then": "允许open修正并进入权利复核，历史履行不被删除",
+      "evidence_required": "固定输入、状态/拒绝依据与可见结果；执行范围另记"
+    },
+    {
+      "id": "H01:check:bad-period",
+      "kind": "algorithm",
+      "given": "负金额或空期间",
+      "when": "调用非负线性累计函数",
+      "then": "拒绝无效输入，不产生计划",
+      "evidence_required": "固定输入、状态/拒绝依据与可见结果；执行范围另记"
+    },
+    {
+      "id": "H01:check:expired-quote",
+      "kind": "authorization",
+      "given": "已过有效期的报价",
+      "when": "客户点击接受",
+      "then": "拒绝并要求重新报价，不产生合同或invoice",
+      "evidence_required": "固定输入、状态/拒绝依据与可见结果；执行范围另记"
+    }
+  ]
+}

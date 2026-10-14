@@ -1,0 +1,1205 @@
+{
+  "contract_version": "1.0",
+  "case_id": "V02",
+  "title": "从方案与同意到可解释的数据锁定",
+  "scope": "Synthetic SYN-T02; 2 sites, 4 fictional participants, 3 forms each. Local strict query→signature→lock policy; no diagnosis, regulatory compliance claim, real participant data or provider integration. CTMS=Veeva CTMS, EDC=Medidata Rave EDC retain source identity; Veeva EDC operational docs are separate supplemental references.",
+  "synthetic": true,
+  "source_ids": [
+    "CTMS",
+    "EDC",
+    "P04-SRC-fda-eic-guidance",
+    "P04-SRC-sitevault-consent-status",
+    "P04-SRC-sitevault-reconsent",
+    "P04-SRC-veeva-edc-queries",
+    "P04-SRC-veeva-edc-signatures",
+    "P04-SRC-veeva-edc-locking",
+    "P04-SRC-veeva-edc-freezing",
+    "P04-SRC-postgresql-locking",
+    "P04-SRC-postgresql-rls"
+  ],
+  "nodes": [
+    {
+      "id": "V02:actor:participant",
+      "type": "actor",
+      "label": "参与者",
+      "authority": "本人指定用途的同意决定；synthetic-design",
+      "tenant_scope": "tenant + study + site + subject + purpose; restricted/blinded fields additionally authorized; no bare subject-ID lookup"
+    },
+    {
+      "id": "V02:actor:crc",
+      "type": "actor",
+      "label": "研究协调员 CRC",
+      "authority": "被委派中心范围内的数据录入与回复；synthetic-design",
+      "tenant_scope": "tenant + study + site + subject + purpose; restricted/blinded fields additionally authorized; no bare subject-ID lookup"
+    },
+    {
+      "id": "V02:actor:pi",
+      "type": "actor",
+      "label": "研究者 PI",
+      "authority": "被授权范围的数据确认；synthetic-design",
+      "tenant_scope": "tenant + study + site + subject + purpose; restricted/blinded fields additionally authorized; no bare subject-ID lookup"
+    },
+    {
+      "id": "V02:actor:dm",
+      "type": "actor",
+      "label": "数据管理员与数据负责人",
+      "authority": "质疑复核及受控锁定；synthetic-design",
+      "tenant_scope": "tenant + study + site + subject + purpose; restricted/blinded fields additionally authorized; no bare subject-ID lookup"
+    },
+    {
+      "id": "V02:actor:designer",
+      "type": "actor",
+      "label": "方案维护者",
+      "authority": "已获准方案和数据定义的发布；synthetic-design",
+      "tenant_scope": "tenant + study + site + subject + purpose; restricted/blinded fields additionally authorized; no bare subject-ID lookup"
+    },
+    {
+      "id": "V02:ui:consent",
+      "type": "ui",
+      "label": "同意、提问与拒绝页面",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + study + site + subject + purpose; restricted/blinded fields additionally authorized; no bare subject-ID lookup"
+    },
+    {
+      "id": "V02:ui:workbench",
+      "type": "ui",
+      "label": "表单、query、签名与锁定工作台",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + study + site + subject + purpose; restricted/blinded fields additionally authorized; no bare subject-ID lookup"
+    },
+    {
+      "id": "V02:service:protocol",
+      "type": "service",
+      "label": "方案服务",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + study + site + subject + purpose; restricted/blinded fields additionally authorized; no bare subject-ID lookup"
+    },
+    {
+      "id": "V02:service:consent",
+      "type": "service",
+      "label": "同意服务",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + study + site + subject + purpose; restricted/blinded fields additionally authorized; no bare subject-ID lookup"
+    },
+    {
+      "id": "V02:service:trial",
+      "type": "service",
+      "label": "研究数据服务",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + study + site + subject + purpose; restricted/blinded fields additionally authorized; no bare subject-ID lookup"
+    },
+    {
+      "id": "V02:service:projection",
+      "type": "service",
+      "label": "投影与导出服务",
+      "authority": "synthetic-design; read model, not decision authority",
+      "tenant_scope": "tenant + study + site + subject + purpose; restricted/blinded fields additionally authorized; no bare subject-ID lookup"
+    },
+    {
+      "id": "V02:store:consent",
+      "type": "store",
+      "label": "同意证据库",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + study + site + subject + purpose; restricted/blinded fields additionally authorized; no bare subject-ID lookup"
+    },
+    {
+      "id": "V02:store:clinical",
+      "type": "store",
+      "label": "事务记录库与操作账",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + study + site + subject + purpose; restricted/blinded fields additionally authorized; no bare subject-ID lookup"
+    },
+    {
+      "id": "V02:store:artifacts",
+      "type": "store",
+      "label": "版本化原件与导出存储",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + study + site + subject + purpose; restricted/blinded fields additionally authorized; no bare subject-ID lookup"
+    },
+    {
+      "id": "V02:object:protocol",
+      "type": "object",
+      "label": "Protocol version",
+      "authority": "方案服务；synthetic-design",
+      "tenant_scope": "tenant + study + site + subject + purpose; restricted/blinded fields additionally authorized; no bare subject-ID lookup"
+    },
+    {
+      "id": "V02:object:consent",
+      "type": "object",
+      "label": "Consent episode",
+      "authority": "同意服务；synthetic-design",
+      "tenant_scope": "tenant + study + site + subject + purpose; restricted/blinded fields additionally authorized; no bare subject-ID lookup"
+    },
+    {
+      "id": "V02:object:form",
+      "type": "object",
+      "label": "eCRF revision",
+      "authority": "研究数据服务；synthetic-design",
+      "tenant_scope": "tenant + study + site + subject + purpose; restricted/blinded fields additionally authorized; no bare subject-ID lookup"
+    },
+    {
+      "id": "V02:object:query",
+      "type": "object",
+      "label": "Query",
+      "authority": "研究数据服务；synthetic-design",
+      "tenant_scope": "tenant + study + site + subject + purpose; restricted/blinded fields additionally authorized; no bare subject-ID lookup"
+    },
+    {
+      "id": "V02:object:signature",
+      "type": "object",
+      "label": "Investigator signature manifest",
+      "authority": "研究数据服务；synthetic-design",
+      "tenant_scope": "tenant + study + site + subject + purpose; restricted/blinded fields additionally authorized; no bare subject-ID lookup"
+    },
+    {
+      "id": "V02:object:lock",
+      "type": "object",
+      "label": "Lock manifest",
+      "authority": "研究数据服务；synthetic-design",
+      "tenant_scope": "tenant + study + site + subject + purpose; restricted/blinded fields additionally authorized; no bare subject-ID lookup"
+    },
+    {
+      "id": "V02:object:operation",
+      "type": "object",
+      "label": "Operation attempt",
+      "authority": "对应命令服务；synthetic-design",
+      "tenant_scope": "tenant + study + site + subject + purpose; restricted/blinded fields additionally authorized; no bare subject-ID lookup"
+    },
+    {
+      "id": "V02:object:export",
+      "type": "object",
+      "label": "Export artifact",
+      "authority": "投影与导出服务；synthetic-design",
+      "tenant_scope": "tenant + study + site + subject + purpose; restricted/blinded fields additionally authorized; no bare subject-ID lookup"
+    },
+    {
+      "id": "V02:event:change",
+      "type": "event",
+      "label": "带对象版本的状态变化事件",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + study + site + subject + purpose; restricted/blinded fields additionally authorized; no bare subject-ID lookup"
+    },
+    {
+      "id": "V02:rule:scope",
+      "type": "rule",
+      "label": "角色、范围与版本 guard",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + study + site + subject + purpose; restricted/blinded fields additionally authorized; no bare subject-ID lookup"
+    }
+  ],
+  "edges": [
+    {
+      "id": "V02:edge:participant-ui",
+      "type": "operates",
+      "from": "V02:actor:participant",
+      "to": "V02:ui:consent",
+      "payload": "本人材料版本、用途、提问和拒绝动作",
+      "timing": "sync",
+      "invariant": "不从浏览进度推断理解或同意",
+      "failure": "页面中断可继续；问题转有资格研究人员",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V02:claim:consent-scope-policy"
+      ]
+    },
+    {
+      "id": "V02:edge:crc-ui",
+      "type": "operates",
+      "from": "V02:actor:crc",
+      "to": "V02:ui:workbench",
+      "payload": "角色可见对象与明确动作",
+      "timing": "sync",
+      "invariant": "研究与中心范围每次检查",
+      "failure": "禁用按钮附原因，服务端同样拒绝",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V02:claim:authority-design"
+      ]
+    },
+    {
+      "id": "V02:edge:pi-ui",
+      "type": "operates",
+      "from": "V02:actor:pi",
+      "to": "V02:ui:workbench",
+      "payload": "角色可见对象与明确动作",
+      "timing": "sync",
+      "invariant": "研究与中心范围每次检查",
+      "failure": "禁用按钮附原因，服务端同样拒绝",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V02:claim:authority-design"
+      ]
+    },
+    {
+      "id": "V02:edge:dm-ui",
+      "type": "operates",
+      "from": "V02:actor:dm",
+      "to": "V02:ui:workbench",
+      "payload": "角色可见对象与明确动作",
+      "timing": "sync",
+      "invariant": "研究与中心范围每次检查",
+      "failure": "禁用按钮附原因，服务端同样拒绝",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V02:claim:authority-design"
+      ]
+    },
+    {
+      "id": "V02:edge:consent-command",
+      "type": "commands",
+      "from": "V02:ui:consent",
+      "to": "V02:service:consent",
+      "payload": "episode、ICF version、purpose、operation ID、身份确认引用",
+      "timing": "sync",
+      "invariant": "签署不移用到未呈现版本",
+      "failure": "超时保留unknown并按operation核对",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V02:claim:consent-scope-policy"
+      ]
+    },
+    {
+      "id": "V02:edge:trial-command",
+      "type": "commands",
+      "from": "V02:ui:workbench",
+      "to": "V02:service:trial",
+      "payload": "对象ID、expected revision/manifest、动作、原因、operation ID",
+      "timing": "sync",
+      "invariant": "预览版本必须等于提交时版本",
+      "failure": "冲突返回差异并要求重审",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V02:claim:version-lock-design"
+      ]
+    },
+    {
+      "id": "V02:edge:scope-authorizes",
+      "type": "authorizes",
+      "from": "V02:rule:scope",
+      "to": "V02:service:trial",
+      "payload": "当前角色、研究/中心、数据级别与委派范围",
+      "timing": "sync",
+      "invariant": "权限和签名含义不由UI按钮授予",
+      "failure": "范围不符拒绝且不泄漏对象细节",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V02:claim:authority-design"
+      ]
+    },
+    {
+      "id": "V02:edge:protocol-owner",
+      "type": "owns",
+      "from": "V02:service:protocol",
+      "to": "V02:object:protocol",
+      "payload": "released protocol revision 与生效范围",
+      "timing": "static",
+      "invariant": "新版本不覆盖历史解释依据",
+      "failure": "错误发布经新修订与影响评估处理",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V02:claim:case-policy"
+      ]
+    },
+    {
+      "id": "V02:edge:consent-owner",
+      "type": "owns",
+      "from": "V02:service:consent",
+      "to": "V02:object:consent",
+      "payload": "参与者用途、ICF版本、签署/拒绝/撤回证据",
+      "timing": "static",
+      "invariant": "授权不能跨用途自动扩展",
+      "failure": "不确定影响交专业人员判定",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V02:claim:consent-scope-policy"
+      ]
+    },
+    {
+      "id": "V02:edge:form-owner",
+      "type": "owns",
+      "from": "V02:service:trial",
+      "to": "V02:object:form",
+      "payload": "form 的稳定身份、版本与动作证据",
+      "timing": "static",
+      "invariant": "分对象保存事实，不能用总进度替代",
+      "failure": "按操作账及版本恢复，不无痕覆盖",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V02:claim:version-lock-design"
+      ]
+    },
+    {
+      "id": "V02:edge:query-owner",
+      "type": "owns",
+      "from": "V02:service:trial",
+      "to": "V02:object:query",
+      "payload": "query 的稳定身份、版本与动作证据",
+      "timing": "static",
+      "invariant": "分对象保存事实，不能用总进度替代",
+      "failure": "按操作账及版本恢复，不无痕覆盖",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V02:claim:version-lock-design"
+      ]
+    },
+    {
+      "id": "V02:edge:signature-owner",
+      "type": "owns",
+      "from": "V02:service:trial",
+      "to": "V02:object:signature",
+      "payload": "signature 的稳定身份、版本与动作证据",
+      "timing": "static",
+      "invariant": "分对象保存事实，不能用总进度替代",
+      "failure": "按操作账及版本恢复，不无痕覆盖",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V02:claim:version-lock-design"
+      ]
+    },
+    {
+      "id": "V02:edge:lock-owner",
+      "type": "owns",
+      "from": "V02:service:trial",
+      "to": "V02:object:lock",
+      "payload": "lock 的稳定身份、版本与动作证据",
+      "timing": "static",
+      "invariant": "分对象保存事实，不能用总进度替代",
+      "failure": "按操作账及版本恢复，不无痕覆盖",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V02:claim:version-lock-design"
+      ]
+    },
+    {
+      "id": "V02:edge:operation-owner",
+      "type": "owns",
+      "from": "V02:service:trial",
+      "to": "V02:object:operation",
+      "payload": "operation 的稳定身份、版本与动作证据",
+      "timing": "static",
+      "invariant": "分对象保存事实，不能用总进度替代",
+      "failure": "按操作账及版本恢复，不无痕覆盖",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V02:claim:version-lock-design"
+      ]
+    },
+    {
+      "id": "V02:edge:read-consent",
+      "type": "reads",
+      "from": "V02:service:trial",
+      "to": "V02:store:consent",
+      "payload": "活动所需的用途、时间、协议与ICF授权投影",
+      "timing": "sync",
+      "invariant": "新研究活动不由不完整或旧用途证据授权",
+      "failure": "缺失/unknown 保持待核对，专业人员处理",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V02:claim:consent-scope-policy"
+      ]
+    },
+    {
+      "id": "V02:edge:consent-store",
+      "type": "stores",
+      "from": "V02:store:consent",
+      "to": "V02:object:consent",
+      "payload": "episode版本与历史签署证据",
+      "timing": "sync",
+      "invariant": "拒绝或撤回不抹去旧episode",
+      "failure": "回查权威记录，不按送达状态重建",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V02:claim:consent-scope-policy"
+      ]
+    },
+    {
+      "id": "V02:edge:protocol-store",
+      "type": "stores",
+      "from": "V02:store:clinical",
+      "to": "V02:object:protocol",
+      "payload": "protocol 的版本、原因、范围和操作结果",
+      "timing": "sync",
+      "invariant": "相关写入与guard处于相容事务边界",
+      "failure": "已提交、未提交、unknown分别处理",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V02:claim:version-lock-design"
+      ]
+    },
+    {
+      "id": "V02:edge:form-store",
+      "type": "stores",
+      "from": "V02:store:clinical",
+      "to": "V02:object:form",
+      "payload": "form 的版本、原因、范围和操作结果",
+      "timing": "sync",
+      "invariant": "相关写入与guard处于相容事务边界",
+      "failure": "已提交、未提交、unknown分别处理",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V02:claim:version-lock-design"
+      ]
+    },
+    {
+      "id": "V02:edge:query-store",
+      "type": "stores",
+      "from": "V02:store:clinical",
+      "to": "V02:object:query",
+      "payload": "query 的版本、原因、范围和操作结果",
+      "timing": "sync",
+      "invariant": "相关写入与guard处于相容事务边界",
+      "failure": "已提交、未提交、unknown分别处理",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V02:claim:version-lock-design"
+      ]
+    },
+    {
+      "id": "V02:edge:signature-store",
+      "type": "stores",
+      "from": "V02:store:clinical",
+      "to": "V02:object:signature",
+      "payload": "signature 的版本、原因、范围和操作结果",
+      "timing": "sync",
+      "invariant": "相关写入与guard处于相容事务边界",
+      "failure": "已提交、未提交、unknown分别处理",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V02:claim:version-lock-design"
+      ]
+    },
+    {
+      "id": "V02:edge:lock-store",
+      "type": "stores",
+      "from": "V02:store:clinical",
+      "to": "V02:object:lock",
+      "payload": "lock 的版本、原因、范围和操作结果",
+      "timing": "sync",
+      "invariant": "相关写入与guard处于相容事务边界",
+      "failure": "已提交、未提交、unknown分别处理",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V02:claim:version-lock-design"
+      ]
+    },
+    {
+      "id": "V02:edge:operation-store",
+      "type": "stores",
+      "from": "V02:store:clinical",
+      "to": "V02:object:operation",
+      "payload": "operation 的版本、原因、范围和操作结果",
+      "timing": "sync",
+      "invariant": "相关写入与guard处于相容事务边界",
+      "failure": "已提交、未提交、unknown分别处理",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V02:claim:version-lock-design"
+      ]
+    },
+    {
+      "id": "V02:edge:form-definition",
+      "type": "depends_on",
+      "from": "V02:object:form",
+      "to": "V02:object:protocol",
+      "payload": "data definition revision与方案适用范围",
+      "timing": "static",
+      "invariant": "值相同但解释变化也进入影响分析",
+      "failure": "遗漏依赖边会漏掉失效签名",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V02:claim:coverage-algorithm"
+      ]
+    },
+    {
+      "id": "V02:edge:query-form",
+      "type": "depends_on",
+      "from": "V02:object:query",
+      "to": "V02:object:form",
+      "payload": "疑问字段、目标revision与回复所依据revision",
+      "timing": "static",
+      "invariant": "answered 不自动等于 closed",
+      "failure": "重新核对回复与当前数据",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V02:claim:case-policy"
+      ]
+    },
+    {
+      "id": "V02:edge:signature-form",
+      "type": "derived_from",
+      "from": "V02:object:signature",
+      "to": "V02:object:form",
+      "payload": "有序(form_id,data_revision,definition_revision) manifest",
+      "timing": "sync",
+      "invariant": "签名只覆盖明确所见范围；摘要非完整电子签名机制",
+      "failure": "版本改变保留旧签署并使当前覆盖失效",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V02:claim:version-lock-design"
+      ]
+    },
+    {
+      "id": "V02:edge:lock-signature",
+      "type": "depends_on",
+      "from": "V02:object:lock",
+      "to": "V02:object:signature",
+      "payload": "本例当前manifest对应的PI确认",
+      "timing": "sync",
+      "invariant": "所有必需成员均被当前签名覆盖",
+      "failure": "缺成员或失效签名阻断",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V02:claim:version-lock-design"
+      ]
+    },
+    {
+      "id": "V02:edge:lock-query",
+      "type": "depends_on",
+      "from": "V02:object:lock",
+      "to": "V02:object:query",
+      "payload": "所有阻断query已关闭的权威检查",
+      "timing": "sync",
+      "invariant": "本例strict policy；实际产品可有不同规则",
+      "failure": "gate覆盖新增query与批量导入，防phantom blocker",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V02:claim:version-lock-design"
+      ]
+    },
+    {
+      "id": "V02:edge:emit-change",
+      "type": "emits",
+      "from": "V02:service:trial",
+      "to": "V02:event:change",
+      "payload": "对象身份、revision、operation ID、事件ID",
+      "timing": "async",
+      "invariant": "事件不替代权威状态",
+      "failure": "重复和迟到按对象版本核对",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V02:claim:recovery-design"
+      ]
+    },
+    {
+      "id": "V02:edge:deliver-change",
+      "type": "delivers",
+      "from": "V02:event:change",
+      "to": "V02:service:projection",
+      "payload": "待刷新范围与operation引用",
+      "timing": "async",
+      "invariant": "接收不等于投影/导出完成",
+      "failure": "持久化待处理身份，重试同一范围",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V02:claim:recovery-design"
+      ]
+    },
+    {
+      "id": "V02:edge:projection-read",
+      "type": "reads",
+      "from": "V02:service:projection",
+      "to": "V02:store:clinical",
+      "payload": "授权范围的当前对象及指定锁定manifest",
+      "timing": "async",
+      "invariant": "列表与导出使用明确版本边界",
+      "failure": "投影陈旧显示新鲜度，锁定从权威库判断",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V02:claim:recovery-design"
+      ]
+    },
+    {
+      "id": "V02:edge:export-owner",
+      "type": "owns",
+      "from": "V02:service:projection",
+      "to": "V02:object:export",
+      "payload": "导出工件状态与manifest引用",
+      "timing": "static",
+      "invariant": "导出失败不解锁数据",
+      "failure": "重建同manifest工件",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V02:claim:recovery-design"
+      ]
+    },
+    {
+      "id": "V02:edge:export-manifest",
+      "type": "derived_from",
+      "from": "V02:object:export",
+      "to": "V02:object:lock",
+      "payload": "冻结成员与不可变revision清单",
+      "timing": "batch",
+      "invariant": "重建使用同一清单",
+      "failure": "新锁定产生新工件，旧工件注明替代关系",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V02:claim:recovery-design"
+      ]
+    },
+    {
+      "id": "V02:edge:export-store",
+      "type": "stores",
+      "from": "V02:store:artifacts",
+      "to": "V02:object:export",
+      "payload": "工件身份、内容与摘要；不以临时URL为证据ID",
+      "timing": "batch",
+      "invariant": "文件与manifest一致",
+      "failure": "写入后崩溃按对象身份核对",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V02:claim:recovery-design"
+      ]
+    },
+    {
+      "id": "V02:edge:form-ui",
+      "type": "projects",
+      "from": "V02:object:form",
+      "to": "V02:ui:workbench",
+      "payload": "独立对象状态、范围、版本和新鲜度",
+      "timing": "async",
+      "invariant": "单个绿色状态不覆盖其它对象的义务",
+      "failure": "可回查权威记录并明确pending/unknown",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V02:claim:recovery-design"
+      ]
+    },
+    {
+      "id": "V02:edge:query-ui",
+      "type": "projects",
+      "from": "V02:object:query",
+      "to": "V02:ui:workbench",
+      "payload": "独立对象状态、范围、版本和新鲜度",
+      "timing": "async",
+      "invariant": "单个绿色状态不覆盖其它对象的义务",
+      "failure": "可回查权威记录并明确pending/unknown",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V02:claim:recovery-design"
+      ]
+    },
+    {
+      "id": "V02:edge:signature-ui",
+      "type": "projects",
+      "from": "V02:object:signature",
+      "to": "V02:ui:workbench",
+      "payload": "独立对象状态、范围、版本和新鲜度",
+      "timing": "async",
+      "invariant": "单个绿色状态不覆盖其它对象的义务",
+      "failure": "可回查权威记录并明确pending/unknown",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V02:claim:recovery-design"
+      ]
+    },
+    {
+      "id": "V02:edge:lock-ui",
+      "type": "projects",
+      "from": "V02:object:lock",
+      "to": "V02:ui:workbench",
+      "payload": "独立对象状态、范围、版本和新鲜度",
+      "timing": "async",
+      "invariant": "单个绿色状态不覆盖其它对象的义务",
+      "failure": "可回查权威记录并明确pending/unknown",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V02:claim:recovery-design"
+      ]
+    },
+    {
+      "id": "V02:edge:operation-ui",
+      "type": "projects",
+      "from": "V02:object:operation",
+      "to": "V02:ui:workbench",
+      "payload": "独立对象状态、范围、版本和新鲜度",
+      "timing": "async",
+      "invariant": "单个绿色状态不覆盖其它对象的义务",
+      "failure": "可回查权威记录并明确pending/unknown",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V02:claim:recovery-design"
+      ]
+    },
+    {
+      "id": "V02:edge:export-ui",
+      "type": "projects",
+      "from": "V02:object:export",
+      "to": "V02:ui:workbench",
+      "payload": "独立对象状态、范围、版本和新鲜度",
+      "timing": "async",
+      "invariant": "单个绿色状态不覆盖其它对象的义务",
+      "failure": "可回查权威记录并明确pending/unknown",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V02:claim:recovery-design"
+      ]
+    }
+  ],
+  "lifecycles": [
+    {
+      "object_id": "V02:object:protocol",
+      "states": [
+        "draft",
+        "released",
+        "superseded"
+      ],
+      "transitions": [
+        {
+          "from": "draft",
+          "to": "released",
+          "trigger": "发布获准版本",
+          "guard": "批准引用、生效范围和定义完整",
+          "durable_effect": "保存不可变版本与影响表",
+          "recovery": "发布失败不得提前放行活动"
+        },
+        {
+          "from": "released",
+          "to": "superseded",
+          "trigger": "后续版本生效",
+          "guard": "适用范围与变更责任明确",
+          "durable_effect": "保留替代关系与旧版",
+          "recovery": "按历史版本解释旧记录"
+        }
+      ]
+    },
+    {
+      "object_id": "V02:object:consent",
+      "states": [
+        "prepared",
+        "awaiting",
+        "effective",
+        "declined",
+        "reconsent_required",
+        "withdrawn"
+      ],
+      "transitions": [
+        {
+          "from": "prepared",
+          "to": "awaiting",
+          "trigger": "呈现已批准ICF",
+          "guard": "参与者身份与用途匹配",
+          "durable_effect": "记录所呈现版本和交付尝试",
+          "recovery": "送达失败不视为同意"
+        },
+        {
+          "from": "awaiting",
+          "to": "effective",
+          "trigger": "本人签署且本例所需复核完成",
+          "guard": "身份、用途、版本、专业过程依据确认",
+          "durable_effect": "记录签署与episode生效依据",
+          "recovery": "unknown按操作核对，不推测成功"
+        },
+        {
+          "from": "awaiting",
+          "to": "declined",
+          "trigger": "参与者拒绝",
+          "guard": "确认为本人决定",
+          "durable_effect": "保留拒绝与用途",
+          "recovery": "禁止自动重试签署"
+        },
+        {
+          "from": "effective",
+          "to": "reconsent_required",
+          "trigger": "获准影响表要求新版本同意",
+          "guard": "专业人员判定受影响活动",
+          "durable_effect": "保留旧episode并创建关联新episode",
+          "recovery": "旧事实不删除；受影响活动暂停"
+        },
+        {
+          "from": "reconsent_required",
+          "to": "effective",
+          "trigger": "关联新episode生效",
+          "guard": "明确新用途/版本获得同意",
+          "durable_effect": "当前授权指向新episode；旧记录保留",
+          "recovery": "拒绝则该范围不放行"
+        },
+        {
+          "from": "effective",
+          "to": "withdrawn",
+          "trigger": "记录指定范围的撤回",
+          "guard": "身份、生效时间与用途明确",
+          "durable_effect": "限制本例未来活动；保留历史",
+          "recovery": "既往数据使用交方案/制度责任人判断"
+        }
+      ]
+    },
+    {
+      "object_id": "V02:object:form",
+      "states": [
+        "draft",
+        "submitted"
+      ],
+      "transitions": [
+        {
+          "from": "draft",
+          "to": "submitted",
+          "trigger": "提交表单",
+          "guard": "字段校验、适用定义、权限与可写范围",
+          "durable_effect": "新增revision与来源/原因",
+          "recovery": "冲突拒绝并呈现差异"
+        },
+        {
+          "from": "submitted",
+          "to": "submitted",
+          "trigger": "更正已提交数据或解释依赖",
+          "guard": "未锁定；expected revision相同",
+          "durable_effect": "生成新revision，旧签名不覆盖新版本",
+          "recovery": "重新质疑/复核/签署；不无痕覆盖"
+        }
+      ]
+    },
+    {
+      "object_id": "V02:object:query",
+      "states": [
+        "open",
+        "answered",
+        "closed"
+      ],
+      "transitions": [
+        {
+          "from": "open",
+          "to": "answered",
+          "trigger": "协调员回复",
+          "guard": "具备回复权限且对象版本匹配",
+          "durable_effect": "保存回复与依据",
+          "recovery": "意见不足保持待复核"
+        },
+        {
+          "from": "answered",
+          "to": "closed",
+          "trigger": "管理员确认解决",
+          "guard": "关闭权限与处理依据齐备",
+          "durable_effect": "记录关闭决定",
+          "recovery": "后续必要时重开"
+        },
+        {
+          "from": "closed",
+          "to": "open",
+          "trigger": "新增待解释问题",
+          "guard": "有权限且范围未锁定",
+          "durable_effect": "保留原问题和重开原因",
+          "recovery": "锁定时先走受控解锁"
+        }
+      ]
+    },
+    {
+      "object_id": "V02:object:signature",
+      "states": [
+        "absent",
+        "current",
+        "superseded"
+      ],
+      "transitions": [
+        {
+          "from": "absent",
+          "to": "current",
+          "trigger": "PI对预览manifest签署",
+          "guard": "身份与范围授权；本例query已关闭；manifest仍相同",
+          "durable_effect": "保存签署含义、身份、时间和manifest",
+          "recovery": "超时按operation核对"
+        },
+        {
+          "from": "current",
+          "to": "superseded",
+          "trigger": "数据、定义或成员发生受控变更",
+          "guard": "变更影响当前签署范围",
+          "durable_effect": "保留旧签名，当前覆盖失效",
+          "recovery": "重新复核后另建签名"
+        },
+        {
+          "from": "superseded",
+          "to": "current",
+          "trigger": "PI确认新manifest",
+          "guard": "重新展示与核对；不是复用旧身份操作",
+          "durable_effect": "新签名关联当前manifest和旧历史",
+          "recovery": "旧值恢复也不自动复活旧签名"
+        }
+      ]
+    },
+    {
+      "object_id": "V02:object:lock",
+      "states": [
+        "open",
+        "preparing",
+        "blocked",
+        "locked",
+        "unlocked"
+      ],
+      "transitions": [
+        {
+          "from": "open",
+          "to": "preparing",
+          "trigger": "准备范围锁定",
+          "guard": "权限、范围与operation已保存",
+          "durable_effect": "设置写入gate并冻结候选成员",
+          "recovery": "中断保持preparing，凭同一operation恢复"
+        },
+        {
+          "from": "preparing",
+          "to": "blocked",
+          "trigger": "发现缺表、query、失效签名或未结导入",
+          "guard": "权威事务内检查",
+          "durable_effect": "保存blocker与原因",
+          "recovery": "按批准恢复流程解除准备并处理问题"
+        },
+        {
+          "from": "blocked",
+          "to": "open",
+          "trigger": "解除准备",
+          "guard": "记录原因且未宣告lock成功",
+          "durable_effect": "恢复可写并保留尝试历史",
+          "recovery": "重新准备必须核对最新manifest"
+        },
+        {
+          "from": "preparing",
+          "to": "locked",
+          "trigger": "提交锁定",
+          "guard": "共同gate内全部条件成立且manifest未变",
+          "durable_effect": "锁定manifest与状态同事务提交",
+          "recovery": "丢响应查operation；导出可独立重试"
+        },
+        {
+          "from": "locked",
+          "to": "unlocked",
+          "trigger": "受控解锁",
+          "guard": "权限、原因、批准引用和范围齐备",
+          "durable_effect": "保留旧manifest及解除限制记录",
+          "recovery": "修改后重签重锁；下游旧工件明确替代"
+        },
+        {
+          "from": "unlocked",
+          "to": "preparing",
+          "trigger": "变更处理完成后再次准备",
+          "guard": "当前范围及问题清单已核对",
+          "durable_effect": "新operation与候选manifest",
+          "recovery": "不覆盖旧锁定历史"
+        }
+      ]
+    },
+    {
+      "object_id": "V02:object:operation",
+      "states": [
+        "saved",
+        "unknown",
+        "confirmed",
+        "rejected"
+      ],
+      "transitions": [
+        {
+          "from": "saved",
+          "to": "unknown",
+          "trigger": "结果未可靠返回",
+          "guard": "请求可能已受理",
+          "durable_effect": "保存请求身份及待核对状态",
+          "recovery": "先查权威结果，不盲目换ID"
+        },
+        {
+          "from": "saved",
+          "to": "confirmed",
+          "trigger": "本地提交/权威确认",
+          "guard": "结果与请求身份匹配",
+          "durable_effect": "保存结果及业务引用",
+          "recovery": "同参数重放返回同一结果"
+        },
+        {
+          "from": "saved",
+          "to": "rejected",
+          "trigger": "版本或权限检查失败",
+          "guard": "拒绝发生在业务效果前",
+          "durable_effect": "保留明确原因",
+          "recovery": "新决定另建可追踪尝试"
+        },
+        {
+          "from": "unknown",
+          "to": "confirmed",
+          "trigger": "按operation查到已提交结果",
+          "guard": "身份及payload匹配",
+          "durable_effect": "连接既有业务效果",
+          "recovery": "不生成第二个签名"
+        },
+        {
+          "from": "unknown",
+          "to": "rejected",
+          "trigger": "确认未产生效果且不可重试",
+          "guard": "具备确定失败证据",
+          "durable_effect": "保存核对结论",
+          "recovery": "保留人工恢复入口"
+        }
+      ]
+    },
+    {
+      "object_id": "V02:object:export",
+      "states": [
+        "pending",
+        "generated",
+        "superseded"
+      ],
+      "transitions": [
+        {
+          "from": "pending",
+          "to": "generated",
+          "trigger": "从locked manifest产生文件",
+          "guard": "输入revision可读且摘要核对一致",
+          "durable_effect": "保存工件身份与manifest引用",
+          "recovery": "崩溃后读取既有工件再决定重建"
+        },
+        {
+          "from": "generated",
+          "to": "superseded",
+          "trigger": "新锁定manifest替代旧版",
+          "guard": "下游版本处理已明确",
+          "durable_effect": "保留旧工件并标注替代",
+          "recovery": "已下载副本需通知/流程处理，不能假设消失"
+        }
+      ]
+    }
+  ],
+  "algorithm_ids": [
+    "ALG:lookup",
+    "ALG:graph-paths",
+    "ALG:caches"
+  ],
+  "claim_ids": [
+    "V02:claim:ctms-scope",
+    "V02:claim:edc-scope",
+    "V02:claim:consent-process",
+    "V02:claim:consent-status",
+    "V02:claim:reconsent",
+    "V02:claim:query-lifecycle",
+    "V02:claim:signature-scope",
+    "V02:claim:lock-scope",
+    "V02:claim:freeze-scope",
+    "V02:claim:postgres-locks",
+    "V02:claim:postgres-rls",
+    "V02:claim:case-policy",
+    "V02:claim:consent-scope-policy",
+    "V02:claim:authority-design",
+    "V02:claim:version-lock-design",
+    "V02:claim:coverage-algorithm",
+    "V02:claim:recovery-design",
+    "V02:claim:ai-eval-design"
+  ],
+  "checks": [
+    {
+      "id": "V02:check:happy",
+      "kind": "happy_path",
+      "given": "12份表、当前授权依据、A2=29 revision8；query已关闭",
+      "when": "PI签当前manifest并锁定，随后导出",
+      "then": "签名/锁定/导出三者版本一致，旧版本可追踪",
+      "evidence_required": "planned UI→service→store→export E2E; local script test_01 only covers 3-form fixture"
+    },
+    {
+      "id": "V02:check:duplicate",
+      "kind": "duplicate",
+      "given": "同scope相同operation及参数",
+      "when": "重复签署；再以不同参数复用ID",
+      "then": "同参数一个效果；异参数明确拒绝",
+      "evidence_required": "synthetic-v02.py test_03; actual HTTP/UI not run"
+    },
+    {
+      "id": "V02:check:late-signature",
+      "kind": "out_of_order",
+      "given": "revision8签过，当前已更改",
+      "when": "旧operation回执迟到",
+      "then": "历史签署可查，当前覆盖仍失效",
+      "evidence_required": "synthetic-v02.py test_07; no real callback delivery executed"
+    },
+    {
+      "id": "V02:check:gate-race",
+      "kind": "concurrency",
+      "given": "当前版本已签，锁定与改值/新query竞争",
+      "when": "两种顺序及真实本地双线程竞争",
+      "then": "一个明确结果序列；locked范围不存在未决query或失效签名",
+      "evidence_required": "synthetic-v02.py test_10/test_11; SQLite coarse serialization, not PostgreSQL test"
+    },
+    {
+      "id": "V02:check:scope",
+      "kind": "tenant_isolation",
+      "given": "相同subject/form编号在不同tenant/study/site",
+      "when": "越范围写入或读取operation，CRC尝试代签",
+      "then": "拒绝越权；签名不会泄漏或跨范围使用",
+      "evidence_required": "synthetic-v02.py test_08; cache/export/actual auth E2E still planned"
+    },
+    {
+      "id": "V02:check:unknown",
+      "kind": "unknown_outcome",
+      "given": "签署已提交但客户端没使用响应",
+      "when": "重新建立数据库连接按operation查询",
+      "then": "找到原签名，未提交ID仍无结果",
+      "evidence_required": "synthetic-v02.py test_09; local response-loss simulation only"
+    },
+    {
+      "id": "V02:check:recover",
+      "kind": "recovery",
+      "given": "preparing中断或export写完后标记前中断",
+      "when": "恢复同一operation/manifest",
+      "then": "可解释继续或受控解除；不会换清单或解锁已锁数据",
+      "evidence_required": "planned fault injection, not implemented in synthetic script"
+    },
+    {
+      "id": "V02:check:definition",
+      "kind": "semantic_revision",
+      "given": "签名绑定数据值2与定义v1",
+      "when": "值不变而定义v2改变含义",
+      "then": "当前签名失效，保留旧记录",
+      "evidence_required": "synthetic-v02.py test_05; professional impact review still required"
+    },
+    {
+      "id": "V02:check:reverted-value",
+      "kind": "revision",
+      "given": "已签revision8=29",
+      "when": "改为92，再改回29",
+      "then": "版本增加，旧签名不会复活",
+      "evidence_required": "synthetic-v02.py test_04"
+    },
+    {
+      "id": "V02:check:coverage",
+      "kind": "algorithm",
+      "given": "required={A1,A2,A3}, signed={A1,A2,X9}",
+      "when": "用计数判断再比较集合差",
+      "then": "坏计数通过但遗漏A3被正确检查检出",
+      "evidence_required": "synthetic-v02.py test_12; hand-worked explanation in prose"
+    },
+    {
+      "id": "V02:check:bad-race",
+      "kind": "negative_counterexample",
+      "given": "T1读取零未决query但未持有共同gate",
+      "when": "T2新增query后T1仍写locked",
+      "then": "明确演示坏实现产生locked+open-query违例",
+      "evidence_required": "synthetic-v02.py test_13; counterexample success is not implementation acceptance"
+    },
+    {
+      "id": "V02:check:consent-purpose",
+      "kind": "domain_guard",
+      "given": "旧用途有效，新用途被拒绝",
+      "when": "尝试新增用途活动并读取历史数据",
+      "then": "新增用途不放行；历史数据处置不由全局boolean推导",
+      "evidence_required": "planned consent-engine/UI test; not executed"
+    },
+    {
+      "id": "V02:check:ai",
+      "kind": "ai_eval",
+      "given": "120条虚构留出样本按40/40/20/20分类",
+      "when": "冻结模型配置，只建议query草稿",
+      "then": "按各自分母报告召回、多问、拒答、越权与人工修正",
+      "evidence_required": "planned only; no model calls or measured scores"
+    }
+  ],
+  "transfers": [
+    {
+      "id": "TR:V02:V03:versioned-release",
+      "preserves": "confirmation binds exact input versions; changes require impact review",
+      "breaks_when": "clinical consent/PI authority is substituted for laboratory method validity, sampling or lot release authority"
+    },
+    {
+      "id": "TR:V02:V01:amended-evidence",
+      "preserves": "original evidence and superseding revision remain traceable",
+      "breaks_when": "report amendment notifications or urgent care requirements are assumed identical to study data lock"
+    },
+    {
+      "id": "TR:V02:H08:scoped-authorization",
+      "preserves": "permission scope, version and refusal reason are explicit",
+      "breaks_when": "clinical informed consent is used to infer authority for security account/device containment or emergency act-then-review rules"
+    }
+  ]
+}

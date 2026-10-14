@@ -1,0 +1,1215 @@
+{
+  "contract_version": "1.0",
+  "case_id": "H02",
+  "title": "请购、验收、发票匹配与付款",
+  "scope": "合成一个法人、一个币种、四方数量证据、零数量容差、2%单价上浮容差；不计税费汇率，银行接口仅为未执行的抽象。",
+  "synthetic": true,
+  "source_ids": [
+    "ORACLE_MATCH",
+    "P01-SRC-oracle-invoice-tolerances",
+    "P01-SRC-postgresql-locking"
+  ],
+  "nodes": [
+    {
+      "id": "H02:actor:requester",
+      "type": "actor",
+      "label": "请购申请人",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant_id + legal_entity_id; service authorization required"
+    },
+    {
+      "id": "H02:actor:budget-approver",
+      "type": "actor",
+      "label": "预算负责人",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant_id + legal_entity_id; service authorization required"
+    },
+    {
+      "id": "H02:actor:receiver",
+      "type": "actor",
+      "label": "仓管",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant_id + legal_entity_id; service authorization required"
+    },
+    {
+      "id": "H02:actor:inspector",
+      "type": "actor",
+      "label": "检验员",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant_id + legal_entity_id; service authorization required"
+    },
+    {
+      "id": "H02:actor:ap-clerk",
+      "type": "actor",
+      "label": "应付会计",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant_id + legal_entity_id; service authorization required"
+    },
+    {
+      "id": "H02:actor:treasury",
+      "type": "actor",
+      "label": "资金制单与复核角色",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant_id + legal_entity_id; service authorization required"
+    },
+    {
+      "id": "H02:ui:workbench",
+      "type": "ui",
+      "label": "采购付款工作台",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant_id + legal_entity_id; service authorization required"
+    },
+    {
+      "id": "H02:service:procurement",
+      "type": "service",
+      "label": "采购服务",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant_id + legal_entity_id; service authorization required"
+    },
+    {
+      "id": "H02:service:receiving",
+      "type": "service",
+      "label": "收货与验收服务",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant_id + legal_entity_id; service authorization required"
+    },
+    {
+      "id": "H02:service:matching",
+      "type": "service",
+      "label": "应付匹配服务",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant_id + legal_entity_id; service authorization required"
+    },
+    {
+      "id": "H02:service:payment",
+      "type": "service",
+      "label": "付款服务",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant_id + legal_entity_id; service authorization required"
+    },
+    {
+      "id": "H02:store:transaction-db",
+      "type": "store",
+      "label": "关系事务数据库",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant_id + legal_entity_id; service authorization required"
+    },
+    {
+      "id": "H02:store:inbox",
+      "type": "store",
+      "label": "持久回执收件表",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant_id + legal_entity_id; service authorization required"
+    },
+    {
+      "id": "H02:external_system:bank",
+      "type": "external_system",
+      "label": "外部银行；未指定 provider",
+      "authority": "external-provider; abstract contract, no live integration",
+      "tenant_scope": "tenant_id + legal_entity_id; service authorization required"
+    },
+    {
+      "id": "H02:rule:approval-policy",
+      "type": "rule",
+      "label": "职责分离、四方数量与价格容差政策",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant_id + legal_entity_id; service authorization required"
+    },
+    {
+      "id": "H02:object:requisition",
+      "type": "object",
+      "label": "请购 REQ-1",
+      "authority": "synthetic procurement service",
+      "tenant_scope": "tenant_id + legal_entity_id; service authorization required"
+    },
+    {
+      "id": "H02:object:purchase-line",
+      "type": "object",
+      "label": "采购单行 PO-1/L1 及批准版本",
+      "authority": "synthetic procurement service",
+      "tenant_scope": "tenant_id + legal_entity_id; service authorization required"
+    },
+    {
+      "id": "H02:object:receipt",
+      "type": "object",
+      "label": "收货 RCV-1/L1",
+      "authority": "synthetic receiving service",
+      "tenant_scope": "tenant_id + legal_entity_id; service authorization required"
+    },
+    {
+      "id": "H02:object:inspection",
+      "type": "object",
+      "label": "验收 INS-1",
+      "authority": "synthetic receiving service",
+      "tenant_scope": "tenant_id + legal_entity_id; service authorization required"
+    },
+    {
+      "id": "H02:object:invoice",
+      "type": "object",
+      "label": "供应商发票及修订版本",
+      "authority": "synthetic matching service",
+      "tenant_scope": "tenant_id + legal_entity_id; service authorization required"
+    },
+    {
+      "id": "H02:object:allocation",
+      "type": "object",
+      "label": "发票数量分配与规则快照",
+      "authority": "synthetic matching service",
+      "tenant_scope": "tenant_id + legal_entity_id; service authorization required"
+    },
+    {
+      "id": "H02:object:payment",
+      "type": "object",
+      "label": "付款指令 PAY-A",
+      "authority": "synthetic payment service; external state must be reconciled",
+      "tenant_scope": "tenant_id + legal_entity_id; service authorization required"
+    },
+    {
+      "id": "H02:object:bank-transaction",
+      "type": "object",
+      "label": "银行交易事实的核对记录",
+      "authority": "bank is authority; local record is verified projection",
+      "tenant_scope": "tenant_id + legal_entity_id; service authorization required"
+    },
+    {
+      "id": "H02:event:bank-result",
+      "type": "event",
+      "label": "经验证的银行状态通知",
+      "authority": "external bank; protocol verification required",
+      "tenant_scope": "tenant_id + legal_entity_id; service authorization required"
+    }
+  ],
+  "edges": [
+    {
+      "id": "H02:edge:requester-operates",
+      "type": "operates",
+      "from": "H02:actor:requester",
+      "to": "H02:ui:workbench",
+      "payload": "授权范围内查看或提交该角色动作",
+      "timing": "sync",
+      "invariant": "租户、法人、对象版本和权限在接收边界重新校验",
+      "failure": "拒绝不满足条件的请求，保留 operation 与可回查原因",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H02:claim:case-design"
+      ]
+    },
+    {
+      "id": "H02:edge:budget-approver-operates",
+      "type": "operates",
+      "from": "H02:actor:budget-approver",
+      "to": "H02:ui:workbench",
+      "payload": "授权范围内查看或提交该角色动作",
+      "timing": "sync",
+      "invariant": "租户、法人、对象版本和权限在接收边界重新校验",
+      "failure": "拒绝不满足条件的请求，保留 operation 与可回查原因",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H02:claim:case-design"
+      ]
+    },
+    {
+      "id": "H02:edge:receiver-operates",
+      "type": "operates",
+      "from": "H02:actor:receiver",
+      "to": "H02:ui:workbench",
+      "payload": "授权范围内查看或提交该角色动作",
+      "timing": "sync",
+      "invariant": "租户、法人、对象版本和权限在接收边界重新校验",
+      "failure": "拒绝不满足条件的请求，保留 operation 与可回查原因",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H02:claim:case-design"
+      ]
+    },
+    {
+      "id": "H02:edge:inspector-operates",
+      "type": "operates",
+      "from": "H02:actor:inspector",
+      "to": "H02:ui:workbench",
+      "payload": "授权范围内查看或提交该角色动作",
+      "timing": "sync",
+      "invariant": "租户、法人、对象版本和权限在接收边界重新校验",
+      "failure": "拒绝不满足条件的请求，保留 operation 与可回查原因",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H02:claim:case-design"
+      ]
+    },
+    {
+      "id": "H02:edge:ap-clerk-operates",
+      "type": "operates",
+      "from": "H02:actor:ap-clerk",
+      "to": "H02:ui:workbench",
+      "payload": "授权范围内查看或提交该角色动作",
+      "timing": "sync",
+      "invariant": "租户、法人、对象版本和权限在接收边界重新校验",
+      "failure": "拒绝不满足条件的请求，保留 operation 与可回查原因",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H02:claim:case-design"
+      ]
+    },
+    {
+      "id": "H02:edge:treasury-operates",
+      "type": "operates",
+      "from": "H02:actor:treasury",
+      "to": "H02:ui:workbench",
+      "payload": "授权范围内查看或提交该角色动作",
+      "timing": "sync",
+      "invariant": "租户、法人、对象版本和权限在接收边界重新校验",
+      "failure": "拒绝不满足条件的请求，保留 operation 与可回查原因",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H02:claim:case-design"
+      ]
+    },
+    {
+      "id": "H02:edge:command-procurement",
+      "type": "commands",
+      "from": "H02:ui:workbench",
+      "to": "H02:service:procurement",
+      "payload": "operation_id, tenant, legal_entity, object_id, expected_version, action, payload",
+      "timing": "sync",
+      "invariant": "租户、法人、对象版本和权限在接收边界重新校验",
+      "failure": "冲突返回当前版本与差异；请求超时按原 operation 查回",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H02:claim:case-design"
+      ]
+    },
+    {
+      "id": "H02:edge:command-receiving",
+      "type": "commands",
+      "from": "H02:ui:workbench",
+      "to": "H02:service:receiving",
+      "payload": "operation_id, tenant, legal_entity, object_id, expected_version, action, payload",
+      "timing": "sync",
+      "invariant": "租户、法人、对象版本和权限在接收边界重新校验",
+      "failure": "冲突返回当前版本与差异；请求超时按原 operation 查回",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H02:claim:case-design"
+      ]
+    },
+    {
+      "id": "H02:edge:command-matching",
+      "type": "commands",
+      "from": "H02:ui:workbench",
+      "to": "H02:service:matching",
+      "payload": "operation_id, tenant, legal_entity, object_id, expected_version, action, payload",
+      "timing": "sync",
+      "invariant": "租户、法人、对象版本和权限在接收边界重新校验",
+      "failure": "冲突返回当前版本与差异；请求超时按原 operation 查回",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H02:claim:case-design"
+      ]
+    },
+    {
+      "id": "H02:edge:command-payment",
+      "type": "commands",
+      "from": "H02:ui:workbench",
+      "to": "H02:service:payment",
+      "payload": "operation_id, tenant, legal_entity, object_id, expected_version, action, payload",
+      "timing": "sync",
+      "invariant": "租户、法人、对象版本和权限在接收边界重新校验",
+      "failure": "冲突返回当前版本与差异；请求超时按原 operation 查回",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H02:claim:case-design"
+      ]
+    },
+    {
+      "id": "H02:edge:owns-requisition",
+      "type": "owns",
+      "from": "H02:service:procurement",
+      "to": "H02:object:requisition",
+      "payload": "事实归属与变更责任",
+      "timing": "static",
+      "invariant": "租户、法人、对象版本和权限在接收边界重新校验",
+      "failure": "拒绝不满足条件的请求，保留 operation 与可回查原因",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H02:claim:case-design"
+      ]
+    },
+    {
+      "id": "H02:edge:owns-purchase-line",
+      "type": "owns",
+      "from": "H02:service:procurement",
+      "to": "H02:object:purchase-line",
+      "payload": "事实归属与变更责任",
+      "timing": "static",
+      "invariant": "租户、法人、对象版本和权限在接收边界重新校验",
+      "failure": "拒绝不满足条件的请求，保留 operation 与可回查原因",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H02:claim:case-design"
+      ]
+    },
+    {
+      "id": "H02:edge:owns-receipt",
+      "type": "owns",
+      "from": "H02:service:receiving",
+      "to": "H02:object:receipt",
+      "payload": "事实归属与变更责任",
+      "timing": "static",
+      "invariant": "租户、法人、对象版本和权限在接收边界重新校验",
+      "failure": "拒绝不满足条件的请求，保留 operation 与可回查原因",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H02:claim:case-design"
+      ]
+    },
+    {
+      "id": "H02:edge:owns-inspection",
+      "type": "owns",
+      "from": "H02:service:receiving",
+      "to": "H02:object:inspection",
+      "payload": "事实归属与变更责任",
+      "timing": "static",
+      "invariant": "租户、法人、对象版本和权限在接收边界重新校验",
+      "failure": "拒绝不满足条件的请求，保留 operation 与可回查原因",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H02:claim:case-design"
+      ]
+    },
+    {
+      "id": "H02:edge:owns-invoice",
+      "type": "owns",
+      "from": "H02:service:matching",
+      "to": "H02:object:invoice",
+      "payload": "事实归属与变更责任",
+      "timing": "static",
+      "invariant": "租户、法人、对象版本和权限在接收边界重新校验",
+      "failure": "拒绝不满足条件的请求，保留 operation 与可回查原因",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H02:claim:case-design"
+      ]
+    },
+    {
+      "id": "H02:edge:owns-allocation",
+      "type": "owns",
+      "from": "H02:service:matching",
+      "to": "H02:object:allocation",
+      "payload": "事实归属与变更责任",
+      "timing": "static",
+      "invariant": "租户、法人、对象版本和权限在接收边界重新校验",
+      "failure": "拒绝不满足条件的请求，保留 operation 与可回查原因",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H02:claim:case-design"
+      ]
+    },
+    {
+      "id": "H02:edge:owns-payment",
+      "type": "owns",
+      "from": "H02:service:payment",
+      "to": "H02:object:payment",
+      "payload": "事实归属与变更责任",
+      "timing": "static",
+      "invariant": "租户、法人、对象版本和权限在接收边界重新校验",
+      "failure": "拒绝不满足条件的请求，保留 operation 与可回查原因",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H02:claim:case-design"
+      ]
+    },
+    {
+      "id": "H02:edge:bank-owns-transaction",
+      "type": "owns",
+      "from": "H02:external_system:bank",
+      "to": "H02:object:bank-transaction",
+      "payload": "外部受理、结算、拒绝及退回的权威事实",
+      "timing": "static",
+      "invariant": "本地 submitted 不替代银行结算事实",
+      "failure": "未核对时保留 unknown",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H02:claim:case-design"
+      ]
+    },
+    {
+      "id": "H02:edge:store-requisition",
+      "type": "stores",
+      "from": "H02:store:transaction-db",
+      "to": "H02:object:requisition",
+      "payload": "对象版本、金额数量、审计记录、操作身份",
+      "timing": "sync",
+      "invariant": "租户、法人、对象版本和权限在接收边界重新校验",
+      "failure": "事务失败不得暴露已确认业务效果",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H02:claim:case-design"
+      ]
+    },
+    {
+      "id": "H02:edge:store-purchase-line",
+      "type": "stores",
+      "from": "H02:store:transaction-db",
+      "to": "H02:object:purchase-line",
+      "payload": "对象版本、金额数量、审计记录、操作身份",
+      "timing": "sync",
+      "invariant": "租户、法人、对象版本和权限在接收边界重新校验",
+      "failure": "事务失败不得暴露已确认业务效果",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H02:claim:case-design"
+      ]
+    },
+    {
+      "id": "H02:edge:store-receipt",
+      "type": "stores",
+      "from": "H02:store:transaction-db",
+      "to": "H02:object:receipt",
+      "payload": "对象版本、金额数量、审计记录、操作身份",
+      "timing": "sync",
+      "invariant": "租户、法人、对象版本和权限在接收边界重新校验",
+      "failure": "事务失败不得暴露已确认业务效果",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H02:claim:case-design"
+      ]
+    },
+    {
+      "id": "H02:edge:store-inspection",
+      "type": "stores",
+      "from": "H02:store:transaction-db",
+      "to": "H02:object:inspection",
+      "payload": "对象版本、金额数量、审计记录、操作身份",
+      "timing": "sync",
+      "invariant": "租户、法人、对象版本和权限在接收边界重新校验",
+      "failure": "事务失败不得暴露已确认业务效果",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H02:claim:case-design"
+      ]
+    },
+    {
+      "id": "H02:edge:store-invoice",
+      "type": "stores",
+      "from": "H02:store:transaction-db",
+      "to": "H02:object:invoice",
+      "payload": "对象版本、金额数量、审计记录、操作身份",
+      "timing": "sync",
+      "invariant": "租户、法人、对象版本和权限在接收边界重新校验",
+      "failure": "事务失败不得暴露已确认业务效果",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H02:claim:case-design"
+      ]
+    },
+    {
+      "id": "H02:edge:store-allocation",
+      "type": "stores",
+      "from": "H02:store:transaction-db",
+      "to": "H02:object:allocation",
+      "payload": "对象版本、金额数量、审计记录、操作身份",
+      "timing": "sync",
+      "invariant": "租户、法人、对象版本和权限在接收边界重新校验",
+      "failure": "事务失败不得暴露已确认业务效果",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H02:claim:case-design"
+      ]
+    },
+    {
+      "id": "H02:edge:store-payment",
+      "type": "stores",
+      "from": "H02:store:transaction-db",
+      "to": "H02:object:payment",
+      "payload": "对象版本、金额数量、审计记录、操作身份",
+      "timing": "sync",
+      "invariant": "租户、法人、对象版本和权限在接收边界重新校验",
+      "failure": "事务失败不得暴露已确认业务效果",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H02:claim:case-design"
+      ]
+    },
+    {
+      "id": "H02:edge:store-bank-transaction",
+      "type": "stores",
+      "from": "H02:store:transaction-db",
+      "to": "H02:object:bank-transaction",
+      "payload": "对象版本、金额数量、审计记录、操作身份",
+      "timing": "sync",
+      "invariant": "租户、法人、对象版本和权限在接收边界重新校验",
+      "failure": "事务失败不得暴露已确认业务效果",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H02:claim:case-design"
+      ]
+    },
+    {
+      "id": "H02:edge:matching-reads",
+      "type": "reads",
+      "from": "H02:service:matching",
+      "to": "H02:store:transaction-db",
+      "payload": "采购、收货、验收与有效分配的同一提交视图",
+      "timing": "sync",
+      "invariant": "检查余额与分配占用同事务；不读缓存授权",
+      "failure": "拒绝不满足条件的请求，保留 operation 与可回查原因",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H02:claim:case-design"
+      ]
+    },
+    {
+      "id": "H02:edge:purchase-from-request",
+      "type": "derived_from",
+      "from": "H02:object:purchase-line",
+      "to": "H02:object:requisition",
+      "payload": "获批需求、价格和供应商版本",
+      "timing": "static",
+      "invariant": "租户、法人、对象版本和权限在接收边界重新校验",
+      "failure": "拒绝不满足条件的请求，保留 operation 与可回查原因",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H02:claim:case-design"
+      ]
+    },
+    {
+      "id": "H02:edge:inspection-from-receipt",
+      "type": "derived_from",
+      "from": "H02:object:inspection",
+      "to": "H02:object:receipt",
+      "payload": "accepted/rejected/pending 数量与收货版本",
+      "timing": "static",
+      "invariant": "accepted + rejected + pending = received",
+      "failure": "拒绝不满足条件的请求，保留 operation 与可回查原因",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H02:claim:case-design"
+      ]
+    },
+    {
+      "id": "H02:edge:allocation-from-purchase-line",
+      "type": "derived_from",
+      "from": "H02:object:allocation",
+      "to": "H02:object:purchase-line",
+      "payload": "匹配输入身份、数量、单位和规则版本",
+      "timing": "sync",
+      "invariant": "新增匹配提交时累计分配不超过当时订购、收货、合格数量；后续证据下修使授权失效但不自动释放历史占用",
+      "failure": "拒绝不满足条件的请求，保留 operation 与可回查原因",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H02:claim:case-design"
+      ]
+    },
+    {
+      "id": "H02:edge:allocation-from-receipt",
+      "type": "derived_from",
+      "from": "H02:object:allocation",
+      "to": "H02:object:receipt",
+      "payload": "匹配输入身份、数量、单位和规则版本",
+      "timing": "sync",
+      "invariant": "新增匹配提交时累计分配不超过当时订购、收货、合格数量；后续证据下修使授权失效但不自动释放历史占用",
+      "failure": "拒绝不满足条件的请求，保留 operation 与可回查原因",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H02:claim:case-design"
+      ]
+    },
+    {
+      "id": "H02:edge:allocation-from-inspection",
+      "type": "derived_from",
+      "from": "H02:object:allocation",
+      "to": "H02:object:inspection",
+      "payload": "匹配输入身份、数量、单位和规则版本",
+      "timing": "sync",
+      "invariant": "新增匹配提交时累计分配不超过当时订购、收货、合格数量；后续证据下修使授权失效但不自动释放历史占用",
+      "failure": "拒绝不满足条件的请求，保留 operation 与可回查原因",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H02:claim:case-design"
+      ]
+    },
+    {
+      "id": "H02:edge:allocation-from-invoice",
+      "type": "derived_from",
+      "from": "H02:object:allocation",
+      "to": "H02:object:invoice",
+      "payload": "匹配输入身份、数量、单位和规则版本",
+      "timing": "sync",
+      "invariant": "新增匹配提交时累计分配不超过当时订购、收货、合格数量；后续证据下修使授权失效但不自动释放历史占用",
+      "failure": "拒绝不满足条件的请求，保留 operation 与可回查原因",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H02:claim:case-design"
+      ]
+    },
+    {
+      "id": "H02:edge:payment-depends-allocation",
+      "type": "depends_on",
+      "from": "H02:object:payment",
+      "to": "H02:object:allocation",
+      "payload": "无有效 hold 的当前匹配版本与获批金额",
+      "timing": "static",
+      "invariant": "匹配通过不自动发款；还需付款授权与收款账户核验",
+      "failure": "拒绝不满足条件的请求，保留 operation 与可回查原因",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H02:claim:case-design"
+      ]
+    },
+    {
+      "id": "H02:edge:approval-matching",
+      "type": "authorizes",
+      "from": "H02:rule:approval-policy",
+      "to": "H02:service:matching",
+      "payload": "零数量容差和2%单价上浮容差的显式规则版本",
+      "timing": "static",
+      "invariant": "租户、法人、对象版本和权限在接收边界重新校验",
+      "failure": "拒绝不满足条件的请求，保留 operation 与可回查原因",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H02:claim:case-design"
+      ]
+    },
+    {
+      "id": "H02:edge:approval-payment",
+      "type": "authorizes",
+      "from": "H02:actor:treasury",
+      "to": "H02:service:payment",
+      "payload": "制单与复核分离的付款批准、收款账户版本",
+      "timing": "sync",
+      "invariant": "制单人不能复核自己的付款；服务端按版本复核授权",
+      "failure": "拒绝不满足条件的请求，保留 operation 与可回查原因",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H02:claim:case-design"
+      ]
+    },
+    {
+      "id": "H02:edge:bank-request",
+      "type": "requests",
+      "from": "H02:service:payment",
+      "to": "H02:external_system:bank",
+      "payload": "稳定付款引用、707.00金额、币种、核验后的收款账户版本",
+      "timing": "async",
+      "invariant": "先持久化 payment/outbox；未知结果不得更换身份重发",
+      "failure": "timeout 保留 unknown，以同一引用核对银行",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H02:claim:case-design"
+      ]
+    },
+    {
+      "id": "H02:edge:bank-emits",
+      "type": "emits",
+      "from": "H02:external_system:bank",
+      "to": "H02:event:bank-result",
+      "payload": "外部交易ID、付款引用、状态、发生时间及验证材料",
+      "timing": "async",
+      "invariant": "通知身份与provider账户范围一致；协议验证后接收",
+      "failure": "签名或来源验证失败隔离；迟到重复留接收记录",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H02:claim:case-design"
+      ]
+    },
+    {
+      "id": "H02:edge:result-inbox",
+      "type": "delivers",
+      "from": "H02:event:bank-result",
+      "to": "H02:store:inbox",
+      "payload": "原始状态通知、接收时间、事件身份",
+      "timing": "async",
+      "invariant": "成功接收应答前持久化；按账户和事件身份去重",
+      "failure": "写入失败不标记业务完成",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H02:claim:case-design"
+      ]
+    },
+    {
+      "id": "H02:edge:payment-reads-inbox",
+      "type": "reads",
+      "from": "H02:service:payment",
+      "to": "H02:store:inbox",
+      "payload": "待核对通知与消费状态",
+      "timing": "async",
+      "invariant": "旧通知不能直接覆盖已核对的新事实",
+      "failure": "拒绝不满足条件的请求，保留 operation 与可回查原因",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H02:claim:case-design"
+      ]
+    },
+    {
+      "id": "H02:edge:payment-reads-bank",
+      "type": "reads",
+      "from": "H02:service:payment",
+      "to": "H02:external_system:bank",
+      "payload": "按原付款引用查询权威交易状态",
+      "timing": "async",
+      "invariant": "暂时查无结果不等于确定未受理",
+      "failure": "保留 unknown，告警并由资金人员接管",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H02:claim:case-design"
+      ]
+    },
+    {
+      "id": "H02:edge:project-invoice",
+      "type": "projects",
+      "from": "H02:object:invoice",
+      "to": "H02:ui:workbench",
+      "payload": "对象状态、核对时间、输入版本、冲突或hold原因",
+      "timing": "async",
+      "invariant": "显示匹配与付款独立状态，投影带新鲜度",
+      "failure": "投影迟到显示待更新，可按operation查回",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H02:claim:case-design"
+      ]
+    },
+    {
+      "id": "H02:edge:project-allocation",
+      "type": "projects",
+      "from": "H02:object:allocation",
+      "to": "H02:ui:workbench",
+      "payload": "对象状态、核对时间、输入版本、冲突或hold原因",
+      "timing": "async",
+      "invariant": "显示匹配与付款独立状态，投影带新鲜度",
+      "failure": "投影迟到显示待更新，可按operation查回",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H02:claim:case-design"
+      ]
+    },
+    {
+      "id": "H02:edge:project-payment",
+      "type": "projects",
+      "from": "H02:object:payment",
+      "to": "H02:ui:workbench",
+      "payload": "对象状态、核对时间、输入版本、冲突或hold原因",
+      "timing": "async",
+      "invariant": "显示匹配与付款独立状态，投影带新鲜度",
+      "failure": "投影迟到显示待更新，可按operation查回",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H02:claim:case-design"
+      ]
+    }
+  ],
+  "lifecycles": [
+    {
+      "object_id": "H02:object:requisition",
+      "states": [
+        "draft",
+        "submitted",
+        "approved",
+        "rejected"
+      ],
+      "transitions": [
+        {
+          "from": "draft",
+          "to": "submitted",
+          "trigger": "提交请购",
+          "guard": "数量、用途、供应商候选完整",
+          "durable_effect": "记录版本与申请人",
+          "recovery": "断线按operation查回"
+        },
+        {
+          "from": "submitted",
+          "to": "approved",
+          "trigger": "预算负责人批准",
+          "guard": "审批人与申请人不同且当前版本未变",
+          "durable_effect": "保存批准金额数量和授权",
+          "recovery": "修改内容需新版本重新批准"
+        },
+        {
+          "from": "submitted",
+          "to": "rejected",
+          "trigger": "负责人驳回",
+          "guard": "有理由与权限",
+          "durable_effect": "保存驳回意见",
+          "recovery": "重新编制后另行提交"
+        }
+      ]
+    },
+    {
+      "object_id": "H02:object:purchase-line",
+      "states": [
+        "draft",
+        "approved",
+        "superseded",
+        "closed"
+      ],
+      "transitions": [
+        {
+          "from": "draft",
+          "to": "approved",
+          "trigger": "生成采购承诺",
+          "guard": "请购已批准，价格数量供应商获授权",
+          "durable_effect": "保存采购单批准版本",
+          "recovery": "失败不对外释放承诺"
+        },
+        {
+          "from": "approved",
+          "to": "superseded",
+          "trigger": "批准采购变更",
+          "guard": "旧承诺及已履约部分已有处置",
+          "durable_effect": "保留旧版本并链接新版本",
+          "recovery": "重验受影响匹配"
+        },
+        {
+          "from": "approved",
+          "to": "closed",
+          "trigger": "关闭剩余采购义务",
+          "guard": "交付或取消数量及未结事项均已解释",
+          "durable_effect": "保存关闭原因与未结应付关系",
+          "recovery": "关闭不删除发票或付款历史"
+        }
+      ]
+    },
+    {
+      "object_id": "H02:object:receipt",
+      "states": [
+        "recorded",
+        "inspected",
+        "adjusted"
+      ],
+      "transitions": [
+        {
+          "from": "recorded",
+          "to": "inspected",
+          "trigger": "检验记录完备",
+          "guard": "所有收货数量被accepted/rejected/pending解释",
+          "durable_effect": "关联验收版本",
+          "recovery": "部分待检继续保留pending数量"
+        },
+        {
+          "from": "inspected",
+          "to": "adjusted",
+          "trigger": "退货或收货更正",
+          "guard": "授权与原收货引用存在",
+          "durable_effect": "新增调整记录，不覆盖原件",
+          "recovery": "使受影响匹配失效或形成已付差异"
+        }
+      ]
+    },
+    {
+      "object_id": "H02:object:inspection",
+      "states": [
+        "pending",
+        "partial",
+        "complete",
+        "revised"
+      ],
+      "transitions": [
+        {
+          "from": "pending",
+          "to": "partial",
+          "trigger": "部分检验",
+          "guard": "合格拒绝待检之和等于收到量",
+          "durable_effect": "保存75 accepted与5 pending等数量",
+          "recovery": "保留未检责任"
+        },
+        {
+          "from": "partial",
+          "to": "complete",
+          "trigger": "完成剩余检验",
+          "guard": "未检数量归零且记录可追溯",
+          "durable_effect": "保存最终分类数量",
+          "recovery": "重跑held发票匹配"
+        },
+        {
+          "from": "partial",
+          "to": "revised",
+          "trigger": "更正验收",
+          "guard": "授权且引用旧版本",
+          "durable_effect": "新增验收版本",
+          "recovery": "已付项转差异处理，未付项重新hold"
+        },
+        {
+          "from": "complete",
+          "to": "revised",
+          "trigger": "更正验收",
+          "guard": "授权且引用旧版本",
+          "durable_effect": "新增版本与原因",
+          "recovery": "不可自动撤销外部现金"
+        }
+      ]
+    },
+    {
+      "object_id": "H02:object:invoice",
+      "states": [
+        "captured",
+        "matched",
+        "held",
+        "void"
+      ],
+      "transitions": [
+        {
+          "from": "captured",
+          "to": "matched",
+          "trigger": "提交匹配",
+          "guard": "身份价格数量均符合冻结规则，当前版本有效",
+          "durable_effect": "原子保存匹配及数量分配",
+          "recovery": "响应丢失返回同一operation"
+        },
+        {
+          "from": "captured",
+          "to": "held",
+          "trigger": "匹配超差",
+          "guard": "任一必要证据不足",
+          "durable_effect": "保存差异与hold",
+          "recovery": "补证或合法修订后重跑"
+        },
+        {
+          "from": "held",
+          "to": "matched",
+          "trigger": "重跑匹配",
+          "guard": "新证据可验证且余额足够",
+          "durable_effect": "保存新版本分配与解除hold依据",
+          "recovery": "不能只手动去除标签"
+        },
+        {
+          "from": "matched",
+          "to": "held",
+          "trigger": "输入证据变化",
+          "guard": "匹配依据失效；根据付款未发出、在途、已结算分别处理",
+          "durable_effect": "阻止新付款动作；在途保留原付款与数量占用，已结算建立差异案件",
+          "recovery": "submitted/unknown先核对外部；确定未执行且获准后释放，成功则转差异处理"
+        },
+        {
+          "from": "captured",
+          "to": "void",
+          "trigger": "确认作废",
+          "guard": "有授权、无活跃可能成功的付款",
+          "durable_effect": "保存作废理由",
+          "recovery": "合法重开需关联新版本"
+        },
+        {
+          "from": "matched",
+          "to": "void",
+          "trigger": "确认作废",
+          "guard": "已核对不存在可能成功的付款且解除分配获批",
+          "durable_effect": "原子解除占用并保留作废依据",
+          "recovery": "结算后的义务用贷项/退回链处理"
+        }
+      ]
+    },
+    {
+      "object_id": "H02:object:allocation",
+      "states": [
+        "reserved",
+        "invalidated",
+        "released"
+      ],
+      "transitions": [
+        {
+          "from": "reserved",
+          "to": "invalidated",
+          "trigger": "验收或发票修订",
+          "guard": "受影响输入版本变化",
+          "durable_effect": "记录旧分配与失效原因，保留占用直至明确获准释放",
+          "recovery": "重新匹配或已付差异处理"
+        },
+        {
+          "from": "reserved",
+          "to": "released",
+          "trigger": "作废与解除占用",
+          "guard": "无活跃可能成功付款且有明确授权",
+          "durable_effect": "写释放事件并重算余额",
+          "recovery": "重放同一释放不能重复增加余额"
+        },
+        {
+          "from": "invalidated",
+          "to": "reserved",
+          "trigger": "重新匹配成功",
+          "guard": "当前证据容量足够并持锁复核",
+          "durable_effect": "保存新分配版本",
+          "recovery": "冲突退回人工处理"
+        }
+      ]
+    },
+    {
+      "object_id": "H02:object:payment",
+      "states": [
+        "prepared",
+        "authorized",
+        "submitted",
+        "unknown",
+        "settled",
+        "rejected",
+        "returned"
+      ],
+      "transitions": [
+        {
+          "from": "prepared",
+          "to": "authorized",
+          "trigger": "资金复核",
+          "guard": "无hold、当前匹配有效、账户核验完成、职责分离",
+          "durable_effect": "保存金额与账户版本授权",
+          "recovery": "版本变化撤回待执行授权"
+        },
+        {
+          "from": "authorized",
+          "to": "submitted",
+          "trigger": "worker发送",
+          "guard": "outbox已保存且无其他活跃尝试",
+          "durable_effect": "保留发送尝试与稳定引用",
+          "recovery": "超时进入unknown"
+        },
+        {
+          "from": "submitted",
+          "to": "unknown",
+          "trigger": "响应不明确",
+          "guard": "无法证明受理或拒绝",
+          "durable_effect": "保存不确定窗口",
+          "recovery": "以同一引用查询，不创建新付款"
+        },
+        {
+          "from": "submitted",
+          "to": "settled",
+          "trigger": "核对银行结算",
+          "guard": "账户范围身份金额币种一致",
+          "durable_effect": "保存银行事实与投影版本",
+          "recovery": "晚到旧通知不回退"
+        },
+        {
+          "from": "unknown",
+          "to": "settled",
+          "trigger": "查询确认成功",
+          "guard": "查回同一外部交易",
+          "durable_effect": "关联原尝试并记录结算",
+          "recovery": "重放不产生新现金效果"
+        },
+        {
+          "from": "unknown",
+          "to": "rejected",
+          "trigger": "证实拒绝/未受理",
+          "guard": "具有足够外部确认",
+          "durable_effect": "记录明确失败证据",
+          "recovery": "新尝试须重新获授权"
+        },
+        {
+          "from": "submitted",
+          "to": "rejected",
+          "trigger": "银行明确拒绝",
+          "guard": "可靠结果对应当前引用",
+          "durable_effect": "保存拒绝与后续责任",
+          "recovery": "修复原因后另行授权"
+        },
+        {
+          "from": "settled",
+          "to": "returned",
+          "trigger": "确认银行退回",
+          "guard": "外部退回关联原交易",
+          "durable_effect": "新增退回记录与应付处理",
+          "recovery": "不删除原settled事实"
+        }
+      ]
+    }
+  ],
+  "algorithm_ids": [
+    "ALG:lookup",
+    "ALG:caches"
+  ],
+  "claim_ids": [
+    "H02:claim:oracle-match-levels",
+    "H02:claim:oracle-tolerances",
+    "H02:claim:postgres-locking",
+    "H02:claim:matching-not-payment",
+    "H02:claim:case-design",
+    "H02:claim:allocation-computation",
+    "H02:claim:optional-ai-eval"
+  ],
+  "checks": [
+    {
+      "id": "H02:check:normal",
+      "kind": "happy_path",
+      "given": "PO100、received80、accepted75、A70×10.10、2%单价容差",
+      "when": "匹配A、授权并核对付款",
+      "then": "分配70、金额707.00、仅一笔结算；UI分别显示数量和现金",
+      "evidence_required": "UI trace、allocation与payment记录、银行stub或真实对账证据分别标记"
+    },
+    {
+      "id": "H02:check:repeat",
+      "kind": "duplicate",
+      "given": "A与PAY-A已记录",
+      "when": "重放同票号、同operation及同银行回执",
+      "then": "不增加应付、数量占用或付款业务效果",
+      "evidence_required": "唯一约束、operation返回值、接收日志、银行交易计数"
+    },
+    {
+      "id": "H02:check:late-result",
+      "kind": "out_of_order",
+      "given": "PAY-A已核对settled",
+      "when": "迟到submitted通知到达",
+      "then": "接收记录保留，付款不回退",
+      "evidence_required": "inbox到达序列、状态版本和UI核对时间"
+    },
+    {
+      "id": "H02:check:last-five",
+      "kind": "concurrency",
+      "given": "accepted75且已占70",
+      "when": "两人并发各匹配最后5件",
+      "then": "最多一笔新占用，累计不超过75；另一请求明确冲突",
+      "evidence_required": "数据库事务/锁证据、两次响应和allocation合计"
+    },
+    {
+      "id": "H02:check:same-number",
+      "kind": "tenant_isolation",
+      "given": "两个租户/法人存在同PO与发票号",
+      "when": "从列表、附件、缓存和worker读取",
+      "then": "始终只见授权范围的数据",
+      "evidence_required": "多租户fixture与访问审计，不只检查缓存键"
+    },
+    {
+      "id": "H02:check:bank-timeout",
+      "kind": "unknown_outcome",
+      "given": "银行受理707.00后连接断开",
+      "when": "重试查询原PAY-A",
+      "then": "维持unknown直至核对；不得用新引用发送第二笔",
+      "evidence_required": "故障注入、operation状态、外部交易数"
+    },
+    {
+      "id": "H02:check:commit-lost-response",
+      "kind": "recovery",
+      "given": "数量分配已提交但响应丢失",
+      "when": "客户端或worker按同operation恢复",
+      "then": "返回原匹配；无第二次70件占用",
+      "evidence_required": "崩溃点、持久记录和恢复后合计"
+    },
+    {
+      "id": "H02:check:cumulative-hold",
+      "kind": "partial_completion",
+      "given": "A70已占用、accepted75、B10",
+      "when": "匹配B后将B合法修订为5",
+      "then": "B10被hold，B5通过50.50；累计75和757.50",
+      "evidence_required": "两版本发票、匹配差异与分配合计"
+    },
+    {
+      "id": "H02:check:quality-reversal",
+      "kind": "post_payment_adjustment",
+      "given": "accepted由75修订为68",
+      "when": "分别在尚未发送、submitted/unknown、已结算三个窗口修订验收",
+      "then": "未付匹配失效；在途冻结新动作并保留尝试与占用直至核对；已付生成差异案件",
+      "evidence_required": "验收版本、hold、在途operation/分配、银行核对与差异案件"
+    },
+    {
+      "id": "H02:check:invalid-input",
+      "kind": "domain_boundary",
+      "given": "缺单位换算、零单价基数、空容差或非法数量",
+      "when": "请求匹配",
+      "then": "明确拒绝或进入专门政策，不默认为通过",
+      "evidence_required": "输入fixture、错误码、数据库无副作用"
+    },
+    {
+      "id": "H02:check:ocr-eval",
+      "kind": "ai_eval",
+      "given": "200张冻结留出合成票据且含歧义/错币种",
+      "when": "执行可选OCR/模型辅助并人工标注",
+      "then": "报告字段精确率与错误自动接受率分母；关键不确定项转人工",
+      "evidence_required": "数据集版本、模型配置、标签与实测分母；本交付未运行"
+    }
+  ]
+}

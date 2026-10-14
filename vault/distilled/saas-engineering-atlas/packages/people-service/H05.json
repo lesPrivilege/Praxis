@@ -1,0 +1,1098 @@
+{
+  "contract_version": "1.0",
+  "case_id": "H05",
+  "title": "服务恢复以后，哪些工作仍未完成",
+  "scope": "Synthetic incident/change/execution/problem system. Continuous 45-minute restoration target; approved pauses unioned by event time. No production execution or actual ServiceNow instance; selected public state facts are not the complete provider configuration.",
+  "synthetic": true,
+  "source_ids": [
+    "SERVICENOW",
+    "P02-SRC-servicenow-resolution",
+    "P02-SRC-servicenow-change-states"
+  ],
+  "nodes": [
+    {
+      "id": "H05:actor:oncall",
+      "type": "actor",
+      "label": "值班工程师",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound；外部映射包含组织、应用与对象身份"
+    },
+    {
+      "id": "H05:actor:approver",
+      "type": "actor",
+      "label": "变更批准人",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound；外部映射包含组织、应用与对象身份"
+    },
+    {
+      "id": "H05:actor:receiver",
+      "type": "actor",
+      "label": "业务接收方",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound；外部映射包含组织、应用与对象身份"
+    },
+    {
+      "id": "H05:actor:incident-owner",
+      "type": "actor",
+      "label": "事故负责人",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound；外部映射包含组织、应用与对象身份"
+    },
+    {
+      "id": "H05:ui:incident",
+      "type": "ui",
+      "label": "事故时间线与恢复工作台",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound；外部映射包含组织、应用与对象身份"
+    },
+    {
+      "id": "H05:ui:change",
+      "type": "ui",
+      "label": "变更差异与授权预览",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound；外部映射包含组织、应用与对象身份"
+    },
+    {
+      "id": "H05:service:incident",
+      "type": "service",
+      "label": "事故协调服务",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound；外部映射包含组织、应用与对象身份"
+    },
+    {
+      "id": "H05:service:change",
+      "type": "service",
+      "label": "变更协调服务",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound；外部映射包含组织、应用与对象身份"
+    },
+    {
+      "id": "H05:service:timer",
+      "type": "service",
+      "label": "SLA 区间计算服务",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound；外部映射包含组织、应用与对象身份"
+    },
+    {
+      "id": "H05:service:impact",
+      "type": "service",
+      "label": "依赖影响分析服务",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound；外部映射包含组织、应用与对象身份"
+    },
+    {
+      "id": "H05:external_system:executor",
+      "type": "external_system",
+      "label": "合成执行器",
+      "authority": "synthetic-design；实际部署版本与 operation 结果",
+      "tenant_scope": "tenant-bound；外部映射包含组织、应用与对象身份"
+    },
+    {
+      "id": "H05:external_system:monitor",
+      "type": "external_system",
+      "label": "合成关键路径观测",
+      "authority": "synthetic-design；测量结果与事件时间",
+      "tenant_scope": "tenant-bound；外部映射包含组织、应用与对象身份"
+    },
+    {
+      "id": "H05:object:incident",
+      "type": "object",
+      "label": "Incident",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound；外部映射包含组织、应用与对象身份"
+    },
+    {
+      "id": "H05:object:change",
+      "type": "object",
+      "label": "Change plan",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound；外部映射包含组织、应用与对象身份"
+    },
+    {
+      "id": "H05:object:execution",
+      "type": "object",
+      "label": "Execution",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound；外部映射包含组织、应用与对象身份"
+    },
+    {
+      "id": "H05:object:problem",
+      "type": "object",
+      "label": "Problem",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound；外部映射包含组织、应用与对象身份"
+    },
+    {
+      "id": "H05:object:restoration",
+      "type": "object",
+      "label": "Restoration evidence",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound；外部映射包含组织、应用与对象身份"
+    },
+    {
+      "id": "H05:object:sla",
+      "type": "object",
+      "label": "SLA calculation",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound；外部映射包含组织、应用与对象身份"
+    },
+    {
+      "id": "H05:object:checkout",
+      "type": "object",
+      "label": "Checkout service",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound；外部映射包含组织、应用与对象身份"
+    },
+    {
+      "id": "H05:object:orders-api",
+      "type": "object",
+      "label": "Orders API",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound；外部映射包含组织、应用与对象身份"
+    },
+    {
+      "id": "H05:object:db",
+      "type": "object",
+      "label": "DB",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound；外部映射包含组织、应用与对象身份"
+    },
+    {
+      "id": "H05:object:invoice",
+      "type": "object",
+      "label": "Invoice service",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound；外部映射包含组织、应用与对象身份"
+    },
+    {
+      "id": "H05:object:search",
+      "type": "object",
+      "label": "Search service",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound；外部映射包含组织、应用与对象身份"
+    },
+    {
+      "id": "H05:object:search-index",
+      "type": "object",
+      "label": "Search Index",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound；外部映射包含组织、应用与对象身份"
+    },
+    {
+      "id": "H05:store:ledger",
+      "type": "store",
+      "label": "PostgreSQL 对象、版本与操作账本",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound；外部映射包含组织、应用与对象身份"
+    },
+    {
+      "id": "H05:store:inbox-outbox",
+      "type": "store",
+      "label": "持久任务与回执",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound；外部映射包含组织、应用与对象身份"
+    },
+    {
+      "id": "H05:store:dependencies",
+      "type": "store",
+      "label": "版本化依赖邻接表",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound；外部映射包含组织、应用与对象身份"
+    },
+    {
+      "id": "H05:event:execution-result",
+      "type": "event",
+      "label": "Execution result observed",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound；外部映射包含组织、应用与对象身份"
+    },
+    {
+      "id": "H05:rule:approved-plan",
+      "type": "rule",
+      "label": "计划版本、窗口与权限检查",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound；外部映射包含组织、应用与对象身份"
+    }
+  ],
+  "edges": [
+    {
+      "id": "H05:edge:oncall-ui",
+      "type": "operates",
+      "from": "H05:actor:oncall",
+      "to": "H05:ui:incident",
+      "payload": "获准字段、当前证据与动作",
+      "timing": "sync",
+      "invariant": "观察与审批职权分开",
+      "failure": "缺少权限拒绝并提供责任人",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H05:edge:owner-ui",
+      "type": "operates",
+      "from": "H05:actor:incident-owner",
+      "to": "H05:ui:incident",
+      "payload": "获准字段、当前证据与动作",
+      "timing": "sync",
+      "invariant": "观察与审批职权分开",
+      "failure": "缺少权限拒绝并提供责任人",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H05:edge:receiver-ui",
+      "type": "operates",
+      "from": "H05:actor:receiver",
+      "to": "H05:ui:incident",
+      "payload": "获准字段、当前证据与动作",
+      "timing": "sync",
+      "invariant": "观察与审批职权分开",
+      "failure": "缺少权限拒绝并提供责任人",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H05:edge:approve-ui",
+      "type": "operates",
+      "from": "H05:actor:approver",
+      "to": "H05:ui:change",
+      "payload": "获准字段、当前证据与动作",
+      "timing": "sync",
+      "invariant": "观察与审批职权分开",
+      "failure": "缺少权限拒绝并提供责任人",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H05:edge:incident-command",
+      "type": "commands",
+      "from": "H05:ui:incident",
+      "to": "H05:service:incident",
+      "payload": "incident ID + expected version + evidence IDs",
+      "timing": "sync",
+      "invariant": "恢复与关闭各有 guard",
+      "failure": "并发新故障证据使旧关闭失败",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H05:edge:change-command",
+      "type": "commands",
+      "from": "H05:ui:change",
+      "to": "H05:service:change",
+      "payload": "plan hash + expected version + operation ID",
+      "timing": "sync",
+      "invariant": "批准绑定不可变计划内容",
+      "failure": "计划修改必须重新审批",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H05:edge:authorization",
+      "type": "authorizes",
+      "from": "H05:actor:approver",
+      "to": "H05:service:change",
+      "payload": "获准计划、目标与窗口",
+      "timing": "static",
+      "invariant": "批准不等于实际执行",
+      "failure": "授权过期或内容变化拒绝执行",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H05:edge:plan-guard",
+      "type": "authorizes",
+      "from": "H05:rule:approved-plan",
+      "to": "H05:service:change",
+      "payload": "plan hash、当前状态、允许窗口",
+      "timing": "static",
+      "invariant": "严重级别不能绕过授权",
+      "failure": "明确返回哪项前提不满足",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H05:edge:incident-owner",
+      "type": "owns",
+      "from": "H05:service:incident",
+      "to": "H05:object:incident",
+      "payload": "本例业务状态与依据",
+      "timing": "static",
+      "invariant": "incident 关闭不自动消除 problem",
+      "failure": "各对象独立保留未结责任",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H05:edge:problem-owner",
+      "type": "owns",
+      "from": "H05:service:incident",
+      "to": "H05:object:problem",
+      "payload": "本例业务状态与依据",
+      "timing": "static",
+      "invariant": "incident 关闭不自动消除 problem",
+      "failure": "各对象独立保留未结责任",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H05:edge:restoration-owner",
+      "type": "owns",
+      "from": "H05:service:incident",
+      "to": "H05:object:restoration",
+      "payload": "本例业务状态与依据",
+      "timing": "static",
+      "invariant": "incident 关闭不自动消除 problem",
+      "failure": "各对象独立保留未结责任",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H05:edge:change-owner",
+      "type": "owns",
+      "from": "H05:service:change",
+      "to": "H05:object:change",
+      "payload": "计划与授权及复核结果",
+      "timing": "static",
+      "invariant": "closed 保留 success/failed outcome",
+      "failure": "失败不改写为成功",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H05:edge:execution-owner",
+      "type": "owns",
+      "from": "H05:external_system:executor",
+      "to": "H05:object:execution",
+      "payload": "实际 operation、运行版本与结果",
+      "timing": "static",
+      "invariant": "本地超时不能宣布失败或成功",
+      "failure": "先核对执行器",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H05:edge:sla-owner",
+      "type": "owns",
+      "from": "H05:service:timer",
+      "to": "H05:object:sla",
+      "payload": "事件时间、规则版本、合并区间与结果",
+      "timing": "static",
+      "invariant": "恢复截止点与关闭时间分开",
+      "failure": "迟到事实产生带理由修订",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H05:edge:inc-store",
+      "type": "stores",
+      "from": "H05:store:ledger",
+      "to": "H05:object:incident",
+      "payload": "对象版本与可追查依据",
+      "timing": "sync",
+      "invariant": "一个对象的完成不覆盖另一个对象",
+      "failure": "恢复投影前先读持久记录",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H05:edge:change-store",
+      "type": "stores",
+      "from": "H05:store:ledger",
+      "to": "H05:object:change",
+      "payload": "对象版本与可追查依据",
+      "timing": "sync",
+      "invariant": "一个对象的完成不覆盖另一个对象",
+      "failure": "恢复投影前先读持久记录",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H05:edge:execution-store",
+      "type": "stores",
+      "from": "H05:store:ledger",
+      "to": "H05:object:execution",
+      "payload": "对象版本与可追查依据",
+      "timing": "sync",
+      "invariant": "一个对象的完成不覆盖另一个对象",
+      "failure": "恢复投影前先读持久记录",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H05:edge:problem-store",
+      "type": "stores",
+      "from": "H05:store:ledger",
+      "to": "H05:object:problem",
+      "payload": "对象版本与可追查依据",
+      "timing": "sync",
+      "invariant": "一个对象的完成不覆盖另一个对象",
+      "failure": "恢复投影前先读持久记录",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H05:edge:proof-store",
+      "type": "stores",
+      "from": "H05:store:ledger",
+      "to": "H05:object:restoration",
+      "payload": "对象版本与可追查依据",
+      "timing": "sync",
+      "invariant": "一个对象的完成不覆盖另一个对象",
+      "failure": "恢复投影前先读持久记录",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H05:edge:sla-store",
+      "type": "stores",
+      "from": "H05:store:ledger",
+      "to": "H05:object:sla",
+      "payload": "对象版本与可追查依据",
+      "timing": "sync",
+      "invariant": "一个对象的完成不覆盖另一个对象",
+      "failure": "恢复投影前先读持久记录",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H05:edge:execute",
+      "type": "requests",
+      "from": "H05:service:change",
+      "to": "H05:external_system:executor",
+      "payload": "目标环境 + plan hash + operation ID",
+      "timing": "async",
+      "invariant": "同一操作未知时不得盲目重执行",
+      "failure": "查询原 operation；无查询能力人工接管",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H05:edge:execution-read",
+      "type": "reads",
+      "from": "H05:service:change",
+      "to": "H05:external_system:executor",
+      "payload": "按原 operation 查询状态与实际版本",
+      "timing": "async",
+      "invariant": "受理、运行、成功分别记录",
+      "failure": "不可查询保留 unknown",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H05:edge:result",
+      "type": "emits",
+      "from": "H05:external_system:executor",
+      "to": "H05:event:execution-result",
+      "payload": "execution identity + outcome + actual version",
+      "timing": "async",
+      "invariant": "结果只属于对应尝试",
+      "failure": "迟到旧结果不覆盖另一恢复尝试",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H05:edge:inbox",
+      "type": "delivers",
+      "from": "H05:event:execution-result",
+      "to": "H05:store:inbox-outbox",
+      "payload": "持久化执行回执",
+      "timing": "async",
+      "invariant": "确认接收前保存",
+      "failure": "崩溃可重放",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H05:edge:consume",
+      "type": "reads",
+      "from": "H05:service:change",
+      "to": "H05:store:inbox-outbox",
+      "payload": "按事件身份读取未投影结果",
+      "timing": "async",
+      "invariant": "重复事件不重新执行",
+      "failure": "业务更新后崩溃按唯一身份恢复",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H05:edge:measure",
+      "type": "reads",
+      "from": "H05:service:incident",
+      "to": "H05:external_system:monitor",
+      "payload": "关键路径、测量窗口、结果与时间",
+      "timing": "async",
+      "invariant": "部署成功不能替代业务恢复",
+      "failure": "缺少任一路径证据保持 investigating",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H05:edge:proof-execution",
+      "type": "derived_from",
+      "from": "H05:object:restoration",
+      "to": "H05:object:execution",
+      "payload": "实际执行版本与尝试身份",
+      "timing": "static",
+      "invariant": "只纳入当前恢复判据相关尝试",
+      "failure": "旧失败留下自身影响处理",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H05:edge:incident-proof",
+      "type": "depends_on",
+      "from": "H05:object:incident",
+      "to": "H05:object:restoration",
+      "payload": "本例必需关键路径均恢复",
+      "timing": "static",
+      "invariant": "部分恢复不允许 restored",
+      "failure": "指出未满足路径",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H05:edge:execution-plan",
+      "type": "depends_on",
+      "from": "H05:service:change",
+      "to": "H05:object:change",
+      "payload": "匹配的计划版本和授权",
+      "timing": "static",
+      "invariant": "修改计划使旧批准失效",
+      "failure": "返回重新审批",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H05:edge:sla-incident",
+      "type": "derived_from",
+      "from": "H05:object:sla",
+      "to": "H05:object:incident",
+      "payload": "首次发生、恢复事件与获准暂停",
+      "timing": "batch",
+      "invariant": "重复告警不重置开始时间；暂停取并集",
+      "failure": "重算保留原结果与原因",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H05:edge:graph-read",
+      "type": "reads",
+      "from": "H05:service:impact",
+      "to": "H05:store:dependencies",
+      "payload": "tenant + graph version + target",
+      "timing": "sync",
+      "invariant": "路径范围只代表登记依赖",
+      "failure": "陈旧或缺失依赖提示人工补充",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H05:edge:checkout-store",
+      "type": "stores",
+      "from": "H05:store:dependencies",
+      "to": "H05:object:checkout",
+      "payload": "服务身份与图版本",
+      "timing": "sync",
+      "invariant": "租户与可见范围受控",
+      "failure": "缺失节点不能由名字猜测",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H05:edge:api-store",
+      "type": "stores",
+      "from": "H05:store:dependencies",
+      "to": "H05:object:orders-api",
+      "payload": "服务身份与图版本",
+      "timing": "sync",
+      "invariant": "租户与可见范围受控",
+      "failure": "缺失节点不能由名字猜测",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H05:edge:db-store",
+      "type": "stores",
+      "from": "H05:store:dependencies",
+      "to": "H05:object:db",
+      "payload": "服务身份与图版本",
+      "timing": "sync",
+      "invariant": "租户与可见范围受控",
+      "failure": "缺失节点不能由名字猜测",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H05:edge:invoice-store",
+      "type": "stores",
+      "from": "H05:store:dependencies",
+      "to": "H05:object:invoice",
+      "payload": "服务身份与图版本",
+      "timing": "sync",
+      "invariant": "租户与可见范围受控",
+      "failure": "缺失节点不能由名字猜测",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H05:edge:search-store",
+      "type": "stores",
+      "from": "H05:store:dependencies",
+      "to": "H05:object:search",
+      "payload": "服务身份与图版本",
+      "timing": "sync",
+      "invariant": "租户与可见范围受控",
+      "failure": "缺失节点不能由名字猜测",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H05:edge:index-store",
+      "type": "stores",
+      "from": "H05:store:dependencies",
+      "to": "H05:object:search-index",
+      "payload": "服务身份与图版本",
+      "timing": "sync",
+      "invariant": "租户与可见范围受控",
+      "failure": "缺失节点不能由名字猜测",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H05:edge:checkout-api",
+      "type": "depends_on",
+      "from": "H05:object:checkout",
+      "to": "H05:object:orders-api",
+      "payload": "合成运行依赖；影响分析沿反向遍历",
+      "timing": "static",
+      "invariant": "可达性不证明故障因果",
+      "failure": "图缺边会漏掉观察范围",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H05:edge:api-db",
+      "type": "depends_on",
+      "from": "H05:object:orders-api",
+      "to": "H05:object:db",
+      "payload": "合成运行依赖；影响分析沿反向遍历",
+      "timing": "static",
+      "invariant": "可达性不证明故障因果",
+      "failure": "图缺边会漏掉观察范围",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H05:edge:invoice-db",
+      "type": "depends_on",
+      "from": "H05:object:invoice",
+      "to": "H05:object:db",
+      "payload": "合成运行依赖；影响分析沿反向遍历",
+      "timing": "static",
+      "invariant": "可达性不证明故障因果",
+      "failure": "图缺边会漏掉观察范围",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H05:edge:search-index",
+      "type": "depends_on",
+      "from": "H05:object:search",
+      "to": "H05:object:search-index",
+      "payload": "合成运行依赖；影响分析沿反向遍历",
+      "timing": "static",
+      "invariant": "可达性不证明故障因果",
+      "failure": "图缺边会漏掉观察范围",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H05:edge:incident-projection",
+      "type": "projects",
+      "from": "H05:object:incident",
+      "to": "H05:ui:incident",
+      "payload": "责任、状态、恢复及关闭依据",
+      "timing": "async",
+      "invariant": "状态与投影新鲜度可见",
+      "failure": "刷新按对象版本恢复",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H05:edge:problem-projection",
+      "type": "projects",
+      "from": "H05:object:problem",
+      "to": "H05:ui:incident",
+      "payload": "未完成原因调查",
+      "timing": "async",
+      "invariant": "incident closed 不隐藏 problem",
+      "failure": "独立显示负责人",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H05:edge:sla-projection",
+      "type": "projects",
+      "from": "H05:object:sla",
+      "to": "H05:ui:incident",
+      "payload": "有效分钟、暂停规则、修订依据",
+      "timing": "async",
+      "invariant": "不按显示状态猜测计时",
+      "failure": "保留 pending/revised",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H05:edge:change-projection",
+      "type": "projects",
+      "from": "H05:object:change",
+      "to": "H05:ui:change",
+      "payload": "计划差异、授权与 outcome",
+      "timing": "async",
+      "invariant": "执行成功与业务恢复分开",
+      "failure": "失败后续补救另建计划",
+      "basis": "synthetic",
+      "claim_ids": []
+    }
+  ],
+  "lifecycles": [
+    {
+      "object_id": "H05:object:incident",
+      "states": [
+        "new",
+        "investigating",
+        "waiting",
+        "restored",
+        "closed",
+        "cancelled"
+      ],
+      "transitions": [
+        {
+          "from": "new",
+          "to": "investigating",
+          "trigger": "值班接管",
+          "guard": "有责任人与影响范围",
+          "durable_effect": "保存首次开始和接管证据",
+          "recovery": "重复告警不重置时间"
+        },
+        {
+          "from": "investigating",
+          "to": "waiting",
+          "trigger": "需要外部信息",
+          "guard": "说明责任交接与原因",
+          "durable_effect": "保存等待；暂停须单独批准",
+          "recovery": "信息迟到继续追踪"
+        },
+        {
+          "from": "waiting",
+          "to": "investigating",
+          "trigger": "信息收到",
+          "guard": "相关性与对象身份匹配",
+          "durable_effect": "记录恢复调查",
+          "recovery": "旧消息不覆盖新状态"
+        },
+        {
+          "from": "investigating",
+          "to": "restored",
+          "trigger": "关键路径恢复验证",
+          "guard": "全部本例判据通过",
+          "durable_effect": "保存恢复时间与证据",
+          "recovery": "缺一条保持调查"
+        },
+        {
+          "from": "restored",
+          "to": "investigating",
+          "trigger": "新失败证据",
+          "guard": "证据有效且对应当前服务",
+          "durable_effect": "重开调查并保留先前恢复窗口",
+          "recovery": "并发关闭版本检查"
+        },
+        {
+          "from": "restored",
+          "to": "closed",
+          "trigger": "接收确认与负责人关闭",
+          "guard": "当前版本、接收证据、未结处置已解释",
+          "durable_effect": "保存关闭记录；problem 不变",
+          "recovery": "新事故建立关联记录"
+        },
+        {
+          "from": "new",
+          "to": "cancelled",
+          "trigger": "识别重复报告",
+          "guard": "已关联主事故",
+          "durable_effect": "保留归并原因",
+          "recovery": "主事故继续处理"
+        }
+      ]
+    },
+    {
+      "object_id": "H05:object:change",
+      "states": [
+        "draft",
+        "authorized",
+        "running",
+        "review",
+        "closed",
+        "cancelled"
+      ],
+      "transitions": [
+        {
+          "from": "draft",
+          "to": "authorized",
+          "trigger": "批准计划",
+          "guard": "明确权限、plan hash 与窗口",
+          "durable_effect": "冻结授权依据",
+          "recovery": "修改内容回到新草稿"
+        },
+        {
+          "from": "authorized",
+          "to": "running",
+          "trigger": "执行器受理",
+          "guard": "当前计划匹配；operation 已持久",
+          "durable_effect": "记录执行身份",
+          "recovery": "超时不盲目再执行"
+        },
+        {
+          "from": "authorized",
+          "to": "cancelled",
+          "trigger": "撤销",
+          "guard": "尚未开始执行且授权取消",
+          "durable_effect": "保存原因",
+          "recovery": "如执行结果未知先核对"
+        },
+        {
+          "from": "running",
+          "to": "review",
+          "trigger": "执行结果已核对",
+          "guard": "成功或失败都保存实际 outcome",
+          "durable_effect": "进入复核",
+          "recovery": "业务未恢复继续 incident"
+        },
+        {
+          "from": "review",
+          "to": "closed",
+          "trigger": "复核完成",
+          "guard": "结果与补救责任已解释",
+          "durable_effect": "保存 closed 与 outcome",
+          "recovery": "不得将 failed 改成 succeeded"
+        }
+      ]
+    },
+    {
+      "object_id": "H05:object:execution",
+      "states": [
+        "queued",
+        "running",
+        "unknown",
+        "succeeded",
+        "failed"
+      ],
+      "transitions": [
+        {
+          "from": "queued",
+          "to": "running",
+          "trigger": "执行器接受",
+          "guard": "目标与计划匹配",
+          "durable_effect": "保存受理身份",
+          "recovery": "同一 operation 重复查询"
+        },
+        {
+          "from": "running",
+          "to": "unknown",
+          "trigger": "响应或观测中断",
+          "guard": "可能已执行",
+          "durable_effect": "保留未知结果",
+          "recovery": "查询实际版本与 operation"
+        },
+        {
+          "from": "running",
+          "to": "succeeded",
+          "trigger": "执行器确认成功",
+          "guard": "相同 operation",
+          "durable_effect": "保存执行结果",
+          "recovery": "仍需业务路径验证"
+        },
+        {
+          "from": "running",
+          "to": "failed",
+          "trigger": "执行器确认失败",
+          "guard": "可核对失败证据",
+          "durable_effect": "保存失败与实际状态",
+          "recovery": "另建补救计划"
+        },
+        {
+          "from": "unknown",
+          "to": "succeeded",
+          "trigger": "核对确认成功",
+          "guard": "身份与实际版本一致",
+          "durable_effect": "保存核对证据",
+          "recovery": "不执行第二次"
+        },
+        {
+          "from": "unknown",
+          "to": "failed",
+          "trigger": "核对确认失败",
+          "guard": "身份匹配",
+          "durable_effect": "保存失败证据",
+          "recovery": "恢复责任仍未结束"
+        }
+      ]
+    },
+    {
+      "object_id": "H05:object:problem",
+      "states": [
+        "open",
+        "investigating",
+        "known",
+        "resolved"
+      ],
+      "transitions": [
+        {
+          "from": "open",
+          "to": "investigating",
+          "trigger": "负责人接管",
+          "guard": "调查范围明确",
+          "durable_effect": "保存假设与检查",
+          "recovery": "incident 关闭不自动改变"
+        },
+        {
+          "from": "investigating",
+          "to": "known",
+          "trigger": "原因证据形成",
+          "guard": "假设经支持和反证检查",
+          "durable_effect": "记录原因及剩余限制",
+          "recovery": "新反证重新调查"
+        },
+        {
+          "from": "known",
+          "to": "resolved",
+          "trigger": "修复验证完成",
+          "guard": "明确根因修复与验证结果",
+          "durable_effect": "保存结果",
+          "recovery": "临时恢复不触发此转换"
+        }
+      ]
+    },
+    {
+      "object_id": "H05:object:sla",
+      "states": [
+        "provisional",
+        "confirmed",
+        "revised"
+      ],
+      "transitions": [
+        {
+          "from": "provisional",
+          "to": "confirmed",
+          "trigger": "恢复证据与暂停核对",
+          "guard": "规则及事件版本已固定",
+          "durable_effect": "保存合并区间与有效分钟",
+          "recovery": "缺少信息继续 provisional"
+        },
+        {
+          "from": "confirmed",
+          "to": "revised",
+          "trigger": "获准补录或规则纠正",
+          "guard": "修订理由与权限记录",
+          "durable_effect": "保留旧结果和新计算",
+          "recovery": "不覆盖历史报表依据"
+        }
+      ]
+    }
+  ],
+  "algorithm_ids": [
+    "ALG:windows",
+    "ALG:graph-paths",
+    "ALG:caches"
+  ],
+  "claim_ids": [
+    "H05:claim:incident-states",
+    "H05:claim:restoration-closure",
+    "H05:claim:change-types",
+    "H05:claim:closure-separation",
+    "H05:claim:architecture"
+  ],
+  "checks": [
+    {
+      "id": "H05:check:happy",
+      "kind": "happy_path",
+      "given": "批准回滚与完整关键路径证据",
+      "when": "执行、恢复、接收",
+      "then": "incident closed；problem 仍 open",
+      "evidence_required": "授权、版本、探测与接收证据"
+    },
+    {
+      "id": "H05:check:duplicate",
+      "kind": "duplicate",
+      "given": "相同告警及结果通知",
+      "when": "各重送两次",
+      "then": "一次执行；首次发生时间不变",
+      "evidence_required": "事件身份与执行调用数"
+    },
+    {
+      "id": "H05:check:ordering",
+      "kind": "out_of_order",
+      "given": "第二计划已恢复",
+      "when": "第一计划失败回执迟到",
+      "then": "只更新第一 execution 并核查影响",
+      "evidence_required": "尝试身份与恢复依据"
+    },
+    {
+      "id": "H05:check:plan-race",
+      "kind": "concurrency",
+      "given": "计划 v1 已授权",
+      "when": "并发改为 v2 后执行旧授权",
+      "then": "拒绝执行需重新批准",
+      "evidence_required": "hash、版本和拒绝原因"
+    },
+    {
+      "id": "H05:check:tenant",
+      "kind": "tenant_isolation",
+      "given": "两个 tenant 各 DB-1",
+      "when": "查询影响图与工单日志",
+      "then": "不跨租户路径或返回内容",
+      "evidence_required": "graph scope、授权与结果"
+    },
+    {
+      "id": "H05:check:unknown",
+      "kind": "unknown_outcome",
+      "given": "执行器已启动",
+      "when": "响应丢失再尝试",
+      "then": "unknown，先核对原 operation",
+      "evidence_required": "执行记录与无第二执行证明"
+    },
+    {
+      "id": "H05:check:crash",
+      "kind": "recovery",
+      "given": "结果已存，UI 未更新",
+      "when": "崩溃后重放",
+      "then": "重建投影不重新执行",
+      "evidence_required": "持久结果、调用数和页面"
+    },
+    {
+      "id": "H05:check:partial",
+      "kind": "partial_completion",
+      "given": "读取成功、写订单失败",
+      "when": "请求 restored/closed",
+      "then": "均被 guard 拒绝",
+      "evidence_required": "独立关键路径结果"
+    },
+    {
+      "id": "H05:check:pause-union",
+      "kind": "algorithm",
+      "given": "[0,70)，暂停[20,35)、[30,40)",
+      "when": "计算有效分钟",
+      "then": "50，超45目标5分钟",
+      "evidence_required": "合并区间与输入规则"
+    },
+    {
+      "id": "H05:check:graph-direction",
+      "kind": "algorithm",
+      "given": "Checkout→API→DB、Invoice→DB",
+      "when": "从DB找消费者",
+      "then": "API、Checkout、Invoice；不含Search",
+      "evidence_required": "反向遍历路径与图版本"
+    }
+  ]
+}

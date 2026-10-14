@@ -1,0 +1,951 @@
+{
+  "package_id": "P06",
+  "contract_version": "1.0",
+  "scope": "Primary public text read only at specified locators; scoped verification is not whole-product validation. Worked numbers, policies and implementation designs are synthetic unless explicitly marked source_fact. No private transcripts, provider execution, full-text snapshots or images included.",
+  "sources": [
+    {
+      "id": "P06-SRC-epcis-guideline",
+      "url": "https://ref.gs1.org/guidelines/epcis-cbv/2.0.0/",
+      "title": "GS1 EPCIS and CBV Implementation Guideline, Release 2.0",
+      "provider": "GS1",
+      "status": "verified",
+      "scope": "§5.5 and §5.5.2 only; March 2023 release"
+    },
+    {
+      "id": "P06-SRC-openroad-overview",
+      "url": "https://openroad.readthedocs.io/en/latest/main/README.html",
+      "title": "OpenROAD documentation — About and physical implementation stages",
+      "provider": "OpenROAD Project"
+    },
+    {
+      "id": "P06-SRC-opensta-readme",
+      "url": "https://github.com/parallaxsw/OpenSTA",
+      "title": "Parallax OpenSTA — official README",
+      "provider": "Parallax Software"
+    },
+    {
+      "id": "P06-SRC-orfs-tutorial",
+      "url": "https://openroad-flow-scripts.readthedocs.io/en/latest/tutorials/FlowTutorial.html",
+      "title": "OpenROAD Flow Scripts Tutorial",
+      "provider": "OpenROAD Project"
+    },
+    {
+      "id": "P06-SRC-oracle-imd",
+      "url": "https://docs.oracle.com/en/industries/energy-water/meter-solution-cloud-service/23c/mscs-user-guides/Topics/D1_BG_About_Initial_Measurement_Data.html",
+      "title": "Oracle Utilities Meter Solution Cloud Service 23c — About Initial Measurement Data",
+      "provider": "Oracle",
+      "status": "verified-primary-scope",
+      "version": "23c",
+      "snapshot_status": "not-captured",
+      "license_state": "Original Chinese synthesis and public links only; no source page or image copied."
+    },
+    {
+      "id": "P06-SRC-oracle-usage-transactions",
+      "url": "https://docs.oracle.com/en/industries/energy-water/meter-solution-cloud-service/23c/mscs-user-guides/Topics/D1_BG_About_Usage_Transactions.html",
+      "title": "Oracle Utilities Meter Solution Cloud Service 23c — About Usage Transactions",
+      "provider": "Oracle",
+      "status": "verified-primary-scope",
+      "version": "23c",
+      "snapshot_status": "not-captured",
+      "license_state": "Original Chinese synthesis and public links only; no source page or image copied."
+    },
+    {
+      "id": "P06-SRC-ibp-overview",
+      "url": "https://www.sap.com/products/scm/integrated-business-planning.html",
+      "title": "SAP Integrated Business Planning for Supply Chain",
+      "provider": "SAP",
+      "limitations": "Public provider overview; not the seed help-page text or algorithm specification.",
+      "status": "verified",
+      "snapshot_status": "not-captured"
+    },
+    {
+      "id": "P06-SRC-epcis-standard",
+      "url": "https://ref.gs1.org/standards/epcis/2.0.1/",
+      "title": "EPCIS Standard, retrieved PDF cover: Release 2.0, Jun 2022",
+      "provider": "GS1",
+      "limitations": "URL path says 2.0.1; retrieved PDF cover and document summary say Release 2.0, June 2022. Preserve this discrepancy; claims limited to observed sections.",
+      "status": "verified",
+      "snapshot_status": "not-captured"
+    },
+    {
+      "id": "P06-SRC-tmf640",
+      "url": "https://www.tmforum.org/open-digital-architecture/open-apis/service-activation-management-api-TMF640/v4.0",
+      "title": "Service Activation Management API TMF640 v4.0",
+      "provider": "TM Forum",
+      "limitations": "Overview only; no claim of full schema review or provider conformance.",
+      "status": "verified",
+      "snapshot_status": "not-captured"
+    },
+    {
+      "id": "P06-SRC-tmf635",
+      "url": "https://www.tmforum.org/open-digital-architecture/open-apis/usage-management-api-TMF635/v4.0",
+      "title": "Product Usage Management API TMF635, v4.0 view",
+      "provider": "TM Forum",
+      "limitations": "Overview and version history; current page uses Product Usage heading and records v5 changes. Case references v4 conceptual rated/non-rated split, not v5 endpoint/schema identity.",
+      "status": "verified",
+      "snapshot_status": "not-captured"
+    },
+    {
+      "id": "P06-SRC-tmf678",
+      "url": "https://www.tmforum.org/open-digital-architecture/open-apis/customer-bill-management-api-TMF678/v4.0",
+      "title": "Customer Bill Management API TMF678 v4.0",
+      "provider": "TM Forum",
+      "limitations": "Overview only; query capability does not establish payment state, tariff or billing implementation.",
+      "status": "verified",
+      "snapshot_status": "not-captured"
+    }
+  ],
+  "reviews": [
+    {
+      "source_id": "AUTODESK",
+      "date": "2026-10-14",
+      "locator": "What is CAD/CAM?; How do I use CAD/CAM software?; web lines 115–123",
+      "supported_claims": [
+        "V07:claim:cad-cam"
+      ],
+      "limitations": "厂商公开说明，仅支持职责解释；不支持本例发布状态、集成接口或内部实现。",
+      "status": "verified",
+      "method": "Opened primary public page with web tool; read the indicated text sections; no provider login or live integration."
+    },
+    {
+      "source_id": "AUTODESK_CAE",
+      "date": "2026-10-14",
+      "locator": "What is computer-aided engineering (CAE)?; What is CAE software?; web lines 124–148",
+      "supported_claims": [
+        "V07:claim:cae-scope"
+      ],
+      "limitations": "设计分析能力自述；不证明现场每件产品质量，不支持本例批准策略。",
+      "status": "verified",
+      "method": "Opened primary public page with web tool; read the indicated text sections; no provider login or live integration."
+    },
+    {
+      "source_id": "SAP_PP",
+      "date": "2026-10-14",
+      "locator": "Processing of Production Orders; Production Order in Detail; web lines 70–98",
+      "supported_claims": [
+        "V07:claim:production-steps"
+      ],
+      "limitations": "课程的离散制造场景；未运行演示或 SAP 实例；正文合成状态机不是 SAP 完整状态定义。",
+      "status": "verified",
+      "method": "Opened primary public page with web tool; read the indicated text sections; no provider login or live integration."
+    },
+    {
+      "source_id": "SAP_GI",
+      "date": "2026-10-14",
+      "locator": "Material Staging / Pull List; Negative Stocks and Postprocessing; web lines 118–124, 181–197",
+      "supported_claims": [
+        "V07:claim:goods-movement-boundary"
+      ],
+      "limitations": "原课程也讨论可配置负库存；本例禁止负库存是独立合成策略，不声称 SAP 普遍禁止。",
+      "status": "verified",
+      "method": "Opened primary public page with web tool; read the indicated text sections; no provider login or live integration."
+    },
+    {
+      "source_id": "SAP_O2C",
+      "date": "2026-10-14",
+      "locator": "Structure of Sales Documents; web lines 68–85",
+      "supported_claims": [
+        "V07:claim:sales-schedule-lines"
+      ],
+      "limitations": "只核查所列段落；原目录标题与当前页面题名不完全一致；不由此推断客户合同允许部分交付。",
+      "status": "verified",
+      "method": "Opened primary public page with web tool; read the indicated text sections; no provider login or live integration."
+    },
+    {
+      "source_id": "ISA95",
+      "date": "2026-10-14",
+      "locator": "What Is ISA-95?; Purpose of ISA-95; web lines 41–44, 113–115",
+      "supported_claims": [
+        "V07:claim:enterprise-control-boundary"
+      ],
+      "limitations": "仅公开简介的主题范围；未读取付费标准全文，不提炼条文或声称标准符合性。",
+      "status": "verified",
+      "method": "Opened primary public page with web tool; read the indicated text sections; no provider login or live integration."
+    },
+    {
+      "source_id": "LABWARE",
+      "date": "2026-10-14",
+      "locator": "Top SaaS LIMS Features for QAQC: Sample Management, Results Entry, Lot Management & Release; More Features: Batch Manager; web lines 79–86, 108–109",
+      "supported_claims": [
+        "V08:claim:lims-objects"
+      ],
+      "limitations": "营销产品能力自述；未核查实际租户、默认规则、验证范围、API或性能，测试批不能自动等同生产批。",
+      "status": "verified",
+      "method": "Opened primary public page with web tool; read the indicated text sections; no provider login or live integration."
+    },
+    {
+      "source_id": "P06-SRC-epcis-guideline",
+      "date": "2026-10-14",
+      "locator": "Release 2.0, March 2023; §5.5 Transformation Events pp.54–55 and §5.5.2 Long-Running Transformations p.56; PDF zero-based pages 53–55; numbered lines 1583–1599, 1617–1637",
+      "supported_claims": [
+        "V08:claim:transformation-genealogy"
+      ],
+      "limitations": "仅核查转换和追踪语义；未验证 EPCIS 接口、schema、供应商符合性或本例质量/召回策略。",
+      "status": "verified",
+      "method": "Opened primary public page with web tool; read the indicated text sections; no provider login or live integration."
+    },
+    {
+      "source_id": "SAP_PP_DETAIL",
+      "date": "2026-10-14",
+      "locator": "https://help.sap.com/docs/SUPPORT_CONTENT/prodord/3138697900.html",
+      "supported_claims": [],
+      "limitations": "Web open returned SAP Help Portal title with zero text lines. No production/process-order details verified from this seed; no claim is based on it.",
+      "status": "unverified"
+    },
+    {
+      "source_id": "EPCIS",
+      "date": "2026-10-14",
+      "locator": "https://www.gs1.org/standards/epcis",
+      "supported_claims": [],
+      "limitations": "Direct primary portal open returned Internal Error twice. Search result lead was not used as factual proof. A distinct primary GS1 guideline URL was read and registered under P06-SRC-epcis-guideline; this does not verify the original portal.",
+      "status": "unverified"
+    },
+    {
+      "source_id": "CADENCE",
+      "date": "2026-10-14",
+      "status": "verified",
+      "locator": "Training Webinar 描述段：You’ll learn concepts such as…；web text lines 8–10",
+      "supported_claims": [
+        "V09:claim:cadence-flow"
+      ],
+      "limitations": "仅课程范围；没有读取注册内容，不证明生产流程、算法或栈。",
+      "method": "web primary text read",
+      "snapshot_status": "not-captured"
+    },
+    {
+      "source_id": "P06-SRC-openroad-overview",
+      "date": "2026-10-14",
+      "status": "verified",
+      "locator": "Getting Started with OpenROAD-flow-scripts > main steps；lines 99–148",
+      "supported_claims": [
+        "V09:claim:openroad-stages"
+      ],
+      "limitations": "只概括所列步骤；不采用营销性能数字，不据此声称真实项目已完成签核。",
+      "method": "web primary text read",
+      "snapshot_status": "not-captured"
+    },
+    {
+      "source_id": "P06-SRC-opensta-readme",
+      "date": "2026-10-14",
+      "status": "verified",
+      "locator": "README > Parallax Static Timing Analyzer；Clocks；Exception paths",
+      "supported_claims": [
+        "V09:claim:opensta-inputs"
+      ],
+      "limitations": "文件格式与能力范围；不证明本例缓存、签核规则或简化公式涵盖真实时序模型。",
+      "method": "web primary text read",
+      "snapshot_status": "not-captured"
+    },
+    {
+      "source_id": "P06-SRC-orfs-tutorial",
+      "date": "2026-10-14",
+      "status": "verified",
+      "locator": "Viewing OpenROAD-flow-scripts Directory Structure And Results；Timing；DRC Viewer；Fixing Setup Violations；Fixing Hold Violations",
+      "supported_claims": [
+        "V09:claim:orfs-evidence"
+      ],
+      "limitations": "已读相应段落；没有安装、运行或复制示例长文本和图片，不把教程结果作为本例执行证据。",
+      "method": "web primary text read",
+      "snapshot_status": "not-captured"
+    },
+    {
+      "source_id": "D365_FS_ARCH",
+      "date": "2026-10-14",
+      "locator": "https://learn.microsoft.com/en-us/dynamics365/field-service/field-service-architecture — A work order is created; The work order is scheduled to resources; A field technician performs the work order; The work order is reviewed and completed. Public rendered body, lines31–68; page Last updated2026-08-26.",
+      "supported_claims": [
+        "V10:claim:field-service-objects"
+      ],
+      "limitations": "Supports separation of Resource Requirement, Booking, technician work and manager review; not site safety authorization, exactly-once integration, implementation stack, a complete state enum or performance. Page contains authorization banner but requested substantive sections were publicly returned.",
+      "status": "verified",
+      "method": "web public page open; substantive body inspected",
+      "snapshot_status": "not-captured",
+      "verification_detail": "verified-primary-scope"
+    },
+    {
+      "source_id": "MAXIMO",
+      "date": "2026-10-14",
+      "locator": "https://www.ibm.com/support/pages/maximo-support-desk-allowable-status-changes-work-orders — IBM Support article UID ibm11112013, Body and From COMP / From CANCEL / From CLOSE lists, lines33–90; same title/path at www.ibm.com.",
+      "supported_claims": [
+        "V10:claim:maximo-transitions"
+      ],
+      "limitations": "Original supportcontent.ibm.com seed returned403. Same IBM article body read at canonical www.ibm.com URL while preserving MAXIMO source ID. Article gives allowable status examples, not all releases/customer configurations, permit policy or a universal irreversible-state contract. Version/date not stated in fetched article.",
+      "status": "verified",
+      "method": "web public page open; substantive body inspected",
+      "snapshot_status": "not-captured",
+      "verification_detail": "verified-via-canonical-primary"
+    },
+    {
+      "source_id": "IFS",
+      "date": "2026-10-14",
+      "locator": "https://claude.com/customers/ifs — IFS Nexus Black builds industrial AI with Claude: introduction and Claude enables production-ready AI for critical industries, lines40–55.",
+      "supported_claims": [
+        "V10:claim:ifs-assistance"
+      ],
+      "limitations": "Supplier-published customer story supports attributed description of Resolve image/sensor assistance only. No independent accuracy evaluation, experimental denominator, safety authorization, latency or guaranteed economic effect inferred. Percentages and forecast savings deliberately omitted.",
+      "status": "verified",
+      "method": "web public page open; substantive body inspected",
+      "snapshot_status": "not-captured",
+      "verification_detail": "verified-attributed-primary"
+    },
+    {
+      "source_id": "ORACLE_VEE",
+      "date": "2026-10-14",
+      "locator": "https://docs.oracle.com/en/industries/energy-water/meter-solution-cloud-service/23c/mscs-user-guides/Topics/D1_BG_About_VEE.html — 23c About VEE: introduction; VEE Groups; VEE Rules; VEE Exceptions, lines3–41.",
+      "supported_claims": [
+        "V11:claim:vee-rules"
+      ],
+      "limitations": "Source defines configurable VEE concepts and exception behavior. Does not establish example averaging formula, estimate allowance, tariff, financial rules, bank matching or local cloud implementation.",
+      "status": "verified",
+      "method": "web public page open; substantive body inspected",
+      "snapshot_status": "not-captured",
+      "verification_detail": "verified-primary-scope"
+    },
+    {
+      "source_id": "P06-SRC-oracle-imd",
+      "date": "2026-10-14",
+      "locator": "https://docs.oracle.com/en/industries/energy-water/meter-solution-cloud-service/23c/mscs-user-guides/Topics/D1_BG_About_Initial_Measurement_Data.html — 23c About Initial Measurement Data: raw/scalar/interval definitions and process; Pre VEE/Post VEE and condition codes, lines84–109.",
+      "supported_claims": [
+        "V11:claim:imd-lineage"
+      ],
+      "limitations": "Supports input/final measurement lineage and quality distinctions. Does not imply measured values are physically infallible or authorize estimated billing.",
+      "status": "verified",
+      "method": "web public page open; substantive body inspected",
+      "snapshot_status": "not-captured",
+      "verification_detail": "verified-primary-scope"
+    },
+    {
+      "source_id": "P06-SRC-oracle-usage-transactions",
+      "date": "2026-10-14",
+      "locator": "https://docs.oracle.com/en/industries/energy-water/meter-solution-cloud-service/23c/mscs-user-guides/Topics/D1_BG_About_Usage_Transactions.html — 23c About Usage Transactions: opening; Calculation Period; Date Breaks; Service Quantities; Quality Assessment; Service Quantities for Scalar Usage, lines88–130.",
+      "supported_claims": [
+        "V11:claim:usage-transaction"
+      ],
+      "limitations": "Cites the reviewed23c product concepts; includes source qualifications for configurable quality and scalar/date-break limitations. Does not assert the synthetic tariffs/rounding/settlement or expose vendor algorithm internals.",
+      "status": "verified",
+      "method": "web public page open; substantive body inspected",
+      "snapshot_status": "not-captured",
+      "verification_detail": "verified-primary-scope"
+    },
+    {
+      "source_id": "IBP",
+      "date": "2026-10-14",
+      "locator": "Original seed URL opened with browser; document body returned zero lines; locale retry also empty.",
+      "supported_claims": [],
+      "limitations": "No chapter text obtained. Exact seed remains unverified and supplies no product/algorithm claim. Public product overview separately registered.",
+      "status": "unverified"
+    },
+    {
+      "source_id": "IBP_SAMPLE",
+      "date": "2026-10-14",
+      "locator": "Original seed URL opened; body returned zero lines; search exposed title only. urllib read failed at network tunnel with HTTP403.",
+      "supported_claims": [],
+      "limitations": "Title/search snippet does not establish the documented process; no claim is assigned to this seed.",
+      "status": "unverified"
+    },
+    {
+      "source_id": "EPCIS",
+      "date": "2026-10-14",
+      "locator": "https://www.gs1.org/standards/epcis; browser returned HTTP403.",
+      "supported_claims": [],
+      "limitations": "Portal not read; separate GS1 standard PDF retrieved under new ID, not substituted into seed verified status.",
+      "status": "unverified"
+    },
+    {
+      "source_id": "TMF_DIR",
+      "date": "2026-10-14",
+      "locator": "Original seed URL; rendered lines 0–28 were navigation/footer without API directory entries.",
+      "supported_claims": [],
+      "limitations": "No API capability inferred from empty directory. Individual API overview pages independently reviewed.",
+      "status": "unverified"
+    },
+    {
+      "source_id": "P06-SRC-ibp-overview",
+      "date": "2026-10-14",
+      "locator": "What is SAP Integrated Business Planning? lines20–29; Key benefits lines43–48; FAQ Which modules are part of SAP IBP? lines146–151.",
+      "supported_claims": [
+        "V21:claim:ibp-scope"
+      ],
+      "limitations": "Provider overview supports stated planning scope and its own capacity/lead-time/inventory description, not optimization algorithm, transport execution or freight settlement. No benchmark or HANA implementation claim used.",
+      "status": "verified"
+    },
+    {
+      "source_id": "P06-SRC-epcis-standard",
+      "date": "2026-10-14",
+      "locator": "Cover/document summary pp1–2; §7.4.1 pp74–75 (eventTime,recordTime,eventID); §7.4.1.2 p76 ErrorDeclaration.",
+      "supported_claims": [
+        "V21:claim:epcis-time",
+        "V21:claim:epcis-correction",
+        "V21:claim:evidence-separation"
+      ],
+      "limitations": "PDF retrieved and relevant text read, not all229pages. Header states Release2.0 Jun2022 despite /2.0.1/ URL. Standard establishes event semantics, not real-world accuracy, universal deployment or payment authority.",
+      "status": "verified"
+    },
+    {
+      "source_id": "TMF622",
+      "date": "2026-10-14",
+      "locator": "v5.0 page, Overview line15; API No./This Version fields lines26–36.",
+      "supported_claims": [
+        "V22:claim:product-order"
+      ],
+      "limitations": "Public overview only. Authenticated assets, full state machine and implementation conformance not reviewed.",
+      "status": "verified"
+    },
+    {
+      "source_id": "P06-SRC-tmf640",
+      "date": "2026-10-14",
+      "locator": "v4.0 page, Overview line15; This Version/Stable fields lines28–38.",
+      "supported_claims": [
+        "V22:claim:activation-monitor"
+      ],
+      "limitations": "Monitor resource and asynchronous request purpose only. No claim that the synthetic status model or health checks are required by TMF640.",
+      "status": "verified"
+    },
+    {
+      "source_id": "P06-SRC-tmf635",
+      "date": "2026-10-14",
+      "locator": "v4.0 view, Overview line15; version history lines18–29, especially v5 endpoint/scope changes line24.",
+      "supported_claims": [
+        "V22:claim:usage-separation"
+      ],
+      "limitations": "Scope and rated/non-rated distinction only; do not mix v4 /usage schema with v5 /productUsage. No tariff rule supplied by this source.",
+      "status": "verified"
+    },
+    {
+      "source_id": "P06-SRC-tmf678",
+      "date": "2026-10-14",
+      "locator": "v4.0 page, Overview line15 and This Version lines32–34.",
+      "supported_claims": [
+        "V22:claim:bill-query"
+      ],
+      "limitations": "Find/retrieve bills and applied billing rates only; no assertion of bill generation algorithm, collection or paid status.",
+      "status": "verified"
+    }
+  ],
+  "claims": [
+    {
+      "id": "V07:claim:cad-cam",
+      "case_id": "V07",
+      "kind": "source_fact",
+      "statement": "Autodesk 说明 CAD/CAM 将设计模型与制造编程连接，CAM 使用 CAD 模型生成加工刀具路径。",
+      "source_ids": [
+        "AUTODESK"
+      ],
+      "locator": "What is CAD/CAM?; How do I use CAD/CAM software?; web lines 115–123",
+      "limitations": "厂商公开说明，仅支持职责解释；不支持本例发布状态、集成接口或内部实现。"
+    },
+    {
+      "id": "V07:claim:cae-scope",
+      "case_id": "V07",
+      "kind": "source_fact",
+      "statement": "Autodesk 将 CAE 描述为通过计算与仿真评估工程设计在给定条件下的行为。",
+      "source_ids": [
+        "AUTODESK_CAE"
+      ],
+      "locator": "What is computer-aided engineering (CAE)?; What is CAE software?; web lines 124–148",
+      "limitations": "设计分析能力自述；不证明现场每件产品质量，不支持本例批准策略。"
+    },
+    {
+      "id": "V07:claim:production-steps",
+      "case_id": "V07",
+      "kind": "source_fact",
+      "statement": "SAP 课程分别解释生产单创建、放行、耗料出库、生产确认和成品收货；放行后可做相关过账，确认用于跟踪生产进度。",
+      "source_ids": [
+        "SAP_PP"
+      ],
+      "locator": "Processing of Production Orders; Production Order in Detail; web lines 70–98",
+      "limitations": "课程的离散制造场景；未运行演示或 SAP 实例；正文合成状态机不是 SAP 完整状态定义。"
+    },
+    {
+      "id": "V07:claim:goods-movement-boundary",
+      "case_id": "V07",
+      "kind": "source_fact",
+      "statement": "SAP 耗料课程将系统库位转移过账与实物转移区分，并说明库存不足时可产生需后处理的记录。",
+      "source_ids": [
+        "SAP_GI"
+      ],
+      "locator": "Material Staging / Pull List; Negative Stocks and Postprocessing; web lines 118–124, 181–197",
+      "limitations": "原课程也讨论可配置负库存；本例禁止负库存是独立合成策略，不声称 SAP 普遍禁止。"
+    },
+    {
+      "id": "V07:claim:sales-schedule-lines",
+      "case_id": "V07",
+      "kind": "source_fact",
+      "statement": "SAP 销售单据有 header、item 与 schedule line 层，schedule line 记录交付日期和数量，一个行项目可有多个分期交付计划行。",
+      "source_ids": [
+        "SAP_O2C"
+      ],
+      "locator": "Structure of Sales Documents; web lines 68–85",
+      "limitations": "只核查所列段落；原目录标题与当前页面题名不完全一致；不由此推断客户合同允许部分交付。"
+    },
+    {
+      "id": "V07:claim:enterprise-control-boundary",
+      "case_id": "V07",
+      "kind": "source_fact",
+      "statement": "ISA-95 官方公开简介讨论制造控制功能与企业业务功能之间的信息集成边界。",
+      "source_ids": [
+        "ISA95"
+      ],
+      "locator": "What Is ISA-95?; Purpose of ISA-95; web lines 41–44, 113–115",
+      "limitations": "仅公开简介的主题范围；未读取付费标准全文，不提炼条文或声称标准符合性。"
+    },
+    {
+      "id": "V07:claim:versioned-quantity-policy",
+      "case_id": "V07",
+      "kind": "synthetic",
+      "statement": "D3固定设计引用；12件以单件状态守恒，返工不追加本例两类材料；10件可发、500应收与300到账独立核对。",
+      "source_ids": [],
+      "locator": "V07.md: 设计版本不是“最新文件”；用数量与依赖算出“能承诺多少”；V07.json",
+      "limitations": "原创合成业务策略、技术选择、计算例、性能目标和检查设计；不是 provider 内部实现或已执行证据。"
+    },
+    {
+      "id": "V08:claim:lims-objects",
+      "case_id": "V08",
+      "kind": "source_fact",
+      "statement": "LabWare QAQC 自述提供样品接收链、结果录入、批次跟踪、数据复核、lot release 与 COA 功能；Batch Manager 可组合样品形成测试批。",
+      "source_ids": [
+        "LABWARE"
+      ],
+      "locator": "Top SaaS LIMS Features for QAQC: Sample Management, Results Entry, Lot Management & Release; More Features: Batch Manager; web lines 79–86, 108–109",
+      "limitations": "营销产品能力自述；未核查实际租户、默认规则、验证范围、API或性能，测试批不能自动等同生产批。"
+    },
+    {
+      "id": "V08:claim:transformation-genealogy",
+      "case_id": "V08",
+      "kind": "source_fact",
+      "statement": "GS1 EPCIS/CBV 指南用 TransformationEvent 表示全部或部分消耗输入并产生输出，任一输入可能贡献于各输出；长时间转换可用相同 transformation identifier 连接事件。",
+      "source_ids": [
+        "P06-SRC-epcis-guideline"
+      ],
+      "locator": "Release 2.0, March 2023; §5.5 Transformation Events pp.54–55 and §5.5.2 Long-Running Transformations p.56; PDF zero-based pages 53–55; numbered lines 1583–1599, 1617–1637",
+      "limitations": "仅核查转换和追踪语义；未验证 EPCIS 接口、schema、供应商符合性或本例质量/召回策略。"
+    },
+    {
+      "id": "V08:claim:release-and-mass-policy",
+      "case_id": "V08",
+      "kind": "synthetic",
+      "statement": "本例把质量放行绑定配方、执行、检验与偏差版本；150=145+3+2 kg，二次混合后当前可售受影响范围80+45+49=174 kg，不累计中间批。",
+      "source_ids": [],
+      "locator": "V08.md: 手算质量平衡，再算影响范围；一次放行与一次撤回怎样留下不同证据；V08.json",
+      "limitations": "原创非医药教学政策；质量平衡边界、0.1kg容差、图查询与AI评估均为合成设计，非化学操作或法规建议。"
+    },
+    {
+      "id": "V09:claim:cadence-flow",
+      "case_id": "V09",
+      "kind": "source_fact",
+      "statement": "Cadence 培训页列出综合、可测试性逻辑、等价检查、实现和时序签核主题。",
+      "source_ids": [
+        "CADENCE"
+      ],
+      "locator": "Training Webinar 描述段：You’ll learn concepts such as…；web text lines 8–10",
+      "limitations": "仅课程范围；没有读取注册内容，不证明生产流程、算法或栈。"
+    },
+    {
+      "id": "V09:claim:openroad-stages",
+      "case_id": "V09",
+      "kind": "source_fact",
+      "statement": "OpenROAD 文档的物理实现阶段包括布局、时钟树、布线、寄生提取和最终时序/物理验证。",
+      "source_ids": [
+        "P06-SRC-openroad-overview"
+      ],
+      "locator": "Getting Started with OpenROAD-flow-scripts > main steps；lines 99–148",
+      "limitations": "只概括所列步骤；不采用营销性能数字，不据此声称真实项目已完成签核。"
+    },
+    {
+      "id": "V09:claim:opensta-inputs",
+      "case_id": "V09",
+      "kind": "source_fact",
+      "statement": "OpenSTA 官方 README 将网表、Liberty、SDC、SPEF 等作为时序校验输入，并列出时钟不确定性和路径例外。",
+      "source_ids": [
+        "P06-SRC-opensta-readme"
+      ],
+      "locator": "README > Parallax Static Timing Analyzer；Clocks；Exception paths",
+      "limitations": "文件格式与能力范围；不证明本例缓存、签核规则或简化公式涵盖真实时序模型。"
+    },
+    {
+      "id": "V09:claim:orfs-evidence",
+      "case_id": "V09",
+      "kind": "source_fact",
+      "statement": "ORFS 教程区分 logs/results/reports，展示时序和 DRC 检查，并分别演示 setup 与 hold 处理。",
+      "source_ids": [
+        "P06-SRC-orfs-tutorial"
+      ],
+      "locator": "Viewing OpenROAD-flow-scripts Directory Structure And Results；Timing；DRC Viewer；Fixing Setup Violations；Fixing Hold Violations",
+      "limitations": "已读相应段落；没有安装、运行或复制示例长文本和图片，不把教程结果作为本例执行证据。"
+    },
+    {
+      "id": "V09:claim:manifest-policy",
+      "case_id": "V09",
+      "kind": "synthetic",
+      "statement": "冻结输入清单；证据绑定输入摘要与检查条件；发布需覆盖全部当前要求并由有权人批准；未知外部结果先核对。",
+      "source_ids": [],
+      "locator": "V09.md：解法：把版本、运行、证据和发布分开；正常发布与不能回滚的失败",
+      "limitations": "本例合成策略，不是 Cadence 或 OpenROAD 的产品承诺，也不构成制造签核标准。"
+    },
+    {
+      "id": "V09:claim:dag-calculation",
+      "case_id": "V09",
+      "kind": "synthetic",
+      "statement": "无资源竞争的 S/E/P/T/D/R 合成 DAG 关键路径16分钟；唯一检查槽时18分钟；P变更影响P/T/D/R。",
+      "source_ids": [],
+      "locator": "V09.md：演算：依赖、时序和失效范围",
+      "limitations": "计算采用固定耗时和完整DAG，不含排队、失败、传输及实际许可证条款。"
+    },
+    {
+      "id": "V09:claim:slack-example",
+      "case_id": "V09",
+      "kind": "synthetic",
+      "statement": "教学条件A/B setup slack为+0.08/-0.05ns，平均为正仍拒绝；hold为-0.03ns，放宽周期不修复该同沿例子。",
+      "source_ids": [],
+      "locator": "V09.md：演算：依赖、时序和失效范围",
+      "limitations": "忽略时钟偏斜、抖动、路径例外等；不是时序签核引擎。"
+    },
+    {
+      "id": "V09:claim:evidence-transfer",
+      "case_id": "V09",
+      "kind": "inference",
+      "statement": "计算依赖的完整输入变化可使已有报告不能支持新候选；版本与证据绑定可迁移，但实物在制品不能靠数字缓存失效处置。",
+      "source_ids": [
+        "P06-SRC-opensta-readme",
+        "P06-SRC-orfs-tutorial"
+      ],
+      "locator": "V09.md：解法：把版本、运行、证据和发布分开；变式：增加条件与减少资源",
+      "limitations": "由输入和报告职责推出的原创建模，非来源描述的产品实现。"
+    },
+    {
+      "id": "V10:claim:field-service-objects",
+      "case_id": "V10",
+      "kind": "source_fact",
+      "statement": "Microsoft Field Service distinguishes work order, Resource Requirement and Booking, permits multiple bookings for a requirement, and describes technician performance followed by service-manager review/closure.",
+      "source_ids": [
+        "D365_FS_ARCH"
+      ],
+      "locator": "https://learn.microsoft.com/en-us/dynamics365/field-service/field-service-architecture — The work order is scheduled to resources; A field technician performs the work order; The work order is reviewed and completed.",
+      "limitations": "Only the reviewed process/object separation; no claim that synthetic permits, states, databases or algorithms are Microsoft implementations.",
+      "external_claim_id": "D365_FS_ARCH-C1"
+    },
+    {
+      "id": "V10:claim:maximo-transitions",
+      "case_id": "V10",
+      "kind": "source_fact",
+      "statement": "The IBM Maximo support article says available target work-order statuses depend on current status; its list gives COMP→Closed and no ordinary state changes from CLOSE.",
+      "source_ids": [
+        "MAXIMO"
+      ],
+      "locator": "https://www.ibm.com/support/pages/maximo-support-desk-allowable-status-changes-work-orders — Body; From COMP; From CLOSE.",
+      "limitations": "Canonical IBM body read after seed403. Preserve source identity; historical support guidance is not proof of every version/customization.",
+      "external_claim_id": "MAXIMO-C1"
+    },
+    {
+      "id": "V10:claim:ifs-assistance",
+      "case_id": "V10",
+      "kind": "source_fact",
+      "statement": "Anthropic’s IFS case study describes Resolve using equipment images and sensor readings to assist field diagnosis.",
+      "source_ids": [
+        "IFS"
+      ],
+      "locator": "https://claude.com/customers/ifs — introduction; Claude enables production-ready AI for critical industries.",
+      "limitations": "Attributed supplier narrative only; no independent accuracy, production deployment breadth or outcome guarantee.",
+      "external_claim_id": "IFS-C1"
+    },
+    {
+      "id": "V10:claim:authority-separation",
+      "case_id": "V10",
+      "kind": "inference",
+      "statement": "Evidence quality, permission to execute, technical completion and acceptance are different decisions; one signal or completed booking cannot establish all four.",
+      "source_ids": [
+        "D365_FS_ARCH",
+        "MAXIMO"
+      ],
+      "locator": [
+        "V10.md — 把异常、许可、工单和资产拆开",
+        "V10.md — 从曲线到工单，再到真实确认"
+      ],
+      "limitations": "Original teaching inference inspired by documented object/state separation. Specific permit guards and authority roles are synthetic and need local safety-policy design."
+    },
+    {
+      "id": "V10:claim:policy",
+      "case_id": "V10",
+      "kind": "synthetic",
+      "statement": "The pump, shared isolation scope, permit roles, logical services sharing a PostgreSQL transaction boundary, command identities, state transitions, technical options, workload targets, recovery checks, exercises and optional AI eval protocol are original teaching policies.",
+      "source_ids": [],
+      "locator": [
+        "V10.md — all explicitly synthetic case policy, implementation, workload, verification and exercise sections",
+        "V10.json — synthetic nodes, edges, lifecycles and checks"
+      ],
+      "limitations": "No live integration, UI execution, model eval, load test or safety validation implied. Independent service databases would require a separately designed permit confirmation protocol."
+    },
+    {
+      "id": "V10:claim:computation",
+      "case_id": "V10",
+      "kind": "synthetic",
+      "statement": "Five complete event-minute slots [4.0,7.2,7.4,3.8,7.3] contain three values above7.0; duplicate samples must not add slots. DAG durations A10 B30 C20 D15 with A→B,A→C,B→D,C→D give55 minutes with two feasible workers and75 with one; cycles are invalid. Overlapping hits append to one unresolved episode for the same tenant/asset/channel/rule. Samples beyond a two-minute watermark update history for review without reversing authorized or executed work.",
+      "source_ids": [],
+      "locator": [
+        "V10.md — 用事件时间发现问题，用依赖图安排工作",
+        "V10.json — checks full-maintenance and dag-resource-bound"
+      ],
+      "limitations": "Hand-worked teaching fixtures; no diagnostic validity or vendor scheduling algorithm asserted. Constant-time window update assumes bounded ordered slots after event-time reconciliation."
+    },
+    {
+      "id": "V11:claim:vee-rules",
+      "case_id": "V11",
+      "kind": "source_fact",
+      "statement": "Oracle23c documents VEE validation/estimation/editing, ordered groups, configurable targeted rules, Issue versus Terminate exception behavior, and preservation of corrected exceptions as closed records.",
+      "source_ids": [
+        "ORACLE_VEE"
+      ],
+      "locator": "https://docs.oracle.com/en/industries/energy-water/meter-solution-cloud-service/23c/mscs-user-guides/Topics/D1_BG_About_VEE.html — VEE Groups; VEE Rules; VEE Exceptions.",
+      "limitations": "No authority inferred for averaging, estimate thresholds, customer tariffs, billing legality or settlement.",
+      "external_claim_id": "ORACLE_VEE-C1"
+    },
+    {
+      "id": "V11:claim:imd-lineage",
+      "case_id": "V11",
+      "kind": "source_fact",
+      "statement": "Oracle23c distinguishes raw initial measurements, Pre VEE/Post VEE quantities and their quality conditions, followed by final measurements used for usage calculation.",
+      "source_ids": [
+        "P06-SRC-oracle-imd"
+      ],
+      "locator": "https://docs.oracle.com/en/industries/energy-water/meter-solution-cloud-service/23c/mscs-user-guides/Topics/D1_BG_About_Initial_Measurement_Data.html — definition/process and Pre VEE/Post VEE condition-code discussion.",
+      "limitations": "Documented conceptual path only; final does not imply physical certainty or authorize charging.",
+      "external_claim_id": "P06-SRC-oracle-imd-C1"
+    },
+    {
+      "id": "V11:claim:usage-transaction",
+      "case_id": "V11",
+      "kind": "source_fact",
+      "statement": "Oracle23c describes usage transactions as bill-determinant calculations for a usage subscription; calculated service quantities carry UOM and measuring-component provenance, with calculation periods, date breaks and configurable quality information.",
+      "source_ids": [
+        "P06-SRC-oracle-usage-transactions"
+      ],
+      "locator": "https://docs.oracle.com/en/industries/energy-water/meter-solution-cloud-service/23c/mscs-user-guides/Topics/D1_BG_About_Usage_Transactions.html — opening; Calculation Period; Date Breaks; Service Quantities; Quality Assessment.",
+      "limitations": "Only reviewed23c concepts. No assertion that all product configurations use the optional quality assessment or that bill determinants establish payment.",
+      "external_claim_id": "P06-SRC-oracle-usage-transactions-C1"
+    },
+    {
+      "id": "V11:claim:policy",
+      "case_id": "V11",
+      "kind": "synthetic",
+      "statement": "The UTC interval model, allowed single-gap estimation,30% estimated-energy threshold, two tariffs, fixed fee, effective installation mapping, correction/approval roles, transaction and cache design, technical options, workload targets and exercises are synthetic teaching policy.",
+      "source_ids": [],
+      "locator": [
+        "V11.md — full teaching policy and implementation sections",
+        "V11.json — synthetic nodes, edges, lifecycles and checks"
+      ],
+      "limitations": "No pricing, legal, regulatory or customer-contract conclusion. No provider integration, UI test, financial-system certification or measured performance claimed; AI decision eval is not applicable."
+    },
+    {
+      "id": "V11:claim:worked-example",
+      "case_id": "V11",
+      "kind": "synthetic",
+      "statement": "[2,3,missing,5] kWh becomes[2,3,4,5] under the stated isolated-gap rule; valley5/peak9, estimated energy4/14 and bill13.50. Late actual6 yields peak11/bill15.50 and2.00 adjustment;30% accepts4/14 while25% rejects. Meter exchange example preserves amount but changes provenance and estimated quantity.",
+      "source_ids": [],
+      "locator": [
+        "V11.md — 一小时数据怎样成为两档电量; 改变前提后的练习",
+        "V11.json — checks four-intervals, bad-estimation-policy, meter-exchange"
+      ],
+      "limitations": "Original manual fixtures, not observed customer data. Source rules do not prescribe these tariffs or formulas; missingness and source revisions must be handled before sums."
+    },
+    {
+      "id": "V11:claim:settlement-boundary",
+      "case_id": "V11",
+      "kind": "inference",
+      "statement": "Measurement quantity, customer receivable, allocated cash and network settlement are separate accounting boundaries; upstream100kWh minus attributable downstream96kWh creates a4kWh unexplained difference, not automatic proof of loss, theft or an authorized customer charge.",
+      "source_ids": [],
+      "locator": [
+        "V11.md — 更正、未知结果和结算差异"
+      ],
+      "limitations": "Original conceptual boundary with synthetic quantities. Wholesale settlement, loss allocation and imbalance pricing remain explicitly out of scope."
+    },
+    {
+      "id": "V21:claim:ibp-scope",
+      "case_id": "V21",
+      "kind": "source_fact",
+      "statement": "SAP describes IBP as integrating demand, supply, inventory and S&OP planning; response and supply planning considers capacity constraints, lead times and inventory.",
+      "source_ids": [
+        "P06-SRC-ibp-overview"
+      ],
+      "locator": "What is SAP IBP; FAQ Which modules are part of SAP IBP? item2",
+      "limitations": "Provider self-description at planning-scope level; does not prove implementation algorithm, optimality, execution or freight accounting.",
+      "external_claim_id": "P06-SRC-ibp-overview-C1"
+    },
+    {
+      "id": "V21:claim:epcis-time",
+      "case_id": "V21",
+      "kind": "source_fact",
+      "statement": "EPCIS eventTime identifies when the capturing application asserts the event occurred; recordTime is repository record time and does not describe the real-world event.",
+      "source_ids": [
+        "P06-SRC-epcis-standard"
+      ],
+      "locator": "§7.4.1 EPCISEvent, pp74–75",
+      "limitations": "Applies to EPCIS event representation; receiver must still verify origin and business relevance.",
+      "external_claim_id": "P06-SRC-epcis-standard-C1"
+    },
+    {
+      "id": "V21:claim:epcis-correction",
+      "case_id": "V21",
+      "kind": "source_fact",
+      "statement": "An EPCIS ErrorDeclaration asserts previous assertions are erroneous, preserves the prior event, may link correctiveEventIDs, and has the same fields as the original except errorDeclaration and recordTime, including the same eventID when present.",
+      "source_ids": [
+        "P06-SRC-epcis-standard"
+      ],
+      "locator": "§7.4.1 eventID field p75; §7.4.1.2 ErrorDeclaration p76",
+      "limitations": "This exceptional identity rule does not permit arbitrary changed payload under a reused eventID; ordinary real-world follow-up should be modeled as ordinary events where possible.",
+      "external_claim_id": "P06-SRC-epcis-standard-C2"
+    },
+    {
+      "id": "V21:claim:packing-fixture",
+      "case_id": "V21",
+      "kind": "synthetic",
+      "statement": "Indivisible orders6,5,5 over two days of capacity10 yield two feasible assignments; cost254 for B+C first versus270 for A first; capacity9 yields no feasible assignment.",
+      "source_ids": [],
+      "locator": "V21.md 先求可行，再比较代价; V21.json fixtures.planning",
+      "limitations": "Synthetic daily-capacity model; no route, travel-time, temperature, labor or real contractual damages. Exhaustive optimality applies only to this fixture."
+    },
+    {
+      "id": "V21:claim:execution-design",
+      "case_id": "V21",
+      "kind": "synthetic",
+      "statement": "Approved plans allocate conditional supply; independent physical reservations require actual receipt; dispatch consumes the latter. UI, services, stores and operation identities implement these separate responsibilities.",
+      "source_ids": [],
+      "locator": "V21.md 计划、承诺和实物各有自己的账 / 从情景预览到运输确认; V21.json lifecycles",
+      "limitations": "Candidate React/FastAPI/Spring/PostgreSQL/OR-Tools design, not a claim about SAP or carrier internals. Workload figures are unmeasured targets."
+    },
+    {
+      "id": "V21:claim:freight-policy",
+      "case_id": "V21",
+      "kind": "synthetic",
+      "statement": "Contract freight200 can be matched; unauthorized surcharge50 remains disputed; planning penalty54 is not automatically deductible and payment requires independent settlement evidence.",
+      "source_ids": [],
+      "locator": "V21.md 交付证据和结算的分岔; V21.json fixtures.freight",
+      "limitations": "Toy contract/payment policy, not tax, financial, legal or freight-industry compliance guidance."
+    },
+    {
+      "id": "V21:claim:evidence-separation",
+      "case_id": "V21",
+      "kind": "inference",
+      "statement": "Because legitimate EPCIS error declarations may share the original eventID, transport-message deduplication must not discard that corrective meaning; validation must distinguish revisions from repeats.",
+      "source_ids": [
+        "P06-SRC-epcis-standard"
+      ],
+      "locator": "Inference from §7.4.1–7.4.1.2; V21.md 接收层设计",
+      "limitations": "Specific inbox key is a synthetic integration contract and must be agreed with event source. Standard does not prescribe this database schema."
+    },
+    {
+      "id": "V22:claim:product-order",
+      "case_id": "V22",
+      "kind": "source_fact",
+      "statement": "TMF622 overview describes a product order based on a catalog product offering containing commercial characteristics such as price and product options.",
+      "source_ids": [
+        "TMF622"
+      ],
+      "locator": "v5.0 Overview line15",
+      "limitations": "Public overview only; no complete status/schema/implementation claim.",
+      "external_claim_id": "TMF622-C1"
+    },
+    {
+      "id": "V22:claim:activation-monitor",
+      "case_id": "V22",
+      "kind": "source_fact",
+      "statement": "TMF640 overview supports service operations and retrieval of a monitor resource for execution of asynchronous requests.",
+      "source_ids": [
+        "P06-SRC-tmf640"
+      ],
+      "locator": "v4.0 Overview line15",
+      "limitations": "Does not assert actual network success, health-probe policy or the chapter synthetic state machine.",
+      "external_claim_id": "P06-SRC-tmf640-C1"
+    },
+    {
+      "id": "V22:claim:usage-separation",
+      "case_id": "V22",
+      "kind": "source_fact",
+      "statement": "TMF635 overview distinguishes rated and non-rated usage, including retrieval of partner usage for rating and provision of rated usage to a partner.",
+      "source_ids": [
+        "P06-SRC-tmf635"
+      ],
+      "locator": "v4.0 page Overview line15; version history line24 noted separately",
+      "limitations": "Current v5 scope/endpoint changes are not silently applied to v4. No allowance or tariff policy specified.",
+      "external_claim_id": "P06-SRC-tmf635-C1"
+    },
+    {
+      "id": "V22:claim:bill-query",
+      "case_id": "V22",
+      "kind": "source_fact",
+      "statement": "TMF678 overview describes finding and retrieving customer bills and details of applied customer billing rates.",
+      "source_ids": [
+        "P06-SRC-tmf678"
+      ],
+      "locator": "v4.0 Overview line15",
+      "limitations": "Not proof of payment, chosen rating algorithm or implementation stack.",
+      "external_claim_id": "P06-SRC-tmf678-C1"
+    },
+    {
+      "id": "V22:claim:orchestration-design",
+      "case_id": "V22",
+      "kind": "synthetic",
+      "statement": "Order acceptance, resource reservation, network execution, health confirmation and service state are distinct durable steps; an unknown network result is reconciled before retry or release.",
+      "source_ids": [],
+      "locator": "V22.md 一次开通要穿过两个不同的事实边界; V22.json topology/lifecycles",
+      "limitations": "Candidate implementation and recovery contract; no live provider integration or production claims."
+    },
+    {
+      "id": "V22:claim:rating-fixture",
+      "case_id": "V22",
+      "kind": "synthetic",
+      "statement": "For a30-day cycle, commercial billable interval[5,20),3000minor monthly fee,10GB unprorated allowance,12GB valid usage and200minor/GB overage, charge=1500+400=1900. Prorating allowance gives2900.",
+      "source_ids": [],
+      "locator": "V22.md 按发生时间和生效区间计费; V22.json fixtures.rating",
+      "limitations": "Equal-length teaching days, specified units, no tax/FX/roaming/shared allowance. Not an operator tariff or generally compliant proration rule."
+    },
+    {
+      "id": "V22:claim:retirement-policy",
+      "case_id": "V22",
+      "kind": "synthetic",
+      "statement": "Commercial billable_interval and technical_active_interval are separate; approved commercial cutoff stops fixed charges, while post-cutoff residual usage is quarantined and network resource release waits for confirmed deconfiguration.",
+      "source_ids": [],
+      "locator": "V22.md 退役关闭的是使用能力，账务关闭另有条件; V22.json billing-interval/resource lifecycles",
+      "limitations": "Chosen customer-facing cutoff policy only. Actual contracts and specialist operational requirements may differ."
+    },
+    {
+      "id": "V22:claim:usage-revision",
+      "case_id": "V22",
+      "kind": "synthetic",
+      "statement": "A valid correction U2=8GB to5GB replaces the effective revision: total9GB, corrected charge1500 and a separate-400 adjustment against issued1900; old and new revisions are not both added.",
+      "source_ids": [],
+      "locator": "V22.md 按发生时间和生效区间计费; V22.json fixtures.rating.correction",
+      "limitations": "Synthetic versioned rating/adjustment design, not a claim that TMF635 defines this revision key or adjustment process."
+    }
+  ],
+  "unconsumed_attempts": [
+    {
+      "url": "https://supportcontent.ibm.com/support/pages/maximo-support-desk-allowable-status-changes-work-orders",
+      "outcome": "403 Forbidden",
+      "resolution": "Same IBM article body read at canonical www.ibm.com; existing MAXIMO source ID preserved."
+    },
+    {
+      "url": "https://docs.oracle.com/en/industries/energy-water/customer-cloud-service/23a/ccs-user-guides/Topics/D1_AG_Configuring_the_Bill_Determinant_Interface.html",
+      "outcome": "web open inaccessible",
+      "resolution": "Not cited or used for provider facts; the example external billing adapter remains synthetic."
+    },
+    {
+      "url": "https://openroad-flow-scripts.readthedocs.io/en/latest/user/FlowTutorial.html",
+      "outcome": "web open inaccessible",
+      "resolution": "Correct tutorials/FlowTutorial.html read and registered as P06-SRC-orfs-tutorial; unavailable guessed path supports no claim."
+    }
+  ],
+  "excluded_seeds": [
+    {
+      "source_id": "SIEMENS_AI",
+      "status": "not-reviewed-not-used",
+      "reason": "Optional AI lead is adjacent to V07/V10 but not needed for their production/permission mechanisms; no factual claim relies on it."
+    }
+  ],
+  "source_aliases": [
+    {
+      "source_id": "MAXIMO",
+      "original_url": "https://supportcontent.ibm.com/support/pages/maximo-support-desk-allowable-status-changes-work-orders",
+      "read_url": "https://www.ibm.com/support/pages/maximo-support-desk-allowable-status-changes-work-orders",
+      "basis": "Same IBM article title/path and UID ibm11112013; original endpoint403; canonical body read. Preserve seed ID; parent may update canonical URL."
+    }
+  ]
+}

@@ -1,0 +1,791 @@
+{
+  "contract_version": "1.0",
+  "case_id": "H06",
+  "title": "支持请求、动作与客户确认",
+  "scope": "synthetic 支持闭环；Zendesk 状态与 auto assist 故障仅作有出处参照，合成关闭与集成不归因厂商",
+  "synthetic": true,
+  "source_ids": [
+    "ZENDESK",
+    "ZENDESK_AI_FAILURE"
+  ],
+  "nodes": [
+    {
+      "id": "H06:actor:agent",
+      "type": "actor",
+      "label": "客服",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; service-side object and role authorization"
+    },
+    {
+      "id": "H06:actor:customer",
+      "type": "actor",
+      "label": "客户",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; service-side object and role authorization"
+    },
+    {
+      "id": "H06:actor:supervisor",
+      "type": "actor",
+      "label": "支持主管",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; service-side object and role authorization"
+    },
+    {
+      "id": "H06:ui:desk",
+      "type": "ui",
+      "label": "支持工作台",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; service-side object and role authorization"
+    },
+    {
+      "id": "H06:ui:portal",
+      "type": "ui",
+      "label": "客户确认页",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; service-side object and role authorization"
+    },
+    {
+      "id": "H06:service:support",
+      "type": "service",
+      "label": "支持服务",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; service-side object and role authorization"
+    },
+    {
+      "id": "H06:service:action",
+      "type": "service",
+      "label": "动作执行与核对",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; service-side object and role authorization"
+    },
+    {
+      "id": "H06:service:clock",
+      "type": "service",
+      "label": "责任计时服务",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; service-side object and role authorization"
+    },
+    {
+      "id": "H06:store:ledger",
+      "type": "store",
+      "label": "请求、动作和确认记录库",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; service-side object and role authorization"
+    },
+    {
+      "id": "H06:store:inbox",
+      "type": "store",
+      "label": "持久结果 inbox",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; service-side object and role authorization"
+    },
+    {
+      "id": "H06:external_system:export",
+      "type": "external_system",
+      "label": "合成导出 provider",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; service-side object and role authorization"
+    },
+    {
+      "id": "H06:external_system:zendesk",
+      "type": "external_system",
+      "label": "Zendesk 参照边界",
+      "authority": "Zendesk product status reference",
+      "tenant_scope": "tenant-bound; service-side object and role authorization"
+    },
+    {
+      "id": "H06:object:request",
+      "type": "object",
+      "label": "支持请求",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; service-side object and role authorization"
+    },
+    {
+      "id": "H06:object:action",
+      "type": "object",
+      "label": "动作尝试",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; service-side object and role authorization"
+    },
+    {
+      "id": "H06:object:resolution",
+      "type": "object",
+      "label": "解决方案版本",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; service-side object and role authorization"
+    },
+    {
+      "id": "H06:object:acceptance",
+      "type": "object",
+      "label": "客户确认",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; service-side object and role authorization"
+    },
+    {
+      "id": "H06:object:provider-ticket",
+      "type": "object",
+      "label": "外部 ticket",
+      "authority": "Zendesk product status reference",
+      "tenant_scope": "tenant-bound; service-side object and role authorization"
+    },
+    {
+      "id": "H06:event:action-result",
+      "type": "event",
+      "label": "动作结果通知",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; service-side object and role authorization"
+    },
+    {
+      "id": "H06:event:customer-message",
+      "type": "event",
+      "label": "客户消息事实",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; service-side object and role authorization"
+    },
+    {
+      "id": "H06:rule:close-guard",
+      "type": "rule",
+      "label": "关闭证据规则",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; service-side object and role authorization"
+    }
+  ],
+  "edges": [
+    {
+      "id": "H06:edge:agent-ui",
+      "type": "operates",
+      "from": "H06:actor:agent",
+      "to": "H06:ui:desk",
+      "payload": "领取、查看等待对象、提交方案",
+      "timing": "sync",
+      "invariant": "租户与队列权限同时满足",
+      "failure": "重新认证后按请求和操作 ID 恢复草稿",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H06:edge:customer-ui",
+      "type": "operates",
+      "from": "H06:actor:customer",
+      "to": "H06:ui:portal",
+      "payload": "查看指定方案并确认或拒绝",
+      "timing": "sync",
+      "invariant": "客户只能操作自己的请求",
+      "failure": "身份无法核验则不能记录本人确认",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H06:edge:submit",
+      "type": "commands",
+      "from": "H06:ui:desk",
+      "to": "H06:service:support",
+      "payload": "request ID、expected_version、intent ID、动作参数",
+      "timing": "sync",
+      "invariant": "重复 command 返回同一已保存尝试",
+      "failure": "过期版本返回差异并保留草稿",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H06:edge:confirm",
+      "type": "commands",
+      "from": "H06:ui:portal",
+      "to": "H06:service:support",
+      "payload": "resolution_version、observed_message_cursor、明确反馈",
+      "timing": "sync",
+      "invariant": "确认必须对应当前方案与消息边界",
+      "failure": "冲突转回 working，不伪造接受",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H06:edge:request-owner",
+      "type": "owns",
+      "from": "H06:service:support",
+      "to": "H06:object:request",
+      "payload": "当前负责者与请求状态",
+      "timing": "static",
+      "invariant": "等待不抹掉未履行责任",
+      "failure": "人工调整负责者必须留原因",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H06:edge:resolution-owner",
+      "type": "owns",
+      "from": "H06:service:support",
+      "to": "H06:object:resolution",
+      "payload": "不可变方案版本与依据",
+      "timing": "static",
+      "invariant": "已提出方案不被静默改写",
+      "failure": "新内容产生新版本",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H06:edge:acceptance-owner",
+      "type": "owns",
+      "from": "H06:service:support",
+      "to": "H06:object:acceptance",
+      "payload": "客户确认身份、版本、游标",
+      "timing": "static",
+      "invariant": "保管记录不替代客户作决定",
+      "failure": "缺证据则仍 pending",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H06:edge:action-owner",
+      "type": "owns",
+      "from": "H06:service:action",
+      "to": "H06:object:action",
+      "payload": "intent ID、外部 job、核对状态",
+      "timing": "static",
+      "invariant": "每个动作意图只有一个经济或业务效果",
+      "failure": "重复意图回查已有尝试",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H06:edge:export-request",
+      "type": "requests",
+      "from": "H06:service:action",
+      "to": "H06:external_system:export",
+      "payload": "已持久动作身份、范围和授权参数",
+      "timing": "sync",
+      "invariant": "不以 timeout 推断未执行",
+      "failure": "unknown 后按原 job/client reference 核对",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H06:edge:export-read",
+      "type": "reads",
+      "from": "H06:service:action",
+      "to": "H06:external_system:export",
+      "payload": "原 job 身份与权威状态查询",
+      "timing": "async",
+      "invariant": "先核对未知结果再考虑重试",
+      "failure": "无核对能力则人工接管",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H06:edge:result-emitted",
+      "type": "emits",
+      "from": "H06:external_system:export",
+      "to": "H06:event:action-result",
+      "payload": "job ID、外部状态与结果摘要",
+      "timing": "async",
+      "invariant": "通知产生不等于支持承诺已完成",
+      "failure": "旧事件不得盲目覆盖当前权威状态",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H06:edge:result-inbox",
+      "type": "delivers",
+      "from": "H06:event:action-result",
+      "to": "H06:store:inbox",
+      "payload": "provider event identity + tenant mapping",
+      "timing": "async",
+      "invariant": "确认收件前持久化并验证来源",
+      "failure": "写入失败不确认收件",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H06:edge:consume-result",
+      "type": "reads",
+      "from": "H06:service:action",
+      "to": "H06:store:inbox",
+      "payload": "未处理及待重放通知",
+      "timing": "async",
+      "invariant": "消费去重与动作唯一约束分别成立",
+      "failure": "提交后崩溃可安全重放",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H06:edge:request-store",
+      "type": "stores",
+      "from": "H06:store:ledger",
+      "to": "H06:object:request",
+      "payload": "版本、责任人、时间及状态",
+      "timing": "sync",
+      "invariant": "状态变化与审计相容提交",
+      "failure": "从确定提交点恢复",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H06:edge:action-store",
+      "type": "stores",
+      "from": "H06:store:ledger",
+      "to": "H06:object:action",
+      "payload": "操作身份、请求摘要与外部核对结果",
+      "timing": "sync",
+      "invariant": "不能只把外部 job 放浏览器",
+      "failure": "未提交则重提原 intent；未知则核对",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H06:edge:resolution-store",
+      "type": "stores",
+      "from": "H06:store:ledger",
+      "to": "H06:object:resolution",
+      "payload": "方案文本、版本与动作引用",
+      "timing": "sync",
+      "invariant": "旧版本可回查",
+      "failure": "禁止覆盖已确认版本",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H06:edge:acceptance-store",
+      "type": "stores",
+      "from": "H06:store:ledger",
+      "to": "H06:object:acceptance",
+      "payload": "客户、方案版本、消息游标、反馈",
+      "timing": "sync",
+      "invariant": "确认与关闭 guard 同一事务判断",
+      "failure": "竞争失败保留明确冲突",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H06:edge:resolution-action",
+      "type": "depends_on",
+      "from": "H06:object:resolution",
+      "to": "H06:object:action",
+      "payload": "已确认的动作证据",
+      "timing": "static",
+      "invariant": "动作 unknown 时不能声称已完成",
+      "failure": "等待核对或提出清楚标注的替代方案",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H06:edge:acceptance-resolution",
+      "type": "depends_on",
+      "from": "H06:object:acceptance",
+      "to": "H06:object:resolution",
+      "payload": "明确接受的 resolution_version",
+      "timing": "static",
+      "invariant": "旧接受不能认可新方案",
+      "failure": "新方案使旧接受失效",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H06:edge:close-evidence",
+      "type": "depends_on",
+      "from": "H06:object:request",
+      "to": "H06:object:acceptance",
+      "payload": "accepted、当前方案、无新消息",
+      "timing": "static",
+      "invariant": "closed 必须有对应证据",
+      "failure": "发现新问题则拒绝关闭或建 follow-up",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H06:edge:close-authority",
+      "type": "authorizes",
+      "from": "H06:rule:close-guard",
+      "to": "H06:service:support",
+      "payload": "方案确认等待、动作已确认、客户接受、游标一致",
+      "timing": "sync",
+      "invariant": "按钮可用不代替服务端 guard",
+      "failure": "任一不满足返回原因",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H06:edge:message-event",
+      "type": "emits",
+      "from": "H06:service:support",
+      "to": "H06:event:customer-message",
+      "payload": "已提交客户消息及单请求序号",
+      "timing": "async",
+      "invariant": "同一消息身份不会插入两次",
+      "failure": "重复收件查回已有消息",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H06:edge:message-store",
+      "type": "stores",
+      "from": "H06:store:ledger",
+      "to": "H06:event:customer-message",
+      "payload": "内容受众、序号与发生/接收时间",
+      "timing": "sync",
+      "invariant": "内部备注不误投客户",
+      "failure": "错误受众拒绝提交并留审计",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H06:edge:clock-read",
+      "type": "reads",
+      "from": "H06:service:clock",
+      "to": "H06:store:ledger",
+      "payload": "状态事件与工作日历版本",
+      "timing": "batch",
+      "invariant": "按责任区间和日历求交，不按到达顺序扣时",
+      "failure": "迟到消息重算受影响窗口",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H06:edge:request-projection",
+      "type": "projects",
+      "from": "H06:object:request",
+      "to": "H06:ui:desk",
+      "payload": "状态、负责者、剩余时间、投影新鲜度",
+      "timing": "async",
+      "invariant": "缓存不授权执行",
+      "failure": "投影超时标示并回读权威状态",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H06:edge:action-projection",
+      "type": "projects",
+      "from": "H06:object:action",
+      "to": "H06:ui:desk",
+      "payload": "saved/submitted/unknown/confirmed",
+      "timing": "async",
+      "invariant": "unknown 不显示成功",
+      "failure": "恢复后按原 intent 查回结果",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H06:edge:confirmation-projection",
+      "type": "projects",
+      "from": "H06:object:resolution",
+      "to": "H06:ui:portal",
+      "payload": "用户可理解的验证步骤、方案版本",
+      "timing": "async",
+      "invariant": "界面正在确认的版本可见",
+      "failure": "版本过期要求刷新后重新确认",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H06:edge:external-mapping",
+      "type": "depends_on",
+      "from": "H06:object:request",
+      "to": "H06:object:provider-ticket",
+      "payload": "tenant + Zendesk account + ticket ID",
+      "timing": "static",
+      "invariant": "外部 closed 不抹掉本地未满足确认义务",
+      "failure": "建立有明确关联的后续请求",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "H06:edge:zendesk-owner",
+      "type": "owns",
+      "from": "H06:external_system:zendesk",
+      "to": "H06:object:provider-ticket",
+      "payload": "Zendesk ticket status",
+      "timing": "static",
+      "invariant": "Solved 是客服提交方案，Closed 是系统关闭",
+      "failure": "solved 回复可重开；closed 回复走关联 follow-up",
+      "basis": "source_fact",
+      "claim_ids": [
+        "H06:claim:ticket-status"
+      ]
+    }
+  ],
+  "lifecycles": [
+    {
+      "object_id": "H06:object:request",
+      "states": [
+        "new",
+        "working",
+        "awaiting_customer",
+        "closed"
+      ],
+      "transitions": [
+        {
+          "from": "new",
+          "to": "working",
+          "trigger": "客服领取",
+          "guard": "有效权限与版本",
+          "durable_effect": "负责者及责任起点",
+          "recovery": "重复领取返回当前负责者"
+        },
+        {
+          "from": "working",
+          "to": "awaiting_customer",
+          "trigger": "请求客户补充信息",
+          "guard": "具体补充信息请求已送达客户",
+          "durable_effect": "waiting_reason=information、问题消息引用、等待开始",
+          "recovery": "发送未确认不暂停；客户回复后恢复团队责任"
+        },
+        {
+          "from": "working",
+          "to": "awaiting_customer",
+          "trigger": "提出解决方案并等待验证",
+          "guard": "动作 confirmed、方案已保存并送达",
+          "durable_effect": "waiting_reason=resolution、当前方案与等待开始",
+          "recovery": "发送失败仍由团队负责，重试原通知"
+        },
+        {
+          "from": "awaiting_customer",
+          "to": "working",
+          "trigger": "客户补充信息、拒绝方案或新增问题",
+          "guard": "消息身份有效且对应请求",
+          "durable_effect": "消息游标、清除当前等待原因并恢复团队责任",
+          "recovery": "乱序重算责任区间"
+        },
+        {
+          "from": "awaiting_customer",
+          "to": "closed",
+          "trigger": "确认并请求关闭",
+          "guard": "waiting_reason=resolution、接受当前方案、游标一致、动作已确认",
+          "durable_effect": "关闭依据和提交序号",
+          "recovery": "冲突拒绝；关闭后新消息建关联后续请求"
+        }
+      ]
+    },
+    {
+      "object_id": "H06:object:action",
+      "states": [
+        "prepared",
+        "submitted",
+        "unknown",
+        "confirmed",
+        "failed"
+      ],
+      "transitions": [
+        {
+          "from": "prepared",
+          "to": "submitted",
+          "trigger": "worker 发送",
+          "guard": "参数与权限仍有效",
+          "durable_effect": "发送尝试和原 intent",
+          "recovery": "未发出可重放原 intent"
+        },
+        {
+          "from": "submitted",
+          "to": "confirmed",
+          "trigger": "权威回执或读取",
+          "guard": "任务身份和结果核实",
+          "durable_effect": "外部完成证据",
+          "recovery": "重复回执无第二效果"
+        },
+        {
+          "from": "submitted",
+          "to": "unknown",
+          "trigger": "响应超时",
+          "guard": "不能确定外部结果",
+          "durable_effect": "保留原引用和核对任务",
+          "recovery": "先按身份查询"
+        },
+        {
+          "from": "unknown",
+          "to": "confirmed",
+          "trigger": "核对找到完成任务",
+          "guard": "证据对应同一 intent",
+          "durable_effect": "保存核对与完成依据",
+          "recovery": "不得创建第二任务"
+        },
+        {
+          "from": "unknown",
+          "to": "failed",
+          "trigger": "权威拒绝或人工查明未执行",
+          "guard": "证据足以排除完成",
+          "durable_effect": "失败原因与是否允许新意图",
+          "recovery": "不能只靠本地超时判断"
+        },
+        {
+          "from": "submitted",
+          "to": "failed",
+          "trigger": "权威拒绝",
+          "guard": "拒绝来自对应任务",
+          "durable_effect": "持久拒绝原因",
+          "recovery": "修正参数需要新意图"
+        }
+      ]
+    },
+    {
+      "object_id": "H06:object:resolution",
+      "states": [
+        "draft",
+        "proposed",
+        "accepted",
+        "superseded"
+      ],
+      "transitions": [
+        {
+          "from": "draft",
+          "to": "proposed",
+          "trigger": "客服提交方案",
+          "guard": "确定版本与已确认动作",
+          "durable_effect": "公开方案及消息引用",
+          "recovery": "消息重送不建新方案"
+        },
+        {
+          "from": "proposed",
+          "to": "accepted",
+          "trigger": "客户明确确认",
+          "guard": "确认版本和最新游标一致",
+          "durable_effect": "接受引用",
+          "recovery": "拒绝过期确认"
+        },
+        {
+          "from": "proposed",
+          "to": "superseded",
+          "trigger": "提出修订",
+          "guard": "新版本已保存",
+          "durable_effect": "替代关系",
+          "recovery": "旧版仅用于历史"
+        },
+        {
+          "from": "accepted",
+          "to": "superseded",
+          "trigger": "新增修订方案",
+          "guard": "有新问题和新版本",
+          "durable_effect": "保留旧接受但标明范围",
+          "recovery": "重新请求新确认"
+        }
+      ]
+    },
+    {
+      "object_id": "H06:object:acceptance",
+      "states": [
+        "pending",
+        "accepted",
+        "rejected",
+        "invalidated"
+      ],
+      "transitions": [
+        {
+          "from": "pending",
+          "to": "accepted",
+          "trigger": "客户确认",
+          "guard": "身份核验、版本和游标匹配",
+          "durable_effect": "确认身份与依据",
+          "recovery": "重复命令返回原记录"
+        },
+        {
+          "from": "pending",
+          "to": "rejected",
+          "trigger": "客户指出未解决",
+          "guard": "反馈对应当前方案",
+          "durable_effect": "拒绝原因与新消息",
+          "recovery": "返回 working"
+        },
+        {
+          "from": "accepted",
+          "to": "invalidated",
+          "trigger": "提交前出现新问题或新方案",
+          "guard": "关闭尚未提交",
+          "durable_effect": "旧确认不再满足 guard",
+          "recovery": "重提方案再确认"
+        }
+      ]
+    }
+  ],
+  "algorithm_ids": [
+    "ALG:windows",
+    "ALG:top-k",
+    "ALG:lookup",
+    "ALG:caches"
+  ],
+  "claim_ids": [
+    "H06:claim:ticket-status",
+    "H06:claim:auto-assist-loop",
+    "H06:claim:design",
+    "H06:claim:calculation",
+    "H06:claim:eval"
+  ],
+  "checks": [
+    {
+      "id": "H06:check:happy",
+      "kind": "happy_path",
+      "given": "a1 confirmed；r1 proposed；游标7",
+      "when": "客户明确确认 r1/7 并关闭",
+      "then": "一请求 closed，有三个独立证据",
+      "evidence_required": "UI、动作核对、方案版本、确认和关闭记录"
+    },
+    {
+      "id": "H06:check:duplicate",
+      "kind": "duplicate",
+      "given": "a1 同一 intent；同一结果 event",
+      "when": "双击并重投事件",
+      "then": "一动作效果且确认不被伪造",
+      "evidence_required": "操作唯一键、inbox、外部 job 核对"
+    },
+    {
+      "id": "H06:check:reorder",
+      "kind": "out_of_order",
+      "given": "当前动作 confirmed；当前 working",
+      "when": "旧 submitted 和 awaiting_customer 迟到",
+      "then": "动作不回退；计时按有效状态历史重算",
+      "evidence_required": "事件次序、权威读取、区间结果"
+    },
+    {
+      "id": "H06:check:race",
+      "kind": "concurrency",
+      "given": "确认游标7；新客户消息8",
+      "when": "并发关闭和消息提交",
+      "then": "关闭拒绝或关闭后新建关联请求；无责任丢失",
+      "evidence_required": "事务提交次序、冲突或 follow-up"
+    },
+    {
+      "id": "H06:check:tenant",
+      "kind": "tenant_isolation",
+      "given": "A/B 同请求号",
+      "when": "命中缓存、冷读和执行动作",
+      "then": "仅授权租户数据可见可改",
+      "evidence_required": "scope、缓存 key、拒绝结果"
+    },
+    {
+      "id": "H06:check:unknown",
+      "kind": "unknown_outcome",
+      "given": "外部已创建导出 job",
+      "when": "发送响应丢失",
+      "then": "unknown 后核对原 job，不二次创建",
+      "evidence_required": "尝试账本和外部记录"
+    },
+    {
+      "id": "H06:check:recovery",
+      "kind": "recovery",
+      "given": "完成已提交而消费标记未提交",
+      "when": "重启重放",
+      "then": "仍一个动作效果；请求仍需客户确认",
+      "evidence_required": "重启记录、最终 guard、唯一键"
+    },
+    {
+      "id": "H06:check:windows",
+      "kind": "algorithm",
+      "given": "周一16到周二12，工作日9到17，周二9:30至10:30等客户",
+      "when": "计算团队责任时间",
+      "then": "3小时；余1小时；重复等待不双扣",
+      "evidence_required": "固定 fixture、区间及手算"
+    },
+    {
+      "id": "H06:check:reject",
+      "kind": "negative_path",
+      "given": "动作成功但客户拒绝方案",
+      "when": "尝试关闭",
+      "then": "guard 拒绝、继续 working",
+      "evidence_required": "拒绝记录和 UI 原因"
+    },
+    {
+      "id": "H06:check:information-wait",
+      "kind": "negative_path",
+      "given": "09:30请求补充信息，动作尚未完成",
+      "when": "送达信息请求后等待；10:30客户回复",
+      "then": "允许暂停并恢复团队责任；发送失败不得暂停；信息回复不能直接关闭",
+      "evidence_required": "发送确认、waiting_reason、消息游标、责任区间与关闭拒绝"
+    }
+  ]
+}

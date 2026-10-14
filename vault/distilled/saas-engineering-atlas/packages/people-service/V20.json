@@ -1,0 +1,1218 @@
+{
+  "contract_version": "1.0",
+  "case_id": "V20",
+  "title": "两次上门怎样兑现一项服务承诺",
+  "scope": "固定安装与校准两项需求；范围接收、预约、工作区间、过账和部分付款；不含税、质保、退款或生产运行",
+  "synthetic": true,
+  "source_ids": [
+    "D365_FS",
+    "D365_FS_ARCH",
+    "P02-SRC-postgres-ranges"
+  ],
+  "nodes": [
+    {
+      "id": "V20:actor:dispatcher",
+      "type": "actor",
+      "label": "调度员",
+      "authority": "synthetic-design",
+      "tenant_scope": "服务组织 tenant + 具体对象权限"
+    },
+    {
+      "id": "V20:actor:technician",
+      "type": "actor",
+      "label": "技师",
+      "authority": "synthetic-design",
+      "tenant_scope": "服务组织 tenant + 具体对象权限"
+    },
+    {
+      "id": "V20:actor:supervisor",
+      "type": "actor",
+      "label": "服务主管",
+      "authority": "synthetic-design",
+      "tenant_scope": "服务组织 tenant + 具体对象权限"
+    },
+    {
+      "id": "V20:actor:accountant",
+      "type": "actor",
+      "label": "财务",
+      "authority": "synthetic-design",
+      "tenant_scope": "服务组织 tenant + 具体对象权限"
+    },
+    {
+      "id": "V20:ui:board",
+      "type": "ui",
+      "label": "排班板",
+      "authority": "synthetic-design",
+      "tenant_scope": "服务组织 tenant + 具体对象权限"
+    },
+    {
+      "id": "V20:ui:mobile",
+      "type": "ui",
+      "label": "现场页与离线队列",
+      "authority": "synthetic-design",
+      "tenant_scope": "服务组织 tenant + 具体对象权限"
+    },
+    {
+      "id": "V20:ui:review",
+      "type": "ui",
+      "label": "接收与费用预览",
+      "authority": "synthetic-design",
+      "tenant_scope": "服务组织 tenant + 具体对象权限"
+    },
+    {
+      "id": "V20:service:schedule",
+      "type": "service",
+      "label": "调度服务",
+      "authority": "synthetic-design",
+      "tenant_scope": "服务组织 tenant + 具体对象权限"
+    },
+    {
+      "id": "V20:service:work",
+      "type": "service",
+      "label": "作业与接收服务",
+      "authority": "synthetic-design",
+      "tenant_scope": "服务组织 tenant + 具体对象权限"
+    },
+    {
+      "id": "V20:service:posting",
+      "type": "service",
+      "label": "记账 adapter",
+      "authority": "synthetic-design",
+      "tenant_scope": "服务组织 tenant + 具体对象权限"
+    },
+    {
+      "id": "V20:store:work-db",
+      "type": "store",
+      "label": "工单与预约事务库",
+      "authority": "synthetic-design",
+      "tenant_scope": "服务组织 tenant + 具体对象权限"
+    },
+    {
+      "id": "V20:store:journal",
+      "type": "store",
+      "label": "操作记录与区间日志",
+      "authority": "synthetic-design",
+      "tenant_scope": "服务组织 tenant + 具体对象权限"
+    },
+    {
+      "id": "V20:store:inbox",
+      "type": "store",
+      "label": "账务回执 inbox",
+      "authority": "synthetic-design",
+      "tenant_scope": "服务组织 tenant + 具体对象权限"
+    },
+    {
+      "id": "V20:external_system:finance",
+      "type": "external_system",
+      "label": "外部账务系统（未指定 provider）",
+      "authority": "synthetic-design",
+      "tenant_scope": "服务组织 tenant + 具体对象权限"
+    },
+    {
+      "id": "V20:event:receipt",
+      "type": "event",
+      "label": "经验证到账事实通知",
+      "authority": "synthetic-design",
+      "tenant_scope": "服务组织 tenant + 具体对象权限"
+    },
+    {
+      "id": "V20:object:work-order",
+      "type": "object",
+      "label": "工单范围版本",
+      "authority": "synthetic-design",
+      "tenant_scope": "服务组织 tenant + 具体对象权限"
+    },
+    {
+      "id": "V20:object:requirement",
+      "type": "object",
+      "label": "必需工作项：安装/校准",
+      "authority": "synthetic-design",
+      "tenant_scope": "服务组织 tenant + 具体对象权限"
+    },
+    {
+      "id": "V20:object:booking",
+      "type": "object",
+      "label": "Booking 预约与实际状态",
+      "authority": "synthetic-design",
+      "tenant_scope": "服务组织 tenant + 具体对象权限"
+    },
+    {
+      "id": "V20:object:result",
+      "type": "object",
+      "label": "逐项作业结果与时间日志",
+      "authority": "synthetic-design",
+      "tenant_scope": "服务组织 tenant + 具体对象权限"
+    },
+    {
+      "id": "V20:object:acceptance",
+      "type": "object",
+      "label": "接收决定版本",
+      "authority": "synthetic-design",
+      "tenant_scope": "服务组织 tenant + 具体对象权限"
+    },
+    {
+      "id": "V20:object:charge",
+      "type": "object",
+      "label": "费用版本",
+      "authority": "synthetic-design",
+      "tenant_scope": "服务组织 tenant + 具体对象权限"
+    },
+    {
+      "id": "V20:object:posting-attempt",
+      "type": "object",
+      "label": "过账操作",
+      "authority": "synthetic-design",
+      "tenant_scope": "服务组织 tenant + 具体对象权限"
+    },
+    {
+      "id": "V20:object:invoice",
+      "type": "object",
+      "label": "Invoice 外部应收",
+      "authority": "synthetic-design",
+      "tenant_scope": "服务组织 tenant + 具体对象权限"
+    },
+    {
+      "id": "V20:object:receipt-record",
+      "type": "object",
+      "label": "Receipt 外部到账映射",
+      "authority": "synthetic-design",
+      "tenant_scope": "服务组织 tenant + 具体对象权限"
+    },
+    {
+      "id": "V20:rule:acceptance-rule",
+      "type": "rule",
+      "label": "两项结果齐备与主管接收规则",
+      "authority": "synthetic-design",
+      "tenant_scope": "服务组织 tenant + 具体对象权限"
+    }
+  ],
+  "edges": [
+    {
+      "id": "V20:edge:dispatch-ui",
+      "type": "operates",
+      "from": "V20:actor:dispatcher",
+      "to": "V20:ui:board",
+      "payload": "本租户资源和需求视图",
+      "timing": "sync",
+      "invariant": "权限范围与当前对象一致",
+      "failure": "拒绝越权的资源可见性",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V20:claim:implementation"
+      ]
+    },
+    {
+      "id": "V20:edge:tech-ui",
+      "type": "operates",
+      "from": "V20:actor:technician",
+      "to": "V20:ui:mobile",
+      "payload": "已分配 booking、现场日志、同步状态",
+      "timing": "sync",
+      "invariant": "只写被授权作业",
+      "failure": "离线存储丢失须重建事实，不能默认为已上传",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V20:claim:implementation"
+      ]
+    },
+    {
+      "id": "V20:edge:supervisor-ui",
+      "type": "operates",
+      "from": "V20:actor:supervisor",
+      "to": "V20:ui:review",
+      "payload": "范围版本、结果、接收意见",
+      "timing": "sync",
+      "invariant": "技师自报不替代接收",
+      "failure": "缺项或过期范围显示不可接受原因",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V20:claim:implementation"
+      ]
+    },
+    {
+      "id": "V20:edge:accountant-ui",
+      "type": "operates",
+      "from": "V20:actor:accountant",
+      "to": "V20:ui:review",
+      "payload": "接收、费用版本、外部余额",
+      "timing": "sync",
+      "invariant": "显示应收与到账分离",
+      "failure": "陈旧余额展示最后核对状态",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V20:claim:implementation"
+      ]
+    },
+    {
+      "id": "V20:edge:schedule-command",
+      "type": "commands",
+      "from": "V20:ui:board",
+      "to": "V20:service:schedule",
+      "payload": "tenant,requirement_id,resource_id,[start,end),version,operation_id",
+      "timing": "sync",
+      "invariant": "最终提交重新检查技能与区间冲突",
+      "failure": "竞争返回当前版本和冲突",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V20:claim:implementation"
+      ]
+    },
+    {
+      "id": "V20:edge:progress-command",
+      "type": "commands",
+      "from": "V20:ui:mobile",
+      "to": "V20:service:work",
+      "payload": "tenant,booking_id,device_op_id,sequence,time,status,version",
+      "timing": "sync",
+      "invariant": "相同操作身份只生效一次",
+      "failure": "序号缺口或跨设备矛盾进入核对",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V20:claim:implementation"
+      ]
+    },
+    {
+      "id": "V20:edge:accept-command",
+      "type": "commands",
+      "from": "V20:ui:review",
+      "to": "V20:service:work",
+      "payload": "scope_version,result_ids,acceptance_decision,actor",
+      "timing": "sync",
+      "invariant": "两项必需结果齐备；有权主管",
+      "failure": "范围变化或缺项拒绝",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V20:claim:acceptance-policy"
+      ]
+    },
+    {
+      "id": "V20:edge:posting-command",
+      "type": "commands",
+      "from": "V20:ui:review",
+      "to": "V20:service:posting",
+      "payload": "work_order,acceptance_version,charge_version,operation_id",
+      "timing": "sync",
+      "invariant": "唯一业务键；费用与接收绑定",
+      "failure": "版本冲突先重做预览",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V20:claim:implementation"
+      ]
+    },
+    {
+      "id": "V20:edge:own-work-order",
+      "type": "owns",
+      "from": "V20:service:work",
+      "to": "V20:object:work-order",
+      "payload": "对象当前版本及历史",
+      "timing": "static",
+      "invariant": "业务权威由作业服务校验",
+      "failure": "冲突保留原记录并生成更正",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V20:claim:implementation"
+      ]
+    },
+    {
+      "id": "V20:edge:own-requirement",
+      "type": "owns",
+      "from": "V20:service:work",
+      "to": "V20:object:requirement",
+      "payload": "对象当前版本及历史",
+      "timing": "static",
+      "invariant": "业务权威由作业服务校验",
+      "failure": "冲突保留原记录并生成更正",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V20:claim:implementation"
+      ]
+    },
+    {
+      "id": "V20:edge:own-result",
+      "type": "owns",
+      "from": "V20:service:work",
+      "to": "V20:object:result",
+      "payload": "对象当前版本及历史",
+      "timing": "static",
+      "invariant": "业务权威由作业服务校验",
+      "failure": "冲突保留原记录并生成更正",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V20:claim:implementation"
+      ]
+    },
+    {
+      "id": "V20:edge:own-acceptance",
+      "type": "owns",
+      "from": "V20:service:work",
+      "to": "V20:object:acceptance",
+      "payload": "对象当前版本及历史",
+      "timing": "static",
+      "invariant": "业务权威由作业服务校验",
+      "failure": "冲突保留原记录并生成更正",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V20:claim:implementation"
+      ]
+    },
+    {
+      "id": "V20:edge:own-booking",
+      "type": "owns",
+      "from": "V20:service:schedule",
+      "to": "V20:object:booking",
+      "payload": "安排及变更版本",
+      "timing": "static",
+      "invariant": "预约不等于需求满足",
+      "failure": "取消预约只释放安排",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V20:claim:implementation"
+      ]
+    },
+    {
+      "id": "V20:edge:own-charge",
+      "type": "owns",
+      "from": "V20:service:posting",
+      "to": "V20:object:charge",
+      "payload": "计价规则与输入版本",
+      "timing": "static",
+      "invariant": "工作区间计价排除休息",
+      "failure": "补录需新费用版本",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V20:claim:billing-example"
+      ]
+    },
+    {
+      "id": "V20:edge:own-attempt",
+      "type": "owns",
+      "from": "V20:service:posting",
+      "to": "V20:object:posting-attempt",
+      "payload": "操作意图、外部引用、结果",
+      "timing": "static",
+      "invariant": "unknown 不当失败处理",
+      "failure": "先核对后重试",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V20:claim:implementation"
+      ]
+    },
+    {
+      "id": "V20:edge:own-invoice",
+      "type": "owns",
+      "from": "V20:external_system:finance",
+      "to": "V20:object:invoice",
+      "payload": "外部发票与余额",
+      "timing": "static",
+      "invariant": "账务系统为应收权威",
+      "failure": "本地副本不能确认付款",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V20:claim:implementation"
+      ]
+    },
+    {
+      "id": "V20:edge:own-receipt",
+      "type": "owns",
+      "from": "V20:external_system:finance",
+      "to": "V20:object:receipt-record",
+      "payload": "到账记录与分配",
+      "timing": "static",
+      "invariant": "本地副本不产生现金",
+      "failure": "无外部证据保持待核对",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V20:claim:implementation"
+      ]
+    },
+    {
+      "id": "V20:edge:contains-needs",
+      "type": "contains",
+      "from": "V20:object:work-order",
+      "to": "V20:object:requirement",
+      "payload": "当前范围的安装/校准工作项",
+      "timing": "static",
+      "invariant": "取消需求必须改范围",
+      "failure": "旧版接收不适用于新范围",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V20:claim:implementation"
+      ]
+    },
+    {
+      "id": "V20:edge:booking-needs",
+      "type": "depends_on",
+      "from": "V20:object:booking",
+      "to": "V20:object:requirement",
+      "payload": "被安排的工作项身份与版本",
+      "timing": "static",
+      "invariant": "安排对应明确需要",
+      "failure": "不能用无主预约完成整个工单",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V20:claim:implementation"
+      ]
+    },
+    {
+      "id": "V20:edge:acceptance-needs",
+      "type": "depends_on",
+      "from": "V20:object:acceptance",
+      "to": "V20:object:requirement",
+      "payload": "所有必需工作项及例外批准",
+      "timing": "sync",
+      "invariant": "两项需要均满足",
+      "failure": "取消一次预约仍不能接受",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V20:claim:acceptance-policy"
+      ]
+    },
+    {
+      "id": "V20:edge:acceptance-result",
+      "type": "derived_from",
+      "from": "V20:object:acceptance",
+      "to": "V20:object:result",
+      "payload": "逐项结果与证据引用",
+      "timing": "sync",
+      "invariant": "签认绑定结果及范围版本",
+      "failure": "附件未齐保留待接收",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V20:claim:implementation"
+      ]
+    },
+    {
+      "id": "V20:edge:charge-result",
+      "type": "derived_from",
+      "from": "V20:object:charge",
+      "to": "V20:object:result",
+      "payload": "有效工作区间、用料、计价规则",
+      "timing": "batch",
+      "invariant": "150分钟+零件算500",
+      "failure": "重复、缺口、倒置区间不得收费",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V20:claim:billing-example"
+      ]
+    },
+    {
+      "id": "V20:edge:posting-accept",
+      "type": "depends_on",
+      "from": "V20:object:posting-attempt",
+      "to": "V20:object:acceptance",
+      "payload": "已接受范围版本",
+      "timing": "sync",
+      "invariant": "旧范围接收不可复用",
+      "failure": "退回后调整接管而非删原账",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V20:claim:implementation"
+      ]
+    },
+    {
+      "id": "V20:edge:posting-charge",
+      "type": "derived_from",
+      "from": "V20:object:posting-attempt",
+      "to": "V20:object:charge",
+      "payload": "锁定费用版本与金额500",
+      "timing": "sync",
+      "invariant": "重试金额与原操作相同",
+      "failure": "不同金额必须新版本",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V20:claim:implementation"
+      ]
+    },
+    {
+      "id": "V20:edge:accept-rule",
+      "type": "authorizes",
+      "from": "V20:rule:acceptance-rule",
+      "to": "V20:service:work",
+      "payload": "全部必需项与主管角色",
+      "timing": "sync",
+      "invariant": "规则版本入审计",
+      "failure": "不满足则拒绝接收",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V20:claim:acceptance-policy"
+      ]
+    },
+    {
+      "id": "V20:edge:persist-work-order",
+      "type": "stores",
+      "from": "V20:store:work-db",
+      "to": "V20:object:work-order",
+      "payload": "租户、身份、版本和状态",
+      "timing": "sync",
+      "invariant": "一致性边界内保存意图与版本",
+      "failure": "事务未提交则无确认",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V20:claim:implementation"
+      ]
+    },
+    {
+      "id": "V20:edge:persist-requirement",
+      "type": "stores",
+      "from": "V20:store:work-db",
+      "to": "V20:object:requirement",
+      "payload": "租户、身份、版本和状态",
+      "timing": "sync",
+      "invariant": "一致性边界内保存意图与版本",
+      "failure": "事务未提交则无确认",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V20:claim:implementation"
+      ]
+    },
+    {
+      "id": "V20:edge:persist-booking",
+      "type": "stores",
+      "from": "V20:store:work-db",
+      "to": "V20:object:booking",
+      "payload": "租户、身份、版本和状态",
+      "timing": "sync",
+      "invariant": "一致性边界内保存意图与版本",
+      "failure": "事务未提交则无确认",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V20:claim:implementation"
+      ]
+    },
+    {
+      "id": "V20:edge:persist-acceptance",
+      "type": "stores",
+      "from": "V20:store:work-db",
+      "to": "V20:object:acceptance",
+      "payload": "租户、身份、版本和状态",
+      "timing": "sync",
+      "invariant": "一致性边界内保存意图与版本",
+      "failure": "事务未提交则无确认",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V20:claim:implementation"
+      ]
+    },
+    {
+      "id": "V20:edge:persist-charge",
+      "type": "stores",
+      "from": "V20:store:work-db",
+      "to": "V20:object:charge",
+      "payload": "租户、身份、版本和状态",
+      "timing": "sync",
+      "invariant": "一致性边界内保存意图与版本",
+      "failure": "事务未提交则无确认",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V20:claim:implementation"
+      ]
+    },
+    {
+      "id": "V20:edge:persist-posting-attempt",
+      "type": "stores",
+      "from": "V20:store:work-db",
+      "to": "V20:object:posting-attempt",
+      "payload": "租户、身份、版本和状态",
+      "timing": "sync",
+      "invariant": "一致性边界内保存意图与版本",
+      "failure": "事务未提交则无确认",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V20:claim:implementation"
+      ]
+    },
+    {
+      "id": "V20:edge:persist-result",
+      "type": "stores",
+      "from": "V20:store:journal",
+      "to": "V20:object:result",
+      "payload": "现场序号、区间与更正依据",
+      "timing": "sync",
+      "invariant": "历史可回查",
+      "failure": "冲突不无痕覆盖",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V20:claim:implementation"
+      ]
+    },
+    {
+      "id": "V20:edge:read-schedule",
+      "type": "reads",
+      "from": "V20:service:schedule",
+      "to": "V20:store:work-db",
+      "payload": "资源时间窗、当前预约及版本",
+      "timing": "sync",
+      "invariant": "提交读权威状态",
+      "failure": "缓存只可预览",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V20:claim:implementation"
+      ]
+    },
+    {
+      "id": "V20:edge:read-work",
+      "type": "reads",
+      "from": "V20:service:work",
+      "to": "V20:store:work-db",
+      "payload": "工作范围与预约权限",
+      "timing": "sync",
+      "invariant": "每条命令均核对租户",
+      "failure": "跨租户载荷拒绝",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V20:claim:implementation"
+      ]
+    },
+    {
+      "id": "V20:edge:read-journal",
+      "type": "reads",
+      "from": "V20:service:posting",
+      "to": "V20:store:journal",
+      "payload": "完整有序的已确认工作日志",
+      "timing": "batch",
+      "invariant": "无缺口且转换有效",
+      "failure": "不完整日志不能锁定最终费用",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V20:claim:implementation"
+      ]
+    },
+    {
+      "id": "V20:edge:send-posting",
+      "type": "requests",
+      "from": "V20:service:posting",
+      "to": "V20:external_system:finance",
+      "payload": "外部操作引用、接收/费用版本、金额单位",
+      "timing": "async",
+      "invariant": "同一账务意图保持身份",
+      "failure": "超时保留unknown并核对",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V20:claim:implementation"
+      ]
+    },
+    {
+      "id": "V20:edge:reconcile",
+      "type": "reads",
+      "from": "V20:service:posting",
+      "to": "V20:external_system:finance",
+      "payload": "按外部引用查询发票与收款",
+      "timing": "async",
+      "invariant": "确认权威余额而非猜测",
+      "failure": "查不到不代表未执行，转人工核对",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V20:claim:implementation"
+      ]
+    },
+    {
+      "id": "V20:edge:emit-receipt",
+      "type": "emits",
+      "from": "V20:external_system:finance",
+      "to": "V20:event:receipt",
+      "payload": "外部事件ID、发票ID、款项ID、金额、币种",
+      "timing": "async",
+      "invariant": "event到账事实仍需身份校验",
+      "failure": "未知或签名无效事件隔离",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V20:claim:implementation"
+      ]
+    },
+    {
+      "id": "V20:edge:inbox-receipt",
+      "type": "delivers",
+      "from": "V20:event:receipt",
+      "to": "V20:store:inbox",
+      "payload": "验证后的事件及接收身份",
+      "timing": "async",
+      "invariant": "先持久化再确认接收",
+      "failure": "写入失败不确认",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V20:claim:implementation"
+      ]
+    },
+    {
+      "id": "V20:edge:receipt-lookup",
+      "type": "reads",
+      "from": "V20:service:posting",
+      "to": "V20:store:inbox",
+      "payload": "待核对账务事件",
+      "timing": "async",
+      "invariant": "事件去重与业务收款身份各自唯一",
+      "failure": "worker崩溃后重放核对",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V20:claim:implementation"
+      ]
+    },
+    {
+      "id": "V20:edge:receipt-balance",
+      "type": "derived_from",
+      "from": "V20:object:invoice",
+      "to": "V20:object:receipt-record",
+      "payload": "已分配到账记录300+200",
+      "timing": "async",
+      "invariant": "只确认本发票相同单位的款项",
+      "failure": "未知分配不得扣减余额",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V20:claim:implementation"
+      ]
+    },
+    {
+      "id": "V20:edge:show-booking-board",
+      "type": "projects",
+      "from": "V20:object:booking",
+      "to": "V20:ui:board",
+      "payload": "对象状态、版本与最后核对信息",
+      "timing": "async",
+      "invariant": "未确认状态可见",
+      "failure": "投影迟到提示刷新，不替代授权",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V20:claim:implementation"
+      ]
+    },
+    {
+      "id": "V20:edge:show-booking-mobile",
+      "type": "projects",
+      "from": "V20:object:booking",
+      "to": "V20:ui:mobile",
+      "payload": "对象状态、版本与最后核对信息",
+      "timing": "async",
+      "invariant": "未确认状态可见",
+      "failure": "投影迟到提示刷新，不替代授权",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V20:claim:implementation"
+      ]
+    },
+    {
+      "id": "V20:edge:show-acceptance-review",
+      "type": "projects",
+      "from": "V20:object:acceptance",
+      "to": "V20:ui:review",
+      "payload": "对象状态、版本与最后核对信息",
+      "timing": "async",
+      "invariant": "未确认状态可见",
+      "failure": "投影迟到提示刷新，不替代授权",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V20:claim:implementation"
+      ]
+    },
+    {
+      "id": "V20:edge:show-charge-review",
+      "type": "projects",
+      "from": "V20:object:charge",
+      "to": "V20:ui:review",
+      "payload": "对象状态、版本与最后核对信息",
+      "timing": "async",
+      "invariant": "未确认状态可见",
+      "failure": "投影迟到提示刷新，不替代授权",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V20:claim:implementation"
+      ]
+    },
+    {
+      "id": "V20:edge:show-posting-attempt-review",
+      "type": "projects",
+      "from": "V20:object:posting-attempt",
+      "to": "V20:ui:review",
+      "payload": "对象状态、版本与最后核对信息",
+      "timing": "async",
+      "invariant": "未确认状态可见",
+      "failure": "投影迟到提示刷新，不替代授权",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V20:claim:implementation"
+      ]
+    },
+    {
+      "id": "V20:edge:show-invoice-review",
+      "type": "projects",
+      "from": "V20:object:invoice",
+      "to": "V20:ui:review",
+      "payload": "对象状态、版本与最后核对信息",
+      "timing": "async",
+      "invariant": "未确认状态可见",
+      "failure": "投影迟到提示刷新，不替代授权",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V20:claim:implementation"
+      ]
+    }
+  ],
+  "lifecycles": [
+    {
+      "object_id": "V20:object:work-order",
+      "states": [
+        "draft",
+        "approved",
+        "canceled",
+        "superseded"
+      ],
+      "transitions": [
+        {
+          "from": "draft",
+          "to": "approved",
+          "trigger": "主管确认范围",
+          "guard": "两项需求、客户和设备身份明确",
+          "durable_effect": "保存范围版本及所需工作项",
+          "recovery": "材料不足保留草稿"
+        },
+        {
+          "from": "approved",
+          "to": "superseded",
+          "trigger": "双方确认范围更改",
+          "guard": "授权与新版本完整",
+          "durable_effect": "旧版只读并关联新版",
+          "recovery": "已执行部分仍留历史，接收重审"
+        },
+        {
+          "from": "approved",
+          "to": "canceled",
+          "trigger": "取消服务承诺",
+          "guard": "主管授权且未开工；已发生费用另行处置",
+          "durable_effect": "记录取消原因并释放未执行安排",
+          "recovery": "外部费用未核对时不假定归零"
+        }
+      ]
+    },
+    {
+      "object_id": "V20:object:requirement",
+      "states": [
+        "pending",
+        "satisfied",
+        "canceled"
+      ],
+      "transitions": [
+        {
+          "from": "pending",
+          "to": "satisfied",
+          "trigger": "提交合格作业结果",
+          "guard": "技能、证据与当前范围匹配",
+          "durable_effect": "保存结果引用",
+          "recovery": "更正可重新进入pending"
+        },
+        {
+          "from": "satisfied",
+          "to": "pending",
+          "trigger": "结果被退回或确认无效",
+          "guard": "主管记录原因和新版本",
+          "durable_effect": "保存重新工作责任",
+          "recovery": "保留原结果，不删原工时"
+        },
+        {
+          "from": "pending",
+          "to": "canceled",
+          "trigger": "范围变更排除本项",
+          "guard": "有授权的新版范围明确排除",
+          "durable_effect": "记录范围变更引用",
+          "recovery": "仅booking取消不触发此转移"
+        }
+      ]
+    },
+    {
+      "object_id": "V20:object:booking",
+      "states": [
+        "proposed",
+        "scheduled",
+        "in_progress",
+        "on_break",
+        "completed",
+        "canceled"
+      ],
+      "transitions": [
+        {
+          "from": "proposed",
+          "to": "scheduled",
+          "trigger": "确认排班",
+          "guard": "技能、空闲、依赖满足且版本未变",
+          "durable_effect": "保存资源占位与通知意图",
+          "recovery": "冲突返回可重新预览的资源版本"
+        },
+        {
+          "from": "scheduled",
+          "to": "in_progress",
+          "trigger": "技师开工",
+          "guard": "当前授权且前置工作与稳定期满足",
+          "durable_effect": "保存开始事件",
+          "recovery": "离线先本地记录，服务器未确认不替代正式状态"
+        },
+        {
+          "from": "in_progress",
+          "to": "on_break",
+          "trigger": "暂停工作",
+          "guard": "有效连续序号",
+          "durable_effect": "保存工作区间结束",
+          "recovery": "缺口进入核对"
+        },
+        {
+          "from": "on_break",
+          "to": "in_progress",
+          "trigger": "恢复工作",
+          "guard": "有效连续序号",
+          "durable_effect": "保存新的工作段开始",
+          "recovery": "矛盾设备事件人工裁决"
+        },
+        {
+          "from": "in_progress",
+          "to": "completed",
+          "trigger": "技师结束预约",
+          "guard": "日志完整；结果上传另行核对",
+          "durable_effect": "保存结束与工作时长版本",
+          "recovery": "附件失败不删除时长；结果仍待齐备"
+        },
+        {
+          "from": "scheduled",
+          "to": "canceled",
+          "trigger": "调度取消预约",
+          "guard": "有权且未执行",
+          "durable_effect": "释放资源占位但保留需求",
+          "recovery": "未满足需求重新安排"
+        }
+      ]
+    },
+    {
+      "object_id": "V20:object:acceptance",
+      "states": [
+        "pending",
+        "accepted",
+        "rejected",
+        "superseded"
+      ],
+      "transitions": [
+        {
+          "from": "pending",
+          "to": "accepted",
+          "trigger": "主管接收",
+          "guard": "当前范围两项合格且证据齐备",
+          "durable_effect": "锁定范围和结果版本及决定人",
+          "recovery": "并发范围变化拒绝"
+        },
+        {
+          "from": "pending",
+          "to": "rejected",
+          "trigger": "主管退回",
+          "guard": "有明确理由和责任对象",
+          "durable_effect": "保存缺项及补做责任",
+          "recovery": "补做后新接收版本"
+        },
+        {
+          "from": "accepted",
+          "to": "superseded",
+          "trigger": "结果更正或范围变化",
+          "guard": "有权更正并保留历史",
+          "durable_effect": "保存替代关系；已过账走调整接管",
+          "recovery": "不可直接删除已生成应收"
+        }
+      ]
+    },
+    {
+      "object_id": "V20:object:charge",
+      "states": [
+        "draft",
+        "locked",
+        "superseded"
+      ],
+      "transitions": [
+        {
+          "from": "draft",
+          "to": "locked",
+          "trigger": "财务确认计价",
+          "guard": "日志完整且接收通过；价格规则版本明确",
+          "durable_effect": "保存500与输入版本",
+          "recovery": "补录先作新预览"
+        },
+        {
+          "from": "locked",
+          "to": "superseded",
+          "trigger": "确认费用更正",
+          "guard": "授权且原版保留",
+          "durable_effect": "新费用版本，已过账转调整",
+          "recovery": "不得无痕改原发票"
+        }
+      ]
+    },
+    {
+      "object_id": "V20:object:posting-attempt",
+      "states": [
+        "prepared",
+        "unknown",
+        "confirmed",
+        "rejected"
+      ],
+      "transitions": [
+        {
+          "from": "prepared",
+          "to": "unknown",
+          "trigger": "请求已发而响应丢失",
+          "guard": "意图已持久化",
+          "durable_effect": "保存外部引用和未知状态",
+          "recovery": "只按同一操作核对，禁止盲目再开票"
+        },
+        {
+          "from": "prepared",
+          "to": "confirmed",
+          "trigger": "账务明确受理",
+          "guard": "身份、金额、费用版本匹配",
+          "durable_effect": "存发票映射与确认",
+          "recovery": "崩溃重放读取已确认记录"
+        },
+        {
+          "from": "unknown",
+          "to": "confirmed",
+          "trigger": "查询找到对应发票",
+          "guard": "权威对象与原请求匹配",
+          "durable_effect": "关联外部发票",
+          "recovery": "仍未知则人工处理"
+        },
+        {
+          "from": "unknown",
+          "to": "rejected",
+          "trigger": "核对确认未产生副作用且拒绝",
+          "guard": "有明确拒绝证据",
+          "durable_effect": "保存拒绝理由",
+          "recovery": "修正另行授权，不猜测失败"
+        },
+        {
+          "from": "prepared",
+          "to": "rejected",
+          "trigger": "账务明确拒绝",
+          "guard": "明确不成功回执",
+          "durable_effect": "保存理由",
+          "recovery": "修正费用或权限后新操作"
+        }
+      ]
+    },
+    {
+      "object_id": "V20:object:invoice",
+      "states": [
+        "open",
+        "partially_paid",
+        "paid"
+      ],
+      "transitions": [
+        {
+          "from": "open",
+          "to": "partially_paid",
+          "trigger": "到账300已核销",
+          "guard": "对应发票、单位和款项唯一",
+          "durable_effect": "余额200",
+          "recovery": "重复到账不重复扣减"
+        },
+        {
+          "from": "partially_paid",
+          "to": "paid",
+          "trigger": "另到账200已核销",
+          "guard": "总额匹配且权威确认",
+          "durable_effect": "余额0",
+          "recovery": "旧部分到账通知不回退当前权威余额"
+        }
+      ]
+    }
+  ],
+  "algorithm_ids": [
+    "ALG:scheduling",
+    "ALG:optimization",
+    "ALG:windows",
+    "ALG:caches",
+    "ALG:lookup"
+  ],
+  "claim_ids": [
+    "V20:claim:requirement-booking",
+    "V20:claim:status-boundary",
+    "V20:claim:range-exclusion",
+    "V20:claim:acceptance-policy",
+    "V20:claim:scheduling-example",
+    "V20:claim:billing-example",
+    "V20:claim:implementation",
+    "V20:claim:closure-inference"
+  ],
+  "checks": [
+    {
+      "id": "V20:check:happy",
+      "kind": "happy_path",
+      "given": "安装90+校准60分钟、零件200；已接收",
+      "when": "过账500，收款300及200",
+      "then": "一张发票，最终余额0",
+      "evidence_required": "UI动作回执、结果/费用版本、外部账务及到账证据；尚未执行E2E"
+    },
+    {
+      "id": "V20:check:duplicate",
+      "kind": "duplicate",
+      "given": "安装40+50分钟有效日志",
+      "when": "重复上传任一事件",
+      "then": "仍90分钟；同操作回原结果",
+      "evidence_required": "日志身份与去重记录；本地局部模型可运行"
+    },
+    {
+      "id": "V20:check:reordering",
+      "kind": "out_of_order",
+      "given": "序号1,2,3,4",
+      "when": "4先到而3缺失",
+      "then": "缺口拒算；齐备重算90",
+      "evidence_required": "抵达顺序、缓冲/拒绝与最终日志"
+    },
+    {
+      "id": "V20:check:resource-race",
+      "kind": "concurrency",
+      "given": "同租户同资源重叠区间",
+      "when": "两个旧版本提交竞争",
+      "then": "一个占位，一个冲突",
+      "evidence_required": "最终持久预约、并发事务日志；本地只演示版本冲突"
+    },
+    {
+      "id": "V20:check:tenant",
+      "kind": "tenant_isolation",
+      "given": "两个组织相同booking编号42",
+      "when": "查询或写入错租户，cache hit/miss",
+      "then": "不得读取或更改他租户对象",
+      "evidence_required": "授权查询与缓存键；本地仅验证键与范围模型"
+    },
+    {
+      "id": "V20:check:unknown",
+      "kind": "unknown_outcome",
+      "given": "账务接受发票后超时",
+      "when": "用相同外部引用核对",
+      "then": "unknown→confirmed且一张发票",
+      "evidence_required": "操作ledger和外部查询；本地fake provider模拟"
+    },
+    {
+      "id": "V20:check:restart",
+      "kind": "recovery",
+      "given": "账务已确认但任务消费未标记",
+      "when": "模拟重放",
+      "then": "仍一张应收，不额外扣款",
+      "evidence_required": "恢复前后操作和外部对象计数；本地fake模型"
+    },
+    {
+      "id": "V20:check:cancel-is-not-accept",
+      "kind": "partial_completion",
+      "given": "安装完成、校准预约取消",
+      "when": "尝试接收",
+      "then": "拒绝，校准需求pending",
+      "evidence_required": "范围、需求、booking、接收拒绝理由"
+    },
+    {
+      "id": "V20:check:arithmetic",
+      "kind": "algorithm",
+      "given": "林和陈窗口；安装事件含休息",
+      "when": "排程及计费",
+      "then": "计划陈120—180；实际130—190；总500",
+      "evidence_required": "固定fixture、手算与本地模型输出"
+    },
+    {
+      "id": "V20:check:reject-malformed",
+      "kind": "invalid_input",
+      "given": "同operation不同内容、负区间或缺序号",
+      "when": "请求计费",
+      "then": "拒绝且无最终费用",
+      "evidence_required": "反例错误码及未改变对象"
+    }
+  ]
+}
