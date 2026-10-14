@@ -5,7 +5,7 @@
 - Package：P01，交易、财务与资金。
 - 基点：`ae1827f34c6df067348d2454d7e5c9331ceda25d`，来源分支 `cloud/saas-engineering-atlas-20261014`。
 - 交付分支：`cloud/saas-atlas-commercial-finance-20261014`。
-- 内容提交 SHA：待最后内容 checkpoint 后填写；早期远端持久化点为 `238b0fb`、`a083491`。本条在最终交接前更新。
+- 内容提交 SHA：`c11415c78d4863768957b4132069287f9aa43115`，包含七例、统一证据和执行检查；随后仅补充本交付记录。最终分支tip的完整SHA在最终报告中以远端核验值给出。早期远端持久化点为`238b0fb`、`a083491`。
 - 所有改动仅位于 `vault/distilled/saas-engineering-atlas/packages/commercial-finance/`。没有修改共享来源层、全局索引、其他包、main、CI 或部署。
 
 ## 已交付内容
