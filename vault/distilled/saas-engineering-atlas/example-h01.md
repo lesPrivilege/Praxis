@@ -74,6 +74,6 @@ Stripe Revenue Recognition 的公开说明以 finalized invoice 的 line item �
 
 ## 条件变化
 
-把预付改为赊账，合同已接受即可按信用规则先开通，`paid` 不再是相同的 guard；逾期风险和暂停策略成为新对象与规则。保持不变的是每次状态变化仍需明确的权威与证据。把一张服务合同改为三批实物交付，则需要数量与部分履约对象；用相同 `active` 状态会掩盖欠交。完整练习与简答见 [教材主线](learning-path.md)。
+把预付改为赊账，合同已接受即可按信用规则先开通，`paid` 不再是相同的 guard；逾期风险和暂停策略成为新对象与规则。保持不变的是每次状态变化仍需明确的权威与证据。把一张服务合同改为三批实物交付，则需要数量与部分履约对象；用相同 `active` 状态会掩盖欠交。完整练习与简答见 [教材主线](../../../books/saas-engineering/learning-path.md)。
 
 演示可以让读者拖动服务区间、重复发送通知、颠倒投递次序或模拟超时，同时观察合同、发票、权利和收入表各自的变化。布局和动效由本地 Claude 选择；synthetic 假设、未确认状态和 provider 事实的界限应在操作时可见。证据与核查记录见 [来源卡](../../provenance/saas-engineering-atlas/sources.md) 与 [CHANGELOG](../../provenance/saas-engineering-atlas/CHANGELOG.md)。

@@ -6,6 +6,7 @@ Praxis 由 Enterprise、Reporting、Work System 三个消费域和共享 Environ
 
 | 位置 | 权威内容 | 下一步 |
 |---|---|---|
+| [books](../../books/README.md) | 连贯教材正文与学习路线 | 场景、交互演示与来源回查 |
 | [vault/intake](../../vault/intake/README.md) | 材料身份与覆盖 | 快照、提炼 |
 | [vault/distilled](../../vault/distilled/README.md) | 研究结论与候选 | 查证、提出采纳 |
 | [vault/references](../../vault/references/README.md) / [provenance](../../vault/provenance/README.md) | 逐 URL 来源、引用恢复与缺口 | 支持或修订主张 |

@@ -31,7 +31,10 @@ def build():
             claims.append({'id': c['claim_id'], 'kind': 'source_fact', 'source_ids': [s['id']],
                            'statement': c['claim'], 'locator': c['locator'], 'limitations': s['limits'],
                            'origin_path': origins[s['id']], 'original_record': c})
-    for p in sorted((ATLAS / 'packages').glob('*/evidence.json')):
+    inputs = sorted((ATLAS / 'packages').glob('*/evidence.json'))
+    if (PROV / 'editorial-evidence.json').exists():
+        inputs.append(PROV / 'editorial-evidence.json')
+    for p in inputs:
         d = read(p)
         origin = p.relative_to(ROOT).as_posix()
         for s in d['sources']:
@@ -69,8 +72,8 @@ def build():
             'supported_claims': [{'claim_id': c['id'], 'claim': c['statement'], 'locator': c['locator'],
                                   'limitations': c['limitations'], 'original_source_ids': c['source_ids'],
                                   'origin_path': c['origin_path']} for c in scoped],
-            'grammar_paths': sorted({'vault/distilled/saas-engineering-atlas/README.md'} | {
-                str(Path(c['origin_path']).parent / (c['case_id'] + '.md')) for c in scoped if 'case_id' in c}),
+            'grammar_paths': sorted({'books/saas-engineering/README.md'} | {
+                str(Path('books/saas-engineering/packages') / Path(c['origin_path']).parent.name / (c['case_id'] + '.md')) for c in scoped if 'case_id' in c}),
             'history_record': 'vault/provenance/saas-engineering-atlas/reviews.json',
             'review_ids': review_ids, 'evidence_modality': ['text_read'] if scoped else [],
             'snapshot_status': 'not-captured', 'implementation_maturity': 'not-assessed',

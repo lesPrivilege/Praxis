@@ -1,6 +1,6 @@
 # Distilled · 主题提炼与研究消费
 
-- [SaaS 工程全景](saas-engineering-atlas/README.md)：33 例、共同系统图景、题型与算法索引；研究候选。
+- [SaaS 工程全景](../../books/saas-engineering/README.md)：33 例、共同系统图景、题型与算法索引；研究候选。
 
 - [AgentScope 企业线研究 · 2026-10-12](agentscope-enterprise-20261012/README.md)：文档系统、Python 2.0、Java Harness/Service 与历史 Runtime/Studio 迁移；消费到知识片。
 

@@ -20,6 +20,7 @@
 
 | 需要 | 入口 |
 |---|---|
+| 连贯学习一类问题、制作交互教材 | [Books](books/README.md) → [SaaS 工程全景](books/saas-engineering/README.md) |
 | 阅读已消费材料、查证来源 | [Vault](vault/README.md) → [主题提炼](vault/distilled/README.md) |
 | 进入 Palantir 方法论主题 | [palantir](palantir/README.md)：一级提炼入口；7 个对象已有不同范围原件及候选笔记，材料参考见 [reading list](palantir/references/README.md)，来源登记与原件仍在 Vault |
 | 进入 Tally SaaS 研究主题 | [tally](tally/README.md)：一级提炼入口；当前仅有《清算 SaaS》书稿登记，材料参考见 `tally/references/README.md`，来源登记与原件仍在 Vault |
@@ -53,6 +54,7 @@
 | [demos](demos/README.md) | 演示实现与施工交接；视觉语法工场与并行施工现场，运行验收见项目回执 |
 | [templates](templates/README.md) | 入账、材料 brief 与 demo 蓝图 |
 | [docs](docs/README.md) | 架构理由、治理规则、裁决和验收回执 |
+| [books](books/README.md) | 按学习目标编订的教材正文；来源与结构数据回链 Vault |
 | [vault](vault/README.md) | 研究登记、提炼、来源、快照与 Chat 备查 |
 | [palantir](palantir/README.md) | 一级主题/提炼入口；材料参考见 [references](palantir/references/README.md)，已有候选笔记，尚无主题正文与 Kit 采纳 |
 | [tally](tally/README.md) | 一级主题/提炼入口；材料参考见 [references](tally/references/README.md)，当前仅登记，尚无完成提炼 |

@@ -9,7 +9,7 @@
 - 唯一改动路径：`vault/distilled/saas-engineering-atlas/packages/people-service/`。共同索引、其他包、main、CI 与部署未改动；没有合并到 main。
 - 本包是 Claude 在既有 Praxis 基础设施内继续消费的教材与目录素材，不是运行中的 SaaS 或页面交付。正文包含“识题→解法→演算→验算→变式”入口、每个主要机制的识别线索与继续查证方向；不约束后续 UI、motion、布局或多代理编排。
 
-入口为 [README](README.md)；七组正文/结构同名；[evidence.json](evidence.json) 单点保存来源、claims、边界与读取记录；四个 `checks-*.py` 保存本地合成模型；执行细节与审阅裁决见 [CHANGELOG](CHANGELOG.md)。分工证据片段已合并，未保留平行编辑源。
+入口为 [README](../../../../../books/saas-engineering/packages/people-service/README.md)；七组正文/结构同名；[evidence.json](evidence.json) 单点保存来源、claims、边界与读取记录；四个 `checks-*.py` 保存本地合成模型；执行细节与审阅裁决见 [CHANGELOG](CHANGELOG.md)。分工证据片段已合并，未保留平行编辑源。
 
 ## 实际内容与证据
 

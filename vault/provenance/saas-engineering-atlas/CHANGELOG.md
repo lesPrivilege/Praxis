@@ -15,3 +15,11 @@
 - 仓库 fit：研究进 `vault/distilled`、来源进 `vault/provenance`、范围进 `vault/intake`、回执进 `docs/verification`；不改 Kit 权威规则，不新增一级主题。`.agents/skills` 在所选工作区与仓库中不存在；读取了根 AGENTS、维护文档及唯一相关 `.claude/skills/writing/SKILL.md`。
 
 结构检查与实际输出见 [验收回执](../../../docs/verification/saas-engineering-atlas-20261014.md)。后续来源或运行结果以新记录追加，不把本次读取变成以后时点的事实保证。
+
+## 2026-10-14 · 六包整合与 Books 入口
+
+按六个精确最终 SHA 合并，保留33例与 provider 名称。来源投影按 canonical URL 汇聚，原始种子记录移入 seed-catalog、原始 reviews 和 claims 保留编辑来源；未把同URL不同范围的主张合成更强结论。三份公开编订流程参考由整合者直接读到正文，范围见 editorial-evidence。
+
+用户增补 Books 目标后，49页教材正文移到 books/saas-engineering，来源与结构资产留在 Vault；相对链接、case-index、transfer图、registry与验证器同步调整。早期示范仍为fixture，不计为新案例。新增题型/方案/算法/栈索引、共同术语与42条精选迁移；92条原建议保留位置。
+
+全部15个案例Python入口通过，报告269项局部合成检查；代表阅读片段、复算、检查输出及待接收输入见 docs/verification/saas-engineering-atlas-20261014.md。未触发CI、部署或main合并。

@@ -1,23 +1,11 @@
-# SaaS 工程全景
+# SaaS 工程全景 · 研究与结构资产
 
-一家企业不断接受承诺、安排资源、完成工作、取得证据并结清义务。客户买到的可能是一段服务、一件产品、一次检查或一个可使用的空间；SaaS 让不同角色围绕这些对象作出相容的决定。订单说明答应了什么，执行记录说明做了什么，接收或放行决定说明证据是否足够，账单与付款分别说明应付和实付。页面把这条链呈现给人，服务守住动作条件，存储保留可以核对的事实。
+教材的唯一阅读入口是 [Books / SaaS 工程全景](../../../books/saas-engineering/README.md)。本目录保存案例结构、稳定身份、合成检查与作者证据，不维护第二套教材正文。
 
-这份教材面向能借助 AI 搭界面的 vibe coder。进入陌生行业时，先认出对象、工作流、约束、权威和系统边界，再选择已有解法，用一个小例子走通，并知道下一步应查什么。33 个案例提供相同深度的入口，不要求记住各家 API 或底层实现。
+- [案例索引](case-index.json)：33 个 case ID，指向 Books 正文和本地 topology JSON。
+- [共同标识](identifiers.json)、[案例内部边类型](relation-types.json)、[跨案例迁移图](transfer-map.json)：供交互实现消费的语义。
+- [包内资产](packages/README.md)：evidence、合成脚本、执行回执与交接历史。
+- [来源整合](../../provenance/saas-engineering-atlas/README.md)：canonical URL、原 ID 别名、主张和读取范围。
+- [Claude 交接](../../../books/saas-engineering/claude-handoff.md)、[验证方法](../../../books/saas-engineering/validation.md)：消费入口与命令。
 
-## 先学一条链，再展开全景
-
-从 [H01：服务承诺、收款与履约](packages/commercial-finance/H01.md)开始。客户付钱后，服务可能尚未开通；一次变更又可能改变未来服务与费用。把承诺、使用权、发票和付款分开，就能解释页面为什么要显示等待、冲突和核对入口。接着读 [V04：拆分履约](packages/commerce-property/V04.md)：同一承诺拆成多个数量对象；再读 [V20：两次上门](packages/people-service/V20.md)：数量换成有技能和时间窗的作业，接收权仍需单独确认。
-
-每例按 **识题 → 解法 → 演算 → 验算 → 变式** 阅读。识题找到不能合并的事实；解法选择对象模型与算法；演算用小输入说明结果；验算用反例与失败路径检验；变式改变前提，判断哪些关系还能沿用。完整顺序与跨章练习见 [阅读主线](learning-path.md)。
-
-| 当前任务 | 入口 | 下一步产物 |
-|---|---|---|
-| 看懂业务、页面与后端的连接 | [共同系统图景](architecture.md) | 一次动作的对象、权威与确认链 |
-| 从问题选解法、算法或技术栈 | [解题索引](problem-index.md) | 一例演算与首轮查证问题 |
-| 按行业寻找熟悉的起点 | [33 例目录](case-catalog.md)、[六组业务对象](packages/README.md) | 具体案例及原语言术语 |
-| 避免术语和箭头混淆 | [共同词表与图语义](semantics.md) | 有类型的关系与对象自己的状态 |
-| 把一种解法迁到另一行业 | [迁移地图](transfer-map.md) | 保留机制、改变条件、反例和检查 |
-| 查来源和实现边界 | [逐 URL 来源](../../provenance/saas-engineering-atlas/README.md)、[验证方法](validation.md) | 主张、读取范围与复查方向 |
-| 交给 Claude 编订为交互 HTML | [消费交接](claude-handoff.md) | 沿 Praxis 场景与设计入口继续制作 |
-
-案例数值、工程策略和技术栈候选均有自己的假设；provider 事实由稳定 source/claim ID 连接。正文与结构数据可用于理解和演算，实际执行记录、来源日期与覆盖缺口见 [验收回执](../../../docs/verification/saas-engineering-atlas-20261014.md)。
+`example-h01.json` 与 [早期示范](example-h01.md)保留为结构验证 fixture；当前 H01 正文只在 Books。历史研究编写契约见 [worker-contract](worker-contract.md)与[case-template](case-template.md)，不再承担派发任务的入口。

@@ -8,7 +8,7 @@ from pathlib import Path
 from urllib.parse import unquote, urlsplit
 
 ROOT = Path(__file__).resolve().parents[1]
-OWNED = ['docs', 'kit', 'scenarios', 'templates', 'demos', 'vault', 'scripts', 'palantir', 'tally']
+OWNED = ['docs', 'kit', 'scenarios', 'templates', 'demos', 'vault', 'scripts', 'palantir', 'tally', 'books']
 errors = []
 counts = {'markdown': 0, 'json': 0, 'snapshots': 0}
 

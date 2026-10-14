@@ -192,7 +192,8 @@ def main():
                 continue
             if data['case_id'] not in p['case_ids'] or path.name != data['case_id'] + '.json':
                 errors.append(f'case outside assigned ownership: {path.relative_to(ROOT)}')
-            if not path.with_suffix('.md').is_file():
+            prose_path = next((c.get('prose_path') for c in cases if c['case_id'] == data['case_id']), None)
+            if not prose_path or not (ATLAS / prose_path).is_file():
                 errors.append(f'case prose missing: {path.name}')
             errors.extend(f'{path.name}: {e}' for e in validate_case(data, local_sources, local_claims, definitions, relations))
             examples.append(path)

@@ -6,8 +6,8 @@
 
 ## 可直接消费的交付
 
-- [共同概念模型与阅读入口](README.md)：承诺、资源、履约证据和资金记录分别确认；说明 UI、权威服务与可恢复动作之间的关系。
-- 五章完整正文与对应 topology JSON：[V04](V04.md)、[V05](V05.md)、[V06](V06.md)、[V15](V15.md)、[V16](V16.md)。合计 14 道条件变化练习及短答案，66 条端到端/领域检查定义。各例按识题、解法、演算、验算与变式建立理解，主要机制均有识别线索与具体后续探索方向。
+- [共同概念模型与阅读入口](../../../../../books/saas-engineering/packages/commerce-property/README.md)：承诺、资源、履约证据和资金记录分别确认；说明 UI、权威服务与可恢复动作之间的关系。
+- 五章完整正文与对应 topology JSON：[V04](../../../../../books/saas-engineering/packages/commerce-property/V04.md)、[V05](../../../../../books/saas-engineering/packages/commerce-property/V05.md)、[V06](../../../../../books/saas-engineering/packages/commerce-property/V06.md)、[V15](../../../../../books/saas-engineering/packages/commerce-property/V15.md)、[V16](../../../../../books/saas-engineering/packages/commerce-property/V16.md)。合计 14 道条件变化练习及短答案，66 条端到端/领域检查定义。各例按识题、解法、演算、验算与变式建立理解，主要机制均有识别线索与具体后续探索方向。
 - [证据](evidence.json)：复读 10 个既有 source ID，补充 12 个官方 URL；22 份逐源 review，46 个本地主张，其中 source_fact 25、synthetic 19、inference 2。旧 source ID/provider 名保留；外部 claim 别名在 `source_claim_id` 中保留。
 - [合成检查脚本](synthetic_checks.py)、[实际输出](synthetic-results.json)、[验证边界](verification.md)、[命令回执](validation-results.json)、[变更记录](CHANGELOG.md)。
 
