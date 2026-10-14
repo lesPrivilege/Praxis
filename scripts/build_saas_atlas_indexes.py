@@ -21,6 +21,36 @@ def read(p):
 def encoded(d):
     return json.dumps(d, ensure_ascii=False, indent=2) + '\n'
 
+def evidence_inputs():
+    """Include completed, locally integrated supplements, never remote branch tips."""
+    paths = sorted((ATLAS / 'packages').glob('*/evidence.json'))
+    for section in ['foundations', 'enterprise-mechanisms']:
+        path = ATLAS / section / 'evidence.json'
+        if path.is_file():
+            paths.append(path)
+    if (PROV / 'editorial-evidence.json').is_file():
+        paths.append(PROV / 'editorial-evidence.json')
+    return paths
+
+def chapter_routes(claim):
+    """Project reader routes without changing the author's original chapter paths."""
+    origin = Path(claim['origin_path'])
+    if 'case_id' in claim:
+        return [str(Path('books/saas-engineering/packages') / origin.parent.name / (claim['case_id'] + '.md'))]
+    routes = []
+    for path in claim.get('chapter_paths', []):
+        chapter = Path(path)
+        if chapter.is_absolute() or '..' in chapter.parts:
+            raise ValueError(f"Unsafe chapter route in {claim['id']}: {path}")
+        if chapter.parts[0] == 'books':
+            routes.append(chapter.as_posix())
+        elif chapter.parts[0] == 'vault':
+            relative = chapter.relative_to('vault/distilled/saas-engineering-atlas')
+            routes.append((Path('books/saas-engineering') / relative).as_posix())
+        else:
+            routes.append((Path('books/saas-engineering') / origin.parent.name / chapter).as_posix())
+    return routes
+
 def build():
     seed = read(PROV / 'seed-catalog.json')
     records = deepcopy(seed['sources'])
@@ -31,16 +61,14 @@ def build():
             claims.append({'id': c['claim_id'], 'kind': 'source_fact', 'source_ids': [s['id']],
                            'statement': c['claim'], 'locator': c['locator'], 'limitations': s['limits'],
                            'origin_path': origins[s['id']], 'original_record': c})
-    inputs = sorted((ATLAS / 'packages').glob('*/evidence.json'))
-    if (PROV / 'editorial-evidence.json').exists():
-        inputs.append(PROV / 'editorial-evidence.json')
-    for p in inputs:
+    for p in evidence_inputs():
         d = read(p)
         origin = p.relative_to(ROOT).as_posix()
+        namespace = d.get('package_id', p.parent.name)
         for s in d['sources']:
             records.append(deepcopy(s)); origins[s['id']] = origin
         for i, review in enumerate(d['reviews']):
-            reviews.append({'review_id': f"{d['package_id']}:review:{i+1:03}", 'origin_path': origin,
+            reviews.append({'review_id': f"{namespace}:review:{i+1:03}", 'origin_path': origin,
                             'origin_pointer': f'/reviews/{i}', 'original_record': deepcopy(review)})
         for c in d['claims']:
             claims.append({**deepcopy(c), 'origin_path': origin})
@@ -73,7 +101,7 @@ def build():
                                   'limitations': c['limitations'], 'original_source_ids': c['source_ids'],
                                   'origin_path': c['origin_path']} for c in scoped],
             'grammar_paths': sorted({'books/saas-engineering/README.md'} | {
-                str(Path('books/saas-engineering/packages') / Path(c['origin_path']).parent.name / (c['case_id'] + '.md')) for c in scoped if 'case_id' in c}),
+                path for c in scoped for path in chapter_routes(c)}),
             'history_record': 'vault/provenance/saas-engineering-atlas/reviews.json',
             'review_ids': review_ids, 'evidence_modality': ['text_read'] if scoped else [],
             'snapshot_status': 'not-captured', 'implementation_maturity': 'not-assessed',

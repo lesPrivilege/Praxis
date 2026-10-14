@@ -6,7 +6,7 @@ from copy import deepcopy
 import json
 from pathlib import Path
 import re
-from build_saas_atlas_indexes import build, ROOT, ATLAS, PROV
+from build_saas_atlas_indexes import build, evidence_inputs, ROOT, ATLAS, PROV
 from validate_saas_atlas import EXPECTED_CASES
 
 def read(p): return json.loads(p.read_text())
@@ -44,18 +44,25 @@ def main():
     if len(ids)!=len(set(ids)) or set(ids)!=set(aliases):errors.append('source identities lost or duplicated')
     if len({s['url'] for s in catalog})!=len(catalog):errors.append('canonical URL duplicate')
     if len({c['id'] for c in claims})!=len(claims):errors.append('duplicate claim identity')
+    if len({r['review_id'] for r in history['reviews']})!=len(history['reviews']):errors.append('duplicate review identity')
+    for source in catalog:
+        for path in source['grammar_paths']:
+            if not (ROOT/path).is_file():errors.append('missing source reader route '+path)
     claimmap={c['id']:c for c in claims}
     originals={s['source_id'] for s in history['source_records']}
     if originals!=set(aliases):errors.append('original source identity lost')
     for sid,canonical in aliases.items():
         if canonical not in {s['id'] for s in catalog}:errors.append('unresolved alias '+sid)
-    for ep in sorted((ATLAS/'packages').glob('*/evidence.json')):
+    for ep in evidence_inputs():
         evidence=read(ep)
+        origin=ep.relative_to(ROOT).as_posix()
+        preserved=[r['original_record'] for r in history['reviews'] if r['origin_path']==origin]
+        if preserved!=evidence['reviews']:errors.append('reviews changed '+origin)
         for c in evidence['claims']:
             if any(claimmap.get(c['id'],{}).get(k)!=v for k,v in c.items()):errors.append('claim changed '+c['id'])
             if c['kind']=='source_fact':
                 for sid in c['source_ids']:
-                    matching=[r for r in evidence['reviews'] if r['source_id']==sid and c['id'] in r['supported_claims']]
+                    matching=[r for r in evidence['reviews'] if r['source_id']==sid and c['id'] in r.get('supported_claims',r.get('supported_claim_ids',[]))]
                     if not matching:errors.append('claim lacks scoped supporting review '+c['id']+' '+sid)
     index=read(ATLAS/'case-index.json')['cases']; cases={c['case_id']:c for c in index}
     if set(cases)!=EXPECTED_CASES or len(index)!=33:errors.append('case coverage')
