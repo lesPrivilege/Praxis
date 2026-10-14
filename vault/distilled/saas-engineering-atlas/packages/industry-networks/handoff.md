@@ -34,3 +34,7 @@
 剩余来源缺口：SAP_PP_DETAIL、EPCIS 原门户、IBP、IBP_SAMPLE、TMF_DIR。MAXIMO 的原主机返回403但同文 canonical 正文已核查；SIEMENS_AI 是未消费的可选种子。来源全文未快照；API 完整 schema、产品部署版本和现场制度仍需后续研究。没有真实集成、UI、负载或 AI eval 结果，也没有运行、安装或部署障碍需要用户解除。
 
 父线程下一步可先按 canonical URL 合并来源，再裁决上述对象差异与 transfer。教材输入的 SHA-256 在验证记录中；若 Claude 重写或实现，沿保留的 case/object/claim ID 重新记录语义变化与应用级验收即可，不必沿用本文的视觉方案。
+
+## 精确内容 checkpoint
+
+已验收的完整教材内容提交为 `5eaf15adc9436626286bd0a4f391d03b7ed6daec`。随后仅补充本页、变更记录和验证记录中的提交定位；17 个正文、拓扑、来源与测试文件的 SHA-256 保持不变。最终交付提交由分支远端 SHA 与最终报告定位，避免在提交内伪造其自身哈希。
