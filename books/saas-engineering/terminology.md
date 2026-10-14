@@ -63,3 +63,5 @@
 | RLS | row-level security | 行级安全；按策略约束行访问，仍须检查运行角色与其他通路 |
 
 领域词如 hold、release、acceptance 的不同含义见 [共同语义](semantics.md)。机器索引见 [terminology.json](../../vault/distilled/saas-engineering-atlas/terminology.json)；图和独立节点标签可通过 `reader_term_ids` 展示同一解释。
+
+算法、缓存与验证术语的细分说明见 [计算方法原词索引](foundations/terms.md)，包括 heap 与 priority queue、memoization 与 cache、eviction 与 invalidation 的区别。

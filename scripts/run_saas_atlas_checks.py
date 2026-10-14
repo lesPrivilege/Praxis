@@ -19,8 +19,10 @@ def main():
     results=[]
     for p in paths:
         cmd=[sys.executable,str(p.relative_to(ROOT))]
+        if p.name == 'check_examples.py' and p.parent.name == 'foundations':
+            cmd.append('--self-test')
         run=subprocess.run(cmd,cwd=ROOT,capture_output=True,text=True)
-        results.append({'command':['python3',str(p.relative_to(ROOT))],'exit_code':run.returncode,'stdout':run.stdout,'stderr':run.stderr})
+        results.append({'command':['python3',*cmd[1:]],'exit_code':run.returncode,'stdout':run.stdout,'stderr':run.stderr})
         print(f"{'PASS' if run.returncode==0 else 'FAIL'} {p.relative_to(ROOT)}",flush=True)
     report={'status':'pass' if all(x['exit_code']==0 for x in results) else 'fail','entry_points':len(results),'results':results,
             'scope':'author synthetic models and metadata checks; no provider, browser E2E, load or AI model execution'}

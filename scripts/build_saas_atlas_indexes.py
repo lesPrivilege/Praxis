@@ -32,14 +32,20 @@ def evidence_inputs():
         paths.append(PROV / 'editorial-evidence.json')
     return paths
 
+def evidence_kind(claim):
+    return {'source-backed': 'source_fact', 'synthetic-example': 'synthetic',
+            'derivation': 'inference'}.get(claim['kind'], claim['kind'])
+
 def chapter_routes(claim):
     """Project reader routes without changing the author's original chapter paths."""
     origin = Path(claim['origin_path'])
     if 'case_id' in claim:
         return [str(Path('books/saas-engineering/packages') / origin.parent.name / (claim['case_id'] + '.md'))]
     routes = []
-    for path in claim.get('chapter_paths', []):
+    for path in claim.get('chapter_paths', claim.get('local_paths', [])):
         chapter = Path(path)
+        if chapter.suffix != '.md':
+            continue
         if chapter.is_absolute() or '..' in chapter.parts:
             raise ValueError(f"Unsafe chapter route in {claim['id']}: {path}")
         if chapter.parts[0] == 'books':
@@ -68,7 +74,7 @@ def build():
         for s in d['sources']:
             records.append(deepcopy(s)); origins[s['id']] = origin
         for i, review in enumerate(d['reviews']):
-            reviews.append({'review_id': f"{namespace}:review:{i+1:03}", 'origin_path': origin,
+            reviews.append({'review_id': review.get('id', f"{namespace}:review:{i+1:03}"), 'origin_path': origin,
                             'origin_pointer': f'/reviews/{i}', 'original_record': deepcopy(review)})
         for c in d['claims']:
             claims.append({**deepcopy(c), 'origin_path': origin})
@@ -87,19 +93,26 @@ def build():
         first = members[0]; ids = [s['id'] for s in members]; sid = first['id']
         assert len(ids) == len(set(ids)), ids
         aliases.update({i: sid for i in ids})
-        scoped = [c for c in claims if c['kind'] == 'source_fact' and set(c['source_ids']) & set(ids)]
+        scoped = [c for c in claims if evidence_kind(c) == 'source_fact' and set(c['source_ids']) & set(ids)]
+        member_map = {s['id']: s for s in members}
+        supported = []
+        for c in scoped:
+            cited = [member_map[sid] for sid in c['source_ids'] if sid in member_map]
+            locators = [loc for source in cited for loc in source.get('locators', [])]
+            supported.append({'claim_id': c['id'], 'claim': c['statement'],
+                              'locator': c.get('locator', locators),
+                              'limitations': c.get('limitations', '范围由原 source 的 claim_scope 与 locators、所关联 review 的 scope 限定。'),
+                              'original_source_ids': c['source_ids'], 'origin_path': c['origin_path']})
         review_ids = [r['review_id'] for r in reviews if r['original_record']['source_id'] in ids]
         source = {
             'id': sid, 'aliases': ids[1:], 'slug': first.get('slug', sid.lower().replace('_', '-')),
-            'title': first['title'], 'original_url': first.get('original_url', first['url']),
+            'title': first.get('title', first.get('title_original')), 'original_url': first.get('original_url', first['url']),
             'url': url, 'canonical_url': url,
             'status': 'verified-in-scope' if scoped else 'unverified',
             'summary_zh': '按下列独立主张和读取范围消费；全文摘要与限制见来源总表。' if scoped else '保留的研究线索，当前没有可用于本教材事实的已支持主张。',
             'limits': '每项主张保留自己的 locator 与 limitations；URL 合并不扩大任一读取范围。无 provider 执行或全文快照。',
             'purpose_tags': ['GRAMMAR'], 'card_path': 'vault/provenance/saas-engineering-atlas/sources.md',
-            'supported_claims': [{'claim_id': c['id'], 'claim': c['statement'], 'locator': c['locator'],
-                                  'limitations': c['limitations'], 'original_source_ids': c['source_ids'],
-                                  'origin_path': c['origin_path']} for c in scoped],
+            'supported_claims': supported,
             'grammar_paths': sorted({'books/saas-engineering/README.md'} | {
                 path for c in scoped for path in chapter_routes(c)}),
             'history_record': 'vault/provenance/saas-engineering-atlas/reviews.json',
@@ -112,6 +125,7 @@ def build():
     for r in reviews:
         r['canonical_source_id'] = aliases[r['original_record']['source_id']]
     for c in claims:
+        c['evidence_kind'] = evidence_kind(c)
         c['canonical_source_ids'] = list(dict.fromkeys(aliases[x] for x in c['source_ids']))
     catalog = {**seed, 'origin': 'integrated-public-source-reviews', 'sources': sources,
                'generation': 'scripts/build_saas_atlas_indexes.py; edit source-owned inputs, not this projection'}

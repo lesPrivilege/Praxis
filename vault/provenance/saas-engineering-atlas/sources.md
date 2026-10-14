@@ -797,9 +797,12 @@
 
 [Idempotent requests](https://docs.stripe.com/api/idempotent_requests)
 
-- `H01:claim:provider-idempotency`：Stripe API v1 在 endpoint 开始执行后保存同幂等 key 的响应，包括 500；key 清理后重用会发起新请求，参数变化受检查。 定位：Body paragraphs API v1 saved responses; pruning after at least 24 hours; validation/concurrent conflicts。边界：区分 v1/v2；不视为永久防重、数据库事务或失败自动成功保证。
+同源 ID：`FND-SRC-stripe-idempotency`。
 
-消费：[README](../../../books/saas-engineering/README.md)、[H01](../../../books/saas-engineering/packages/commercial-finance/H01.md)。
+- `H01:claim:provider-idempotency`：Stripe API v1 在 endpoint 开始执行后保存同幂等 key 的响应，包括 500；key 清理后重用会发起新请求，参数变化受检查。 定位：Body paragraphs API v1 saved responses; pruning after at least 24 hours; validation/concurrent conflicts。边界：区分 v1/v2；不视为永久防重、数据库事务或失败自动成功保证。
+- `FND-CLM-stripe-idempotency`：所读版本明确区分 v1/v2、执行前验证、保存响应与保留窗口；适用所选 API 协议。 定位：API v1 response replay, parameter comparison, execution start and key pruning; API v2 difference note。边界：范围由原 source 的 claim_scope 与 locators、所关联 review 的 scope 限定。
+
+消费：[README](../../../books/saas-engineering/README.md)、[09-from-ui-to-recovery](../../../books/saas-engineering/foundations/09-from-ui-to-recovery.md)、[H01](../../../books/saas-engineering/packages/commercial-finance/H01.md)。
 
 复查：实现前按具体版本、字段、制度与部署范围重新核查；来源变更或主张冲突时复读。
 
@@ -1510,6 +1513,396 @@
 
 
 消费：[README](../../../books/saas-engineering/README.md)。
+
+复查：实现前按具体版本、字段、制度与部署范围重新核查；来源变更或主张冲突时复读。
+
+## FND-SRC-ods-hash
+
+[Open Data Structures — 5.1 ChainedHashTable: Hashing with Chaining](https://opendatastructures.org/ods-python/5_1_ChainedHashTable_Hashin.html)
+
+- `FND-CLM-ods-hash`：链地址法、碰撞检查与装载受控时的期望/摊还成本；字符串算 hash 的长度成本另计。 定位：§5.1; add/find/remove; Analysis of Chained Hashing。边界：范围由原 source 的 claim_scope 与 locators、所关联 review 的 scope 限定。
+
+消费：[README](../../../books/saas-engineering/README.md)、[02-lookup-and-indexes](../../../books/saas-engineering/foundations/02-lookup-and-indexes.md)。
+
+复查：实现前按具体版本、字段、制度与部署范围重新核查；来源变更或主张冲突时复读。
+
+## FND-SRC-python-bisect
+
+[bisect — Array bisection algorithm](https://docs.python.org/3/library/bisect.html)
+
+- `FND-CLM-python-bisect`：有序序列的分割位置、对数查找与线性插入；不能把插入也称为对数成本。 定位：bisect_left; Performance Notes。边界：范围由原 source 的 claim_scope 与 locators、所关联 review 的 scope 限定。
+
+消费：[README](../../../books/saas-engineering/README.md)、[02-lookup-and-indexes](../../../books/saas-engineering/foundations/02-lookup-and-indexes.md)。
+
+复查：实现前按具体版本、字段、制度与部署范围重新核查；来源变更或主张冲突时复读。
+
+## FND-SRC-ods-python-btree
+
+[Open Data Structures — 14.2 B-Trees](https://opendatastructures.org/ods-python/14_2_B_Trees.html)
+
+- `FND-CLM-ods-python-btree`：多键节点、平衡树高、外存块访问与分裂；不据此指定某数据库的内部页布局。 定位：§14.2 definition and height; §14.2.1 Searching; §14.2.2 Addition。边界：范围由原 source 的 claim_scope 与 locators、所关联 review 的 scope 限定。
+
+消费：[README](../../../books/saas-engineering/README.md)、[02-lookup-and-indexes](../../../books/saas-engineering/foundations/02-lookup-and-indexes.md)。
+
+复查：实现前按具体版本、字段、制度与部署范围重新核查；来源变更或主张冲突时复读。
+
+## FND-SRC-pg-index
+
+[PostgreSQL — 11.2. Index Types](https://www.postgresql.org/docs/current/indexes-types.html)
+
+- `FND-CLM-pg-index`：PostgreSQL B-tree 的等值、范围和排序能力，以及 Hash 索引的简单等值能力。 定位：§11.2.1 B-Tree; §11.2.2 Hash。边界：范围由原 source 的 claim_scope 与 locators、所关联 review 的 scope 限定。
+
+消费：[README](../../../books/saas-engineering/README.md)、[02-lookup-and-indexes](../../../books/saas-engineering/foundations/02-lookup-and-indexes.md)。
+
+复查：实现前按具体版本、字段、制度与部署范围重新核查；来源变更或主张冲突时复读。
+
+## FND-SRC-ods-binary-trie
+
+[Open Data Structures — 13.1 BinaryTrie: A digital search tree](https://opendatastructures.org/ods-python/13_1_BinaryTrie_digital_sea.html)
+
+- `FND-CLM-ods-binary-trie`：按位路径表示整数键；本书字符路径算例属于明确说明的教学推广。 定位：§13.1 path-by-bits representation and find。边界：范围由原 source 的 claim_scope 与 locators、所关联 review 的 scope 限定。
+
+消费：[README](../../../books/saas-engineering/README.md)、[02-lookup-and-indexes](../../../books/saas-engineering/foundations/02-lookup-and-indexes.md)。
+
+复查：实现前按具体版本、字段、制度与部署范围重新核查；来源变更或主张冲突时复读。
+
+## FND-SRC-cmu-sorting
+
+[Comparison-based Lower Bounds for Sorting — 15-451 lecture notes](https://www.cs.cmu.edu/~avrim/451f11/lectures/lect0913.pdf)
+
+- `FND-CLM-cmu-sorting`：比较排序的最坏情况 Ω(n log n) 下界只适用于比较模型。 定位：§5.1 Overview; §5.2 Lower bounds for comparison-based sorting, pp. 1–3。边界：范围由原 source 的 claim_scope 与 locators、所关联 review 的 scope 限定。
+
+消费：[README](../../../books/saas-engineering/README.md)、[03-order-and-intervals](../../../books/saas-engineering/foundations/03-order-and-intervals.md)。
+
+复查：实现前按具体版本、字段、制度与部署范围重新核查；来源变更或主张冲突时复读。
+
+## FND-SRC-python-heap
+
+[heapq — Heap queue algorithm](https://docs.python.org/3/library/heapq.html)
+
+- `FND-CLM-python-heap`：堆的局部顺序、少量最大/最小项选择与并列处理；业务评分和教学算例是本地定义。 定位：Heap invariant; nlargest/nsmallest; Priority Queue Implementation Notes。边界：范围由原 source 的 claim_scope 与 locators、所关联 review 的 scope 限定。
+
+消费：[README](../../../books/saas-engineering/README.md)、[03-order-and-intervals](../../../books/saas-engineering/foundations/03-order-and-intervals.md)。
+
+复查：实现前按具体版本、字段、制度与部署范围重新核查；来源变更或主张冲突时复读。
+
+## FND-SRC-cses
+
+[Competitive Programmer’s Handbook — Antti Laaksonen](https://cses.fi/book/book.pdf)
+
+- `FND-CLM-cses`：双指针的单调移动、静态前缀和、最早结束的无权区间选择与回溯剪枝；不借用书中数据或性能表。 定位：Draft July 3, 2018; §5.3 Backtracking, pp. 50–51; §5.4 Pruning the search, pp. 51–54; §6.2 Scheduling, pp. 58–60; §8.1 Two pointers method, pp. 77–79; §9.1 Static array queries / Sum queries, p. 84。边界：范围由原 source 的 claim_scope 与 locators、所关联 review 的 scope 限定。
+
+消费：[README](../../../books/saas-engineering/README.md)、[03-order-and-intervals](../../../books/saas-engineering/foundations/03-order-and-intervals.md)、[06-choices-and-optimization](../../../books/saas-engineering/foundations/06-choices-and-optimization.md)。
+
+复查：实现前按具体版本、字段、制度与部署范围重新核查；来源变更或主张冲突时复读。
+
+## FND-SRC-beam-window
+
+[Apache Beam Programming Guide](https://beam.apache.org/documentation/programming-guide/)
+
+- `FND-CLM-beam-window`：事件时间、处理时间、水位线和迟到数据影响窗口结果的完整性与修订。 定位：§8 Windowing; §8.4 Watermarks and late data。边界：范围由原 source 的 claim_scope 与 locators、所关联 review 的 scope 限定。
+
+消费：[README](../../../books/saas-engineering/README.md)、[03-order-and-intervals](../../../books/saas-engineering/foundations/03-order-and-intervals.md)。
+
+复查：实现前按具体版本、字段、制度与部署范围重新核查；来源变更或主张冲突时复读。
+
+## FND-SRC-ods-graph
+
+[Open Data Structures — 12.3 Graph Traversal](https://opendatastructures.org/ods-python/12_3_Graph_Traversal.html)
+
+- `FND-CLM-ods-graph`：BFS 层次、DFS 访问颜色和有向环，邻接表遍历 O(V+E)。 定位：§12.3.1 Breadth-First Search; §12.3.2 Depth-First Search。边界：范围由原 source 的 claim_scope 与 locators、所关联 review 的 scope 限定。
+
+消费：[README](../../../books/saas-engineering/README.md)、[04-graphs-and-connectivity](../../../books/saas-engineering/foundations/04-graphs-and-connectivity.md)。
+
+复查：实现前按具体版本、字段、制度与部署范围重新核查；来源变更或主张冲突时复读。
+
+## FND-SRC-mit-dijkstra
+
+[MIT 6.006 Lecture 16: Shortest Paths II — Dijkstra](https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-fall-2011/6277a1f06100c26a7ff21031af6757b5_MIT6_006F11_lec16.pdf)
+
+- `FND-CLM-mit-dijkstra`：松弛、非负前提、DAG 顺序松弛及不同优先队列的成本；教学路线另行演算。 定位：Fall 2011; Relaxation, p. 1; DAGs, p. 2; Dijkstra and nonnegative edges, pp. 3–5; Analysis, p. 6。边界：范围由原 source 的 claim_scope 与 locators、所关联 review 的 scope 限定。
+
+消费：[README](../../../books/saas-engineering/README.md)、[04-graphs-and-connectivity](../../../books/saas-engineering/foundations/04-graphs-and-connectivity.md)。
+
+复查：实现前按具体版本、字段、制度与部署范围重新核查；来源变更或主张冲突时复读。
+
+## FND-SRC-opendsa-union
+
+[OpenDSA — 13.2. Union/Find and the Parent Pointer Implementation](https://opendsa-server.cs.vt.edu/ODSA/Books/CS3/html/UnionFind.html)
+
+- `FND-CLM-opendsa-union`：互不相交集合、按规模合并和路径压缩；近常数描述为大量操作的摊还性质。 定位：§13.2.1.1 Parent Pointer Trees; §13.2.1.2 Equivalence Classes; §13.2.1.3 Weighted Union; §13.2.1.4 Path Compression。边界：范围由原 source 的 claim_scope 与 locators、所关联 review 的 scope 限定。
+
+消费：[README](../../../books/saas-engineering/README.md)、[04-graphs-and-connectivity](../../../books/saas-engineering/foundations/04-graphs-and-connectivity.md)。
+
+复查：实现前按具体版本、字段、制度与部署范围重新核查；来源变更或主张冲突时复读。
+
+## FND-SRC-python-graphlib
+
+[graphlib — Functionality to operate with graph-like structures](https://docs.python.org/3/library/graphlib.html)
+
+- `FND-CLM-python-graphlib`：拓扑序与无环条件；已就绪、已领取、已完成分别处理，运行中暂时无就绪项不推出有环。 定位：TopologicalSorter; prepare; is_active; get_ready; done。边界：范围由原 source 的 claim_scope 与 locators、所关联 review 的 scope 限定。
+
+消费：[README](../../../books/saas-engineering/README.md)、[05-dependencies-and-queues](../../../books/saas-engineering/foundations/05-dependencies-and-queues.md)。
+
+复查：实现前按具体版本、字段、制度与部署范围重新核查；来源变更或主张冲突时复读。
+
+## FND-SRC-rabbitmq-confirms
+
+[RabbitMQ — Consumer Acknowledgements and Publisher Confirms](https://www.rabbitmq.com/docs/confirms)
+
+- `FND-CLM-rabbitmq-confirms`：发布确认与消费确认相互独立；确认的边界不能升级为端到端恰好一次。 定位：Are Publisher Confirms Related to Consumer Delivery Acknowledgements?; Consumer Acknowledgements。边界：范围由原 source 的 claim_scope 与 locators、所关联 review 的 scope 限定。
+
+消费：[README](../../../books/saas-engineering/README.md)、[05-dependencies-and-queues](../../../books/saas-engineering/foundations/05-dependencies-and-queues.md)。
+
+复查：实现前按具体版本、字段、制度与部署范围重新核查；来源变更或主张冲突时复读。
+
+## FND-SRC-aws-outbox
+
+[AWS Prescriptive Guidance — Transactional outbox pattern](https://docs.aws.amazon.com/prescriptive-guidance/latest/cloud-design-patterns/transactional-outbox.html)
+
+- `FND-CLM-aws-outbox`：本地数据库更新与待发消息原子交接，派发可能重复、消费仍需幂等；不声称跨 provider 原子事务。 定位：Intent; Motivation; Issues and considerations / Duplicate messages; Implementation / Outbox table。边界：范围由原 source 的 claim_scope 与 locators、所关联 review 的 scope 限定。
+
+消费：[README](../../../books/saas-engineering/README.md)、[05-dependencies-and-queues](../../../books/saas-engineering/foundations/05-dependencies-and-queues.md)。
+
+复查：实现前按具体版本、字段、制度与部署范围重新核查；来源变更或主张冲突时复读。
+
+## FND-SRC-mit-knapsack
+
+[MIT 6.006 Lecture 21: Dynamic Programming III](https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-fall-2011/3484e876d81aba07911a1109f5b5e81e_MIT6_006F11_lec21.pdf)
+
+- `FND-CLM-mit-knapsack`：子问题必须携带剩余容量；O(nS) 相对于数字大小是伪多项式成本。 定位：Fall 2011; Knapsack / First Attempt / Correct, pp. 4–5; Pseudopolynomial Time, p. 5。边界：范围由原 source 的 claim_scope 与 locators、所关联 review 的 scope 限定。
+
+消费：[README](../../../books/saas-engineering/README.md)、[06-choices-and-optimization](../../../books/saas-engineering/foundations/06-choices-and-optimization.md)。
+
+复查：实现前按具体版本、字段、制度与部署范围重新核查；来源变更或主张冲突时复读。
+
+## FND-SRC-stanford-bound
+
+[Branch and Bound Methods — Stephen Boyd and Jacob Mattingley](https://web.stanford.edu/class/ee364b/lectures/bb_notes.pdf)
+
+- `FND-CLM-stanford-bound`：可靠上下界、分割、剪枝与停止条件；正文将最小化方向转换为合成最大化背包示例。 定位：April 1, 2018; introduction; §1 Unconstrained nonconvex minimization, pp. 1–3。边界：范围由原 source 的 claim_scope 与 locators、所关联 review 的 scope 限定。
+
+消费：[README](../../../books/saas-engineering/README.md)、[06-choices-and-optimization](../../../books/saas-engineering/foundations/06-choices-and-optimization.md)。
+
+复查：实现前按具体版本、字段、制度与部署范围重新核查；来源变更或主张冲突时复读。
+
+## FND-SRC-ortools-status
+
+[Google OR-Tools — CP-SAT Solver](https://developers.google.com/optimization/cp/cp_solver)
+
+- `FND-CLM-ortools-status`：OPTIMAL、FEASIBLE、INFEASIBLE、MODEL_INVALID、UNKNOWN 的区分；不是本书执行了 OR-Tools。 定位：CP-SAT return values / solver status table。边界：范围由原 source 的 claim_scope 与 locators、所关联 review 的 scope 限定。
+
+消费：[README](../../../books/saas-engineering/README.md)、[06-choices-and-optimization](../../../books/saas-engineering/foundations/06-choices-and-optimization.md)。
+
+复查：实现前按具体版本、字段、制度与部署范围重新核查；来源变更或主张冲突时复读。
+
+## FND-SRC-python-cache
+
+[functools — Higher-order functions and operations on callable objects](https://docs.python.org/3/library/functools.html)
+
+- `FND-CLM-python-cache`：按参数复用、有限缓存及线程安全缓存仍可重复执行函数体；适用纯计算。 定位：cache; lru_cache。边界：范围由原 source 的 claim_scope 与 locators、所关联 review 的 scope 限定。
+
+消费：[README](../../../books/saas-engineering/README.md)、[07-reuse-and-invalidation](../../../books/saas-engineering/foundations/07-reuse-and-invalidation.md)。
+
+复查：实现前按具体版本、字段、制度与部署范围重新核查；来源变更或主张冲突时复读。
+
+## FND-SRC-redis-eviction
+
+[Redis — Key eviction](https://redis.io/docs/latest/develop/reference/eviction/)
+
+- `FND-CLM-redis-eviction`：Redis LRU/LFU 的采样近似与频率衰减；正文精确手算不映射为 Redis 的逐次轨迹。 定位：Eviction policies; Approximated LRU algorithm; LFU eviction。边界：范围由原 source 的 claim_scope 与 locators、所关联 review 的 scope 限定。
+
+消费：[README](../../../books/saas-engineering/README.md)、[07-reuse-and-invalidation](../../../books/saas-engineering/foundations/07-reuse-and-invalidation.md)。
+
+复查：实现前按具体版本、字段、制度与部署范围重新核查；来源变更或主张冲突时复读。
+
+## FND-SRC-redis-bloom
+
+[Redis — Bloom filters](https://redis.io/docs/latest/develop/data-types/probabilistic/bloom-filter/)
+
+- `FND-CLM-redis-bloom`：概率成员判断、误报、容量和扩展。正文误报率的分母明确为实际不存在的查询，公式是本地推导的独立性近似。 定位：Introduction; Use cases; Resizing Bloom filters; Performance。边界：范围由原 source 的 claim_scope 与 locators、所关联 review 的 scope 限定。
+
+消费：[README](../../../books/saas-engineering/README.md)、[08-approximation-and-search](../../../books/saas-engineering/foundations/08-approximation-and-search.md)。
+
+复查：实现前按具体版本、字段、制度与部署范围重新核查；来源变更或主张冲突时复读。
+
+## FND-SRC-hll-paper
+
+[HyperLogLog: the analysis of a near-optimal cardinality estimation algorithm](https://algo.inria.fr/flajolet/Publications/FlFuGaMe07.pdf)
+
+- `FND-CLM-hll-paper`：分桶、最大前导零模式、调和组合、渐近标准误差与小范围校正；四桶例只检查寄存器更新。 定位：P. Flajolet, É. Fusy, O. Gandouet, F. Meunier (2007); Abstract; §1 / Figure 2 / Theorem 1; §4 / Figure 3 practical corrections。边界：范围由原 source 的 claim_scope 与 locators、所关联 review 的 scope 限定。
+
+消费：[README](../../../books/saas-engineering/README.md)、[08-approximation-and-search](../../../books/saas-engineering/foundations/08-approximation-and-search.md)。
+
+复查：实现前按具体版本、字段、制度与部署范围重新核查；来源变更或主张冲突时复读。
+
+## FND-SRC-redis-hll
+
+[Redis — HyperLogLog](https://redis.io/docs/latest/develop/data-types/probabilistic/hyperloglogs/)
+
+- `FND-CLM-redis-hll`：成熟实现提供基数估计和摘要合并；未把产品说明当作本书性能实测。 定位：Introduction; Basic commands / PFADD, PFCOUNT, PFMERGE。边界：范围由原 source 的 claim_scope 与 locators、所关联 review 的 scope 限定。
+
+消费：[README](../../../books/saas-engineering/README.md)、[08-approximation-and-search](../../../books/saas-engineering/foundations/08-approximation-and-search.md)。
+
+复查：实现前按具体版本、字段、制度与部署范围重新核查；来源变更或主张冲突时复读。
+
+## FND-SRC-hnsw-paper
+
+[Efficient and robust approximate nearest neighbor search using Hierarchical Navigable Small World graphs](https://arxiv.org/abs/1603.09320)
+
+- `FND-CLM-hnsw-paper`：只支持分层邻近图的结构直觉；不据摘要断言任意数据的最坏 O(log n)，也不称全文复现。 定位：Yu. A. Malkov and D. A. Yashunin; arXiv:1603.09320v4; Abstract。边界：范围由原 source 的 claim_scope 与 locators、所关联 review 的 scope 限定。
+
+消费：[README](../../../books/saas-engineering/README.md)、[08-approximation-and-search](../../../books/saas-engineering/foundations/08-approximation-and-search.md)。
+
+复查：实现前按具体版本、字段、制度与部署范围重新核查；来源变更或主张冲突时复读。
+
+## FND-SRC-pgvector
+
+[pgvector/pgvector — README](https://github.com/pgvector/pgvector)
+
+- `FND-CLM-pgvector`：精确和近似检索的选择、搜索预算与过滤导致结果不足；未运行扩展。 定位：Indexing; HNSW; Filtering; Iterative Index Scans。边界：范围由原 source 的 claim_scope 与 locators、所关联 review 的 scope 限定。
+
+消费：[README](../../../books/saas-engineering/README.md)、[08-approximation-and-search](../../../books/saas-engineering/foundations/08-approximation-and-search.md)。
+
+复查：实现前按具体版本、字段、制度与部署范围重新核查；来源变更或主张冲突时复读。
+
+## FND-SRC-pg-isolation
+
+[PostgreSQL — 13.2. Transaction Isolation](https://www.postgresql.org/docs/current/transaction-iso.html)
+
+- `FND-CLM-pg-isolation`：更新冲突、隔离级别和事务重试要求；SQLite 教学检查不验证 PostgreSQL 锁/隔离。 定位：§13.2.1 Read Committed Isolation Level; §13.2.2 Repeatable Read; §13.2.3 Serializable。边界：范围由原 source 的 claim_scope 与 locators、所关联 review 的 scope 限定。
+
+消费：[README](../../../books/saas-engineering/README.md)、[09-from-ui-to-recovery](../../../books/saas-engineering/foundations/09-from-ui-to-recovery.md)。
+
+复查：实现前按具体版本、字段、制度与部署范围重新核查；来源变更或主张冲突时复读。
+
+## FND-SRC-react-state
+
+[React — Choosing the State Structure](https://react.dev/learn/choosing-the-state-structure)
+
+- `FND-CLM-react-state`：界面状态避免矛盾与冗余；未强制使用 React，也不据页面状态推断业务已确认。 定位：Principles for structuring state; Avoid contradictions in state; Avoid redundant state。边界：范围由原 source 的 claim_scope 与 locators、所关联 review 的 scope 限定。
+
+消费：[README](../../../books/saas-engineering/README.md)、[09-from-ui-to-recovery](../../../books/saas-engineering/foundations/09-from-ui-to-recovery.md)、[11-stacks-and-research](../../../books/saas-engineering/foundations/11-stacks-and-research.md)。
+
+复查：实现前按具体版本、字段、制度与部署范围重新核查；来源变更或主张冲突时复读。
+
+## FND-SRC-hypothesis
+
+[Introduction to Hypothesis](https://hypothesis.readthedocs.io/en/latest/tutorial/introduction.html)
+
+- `FND-CLM-hypothesis`：生成输入、与独立参照比较、反例及输入域约束；本地程序采用标准库穷举而非执行 Hypothesis。 定位：Testing a sorting algorithm; Adding floats to our test; Preventing floats from generating nan。边界：范围由原 source 的 claim_scope 与 locators、所关联 review 的 scope 限定。
+
+消费：[README](../../../books/saas-engineering/README.md)、[10-verification-and-evals](../../../books/saas-engineering/foundations/10-verification-and-evals.md)。
+
+复查：实现前按具体版本、字段、制度与部署范围重新核查；来源变更或主张冲突时复读。
+
+## FND-SRC-pact
+
+[Pact — Introduction](https://docs.pact.io/)
+
+- `FND-CLM-pact`：消费者与提供者的契约兼容测试；不等于真实服务可用或业务闭环。 定位：What is contract testing?; consumer-driven contract testing。边界：范围由原 source 的 claim_scope 与 locators、所关联 review 的 scope 限定。
+
+消费：[README](../../../books/saas-engineering/README.md)、[10-verification-and-evals](../../../books/saas-engineering/foundations/10-verification-and-evals.md)。
+
+复查：实现前按具体版本、字段、制度与部署范围重新核查；来源变更或主张冲突时复读。
+
+## FND-SRC-playwright
+
+[Playwright — Best Practices](https://playwright.dev/docs/best-practices)
+
+- `FND-CLM-playwright`：以用户可见行为和稳健定位组织浏览器测试；本轮未运行浏览器。 定位：Testing philosophy / Test user-visible behavior, Make tests as isolated as possible; Best practices / Use locators。边界：范围由原 source 的 claim_scope 与 locators、所关联 review 的 scope 限定。
+
+消费：[README](../../../books/saas-engineering/README.md)、[10-verification-and-evals](../../../books/saas-engineering/foundations/10-verification-and-evals.md)。
+
+复查：实现前按具体版本、字段、制度与部署范围重新核查；来源变更或主张冲突时复读。
+
+## FND-SRC-chaos
+
+[Principles of Chaos Engineering](https://principlesofchaos.org/)
+
+- `FND-CLM-chaos`：用可测业务输出、假设和扰动实验验证韧性；正文给实验设计，不记录真实生产故障。 定位：Four-step experiment description; Advanced Principles / Build a Hypothesis around Steady State Behavior; Minimize Blast Radius。边界：范围由原 source 的 claim_scope 与 locators、所关联 review 的 scope 限定。
+
+消费：[README](../../../books/saas-engineering/README.md)、[10-verification-and-evals](../../../books/saas-engineering/foundations/10-verification-and-evals.md)。
+
+复查：实现前按具体版本、字段、制度与部署范围重新核查；来源变更或主张冲突时复读。
+
+## FND-SRC-k6-load
+
+[Grafana k6 — Open and closed models](https://grafana.com/docs/k6/latest/using-k6/scenarios/concepts/open-vs-closed/)
+
+- `FND-CLM-k6-load`：闭合客户端模型在变慢时降低到达率；开放模型解耦到达与执行时长。 定位：Drawbacks of using the closed model; Open model。边界：范围由原 source 的 claim_scope 与 locators、所关联 review 的 scope 限定。
+
+消费：[README](../../../books/saas-engineering/README.md)、[10-verification-and-evals](../../../books/saas-engineering/foundations/10-verification-and-evals.md)。
+
+复查：实现前按具体版本、字段、制度与部署范围重新核查；来源变更或主张冲突时复读。
+
+## FND-SRC-sre-monitor
+
+[Site Reliability Engineering — Monitoring Distributed Systems](https://sre.google/sre-book/monitoring-distributed-systems/)
+
+- `FND-CLM-sre-monitor`：延迟、流量、错误、饱和度与尾延迟；本书负载数字是合成目标。 定位：The Four Golden Signals; Worrying About Your Tail (or, Instrumentation and Performance)。边界：范围由原 source 的 claim_scope 与 locators、所关联 review 的 scope 限定。
+
+消费：[README](../../../books/saas-engineering/README.md)、[10-verification-and-evals](../../../books/saas-engineering/foundations/10-verification-and-evals.md)。
+
+复查：实现前按具体版本、字段、制度与部署范围重新核查；来源变更或主张冲突时复读。
+
+## FND-SRC-helm-paper
+
+[Holistic Evaluation of Language Models](https://arxiv.org/abs/2211.09110)
+
+- `FND-CLM-helm-paper`：多场景、多指标的评估视角；仅摘要已读，不借此声称复现 HELM 或得到模型分数。 定位：arXiv:2211.09110; Abstract。边界：范围由原 source 的 claim_scope 与 locators、所关联 review 的 scope 限定。
+
+消费：[README](../../../books/saas-engineering/README.md)、[10-verification-and-evals](../../../books/saas-engineering/foundations/10-verification-and-evals.md)。
+
+复查：实现前按具体版本、字段、制度与部署范围重新核查；来源变更或主张冲突时复读。
+
+## FND-SRC-openai-eval
+
+[OpenAI — Evaluation best practices](https://developers.openai.com/api/docs/guides/evaluation-best-practices)
+
+- `FND-CLM-openai-eval`：确定目标、数据集、指标、比较与持续评估；自动评分用人工判断校准。 定位：Eval-driven development; Designing evals; Eval process; Human evaluation / calibrating automated metrics。边界：范围由原 source 的 claim_scope 与 locators、所关联 review 的 scope 限定。
+
+消费：[README](../../../books/saas-engineering/README.md)、[10-verification-and-evals](../../../books/saas-engineering/foundations/10-verification-and-evals.md)。
+
+复查：实现前按具体版本、字段、制度与部署范围重新核查；来源变更或主张冲突时复读。
+
+## FND-SRC-django
+
+[Django at a glance](https://docs.djangoproject.com/en/5.2/intro/overview/)
+
+- `FND-CLM-django`：模型、数据库访问、模板和管理界面是可组合成熟能力；不宣称最新版本或性能排名。 定位：Django 5.2; Design your model; A dynamic admin interface; Design your templates。边界：范围由原 source 的 claim_scope 与 locators、所关联 review 的 scope 限定。
+
+消费：[README](../../../books/saas-engineering/README.md)、[11-stacks-and-research](../../../books/saas-engineering/foundations/11-stacks-and-research.md)。
+
+复查：实现前按具体版本、字段、制度与部署范围重新核查；来源变更或主张冲突时复读。
+
+## FND-SRC-fastapi
+
+[FastAPI — Features](https://fastapi.tiangolo.com/features/)
+
+- `FND-CLM-fastapi`：OpenAPI 接口描述和 JSON Schema 模型文档/校验；事务与任务仍需另行设计。 定位：Based on open standards; Automatic docs; Validation。边界：范围由原 source 的 claim_scope 与 locators、所关联 review 的 scope 限定。
+
+消费：[README](../../../books/saas-engineering/README.md)、[11-stacks-and-research](../../../books/saas-engineering/foundations/11-stacks-and-research.md)。
+
+复查：实现前按具体版本、字段、制度与部署范围重新核查；来源变更或主张冲突时复读。
+
+## FND-SRC-aspnet
+
+[What is ASP.NET?](https://dotnet.microsoft.com/en-us/learn/aspnet/what-is-aspnet)
+
+- `FND-CLM-aspnet`：请求处理、模板和认证的官方能力说明；不指定部署形态。 定位：ASP.NET features; Back-end code; Dynamic pages using C#, HTML, CSS, and JavaScript; Authentication。边界：范围由原 source 的 claim_scope 与 locators、所关联 review 的 scope 限定。
+
+消费：[README](../../../books/saas-engineering/README.md)、[11-stacks-and-research](../../../books/saas-engineering/foundations/11-stacks-and-research.md)。
+
+复查：实现前按具体版本、字段、制度与部署范围重新核查；来源变更或主张冲突时复读。
+
+## FND-SRC-vue
+
+[Vue.js — Introduction](https://vuejs.org/guide/introduction.html)
+
+- `FND-CLM-vue`：声明式视图、响应式状态和渐进采用；不是固定框架套餐。 定位：What is Vue?; The Progressive Framework。边界：范围由原 source 的 claim_scope 与 locators、所关联 review 的 scope 限定。
+
+消费：[README](../../../books/saas-engineering/README.md)、[11-stacks-and-research](../../../books/saas-engineering/foundations/11-stacks-and-research.md)。
 
 复查：实现前按具体版本、字段、制度与部署范围重新核查；来源变更或主张冲突时复读。
 

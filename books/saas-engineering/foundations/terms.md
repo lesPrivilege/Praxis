@@ -1,6 +1,6 @@
 # 术语与原文索引
 
-中文解释采用正文的含义；英文保留可检索的原名。同一个英文词在数据结构、协议与业务中可能指不同边界，下面按用途区分。来源的完整原文标题与章节定位见 [evidence.json](evidence.json)。
+中文解释采用正文的含义；英文保留可检索的原名。同一个英文词在数据结构、协议与业务中可能指不同边界，下面按用途区分。来源的完整原文标题与章节定位见 [evidence.json](../../../vault/distilled/saas-engineering-atlas/foundations/evidence.json)。
 
 ## 计算结构
 
@@ -51,4 +51,4 @@
 | 接口描述、数据结构约束 | OpenAPI, JSON Schema | OpenAPI 是接口描述规范名；JSON（JavaScript Object Notation）是数据格式，Schema 表达数据约束 | [11](11-stacks-and-research.md) |
 | 软件即服务、站点可靠性工程 | software as a service (SaaS), site reliability engineering (SRE) | 分别描述服务交付模式和工程实践领域 | [11](11-stacks-and-research.md)、[10](10-verification-and-evals.md) |
 
-`booking` 在案例中保留预约/资源占用的具体对象含义；`folio` 指住宿账单明细；`signoff` 指相应版本的专业签认。三个词都不能仅因界面出现“完成”就统一成同一种批准。具体行业对象沿用 [33 案例目录](../case-index.json)中的案例定义。
+`booking` 在案例中保留预约/资源占用的具体对象含义；`folio` 指住宿账单明细；`signoff` 指相应版本的专业签认。三个词都不能仅因界面出现“完成”就统一成同一种批准。具体行业对象沿用 [33 案例目录](../../../vault/distilled/saas-engineering-atlas/case-index.json)中的案例定义。

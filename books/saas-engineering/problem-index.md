@@ -23,20 +23,20 @@
 
 每种算法先说明输入、单位、规模和要保持的不变量；复杂度与服务延迟分别验证。案例采用的家族全部列在 [机器目录](../../vault/distilled/saas-engineering-atlas/case-index.json)。
 
-| 家族 | 何时选择及取舍 | 演算入口 |
+| 家族 | 何时选择及取舍 | 方法章与行业演算 |
 |---|---|---|
-| lookup / 查找 | 稳定键找对象；hash 平均 O(1) 或树索引 O(log n) 的前提不同，先保证身份完整 | [H02](packages/commercial-finance/H02.md)、[H04](packages/people-service/H04.md)、[X01](packages/data-ai-control/X01.md) |
-| sorting / Top-K | 按可解释分数选少量优先项；顺序不能代替授权或运输可行性 | [H06](packages/people-service/H06.md)、[H08](packages/data-ai-control/H08.md)、[V14](packages/commercial-finance/V14.md) |
-| windows / 窗口 | 累计区间或事件时间；先定义半开边界、迟到和修订 | [H01](packages/commercial-finance/H01.md)、[V06](packages/commerce-property/V06.md)、[V11](packages/industry-networks/V11.md)、[V22](packages/industry-networks/V22.md) |
-| graph paths / 图路径 | 来源追溯和影响集合；方向、权限与环决定结果 | [H07](packages/data-ai-control/H07.md)、[V03](packages/health-science/V03.md)、[V15](packages/commerce-property/V15.md)、[V18](packages/people-service/V18.md) |
-| dependencies / scheduling | DAG 求先后与关键路径；资源约束须另外加入 | [H03](packages/commercial-finance/H03.md)、[H09](packages/data-ai-control/H09.md)、[V09](packages/industry-networks/V09.md)、[V20](packages/people-service/V20.md) |
-| optimization / 优化 | 在硬约束内比较成本、时间或利用率；启发式不保证全局最优 | [V04](packages/commerce-property/V04.md)、[V19](packages/people-service/V19.md)、[V20](packages/people-service/V20.md)、[V21](packages/industry-networks/V21.md) |
-| caches / 缓存 | 复用读取与计算；键、失效、版本和当前权限一起设计 | [H07](packages/data-ai-control/H07.md)、[X01](packages/data-ai-control/X01.md)、[V16](packages/commerce-property/V16.md) |
-| approximate / 近似 | 允许量化误差的估计；阈值附近需要精确复核，不能直接授予放行权 | [V03](packages/health-science/V03.md) |
+| lookup / 查找 | 稳定键找对象；hash 平均 O(1) 或树索引 O(log n) 的前提不同，先保证身份完整 | [查找与索引](foundations/02-lookup-and-indexes.md)；[H02](packages/commercial-finance/H02.md)、[H04](packages/people-service/H04.md)、[X01](packages/data-ai-control/X01.md) |
+| sorting / Top-K | 按可解释分数选少量优先项；顺序不能代替授权或运输可行性 | [顺序与区间](foundations/03-order-and-intervals.md)；[H06](packages/people-service/H06.md)、[H08](packages/data-ai-control/H08.md)、[V14](packages/commercial-finance/V14.md) |
+| windows / 窗口 | 累计区间或事件时间；先定义半开边界、迟到和修订 | [窗口与累计](foundations/03-order-and-intervals.md)；[H01](packages/commercial-finance/H01.md)、[V06](packages/commerce-property/V06.md)、[V11](packages/industry-networks/V11.md)、[V22](packages/industry-networks/V22.md) |
+| graph paths / 图路径 | 来源追溯和影响集合；方向、权限与环决定结果 | [图与连通](foundations/04-graphs-and-connectivity.md)；[H07](packages/data-ai-control/H07.md)、[V03](packages/health-science/V03.md)、[V15](packages/commerce-property/V15.md)、[V18](packages/people-service/V18.md) |
+| dependencies / scheduling | DAG 求先后与关键路径；资源约束须另外加入 | [依赖与队列](foundations/05-dependencies-and-queues.md)；[H03](packages/commercial-finance/H03.md)、[H09](packages/data-ai-control/H09.md)、[V09](packages/industry-networks/V09.md)、[V20](packages/people-service/V20.md) |
+| optimization / 优化 | 在硬约束内比较成本、时间或利用率；启发式不保证全局最优 | [约束与选择](foundations/06-choices-and-optimization.md)；[V04](packages/commerce-property/V04.md)、[V19](packages/people-service/V19.md)、[V20](packages/people-service/V20.md)、[V21](packages/industry-networks/V21.md) |
+| caches / 缓存 | 复用读取与计算；键、失效、版本和当前权限一起设计 | [复用与失效](foundations/07-reuse-and-invalidation.md)；[H07](packages/data-ai-control/H07.md)、[X01](packages/data-ai-control/X01.md)、[V16](packages/commerce-property/V16.md) |
+| approximate / 近似 | 允许量化误差的估计；阈值附近需要精确复核，不能直接授予放行权 | [近似与检索](foundations/08-approximation-and-search.md)；[V03](packages/health-science/V03.md) |
 
 ## 技术栈索引
 
-技术栈从数据与恢复条件反推。下表是案例设计候选，既不描述 provider 内部实现，也不要求 Claude 使用指定框架。
+先读 [技术栈与研究](foundations/11-stacks-and-research.md)，把一次动作的责任分清，再从数据与恢复条件反推技术栈。下表是案例设计候选，既不描述 provider 内部实现，也不要求 Claude 使用指定框架。
 
 | 系统需要 | 候选构件与选择理由 | 前提与替代 | 案例入口 |
 |---|---|---|---|

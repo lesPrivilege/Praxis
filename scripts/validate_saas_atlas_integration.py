@@ -6,7 +6,7 @@ from copy import deepcopy
 import json
 from pathlib import Path
 import re
-from build_saas_atlas_indexes import build, evidence_inputs, ROOT, ATLAS, PROV
+from build_saas_atlas_indexes import build, evidence_inputs, evidence_kind, ROOT, ATLAS, PROV
 from validate_saas_atlas import EXPECTED_CASES
 
 def read(p): return json.loads(p.read_text())
@@ -60,9 +60,12 @@ def main():
         if preserved!=evidence['reviews']:errors.append('reviews changed '+origin)
         for c in evidence['claims']:
             if any(claimmap.get(c['id'],{}).get(k)!=v for k,v in c.items()):errors.append('claim changed '+c['id'])
-            if c['kind']=='source_fact':
+            if evidence_kind(c)=='source_fact':
                 for sid in c['source_ids']:
                     matching=[r for r in evidence['reviews'] if r['source_id']==sid and c['id'] in r.get('supported_claims',r.get('supported_claim_ids',[]))]
+                    if c['kind']=='source-backed':
+                        source=next(s for s in evidence['sources'] if s['id']==sid)
+                        matching=[r for r in evidence['reviews'] if r.get('id')==source.get('review_id') and r['source_id']==sid and r.get('scope') and source.get('claim_scope')==c['statement']]
                     if not matching:errors.append('claim lacks scoped supporting review '+c['id']+' '+sid)
     index=read(ATLAS/'case-index.json')['cases']; cases={c['case_id']:c for c in index}
     if set(cases)!=EXPECTED_CASES or len(index)!=33:errors.append('case coverage')
@@ -94,7 +97,7 @@ def main():
             broken=deepcopy(graph);mutate(broken)
             if not check_transfers(broken,cases):errors.append('negative integration self-test accepted')
             negative+=1
-    result={'status':'fail' if errors else 'pass','case_count':len(cases),'case_nodes':nodes,'case_edges':edges,'lifecycles':lives,'defined_checks':checks,'canonical_sources':len(catalog),'source_identities':len(aliases),'source_reviews':len(history['reviews']),'claims':len(claims),'claim_kinds':dict(Counter(c['kind'] for c in claims)),'transfers':len(graph['edges']),'proposals':len(proposals),'negative_self_tests':negative,'errors':errors,'scope':'structure, navigation and evidence preservation; no provider, browser, load or AI execution'}
+    result={'status':'fail' if errors else 'pass','case_count':len(cases),'case_nodes':nodes,'case_edges':edges,'lifecycles':lives,'defined_checks':checks,'canonical_sources':len(catalog),'source_identities':len(aliases),'source_reviews':len(history['reviews']),'claims':len(claims),'claim_kinds':dict(Counter(evidence_kind(c) for c in claims)),'transfers':len(graph['edges']),'proposals':len(proposals),'negative_self_tests':negative,'errors':errors,'scope':'structure, navigation and evidence preservation; no provider, browser, load or AI execution'}
     print(json.dumps(result,ensure_ascii=False,indent=2));return bool(errors)
 
 if __name__=='__main__':raise SystemExit(main())

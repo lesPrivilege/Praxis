@@ -4,7 +4,7 @@
 
 ## 识题：关系的含义先于遍历
 
-H07 的来源依赖、V07 的零件与产品、V18 的证据关联、V22 的网络连通都可以画图，但不能把边混用。`B depends_on A` 表示 B 依赖 A；若要从 A 找受影响对象，遍历方向应转成 A→B。公共关系方向仍保持 [relation-types](../relation-types.json)的定义，计算时显式建立反向邻接表，不悄悄改变原边。
+H07 的来源依赖、V07 的零件与产品、V18 的证据关联、V22 的网络连通都可以画图，但不能把边混用。`B depends_on A` 表示 B 依赖 A；若要从 A 找受影响对象，遍历方向应转成 A→B。公共关系方向仍保持 [relation-types](../../../vault/distilled/saas-engineering-atlas/relation-types.json)的定义，计算时显式建立反向邻接表，不悄悄改变原边。
 
 设一张合成传播图：A→B、A→C、B→D、C→D、D→E。A 是源表，B、C 是两个汇总，D 是发布包，E 是下游报表。以下手算只讨论传播关系；得到 E 可达，并不授权读取 E 的内容。
 

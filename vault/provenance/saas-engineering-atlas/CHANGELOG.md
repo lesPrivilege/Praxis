@@ -23,3 +23,7 @@
 用户增补 Books 目标后，49页教材正文移到 books/saas-engineering，来源与结构资产留在 Vault；相对链接、case-index、transfer图、registry与验证器同步调整。早期示范仍为fixture，不计为新案例。新增题型/方案/算法/栈索引、共同术语与42条精选迁移；92条原建议保留位置。
 
 全部15个案例Python入口通过，报告269项局部合成检查；代表阅读片段、复算、检查输出及待接收输入见 docs/verification/saas-engineering-atlas-20261014.md。未触发CI、部署或main合并。
+
+## Foundations integration · 2026-10-14
+
+Merged exact author commit `ee597ceaa3675f818746c6122353858872af17e4`. Moved14 teaching pages into Books, preserved raw evidence and local curriculum/example identities, and adapted reader routes without weakening coverage checks. All17 delivered Python entry points passed; foundations reports18 examples,18,462 comparison scenarios and18 rejected mutations. Shared catalog now has188 canonical URLs and193 original source identities. Enterprise mechanisms and independent final reviews remain pending.

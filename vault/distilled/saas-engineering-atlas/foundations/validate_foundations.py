@@ -23,6 +23,7 @@ def unique(items, label):
 
 def main():
     evidence, curriculum, examples = read('evidence.json'), read('curriculum.json'), read('examples.json')
+    reader = (HERE / curriculum['reader_root']).resolve()
     cases = {c['case_id'] for c in read('../case-index.json')['cases']}
     algorithms = {a['id'] for a in read('../identifiers.json')['algorithms']}
     sources = {s['id']: s for s in evidence['sources']}
@@ -30,7 +31,7 @@ def main():
     chapters = curriculum['chapters']
     paths = {c['path'] for c in chapters}
     require(len(chapters) == 12, 'chapter count')
-    require(paths == {f.name for f in HERE.glob('[0-9][0-9]-*.md')}, 'chapter map differs from files')
+    require(paths == {f.name for f in reader.glob('[0-9][0-9]-*.md')}, 'chapter map differs from files')
     require(len(example_map) == 18, 'example count')
     for rows, key, label in [(evidence['sources'], 'id', 'source IDs'),
                              (evidence['sources'], 'canonical_url', 'canonical URLs'),
@@ -56,10 +57,11 @@ def main():
         require(set(claim.get('case_ids', [])) <= cases, 'unknown case')
         require(set(claim.get('example_ids', [])) <= example_map.keys(), 'unknown example')
         for path in claim['local_paths']:
-            require((HERE / path).is_file(), f'missing claim path: {path}')
+            base = reader if path in paths else HERE
+            require((base / path).is_file(), f'missing claim path: {path}')
     body_urls, seen_cases, seen_algorithms, seen_examples = set(), set(), set(), set()
     for chapter in chapters:
-        text = (HERE / chapter['path']).read_text(encoding='utf-8')
+        text = (reader / chapter['path']).read_text(encoding='utf-8')
         require(all(word in text for word in ('识题', '解法', '演算', '验算', '变式')), chapter['path'])
         require(set(chapter['case_ids']) <= cases, chapter['path'])
         require(set(chapter['algorithm_ids']) <= algorithms, chapter['path'])
@@ -75,7 +77,7 @@ def main():
     require(seen_examples == example_map.keys(), 'unmapped example')
     require(body_urls == {s['canonical_url'] for s in sources.values()}, 'cited URL and source catalog mismatch')
     link_count = 0
-    for file in HERE.glob('*.md'):
+    for file in [*HERE.glob('*.md'), *reader.glob('*.md')]:
         for target in re.findall(r'\]\(([^)]+)\)', file.read_text(encoding='utf-8')):
             if '://' in target or target.startswith('#'):
                 continue

@@ -2,11 +2,17 @@
 
 一家企业不断接受承诺、安排资源、完成交付、取得证据并结清义务。销售订单让客户与企业对交付形成共同约定；生产单安排如何履约；检验结果决定能否放行；发票与付款记录各自回答应收多少和实际收到多少。SaaS 把这些对象交给不同角色处理，又使它们能互相核对。页面是人进入这条链的地方，接口连接不同权威系统，存储保留已经作出的决定。
 
-全景图首先要让读者看见这些连接，再进入行业细节。案例编号保留已有身份；教材章节按理解依赖组织，不按编号顺序堆放案例。下面的七章从简单承诺逐步走向时间、资源与跨组织责任。每章选一例完成五步，再用另一例改变条件；无需顺序读完所有行业。
+全景图首先要让读者看见这些连接，再进入行业细节。案例编号保留已有身份；教材章节按理解依赖组织，不按编号顺序堆放案例。阅读分两次展开：先用一组小输入学会方法，再按业务问题选行业案例。下列七个问题从简单承诺走向时间、资源与跨组织责任；每次选一例完成五步，再用另一例改变条件。
 
-## 由共同图景走向案例
+## 先把一组小输入算清
 
-| 章 | 逐步建立的理解 | 案例入口 | 本章应能完成的判断 |
+[计算与系统方法](foundations/README.md)用维修订单 O7 连起 12 章。第 [1](foundations/01-problems-and-objects.md)章分清对象，第 [2](foundations/02-lookup-and-indexes.md)–[3](foundations/03-order-and-intervals.md)章处理查找、顺序与区间，第 [4](foundations/04-graphs-and-connectivity.md)–[6](foundations/06-choices-and-optimization.md)章处理关系、依赖与约束，第 [7](foundations/07-reuse-and-invalidation.md)–[8](foundations/08-approximation-and-search.md)章比较复用和近似的代价，第 [9](foundations/09-from-ui-to-recovery.md)–[11](foundations/11-stacks-and-research.md)章把计算接入界面、事务、恢复、验证和成熟技术栈。最后在第 [12](foundations/12-transfer-workbook.md)章独立完成跨行业变式。
+
+需要查某一种方法时，可直接从 [解题索引](problem-index.md)进入；进入章节后仍先写自己的预测，再对照演算。方法章解释算法为何成立，行业例解释对象和权威为何不能照搬。
+
+## 再用七个问题展开行业全景
+
+| 业务问题 | 逐步建立的理解 | 案例入口 | 本章应能完成的判断 |
 |---|---|---|---|
 | 1. 承诺、资源与证据 | 企业为何需要独立对象、角色与状态 | [H01](packages/commercial-finance/H01.md)、[V07](packages/industry-networks/V07.md)、[V20](packages/people-service/V20.md) | 解释“已提交”“已完成”“已收款”为何分别需要证据 |
 | 2. 状态与权威 | 谁能改什么；哪个系统对哪项事实负责 | [H02](packages/commercial-finance/H02.md)、[H04](packages/people-service/H04.md)、[V01](packages/health-science/V01.md)、[V03](packages/health-science/V03.md) | 给一次状态变化列出身份、权限、guard 和接收人 |
@@ -16,7 +22,7 @@
 | 6. 专业判断与责任 | 同意、放行、保全、审批和人工接管 | [H08](packages/data-ai-control/H08.md)、[V02](packages/health-science/V02.md)、[V13](packages/commercial-finance/V13.md)、[V17](packages/people-service/V17.md)、[V18](packages/people-service/V18.md) | 指出自动化可提供什么证据、谁仍须作决定 |
 | 7. 跨对象与跨组织闭环 | 变更、工时、资产、供应、计量和内部结算 | [V08](packages/industry-networks/V08.md)、[V10](packages/industry-networks/V10.md)、[V15](packages/commerce-property/V15.md)、[V16](packages/commerce-property/V16.md)、[V19](packages/people-service/V19.md)、[V22](packages/industry-networks/V22.md)、[X02](packages/commercial-finance/X02.md) | 沿关系检查局部完成是否真的关闭全局义务 |
 
-每章沿“识题 → 解法 → 演算 → 验算 → 变式”展开。每例先接回共同图景，再讲该行业为什么需要自己的对象；具体源词不被统一术语抹平。一个病例的 consent、一个采购单的 approval 和一次安全响应的 authorization 都可能是执行前提，但它们的撤回、有效期和专业责任必须分别查证。
+每次沿“识题 → 解法 → 演算 → 验算 → 变式”展开。每例先接回共同图景，再讲该行业为什么需要自己的对象；具体源词不被统一术语抹平。一个病例的 consent、一个采购单的 approval 和一次安全响应的 authorization 都可能是执行前提，但它们的撤回、有效期和专业责任必须分别查证。
 
 ## 共同机制的迁移方法
 
@@ -42,7 +48,7 @@
 
 简答：排序能产生顺序，不能保证运输可行。资源约束改变后，容量、路线、时间窗和不可拆分条件成为约束；要先找可行方案，再比较成本或延迟。反例是金额最大的货占满车后，剩余冷链订单超过时间窗。检查每个约束，并将所得方案与小规模穷举或人工可行解对照；启发式不能称为最优。
 
-以上为 synthetic 推理题，未声称 Shopify、Dynamics 365、AWS 或 SAP 采用这些具体实现。各案例末尾还有领域变式与继续研究方向。先独立作答，再对照短答；遇到陌生制度时保留待确认条件。
+各案例末尾还有领域变式与继续研究方向。先独立作答，再对照短答；遇到陌生制度时保留待确认条件。
 
 ## 三条可完成的学习路线
 

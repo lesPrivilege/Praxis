@@ -65,4 +65,4 @@ E2E 从人的行为观察结果：提交取消、看到原操作 ID、刷新后�
 
 **题二。** X01 的 AI 回答分数提高，延迟翻倍且每次查询费用增三倍。**答案：** 需同时按质量、延迟、成本和错误后果比较，检查是否满足服务目标；不是分数越高就自动替换。选择工作负载与人审样本，比较同一业务任务的净收益。
 
-想把手算变成机器检查，可从 [18 组样例](examples.json)和配套 [检查程序](check_examples.py)开始：先改输入，写下自己的预测，再与运行结果比较。
+想把手算变成机器检查，可从 [18 组样例](../../../vault/distilled/saas-engineering-atlas/foundations/examples.json)和配套 [检查程序](../../../vault/distilled/saas-engineering-atlas/foundations/check_examples.py)开始：先改输入，写下自己的预测，再与运行结果比较。
