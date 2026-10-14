@@ -1906,6 +1906,176 @@
 
 复查：实现前按具体版本、字段、制度与部署范围重新核查；来源变更或主张冲突时复读。
 
+## EM-SRC-ontology
+
+[Ontology building](https://www.palantir.com/docs/foundry/ontology/overview)
+
+- `EM-C01`：Ontology connects integrated digital assets to organizational objects; public concepts include objects, properties, links, actions and functions. 定位：Ontology building; Object and link types; Action types and functions。边界：产品公开概念；不证明本例的数据模型、内部存储或业务保证。
+
+消费：[README](../../../books/saas-engineering/README.md)、[01-organization-to-system](../../../books/saas-engineering/enterprise-mechanisms/01-organization-to-system.md)。
+
+复查：实现前按具体版本、字段、制度与部署范围重新核查；来源变更或主张冲突时复读。
+
+## EM-SRC-compensation
+
+[Compensation events](https://docs.camunda.io/docs/8.8/components/modeler/bpmn/compensation-events/)
+
+- `EM-C02`：Compensation handlers are associated with completed activities and are invoked within defined scopes; ordering requires explicit modeling. 定位：Compensation events; Triggering compensation; Triggering compensation for a specific activity。边界：限定 Camunda 8.8 已读语义；不推导退款或配置恢复必然成功。
+
+消费：[README](../../../books/saas-engineering/README.md)、[01-organization-to-system](../../../books/saas-engineering/enterprise-mechanisms/01-organization-to-system.md)。
+
+复查：实现前按具体版本、字段、制度与部署范围重新核查；来源变更或主张冲突时复读。
+
+## EM-SRC-carbon-table
+
+[Data table](https://www.carbondesignsystem.com/building-blocks/core/components/data-table/guidelines)
+
+- `EM-C03`：Carbon distinguishes table-level, selected-set and row actions; batch mode disables row actions to clarify the active interaction mode. 定位：Variants: Expandable, Selectable; Universal behaviors: Table toolbar, Batch actions, Inline actions。边界：组件指导；不指定数据库分页、快照、事务或本册视觉布局。
+
+消费：[README](../../../books/saas-engineering/README.md)、[02-enterprise-frontend](../../../books/saas-engineering/enterprise-mechanisms/02-enterprise-frontend.md)。
+
+复查：实现前按具体版本、字段、制度与部署范围重新核查；来源变更或主张冲突时复读。
+
+## EM-SRC-w3c-grid
+
+[Grid (Interactive Tabular Data and Layout Containers) Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/grid/)
+
+- `EM-C04`：Interactive grids require focus and keyboard navigation behavior; semantic roles alone do not implement these interactions. 定位：About This Pattern; Data Grids For Presenting Tabular Information; Keyboard Interaction For Data Grids。边界：APG 模式与交互说明；不声称示例经过浏览器或辅助技术实测。
+
+消费：[README](../../../books/saas-engineering/README.md)、[02-enterprise-frontend](../../../books/saas-engineering/enterprise-mechanisms/02-enterprise-frontend.md)。
+
+复查：实现前按具体版本、字段、制度与部署范围重新核查；来源变更或主张冲突时复读。
+
+## EM-SRC-govuk-errors
+
+[Error summary](https://design-system.service.gov.uk/components/error-summary/)
+
+- `EM-C05`：Error summaries accompany field errors, link to affected inputs, and receive focus so users can find and correct validation errors. 定位：When to use this component; How it works; Linking from the error summary to each answer。边界：表单验证指导；不把业务证据不足当成任意可改的输入错误。
+
+消费：[README](../../../books/saas-engineering/README.md)、[02-enterprise-frontend](../../../books/saas-engineering/enterprise-mechanisms/02-enterprise-frontend.md)。
+
+复查：实现前按具体版本、字段、制度与部署范围重新核查；来源变更或主张冲突时复读。
+
+## EM-SRC-actions
+
+[Action types](https://www.palantir.com/docs/foundry/action-types/overview)
+
+- `EM-C06`：Action types define changes to objects, properties and links; action logic and validation can be reused across user-facing applications. 定位：Action types, opening definition and shared logic paragraphs。边界：不把 Ontology 内部事务描述扩展为外部系统的分布式事务保证。
+
+消费：[README](../../../books/saas-engineering/README.md)、[03-schema-tools-completion](../../../books/saas-engineering/enterprise-mechanisms/03-schema-tools-completion.md)。
+
+复查：实现前按具体版本、字段、制度与部署范围重新核查；来源变更或主张冲突时复读。
+
+## EM-SRC-action-permissions
+
+[Permissions](https://www.palantir.com/docs/foundry/action-types/permissions)
+
+- `EM-C07`：Action application depends on configured object/link permissions and submission criteria; read controls, writes and side effects have distinct conditions. 定位：Apply action; Read-time enforcement only; Submission criteria; Side effect permissions。边界：未测试账户配置；细节随对象安全模型及版本变化，未概括成所有 SaaS 的权限实现。
+
+消费：[README](../../../books/saas-engineering/README.md)、[03-schema-tools-completion](../../../books/saas-engineering/enterprise-mechanisms/03-schema-tools-completion.md)。
+
+复查：实现前按具体版本、字段、制度与部署范围重新核查；来源变更或主张冲突时复读。
+
+## EM-SRC-job-workers
+
+[Job workers](https://docs.camunda.io/docs/8.8/components/concepts/job-workers/)
+
+- `EM-C08`：Job activation can time out and be reassigned; delivery may lead to multiple workers processing a job, requiring idempotent worker behavior. 定位：Requesting jobs; Completing or failing jobs; Timeouts。边界：仅取用所读 8.8 文档的重复执行边界；未运行 Camunda 或推断 exactly-once 外部效果。
+
+消费：[README](../../../books/saas-engineering/README.md)、[03-schema-tools-completion](../../../books/saas-engineering/enterprise-mechanisms/03-schema-tools-completion.md)。
+
+复查：实现前按具体版本、字段、制度与部署范围重新核查；来源变更或主张冲突时复读。
+
+## EM-SRC-pact-how
+
+[How Pact works](https://docs.pact.io/getting_started/how_pact_works)
+
+- `EM-C09`：Consumer tests encode expected interactions; provider verification replays requests and compares required response content; message tests focus on messages. 定位：Consumer testing; Provider verification; Non-HTTP testing (Message Pact)。边界：本地实验采用契约思路但未安装或运行 Pact framework/broker。
+
+消费：[README](../../../books/saas-engineering/README.md)、[03-schema-tools-completion](../../../books/saas-engineering/enterprise-mechanisms/03-schema-tools-completion.md)。
+
+复查：实现前按具体版本、字段、制度与部署范围重新核查；来源变更或主张冲突时复读。
+
+## EM-SRC-pact-faq
+
+[FAQ](https://docs.pact.io/faq)
+
+- `EM-C10`：Response contract matching does not by itself test provider side effects or replace core business logic tests. 定位：What is Pact not good for?; Why Pact may not be the best tool for testing pass through APIs?; Do I still need end-to-end tests?。边界：不把消息兼容性检查提升为业务正确性、性能或外部运行验收。
+
+消费：[README](../../../books/saas-engineering/README.md)、[03-schema-tools-completion](../../../books/saas-engineering/enterprise-mechanisms/03-schema-tools-completion.md)。
+
+复查：实现前按具体版本、字段、制度与部署范围重新核查；来源变更或主张冲突时复读。
+
+## EM-SRC-data-management
+
+[Manage your data in Dynamics 365 implementation projects](https://learn.microsoft.com/en-us/dynamics365/guidance/implementation-guide/data-management)
+
+- `EM-C11`：Data governance includes stewardship, data quality, primary data and use cases; data stewardship assigns responsibility for content and metadata fitness. 定位：Data governance; Data stewardship; Data quality; Primary data; Proper use cases。边界：官方实施指南，非普遍组织法定职责定义；data steward 不等于数据库管理员。
+
+消费：[README](../../../books/saas-engineering/README.md)、[04-implementation-reality](../../../books/saas-engineering/enterprise-mechanisms/04-implementation-reality.md)。
+
+复查：实现前按具体版本、字段、制度与部署范围重新核查；来源变更或主张冲突时复读。
+
+## EM-SRC-extend
+
+[Extend Dynamics 365 apps without compromising performance](https://learn.microsoft.com/en-us/dynamics365/guidance/implementation-guide/extend-your-solution)
+
+- `EM-C12`：Extensions should be assessed for business need and impact on usability, performance, security, maintainability and evolution; legacy behavior should not be copied without assessment. 定位：Introduction; What does it mean to extend?; Determine the need; Don’t replicate your legacy solution; Performance。边界：不替代实际产品版本、支持合同或定制成本测量；本册成本为合成输入。
+
+消费：[README](../../../books/saas-engineering/README.md)、[04-implementation-reality](../../../books/saas-engineering/enterprise-mechanisms/04-implementation-reality.md)。
+
+复查：实现前按具体版本、字段、制度与部署范围重新核查；来源变更或主张冲突时复读。
+
+## EM-SRC-migration
+
+[Manage configuration and migration data for Dynamics 365 projects](https://learn.microsoft.com/en-us/dynamics365/guidance/implementation-guide/data-management-configuration-data-migration)
+
+- `EM-C13`：Configuration data and migration data differ; migration planning covers scope, mapping, dependencies, roles, and pre/post-cutover activities. 定位：Configuration data; Use a configuration plan; Migration data; Define a migration strategy; How to assign roles and responsibilities。边界：厂商实施指导；未将其专属环境建议提升为所有系统的必要条件。
+
+消费：[README](../../../books/saas-engineering/README.md)、[04-implementation-reality](../../../books/saas-engineering/enterprise-mechanisms/04-implementation-reality.md)。
+
+复查：实现前按具体版本、字段、制度与部署范围重新核查；来源变更或主张冲突时复读。
+
+## EM-SRC-training
+
+[Develop your own training strategy for your Dynamics 365 implementations](https://learn.microsoft.com/en-us/dynamics365/guidance/implementation-guide/training-strategy)
+
+- `EM-C14`：Training should enable users to do their jobs and should continue after go-live; objectives can distinguish attendance from task competence. 定位：Introduction; Training objectives; What not to do。边界：培训目标指导；本册六人通过率是合成演算，不是实施成效数据。
+
+消费：[README](../../../books/saas-engineering/README.md)、[04-implementation-reality](../../../books/saas-engineering/enterprise-mechanisms/04-implementation-reality.md)。
+
+复查：实现前按具体版本、字段、制度与部署范围重新核查；来源变更或主张冲突时复读。
+
+## EM-SRC-support
+
+[Create a support strategy for your Dynamics 365 solution](https://learn.microsoft.com/en-us/dynamics365/guidance/implementation-guide/transition-to-support)
+
+- `EM-C15`：Support planning distinguishes scope, team and operations and includes readiness, service coverage and escalation before go-live. 定位：Support scope; Support team; Support operations。边界：不许诺任何供应商响应时限或客户 SLA。
+
+消费：[README](../../../books/saas-engineering/README.md)、[04-implementation-reality](../../../books/saas-engineering/enterprise-mechanisms/04-implementation-reality.md)。
+
+复查：实现前按具体版本、字段、制度与部署范围重新核查；来源变更或主张冲突时复读。
+
+## EM-SRC-testing
+
+[Test your Dynamics 365 solution before deployment](https://learn.microsoft.com/en-us/dynamics365/guidance/implementation-guide/testing-strategy)
+
+- `EM-C16`：Testing is an ongoing lifecycle activity with scope, test cycles, objectives, entry/exit criteria and outcome tracking. 定位：Why testing matters; testing strategy elements。边界：不把本文的本地测试扩展为产品上线、真实用户或厂商验收。
+
+消费：[README](../../../books/saas-engineering/README.md)、[04-implementation-reality](../../../books/saas-engineering/enterprise-mechanisms/04-implementation-reality.md)。
+
+复查：实现前按具体版本、字段、制度与部署范围重新核查；来源变更或主张冲突时复读。
+
+## EM-SRC-http-semantics
+
+[RFC 9110: HTTP Semantics](https://www.rfc-editor.org/rfc/rfc9110.html#name-202-accepted)
+
+- `EM-C17`：HTTP 202 Accepted means accepted for processing but not completed; the request might or might not eventually be acted upon. 定位：15.3.3. 202 Accepted。边界：仅引用 §15.3.3；不把 HTTP 状态码解释为特定业务接收或效果保证。
+
+消费：[README](../../../books/saas-engineering/README.md)、[03-schema-tools-completion](../../../books/saas-engineering/enterprise-mechanisms/03-schema-tools-completion.md)。
+
+复查：实现前按具体版本、字段、制度与部署范围重新核查；来源变更或主张冲突时复读。
+
 ## ED-SRC-li-infra-references
 
 [本地参考资料库](https://github.com/bojieli/ai-infra-book/blob/main/references/README.md)

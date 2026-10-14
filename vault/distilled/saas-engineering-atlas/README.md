@@ -4,6 +4,7 @@
 
 - [案例索引](case-index.json)：33 个 case ID，指向 Books 正文和本地 topology JSON。
 - [共同标识](identifiers.json)、[案例内部边类型](relation-types.json)、[跨案例迁移图](transfer-map.json)：供交互实现消费的语义。
+- [企业机制资产](enterprise-mechanisms/README.md)：4章映射、2条工作链、契约实验与证据。
 - [计算方法资产](foundations/README.md)：12 章映射、18 组样例、来源与本地检查。
 - [包内资产](packages/README.md)：evidence、合成脚本、执行回执与交接历史。
 - [来源整合](../../provenance/saas-engineering-atlas/README.md)：canonical URL、原 ID 别名、主张和读取范围。

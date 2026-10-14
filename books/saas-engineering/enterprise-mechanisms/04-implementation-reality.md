@@ -15,7 +15,7 @@
 | 管理员与运行团队 | 单点登录、权限模板、配置入口 | 角色撤回、集成失效、租户差异与升级时能否持续控制 |
 | 数据负责人及 data steward | 统一口径、清洗数据 | 谁有权确定含义、修正错误、接受迁移结果与维护来源关系 |
 
-data steward 常译为数据管家或数据专员，本册保留原词，指日常维护定义、质量与使用规则的职责；它不等于数据库管理员。Microsoft 的数据治理指南把 stewardship、质量、主数据与使用场景放在一起，强调定义与质量有人的责任。[Data management](https://learn.microsoft.com/en-us/dynamics365/guidance/implementation-guide/data-management)（`EM-C11`）。
+data steward 常译为数据管家或数据专员，本册保留原词，指日常维护定义、质量与使用规则的职责；它不等于数据库管理员。Microsoft 的数据治理指南把 stewardship、质量、主数据与使用场景放在一起，强调定义与质量有人的责任。[Data management](https://learn.microsoft.com/en-us/dynamics365/guidance/implementation-guide/data-management)。
 
 需求冲突要落到具体工作上。购买者要求自动关闭更多工单，使用者担心客户未确认；解决办法不是折中为一个任意比例，而是区分哪些类别有确定验收证据，哪些仍需接收。管理员要求扩大统一角色，数据负责人担心跨法人暴露；应明确角色的作用域和必要数据，而不是给每个人相同访问。
 
@@ -34,13 +34,13 @@ data steward 常译为数据管家或数据专员，本册保留原词，指日�
 | 付款前核对另一个系统的证据 | 集成或领域扩展 | 身份映射、失败恢复、配额、支持责任 |
 | 完全不同的工作对象与生命周期 | 独立模块或专门产品 | 双系统权威、数据同步、用户切换与退出 |
 
-Microsoft 的扩展指南将可用性、性能、安全、可维护性与后续演进列为扩展时的考虑，并提醒不要直接复制旧方案。可取用的判断是：新功能的价值要连同长期维护责任一起计算。[Extend your solution](https://learn.microsoft.com/en-us/dynamics365/guidance/implementation-guide/extend-your-solution)（`EM-C12`）。
+Microsoft 的扩展指南将可用性、性能、安全、可维护性与后续演进列为扩展时的考虑，并提醒不要直接复制旧方案。可取用的判断是：新功能的价值要连同长期维护责任一起计算。[Extend your solution](https://learn.microsoft.com/en-us/dynamics365/guidance/implementation-guide/extend-your-solution)。
 
 成本可以用一个小模型估计。假设标准配置初期 8 人日、每季度维护 1 人日；定制初期 20 人日、每季度维护 4 人日；比较两年共 8 个季度，则分别为 `8 + 8×1 = 16` 和 `20 + 8×4 = 52` 人日，相差 36 人日。若定制每天节约 30 分钟，每年按 220 个工作日、每人日 8 小时估算，两年节约 `0.5×220×2÷8 = 27.5` 人日，单看劳动尚不足以抵偿差额。它仍可能因为降低重大错误或支持必要业务而值得做，但这些理由要另外说明，不能藏在“效率提升”中。
 
 ### 迁移是在转交未完成的责任
 
-迁移首先决定哪些数据需要进入新系统。通常要区分配置数据、主数据、未结交易、历史记录与附件。它们的用途和载入顺序不同。Microsoft 的迁移指南区分 configuration data 与 migration data，并要求明确范围、映射、依赖、角色和切换前后活动。[Configuration and migration data](https://learn.microsoft.com/en-us/dynamics365/guidance/implementation-guide/data-management-configuration-data-migration)（`EM-C13`）。
+迁移首先决定哪些数据需要进入新系统。通常要区分配置数据、主数据、未结交易、历史记录与附件。它们的用途和载入顺序不同。Microsoft 的迁移指南区分 configuration data 与 migration data，并要求明确范围、映射、依赖、角色和切换前后活动。[Configuration and migration data](https://learn.microsoft.com/en-us/dynamics365/guidance/implementation-guide/data-management-configuration-data-migration)。
 
 只核对导入条数不够。100 张旧工单变成 100 张新工单，可能已经丢失批准版本、附件关系或客户接收状态。迁移映射至少包括旧 ID、新 ID、身份范围、状态语义、时间语义、数量金额单位、缺失字段策略与来源。不能把旧系统的 `done` 无条件映射成新系统的 `accepted`。
 
@@ -58,9 +58,9 @@ Microsoft 的扩展指南将可用性、性能、安全、可维护性与后续�
 
 训练的单位应是一件完整任务，而不是菜单导览。采购人员要能说明为什么发票被阻塞、怎样取得修订；资金人员要知道未知付款不能另起一笔；服务负责人要能区分“已应用”与“已接收”。讲解成功路径之后，让使用者独立处理一次过期批准、一次部分完成和一次回执丢失，比只记录观看时长更能说明准备程度。
 
-Microsoft 的训练指南将训练目标与用户实际工作联系起来，并明确训练持续到上线之后。它支持按角色和任务设定可观察目标的做法。[Training strategy](https://learn.microsoft.com/en-us/dynamics365/guidance/implementation-guide/training-strategy)（`EM-C14`）。
+Microsoft 的训练指南将训练目标与用户实际工作联系起来，并明确训练持续到上线之后。它支持按角色和任务设定可观察目标的做法。[Training strategy](https://learn.microsoft.com/en-us/dynamics365/guidance/implementation-guide/training-strategy)。
 
-支持团队需要接收运行责任：哪些时段提供服务，什么问题由业务负责人、内部技术团队或供应商处理，超时怎样升级，何时允许临时访问。服务水平协议（Service Level Agreement, SLA）定义响应和恢复承诺时，应区分两者。Microsoft 的支持指南把范围、团队与运行安排分开，并要求在上线前检查准备程度。[Transition to support](https://learn.microsoft.com/en-us/dynamics365/guidance/implementation-guide/transition-to-support)（`EM-C15`）。
+支持团队需要接收运行责任：哪些时段提供服务，什么问题由业务负责人、内部技术团队或供应商处理，超时怎样升级，何时允许临时访问。服务水平协议（Service Level Agreement, SLA）定义响应和恢复承诺时，应区分两者。Microsoft 的支持指南把范围、团队与运行安排分开，并要求在上线前检查准备程度。[Transition to support](https://learn.microsoft.com/en-us/dynamics365/guidance/implementation-guide/transition-to-support)。
 
 ### 升级与技术债改变未来的工作成本
 
@@ -68,7 +68,7 @@ Microsoft 的训练指南将训练目标与用户实际工作联系起来，并�
 
 把这些依赖登记为可维护资产：每项定制有业务原因、负责人、契约测试、运行指标与退出条件。技术债不只是代码难看，也包括无人拥有的配置、无法重建的手工操作和没人知道含义的状态映射。偿还顺序由受影响的工作与风险决定，而不是只统计代码行数。
 
-测试随版本持续进行。系统集成测试（System Integration Testing, SIT）检查连接与数据流，用户验收测试（User Acceptance Testing, UAT）检查真实角色能否完成约定工作。Microsoft 的测试指南把测试作为持续活动，并要求范围、进入与退出条件及结果跟踪。[Testing strategy](https://learn.microsoft.com/en-us/dynamics365/guidance/implementation-guide/testing-strategy)（`EM-C16`）。一组适配器契约通过，可以证明其消息理解符合预期；实际工作接收仍有独立的验收目标。
+测试随版本持续进行。系统集成测试（System Integration Testing, SIT）检查连接与数据流，用户验收测试（User Acceptance Testing, UAT）检查真实角色能否完成约定工作。Microsoft 的测试指南把测试作为持续活动，并要求范围、进入与退出条件及结果跟踪。[Testing strategy](https://learn.microsoft.com/en-us/dynamics365/guidance/implementation-guide/testing-strategy)。一组适配器契约通过，可以证明其消息理解符合预期；实际工作接收仍有独立的验收目标。
 
 ### 退出是系统设计的一部分
 
@@ -120,7 +120,7 @@ Microsoft 的训练指南将训练目标与用户实际工作联系起来，并�
 
 **变式三：供应商升级后新增状态 `applied_with_warning`。** 如果业务并未定义警告是否可接受，调用方不能按字符串前缀把它当作 applied。适配器返回显式契约不匹配，操作保留待核对；待业务与技术负责人定义语义并补充测试后再接纳。检查 fake 和 HTTP 适配器都拒绝未识别状态，避免只有演示继续成功。
 
-**变式四：标准配置每天节省的时间变成 60 分钟。** 若增加的节约确实来自定制且持续两年，劳动收益变成 `1×220×2÷8 = 55` 人日，超过前述 36 人日增量成本。仍需计入使用覆盖、支持故障和可替代方案，但决定依据已改变。检查节约是否只是从录入人员转移到数据团队，不能把转移劳动计算成净收益。
+**变式四：定制每天节省的时间变成 60 分钟。** 若增加的节约确实来自定制且持续两年，劳动收益变成 `1×220×2÷8 = 55` 人日，超过前述 36 人日增量成本。仍需计入使用覆盖、支持故障和可替代方案，但决定依据已改变。检查节约是否只是从录入人员转移到数据团队，不能把转移劳动计算成净收益。
 
 ## 在陌生业务中继续调查
 

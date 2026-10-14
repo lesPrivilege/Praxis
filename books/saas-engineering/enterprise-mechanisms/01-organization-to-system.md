@@ -30,7 +30,7 @@
 
 关系也要有语义。“发票关联采购单”仍不足以结算：是引用、替换、冲销，还是占用了该采购单某一行的验收额度？若一张发票占用多次验收，分配关系本身应有数量、单位与有效状态。否则对象都在，真正决定能否付款的关系却没有保存。
 
-Palantir 的 Ontology 文档将 objects、properties、links 与 actions、functions 放在同一组织运行层中；这一建模方式把数据结构与允许的变化放在一起表达。[Ontology overview](https://www.palantir.com/docs/foundry/ontology/overview/)（`EM-C01`）。
+Palantir 的 Ontology 文档将 objects、properties、links 与 actions、functions 放在同一组织运行层中；这一建模方式把数据结构与允许的变化放在一起表达。[Ontology overview](https://www.palantir.com/docs/foundry/ontology/overview/)。
 
 ### 状态是可解释的事实压缩
 
@@ -56,7 +56,7 @@ Palantir 的 Ontology 文档将 objects、properties、links 与 actions、funct
 
 流程图最有用的内容不是箭头多，而是每条交接说明传什么、谁接收、怎样拒绝、等待多久由谁接管。先提交申请，后取得批准，是流程；批准后等待一天，是时间；取消后退款，是补偿；三者不能用同一条“下一步”箭头含混带过。
 
-操作撤销也有边界。尚未发出的指令可以取消；已被外部系统受理的指令要核对；已经生效的结果可能需要补偿动作。Camunda 的 compensation 文档把补偿处理绑定到已完成活动，并明确其作用范围与触发方式。由此应区分业务补救与数据库回滚：退货、退款或恢复配置都是新的工作，能否完成仍有自己的条件。[Compensation events](https://docs.camunda.io/docs/8.8/components/modeler/bpmn/compensation-events/)（`EM-C02`）。
+操作撤销也有边界。尚未发出的指令可以取消；已被外部系统受理的指令要核对；已经生效的结果可能需要补偿动作。Camunda 的 compensation 文档把补偿处理绑定到已完成活动，并明确其作用范围与触发方式。由此应区分业务补救与数据库回滚：退货、退款或恢复配置都是新的工作，能否完成仍有自己的条件。[Compensation events](https://docs.camunda.io/docs/8.8/components/modeler/bpmn/compensation-events/)。
 
 ## 演算：EM-E01 的采购例外
 

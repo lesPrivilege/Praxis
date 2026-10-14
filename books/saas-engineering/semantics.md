@@ -53,3 +53,5 @@
 `source_fact` 只在 claim 指定的来源和 locator 范围成立；`inference` 是作者推理；`synthetic` 是演示数值或系统设计。同一 URL 可以支持多个不同范围的主张，合并 URL 时不合并其限制。来源别名只处理同一材料的身份，不建立产品功能等价关系。来源、读取记录与原 ID 的解析见 [证据入口](../../vault/provenance/saas-engineering-atlas/README.md)。
 
 JSON 是语义输入，案例 Markdown 承担解释与推理；字段不限定 UI、图形、motion 或 Claude 的实现架构。ID 和证据身份应保留，新的设计决定在消费项目记录。
+
+企业机制中的 System Schema、Work Schema 与 Agent Context 是三个分析层次：系统能表达什么、工作怎样推进、这次执行实际读到了什么。它们分别映射到成熟生态中的对象/接口模型、流程/动作契约、上下文与运行状态；不是一套替代这些生态的通用 schema 标准。展开说明见 [工作上下文章](enterprise-mechanisms/03-schema-tools-completion.md)。

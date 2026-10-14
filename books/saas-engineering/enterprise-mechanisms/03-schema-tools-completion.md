@@ -2,7 +2,7 @@
 
 一个 agent 能读取工单、调用接口、生成一段流畅总结，仍可能没有完成工作。它也许不知道哪个版本被批准，外部执行是否已经生效，或者谁应当接收结果。工具连接解决了“怎样触达系统”，工作完成还需要解决“现在应该做什么、允许做什么、怎样确认做成”。
 
-前两章已经建立对象、权限与界面。这里用三个层次把它们连接起来：System Schema 描述系统怎样表达和访问事实；Work Schema 描述工作怎样推进和结束；Agent Context 则是本次 agent 执行实际得到的任务材料与状态。本册使用这三个分析层次来定位不同类型的缺口。
+前两章已经建立对象、权限与界面。这里用三个层次把它们连接起来：System Schema 描述系统怎样表达和访问事实；Work Schema 描述工作怎样推进和结束；Agent Context 则是本次 agent 执行实际得到的任务材料与状态。这三个层次是本书定位缺口的分析方式；实际实现仍使用各生态的对象模型、动作契约、流程定义与上下文结构，不把这组名称当作统一行业标准。
 
 ## 识题：缺的是结构、工作规则，还是当前依据
 
@@ -32,7 +32,7 @@
 
 它不必被实现为一个庞大的工作流引擎。开始时可以是领域服务的命令和状态转换；跨日等待、多角色交接、计时升级或分支补偿变多时，显式流程定义会更有价值。引擎能调度任务，却不能自行知道一次配置修改是否恢复了业务。
 
-Palantir 的 Action types 把一组对象、属性和关系的改变定义为动作，并允许跨应用复用其逻辑与校验。这说明“批准变更”比“把 status 列改为 approved”提供了更完整的工作语义。[Action types](https://www.palantir.com/docs/foundry/action-types/overview/)（`EM-C06`）。动作的事务边界仍需明确：组织内对象更新与外部系统产生的效果，不能只因出现在同一按钮下就被视为一项原子事务。
+Palantir 的 Action types 把一组对象、属性和关系的改变定义为动作，并允许跨应用复用其逻辑与校验。这说明“批准变更”比“把 status 列改为 approved”提供了更完整的工作语义。[Action types](https://www.palantir.com/docs/foundry/action-types/overview/)。动作的事务边界仍需明确：组织内对象更新与外部系统产生的效果，不能只因出现在同一按钮下就被视为一项原子事务。
 
 ### Agent Context：这一次执行所需的最小充分材料
 
@@ -86,15 +86,15 @@ flowchart TB
 
 每个工具还需要清楚的失败类别。格式错误需要改输入；权限拒绝需要不同授权；版本冲突需要重读；限流需要按协议退避；结果未知需要先核对。统一返回 `false` 会迫使 agent 猜测；统一自动重试会把错误放大。
 
-Palantir 的权限文档分别讨论动作可见性、配置与执行，并用 submission criteria 进一步控制执行。它还区分读访问控制、动作写入及副作用的条件。因此，能看见对象、能发现工具和能执行某次动作，不能互相推出。[Permissions](https://www.palantir.com/docs/foundry/action-types/permissions/)（`EM-C07`）。
+Palantir 的权限文档分别讨论动作可见性、配置与执行，并用 submission criteria 进一步控制执行。它还区分读访问控制、动作写入及副作用的条件。因此，能看见对象、能发现工具和能执行某次动作，不能互相推出。[Permissions](https://www.palantir.com/docs/foundry/action-types/permissions/)。
 
 ### 回写与完成的五个门槛
 
-一个命令经过的门槛可以是：**意图已保存 → 外部已受理 → 效果已确认 → 查询投影已同步 → 业务已接收**。不是所有业务都需要五个独立对象，但每个含义必须能定位。超文本传输协议（Hypertext Transfer Protocol, HTTP）的 202 Accepted 表示请求已被接受处理，但处理尚未完成；它不保证请求最终会被执行。后续完成情况应通过具体 API 的操作资源与业务证据核对。[HTTP Semantics §15.3.3](https://www.rfc-editor.org/rfc/rfc9110.html#name-202-accepted)（`EM-C17`）。
+一个命令经过的门槛可以是：**意图已保存 → 外部已受理 → 效果已确认 → 查询投影已同步 → 业务已接收**。不是所有业务都需要五个独立对象，但每个含义必须能定位。超文本传输协议（Hypertext Transfer Protocol, HTTP）的 202 Accepted 表示请求已被接受处理，但处理尚未完成；它不保证请求最终会被执行。后续完成情况应通过具体 API 的操作资源与业务证据核对。[HTTP Semantics §15.3.3](https://www.rfc-editor.org/rfc/rfc9110.html#name-202-accepted)。
 
 回写也有方向。agent 将摘要写入工单，是记录了一条说明；控制系统报告配置已变，是外部效果；服务负责人确认服务恢复，才是接收。三种内容可关联，来源与权限不能混为一谈。模型生成的“已修复”不能成为控制系统实际状态的来源。
 
-在任务执行层，超时不保证旧 worker 已停止。Camunda 的 job workers 文档明确指出，超时后重新分派可能使多个 worker 处理同一作业，worker 因而需要幂等。这提醒我们：重试次数与业务操作身份是两件事。[Job workers](https://docs.camunda.io/docs/8.8/components/concepts/job-workers/)（`EM-C08`）。保留同一意图、同一目标和同一操作键，才能核对每一次尝试到底在做哪件事。
+在任务执行层，超时不保证旧 worker 已停止。Camunda 的 job workers 文档明确指出，超时后重新分派可能使多个 worker 处理同一作业，worker 因而需要幂等。这提醒我们：重试次数与业务操作身份是两件事。[Job workers](https://docs.camunda.io/docs/8.8/components/concepts/job-workers/)。保留同一意图、同一目标和同一操作键，才能核对每一次尝试到底在做哪件事。
 
 ## 演算：EM-E02 的服务变更
 
@@ -130,7 +130,7 @@ fake 的价值是快速构造状态与故障；风险是它过于友好，永远
 
 本册实验端口为 `submit(intent)` 与 `lookup(tenant, operation_id)`。fake 直接处理内存对象；HTTP 适配器真的编码请求、经过本机 HTTP 服务、解析状态码和响应。两者共享以下可观察规则：同键同内容返回同一效果；同键不同内容拒绝；不同租户不串记录；响应丢失后按原键找回；不存在的操作返回“未观察到”；未知状态或错误响应形状不能被当作 applied。
 
-Pact 把 consumer（调用方）的请求与最低响应需要形成契约，再向 provider（提供方）重放请求进行验证。这种分开验证双方理解的做法，适合检查适配器边界。[How Pact works](https://docs.pact.io/getting_started/how_pact_works)（`EM-C09`）。Pact 的 FAQ 同时指出，响应匹配不等于验证所有副作用。因此实验还核对本地效果数与工作状态；真实接入还需要对真正 provider 的可观察效果作相应验证。[Pact FAQ](https://docs.pact.io/faq)（`EM-C10`）。
+Pact 把 consumer（调用方）的请求与最低响应需要形成契约，再向 provider（提供方）重放请求进行验证。这种分开验证双方理解的做法，适合检查适配器边界。[How Pact works](https://docs.pact.io/getting_started/how_pact_works)。Pact 的 FAQ 同时指出，响应匹配不等于验证所有副作用。因此实验还核对本地效果数与工作状态；真实接入还需要对真正 provider 的可观察效果作相应验证。[Pact FAQ](https://docs.pact.io/faq)。
 
 工具测试与 agent 测试也应分开。确定性工具检查权限、版本和操作身份；agent 评估检查它是否选对对象、是否追问缺失依据、是否在 unknown 时停止提交、是否准确报告剩余责任。只比较最终文字是否“像完成报告”，会漏掉错误动作。
 

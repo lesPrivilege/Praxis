@@ -6,11 +6,11 @@
 
 ## 可直接编订的内容
 
-[README](README.md)串起四章。正文约 1.6 万汉字，依次教授组织对象与权威、七种前端语法及后端契约、三个 schema 层次与工具完成条件、实施与退出。两条原创合成工作链贯通四章，14 道改变条件的练习均有答案、失效原因与可观察检查。原语言术语保留在 [terms.md](terms.md)，没有制作机械重复的双语正文。
+[README](../../../../books/saas-engineering/enterprise-mechanisms/README.md)串起四章。正文约 1.6 万汉字，依次教授组织对象与权威、七种前端语法及后端契约、三个 schema 层次与工具完成条件、实施与退出。两条原创合成工作链贯通四章，14 道改变条件的练习均有答案、失效原因与可观察检查。原语言术语保留在 [terms.md](../../../../books/saas-engineering/enterprise-mechanisms/terms.md)，没有制作机械重复的双语正文。
 
-[examples.json](examples.json)保留 EM-E01/EM-E02 的对象身份、数值、状态、步骤、故障与检查入口；[case-connections.md](case-connections.md)按机制连接全部 33 例，[case-links.json](case-links.json)记录固定提交和可供整合者改写的本地路径。没有重复展开独立算法分册。
+[examples.json](examples.json)保留 EM-E01/EM-E02 的对象身份、数值、状态、步骤、故障与检查入口；[case-connections.md](../../../../books/saas-engineering/enterprise-mechanisms/case-connections.md)按机制连接全部 33 例，[case-links.json](case-links.json)记录固定提交和可供整合者改写的本地路径。没有重复展开独立算法分册。
 
-[evidence.json](evidence.json)有 17 个逐 URL 来源、17 条实际读取记录、27 条事实/解释/合成主张；[evidence.md](evidence.md)便于回查。[lab-guide.md](lab-guide.md)、源码与 36 项通过的检查交付可复现机制；HTTP 适配器实际经过本机网络，真实外部 provider 未调用。事实、数量、条件和本地例子已在本轮核对，后续 Claude 不承担原始草稿查错职责。
+[evidence.json](evidence.json)有 17 个逐 URL 来源、17 条实际读取记录、27 条事实/解释/合成主张；[evidence.md](evidence.md)便于回查。[lab-guide.md](../../../../books/saas-engineering/enterprise-mechanisms/lab-guide.md)、源码与 36 项通过的检查交付可复现机制；HTTP 适配器实际经过本机网络，真实外部 provider 未调用。事实、数量、条件和本地例子已在本轮核对，后续 Claude 不承担原始草稿查错职责。
 
 ## 编订接口
 

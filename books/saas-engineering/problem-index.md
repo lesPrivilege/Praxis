@@ -2,6 +2,8 @@
 
 先描述“哪些事实看起来冲突”，再选择方法。下表用常见机制连接案例；题型分组是本书的教学归纳。算法沿用 lookup、Top-K、window、graph、scheduling 等熟悉名称，provider 术语保持原样，技术方案和行业制度的范围在各例说明。
 
+对象、权限、页面与工作完成的关系可先读 [企业机制](enterprise-mechanisms/README.md)。其中 [前端工作面](enterprise-mechanisms/02-enterprise-frontend.md)解释表格、表单、详情、工作台、看板、批量动作与设置各自需要的后端契约；[工作上下文与工具](enterprise-mechanisms/03-schema-tools-completion.md)把这些契约接到 agent 的执行与回写。
+
 ## 题型与方案
 
 | 识题线索 | 解法家族 | 演算入口 | 下一步查证与反例 |

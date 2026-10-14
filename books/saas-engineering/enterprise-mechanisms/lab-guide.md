@@ -4,23 +4,23 @@
 
 ## 运行与阅读
 
-在本目录运行：
+从 Praxis 仓库根目录运行：
 
 ```bash
-python3 -m unittest -v test_mechanism_lab.py
+python3 vault/distilled/saas-engineering-atlas/enterprise-mechanisms/test_mechanism_lab.py
 ```
 
 只使用 Python 标准库；临时 SQLite 数据库由测试创建并清理，本机 HTTP 服务绑定 `127.0.0.1` 的临时端口。代码不需要依赖安装、账号或外部地址。
 
 | 文件与入口 | 阅读目的 |
 |---|---|
-| [mechanism_lab.py](mechanism_lab.py) 的 `PurchaseLedger` | 发票修订保留历史；批准版本检查；数量检查与分配在同一 SQLite 事务中 |
+| [mechanism_lab.py](../../../vault/distilled/saas-engineering-atlas/enterprise-mechanisms/mechanism_lab.py) 的 `PurchaseLedger` | 发票修订保留历史；批准版本检查；数量检查与分配在同一 SQLite 事务中 |
 | 同文件的 `Change` | 确定方案与批准范围的绑定；执行窗口 |
 | 同文件的 `OperationJournal` | 意图与发送状态持久化；业务意图唯一；结果未知后核对；接收权限 |
 | 同文件的 `FakeAdapter` / `HttpAdapter` | 同一应用端口的内存实现和实际 HTTP 编解码实现 |
-| [test_mechanism_lab.py](test_mechanism_lab.py) 的 `ReferenceProvider` | 独立实现本地教学协议，能够在生效后主动断开响应 |
+| [test_mechanism_lab.py](../../../vault/distilled/saas-engineering-atlas/enterprise-mechanisms/test_mechanism_lab.py) 的 `ReferenceProvider` | 独立实现本地教学协议，能够在生效后主动断开响应 |
 | 同文件的 `AdapterContract` | 同一组契约检查分别执行在 fake 与 HTTP 适配器上 |
-| [fixtures.json](fixtures.json) | 切换前 20 项工作、来源状态与算术预期值 |
+| [fixtures.json](../../../vault/distilled/saas-engineering-atlas/enterprise-mechanisms/fixtures.json) | 切换前 20 项工作、来源状态与算术预期值 |
 
 ## 两条完整实验轨迹
 
@@ -53,8 +53,10 @@ HTTP 线协议使用 `POST /operations` 与 `GET /operations?tenant=...&operatio
 
 真实适配器的接入验证沿用同样的步骤，但增加确切 provider 的验证环境、身份与最小权限、API 版本、外部查询一致性、错误码、重复请求保留期限及结果关联规则。需要同时核对请求响应与实际效果。只有传输成功，不能证明业务已完成；只有 fake 通过，也不能证明真正 provider 接受同一约定。
 
+发送失败与核对也可能并发。配套回归检查先保存已确认效果，再让原发送者收到延迟的传输、契约或拒绝异常；工作日志只允许仍处于 sending 的记录转为 unknown，已确认事实保持不变。
+
 ## 实现范围
 
 本实验的 HTTP 适配器是实际传输代码，提供方是本机合成服务。它没有连接银行、Palantir、Camunda 或任何生产账户；Pact 被用作契约思想的来源，未安装其框架。角色字符串是来自测试夹具的已验证身份假设，没有实现身份认证、真实权限撤回或跨租户数据访问控制。
 
-SQLite 检查覆盖局部事务与持久化意图，没有模拟分布式数据库、外部 provider 持久化、服务崩溃的所有时序、支付退款、审批撤回广播、浏览器或负载。分钟值 1200–1230 表示本例 UTC 日内执行窗口；真实运行需要完整日期、时区与可信时钟。对象模型保留本次演算需要的证据，未实现完整单据管理系统。上述边界不影响已经执行的局部结论；各项实际结果见 [验证记录](verification.md)。
+SQLite 检查覆盖局部事务与持久化意图，没有模拟分布式数据库、外部 provider 持久化、服务崩溃的所有时序、支付退款、审批撤回广播、浏览器或负载。分钟值 1200–1230 表示本例 UTC 日内执行窗口；真实运行需要完整日期、时区与可信时钟。对象模型保留本次演算需要的证据，未实现完整单据管理系统。上述边界不影响已经执行的局部结论；各项实际结果见 [验证记录](../../../vault/distilled/saas-engineering-atlas/enterprise-mechanisms/verification.md)。

@@ -36,13 +36,16 @@ def evidence_kind(claim):
     return {'source-backed': 'source_fact', 'synthetic-example': 'synthetic',
             'derivation': 'inference'}.get(claim['kind'], claim['kind'])
 
+def source_url(source):
+    return source.get('canonical_url') or source.get('url') or source['original_url']
+
 def chapter_routes(claim):
     """Project reader routes without changing the author's original chapter paths."""
     origin = Path(claim['origin_path'])
     if 'case_id' in claim:
         return [str(Path('books/saas-engineering/packages') / origin.parent.name / (claim['case_id'] + '.md'))]
     routes = []
-    for path in claim.get('chapter_paths', claim.get('local_paths', [])):
+    for path in claim.get('chapter_paths', claim.get('local_paths', [claim['chapter']] if 'chapter' in claim else [])):
         chapter = Path(path)
         if chapter.suffix != '.md':
             continue
@@ -86,7 +89,7 @@ def build():
     }
     groups = defaultdict(list)
     for s in records:
-        url = redirects.get(s['id'], (s.get('canonical_url', s['url']), ''))[0]
+        url = redirects.get(s['id'], (source_url(s), ''))[0]
         groups[url].append(s)
     sources, aliases = [], {}
     for url, members in groups.items():
@@ -106,7 +109,7 @@ def build():
         review_ids = [r['review_id'] for r in reviews if r['original_record']['source_id'] in ids]
         source = {
             'id': sid, 'aliases': ids[1:], 'slug': first.get('slug', sid.lower().replace('_', '-')),
-            'title': first.get('title', first.get('title_original')), 'original_url': first.get('original_url', first['url']),
+            'title': first.get('title', first.get('title_original')), 'original_url': first.get('original_url', source_url(first)),
             'url': url, 'canonical_url': url,
             'status': 'verified-in-scope' if scoped else 'unverified',
             'summary_zh': '按下列独立主张和读取范围消费；全文摘要与限制见来源总表。' if scoped else '保留的研究线索，当前没有可用于本教材事实的已支持主张。',

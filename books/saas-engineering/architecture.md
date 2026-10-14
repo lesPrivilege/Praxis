@@ -1,6 +1,6 @@
 # 从业务承诺到可恢复的系统
 
-一项 SaaS 服务使不同的人能围绕同一件工作作出相容的决定。销售承诺交付，运营证明交付，财务核对收款。各方看的是同一业务的不同部分；系统要保存足够的身份、状态与证据，使一次点击不会悄悄替另一方作出决定。这是本百科组织案例的起点。
+一项 SaaS 服务使不同的人能围绕同一件工作作出相容的决定。销售承诺交付，运营证明交付，财务核对收款。各方看的是同一业务的不同部分；系统要保存足够的身份、状态与证据，使一次点击不会悄悄替另一方作出决定。这是本书组织案例的起点。
 
 本书中的软件即服务（Software as a Service，SaaS）通过持续服务提供软件能力。用户界面（user interface，UI）承接人的观察与请求；应用程序接口（application programming interface，API）规定系统之间怎样读写。人工智能（artificial intelligence，AI）可以帮助生成候选与解释，动作仍受对象、权限和确认条件约束。标识符（identifier，ID）定位对象，唯一性取决于租户与来源等范围；JSON（JavaScript Object Notation）保存配套结构数据。其他缩写在各行业首次使用处展开，集中查阅见 [术语索引](terminology.md)。
 
@@ -44,8 +44,6 @@
 
 性能参数写成待检验的目标，注明请求量、对象数、租户分布、并发、延迟分位数、错误率与缓存条件。恢复要说明已提交、未提交与结果未知的区分；每个可重试操作都有身份和核对依据。AI 输出如果参与判断，则另外评估错判、漏判、人工修正和拒绝条件；语言流畅不作为业务正确性的替代指标。
 
-## 在 Praxis 中落位
+## 继续展开这张图
 
-教材正文放在 `books/saas-engineering`，结构与合成检查放在 `vault/distilled/saas-engineering-atlas`，来源身份和读取记录放在 `vault/provenance/saas-engineering-atlas`，批次范围进 `vault/intake`，验收记录进 `docs/verification`。既有 [工作语法](../../kit/grammar/work.md) 和 [场景模板](../../scenarios/_template/README.md)作为后续消费入口，研究结论不自动成为 Kit 权威定义。Tally 仍保留原书稿主题入口，本书从 Books 与 Vault 双向发现，来源仍按原有主题入口回查。
-
-本地 Claude 可以自由选择布局、交互、动效和技术栈。交接约束只要求保留 case/object/claim ID、原语言术语、provider 身份、synthetic 标签、前提和证据强度。演示若省略恢复步骤，必须在相应动作处说明省略。建立 demo 时再按 Praxis 的 scenario/demo 规则记录实现与运行验收。
+[企业机制](enterprise-mechanisms/README.md)解释组织责任为什么形成这些对象、页面与动作；[计算与系统方法](foundations/README.md)把选择过程展开为可手算的例子，再接到事务、恢复与验证。进入一个行业时，从 [案例目录](case-catalog.md)选择一例，沿 [迁移地图](transfer-map.md)改变条件。需要把教材编订为交互作品时，制作入口与结构资产见 [Claude 交接](claude-handoff.md)。

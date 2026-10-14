@@ -309,6 +309,13 @@ class OperationJournal:
         self.db.execute("UPDATE operations SET state=?, result=coalesce(?,result) WHERE tenant=? AND id=?",
                         (state,canonical(result) if result is not None else None,tenant,operation_id))
 
+    def _mark_uncertain(self, tenant, operation_id):
+        # A slower sender cannot erase evidence already saved by reconciliation.
+        with transaction(self.db):
+            self.db.execute("UPDATE operations SET state='unknown' WHERE tenant=? AND id=? AND state='sending'",
+                            (tenant,operation_id))
+            return self.row(tenant, operation_id)['state']
+
     def _observe(self, tenant, operation_id, result):
         with transaction(self.db):
             row = self.row(tenant, operation_id)
@@ -342,11 +349,10 @@ class OperationJournal:
             result = adapter.submit(intent)
             return self._observe(tenant, operation_id, result)
         except (UnknownResult, ContractError):
-            self._state(tenant, operation_id, "unknown")
-            return "unknown"
+            return self._mark_uncertain(tenant, operation_id)
         except RuleError:
             # A contradictory provider key may conceal a prior effect: retain for reconciliation.
-            self._state(tenant, operation_id, "unknown")
+            self._mark_uncertain(tenant, operation_id)
             raise
 
     def reconcile(self, tenant, operation_id, adapter):

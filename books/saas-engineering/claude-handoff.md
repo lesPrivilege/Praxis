@@ -4,7 +4,7 @@
 
 ## 最少输入
 
-1. [全景入口](README.md)与[阅读主线](learning-path.md)：共同图景及“识题→解法→演算→验算→变式”。
+1. [全景入口](README.md)与[阅读主线](learning-path.md)：先读 [企业机制四章](enterprise-mechanisms/README.md)，建立组织→界面→工作上下文与工具→实施的连接。全书沿“识题→解法→演算→验算→变式”。
 2. [12 章计算与系统方法](foundations/README.md)与其 18 个演算例；[题型、算法与栈索引](problem-index.md)、[33 例目录](case-catalog.md)：先选主线例子，再按需展开行业。
 3. [词表与图语义](semantics.md)、[迁移地图](transfer-map.md)：保留哪些机制、哪些条件必须重查。
 4. [来源与证据](../../vault/provenance/saas-engineering-atlas/README.md)、[验证方法](validation.md)：来源事实、作者推理、合成政策分别消费。
@@ -17,7 +17,9 @@ Vault 结构目录中的 [`case-index.json`](../../vault/distilled/saas-engineer
 
 `transfer-map.json` 的 node 是 case，edge 是教学迁移。每条边有 `type/from/to/preserved_mechanism/precondition/changed_condition/counterexample/observable_check`，全部是教学推理；它不继承来源事实、运行权限或专业决定。`transfer-proposals.json` 保留其余建议及出处，可继续编辑或选择。
 
-包内 `evidence.json` 保存原主张和读取记录。provenance 的 `catalog.json` 按 canonical URL 去重；`source-aliases.json` 让全部原 source ID 可解析；`claims.json` 保留全部主张、类别与限制；`reviews.json` 保留原始记录、读取日期和失败范围。同一 URL 的不同 claim、版本限制及失败记录不能互相覆盖。foundations 的 `curriculum.json` 以 `reader_root` 加章节 `path` 定位 Books，`examples.json` 保存输入、步骤与结果。全局 claims 保留作者原 `kind`，另以 `evidence_kind` 映射为 `source_fact/synthetic/inference`；`source-backed` 与 `synthetic-example` 的原类别不被抹去。
+包内 `evidence.json` 保存原主张和读取记录。provenance 的 `catalog.json` 按 canonical URL 去重；`source-aliases.json` 让全部原 source ID 可解析；`claims.json` 保留全部主张、类别与限制；`reviews.json` 保留原始记录、读取日期和失败范围。同一 URL 的不同 claim、版本限制及失败记录不能互相覆盖。enterprise-mechanisms 的 `case-links.json` 连接33例并保留作者所读固定SHA；`reader_root` 与 `reader_path` 指向当前 Books。其 `examples.json` 保留两条工作链，实验指南明确本机 HTTP/SQLite 与真实 provider 的边界。
+
+foundations 的 `curriculum.json` 以 `reader_root` 加章节 `path` 定位 Books，`examples.json` 保存输入、步骤与结果。全局 claims 保留作者原 `kind`，另以 `evidence_kind` 映射为 `source_fact/synthetic/inference`；`source-backed` 与 `synthetic-example` 的原类别不被抹去。
 
 `source_claim_id` 是引用关系，未声明为完全同义的 claim 不应直接合并。
 

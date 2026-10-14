@@ -48,4 +48,4 @@
 | folio | 住客账夹 | V06 汇集费用与支付的对象，不等于预订或实体房间 |
 | reserve / payoff / transcript | 赔付准备业务记录 / 提前结清 / 成绩记录 | 各自属于 V13、V12、V17；含义以对应案例对象与原来源为准 |
 
-原语言来源标题与段落定位见 [证据侧栏](evidence.md)，案例原词的进一步解释见 [33 个案例入口](case-connections.md)。
+原语言来源标题与段落定位见 [证据侧栏](../../../vault/distilled/saas-engineering-atlas/enterprise-mechanisms/evidence.md)，案例原词的进一步解释见 [33 个案例入口](case-connections.md)。

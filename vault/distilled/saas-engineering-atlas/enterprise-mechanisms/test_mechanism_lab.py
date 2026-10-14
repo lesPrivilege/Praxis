@@ -256,6 +256,23 @@ class TestWorkflows(unittest.TestCase):
         j=self.journal(); a=FakeAdapter(); j.enqueue(change_intent()); j.dispatch('T-1','OP-42',a)
         late=a.lookup('T-1','OP-42'); late['state']='accepted'
         self.assertEqual('awaiting_acceptance',j._observe('T-1','OP-42',late))
+    def test_late_send_failure_preserves_concurrent_confirmation(self):
+        for failure in (UnknownResult, ContractError, RuleError):
+            with self.subTest(failure=failure.__name__):
+                j=self.journal(); j.enqueue(change_intent())
+                class ObservedBeforeFailure(FakeAdapter):
+                    def submit(self, intent):
+                        result=super().submit(intent)
+                        # A reconciliation worker saves the effect before the sender resumes.
+                        j._observe('T-1','OP-42',result)
+                        raise failure('late_sender_failure')
+                adapter=ObservedBeforeFailure()
+                if failure is RuleError:
+                    with self.assertRaises(RuleError): j.dispatch('T-1','OP-42',adapter)
+                else:
+                    self.assertEqual('awaiting_acceptance',j.dispatch('T-1','OP-42',adapter))
+                self.assertEqual('awaiting_acceptance',j.row('T-1','OP-42')['state'])
+                self.assertEqual(1,adapter.effect_count)
     def test_concurrent_observations_cannot_regress_applied(self):
         with tempfile.TemporaryDirectory() as directory:
             path=str(Path(directory)/'observe.db')

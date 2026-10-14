@@ -27,3 +27,7 @@
 ## Foundations integration · 2026-10-14
 
 Merged exact author commit `ee597ceaa3675f818746c6122353858872af17e4`. Moved14 teaching pages into Books, preserved raw evidence and local curriculum/example identities, and adapted reader routes without weakening coverage checks. All17 delivered Python entry points passed; foundations reports18 examples,18,462 comparison scenarios and18 rejected mutations. Shared catalog now has188 canonical URLs and193 original source identities. Enterprise mechanisms and independent final reviews remain pending.
+
+## Enterprise integration · 2026-10-14
+
+Merged exact author commit `dc37f49302d8145006e62a111a7a06d10e1d6ca2`. Moved8 teaching pages to Books and connected all33 canonical case pages while preserving frozen source paths. Shared catalog now has205 canonical URLs,210 original source identities,222 reviews and386 claims. All19 delivered executable check entry points passed. Reproduced and repaired a late sender-error race, adding one regression method (37enterprise methods total); original36-test author records remain preserved. All inputs are integrated; independent technical and whole-book reviews are pending.

@@ -16,6 +16,9 @@ def main():
     paths=sorted((ATLAS/'packages').glob('*/*.py'))
     if (ATLAS/'foundations').is_dir():
         paths+=sorted((ATLAS/'foundations').rglob('*.py'))
+    enterprise=ATLAS/'enterprise-mechanisms'
+    if enterprise.is_dir():
+        paths += [enterprise/'test_mechanism_lab.py', enterprise/'validate_content.py']
     results=[]
     for p in paths:
         cmd=[sys.executable,str(p.relative_to(ROOT))]

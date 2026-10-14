@@ -65,3 +65,5 @@
 领域词如 hold、release、acceptance 的不同含义见 [共同语义](semantics.md)。机器索引见 [terminology.json](../../vault/distilled/saas-engineering-atlas/terminology.json)；图和独立节点标签可通过 `reader_term_ids` 展示同一解释。
 
 算法、缓存与验证术语的细分说明见 [计算方法原词索引](foundations/terms.md)，包括 heap 与 priority queue、memoization 与 cache、eviction 与 invalidation 的区别。
+
+对象、工作、工具、配置与实施用语见 [企业机制原词索引](enterprise-mechanisms/terms.md)。System Schema、Work Schema 与 Agent Context 在这里是编订分析层次；Palantir Ontology 与 submission criteria 保留产品定义，不互相替代。

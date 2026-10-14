@@ -2,15 +2,21 @@
 
 一家企业不断接受承诺、安排资源、完成交付、取得证据并结清义务。销售订单让客户与企业对交付形成共同约定；生产单安排如何履约；检验结果决定能否放行；发票与付款记录各自回答应收多少和实际收到多少。SaaS 把这些对象交给不同角色处理，又使它们能互相核对。页面是人进入这条链的地方，接口连接不同权威系统，存储保留已经作出的决定。
 
-全景图首先要让读者看见这些连接，再进入行业细节。案例编号保留已有身份；教材章节按理解依赖组织，不按编号顺序堆放案例。阅读分两次展开：先用一组小输入学会方法，再按业务问题选行业案例。下列七个问题从简单承诺走向时间、资源与跨组织责任；每次选一例完成五步，再用另一例改变条件。
+全景图首先要让读者看见这些连接，再进入行业细节。案例编号保留已有身份；教材章节按理解依赖组织，不按编号顺序堆放案例。阅读先建立组织与系统的连接，再用小输入学会计算方法，最后按业务问题选行业案例。下列七个问题从简单承诺走向时间、资源与跨组织责任；每次选一例完成五步，再用另一例改变条件。
 
-## 先把一组小输入算清
+## 先看组织怎样使用软件
+
+[企业机制四章](enterprise-mechanisms/README.md)从采购例外开始：12 台承诺、10 台到货、9 台合格，为什么只能形成 9 台的付款资格？第 [1](enterprise-mechanisms/01-organization-to-system.md)章分清对象与权威，第 [2](enterprise-mechanisms/02-enterprise-frontend.md)章将证据与动作放进表格、表单和工作台，第 [3](enterprise-mechanisms/03-schema-tools-completion.md)章让 agent 沿批准版本提交、核对并取得接收，第 [4](enterprise-mechanisms/04-implementation-reality.md)章把同样的责任带进配置、迁移、培训和退出。
+
+读到接口成功、效果确认和业务接收时，画出各自的确认者。把服务变更改成“只收到 accepted”，检查哪一段不能继续；这会为后面方法章的事务和恢复建立具体问题。
+
+## 再把一组小输入算清
 
 [计算与系统方法](foundations/README.md)用维修订单 O7 连起 12 章。第 [1](foundations/01-problems-and-objects.md)章分清对象，第 [2](foundations/02-lookup-and-indexes.md)–[3](foundations/03-order-and-intervals.md)章处理查找、顺序与区间，第 [4](foundations/04-graphs-and-connectivity.md)–[6](foundations/06-choices-and-optimization.md)章处理关系、依赖与约束，第 [7](foundations/07-reuse-and-invalidation.md)–[8](foundations/08-approximation-and-search.md)章比较复用和近似的代价，第 [9](foundations/09-from-ui-to-recovery.md)–[11](foundations/11-stacks-and-research.md)章把计算接入界面、事务、恢复、验证和成熟技术栈。最后在第 [12](foundations/12-transfer-workbook.md)章独立完成跨行业变式。
 
 需要查某一种方法时，可直接从 [解题索引](problem-index.md)进入；进入章节后仍先写自己的预测，再对照演算。方法章解释算法为何成立，行业例解释对象和权威为何不能照搬。
 
-## 再用七个问题展开行业全景
+## 用七个问题展开行业全景
 
 | 业务问题 | 逐步建立的理解 | 案例入口 | 本章应能完成的判断 |
 |---|---|---|---|
