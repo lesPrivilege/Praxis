@@ -1,0 +1,283 @@
+{
+  "package_id": "P01",
+  "sources": [
+    {
+      "id": "P01-SRC-stripe-payment-application",
+      "url": "https://docs.stripe.com/invoicing/apply-payments",
+      "canonical_url": "https://docs.stripe.com/invoicing/apply-payments",
+      "title": "Payment application",
+      "status": "verified",
+      "snapshot_status": "not-captured",
+      "scope": "下列 review 指定章节的文本读取；无 provider 执行"
+    },
+    {
+      "id": "P01-SRC-stripe-idempotency",
+      "url": "https://docs.stripe.com/api/idempotent_requests",
+      "canonical_url": "https://docs.stripe.com/api/idempotent_requests",
+      "title": "Idempotent requests",
+      "status": "verified",
+      "snapshot_status": "not-captured",
+      "scope": "下列 review 指定章节的文本读取；无 provider 执行"
+    },
+    {
+      "id": "P01-SRC-stripe-credit-notes",
+      "url": "https://docs.stripe.com/invoicing/integration/programmatic-credit-notes",
+      "canonical_url": "https://docs.stripe.com/invoicing/integration/programmatic-credit-notes",
+      "title": "Generate credit notes programmatically",
+      "status": "verified",
+      "snapshot_status": "not-captured",
+      "scope": "下列 review 指定章节的文本读取；无 provider 执行"
+    },
+    {
+      "id": "P01-SRC-postgres-constraints",
+      "url": "https://www.postgresql.org/docs/current/ddl-constraints.html",
+      "canonical_url": "https://www.postgresql.org/docs/current/ddl-constraints.html",
+      "title": "PostgreSQL 18 — Constraints",
+      "status": "verified",
+      "snapshot_status": "not-captured",
+      "scope": "下列 review 指定章节的文本读取；无 provider 执行"
+    }
+  ],
+  "reviews": [
+    {
+      "source_id": "SF_QTC",
+      "date": "2026-10-14",
+      "status": "verified-in-scope",
+      "method": "web open/read primary public page",
+      "locator": "Introduction; What is the quote-to-cash process?; Craft the Proposal and Agreement; Process the Order; Send the Invoice, Collect Payment, and Allocate Cash",
+      "supported_claims": [
+        "H01:claim:qtc-scope"
+      ],
+      "limitations": "仅采用流程范围；未核查文中外链统计，不采纳营销因果或收入确认说法。"
+    },
+    {
+      "source_id": "IRONCLAD",
+      "date": "2026-10-14",
+      "status": "verified-in-scope",
+      "method": "web open/read primary public page",
+      "locator": "New Workflow Page; Unified Dashboard and Repository",
+      "supported_claims": [
+        "H01:claim:contract-workspace"
+      ],
+      "limitations": "仅产品发布说明文本；未打开嵌入演示、未测试功能。"
+    },
+    {
+      "source_id": "STRIPE_INV",
+      "date": "2026-10-14",
+      "status": "verified-in-scope",
+      "method": "web open/read primary public page",
+      "locator": "Invoice lifecycle; Invoice statuses; Open invoices; Paid invoices; Out of band invoices; Credit notes",
+      "supported_claims": [
+        "H01:claim:paid-evidence",
+        "STRIPE_INV-C1"
+      ],
+      "limitations": "保留 STRIPE_INV-C1 原身份。概览的 paid terminal 说法与生命周期表、Payment application 存在冲突；不把 paid 当普遍终态。"
+    },
+    {
+      "source_id": "STRIPE_WEBHOOK",
+      "date": "2026-10-14",
+      "status": "verified-in-scope",
+      "method": "web open/read primary public page",
+      "locator": "Create a handler; Event ordering; Handle duplicate events; Handle events asynchronously; Verify webhook signatures",
+      "supported_claims": [
+        "STRIPE_WEBHOOK-C1"
+      ],
+      "limitations": "保留 STRIPE_WEBHOOK-C1；只阅读集成行为，未执行签名或网络测试。"
+    },
+    {
+      "source_id": "STRIPE_REV",
+      "date": "2026-10-14",
+      "status": "verified-in-scope",
+      "method": "web open/read primary public page",
+      "locator": "Introduction; Licensed subscriptions; Subscription cancellations; Standalone invoices",
+      "supported_claims": [
+        "H01:claim:period-input",
+        "STRIPE_REV-C1"
+      ],
+      "limitations": "保留 STRIPE_REV-C1；本例算术是合成设计，未读取所有其他收入类型。"
+    },
+    {
+      "source_id": "P01-SRC-stripe-payment-application",
+      "date": "2026-10-14",
+      "status": "verified-in-scope",
+      "method": "web open/read primary public page",
+      "locator": "Before applying or unapplying; Apply a payment to an invoice; Unapply a payment from an invoice; Automatic collection; Subscription status",
+      "supported_claims": [
+        "H01:claim:invoice-reopen"
+      ],
+      "limitations": "有 collection_method 和 preview API 限定；未验证账户实际可用性。"
+    },
+    {
+      "source_id": "P01-SRC-stripe-idempotency",
+      "date": "2026-10-14",
+      "status": "verified-in-scope",
+      "method": "web open/read primary public page",
+      "locator": "Body paragraphs API v1 saved result, parameter comparison, key pruning, endpoint execution and v1/v2 distinction",
+      "supported_claims": [
+        "H01:claim:provider-idempotency"
+      ],
+      "limitations": "仅 API v1 结论用于本例；无运行证明。"
+    },
+    {
+      "source_id": "P01-SRC-stripe-credit-notes",
+      "date": "2026-10-14",
+      "status": "verified-in-scope",
+      "method": "web open/read primary public page",
+      "locator": "Introduction; Credit notes for open invoices; Credit notes for paid invoices",
+      "supported_claims": [
+        "H01:claim:credit-note"
+      ],
+      "limitations": "只支持 credit note 与退款/余额的分离，未验证税务或实际 API。"
+    },
+    {
+      "source_id": "P01-SRC-postgres-constraints",
+      "date": "2026-10-14",
+      "status": "verified-in-scope",
+      "method": "web open/read primary public page",
+      "locator": "5.5.1 Check Constraints; 5.5.3 Unique Constraints; 5.5.4 Primary Keys; 5.5.5 Foreign Keys",
+      "supported_claims": [
+        "H01:claim:db-identity"
+      ],
+      "limitations": "文档当前指向18；未在 PostgreSQL 执行数据库测试。"
+    }
+  ],
+  "claims": [
+    {
+      "id": "H01:claim:qtc-scope",
+      "case_id": "H01",
+      "kind": "source_fact",
+      "statement": "Salesforce 的 QTC 范围涉及报价、履约、开票、应收与收款分配。",
+      "source_ids": [
+        "SF_QTC"
+      ],
+      "locator": "Introduction; What is the quote-to-cash process?; Send the Invoice, Collect Payment, and Allocate Cash",
+      "limitations": "仅流程范围；营销效果、收入可确认时点及技术实现未采纳。"
+    },
+    {
+      "id": "H01:claim:contract-workspace",
+      "case_id": "H01",
+      "kind": "source_fact",
+      "statement": "Ironclad 发布说明将合同状态、未完成任务、协作者责任和统一合同搜索作为界面能力。",
+      "source_ids": [
+        "IRONCLAD"
+      ],
+      "locator": "New Workflow Page; Unified Dashboard and Repository",
+      "limitations": "2025 年发布说明的产品自述；不证明内部存储、授权或财务机制。"
+    },
+    {
+      "id": "H01:claim:paid-evidence",
+      "case_id": "H01",
+      "kind": "source_fact",
+      "statement": "Stripe invoice.paid 可由信用余额、免费/试用、out-of-band 等情况产生，不能单凭事件认定一次关联 PaymentIntent 成功。",
+      "source_ids": [
+        "STRIPE_INV"
+      ],
+      "locator": "Paid invoices; Out of band invoices",
+      "limitations": "只说明 listed 状态证据差异；不是银行结算确认或通用会计规则。"
+    },
+    {
+      "id": "H01:claim:period-input",
+      "case_id": "H01",
+      "kind": "source_fact",
+      "statement": "Stripe 收入计划基于 finalized invoice 与服务行期间；取消 subscription 不自动改写已开票计划，独立发票未设行期间会影响确认时点。",
+      "source_ids": [
+        "STRIPE_REV"
+      ],
+      "locator": "Introduction; Licensed subscriptions; Subscription cancellations; Standalone invoices",
+      "limitations": "不支持本例整数日累计算法、合规性、退款调整分录或 provider 内部实现。"
+    },
+    {
+      "id": "H01:claim:invoice-reopen",
+      "case_id": "H01",
+      "kind": "source_fact",
+      "statement": "Stripe Payment application 允许 send_invoice 发票取消付款分配并重开；不能推广到所有 collection_method。",
+      "source_ids": [
+        "P01-SRC-stripe-payment-application"
+      ],
+      "locator": "Before applying or unapplying; Unapply a payment from an invoice; Subscription status",
+      "limitations": "API 示例含 preview 版本；需按实际账户版本复核。overview 的 Paid invoices 段仍称终态，与其生命周期表及此专页冲突，采用窄范围专页而不强行统一。"
+    },
+    {
+      "id": "H01:claim:provider-idempotency",
+      "case_id": "H01",
+      "kind": "source_fact",
+      "statement": "Stripe API v1 在 endpoint 开始执行后保存同幂等 key 的响应，包括 500；key 清理后重用会发起新请求，参数变化受检查。",
+      "source_ids": [
+        "P01-SRC-stripe-idempotency"
+      ],
+      "locator": "Body paragraphs API v1 saved responses; pruning after at least 24 hours; validation/concurrent conflicts",
+      "limitations": "区分 v1/v2；不视为永久防重、数据库事务或失败自动成功保证。"
+    },
+    {
+      "id": "H01:claim:credit-note",
+      "case_id": "H01",
+      "kind": "source_fact",
+      "statement": "Stripe credit note 调整已最终化发票；对 paid 发票可选择退款、客户余额或外部处理。",
+      "source_ids": [
+        "P01-SRC-stripe-credit-notes"
+      ],
+      "locator": "Credit notes for open invoices; Credit notes for paid invoices",
+      "limitations": "本例未执行 credit note/refund API；贷项不自动证明现金到账。"
+    },
+    {
+      "id": "H01:claim:db-identity",
+      "case_id": "H01",
+      "kind": "source_fact",
+      "statement": "PostgreSQL 支持组合唯一约束，默认唯一约束允许多个 NULL；主键同时要求唯一和非空。",
+      "source_ids": [
+        "P01-SRC-postgres-constraints"
+      ],
+      "locator": "5.5.3 Unique Constraints; 5.5.4 Primary Keys",
+      "limitations": "只支持本地数据库身份约束的可选实现，不证明跨系统 exactly-once。"
+    },
+    {
+      "id": "H01:claim:separate-obligations",
+      "case_id": "H01",
+      "kind": "inference",
+      "statement": "合同、发票结清、服务权利与期间归属分别需要证据，因此应保留独立对象而非一个总状态。",
+      "source_ids": [
+        "SF_QTC",
+        "STRIPE_INV",
+        "STRIPE_REV"
+      ],
+      "locator": "H01.md 价格先冻结，履行再推进；source facts 的组合推理",
+      "limitations": "本包原创领域建模；不宣称厂商内部模型相同。"
+    },
+    {
+      "id": "H01:claim:scenario-policy",
+      "case_id": "H01",
+      "kind": "synthetic",
+      "statement": "原 10 席位全期 27000 分；第12天增5席不折扣收费9000分；预付开通；第20天退未来新增部分5000分。",
+      "source_ids": [],
+      "locator": "H01.md 价格先冻结；变更、迟到与未知结果",
+      "limitations": "等长30日、整数分、无税费汇率；退款需双方同意，非通用合同政策。"
+    },
+    {
+      "id": "H01:claim:cumulative-windows",
+      "case_id": "H01",
+      "kind": "synthetic",
+      "statement": "非负金额的累计向下取整再求窗口差，保持相邻窗口可加与期末总额；27000/9000 两行截至20日为22000分。",
+      "source_ids": [],
+      "locator": "H01.md 从时间区间得到可重演的金额",
+      "limitations": "纯教学计算，不用于负向修正、真实日历或直接判定会计合规。"
+    },
+    {
+      "id": "H01:claim:recovery-design",
+      "case_id": "H01",
+      "kind": "synthetic",
+      "statement": "操作持久化、inbox、业务唯一效果及权威核对共同处理重复、乱序、崩溃和未知结果。",
+      "source_ids": [],
+      "locator": "H01.md 按钮保存意图；变更、迟到与未知结果",
+      "limitations": "本地模型及端到端检查定义；无实际服务、数据库并发或 provider 联调。"
+    },
+    {
+      "id": "H01:claim:technology-workload",
+      "case_id": "H01",
+      "kind": "synthetic",
+      "statement": "原型选型与100租户10万合同的性能目标，用于后续实施测量。",
+      "source_ids": [],
+      "locator": "H01.md 把教学设计落到技术选择",
+      "limitations": "不是已实现架构、性能结论或厂商栈。"
+    }
+  ]
+}
