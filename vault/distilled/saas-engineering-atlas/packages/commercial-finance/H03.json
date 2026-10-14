@@ -1,0 +1,1294 @@
+{
+  "contract_version": "1.0",
+  "case_id": "H03",
+  "title": "子账、对账、关账与管理报告",
+  "scope": "合成单法人、单币种、期间快照与可授权重开；不计税汇率；以独立总账部署说明外部未知结果，未调用provider。",
+  "synthetic": true,
+  "source_ids": [
+    "D365_CLOSE",
+    "P01-SRC-d365-period-status",
+    "P01-SRC-postgresql-numeric"
+  ],
+  "nodes": [
+    {
+      "id": "H03:actor:accountant",
+      "type": "actor",
+      "label": "应付与总账会计",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant_id + legal_entity_id; service authorization required"
+    },
+    {
+      "id": "H03:actor:reviewer",
+      "type": "actor",
+      "label": "独立复核人",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant_id + legal_entity_id; service authorization required"
+    },
+    {
+      "id": "H03:actor:controller",
+      "type": "actor",
+      "label": "关账负责人",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant_id + legal_entity_id; service authorization required"
+    },
+    {
+      "id": "H03:actor:manager",
+      "type": "actor",
+      "label": "报告读者",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant_id + legal_entity_id; service authorization required"
+    },
+    {
+      "id": "H03:ui:close-workbench",
+      "type": "ui",
+      "label": "关账、对账与报告工作台",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant_id + legal_entity_id; service authorization required"
+    },
+    {
+      "id": "H03:service:adapter",
+      "type": "service",
+      "label": "总账适配服务",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant_id + legal_entity_id; service authorization required"
+    },
+    {
+      "id": "H03:service:reconciliation",
+      "type": "service",
+      "label": "对账服务",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant_id + legal_entity_id; service authorization required"
+    },
+    {
+      "id": "H03:service:close",
+      "type": "service",
+      "label": "期间与任务服务",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant_id + legal_entity_id; service authorization required"
+    },
+    {
+      "id": "H03:service:report",
+      "type": "service",
+      "label": "报告服务",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant_id + legal_entity_id; service authorization required"
+    },
+    {
+      "id": "H03:store:transaction-db",
+      "type": "store",
+      "label": "期间、映射、对账与任务事务库",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant_id + legal_entity_id; service authorization required"
+    },
+    {
+      "id": "H03:store:snapshot-files",
+      "type": "store",
+      "label": "冻结明细与报告对象存储",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant_id + legal_entity_id; service authorization required"
+    },
+    {
+      "id": "H03:external_system:ap-subledger",
+      "type": "external_system",
+      "label": "应付子账权威系统",
+      "authority": "synthetic upstream authority",
+      "tenant_scope": "tenant_id + legal_entity_id; service authorization required"
+    },
+    {
+      "id": "H03:external_system:general-ledger",
+      "type": "external_system",
+      "label": "独立总账系统",
+      "authority": "external journal and posted-fact authority; abstract provider",
+      "tenant_scope": "tenant_id + legal_entity_id; service authorization required"
+    },
+    {
+      "id": "H03:object:subledger-entry",
+      "type": "object",
+      "label": "应付子账来源记录",
+      "authority": "upstream AP system",
+      "tenant_scope": "tenant_id + legal_entity_id; service authorization required"
+    },
+    {
+      "id": "H03:object:posting-operation",
+      "type": "object",
+      "label": "过账导入尝试",
+      "authority": "synthetic adapter service",
+      "tenant_scope": "tenant_id + legal_entity_id; service authorization required"
+    },
+    {
+      "id": "H03:object:journal",
+      "type": "object",
+      "label": "经核对的已过账凭证",
+      "authority": "external general ledger; local verified copy",
+      "tenant_scope": "tenant_id + legal_entity_id; service authorization required"
+    },
+    {
+      "id": "H03:object:manifest",
+      "type": "object",
+      "label": "冻结输入manifest",
+      "authority": "synthetic reconciliation service; versions and coverage recorded",
+      "tenant_scope": "tenant_id + legal_entity_id; service authorization required"
+    },
+    {
+      "id": "H03:object:reconciliation-run",
+      "type": "object",
+      "label": "对账运行与明细差异",
+      "authority": "synthetic reconciliation service",
+      "tenant_scope": "tenant_id + legal_entity_id; service authorization required"
+    },
+    {
+      "id": "H03:object:period",
+      "type": "object",
+      "label": "会计期间与写入边界",
+      "authority": "synthetic close service; controller authorizes",
+      "tenant_scope": "tenant_id + legal_entity_id; service authorization required"
+    },
+    {
+      "id": "H03:object:close-task",
+      "type": "object",
+      "label": "关账任务D：差异调整复核（任务状态示例）",
+      "authority": "synthetic close service; assigned owner and reviewer",
+      "tenant_scope": "tenant_id + legal_entity_id; service authorization required"
+    },
+    {
+      "id": "H03:object:report",
+      "type": "object",
+      "label": "管理报告版本",
+      "authority": "synthetic report service",
+      "tenant_scope": "tenant_id + legal_entity_id; service authorization required"
+    },
+    {
+      "id": "H03:event:source-confirmed",
+      "type": "event",
+      "label": "上游已确认来源事件",
+      "authority": "synthetic upstream AP system",
+      "tenant_scope": "tenant_id + legal_entity_id; service authorization required"
+    },
+    {
+      "id": "H03:rule:posting-policy",
+      "type": "rule",
+      "label": "期间、科目映射、币种与修订政策",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant_id + legal_entity_id; service authorization required"
+    },
+    {
+      "id": "H03:object:task-a",
+      "type": "object",
+      "label": "关账任务A：完整导入子账",
+      "authority": "synthetic close service; assigned owner and reviewer",
+      "tenant_scope": "tenant_id + legal_entity_id; service authorization required"
+    },
+    {
+      "id": "H03:object:task-b",
+      "type": "object",
+      "label": "关账任务B：应付与总账对账",
+      "authority": "synthetic close service; assigned owner and reviewer",
+      "tenant_scope": "tenant_id + legal_entity_id; service authorization required"
+    },
+    {
+      "id": "H03:object:task-c",
+      "type": "object",
+      "label": "关账任务C：银行核对",
+      "authority": "synthetic close service; assigned owner and reviewer",
+      "tenant_scope": "tenant_id + legal_entity_id; service authorization required"
+    },
+    {
+      "id": "H03:object:task-e",
+      "type": "object",
+      "label": "关账任务E：生成报告",
+      "authority": "synthetic close service; assigned owner and reviewer",
+      "tenant_scope": "tenant_id + legal_entity_id; service authorization required"
+    }
+  ],
+  "edges": [
+    {
+      "id": "H03:edge:accountant-operates",
+      "type": "operates",
+      "from": "H03:actor:accountant",
+      "to": "H03:ui:close-workbench",
+      "payload": "按角色查看明细、复核、冻结或读取报告",
+      "timing": "sync",
+      "invariant": "租户、法人、对象版本和权限在接收边界重新校验",
+      "failure": "拒绝不满足条件的请求，保留 operation 与可回查原因",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H03:claim:case-design"
+      ]
+    },
+    {
+      "id": "H03:edge:reviewer-operates",
+      "type": "operates",
+      "from": "H03:actor:reviewer",
+      "to": "H03:ui:close-workbench",
+      "payload": "按角色查看明细、复核、冻结或读取报告",
+      "timing": "sync",
+      "invariant": "租户、法人、对象版本和权限在接收边界重新校验",
+      "failure": "拒绝不满足条件的请求，保留 operation 与可回查原因",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H03:claim:case-design"
+      ]
+    },
+    {
+      "id": "H03:edge:controller-operates",
+      "type": "operates",
+      "from": "H03:actor:controller",
+      "to": "H03:ui:close-workbench",
+      "payload": "按角色查看明细、复核、冻结或读取报告",
+      "timing": "sync",
+      "invariant": "租户、法人、对象版本和权限在接收边界重新校验",
+      "failure": "拒绝不满足条件的请求，保留 operation 与可回查原因",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H03:claim:case-design"
+      ]
+    },
+    {
+      "id": "H03:edge:manager-operates",
+      "type": "operates",
+      "from": "H03:actor:manager",
+      "to": "H03:ui:close-workbench",
+      "payload": "按角色查看明细、复核、冻结或读取报告",
+      "timing": "sync",
+      "invariant": "租户、法人、对象版本和权限在接收边界重新校验",
+      "failure": "拒绝不满足条件的请求，保留 operation 与可回查原因",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H03:claim:case-design"
+      ]
+    },
+    {
+      "id": "H03:edge:command-reconciliation",
+      "type": "commands",
+      "from": "H03:ui:close-workbench",
+      "to": "H03:service:reconciliation",
+      "payload": "operation_id, tenant, legal_entity, period_id, input_version, action",
+      "timing": "sync",
+      "invariant": "租户、法人、对象版本和权限在接收边界重新校验",
+      "failure": "命令持久化后返回操作身份；冲突保留旧输入并说明版本差异",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H03:claim:case-design"
+      ]
+    },
+    {
+      "id": "H03:edge:command-close",
+      "type": "commands",
+      "from": "H03:ui:close-workbench",
+      "to": "H03:service:close",
+      "payload": "operation_id, tenant, legal_entity, period_id, input_version, action",
+      "timing": "sync",
+      "invariant": "租户、法人、对象版本和权限在接收边界重新校验",
+      "failure": "命令持久化后返回操作身份；冲突保留旧输入并说明版本差异",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H03:claim:case-design"
+      ]
+    },
+    {
+      "id": "H03:edge:command-report",
+      "type": "commands",
+      "from": "H03:ui:close-workbench",
+      "to": "H03:service:report",
+      "payload": "operation_id, tenant, legal_entity, period_id, input_version, action",
+      "timing": "sync",
+      "invariant": "租户、法人、对象版本和权限在接收边界重新校验",
+      "failure": "命令持久化后返回操作身份；冲突保留旧输入并说明版本差异",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H03:claim:case-design"
+      ]
+    },
+    {
+      "id": "H03:edge:ap-owns-entry",
+      "type": "owns",
+      "from": "H03:external_system:ap-subledger",
+      "to": "H03:object:subledger-entry",
+      "payload": "源业务身份、金额、会计日期、业务时间、收到时间",
+      "timing": "static",
+      "invariant": "来源版本与租户法人不可丢失",
+      "failure": "拒绝不满足条件的请求，保留 operation 与可回查原因",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H03:claim:case-design"
+      ]
+    },
+    {
+      "id": "H03:edge:ap-emits",
+      "type": "emits",
+      "from": "H03:external_system:ap-subledger",
+      "to": "H03:event:source-confirmed",
+      "payload": "source_id, source_version, event_id, amount, currency, accounting_date",
+      "timing": "async",
+      "invariant": "租户、法人、对象版本和权限在接收边界重新校验",
+      "failure": "拒绝不满足条件的请求，保留 operation 与可回查原因",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H03:claim:case-design"
+      ]
+    },
+    {
+      "id": "H03:edge:source-delivery",
+      "type": "delivers",
+      "from": "H03:event:source-confirmed",
+      "to": "H03:service:adapter",
+      "payload": "已确认来源事件与批次覆盖信息",
+      "timing": "async",
+      "invariant": "先持久收件并按来源版本去重，再请求过账",
+      "failure": "早到更正事件等待原始来源，非法范围隔离",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H03:claim:case-design"
+      ]
+    },
+    {
+      "id": "H03:edge:owns-operation",
+      "type": "owns",
+      "from": "H03:service:adapter",
+      "to": "H03:object:posting-operation",
+      "payload": "稳定来源键、发送尝试与外部核对结果",
+      "timing": "static",
+      "invariant": "租户、法人、对象版本和权限在接收边界重新校验",
+      "failure": "拒绝不满足条件的请求，保留 operation 与可回查原因",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H03:claim:case-design"
+      ]
+    },
+    {
+      "id": "H03:edge:submit-journal",
+      "type": "requests",
+      "from": "H03:service:adapter",
+      "to": "H03:external_system:general-ledger",
+      "payload": "来源键、会计规则版本、会计日期、借贷行与稳定operation",
+      "timing": "async",
+      "invariant": "同来源同规则只产生一次有效过账；外部无防重能力时先核对",
+      "failure": "外部受理后timeout进入unknown，按来源或批次查回",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H03:claim:case-design"
+      ]
+    },
+    {
+      "id": "H03:edge:query-journal",
+      "type": "reads",
+      "from": "H03:service:adapter",
+      "to": "H03:external_system:general-ledger",
+      "payload": "来源引用或导入批次的权威状态查询",
+      "timing": "async",
+      "invariant": "查无结果不立即推断失败；未确认阻止关账",
+      "failure": "告警与人工核对，不能新引用盲重发",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H03:claim:case-design"
+      ]
+    },
+    {
+      "id": "H03:edge:gl-owns-journal",
+      "type": "owns",
+      "from": "H03:external_system:general-ledger",
+      "to": "H03:object:journal",
+      "payload": "posted凭证及追加更正/冲销事实",
+      "timing": "static",
+      "invariant": "本地镜像不替代外部posted权威",
+      "failure": "未知或不一致进入对账差异",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H03:claim:case-design"
+      ]
+    },
+    {
+      "id": "H03:edge:owns-manifest",
+      "type": "owns",
+      "from": "H03:service:reconciliation",
+      "to": "H03:object:manifest",
+      "payload": "对象事实及版本归属",
+      "timing": "static",
+      "invariant": "租户、法人、对象版本和权限在接收边界重新校验",
+      "failure": "拒绝不满足条件的请求，保留 operation 与可回查原因",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H03:claim:case-design"
+      ]
+    },
+    {
+      "id": "H03:edge:owns-reconciliation-run",
+      "type": "owns",
+      "from": "H03:service:reconciliation",
+      "to": "H03:object:reconciliation-run",
+      "payload": "对象事实及版本归属",
+      "timing": "static",
+      "invariant": "租户、法人、对象版本和权限在接收边界重新校验",
+      "failure": "拒绝不满足条件的请求，保留 operation 与可回查原因",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H03:claim:case-design"
+      ]
+    },
+    {
+      "id": "H03:edge:owns-period",
+      "type": "owns",
+      "from": "H03:service:close",
+      "to": "H03:object:period",
+      "payload": "对象事实及版本归属",
+      "timing": "static",
+      "invariant": "租户、法人、对象版本和权限在接收边界重新校验",
+      "failure": "拒绝不满足条件的请求，保留 operation 与可回查原因",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H03:claim:case-design"
+      ]
+    },
+    {
+      "id": "H03:edge:owns-close-task",
+      "type": "owns",
+      "from": "H03:service:close",
+      "to": "H03:object:close-task",
+      "payload": "对象事实及版本归属",
+      "timing": "static",
+      "invariant": "租户、法人、对象版本和权限在接收边界重新校验",
+      "failure": "拒绝不满足条件的请求，保留 operation 与可回查原因",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H03:claim:case-design"
+      ]
+    },
+    {
+      "id": "H03:edge:owns-report",
+      "type": "owns",
+      "from": "H03:service:report",
+      "to": "H03:object:report",
+      "payload": "对象事实及版本归属",
+      "timing": "static",
+      "invariant": "租户、法人、对象版本和权限在接收边界重新校验",
+      "failure": "拒绝不满足条件的请求，保留 operation 与可回查原因",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H03:claim:case-design"
+      ]
+    },
+    {
+      "id": "H03:edge:store-subledger-entry",
+      "type": "stores",
+      "from": "H03:store:transaction-db",
+      "to": "H03:object:subledger-entry",
+      "payload": "来源映射、版本、规则、控制总额和审计信息",
+      "timing": "sync",
+      "invariant": "租户、法人、对象版本和权限在接收边界重新校验",
+      "failure": "事务未提交不产生已确认状态",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H03:claim:case-design"
+      ]
+    },
+    {
+      "id": "H03:edge:store-posting-operation",
+      "type": "stores",
+      "from": "H03:store:transaction-db",
+      "to": "H03:object:posting-operation",
+      "payload": "来源映射、版本、规则、控制总额和审计信息",
+      "timing": "sync",
+      "invariant": "租户、法人、对象版本和权限在接收边界重新校验",
+      "failure": "事务未提交不产生已确认状态",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H03:claim:case-design"
+      ]
+    },
+    {
+      "id": "H03:edge:store-journal",
+      "type": "stores",
+      "from": "H03:store:transaction-db",
+      "to": "H03:object:journal",
+      "payload": "来源映射、版本、规则、控制总额和审计信息",
+      "timing": "sync",
+      "invariant": "租户、法人、对象版本和权限在接收边界重新校验",
+      "failure": "事务未提交不产生已确认状态",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H03:claim:case-design"
+      ]
+    },
+    {
+      "id": "H03:edge:store-manifest",
+      "type": "stores",
+      "from": "H03:store:transaction-db",
+      "to": "H03:object:manifest",
+      "payload": "来源映射、版本、规则、控制总额和审计信息",
+      "timing": "sync",
+      "invariant": "租户、法人、对象版本和权限在接收边界重新校验",
+      "failure": "事务未提交不产生已确认状态",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H03:claim:case-design"
+      ]
+    },
+    {
+      "id": "H03:edge:store-reconciliation-run",
+      "type": "stores",
+      "from": "H03:store:transaction-db",
+      "to": "H03:object:reconciliation-run",
+      "payload": "来源映射、版本、规则、控制总额和审计信息",
+      "timing": "sync",
+      "invariant": "租户、法人、对象版本和权限在接收边界重新校验",
+      "failure": "事务未提交不产生已确认状态",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H03:claim:case-design"
+      ]
+    },
+    {
+      "id": "H03:edge:store-period",
+      "type": "stores",
+      "from": "H03:store:transaction-db",
+      "to": "H03:object:period",
+      "payload": "来源映射、版本、规则、控制总额和审计信息",
+      "timing": "sync",
+      "invariant": "租户、法人、对象版本和权限在接收边界重新校验",
+      "failure": "事务未提交不产生已确认状态",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H03:claim:case-design"
+      ]
+    },
+    {
+      "id": "H03:edge:store-close-task",
+      "type": "stores",
+      "from": "H03:store:transaction-db",
+      "to": "H03:object:close-task",
+      "payload": "来源映射、版本、规则、控制总额和审计信息",
+      "timing": "sync",
+      "invariant": "租户、法人、对象版本和权限在接收边界重新校验",
+      "failure": "事务未提交不产生已确认状态",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H03:claim:case-design"
+      ]
+    },
+    {
+      "id": "H03:edge:store-report",
+      "type": "stores",
+      "from": "H03:store:transaction-db",
+      "to": "H03:object:report",
+      "payload": "来源映射、版本、规则、控制总额和审计信息",
+      "timing": "sync",
+      "invariant": "租户、法人、对象版本和权限在接收边界重新校验",
+      "failure": "事务未提交不产生已确认状态",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H03:claim:case-design"
+      ]
+    },
+    {
+      "id": "H03:edge:file-manifest",
+      "type": "stores",
+      "from": "H03:store:snapshot-files",
+      "to": "H03:object:manifest",
+      "payload": "受权限保护的内容对象及内容摘要",
+      "timing": "batch",
+      "invariant": "内容与manifest版本对应；未登记文件不算已发布",
+      "failure": "按相同对象身份找回或清理孤儿文件，不覆盖旧版本",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H03:claim:case-design"
+      ]
+    },
+    {
+      "id": "H03:edge:file-report",
+      "type": "stores",
+      "from": "H03:store:snapshot-files",
+      "to": "H03:object:report",
+      "payload": "受权限保护的内容对象及内容摘要",
+      "timing": "batch",
+      "invariant": "内容与manifest版本对应；未登记文件不算已发布",
+      "failure": "按相同对象身份找回或清理孤儿文件，不覆盖旧版本",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H03:claim:case-design"
+      ]
+    },
+    {
+      "id": "H03:edge:reconciliation-reads",
+      "type": "reads",
+      "from": "H03:service:reconciliation",
+      "to": "H03:store:transaction-db",
+      "payload": "固定manifest对应的两侧明细与来源覆盖",
+      "timing": "batch",
+      "invariant": "同一run不混入不同截止点的数据",
+      "failure": "失败用原manifest重跑，不自动换成最新数据",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H03:claim:case-design"
+      ]
+    },
+    {
+      "id": "H03:edge:run-from-subledger-entry",
+      "type": "derived_from",
+      "from": "H03:object:reconciliation-run",
+      "to": "H03:object:subledger-entry",
+      "payload": "同范围full outer join、重复计数、金额与属性差异",
+      "timing": "batch",
+      "invariant": "零净差不抹除未匹配来源；所有差异保留",
+      "failure": "拒绝不满足条件的请求，保留 operation 与可回查原因",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H03:claim:case-design"
+      ]
+    },
+    {
+      "id": "H03:edge:run-from-journal",
+      "type": "derived_from",
+      "from": "H03:object:reconciliation-run",
+      "to": "H03:object:journal",
+      "payload": "同范围full outer join、重复计数、金额与属性差异",
+      "timing": "batch",
+      "invariant": "零净差不抹除未匹配来源；所有差异保留",
+      "failure": "拒绝不满足条件的请求，保留 operation 与可回查原因",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H03:claim:case-design"
+      ]
+    },
+    {
+      "id": "H03:edge:run-from-manifest",
+      "type": "derived_from",
+      "from": "H03:object:reconciliation-run",
+      "to": "H03:object:manifest",
+      "payload": "输入批次、期间、币种、规则、控制总数",
+      "timing": "batch",
+      "invariant": "计算身份包含manifest；截止点不等于完整性声明",
+      "failure": "拒绝不满足条件的请求，保留 operation 与可回查原因",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H03:claim:case-design"
+      ]
+    },
+    {
+      "id": "H03:edge:period-depends-run",
+      "type": "depends_on",
+      "from": "H03:object:period",
+      "to": "H03:object:reconciliation-run",
+      "payload": "冻结所需已复核对账结果及范围声明",
+      "timing": "static",
+      "invariant": "未知过账或未解释差异阻止最终冻结",
+      "failure": "拒绝不满足条件的请求，保留 operation 与可回查原因",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H03:claim:case-design"
+      ]
+    },
+    {
+      "id": "H03:edge:task-depends-run",
+      "type": "depends_on",
+      "from": "H03:object:close-task",
+      "to": "H03:object:reconciliation-run",
+      "payload": "任务完成所需证据版本",
+      "timing": "static",
+      "invariant": "计算完成不等于人工复核通过；版本变化使任务失效",
+      "failure": "拒绝不满足条件的请求，保留 operation 与可回查原因",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H03:claim:case-design"
+      ]
+    },
+    {
+      "id": "H03:edge:report-from-journal",
+      "type": "derived_from",
+      "from": "H03:object:report",
+      "to": "H03:object:journal",
+      "payload": "冻结期间内的科目/维度明细与映射版本",
+      "timing": "batch",
+      "invariant": "报告每个数可追到输入；旧版不可被新过账覆盖",
+      "failure": "拒绝不满足条件的请求，保留 operation 与可回查原因",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H03:claim:case-design"
+      ]
+    },
+    {
+      "id": "H03:edge:report-depends-period",
+      "type": "depends_on",
+      "from": "H03:object:report",
+      "to": "H03:object:period",
+      "payload": "已冻结期间、获批重开与版本边界",
+      "timing": "static",
+      "invariant": "新版本需新的有效冻结与复核证据",
+      "failure": "拒绝不满足条件的请求，保留 operation 与可回查原因",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H03:claim:case-design"
+      ]
+    },
+    {
+      "id": "H03:edge:posting-policy",
+      "type": "authorizes",
+      "from": "H03:rule:posting-policy",
+      "to": "H03:service:adapter",
+      "payload": "期间可写权限、借贷平衡及会计规则版本",
+      "timing": "sync",
+      "invariant": "后台导入与UI都执行相同期间guard",
+      "failure": "拒绝不满足条件的请求，保留 operation 与可回查原因",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H03:claim:case-design"
+      ]
+    },
+    {
+      "id": "H03:edge:controller-authorizes",
+      "type": "authorizes",
+      "from": "H03:actor:controller",
+      "to": "H03:service:close",
+      "payload": "冻结或重开的权限、理由、版本与责任",
+      "timing": "sync",
+      "invariant": "检查与写入串行判定，不只检查旧is_closed缓存",
+      "failure": "拒绝不满足条件的请求，保留 operation 与可回查原因",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H03:claim:case-design"
+      ]
+    },
+    {
+      "id": "H03:edge:project-reconciliation-run",
+      "type": "projects",
+      "from": "H03:object:reconciliation-run",
+      "to": "H03:ui:close-workbench",
+      "payload": "状态、负责人、证据版本、未匹配条数、范围与新鲜度",
+      "timing": "async",
+      "invariant": "投影迟到可见；数字相等不显示未经验证的完成事实",
+      "failure": "拒绝不满足条件的请求，保留 operation 与可回查原因",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H03:claim:case-design"
+      ]
+    },
+    {
+      "id": "H03:edge:project-period",
+      "type": "projects",
+      "from": "H03:object:period",
+      "to": "H03:ui:close-workbench",
+      "payload": "状态、负责人、证据版本、未匹配条数、范围与新鲜度",
+      "timing": "async",
+      "invariant": "投影迟到可见；数字相等不显示未经验证的完成事实",
+      "failure": "拒绝不满足条件的请求，保留 operation 与可回查原因",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H03:claim:case-design"
+      ]
+    },
+    {
+      "id": "H03:edge:project-close-task",
+      "type": "projects",
+      "from": "H03:object:close-task",
+      "to": "H03:ui:close-workbench",
+      "payload": "状态、负责人、证据版本、未匹配条数、范围与新鲜度",
+      "timing": "async",
+      "invariant": "投影迟到可见；数字相等不显示未经验证的完成事实",
+      "failure": "拒绝不满足条件的请求，保留 operation 与可回查原因",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H03:claim:case-design"
+      ]
+    },
+    {
+      "id": "H03:edge:project-report",
+      "type": "projects",
+      "from": "H03:object:report",
+      "to": "H03:ui:close-workbench",
+      "payload": "状态、负责人、证据版本、未匹配条数、范围与新鲜度",
+      "timing": "async",
+      "invariant": "投影迟到可见；数字相等不显示未经验证的完成事实",
+      "failure": "拒绝不满足条件的请求，保留 operation 与可回查原因",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H03:claim:case-design"
+      ]
+    },
+    {
+      "id": "H03:edge:b-after-a",
+      "type": "depends_on",
+      "from": "H03:object:task-b",
+      "to": "H03:object:task-a",
+      "payload": "后继任务依赖前提任务的有效完成与证据版本",
+      "timing": "static",
+      "invariant": "保存模板前拒绝有向环；前提变化使后继复核失效",
+      "failure": "返回阻塞前提或环路径，不能凭完成按钮越过",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H03:claim:case-design",
+        "H03:claim:schedule-computation"
+      ]
+    },
+    {
+      "id": "H03:edge:d-after-b",
+      "type": "depends_on",
+      "from": "H03:object:close-task",
+      "to": "H03:object:task-b",
+      "payload": "后继任务依赖前提任务的有效完成与证据版本",
+      "timing": "static",
+      "invariant": "保存模板前拒绝有向环；前提变化使后继复核失效",
+      "failure": "返回阻塞前提或环路径，不能凭完成按钮越过",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H03:claim:case-design",
+        "H03:claim:schedule-computation"
+      ]
+    },
+    {
+      "id": "H03:edge:d-after-c",
+      "type": "depends_on",
+      "from": "H03:object:close-task",
+      "to": "H03:object:task-c",
+      "payload": "后继任务依赖前提任务的有效完成与证据版本",
+      "timing": "static",
+      "invariant": "保存模板前拒绝有向环；前提变化使后继复核失效",
+      "failure": "返回阻塞前提或环路径，不能凭完成按钮越过",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H03:claim:case-design",
+        "H03:claim:schedule-computation"
+      ]
+    },
+    {
+      "id": "H03:edge:e-after-d",
+      "type": "depends_on",
+      "from": "H03:object:task-e",
+      "to": "H03:object:close-task",
+      "payload": "后继任务依赖前提任务的有效完成与证据版本",
+      "timing": "static",
+      "invariant": "保存模板前拒绝有向环；前提变化使后继复核失效",
+      "failure": "返回阻塞前提或环路径，不能凭完成按钮越过",
+      "basis": "synthetic",
+      "claim_ids": [
+        "H03:claim:case-design",
+        "H03:claim:schedule-computation"
+      ]
+    }
+  ],
+  "lifecycles": [
+    {
+      "object_id": "H03:object:subledger-entry",
+      "states": [
+        "captured",
+        "confirmed",
+        "corrected"
+      ],
+      "transitions": [
+        {
+          "from": "captured",
+          "to": "confirmed",
+          "trigger": "业务侧确认",
+          "guard": "身份金额币种日期获授权确认",
+          "durable_effect": "保存源版本与事件",
+          "recovery": "重放同来源版本不新增业务事实"
+        },
+        {
+          "from": "confirmed",
+          "to": "corrected",
+          "trigger": "合法更正",
+          "guard": "引用原记录且有原因与批准",
+          "durable_effect": "追加更正记录和事件",
+          "recovery": "下游等待原事件后应用，保留历史"
+        }
+      ]
+    },
+    {
+      "object_id": "H03:object:posting-operation",
+      "states": [
+        "prepared",
+        "submitted",
+        "unknown",
+        "confirmed",
+        "rejected"
+      ],
+      "transitions": [
+        {
+          "from": "prepared",
+          "to": "submitted",
+          "trigger": "发送总账导入",
+          "guard": "来源唯一、当前期间准许写入、凭证规则通过",
+          "durable_effect": "保存发送尝试与外部引用",
+          "recovery": "失败保留原operation"
+        },
+        {
+          "from": "submitted",
+          "to": "unknown",
+          "trigger": "响应丢失",
+          "guard": "无法确定外部结果",
+          "durable_effect": "保存不确定状态及核对任务",
+          "recovery": "按原批次或来源查回"
+        },
+        {
+          "from": "submitted",
+          "to": "confirmed",
+          "trigger": "核对posted",
+          "guard": "外部凭证与来源金额币种一致",
+          "durable_effect": "记录外部凭证与来源映射",
+          "recovery": "重复通知不重复过账"
+        },
+        {
+          "from": "unknown",
+          "to": "confirmed",
+          "trigger": "查询找到原凭证",
+          "guard": "权威凭证与原请求一致",
+          "durable_effect": "关联原操作并清除未知标记",
+          "recovery": "冲突进入人工核对"
+        },
+        {
+          "from": "submitted",
+          "to": "rejected",
+          "trigger": "明确拒绝",
+          "guard": "外部可靠失败或本地验证拒绝",
+          "durable_effect": "记录原因",
+          "recovery": "修复后按政策新建获批尝试"
+        },
+        {
+          "from": "unknown",
+          "to": "rejected",
+          "trigger": "证实未受理",
+          "guard": "有足够外部确认而非暂时查无结果",
+          "durable_effect": "保存失败证据",
+          "recovery": "新尝试需明确防重与授权"
+        }
+      ]
+    },
+    {
+      "object_id": "H03:object:journal",
+      "states": [
+        "draft",
+        "posted",
+        "reversed"
+      ],
+      "transitions": [
+        {
+          "from": "draft",
+          "to": "posted",
+          "trigger": "外部总账确认过账",
+          "guard": "借贷平衡、期间可写、来源唯一、科目权限符合政策",
+          "durable_effect": "持久posted凭证与来源映射",
+          "recovery": "不明确时operation保持unknown"
+        },
+        {
+          "from": "posted",
+          "to": "reversed",
+          "trigger": "批准冲销",
+          "guard": "原凭证明确且期间允许",
+          "durable_effect": "追加关联冲销；原凭证保留",
+          "recovery": "更正重新核对，不直接改余额"
+        }
+      ]
+    },
+    {
+      "object_id": "H03:object:reconciliation-run",
+      "states": [
+        "queued",
+        "running",
+        "computed",
+        "accepted",
+        "invalidated",
+        "failed"
+      ],
+      "transitions": [
+        {
+          "from": "queued",
+          "to": "running",
+          "trigger": "worker启动",
+          "guard": "manifest冻结且范围获授权",
+          "durable_effect": "记录输入与开始点",
+          "recovery": "重复启动使用同run"
+        },
+        {
+          "from": "running",
+          "to": "computed",
+          "trigger": "计算完成",
+          "guard": "全部分区完成且控制总数一致",
+          "durable_effect": "保存差异明细与摘要",
+          "recovery": "提交失败重跑同manifest"
+        },
+        {
+          "from": "running",
+          "to": "failed",
+          "trigger": "计算或依赖失败",
+          "guard": "失败原因可记录",
+          "durable_effect": "保留部分进度但不可复核通过",
+          "recovery": "同manifest重试"
+        },
+        {
+          "from": "failed",
+          "to": "running",
+          "trigger": "恢复运行",
+          "guard": "输入版本相同且故障已处理",
+          "durable_effect": "保存恢复尝试",
+          "recovery": "不混入新批次"
+        },
+        {
+          "from": "computed",
+          "to": "accepted",
+          "trigger": "复核人批准",
+          "guard": "未解释差异为零且覆盖声明明确",
+          "durable_effect": "保存复核人与证据版本",
+          "recovery": "新输入改变则失效"
+        },
+        {
+          "from": "accepted",
+          "to": "invalidated",
+          "trigger": "输入或规则改变",
+          "guard": "依赖版本不再有效",
+          "durable_effect": "标明旧结果与后继失效",
+          "recovery": "生成新run并重新复核"
+        }
+      ]
+    },
+    {
+      "object_id": "H03:object:period",
+      "states": [
+        "open",
+        "freezing",
+        "frozen",
+        "reopened"
+      ],
+      "transitions": [
+        {
+          "from": "open",
+          "to": "freezing",
+          "trigger": "负责人启动冻结",
+          "guard": "权限有效，写入边界可串行确定",
+          "durable_effect": "拒绝普通新过账并记录边界版本",
+          "recovery": "未完成在途事务先确认归属"
+        },
+        {
+          "from": "freezing",
+          "to": "frozen",
+          "trigger": "完成核对与复核",
+          "guard": "在途已定、无未知过账、差异处置完整",
+          "durable_effect": "保存期间快照与版本",
+          "recovery": "发布失败不解除冻结"
+        },
+        {
+          "from": "freezing",
+          "to": "open",
+          "trigger": "取消冻结",
+          "guard": "有授权和原因",
+          "durable_effect": "记录放弃边界",
+          "recovery": "已生成草稿不可冒充最终报告"
+        },
+        {
+          "from": "frozen",
+          "to": "reopened",
+          "trigger": "批准重开",
+          "guard": "政策允许且有负责人理由与旧报告引用",
+          "durable_effect": "保存重开记录并使后继复核失效",
+          "recovery": "旧报告内容不改"
+        },
+        {
+          "from": "reopened",
+          "to": "freezing",
+          "trigger": "重新冻结",
+          "guard": "新增记录复核完成",
+          "durable_effect": "形成新边界版本",
+          "recovery": "再次核对后才发布v2"
+        }
+      ]
+    },
+    {
+      "object_id": "H03:object:close-task",
+      "states": [
+        "blocked",
+        "ready",
+        "submitted",
+        "complete",
+        "invalidated"
+      ],
+      "transitions": [
+        {
+          "from": "blocked",
+          "to": "ready",
+          "trigger": "前提完成",
+          "guard": "所有依赖版本有效且无环",
+          "durable_effect": "保存可开始状态",
+          "recovery": "前提失效重新阻塞"
+        },
+        {
+          "from": "ready",
+          "to": "submitted",
+          "trigger": "责任人提交证据",
+          "guard": "任务授权和证据引用完整",
+          "durable_effect": "保存负责人、证据与完成声明",
+          "recovery": "缺证据退回"
+        },
+        {
+          "from": "submitted",
+          "to": "complete",
+          "trigger": "复核通过",
+          "guard": "前提与证据仍有效",
+          "durable_effect": "记录复核人与时间",
+          "recovery": "不能凭按钮替代证据"
+        },
+        {
+          "from": "complete",
+          "to": "invalidated",
+          "trigger": "前提或输入版本变化",
+          "guard": "依赖关系命中",
+          "durable_effect": "记录受影响任务与原因",
+          "recovery": "后继重新核对"
+        },
+        {
+          "from": "invalidated",
+          "to": "blocked",
+          "trigger": "重新安排",
+          "guard": "范围与版本已确定",
+          "durable_effect": "创建新复核责任",
+          "recovery": "保持旧完成历史可查"
+        }
+      ]
+    },
+    {
+      "object_id": "H03:object:report",
+      "states": [
+        "draft",
+        "generated",
+        "published",
+        "superseded"
+      ],
+      "transitions": [
+        {
+          "from": "draft",
+          "to": "generated",
+          "trigger": "计算报告",
+          "guard": "frozen期间、有效run与映射版本固定",
+          "durable_effect": "写出内容对象与摘要",
+          "recovery": "崩溃按同report ID找回"
+        },
+        {
+          "from": "generated",
+          "to": "published",
+          "trigger": "批准发布",
+          "guard": "登记文件摘要、范围和复核证据一致",
+          "durable_effect": "保存发布记录与current指针",
+          "recovery": "断线查回原版本"
+        },
+        {
+          "from": "published",
+          "to": "superseded",
+          "trigger": "新版本发布",
+          "guard": "重开与重新核对均获批",
+          "durable_effect": "旧版保留并链接新版本",
+          "recovery": "禁止覆盖旧文件内容"
+        }
+      ]
+    }
+  ],
+  "algorithm_ids": [
+    "ALG:lookup",
+    "ALG:windows",
+    "ALG:scheduling",
+    "ALG:caches"
+  ],
+  "claim_ids": [
+    "H03:claim:d365-close-dependencies",
+    "H03:claim:d365-period-status",
+    "H03:claim:postgres-numeric",
+    "H03:claim:close-not-proof",
+    "H03:claim:case-design",
+    "H03:claim:reconciliation-computation",
+    "H03:claim:schedule-computation",
+    "H03:claim:optional-ai-eval"
+  ],
+  "checks": [
+    {
+      "id": "H03:check:normal",
+      "kind": "happy_path",
+      "given": "期初AP1000，A+707、B+50.50、PAY-A−707均确认",
+      "when": "过账、对账、复核、冻结并生成报告",
+      "then": "AP1050.50，费用757.50，报告可追到同一输入版本",
+      "evidence_required": "UI动作、来源映射、凭证、manifest、审批与报告摘要"
+    },
+    {
+      "id": "H03:check:replay-source",
+      "kind": "duplicate",
+      "given": "A已有posted映射",
+      "when": "重复发送来源事件与导入请求",
+      "then": "只有一次有效A过账；重复接收记录可查",
+      "evidence_required": "来源唯一性、operation与外部凭证计数"
+    },
+    {
+      "id": "H03:check:correction-before-source",
+      "kind": "out_of_order",
+      "given": "更正引用原事件但原事件尚未到达",
+      "when": "先接收更正、再接收原事件",
+      "then": "更正等待依赖，最终来源链完整；旧通知不复活失效任务",
+      "evidence_required": "收件顺序、等待原因和凭证/任务版本链"
+    },
+    {
+      "id": "H03:check:freeze-race",
+      "kind": "concurrency",
+      "given": "期间open且有待提交凭证",
+      "when": "并发冻结与过账",
+      "then": "凭证明确在边界前整体纳入或被拒绝；无半笔凭证",
+      "evidence_required": "事务序列、期间版本、拒绝响应与报告manifest"
+    },
+    {
+      "id": "H03:check:same-company-number",
+      "kind": "tenant_isolation",
+      "given": "多个租户有相同法人名、来源号和期间名",
+      "when": "查询、导出或命中报告缓存",
+      "then": "所有层仅返回授权范围",
+      "evidence_required": "多租户/多法人fixture、缓存键、访问日志"
+    },
+    {
+      "id": "H03:check:external-posted-timeout",
+      "kind": "unknown_outcome",
+      "given": "总账已接受A但响应丢失",
+      "when": "按原operation查询",
+      "then": "查回原凭证；确认前阻止关账，禁止新引用盲重发",
+      "evidence_required": "故障注入、operation状态、外部凭证与关账guard"
+    },
+    {
+      "id": "H03:check:manifest-restart",
+      "kind": "recovery",
+      "given": "固定manifest核对中断且实时数据新增",
+      "when": "恢复同run并重新生成报告",
+      "then": "仍使用原输入；新数据需要新run；文件登记重试不覆盖旧版本",
+      "evidence_required": "故障点、manifest摘要、输入计数与报告内容哈希"
+    },
+    {
+      "id": "H03:check:offsetting-errors",
+      "kind": "zero_net_difference",
+      "given": "子账有+100和−100，总账两条都缺失",
+      "when": "执行来源级full outer join",
+      "then": "净差0但两条未匹配，禁止accepted",
+      "evidence_required": "两侧fixture、差异明细与禁止放行响应"
+    },
+    {
+      "id": "H03:check:duplicate-and-missing",
+      "kind": "reconciliation_domain",
+      "given": "GL重复A、遗漏B",
+      "when": "对账并批准冲销−707与补记+50.50",
+      "then": "原GL1707差656.50；追加修复后1050.50，不改写旧凭证",
+      "evidence_required": "原/修复明细、来源映射、手算和运行结果"
+    },
+    {
+      "id": "H03:check:dependency-cycle",
+      "kind": "scheduling_domain",
+      "given": "A→B、B/C→D、D→E",
+      "when": "新增E→A，另测资源约束",
+      "then": "保存环被拒绝；独立资源下界7小时，共用B/C可行9小时",
+      "evidence_required": "环路径、拓扑输出、资源时间表；非provider排程实测"
+    },
+    {
+      "id": "H03:check:late-entry-version",
+      "kind": "late_arrival",
+      "given": "v1已发布，迟到50属于旧期间",
+      "when": "按本例政策授权重开并重新核对",
+      "then": "v1内容不变，v2 AP1100.50；前提任务重新复核",
+      "evidence_required": "重开授权、run与报告版本链、两个内容摘要"
+    },
+    {
+      "id": "H03:check:narrative-eval",
+      "kind": "ai_eval",
+      "given": "100个冻结留出差异包，含零净差和信息不足",
+      "when": "运行可选AI原因建议",
+      "then": "报告有分母的无依据结论、错误原因和人工更正；不自动过账",
+      "evidence_required": "数据集、标签、模型配置及真实结果；本交付未运行"
+    }
+  ]
+}

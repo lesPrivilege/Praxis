@@ -1,0 +1,1395 @@
+{
+  "contract_version": "1.0",
+  "case_id": "X02",
+  "title": "Intercompany operations：一次发货，多个公司的责任",
+  "scope": "金蝶 EAS 集中销售/分开发货/集中结算参照；合成两公司单币种同期间模型；收入、转移定价与合并政策不作合规判断",
+  "synthetic": true,
+  "source_ids": [
+    "KINGDEE",
+    "P01-SRC-d365-consolidation-overview"
+  ],
+  "nodes": [
+    {
+      "id": "X02:actor:sales",
+      "type": "actor",
+      "label": "A 销售员",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + authorized legal/account scope"
+    },
+    {
+      "id": "X02:actor:warehouse",
+      "type": "actor",
+      "label": "B 仓管员",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + authorized legal/account scope"
+    },
+    {
+      "id": "X02:actor:finance",
+      "type": "actor",
+      "label": "公司财务与集团合并会计（权限分别核对）",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + authorized legal/account scope"
+    },
+    {
+      "id": "X02:ui:workbench",
+      "type": "ui",
+      "label": "销售、仓库、往来与合并工作台",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + authorized legal/account scope"
+    },
+    {
+      "id": "X02:service:coordination",
+      "type": "service",
+      "label": "版本化单据协同服务",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + authorized legal/account scope"
+    },
+    {
+      "id": "X02:service:subledger",
+      "type": "service",
+      "label": "各公司账务接入服务",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + authorized legal/account scope"
+    },
+    {
+      "id": "X02:service:consolidation",
+      "type": "service",
+      "label": "配对与合并调整服务",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + authorized legal/account scope"
+    },
+    {
+      "id": "X02:store:operations",
+      "type": "store",
+      "label": "源行、关联、inbox/outbox 与协同批次",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + authorized legal/account scope"
+    },
+    {
+      "id": "X02:store:ledgers",
+      "type": "store",
+      "label": "按公司隔离的个别账务映射",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + authorized legal/account scope"
+    },
+    {
+      "id": "X02:store:consolidation",
+      "type": "store",
+      "label": "合并快照与调整簿",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + authorized legal/account scope"
+    },
+    {
+      "id": "X02:external_system:warehouse",
+      "type": "external_system",
+      "label": "B 仓储边界（合成；EAS 为业务参照）",
+      "authority": "external physical-shipment evidence; concrete API unverified",
+      "tenant_scope": "tenant + authorized legal/account scope"
+    },
+    {
+      "id": "X02:external_system:bank",
+      "type": "external_system",
+      "label": "银行/资金确认边界（合成）",
+      "authority": "external cash evidence; provider unspecified",
+      "tenant_scope": "tenant + authorized legal/account scope"
+    },
+    {
+      "id": "X02:event:shipment-posted",
+      "type": "event",
+      "label": "B 实单过账事实",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + authorized legal/account scope"
+    },
+    {
+      "id": "X02:event:cash-confirmed",
+      "type": "event",
+      "label": "收付款确认",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + authorized legal/account scope"
+    },
+    {
+      "id": "X02:object:sales-order",
+      "type": "object",
+      "label": "A 对 C 销售订单",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + authorized legal/account scope"
+    },
+    {
+      "id": "X02:object:physical-issue",
+      "type": "object",
+      "label": "B 销售出库单（实单）",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + authorized legal/account scope"
+    },
+    {
+      "id": "X02:object:virtual-receipt",
+      "type": "object",
+      "label": "A 采购入库单（虚单）",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + authorized legal/account scope"
+    },
+    {
+      "id": "X02:object:virtual-issue",
+      "type": "object",
+      "label": "A 销售出库单（虚单）",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + authorized legal/account scope"
+    },
+    {
+      "id": "X02:object:coordination-batch",
+      "type": "object",
+      "label": "源行协同批次",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + authorized legal/account scope"
+    },
+    {
+      "id": "X02:object:external-ar",
+      "type": "object",
+      "label": "A 对 C 应收",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + authorized legal/account scope"
+    },
+    {
+      "id": "X02:object:internal-ar",
+      "type": "object",
+      "label": "B 对 A 应收",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + authorized legal/account scope"
+    },
+    {
+      "id": "X02:object:internal-ap",
+      "type": "object",
+      "label": "A 对 B 应付",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + authorized legal/account scope"
+    },
+    {
+      "id": "X02:object:cash-transfer",
+      "type": "object",
+      "label": "外部收款/内部付款的独立记录",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + authorized legal/account scope"
+    },
+    {
+      "id": "X02:object:elimination",
+      "type": "object",
+      "label": "配对快照与合并调整批次",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + authorized legal/account scope"
+    },
+    {
+      "id": "X02:rule:frozen-policy",
+      "type": "rule",
+      "label": "集团范围、配置、价格和批准版本",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + authorized legal/account scope"
+    }
+  ],
+  "edges": [
+    {
+      "id": "X02:edge:sales-uses",
+      "type": "operates",
+      "from": "X02:actor:sales",
+      "to": "X02:ui:workbench",
+      "payload": "公司、角色、源单版本",
+      "timing": "sync",
+      "invariant": "集团身份不授予所有公司动作",
+      "failure": "权限不匹配拒绝且不泄露内部价格",
+      "basis": "synthetic",
+      "claim_ids": [
+        "X02:claim:synthetic-model"
+      ]
+    },
+    {
+      "id": "X02:edge:warehouse-uses",
+      "type": "operates",
+      "from": "X02:actor:warehouse",
+      "to": "X02:ui:workbench",
+      "payload": "公司、角色、源单版本",
+      "timing": "sync",
+      "invariant": "集团身份不授予所有公司动作",
+      "failure": "权限不匹配拒绝且不泄露内部价格",
+      "basis": "synthetic",
+      "claim_ids": [
+        "X02:claim:synthetic-model"
+      ]
+    },
+    {
+      "id": "X02:edge:finance-uses",
+      "type": "operates",
+      "from": "X02:actor:finance",
+      "to": "X02:ui:workbench",
+      "payload": "公司、角色、源单版本",
+      "timing": "sync",
+      "invariant": "集团身份不授予所有公司动作",
+      "failure": "权限不匹配拒绝且不泄露内部价格",
+      "basis": "synthetic",
+      "claim_ids": [
+        "X02:claim:synthetic-model"
+      ]
+    },
+    {
+      "id": "X02:edge:command-coordinate",
+      "type": "commands",
+      "from": "X02:ui:workbench",
+      "to": "X02:service:coordination",
+      "payload": "通知/实单来源、批准版本、operation ID",
+      "timing": "sync",
+      "invariant": "可执行数量在服务器串行校验",
+      "failure": "并发超额返回冲突",
+      "basis": "synthetic",
+      "claim_ids": [
+        "X02:claim:synthetic-model"
+      ]
+    },
+    {
+      "id": "X02:edge:command-finance",
+      "type": "commands",
+      "from": "X02:ui:workbench",
+      "to": "X02:service:subledger",
+      "payload": "往来/收付款版本和批准动作",
+      "timing": "sync",
+      "invariant": "对外对内义务独立",
+      "failure": "过账或现金未知时保留待核对",
+      "basis": "synthetic",
+      "claim_ids": [
+        "X02:claim:synthetic-model"
+      ]
+    },
+    {
+      "id": "X02:edge:command-consolidate",
+      "type": "commands",
+      "from": "X02:ui:workbench",
+      "to": "X02:service:consolidation",
+      "payload": "快照、范围、配对与调整版本",
+      "timing": "sync",
+      "invariant": "新个别账数据使旧预览失效",
+      "failure": "重新取数后批准",
+      "basis": "synthetic",
+      "claim_ids": [
+        "X02:claim:synthetic-model"
+      ]
+    },
+    {
+      "id": "X02:edge:policy-guard",
+      "type": "authorizes",
+      "from": "X02:rule:frozen-policy",
+      "to": "X02:service:coordination",
+      "payload": "冻结配置、内部协议、价目和数量控制",
+      "timing": "static",
+      "invariant": "重试不得读取新价格重算旧批次",
+      "failure": "政策变动需新版本",
+      "basis": "synthetic",
+      "claim_ids": [
+        "X02:claim:synthetic-model"
+      ]
+    },
+    {
+      "id": "X02:edge:owns-order",
+      "type": "owns",
+      "from": "X02:service:coordination",
+      "to": "X02:object:sales-order",
+      "payload": "对象及来源角色版本",
+      "timing": "static",
+      "invariant": "同源同用途一次；虚单不产生实物流",
+      "failure": "记录缺失用途并补齐",
+      "basis": "synthetic",
+      "claim_ids": [
+        "X02:claim:synthetic-model"
+      ]
+    },
+    {
+      "id": "X02:edge:owns-batch",
+      "type": "owns",
+      "from": "X02:service:coordination",
+      "to": "X02:object:coordination-batch",
+      "payload": "对象及来源角色版本",
+      "timing": "static",
+      "invariant": "同源同用途一次；虚单不产生实物流",
+      "failure": "记录缺失用途并补齐",
+      "basis": "synthetic",
+      "claim_ids": [
+        "X02:claim:synthetic-model"
+      ]
+    },
+    {
+      "id": "X02:edge:owns-virtual-in",
+      "type": "owns",
+      "from": "X02:service:coordination",
+      "to": "X02:object:virtual-receipt",
+      "payload": "对象及来源角色版本",
+      "timing": "static",
+      "invariant": "同源同用途一次；虚单不产生实物流",
+      "failure": "记录缺失用途并补齐",
+      "basis": "synthetic",
+      "claim_ids": [
+        "X02:claim:synthetic-model"
+      ]
+    },
+    {
+      "id": "X02:edge:owns-virtual-out",
+      "type": "owns",
+      "from": "X02:service:coordination",
+      "to": "X02:object:virtual-issue",
+      "payload": "对象及来源角色版本",
+      "timing": "static",
+      "invariant": "同源同用途一次；虚单不产生实物流",
+      "failure": "记录缺失用途并补齐",
+      "basis": "synthetic",
+      "claim_ids": [
+        "X02:claim:synthetic-model"
+      ]
+    },
+    {
+      "id": "X02:edge:owns-physical",
+      "type": "owns",
+      "from": "X02:external_system:warehouse",
+      "to": "X02:object:physical-issue",
+      "payload": "实单、实际数量、仓库证据",
+      "timing": "static",
+      "invariant": "只有实际发货一次库存效果",
+      "failure": "失败查库存与源单，不重扣",
+      "basis": "synthetic",
+      "claim_ids": [
+        "X02:claim:synthetic-model"
+      ]
+    },
+    {
+      "id": "X02:edge:owns-external-ar",
+      "type": "owns",
+      "from": "X02:service:subledger",
+      "to": "X02:object:external-ar",
+      "payload": "公司权威记录及外部证据映射",
+      "timing": "static",
+      "invariant": "各公司往来与现金分开；接口实现为合成",
+      "failure": "单边失败保留差异",
+      "basis": "synthetic",
+      "claim_ids": [
+        "X02:claim:synthetic-model"
+      ]
+    },
+    {
+      "id": "X02:edge:owns-internal-ar",
+      "type": "owns",
+      "from": "X02:service:subledger",
+      "to": "X02:object:internal-ar",
+      "payload": "公司权威记录及外部证据映射",
+      "timing": "static",
+      "invariant": "各公司往来与现金分开；接口实现为合成",
+      "failure": "单边失败保留差异",
+      "basis": "synthetic",
+      "claim_ids": [
+        "X02:claim:synthetic-model"
+      ]
+    },
+    {
+      "id": "X02:edge:owns-internal-ap",
+      "type": "owns",
+      "from": "X02:service:subledger",
+      "to": "X02:object:internal-ap",
+      "payload": "公司权威记录及外部证据映射",
+      "timing": "static",
+      "invariant": "各公司往来与现金分开；接口实现为合成",
+      "failure": "单边失败保留差异",
+      "basis": "synthetic",
+      "claim_ids": [
+        "X02:claim:synthetic-model"
+      ]
+    },
+    {
+      "id": "X02:edge:owns-cash",
+      "type": "owns",
+      "from": "X02:service:subledger",
+      "to": "X02:object:cash-transfer",
+      "payload": "公司权威记录及外部证据映射",
+      "timing": "static",
+      "invariant": "各公司往来与现金分开；接口实现为合成",
+      "failure": "单边失败保留差异",
+      "basis": "synthetic",
+      "claim_ids": [
+        "X02:claim:synthetic-model"
+      ]
+    },
+    {
+      "id": "X02:edge:owns-elimination",
+      "type": "owns",
+      "from": "X02:service:consolidation",
+      "to": "X02:object:elimination",
+      "payload": "取数快照、匹配差异与批准调整",
+      "timing": "static",
+      "invariant": "抵销不改变个别公司账簿",
+      "failure": "差异不可用未解释补差关闭",
+      "basis": "synthetic",
+      "claim_ids": [
+        "X02:claim:synthetic-model"
+      ]
+    },
+    {
+      "id": "X02:edge:persist-order",
+      "type": "stores",
+      "from": "X02:store:operations",
+      "to": "X02:object:sales-order",
+      "payload": "公司、来源行、版本、用途、幂等身份",
+      "timing": "sync",
+      "invariant": "角色不同的两张虚单均可存在",
+      "failure": "相同用途重复则读取原记录",
+      "basis": "synthetic",
+      "claim_ids": [
+        "X02:claim:synthetic-model"
+      ]
+    },
+    {
+      "id": "X02:edge:persist-physical",
+      "type": "stores",
+      "from": "X02:store:operations",
+      "to": "X02:object:physical-issue",
+      "payload": "公司、来源行、版本、用途、幂等身份",
+      "timing": "sync",
+      "invariant": "角色不同的两张虚单均可存在",
+      "failure": "相同用途重复则读取原记录",
+      "basis": "synthetic",
+      "claim_ids": [
+        "X02:claim:synthetic-model"
+      ]
+    },
+    {
+      "id": "X02:edge:persist-virtual-in",
+      "type": "stores",
+      "from": "X02:store:operations",
+      "to": "X02:object:virtual-receipt",
+      "payload": "公司、来源行、版本、用途、幂等身份",
+      "timing": "sync",
+      "invariant": "角色不同的两张虚单均可存在",
+      "failure": "相同用途重复则读取原记录",
+      "basis": "synthetic",
+      "claim_ids": [
+        "X02:claim:synthetic-model"
+      ]
+    },
+    {
+      "id": "X02:edge:persist-virtual-out",
+      "type": "stores",
+      "from": "X02:store:operations",
+      "to": "X02:object:virtual-issue",
+      "payload": "公司、来源行、版本、用途、幂等身份",
+      "timing": "sync",
+      "invariant": "角色不同的两张虚单均可存在",
+      "failure": "相同用途重复则读取原记录",
+      "basis": "synthetic",
+      "claim_ids": [
+        "X02:claim:synthetic-model"
+      ]
+    },
+    {
+      "id": "X02:edge:persist-batch",
+      "type": "stores",
+      "from": "X02:store:operations",
+      "to": "X02:object:coordination-batch",
+      "payload": "公司、来源行、版本、用途、幂等身份",
+      "timing": "sync",
+      "invariant": "角色不同的两张虚单均可存在",
+      "failure": "相同用途重复则读取原记录",
+      "basis": "synthetic",
+      "claim_ids": [
+        "X02:claim:synthetic-model"
+      ]
+    },
+    {
+      "id": "X02:edge:persist-external-ar",
+      "type": "stores",
+      "from": "X02:store:ledgers",
+      "to": "X02:object:external-ar",
+      "payload": "公司、币种、期间、金额、过账和核销",
+      "timing": "sync",
+      "invariant": "公司账可独立查证",
+      "failure": "单边过账形成可见例外",
+      "basis": "synthetic",
+      "claim_ids": [
+        "X02:claim:synthetic-model"
+      ]
+    },
+    {
+      "id": "X02:edge:persist-internal-ar",
+      "type": "stores",
+      "from": "X02:store:ledgers",
+      "to": "X02:object:internal-ar",
+      "payload": "公司、币种、期间、金额、过账和核销",
+      "timing": "sync",
+      "invariant": "公司账可独立查证",
+      "failure": "单边过账形成可见例外",
+      "basis": "synthetic",
+      "claim_ids": [
+        "X02:claim:synthetic-model"
+      ]
+    },
+    {
+      "id": "X02:edge:persist-internal-ap",
+      "type": "stores",
+      "from": "X02:store:ledgers",
+      "to": "X02:object:internal-ap",
+      "payload": "公司、币种、期间、金额、过账和核销",
+      "timing": "sync",
+      "invariant": "公司账可独立查证",
+      "failure": "单边过账形成可见例外",
+      "basis": "synthetic",
+      "claim_ids": [
+        "X02:claim:synthetic-model"
+      ]
+    },
+    {
+      "id": "X02:edge:persist-cash",
+      "type": "stores",
+      "from": "X02:store:ledgers",
+      "to": "X02:object:cash-transfer",
+      "payload": "公司、币种、期间、金额、过账和核销",
+      "timing": "sync",
+      "invariant": "公司账可独立查证",
+      "failure": "单边过账形成可见例外",
+      "basis": "synthetic",
+      "claim_ids": [
+        "X02:claim:synthetic-model"
+      ]
+    },
+    {
+      "id": "X02:edge:persist-adjustment",
+      "type": "stores",
+      "from": "X02:store:consolidation",
+      "to": "X02:object:elimination",
+      "payload": "配对键、范围、快照与抵销行",
+      "timing": "batch",
+      "invariant": "已批准版本可重现",
+      "failure": "变更后新批次替代不无痕覆盖",
+      "basis": "synthetic",
+      "claim_ids": [
+        "X02:claim:synthetic-model"
+      ]
+    },
+    {
+      "id": "X02:edge:request-issue",
+      "type": "requests",
+      "from": "X02:service:coordination",
+      "to": "X02:external_system:warehouse",
+      "payload": "已批准通知行、授权数量和源行身份",
+      "timing": "async",
+      "invariant": "信息请求不等同货物已发出",
+      "failure": "超时查同身份",
+      "basis": "synthetic",
+      "claim_ids": [
+        "X02:claim:synthetic-model"
+      ]
+    },
+    {
+      "id": "X02:edge:physical-event",
+      "type": "emits",
+      "from": "X02:external_system:warehouse",
+      "to": "X02:event:shipment-posted",
+      "payload": "已过账实单行、数量、版本",
+      "timing": "async",
+      "invariant": "实单库存效果只有一次",
+      "failure": "提交与 outbox 相容恢复",
+      "basis": "synthetic",
+      "claim_ids": [
+        "X02:claim:synthetic-model"
+      ]
+    },
+    {
+      "id": "X02:edge:coordinate-event",
+      "type": "delivers",
+      "from": "X02:event:shipment-posted",
+      "to": "X02:service:coordination",
+      "payload": "源公司、实单行、版本和冻结配置",
+      "timing": "async",
+      "invariant": "先落 inbox 再按用途派生",
+      "failure": "重复复用，缺失依赖挂起",
+      "basis": "synthetic",
+      "claim_ids": [
+        "X02:claim:synthetic-model"
+      ]
+    },
+    {
+      "id": "X02:edge:virtual-in-source",
+      "type": "derived_from",
+      "from": "X02:object:virtual-receipt",
+      "to": "X02:object:physical-issue",
+      "payload": "内部结算用途；physical_effect=false",
+      "timing": "async",
+      "invariant": "采购虚单不增加 A 的真实库存",
+      "failure": "不同用途不能共享同一唯一键",
+      "basis": "synthetic",
+      "claim_ids": [
+        "X02:claim:synthetic-model"
+      ]
+    },
+    {
+      "id": "X02:edge:virtual-out-source",
+      "type": "derived_from",
+      "from": "X02:object:virtual-issue",
+      "to": "X02:object:physical-issue",
+      "payload": "对客应收用途；physical_effect=false",
+      "timing": "async",
+      "invariant": "销售虚单不第二次扣库存",
+      "failure": "协同部分完成显示缺失项",
+      "basis": "synthetic",
+      "claim_ids": [
+        "X02:claim:synthetic-model"
+      ]
+    },
+    {
+      "id": "X02:edge:external-ar-source",
+      "type": "derived_from",
+      "from": "X02:object:external-ar",
+      "to": "X02:object:virtual-issue",
+      "payload": "数量与外售价版本",
+      "timing": "sync",
+      "invariant": "结算依据和本例收入条件分别核对",
+      "failure": "客户确认不足不自动确认收入",
+      "basis": "synthetic",
+      "claim_ids": [
+        "X02:claim:synthetic-model"
+      ]
+    },
+    {
+      "id": "X02:edge:internal-ar-source",
+      "type": "derived_from",
+      "from": "X02:object:internal-ar",
+      "to": "X02:object:physical-issue",
+      "payload": "60件×9，内部协议与源批次",
+      "timing": "sync",
+      "invariant": "原币、期间、对手方与方向明确",
+      "failure": "价格/期间差异转核对",
+      "basis": "synthetic",
+      "claim_ids": [
+        "X02:claim:synthetic-model"
+      ]
+    },
+    {
+      "id": "X02:edge:internal-ap-source",
+      "type": "derived_from",
+      "from": "X02:object:internal-ap",
+      "to": "X02:object:virtual-receipt",
+      "payload": "60件×9，同一内部交易身份",
+      "timing": "sync",
+      "invariant": "不得按单据名字猜测同一交易",
+      "failure": "缺少对侧继续保持单边",
+      "basis": "synthetic",
+      "claim_ids": [
+        "X02:claim:synthetic-model"
+      ]
+    },
+    {
+      "id": "X02:edge:adjustment-needs-ar",
+      "type": "depends_on",
+      "from": "X02:object:elimination",
+      "to": "X02:object:internal-ar",
+      "payload": "双方过账快照及配对键",
+      "timing": "batch",
+      "invariant": "同键、同币种、同期间且差异为零才作本例候选",
+      "failure": "跨键抵消仍输出异常",
+      "basis": "synthetic",
+      "claim_ids": [
+        "X02:claim:synthetic-algorithm"
+      ]
+    },
+    {
+      "id": "X02:edge:adjustment-needs-ap",
+      "type": "depends_on",
+      "from": "X02:object:elimination",
+      "to": "X02:object:internal-ap",
+      "payload": "双方过账快照及配对键",
+      "timing": "batch",
+      "invariant": "同键、同币种、同期间且差异为零才作本例候选",
+      "failure": "跨键抵消仍输出异常",
+      "basis": "synthetic",
+      "claim_ids": [
+        "X02:claim:synthetic-algorithm"
+      ]
+    },
+    {
+      "id": "X02:edge:read-ledgers",
+      "type": "reads",
+      "from": "X02:service:consolidation",
+      "to": "X02:store:ledgers",
+      "payload": "固定水位与获授权公司范围",
+      "timing": "batch",
+      "invariant": "完整快照内配对，不混合新旧账",
+      "failure": "缺失或期间冲突阻断批准",
+      "basis": "synthetic",
+      "claim_ids": [
+        "X02:claim:synthetic-model"
+      ]
+    },
+    {
+      "id": "X02:edge:pay-request",
+      "type": "requests",
+      "from": "X02:service:subledger",
+      "to": "X02:external_system:bank",
+      "payload": "付款身份、公司、对手方与金额",
+      "timing": "async",
+      "invariant": "内部付款不是新增集团外部流入",
+      "failure": "未知结果查询原指令",
+      "basis": "synthetic",
+      "claim_ids": [
+        "X02:claim:synthetic-model"
+      ]
+    },
+    {
+      "id": "X02:edge:cash-event",
+      "type": "emits",
+      "from": "X02:external_system:bank",
+      "to": "X02:event:cash-confirmed",
+      "payload": "收付款确认身份与金额",
+      "timing": "async",
+      "invariant": "银行受理不等于双方都已确认",
+      "failure": "保留在途或失败原因",
+      "basis": "synthetic",
+      "claim_ids": [
+        "X02:claim:synthetic-model"
+      ]
+    },
+    {
+      "id": "X02:edge:cash-delivery",
+      "type": "delivers",
+      "from": "X02:event:cash-confirmed",
+      "to": "X02:service:subledger",
+      "payload": "公司现金与往来核销依据",
+      "timing": "async",
+      "invariant": "不凭合并净额关闭资金异常",
+      "failure": "重复按资金身份核对",
+      "basis": "synthetic",
+      "claim_ids": [
+        "X02:claim:synthetic-model"
+      ]
+    },
+    {
+      "id": "X02:edge:show-batch",
+      "type": "projects",
+      "from": "X02:object:coordination-batch",
+      "to": "X02:ui:workbench",
+      "payload": "状态、数量金额、公司、版本、新鲜度和责任人",
+      "timing": "async",
+      "invariant": "视图范围不提升跨公司权限",
+      "failure": "按权限刷新；未知状态保留",
+      "basis": "synthetic",
+      "claim_ids": [
+        "X02:claim:synthetic-model"
+      ]
+    },
+    {
+      "id": "X02:edge:show-order",
+      "type": "projects",
+      "from": "X02:object:sales-order",
+      "to": "X02:ui:workbench",
+      "payload": "状态、数量金额、公司、版本、新鲜度和责任人",
+      "timing": "async",
+      "invariant": "视图范围不提升跨公司权限",
+      "failure": "按权限刷新；未知状态保留",
+      "basis": "synthetic",
+      "claim_ids": [
+        "X02:claim:synthetic-model"
+      ]
+    },
+    {
+      "id": "X02:edge:show-external-ar",
+      "type": "projects",
+      "from": "X02:object:external-ar",
+      "to": "X02:ui:workbench",
+      "payload": "状态、数量金额、公司、版本、新鲜度和责任人",
+      "timing": "async",
+      "invariant": "视图范围不提升跨公司权限",
+      "failure": "按权限刷新；未知状态保留",
+      "basis": "synthetic",
+      "claim_ids": [
+        "X02:claim:synthetic-model"
+      ]
+    },
+    {
+      "id": "X02:edge:show-internal-ar",
+      "type": "projects",
+      "from": "X02:object:internal-ar",
+      "to": "X02:ui:workbench",
+      "payload": "状态、数量金额、公司、版本、新鲜度和责任人",
+      "timing": "async",
+      "invariant": "视图范围不提升跨公司权限",
+      "failure": "按权限刷新；未知状态保留",
+      "basis": "synthetic",
+      "claim_ids": [
+        "X02:claim:synthetic-model"
+      ]
+    },
+    {
+      "id": "X02:edge:show-internal-ap",
+      "type": "projects",
+      "from": "X02:object:internal-ap",
+      "to": "X02:ui:workbench",
+      "payload": "状态、数量金额、公司、版本、新鲜度和责任人",
+      "timing": "async",
+      "invariant": "视图范围不提升跨公司权限",
+      "failure": "按权限刷新；未知状态保留",
+      "basis": "synthetic",
+      "claim_ids": [
+        "X02:claim:synthetic-model"
+      ]
+    },
+    {
+      "id": "X02:edge:show-cash",
+      "type": "projects",
+      "from": "X02:object:cash-transfer",
+      "to": "X02:ui:workbench",
+      "payload": "状态、数量金额、公司、版本、新鲜度和责任人",
+      "timing": "async",
+      "invariant": "视图范围不提升跨公司权限",
+      "failure": "按权限刷新；未知状态保留",
+      "basis": "synthetic",
+      "claim_ids": [
+        "X02:claim:synthetic-model"
+      ]
+    },
+    {
+      "id": "X02:edge:show-elimination",
+      "type": "projects",
+      "from": "X02:object:elimination",
+      "to": "X02:ui:workbench",
+      "payload": "状态、数量金额、公司、版本、新鲜度和责任人",
+      "timing": "async",
+      "invariant": "视图范围不提升跨公司权限",
+      "failure": "按权限刷新；未知状态保留",
+      "basis": "synthetic",
+      "claim_ids": [
+        "X02:claim:synthetic-model"
+      ]
+    }
+  ],
+  "lifecycles": [
+    {
+      "object_id": "X02:object:sales-order",
+      "states": [
+        "draft",
+        "approved",
+        "partial",
+        "fulfilled",
+        "cancelled"
+      ],
+      "transitions": [
+        {
+          "from": "draft",
+          "to": "approved",
+          "trigger": "销售主管批准",
+          "guard": "客户价格发货组织政策版本明确",
+          "durable_effect": "冻结100件承诺",
+          "recovery": "改价改量新版本批准"
+        },
+        {
+          "from": "approved",
+          "to": "partial",
+          "trigger": "首批客户确认",
+          "guard": "真实交付证据60件",
+          "durable_effect": "已交60、待交40",
+          "recovery": "未确认运输单独追踪"
+        },
+        {
+          "from": "partial",
+          "to": "fulfilled",
+          "trigger": "剩余交付确认",
+          "guard": "总量与承诺一致",
+          "durable_effect": "已交总量100",
+          "recovery": "退货独立链不抹去历史"
+        },
+        {
+          "from": "approved",
+          "to": "cancelled",
+          "trigger": "取消未执行订单",
+          "guard": "无已执行数量且获授权",
+          "durable_effect": "保留取消原因",
+          "recovery": "已发货不能走此转换"
+        }
+      ]
+    },
+    {
+      "object_id": "X02:object:physical-issue",
+      "states": [
+        "draft",
+        "posted",
+        "reversal-requested",
+        "adjusted"
+      ],
+      "transitions": [
+        {
+          "from": "draft",
+          "to": "posted",
+          "trigger": "B仓库确认出库",
+          "guard": "已批准通知与可执行数量满足",
+          "durable_effect": "库存一次扣减、实单与outbox",
+          "recovery": "提交后恢复只投递协同"
+        },
+        {
+          "from": "posted",
+          "to": "reversal-requested",
+          "trigger": "退货或更正请求",
+          "guard": "引用原批次且权限通过",
+          "durable_effect": "建立更正任务",
+          "recovery": "已付款下游禁止递归删除"
+        },
+        {
+          "from": "reversal-requested",
+          "to": "adjusted",
+          "trigger": "更正获批准且实物确认",
+          "guard": "实际退回数量与金额分别有证据",
+          "durable_effect": "保留原实单及关联更正",
+          "recovery": "退款单独核对"
+        }
+      ]
+    },
+    {
+      "object_id": "X02:object:coordination-batch",
+      "states": [
+        "pending",
+        "partial",
+        "complete",
+        "blocked"
+      ],
+      "transitions": [
+        {
+          "from": "pending",
+          "to": "partial",
+          "trigger": "部分用途生成",
+          "guard": "源行版本可查",
+          "durable_effect": "保存已成功目标业务键",
+          "recovery": "查询未知步骤而不重做出库"
+        },
+        {
+          "from": "partial",
+          "to": "complete",
+          "trigger": "剩余用途核对完成",
+          "guard": "所有必需目标各一份",
+          "durable_effect": "保存完整性证据",
+          "recovery": "重放返回原目标"
+        },
+        {
+          "from": "partial",
+          "to": "blocked",
+          "trigger": "身份冲突或无法核对",
+          "guard": "无法判定外部副作用",
+          "durable_effect": "保存原因与负责人",
+          "recovery": "人工核对后再恢复"
+        },
+        {
+          "from": "blocked",
+          "to": "partial",
+          "trigger": "解决缺口",
+          "guard": "新增证据与原身份一致",
+          "durable_effect": "解除相应阻断",
+          "recovery": "继续未完成用途"
+        }
+      ]
+    },
+    {
+      "object_id": "X02:object:external-ar",
+      "states": [
+        "draft",
+        "posted",
+        "partially-settled",
+        "settled",
+        "adjusted"
+      ],
+      "transitions": [
+        {
+          "from": "draft",
+          "to": "posted",
+          "trigger": "对应公司财务批准",
+          "guard": "来源数量金额币种期间有效",
+          "durable_effect": "保存个别公司往来事实",
+          "recovery": "单边成功不得回滚另一方事实"
+        },
+        {
+          "from": "posted",
+          "to": "partially-settled",
+          "trigger": "收到部分核销证据",
+          "guard": "现金或获准冲销身份有效",
+          "durable_effect": "保存剩余余额",
+          "recovery": "重复核销不重复扣余额"
+        },
+        {
+          "from": "posted",
+          "to": "settled",
+          "trigger": "全额核销",
+          "guard": "逐笔确认合计覆盖余额",
+          "durable_effect": "保存结清依据",
+          "recovery": "不改变另一公司或集团状态"
+        },
+        {
+          "from": "partially-settled",
+          "to": "settled",
+          "trigger": "剩余核销",
+          "guard": "证据合计无超额",
+          "durable_effect": "剩余归零",
+          "recovery": "差异进入核对"
+        },
+        {
+          "from": "posted",
+          "to": "adjusted",
+          "trigger": "退货或价格更正",
+          "guard": "获批准且来源/期间明确",
+          "durable_effect": "关联调整而非删除历史",
+          "recovery": "跨期转专业处理"
+        },
+        {
+          "from": "settled",
+          "to": "adjusted",
+          "trigger": "已结清后获准退货/更正",
+          "guard": "引用原批次；责任公司批准；现金效果单独确认",
+          "durable_effect": "保留原核销并建立关联调整/退款义务",
+          "recovery": "负数往来不等于现金已退；跨期交专业人员"
+        }
+      ]
+    },
+    {
+      "object_id": "X02:object:internal-ar",
+      "states": [
+        "draft",
+        "posted",
+        "partially-settled",
+        "settled",
+        "adjusted"
+      ],
+      "transitions": [
+        {
+          "from": "draft",
+          "to": "posted",
+          "trigger": "对应公司财务批准",
+          "guard": "来源数量金额币种期间有效",
+          "durable_effect": "保存个别公司往来事实",
+          "recovery": "单边成功不得回滚另一方事实"
+        },
+        {
+          "from": "posted",
+          "to": "partially-settled",
+          "trigger": "收到部分核销证据",
+          "guard": "现金或获准冲销身份有效",
+          "durable_effect": "保存剩余余额",
+          "recovery": "重复核销不重复扣余额"
+        },
+        {
+          "from": "posted",
+          "to": "settled",
+          "trigger": "全额核销",
+          "guard": "逐笔确认合计覆盖余额",
+          "durable_effect": "保存结清依据",
+          "recovery": "不改变另一公司或集团状态"
+        },
+        {
+          "from": "partially-settled",
+          "to": "settled",
+          "trigger": "剩余核销",
+          "guard": "证据合计无超额",
+          "durable_effect": "剩余归零",
+          "recovery": "差异进入核对"
+        },
+        {
+          "from": "posted",
+          "to": "adjusted",
+          "trigger": "退货或价格更正",
+          "guard": "获批准且来源/期间明确",
+          "durable_effect": "关联调整而非删除历史",
+          "recovery": "跨期转专业处理"
+        },
+        {
+          "from": "settled",
+          "to": "adjusted",
+          "trigger": "已结清后获准退货/更正",
+          "guard": "引用原批次；责任公司批准；现金效果单独确认",
+          "durable_effect": "保留原核销并建立关联调整/退款义务",
+          "recovery": "负数往来不等于现金已退；跨期交专业人员"
+        }
+      ]
+    },
+    {
+      "object_id": "X02:object:internal-ap",
+      "states": [
+        "draft",
+        "posted",
+        "partially-settled",
+        "settled",
+        "adjusted"
+      ],
+      "transitions": [
+        {
+          "from": "draft",
+          "to": "posted",
+          "trigger": "对应公司财务批准",
+          "guard": "来源数量金额币种期间有效",
+          "durable_effect": "保存个别公司往来事实",
+          "recovery": "单边成功不得回滚另一方事实"
+        },
+        {
+          "from": "posted",
+          "to": "partially-settled",
+          "trigger": "收到部分核销证据",
+          "guard": "现金或获准冲销身份有效",
+          "durable_effect": "保存剩余余额",
+          "recovery": "重复核销不重复扣余额"
+        },
+        {
+          "from": "posted",
+          "to": "settled",
+          "trigger": "全额核销",
+          "guard": "逐笔确认合计覆盖余额",
+          "durable_effect": "保存结清依据",
+          "recovery": "不改变另一公司或集团状态"
+        },
+        {
+          "from": "partially-settled",
+          "to": "settled",
+          "trigger": "剩余核销",
+          "guard": "证据合计无超额",
+          "durable_effect": "剩余归零",
+          "recovery": "差异进入核对"
+        },
+        {
+          "from": "posted",
+          "to": "adjusted",
+          "trigger": "退货或价格更正",
+          "guard": "获批准且来源/期间明确",
+          "durable_effect": "关联调整而非删除历史",
+          "recovery": "跨期转专业处理"
+        },
+        {
+          "from": "settled",
+          "to": "adjusted",
+          "trigger": "已结清后获准退货/更正",
+          "guard": "引用原批次；责任公司批准；现金效果单独确认",
+          "durable_effect": "保留原核销并建立关联调整/退款义务",
+          "recovery": "负数往来不等于现金已退；跨期交专业人员"
+        }
+      ]
+    },
+    {
+      "object_id": "X02:object:cash-transfer",
+      "states": [
+        "prepared",
+        "submitted",
+        "unknown",
+        "confirmed",
+        "failed"
+      ],
+      "transitions": [
+        {
+          "from": "prepared",
+          "to": "submitted",
+          "trigger": "出纳授权付款",
+          "guard": "收付款公司及金额一致",
+          "durable_effect": "保存唯一资金指令",
+          "recovery": "同身份恢复"
+        },
+        {
+          "from": "submitted",
+          "to": "unknown",
+          "trigger": "外部响应超时",
+          "guard": "尚无可证终态",
+          "durable_effect": "保存发送证据",
+          "recovery": "查询银行或人工核对"
+        },
+        {
+          "from": "unknown",
+          "to": "confirmed",
+          "trigger": "外部核对成功",
+          "guard": "原指令与结果一致",
+          "durable_effect": "映射现金确认",
+          "recovery": "不重复付款"
+        },
+        {
+          "from": "submitted",
+          "to": "confirmed",
+          "trigger": "收到现金确认",
+          "guard": "业务身份与公司匹配",
+          "durable_effect": "记录资金事实并安排核销",
+          "recovery": "对侧未确认仍可在途"
+        },
+        {
+          "from": "submitted",
+          "to": "failed",
+          "trigger": "外部明确拒绝",
+          "guard": "可核查拒绝证据",
+          "durable_effect": "保存失败原因",
+          "recovery": "修复后受控新尝试"
+        }
+      ]
+    },
+    {
+      "object_id": "X02:object:elimination",
+      "states": [
+        "draft",
+        "reconciled",
+        "blocked",
+        "approved",
+        "posted",
+        "superseded"
+      ],
+      "transitions": [
+        {
+          "from": "draft",
+          "to": "reconciled",
+          "trigger": "配对完成",
+          "guard": "同键同币种同期间且双方齐全",
+          "durable_effect": "固定配对快照与候选行",
+          "recovery": "补记后重新取数"
+        },
+        {
+          "from": "draft",
+          "to": "blocked",
+          "trigger": "配对有差异",
+          "guard": "缺单币种期间金额任一不满足",
+          "durable_effect": "逐键异常与负责人",
+          "recovery": "不能跨交易互相抵差"
+        },
+        {
+          "from": "blocked",
+          "to": "draft",
+          "trigger": "专业处理完成",
+          "guard": "修正证据可查",
+          "durable_effect": "建立新输入快照",
+          "recovery": "重新计算"
+        },
+        {
+          "from": "reconciled",
+          "to": "approved",
+          "trigger": "合并会计批准",
+          "guard": "范围政策快照版本一致",
+          "durable_effect": "保存批准与调整内容",
+          "recovery": "并发补记拒绝旧预览"
+        },
+        {
+          "from": "approved",
+          "to": "posted",
+          "trigger": "生成集团报告调整",
+          "guard": "批准版本未失效",
+          "durable_effect": "只写集团调整簿",
+          "recovery": "个别账保持可追踪"
+        },
+        {
+          "from": "posted",
+          "to": "superseded",
+          "trigger": "来源账变动需重做",
+          "guard": "新快照获批准",
+          "durable_effect": "保留旧报告和替代关系",
+          "recovery": "不混合新账旧抵销"
+        }
+      ]
+    }
+  ],
+  "algorithm_ids": [
+    "ALG:graph-paths",
+    "ALG:lookup"
+  ],
+  "claim_ids": [
+    "X02:claim:kingdee-flow",
+    "X02:claim:consolidation-options",
+    "X02:claim:synthetic-model",
+    "X02:claim:synthetic-algorithm"
+  ],
+  "checks": [
+    {
+      "id": "X02:check:happy",
+      "kind": "happy_path",
+      "given": "100件订单，首批60，外价12内价9成本6",
+      "when": "出库协同、往来和合并",
+      "then": "B实物减60，A实物不动；外AR720内双边540；集团收入720成本360",
+      "evidence_required": "库存明细、两侧单据、UI与抵销前后报告"
+    },
+    {
+      "id": "X02:check:duplicate",
+      "kind": "duplicate",
+      "given": "相同源实单事件",
+      "when": "重投两次",
+      "then": "每用途一份虚单，共两份；库存只减一次",
+      "evidence_required": "业务唯一键、库存与派生行"
+    },
+    {
+      "id": "X02:check:ordering",
+      "kind": "out_of_order",
+      "given": "应付通知先到，源行映射未到",
+      "when": "补齐源行",
+      "then": "先挂起依赖，后关联正确批次",
+      "evidence_required": "inbox、依赖状态与目标来源"
+    },
+    {
+      "id": "X02:check:race",
+      "kind": "concurrency",
+      "given": "100件可执行",
+      "when": "两人并发通知60和50",
+      "then": "成功数量不超100，明确冲突",
+      "evidence_required": "行锁/版本结果、通知数量与UI"
+    },
+    {
+      "id": "X02:check:tenant",
+      "kind": "tenant_isolation",
+      "given": "两集团复用订单号，客户无内部价权限",
+      "when": "查缓存、导出、关联图",
+      "then": "集团公司及字段权限保持；不泄露内部价",
+      "evidence_required": "查询范围、返回与缓存键"
+    },
+    {
+      "id": "X02:check:unknown",
+      "kind": "unknown_outcome",
+      "given": "A虚单已建",
+      "when": "接口返回前断连",
+      "then": "原键查询命中一份；未知则人工核对，不再新建",
+      "evidence_required": "请求身份、外部查询与批次状态"
+    },
+    {
+      "id": "X02:check:recovery",
+      "kind": "recovery",
+      "given": "实单与outbox已提交",
+      "when": "发事件前崩溃",
+      "then": "恢复协同，不第二次扣库存",
+      "evidence_required": "事务记录、重启与完整性对账"
+    },
+    {
+      "id": "X02:check:offsetting-errors",
+      "kind": "algorithm",
+      "given": "T1=+540/-530,T2=+360/-370",
+      "when": "按键配对",
+      "then": "输出+10/-10两异常；总净额0不能通过",
+      "evidence_required": "固定fixture与逐键差异"
+    },
+    {
+      "id": "X02:check:returns",
+      "kind": "partial_return",
+      "given": "60交付中退10到B",
+      "when": "确认实物退回与调整",
+      "then": "库存+10；外部-120内部-90成本-60；集团600/300；退款另查",
+      "evidence_required": "退货来源、库存、金额调整、银行证据"
+    },
+    {
+      "id": "X02:check:period",
+      "kind": "period_mismatch",
+      "given": "B应收P已过账，A应付P+1草稿",
+      "when": "合并取数",
+      "then": "阻断自动配对并展示期间/过账差异",
+      "evidence_required": "两侧原始期间与异常记录"
+    },
+    {
+      "id": "X02:check:downstream",
+      "kind": "reversal_guard",
+      "given": "下游付款已确认",
+      "when": "反审核源单",
+      "then": "不递归删除；建立批准更正任务",
+      "evidence_required": "权限拒绝、原记录与更正链"
+    },
+    {
+      "id": "X02:check:physical-role",
+      "kind": "algorithm",
+      "given": "一张B实单和A两张虚单各60",
+      "when": "汇总库存效果",
+      "then": "仅B减60；不按单据名称累加",
+      "evidence_required": "physical_effect与来源角色fixture"
+    },
+    {
+      "id": "X02:check:currency",
+      "kind": "currency_mismatch",
+      "given": "两笔540分别币种U/V",
+      "when": "尝试抵销",
+      "then": "不可直接匹配，需明确换算政策",
+      "evidence_required": "币种、政策与拒绝原因"
+    }
+  ]
+}

@@ -1,0 +1,1219 @@
+{
+  "contract_version": "1.0",
+  "case_id": "V13",
+  "title": "保险：Submission、承保、理赔、reserve 与支付",
+  "scope": "单币种单事故财产损失；先扣免赔后限额；reserve估计、责任认定与现金分别核对",
+  "synthetic": true,
+  "source_ids": [
+    "GUIDEWIRE",
+    "ACORD",
+    "P01-SRC-guidewire-reserves",
+    "P01-SRC-guidewire-create-reserves",
+    "P01-SRC-guidewire-financial-calculations"
+  ],
+  "nodes": [
+    {
+      "id": "V13:actor:underwriter",
+      "type": "actor",
+      "label": "核保人员",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + object identity; service-side authorization"
+    },
+    {
+      "id": "V13:actor:adjuster",
+      "type": "actor",
+      "label": "理赔人员",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + object identity; service-side authorization"
+    },
+    {
+      "id": "V13:actor:supervisor",
+      "type": "actor",
+      "label": "授权主管",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + object identity; service-side authorization"
+    },
+    {
+      "id": "V13:ui:insurance-workbench",
+      "type": "ui",
+      "label": "投保与理赔工作台",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + object identity; service-side authorization"
+    },
+    {
+      "id": "V13:service:policy",
+      "type": "service",
+      "label": "保单与报价服务",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + object identity; service-side authorization"
+    },
+    {
+      "id": "V13:service:claims",
+      "type": "service",
+      "label": "理赔与责任服务",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + object identity; service-side authorization"
+    },
+    {
+      "id": "V13:service:claim-finance",
+      "type": "service",
+      "label": "reserve 与支付服务",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + object identity; service-side authorization"
+    },
+    {
+      "id": "V13:store:ledger",
+      "type": "store",
+      "label": "对象版本、交易、占用、outbox",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + object identity; service-side authorization"
+    },
+    {
+      "id": "V13:store:inbox",
+      "type": "store",
+      "label": "外部结果接收表",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + object identity; service-side authorization"
+    },
+    {
+      "id": "V13:external_system:payment-rail",
+      "type": "external_system",
+      "label": "合成支付参照接口",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + object identity; service-side authorization"
+    },
+    {
+      "id": "V13:external_system:general-ledger",
+      "type": "external_system",
+      "label": "合成下游总账",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + object identity; service-side authorization"
+    },
+    {
+      "id": "V13:event:payment-result",
+      "type": "event",
+      "label": "支付结果",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + object identity; service-side authorization"
+    },
+    {
+      "id": "V13:object:submission",
+      "type": "object",
+      "label": "Submission 与 quote 版本",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + object identity; service-side authorization"
+    },
+    {
+      "id": "V13:object:policy",
+      "type": "object",
+      "label": "Policy version 与出单状态",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + object identity; service-side authorization"
+    },
+    {
+      "id": "V13:object:claim",
+      "type": "object",
+      "label": "Claim",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + object identity; service-side authorization"
+    },
+    {
+      "id": "V13:object:exposure",
+      "type": "object",
+      "label": "Exposure",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + object identity; service-side authorization"
+    },
+    {
+      "id": "V13:object:decision",
+      "type": "object",
+      "label": "Coverage decision",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + object identity; service-side authorization"
+    },
+    {
+      "id": "V13:object:reserve-set",
+      "type": "object",
+      "label": "Reserve set 与批准状态",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + object identity; service-side authorization"
+    },
+    {
+      "id": "V13:object:reserve-line",
+      "type": "object",
+      "label": "Reserve line",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + object identity; service-side authorization"
+    },
+    {
+      "id": "V13:object:payment",
+      "type": "object",
+      "label": "Payment operation",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + object identity; service-side authorization"
+    },
+    {
+      "id": "V13:rule:authority",
+      "type": "rule",
+      "label": "金额权限、责任与版本 guard",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + object identity; service-side authorization"
+    },
+    {
+      "id": "V13:object:reserve-transaction",
+      "type": "object",
+      "label": "Reserve adjustment transaction",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + claim + reserve line + transaction ID"
+    }
+  ],
+  "edges": [
+    {
+      "id": "V13:edge:underwriter",
+      "type": "operates",
+      "from": "V13:actor:underwriter",
+      "to": "V13:ui:insurance-workbench",
+      "payload": "按角色与对象范围开放的动作",
+      "timing": "static",
+      "invariant": "核保与理赔授权分开",
+      "failure": "服务端拒绝越权",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V13:claim:design"
+      ]
+    },
+    {
+      "id": "V13:edge:adjuster",
+      "type": "operates",
+      "from": "V13:actor:adjuster",
+      "to": "V13:ui:insurance-workbench",
+      "payload": "按角色与对象范围开放的动作",
+      "timing": "static",
+      "invariant": "核保与理赔授权分开",
+      "failure": "服务端拒绝越权",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V13:claim:design"
+      ]
+    },
+    {
+      "id": "V13:edge:supervisor",
+      "type": "operates",
+      "from": "V13:actor:supervisor",
+      "to": "V13:ui:insurance-workbench",
+      "payload": "按角色与对象范围开放的动作",
+      "timing": "static",
+      "invariant": "核保与理赔授权分开",
+      "failure": "服务端拒绝越权",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V13:claim:design"
+      ]
+    },
+    {
+      "id": "V13:edge:quote-command",
+      "type": "commands",
+      "from": "V13:ui:insurance-workbench",
+      "to": "V13:service:policy",
+      "payload": "Submission version、动作、command ID",
+      "timing": "sync",
+      "invariant": "编辑后重新报价；bind绑定选中版本",
+      "failure": "版本冲突展示差异",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V13:claim:design"
+      ]
+    },
+    {
+      "id": "V13:edge:claim-command",
+      "type": "commands",
+      "from": "V13:ui:insurance-workbench",
+      "to": "V13:service:claims",
+      "payload": "事故日、报案日、policy version、证据引用",
+      "timing": "sync",
+      "invariant": "事故日和报案日不得互相替代",
+      "failure": "缺证据挂起，不凭文本猜值",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V13:claim:design"
+      ]
+    },
+    {
+      "id": "V13:edge:finance-command",
+      "type": "commands",
+      "from": "V13:ui:insurance-workbench",
+      "to": "V13:service:claim-finance",
+      "payload": "decision、reserve line、收款人版本及operation",
+      "timing": "sync",
+      "invariant": "本次动作绑定金额维度与权限",
+      "failure": "陈旧版本或维度错误拒绝",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V13:claim:design"
+      ]
+    },
+    {
+      "id": "V13:edge:authority",
+      "type": "authorizes",
+      "from": "V13:rule:authority",
+      "to": "V13:service:claim-finance",
+      "payload": "全案额度、责任、剩余可付及角色",
+      "timing": "static",
+      "invariant": "拆分请求不能绕过全案额度；未知支付持续占用",
+      "failure": "待主管审批或拒绝",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V13:claim:design"
+      ]
+    },
+    {
+      "id": "V13:edge:submission-owner",
+      "type": "owns",
+      "from": "V13:service:policy",
+      "to": "V13:object:submission",
+      "payload": "对象版本与决定依据",
+      "timing": "static",
+      "invariant": "同一对象只有明确权威",
+      "failure": "查询投影不得替代决定",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V13:claim:design"
+      ]
+    },
+    {
+      "id": "V13:edge:store-submission",
+      "type": "stores",
+      "from": "V13:store:ledger",
+      "to": "V13:object:submission",
+      "payload": "对象、交易、版本、关联身份与审计引用",
+      "timing": "sync",
+      "invariant": "证据与变化关系持久保存",
+      "failure": "恢复按版本与唯一键核对",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V13:claim:design"
+      ]
+    },
+    {
+      "id": "V13:edge:policy-owner",
+      "type": "owns",
+      "from": "V13:service:policy",
+      "to": "V13:object:policy",
+      "payload": "对象版本与决定依据",
+      "timing": "static",
+      "invariant": "同一对象只有明确权威",
+      "failure": "查询投影不得替代决定",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V13:claim:design"
+      ]
+    },
+    {
+      "id": "V13:edge:store-policy",
+      "type": "stores",
+      "from": "V13:store:ledger",
+      "to": "V13:object:policy",
+      "payload": "对象、交易、版本、关联身份与审计引用",
+      "timing": "sync",
+      "invariant": "证据与变化关系持久保存",
+      "failure": "恢复按版本与唯一键核对",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V13:claim:design"
+      ]
+    },
+    {
+      "id": "V13:edge:claim-owner",
+      "type": "owns",
+      "from": "V13:service:claims",
+      "to": "V13:object:claim",
+      "payload": "对象版本与决定依据",
+      "timing": "static",
+      "invariant": "同一对象只有明确权威",
+      "failure": "查询投影不得替代决定",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V13:claim:design"
+      ]
+    },
+    {
+      "id": "V13:edge:store-claim",
+      "type": "stores",
+      "from": "V13:store:ledger",
+      "to": "V13:object:claim",
+      "payload": "对象、交易、版本、关联身份与审计引用",
+      "timing": "sync",
+      "invariant": "证据与变化关系持久保存",
+      "failure": "恢复按版本与唯一键核对",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V13:claim:design"
+      ]
+    },
+    {
+      "id": "V13:edge:exposure-owner",
+      "type": "owns",
+      "from": "V13:service:claims",
+      "to": "V13:object:exposure",
+      "payload": "对象版本与决定依据",
+      "timing": "static",
+      "invariant": "同一对象只有明确权威",
+      "failure": "查询投影不得替代决定",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V13:claim:design"
+      ]
+    },
+    {
+      "id": "V13:edge:store-exposure",
+      "type": "stores",
+      "from": "V13:store:ledger",
+      "to": "V13:object:exposure",
+      "payload": "对象、交易、版本、关联身份与审计引用",
+      "timing": "sync",
+      "invariant": "证据与变化关系持久保存",
+      "failure": "恢复按版本与唯一键核对",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V13:claim:design"
+      ]
+    },
+    {
+      "id": "V13:edge:decision-owner",
+      "type": "owns",
+      "from": "V13:service:claims",
+      "to": "V13:object:decision",
+      "payload": "对象版本与决定依据",
+      "timing": "static",
+      "invariant": "同一对象只有明确权威",
+      "failure": "查询投影不得替代决定",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V13:claim:design"
+      ]
+    },
+    {
+      "id": "V13:edge:store-decision",
+      "type": "stores",
+      "from": "V13:store:ledger",
+      "to": "V13:object:decision",
+      "payload": "对象、交易、版本、关联身份与审计引用",
+      "timing": "sync",
+      "invariant": "证据与变化关系持久保存",
+      "failure": "恢复按版本与唯一键核对",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V13:claim:design"
+      ]
+    },
+    {
+      "id": "V13:edge:reserve-set-owner",
+      "type": "owns",
+      "from": "V13:service:claim-finance",
+      "to": "V13:object:reserve-set",
+      "payload": "对象版本与决定依据",
+      "timing": "static",
+      "invariant": "同一对象只有明确权威",
+      "failure": "查询投影不得替代决定",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V13:claim:design"
+      ]
+    },
+    {
+      "id": "V13:edge:store-reserve-set",
+      "type": "stores",
+      "from": "V13:store:ledger",
+      "to": "V13:object:reserve-set",
+      "payload": "对象、交易、版本、关联身份与审计引用",
+      "timing": "sync",
+      "invariant": "证据与变化关系持久保存",
+      "failure": "恢复按版本与唯一键核对",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V13:claim:design"
+      ]
+    },
+    {
+      "id": "V13:edge:reserve-line-owner",
+      "type": "owns",
+      "from": "V13:service:claim-finance",
+      "to": "V13:object:reserve-line",
+      "payload": "对象版本与决定依据",
+      "timing": "static",
+      "invariant": "同一对象只有明确权威",
+      "failure": "查询投影不得替代决定",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V13:claim:design"
+      ]
+    },
+    {
+      "id": "V13:edge:store-reserve-line",
+      "type": "stores",
+      "from": "V13:store:ledger",
+      "to": "V13:object:reserve-line",
+      "payload": "对象、交易、版本、关联身份与审计引用",
+      "timing": "sync",
+      "invariant": "证据与变化关系持久保存",
+      "failure": "恢复按版本与唯一键核对",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V13:claim:design"
+      ]
+    },
+    {
+      "id": "V13:edge:payment-owner",
+      "type": "owns",
+      "from": "V13:service:claim-finance",
+      "to": "V13:object:payment",
+      "payload": "对象版本与决定依据",
+      "timing": "static",
+      "invariant": "同一对象只有明确权威",
+      "failure": "查询投影不得替代决定",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V13:claim:design"
+      ]
+    },
+    {
+      "id": "V13:edge:store-payment",
+      "type": "stores",
+      "from": "V13:store:ledger",
+      "to": "V13:object:payment",
+      "payload": "对象、交易、版本、关联身份与审计引用",
+      "timing": "sync",
+      "invariant": "证据与变化关系持久保存",
+      "failure": "恢复按版本与唯一键核对",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V13:claim:design"
+      ]
+    },
+    {
+      "id": "V13:edge:claim-exposure",
+      "type": "contains",
+      "from": "V13:object:claim",
+      "to": "V13:object:exposure",
+      "payload": "本案责任单元集合",
+      "timing": "static",
+      "invariant": "结案检查全部 exposure",
+      "failure": "任一未决仍显示在父案",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V13:claim:design"
+      ]
+    },
+    {
+      "id": "V13:edge:claim-policy",
+      "type": "depends_on",
+      "from": "V13:object:claim",
+      "to": "V13:object:policy",
+      "payload": "事故时点适用保单版本",
+      "timing": "static",
+      "invariant": "当前版本不覆盖历史事故依据",
+      "failure": "版本不明确转人工核验",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V13:claim:design"
+      ]
+    },
+    {
+      "id": "V13:edge:exposure-policy",
+      "type": "depends_on",
+      "from": "V13:object:exposure",
+      "to": "V13:object:policy",
+      "payload": "coverage + claimant 引用",
+      "timing": "static",
+      "invariant": "责任范围必须属于该保单与事故",
+      "failure": "无匹配保障不得自动放行",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V13:claim:design"
+      ]
+    },
+    {
+      "id": "V13:edge:decision-evidence",
+      "type": "derived_from",
+      "from": "V13:object:decision",
+      "to": "V13:object:exposure",
+      "payload": "损失证据、条款版本、核定赔款",
+      "timing": "sync",
+      "invariant": "存在关联路径不等于成立责任",
+      "failure": "证据不足保持pending",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V13:claim:design"
+      ]
+    },
+    {
+      "id": "V13:edge:reserve-transactions",
+      "type": "contains",
+      "from": "V13:object:reserve-set",
+      "to": "V13:object:reserve-transaction",
+      "payload": "同组拟批准的reserve调整交易",
+      "timing": "static",
+      "invariant": "审批作为一个整体；交易各引用可复用reserve line",
+      "failure": "未批准交易不增加R",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V13:claim:design"
+      ]
+    },
+    {
+      "id": "V13:edge:payment-decision",
+      "type": "depends_on",
+      "from": "V13:object:payment",
+      "to": "V13:object:decision",
+      "payload": "确认赔付额与版本",
+      "timing": "static",
+      "invariant": "reserve不能代替责任认定",
+      "failure": "decision修订后挂起未执行支付",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V13:claim:design"
+      ]
+    },
+    {
+      "id": "V13:edge:payment-reserve",
+      "type": "depends_on",
+      "from": "V13:object:payment",
+      "to": "V13:object:reserve-line",
+      "payload": "R、P、U、line version",
+      "timing": "static",
+      "invariant": "新占用不超过核定余额和该line可用额度",
+      "failure": "同案并发冲突重读；不得借用另一line",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V13:claim:design"
+      ]
+    },
+    {
+      "id": "V13:edge:payment-request",
+      "type": "requests",
+      "from": "V13:service:claim-finance",
+      "to": "V13:external_system:payment-rail",
+      "payload": "原operation、收款人、金额币种",
+      "timing": "sync",
+      "invariant": "未知结果不得改身份重发",
+      "failure": "按原参考号核对",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V13:claim:design"
+      ]
+    },
+    {
+      "id": "V13:edge:payment-event",
+      "type": "emits",
+      "from": "V13:external_system:payment-rail",
+      "to": "V13:event:payment-result",
+      "payload": "支付ID、结果、金额币种与版本",
+      "timing": "async",
+      "invariant": "外部受理不同于确认执行",
+      "failure": "重复或乱序需查权威结果",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V13:claim:design"
+      ]
+    },
+    {
+      "id": "V13:edge:receive",
+      "type": "delivers",
+      "from": "V13:event:payment-result",
+      "to": "V13:store:inbox",
+      "payload": "验证来源与映射后的资金回执",
+      "timing": "async",
+      "invariant": "持久接收先于确认",
+      "failure": "写入失败允许重送",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V13:claim:design"
+      ]
+    },
+    {
+      "id": "V13:edge:consume",
+      "type": "reads",
+      "from": "V13:service:claim-finance",
+      "to": "V13:store:inbox",
+      "payload": "待处理支付结果",
+      "timing": "async",
+      "invariant": "U转P与唯一业务键相容",
+      "failure": "重启后读取既有P，不再增加",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V13:claim:design"
+      ]
+    },
+    {
+      "id": "V13:edge:reconcile",
+      "type": "reads",
+      "from": "V13:service:claim-finance",
+      "to": "V13:external_system:payment-rail",
+      "payload": "原operation参考号",
+      "timing": "async",
+      "invariant": "未确认失败前不释放U",
+      "failure": "不可确认继续unknown并人工接管",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V13:claim:design"
+      ]
+    },
+    {
+      "id": "V13:edge:general-ledger",
+      "type": "requests",
+      "from": "V13:service:claim-finance",
+      "to": "V13:external_system:general-ledger",
+      "payload": "已批准交易身份与金额维度",
+      "timing": "async",
+      "invariant": "总账交接不等于银行付款",
+      "failure": "重试原交易并核对ack，不能重复加reserve",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V13:claim:design"
+      ]
+    },
+    {
+      "id": "V13:edge:project-policy",
+      "type": "projects",
+      "from": "V13:object:policy",
+      "to": "V13:ui:insurance-workbench",
+      "payload": "状态、版本、金额维度、最后核对时间",
+      "timing": "async",
+      "invariant": "承保、责任、估计和现金分栏",
+      "failure": "陈旧投影显示待刷新，不作授权",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V13:claim:design"
+      ]
+    },
+    {
+      "id": "V13:edge:project-claim",
+      "type": "projects",
+      "from": "V13:object:claim",
+      "to": "V13:ui:insurance-workbench",
+      "payload": "状态、版本、金额维度、最后核对时间",
+      "timing": "async",
+      "invariant": "承保、责任、估计和现金分栏",
+      "failure": "陈旧投影显示待刷新，不作授权",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V13:claim:design"
+      ]
+    },
+    {
+      "id": "V13:edge:project-decision",
+      "type": "projects",
+      "from": "V13:object:decision",
+      "to": "V13:ui:insurance-workbench",
+      "payload": "状态、版本、金额维度、最后核对时间",
+      "timing": "async",
+      "invariant": "承保、责任、估计和现金分栏",
+      "failure": "陈旧投影显示待刷新，不作授权",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V13:claim:design"
+      ]
+    },
+    {
+      "id": "V13:edge:project-reserve",
+      "type": "projects",
+      "from": "V13:object:reserve-set",
+      "to": "V13:ui:insurance-workbench",
+      "payload": "状态、版本、金额维度、最后核对时间",
+      "timing": "async",
+      "invariant": "承保、责任、估计和现金分栏",
+      "failure": "陈旧投影显示待刷新，不作授权",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V13:claim:design"
+      ]
+    },
+    {
+      "id": "V13:edge:project-payment",
+      "type": "projects",
+      "from": "V13:object:payment",
+      "to": "V13:ui:insurance-workbench",
+      "payload": "状态、版本、金额维度、最后核对时间",
+      "timing": "async",
+      "invariant": "承保、责任、估计和现金分栏",
+      "failure": "陈旧投影显示待刷新，不作授权",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V13:claim:design"
+      ]
+    },
+    {
+      "timing": "static",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V13:claim:design"
+      ],
+      "id": "V13:edge:reserve-transaction-owner",
+      "type": "owns",
+      "from": "V13:service:claim-finance",
+      "to": "V13:object:reserve-transaction",
+      "payload": "调整金额、批准与下游交接状态",
+      "invariant": "set审批决定与每笔交易交接分开",
+      "failure": "ack仅补交接状态，不重复增加金额"
+    },
+    {
+      "timing": "static",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V13:claim:design"
+      ],
+      "id": "V13:edge:reserve-transaction-line",
+      "type": "depends_on",
+      "from": "V13:object:reserve-transaction",
+      "to": "V13:object:reserve-line",
+      "payload": "exposure、费用类别与币种维度",
+      "invariant": "同一line可被多个set的交易引用；line不隶属单个set",
+      "failure": "维度错误拒绝"
+    },
+    {
+      "timing": "static",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V13:claim:design"
+      ],
+      "id": "V13:edge:reserve-line-exposure",
+      "type": "depends_on",
+      "from": "V13:object:reserve-line",
+      "to": "V13:object:exposure",
+      "payload": "本例line关联的coverage与claimant",
+      "invariant": "其他claimant余额不挪用",
+      "failure": "无权或错误exposure拒绝"
+    },
+    {
+      "timing": "sync",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V13:claim:design"
+      ],
+      "id": "V13:edge:store-reserve-transaction",
+      "type": "stores",
+      "from": "V13:store:ledger",
+      "to": "V13:object:reserve-transaction",
+      "payload": "原交易身份、调整与ack证据",
+      "invariant": "重复ack不重复记R",
+      "failure": "恢复先读已有交易"
+    }
+  ],
+  "lifecycles": [
+    {
+      "object_id": "V13:object:submission",
+      "states": [
+        "draft",
+        "quoted",
+        "bound",
+        "declined",
+        "withdrawn"
+      ],
+      "transitions": [
+        {
+          "from": "draft",
+          "to": "quoted",
+          "trigger": "生成报价",
+          "guard": "资料满足本例规则且版本固定",
+          "durable_effect": "保费与条款版本",
+          "recovery": "缺项定位字段并保留表单"
+        },
+        {
+          "from": "quoted",
+          "to": "draft",
+          "trigger": "修改内容",
+          "guard": "显式回到草案",
+          "durable_effect": "旧报价失效",
+          "recovery": "重新报价后才能绑定"
+        },
+        {
+          "from": "quoted",
+          "to": "bound",
+          "trigger": "接受并绑定",
+          "guard": "客户与核保确认选定版本",
+          "durable_effect": "保障承诺及独立出单任务",
+          "recovery": "文件失败不撤销绑定事实"
+        },
+        {
+          "from": "draft",
+          "to": "declined",
+          "trigger": "拒保",
+          "guard": "核保权限与原因",
+          "durable_effect": "保存拒保版本",
+          "recovery": "新申请另建，不覆盖原原因"
+        },
+        {
+          "from": "quoted",
+          "to": "withdrawn",
+          "trigger": "撤回",
+          "guard": "尚未绑定且有权限",
+          "durable_effect": "终止该报价",
+          "recovery": "已绑定不得用撤回草案代替变更"
+        }
+      ]
+    },
+    {
+      "object_id": "V13:object:policy",
+      "states": [
+        "bound-unissued",
+        "issued",
+        "superseded"
+      ],
+      "transitions": [
+        {
+          "from": "bound-unissued",
+          "to": "issued",
+          "trigger": "交付保单文件",
+          "guard": "文件与绑定版本一致",
+          "durable_effect": "文件摘要与交付依据",
+          "recovery": "补发同一版本，不重复绑定"
+        },
+        {
+          "from": "issued",
+          "to": "superseded",
+          "trigger": "授权变更",
+          "guard": "新条款及生效日已核准",
+          "durable_effect": "保留历史版本与适用区间",
+          "recovery": "历史事故仍引用旧版本"
+        }
+      ]
+    },
+    {
+      "object_id": "V13:object:claim",
+      "states": [
+        "reported",
+        "investigating",
+        "resolved",
+        "closed",
+        "reopened"
+      ],
+      "transitions": [
+        {
+          "from": "reported",
+          "to": "investigating",
+          "trigger": "受理调查",
+          "guard": "持久报案与policy引用",
+          "durable_effect": "建立exposure及证据待办",
+          "recovery": "缺资料不直接拒赔"
+        },
+        {
+          "from": "investigating",
+          "to": "resolved",
+          "trigger": "责任与处理方案明确",
+          "guard": "全部exposure已有可解释决定",
+          "durable_effect": "决定版本及支付待办",
+          "recovery": "新证据可重开"
+        },
+        {
+          "from": "resolved",
+          "to": "closed",
+          "trigger": "结案",
+          "guard": "全部责任完成、费用已处理、无未知操作",
+          "durable_effect": "结案证据与余额快照",
+          "recovery": "不能只凭赔款已付关闭"
+        },
+        {
+          "from": "closed",
+          "to": "reopened",
+          "trigger": "新证据或资金退回",
+          "guard": "授权及明确理由",
+          "durable_effect": "重开依据保留旧结案",
+          "recovery": "冻结受影响未执行操作"
+        },
+        {
+          "from": "reopened",
+          "to": "investigating",
+          "trigger": "继续调查",
+          "guard": "已分配责任人",
+          "durable_effect": "新的证据版本",
+          "recovery": "已付款事实保持不变"
+        }
+      ]
+    },
+    {
+      "object_id": "V13:object:decision",
+      "states": [
+        "pending",
+        "confirmed",
+        "denied",
+        "superseded"
+      ],
+      "transitions": [
+        {
+          "from": "pending",
+          "to": "confirmed",
+          "trigger": "理赔员核定",
+          "guard": "事故时点条款及损失证据齐备",
+          "durable_effect": "核定赔付与规则版本",
+          "recovery": "新证据触发替代决定"
+        },
+        {
+          "from": "pending",
+          "to": "denied",
+          "trigger": "责任不成立",
+          "guard": "授权判断及证据理由",
+          "durable_effect": "保留拒绝理由",
+          "recovery": "补证后走新审查，不改原记录"
+        },
+        {
+          "from": "confirmed",
+          "to": "superseded",
+          "trigger": "责任修订",
+          "guard": "新证据与授权",
+          "durable_effect": "旧决定失效关系及未执行款冻结",
+          "recovery": "已付差额另行处理"
+        }
+      ]
+    },
+    {
+      "object_id": "V13:object:reserve-set",
+      "states": [
+        "proposed",
+        "awaiting-approval",
+        "approved",
+        "rejected"
+      ],
+      "transitions": [
+        {
+          "from": "proposed",
+          "to": "awaiting-approval",
+          "trigger": "超限提交",
+          "guard": "依据变更后全案金额检查权限",
+          "durable_effect": "保存完整reserve set与待办",
+          "recovery": "拆分也按全案复核"
+        },
+        {
+          "from": "proposed",
+          "to": "approved",
+          "trigger": "额度内批准",
+          "guard": "角色权限、维度与版本有效",
+          "durable_effect": "整组调整加入批准余额及outbox",
+          "recovery": "重试同一set不得再加金额"
+        },
+        {
+          "from": "awaiting-approval",
+          "to": "approved",
+          "trigger": "主管批准",
+          "guard": "主管限额及当前案版本满足",
+          "durable_effect": "整组交易原子生效",
+          "recovery": "版本改变重新审阅"
+        },
+        {
+          "from": "awaiting-approval",
+          "to": "rejected",
+          "trigger": "主管拒绝",
+          "guard": "授权及理由",
+          "durable_effect": "保留提议不增加R",
+          "recovery": "修订后建立新提议"
+        }
+      ]
+    },
+    {
+      "object_id": "V13:object:payment",
+      "states": [
+        "prepared",
+        "submitted",
+        "unknown",
+        "settled",
+        "failed"
+      ],
+      "transitions": [
+        {
+          "from": "prepared",
+          "to": "submitted",
+          "trigger": "发起支付",
+          "guard": "责任确认、额度足够、收款人版本有效",
+          "durable_effect": "同事务建立U占用与操作",
+          "recovery": "进程退出查询原参考号"
+        },
+        {
+          "from": "submitted",
+          "to": "unknown",
+          "trigger": "外部超时",
+          "guard": "执行结果无法确认",
+          "durable_effect": "U保持不变",
+          "recovery": "查询原操作或人工对账"
+        },
+        {
+          "from": "submitted",
+          "to": "settled",
+          "trigger": "确认执行",
+          "guard": "可信回执匹配金额币种收款人",
+          "durable_effect": "同一身份U转P",
+          "recovery": "消费标记前崩溃读取既有结果"
+        },
+        {
+          "from": "unknown",
+          "to": "settled",
+          "trigger": "核对成功",
+          "guard": "确认原操作执行",
+          "durable_effect": "U转P一次",
+          "recovery": "保留查询依据"
+        },
+        {
+          "from": "unknown",
+          "to": "failed",
+          "trigger": "核对失败",
+          "guard": "确定原操作没有现金效果",
+          "durable_effect": "释放U并记录失败",
+          "recovery": "重试须新授权且与原尝试关联"
+        },
+        {
+          "from": "submitted",
+          "to": "failed",
+          "trigger": "明确拒绝",
+          "guard": "外部确认未执行",
+          "durable_effect": "释放U",
+          "recovery": "不得把未知当拒绝"
+        }
+      ]
+    },
+    {
+      "object_id": "V13:object:reserve-transaction",
+      "states": [
+        "proposed",
+        "submitting",
+        "submitted",
+        "rejected"
+      ],
+      "transitions": [
+        {
+          "from": "proposed",
+          "to": "submitting",
+          "trigger": "所属set批准",
+          "guard": "整组审批通过且交易身份唯一",
+          "durable_effect": "调整R并写入待总账交接任务",
+          "recovery": "重放读取已有交易不再加R"
+        },
+        {
+          "from": "submitting",
+          "to": "submitted",
+          "trigger": "下游ack",
+          "guard": "匹配原交易身份",
+          "durable_effect": "记录交接确认，不改变R",
+          "recovery": "ack迟到可重试核对"
+        },
+        {
+          "from": "proposed",
+          "to": "rejected",
+          "trigger": "所属set拒绝",
+          "guard": "授权拒绝理由",
+          "durable_effect": "保留原提议且不改变R",
+          "recovery": "修订另建交易"
+        }
+      ]
+    }
+  ],
+  "algorithm_ids": [
+    "ALG:lookup",
+    "ALG:graph-paths",
+    "ALG:caches"
+  ],
+  "claim_ids": [
+    "V13:claim:submission",
+    "V13:claim:reserve-model",
+    "V13:claim:reserve-authority",
+    "V13:claim:financial-dimensions",
+    "V13:claim:authority-separation",
+    "V13:claim:design",
+    "V13:claim:calculation"
+  ],
+  "checks": [
+    {
+      "id": "V13:check:happy",
+      "kind": "happy_path",
+      "given": "损失6000、免赔500、限额8000；赔款R5500、费用R300",
+      "when": "支付赔款2000再3500",
+      "then": "赔款5500；费用未解决不能全案关闭",
+      "evidence_required": "UI、责任版本、reserve、付款和费用证据；端到端尚未执行"
+    },
+    {
+      "id": "V13:check:duplicate",
+      "kind": "duplicate",
+      "given": "一条支付结果",
+      "when": "重复投递",
+      "then": "一次U转P；独立payment不按金额去重",
+      "evidence_required": "inbox与payment唯一键；尚未执行"
+    },
+    {
+      "id": "V13:check:reordering",
+      "kind": "out_of_order",
+      "given": "reserve已获主管批准",
+      "when": "迟到待批通知",
+      "then": "核对权威版本；R不回退也不重复增加",
+      "evidence_required": "版本与到达日志、权威读取；尚未执行"
+    },
+    {
+      "id": "V13:check:same-line-race",
+      "kind": "concurrency",
+      "given": "可用2500，两个操作各2000",
+      "when": "同案并发占用",
+      "then": "一个成功另一个冲突；剩500",
+      "evidence_required": "真实事务并发与占用行；尚未执行"
+    },
+    {
+      "id": "V13:check:tenant",
+      "kind": "tenant_isolation",
+      "given": "相同claim ID在两个tenant",
+      "when": "查看责任图、附件、缓存、导出",
+      "then": "仅授权tenant可达数据",
+      "evidence_required": "查询与权限证据；尚未执行"
+    },
+    {
+      "id": "V13:check:timeout",
+      "kind": "unknown_outcome",
+      "given": "支付接口已受理1000",
+      "when": "请求超时",
+      "then": "保留U1000，原参考号查询，不盲目第二次付款",
+      "evidence_required": "外部操作与本地占用；尚未执行"
+    },
+    {
+      "id": "V13:check:crash",
+      "kind": "recovery",
+      "given": "P已提交",
+      "when": "消费标记前崩溃重启",
+      "then": "P只增加一次，最终消费状态可解释",
+      "evidence_required": "故障注入、账务与恢复日志；尚未执行"
+    },
+    {
+      "id": "V13:check:authority-split",
+      "kind": "authorization",
+      "given": "理赔员全案限额3000",
+      "when": "把4000拆两次2000",
+      "then": "第二次使全案超限时进入审批；不凭单笔放行",
+      "evidence_required": "权限判断与全案版本；尚未执行"
+    },
+    {
+      "id": "V13:check:occurrence-date",
+      "kind": "domain",
+      "given": "保障[0,365)，事故360，报案370",
+      "when": "评估保障时点",
+      "then": "按事故日进入责任调查；非直接放行",
+      "evidence_required": "条款版本、两日期与决定理由；尚未执行"
+    },
+    {
+      "id": "V13:check:line-isolation",
+      "kind": "algorithm",
+      "given": "赔款R5500 P2000 U1000；费用R300",
+      "when": "计算本赔款line可新付",
+      "then": "2500；不得加入费用/另一claimant/另一币种余额",
+      "evidence_required": "固定分组fixture；本地算术脚本可运行"
+    },
+    {
+      "id": "V13:check:deductible-order",
+      "kind": "algorithm",
+      "given": "损失10000、免赔500、限额8000",
+      "when": "按本例先免赔后限额",
+      "then": "8000；错误次序7500被反例识别",
+      "evidence_required": "固定fixture与预期差异；本地脚本可运行"
+    },
+    {
+      "id": "V13:check:reserve-reduction",
+      "kind": "domain",
+      "given": "R5500 P2000 U1000",
+      "when": "请求下调R至2500",
+      "then": "挂起或拒绝，不能清除U造成负可用",
+      "evidence_required": "拒绝记录与占用保持证据；仅纯函数guard可运行"
+    }
+  ]
+}

@@ -1,0 +1,1077 @@
+{
+  "contract_version": "1.0",
+  "case_id": "V14",
+  "title": "投资订单：成交、撤单、分配与结算",
+  "scope": "合成买方订单系统；整数股、单一币种、无费税；FIX 语义参照不代表完整协议或监管合规",
+  "synthetic": true,
+  "source_ids": [
+    "FIX",
+    "P01-SRC-fix-order-states-ep284",
+    "P01-SRC-fix-allocation-instruction",
+    "P01-SRC-fix-settlement-instructions"
+  ],
+  "nodes": [
+    {
+      "id": "V14:actor:trader",
+      "type": "actor",
+      "label": "获授权交易员",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + authorized legal/account scope"
+    },
+    {
+      "id": "V14:actor:operations",
+      "type": "actor",
+      "label": "分配与交收运营",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + authorized legal/account scope"
+    },
+    {
+      "id": "V14:ui:desk",
+      "type": "ui",
+      "label": "订单、分配与结算工作台",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + authorized legal/account scope"
+    },
+    {
+      "id": "V14:service:oms",
+      "type": "service",
+      "label": "投资指令与订单服务",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + authorized legal/account scope"
+    },
+    {
+      "id": "V14:service:allocation",
+      "type": "service",
+      "label": "分配计算与版本服务",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + authorized legal/account scope"
+    },
+    {
+      "id": "V14:service:settlement",
+      "type": "service",
+      "label": "结算义务服务",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + authorized legal/account scope"
+    },
+    {
+      "id": "V14:store:ledger",
+      "type": "store",
+      "label": "意图、成交、分配与 outbox",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + authorized legal/account scope"
+    },
+    {
+      "id": "V14:store:inbox",
+      "type": "store",
+      "label": "入站回报持久簿",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + authorized legal/account scope"
+    },
+    {
+      "id": "V14:external_system:broker",
+      "type": "external_system",
+      "label": "经纪商边界（合成，FIX 参照）",
+      "authority": "external counterparty evidence; concrete provider unspecified",
+      "tenant_scope": "tenant + authorized legal/account scope"
+    },
+    {
+      "id": "V14:external_system:custodian",
+      "type": "external_system",
+      "label": "托管/结算机构边界（合成）",
+      "authority": "external settlement evidence; concrete provider unspecified",
+      "tenant_scope": "tenant + authorized legal/account scope"
+    },
+    {
+      "id": "V14:event:execution-report",
+      "type": "event",
+      "label": "执行回报：原因、状态、执行身份",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + authorized legal/account scope"
+    },
+    {
+      "id": "V14:event:settlement-report",
+      "type": "event",
+      "label": "交收明细确认",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + authorized legal/account scope"
+    },
+    {
+      "id": "V14:object:intent",
+      "type": "object",
+      "label": "授权投资指令",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + authorized legal/account scope"
+    },
+    {
+      "id": "V14:object:broker-order",
+      "type": "object",
+      "label": "外部订单状态映射",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + authorized legal/account scope"
+    },
+    {
+      "id": "V14:object:cancel-request",
+      "type": "object",
+      "label": "撤单尝试",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + authorized legal/account scope"
+    },
+    {
+      "id": "V14:object:executions",
+      "type": "object",
+      "label": "版本化有效成交集合",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + authorized legal/account scope"
+    },
+    {
+      "id": "V14:object:allocation",
+      "type": "object",
+      "label": "账户分配版本",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + authorized legal/account scope"
+    },
+    {
+      "id": "V14:object:settlement",
+      "type": "object",
+      "label": "按账户结算义务",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + authorized legal/account scope"
+    },
+    {
+      "id": "V14:rule:mandate",
+      "type": "rule",
+      "label": "冻结的授权、账户集合与分配政策",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + authorized legal/account scope"
+    }
+  ],
+  "edges": [
+    {
+      "id": "V14:edge:trader-desk",
+      "type": "operates",
+      "from": "V14:actor:trader",
+      "to": "V14:ui:desk",
+      "payload": "角色、账户范围、对象版本",
+      "timing": "sync",
+      "invariant": "角色只能发起获授权动作",
+      "failure": "权限变化后刷新；服务端复核",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V14:claim:synthetic-model"
+      ]
+    },
+    {
+      "id": "V14:edge:operations-desk",
+      "type": "operates",
+      "from": "V14:actor:operations",
+      "to": "V14:ui:desk",
+      "payload": "角色、账户范围、对象版本",
+      "timing": "sync",
+      "invariant": "角色只能发起获授权动作",
+      "failure": "权限变化后刷新；服务端复核",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V14:claim:synthetic-model"
+      ]
+    },
+    {
+      "id": "V14:edge:submit-order",
+      "type": "commands",
+      "from": "V14:ui:desk",
+      "to": "V14:service:oms",
+      "payload": "operation ID、intent version、数量、限价、账户集合",
+      "timing": "sync",
+      "invariant": "重复意图不生成第二张新单",
+      "failure": "返回既有操作或版本冲突",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V14:claim:synthetic-model"
+      ]
+    },
+    {
+      "id": "V14:edge:approve-allocation",
+      "type": "commands",
+      "from": "V14:ui:desk",
+      "to": "V14:service:allocation",
+      "payload": "allocation version、execution_set_version、批准人",
+      "timing": "sync",
+      "invariant": "旧成交集合不得批准",
+      "failure": "展示新成交/纠正差额并重算",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V14:claim:synthetic-model"
+      ]
+    },
+    {
+      "id": "V14:edge:instruct-settlement",
+      "type": "commands",
+      "from": "V14:ui:desk",
+      "to": "V14:service:settlement",
+      "payload": "accepted allocation ID、账户及指令版本",
+      "timing": "sync",
+      "invariant": "不把发送指令当成交收完成",
+      "failure": "保留 unknown 并查询外部",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V14:claim:synthetic-model"
+      ]
+    },
+    {
+      "id": "V14:edge:mandate-check",
+      "type": "authorizes",
+      "from": "V14:rule:mandate",
+      "to": "V14:service:oms",
+      "payload": "授权限价、账户范围与版本",
+      "timing": "static",
+      "invariant": "发单不得越过批准边界",
+      "failure": "拒绝并保留原因",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V14:claim:synthetic-model"
+      ]
+    },
+    {
+      "id": "V14:edge:owns-intent",
+      "type": "owns",
+      "from": "V14:service:oms",
+      "to": "V14:object:intent",
+      "payload": "对象版本和决定记录",
+      "timing": "static",
+      "invariant": "本地意图与外部事实分别保留",
+      "failure": "原始证据与修订链可回查",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V14:claim:synthetic-model"
+      ]
+    },
+    {
+      "id": "V14:edge:owns-cancel",
+      "type": "owns",
+      "from": "V14:service:oms",
+      "to": "V14:object:cancel-request",
+      "payload": "对象版本和决定记录",
+      "timing": "static",
+      "invariant": "本地意图与外部事实分别保留",
+      "failure": "原始证据与修订链可回查",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V14:claim:synthetic-model"
+      ]
+    },
+    {
+      "id": "V14:edge:owns-executions",
+      "type": "owns",
+      "from": "V14:service:oms",
+      "to": "V14:object:executions",
+      "payload": "对象版本和决定记录",
+      "timing": "static",
+      "invariant": "本地意图与外部事实分别保留",
+      "failure": "原始证据与修订链可回查",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V14:claim:synthetic-model"
+      ]
+    },
+    {
+      "id": "V14:edge:owns-broker-state",
+      "type": "owns",
+      "from": "V14:external_system:broker",
+      "to": "V14:object:broker-order",
+      "payload": "外部订单状态回报",
+      "timing": "static",
+      "invariant": "UI 不自行制造外部终态",
+      "failure": "未知状态由回报缺口与查询解决",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V14:claim:synthetic-model"
+      ]
+    },
+    {
+      "id": "V14:edge:owns-allocation",
+      "type": "owns",
+      "from": "V14:service:allocation",
+      "to": "V14:object:allocation",
+      "payload": "数量、金额、政策、成交集合版本",
+      "timing": "static",
+      "invariant": "各账户数量合计等于有效成交",
+      "failure": "纠正后标记旧版失效",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V14:claim:synthetic-model"
+      ]
+    },
+    {
+      "id": "V14:edge:owns-obligation",
+      "type": "owns",
+      "from": "V14:service:settlement",
+      "to": "V14:object:settlement",
+      "payload": "账户、证券、币种、日期、金额和确认映射",
+      "timing": "static",
+      "invariant": "每项履约证据只计一次",
+      "failure": "部分结算保持剩余义务",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V14:claim:synthetic-model"
+      ]
+    },
+    {
+      "id": "V14:edge:store-intent",
+      "type": "stores",
+      "from": "V14:store:ledger",
+      "to": "V14:object:intent",
+      "payload": "对象、版本、业务唯一键",
+      "timing": "sync",
+      "invariant": "同事务保存业务效果与待办",
+      "failure": "提交后崩溃可重放而不重复效果",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V14:claim:synthetic-model"
+      ]
+    },
+    {
+      "id": "V14:edge:store-cancel",
+      "type": "stores",
+      "from": "V14:store:ledger",
+      "to": "V14:object:cancel-request",
+      "payload": "对象、版本、业务唯一键",
+      "timing": "sync",
+      "invariant": "同事务保存业务效果与待办",
+      "failure": "提交后崩溃可重放而不重复效果",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V14:claim:synthetic-model"
+      ]
+    },
+    {
+      "id": "V14:edge:store-executions",
+      "type": "stores",
+      "from": "V14:store:ledger",
+      "to": "V14:object:executions",
+      "payload": "对象、版本、业务唯一键",
+      "timing": "sync",
+      "invariant": "同事务保存业务效果与待办",
+      "failure": "提交后崩溃可重放而不重复效果",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V14:claim:synthetic-model"
+      ]
+    },
+    {
+      "id": "V14:edge:store-allocation",
+      "type": "stores",
+      "from": "V14:store:ledger",
+      "to": "V14:object:allocation",
+      "payload": "对象、版本、业务唯一键",
+      "timing": "sync",
+      "invariant": "同事务保存业务效果与待办",
+      "failure": "提交后崩溃可重放而不重复效果",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V14:claim:synthetic-model"
+      ]
+    },
+    {
+      "id": "V14:edge:store-settlement",
+      "type": "stores",
+      "from": "V14:store:ledger",
+      "to": "V14:object:settlement",
+      "payload": "对象、版本、业务唯一键",
+      "timing": "sync",
+      "invariant": "同事务保存业务效果与待办",
+      "failure": "提交后崩溃可重放而不重复效果",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V14:claim:synthetic-model"
+      ]
+    },
+    {
+      "id": "V14:edge:route-order",
+      "type": "requests",
+      "from": "V14:service:oms",
+      "to": "V14:external_system:broker",
+      "payload": "原始 ClOrdID 或撤单新 ID、引用身份、数量限价",
+      "timing": "async",
+      "invariant": "超时不生成另一张新订单",
+      "failure": "按对手方协议查询/重传，结果未明保留 unknown",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V14:claim:synthetic-model"
+      ]
+    },
+    {
+      "id": "V14:edge:execution-arrives",
+      "type": "emits",
+      "from": "V14:external_system:broker",
+      "to": "V14:event:execution-report",
+      "payload": "ExecType、OrdStatus、ExecID、引用执行和数量价格",
+      "timing": "async",
+      "invariant": "事件原因和当前状态不能合并为单一阶段",
+      "failure": "记录缺口、纠正引用和冲突身份",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V14:claim:synthetic-model"
+      ]
+    },
+    {
+      "id": "V14:edge:persist-execution",
+      "type": "delivers",
+      "from": "V14:event:execution-report",
+      "to": "V14:store:inbox",
+      "payload": "完整入站内容、会话范围、接收时间、解析版本",
+      "timing": "async",
+      "invariant": "先持久化后确认本地受理",
+      "failure": "重放按业务身份去重",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V14:claim:synthetic-model"
+      ]
+    },
+    {
+      "id": "V14:edge:consume-execution",
+      "type": "reads",
+      "from": "V14:service:oms",
+      "to": "V14:store:inbox",
+      "payload": "已授权连接内的待处理回报",
+      "timing": "async",
+      "invariant": "状态消息不被当作新增成交重复求和",
+      "failure": "缺失被引用执行先挂起",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V14:claim:synthetic-model"
+      ]
+    },
+    {
+      "id": "V14:edge:reconcile-broker",
+      "type": "reads",
+      "from": "V14:service:oms",
+      "to": "V14:external_system:broker",
+      "payload": "原订单/撤单身份与恢复请求",
+      "timing": "async",
+      "invariant": "成交集合完整性独立于显示终态",
+      "failure": "查询失败不释放未知余量的预算",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V14:claim:synthetic-model"
+      ]
+    },
+    {
+      "id": "V14:edge:allocation-source",
+      "type": "derived_from",
+      "from": "V14:object:allocation",
+      "to": "V14:object:executions",
+      "payload": "有效成交版本、分配政策与整数舍入",
+      "timing": "sync",
+      "invariant": "总股数与分配金额守恒",
+      "failure": "版本变化重新计算并产生修订",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V14:claim:synthetic-algorithm"
+      ]
+    },
+    {
+      "id": "V14:edge:settlement-prerequisite",
+      "type": "depends_on",
+      "from": "V14:object:settlement",
+      "to": "V14:object:allocation",
+      "payload": "被外部接受的分配版本",
+      "timing": "static",
+      "invariant": "被替代版本不得发起新交收",
+      "failure": "已有外部动作先核对再调整",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V14:claim:synthetic-model"
+      ]
+    },
+    {
+      "id": "V14:edge:send-settlement",
+      "type": "requests",
+      "from": "V14:service:settlement",
+      "to": "V14:external_system:custodian",
+      "payload": "账户指令、证券、数量、金额、日期、版本",
+      "timing": "async",
+      "invariant": "发送与接受不等于完成",
+      "failure": "保留发送身份并查询",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V14:claim:synthetic-model"
+      ]
+    },
+    {
+      "id": "V14:edge:settlement-arrives",
+      "type": "emits",
+      "from": "V14:external_system:custodian",
+      "to": "V14:event:settlement-report",
+      "payload": "交收义务、确认数量、金额与身份",
+      "timing": "async",
+      "invariant": "不能仅凭 allocation accepted 完成义务",
+      "failure": "缺少一侧确认保留异常",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V14:claim:synthetic-model"
+      ]
+    },
+    {
+      "id": "V14:edge:consume-settlement",
+      "type": "delivers",
+      "from": "V14:event:settlement-report",
+      "to": "V14:service:settlement",
+      "payload": "经过身份核验的交收明细",
+      "timing": "async",
+      "invariant": "累计明细不超有效义务；冲突不静默修正",
+      "failure": "对账并人工接管超额/差异",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V14:claim:synthetic-model"
+      ]
+    },
+    {
+      "id": "V14:edge:show-intent",
+      "type": "projects",
+      "from": "V14:object:intent",
+      "to": "V14:ui:desk",
+      "payload": "对象状态、数量、版本、新鲜度和未决原因",
+      "timing": "async",
+      "invariant": "并行生命周期独立显示",
+      "failure": "重连后按游标补读，不以在线代替完整",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V14:claim:synthetic-model"
+      ]
+    },
+    {
+      "id": "V14:edge:show-broker-order",
+      "type": "projects",
+      "from": "V14:object:broker-order",
+      "to": "V14:ui:desk",
+      "payload": "对象状态、数量、版本、新鲜度和未决原因",
+      "timing": "async",
+      "invariant": "并行生命周期独立显示",
+      "failure": "重连后按游标补读，不以在线代替完整",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V14:claim:synthetic-model"
+      ]
+    },
+    {
+      "id": "V14:edge:show-cancel",
+      "type": "projects",
+      "from": "V14:object:cancel-request",
+      "to": "V14:ui:desk",
+      "payload": "对象状态、数量、版本、新鲜度和未决原因",
+      "timing": "async",
+      "invariant": "并行生命周期独立显示",
+      "failure": "重连后按游标补读，不以在线代替完整",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V14:claim:synthetic-model"
+      ]
+    },
+    {
+      "id": "V14:edge:show-allocation",
+      "type": "projects",
+      "from": "V14:object:allocation",
+      "to": "V14:ui:desk",
+      "payload": "对象状态、数量、版本、新鲜度和未决原因",
+      "timing": "async",
+      "invariant": "并行生命周期独立显示",
+      "failure": "重连后按游标补读，不以在线代替完整",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V14:claim:synthetic-model"
+      ]
+    },
+    {
+      "id": "V14:edge:show-settlement",
+      "type": "projects",
+      "from": "V14:object:settlement",
+      "to": "V14:ui:desk",
+      "payload": "对象状态、数量、版本、新鲜度和未决原因",
+      "timing": "async",
+      "invariant": "并行生命周期独立显示",
+      "failure": "重连后按游标补读，不以在线代替完整",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V14:claim:synthetic-model"
+      ]
+    }
+  ],
+  "lifecycles": [
+    {
+      "object_id": "V14:object:intent",
+      "states": [
+        "draft",
+        "authorized",
+        "routed",
+        "rejected"
+      ],
+      "transitions": [
+        {
+          "from": "draft",
+          "to": "authorized",
+          "trigger": "经理批准",
+          "guard": "限价、账户与策略已确认",
+          "durable_effect": "冻结授权版本",
+          "recovery": "修改需重新批准"
+        },
+        {
+          "from": "authorized",
+          "to": "routed",
+          "trigger": "交易员提交",
+          "guard": "服务端权限及版本匹配",
+          "durable_effect": "保存 operation 与 outbox",
+          "recovery": "超时按原身份核对"
+        },
+        {
+          "from": "authorized",
+          "to": "rejected",
+          "trigger": "校验拒绝",
+          "guard": "额度或账户不满足",
+          "durable_effect": "保存原因而不发外部请求",
+          "recovery": "改动后重新批准"
+        }
+      ]
+    },
+    {
+      "object_id": "V14:object:broker-order",
+      "states": [
+        "unknown",
+        "new",
+        "partially-filled",
+        "pending-cancel",
+        "canceled",
+        "filled",
+        "rejected"
+      ],
+      "transitions": [
+        {
+          "from": "unknown",
+          "to": "new",
+          "trigger": "外部受理回报",
+          "guard": "身份与请求匹配",
+          "durable_effect": "保存订单映射",
+          "recovery": "补齐缺口再投影"
+        },
+        {
+          "from": "unknown",
+          "to": "rejected",
+          "trigger": "外部拒单",
+          "guard": "经核对的拒绝证据",
+          "durable_effect": "保存拒绝原因",
+          "recovery": "不得把撤单拒绝映成拒单"
+        },
+        {
+          "from": "new",
+          "to": "partially-filled",
+          "trigger": "有效成交",
+          "guard": "独立执行身份通过校验",
+          "durable_effect": "更新有效集合与数量",
+          "recovery": "重复只返回既有事实"
+        },
+        {
+          "from": "partially-filled",
+          "to": "pending-cancel",
+          "trigger": "外部撤单等待回报",
+          "guard": "关联撤单尝试",
+          "durable_effect": "保留累计成交与待撤余量",
+          "recovery": "等待期间继续接收成交"
+        },
+        {
+          "from": "pending-cancel",
+          "to": "pending-cancel",
+          "trigger": "等待期间成交",
+          "guard": "新执行有效",
+          "durable_effect": "增加成交并重算剩余",
+          "recovery": "不因 pending 状态丢弃成交"
+        },
+        {
+          "from": "pending-cancel",
+          "to": "canceled",
+          "trigger": "外部取消确认",
+          "guard": "回报匹配；最终分配另需缺口补齐",
+          "durable_effect": "余量不再执行，保留已成交",
+          "recovery": "迟到纠正进入新集合版本"
+        },
+        {
+          "from": "pending-cancel",
+          "to": "filled",
+          "trigger": "撤单太晚且已全成",
+          "guard": "完整成交及拒撤证据",
+          "durable_effect": "总量已成并关闭撤单尝试",
+          "recovery": "不自动反向交易"
+        },
+        {
+          "from": "canceled",
+          "to": "canceled",
+          "trigger": "成交纠正或撤销",
+          "guard": "有效引用原执行",
+          "durable_effect": "修订有效集合；不擅自重开订单",
+          "recovery": "冻结下游并核对调整"
+        },
+        {
+          "from": "new",
+          "to": "pending-cancel",
+          "trigger": "未成交订单收到外部撤单等待回报",
+          "guard": "身份与原订单匹配",
+          "durable_effect": "记录等待；仍可继续成交",
+          "recovery": "未经外部确认不释放余量预算"
+        },
+        {
+          "from": "new",
+          "to": "filled",
+          "trigger": "一笔全部成交",
+          "guard": "有效数量等于原订单数量",
+          "durable_effect": "记录有效执行与已成终态",
+          "recovery": "继续分配结算"
+        },
+        {
+          "from": "partially-filled",
+          "to": "filled",
+          "trigger": "剩余数量成交",
+          "guard": "有效执行合计等于订单数量",
+          "durable_effect": "记录完整成交集合",
+          "recovery": "成交纠正另建版本"
+        }
+      ]
+    },
+    {
+      "object_id": "V14:object:cancel-request",
+      "states": [
+        "prepared",
+        "sent",
+        "pending",
+        "confirmed",
+        "rejected",
+        "unknown"
+      ],
+      "transitions": [
+        {
+          "from": "prepared",
+          "to": "sent",
+          "trigger": "发送撤单",
+          "guard": "有权限且原订单身份明确",
+          "durable_effect": "保存独立请求身份与原单引用",
+          "recovery": "同身份恢复"
+        },
+        {
+          "from": "sent",
+          "to": "pending",
+          "trigger": "外部确认收到请求",
+          "guard": "证据身份匹配",
+          "durable_effect": "保存等待状态",
+          "recovery": "继续处理成交"
+        },
+        {
+          "from": "sent",
+          "to": "unknown",
+          "trigger": "发送后超时",
+          "guard": "无法确认外部结果",
+          "durable_effect": "保存发送证据和待核对任务",
+          "recovery": "查询原请求而不新造撤单"
+        },
+        {
+          "from": "unknown",
+          "to": "pending",
+          "trigger": "恢复查询确认仍待处理",
+          "guard": "外部结果可信",
+          "durable_effect": "关联既有尝试",
+          "recovery": "继续查询直到明确"
+        },
+        {
+          "from": "pending",
+          "to": "confirmed",
+          "trigger": "外部撤单确认",
+          "guard": "原单与请求匹配",
+          "durable_effect": "保存终态",
+          "recovery": "成交缺口仍须核对"
+        },
+        {
+          "from": "pending",
+          "to": "rejected",
+          "trigger": "外部拒撤",
+          "guard": "原因与订单匹配",
+          "durable_effect": "保存拒绝与当前订单状态",
+          "recovery": "已成交继续分配结算"
+        },
+        {
+          "from": "unknown",
+          "to": "confirmed",
+          "trigger": "核对确认取消",
+          "guard": "既有外部订单已取消",
+          "durable_effect": "保存查询证据",
+          "recovery": "不重复发送新单"
+        },
+        {
+          "from": "sent",
+          "to": "confirmed",
+          "trigger": "直接收到取消终态回报",
+          "guard": "原订单与撤单身份匹配",
+          "durable_effect": "保存终态；不要求必经本地 pending",
+          "recovery": "仍核对晚到执行和缺口"
+        },
+        {
+          "from": "sent",
+          "to": "rejected",
+          "trigger": "直接收到拒撤",
+          "guard": "经核对的拒撤证据",
+          "durable_effect": "保存拒绝及原订单状态",
+          "recovery": "不把拒撤视为拒绝原单"
+        },
+        {
+          "from": "unknown",
+          "to": "rejected",
+          "trigger": "恢复查询确认拒撤",
+          "guard": "外部证据关联原尝试",
+          "durable_effect": "保存已知拒撤结果",
+          "recovery": "原单继续按实际成交履约"
+        }
+      ]
+    },
+    {
+      "object_id": "V14:object:allocation",
+      "states": [
+        "draft",
+        "approved",
+        "submitted",
+        "accepted",
+        "rejected",
+        "superseded"
+      ],
+      "transitions": [
+        {
+          "from": "draft",
+          "to": "approved",
+          "trigger": "运营批准",
+          "guard": "完整成交集版本匹配；数量金额容量满足",
+          "durable_effect": "保存政策版本和批准者",
+          "recovery": "并发改变则拒绝旧预览"
+        },
+        {
+          "from": "approved",
+          "to": "submitted",
+          "trigger": "发出分配",
+          "guard": "版本未失效",
+          "durable_effect": "保存 AllocID 对应尝试",
+          "recovery": "未知结果查询同身份"
+        },
+        {
+          "from": "submitted",
+          "to": "accepted",
+          "trigger": "外部接受",
+          "guard": "对应分配版本",
+          "durable_effect": "保存接受证据并建立义务",
+          "recovery": "不据此宣告结算完成"
+        },
+        {
+          "from": "submitted",
+          "to": "rejected",
+          "trigger": "外部拒绝",
+          "guard": "身份一致",
+          "durable_effect": "保存原因",
+          "recovery": "纠正账户资料后新版本"
+        },
+        {
+          "from": "accepted",
+          "to": "superseded",
+          "trigger": "成交纠正",
+          "guard": "调整方案获批准且核对已有交收",
+          "durable_effect": "保留旧版与修订关联",
+          "recovery": "已结算转人工交收后调整"
+        },
+        {
+          "from": "approved",
+          "to": "superseded",
+          "trigger": "批准后、发送前成交集合变动",
+          "guard": "版本变动已确认",
+          "durable_effect": "冻结批准版本并新建预览",
+          "recovery": "未发送者无外部回滚；重新批准"
+        },
+        {
+          "from": "submitted",
+          "to": "superseded",
+          "trigger": "已发分配受到成交纠正影响",
+          "guard": "先查回旧分配结果并记录外部取消/替换处理",
+          "durable_effect": "保存旧尝试与新版本关联；未解决交收保持冻结",
+          "recovery": "结果未知时先核对，不能假定旧指令不存在"
+        }
+      ]
+    },
+    {
+      "object_id": "V14:object:settlement",
+      "states": [
+        "pending",
+        "instructed",
+        "matched",
+        "partial",
+        "settled",
+        "failed"
+      ],
+      "transitions": [
+        {
+          "from": "pending",
+          "to": "instructed",
+          "trigger": "提交结算指令",
+          "guard": "已接受有效分配和账户资料",
+          "durable_effect": "保存指令版本",
+          "recovery": "超时保留未知尝试并查回"
+        },
+        {
+          "from": "instructed",
+          "to": "matched",
+          "trigger": "双方资料核对一致",
+          "guard": "数量金额日期版本一致",
+          "durable_effect": "记录匹配证据",
+          "recovery": "错配进入异常"
+        },
+        {
+          "from": "matched",
+          "to": "partial",
+          "trigger": "收到部分交收证据",
+          "guard": "确认明细唯一且不超义务",
+          "durable_effect": "累计已结数量与剩余",
+          "recovery": "其他账户可独立推进"
+        },
+        {
+          "from": "matched",
+          "to": "settled",
+          "trigger": "收到全部交收证据",
+          "guard": "证券资金证据满足本例条件",
+          "durable_effect": "保存最终明细映射",
+          "recovery": "迟到调整独立处理"
+        },
+        {
+          "from": "partial",
+          "to": "settled",
+          "trigger": "补齐剩余交收",
+          "guard": "合计等于有效义务",
+          "durable_effect": "剩余归零",
+          "recovery": "重复确认不再次记账"
+        },
+        {
+          "from": "instructed",
+          "to": "failed",
+          "trigger": "外部明确拒绝",
+          "guard": "已知失败证据",
+          "durable_effect": "记录原因与责任人",
+          "recovery": "修正后重新提交受控版本"
+        },
+        {
+          "from": "failed",
+          "to": "instructed",
+          "trigger": "运营修正后重发",
+          "guard": "旧结果已核对且新资料获准",
+          "durable_effect": "保存关联尝试",
+          "recovery": "仍未知时不继续盲发"
+        }
+      ]
+    }
+  ],
+  "algorithm_ids": [
+    "ALG:lookup",
+    "ALG:top-k"
+  ],
+  "claim_ids": [
+    "V14:claim:fix-state-semantics",
+    "V14:claim:allocation-message",
+    "V14:claim:settlement-message",
+    "V14:claim:synthetic-model",
+    "V14:claim:synthetic-algorithm"
+  ],
+  "checks": [
+    {
+      "id": "V14:check:happy",
+      "kind": "happy_path",
+      "given": "100 股授权；40@10 与25@10.04；余量撤单",
+      "when": "最终核对、分配、逐户交收",
+      "then": "65 股/651.00；33/19/13 与330.51/190.29/130.20；义务各自关闭",
+      "evidence_required": "UI、有效成交、外部分配接受及交收明细"
+    },
+    {
+      "id": "V14:check:duplicate",
+      "kind": "duplicate",
+      "given": "相同执行身份与内容",
+      "when": "回报投递两次",
+      "then": "仍65股，单一业务效果",
+      "evidence_required": "接收日志、唯一键与成交汇总"
+    },
+    {
+      "id": "V14:check:ordering",
+      "kind": "out_of_order",
+      "given": "65股实际成交；撤单确认先到",
+      "when": "迟到第二笔成交到达",
+      "then": "缺口补齐前不最终分配；补齐后65股仍存在",
+      "evidence_required": "会话/回报缺口记录、最终集合版本"
+    },
+    {
+      "id": "V14:check:race",
+      "kind": "concurrency",
+      "given": "同一分配预览；并发新纠正",
+      "when": "两人同时批准",
+      "then": "旧成交版本拒绝；只一套有效分配",
+      "evidence_required": "版本冲突、批准记录、外部发送记录"
+    },
+    {
+      "id": "V14:check:tenant",
+      "kind": "tenant_isolation",
+      "given": "两租户同订单与执行编号",
+      "when": "查询、缓存、导出和订阅",
+      "then": "仅见授权账户数据",
+      "evidence_required": "授权输入、返回载荷与缓存键"
+    },
+    {
+      "id": "V14:check:unknown",
+      "kind": "unknown_outcome",
+      "given": "经纪商已受理新单",
+      "when": "本地响应超时",
+      "then": "保留同一尝试；查回一张单；不新建第二张",
+      "evidence_required": "发送簿、外部查询、UI unknown"
+    },
+    {
+      "id": "V14:check:recovery",
+      "kind": "recovery",
+      "given": "成交与待办已提交",
+      "when": "消费标记前崩溃并重放",
+      "then": "数量不重复；分配待办可继续",
+      "evidence_required": "事务证据、重启与去重结果"
+    },
+    {
+      "id": "V14:check:partial",
+      "kind": "partial_settlement",
+      "given": "分配33/19/13",
+      "when": "A/C完结，B完成10",
+      "then": "已结56、未结9；整批未完结",
+      "evidence_required": "逐账户交收明细及金额核对"
+    },
+    {
+      "id": "V14:check:correction",
+      "kind": "execution_correction",
+      "given": "已分配65/651.00",
+      "when": "25股纠正为20股",
+      "then": "60/600.80；30/18/12；旧版冻结与外部调整可查",
+      "evidence_required": "引用执行链、分配替代和调整状态"
+    },
+    {
+      "id": "V14:check:capacity",
+      "kind": "infeasible_allocation",
+      "given": "A容量30，原算法33",
+      "when": "批准分配",
+      "then": "拒绝或受控重算；不可越权放入A",
+      "evidence_required": "容量规则、拒绝与有效总量"
+    },
+    {
+      "id": "V14:check:rounding",
+      "kind": "algorithm",
+      "given": "有效成交65股65100分",
+      "when": "分别取整股数与现金余数",
+      "then": "33/19/13；33051/19029/13020分；各自守恒",
+      "evidence_required": "固定整数fixture；错误四舍五入产生66被拒绝"
+    },
+    {
+      "id": "V14:check:lots",
+      "kind": "algorithm",
+      "given": "65股，每户整手10",
+      "when": "寻找完全分配",
+      "then": "不存在全部覆盖的方案；保留5股未分配责任",
+      "evidence_required": "可行域检查与未分配状态"
+    }
+  ]
+}
