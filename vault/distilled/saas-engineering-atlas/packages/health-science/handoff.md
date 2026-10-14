@@ -6,6 +6,7 @@
 - 分支：`cloud/saas-atlas-health-science-20261014`。
 - 精确起点：`ae1827f34c6df067348d2454d7e5c9331ceda25d`，源分支 `cloud/saas-engineering-atlas-20261014`。
 - 早期已推送检查点：`af41aad8a305769df1a3753c3f3e3e37bc297886`。
+- 完整内容与验证检查点：`ee38ac38a5719406074b062ff16f96b9ec55e872`；已 push，`git ls-remote` 返回同一完整 SHA。当前交接记录随后单独提交；最终分支 SHA 在任务完成报告中提供，也可按下方命令核对。
 - 唯一改动目录：`vault/distilled/saas-engineering-atlas/packages/health-science/`。未合并 main，未修改共享索引、其他包、CI 或部署。
 
 ## 阅读与后续消费
@@ -40,3 +41,13 @@
 ## 剩余缺口
 
 DICOM overview 正文未取回；公开在线资料没有做离线全文快照。标准定义不证明任何具体部署满足 profile 或实现全量服务。临床、研究伦理、药典/规格、电子签署和跨组织数据权限仍需针对实际场景的专业裁决。无真实账号、接口契约测试、端到端演示或性能测量；这不是阻塞本教材交付的缺失实现。
+
+## 获取与复核
+
+```bash
+git fetch origin cloud/saas-atlas-health-science-20261014
+git ls-remote --exit-code origin refs/heads/cloud/saas-atlas-health-science-20261014
+git diff --name-only ae1827f34c6df067348d2454d7e5c9331ceda25d...HEAD
+```
+
+内容检查点包含全部教材、结构、统一证据、53 项合成检查及其输出。其后提交只记录这份检查点与交付核对。最终 diff 的全部 17 个路径均在本包范围内。

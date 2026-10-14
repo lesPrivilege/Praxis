@@ -54,3 +54,8 @@ assert expected == json.loads(Path('vault/registry.json').read_text())
 ### 后续与交付
 
 写入范围、内容检查点、远端核对及跨包建议在 [handoff](handoff.md)。共享索引、全局主线、其他 package、main、CI 和部署未改动。剩余工作属于真实业务实现与专业适用性验证，不是本轮教材的未完成章节。
+
+
+## 2026-10-14 · 远端交付核对
+
+完整内容提交 `ee38ac38a5719406074b062ff16f96b9ec55e872` 已推送至指定交付分支，远端 `git ls-remote` 返回相同 SHA。写入最终交接记录前再次运行 repository validator：pass，errors=[]；暂存空白检查 pass。此后只补交接与变更记录，具体最终分支 SHA 由完成消息及远端引用提供，避免把文档写成无法自指的提交标识。
