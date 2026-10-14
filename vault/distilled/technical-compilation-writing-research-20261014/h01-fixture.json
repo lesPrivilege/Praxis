@@ -1,0 +1,62 @@
+{
+  "kind": "synthetic teaching model; arithmetic only",
+  "source_commit": "6d9e6c1807f7f77f36ef1cbd4e5c1a090d6a8cc8",
+  "source_path": "books/saas-engineering/packages/commercial-finance/H01.md",
+  "source_sha256": "82c1e04d655dfebfa4d227d3116f1c723478caabcb5736244fec97fe9d2a0e7f",
+  "units": "minor currency units; equal-length days; half-open intervals",
+  "assumptions": [
+    "nonnegative linear service allocation",
+    "no tax, FX, fees or bad debt",
+    "cancel only future service of added seats; original seats continue",
+    "cash changes only after refund confirmation"
+  ],
+  "inputs": {
+    "original_seats": 10,
+    "added_seats": 5,
+    "full_period_price_per_seat": 3000,
+    "discount_numerator": 9,
+    "discount_denominator": 10,
+    "period_start": 0,
+    "period_end": 30,
+    "add_day": 12
+  },
+  "scenarios": [
+    {
+      "name": "source example",
+      "cancel_day": 20,
+      "expected": {
+        "original_charge": 27000,
+        "added_charge": 9000,
+        "earned": 22000,
+        "credit": 5000,
+        "net_charge": 31000,
+        "original_future": 9000,
+        "cash_before_confirmation": 36000,
+        "cash_after_confirmation": 31000
+      }
+    },
+    {
+      "name": "research maintenance variation",
+      "cancel_day": 21,
+      "expected": {
+        "original_charge": 27000,
+        "added_charge": 9000,
+        "earned": 23400,
+        "credit": 4500,
+        "net_charge": 31500,
+        "original_future": 8100,
+        "cash_before_confirmation": 36000,
+        "cash_after_confirmation": 31500
+      }
+    }
+  ],
+  "rounding": {
+    "amount": 100,
+    "days": 3,
+    "expected_daily": [
+      33,
+      33,
+      34
+    ]
+  }
+}
