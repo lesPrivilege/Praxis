@@ -1,0 +1,151 @@
+{
+  "frozen_sha": "5e6b7e3bc4e7d2bcfe737c231ddfe0c3be015f5b",
+  "actual_role": "independent enterprise repair adjudicator",
+  "actual_model": "gpt-6-astra",
+  "reasoning_effort": "high (parent-selected)",
+  "input_verification": [
+    {
+      "path": "vault/distilled/saas-engineering-atlas/enterprise-mechanisms/mechanism_lab.py",
+      "sha256": "1042e2b32caa608206d12005d252b9ede54dcc299a161532b9c9df01025dbdd7",
+      "matches_frozen": true
+    },
+    {
+      "path": "vault/distilled/saas-engineering-atlas/enterprise-mechanisms/test_mechanism_lab.py",
+      "sha256": "f94c321b274e470ed16ddb9aaebe63c3b29271fc230a659b041e1b5fab346cc0",
+      "matches_frozen": true
+    },
+    {
+      "path": "vault/distilled/saas-engineering-atlas/enterprise-mechanisms/examples.json",
+      "sha256": "0829366f0818c4c324e5fea21e5afacc4f92c00aae56143fde0e499e0c726002",
+      "matches_frozen": true
+    },
+    {
+      "path": "books/saas-engineering/enterprise-mechanisms/01-organization-to-system.md",
+      "sha256": "94e65a6cc2d3419315c0f18b591c301338632c73e09e1c19d1a6d8cf78e73181",
+      "matches_frozen": true
+    },
+    {
+      "path": "books/saas-engineering/enterprise-mechanisms/03-schema-tools-completion.md",
+      "sha256": "6f90fb05343dc3ddc1cbd370d600d75a93d0a75601aaf7e718361bbb82b20998",
+      "matches_frozen": true
+    },
+    {
+      "path": "books/saas-engineering/enterprise-mechanisms/lab-guide.md",
+      "sha256": "465d11adef9fd5ba22ee18cbc927d3c7512ddc4ca89409d6d690ba55014b166e",
+      "matches_frozen": true
+    },
+    {
+      "path": "vault/provenance/saas-engineering-atlas/whole-book-repair-evidence.json",
+      "sha256": "6344f3197c70431940f64faf54da61bab6e8171a3695992ad82c7c72095791da",
+      "matches_frozen": true
+    },
+    {
+      "path": "docs/reviews/saas-whole-book-repairs-20261014/dispositions.json",
+      "sha256": "f40ff304fb67aac2fec4f00be8627a84fd326eb61d1be27ccb98db920208871b",
+      "matches_frozen": true
+    },
+    {
+      "path": "docs/reviews/saas-whole-book-repairs-20261014/regression_checks.py",
+      "sha256": "c7896cd2b59306d528333472fd90dfaf72c8332891ef25cafb78286dfe66f4bf",
+      "matches_frozen": true
+    }
+  ],
+  "author_entry_points": [
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 python3 vault/distilled/saas-engineering-atlas/enterprise-mechanisms/test_mechanism_lab.py",
+      "exit_code": 0,
+      "result": "37 unittest methods passed"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 python3 vault/distilled/saas-engineering-atlas/enterprise-mechanisms/validate_content.py",
+      "exit_code": 0,
+      "result": {
+        "chapters": 4,
+        "case_links": 33,
+        "sources": 17,
+        "claims": 27,
+        "worked_examples": 2,
+        "changed_condition_exercises": 14
+      }
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s docs/reviews/saas-whole-book-repairs-20261014 -p regression_checks.py -k EnterpriseRepairs -v",
+      "exit_code": 0,
+      "result": "7 enterprise repair unittest methods passed"
+    }
+  ],
+  "independent_entry_point": {
+    "command": "PYTHONDONTWRITEBYTECODE=1 python3 docs/reviews/saas-final-repair-verification-20261014/enterprise/probes.py --mutations --output docs/reviews/saas-final-repair-verification-20261014/enterprise/results.json",
+    "exit_code": 1,
+    "result": "7 test methods: 6 passed, 1 failed in 4 subcases; 0 errors. All 6 temporary guard mutations detected.",
+    "details": "results.json"
+  },
+  "dispositions": [
+    {
+      "id": "WB-01",
+      "status": "pass",
+      "evidence": "results.json#/observations/WB-01",
+      "basis": "Persisted 10/10 denominator; 195 bad integer pairs per adapter, type/evidence controls, invalid/missing policy rejection and reopened persistence."
+    },
+    {
+      "id": "WB-02",
+      "status": "fail",
+      "severity": "low",
+      "evidence": "results.json#/observations/WB-02-residual",
+      "basis": "Valid terminal conflicts persist; same-identity changed receipt combined with mismatched version/desired is silently discarded, persists no diagnostic after reopen, and acceptance closes on both adapters. Prior valid effect remains unchanged.",
+      "locations": [
+        {
+          "path": "vault/distilled/saas-engineering-atlas/enterprise-mechanisms/mechanism_lab.py",
+          "line": 350
+        },
+        {
+          "path": "vault/distilled/saas-engineering-atlas/enterprise-mechanisms/mechanism_lab.py",
+          "line": 397
+        },
+        {
+          "path": "vault/distilled/saas-engineering-atlas/enterprise-mechanisms/mechanism_lab.py",
+          "line": 408
+        },
+        {
+          "path": "books/saas-engineering/enterprise-mechanisms/03-schema-tools-completion.md",
+          "line": 127
+        },
+        {
+          "path": "books/saas-engineering/enterprise-mechanisms/lab-guide.md",
+          "line": 64
+        },
+        {
+          "path": "vault/provenance/saas-engineering-atlas/whole-book-repair-evidence.json",
+          "line": 166
+        }
+      ]
+    },
+    {
+      "id": "WB-09",
+      "status": "pass",
+      "evidence": "results.json#/observations/WB-09",
+      "basis": "Independent subtraction gives 1 pending inspection and 2 not received, 3 outstanding fulfillment; 9+1+2=12 and settlement 720000 fen."
+    },
+    {
+      "id": "WB-10",
+      "status": "pass",
+      "evidence": "results.json#/observations/WB-10",
+      "basis": "Wire exposes exactly seven result fields; expected version8 resides in request, resulting version9 checked; prose accurately distinguishes evidence."
+    },
+    {
+      "id": "WB-11",
+      "status": "pass",
+      "evidence": "results.json#/observations/WB-11",
+      "basis": "Both adapters complete r3/r4/r5 with lost response and journal reopen; old retries retain receipt versions and no new effects; stale approval, changed same-key content and replacement operation key rejected."
+    }
+  ],
+  "scope": "Bounded frozen local repair verification; no textbook edits, source changes, git mutations, live providers, whole raw manuscript re-audit, production authorization or exhaustive crash/concurrency testing. Root owns global runner/repository validator.",
+  "blockers": [
+    {
+      "action": "Sign off WB-02 as fully repaired",
+      "target": "5e6b7e3bc4e7d2bcfe737c231ddfe0c3be015f5b",
+      "status": "failed-verification",
+      "reason": "Four reproducible same-identity terminal diagnostic failures; no permission denial or execution blocker."
+    }
+  ]
+}

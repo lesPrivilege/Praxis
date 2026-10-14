@@ -1,0 +1,259 @@
+{
+  "reviewed_sha": "5e6b7e3bc4e7d2bcfe737c231ddfe0c3be015f5b",
+  "actual_head": "5e6b7e3bc4e7d2bcfe737c231ddfe0c3be015f5b",
+  "scope": "IR-01, IR-02, IR-03, IR-04, WB-12 only; synchronous synthetic helpers and local SQLite; no live provider or global runner",
+  "role": "Independent case repair verifier and critical adjudicator",
+  "model": "gpt-6-astra, high reasoning; requested model confirmed by parent orchestration metadata",
+  "reproduction_command": "python3 docs/reviews/saas-final-repair-verification-20261014/cases/probes.py",
+  "source_sha256": {
+    "vault/distilled/saas-engineering-atlas/packages/data-ai-control/check_h07.py": "619cbac0647f203dc551b5cd4198357f688b15d7ff6325201fd4153ecbf5fc69",
+    "vault/distilled/saas-engineering-atlas/packages/data-ai-control/check_h08.py": "f5c12edf496318f3bc248c801ff7f9a7ba32eda0ddd8a62a4299ccce6dc10f54",
+    "vault/distilled/saas-engineering-atlas/packages/data-ai-control/check_x01.py": "5383dc317577e5cd971a76b2e22c4f5201366b1753c4d35265e4d51f3f512cb3",
+    "vault/distilled/saas-engineering-atlas/packages/people-service/checks-h04-h05.py": "af3026353ac2a2741370849e4df86dbd408e0574491a236bc6530d1ccb7d806a"
+  },
+  "author_commands": [
+    {
+      "argv": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+        "vault/distilled/saas-engineering-atlas/packages/data-ai-control/check_h07.py"
+      ],
+      "cwd": "repository root",
+      "exit_code": 0,
+      "stdout": "{\n  \"status\": \"pass\",\n  \"scope\": \"Pure Python synthetic arithmetic, revision selection, dependency traversal and approval fingerprint checks only; no database, UI, Snowflake, BI API, load or end-to-end execution.\",\n  \"assertions\": 15,\n  \"negative_controls_detected\": 4,\n  \"observations\": [\n    {\n      \"name\": \"D1 current completed cents\",\n      \"observed\": 22000\n    },\n    {\n      \"name\": \"D2 current completed cents\",\n      \"observed\": 20000\n    },\n    {\n      \"name\": \"difference bridge cents\",\n      \"observed\": 20000\n    },\n    {\n      \"name\": \"right boundary excluded\",\n      \"observed\": 0\n    },\n    {\n      \"name\": \"right boundary belongs to next window\",\n      \"observed\": 5000\n    },\n    {\n      \"name\": \"duplicate B is one contribution\",\n      \"observed\": 20000\n    },\n    {\n      \"name\": \"late old revision cannot revive A\",\n      \"observed\": 20000\n    },\n    {\n      \"name\": \"same order ID in another tenant is excluded\",\n      \"observed\": 20000\n    },\n    {\n      \"name\": \"M2 first completed cents\",\n      \"observed\": 30000\n    },\n    {\n      \"name\": \"approved digest rejects changed metric\",\n      \"observed\": false\n    },\n    {\n      \"name\": \"fixed historical release recomputes D1\",\n      \"observed\": 22000\n    },\n    {\n      \"name\": \"filter-only input impacts metric and dashboard\",\n      \"observed\": [\n        \"daily_completed\",\n        \"operations_dashboard\"\n      ]\n    },\n    {\n      \"name\": \"source change reaches both branches once\",\n      \"observed\": [\n        \"current_orders\",\n        \"daily_completed\",\n        \"operations_dashboard\",\n        \"refund_monitor\"\n      ]\n    },\n    {\n      \"name\": \"provider-only missing filter edge gives empty reachability\",\n      \"observed\": []\n    },\n    {\n      \"name\": \"conflicting duplicate revision is rejected\",\n      \"observed\": true\n    }\n  ],\n  \"negative_controls\": [\n    {\n      \"name\": \"sum completed revisions without retracting superseded A\",\n      \"wrong_cents\": 30000,\n      \"correct_cents\": 20000\n    },\n    {\n      \"name\": \"assign business day by receipt time\",\n      \"wrong_cents\": 12000,\n      \"correct_cents\": 20000\n    },\n    {\n      \"name\": \"treat missing provider lineage edge as no impact\",\n      \"wrong_affected\": [],\n      \"manifest_affected\": [\n        \"daily_completed\",\n        \"operations_dashboard\"\n      ]\n    },\n    {\n      \"name\": \"same revision identity with different amount\",\n      \"observed\": \"rejected\",\n      \"reason\": \"immutable business identity violated\"\n    }\n  ],\n  \"unexecuted\": [\n    \"real authorization enforcement\",\n    \"persistent transaction boundaries\",\n    \"concurrent worker behavior\",\n    \"connector retention recovery\",\n    \"external conditional switching\",\n    \"browser feedback\",\n    \"performance goals\"\n  ]\n}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+        "vault/distilled/saas-engineering-atlas/packages/data-ai-control/check_h08.py"
+      ],
+      "cwd": "repository root",
+      "exit_code": 0,
+      "stdout": "{\n  \"status\": \"pass\",\n  \"checks\": 24,\n  \"expected_rejections\": 12,\n  \"counterexamples\": 4,\n  \"scope\": \"synthetic calculations and gates plus local SQLite uniqueness only; no provider/model/UI/load/distributed failure execution\",\n  \"results\": [\n    {\n      \"name\": \"duplicate_signal\",\n      \"category\": \"invariant\",\n      \"observation\": \"4 receptions -> 3 independent signals; score remains 100\"\n    },\n    {\n      \"name\": \"ranking_counterexample\",\n      \"category\": \"counterexample\",\n      \"observation\": \"naive sum ranks B=280 over A=150; R1 ranks A=100 over B=70\"\n    },\n    {\n      \"name\": \"shared_ip_is_not_identity\",\n      \"category\": \"invariant\",\n      \"observation\": \"same egress IP retains two scoped principals\"\n    },\n    {\n      \"name\": \"anchored_window\",\n      \"category\": \"counterexample\",\n      \"observation\": \"[0,9] and [18]; adjacent-gap chaining would incorrectly span 18 minutes\"\n    },\n    {\n      \"name\": \"half_open_boundary\",\n      \"category\": \"invariant\",\n      \"observation\": \"minute 10 enters a new window, never both\"\n    },\n    {\n      \"name\": \"tenant_identity\",\n      \"category\": \"invariant\",\n      \"observation\": \"identical source IDs in two tenants remain two independent objects\"\n    },\n    {\n      \"name\": \"remove_weak_relation\",\n      \"category\": \"invariant\",\n      \"observation\": \"removing endpoint evidence changes 100 to 90 with critical asset retained\"\n    },\n    {\n      \"name\": \"valid_bound_authorization\",\n      \"category\": \"invariant\",\n      \"observation\": \"consumed means bound to RUN3, not expired or reusable by other runs\"\n    },\n    {\n      \"name\": \"expired\",\n      \"category\": \"expected_rejection\",\n      \"observation\": \"rejected: expired\"\n    },\n    {\n      \"name\": \"revoked\",\n      \"category\": \"expected_rejection\",\n      \"observation\": \"rejected: inactive_authorization\"\n    },\n    {\n      \"name\": \"changed_target\",\n      \"category\": \"expected_rejection\",\n      \"observation\": \"rejected: mismatch:target\"\n    },\n    {\n      \"name\": \"changed_version\",\n      \"category\": \"expected_rejection\",\n      \"observation\": \"rejected: mismatch:plan_hash\"\n    },\n    {\n      \"name\": \"other_tenant\",\n      \"category\": \"expected_rejection\",\n      \"observation\": \"rejected: mismatch:tenant\"\n    },\n    {\n      \"name\": \"old_role\",\n      \"category\": \"expected_rejection\",\n      \"observation\": \"rejected: current_authority_denied\"\n    },\n    {\n      \"name\": \"second_run\",\n      \"category\": \"expected_rejection\",\n      \"observation\": \"rejected: different_run\"\n    },\n    {\n      \"name\": \"unknown_not_replayable\",\n      \"category\": \"expected_rejection\",\n      \"observation\": \"rejected: reconcile_or_skip\"\n    },\n    {\n      \"name\": \"confirmed_not_replayable\",\n      \"category\": \"expected_rejection\",\n      \"observation\": \"rejected: reconcile_or_skip\"\n    },\n    {\n      \"name\": \"high_score_without_authority\",\n      \"category\": \"expected_rejection\",\n      \"observation\": \"rejected: missing_authorization\"\n    },\n    {\n      \"name\": \"time_varying_retry_scope\",\n      \"category\": \"counterexample\",\n      \"observation\": \"repeating all-sessions operation would add new-session beyond first fixed target\"\n    },\n    {\n      \"name\": \"recovery_current_rights\",\n      \"category\": \"counterexample\",\n      \"observation\": \"restoring old snapshot would wrongly restore finance-admin; minimal current scope is reader\"\n    },\n    {\n      \"name\": \"sqlite_concurrent_plan\",\n      \"category\": \"local_storage\",\n      \"observation\": \"two concurrent inserts -> one persisted run and one uniqueness rejection\"\n    },\n    {\n      \"name\": \"synthetic_eval_arithmetic\",\n      \"category\": \"invariant\",\n      \"observation\": \"100 items; precision 16/24; recall 16/20; human coverage 19/20; 32 reviews; 192 min; hypothetical cost 132\"\n    },\n    {\n      \"name\": \"missing_eval_item\",\n      \"category\": \"expected_rejection\",\n      \"observation\": \"rejected: fixture denominator mismatch\"\n    },\n    {\n      \"name\": \"empty_incident\",\n      \"category\": \"expected_rejection\",\n      \"observation\": \"rejected: empty incident\"\n    }\n  ]\n}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+        "vault/distilled/saas-engineering-atlas/packages/data-ai-control/check_x01.py"
+      ],
+      "cwd": "repository root",
+      "exit_code": 0,
+      "stdout": "{\n  \"synthetic_eval\": {\n    \"grounded\": [\n      1,\n      2\n    ],\n    \"absent_abstention\": [\n      1,\n      2\n    ],\n    \"protected_violations\": [\n      1,\n      2\n    ],\n    \"strict\": [\n      3,\n      6\n    ],\n    \"failed_fixture_ids\": [\n      \"missing-citation\",\n      \"fabrication\",\n      \"other-tenant\"\n    ],\n    \"provenance\": \"handcrafted synthetic predictions; no model was called\"\n  },\n  \"scope\": \"SQLite local ledger, serial quota model, pure epoch guard and scorer only; no actual model, provider, RLS, concurrent DB, browser or load test\"\n}\n",
+      "stderr": "test_both_serialized_admission_orders (__main__.Invariants.test_both_serialized_admission_orders) ... ok\ntest_cached_permission_cannot_survive_revoke (__main__.Invariants.test_cached_permission_cannot_survive_revoke) ... ok\ntest_conflicting_payload_is_rejected (__main__.Invariants.test_conflicting_payload_is_rejected) ... ok\ntest_cost_billing_and_tenant_identity (__main__.Invariants.test_cost_billing_and_tenant_identity) ... ok\ntest_dispatch_before_offboard_preserves_unknown_reservation (__main__.Invariants.test_dispatch_before_offboard_preserves_unknown_reservation) ... ok\ntest_duplicate_survives_close_reopen (__main__.Invariants.test_duplicate_survives_close_reopen) ... ok\ntest_eval_reports_failures_instead_of_inflated_success (__main__.Invariants.test_eval_reports_failures_instead_of_inflated_success) ... ok\ntest_excess_actual_detects_design_assumption_failure (__main__.Invariants.test_excess_actual_detects_design_assumption_failure) ... ok\ntest_half_open_window_and_late_replacement (__main__.Invariants.test_half_open_window_and_late_replacement) ... ok\ntest_negative_usage_is_rejected (__main__.Invariants.test_negative_usage_is_rejected) ... ok\ntest_offboard_before_dispatch_terminates_queued_run (__main__.Invariants.test_offboard_before_dispatch_terminates_queued_run) ... ok\ntest_quarantine_is_scoped_to_tenant (__main__.Invariants.test_quarantine_is_scoped_to_tenant) ... ok\ntest_revision_gap_blocks_then_replacement_does_not_double_count (__main__.Invariants.test_revision_gap_blocks_then_replacement_does_not_double_count) ... ok\ntest_unknown_reservation_not_released_without_settlement (__main__.Invariants.test_unknown_reservation_not_released_without_settlement) ... ok\n\n----------------------------------------------------------------------\nRan 14 tests in 0.011s\n\nOK\n"
+    },
+    {
+      "argv": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+        "vault/distilled/saas-engineering-atlas/packages/people-service/checks-h04-h05.py"
+      ],
+      "cwd": "repository root",
+      "exit_code": 0,
+      "stdout": "{\n  \"scope\": \"Synthetic pure calculations, guards and SQLite/stub local persistence only\",\n  \"tests_run\": 20,\n  \"failures\": 0,\n  \"errors\": 0,\n  \"counterexamples_observed\": {\n    \"inclusive_payroll_end\": \"bad=7700, correct=7000 teaching yuan\",\n    \"sum_overlapping_pauses\": \"bad=45 and false pass, correct=50 and breach by 5 minutes\",\n    \"missing_graph_edge\": \"Invoice omitted when its dependency is absent\",\n    \"old_revoke_after_rehire\": \"historical E1=false differs from current desired E2=true\"\n  },\n  \"not_executed\": [\n    \"provider APIs\",\n    \"browser/UI E2E\",\n    \"real concurrent network races\",\n    \"session/token revocation\",\n    \"load/latency measurements\",\n    \"AI eval\"\n  ]\n}\n",
+      "stderr": "test_access_unknown_requires_original_operation_reconciliation (__main__.H04Checks.test_access_unknown_requires_original_operation_reconciliation) ... ok\ntest_desired_state_after_rehire (__main__.H04Checks.test_desired_state_after_rehire) ... ok\ntest_empty_employment_and_exact_boundary (__main__.H04Checks.test_empty_employment_and_exact_boundary) ... ok\ntest_inclusive_end_mutant_has_counterexample (__main__.H04Checks.test_inclusive_end_mutant_has_counterexample) ... ok\ntest_interval_accrual_and_retro_correction (__main__.H04Checks.test_interval_accrual_and_retro_correction) ... ok\ntest_overlap_gap_and_invalid_interval_are_rejected (__main__.H04Checks.test_overlap_gap_and_invalid_interval_are_rejected) ... ok\ntest_partial_offboarding_is_not_complete (__main__.H04Checks.test_partial_offboarding_is_not_complete) ... ok\ntest_revision_aware_delivery_in_both_orders (__main__.H04Checks.test_revision_aware_delivery_in_both_orders) ... ok\ntest_old_attempt_result_cannot_erase_new_restoration_evidence (__main__.H05Checks.test_old_attempt_result_cannot_erase_new_restoration_evidence) ... ok\ntest_partial_recovery_blocks_close_even_after_execution_success (__main__.H05Checks.test_partial_recovery_blocks_close_even_after_execution_success) ... ok\ntest_pause_clipping_order_and_duplicate_invariance (__main__.H05Checks.test_pause_clipping_order_and_duplicate_invariance) ... ok\ntest_pause_union_exposes_false_sla_pass (__main__.H05Checks.test_pause_union_exposes_false_sla_pass) ... ok\ntest_plan_change_invalidates_authorization (__main__.H05Checks.test_plan_change_invalidates_authorization) ... ok\ntest_reverse_graph_and_cycle_termination (__main__.H05Checks.test_reverse_graph_and_cycle_termination) ... ok\ntest_competing_writers_and_stale_revision (__main__.PersistenceChecks.test_competing_writers_and_stale_revision) ... ok\ntest_duplicate_identity_and_payload_conflict (__main__.PersistenceChecks.test_duplicate_identity_and_payload_conflict) ... ok\ntest_external_mismatch_is_not_confirmation (__main__.PersistenceChecks.test_external_mismatch_is_not_confirmation) ... ok\ntest_restart_after_effect_before_completion_marker (__main__.PersistenceChecks.test_restart_after_effect_before_completion_marker) ... ok\ntest_tenant_scope_in_same_local_id (__main__.PersistenceChecks.test_tenant_scope_in_same_local_id) ... ok\ntest_unknown_outcome_is_reconciled_without_second_execution (__main__.PersistenceChecks.test_unknown_outcome_is_reconciled_without_second_execution) ... ok\n\n----------------------------------------------------------------------\nRan 20 tests in 0.007s\n\nOK\n"
+    },
+    {
+      "argv": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+        "-c",
+        "import importlib.util,sys,unittest; s=importlib.util.spec_from_file_location(\"selected_author\",'docs/reviews/saas-atlas-repairs-20261014/regression_checks.py'); m=importlib.util.module_from_spec(s);sys.modules[s.name]=m;s.loader.exec_module(m); suite=unittest.defaultTestLoader.loadTestsFromNames(['CaseRepairs'],m); r=unittest.TextTestRunner(verbosity=2).run(suite);sys.exit(not r.wasSuccessful())"
+      ],
+      "cwd": "repository root",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": "test_h07_both_metrics_conflict_orders_and_late_identical_replay (selected_author.CaseRepairs.test_h07_both_metrics_conflict_orders_and_late_identical_replay) ... ok\ntest_h08_conflicting_evidence_cannot_enter_score_or_window (selected_author.CaseRepairs.test_h08_conflicting_evidence_cannot_enter_score_or_window) ... ok\ntest_x01_api_domains_and_no_charge_after_rejection (selected_author.CaseRepairs.test_x01_api_domains_and_no_charge_after_rejection) ... ok\ntest_x01_database_constraints_survive_direct_insert (selected_author.CaseRepairs.test_x01_database_constraints_survive_direct_insert) ... ok\n\n----------------------------------------------------------------------\nRan 4 tests in 0.002s\n\nOK\n"
+    },
+    {
+      "argv": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+        "-c",
+        "import importlib.util,sys,unittest; s=importlib.util.spec_from_file_location(\"selected_author\",'docs/reviews/saas-whole-book-repairs-20261014/regression_checks.py'); m=importlib.util.module_from_spec(s);sys.modules[s.name]=m;s.loader.exec_module(m); suite=unittest.defaultTestLoader.loadTestsFromNames(['CaseAndReaderRepairs.test_buffered_answer_revocation_before_first_chunk', 'CaseAndReaderRepairs.test_revocation_between_chunks_preserves_prior_delivery', 'CaseAndReaderRepairs.test_reconnect_replay_requires_current_authorization'],m); r=unittest.TextTestRunner(verbosity=2).run(suite);sys.exit(not r.wasSuccessful())"
+      ],
+      "cwd": "repository root",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": "test_buffered_answer_revocation_before_first_chunk (selected_author.CaseAndReaderRepairs.test_buffered_answer_revocation_before_first_chunk) ... ok\ntest_revocation_between_chunks_preserves_prior_delivery (selected_author.CaseAndReaderRepairs.test_revocation_between_chunks_preserves_prior_delivery) ... ok\ntest_reconnect_replay_requires_current_authorization (selected_author.CaseAndReaderRepairs.test_reconnect_replay_requires_current_authorization) ... ok\n\n----------------------------------------------------------------------\nRan 3 tests in 0.000s\n\nOK\n"
+    }
+  ],
+  "independent": [
+    {
+      "id": "IR-01",
+      "status": "pass",
+      "assertions": 3238
+    },
+    {
+      "id": "IR-02",
+      "status": "pass",
+      "assertions": 146
+    },
+    {
+      "id": "IR-03",
+      "status": "pass",
+      "assertions": 59
+    },
+    {
+      "id": "IR-04",
+      "status": "pass",
+      "assertions": 25
+    },
+    {
+      "id": "WB-12",
+      "status": "pass",
+      "assertions": 91
+    }
+  ],
+  "mutations": [
+    {
+      "name": "drop_shared_identity_guard",
+      "status": "killed",
+      "reason": "IR-01: hidden collision rejected: accepted invalid input",
+      "change": {
+        "before": "if versions[identity] != content:",
+        "after": "if False:"
+      }
+    },
+    {
+      "name": "M2_bypasses_shared_guard",
+      "status": "killed",
+      "reason": "IR-01: hidden collision rejected: accepted invalid input",
+      "change": {
+        "before": "for row in validated_revisions(rows, tenant, cutoff):\n        if row.status",
+        "after": "for row in (r for r in rows if r.tenant == tenant and r.received <= cutoff):\n        if row.status"
+      }
+    },
+    {
+      "name": "first_wins_conflicting_signal",
+      "status": "killed",
+      "reason": "IR-02: collision blocks trusted output: accepted invalid input",
+      "change": {
+        "before": "if prior != content:",
+        "after": "if False:"
+      }
+    },
+    {
+      "name": "scoring_bypasses_identity_guard",
+      "status": "killed",
+      "reason": "IR-02: collision blocks trusted output: accepted invalid input",
+      "change": {
+        "before": "rows = deduplicate(rows)",
+        "after": "rows = list(rows)"
+      }
+    },
+    {
+      "name": "windowing_bypasses_identity_guard",
+      "status": "killed",
+      "reason": "IR-02: collision blocks trusted output: accepted invalid input",
+      "change": {
+        "before": "for row in deduplicate(rows):",
+        "after": "for row in rows:"
+      }
+    },
+    {
+      "name": "eligibility_API_guard_removed",
+      "status": "killed",
+      "reason": "IR-03: API eligibility: accepted invalid input",
+      "change": {
+        "before": "if type(eligible) not in (bool, int) or eligible not in (0, 1):",
+        "after": "if False:"
+      }
+    },
+    {
+      "name": "units_API_guard_removed",
+      "status": "killed",
+      "reason": "IR-03: API usage: accepted invalid input",
+      "change": {
+        "before": "if type(units) is not int or not 0 <= units <= 2**63 - 1:",
+        "after": "if False:"
+      }
+    },
+    {
+      "name": "eligibility_SQL_guard_removed",
+      "status": "killed",
+      "reason": "IR-03: raw SQL insert: accepted invalid input",
+      "change": {
+        "before": "eligible INTEGER NOT NULL CHECK(typeof(eligible)='integer' AND eligible IN (0,1))",
+        "after": "eligible INTEGER"
+      }
+    },
+    {
+      "name": "units_SQL_guard_removed",
+      "status": "killed",
+      "reason": "IR-03: raw SQL insert: accepted invalid input",
+      "change": {
+        "before": "units INTEGER NOT NULL CHECK(typeof(units)='integer' AND units >= 0)",
+        "after": "units INTEGER"
+      }
+    },
+    {
+      "name": "stale_task_gate_removed",
+      "status": "killed",
+      "reason": "stale target revision",
+      "change": {
+        "before": "if (task['revision'], task['active']) != (current['revision'], current['active']):",
+        "after": "if False:"
+      }
+    },
+    {
+      "name": "target_version_gate_removed",
+      "status": "killed",
+      "reason": "IR-04: target conditional version: accepted invalid input",
+      "change": {
+        "before": "if command['revision'] < self.revision:",
+        "after": "if False:"
+      }
+    },
+    {
+      "name": "verification_gate_removed",
+      "status": "killed",
+      "reason": "WB-12: authorized but unverified content blocked: accepted invalid input",
+      "change": {
+        "before": "if not self.verified:",
+        "after": "if False:"
+      }
+    },
+    {
+      "name": "epoch_gate_removed",
+      "status": "killed",
+      "reason": "WB-12: independent authorization condition: accepted invalid input",
+      "change": {
+        "before": "and captured_epoch == current_epoch",
+        "after": "and True"
+      }
+    },
+    {
+      "name": "membership_active_gate_removed",
+      "status": "killed",
+      "reason": "WB-12: independent authorization condition: accepted invalid input",
+      "change": {
+        "before": "and active and captured_epoch",
+        "after": "and captured_epoch"
+      }
+    },
+    {
+      "name": "tenant_gate_removed",
+      "status": "killed",
+      "reason": "WB-12: independent authorization condition: accepted invalid input",
+      "change": {
+        "before": "return tenant == member_tenant and active",
+        "after": "return active"
+      }
+    },
+    {
+      "name": "replayed_chunk_skips_current_authority",
+      "status": "killed",
+      "reason": "WB-12: new and replay after revocation: accepted invalid input",
+      "change": {
+        "before": "if not may_deliver(self.tenant, self.member_tenant, self.captured_epoch, current_epoch, active):",
+        "after": "if index not in self.delivered_indices and not may_deliver(self.tenant, self.member_tenant, self.captured_epoch, current_epoch, active):"
+      }
+    }
+  ],
+  "assertion_counts_including_mutant_prefixes": {
+    "IR-01": 8999,
+    "IR-02": 161,
+    "IR-03": 164,
+    "IR-04": 49,
+    "WB-12": 240
+  },
+  "status": "pass"
+}

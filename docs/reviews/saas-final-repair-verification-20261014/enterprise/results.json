@@ -1,0 +1,285 @@
+{
+  "frozen_sha": "5e6b7e3bc4e7d2bcfe737c231ddfe0c3be015f5b",
+  "role": "independent enterprise repair adjudicator",
+  "model": "gpt-6-astra (parent-selected)",
+  "status": "fail",
+  "test_methods": 7,
+  "failing_subtests_or_methods": 4,
+  "errors": 0,
+  "observations": {
+    "WB-01": {
+      "invalid_integer_pairs_rejected_per_adapter": {
+        "fake_fixture": 195,
+        "http_fixture": 195
+      },
+      "policy_copy_reopen_and_bad_policy_controls": "pass"
+    },
+    "WB-02-closed": "historical closure and acceptance preserved; visible conflict reported",
+    "WB-11": [
+      {
+        "adapter": "fake_fixture",
+        "effects": 3,
+        "identities": [
+          [
+            "APR-42-r3",
+            "CHG-42/r3/apply",
+            "OP-42"
+          ],
+          [
+            "APR-42-r4",
+            "CHG-42/r4/apply",
+            "OP-42-r4"
+          ],
+          [
+            "APR-42-r5",
+            "CHG-42/r5/apply",
+            "OP-42-r5"
+          ]
+        ]
+      },
+      {
+        "adapter": "http_fixture",
+        "effects": 3,
+        "identities": [
+          [
+            "APR-42-r3",
+            "CHG-42/r3/apply",
+            "OP-42"
+          ],
+          [
+            "APR-42-r4",
+            "CHG-42/r4/apply",
+            "OP-42-r4"
+          ],
+          [
+            "APR-42-r5",
+            "CHG-42/r5/apply",
+            "OP-42-r5"
+          ]
+        ]
+      }
+    ],
+    "WB-09": {
+      "accepted": 9,
+      "received_pending_inspection": 1,
+      "not_received": 2,
+      "outstanding_fulfillment": 3,
+      "partition_total": 12,
+      "settlement_minor": 720000
+    },
+    "WB-02-residual": [
+      {
+        "adapter": "fake_fixture",
+        "wire": {
+          "desired": 6,
+          "operation_id": "OP-42",
+          "receipt": "contradictory-receipt",
+          "state": "applied",
+          "target": "SVC-7",
+          "tenant": "T-1",
+          "version": 10
+        },
+        "reconcile": "awaiting_acceptance",
+        "conflicts": [],
+        "reopened_state": "awaiting_acceptance",
+        "reopened_conflict_count": 0,
+        "accept": "closed",
+        "old_result_preserved": true,
+        "effects": 1
+      },
+      {
+        "adapter": "fake_fixture",
+        "wire": {
+          "desired": 8,
+          "operation_id": "OP-42",
+          "receipt": "contradictory-receipt",
+          "state": "applied",
+          "target": "SVC-7",
+          "tenant": "T-1",
+          "version": 9
+        },
+        "reconcile": "awaiting_acceptance",
+        "conflicts": [],
+        "reopened_state": "awaiting_acceptance",
+        "reopened_conflict_count": 0,
+        "accept": "closed",
+        "old_result_preserved": true,
+        "effects": 1
+      },
+      {
+        "adapter": "http_fixture",
+        "wire": {
+          "desired": 6,
+          "operation_id": "OP-42",
+          "receipt": "contradictory-receipt",
+          "state": "applied",
+          "target": "SVC-7",
+          "tenant": "T-1",
+          "version": 10
+        },
+        "reconcile": "awaiting_acceptance",
+        "conflicts": [],
+        "reopened_state": "awaiting_acceptance",
+        "reopened_conflict_count": 0,
+        "accept": "closed",
+        "old_result_preserved": true,
+        "effects": 1
+      },
+      {
+        "adapter": "http_fixture",
+        "wire": {
+          "desired": 8,
+          "operation_id": "OP-42",
+          "receipt": "contradictory-receipt",
+          "state": "applied",
+          "target": "SVC-7",
+          "tenant": "T-1",
+          "version": 9
+        },
+        "reconcile": "awaiting_acceptance",
+        "conflicts": [],
+        "reopened_state": "awaiting_acceptance",
+        "reopened_conflict_count": 0,
+        "accept": "closed",
+        "old_result_preserved": true,
+        "effects": 1
+      }
+    ],
+    "WB-02-valid": [
+      [
+        "fake_fixture",
+        "applied",
+        "rejected",
+        "awaiting_acceptance",
+        1
+      ],
+      [
+        "fake_fixture",
+        "rejected",
+        "applied",
+        "rejected",
+        1
+      ],
+      [
+        "fake_fixture",
+        "applied",
+        "applied",
+        "awaiting_acceptance",
+        1
+      ],
+      [
+        "fake_fixture",
+        "rejected",
+        "rejected",
+        "rejected",
+        1
+      ],
+      [
+        "http_fixture",
+        "applied",
+        "rejected",
+        "awaiting_acceptance",
+        1
+      ],
+      [
+        "http_fixture",
+        "rejected",
+        "applied",
+        "rejected",
+        1
+      ],
+      [
+        "http_fixture",
+        "applied",
+        "applied",
+        "awaiting_acceptance",
+        1
+      ],
+      [
+        "http_fixture",
+        "rejected",
+        "rejected",
+        "rejected",
+        1
+      ]
+    ],
+    "WB-10": [
+      {
+        "adapter": "fake_fixture",
+        "request_expected_version": 8,
+        "wire": {
+          "tenant": "T-1",
+          "operation_id": "OP-42",
+          "target": "SVC-7",
+          "state": "applied",
+          "receipt": "fake-receipt-OP-42",
+          "version": 9,
+          "desired": 6
+        }
+      },
+      {
+        "adapter": "http_fixture",
+        "request_expected_version": 8,
+        "wire": {
+          "tenant": "T-1",
+          "operation_id": "OP-42",
+          "target": "SVC-7",
+          "state": "applied",
+          "receipt": "http-OP-42",
+          "version": 9,
+          "desired": 6
+        }
+      }
+    ]
+  },
+  "unittest_output": "test_acceptance_matrix_and_persistence (__main__.Independent.test_acceptance_matrix_and_persistence) ... ok\ntest_late_conflicts_after_closure (__main__.Independent.test_late_conflicts_after_closure) ... ok\ntest_new_revisions_retry_and_duplicates (__main__.Independent.test_new_revisions_retry_and_duplicates) ... ok\ntest_quantity_and_prose_sidecars (__main__.Independent.test_quantity_and_prose_sidecars) ... ok\ntest_terminal_conflict_with_invalid_effect (__main__.Independent.test_terminal_conflict_with_invalid_effect) ... \n  test_terminal_conflict_with_invalid_effect (__main__.Independent.test_terminal_conflict_with_invalid_effect) (adapter='fake_fixture', changed={'version': 10}) ... FAIL\n  test_terminal_conflict_with_invalid_effect (__main__.Independent.test_terminal_conflict_with_invalid_effect) (adapter='fake_fixture', changed={'desired': 8}) ... FAIL\n  test_terminal_conflict_with_invalid_effect (__main__.Independent.test_terminal_conflict_with_invalid_effect) (adapter='http_fixture', changed={'version': 10}) ... FAIL\n  test_terminal_conflict_with_invalid_effect (__main__.Independent.test_terminal_conflict_with_invalid_effect) (adapter='http_fixture', changed={'desired': 8}) ... FAIL\ntest_valid_terminal_conflict_sequences (__main__.Independent.test_valid_terminal_conflict_sequences) ... ok\ntest_wire_precondition_and_negative_effects (__main__.Independent.test_wire_precondition_and_negative_effects) ... ok\n\n======================================================================\nFAIL: test_terminal_conflict_with_invalid_effect (__main__.Independent.test_terminal_conflict_with_invalid_effect) (adapter='fake_fixture', changed={'version': 10})\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/Praxis-final-review/docs/reviews/saas-final-repair-verification-20261014/enterprise/probes.py\", line 153, in test_terminal_conflict_with_invalid_effect\n    self.assertEqual(state, 'evidence_conflict', 'same operation terminal receipt contradiction discarded before diagnostic')\nAssertionError: 'awaiting_acceptance' != 'evidence_conflict'\n- awaiting_acceptance\n+ evidence_conflict\n : same operation terminal receipt contradiction discarded before diagnostic\n\n======================================================================\nFAIL: test_terminal_conflict_with_invalid_effect (__main__.Independent.test_terminal_conflict_with_invalid_effect) (adapter='fake_fixture', changed={'desired': 8})\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/Praxis-final-review/docs/reviews/saas-final-repair-verification-20261014/enterprise/probes.py\", line 153, in test_terminal_conflict_with_invalid_effect\n    self.assertEqual(state, 'evidence_conflict', 'same operation terminal receipt contradiction discarded before diagnostic')\nAssertionError: 'awaiting_acceptance' != 'evidence_conflict'\n- awaiting_acceptance\n+ evidence_conflict\n : same operation terminal receipt contradiction discarded before diagnostic\n\n======================================================================\nFAIL: test_terminal_conflict_with_invalid_effect (__main__.Independent.test_terminal_conflict_with_invalid_effect) (adapter='http_fixture', changed={'version': 10})\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/Praxis-final-review/docs/reviews/saas-final-repair-verification-20261014/enterprise/probes.py\", line 153, in test_terminal_conflict_with_invalid_effect\n    self.assertEqual(state, 'evidence_conflict', 'same operation terminal receipt contradiction discarded before diagnostic')\nAssertionError: 'awaiting_acceptance' != 'evidence_conflict'\n- awaiting_acceptance\n+ evidence_conflict\n : same operation terminal receipt contradiction discarded before diagnostic\n\n======================================================================\nFAIL: test_terminal_conflict_with_invalid_effect (__main__.Independent.test_terminal_conflict_with_invalid_effect) (adapter='http_fixture', changed={'desired': 8})\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/Praxis-final-review/docs/reviews/saas-final-repair-verification-20261014/enterprise/probes.py\", line 153, in test_terminal_conflict_with_invalid_effect\n    self.assertEqual(state, 'evidence_conflict', 'same operation terminal receipt contradiction discarded before diagnostic')\nAssertionError: 'awaiting_acceptance' != 'evidence_conflict'\n- awaiting_acceptance\n+ evidence_conflict\n : same operation terminal receipt contradiction discarded before diagnostic\n\n----------------------------------------------------------------------\nRan 7 tests in 0.195s\n\nFAILED (failures=4)\n",
+  "source_sha256": {
+    "vault/distilled/saas-engineering-atlas/enterprise-mechanisms/mechanism_lab.py": "1042e2b32caa608206d12005d252b9ede54dcc299a161532b9c9df01025dbdd7",
+    "vault/distilled/saas-engineering-atlas/enterprise-mechanisms/test_mechanism_lab.py": "f94c321b274e470ed16ddb9aaebe63c3b29271fc230a659b041e1b5fab346cc0",
+    "vault/distilled/saas-engineering-atlas/enterprise-mechanisms/examples.json": "0829366f0818c4c324e5fea21e5afacc4f92c00aae56143fde0e499e0c726002"
+  },
+  "guard_mutations": [
+    {
+      "mutation": "narrow-denominator",
+      "case": "test_acceptance_matrix_and_persistence",
+      "detected": true,
+      "exit_code": 1,
+      "unittest_output": "test_acceptance_matrix_and_persistence (__main__.Independent.test_acceptance_matrix_and_persistence) ... FAIL\n\n======================================================================\nFAIL: test_acceptance_matrix_and_persistence (__main__.Independent.test_acceptance_matrix_and_persistence)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/Praxis-final-review/docs/reviews/saas-final-repair-verification-20261014/enterprise/probes.py\", line 69, in test_acceptance_matrix_and_persistence\n    with self.assertRaisesRegex(M.RuleError, 'acceptance_failed'):\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: RuleError not raised\n\n----------------------------------------------------------------------\nRan 1 test in 0.002s\n\nFAILED (failures=1)\n"
+    },
+    {
+      "mutation": "caller-policy",
+      "case": "test_acceptance_matrix_and_persistence",
+      "detected": true,
+      "exit_code": 1,
+      "unittest_output": "test_acceptance_matrix_and_persistence (__main__.Independent.test_acceptance_matrix_and_persistence) ... FAIL\n\n======================================================================\nFAIL: test_acceptance_matrix_and_persistence (__main__.Independent.test_acceptance_matrix_and_persistence)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/Praxis-final-review/docs/reviews/saas-final-repair-verification-20261014/enterprise/probes.py\", line 86, in test_acceptance_matrix_and_persistence\n    with self.assertRaisesRegex(M.RuleError, 'invalid_acceptance_policy'):\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: RuleError not raised\n\n----------------------------------------------------------------------\nRan 1 test in 0.048s\n\nFAILED (failures=1)\n"
+    },
+    {
+      "mutation": "discard-terminal-conflict",
+      "case": "test_valid_terminal_conflict_sequences",
+      "detected": true,
+      "exit_code": 1,
+      "unittest_output": "test_valid_terminal_conflict_sequences (__main__.Independent.test_valid_terminal_conflict_sequences) ... FAIL\n\n======================================================================\nFAIL: test_valid_terminal_conflict_sequences (__main__.Independent.test_valid_terminal_conflict_sequences)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/Praxis-final-review/docs/reviews/saas-final-repair-verification-20261014/enterprise/probes.py\", line 108, in test_valid_terminal_conflict_sequences\n    self.assertEqual(j.reconcile('T-1', 'OP-42', a), 'evidence_conflict')\nAssertionError: 'awaiting_acceptance' != 'evidence_conflict'\n- awaiting_acceptance\n+ evidence_conflict\n\n\n----------------------------------------------------------------------\nRan 1 test in 0.002s\n\nFAILED (failures=1)\n"
+    },
+    {
+      "mutation": "result-version-check",
+      "case": "test_wire_precondition_and_negative_effects",
+      "detected": true,
+      "exit_code": 1,
+      "unittest_output": "test_wire_precondition_and_negative_effects (__main__.Independent.test_wire_precondition_and_negative_effects) ... FAIL\n\n======================================================================\nFAIL: test_wire_precondition_and_negative_effects (__main__.Independent.test_wire_precondition_and_negative_effects)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/Praxis-final-review/docs/reviews/saas-final-repair-verification-20261014/enterprise/probes.py\", line 186, in test_wire_precondition_and_negative_effects\n    with self.assertRaises(M.ContractError):\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: ContractError not raised\n\n----------------------------------------------------------------------\nRan 1 test in 0.001s\n\nFAILED (failures=1)\n"
+    },
+    {
+      "mutation": "fixed-revision-operation",
+      "case": "test_new_revisions_retry_and_duplicates",
+      "detected": true,
+      "exit_code": 1,
+      "unittest_output": "test_new_revisions_retry_and_duplicates (__main__.Independent.test_new_revisions_retry_and_duplicates) ... FAIL\n\n======================================================================\nFAIL: test_new_revisions_retry_and_duplicates (__main__.Independent.test_new_revisions_retry_and_duplicates)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/Praxis-final-review/docs/reviews/saas-final-repair-verification-20261014/enterprise/probes.py\", line 208, in test_new_revisions_retry_and_duplicates\n    self.assertEqual((body['operation_id'], body['business_key'], body['approval_ref']), (op, f'CHG-42/r{rev}/apply', f'APR-42-r{rev}'))\nAssertionError: Tuples differ: ('OP-42', 'CHG-42/r4/apply', 'APR-42-r4') != ('OP-42-r4', 'CHG-42/r4/apply', 'APR-42-r4')\n\nFirst differing element 0:\n'OP-42'\n'OP-42-r4'\n\n- ('OP-42', 'CHG-42/r4/apply', 'APR-42-r4')\n+ ('OP-42-r4', 'CHG-42/r4/apply', 'APR-42-r4')\n?        +++\n\n\n----------------------------------------------------------------------\nRan 1 test in 0.004s\n\nFAILED (failures=1)\n"
+    },
+    {
+      "mutation": "business-identity-constraint",
+      "case": "test_new_revisions_retry_and_duplicates",
+      "detected": true,
+      "exit_code": 1,
+      "unittest_output": "test_new_revisions_retry_and_duplicates (__main__.Independent.test_new_revisions_retry_and_duplicates) ... FAIL\n\n======================================================================\nFAIL: test_new_revisions_retry_and_duplicates (__main__.Independent.test_new_revisions_retry_and_duplicates)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/Praxis-final-review/docs/reviews/saas-final-repair-verification-20261014/enterprise/probes.py\", line 220, in test_new_revisions_retry_and_duplicates\n    with self.assertRaisesRegex(M.RuleError, 'business_intent_exists'):\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: RuleError not raised\n\n----------------------------------------------------------------------\nRan 1 test in 0.005s\n\nFAILED (failures=1)\n"
+    }
+  ]
+}

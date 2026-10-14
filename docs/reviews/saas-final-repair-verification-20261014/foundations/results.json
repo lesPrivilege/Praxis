@@ -1,0 +1,611 @@
+{
+  "frozen_sha": "5e6b7e3bc4e7d2bcfe737c231ddfe0c3be015f5b",
+  "role": "Independent foundations repair verifier",
+  "model": "gpt-6-astra (explicit parent spawn selection)",
+  "date": "2026-10-14",
+  "author_commands": [
+    {
+      "argv": [
+        "python3",
+        "vault/distilled/saas-engineering-atlas/foundations/check_examples.py",
+        "--self-test"
+      ],
+      "exit_code": 0,
+      "stdout": "{\n  \"status\": \"pass\",\n  \"examples\": 18,\n  \"example_results\": {\n    \"FDN:example:order\": {\n      \"quantity_total\": 3,\n      \"refund_due\": 40\n    },\n    \"FDN:example:lookup\": {\n      \"lower_bound_value\": 12,\n      \"prefix_matches\": [\n        \"car\",\n        \"cart\",\n        \"cat\"\n      ],\n      \"btree_visited\": [\n        [\n          10,\n          20\n        ],\n        [\n          12,\n          17\n        ]\n      ],\n      \"btree_range_values\": [\n        12,\n        17,\n        20,\n        23\n      ]\n    },\n    \"FDN:example:top-k\": {\n      \"sorted_ids\": [\n        \"E\",\n        \"A\",\n        \"C\",\n        \"D\",\n        \"B\"\n      ],\n      \"top_ids\": [\n        \"E\",\n        \"A\"\n      ]\n    },\n    \"FDN:example:two-pointers\": {\n      \"pair\": [\n        4,\n        7\n      ]\n    },\n    \"FDN:example:intervals\": {\n      \"prefix\": [\n        0,\n        2,\n        3,\n        6,\n        6,\n        10\n      ],\n      \"rolling\": [\n        6,\n        4,\n        7\n      ],\n      \"range_sum\": 4\n    },\n    \"FDN:example:graph\": {\n      \"bfs_layers\": [\n        [\n          \"A\"\n        ],\n        [\n          \"B\",\n          \"C\"\n        ],\n        [\n          \"D\"\n        ],\n        [\n          \"E\"\n        ]\n      ],\n      \"dfs_preorder\": [\n        \"A\",\n        \"B\",\n        \"D\",\n        \"E\",\n        \"C\"\n      ]\n    },\n    \"FDN:example:shortest-path\": {\n      \"distances\": {\n        \"A\": 0,\n        \"B\": 3,\n        \"C\": 1,\n        \"D\": 4\n      },\n      \"path\": [\n        \"A\",\n        \"C\",\n        \"B\",\n        \"D\"\n      ]\n    },\n    \"FDN:example:union-find\": {\n      \"component_counts\": [\n        4,\n        3,\n        2,\n        1\n      ]\n    },\n    \"FDN:example:dag\": {\n      \"earliest_finish\": {\n        \"A\": 2,\n        \"B\": 5,\n        \"C\": 6,\n        \"D\": 7\n      },\n      \"one_shared_worker_finish\": 10\n    },\n    \"FDN:example:optimization\": {\n      \"value\": 7,\n      \"selected\": [\n        \"A\",\n        \"B\"\n      ],\n      \"dp_rows\": [\n        [\n          0,\n          0,\n          0,\n          0,\n          0,\n          0\n        ],\n        [\n          0,\n          0,\n          3,\n          3,\n          3,\n          3\n        ],\n        [\n          0,\n          0,\n          3,\n          4,\n          4,\n          7\n        ],\n        [\n          0,\n          0,\n          3,\n          4,\n          5,\n          7\n        ]\n      ],\n      \"branch_c_upper_bound\": 6.5\n    },\n    \"FDN:example:greedy\": {\n      \"max_count_ids\": [\n        \"A\",\n        \"C\",\n        \"D\"\n      ]\n    },\n    \"FDN:example:backtracking\": {\n      \"assignment\": {\n        \"J1\": \"乙\",\n        \"J2\": \"甲\"\n      }\n    },\n    \"FDN:example:caches\": {\n      \"lru_keys_old_to_new\": [\n        \"C\",\n        \"B\"\n      ],\n      \"lfu_keys\": [\n        \"A\",\n        \"B\"\n      ],\n      \"lru_hits\": 2,\n      \"lru_misses\": 4,\n      \"lfu_hits\": 2,\n      \"lfu_misses\": 4\n    },\n    \"FDN:example:bloom\": {\n      \"set_bits\": [\n        1,\n        4,\n        6\n      ],\n      \"possibly_present_C\": true,\n      \"possibly_present_D\": false\n    },\n    \"FDN:example:hll\": {\n      \"registers\": [\n        3,\n        0,\n        4,\n        0\n      ]\n    },\n    \"FDN:example:ann\": {\n      \"exact_top\": [\n        \"A\",\n        \"B\"\n      ],\n      \"approximate_top\": [\n        \"A\",\n        \"C\"\n      ],\n      \"recall\": 0.5\n    },\n    \"FDN:example:recovery\": {\n      \"refund_total\": 40,\n      \"effect_count\": 1\n    },\n    \"FDN:example:ai-eval\": {\n      \"n\": 40,\n      \"precision_fraction\": [\n        18,\n        22\n      ],\n      \"recall_fraction\": [\n        18,\n        20\n      ],\n      \"accuracy_fraction\": [\n        34,\n        40\n      ]\n    }\n  },\n  \"property_cases\": {\n    \"signed_sequences_interval_oracle\": 364,\n    \"top_k_ties_orders_and_k\": 11664,\n    \"two_pointer_oracle\": 1120,\n    \"knapsack_oracle\": 5103,\n    \"undirected_graphs\": 64,\n    \"nonnegative_weighted_graphs\": 81,\n    \"interval_scheduling_oracle\": 64,\n    \"scheduler_boundary_scenarios\": 2\n  },\n  \"rejected_mutations\": 18,\n  \"execution_scope\": \"Python arithmetic/algorithms and in-memory SQLite model; no real provider, service crash, PostgreSQL, browser, load or AI execution\"\n}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "python3",
+        "vault/distilled/saas-engineering-atlas/foundations/validate_foundations.py"
+      ],
+      "exit_code": 0,
+      "stdout": "{\n  \"status\": \"pass\",\n  \"chapters\": 12,\n  \"examples\": 18,\n  \"case_ids\": 33,\n  \"algorithm_ids\": 8,\n  \"sources\": 40,\n  \"claims\": 61,\n  \"local_markdown_links\": 96\n}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "python3",
+        "-c",
+        "import runpy,unittest; d=runpy.run_path('docs/reviews/saas-atlas-repairs-20261014/regression_checks.py'); r=unittest.TextTestRunner(verbosity=2).run(unittest.defaultTestLoader.loadTestsFromTestCase(d['FoundationRepairs'])); raise SystemExit(not r.wasSuccessful())"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": "test_all_three_node_nonnegative_graphs_against_simple_paths (<run_path>.FoundationRepairs.test_all_three_node_nonnegative_graphs_against_simple_paths) ... ok\ntest_ann_rejects_invalid_dimensions_candidates_and_k (<run_path>.FoundationRepairs.test_ann_rejects_invalid_dimensions_candidates_and_k) ... ok\ntest_btree_balance_occupancy_and_partitions (<run_path>.FoundationRepairs.test_btree_balance_occupancy_and_partitions) ... ok\ntest_cache_extension_has_distinct_hits_and_scan_oracle (<run_path>.FoundationRepairs.test_cache_extension_has_distinct_hits_and_scan_oracle) ... ok\ntest_confusion_counts_and_zero_denominators (<run_path>.FoundationRepairs.test_confusion_counts_and_zero_denominators) ... ok\ntest_graph_chain_and_union_do_not_rescan_node_set (<run_path>.FoundationRepairs.test_graph_chain_and_union_do_not_rescan_node_set) ... ok\ntest_prevalence_and_small_denominator_changes (<run_path>.FoundationRepairs.test_prevalence_and_small_denominator_changes) ... ok\ntest_recovery_reads_database_and_kills_missing_writes (<run_path>.FoundationRepairs.test_recovery_reads_database_and_kills_missing_writes) ... ok\ntest_shortest_path_isolated_unreachable_invalid_and_parallel (<run_path>.FoundationRepairs.test_shortest_path_isolated_unreachable_invalid_and_parallel) ... ok\ntest_top_k_one_shot_stream_and_bounded_heap (<run_path>.FoundationRepairs.test_top_k_one_shot_stream_and_bounded_heap) ... ok\n\n----------------------------------------------------------------------\nRan 10 tests in 0.146s\n\nOK\n"
+    }
+  ],
+  "fixture_recomputation": {
+    "status": "pass",
+    "count": 18,
+    "method": "Original independent audit oracles reused for 17 fixtures; new event-history oracle for repaired cache schema. New probes below independently challenge repaired domains.",
+    "results": {
+      "order": {
+        "quantity_total": 3,
+        "refund_due": 40
+      },
+      "lookup": {
+        "lower_bound_value": 12,
+        "prefix_matches": [
+          "car",
+          "cart",
+          "cat"
+        ],
+        "btree_visited": [
+          [
+            10,
+            20
+          ],
+          [
+            12,
+            17
+          ]
+        ],
+        "btree_range_values": [
+          12,
+          17,
+          20,
+          23
+        ]
+      },
+      "top-k": {
+        "sorted_ids": [
+          "E",
+          "A",
+          "C",
+          "D",
+          "B"
+        ],
+        "top_ids": [
+          "E",
+          "A"
+        ]
+      },
+      "two-pointers": {
+        "pair": [
+          4,
+          7
+        ]
+      },
+      "intervals": {
+        "prefix": [
+          0,
+          2,
+          3,
+          6,
+          6,
+          10
+        ],
+        "rolling": [
+          6,
+          4,
+          7
+        ],
+        "range_sum": 4
+      },
+      "graph": {
+        "bfs_layers": [
+          [
+            "A"
+          ],
+          [
+            "B",
+            "C"
+          ],
+          [
+            "D"
+          ],
+          [
+            "E"
+          ]
+        ],
+        "dfs_preorder": [
+          "A",
+          "B",
+          "D",
+          "E",
+          "C"
+        ]
+      },
+      "shortest-path": {
+        "distances": {
+          "A": 0,
+          "B": 3,
+          "C": 1,
+          "D": 4
+        },
+        "path": [
+          "A",
+          "C",
+          "B",
+          "D"
+        ]
+      },
+      "union-find": {
+        "component_counts": [
+          4,
+          3,
+          2,
+          1
+        ]
+      },
+      "dag": {
+        "earliest_finish": {
+          "A": 2,
+          "B": 5,
+          "C": 6,
+          "D": 7
+        },
+        "one_shared_worker_finish": 10
+      },
+      "optimization": {
+        "value": 7,
+        "selected": [
+          "A",
+          "B"
+        ],
+        "dp_rows": [
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            3,
+            3,
+            3,
+            3
+          ],
+          [
+            0,
+            0,
+            3,
+            4,
+            4,
+            7
+          ],
+          [
+            0,
+            0,
+            3,
+            4,
+            5,
+            7
+          ]
+        ],
+        "branch_c_upper_bound": 6.5
+      },
+      "greedy": {
+        "max_count_ids": [
+          "A",
+          "C",
+          "D"
+        ]
+      },
+      "backtracking": {
+        "assignment": {
+          "J1": "乙",
+          "J2": "甲"
+        }
+      },
+      "caches": {
+        "lru_keys_old_to_new": [
+          "C",
+          "B"
+        ],
+        "lfu_keys": [
+          "A",
+          "B"
+        ],
+        "lru_hits": 2,
+        "lru_misses": 4,
+        "lfu_hits": 2,
+        "lfu_misses": 4
+      },
+      "bloom": {
+        "set_bits": [
+          1,
+          4,
+          6
+        ],
+        "possibly_present_C": true,
+        "possibly_present_D": false
+      },
+      "hll": {
+        "registers": [
+          3,
+          0,
+          4,
+          0
+        ]
+      },
+      "ann": {
+        "exact_top": [
+          "A",
+          "B"
+        ],
+        "approximate_top": [
+          "A",
+          "C"
+        ],
+        "recall": 0.5
+      },
+      "recovery": {
+        "refund_total": 40,
+        "effect_count": 1
+      },
+      "ai-eval": {
+        "n": 40,
+        "precision_fraction": [
+          18,
+          22
+        ],
+        "recall_fraction": [
+          18,
+          20
+        ],
+        "accuracy_fraction": [
+          34,
+          40
+        ]
+      }
+    }
+  },
+  "R1": {
+    "status": "pass",
+    "persisted_rows_on_connection_close": [
+      {
+        "objects": [
+          [
+            "A",
+            "S3",
+            3,
+            "cancelled"
+          ]
+        ],
+        "operations": [
+          [
+            "A",
+            "OP7",
+            40,
+            "confirmed",
+            "R1"
+          ]
+        ],
+        "outbox": [
+          [
+            "A",
+            "OP7"
+          ]
+        ]
+      },
+      {
+        "effects": [
+          [
+            "A",
+            "OP7",
+            40,
+            "R1"
+          ]
+        ]
+      }
+    ],
+    "trace": [
+      {
+        "step": "local_commit",
+        "object_version": 3,
+        "operation_state": "awaiting_external",
+        "outbox_exists": true
+      },
+      {
+        "step": "external_accept_response_lost",
+        "operation_state": "unknown"
+      },
+      {
+        "step": "reconcile_same_operation",
+        "operation_state": "confirmed",
+        "external_id": "R1",
+        "effect_count": 1
+      }
+    ],
+    "mutations": {
+      "omit_handoff": "committed scoped outbox: actual=[], expected=[('A', 'OP7')]",
+      "omit_confirmation": "persisted reconciliation: actual=('unknown', None), expected=('confirmed', 'R1')",
+      "omit_unknown_state": "recovery stages: actual=[{'step': 'local_commit', 'object_version': 3, 'operation_state': 'awaiting_external', 'outbox_exists': True}, {'step': 'external_accept_response_lost', 'operation_state': 'awaiting_external'}, {'step': 'reconcile_same_operation', 'operation_state': 'confirmed', 'external_id': 'R1', 'effect_count': 1}], expected=[{'step': 'local_commit', 'object_version': 3, 'operation_state': 'awaiting_external', 'outbox_exists': True}, {'step': 'external_accept_response_lost', 'operation_state': 'unknown'}, {'step': 'reconcile_same_operation', 'operation_state': 'confirmed', 'external_id': 'R1', 'effect_count': 1}]",
+      "wrong_confirmation_external_id": "persisted reconciliation: actual=('confirmed', 'wrong-id'), expected=('confirmed', 'R1')",
+      "wrong_dispatch_amount": "reconciliation identity and amount",
+      "handoff_wrong_operation": "committed scoped outbox: actual=[], expected=[('A', 'OP7')]",
+      "lose_work_after_commit": "dispatch must consume durable handoff: actual=[], expected=[('A', 'OP7', 40)]",
+      "write_outbox_before_rollback_fault": "valid stronger rollback schedule passes; outbox write is rolled back"
+    },
+    "boundary": "in-memory SQLite commits/rollback and fake provider only; no restart, durable disk, concurrency or multi-tenant dispatch certification"
+  },
+  "R2": {
+    "status": "pass",
+    "independent_sequence_capacity_cases": 13120,
+    "domain": "all A/B/C sequences lengths 0..7; capacity 1..4; resident LFU frequencies reset on eviction",
+    "seventh_A": {
+      "lru_keys_old_to_new": [
+        "B",
+        "A"
+      ],
+      "lfu_keys": [
+        "A",
+        "B"
+      ],
+      "lru_hits": 2,
+      "lru_misses": 5,
+      "lfu_hits": 3,
+      "lfu_misses": 4
+    }
+  },
+  "R3": {
+    "status": "pass",
+    "top_k_changed_cases": 273,
+    "stream_size": 20000,
+    "k": 5,
+    "maximum_live_heap_entries": 7,
+    "maximum_sort_input": 5,
+    "graph_source_cases_including_self_loops": 1536,
+    "deep_chain_nodes": 12000,
+    "incremental_union_sequences": 500,
+    "limits": "finite probes plus code inspection; not timing or universal complexity proof"
+  },
+  "R4": {
+    "status": "fail",
+    "original_R4_repairs": "pass",
+    "semantic_negative_cases": 28,
+    "rejection_messages": {
+      "ANN_extra_coordinate": "ANN vector dimensions must agree",
+      "ANN_empty_dimension": "ANN vector dimensions must agree",
+      "ANN_missing_candidate": "ANN candidate identities",
+      "ANN_duplicate_candidate": "ANN candidate identities",
+      "ANN_boolean_coordinate": "ANN finite numeric coordinates",
+      "ANN_infinite_coordinate": "ANN finite numeric coordinates",
+      "ANN_fractional_k": "ANN k must be within vector count",
+      "ANN_excess_k": "ANN k must be within vector count",
+      "confusion_tp_-1": "confusion counts must be nonnegative integers",
+      "confusion_tp_0.5": "confusion counts must be nonnegative integers",
+      "confusion_tp_True": "confusion counts must be nonnegative integers",
+      "confusion_tp_'1'": "confusion counts must be nonnegative integers",
+      "confusion_tp_None": "confusion counts must be nonnegative integers",
+      "confusion_fn_-1": "confusion counts must be nonnegative integers",
+      "confusion_fn_0.5": "confusion counts must be nonnegative integers",
+      "confusion_fn_True": "confusion counts must be nonnegative integers",
+      "confusion_fn_'1'": "confusion counts must be nonnegative integers",
+      "confusion_fn_None": "confusion counts must be nonnegative integers",
+      "confusion_fp_-1": "confusion counts must be nonnegative integers",
+      "confusion_fp_0.5": "confusion counts must be nonnegative integers",
+      "confusion_fp_True": "confusion counts must be nonnegative integers",
+      "confusion_fp_'1'": "confusion counts must be nonnegative integers",
+      "confusion_fp_None": "confusion counts must be nonnegative integers",
+      "confusion_tn_-1": "confusion counts must be nonnegative integers",
+      "confusion_tn_0.5": "confusion counts must be nonnegative integers",
+      "confusion_tn_True": "confusion counts must be nonnegative integers",
+      "confusion_tn_'1'": "confusion counts must be nonnegative integers",
+      "confusion_tn_None": "confusion counts must be nonnegative integers"
+    },
+    "random_route_target_cases": 3000,
+    "precision_boundary": {
+      "input": {
+        "query": [
+          0.0,
+          0.0
+        ],
+        "vectors": {
+          "A": [
+            100000000,
+            1
+          ],
+          "B": [
+            100000000,
+            0
+          ]
+        },
+        "candidate_ids": [
+          "A",
+          "B"
+        ],
+        "k": 1
+      },
+      "floating_result": {
+        "exact_top": [
+          "A"
+        ],
+        "approximate_top": [
+          "A"
+        ],
+        "recall": 1.0
+      },
+      "exact_squared_distances": {
+        "A": 10000000000000001,
+        "B": 10000000000000000
+      },
+      "integer_query_control_result": {
+        "exact_top": [
+          "B"
+        ],
+        "approximate_top": [
+          "B"
+        ],
+        "recall": 1.0
+      },
+      "classification": "Nonblocking ordinary float near-tie rounding; numeric precision boundary, not a separate blocker or claim that finite checks imply exact real arithmetic."
+    },
+    "residual": {
+      "id": "R4-N1",
+      "severity": "low",
+      "reason": "Finite inputs overflow derived path or squared-distance arithmetic; reachable route becomes unreachable and ANN exact ranking can be wrong.",
+      "dijkstra": {
+        "edges": [
+          [
+            "A",
+            "B",
+            1e+308
+          ],
+          [
+            "B",
+            "C",
+            1e+308
+          ]
+        ],
+        "actual": {
+          "A": 0,
+          "B": 1e+308
+        },
+        "exact_reachable_C_distance_integer": "200000000000000002195812725888091083480984619354623692673621365806315170809822983074326657956989377798122499339442345031223180567486280176656614018396292092062543329005866054371394979399177118086676768932330002356853795252425890355256182391573414916245567940343568830210583605786415746545949771430860446236672"
+      },
+      "ann": {
+        "input": {
+          "query": [
+            -1e+308
+          ],
+          "vectors": {
+            "A": [
+              1e+308
+            ],
+            "B": [
+              9e+307
+            ]
+          },
+          "candidate_ids": [
+            "A",
+            "B"
+          ],
+          "k": 1
+        },
+        "accepted_result": {
+          "exact_top": [
+            "A"
+          ],
+          "approximate_top": [
+            "A"
+          ],
+          "recall": 1.0
+        },
+        "independent_exact_order": [
+          "B",
+          "A"
+        ]
+      },
+      "repair": "Reject nonrepresentable derived arithmetic with an explicit numeric-domain error, or use an exact/scaled calculation; preserve unreachable exclusively for absent paths. Avoid float conversion when checking finiteness of arbitrary-size integers, or explicitly reject out-of-domain magnitudes."
+    },
+    "integer_guard_regression": {
+      "expression": "dijkstra([('A','B',10**400)], 'A')",
+      "observations": [
+        {
+          "sha": "ee597ceaa3675f818746c6122353858872af17e4",
+          "source_command": [
+            "git",
+            "show",
+            "ee597ceaa3675f818746c6122353858872af17e4:vault/distilled/saas-engineering-atlas/foundations/check_examples.py"
+          ],
+          "source_sha256": "15fd6d0fc4a3c7697e5da1706405f220d7a5294ff8c288eeb73d75903a6d1108",
+          "status": "returned",
+          "distance_B_matches_exact_integer": true,
+          "parents": {
+            "B": "A"
+          }
+        },
+        {
+          "sha": "cd8d77b6166a6fc566f6aa09b4d9af3e11537408",
+          "source_command": [
+            "git",
+            "show",
+            "cd8d77b6166a6fc566f6aa09b4d9af3e11537408:vault/distilled/saas-engineering-atlas/foundations/check_examples.py"
+          ],
+          "source_sha256": "15fd6d0fc4a3c7697e5da1706405f220d7a5294ff8c288eeb73d75903a6d1108",
+          "status": "returned",
+          "distance_B_matches_exact_integer": true,
+          "parents": {
+            "B": "A"
+          }
+        },
+        {
+          "sha": "5e6b7e3bc4e7d2bcfe737c231ddfe0c3be015f5b",
+          "source_command": [
+            "git",
+            "show",
+            "5e6b7e3bc4e7d2bcfe737c231ddfe0c3be015f5b:vault/distilled/saas-engineering-atlas/foundations/check_examples.py"
+          ],
+          "source_sha256": "2571dadcadfdd926cf997bb6ffb4829d26c861d1f2fbd902716a659851cbd785",
+          "status": "raised",
+          "exception_type": "OverflowError",
+          "message": "int too large to convert to float"
+        }
+      ],
+      "classification": "New guard regression: math.isfinite converts the Python integer to float and raises OverflowError. Both pre-repair implementations computed this exact integer path correctly. Distinct from pre-existing floating-point range/rounding limits; part of R4-N1, not another finding."
+    }
+  },
+  "R5": {
+    "status": "pass",
+    "valid_degree_depth_cases": 20,
+    "invalid_tree_rejections": {
+      "unequal_leaf_depth": "B-tree equal leaf depth",
+      "child_count": "B-tree child count",
+      "empty_nonroot": "B-tree occupancy",
+      "ancestor_partition": "B-tree partition",
+      "duplicate_separator": "B-tree node keys",
+      "unsorted": "B-tree node keys",
+      "overfull": "B-tree occupancy"
+    }
+  },
+  "R6": {
+    "status": "pass",
+    "independently_constructed_matrix": {
+      "tp": 9,
+      "fn": 1,
+      "fp": 198,
+      "tn": 792
+    },
+    "metrics": {
+      "n": 1000,
+      "precision_fraction": [
+        9,
+        207
+      ],
+      "recall_fraction": [
+        9,
+        10
+      ],
+      "accuracy_fraction": [
+        801,
+        1000
+      ]
+    },
+    "precision_percent": 4.3478260869565215,
+    "one_corrected_prediction_accuracy_pp": 2.5,
+    "one_recovered_positive_recall_pp": 5,
+    "assumption": "conditional true-positive/false-positive rates held fixed, hypothetical arithmetic only"
+  },
+  "status": "fail",
+  "source_hashes": {
+    "vault/distilled/saas-engineering-atlas/foundations/check_examples.py": "2571dadcadfdd926cf997bb6ffb4829d26c861d1f2fbd902716a659851cbd785",
+    "vault/distilled/saas-engineering-atlas/foundations/examples.json": "2289bcc3ff8ca3430f9eaed917ed8f37fafa2de40cdeabe700fbceb3f4736361",
+    "docs/reviews/saas-atlas-repairs-20261014/dispositions.json": "6bbc2edf77f11e5975794aaea7f31e22bb2380d0233f6c1432a601f97bfed65b"
+  }
+}
