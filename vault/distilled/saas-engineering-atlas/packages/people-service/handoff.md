@@ -4,6 +4,7 @@
 
 - Package：P02；案例 H04、H05、H06、V17、V18、V19、V20 全部具备原创中文正文与契约 JSON。
 - 分支：`cloud/saas-atlas-people-service-20261014`。
+- 已验证并推送的完整内容提交：`f94241ec998c3d6db36171b568fd12375be1223c`。该提交包含全部教材、结构、证据和检查；随后的封口提交只更新本 handoff 与 CHANGELOG。最终分支头由交付回复给出，并用 `git ls-remote` 核对，避免在提交内容中循环嵌入自己的 SHA。
 - 精确起点：`ae1827f34c6df067348d2454d7e5c9331ceda25d`，来自 `cloud/saas-engineering-atlas-20261014`。
 - 唯一改动路径：`vault/distilled/saas-engineering-atlas/packages/people-service/`。共同索引、其他包、main、CI 与部署未改动；没有合并到 main。
 - 本包是 Claude 在既有 Praxis 基础设施内继续消费的教材与目录素材，不是运行中的 SaaS 或页面交付。正文包含“识题→解法→演算→验算→变式”入口、每个主要机制的识别线索与继续查证方向；不约束后续 UI、motion、布局或多代理编排。

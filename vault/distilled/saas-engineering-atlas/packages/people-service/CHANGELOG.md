@@ -53,3 +53,11 @@
 四个脚本合计 77 项；测试运行观察为 H04/H05 0.007s、H06/V17 0.001s、V18/V19 0.005s、V20 0.001s。这些只是小型本地测试耗时，不能引用为 SaaS 性能指标。错误方法的反例输出包括工资7700而非7000、SLA误报45而非50、原始分数相加得到73.3而非78、hash-first吞掉未决实例、cap换版误丢3000预留、现场经过时间多收20。
 
 未执行：真实provider/sandbox、浏览器E2E、生产数据库/真实网络并发、负载、OR-Tools求解器、AI模型/eval、OneRoster认证与法域/机构合规检查。验收表和性能预算保留为后续应用的可执行目标，当前无运行部署。
+
+## 2026-10-14 · 推送与封口
+
+- 早期共享模型 checkpoint：`c2bf2bc97b90a009de934f213bc3114341cb4523`，已推送并核对远端。
+- V20 正文/结构/局部检查 checkpoint：`8e42dfc`，已推送。
+- 完整内容提交：`f94241ec998c3d6db36171b568fd12375be1223c`，`git push origin cloud/saas-atlas-people-service-20261014` 成功，`git ls-remote origin refs/heads/cloud/saas-atlas-people-service-20261014` 返回同一 SHA。
+- 末次范围检查：22 个包内文件；相对精确起点及 staged diff 的所有改动均位于授权目录。凭据/签名URL模式扫描无匹配，人工检查未见私人转录或真实用户材料。
+- 此封口只补交接记录。最终远端分支头在交付回复记录；未 merge main，未运行 CI 或部署。
