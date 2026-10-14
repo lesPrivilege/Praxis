@@ -1,0 +1,1044 @@
+{
+  "contract_version": "1.0",
+  "case_id": "V11",
+  "title": "从电表读数到可解释的账单与结算",
+  "scope": "Synthetic retail electricity interval example in UTC. Four 15-minute kWh intervals, two TOU prices, fixed fee; no taxes, demand charges, import/export offsets or wholesale market settlement. Estimated usage permission and correction policy are explicit teaching assumptions.",
+  "synthetic": true,
+  "source_ids": [
+    "ORACLE_VEE",
+    "P06-SRC-oracle-imd",
+    "P06-SRC-oracle-usage-transactions"
+  ],
+  "nodes": [
+    {
+      "id": "V11:actor:analyst",
+      "type": "actor",
+      "label": "计量分析员",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; site and asset/component scope verified server-side"
+    },
+    {
+      "id": "V11:actor:reviewer",
+      "type": "actor",
+      "label": "计量复核员",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; site and asset/component scope verified server-side"
+    },
+    {
+      "id": "V11:actor:billing-operator",
+      "type": "actor",
+      "label": "账务与对账员",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; site and asset/component scope verified server-side"
+    },
+    {
+      "id": "V11:ui:meter-desk",
+      "type": "ui",
+      "label": "计量异常与账务工作台",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; site and asset/component scope verified server-side"
+    },
+    {
+      "id": "V11:service:ingestion",
+      "type": "service",
+      "label": "原始计量接入",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; site and asset/component scope verified server-side"
+    },
+    {
+      "id": "V11:service:master-data",
+      "type": "service",
+      "label": "有效安装关系管理",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; site and asset/component scope verified server-side"
+    },
+    {
+      "id": "V11:service:vee",
+      "type": "service",
+      "label": "VEE 与测量版本服务",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; site and asset/component scope verified server-side"
+    },
+    {
+      "id": "V11:service:usage",
+      "type": "service",
+      "label": "计费数量计算",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; site and asset/component scope verified server-side"
+    },
+    {
+      "id": "V11:service:billing",
+      "type": "service",
+      "label": "账务适配与核销",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; site and asset/component scope verified server-side"
+    },
+    {
+      "id": "V11:external_system:head-end",
+      "type": "external_system",
+      "label": "合成 Head-end 采集系统",
+      "authority": "synthetic source of raw samples",
+      "tenant_scope": "tenant-bound; site and asset/component scope verified server-side"
+    },
+    {
+      "id": "V11:external_system:receivables",
+      "type": "external_system",
+      "label": "合成外部应收账务系统",
+      "authority": "synthetic authoritative issued bill ledger",
+      "tenant_scope": "tenant-bound; site and asset/component scope verified server-side"
+    },
+    {
+      "id": "V11:external_system:bank",
+      "type": "external_system",
+      "label": "合成银行回执系统",
+      "authority": "synthetic authoritative payment receipt source",
+      "tenant_scope": "tenant-bound; site and asset/component scope verified server-side"
+    },
+    {
+      "id": "V11:event:raw",
+      "type": "event",
+      "label": "原始计量批次",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; site and asset/component scope verified server-side"
+    },
+    {
+      "id": "V11:event:revision",
+      "type": "event",
+      "label": "计量修订事件",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; site and asset/component scope verified server-side"
+    },
+    {
+      "id": "V11:event:payment",
+      "type": "event",
+      "label": "付款回执",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; site and asset/component scope verified server-side"
+    },
+    {
+      "id": "V11:store:inbox",
+      "type": "store",
+      "label": "持久消息与操作记录",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; site and asset/component scope verified server-side"
+    },
+    {
+      "id": "V11:store:raw-partitions",
+      "type": "store",
+      "label": "原始计量与版本分区",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; site and asset/component scope verified server-side"
+    },
+    {
+      "id": "V11:store:transaction-db",
+      "type": "store",
+      "label": "主数据、计费数量、核销与审计",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; site and asset/component scope verified server-side"
+    },
+    {
+      "id": "V11:object:installation",
+      "type": "object",
+      "label": "Device installation / 有效安装关系",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; site and asset/component scope verified server-side"
+    },
+    {
+      "id": "V11:object:raw-measurement",
+      "type": "object",
+      "label": "Raw measurement / 原始计量",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; site and asset/component scope verified server-side"
+    },
+    {
+      "id": "V11:object:measurement",
+      "type": "object",
+      "label": "VEE run and measurement revision",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; site and asset/component scope verified server-side"
+    },
+    {
+      "id": "V11:object:determinant",
+      "type": "object",
+      "label": "Bill determinant / 计费数量",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; site and asset/component scope verified server-side"
+    },
+    {
+      "id": "V11:object:bill",
+      "type": "object",
+      "label": "Bill / 账单",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; site and asset/component scope verified server-side"
+    },
+    {
+      "id": "V11:object:settlement",
+      "type": "object",
+      "label": "Settlement / 客户应收核销",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; site and asset/component scope verified server-side"
+    }
+  ],
+  "edges": [
+    {
+      "id": "V11:edge:analyst-desk",
+      "type": "operates",
+      "from": "V11:actor:analyst",
+      "to": "V11:ui:meter-desk",
+      "payload": "原始/处理后曲线、质量、账单与差额",
+      "timing": "sync",
+      "invariant": "仅显示获授权 tenant/service point/account",
+      "failure": "缺权限不泄露存在性与金额",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V11:claim:policy"
+      ]
+    },
+    {
+      "id": "V11:edge:reviewer-desk",
+      "type": "operates",
+      "from": "V11:actor:reviewer",
+      "to": "V11:ui:meter-desk",
+      "payload": "原始/处理后曲线、质量、账单与差额",
+      "timing": "sync",
+      "invariant": "仅显示获授权 tenant/service point/account",
+      "failure": "缺权限不泄露存在性与金额",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V11:claim:policy"
+      ]
+    },
+    {
+      "id": "V11:edge:billing-desk",
+      "type": "operates",
+      "from": "V11:actor:billing-operator",
+      "to": "V11:ui:meter-desk",
+      "payload": "原始/处理后曲线、质量、账单与差额",
+      "timing": "sync",
+      "invariant": "仅显示获授权 tenant/service point/account",
+      "failure": "缺权限不泄露存在性与金额",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V11:claim:policy"
+      ]
+    },
+    {
+      "id": "V11:edge:override",
+      "type": "commands",
+      "from": "V11:ui:meter-desk",
+      "to": "V11:service:vee",
+      "payload": "base version + operation ID + value/unit + reason",
+      "timing": "sync",
+      "invariant": "修改创建修订，原始值不变",
+      "failure": "并发冲突显示差异，不能最后写入覆盖",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V11:claim:policy"
+      ]
+    },
+    {
+      "id": "V11:edge:calculate",
+      "type": "commands",
+      "from": "V11:ui:meter-desk",
+      "to": "V11:service:usage",
+      "payload": "subscription + [start,end) + quality policy + rule versions",
+      "timing": "sync",
+      "invariant": "计算身份绑定输入快照",
+      "failure": "缺读数或质量政策不满足则明确阻断",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V11:claim:policy"
+      ]
+    },
+    {
+      "id": "V11:edge:issue",
+      "type": "commands",
+      "from": "V11:ui:meter-desk",
+      "to": "V11:service:billing",
+      "payload": "determinant version + tariff version + operation ID",
+      "timing": "sync",
+      "invariant": "发布前核验计费依据尚有效",
+      "failure": "依据失效重算；外部未知保留 unknown",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V11:claim:policy"
+      ]
+    },
+    {
+      "id": "V11:edge:override-authority",
+      "type": "authorizes",
+      "from": "V11:actor:reviewer",
+      "to": "V11:service:vee",
+      "payload": "例外覆盖/估算的复核权限",
+      "timing": "static",
+      "invariant": "分析员提交不等于批准",
+      "failure": "无授权不能 finalized",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V11:claim:policy"
+      ]
+    },
+    {
+      "id": "V11:edge:raw-emission",
+      "type": "emits",
+      "from": "V11:external_system:head-end",
+      "to": "V11:event:raw",
+      "payload": "source message ID + device/component + UTC interval + revision + value/UOM",
+      "timing": "async",
+      "invariant": "源时间、单位与原值完整保存",
+      "failure": "非法或含糊时间隔离",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V11:claim:policy"
+      ]
+    },
+    {
+      "id": "V11:edge:raw-delivery",
+      "type": "delivers",
+      "from": "V11:event:raw",
+      "to": "V11:store:inbox",
+      "payload": "原始批次及接收时间",
+      "timing": "async",
+      "invariant": "先持久接收再确认",
+      "failure": "写入失败可重投；重复身份不可重复计量",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V11:claim:policy"
+      ]
+    },
+    {
+      "id": "V11:edge:ingest-read",
+      "type": "reads",
+      "from": "V11:service:ingestion",
+      "to": "V11:store:inbox",
+      "payload": "待映射批次",
+      "timing": "async",
+      "invariant": "重放保持原始身份",
+      "failure": "异常批次进入隔离而非填零",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V11:claim:policy"
+      ]
+    },
+    {
+      "id": "V11:edge:raw-own",
+      "type": "owns",
+      "from": "V11:service:ingestion",
+      "to": "V11:object:raw-measurement",
+      "payload": "原始值、源身份与映射状态",
+      "timing": "static",
+      "invariant": "源修订保留版本链",
+      "failure": "不得无痕覆盖旧原始值",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V11:claim:policy"
+      ]
+    },
+    {
+      "id": "V11:edge:installation-own",
+      "type": "owns",
+      "from": "V11:service:master-data",
+      "to": "V11:object:installation",
+      "payload": "服务点/设备/倍率的有效区间",
+      "timing": "static",
+      "invariant": "同一通道生效区间不含混重叠",
+      "failure": "换表关闭旧关系并建立新关系",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V11:claim:policy"
+      ]
+    },
+    {
+      "id": "V11:edge:raw-installation",
+      "type": "depends_on",
+      "from": "V11:object:raw-measurement",
+      "to": "V11:object:installation",
+      "payload": "计量事件期间内的有效映射",
+      "timing": "sync",
+      "invariant": "不能用今天的安装关系解释历史数据",
+      "failure": "无映射或冲突隔离",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V11:claim:policy"
+      ]
+    },
+    {
+      "id": "V11:edge:vee-read",
+      "type": "reads",
+      "from": "V11:service:vee",
+      "to": "V11:store:raw-partitions",
+      "payload": "原始版本、缺失标记与邻近样本",
+      "timing": "batch",
+      "invariant": "质量政策和适用规则冻结",
+      "failure": "连续缺口超许可范围进入 exception",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V11:claim:policy"
+      ]
+    },
+    {
+      "id": "V11:edge:measurement-own",
+      "type": "owns",
+      "from": "V11:service:vee",
+      "to": "V11:object:measurement",
+      "payload": "VEE run、规则版本、前后值与质量码",
+      "timing": "static",
+      "invariant": "估算不改称实测",
+      "failure": "更正生成新版本并保留异常",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V11:claim:policy"
+      ]
+    },
+    {
+      "id": "V11:edge:measurement-source",
+      "type": "derived_from",
+      "from": "V11:object:measurement",
+      "to": "V11:object:raw-measurement",
+      "payload": "输入修订、VEE 规则与覆盖理由",
+      "timing": "batch",
+      "invariant": "每个后值可追溯原值和规则",
+      "failure": "依据缺失不能 finalized",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V11:claim:policy"
+      ]
+    },
+    {
+      "id": "V11:edge:determinant-own",
+      "type": "owns",
+      "from": "V11:service:usage",
+      "to": "V11:object:determinant",
+      "payload": "期间、TOU、质量比例和 quantity",
+      "timing": "static",
+      "invariant": "单位、期间、测量与规则版本随结果保存",
+      "failure": "失效后重新计算并 supersede 旧版本",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V11:claim:policy"
+      ]
+    },
+    {
+      "id": "V11:edge:determinant-source",
+      "type": "derived_from",
+      "from": "V11:object:determinant",
+      "to": "V11:object:measurement",
+      "payload": "已 finalized 测量版本集合",
+      "timing": "batch",
+      "invariant": "不把缺失当零；估算比例明确分母",
+      "failure": "质量门槛未满足不可批准",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V11:claim:policy"
+      ]
+    },
+    {
+      "id": "V11:edge:quantity-publish",
+      "type": "requests",
+      "from": "V11:service:billing",
+      "to": "V11:external_system:receivables",
+      "payload": "operation ID + determinant/version + tariff/version + amount",
+      "timing": "sync",
+      "invariant": "同一发布只产生一张已发布账单",
+      "failure": "timeout 先查外部引用，不能另建账单",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V11:claim:policy"
+      ]
+    },
+    {
+      "id": "V11:edge:bill-reconcile",
+      "type": "reads",
+      "from": "V11:service:billing",
+      "to": "V11:external_system:receivables",
+      "payload": "按 tenant + external account + operation/reference 核对",
+      "timing": "async",
+      "invariant": "本地无回执不代表外部失败",
+      "failure": "不可达保留 unknown 并创建对账待办",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V11:claim:policy"
+      ]
+    },
+    {
+      "id": "V11:edge:bill-own",
+      "type": "owns",
+      "from": "V11:external_system:receivables",
+      "to": "V11:object:bill",
+      "payload": "账单、调整与外部状态",
+      "timing": "static",
+      "invariant": "已发布历史不可无痕改价",
+      "failure": "新旧依据差异形成明确调整记录",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V11:claim:policy"
+      ]
+    },
+    {
+      "id": "V11:edge:bill-source",
+      "type": "derived_from",
+      "from": "V11:object:bill",
+      "to": "V11:object:determinant",
+      "payload": "已批准 bill determinant 与费率版本",
+      "timing": "sync",
+      "invariant": "数量是计费输入，付款是另一事实",
+      "failure": "依据更正走调整而非改写历史",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V11:claim:policy"
+      ]
+    },
+    {
+      "id": "V11:edge:revision-emission",
+      "type": "emits",
+      "from": "V11:service:vee",
+      "to": "V11:event:revision",
+      "payload": "old/new measurement versions + impacted intervals",
+      "timing": "async",
+      "invariant": "修订晚到不丢失历史",
+      "failure": "重复触发计算仍绑定同一版本集合",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V11:claim:policy"
+      ]
+    },
+    {
+      "id": "V11:edge:revision-delivery",
+      "type": "delivers",
+      "from": "V11:event:revision",
+      "to": "V11:service:usage",
+      "payload": "需使缓存/计费数量失效的输入关系",
+      "timing": "async",
+      "invariant": "不以到达时间覆盖更高修订",
+      "failure": "重放按依赖版本核对",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V11:claim:policy"
+      ]
+    },
+    {
+      "id": "V11:edge:payment-emission",
+      "type": "emits",
+      "from": "V11:external_system:bank",
+      "to": "V11:event:payment",
+      "payload": "tenant external account + transaction ID + amount/currency + posted time",
+      "timing": "async",
+      "invariant": "银行交易和账单身份分别核验",
+      "failure": "只有金额相同不足以匹配",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V11:claim:policy"
+      ]
+    },
+    {
+      "id": "V11:edge:payment-delivery",
+      "type": "delivers",
+      "from": "V11:event:payment",
+      "to": "V11:store:inbox",
+      "payload": "付款通知原始身份",
+      "timing": "async",
+      "invariant": "重复银行交易只产生一次入账",
+      "failure": "先到款后到账单保留 unmatched",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V11:claim:policy"
+      ]
+    },
+    {
+      "id": "V11:edge:payment-read",
+      "type": "reads",
+      "from": "V11:service:billing",
+      "to": "V11:store:inbox",
+      "payload": "待匹配付款与修订通知",
+      "timing": "async",
+      "invariant": "分配总额不超可分配付款",
+      "failure": "无正确账户/账单则 held 或 unmatched",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V11:claim:policy"
+      ]
+    },
+    {
+      "id": "V11:edge:settlement-own",
+      "type": "owns",
+      "from": "V11:service:billing",
+      "to": "V11:object:settlement",
+      "payload": "银行交易与应收分配关系",
+      "timing": "static",
+      "invariant": "付款、贷项和应收分别守恒",
+      "failure": "争议余额保留 held，不自动再扣款",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V11:claim:policy"
+      ]
+    },
+    {
+      "id": "V11:edge:settlement-bill",
+      "type": "depends_on",
+      "from": "V11:object:settlement",
+      "to": "V11:object:bill",
+      "payload": "已核对账单与调整余额",
+      "timing": "sync",
+      "invariant": "已收原款不随新读数消失",
+      "failure": "修订只改变新差额待办",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V11:claim:policy"
+      ]
+    },
+    {
+      "id": "V11:edge:raw-store",
+      "type": "stores",
+      "from": "V11:store:raw-partitions",
+      "to": "V11:object:raw-measurement",
+      "payload": "不可无痕覆盖的版本、关联与状态",
+      "timing": "sync",
+      "invariant": "账单可逆向解释；本地 bill 为外部映射",
+      "failure": "恢复后对照权威对象及版本链",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V11:claim:policy"
+      ]
+    },
+    {
+      "id": "V11:edge:measurement-store",
+      "type": "stores",
+      "from": "V11:store:raw-partitions",
+      "to": "V11:object:measurement",
+      "payload": "不可无痕覆盖的版本、关联与状态",
+      "timing": "sync",
+      "invariant": "账单可逆向解释；本地 bill 为外部映射",
+      "failure": "恢复后对照权威对象及版本链",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V11:claim:policy"
+      ]
+    },
+    {
+      "id": "V11:edge:installation-store",
+      "type": "stores",
+      "from": "V11:store:transaction-db",
+      "to": "V11:object:installation",
+      "payload": "不可无痕覆盖的版本、关联与状态",
+      "timing": "sync",
+      "invariant": "账单可逆向解释；本地 bill 为外部映射",
+      "failure": "恢复后对照权威对象及版本链",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V11:claim:policy"
+      ]
+    },
+    {
+      "id": "V11:edge:determinant-store",
+      "type": "stores",
+      "from": "V11:store:transaction-db",
+      "to": "V11:object:determinant",
+      "payload": "不可无痕覆盖的版本、关联与状态",
+      "timing": "sync",
+      "invariant": "账单可逆向解释；本地 bill 为外部映射",
+      "failure": "恢复后对照权威对象及版本链",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V11:claim:policy"
+      ]
+    },
+    {
+      "id": "V11:edge:bill-mapping-store",
+      "type": "stores",
+      "from": "V11:store:transaction-db",
+      "to": "V11:object:bill",
+      "payload": "不可无痕覆盖的版本、关联与状态",
+      "timing": "sync",
+      "invariant": "账单可逆向解释；本地 bill 为外部映射",
+      "failure": "恢复后对照权威对象及版本链",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V11:claim:policy"
+      ]
+    },
+    {
+      "id": "V11:edge:settlement-store",
+      "type": "stores",
+      "from": "V11:store:transaction-db",
+      "to": "V11:object:settlement",
+      "payload": "不可无痕覆盖的版本、关联与状态",
+      "timing": "sync",
+      "invariant": "账单可逆向解释；本地 bill 为外部映射",
+      "failure": "恢复后对照权威对象及版本链",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V11:claim:policy"
+      ]
+    },
+    {
+      "id": "V11:edge:measurement-view",
+      "type": "projects",
+      "from": "V11:object:measurement",
+      "to": "V11:ui:meter-desk",
+      "payload": "值、单位、质量/状态、版本与核对时间",
+      "timing": "async",
+      "invariant": "估算、未知、已收和未核销明确区分",
+      "failure": "过期投影显示待更新，不授权开票",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V11:claim:policy"
+      ]
+    },
+    {
+      "id": "V11:edge:determinant-view",
+      "type": "projects",
+      "from": "V11:object:determinant",
+      "to": "V11:ui:meter-desk",
+      "payload": "值、单位、质量/状态、版本与核对时间",
+      "timing": "async",
+      "invariant": "估算、未知、已收和未核销明确区分",
+      "failure": "过期投影显示待更新，不授权开票",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V11:claim:policy"
+      ]
+    },
+    {
+      "id": "V11:edge:bill-view",
+      "type": "projects",
+      "from": "V11:object:bill",
+      "to": "V11:ui:meter-desk",
+      "payload": "值、单位、质量/状态、版本与核对时间",
+      "timing": "async",
+      "invariant": "估算、未知、已收和未核销明确区分",
+      "failure": "过期投影显示待更新，不授权开票",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V11:claim:policy"
+      ]
+    },
+    {
+      "id": "V11:edge:settlement-view",
+      "type": "projects",
+      "from": "V11:object:settlement",
+      "to": "V11:ui:meter-desk",
+      "payload": "值、单位、质量/状态、版本与核对时间",
+      "timing": "async",
+      "invariant": "估算、未知、已收和未核销明确区分",
+      "failure": "过期投影显示待更新，不授权开票",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V11:claim:policy"
+      ]
+    }
+  ],
+  "lifecycles": [
+    {
+      "object_id": "V11:object:installation",
+      "states": [
+        "planned",
+        "effective",
+        "ended"
+      ],
+      "transitions": [
+        {
+          "from": "planned",
+          "to": "effective",
+          "trigger": "安装生效",
+          "guard": "设备、服务点、倍率、通道与有效起点获确认",
+          "durable_effect": "保存安装版本与起点",
+          "recovery": "映射缺失数据隔离"
+        },
+        {
+          "from": "effective",
+          "to": "ended",
+          "trigger": "换表或拆除",
+          "guard": "有效终点明确且不与替代关系含混重叠",
+          "durable_effect": "保存旧关系终点和新关系引用",
+          "recovery": "重算受影响历史期间时仍使用旧关系"
+        }
+      ]
+    },
+    {
+      "object_id": "V11:object:raw-measurement",
+      "states": [
+        "received",
+        "mapped",
+        "quarantined"
+      ],
+      "transitions": [
+        {
+          "from": "received",
+          "to": "mapped",
+          "trigger": "接入校验通过",
+          "guard": "单位、源身份、区间和有效安装关系明确",
+          "durable_effect": "保存映射与原始值",
+          "recovery": "重复源身份返回原记录"
+        },
+        {
+          "from": "received",
+          "to": "quarantined",
+          "trigger": "校验失败",
+          "guard": "缺单位/时间歧义/映射冲突之一",
+          "durable_effect": "保存失败原因与源 payload",
+          "recovery": "补充权威映射后重新处理"
+        },
+        {
+          "from": "quarantined",
+          "to": "mapped",
+          "trigger": "更正映射并复核",
+          "guard": "保留原错误且新依据明确",
+          "durable_effect": "保存处理版本",
+          "recovery": "不得把缺失默认为零"
+        }
+      ]
+    },
+    {
+      "object_id": "V11:object:measurement",
+      "states": [
+        "pending",
+        "exception",
+        "validated",
+        "finalized",
+        "superseded"
+      ],
+      "transitions": [
+        {
+          "from": "pending",
+          "to": "exception",
+          "trigger": "VEE 发现阻断",
+          "guard": "规则顺序与资格冻结",
+          "durable_effect": "保存异常、Pre/Post 与质量码",
+          "recovery": "修改后重新运行且不删除旧异常"
+        },
+        {
+          "from": "pending",
+          "to": "validated",
+          "trigger": "规则全部通过",
+          "guard": "单缺口估算满足本例条件/实测校验通过",
+          "durable_effect": "保存规则与测量版本",
+          "recovery": "输入改变必须重算"
+        },
+        {
+          "from": "exception",
+          "to": "validated",
+          "trigger": "复核修订通过",
+          "guard": "有覆盖权限、依据和理由",
+          "durable_effect": "追加修订并关闭对应异常",
+          "recovery": "不能直接编辑已发布金额"
+        },
+        {
+          "from": "validated",
+          "to": "finalized",
+          "trigger": "计量批准",
+          "guard": "质量政策允许用于当前用途",
+          "durable_effect": "保存 final 版本并发出修订通知",
+          "recovery": "下游失败保留可重放事件"
+        },
+        {
+          "from": "finalized",
+          "to": "superseded",
+          "trigger": "新实际值或合法更正生效",
+          "guard": "新修订 finalized",
+          "durable_effect": "保留新旧关联并标记受影响数量",
+          "recovery": "乱序旧事件不可恢复旧版"
+        }
+      ]
+    },
+    {
+      "object_id": "V11:object:determinant",
+      "states": [
+        "requested",
+        "calculated",
+        "approved",
+        "published",
+        "superseded"
+      ],
+      "transitions": [
+        {
+          "from": "requested",
+          "to": "calculated",
+          "trigger": "用量计算",
+          "guard": "期间、单位、测量版本与规则完备",
+          "durable_effect": "保存谷/峰数量与估算电量比例",
+          "recovery": "缺输入保持 requested/异常待办"
+        },
+        {
+          "from": "calculated",
+          "to": "approved",
+          "trigger": "规则或人工批准",
+          "guard": "估算电量比例 <=30% 且无未决阻断",
+          "durable_effect": "保存批准证据与输入 hash",
+          "recovery": "上限改25%须拒绝本例4/14"
+        },
+        {
+          "from": "approved",
+          "to": "published",
+          "trigger": "账务适配发送数量",
+          "guard": "版本尚有效且 operation 持久化",
+          "durable_effect": "保存发布引用",
+          "recovery": "响应未知核对原 operation"
+        },
+        {
+          "from": "published",
+          "to": "superseded",
+          "trigger": "已用测量更正",
+          "guard": "新数量版本已算出且关联完整",
+          "durable_effect": "保存新旧差异与调整待办",
+          "recovery": "原账单仍引用原数量"
+        }
+      ]
+    },
+    {
+      "object_id": "V11:object:bill",
+      "states": [
+        "draft",
+        "issued",
+        "adjusted"
+      ],
+      "transitions": [
+        {
+          "from": "draft",
+          "to": "issued",
+          "trigger": "外部账务确认发布",
+          "guard": "计费数量已批准、费率有效且唯一 operation",
+          "durable_effect": "保存外部 ID 和金额13.50",
+          "recovery": "timeout 先查询原发布"
+        },
+        {
+          "from": "issued",
+          "to": "adjusted",
+          "trigger": "新数量实际值6生效",
+          "guard": "原账单金额保留，合法差额规则批准",
+          "durable_effect": "追加2.00调整及依据",
+          "recovery": "重复新旧数量版本只产生一次调整"
+        }
+      ]
+    },
+    {
+      "object_id": "V11:object:settlement",
+      "states": [
+        "unmatched",
+        "partially_matched",
+        "matched",
+        "held"
+      ],
+      "transitions": [
+        {
+          "from": "unmatched",
+          "to": "partially_matched",
+          "trigger": "首笔付款10.00匹配",
+          "guard": "银行交易与账户/账单映射核对且未重复分配",
+          "durable_effect": "保存allocation10.00及余额3.50",
+          "recovery": "未知先核对银行及既有分配"
+        },
+        {
+          "from": "partially_matched",
+          "to": "matched",
+          "trigger": "再匹配3.50",
+          "guard": "可分配资金与剩余应收一致",
+          "durable_effect": "余额为0，保存第二笔交易引用",
+          "recovery": "重放不重复资金"
+        },
+        {
+          "from": "matched",
+          "to": "held",
+          "trigger": "已结清后出现争议调整2.00",
+          "guard": "保留旧账单与原核销且争议获登记",
+          "durable_effect": "保存新争议余额2.00",
+          "recovery": "不可无痕改旧账单或自动扣款"
+        },
+        {
+          "from": "held",
+          "to": "partially_matched",
+          "trigger": "争议解决后确认应收",
+          "guard": "授权人明确结果和调整依据",
+          "durable_effect": "记录释放剩余应收",
+          "recovery": "若减免则另存贷项与批准，不伪造付款"
+        }
+      ]
+    }
+  ],
+  "algorithm_ids": [
+    "ALG:lookup",
+    "ALG:windows",
+    "ALG:caches"
+  ],
+  "claim_ids": [
+    "V11:claim:policy",
+    "V11:claim:vee-rules",
+    "V11:claim:imd-lineage",
+    "V11:claim:usage-transaction",
+    "V11:claim:worked-example",
+    "V11:claim:settlement-boundary"
+  ],
+  "checks": [
+    {
+      "id": "V11:check:four-intervals",
+      "kind": "happy_path",
+      "given": "15-minute UTC interval kWh=[2,3,null,5]; prices=[0.50,0.50,1.00,1.00]; fixed=2.00; estimate limit30%",
+      "when": "Estimate isolated hole, approve, issue and match payments10.00 then3.50",
+      "then": "Post=[2,3,4,5]; valley5 peak9; estimate share4/14; bill13.50; balance3.50 then0",
+      "evidence_required": "Frozen input, pre/post values and flags, determinant versions, issued bill and two bank allocation IDs"
+    },
+    {
+      "id": "V11:check:duplicate-reading-payment",
+      "kind": "duplicate",
+      "given": "A raw batch and bank transaction T-1 already committed",
+      "when": "Deliver each twice",
+      "then": "No duplicate interval energy or payment allocation",
+      "evidence_required": "Source and bank unique-key logs; quantities and allocation totals"
+    },
+    {
+      "id": "V11:check:actual-before-old-estimate",
+      "kind": "out_of_order",
+      "given": "Actual revision6 finalized before old estimated revision4 notification",
+      "when": "Deliver older notification later",
+      "then": "Current effective value stays6; estimate4 remains historical; revised bill basis15.50",
+      "evidence_required": "Revision ordering, input snapshot hash and adjustment linkage"
+    },
+    {
+      "id": "V11:check:competing-edits-publish",
+      "kind": "concurrency",
+      "given": "Two analysts edit same base revision; issue request races with revised input",
+      "when": "Commit both edits and publish",
+      "then": "One stale edit rejected; published bill has fixed snapshot; subsequent change uses adjustment",
+      "evidence_required": "Conflict response, transaction versions, immutable published basis"
+    },
+    {
+      "id": "V11:check:same-meter-two-tenants",
+      "kind": "tenant_isolation",
+      "given": "Tenants A/B share local meter ID,SP-1 and bill number",
+      "when": "Query raw curve, preview cache, export and payment lookup",
+      "then": "No cross-tenant data for hit, miss or rebuild",
+      "evidence_required": "Tenant-collision fixture and access audit for each path"
+    },
+    {
+      "id": "V11:check:external-bill-timeout",
+      "kind": "unknown_outcome",
+      "given": "External ledger creates B-1 but response is lost",
+      "when": "Reconcile by same persisted operation reference",
+      "then": "One bill B-1; UI changes unknown to issued after confirmation",
+      "evidence_required": "Fault at response boundary, external listing and local mapping"
+    },
+    {
+      "id": "V11:check:adjustment-crash",
+      "kind": "recovery",
+      "given": "Actual value6 yields2.00 adjustment already stored, consumer marker absent",
+      "when": "Restart and replay correction twice",
+      "then": "Exactly one2.00 adjustment; original13.50 allocation preserved; disputed balance2.00",
+      "evidence_required": "Adjustment unique key old/new determinant; crash log; ledger reconciliation"
+    },
+    {
+      "id": "V11:check:bad-estimation-policy",
+      "kind": "quality_gate",
+      "given": "[2,null,null,5] or original fixture estimate limit25%",
+      "when": "Apply single-gap rule or approve4/14 estimated energy",
+      "then": "Both fail explicitly; no zero filling and no confusion with25% interval count",
+      "evidence_required": "Negative fixture result with exact failed guard and remaining exception"
+    },
+    {
+      "id": "V11:check:meter-exchange",
+      "kind": "installation_change",
+      "given": "00:30 exchange; old multiplier1 new2; raw=[2,3,2,2.5] all measured",
+      "when": "Map effective installations and price",
+      "then": "Post=[2,3,4,5],bill13.50,estimated energy0; wrong multiplier gives9.00 and must be detected",
+      "evidence_required": "Installation-boundary trace, quantity/quality assertions, wrong-policy negative comparison"
+    }
+  ]
+}

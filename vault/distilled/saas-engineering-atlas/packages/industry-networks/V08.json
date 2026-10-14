@@ -1,0 +1,1059 @@
+{
+  "contract_version": "1.0",
+  "case_id": "V08",
+  "title": "混合以后，批次为什么仍要能解释来路",
+  "scope": "合成非医药工业混合料；配方、批生产记录、数量谱系、检验复核与lot release；不是工艺或合规指引",
+  "synthetic": true,
+  "source_ids": [
+    "LABWARE",
+    "P06-SRC-epcis-guideline"
+  ],
+  "nodes": [
+    {
+      "id": "V08:actor:operator",
+      "type": "actor",
+      "label": "投料操作员",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + plant; provider mappings additionally include external account"
+    },
+    {
+      "id": "V08:actor:process-owner",
+      "type": "actor",
+      "label": "工艺授权人",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + plant; provider mappings additionally include external account"
+    },
+    {
+      "id": "V08:actor:quality",
+      "type": "actor",
+      "label": "质量负责人",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + plant; provider mappings additionally include external account"
+    },
+    {
+      "id": "V08:ui:batch-workbench",
+      "type": "ui",
+      "label": "批次工作台",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + plant; provider mappings additionally include external account"
+    },
+    {
+      "id": "V08:ui:quality-review",
+      "type": "ui",
+      "label": "质量复核台",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + plant; provider mappings additionally include external account"
+    },
+    {
+      "id": "V08:service:batch-execution",
+      "type": "service",
+      "label": "批次执行服务",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + plant; provider mappings additionally include external account"
+    },
+    {
+      "id": "V08:service:quality",
+      "type": "service",
+      "label": "质量服务",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + plant; provider mappings additionally include external account"
+    },
+    {
+      "id": "V08:service:genealogy",
+      "type": "service",
+      "label": "谱系查询服务",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + plant; provider mappings additionally include external account"
+    },
+    {
+      "id": "V08:external_system:lims",
+      "type": "external_system",
+      "label": "实验室适配边界",
+      "authority": "外部实验室对经核对样品和结果事实负责；LabWare仅为文档能力参照",
+      "tenant_scope": "tenant + plant; provider mappings additionally include external account"
+    },
+    {
+      "id": "V08:external_system:warehouse",
+      "type": "external_system",
+      "label": "仓储适配边界",
+      "authority": "外部库存分配状态",
+      "tenant_scope": "tenant + plant; provider mappings additionally include external account"
+    },
+    {
+      "id": "V08:object:recipe",
+      "type": "object",
+      "label": "配方R7",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + plant; provider mappings additionally include external account"
+    },
+    {
+      "id": "V08:object:batch-record",
+      "type": "object",
+      "label": "PB1批生产记录",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + plant; provider mappings additionally include external account"
+    },
+    {
+      "id": "V08:object:input-lots",
+      "type": "object",
+      "label": "A1/B1投入批",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + plant; provider mappings additionally include external account"
+    },
+    {
+      "id": "V08:object:output-lots",
+      "type": "object",
+      "label": "M1/P1/P2/M2产出及后代批",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + plant; provider mappings additionally include external account"
+    },
+    {
+      "id": "V08:object:sample",
+      "type": "object",
+      "label": "样品与接收链",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + plant; provider mappings additionally include external account"
+    },
+    {
+      "id": "V08:object:result",
+      "type": "object",
+      "label": "方法与规格版本下的结果",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + plant; provider mappings additionally include external account"
+    },
+    {
+      "id": "V08:object:disposition",
+      "type": "object",
+      "label": "批次质量处置",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + plant; provider mappings additionally include external account"
+    },
+    {
+      "id": "V08:object:release-operation",
+      "type": "object",
+      "label": "仓储状态同步操作",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + plant; provider mappings additionally include external account"
+    },
+    {
+      "id": "V08:event:result-version",
+      "type": "event",
+      "label": "实验室结果版本通知",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + plant; provider mappings additionally include external account"
+    },
+    {
+      "id": "V08:store:ledger",
+      "type": "store",
+      "label": "数量分录与决定账本",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + plant; provider mappings additionally include external account"
+    },
+    {
+      "id": "V08:store:inbox",
+      "type": "store",
+      "label": "原始事件收件箱",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + plant; provider mappings additionally include external account"
+    },
+    {
+      "id": "V08:store:files",
+      "type": "store",
+      "label": "仪器原始文件与附件",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + plant; provider mappings additionally include external account"
+    }
+  ],
+  "edges": [
+    {
+      "id": "V08:edge:operator-ui",
+      "type": "operates",
+      "from": "V08:actor:operator",
+      "to": "V08:ui:batch-workbench",
+      "payload": "扫码、计划量与实际量",
+      "timing": "sync",
+      "invariant": "现场动作与电子确认分开",
+      "failure": "离线草稿不可作为确认",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V08:edge:process-ui",
+      "type": "operates",
+      "from": "V08:actor:process-owner",
+      "to": "V08:ui:batch-workbench",
+      "payload": "配方版本与影响预览",
+      "timing": "sync",
+      "invariant": "只发布有权范围的版本",
+      "failure": "缺项或冲突拒绝",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V08:edge:qa-ui",
+      "type": "operates",
+      "from": "V08:actor:quality",
+      "to": "V08:ui:quality-review",
+      "payload": "证据集合、偏差与批准范围",
+      "timing": "sync",
+      "invariant": "看见已复核结果和缺项",
+      "failure": "查询过期显示状态",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V08:edge:record-command",
+      "type": "commands",
+      "from": "V08:ui:batch-workbench",
+      "to": "V08:service:batch-execution",
+      "payload": "batch/step/lot/quantity/unit/expected_version/operation_id",
+      "timing": "sync",
+      "invariant": "单位、余量和原料质量状态都校验",
+      "failure": "实投未知时转偏差，不重复称料",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V08:edge:review-command",
+      "type": "commands",
+      "from": "V08:ui:quality-review",
+      "to": "V08:service:quality",
+      "payload": "证据摘要、版本与处置意见",
+      "timing": "sync",
+      "invariant": "批准绑定同一证据快照",
+      "failure": "新增偏差使旧预览失效",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V08:edge:authorize-process",
+      "type": "authorizes",
+      "from": "V08:actor:process-owner",
+      "to": "V08:service:batch-execution",
+      "payload": "配方批准权",
+      "timing": "static",
+      "invariant": "执行记录不能追溯改配方",
+      "failure": "无权限拒绝",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V08:edge:authorize-quality",
+      "type": "authorizes",
+      "from": "V08:actor:quality",
+      "to": "V08:service:quality",
+      "payload": "质量处置权",
+      "timing": "static",
+      "invariant": "模型建议和操作员不能替代授权",
+      "failure": "未授权拒绝",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V08:edge:owns-recipe",
+      "type": "owns",
+      "from": "V08:service:batch-execution",
+      "to": "V08:object:recipe",
+      "payload": "对象当前事实及历史版本",
+      "timing": "static",
+      "invariant": "更正追加依据不抹除原记录",
+      "failure": "冲突按版本核对",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V08:edge:owns-batch",
+      "type": "owns",
+      "from": "V08:service:batch-execution",
+      "to": "V08:object:batch-record",
+      "payload": "对象当前事实及历史版本",
+      "timing": "static",
+      "invariant": "更正追加依据不抹除原记录",
+      "failure": "冲突按版本核对",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V08:edge:owns-input-lots",
+      "type": "owns",
+      "from": "V08:service:batch-execution",
+      "to": "V08:object:input-lots",
+      "payload": "对象当前事实及历史版本",
+      "timing": "static",
+      "invariant": "更正追加依据不抹除原记录",
+      "failure": "冲突按版本核对",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V08:edge:owns-output-lots",
+      "type": "owns",
+      "from": "V08:service:batch-execution",
+      "to": "V08:object:output-lots",
+      "payload": "对象当前事实及历史版本",
+      "timing": "static",
+      "invariant": "更正追加依据不抹除原记录",
+      "failure": "冲突按版本核对",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V08:edge:owns-disposition",
+      "type": "owns",
+      "from": "V08:service:quality",
+      "to": "V08:object:disposition",
+      "payload": "对象当前事实及历史版本",
+      "timing": "static",
+      "invariant": "更正追加依据不抹除原记录",
+      "failure": "冲突按版本核对",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V08:edge:owns-sync",
+      "type": "owns",
+      "from": "V08:service:quality",
+      "to": "V08:object:release-operation",
+      "payload": "对象当前事实及历史版本",
+      "timing": "static",
+      "invariant": "更正追加依据不抹除原记录",
+      "failure": "冲突按版本核对",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V08:edge:lims-owns-sample",
+      "type": "owns",
+      "from": "V08:external_system:lims",
+      "to": "V08:object:sample",
+      "payload": "实验室权威对象引用",
+      "timing": "static",
+      "invariant": "本地副本不自动证明已复核",
+      "failure": "读取当前实验室对象核对",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V08:edge:lims-owns-result",
+      "type": "owns",
+      "from": "V08:external_system:lims",
+      "to": "V08:object:result",
+      "payload": "实验室权威对象引用",
+      "timing": "static",
+      "invariant": "本地副本不自动证明已复核",
+      "failure": "读取当前实验室对象核对",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V08:edge:batch-recipe",
+      "type": "depends_on",
+      "from": "V08:object:batch-record",
+      "to": "V08:object:recipe",
+      "payload": "approved R7及规格方法版本",
+      "timing": "static",
+      "invariant": "执行固定引用",
+      "failure": "新配方不得覆盖旧执行",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V08:edge:batch-inputs",
+      "type": "derived_from",
+      "from": "V08:object:batch-record",
+      "to": "V08:object:input-lots",
+      "payload": "实际投入批号、数量、单位",
+      "timing": "async",
+      "invariant": "部分消耗与剩余量分开",
+      "failure": "漏项阻断记录关闭",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V08:edge:output-batch",
+      "type": "derived_from",
+      "from": "V08:object:output-lots",
+      "to": "V08:object:batch-record",
+      "payload": "转换记录的投入产出关联",
+      "timing": "async",
+      "invariant": "多个输入可能影响各输出；本例数量另由账本核对",
+      "failure": "不把单一父批号当完整谱系",
+      "basis": "source_fact",
+      "claim_ids": [
+        "V08:claim:transformation-genealogy"
+      ]
+    },
+    {
+      "id": "V08:edge:sample-output",
+      "type": "derived_from",
+      "from": "V08:object:sample",
+      "to": "V08:object:output-lots",
+      "payload": "抽样方案、代表批与留样量",
+      "timing": "static",
+      "invariant": "样品不能无依据代表所有批",
+      "failure": "身份不明重新确认",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V08:edge:result-sample",
+      "type": "derived_from",
+      "from": "V08:object:result",
+      "to": "V08:object:sample",
+      "payload": "方法、单位、数值、试验有效性与版本",
+      "timing": "async",
+      "invariant": "测试批与生产批身份分开",
+      "failure": "导入错配隔离处理",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V08:edge:disposition-batch",
+      "type": "depends_on",
+      "from": "V08:object:disposition",
+      "to": "V08:object:batch-record",
+      "payload": "完整执行记录与已处理偏差",
+      "timing": "static",
+      "invariant": "completed不等于released",
+      "failure": "差异未解拒绝",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V08:edge:disposition-result",
+      "type": "depends_on",
+      "from": "V08:object:disposition",
+      "to": "V08:object:result",
+      "payload": "所有必需项目的已复核当前结果",
+      "timing": "static",
+      "invariant": "不能挑最好结果覆盖首次失败",
+      "failure": "版本变化使待批准快照失效",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V08:edge:lims-request",
+      "type": "requests",
+      "from": "V08:service:quality",
+      "to": "V08:external_system:lims",
+      "payload": "样品及方法身份或结果查询请求",
+      "timing": "sync",
+      "invariant": "租户与实验室账户映射受控",
+      "failure": "超时保留unknown并查原身份",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V08:edge:result-event",
+      "type": "emits",
+      "from": "V08:external_system:lims",
+      "to": "V08:event:result-version",
+      "payload": "结果身份与版本通知",
+      "timing": "async",
+      "invariant": "到达顺序不定义当前结果",
+      "failure": "读取当前版本",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V08:edge:result-inbox",
+      "type": "delivers",
+      "from": "V08:event:result-version",
+      "to": "V08:store:inbox",
+      "payload": "原始消息与文件摘要",
+      "timing": "async",
+      "invariant": "先持久化再确认",
+      "failure": "重复可见但不重复生效",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V08:edge:quality-reads-inbox",
+      "type": "reads",
+      "from": "V08:service:quality",
+      "to": "V08:store:inbox",
+      "payload": "待核对结果通知",
+      "timing": "async",
+      "invariant": "旧v1不能覆盖v2",
+      "failure": "保留旧通知与版本冲突",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V08:edge:quality-reads-lims",
+      "type": "reads",
+      "from": "V08:service:quality",
+      "to": "V08:external_system:lims",
+      "payload": "当前结果与复核状态",
+      "timing": "async",
+      "invariant": "不把收到事件当已复核",
+      "failure": "源系统不可用则不新放行",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V08:edge:warehouse-request",
+      "type": "requests",
+      "from": "V08:service:quality",
+      "to": "V08:external_system:warehouse",
+      "payload": "批号、质量状态版本、同步operation_id",
+      "timing": "sync",
+      "invariant": "外部有条件版本时只接受较新版本；否则同批仅一个在途或unknown状态变更，新的冻结立即关闭本地分配",
+      "failure": "旧release未知期间保持电子禁分配并升级现场隔离；先证明旧命令终态，再执行block并查外部现状；无法证明终态则不宣告恢复",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V08:edge:warehouse-reconcile",
+      "type": "reads",
+      "from": "V08:service:quality",
+      "to": "V08:external_system:warehouse",
+      "payload": "当前批次库存限制与操作引用",
+      "timing": "async",
+      "invariant": "质量批准、命令终态、仓储状态与实物可拣范围分别核对；单次读取blocked不能证明旧请求不会晚执行",
+      "failure": "外部缺版本保护又无法证明旧请求终态时维持隔离并人工接管",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V08:edge:genealogy-read",
+      "type": "reads",
+      "from": "V08:service:genealogy",
+      "to": "V08:store:ledger",
+      "payload": "根批次、图版本、授权范围",
+      "timing": "batch",
+      "invariant": "有visited集且未完成查询标incomplete",
+      "failure": "任务可续查，不能把截断结果当查全",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V08:edge:store-recipe",
+      "type": "stores",
+      "from": "V08:store:ledger",
+      "to": "V08:object:recipe",
+      "payload": "身份、版本、数量或决定依据",
+      "timing": "sync",
+      "invariant": "更正追加记录；decimal数量和受控单位",
+      "failure": "重放检查唯一业务尝试",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V08:edge:store-batch",
+      "type": "stores",
+      "from": "V08:store:ledger",
+      "to": "V08:object:batch-record",
+      "payload": "身份、版本、数量或决定依据",
+      "timing": "sync",
+      "invariant": "更正追加记录；decimal数量和受控单位",
+      "failure": "重放检查唯一业务尝试",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V08:edge:store-inputs",
+      "type": "stores",
+      "from": "V08:store:ledger",
+      "to": "V08:object:input-lots",
+      "payload": "身份、版本、数量或决定依据",
+      "timing": "sync",
+      "invariant": "更正追加记录；decimal数量和受控单位",
+      "failure": "重放检查唯一业务尝试",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V08:edge:store-outputs",
+      "type": "stores",
+      "from": "V08:store:ledger",
+      "to": "V08:object:output-lots",
+      "payload": "身份、版本、数量或决定依据",
+      "timing": "sync",
+      "invariant": "更正追加记录；decimal数量和受控单位",
+      "failure": "重放检查唯一业务尝试",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V08:edge:store-sample",
+      "type": "stores",
+      "from": "V08:store:ledger",
+      "to": "V08:object:sample",
+      "payload": "身份、版本、数量或决定依据",
+      "timing": "sync",
+      "invariant": "更正追加记录；decimal数量和受控单位",
+      "failure": "重放检查唯一业务尝试",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V08:edge:store-result",
+      "type": "stores",
+      "from": "V08:store:ledger",
+      "to": "V08:object:result",
+      "payload": "身份、版本、数量或决定依据",
+      "timing": "sync",
+      "invariant": "更正追加记录；decimal数量和受控单位",
+      "failure": "重放检查唯一业务尝试",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V08:edge:store-disposition",
+      "type": "stores",
+      "from": "V08:store:ledger",
+      "to": "V08:object:disposition",
+      "payload": "身份、版本、数量或决定依据",
+      "timing": "sync",
+      "invariant": "更正追加记录；decimal数量和受控单位",
+      "failure": "重放检查唯一业务尝试",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V08:edge:store-sync",
+      "type": "stores",
+      "from": "V08:store:ledger",
+      "to": "V08:object:release-operation",
+      "payload": "身份、版本、数量或决定依据",
+      "timing": "sync",
+      "invariant": "更正追加记录；decimal数量和受控单位",
+      "failure": "重放检查唯一业务尝试",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V08:edge:store-files",
+      "type": "stores",
+      "from": "V08:store:files",
+      "to": "V08:object:result",
+      "payload": "原始仪器文件与摘要",
+      "timing": "sync",
+      "invariant": "附件授权及原始证据可追溯",
+      "failure": "摘要不符隔离并禁止使用",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V08:edge:project-batch",
+      "type": "projects",
+      "from": "V08:object:batch-record",
+      "to": "V08:ui:batch-workbench",
+      "payload": "当前状态、版本、缺项与最近核对",
+      "timing": "async",
+      "invariant": "质量批准与仓储确认分别显示",
+      "failure": "失效缓存不得授权放行",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V08:edge:project-output",
+      "type": "projects",
+      "from": "V08:object:output-lots",
+      "to": "V08:ui:batch-workbench",
+      "payload": "当前状态、版本、缺项与最近核对",
+      "timing": "async",
+      "invariant": "质量批准与仓储确认分别显示",
+      "failure": "失效缓存不得授权放行",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V08:edge:project-result",
+      "type": "projects",
+      "from": "V08:object:result",
+      "to": "V08:ui:quality-review",
+      "payload": "当前状态、版本、缺项与最近核对",
+      "timing": "async",
+      "invariant": "质量批准与仓储确认分别显示",
+      "failure": "失效缓存不得授权放行",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V08:edge:project-disposition",
+      "type": "projects",
+      "from": "V08:object:disposition",
+      "to": "V08:ui:quality-review",
+      "payload": "当前状态、版本、缺项与最近核对",
+      "timing": "async",
+      "invariant": "质量批准与仓储确认分别显示",
+      "failure": "失效缓存不得授权放行",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V08:edge:project-sync",
+      "type": "projects",
+      "from": "V08:object:release-operation",
+      "to": "V08:ui:quality-review",
+      "payload": "当前状态、版本、缺项与最近核对",
+      "timing": "async",
+      "invariant": "质量批准与仓储确认分别显示",
+      "failure": "失效缓存不得授权放行",
+      "basis": "synthetic",
+      "claim_ids": []
+    }
+  ],
+  "lifecycles": [
+    {
+      "object_id": "V08:object:recipe",
+      "states": [
+        "draft",
+        "approved",
+        "superseded"
+      ],
+      "transitions": [
+        {
+          "from": "draft",
+          "to": "approved",
+          "trigger": "工艺人批准",
+          "guard": "步骤、设备能力、配比和检验方案完整",
+          "durable_effect": "固定R7快照",
+          "recovery": "缺项拒绝"
+        },
+        {
+          "from": "approved",
+          "to": "superseded",
+          "trigger": "新配方获批",
+          "guard": "影响范围和生效边界明确",
+          "durable_effect": "保留R7与新版本关系",
+          "recovery": "旧批记录仍引用R7"
+        }
+      ]
+    },
+    {
+      "object_id": "V08:object:batch-record",
+      "states": [
+        "planned",
+        "executing",
+        "held",
+        "completed"
+      ],
+      "transitions": [
+        {
+          "from": "planned",
+          "to": "executing",
+          "trigger": "首次投料",
+          "guard": "approved配方、可用原料和设备许可",
+          "durable_effect": "投入分录与实际执行",
+          "recovery": "现场已投却未确认转偏差"
+        },
+        {
+          "from": "executing",
+          "to": "held",
+          "trigger": "异常投料或记录不符",
+          "guard": "记录真实情况与权限",
+          "durable_effect": "暂停后续受控动作",
+          "recovery": "调查决定恢复或结束"
+        },
+        {
+          "from": "held",
+          "to": "executing",
+          "trigger": "获准恢复",
+          "guard": "偏差处置方案已批准",
+          "durable_effect": "恢复依据",
+          "recovery": "冲突拒绝"
+        },
+        {
+          "from": "executing",
+          "to": "completed",
+          "trigger": "生产记录关闭",
+          "guard": "实际步骤齐全且150=145+3+2在容差内",
+          "durable_effect": "固定执行记录版本",
+          "recovery": "缺2kg留样则阻断；不自动放行"
+        }
+      ]
+    },
+    {
+      "object_id": "V08:object:output-lots",
+      "states": [
+        "quarantine",
+        "released",
+        "rejected",
+        "blocked"
+      ],
+      "transitions": [
+        {
+          "from": "quarantine",
+          "to": "released",
+          "trigger": "质量处置批准",
+          "guard": "证据完整、项目复核、无未解偏差且质量授权",
+          "durable_effect": "记录批准版本并安排仓储同步",
+          "recovery": "同步unknown时显示未确认"
+        },
+        {
+          "from": "quarantine",
+          "to": "rejected",
+          "trigger": "质量拒绝",
+          "guard": "理由和范围获授权",
+          "durable_effect": "拒绝记录",
+          "recovery": "不可分配；另作处置任务"
+        },
+        {
+          "from": "released",
+          "to": "blocked",
+          "trigger": "新关键偏差或结果更正",
+          "guard": "有触发证据和范围",
+          "durable_effect": "当前冻结及新调查",
+          "recovery": "已交付数量另建客户处置"
+        },
+        {
+          "from": "blocked",
+          "to": "released",
+          "trigger": "复核解除冻结",
+          "guard": "新的完整证据与授权决定",
+          "durable_effect": "新release版本",
+          "recovery": "旧回执不得解除新hold"
+        }
+      ]
+    },
+    {
+      "object_id": "V08:object:sample",
+      "states": [
+        "registered",
+        "received",
+        "tested",
+        "reviewed"
+      ],
+      "transitions": [
+        {
+          "from": "registered",
+          "to": "received",
+          "trigger": "样品接收",
+          "guard": "身份与代表范围可确认",
+          "durable_effect": "接收链和位置",
+          "recovery": "标签不明隔离"
+        },
+        {
+          "from": "received",
+          "to": "tested",
+          "trigger": "完成检测",
+          "guard": "方法有效且输入可追溯",
+          "durable_effect": "原始结果与仪器文件",
+          "recovery": "失败记录不得覆盖"
+        },
+        {
+          "from": "tested",
+          "to": "reviewed",
+          "trigger": "实验室复核",
+          "guard": "有效性与结果版本确认",
+          "durable_effect": "复核事实",
+          "recovery": "更正生成新版本"
+        }
+      ]
+    },
+    {
+      "object_id": "V08:object:result",
+      "states": [
+        "entered",
+        "reviewed",
+        "corrected"
+      ],
+      "transitions": [
+        {
+          "from": "entered",
+          "to": "reviewed",
+          "trigger": "结果审核",
+          "guard": "样品方法单位和有效性明确",
+          "durable_effect": "复核版本",
+          "recovery": "不合格仍保留"
+        },
+        {
+          "from": "reviewed",
+          "to": "corrected",
+          "trigger": "发现结果错误",
+          "guard": "更正理由和授权",
+          "durable_effect": "原结果保留，新版本成为当前",
+          "recovery": "触发受影响处置重审"
+        },
+        {
+          "from": "corrected",
+          "to": "reviewed",
+          "trigger": "更正结果复核",
+          "guard": "新版本经审核",
+          "durable_effect": "新复核事实",
+          "recovery": "迟到旧事件不回退"
+        }
+      ]
+    },
+    {
+      "object_id": "V08:object:disposition",
+      "states": [
+        "pending",
+        "approved",
+        "rejected"
+      ],
+      "transitions": [
+        {
+          "from": "pending",
+          "to": "approved",
+          "trigger": "质量签署",
+          "guard": "输入快照未变且所有guard满足",
+          "durable_effect": "签署者、范围、摘要和版本",
+          "recovery": "并发偏差拒绝或随后block"
+        },
+        {
+          "from": "pending",
+          "to": "rejected",
+          "trigger": "质量拒绝",
+          "guard": "有理由与授权",
+          "durable_effect": "拒绝记录与后续任务",
+          "recovery": "补证后建立新审核尝试"
+        }
+      ]
+    },
+    {
+      "object_id": "V08:object:release-operation",
+      "states": [
+        "pending",
+        "unknown",
+        "confirmed",
+        "superseded"
+      ],
+      "transitions": [
+        {
+          "from": "pending",
+          "to": "unknown",
+          "trigger": "仓储调用超时",
+          "guard": "请求已发送且结果不明",
+          "durable_effect": "同一操作等待核对",
+          "recovery": "查外部状态不重签质量决定"
+        },
+        {
+          "from": "pending",
+          "to": "confirmed",
+          "trigger": "仓储确认",
+          "guard": "外部状态与当前质量版本一致",
+          "durable_effect": "生效确认",
+          "recovery": "过期回执进入superseded"
+        },
+        {
+          "from": "unknown",
+          "to": "confirmed",
+          "trigger": "对账成功",
+          "guard": "操作引用唯一且质量版本仍当前",
+          "durable_effect": "补确认",
+          "recovery": "保留unknown期间"
+        },
+        {
+          "from": "unknown",
+          "to": "superseded",
+          "trigger": "新block取代release",
+          "guard": "新质量版本更高",
+          "durable_effect": "旧意图标记superseded，关闭本地分配；外部旧命令终态仍须独立核对",
+          "recovery": "有版本条件则外部拒旧命令；否则按批串行、确认旧命令终态后执行block；不确定则保持现场控制"
+        }
+      ]
+    }
+  ],
+  "algorithm_ids": [
+    "ALG:lookup",
+    "ALG:graph-paths",
+    "ALG:caches"
+  ],
+  "claim_ids": [
+    "V08:claim:lims-objects",
+    "V08:claim:transformation-genealogy",
+    "V08:claim:release-and-mass-policy"
+  ],
+  "checks": [
+    {
+      "id": "V08:check:happy",
+      "kind": "happy_path",
+      "given": "R7;A100kg+B50kg;145主产3废料2留样;必需结果已复核",
+      "when": "授权质量人批准并获仓储确认",
+      "then": "差额0、得率145/150≈96.67%；批准和仓储确认分开可查",
+      "evidence_required": "数量分录、证据摘要、签署与仓储结果"
+    },
+    {
+      "id": "V08:check:duplicate",
+      "kind": "duplicate",
+      "given": "同一投料operation_id和结果文件摘要",
+      "when": "分别提交两次",
+      "then": "只扣100+50kg一次；结果不重复生效",
+      "evidence_required": "唯一键命中、原始消息与数量账"
+    },
+    {
+      "id": "V08:check:old-result",
+      "kind": "out_of_order",
+      "given": "v2超限已生效",
+      "when": "之后收到旧v1通过",
+      "then": "当前仍v2且保持block",
+      "evidence_required": "版本读取、通知日志、冻结记录"
+    },
+    {
+      "id": "V08:check:release-race",
+      "kind": "concurrency",
+      "given": "质量批准预览v5",
+      "when": "另一人并发登记关键偏差",
+      "then": "批准拒绝或已批准后立即新block；不能保持错误无偏差结论",
+      "evidence_required": "对象版本、两个操作的提交顺序及最终冻结"
+    },
+    {
+      "id": "V08:check:tenant",
+      "kind": "tenant_isolation",
+      "given": "不同租户均有A1和PB1",
+      "when": "图查询、文件下载与导出",
+      "then": "只获授权范围，不泄露无权节点标签或数量",
+      "evidence_required": "带tenant和授权范围的路径及返回内容"
+    },
+    {
+      "id": "V08:check:warehouse-timeout",
+      "kind": "unknown_outcome",
+      "given": "仓储解锁成功",
+      "when": "响应丢失",
+      "then": "同一同步操作unknown直至回查；不产生第二批准",
+      "evidence_required": "外部当前状态、操作引用与批准唯一性"
+    },
+    {
+      "id": "V08:check:mass-replay",
+      "kind": "recovery",
+      "given": "数量分录已提交",
+      "when": "服务崩溃后重放",
+      "then": "投入仍150，输出145+3+2；投影可重建",
+      "evidence_required": "注入点、重放日志和原料余额"
+    },
+    {
+      "id": "V08:check:missing-retain",
+      "kind": "release_guard",
+      "given": "原料150，仅记录145主产和3废料",
+      "when": "尝试关闭并放行",
+      "then": "差额2kg超过0.1kg容差；阻断关闭",
+      "evidence_required": "校验错误与无状态副作用"
+    },
+    {
+      "id": "V08:check:genealogy",
+      "kind": "algorithm",
+      "given": "A100+B50→M1=145+废3+留2；M1拆80/65；65中20+C30→M2=49+废1",
+      "when": "从A遍历当前可售后代",
+      "then": "P1=80、P2余45、M2=49，共174kg；不加中间批145",
+      "evidence_required": "有向路径、visited集合、当前余额和去向分类"
+    },
+    {
+      "id": "V08:check:unit-change",
+      "kind": "algorithm",
+      "given": "A输入100g，B50kg；目标2:1/150kg",
+      "when": "统一单位并验证",
+      "then": "A=0.1kg，总50.1kg；比例与目标不符拒绝",
+      "evidence_required": "受控换算表、计算结果与明确拒绝"
+    },
+    {
+      "id": "V08:check:optional-ai",
+      "kind": "ai_eval",
+      "given": "120合成标注记录：开发40，留出80含关键20非关键60；未执行",
+      "when": "冻结模型配置后分类并由人复核",
+      "then": "报告关键漏判/20、错误升级/60、无引用/80、拒答/80、改判/80；模型不能改放行",
+      "evidence_required": "冻结数据与标签、模型配置、逐项预测及人工结论；当前均未运行"
+    },
+    {
+      "id": "V08:check:late-release-side-effect",
+      "kind": "out_of_order",
+      "given": "release v7在外部网络延迟；block v8已被仓储应用",
+      "when": "旧release v7晚于block抵达；另走无版本条件的模拟路径",
+      "then": "条件版本仓储拒绝v7且保持blocked；无版本条件路径不得并发旧未知release与新block，应保持本地禁分配及现场隔离直到旧命令终态和最终block均被核对",
+      "evidence_required": "外部按版本拒绝日志或按批串行记录；旧命令终态、当前仓储状态、本地拒绝分配与现场隔离凭据；仅本地投影不够"
+    }
+  ]
+}

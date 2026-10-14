@@ -1,0 +1,1077 @@
+{
+  "contract_version": "1.0",
+  "case_id": "V10",
+  "title": "资产信号怎样成为可关闭的维护工作",
+  "scope": "Synthetic asset maintenance. P-17/P-18 share isolation group G-2. Operational safety is determined by authorized site personnel; sample thresholds, permit policies and implementation are teaching designs, not provider guarantees.",
+  "synthetic": true,
+  "source_ids": [
+    "D365_FS_ARCH",
+    "MAXIMO",
+    "IFS"
+  ],
+  "nodes": [
+    {
+      "id": "V10:actor:planner",
+      "type": "actor",
+      "label": "计划员/异常分析员",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; site and asset/component scope verified server-side"
+    },
+    {
+      "id": "V10:actor:permit-owner",
+      "type": "actor",
+      "label": "许可负责人",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; site and asset/component scope verified server-side"
+    },
+    {
+      "id": "V10:actor:technician",
+      "type": "actor",
+      "label": "技师",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; site and asset/component scope verified server-side"
+    },
+    {
+      "id": "V10:actor:acceptor",
+      "type": "actor",
+      "label": "维护接收人",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; site and asset/component scope verified server-side"
+    },
+    {
+      "id": "V10:ui:desk",
+      "type": "ui",
+      "label": "异常与维护工作台",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; site and asset/component scope verified server-side"
+    },
+    {
+      "id": "V10:ui:mobile",
+      "type": "ui",
+      "label": "离线维护表单",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; site and asset/component scope verified server-side"
+    },
+    {
+      "id": "V10:service:signals",
+      "type": "service",
+      "label": "样本验证与异常服务",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; site and asset/component scope verified server-side"
+    },
+    {
+      "id": "V10:service:maintenance",
+      "type": "service",
+      "label": "维护命令与接受服务",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; site and asset/component scope verified server-side"
+    },
+    {
+      "id": "V10:service:permits",
+      "type": "service",
+      "label": "许可服务",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; site and asset/component scope verified server-side"
+    },
+    {
+      "id": "V10:service:schedule",
+      "type": "service",
+      "label": "人员与依赖调度",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; site and asset/component scope verified server-side"
+    },
+    {
+      "id": "V10:service:assets",
+      "type": "service",
+      "label": "资产台账服务",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; site and asset/component scope verified server-side"
+    },
+    {
+      "id": "V10:external_system:telemetry",
+      "type": "external_system",
+      "label": "合成传感平台",
+      "authority": "synthetic external telemetry authority",
+      "tenant_scope": "tenant-bound; site and asset/component scope verified server-side"
+    },
+    {
+      "id": "V10:event:sample",
+      "type": "event",
+      "label": "带事件时间的传感样本",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; site and asset/component scope verified server-side"
+    },
+    {
+      "id": "V10:event:permit-change",
+      "type": "event",
+      "label": "许可修订通知",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; site and asset/component scope verified server-side"
+    },
+    {
+      "id": "V10:store:inbox",
+      "type": "store",
+      "label": "持久接收与去重库",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; site and asset/component scope verified server-side"
+    },
+    {
+      "id": "V10:store:work-db",
+      "type": "store",
+      "label": "工单与许可共用 PostgreSQL 事务库（逻辑模块未拆库）",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; site and asset/component scope verified server-side"
+    },
+    {
+      "id": "V10:store:series",
+      "type": "store",
+      "label": "按资产分区的时序样本",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; site and asset/component scope verified server-side"
+    },
+    {
+      "id": "V10:store:attachments",
+      "type": "store",
+      "label": "附件内容存储",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; site and asset/component scope verified server-side"
+    },
+    {
+      "id": "V10:object:asset",
+      "type": "object",
+      "label": "Asset / 资产",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; site and asset/component scope verified server-side"
+    },
+    {
+      "id": "V10:object:signal",
+      "type": "object",
+      "label": "Signal case / 异常事件",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; site and asset/component scope verified server-side"
+    },
+    {
+      "id": "V10:object:permit",
+      "type": "object",
+      "label": "Permit / 工作许可",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; site and asset/component scope verified server-side"
+    },
+    {
+      "id": "V10:object:work-order",
+      "type": "object",
+      "label": "Work order / 维护工单",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; site and asset/component scope verified server-side"
+    },
+    {
+      "id": "V10:object:booking",
+      "type": "object",
+      "label": "Booking / 人员时段",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; site and asset/component scope verified server-side"
+    },
+    {
+      "id": "V10:object:confirmation",
+      "type": "object",
+      "label": "Maintenance confirmation / 维护确认",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant-bound; site and asset/component scope verified server-side"
+    }
+  ],
+  "edges": [
+    {
+      "id": "V10:edge:planner-desk",
+      "type": "operates",
+      "from": "V10:actor:planner",
+      "to": "V10:ui:desk",
+      "payload": "获授权资产、工单、版本和待办",
+      "timing": "sync",
+      "invariant": "tenant 与 site scope 均匹配",
+      "failure": "重新认证后找回同一 operation",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V10:claim:policy"
+      ]
+    },
+    {
+      "id": "V10:edge:permitter-desk",
+      "type": "operates",
+      "from": "V10:actor:permit-owner",
+      "to": "V10:ui:desk",
+      "payload": "获授权资产、工单、版本和待办",
+      "timing": "sync",
+      "invariant": "tenant 与 site scope 均匹配",
+      "failure": "重新认证后找回同一 operation",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V10:claim:policy"
+      ]
+    },
+    {
+      "id": "V10:edge:acceptor-desk",
+      "type": "operates",
+      "from": "V10:actor:acceptor",
+      "to": "V10:ui:desk",
+      "payload": "获授权资产、工单、版本和待办",
+      "timing": "sync",
+      "invariant": "tenant 与 site scope 均匹配",
+      "failure": "重新认证后找回同一 operation",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V10:claim:policy"
+      ]
+    },
+    {
+      "id": "V10:edge:technician-mobile",
+      "type": "operates",
+      "from": "V10:actor:technician",
+      "to": "V10:ui:mobile",
+      "payload": "获授权资产、工单、版本和待办",
+      "timing": "sync",
+      "invariant": "tenant 与 site scope 均匹配",
+      "failure": "重新认证后找回同一 operation",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V10:claim:policy"
+      ]
+    },
+    {
+      "id": "V10:edge:propose",
+      "type": "commands",
+      "from": "V10:ui:desk",
+      "to": "V10:service:maintenance",
+      "payload": "asset + signal + scope version + operation ID",
+      "timing": "sync",
+      "invariant": "同一异常与范围的重复请求关联原尝试",
+      "failure": "冲突显示既有工单，拆分需显式理由",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V10:claim:policy"
+      ]
+    },
+    {
+      "id": "V10:edge:submit-confirmation",
+      "type": "commands",
+      "from": "V10:ui:mobile",
+      "to": "V10:service:maintenance",
+      "payload": "device record ID + task evidence + base version + event/receive times",
+      "timing": "sync",
+      "invariant": "离线保存不表示服务器接受；附件与确认分别核对",
+      "failure": "未知响应按同 operation 查询，许可时间异常人工复核",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V10:claim:policy"
+      ]
+    },
+    {
+      "id": "V10:edge:permit-command",
+      "type": "commands",
+      "from": "V10:ui:desk",
+      "to": "V10:service:permits",
+      "payload": "许可范围、版本、有效期、授权人及暂停理由",
+      "timing": "sync",
+      "invariant": "技术完成不签发或延长许可",
+      "failure": "过期版本拒绝并显示差异",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V10:claim:policy"
+      ]
+    },
+    {
+      "id": "V10:edge:schedule-command",
+      "type": "commands",
+      "from": "V10:ui:desk",
+      "to": "V10:service:schedule",
+      "payload": "任务 DAG、技能、资源和时间窗",
+      "timing": "sync",
+      "invariant": "依赖下限不冒充有资源约束的可行排程",
+      "failure": "环、资源冲突、缺备件各自报告",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V10:claim:policy"
+      ]
+    },
+    {
+      "id": "V10:edge:approval-authority",
+      "type": "authorizes",
+      "from": "V10:actor:permit-owner",
+      "to": "V10:service:permits",
+      "payload": "许可负责人角色及现场授权范围",
+      "timing": "static",
+      "invariant": "请求人不能代替许可责任人",
+      "failure": "无权请求拒绝并记审计",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V10:claim:authority-separation"
+      ]
+    },
+    {
+      "id": "V10:edge:acceptance-authority",
+      "type": "authorizes",
+      "from": "V10:actor:acceptor",
+      "to": "V10:service:maintenance",
+      "payload": "维护接受与关闭权限",
+      "timing": "static",
+      "invariant": "提交执行证据不等于接受自己的工作",
+      "failure": "缺接收权限时只保存提交",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V10:claim:authority-separation"
+      ]
+    },
+    {
+      "id": "V10:edge:sample-emission",
+      "type": "emits",
+      "from": "V10:external_system:telemetry",
+      "to": "V10:event:sample",
+      "payload": "tenant + source ID + asset/channel + event minute + revision + value/unit",
+      "timing": "async",
+      "invariant": "未知分钟不写成零",
+      "failure": "源身份、单位或时间含糊则隔离",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V10:claim:policy"
+      ]
+    },
+    {
+      "id": "V10:edge:sample-delivery",
+      "type": "delivers",
+      "from": "V10:event:sample",
+      "to": "V10:store:inbox",
+      "payload": "源消息身份和原始 payload",
+      "timing": "async",
+      "invariant": "确认接收前持久化；重复接收不重复计量",
+      "failure": "持久化失败要求重传",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V10:claim:policy"
+      ]
+    },
+    {
+      "id": "V10:edge:sample-read",
+      "type": "reads",
+      "from": "V10:service:signals",
+      "to": "V10:store:inbox",
+      "payload": "未处理与重放样本",
+      "timing": "async",
+      "invariant": "按事件分钟与源修订选择有效版本",
+      "failure": "乱序重算窗口；超过两分钟水位保留晚到标记与复核项，不改写既有执行事实",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V10:claim:policy"
+      ]
+    },
+    {
+      "id": "V10:edge:series-read",
+      "type": "reads",
+      "from": "V10:service:signals",
+      "to": "V10:store:series",
+      "payload": "窗口内样本及缺失标记",
+      "timing": "sync",
+      "invariant": "曲线降采样不能作为诊断规则输入",
+      "failure": "缺失保留数据不足",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V10:claim:policy"
+      ]
+    },
+    {
+      "id": "V10:edge:signal-own",
+      "type": "owns",
+      "from": "V10:service:signals",
+      "to": "V10:object:signal",
+      "payload": "异常身份、规则版本、样本依据",
+      "timing": "static",
+      "invariant": "tenant/asset/channel/rule版本下同一未解除episode只追加证据；解除后可新建",
+      "failure": "相邻命中不新建工单；超过两分钟水位的样本回补历史并复核，不撤销已执行维护",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V10:claim:policy"
+      ]
+    },
+    {
+      "id": "V10:edge:asset-own",
+      "type": "owns",
+      "from": "V10:service:assets",
+      "to": "V10:object:asset",
+      "payload": "资产、安装位置与运行状态",
+      "timing": "static",
+      "invariant": "工单关闭不自动恢复运行状态",
+      "failure": "需单独投运确认",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V10:claim:policy"
+      ]
+    },
+    {
+      "id": "V10:edge:permit-own",
+      "type": "owns",
+      "from": "V10:service:permits",
+      "to": "V10:object:permit",
+      "payload": "许可范围与有效版本",
+      "timing": "static",
+      "invariant": "许可状态独立于告警与工单",
+      "failure": "暂停立刻进入权威状态，现场反应另有确认",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V10:claim:policy"
+      ]
+    },
+    {
+      "id": "V10:edge:work-own",
+      "type": "owns",
+      "from": "V10:service:maintenance",
+      "to": "V10:object:work-order",
+      "payload": "范围、执行、接受与关闭版本",
+      "timing": "static",
+      "invariant": "关闭要求完整任务集合和接受证据",
+      "failure": "缺任务、缺附件或许可争议保持 blocked/待复核",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V10:claim:policy"
+      ]
+    },
+    {
+      "id": "V10:edge:confirmation-own",
+      "type": "owns",
+      "from": "V10:service:maintenance",
+      "to": "V10:object:confirmation",
+      "payload": "维护测量、耗材、执行人和接受记录",
+      "timing": "static",
+      "invariant": "提交后修订产生新版本",
+      "failure": "驳回保留原记录并要求补充",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V10:claim:policy"
+      ]
+    },
+    {
+      "id": "V10:edge:booking-own",
+      "type": "owns",
+      "from": "V10:service:schedule",
+      "to": "V10:object:booking",
+      "payload": "人员资源与计划/实际时段",
+      "timing": "static",
+      "invariant": "多个 booking 独立确认",
+      "failure": "单次 booking 完成不关闭整个工单",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V10:claim:policy"
+      ]
+    },
+    {
+      "id": "V10:edge:work-permit",
+      "type": "depends_on",
+      "from": "V10:object:work-order",
+      "to": "V10:object:permit",
+      "payload": "开工、续工适用许可版本",
+      "timing": "sync",
+      "invariant": "许可与工单共用事务库；开工锁定并核验当前许可版本，UI缓存不授权",
+      "failure": "暂停与开工按同一事务顺序裁决；若模块拆库，必须另建许可确认协议",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V10:claim:authority-separation"
+      ]
+    },
+    {
+      "id": "V10:edge:work-signal",
+      "type": "derived_from",
+      "from": "V10:object:work-order",
+      "to": "V10:object:signal",
+      "payload": "诊断起因与范围依据",
+      "timing": "static",
+      "invariant": "关联起因不证明故障诊断正确",
+      "failure": "补充诊断保留变更理由",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V10:claim:policy"
+      ]
+    },
+    {
+      "id": "V10:edge:work-booking",
+      "type": "contains",
+      "from": "V10:object:work-order",
+      "to": "V10:object:booking",
+      "payload": "工单要求的到场记录",
+      "timing": "static",
+      "invariant": "必需任务/booking 完整可见",
+      "failure": "取消的 booking 必须有范围变更或替代",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V10:claim:policy"
+      ]
+    },
+    {
+      "id": "V10:edge:confirmation-work",
+      "type": "depends_on",
+      "from": "V10:object:confirmation",
+      "to": "V10:object:work-order",
+      "payload": "任务和范围版本",
+      "timing": "static",
+      "invariant": "旧范围的完成证据不能覆盖新增任务",
+      "failure": "变更后重新确认受影响步骤",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V10:claim:policy"
+      ]
+    },
+    {
+      "id": "V10:edge:work-confirmation",
+      "type": "depends_on",
+      "from": "V10:object:work-order",
+      "to": "V10:object:confirmation",
+      "payload": "关闭所需 accepted confirmation",
+      "timing": "sync",
+      "invariant": "关闭不是任意子任务完成",
+      "failure": "缺失或 rejected 则不可关闭",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V10:claim:policy"
+      ]
+    },
+    {
+      "id": "V10:edge:asset-store",
+      "type": "stores",
+      "from": "V10:store:work-db",
+      "to": "V10:object:asset",
+      "payload": "身份、版本、操作者和操作记录",
+      "timing": "sync",
+      "invariant": "事务保存对象变更与 outbox",
+      "failure": "崩溃后按 operation 重放核对",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V10:claim:policy"
+      ]
+    },
+    {
+      "id": "V10:edge:work-store",
+      "type": "stores",
+      "from": "V10:store:work-db",
+      "to": "V10:object:work-order",
+      "payload": "身份、版本、操作者和操作记录",
+      "timing": "sync",
+      "invariant": "事务保存对象变更与 outbox",
+      "failure": "崩溃后按 operation 重放核对",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V10:claim:policy"
+      ]
+    },
+    {
+      "id": "V10:edge:permit-store",
+      "type": "stores",
+      "from": "V10:store:work-db",
+      "to": "V10:object:permit",
+      "payload": "身份、版本、操作者和操作记录",
+      "timing": "sync",
+      "invariant": "事务保存对象变更与 outbox",
+      "failure": "崩溃后按 operation 重放核对",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V10:claim:policy"
+      ]
+    },
+    {
+      "id": "V10:edge:booking-store",
+      "type": "stores",
+      "from": "V10:store:work-db",
+      "to": "V10:object:booking",
+      "payload": "身份、版本、操作者和操作记录",
+      "timing": "sync",
+      "invariant": "事务保存对象变更与 outbox",
+      "failure": "崩溃后按 operation 重放核对",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V10:claim:policy"
+      ]
+    },
+    {
+      "id": "V10:edge:confirmation-store",
+      "type": "stores",
+      "from": "V10:store:work-db",
+      "to": "V10:object:confirmation",
+      "payload": "身份、版本、操作者和操作记录",
+      "timing": "sync",
+      "invariant": "事务保存对象变更与 outbox",
+      "failure": "崩溃后按 operation 重放核对",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V10:claim:policy"
+      ]
+    },
+    {
+      "id": "V10:edge:attachment-store",
+      "type": "stores",
+      "from": "V10:store:attachments",
+      "to": "V10:object:confirmation",
+      "payload": "确认的附件内容与摘要引用",
+      "timing": "async",
+      "invariant": "文件存在且 hash 匹配才可接受",
+      "failure": "缺附件显示提交未完整，不伪造接受",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V10:claim:policy"
+      ]
+    },
+    {
+      "id": "V10:edge:permit-event",
+      "type": "emits",
+      "from": "V10:service:permits",
+      "to": "V10:event:permit-change",
+      "payload": "permit ID + version + scope + state",
+      "timing": "async",
+      "invariant": "通知表达已持久化许可事实",
+      "failure": "投影迟到不影响命令端权威检查",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V10:claim:policy"
+      ]
+    },
+    {
+      "id": "V10:edge:permit-delivery",
+      "type": "delivers",
+      "from": "V10:event:permit-change",
+      "to": "V10:service:maintenance",
+      "payload": "需重审的活动工单",
+      "timing": "async",
+      "invariant": "旧事件不得使 suspended 回到 active",
+      "failure": "重读许可权威版本",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V10:claim:policy"
+      ]
+    },
+    {
+      "id": "V10:edge:work-view",
+      "type": "projects",
+      "from": "V10:object:work-order",
+      "to": "V10:ui:desk",
+      "payload": "状态、版本、最后核对时间与缺口",
+      "timing": "async",
+      "invariant": "投影是反馈而非授权依据",
+      "failure": "陈旧显示待核对并提供刷新",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V10:claim:policy"
+      ]
+    },
+    {
+      "id": "V10:edge:permit-view",
+      "type": "projects",
+      "from": "V10:object:permit",
+      "to": "V10:ui:mobile",
+      "payload": "状态、版本、最后核对时间与缺口",
+      "timing": "async",
+      "invariant": "投影是反馈而非授权依据",
+      "failure": "陈旧显示待核对并提供刷新",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V10:claim:policy"
+      ]
+    },
+    {
+      "id": "V10:edge:confirmation-view",
+      "type": "projects",
+      "from": "V10:object:confirmation",
+      "to": "V10:ui:mobile",
+      "payload": "状态、版本、最后核对时间与缺口",
+      "timing": "async",
+      "invariant": "投影是反馈而非授权依据",
+      "failure": "陈旧显示待核对并提供刷新",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V10:claim:policy"
+      ]
+    },
+    {
+      "id": "V10:edge:signal-view",
+      "type": "projects",
+      "from": "V10:object:signal",
+      "to": "V10:ui:desk",
+      "payload": "状态、版本、最后核对时间与缺口",
+      "timing": "async",
+      "invariant": "投影是反馈而非授权依据",
+      "failure": "陈旧显示待核对并提供刷新",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V10:claim:policy"
+      ]
+    }
+  ],
+  "lifecycles": [
+    {
+      "object_id": "V10:object:asset",
+      "states": [
+        "operating",
+        "isolated",
+        "verification"
+      ],
+      "transitions": [
+        {
+          "from": "operating",
+          "to": "isolated",
+          "trigger": "现场授权人确认隔离",
+          "guard": "资产与隔离范围正确且现场依据齐全",
+          "durable_effect": "保存隔离确认与版本",
+          "recovery": "不凭网络请求推断现场隔离"
+        },
+        {
+          "from": "isolated",
+          "to": "verification",
+          "trigger": "维护步骤完成后申请试验",
+          "guard": "必需任务完成、试验获许可",
+          "durable_effect": "保存试验阶段与工作关联",
+          "recovery": "试验失败保持隔离并补任务"
+        },
+        {
+          "from": "verification",
+          "to": "operating",
+          "trigger": "负责人接受试运行并交还",
+          "guard": "共享隔离范围所有占用已解除且确认完整",
+          "durable_effect": "保存投运事实与授权人",
+          "recovery": "未知现场结果保持待核实"
+        }
+      ]
+    },
+    {
+      "object_id": "V10:object:signal",
+      "states": [
+        "open",
+        "acknowledged",
+        "linked",
+        "resolved"
+      ],
+      "transitions": [
+        {
+          "from": "open",
+          "to": "acknowledged",
+          "trigger": "分析员认领",
+          "guard": "有资产范围权限",
+          "durable_effect": "保存认领人",
+          "recovery": "重复认领返回已有结果"
+        },
+        {
+          "from": "acknowledged",
+          "to": "linked",
+          "trigger": "工单提出",
+          "guard": "工单范围与异常相关",
+          "durable_effect": "保存 signal/work order 关联",
+          "recovery": "建单未知按操作核对"
+        },
+        {
+          "from": "linked",
+          "to": "resolved",
+          "trigger": "信号复核解除",
+          "guard": "有新的观测与分析理由",
+          "durable_effect": "保存解除依据",
+          "recovery": "工单仍独立继续，不随之关闭"
+        },
+        {
+          "from": "linked",
+          "to": "linked",
+          "trigger": "同一未解除episode后续窗口再次命中或超水位回补",
+          "guard": "相同tenant/asset/channel/rule版本；保留事件时间与源修订",
+          "durable_effect": "追加样本依据和必要的复核项，不新建工单",
+          "recovery": "超过两分钟迟到不能自动撤销许可、接受记录或已完成维护"
+        }
+      ]
+    },
+    {
+      "object_id": "V10:object:permit",
+      "states": [
+        "draft",
+        "active",
+        "suspended",
+        "expired",
+        "closed"
+      ],
+      "transitions": [
+        {
+          "from": "draft",
+          "to": "active",
+          "trigger": "负责人签发",
+          "guard": "范围版本、时间和现场条件获确认",
+          "durable_effect": "保存签发身份与有效期",
+          "recovery": "证据缺失不可推定生效"
+        },
+        {
+          "from": "active",
+          "to": "suspended",
+          "trigger": "负责人暂停",
+          "guard": "有暂停权限与理由",
+          "durable_effect": "保存新版本并发布通知",
+          "recovery": "活动工单进入待处置；现场停工另确认"
+        },
+        {
+          "from": "active",
+          "to": "expired",
+          "trigger": "到达有效期末",
+          "guard": "按服务端时间判定",
+          "durable_effect": "保存过期状态",
+          "recovery": "续工需重新签发或授权修订"
+        },
+        {
+          "from": "suspended",
+          "to": "active",
+          "trigger": "重新授权",
+          "guard": "变化后的范围与现场条件重新确认",
+          "durable_effect": "保存新许可版本",
+          "recovery": "不能用旧离线状态恢复"
+        },
+        {
+          "from": "active",
+          "to": "closed",
+          "trigger": "范围交还",
+          "guard": "所有共享占用解除且负责人确认",
+          "durable_effect": "保存交还依据",
+          "recovery": "未解除占用显示阻塞工单"
+        }
+      ]
+    },
+    {
+      "object_id": "V10:object:work-order",
+      "states": [
+        "proposed",
+        "authorized",
+        "in_progress",
+        "blocked",
+        "technically_complete",
+        "closed",
+        "cancelled"
+      ],
+      "transitions": [
+        {
+          "from": "proposed",
+          "to": "authorized",
+          "trigger": "审批工作范围",
+          "guard": "任务、资源、许可前提明确",
+          "durable_effect": "保存获批范围版本",
+          "recovery": "拒绝保留 proposed 与理由"
+        },
+        {
+          "from": "authorized",
+          "to": "in_progress",
+          "trigger": "技师申请开工",
+          "guard": "最新许可有效、角色及资产范围匹配",
+          "durable_effect": "原子保存 start operation 与当前许可版本",
+          "recovery": "响应未知查询同 operation"
+        },
+        {
+          "from": "in_progress",
+          "to": "blocked",
+          "trigger": "许可暂停或工作条件缺失",
+          "guard": "当前工作受影响",
+          "durable_effect": "保存已完成步骤与阻塞理由",
+          "recovery": "现场负责人处置，不能回滚物理行为"
+        },
+        {
+          "from": "blocked",
+          "to": "in_progress",
+          "trigger": "恢复作业",
+          "guard": "新许可/条件获确认且范围已核对",
+          "durable_effect": "保存恢复依据",
+          "recovery": "条件未满足保持 blocked"
+        },
+        {
+          "from": "in_progress",
+          "to": "technically_complete",
+          "trigger": "所有任务提交完成",
+          "guard": "必需 booking/任务齐全且证据可读",
+          "durable_effect": "保存技术完成汇总",
+          "recovery": "缺附件不进入接受"
+        },
+        {
+          "from": "technically_complete",
+          "to": "closed",
+          "trigger": "接收人关闭",
+          "guard": "accepted confirmation、完整范围及未决项已处理",
+          "durable_effect": "保存不可无痕改写的关闭证据",
+          "recovery": "重放返回原关闭；错误追加更正和跟进工单"
+        },
+        {
+          "from": "proposed",
+          "to": "cancelled",
+          "trigger": "撤销计划",
+          "guard": "尚未开工且有撤销权限",
+          "durable_effect": "保存取消理由",
+          "recovery": "已有执行先核对后采用专门终止流程"
+        }
+      ]
+    },
+    {
+      "object_id": "V10:object:booking",
+      "states": [
+        "planned",
+        "started",
+        "completed",
+        "cancelled"
+      ],
+      "transitions": [
+        {
+          "from": "planned",
+          "to": "started",
+          "trigger": "人员到场开工",
+          "guard": "工单已允许执行且人员匹配",
+          "durable_effect": "保存实际开始",
+          "recovery": "离线状态不刷新许可"
+        },
+        {
+          "from": "started",
+          "to": "completed",
+          "trigger": "技师提交任务结果",
+          "guard": "该 booking 工作证据齐全",
+          "durable_effect": "保存实际时段和完成引用",
+          "recovery": "重复上报不重复工时"
+        },
+        {
+          "from": "planned",
+          "to": "cancelled",
+          "trigger": "调度取消",
+          "guard": "尚未开始并明确替代/范围变化",
+          "durable_effect": "保存取消与替代关系",
+          "recovery": "不能掩盖必需未完成任务"
+        }
+      ]
+    },
+    {
+      "object_id": "V10:object:confirmation",
+      "states": [
+        "draft",
+        "submitted",
+        "accepted",
+        "rejected"
+      ],
+      "transitions": [
+        {
+          "from": "draft",
+          "to": "submitted",
+          "trigger": "技师同步",
+          "guard": "任务、版本、身份、附件摘要齐全",
+          "durable_effect": "保存不可无痕覆盖的提交版本",
+          "recovery": "未知查询 operation；缺文件保持待补充"
+        },
+        {
+          "from": "submitted",
+          "to": "accepted",
+          "trigger": "接收人复核通过",
+          "guard": "测量、附件、许可适用和任务集合都满足",
+          "durable_effect": "保存接受人和依据",
+          "recovery": "重试返回原接受"
+        },
+        {
+          "from": "submitted",
+          "to": "rejected",
+          "trigger": "接收人发现缺口",
+          "guard": "说明不符合项及所需补充",
+          "durable_effect": "保存拒绝理由",
+          "recovery": "新版本补充后重新提交"
+        }
+      ]
+    }
+  ],
+  "algorithm_ids": [
+    "ALG:lookup",
+    "ALG:windows",
+    "ALG:scheduling",
+    "ALG:caches"
+  ],
+  "claim_ids": [
+    "V10:claim:policy",
+    "V10:claim:field-service-objects",
+    "V10:claim:maximo-transitions",
+    "V10:claim:authority-separation",
+    "V10:claim:computation",
+    "V10:claim:ifs-assistance"
+  ],
+  "checks": [
+    {
+      "id": "V10:check:full-maintenance",
+      "kind": "happy_path",
+      "given": "P-17 minutes 09:00..09:04=[4.0,7.2,7.4,3.8,7.3] mm/s; valid P-1; B,C complete",
+      "when": "Create W-1, start with current permit, accept both task confirmations and close",
+      "then": "One S-1 and W-1; three high slots; close references accepted confirmation and permit versions; asset return separately confirmed",
+      "evidence_required": "Source-minute fixture; operation audit; booking and confirmation IDs; close record and independent asset record"
+    },
+    {
+      "id": "V10:check:repeated-confirmation",
+      "kind": "duplicate",
+      "given": "Source sample at 09:02 and mobile C-1 already stored",
+      "when": "Deliver both twice and retry material use operation",
+      "then": "One effective sample slot, one C-1 and one material use effect",
+      "evidence_required": "Inbox identities, database unique-key result, material ledger count"
+    },
+    {
+      "id": "V10:check:late-sample-permit",
+      "kind": "out_of_order",
+      "given": "09:02 arrives before 09:01; permit v3 suspended, v2 active projection delayed",
+      "when": "Deliver earlier sample and old permit event",
+      "then": "Window uses event minutes; current permit remains v3 suspended",
+      "evidence_required": "Window slot trace; source revisions; authoritative permit vs read model"
+    },
+    {
+      "id": "V10:check:start-versus-suspend",
+      "kind": "concurrency",
+      "given": "W-1 authorized; technician has permit v2; supervisor suspends it",
+      "when": "Commit start and suspension concurrently",
+      "then": "Start either observes valid v2 and later blocks, or rejects with version conflict; no start authorized by stale projection",
+      "evidence_required": "Transaction ordering, permit versions, explicit start response and affected work queue"
+    },
+    {
+      "id": "V10:check:tenant-asset-collision",
+      "kind": "tenant_isolation",
+      "given": "Tenants A and B each own P-17,W-1,C-1",
+      "when": "Query list, attachment, cache and operation using the other tenant context",
+      "then": "No cross-tenant fields or attachment content returned in hit or miss paths",
+      "evidence_required": "Authorization logs and same-ID fixtures across every read path"
+    },
+    {
+      "id": "V10:check:saved-response-lost",
+      "kind": "unknown_outcome",
+      "given": "C-1 persisted and HTTP response lost",
+      "when": "Mobile retries with same operation ID",
+      "then": "UI moves from pending verification to original C-1; no second consumption",
+      "evidence_required": "Durable operation record, lost-response fault injection, effect counts"
+    },
+    {
+      "id": "V10:check:close-crash",
+      "kind": "recovery",
+      "given": "Acceptance saved; close worker crashes before consumption marker",
+      "when": "Restart worker and replay; separately remove mandatory attachment",
+      "then": "First closes once; second stays unaccepted/unclosed with specific missing attachment",
+      "evidence_required": "Crash boundaries, audit sequence, close count, rejected negative fixture"
+    },
+    {
+      "id": "V10:check:shared-isolation",
+      "kind": "shared_resource",
+      "given": "G-2 already covers multiple work orders; W-1 completed and W-2 still in_progress, activating the existing shared-scope guard",
+      "when": "Request return to operation based on W-1",
+      "then": "Reject return and identify W-2 dependency",
+      "evidence_required": "Permit scope graph, rejection and independent asset state"
+    },
+    {
+      "id": "V10:check:dag-resource-bound",
+      "kind": "algorithm",
+      "given": "A=10 B=30 C=20 D=15 minutes; A->B,A->C,B->D,C->D",
+      "when": "Compute with two then one technician; inject A->B->A cycle",
+      "then": "Dependency bound 55; one-technician feasible serial duration 75; cycle rejected",
+      "evidence_required": "Fixed input, topological order, resource occupancy trace and rejection"
+    },
+    {
+      "id": "V10:check:continuous-episode",
+      "kind": "episode_deduplication",
+      "given": "Same tenant/asset/channel/rule has ten consecutive high minutes and one unresolved episode",
+      "when": "Evaluate all overlapping five-minute windows, then resolve episode and later trigger a fresh window",
+      "then": "One episode accumulates first run evidence; a new episode is allowed only after prior resolution",
+      "evidence_required": "Episode business key, matched-window references, explicit resolution and new episode identity"
+    },
+    {
+      "id": "V10:check:very-late-evidence",
+      "kind": "late_correction",
+      "given": "A high window caused maintenance already performed; late low revision arrives beyond two-minute watermark",
+      "when": "Recompute historical signal with source revision",
+      "then": "Record late correction and human review; preserve prior authorization and execution evidence, no automatic reversal",
+      "evidence_required": "Event and receive timestamps, watermark, revision trail and unchanged work execution records"
+    }
+  ]
+}
