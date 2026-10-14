@@ -2,6 +2,8 @@
 
 交付分支：`cloud/saas-atlas-enterprise-mechanisms-20261014`。基础提交：`ae1827f34c6df067348d2454d7e5c9331ceda25d`。唯一改动目录：`vault/distilled/saas-engineering-atlas/enterprise-mechanisms/`。
 
+已完成并经远端核对的内容提交：`1618a2ff5ed736ef455321663ed7b44a55d1fb1f`。本交接封口提交仅补充提交身份；最终分支头在交付回复中给出。
+
 ## 可直接编订的内容
 
 [README](README.md)串起四章。正文约 1.6 万汉字，依次教授组织对象与权威、七种前端语法及后端契约、三个 schema 层次与工具完成条件、实施与退出。两条原创合成工作链贯通四章，14 道改变条件的练习均有答案、失效原因与可观察检查。原语言术语保留在 [terms.md](terms.md)，没有制作机械重复的双语正文。

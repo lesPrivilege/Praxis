@@ -22,3 +22,7 @@ git diff --check
 ```
 
 第一条在本目录执行，其余在仓库根执行。仓库验证与 atlas self-test 均通过，errors 为空；atlas 的 8 个损坏输入自测被拒。最后追加并发操作观察检查后，36 项行为测试全部通过。完整命令范围与结果保存在 validation-results.json。最终远端 SHA 由交付回复提供，避免将提交自身哈希循环写入提交内容。
+
+## 远端持久化回执
+
+完整内容提交 `1618a2ff5ed736ef455321663ed7b44a55d1fb1f` 已推送，`git ls-remote --heads origin cloud/saas-atlas-enterprise-mechanisms-20261014` 返回相同 SHA。随后仅补充 handoff 与本记录的提交身份；工作树无范围外改动。
