@@ -1,0 +1,256 @@
+{
+  "schema_version": "1.0",
+  "synthetic": true,
+  "purpose": "diagram-ready semantics; no prescribed layout or motion",
+  "examples": [
+    {
+      "id": "EM-E01",
+      "title": "设备采购例外",
+      "chapter_paths": [
+        "01-organization-to-system.md",
+        "02-enterprise-frontend.md"
+      ],
+      "objects": [
+        {
+          "id": "REQ-17",
+          "kind": "requisition",
+          "version": 1
+        },
+        {
+          "id": "PO-17/L1",
+          "kind": "purchase_order_line",
+          "version": 1
+        },
+        {
+          "id": "RCV-9",
+          "kind": "receipt",
+          "version": 1
+        },
+        {
+          "id": "INS-9",
+          "kind": "inspection",
+          "version": 1
+        },
+        {
+          "id": "INV-9",
+          "kind": "supplier_invoice",
+          "versions": [
+            1,
+            2
+          ]
+        },
+        {
+          "id": "PAY-17",
+          "kind": "payment_operation"
+        }
+      ],
+      "policy": {
+        "currency": "CNY",
+        "money_unit": "minor-unit fen",
+        "price_minor": 80000,
+        "requested_qty": 12,
+        "received_qty": 10,
+        "accepted_qty": 9,
+        "pending_inspection_qty": 1,
+        "not_received_qty": 2,
+        "self_approval": false,
+        "rule_version": "PUR-3",
+        "tax_freight_fx": "excluded"
+      },
+      "steps": [
+        {
+          "id": "EM-E01-1",
+          "action": "approve_purchase",
+          "authority": "budget-owner",
+          "guard": "actor != requester and version = 1",
+          "effect": {
+            "approved_amount_minor": 960000
+          }
+        },
+        {
+          "id": "EM-E01-2",
+          "action": "record_receipt_and_inspection",
+          "authority": "warehouse and inspector",
+          "effect": {
+            "received": 10,
+            "accepted": 9,
+            "pending": 1
+          }
+        },
+        {
+          "id": "EM-E01-3",
+          "action": "match_invoice_v1",
+          "guard": "10 <= available accepted 9",
+          "outcome": "held",
+          "shortfall_qty": 1
+        },
+        {
+          "id": "EM-E01-4",
+          "action": "revise_and_match_invoice_v2",
+          "authority": "AP clerk with supplier revision evidence",
+          "effect": {
+            "allocated_qty": 9,
+            "amount_minor": 720000,
+            "remaining_accepted_qty": 0
+          }
+        },
+        {
+          "id": "EM-E01-5",
+          "action": "authorize_and_send_payment",
+          "authority": "treasury",
+          "effect": {
+            "operation": "PAY-17",
+            "local_state": "unknown",
+            "external_effect_count": 1
+          }
+        },
+        {
+          "id": "EM-E01-6",
+          "action": "reconcile_same_operation",
+          "effect": {
+            "payment_state": "settled",
+            "amount_minor": 720000,
+            "remaining_delivery_qty": 3
+          }
+        }
+      ],
+      "invariants": [
+        "allocated_qty <= accepted_qty",
+        "approved revision matches executed intent",
+        "one business obligation cannot create a second live payment intent",
+        "9+1+2=12"
+      ],
+      "failures": [
+        "self_approval",
+        "stale_approval",
+        "insufficient_accepted_quantity",
+        "duplicate_allocation",
+        "response_lost_after_effect",
+        "query_not_observed"
+      ],
+      "claim_ids": [
+        "EM-S01",
+        "EM-S02"
+      ],
+      "test_methods": [
+        "test_e01_end_to_end_both_adapters",
+        "test_two_connections_compete_for_last_unit"
+      ]
+    },
+    {
+      "id": "EM-E02",
+      "title": "服务配置变更",
+      "chapter_paths": [
+        "03-schema-tools-completion.md",
+        "04-implementation-reality.md"
+      ],
+      "objects": [
+        {
+          "id": "CHG-42",
+          "kind": "change_request",
+          "revision": 3
+        },
+        {
+          "id": "SVC-7",
+          "kind": "service_config",
+          "versions": [
+            8,
+            9
+          ]
+        },
+        {
+          "id": "APR-42-r3",
+          "kind": "approval"
+        },
+        {
+          "id": "OP-42",
+          "kind": "external_operation"
+        }
+      ],
+      "policy": {
+        "timezone": "UTC",
+        "window": [
+          "20:00",
+          "20:30"
+        ],
+        "window_end": "exclusive",
+        "initial_worker_limit": 4,
+        "desired_worker_limit": 6,
+        "acceptance_role": "service-owner",
+        "required_probes_passed": 10,
+        "probe_total": 10
+      },
+      "steps": [
+        {
+          "id": "EM-E02-1",
+          "action": "read_and_preview",
+          "effect": {
+            "change_revision": 3,
+            "config_version": 8
+          }
+        },
+        {
+          "id": "EM-E02-2",
+          "action": "save_intent",
+          "guard": "approval scope and window valid",
+          "effect": {
+            "state": "queued",
+            "operation": "OP-42"
+          }
+        },
+        {
+          "id": "EM-E02-3",
+          "action": "send_then_lose_response",
+          "effect": {
+            "local_state": "unknown",
+            "external_state": "applied",
+            "external_version": 9,
+            "external_worker_limit": 6
+          }
+        },
+        {
+          "id": "EM-E02-4",
+          "action": "query_original_operation",
+          "effect": {
+            "state": "awaiting_acceptance",
+            "config_version": 9
+          }
+        },
+        {
+          "id": "EM-E02-5",
+          "action": "record_probe_and_acceptance",
+          "authority": "service-owner",
+          "effect": {
+            "probe_passed": 10,
+            "probe_total": 10,
+            "state": "closed"
+          }
+        }
+      ],
+      "failures": [
+        "approval_stale",
+        "approval_expired",
+        "config_version_conflict",
+        "response_lost_after_effect",
+        "query_not_observed",
+        "acceptance_failed",
+        "unknown_provider_state"
+      ],
+      "invariants": [
+        "approved scope equals submitted scope",
+        "external receipt matches tenant operation target and effect",
+        "applied does not imply accepted by business",
+        "late accepted receipt cannot regress applied state"
+      ],
+      "claim_ids": [
+        "EM-S03",
+        "EM-S04"
+      ],
+      "test_methods": [
+        "test_e02_end_to_end_both_adapters",
+        "test_restart_reconciles_without_reexecution",
+        "test_twenty_obligations_keep_their_state_and_identity"
+      ]
+    }
+  ]
+}

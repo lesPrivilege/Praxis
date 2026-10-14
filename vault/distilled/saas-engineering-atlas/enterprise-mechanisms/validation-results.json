@@ -1,0 +1,101 @@
+{
+  "executed_on": "2026-10-14",
+  "python": "3.12.14",
+  "behavior_test": {
+    "command": "python3 -m unittest discover -s vault/distilled/saas-engineering-atlas/enterprise-mechanisms -p test_mechanism_lab.py -v",
+    "result": "OK",
+    "tests_run": 36,
+    "exit_code": 0,
+    "scope": "synthetic domain and SQLite behavior, fake adapter, actual HTTP transport to independent loopback reference provider"
+  },
+  "checks": [
+    {
+      "command": [
+        "python3",
+        "vault/distilled/saas-engineering-atlas/enterprise-mechanisms/validate_content.py"
+      ],
+      "cwd": "repository-root",
+      "exit_code": 0,
+      "output": {
+        "result": "pass",
+        "chapters": 4,
+        "case_links": 33,
+        "sources": 17,
+        "reviews": 17,
+        "claims": 27,
+        "source_facts": 17,
+        "inferences": 5,
+        "synthetic_claims": 5,
+        "worked_examples": 2,
+        "changed_condition_exercises": 14,
+        "scope": "vault/distilled/saas-engineering-atlas/enterprise-mechanisms/"
+      },
+      "stderr": ""
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/validate_repository.py"
+      ],
+      "cwd": "repository-root",
+      "exit_code": 0,
+      "output": {
+        "counts": {
+          "markdown": 1747,
+          "json": 412,
+          "snapshots": 1105,
+          "distilled_messages": 127,
+          "source_records": 1017,
+          "citation_mappings": 229,
+          "generated_source_cards": 620
+        },
+        "errors": [],
+        "status": "pass"
+      },
+      "stderr": ""
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/validate_saas_atlas.py",
+        "--self-test"
+      ],
+      "cwd": "repository-root",
+      "exit_code": 0,
+      "output": {
+        "status": "pass",
+        "cases": 33,
+        "packages": 6,
+        "sources": 63,
+        "structured_examples": 1,
+        "negative_self_tests": 8,
+        "errors": [],
+        "scope": "structural validation only; no provider, demo, factual, performance or end-to-end execution"
+      },
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "cwd": "repository-root",
+      "exit_code": 0,
+      "output": "",
+      "stderr": ""
+    }
+  ],
+  "unexecuted": [
+    "real provider integration",
+    "production authentication",
+    "browser or assistive technology",
+    "load or performance test",
+    "organizational go-live",
+    "legal/compliance acceptance"
+  ],
+  "notes": [
+    "read-only validation; no global registry rebuild",
+    "35 tests passed before final concurrent-observation fix; final 36 tests passed after fix"
+  ]
+}
