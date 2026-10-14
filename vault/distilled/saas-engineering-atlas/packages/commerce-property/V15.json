@@ -1,0 +1,1158 @@
+{
+  "contract_version": "1.0",
+  "case_id": "V15",
+  "title": "建造变更、计量与付款",
+  "scope": "Synthetic single-owner contract, one currency; no tax, retention, advance payment or claim interest. Versioned design, technical RFI, uncertain change event, approved scope, measured quantity, certified increment and confirmed payment are distinct. No live provider integration.",
+  "synthetic": true,
+  "source_ids": [
+    "AUTODESK",
+    "PROCORE_CHANGE",
+    "PROCORE_ORDER",
+    "P05-SRC-autodesk-rfi",
+    "P05-SRC-procore-pcco-review"
+  ],
+  "nodes": [
+    {
+      "id": "V15:actor:field",
+      "type": "actor",
+      "label": "现场人员与施工方",
+      "authority": "synthetic-design",
+      "tenant_scope": "org_id + project_id + contract participation"
+    },
+    {
+      "id": "V15:actor:designer",
+      "type": "actor",
+      "label": "技术审核人",
+      "authority": "synthetic-design",
+      "tenant_scope": "org_id + project_id + contract participation"
+    },
+    {
+      "id": "V15:actor:approver",
+      "type": "actor",
+      "label": "合同授权代表",
+      "authority": "synthetic-design",
+      "tenant_scope": "org_id + project_id + contract participation"
+    },
+    {
+      "id": "V15:actor:measurer",
+      "type": "actor",
+      "label": "独立计量审核人",
+      "authority": "synthetic-design",
+      "tenant_scope": "org_id + project_id + contract participation"
+    },
+    {
+      "id": "V15:actor:finance",
+      "type": "actor",
+      "label": "财务操作员",
+      "authority": "synthetic-design",
+      "tenant_scope": "org_id + project_id + contract participation"
+    },
+    {
+      "id": "V15:ui:project-desk",
+      "type": "ui",
+      "label": "项目、计量与付款工作台",
+      "authority": "synthetic-design",
+      "tenant_scope": "org_id + project_id + contract participation"
+    },
+    {
+      "id": "V15:service:project",
+      "type": "service",
+      "label": "项目与合同服务",
+      "authority": "synthetic-design",
+      "tenant_scope": "org_id + project_id + contract participation"
+    },
+    {
+      "id": "V15:service:measurement",
+      "type": "service",
+      "label": "计量与签证服务",
+      "authority": "synthetic-design",
+      "tenant_scope": "org_id + project_id + contract participation"
+    },
+    {
+      "id": "V15:service:payment",
+      "type": "service",
+      "label": "付款与核对服务",
+      "authority": "synthetic-design",
+      "tenant_scope": "org_id + project_id + contract participation"
+    },
+    {
+      "id": "V15:object:design-revision",
+      "type": "object",
+      "label": "Design revision",
+      "authority": "synthetic-design",
+      "tenant_scope": "org_id + project_id + contract participation"
+    },
+    {
+      "id": "V15:object:rfi",
+      "type": "object",
+      "label": "Request for Information",
+      "authority": "synthetic-design",
+      "tenant_scope": "org_id + project_id + contract participation"
+    },
+    {
+      "id": "V15:object:change-event",
+      "type": "object",
+      "label": "Change event",
+      "authority": "synthetic-design",
+      "tenant_scope": "org_id + project_id + contract participation"
+    },
+    {
+      "id": "V15:object:variation",
+      "type": "object",
+      "label": "Variation",
+      "authority": "synthetic-design",
+      "tenant_scope": "org_id + project_id + contract participation"
+    },
+    {
+      "id": "V15:object:measurement",
+      "type": "object",
+      "label": "Cumulative measurement",
+      "authority": "synthetic-design",
+      "tenant_scope": "org_id + project_id + contract participation"
+    },
+    {
+      "id": "V15:object:certificate",
+      "type": "object",
+      "label": "Payment certificate",
+      "authority": "synthetic-design",
+      "tenant_scope": "org_id + project_id + contract participation"
+    },
+    {
+      "id": "V15:object:payment-operation",
+      "type": "object",
+      "label": "Payment operation",
+      "authority": "synthetic-design",
+      "tenant_scope": "org_id + project_id + contract participation"
+    },
+    {
+      "id": "V15:store:records",
+      "type": "store",
+      "label": "合同版本、计量与操作记录库",
+      "authority": "synthetic-design",
+      "tenant_scope": "org_id + project_id + contract participation"
+    },
+    {
+      "id": "V15:store:files",
+      "type": "store",
+      "label": "图纸与照片对象存储",
+      "authority": "synthetic-design",
+      "tenant_scope": "org_id + project_id + contract participation"
+    },
+    {
+      "id": "V15:store:outbox",
+      "type": "store",
+      "label": "事务 outbox",
+      "authority": "synthetic-design",
+      "tenant_scope": "org_id + project_id + contract participation"
+    },
+    {
+      "id": "V15:store:inbox",
+      "type": "store",
+      "label": "付款结果 inbox",
+      "authority": "synthetic-design",
+      "tenant_scope": "org_id + project_id + contract participation"
+    },
+    {
+      "id": "V15:external_system:funds",
+      "type": "external_system",
+      "label": "外部资金系统（未指定厂商）",
+      "authority": "external payment outcome; no integration executed",
+      "tenant_scope": "org_id + project_id + contract participation"
+    },
+    {
+      "id": "V15:event:variation-approved",
+      "type": "event",
+      "label": "变更批准通知",
+      "authority": "synthetic-design",
+      "tenant_scope": "org_id + project_id + contract participation"
+    },
+    {
+      "id": "V15:event:payment-result",
+      "type": "event",
+      "label": "付款结果通知",
+      "authority": "external result, verified by synthetic adapter",
+      "tenant_scope": "org_id + project_id + contract participation"
+    },
+    {
+      "id": "V15:rule:certificate-guard",
+      "type": "rule",
+      "label": "批准余额与证据规则",
+      "authority": "synthetic-design",
+      "tenant_scope": "org_id + project_id + contract participation"
+    }
+  ],
+  "edges": [
+    {
+      "id": "V15:edge:field-ui",
+      "type": "operates",
+      "from": "V15:actor:field",
+      "to": "V15:ui:project-desk",
+      "payload": "身份、项目和角色限定的详情与动作",
+      "timing": "sync",
+      "invariant": "按合同参与范围展示数据",
+      "failure": "重新认证后找回持久请求，不展示无权价格",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V15:edge:designer-ui",
+      "type": "operates",
+      "from": "V15:actor:designer",
+      "to": "V15:ui:project-desk",
+      "payload": "身份、项目和角色限定的详情与动作",
+      "timing": "sync",
+      "invariant": "按合同参与范围展示数据",
+      "failure": "重新认证后找回持久请求，不展示无权价格",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V15:edge:approver-ui",
+      "type": "operates",
+      "from": "V15:actor:approver",
+      "to": "V15:ui:project-desk",
+      "payload": "身份、项目和角色限定的详情与动作",
+      "timing": "sync",
+      "invariant": "按合同参与范围展示数据",
+      "failure": "重新认证后找回持久请求，不展示无权价格",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V15:edge:measurer-ui",
+      "type": "operates",
+      "from": "V15:actor:measurer",
+      "to": "V15:ui:project-desk",
+      "payload": "身份、项目和角色限定的详情与动作",
+      "timing": "sync",
+      "invariant": "按合同参与范围展示数据",
+      "failure": "重新认证后找回持久请求，不展示无权价格",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V15:edge:finance-ui",
+      "type": "operates",
+      "from": "V15:actor:finance",
+      "to": "V15:ui:project-desk",
+      "payload": "身份、项目和角色限定的详情与动作",
+      "timing": "sync",
+      "invariant": "按合同参与范围展示数据",
+      "failure": "重新认证后找回持久请求，不展示无权价格",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V15:edge:project-command",
+      "type": "commands",
+      "from": "V15:ui:project-desk",
+      "to": "V15:service:project",
+      "payload": "design/RFI/variation ID + version + operation ID",
+      "timing": "sync",
+      "invariant": "技术回答与合同批准为独立动作",
+      "failure": "过期版本返回冲突；离线草稿不得显示已批准",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V15:edge:measurement-command",
+      "type": "commands",
+      "from": "V15:ui:project-desk",
+      "to": "V15:service:measurement",
+      "payload": "工作行、累计数量、单位、现场证据与前序版本",
+      "timing": "sync",
+      "invariant": "记录实测不等同于已签证",
+      "failure": "超额或单位不符保留草稿并拒绝签证",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V15:edge:payment-command",
+      "type": "commands",
+      "from": "V15:ui:project-desk",
+      "to": "V15:service:payment",
+      "payload": "certificate ID + amount + operation ID",
+      "timing": "sync",
+      "invariant": "可申请金额不超过已签证未支付且未预留的余额",
+      "failure": "拒绝并发超额付款，关联已有尝试",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V15:edge:owns-design",
+      "type": "owns",
+      "from": "V15:service:project",
+      "to": "V15:object:design-revision",
+      "payload": "对象身份、版本与决定",
+      "timing": "static",
+      "invariant": "引用确定版本；批准不能被 RFI 答复代替",
+      "failure": "修订新建版本，旧证据保留",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V15:edge:owns-rfi",
+      "type": "owns",
+      "from": "V15:service:project",
+      "to": "V15:object:rfi",
+      "payload": "对象身份、版本与决定",
+      "timing": "static",
+      "invariant": "引用确定版本；批准不能被 RFI 答复代替",
+      "failure": "修订新建版本，旧证据保留",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V15:edge:owns-change",
+      "type": "owns",
+      "from": "V15:service:project",
+      "to": "V15:object:change-event",
+      "payload": "对象身份、版本与决定",
+      "timing": "static",
+      "invariant": "引用确定版本；批准不能被 RFI 答复代替",
+      "failure": "修订新建版本，旧证据保留",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V15:edge:owns-variation",
+      "type": "owns",
+      "from": "V15:service:project",
+      "to": "V15:object:variation",
+      "payload": "对象身份、版本与决定",
+      "timing": "static",
+      "invariant": "引用确定版本；批准不能被 RFI 答复代替",
+      "failure": "修订新建版本，旧证据保留",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V15:edge:owns-measurement",
+      "type": "owns",
+      "from": "V15:service:measurement",
+      "to": "V15:object:measurement",
+      "payload": "实测或签证的权威记录",
+      "timing": "static",
+      "invariant": "签证基于获授权范围且可追溯",
+      "failure": "错误用冲减或更正，不重写已付证书",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V15:edge:owns-certificate",
+      "type": "owns",
+      "from": "V15:service:measurement",
+      "to": "V15:object:certificate",
+      "payload": "实测或签证的权威记录",
+      "timing": "static",
+      "invariant": "签证基于获授权范围且可追溯",
+      "failure": "错误用冲减或更正，不重写已付证书",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V15:edge:owns-operation",
+      "type": "owns",
+      "from": "V15:service:payment",
+      "to": "V15:object:payment-operation",
+      "payload": "付款请求、预留与核对状态",
+      "timing": "static",
+      "invariant": "本地不能自行宣称资金到账",
+      "failure": "未知结果先核对外部",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V15:edge:technical-authority",
+      "type": "authorizes",
+      "from": "V15:actor:designer",
+      "to": "V15:service:project",
+      "payload": "技术答复权限",
+      "timing": "static",
+      "invariant": "只允许回答或澄清，不授予合同加价权限",
+      "failure": "错误角色拒绝且留审计",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V15:edge:commercial-authority",
+      "type": "authorizes",
+      "from": "V15:actor:approver",
+      "to": "V15:service:project",
+      "payload": "合同授权与提交版本",
+      "timing": "static",
+      "invariant": "提案人不得自批；批准固定范围和金额",
+      "failure": "越权拒绝；版本变动重新审核",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V15:edge:measurement-authority",
+      "type": "authorizes",
+      "from": "V15:actor:measurer",
+      "to": "V15:service:measurement",
+      "payload": "独立审核与签证权限",
+      "timing": "static",
+      "invariant": "实测人不能自行代替审核",
+      "failure": "拒绝无权签证",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V15:edge:payment-authority",
+      "type": "authorizes",
+      "from": "V15:actor:finance",
+      "to": "V15:service:payment",
+      "payload": "付款权限",
+      "timing": "static",
+      "invariant": "资金动作仍需有效证书与余额",
+      "failure": "权限已撤销则拒绝",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V15:edge:guard",
+      "type": "authorizes",
+      "from": "V15:rule:certificate-guard",
+      "to": "V15:service:measurement",
+      "payload": "已批准工作行、单位、余额和证据",
+      "timing": "sync",
+      "invariant": "累计签证量不超批准量",
+      "failure": "标明具体工作行及拒绝原因",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V15:edge:rfi-design",
+      "type": "derived_from",
+      "from": "V15:object:rfi",
+      "to": "V15:object:design-revision",
+      "payload": "图纸版本、区域、附件摘要",
+      "timing": "static",
+      "invariant": "不能改为最新链接覆盖原问题语境",
+      "failure": "找不到版本时标记缺证，禁止伪造引用",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V15:edge:event-rfi",
+      "type": "derived_from",
+      "from": "V15:object:change-event",
+      "to": "V15:object:rfi",
+      "payload": "技术歧义与潜在影响",
+      "timing": "static",
+      "invariant": "潜在估算不是批准额",
+      "failure": "不确定项保留 TBD",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V15:edge:variation-event",
+      "type": "derived_from",
+      "from": "V15:object:variation",
+      "to": "V15:object:change-event",
+      "payload": "获批工作行与估算来路",
+      "timing": "static",
+      "invariant": "多条路径到达同一批准行只计一次",
+      "failure": "遍历去重并报告异常环",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V15:claim:computation"
+      ]
+    },
+    {
+      "id": "V15:edge:variation-rfi",
+      "type": "derived_from",
+      "from": "V15:object:variation",
+      "to": "V15:object:rfi",
+      "payload": "直接技术依据路径",
+      "timing": "static",
+      "invariant": "第二条路径不产生第二笔合同金额",
+      "failure": "按 variation ID 和工作行 ID 去重",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V15:claim:computation"
+      ]
+    },
+    {
+      "id": "V15:edge:certificate-approval",
+      "type": "depends_on",
+      "from": "V15:object:certificate",
+      "to": "V15:object:variation",
+      "payload": "已批准范围与计价快照",
+      "timing": "static",
+      "invariant": "RFI 关闭不能越过合同批准 guard",
+      "failure": "拒绝或待定范围不得签证",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V15:edge:certificate-measurement",
+      "type": "derived_from",
+      "from": "V15:object:certificate",
+      "to": "V15:object:measurement",
+      "payload": "本期累计量减上期有效累计量",
+      "timing": "static",
+      "invariant": "累计值不得被当作每期增量相加",
+      "failure": "更正须有冲减证书及原证书引用",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V15:claim:computation"
+      ]
+    },
+    {
+      "id": "V15:edge:operation-certificate",
+      "type": "depends_on",
+      "from": "V15:object:payment-operation",
+      "to": "V15:object:certificate",
+      "payload": "已签证未付金额与付款预留",
+      "timing": "static",
+      "invariant": "一次 operation 不能凭 UI 状态无限再支付",
+      "failure": "unknown 保持预留直到核对",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V15:edge:store-design",
+      "type": "stores",
+      "from": "V15:store:records",
+      "to": "V15:object:design-revision",
+      "payload": "作用域内对象与不可变历史",
+      "timing": "sync",
+      "invariant": "业务提交与相关版本检查一致",
+      "failure": "提交失败不显示成功；重放检查业务唯一键",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V15:edge:store-rfi",
+      "type": "stores",
+      "from": "V15:store:records",
+      "to": "V15:object:rfi",
+      "payload": "作用域内对象与不可变历史",
+      "timing": "sync",
+      "invariant": "业务提交与相关版本检查一致",
+      "failure": "提交失败不显示成功；重放检查业务唯一键",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V15:edge:store-change",
+      "type": "stores",
+      "from": "V15:store:records",
+      "to": "V15:object:change-event",
+      "payload": "作用域内对象与不可变历史",
+      "timing": "sync",
+      "invariant": "业务提交与相关版本检查一致",
+      "failure": "提交失败不显示成功；重放检查业务唯一键",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V15:edge:store-variation",
+      "type": "stores",
+      "from": "V15:store:records",
+      "to": "V15:object:variation",
+      "payload": "作用域内对象与不可变历史",
+      "timing": "sync",
+      "invariant": "业务提交与相关版本检查一致",
+      "failure": "提交失败不显示成功；重放检查业务唯一键",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V15:edge:store-measurement",
+      "type": "stores",
+      "from": "V15:store:records",
+      "to": "V15:object:measurement",
+      "payload": "作用域内对象与不可变历史",
+      "timing": "sync",
+      "invariant": "业务提交与相关版本检查一致",
+      "failure": "提交失败不显示成功；重放检查业务唯一键",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V15:edge:store-certificate",
+      "type": "stores",
+      "from": "V15:store:records",
+      "to": "V15:object:certificate",
+      "payload": "作用域内对象与不可变历史",
+      "timing": "sync",
+      "invariant": "业务提交与相关版本检查一致",
+      "failure": "提交失败不显示成功；重放检查业务唯一键",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V15:edge:store-operation",
+      "type": "stores",
+      "from": "V15:store:records",
+      "to": "V15:object:payment-operation",
+      "payload": "作用域内对象与不可变历史",
+      "timing": "sync",
+      "invariant": "业务提交与相关版本检查一致",
+      "failure": "提交失败不显示成功；重放检查业务唯一键",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V15:edge:store-files",
+      "type": "stores",
+      "from": "V15:store:files",
+      "to": "V15:object:design-revision",
+      "payload": "图纸二进制与摘要",
+      "timing": "async",
+      "invariant": "文件副本不是发布权威；链接必须验证访问范围",
+      "failure": "上传未完成保留草稿，不发布空引用",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V15:edge:project-read",
+      "type": "reads",
+      "from": "V15:service:project",
+      "to": "V15:store:records",
+      "payload": "按 org/project/version 读取",
+      "timing": "sync",
+      "invariant": "审批读取权威版本",
+      "failure": "缓存失效不影响 guard",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V15:edge:measure-read",
+      "type": "reads",
+      "from": "V15:service:measurement",
+      "to": "V15:store:records",
+      "payload": "批准行、已签证累计和证据",
+      "timing": "sync",
+      "invariant": "统一单位和前序版本",
+      "failure": "冲突重新读取，不能负量覆盖已付记录",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V15:edge:payment-read",
+      "type": "reads",
+      "from": "V15:service:payment",
+      "to": "V15:store:records",
+      "payload": "证书、余额、已有 operation",
+      "timing": "sync",
+      "invariant": "先保存操作身份再请求外部",
+      "failure": "重启找回已有尝试",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V15:edge:approved-event",
+      "type": "emits",
+      "from": "V15:service:project",
+      "to": "V15:event:variation-approved",
+      "payload": "批准对象 ID 和版本",
+      "timing": "async",
+      "invariant": "通知不能改变快照内容",
+      "failure": "提交与 outbox 同事务",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V15:edge:approval-outbox",
+      "type": "delivers",
+      "from": "V15:event:variation-approved",
+      "to": "V15:store:outbox",
+      "payload": "批准投影更新任务",
+      "timing": "async",
+      "invariant": "重复处理不增合同总额",
+      "failure": "投影失败可重建",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V15:edge:funds-request",
+      "type": "requests",
+      "from": "V15:service:payment",
+      "to": "V15:external_system:funds",
+      "payload": "固定 operation ID、已签证金额、收款方映射",
+      "timing": "sync",
+      "invariant": "外部未知时不新建身份重试",
+      "failure": "查询原操作或人工核对",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V15:edge:funds-reconcile",
+      "type": "reads",
+      "from": "V15:service:payment",
+      "to": "V15:external_system:funds",
+      "payload": "provider account + operation reference",
+      "timing": "async",
+      "invariant": "只有确认结果才减少资金预留",
+      "failure": "外部无查询依据时维持 unknown",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V15:edge:funds-event",
+      "type": "emits",
+      "from": "V15:external_system:funds",
+      "to": "V15:event:payment-result",
+      "payload": "外部结果及引用",
+      "timing": "async",
+      "invariant": "收到回执不等于本地已处理",
+      "failure": "验签或可信适配器验证；不假设任何指定 provider API",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V15:edge:funds-inbox",
+      "type": "delivers",
+      "from": "V15:event:payment-result",
+      "to": "V15:store:inbox",
+      "payload": "原始结果身份与内容摘要",
+      "timing": "async",
+      "invariant": "持久化后才确认接收",
+      "failure": "失败允许重投；同 ID 异内容报警",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V15:edge:consume-result",
+      "type": "reads",
+      "from": "V15:service:payment",
+      "to": "V15:store:inbox",
+      "payload": "待核对结果",
+      "timing": "async",
+      "invariant": "业务唯一约束与消费重放相容",
+      "failure": "崩溃重放不二次支付",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V15:edge:view-design",
+      "type": "projects",
+      "from": "V15:object:design-revision",
+      "to": "V15:ui:project-desk",
+      "payload": "状态、依据、版本及最近核对时间",
+      "timing": "async",
+      "invariant": "区分批准、签证、付款及未知",
+      "failure": "显示投影迟延并提供刷新/核对入口",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V15:edge:view-rfi",
+      "type": "projects",
+      "from": "V15:object:rfi",
+      "to": "V15:ui:project-desk",
+      "payload": "状态、依据、版本及最近核对时间",
+      "timing": "async",
+      "invariant": "区分批准、签证、付款及未知",
+      "failure": "显示投影迟延并提供刷新/核对入口",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V15:edge:view-variation",
+      "type": "projects",
+      "from": "V15:object:variation",
+      "to": "V15:ui:project-desk",
+      "payload": "状态、依据、版本及最近核对时间",
+      "timing": "async",
+      "invariant": "区分批准、签证、付款及未知",
+      "failure": "显示投影迟延并提供刷新/核对入口",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V15:edge:view-certificate",
+      "type": "projects",
+      "from": "V15:object:certificate",
+      "to": "V15:ui:project-desk",
+      "payload": "状态、依据、版本及最近核对时间",
+      "timing": "async",
+      "invariant": "区分批准、签证、付款及未知",
+      "failure": "显示投影迟延并提供刷新/核对入口",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V15:edge:view-operation",
+      "type": "projects",
+      "from": "V15:object:payment-operation",
+      "to": "V15:ui:project-desk",
+      "payload": "状态、依据、版本及最近核对时间",
+      "timing": "async",
+      "invariant": "区分批准、签证、付款及未知",
+      "failure": "显示投影迟延并提供刷新/核对入口",
+      "basis": "synthetic",
+      "claim_ids": []
+    }
+  ],
+  "lifecycles": [
+    {
+      "object_id": "V15:object:design-revision",
+      "states": [
+        "draft",
+        "published",
+        "superseded"
+      ],
+      "transitions": [
+        {
+          "from": "draft",
+          "to": "published",
+          "trigger": "设计负责人发布",
+          "guard": "发布权限；附件齐全；版本唯一",
+          "durable_effect": "固定内容摘要、适用范围和发布时间",
+          "recovery": "失败保留 draft；同操作重放返回原版"
+        },
+        {
+          "from": "published",
+          "to": "superseded",
+          "trigger": "发布替代版本",
+          "guard": "明确替代关系与适用时间",
+          "durable_effect": "旧版本保留、新版指针更新",
+          "recovery": "乱序通知按版本核对，不回退"
+        }
+      ]
+    },
+    {
+      "object_id": "V15:object:rfi",
+      "states": [
+        "open",
+        "answered",
+        "closed"
+      ],
+      "transitions": [
+        {
+          "from": "open",
+          "to": "answered",
+          "trigger": "技术审核人答复",
+          "guard": "针对原问题和确定设计版本",
+          "durable_effect": "保存答复及责任人，不变更价款",
+          "recovery": "补充问题另记修订"
+        },
+        {
+          "from": "answered",
+          "to": "open",
+          "trigger": "协调人要求补问",
+          "guard": "原因和原答复引用",
+          "durable_effect": "保留答复历史并开启待答事项",
+          "recovery": "通知失败从任务表补发"
+        },
+        {
+          "from": "answered",
+          "to": "closed",
+          "trigger": "协调人关闭",
+          "guard": "澄清足够且有关闭权限",
+          "durable_effect": "固定关闭理由，不生成应付款",
+          "recovery": "新技术问题新建或重开有审计"
+        }
+      ]
+    },
+    {
+      "object_id": "V15:object:change-event",
+      "states": [
+        "identified",
+        "assessing",
+        "resolved",
+        "dismissed"
+      ],
+      "transitions": [
+        {
+          "from": "identified",
+          "to": "assessing",
+          "trigger": "项目经理评估",
+          "guard": "记录来源和受影响范围",
+          "durable_effect": "保存 ROM、单位与未定项",
+          "recovery": "资料不足留 assessing"
+        },
+        {
+          "from": "assessing",
+          "to": "resolved",
+          "trigger": "记录处置",
+          "guard": "每行已有获批/拒绝/另行处理决定",
+          "durable_effect": "链接后续 variation 与残留义务",
+          "recovery": "不得因一个行获批隐藏另一个未决项"
+        },
+        {
+          "from": "assessing",
+          "to": "dismissed",
+          "trigger": "确认不构成变更",
+          "guard": "有理由与责任人",
+          "durable_effect": "保留事件及驳回依据",
+          "recovery": "新证据新建修订，不删除历史"
+        }
+      ]
+    },
+    {
+      "object_id": "V15:object:variation",
+      "states": [
+        "draft",
+        "submitted",
+        "approved",
+        "rejected"
+      ],
+      "transitions": [
+        {
+          "from": "draft",
+          "to": "submitted",
+          "trigger": "提案人提交",
+          "guard": "工作行、单价、单位和依据完整",
+          "durable_effect": "冻结待审版本",
+          "recovery": "版本冲突返回差异"
+        },
+        {
+          "from": "submitted",
+          "to": "approved",
+          "trigger": "授权代表批准",
+          "guard": "权限、非自批、提交版本一致",
+          "durable_effect": "保存范围/价格快照、批准人、outbox",
+          "recovery": "同操作返回原决定；后续更改单独批准"
+        },
+        {
+          "from": "submitted",
+          "to": "rejected",
+          "trigger": "授权代表拒绝",
+          "guard": "提交版本一致且拒绝理由完整",
+          "durable_effect": "记录 rejected 与理由",
+          "recovery": "不得删除现场已发生的事实"
+        }
+      ]
+    },
+    {
+      "object_id": "V15:object:measurement",
+      "states": [
+        "draft",
+        "submitted",
+        "certified",
+        "rejected"
+      ],
+      "transitions": [
+        {
+          "from": "draft",
+          "to": "submitted",
+          "trigger": "现场提交累计量",
+          "guard": "身份、单位、证据齐全",
+          "durable_effect": "保存测量版本及现场时间",
+          "recovery": "断网保留本地草稿不称成功"
+        },
+        {
+          "from": "submitted",
+          "to": "certified",
+          "trigger": "独立审核通过",
+          "guard": "累计量>=前序且<=批准量；版本一致",
+          "durable_effect": "保存有效累计和证书行",
+          "recovery": "写入后崩溃按业务键恢复"
+        },
+        {
+          "from": "submitted",
+          "to": "rejected",
+          "trigger": "审核拒绝",
+          "guard": "超量、缺证或单位错误已说明",
+          "durable_effect": "保存原实测与拒绝理由",
+          "recovery": "补证后新版本，不丢事实"
+        }
+      ]
+    },
+    {
+      "object_id": "V15:object:certificate",
+      "states": [
+        "draft",
+        "certified",
+        "adjusted"
+      ],
+      "transitions": [
+        {
+          "from": "draft",
+          "to": "certified",
+          "trigger": "签发本期证书",
+          "guard": "已审核实测与有效批准；差额金额正确",
+          "durable_effect": "保存本期增量和累计依据",
+          "recovery": "重复证书 ID 比对摘要"
+        },
+        {
+          "from": "certified",
+          "to": "adjusted",
+          "trigger": "后续更正",
+          "guard": "有独立冲减/补充证书及权限",
+          "durable_effect": "原证书不变，关联调整记录",
+          "recovery": "不得改写已付金额造成假平账"
+        }
+      ]
+    },
+    {
+      "object_id": "V15:object:payment-operation",
+      "states": [
+        "prepared",
+        "submitted",
+        "unknown",
+        "confirmed",
+        "failed"
+      ],
+      "transitions": [
+        {
+          "from": "prepared",
+          "to": "submitted",
+          "trigger": "财务发送付款",
+          "guard": "证书有效；可用余额足够；固定身份",
+          "durable_effect": "保存请求与预留，再调用外部",
+          "recovery": "崩溃先核对 operation"
+        },
+        {
+          "from": "submitted",
+          "to": "unknown",
+          "trigger": "网络超时或结果无法判断",
+          "guard": "已有发送尝试",
+          "durable_effect": "保持资金预留与核对任务",
+          "recovery": "不更换 ID 盲目补发"
+        },
+        {
+          "from": "submitted",
+          "to": "confirmed",
+          "trigger": "收到并核对成功结果",
+          "guard": "外部结果身份金额收款方匹配",
+          "durable_effect": "预留转已付，保存回执",
+          "recovery": "重复结果无新增效果"
+        },
+        {
+          "from": "unknown",
+          "to": "confirmed",
+          "trigger": "核对原操作成功",
+          "guard": "外部原操作确认匹配",
+          "durable_effect": "预留转已付并完成核对",
+          "recovery": "回执晚到仍引用原操作"
+        },
+        {
+          "from": "submitted",
+          "to": "failed",
+          "trigger": "明确拒绝",
+          "guard": "外部确认无付款效果",
+          "durable_effect": "释放预留，记录原因",
+          "recovery": "修正后需要明确新操作"
+        },
+        {
+          "from": "unknown",
+          "to": "failed",
+          "trigger": "确认未付款",
+          "guard": "可核验的外部失败或人工证据",
+          "durable_effect": "释放预留并保存依据",
+          "recovery": "仅超时不是失败证据"
+        }
+      ]
+    }
+  ],
+  "algorithm_ids": [
+    "ALG:graph-paths",
+    "ALG:lookup",
+    "ALG:caches"
+  ],
+  "claim_ids": [
+    "V15:claim:cad-scope",
+    "V15:claim:rfi-links",
+    "V15:claim:change-uncertainty",
+    "V15:claim:order-types",
+    "V15:claim:pcco-review",
+    "V15:claim:separate-authorities",
+    "V15:claim:computation",
+    "V15:claim:design"
+  ],
+  "checks": [
+    {
+      "id": "V15:check:happy",
+      "kind": "happy_path",
+      "given": "base 100m*50, approved variation20m*50, cert1 base60m/change8m",
+      "when": "UI submit -> certify -> request payment -> reconcile",
+      "then": "approved6000; certified3400; one confirmed payment3400; trace to RFI but no RFI payment authority",
+      "evidence_required": "UI state, submitted version, certificate lines, operation and external confirmation"
+    },
+    {
+      "id": "V15:check:duplicate",
+      "kind": "duplicate",
+      "given": "certificate C1 amount3400",
+      "when": "import same ID+hash twice, then same ID with changed hash",
+      "then": "one effect for exact duplicate; changed content explicit conflict",
+      "evidence_required": "unique identity outcome and retained conflicting payload"
+    },
+    {
+      "id": "V15:check:reordering",
+      "kind": "out_of_order",
+      "given": "rev-C is current, RFI refers to rev-B",
+      "when": "deliver rev-C then old rev-B publication notification",
+      "then": "current stays rev-C; historical RFI retains rev-B",
+      "evidence_required": "authority versions, effective time and UI version labels"
+    },
+    {
+      "id": "V15:check:race",
+      "kind": "concurrency",
+      "given": "one submitted variation version",
+      "when": "two authorized reviewers approve simultaneously",
+      "then": "one immutable approved snapshot or explicit conflict, never duplicated amount",
+      "evidence_required": "concurrent responses and committed revision"
+    },
+    {
+      "id": "V15:check:tenant",
+      "kind": "tenant_isolation",
+      "given": "two orgs use P1/RFI-1; subcontractor cannot see other bidder price",
+      "when": "read list, cache hit/miss, graph path and attachment",
+      "then": "no other-org or unauthorized intermediate-node data",
+      "evidence_required": "query scopes, graph node results and attachment authorization"
+    },
+    {
+      "id": "V15:check:timeout",
+      "kind": "unknown_outcome",
+      "given": "funds accepted operation X",
+      "when": "client times out",
+      "then": "X remains unknown/reserved until reconcile; no new payment identity",
+      "evidence_required": "attempt ledger and original external operation lookup"
+    },
+    {
+      "id": "V15:check:crash",
+      "kind": "recovery",
+      "given": "certificate committed, projection consumer not marked",
+      "when": "crash then replay",
+      "then": "one certificate amount and eventual projected state",
+      "evidence_required": "commit record, restart log and final UI projection"
+    },
+    {
+      "id": "V15:check:graph",
+      "kind": "algorithm",
+      "given": "derived_from points output→evidence; reverse adjacency from design reaches A1 value1000 through two evidence paths; base5000",
+      "when": "traverse authorized reverse adjacency for downstream impact; traverse original adjacency for provenance; sum unique approved lines",
+      "then": "6000, not7000; cycle yields diagnostic and terminates",
+      "evidence_required": "fixed adjacency fixture, visited IDs and arithmetic"
+    },
+    {
+      "id": "V15:check:cumulative",
+      "kind": "algorithm",
+      "given": "cert1 cumulative3400; cert2 cumulative5750; paid5400",
+      "when": "compute second increment and outstanding",
+      "then": "2350 increment,350 certified unpaid,250 approved uncertified",
+      "evidence_required": "fixed quantities, previous effective certificate and output"
+    },
+    {
+      "id": "V15:check:overrun",
+      "kind": "domain_failure",
+      "given": "approved variation20m",
+      "when": "submit cumulative21m or mismatched unit",
+      "then": "reject certification, retain measurement draft and reason",
+      "evidence_required": "guard rejection plus unchanged certified balance"
+    },
+    {
+      "id": "V15:check:rfi-authority",
+      "kind": "authorization",
+      "given": "RFI answered, variation rejected, 8m physically installed",
+      "when": "attempt certify/pay from RFI",
+      "then": "record physical fact as unauthorized; no signed certificate or payment",
+      "evidence_required": "persisted observation and denied command"
+    },
+    {
+      "id": "V15:check:late-price",
+      "kind": "domain_failure",
+      "given": "first8m at50 certified; next7m effective rate60",
+      "when": "apply price revision",
+      "then": "change total820, not900; old certificate unchanged",
+      "evidence_required": "rate-effective scope and immutable certificate hashes"
+    }
+  ]
+}

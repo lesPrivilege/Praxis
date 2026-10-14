@@ -1,0 +1,1081 @@
+{
+  "contract_version": "1.0",
+  "case_id": "V04",
+  "title": "产品目录、拆分履约与退货后的净结算",
+  "scope": "Synthetic single-currency retail order; tax, shipping charge, FX, chargebacks and exchanges excluded. Quantity allocation, shipment, returns, refund attempts and settlement are independent. Provider objects are references, not a live Shopify/Stripe integration.",
+  "synthetic": true,
+  "source_ids": [
+    "SHOPIFY",
+    "STRIPE_WEBHOOK",
+    "P05-SRC-shopify-returns",
+    "P05-SRC-shopify-refund"
+  ],
+  "nodes": [
+    {
+      "id": "V04:actor:customer",
+      "type": "actor",
+      "label": "顾客",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + shop/restaurant; external mapping also requires provider account; human roles checked server-side"
+    },
+    {
+      "id": "V04:actor:warehouse",
+      "type": "actor",
+      "label": "仓库操作员",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + shop/restaurant; external mapping also requires provider account; human roles checked server-side"
+    },
+    {
+      "id": "V04:actor:finance",
+      "type": "actor",
+      "label": "客服与财务审核员",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + shop/restaurant; external mapping also requires provider account; human roles checked server-side"
+    },
+    {
+      "id": "V04:ui:checkout",
+      "type": "ui",
+      "label": "商品与结账页",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + shop/restaurant; external mapping also requires provider account; human roles checked server-side"
+    },
+    {
+      "id": "V04:ui:operations",
+      "type": "ui",
+      "label": "订单、退货与退款工作台",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + shop/restaurant; external mapping also requires provider account; human roles checked server-side"
+    },
+    {
+      "id": "V04:service:orders",
+      "type": "service",
+      "label": "订单与目录服务",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + shop/restaurant; external mapping also requires provider account; human roles checked server-side"
+    },
+    {
+      "id": "V04:service:inventory",
+      "type": "service",
+      "label": "库存与履约服务",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + shop/restaurant; external mapping also requires provider account; human roles checked server-side"
+    },
+    {
+      "id": "V04:service:returns",
+      "type": "service",
+      "label": "退货验收服务",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + shop/restaurant; external mapping also requires provider account; human roles checked server-side"
+    },
+    {
+      "id": "V04:service:money",
+      "type": "service",
+      "label": "退款与对账服务",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + shop/restaurant; external mapping also requires provider account; human roles checked server-side"
+    },
+    {
+      "id": "V04:store:ledger",
+      "type": "store",
+      "label": "订单、数量及资金记录库",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + shop/restaurant; external mapping also requires provider account; human roles checked server-side"
+    },
+    {
+      "id": "V04:store:messages",
+      "type": "store",
+      "label": "Outbox 与 durable inbox",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + shop/restaurant; external mapping also requires provider account; human roles checked server-side"
+    },
+    {
+      "id": "V04:object:catalog",
+      "type": "object",
+      "label": "版本化商品目录",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + shop/restaurant; external mapping also requires provider account; human roles checked server-side"
+    },
+    {
+      "id": "V04:object:order",
+      "type": "object",
+      "label": "订单及接受快照",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + shop/restaurant; external mapping also requires provider account; human roles checked server-side"
+    },
+    {
+      "id": "V04:object:allocation",
+      "type": "object",
+      "label": "仓库数量分配",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + shop/restaurant; external mapping also requires provider account; human roles checked server-side"
+    },
+    {
+      "id": "V04:object:shipment",
+      "type": "object",
+      "label": "发货批次",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + shop/restaurant; external mapping also requires provider account; human roles checked server-side"
+    },
+    {
+      "id": "V04:object:return",
+      "type": "object",
+      "label": "退货及处置",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + shop/restaurant; external mapping also requires provider account; human roles checked server-side"
+    },
+    {
+      "id": "V04:object:refund",
+      "type": "object",
+      "label": "退款尝试",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + shop/restaurant; external mapping also requires provider account; human roles checked server-side"
+    },
+    {
+      "id": "V04:object:settlement",
+      "type": "object",
+      "label": "结算核对",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + shop/restaurant; external mapping also requires provider account; human roles checked server-side"
+    },
+    {
+      "id": "V04:external_system:warehouse",
+      "type": "external_system",
+      "label": "外部仓库与承运边界",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + shop/restaurant; external mapping also requires provider account; human roles checked server-side"
+    },
+    {
+      "id": "V04:external_system:payment",
+      "type": "external_system",
+      "label": "支付方（可选 Stripe 适配器）",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + shop/restaurant; external mapping also requires provider account; human roles checked server-side"
+    },
+    {
+      "id": "V04:event:fulfillment",
+      "type": "event",
+      "label": "交接与交付回执",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + shop/restaurant; external mapping also requires provider account; human roles checked server-side"
+    },
+    {
+      "id": "V04:event:money",
+      "type": "event",
+      "label": "支付结果通知",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + shop/restaurant; external mapping also requires provider account; human roles checked server-side"
+    }
+  ],
+  "edges": [
+    {
+      "id": "V04:edge:customer-ui",
+      "type": "operates",
+      "from": "V04:actor:customer",
+      "to": "V04:ui:checkout",
+      "payload": "获授权的商品、仓库或资金视图",
+      "timing": "sync",
+      "invariant": "租户和角色限定动作",
+      "failure": "重新认证后找回原 operation",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V04:edge:warehouse-ui",
+      "type": "operates",
+      "from": "V04:actor:warehouse",
+      "to": "V04:ui:operations",
+      "payload": "获授权的商品、仓库或资金视图",
+      "timing": "sync",
+      "invariant": "租户和角色限定动作",
+      "failure": "重新认证后找回原 operation",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V04:edge:finance-ui",
+      "type": "operates",
+      "from": "V04:actor:finance",
+      "to": "V04:ui:operations",
+      "payload": "获授权的商品、仓库或资金视图",
+      "timing": "sync",
+      "invariant": "租户和角色限定动作",
+      "failure": "重新认证后找回原 operation",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V04:edge:accept",
+      "type": "commands",
+      "from": "V04:ui:checkout",
+      "to": "V04:service:orders",
+      "payload": "catalog version + unit choices + operation ID",
+      "timing": "sync",
+      "invariant": "服务端重算价格并固定接受快照",
+      "failure": "版本变化返回差额预览",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V04:edge:allocate",
+      "type": "commands",
+      "from": "V04:ui:operations",
+      "to": "V04:service:inventory",
+      "payload": "order line + warehouse + quantity + expected version",
+      "timing": "sync",
+      "invariant": "占量与分配记录原子提交",
+      "failure": "竞争失败明确缺货",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V04:edge:inspect",
+      "type": "commands",
+      "from": "V04:ui:operations",
+      "to": "V04:service:returns",
+      "payload": "return ID + received quantity + inspection evidence",
+      "timing": "sync",
+      "invariant": "检验通过才允许可售返库",
+      "failure": "不合格品隔离而非直接加库存",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V04:edge:refund-command",
+      "type": "commands",
+      "from": "V04:ui:operations",
+      "to": "V04:service:money",
+      "payload": "refund preview version + parent payment + operation ID",
+      "timing": "sync",
+      "invariant": "授权金额不超过剩余可退额",
+      "failure": "unknown 时只核对原尝试",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V04:edge:catalog-owner",
+      "type": "owns",
+      "from": "V04:service:orders",
+      "to": "V04:object:catalog",
+      "payload": "该对象的合成权威",
+      "timing": "static",
+      "invariant": "投影不能代替权威确认",
+      "failure": "按版本和证据核对",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V04:edge:catalog-stored",
+      "type": "stores",
+      "from": "V04:store:ledger",
+      "to": "V04:object:catalog",
+      "payload": "对象身份、版本、证据与历史",
+      "timing": "sync",
+      "invariant": "包含 tenant 与外部 account 映射",
+      "failure": "恢复不能丢失数量或资金依据",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V04:edge:order-owner",
+      "type": "owns",
+      "from": "V04:service:orders",
+      "to": "V04:object:order",
+      "payload": "该对象的合成权威",
+      "timing": "static",
+      "invariant": "投影不能代替权威确认",
+      "failure": "按版本和证据核对",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V04:edge:order-stored",
+      "type": "stores",
+      "from": "V04:store:ledger",
+      "to": "V04:object:order",
+      "payload": "对象身份、版本、证据与历史",
+      "timing": "sync",
+      "invariant": "包含 tenant 与外部 account 映射",
+      "failure": "恢复不能丢失数量或资金依据",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V04:edge:allocation-owner",
+      "type": "owns",
+      "from": "V04:service:inventory",
+      "to": "V04:object:allocation",
+      "payload": "该对象的合成权威",
+      "timing": "static",
+      "invariant": "投影不能代替权威确认",
+      "failure": "按版本和证据核对",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V04:edge:allocation-stored",
+      "type": "stores",
+      "from": "V04:store:ledger",
+      "to": "V04:object:allocation",
+      "payload": "对象身份、版本、证据与历史",
+      "timing": "sync",
+      "invariant": "包含 tenant 与外部 account 映射",
+      "failure": "恢复不能丢失数量或资金依据",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V04:edge:shipment-owner",
+      "type": "owns",
+      "from": "V04:service:inventory",
+      "to": "V04:object:shipment",
+      "payload": "该对象的合成权威",
+      "timing": "static",
+      "invariant": "投影不能代替权威确认",
+      "failure": "按版本和证据核对",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V04:edge:shipment-stored",
+      "type": "stores",
+      "from": "V04:store:ledger",
+      "to": "V04:object:shipment",
+      "payload": "对象身份、版本、证据与历史",
+      "timing": "sync",
+      "invariant": "包含 tenant 与外部 account 映射",
+      "failure": "恢复不能丢失数量或资金依据",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V04:edge:return-owner",
+      "type": "owns",
+      "from": "V04:service:returns",
+      "to": "V04:object:return",
+      "payload": "该对象的合成权威",
+      "timing": "static",
+      "invariant": "投影不能代替权威确认",
+      "failure": "按版本和证据核对",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V04:edge:return-stored",
+      "type": "stores",
+      "from": "V04:store:ledger",
+      "to": "V04:object:return",
+      "payload": "对象身份、版本、证据与历史",
+      "timing": "sync",
+      "invariant": "包含 tenant 与外部 account 映射",
+      "failure": "恢复不能丢失数量或资金依据",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V04:edge:refund-owner",
+      "type": "owns",
+      "from": "V04:service:money",
+      "to": "V04:object:refund",
+      "payload": "该对象的合成权威",
+      "timing": "static",
+      "invariant": "投影不能代替权威确认",
+      "failure": "按版本和证据核对",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V04:edge:refund-stored",
+      "type": "stores",
+      "from": "V04:store:ledger",
+      "to": "V04:object:refund",
+      "payload": "对象身份、版本、证据与历史",
+      "timing": "sync",
+      "invariant": "包含 tenant 与外部 account 映射",
+      "failure": "恢复不能丢失数量或资金依据",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V04:edge:settlement-owner",
+      "type": "owns",
+      "from": "V04:service:money",
+      "to": "V04:object:settlement",
+      "payload": "该对象的合成权威",
+      "timing": "static",
+      "invariant": "投影不能代替权威确认",
+      "failure": "按版本和证据核对",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V04:edge:settlement-stored",
+      "type": "stores",
+      "from": "V04:store:ledger",
+      "to": "V04:object:settlement",
+      "payload": "对象身份、版本、证据与历史",
+      "timing": "sync",
+      "invariant": "包含 tenant 与外部 account 映射",
+      "failure": "恢复不能丢失数量或资金依据",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V04:edge:snapshot",
+      "type": "derived_from",
+      "from": "V04:object:order",
+      "to": "V04:object:catalog",
+      "payload": "接受时名称、规格、价格和规则版本",
+      "timing": "sync",
+      "invariant": "后续目录改变不重算历史退款",
+      "failure": "缺少版本拒绝接受",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V04:edge:allocation-order",
+      "type": "depends_on",
+      "from": "V04:object:allocation",
+      "to": "V04:object:order",
+      "payload": "accepted line quantity",
+      "timing": "static",
+      "invariant": "有效未交接分配量 + 累计交接量 + 交接前取消量 ≤ 原订购量；已释放分配留史但不再占量",
+      "failure": "释放只允许交接前且已核实",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V04:edge:shipment-allocation",
+      "type": "derived_from",
+      "from": "V04:object:shipment",
+      "to": "V04:object:allocation",
+      "payload": "allocated line quantities",
+      "timing": "sync",
+      "invariant": "每份交接量可回溯原分配",
+      "failure": "交接回执未知时不释放",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V04:edge:return-shipment",
+      "type": "derived_from",
+      "from": "V04:object:return",
+      "to": "V04:object:shipment",
+      "payload": "原已交付行与 unit ID",
+      "timing": "sync",
+      "invariant": "累计收退量不超过可退量",
+      "failure": "重复收件不重复返库",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V04:edge:refund-return",
+      "type": "derived_from",
+      "from": "V04:object:refund",
+      "to": "V04:object:return",
+      "payload": "已交付退货分支的批准处置与原单位实付金额；未交接取消使用订单取消依据",
+      "timing": "sync",
+      "invariant": "收件与资金成功分别确认",
+      "failure": "已退款未收件仍不增加库存",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V04:edge:settlement-refund",
+      "type": "derived_from",
+      "from": "V04:object:settlement",
+      "to": "V04:object:refund",
+      "payload": "成功交易、批次与合成手续费",
+      "timing": "batch",
+      "invariant": "unknown 不当作成功退款",
+      "failure": "跨批次差异留未结余额",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V04:edge:send-warehouse",
+      "type": "requests",
+      "from": "V04:service:inventory",
+      "to": "V04:external_system:warehouse",
+      "payload": "allocation ID + shipment operation + quantity",
+      "timing": "async",
+      "invariant": "重试沿用同一业务身份",
+      "failure": "timeout 后查询交接事实",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V04:edge:send-refund",
+      "type": "requests",
+      "from": "V04:service:money",
+      "to": "V04:external_system:payment",
+      "payload": "account + parent transaction + refund attempt + amount",
+      "timing": "async",
+      "invariant": "同一退货单位只占一次退款额度",
+      "failure": "结果未知不盲目新建退款",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V04:edge:warehouse-reconcile",
+      "type": "reads",
+      "from": "V04:service:inventory",
+      "to": "V04:external_system:warehouse",
+      "payload": "原操作映射的当前权威结果",
+      "timing": "async",
+      "invariant": "不按回执到达次序覆盖新事实",
+      "failure": "不可用时保留 unknown 和责任人",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V04:edge:payment-reconcile",
+      "type": "reads",
+      "from": "V04:service:money",
+      "to": "V04:external_system:payment",
+      "payload": "原操作映射的当前权威结果",
+      "timing": "async",
+      "invariant": "不按回执到达次序覆盖新事实",
+      "failure": "不可用时保留 unknown 和责任人",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V04:edge:fulfillment-emission",
+      "type": "emits",
+      "from": "V04:external_system:warehouse",
+      "to": "V04:event:fulfillment",
+      "payload": "外部操作身份与通知内容",
+      "timing": "async",
+      "invariant": "通知存在不等于本地效果完成",
+      "failure": "验明来源并核对当前对象",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V04:edge:fulfillment-inbox",
+      "type": "delivers",
+      "from": "V04:event:fulfillment",
+      "to": "V04:store:messages",
+      "payload": "event identity + payload + account mapping",
+      "timing": "async",
+      "invariant": "确认接收前持久化",
+      "failure": "失败允许重新投递",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V04:edge:fulfillment-consume",
+      "type": "reads",
+      "from": "V04:service:inventory",
+      "to": "V04:store:messages",
+      "payload": "待消费事件与业务去重身份",
+      "timing": "async",
+      "invariant": "消费可重放且业务效果唯一",
+      "failure": "提交后崩溃则读取已有效果",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V04:edge:money-emission",
+      "type": "emits",
+      "from": "V04:external_system:payment",
+      "to": "V04:event:money",
+      "payload": "外部操作身份与通知内容",
+      "timing": "async",
+      "invariant": "通知存在不等于本地效果完成",
+      "failure": "验明来源并核对当前对象",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V04:edge:money-inbox",
+      "type": "delivers",
+      "from": "V04:event:money",
+      "to": "V04:store:messages",
+      "payload": "event identity + payload + account mapping",
+      "timing": "async",
+      "invariant": "确认接收前持久化",
+      "failure": "失败允许重新投递",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V04:edge:money-consume",
+      "type": "reads",
+      "from": "V04:service:money",
+      "to": "V04:store:messages",
+      "payload": "待消费事件与业务去重身份",
+      "timing": "async",
+      "invariant": "消费可重放且业务效果唯一",
+      "failure": "提交后崩溃则读取已有效果",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V04:edge:order-view",
+      "type": "projects",
+      "from": "V04:object:order",
+      "to": "V04:ui:operations",
+      "payload": "独立状态、数量金额、最后核对时间",
+      "timing": "async",
+      "invariant": "付款不隐藏缺货；退款不冒充返库",
+      "failure": "陈旧投影展示待同步并读取权威状态",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V04:edge:shipment-view",
+      "type": "projects",
+      "from": "V04:object:shipment",
+      "to": "V04:ui:operations",
+      "payload": "独立状态、数量金额、最后核对时间",
+      "timing": "async",
+      "invariant": "付款不隐藏缺货；退款不冒充返库",
+      "failure": "陈旧投影展示待同步并读取权威状态",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V04:edge:return-view",
+      "type": "projects",
+      "from": "V04:object:return",
+      "to": "V04:ui:operations",
+      "payload": "独立状态、数量金额、最后核对时间",
+      "timing": "async",
+      "invariant": "付款不隐藏缺货；退款不冒充返库",
+      "failure": "陈旧投影展示待同步并读取权威状态",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V04:edge:refund-view",
+      "type": "projects",
+      "from": "V04:object:refund",
+      "to": "V04:ui:operations",
+      "payload": "独立状态、数量金额、最后核对时间",
+      "timing": "async",
+      "invariant": "付款不隐藏缺货；退款不冒充返库",
+      "failure": "陈旧投影展示待同步并读取权威状态",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V04:edge:settlement-view",
+      "type": "projects",
+      "from": "V04:object:settlement",
+      "to": "V04:ui:operations",
+      "payload": "独立状态、数量金额、最后核对时间",
+      "timing": "async",
+      "invariant": "付款不隐藏缺货；退款不冒充返库",
+      "failure": "陈旧投影展示待同步并读取权威状态",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V04:edge:refund-cancellation",
+      "type": "derived_from",
+      "from": "V04:object:refund",
+      "to": "V04:object:order",
+      "payload": "已核实未交接的取消单位、原价快照、原付款与批准记录",
+      "timing": "sync",
+      "invariant": "取消退款无需实物退货对象；同一原单位跨退款分支累计不超过剩余可退额",
+      "failure": "交接未知则不伪造取消；已有成功或未决退款先核对",
+      "basis": "synthetic",
+      "claim_ids": [
+        "V04:claim:quantity-ledger",
+        "V04:claim:case-policy"
+      ]
+    }
+  ],
+  "lifecycles": [
+    {
+      "object_id": "V04:object:order",
+      "states": [
+        "draft",
+        "accepted",
+        "resolved"
+      ],
+      "transitions": [
+        {
+          "from": "draft",
+          "to": "accepted",
+          "trigger": "顾客接受报价",
+          "guard": "目录版本、价格及身份有效",
+          "durable_effect": "保存行快照和优惠单位分配",
+          "recovery": "价格冲突返回新预览"
+        },
+        {
+          "from": "accepted",
+          "to": "resolved",
+          "trigger": "关闭审核",
+          "guard": "所有订购量已交付、已取消或有获批异常处置，且退款、退货库存处置、对账无悬项",
+          "durable_effect": "关闭证据引用",
+          "recovery": "任一 unknown 保持 accepted"
+        }
+      ]
+    },
+    {
+      "object_id": "V04:object:allocation",
+      "states": [
+        "reserved",
+        "handed_over",
+        "released"
+      ],
+      "transitions": [
+        {
+          "from": "reserved",
+          "to": "handed_over",
+          "trigger": "仓库交接确认",
+          "guard": "未交接量足够且证据唯一",
+          "durable_effect": "移动数量桶并关联 shipment",
+          "recovery": "超时查询仓库"
+        },
+        {
+          "from": "reserved",
+          "to": "released",
+          "trigger": "确认取消或到期释放",
+          "guard": "已核实尚未实物交接",
+          "durable_effect": "归还可用量且取消原占用",
+          "recovery": "与交接竞争时拒绝或核对"
+        }
+      ]
+    },
+    {
+      "object_id": "V04:object:shipment",
+      "states": [
+        "planned",
+        "packed",
+        "handed_over",
+        "delivered",
+        "exception"
+      ],
+      "transitions": [
+        {
+          "from": "planned",
+          "to": "packed",
+          "trigger": "仓库拣货完成",
+          "guard": "有有效分配",
+          "durable_effect": "保存包装数量",
+          "recovery": "短拣建立异常不虚增"
+        },
+        {
+          "from": "packed",
+          "to": "handed_over",
+          "trigger": "承运交接",
+          "guard": "数量与分配相符",
+          "durable_effect": "保存交接证据",
+          "recovery": "不确定时核对原运单"
+        },
+        {
+          "from": "handed_over",
+          "to": "delivered",
+          "trigger": "交付确认",
+          "guard": "可回查交付凭据",
+          "durable_effect": "保存交付事实",
+          "recovery": "晚到旧状态不回退"
+        },
+        {
+          "from": "handed_over",
+          "to": "exception",
+          "trigger": "丢件或拒收",
+          "guard": "异常证据和责任人",
+          "durable_effect": "保存例外义务",
+          "recovery": "补寄需独立授权与分配"
+        }
+      ]
+    },
+    {
+      "object_id": "V04:object:return",
+      "states": [
+        "requested",
+        "authorized",
+        "rejected",
+        "received",
+        "inspected",
+        "disposed"
+      ],
+      "transitions": [
+        {
+          "from": "requested",
+          "to": "authorized",
+          "trigger": "客服批准",
+          "guard": "已交付可退数量与例内政策允许",
+          "durable_effect": "保存原发货单位和批准依据",
+          "recovery": "重复申请核对剩余量"
+        },
+        {
+          "from": "requested",
+          "to": "rejected",
+          "trigger": "不满足退货条件",
+          "guard": "授权人员记录理由",
+          "durable_effect": "拒绝及申诉入口",
+          "recovery": "误判以新决定修正而非删历史"
+        },
+        {
+          "from": "authorized",
+          "to": "received",
+          "trigger": "仓库收件",
+          "guard": "原退货身份及数量核验",
+          "durable_effect": "收件记录不自动加可售库存",
+          "recovery": "重复扫描读取已有记录"
+        },
+        {
+          "from": "received",
+          "to": "inspected",
+          "trigger": "检验完成",
+          "guard": "人员记录完好与不合格数量",
+          "durable_effect": "检验与处置建议",
+          "recovery": "差异留隔离"
+        },
+        {
+          "from": "inspected",
+          "to": "disposed",
+          "trigger": "返库或报损",
+          "guard": "处置量不超过相应验收量",
+          "durable_effect": "完好返库一次、其余隔离或报损",
+          "recovery": "事务重放不得二次加库存"
+        }
+      ]
+    },
+    {
+      "object_id": "V04:object:refund",
+      "states": [
+        "prepared",
+        "pending",
+        "unknown",
+        "succeeded",
+        "failed"
+      ],
+      "transitions": [
+        {
+          "from": "prepared",
+          "to": "pending",
+          "trigger": "提交支付方",
+          "guard": "权限、原付款、剩余可退额已锁定",
+          "durable_effect": "保存请求身份和占额",
+          "recovery": "提交超时转 unknown"
+        },
+        {
+          "from": "pending",
+          "to": "unknown",
+          "trigger": "结果超时",
+          "guard": "不能证明受理或拒绝",
+          "durable_effect": "保存核对任务",
+          "recovery": "查询同一外部身份"
+        },
+        {
+          "from": "pending",
+          "to": "succeeded",
+          "trigger": "权威成功",
+          "guard": "父交易与金额币种匹配",
+          "durable_effect": "追加成功退款事实",
+          "recovery": "重复通知不重复效果"
+        },
+        {
+          "from": "pending",
+          "to": "failed",
+          "trigger": "明确拒绝",
+          "guard": "权威失败证据",
+          "durable_effect": "失败及释放未决占额",
+          "recovery": "新尝试重新授权"
+        },
+        {
+          "from": "unknown",
+          "to": "succeeded",
+          "trigger": "核对成功",
+          "guard": "原尝试身份匹配",
+          "durable_effect": "补记成功且清除未知",
+          "recovery": "不另开退款"
+        },
+        {
+          "from": "unknown",
+          "to": "failed",
+          "trigger": "核对失败",
+          "guard": "明确不存在成功副作用",
+          "durable_effect": "释放占额并记原因",
+          "recovery": "仍不可查则继续 unknown"
+        }
+      ]
+    },
+    {
+      "object_id": "V04:object:settlement",
+      "states": [
+        "open",
+        "reconciled",
+        "discrepancy"
+      ],
+      "transitions": [
+        {
+          "from": "open",
+          "to": "reconciled",
+          "trigger": "逐笔匹配批次",
+          "guard": "成功收款、退款和费用均有明细",
+          "durable_effect": "保留 8097 分合成批次桥",
+          "recovery": "跨批次拆开核对"
+        },
+        {
+          "from": "open",
+          "to": "discrepancy",
+          "trigger": "金额或身份不符",
+          "guard": "已确认来源明细",
+          "durable_effect": "差异、责任人与未结余额",
+          "recovery": "不强改交易凑平"
+        },
+        {
+          "from": "discrepancy",
+          "to": "reconciled",
+          "trigger": "补齐差异解释",
+          "guard": "批准调整且证据闭合",
+          "durable_effect": "修订核对版本",
+          "recovery": "历史版本保留"
+        }
+      ]
+    }
+  ],
+  "algorithm_ids": [
+    "ALG:lookup",
+    "ALG:optimization",
+    "ALG:top-k",
+    "ALG:caches"
+  ],
+  "claim_ids": [
+    "V04:claim:shopify-model",
+    "V04:claim:shopify-return-separation",
+    "V04:claim:shopify-refund-status",
+    "V04:claim:webhook-boundary",
+    "V04:claim:case-policy",
+    "V04:claim:quantity-ledger",
+    "V04:claim:implementation",
+    "V04:claim:allocation-example",
+    "V04:claim:settlement-example",
+    "STRIPE_WEBHOOK-C1"
+  ],
+  "checks": [
+    {
+      "id": "V04:check:normal",
+      "kind": "happy_path",
+      "given": "3 cups at 4000; 2 lids at 1000; discount 1001; north 2+2, south 1+0",
+      "when": "accept, allocate, deliver both shipments, return cup + first lid, confirm refund",
+      "then": "5 shipped; returned 2; only cup restocked; refund 4642; net batch 8097",
+      "evidence_required": "UI snapshots, order and inventory ledger, provider/stub identities, refund and settlement records",
+      "execution_status": "specified-not-executed"
+    },
+    {
+      "id": "V04:check:duplicate-refund",
+      "kind": "duplicate",
+      "given": "refund attempt R=4642 already succeeded",
+      "when": "deliver its success notification twice",
+      "then": "one refund effect and no additional restock",
+      "evidence_required": "inbox IDs, business key, unit refundable balance",
+      "execution_status": "specified-not-executed"
+    },
+    {
+      "id": "V04:check:late-pending",
+      "kind": "out_of_order",
+      "given": "shipment delivered; refund authoritatively succeeded",
+      "when": "old packed and refund pending notifications arrive",
+      "then": "current authoritative states retained after reconciliation",
+      "evidence_required": "arrival log, current source response, final UI",
+      "execution_status": "specified-not-executed"
+    },
+    {
+      "id": "V04:check:last-unit",
+      "kind": "concurrency",
+      "given": "one available cup; two independent orders each need one",
+      "when": "simultaneous conditional reservations",
+      "then": "one allocation succeeds; other receives shortage; availability never negative",
+      "evidence_required": "transaction history and rejected command",
+      "execution_status": "specified-not-executed"
+    },
+    {
+      "id": "V04:check:same-order-number",
+      "kind": "tenant_isolation",
+      "given": "two stores have same visible order number and SKU",
+      "when": "query and refund using other store ID with cache hit and miss",
+      "then": "no foreign detail or side effect; account mapping cannot be client-overridden",
+      "evidence_required": "scoped query, authorization result, cache keys, refund ledger",
+      "execution_status": "specified-not-executed"
+    },
+    {
+      "id": "V04:check:refund-timeout",
+      "kind": "unknown_outcome",
+      "given": "payment side accepted R but response lost",
+      "when": "operator retries and opens order elsewhere",
+      "then": "same R remains unknown until queried; no second refund",
+      "evidence_required": "operation record, UI feedback, external lookup and attempt count",
+      "execution_status": "specified-not-executed"
+    },
+    {
+      "id": "V04:check:crash-after-commit",
+      "kind": "recovery",
+      "given": "allocation and outbox committed; worker has not acknowledged",
+      "when": "restart and replay job",
+      "then": "one reservation and explained eventual delivery",
+      "evidence_required": "restart trace, unique key, quantity sum",
+      "execution_status": "specified-not-executed"
+    },
+    {
+      "id": "V04:check:partial-cancel",
+      "kind": "partial_fulfillment",
+      "given": "north shipped 4; south 1 unresolved",
+      "when": "cancel south without confirming no handoff",
+      "then": "cancel remains pending; shipped 4 stays visible; no stock release",
+      "evidence_required": "warehouse lookup, allocation version, UI independent statuses",
+      "execution_status": "specified-not-executed"
+    },
+    {
+      "id": "V04:check:restock-negative",
+      "kind": "negative_domain",
+      "given": "refund succeeded but item not received, or lid received damaged",
+      "when": "naive refund-success handler attempts sellable restock",
+      "then": "reject restock; only inspected acceptable quantity can return to stock",
+      "evidence_required": "inspection and stock movement references; deliberately faulty path must fail",
+      "execution_status": "specified-not-executed"
+    },
+    {
+      "id": "V04:check:rounding",
+      "kind": "algorithm",
+      "given": "discount 1001 on [4000,4000,4000,1000,1000]",
+      "when": "largest remainder with stable unit IDs; return lids separately",
+      "then": "discount [286,286,286,72,71]; lid refunds 928+929=1857 regardless order",
+      "evidence_required": "fixed fixture, integer steps, sum and permutation checks",
+      "execution_status": "specified-not-executed"
+    },
+    {
+      "id": "V04:check:refund-cap",
+      "kind": "negative_domain",
+      "given": "first lid already refunded 928",
+      "when": "another refund references same unit or all five units total above 12999",
+      "then": "duplicate unit or over-cap refund refused",
+      "evidence_required": "unit refund ledger, approval/version, refusal detail",
+      "execution_status": "specified-not-executed"
+    },
+    {
+      "id": "V04:check:fixed-shipping-cost",
+      "kind": "algorithm",
+      "given": "A has cup only cost 4; B cup+lid cost 5",
+      "when": "compare greedy per-item and feasible single-warehouse assignment",
+      "then": "greedy 9 is not optimal; B-only 5; label heuristic honestly",
+      "evidence_required": "tiny exhaustive enumeration and objective values",
+      "execution_status": "specified-not-executed"
+    },
+    {
+      "id": "V04:check:settlement-fee",
+      "kind": "reconciliation",
+      "given": "capture12999 refund4642 fee260 in same synthetic batch",
+      "when": "compare payout marked 8357 or same amount from another account",
+      "then": "raise discrepancy; expected 8097 and identity must match",
+      "evidence_required": "batch lines, account scope, adjustment explanation",
+      "execution_status": "specified-not-executed"
+    },
+    {
+      "id": "V04:check:cancellation-refund",
+      "kind": "negative_domain",
+      "given": "one unit reserved but not handed over; no return exists; original unit paid3714",
+      "when": "warehouse confirms no handoff, cancel, release reservation, request refund",
+      "then": "one cancellation-grounded refund up to3714; no fabricated physical return or second refund through return branch",
+      "evidence_required": "warehouse confirmation, order cancellation record, reservation movement, unit refund balance and UI",
+      "execution_status": "specified-not-executed"
+    }
+  ]
+}

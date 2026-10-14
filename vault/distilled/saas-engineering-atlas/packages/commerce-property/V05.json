@@ -1,0 +1,1016 @@
+{
+  "contract_version": "1.0",
+  "case_id": "V05",
+  "title": "菜单选择、厨房交接、分账与结账",
+  "scope": "Synthetic dine-in case; tax, service charges, tips, FX, offline card authorization and cross-business-day reopen excluded. Kitchen tickets, checks and tender attempts remain independent; no production Toast/Stripe integration.",
+  "synthetic": true,
+  "source_ids": [
+    "TOAST",
+    "STRIPE_WEBHOOK",
+    "P05-SRC-toast-modifiers",
+    "P05-SRC-toast-split"
+  ],
+  "nodes": [
+    {
+      "id": "V05:actor:server",
+      "type": "actor",
+      "label": "服务员",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + shop/restaurant; external mapping also requires provider account; human roles checked server-side"
+    },
+    {
+      "id": "V05:actor:cook",
+      "type": "actor",
+      "label": "厨房人员",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + shop/restaurant; external mapping also requires provider account; human roles checked server-side"
+    },
+    {
+      "id": "V05:actor:cashier",
+      "type": "actor",
+      "label": "收银员",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + shop/restaurant; external mapping also requires provider account; human roles checked server-side"
+    },
+    {
+      "id": "V05:actor:manager",
+      "type": "actor",
+      "label": "经理",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + shop/restaurant; external mapping also requires provider account; human roles checked server-side"
+    },
+    {
+      "id": "V05:ui:order",
+      "type": "ui",
+      "label": "桌台与点餐",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + shop/restaurant; external mapping also requires provider account; human roles checked server-side"
+    },
+    {
+      "id": "V05:ui:kitchen",
+      "type": "ui",
+      "label": "厨房屏",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + shop/restaurant; external mapping also requires provider account; human roles checked server-side"
+    },
+    {
+      "id": "V05:ui:payment",
+      "type": "ui",
+      "label": "分账与收款",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + shop/restaurant; external mapping also requires provider account; human roles checked server-side"
+    },
+    {
+      "id": "V05:service:orders",
+      "type": "service",
+      "label": "选择与账单服务",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + shop/restaurant; external mapping also requires provider account; human roles checked server-side"
+    },
+    {
+      "id": "V05:service:kitchen",
+      "type": "service",
+      "label": "厨房交接服务",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + shop/restaurant; external mapping also requires provider account; human roles checked server-side"
+    },
+    {
+      "id": "V05:service:money",
+      "type": "service",
+      "label": "收款与对账服务",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + shop/restaurant; external mapping also requires provider account; human roles checked server-side"
+    },
+    {
+      "id": "V05:store:ledger",
+      "type": "store",
+      "label": "餐厅业务记录库",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + shop/restaurant; external mapping also requires provider account; human roles checked server-side"
+    },
+    {
+      "id": "V05:store:messages",
+      "type": "store",
+      "label": "Outbox 与 durable inbox",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + shop/restaurant; external mapping also requires provider account; human roles checked server-side"
+    },
+    {
+      "id": "V05:object:selection",
+      "type": "object",
+      "label": "菜单选择与 modifier 快照",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + shop/restaurant; external mapping also requires provider account; human roles checked server-side"
+    },
+    {
+      "id": "V05:object:ticket",
+      "type": "object",
+      "label": "Kitchen ticket",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + shop/restaurant; external mapping also requires provider account; human roles checked server-side"
+    },
+    {
+      "id": "V05:object:check",
+      "type": "object",
+      "label": "Check 及消费责任份额",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + shop/restaurant; external mapping also requires provider account; human roles checked server-side"
+    },
+    {
+      "id": "V05:object:tender",
+      "type": "object",
+      "label": "Tender attempt",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + shop/restaurant; external mapping also requires provider account; human roles checked server-side"
+    },
+    {
+      "id": "V05:object:shift",
+      "type": "object",
+      "label": "班次核对",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + shop/restaurant; external mapping also requires provider account; human roles checked server-side"
+    },
+    {
+      "id": "V05:external_system:payment",
+      "type": "external_system",
+      "label": "支付终端与处理方（可选 Stripe 适配器）",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + shop/restaurant; external mapping also requires provider account; human roles checked server-side"
+    },
+    {
+      "id": "V05:event:kitchen",
+      "type": "event",
+      "label": "厨房状态确认",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + shop/restaurant; external mapping also requires provider account; human roles checked server-side"
+    },
+    {
+      "id": "V05:event:payment",
+      "type": "event",
+      "label": "支付处理通知",
+      "authority": "synthetic-design",
+      "tenant_scope": "tenant + shop/restaurant; external mapping also requires provider account; human roles checked server-side"
+    }
+  ],
+  "edges": [
+    {
+      "id": "V05:edge:server-ui",
+      "type": "operates",
+      "from": "V05:actor:server",
+      "to": "V05:ui:order",
+      "payload": "角色权限与所属餐厅视图",
+      "timing": "sync",
+      "invariant": "桌号不跨餐厅唯一；设备切换重绑身份",
+      "failure": "拒绝越权并找回原操作",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V05:edge:cook-ui",
+      "type": "operates",
+      "from": "V05:actor:cook",
+      "to": "V05:ui:kitchen",
+      "payload": "角色权限与所属餐厅视图",
+      "timing": "sync",
+      "invariant": "桌号不跨餐厅唯一；设备切换重绑身份",
+      "failure": "拒绝越权并找回原操作",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V05:edge:cashier-ui",
+      "type": "operates",
+      "from": "V05:actor:cashier",
+      "to": "V05:ui:payment",
+      "payload": "角色权限与所属餐厅视图",
+      "timing": "sync",
+      "invariant": "桌号不跨餐厅唯一；设备切换重绑身份",
+      "failure": "拒绝越权并找回原操作",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V05:edge:manager-ui",
+      "type": "operates",
+      "from": "V05:actor:manager",
+      "to": "V05:ui:payment",
+      "payload": "角色权限与所属餐厅视图",
+      "timing": "sync",
+      "invariant": "桌号不跨餐厅唯一；设备切换重绑身份",
+      "failure": "拒绝越权并找回原操作",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V05:edge:select",
+      "type": "commands",
+      "from": "V05:ui:order",
+      "to": "V05:service:orders",
+      "payload": "菜单版本 + selection tree + operation ID",
+      "timing": "sync",
+      "invariant": "每份有明确 modifier，价格由服务端确认",
+      "failure": "选项冲突保留草稿并定位错误",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V05:edge:fire",
+      "type": "commands",
+      "from": "V05:ui:order",
+      "to": "V05:service:kitchen",
+      "payload": "selection revision + ticket ID",
+      "timing": "sync",
+      "invariant": "固定制作依据并持久化交接请求",
+      "failure": "无厨房回执显示待接收",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V05:edge:kitchen-action",
+      "type": "commands",
+      "from": "V05:ui:kitchen",
+      "to": "V05:service:kitchen",
+      "payload": "ticket revision + start/ready/cancel response",
+      "timing": "sync",
+      "invariant": "撤菜请求不等于实物停止",
+      "failure": "too_late 保留制作与报损责任",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V05:edge:split",
+      "type": "commands",
+      "from": "V05:ui:payment",
+      "to": "V05:service:orders",
+      "payload": "old check version + responsibility shares",
+      "timing": "sync",
+      "invariant": "份额守恒且不生成新制作任务",
+      "failure": "并发版本冲突要求重预览",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V05:edge:take-payment",
+      "type": "commands",
+      "from": "V05:ui:payment",
+      "to": "V05:service:money",
+      "payload": "check version + tender amount + attempt ID",
+      "timing": "sync",
+      "invariant": "已付与未决占额合计不超过应付",
+      "failure": "unknown 时阻止新收费",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V05:edge:manager-adjustment",
+      "type": "commands",
+      "from": "V05:ui:payment",
+      "to": "V05:service:orders",
+      "payload": "reason + original selection + approval",
+      "timing": "sync",
+      "invariant": "免单不删除已制作事实",
+      "failure": "权限不符或已付需专门调整",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V05:edge:manager-permission",
+      "type": "authorizes",
+      "from": "V05:actor:manager",
+      "to": "V05:service:orders",
+      "payload": "折扣、撤菜、报损审批范围",
+      "timing": "static",
+      "invariant": "批准人和原因留证",
+      "failure": "越额或身份失效拒绝",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V05:edge:selection-owner",
+      "type": "owns",
+      "from": "V05:service:orders",
+      "to": "V05:object:selection",
+      "payload": "对象版本与责任边界",
+      "timing": "static",
+      "invariant": "服务只确认自己掌握的事实",
+      "failure": "缺外部证据保留待确认",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V05:edge:selection-stored",
+      "type": "stores",
+      "from": "V05:store:ledger",
+      "to": "V05:object:selection",
+      "payload": "tenant + restaurant + stable ID + versions + evidence",
+      "timing": "sync",
+      "invariant": "不得用桌号替代订单身份",
+      "failure": "重放读取唯一业务效果",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V05:edge:ticket-owner",
+      "type": "owns",
+      "from": "V05:service:kitchen",
+      "to": "V05:object:ticket",
+      "payload": "对象版本与责任边界",
+      "timing": "static",
+      "invariant": "服务只确认自己掌握的事实",
+      "failure": "缺外部证据保留待确认",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V05:edge:ticket-stored",
+      "type": "stores",
+      "from": "V05:store:ledger",
+      "to": "V05:object:ticket",
+      "payload": "tenant + restaurant + stable ID + versions + evidence",
+      "timing": "sync",
+      "invariant": "不得用桌号替代订单身份",
+      "failure": "重放读取唯一业务效果",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V05:edge:check-owner",
+      "type": "owns",
+      "from": "V05:service:orders",
+      "to": "V05:object:check",
+      "payload": "对象版本与责任边界",
+      "timing": "static",
+      "invariant": "服务只确认自己掌握的事实",
+      "failure": "缺外部证据保留待确认",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V05:edge:check-stored",
+      "type": "stores",
+      "from": "V05:store:ledger",
+      "to": "V05:object:check",
+      "payload": "tenant + restaurant + stable ID + versions + evidence",
+      "timing": "sync",
+      "invariant": "不得用桌号替代订单身份",
+      "failure": "重放读取唯一业务效果",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V05:edge:tender-owner",
+      "type": "owns",
+      "from": "V05:service:money",
+      "to": "V05:object:tender",
+      "payload": "对象版本与责任边界",
+      "timing": "static",
+      "invariant": "服务只确认自己掌握的事实",
+      "failure": "缺外部证据保留待确认",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V05:edge:tender-stored",
+      "type": "stores",
+      "from": "V05:store:ledger",
+      "to": "V05:object:tender",
+      "payload": "tenant + restaurant + stable ID + versions + evidence",
+      "timing": "sync",
+      "invariant": "不得用桌号替代订单身份",
+      "failure": "重放读取唯一业务效果",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V05:edge:shift-owner",
+      "type": "owns",
+      "from": "V05:service:money",
+      "to": "V05:object:shift",
+      "payload": "对象版本与责任边界",
+      "timing": "static",
+      "invariant": "服务只确认自己掌握的事实",
+      "failure": "缺外部证据保留待确认",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V05:edge:shift-stored",
+      "type": "stores",
+      "from": "V05:store:ledger",
+      "to": "V05:object:shift",
+      "payload": "tenant + restaurant + stable ID + versions + evidence",
+      "timing": "sync",
+      "invariant": "不得用桌号替代订单身份",
+      "failure": "重放读取唯一业务效果",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V05:edge:ticket-source",
+      "type": "derived_from",
+      "from": "V05:object:ticket",
+      "to": "V05:object:selection",
+      "payload": "固定 selection revision 及制作数量",
+      "timing": "sync",
+      "invariant": "拆金额不增加制作份数",
+      "failure": "重复送厨按 ticket revision 合并",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V05:edge:check-source",
+      "type": "derived_from",
+      "from": "V05:object:check",
+      "to": "V05:object:selection",
+      "payload": "价格快照、消费责任份额、折扣分配",
+      "timing": "sync",
+      "invariant": "子份额合计为原消费责任",
+      "failure": "共享项目复制须拒绝",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V05:edge:tender-check",
+      "type": "depends_on",
+      "from": "V05:object:tender",
+      "to": "V05:object:check",
+      "payload": "被接受的账单版本与剩余可收余额",
+      "timing": "sync",
+      "invariant": "未决支付占额阻止并发过收",
+      "failure": "check 变化或未知时先核对",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V05:edge:shift-source",
+      "type": "derived_from",
+      "from": "V05:object:shift",
+      "to": "V05:object:tender",
+      "payload": "现金应用额、找零、卡交易和退款明细",
+      "timing": "batch",
+      "invariant": "check closed 不等于 shift balanced",
+      "failure": "保留差异与责任人",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V05:edge:kitchen-event",
+      "type": "emits",
+      "from": "V05:service:kitchen",
+      "to": "V05:event:kitchen",
+      "payload": "ticket revision + accepted/ready/cancel result",
+      "timing": "async",
+      "invariant": "厨房事实不推断已付款",
+      "failure": "旧 revision 不覆盖新决定",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V05:edge:kitchen-inbox",
+      "type": "delivers",
+      "from": "V05:event:kitchen",
+      "to": "V05:store:messages",
+      "payload": "ticket identity + event identity + evidence",
+      "timing": "async",
+      "invariant": "接收持久化后确认",
+      "failure": "落库失败重投",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V05:edge:kitchen-consume",
+      "type": "reads",
+      "from": "V05:service:orders",
+      "to": "V05:store:messages",
+      "payload": "厨房待处理通知",
+      "timing": "async",
+      "invariant": "同一确认效果唯一",
+      "failure": "重放并查当前 ticket",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V05:edge:card-request",
+      "type": "requests",
+      "from": "V05:service:money",
+      "to": "V05:external_system:payment",
+      "payload": "原 attempt + terminal identity + amount + account",
+      "timing": "async",
+      "invariant": "一次收款沿用同一身份",
+      "failure": "响应丢失变 unknown 而非 declined",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V05:edge:card-lookup",
+      "type": "reads",
+      "from": "V05:service:money",
+      "to": "V05:external_system:payment",
+      "payload": "原交易的当前结果",
+      "timing": "async",
+      "invariant": "unknown 占额仅在明确结果后解消",
+      "failure": "不可查询交经理，不能自动改现金",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V05:edge:card-event",
+      "type": "emits",
+      "from": "V05:external_system:payment",
+      "to": "V05:event:payment",
+      "payload": "支付相关通知及原交易引用",
+      "timing": "async",
+      "invariant": "通知不证明本地结账已完成",
+      "failure": "适配器验证来源并处理重复乱序",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V05:edge:card-inbox",
+      "type": "delivers",
+      "from": "V05:event:payment",
+      "to": "V05:store:messages",
+      "payload": "signed event where supported + account + attempt",
+      "timing": "async",
+      "invariant": "持久化接收与业务处理分开",
+      "failure": "签名无效不执行付款效果",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V05:edge:card-consume",
+      "type": "reads",
+      "from": "V05:service:money",
+      "to": "V05:store:messages",
+      "payload": "待核对支付事件",
+      "timing": "async",
+      "invariant": "业务去重不只依赖消息 ID",
+      "failure": "提交后崩溃可重放",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V05:edge:selection-order-view",
+      "type": "projects",
+      "from": "V05:object:selection",
+      "to": "V05:ui:order",
+      "payload": "当前事实、pending/unknown、责任人与新鲜度",
+      "timing": "async",
+      "invariant": "未送厨草稿与厨房已接单分开",
+      "failure": "刷新读取原对象不新建尝试",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V05:edge:ticket-kitchen-view",
+      "type": "projects",
+      "from": "V05:object:ticket",
+      "to": "V05:ui:kitchen",
+      "payload": "当前事实、pending/unknown、责任人与新鲜度",
+      "timing": "async",
+      "invariant": "未送厨草稿与厨房已接单分开",
+      "failure": "刷新读取原对象不新建尝试",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V05:edge:ticket-order-view",
+      "type": "projects",
+      "from": "V05:object:ticket",
+      "to": "V05:ui:order",
+      "payload": "当前事实、pending/unknown、责任人与新鲜度",
+      "timing": "async",
+      "invariant": "未送厨草稿与厨房已接单分开",
+      "failure": "刷新读取原对象不新建尝试",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V05:edge:check-payment-view",
+      "type": "projects",
+      "from": "V05:object:check",
+      "to": "V05:ui:payment",
+      "payload": "当前事实、pending/unknown、责任人与新鲜度",
+      "timing": "async",
+      "invariant": "未送厨草稿与厨房已接单分开",
+      "failure": "刷新读取原对象不新建尝试",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V05:edge:tender-payment-view",
+      "type": "projects",
+      "from": "V05:object:tender",
+      "to": "V05:ui:payment",
+      "payload": "当前事实、pending/unknown、责任人与新鲜度",
+      "timing": "async",
+      "invariant": "未送厨草稿与厨房已接单分开",
+      "failure": "刷新读取原对象不新建尝试",
+      "basis": "synthetic",
+      "claim_ids": []
+    },
+    {
+      "id": "V05:edge:shift-payment-view",
+      "type": "projects",
+      "from": "V05:object:shift",
+      "to": "V05:ui:payment",
+      "payload": "当前事实、pending/unknown、责任人与新鲜度",
+      "timing": "async",
+      "invariant": "未送厨草稿与厨房已接单分开",
+      "failure": "刷新读取原对象不新建尝试",
+      "basis": "synthetic",
+      "claim_ids": []
+    }
+  ],
+  "lifecycles": [
+    {
+      "object_id": "V05:object:selection",
+      "states": [
+        "draft",
+        "committed",
+        "amended"
+      ],
+      "transitions": [
+        {
+          "from": "draft",
+          "to": "committed",
+          "trigger": "服务员确认",
+          "guard": "菜单版本、modifier 数量及价格合法",
+          "durable_effect": "保存选择快照",
+          "recovery": "错误定位选项，不送厨"
+        },
+        {
+          "from": "committed",
+          "to": "amended",
+          "trigger": "送厨后提出变更",
+          "guard": "保留原 revision 与授权原因",
+          "durable_effect": "新增 amendment，不删除原制作依据",
+          "recovery": "厨房响应决定是否停止原制作"
+        }
+      ]
+    },
+    {
+      "object_id": "V05:object:ticket",
+      "states": [
+        "queued",
+        "accepted",
+        "preparing",
+        "ready",
+        "served",
+        "cancel_requested",
+        "cancelled",
+        "too_late"
+      ],
+      "transitions": [
+        {
+          "from": "queued",
+          "to": "accepted",
+          "trigger": "厨房确认收到",
+          "guard": "ticket revision 唯一且内容完整",
+          "durable_effect": "接收证据",
+          "recovery": "无回执保留 queued"
+        },
+        {
+          "from": "accepted",
+          "to": "preparing",
+          "trigger": "厨房开始",
+          "guard": "当前 revision 未取消",
+          "durable_effect": "开始事实",
+          "recovery": "重发不重复制作"
+        },
+        {
+          "from": "preparing",
+          "to": "ready",
+          "trigger": "厨房完成",
+          "guard": "制作证据",
+          "durable_effect": "完成数量",
+          "recovery": "旧通知不回退"
+        },
+        {
+          "from": "ready",
+          "to": "served",
+          "trigger": "前厅确认交付",
+          "guard": "数量与选择匹配",
+          "durable_effect": "上菜记录",
+          "recovery": "差异开例外"
+        },
+        {
+          "from": "accepted",
+          "to": "cancel_requested",
+          "trigger": "前厅请求撤菜",
+          "guard": "经理权限与原因",
+          "durable_effect": "撤销请求独立保存",
+          "recovery": "未回复不假定停止"
+        },
+        {
+          "from": "preparing",
+          "to": "cancel_requested",
+          "trigger": "制作中请求撤菜",
+          "guard": "当前状态核对",
+          "durable_effect": "保存待决请求与先前制作阶段",
+          "recovery": "等待厨房明确回复"
+        },
+        {
+          "from": "cancel_requested",
+          "to": "cancelled",
+          "trigger": "厨房确认可停止",
+          "guard": "确认未继续制作及报损处置",
+          "durable_effect": "停止确认",
+          "recovery": "旧 accepted 回执不能重启"
+        },
+        {
+          "from": "cancel_requested",
+          "to": "too_late",
+          "trigger": "厨房无法停止",
+          "guard": "已制作证据和责任人",
+          "durable_effect": "免单/继续/报损决策引用",
+          "recovery": "不删除原选择"
+        },
+        {
+          "from": "too_late",
+          "to": "ready",
+          "trigger": "经理决定继续或记录成品",
+          "guard": "明确处置授权",
+          "durable_effect": "保存完成与处置",
+          "recovery": "账单调整另走授权"
+        }
+      ]
+    },
+    {
+      "object_id": "V05:object:check",
+      "states": [
+        "open",
+        "settling",
+        "paid",
+        "closed",
+        "superseded"
+      ],
+      "transitions": [
+        {
+          "from": "open",
+          "to": "superseded",
+          "trigger": "提交拆账",
+          "guard": "无已启动付款，子责任与金额守恒",
+          "durable_effect": "原账单只读并关联新 checks",
+          "recovery": "并发 version 冲突重预览"
+        },
+        {
+          "from": "open",
+          "to": "settling",
+          "trigger": "开始收款",
+          "guard": "冻结本次账单版本",
+          "durable_effect": "记录收款状态",
+          "recovery": "未决结果继续显示"
+        },
+        {
+          "from": "settling",
+          "to": "paid",
+          "trigger": "所有应付覆盖",
+          "guard": "确认付款合计=应付且无未决占额",
+          "durable_effect": "付款闭合证据",
+          "recovery": "unknown 阻止关闭"
+        },
+        {
+          "from": "paid",
+          "to": "closed",
+          "trigger": "确认关闭",
+          "guard": "制作例外已有解释且例内结账条件满足",
+          "durable_effect": "关闭证据与责任人",
+          "recovery": "班次差异单独处理"
+        }
+      ]
+    },
+    {
+      "object_id": "V05:object:tender",
+      "states": [
+        "prepared",
+        "submitted",
+        "unknown",
+        "succeeded",
+        "declined"
+      ],
+      "transitions": [
+        {
+          "from": "prepared",
+          "to": "submitted",
+          "trigger": "向终端发起",
+          "guard": "原子检查可发起余额并占额",
+          "durable_effect": "保存 attempt 和未决金额",
+          "recovery": "丢响应仍保留占额"
+        },
+        {
+          "from": "submitted",
+          "to": "unknown",
+          "trigger": "终端超时",
+          "guard": "无明确成功或拒绝",
+          "durable_effect": "unknown 与核对任务",
+          "recovery": "查原交易，不建第二笔"
+        },
+        {
+          "from": "submitted",
+          "to": "succeeded",
+          "trigger": "确认收款",
+          "guard": "金额币种账户与 attempt 匹配",
+          "durable_effect": "占额转已确认应用额",
+          "recovery": "重复通知读取已有成功"
+        },
+        {
+          "from": "submitted",
+          "to": "declined",
+          "trigger": "明确拒绝",
+          "guard": "权威无成功副作用证据",
+          "durable_effect": "释放未决占额",
+          "recovery": "新 attempt 需新操作"
+        },
+        {
+          "from": "unknown",
+          "to": "succeeded",
+          "trigger": "核对成功",
+          "guard": "原交易可确认",
+          "durable_effect": "只登记一次应用额",
+          "recovery": "不补收现金"
+        },
+        {
+          "from": "unknown",
+          "to": "declined",
+          "trigger": "核对拒绝",
+          "guard": "明确拒绝且无成功副作用",
+          "durable_effect": "释放占额",
+          "recovery": "仍不明则保持 unknown"
+        }
+      ]
+    },
+    {
+      "object_id": "V05:object:shift",
+      "states": [
+        "open",
+        "balanced",
+        "exception"
+      ],
+      "transitions": [
+        {
+          "from": "open",
+          "to": "balanced",
+          "trigger": "班次核对",
+          "guard": "现金与卡交易、退款明细均匹配",
+          "durable_effect": "对账版本",
+          "recovery": "check closed 本身不够"
+        },
+        {
+          "from": "open",
+          "to": "exception",
+          "trigger": "发现不符或未决",
+          "guard": "有差异及责任人",
+          "durable_effect": "保留差异清单",
+          "recovery": "逐交易核查"
+        },
+        {
+          "from": "exception",
+          "to": "balanced",
+          "trigger": "差异已解决",
+          "guard": "有批准的解释与证据",
+          "durable_effect": "追加修正版本",
+          "recovery": "不覆盖原差异"
+        }
+      ]
+    }
+  ],
+  "algorithm_ids": [
+    "ALG:lookup",
+    "ALG:graph-paths",
+    "ALG:top-k",
+    "ALG:caches"
+  ],
+  "claim_ids": [
+    "V05:claim:toast-statuses",
+    "V05:claim:toast-modifiers",
+    "V05:claim:toast-split-modes",
+    "V05:claim:webhook-boundary",
+    "V05:claim:case-policy",
+    "V05:claim:kitchen-handoff",
+    "V05:claim:checks-tenders",
+    "V05:claim:split-example",
+    "V05:claim:payment-budget",
+    "V05:claim:implementation",
+    "STRIPE_WEBHOOK-C1"
+  ],
+  "checks": [
+    {
+      "id": "V05:check:normal",
+      "kind": "happy_path",
+      "given": "mains3200/2800 + shared1900; discount501",
+      "when": "send once, prepare, serve, split responsibility equally for side, pay each check",
+      "then": "checks3887/3512; total7399; one shared-side kitchen task; close after confirmations",
+      "evidence_required": "menu snapshot, tickets, check shares, payment evidence, UI states",
+      "execution_status": "specified-not-executed"
+    },
+    {
+      "id": "V05:check:duplicate-ticket",
+      "kind": "duplicate",
+      "given": "ticket T revision1 accepted once",
+      "when": "worker resends same outbox after restart",
+      "then": "one KDS task; paper reprint marked duplicate and requires human confirmation",
+      "evidence_required": "ticket uniqueness, KDS count or print confirmation record",
+      "execution_status": "specified-not-executed"
+    },
+    {
+      "id": "V05:check:late-accepted",
+      "kind": "out_of_order",
+      "given": "ticket cancellation confirmed; payment succeeded",
+      "when": "deliver old accepted or pending notifications",
+      "then": "cancelled/current payment facts retained; no restart or reopening based on stale event",
+      "evidence_required": "event order, current object read, UI state",
+      "execution_status": "specified-not-executed"
+    },
+    {
+      "id": "V05:check:concurrent-tenders",
+      "kind": "concurrency",
+      "given": "check7399, cash3000 confirmed, two cashiers attempt4399",
+      "when": "both reserve remaining budget",
+      "then": "only one pending attempt; other explicit conflict; no overcollection",
+      "evidence_required": "transaction and balance reservation logs",
+      "execution_status": "specified-not-executed"
+    },
+    {
+      "id": "V05:check:same-table",
+      "kind": "tenant_isolation",
+      "given": "two restaurants have table12 and check number100",
+      "when": "read/menu cache/command with another restaurant reference",
+      "then": "no data disclosure or foreign kitchen/payment side effect",
+      "evidence_required": "scope mapping, cache hit/miss responses, ticket and payment records",
+      "execution_status": "specified-not-executed"
+    },
+    {
+      "id": "V05:check:card-timeout",
+      "kind": "unknown_outcome",
+      "given": "card attempt4399 accepted externally but response lost; cash3000 applied",
+      "when": "cashier attempts another4399 then queries original",
+      "then": "new tender blocked; unknown4399 visible; confirmation closes7399 once",
+      "evidence_required": "attempt IDs, balance equation, terminal lookup, visible feedback",
+      "execution_status": "specified-not-executed"
+    },
+    {
+      "id": "V05:check:outbox-crash",
+      "kind": "recovery",
+      "given": "selection, ticket and outbox committed before worker crashes",
+      "when": "restart worker and reopen UI",
+      "then": "same selection revision and one ticket; UI finds original operation",
+      "evidence_required": "database rows, replay trace, KDS receipt",
+      "execution_status": "specified-not-executed"
+    },
+    {
+      "id": "V05:check:modifier-mismatch",
+      "kind": "negative_domain",
+      "given": "selection quantity3 with no-sauce modifier quantity1",
+      "when": "validate before committing menu selection",
+      "then": "reject mismatch; corrected selections1 and2 produce total3 portions",
+      "evidence_required": "validation message, saved selections, kitchen configurations",
+      "execution_status": "specified-not-executed"
+    },
+    {
+      "id": "V05:check:split-discount",
+      "kind": "algorithm",
+      "given": "weights4150/3750, total discount501",
+      "when": "allocate remainder and split already-sent check",
+      "then": "discount263/238; dues3887/3512; no second shared-side ticket",
+      "evidence_required": "integer arithmetic, shares sum, original ticket IDs",
+      "execution_status": "specified-not-executed"
+    },
+    {
+      "id": "V05:check:late-cancel",
+      "kind": "negative_domain",
+      "given": "kitchen already preparing",
+      "when": "manager requests cancel and cook reports too_late",
+      "then": "original production preserved; approved comp/serve/waste separately recorded",
+      "evidence_required": "ticket stage, manager reason, amendment and money records",
+      "execution_status": "specified-not-executed"
+    },
+    {
+      "id": "V05:check:release-only-on-decline",
+      "kind": "negative_domain",
+      "given": "unknown4399 with cash3000 applied",
+      "when": "receive explicit decline, or merely another timeout",
+      "then": "decline releases4399; timeout keeps reserved4399; no false paid",
+      "evidence_required": "authoritative result, reservation ledger, collectable UI",
+      "execution_status": "specified-not-executed"
+    },
+    {
+      "id": "V05:check:cash-change",
+      "kind": "reconciliation",
+      "given": "cash handed5000, change2000, card4399",
+      "when": "apply cash and close shift",
+      "then": "cash application3000; confirmed total7399; drawer movement3000",
+      "evidence_required": "cash entries, change, card transaction, shift comparison",
+      "execution_status": "specified-not-executed"
+    },
+    {
+      "id": "V05:check:split-after-payment",
+      "kind": "negative_domain",
+      "given": "payment attempt already submitted on parent check",
+      "when": "try split check without payment allocation model",
+      "then": "reject with unresolved payment explanation; no orphaned tender",
+      "evidence_required": "version guard, original check/tender links and UI",
+      "execution_status": "specified-not-executed"
+    }
+  ]
+}

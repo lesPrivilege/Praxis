@@ -244,9 +244,14 @@ def lodging_calendar():
     utc_start = datetime(2026, 10, 24, tzinfo=zone).astimezone(timezone.utc)
     utc_end = datetime(2026, 10, 27, tzinfo=zone).astimezone(timezone.utc)
     elapsed = (utc_end - utc_start).total_seconds() / 3600
+    planned_start = datetime(2026, 10, 24, 15, tzinfo=zone).astimezone(timezone.utc)
+    planned_end = datetime(2026, 10, 27, 11, tzinfo=zone).astimezone(timezone.utc)
+    planned_hours = (planned_end - planned_start).total_seconds() / 3600
     require((end - start).days == 3 and elapsed == 73, "DST fixture")
+    require(planned_hours == 69, "actual arrival and departure clock times")
     require(sum([12000, 15000, 13000]) == 40000, "night rate snapshot")
-    return {"calendar_nights": 3, "elapsed_hours": elapsed, "counterexample_elapsed_divided_by_24": elapsed / 24, "room_charge": 40000}
+    return {"calendar_nights": 3, "midnight_elapsed_hours": elapsed, "planned_elapsed_hours": planned_hours,
+            "counterexample_elapsed_divided_by_24": elapsed / 24, "room_charge": 40000}
 
 
 def lodging_continuity():
@@ -289,6 +294,8 @@ def construction_revision():
 
 
 def construction_dependencies():
+    # Impact traversal uses reverse adjacency of the JSON derived_from edges.
+    # Stored edge direction remains derived object -> evidence/source.
     graph = {"RFI-1": ["CE-1", "CE-2"], "CE-1": ["VAR-1"], "CE-2": ["VAR-1"], "VAR-1": ["CERT-1"]}
     reached = closure(graph, "RFI-1")
     require(len(reached) == 5, "shared variation must visit once")
@@ -337,7 +344,13 @@ def property_responsibility():
     actual_deduction = sum(x["cost"] for x in evidence if x["responsibility"] == "tenant-approved")
     require(actual_deduction == 12000 and sum(x["cost"] for x in evidence) == 65000, "repair cost is not liability")
     require("unit-1" == "unit-1" and ("lease-1", "unit-1") != ("lease-2", "unit-1"), "tenancy scope")
-    return {"repair_total": 65000, "approved_deduction": actual_deduction, "counterexample_blanket_repair_deduction_overstates": 53000}
+    signed = [{"interval": (10, 20), "occupancy": "planned"}]
+    proposed = (15, 25)
+    conflict = any(overlaps(x["interval"], proposed) for x in signed)
+    unsafe_active_only = any(overlaps(x["interval"], proposed) for x in signed if x["occupancy"] == "active")
+    require(conflict and not unsafe_active_only, "signed future rights must reserve space before move-in")
+    return {"repair_total": 65000, "approved_deduction": actual_deduction, "counterexample_blanket_repair_deduction_overstates": 53000,
+            "overlapping_signed_future_lease": "rejected", "counterexample_active_only_filter_misses_conflict": not unsafe_active_only}
 
 
 def sqlite_optimistic_contention():
