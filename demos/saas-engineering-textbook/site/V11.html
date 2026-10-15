@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>V11 · 电表读数、计费数量、账单与核销 · SaaS 工程全景</title>
-<link rel="stylesheet" href="book.css?v=mv9186ug">
+<link rel="stylesheet" href="book.css?v=mv95jeod">
 </head>
 <body>
 <a class="skip" href="#main">跳到正文</a>
@@ -20,11 +20,12 @@
 <header class="hero">
 <p class="kicker"><a href="group-industry-networks.html">生产、资产、公用与供应网络</a><span class="dot">·</span>V11</p>
 <h1>电表读数、计费数量、账单与核销</h1>
-<p class="lede">电表上报一个数字，用户最终收到一张账单，中间至少有三种不同判断：数字是否代表正确的计量区间，哪些数量适用于本次计费，以及多少钱已经结清。把它们合成一次 <code>SUM(reading) × price</code>，缺失读数、设备更换、费率变化和迟到更正都会变成无法解释的金额差异。计费系统要让每一笔应收与结算都能倒查到数量、质量、期间和规则版本；只给一个看似精确的总额，出了差异便无从解释。</p>
+<p class="lede">电表上报一个数字，用户最终收到一张账单，中间至少有三种不同判断：数字是否代表正确的计量区间，哪些数量适用于本次计费，以及多少钱已经结清。把它们合成一次 <code>SUM(reading) × price</code>，缺失读数、设备更换、费率变化和迟到更正都会变成无法解释的金额差异。计费系统要让每一笔应收与结算都能倒查到数量、质量、期间和规则版本；只给一个看似精确的总额，出了差异便无从解释。原始计量经 <abbr title="validation, estimation and editing：校验、估算与编辑">VEE</abbr> 形成带质量码的测量版本，再按有效安装关系和费率生效边界分窗，得到计费数量；账单按计费数量版本计价，收款按银行交易身份分配核销；迟到的实际值生成新的测量版本。改变判断的是原账单有没有发布：草稿可以废弃重算，已发布的账单只能追加调整，原核销保持不变。</p>
+
 <div class="cast" aria-label="本例的角色、界面与系统">
 <div class="cast-lane"><p class="cast-k">角色</p><ul><li>计量分析员</li><li>计量复核员</li><li>账务与对账员</li></ul></div>
 <div class="cast-lane"><p class="cast-k">界面</p><ul><li>计量异常与账务工作台</li></ul></div>
-<div class="cast-lane wide"><p class="cast-k">服务与对象</p><ul class="svc"><li><b>原始计量接入</b><ul class="owned"><li>Raw measurement / 原始计量</li></ul></li><li><b>有效安装关系管理</b><ul class="owned"><li>Device installation / 有效安装关系</li></ul></li><li><b><abbr title="validation, estimation and editing：校验、估算与编辑">VEE</abbr> 与测量版本服务</b><ul class="owned"><li>VEE run and measurement revision</li></ul></li><li><b>计费数量计算</b><ul class="owned"><li>Bill determinant / 计费数量</li></ul></li><li><b>账务适配与核销</b><ul class="owned"><li>Settlement / 客户应收核销</li></ul></li><li class="loose"><b>其他对象</b><ul class="owned"><li>Bill / 账单</li></ul></li></ul></div>
+<div class="cast-lane wide"><p class="cast-k">服务与对象</p><ul class="svc"><li><b>原始计量接入</b><ul class="owned"><li>Raw measurement / 原始计量</li></ul></li><li><b>有效安装关系管理</b><ul class="owned"><li>Device installation / 有效安装关系</li></ul></li><li><b>VEE 与测量版本服务</b><ul class="owned"><li>VEE run and measurement revision</li></ul></li><li><b>计费数量计算</b><ul class="owned"><li>Bill determinant / 计费数量</li></ul></li><li><b>账务适配与核销</b><ul class="owned"><li>Settlement / 客户应收核销</li></ul></li><li class="loose"><b>其他对象</b><ul class="owned"><li>Bill / 账单</li></ul></li></ul></div>
 <div class="cast-lane"><p class="cast-k">记录与规则</p><ul><li>持久消息与操作记录</li><li>原始计量与版本分区</li><li>主数据、计费数量、核销与审计</li><li>原始计量批次</li><li>计量修订事件</li><li>付款回执</li></ul></div>
 <div class="cast-lane"><p class="cast-k">外部系统</p><ul class="ext"><li>Head-end 采集系统</li><li>外部应收账务系统</li><li>银行回执系统</li></ul></div>
 </div>
@@ -33,7 +34,8 @@
       <aside class="rail" aria-label="本页进度"><ol><li><a href="#识题计量口径分段价格与更正"><span class="rn">01<span class="of"> / 10</span></span><span class="rt">计量口径、分段价格与更正</span></a></li><li><a href="#解法测量计费数量账单与核销分层"><span class="rn">02<span class="of"> / 10</span></span><span class="rt">测量、计费数量、账单与核销分层</span></a></li><li><a href="#演算一小时电量与迟到更正"><span class="rn">03<span class="of"> / 10</span></span><span class="rt">一小时电量与迟到更正</span></a></li><li><a href="#窗口边界费率切分与聚合"><span class="rn">04<span class="of"> / 10</span></span><span class="rt">窗口边界、费率切分与聚合</span></a></li><li><a href="#人工修订计费接口与技术选型"><span class="rn">05<span class="of"> / 10</span></span><span class="rt">人工修订、计费接口与技术选型</span></a></li><li><a href="#更正未知结果与结算差异"><span class="rn">06<span class="of"> / 10</span></span><span class="rt">更正、未知结果与结算差异</span></a></li><li><a href="#验算金额质量分母与修订链"><span class="rn">07<span class="of"> / 10</span></span><span class="rt">金额、质量分母与修订链</span></a></li><li><a href="#变式换表与已收款后的争议"><span class="rn">08<span class="of"> / 10</span></span><span class="rt">换表与已收款后的争议</span></a></li><li><a href="#进入公用计量的先查项"><span class="rn">09<span class="of"> / 10</span></span><span class="rt">进入公用计量的先查项</span></a></li><li><a href="#case-structure"><span class="rn">10<span class="of"> / 10</span></span><span class="rt">对象、生命周期与迁移</span></a></li></ol></aside>
       <div class="flow">
 <p>本例是一套零售电量政策：计量值为每个 15 分钟区间的耗电量 kWh，区间采用 <code>[start, end)</code>；统一使用 UTC，无夏令时、税费、需量电费、进出电量抵扣或复杂市场规则。本例的“结算”指客户应收的核销；市场 settlement 另有边界，后文用一个供需数量差异的例子交代。真实系统能否用估算值出账、怎样更正、何时退款，以适用合同与获批政策为准。</p>
-<section class="scene" aria-labelledby="识题计量口径分段价格与更正"><header class="scene-head"><h2 id="识题计量口径分段价格与更正"><span class="scene-no" aria-hidden="true">01</span><span class="visually-hidden">识题：</span><span class="head">计量口径、分段价格与更正</span></h2></header><div class="table-wrap"><table>
+<section class="scene" aria-labelledby="识题计量口径分段价格与更正"><header class="scene-head"><h2 id="识题计量口径分段价格与更正"><span class="scene-no" aria-hidden="true">01</span><span class="visually-hidden">识题：</span><span class="head">计量口径、分段价格与更正</span></h2></header><p class="scene-lede">账单出现差异，先分清问题在计量口径、分段价格还是更正上：口径决定数量是否可信，费率边界决定同样的总量算出多少钱，更正决定原账单怎样保留。</p>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>识题线索</th>
@@ -58,7 +60,8 @@
 </tr>
 </tbody></table></div>
 </section>
-<section class="scene" aria-labelledby="解法测量计费数量账单与核销分层"><header class="scene-head"><h2 id="解法测量计费数量账单与核销分层"><span class="scene-no" aria-hidden="true">02</span><span class="visually-hidden">解法：</span><span class="head">测量、计费数量、账单与核销分层</span></h2></header><p class="scene-lede">Oracle 的 <a href="https://docs.oracle.com/en/industries/energy-water/meter-solution-cloud-service/23c/mscs-user-guides/Topics/D1_BG_About_VEE.html" class="ext" rel="noopener">About VEE</a> 将 Validation、Estimation、Editing 用于检查计量、填补缺失并产生待复核异常；规则按配置顺序运行，<code>Issue</code> 与 <code>Terminate</code> 的阻断方式不同，更正后异常记录仍可保留为关闭状态。<a href="https://docs.oracle.com/en/industries/energy-water/meter-solution-cloud-service/23c/mscs-user-guides/Topics/D1_BG_About_Initial_Measurement_Data.html" class="ext" rel="noopener">About Initial Measurement Data</a> 区分 Pre VEE 与 Post VEE 数量及质量码，最终计量再供用量计算。这些产品文档支持把计量分层处理。</p>
+<section class="scene" aria-labelledby="解法测量计费数量账单与核销分层"><header class="scene-head"><h2 id="解法测量计费数量账单与核销分层"><span class="scene-no" aria-hidden="true">02</span><span class="visually-hidden">解法：</span><span class="head">测量、计费数量、账单与核销分层</span></h2></header><p class="scene-lede">测量、计费数量、账单和核销分层保存，各有权威与版本，下一层只引用上一层确定的版本。</p>
+<p>Oracle 的 <a href="https://docs.oracle.com/en/industries/energy-water/meter-solution-cloud-service/23c/mscs-user-guides/Topics/D1_BG_About_VEE.html" class="ext" rel="noopener">About VEE</a> 将 Validation、Estimation、Editing 用于检查计量、填补缺失并产生待复核异常；规则按配置顺序运行，<code>Issue</code> 与 <code>Terminate</code> 的阻断方式不同，更正后异常记录仍可保留为关闭状态。<a href="https://docs.oracle.com/en/industries/energy-water/meter-solution-cloud-service/23c/mscs-user-guides/Topics/D1_BG_About_Initial_Measurement_Data.html" class="ext" rel="noopener">About Initial Measurement Data</a> 区分 Pre VEE 与 Post VEE 数量及质量码，最终计量再供用量计算。这些产品文档支持把计量分层处理。</p>
 <div class="table-wrap"><table>
 <thead>
 <tr>
@@ -101,7 +104,8 @@
 <p>计量分析员能处理异常或申请覆盖，复核员批准例外，账务员发布账单，收款系统提供入账事实。一个账户可以对应多个服务点，一个服务点在期间内可以换表，电表本身也有不同的测量通道。因此接口和唯一键不能只用“表号 + 月份”，服务端要核验租户、有效安装关系、量纲以及期间是否重叠。</p>
 <p>Oracle 的 <a href="https://docs.oracle.com/en/industries/energy-water/meter-solution-cloud-service/23c/mscs-user-guides/Topics/D1_BG_About_Usage_Transactions.html" class="ext" rel="noopener">About Usage Transactions</a> 把 usage transaction 定义为 usage subscription 的 bill determinant 计算记录，数量包含 UOM 等信息并指向来源 measuring component；该章还解释了 calculation period、date breaks 和可配置的质量信息。因而 bill determinant 应理解为“给定期间和口径下可用于计费的数量”：它是数量而不是金额，也不说明客户已经付款。</p>
 </section>
-<section class="scene" aria-labelledby="演算一小时电量与迟到更正"><header class="scene-head"><h2 id="演算一小时电量与迟到更正"><span class="scene-no" aria-hidden="true">03</span><span class="visually-hidden">演算：</span><span class="head">一小时电量与迟到更正</span></h2></header><p class="scene-lede">服务点 SP-1 的四个 15 分钟区间如下。前两个区间谷价 0.50 记账单位/kWh，后两个区间峰价 1.00；固定费用为 2.00。第三个区间缺失。本例只在“单个内侧缺口、两侧均为有效同长度区间且无停电标记”时用相邻值均值估算，连续缺口超过一个就转人工处理。这条政策刻意从简，只用于本例。</p>
+<section class="scene" aria-labelledby="演算一小时电量与迟到更正"><header class="scene-head"><h2 id="演算一小时电量与迟到更正"><span class="scene-no" aria-hidden="true">03</span><span class="visually-hidden">演算：</span><span class="head">一小时电量与迟到更正</span></h2></header><p class="scene-lede">金额由 VEE 后的分时计费数量和费率算出；迟到的实际值生成新版本和差额调整，已收的款项不变。</p>
+<p>服务点 SP-1 的四个 15 分钟区间如下。前两个区间谷价 0.50 记账单位/kWh，后两个区间峰价 1.00；固定费用为 2.00。第三个区间缺失。本例只在“单个内侧缺口、两侧均为有效同长度区间且无停电标记”时用相邻值均值估算，连续缺口超过一个就转人工处理。这条政策刻意从简，只用于本例。</p>
 <div class="table-wrap wide"><table>
 <thead>
 <tr>
@@ -149,17 +153,20 @@
 <p>一百万只表每 15 分钟一条，每天 9,600 万条，30 天约 28.8 亿条。每画一次月图都扫描全表，代价太高；可以按日、服务点、通道和 TOU 规则版本生成聚合，但日总量支撑不了任意的新费率边界。费率从半点改为 00:37 时，已有的 15 分钟能量值无法精确判断 00:30—00:45 内的负荷分布。按时间比例拆分是另一层估计，要标明估计政策；没有更细的测量，拆分结果就只是估计值。若政策只允许边界与采样对齐，计算服务应拒绝这次费率变更配置。</p>
 <p>示例使用固定 UTC；真实的本地日历遇到夏令时，一天可能有 92 或 100 个 15 分钟区间，不能硬编码每天 96。保存 UTC 时刻和业务时区、偏移及规则版本，窗口按真实起止建立；若来源只给出有歧义的本地时间，应隔离该数据，不自行选定某个小时。数据库聚合、前缀和可以加速稳定区间的求和，但一旦修订，所有包含该测量的计费数量都要作废重算。<code>ALG:caches</code> 的缓存键至少含 tenant、subscription、period、measurement revision set、TOU 与规则版本；“上月账单”这个键表达不了依据的变化。</p>
 </section>
-<section class="scene" aria-labelledby="人工修订计费接口与技术选型"><header class="scene-head"><h2 id="人工修订计费接口与技术选型"><span class="scene-no" aria-hidden="true">05</span><span class="head">人工修订、计费接口与技术选型</span></h2></header><p class="scene-lede">异常工作台并列显示原始曲线、VEE 后曲线和质量码，缺失区间用空档，不能画成零线。分析员选择缺口后，预览估算规则、依据样本和受影响的账单；提交 <code>POST /vee-runs/{id}/overrides</code> 时带上基准版本、operation <abbr title="identifier：标识符">ID</abbr>、修改值、单位及理由。服务器验证权限与当前版本，同时保存新的测量版本、审核任务和 outbox 记录。页面先显示“修订待复核”，审批通过后才显示“计费依据已更新”；旧账单旁保留“存在后续调整”，不能悄悄换掉 <abbr title="Portable Document Format：便携式文档格式">PDF</abbr> 或金额。</p>
+<section class="scene" aria-labelledby="人工修订计费接口与技术选型"><header class="scene-head"><h2 id="人工修订计费接口与技术选型"><span class="scene-no" aria-hidden="true">05</span><span class="head">人工修订、计费接口与技术选型</span></h2></header><p class="scene-lede">修订和计算都带基准版本与 operation <abbr title="identifier：标识符">ID</abbr>，得到可重演的身份；复核通过之前页面只显示待复核，旧账单旁保留后续调整的标记。</p>
+<p>异常工作台并列显示原始曲线、VEE 后曲线和质量码，缺失区间用空档，不能画成零线。分析员选择缺口后，预览估算规则、依据样本和受影响的账单；提交 <code>POST /vee-runs/{id}/overrides</code> 时带上基准版本、operation ID、修改值、单位及理由。服务器验证权限与当前版本，同时保存新的测量版本、审核任务和 outbox 记录。页面先显示“修订待复核”，审批通过后才显示“计费依据已更新”；旧账单旁保留“存在后续调整”，不能悄悄换掉 <abbr title="Portable Document Format：便携式文档格式">PDF</abbr> 或金额。</p>
 <p>计算接口 <code>POST /usage-calculations</code> 接收 subscription、半开期间、质量政策和规则版本，输出一个可重演的计算身份；发布账单时再次检查该身份仍然有效。收款回执先匹配银行交易与账户，再生成 allocation。账单号相同可能来自不同租户，金额碰巧相同也不足以认定匹配。对账页面应分别显示应收、已分配收款、待匹配资金和贷项，并写明谁处理剩余差异。</p>
 <p>前端可用 React/TypeScript 加 Canvas 曲线绘制高密度区间，表格保留可访问的原值和质量明细；数据少时可用 SVG，便于选点和说明，但逐点 DOM 不适合百万级曲线。后端可用 Kotlin/Java 服务承载长时批处理与严格类型的规则模型；Python 便于快速迭代分析规则，但要把规则版本、类型校验和批处理重启点显式保存，不能让临时 notebook 成为隐含的账务权威。两条路线的金额都采用 Decimal 或整数最小单位，收款金额不由浏览器的浮点结果确定。关系库保存有效安装关系、规则、账单及核销，原始计量可分区写入列式存储或时序库；列式扫描适合大批量重算，事务库适合保证发布和核销的唯一性。先用 PostgreSQL 分区和后台 worker 做一个小规模、可解释的原型，测出扫描或存储瓶颈后再拆分，跨库一致性的负担会小很多。</p>
 <p>原始事件经消息投递（结构数据中的 <code>emits → delivers</code>）进入持久接收层；VEE 服务拥有测量修订，usage 服务拥有计费数量，账务域的外部应收系统拥有已发布账单，本地账务适配与核销服务保存映射、操作记录和款项分配。<code>derived_from</code> 边记录计算依据，<code>requests</code> 边表示提交给外部账务或收款系统；数量派生与消息送达不能混用。物理电量、客户应收和银行资金各有各的账；<abbr title="JavaScript Object Notation：结构化数据表示格式，后文保留 JSON">JSON</abbr> 里的箭头只表示记录之间的关系，电能和现金的实际流动另有凭证。</p>
 </section>
-<section class="scene" aria-labelledby="更正未知结果与结算差异"><header class="scene-head"><h2 id="更正未知结果与结算差异"><span class="scene-no" aria-hidden="true">06</span><span class="head">更正、未知结果与结算差异</span></h2></header><p class="scene-lede">正常路径为 R-1 原始批次→VEE-1→D-1 计费数量→B-1 账单→两笔已核对付款→核销完成。假如第三个区间补录时 D-1 已发布，修订事件触发 D-2 及调整任务，并保留 D-1 到 B-1 的旧关系。若调整 worker 在保存 2.00 调整后、标记事件消费前崩溃，重放必须返回同一笔调整。这里的业务唯一键是“原账单 + 新旧计费数量版本”，而非每次重试产生的新消息号。</p>
+<section class="scene" aria-labelledby="更正未知结果与结算差异"><header class="scene-head"><h2 id="更正未知结果与结算差异"><span class="scene-no" aria-hidden="true">06</span><span class="head">更正、未知结果与结算差异</span></h2></header><p class="scene-lede">更正、重放和未知结果都不另造事实：调整按“原账单 + 新旧计费数量版本”唯一，未知的开票按外部引用核对，供需数量差额先作为待解释差异。</p>
+<p>正常路径为 R-1 原始批次→VEE-1→D-1 计费数量→B-1 账单→两笔已核对付款→核销完成。假如第三个区间补录时 D-1 已发布，修订事件触发 D-2 及调整任务，并保留 D-1 到 B-1 的旧关系。若调整 worker 在保存 2.00 调整后、标记事件消费前崩溃，重放必须返回同一笔调整。这里的业务唯一键是“原账单 + 新旧计费数量版本”，而非每次重试产生的新消息号。</p>
 <p>若账务系统已受理 B-1 但调用超时，operation 保持 <code>unknown</code>，按外部引用核对后再决定是否重试；状态未知时，不记为“开票失败”。若付款通知先到、账单投影还未到，款项先进入待匹配记录，不为凑平余额生成临时账单。两名分析员同时修订同一个区间时，第二位看到版本冲突并比较两份理由，不能让最后写入者覆盖前一人的审核依据。</p>
 <p>客户结清不代表整个供电网络的 settlement 完成。另一个例子里，上游同期间为 100 kWh，下游可归集量为 96 kWh，差额 4 kWh 应先作为待解释差异；它可能涉及测量边界、损耗、时钟偏差或未归集的服务点，不能直接称为窃电，也不能把 4 kWh 自动平摊到账单。本篇只演示差异守恒 <code>100 = 96 + 4</code>。</p>
 <p>前述百万只表的负载平均约 1,111 条/秒，补传峰值按 10 倍设计。待测目标是：持久接收 p95 &lt; 1 秒，正常批次 VEE p95 &lt; 5 分钟，预聚合条件下单账户账单预览 p95 &lt; 2 秒；分别测一个大租户占 50% 流量、全冷缓存、整日回补和 1% 区间修订的情形。批处理按租户和期间设预算，避免一项历史重算挤占当前账期的计算资源。原始分区与聚合分区的保留政策应一起评审，否则聚合虽然还在，账单已无法重新解释。</p>
 </section>
-<section class="scene" aria-labelledby="验算金额质量分母与修订链"><header class="scene-head"><h2 id="验算金额质量分母与修订链"><span class="scene-no" aria-hidden="true">07</span><span class="visually-hidden">验算：</span><span class="head">金额、质量分母与修订链</span></h2></header><div class="table-wrap"><table>
+<section class="scene" aria-labelledby="验算金额质量分母与修订链"><header class="scene-head"><h2 id="验算金额质量分母与修订链"><span class="scene-no" aria-hidden="true">07</span><span class="visually-hidden">验算：</span><span class="head">金额、质量分母与修订链</span></h2></header><p class="scene-lede">每个金额都要能回查输入版本；重复、乱序、并发、跨租户、结果未知和崩溃都不能让数量加倍或调整重复。</p>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>检查输入与动作</th>
@@ -201,7 +208,8 @@
 </tbody></table></div>
 <p>本例的计费数值不由 <abbr title="artificial intelligence：人工智能">AI</abbr> 决定，AI eval 不适用。若以后用模型解释异常，它可以起草说明，确定金额仍由冻结的规则计算；流畅的解释不能把估算变成实测。</p>
 </section>
-<section class="scene" aria-labelledby="变式换表与已收款后的争议"><header class="scene-head"><h2 id="变式换表与已收款后的争议"><span class="scene-no" aria-hidden="true">08</span><span class="visually-hidden">变式：</span><span class="head">换表与已收款后的争议</span></h2></header><p class="scene-lede"><strong>练习一：00:30 换表，新表倍率为 2，后两个原始区间值改为 2、2.5，四个区间都已实测。能否继续使用之前的 13.50？</strong></p>
+<section class="scene" aria-labelledby="变式换表与已收款后的争议"><header class="scene-head"><h2 id="变式换表与已收款后的争议"><span class="scene-no" aria-hidden="true">08</span><span class="visually-hidden">变式：</span><span class="head">换表与已收款后的争议</span></h2></header><p class="scene-lede">换表和收款后的更正都不改写已有记录：安装关系按换表边界切分，已发布的账单靠调整更正。</p>
+<p><strong>练习一：00:30 换表，新表倍率为 2，后两个原始区间值改为 2、2.5，四个区间都已实测。能否继续使用之前的 13.50？</strong></p>
 <p>简答：不能直接沿用。有效安装关系按换表边界切分：前两个区间仍为 2、3 kWh，后两个区间乘倍率得到 4、5 kWh。这组数值恰好仍给出 13.50，但证据链完全不同，估算电量已为零。要守住的是量纲和期间归属，“一个期间一个倍率”的假设在这里失效。检查时故意把旧倍率用到新表上，金额会错成 9.00；即使正确金额碰巧相同，也要断言安装关系与质量码都已更新。</p>
 <p><strong>练习二：实际补录值 6 到达时，13.50 已全额收款，客户提出争议。能否把原账单改成 15.50 并标为未付？</strong></p>
 <p>简答：不能。原账单和原核销都保留，另生成一笔 2.00 的调整，以 <code>held</code> 挂起争议，本例不自动扣款。每笔收款都要有可追溯的分配；“草稿可以替换”的前提在账单发布后已不成立。若覆盖原金额，客户看起来就只付了原账单的一部分。检查总应收 15.50、已收 13.50、争议余额 2.00，旧收款引用保持不变，调整也不会重复生成。</p>
@@ -333,8 +341,8 @@
     <footer class="page-foot">正文 <a href="../../../books/saas-engineering/packages/industry-networks/V11.md">books/saas-engineering/packages/industry-networks/V11.md</a> · <a href="../../../vault/distilled/saas-engineering-atlas/README.md">结构、来源与验证</a></footer>
   </main>
 </div>
-<script src="search-index.js?v=mv9186ug"></script>
-<script src="book.js?v=mv9186ug"></script>
+<script src="search-index.js?v=mv95jeod"></script>
+<script src="book.js?v=mv95jeod"></script>
 
 </body>
 </html>

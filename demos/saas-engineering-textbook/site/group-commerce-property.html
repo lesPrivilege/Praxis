@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>P05 · 消费履约、住宿与空间 · SaaS 工程全景</title>
-<link rel="stylesheet" href="book.css?v=mv9186ug">
+<link rel="stylesheet" href="book.css?v=mv95jeod">
 </head>
 <body>
 <a class="skip" href="#main">跳到正文</a>
@@ -20,7 +20,8 @@
 <header class="hero">
 <p class="kicker"></p>
 <h1>P05 · 消费履约、住宿与空间</h1>
-<p class="lede">顾客买了三件商品、点了一桌菜、订了两晚房，企业就有了一项带数量、期限和条件的承诺。工程承包商接受变更、物业交出房屋钥匙，同样涉及承诺。软件帮不同角色确认：还欠什么，资源是否可用，哪部分已经交付，钱应当怎样处理。这几件事彼此相关，却很少同时了结。</p>
+<p class="lede">顾客买了三件商品、点了一桌菜、订了两晚房，企业就有了一项带数量、期限和条件的承诺；工程承包商接受变更、物业交出房屋钥匙，同样涉及承诺。本包把一笔业务分成承诺、资源、履约和资金四类记录，“完成”指四类记录都达到本业务规定的相容状态。资源的性质决定补救动作：过去的房晚、做出的菜、建成的墙都回滚不了，只能更正或补偿。外部调用离开本地事务后结果可能未知，这时凭同一操作身份查询或核对，换一个新 <abbr title="identifier：标识符">ID</abbr> 重发就成了第二笔业务。</p>
+
 
 </header>
     <div class="reel">
@@ -30,16 +31,18 @@
 <p>以三件预付商品为例：付款已确认，仓库只发出两件，第三件取消。承诺数量可核对为 <code>3 = 2 已发 + 1 已取消 + 0 待处理</code>；取消的一件又带来一项待退款义务。退款请求即使已被受理，结果仍要由资金方确认。退回一件已发商品时，累计已发数量仍是二，退货另记为一条反向流；把累计已发直接减为一，就分不清“从未交付”和“交付后退回”。V04 把这个模型展开成可逐行核对的行项目。</p>
 <p>资源的性质不同，不变量也不同。一晚空房无法在次日补交给昨晚的住客；厨房已经做出的食物无法通过数据库回滚变回原料；已施工的墙体需要新的施工才能撤除。V05、V06、V15 因而各有自己的补救动作。V16 更进一步：房屋已经归还，押金仍可能处于责任争议中。物理工作结束、合同义务关闭和资金结清要分别证明。</p>
 </section>
-<section class="scene" aria-labelledby="权威命令与撤销"><header class="scene-head"><h2 id="权威命令与撤销"><span class="scene-no" aria-hidden="true">02</span><span class="head">权威、命令与撤销</span></h2></header><p class="scene-lede">actor 指执行动作并为它负责的角色，object 是有身份和历史的业务对象。仓库人员可以确认拣货，客服可以提出退款；两个按钮出现在同一页，这两项权限也不会因此合并。租户标识 <code>tenant_id</code> 指软件客户的隔离边界，租约里的承租人则是业务主体；一个物业软件租户可以管理许多承租人，两者不能共用一个字段。</p>
+<section class="scene" aria-labelledby="权威命令与撤销"><header class="scene-head"><h2 id="权威命令与撤销"><span class="scene-no" aria-hidden="true">02</span><span class="head">权威、命令与撤销</span></h2></header><p class="scene-lede">每项事实由一个 system of record 负责，界面发出的 command 只是请求；撤销按对象分为丢弃、更正和补偿三种动作。</p>
+<p>actor 指执行动作并为它负责的角色，object 是有身份和历史的业务对象。仓库人员可以确认拣货，客服可以提出退款；两个按钮出现在同一页，这两项权限也不会因此合并。租户标识 <code>tenant_id</code> 指软件客户的隔离边界，租约里的承租人则是业务主体；一个物业软件租户可以管理许多承租人，两者不能共用一个字段。</p>
 <p>每个对象要指定 system of record，即哪一方对哪项事实负责。本地订单服务决定退款申请是否符合退款政策，支付方对款项执行结果负责，仓库对收回货物的检验记录负责。同一个外部编号还要附 provider account 与 tenant scope，才不会把两个商户的编号 <code>1001</code> 当成同一对象。列表、图表和搜索索引只是 read model，即为阅读构造的投影；它们应带版本或核对时间，副作用也不能凭它们批准。</p>
-<p>界面发出的 command 只是请求。以“退回 1 件并申请退款”为例，它先成为一条带行项目、金额、授权人和操作身份的请求；服务端检查版本、权限和余额，在本地事务里保存状态和待执行工作。外部调用一旦离开本地事务，就可能出现“对方成功，但回执丢失”。这时记为 <code>unknown</code>，意思是本系统还不知道结果，应凭同一操作身份查询、对账或人工确认。换一个新操作 <abbr title="identifier：标识符">ID</abbr> 重发，一次重试就成了第二笔业务。</p>
+<p>界面发出的 command 只是请求。以“退回 1 件并申请退款”为例，它先成为一条带行项目、金额、授权人和操作身份的请求；服务端检查版本、权限和余额，在本地事务里保存状态和待执行工作。外部调用一旦离开本地事务，就可能出现“对方成功，但回执丢失”。这时记为 <code>unknown</code>，意思是本系统还不知道结果，应凭同一操作身份查询、对账或人工确认。换一个新操作 ID 重发，一次重试就成了第二笔业务。</p>
 <p>撤销怎样做，取决于对象。未提交的表单可以丢弃；已入库的错误记录需要更正记录；已经发生的款项或物理交付需要补偿。把这些动作做成一个没有说明的“撤销”，操作者会误以为所有后果都已消失。恢复责任人、应保留的证据和用户能看到的等待状态，见各例的故障轨迹。</p>
 </section>
 <section class="scene" aria-labelledby="技术选型与事务边界"><header class="scene-head"><h2 id="技术选型与事务边界"><span class="scene-no" aria-hidden="true">03</span><span class="head">技术选型与事务边界</span></h2></header><p class="scene-lede">第一版实现用一个按领域分模块的后端加关系数据库，更容易把本地约束放进同一个事务。订单、付款尝试和待发送工作可以存在同一个库里，后台 worker 再执行外部请求。拆成微服务会多出交接与恢复责任；写入规模、团队边界或独立可用性的要求值得这些代价时，再拆。</p>
 <p>前端可以用 React/TypeScript 或 Vue/TypeScript 处理多对象状态、表单校验与冲突提示；后端可以用 Node.js 配合共享类型，也可以用 Django 或 ASP.NET Core 复用已有的领域代码和事务能力。共享类型减少字段误用，却不能让浏览器成为权限权威。为什么需要日历、厨房屏、版本差异或责任明细，这些界面又依赖哪些后端事实，见各例。</p>
 <p>关系数据库守住会改变业务结果的约束；缓存适合加速候选列表和读模型，不能凭过期可售数确认最后一间房。消息队列承接要等待的工作；消息重放以后，哪次已经生效、哪次是重复，靠业务操作身份和持久化记录判断。对象存储保存图纸或验收附件；文件在那里只证明有文件，批准另需证据。</p>
 </section>
-<section class="scene" aria-labelledby="案例与阅读顺序"><header class="scene-head"><h2 id="案例与阅读顺序"><span class="scene-no" aria-hidden="true">04</span><span class="head">案例与阅读顺序</span></h2></header><p class="scene-lede">各例的状态、事件和检查身份保存在表中的拓扑 <abbr title="JavaScript Object Notation：结构化数据表示格式，后文保留 JSON">JSON</abbr> 里。</p>
+<section class="scene" aria-labelledby="案例与阅读顺序"><header class="scene-head"><h2 id="案例与阅读顺序"><span class="scene-no" aria-hidden="true">04</span><span class="head">案例与阅读顺序</span></h2></header><p class="scene-lede">五个案例共用四类记录，区别在资源：商品件数、厨房制作、房晚、获批的工程量和租期内的空间。</p>
+<p>各例的状态、事件和检查身份保存在表中的拓扑 <abbr title="JavaScript Object Notation：结构化数据表示格式，后文保留 JSON">JSON</abbr> 里。</p>
 <div class="table-wrap"><table>
 <thead>
 <tr>
@@ -81,7 +84,8 @@
 <section class="scene" aria-labelledby="手算与检查"><header class="scene-head"><h2 id="手算与检查"><span class="scene-no" aria-hidden="true">06</span><span class="head">手算与检查</span></h2></header><p class="scene-lede">各例的计算：V04 按行分配折扣与退款，V05 分摊共享菜品与组合支付，V06 计算区间占用和连续住宿，V15 沿变更来源去重并核对累计证书，V16 把有依据的扣款与未解决争议分开。计算代价和业务正确性分开解释；算法得出结果以后，多人同时使用这个结果还要靠事务保护。</p>
 <p>先手算正文的小输入，再改变一个条件：多一个操作者、少一份确认、晚到一条账单、同编号属于另一商户。每例至少有两道带简答的条件变化练习，检验不变量是否仍然成立。</p>
 </section>
-<section class="scene" aria-labelledby="跨案例迁移"><header class="scene-head"><h2 id="跨案例迁移"><span class="scene-no" aria-hidden="true">07</span><span class="head">跨案例迁移</span></h2></header><p class="scene-lede">H01 的承诺、付款与服务权利到了 V04，要再加上数量和反向流。V04 的“子项完成不代表整单完成”可以用在 V20 的多次上门工单上。V06 的区间占用可以搬到 V16 的空间使用，租约中的法律权利却不能由酒店夜数定义。V15 把技术答复与商业批准分开，能帮 V07 理解图纸变更，但替代不了生产放行。X01 的隔离要求贯穿所有 case；物业里的租客身份要单独记录，<code>tenant_id</code> 替换不了。</p>
+<section class="scene" aria-labelledby="跨案例迁移"><header class="scene-head"><h2 id="跨案例迁移"><span class="scene-no" aria-hidden="true">07</span><span class="head">跨案例迁移</span></h2></header><p class="scene-lede">机制可以跨案例迁移，业务含义和法律权利不能跟着搬：每条迁移都要分清保留的结构与失效的位置。</p>
+<p>H01 的承诺、付款与服务权利到了 V04，要再加上数量和反向流。V04 的“子项完成不代表整单完成”可以用在 V20 的多次上门工单上。V06 的区间占用可以搬到 V16 的空间使用，租约中的法律权利却不能由酒店夜数定义。V15 把技术答复与商业批准分开，能帮 V07 理解图纸变更，但替代不了生产放行。X01 的隔离要求贯穿所有 case；物业里的租客身份要单独记录，<code>tenant_id</code> 替换不了。</p>
 <p><a href="../../../vault/distilled/saas-engineering-atlas/packages/commerce-property/evidence.json">来源与模型说明</a> · <a href="semantics.html">共同语义</a> · <a href="transfer-map.html">跨行业迁移</a></p>
 </section>
       </div>
@@ -90,8 +94,8 @@
     <footer class="page-foot">正文 <a href="../../../books/saas-engineering/packages/commerce-property/README.md">books/saas-engineering/packages/commerce-property/README.md</a> · <a href="../../../vault/distilled/saas-engineering-atlas/README.md">结构、来源与验证</a></footer>
   </main>
 </div>
-<script src="search-index.js?v=mv9186ug"></script>
-<script src="book.js?v=mv9186ug"></script>
+<script src="search-index.js?v=mv95jeod"></script>
+<script src="book.js?v=mv95jeod"></script>
 
 </body>
 </html>

@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>第三章：顺序、连续区间与累计 · SaaS 工程全景</title>
-<link rel="stylesheet" href="book.css?v=mv9186ug">
+<link rel="stylesheet" href="book.css?v=mv95jeod">
 </head>
 <body>
 <a class="skip" href="#main">跳到正文</a>
@@ -20,17 +20,19 @@
 <header class="hero">
 <p class="kicker"><a href="fdn.html">计算与系统方法</a><span class="dot">·</span>第三章</p>
 <h1>顺序、连续区间与累计</h1>
-<p class="lede">工作台里的“前十项”“最近七天”“这一段的合计”看起来都在处理列表，利用的结构却各不相同。</p>
+<p class="lede">工作台里的“前十项”“最近七天”“这一段的合计”看起来都在处理列表，利用的结构却各不相同：要全体次序时排序，只要领先几项时用 Top-K，在有序数据里找组合时用双指针，连续区间的合计用窗口或前缀和。方法选定之前先定口径，包括过滤范围、按发生时间还是入库时间、金额是否同币种；可变长度窗口还要求数值非负，出现负数冲销就要换方法。</p>
+
 
 </header>
     <div class="reel">
       <aside class="rail" aria-label="本页进度"><ol><li><a href="#识题全体前几项与连续片段"><span class="rn">01<span class="of"> / 05</span></span><span class="rt">全体、前几项与连续片段</span></a></li><li><a href="#解法减少重复工作"><span class="rn">02<span class="of"> / 05</span></span><span class="rt">减少重复工作</span></a></li><li><a href="#演算五种结构"><span class="rn">03<span class="of"> / 05</span></span><span class="rt">五种结构</span></a></li><li><a href="#验算区间代数与边界"><span class="rn">04<span class="of"> / 05</span></span><span class="rt">区间代数与边界</span></a></li><li><a href="#变式需求改动与方法重选"><span class="rn">05<span class="of"> / 05</span></span><span class="rt">需求改动与方法重选</span></a></li></ol></aside>
       <div class="flow">
-<section class="scene" aria-labelledby="识题全体前几项与连续片段"><header class="scene-head"><h2 id="识题全体前几项与连续片段"><span class="scene-no" aria-hidden="true">01</span><span class="visually-hidden">识题：</span><span class="head">全体、前几项与连续片段</span></h2></header><p class="scene-lede">H03 的待核对清单要按金额排序，H06 的客服待办要选最急的几项，V11 的计量要按时间汇总，V19 的工时要在合同上限内累计。这几项都要先定下过滤范围和比较口径：哪些租户、哪些状态、按发生时间还是入库时间、金额是否同币种。口径定好之后，算法才有可比较的关系。</p>
+<section class="scene" aria-labelledby="识题全体前几项与连续片段"><header class="scene-head"><h2 id="识题全体前几项与连续片段"><span class="scene-no" aria-hidden="true">01</span><span class="visually-hidden">识题：</span><span class="head">全体、前几项与连续片段</span></h2></header><p class="scene-lede">选算法之前先定过滤范围和比较口径：哪些租户、哪些状态、按发生时间还是入库时间、金额是否同币种。H03 的待核对清单要按金额排序，H06 的客服待办要选最急的几项，V11 的计量要按时间汇总，V19 的工时要在合同上限内累计，都要先回答这几问。口径定好之后，算法才有可比较的关系。</p>
 </section>
 <section class="scene" aria-labelledby="解法减少重复工作"><header class="scene-head"><h2 id="解法减少重复工作"><span class="scene-no" aria-hidden="true">02</span><span class="visually-hidden">解法：</span><span class="head">减少重复工作</span></h2></header><p class="scene-lede">排序给全体定次序，Top-K 只留下领先的几项，双指针利用顺序成批排除组合，窗口随区间移动更新合计，前缀和用两个累计数相减求区间总额。</p>
 </section>
-<section class="scene" aria-labelledby="演算五种结构"><header class="scene-head"><h2 id="演算五种结构"><span class="scene-no" aria-hidden="true">03</span><span class="visually-hidden">演算：</span><span class="head">五种结构</span></h2></header><h3 id="排序可复现的全局次序">排序：可复现的全局次序</h3>
+<section class="scene" aria-labelledby="演算五种结构"><header class="scene-head"><h2 id="演算五种结构"><span class="scene-no" aria-hidden="true">03</span><span class="visually-hidden">演算：</span><span class="head">五种结构</span></h2></header><p class="scene-lede">五种结构各有成立条件：排序和 Top-K 要可复现的同分规则，双指针要求数据已排序，可变窗口要求数值非负，前缀和要求数组在两次修订之间不变。</p>
+<h3 id="排序可复现的全局次序">排序：可复现的全局次序</h3>
 <p>设待办为 <code>A:70, B:20, C:70, D:50, E:90</code>。按分数降序、<abbr title="identifier：标识符">ID</abbr> 升序，全排序得到 <code>E,A,C,D,B</code>。归并排序先把小段分别排好，再像合并两叠有序卡片那样，每次取较靠前的一张；每层合并读一遍全部 n 项，共约 log n 层，所以成本是 O(n log n)。实现时用标准库排序，不必手写归并。</p>
 <p>全排序适合导出完整排名或反复浏览同一快照。主要靠两两比较的排序，最坏情况有 Ω(n log n) 的下界；计数排序等利用有限整数范围的办法属于另一种模型，这个下界管不到它们。见 <a href="https://www.cs.cmu.edu/~avrim/451f11/lectures/lect0913.pdf" class="ext" rel="noopener">CMU 15-451 排序下界讲义 §5.1–5.2</a>。</p>
 <div class="labelled" data-kind="counter"><p class="blk-l">误用反例</p><p>同分时没有稳定次序，翻页可能重复或漏项；同分排名规则也可能要求保留全部并列者，不能默认只取固定数量。验算检查结果有序、记录的多重集不变、同分规则可复现。动态列表要用查询快照或明确的游标语义；只在前端给当前页排序，得不到全局前十项。</p></div>
@@ -150,7 +152,8 @@
 </section>
 <section class="scene" aria-labelledby="验算区间代数与边界"><header class="scene-head"><h2 id="验算区间代数与边界"><span class="scene-no" aria-hidden="true">04</span><span class="visually-hidden">验算：</span><span class="head">区间代数与边界</span></h2></header><p class="scene-lede">对任意合法 <code>a≤b≤c</code>，<code>sum[a,c)=sum[a,b)+sum[b,c)</code>；空区间为零。把一天拆成两段再合并，计量总量不应增加。排序不增减记录；按多重集比较比只比总数更严，因为“丢一条、重复另一条”时总数可能不变。窗口结果应与对同一输入版本直接扫描的结果相等，迟到修订前后的差额应能解释。</p>
 </section>
-<section class="scene" aria-labelledby="变式需求改动与方法重选"><header class="scene-head"><h2 id="变式需求改动与方法重选"><span class="scene-no" aria-hidden="true">05</span><span class="visually-hidden">变式：</span><span class="head">需求改动与方法重选</span></h2></header><p class="scene-lede"><strong>变式题一。</strong> H06 的“最急两项”改为“每个客户至少一项，然后填满五项”。</p>
+<section class="scene" aria-labelledby="变式需求改动与方法重选"><header class="scene-head"><h2 id="变式需求改动与方法重选"><span class="scene-no" aria-hidden="true">05</span><span class="visually-hidden">变式：</span><span class="head">需求改动与方法重选</span></h2></header><p class="scene-lede">需求改动时，先看方法依赖的前提是否还在：全局 Top-K 满足不了配额，负数破坏可变窗口，夏令时改变时间映射。</p>
+<div class="labelled" data-kind="exercise"><p class="blk-l">变式题一</p><p>H06 的“最急两项”改为“每个客户至少一项，然后填满五项”。</p></div>
 <div class="labelled" data-kind="answer"><p class="blk-l">简答</p><p>全局 Top-K 不再能直接满足这条约束。先定义每个客户内部怎样选、全局怎样补位；客户超过五个时，还要处理配额冲突。反例是一个大客户独占五项。验算检查每个可服务客户的覆盖率与等待上限，不只看分数。</p></div>
 <div class="labelled" data-kind="exercise"><p class="blk-l">变式题二</p><p>V11 的小时用量迁移到 V19 的工时，出现负数冲销。</p></div>
 <div class="labelled" data-kind="answer"><p class="blk-l">简答</p><p>固定窗口求和、前缀和仍可使用；依赖非负性的可变窗口方法失效。保留冲销的来源及版本，用含负数的小样本穷举，检查新方法。</p></div>
@@ -163,8 +166,8 @@
     <footer class="page-foot">正文 <a href="../../../books/saas-engineering/foundations/03-order-and-intervals.md">books/saas-engineering/foundations/03-order-and-intervals.md</a> · <a href="../../../vault/distilled/saas-engineering-atlas/README.md">结构、来源与验证</a></footer>
   </main>
 </div>
-<script src="search-index.js?v=mv9186ug"></script>
-<script src="book.js?v=mv9186ug"></script>
+<script src="search-index.js?v=mv95jeod"></script>
+<script src="book.js?v=mv95jeod"></script>
 
 </body>
 </html>

@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>V04 · 产品目录、拆分履约与退货后的净结算 · SaaS 工程全景</title>
-<link rel="stylesheet" href="book.css?v=mv9186ug">
+<link rel="stylesheet" href="book.css?v=mv95jeod">
 </head>
 <body>
 <a class="skip" href="#main">跳到正文</a>
@@ -20,7 +20,8 @@
 <header class="hero">
 <p class="kicker"><a href="group-commerce-property.html">消费履约、住宿与空间</a><span class="dot">·</span>V04</p>
 <h1>产品目录、拆分履约与退货后的净结算</h1>
-<p class="lede">商店向顾客承诺的是具体的商品、数量、价格和交付方式。收到货款，只说明其中一项义务有了进展；商品可能还分散在两座仓库，退回的商品也可能暂时不能再卖。本例接续 H01 的“承诺—履约—收款”模型，把一份承诺拆成可以逐件核对的数量账，实物和资金各凭各的证据核对。</p>
+<p class="lede">商店向顾客承诺的是具体的商品、数量、价格和交付方式；收到货款，只说明其中一项义务有了进展。本例接续 H01 的“承诺—履约—收款”模型，把一份承诺拆成可以逐件核对的数量账，实物和资金各凭各的证据核对：订单行在接受时冻结目录版本和逐件实付，每份数量只有一个当前去向；整单优惠按原价逐件分摊并精确守恒，仓库分配另受库存和包裹成本约束；退回的实物由验收决定返库或隔离，退款以支付方确认的结果为准，净额靠交易和结算明细解释。改变判断的是外部结果有没有确认：交接回执丢失或退款结果为 unknown 时，只能凭原操作身份查询，不能先释放占用，也不能换一个请求再退。</p>
+
 <div class="cast" aria-label="本例的角色、界面与系统">
 <div class="cast-lane"><p class="cast-k">角色</p><ul><li>顾客</li><li>仓库操作员</li><li>客服与财务审核员</li></ul></div>
 <div class="cast-lane"><p class="cast-k">界面</p><ul><li>商品与结账页</li><li>订单、退货与退款工作台</li></ul></div>
@@ -59,7 +60,8 @@
 </tr>
 </tbody></table></div>
 </section>
-<section class="scene" aria-labelledby="解法目录版本与订单快照"><header class="scene-head"><h2 id="解法目录版本与订单快照"><span class="scene-no" aria-hidden="true">02</span><span class="visually-hidden">解法：</span><span class="head">目录版本与订单快照</span></h2></header><p class="scene-lede">目录中的 variant 表示一个可销售的规格，例如“陶瓷茶杯／白色／300 mL”。库存单位（stock keeping unit，<abbr title="stock keeping unit：库存单位">SKU</abbr>）是业务识别码，不能代替不可变的内部身份；SKU 改名或被重新使用，既有订单都不受影响。系统让目录管理员发布带版本的名称、规格、价格和可销售规则，客户提交时由服务端重新确认版本，再把接受的内容、单价、优惠分配和规则版本复制到订单行。以后目录改成 4,500 分，旧订单的退款计算仍取 4,000 分的购买快照。</p>
+<section class="scene" aria-labelledby="解法目录版本与订单快照"><header class="scene-head"><h2 id="解法目录版本与订单快照"><span class="scene-no" aria-hidden="true">02</span><span class="visually-hidden">解法：</span><span class="head">目录版本与订单快照</span></h2></header><p class="scene-lede">订单接受时把目录版本、单价和优惠分配复制成订单行快照，此后目录怎样改都不影响已接受的订单；订单、分配、发货、退货、退款和结算各由自己的负责方推进状态。</p>
+<p>目录中的 variant 表示一个可销售的规格，例如“陶瓷茶杯／白色／300 mL”。库存单位（stock keeping unit，<abbr title="stock keeping unit：库存单位">SKU</abbr>）是业务识别码，不能代替不可变的内部身份；SKU 改名或被重新使用，既有订单都不受影响。系统让目录管理员发布带版本的名称、规格、价格和可销售规则，客户提交时由服务端重新确认版本，再把接受的内容、单价、优惠分配和规则版本复制到订单行。以后目录改成 4,500 分，旧订单的退款计算仍取 4,000 分的购买快照。</p>
 <p>顾客只能请求购买、取消未交接的部分或申请退货；客服可以批准符合政策的退货，却不能凭聊天记录宣布钱已退到顾客账户。库存服务掌握各仓的可用数量，仓库操作员确认拣货和实物交接，财务审核退款及结算差异。超过客服权限额度的退款转交复核；审核人在确认页上能看到原付款、已有退款、本次金额和剩余额度。租户、商店、仓库与支付账户的对应关系由服务端决定，服务端不信任浏览器提交的 <code>tenant_id</code>。</p>
 <p>Shopify 的公开模型区分 <code>Order</code>、<code>FulfillmentOrder</code> 和 <code>Fulfillment</code>：履约单组织同一地点要履约的项目与数量，实际履约记录另含发货项目和追踪信息；一个订单还可能包含不同的交付方式。真实产品同样把承诺、安排和发货证据分开记录。参见 <a href="https://shopify.dev/docs/apps/build/orders-fulfillment/order-management-apps#api-objects-and-relationships" class="ext" rel="noopener">Apps in order management，API objects and relationships</a>。</p>
 <div class="table-wrap"><table>
@@ -107,7 +109,8 @@
 <p>北仓有茶杯 2 个、杯盖 2 个，南仓有茶杯 1 个、杯盖 0 个。库存服务先校验商品是否可售、价格是否正确，再按库存行的版本号创建分配：北仓 4 件，南仓 1 件。对单仓单规格，<code>可用量 = 实存量 − 有效占用量</code>。占量与 allocation 写入同一个数据库事务；两个订单同时争最后一个杯子时，只允许一个条件更新成功。</p>
 <p>北仓先发货后，订单汇总显示“已交接 4／5，另 1 件已占待交接”，而不是“已发货”。南仓迟迟未确认时，客服可以催办或请求取消这一份，但系统要先确认南仓还没有交接。若实物已经出库而本地回执丢失，直接释放占用会让另一位顾客买到并不存在的库存。</p>
 </section>
-<section class="scene" aria-labelledby="按钮与提交边界"><header class="scene-head"><h2 id="按钮与提交边界"><span class="scene-no" aria-hidden="true">04</span><span class="head">按钮与提交边界</span></h2></header><p class="scene-lede">商品页允许按规格选购，购物车只给预估；结账确认页显示服务端重新计算的价格和拆分交付方案。目录版本若有变化，界面保留选项并列出差额，要求顾客接受新报价，价格冲突按价格冲突提示。订单页并列展示付款、各仓份额、每批追踪和退货退款卡片。订单列表读的是查询投影，详情页标出最后一次核对的时间；用户离开再回来，仍能凭同一个操作身份找到这次提交的结果。</p>
+<section class="scene" aria-labelledby="按钮与提交边界"><header class="scene-head"><h2 id="按钮与提交边界"><span class="scene-no" aria-hidden="true">04</span><span class="head">按钮与提交边界</span></h2></header><p class="scene-lede">界面提交的是带操作身份、版本和证据引用的请求，结果以服务端记录和外部证据为准；结果未知时，页面只让人回查原请求。</p>
+<p>商品页允许按规格选购，购物车只给预估；结账确认页显示服务端重新计算的价格和拆分交付方案。目录版本若有变化，界面保留选项并列出差额，要求顾客接受新报价，价格冲突按价格冲突提示。订单页并列展示付款、各仓份额、每批追踪和退货退款卡片。订单列表读的是查询投影，详情页标出最后一次核对的时间；用户离开再回来，仍能凭同一个操作身份找到这次提交的结果。</p>
 <p>仓库操作员点击“确认交接”时，提交 <code>operation_id、allocation_id、expected_version、quantity、交接证据引用</code>。服务校验该仓的权限及未交接量，在事务中保存状态和待通知事件，然后返回“交接已记录”。异步 worker 再把这次交接通知其他系统；承运人是否送达，以发货批次的交付证据为准。客服点击“退款”时，先拿到退款金额的计算预览，提交的请求绑定这份预览的版本和原付款；等待页依次区分“请求已保存”“支付方处理中”“结果待核对”“已确认退款”。结果为 unknown 时，页面只提供“重新查询”，不提供“换一个请求再退”。</p>
 <p>结构数据里的拓扑用几种边表示关系：人使用界面记为 <code>operates</code>，界面发出动作记为 <code>commands</code>，对事实负责的一方记为 <code>owns</code>，记录保存的位置记为 <code>stores</code>。本地操作送往仓储或支付系统记为 <code>requests</code>；<code>emits → delivers</code> 只表示通知的交接，商品实际移动仍以 shipment 和 return 的证据为准。对象状态投影到界面记为 <code>projects</code>，投影不能反过来当作授权依据。支付 provider 节点是可替换的边界。</p>
 <p>一个可以实现的起点是用 React 或 Vue 做订单工作台，服务端用 TypeScript/NestJS 或 Python/Django，PostgreSQL 保存订单行快照、库存、分配与资金操作。前端选 React 还是 Vue，取决于团队的维护成本。PostgreSQL 的事务与唯一约束适合数量和金额的竞争更新。队列起初可以用数据库 outbox 加 worker 实现，量大了再换托管消息队列；引入队列会多出交接点，业务唯一键仍要保留。Redis 可以缓存目录和订单列表，不掌握最终的可用量。</p>
@@ -214,14 +217,17 @@
 </svg>
 </div>
 <figcaption>逐件选最便宜的仓，杯子交给 A，多开一包，总成本 9；全部从 B 发只开一包，总成本 5。</figcaption></figure></section>
-<section class="scene" aria-labelledby="退货退款与结算核对"><header class="scene-head"><h2 id="退货退款与结算核对"><span class="scene-no" aria-hidden="true">06</span><span class="head">退货、退款与结算核对</span></h2></header><p class="scene-lede">正常路径中，两仓分别交接，承运证据确认交付；退货申请引用原发货行，仓库收件后检验。茶杯完好返库，杯盖有划痕进入隔离，可售库存分别增加 1 和 0。财务按批准金额发起 4,642 分的退款，确认成功后才计入已退款合计。未交接商品经核实取消后，依据原订单的取消记录发起退款。两种退款都受原付款和原单位实付的上限约束。Shopify 文档把 return 定义为买方退回商品的意图，并说明 <code>returnProcess</code> 可处理全部、部分或延后退款，以及是否重新入库的处置；这支持把退回的实物和退款分开跟踪。参见 <a href="https://shopify.dev/docs/apps/build/orders-fulfillment/returns-apps/build-return-management#step-9-issue-a-refund-and-dispose-return-items" class="ext" rel="noopener">Build for return management，Step 1 与 Step 9</a>。</p>
+<section class="scene" aria-labelledby="退货退款与结算核对"><header class="scene-head"><h2 id="退货退款与结算核对"><span class="scene-no" aria-hidden="true">06</span><span class="head">退货、退款与结算核对</span></h2></header><p class="scene-lede">退回的实物、退款和结算分别凭验收记录、支付交易和结算明细确认，一项完成推不出另一项；净待结算额也不等于顾客净支付额。</p>
+<p>正常路径中，两仓分别交接，承运证据确认交付；退货申请引用原发货行，仓库收件后检验。茶杯完好返库，杯盖有划痕进入隔离，可售库存分别增加 1 和 0。财务按批准金额发起 4,642 分的退款，确认成功后才计入已退款合计。未交接商品经核实取消后，依据原订单的取消记录发起退款。两种退款都受原付款和原单位实付的上限约束。Shopify 文档把 return 定义为买方退回商品的意图，并说明 <code>returnProcess</code> 可处理全部、部分或延后退款，以及是否重新入库的处置；这支持把退回的实物和退款分开跟踪。参见 <a href="https://shopify.dev/docs/apps/build/orders-fulfillment/returns-apps/build-return-management#step-9-issue-a-refund-and-dispose-return-items" class="ext" rel="noopener">Build for return management，Step 1 与 Step 9</a>。</p>
 <p>只有退款记录，还不能说明资金已经处理成功；Shopify 的 <code>Refund</code> 文档明确要求查看关联的 <code>OrderTransaction</code> 状态。参见 <a href="https://shopify.dev/docs/api/admin-graphql/latest/objects/Refund" class="ext" rel="noopener">Refund，说明与 transactions</a>。本例的退款 worker 若在支付方受理后超时，把原尝试保留为 unknown，按支付账户和外部交易身份查询；核对为成功后追加成功的证据，不再创建第二笔退款。重复到达的通知只作用于同一笔退款；晚到的 pending 不能覆盖已核实的成功。Stripe 的文档说明事件可能重复、送达不保证顺序，并要求验证签名；本例的回调消费者按这几种情形处理。参见 <a href="https://docs.stripe.com/webhooks" class="ext" rel="noopener">Stripe Webhooks，Event ordering 与 Handle duplicate events</a>。</p>
 <p>本例再假设支付手续费固定为 260 分、不退还，收款和退款落在同一个结算批次。净待结算额为 <code>12999 − 4642 − 260 = 8097</code> 分。它不是 8,357 分的顾客净支付额，也不是利润。若 provider 实际先结算收款、后扣退款，应分别显示两批及尚未结算的余额，不能强行要求某一笔银行入账恰好等于 8,097。核对时先按交易身份匹配，再核对金额、币种、批次和手续费；金额相同，不能证明是同一笔付款。</p>
 </section>
-<section class="scene" aria-labelledby="验算规模目标与失败检查"><header class="scene-head"><h2 id="验算规模目标与失败检查"><span class="scene-no" aria-hidden="true">07</span><span class="visually-hidden">验算：</span><span class="head">规模目标与失败检查</span></h2></header><p class="scene-lede">负载目标为 100 家商店、每店 2 万个活跃 SKU、平台峰值每秒 100 张订单、每单最多 50 行；单个热门 SKU 可占写入的 30%。目录热缓存下读取 p95 目标 200 ms，本地订单接受及占量 p95 目标 500 ms，不含支付和物流的网络耗时。这些是待测的目标，尚未实测。缓存 key 包含 tenant、商品版本与币种；目录发布新版本后，旧版本不再用于新报价，历史订单照常有效。热点库存按仓库和 SKU 串行化条件更新。定时扫描最早的 unknown 结果和未送达的 outbox 记录，比只看平均请求延迟更能发现还欠着顾客结果的操作。</p>
+<section class="scene" aria-labelledby="验算规模目标与失败检查"><header class="scene-head"><h2 id="验算规模目标与失败检查"><span class="scene-no" aria-hidden="true">07</span><span class="visually-hidden">验算：</span><span class="head">规模目标与失败检查</span></h2></header><p class="scene-lede">规模目标尚未实测；验算的重点是在目标负载下找出还欠着顾客结果的操作，并让故意写错的实现在反例输入上失败。</p>
+<p>负载目标为 100 家商店、每店 2 万个活跃 SKU、平台峰值每秒 100 张订单、每单最多 50 行；单个热门 SKU 可占写入的 30%。目录热缓存下读取 p95 目标 200 ms，本地订单接受及占量 p95 目标 500 ms，不含支付和物流的网络耗时。这些是待测的目标，尚未实测。缓存 key 包含 tenant、商品版本与币种；目录发布新版本后，旧版本不再用于新报价，历史订单照常有效。热点库存按仓库和 SKU 串行化条件更新。定时扫描最早的 unknown 结果和未送达的 outbox 记录，比只看平均请求延迟更能发现还欠着顾客结果的操作。</p>
 <p>验算沿 <abbr title="user interface：用户界面">UI</abbr>、命令记录、数量账、外部核对和投影逐段收集证据。<a href="../../../vault/distilled/saas-engineering-atlas/packages/commerce-property/V04.json">结构数据</a>定义了七种必需路径及额外的反例：两人抢最后一件；重复的退款通知；迟到的待发状态；跨商店同号订单与缓存；退款受理后断网；占量提交后 worker 崩溃；部分发货取消；不合格退货被错误加回可售库存；分批退款总额溢出；结算扣费遗漏。尤其要留一个故意写错的实现：退款一成功就把库存加回去；用“已退款但货未寄回”的输入测试，它必须失败。本例没有模型参与定价、批准或状态确认，<abbr title="artificial intelligence：人工智能">AI</abbr> eval 不适用。</p>
 </section>
-<section class="scene" aria-labelledby="变式条件改变后的判断"><header class="scene-head"><h2 id="变式条件改变后的判断"><span class="scene-no" aria-hidden="true">08</span><span class="visually-hidden">变式：</span><span class="head">条件改变后的判断</span></h2></header><p class="scene-lede"><strong>练习一：南仓实际已交接，但回执丢失，顾客要求取消最后一个茶杯。</strong> 能否立即把剩余 1 件释放并退款？</p>
+<section class="scene" aria-labelledby="变式条件改变后的判断"><header class="scene-head"><h2 id="变式条件改变后的判断"><span class="scene-no" aria-hidden="true">08</span><span class="visually-hidden">变式：</span><span class="head">条件改变后的判断</span></h2></header><p class="scene-lede">回执缺失或目录涨价时，判断仍回到两条不变量：每份数量只有一个当前去向，每件退款不超过它原来分到的实付。</p>
+<p><strong>练习一：南仓实际已交接，但回执丢失，顾客要求取消最后一个茶杯。</strong> 能否立即把剩余 1 件释放并退款？</p>
 <p>简答：不能立即释放和退款。每一份数量只能有一个当前去处，本地缺回执也不能说明实物没动：先把这份分配转入待核对，按交接身份向仓库查询；确认未交接再取消并释放，已交接则转拦截或按退货政策处理。反例是先释放、后收到交接回执，两个订单共占一件并不存在的货。检查回执迟到后数量没有变成负数、货没有第二次售出，顾客页面仍显示取消待确认的原因。若仓库给不出交接身份或交接证据，自动恢复的前提就不成立，转由仓库主管核查。（<code>TR:V04:V05:irreversible-handoff</code>）</p>
 <p><strong>练习二：两只杯盖先后分两次退货，目录已经涨价到 1,200 分。</strong> 两次各退多少？</p>
 <p>简答：按原 unit ID 分别退 928 分和 929 分，共 1,857 分。不变量是：这两件的累计退款不超过各自原来分到的实付，整单全退最多 12,999 分。反例是两次都退 929，多退 1 分。检查时调换退货顺序，累计仍为 1,857 分。若销售政策允许额外赔偿，另立 goodwill adjustment 并授权，不能把赔偿塞进原商品的退款上限。</p>
@@ -360,8 +366,8 @@
     <footer class="page-foot">正文 <a href="../../../books/saas-engineering/packages/commerce-property/V04.md">books/saas-engineering/packages/commerce-property/V04.md</a> · <a href="../../../vault/distilled/saas-engineering-atlas/README.md">结构、来源与验证</a></footer>
   </main>
 </div>
-<script src="search-index.js?v=mv9186ug"></script>
-<script src="book.js?v=mv9186ug"></script>
-<script src="fig-v04-allocation.js?v=mv9186ug"></script>
+<script src="search-index.js?v=mv95jeod"></script>
+<script src="book.js?v=mv95jeod"></script>
+<script src="fig-v04-allocation.js?v=mv95jeod"></script>
 </body>
 </html>

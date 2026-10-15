@@ -18,6 +18,7 @@
 | 有界试用的工作约定 | [8 条候选约定](candidate-convention.md) |
 | 真实章节、留出路线、主笔交接与采纳条件 | [SaaS 试用计划](saas-dogfood-plan.md) |
 | 2026-10-15 在 SaaS 教材上的事后对照与 Kit 候选 | [试用记录](saas-trial-20261015.md) |
+| 用户交来的《知识组织与解释性写作规范》的结构取舍 | [取用与退回](knowledge-organization-spec-20261015.md) |
 | 实际检查与未完成范围 | [验证记录](verification.md)、[来源获取历史](history.json) |
 
 最具体的配置发现是：AI Infra 的历史第 4 章回执与当前稿 hash 不同，部分输出说明也落后于工作流；AI Agent 的多语言计数检查与图注转换有实际实现，但不等于翻译和教学审阅。两例都支持把“协议、实现、配置调用、实际回执”分别记录。

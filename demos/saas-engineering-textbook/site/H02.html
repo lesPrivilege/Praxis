@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>H02 · 请购、验收、发票匹配与付款 · SaaS 工程全景</title>
-<link rel="stylesheet" href="book.css?v=mv9186ug">
+<link rel="stylesheet" href="book.css?v=mv95jeod">
 </head>
 <body>
 <a class="skip" href="#main">跳到正文</a>
@@ -20,7 +20,8 @@
 <header class="hero">
 <p class="kicker"><a href="group-commercial-finance.html">交易、财务与资金</a><span class="dot">·</span>H02</p>
 <h1>请购、验收、发票匹配与付款</h1>
-<p class="lede">企业付出的每一笔采购款，都应对应自己授权购买、确实收到并按约接受的东西，金额也要正确。请购证明“有人需要”，采购单证明“企业作了承诺”，收货与检验证明“供应商交了什么”，发票表达“供应商要求结算多少”，银行记录证明“资金发生了什么”。这几种证据可能相隔数天才到；采购系统把它们连到同一批义务上，彼此的分歧照样保留。</p>
+<p class="lede">企业付出的每一笔采购款，都应对应自己授权购买、确实收到并按约接受的东西，金额也要正确。请购证明“有人需要”，采购单证明“企业作了承诺”，收货与检验证明“供应商交了什么”，发票表达“供应商要求结算多少”，银行记录证明“资金发生了什么”。这几种证据可能相隔数天才到；采购系统把它们连到同一批义务上，彼此的分歧照样保留。机制是按累计量占用证据：同一采购单行的订购、收货和合格余额，被每张有效发票依次扣减，余额检查与分配在同一事务提交；发票匹配锚定在哪一级，与放行付款需要哪些证据分开决定。本章还处理 hold 的解除、付款结果未知时的核对，以及匹配后验收数量改变怎样回到发票和付款。每张发票单看都够、合起来却超量，是最常见的错判。</p>
+
 <div class="cast" aria-label="本例的角色、界面与系统">
 <div class="cast-lane"><p class="cast-k">角色</p><ul><li>请购申请人</li><li>预算负责人</li><li>仓管</li><li>检验员</li><li>应付会计</li><li>资金制单与复核角色</li></ul></div>
 <div class="cast-lane"><p class="cast-k">界面</p><ul><li>采购付款工作台</li></ul></div>
@@ -33,7 +34,8 @@
       <aside class="rail" aria-label="本页进度"><ol><li><a href="#识题从现象到方法"><span class="rn">01<span class="of"> / 09</span></span><span class="rt">从现象到方法</span></a></li><li><a href="#解法分角色的证据与审批"><span class="rn">02<span class="of"> / 09</span></span><span class="rt">分角色的证据与审批</span></a></li><li><a href="#演算累计分配与可付余额"><span class="rn">03<span class="of"> / 09</span></span><span class="rt">累计分配与可付余额</span></a></li><li><a href="#匹配算法与差异解释"><span class="rn">04<span class="of"> / 09</span></span><span class="rt">匹配算法与差异解释</span></a></li><li><a href="#技术选型"><span class="rn">05<span class="of"> / 09</span></span><span class="rt">技术选型</span></a></li><li><a href="#正常路径与故障接管"><span class="rn">06<span class="of"> / 09</span></span><span class="rt">正常路径与故障接管</span></a></li><li><a href="#验算检查项与所需证据"><span class="rn">07<span class="of"> / 09</span></span><span class="rt">检查项与所需证据</span></a></li><li><a href="#变式条件变化与迁移"><span class="rn">08<span class="of"> / 09</span></span><span class="rt">条件变化与迁移</span></a></li><li><a href="#case-structure"><span class="rn">09<span class="of"> / 09</span></span><span class="rt">对象、生命周期与迁移</span></a></li></ol></aside>
       <div class="flow">
 <p><a href="H01.html">H01</a> 的承诺与履约模型换到买方一侧，多出了数量约束。本例设一个法人、一个币种，采购 100 件零件，每件 10.00 记账单位；不计税、运费、汇率及预付款。实物流由收货和检验证明，现金流由银行确认。税务处理、付款法律效力、供应商银行账户变更与特殊采购例外，需要企业自己的制度和专业复核。</p>
-<section class="scene" aria-labelledby="识题从现象到方法"><header class="scene-head"><h2 id="识题从现象到方法"><span class="scene-no" aria-hidden="true">01</span><span class="visually-hidden">识题：</span><span class="head">从现象到方法</span></h2></header><div class="table-wrap"><table>
+<section class="scene" aria-labelledby="识题从现象到方法"><header class="scene-head"><h2 id="识题从现象到方法"><span class="scene-no" aria-hidden="true">01</span><span class="visually-hidden">识题：</span><span class="head">从现象到方法</span></h2></header><p class="scene-lede">超量看累计占用，质量未定看证据层级，付款超时先核对原尝试。</p>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>识题线索</th>
@@ -58,7 +60,8 @@
 </tr>
 </tbody></table></div>
 </section>
-<section class="scene" aria-labelledby="解法分角色的证据与审批"><header class="scene-head"><h2 id="解法分角色的证据与审批"><span class="scene-no" aria-hidden="true">02</span><span class="visually-hidden">解法：</span><span class="head">分角色的证据与审批</span></h2></header><p class="scene-lede">预算负责人可以批准买 100 件，但没有看到仓库后来的短交；仓管可以证明收到 80 件，却未必有资格判定质量；应付会计能检查发票，却不能替银行确认付款。如果系统只用一个 invoice.approved 状态代表这些人的判断，一次早先的批准就会在对象已经变化之后继续放行付款。</p>
+<section class="scene" aria-labelledby="解法分角色的证据与审批"><header class="scene-head"><h2 id="解法分角色的证据与审批"><span class="scene-no" aria-hidden="true">02</span><span class="visually-hidden">解法：</span><span class="head">分角色的证据与审批</span></h2></header><p class="scene-lede">每个角色只证明自己负责的那部分事实，所以请购、收货、验收、发票匹配和付款各有对象和状态，不用一个批准状态代表全部判断。</p>
+<p>预算负责人可以批准买 100 件，但没有看到仓库后来的短交；仓管可以证明收到 80 件，却未必有资格判定质量；应付会计能检查发票，却不能替银行确认付款。如果系统只用一个 invoice.approved 状态代表这些人的判断，一次早先的批准就会在对象已经变化之后继续放行付款。</p>
 <p>Oracle Procurement 的 <strong>Match Approval Level</strong> 区分 Two-Way、Three-Way 和 Four-Way：从两方到四方，数量核对依次加入 receipt 数量和 inspection 中的 accepted quantities。文档还说明，它与 <strong>invoice match option</strong> 是两项独立配置，后者决定发票匹配到采购单还是收货记录。<a href="https://docs.oracle.com/en/cloud/saas/procurement/26b/oapro/match-approval-level-options.html" class="ext" rel="noopener">Oracle Match Approval Level Options</a>。由此推论：发票匹配锚定在哪一级，与放行付款需要哪些证据，要分开决定。本例把发票匹配到采购单行，放行时要求四方数量证据；改用别的锚点，验收证据照样要有。</p>
 <div class="table-wrap"><table>
 <thead>
@@ -97,7 +100,8 @@
 <p>本例实行职责分离：申请人不能批准自己的请购，检验员不能发起付款，付款审批人与制单人不是同一人。服务端按租户、法人、角色和对象版本验证权限；页面隐藏按钮只起提示作用。名称相同不说明是同一家供应商；发票号的防重键为 <code>(tenant, legal_entity, supplier_id, normalized_invoice_number)</code>，规范化时要保留原串并处理冲突。文档哈希相同可以提示重复，但单凭哈希分辨不了重新扫描、合法重开和贷项通知。</p>
 <p>各对象的生命周期各自推进。请购从 draft 到 submitted，再由负责人批准或驳回；已获批的采购单修改时生成新版本，旧版本保留。收货从 recorded 到 inspected，部分检验期间仍可保留 pending 数量；退货作为关联原收货的调整。发票从 captured 到 matched 或 held，解除 hold 时要记录新证据和重新匹配的结果；本例整张发票有 hold 就不付款，不单独支付其中能匹配的部分。付款从 prepared、authorized 到 submitted，之后可能是 unknown、settled 或 rejected；银行后来确认退回，另记一条 return 事实，settled 的历史照旧保留。各状态转换的 guard 见 <a href="../../../vault/distilled/saas-engineering-atlas/packages/commercial-finance/H02.json">H02.json</a>。</p>
 </section>
-<section class="scene" aria-labelledby="演算累计分配与可付余额"><header class="scene-head"><h2 id="演算累计分配与可付余额"><span class="scene-no" aria-hidden="true">03</span><span class="visually-hidden">演算：</span><span class="head">累计分配与可付余额</span></h2></header><p class="scene-lede">假设第一批收到 80 件，其中 75 件验收合格，5 件仍待检验。供应商的发票 A 为 70 件，单价 10.10，总额 707.00。本例数量容差为零，单价允许比采购单高 2%；这是一条显式案例政策，不是 Oracle 的默认值。匹配时先统一单位，再看同一采购单行的累计值：</p>
+<section class="scene" aria-labelledby="演算累计分配与可付余额"><header class="scene-head"><h2 id="演算累计分配与可付余额"><span class="scene-no" aria-hidden="true">03</span><span class="visually-hidden">演算：</span><span class="head">累计分配与可付余额</span></h2></header><p class="scene-lede">可付范围取订单、收货、合格三项余额中最小的一项，并扣除已被有效发票占用的数量；本例发票 A 全额通过，B 因合格余额只剩 5 件被 hold。</p>
+<p>假设第一批收到 80 件，其中 75 件验收合格，5 件仍待检验。供应商的发票 A 为 70 件，单价 10.10，总额 707.00。本例数量容差为零，单价允许比采购单高 2%；这是一条显式案例政策，不是 Oracle 的默认值。匹配时先统一单位，再看同一采购单行的累计值：</p>
 <ul>
 <li>已分配数量为 0，因此可用订单量为 100，可用收货量为 80，可用合格量为 75。A 的 70 件不超过其中任何一个余额。</li>
 <li>单价差率为 <code>(10.10 − 10.00) / 10.00 = 1%</code>，在 2% 以内；<code>70 × 10.10 = 707.00</code>。通过后，在同一事务里写入 A 占用 70 件的分配，剩余合格量为 5 件。</li>
@@ -117,12 +121,14 @@
 <p>关系数据库适合把发票版本、数量分配和 operation 唯一约束放在一个事务里提交。若采用 PostgreSQL，可以先锁定采购单行的余额记录，再重新判断；涉及多行时按同一 <abbr title="identifier：标识符">ID</abbr> 顺序取锁，以减少死锁。官方文档说明 <code>FOR UPDATE</code> 会阻挡其他事务对同一行的冲突修改，锁通常保持到事务结束，死锁则可能导致事务被中止。<a href="https://www.postgresql.org/docs/current/explicit-locking.html" class="ext" rel="noopener">Explicit Locking §13.3.2、§13.3.4</a>。文档说明的只是数据库机制，业务代码是否正确加锁要另行检查；等待银行响应的网络付款不能放在持锁事务里。</p>
 <p>发票原件放对象存储，事务库只保存受权限保护的引用、哈希和解析版本；对外公开的材料不保存真实票据或访问凭据。队列可以先用数据库 outbox 加后台 worker 实现；吞吐、消费者独立扩缩容或重放的需求确实增加后，再考虑 RabbitMQ/Kafka。引入消息平台会多出运维和去重的工作，数据库写入与银行转账也不会因此变成同一事务。工作台读缓存的键包含租户、法人、对象与投影版本；正式匹配和付款授权不读取缓存余额。</p>
 </section>
-<section class="scene" aria-labelledby="正常路径与故障接管"><header class="scene-head"><h2 id="正常路径与故障接管"><span class="scene-no" aria-hidden="true">06</span><span class="head">正常路径与故障接管</span></h2></header><p class="scene-lede">正常路径从已获批的 PO 开始：仓管登记 80 件；检验员接受 75 件；会计录入 A 并预览 70 件分配；服务端按当前版本提交匹配；资金人员批准 707.00；worker 发出已保存的 PAY-A；银行确认结果后，付款状态与投影随之更新。会计既能看到 A 的付款证据，也能看到 B 的 hold；“订单已付”这样的标签遮不住尚未了结的 B。</p>
+<section class="scene" aria-labelledby="正常路径与故障接管"><header class="scene-head"><h2 id="正常路径与故障接管"><span class="scene-no" aria-hidden="true">06</span><span class="head">正常路径与故障接管</span></h2></header><p class="scene-lede">正常路径上每一步只推进自己的对象；故障时以保留的付款身份和数量占用为准，先核对外部结果，再释放或修正。</p>
+<p>正常路径从已获批的 PO 开始：仓管登记 80 件；检验员接受 75 件；会计录入 A 并预览 70 件分配；服务端按当前版本提交匹配；资金人员批准 707.00；worker 发出已保存的 PAY-A；银行确认结果后，付款状态与投影随之更新。会计既能看到 A 的付款证据，也能看到 B 的 hold；“订单已付”这样的标签遮不住尚未了结的 B。</p>
 <p>最难恢复的窗口在外部受理与本地收到结果之间。若银行接受 PAY-A 后连接断开，本地仍保留 PAY-A 的身份、707.00、收款人版本与 unknown 状态。核对任务确认是同一笔外部交易后，更新为 settled；若一直查不到，操作员必须取得“未受理”的充分证据或按银行协议处理，不能把查询暂时无结果当作确定失败。旧的 submitted 通知晚于 settled 到达时，接收记录可以保留，已核对的结果不倒退。银行后来确认款项退回时，新增一条退回记录，义务重新变为待处理；这是新发生的事件，与旧消息乱序到达是两回事。</p>
 <p>验收数量也可能在匹配之后改变。检验记录在发票匹配后由 75 改为 68 件：若付款尚未发送，匹配快照失效，发票重新置 hold；若付款处于 submitted 或 unknown，先冻结新的付款与释放动作，保留原尝试与数量占用，再核对银行，确定未执行且解除分配获批后才释放占用，已成功则转入差异案件；若已经 settled，就立差异案件，走退货/贷项处理。回滚数据库追不回已经转出的资金。重新匹配完成后才允许解除 hold。如果业务需要手工“强制通过”，应做成限定权限、写明原因并留存审批证据的例外流程；本例不实现。</p>
 <p>假设 100 个租户、100 万张历史发票，每天新入 5 万张，每张平均 5 行；高峰每秒 30 次匹配、100 个并发用户，10% 流量集中在同一大供应商。待测目标为：单张 50 行以内的预览 p95 500 毫秒、正式匹配 p95 1 秒，都从 <abbr title="application programming interface：应用程序接口">API</abbr> 接收计到提交或明确拒绝，不含银行等待，银行延迟另报。同一采购单热点、缓存未命中、长队列与锁冲突要单独测。收件 2 秒、投影 5 秒内可见只是目标；正确性指标始终要求零重复付款、零跨租户读取、零未经例外授权的超额占用。每个租户的后台并发设上限，避免一次批量导入挤占其他租户。</p>
 </section>
-<section class="scene" aria-labelledby="验算检查项与所需证据"><header class="scene-head"><h2 id="验算检查项与所需证据"><span class="scene-no" aria-hidden="true">07</span><span class="visually-hidden">验算：</span><span class="head">检查项与所需证据</span></h2></header><div class="table-wrap"><table>
+<section class="scene" aria-labelledby="验算检查项与所需证据"><header class="scene-head"><h2 id="验算检查项与所需证据"><span class="scene-no" aria-hidden="true">07</span><span class="visually-hidden">验算：</span><span class="head">检查项与所需证据</span></h2></header><p class="scene-lede">验收看三件事同时成立：累计分配不超过合格量，同一义务只出现一笔资金交易，租户之间不交叉。</p>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>检查情境</th>
@@ -165,7 +171,8 @@
 <p>以上是端到端验收定义；所需的操作记录、数据库状态与外部 stub/银行证据列在 <abbr title="JavaScript Object Notation：结构化数据表示格式，后文保留 JSON">JSON</abbr> 的 checks 中。配套脚本核验的是数量与金额守恒；数据库并发、真实银行、浏览器和性能仍要另行实测。</p>
 <p>确定性匹配不需要 <abbr title="artificial intelligence：人工智能">AI</abbr>。若加入票据 OCR 或模型抽取，模型只生成待确认的字段和页码位置，不能替代收货、验收或银行账户的权威记录。评估可以冻结 200 张未参与提示词调试的合成票据，覆盖多页、重复票号、不同单位、小数点模糊与币种冲突。报告以下指标：金额、币种、供应商身份逐字段完全正确的数量；错误自动接受数占自动接受数的比例；应拒绝却被接受的数量占歧义样本数的比例；人工更正数占全部样本数的比例；拒绝率。关键身份或金额不确定时转人工。分母、模型版本、解析版本与实际结果单独记录。</p>
 </section>
-<section class="scene" aria-labelledby="变式条件变化与迁移"><header class="scene-head"><h2 id="变式条件变化与迁移"><span class="scene-no" aria-hidden="true">08</span><span class="visually-hidden">变式：</span><span class="head">条件变化与迁移</span></h2></header><p class="scene-lede"><strong>练习一：B 仍为 10 件、处于 held 且尚未修订，5 件待检零件全部合格。</strong> B 能否付款？</p>
+<section class="scene" aria-labelledby="变式条件变化与迁移"><header class="scene-head"><h2 id="变式条件变化与迁移"><span class="scene-no" aria-hidden="true">08</span><span class="visually-hidden">变式：</span><span class="head">条件变化与迁移</span></h2></header><p class="scene-lede">累计分配、承诺与验收证据在条件改变后仍然成立；变的是证据单位和授权：验收量增加要重新匹配并重新授权，件数换成里程碑时，由验收标准和承诺额度代替件数。</p>
+<p><strong>练习一：B 仍为 10 件、处于 held 且尚未修订，5 件待检零件全部合格。</strong> B 能否付款？</p>
 <p>简答：能，但要重新匹配并取得授权。累计分配不变量照旧，accepted 从 75 改为 80；A 仍占用 70，B 可用 10，价格仍在规则内。本题没有先前那 5 件的 B 分配；若主线的 B5 已经匹配，剩余额度只有 5，不能复活旧的 B10 再占用。系统必须记录新的验收版本、重新运行匹配并取得付款授权，不能因为列表由红变绿就自动付款。反例是用验收缓存解除 hold，却仍按旧收款账户支付。检查分配合计为 80、没有重复的 PAY-B、付款预览引用当前的发票与银行账户版本。</p>
 <p><strong>练习二：采购对象改为一个 1,000 单位的咨询里程碑，没有件数。</strong> 四方匹配能否原样使用？</p>
 <p>简答：不能原样使用。承诺、履约证据与结算分配仍然保留；“件数”换成有明确验收标准的里程碑金额或可验证的工作量，范围变更另立版本。任意的“完成 80%”换算不成 80 件实体物料；合同不允许按进度付款时，完成 80% 也不释放 800。检查里程碑是否达到约定的 guard，以及发票累计金额是否占用同一份承诺额度。这个模型可以连接 V20 的工单验收，但工单完成并不意味着付款已获授权。</p>
@@ -311,8 +318,8 @@
     <footer class="page-foot">正文 <a href="../../../books/saas-engineering/packages/commercial-finance/H02.md">books/saas-engineering/packages/commercial-finance/H02.md</a> · <a href="../../../vault/distilled/saas-engineering-atlas/README.md">结构、来源与验证</a></footer>
   </main>
 </div>
-<script src="search-index.js?v=mv9186ug"></script>
-<script src="book.js?v=mv9186ug"></script>
+<script src="search-index.js?v=mv95jeod"></script>
+<script src="book.js?v=mv95jeod"></script>
 
 </body>
 </html>

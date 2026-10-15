@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>第八章：用可说明的误差换取空间与速度 · SaaS 工程全景</title>
-<link rel="stylesheet" href="book.css?v=mv9186ug">
+<link rel="stylesheet" href="book.css?v=mv95jeod">
 </head>
 <body>
 <a class="skip" href="#main">跳到正文</a>
@@ -20,17 +20,19 @@
 <header class="hero">
 <p class="kicker"><a href="fdn.html">计算与系统方法</a><span class="dot">·</span>第八章</p>
 <h1>用可说明的误差换取空间与速度</h1>
-<p class="lede">“可能见过”“大约多少”“最相似的候选”，分别对应集合成员筛选、去重数量估计和近邻搜索。</p>
+<p class="lede">“可能见过”“大约多少”“最相似的候选”，分别由布隆过滤器（Bloom filter）、HyperLogLog（HLL）和近似最近邻搜索（approximate nearest neighbor search，ANN）回答，三者都用可说明的误差换取空间与速度，错误的方向却不同：Bloom 在同步完整时只会误报、不会漏报，HLL 给出带标准误差的去重估计，ANN 可能漏掉真正最近的点。探索、预筛和候选召回适合用近似；结果要用于计费、付款去重、封禁或证据提交时，回到精确集合、可审计的记录或人工复核。</p>
+
 
 </header>
     <div class="reel">
       <aside class="rail" aria-label="本页进度"><ol><li><a href="#识题近似结果的用途"><span class="rn">01<span class="of"> / 05</span></span><span class="rt">近似结果的用途</span></a></li><li><a href="#解法错误方向与补救方式"><span class="rn">02<span class="of"> / 05</span></span><span class="rt">错误方向与补救方式</span></a></li><li><a href="#演算三种近似结构"><span class="rn">03<span class="of"> / 05</span></span><span class="rt">三种近似结构</span></a></li><li><a href="#验算误差的分母与方向"><span class="rn">04<span class="of"> / 05</span></span><span class="rt">误差的分母与方向</span></a></li><li><a href="#变式从估算到计费从候选到证据从预筛到放款去重"><span class="rn">05<span class="of"> / 05</span></span><span class="rt">从估算到计费，从候选到证据，从预筛到放款去重</span></a></li></ol></aside>
       <div class="flow">
-<section class="scene" aria-labelledby="识题近似结果的用途"><header class="scene-head"><h2 id="识题近似结果的用途"><span class="scene-no" aria-hidden="true">01</span><span class="visually-hidden">识题：</span><span class="head">近似结果的用途</span></h2></header><p class="scene-lede">H07 的趋势报表可以展示估算，X01 的用量结算需要按契约核对精确事实；H06 的知识检索可以先给候选，H08 的封禁决定不能凭“相似”自动生效。探索、预筛和候选召回适合用近似；业务确认能否容许误差，要看具体承诺了什么。</p>
+<section class="scene" aria-labelledby="识题近似结果的用途"><header class="scene-head"><h2 id="识题近似结果的用途"><span class="scene-no" aria-hidden="true">01</span><span class="visually-hidden">识题：</span><span class="head">近似结果的用途</span></h2></header><p class="scene-lede">探索、预筛和候选召回适合用近似；业务确认能否容许误差，要看具体承诺了什么。H07 的趋势报表可以展示估算，X01 的用量结算需要按契约核对精确事实；H06 的知识检索可以先给候选，H08 的封禁决定不能凭“相似”自动生效。</p>
 </section>
-<section class="scene" aria-labelledby="解法错误方向与补救方式"><header class="scene-head"><h2 id="解法错误方向与补救方式"><span class="scene-no" aria-hidden="true">02</span><span class="visually-hidden">解法：</span><span class="head">错误方向与补救方式</span></h2></header><p class="scene-lede">这三种近似都牺牲某种精确性，但错误的方向与补救方式各不相同。先说清允许哪一种错，再选近似方法。</p>
+<section class="scene" aria-labelledby="解法错误方向与补救方式"><header class="scene-head"><h2 id="解法错误方向与补救方式"><span class="scene-no" aria-hidden="true">02</span><span class="visually-hidden">解法：</span><span class="head">错误方向与补救方式</span></h2></header><p class="scene-lede">这三种近似都牺牲某种精确性，但错误的方向与补救方式各不相同：Bloom 的阳性回到精确集合核对，HLL 的估计只能合并兼容的摘要、不能相加，ANN 漏召回的项靠扩大搜索预算或补充检索找回。先说清允许哪一种错，再选近似方法。</p>
 </section>
-<section class="scene" aria-labelledby="演算三种近似结构"><header class="scene-head"><h2 id="演算三种近似结构"><span class="scene-no" aria-hidden="true">03</span><span class="visually-hidden">演算：</span><span class="head">三种近似结构</span></h2></header><h3 id="布隆过滤器bloom-filter共享位图与不存在判定">布隆过滤器（Bloom filter）：共享位图与不存在判定</h3>
+<section class="scene" aria-labelledby="演算三种近似结构"><header class="scene-head"><h2 id="演算三种近似结构"><span class="scene-no" aria-hidden="true">03</span><span class="visually-hidden">演算：</span><span class="head">三种近似结构</span></h2></header><p class="scene-lede">三个小例各显出一种错误：Bloom 把从未插入的 C 报成“可能存在”，HLL 的四个桶只演示更新、估不出可靠人数，ANN 召回不到的 B 再怎么精排也回不来。</p>
+<h3 id="布隆过滤器bloom-filter共享位图与不存在判定">布隆过滤器（Bloom filter）：共享位图与不存在判定</h3>
 <p>设位图有 8 位、两个 hash。插入 A 时把第 1、4 位设为 1；插入 B 时把第 4、6 位设为 1。查询 C 的位置为 1、6，两位都是 1，所以回答“可能存在”，尽管 C 从未插入。查询 D 的位置为 2、6，第 2 位为 0，于是回答“确定不在这个过滤器所表示的集合里”。</p>
 <figure class="drawing" data-drawing="f08-bloom"><div class="dw-scroll" style="--dw-min:560px;--dw-max:760px">
 <svg viewBox="100 0 600 250" role="img" aria-labelledby="f08-bloom-t f08-bloom-d">
@@ -124,7 +126,7 @@
 <figcaption>每个桶只记见过的最大位置；重复的 A 算出同一个桶、同一个位置，寄存器不变。</figcaption></figure><p>实际实现还有小范围校正等修正。每项更新访问一个寄存器，在常见的固定宽度 hash 模型下为 O(1)，空间主要由精度参数决定；hash、寄存器布局与精度都兼容的摘要，可以逐桶取最大值合并，合并成本 O(m)。<a href="https://redis.io/docs/latest/develop/data-types/probabilistic/hyperloglogs/" class="ext" rel="noopener">Redis HLL 文档</a>给出其实现的内存与标准误差说明，可作为产品能力的参照。</p>
 <div class="labelled" data-kind="counter"><p class="blk-l">误用反例</p><p>周一独立访客约 100、周二约 100，直接相加得到两日独立访客 200。两日的访客可能完全重合，应合并兼容的摘要，或者精确去重。HLL 列不出这些人，也不能当精确的扣费明细。验算用多个已知的精确集合、不同的基数，比较相对误差的分布；重复项和重复合并都不应改变摘要。一次碰巧相等，证明不了精度。</p></div>
 <h3 id="近似最近邻搜索ann搜索预算与召回">近似最近邻搜索（ANN）：搜索预算与召回</h3>
-<p>把对象表示成向量后，就能在空间里计算距离。近似最近邻搜索（approximate nearest neighbor search，ANN search）为了少做比较，容许漏掉真正最近的点。HNSW（hierarchical navigable small world，分层可导航小世界）用多层邻近图缩小搜索范围；其结构直觉见 <a href="https://arxiv.org/abs/1603.09320" class="ext" rel="noopener">Malkov 与 Yashunin 论文摘要</a>。</p>
+<p>把对象表示成向量后，就能在空间里计算距离。ANN 为了少做比较，容许漏掉真正最近的点。HNSW（hierarchical navigable small world，分层可导航小世界）用多层邻近图缩小搜索范围；其结构直觉见 <a href="https://arxiv.org/abs/1603.09320" class="ext" rel="noopener">Malkov 与 Yashunin 论文摘要</a>。</p>
 <p>设查询向量 Q=(0,0)，四篇文档 A=(1,0)、B=(0,2)、C=(3,0)、D=(4,0)。欧氏距离为 1、2、3、4，精确 Top-2 是 A、B。搜索预算有限，候选过程只看到 A、C、D，精排后返回 A、C，<code>recall@2=|{A,C}∩{A,B}|/2=1/2</code>。把候选重排得再准确，也找不回从未召回的 B。</p>
 <figure class="drawing" data-drawing="f08-ann"><div class="dw-scroll" style="--dw-min:600px;--dw-max:860px">
 <svg viewBox="0 0 690 330" role="img" aria-labelledby="f08-ann-t f08-ann-d">
@@ -166,7 +168,8 @@
 </section>
 <section class="scene" aria-labelledby="验算误差的分母与方向"><header class="scene-head"><h2 id="验算误差的分母与方向"><span class="scene-no" aria-hidden="true">04</span><span class="visually-hidden">验算：</span><span class="head">误差的分母与方向</span></h2></header><p class="scene-lede">Bloom 的误报率，分母是实际不存在的查询数；HLL 比较估算与精确基数，报告误差分布；ANN 的 recall@k 与同一范围、同一距离规则下的精确 Top-K 比较。候选在业务上是否相关，还要另做一层标注。测量时还要固定输入、索引参数与版本，记录构建时间、增量更新延迟、内存和查询尾延迟。</p>
 </section>
-<section class="scene" aria-labelledby="变式从估算到计费从候选到证据从预筛到放款去重"><header class="scene-head"><h2 id="变式从估算到计费从候选到证据从预筛到放款去重"><span class="scene-no" aria-hidden="true">05</span><span class="visually-hidden">变式：</span><span class="head">从估算到计费，从候选到证据，从预筛到放款去重</span></h2></header><p class="scene-lede"><strong>题一。</strong> X01 原本只估算活跃用户数，现在要按独立用户精确收费。<strong>答案：</strong> HLL 可以保留，用于趋势或异常比较；收费要回到可审计的精确身份与计量记录。反例是估算多 1%，就多收 1%。检查账单能否回查到每项应计费的身份与规则版本。</p>
+<section class="scene" aria-labelledby="变式从估算到计费从候选到证据从预筛到放款去重"><header class="scene-head"><h2 id="变式从估算到计费从候选到证据从预筛到放款去重"><span class="scene-no" aria-hidden="true">05</span><span class="visually-hidden">变式：</span><span class="head">从估算到计费，从候选到证据，从预筛到放款去重</span></h2></header><p class="scene-lede">三题的共同判断：近似结构可以留作趋势、预筛或候选召回，承诺精确结果的环节要回到可审计的精确身份与记录。</p>
+<div class="labelled" data-kind="exercise"><p class="blk-l">题一</p><p>X01 原本只估算活跃用户数，现在要按独立用户精确收费。<strong>答案：</strong> HLL 可以保留，用于趋势或异常比较；收费要回到可审计的精确身份与计量记录。反例是估算多 1%，就多收 1%。检查账单能否回查到每项应计费的身份与规则版本。</p></div>
 <div class="labelled" data-kind="exercise"><p class="blk-l">题二</p><p>H06 的常见问题（frequently asked questions，FAQ）候选检索迁移到 V18 的证据检索。<strong>答案：</strong> ANN 召回机制可以保留，但遗漏的代价、权限、保全、来源与版本要求都变了，通常还要用关键词或结构化检索补充，并加人工复核。检查已知必须找到的证据有没有被漏掉，检索候选与可提交的证据分开记录。</p></div>
 <div class="labelled" data-kind="exercise"><p class="blk-l">题三</p><p>V04 放在商品缓存前的 Bloom 过滤器，改用于 V12 的放款请求去重。<strong>答案：</strong> 同步条件满足时，阴性可以省去一次无效查询；阳性必须查权威的操作台账。放款去重依赖持久化的唯一业务身份。把 Bloom 当台账，会把一次误报变成漏放款。</p></div>
 </section>
@@ -176,8 +179,8 @@
     <footer class="page-foot">正文 <a href="../../../books/saas-engineering/foundations/08-approximation-and-search.md">books/saas-engineering/foundations/08-approximation-and-search.md</a> · <a href="../../../vault/distilled/saas-engineering-atlas/README.md">结构、来源与验证</a></footer>
   </main>
 </div>
-<script src="search-index.js?v=mv9186ug"></script>
-<script src="book.js?v=mv9186ug"></script>
+<script src="search-index.js?v=mv95jeod"></script>
+<script src="book.js?v=mv95jeod"></script>
 
 </body>
 </html>

@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>H04 · 从录用承诺到离职结清 · SaaS 工程全景</title>
-<link rel="stylesheet" href="book.css?v=mv9186ug">
+<link rel="stylesheet" href="book.css?v=mv95jeod">
 </head>
 <body>
 <a class="skip" href="#main">跳到正文</a>
@@ -20,7 +20,8 @@
 <header class="hero">
 <p class="kicker"><a href="group-people-service.html">人员、专业服务与接收</a><span class="dot">·</span>H04</p>
 <h1>从录用承诺到离职结清</h1>
-<p class="lede">员工入职时，公司要同时履行几种不同的义务：确认雇佣条件，按生效日期安排工作，开通完成工作所需的权限，按约定结算报酬。离职时这些义务也不会一起了结：登录权限可以在最后一笔工资结算之前关闭，工资结清了，也说明不了所有应用都已停用。只有“员工：在职／离职”一个开关的演示，把这些义务压进了同一个字段。</p>
+<p class="lede">员工入职时，公司要同时履行几种不同的义务：确认雇佣条件，按生效日期安排工作，开通完成工作所需的权限，按约定结算报酬。离职时这些义务也不会一起了结，只有“员工：在职／离职”一个开关的演示，把它们压进了同一个字段。本例把它们拆给各自的权威，覆盖 offer 版本、employment 有效区间、按计薪期间计算的薪资，以及带 revision 下发并核对回执的权限。工资可以事后补算，已经发生的数据访问却无法靠重算撤销，所以终止生效时先阻断本地授权；任一必需应用未确认停用，离职就保持未完成。</p>
+
 <div class="cast" aria-label="本例的角色、界面与系统">
 <div class="cast-lane"><p class="cast-k">角色</p><ul><li><abbr title="human resources：人力资源">HR</abbr> 负责人</li><li>薪资批准人</li><li>应用负责人</li><li>员工／接收人</li></ul></div>
 <div class="cast-lane"><p class="cast-k">界面</p><ul><li>人员与离职工作台</li><li>薪资预览与批准页</li></ul></div>
@@ -33,7 +34,8 @@
       <aside class="rail" aria-label="本页进度"><ol><li><a href="#识题期间交集与多处撤权"><span class="rn">01<span class="of"> / 11</span></span><span class="rt">期间交集与多处撤权</span></a></li><li><a href="#解法四类对象与各自的权威"><span class="rn">02<span class="of"> / 11</span></span><span class="rt">四类对象与各自的权威</span></a></li><li><a href="#有效时间与记录时间"><span class="rn">03<span class="of"> / 11</span></span><span class="rt">有效时间与记录时间</span></a></li><li><a href="#入职确认的命令与回执"><span class="rn">04<span class="of"> / 11</span></span><span class="rt">入职确认的命令与回执</span></a></li><li><a href="#演算跨调薪区间的工资"><span class="rn">05<span class="of"> / 11</span></span><span class="rt">跨调薪区间的工资</span></a></li><li><a href="#验算闭区间与重叠版本"><span class="rn">06<span class="of"> / 11</span></span><span class="rt">闭区间与重叠版本</span></a></li><li><a href="#返聘与迟到的撤权"><span class="rn">07<span class="of"> / 11</span></span><span class="rt">返聘与迟到的撤权</span></a></li><li><a href="#验算端到端验收情境"><span class="rn">08<span class="of"> / 11</span></span><span class="rt">端到端验收情境</span></a></li><li><a href="#变式条件变化与迁移"><span class="rn">09<span class="of"> / 11</span></span><span class="rt">条件变化与迁移</span></a></li><li><a href="#进入新组织的先查项"><span class="rn">10<span class="of"> / 11</span></span><span class="rt">进入新组织的先查项</span></a></li><li><a href="#case-structure"><span class="rn">11<span class="of"> / 11</span></span><span class="rt">对象、生命周期与迁移</span></a></li></ol></aside>
       <div class="flow">
 <p>例子沿用本包的“责任—执行—接收”模型。员工甲接受第二版 offer（录用条件），雇佣在某月第 6 日生效，第 16 日调薪，第 26 日零时结束。月份固定为 30 个等价计薪日，金额单位为元；税、社保、假期、工时、银行费用和任何司法辖区的工资规则都不计入。演算得出的是可解释的应计额，实际付了多少以支付方的结果为准。</p>
-<section class="scene" aria-labelledby="识题期间交集与多处撤权"><header class="scene-head"><h2 id="识题期间交集与多处撤权"><span class="scene-no" aria-hidden="true">01</span><span class="visually-hidden">识题：</span><span class="head">期间交集与多处撤权</span></h2></header><div class="table-wrap wide"><table>
+<section class="scene" aria-labelledby="识题期间交集与多处撤权"><header class="scene-head"><h2 id="识题期间交集与多处撤权"><span class="scene-no" aria-hidden="true">01</span><span class="visually-hidden">识题：</span><span class="head">期间交集与多处撤权</span></h2></header><p class="scene-lede">本例有两道题。同一期间几段工资条件，用区间交集求应计额；一个离职决定要在多个应用兑现，把期望状态与实际回执分开，按当前 revision 协调撤权。</p>
+<div class="table-wrap wide"><table>
 <thead>
 <tr>
 <th>识题线索</th>
@@ -56,7 +58,7 @@
 </tr>
 </tbody></table></div>
 </section>
-<section class="scene" aria-labelledby="解法四类对象与各自的权威"><header class="scene-head"><h2 id="解法四类对象与各自的权威"><span class="scene-no" aria-hidden="true">02</span><span class="visually-hidden">解法：</span><span class="head">四类对象与各自的权威</span></h2></header><p class="scene-lede">Candidate 是候选人，application 是某次岗位申请，offer 是该申请的一版条件，employment 是一段雇佣关系。一个候选人可以申请多个岗位，一个人可以离职后再次入职；因此邮箱、姓名和“当前员工号”都不足以充当所有对象的共同主键。本例用 <code>tenant + person_id + employment_id</code> 标识本次雇佣，用另一个映射关联招聘系统的 application 与 offer 版本。邮箱改变只更新联系属性，不能把另一人的历史工资和账号接过来。</p>
+<section class="scene" aria-labelledby="解法四类对象与各自的权威"><header class="scene-head"><h2 id="解法四类对象与各自的权威"><span class="scene-no" aria-hidden="true">02</span><span class="visually-hidden">解法：</span><span class="head">四类对象与各自的权威</span></h2></header><p class="scene-lede">录用、雇佣、权限与工资各由自己的权威宣布，状态分开保存，所以雇佣已结束而工资仍在提交、工资已结清而账号仍未知，都是可以并存的状态。Candidate 是候选人，application 是某次岗位申请，offer 是该申请的一版条件，employment 是一段雇佣关系。一个候选人可以申请多个岗位，一个人可以离职后再次入职；因此邮箱、姓名和“当前员工号”都不足以充当所有对象的共同主键。本例用 <code>tenant + person_id + employment_id</code> 标识本次雇佣，用另一个映射关联招聘系统的 application 与 offer 版本。邮箱改变只更新联系属性，不能把另一人的历史工资和账号接过来。</p>
 <p>Greenhouse Harvest 文档把 offer 的 <code>id</code>、<code>version</code>、<code>application_id</code> 和 <code>starts_at</code> 分别列出；其 Hire Application 操作要求岗位与 offer 的相关审批已经完成。所以集成要保留申请与版本，只收一个“已录用”布尔值不够。雇佣是否生效仍由本例的 HR 服务确认，薪资也不以 Greenhouse 的招聘记录为准。<a href="https://developers.greenhouse.io/harvest.html#the-offer-object" class="ext" rel="noopener">Harvest API</a></p>
 <p>招聘专员负责 offer，HR 负责人确认生效日期与雇佣终止，经理申请岗位权限，应用负责人批准超出基线的权限，薪资人员确认计算输入与结算批次。员工能核对自己的资料和工资单，但不能批准自己的调薪，也不能把付款状态改成成功。职责要分开，是因为每个人只能证明自己掌握的事实：经理知道甲需要项目库，却不知道支付方是否已受理一笔汇款。</p>
 <div class="table-wrap"><table>
@@ -100,23 +102,23 @@
 <p>权限也按有效时间生效，却不能照搬计薪逻辑：工资可以事后补算，已经发生的数据访问无法靠重算撤销。本例在终止生效时先阻断本地授权，再逐个应用撤权并核对；尚未确认的目标应用进入人工处理队列。Okta 的 SCIM（System for Cross-domain Identity Management，跨域身份管理）说明把用户取消配置映射为 <code>active=false</code>，并不向目标应用发 DELETE；更细的 SCIM 2.0 文档还指出，在 Okta 中 suspend 的用户不会发送 deprovisioning event。因此“暂停 Okta 用户”和“已撤销全部下游账号”不能作为同一个验收项。<a href="https://developer.okta.com/docs/concepts/scim/#delete-deprovision" class="ext" rel="noopener">Understanding SCIM</a>、<a href="https://developer.okta.com/docs/api/openapi/okta-scim/guides/scim-20#delete-users" class="ext" rel="noopener">Okta and SCIM 2.0</a></p>
 <p><code>active=false</code> 也不说明任何应用会立即撤销已有会话、<abbr title="application programming interface：应用程序接口">API</abbr> token 或离线凭据，这些效果要在真实接入时逐个应用确认。</p>
 </section>
-<section class="scene" aria-labelledby="入职确认的命令与回执"><header class="scene-head"><h2 id="入职确认的命令与回执"><span class="scene-no" aria-hidden="true">04</span><span class="head">入职确认的命令与回执</span></h2></header><p class="scene-lede">人员列表适合查看谁即将入职、谁还缺必要材料。详情页要并列显示 offer 版本、雇佣有效区间、权限执行进度和工资批次，不能用一个总进度条把几方权威的状态盖住。HR 点击“确认第 6 日入职”时，表单提交 <code>employment_id + expected_version + operation_id</code>。服务校验 HR 权限、租户、已确认的 offer 身份、日期和必填字段，在同一数据库事务里写入 employment 与待发送任务。响应显示“已确认，账号配置待完成”；“入职全部完成”要等各项回执到齐。</p>
+<section class="scene" aria-labelledby="入职确认的命令与回执"><header class="scene-head"><h2 id="入职确认的命令与回执"><span class="scene-no" aria-hidden="true">04</span><span class="head">入职确认的命令与回执</span></h2></header><p class="scene-lede">HR 确认入职，只是在 HR 服务里写下雇佣与待发送任务；“入职全部完成”要等各应用的回执到齐，页面因此把几方权威的状态并列显示。人员列表适合查看谁即将入职、谁还缺必要材料。详情页要并列显示 offer 版本、雇佣有效区间、权限执行进度和工资批次，不能用一个总进度条把几方权威的状态盖住。HR 点击“确认第 6 日入职”时，表单提交 <code>employment_id + expected_version + operation_id</code>。服务校验 HR 权限、租户、已确认的 offer 身份、日期和必填字段，在同一数据库事务里写入 employment 与待发送任务。响应显示“已确认，账号配置待完成”；“入职全部完成”要等各项回执到齐。</p>
 <p>后台任务读取待发送记录，用租户和外部组织映射调用身份适配器。每个应用任务保留 <code>employment_id + app_id + desired_revision</code>，响应、拒绝和超时各自记录。外部已受理但网络断开时，这次 operation 记为 unknown，系统先按已保存的外部身份查询；目标接口没有可核对的身份时转人工检查，不另建一个 person 重试。页面刷新或重复点击，返回的都是同一 operation 的进展。旧表单遇到版本冲突时，页面展示“生效日期已由第 6 日改为第 8 日”，要求操作者按新版本重新判断。</p>
 <p>这条链在 <a href="../../../vault/distilled/saas-engineering-atlas/packages/people-service/H04.json">H04.json</a> 中拆为 actor <code>operates</code> <abbr title="user interface：用户界面">UI</abbr>、UI <code>commands</code> HR service、service <code>requests</code> 外部系统、store <code>stores</code> 对象和事件、对象 <code>projects</code> 页面。<code>owns</code> 只说明谁能宣布哪项事实；<code>derived_from</code> 说明工资明细由哪些版本算出；消息送达不等于资金已经流动。招聘适配器只读取必要的 application 与 offer 字段，API key 能读到多少，不改变 HR 的权威范围；本地租户身份也不由前端传来的外部组织名决定。</p>
 <p>一个实现起点是 React + TypeScript 的详情与差异预览，后端用 FastAPI 或 NestJS，PostgreSQL 保存有效区间、版本、operation 与事务内 outbox，独立 worker 执行集成。React 便于在多个面板间比较状态；以表单为主的小组织，用服务端渲染的 Django + HTMX 也够，客户端要同步的状态更少，代价是复杂的权限进度交互要另做局部更新。PostgreSQL 的事务和唯一约束适合冻结薪资输入；把所有字段都放在前端状态或一个可覆盖的 <abbr title="JavaScript Object Notation：结构化数据表示格式，后文保留 JSON">JSON</abbr> 文档里，就很难证明“同一批次曾批准了什么”。</p>
 <p>初期可以由数据库任务表配合 worker 领取任务，减少组件数量；应用与重试流程变多后，可以考虑 Temporal 这样的持久工作流编排，代价是额外的运行环境与版本管理。队列只能安排尝试，成功与否要由目标应用证明。工资文档放在私有对象存储，业务库只保存受权限控制的引用和摘要；公开日志只保留操作身份、错误类别与必要的技术字段。</p>
 </section>
-<section class="scene" aria-labelledby="演算跨调薪区间的工资"><header class="scene-head"><h2 id="演算跨调薪区间的工资"><span class="scene-no" aria-hidden="true">05</span><span class="visually-hidden">演算：</span><span class="head">跨调薪区间的工资</span></h2></header><p class="scene-lede">把计薪期间写成半开区间 <code>[1,31)</code>，其中第 31 日零时是下个月开始。甲的雇佣区间为 <code>[6,26)</code>，旧日薪为 300，适用 <code>[1,16)</code>；新日薪为 400，适用 <code>[16,31)</code>。算法对每条工资条件取三个区间的交集：计薪期间、雇佣区间、该条件的有效区间。交集长度乘日薪，再求和。</p>
+<section class="scene" aria-labelledby="演算跨调薪区间的工资"><header class="scene-head"><h2 id="演算跨调薪区间的工资"><span class="scene-no" aria-hidden="true">05</span><span class="visually-hidden">演算：</span><span class="head">跨调薪区间的工资</span></h2></header><p class="scene-lede">甲本月应计 7000：每条工资条件与计薪期间、雇佣区间取交集，交集长度乘日薪再求和。把计薪期间写成半开区间 <code>[1,31)</code>，其中第 31 日零时是下个月开始。甲的雇佣区间为 <code>[6,26)</code>，旧日薪为 300，适用 <code>[1,16)</code>；新日薪为 400，适用 <code>[16,31)</code>。算法对每条工资条件取三个区间的交集：计薪期间、雇佣区间、该条件的有效区间。交集长度乘日薪，再求和。</p>
 <p>旧条件交集为 <code>[6,16)</code>，有 10 天，金额 <code>10 × 300 = 3000</code>；新条件交集为 <code>[16,26)</code>，有 10 天，金额 <code>10 × 400 = 4000</code>。总应计额为 7000。第 16 日只落在新条件里，第 26 日不计入本次雇佣。若调薪记录尚未到达，原批次可能按 20 天旧日薪批准 6000；收到经批准的补录后，修正批次为 <code>7000 − 6000 = 1000</code>，两个批次的输入身份都保留。</p>
 <p>朴素实现按每个人、每一天寻找有效条件，若有 n 段条件和 d 天，成本约为 O(dn)。按生效起点排序并检查相邻区间，再扫描交集，成本为 O(n log n)，输入已排序时为 O(n)；不需要把多年历史展开成逐日行。代码以整数分计算金额，避免二进制浮点造成尾差。实际按小时、工作日、四舍五入规则或多币种计薪时，规则本身也要分版本记录，不能沿用“固定 30 天”的除数。</p>
 </section>
-<section class="scene" aria-labelledby="验算闭区间与重叠版本"><header class="scene-head"><h2 id="验算闭区间与重叠版本"><span class="scene-no" aria-hidden="true">06</span><span class="visually-hidden">验算：</span><span class="head">闭区间与重叠版本</span></h2></header><p class="scene-lede">把两端都包括的 <code>[6,16]</code> 与 <code>[16,26]</code> 相加，是一个危险的反例：调薪日被计算两次，离职后的起点也可能被算入。另一个反例是工资版本 <code>[1,18)</code> 与 <code>[16,31)</code> 重叠，却直接求和，第 16—17 日被双算。检查要拒绝重叠，不能用“总金额看起来合理”代替区间证据。若 HR 事后确认终止应为第 24 日，正确应计额是 <code>10 × 300 + 8 × 400 = 6200</code>，与已批准的 7000 相比有 −800 的待处理差额；怎样结清，由人工授权决定。</p>
+<section class="scene" aria-labelledby="验算闭区间与重叠版本"><header class="scene-head"><h2 id="验算闭区间与重叠版本"><span class="scene-no" aria-hidden="true">06</span><span class="visually-hidden">验算：</span><span class="head">闭区间与重叠版本</span></h2></header><p class="scene-lede">区间要写成半开区间，同一工资项目的版本不得重叠，否则调薪日或重叠的日子会被算两次。把两端都包括的 <code>[6,16]</code> 与 <code>[16,26]</code> 相加，是一个危险的反例：调薪日被计算两次，离职后的起点也可能被算入。另一个反例是工资版本 <code>[1,18)</code> 与 <code>[16,31)</code> 重叠，却直接求和，第 16—17 日被双算。检查要拒绝重叠，不能用“总金额看起来合理”代替区间证据。若 HR 事后确认终止应为第 24 日，正确应计额是 <code>10 × 300 + 8 × 400 = 6200</code>，与已批准的 7000 相比有 −800 的待处理差额；怎样结清，由人工授权决定。</p>
 </section>
-<section class="scene" aria-labelledby="返聘与迟到的撤权"><header class="scene-head"><h2 id="返聘与迟到的撤权"><span class="scene-no" aria-hidden="true">07</span><span class="head">返聘与迟到的撤权</span></h2></header><p class="scene-lede">假设甲已经离职，又以新的 employment <code>E2</code> 返聘。旧雇佣 <code>E1</code> 的撤权任务迟到，如果只按邮箱发“停用账号”，可能停掉新雇佣刚恢复的账号。所以协调服务不让一个历史事件直接决定目标状态：它在发送前按当前有效雇佣与已批准岗位重新计算期望权限，把递增的 revision 写入任务；同一应用账号的操作串行执行，完成后再次核对期望状态与实际状态。外部接口不支持条件更新时，从发送到生效之间仍有空档，只能靠串行通道、事后核对和人工接管风险来补，无法承诺全局原子撤权。</p>
+<section class="scene" aria-labelledby="返聘与迟到的撤权"><header class="scene-head"><h2 id="返聘与迟到的撤权"><span class="scene-no" aria-hidden="true">07</span><span class="head">返聘与迟到的撤权</span></h2></header><p class="scene-lede">撤权任务按当前有效雇佣重新计算期望权限并携带递增的 revision，旧雇佣迟到的任务因此停不掉返聘后的账号；离职在每个必需应用和薪资都核对完之前保持 partial。假设甲已经离职，又以新的 employment <code>E2</code> 返聘。旧雇佣 <code>E1</code> 的撤权任务迟到，如果只按邮箱发“停用账号”，可能停掉新雇佣刚恢复的账号。所以协调服务不让一个历史事件直接决定目标状态：它在发送前按当前有效雇佣与已批准岗位重新计算期望权限，把递增的 revision 写入任务；同一应用账号的操作串行执行，完成后再次核对期望状态与实际状态。外部接口不支持条件更新时，从发送到生效之间仍有空档，只能靠串行通道、事后核对和人工接管风险来补，无法承诺全局原子撤权。</p>
 <p>离职流程先在本地记下一个明确的决定，再处理散在各个系统里的后果。正常轨迹是 HR 确认终止 → 生效时本地授权阻断 → 应用 A、B 分别确认停用 → 薪资批次完成核对 → 交接责任人签收 → offboarding complete。失败轨迹中，A 成功、B 超时、工资被拒付，页面保持 partial，分别指定 B 的应用负责人和薪资人员；修复 B 不会自动重发工资，补发工资也不会把 A 重新开启。</p>
 <p>容量假设为 100 个租户、合计 10 万段当前雇佣、每天 2000 次人员变更、发薪日 10 万条明细。列表查询按租户和有效日期建索引，待测目标是每页 50 行、服务端 p95 小于 400 ms。薪资按租户与批次分块，但同一批次的冻结与批准应保持单一版本。离职撤权队列优先于低风险的资料同步，每个租户保留并发配额，避免大租户占满 worker。判定权限时不读列表缓存；列表缓存的 key 包含 tenant、可见字段范围与对象版本，撤权一经确认，相应投影即失效。衡量撤权要分别记录“本地拒绝用时”和“必需应用核对完成用时”，平均 API 延迟替代不了后者。</p>
 </section>
-<section class="scene" aria-labelledby="验算端到端验收情境"><header class="scene-head"><h2 id="验算端到端验收情境"><span class="scene-no" aria-hidden="true">08</span><span class="visually-hidden">验算：</span><span class="head">端到端验收情境</span></h2></header><p class="scene-lede">当前仓库还没有 UI、真实队列和外部 sandbox，下表的情境尚未端到端运行，只是交给实现者的验收定义。每项都要保存操作记录、权威状态与页面结果。</p>
+<section class="scene" aria-labelledby="验算端到端验收情境"><header class="scene-head"><h2 id="验算端到端验收情境"><span class="scene-no" aria-hidden="true">08</span><span class="visually-hidden">验算：</span><span class="head">端到端验收情境</span></h2></header><p class="scene-lede">九个情境各检验一条性质，其中重复只产生一次业务效果，乱序不复活旧雇佣，并发得到可解释的冲突，结果未知时核对原 operation，部分完成保持 partial，历史修正不覆盖已结算批次。每项都要保存操作记录、权威状态与页面结果。下表的情境是交给实现者的验收定义。</p>
 <div class="table-wrap"><table>
 <thead>
 <tr>
@@ -173,7 +175,8 @@
 </tbody></table></div>
 <p>核心流程不用 <abbr title="artificial intelligence：人工智能">AI</abbr> 决定录用、薪资或撤权。固定的区间与权限规则能解释每个结果；权威证据缺了，语言模型也补不上。以后若增加简历摘要或政策问答，另建评估集。</p>
 </section>
-<section class="scene" aria-labelledby="变式条件变化与迁移"><header class="scene-head"><h2 id="变式条件变化与迁移"><span class="scene-no" aria-hidden="true">09</span><span class="visually-hidden">变式：</span><span class="head">条件变化与迁移</span></h2></header><p class="scene-lede"><strong>练习一：第 6 日入职改为第 8 日，账号已经提前创建。</strong> 新工资是多少，账号应如何处理？</p>
+<section class="scene" aria-labelledby="变式条件变化与迁移"><header class="scene-head"><h2 id="变式条件变化与迁移"><span class="scene-no" aria-hidden="true">09</span><span class="visually-hidden">变式：</span><span class="head">条件变化与迁移</span></h2></header><p class="scene-lede">入职推迟或离职后返聘时，有效区间与 revision 的做法照样成立；失效的是“账号存在就说明开始计薪”和“邮箱相同就能覆盖新期望”两个假设。</p>
+<p><strong>练习一：第 6 日入职改为第 8 日，账号已经提前创建。</strong> 新工资是多少，账号应如何处理？</p>
 <p>简答：有效区间变成 <code>[8,26)</code>，旧条件 8 天、新条件 10 天，共 6400；与已批准的 7000 相比，有 −600 的修正依据。账号创建可以只是准备工作，能否登录另由生效 guard 控制。不变的是每段义务都有时间与版本；失效的是“账号存在就说明开始计薪”这个假设。验算时核对第 7 日的授权结果、工资区间和修正记录是否相容，只看列表上的新日期不够。</p>
 <p><strong>练习二：甲离职后返聘，邮箱保持不变，旧撤权任务还在队列。</strong> 旧任务能否停用返聘后的账号？</p>
 <p>简答：不能。新建 employment <code>E2</code>，保留 person 与应用账号映射，按当前有效关系计算新的 desired revision；旧任务不能因邮箱相同就覆盖新的期望。不变的是人员身份与具体责任期间分开；目标应用不支持条件更新、会话撤销机制也不明确时，无法保证即时、跨应用的原子效果。验算时先投递 E2 开通、再投递 E1 撤权，然后交换次序：当前期望是 revision 2，两种次序下 revision 1 的任务都应被挡住，目标最终保持启用。配套练习实际调用带 revision 的派发器与假目标；反例是不看 revision、按到达顺序盲目覆盖，结果账号被停用。假目标支持版本检查，真实 SCIM 接口未必有此保证。目标已接受而回复丢失时，本地保持 unknown，重复派发不能制造第二个效果，核对原 operation 后才记 confirmed。</p>
@@ -303,8 +306,8 @@
     <footer class="page-foot">正文 <a href="../../../books/saas-engineering/packages/people-service/H04.md">books/saas-engineering/packages/people-service/H04.md</a> · <a href="../../../vault/distilled/saas-engineering-atlas/README.md">结构、来源与验证</a></footer>
   </main>
 </div>
-<script src="search-index.js?v=mv9186ug"></script>
-<script src="book.js?v=mv9186ug"></script>
+<script src="search-index.js?v=mv95jeod"></script>
+<script src="book.js?v=mv95jeod"></script>
 
 </body>
 </html>

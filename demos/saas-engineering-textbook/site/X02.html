@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>X02 · Intercompany operations：一次发货，多家公司的责任 · SaaS 工程全景</title>
-<link rel="stylesheet" href="book.css?v=mv9186ug">
+<link rel="stylesheet" href="book.css?v=mv95jeod">
 </head>
 <body>
 <a class="skip" href="#main">跳到正文</a>
@@ -20,7 +20,8 @@
 <header class="hero">
 <p class="kicker"><a href="group-commercial-finance.html">交易、财务与资金</a><span class="dot">·</span>X02</p>
 <h1>Intercompany operations：一次发货，多家公司的责任</h1>
-<p class="lede">集团里的销售公司接单、开票和收款，生产公司把货直接送到客户。客户只收到一次货，两家公司却要各自说明销售、成本和往来款，系统因此要保存几套相互关联的业务对象。单据多了，货物并没有多走一趟；集团合并时消除了内部交易的影响，各公司的交易记录仍然保留。</p>
+<p class="lede">集团里的销售公司接单、开票和收款，生产公司把货直接送到客户。客户只收到一次货，两家公司却要各自说明销售、成本和往来款，系统因此要保存几套相互关联的业务对象。单据多了，货物并没有多走一趟；集团合并时消除了内部交易的影响，各公司的交易记录仍然保留。机制是把实物效果与结算用途分开：B 的实单扣一次库存，A 的两张虚单只承担内部结算和对客应收；集团合并时，按交易身份逐键配对内部应收应付，再在集团报告层抵销。本例首批 60 件，A、B 直接相加的收入为 1,260，合并后为 720。本章还处理协同单据部分生成、退货、跨期截止和反审核的边界。集团净差为零时，双边单据仍可能各有未解释的差异。</p>
+
 <div class="cast" aria-label="本例的角色、界面与系统">
 <div class="cast-lane"><p class="cast-k">角色</p><ul><li>A 销售员</li><li>B 仓管员</li><li>公司财务与集团合并会计（权限分别核对）</li></ul></div>
 <div class="cast-lane"><p class="cast-k">界面</p><ul><li>销售、仓库、往来与合并工作台</li></ul></div>
@@ -33,7 +34,8 @@
       <aside class="rail" aria-label="本页进度"><ol><li><a href="#识题从现象到方法"><span class="rn">01<span class="of"> / 11</span></span><span class="rt">从现象到方法</span></a></li><li><a href="#解法四条流与单据角色"><span class="rn">02<span class="of"> / 11</span></span><span class="rt">四条流与单据角色</span></a></li><li><a href="#各对象的状态"><span class="rn">03<span class="of"> / 11</span></span><span class="rt">各对象的状态</span></a></li><li><a href="#一次发货经过的工作台"><span class="rn">04<span class="of"> / 11</span></span><span class="rt">一次发货经过的工作台</span></a></li><li><a href="#演算个别报表与集团报表"><span class="rn">05<span class="of"> / 11</span></span><span class="rt">个别报表与集团报表</span></a></li><li><a href="#关系遍历与配对键"><span class="rn">06<span class="of"> / 11</span></span><span class="rt">关系遍历与配对键</span></a></li><li><a href="#部分生成退货与跨期"><span class="rn">07<span class="of"> / 11</span></span><span class="rt">部分生成、退货与跨期</span></a></li><li><a href="#验算数量责任与报告范围"><span class="rn">08<span class="of"> / 11</span></span><span class="rt">数量、责任与报告范围</span></a></li><li><a href="#变式条件变化与迁移"><span class="rn">09<span class="of"> / 11</span></span><span class="rt">条件变化与迁移</span></a></li><li><a href="#进入集团业务的先查项"><span class="rn">10<span class="of"> / 11</span></span><span class="rt">进入集团业务的先查项</span></a></li><li><a href="#case-structure"><span class="rn">11<span class="of"> / 11</span></span><span class="rt">对象、生命周期与迁移</span></a></li></ol></aside>
       <div class="flow">
 <p>本章以 <strong>金蝶 EAS</strong> 公开资料中的“集中销售、分开发货、集中结算”作为产品参照。销售公司 A 向外部客户 C 出售生产公司 B 的商品，由 B 直接发货。订单为 100 件，外售价每件 12 记账单位，内部结算价每件 9，B 的成本每件 6；首批实际交付并获客户确认 60 件，另外 40 件尚未发出。金额不含税费，币种、期间、计量单位一致；A、B 都在本例的合并范围内，并假设首批确认交付满足本例的收入记录条件。真实的收入确认、税务、转移定价与合并范围需要专业判断。</p>
-<section class="scene" aria-labelledby="识题从现象到方法"><header class="scene-head"><h2 id="识题从现象到方法"><span class="scene-no" aria-hidden="true">01</span><span class="visually-hidden">识题：</span><span class="head">从现象到方法</span></h2></header><div class="table-wrap"><table>
+<section class="scene" aria-labelledby="识题从现象到方法"><header class="scene-head"><h2 id="识题从现象到方法"><span class="scene-no" aria-hidden="true">01</span><span class="visually-hidden">识题：</span><span class="head">从现象到方法</span></h2></header><p class="scene-lede">三条线索分属三个层次：单据层区分实物效果与结算用途，报告层先定合并范围，核对层按交易身份逐键配对。</p>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>识题线索</th>
@@ -112,12 +114,14 @@
 </tbody></table></div>
 <p>集团层面的角色并不能操作所有公司。A 的销售员能查看 B 的可发数量与发货进度，却改不了 B 的成本；集团合并会计能访问经授权的财务映射，也不能替 B 的仓管员补记出库事实。本例以 <code>(集团租户, 法人公司, 业务对象 ID)</code> 为最小数据身份，再由角色和业务关系决定跨公司可见的字段。外部客户 C 只看到合同、交付与账单，沿单据关系也读不到内部价格。</p>
 </section>
-<section class="scene" aria-labelledby="各对象的状态"><header class="scene-head"><h2 id="各对象的状态"><span class="scene-no" aria-hidden="true">03</span><span class="head">各对象的状态</span></h2></header><p class="scene-lede">销售订单经批准（从 <code>draft</code> 到 <code>approved</code>）后才能发货，承诺数量按“已交付、待交付、已取消”分别累计。发货通知批准（从 <code>draft</code> 到 <code>approved</code>），表示允许 B 执行；B 的实单过账（从 <code>draft</code> 到 <code>posted</code>）后，库存才真正变动。生成了通知不等于已经发货；单据审核过了，也代替不了本例额外要求的客户收货确认。</p>
+<section class="scene" aria-labelledby="各对象的状态"><header class="scene-head"><h2 id="各对象的状态"><span class="scene-no" aria-hidden="true">03</span><span class="head">各对象的状态</span></h2></header><p class="scene-lede">实物、协同、往来和合并各有自己的状态，一个推进了不说明另一个完成。</p>
+<p>销售订单经批准（从 <code>draft</code> 到 <code>approved</code>）后才能发货，承诺数量按“已交付、待交付、已取消”分别累计。发货通知批准（从 <code>draft</code> 到 <code>approved</code>），表示允许 B 执行；B 的实单过账（从 <code>draft</code> 到 <code>posted</code>）后，库存才真正变动。生成了通知不等于已经发货；单据审核过了，也代替不了本例额外要求的客户收货确认。</p>
 <p>每笔实单对应一个协同批次，状态为 <code>pending → partial → complete</code> 或 <code>blocked</code>，记录应生成的两张虚单、内部往来和来源版本。某家公司的服务暂时不可达时，批次停在 partial，已经发出的货不必为此“退回数据库”。系统显示缺了哪一侧的单据，并安排恢复任务；协同批次满足完整性条件之后，下游的合并批次才能把这笔交易算作配对完成。实现不一定要拆成多个服务；无论协同跨服务还是跨数据库，这个批次对象都能说明结果为什么不完整。</p>
 <p>应收、应付各自按 <code>draft → posted → partially-settled → settled</code> 推进。客户付清了对外应收，内部应付未必已经结清；内部付款指令被银行接受，也说明不了 B 已确认收款。合并批次的状态为 <code>draft → reconciled → approved → posted</code>，有差异时进入 <code>blocked</code>。本例要求批准抵销时绑定一份确定的取数快照；个别公司补记之后，旧预览必须作废，新账和旧抵销不能混在同一份报告里。</p>
 <p>“反审核”的边界要单独说明。金蝶的资料描述了协同单据的删除行为，没有给出下游已入账、已收款、跨期间等情况下的全部限制，本例因此不设计一键递归删除。本章的政策是：下游还是草稿时，可以撤回并保留审计事件；下游已过账或现金已确认时，冻结自动回退，另建可追踪的冲销或更正批次，交给对应的财务角色批准。</p>
 </section>
-<section class="scene" aria-labelledby="一次发货经过的工作台"><header class="scene-head"><h2 id="一次发货经过的工作台"><span class="scene-no" aria-hidden="true">04</span><span class="head">一次发货经过的工作台</span></h2></header><p class="scene-lede">A 的销售员在销售工作台上创建订单时，页面显示外部客户、销售组织、发货组织、内部协议和配置版本。用户下推 60 件发货通知前，服务校验剩余可执行数量，并为订单行预留这 60 件。第二个操作者同时请求 50 件时，服务器端要拒绝超出的部分，或要求调整；页面缓存里显示的 100 件不能当作独立的发货额度。</p>
+<section class="scene" aria-labelledby="一次发货经过的工作台"><header class="scene-head"><h2 id="一次发货经过的工作台"><span class="scene-no" aria-hidden="true">04</span><span class="head">一次发货经过的工作台</span></h2></header><p class="scene-lede">每个角色只在自己的工作台上确认自己负责的事实；服务端按剩余数量、版本和来源校验，页面缓存和显示的金额都不作为依据。</p>
+<p>A 的销售员在销售工作台上创建订单时，页面显示外部客户、销售组织、发货组织、内部协议和配置版本。用户下推 60 件发货通知前，服务校验剩余可执行数量，并为订单行预留这 60 件。第二个操作者同时请求 50 件时，服务器端要拒绝超出的部分，或要求调整；页面缓存里显示的 100 件不能当作独立的发货额度。</p>
 <p>B 的仓管员在仓库工作台上按通知备货，提交出库时，系统保存批次、仓位、数量与操作员身份。服务端在一个本地事务里记录库存扣减、实单版本和协同 outbox。页面先显示“出库已记录，协同结算单据生成中”，并提供同一批次的状态链接。若 A 侧暂时失败，仓管员看不到会重复扣库存的“重试发货”按钮；重试入口针对的是缺失的协同步骤。</p>
 <p>A 的财务人员在财务工作台上从两张虚单进入对外应收和内部应付，预览时同时看到外售价 12、内部价 9，以及这两个价格所来自的订单或内部协议版本。内部价从 9 改成 9.50 时，历史批次不能因为实时读取价格表而自动从 540 变成 570。改价要定新的协议生效边界，并另建修正批次；旧来源仍能回查。</p>
 <p>集团的核对人员在核对工作台上按内部交易查看两侧的数量、金额、币种、期间与过账状态。发现 B 应收 540、A 应付 530 时，核对人员要做的是定位差异、指派负责人，页面不提供“自动补差 10”。出纳在收付款工作台上看到外部收款与内部付款两条独立的进度；合并会计在合并工作台上看到抵销预览与取数时间，“报表已抵销”不会显示成“公司已付款”。</p>
@@ -125,7 +129,7 @@
 <p>React 或 Vue 可以实现关联单据表格、差异高亮和批次追踪；服务端对每次跳转都重新授权，不能只隐藏内部价格列。Java/Spring 或 C#/.NET 可以实现协同服务及规则版本管理；PostgreSQL 保存源行、关系、状态、inbox/outbox 与配对快照，适合在事务中约束“同一源行同一用途只能生成一次”。各公司已有的企业资源计划（enterprise resource planning，<abbr title="enterprise resource planning：企业资源计划">ERP</abbr>）系统仍可作为账务权威，adapter 通过明确的导入/导出或公开的接口约定核对结果。具体 ERP 的接口格式，本章没有验证。</p>
 <p>规模较小时，关系表和递归查询足以追踪来源；只有多层流转、影响分析成为主要负载时，才值得考虑独立的图索引。图数据库也代替不了会计分录的金额和版本约束。Redis 可以缓存列表，key 必须包含集团、公司、权限范围及数据版本；批准出库、付款或抵销仍读取权威记录。以上选型从事务和可追踪性出发。</p>
 </section>
-<section class="scene" aria-labelledby="演算个别报表与集团报表"><header class="scene-head"><h2 id="演算个别报表与集团报表"><span class="scene-no" aria-hidden="true">05</span><span class="visually-hidden">演算：</span><span class="head">个别报表与集团报表</span></h2></header><p class="scene-lede">下表是首批 60 件完成后的账务。这里假设外部客户还没付款，A 也没有向 B 付款，以便单独看清债权债务。</p>
+<section class="scene" aria-labelledby="演算个别报表与集团报表"><header class="scene-head"><h2 id="演算个别报表与集团报表"><span class="scene-no" aria-hidden="true">05</span><span class="visually-hidden">演算：</span><span class="head">个别报表与集团报表</span></h2></header><p class="scene-lede">A、B 个别报表直接相加，收入、成本和往来余额都多出内部交易的 540；集团合并后收入 720、成本 360，个别公司的记录不变。账务取首批 60 件完成时的状态，并假设外部客户还没付款、A 也没有向 B 付款，以便单独看清债权债务。</p>
 <div class="table-wrap wide"><table>
 <thead>
 <tr>
@@ -174,12 +178,14 @@
 <p><code>ALG:lookup</code> 把内部应收和应付按稳定的交易身份配对。键包括集团、公司对、内部协议、源批次行、币种和核对期间，并保留双方的原始方向；应收记为 +540、应付记为 −540，同一键内余额为零且两侧都齐全，才算本例的可抵销候选。哈希分组平均为 O(n)，需要约 O(k) 的键与累计存储；排序归并为 O(n log n)，数据大于内存时可以分批处理。具体延迟还取决于磁盘、分区和宽表，复杂度决定不了全部。</p>
 <p>反例是集团总净额看起来为零：交易 T1 中 B 应收 540、A 应付 530，差 10；交易 T2 中 B 应收 360、A 应付 370，差 −10。两者恰好抵消，却留下两条未解释的差异。如果只做 <code>SUM(amount)</code> 就亮绿灯，便无从知道是价格错了还是单据串配。正确的输出是两条异常，各自追到来源；金额相等但币种不同、期间不同或一侧未过账，也不能直接认定匹配。</p>
 </section>
-<section class="scene" aria-labelledby="部分生成退货与跨期"><header class="scene-head"><h2 id="部分生成退货与跨期"><span class="scene-no" aria-hidden="true">07</span><span class="head">部分生成、退货与跨期</span></h2></header><p class="scene-lede">第一条失败轨迹从实物已经离开仓库开始。B 实单已提交，A 的采购虚单生成成功，A 的销售虚单接口超时。协同批次保持 partial，并记录超时步骤的业务键与外部尝试。恢复时先查询这个业务键：若已存在，登记映射并继续；若确定未生成，再按原身份重试；若接口没有可靠的查询能力，进入人工核对，“超时”不能当作“未执行”。无论哪一种情况，B 的库存都不会再扣一次。</p>
+<section class="scene" aria-labelledby="部分生成退货与跨期"><header class="scene-head"><h2 id="部分生成退货与跨期"><span class="scene-no" aria-hidden="true">07</span><span class="head">部分生成、退货与跨期</span></h2></header><p class="scene-lede">三条失败轨迹守同一组规则：已经发生的实物和已过账的记录不回退，缺的一侧按原业务键补齐，每项差异都有负责人。</p>
+<p>第一条失败轨迹从实物已经离开仓库开始。B 实单已提交，A 的采购虚单生成成功，A 的销售虚单接口超时。协同批次保持 partial，并记录超时步骤的业务键与外部尝试。恢复时先查询这个业务键：若已存在，登记映射并继续；若确定未生成，再按原身份重试；若接口没有可靠的查询能力，进入人工核对，“超时”不能当作“未执行”。无论哪一种情况，B 的库存都不会再扣一次。</p>
 <p>第二条轨迹是客户退回首批中的 10 件，实物直接退回 B。本例政策先保存退货授权，再由 B 确认实际收货，并关联原 60 件批次；由此库存恢复 10 件，外部金额调整 120，内部金额调整 90，成本恢复 60。若已收到原货款，外部退款仍是独立的资金任务；若只是开了负数应收，现金不能显示为已退。若本例的交付确认和入账条件同样满足，剩余有效销售为 50 件，集团收入 600、成本 300、利润 300。不能对最初 100 件的订单整单冲回，也不能把 10 件退货冲到尚未发出的 40 件上。</p>
 <p>第三条轨迹是月底截止不一致。B 在期间 P 已记内部应收，A 的应付仍是 P+1 的草稿，按本章的配对规则就缺了一侧。合并会计先确认经济事实、公司过账状态与适用期间，再决定补记、调整或暂缓。跨期差异不自动算作错误，期间归属由人判断，不交给算法；恢复后的新快照使旧抵销预览失效。所有差异都有负责人和解释；即使批准的会计政策允许带着解释结转，技术层也不能悄悄把差异丢掉。</p>
 <p>负载假设为 200 个法人公司、每日 5 万条出库明细、月结核对 1,000 万条内部往来、50 名并发操作员。目标是普通源行查询 p95 小于 400 毫秒、跨公司协同正常完成 p95 小于 5 秒、月结全量配对 20 分钟内产生结果，都待验证。实单行按公司与期间建索引；月结用固定水位的快照批次，免得读到一半时底层变化，结果无法重现。实时协同队列和月结计算分开分配资源，免得批量扫描挤占仓库提交的资源。热点来自集中销售公司的大订单，数量预留按订单行锁定，不锁整个集团。至少跟踪 partial 批次的年龄、两侧数量/金额差、在途现金与待批准的调整数；这些指标比“服务都在线”更能反映还有哪些业务责任没有完成。</p>
 </section>
-<section class="scene" aria-labelledby="验算数量责任与报告范围"><header class="scene-head"><h2 id="验算数量责任与报告范围"><span class="scene-no" aria-hidden="true">08</span><span class="visually-hidden">验算：</span><span class="head">数量、责任与报告范围</span></h2></header><p class="scene-lede">本例不用 <abbr title="artificial intelligence：人工智能">AI</abbr> 批准出库、判断收入或抵销，AI eval 不适用。若以后用模型解释核对差异，解释与过账权限要分开；差异原因按“价格、币种、期间、漏单、未知”分类，要有人工标签、独立留出集和明确的分母。模型说不出原因时必须保留 unknown，不能自动生成一笔补差。</p>
+<section class="scene" aria-labelledby="验算数量责任与报告范围"><header class="scene-head"><h2 id="验算数量责任与报告范围"><span class="scene-no" aria-hidden="true">08</span><span class="visually-hidden">验算：</span><span class="head">数量、责任与报告范围</span></h2></header><p class="scene-lede">验收看三件事：库存只按实单动一次，每项下游责任都能追到来源，集团净额为零时未配对的明细仍被报出。</p>
+<p>本例不用 <abbr title="artificial intelligence：人工智能">AI</abbr> 批准出库、判断收入或抵销，AI eval 不适用。若以后用模型解释核对差异，解释与过账权限要分开；差异原因按“价格、币种、期间、漏单、未知”分类，要有人工标签、独立留出集和明确的分母。模型说不出原因时必须保留 unknown，不能自动生成一笔补差。</p>
 <div class="table-wrap"><table>
 <thead>
 <tr>
@@ -245,7 +251,8 @@
 </tr>
 </tbody></table></div>
 </section>
-<section class="scene" aria-labelledby="变式条件变化与迁移"><header class="scene-head"><h2 id="变式条件变化与迁移"><span class="scene-no" aria-hidden="true">09</span><span class="visually-hidden">变式：</span><span class="head">条件变化与迁移</span></h2></header><p class="scene-lede"><strong>练习一：首批 60 件中，20 件尚未获客户确认；本例政策仍以确认交付作为收入记录条件。</strong> 外部应收和收入能否照 60 件自动完成？</p>
+<section class="scene" aria-labelledby="变式条件变化与迁移"><header class="scene-head"><h2 id="变式条件变化与迁移"><span class="scene-no" aria-hidden="true">09</span><span class="visually-hidden">变式：</span><span class="head">条件变化与迁移</span></h2></header><p class="scene-lede">实物事实、交易身份和双方责任在条件改变后不变；变的是收入条件、币种和物流路径，每一项都让原来的数字不能直接沿用。</p>
+<p><strong>练习一：首批 60 件中，20 件尚未获客户确认；本例政策仍以确认交付作为收入记录条件。</strong> 外部应收和收入能否照 60 件自动完成？</p>
 <p>简答：不能。仓库出库不等于满足了本例的收入条件。实物仍是 B 发出 60 件，客户只确认了 40 件，其余 20 件要单独显示为在途或待确认。收入只按已满足条件的 40 件演算，为 480，成本 240；应收是否已经形成，取决于所设的合同与开票政策，本题不能把应收和收入合在一起判断。检查库存、确认数量、应收与收入四项证据，一个“已发货”标签代替不了全部条件。</p>
 <p><strong>练习二：A 和 B 改用不同记账币种；两个账面的内部余额数字都为 540。</strong> 能否直接抵销？</p>
 <p>简答：不能。两边的记账单位不同，数字相等不说明能配对。交易身份、原币数量与双方责任不变；需要记录交易币种、汇率类型/日期、换算版本和经专业确认的差异处理。政策选定之前，结果标为不可比较，不输出零差异。反例是把 540 个币种 U 与 540 个币种 V 相减；检查时，混合币种的 fixture 必须被拦下。</p>
@@ -414,8 +421,8 @@
     <footer class="page-foot">正文 <a href="../../../books/saas-engineering/packages/commercial-finance/X02.md">books/saas-engineering/packages/commercial-finance/X02.md</a> · <a href="../../../vault/distilled/saas-engineering-atlas/README.md">结构、来源与验证</a></footer>
   </main>
 </div>
-<script src="search-index.js?v=mv9186ug"></script>
-<script src="book.js?v=mv9186ug"></script>
+<script src="search-index.js?v=mv95jeod"></script>
+<script src="book.js?v=mv95jeod"></script>
 
 </body>
 </html>

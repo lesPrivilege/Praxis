@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>第二章：先知道要找什么，再选索引 · SaaS 工程全景</title>
-<link rel="stylesheet" href="book.css?v=mv9186ug">
+<link rel="stylesheet" href="book.css?v=mv95jeod">
 </head>
 <body>
 <a class="skip" href="#main">跳到正文</a>
@@ -20,17 +20,19 @@
 <header class="hero">
 <p class="kicker"><a href="fdn.html">计算与系统方法</a><span class="dot">·</span>第二章</p>
 <h1>先知道要找什么，再选索引</h1>
-<p class="lede">查找就是排除不可能的候选。数据结构事先花成本组织和维护数据，之后的查询就少做无用的比较。</p>
+<p class="lede">查找就是排除不可能的候选。数据结构事先花成本组织和维护数据，之后的查询就少做无用的比较。等值、范围和前缀三类查询各有排除方式：hash、有序结构上的二分与 B-tree、trie；每多一个索引，写入也多一份维护工作。索引只加快查找：身份唯一要靠持久化的唯一约束，能否读取要靠服务端授权。</p>
+
 
 </header>
     <div class="reel">
       <aside class="rail" aria-label="本页进度"><ol><li><a href="#识题相等范围与前缀"><span class="rn">01<span class="of"> / 05</span></span><span class="rt">相等、范围与前缀</span></a></li><li><a href="#解法按查询条件排除候选"><span class="rn">02<span class="of"> / 05</span></span><span class="rt">按查询条件排除候选</span></a></li><li><a href="#演算四种排除方式"><span class="rn">03<span class="of"> / 05</span></span><span class="rt">四种排除方式</span></a></li><li><a href="#验算扫描对照唯一约束与读取授权"><span class="rn">04<span class="of"> / 05</span></span><span class="rt">扫描对照、唯一约束与读取授权</span></a></li><li><a href="#变式从发票到样本从目录到对账"><span class="rn">05<span class="of"> / 05</span></span><span class="rt">从发票到样本，从目录到对账</span></a></li></ol></aside>
       <div class="flow">
-<section class="scene" aria-labelledby="识题相等范围与前缀"><header class="scene-head"><h2 id="识题相等范围与前缀"><span class="scene-no" aria-hidden="true">01</span><span class="visually-hidden">识题：</span><span class="head">相等、范围与前缀</span></h2></header><p class="scene-lede">“找到租户 A 的订单 O7”问相等；“找交付日落在第 10 到第 20 天的订单”问范围；“输入 re 后列出产品”问前缀。三种查询可能出现在同一个页面上，需要的索引却不同。先写清查询条件、数据量和更新频率，再说清要返回一条、全部匹配项，还是前十条：输出一万条，至少要付出传送这一万条的成本。</p>
+<section class="scene" aria-labelledby="识题相等范围与前缀"><header class="scene-head"><h2 id="识题相等范围与前缀"><span class="scene-no" aria-hidden="true">01</span><span class="visually-hidden">识题：</span><span class="head">相等、范围与前缀</span></h2></header><p class="scene-lede">同一个页面上可能同时有三种查询，需要的索引各不相同：“找到租户 A 的订单 O7”问相等；“找交付日落在第 10 到第 20 天的订单”问范围；“输入 re 后列出产品”问前缀。先写清查询条件、数据量和更新频率，再说清要返回一条、全部匹配项，还是前十条：输出一万条，至少要付出传送这一万条的成本。</p>
 </section>
 <section class="scene" aria-labelledby="解法按查询条件排除候选"><header class="scene-head"><h2 id="解法按查询条件排除候选"><span class="scene-no" aria-hidden="true">02</span><span class="visually-hidden">解法：</span><span class="head">按查询条件排除候选</span></h2></header><p class="scene-lede">知道完整编号，可以按 hash 找到桶；知道范围，可以利用顺序；知道前缀，可以沿字符路径逐步缩小范围。</p>
 </section>
-<section class="scene" aria-labelledby="演算四种排除方式"><header class="scene-head"><h2 id="演算四种排除方式"><span class="scene-no" aria-hidden="true">03</span><span class="visually-hidden">演算：</span><span class="head">四种排除方式</span></h2></header><h3 id="hash分桶与完整-key-比较">Hash：分桶与完整 key 比较</h3>
+<section class="scene" aria-labelledby="演算四种排除方式"><header class="scene-head"><h2 id="演算四种排除方式"><span class="scene-no" aria-hidden="true">03</span><span class="visually-hidden">演算：</span><span class="head">四种排除方式</span></h2></header><p class="scene-lede">四种结构各有前提：hash 命中桶后仍要比较完整 key，二分要求数据有序、条件单调，B-tree 靠所有叶子同深和占用下界控制树高，trie 要求字符归一化一致。</p>
+<h3 id="hash分桶与完整-key-比较">Hash：分桶与完整 key 比较</h3>
 <p>设 hash 函数把 <code>(A,O7)</code> 放进桶 2，<code>(A,O9)</code> 也放进桶 2，把 <code>(B,O7)</code> 放进桶 5。查 <code>(A,O7)</code> 时先到桶 2，再比较完整 key，排除 O9，返回目标。落在同一个桶里的两个对象未必相同。实际桶号由所选 hash 函数与表容量决定。</p>
 <p>hash 分布均匀、装载率合适时，查找的期望成本接近 O(1)，空间为 O(n)；桶一拥挤，比较次数就增加，扩容还可能搬迁全表。对长字符串求 hash，本身也要逐个读字符。优先使用语言自带的 Map/dict/set；需要持久保存的身份唯一约束交给数据库。hash 表的机制，以及期望成本和摊还分析的前提，见 <a href="https://opendatastructures.org/ods-python/5_1_ChainedHashTable_Hashin.html" class="ext" rel="noopener">Open Data Structures 5.1</a>。</p>
 <div class="labelled" data-kind="counter"><p class="blk-l">误用反例</p><p>用 <code>order_number=O7</code> 当全局 key，A、B 两个租户的 O7 会互相覆盖。另一种误用是一见 hash 值相同，就当作重复项跳过。验算样本要包括不同租户的同号订单、hash 碰撞但 key 不同的记录，以及不存在的 key。并发下“先查不存在、再插入”的竞争，hash 也解决不了，要靠持久化的唯一约束。</p></div>
@@ -128,7 +130,8 @@
 </section>
 <section class="scene" aria-labelledby="验算扫描对照唯一约束与读取授权"><header class="scene-head"><h2 id="验算扫描对照唯一约束与读取授权"><span class="scene-no" aria-hidden="true">04</span><span class="visually-hidden">验算：</span><span class="head">扫描对照、唯一约束与读取授权</span></h2></header><p class="scene-lede">在少量样本上，四种查询的结果集合都应与逐条扫描一致。此外分开检查：身份是否由唯一约束保证，普通索引不提供这一保证；读取是否经过授权，查得到一行不等于有权读取；索引是否加快了目标查询。<abbr title="user interface：用户界面">UI</abbr> 的自动补全也要在服务端限定租户和可见范围，不能先取出全部候选，再靠浏览器隐藏。</p>
 </section>
-<section class="scene" aria-labelledby="变式从发票到样本从目录到对账"><header class="scene-head"><h2 id="变式从发票到样本从目录到对账"><span class="scene-no" aria-hidden="true">05</span><span class="visually-hidden">变式：</span><span class="head">从发票到样本，从目录到对账</span></h2></header><p class="scene-lede"><strong>变式题一。</strong> 把 H01 的外部发票映射迁移到 V03 的实验样本，不同实验室都有样本 <code>1001</code>。还能按编号查找吗？</p>
+<section class="scene" aria-labelledby="变式从发票到样本从目录到对账"><header class="scene-head"><h2 id="变式从发票到样本从目录到对账"><span class="scene-no" aria-hidden="true">05</span><span class="visually-hidden">变式：</span><span class="head">从发票到样本，从目录到对账</span></h2></header><p class="scene-lede">换领域时，查询类型不变就保留结构、重定 key 的范围；查询类型变了就要重选结构。</p>
+<div class="labelled" data-kind="exercise"><p class="blk-l">变式题一</p><p>把 H01 的外部发票映射迁移到 V03 的实验样本，不同实验室都有样本 <code>1001</code>。还能按编号查找吗？</p></div>
 <div class="labelled" data-kind="answer"><p class="blk-l">简答</p><p>能。相等查找可以保留，但 key 要改成明确的组织/实验室与样本身份，外部系统的编号另带 provider scope；各版本结果单独保存。反例是用最新的样本结果覆盖同号样本。验算检查两个范围里的同号样本互不覆盖，结果修订后仍保留原版本的依据。</p></div>
 <div class="labelled" data-kind="exercise"><p class="blk-l">变式题二</p><p>把 V04 的产品前缀提示改成 H03 的“金额相同且日期接近的对账候选”，trie 还能直接沿用吗？</p></div>
 <div class="labelled" data-kind="answer"><p class="blk-l">简答</p><p>不能直接沿用。需求已经变成金额相等加日期范围的组合查询，可以考虑数据库组合索引，或先按金额分组、再按时间筛选，并同时保留多个候选。金额相同不能证明是同一笔交易。验算时返回候选集合，由明确的匹配规则或人工证据决定是否消除差异。</p></div>
@@ -139,8 +142,8 @@
     <footer class="page-foot">正文 <a href="../../../books/saas-engineering/foundations/02-lookup-and-indexes.md">books/saas-engineering/foundations/02-lookup-and-indexes.md</a> · <a href="../../../vault/distilled/saas-engineering-atlas/README.md">结构、来源与验证</a></footer>
   </main>
 </div>
-<script src="search-index.js?v=mv9186ug"></script>
-<script src="book.js?v=mv9186ug"></script>
+<script src="search-index.js?v=mv95jeod"></script>
+<script src="book.js?v=mv95jeod"></script>
 
 </body>
 </html>

@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>第六章：有约束的选择与求解 · SaaS 工程全景</title>
-<link rel="stylesheet" href="book.css?v=mv9186ug">
+<link rel="stylesheet" href="book.css?v=mv95jeod">
 </head>
 <body>
 <a class="skip" href="#main">跳到正文</a>
@@ -20,7 +20,8 @@
 <header class="hero">
 <p class="kicker"><a href="fdn.html">计算与系统方法</a><span class="dot">·</span>第六章</p>
 <h1>有约束的选择与求解</h1>
-<p class="lede">“最便宜”“尽量多”“最快”，缺了对象与约束，都不是完整的题目。</p>
+<p class="lede">“最便宜”“尽量多”“最快”，缺了对象与约束，都不是完整的题目。写出变量、硬约束和目标之后，方法按条件选：交换论证成立时用贪心，子问题反复出现时用动态规划，规模小而约束复杂时用回溯搜索，要证明最优时用分支限界或成熟求解器。可行与最优是两种结论：最优要有界或求解器的证明状态作证据；时间到了还没找到解，只说明没有找到，不说明无解。</p>
+
 
 </header>
     <div class="reel">
@@ -30,7 +31,8 @@
 </section>
 <section class="scene" aria-labelledby="解法四种方法的适用条件"><header class="scene-head"><h2 id="解法四种方法的适用条件"><span class="scene-no" aria-hidden="true">02</span><span class="visually-hidden">解法：</span><span class="head">四种方法的适用条件</span></h2></header><p class="scene-lede">每次选当前最好的一项，若能用交换论证说明这样选不会损害最终答案，可以考虑贪心。不同的选择反复落到相同的子问题上，适合动态规划（dynamic programming，DP）。约束组合复杂而候选规模小时，可以搜索，并及时剪掉不可能的分支。还要证明最优，就在搜索中维护目标的上下界，或者交给成熟的求解器。</p>
 </section>
-<section class="scene" aria-labelledby="演算四种方法"><header class="scene-head"><h2 id="演算四种方法"><span class="scene-no" aria-hidden="true">03</span><span class="visually-hidden">演算：</span><span class="head">四种方法</span></h2></header><h3 id="贪心greedy可证明的局部规则">贪心（greedy）：可证明的局部规则</h3>
+<section class="scene" aria-labelledby="演算四种方法"><header class="scene-head"><h2 id="演算四种方法"><span class="scene-no" aria-hidden="true">03</span><span class="visually-hidden">演算：</span><span class="head">四种方法</span></h2></header><p class="scene-lede">四种方法的正确性各靠一个前提：贪心靠交换论证，DP 靠状态含足够信息（这里是剩余预算），分支限界靠有效的乐观界；回溯穷尽分支时结论可靠，最坏仍可能面对指数个组合。</p>
+<h3 id="贪心greedy可证明的局部规则">贪心（greedy）：可证明的局部规则</h3>
 <p>设预约为 A <code>[0,3)</code>、B <code>[2,4)</code>、C <code>[3,5)</code>、D <code>[5,7)</code>，只有一台设备，预约不可重叠，每项价值相同，目标是完成最多项。按最早结束优先：选 A，排除 B，再选 C、D，共 3 项。交换论证是：某个最优方案的第一项若结束得比 A 晚，换成 A 不会挤掉后面的项；对剩下的子问题重复这一交换即可。先排序 O(n log n)，随后扫描 O(n)。这类问题的讲解见 <a href="https://cses.fi/book/book.pdf" class="ext" rel="noopener">Laaksonen §6.2</a>。</p>
 <figure class="drawing" data-drawing="f06-greedy"><div class="dw-scroll" style="--dw-min:520px;--dw-max:720px">
 <svg viewBox="0 0 600 262" role="img" aria-labelledby="f06-greedy-t f06-greedy-d">
@@ -142,7 +144,8 @@
 <section class="scene" aria-labelledby="验算方案最优性证明与资源占用"><header class="scene-head"><h2 id="验算方案最优性证明与资源占用"><span class="scene-no" aria-hidden="true">04</span><span class="visually-hidden">验算：</span><span class="head">方案、最优性证明与资源占用</span></h2></header><p class="scene-lede">求解结果应携带输入快照、约束版本、目标单位、方案、求解状态和停止预算。先用独立的检查器逐条验证硬约束，再检查目标值；要求最优时，记录界或求解器的证明状态。OR-Tools 的 CP-SAT 求解器结合了约束规划（constraint programming，CP）与可满足性（satisfiability，SAT）方法；它的<a href="https://developers.google.com/optimization/cp/cp_solver" class="ext" rel="noopener">返回状态文档</a>区分 <code>OPTIMAL</code>、<code>FEASIBLE</code>、<code>INFEASIBLE</code>、<code>MODEL_INVALID</code>、<code>UNKNOWN</code>，可以对照着理解这几种返回状态。求解器报告的最优，只对输入的模型成立；模型里漏写的技能约束，求解器不会自动补上。</p>
 <p>生产排程先考虑 OR-Tools、整数规划或约束求解器。求解可以放到后台，<abbr title="user interface：用户界面">UI</abbr> 显示正在求解的工作版本、当前的可行方案以及方案是否已确认；调度员接受方案后，仍要原子地占用资源，防止求解期间资源被别人预约。方案算得最优与资源锁定成功，要各有一条证据。</p>
 </section>
-<section class="scene" aria-labelledby="变式从配送到配员"><header class="scene-head"><h2 id="变式从配送到配员"><span class="scene-no" aria-hidden="true">05</span><span class="visually-hidden">变式：</span><span class="head">从配送到配员</span></h2></header><p class="scene-lede"><strong>题一。</strong> V21 的车辆装载移到 V19 的咨询配员，把重量改为工时是否够？<strong>答案：</strong> 不够。容量约束可以保留，还要新增技能、日历重叠和不可替代角色三类约束，单一背包 DP 已不足以表达全部约束。反例是总工时足够，唯一的专家却在同一天被分配到两处。验算时逐时段核对人员占用，并与一组人工确认可行的方案比较。</p>
+<section class="scene" aria-labelledby="变式从配送到配员"><header class="scene-head"><h2 id="变式从配送到配员"><span class="scene-no" aria-hidden="true">05</span><span class="visually-hidden">变式：</span><span class="head">从配送到配员</span></h2></header><p class="scene-lede">换领域后，原模型的约束要逐项补齐：配员要补技能、日历和角色，限时排程要区分可行方案与已证明的最优。</p>
+<div class="labelled" data-kind="exercise"><p class="blk-l">题一</p><p>V21 的车辆装载移到 V19 的咨询配员，把重量改为工时是否够？<strong>答案：</strong> 不够。容量约束可以保留，还要新增技能、日历重叠和不可替代角色三类约束，单一背包 DP 已不足以表达全部约束。反例是总工时足够，唯一的专家却在同一天被分配到两处。验算时逐时段核对人员占用，并与一组人工确认可行的方案比较。</p></div>
 <div class="labelled" data-kind="exercise"><p class="blk-l">题二</p><p>V07 要在 2 秒内返回生产计划，求解器已有可行解但未证明最优。<strong>答案：</strong> 业务允许时，可以返回带目标值和未闭合界的候选方案，由人确认，但不能标成最优。2 秒内没有解，就显示“未找到”而不是“无解”，并保留上一次仍然可行的方案或人工排程的路径。性能目标与最优性要求共同决定解法。</p></div>
 </section>
       </div>
@@ -151,8 +154,8 @@
     <footer class="page-foot">正文 <a href="../../../books/saas-engineering/foundations/06-choices-and-optimization.md">books/saas-engineering/foundations/06-choices-and-optimization.md</a> · <a href="../../../vault/distilled/saas-engineering-atlas/README.md">结构、来源与验证</a></footer>
   </main>
 </div>
-<script src="search-index.js?v=mv9186ug"></script>
-<script src="book.js?v=mv9186ug"></script>
+<script src="search-index.js?v=mv95jeod"></script>
+<script src="book.js?v=mv95jeod"></script>
 
 </body>
 </html>

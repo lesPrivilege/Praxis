@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>第四章：沿关系找影响、路径与连通组 · SaaS 工程全景</title>
-<link rel="stylesheet" href="book.css?v=mv9186ug">
+<link rel="stylesheet" href="book.css?v=mv95jeod">
 </head>
 <body>
 <a class="skip" href="#main">跳到正文</a>
@@ -20,17 +20,19 @@
 <header class="hero">
 <p class="kicker"><a href="fdn.html">计算与系统方法</a><span class="dot">·</span>第四章</p>
 <h1>沿关系找影响、路径与连通组</h1>
-<p class="lede">“这个样本影响哪些批次”“这份报表依赖哪些数据”“两个站点是否接通”都在问关系。图把对象作为节点，把一种明确的关系作为边。</p>
+<p class="lede">“这个样本影响哪些批次”“这份报表依赖哪些数据”“两个站点是否接通”都在问关系。图把对象作为节点，把一种明确的关系作为边。问题的形式决定算法：逐层的影响范围用广度优先搜索（BFS），一条完整来源链和环检测用深度优先搜索（DFS），带代价的路线用最短路，反复判断两点是否同组用并查集。边的方向、代价和权限先于算法定下；可达只说明变化会传到，读取另需授权，关系数据取得不全时，算法会正确地遍历一张不完整的图。</p>
+
 
 </header>
     <div class="reel">
       <aside class="rail" aria-label="本页进度"><ol><li><a href="#识题边的含义与方向"><span class="rn">01<span class="of"> / 05</span></span><span class="rt">边的含义与方向</span></a></li><li><a href="#解法方向代价与反向邻接表"><span class="rn">02<span class="of"> / 05</span></span><span class="rt">方向、代价与反向邻接表</span></a></li><li><a href="#演算可达来源链最短路与连通组"><span class="rn">03<span class="of"> / 05</span></span><span class="rt">可达、来源链、最短路与连通组</span></a></li><li><a href="#验算算法结果与关系数据"><span class="rn">04<span class="of"> / 05</span></span><span class="rt">算法结果与关系数据</span></a></li><li><a href="#变式从报表到制造从网络到授权"><span class="rn">05<span class="of"> / 05</span></span><span class="rt">从报表到制造，从网络到授权</span></a></li></ol></aside>
       <div class="flow">
-<section class="scene" aria-labelledby="识题边的含义与方向"><header class="scene-head"><h2 id="识题边的含义与方向"><span class="scene-no" aria-hidden="true">01</span><span class="visually-hidden">识题：</span><span class="head">边的含义与方向</span></h2></header><p class="scene-lede">H07 的来源依赖、V07 的零件与产品、V18 的证据关联、V22 的网络连通都可以画成图，但各自的边不能混用。<code>B depends_on A</code> 表示 B 依赖 A。</p>
+<section class="scene" aria-labelledby="识题边的含义与方向"><header class="scene-head"><h2 id="识题边的含义与方向"><span class="scene-no" aria-hidden="true">01</span><span class="visually-hidden">识题：</span><span class="head">边的含义与方向</span></h2></header><p class="scene-lede">一张图里的边只表达一种关系：H07 的来源依赖、V07 的零件与产品、V18 的证据关联、V22 的网络连通都可以画成图，但各自的边不能混用。<code>B depends_on A</code> 表示 B 依赖 A。</p>
 </section>
 <section class="scene" aria-labelledby="解法方向代价与反向邻接表"><header class="scene-head"><h2 id="解法方向代价与反向邻接表"><span class="scene-no" aria-hidden="true">02</span><span class="visually-hidden">解法：</span><span class="head">方向、代价与反向邻接表</span></h2></header><p class="scene-lede">画出箭头之后，还要定下方向、代价与权限，它们决定算法的答案。若要从 A 找受影响的对象，遍历方向应转成 A→B。共享关系类型的方向仍按 <a href="../../../vault/distilled/saas-engineering-atlas/relation-types.json">relation-types</a>的定义；计算时另建一张反向邻接表，原边不动。</p>
 </section>
-<section class="scene" aria-labelledby="演算可达来源链最短路与连通组"><header class="scene-head"><h2 id="演算可达来源链最短路与连通组"><span class="scene-no" aria-hidden="true">03</span><span class="visually-hidden">演算：</span><span class="head">可达、来源链、最短路与连通组</span></h2></header><p class="scene-lede">设一张传播图：</p><ol class="chain" style="--per:3"><li><span class="cn">1</span><span class="ct">A</span></li><li><span class="cn">2</span><span class="ct">B、A</span></li><li><span class="cn">3</span><span class="ct">C、B</span></li><li><span class="cn">4</span><span class="ct">D、C</span></li><li><span class="cn">5</span><span class="ct">D、D</span></li><li><span class="cn">6</span><span class="ct">E</span></li></ol><p>A 是源表，B、C 是两个汇总，D 是发布包，E 是下游报表。E 可达只说明变化会传到 E；读取 E 的内容另需授权。</p>
+<section class="scene" aria-labelledby="演算可达来源链最短路与连通组"><header class="scene-head"><h2 id="演算可达来源链最短路与连通组"><span class="scene-no" aria-hidden="true">03</span><span class="visually-hidden">演算：</span><span class="head">可达、来源链、最短路与连通组</span></h2></header><p class="scene-lede">四种算法回答四种问题：逐层的影响范围、一条来源链与环、带代价的最短路线、无向连接下的同组判定。前两种用同一张传播图演算。</p>
+<p>设一张传播图：</p><ol class="chain" style="--per:3"><li><span class="cn">1</span><span class="ct">A</span></li><li><span class="cn">2</span><span class="ct">B、A</span></li><li><span class="cn">3</span><span class="ct">C、B</span></li><li><span class="cn">4</span><span class="ct">D、C</span></li><li><span class="cn">5</span><span class="ct">D、D</span></li><li><span class="cn">6</span><span class="ct">E</span></li></ol><p>A 是源表，B、C 是两个汇总，D 是发布包，E 是下游报表。E 可达只说明变化会传到 E；读取 E 的内容另需授权。</p>
 <h3 id="广度优先搜索bfs逐层扩展">广度优先搜索（BFS）：逐层扩展</h3>
 <p>“距 A 两步以内有哪些对象”适合广度优先搜索。先把 A 入队；取出 A，把未访问的 B、C 放到队尾；再取 B，加入 D；取 C 时 D 已被发现，不重复入队；随后取 D，加入 E。层次是 <code>0:{A}, 1:{B,C}, 2:{D}, 3:{E}</code>，两步内的下游对象为 B、C、D。</p>
 <figure class="drawing" data-drawing="f04-bfs-levels"><div class="dw-scroll" style="--dw-min:460px;--dw-max:680px">
@@ -123,7 +125,8 @@
 <section class="scene" aria-labelledby="验算算法结果与关系数据"><header class="scene-head"><h2 id="验算算法结果与关系数据"><span class="scene-no" aria-hidden="true">04</span><span class="visually-hidden">验算：</span><span class="head">算法结果与关系数据</span></h2></header><p class="scene-lede">可达集合应不重不漏，路径上的每条边都应存在，路径总成本应等于输出值。还应验证关系数据的版本、方向和可见范围。缓存旧血缘可能漏掉新依赖；邻接节点分页没取完，算法会正确地遍历一张不完整的图。大图要测节点数、边数、扇出、深度和返回量；设了遍历预算时，要明确标出结果不完整。</p>
 <p>配套脚本生成逐步轨迹时，BFS 在发现节点时追加层次，DFS 用显式栈和共享的路径记录，并查集随合并更新连通组计数，都不必每层或每次合并后重扫全部节点。</p>
 </section>
-<section class="scene" aria-labelledby="变式从报表到制造从网络到授权"><header class="scene-head"><h2 id="变式从报表到制造从网络到授权"><span class="scene-no" aria-hidden="true">05</span><span class="visually-hidden">变式：</span><span class="head">从报表到制造，从网络到授权</span></h2></header><p class="scene-lede"><strong>变式题一。</strong> 把 H07 的源表变化传播迁移到 V08 的批次原料追溯。</p>
+<section class="scene" aria-labelledby="变式从报表到制造从网络到授权"><header class="scene-head"><h2 id="变式从报表到制造从网络到授权"><span class="scene-no" aria-hidden="true">05</span><span class="visually-hidden">变式：</span><span class="head">从报表到制造，从网络到授权</span></h2></header><p class="scene-lede">迁移时保留遍历方式，边的含义要重建：投入产出边可以沿用找影响集合的方法，有向且带条件的授权不能套用并查集的对称、传递关系。</p>
+<div class="labelled" data-kind="exercise"><p class="blk-l">变式题一</p><p>把 H07 的源表变化传播迁移到 V08 的批次原料追溯。</p></div>
 <div class="labelled" data-kind="answer"><p class="blk-l">简答</p><p>保留沿关系找影响集合的方法，边改成明确的投入/产出批次关系，加入数量和转换版本。BFS 找出的受影响批次只是候选，不能据此认定每一批都不合格。验算把同一原料分批、混批及返工放入样本，核对数量与质量处置的独立证据。</p></div>
 <div class="labelled" data-kind="exercise"><p class="blk-l">变式题二</p><p>V22 的连通组迁移到 H08 的访问授权。</p></div>
 <div class="labelled" data-kind="answer"><p class="blk-l">简答</p><p>不适合直接沿用。并查集的对称、传递关系表达不了有向且带条件的授权：A 可操作 B、B 可操作 C，推不出 A 可操作 C。授权要按实际的权限模型求值；验算检查撤权、有效期和跨租户对象。</p></div>
@@ -134,8 +137,8 @@
     <footer class="page-foot">正文 <a href="../../../books/saas-engineering/foundations/04-graphs-and-connectivity.md">books/saas-engineering/foundations/04-graphs-and-connectivity.md</a> · <a href="../../../vault/distilled/saas-engineering-atlas/README.md">结构、来源与验证</a></footer>
   </main>
 </div>
-<script src="search-index.js?v=mv9186ug"></script>
-<script src="book.js?v=mv9186ug"></script>
+<script src="search-index.js?v=mv95jeod"></script>
+<script src="book.js?v=mv95jeod"></script>
 
 </body>
 </html>

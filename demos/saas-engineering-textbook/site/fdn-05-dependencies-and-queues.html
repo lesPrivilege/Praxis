@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>第五章：有前提的工作与队列 · SaaS 工程全景</title>
-<link rel="stylesheet" href="book.css?v=mv9186ug">
+<link rel="stylesheet" href="book.css?v=mv95jeod">
 </head>
 <body>
 <a class="skip" href="#main">跳到正文</a>
@@ -20,7 +20,8 @@
 <header class="hero">
 <p class="kicker"><a href="fdn.html">计算与系统方法</a><span class="dot">·</span>第五章</p>
 <h1>有前提的工作与队列</h1>
-<p class="lede">排在第一的订单，未必现在就能开始：检验要等生产证据，发布要等审核，结算要等必要回执。依赖图回答哪些工作已具备前提，队列回答就绪的工作怎样交给执行者，资源排程回答何时占用谁。三者分开看，才解释得了“明明没有报错，工作却一直不动”。</p>
+<p class="lede">排在第一的订单，未必现在就能开始：检验要等生产证据，发布要等审核，结算要等必要回执。依赖图回答哪些工作已具备前提，队列回答就绪的工作怎样交给执行者，资源排程回答何时占用谁。三者分开看，才解释得了“明明没有报错，工作却一直不动”。后继只在前提的完成证据持久化之后解锁；消息出队、送达或得到消息代理的确认，都不等于业务效果已经提交。</p>
+
 
 </header>
     <div class="reel">
@@ -31,7 +32,8 @@
 <section class="scene" aria-labelledby="解法拓扑排序与就绪集合"><header class="scene-head"><h2 id="解法拓扑排序与就绪集合"><span class="scene-no" aria-hidden="true">02</span><span class="visually-hidden">解法：</span><span class="head">拓扑排序与就绪集合</span></h2></header><p class="scene-lede">DAG 用“前提→后继”表示依赖。拓扑排序先取入度为零的节点，移走它及其出边，再找新的入度为零的节点。若还有未移走的节点，却再也没有入度为零的节点，剩余图中必有环。建立并扫描邻接表的成本为 O(V+E)，空间 O(V+E)。</p>
 <p><a href="https://docs.python.org/3/library/graphlib.html" class="ext" rel="noopener">Python graphlib.TopologicalSorter</a>用 <code>get_ready</code> 与 <code>done</code> 两个接口把“可开始”和“已完成”分开。异步执行时，就绪集合暂时为空，可能只是前提还在运行，并非有环：A 已被领取、尚未完成时，B、C 都不能开始。后台执行者（worker）应在完成证据持久化之后才解锁后继；把“已经发入队列”当成 done，会让发布越过尚未完成的审核。</p>
 </section>
-<section class="scene" aria-labelledby="演算先后次序与占用时间"><header class="scene-head"><h2 id="演算先后次序与占用时间"><span class="scene-no" aria-hidden="true">03</span><span class="visually-hidden">演算：</span><span class="head">先后次序与占用时间</span></h2></header><p class="scene-lede">设发布任务为：A 准备 2 分钟，B 复核 3 分钟，C 生成附件 4 分钟，D 发布 1 分钟。依赖为 A→B、A→C、B→D、C→D。初始入度为 A0、B1、C1、D2。A 完成后，B、C 都就绪；B 完成使 D 的入度从 2 降至 1，C 完成后才降至 0。</p>
+<section class="scene" aria-labelledby="演算先后次序与占用时间"><header class="scene-head"><h2 id="演算先后次序与占用时间"><span class="scene-no" aria-hidden="true">03</span><span class="visually-hidden">演算：</span><span class="head">先后次序与占用时间</span></h2></header><p class="scene-lede">同一组依赖在资源不同时工期不同：B、C 能并行时 7 分钟，共用一名审核人时 10 分钟。</p>
+<p>设发布任务为：A 准备 2 分钟，B 复核 3 分钟，C 生成附件 4 分钟，D 发布 1 分钟。依赖为 A→B、A→C、B→D、C→D。初始入度为 A0、B1、C1、D2。A 完成后，B、C 都就绪；B 完成使 D 的入度从 2 降至 1，C 完成后才降至 0。</p>
 <p>若 B、C 可由不同的执行资源同时运行，各任务最早的时间区间为 A <code>[0,2)</code>，B <code>[2,5)</code>，C <code>[2,6)</code>，D <code>[6,7)</code>：每项任务在其前提中最晚的完成时刻开始，算得最短工期下界 7 分钟。若 B、C 必须占用同一名审核人，两项只能先后执行；排成 <code>[2,5)</code>、<code>[5,9)</code> 时，D 在 <code>[9,10)</code>，总计 10 分钟。两种排法的拓扑序都合法，是资源占用改变了完成时间。</p>
 <figure class="drawing" data-drawing="f05-schedules"><div class="dw-scroll" style="--dw-min:640px;--dw-max:960px">
 <svg viewBox="-4 0 830 316" role="img" aria-labelledby="f05-schedules-t f05-schedules-d">
@@ -109,7 +111,8 @@
 </div>
 <figcaption>依赖不变，B、C 只能共用一名审核人时，C 推迟到 B 之后，工期从 7 分钟变成 10 分钟。</figcaption></figure><p>再加一条 D→A，图中就有了环。这时应报告依赖建模错误，不能随意挑一个节点强行开始。若业务本来允许“修订→再审→再发布”的循环，可把每个版本的发布实例展开成一张新的有限任务图，或者使用允许循环的显式状态机。</p>
 </section>
-<section class="scene" aria-labelledby="持久化队列与处理回执"><header class="scene-head"><h2 id="持久化队列与处理回执"><span class="scene-no" aria-hidden="true">04</span><span class="head">持久化队列与处理回执</span></h2></header><p class="scene-lede">先进先出（first in, first out，FIFO）队列适合按到达顺序处理；优先队列适合紧急程度不同的就绪项。内存双端队列（deque）的入队、出队都很便宜，但进程一退出，内容就可能丢失。生产中的后台任务还需要持久化、领取/租约、重试预算、死信或人工接管，以及对重复投递的处理。</p>
+<section class="scene" aria-labelledby="持久化队列与处理回执"><header class="scene-head"><h2 id="持久化队列与处理回执"><span class="scene-no" aria-hidden="true">04</span><span class="head">持久化队列与处理回执</span></h2></header><p class="scene-lede">后台交接靠持久化队列、发件表和幂等消费，内存队列在进程退出时可能丢失内容；发布者确认与消费者确认是两条不同的边界。</p>
+<p>先进先出（first in, first out，FIFO）队列适合按到达顺序处理；优先队列适合紧急程度不同的就绪项。内存双端队列（deque）的入队、出队都很便宜，但进程一退出，内容就可能丢失。生产中的后台任务还需要持久化、领取/租约、重试预算、死信或人工接管，以及对重复投递的处理。</p>
 <p>流程在同一个本地事务中保存业务变更，并把待发送事件写入发件表（outbox）。派发器（dispatcher）反复投递未确认的事件；消费者把业务效果与已消费的消息身份一起持久化，然后确认消息。<a href="https://docs.aws.amazon.com/prescriptive-guidance/latest/cloud-design-patterns/transactional-outbox.html" class="ext" rel="noopener">AWS Transactional outbox</a>说明这种本地交接与重复处理要求。发布者（publisher）收到的确认，只说明消息代理（broker）已在相应阶段接手了消息；消费者（consumer）的确认，是消费者向 broker 报告处理结果。两者不能互相替代，<a href="https://www.rabbitmq.com/docs/confirms" class="ext" rel="noopener">RabbitMQ acknowledgements and confirms</a>明确区分了这两个边界。</p>
 <p>消费者在记录效果之后、发送确认之前崩溃，消息会再次投递，这时要靠持久化去重和幂等的业务约束挡住重复效果。不同 broker、队列类型和配置有不同保证，要按实际配置读协议，不能由“用了消息队列”推出 exactly-once 的业务效果。外部付款这类副作用，还要记录外部操作的身份并核对。</p>
 </section>
@@ -117,7 +120,8 @@
 <p>设工作负载每秒进入 12 件，持续处理能力每秒 10 件，一分钟净积压约 120 件。这是稳定速率下的算术，算不出实际的排队延迟。提高并发可能争抢同一个数据库或 provider 限额，应同时观察队列中最老任务的等待时长、执行时长、失败率和资源饱和度。高优先级任务持续到来时，低优先级任务会饥饿；可以考虑老化、租户配额与背压，再按服务承诺验收。</p>
 <div class="labelled" data-kind="counter"><p class="blk-l">误用反例</p><p>一次失败就立即反复重试，占满所有 worker。另一种误用是因为消息先出队，就推断它的效果先提交。并发执行时，完成次序可能改变，需要保持顺序的对象应有序号、版本检查或分区约束。</p></div>
 </section>
-<section class="scene" aria-labelledby="变式从文档发布到现场维修"><header class="scene-head"><h2 id="变式从文档发布到现场维修"><span class="scene-no" aria-hidden="true">06</span><span class="visually-hidden">变式：</span><span class="head">从文档发布到现场维修</span></h2></header><p class="scene-lede"><strong>变式题一。</strong> H09 的两项审核迁移到 V20 的两次 booking。第一次已完成，第二次还没到预约时间，工单能否关闭？</p>
+<section class="scene" aria-labelledby="变式从文档发布到现场维修"><header class="scene-head"><h2 id="变式从文档发布到现场维修"><span class="scene-no" aria-hidden="true">06</span><span class="visually-hidden">变式：</span><span class="head">从文档发布到现场维修</span></h2></header><p class="scene-lede">迁移时依赖 guard 保留，新的约束和版本各自核对：预约时间与技师资源是新约束，迟到的回执只属于它的输入版本。</p>
+<div class="labelled" data-kind="exercise"><p class="blk-l">变式题一</p><p>H09 的两项审核迁移到 V20 的两次 booking。第一次已完成，第二次还没到预约时间，工单能否关闭？</p></div>
 <div class="labelled" data-kind="answer"><p class="blk-l">简答</p><p>按本例的规则不能关闭。保留“所有必需子项证据齐备才关闭”的 guard；时间窗和技师资源是新增的约束。验算检查 booking 取消后，是否产生了替代任务或明确的变更，不能直接删掉这条依赖。</p></div>
 <div class="labelled" data-kind="exercise"><p class="blk-l">变式题二</p><p>V09 的 signoff 输入版本改变，旧任务的成功回执这时才到。</p></div>
 <div class="labelled" data-kind="answer"><p class="blk-l">简答</p><p>这份成功回执属于旧输入版本，不能用来解锁新版本的发布。新的依赖实例等待自己的回执；验算检查乱序到达的回执不会改动错误的版本。队列正确送达了消息，业务仍要判断它是否属于当前工作。</p></div>
@@ -128,8 +132,8 @@
     <footer class="page-foot">正文 <a href="../../../books/saas-engineering/foundations/05-dependencies-and-queues.md">books/saas-engineering/foundations/05-dependencies-and-queues.md</a> · <a href="../../../vault/distilled/saas-engineering-atlas/README.md">结构、来源与验证</a></footer>
   </main>
 </div>
-<script src="search-index.js?v=mv9186ug"></script>
-<script src="book.js?v=mv9186ug"></script>
+<script src="search-index.js?v=mv95jeod"></script>
+<script src="book.js?v=mv95jeod"></script>
 
 </body>
 </html>

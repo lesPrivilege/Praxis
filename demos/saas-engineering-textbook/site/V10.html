@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>V10 · 资产异常、维护许可与工单关闭 · SaaS 工程全景</title>
-<link rel="stylesheet" href="book.css?v=mv9186ug">
+<link rel="stylesheet" href="book.css?v=mv95jeod">
 </head>
 <body>
 <a class="skip" href="#main">跳到正文</a>
@@ -20,7 +20,8 @@
 <header class="hero">
 <p class="kicker"><a href="group-industry-networks.html">生产、资产、公用与供应网络</a><span class="dot">·</span>V10</p>
 <h1>资产异常、维护许可与工单关闭</h1>
-<p class="lede">一台泵的振动升高，只说明出现了一项值得检查的信号；故障原因是什么、谁可以决定停机、哪位技师可以拆卸、修完后能否重新投运，都还没有答案。资产维护软件要做的，是把异常交给有权处理的人，让工作在许可范围内完成，最后凭维护证据和接受记录了结这项责任。V07 处理产品能否交付，本例处理在用资产怎样恢复可用；两者都靠证据收尾，结案条件不同。</p>
+<p class="lede">一台泵的振动升高，只说明出现了一项值得检查的信号；故障原因是什么、谁可以决定停机、哪位技师可以拆卸、修完后能否重新投运，都还没有答案。资产维护软件要做的，是把异常交给有权处理的人，让工作在许可范围内完成，最后凭维护证据和接受记录了结这项责任。V07 处理产品能否交付，本例处理在用资产怎样恢复可用；两者都靠证据收尾，结案条件不同。异常按事件时间的连续窗口提出，同一未解除的 episode 只追加样本依据，不每分钟新建工单；开工要在事务里核验当前许可版本，排期本身不授予施工权；工单关闭凭接收人接受的维护确认，告警解除填不上未完成的任务。改变判断的是共享许可：多张工单共用一个隔离范围时，一张完成不足以交还隔离或复电。</p>
+
 <div class="cast" aria-label="本例的角色、界面与系统">
 <div class="cast-lane"><p class="cast-k">角色</p><ul><li>计划员/异常分析员</li><li>许可负责人</li><li>技师</li><li>维护接收人</li></ul></div>
 <div class="cast-lane"><p class="cast-k">界面</p><ul><li>异常与维护工作台</li><li>离线维护表单</li></ul></div>
@@ -33,7 +34,8 @@
       <aside class="rail" aria-label="本页进度"><ol><li><a href="#识题信号窗口排程与许可"><span class="rn">01<span class="of"> / 09</span></span><span class="rt">信号窗口、排程与许可</span></a></li><li><a href="#解法异常许可工单与资产的独立状态"><span class="rn">02<span class="of"> / 09</span></span><span class="rt">异常、许可、工单与资产的独立状态</span></a></li><li><a href="#界面流程开工事务与技术选型"><span class="rn">03<span class="of"> / 09</span></span><span class="rt">界面流程、开工事务与技术选型</span></a></li><li><a href="#演算事件窗口与资源排程"><span class="rn">04<span class="of"> / 09</span></span><span class="rt">事件窗口与资源排程</span></a></li><li><a href="#正常路径失败处理与容量目标"><span class="rn">05<span class="of"> / 09</span></span><span class="rt">正常路径、失败处理与容量目标</span></a></li><li><a href="#验算从异常到关闭的检查项"><span class="rn">06<span class="of"> / 09</span></span><span class="rt">从异常到关闭的检查项</span></a></li><li><a href="#变式共享许可与设备时钟偏移"><span class="rn">07<span class="of"> / 09</span></span><span class="rt">共享许可与设备时钟偏移</span></a></li><li><a href="#进入资产维护的先查项"><span class="rn">08<span class="of"> / 09</span></span><span class="rt">进入资产维护的先查项</span></a></li><li><a href="#case-structure"><span class="rn">09<span class="of"> / 09</span></span><span class="rt">对象、生命周期与迁移</span></a></li></ol></aside>
       <div class="flow">
 <p>工厂有两台泵 P-17、P-18，共用隔离阀组 G-2；P-17 产生连续异常，工作包括更换轴承和试运行。隔离是否充分、试验条件是否安全，由具备相应责任的人依据现场制度确认。软件记下谁作了确认、确认覆盖哪些范围，专业判断仍归这些人。文中“接收”和“接受”是两件事：接收指修好的设备由维护方交回使用方，由接收人确认投运；接受指接收人复核一份维护确认后认可它，工单关闭以此为据。</p>
-<section class="scene" aria-labelledby="识题信号窗口排程与许可"><header class="scene-head"><h2 id="识题信号窗口排程与许可"><span class="scene-no" aria-hidden="true">01</span><span class="visually-hidden">识题：</span><span class="head">信号窗口、排程与许可</span></h2></header><div class="table-wrap"><table>
+<section class="scene" aria-labelledby="识题信号窗口排程与许可"><header class="scene-head"><h2 id="识题信号窗口排程与许可"><span class="scene-no" aria-hidden="true">01</span><span class="visually-hidden">识题：</span><span class="head">信号窗口、排程与许可</span></h2></header><p class="scene-lede">设备问题先分清卡在哪一层：窗口规则决定是否提出异常，依赖与资源决定何时能做，许可和接受记录决定能否开工与投运。</p>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>识题线索</th>
@@ -101,24 +103,28 @@
 <p>Microsoft 的 <a href="https://learn.microsoft.com/en-us/dynamics365/field-service/field-service-architecture" class="ext" rel="noopener">Work order architecture</a> 分开描述 Resource Requirement、Booking、技师执行和经理复核，同一 requirement 可以生成多个 booking；可见“预约”和“工单”是两个相关但不同的对象。IBM 的 <a href="https://www.ibm.com/support/pages/maximo-support-desk-allowable-status-changes-work-orders" class="ext" rel="noopener">Maximo 状态转换说明</a> 列出随当前状态变化的允许目标，其中 <code>COMP</code> 可走向 <code>CLOSE</code>，关闭后不能随意改回工作状态。这篇支持文章给的是一般规则，具体 Maximo 版本和客户配置可能不同。</p>
 <p>计划员能提出任务和排期，许可负责人能批准或暂停许可，技师能上报执行事实，接收人能接受或退回维护确认。技师改不了状态字段来给自己发许可；列表里隐藏“关闭”按钮，也代替不了服务端的权限检查。关闭工单时，服务端读取最新版本的工作范围和许可，而不是页面打开时缓存的许可快照。</p>
 </section>
-<section class="scene" aria-labelledby="界面流程开工事务与技术选型"><header class="scene-head"><h2 id="界面流程开工事务与技术选型"><span class="scene-no" aria-hidden="true">03</span><span class="head">界面流程、开工事务与技术选型</span></h2></header><p class="scene-lede">异常列表首先展示资产、异常开始时间、样本新鲜度和现有工单。分析员打开 P-17 的曲线，看到的是告警规则和原始样本，而不只是一个红点；点击“提出维护”后，预览任务、停机影响、所需技能和备件。接口 <code>POST /work-orders</code> 接收资产身份、异常引用、范围版本及 operation <abbr title="identifier：标识符">ID</abbr>，把工单存为 <code>proposed</code> 并写入审计记录。重复点击返回同一 operation。两位分析员针对同一异常同时提单时，系统靠“租户 + 异常 + 工作范围”的唯一约束发现重复，提示两人合并或明确拆分任务，而不是按标题相似度悄悄去重。</p>
+<section class="scene" aria-labelledby="界面流程开工事务与技术选型"><header class="scene-head"><h2 id="界面流程开工事务与技术选型"><span class="scene-no" aria-hidden="true">03</span><span class="head">界面流程、开工事务与技术选型</span></h2></header><p class="scene-lede">开工在一个事务里核验工单版本、技师范围和有效许可；客户端没收到响应时，用同一 operation <abbr title="identifier：标识符">ID</abbr> 查询，不换身份补记。</p>
+<p>异常列表首先展示资产、异常开始时间、样本新鲜度和现有工单。分析员打开 P-17 的曲线，看到的是告警规则和原始样本，而不只是一个红点；点击“提出维护”后，预览任务、停机影响、所需技能和备件。接口 <code>POST /work-orders</code> 接收资产身份、异常引用、范围版本及 operation ID，把工单存为 <code>proposed</code> 并写入审计记录。重复点击返回同一 operation。两位分析员针对同一异常同时提单时，系统靠“租户 + 异常 + 工作范围”的唯一约束发现重复，提示两人合并或明确拆分任务，而不是按标题相似度悄悄去重。</p>
 <p>调度员安排时段并不授予现场施工权。技师到场后点击“申请开工”，<code>POST /work-orders/{id}/start</code> 在一个事务内核验当前工单版本、技师范围、有效许可、资产身份和所需的前置确认。本例的许可与工单是逻辑模块，共用 PostgreSQL 的事务边界，开工时锁定并核验许可版本；若拆成独立数据库，跨服务就没有原子性，要另行设计许可确认协议。开工记录是否已被后台记下，以服务端返回的 <code>started</code> 为准。客户端未收到响应时，显示“开工记录待核对”，用同一 operation ID 查询，不换新的请求身份再补一条记录。</p>
 <p>施工后，表单按任务要求收集部件编号、完成时间和试验测量，区分“已保存草稿”“待同步”“已提交”“已接受”。离线设备可以缓存任务、录入完成证据，但本例不允许在离线时刷新已过期的开工许可。PWA 的 Service Worker 与 IndexedDB 适合可控设备上的离线录入；若设备管理、相机和稳定的后台同步更重要，可选 Flutter 或原生移动客户端，代价是独立发布和多端维护。离线记录必须带设备记录 ID、事件时间、基准版本与附件摘要；服务器收到后重新核验权限和许可时间，不只凭手机时间判断。</p>
 <p>传感平台发送测量事件，持久接收库保存；信号服务生成异常对象，维护服务管理工单，许可服务管理许可。结构数据用 <code>commands</code>、<code>emits</code>、<code>delivers</code>、<code>owns</code> 等边记录这些关系，界面只是这些对象的投影。附件进入对象存储，数据库保存内容摘要与访问范围；照片上传成功，维护确认未必已被接受。</p>
 <p>核心可以用 React/TypeScript 工作台，配 ASP.NET Core 或 Spring Boot 命令服务：前者便于组合表单与可视化，后两者能承载授权与事务边界，选哪一个主要看团队是否熟悉。PostgreSQL 保存工单版本、许可与操作记录，大量样本放进时序分区表或专门的时序库。数据量小时先用数据库 outbox 和任务 worker，确需独立消费与重放时再引入消息平台。</p>
 </section>
-<section class="scene" aria-labelledby="演算事件窗口与资源排程"><header class="scene-head"><h2 id="演算事件窗口与资源排程"><span class="scene-no" aria-hidden="true">04</span><span class="visually-hidden">演算：</span><span class="head">事件窗口与资源排程</span></h2></header><p class="scene-lede">P-17 每分钟一个振动值，单位 mm/s。本例规则：连续五个无缺失的事件分钟里，至少三个值大于 7.0，即提出异常。输入 09:00—09:04 为 <code>[4.0, 7.2, 7.4, 3.8, 7.3]</code>，高值计数是 3，因此得到一个异常。09:02 的样本重复送达，仍只占一个槽；09:01 的样本迟到时，按事件分钟补入，再重算受影响的窗口。每个样本先按 <code>(tenant, asset, channel, event-minute, source-revision)</code> 找到版本。滑动窗口维护五个槽及高值数，每个已排序样本的更新为 O(1)，空间 O(w)；乱序输入若先排序，要 O(n log n)，两者的成本不同。<code>ALG:windows</code>、<code>ALG:lookup</code>。</p>
+<section class="scene" aria-labelledby="演算事件窗口与资源排程"><header class="scene-head"><h2 id="演算事件窗口与资源排程"><span class="scene-no" aria-hidden="true">04</span><span class="visually-hidden">演算：</span><span class="head">事件窗口与资源排程</span></h2></header><p class="scene-lede">异常检测计算的是“需要关注什么”，排程计算的是“条件满足后何时可做”，两者都不产生现场完成事实。</p>
+<p>P-17 每分钟一个振动值，单位 mm/s。本例规则：连续五个无缺失的事件分钟里，至少三个值大于 7.0，即提出异常。输入 09:00—09:04 为 <code>[4.0, 7.2, 7.4, 3.8, 7.3]</code>，高值计数是 3，因此得到一个异常。09:02 的样本重复送达，仍只占一个槽；09:01 的样本迟到时，按事件分钟补入，再重算受影响的窗口。每个样本先按 <code>(tenant, asset, channel, event-minute, source-revision)</code> 找到版本。滑动窗口维护五个槽及高值数，每个已排序样本的更新为 O(1)，空间 O(w)；乱序输入若先排序，要 O(n log n)，两者的成本不同。<code>ALG:windows</code>、<code>ALG:lookup</code>。</p>
 <p>持续高值会让相邻窗口反复命中，但不应每分钟新建一张工单。本例对同一租户、资产、通道和规则版本只保留一个尚未解除的异常 episode（同一异常从提出到解除的一段经过）；后续命中向它追加样本依据，异常复核解除后才允许新的 episode。接收水位允许两分钟迟到；超过水位的样本仍补入历史并产生待复核项，不自动撤销已经获准或已经执行的维护。事件时间可以修正信号的解释，不能改写过去实际发生的工作。</p>
 <p>三个高值分别出现在 09:00、09:10、09:20 时，直接累计“今天三次超标”违反了连续窗口的定义。把缺失分钟补零也是错的：零读数和未知读数表达不同的事实。本例窗口有缺失时显示数据不足，并保留缺失事件，不把“未触发告警”写成“设备健康”。</p>
 <p>维护工作的排程是另一种计算。任务 A 隔离确认 10 分钟，B 更换部件 30 分钟，C 检查接线 20 分钟，D 试运行 15 分钟；依赖是 A→B、A→C、B→D、C→D。假定 B、C 各有一位合格技师、可以同时进行，最早完成时间为 <code>10 + max(30, 20) + 15 = 55</code> 分钟。只有一位技师时，B、C 还受资源互斥约束，下界变成 <code>10 + 30 + 20 + 15 = 75</code> 分钟。拓扑排序和前向计算在有向无环图（directed acyclic graph，<abbr title="directed acyclic graph：有向无环图">DAG</abbr>）上为 O(V+E)，能求出依赖下界；技能、共享隔离区、备件到货与时间窗的组合排程，它解决不了。遇到环 A→B→A，应报告不可排，而不是照样输出甘特图。<code>ALG:scheduling</code>。</p>
-<p>异常检测计算的是“需要关注什么”，排程计算的是“条件满足后何时可做”，两者都不产生现场完成事实。动画若让阈值变红后直接跳到工单关闭变绿，中间的许可、执行和接受就都被略去了。</p>
+<p>动画若让阈值变红后直接跳到工单关闭变绿，中间的许可、执行和接受就都被略去了。</p>
 </section>
-<section class="scene" aria-labelledby="正常路径失败处理与容量目标"><header class="scene-head"><h2 id="正常路径失败处理与容量目标"><span class="scene-no" aria-hidden="true">05</span><span class="head">正常路径、失败处理与容量目标</span></h2></header><p class="scene-lede">正常路径是：五分钟样本触发异常 S-1；计划员创建 W-1；许可负责人对 P-17/G-2 与任务版本 3 签发 P-1；两项 booking 排定；技师逐项提交确认；接收人核对两个必需任务及试运行，保存接受记录；W-1 关闭。资产重新投运和告警复核解除各自留证，不要求与关闭发生在同一秒。财务若要据此收费，还需要单独的计价与账单规则。</p>
+<section class="scene" aria-labelledby="正常路径失败处理与容量目标"><header class="scene-head"><h2 id="正常路径失败处理与容量目标"><span class="scene-no" aria-hidden="true">05</span><span class="head">正常路径、失败处理与容量目标</span></h2></header><p class="scene-lede">关闭、投运和告警解除各自留证；许可变更、同步丢失或断网补传时，系统拒绝旧版本或返回原结果，不补造现场事实。</p>
+<p>正常路径是：五分钟样本触发异常 S-1；计划员创建 W-1；许可负责人对 P-17/G-2 与任务版本 3 签发 P-1；两项 booking 排定；技师逐项提交确认；接收人核对两个必需任务及试运行，保存接受记录；W-1 关闭。资产重新投运和告警复核解除各自留证，不要求与关闭发生在同一秒。财务若要据此收费，还需要单独的计价与账单规则。</p>
 <p>第一种失败发生在许可变更。技师打开页面时 P-1 仍有效，许可负责人随后暂停了 P-1。开工请求带着旧版本到达，服务器拒绝请求，界面显示“许可已暂停，需重新确认”，而不是笼统的网络错误。若已经开工才收到暂停，工单进入 <code>blocked</code>，保留已完成的步骤；现场负责人按制度确认停工和后续条件。一条异步消息无法立即改变物理设备的状态，系统也不作这种承诺。</p>
 <p>第二种失败发生在维护确认同步。技师提交 C-1 后断网，服务器其实已经保存；重传 C-1 返回原结果。若附件丢失，确认保持 <code>submitted</code>，不能接受。若两个 booking 只完成一个，工单仍显示另一个未完成；告警信号恢复正常也不会填上这个缺口。关闭之后才发现记录错误时，追加更正记录并另开跟进工单，原接受依据保持原样。</p>
 <p>容量基线为 100 个租户、每租户 1,000 个资产、每资产每分钟一个样本，即每日 1.44 亿条，平均约 1,667 条/秒；还要单独测 10 倍的断网补传峰值，以及大租户占半数流量的情形。待测目标是：正常网络下持久接收 p95 &lt; 500 ms；告警投影在允许的两分钟迟到之后 30 秒内更新；50 个并发操作员的工单查询 p95 &lt; 300 ms。按租户与资产分区限流，一个断网工厂的补传就挤不掉全部开工请求。曲线可以降采样以便显示，开工与关闭则要查权威许可和完整的任务集合；缓存 key 含 tenant、对象和版本，许可变更会使相关读模型失效。</p>
 </section>
-<section class="scene" aria-labelledby="验算从异常到关闭的检查项"><header class="scene-head"><h2 id="验算从异常到关闭的检查项"><span class="scene-no" aria-hidden="true">06</span><span class="visually-hidden">验算：</span><span class="head">从异常到关闭的检查项</span></h2></header><div class="table-wrap"><table>
+<section class="scene" aria-labelledby="验算从异常到关闭的检查项"><header class="scene-head"><h2 id="验算从异常到关闭的检查项"><span class="scene-no" aria-hidden="true">06</span><span class="visually-hidden">验算：</span><span class="head">从异常到关闭的检查项</span></h2></header><p class="scene-lede">重复、乱序、并发、跨租户、结果未知和崩溃恢复下，异常、工单、许可和资产各自的记录都要给出可观察的结果。</p>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>检查输入与动作</th>
@@ -160,7 +166,8 @@
 </tbody></table></div>
 <p>这套闭环不依赖 <abbr title="artificial intelligence：人工智能">AI</abbr>。Anthropic 的 <a href="https://claude.com/customers/ifs" class="ext" rel="noopener">IFS 案例</a> 描述 Resolve 用图像与传感信息辅助现场诊断；这是供应方发布的案例，没有给出可推广到所有工厂的诊断准确率。若加入建议助手，输出要绑定资产型号、手册版本和证据片段，只能起草诊断与任务。评测前冻结模型版本、提示词、检索索引和工具配置；由两名领域复核人按“必须升级、可建议检查、证据不足”标注并裁决分歧，训练和提示调试不得使用留出答案。评测使用 200 个独立标注的留出案例，其中 40 个需立即人工升级，逐项统计漏升级数/40、无依据建议数/200、越权自动开工数/200，并记录人工修正率与拒答率；测试集中加入错型号、过期手册、模糊图像和传感矛盾。未经许可的执行建议一律由规则拦截。</p>
 </section>
-<section class="scene" aria-labelledby="变式共享许可与设备时钟偏移"><header class="scene-head"><h2 id="变式共享许可与设备时钟偏移"><span class="scene-no" aria-hidden="true">07</span><span class="visually-hidden">变式：</span><span class="head">共享许可与设备时钟偏移</span></h2></header><p class="scene-lede"><strong>练习一：两个工单共享 G-2，W-1 已完成，W-2 仍有技师作业。能否因 W-1 关闭而把 G-2 交还？</strong></p>
+<section class="scene" aria-labelledby="变式共享许可与设备时钟偏移"><header class="scene-head"><h2 id="变式共享许可与设备时钟偏移"><span class="scene-no" aria-hidden="true">07</span><span class="visually-hidden">变式：</span><span class="head">共享许可与设备时钟偏移</span></h2></header><p class="scene-lede">两种变化都回到同一要求：每次交还或接受都要能追溯到覆盖实际工作的有效许可。</p>
+<p><strong>练习一：两个工单共享 G-2，W-1 已完成，W-2 仍有技师作业。能否因 W-1 关闭而把 G-2 交还？</strong></p>
 <p>简答：不能。本例新增一条交还 guard（状态转换前必须满足的条件）：隔离范围下所有仍依赖它的工作都已解除占用，且负责人确认。要守住的是许可覆盖实际工作范围；第二张工单仍在执行，正好触发前文已有的共享范围约束，“一张工单完成就足以交还”的简化在这里不成立，按任意一张工单完成就触发投运便是反例。检查用的 fixture 让 W-1 完成、W-2 处于 <code>in_progress</code>，系统应拒绝交还并列出阻塞的工单，而不只显示计数 1。</p>
 <p><strong>练习二：断网两小时后技师上传一份记录，其填报时间在许可失效前，手机时间却被调慢一小时。能否自动接受？</strong></p>
 <p>简答：不能只凭设备时间接受。原始记录与签名身份照常保存，但记录是否新鲜、时间是否可信都不能再默认，要由授权人核对现场证据后另行决定是否接受。每次接受都要能追溯到适用的许可，用客户端时间绕过已撤销的许可就破坏了这一点。检查时调整设备时钟，记录应进入复核队列，审计同时保留事件时间、接收时间、设备时间偏差和最终理由。</p>
@@ -300,8 +307,8 @@
     <footer class="page-foot">正文 <a href="../../../books/saas-engineering/packages/industry-networks/V10.md">books/saas-engineering/packages/industry-networks/V10.md</a> · <a href="../../../vault/distilled/saas-engineering-atlas/README.md">结构、来源与验证</a></footer>
   </main>
 </div>
-<script src="search-index.js?v=mv9186ug"></script>
-<script src="book.js?v=mv9186ug"></script>
+<script src="search-index.js?v=mv95jeod"></script>
+<script src="book.js?v=mv95jeod"></script>
 
 </body>
 </html>

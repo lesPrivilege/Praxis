@@ -82,6 +82,7 @@ Intake 只登记材料身份、覆盖、处理状态、附件和缺口，不重�
 - [内容架构与能力语法审阅 · 2026-10-02](content-architecture-review-20261002.json)：单文件建议稿的快照与 hash，13 个外部链接都没有打开；[对照与裁决](../distilled/content-architecture-review-20261002/README.md)。
 - [社区 Skills 与 Prompts 研究包 · 2026-10-02](community-grammar-20261002.json)：三个文件的快照与 hash，45 个外部链接里主会话读了 8 个；[对照与裁决](../distilled/community-grammar-20261002/README.md)。
 - [自足性审查 · 2026-10-02](self-contained-review-20261002.json)：单文件审查的快照与 hash，引用的都是本仓库自己的文件，没有外部来源；[对照与裁决](../distilled/self-contained-review-20261002/README.md)。
+- [知识组织与解释性写作规范 · 2026-10-15](knowledge-organization-spec-20261015.json)：单文件规范的快照与 hash，22 条外部参考未回查；[取用与退回](../distilled/technical-compilation-writing-research-20261014/knowledge-organization-spec-20261015.md)。
 - [Palantir 设计交接包 · 2026-10-03](palantir-design-handoff-20261003.json)：七个文件的快照与 hash，9 个外部链接复查了作品用到的 3 个；据此做的作品见 [demos/palantir-discovery](../../demos/palantir-discovery/README.md)。
 
 - [Design / Write 书目与语法参考登记](design-writing-encyclopedia-20261011.json)：公开来源的细读摘要、可选语法与有界分面；[阅读入口与覆盖](../provenance/design-writing-encyclopedia/README.md)，[历史与验收](../../docs/verification/design-writing-encyclopedia-20261011/README.md)。

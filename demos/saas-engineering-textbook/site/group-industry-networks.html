@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>P06 · 生产、资产、公用与供应网络 · SaaS 工程全景</title>
-<link rel="stylesheet" href="book.css?v=mv9186ug">
+<link rel="stylesheet" href="book.css?v=mv95jeod">
 </head>
 <body>
 <a class="skip" href="#main">跳到正文</a>
@@ -20,7 +20,8 @@
 <header class="hero">
 <p class="kicker"></p>
 <h1>P06 · 生产、资产、公用与供应网络</h1>
-<p class="lede">一家企业答应交付一批设备，首先要知道交付的是哪版设计，随后安排材料、设备和人；制造记录证明做过什么，检验决定哪些可以出厂，运输证明哪些到达客户，账单和付款再结清相应义务。设备投入使用后，还会产生维护、计量和服务费用。七个案例沿这些关系展开：同一件实物可以参与多条工作链，每条链却有自己的权威、证据和结束条件。</p>
+<p class="lede">一家企业答应交付一批设备，首先要知道交付的是哪版设计，随后安排材料、设备和人；制造、检验、运输、账单和付款各自证明或结清一部分义务，设备投入使用后还会产生维护、计量和服务费用。七个案例沿这些关系展开：同一件实物可以参与多条工作链，每条链却有自己的权威、证据和结束条件。改变判断的是证据能否支持这项决定：生产完成说明不了检验通过，抄表数据到达说明不了数值可以计费；现场实物已被改变时，恢复只能追加修正、返工、隔离或对账。</p>
+
 
 </header>
     <div class="reel">
@@ -75,7 +76,8 @@
 </tbody></table></div>
 <p>每个对象至少有三种身份：业务身份（批次或服务实例）、版本身份（这次判断使用的输入）、操作身份（这次提交和重试）。业务身份让人追踪一件事，版本身份阻止旧证据批准新对象，操作身份让重复送达不重复扣料或收费。三者不能用一个自增行号替代。租户、站点、外部账户和允许的合作伙伴关系还要进入授权范围；把编号拼接进缓存键只能防误命中，不能代替服务端权限。</p>
 </section>
-<section class="scene" aria-labelledby="页面与现场"><header class="scene-head"><h2 id="页面与现场"><span class="scene-no" aria-hidden="true">02</span><span class="head">页面与现场</span></h2></header><p class="scene-lede">系统的最小闭环是：人通过工作台发命令，服务检查权限和对象版本，数据库保存尝试，连接器把确定的请求交给现场或外部系统，回执进入持久收件箱，业务服务核对后改变状态，读模型再更新页面。拓扑中 <code>commands</code>、<code>requests</code>、<code>delivers</code> 表达不同交接，<code>owns</code> 表达事实归谁负责，<code>derived_from</code> 表达计算依据。实物运输和现金支付另有业务记录，一条消息箭头证明不了。</p>
+<section class="scene" aria-labelledby="页面与现场"><header class="scene-head"><h2 id="页面与现场"><span class="scene-no" aria-hidden="true">02</span><span class="head">页面与现场</span></h2></header><p class="scene-lede">命令、外部请求和回执各是一段交接，业务状态只在核对回执之后改变。</p>
+<p>系统的最小闭环是：人通过工作台发命令，服务检查权限和对象版本，数据库保存尝试，连接器把确定的请求交给现场或外部系统，回执进入持久收件箱，业务服务核对后改变状态，读模型再更新页面。拓扑中 <code>commands</code>、<code>requests</code>、<code>delivers</code> 表达不同交接，<code>owns</code> 表达事实归谁负责，<code>derived_from</code> 表达计算依据。实物运输和现金支付另有业务记录，一条消息箭头证明不了。</p>
 <p>页面要把“请求已保存”“外部已接受”“业务已确认”分开显示。运行数小时的芯片设计任务、离线维修、迟到的电表读数，尤其不能只靠一个旋转图标表示进度。用户关闭浏览器再回来，仍应找到同一操作及待办责任。结果未知时先查询既有外部对象；现场实物已被改变时，恢复往往是追加修正、返工、隔离或对账，数据库回滚抹不掉。</p>
 </section>
 <section class="scene" aria-labelledby="技术选型与触发条件"><header class="scene-head"><h2 id="技术选型与触发条件"><span class="scene-no" aria-hidden="true">03</span><span class="head">技术选型与触发条件</span></h2></header><p class="scene-lede">原型可以从 React 或 Vue 工作台、一个模块化业务服务、PostgreSQL 和对象存储开始。关系库适合在事务内保护版本和数量约束，对象存储适合检验附件、版图和签名清单；时间序列、图遍历、优化器和消息中间件按案例中的真实查询或规模需求再引入。各例写明引入每种组件的触发条件：先有业务理由，再加基础设施。</p>
@@ -90,49 +92,20 @@
 </tr>
 </thead>
 <tbody><tr>
-<td><a href="V07.html">V07</a> · <a href="../../../vault/distilled/saas-engineering-atlas/packages/industry-networks/V07.json">拓扑</a></td>
-<td>发布设计 → 生产 → 检验 → 发货 → 收款</td>
-<td>版本生效、数量守恒和部分履约</td>
-<td>设计变更影响的在制品</td>
-</tr>
-<tr>
-<td><a href="V08.html">V08</a> · <a href="../../../vault/distilled/saas-engineering-atlas/packages/industry-networks/V08.json">拓扑</a></td>
-<td>Recipe → batch record → 质量处置 → lot release</td>
-<td>谱系、质量处置和证据覆盖</td>
-<td>混批后隔离范围与投料平衡</td>
-</tr>
-<tr>
-<td><a href="V09.html">V09</a> · <a href="../../../vault/distilled/saas-engineering-atlas/packages/industry-networks/V09.json">拓扑</a></td>
-<td><abbr title="register-transfer level：寄存器传输级">RTL</abbr> baseline → 实现证据 → signoff → release</td>
-<td>依赖图、证据失效和多条件签核</td>
-<td>关键路径与最差 slack</td>
-</tr>
-<tr>
-<td><a href="V10.html">V10</a> · <a href="../../../vault/distilled/saas-engineering-atlas/packages/industry-networks/V10.json">拓扑</a></td>
-<td>资产信号 → 获许可工作 → 维护确认 → 关闭</td>
-<td>资产、工作与现场许可分别演进</td>
-<td>告警到获许可任务的转换</td>
-</tr>
-<tr>
-<td><a href="V11.html">V11</a> · <a href="../../../vault/distilled/saas-engineering-atlas/packages/industry-networks/V11.json">拓扑</a></td>
-<td>Meter data → VEE → bill determinant → 账单 → 结算</td>
-<td>事件时间、校验估算和账单修订</td>
-<td>迟到真值影响的计费版本</td>
-</tr>
-<tr>
-<td><a href="V21.html">V21</a> · <a href="../../../vault/distilled/saas-engineering-atlas/packages/industry-networks/V21.json">拓扑</a></td>
-<td>约束计划 → 供应批准 → 运输 → 交付 → 运费支付</td>
-<td>约束可行性、承诺确认和运输结算</td>
-<td>容量与时间窗对可行解的影响</td>
-</tr>
-<tr>
-<td><a href="V22.html">V22</a> · <a href="../../../vault/distilled/saas-engineering-atlas/packages/industry-networks/V22.json">拓扑</a></td>
-<td>Product order → service activation → usage → bill → retirement</td>
-<td>商业订单、技术资源和计费边界</td>
-<td>部分激活与迟到用量归属</td>
+<td>七个案例共用“判断绑定依据，动作有权威，数量和时间可核对”这一结构，区别在允许推进的条件。</td>
+<td></td>
+<td></td>
+<td></td>
 </tr>
 </tbody></table></div>
-<p>跨例保持的是“判断绑定依据，动作有权威，数量和时间可核对”；变化的是允许推进的条件。V08 的 lot release 需要质量责任，V09 的 release 需要设计证据，V22 的 active 需要技术状态。三个英文词即使都呈现为绿色，也没有可互换的审批语义。</p>
+<p>| <a href="V07.html">V07</a> · <a href="../../../vault/distilled/saas-engineering-atlas/packages/industry-networks/V07.json">拓扑</a> | 发布设计 → 生产 → 检验 → 发货 → 收款 | 版本生效、数量守恒和部分履约 | 设计变更影响的在制品 |
+| <a href="V08.html">V08</a> · <a href="../../../vault/distilled/saas-engineering-atlas/packages/industry-networks/V08.json">拓扑</a> | Recipe → batch record → 质量处置 → lot release | 谱系、质量处置和证据覆盖 | 混批后隔离范围与投料平衡 |
+| <a href="V09.html">V09</a> · <a href="../../../vault/distilled/saas-engineering-atlas/packages/industry-networks/V09.json">拓扑</a> | <abbr title="register-transfer level：寄存器传输级">RTL</abbr> baseline → 实现证据 → signoff → release | 依赖图、证据失效和多条件签核 | 关键路径与最差 slack |
+| <a href="V10.html">V10</a> · <a href="../../../vault/distilled/saas-engineering-atlas/packages/industry-networks/V10.json">拓扑</a> | 资产信号 → 获许可工作 → 维护确认 → 关闭 | 资产、工作与现场许可分别演进 | 告警到获许可任务的转换 |
+| <a href="V11.html">V11</a> · <a href="../../../vault/distilled/saas-engineering-atlas/packages/industry-networks/V11.json">拓扑</a> | Meter data → VEE → bill determinant → 账单 → 结算 | 事件时间、校验估算和账单修订 | 迟到真值影响的计费版本 |
+| <a href="V21.html">V21</a> · <a href="../../../vault/distilled/saas-engineering-atlas/packages/industry-networks/V21.json">拓扑</a> | 约束计划 → 供应批准 → 运输 → 交付 → 运费支付 | 约束可行性、承诺确认和运输结算 | 容量与时间窗对可行解的影响 |
+| <a href="V22.html">V22</a> · <a href="../../../vault/distilled/saas-engineering-atlas/packages/industry-networks/V22.json">拓扑</a> | Product order → service activation → usage → bill → retirement | 商业订单、技术资源和计费边界 | 部分激活与迟到用量归属 |</p>
+<p>V08 的 lot release 需要质量责任，V09 的 release 需要设计证据，V22 的 active 需要技术状态。三个英文词即使都呈现为绿色，也没有可互换的审批语义。</p>
 <p>从 V07 读起，先熟悉“承诺到履约”这条线；V08、V09 比较实体谱系与数字证据图；V10、V11 解释现场事实怎样晚于动作进入系统；V21、V22 把局部完成扩展到跨组织和跨资源闭环。</p>
 </section>
 <section class="scene" aria-labelledby="解题五步"><header class="scene-head"><h2 id="解题五步"><span class="scene-no" aria-hidden="true">05</span><span class="head">解题五步</span></h2></header><p class="scene-lede">每例按“识题 → 解法 → 演算 → 验算 → 变式”展开，五步的含义见<a href="fdn.html">把业务问题算清楚</a>：看到线索后选择已知方法，用小数据算清楚，再用不变量和反例检查，最后改变前提判断哪里必须重做。每例末尾的条件变化练习检验迁移边界。算法回答“选什么、算多少、受什么影响”，恢复流程回答“现实究竟做到了哪里”，两者分别验收。</p>
@@ -146,8 +119,8 @@
     <footer class="page-foot">正文 <a href="../../../books/saas-engineering/packages/industry-networks/README.md">books/saas-engineering/packages/industry-networks/README.md</a> · <a href="../../../vault/distilled/saas-engineering-atlas/README.md">结构、来源与验证</a></footer>
   </main>
 </div>
-<script src="search-index.js?v=mv9186ug"></script>
-<script src="book.js?v=mv9186ug"></script>
+<script src="search-index.js?v=mv95jeod"></script>
+<script src="book.js?v=mv95jeod"></script>
 
 </body>
 </html>

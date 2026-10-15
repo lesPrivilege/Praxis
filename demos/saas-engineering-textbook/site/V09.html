@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>V09 · 芯片设计的证据依赖与发布 · SaaS 工程全景</title>
-<link rel="stylesheet" href="book.css?v=mv9186ug">
+<link rel="stylesheet" href="book.css?v=mv95jeod">
 </head>
 <body>
 <a class="skip" href="#main">跳到正文</a>
@@ -20,7 +20,8 @@
 <header class="hero">
 <p class="kicker"><a href="group-industry-networks.html">生产、资产、公用与供应网络</a><span class="dot">·</span>V09</p>
 <h1>芯片设计的证据依赖与发布</h1>
-<p class="lede">芯片设计团队向交付负责人承诺的是一份发布包：设计依据可以追溯，约定的检查已经完成。寄存器传输级（register-transfer level，<abbr title="register-transfer level：寄存器传输级">RTL</abbr>）描述表达逻辑，综合生成门级实现，布局布线产生物理结果，检查报告支持签核。工作台若只显示“任务全部成功”，可能把来自不同约束版本的绿色报告拼成一次从未真正验证过的发布。本例关心的是这些证据能否共同支持同一个设计版本；电子设计自动化（EDA）工具做的设计与分析计算，不在网页里重做。</p>
+<p class="lede">芯片设计团队向交付负责人承诺的是一份发布包：设计依据可以追溯，约定的检查已经完成。工作台若只显示“任务全部成功”，可能把来自不同约束版本的绿色报告拼成一次从未真正验证过的发布。本例关心寄存器传输级（<abbr title="register-transfer level：寄存器传输级">RTL</abbr>）描述、综合、布局布线与检查报告能否共同支持同一个设计版本，覆盖证据复用与 stale 判定、<abbr title="directed acyclic graph：有向无环图">DAG</abbr> 排期和逐条件的时序判定；电子设计自动化（EDA）工具的计算不在网页里重做。改变判断的是发布包有没有送出：接收方拿到之后，发现问题只能追加 withdrawal，本地删除文件撤回不了现实影响。</p>
+
 <div class="cast" aria-label="本例的角色、界面与系统">
 <div class="cast-lane"><p class="cast-k">角色</p><ul><li>设计工程师</li><li>发布负责人</li></ul></div>
 <div class="cast-lane"><p class="cast-k">界面</p><ul><li>基线、任务与证据矩阵</li></ul></div>
@@ -44,7 +45,7 @@
 </thead>
 <tbody><tr>
 <td>很多任务可以并行，完成时间却难预计</td>
-<td>用有向无环图（directed acyclic graph，<abbr title="directed acyclic graph：有向无环图">DAG</abbr>）求关键路径，再加入许可证与机器容量</td>
+<td>用有向无环图（directed acyclic graph，DAG）求关键路径，再加入许可证与机器容量</td>
 <td>执行器资源语义、实际耗时与依赖清单</td>
 </tr>
 <tr>
@@ -59,7 +60,8 @@
 </tr>
 </tbody></table></div>
 </section>
-<section class="scene" aria-labelledby="解法基线运行证据与发布"><header class="scene-head"><h2 id="解法基线运行证据与发布"><span class="scene-no" aria-hidden="true">02</span><span class="visually-hidden">解法：</span><span class="head">基线、运行、证据与发布</span></h2></header><p class="scene-lede">设计工程师希望尽快试验参数，验证工程师希望报告可复现，发布负责人需要知道究竟批准了什么，算力管理员则控制机器和许可证。这些诉求会互相冲突：重跑所有任务代价高，只复用“文件名相同”的报告，又可能漏掉依赖变化。本例把复用资格和运行成功分开保存。</p>
+<section class="scene" aria-labelledby="解法基线运行证据与发布"><header class="scene-head"><h2 id="解法基线运行证据与发布"><span class="scene-no" aria-hidden="true">02</span><span class="visually-hidden">解法：</span><span class="head">基线、运行、证据与发布</span></h2></header><p class="scene-lede">基线、运行、证据和发布包各有权威；证据要在完整输入摘要匹配、预期检查确实执行过时才有效，退出码 0 不够。</p>
+<p>设计工程师希望尽快试验参数，验证工程师希望报告可复现，发布负责人需要知道究竟批准了什么，算力管理员则控制机器和许可证。这些诉求会互相冲突：重跑所有任务代价高，只复用“文件名相同”的报告，又可能漏掉依赖变化。本例把复用资格和运行成功分开保存。</p>
 <div class="table-wrap"><table>
 <thead>
 <tr>
@@ -90,25 +92,29 @@
 </tr>
 </tbody></table></div>
 <p>冻结基线需要设计工程师的权限、输入齐全且摘要已校验；运行成功需要工具退出、产物登记和校验相容；证据有效，还需要预期的检查真的执行过、报告可解析且输入匹配。只有退出码 0，无法排除检查被关闭或报告为空。发布负责人在最新的候选版本上批准 manifest，审批不自动追随分支的最新提交。</p>
-<p><a href="https://github.com/parallaxsw/OpenSTA" class="ext" rel="noopener">OpenSTA 官方说明</a>把它描述为门级静态时序校验器，列出网表、Liberty、Synopsys 设计约束格式（Synopsys Design Constraints，<abbr title="Synopsys Design Constraints：Synopsys 设计约束格式">SDC</abbr>）、标准寄生参数交换格式（Standard Parasitic Exchange Format，<abbr title="Standard Parasitic Exchange Format：标准寄生参数交换格式">SPEF</abbr>）等输入，并支持时钟不确定性和路径例外。两种格式的名称分别见 <a href="https://www.synopsys.com/community/interoperability-programs/tap-in.html" class="ext" rel="noopener">Synopsys SDC</a> 与 <a href="https://news.synopsys.com/home?item=122632" class="ext" rel="noopener">SPEF 说明</a>。由此可见，“RTL 没变”不足以复用报告：时序约束、单元库或寄生参数变化，也可能改变结论。这条失效规则是本例自己的设计，并非 OpenSTA 内部的缓存行为。</p>
+<p><a href="https://github.com/parallaxsw/OpenSTA" class="ext" rel="noopener">OpenSTA 官方说明</a>把它描述为门级静态时序校验器，列出网表、Liberty、Synopsys 设计约束格式（Synopsys Design Constraints，<abbr title="Synopsys Design Constraints：Synopsys 设计约束格式">SDC</abbr>）、标准寄生参数交换格式（Standard Parasitic Exchange Format，<abbr title="Standard Parasitic Exchange Format：标准寄生参数交换格式">SPEF</abbr>）等输入，并支持时钟不确定性和路径例外。两种格式的名称分别见 <a href="https://www.synopsys.com/community/interoperability-programs/tap-in.html" class="ext" rel="noopener">Synopsys SDC</a> 与 <a href="https://news.synopsys.com/home?item=122632" class="ext" rel="noopener">SPEF 说明</a>。由此可见，“RTL 没变”不足以复用报告：时序约束、单元库或寄生参数变化，也可能改变结论。</p>
 </section>
-<section class="scene" aria-labelledby="工作台执行器与证据库"><header class="scene-head"><h2 id="工作台执行器与证据库"><span class="scene-no" aria-hidden="true">03</span><span class="head">工作台、执行器与证据库</span></h2></header><p class="scene-lede">工程师先在基线差异页查看变动的输入及受影响的任务，再点击“冻结并运行”。命令携带项目身份、基线版本和 operation <abbr title="identifier：标识符">ID</abbr>。服务端在一个事务内保存运行记录与待发送项，返回可重新打开的 operation 地址。编排器分配到算力后才显示 running；页面同时展示排队原因、执行器 job ID 和输出的最后更新时间。任务列表中的绿色只表示该任务成功，右侧的发布矩阵仍逐项展示条件、报告依据和有效性。</p>
+<section class="scene" aria-labelledby="工作台执行器与证据库"><header class="scene-head"><h2 id="工作台执行器与证据库"><span class="scene-no" aria-hidden="true">03</span><span class="head">工作台、执行器与证据库</span></h2></header><p class="scene-lede">运行和回执都带完整身份，收件箱持久化之后再核对；任务列表的绿色只说明任务成功，发布资格由逐项展示的证据矩阵判断。</p>
+<p>工程师先在基线差异页查看变动的输入及受影响的任务，再点击“冻结并运行”。命令携带项目身份、基线版本和 operation <abbr title="identifier：标识符">ID</abbr>。服务端在一个事务内保存运行记录与待发送项，返回可重新打开的 operation 地址。编排器分配到算力后才显示 running；页面同时展示排队原因、执行器 job ID 和输出的最后更新时间。任务列表中的绿色只表示该任务成功，右侧的发布矩阵仍逐项展示条件、报告依据和有效性。</p>
 <figure class="graph-fig"><div class="graph-wrap"><svg class="graph" viewBox="0 0 1134 134" width="1134" height="134" style="max-width:1304px;min-width:907px" role="img" aria-label="V09 · 芯片设计的证据依赖与发布"><defs><marker id="arrow-g1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arrowhead"/></marker></defs><path class="edge" data-type="operates" data-from="Engineer" data-to="UI" d="M97.0,25.0 Q158.0,25.0 219.0,31.8" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Engineer" data-to="UI"><rect x="130.0" y="17.0" width="56" height="16" rx="3"/><text x="158.0" y="29.0">operates</text></g><path class="edge" data-type="commands" data-from="UI" data-to="Orchestrator" d="M347.0,39.0 Q414.0,39.0 481.0,39.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="UI" data-to="Orchestrator"><rect x="386.0" y="31.0" width="56" height="16" rx="3"/><text x="414.0" y="43.0">commands</text></g><path class="edge" data-type="requests" data-from="Orchestrator" data-to="Executor" d="M557.0,39.0 Q612.0,39.0 667.0,39.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Orchestrator" data-to="Executor"><rect x="584.0" y="31.0" width="56" height="16" rx="3"/><text x="612.0" y="43.0">requests</text></g><path class="edge" data-type="emits" data-from="Executor" data-to="Event" d="M759.0,39.0 Q805.0,39.0 851.0,39.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Executor" data-to="Event"><rect x="786.0" y="31.0" width="38" height="16" rx="3"/><text x="805.0" y="43.0">emits</text></g><path class="edge" data-type="delivers" data-from="Event" data-to="Inbox" d="M927.0,39.0 Q982.0,39.0 1037.0,39.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Event" data-to="Inbox"><rect x="954.0" y="31.0" width="56" height="16" rx="3"/><text x="982.0" y="43.0">delivers</text></g><path class="edge" data-type="derived_from" data-from="Evidence" data-to="Baseline" d="M321.0,109.0 Q414.0,109.0 481.0,109.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Evidence" data-to="Baseline"><rect x="374.0" y="101.0" width="80" height="16" rx="3"/><text x="414.0" y="113.0">derived_from</text></g><path class="edge" data-type="depends_on" data-from="Release" data-to="Evidence" d="M84.0,99.2 Q158.0,109.0 245.0,109.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Release" data-to="Evidence"><rect x="124.0" y="101.0" width="68" height="16" rx="3"/><text x="158.0" y="113.0">depends_on</text></g><path class="edge" data-type="projects" data-from="Release" data-to="UI" d="M84.0,86.6 Q158.0,67.0 219.0,53.3" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Release" data-to="UI"><rect x="130.0" y="59.0" width="56" height="16" rx="3"/><text x="158.0" y="71.0">projects</text></g><g class="node" data-id="Engineer"><rect x="8.0" y="8.0" width="89" height="34" rx="4"/><text x="52.5" y="29.5">设计工程师</text></g><g class="node" data-id="UI"><rect x="219.0" y="22.0" width="128" height="34" rx="4"/><text x="283.0" y="43.5">基线与证据工作台</text></g><g class="node" data-id="Orchestrator"><rect x="481.0" y="22.0" width="76" height="34" rx="4"/><text x="519.0" y="43.5">编排服务</text></g><g class="node" data-id="Executor"><rect x="667.0" y="22.0" width="92" height="34" rx="4"/><text x="713.0" y="43.5">EDA 执行器</text></g><g class="node" data-id="Event"><rect x="851.0" y="22.0" width="76" height="34" rx="4"/><text x="889.0" y="43.5">运行回执</text></g><g class="node" data-id="Inbox"><rect x="1037.0" y="22.0" width="89" height="34" rx="4"/><text x="1081.5" y="43.5">持久收件箱</text></g><g class="node" data-id="Evidence"><rect x="245.0" y="92.0" width="76" height="34" rx="4"/><text x="283.0" y="113.5">证据对象</text></g><g class="node" data-id="Baseline"><rect x="481.0" y="92.0" width="76" height="34" rx="4"/><text x="519.0" y="113.5">冻结基线</text></g><g class="node" data-id="Release"><rect x="21.0" y="78.0" width="63" height="34" rx="4"/><text x="52.5" y="99.5">发布包</text></g></svg></div><details class="edge-list"><summary>图中关系的文字列表</summary><ul><li>设计工程师 <span class="rel">—operates→</span> 基线与证据工作台</li><li>基线与证据工作台 <span class="rel">—commands→</span> 编排服务</li><li>编排服务 <span class="rel">—requests→</span> EDA 执行器</li><li>EDA 执行器 <span class="rel">—emits→</span> 运行回执</li><li>运行回执 <span class="rel">—delivers→</span> 持久收件箱</li><li>证据对象 <span class="rel">—derived_from→</span> 冻结基线</li><li>发布包 <span class="rel">—depends_on→</span> 证据对象</li><li>发布包 <span class="rel">—projects→</span> 基线与证据工作台</li></ul></details></figure><p>图中的派生与依赖不代表传输了版图文件；完整的 typed edges 在 <a href="../../../vault/distilled/saas-engineering-atlas/packages/industry-networks/V09.json">V09.json</a>。连接器只向执行器发送登记过的 manifest 和允许的任务配置，<abbr title="user interface：用户界面">UI</abbr> 里的任意文本不会变成 shell 命令。回执包含租户、项目、run、attempt、job、输入摘要和产物摘要，收件箱持久化之后再核对。对象下载也检查项目授权；知道摘要的人，不能因此读取另一个项目的 IP。</p>
 <p>前端可用 React 加 TanStack Table 展示可排序的报告矩阵；小型 DAG 用 SVG 即可，大图再按任务展开邻接关系，避免一开始就把数万条边绘入浏览器。后端可选 Python/FastAPI，便于连接分析工具，或 TypeScript/NestJS，便于同一团队维护接口类型；两者都把长时运行交给独立的 worker。PostgreSQL 保存版本、审批和依赖边，S3 兼容的对象存储保存大型报告与版图，内容摘要用于校验，隔离另靠访问权限。小规模可用数据库任务队列；已有集群可接 Slurm，已有容器环境可接 Kubernetes Jobs，但都要保留本例 run 与外部 job 的映射。许可证池和大内存任务会限制并行度，增加容器数量未必能缩短排队。</p>
 <p>OpenROAD 的 <a href="https://openroad.readthedocs.io/en/latest/main/README.html" class="ext" rel="noopener">项目说明</a>公开了布局、时钟树、布线、寄生提取及最终验证等阶段。其 <a href="https://openroad-flow-scripts.readthedocs.io/en/latest/tutorials/FlowTutorial.html" class="ext" rel="noopener">流程教程</a>分别展示 logs、results 和 reports 目录，以及时序和 DRC 检查。这为“产物与报告分别登记”提供了可观察的参照；同样，流程跑完的消息也不能拿来证明制造合格。</p>
 </section>
-<section class="scene" aria-labelledby="演算依赖时序和失效范围"><header class="scene-head"><h2 id="演算依赖时序和失效范围"><span class="scene-no" aria-hidden="true">04</span><span class="visually-hidden">演算：</span><span class="head">依赖、时序和失效范围</span></h2></header><p class="scene-lede">任务的耗时以分钟计：综合 S 为 4；S 之后并行做等价检查 E（3）与布局布线 P（6）；P 之后并行做时序 T（2）与物理检查 D（5）；发布打包 R（1）依赖 E、T、D。忽略排队和传输时，S 在 4 完成，E 在 7 完成，P 在 10 完成，T 在 12 完成，D 在 15 完成，R 在 16 完成。关键路径是 S→P→D→R，长度 16。把 T 从 2 优化到 1，不会改变总完成时间；把 D 从 5 优化到 3，才把总时间降到 14。</p>
+<section class="scene" aria-labelledby="演算依赖时序和失效范围"><header class="scene-head"><h2 id="演算依赖时序和失效范围"><span class="scene-no" aria-hidden="true">04</span><span class="visually-hidden">演算：</span><span class="head">依赖、时序和失效范围</span></h2></header><p class="scene-lede">关键路径给出无资源竞争时的完成下界，时序按逐条件硬约束判定，变更影响沿反向依赖找出失效集合。</p>
+<p>任务的耗时以分钟计：综合 S 为 4；S 之后并行做等价检查 E（3）与布局布线 P（6）；P 之后并行做时序 T（2）与物理检查 D（5）；发布打包 R（1）依赖 E、T、D。忽略排队和传输时，S 在 4 完成，E 在 7 完成，P 在 10 完成，T 在 12 完成，D 在 15 完成，R 在 16 完成。关键路径是 S→P→D→R，长度 16。把 T 从 2 优化到 1，不会改变总完成时间；把 D 从 5 优化到 3，才把总时间降到 14。</p>
 <p><code>ALG:scheduling</code> 的直接做法是枚举所有路径，再选最长的一条；分叉多时，路径数量可能指数增长。DAG 拓扑排序后，对每个任务计算 <code>finish = duration + max(predecessor.finish)</code>，代价为 O(V+E)，V 为任务数、E 为依赖数。若出现环，就不存在合法的任务顺序，应报告配置错误，而不是无限等待。这样算出的是无资源竞争时的下界：若 T 与 D 争用唯一的检查槽，P 之后要串行 2+5 分钟，R 最早在 18 完成。DAG 算对了，资源计划未必可行；迁到 V21 时要补上的就是容量约束。</p>
 <p>时序报告也不能取平均。这里的 setup 检查忽略时钟偏斜与抖动，时钟周期 1.00 ns、setup 要求 0.10 ns，因此数据最晚应在 0.90 ns 到达。条件 A 的数据延迟 0.82 ns，slack 为 <code>0.90−0.82=+0.08 ns</code>；条件 B 的延迟 0.95 ns，slack 为 <code>−0.05 ns</code>。平均 slack 为 +0.015 ns，仍然必须拒绝，因为 B 没满足要求。若 hold 最早允许的到达时间为 0.07 ns、最短路径为 0.04 ns，则 hold slack 为 <code>0.04−0.07=−0.03 ns</code>；单纯把时钟周期放宽到 1.10 ns，可以让上述 setup 达标，却修不好这个同沿的 hold 例子。真实的时序分析还涉及路径例外、时钟传播等条件，这些简化公式不能当作签核工具。OpenROAD 流程教程的 setup 与 hold 修复小节，提供了二者分开检查的公开实例。</p>
 <p>发布门槛在本例取“所有必需条件都有匹配输入的报告，setup 和 hold 均非负，物理检查和等价检查按政策通过”。最小 slack 可以线性扫描 O(n) 个结果；展示最差的 k 项可用大小为 k 的堆，O(n log k)。Top-K 只改善定位问题的界面，批准时仍检查完整的必需集合；只拿最差的十条报告，可能漏掉一个根本没有产出的条件。</p>
 <p>变更影响也可以手算。依赖图为 S→E、S→P、P→T、P→D、E/T/D→R。若 P 的输入参数变更，失效集合就是 P、T、D、R；E 可以复用，前提是 E 自身的完整输入摘要未变。沿反向依赖遍历需要 O(V+E)，比无差别重跑便宜。反例是缓存键只含 RTL commit：SDC 变严后仍命中旧的 T，界面全部绿色，批准的却是旧条件。缓存键应含 tenant、project、输入 manifest、工具与规则版本；各阶段可以使用自己的依赖子集，但要先证明依赖完整。依赖不明时保守重跑，不能把“未登记”解释成“不影响”。</p>
 </section>
-<section class="scene" aria-labelledby="正常发布与不可撤回的失败"><header class="scene-head"><h2 id="正常发布与不可撤回的失败"><span class="scene-no" aria-hidden="true">05</span><span class="head">正常发布与不可撤回的失败</span></h2></header><p class="scene-lede">正常路径中，工程师冻结 B1，编排器持久化 run-1，执行器以既有的尝试身份接收任务，各任务按依赖产生附件。worker 校验摘要和报告覆盖，发布负责人预览 manifest M1 中的基线、报告和检查政策，审批服务原子地检查候选版本后保存签核。连接器把 M1 发送给接收系统，接收方核对摘要并确认后，页面才显示 acknowledged。收到 acknowledgement 只证明对方收到了约定的包；后续的制造与收费各有独立的对象记录完成与否。</p>
+<section class="scene" aria-labelledby="正常发布与不可撤回的失败"><header class="scene-head"><h2 id="正常发布与不可撤回的失败"><span class="scene-no" aria-hidden="true">05</span><span class="head">正常发布与不可撤回的失败</span></h2></header><p class="scene-lede">结果未知时按原身份查询，确认对方未受理才重发；旧版本的签名和迟到回执不进入新候选；包已送出后，问题只能追加 withdrawal。</p>
+<p>正常路径中，工程师冻结 B1，编排器持久化 run-1，执行器以既有的尝试身份接收任务，各任务按依赖产生附件。worker 校验摘要和报告覆盖，发布负责人预览 manifest M1 中的基线、报告和检查政策，审批服务原子地检查候选版本后保存签核。连接器把 M1 发送给接收系统，接收方核对摘要并确认后，页面才显示 acknowledged。收到 acknowledgement 只证明对方收到了约定的包；后续的制造与收费各有独立的对象记录完成与否。</p>
 <p>一种失败发生在执行器已启动、网络回执丢失之后。run-1 进入 unknown，调度器用已有的 job 标签和 operation ID 查询执行器，找到同一任务后接回运行；只有确认对方未受理，或执行器提供受约束的幂等提交语义，才重新发送。另一种发生在工程师冻结 B2 的同时，审批者仍打开着 B1 的页面：提交要返回版本冲突及差异，一次旧签名不能批准 B2。来自 B1 的迟到成功回执仍可保存为 B1 的历史证据，但不会让 B2 的矩阵变绿。</p>
 <p>若附件只上传了一半，记录保持 candidate，一个提前到达的“完成”事件不能把它变成 valid。若审批事务已提交而通知 worker 崩溃，重放读取同一个 manifest 和已有的发送尝试，不生成第二个内容不同的包。若接收方已拿到包，后来才发现漏查了条件，本地删除文件撤回不了它的现实影响。发布负责人追加 withdrawal，记录接收方是否确认停止处理；结果未明时，责任与升级入口仍然保留。这种恢复与 V08 的隔离通知相似，但数字包可以按摘要重传，物料不能靠下载重做。</p>
 <p>规模假设为 20 个项目、每项目 500 个候选基线、每基线 200 个任务，约 200 万条任务记录；每天 100 次运行，每次报告与产物共 10 GB，仅按此估算，保留量级就是约 1 TB/日。列表只读元数据与摘要，大文件按需授权获取。待测目标是在 50 个并发读者、冷热缓存分别记录的条件下，元数据列表 p95 小于 500 ms；计算作业单独记录排队、许可证等待、运行与上传时间，网页响应快不等于设计完成快。按项目配额与等待时长安排公平性；取消申请也要停在待核对状态，直到外部确认资源已释放。本轮未测量这些性能数字。</p>
 </section>
-<section class="scene" aria-labelledby="验算覆盖版本与可恢复发布"><header class="scene-head"><h2 id="验算覆盖版本与可恢复发布"><span class="scene-no" aria-hidden="true">06</span><span class="visually-hidden">验算：</span><span class="head">覆盖、版本与可恢复发布</span></h2></header><div class="table-wrap"><table>
+<section class="scene" aria-labelledby="验算覆盖版本与可恢复发布"><header class="scene-head"><h2 id="验算覆盖版本与可恢复发布"><span class="scene-no" aria-hidden="true">06</span><span class="visually-hidden">验算：</span><span class="head">覆盖、版本与可恢复发布</span></h2></header><p class="scene-lede">发布只在当前候选的必需证据全部匹配时成立；重复、乱序、并发、跨租户和结果未知都不能产生第二个包，也不能让审批混入别的输入。</p>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>前提与操作</th>
@@ -150,7 +156,8 @@
 </tbody></table></div>
 <p>本例的发布权由确定性规则和人掌握，不需要 <abbr title="artificial intelligence：人工智能">AI</abbr>。若加入报告摘要助手，它只能建议定位，不能签核。可另建 120 份留出报告：40 份含违例、40 份缺条件或输入不匹配、40 份完整合格；同一设计的相近运行不能分落在训练和留出两个集合。记录危险建议率（错误建议放行/80 份不安全样本）、违例漏报率（漏报/40）、引用定位错误率（错误定位/全部引用）及人工修正次数；遇到损坏或缺失的输入应拒答。阈值和专家标注先冻结，再评估效果。本轮未运行模型，也未采集这些 eval 数据。</p>
 </section>
-<section class="scene" aria-labelledby="变式增加条件与减少资源"><header class="scene-head"><h2 id="变式增加条件与减少资源"><span class="scene-no" aria-hidden="true">07</span><span class="visually-hidden">变式：</span><span class="head">增加条件与减少资源</span></h2></header><p class="scene-lede"><strong>练习一：新增低电压条件，已有的十份报告全部通过。</strong> 能否发布？</p>
+<section class="scene" aria-labelledby="变式增加条件与减少资源"><header class="scene-head"><h2 id="变式增加条件与减少资源"><span class="scene-no" aria-hidden="true">07</span><span class="visually-hidden">变式：</span><span class="head">增加条件与减少资源</span></h2></header><p class="scene-lede">条件或资源一变，旧结论都要重算：新增条件要有新证据覆盖，资源减少要重排完成时间。</p>
+<p><strong>练习一：新增低电压条件，已有的十份报告全部通过。</strong> 能否发布？</p>
 <p>简答：不能，旧的完整性结论不能沿用。为候选登记新的必需条件集合，原报告保留历史身份，新条件还没有证据时，状态为 incomplete。批准要覆盖当前候选的全部要求；把“已有报告全部通过”误写成“所需报告全部存在且通过”，就会在这里放过缺项。验证时增加一个 required corner 而不新增报告，发布必须被拒。这套机制可以迁到 V08 的必检项目覆盖，但检验取样、复检和质量责任不能照搬芯片条件。</p>
 <p><strong>练习二：只有一个检查许可证。</strong> 16 分钟还能作为交付承诺吗？</p>
 <p>简答：不能。本例的 T、D 必须串行，最快 18 分钟；若还有别的项目争用，还要算上排队。依赖顺序照旧，另增资源容量和预约对象；把无资源约束的关键路径当成可执行排程，承诺就会落空。验证时确认任意时间片最多一个任务占用许可证，再核对最早完成时间。迁到 V21 时，约束检查可以复用，但运输还要考虑行驶时间、装卸和不可拆分的货物。</p>
@@ -266,8 +273,8 @@
     <footer class="page-foot">正文 <a href="../../../books/saas-engineering/packages/industry-networks/V09.md">books/saas-engineering/packages/industry-networks/V09.md</a> · <a href="../../../vault/distilled/saas-engineering-atlas/README.md">结构、来源与验证</a></footer>
   </main>
 </div>
-<script src="search-index.js?v=mv9186ug"></script>
-<script src="book.js?v=mv9186ug"></script>
+<script src="search-index.js?v=mv95jeod"></script>
+<script src="book.js?v=mv95jeod"></script>
 
 </body>
 </html>

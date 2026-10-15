@@ -86,6 +86,10 @@ export function stage(html, { section, sectionHref, title, cast = '' }) {
   const chunks = rest.split(/(?=<h2 id=)/);
   let intro = chunks[0].startsWith('<h2 ') ? '' : chunks.shift();
   let lede = '';
+  // A first paragraph that is only a link (e.g. "返回 P04 共同模型") stays as navigation; the next one is the lede.
+  const nav = /^\s*<p>(<a [^>]*>[^<]*<\/a>[\s·|]*)+<\/p>\n?/.exec(intro);
+  const navHtml = nav ? nav[0].replace('<p>', '<p class="hero-nav">') : '';
+  if (nav) intro = intro.slice(nav[0].length);
   intro = intro.replace(/^\s*<p>([\s\S]*?)<\/p>\n?/, (m, p) => { lede = p; return ''; });
 
   const scenes = chunks.map((c, i) => {
@@ -110,6 +114,7 @@ export function stage(html, { section, sectionHref, title, cast = '' }) {
 <p class="kicker">${section ? `<a href="${esc(sectionHref)}">${esc(section)}</a>` : ''}${section && t.kicker ? '<span class="dot">·</span>' : ''}${esc(t.kicker)}</p>
 <h1>${esc(t.title)}</h1>
 ${lede ? `<p class="lede">${lede}</p>` : ''}
+${navHtml}
 ${cast}
 </header>`;
 

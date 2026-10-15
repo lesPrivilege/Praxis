@@ -5,6 +5,8 @@
 - 新增 [SaaS 工程全景 · 交互教材](demos/saas-engineering-textbook/README.md)：从 Books 正文与 Vault 结构数据生成的离线多页站点，含 33 例结构面板与 9 个交互图件；全书正文经独立审阅后改写回 Books。交接与验证命令移出读者路径，归入 [Vault 资产索引](vault/distilled/saas-engineering-atlas/README.md)。
 - 并入 [技术文档编订研究](vault/distilled/technical-compilation-writing-research-20261014/README.md)，并在本书上做事后对照，见 [试用记录](vault/distilled/technical-compilation-writing-research-20261014/saas-trial-20261015.md)。
 - [成文原理](kit/write/prose/grammar.md)第 8 条与 [审阅方法](kit/write/prose/review.md)加“重复设防”：限定在读者需要处说一次；[证据与来源](kit/write/shared/evidence.md)把过程材料归 index；审阅第 7 步可用脚本比对不可损失的字面量。兼容扩展，见 [ADR-034](docs/decisions/034-state-limits-once-and-keep-process-out.md)。
+- 来路标签（例子是构造的、不对应某家产品或标准）不算限定，写在约定页或 index；SaaS 书据此删去，补记在 ADR-034。教材站点改为分场版式，并加 18 张手绘 SVG。
+- 用户交来的写作规范只取结构：讲解页每节先给局部答案，审阅加“目录冒充概览”“摘要逐级稀释”，交叉链接写明关系，见 [ADR-035](docs/decisions/035-local-answers-and-link-relations.md)；原件登记在 [Vault](vault/distilled/technical-compilation-writing-research-20261014/knowledge-organization-spec-20261015.md)。
 
 ## 2026-10-12 · 并回此前暂存的本地工作
 

@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>第二章　企业前端的工作面与契约 · SaaS 工程全景</title>
-<link rel="stylesheet" href="book.css?v=mv9186ug">
+<link rel="stylesheet" href="book.css?v=mv95jeod">
 </head>
 <body>
 <a class="skip" href="#main">跳到正文</a>
@@ -20,13 +20,13 @@
 <header class="hero">
 <p class="kicker"><a href="em.html">企业软件的工作机制</a><span class="dot">·</span>第二章</p>
 <h1>企业前端的工作面与契约</h1>
-<p class="lede">上一章的采购链里有五类事实、几个责任人和一个暂时未知的付款结果。用户不会逐条去读数据库记录；他要先发现异常，再弄清依据，在权限之内作出决定，最后确认决定是否生效。企业界面怎样组织，要看能不能帮人走完这条判断链。</p>
+<p class="lede">上一章的采购链里有五类事实、几个责任人和一个暂时未知的付款结果。用户不会逐条去读数据库记录；他要先发现异常，再弄清依据，在权限之内作出决定，最后确认决定是否生效。企业界面怎样组织，要看能不能帮人走完这条判断链。表格、表单、详情页、工作台、看板、批量操作和设置在企业软件里反复出现，是因为它们各自对应一种工作方式：比较一组对象、提出一项变更、检查一个对象、处理不断到来的队列、观察整体、对一组对象执行同一动作，以及修改后续动作要用的规则。选哪种工作面，看用户这次要下什么判断；每种工作面都要把后端的版本、权限和结果语义带到页面上。</p>
+
 
 </header>
     <div class="reel">
       <aside class="rail" aria-label="本页进度"><ol><li><a href="#识题按用户要下的判断选页面"><span class="rn">01<span class="of"> / 05</span></span><span class="rt">按用户要下的判断选页面</span></a></li><li><a href="#解法为每种工作面定契约"><span class="rn">02<span class="of"> / 05</span></span><span class="rt">为每种工作面定契约</span></a></li><li><a href="#演算把-em-e01-的事实接到页面"><span class="rn">03<span class="of"> / 05</span></span><span class="rt">把 EM-E01 的事实接到页面</span></a></li><li><a href="#验算沿一次动作逐层检查"><span class="rn">04<span class="of"> / 05</span></span><span class="rt">沿一次动作逐层检查</span></a></li><li><a href="#变式改变选择范围与工作节奏"><span class="rn">05<span class="of"> / 05</span></span><span class="rt">改变选择范围与工作节奏</span></a></li></ol></aside>
       <div class="flow">
-<p>表格、表单、详情页、工作台、看板、批量操作和设置在企业软件里反复出现，是因为它们各自对应一种工作方式：比较一组对象、提出一项变更、检查一个对象、处理不断到来的队列、观察整体、对一组对象执行同一动作，以及修改后续动作要用的规则。</p>
 <section class="scene" aria-labelledby="识题按用户要下的判断选页面"><header class="scene-head"><h2 id="识题按用户要下的判断选页面"><span class="scene-no" aria-hidden="true">01</span><span class="visually-hidden">识题：</span><span class="head">按用户要下的判断选页面</span></h2></header><p class="scene-lede">先问清用户这次打开页面要决定什么，再定信息密度和动作的位置。主管每周找一次异常，会计每天处理几百张发票，两人读的可能是同一批对象，需要的工作面却不同。</p>
 <div class="table-wrap"><table>
 <thead>
@@ -74,7 +74,8 @@
 </tbody></table></div>
 <p>一个“管理控制台”可以同时包含这几种工作面，一个“详情抽屉”也可能装下一次完整的决策。判断标准是：用户能否看到足够的依据，并能把动作结果追溯到权威记录。</p>
 </section>
-<section class="scene" aria-labelledby="解法为每种工作面定契约"><header class="scene-head"><h2 id="解法为每种工作面定契约"><span class="scene-no" aria-hidden="true">02</span><span class="visually-hidden">解法：</span><span class="head">为每种工作面定契约</span></h2></header><h3 id="表格让比较可以重复">表格让比较可以重复</h3>
+<section class="scene" aria-labelledby="解法为每种工作面定契约"><header class="scene-head"><h2 id="解法为每种工作面定契约"><span class="scene-no" aria-hidden="true">02</span><span class="visually-hidden">解法：</span><span class="head">为每种工作面定契约</span></h2></header><p class="scene-lede">每种工作面对应一份后端契约：查询范围、版本前提、操作身份和部分成功的结果，都要在页面上有落点。</p>
+<h3 id="表格让比较可以重复">表格让比较可以重复</h3>
 <p>表格把同一种对象的同一属性放在相同位置。会计沿列比较金额、到期日与异常原因，比逐张打开卡片更容易发现偏差。列多本身没有错；错在把与当前判断无关的字段，和必须看到的字段混在同一层。</p>
 <p>以待匹配发票表为例，首要列是发票身份、供应商、币种金额、匹配状态、阻塞原因和下一责任人；创建时间、解析器版本等字段可以放进详情。长名称被截断时，要能读到完整文本；金额省略显示时不能丢掉币种；排序时空值不能悄悄排成最大金额。</p>
 <p>后端查询必须回答：搜索哪些字段，过滤条件怎样组合，排序发生在整个结果集还是当前页，同值时怎样稳定排序，翻页期间新增记录怎么办。一种可行的契约是按 <code>(due_at, invoice_id)</code> 排出稳定次序，由游标保存查询与排序条件；需要冻结批量集合时，再返回快照身份。普通浏览不一定要数据库快照，但不能把一个不断变化的列表称作“已选全部的固定集合”。缓存键还要包含租户、权限范围和查询条件。</p>
@@ -142,7 +143,8 @@
 <p>金额阈值、角色映射、计价模板、营业日历和集成目标都会改变后续行为，设置页因此也是业务工作面：谁能提议，谁批准，在哪些组织生效，何时生效，旧单据用旧规则还是按新规则重算。</p>
 <p>配置预览应拿有代表性的输入演示改动前后的差异。例如把“必须验收”改为“仅需收货”，应显示哪些在途发票的资格会改变。批准配置的人不一定有权批准这些发票本身。配置生效时，要保存配置版本、变更理由和回退方案；表单的版本问题在设置页同样存在，只是牵涉的对象更多。</p>
 </section>
-<section class="scene" aria-labelledby="演算把-em-e01-的事实接到页面"><header class="scene-head"><h2 id="演算把-em-e01-的事实接到页面"><span class="scene-no" aria-hidden="true">03</span><span class="visually-hidden">演算：</span><span class="head">把 EM-E01 的事实接到页面</span></h2></header><p class="scene-lede">会计从“待处理发票”进入 <code>INV-9</code>。列表上显示简短状态“等待验收或单据修订”，详情里展开为“采购 12 台；已收 10；合格 9；本票 10；可用合格量 9；缺口 1”，并可直接进入这些数字的来源和相关记录。</p>
+<section class="scene" aria-labelledby="演算把-em-e01-的事实接到页面"><header class="scene-head"><h2 id="演算把-em-e01-的事实接到页面"><span class="scene-no" aria-hidden="true">03</span><span class="visually-hidden">演算：</span><span class="head">把 EM-E01 的事实接到页面</span></h2></header><p class="scene-lede">页面把 EM-E01 的数字逐层展开：列表给状态摘要，详情给来源，匹配与付款是由不同的人授权的两个动作。</p>
+<p>会计从“待处理发票”进入 <code>INV-9</code>。列表上显示简短状态“等待验收或单据修订”，详情里展开为“采购 12 台；已收 10；合格 9；本票 10；可用合格量 9；缺口 1”，并可直接进入这些数字的来源和相关记录。</p>
 <p>取得供应商的修订后，会计提交版本 2 的 9 台发票，后端确认 720,000 分与有效依据一致，返回新版本。会计点击“匹配”，生成操作 <code>MATCH-17</code>；成功后页面显示已占用 9 台、剩余合格量 0。随后由资金人员进入单独的付款动作，看到金额、收款目标的已确认版本与依据；会计页面上的“匹配成功”不能代替这一步授权。</p>
 <p>简化的匹配命令：</p>
 <pre><code class="lang-json">{
@@ -244,7 +246,8 @@
 </tbody></table></div>
 <p>空状态有四种：真的没有待办、筛选无结果、没有权限、数据尚未载入。全都显示成“暂无数据”，用户在最需要判断的时候反而失去了依据。</p>
 </section>
-<section class="scene" aria-labelledby="变式改变选择范围与工作节奏"><header class="scene-head"><h2 id="变式改变选择范围与工作节奏"><span class="scene-no" aria-hidden="true">05</span><span class="visually-hidden">变式：</span><span class="head">改变选择范围与工作节奏</span></h2></header><p class="scene-lede"><strong>变式一：批量动作从“标记已阅读”改成“发起付款”。</strong> 选集合的方式可以复用，后果和完成条件却变了：每笔付款都要绑定金额、目标、授权和唯一的操作身份；结果未知的保留核对路径；取消只影响尚未发送的部分。检查重试整批时，已发出的付款引用没有变化，新的操作身份也不能绕过仍在途的业务义务。</p>
+<section class="scene" aria-labelledby="变式改变选择范围与工作节奏"><header class="scene-head"><h2 id="变式改变选择范围与工作节奏"><span class="scene-no" aria-hidden="true">05</span><span class="visually-hidden">变式：</span><span class="head">改变选择范围与工作节奏</span></h2></header><p class="scene-lede">选集合、保留对象与权限、识别分母的做法可以复用；动作的后果、设备与网络条件或进度的口径一变，完成条件跟着变。</p>
+<p><strong>变式一：批量动作从“标记已阅读”改成“发起付款”。</strong> 选集合的方式可以复用，后果和完成条件却变了：每笔付款都要绑定金额、目标、授权和唯一的操作身份；结果未知的保留核对路径；取消只影响尚未发送的部分。检查重试整批时，已发出的付款引用没有变化，新的操作身份也不能绕过仍在途的业务义务。</p>
 <p><strong>变式二：用户从办公室电脑转到仓库手机。</strong> 对象与权限不变；狭窄屏幕可能更适合卡片和逐件确认，而不是横向缩小几十列的表格。编号、数量、单位和异常原因必须保留，离线草稿要注明尚未提交。网络恢复后重新检查版本；“离线确认 10 台”不能覆盖另一人已经记录的退货。</p>
 <p><strong>变式三：看板显示“90% 完成”，负责人要据此关闭采购单。</strong> 先识别分母。9 台已结算占 10 台到货的 90%，只占 12 台承诺的 75%。能否关闭，取决于剩余 3 台怎样处理以及相关的接收条件。检查下钻对象与承诺量，不能把一个视觉进度直接变成关闭命令。</p>
 <p>界面讲清了这些条件，agent 才可能按同样的工作语义行事。</p>
@@ -255,8 +258,8 @@
     <footer class="page-foot">正文 <a href="../../../books/saas-engineering/enterprise-mechanisms/02-enterprise-frontend.md">books/saas-engineering/enterprise-mechanisms/02-enterprise-frontend.md</a> · <a href="../../../vault/distilled/saas-engineering-atlas/README.md">结构、来源与验证</a></footer>
   </main>
 </div>
-<script src="search-index.js?v=mv9186ug"></script>
-<script src="book.js?v=mv9186ug"></script>
-<script src="fig-em-batch.js?v=mv9186ug"></script>
+<script src="search-index.js?v=mv95jeod"></script>
+<script src="book.js?v=mv95jeod"></script>
+<script src="fig-em-batch.js?v=mv95jeod"></script>
 </body>
 </html>

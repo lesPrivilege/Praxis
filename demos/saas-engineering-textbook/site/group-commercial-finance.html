@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>P01 · 交易、财务与资金 · SaaS 工程全景</title>
-<link rel="stylesheet" href="book.css?v=mv9186ug">
+<link rel="stylesheet" href="book.css?v=mv95jeod">
 </head>
 <body>
 <a class="skip" href="#main">跳到正文</a>
@@ -20,13 +20,15 @@
 <header class="hero">
 <p class="kicker"></p>
 <h1>P01 · 交易、财务与资金</h1>
-<p class="lede">一笔业务可能同时有已经生效的合同、尚未交完的服务、已结清的发票和还未完成的收入计划。财务软件的难处，是把这些事实分别存进各自的对象，再说明它们为什么相容。只在订单表加一个 <code>status</code>，很容易把“客户欠多少”“企业还欠什么”“钱现在在哪里”混成一个问题。</p>
+<p class="lede">一笔业务可能同时有已经生效的合同、尚未交完的服务、已结清的发票和还未完成的收入计划。财务软件的难处，是把这些事实分别存进各自的对象，再说明它们为什么相容。只在订单表加一个 <code>status</code>，很容易把“客户欠多少”“企业还欠什么”“钱现在在哪里”混成一个问题。本包把一笔业务的事实分存在六种记录里，每种回答一个问题、要求自己的证据；每笔金额带上身份坐标，每个外部动作保存“想做什么、发出了什么、确认了什么”。七个案例从订阅收入、采购付款和关账，延伸到贷款、保险、投资订单与集团内部交易。外部结果缺少证据时只能记为未知，不能当作失败去重试。</p>
+
 
 </header>
     <div class="reel">
       <aside class="rail" aria-label="本页进度"><ol><li><a href="#共同模型六种记录"><span class="rn">01<span class="of"> / 07</span></span><span class="rt">六种记录</span></a></li><li><a href="#身份坐标"><span class="rn">02<span class="of"> / 07</span></span><span class="rt">身份坐标</span></a></li><li><a href="#页面与权威"><span class="rn">03<span class="of"> / 07</span></span><span class="rt">页面与权威</span></a></li><li><a href="#案例与阅读顺序"><span class="rn">04<span class="of"> / 07</span></span><span class="rt">案例与阅读顺序</span></a></li><li><a href="#解题五步"><span class="rn">05<span class="of"> / 07</span></span><span class="rt">解题五步</span></a></li><li><a href="#手算与检查"><span class="rn">06<span class="of"> / 07</span></span><span class="rt">手算与检查</span></a></li><li><a href="#进入陌生行业"><span class="rn">07<span class="of"> / 07</span></span><span class="rt">进入陌生行业</span></a></li></ol></aside>
       <div class="flow">
-<section class="scene" aria-labelledby="共同模型六种记录"><header class="scene-head"><h2 id="共同模型六种记录"><span class="scene-no" aria-hidden="true">01</span><span class="visually-hidden">共同模型：</span><span class="head">六种记录</span></h2></header><p class="scene-lede">设一家企业收取 300 单位预付款，承诺提供 30 个等长服务日。第 10 天，客户可能已不欠钱，企业仍欠 20 天服务。把收到的 300 全显示成已赚取，会隐藏剩余承诺；只显示“服务进行中”，又说明不了能否用这笔现金付款。下表把记录分为六种，各回答一个问题。</p>
+<section class="scene" aria-labelledby="共同模型六种记录"><header class="scene-head"><h2 id="共同模型六种记录"><span class="scene-no" aria-hidden="true">01</span><span class="visually-hidden">共同模型：</span><span class="head">六种记录</span></h2></header><p class="scene-lede">六种记录各回答一个问题，各有改变记录所需的证据；记录之间的先后带有条件，不是固定的箭头。</p>
+<p>设一家企业收取 300 单位预付款，承诺提供 30 个等长服务日。第 10 天，客户可能已不欠钱，企业仍欠 20 天服务。把收到的 300 全显示成已赚取，会隐藏剩余承诺；只显示“服务进行中”，又说明不了能否用这笔现金付款。下表把记录分为六种，各回答一个问题。</p>
 <div class="table-wrap wide"><table>
 <thead>
 <tr>
@@ -81,7 +83,8 @@
 <section class="scene" aria-labelledby="页面与权威"><header class="scene-head"><h2 id="页面与权威"><span class="scene-no" aria-hidden="true">03</span><span class="head">页面与权威</span></h2></header><p class="scene-lede">页面要同时显示对象的状态和动作的状态。例如发票仍为 <code>open</code>，付款尝试正在核对；贷款已批准，放款尚未确认；订单部分成交，撤单正在等待。列表适合发现异常，详情需要展示来源版本、剩余数量、责任人和下一步动作。权限由服务端依据身份、对象范围与动作重新判断。隐藏按钮方便使用，但不是授权机制。</p>
 <p>本包的 <abbr title="JavaScript Object Notation：结构化数据表示格式，后文保留 JSON">JSON</abbr> 画出 <abbr title="user interface：用户界面">UI</abbr>、service、store、external system 之间的信息传递，现金、实物和证券的变化则记在业务对象里。一个 <code>delivers</code> 箭头表示消息交接，不表示钱或货已经到达。<code>owns</code> 指明哪一方对某项事实说了算；存储副本和报表投影没有这种权力。状态图把“事件触发了什么”与“哪个对象依赖哪个前提”分开：H03 正文中 A 先于 B 执行，对应结构里的 B <code>depends_on</code> A；这条边表示依赖，不表示沿箭头方向传输数据。完整的状态转换、前提和恢复点在每例的结构文件里，正文解释这些前提为什么存在。</p>
 </section>
-<section class="scene" aria-labelledby="案例与阅读顺序"><header class="scene-head"><h2 id="案例与阅读顺序"><span class="scene-no" aria-hidden="true">04</span><span class="head">案例与阅读顺序</span></h2></header><div class="table-wrap"><table>
+<section class="scene" aria-labelledby="案例与阅读顺序"><header class="scene-head"><h2 id="案例与阅读顺序"><span class="scene-no" aria-hidden="true">04</span><span class="head">案例与阅读顺序</span></h2></header><p class="scene-lede">七个案例从单个法人的收入、采购和关账出发，再引入本金、损失估计和在途成交，最后扩展到集团。</p>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>案例</th>
@@ -143,8 +146,8 @@
     <footer class="page-foot">正文 <a href="../../../books/saas-engineering/packages/commercial-finance/README.md">books/saas-engineering/packages/commercial-finance/README.md</a> · <a href="../../../vault/distilled/saas-engineering-atlas/README.md">结构、来源与验证</a></footer>
   </main>
 </div>
-<script src="search-index.js?v=mv9186ug"></script>
-<script src="book.js?v=mv9186ug"></script>
+<script src="search-index.js?v=mv95jeod"></script>
+<script src="book.js?v=mv95jeod"></script>
 
 </body>
 </html>

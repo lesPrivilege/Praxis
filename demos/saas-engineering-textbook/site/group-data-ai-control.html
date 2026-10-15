@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>P03 · 数据、文档、安全与 AI SaaS · SaaS 工程全景</title>
-<link rel="stylesheet" href="book.css?v=mv9186ug">
+<link rel="stylesheet" href="book.css?v=mv95jeod">
 </head>
 <body>
 <a class="skip" href="#main">跳到正文</a>
@@ -20,13 +20,15 @@
 <header class="hero">
 <p class="kicker"></p>
 <h1>P03 · 数据、文档、安全与 AI SaaS</h1>
-<p class="lede">企业保存数据，还要知道哪份数据可以拿来作决定。报表算出一个金额，口径未必已经获准；系统发现异常，停用账号仍要另行授权；文档获得批准，下游系统未必已经收到；请求生成了一段回答，能否向客户计费是另一回事。这些事实彼此相邻，却不能合并。能搭界面的读者要能辨认：一次点击究竟改了什么，凭什么改，失败后该找谁。</p>
+<p class="lede">企业保存数据，还要知道哪份数据可以拿来作决定。报表算出一个金额，口径未必已经获准；系统发现异常，停用账号仍要另行授权；文档获得批准，下游系统未必已经收到；请求生成了一段回答，能否向客户计费是另一回事。这些事实彼此相邻，却不能合并。能搭界面的读者要能辨认：一次点击究竟改了什么，凭什么改，失败后该找谁。四个案例共用一个模型：每项决定带着租户、对象、版本和决定人，执行另有许可和回执。H07 讲数据修订与 <abbr title="business intelligence：商业智能">BI</abbr> 发布，H08 讲安全信号与授权响应，H09 讲文档版本与下游记录，X01 把租户开通、计量、计费和退出连成一条链。结果未知时，恢复先查原尝试的证据，另发新请求可能把未知的一次变成确定的两次。</p>
+
 
 </header>
     <div class="reel">
       <aside class="rail" aria-label="本页进度"><ol><li><a href="#共同模型身份版本许可与回执"><span class="rn">01<span class="of"> / 04</span></span><span class="rt">身份、版本、许可与回执</span></a></li><li><a href="#相似机制的边界"><span class="rn">02<span class="of"> / 04</span></span><span class="rt">相似机制的边界</span></a></li><li><a href="#案例与阅读顺序"><span class="rn">03<span class="of"> / 04</span></span><span class="rt">案例与阅读顺序</span></a></li><li><a href="#解题五步"><span class="rn">04<span class="of"> / 04</span></span><span class="rt">解题五步</span></a></li></ol></aside>
       <div class="flow">
-<section class="scene" aria-labelledby="共同模型身份版本许可与回执"><header class="scene-head"><h2 id="共同模型身份版本许可与回执"><span class="scene-no" aria-hidden="true">01</span><span class="visually-hidden">共同模型：</span><span class="head">身份、版本、许可与回执</span></h2></header><p class="scene-lede">设想一个企业工作台。租户 A 的分析员根据订单数据制作月报，安全员调查异常访问，法务批准数据使用协议，客户管理员决定谁能使用 <abbr title="artificial intelligence：人工智能">AI</abbr> 服务。四个人面对同一组织，各自有不同的权威。把四个人的工作连起来的最小单位，是“一项带身份的决定”：针对哪个租户的哪个对象、哪个版本，由谁依据什么规则作出，何时生效，接收方确认到哪一步。</p>
+<section class="scene" aria-labelledby="共同模型身份版本许可与回执"><header class="scene-head"><h2 id="共同模型身份版本许可与回执"><span class="scene-no" aria-hidden="true">01</span><span class="visually-hidden">共同模型：</span><span class="head">身份、版本、许可与回执</span></h2></header><p class="scene-lede">身份和版本说明一项决定针对哪一件、哪一份，许可和回执说明能否执行、执行到了哪里；证据链和执行链靠这四者互相核对。</p>
+<p>设想一个企业工作台。租户 A 的分析员根据订单数据制作月报，安全员调查异常访问，法务批准数据使用协议，客户管理员决定谁能使用 <abbr title="artificial intelligence：人工智能">AI</abbr> 服务。四个人面对同一组织，各自有不同的权威。把四个人的工作连起来的最小单位，是“一项带身份的决定”：针对哪个租户的哪个对象、哪个版本，由谁依据什么规则作出，何时生效，接收方确认到哪一步。</p>
 <p>对象身份回答“这是哪一件”，版本回答“当时看的是哪一份”。<code>tenant=A, object=contract-7, version=3</code> 与版本 4 是同一合同的两份内容；对版本 3 的批准不能在没有规则的情况下覆盖版本 4。把版本换成报表输入快照、响应目标状态或计量价格版本，同样的问题仍然成立。页面可以只显示易读名称，服务端和持久记录仍要保存完整身份。</p>
 <p>许可回答“现在可否执行”，回执回答“到底执行到哪里”。权限检查发生在执行边界；一条历史批准有时是权限判断的输入，却不是永不过期的通行证。发送请求后可能出现成功、明确拒绝、结果未知三类情况。结果未知时，恢复的第一件事是查找原尝试的证据；另发一个新请求，可能把未知的一次变成确定的两次。</p>
 <p>身份、版本、许可和回执连成两条互相核对的链。证据链保存来源、版本、规则和决定，让人可以解释结果；执行链保存命令、尝试、外部回执和投影，让人可以恢复工作。两条链都需要租户身份。业务服务对自己的对象负责，外部 provider 对它接收的对象负责，列表中的绿色状态只是某一时刻的投影。复制一份数据不会自动转移权威。</p>
@@ -35,7 +37,8 @@
 <p>同样，撤回一份报表可以切回旧发布指针；撤销一份批准可能要求重新审查；解除隔离需要确认目标已安全；租户退出则可能需要先停止新请求，再结算在途用量并处理保留规则。它们都叫恢复，却不都是回滚。已经发到外部的内容、已经消耗的计算和已经作出的人工决定，不会因本地数据库回退而消失。</p>
 <p>AI 在这套模型中可以建议映射、整理告警、抽取条款或回答问题。模型输出是需要验证的输入；工具执行能力仍受身份、租户、对象版本和动作许可约束。确定性规则检验权限和金额，AI eval 检验答案是否有依据、该拒答时是否拒答。二者各有失败标准，不能把“模型答得像”当作“业务做对了”。</p>
 </section>
-<section class="scene" aria-labelledby="案例与阅读顺序"><header class="scene-head"><h2 id="案例与阅读顺序"><span class="scene-no" aria-hidden="true">03</span><span class="head">案例与阅读顺序</span></h2></header><div class="table-wrap wide"><table>
+<section class="scene" aria-labelledby="案例与阅读顺序"><header class="scene-head"><h2 id="案例与阅读顺序"><span class="scene-no" aria-hidden="true">03</span><span class="head">案例与阅读顺序</span></h2></header><p class="scene-lede">每个案例都有一对容易混成一项的事实，判断的关键是把它们分开保存、分别验收。</p>
+<div class="table-wrap wide"><table>
 <thead>
 <tr>
 <th>案例</th>
@@ -47,7 +50,7 @@
 </thead>
 <tbody><tr>
 <td><a href="H07.html">H07</a> · <a href="../../../vault/distilled/saas-engineering-atlas/packages/data-ai-control/H07.json">拓扑</a></td>
-<td>源数据变化 → 治理 → <abbr title="business intelligence：商业智能">BI</abbr> 发布</td>
+<td>源数据变化 → 治理 → BI 发布</td>
 <td>上游变化怎样成为可解释的发布版本</td>
 <td>数据已到达 / 指标口径可发布</td>
 <td>重算影响范围、迟到事件与旧报表的关系</td>
@@ -85,8 +88,8 @@
     <footer class="page-foot">正文 <a href="../../../books/saas-engineering/packages/data-ai-control/README.md">books/saas-engineering/packages/data-ai-control/README.md</a> · <a href="../../../vault/distilled/saas-engineering-atlas/README.md">结构、来源与验证</a></footer>
   </main>
 </div>
-<script src="search-index.js?v=mv9186ug"></script>
-<script src="book.js?v=mv9186ug"></script>
+<script src="search-index.js?v=mv95jeod"></script>
+<script src="book.js?v=mv95jeod"></script>
 
 </body>
 </html>

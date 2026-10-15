@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>把业务问题算清楚 · SaaS 工程全景</title>
-<link rel="stylesheet" href="book.css?v=mv9186ug">
+<link rel="stylesheet" href="book.css?v=mv95jeod">
 </head>
 <body>
 <a class="skip" href="#main">跳到正文</a>
@@ -20,7 +20,8 @@
 <header class="hero">
 <p class="kicker"></p>
 <h1>把业务问题算清楚</h1>
-<p class="lede">一张订单、一段时间、几条依赖边，都可以先用纸笔算出答案，再决定数据放在哪里、请求怎样执行、失败怎样恢复。算清楚以后，交给 <abbr title="artificial intelligence：人工智能">AI</abbr> 的任务就能验算：输入明确，选择有理由，结果能检查。</p>
+<p class="lede">一张订单、一段时间、几条依赖边，都可以先用纸笔算出答案，再决定数据放在哪里、请求怎样执行、失败怎样恢复。算清楚以后，交给 <abbr title="artificial intelligence：人工智能">AI</abbr> 的任务就能验算：输入明确，选择有理由，结果能检查。全书从对象与题型出发，依次处理查找、顺序与区间、图、依赖与队列、有约束的选择，再讨论复用和近似的成本，把答案接进恢复、验证与技术栈，最后迁移到其他行业。固定输入下算对的答案，在并发、重复、超时和恢复中仍可能出错，所以计算检查与运行检查分开做。</p>
+
 
 </header>
     <div class="reel">
@@ -28,8 +29,9 @@
       <div class="flow">
 <p>每章按同样的五步展开：<strong>识题</strong>找出输入与约束；<strong>解法</strong>说明为何选这种方法；<strong>演算</strong>逐步处理小输入；<strong>验算</strong>用不变量和反例检查；<strong>变式</strong>改变一个前提，判断方法是否仍成立。维修订单 O7 贯穿对象、数量、任务、退款和验证，其他行业案例用来练习迁移。</p>
 <p>只需能读表格、比较大小和计算加减乘除。复杂度中的 n 是输入条数，k 是保留项数，V/E 是图的点数/边数，L 是键的长度；<code>[a,b)</code> 包含 a、不包含 b。方法和术语在首次出现处解释，原文名称可从<a href="fdn-terms.html">术语索引</a>反查。</p>
-<section class="scene" aria-labelledby="渐进路线"><header class="scene-head"><h2 id="渐进路线"><span class="scene-no" aria-hidden="true">01</span><span class="head">渐进路线</span></h2></header><ol class="route" style="--rows:6" aria-label="要学会的判断"><li><span class="rn" aria-hidden="true">01</span><p class="rh">一次点击改变的是哪项事实</p><p class="rs"><a href="fdn-01-problems-and-objects.html">对象与题型</a>：3 次服务与 40 单位退款</p></li><li><span class="rn" aria-hidden="true">02</span><p class="rh">等值、边界、范围、前缀为什么用不同结构</p><p class="rs"><a href="fdn-02-lookup-and-indexes.html">查找与索引</a>：5 个日期、4 个词</p></li><li><span class="rn" aria-hidden="true">03</span><p class="rh">何时全排，何时只留少量候选，如何累计区间</p><p class="rs"><a href="fdn-03-order-and-intervals.html">顺序与区间</a>：5 个评分与 5 段用量</p></li><li><span class="rn" aria-hidden="true">04</span><p class="rh">要的是影响集合、解释路径、最短路，还是连通分组</p><p class="rs"><a href="fdn-04-graphs-and-connectivity.html">图与连通</a>：5 个依赖节点、4 个站点</p></li><li><span class="rn" aria-hidden="true">05</span><p class="rh">哪些前提已满足，资源何时可用，任务怎样交接</p><p class="rs"><a href="fdn-05-dependencies-and-queues.html">依赖与队列</a>：4 项工作，7 分钟与 10 分钟</p></li><li><span class="rn" aria-hidden="true">06</span><p class="rh">局部最优是否足够，状态怎样表达剩余问题</p><p class="rs"><a href="fdn-06-choices-and-optimization.html">有约束的选择</a>：预算 5、3 件工作、2 名技师</p></li><li><span class="rn" aria-hidden="true">07</span><p class="rh">哪个结果可复用，何时应淘汰，何时已失效</p><p class="rs"><a href="fdn-07-reuse-and-invalidation.html">复用与失效</a>：容量 2，6 次访问</p></li><li><span class="rn" aria-hidden="true">08</span><p class="rh">允许哪一种误差，怎样测量和补救</p><p class="rs"><a href="fdn-08-approximation-and-search.html">近似与检索</a>：8 位过滤器、4 个寄存器、4 个向量</p></li><li><span class="rn" aria-hidden="true">09</span><p class="rh">计算结果怎样变成可恢复的业务动作</p><p class="rs"><a href="fdn-09-from-ui-to-recovery.html">从界面到恢复</a>：取消 S3、操作 OP7、退款回执 R1</p></li><li><span class="rn" aria-hidden="true">10</span><p class="rh">用哪层实验支持哪项承诺</p><p class="rs"><a href="fdn-10-verification-and-evals.html">分层验证与 AI 评估</a>：重复投递、未知结果、40 条评估样本</p></li><li><span class="rn" aria-hidden="true">11</span><p class="rh">哪些成熟能力能减少自建工作，何时才值得增加组件</p><p class="rs"><a href="fdn-11-stacks-and-research.html">技术栈与研究</a>：50 名操作员、每天 2,000 次操作</p></li><li><span class="rn" aria-hidden="true">12</span><p class="rh">换行业后哪些结构留下，哪些语义要重建</p><p class="rs"><a href="fdn-12-transfer-workbook.html">迁移练习册</a>：33 案例地图与 6 组跨行业演算</p></li></ol>
-<p>第一遍顺序读：1–3 章把对象和数字算清楚，4–6 章处理关系与选择，7–8 章讨论成本，9–11 章把答案接进系统，12 章独立迁移。每个例子先遮住答案自己算，再改变一个条件。第二遍从产品症状进入：查不到或查得慢看第 2 章，列表顺序与报表看第 3 章，任务卡住看第 5 章，重复执行或结果未知看第 9–10 章。</p>
+<section class="scene" aria-labelledby="渐进路线"><header class="scene-head"><h2 id="渐进路线"><span class="scene-no" aria-hidden="true">01</span><span class="head">渐进路线</span></h2></header><p class="scene-lede">十二章按渐进次序排列：1–3 章把对象和数字算清楚，4–6 章处理关系与选择，7–8 章讨论成本，9–11 章把答案接进系统，12 章独立迁移。每章对应一个要学会的判断和一组可以手算的小输入。</p>
+<ol class="route" style="--rows:6" aria-label="要学会的判断"><li><span class="rn" aria-hidden="true">01</span><p class="rh">一次点击改变的是哪项事实</p><p class="rs"><a href="fdn-01-problems-and-objects.html">对象与题型</a>：3 次服务与 40 单位退款</p></li><li><span class="rn" aria-hidden="true">02</span><p class="rh">等值、边界、范围、前缀为什么用不同结构</p><p class="rs"><a href="fdn-02-lookup-and-indexes.html">查找与索引</a>：5 个日期、4 个词</p></li><li><span class="rn" aria-hidden="true">03</span><p class="rh">何时全排，何时只留少量候选，如何累计区间</p><p class="rs"><a href="fdn-03-order-and-intervals.html">顺序与区间</a>：5 个评分与 5 段用量</p></li><li><span class="rn" aria-hidden="true">04</span><p class="rh">要的是影响集合、解释路径、最短路，还是连通分组</p><p class="rs"><a href="fdn-04-graphs-and-connectivity.html">图与连通</a>：5 个依赖节点、4 个站点</p></li><li><span class="rn" aria-hidden="true">05</span><p class="rh">哪些前提已满足，资源何时可用，任务怎样交接</p><p class="rs"><a href="fdn-05-dependencies-and-queues.html">依赖与队列</a>：4 项工作，7 分钟与 10 分钟</p></li><li><span class="rn" aria-hidden="true">06</span><p class="rh">局部最优是否足够，状态怎样表达剩余问题</p><p class="rs"><a href="fdn-06-choices-and-optimization.html">有约束的选择</a>：预算 5、3 件工作、2 名技师</p></li><li><span class="rn" aria-hidden="true">07</span><p class="rh">哪个结果可复用，何时应淘汰，何时已失效</p><p class="rs"><a href="fdn-07-reuse-and-invalidation.html">复用与失效</a>：容量 2，6 次访问</p></li><li><span class="rn" aria-hidden="true">08</span><p class="rh">允许哪一种误差，怎样测量和补救</p><p class="rs"><a href="fdn-08-approximation-and-search.html">近似与检索</a>：8 位过滤器、4 个寄存器、4 个向量</p></li><li><span class="rn" aria-hidden="true">09</span><p class="rh">计算结果怎样变成可恢复的业务动作</p><p class="rs"><a href="fdn-09-from-ui-to-recovery.html">从界面到恢复</a>：取消 S3、操作 OP7、退款回执 R1</p></li><li><span class="rn" aria-hidden="true">10</span><p class="rh">用哪层实验支持哪项承诺</p><p class="rs"><a href="fdn-10-verification-and-evals.html">分层验证与 AI 评估</a>：重复投递、未知结果、40 条评估样本</p></li><li><span class="rn" aria-hidden="true">11</span><p class="rh">哪些成熟能力能减少自建工作，何时才值得增加组件</p><p class="rs"><a href="fdn-11-stacks-and-research.html">技术栈与研究</a>：50 名操作员、每天 2,000 次操作</p></li><li><span class="rn" aria-hidden="true">12</span><p class="rh">换行业后哪些结构留下，哪些语义要重建</p><p class="rs"><a href="fdn-12-transfer-workbook.html">迁移练习册</a>：33 案例地图与 6 组跨行业演算</p></li></ol>
+<p>第一遍顺序读，每个例子先遮住答案自己算，再改变一个条件。第二遍从产品症状进入：查不到或查得慢看第 2 章，列表顺序与报表看第 3 章，任务卡住看第 5 章，重复执行或结果未知看第 9–10 章。</p>
 </section>
 <section class="scene" aria-labelledby="把方法用于自己的产品"><header class="scene-head"><h2 id="把方法用于自己的产品"><span class="scene-no" aria-hidden="true">02</span><span class="head">把方法用于自己的产品</span></h2></header><p class="scene-lede">拿一项真实需求，先写一小段题目：“给定哪些对象和版本；要返回什么或改变什么；哪些条件绝不能破坏。”接着写 3–5 条足以手算的输入、一组期望结果和一个反例。选出正文中最接近的方法，写明它的适用前提。最后把计算检查与运行检查分开：前者证明固定输入下的答案，后者检查并发、重复、超时和恢复。</p>
 <p>业务软件通过网络提供服务，这种模式通常称为软件即服务（software as a service，<abbr title="Software as a Service：软件即服务">SaaS</abbr>）。各章的练习都放在这类业务工作台里，方法同样适用于内部工具、数据任务和单机应用。<a href="learning-path.html">共同学习路径</a>、<a href="architecture.html">atlas 架构</a>、<a href="../../../vault/distilled/saas-engineering-atlas/case-index.json">案例索引</a>及 <a href="H01.html">H01 服务承诺案例</a>补充业务背景。</p>
@@ -43,8 +45,8 @@
     <footer class="page-foot">正文 <a href="../../../books/saas-engineering/foundations/README.md">books/saas-engineering/foundations/README.md</a> · <a href="../../../vault/distilled/saas-engineering-atlas/README.md">结构、来源与验证</a></footer>
   </main>
 </div>
-<script src="search-index.js?v=mv9186ug"></script>
-<script src="book.js?v=mv9186ug"></script>
+<script src="search-index.js?v=mv95jeod"></script>
+<script src="book.js?v=mv95jeod"></script>
 
 </body>
 </html>
