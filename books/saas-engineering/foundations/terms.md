@@ -22,7 +22,7 @@
 | 回溯、剪枝、分支限界 | backtracking, pruning, branch and bound | 回溯搜索候选；分支限界用有效目标界排除分支；启发式估计不自动成为界 | [6](06-choices-and-optimization.md) |
 | 约束规划 / 可满足性 | constraint programming (CP), satisfiability (SAT) | CP-SAT 是 OR-Tools 求解器名，最优性相对于输入模型 | [6](06-choices-and-optimization.md) |
 | 记忆化、缓存 | memoization, cache | 记忆化复用同一函数输入的结果；缓存还涉及共享、新鲜度、容量和失效 | [7](07-reuse-and-invalidation.md) |
-| 最近最少使用 / 最不经常使用 | least recently used (LRU), least frequently used (LFU) | 一个看时间次序，一个看频率；精确教学策略与采样实现可产生不同结果 | [7](07-reuse-and-invalidation.md) |
+| 最近最少使用 / 最不经常使用 | least recently used (LRU), least frequently used (LFU) | 一个看时间次序，一个看频率；精确策略与采样实现可产生不同结果 | [7](07-reuse-and-invalidation.md) |
 | 存活时限、淘汰、失效 | time to live (TTL), eviction, invalidation | TTL 是时间策略；淘汰释放容量；失效表示结果已不适用 | [7](07-reuse-and-invalidation.md) |
 | 布隆过滤器 | Bloom filter | 命名来自 Bloom；判断集合成员的概率结构，阳性仍需核对 | [8](08-approximation-and-search.md) |
 | 去重数量估计 | HyperLogLog (HLL), cardinality estimation | HyperLogLog 保留原名；基数是不同元素数，不是元素清单 | [8](08-approximation-and-search.md) |

@@ -22,20 +22,27 @@
   var cur = document.querySelector('.book-nav [aria-current="page"]');
   if (cur) cur.scrollIntoView({ block: 'center' });
 
-  // page TOC highlight
-  var tocLinks = Array.prototype.slice.call(document.querySelectorAll('.page-toc a'));
-  if (tocLinks.length && 'IntersectionObserver' in window) {
-    var byId = {};
-    tocLinks.forEach(function (a) { byId[decodeURIComponent(a.hash.slice(1))] = a; });
-    var obs = new IntersectionObserver(function (entries) {
-      entries.forEach(function (en) {
-        if (en.isIntersecting && byId[en.target.id]) {
-          tocLinks.forEach(function (a) { a.classList.remove('active'); });
-          byId[en.target.id].classList.add('active');
-        }
+  // progress rail: the scene being read is current, earlier ones are passed
+  var railItems = Array.prototype.slice.call(document.querySelectorAll('.rail li'));
+  var scenes = railItems.map(function (li) { return document.getElementById(decodeURIComponent(li.querySelector('a').hash.slice(1))); });
+  if (railItems.length) {
+    var ticking = false;
+    var update = function () {
+      ticking = false;
+      var line = window.innerHeight * 0.32;
+      var cur = -1;
+      scenes.forEach(function (h, i) { if (h && h.getBoundingClientRect().top <= line) cur = i; });
+      if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4) cur = scenes.length - 1;
+      railItems.forEach(function (li, i) {
+        li.classList.toggle('current', i === cur);
+        li.classList.toggle('passed', i < cur);
+        var a = li.querySelector('a');
+        if (i === cur) a.setAttribute('aria-current', 'location'); else a.removeAttribute('aria-current');
       });
-    }, { rootMargin: '-10% 0px -75% 0px' });
-    Object.keys(byId).forEach(function (id) { var h = document.getElementById(id); if (h) obs.observe(h); });
+    };
+    window.addEventListener('scroll', function () { if (!ticking) { ticking = true; setTimeout(update, 60); } }, { passive: true });
+    window.addEventListener('resize', update);
+    update();
   }
 
   // search over titles and section headings
@@ -140,7 +147,7 @@
         var rows = data.e.filter(function (e) { return (e.f === id || e.to === id) && visible[e.t]; }).map(function (e) {
           var other = e.f === id ? '→ ' + data.n[e.to].l : data.n[e.f].l + ' →';
           return '<li><b>' + esc(e.t) + '</b> ' + esc(other) + '<dl><dt>传递内容</dt><dd>' + esc(e.p) + '</dd><dt>时机</dt><dd>' + esc(e.tm) +
-            '</dd><dt>约束</dt><dd>' + esc(e.i) + '</dd><dt>失败处理</dt><dd>' + esc(e.x) + '</dd><dt>依据</dt><dd>' + esc(e.b) + '</dd></dl></li>';
+            '</dd><dt>约束</dt><dd>' + esc(e.i) + '</dd><dt>失败处理</dt><dd>' + esc(e.x) + '</dd>' + (e.b ? '<dt>依据</dt><dd>' + esc(e.b) + '</dd>' : '') + '</dl></li>';
         });
         detail.innerHTML = '<h4>' + esc(n.l) + '</h4><p class="node-meta">' + esc(n.k) + ' · 权威：' + esc(n.a) + ' · 租户范围：' + esc(n.s) + '</p><ul>' + rows.join('') + '</ul>';
       }

@@ -1,6 +1,6 @@
 # 从题型选择解法
 
-先说清哪些事实看起来互相冲突，再选方法。下表按题型把常见机制与案例对应起来；题型分组是本书的教学归纳。算法用 lookup、Top-K、window、graph、scheduling 等通行名称，provider 术语保留原文；技术方案和行业制度的适用范围见各例。
+先说清哪些事实看起来互相冲突，再选方法。下表按题型把常见机制与案例对应起来。算法用 lookup、Top-K、window、graph、scheduling 等通行名称，provider 术语保留原文；技术方案和行业制度的适用范围见各例。
 
 对象、权限和页面怎样影响一项工作的完成，可先读 [企业机制](enterprise-mechanisms/README.md)。其中 [前端工作面](enterprise-mechanisms/02-enterprise-frontend.md)解释表格、表单、详情、工作台、看板、批量动作与设置各自需要的后端契约；[工作上下文与工具](enterprise-mechanisms/03-schema-tools-completion.md)讲 agent 怎样按这些契约执行动作、回写结果。
 
@@ -38,7 +38,7 @@
 
 ## 技术栈索引
 
-先读 [技术栈与研究](foundations/11-stacks-and-research.md)，分清一次动作由哪些部分负责，再从数据与恢复条件反推技术栈。下表列出案例设计中的候选构件，不描述 provider 的内部实现，也不指定框架。
+先读 [技术栈与研究](foundations/11-stacks-and-research.md)，分清一次动作由哪些部分负责，再从数据与恢复条件反推技术栈。下表列出案例设计中的候选构件，不指定框架。
 
 | 系统需求 | 候选构件 | 前提与替代 | 案例入口 |
 |---|---|---|---|
@@ -46,7 +46,7 @@
 | 应对回执重复、迟到与进程恢复 | durable outbox/inbox、队列或可恢复 worker | 小规模可先用数据库任务表；每项外部效果仍需独立身份 | [H08](packages/data-ai-control/H08.md)、[H09](packages/data-ai-control/H09.md)、[V18](packages/people-service/V18.md)、[X01](packages/data-ai-control/X01.md) |
 | 保存文件/测量证据与引用版本 | 对象存储、内容摘要、关系元数据 | hash 判断内容身份，不能替代来源实例、权限、签署或保留义务 | [H09](packages/data-ai-control/H09.md)、[V02](packages/health-science/V02.md)、[V03](packages/health-science/V03.md)、[V18](packages/people-service/V18.md) |
 | 追溯来源与变更影响 | 邻接关系表、递归查询或图计算 | 有实际多跳规模再考虑图引擎；先固定边类型与方向 | [H07](packages/data-ai-control/H07.md)、[V07](packages/industry-networks/V07.md)、[V15](packages/commerce-property/V15.md) |
-| 处理时间容量与资源冲突 | 区间类型、约束/锁、调度器或求解器 | SQLite 上的合成检查证明不了生产环境的隔离；小时容量之外还要核对地点时窗 | [V06](packages/commerce-property/V06.md)、[V16](packages/commerce-property/V16.md)、[V20](packages/people-service/V20.md)、[V21](packages/industry-networks/V21.md) |
+| 处理时间容量与资源冲突 | 区间类型、约束/锁、调度器或求解器 | SQLite 上的本地检查证明不了生产环境的隔离；小时容量之外还要核对地点时窗 | [V06](packages/commerce-property/V06.md)、[V16](packages/commerce-property/V16.md)、[V20](packages/people-service/V20.md)、[V21](packages/industry-networks/V21.md) |
 | 展示状态并应对投影滞后 | API + 查询投影 + UI 等待/冲突/重试状态 | 服务端复核当前权限与版本；界面禁用只是反馈 | [H06](packages/people-service/H06.md)、[H09](packages/data-ai-control/H09.md)、[X01](packages/data-ai-control/X01.md) |
 | 接入 AI 给出的候选或检索结果 | 检索、模型适配、引用与评估记录 | 固定分母、留出集、拒绝条件和人工接管；模型输出不自动成为执行授权 | [H08](packages/data-ai-control/H08.md)、[V01](packages/health-science/V01.md)、[V02](packages/health-science/V02.md)、[X01](packages/data-ai-control/X01.md) |
 

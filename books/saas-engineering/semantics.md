@@ -9,7 +9,7 @@
 | 通用技术与领域术语 | transaction、idempotency、system of record、read model、DAG、work order | 按通行含义理解；某个系统实际提供哪些保证，以上下文为准，不从名称推断实现 |
 | 标准或参考模型 | SCIM、FHIR、DICOM、FIX、EPCIS、EDRM、OneRoster | 保留原名、版本与适用范围；标准数据交换不自动授予业务批准权 |
 | provider 专有概念 | Snowflake stream、Stripe invoice、Ironclad Record、ServiceNow incident 状态 | 按该产品来源的定义读；跨产品对照时写明差异 |
-| 本书的编排归纳 | 五步解题顺序、案例分组、typed transfer 分类、JSON 边枚举 | 用于比较案例的教学组织，不作为行业标准或厂商内部设计的证据 |
+| 本书的编排归纳 | 五步解题顺序、案例分组、typed transfer 分类、JSON 边枚举 | 用于比较案例的编排，不作为行业标准或厂商内部设计的证据 |
 
 `TERM:COMMON` 是本书查阅用的命名空间。“共同”指书中多处共用同一个解释，与各厂商是否采用相同实现或制度无关。已有名称能表达机制时沿用原名，不另起新名。
 
@@ -52,7 +52,7 @@
 
 ## 证据身份
 
-`source_fact` 只在 claim 指定的来源和 locator 范围内成立；`inference` 是作者推理；`synthetic` 是演示数值或系统设计。同一 URL 可以支持多条范围不同的 claim，合并 URL 时各条 claim 的限制分别保留。来源别名只用来认定几处来源指向同一份材料，与产品功能是否等价无关。来源、读取记录与原 ID 的解析见 [证据入口](../../vault/provenance/saas-engineering-atlas/README.md)。
+`source_fact` 只在 claim 指定的来源和 locator 范围内成立；`inference` 是作者推理；`synthetic` 是为演示构造的数值或系统设计，不描述任何厂商产品的内部实现。同一 URL 可以支持多条范围不同的 claim，合并 URL 时各条 claim 的限制分别保留。来源别名只用来认定几处来源指向同一份材料，与产品功能是否等价无关。来源、读取记录与原 ID 的解析见 [证据入口](../../vault/provenance/saas-engineering-atlas/README.md)。
 
 ## 语义输入与分析层次
 

@@ -1,0 +1,51 @@
+<div class="dw-scroll" style="--dw-min:600px;--dw-max:840px">
+<svg viewBox="-10 0 700 252" role="img" aria-labelledby="f08-hll-t f08-hll-d">
+  <title id="f08-hll-t">HyperLogLog 的 4 个寄存器</title>
+  <desc id="f08-hll-d">hash 的前两位选桶，剩余串里首个 1 的位置与该桶的值取最大。A 为 00|001…，桶 00 由 0 变 3；B 为 00|01…，2 小于 3，不变；重复的 A 也不变；C 为 10|0001…，桶 10 由 0 变 4，寄存器成为 [3,0,4,0]。</desc>
+  <text class="t-s" x="64" y="18">hash：桶位 | 剩余串</text>
+  <text class="t-s" x="214" y="18">剩余串首个 1</text>
+  <text class="t-s mid" x="325.0" y="18">桶 00</text>
+  <text class="t-s mid" x="375.0" y="18">桶 01</text>
+  <text class="t-s mid" x="425.0" y="18">桶 10</text>
+  <text class="t-s mid" x="475.0" y="18">桶 11</text>
+  <text class="t-b" x="0" y="53">初始</text>
+  <rect class="box" x="300" y="34" width="50" height="28"/><text class="t-n mid" x="325.0" y="53">0</text>
+  <rect class="box" x="350" y="34" width="50" height="28"/><text class="t-n mid" x="375.0" y="53">0</text>
+  <rect class="box" x="400" y="34" width="50" height="28"/><text class="t-n mid" x="425.0" y="53">0</text>
+  <rect class="box" x="450" y="34" width="50" height="28"/><text class="t-n mid" x="475.0" y="53">0</text>
+  <text class="t-b" x="0" y="97">A</text>
+  <text class="t-n" x="64" y="97"><tspan font-weight="600">00</tspan> | 001…</text>
+  <text class="t" x="214" y="97">第 3 位</text>
+  <rect class="box f3" x="300" y="78" width="50" height="28"/><text class="t-n mid" x="325.0" y="97">3</text>
+  <rect class="box" x="350" y="78" width="50" height="28"/><text class="t-n mid" x="375.0" y="97">0</text>
+  <rect class="box" x="400" y="78" width="50" height="28"/><text class="t-n mid" x="425.0" y="97">0</text>
+  <rect class="box" x="450" y="78" width="50" height="28"/><text class="t-n mid" x="475.0" y="97">0</text>
+  <text class="t" x="516" y="97">0 → 3</text>
+  <text class="t-b" x="0" y="141">B</text>
+  <text class="t-n" x="64" y="141"><tspan font-weight="600">00</tspan> | 01…</text>
+  <text class="t" x="214" y="141">第 2 位</text>
+  <rect class="box" x="300" y="122" width="50" height="28"/><text class="t-n mid" x="325.0" y="141">3</text>
+  <rect class="box" x="350" y="122" width="50" height="28"/><text class="t-n mid" x="375.0" y="141">0</text>
+  <rect class="box" x="400" y="122" width="50" height="28"/><text class="t-n mid" x="425.0" y="141">0</text>
+  <rect class="box" x="450" y="122" width="50" height="28"/><text class="t-n mid" x="475.0" y="141">0</text>
+  <text class="t" x="516" y="141">2 小于 3，不变</text>
+  <rect class="box-em" x="-8" y="160" width="666" height="40"/>
+  <text class="t-b t-em" x="0" y="185">A 重复</text>
+  <text class="t-n" x="64" y="185"><tspan font-weight="600">00</tspan> | 001…</text>
+  <text class="t" x="214" y="185">第 3 位</text>
+  <rect class="box" x="300" y="166" width="50" height="28"/><text class="t-n mid" x="325.0" y="185">3</text>
+  <rect class="box" x="350" y="166" width="50" height="28"/><text class="t-n mid" x="375.0" y="185">0</text>
+  <rect class="box" x="400" y="166" width="50" height="28"/><text class="t-n mid" x="425.0" y="185">0</text>
+  <rect class="box" x="450" y="166" width="50" height="28"/><text class="t-n mid" x="475.0" y="185">0</text>
+  <text class="t-b t-em" x="516" y="185">同桶同位，不变</text>
+  <text class="t-b" x="0" y="229">C</text>
+  <text class="t-n" x="64" y="229"><tspan font-weight="600">10</tspan> | 0001…</text>
+  <text class="t" x="214" y="229">第 4 位</text>
+  <rect class="box" x="300" y="210" width="50" height="28"/><text class="t-n mid" x="325.0" y="229">3</text>
+  <rect class="box" x="350" y="210" width="50" height="28"/><text class="t-n mid" x="375.0" y="229">0</text>
+  <rect class="box f3" x="400" y="210" width="50" height="28"/><text class="t-n mid" x="425.0" y="229">4</text>
+  <rect class="box" x="450" y="210" width="50" height="28"/><text class="t-n mid" x="475.0" y="229">0</text>
+  <text class="t" x="516" y="229">0 → 4</text>
+</svg>
+</div>
+<figcaption>每个桶只记见过的最大位置；重复的 A 算出同一个桶、同一个位置，寄存器不变。</figcaption>

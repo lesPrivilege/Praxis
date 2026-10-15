@@ -65,7 +65,7 @@ function wrapLabel(label, max) {
 }
 
 // graph: {dir, nodes:[{id,label,kind?}], edges:[{from,to,label,type?}]}
-const FIT = 740;
+const FIT = 960;
 
 export function renderGraph(graph, opts = {}) {
   if (graph.dir !== 'auto') return draw(layout(graph, graph.dir || 'LR'), opts);
@@ -100,7 +100,7 @@ function draw(g, { title = '', id = '' }) {
   const H = Math.ceil(height);
   const out = [];
   const mid = `arrow-${id || Math.random().toString(36).slice(2, 8)}`;
-  out.push(`<svg class="graph" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" style="min-width:${Math.round(Math.min(W, Math.max(W * 0.85, FIT)))}px" role="img" aria-label="${esc(title)}">`);
+  out.push(`<svg class="graph" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" style="max-width:${Math.round(W * 1.15)}px;min-width:${Math.round(Math.min(W, Math.max(W * 0.8, 640)))}px" role="img" aria-label="${esc(title)}">`);
   out.push(`<defs><marker id="${mid}" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arrowhead"/></marker></defs>`);
   for (const ev of g.edges()) {
     const e = g.edge(ev);

@@ -26,7 +26,7 @@
 | CLM | contract lifecycle management | 合同生命周期管理；合同起草、审批、签署与履行管理 |
 | DML | data manipulation language | 数据操作语言；插入、修改、删除等数据操作 |
 | REST | representational state transfer | 表述性状态转移；一种围绕资源与统一接口的架构风格；不是完整互操作保证 |
-| CU | currency unit | 合成记账单位；本例自定金额符号，不是标准货币代码 |
+| CU | currency unit | 本书示例使用的记账单位；不是标准货币代码 |
 | PCCO | Prime Contract Change Order | 业主合同变更单；Procore 所指的 Prime Contract 变更单 |
 | IWMS | integrated workplace management system | 集成工作场所管理系统；关联空间、设施、维护和房地产信息 |
 | SaaS | Software as a Service | 软件即服务；通过服务持续提供软件能力 |

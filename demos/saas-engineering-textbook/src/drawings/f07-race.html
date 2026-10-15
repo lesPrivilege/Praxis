@@ -1,0 +1,30 @@
+<div class="dw-scroll" style="--dw-min:520px;--dw-max:760px">
+<svg viewBox="0 0 640 262" role="img" aria-labelledby="f07-race-t f07-race-d">
+  <title id="f07-race-t">更新后删缓存的竞态</title>
+  <desc id="f07-race-d">读者从数据库读到 v2，暂未写缓存；写者提交 v3，再删除缓存；读者随后把 v2 写回缓存。最后数据库是 v3，缓存是旧值 v2。</desc>
+  <defs><marker id="f07-race-ah" viewBox="0 0 8 8" refX="7" refY="4" markerUnits="userSpaceOnUse" markerWidth="9" markerHeight="9" orient="auto"><path class="f-ink" d="M0 0 L8 4 L0 8 z"/></marker><marker id="f07-race-ahe" viewBox="0 0 8 8" refX="7" refY="4" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" orient="auto"><path class="f-em" d="M0 0 L8 4 L0 8 z"/></marker></defs>
+  <text class="t-b" x="0" y="27">数据库</text>
+  <text class="t-b" x="0" y="91">读者</text>
+  <path class="ln-soft" d="M86 86 L630 86"/>
+  <text class="t-b" x="0" y="155">写者</text>
+  <path class="ln-soft" d="M86 150 L630 150"/>
+  <text class="t-b" x="0" y="219">缓存</text>
+  <rect class="box f2" x="86" y="10.0" width="184" height="24"/><text class="t-n mid" x="178.0" y="27">v2</text>
+  <rect class="box f2" x="270" y="10.0" width="360" height="24"/><text class="t-n mid" x="450.0" y="27">v3</text>
+  <rect class="box" x="390" y="202.0" width="120" height="24"/><text class="t-s mid" x="450.0" y="219">已删除</text>
+  <rect class="box-em" x="510" y="202.0" width="120" height="24"/><text class="t-b mid t-em" x="570.0" y="219">v2（旧）</text>
+  <circle class="f-ink" cx="150" cy="34.0" r="3"/><path class="ln" marker-end="url(#f07-race-ah)" d="M150 34.0 L150 84"/>
+  <text class="t" x="160" y="65.0">1 读到 v2</text>
+  <circle class="f-ink" cx="270" cy="150" r="3"/>
+  <path class="ln" marker-end="url(#f07-race-ah)" d="M270 150 L270 36.0"/>
+  <text class="t" x="280" y="122.0">2 提交 v3</text>
+  <circle class="f-ink" cx="390" cy="150" r="3"/>
+  <path class="ln" marker-end="url(#f07-race-ah)" d="M390 150 L390 200.0"/>
+  <text class="t" x="400" y="186.0">3 删除缓存</text>
+  <circle class="f-em" cx="510" cy="86" r="3"/>
+  <path class="ln-em" marker-end="url(#f07-race-ahe)" d="M510 86 L510 200.0"/>
+  <text class="t-b t-em" x="520" y="122.0">4 写回 v2</text>
+  <text class="t-s" x="86" y="254">从左到右是先后次序，间距不表示时长</text>
+</svg>
+</div>
+<figcaption>删除发生在读者回填之前，读者随后写回的 v2 留在缓存里，“更新后删缓存”没有挡住旧值。</figcaption>

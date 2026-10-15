@@ -5,16 +5,18 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { Marked } from '../vendor/marked.esm.js';
 import { parseFlowchart, renderGraph, edgeList, esc } from './graph.mjs';
-import { casePanel } from './case.mjs';
+import { casePanel, caseCast } from './case.mjs';
+import { stage, splitTitle } from './stage.mjs';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const PROJECT = path.resolve(HERE, '..');
 const REPO = path.resolve(PROJECT, '../..');
 const BOOK = path.join(REPO, 'books/saas-engineering');
 const ATLAS = path.join(REPO, 'vault/distilled/saas-engineering-atlas');
-const OUT = path.join(PROJECT, 'site');
+const OUT = process.env.SITE_OUT ? path.resolve(process.env.SITE_OUT) : path.join(PROJECT, 'site'); // SITE_OUT: a private preview build
 const SRC = path.join(PROJECT, 'src');
 
+const V = Date.now().toString(36); // asset version, so a rebuilt page never pairs with a cached stylesheet
 const readJSON = (p) => JSON.parse(fs.readFileSync(p, 'utf8'));
 
 // ---------- reading order ----------
@@ -132,7 +134,6 @@ function makeRenderer(rel, ctx) {
       ctx.slugs.set(id, n + 1);
       if (n) id = `${id}-${n}`;
       if (depth === 1) ctx.title = plain;
-      if (depth === 2) ctx.toc.push({ id, text: plain });
       return `<h${depth} id="${esc(id)}">${inner}</h${depth}>\n`;
     },
     link({ href, title, tokens }) {
@@ -172,6 +173,13 @@ const FIG_RE = /<!--\s*figure:\s*([\w-]+)\s*-->\n([\s\S]*?)<!--\s*\/figure\s*-->
 function renderMarkdown(md, rel, ctx) {
   const marked = new Marked({ gfm: true });
   marked.use({ renderer: makeRenderer(rel, ctx) });
+  // Static drawings:  <!-- svg: id --> inserts src/drawings/<id>.html in place; the prose around it stays.
+  md = md.replace(/<!--\s*svg:\s*([\w-]+)\s*-->/g, (m, id) => {
+    const p = path.join(SRC, 'drawings', `${id}.html`);
+    if (!fs.existsSync(p)) throw new Error(`Missing drawing ${id}`);
+    ctx.drawings.push(id);
+    return `\n\n<figure class="drawing" data-drawing="${id}">${fs.readFileSync(p, 'utf8').trim().replace(/\n\s*\n/g, '\n')}</figure>\n\n`;
+  });
   const parts = [];
   let last = 0;
   for (const m of md.matchAll(FIG_RE)) {
@@ -224,13 +232,14 @@ function shell({ rel, ctx, body }) {
   const prev = i > 0 ? order[i - 1] : null;
   const next = i < order.length - 1 ? order[i + 1] : null;
   const pn = (f, cls, label) =>
-    f ? `<a class="${cls}" href="${prefix + outPathFor(f)}"><span>${label}</span>${esc(pages.get(f).navTitle)}</a>` : '<span></span>';
-  const toc = ctx.toc.length > 1
-    ? `<aside class="page-toc" aria-label="本页目录"><p>本页</p><ol>${ctx.toc.map((h) => `<li><a href="#${esc(h.id)}">${esc(h.text)}</a></li>`).join('')}</ol></aside>`
-    : '<aside class="page-toc"></aside>';
+    f ? `<a class="${cls}" href="${prefix + outPathFor(f)}"><span>${label}</span><b>${esc(pages.get(f).navTitle)}</b></a>` : '<span></span>';
+  const rail = ctx.scenes.length > 1
+    ? `<aside class="rail" aria-label="本页进度"><ol>${ctx.scenes.map((h) => `<li><a href="#${esc(h.id)}"><span class="rn">${h.no}<span class="of"> / ${String(ctx.scenes.length).padStart(2, '0')}</span></span><span class="rt">${esc(h.head)}</span></a></li>`).join('')}</ol></aside>`
+    : '<aside class="rail"></aside>';
+  const sec = SECTIONS.find((x) => x.files.includes(rel));
   const figScripts = [...new Set(ctx.figures)]
     .filter((f) => fs.existsSync(path.join(SRC, 'figures', `${f}.js`)))
-    .map((f) => `<script src="${prefix}fig-${f}.js"></script>`)
+    .map((f) => `<script src="${prefix}fig-${f}.js?v=${V}"></script>`)
     .join('');
   return `<!doctype html>
 <html lang="zh-CN">
@@ -238,30 +247,72 @@ function shell({ rel, ctx, body }) {
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${esc(ctx.title)} · SaaS 工程全景</title>
-<link rel="stylesheet" href="${prefix}book.css">
+<link rel="stylesheet" href="${prefix}book.css?v=${V}">
 </head>
 <body>
 <a class="skip" href="#main">跳到正文</a>
 <header class="topbar">
   <button class="nav-toggle" type="button" aria-controls="sidebar" aria-expanded="false">目录</button>
   <a class="book-title" href="${prefix}index.html">SaaS 工程全景</a>
+  ${sec && rel !== 'README.md' ? `<a class="crumb" href="${prefix + outPathFor(sec.files[0])}">${esc(sec.title)}</a>` : ''}
   <label class="search"><span class="visually-hidden">搜索章节与案例</span><input type="search" placeholder="章节、案例或小节标题" autocomplete="off"></label>
 </header>
 <div class="layout">
   <div class="sidebar" id="sidebar">${navHtml(rel, prefix)}</div>
-  <main id="main" class="page${ctx.isCase ? ' case-page' : ''}">
+  <main id="main" class="page${ctx.isCase ? ' case-page' : ''}${rel === 'README.md' ? ' home' : ''}">
+${ctx.hero}
+    <div class="reel">
+      ${rail}
+      <div class="flow">
 ${body}
+      </div>
+    </div>
     <nav class="pager" aria-label="前后章节">${pn(prev, 'prev', '上一篇')}${pn(next, 'next', '下一篇')}</nav>
     <footer class="page-foot">正文 <a href="${path.relative(path.dirname(path.join(OUT, outRel)), path.join(BOOK, rel))}">books/saas-engineering/${esc(rel)}</a> · <a href="${path.relative(path.dirname(path.join(OUT, outRel)), path.join(ATLAS, 'README.md'))}">结构、来源与验证</a></footer>
   </main>
-  ${toc}
 </div>
-<script src="${prefix}search-index.js"></script>
-<script src="${prefix}book.js"></script>
+<script src="${prefix}search-index.js?v=${V}"></script>
+<script src="${prefix}book.js?v=${V}"></script>
 ${figScripts}
 </body>
 </html>
 `;
+}
+
+// ---------- home title-card figure: the chain the opening paragraph describes ----------
+function homeFigure() {
+  const links = [
+    ['订单', '答应了什么'], ['执行记录', '做了什么'], ['接收或放行', '证据是否足够'], ['账单', '应付'], ['付款', '实付'],
+  ];
+  const layers = [['页面', '人看到这条从承诺到结清的链'], ['服务', '每个动作之前检查条件'], ['存储', '保留日后可以核对的事实']];
+  return `<figure class="home-fig" aria-label="从承诺到结清：订单、执行记录、接收或放行、账单、付款；页面、服务与存储三层">
+<ol class="hf-chain">${links.map(([o, q], i) => `<li><span class="hf-n">${i + 1}</span><b>${o}</b><span>${q}</span></li>`).join('')}</ol>
+<div class="hf-ends"><span>承诺</span><span>结清</span></div>
+<ul class="hf-layers">${layers.map(([l, d]) => `<li><b>${l}</b><span>${d}</span></li>`).join('')}</ul>
+</figure>`;
+}
+
+// ---------- book map (home page) ----------
+function bookMap() {
+  const o = ['<section class="book-map" aria-label="全书地图">'];
+  for (const s of SECTIONS) {
+    if (s.title === '开篇') continue;
+    const [head, ...files] = s.files;
+    const items = files.filter((f) => !/(terms|lab-guide|case-connections)\.md$/.test(f));
+    const isGroup = Boolean(s.group);
+    if (isGroup && s === SECTIONS.find((x) => x.group)) o.push('<p class="map-part">行业案例</p>');
+    o.push(`<div class="map-row${isGroup ? ' group' : ''}"><a class="map-head" href="${outPathFor(head)}">${esc(s.title)}<span>${items.length}${isGroup ? ' 例' : s.title === '索引与查证' ? ' 页' : ' 章'}</span></a><ol class="map-track">`);
+    for (const f of items) {
+      const t = pages.get(f).title;
+      const { kicker, title } = splitTitle(t);
+      const id = /([HVX]\d\d)\.md$/.exec(f)?.[1];
+      const num = id || (/(\d\d)-/.exec(f)?.[1] ?? '');
+      o.push(`<li><a href="${outPathFor(f)}"><span class="mn">${esc(num.replace(/^0/, ''))}</span><span class="mt">${esc(title)}</span></a></li>`);
+    }
+    o.push('</ol></div>');
+  }
+  o.push('</section>');
+  return o.join('');
 }
 
 // ---------- build ----------
@@ -276,28 +327,39 @@ fs.rmSync(OUT, { recursive: true, force: true });
 fs.mkdirSync(OUT, { recursive: true });
 
 const search = [];
-const stats = { pages: 0, graphs: 0, figures: 0, cases: 0 };
+const stats = { pages: 0, graphs: 0, figures: 0, drawings: 0, cases: 0 };
 for (const rel of order) {
   const page = pages.get(rel);
-  const ctx = { slugs: new Map(), toc: [], title: page.title, graphs: 0, figures: [], isCase: false };
+  const ctx = { slugs: new Map(), title: page.title, graphs: 0, figures: [], drawings: [], isCase: false };
   let body = renderMarkdown(page.md, rel, ctx);
   const caseId = /\/([HVX]\d\d)\.md$/.exec(rel)?.[1];
   if (caseId) {
     ctx.isCase = true;
     const panel = casePanel(caseById[caseId], { ATLAS, readJSON, outDir: path.dirname(path.join(OUT, outPathFor(rel))), OUT, outPathFor, pages });
-    ctx.toc.push({ id: 'case-structure', text: '结构、生命周期与迁移' });
     body += panel;
     stats.cases++;
   }
-  body = wrapAbbr(body);
+  const sec = SECTIONS.find((x) => x.files.includes(rel));
+  const staged = stage(body, {
+    title: page.title,
+    section: rel === 'README.md' || sec.files[0] === rel ? '' : sec.title,
+    sectionHref: outPathFor(sec.files[0]),
+    cast: caseId ? caseCast(caseById[caseId], { ATLAS, readJSON }) : rel === 'README.md' ? homeFigure() : '',
+  });
+  ctx.scenes = staged.scenes;
+  const all = wrapAbbr(staged.html);
+  const heroEnd = all.indexOf('</header>') + '</header>'.length;
+  ctx.hero = all.slice(0, heroEnd) + (rel === 'README.md' ? bookMap() : '');
+  body = all.slice(heroEnd);
   const html = shell({ rel, ctx, body });
   const outFile = path.join(OUT, outPathFor(rel));
   fs.mkdirSync(path.dirname(outFile), { recursive: true });
   fs.writeFileSync(outFile, html);
-  search.push({ u: outPathFor(rel), t: page.navTitle, h: ctx.toc.map((h) => [h.id, h.text]) });
+  search.push({ u: outPathFor(rel), t: page.navTitle, h: ctx.scenes.map((h) => [h.id, h.step ? `${h.step}：${h.head}` : h.head]) });
   stats.pages++;
   stats.graphs += ctx.graphs;
   stats.figures += ctx.figures.length;
+  stats.drawings += ctx.drawings.length;
 }
 
 // assets

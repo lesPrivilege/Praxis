@@ -37,7 +37,7 @@
 | Agent Context | agent 的本次工作上下文 | 当前任务视图与执行依据；不是新权威数据库或凭空授权来源 |
 | agent / tool / adapter | agent / 工具 / 适配器 | agent 规划与调用；工具公开有界动作；适配器连接具体系统 |
 | consumer / provider | 调用方 / 提供方 | Pact 在 HTTP 中按请求发起方与响应方定义；消息场景另按消费和生产定义 |
-| fake / mock / stub | 保留英文，按用途说明 | 本册 fake 有状态和效果；参考 HTTP 服务独立实现教学协议；不把三词当成同义的“真实系统” |
+| fake / mock / stub | 保留英文，按用途说明 | 本册 fake 有状态和效果；参考 HTTP 服务独立实现参考协议；不把三词当成同义的“真实系统” |
 | data steward | 保留英文并解释职责 | 维护定义、质量与使用规则的角色；不等于数据库管理员或所有数据的法律所有者 |
 | configuration / customization | 配置 / 定制 | 在受支持范围内选择行为，与增加或改变能力的区别；具体产品边界要写明 |
 | cutover / go-live | 切换 / 上线 | 转交权威与执行责任，与开放服务使用不是同一个瞬间 |

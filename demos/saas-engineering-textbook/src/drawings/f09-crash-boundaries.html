@@ -1,0 +1,27 @@
+<div class="dw-scroll" style="--dw-min:680px;--dw-max:860px">
+<svg viewBox="-20 0 780 170" role="img" aria-labelledby="f09-crash-t f09-crash-d">
+  <title id="f09-crash-t">退款流程中的四个崩溃边界</title>
+  <desc id="f09-crash-d">步骤依次为提交事务、派发、收到响应、确认、更新页面。提交之前崩溃，没有本地决定；提交之后、派发之前，outbox 保留着待办；派发之后、收到响应之前，外部结果未知；确认之后、更新页面之前，权威事实已经存在，投影可以重建。</desc>
+  <!-- steps -->
+  <path class="ln" d="M0 60 L720 60"/>
+  <g>
+    <circle class="f-ink" cx="120" cy="60" r="5"/><text class="t-b mid" x="120" y="38">提交事务</text>
+    <circle class="f-ink" cx="270" cy="60" r="5"/><text class="t-b mid" x="270" y="38">派发</text>
+    <circle class="f-ink" cx="420" cy="60" r="5"/><text class="t-b mid" x="420" y="38">收到响应</text>
+    <circle class="f-ink" cx="570" cy="60" r="5"/><text class="t-b mid" x="570" y="38">确认</text>
+    <circle class="f-ink" cx="720" cy="60" r="5"/><text class="t-b mid" x="720" y="38">更新页面</text>
+  </g>
+  <!-- crash boundaries -->
+  <path class="ln-strong" d="M45 48 L45 72"/><path class="ln-soft" d="M45 72 L45 96"/>
+  <text class="t mid" x="45" y="114">没有本地决定</text>
+  <path class="ln-strong" d="M195 48 L195 72"/><path class="ln-soft" d="M195 72 L195 96"/>
+  <text class="t mid" x="195" y="114">outbox 保留着待办</text>
+  <path class="ln-em" d="M345 46 L345 74"/><path class="ln-soft" d="M345 74 L345 96"/>
+  <text class="t-b mid t-em" x="345" y="114">外部结果未知</text>
+  <path class="ln-strong" d="M645 48 L645 72"/><path class="ln-soft" d="M645 72 L645 96"/>
+  <text class="t mid" x="645" y="114">权威事实已经存在</text>
+  <text class="t mid" x="645" y="132">投影可以重建</text>
+  <text class="t-s" x="-10" y="162">竖线是崩溃停下的边界，下方写这时留下的东西。</text>
+</svg>
+</div>
+<figcaption>停在哪条边界，决定恢复按什么核对；派发之后、收到响应之前停下的，只能回查外部结果。</figcaption>
