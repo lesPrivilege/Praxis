@@ -1,0 +1,32 @@
+未采用的转码尝试：拼接输出的时间戳未满足3739秒预期。最终成片改为原生SVG时间线重渲染。代码仅供制作回查，不作为重建入口。
+
+"""Add local static reading holds to the encoded master, preserving every original frame."""
+import os,sys,json,math,subprocess
+from pathlib import Path
+R=Path(__file__).resolve().parent;os.environ['PRAXIS_FILM_ROOT']=str(R);sys.path.insert(0,str(R.parent/'build'))
+from check import reading
+from common import ffmpeg_path
+from playwright.sync_api import sync_playwright
+P=R/'out';tl=json.loads((P/'timeline.json').read_text());report,_=reading(tl);holds={}
+for sid in report['scenes_above_target']:
+ v=report['by_scene'][sid];old=next(s['end']-s['start'] for s in tl['segments'] if s['id']==sid);holds[sid]=max(0,math.ceil(v['characters']/5.7-v['seconds']))
+if not holds:print('No reading holds needed');raise SystemExit()
+(P/'prehold-timeline.json').write_text(json.dumps(tl,ensure_ascii=False,indent=2)+'\n');src=P/'agentscope-enterprise-cut3-prehold.mp4';master=P/'agentscope-enterprise-cut3.mp4';master.rename(src);meta=master.with_name(master.stem+'-render.json');meta.rename(src.with_name(src.stem+'-render.json'))
+# Frame trims avoid keyframe/DTS ambiguity from stream-copy cuts. Only the final
+# decoded frame of a dense scene is repeated; all earlier motion stays at 1x.
+n=len(tl['segments']);chains=['[0:v]split='+str(n)+''.join('[v'+str(i)+']' for i in range(n))];labels=[]
+for i,s in enumerate(tl['segments']):
+ chain=f'[v{i}]trim=start_frame={round(s["start"]*24)}:end_frame={round(s["end"]*24)},setpts=PTS-STARTPTS'
+ if holds.get(s['id']):chain+=f',tpad=stop_mode=clone:stop={holds[s["id"]]*24}'
+ label='s'+str(i);chains.append(chain+'['+label+']');labels.append('['+label+']')
+chains.append(''.join(labels)+f'concat=n={n}:v=1:a=0[out]');filterfile=P/'reading-holds.fffilter';filterfile.write_text(';\n'.join(chains)+'\n')
+subprocess.run([ffmpeg_path(),'-v','error','-y','-i',str(src),'-filter_complex_script',str(filterfile),'-map','[out]','-an','-c:v','libx264','-preset','veryfast','-crf','12','-pix_fmt','yuv420p','-threads','4','-r','24','-colorspace','bt709','-color_primaries','bt709','-color_trc','bt709','-movflags','+faststart',str(master)],check=True)
+with sync_playwright() as pw:
+ b=pw.chromium.launch();p=b.new_page();p.goto((R/'film/index.html').as_uri()+'?render=1');p.wait_for_function('Film.ready');order=p.evaluate('CUT3_ORDER');b.close()
+man=json.loads((P/'scene-manifest.json').read_text());elapsed=0
+for s,m in zip(tl['segments'],man):
+ duration=s['end']-s['start']+holds.get(s['id'],0);s['start']=elapsed;s['end']=elapsed+duration;m['start']=elapsed;m['end']=elapsed+duration;m['duration']=duration;elapsed+=duration
+for c in tl['chapters']:c['t']=next(s['start'] for s in tl['segments'] if s['id']==c['id'])
+tl['duration']=elapsed
+(P/'timeline.json').write_text(json.dumps(tl,ensure_ascii=False,indent=2)+'\n');(P/'scene-manifest.json').write_text(json.dumps(man,ensure_ascii=False,indent=2)+'\n');(R/'film/timeline.js').write_text('window.TIMELINE='+json.dumps(tl,ensure_ascii=False)+';window.CUT3_ORDER='+json.dumps(order,ensure_ascii=False)+';\n')
+(R/'design/reading-holds.json').write_text(json.dumps({'additional_seconds':holds,'reason':'Static result holds for dense local explanations; original motion remains 1x','target_scene_cps':5.7},ensure_ascii=False,indent=2)+'\n');meta.write_text(json.dumps({'file':master.name,'from':0,'to':elapsed,'fps':24,'frames':elapsed*24,'retimed_from':src.name,'additional_static_holds':holds},ensure_ascii=False,indent=2)+'\n');print('Static reading holds:',holds,'duration',elapsed,flush=True)

@@ -1,0 +1,21 @@
+(function(){'use strict';const TL=window.TIMELINE;let current=null;const objects=new Map();
+ const Film=window.Film={ready:false,duration:TL.duration,chapters:TL.chapters,segments:TL.segments,W:1920,H:1080,time:0,stage:null,
+  seg:id=>TL.segments.find(s=>s.id===id),
+  seek(t){t=Math.max(0,Math.min(TL.duration,Number.isFinite(t)?t:0));Film.time=t;const seg=TL.segments.find(s=>t>=s.start&&(t<s.end||(t===TL.duration&&s.end===t)));if(!seg)return;Film.activeScene=seg.id;
+   if(current!==seg.id){for(const [id,o] of objects)o.root.style.visibility=id===seg.id?'visible':'hidden';current=seg.id;const o=objects.get(seg.id);document.getElementById('chapter').textContent=o.meta.chapter.join(' · ');document.getElementById('heading').textContent=o.spec.title;document.getElementById('version').textContent=o.meta.sourceLine;document.getElementById('scene-count').textContent=String(o.meta.index+1).padStart(2,'0')+' / '+TL.segments.length;}
+   const o=objects.get(seg.id);o.instance.render(t-seg.start);
+  },
+  boot(){Film.stage=document.getElementById('stage');for(const meta of window.CUT3_ORDER){const spec=V3.registry.get(meta.id);if(!spec)throw Error('Missing v3 scene '+meta.id);const root=document.createElement('div');root.className='scene';root.dataset.scene=meta.id;root.id='scene-'+meta.id;root.style.visibility='hidden';Film.stage.appendChild(root);const svg=V3.el(root,'svg',{viewBox:'0 0 1920 1080','aria-label':spec.title,role:'img'});const instance=spec.build(svg);objects.set(meta.id,{root,svg,spec,meta,instance});}Film.ready=true;Film.seek(0);}
+ };
+ document.fonts.ready.then(()=>{Film.boot();const q=new URLSearchParams(location.search);if(q.has('render')){document.body.classList.add('render');return;}let playing=false,p0=0,epoch=0;const progress=document.getElementById('progress'),btn=document.getElementById('play'),select=document.getElementById('chapters');progress.max=Film.duration;
+ const fmt=t=>Math.floor(t/60).toString().padStart(2,'0')+':'+Math.floor(t%60).toString().padStart(2,'0');
+ function paint(){progress.value=Film.time;document.getElementById('clock').textContent=fmt(Film.time)+' / '+fmt(Film.duration);const ch=Film.chapters.filter(c=>c.t<=Film.time).at(-1);if(ch)select.value=ch.t;}
+ function go(t){Film.seek(t);p0=Film.time;epoch=performance.now();paint();}
+ function toggle(){if(!playing&&Film.time>=Film.duration)go(0);playing=!playing;btn.textContent=playing?'暂停':'播放';btn.setAttribute('aria-pressed',String(playing));p0=Film.time;epoch=performance.now();}
+ function moveScene(d){let i=Film.segments.findIndex(s=>Film.time>=s.start&&Film.time<s.end);if(i<0)i=Film.segments.length-1;go(d<0&&Film.time>Film.segments[i].start+1?Film.segments[i].start:Film.segments[Math.max(0,Math.min(Film.segments.length-1,i+d))].start);}
+ for(const c of Film.chapters){const o=document.createElement('option');o.value=c.t;o.textContent=c.title;select.appendChild(o);}btn.onclick=toggle;progress.oninput=()=>go(Number(progress.value));select.onchange=()=>go(Number(select.value));document.getElementById('prev').onclick=()=>moveScene(-1);document.getElementById('next').onclick=()=>moveScene(1);
+ addEventListener('keydown',e=>{if(/INPUT|SELECT|TEXTAREA|BUTTON|A/.test(e.target.tagName)||e.metaKey||e.ctrlKey||e.altKey)return;if(['Space','KeyK','ArrowLeft','ArrowRight','BracketLeft','BracketRight','Home','End'].includes(e.code))e.preventDefault();if(e.code==='Space'||e.code==='KeyK')toggle();if(e.code==='ArrowLeft')go(Film.time-(e.shiftKey?10:5));if(e.code==='ArrowRight')go(Film.time+(e.shiftKey?10:5));if(e.code==='BracketLeft')moveScene(-1);if(e.code==='BracketRight')moveScene(1);if(e.code==='Home')go(0);if(e.code==='End')go(Film.duration);});
+ function fit(){const h=document.getElementById('hud').offsetHeight+(innerWidth<850?45:0);Film.stage.style.transform='scale('+Math.min(innerWidth/1920,Math.max(100,innerHeight-h)/1080)+')';document.getElementById('viewport').style.bottom=document.getElementById('hud').offsetHeight+'px';}addEventListener('resize',fit);fit();go(Number(q.get('t')||0));
+ function tick(){if(playing){Film.seek(p0+(performance.now()-epoch)/1000);paint();if(Film.time>=Film.duration)toggle();}requestAnimationFrame(tick);}requestAnimationFrame(tick);window.Player={go,toggle,moveScene,get playing(){return playing;}};
+ });
+})();

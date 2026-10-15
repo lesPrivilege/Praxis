@@ -1,0 +1,405 @@
+[
+  {
+    "id": "message-journey",
+    "title": "一条消息，怎样长成一次完整回复",
+    "duration": 192,
+    "covers": [
+      "message",
+      "events",
+      "react"
+    ],
+    "phases": [
+      {
+        "at": 0,
+        "name": "识别同一个 Msg R1"
+      },
+      {
+        "at": 12,
+        "name": "第一段 delta 进入 B1"
+      },
+      {
+        "at": 30,
+        "name": "第二段追加到 B1"
+      },
+      {
+        "at": 46,
+        "name": "TEXT_BLOCK_END只结束B1"
+      },
+      {
+        "at": 49,
+        "name": "身份不符，事件跳过"
+      },
+      {
+        "at": 66,
+        "name": "消息展开并记录调用 T1"
+      },
+      {
+        "at": 83,
+        "name": "只读查询进入工具"
+      },
+      {
+        "at": 102,
+        "name": "结果按 T1 写回"
+      },
+      {
+        "at": 120,
+        "name": "完整消息进入下一轮"
+      },
+      {
+        "at": 138,
+        "name": "条件支路：ASK 暂停"
+      },
+      {
+        "at": 157,
+        "name": "条件支路：工具失败回灌"
+      },
+      {
+        "at": 176,
+        "name": "迭代预算与结束"
+      },
+      {
+        "at": 186,
+        "name": "REPLY_END写入整次结束原因"
+      }
+    ],
+    "motion": [
+      {
+        "at": 12,
+        "duration": 4,
+        "purpose": "delta 本身进入目标 B1"
+      },
+      {
+        "at": 30,
+        "duration": 4,
+        "purpose": "第二段追加，第一段保留"
+      },
+      {
+        "at": 46,
+        "duration": 1.8,
+        "purpose": "B1结束而R1继续"
+      },
+      {
+        "at": 49,
+        "duration": 3,
+        "purpose": "错误身份停在容器之外"
+      },
+      {
+        "at": 66,
+        "duration": 4,
+        "purpose": "R1 左移展开，建立工具空间"
+      },
+      {
+        "at": 83,
+        "duration": 3,
+        "purpose": "调用先连通，工具才开始"
+      },
+      {
+        "at": 102,
+        "duration": 4,
+        "purpose": "结果对象返回并配对 T1"
+      },
+      {
+        "at": 120,
+        "duration": 3,
+        "purpose": "完整记录作为下一次模型输入"
+      },
+      {
+        "at": 138,
+        "duration": 2.2,
+        "purpose": "ASK 支路停在等待线"
+      },
+      {
+        "at": 157,
+        "duration": 2.2,
+        "purpose": "error 沿条件支路回灌"
+      },
+      {
+        "at": 176,
+        "duration": 2.2,
+        "purpose": "预算上限与禁工具总结"
+      },
+      {
+        "at": 186,
+        "duration": 1.8,
+        "purpose": "整次回复结束并记录finished_reason"
+      }
+    ],
+    "start": 0,
+    "end": 192,
+    "chapter": [
+      "02",
+      "Agent 内核"
+    ]
+  },
+  {
+    "id": "permission",
+    "title": "权限：调用先停住，再决定是否放行",
+    "duration": 168,
+    "covers": [
+      "permission",
+      "hitl"
+    ],
+    "phases": [
+      {
+        "at": 0,
+        "name": "input"
+      },
+      {
+        "at": 12,
+        "name": "input_validated"
+      },
+      {
+        "at": 24,
+        "name": "ask_parked"
+      },
+      {
+        "at": 52,
+        "name": "confirmation"
+      },
+      {
+        "at": 66,
+        "name": "identity_matched"
+      },
+      {
+        "at": 74,
+        "name": "gate_open"
+      },
+      {
+        "at": 82,
+        "name": "allowed_to_execute"
+      },
+      {
+        "at": 96,
+        "name": "deny_arrival"
+      },
+      {
+        "at": 108,
+        "name": "denied"
+      },
+      {
+        "at": 120,
+        "name": "explore_order"
+      },
+      {
+        "at": 140,
+        "name": "explore_single_call_confirmation"
+      }
+    ],
+    "motion": [
+      {
+        "at": 10,
+        "duration": 2,
+        "purpose": "输入检查通过，Schema关口打开"
+      },
+      {
+        "at": 15,
+        "duration": 3,
+        "purpose": "原调用T2抵达权限闸门前"
+      },
+      {
+        "at": 64,
+        "duration": 2,
+        "purpose": "确认对象的嵌套T2连接原调用T2"
+      },
+      {
+        "at": 74,
+        "duration": 2,
+        "purpose": "确认匹配后权限闸门打开"
+      },
+      {
+        "at": 79,
+        "duration": 3,
+        "purpose": "原调用T2进入工具执行端"
+      },
+      {
+        "at": 94,
+        "duration": 2,
+        "purpose": "权限闸门关闭，下一调用重新判定"
+      },
+      {
+        "at": 99,
+        "duration": 3,
+        "purpose": "独立调用T3抵达拒绝点"
+      },
+      {
+        "at": 108,
+        "duration": 3,
+        "purpose": "DENY调用转入止步区，不进入工具执行端"
+      }
+    ],
+    "start": 192,
+    "end": 360,
+    "chapter": [
+      "02",
+      "Agent 内核"
+    ]
+  },
+  {
+    "id": "workspace",
+    "title": "同一份文件，哪些会话能看见？",
+    "duration": 206,
+    "covers": [
+      "workspace",
+      "sandbox"
+    ],
+    "phases": [
+      {
+        "at": 0,
+        "name": "默认 per_agent"
+      },
+      {
+        "at": 24,
+        "name": "同 Agent 新会话"
+      },
+      {
+        "at": 46,
+        "name": "不同 Agent 分目录"
+      },
+      {
+        "at": 70,
+        "name": "per_session 新分配"
+      },
+      {
+        "at": 94,
+        "name": "per_user 新分配"
+      },
+      {
+        "at": 120,
+        "name": "MCP 与 Skills 分区"
+      },
+      {
+        "at": 147,
+        "name": "后端执行位置"
+      },
+      {
+        "at": 173,
+        "name": "绑定与生命周期"
+      }
+    ],
+    "motion": [
+      {
+        "at": 3,
+        "duration": 3,
+        "purpose": "PA1 路径落到 W-A"
+      },
+      {
+        "at": 25,
+        "duration": 3,
+        "purpose": "PA2 汇入既有目录"
+      },
+      {
+        "at": 48,
+        "duration": 3,
+        "purpose": "PB1 分叉到 W-B"
+      },
+      {
+        "at": 72,
+        "duration": 3,
+        "purpose": "新会话分别分配目录"
+      },
+      {
+        "at": 96,
+        "duration": 3,
+        "purpose": "同用户的新入口汇合"
+      },
+      {
+        "at": 121,
+        "duration": 3,
+        "purpose": "资源端口与技能括线展开"
+      },
+      {
+        "at": 149,
+        "duration": 3,
+        "purpose": "显露 Local 主机边界"
+      },
+      {
+        "at": 176,
+        "duration": 3,
+        "purpose": "工作区身份连接到后端"
+      }
+    ],
+    "start": 360,
+    "end": 566,
+    "chapter": [
+      "04",
+      "Python 服务"
+    ]
+  },
+  {
+    "id": "java-recovery",
+    "title": "断在哪里，恢复就核对哪里的事实",
+    "duration": 96,
+    "covers": [
+      "java-09-recovery-capabilities"
+    ],
+    "phases": [
+      {
+        "at": 0,
+        "name": "Java 原任务与动作轴"
+      },
+      {
+        "at": 18,
+        "name": "观察连接断开"
+      },
+      {
+        "at": 34,
+        "name": "进程中断与未知结果"
+      },
+      {
+        "at": 53,
+        "name": "查询原调用回执"
+      },
+      {
+        "at": 71,
+        "name": "核实结果后 reconcile"
+      },
+      {
+        "at": 84,
+        "name": "显式 resume"
+      }
+    ],
+    "motion": [
+      {
+        "at": 3,
+        "duration": 4,
+        "purpose": "原调用沿动作轴派发"
+      },
+      {
+        "at": 19,
+        "duration": 3,
+        "purpose": "仅观察连接断开"
+      },
+      {
+        "at": 28,
+        "duration": 3,
+        "purpose": "从已提交日志恢复页面"
+      },
+      {
+        "at": 36,
+        "duration": 3,
+        "purpose": "定位结果提交前的进程断点"
+      },
+      {
+        "at": 55,
+        "duration": 4,
+        "purpose": "查询原调用的外部回执"
+      },
+      {
+        "at": 72,
+        "duration": 3,
+        "purpose": "核实回执写入保存状态"
+      },
+      {
+        "at": 86,
+        "duration": 3,
+        "purpose": "同一 turn 的新 run 从 checkpoint 继续"
+      }
+    ],
+    "start": 566,
+    "end": 662,
+    "chapter": [
+      "05",
+      "Java 企业接入"
+    ]
+  }
+]
