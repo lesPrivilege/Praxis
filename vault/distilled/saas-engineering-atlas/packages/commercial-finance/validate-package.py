@@ -36,7 +36,7 @@ for case in ['H01','H02','H03','V12','V13','V14','X02']:
  cited=set(re.findall(r'(?:H\d{2}|V\d{2}|X\d{2}):claim:[a-z0-9-]+',text))
  assert cited<=set(d['claim_ids']),(case,cited-set(d['claim_ids']))
  assert len(re.findall(r'\*\*练习',text))>=2,case
- assert 'synthetic' in text,case
+ assert 'synthetic' in text or '合成' in text,case
  assert len({n['id'] for n in d['nodes']})==len(d['nodes'])
  print(f"{case}: nodes={len(d['nodes'])}, edges={len(d['edges'])}, lifecycles={len(d['lifecycles'])}, check_definitions={len(d['checks'])}, exercises={len(re.findall(r'[*][*]练习',text))}")
 print(json.dumps({'status':'pass','new_sources':len(local),'reviews':len(reviews),'review_statuses':dict(Counter(r.get('status') for r in e['reviews'])),'claims':len(claims),'claim_kinds':dict(Counter(c['kind'] for c in e['claims'])),'scope':'IDs, source-review-claim linkage, duplicate metadata, prose citations, exercise presence; no semantic/factual validation'},ensure_ascii=False))
