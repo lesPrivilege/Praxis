@@ -1,0 +1,34 @@
+<div class="dw-scroll" style="--dw-min:600px;--dw-max:960px">
+<svg viewBox="0 0 800 245" role="img" aria-labelledby="v15-paths-t v15-paths-d">
+  <title id="v15-paths-t">同一变更经两条路径可达</title>
+  <desc id="v15-paths-d">从设计 rev-B 出发，rev-B → R1 → E1 → A1 与 rev-B → R1 → A1 两条路径都到达变更 A1，现场 issue I1 也关联 E1。按 ID 去重后可达集合只有 A1，新增 1,000；逐条路径累加会得到 2,000。</desc>
+  <g data-s="1">
+    <rect class="box" x="20" y="100" width="90" height="40"/><text class="t-n mid" x="65" y="125">rev-B</text>
+    <rect class="box" x="170" y="100" width="100" height="40"/><text class="t-n mid" x="220" y="125">RFI-R1</text>
+    <rect class="box" x="330" y="100" width="90" height="40"/><text class="t-n mid" x="375" y="125">E1</text>
+    <rect class="box" x="330" y="190" width="90" height="40"/><text class="t mid" x="375" y="215">issue I1</text>
+    <path class="ln" d="M375 190 V146 M368 154 L375 146 L382 154"/>
+    <text class="t-s" x="20" y="172">路径一  rev-B → R1 → E1 → A1</text>
+  </g>
+  <rect class="box-em" x="480" y="100" width="90" height="40"/><text class="t-n mid" x="525" y="125">A1</text>
+  <path class="ln-strong" data-draw="1" d="M110 120 H164"/>
+  <path class="ln-strong" data-draw="1" d="M270 120 H324"/>
+  <path class="ln-strong" data-draw="1" d="M420 120 H474"/>
+  <g data-s="1"><path class="ln-strong" d="M158 113 L166 120 L158 127 M318 113 L326 120 L318 127 M468 113 L476 120 L468 127"/></g>
+  <path class="ln-strong" data-draw="2" d="M220 100 C 250 36, 495 36, 525 94"/>
+  <g data-s="2">
+    <path class="ln-strong" d="M517 86 L525 96 L530 84"/>
+    <text class="t-s mid" x="372" y="34">路径二  rev-B → R1 → A1</text>
+  </g>
+  <path class="ln-soft" d="M610 20 V230"/>
+  <g data-s="3">
+    <text class="t-s mid" x="705" y="58">可达 variation，按 ID 去重</text>
+    <text class="t-big mid" x="705" y="100">{ A1 }</text>
+    <text class="t-n mid" x="705" y="128">新增 1,000</text>
+    <text class="t-s mid" x="705" y="186">逐条路径累加</text>
+    <text class="t-n mid" x="705" y="210">1,000 + 1,000 = 2,000</text>
+    <path class="ln" d="M622 206 H788"/>
+  </g>
+</svg>
+</div>
+<figcaption>A1 经两条路径到达，在可达集合里只出现一次；新增批准额按集合求和，是 1,000。</figcaption>

@@ -1,0 +1,40 @@
+<div class="dw-scroll" style="--dw-min:560px;--dw-max:860px">
+<svg viewBox="0 0 720 236" role="img" aria-labelledby="f07-memo-key-t f07-memo-key-d">
+  <title id="f07-memo-key-t">规则版本是否进入记忆化 key</title>
+  <desc id="f07-memo-key-d">A 价值 3，B 价值 4。第一次计算 price(A,B,rule=v2) 得 7 并存入，第二次复用 7。规则升到 v3、加收 1 后，key 含 v3 时未命中，算出 8；key 只有 A、B 时命中旧项，返回旧价 7。</desc>
+  <text class="t-s" x="0" y="18">请求</text>
+  <text class="t-s mid" x="300" y="18">记忆化 key</text>
+  <text class="t-s" x="390" y="18">结果</text>
+  <path class="ln-soft" d="M0 28 H720"/>
+  <g data-s="1">
+    <text class="t-n" x="0" y="57">price(A,B,rule=v2)</text>
+    <path class="ln" d="M180 52 H240"/>
+    <rect class="box" x="240" y="38" width="120" height="28"/><text class="t-n mid" x="300" y="57">(A,B,v2)</text>
+    <path class="ln" d="M360 52 H380"/>
+    <text class="t" x="390" y="57">未命中，计算 3+4 = <tspan class="t-b">7</tspan>，存入</text>
+  </g>
+  <g data-s="2">
+    <text class="t-n" x="0" y="99">price(A,B,rule=v2)</text>
+    <path class="ln" d="M180 94 H240"/>
+    <rect class="box" x="240" y="80" width="120" height="28"/><text class="t-n mid" x="300" y="99">(A,B,v2)</text>
+    <path class="ln" d="M360 94 H380"/>
+    <text class="t" x="390" y="99">命中，复用 <tspan class="t-b">7</tspan></text>
+  </g>
+  <g data-s="3">
+    <path class="ln-soft" d="M0 124 H720"/>
+    <text class="t-s" x="0" y="142">规则升到 v3，加收 1</text>
+    <text class="t-n" x="0" y="177">price(A,B,rule=v3)</text>
+    <path class="ln" d="M180 172 H240"/>
+    <rect class="box" x="240" y="158" width="120" height="28"/><text class="t-n mid" x="300" y="177">(A,B,v3)</text>
+    <path class="ln" d="M360 172 H380"/>
+    <text class="t" x="390" y="177">key 含规则版本：未命中，计算 3+4+1 = <tspan class="t-b">8</tspan></text>
+  </g>
+  <g data-s="4">
+    <path class="ln" d="M180 172 C210 172 210 214 240 214"/>
+    <rect class="box-em" x="240" y="200" width="120" height="28"/><text class="t-n mid t-em" x="300" y="219">(A,B)</text>
+    <path class="ln-em" d="M360 214 H380"/>
+    <text class="t-b t-em" x="390" y="219">key 只有 A、B：命中旧项，返回 7</text>
+  </g>
+</svg>
+</div>
+<figcaption>规则版本在 key 里时，v3 的请求找不到 v2 的结果，重新算出 8；漏掉规则版本，v3 的请求落在 v2 留下的 7 上。</figcaption>

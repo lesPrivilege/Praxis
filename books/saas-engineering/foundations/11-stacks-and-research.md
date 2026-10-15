@@ -18,7 +18,7 @@
 | 已有 .NET 业务与团队 | ASP.NET Core 与既有数据访问、认证和后台机制 | 沿用现有团队与运维体系；部署与升级边界另行核对 |
 | 以 TypeScript 为主的团队 | 前后端采用团队熟悉的 TypeScript 框架与运行时 | 前后端共享类型，可减少接口定义不一致；运行时输入验证和持久化约束照样需要 |
 
-这些是选型方向，不是固定套餐或性能排名。具体能力可回查 [Django overview](https://docs.djangoproject.com/en/5.2/intro/overview/)的模型、模板与管理界面，[FastAPI features](https://fastapi.tiangolo.com/features/)的 OpenAPI 接口描述与 JSON Schema 数据约束（JSON 即 JavaScript Object Notation），以及 [ASP.NET 官方说明](https://dotnet.microsoft.com/en-us/learn/aspnet/what-is-aspnet)的请求、模板与认证。前端状态怎样组织，可参照 [React 文档](https://react.dev/learn/choosing-the-state-structure)；想渐进地接入前端框架，可读 [Vue Guide](https://vuejs.org/guide/introduction.html)。实际选择时再固定版本、许可、依赖与升级策略。
+这些是选型方向，各行之间没有性能先后。具体能力可回查 [Django overview](https://docs.djangoproject.com/en/5.2/intro/overview/)的模型、模板与管理界面，[FastAPI features](https://fastapi.tiangolo.com/features/)的 OpenAPI 接口描述与 JSON Schema 数据约束（JSON 即 JavaScript Object Notation），以及 [ASP.NET 官方说明](https://dotnet.microsoft.com/en-us/learn/aspnet/what-is-aspnet)的请求、模板与认证。前端状态怎样组织，可参照 [React 文档](https://react.dev/learn/choosing-the-state-structure)；想渐进地接入前端框架，可读 [Vue Guide](https://vuejs.org/guide/introduction.html)。实际选择时再固定版本、许可、依赖与升级策略。
 
 存储先按数据责任拆分：关系数据库负责身份、约束、事务和常规查询；对象存储保存文件内容，文件的身份、权限与版本仍记在数据库里；搜索索引保存供检索用的投影；缓存存放可以重建的结果；队列存放待处理的工作。一个系统可能只需要前两项。搜索和向量检索可以先用数据库已支持的功能，测出瓶颈后再拆成独立服务。
 
@@ -30,11 +30,15 @@
 
 设一个维修产品有 50 名内部操作员，每天 2,000 个操作，要求取消不重复、退款可核对，列表允许等几秒再刷新。方案 A：一个应用处理页面/API与领域事务，一个关系数据库保存权威对象和 outbox，一个 worker 派发并对账；不先增加分布式缓存。方案 B：独立前端、多个服务、专用消息 broker、搜索索引和共享缓存。
 
-两种方案都可能实现相同功能，差别在边界：A 的取消、OP7 与 outbox 可以在一次本地事务里完成；B 若把它们分到不同服务，就要另外设计交接协议。团队没有独立扩容或组织边界的要求时，A 更容易完整验证；以后某类数据处理确实需要独立扩容，再从稳定的任务或 API 边界拆出去。这是本例约束下的判断。
+两种方案都可能实现相同功能，差别在边界：A 的取消、OP7 与 outbox 可以在一次本地事务里完成；B 若把它们分到不同服务，就要另外设计交接协议。
+
+<!-- svg: f11-tx-boundary -->
+
+团队没有独立扩容或组织边界的要求时，A 更容易完整验证；以后某类数据处理确实需要独立扩容，再从稳定的任务或 API 边界拆出去。这是本例约束下的判断。
 
 ## 验算：完整链路与对照实验
 
-验收先打通一条完整链路：页面提交 → 权限与版本 → 事务 → worker → 测试 provider → 投影 → 对账。用两个租户、重复请求、未知结果和并发修改来验算。只能走通 happy path 的框架原型，还比较不出可靠性成本。
+验收先打通一条完整链路：页面提交 → 权限与版本 → 事务 → worker → 测试 provider → 投影 → 对账。用两个租户、重复请求、未知结果和并发修改来验算。框架原型走过这些情形，才比较得出可靠性成本，happy path 只是其中一条。
 
 链路打通以后，进一步的研究由运行中观察到的具体问题触发。
 
@@ -57,4 +61,4 @@
 
 **变式题。** 将内部维修台转为 X01 的外部多租户 SaaS，原有技术栈是否必须全换？
 
-**简答。** 不必先换框架。要新增并验证的是租户身份传播、数据隔离、配额、计量、配置、支持和退出流程。共享表、分 schema、独立数据库这几种隔离方式，按风险、成本与运维约束来比较。原有算法仍可复用，但每个查询、缓存、任务和错误响应都要带上相应的租户边界。验算时检查同号对象、跨租户事件和退出后仍在途的任务。
+**简答。** 框架可以保留。要新增并验证的是租户身份传播、数据隔离、配额、计量、配置、支持和退出流程。共享表、分 schema、独立数据库这几种隔离方式，按风险、成本与运维约束来比较。原有算法仍可复用，但每个查询、缓存、任务和错误响应都要带上相应的租户边界。验算时检查同号对象、跨租户事件和退出后仍在途的任务。

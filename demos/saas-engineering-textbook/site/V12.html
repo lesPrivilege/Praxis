@@ -4,9 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>V12 · 贷款：批准、放款、债权与结清 · SaaS 工程全景</title>
-<link rel="stylesheet" href="book.css?v=mv95jeod">
+<link rel="stylesheet" href="book.css?v=mv97hru0">
 </head>
 <body>
+<svg class="dw-defs" width="0" height="0" aria-hidden="true" focusable="false" style="position:absolute"><defs><pattern id="dw-hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" fill="var(--bg)"/><path d="M0 0 V6" stroke="var(--ink-2)" stroke-width="1.2"/></pattern></defs></svg>
 <a class="skip" href="#main">跳到正文</a>
 <header class="topbar">
   <button class="nav-toggle" type="button" aria-controls="sidebar" aria-expanded="false">目录</button>
@@ -20,7 +21,7 @@
 <header class="hero">
 <p class="kicker"><a href="group-commercial-finance.html">交易、财务与资金</a><span class="dot">·</span>V12</p>
 <h1>贷款：批准、放款、债权与结清</h1>
-<p class="lede">贷款把今天的一次资金交付，换成未来一段时间内的还款义务。申请通过、放款、债权余额和 payoff（提前结清）各自说明一件不同的事；若都显示成“成功”，页面看起来办完了，资金或利息却可能还没结清。机制是按本金变化的生效日分段计息，同一笔还款的生效日一变，payoff 随之改变，旧报价作废。本章还处理放款结果未知时的核对、结清报价绑定的余额版本，以及迟到还款与退票怎样重演余额。批准额度不是计息本金，只有资金确认交付的本金才计息。</p>
+<p class="lede">贷款把今天的一次资金交付，换成未来一段时间内的还款义务。申请通过、放款、债权余额和 payoff（提前结清）各自说明一件不同的事；若都显示成“成功”，页面看起来办完了，资金或利息却可能还没结清。机制是按本金变化的生效日分段计息，同一笔还款的生效日一变，payoff 随之改变，旧报价作废。本章还处理放款结果未知时的核对、结清报价绑定的余额版本，以及迟到还款与退票怎样重演余额。计息本金是资金已确认交付的那部分，批准额度另存。</p>
 
 <div class="cast" aria-label="本例的角色、界面与系统">
 <div class="cast-lane"><p class="cast-k">角色</p><ul><li>借款申请人</li><li>信贷审批员</li><li>资金与贷后操作员</li></ul></div>
@@ -60,9 +61,9 @@
 </tr>
 </tbody></table></div>
 </section>
-<section class="scene" aria-labelledby="解法批准放款与债权的分界"><header class="scene-head"><h2 id="解法批准放款与债权的分界"><span class="scene-no" aria-hidden="true">02</span><span class="visually-hidden">解法：</span><span class="head">批准、放款与债权的分界</span></h2></header><p class="scene-lede">批准接受的是条件，放款证明现金付出，债权余额由贷后服务按到账和分配记录维护；四者分开建对象，任何一个“成功”都不代替另一个。</p>
+<section class="scene" aria-labelledby="解法批准放款与债权的分界"><header class="scene-head"><h2 id="解法批准放款与债权的分界"><span class="scene-no" aria-hidden="true">02</span><span class="visually-hidden">解法：</span><span class="head">批准、放款与债权的分界</span></h2></header><p class="scene-lede">批准接受的是条件，放款证明现金付出，债权余额由贷后服务按到账和分配记录维护；四者分开建对象，每个对象的“成功”只证明它自己那一步。</p>
 <p>客户提交资料，贷款操作员检查完整性，信贷审批员判断是否接受风险，资金操作员发起放款，贷后人员处理到账和余额差异。分出这些角色，是为了留下记录：谁提出条件，谁批准条件，谁动用了现金。本例设定两条职责分离政策：申请人不能批准自己的申请；审批后改变金额或利率，要重开审批。</p>
-<p>Mambu 文档里，<code>Partial Application</code> 表示资料不完整，<code>Pending Approval</code> 表示正在评估；批准后条款不能直接改，放款后账户变为 <code>Active</code>，逾期与结清另有状态。可见 Mambu 也把批准、放款和还款分开处理；不过账户进入这一状态，并不说明某笔银行转账已经到账。<a href="https://docs.mambu.com/docs/loan-account-life-cycle-and-states/" class="ext" rel="noopener">Mambu：Loan Account Life Cycle and States</a>。另一页规定，贷款要先经具备 <code>Approve Loan</code> 权限的用户批准，且只有处于 <code>Pending Approval</code> 的贷款可以批准。<a href="https://docs.mambu.com/docs/approving-a-loan/" class="ext" rel="noopener">Mambu：Approving a Loan</a>。</p>
+<p>Mambu 文档里，<code>Partial Application</code> 表示资料不完整，<code>Pending Approval</code> 表示正在评估；批准后条款不能直接改，放款后账户变为 <code>Active</code>，逾期与结清另有状态。可见 Mambu 也把批准、放款和还款分开处理；某笔银行转账是否到账，另由资金回执证明。<a href="https://docs.mambu.com/docs/loan-account-life-cycle-and-states/" class="ext" rel="noopener">Mambu：Loan Account Life Cycle and States</a>。另一页规定，贷款要先经具备 <code>Approve Loan</code> 权限的用户批准，且只有处于 <code>Pending Approval</code> 的贷款可以批准。<a href="https://docs.mambu.com/docs/approving-a-loan/" class="ext" rel="noopener">Mambu：Approving a Loan</a>。</p>
 <div class="table-wrap"><table>
 <thead>
 <tr>
@@ -91,7 +92,7 @@
 <td>贷后服务计算可追溯的金额。<code>quoted → accepted → settled</code>，余额变化或过期时进入 <code>expired</code>；接受报价本身不消灭债权</td>
 </tr>
 </tbody></table></div>
-<p>拒绝申请没有本金偿还动作，因为资金尚未交付。已放款后的“撤销”却不能靠删除申请实现：现金已经出账的，要核对收回或另行处理，原放款证据保留。Mambu 还区分全部义务履行后的关闭与核销关闭，本例只实现前者；免除部分余额要另有授权记录，应收差额不能静默清零。两种关闭方式见同一生命周期页面的 <code>Closed</code> 一节；计算与授权政策是本例设定的。</p>
+<p>拒绝申请时资金尚未交付，也就没有本金偿还动作。已放款后的“撤销”是一项资金处理，申请记录照旧保留：现金已经出账的，核对收回或另行处理，原放款证据保留。Mambu 还区分全部义务履行后的关闭与核销关闭，本例只实现前者；免除部分余额要另有授权记录，应收差额凭这条记录才清零。两种关闭方式见同一生命周期页面的 <code>Closed</code> 一节；计算与授权政策是本例设定的。</p>
 </section>
 <section class="scene" aria-labelledby="界面动作与服务端校验"><header class="scene-head"><h2 id="界面动作与服务端校验"><span class="scene-no" aria-hidden="true">03</span><span class="head">界面动作与服务端校验</span></h2></header><p class="scene-lede">界面上的每个动作只提交请求，服务端按条款版本和 operation 身份重新校验后才落账。</p>
 <p>申请工作台同时展示资料完整性、当前条款版本和待办责任人。点“送审”只是提交评估请求，界面不能因此显示“已获贷款”。审批页固定展示本金、利率、日计息规则、到期安排及证据版本；点击“批准 v3”后，服务端重新检查权限与版本，在一个事务里保存决定与待放款任务。旧标签页仍拿 v2 提交时，服务端返回版本冲突及差异，要求重新审阅，旧批准不会自动套到新金额上。</p>
@@ -102,14 +103,96 @@
 </section>
 <section class="scene" aria-labelledby="演算按生效日分段计息"><header class="scene-head"><h2 id="演算按生效日分段计息"><span class="scene-no" aria-hidden="true">04</span><span class="visually-hidden">演算：</span><span class="head">按生效日分段计息</span></h2></header><p class="scene-lede">利息按本金稳定的区间分段计算，到账按生效日而不是收到日进入重演。</p>
 <p>第 0 日放款 1,000 CU。到第 10 日还 310 CU 时，已产生 <code>1,000 × 0.001 × 10 = 10</code> CU 利息；310 先冲 10 利息，再冲 300 本金，本金剩 700。第 15 日结清时另计 <code>[10,15)</code> 的利息 <code>700 × 0.001 × 5 = 3.50</code>，因此 payoff 为 <strong>703.50 CU</strong>。这笔贷款累计收回 <code>310 + 703.50 = 1,013.50</code>，其中本金 1,000、利息 13.50。这道核对等式交代了每笔钱的来处，也能查出已还本金仍在计息的错误。</p>
-<p><code>ALG:windows</code> 的输入是按生效日排列的本金变化事件，输出是每个本金稳定区间的利息；<code>ALG:lookup</code> 负责把到账记录映射到唯一贷款。朴素方法逐日遍历 d 天；按事件分段只处理 m 个边界，已排序时 O(m)，需要排序时 O(m log m)。规模按“每户历史事件数”估计，只报总贷款数不够。舍入之前累加精确小数，到本例指定的结算事件再舍入；改为每日舍入可能得出不同结果，要作为新的规则版本发布。</p>
+<p><code>ALG:windows</code> 的输入是按生效日排列的本金变化事件，输出是每个本金稳定区间的利息；<code>ALG:lookup</code> 负责把到账记录映射到唯一贷款。朴素方法逐日遍历 d 天；按事件分段只处理 m 个边界，已排序时 O(m)，需要排序时 O(m log m)。规模按“每户历史事件数”估计，总贷款数只说明有多少户。舍入之前累加精确小数，到本例指定的结算事件再舍入；改为每日舍入可能得出不同结果，要作为新的规则版本发布。</p>
 <p>反例是第 11 日才收到一条<strong>生效日为第 8 日</strong>的 310 CU 还款。按收到日处理，会对客户已经归还的部分多计利息。按本例规则重演：前 8 天利息为 8，冲本金 302，本金剩 698；至第 15 日再计 <code>698 × 0.001 × 7 = 4.886</code>，舍入为 4.89，payoff 为 <strong>702.89</strong>。旧报价 703.50 作废，已记的利息用差额调整更正，原记录保留。这里的生效日要来自经过授权和核对的资金证据；普通用户不能任意回填更早的日期来降低利息。</p>
-<p>事件晚到以后，“每天只累加当天利息”的做法就不成立了。可选的做法是保存余额 checkpoint（某一时点的余额快照）及对应的事件水位；补录发生在 checkpoint 之前时，从更早的可靠点重演受影响区间，生成新版本与调整差额。全历史重算最容易解释，但代价高；checkpoint 减少重演量，却要保存规则版本、事件集合和舍入状态。缓存 key 至少包括 tenant、loan、余额版本、规则版本和 as-of day；收款、冲正、回填或规则修订都会使旧 payoff 失效。</p>
+<figure class="drawing" data-drawing="v12-windows"><div class="dw-scroll" style="--dw-min:620px;--dw-max:960px">
+<svg viewBox="0 0 830 350" role="img" aria-labelledby="v12-windows-t v12-windows-d">
+  <title id="v12-windows-t">同一笔还款换了生效日，分段与 payoff 都变</title>
+  <desc id="v12-windows-d">上排：R1 310 按第 10 日生效，前 10 天按本金 1,000 计息 10，[10,15) 按本金 700 计息 3.50，第 15 日 payoff 703.50。下排：R1 第 11 日才收到、生效日为第 8 日，前 8 天计息 8，冲本金 302，第 8 至 15 日按本金 698 计息 4.886，舍入为 4.89，payoff 702.89，旧报价 703.50 作废。</desc>
+  <g data-s="1">
+    <text class="t-b" x="110" y="30">R1 生效日 第 10 日</text>
+    <text class="t-s end" x="104" y="64">本金 1,000</text>
+    <text class="t-s end" x="104" y="88">700</text>
+    <rect class="box f1" x="110" y="60" width="400" height="80"/>
+    <rect class="box f1" x="510" y="84" width="200" height="56"/>
+    <text class="t-n mid" x="310" y="106">1,000 × 0.001 × 10 = 10</text>
+    <text class="t-n mid" x="610" y="118">700 × 0.001 × 5 = 3.50</text>
+    <text class="t-s" x="516" y="76">R1 310：利息 10，本金 300</text>
+    <text class="t-s mid" x="110" y="158">第 0 日</text><text class="t-s mid" x="510" y="158">第 10 日</text><text class="t-s mid" x="710" y="158">第 15 日</text>
+    <text class="t-s" x="728" y="100">payoff</text>
+    <text class="t-big" x="728" y="126">703.50</text>
+  </g>
+  <path class="ln-soft" d="M0 182 H830"/>
+  <g data-s="2">
+    <text class="t-b" x="110" y="214">R1 生效日 第 8 日</text>
+    <text class="t-s end" x="104" y="250">本金 1,000</text>
+    <text class="t-s end" x="104" y="274">698</text>
+    <rect class="box f1" x="110" y="246" width="320" height="80"/>
+    <rect class="box f1" x="430" y="270" width="280" height="56"/>
+    <text class="t-n mid" x="270" y="292">1,000 × 0.001 × 8 = 8</text>
+    <text class="t-n mid" x="570" y="300">698 × 0.001 × 7 = 4.886</text>
+    <text class="t-s mid" x="570" y="317">舍入为 4.89</text>
+    <text class="t-s" x="436" y="262">R1 310：利息 8，本金 302</text>
+    <text class="t-s mid" x="110" y="344">第 0 日</text><text class="t-s mid" x="430" y="344">第 8 日</text><text class="t-s mid" x="710" y="344">第 15 日</text>
+    <text class="t-s" x="728" y="286">payoff</text>
+    <text class="t-big" x="728" y="312">702.89</text>
+    <text class="t-s" x="728" y="330">703.50 作废</text>
+  </g>
+  <g data-s="3">
+    <text class="t-s mid t-em" x="576" y="226">第 11 日收到</text>
+    <path class="ln-em" d="M542 236 H434 M442 230 L434 236 L442 242"/>
+  </g>
+</svg>
+</div>
+<figcaption>每块面积是一段本金稳定区间的利息；生效日从第 10 日移到第 8 日，分段边界随之移动，payoff 从 703.50 变为 702.89。</figcaption></figure><p>事件会晚到，余额因此要能从更早的点重演，逐日累加当天利息的做法只适用于事件按时到达的情况。可选的做法是保存余额 checkpoint（某一时点的余额快照）及对应的事件水位；补录发生在 checkpoint 之前时，从更早的可靠点重演受影响区间，生成新版本与调整差额。全历史重算最容易解释，但代价高；checkpoint 减少重演量，却要保存规则版本、事件集合和舍入状态。缓存 key 至少包括 tenant、loan、余额版本、规则版本和 as-of day；收款、冲正、回填或规则修订都会使旧 payoff 失效。</p>
 </section>
 <section class="scene" aria-labelledby="正常路径与失败恢复"><header class="scene-head"><h2 id="正常路径与失败恢复"><span class="scene-no" aria-hidden="true">05</span><span class="head">正常路径与失败恢复</span></h2></header><p class="scene-lede">账户只在本金和应计利息归零、没有未决资金操作时转为 paid-off；结果未知的放款保持原 operation 等待核对，不生成新的支付身份。</p>
-<p>正常路径从客户补齐申请开始。审批员确认条款 v3，资金员提交 1,000 的 operation D1；银行参照接口确认 D1 已执行，贷后服务在唯一 D1 键下登记本金并激活账户。第 10 日到账 R1 核对后，界面显示“收到 310；利息 10；本金 300；剩余本金 700”。第 15 日客户接受 Q1，703.50 的到账 R2 应用后，本金与应计利息均为零，且没有未分配到账、未解决转账或待冲正操作，账户才转为 <code>paid-off</code>。结清证据能回查到 D1、R1、R2 与 Q1；一张余额截图代替不了这条记录链。</p>
+<p>正常路径从客户补齐申请开始。审批员确认条款 v3，资金员提交 1,000 的 operation D1；银行参照接口确认 D1 已执行，贷后服务在唯一 D1 键下登记本金并激活账户。第 10 日到账 R1 核对后，界面显示“收到 310；利息 10；本金 300；剩余本金 700”。第 15 日客户接受 Q1，703.50 的到账 R2 应用后，本金与应计利息均为零，且没有未分配到账、未解决转账或待冲正操作，账户才转为 <code>paid-off</code>。结清证据是一条能回查到 D1、R1、R2 与 Q1 的记录链。</p>
 <p>失败路径：银行已接受 D1，客户端却超时了。operation 进入 <code>unknown</code>，本地账户仍为 <code>pending-funding</code>；资金人员看到的是“等待银行结果”，而不是可以再次点击的“放款失败”。核对任务按原参考号查询。银行确认已出账后，贷后服务登记本金；若此时 worker 在本金提交之后、回执消费标记之前崩溃，重放时读取已存在的 D1 分录并补齐消费标记，本金不会再加 1,000。银行无法按原请求身份查询时，自动恢复到此为止，由资金人员核对流水；未经确认不生成新的支付身份。</p>
-<p>贷后阶段的失败另有几种。重复的 R1 回执只分配一次；金额相同但银行交易 <abbr title="identifier：标识符">ID</abbr> 不同的两笔付款是两笔钱，不能当成重复。退票使既往还款失效时，要反向分配、重演余额并让相关报价失效，原 R1 不删除。两个操作员同时结清同一余额版本，只有一个能消耗该版本；第二笔实际来款仍要放进未分配款，留待退款或人工处理，不能因为版本冲突把这笔已到账的钱丢掉。</p>
+<figure class="drawing" data-drawing="v12-unknown"><div class="dw-scroll" style="--dw-min:620px;--dw-max:900px">
+<svg viewBox="0 0 780 250" role="img" aria-labelledby="v12-unknown-t v12-unknown-d">
+  <title id="v12-unknown-t">放款结果未知时的三条去路</title>
+  <desc id="v12-unknown-d">资金服务提交 1,000 的放款 D1，银行参照接口已执行，响应丢失，D1 进入 unknown，账户仍为 pending-funding。按原参考号查询，银行确认已出账后登记本金 1,000；无法按原身份查询时，由资金人员核对流水；另建一条转账，则一次借款变成两次现金交付。</desc>
+  <g data-s="1">
+    <rect class="box" x="10" y="101" width="120" height="50"/>
+    <text class="t-b mid" x="70" y="122">D1</text><text class="t-s mid" x="70" y="141">放款 1,000</text>
+    <path class="ln" d="M130 126 H164 M157 120 L164 126 L157 132"/>
+    <rect class="box" x="166" y="101" width="130" height="50"/>
+    <text class="t-b mid" x="231" y="122">银行参照接口</text><text class="t-s mid" x="231" y="141">已执行 D1</text>
+  </g>
+  <g data-s="2">
+    <path class="ln-dash" d="M296 126 H330"/>
+    <text class="t-s mid" x="313" y="94">响应丢失</text>
+    <rect class="box" x="332" y="96" width="140" height="60"/>
+    <text class="t-n mid" x="402" y="120">unknown</text><text class="t-s mid" x="402" y="141">账户 pending-funding</text>
+  </g>
+  <g data-s="3">
+    <path class="ln" d="M472 126 H490 V52 H508"/>
+    <rect class="box-em" x="510" y="30" width="120" height="44"/>
+    <text class="t mid" x="570" y="57">按原参考号查询</text>
+    <path class="ln" d="M630 52 H648 M641 46 L648 52 L641 58"/>
+    <rect class="box" x="650" y="30" width="124" height="44"/>
+    <text class="t-s mid" x="712" y="47">银行确认已出账</text><text class="t-n mid" x="712" y="65">本金 +1,000</text>
+  </g>
+  <g data-s="4">
+    <path class="ln" d="M490 126 H508"/>
+    <rect class="box" x="510" y="104" width="120" height="44"/>
+    <text class="t-s mid" x="570" y="130">无法按原身份查询</text>
+    <path class="ln" d="M630 126 H648 M641 120 L648 126 L641 132"/>
+    <rect class="box" x="650" y="104" width="124" height="44"/>
+    <text class="t mid" x="712" y="131">资金人员核对流水</text>
+  </g>
+  <g data-s="5">
+    <path class="ln-dash" d="M490 126 V200 H508"/>
+    <rect class="box-dash" x="510" y="178" width="120" height="44"/>
+    <text class="t mid" x="570" y="205">另建一条转账</text>
+    <path class="ln-dash" d="M630 200 H648"/>
+    <rect class="box-dash" x="650" y="178" width="124" height="44"/>
+    <text class="t mid" x="712" y="205">两次现金交付</text>
+  </g>
+</svg>
+</div>
+<figcaption>结果未知的 D1 保持原 operation：能查就按原参考号查，查不到就人工核对流水；只有另建转账这条路会让同一笔借款出账两次。</figcaption></figure><p>贷后阶段的失败另有几种。重复的 R1 回执只分配一次；金额相同、银行交易 <abbr title="identifier：标识符">ID</abbr> 不同的两笔付款是两笔钱，各自分配。退票使既往还款失效时，要反向分配、重演余额并让相关报价失效，原 R1 不删除。两个操作员同时结清同一余额版本，只有一个能消耗该版本；第二笔实际来款照样入账，放进未分配款，留待退款或人工处理。</p>
 </section>
 <section class="scene" aria-labelledby="验算规模目标检查项与模型评估"><header class="scene-head"><h2 id="验算规模目标检查项与模型评估"><span class="scene-no" aria-hidden="true">06</span><span class="visually-hidden">验算：</span><span class="head">规模目标、检查项与模型评估</span></h2></header><p class="scene-lede">验收要同时证明三件事：每笔现金只记一次，本金变化与已确认资金一一对应，过期或失效的报价不会关闭账户。</p>
 <p>待测负载为 50 个租户、100 万活跃账户，每户平均 60 个历史事件，最忙租户占写入的 40%；白天 100 笔到账/秒、300 次工作台读取/秒，晚间对全部账户作计息核对。单户 payoff 请求的目标为 p95 小于 300 ms、p99 小于 1 s，覆盖冷缓存与含 1 万条历史事件的长尾账户；外部支付时间不计入该同步计算目标。晚间核对应在 2 小时内完成，并报告分片积压、回填重演量和未解释的差额。以上是假设的负载与验收目标，尚未实测。</p>
@@ -163,18 +246,31 @@
 </tr>
 </tbody></table></div>
 <p>每项检查的 check ID 与执行证据记在章末的 V12.json 里。<code>checks.py</code> 只跑确定性的算术和反例检查；<abbr title="application programming interface：应用程序接口">API</abbr> 幂等、持久化恢复、实际到账和端到端 UI 都没有经它验证。</p>
-<p>本例不让模型决定授信、拒贷或余额，这些决定不需要 <abbr title="artificial intelligence：人工智能">AI</abbr> eval。若新增资料提取助手，可先冻结 120 份合成申请，其中 40 份缺金额、日期或币种，80 份完整；按字段标注来源位置，分别测关键字段错误数/已提取关键字段数、缺失资料错误填满数/40、人工修正数/120。存在冲突时显示待核查并引用原页，模型输出无权改变条款版本。留出集还要覆盖实际申请里出现的缺项与冲突。</p>
+<p>授信、拒贷与余额由有权限的人和确定性规则决定，这些决定不做 <abbr title="artificial intelligence：人工智能">AI</abbr> eval。若新增资料提取助手，可先冻结 120 份合成申请，其中 40 份缺金额、日期或币种，80 份完整；按字段标注来源位置，分别测关键字段错误数/已提取关键字段数、缺失资料错误填满数/40、人工修正数/120。存在冲突时显示待核查并引用原页，模型输出无权改变条款版本。留出集还要覆盖实际申请里出现的缺项与冲突。</p>
 </section>
 <section class="scene" aria-labelledby="变式条件变化与迁移"><header class="scene-head"><h2 id="变式条件变化与迁移"><span class="scene-no" aria-hidden="true">07</span><span class="visually-hidden">变式：</span><span class="head">条件变化与迁移</span></h2></header><p class="scene-lede">本金变化与已确认资金一一对应、事件可以重演，这两条在条件改变后保留；变的是计息基数：退票让本金回到 1,000，分段放款只按已交付部分计息，迁到 H01 时基数换成服务价款与期间。</p>
 <p><strong>练习 1：日 10 的 310 CU 被确认退回，但页面已经生成日 15 的报价。怎样修正？</strong></p>
-<p>简答：撤销这笔分配的经济效果，保留原款、退回证据和调整链；本金回到 1,000，按本例规则日 15 应付 <code>1,000 + 1,000×0.001×15 = 1,015</code>。旧报价失效，只把“已付款”标签改灰不够。不变量是本金变化与已确认资金一一对应；可观察的检查是原 R1 可追溯、净收款为零、新旧报价的差异有原因可查。退票的计息政策不同，金额就要重算。</p>
+<p>简答：撤销这笔分配的经济效果，保留原款、退回证据和调整链；本金回到 1,000，按本例规则日 15 应付 <code>1,000 + 1,000×0.001×15 = 1,015</code>。旧报价失效。不变量是本金变化与已确认资金一一对应；可观察的检查是原 R1 可追溯、净收款为零、新旧报价的差异有原因可查。退票的计息政策不同，金额就要重算。</p>
 <p><strong>练习 2：合同允许分两次各放 500，第二次尚未执行，是否按批准总额 1,000 计息？</strong></p>
-<p>简答：不按批准总额计息。在本例“按实际未偿本金计息”的前提下，只按已确认交付的 500 计息；引入 tranche（放款分段）对象，每段各有额度、条件和 operation，第一段成功后，账户不能显示全部资金已交付。批准额度与实际本金分开保存，检查两段已执行金额之和及剩余额度。若合同约定了未提款额度费，那是另一条费用规则，不并入本金利息计算。</p>
-<p><strong>练习 3：把利息窗口计算迁到 H01 的收入期间，哪些部分能保留？</strong></p>
+<p>简答：按已确认交付的 500 计息。在本例“按实际未偿本金计息”的前提下，计息基数是已交付的本金；引入 tranche（放款分段）对象，每段各有额度、条件和 operation，第一段成功后，账户显示已交付 500、尚余 500 额度。批准额度与实际本金分开保存，检查两段已执行金额之和及剩余额度。若合同约定了未提款额度费，那是另一条费用规则，与本金利息分开计算。</p>
+<figure class="drawing" data-drawing="v12-tranche"><div class="dw-scroll" style="--dw-min:520px;--dw-max:780px">
+<svg viewBox="0 0 660 140" role="img" aria-labelledby="v12-tranche-t v12-tranche-d">
+  <title id="v12-tranche-t">批准额度与计息本金</title>
+  <desc id="v12-tranche-d">批准额度 1,000 分两段各 500。第一段已确认交付，按 500 计息；第二段尚未执行，剩余额度 500。</desc>
+  <text class="t-b end" x="120" y="62">批准额度</text><text class="t-n end" x="120" y="80">1,000</text>
+  <rect class="box f2" x="130" y="46" width="250" height="48"/>
+  <text class="t mid" x="255" y="67">第一段 500</text><text class="t-s mid" x="255" y="84">已确认交付</text>
+  <rect class="box-dash" x="380" y="46" width="250" height="48"/>
+  <text class="t mid" x="505" y="67">第二段 500</text><text class="t-s mid" x="505" y="84">尚未执行 · 剩余额度</text>
+  <path class="ln-strong" d="M130 104 V114 H380 V104"/>
+  <text class="t-b mid" x="255" y="134">计息本金 500</text>
+</svg>
+</div>
+<figcaption>计息基数只覆盖已确认交付的第一段；第二段在执行之前只算额度。</figcaption></figure><p><strong>练习 3：把利息窗口计算迁到 H01 的收入期间，哪些部分能保留？</strong></p>
 <p>简答：半开区间、事件修订和可重演版本可以保留。贷款的计息基数随本金变化，H01 的收入基数由服务价款与期间决定，现金早到不会让收入提前完成。反例是借用 payoff 公式，把提前收款当成全部收入。检查时分别固定服务区间和资金日期，确认两个模型不会因同一次操作一起清零。</p>
 <p><code>TR:V12:H01:effective-time</code> 对应第三道练习里的时间窗口迁移。资金核对迁到 H02 与 V14 时（<code>TR:V12:H02:unknown-funding</code>、<code>TR:V12:V14:unknown-funding</code>），“外部资金结果未知先核对”的操作模型可以共用，债权关闭条件却不能共用，因为采购付款还依赖验收，证券结算还依赖成交与资产交割。V12 与 V13 都用审批版本和金额权限，金额的含义却不同：贷款本金是资金交付后应收的债权，保险 reserve 是对潜在赔付的估计。</p>
 </section>
-<section class="scene" aria-labelledby="进入新贷款产品的先查项"><header class="scene-head"><h2 id="进入新贷款产品的先查项"><span class="scene-no" aria-hidden="true">08</span><span class="head">进入新贷款产品的先查项</span></h2></header><p class="scene-lede">面对新贷款产品，先确认本金何时产生、利息以什么余额和日历为基数、还款如何分配、资金退回怎样影响历史。一次放款、分段提款与循环额度需要不同的对象，只改利率字段不能复用同一套模型。查清核心账务系统的生效日、舍入、冲正与 payoff 报价有效期，再用一笔迟到还款，把余额引擎的重演结果与逐区间手算对照；每笔现金只记一次、旧报价作废，都应能在系统里看到。</p>
+<section class="scene" aria-labelledby="进入新贷款产品的先查项"><header class="scene-head"><h2 id="进入新贷款产品的先查项"><span class="scene-no" aria-hidden="true">08</span><span class="head">进入新贷款产品的先查项</span></h2></header><p class="scene-lede">面对新贷款产品，先确认本金何时产生、利息以什么余额和日历为基数、还款如何分配、资金退回怎样影响历史。一次放款、分段提款与循环额度各需一套对象，差别在本金如何产生，利率字段只是其中一个参数。查清核心账务系统的生效日、舍入、冲正与 payoff 报价有效期，再用一笔迟到还款，把余额引擎的重演结果与逐区间手算对照；每笔现金只记一次、旧报价作废，都应能在系统里看到。</p>
 <p>拓扑与检查见 <a href="../../../vault/distilled/saas-engineering-atlas/packages/commercial-finance/V12.json">V12.json</a>；来源边界与执行记录见 <a href="../../../vault/distilled/saas-engineering-atlas/packages/commercial-finance/evidence.json">evidence.json</a>、<a href="../../../vault/distilled/saas-engineering-atlas/packages/commercial-finance/CHANGELOG.md">CHANGELOG.md</a>。</p>
 </section>
 <section class="scene scene-structure" aria-labelledby="case-structure"><header class="scene-head"><h2 id="case-structure"><span class="scene-no" aria-hidden="true">09</span><span class="visually-hidden">结构：</span><span class="head">对象、生命周期与迁移</span></h2></header><p class="scene-lede">17 个节点、30 条带类型的边、5 个生命周期、10 条检查定义，数据见 <a href="../../../vault/distilled/saas-engineering-atlas/packages/commercial-finance/V12.json">V12.json</a>。</p>
@@ -292,8 +388,8 @@
     <footer class="page-foot">正文 <a href="../../../books/saas-engineering/packages/commercial-finance/V12.md">books/saas-engineering/packages/commercial-finance/V12.md</a> · <a href="../../../vault/distilled/saas-engineering-atlas/README.md">结构、来源与验证</a></footer>
   </main>
 </div>
-<script src="search-index.js?v=mv95jeod"></script>
-<script src="book.js?v=mv95jeod"></script>
+<script src="search-index.js?v=mv97hru0"></script>
+<script src="book.js?v=mv97hru0"></script>
 
 </body>
 </html>

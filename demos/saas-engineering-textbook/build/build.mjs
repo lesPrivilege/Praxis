@@ -250,6 +250,7 @@ function shell({ rel, ctx, body }) {
 <link rel="stylesheet" href="${prefix}book.css?v=${V}">
 </head>
 <body>
+<svg class="dw-defs" width="0" height="0" aria-hidden="true" focusable="false" style="position:absolute"><defs><pattern id="dw-hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" fill="var(--bg)"/><path d="M0 0 V6" stroke="var(--ink-2)" stroke-width="1.2"/></pattern></defs></svg>
 <a class="skip" href="#main">跳到正文</a>
 <header class="topbar">
   <button class="nav-toggle" type="button" aria-controls="sidebar" aria-expanded="false">目录</button>

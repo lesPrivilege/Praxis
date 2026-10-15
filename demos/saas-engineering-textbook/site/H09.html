@@ -4,9 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>H09 · 文档版本、审批与下游记录 · SaaS 工程全景</title>
-<link rel="stylesheet" href="book.css?v=mv95jeod">
+<link rel="stylesheet" href="book.css?v=mv97hru0">
 </head>
 <body>
+<svg class="dw-defs" width="0" height="0" aria-hidden="true" focusable="false" style="position:absolute"><defs><pattern id="dw-hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" fill="var(--bg)"/><path d="M0 0 V6" stroke="var(--ink-2)" stroke-width="1.2"/></pattern></defs></svg>
 <a class="skip" href="#main">跳到正文</a>
 <header class="topbar">
   <button class="nav-toggle" type="button" aria-controls="sidebar" aria-expanded="false">目录</button>
@@ -76,8 +77,8 @@
 </tbody></table></div>
 </section>
 <section class="scene" aria-labelledby="解法送审包与批准绑定"><header class="scene-head"><h2 id="解法送审包与批准绑定"><span class="scene-no" aria-hidden="true">02</span><span class="visually-hidden">解法：</span><span class="head">送审包与批准绑定</span></h2></header><p class="scene-lede">“我批准这个合同”至少省略了四个问题：看到的是哪份正文，附件有哪些，金额等业务字段是什么，适用哪版审批政策。编辑器里显示的内容随时会变，批准却要在日后仍能说清批准的是哪一份，所以系统把可编辑的工作稿与送审包分开。工作稿可以保存多次；提交审阅时，系统冻结一个 bundle（送审包），用 <code>tenant_id、contract_id、bundle_version</code> 标识，内容包括有序文件清单、每个文件的摘要、结构化字段及其 schema 版本，以及审批政策版本。</p>
-<p>文件摘要能发现字节改变，却不能证明合同意思正确，也不能发现漏掉清单的附件。DOCX 重新保存可能只改变内部元数据，所以本例在原始文件摘要之外，还保留供人审阅的差异视图，并采用保守策略：送审包有任何改变都生成新版本，为新版本开启新的审批轮次，不因“语义看起来相同”就自动沿用旧批准。金额按固定整数单位存储，缺值与零值分开；文件名、附件顺序与签署人清单也一并冻结。这样，批准人日后回看的内容与执行时取用的内容指向同一个版本。</p>
-<p>Ironclad 的公开配置说明分别列出文档、工作流和字段变化的审批重置条件；其中还说明，上传文档改变了字段含义时，需要同步更新结构化字段，才能触发字段变化条件。可见文档与结构化字段可能脱节，“上传成功”并不说明金额规则已重新计算（<a href="https://support.ironcladapp.com/hc/en-us/articles/40675997675031-Configure-Approval-Resets-in-Workflow-Designer" class="ext" rel="noopener">Configure Approval Resets</a>）。本例采用更保守的整体版本绑定；接入时具体怎样重置，由使用方自己的规则决定。</p>
+<p>文件摘要检出字节改变；合同意思是否正确、清单是否漏了附件，由审阅人判断。DOCX 重新保存可能只改变内部元数据，所以本例在原始文件摘要之外，还保留供人审阅的差异视图，并采用保守策略：送审包有任何改变都生成新版本，为新版本开启新的审批轮次，不因“语义看起来相同”就自动沿用旧批准。金额按固定整数单位存储，缺值与零值分开；文件名、附件顺序与签署人清单也一并冻结。这样，批准人日后回看的内容与执行时取用的内容指向同一个版本。</p>
+<p>Ironclad 的公开配置说明分别列出文档、工作流和字段变化的审批重置条件；其中还说明，上传文档改变了字段含义时，需要同步更新结构化字段，才能触发字段变化条件。可见文档与结构化字段可能脱节：上传成功之后，金额规则要等结构化字段更新才重新计算（<a href="https://support.ironcladapp.com/hc/en-us/articles/40675997675031-Configure-Approval-Resets-in-Workflow-Designer" class="ext" rel="noopener">Configure Approval Resets</a>）。本例采用更保守的整体版本绑定；接入时具体怎样重置，由使用方自己的规则决定。</p>
 <div class="table-wrap"><table>
 <thead>
 <tr>
@@ -113,15 +114,15 @@
 </tr>
 </tbody></table></div>
 <p>表格和结构 <abbr title="JavaScript Object Notation：结构化数据表示格式，后文保留 JSON">JSON</abbr> 只列本例用到的状态与转换。</p>
-<p>合同负责人可以起草、提交和申请撤回，无权替法务批准；审批人只能处理被指派的角色和当前轮次；签署人只能就自己收到的那一版签署包表态。集成账号只能读取已允许导出的字段并更新映射记录，不能制造审批。管理员修改政策是另一种权限：修改后生成新的政策版本；已在审的包是沿用旧政策还是重新送审，要明确决定，本例选择重新送审。界面上隐藏或禁用按钮，只是向用户说明权限；授权由服务端在每次提交时重新检查。</p>
-<p>Ironclad 的 API 文档区分 Workflow 与 Record：前者描述流程，后者包含完成流程产生的签署文件及元数据；各有对象 <abbr title="identifier：标识符">ID</abbr>，并用 Ironclad ID 连接同一合同生命周期。<a href="https://developer.ironcladapp.com/reference/getting-started-api" class="ext" rel="noopener">Getting Started — Workflows / Records / Ironclad ID</a>。接入该产品时要保留这些 ID，本地的 <code>contract_id</code> 不能拿来代替 provider 的 Workflow ID 或 Record ID。</p>
+<p>合同负责人可以起草、提交和申请撤回，无权替法务批准；审批人只能处理被指派的角色和当前轮次；签署人只能就自己收到的那一版签署包表态。集成账号只读取已允许导出的字段并更新映射记录，审批决定只来自被指派的审批人。管理员修改政策是另一种权限：修改后生成新的政策版本；已在审的包是沿用旧政策还是重新送审，要明确决定，本例选择重新送审。界面上隐藏或禁用按钮，只是向用户说明权限；授权由服务端在每次提交时重新检查。</p>
+<p>Ironclad 的 API 文档区分 Workflow 与 Record：前者描述流程，后者包含完成流程产生的签署文件及元数据；各有对象 <abbr title="identifier：标识符">ID</abbr>，并用 Ironclad ID 连接同一合同生命周期。<a href="https://developer.ironcladapp.com/reference/getting-started-api" class="ext" rel="noopener">Getting Started — Workflows / Records / Ironclad ID</a>。接入该产品时保留这些 ID：本地的 <code>contract_id</code> 与 provider 的 Workflow ID、Record ID 并列记入映射，各自引用各自系统里的对象。</p>
 </section>
 <section class="scene" aria-labelledby="批准版本冲突与发签"><header class="scene-head"><h2 id="批准版本冲突与发签"><span class="scene-no" aria-hidden="true">03</span><span class="head">批准、版本冲突与发签</span></h2></header><p class="scene-lede">批准只对当前送审包版本有效：过期页面上的批准返回版本冲突，新包提交后旧轮次不能放行；发签从 outbox 固定的请求发送，失联时记为 unknown。</p>
-<p>工作台列表分别显示“当前包 v7”“内部审阅 2/3”“签署未发起”“ERP 未同步”。详情页先展示当前包、相对于上一版的差异、未解决批注和本人的审批责任，再提供“批准此版本”“拒绝并说明原因”。预览页要能查看原始文件和全部附件；有页面无法渲染时，明确提示缺页，不完整的预览不能记为已审阅。</p>
-<p>点击批准时，浏览器提交 <code>operation_id、bundle_version、approval_round、decision、comment</code>。服务端在同一事务中检查租户、当前指派、政策版本、包版本及尚未决定的状态，写入批准与审计记录。事务提交后，页面可以显示“v7 已由你批准”；其他审批尚未完成时，签署仍为等待。重复点击返回同一次尝试；同一 operation ID 带着不同内容提交时，服务端拒绝。浏览器断网后重开页面，按 operation ID 查询结果；本地弹出过的 toast 不算已保存的证据。</p>
+<p>工作台列表分别显示“当前包 v7”“内部审阅 2/3”“签署未发起”“ERP 未同步”。详情页先展示当前包、相对于上一版的差异、未解决批注和本人的审批责任，再提供“批准此版本”“拒绝并说明原因”。预览页要能查看原始文件和全部附件；有页面无法渲染时，明确提示缺页；只有完整的预览才记为已审阅。</p>
+<p>点击批准时，浏览器提交 <code>operation_id、bundle_version、approval_round、decision、comment</code>。服务端在同一事务中检查租户、当前指派、政策版本、包版本及尚未决定的状态，写入批准与审计记录。事务提交后，页面可以显示“v7 已由你批准”；其他审批尚未完成时，签署仍为等待。重复点击返回同一次尝试；同一 operation ID 带着不同内容提交时，服务端拒绝。浏览器断网后重开页面，按 operation ID 查询结果；已保存的证据是服务端按该 ID 返回的记录，本地弹出过的 toast 只是提示。</p>
 <p>假设法务打开 v7 后，销售先提交了 v8。法务再批准 v7 时，服务端返回版本冲突，展示“当前为 v8；你查看的 v7 已被替代”以及差异入口。把批准自动挪到 v8，会让人承担尚未看过内容的责任。反过来，法务已批准 v7，销售随后提交 v8，则保存 v7 的批准事实，同时使旧轮次不能放行 v8。批准与提交争用同一个“当前版本”标记，数据库用条件更新或行锁为两者定出可解释的先后。</p>
 <p>必要的批准都齐备后，负责人点击“发送签署”。服务端再次核对送审包、签署人清单和当前有效批准，冻结签署请求 payload，在事务中写操作记录和 outbox（待发送记录）。worker 先在事务中用条件更新认领任务，把 <code>queued</code> 改成 <code>dispatching</code>，保存这次固定的尝试，再调用外部签署系统；发送内容按 outbox 中的字节引用读取，不从编辑器重新生成最新稿。外部系统受理后，<abbr title="user interface：用户界面">UI</abbr> 才显示具体的签署请求。<abbr title="Hypertext Transfer Protocol：超文本传输协议">HTTP</abbr> 超时，或 worker 认领后崩溃，任务都进入 <code>unknown</code>，界面显示“发送结果待核对”，这次尝试保留不动。租约到期只能说明执行者失联，不能证明网络请求没有发出。签署页面的原始请求 ID 与本地 bundle 版本必须始终能互查。</p>
-<figure class="graph-fig"><div class="graph-wrap"><svg class="graph" viewBox="0 0 1311 231" width="1311" height="231" style="max-width:1508px;min-width:1049px" role="img" aria-label="H09 · 文档版本、审批与下游记录"><defs><marker id="arrow-g1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arrowhead"/></marker></defs><path class="edge" data-type="operates" data-from="Reviewer" data-to="Desk" d="M309.0,25.0 Q364.0,25.0 433.2,57.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Reviewer" data-to="Desk"><rect x="336.0" y="17.0" width="56" height="16" rx="3"/><text x="364.0" y="29.0">operates</text></g><path class="edge" data-type="commands" data-from="Desk" data-to="Contract" d="M514.5,74.0 Q576.0,74.0 631.0,74.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Desk" data-to="Contract"><rect x="548.0" y="66.0" width="56" height="16" rx="3"/><text x="576.0" y="78.0">commands</text></g><path class="edge" data-type="owns" data-from="Contract" data-to="Bundle" d="M706.6,57.0 Q762.0,32.0 808.5,32.0 Q855.0,32.0 904.5,32.0 Q954.0,32.0 1015.0,36.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Contract" data-to="Bundle"><rect x="839.0" y="24.0" width="32" height="16" rx="3"/><text x="855.0" y="36.0">owns</text></g><path class="edge" data-type="owns" data-from="Contract" data-to="Decision" d="M707.0,74.0 Q762.0,74.0 817.0,74.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Contract" data-to="Decision"><rect x="746.0" y="66.0" width="32" height="16" rx="3"/><text x="762.0" y="78.0">owns</text></g><path class="edge" data-type="depends_on" data-from="Decision" data-to="Bundle" d="M893.0,74.0 Q954.0,74.0 1015.0,53.8" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Decision" data-to="Bundle"><rect x="920.0" y="66.0" width="68" height="16" rx="3"/><text x="954.0" y="78.0">depends_on</text></g><path class="edge" data-type="requests" data-from="Contract" data-to="Sign" d="M695.4,91.0 Q762.0,134.0 817.0,156.5" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Contract" data-to="Sign"><rect x="734.0" y="126.0" width="56" height="16" rx="3"/><text x="762.0" y="138.0">requests</text></g><path class="edge" data-type="emits" data-from="Sign" data-to="Receipt" d="M893.0,172.0 Q954.0,172.0 1021.5,172.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Sign" data-to="Receipt"><rect x="935.0" y="164.0" width="38" height="16" rx="3"/><text x="954.0" y="176.0">emits</text></g><path class="edge" data-type="delivers" data-from="Receipt" data-to="Inbox" d="M1097.5,172.0 Q1159.0,172.0 1214.0,190.8" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Receipt" data-to="Inbox"><rect x="1131.0" y="164.0" width="56" height="16" rx="3"/><text x="1159.0" y="176.0">delivers</text></g><path class="edge" data-type="reads" data-from="Integrator" data-to="Inbox" d="M84.0,190.0 Q139.0,206.0 195.3,206.0 Q251.5,206.0 307.8,206.0 Q364.0,206.0 417.0,206.0 Q470.0,206.0 523.0,206.0 Q576.0,206.0 622.5,206.0 Q669.0,206.0 715.5,206.0 Q762.0,206.0 808.5,206.0 Q855.0,206.0 904.5,206.0 Q954.0,206.0 1006.8,206.0 Q1059.5,206.0 1109.3,206.0 Q1159.0,206.0 1214.0,206.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Integrator" data-to="Inbox"><rect x="650.0" y="198.0" width="38" height="16" rx="3"/><text x="669.0" y="210.0">reads</text></g><path class="edge" data-type="reads" data-from="Integrator" data-to="Sign" d="M84.0,179.0 Q139.0,179.0 195.3,179.0 Q251.5,179.0 307.8,179.0 Q364.0,179.0 417.0,179.0 Q470.0,179.0 523.0,179.0 Q576.0,179.0 622.5,179.0 Q669.0,179.0 715.5,179.0 Q762.0,179.0 817.0,174.9" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Integrator" data-to="Sign"><rect x="451.0" y="171.0" width="38" height="16" rx="3"/><text x="470.0" y="183.0">reads</text></g><path class="edge" data-type="owns" data-from="Integrator" data-to="Attempt" d="M62.1,162.0 Q139.0,81.0 213.5,81.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Integrator" data-to="Attempt"><rect x="123.0" y="73.0" width="32" height="16" rx="3"/><text x="139.0" y="85.0">owns</text></g><path class="edge" data-type="requests" data-from="Integrator" data-to="ERP" d="M83.6,162.0 Q139.0,137.0 223.5,137.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Integrator" data-to="ERP"><rect x="111.0" y="129.0" width="56" height="16" rx="3"/><text x="139.0" y="141.0">requests</text></g><path class="edge" data-type="owns" data-from="ERP" data-to="Downstream" d="M279.5,137.0 Q364.0,137.0 419.0,137.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="ERP" data-to="Downstream"><rect x="348.0" y="129.0" width="32" height="16" rx="3"/><text x="364.0" y="141.0">owns</text></g><path class="edge" data-type="projects" data-from="Attempt" data-to="Desk" d="M289.5,81.0 Q364.0,81.0 425.5,76.9" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Attempt" data-to="Desk"><rect x="336.0" y="73.0" width="56" height="16" rx="3"/><text x="364.0" y="85.0">projects</text></g><g class="node" data-id="Reviewer"><rect x="194.0" y="8.0" width="115" height="34" rx="4"/><text x="251.5" y="29.5">负责人和审批人</text></g><g class="node" data-id="Desk"><rect x="425.5" y="57.0" width="89" height="34" rx="4"/><text x="470.0" y="78.5">合同工作台</text></g><g class="node" data-id="Contract"><rect x="631.0" y="57.0" width="76" height="34" rx="4"/><text x="669.0" y="78.5">合同服务</text></g><g class="node" data-id="Bundle"><rect x="1015.0" y="22.0" width="89" height="34" rx="4"/><text x="1059.5" y="43.5">冻结送审包</text></g><g class="node" data-id="Decision"><rect x="817.0" y="57.0" width="76" height="34" rx="4"/><text x="855.0" y="78.5">审批决定</text></g><g class="node" data-id="Sign"><rect x="817.0" y="155.0" width="76" height="34" rx="4"/><text x="855.0" y="176.5">签署系统</text></g><g class="node" data-id="Receipt"><rect x="1021.5" y="155.0" width="76" height="34" rx="4"/><text x="1059.5" y="176.5">签署通知</text></g><g class="node" data-id="Inbox"><rect x="1214.0" y="189.0" width="89" height="34" rx="4"/><text x="1258.5" y="210.5">持久接收箱</text></g><g class="node" data-id="Integrator"><rect x="8.0" y="162.0" width="76" height="34" rx="4"/><text x="46.0" y="183.5">集成服务</text></g><g class="node" data-id="Attempt"><rect x="213.5" y="64.0" width="76" height="34" rx="4"/><text x="251.5" y="85.5">同步尝试</text></g><g class="node" data-id="ERP"><rect x="223.5" y="120.0" width="56" height="34" rx="4"/><text x="251.5" y="141.5">ERP</text></g><g class="node" data-id="Downstream"><rect x="419.0" y="120.0" width="102" height="34" rx="4"/><text x="470.0" y="141.5">下游合同记录</text></g></svg></div><details class="edge-list"><summary>图中关系的文字列表</summary><ul><li>负责人和审批人 <span class="rel">—operates→</span> 合同工作台</li><li>合同工作台 <span class="rel">—commands→</span> 合同服务</li><li>合同服务 <span class="rel">—owns→</span> 冻结送审包</li><li>合同服务 <span class="rel">—owns→</span> 审批决定</li><li>审批决定 <span class="rel">—depends_on→</span> 冻结送审包</li><li>合同服务 <span class="rel">—requests→</span> 签署系统</li><li>签署系统 <span class="rel">—emits→</span> 签署通知</li><li>签署通知 <span class="rel">—delivers→</span> 持久接收箱</li><li>集成服务 <span class="rel">—reads→</span> 持久接收箱</li><li>集成服务 <span class="rel">—reads→</span> 签署系统</li><li>集成服务 <span class="rel">—owns→</span> 同步尝试</li><li>集成服务 <span class="rel">—requests→</span> ERP</li><li>ERP <span class="rel">—owns→</span> 下游合同记录</li><li>同步尝试 <span class="rel">—projects→</span> 合同工作台</li></ul></details></figure><p>图中关系类型与 <a href="../../../vault/distilled/saas-engineering-atlas/packages/data-ai-control/H09.json">拓扑 JSON</a>一一对应；<code>depends_on</code> 指向前提，不代表文件已经传过去。若实际选用 Ironclad 作为合同生命周期管理（contract lifecycle management，<abbr title="contract lifecycle management：合同生命周期管理">CLM</abbr>）的权威系统，适配层应读取它的工作流、记录与权限结果，不再用本地的绿色状态覆盖它的决定。</p>
+<figure class="graph-fig"><div class="graph-wrap"><svg class="graph" viewBox="0 0 1311 231" width="1311" height="231" style="max-width:1508px;min-width:1049px" role="img" aria-label="H09 · 文档版本、审批与下游记录"><defs><marker id="arrow-g1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arrowhead"/></marker></defs><path class="edge" data-type="operates" data-from="Reviewer" data-to="Desk" d="M309.0,25.0 Q364.0,25.0 433.2,57.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Reviewer" data-to="Desk"><rect x="336.0" y="17.0" width="56" height="16" rx="3"/><text x="364.0" y="29.0">operates</text></g><path class="edge" data-type="commands" data-from="Desk" data-to="Contract" d="M514.5,74.0 Q576.0,74.0 631.0,74.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Desk" data-to="Contract"><rect x="548.0" y="66.0" width="56" height="16" rx="3"/><text x="576.0" y="78.0">commands</text></g><path class="edge" data-type="owns" data-from="Contract" data-to="Bundle" d="M706.6,57.0 Q762.0,32.0 808.5,32.0 Q855.0,32.0 904.5,32.0 Q954.0,32.0 1015.0,36.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Contract" data-to="Bundle"><rect x="839.0" y="24.0" width="32" height="16" rx="3"/><text x="855.0" y="36.0">owns</text></g><path class="edge" data-type="owns" data-from="Contract" data-to="Decision" d="M707.0,74.0 Q762.0,74.0 817.0,74.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Contract" data-to="Decision"><rect x="746.0" y="66.0" width="32" height="16" rx="3"/><text x="762.0" y="78.0">owns</text></g><path class="edge" data-type="depends_on" data-from="Decision" data-to="Bundle" d="M893.0,74.0 Q954.0,74.0 1015.0,53.8" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Decision" data-to="Bundle"><rect x="920.0" y="66.0" width="68" height="16" rx="3"/><text x="954.0" y="78.0">depends_on</text></g><path class="edge" data-type="requests" data-from="Contract" data-to="Sign" d="M695.4,91.0 Q762.0,134.0 817.0,156.5" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Contract" data-to="Sign"><rect x="734.0" y="126.0" width="56" height="16" rx="3"/><text x="762.0" y="138.0">requests</text></g><path class="edge" data-type="emits" data-from="Sign" data-to="Receipt" d="M893.0,172.0 Q954.0,172.0 1021.5,172.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Sign" data-to="Receipt"><rect x="935.0" y="164.0" width="38" height="16" rx="3"/><text x="954.0" y="176.0">emits</text></g><path class="edge" data-type="delivers" data-from="Receipt" data-to="Inbox" d="M1097.5,172.0 Q1159.0,172.0 1214.0,190.8" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Receipt" data-to="Inbox"><rect x="1131.0" y="164.0" width="56" height="16" rx="3"/><text x="1159.0" y="176.0">delivers</text></g><path class="edge" data-type="reads" data-from="Integrator" data-to="Inbox" d="M84.0,190.0 Q139.0,206.0 195.3,206.0 Q251.5,206.0 307.8,206.0 Q364.0,206.0 417.0,206.0 Q470.0,206.0 523.0,206.0 Q576.0,206.0 622.5,206.0 Q669.0,206.0 715.5,206.0 Q762.0,206.0 808.5,206.0 Q855.0,206.0 904.5,206.0 Q954.0,206.0 1006.8,206.0 Q1059.5,206.0 1109.3,206.0 Q1159.0,206.0 1214.0,206.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Integrator" data-to="Inbox"><rect x="650.0" y="198.0" width="38" height="16" rx="3"/><text x="669.0" y="210.0">reads</text></g><path class="edge" data-type="reads" data-from="Integrator" data-to="Sign" d="M84.0,179.0 Q139.0,179.0 195.3,179.0 Q251.5,179.0 307.8,179.0 Q364.0,179.0 417.0,179.0 Q470.0,179.0 523.0,179.0 Q576.0,179.0 622.5,179.0 Q669.0,179.0 715.5,179.0 Q762.0,179.0 817.0,174.9" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Integrator" data-to="Sign"><rect x="451.0" y="171.0" width="38" height="16" rx="3"/><text x="470.0" y="183.0">reads</text></g><path class="edge" data-type="owns" data-from="Integrator" data-to="Attempt" d="M62.1,162.0 Q139.0,81.0 213.5,81.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Integrator" data-to="Attempt"><rect x="123.0" y="73.0" width="32" height="16" rx="3"/><text x="139.0" y="85.0">owns</text></g><path class="edge" data-type="requests" data-from="Integrator" data-to="ERP" d="M83.6,162.0 Q139.0,137.0 223.5,137.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Integrator" data-to="ERP"><rect x="111.0" y="129.0" width="56" height="16" rx="3"/><text x="139.0" y="141.0">requests</text></g><path class="edge" data-type="owns" data-from="ERP" data-to="Downstream" d="M279.5,137.0 Q364.0,137.0 419.0,137.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="ERP" data-to="Downstream"><rect x="348.0" y="129.0" width="32" height="16" rx="3"/><text x="364.0" y="141.0">owns</text></g><path class="edge" data-type="projects" data-from="Attempt" data-to="Desk" d="M289.5,81.0 Q364.0,81.0 425.5,76.9" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Attempt" data-to="Desk"><rect x="336.0" y="73.0" width="56" height="16" rx="3"/><text x="364.0" y="85.0">projects</text></g><g class="node" data-id="Reviewer"><rect x="194.0" y="8.0" width="115" height="34" rx="4"/><text x="251.5" y="29.5">负责人和审批人</text></g><g class="node" data-id="Desk"><rect x="425.5" y="57.0" width="89" height="34" rx="4"/><text x="470.0" y="78.5">合同工作台</text></g><g class="node" data-id="Contract"><rect x="631.0" y="57.0" width="76" height="34" rx="4"/><text x="669.0" y="78.5">合同服务</text></g><g class="node" data-id="Bundle"><rect x="1015.0" y="22.0" width="89" height="34" rx="4"/><text x="1059.5" y="43.5">冻结送审包</text></g><g class="node" data-id="Decision"><rect x="817.0" y="57.0" width="76" height="34" rx="4"/><text x="855.0" y="78.5">审批决定</text></g><g class="node" data-id="Sign"><rect x="817.0" y="155.0" width="76" height="34" rx="4"/><text x="855.0" y="176.5">签署系统</text></g><g class="node" data-id="Receipt"><rect x="1021.5" y="155.0" width="76" height="34" rx="4"/><text x="1059.5" y="176.5">签署通知</text></g><g class="node" data-id="Inbox"><rect x="1214.0" y="189.0" width="89" height="34" rx="4"/><text x="1258.5" y="210.5">持久接收箱</text></g><g class="node" data-id="Integrator"><rect x="8.0" y="162.0" width="76" height="34" rx="4"/><text x="46.0" y="183.5">集成服务</text></g><g class="node" data-id="Attempt"><rect x="213.5" y="64.0" width="76" height="34" rx="4"/><text x="251.5" y="85.5">同步尝试</text></g><g class="node" data-id="ERP"><rect x="223.5" y="120.0" width="56" height="34" rx="4"/><text x="251.5" y="141.5">ERP</text></g><g class="node" data-id="Downstream"><rect x="419.0" y="120.0" width="102" height="34" rx="4"/><text x="470.0" y="141.5">下游合同记录</text></g></svg></div><details class="edge-list"><summary>图中关系的文字列表</summary><ul><li>负责人和审批人 <span class="rel">—operates→</span> 合同工作台</li><li>合同工作台 <span class="rel">—commands→</span> 合同服务</li><li>合同服务 <span class="rel">—owns→</span> 冻结送审包</li><li>合同服务 <span class="rel">—owns→</span> 审批决定</li><li>审批决定 <span class="rel">—depends_on→</span> 冻结送审包</li><li>合同服务 <span class="rel">—requests→</span> 签署系统</li><li>签署系统 <span class="rel">—emits→</span> 签署通知</li><li>签署通知 <span class="rel">—delivers→</span> 持久接收箱</li><li>集成服务 <span class="rel">—reads→</span> 持久接收箱</li><li>集成服务 <span class="rel">—reads→</span> 签署系统</li><li>集成服务 <span class="rel">—owns→</span> 同步尝试</li><li>集成服务 <span class="rel">—requests→</span> ERP</li><li>ERP <span class="rel">—owns→</span> 下游合同记录</li><li>同步尝试 <span class="rel">—projects→</span> 合同工作台</li></ul></details></figure><p>图中关系类型与 <a href="../../../vault/distilled/saas-engineering-atlas/packages/data-ai-control/H09.json">拓扑 JSON</a>一一对应；<code>depends_on</code> 指向前提，不代表文件已经传过去。若实际选用 Ironclad 作为合同生命周期管理（contract lifecycle management，<abbr title="contract lifecycle management：合同生命周期管理">CLM</abbr>）的权威系统，适配层应读取它的工作流、记录与权限结果，以它的决定为准，本地状态只做投影。</p>
 </section>
 <section class="scene" aria-labelledby="演算审批依赖与等待时间"><header class="scene-head"><h2 id="演算审批依赖与等待时间"><span class="scene-no" aria-hidden="true">04</span><span class="visually-hidden">演算：</span><span class="head">审批依赖与等待时间</span></h2></header><p class="scene-lede">按依赖排序，本例审批从串行的 6.5 小时缩到 3.5 小时；人员是否有空另算。</p>
 <p>审批能否并行，取决于信息依赖。本例的隐私审阅 P 用 2 小时判断附件要求及额外实施成本；财务 F 需要 P 的成本结论，再用 1 小时审阅预算；法务 L 可以独立用 3 小时审阅正文；负责人 R 在 L、F 都完成后用 0.5 小时核对发签条件。这里的时长是假设的连续处理时间，先忽略排队、工作日历和返工。</p>
@@ -160,39 +161,266 @@
 <td align="right">3.5 小时</td>
 </tr>
 </tbody></table></div>
-<p>并行的价值在于：最长前提链只有 3 小时，最后复核再用 0.5 小时。加速也有边界：即使把 F 从 1 小时缩到 0.2 小时，L 仍需 3 小时，整体还是 3.5 小时。把任务分给更多 worker，也不会加快正由人审阅的法务节点。</p>
-<p>Kahn 拓扑排序维护每个节点的剩余前提数，出队一个节点就减少它的后继计数，时间和空间量级均为 <code>O(V+E)</code>；V 是任务数，E 是依赖数。工作台可在配置发布时检查有无环：若处理完的节点少于 V 个，剩下的节点之间存在循环依赖。反例是配置者又要求“P 等 R 发签复核后开始”，形成 <code>P → F → R → P</code>，所有涉及节点互等；重试提醒和增加机器都无法解除这个政策错误。</p>
-<p>拓扑排序给出合法的先后次序，人员是否有空是另一回事。若 P 和 L 必须由同一位有双重资格的人处理，就不能在第 0 小时并行开始，3.5 小时只是忽略资源竞争的下界。实际调度还需工作日历、资格、优先级和不可拆分时段。本例不做资源优化；最早完成时间也不是合同处理的服务级别协议（service-level agreement，<abbr title="service-level agreement：服务级别协议">SLA</abbr>）承诺。</p>
-<p>版本变化也会改变图。v7 金额为 80,000 记账单位，v8 为 120,000；本例政策规定高于 100,000 需增加负责人上级 E，在 L、F 后用 1 小时批准，R 改为等待 E。重新计算得到 4.5 小时。若正文已经改成 120,000，metadata 仍写 80,000，拓扑算法会正确执行错误的图，漏掉 E。问题出在输入不一致：提交前要核对正文与结构化字段；自动抽取只能提示冲突，替代不了负责人确认。</p>
-</section>
+<p>并行之后，整体时长由最长前提链决定：这条链 3 小时，最后复核再用 0.5 小时。把 F 从 1 小时缩到 0.2 小时，L 仍需 3 小时，整体还是 3.5 小时；正由人审阅的法务节点，快慢取决于审阅人，与 worker 数量无关。</p>
+<figure class="drawing" data-drawing="h09-schedule"><div class="dw-scroll" style="--dw-min:600px;--dw-max:900px">
+<svg viewBox="0 0 780 300" role="img" aria-labelledby="h09-schedule-t h09-schedule-d">
+  <title id="h09-schedule-t">四项审批：串行与按依赖排序</title>
+  <desc id="h09-schedule-d">串行执行 P 2 小时、F 1 小时、L 3 小时、R 0.5 小时，共 6.5 小时。按依赖排序时，P 与 L 在第 0 小时同时开始；F 等 P，在第 2 至 3 小时；R 等 F 与 L，在第 3 至 3.5 小时，共 3.5 小时。</desc>
+  <g data-s="1">
+    <text class="t-b end" x="108" y="56">串行</text>
+    <rect class="box f2" x="120" y="36" width="180" height="28"/><text class="t-n mid" x="210" y="55">P</text>
+    <rect class="box f2" x="300" y="36" width="90" height="28"/><text class="t-n mid" x="345" y="55">F</text>
+    <rect class="box f2" x="390" y="36" width="270" height="28"/><text class="t-n mid" x="525" y="55">L</text>
+    <rect class="box f2" x="660" y="36" width="45" height="28"/><text class="t-n mid" x="682" y="55">R</text>
+    <text class="t-n" x="714" y="55">6.5 小时</text>
+  </g>
+  <path class="ln-soft" d="M20 86 H760"/>
+  <text class="t-s" x="20" y="104">按依赖排序</text>
+  <g data-s="2">
+    <text class="t end" x="108" y="134">P 隐私</text>
+    <rect class="box f1" x="120" y="116" width="180" height="26"/><text class="t-n mid" x="210" y="134">2 小时</text>
+    <text class="t end" x="108" y="172">L 法务</text>
+    <rect class="box f1" x="120" y="154" width="270" height="26"/><text class="t-n mid" x="255" y="172">3 小时</text>
+  </g>
+  <g data-s="3">
+    <text class="t end" x="108" y="210">F 财务</text>
+    <path class="ln-dash" d="M300 142 V192"/>
+    <rect class="box f1" x="300" y="192" width="90" height="26"/><text class="t-n mid" x="345" y="210">1 小时</text>
+    <text class="t-s" x="400" y="210">等 P</text>
+  </g>
+  <g data-s="4">
+    <text class="t end" x="108" y="248">R 发签复核</text>
+    <rect class="box f-ink" x="390" y="230" width="45" height="26"/>
+    <text class="t-n" x="444" y="248">0.5 小时</text><text class="t-s" x="512" y="248">等 F、L</text>
+    <path class="ln-em" d="M435 96 V262"/>
+    <text class="t-n t-em" x="443" y="114">3.5 小时</text>
+  </g>
+  <path class="ln" d="M120 268 H705"/>
+  <g class="t-s">
+    <text class="t-s mid" x="120" y="286">0</text><text class="t-s mid" x="210" y="286">1</text><text class="t-s mid" x="300" y="286">2</text><text class="t-s mid" x="390" y="286">3</text><text class="t-s mid" x="480" y="286">4</text><text class="t-s mid" x="570" y="286">5</text><text class="t-s mid" x="660" y="286">6</text><text class="t-s" x="714" y="286">小时</text>
+  </g>
+  <path class="ln" d="M120 268 v5 M210 268 v5 M300 268 v5 M390 268 v5 M480 268 v5 M570 268 v5 M660 268 v5 M705 268 v5"/>
+</svg>
+</div>
+<figcaption>P 与 L 没有共同前提，同时开始；F 接在 P 之后，R 等到 F、L 都完成，整体由最长的前提链加 0.5 小时决定。</figcaption></figure><p>Kahn 拓扑排序维护每个节点的剩余前提数，出队一个节点就减少它的后继计数，时间和空间量级均为 <code>O(V+E)</code>；V 是任务数，E 是依赖数。工作台可在配置发布时检查有无环：若处理完的节点少于 V 个，剩下的节点之间存在循环依赖。反例是配置者又要求“P 等 R 发签复核后开始”，形成 <code>P → F → R → P</code>，所有涉及节点互等。这是政策配置错误，在发布检查时拒绝，重试提醒和增加机器都解除不了。</p>
+<p>拓扑排序给出合法的先后次序，人员是否有空另行计算。若 P 和 L 必须由同一位有双重资格的人处理，第 0 小时只能开始其中一项，3.5 小时是忽略资源竞争的下界。实际调度还需工作日历、资格、优先级和不可拆分时段。本例不做资源优化；最早完成时间是计算出的下界，与合同处理的服务级别协议（service-level agreement，<abbr title="service-level agreement：服务级别协议">SLA</abbr>）承诺分开。</p>
+<p>版本变化也会改变图。v7 金额为 80,000 记账单位，v8 为 120,000；本例政策规定高于 100,000 需增加负责人上级 E，在 L、F 后用 1 小时批准，R 改为等待 E。重新计算得到 4.5 小时。若正文已经改成 120,000，metadata 仍写 80,000，金额规则读到 80,000，图中没有 E，拓扑算法正确地算出 3.5 小时。问题出在输入不一致：提交前核对正文与结构化字段；自动抽取提示冲突，由负责人确认。</p>
+<figure class="drawing" data-drawing="h09-v8"><div class="dw-scroll" style="--dw-min:620px;--dw-max:920px">
+<svg viewBox="0 0 780 270" role="img" aria-labelledby="h09-v8-t h09-v8-d">
+  <title id="h09-v8-t">v8 的审批图取决于字段里的金额</title>
+  <desc id="h09-v8-d">政策规定金额高于 100,000 需加上级审批 E，在 L、F 之后用 1 小时，R 改为等待 E。正文与字段都是 120,000 时，图中有 E，共 4.5 小时。正文为 120,000、字段仍是 80,000 时，算法按字段建图，漏掉 E，得出 3.5 小时。</desc>
+  <text class="t-s" x="20" y="22">政策：金额高于 100,000 时增加上级审批 E</text>
+  <path class="ln-soft" d="M390 40 V250"/>
+  <g data-s="1">
+    <text class="t-b" x="20" y="58">正文 120,000 · 字段 120,000</text>
+    <rect class="box" x="20" y="74" width="64" height="44"/><text class="t-b mid" x="52" y="92">P</text><text class="t-s mid" x="52" y="110">2 小时</text>
+    <rect class="box" x="116" y="74" width="64" height="44"/><text class="t-b mid" x="148" y="92">F</text><text class="t-s mid" x="148" y="110">1 小时</text>
+    <rect class="box f1" x="212" y="74" width="64" height="44"/><text class="t-b mid" x="244" y="92">E</text><text class="t-s mid" x="244" y="110">1 小时</text>
+    <rect class="box" x="308" y="74" width="64" height="44"/><text class="t-b mid" x="340" y="92">R</text><text class="t-s mid" x="340" y="110">0.5 小时</text>
+    <rect class="box" x="116" y="150" width="64" height="44"/><text class="t-b mid" x="148" y="168">L</text><text class="t-s mid" x="148" y="186">3 小时</text>
+    <path class="ln" d="M84 96 H116 M108 90 L116 96 L108 102"/>
+    <path class="ln" d="M180 96 H212 M204 90 L212 96 L204 102"/>
+    <path class="ln" d="M276 96 H308 M300 90 L308 96 L300 102"/>
+    <path class="ln" d="M180 172 H244 V118 M238 126 L244 118 L250 126"/>
+    <text class="t-big" x="20" y="240">4.5</text><text class="t" x="64" y="240">小时</text>
+  </g>
+  <g data-s="2">
+    <text class="t-b" x="410" y="58">正文 120,000 · 字段 80,000</text>
+    <rect class="box" x="410" y="74" width="64" height="44"/><text class="t-b mid" x="442" y="92">P</text><text class="t-s mid" x="442" y="110">2 小时</text>
+    <rect class="box" x="506" y="74" width="64" height="44"/><text class="t-b mid" x="538" y="92">F</text><text class="t-s mid" x="538" y="110">1 小时</text>
+    <rect class="box-dash" x="602" y="74" width="64" height="44"/><text class="t-em mid" x="634" y="101">漏掉 E</text>
+    <rect class="box" x="698" y="74" width="64" height="44"/><text class="t-b mid" x="730" y="92">R</text><text class="t-s mid" x="730" y="110">0.5 小时</text>
+    <rect class="box" x="506" y="150" width="64" height="44"/><text class="t-b mid" x="538" y="168">L</text><text class="t-s mid" x="538" y="186">3 小时</text>
+    <path class="ln" d="M474 96 H506 M498 90 L506 96 L498 102"/>
+    <path class="ln" d="M570 86 C 600 48, 680 48, 714 74 M705 72 L714 74 L711 65"/>
+    <path class="ln" d="M570 172 H730 V118 M724 126 L730 118 L736 126"/>
+    <text class="t-big" x="410" y="240">3.5</text><text class="t" x="454" y="240">小时</text>
+    <text class="t-s" x="500" y="240">算法照常执行，输入的图少了一项审批</text>
+  </g>
+</svg>
+</div>
+<figcaption>同一份 v8 正文，字段写 120,000 时图中有 E，共 4.5 小时；字段停在 80,000 时，拓扑排序正确地算出 3.5 小时，却漏掉了 E。</figcaption></figure></section>
 <section class="scene" aria-labelledby="签署回执归档与映射"><header class="scene-head"><h2 id="签署回执归档与映射"><span class="scene-no" aria-hidden="true">05</span><span class="head">签署回执、归档与映射</span></h2></header><p class="scene-lede">归档凭核对过的签署请求最终状态，下游记录按稳定的映射键和导出代次写入，各目的地分别确认。</p>
 <p>签署回调说明的是一次外部事件。Ironclad 文档区分签名收集事件和全部签署事件；手动上传路径中，“全部签署”还可能来自用户声明，产品不校验上传文件包含的签名是否正确。完成工作流通知则另外携带 Record IDs。<a href="https://developer.ironcladapp.com/reference/webhooks" class="ext" rel="noopener">Webhooks — signatures collected / fully signed / workflow completed</a>。因此，本例的归档 guard 检查全部所需签署人、请求版本和证据路径；手动上传增加人工复核，不把收到带有 <code>signed</code> 字样的事件当成自动放行依据。</p>
-<p>正常路径是：v7 的必要审批有效，签署请求 S7 被受理，两位签署人各完成签署，服务核对 S7 的最终状态，保存签署文件和证据，建立归档记录 A7。集成服务根据固定映射版本 M3 从 A7 提取金额、币种或记账单位、对方实体 ID 和生效区间，生成 ERP 命令。日期类型、枚举、缺失值和单位在映射前验证；验证不通过的记录进入 <code>blocked</code>，操作员能看到具体字段和原始出处，不会出现字段半空却标为成功的记录。</p>
-<p>映射键至少包含 <code>(tenant, provider_account, contract_id, destination, destination_record_id)</code>；某一次写入另有 <code>(source_record_version, mapping_version, operation_id)</code>。合同号是给人看的编号，不能代替跨租户身份。同一合同的新修订通常更新同一下游业务记录并保留版本史；不同目的地各有同步尝试，CRM 成功不意味着 ERP 已成功，所以 UI 上可能同时出现“已归档；ERP 待核对”。每个 <code>(tenant, contract_id, destination)</code> 还由本地事务分配单调递增的 <code>export_generation</code>，每次尝试冻结写前条件 <code>expected_destination_version</code>。成功回执保存写后 <code>committed_destination_version</code>；本例协议每次新写入将版本加一，因此写前为 0 时写后应为 1。外部返回记录 ID 后，还要核对保存结果、导出代次、目标字段与写后版本，都无误才把本次尝试标为 <code>confirmed</code>；读回的版本应等于写后版本，不应再等于写前条件。</p>
-<p>最危险的故障发生在 ERP 已创建记录、worker 尚未保存响应时。若下游支持按外部键原子 upsert，并能按该键查询，重试可查询并确认原记录；若支持幂等请求键，保留同一键并遵守其有效期。这两项能力都要按实际下游的接口契约核实。本例假定 ERP 提供按外部键定位的条件写入：在同一原子操作中检查导出代次不落后、目标当前版本等于请求的 <code>expected_destination_version</code>，再递增目标版本并保存 payload；相同代次和相同 payload 只返回原提交结果及其写后版本，不再次递增；相同代次但内容不同则拒绝。这样旧导出迟到时无法把新金额覆盖回去。只有 upsert，能防止重复建记录，却防不住错误覆盖。若查回时目标已是更高代次，旧尝试标为 <code>superseded</code>，保留被替代的证据，旧 payload 不再算作当前值。</p>
-<p>真实下游没有条件写入时，本地应按合同和目的地串行发送，并让 unknown 阻断后续导出。这只管得住自己的发送顺序，外部人工操作或另一个集成账号仍可能并发覆盖。若下游还不能幂等写入或可靠查回，超时必须停在 unknown，由人工对账；换一个新 operation ID 继续创建会制造第二份承诺。</p>
-<p>接收边界先按实际 provider 的认证契约验证来源，并由已验证的账户映射确定租户，不能任由 payload 选择租户；具体认证协议需在接入时继续核查。签署通知可能迟到，也可能被重复处理，所以接收箱先保存原始事件摘要、来源账户、接收序号与映射身份，处理时再核对对应的请求。本例不假定通知提供全局唯一事件 ID；订阅的 webhook ID 也不能直接用来去重每个事件。业务效果仍由“某租户、某签署请求、某归档版本只能对应一个结果”的唯一约束保护。旧 S7 通知抵达时，当前签署请求已是 S8，通知仍写入 S7 的历史，不将 S8 标为签完。</p>
+<p>正常路径是：v7 的必要审批有效，签署请求 S7 被受理，两位签署人各完成签署，服务核对 S7 的最终状态，保存签署文件和证据，建立归档记录 A7。集成服务根据固定映射版本 M3 从 A7 提取金额、币种或记账单位、对方实体 ID 和生效区间，生成 ERP 命令。日期类型、枚举、缺失值和单位在映射前验证；验证不通过的记录进入 <code>blocked</code>，操作员能看到具体字段和原始出处；标为成功的记录字段齐全。</p>
+<p>映射键至少包含 <code>(tenant, provider_account, contract_id, destination, destination_record_id)</code>；某一次写入另有 <code>(source_record_version, mapping_version, operation_id)</code>。合同号是给人看的编号，跨租户身份由映射键承担。同一合同的新修订通常更新同一下游业务记录并保留版本史；不同目的地各有同步尝试，CRM 与 ERP 各自确认，所以 UI 上可能同时出现“已归档；ERP 待核对”。每个 <code>(tenant, contract_id, destination)</code> 还由本地事务分配单调递增的 <code>export_generation</code>，每次尝试冻结写前条件 <code>expected_destination_version</code>。成功回执保存写后 <code>committed_destination_version</code>；本例协议每次新写入将版本加一，因此写前为 0 时写后应为 1。外部返回记录 ID 后，还要核对保存结果、导出代次、目标字段与写后版本，都无误才把本次尝试标为 <code>confirmed</code>；读回的版本应等于写后版本。</p>
+<p>最危险的故障发生在 ERP 已创建记录、worker 尚未保存响应时。若下游支持按外部键原子 upsert，并能按该键查询，重试可查询并确认原记录；若支持幂等请求键，保留同一键并遵守其有效期。这两项能力都要按实际下游的接口契约核实。本例假定 ERP 提供按外部键定位的条件写入：在同一原子操作中检查导出代次不落后、目标当前版本等于请求的 <code>expected_destination_version</code>，再递增目标版本并保存 payload；相同代次和相同 payload 只返回原提交结果及其写后版本，不再次递增；相同代次但内容不同则拒绝。下一次导出用代次 2 和写前条件 1 写入新金额，写后版本为 2；此后迟到的代次 1 落后，被原子拒绝，新金额留在原处。单靠 upsert 只防重复建记录；防错误覆盖靠代次与版本的比较。若查回时目标已是更高代次，旧尝试标为 <code>superseded</code>，保留被替代的证据，当前值仍是新代次的 payload。</p>
+<figure class="drawing" data-drawing="h09-generations"><div class="dw-scroll" style="--dw-min:620px;--dw-max:920px">
+<svg viewBox="0 0 780 240" role="img" aria-labelledby="h09-generations-t h09-generations-d">
+  <title id="h09-generations-t">导出代次与 ERP 记录版本</title>
+  <desc id="h09-generations-d">代次 1 带写前条件 0 写入，ERP 记录版本由 0 变为 1。同一代次、同一 payload 重投，返回原提交结果，版本仍为 1。代次 2 带写前条件 1 写入新金额，版本变为 2。代次 1 随后迟到，代次落后，被拒绝，旧尝试标为 superseded，版本仍为 2。</desc>
+  <g data-s="1">
+    <rect class="box" x="110" y="24" width="120" height="52"/><text class="t-b mid" x="170" y="46">代次 1</text><text class="t-s mid" x="170" y="66">写前 0</text>
+    <path class="ln" d="M170 76 V160 M164 152 L170 160 L176 152"/>
+    <circle class="f-ink" cx="170" cy="166" r="5"/>
+    <text class="t mid" x="170" y="200">0 → 1</text><text class="t-s mid" x="170" y="218">写入</text>
+  </g>
+  <g data-s="2">
+    <rect class="box" x="270" y="24" width="120" height="52"/><text class="t-b mid" x="330" y="46">代次 1 重投</text><text class="t-s mid" x="330" y="66">同一 payload</text>
+    <path class="ln" d="M330 76 V160 M324 152 L330 160 L336 152"/>
+    <circle class="box" cx="330" cy="166" r="5"/>
+    <text class="t mid" x="330" y="200">仍为 1</text><text class="t-s mid" x="330" y="218">返回原提交结果</text>
+  </g>
+  <g data-s="3">
+    <rect class="box f1" x="430" y="24" width="120" height="52"/><text class="t-b mid" x="490" y="46">代次 2</text><text class="t-s mid" x="490" y="66">写前 1 · 新金额</text>
+    <path class="ln" d="M490 76 V160 M484 152 L490 160 L496 152"/>
+    <circle class="f-ink" cx="490" cy="166" r="5"/>
+    <text class="t mid" x="490" y="200">1 → 2</text><text class="t-s mid" x="490" y="218">写入</text>
+  </g>
+  <g data-s="4">
+    <rect class="box-dash" x="590" y="24" width="120" height="52"/><text class="t-b mid" x="650" y="46">代次 1 迟到</text><text class="t-s mid" x="650" y="66">写前 0</text>
+    <path class="ln-em" d="M650 76 V128 M636 128 H664"/>
+    <text class="t-em mid" x="650" y="200">拒绝，仍为 2</text><text class="t-s mid" x="650" y="218">旧尝试 superseded</text>
+  </g>
+  <text class="t-b" x="20" y="171">ERP 记录</text>
+  <path class="ln-strong" d="M90 166 H750"/>
+  <text class="t-n mid" x="128" y="156">版本 0</text>
+  <text class="t-n mid" x="250" y="156">版本 1</text>
+  <text class="t-n mid" x="410" y="156">版本 1</text>
+  <text class="t-n mid" x="570" y="156">版本 2</text>
+  <text class="t-n mid" x="712" y="156">版本 2</text>
+</svg>
+</div>
+<figcaption>写入在同一原子操作中比较代次与目标版本：重投不再递增，落后的代次 1 被拒绝，新金额留在版本 2。</figcaption></figure><p>真实下游没有条件写入时，本地应按合同和目的地串行发送，并让 unknown 阻断后续导出。这只管得住自己的发送顺序，外部人工操作或另一个集成账号仍可能并发覆盖。若下游还不能幂等写入或可靠查回，超时必须停在 unknown，由人工对账；换一个新 operation ID 继续创建会制造第二份承诺。</p>
+<p>接收边界先按实际 provider 的认证契约验证来源，并由已验证的账户映射确定租户，payload 里的租户字段不参与选择；具体认证协议需在接入时继续核查。签署通知可能迟到，也可能被重复处理，所以接收箱先保存原始事件摘要、来源账户、接收序号与映射身份，处理时再核对对应的请求。本例不假定通知提供全局唯一事件 ID；订阅的 webhook ID 标识订阅本身，去重每个事件要用上面保存的接收信息。业务效果仍由“某租户、某签署请求、某归档版本只能对应一个结果”的唯一约束保护。旧 S7 通知抵达时，当前签署请求已是 S8，通知仍写入 S7 的历史，不将 S8 标为签完。</p>
 </section>
 <section class="scene" aria-labelledby="撤回取消与补偿"><header class="scene-head"><h2 id="撤回取消与补偿"><span class="scene-no" aria-hidden="true">06</span><span class="head">撤回、取消与补偿</span></h2></header><p class="scene-lede">恢复分成三种动作：未认领的 queued outbox 可以在事务内阻止发送；已经发送但结果未知的请求先查回；已确认的外部效果用新操作补偿。</p>
-<p>内部审阅期间撤回 v7，可以使当前审批轮次失效。只有仍为 <code>queued</code>、尚未被 worker 认领的 S7，才允许用条件更新在本地取消，并抑制发送；认领与取消只能有一方成功。处于 <code>dispatching</code> 的尝试可能已经发出请求，即使尚未保存外部 ID，也不能直接写成已取消。此时先保存取消意图并进入核对路径。已确认发出的请求改为 <code>cancel_pending</code>，再向外部请求取消，得到确认才显示 <code>cancelled</code>。Ironclad 文档提供签署期间取消请求并返回 Review 的操作；具体审批重置仍应按配置核查。<a href="https://support.ironcladapp.com/hc/en-us/articles/12274796145303-Cancel-Signatures-and-Return-a-Workflow-to-Review" class="ext" rel="noopener">Cancel Signatures and Return a Workflow to Review</a>。</p>
-<p><code>unknown</code> 查回后，请求可能已在待签、部分签署、全部签署或已取消，恢复按查到的实际结果走，不一律退回“待签”。带有取消意图且查到仍待签或部分签署时进入取消中；查到全部签署时进入争议。查不到请求时，只有 provider 能可靠证明它未被受理，才允许重新发送；否则保持 unknown。</p>
-<p>取消与最后一名签署人提交可能竞争。本例在取消结果未明时停止新的下游同步；若核对发现请求已完整签署，保留签名及时间，标记争议并由合同负责人处理。已签状态不能为了让“撤回成功”的提示成立而在数据库里改回未签。已经进入 ERP 的记录也需要独立的修订或作废命令；该命令自身有申请人、理由、权限、外部回执和失败状态。下游已开票、交付或支付时，合同字段被删除不等于那些义务随之消失。</p>
-<p>补偿确认后仍保留原记录和修订关系，不用硬删除伪造“从未发生”。如果要求某字段不再向下游传播，本例把它交给后续的映射政策和撤回任务处理；历史保留到什么范围由组织决定，不由一条通用同步脚本决定。</p>
+<p>内部审阅期间撤回 v7，可以使当前审批轮次失效。只有仍为 <code>queued</code>、尚未被 worker 认领的 S7，才允许用条件更新在本地取消，并抑制发送；认领与取消只能有一方成功。处于 <code>dispatching</code> 的尝试可能已经发出请求，即使尚未保存外部 ID，也先保存取消意图并进入核对路径，状态保持未定。已确认发出的请求改为 <code>cancel_pending</code>，再向外部请求取消，得到确认才显示 <code>cancelled</code>。Ironclad 文档提供签署期间取消请求并返回 Review 的操作；具体审批重置仍应按配置核查。<a href="https://support.ironcladapp.com/hc/en-us/articles/12274796145303-Cancel-Signatures-and-Return-a-Workflow-to-Review" class="ext" rel="noopener">Cancel Signatures and Return a Workflow to Review</a>。</p>
+<p><code>unknown</code> 查回后，请求可能已在待签、部分签署、全部签署或已取消，恢复按查到的实际结果走。带有取消意图且查到仍待签或部分签署时进入取消中；查到全部签署时进入争议。查不到请求时，只有 provider 能可靠证明它未被受理，才允许重新发送；否则保持 unknown。</p>
+<figure class="drawing" data-drawing="h09-recovery"><div class="dw-scroll" style="--dw-min:640px;--dw-max:960px">
+<svg viewBox="0 0 822 310" role="img" aria-labelledby="h09-recovery-t h09-recovery-d">
+  <title id="h09-recovery-t">取消意图按 S7 所处状态分路</title>
+  <desc id="h09-recovery-d">S7 仍为 queued、未被认领时，条件更新取消成功，发送被抑制。S7 处于 dispatching 或结果未知时，先保存取消意图并查回：查到全部签署进入 disputed；查到待签或部分签署进入 cancel_pending；查不到请求且无法证明未受理时保持 unknown。S7 已确认发出时，进入 cancel_pending，外部确认后为 cancelled。</desc>
+  <g data-s="1">
+    <rect class="box" x="10" y="140" width="120" height="44"/><text class="t-b mid" x="70" y="167">S7 取消意图</text>
+    <path class="ln" d="M130 162 C 155 162, 155 52, 180 52"/>
+    <path class="ln" d="M130 162 H180"/>
+    <path class="ln" d="M130 162 C 155 162, 155 272, 180 272"/>
+    <rect class="box" x="180" y="30" width="150" height="44"/><text class="t-n mid" x="255" y="50">queued</text><text class="t-s mid" x="255" y="66">尚未认领</text>
+    <rect class="box-em" x="180" y="140" width="150" height="44"/><text class="t-n mid" x="255" y="160">dispatching</text><text class="t-s mid" x="255" y="176">已认领，结果未知</text>
+    <rect class="box" x="180" y="250" width="150" height="44"/><text class="t-n mid" x="255" y="270">sent</text><text class="t-s mid" x="255" y="286">已确认发出</text>
+  </g>
+  <g data-s="2">
+    <path class="ln" d="M330 52 H370"/>
+    <rect class="box" x="370" y="30" width="150" height="44"/><text class="t mid" x="445" y="50">条件更新取消</text><text class="t-s mid" x="445" y="66">认领与取消只一方成功</text>
+    <path class="ln" d="M520 52 H580"/>
+    <rect class="box f1" x="580" y="30" width="232" height="46"/><text class="t-s" x="592" y="48">取消先于认领</text><text class="t" x="592" y="67">已取消，发送被抑制</text>
+  </g>
+  <g data-s="3">
+    <path class="ln" d="M330 272 H580"/>
+    <rect class="box f1" x="580" y="250" width="232" height="46"/><text class="t-s" x="592" y="268">已发出，或查回待签、部分签署</text><text class="t-n" x="592" y="287">cancel_pending → cancelled</text>
+  </g>
+  <g data-s="4">
+    <path class="ln" d="M330 162 H370"/>
+    <rect class="box" x="370" y="140" width="150" height="44"/><text class="t mid" x="445" y="160">保存取消意图</text><text class="t-s mid" x="445" y="176">查回实际状态</text>
+    <path class="ln" d="M520 162 C 550 162, 550 123, 580 123"/>
+    <path class="ln" d="M520 162 C 550 162, 550 193, 580 193"/>
+    <path class="ln" d="M520 162 C 550 162, 550 268, 580 268"/>
+    <rect class="box f1" x="580" y="100" width="232" height="46"/><text class="t-s" x="592" y="118">查回：全部签署</text><text class="t" x="592" y="137">disputed，保留签名与时间</text>
+    <rect class="box-dash" x="580" y="170" width="232" height="46"/><text class="t-s" x="592" y="188">查不到，又无法证明未受理</text><text class="t" x="592" y="207">保持 unknown</text>
+  </g>
+</svg>
+</div>
+<figcaption>只有尚未认领的 queued 尝试能在本地直接取消；已认领的尝试先查回，再按查到的结果分路。</figcaption></figure><p>取消与最后一名签署人提交可能竞争。本例在取消结果未明时停止新的下游同步；若核对发现请求已完整签署，保留签名及时间，标记争议并由合同负责人处理。已签状态不能为了让“撤回成功”的提示成立而在数据库里改回未签。已经进入 ERP 的记录也需要独立的修订或作废命令；该命令自身有申请人、理由、权限、外部回执和失败状态。下游已开票、交付或支付时，那些义务各有自己的记录，按各自的命令处理。</p>
+<p>补偿确认后仍保留原记录和修订关系，原记录与补偿记录并存。如果要求某字段不再向下游传播，本例把它交给后续的映射政策和撤回任务处理；历史保留到什么范围由组织决定。</p>
 </section>
-<section class="scene" aria-labelledby="技术选型与规模边界"><header class="scene-head"><h2 id="技术选型与规模边界"><span class="scene-no" aria-hidden="true">07</span><span class="head">技术选型与规模边界</span></h2></header><p class="scene-lede">一个可验证的第一版可以采用 React 或 Vue 做审批工作台，服务端用 TypeScript 的 NestJS 或 Python 的 FastAPI，PostgreSQL 保存版本元数据、决定、操作记录和 outbox，对象存储保存原始 DOCX/<abbr title="Portable Document Format：便携式文档格式">PDF</abbr>。共用 TypeScript 可减少前后端数据类型分叉；Python 便于连接文本分析工具。无论选哪一种，都要在服务端验证输入，编译期类型代替不了权限检查。</p>
-<p>文档审阅若以 PDF 为主，可以用 <a href="https://mozilla.github.io/pdf.js/" class="ext" rel="noopener">PDF.js</a> 显示已冻结 PDF 并把批注单独保存；这种方案便于明确审阅版本，却不保证能还原 DOCX 的可编辑布局。确需在线编辑时，可以评估 ONLYOFFICE 或 Collabora，但需另外验证修订标记、字体、转换一致性、授权与部署成本。富文本组件适合快速做演示；复杂法律文档导入导出后会不会丢失格式或批注，要先试验再下结论。预览输出要能追溯到原始文件，渲染失败时不能用空白页掩盖。</p>
-<p>PostgreSQL 适合把“确认批准有效、写入决定、安排后续任务”放进同一个事务，并用组合唯一约束防止重复记录。身份列应设为非空：按默认语义，唯一约束不把两个空值视为相等，约束列中至少有一列为空的行可以重复存在。<a href="https://www.postgresql.org/docs/current/ddl-constraints.html#DDL-CONSTRAINTS-UNIQUE-CONSTRAINTS" class="ext" rel="noopener">PostgreSQL — Unique Constraints</a>。文件先上传到临时位置，校验大小和摘要后登记引用；崩溃后残留的无引用文件由独立清理任务处理。对象存储保存副本，数据库保存权威记录：文件存在不代表批准已经成立，数据库有引用也不保证文件还能读取。备份恢复检查要实际取回被批准的旧版本，不能只数数据库行。</p>
-<p>工作流规模小时，数据库 outbox 加 worker 已足够解释重试；长时间等待、多个取消分支与跨服务恢复越来越多时，可评估 Temporal 一类持久工作流工具。引入它是为了保存执行进度，审批权限、历史版本和外部请求是否成功，它不会自动解决。Temporal 自己也建议 Activity 幂等，以避免重试造成重复副作用。<a href="https://docs.temporal.io/activities" class="ext" rel="noopener">Temporal Activities</a>。全文检索也应排在基础权限与映射之后：索引只是供查询的副本，文档出现在搜索结果里，不等于有下载权限。</p>
+<section class="scene" aria-labelledby="技术选型与规模边界"><header class="scene-head"><h2 id="技术选型与规模边界"><span class="scene-no" aria-hidden="true">07</span><span class="head">技术选型与规模边界</span></h2></header><p class="scene-lede">一个可验证的第一版可以采用 React 或 Vue 做审批工作台，服务端用 TypeScript 的 NestJS 或 Python 的 FastAPI，PostgreSQL 保存版本元数据、决定、操作记录和 outbox，对象存储保存原始 DOCX/<abbr title="Portable Document Format：便携式文档格式">PDF</abbr>。共用 TypeScript 可减少前后端数据类型分叉；Python 便于连接文本分析工具。无论选哪一种，输入验证与权限检查都在服务端执行。</p>
+<p>文档审阅若以 PDF 为主，可以用 <a href="https://mozilla.github.io/pdf.js/" class="ext" rel="noopener">PDF.js</a> 显示已冻结 PDF 并把批注单独保存；这种方案便于明确审阅版本，却不保证能还原 DOCX 的可编辑布局。确需在线编辑时，可以评估 ONLYOFFICE 或 Collabora，但需另外验证修订标记、字体、转换一致性、授权与部署成本。富文本组件适合快速做演示；复杂法律文档导入导出后会不会丢失格式或批注，要先试验再下结论。预览输出要能追溯到原始文件，渲染失败时明确显示失败。</p>
+<p>PostgreSQL 适合把“确认批准有效、写入决定、安排后续任务”放进同一个事务，并用组合唯一约束防止重复记录。身份列应设为非空：按默认语义，唯一约束不把两个空值视为相等，约束列中至少有一列为空的行可以重复存在。<a href="https://www.postgresql.org/docs/current/ddl-constraints.html#DDL-CONSTRAINTS-UNIQUE-CONSTRAINTS" class="ext" rel="noopener">PostgreSQL — Unique Constraints</a>。文件先上传到临时位置，校验大小和摘要后登记引用；崩溃后残留的无引用文件由独立清理任务处理。对象存储保存副本，数据库保存权威记录：批准是否成立查数据库，文件能否读取查对象存储。备份恢复检查要实际取回被批准的旧版本，数一数数据库行是不够的。</p>
+<p>工作流规模小时，数据库 outbox 加 worker 已足够解释重试；长时间等待、多个取消分支与跨服务恢复越来越多时，可评估 Temporal 一类持久工作流工具。引入它是为了保存执行进度；审批权限、历史版本和外部请求是否成功，仍由前面的版本绑定、条件更新与查回负责。Temporal 自己也建议 Activity 幂等，以避免重试造成重复副作用。<a href="https://docs.temporal.io/activities" class="ext" rel="noopener">Temporal Activities</a>。全文检索也应排在基础权限与映射之后：索引只是供查询的副本，下载权限在下载时另行检查。</p>
 <p>容量规划假设 300 个租户、总计 200,000 份合同、每份 4 个版本、每版平均 2 MB，原始文件约 <code>200,000 × 4 × 2 = 1,600,000 MB</code>，即十进制 1.6 TB；未计预览、附件额外副本与备份。每秒 40 次列表读取和 5 次批准写入下，可把列表 p95 小于 500 毫秒、批准持久化 p95 小于 1 秒作为待测目标，外部签署与人工处理时间单独报告。</p>
-<p>真正可能占用资源的是文件上传、预览转换与批量同步，不是十几个审批节点的拓扑排序。预览任务应按租户限制并发；同一合同的批准与替代需要串行化，避免热点争用扩散到其他租户。只缓存不可变版本的预览，缓存失效更好管理；缓存 key 包含租户、内容摘要和渲染器版本，当前包指针与权限仍在读取时校验。对签署、ERP 的积压分别测队列年龄和 unknown 数量，避免“平均处理快”掩盖少量长期无法确认的合同。</p>
+<p>真正可能占用资源的是文件上传、预览转换与批量同步；十几个审批节点的拓扑排序开销可以忽略。预览任务应按租户限制并发；同一合同的批准与替代需要串行化，避免热点争用扩散到其他租户。只缓存不可变版本的预览，缓存失效更好管理；缓存 key 包含租户、内容摘要和渲染器版本，当前包指针与权限仍在读取时校验。对签署、ERP 的积压分别测队列年龄和 unknown 数量，避免“平均处理快”掩盖少量长期无法确认的合同。</p>
 </section>
 <section class="scene" aria-labelledby="ai-字段建议的评估"><header class="scene-head"><h2 id="ai-字段建议的评估"><span class="scene-no" aria-hidden="true">08</span><span class="head">AI 字段建议的评估</span></h2></header><p class="scene-lede">模型只提供带原文位置的候选字段，确认后才进入送审包；评估把漏报和拒答单独列出，总体正确率会淡化漏报。</p>
 <p>Ironclad 的 April 2025 更新介绍 Custom AI Properties，用示例改进合同字段抽取；这份公开介绍里没有本例所需的准确率数据。<a href="https://support.ironcladapp.com/hc/en-us/articles/30977258163607-What-s-New-in-Ironclad-April-2025" class="ext" rel="noopener">What&#39;s New — Custom AI Properties</a>。本例可让模型建议金额、期限和需要复核的条款，并附原文位置；AI 输出是候选字段，确认后才进入送审包。模型没有“批准”“发送签署”或更改已批准包的权限。</p>
-<p>留出集包含 40 份合同，按人工标签，其中 10 份需要额外升级审阅，30 份不需要。假设冻结配置的模型提示升级 12 份，其中 8 份命中，4 份误报；另漏掉 2 份。精确率为 <code>8/12 = 66.7%</code>，召回率为 <code>8/10 = 80%</code>，漏报率为 <code>2/10 = 20%</code>。只报总体正确率 <code>(8+26)/40 = 85%</code>，会淡化两份漏报的后果，所以本例不允许这组结果自动放行。</p>
-<p>对同一留出集的金额抽取，另列 40 个有标签字段：34 个完全正确、2 个错误、4 个拒答；自动覆盖率为 <code>36/40 = 90%</code>，覆盖样本正确率为 <code>34/36 = 94.4%</code>。若人工逐项复核，至少 6 个字段需要补充或修正，比例 <code>6/40 = 15%</code>；被人工确认过的结果不能反过来算成模型正确。缺页、扫描质量差、币种冲突或跨文档矛盾都要求明确拒答或转复核，不能自动填零。</p>
+<p>留出集包含 40 份合同，按人工标签，其中 10 份需要额外升级审阅，30 份不需要。假设冻结配置的模型提示升级 12 份，其中 8 份命中，4 份误报；另漏掉 2 份。其余 26 份不需要升级，模型也没有提示。精确率为 <code>8/12 = 66.7%</code>，召回率为 <code>8/10 = 80%</code>，漏报率为 <code>2/10 = 20%</code>。只报总体正确率 <code>(8+26)/40 = 85%</code>，会淡化两份漏报的后果，所以本例不允许这组结果自动放行。</p>
+<figure class="drawing" data-drawing="h09-eval"><div class="dw-scroll" style="--dw-min:600px;--dw-max:900px">
+<svg viewBox="0 0 760 210" role="img" aria-labelledby="h09-eval-t h09-eval-d">
+  <title id="h09-eval-t">40 份合同的升级提示</title>
+  <desc id="h09-eval-d">人工标签中 10 份需要额外升级审阅，30 份不需要。模型提示 12 份：8 份命中，4 份误报；漏掉 2 份；其余 26 份正确未提示。精确率 8/12 = 66.7%，召回率 8/10 = 80%，漏报率 2/10 = 20%，总体正确率 (8+26)/40 = 85%。</desc>
+  <text class="t-b" x="20" y="34">需要升级 · 10 份</text>
+  <text class="t-b" x="210" y="34">不需要 · 30 份</text>
+  <g>
+    <rect class="box" x="20" y="56" width="24" height="24"/>
+    <rect class="box" x="50" y="56" width="24" height="24"/>
+    <rect class="box" x="80" y="56" width="24" height="24"/>
+    <rect class="box" x="110" y="56" width="24" height="24"/>
+    <rect class="box" x="140" y="56" width="24" height="24"/>
+    <rect class="box" x="20" y="86" width="24" height="24"/>
+    <rect class="box" x="50" y="86" width="24" height="24"/>
+    <rect class="box" x="80" y="86" width="24" height="24"/>
+    <rect class="box" x="110" y="86" width="24" height="24"/>
+    <rect class="box" x="140" y="86" width="24" height="24"/>
+    <rect class="box" x="210" y="56" width="24" height="24"/>
+    <rect class="box" x="240" y="56" width="24" height="24"/>
+    <rect class="box" x="270" y="56" width="24" height="24"/>
+    <rect class="box" x="300" y="56" width="24" height="24"/>
+    <rect class="box" x="330" y="56" width="24" height="24"/>
+    <rect class="box" x="360" y="56" width="24" height="24"/>
+    <rect class="box" x="390" y="56" width="24" height="24"/>
+    <rect class="box" x="420" y="56" width="24" height="24"/>
+    <rect class="box" x="450" y="56" width="24" height="24"/>
+    <rect class="box" x="480" y="56" width="24" height="24"/>
+    <rect class="box" x="210" y="86" width="24" height="24"/>
+    <rect class="box" x="240" y="86" width="24" height="24"/>
+    <rect class="box" x="270" y="86" width="24" height="24"/>
+    <rect class="box" x="300" y="86" width="24" height="24"/>
+    <rect class="box" x="330" y="86" width="24" height="24"/>
+    <rect class="box" x="360" y="86" width="24" height="24"/>
+    <rect class="box" x="390" y="86" width="24" height="24"/>
+    <rect class="box" x="420" y="86" width="24" height="24"/>
+    <rect class="box" x="450" y="86" width="24" height="24"/>
+    <rect class="box" x="480" y="86" width="24" height="24"/>
+    <rect class="box" x="210" y="116" width="24" height="24"/>
+    <rect class="box" x="240" y="116" width="24" height="24"/>
+    <rect class="box" x="270" y="116" width="24" height="24"/>
+    <rect class="box" x="300" y="116" width="24" height="24"/>
+    <rect class="box" x="330" y="116" width="24" height="24"/>
+    <rect class="box" x="360" y="116" width="24" height="24"/>
+    <rect class="box" x="390" y="116" width="24" height="24"/>
+    <rect class="box" x="420" y="116" width="24" height="24"/>
+    <rect class="box" x="450" y="116" width="24" height="24"/>
+    <rect class="box" x="480" y="116" width="24" height="24"/>
+  </g>
+  <g data-s="1">
+    <rect class="box f-ink" x="20" y="56" width="24" height="24"/>
+    <rect class="box f-ink" x="50" y="56" width="24" height="24"/>
+    <rect class="box f-ink" x="80" y="56" width="24" height="24"/>
+    <rect class="box f-ink" x="110" y="56" width="24" height="24"/>
+    <rect class="box f-ink" x="140" y="56" width="24" height="24"/>
+    <rect class="box f-ink" x="20" y="86" width="24" height="24"/>
+    <rect class="box f-ink" x="50" y="86" width="24" height="24"/>
+    <rect class="box f-ink" x="80" y="86" width="24" height="24"/>
+    <rect class="box f2" x="210" y="56" width="24" height="24"/>
+    <rect class="box f2" x="240" y="56" width="24" height="24"/>
+    <rect class="box f2" x="270" y="56" width="24" height="24"/>
+    <rect class="box f2" x="300" y="56" width="24" height="24"/>
+  </g>
+  <g data-s="2">
+    <rect class="box-em" x="110" y="86" width="24" height="24"/>
+    <rect class="box-em" x="140" y="86" width="24" height="24"/>
+  </g>
+  <g data-s="1">
+    <rect class="box f-ink" x="20" y="166" width="14" height="14"/><text class="t-s" x="40" y="178">命中 8</text>
+    <rect class="box f2" x="100" y="166" width="14" height="14"/><text class="t-s" x="120" y="178">误报 4</text>
+    <rect class="box" x="180" y="166" width="14" height="14"/><text class="t-s" x="200" y="178">正确未提示 26</text>
+  </g>
+  <g data-s="2">
+    <rect class="box-em" x="292" y="166" width="14" height="14"/><text class="t-s" x="312" y="178">漏报 2</text>
+  </g>
+  <g data-s="3">
+    <path class="ln-soft" d="M530 24 V190"/>
+    <text class="t" x="550" y="48">精确率</text><text class="t-n end" x="740" y="48">8/12 = 66.7%</text>
+    <text class="t" x="550" y="80">召回率</text><text class="t-n end" x="740" y="80">8/10 = 80%</text>
+    <text class="t-em" x="550" y="112">漏报率</text><text class="t-n t-em end" x="740" y="112">2/10 = 20%</text>
+    <text class="t" x="550" y="152">总体正确率</text><text class="t-n end" x="740" y="152">(8+26)/40 = 85%</text>
+  </g>
+</svg>
+</div>
+<figcaption>85% 的总体正确率主要由 26 份正确未提示撑起；需要升级的 10 份里有 2 份漏报，单列为 20% 的漏报率。</figcaption></figure><p>对同一留出集的金额抽取，另列 40 个有标签字段：34 个完全正确、2 个错误、4 个拒答；自动覆盖率为 <code>36/40 = 90%</code>，覆盖样本正确率为 <code>34/36 = 94.4%</code>。若人工逐项复核，至少 6 个字段需要补充或修正，比例 <code>6/40 = 15%</code>；被人工确认过的结果不能反过来算成模型正确。缺页、扫描质量差、币种冲突或跨文档矛盾都要求明确拒答或转复核，字段保持缺值，与零值分开。</p>
 <p>真实评估需冻结原始文档、标签口径、模型与提示配置，按合同而非页面拆分训练集与留出集，避免同一合同版本泄漏。分别测试改数字、否定词、附件覆盖正文、扫描件以及把“忽略审批”藏进文本的样本；这些文本是待分析内容，无权改变工具权限。自动草稿只写入新的 draft，抽取变化必须重新走提交检查。AI eval 评的是候选输出，业务检查看的是人和系统有没有守住授权边界，两者分别留存证据。</p>
 </section>
-<section class="scene" aria-labelledby="验算从界面到下游的检查"><header class="scene-head"><h2 id="验算从界面到下游的检查"><span class="scene-no" aria-hidden="true">09</span><span class="visually-hidden">验算：</span><span class="head">从界面到下游的检查</span></h2></header><p class="scene-lede">每项检查都记录实际观察到的结果，预期答案不能当作执行结果填入。固定输入、对应 ID 和详细证据要求见 <a href="../../../vault/distilled/saas-engineering-atlas/packages/data-ai-control/H09.json">H09.json</a>。本地纯计算检查可以验证依赖关系和版本规则，替代不了浏览器、数据库或 provider sandbox 的端到端试验。</p>
+<section class="scene" aria-labelledby="验算从界面到下游的检查"><header class="scene-head"><h2 id="验算从界面到下游的检查"><span class="scene-no" aria-hidden="true">09</span><span class="visually-hidden">验算：</span><span class="head">从界面到下游的检查</span></h2></header><p class="scene-lede">每项检查都记录实际观察到的结果，预期答案不能当作执行结果填入。固定输入、对应 ID 和详细证据要求见 <a href="../../../vault/distilled/saas-engineering-atlas/packages/data-ai-control/H09.json">H09.json</a>。本地纯计算检查验证依赖关系和版本规则；浏览器、数据库或 provider sandbox 的端到端试验另行进行。</p>
 <div class="table-wrap"><table>
 <thead>
 <tr>
@@ -394,8 +622,8 @@
     <footer class="page-foot">正文 <a href="../../../books/saas-engineering/packages/data-ai-control/H09.md">books/saas-engineering/packages/data-ai-control/H09.md</a> · <a href="../../../vault/distilled/saas-engineering-atlas/README.md">结构、来源与验证</a></footer>
   </main>
 </div>
-<script src="search-index.js?v=mv95jeod"></script>
-<script src="book.js?v=mv95jeod"></script>
+<script src="search-index.js?v=mv97hru0"></script>
+<script src="book.js?v=mv97hru0"></script>
 
 </body>
 </html>

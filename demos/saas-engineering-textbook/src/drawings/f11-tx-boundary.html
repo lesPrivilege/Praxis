@@ -1,0 +1,43 @@
+<div class="dw-scroll" style="--dw-min:640px;--dw-max:900px">
+<svg viewBox="0 0 770 300" role="img" aria-labelledby="f11-tx-t f11-tx-d">
+  <title id="f11-tx-t">取消、OP7 与 outbox 落在几条边界里</title>
+  <desc id="f11-tx-d">方案 A：一个应用处理页面/API 与领域事务，S3 的取消、OP7 与 outbox 记录在一次本地事务里提交到一个关系数据库，一个 worker 派发并对账。方案 B：独立前端、多个服务、专用消息 broker、搜索索引和共享缓存；三者分到不同服务时，彼此之间要另外设计交接协议。</desc>
+  <defs><marker id="f11-tx-ah" viewBox="0 0 8 8" refX="7" refY="4" markerUnits="userSpaceOnUse" markerWidth="9" markerHeight="9" orient="auto"><path class="f-ink" d="M0 0 L8 4 L0 8 z"/></marker></defs>
+  <!-- A -->
+  <text class="t-b" x="0" y="18">方案 A</text><text class="t-s" x="60" y="18">一个应用、一个关系数据库、一个 worker</text>
+  <rect class="box" x="0" y="34" width="340" height="176"/>
+  <text class="t-s" x="12" y="52">应用：页面/API 与领域事务</text>
+  <rect class="ln-em" x="20" y="64" width="200" height="132"/>
+  <text class="t-b t-em" x="32" y="84">一次本地事务</text>
+  <rect class="box f2" x="36" y="96" width="168" height="26"/><text class="t mid" x="120" y="114">S3 取消</text>
+  <rect class="box f2" x="36" y="128" width="168" height="26"/><text class="t-n mid" x="120" y="146">OP7</text>
+  <rect class="box f2" x="36" y="160" width="168" height="26"/><text class="t mid" x="120" y="178">outbox 记录</text>
+  <path class="ln" marker-end="url(#f11-tx-ah)" d="M120 196 V232"/><text class="t-s" x="128" y="222">一次提交</text>
+  <rect class="box" x="0" y="234" width="230" height="34"/><text class="t mid" x="115" y="256">关系数据库：权威对象与 outbox</text>
+  <path class="ln" marker-end="url(#f11-tx-ah)" d="M230 251 H248"/>
+  <rect class="box" x="250" y="234" width="90" height="34"/><text class="t mid" x="295" y="256">worker</text>
+  <text class="t-s mid" x="295" y="286">派发并对账</text>
+  <path class="ln-soft" d="M370 8 V292"/>
+  <!-- B -->
+  <text class="t-b" x="400" y="18">方案 B</text>
+  <g data-s="1">
+    <rect class="box" x="400" y="34" width="370" height="30"/><text class="t mid" x="585" y="54">独立前端</text>
+    <rect class="box" x="400" y="84" width="110" height="80"/><text class="t-s" x="410" y="102">服务 1</text>
+    <rect class="box f2" x="410" y="114" width="90" height="26"/><text class="t mid" x="455" y="132">S3 取消</text>
+    <rect class="box" x="530" y="84" width="110" height="80"/><text class="t-s" x="540" y="102">服务 2</text>
+    <rect class="box f2" x="540" y="114" width="90" height="26"/><text class="t-n mid" x="585" y="132">OP7</text>
+    <rect class="box" x="660" y="84" width="110" height="80"/><text class="t-s" x="670" y="102">服务 3</text>
+    <rect class="box f2" x="670" y="114" width="90" height="26"/><text class="t mid" x="715" y="132">outbox 记录</text>
+  </g>
+  <g data-s="2">
+    <path class="ln-dash" d="M455 164 V192"/><path class="ln-dash" d="M585 164 V192"/><path class="ln-dash" d="M715 164 V192"/>
+    <rect class="box-dash" x="400" y="192" width="370" height="34"/>
+    <text class="t mid" x="585" y="214">消息 broker：服务之间的交接协议另行设计</text>
+  </g>
+  <g data-s="3">
+    <rect class="box" x="400" y="242" width="175" height="30"/><text class="t mid" x="487" y="262">搜索索引</text>
+    <rect class="box" x="595" y="242" width="175" height="30"/><text class="t mid" x="682" y="262">共享缓存</text>
+  </g>
+</svg>
+</div>
+<figcaption>A 的取消、OP7 与 outbox 随同一次提交成立；B 把它们分到三个服务，每一处交接都要另外设计协议。</figcaption>

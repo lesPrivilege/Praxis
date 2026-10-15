@@ -4,9 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>H02 · 请购、验收、发票匹配与付款 · SaaS 工程全景</title>
-<link rel="stylesheet" href="book.css?v=mv95jeod">
+<link rel="stylesheet" href="book.css?v=mv97hru0">
 </head>
 <body>
+<svg class="dw-defs" width="0" height="0" aria-hidden="true" focusable="false" style="position:absolute"><defs><pattern id="dw-hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" fill="var(--bg)"/><path d="M0 0 V6" stroke="var(--ink-2)" stroke-width="1.2"/></pattern></defs></svg>
 <a class="skip" href="#main">跳到正文</a>
 <header class="topbar">
   <button class="nav-toggle" type="button" aria-controls="sidebar" aria-expanded="false">目录</button>
@@ -60,8 +61,8 @@
 </tr>
 </tbody></table></div>
 </section>
-<section class="scene" aria-labelledby="解法分角色的证据与审批"><header class="scene-head"><h2 id="解法分角色的证据与审批"><span class="scene-no" aria-hidden="true">02</span><span class="visually-hidden">解法：</span><span class="head">分角色的证据与审批</span></h2></header><p class="scene-lede">每个角色只证明自己负责的那部分事实，所以请购、收货、验收、发票匹配和付款各有对象和状态，不用一个批准状态代表全部判断。</p>
-<p>预算负责人可以批准买 100 件，但没有看到仓库后来的短交；仓管可以证明收到 80 件，却未必有资格判定质量；应付会计能检查发票，却不能替银行确认付款。如果系统只用一个 invoice.approved 状态代表这些人的判断，一次早先的批准就会在对象已经变化之后继续放行付款。</p>
+<section class="scene" aria-labelledby="解法分角色的证据与审批"><header class="scene-head"><h2 id="解法分角色的证据与审批"><span class="scene-no" aria-hidden="true">02</span><span class="visually-hidden">解法：</span><span class="head">分角色的证据与审批</span></h2></header><p class="scene-lede">每个角色只证明自己负责的那部分事实，所以请购、收货、验收、发票匹配和付款各有对象和状态，每次批准只覆盖它那一份事实。</p>
+<p>预算负责人批准买 100 件时，还看不到仓库后来的短交；仓管证明收到 80 件，质量由检验员判定；应付会计检查发票，付款结果由银行确认。如果系统只用一个 invoice.approved 状态代表这些人的判断，一次早先的批准就会在对象已经变化之后继续放行付款。</p>
 <p>Oracle Procurement 的 <strong>Match Approval Level</strong> 区分 Two-Way、Three-Way 和 Four-Way：从两方到四方，数量核对依次加入 receipt 数量和 inspection 中的 accepted quantities。文档还说明，它与 <strong>invoice match option</strong> 是两项独立配置，后者决定发票匹配到采购单还是收货记录。<a href="https://docs.oracle.com/en/cloud/saas/procurement/26b/oapro/match-approval-level-options.html" class="ext" rel="noopener">Oracle Match Approval Level Options</a>。由此推论：发票匹配锚定在哪一级，与放行付款需要哪些证据，要分开决定。本例把发票匹配到采购单行，放行时要求四方数量证据；改用别的锚点，验收证据照样要有。</p>
 <div class="table-wrap"><table>
 <thead>
@@ -84,12 +85,12 @@
 <tr>
 <td>Inspection 验收 <code>INS-1</code></td>
 <td>检验员决定 accepted、rejected、pending 数量</td>
-<td>本例 <code>accepted + rejected + pending = received</code>；accepted 不从送货单推测</td>
+<td>本例 <code>accepted + rejected + pending = received</code>；accepted 由检验员记录，不从送货单推测</td>
 </tr>
 <tr>
 <td>Supplier invoice 发票 <code>INV-A</code>；匹配分配 <code>ALLOC-A</code></td>
 <td>应付会计录入；应付服务保存发票版本、匹配与 hold</td>
-<td>同一验收数量不能被不同发票重复占用；发票金额不直接采信光学字符识别（optical character recognition，<abbr title="optical character recognition：光学字符识别">OCR</abbr>）的结果</td>
+<td>同一验收数量只被一张有效发票占用；光学字符识别（optical character recognition，<abbr title="optical character recognition：光学字符识别">OCR</abbr>）读出的金额经人工确认后才作为发票金额</td>
 </tr>
 <tr>
 <td>Payment order 付款指令 <code>PAY-A</code></td>
@@ -97,7 +98,7 @@
 <td>一笔义务只能关联一个仍可能成功的付款尝试；submitted 与 settled 分开记录</td>
 </tr>
 </tbody></table></div>
-<p>本例实行职责分离：申请人不能批准自己的请购，检验员不能发起付款，付款审批人与制单人不是同一人。服务端按租户、法人、角色和对象版本验证权限；页面隐藏按钮只起提示作用。名称相同不说明是同一家供应商；发票号的防重键为 <code>(tenant, legal_entity, supplier_id, normalized_invoice_number)</code>，规范化时要保留原串并处理冲突。文档哈希相同可以提示重复，但单凭哈希分辨不了重新扫描、合法重开和贷项通知。</p>
+<p>本例实行职责分离：申请人不能批准自己的请购，检验员不能发起付款，付款审批人与制单人不是同一人。服务端按租户、法人、角色和对象版本验证权限；页面隐藏按钮只起提示作用。供应商按 <code>supplier_id</code> 识别，名称相同的两家仍是两家；发票号的防重键为 <code>(tenant, legal_entity, supplier_id, normalized_invoice_number)</code>，规范化时要保留原串并处理冲突。文档哈希相同可以提示重复，但单凭哈希分辨不了重新扫描、合法重开和贷项通知。</p>
 <p>各对象的生命周期各自推进。请购从 draft 到 submitted，再由负责人批准或驳回；已获批的采购单修改时生成新版本，旧版本保留。收货从 recorded 到 inspected，部分检验期间仍可保留 pending 数量；退货作为关联原收货的调整。发票从 captured 到 matched 或 held，解除 hold 时要记录新证据和重新匹配的结果；本例整张发票有 hold 就不付款，不单独支付其中能匹配的部分。付款从 prepared、authorized 到 submitted，之后可能是 unknown、settled 或 rejected；银行后来确认退回，另记一条 return 事实，settled 的历史照旧保留。各状态转换的 guard 见 <a href="../../../vault/distilled/saas-engineering-atlas/packages/commercial-finance/H02.json">H02.json</a>。</p>
 </section>
 <section class="scene" aria-labelledby="演算累计分配与可付余额"><header class="scene-head"><h2 id="演算累计分配与可付余额"><span class="scene-no" aria-hidden="true">03</span><span class="visually-hidden">演算：</span><span class="head">累计分配与可付余额</span></h2></header><p class="scene-lede">可付范围取订单、收货、合格三项余额中最小的一项，并扣除已被有效发票占用的数量；本例发票 A 全额通过，B 因合格余额只剩 5 件被 hold。</p>
@@ -108,23 +109,147 @@
 <li>发票 B 又申请 10 件、总额 101.00。订单余额为 30，收货余额为 10，合格余额只有 5。B 的价格合格，合格数量却不够，因此被 hold。</li>
 <li>供应商确认后把 B 修订为 5 件、50.50，旧版本与修订关系保留。重新匹配后累计结算数量为 75，累计金额为 757.50；其中 A 已付款 707.00，B 尚待支付 50.50。另有 5 件待检、20 件尚未收到，这两项未了的责任页面上都要继续显示。</li>
 </ul>
-<p>这里的“可用”指尚未被有效发票分配占用的证据量。已付款发票仍占用对应数量；删除支付记录或关闭页面，都不会让这 70 件重新可用。发票作废时，要先确认没有仍可能成功的付款尝试，并记录解除分配，数量才可重新使用。新证据使匹配失效时，占用也不会自动释放；当前验收证据不足以覆盖历史分配时，差异挂起，不再授权新付款。若付款后才发现质量问题，就走退货、贷项或追偿流程；调低 accepted 数量撤销不了已经转出的现金。</p>
-<p><strong>反例：每张发票各自与总验收量比较。</strong> A 的 70 件不超过 75，B 的 10 件也不超过 75，两张都“通过”，累计却达 80。问题出在比较时没有扣除已被前一张发票占用的证据。两个操作员同时匹配也会出同样的问题：一人申请 5 件，另一人也申请 5 件，两人都读到剩余 5 件。检查余额与占用余额必须是一个原子动作，否则就会超额。</p>
-<p>Oracle Financials 的 <strong>Invoice Tolerances</strong> 区分数量、价格和金额容差，并说明超差的匹配发票会被 hold，hold 解除前不能付款；在它的配置里，百分比为零的容差与启用但没有赋值的容差含义不同。<a href="https://docs.oracle.com/en/cloud/saas/financials/26b/fappp/invoice-tolerances.html" class="ext" rel="noopener">Invoice Tolerances</a>。由此推出一条界面要求：“零容差”“未启用”“无上限”要显示为三种不同的选择，不能都渲染成空输入框。</p>
+<figure class="drawing" data-drawing="h02-allocation"><div class="dw-scroll" style="--dw-min:600px;--dw-max:900px">
+<svg viewBox="0 0 780 330" role="img" aria-labelledby="h02-allocation-t h02-allocation-d">
+  <title id="h02-allocation-t">采购单行 PO-1/L1 的累计占用</title>
+  <desc id="h02-allocation-d">订购 100 件，收到 80 件，其中 75 件合格、5 件待检，20 件未到。发票 A 占用 0 到 70；发票 B 申请 10 件，从 70 排到 80，越过合格线 75 的 5 件使 B 被 hold；B 修订为 5 件后占用 70 到 75，累计 75 件、757.50。</desc>
+  <path class="ln-soft" d="M570 22 V290"/><text class="t-s mid" x="570" y="16">合格线 75</text>
+  <text class="t-b end" x="108" y="51">PO-1/L1</text>
+  <rect class="box" x="120" y="34" width="600" height="24"/><text class="t" x="130" y="51">订购 100 件 · 每件 10.00</text>
+  <g data-s="1">
+    <text class="t-b end" x="108" y="91">RCV-1</text>
+    <rect class="box" x="120" y="74" width="480" height="24"/><text class="t" x="130" y="91">收货 80</text>
+    <rect class="box-dash" x="600" y="74" width="120" height="24"/><text class="t-s mid" x="660" y="90">未到 20</text>
+    <text class="t-b end" x="108" y="131">INS-1</text>
+    <rect class="box f2" x="120" y="114" width="450" height="24"/><text class="t" x="130" y="131">合格 75</text>
+    <rect class="box-dash" x="570" y="114" width="30" height="24"/><text class="t-s" x="608" y="130">待检 5</text>
+  </g>
+  <path class="ln-soft" d="M20 160 H760"/>
+  <text class="t-s" x="20" y="178">有效发票的累计占用</text>
+  <g data-s="2">
+    <text class="t-b end" x="108" y="211">INV-A</text>
+    <rect class="box f1" x="120" y="194" width="420" height="24"/><text class="t" x="130" y="211">70 件 · 单价 10.10 · 707.00</text>
+  </g>
+  <g data-s="3">
+    <text class="t-b end" x="108" y="251">INV-B</text>
+    <rect class="box" x="540" y="234" width="30" height="24"/><rect class="box-em" x="570" y="234" width="30" height="24"/>
+    <text class="t" x="608" y="251">越过合格线 5 件 → hold</text>
+    <text class="t end" x="532" y="251">申请 10 件 · 101.00，从 70 排起</text>
+  </g>
+  <g data-s="4">
+    <text class="t-b end" x="108" y="291">INV-B 修订</text>
+    <rect class="box f1" x="540" y="274" width="30" height="24"/>
+    <text class="t end" x="532" y="291">5 件 · 50.50</text><text class="t" x="608" y="291">累计 75 件 · 757.50</text>
+  </g>
+    <text class="t-n mid" x="120" y="318">0</text><text class="t-n mid" x="540" y="318">70</text><text class="t-n mid" x="600" y="318">80</text><text class="t-n mid" x="720" y="318">100</text>
+</svg>
+</div>
+<figcaption>同一采购单行上，每张有效发票接着前一张的占用往后排；越过合格线的那 5 件让发票 B 停在 hold，修订到 5 件后正好填满 75。</figcaption></figure><p>这里的“可用”指尚未被有效发票分配占用的证据量。已付款发票仍占用对应数量；删除支付记录或关闭页面，都不会让这 70 件重新可用。发票作废时，要先确认没有仍可能成功的付款尝试，并记录解除分配，数量才可重新使用。新证据使匹配失效时，占用保持原样，等核对后再释放或修正；当前验收证据不足以覆盖历史分配时，差异挂起，新付款暂停授权。若付款后才发现质量问题，就走退货、贷项或追偿流程；调低 accepted 数量撤销不了已经转出的现金。</p>
+<p><strong>反例：每张发票各自与总验收量比较。</strong> A 的 70 件不超过 75，B 的 10 件也不超过 75，两张都“通过”，累计却达 80。问题出在比较时没有扣除已被前一张发票占用的证据：B 要接在 A 的 70 件之后比较。</p>
+<figure class="drawing" data-drawing="h02-counter"><div class="dw-scroll" style="--dw-min:600px;--dw-max:900px">
+<svg viewBox="0 0 760 190" role="img" aria-labelledby="h02-counter-t h02-counter-d">
+  <title id="h02-counter-t">各自比较与累计占用</title>
+  <desc id="h02-counter-d">各自比较时，发票 A 的 70 件和发票 B 的 10 件都从 0 量起，都不超过合格量 75，两张都通过。累计占用时，B 接在 A 的 70 件之后，排到 80，越过 75。</desc>
+  <text class="t-b" x="20" y="22">各自与合格量 75 比较</text>
+  <path class="ln-soft" d="M330 34 V132"/><text class="t-s mid" x="330" y="148">75</text>
+  <text class="t-b end" x="54" y="67">A</text>
+  <rect class="box f1" x="60" y="50" width="252" height="24"/><text class="t-n" x="70" y="67">70</text>
+  <text class="t-b end" x="54" y="111">B</text>
+  <rect class="box f1" x="60" y="94" width="36" height="24"/><text class="t-n" x="104" y="111">10</text>
+  <text class="t" x="20" y="176">两张都通过，合计 80 件</text>
+  <g data-s="1">
+    <text class="t-b" x="420" y="22">累计占用同一份合格量</text>
+    <path class="ln-soft" d="M690 34 V132"/><text class="t-s mid" x="690" y="148">75</text>
+    <text class="t-b end" x="414" y="89">A + B</text>
+    <rect class="box f1" x="420" y="72" width="252" height="24"/><text class="t-n" x="430" y="89">A 70</text>
+    <rect class="box" x="672" y="72" width="18" height="24"/>
+    <rect class="box-em" x="690" y="72" width="18" height="24"/>
+    <text class="t-s" x="672" y="64">B</text>
+    <text class="t-s mid" x="708" y="148">80</text>
+    <text class="t" x="420" y="176">B 排到 80，越过合格量 5 件</text>
+  </g>
+</svg>
+</div>
+<figcaption>两张发票各自与 75 比较都能通过；接在已占用的 70 件之后比较，B 的后 5 件落在合格量之外。</figcaption></figure><p>两个操作员同时匹配也会出同样的问题：操作员甲申请 5 件，操作员乙也申请 5 件，两人都读到剩余 5 件，各自写入后累计占用 80 件。检查余额与占用余额必须是一个原子动作，否则就会超额。在同一事务里先锁定 PO-1/L1 的余额记录再判断，甲提交后剩余为 0，乙等锁释放后读到 0，返回冲突或 hold，累计仍为 75。</p>
+<figure class="drawing" data-drawing="h02-race"><div class="dw-scroll" style="--dw-min:600px;--dw-max:900px">
+<svg viewBox="0 0 760 300" role="img" aria-labelledby="h02-race-t h02-race-d">
+  <title id="h02-race-t">两人同时申请最后 5 件</title>
+  <desc id="h02-race-d">检查与占用分开时，操作员甲和乙都读到剩余 5 件，各自写入 5 件，累计占用 80。在同一事务里锁定 PO-1/L1 的余额记录时，甲先锁行、读到 5、写入并提交；乙等锁释放后读到 0，返回冲突或 hold，累计仍为 75。</desc>
+  <text class="t-b" x="20" y="22">检查与占用分开</text>
+  <text class="t-b end" x="100" y="65">甲</text><text class="t-b end" x="100" y="115">乙</text>
+  <path class="ln" d="M120 60 H560"/><path class="ln" d="M120 110 H560"/>
+  <g data-s="1">
+    <circle class="f-ink" cx="200" cy="60" r="4"/><text class="t-s mid" x="200" y="48">读到剩余 5</text>
+    <circle class="f-ink" cx="250" cy="110" r="4"/><text class="t-s mid" x="250" y="132">读到剩余 5</text>
+  </g>
+  <g data-s="2">
+    <circle class="f-ink" cx="360" cy="60" r="4"/><text class="t-s mid" x="360" y="48">写入 5 件</text>
+    <circle class="f-ink" cx="420" cy="110" r="4"/><text class="t-s mid" x="420" y="132">写入 5 件</text>
+    <text class="t-b t-em" x="590" y="80">累计 80</text>
+    <text class="t-s" x="590" y="98">超出合格量 75</text>
+  </g>
+  <path class="ln-soft" d="M20 156 H740"/>
+  <text class="t-b" x="20" y="182">同一事务里先锁行再判断</text>
+  <text class="t-b end" x="100" y="225">甲</text><text class="t-b end" x="100" y="275">乙</text>
+  <path class="ln" d="M120 220 H560"/><path class="ln" d="M120 270 H250"/><path class="ln" d="M380 270 H560"/>
+  <g data-s="3">
+    <rect class="box f2" x="200" y="210" width="160" height="20"/>
+    <text class="t-s" x="206" y="206">锁 PO-1/L1 · 读到 5 · 写入 5</text>
+    <circle class="f-ink" cx="360" cy="220" r="4"/><text class="t-s" x="368" y="238">提交，剩余 0</text>
+    <path class="ln-dash" d="M250 270 H380"/><text class="t-s mid" x="315" y="292">等锁释放</text>
+  </g>
+  <g data-s="4">
+    <circle class="f-ink" cx="390" cy="270" r="4"/><text class="t-s" x="398" y="260">读到 0 · 冲突或 hold</text>
+    <text class="t-b" x="590" y="250">累计 75</text>
+  </g>
+</svg>
+</div>
+<figcaption>两人都读到同一份剩余 5 件时，各自写入就超出合格量；先锁采购单行，后到的一方读到的是前一笔提交后的 0。</figcaption></figure><p>Oracle Financials 的 <strong>Invoice Tolerances</strong> 区分数量、价格和金额容差，并说明超差的匹配发票会被 hold，hold 解除前不能付款；在它的配置里，百分比为零的容差与启用但没有赋值的容差含义不同。<a href="https://docs.oracle.com/en/cloud/saas/financials/26b/fappp/invoice-tolerances.html" class="ext" rel="noopener">Invoice Tolerances</a>。由此推出一条界面要求：“零容差”“未启用”“无上限”要显示为三种不同的选择，不能都渲染成空输入框。</p>
 </section>
 <section class="scene" aria-labelledby="匹配算法与差异解释"><header class="scene-head"><h2 id="匹配算法与差异解释"><span class="scene-no" aria-hidden="true">04</span><span class="head">匹配算法与差异解释</span></h2></header><p class="scene-lede"><code>ALG:lookup</code> 的输入是发票行、采购单行、收货与验收分配、历史有效发票分配，以及冻结的规则版本；输出是可追溯的匹配结果和具体差异。朴素做法让每条发票行扫描全部 m 条采购和收货记录，n 行约需 O(nm) 次比较。若用包含租户与法人的采购单行键建树索引，先定位候选，再只累计该行的分配：定位通常为 O(log m)，另加读取实际 k 条候选的成本。把累计余额放在采购单行上可以减少重复聚合，但每次调整都要同步维护它，并能从分配明细重算校验。</p>
 <p>同一发票行可以对应多次收货。本例按业务已指定的采购单行匹配，按合格记录的稳定顺序分配，不按“金额接近”任意凑单；候选关系不清时，返回人工待确认。若按金额凑单，两个不同法人恰好都有 707.00 的单据，就会被错误连到一起；哈希查找再快，也纠正不了身份错误。规则计算使用整数最小货币单位或精度明确的小数；单价与数量可以保留更高精度，在政策指定的行或单据层舍入，并记录尾差落在哪里。</p>
-<p>发票详情应在一屏给出“订购 100 / 收货 80 / 合格 75 / 已占用 70 / 本次申请 10”，并定位导致 hold 的 5 件缺口。点击“重新匹配”时提交 <code>invoice_id、expected_version、rule_version、operation_id</code>；服务端重读权威数量，保存匹配快照和分配。页面上的预览可能已经过时，所以提交结果要返回被接受的版本或冲突差异。拒绝时保留原输入，指向待补的证据；界面不引导用户靠反复点击“审批”解决缺货。</p>
-<figure class="graph-fig"><div class="graph-wrap"><svg class="graph" viewBox="0 0 1257 159" width="1257" height="159" style="max-width:1446px;min-width:1006px" role="img" aria-label="H02 · 请购、验收、发票匹配与付款"><defs><marker id="arrow-g1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arrowhead"/></marker></defs><path class="edge" data-type="operates" data-from="Staff" data-to="UI" d="M201.0,47.0 Q256.0,47.0 311.0,47.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Staff" data-to="UI"><rect x="228.0" y="39.0" width="56" height="16" rx="3"/><text x="256.0" y="51.0">operates</text></g><path class="edge" data-type="commands" data-from="UI" data-to="AP" d="M418.8,64.0 Q481.0,85.0 536.0,85.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="UI" data-to="AP"><rect x="453.0" y="77.0" width="56" height="16" rx="3"/><text x="481.0" y="89.0">commands</text></g><path class="edge" data-type="owns" data-from="AP" data-to="Allocation" d="M651.0,88.6 Q706.0,92.0 755.8,92.0 Q805.5,92.0 852.3,92.0 Q899.0,92.0 958.5,67.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="AP" data-to="Allocation"><rect x="789.5" y="84.0" width="32" height="16" rx="3"/><text x="805.5" y="96.0">owns</text></g><path class="edge" data-type="stores" data-from="DB" data-to="Allocation" d="M850.0,50.0 Q899.0,50.0 948.0,50.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="DB" data-to="Allocation"><rect x="877.0" y="42.0" width="44" height="16" rx="3"/><text x="899.0" y="54.0">stores</text></g><path class="edge" data-type="reads" data-from="AP" data-to="DB" d="M648.1,68.0 Q706.0,50.0 761.0,50.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="AP" data-to="DB"><rect x="687.0" y="42.0" width="38" height="16" rx="3"/><text x="706.0" y="54.0">reads</text></g><path class="edge" data-type="requests" data-from="AP" data-to="Bank" d="M632.5,102.0 Q706.0,134.0 767.5,134.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="AP" data-to="Bank"><rect x="678.0" y="126.0" width="56" height="16" rx="3"/><text x="706.0" y="138.0">requests</text></g><path class="edge" data-type="emits" data-from="Bank" data-to="Result" d="M843.5,134.0 Q899.0,134.0 948.0,134.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Bank" data-to="Result"><rect x="880.0" y="126.0" width="38" height="16" rx="3"/><text x="899.0" y="138.0">emits</text></g><path class="edge" data-type="delivers" data-from="Result" data-to="Inbox" d="M1050.0,134.0 Q1105.0,134.0 1160.0,134.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Result" data-to="Inbox"><rect x="1077.0" y="126.0" width="56" height="16" rx="3"/><text x="1105.0" y="138.0">delivers</text></g><path class="edge" data-type="projects" data-from="Allocation" data-to="UI" d="M949.0,33.0 Q899.0,16.0 852.3,16.0 Q805.5,16.0 755.8,16.0 Q706.0,16.0 649.8,16.0 Q593.5,16.0 537.3,16.0 Q481.0,16.0 426.0,31.2" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Allocation" data-to="UI"><rect x="678.0" y="8.0" width="56" height="16" rx="3"/><text x="706.0" y="20.0">projects</text></g><g class="node" data-id="Staff"><rect x="8.0" y="30.0" width="193" height="34" rx="4"/><text x="104.5" y="51.5">采购、仓管、会计与资金人员</text></g><g class="node" data-id="UI"><rect x="311.0" y="30.0" width="115" height="34" rx="4"/><text x="368.5" y="51.5">采购付款工作台</text></g><g class="node" data-id="AP"><rect x="536.0" y="68.0" width="115" height="34" rx="4"/><text x="593.5" y="89.5">采购与应付服务</text></g><g class="node" data-id="Allocation"><rect x="948.0" y="33.0" width="102" height="34" rx="4"/><text x="999.0" y="54.5">发票匹配分配</text></g><g class="node" data-id="DB"><rect x="761.0" y="33.0" width="89" height="34" rx="4"/><text x="805.5" y="54.5">事务数据库</text></g><g class="node" data-id="Bank"><rect x="767.5" y="117.0" width="76" height="34" rx="4"/><text x="805.5" y="138.5">外部银行</text></g><g class="node" data-id="Result"><rect x="948.0" y="117.0" width="102" height="34" rx="4"/><text x="999.0" y="138.5">付款状态通知</text></g><g class="node" data-id="Inbox"><rect x="1160.0" y="117.0" width="89" height="34" rx="4"/><text x="1204.5" y="138.5">通知收件表</text></g></svg></div><details class="edge-list"><summary>图中关系的文字列表</summary><ul><li>采购、仓管、会计与资金人员 <span class="rel">—operates→</span> 采购付款工作台</li><li>采购付款工作台 <span class="rel">—commands→</span> 采购与应付服务</li><li>采购与应付服务 <span class="rel">—owns→</span> 发票匹配分配</li><li>事务数据库 <span class="rel">—stores→</span> 发票匹配分配</li><li>采购与应付服务 <span class="rel">—reads→</span> 事务数据库</li><li>采购与应付服务 <span class="rel">—requests→</span> 外部银行</li><li>外部银行 <span class="rel">—emits→</span> 付款状态通知</li><li>付款状态通知 <span class="rel">—delivers→</span> 通知收件表</li><li>发票匹配分配 <span class="rel">—projects→</span> 采购付款工作台</li></ul></details></figure><p>箭头只表示信息关系，不表示实物或资金的移动：零件进库不是一次消息送达，<code>requests</code> 边发出也不代表银行已经转账。付款按钮在以下条件同时满足时才可提交：发票没有有效 hold、银行账户版本已确认、授权有效、没有活跃的付款尝试。服务端先保存指令与 outbox，再由发送任务连接银行。外部请求超时后，页面显示“银行结果待核对”，按原付款引用查询或读取对账单；没有银行幂等保证时，不换新引用盲目重发。</p>
+<p>发票详情应在一屏给出“订购 100 / 收货 80 / 合格 75 / 已占用 70 / 本次申请 10”，并定位导致 hold 的 5 件缺口。点击“重新匹配”时提交 <code>invoice_id、expected_version、rule_version、operation_id</code>；服务端重读权威数量，保存匹配快照和分配。页面上的预览可能已经过时，所以提交结果要返回被接受的版本或冲突差异。拒绝时保留原输入，指向待补的证据，缺货靠补证据解决。</p>
+<figure class="graph-fig"><div class="graph-wrap"><svg class="graph" viewBox="0 0 1257 159" width="1257" height="159" style="max-width:1446px;min-width:1006px" role="img" aria-label="H02 · 请购、验收、发票匹配与付款"><defs><marker id="arrow-g1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arrowhead"/></marker></defs><path class="edge" data-type="operates" data-from="Staff" data-to="UI" d="M201.0,47.0 Q256.0,47.0 311.0,47.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Staff" data-to="UI"><rect x="228.0" y="39.0" width="56" height="16" rx="3"/><text x="256.0" y="51.0">operates</text></g><path class="edge" data-type="commands" data-from="UI" data-to="AP" d="M418.8,64.0 Q481.0,85.0 536.0,85.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="UI" data-to="AP"><rect x="453.0" y="77.0" width="56" height="16" rx="3"/><text x="481.0" y="89.0">commands</text></g><path class="edge" data-type="owns" data-from="AP" data-to="Allocation" d="M651.0,88.6 Q706.0,92.0 755.8,92.0 Q805.5,92.0 852.3,92.0 Q899.0,92.0 958.5,67.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="AP" data-to="Allocation"><rect x="789.5" y="84.0" width="32" height="16" rx="3"/><text x="805.5" y="96.0">owns</text></g><path class="edge" data-type="stores" data-from="DB" data-to="Allocation" d="M850.0,50.0 Q899.0,50.0 948.0,50.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="DB" data-to="Allocation"><rect x="877.0" y="42.0" width="44" height="16" rx="3"/><text x="899.0" y="54.0">stores</text></g><path class="edge" data-type="reads" data-from="AP" data-to="DB" d="M648.1,68.0 Q706.0,50.0 761.0,50.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="AP" data-to="DB"><rect x="687.0" y="42.0" width="38" height="16" rx="3"/><text x="706.0" y="54.0">reads</text></g><path class="edge" data-type="requests" data-from="AP" data-to="Bank" d="M632.5,102.0 Q706.0,134.0 767.5,134.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="AP" data-to="Bank"><rect x="678.0" y="126.0" width="56" height="16" rx="3"/><text x="706.0" y="138.0">requests</text></g><path class="edge" data-type="emits" data-from="Bank" data-to="Result" d="M843.5,134.0 Q899.0,134.0 948.0,134.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Bank" data-to="Result"><rect x="880.0" y="126.0" width="38" height="16" rx="3"/><text x="899.0" y="138.0">emits</text></g><path class="edge" data-type="delivers" data-from="Result" data-to="Inbox" d="M1050.0,134.0 Q1105.0,134.0 1160.0,134.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Result" data-to="Inbox"><rect x="1077.0" y="126.0" width="56" height="16" rx="3"/><text x="1105.0" y="138.0">delivers</text></g><path class="edge" data-type="projects" data-from="Allocation" data-to="UI" d="M949.0,33.0 Q899.0,16.0 852.3,16.0 Q805.5,16.0 755.8,16.0 Q706.0,16.0 649.8,16.0 Q593.5,16.0 537.3,16.0 Q481.0,16.0 426.0,31.2" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Allocation" data-to="UI"><rect x="678.0" y="8.0" width="56" height="16" rx="3"/><text x="706.0" y="20.0">projects</text></g><g class="node" data-id="Staff"><rect x="8.0" y="30.0" width="193" height="34" rx="4"/><text x="104.5" y="51.5">采购、仓管、会计与资金人员</text></g><g class="node" data-id="UI"><rect x="311.0" y="30.0" width="115" height="34" rx="4"/><text x="368.5" y="51.5">采购付款工作台</text></g><g class="node" data-id="AP"><rect x="536.0" y="68.0" width="115" height="34" rx="4"/><text x="593.5" y="89.5">采购与应付服务</text></g><g class="node" data-id="Allocation"><rect x="948.0" y="33.0" width="102" height="34" rx="4"/><text x="999.0" y="54.5">发票匹配分配</text></g><g class="node" data-id="DB"><rect x="761.0" y="33.0" width="89" height="34" rx="4"/><text x="805.5" y="54.5">事务数据库</text></g><g class="node" data-id="Bank"><rect x="767.5" y="117.0" width="76" height="34" rx="4"/><text x="805.5" y="138.5">外部银行</text></g><g class="node" data-id="Result"><rect x="948.0" y="117.0" width="102" height="34" rx="4"/><text x="999.0" y="138.5">付款状态通知</text></g><g class="node" data-id="Inbox"><rect x="1160.0" y="117.0" width="89" height="34" rx="4"/><text x="1204.5" y="138.5">通知收件表</text></g></svg></div><details class="edge-list"><summary>图中关系的文字列表</summary><ul><li>采购、仓管、会计与资金人员 <span class="rel">—operates→</span> 采购付款工作台</li><li>采购付款工作台 <span class="rel">—commands→</span> 采购与应付服务</li><li>采购与应付服务 <span class="rel">—owns→</span> 发票匹配分配</li><li>事务数据库 <span class="rel">—stores→</span> 发票匹配分配</li><li>采购与应付服务 <span class="rel">—reads→</span> 事务数据库</li><li>采购与应付服务 <span class="rel">—requests→</span> 外部银行</li><li>外部银行 <span class="rel">—emits→</span> 付款状态通知</li><li>付款状态通知 <span class="rel">—delivers→</span> 通知收件表</li><li>发票匹配分配 <span class="rel">—projects→</span> 采购付款工作台</li></ul></details></figure><p>箭头表示信息关系；实物和资金的移动在图外发生：零件进库不是一次消息送达，<code>requests</code> 边只表示请求已发出，转账以银行确认为准。付款按钮在以下条件同时满足时才可提交：发票没有有效 hold、银行账户版本已确认、授权有效、没有活跃的付款尝试。服务端先保存指令与 outbox，再由发送任务连接银行。外部请求超时后，页面显示“银行结果待核对”，按原付款引用查询或读取对账单；没有银行幂等保证时，不换新引用盲目重发。</p>
 </section>
-<section class="scene" aria-labelledby="技术选型"><header class="scene-head"><h2 id="技术选型"><span class="scene-no" aria-hidden="true">05</span><span class="head">技术选型</span></h2></header><p class="scene-lede">一个可实现的起点是 React 或 Vue 的发票差异表格，配合 TypeScript/NestJS 或 Java/Spring 的模块化服务和 PostgreSQL。前端适合把行级差异、版本冲突、附件预览和长任务状态放在同一上下文里；小团队也可以用 Django 服务端页面，少做前后端状态同步。选哪一种取决于团队熟悉度与交互复杂度；本例不要求拆分微服务。</p>
-<p>关系数据库适合把发票版本、数量分配和 operation 唯一约束放在一个事务里提交。若采用 PostgreSQL，可以先锁定采购单行的余额记录，再重新判断；涉及多行时按同一 <abbr title="identifier：标识符">ID</abbr> 顺序取锁，以减少死锁。官方文档说明 <code>FOR UPDATE</code> 会阻挡其他事务对同一行的冲突修改，锁通常保持到事务结束，死锁则可能导致事务被中止。<a href="https://www.postgresql.org/docs/current/explicit-locking.html" class="ext" rel="noopener">Explicit Locking §13.3.2、§13.3.4</a>。文档说明的只是数据库机制，业务代码是否正确加锁要另行检查；等待银行响应的网络付款不能放在持锁事务里。</p>
-<p>发票原件放对象存储，事务库只保存受权限保护的引用、哈希和解析版本；对外公开的材料不保存真实票据或访问凭据。队列可以先用数据库 outbox 加后台 worker 实现；吞吐、消费者独立扩缩容或重放的需求确实增加后，再考虑 RabbitMQ/Kafka。引入消息平台会多出运维和去重的工作，数据库写入与银行转账也不会因此变成同一事务。工作台读缓存的键包含租户、法人、对象与投影版本；正式匹配和付款授权不读取缓存余额。</p>
+<section class="scene" aria-labelledby="技术选型"><header class="scene-head"><h2 id="技术选型"><span class="scene-no" aria-hidden="true">05</span><span class="head">技术选型</span></h2></header><p class="scene-lede">一个可实现的起点是 React 或 Vue 的发票差异表格，配合 TypeScript/NestJS 或 Java/Spring 的模块化服务和 PostgreSQL。前端适合把行级差异、版本冲突、附件预览和长任务状态放在同一上下文里；小团队也可以用 Django 服务端页面，少做前后端状态同步。选哪一种取决于团队熟悉度与交互复杂度；本例用一个模块化服务即可。</p>
+<p>关系数据库适合把发票版本、数量分配和 operation 唯一约束放在一个事务里提交。若采用 PostgreSQL，可以先锁定采购单行的余额记录，再重新判断；涉及多行时按同一 <abbr title="identifier：标识符">ID</abbr> 顺序取锁，以减少死锁。官方文档说明 <code>FOR UPDATE</code> 会阻挡其他事务对同一行的冲突修改，锁通常保持到事务结束，死锁则可能导致事务被中止。<a href="https://www.postgresql.org/docs/current/explicit-locking.html" class="ext" rel="noopener">Explicit Locking §13.3.2、§13.3.4</a>。文档说明的只是数据库机制，业务代码是否正确加锁要另行检查；等待银行响应的网络付款放在持锁事务之外。</p>
+<p>发票原件放对象存储，事务库只保存受权限保护的引用、哈希和解析版本；对外公开的材料不保存真实票据或访问凭据。队列可以先用数据库 outbox 加后台 worker 实现；吞吐、消费者独立扩缩容或重放的需求确实增加后，再考虑 RabbitMQ/Kafka。引入消息平台会多出运维和去重的工作，数据库写入与银行转账也不会因此变成同一事务。工作台读缓存的键包含租户、法人、对象与投影版本；正式匹配和付款授权读取事务库里的权威余额。</p>
 </section>
 <section class="scene" aria-labelledby="正常路径与故障接管"><header class="scene-head"><h2 id="正常路径与故障接管"><span class="scene-no" aria-hidden="true">06</span><span class="head">正常路径与故障接管</span></h2></header><p class="scene-lede">正常路径上每一步只推进自己的对象；故障时以保留的付款身份和数量占用为准，先核对外部结果，再释放或修正。</p>
 <p>正常路径从已获批的 PO 开始：仓管登记 80 件；检验员接受 75 件；会计录入 A 并预览 70 件分配；服务端按当前版本提交匹配；资金人员批准 707.00；worker 发出已保存的 PAY-A；银行确认结果后，付款状态与投影随之更新。会计既能看到 A 的付款证据，也能看到 B 的 hold；“订单已付”这样的标签遮不住尚未了结的 B。</p>
 <p>最难恢复的窗口在外部受理与本地收到结果之间。若银行接受 PAY-A 后连接断开，本地仍保留 PAY-A 的身份、707.00、收款人版本与 unknown 状态。核对任务确认是同一笔外部交易后，更新为 settled；若一直查不到，操作员必须取得“未受理”的充分证据或按银行协议处理，不能把查询暂时无结果当作确定失败。旧的 submitted 通知晚于 settled 到达时，接收记录可以保留，已核对的结果不倒退。银行后来确认款项退回时，新增一条退回记录，义务重新变为待处理；这是新发生的事件，与旧消息乱序到达是两回事。</p>
-<p>验收数量也可能在匹配之后改变。检验记录在发票匹配后由 75 改为 68 件：若付款尚未发送，匹配快照失效，发票重新置 hold；若付款处于 submitted 或 unknown，先冻结新的付款与释放动作，保留原尝试与数量占用，再核对银行，确定未执行且解除分配获批后才释放占用，已成功则转入差异案件；若已经 settled，就立差异案件，走退货/贷项处理。回滚数据库追不回已经转出的资金。重新匹配完成后才允许解除 hold。如果业务需要手工“强制通过”，应做成限定权限、写明原因并留存审批证据的例外流程；本例不实现。</p>
+<p>验收数量也可能在匹配之后改变。检验记录在发票匹配后由 75 改为 68 件：若付款尚未发送，匹配快照失效，发票重新置 hold；若付款处于 submitted 或 unknown，先冻结新的付款与释放动作，保留原尝试与数量占用，再核对银行，确定未执行且解除分配获批后才释放占用，已成功则转入差异案件；若已经 settled，就立差异案件，走退货/贷项处理。回滚数据库追不回已经转出的资金。重新匹配完成后才允许解除 hold。</p>
+<figure class="drawing" data-drawing="h02-downgrade"><div class="dw-scroll" style="--dw-min:620px;--dw-max:940px">
+<svg viewBox="0 0 780 270" role="img" aria-labelledby="h02-downgrade-t h02-downgrade-d">
+  <title id="h02-downgrade-t">验收量下调后，按付款状态分三路</title>
+  <desc id="h02-downgrade-d">检验记录在匹配后由 75 改为 68 件。付款未发送时，匹配快照失效，发票重新 hold；付款 submitted 或 unknown 时，冻结新付款与释放，保留原尝试与数量占用并核对银行，确定未执行且解除分配获批后释放占用，已成功则转入差异案件；付款 settled 时立差异案件，走退货或贷项。</desc>
+  <defs><marker id="h02-downgrade-ah" viewBox="0 0 8 8" refX="7" refY="4" markerUnits="userSpaceOnUse" markerWidth="9" markerHeight="9" orient="auto"><path class="f-ink" d="M0 0 L8 4 L0 8 z"/></marker></defs>
+  <rect class="box" x="10" y="108" width="130" height="54"/>
+  <text class="t-b" x="22" y="130">INS-1 合格</text>
+  <text class="t-n" x="22" y="151">75 → 68</text>
+  <text class="t-s" x="160" y="18">付款状态</text>
+  <g data-s="1">
+    <path class="ln" d="M140 135 L160 135 L160 48 L176 48"/><path class="ln" d="M160 135 H176"/><path class="ln" d="M160 135 L160 222 L176 222"/>
+    <rect class="box" x="176" y="30" width="150" height="36"/><text class="t" x="188" y="53">未发送</text>
+    <rect class="box" x="176" y="117" width="150" height="36"/><text class="t-n" x="188" y="140">submitted/unknown</text>
+    <rect class="box" x="176" y="204" width="150" height="36"/><text class="t-n" x="188" y="227">settled</text>
+  </g>
+  <g data-s="2">
+    <path class="ln" marker-end="url(#h02-downgrade-ah)" d="M326 48 H352"/>
+    <rect class="box" x="354" y="30" width="200" height="36"/><text class="t" x="366" y="53">匹配快照失效，重新 hold</text>
+    <path class="ln" marker-end="url(#h02-downgrade-ah)" d="M326 135 H352"/>
+    <rect class="box-em" x="354" y="108" width="200" height="54"/><text class="t" x="366" y="130">冻结新付款与释放</text><text class="t" x="366" y="151">保留原尝试与占用，核对银行</text>
+    <path class="ln" marker-end="url(#h02-downgrade-ah)" d="M326 222 H352"/>
+    <rect class="box" x="354" y="204" width="200" height="54"/><text class="t" x="366" y="226">立差异案件</text><text class="t" x="366" y="247">走退货 / 贷项</text>
+  </g>
+  <g data-s="3">
+    <path class="ln" d="M554 135 L574 135 L574 96 L588 96"/><path class="ln" d="M574 135 L574 174 L588 174"/>
+    <rect class="box" x="588" y="78" width="182" height="36"/><text class="t" x="600" y="101">未执行且解除获批 → 释放</text>
+    <rect class="box" x="588" y="156" width="182" height="36"/><text class="t" x="600" y="179">已成功 → 差异案件</text>
+  </g>
+</svg>
+</div>
+<figcaption>在途的付款保留原尝试和数量占用，等银行结果确定后再分路；已转出的现金只能经退货或贷项处理。</figcaption></figure><p>如果业务需要手工“强制通过”，应做成限定权限、写明原因并留存审批证据的例外流程；本例不实现。</p>
 <p>假设 100 个租户、100 万张历史发票，每天新入 5 万张，每张平均 5 行；高峰每秒 30 次匹配、100 个并发用户，10% 流量集中在同一大供应商。待测目标为：单张 50 行以内的预览 p95 500 毫秒、正式匹配 p95 1 秒，都从 <abbr title="application programming interface：应用程序接口">API</abbr> 接收计到提交或明确拒绝，不含银行等待，银行延迟另报。同一采购单热点、缓存未命中、长队列与锁冲突要单独测。收件 2 秒、投影 5 秒内可见只是目标；正确性指标始终要求零重复付款、零跨租户读取、零未经例外授权的超额占用。每个租户的后台并发设上限，避免一次批量导入挤占其他租户。</p>
 </section>
 <section class="scene" aria-labelledby="验算检查项与所需证据"><header class="scene-head"><h2 id="验算检查项与所需证据"><span class="scene-no" aria-hidden="true">07</span><span class="visually-hidden">验算：</span><span class="head">检查项与所需证据</span></h2></header><p class="scene-lede">验收看三件事同时成立：累计分配不超过合格量，同一义务只出现一笔资金交易，租户之间不交叉。</p>
@@ -169,7 +294,7 @@
 </tr>
 </tbody></table></div>
 <p>以上是端到端验收定义；所需的操作记录、数据库状态与外部 stub/银行证据列在 <abbr title="JavaScript Object Notation：结构化数据表示格式，后文保留 JSON">JSON</abbr> 的 checks 中。配套脚本核验的是数量与金额守恒；数据库并发、真实银行、浏览器和性能仍要另行实测。</p>
-<p>确定性匹配不需要 <abbr title="artificial intelligence：人工智能">AI</abbr>。若加入票据 OCR 或模型抽取，模型只生成待确认的字段和页码位置，不能替代收货、验收或银行账户的权威记录。评估可以冻结 200 张未参与提示词调试的合成票据，覆盖多页、重复票号、不同单位、小数点模糊与币种冲突。报告以下指标：金额、币种、供应商身份逐字段完全正确的数量；错误自动接受数占自动接受数的比例；应拒绝却被接受的数量占歧义样本数的比例；人工更正数占全部样本数的比例；拒绝率。关键身份或金额不确定时转人工。分母、模型版本、解析版本与实际结果单独记录。</p>
+<p>确定性匹配不需要 <abbr title="artificial intelligence：人工智能">AI</abbr>。若加入票据 OCR 或模型抽取，模型只生成待确认的字段和页码位置；收货、验收和银行账户仍以权威记录为准。评估可以冻结 200 张未参与提示词调试的合成票据，覆盖多页、重复票号、不同单位、小数点模糊与币种冲突。报告以下指标：金额、币种、供应商身份逐字段完全正确的数量；错误自动接受数占自动接受数的比例；应拒绝却被接受的数量占歧义样本数的比例；人工更正数占全部样本数的比例；拒绝率。关键身份或金额不确定时转人工。分母、模型版本、解析版本与实际结果单独记录。</p>
 </section>
 <section class="scene" aria-labelledby="变式条件变化与迁移"><header class="scene-head"><h2 id="变式条件变化与迁移"><span class="scene-no" aria-hidden="true">08</span><span class="visually-hidden">变式：</span><span class="head">条件变化与迁移</span></h2></header><p class="scene-lede">累计分配、承诺与验收证据在条件改变后仍然成立；变的是证据单位和授权：验收量增加要重新匹配并重新授权，件数换成里程碑时，由验收标准和承诺额度代替件数。</p>
 <p><strong>练习一：B 仍为 10 件、处于 held 且尚未修订，5 件待检零件全部合格。</strong> B 能否付款？</p>
@@ -318,8 +443,8 @@
     <footer class="page-foot">正文 <a href="../../../books/saas-engineering/packages/commercial-finance/H02.md">books/saas-engineering/packages/commercial-finance/H02.md</a> · <a href="../../../vault/distilled/saas-engineering-atlas/README.md">结构、来源与验证</a></footer>
   </main>
 </div>
-<script src="search-index.js?v=mv95jeod"></script>
-<script src="book.js?v=mv95jeod"></script>
+<script src="search-index.js?v=mv97hru0"></script>
+<script src="book.js?v=mv97hru0"></script>
 
 </body>
 </html>

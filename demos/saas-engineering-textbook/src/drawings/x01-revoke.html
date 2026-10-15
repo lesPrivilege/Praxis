@@ -1,0 +1,41 @@
+<div class="dw-scroll" style="--dw-min:600px;--dw-max:920px">
+<svg viewBox="0 0 780 270" role="img" aria-labelledby="x01-revoke-t x01-revoke-d">
+  <title id="x01-revoke-t">撤销落在交付之前与之后</title>
+  <desc id="x01-revoke-d">撤销发生在检索完成之后、答案返回之前：最终授权复检发现 epoch 变化，停止交付正文，记录受限原因，已消耗成本入账。撤销发生在第一块已在有效授权下交付之后：保留第一块的交付事实，后续块与重连回放都被拒绝。</desc>
+  <text class="t-b" x="20" y="30">撤销在答案返回之前</text>
+  <path class="ln" d="M20 80 H380"/>
+  <g class="t-s">
+    <circle class="f-ink" cx="60" cy="80" r="4"/><text class="t-s mid" x="60" y="104">检索完成</text>
+    <circle class="f-ink" cx="160" cy="80" r="4"/><text class="t-s mid" x="160" y="104">生成</text>
+    <circle class="f-ink" cx="260" cy="80" r="4"/><text class="t-s mid" x="260" y="104">核对</text>
+  </g>
+  <g data-s="1">
+    <path class="ln-strong" d="M320 50 V112"/><text class="t-b mid" x="320" y="44">撤销 · epoch 变化</text>
+  </g>
+  <g data-s="2">
+    <rect class="box-dash" x="380" y="64" width="90" height="32"/><text class="t mid" x="425" y="85">正文</text>
+    <text class="t-s" x="484" y="78">最终复检拦下，停止交付</text>
+    <text class="t-s" x="484" y="96">记录受限原因 · 已消耗成本入账</text>
+  </g>
+  <path class="ln-soft" d="M20 136 H760"/>
+  <text class="t-b" x="20" y="166">撤销在第一块交付之后</text>
+  <path class="ln" d="M20 216 H300"/>
+  <circle class="f-ink" cx="60" cy="216" r="4"/><text class="t-s mid" x="60" y="240">检索完成</text>
+  <circle class="f-ink" cx="160" cy="216" r="4"/><text class="t-s mid" x="160" y="240">生成</text>
+  <circle class="f-ink" cx="260" cy="216" r="4"/><text class="t-s mid" x="260" y="240">核对</text>
+  <g data-s="3">
+    <rect class="box f-ink" x="300" y="200" width="70" height="32"/><text class="t t-inv mid" x="335" y="221">块 1</text>
+    <text class="t-s mid" x="335" y="252">已交付，保留</text>
+  </g>
+  <g data-s="4">
+    <path class="ln-strong" d="M410 186 V248"/><text class="t-b mid" x="410" y="180">撤销</text>
+  </g>
+  <g data-s="5">
+    <rect class="box-dash" x="450" y="200" width="70" height="32"/><text class="t mid" x="485" y="221">块 2</text>
+    <text class="t-s mid" x="485" y="252">拒绝</text>
+    <rect class="box-dash" x="560" y="200" width="100" height="32"/><text class="t mid" x="610" y="221">重连回放</text>
+    <text class="t-s mid" x="610" y="252">拒绝</text>
+  </g>
+</svg>
+</div>
+<figcaption>交付前的最后一次复检看当前 epoch：撤销在前，正文一块也不发；撤销在后，已发出的块保留为事实，之后的块和回放都被拒绝。</figcaption>

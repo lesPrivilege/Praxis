@@ -1,0 +1,36 @@
+<div class="dw-scroll" style="--dw-min:620px;--dw-max:920px">
+<svg viewBox="0 0 790 330" role="img" aria-labelledby="v22-intervals-t v22-intervals-d">
+  <title id="v22-intervals-t">计费周期、两种区间与 usage 的时间</title>
+  <desc id="v22-intervals-d">周期为 [0,30)。BI1 计费区间为 [5,20)，15 天，固定费 1500 分；技术活动区间正常也是 [5,20)，网络延误时到 day 22，后两天是运营异常。U1 在 day 6 用 4 GB，U2 在 day 18 用 8 GB、day 22 才到达，仍归入 day 18；day 20 的记录不在 [5,20) 中，先隔离核对；day 23 为最终账单截点。</desc>
+  <path class="ln-soft" d="M250 40 V292"/><path class="ln-soft" d="M550 40 V292"/>
+  <text class="t-n mid" x="150" y="316">0</text><text class="t-n mid" x="250" y="316">5</text><text class="t-n mid" x="270" y="316">6</text>
+  <text class="t-n mid" x="510" y="316">18</text><text class="t-n mid" x="550" y="316">20</text><text class="t-n mid" x="590" y="316">22</text>
+  <text class="t-n mid" x="612" y="316">23</text><text class="t-n mid" x="750" y="316">30</text>
+  <g data-s="1">
+    <text class="t-b end" x="135" y="62">计费周期</text>
+    <rect class="box f1" x="150" y="46" width="600" height="22"/><text class="t-s" x="158" y="61">[0,30) · 月费 3,000 分 · 含 10 GB</text>
+    <text class="t-b end" x="135" y="110">BI1 计费区间</text>
+    <path class="ln-strong" d="M250 106 H550"/><text class="t-s" x="258" y="96">[5,20) · 15 天 · 固定费 1500 分</text>
+  </g>
+  <g data-s="2">
+    <text class="t-b end" x="135" y="158">技术活动区间</text>
+    <path class="ln-strong" d="M250 154 H550"/><path class="ln-em" d="M550 154 H590"/>
+    <text class="t-s" x="258" y="144">[5,20)，正常关闭</text><text class="t-s" x="598" y="158">延误到 day 22 · 运营异常</text>
+  </g>
+  <g data-s="3">
+    <text class="t-b end" x="135" y="210">usage 发生</text>
+    <circle class="f-ink" cx="270" cy="206" r="5"/><text class="t-s" x="278" y="196">U1 · 4 GB</text>
+    <circle class="f-ink" cx="510" cy="206" r="5"/><text class="t-s end" x="502" y="196">U2 · 8 GB</text>
+  </g>
+  <g data-s="4">
+    <text class="t-b end" x="135" y="262">usage 到达</text>
+    <circle class="box" cx="590" cy="258" r="5"/><path class="ln" d="M586 254 L514 210"/>
+    <text class="t-s" x="600" y="262">U2 day 22 到达，归入 day 18</text>
+  </g>
+  <g data-s="5">
+    <circle class="box-dash" cx="550" cy="206" r="5"/><text class="t-s" x="560" y="210">day 20 的记录 · 隔离核对</text>
+    <path class="ln" d="M612 34 V120"/><text class="t-s mid" x="612" y="26">day 23 截点</text>
+  </g>
+</svg>
+</div>
+<figcaption>usage 按发生时间落进区间：U2 在 day 22 才到，仍落在 BI1 内；网络多开的两天只延长技术区间。</figcaption>

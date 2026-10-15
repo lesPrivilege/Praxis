@@ -4,9 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>第二章　企业前端的工作面与契约 · SaaS 工程全景</title>
-<link rel="stylesheet" href="book.css?v=mv95jeod">
+<link rel="stylesheet" href="book.css?v=mv97hru0">
 </head>
 <body>
+<svg class="dw-defs" width="0" height="0" aria-hidden="true" focusable="false" style="position:absolute"><defs><pattern id="dw-hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" fill="var(--bg)"/><path d="M0 0 V6" stroke="var(--ink-2)" stroke-width="1.2"/></pattern></defs></svg>
 <a class="skip" href="#main">跳到正文</a>
 <header class="topbar">
   <button class="nav-toggle" type="button" aria-controls="sidebar" aria-expanded="false">目录</button>
@@ -76,24 +77,85 @@
 </section>
 <section class="scene" aria-labelledby="解法为每种工作面定契约"><header class="scene-head"><h2 id="解法为每种工作面定契约"><span class="scene-no" aria-hidden="true">02</span><span class="visually-hidden">解法：</span><span class="head">为每种工作面定契约</span></h2></header><p class="scene-lede">每种工作面对应一份后端契约：查询范围、版本前提、操作身份和部分成功的结果，都要在页面上有落点。</p>
 <h3 id="表格让比较可以重复">表格让比较可以重复</h3>
-<p>表格把同一种对象的同一属性放在相同位置。会计沿列比较金额、到期日与异常原因，比逐张打开卡片更容易发现偏差。列多本身没有错；错在把与当前判断无关的字段，和必须看到的字段混在同一层。</p>
-<p>以待匹配发票表为例，首要列是发票身份、供应商、币种金额、匹配状态、阻塞原因和下一责任人；创建时间、解析器版本等字段可以放进详情。长名称被截断时，要能读到完整文本；金额省略显示时不能丢掉币种；排序时空值不能悄悄排成最大金额。</p>
-<p>后端查询必须回答：搜索哪些字段，过滤条件怎样组合，排序发生在整个结果集还是当前页，同值时怎样稳定排序，翻页期间新增记录怎么办。一种可行的契约是按 <code>(due_at, invoice_id)</code> 排出稳定次序，由游标保存查询与排序条件；需要冻结批量集合时，再返回快照身份。普通浏览不一定要数据库快照，但不能把一个不断变化的列表称作“已选全部的固定集合”。缓存键还要包含租户、权限范围和查询条件。</p>
+<p>表格把同一种对象的同一属性放在相同位置。会计沿列比较金额、到期日与异常原因，比逐张打开卡片更容易发现偏差。列的多少由判断决定：当前判断必须看到的字段放在第一层，其余字段放进详情。</p>
+<p>以待匹配发票表为例，首要列是发票身份、供应商、币种金额、匹配状态、阻塞原因和下一责任人；创建时间、解析器版本等字段可以放进详情。长名称被截断时，要能读到完整文本；金额省略显示时保留币种；排序时空值单独归位，与最大金额分开。</p>
+<p>后端查询必须回答：搜索哪些字段，过滤条件怎样组合，排序发生在整个结果集还是当前页，同值时怎样稳定排序，翻页期间新增记录怎么办。一种可行的契约是按 <code>(due_at, invoice_id)</code> 排出稳定次序，由游标保存查询与排序条件；需要冻结批量集合时，再返回快照身份。普通浏览用游标就够；要称作“已选全部的固定集合”，就得有快照身份，一个不断变化的列表担不起这个名字。缓存键还要包含租户、权限范围和查询条件。</p>
 <p>Carbon 把全表工具栏、逐行动作与批量动作分开；进入批量模式后，它建议禁用逐行动作，让用户看清当前作用范围。可以借用的是它减少作用对象歧义的做法。<a href="https://www.carbondesignsystem.com/building-blocks/core/components/data-table/guidelines" class="ext" rel="noopener">Data table</a>。</p>
 <p>表格要不要做成交互网格（grid），看用户是否需要在单元格之间移动、编辑和选择。只展示数据时，原生表格通常就够了；一旦要在单元格间导航、编辑和选择，就得管理焦点、方向键和编辑模式。万维网联盟（World Wide Web Consortium, W3C）的 ARIA Authoring Practices Guide（APG）写明了 grid 的这些键盘职责；ARIA（Accessible Rich Internet Applications）是为网页控件补充无障碍语义的一组属性。给普通表格加上 <code>role=&quot;grid&quot;</code>，并不会自动具备这些行为。<a href="https://www.w3.org/WAI/ARIA/apg/patterns/grid/" class="ext" rel="noopener">Grid pattern</a>。</p>
 <h3 id="表单把输入变成有依据的请求">表单把输入变成有依据的请求</h3>
-<p>表单按用户要做的动作来设计，不照搬数据库表。用户想的是“修订发票”，不会去想“更新 invoice 表的哪几列”。系统只让用户填写本次动作需要的字段，并展示必要的依据：原金额、修改原因、附件关系、变化后的影响。不可编辑的字段与当前值一起显示，能减少重复输入和误认。</p>
-<p>本例的发票修订表单接受数量、对应的供应商修订凭据与原因，金额按已确认单价计算。提交时带 <code>invoice_id、expected_version、operation_id</code>。服务端先检查字段类型与范围，再检查业务约束与权限。客户端即时校验可以减少无效输入，不能替代服务端的决定。</p>
-<p>草稿和正式提交要分开：自动保存的草稿可以恢复意外关闭的输入，但还不是正式请求。正式提交后即使超时，也不能显示成“没有保存”。恢复页面时，按同一个操作身份查询，告诉用户当前是未受理、受理后等待、明确拒绝还是结果未知。</p>
-<p>错误提示应指向用户能改动的地方。GOV.UK 的 error summary 模式同时提供页首错误摘要与字段旁错误，把摘要链接到对应字段，并管理键盘焦点。<a href="https://design-system.service.gov.uk/components/error-summary/" class="ext" rel="noopener">Error summary</a>。“验收不足”则不同：会计不能靠改数量消除它，页面应把它显示为业务阻塞，并指向验收责任人或有依据的修订动作。</p>
+<p>表单按用户要做的动作来设计。用户想的是“修订发票”，字段从这个动作推出，而非从“更新 invoice 表的哪几列”推出。系统只让用户填写本次动作需要的字段，并展示必要的依据：原金额、修改原因、附件关系、变化后的影响。不可编辑的字段与当前值一起显示，能减少重复输入和误认。</p>
+<p>本例的发票修订表单接受数量、对应的供应商修订凭据与原因，金额按已确认单价计算。提交时带 <code>invoice_id、expected_version、operation_id</code>。服务端先检查字段类型与范围，再检查业务约束与权限。客户端即时校验减少无效输入，接受与否由服务端决定。</p>
+<p>草稿和正式提交要分开：自动保存的草稿用来恢复意外关闭的输入，正式请求从提交那一刻开始，带着操作身份。正式提交后即使超时，也不能显示成“没有保存”；恢复页面时，按同一个操作身份查询，告诉用户当前是未受理、受理后等待、明确拒绝还是结果未知。</p>
+<figure class="drawing" data-drawing="em02-recovery"><div class="dw-scroll" style="--dw-min:600px;--dw-max:880px">
+<svg viewBox="0 0 740 250" role="img" aria-labelledby="em02-recovery-t em02-recovery-d">
+  <title id="em02-recovery-t">提交超时后按操作身份找回结果</title>
+  <desc id="em02-recovery-d">提交之前是自动保存的草稿。提交时请求带上操作身份，随后超时。恢复页面时按同一个操作身份查询，得到四种结果之一：未受理、受理后等待、明确拒绝、结果未知。</desc>
+  <g data-s="1">
+    <rect class="box-dash" x="20" y="100" width="170" height="50"/>
+    <text class="t-b mid" x="105" y="122">草稿</text>
+    <text class="t-s mid" x="105" y="140">自动保存，可恢复输入</text>
+    <path class="ln-dash" d="M190 125 H240"/>
+  </g>
+  <g data-s="2">
+    <path class="ln-strong" d="M240 70 V180"/>
+    <text class="t-b mid" x="240" y="60">正式提交</text>
+    <text class="t-n mid" x="240" y="200">operation_id</text>
+    <path class="ln" d="M240 125 H300"/>
+    <path class="ln-dash" d="M300 125 H380"/>
+    <text class="t mid" x="340" y="112">超时</text>
+  </g>
+  <g data-s="3">
+    <rect class="box-em" x="380" y="100" width="150" height="50"/>
+    <text class="t mid" x="455" y="122">按同一操作身份</text>
+    <text class="t mid" x="455" y="140">查询</text>
+    <path class="ln" d="M530 125 C560 125 560 40 590 40"/>
+    <path class="ln" d="M530 125 C560 125 560 95 590 95"/>
+    <path class="ln" d="M530 125 C560 125 560 155 590 155"/>
+    <path class="ln" d="M530 125 C560 125 560 210 590 210"/>
+    <text class="t" x="600" y="45">未受理</text>
+    <text class="t" x="600" y="100">受理后等待</text>
+    <text class="t" x="600" y="160">明确拒绝</text>
+    <text class="t" x="600" y="215">结果未知</text>
+  </g>
+</svg>
+</div>
+<figcaption>超时之后，页面按提交时的操作身份查询，报告四种结果之一；草稿与正式请求以提交为界。</figcaption></figure><p>错误提示应指向用户能改动的地方。GOV.UK 的 error summary 模式同时提供页首错误摘要与字段旁错误，把摘要链接到对应字段，并管理键盘焦点。<a href="https://design-system.service.gov.uk/components/error-summary/" class="ext" rel="noopener">Error summary</a>。“验收不足”则不同：它要靠补齐验收或有依据的修订来消除，页面把它显示为业务阻塞，并指向验收责任人或修订动作。</p>
 <h3 id="详情页解释一项决定的依据">详情页解释一项决定的依据</h3>
-<p>详情页围绕一个对象组织信息，但不能只显示它自身的字段。决定发票能否付款，需要采购承诺、验收数量、已分配数量、当前发票版本与授权。关系是决策依据，不是装饰性的“相关记录”。</p>
-<p>详情页可以依次回答：我正在看什么版本，目前到了哪里，依据是什么，有哪些分歧，谁可以做下一步。活动历史应区分用户提交、服务接受、外部确认和业务接收；把它们都写成“操作成功”会抹去关键差别。正文附件、权限敏感的内容和过期引用，也要按各自的权限读取，详情页能打开，不等于所有附件都可见。</p>
-<p>长时间的操作应有可以重新进入的操作记录。用户刷新、离开或换设备，都不应失去查询付款结果的入口。临时提示（toast）适合提醒有了变化，但不能作为唯一的回执。</p>
+<p>详情页围绕一个对象组织信息，并带上决定所需的关系。决定发票能否付款，需要采购承诺、验收数量、已分配数量、当前发票版本与授权；这些关系是决策依据，与发票自身的字段放在一起读。</p>
+<p>详情页可以依次回答：我正在看什么版本，目前到了哪里，依据是什么，有哪些分歧，谁可以做下一步。活动历史分别记下用户提交、服务接受、外部确认和业务接收，四件事各占一行；统写成“操作成功”，就分不出工作停在哪一步。正文附件、权限敏感的内容和过期引用，按各自的权限读取，与详情页本身的权限分开判断。</p>
+<p>长时间的操作应有可以重新进入的操作记录。用户刷新、离开或换设备后，仍从这份记录查询付款结果。临时提示（toast）用来提醒有了变化，回执留在操作记录里。</p>
 <h3 id="工作台按责任组织队列">工作台按责任组织队列</h3>
-<p>工作台适合持续处理一类工作。常见的安排是左侧挑待办、中间看证据、右侧执行动作；无论怎样布局，切换任务时上下文和责任都不能丢。</p>
-<p>领取任务不等于拥有业务对象。一个操作员打开了发票，另一个人仍可能更新验收。若需要排他处理，后端要有领取者、租约或显式分派；若允许并行，只需在提交时检测版本冲突。不要用“当前在线”图标暗示对象已被锁定。用户离线、请假或浏览器崩溃后，任务要能重新分配，已有草稿与正式动作分别处理。</p>
-<p>队列也不该只按创建时间排序。等待外部回执、等待另一部门补件和等待本角色行动，是不同的等待原因。把它们混在一列“待办”里，用户会反复打开自己无权处理的记录。队列应显示下一责任人、下一可行动时间与升级条件；计时规则要写明是否暂停、为何暂停。</p>
+<p>工作台适合持续处理一类工作。常见的安排是左侧挑待办、中间看证据、右侧执行动作；无论怎样布局，切换任务时，上下文和责任跟着任务走。</p>
+<p>领取的是任务，业务对象仍可能被别人修改。会计领取 <code>INV-9</code>，读到的验收是 <code>INS-9</code> 版本 1；同一时间检验员更新了验收记录，<code>INS-9</code> 成为版本 2；会计随后提交，请求里带着 <code>INS-9</code> 版本 1，服务端返回版本冲突，页面展示原依据与当前差异，并保留会计的输入。这是允许并行的做法：提交时检测版本冲突。若需要排他处理，后端要有领取者、租约或显式分派。“当前在线”图标只说明有人在看，不能当作对象已被锁定的标志。</p>
+<figure class="drawing" data-drawing="em02-claim"><div class="dw-scroll" style="--dw-min:620px;--dw-max:900px">
+<svg viewBox="0 0 760 270" role="img" aria-labelledby="em02-claim-t em02-claim-d">
+  <title id="em02-claim-t">领取任务期间验收被更新</title>
+  <desc id="em02-claim-d">会计领取 INV-9，读到 INS-9 版本 1。检验员随后更新验收，INS-9 成为版本 2。会计提交时带着 INS-9 版本 1，服务端返回版本冲突，展示原依据与当前差异并保留输入。</desc>
+  <text class="t-b end" x="100" y="55">会计</text>
+  <text class="t-b end" x="100" y="135">INS-9</text>
+  <text class="t-b end" x="100" y="215">服务端</text>
+  <path class="ln-soft" d="M120 50 H740"/><path class="ln-soft" d="M120 210 H740"/>
+  <g data-s="1">
+    <circle class="f-ink" cx="160" cy="50" r="5"/><text class="t-s" x="150" y="36">领取 INV-9</text>
+    <rect class="box f1" x="120" y="114" width="260" height="32"/><text class="t-n" x="132" y="135">版本 1</text>
+    <path class="ln-dash" d="M250 55 V114"/>
+    <circle class="f-ink" cx="250" cy="50" r="5"/><text class="t-s" x="240" y="36">读到 INS-9 版本 1</text>
+  </g>
+  <g data-s="2">
+    <rect class="box" x="380" y="114" width="360" height="32"/><text class="t-n" x="392" y="135">版本 2</text>
+    <text class="t-s mid" x="380" y="170">检验员更新验收</text>
+    <path class="ln" d="M380 104 V156"/>
+  </g>
+  <g data-s="3">
+    <circle class="f-ink" cx="560" cy="50" r="5"/><text class="t-s" x="550" y="36">提交，带 INS-9 版本 1</text>
+    <path class="ln" d="M560 55 V112 M560 148 V194 M553 186 L560 194 L567 186"/>
+    <rect class="box-em" x="490" y="196" width="140" height="30"/><text class="t mid" x="560" y="216">版本冲突</text>
+    <text class="t-s" x="490" y="248">展示原依据与当前差异，保留输入</text>
+  </g>
+</svg>
+</div>
+<figcaption>会计读到的是版本 1，提交时验收已是版本 2；服务端在提交这一刻发现差异。</figcaption></figure><p>用户离线、请假或浏览器崩溃后，任务要能重新分配，已有草稿与正式动作分别处理。</p>
+<p>队列按等待原因分开，创建时间只是其中的次序。等待外部回执、等待另一部门补件和等待本角色行动，是不同的等待原因。把它们混在一列“待办”里，用户会反复打开自己无权处理的记录。队列应显示下一责任人、下一可行动时间与升级条件；计时规则要写明是否暂停、为何暂停。</p>
 <h3 id="看板描述集合">看板描述集合</h3>
 <p>有了看板，就不必翻看全量记录，适合发现“本周异常率上升”“某队列积压”这类情况。每个指标都要有对象、过滤条件、时间口径与分母。本例的“处理率”可能是 9/10 张发票已处理，9/10 台到货已合格，或者 9/12 台承诺量已结算，三个数字回答的是不同的问题。</p>
 <figure class="drawing" data-drawing="em02-denominators"><div class="dw-scroll" style="--dw-min:560px;--dw-max:800px">
@@ -136,16 +198,32 @@
 </div>
 <figcaption>同一个 9，分母是 10 台到货时为 90%，是 12 台承诺时只有 75%；剩下 3 台的履约义务仍在。</figcaption></figure><p>下钻时要沿用指标所用的集合和口径。如果看板显示的是昨天 18:00 的快照，点进去却打开实时全量列表，两边数字对不上时，页面要能说明原因。外部回执已收到、尚未进入投影的，也要计入数据新鲜度和待核对数量。</p>
 <h3 id="批量操作改变错误处理">批量操作改变错误处理</h3>
-<p>“全选”首先是集合问题：当前页的 25 条，还是满足筛选的 2,430 条？本例的交互分两步：先列出可见的候选集合并预检权限、状态和版本，再确认动作。预检只帮助用户了解影响，正式执行时仍要逐项重新校验。</p>
-<p>批量更新可以全有或全无，也可以逐项独立完成，取决于业务：同一张凭证的借贷行可能需要一起成立，不同供应商的发票通常应能分别处理。若允许部分成功，结果记录必须逐项包含对象 <abbr title="identifier：标识符">ID</abbr>、所用版本、操作 ID、状态与原因。重试时只重发失败的那部分，已成功的项目不再发起。</p>
+<p>“全选”首先是集合问题：当前页的 25 条，还是满足筛选的 2,430 条？本例的交互分两步：先列出可见的候选集合并预检权限、状态和版本，再确认动作。预检让用户看到影响，正式执行时逐项重新校验。</p>
+<figure class="drawing" data-drawing="em02-selectall"><div class="dw-scroll" style="--dw-min:560px;--dw-max:860px">
+<svg viewBox="0 0 740 150" role="img" aria-labelledby="em02-selectall-t em02-selectall-d">
+  <title id="em02-selectall-t">“全选”的两种集合</title>
+  <desc id="em02-selectall-d">按比例画出满足筛选的 2,430 条记录，当前页的 25 条只占其中很窄的一段。“全选”可能指当前页的 25 条，也可能指满足筛选的 2,430 条。</desc>
+  <g data-s="1">
+    <rect class="box-em" x="30" y="60" width="7" height="36"/>
+    <path class="ln" d="M33 56 V30 H60"/>
+    <text class="t" x="66" y="35">当前页的 <tspan class="t-n">25</tspan> 条</text>
+  </g>
+  <g data-s="2">
+    <rect class="box f1" x="37" y="60" width="673" height="36"/>
+    <path class="ln" d="M30 106 V116 H710 V106"/>
+    <text class="t mid" x="370" y="138">满足筛选的 <tspan class="t-n">2,430</tspan> 条</text>
+  </g>
+</svg>
+</div>
+<figcaption>两段长度按条数画出：当前页的 25 条只是满足筛选的 2,430 条里很窄的一段，“全选”先要说清是哪一段。</figcaption></figure><p>批量更新可以全有或全无，也可以逐项独立完成，取决于业务：同一张凭证的借贷行可能需要一起成立，不同供应商的发票通常应能分别处理。若允许部分成功，结果记录必须逐项包含对象 <abbr title="identifier：标识符">ID</abbr>、所用版本、操作 ID、状态与原因。重试时只重发失败的那部分，已成功的项目不再发起。</p>
 <p>取消批任务，只是停下尚未执行的部分；已发出的外部操作仍要核对。页面要分别计数“已完成”“未开始”“结果未知”。进度条到 100% 可以表示任务已遍历完毕，文案要说明其中有多少失败项和待核对项。</p>
 <h3 id="设置是后续动作的规则">设置是后续动作的规则</h3>
 <p>金额阈值、角色映射、计价模板、营业日历和集成目标都会改变后续行为，设置页因此也是业务工作面：谁能提议，谁批准，在哪些组织生效，何时生效，旧单据用旧规则还是按新规则重算。</p>
-<p>配置预览应拿有代表性的输入演示改动前后的差异。例如把“必须验收”改为“仅需收货”，应显示哪些在途发票的资格会改变。批准配置的人不一定有权批准这些发票本身。配置生效时，要保存配置版本、变更理由和回退方案；表单的版本问题在设置页同样存在，只是牵涉的对象更多。</p>
+<p>配置预览应拿有代表性的输入演示改动前后的差异。例如把“必须验收”改为“仅需收货”，应显示哪些在途发票的资格会改变。批准配置与批准这些发票本身是两项权限。配置生效时，要保存配置版本、变更理由和回退方案；表单的版本问题在设置页同样存在，只是牵涉的对象更多。</p>
 </section>
 <section class="scene" aria-labelledby="演算把-em-e01-的事实接到页面"><header class="scene-head"><h2 id="演算把-em-e01-的事实接到页面"><span class="scene-no" aria-hidden="true">03</span><span class="visually-hidden">演算：</span><span class="head">把 EM-E01 的事实接到页面</span></h2></header><p class="scene-lede">页面把 EM-E01 的数字逐层展开：列表给状态摘要，详情给来源，匹配与付款是由不同的人授权的两个动作。</p>
 <p>会计从“待处理发票”进入 <code>INV-9</code>。列表上显示简短状态“等待验收或单据修订”，详情里展开为“采购 12 台；已收 10；合格 9；本票 10；可用合格量 9；缺口 1”，并可直接进入这些数字的来源和相关记录。</p>
-<p>取得供应商的修订后，会计提交版本 2 的 9 台发票，后端确认 720,000 分与有效依据一致，返回新版本。会计点击“匹配”，生成操作 <code>MATCH-17</code>；成功后页面显示已占用 9 台、剩余合格量 0。随后由资金人员进入单独的付款动作，看到金额、收款目标的已确认版本与依据；会计页面上的“匹配成功”不能代替这一步授权。</p>
+<p>取得供应商的修订后，会计提交版本 2 的 9 台发票，后端确认 720,000 分与有效依据一致，返回新版本。会计点击“匹配”，生成操作 <code>MATCH-17</code>；成功后页面显示已占用 9 台、剩余合格量 0。随后由资金人员进入单独的付款动作，看到金额、收款目标的已确认版本与依据，作出付款授权；会计页面上的“匹配成功”说明取得了付款资格，授权仍在资金人员这一步。</p>
 <p>简化的匹配命令：</p>
 <pre><code class="lang-json">{
   &quot;command&quot;: &quot;match_invoice&quot;,
@@ -154,7 +232,7 @@
   &quot;operation_id&quot;: &quot;MATCH-17&quot;,
   &quot;evidence_versions&quot;: {&quot;PO-17&quot;: 1, &quot;INS-9&quot;: 1},
   &quot;rule_version&quot;: &quot;PUR-3&quot;
-}</code></pre><p>操作者与租户取自服务器已验证的会话；请求里即使写了另一个租户，也改变不了访问范围。返回值至少区分已接受、已拒绝与版本冲突；异步动作另外提供可查询的操作身份。</p>
+}</code></pre><p>操作者与租户取自服务器已验证的会话；请求里写的租户字段不参与访问判断。返回值至少区分已接受、已拒绝与版本冲突；异步动作另外提供可查询的操作身份。</p>
 <div class="table-wrap"><table>
 <thead>
 <tr>
@@ -189,7 +267,7 @@
 <td>保留权威结果并刷新投影</td>
 </tr>
 </tbody></table></div>
-<p>批量的情形：会计选择 4 张发票，预检显示 A、B 可匹配，C 缺验收，D 无权限。确认时集合冻结为 A、B。执行前 B 又被修订；A 成功，B 冲突。批任务应报告候选 4、排除 2、提交 2、成功 1、冲突 1，各类别不能混用分母。修复 B 后只重试 B，A 不会再分配第二次。</p>
+<p>批量的情形：会计选择 4 张发票，预检显示 A、B 可匹配，C 缺验收，D 无权限。确认时集合冻结为 A、B。执行前 B 又被修订；A 成功，B 冲突。批任务应报告候选 4、排除 2、提交 2、成功 1、冲突 1，每个计数都标明自己的分母。修复 B 后只重试 B，A 保持原来那一次分配。</p>
 
 <div class="fig" data-fig="em-batch"><div class="fig-body">
   <style>
@@ -244,12 +322,12 @@
 <td>能看见作用域、版本、生效时间和受影响对象；执行时按指定规则重验</td>
 </tr>
 </tbody></table></div>
-<p>空状态有四种：真的没有待办、筛选无结果、没有权限、数据尚未载入。全都显示成“暂无数据”，用户在最需要判断的时候反而失去了依据。</p>
+<p>空状态有四种：真的没有待办、筛选无结果、没有权限、数据尚未载入。四种各写一句说明，用户才知道是已经清空、该改筛选、该找人授权，还是该等待；全都显示成“暂无数据”，就丢掉了这层依据。</p>
 </section>
 <section class="scene" aria-labelledby="变式改变选择范围与工作节奏"><header class="scene-head"><h2 id="变式改变选择范围与工作节奏"><span class="scene-no" aria-hidden="true">05</span><span class="visually-hidden">变式：</span><span class="head">改变选择范围与工作节奏</span></h2></header><p class="scene-lede">选集合、保留对象与权限、识别分母的做法可以复用；动作的后果、设备与网络条件或进度的口径一变，完成条件跟着变。</p>
-<p><strong>变式一：批量动作从“标记已阅读”改成“发起付款”。</strong> 选集合的方式可以复用，后果和完成条件却变了：每笔付款都要绑定金额、目标、授权和唯一的操作身份；结果未知的保留核对路径；取消只影响尚未发送的部分。检查重试整批时，已发出的付款引用没有变化，新的操作身份也不能绕过仍在途的业务义务。</p>
-<p><strong>变式二：用户从办公室电脑转到仓库手机。</strong> 对象与权限不变；狭窄屏幕可能更适合卡片和逐件确认，而不是横向缩小几十列的表格。编号、数量、单位和异常原因必须保留，离线草稿要注明尚未提交。网络恢复后重新检查版本；“离线确认 10 台”不能覆盖另一人已经记录的退货。</p>
-<p><strong>变式三：看板显示“90% 完成”，负责人要据此关闭采购单。</strong> 先识别分母。9 台已结算占 10 台到货的 90%，只占 12 台承诺的 75%。能否关闭，取决于剩余 3 台怎样处理以及相关的接收条件。检查下钻对象与承诺量，不能把一个视觉进度直接变成关闭命令。</p>
+<p><strong>变式一：批量动作从“标记已阅读”改成“发起付款”。</strong> 选集合的方式可以复用，后果和完成条件却变了：每笔付款都要绑定金额、目标、授权和唯一的操作身份；结果未知的保留核对路径；取消只影响尚未发送的部分。检查重试整批时，已发出的付款引用保持不变，仍在途的业务义务继续约束新的操作身份。</p>
+<p><strong>变式二：用户从办公室电脑转到仓库手机。</strong> 对象与权限不变；狭窄屏幕更适合卡片和逐件确认。编号、数量、单位和异常原因都保留，离线草稿注明尚未提交。网络恢复后重新检查版本；“离线确认 10 台”不能覆盖另一人已经记录的退货。</p>
+<p><strong>变式三：看板显示“90% 完成”，负责人要据此关闭采购单。</strong> 先识别分母。9 台已结算占 10 台到货的 90%，只占 12 台承诺的 75%。能否关闭，取决于剩余 3 台怎样处理以及相关的接收条件。关闭命令依据下钻对象与承诺量，视觉进度只是提示。</p>
 <p>界面讲清了这些条件，agent 才可能按同样的工作语义行事。</p>
 </section>
       </div>
@@ -258,8 +336,8 @@
     <footer class="page-foot">正文 <a href="../../../books/saas-engineering/enterprise-mechanisms/02-enterprise-frontend.md">books/saas-engineering/enterprise-mechanisms/02-enterprise-frontend.md</a> · <a href="../../../vault/distilled/saas-engineering-atlas/README.md">结构、来源与验证</a></footer>
   </main>
 </div>
-<script src="search-index.js?v=mv95jeod"></script>
-<script src="book.js?v=mv95jeod"></script>
-<script src="fig-em-batch.js?v=mv95jeod"></script>
+<script src="search-index.js?v=mv97hru0"></script>
+<script src="book.js?v=mv97hru0"></script>
+<script src="fig-em-batch.js?v=mv97hru0"></script>
 </body>
 </html>

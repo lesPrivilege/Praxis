@@ -4,9 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>H07 · 数据修订、指标口径与 BI 发布 · SaaS 工程全景</title>
-<link rel="stylesheet" href="book.css?v=mv95jeod">
+<link rel="stylesheet" href="book.css?v=mv97hru0">
 </head>
 <body>
+<svg class="dw-defs" width="0" height="0" aria-hidden="true" focusable="false" style="position:absolute"><defs><pattern id="dw-hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" fill="var(--bg)"/><path d="M0 0 V6" stroke="var(--ink-2)" stroke-width="1.2"/></pattern></defs></svg>
 <a class="skip" href="#main">跳到正文</a>
 <header class="topbar">
   <button class="nav-toggle" type="button" aria-controls="sidebar" aria-expanded="false">目录</button>
@@ -20,7 +21,7 @@
 <header class="hero">
 <p class="kicker"><a href="group-data-ai-control.html">数据、文档、安全与 AI SaaS</a><span class="dot">·</span>H07</p>
 <h1>数据修订、指标口径与 BI 发布</h1>
-<p class="lede">运营负责人要在晨会上回答：“昨天完成了多少业务？数字为什么和昨晚不一样？”数据团队交付的除了数字，还有它采用的口径、证据收到的截止时间、能看到它的人，以及修订后怎样解释差异。机制是把结果绑定四个输入：冻结的数据修订集合、指标口径版本、业务时间窗口和受众权限策略，任何一个变化都产生新的发布，旧发布保留。本章覆盖迟到修订、lineage 复核、以 <abbr title="business intelligence：商业智能">BI</abbr> 读回为准的发布，以及撤权后的缓存。接收时间只决定修订是否被看见，不决定订单属于哪一天。</p>
+<p class="lede">运营负责人要在晨会上回答：“昨天完成了多少业务？数字为什么和昨晚不一样？”数据团队交付的除了数字，还有它采用的口径、证据收到的截止时间、能看到它的人，以及修订后怎样解释差异。机制是把结果绑定四个输入：冻结的数据修订集合、指标口径版本、业务时间窗口和受众权限策略，任何一个变化都产生新的发布，旧发布保留。本章覆盖迟到修订、lineage 复核、以 <abbr title="business intelligence：商业智能">BI</abbr> 读回为准的发布，以及撤权后的缓存。订单按完成时间归日，接收时间只决定修订是否被看见。</p>
 
 <div class="cast" aria-label="本例的角色、界面与系统">
 <div class="cast-lane"><p class="cast-k">角色</p><ul><li>运营分析员</li><li>指标负责人</li><li>数据管理员</li></ul></div>
@@ -69,8 +70,40 @@
 </tbody></table></div>
 </section>
 <section class="scene" aria-labelledby="解法数据口径与发布分开保存"><header class="scene-head"><h2 id="解法数据口径与发布分开保存"><span class="scene-no" aria-hidden="true">02</span><span class="visually-hidden">解法：</span><span class="head">数据、口径与发布分开保存</span></h2></header><p class="scene-lede">订单记录说明发生了什么，指标定义说明怎样解释这些记录，数据版本记下计算读取了哪些证据，发布记下哪份结果送到了哪组读者。若把这些事实塞进一个可覆盖的 <code>dashboard_total</code> 字段，数字一变就分不清是业务变了、数据补录了、<abbr title="Structured Query Language：结构化查询语言">SQL</abbr> 改了，还是权限变了。</p>
-<p>本例把一个可重演结果写成 <code>R = f(D, M, W, P)</code>：D 是冻结的数据修订集合，M 是指标口径版本，W 是业务时间窗口，P 是受众权限策略。发布对象另外绑定计算代码摘要、质量检查结果、审批证据及 BI 对象版本。四个输入中任何一个变了，结果都要换一个新身份；旧结果保留下来，用来解释读者当时看到了什么。</p>
-<div class="table-wrap"><table>
+<p>本例把一个可重演结果写成 <code>R = f(D, M, W, P)</code>：D 是冻结的数据修订集合，M 是指标口径版本，W 是业务时间窗口，P 是受众权限策略。发布对象另外绑定计算代码摘要、质量检查结果、审批证据及 BI 对象版本。四个输入中任何一个变了，结果都要换一个新身份；旧结果保留下来，用来解释读者当时看到了什么。后文的两份发布只差在数据版本：R1 绑定 <code>(D1, M1, W, P1)</code>，结果 220 元；R2 绑定 <code>(D2, M1, W, P1)</code>，结果 200 元。R2 成为当前发布后，R1 仍在，晨会 PDF 继续引用它。</p>
+<figure class="drawing" data-drawing="h07-releases"><div class="dw-scroll" style="--dw-min:600px;--dw-max:880px">
+<svg viewBox="0 0 780 220" role="img" aria-labelledby="h07-releases-t h07-releases-d">
+  <title id="h07-releases-t">两份发布只差一个输入</title>
+  <desc id="h07-releases-d">R1 绑定 D1、M1、W、P1，结果 220 元；R2 绑定 D2、M1、W、P1，结果 200 元。R2 成为当前发布，R1 保留，晨会 PDF 仍引用 R1。</desc>
+  <text class="t-s mid" x="70" y="30">数据修订 D</text><text class="t-s mid" x="160" y="30">口径 M</text>
+  <text class="t-s mid" x="250" y="30">窗口 W</text><text class="t-s mid" x="340" y="30">权限策略 P</text>
+  <text class="t-s mid" x="510" y="30">发布</text>
+  <g data-s="1">
+    <rect class="box" x="35" y="48" width="70" height="40"/><text class="t-n mid" x="70" y="73">D1</text>
+    <rect class="box" x="125" y="48" width="70" height="40"/><text class="t-n mid" x="160" y="73">M1</text>
+    <rect class="box" x="215" y="48" width="70" height="40"/><text class="t-n mid" x="250" y="73">W</text>
+    <rect class="box" x="305" y="48" width="70" height="40"/><text class="t-n mid" x="340" y="73">P1</text>
+    <path class="ln" d="M375 68 H440 M432 61 L440 68 L432 75"/>
+    <rect class="box f1" x="440" y="44" width="140" height="48"/><text class="t-b mid" x="510" y="73">R1 · <tspan class="t-n">220</tspan> 元</text>
+    <path class="ln" d="M580 68 H640"/>
+    <rect class="box" x="640" y="50" width="120" height="36"/><text class="t mid" x="700" y="73">晨会 PDF</text>
+  </g>
+  <g data-s="2">
+    <rect class="box-em" x="35" y="128" width="70" height="40"/><text class="t-n mid t-em" x="70" y="153">D2</text>
+    <rect class="box" x="125" y="128" width="70" height="40"/><text class="t-n mid" x="160" y="153">M1</text>
+    <rect class="box" x="215" y="128" width="70" height="40"/><text class="t-n mid" x="250" y="153">W</text>
+    <rect class="box" x="305" y="128" width="70" height="40"/><text class="t-n mid" x="340" y="153">P1</text>
+    <path class="ln" d="M375 148 H440 M432 141 L440 148 L432 155"/>
+    <rect class="box f1" x="440" y="124" width="140" height="48"/><text class="t-b mid" x="510" y="153">R2 · <tspan class="t-n">200</tspan> 元</text>
+  </g>
+  <g data-s="3">
+    <path class="ln-strong" d="M640 148 H588 M596 141 L588 148 L596 155"/>
+    <text class="t-b" x="648" y="153">当前发布</text>
+    <text class="t-s" x="440" y="198">R1 保留，可按原输入重算出 220</text>
+  </g>
+</svg>
+</div>
+<figcaption>D 变了，结果就换一个发布身份；当前发布指向 R2，R1 连同它的四个输入一起留下。</figcaption></figure><div class="table-wrap"><table>
 <thead>
 <tr>
 <th>参与者或对象</th>
@@ -121,11 +154,11 @@
 <tr>
 <td>集成尝试 A</td>
 <td>BI 是否接受并启用 R</td>
-<td>这里的 A 是尝试的记号，与后文的订单 A 无关；独立保存请求、外部身份与核对证据；请求已保存不等于 BI 已生效</td>
+<td>这里的 A 是尝试的记号，与后文的订单 A 无关；独立保存请求、外部身份与核对证据；BI 读回启用后才算生效</td>
 </tr>
 </tbody></table></div>
 <p>原始修订的权威仍在业务源系统；仓库保存的是接收到的证据副本。治理服务对指标定义、批准和发布记录负责，BI 对它当前启用的数据集版本负责。Snowflake stream 依靠消费位置和表的版本历史给出变化，本身并不独立保存每个事件的正文。只查询不会推进消费位置；消费 stream 的数据操作语言（data manipulation language，<abbr title="data manipulation language：数据操作语言">DML</abbr>）语句成功提交后才推进，回滚则不推进。所以“预览变化”和“确认消费变化”可以分开处理。<a href="https://docs.snowflake.com/en/user-guide/streams-intro#offset-storage" class="ext" rel="noopener">Introduction to streams · Offset storage / Table versioning / Repeatable read isolation</a>。</p>
-<p>源业务若要求保留每次状态修订，接入层还要保存带业务身份的历史证据。Snowflake standard stream 给出两个位置之间的净变化，两次消费之间新增又删除的行可能不出现在结果里。用它同步当前状态够用；用它统计“一共取消过多少次”，中间增删的记录就会漏掉。本例的导入协议保留修订身份，provider 的行标识不能拿来充当订单的业务事件 ID。<a href="https://docs.snowflake.com/en/user-guide/streams-intro#types-of-streams" class="ext" rel="noopener">Types of streams</a>。</p>
+<p>源业务若要求保留每次状态修订，接入层还要保存带业务身份的历史证据。Snowflake standard stream 给出两个位置之间的净变化，两次消费之间新增又删除的行可能不出现在结果里。用它同步当前状态够用；用它统计“一共取消过多少次”，中间增删的记录就会漏掉。本例的导入协议保留修订身份，以 <code>(tenant, order_id, revision)</code> 作订单的业务事件 ID，不用 provider 的行标识。<a href="https://docs.snowflake.com/en/user-guide/streams-intro#types-of-streams" class="ext" rel="noopener">Types of streams</a>。</p>
 </section>
 <section class="scene" aria-labelledby="发布状态与审批"><header class="scene-head"><h2 id="发布状态与审批"><span class="scene-no" aria-hidden="true">03</span><span class="head">发布状态与审批</span></h2></header><p class="scene-lede">发布以读回 BI 的版本与受众为准：程序检查通过、负责人批准和外部启用是三份不同的证据。</p>
 <p>指标定义有 <code>draft → approved → retired</code> 的生命周期。负责人批准的是定义内容及摘要；已批准的版本不原地修改。待发布结果有 <code>candidate → validated → approved → publishing → published</code>，也可能进入 <code>blocked</code>、<code>unknown</code> 或 <code>superseded</code>。<code>validated</code> 表示程序检查通过，<code>approved</code> 表示指定的人接受这份结果；两者的证据不同。集成尝试另有一条状态线：<code>prepared → sent → confirmed</code>，也可能进入 <code>unknown / failed</code>，不与发布状态混在一起。</p>
@@ -135,7 +168,7 @@
 <figure class="graph-fig"><div class="graph-wrap"><svg class="graph" viewBox="0 0 927 234" width="927" height="234" style="max-width:1066px;min-width:742px" role="img" aria-label="H07 · 数据修订、指标口径与 BI 发布"><defs><marker id="arrow-g1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arrowhead"/></marker></defs><path class="edge" data-type="operates" data-from="Analyst" data-to="UI" d="M123.0,162.0 Q178.0,162.0 239.5,162.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Analyst" data-to="UI"><rect x="150.0" y="154.0" width="56" height="16" rx="3"/><text x="178.0" y="166.0">operates</text></g><path class="edge" data-type="commands" data-from="UI" data-to="Gov" d="M328.5,149.0 Q390.0,131.0 464.5,131.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="UI" data-to="Gov"><rect x="362.0" y="123.0" width="56" height="16" rx="3"/><text x="390.0" y="135.0">commands</text></g><path class="edge" data-type="owns" data-from="Gov" data-to="Release" d="M539.3,114.0 Q615.0,79.0 664.8,79.0 Q714.5,79.0 761.3,79.0 Q808.0,79.0 857.0,104.7" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Gov" data-to="Release"><rect x="698.5" y="71.0" width="32" height="16" rx="3"/><text x="714.5" y="83.0">owns</text></g><path class="edge" data-type="stores" data-from="Meta" data-to="Release" d="M759.0,121.0 Q808.0,121.0 857.0,121.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Meta" data-to="Release"><rect x="786.0" y="113.0" width="44" height="16" rx="3"/><text x="808.0" y="125.0">stores</text></g><path class="edge" data-type="emits" data-from="Source" data-to="Change" d="M110.0,30.0 Q178.0,30.0 233.0,30.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Source" data-to="Change"><rect x="159.0" y="22.0" width="38" height="16" rx="3"/><text x="178.0" y="34.0">emits</text></g><path class="edge" data-type="delivers" data-from="Change" data-to="Ingest" d="M335.0,30.0 Q390.0,30.0 445.0,30.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Change" data-to="Ingest"><rect x="362.0" y="22.0" width="56" height="16" rx="3"/><text x="390.0" y="34.0">delivers</text></g><path class="edge" data-type="requests" data-from="Ingest" data-to="Snow" d="M560.0,22.8 Q615.0,16.0 670.0,23.7" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Ingest" data-to="Snow"><rect x="587.0" y="8.0" width="56" height="16" rx="3"/><text x="615.0" y="20.0">requests</text></g><path class="edge" data-type="reads" data-from="Ingest" data-to="Snow" d="M560.0,37.2 Q615.0,44.0 670.0,36.3" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Ingest" data-to="Snow"><rect x="596.0" y="36.0" width="38" height="16" rx="3"/><text x="615.0" y="48.0">reads</text></g><path class="edge" data-type="reads" data-from="Gov" data-to="Meta" d="M540.5,127.6 Q615.0,121.0 670.0,121.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Gov" data-to="Meta"><rect x="596.0" y="113.0" width="38" height="16" rx="3"/><text x="615.0" y="125.0">reads</text></g><path class="edge" data-type="requests" data-from="Gov" data-to="BI" d="M540.5,140.5 Q615.0,159.0 672.5,169.4" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Gov" data-to="BI"><rect x="587.0" y="151.0" width="56" height="16" rx="3"/><text x="615.0" y="163.0">requests</text></g><path class="edge" data-type="reads" data-from="Gov" data-to="BI" d="M536.7,148.0 Q615.0,187.0 672.5,181.2" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Gov" data-to="BI"><rect x="596.0" y="179.0" width="38" height="16" rx="3"/><text x="615.0" y="191.0">reads</text></g><path class="edge" data-type="projects" data-from="Release" data-to="UI" d="M874.0,138.0 Q808.0,218.0 761.3,218.0 Q714.5,218.0 664.8,218.0 Q615.0,218.0 558.8,218.0 Q502.5,218.0 446.3,218.0 Q390.0,218.0 316.2,179.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Release" data-to="UI"><rect x="587.0" y="210.0" width="56" height="16" rx="3"/><text x="615.0" y="222.0">projects</text></g><g class="node" data-id="Analyst"><rect x="8.0" y="145.0" width="115" height="34" rx="4"/><text x="65.5" y="166.5">分析员与负责人</text></g><g class="node" data-id="UI"><rect x="239.5" y="145.0" width="89" height="34" rx="4"/><text x="284.0" y="166.5">治理工作台</text></g><g class="node" data-id="Gov"><rect x="464.5" y="114.0" width="76" height="34" rx="4"/><text x="502.5" y="135.5">治理服务</text></g><g class="node" data-id="Release"><rect x="857.0" y="104.0" width="62" height="34" rx="4"/><text x="888.0" y="125.5">发布 R</text></g><g class="node" data-id="Meta"><rect x="670.0" y="104.0" width="89" height="34" rx="4"/><text x="714.5" y="125.5">发布记录库</text></g><g class="node" data-id="Source"><rect x="21.0" y="13.0" width="89" height="34" rx="4"/><text x="65.5" y="34.5">业务源系统</text></g><g class="node" data-id="Change"><rect x="233.0" y="13.0" width="102" height="34" rx="4"/><text x="284.0" y="34.5">订单修订通知</text></g><g class="node" data-id="Ingest"><rect x="445.0" y="13.0" width="115" height="34" rx="4"/><text x="502.5" y="34.5">接入与计算服务</text></g><g class="node" data-id="Snow"><rect x="670.0" y="13.0" width="89" height="34" rx="4"/><text x="714.5" y="34.5">Snowflake</text></g><g class="node" data-id="BI"><rect x="672.5" y="160.0" width="84" height="34" rx="4"/><text x="714.5" y="181.5">BI 适配器</text></g></svg></div><details class="edge-list"><summary>图中关系的文字列表</summary><ul><li>分析员与负责人 <span class="rel">—operates→</span> 治理工作台</li><li>治理工作台 <span class="rel">—commands→</span> 治理服务</li><li>治理服务 <span class="rel">—owns→</span> 发布 R</li><li>发布记录库 <span class="rel">—stores→</span> 发布 R</li><li>业务源系统 <span class="rel">—emits→</span> 订单修订通知</li><li>订单修订通知 <span class="rel">—delivers→</span> 接入与计算服务</li><li>接入与计算服务 <span class="rel">—requests→</span> Snowflake</li><li>接入与计算服务 <span class="rel">—reads→</span> Snowflake</li><li>治理服务 <span class="rel">—reads→</span> 发布记录库</li><li>治理服务 <span class="rel">—requests→</span> BI 适配器</li><li>治理服务 <span class="rel">—reads→</span> BI 适配器</li><li>发布 R <span class="rel">—projects→</span> 治理工作台</li></ul></details></figure><p>图中 <code>requests</code> 表示请求交接，<code>owns</code> 表示权威归属，<code>stores</code> 表示保存位置。完整身份、payload、失败处理与生命周期见 <a href="../../../vault/distilled/saas-engineering-atlas/packages/data-ai-control/H07.json">H07.json</a>。</p>
 </section>
 <section class="scene" aria-labelledby="演算业务时间窗口与迟到修订"><header class="scene-head"><h2 id="演算业务时间窗口与迟到修订"><span class="scene-no" aria-hidden="true">04</span><span class="visually-hidden">演算：</span><span class="head">业务时间窗口与迟到修订</span></h2></header><p class="scene-lede">迟到修订按业务时间归日，先撤旧贡献再计新贡献；本例 D1 的 220 元在 D2 变为 200 元，差异桥逐项交代原因。</p>
-<p>先固定口径再计算。业务日采用 UTC 的 <code>[00:00, 次日 00:00)</code>，即包含左边界、不包含右边界的半开区间。M1 按订单完成时间归属业务日；每个订单选截至 D 已收到的最高有效 revision，状态为 completed 才累计金额。接收时间只决定某个修订是否已被 D 看见，不能决定订单属于哪一天。真实业务若用营业时区，就要把时区和夏令时规则写入口径，“加 24 小时”并不等于每个日历日。</p>
+<p>先固定口径再计算。业务日采用 UTC 的 <code>[00:00, 次日 00:00)</code>，即包含左边界、不包含右边界的半开区间。M1 按订单完成时间归属业务日；每个订单选截至 D 已收到的最高有效 revision，状态为 completed 才累计金额。接收时间只决定某个修订是否已被 D 看见。真实业务若用营业时区，就要把时区和夏令时规则写入口径，“加 24 小时”并不等于每个日历日。</p>
 <p>设关注窗口 W 为某日 <code>[00:00, 次日 00:00)</code>，次日 00:10 生成 D1。五条修订属于同一租户；重复送达的原始通知不算新修订。</p>
 <div class="table-wrap wide"><table>
 <thead>
@@ -183,31 +216,168 @@
 <td>D2 最新修订排除 A</td>
 </tr>
 </tbody></table></div>
-<p>D1 收到了 A、C、D：先按 revision 选当前状态，再按 W 过滤，结果为 <code>100 + 120 = 220 元</code>。次日 00:35 生成 D2，此时 B 已补到、A 已撤销，结果为 <code>80 + 120 = 200 元</code>。差异桥写成 <code>220 + 80（迟到完成）− 100（撤销修订）= 200</code>，数字和原因一起交代。重复收到 B:r1，结果仍为 200；迟到的 A:r1 不能覆盖 A:r2；C 恰在右边界，不计入 W。</p>
-<p>每日窗口结束后，本例要求再过满 48 小时观察期，并且所有预期来源已核对、没有待处理修订，才标为“观察期结束”。时间过去了，现实中的事件也未必都已到达。超过观察期的修订仍进入更正队列，由负责人决定是否发布新修订版、通知哪些人，旧版保留。若产品需要“当时已知值”与“按最新事实重述值”并存，就给两种读取模式分别命名，免得同一日期的 URL 在读者不知情时换了含义。</p>
+<p>D1 收到了 A、C、D：先按 revision 选当前状态，再按 W 过滤，结果为 <code>100 + 120 = 220 元</code>。次日 00:35 生成 D2，此时 B 已补到、A 已撤销，结果为 <code>80 + 120 = 200 元</code>。</p>
+<figure class="drawing" data-drawing="h07-window"><div class="dw-scroll" style="--dw-min:680px;--dw-max:900px">
+<svg viewBox="0 0 800 300" role="img" aria-labelledby="h07-window-t h07-window-d">
+  <title id="h07-window-t">五条修订的完成时间与接收时间</title>
+  <desc id="h07-window-d">窗口 W 为某日 00:00 至次日 00:00，右边界不含。次日 00:10 生成的 D1 已收到 A:r1、C:r1、D:r1，W 内为 A 100 元加 D 120 元，共 220 元。B:r1 在 23:55 完成、00:20 才收到，A:r2 在 00:30 收到并把 A 改为 cancelled；00:35 生成的 D2 为 B 80 元加 D 120 元，共 200 元。C 在 00:00 完成，属于次日。</desc>
+  <rect class="f1" x="170" y="50" width="195" height="178"/>
+  <path class="ln" d="M365 50 V228"/>
+  <text class="t-s" x="176" y="44">窗口 W（某日）</text>
+  <text class="t-n" x="12" y="83">A:r1</text><text class="t-s" x="56" y="83">completed · 100 元</text>
+  <text class="t-n" x="12" y="117">B:r1</text><text class="t-s" x="56" y="117">completed · 80 元</text>
+  <text class="t-n" x="12" y="151">C:r1</text><text class="t-s" x="56" y="151">completed · 50 元</text>
+  <text class="t-n" x="12" y="185">D:r1</text><text class="t-s" x="56" y="185">completed · 120 元</text>
+  <text class="t-n" x="12" y="219">A:r2</text><text class="t-s" x="56" y="219">cancelled · 100 元</text>
+  <path class="ln" d="M170 240 H198 M212 240 H730"/>
+  <path class="ln" d="M196 246 L202 234 M208 246 L214 234"/>
+  <path class="ln" d="M185 240 V245 M275 240 V245 M365 240 V245 M455 240 V245 M545 240 V245 M635 240 V245"/>
+  <text class="t-s mid" x="185" y="259">12:00</text><text class="t-s mid" x="275" y="259">23:50</text><text class="t-s mid" x="365" y="259">00:00</text>
+  <text class="t-s mid" x="455" y="259">00:10</text><text class="t-s mid" x="545" y="259">00:20</text><text class="t-s mid" x="635" y="259">00:30</text>
+  <circle class="f-ink" cx="24" cy="282" r="4"/><text class="t-s" x="34" y="286">完成时间</text>
+  <rect class="box" x="92" y="278" width="8" height="8"/><text class="t-s" x="106" y="286">接收时间</text>
+  <g data-s="1">
+    <path class="ln-soft" d="M275 78 H284"/><circle class="f-ink" cx="275" cy="78" r="4"/><rect class="box" x="280" y="74" width="8" height="8"/>
+    <path class="ln-soft" d="M365 146 H374"/><circle class="f-ink" cx="365" cy="146" r="4"/><rect class="box" x="370" y="142" width="8" height="8"/>
+    <path class="ln-soft" d="M185 180 H190"/><circle class="f-ink" cx="185" cy="180" r="4"/><rect class="box" x="188" y="176" width="8" height="8"/>
+  </g>
+  <g data-s="2">
+    <path class="ln-strong" d="M455 34 V232"/>
+    <text class="t-b mid" x="455" y="24">D1 · 00:10</text>
+    <text class="t mid" x="455" y="286">D1：A 100 + D 120 = <tspan class="t-n">220</tspan></text>
+  </g>
+  <g data-s="3">
+    <path class="ln-em" d="M320 112 H545"/><circle class="f-ink" cx="320" cy="112" r="4"/><rect class="box" x="541" y="108" width="8" height="8"/>
+    <path class="ln-soft" d="M275 214 H635"/><circle class="box" cx="275" cy="214" r="4"/><rect class="box" x="631" y="210" width="8" height="8"/>
+  </g>
+  <g data-s="4">
+    <path class="ln-strong" d="M680 34 V232"/>
+    <text class="t-b mid" x="680" y="24">D2 · 00:35</text>
+    <text class="t mid" x="680" y="286">D2：B 80 + D 120 = <tspan class="t-n">200</tspan></text>
+  </g>
+</svg>
+</div>
+<figcaption>订单按完成时间落进窗口，按接收时间进入数据版本：B 属于 W，却在 D1 生成之后才收到；A:r2 仍指向 23:50，把 A 从 D2 中撤出。</figcaption></figure><p>差异桥写成 <code>220 + 80（迟到完成）− 100（撤销修订）= 200</code>，数字和原因一起交代。重复收到 B:r1，结果仍为 200；A:r1 若迟到重投，revision 低于 A:r2，A 仍是 cancelled；C 恰在右边界，属于下一日。</p>
+<figure class="drawing" data-drawing="h07-bridge"><div class="dw-scroll" style="--dw-min:520px;--dw-max:660px">
+<svg viewBox="0 0 640 280" role="img" aria-labelledby="h07-bridge-t h07-bridge-d">
+  <title id="h07-bridge-t">D1 到 D2 的差异桥</title>
+  <desc id="h07-bridge-d">D1 的 220 元，加上迟到完成的 B:r1 80 元，减去撤销修订 A:r2 的 100 元，得到 D2 的 200 元。</desc>
+  <path class="ln-soft" d="M40 230 H600"/>
+  <g data-s="1">
+    <rect class="box f2" x="80" y="98" width="80" height="132"/>
+    <text class="t-n mid" x="120" y="88">220</text>
+    <text class="t-b mid" x="120" y="252">D1</text>
+  </g>
+  <g data-s="2">
+    <path class="ln-soft" d="M160 98 H230"/>
+    <rect class="f-ink" x="230" y="50" width="80" height="48"/>
+    <text class="t-n mid" x="270" y="40">+80</text>
+    <text class="t-b mid" x="270" y="252">B:r1</text><text class="t-s mid" x="270" y="270">迟到完成</text>
+  </g>
+  <g data-s="3">
+    <path class="ln-soft" d="M310 50 H380"/>
+    <rect class="box" x="380" y="50" width="80" height="60"/>
+    <text class="t-n mid" x="420" y="40">−100</text>
+    <text class="t-b mid" x="420" y="252">A:r2</text><text class="t-s mid" x="420" y="270">撤销修订</text>
+  </g>
+  <g data-s="4">
+    <path class="ln-soft" d="M460 110 H530"/>
+    <rect class="box f2" x="530" y="110" width="80" height="120"/>
+    <text class="t-n mid t-em" x="570" y="100">200</text>
+    <text class="t-b mid" x="570" y="252">D2</text>
+  </g>
+</svg>
+</div>
+<figcaption>两版之差拆成两笔有名字的修订：B 迟到补入 80 元，A 撤销扣出 100 元。</figcaption></figure><p>每日窗口结束后，本例要求再过满 48 小时观察期，并且所有预期来源已核对、没有待处理修订，才标为“观察期结束”。超过观察期的修订仍进入更正队列，由负责人决定是否发布新修订版、通知哪些人，旧版保留。若产品需要“当时已知值”与“按最新事实重述值”并存，就给两种读取模式分别命名，免得同一日期的 URL 在读者不知情时换了含义。</p>
 <p>按接收时间归日，B 会被错误计入下一日；只在每批金额上做加法，A 的取消也会被当作 +100，既不减原值又误增新值；只取“最新收到”，乱序的 A:r1 会复活已取消的订单。所以增量计算之前要先定义怎样撤销旧贡献：对每个修订，读取该订单的旧有效值，计算 <code>新贡献 − 旧贡献</code>，再更新受影响窗口。完成时间改到另一日时，旧日减、新日加；缺失旧值、修订链断裂或金额语义变化时，重新计算受影响分区比猜一个 delta 更可靠。</p>
-<p>朴素算法每次扫描 n 条修订，按业务 key 选最新修订，再聚合，工作量至少随 n 增长。维护一个最新修订索引，可以把一个 b 条修订的批次的主要更新限定在 b 条及受影响分区；平衡树索引的查找可按 O(log n) 推理，具体数据库代价还取决于 I/O、分区和执行计划。索引提速不保证乱序正确，<code>revision &gt; stored_revision</code> 的状态条件仍要执行。<code>ALG:lookup</code> 和 <code>ALG:windows</code> 在这里分别负责“找哪个旧状态”和“差额记到哪一天”。</p>
+<p>朴素算法每次扫描 n 条修订，按业务 key 选最新修订，再聚合，工作量至少随 n 增长。维护一个最新修订索引，可以把一个 b 条修订的批次的主要更新限定在 b 条及受影响分区；平衡树索引的查找可按 O(log n) 推理，具体数据库代价还取决于 I/O、分区和执行计划。乱序下的正确性由 <code>revision &gt; stored_revision</code> 的状态条件保证，索引只负责提速。<code>ALG:lookup</code> 和 <code>ALG:windows</code> 在这里分别负责“找哪个旧状态”和“差额记到哪一天”。</p>
 </section>
-<section class="scene" aria-labelledby="lineage-与影响范围"><header class="scene-head"><h2 id="lineage-与影响范围"><span class="scene-no" aria-hidden="true">05</span><span class="head">lineage 与影响范围</span></h2></header><p class="scene-lede">lineage 给出待检查的范围，不证明影响；只参与过滤的表可能不在图里，要靠构建 manifest 补登。</p>
+<section class="scene" aria-labelledby="lineage-与影响范围"><header class="scene-head"><h2 id="lineage-与影响范围"><span class="scene-no" aria-hidden="true">05</span><span class="head">lineage 与影响范围</span></h2></header><p class="scene-lede">lineage 给出待检查的范围，影响是否成立由列映射、SQL 和指标依赖验证；只参与过滤的表可能不在图里，要靠构建 manifest 补登。</p>
 <p>lineage（数据血缘）描述结果由哪些来源派生。设源 <code>orders</code> 生成 <code>current_orders</code>，后者生成 <code>daily_completed</code> 与 <code>refund_monitor</code>，<code>daily_completed</code> 又生成 <code>operations_dashboard</code>。如果完成时间字段改变，沿正向影响图访问 <code>current_orders → daily_completed → operations_dashboard</code>；若金额字段也变，<code>refund_monitor</code> 同样进入候选影响集合。用广度优先或深度优先遍历，每个节点和每条边至多处理一次，复杂度为 O(V+E)。visited 集合防止重复处理；若在构建依赖中发现环，就阻断这次构建并报告环路径。</p>
-<p>拓扑 <abbr title="JavaScript Object Notation：结构化数据表示格式，后文保留 JSON">JSON</abbr> 的 <code>derived_from</code> 方向是“结果 → 来源”，所以影响分析要读反向邻接表，而不是顺着 JSON 的箭头往下游走。图遍历输出的是待检查范围；只有列映射、SQL 和指标依赖验证之后，才能断言某张报表的结果会变化。Snowflake 文档区分数据移动与对象依赖，并明确说明：某些只参与过滤或连接、没有数据移动到输出的表，不会出现在 lineage 中。<a href="https://docs.snowflake.com/en/user-guide/ui-snowsight-lineage#limitations-and-considerations" class="ext" rel="noopener">Data Lineage · Relationships / Limitations and considerations</a>。</p>
-<p>例如完成订单与 <code>eligible_regions</code> 表连接，只用来过滤可计入的区域，输出里没有区域表的字段。改变 <code>eligible_regions</code> 也可能改变总额，图里却未必有这条数据移动边。因此本例把过滤表、权限映射和指标定义的依赖显式登记在构建 manifest 中；provider lineage 与 manifest 互相补充，“图中没有边”不能证明没有影响。</p>
-<p>影响图本身也受权限约束：有权看到一个下游指标，不等于有权查看全部上游客户信息。影响计算可以交给专用服务执行，界面只返回获授权的对象，并提示“仍有不可见依赖”。</p>
+<p>拓扑 <abbr title="JavaScript Object Notation：结构化数据表示格式，后文保留 JSON">JSON</abbr> 的 <code>derived_from</code> 方向是“结果 → 来源”，所以影响分析读反向邻接表，从来源走向结果。图遍历输出的是待检查范围；只有列映射、SQL 和指标依赖验证之后，才能断言某张报表的结果会变化。Snowflake 文档区分数据移动与对象依赖，并明确说明：某些只参与过滤或连接、没有数据移动到输出的表，不会出现在 lineage 中。<a href="https://docs.snowflake.com/en/user-guide/ui-snowsight-lineage#limitations-and-considerations" class="ext" rel="noopener">Data Lineage · Relationships / Limitations and considerations</a>。</p>
+<p>例如 <code>daily_completed</code> 计算时把完成订单与 <code>eligible_regions</code> 表连接，只用来过滤可计入的区域，输出里没有区域表的字段。改变 <code>eligible_regions</code> 也可能改变总额，图里却未必有这条数据移动边。因此本例把过滤表、权限映射和指标定义的依赖显式登记在构建 manifest 中；provider lineage 与 manifest 互相补充，图中没有边的依赖按 manifest 的登记复核。</p>
+<figure class="drawing" data-drawing="h07-lineage"><div class="dw-scroll" style="--dw-min:640px;--dw-max:940px">
+<svg viewBox="0 0 800 290" role="img" aria-labelledby="h07-lineage-t h07-lineage-d">
+  <title id="h07-lineage-t">从 derived_from 反推影响范围</title>
+  <desc id="h07-lineage-d">JSON 的 derived_from 从结果指向来源：current_orders 指向 orders，daily_completed 与 refund_monitor 指向 current_orders，operations_dashboard 指向 daily_completed。影响分析反向走：完成时间字段改变时，从 orders 到 current_orders、daily_completed、operations_dashboard；金额字段也变时，refund_monitor 也进入候选集合。eligible_regions 只在 daily_completed 中用于过滤，lineage 中没有这条边，由构建 manifest 登记。</desc>
+  <rect class="box" x="20" y="140" width="130" height="40"/><text class="t-n mid" x="85" y="165">orders</text>
+  <rect class="box" x="200" y="140" width="150" height="40"/><text class="t-n mid" x="275" y="165">current_orders</text>
+  <rect class="box" x="420" y="80" width="160" height="40"/><text class="t-n mid" x="500" y="105">daily_completed</text>
+  <rect class="box" x="420" y="200" width="160" height="40"/><text class="t-n mid" x="500" y="225">refund_monitor</text>
+  <rect class="box" x="620" y="80" width="170" height="40"/><text class="t-n mid" x="705" y="105">operations_dashboard</text>
+  <g data-s="1">
+    <path class="ln-soft" d="M150 152 H200 M158 146 L150 152 L158 158"/>
+    <path class="ln-soft" d="M350 152 H378 V92 H420 M358 146 L350 152 L358 158"/>
+    <path class="ln-soft" d="M290 180 V228 H420 M284 188 L290 180 L296 188"/>
+    <path class="ln-soft" d="M580 92 H620 M588 86 L580 92 L588 98"/>
+  </g>
+  <g data-s="2">
+    <path class="ln-strong" d="M150 168 H200 M192 162 L200 168 L192 174"/>
+    <path class="ln-strong" d="M350 168 H392 V108 H420 M412 102 L420 108 L412 114"/>
+    <path class="ln-strong" d="M580 108 H620 M612 102 L620 108 L612 114"/>
+    <text class="t-s" x="20" y="200">完成时间字段改变</text>
+  </g>
+  <g data-s="3">
+    <path class="ln" d="M310 180 V214 H420 M412 208 L420 214 L412 220"/>
+    <text class="t-s" x="590" y="225">金额字段也变时进入</text>
+  </g>
+  <g data-s="4">
+    <rect class="box-dash" x="200" y="30" width="150" height="40"/><text class="t-n mid" x="275" y="55">eligible_regions</text>
+    <path class="ln-dash" d="M350 50 H500 V80"/>
+    <text class="t-s t-em" x="512" y="56">只参与过滤，lineage 中无此边；manifest 登记</text>
+  </g>
+  <path class="ln-soft" d="M20 276 H56 M28 270 L20 276 L28 282"/>
+  <text class="t-s" x="66" y="280">derived_from：结果 → 来源（JSON 的方向）</text>
+  <path class="ln-strong" d="M400 276 H436 M428 270 L436 276 L428 282"/>
+  <text class="t-s" x="446" y="280">影响遍历：来源 → 结果</text>
+</svg>
+</div>
+<figcaption>影响分析逆着 derived_from 走；过滤用的 eligible_regions 不在 lineage 里，靠 manifest 补上这条依赖。</figcaption></figure><p>影响图本身也受权限约束：看到一个下游指标的权限，与查看上游客户信息的权限分开授予。影响计算可以交给专用服务执行，界面只返回获授权的对象，并提示“仍有不可见依赖”。</p>
 </section>
-<section class="scene" aria-labelledby="查询与缓存的权限检查"><header class="scene-head"><h2 id="查询与缓存的权限检查"><span class="scene-no" aria-hidden="true">06</span><span class="head">查询与缓存的权限检查</span></h2></header><p class="scene-lede">指标负责人批准指标、管理员批准受众、计算服务读取原始数据，是三种不同的权限。本例服务端从已验证身份推导 tenant，拒绝客户端自行指定不属于自己的租户；查询、导出、任务与缓存都携带租户和受众身份。发布时冻结策略版本，是为了说明当时的依据，实际读取还要检查当前权限。用户已被撤权时，不能因为 R 仍指向旧 P 就继续返回缓存。</p>
+<section class="scene" aria-labelledby="查询与缓存的权限检查"><header class="scene-head"><h2 id="查询与缓存的权限检查"><span class="scene-no" aria-hidden="true">06</span><span class="head">查询与缓存的权限检查</span></h2></header><p class="scene-lede">指标负责人批准指标、管理员批准受众、计算服务读取原始数据，是三种不同的权限。本例服务端从已验证身份推导 tenant，拒绝客户端自行指定不属于自己的租户；查询、导出、任务与缓存都携带租户和受众身份。发布时冻结策略版本，是为了说明当时的依据，实际读取还要检查当前权限。用户已被撤权时，即使 R 仍指向旧 P，缓存也按当前权限拒绝。</p>
 <p>Snowflake row access policy 在查询时决定返回哪些行；文档同时说明，它本身不阻止插入，也不阻止修改或删除已经可见的行。本例因此仍在写接口检查业务权限与 tenant 归属。该功能要求 Enterprise Edition 或更高版本，选型时要单独核对。<a href="https://docs.snowflake.com/en/user-guide/security-row-intro#what-is-row-level-security" class="ext" rel="noopener">Understanding row access policies · What is Row-level Security?</a>。</p>
-<p>结果缓存的 key 至少包含 tenant、release ID、查询参数、受众身份或等价的权限摘要；命中缓存前仍检查当前授权版本。只用“指标名 + 日期”作 key，会把租户乙的 220 元返回给同名报表的租户甲。行过滤也保护不了所有聚合：如果先跨租户汇总，再按当前用户过滤，租户身份可能已经丢失。因此只在允许的租户和粒度内聚合，并专门测试小群体、导出与钻取入口；只在前端隐藏按钮，不算完成权限控制。</p>
+<p>结果缓存的 key 至少包含 tenant、release ID、查询参数、受众身份或等价的权限摘要；命中缓存前仍检查当前授权版本。租户甲和租户乙都有名为“每日已完成订单金额”的报表；只用“指标名 + 日期”作 key，乙的 220 元会返回给甲。</p>
+<figure class="drawing" data-drawing="h07-cache"><div class="dw-scroll" style="--dw-min:620px;--dw-max:900px">
+<svg viewBox="0 0 780 230" role="img" aria-labelledby="h07-cache-t h07-cache-d">
+  <title id="h07-cache-t">缓存 key 决定谁拿到哪份结果</title>
+  <desc id="h07-cache-d">以指标名加日期为 key，租户甲与租户乙的同名报表落进同一格，租户乙的 220 元返回给租户甲。key 含 tenant、release ID、查询参数和受众权限摘要时，两个租户各占一格，命中前还检查当前授权版本。</desc>
+  <g data-s="1">
+    <text class="t-b" x="20" y="28">key = 指标名 + 日期</text>
+    <rect class="box" x="20" y="56" width="100" height="36"/><text class="t mid" x="70" y="79">租户乙</text>
+    <rect class="box" x="20" y="148" width="100" height="36"/><text class="t mid" x="70" y="171">租户甲</text>
+    <rect class="box f1" x="190" y="92" width="170" height="56"/>
+    <text class="t-s mid" x="275" y="114">每日已完成订单金额 · 某日</text>
+    <text class="t mid" x="275" y="136"><tspan class="t-n">220</tspan> 元（租户乙）</text>
+    <path class="ln" d="M120 74 H150 V108 H190 M182 102 L190 108 L182 114"/>
+    <path class="ln-em" d="M190 134 H150 V166 H120 M128 160 L120 166 L128 172"/>
+    <text class="t-s t-em" x="20" y="210">租户甲读到租户乙的 220 元</text>
+  </g>
+  <path class="ln-soft" d="M395 16 V214"/>
+  <g data-s="2">
+    <text class="t-b" x="420" y="28">key 含 tenant、release ID、</text>
+    <text class="t-s" x="420" y="46">查询参数、受众权限摘要</text>
+    <rect class="box" x="420" y="66" width="100" height="36"/><text class="t mid" x="470" y="89">租户乙</text>
+    <rect class="box" x="420" y="148" width="100" height="36"/><text class="t mid" x="470" y="171">租户甲</text>
+    <path class="ln-strong" d="M560 60 V196"/>
+    <text class="t-s mid" x="560" y="214">命中前检查当前授权版本</text>
+    <path class="ln" d="M520 84 H600"/><path class="ln" d="M520 166 H600"/>
+    <rect class="box f1" x="600" y="66" width="170" height="36"/><text class="t mid" x="685" y="89">乙 · <tspan class="t-n">220</tspan> 元</text>
+    <rect class="box f1" x="600" y="148" width="170" height="36"/><text class="t mid" x="685" y="171">甲 · 甲自己的结果</text>
+  </g>
+</svg>
+</div>
+<figcaption>同名报表只按指标名和日期取 key 时共用一格；key 带上租户与发布身份，每个租户只命中自己的结果。</figcaption></figure><p>行过滤只作用于明细行：如果先跨租户汇总，再按当前用户过滤，租户身份可能已经丢失。因此只在允许的租户和粒度内聚合，并专门测试小群体、导出与钻取入口；权限在服务端检查，前端隐藏按钮只是界面呈现。</p>
 </section>
 <section class="scene" aria-labelledby="技术选型与规模"><header class="scene-head"><h2 id="技术选型与规模"><span class="scene-no" aria-hidden="true">07</span><span class="head">技术选型与规模</span></h2></header><p class="scene-lede">前端可用 React + TypeScript 或 Vue + TypeScript。这里更要紧的是把“当前发布”和“待批准候选”分开建模，轮询回来的旧状态才不会覆盖用户正在看的新版本。小图可用 SVG 配合文本表格，节点很多时按授权范围分批展开，图之外始终有可读的表格入口。页面只请求少量汇总与差异样本，完整变更清单由有权限的导出任务生成。</p>
-<p>后端可用 FastAPI 或 TypeScript 服务处理版本校验、审批和发布命令，PostgreSQL 保存控制记录与事务性 outbox，工作进程执行计算和外部核对。低规模原型可以在 PostgreSQL 内重算日分区，减少系统之间的核对；分析扫描明显挤占在线事务时，再把数据面迁到 Snowflake 这类独立分析平台。拆分会增加成本，还多出数据同步和身份映射的工作；拆不拆看负载，不看平台名气。Snowflake 的 stream 是一种增量接入办法，任务编排与 BI API 仍要单独验证。</p>
-<p>本例待测负载为 100 个租户、每天共 1,000 万条修订、最大租户占 40%、每五分钟导入一次、100 个并发报表读取。平均每批约 <code>10,000,000 / 288 ≈ 34,722</code> 条，这只是平均值；计划以五倍突发量测试，队列不按均值配置。目标是在该负载下，95% 的可处理修订在收到后十分钟内进入候选结果，列表 p95 小于一秒，单个租户不能饿死其他租户的发布任务。</p>
+<p>后端可用 FastAPI 或 TypeScript 服务处理版本校验、审批和发布命令，PostgreSQL 保存控制记录与事务性 outbox，工作进程执行计算和外部核对。低规模原型可以在 PostgreSQL 内重算日分区，减少系统之间的核对；分析扫描明显挤占在线事务时，再把数据面迁到 Snowflake 这类独立分析平台。拆分会增加成本，还多出数据同步和身份映射的工作；拆不拆按负载决定。Snowflake 的 stream 是一种增量接入办法，任务编排与 BI API 仍要单独验证。</p>
+<p>本例待测负载为 100 个租户、每天共 1,000 万条修订、最大租户占 40%、每五分钟导入一次、100 个并发报表读取。平均每批约 <code>10,000,000 / 288 ≈ 34,722</code> 条，这只是平均值；计划以五倍突发量测试，队列按突发量配置。目标是在该负载下，95% 的可处理修订在收到后十分钟内进入候选结果，列表 p95 小于一秒，单个租户不能饿死其他租户的发布任务。</p>
 <p>迟到比例决定增量成本。若大量修订跨越多年历史，五分钟一批仍可能触发巨大的重算；要按受影响窗口合并任务、限制单租户同时运行的分区数，并观察最老待处理修订的年龄。已经发布的不可变结果可以复用，正在核对的候选不宜依赖长期缓存。衡量新鲜度至少要区分“收到后等待多久”和“业务事件迟到了多久”；只报告作业耗时，会掩盖源头已经停更。</p>
 </section>
 <section class="scene" aria-labelledby="故障与恢复"><header class="scene-head"><h2 id="故障与恢复"><span class="scene-no" aria-hidden="true">08</span><span class="head">故障与恢复</span></h2></header><p class="scene-lede">三种故障都按原身份恢复：发布按 release ID 读回核对，计算按固定的计算身份重跑，源契约异常时隔离批次并保留旧发布。</p>
 <p>正常路径从订单修订写入持久接入记录开始。计算服务依据源位置生成 D2，计算出 200 元并保存差异桥；质量检查核对去重键、修订有效性、空值、金额范围和租户归属；指标负责人批准 <code>(D2, M1, W, P1)</code>；发布 worker 拿到外部切换回执并读回 R2；工作台显示 R2、200 元及上一版 220 元的解释。业务完成的证据是受众读到的 BI 结果与批准版本吻合，而不只是后台任务变绿。</p>
-<p>第一种故障：BI 已经切换，worker 却在等回执时超时。此时 R2 进入 <code>unknown</code>，R1 仍是本地最后确认的版本，页面要写明“BI 切换待核对”。恢复 worker 用 release ID 查询外部对象：若当前已是 R2，就补写确认；若仍为 R1 且外部明确未受理，就重试同一尝试；若外部无法按身份核对，就转人工，不能另建 R3 假装第一次没有发生。晚到的 R1 回执也不能把 R2 的确认覆盖。旧请求在网络中迟到后可能把新数据集换回旧版，能避免这一点的只有支持版本条件切换或可靠串行发布的适配器。</p>
+<p>第一种故障：BI 已经切换，worker 却在等回执时超时。此时 R2 进入 <code>unknown</code>，R1 仍是本地最后确认的版本，页面要写明“BI 切换待核对”。恢复 worker 用 release ID 查询外部对象：若当前已是 R2，就补写确认；若仍为 R1 且外部明确未受理，就重试同一尝试；若外部无法按身份核对，就转人工；这次发布始终是 R2，不另建 R3。晚到的 R1 回执按版本识别为旧消息，R2 的确认保持不变。旧请求在网络中迟到后可能把新数据集换回旧版，能避免这一点的只有支持版本条件切换或可靠串行发布的适配器。</p>
 <p>第二种故障出现在可信候选生成之前：源 schema 把金额单位从分改成元，字段名没变。非空和类型检查都会通过，金额却扩大或缩小百倍。因此数据契约需要单位、范围与分布检查；出现这种变化就隔离批次，保留旧发布并展示源新鲜度中断，由数据工程师确认转换版本，再重新计算候选。若 stream 的消费位置已落在源表可保留的历史之外，重新创建的 stream 只能跟踪此后的变化，中间缺失的区间要另行补数与核对。stale stream 的这项限制见 <a href="https://docs.snowflake.com/en/user-guide/streams-intro#data-retention-period-and-staleness" class="ext" rel="noopener">Data retention period and staleness</a>。</p>
-<p>若计算已经成功、进程却在写完成标记之前崩溃，恢复时也不应再生成一个结果版本。本例以固定的 <code>(tenant, D, M, W, P, code_digest)</code> 作计算身份，保存结果摘要；重跑写入同一候选，或核对已有候选。批次落库与源位置推进若能放进同一平台事务，就一起提交；跨存储时保存接入收据，允许重复导入并按源修订去重。事务边界要与 connector 的实际能力相符，“最终有一次成功”不等于所有系统共同的 exactly-once 保证。</p>
+<p>若计算已经成功、进程却在写完成标记之前崩溃，恢复时沿用原来的结果版本。本例以固定的 <code>(tenant, D, M, W, P, code_digest)</code> 作计算身份，保存结果摘要；重跑写入同一候选，或核对已有候选。批次落库与源位置推进若能放进同一平台事务，就一起提交；跨存储时保存接入收据，允许重复导入并按源修订去重。事务边界要与 connector 的实际能力相符，“最终有一次成功”不等于所有系统共同的 exactly-once 保证。</p>
 </section>
 <section class="scene" aria-labelledby="验算检查项与观察证据"><header class="scene-head"><h2 id="验算检查项与观察证据"><span class="scene-no" aria-hidden="true">09</span><span class="visually-hidden">验算：</span><span class="head">检查项与观察证据</span></h2></header><p class="scene-lede">验收的共同判据是同一身份贯穿 <abbr title="user interface：用户界面">UI</abbr>、发布库和 BI 读回；重复、乱序和撤权都不能让当前发布倒退或越权。</p>
 <p>本例使用确定性规则与人工批准，口径判断和授权都没有模型参与，<abbr title="artificial intelligence：人工智能">AI</abbr> eval 不适用。以后若增加自然语言生成 SQL，要另建一组带输入、期望口径与权限标签的独立留出集，测量指标选错、时间窗错置、越权引用和拒绝率。</p>
@@ -400,8 +570,8 @@
     <footer class="page-foot">正文 <a href="../../../books/saas-engineering/packages/data-ai-control/H07.md">books/saas-engineering/packages/data-ai-control/H07.md</a> · <a href="../../../vault/distilled/saas-engineering-atlas/README.md">结构、来源与验证</a></footer>
   </main>
 </div>
-<script src="search-index.js?v=mv95jeod"></script>
-<script src="book.js?v=mv95jeod"></script>
+<script src="search-index.js?v=mv97hru0"></script>
+<script src="book.js?v=mv97hru0"></script>
 
 </body>
 </html>

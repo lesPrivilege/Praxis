@@ -1,0 +1,31 @@
+<div class="dw-scroll" style="--dw-min:600px;--dw-max:900px">
+<svg viewBox="0 0 760 240" role="img" aria-labelledby="h01-dedup-t h01-dedup-d">
+  <title id="h01-dedup-t">两层去重</title>
+  <desc id="h01-dedup-d">通知 E1 投递两次，另一条通知 E2 指向同一购买行 L1。第一层按 event ID 跳过 E1 的第二次投递；第二层按 tenant + purchase_line_id 发现 L1 已有权利效果，E2 读取原效果。最终 L1 只有一份 10 席的开通效果。</desc>
+  <defs><marker id="h01-dedup-ah" viewBox="0 0 8 8" refX="7" refY="4" markerUnits="userSpaceOnUse" markerWidth="9" markerHeight="9" orient="auto"><path class="f-ink" d="M0 0 L8 4 L0 8 z"/></marker></defs>
+  <g data-s="1">
+    <text class="t-s" x="20" y="22">到达的通知</text>
+    <rect class="box" x="20" y="40" width="150" height="36"/><text class="t-n" x="34" y="63">E1 → L1</text>
+    <rect class="box" x="20" y="96" width="150" height="36"/><text class="t-n" x="34" y="119">E1 → L1</text><text class="t-s" x="104" y="119">重投</text>
+    <rect class="box" x="20" y="152" width="150" height="36"/><text class="t-n" x="34" y="175">E2 → L1</text>
+  </g>
+  <g data-s="2">
+    <path class="ln-strong" d="M290 34 V196"/>
+    <text class="t-b mid" x="290" y="216">第一层</text><text class="t-s mid" x="290" y="233">event ID</text>
+    <path class="ln" d="M170 58 H470"/>
+    <path class="ln" d="M170 114 H284"/>
+    <text class="t-s end" x="280" y="106">已收过，跳过</text>
+    <path class="ln" d="M170 170 H464"/>
+  </g>
+  <g data-s="3">
+    <path class="ln-strong" d="M470 34 V196"/>
+    <text class="t-b mid" x="470" y="216">第二层</text><text class="t-s mid" x="470" y="233">tenant + purchase_line_id</text>
+    <text class="t-s" x="480" y="174">L1 已有效果，读取原效果</text>
+    <path class="ln" marker-end="url(#h01-dedup-ah)" d="M470 58 H588"/>
+    <rect class="box-em" x="590" y="34" width="160" height="50"/>
+    <text class="t-b" x="604" y="56">L1 的席位效果</text>
+    <text class="t-n" x="604" y="75">10 席 · 1 份</text>
+  </g>
+</svg>
+</div>
+<figcaption>event ID 挡下同一通知的重投；购买行上的唯一效果挡下另一条通知对同一购买的第二次开通。</figcaption>

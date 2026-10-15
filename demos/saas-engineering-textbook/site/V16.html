@@ -4,9 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>V16 · 租约、维修与押金对账 · SaaS 工程全景</title>
-<link rel="stylesheet" href="book.css?v=mv95jeod">
+<link rel="stylesheet" href="book.css?v=mv97hru0">
 </head>
 <body>
+<svg class="dw-defs" width="0" height="0" aria-hidden="true" focusable="false" style="position:absolute"><defs><pattern id="dw-hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" fill="var(--bg)"/><path d="M0 0 V6" stroke="var(--ink-2)" stroke-width="1.2"/></pattern></defs></svg>
 <a class="skip" href="#main">跳到正文</a>
 <header class="topbar">
   <button class="nav-toggle" type="button" aria-controls="sidebar" aria-expanded="false">目录</button>
@@ -20,7 +21,7 @@
 <header class="hero">
 <p class="kicker"><a href="group-commerce-property.html">消费履约、住宿与空间</a><span class="dot">·</span>V16</p>
 <h1>租约、维修与押金对账</h1>
-<p class="lede">物业向承租人承诺在一段时间内提供约定空间和服务。住户离开时，交回钥匙、完成维修、认定损坏责任、退回押金各自需要证据。维修人员更换门锁的记录只证明做过这项工作，证明不了门锁原来完好，也证明不了本次承租人要承担全部费用。租赁软件的难点是把同一空间的时间、状态、权利和资金连接起来，同时保留这些区别。占用权按左闭右开区间在签署时预留，已签未入住的租期也参与冲突检查；一张工单可以有多次 booking，一次到场结束不等于工单完成；押金按已分配扣除、待裁定、退款预留和已退分桶守恒，维修支出不自动变成住户责任。改变判断的是退款结果有没有确认：结果未知的退款继续占住它的金额，只有新确定的部分才能释放。</p>
+<p class="lede">物业向承租人承诺在一段时间内提供约定空间和服务。住户离开时，交回钥匙、完成维修、认定损坏责任、退回押金各自需要证据。维修人员更换门锁的记录证明做过这项工作；门锁原来是否完好要看入住交接记录，本次承租人承担多少费用要看责任认定。租赁软件的难点是把同一空间的时间、状态、权利和资金连接起来，同时保留这些区别。占用权按左闭右开区间在签署时预留，已签未入住的租期也参与冲突检查；一张工单可以有多次 booking，工单在全部必需工作完成并经复核后才关闭；押金按已分配扣除、待裁定、退款预留和已退分桶守恒，维修支出经责任认定才成为住户责任。改变判断的是退款结果有没有确认：结果未知的退款继续占住它的金额，只有新确定的部分才能释放。</p>
 
 <div class="cast" aria-label="本例的角色、界面与系统">
 <div class="cast-lane"><p class="cast-k">角色</p><ul><li>承租当事人</li><li>物业经理与责任审核人</li><li>维护调度员</li><li>维修技师</li><li>结算财务</li></ul></div>
@@ -34,7 +35,7 @@
       <aside class="rail" aria-label="本页进度"><ol><li><a href="#识题同一空间的期间任务与责任"><span class="rn">01<span class="of"> / 10</span></span><span class="rt">同一空间的期间、任务与责任</span></a></li><li><a href="#解法身份租约与占用"><span class="rn">02<span class="of"> / 10</span></span><span class="rt">身份、租约与占用</span></a></li><li><a href="#时间区间与进入许可"><span class="rn">03<span class="of"> / 10</span></span><span class="rt">时间区间与进入许可</span></a></li><li><a href="#报修预约与退租检查"><span class="rn">04<span class="of"> / 10</span></span><span class="rt">报修、预约与退租检查</span></a></li><li><a href="#演算责任核定与押金守恒"><span class="rn">05<span class="of"> / 10</span></span><span class="rt">责任核定与押金守恒</span></a></li><li><a href="#实现与性能"><span class="rn">06<span class="of"> / 10</span></span><span class="rt">实现与性能</span></a></li><li><a href="#验算正常路径失败路径与检查"><span class="rn">07<span class="of"> / 10</span></span><span class="rt">正常路径、失败路径与检查</span></a></li><li><a href="#变式条件改变后的判断"><span class="rn">08<span class="of"> / 10</span></span><span class="rt">条件改变后的判断</span></a></li><li><a href="#进入物业租赁的先查项"><span class="rn">09<span class="of"> / 10</span></span><span class="rt">进入物业租赁的先查项</span></a></li><li><a href="#case-structure"><span class="rn">10<span class="of"> / 10</span></span><span class="rt">对象、生命周期与迁移</span></a></li></ol></aside>
       <div class="flow">
 <p>本例是一套公寓：单套住房只有一份有效独占占用权，租期用建筑所在地时区表达并保存对应时刻，所有区间取左闭右开；押金为 3,000 记账单位，无税、利息和汇率。双方采用“无争议金额先退、争议部分暂留并有复核入口”的政策。</p>
-<section class="scene" aria-labelledby="识题同一空间的期间任务与责任"><header class="scene-head"><h2 id="识题同一空间的期间任务与责任"><span class="scene-no" aria-hidden="true">01</span><span class="visually-hidden">识题：</span><span class="head">同一空间的期间、任务与责任</span></h2></header><p class="scene-lede">处理物业问题，先确定涉及哪一段占用关系，再看手上的证据证明的是“做过工作”还是“承担费用”。房号和维修发票各有用途，合在一起也代替不了租约身份和责任认定。</p>
+<section class="scene" aria-labelledby="识题同一空间的期间任务与责任"><header class="scene-head"><h2 id="识题同一空间的期间任务与责任"><span class="scene-no" aria-hidden="true">01</span><span class="visually-hidden">识题：</span><span class="head">同一空间的期间、任务与责任</span></h2></header><p class="scene-lede">处理物业问题，先确定涉及哪一段占用关系，再看手上的证据证明的是“做过工作”还是“承担费用”。房号定位空间，维修发票证明支出；租约身份和责任认定各有自己的记录。</p>
 <div class="table-wrap"><table>
 <thead>
 <tr>
@@ -60,9 +61,9 @@
 </tr>
 </tbody></table></div>
 </section>
-<section class="scene" aria-labelledby="解法身份租约与占用"><header class="scene-head"><h2 id="解法身份租约与占用"><span class="scene-no" aria-hidden="true">02</span><span class="visually-hidden">解法：</span><span class="head">身份、租约与占用</span></h2></header><p class="scene-lede">管理组织、当事人和占用关系各有身份；租约签署时在同一事务里预留整段独占权利，押金账户挂在占用关系上，不挂在邮箱或房号上。</p>
+<section class="scene" aria-labelledby="解法身份租约与占用"><header class="scene-head"><h2 id="解法身份租约与占用"><span class="scene-no" aria-hidden="true">02</span><span class="visually-hidden">解法：</span><span class="head">身份、租约与占用</span></h2></header><p class="scene-lede">管理组织、当事人和占用关系各有身份；租约签署时在同一事务里预留整段独占权利，押金账户挂在占用关系上。</p>
 <p>有三个身份都容易被叫作 tenant。<code>org_id</code> 是 <abbr title="Software as a Service：软件即服务">SaaS</abbr> 数据所属的管理组织；<code>party_id</code> 是承租人或其他当事人；<code>tenancy_id</code> 是某批当事人与某一空间在某一期间的占用关系。同一人可以续租、搬家、共同承租，也可能先后租住两套房；同一套房可以不断换住户。若用邮箱或房号作押金账户主键，下一任住户就可能看见上一任的照片与争议，续租也可能重复收取或退回同一笔押金。</p>
-<p>租约 <code>L1</code> 固定签署版本、空间、当事人、有效区间和费用条款。占用权 <code>T1</code> 是执行这些条款的时间关系；入住交接 <code>I1</code> 记录实际交钥匙时刻、物品清单、已有缺陷和双方意见。本例中，系统把租约确认为 signed 时，在同一事务里检查并预留整段独占的空间权利；尚未交接的 planned tenancy 也占住未来的时段，两份已签租约重叠要在签署时发现，不能等到入住。租约有效时，住户未必已经入住；住户还拿着钥匙，合同结束日也不会因此改写。提前进入、延期交还和合同续签都要有明确的事件，系统才能解释某一时刻谁有进入权、谁收到维修通知、账单属于谁。</p>
+<p>租约 <code>L1</code> 固定签署版本、空间、当事人、有效区间和费用条款。占用权 <code>T1</code> 是执行这些条款的时间关系；入住交接 <code>I1</code> 记录实际交钥匙时刻、物品清单、已有缺陷和双方意见。本例中，系统把租约确认为 signed 时，在同一事务里检查并预留整段独占的空间权利；尚未交接的 planned tenancy 也占住未来的时段，两份已签租约的重叠在签署时就被发现。租约有效与住户入住是两件事；住户到期仍拿着钥匙时，合同结束日保持原值。提前进入、延期交还和合同续签都要有明确的事件，系统才能解释某一时刻谁有进入权、谁收到维修通知、账单属于谁。</p>
 <p>ServiceNow 介绍集成工作场所管理系统（integrated workplace management system，<abbr title="integrated workplace management system：集成工作场所管理系统">IWMS</abbr>）时，把空间、租约信息、占用情况、维护请求和工单都纳入工作场所管理。这可以作为“资产、空间与维护相互关联”这一产品类别的参照；本例的住宅押金扣除政策不在其中。参见 <a href="https://www.servicenow.com/in/workflows/employee-workflows/what-is-iwms.html" class="ext" rel="noopener">Facilities management / Facilities maintenance / Real estate lifecycle management</a>。</p>
 <div class="table-wrap"><table>
 <thead>
@@ -74,7 +75,7 @@
 </thead>
 <tbody><tr>
 <td>Lease，租约服务</td>
-<td>双方确认签署快照；管理员不能无痕改旧租约</td>
+<td>双方确认签署快照；管理员对旧租约的每次修改都留痕</td>
 <td><code>draft → signed → ended</code>；signed 同时预留整段独占权利，签署后修改另建修订</td>
 </tr>
 <tr>
@@ -108,34 +109,160 @@
 <td><code>open → partial → reconciled</code>；外部退款结果未知时不能进入 reconciled</td>
 </tr>
 </tbody></table></div>
-<p>Dynamics 365 Field Service 的架构文档把工作需求与 Booking 分开：同一 requirement 可以多次安排；技师更新 booking 状态，经理再复核关闭工单。所以一次到场结束，不能当作全部工作结束。参见 <a href="https://learn.microsoft.com/en-us/dynamics365/field-service/field-service-architecture" class="ext" rel="noopener">The work order is scheduled to resources；A field technician performs；The work order is reviewed and completed</a>。</p>
+<p>Dynamics 365 Field Service 的架构文档把工作需求与 Booking 分开：同一 requirement 可以多次安排；技师更新 booking 状态，经理再复核关闭工单。所以一次到场结束只结束这次 booking，工单等全部工作完成并经复核才关闭。参见 <a href="https://learn.microsoft.com/en-us/dynamics365/field-service/field-service-architecture" class="ext" rel="noopener">The work order is scheduled to resources；A field technician performs；The work order is reviewed and completed</a>。</p>
 </section>
 <section class="scene" aria-labelledby="时间区间与进入许可"><header class="scene-head"><h2 id="时间区间与进入许可"><span class="scene-no" aria-hidden="true">03</span><span class="head">时间区间与进入许可</span></h2></header><p class="scene-lede">独占占用按左闭右开区间判断冲突，相邻租期共享边界而不重叠；进入许可按预约时段另行核对，事实发生时间与系统记录时间分开保存。</p>
-<p>假设 T1 对房间 U7 的租期为 <code>[10月1日 12:00, 11月1日 12:00)</code>。10 月 31 日 12:00 开始的维修预约在租期内；11 月 1 日 12:00 开始的预约已不在其中。两个相邻住户的区间共享边界却不重叠。这个约束在签署、续租或改变有效区间时就检查，包含所有已签但尚未入住的计划关系；实际入住前再核对交接、当前权利和迟到变更。系统可以用 <code>start_a &lt; end_b 且 start_b &lt; end_a</code> 判断两段独占占用是否冲突，不能用日期字符串相等或“当前住户”字段推断整段权利。</p>
-<p>预约还需要维修资源与进入许可。T1 同意周一 09:00—10:00 的普通入户维修，这份许可不延续到周二；预约改期时要重新核对有效区间和授权。公共区域维护可以依据另一种权限，工单不必都关联某个住户。紧急进入若适用，要单独定义授权依据和审核流程；本例不凭“紧急”标签自动放行。</p>
-<p>后端每次接受 command 时按当时有效的权限核验，保存 <code>effective_at</code> 与 <code>recorded_at</code>：前者说事实何时发生，后者说系统何时知道。住户周五迁出、周一才补录时，周末的维修不能错算到后来才建档的新住户名下。迟到记录与已安排的工作冲突时，系统保留事实并发起待复核项，不能改历史时间把冲突藏起来。门禁权失效后，住户查阅历史结算和自己档案的权限不必随之消失，按单独的访问目的和期限管理。</p>
+<p>假设 T1 对房间 U7 的租期为 <code>[10月1日 12:00, 11月1日 12:00)</code>。10 月 31 日 12:00 开始的维修预约在租期内；11 月 1 日 12:00 开始的预约已不在其中。下一任住户的租期从 11 月 1 日 12:00 开始，两段区间共享边界而不重叠；若改为 11 月 1 日 11:59 开始，就与 T1 重叠，签署时被拒绝。这个约束在签署、续租或改变有效区间时就检查，包含所有已签但尚未入住的计划关系；实际入住前再核对交接、当前权利和迟到变更。系统可以用 <code>start_a &lt; end_b 且 start_b &lt; end_a</code> 判断两段独占占用是否冲突，不能用日期字符串相等或“当前住户”字段推断整段权利。</p>
+<figure class="drawing" data-drawing="v16-intervals"><div class="dw-scroll" style="--dw-min:600px;--dw-max:940px">
+<svg viewBox="0 0 780 270" role="img" aria-labelledby="v16-intervals-t v16-intervals-d">
+  <title id="v16-intervals-t">左闭右开的租期与相邻边界</title>
+  <desc id="v16-intervals-d">T1 对 U7 的租期为 [10月1日 12:00, 11月1日 12:00)。10月31日 12:00 开始的维修预约在租期内，11月1日 12:00 开始的预约已不在其中。下一段租期从 11月1日 12:00 开始，与 T1 共享边界而不重叠；改为 11:59 开始就与 T1 重叠，签署时被拒绝。</desc>
+  <!-- axis: 10/31 12:00 at 330, 11/1 12:00 at 530 (24 h = 200), break before 10/31 -->
+  <path class="ln" d="M150 236 H195 M205 236 H770"/>
+  <path class="ln" d="M190 244 L198 228 M202 244 L210 228"/>
+  <path class="ln" d="M150 232 V240 M330 232 V240 M530 232 V240"/>
+  <text class="t-s mid" x="150" y="256">10月1日 12:00</text>
+  <text class="t-s mid" x="330" y="256">10月31日 12:00</text>
+  <text class="t-s mid" x="530" y="256">11月1日 12:00</text>
+  <path class="ln-soft" d="M530 30 V230"/>
+  <g data-s="1">
+    <text class="t-b end" x="136" y="65">T1 · U7</text>
+    <path class="ln-strong" d="M150 60 H193 M207 60 H525"/>
+    <circle class="f-ink" cx="150" cy="60" r="5"/>
+    <circle class="box" cx="530" cy="60" r="5"/>
+    <text class="t-n" x="214" y="46">[10月1日 12:00, 11月1日 12:00)</text>
+  </g>
+  <g data-s="2">
+    <text class="t-b end" x="136" y="115">维修预约</text>
+    <path class="ln-soft" d="M330 66 V104"/>
+    <rect class="f-ink" x="325" y="105" width="10" height="10"/>
+    <text class="t-s" x="342" y="114">10月31日 12:00 · 在 T1 内</text>
+    <rect class="box" x="525" y="105" width="10" height="10"/>
+    <text class="t-s" x="542" y="114">11月1日 12:00 · 已不在 T1 内</text>
+  </g>
+  <g data-s="3">
+    <text class="t-b end" x="136" y="165">下一段租期</text>
+    <circle class="f-ink" cx="530" cy="160" r="5"/>
+    <path class="ln-strong" d="M530 160 H770"/>
+    <text class="t-s" x="542" y="148">12:00 起 · 共享边界，不重叠 · 允许</text>
+  </g>
+  <g data-s="4">
+    <text class="t-b end" x="136" y="210">改为 11:59 起</text>
+    <circle class="f-ink" cx="500" cy="205" r="5"/>
+    <path class="ln-strong" d="M530 205 H770"/>
+    <path class="ln-em" d="M500 205 H530"/>
+    <text class="t-s mid" x="500" y="224">11:59</text>
+    <text class="t-s t-em" x="542" y="193">11:59 &lt; 12:00 · 重叠 · 签署时拒绝</text>
+  </g>
+</svg>
+</div>
+<figcaption>右端点不属于区间：T1 在 11月1日 12:00 结束的同一时刻，下一段租期可以开始；提前一分钟开始就构成重叠。</figcaption></figure><p>预约还需要维修资源与进入许可。T1 同意周一 09:00—10:00 的普通入户维修，这份许可只在这一小时内有效；预约改期时要重新核对有效区间和授权。公共区域维护可以依据另一种权限，这类工单可以不关联住户。紧急进入若适用，要单独定义授权依据和审核流程；本例中紧急进入同样逐次核验授权依据。</p>
+<p>后端每次接受 command 时按当时有效的权限核验，保存 <code>effective_at</code> 与 <code>recorded_at</code>：前者说事实何时发生，后者说系统何时知道。住户周五迁出、周一才补录时，周末的维修不能错算到后来才建档的新住户名下。迟到记录与已安排的工作冲突时，系统保留事实并发起待复核项，历史时间保持原值。门禁权失效后，住户仍可查阅历史结算和自己的档案，这项权限按单独的访问目的和期限管理。</p>
 </section>
 <section class="scene" aria-labelledby="报修预约与退租检查"><header class="scene-head"><h2 id="报修预约与退租检查"><span class="scene-no" aria-hidden="true">04</span><span class="head">报修、预约与退租检查</span></h2></header><p class="scene-lede">提交只说明请求已接收：预约以事务提交后的确认号为准，一次 booking 完成不关闭工单，退租时的维修支出只形成待答复的责任建议。</p>
-<p>住户工作台展示自己的租约、入住清单、报修进度和押金明细，不展示整栋楼的“当前住户表”。报修表单先选择空间和设备，再说明症状、可进入时段与附件。提交只表示请求已接收，页面随后显示分配的负责人、预约和下一次动作。技师只能看到工作需要的设备、地址和有效进入说明；押金争议和其他住户的私人附件不在维修任务的默认权限内。</p>
-<p>调度员在日历上拖动 booking 时，服务端重新核验人员时间、设备要求和进入许可。浏览器中的空档可能已被别人占用，所以预约成功以事务提交后的确认号为准；失败时返回冲突区间及可选时段。技师到场无法进入时记录 <code>no_access</code>，这次预约失败，工单仍为 open 或等待重排。若首次检修发现要换零件，保存检查结果，另建第二次 booking；第一次 booking 为 completed，工单不随之变为 closed。</p>
-<p>离场检查引用入住清单中的同一资产 <abbr title="identifier：标识符">ID</abbr>，逐项并排显示前后状况、照片采集时刻、双方意见与维修报价。经理提出“门板更换支出 900，其中本次责任建议 600”时，系统保存支出、分摊依据、提出人和待答复金额。住户可以接受 600 或提出异议，不必靠撤回工单来表达争议。财务工作台看到的是责任行与结算余额；财务点击“生成退款”时，系统先锁定本次可退金额与 settlement version，再创建退款 operation。</p>
+<p>住户工作台只展示本人的租约、入住清单、报修进度和押金明细。报修表单先选择空间和设备，再说明症状、可进入时段与附件。提交只表示请求已接收，页面随后显示分配的负责人、预约和下一次动作。技师只能看到工作需要的设备、地址和有效进入说明；押金争议和其他住户的私人附件在维修任务的默认权限之外。</p>
+<p>调度员在日历上拖动 booking 时，服务端重新核验人员时间、设备要求和进入许可。浏览器中的空档可能已被别人占用，所以预约成功以事务提交后的确认号为准；失败时返回冲突区间及可选时段。技师到场无法进入时记录 <code>no_access</code>，这次预约失败，工单仍为 open 或等待重排。若首次检修发现要换零件，保存检查结果，另建第二次 booking；第一次 booking 为 completed，工单保持未关闭。</p>
+<p>离场检查引用入住清单中的同一资产 <abbr title="identifier：标识符">ID</abbr>，逐项并排显示前后状况、照片采集时刻、双方意见与维修报价。经理提出“门板更换支出 900，其中本次责任建议 600”时，系统保存支出、分摊依据、提出人和待答复金额。住户可以接受 600 或提出异议；异议记在责任行上，工单保持原样。财务工作台看到的是责任行与结算余额；财务点击“生成退款”时，系统先锁定本次可退金额与 settlement version，再创建退款 operation。</p>
 <figure class="graph-fig"><div class="graph-wrap"><svg class="graph" viewBox="0 0 869 243" width="869" height="243" style="max-width:999px;min-width:695px" role="img" aria-label="V16 · 租约、维修与押金对账"><defs><marker id="arrow-g1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arrowhead"/></marker></defs><path class="edge" data-type="operates" data-from="Resident" data-to="Portal" d="M114.0,25.0 Q218.0,25.0 295.0,25.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Resident" data-to="Portal"><rect x="190.0" y="17.0" width="56" height="16" rx="3"/><text x="218.0" y="29.0">operates</text></g><path class="edge" data-type="commands" data-from="Portal" data-to="Housing" d="M384.0,25.0 Q467.0,25.0 534.0,25.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Portal" data-to="Housing"><rect x="439.0" y="17.0" width="56" height="16" rx="3"/><text x="467.0" y="29.0">commands</text></g><path class="edge" data-type="owns" data-from="Housing" data-to="Tenancy" d="M649.0,25.0 Q710.0,25.0 778.5,43.1" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Housing" data-to="Tenancy"><rect x="694.0" y="17.0" width="32" height="16" rx="3"/><text x="710.0" y="29.0">owns</text></g><path class="edge" data-type="depends_on" data-from="Work" data-to="Tenancy" d="M638.0,81.0 Q710.0,81.0 778.5,62.9" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Work" data-to="Tenancy"><rect x="676.0" y="73.0" width="68" height="16" rx="3"/><text x="710.0" y="85.0">depends_on</text></g><path class="edge" data-type="depends_on" data-from="Booking" data-to="Work" d="M377.0,81.0 Q467.0,81.0 545.0,81.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Booking" data-to="Work"><rect x="433.0" y="73.0" width="68" height="16" rx="3"/><text x="467.0" y="85.0">depends_on</text></g><path class="edge" data-type="derived_from" data-from="Liability" data-to="Report" d="M400.0,137.0 Q467.0,137.0 534.0,137.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Liability" data-to="Report"><rect x="427.0" y="129.0" width="80" height="16" rx="3"/><text x="467.0" y="141.0">derived_from</text></g><path class="edge" data-type="depends_on" data-from="Settlement" data-to="Liability" d="M157.0,137.0 Q218.0,137.0 279.0,137.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Settlement" data-to="Liability"><rect x="184.0" y="129.0" width="68" height="16" rx="3"/><text x="218.0" y="141.0">depends_on</text></g><path class="edge" data-type="requests" data-from="Ledger" data-to="Funds" d="M120.5,205.2 Q218.0,193.0 288.5,193.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Ledger" data-to="Funds"><rect x="190.0" y="185.0" width="56" height="16" rx="3"/><text x="218.0" y="197.0">requests</text></g><path class="edge" data-type="emits" data-from="Funds" data-to="Result" d="M390.5,193.0 Q467.0,193.0 553.5,193.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Funds" data-to="Result"><rect x="448.0" y="185.0" width="38" height="16" rx="3"/><text x="467.0" y="197.0">emits</text></g><path class="edge" data-type="delivers" data-from="Result" data-to="Inbox" d="M629.5,193.0 Q710.0,193.0 771.0,202.8" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Result" data-to="Inbox"><rect x="682.0" y="185.0" width="56" height="16" rx="3"/><text x="710.0" y="197.0">delivers</text></g><path class="edge" data-type="reads" data-from="Ledger" data-to="Inbox" d="M120.5,214.8 Q218.0,227.0 278.8,227.0 Q339.5,227.0 403.3,227.0 Q467.0,227.0 529.3,227.0 Q591.5,227.0 650.8,227.0 Q710.0,227.0 771.0,217.2" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Ledger" data-to="Inbox"><rect x="448.0" y="219.0" width="38" height="16" rx="3"/><text x="467.0" y="231.0">reads</text></g><g class="node" data-id="Resident"><rect x="51.0" y="8.0" width="63" height="34" rx="4"/><text x="82.5" y="29.5">承租人</text></g><g class="node" data-id="Portal"><rect x="295.0" y="8.0" width="89" height="34" rx="4"/><text x="339.5" y="29.5">住户工作台</text></g><g class="node" data-id="Housing"><rect x="534.0" y="8.0" width="115" height="34" rx="4"/><text x="591.5" y="29.5">租约与占用服务</text></g><g class="node" data-id="Tenancy"><rect x="778.5" y="36.0" width="75" height="34" rx="4"/><text x="816.0" y="57.5">Tenancy</text></g><g class="node" data-id="Work"><rect x="545.0" y="64.0" width="93" height="34" rx="4"/><text x="591.5" y="85.5">Work order</text></g><g class="node" data-id="Booking"><rect x="302.0" y="64.0" width="75" height="34" rx="4"/><text x="339.5" y="85.5">Booking</text></g><g class="node" data-id="Liability"><rect x="279.0" y="120.0" width="121" height="34" rx="4"/><text x="339.5" y="141.5">Liability item</text></g><g class="node" data-id="Report"><rect x="534.0" y="120.0" width="115" height="34" rx="4"/><text x="591.5" y="141.5">交接与状况报告</text></g><g class="node" data-id="Settlement"><rect x="8.0" y="120.0" width="149" height="34" rx="4"/><text x="82.5" y="141.5">Deposit settlement</text></g><g class="node" data-id="Ledger"><rect x="44.5" y="193.0" width="76" height="34" rx="4"/><text x="82.5" y="214.5">结算服务</text></g><g class="node" data-id="Funds"><rect x="288.5" y="176.0" width="102" height="34" rx="4"/><text x="339.5" y="197.5">外部资金系统</text></g><g class="node" data-id="Result"><rect x="553.5" y="176.0" width="76" height="34" rx="4"/><text x="591.5" y="197.5">退款结果</text></g><g class="node" data-id="Inbox"><rect x="771.0" y="193.0" width="90" height="34" rx="4"/><text x="816.0" y="214.5">持久 inbox</text></g></svg></div><details class="edge-list"><summary>图中关系的文字列表</summary><ul><li>承租人 <span class="rel">—operates→</span> 住户工作台</li><li>住户工作台 <span class="rel">—commands→</span> 租约与占用服务</li><li>租约与占用服务 <span class="rel">—owns→</span> Tenancy</li><li>Work order <span class="rel">—depends_on→</span> Tenancy</li><li>Booking <span class="rel">—depends_on→</span> Work order</li><li>Liability item <span class="rel">—derived_from→</span> 交接与状况报告</li><li>Deposit settlement <span class="rel">—depends_on→</span> Liability item</li><li>结算服务 <span class="rel">—requests→</span> 外部资金系统</li><li>外部资金系统 <span class="rel">—emits→</span> 退款结果</li><li>退款结果 <span class="rel">—delivers→</span> 持久 inbox</li><li>结算服务 <span class="rel">—reads→</span> 持久 inbox</li></ul></details></figure><p><code>Work → Tenancy</code> 只用于本例需要核对占用与进入许可的室内工作。结构数据另有权威记录、存储与界面投影边，见 <a href="../../../vault/distilled/saas-engineering-atlas/packages/commerce-property/V16.json">V16.json</a>。</p>
 </section>
-<section class="scene" aria-labelledby="演算责任核定与押金守恒"><header class="scene-head"><h2 id="演算责任核定与押金守恒"><span class="scene-no" aria-hidden="true">05</span><span class="visually-hidden">演算：</span><span class="head">责任核定与押金守恒</span></h2></header><p class="scene-lede">押金按桶核对守恒：无争议扣除、待裁定、退款预留和已退分开记，预留在外部确认之前不能写作已退，维修支出也不等于住户责任。</p>
-<p>押金收到 3,000。退租时有三项记录：拖欠费用 300 已由双方确认；清洁 200 已确认；门板更换实际支出 900，其中提出的本次住户责任为 600，住户对此有异议。剩余 300 更换支出由物业承担，是本例政策，不是押金责任。当前无争议扣除 <code>300 + 200 = 500</code>，争议保留 600，可先退 <code>3,000 − 500 − 600 = 1,900</code>。</p>
-<p>这时账面关系为 <code>3,000 = 500 已分配扣除 + 600 待裁定 + 1,900 退款预留</code>。预留不能写作已退。外部确认退回 1,900 后，才把这部分移到已退；如果超时，1,900 仍被同一 operation 占用。后来双方确认门板责任只有 300，争议的 600 就拆成新增扣除 300 与新增退款 300。最终 <code>3,000 = 800 扣除 + 2,200 已退 + 0 待裁定 + 0 退款预留 + 0 未分配</code>，押金结清。900 的维修支出始终可以保留，不必为了让押金数字相等而改写工单成本。</p>
-<p>朴素报表从所有现金流水重算余额，容易把待发送的退款和实际到账混在一起。<code>ALG:lookup</code> 用 <code>(org_id, tenancy_id, deposit_account_id)</code> 找到押金账户，逐行扫描不可变流水求各桶余额；<code>ALG:windows</code> 用有效时段把费用归属到正确的占用关系，再按明确的责任规则分摊。预聚合可以缩短查询；防止两人各退 1,900，靠的是唯一的退款操作和事务里的可用余额检查。扫描 n 条结算流水是 <code>O(n)</code>；带账户索引的读取先定位账户范围，仍要处理该账户的 k 条记录，整体计算不是 <code>O(1)</code>。</p>
+<section class="scene" aria-labelledby="演算责任核定与押金守恒"><header class="scene-head"><h2 id="演算责任核定与押金守恒"><span class="scene-no" aria-hidden="true">05</span><span class="visually-hidden">演算：</span><span class="head">责任核定与押金守恒</span></h2></header><p class="scene-lede">押金按桶核对守恒：无争议扣除、待裁定、退款预留和已退分开记，预留在外部确认后才转为已退，维修支出经责任认定才成为住户责任。</p>
+<p>押金收到 3,000。退租时有三项记录：拖欠费用 300 已由双方确认；清洁 200 已确认；门板更换实际支出 900，其中提出的本次住户责任为 600，住户对此有异议。剩余 300 更换支出由物业承担，这是本例政策，不进押金。当前无争议扣除 <code>300 + 200 = 500</code>，争议保留 600，可先退 <code>3,000 − 500 − 600 = 1,900</code>。</p>
+<p>这时账面关系为 <code>3,000 = 500 已分配扣除 + 600 待裁定 + 1,900 退款预留</code>。外部确认退回 1,900 后，才把这部分移到已退；如果超时，1,900 仍被同一 operation 占用。后来双方确认门板责任只有 300，争议的 600 就拆成新增扣除 300 与新增退款 300。最终 <code>3,000 = 800 扣除 + 2,200 已退 + 0 待裁定 + 0 退款预留 + 0 未分配</code>，押金结清。900 的维修支出始终保留在工单成本里，与押金各桶分开核对。</p>
+<figure class="drawing" data-drawing="v16-buckets"><div class="dw-scroll" style="--dw-min:600px;--dw-max:940px">
+<svg viewBox="0 0 780 280" role="img" aria-labelledby="v16-buckets-t v16-buckets-d">
+  <title id="v16-buckets-t">押金 3,000 在各桶之间移动</title>
+  <desc id="v16-buckets-d">退租核定后，3,000 分为已分配扣除 500（拖欠 300、清洁 200）、待裁定 600、退款预留 1,900；门板支出 900，其中住户责任建议 600，有异议。外部确认后 1,900 转为已退。门板责任定为 300 后，600 拆成新增扣除 300 和新增退款 300，最终扣除 800、已退 2,200。</desc>
+  <!-- x = 150 + v × 0.19 -->
+  <g data-s="1">
+    <text class="t-s" x="245" y="36">门板支出 900 → 住户责任建议 600，有异议</text>
+    <path class="ln-soft" d="M302 40 V52"/>
+    <text class="t-b end" x="140" y="77">退租核定</text>
+    <rect class="box f-ink" x="150" y="52" width="95" height="40"/>
+    <text class="t t-inv mid" x="197" y="69">扣除 500</text><text class="t-s t-inv mid" x="197" y="85">300 + 200</text>
+    <rect class="box f2" x="245" y="52" width="114" height="40"/>
+    <text class="t mid" x="302" y="77">待裁定 600</text>
+    <rect class="box-dash" x="359" y="52" width="361" height="40"/>
+    <text class="t mid" x="539" y="77">退款预留 1,900</text>
+    <text class="t-n end" x="776" y="77">3,000</text>
+  </g>
+  <g data-s="2">
+    <text class="t-b end" x="140" y="147">确认退回 1,900</text>
+    <rect class="box f-ink" x="150" y="122" width="95" height="40"/>
+    <text class="t t-inv mid" x="197" y="147">扣除 500</text>
+    <rect class="box f2" x="245" y="122" width="114" height="40"/>
+    <text class="t mid" x="302" y="147">待裁定 600</text>
+    <rect class="box f1" x="359" y="122" width="361" height="40"/>
+    <text class="t mid" x="539" y="147">已退 1,900</text>
+    <text class="t-n end" x="776" y="147">3,000</text>
+  </g>
+  <g data-s="3">
+    <path class="ln-em" d="M273 162 V206 M267 198 L273 206 L279 198"/>
+    <path class="ln-em" d="M330 162 V206 M324 198 L330 206 L336 198"/>
+    <text class="t-s t-em end" x="264" y="190">扣除 +300</text>
+    <text class="t-s t-em" x="339" y="190">退回 +300</text>
+    <text class="t-b end" x="140" y="237">责任定为 300</text>
+    <rect class="box f-ink" x="150" y="212" width="152" height="40"/>
+    <path class="ln-soft" d="M245 212 V252"/>
+    <text class="t t-inv mid" x="197" y="237">扣除 800</text>
+    <rect class="box f1" x="302" y="212" width="418" height="40"/>
+    <path class="ln-soft" d="M359 212 V252"/>
+    <text class="t mid" x="539" y="237">已退 2,200</text>
+    <text class="t-n end" x="776" y="237">3,000</text>
+    <text class="t-s end" x="776" y="270">待裁定 0 · 退款预留 0 · 结清</text>
+  </g>
+</svg>
+</div>
+<figcaption>每一行的各桶之和都是 3,000；外部确认把预留移到已退，裁定把 600 一分为二。</figcaption></figure><p>朴素报表从所有现金流水重算余额，容易把待发送的退款和实际到账混在一起。<code>ALG:lookup</code> 用 <code>(org_id, tenancy_id, deposit_account_id)</code> 找到押金账户，逐行扫描不可变流水求各桶余额；<code>ALG:windows</code> 用有效时段把费用归属到正确的占用关系，再按明确的责任规则分摊。预聚合可以缩短查询；防止两人各退 1,900，靠的是唯一的退款操作和事务里的可用余额检查。扫描 n 条结算流水是 <code>O(n)</code>；带账户索引的读取先定位账户范围，仍要处理该账户的 k 条记录，整体计算不是 <code>O(1)</code>。</p>
 <p>一个反例是看到支出 900 就扣 900，先退 <code>3,000 − 300 − 200 − 900 = 1,600</code>：它把成本当成责任，还隐藏了 600 的异议。另一个反例是把“已请求退 1,900”立即记为到账，超时后再请求 1,900，最终可能退出 3,800。守恒检查若只看本地期望值，仍可能全部通过；所以要同时核对已提交的 operation、外部结算结果和争议桶。</p>
 </section>
 <section class="scene" aria-labelledby="实现与性能"><header class="scene-head"><h2 id="实现与性能"><span class="scene-no" aria-hidden="true">06</span><span class="head">实现与性能</span></h2></header><p class="scene-lede">占用区间、责任行、退款预留与唯一业务键在同一事务里提交，单套房先锁空间记录即可；照片、搜索和缓存只保存或投影经过授权的内容。</p>
 <p>住户端可选 Vue 或 React 做响应式表单、照片清单与时间线，管理端可以先用 Django 模板或同一前端框架实现。确实存在离线入户检查时，才增加本地草稿与离线上传队列：每份草稿保留原始采集时刻、资产身份、租约版本和客户端操作 ID，联网后仍由服务器核验归属。照片上传进度与报修提交结果分开显示，避免“按钮已成功”却丢失关键证据。</p>
-<p>模块化后端可用 Django 加 PostgreSQL，也可选 ASP.NET Core 加关系数据库。占用区间、审批版本、责任行、退款预留与唯一业务键需要一起提交；单套房的冲突可以先锁定空间记录，再检查区间并写入，首版不必自建分布式锁。照片存对象存储，数据库保留摘要、资产、tenancy 与访问目的；搜索与缓存只投影经过授权的内容。若接入 Dynamics 365，可由适配器映射工单和预约，租约与押金仍以本地记录为准。</p>
-<p>设 100 个管理组织、每组织 1,000 个单元、每月 2,000 张工单，每张最多 10 个预约，照片中位数 3 张。目标是在每组织 30 个并发操作下，普通列表 <abbr title="application programming interface：应用程序接口">API</abbr> p95 小于 500 ms，单空间预约确认 p95 小于 700 ms；二者都不含图片上传，尚未实测。月初批量起租与月末集中退租是不同的热点：前者竞争空间权利，后者竞争押金账户。按组织和账户限制并发、分批生成待处理清单，不能让一个大物业的图片识别任务阻塞其它组织的退款核对。</p>
-<p>缓存 key 至少包含组织、当事人或权限范围、tenancy、查询窗口及权限版本；权限或占用变化时，相关投影失效。旧住户失去门禁权后，服务端不能依据“几分钟前的住户列表”允许新预约。持久任务按账户处理退款，超时后先查原 operation；工单预约则按外部 booking ID 对账。外部无法查询时保留 unknown 和人工入口，不按失败处理。设备归属有误时，写一条可追溯来源的更正记录；不能把旧住户的照片移到新 tenancy 下来修正报表。</p>
+<p>模块化后端可用 Django 加 PostgreSQL，也可选 ASP.NET Core 加关系数据库。占用区间、审批版本、责任行、退款预留与唯一业务键需要一起提交；单套房的冲突可以先锁定空间记录，再检查区间并写入，首版用数据库事务里的这把锁即可。照片存对象存储，数据库保留摘要、资产、tenancy 与访问目的；搜索与缓存只投影经过授权的内容。若接入 Dynamics 365，可由适配器映射工单和预约，租约与押金仍以本地记录为准。</p>
+<p>设 100 个管理组织、每组织 1,000 个单元、每月 2,000 张工单，每张最多 10 个预约，照片中位数 3 张。目标是在每组织 30 个并发操作下，普通列表 <abbr title="application programming interface：应用程序接口">API</abbr> p95 小于 500 ms，单空间预约确认 p95 小于 700 ms；二者都不含图片上传，尚未实测。月初批量起租与月末集中退租是不同的热点：前者竞争空间权利，后者竞争押金账户。按组织和账户限制并发、分批生成待处理清单，一个大物业的图片识别任务与其它组织的退款核对互不阻塞。</p>
+<p>缓存 key 至少包含组织、当事人或权限范围、tenancy、查询窗口及权限版本；权限或占用变化时，相关投影失效。旧住户失去门禁权后，服务端按当前权限版本核验新预约，“几分钟前的住户列表”不作依据。持久任务按账户处理退款，超时后先查原 operation；工单预约则按外部 booking ID 对账。外部无法查询时保留 unknown 和人工入口，不按失败处理。设备归属有误时，写一条可追溯来源的更正记录；旧住户的照片留在原 tenancy 下。</p>
 </section>
-<section class="scene" aria-labelledby="验算正常路径失败路径与检查"><header class="scene-head"><h2 id="验算正常路径失败路径与检查"><span class="scene-no" aria-hidden="true">07</span><span class="visually-hidden">验算：</span><span class="head">正常路径、失败路径与检查</span></h2></header><p class="scene-lede">检查要看持久记录、用户界面和外部结果，只验证计算函数的返回值不够；占用、工单和押金各自停在有证据的状态。</p>
+<section class="scene" aria-labelledby="验算正常路径失败路径与检查"><header class="scene-head"><h2 id="验算正常路径失败路径与检查"><span class="scene-no" aria-hidden="true">07</span><span class="visually-hidden">验算：</span><span class="head">正常路径、失败路径与检查</span></h2></header><p class="scene-lede">检查覆盖持久记录、用户界面和外部结果三处，计算函数的返回值只是其中一部分依据；占用、工单和押金各自停在有证据的状态。</p>
 <p>正常路径是签署 L1、记录并确认 I1、T1 入住、生效期间报修、两次预约完成、经理关闭工单、退租检查、逐项认定责任、先退 1,900、复核争议后再退 300、核对押金守恒。页面应允许 T1 已 vacated、工单已 closed、押金仍 partial 同时存在。</p>
-<p>失败路径是第一次预约未能进入，第二次到场发现配件待订，第三次完成维修。任何一次 booking 都不能代替经理验收。退租时发现入住照片缺失，责任行保持 disputed 或待补证，不能因为已经付了维修商就自动转为 accepted。退款超时则显示“该笔结果待核对，余额已预留”，住户可以看到金额和操作身份，财务可以继续处理其它不相关的账户。</p>
+<p>失败路径是第一次预约未能进入，第二次到场发现配件待订，第三次完成维修。三次 booking 各自结束，工单等经理验收后才关闭。</p>
+<figure class="drawing" data-drawing="v16-bookings"><div class="dw-scroll" style="--dw-min:600px;--dw-max:900px">
+<svg viewBox="0 0 760 236" role="img" aria-labelledby="v16-bookings-t v16-bookings-d">
+  <title id="v16-bookings-t">一张工单，三次 booking</title>
+  <desc id="v16-bookings-d">第一次 booking 未能进入，记为 no_access；第二次到场完成检查，发现配件待订；第三次完成维修。三次 booking 期间工单一直未关闭，经理验收后工单才变为 closed。每次新 booking 都重新核对进入许可。</desc>
+  <text class="t-b end" x="110" y="55">工单</text>
+  <path class="ln-strong" d="M130 50 H640"/>
+  <text class="t-s mid" x="385" y="38">open · 未关闭</text>
+  <text class="t-b end" x="110" y="145">booking</text>
+  <g data-s="1">
+    <path class="ln-soft" d="M200 50 V110"/>
+    <rect class="box" x="130" y="110" width="140" height="64"/>
+    <text class="t-b mid" x="200" y="134">第一次</text>
+    <text class="t-n mid" x="200" y="156">no_access</text>
+  </g>
+  <g data-s="2">
+    <path class="ln-soft" d="M270 142 H300 M294 137 L300 142 L294 147"/>
+    <path class="ln-soft" d="M370 50 V110"/>
+    <rect class="box" x="300" y="110" width="140" height="64"/>
+    <text class="t-b mid" x="370" y="134">第二次</text>
+    <text class="t-n mid" x="370" y="152">completed</text>
+    <text class="t-s mid" x="370" y="167">发现配件待订</text>
+  </g>
+  <g data-s="3">
+    <path class="ln-soft" d="M440 142 H470 M464 137 L470 142 L464 147"/>
+    <path class="ln-soft" d="M540 50 V110"/>
+    <rect class="box" x="470" y="110" width="140" height="64"/>
+    <text class="t-b mid" x="540" y="134">第三次</text>
+    <text class="t-n mid" x="540" y="152">completed</text>
+    <text class="t-s mid" x="540" y="167">完成维修</text>
+  </g>
+  <text class="t-s mid" x="370" y="200" data-s="2">每次新 booking 重新核对进入许可</text>
+  <g data-s="4">
+    <circle class="f-em" cx="646" cy="50" r="6"/>
+    <text class="t-b" x="658" y="45">经理验收</text>
+    <text class="t-n t-em" x="658" y="64">closed</text>
+  </g>
+</svg>
+</div>
+<figcaption>booking 各自结束，工单在经理验收后才关闭。</figcaption></figure><p>退租时发现入住照片缺失，责任行保持 disputed 或待补证；向维修商付款不改变责任行的状态。退款超时则显示“该笔结果待核对，余额已预留”，住户可以看到金额和操作身份，财务可以继续处理其它不相关的账户。</p>
 <div class="table-wrap"><table>
 <thead>
 <tr>
@@ -192,14 +319,14 @@
 </section>
 <section class="scene" aria-labelledby="变式条件改变后的判断"><header class="scene-head"><h2 id="变式条件改变后的判断"><span class="scene-no" aria-hidden="true">08</span><span class="visually-hidden">变式：</span><span class="head">条件改变后的判断</span></h2></header><p class="scene-lede">三种变化都不改变资金守恒与证据归属，改的是承载它们的对象：换房另开押金账户，未知的退款继续预留，并行的工作按资源而不按工单判断冲突。</p>
 <p><strong>练习一：同一个人换房，旧房押金尚有 600 争议，新房要求 3,000 押金。</strong> 能否直接把 person 表上的押金余额搬过去？</p>
-<p>简答：不能。旧 tenancy 的责任与退款义务仍在，新的 tenancy 有自己的入住房况和押金账户。若双方允许转移无争议余额，应生成两边关联的转出、转入记录和授权，600 继续留在旧账户；不能只改 <code>unit_id</code>。资金守恒与证据归属不变；原模型失效的前提是“一个人只有一段占用”。检查新房账户不能消费旧房的争议桶，也看不到无关前任住户的附件。</p>
+<p>简答：押金账户属于 tenancy。旧 tenancy 的责任与退款义务仍在，新的 tenancy 有自己的入住房况和押金账户。若双方允许转移无争议余额，应生成两边关联的转出、转入记录和授权，600 继续留在旧账户；不能只改 <code>unit_id</code>。资金守恒与证据归属不变；原模型失效的前提是“一个人只有一段占用”。检查新房账户不能消费旧房的争议桶，也看不到无关前任住户的附件。</p>
 <p><strong>练习二：争议责任从 600 降到 300，但首笔 1,900 退款仍然 unknown。</strong> 可以再退多少？</p>
 <p>简答：只能释放新确定的 300，并且仍受独立操作与可用余额检查约束。原 1,900 继续预留，不能因为还没看到到账就把它重新算成可用。当前守恒为 <code>3,000 = 800 扣除 + 1,900 原退款预留 + 300 新可退</code>。检查重复运行争议处理只释放一次 300；原操作确认后，只改变预留与已退两个桶，总余额不变。</p>
 <p><strong>练习三：维修单需要水电两位技师，水电预约时间相同。</strong> 原来“同一时间只能有一个 booking”的冲突规则还能用吗？</p>
-<p>简答：不能照用。冲突应按资源与进入许可计算，不按工单全局互斥。两位不同技师可以共享允许入户的窗口；同一技师不能同时出现在两个房间。若现场规定同一狭小空间不能同时施工，还要加空间容量约束。检查不同资源可以并行、相同资源被拒绝，工单仍要等全部必需任务验收。</p>
+<p>简答：改按资源判断。冲突按资源与进入许可计算。两位不同技师可以共享允许入户的窗口；同一技师不能同时出现在两个房间。若现场规定同一狭小空间不能同时施工，还要加空间容量约束。检查不同资源可以并行、相同资源被拒绝，工单仍要等全部必需任务验收。</p>
 <p><code>TR:V16:V06:temporal-rights</code> 可把时间区间与占用权带到 V06 的住宿预订；失效点在于酒店通常还涉及房型容量、换房与按夜计价，不能照搬本例“单单元独占租约”的全部 guard。<code>TR:V16:V20:booking-work</code> 可把一工单多 booking 与复核关闭带到现场服务；资产服务未必有住户占用关系，所以不继承租约与押金规则。演示可拖动交接时间、改变责任金额、制造一次 no_access 或退款 unknown，观察哪些对象变化、哪些证据保持不变；呈现这些因果关系用不着三维房屋浏览器。</p>
 </section>
-<section class="scene" aria-labelledby="进入物业租赁的先查项"><header class="scene-head"><h2 id="进入物业租赁的先查项"><span class="scene-no" aria-hidden="true">09</span><span class="head">进入物业租赁的先查项</span></h2></header><p class="scene-lede">先把管理组织、房屋、当事人、租约、实际占用和押金账户画成身份关系，再跟踪一段续租或换房。成熟解法包括租约与空间时段管理、工单/多次预约、前后状况记录、责任争议与资金分桶；设施维护平台可以支撑其中一段，但不等于已经覆盖住宅租赁结算。下一步要向业务负责人确认未来权利何时被承诺、预约进入许可如何取得、维修费用怎样转为住户责任，并另行查明适用的押金保管与争议程序。验证从同一人两个 tenancy、尚未入住的重叠租期、缺少入住照片和退款 unknown 四个样本开始；若只凭房号或维修发票就能扣款，模型仍缺少关键的身份或权限边界。</p>
+<section class="scene" aria-labelledby="进入物业租赁的先查项"><header class="scene-head"><h2 id="进入物业租赁的先查项"><span class="scene-no" aria-hidden="true">09</span><span class="head">进入物业租赁的先查项</span></h2></header><p class="scene-lede">先把管理组织、房屋、当事人、租约、实际占用和押金账户画成身份关系，再跟踪一段续租或换房。成熟解法包括租约与空间时段管理、工单/多次预约、前后状况记录、责任争议与资金分桶；设施维护平台可以支撑其中一段，住宅租赁结算另需核对。下一步要向业务负责人确认未来权利何时被承诺、预约进入许可如何取得、维修费用怎样转为住户责任，并另行查明适用的押金保管与争议程序。验证从同一人两个 tenancy、尚未入住的重叠租期、缺少入住照片和退款 unknown 四个样本开始；若只凭房号或维修发票就能扣款，模型仍缺少关键的身份或权限边界。</p>
 <p><a href="../../../vault/distilled/saas-engineering-atlas/packages/commerce-property/evidence.json">来源与模型说明</a> · <a href="../../../vault/distilled/saas-engineering-atlas/packages/commerce-property/V16.json">对象与检查结构</a></p>
 </section>
 <section class="scene scene-structure" aria-labelledby="case-structure"><header class="scene-head"><h2 id="case-structure"><span class="scene-no" aria-hidden="true">10</span><span class="visually-hidden">结构：</span><span class="head">对象、生命周期与迁移</span></h2></header><p class="scene-lede">25 个节点、54 条带类型的边、8 个生命周期、13 条检查定义，数据见 <a href="../../../vault/distilled/saas-engineering-atlas/packages/commerce-property/V16.json">V16.json</a>。</p>
@@ -349,8 +476,8 @@
     <footer class="page-foot">正文 <a href="../../../books/saas-engineering/packages/commerce-property/V16.md">books/saas-engineering/packages/commerce-property/V16.md</a> · <a href="../../../vault/distilled/saas-engineering-atlas/README.md">结构、来源与验证</a></footer>
   </main>
 </div>
-<script src="search-index.js?v=mv95jeod"></script>
-<script src="book.js?v=mv95jeod"></script>
+<script src="search-index.js?v=mv97hru0"></script>
+<script src="book.js?v=mv97hru0"></script>
 
 </body>
 </html>

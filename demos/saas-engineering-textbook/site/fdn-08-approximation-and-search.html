@@ -4,9 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>第八章：用可说明的误差换取空间与速度 · SaaS 工程全景</title>
-<link rel="stylesheet" href="book.css?v=mv95jeod">
+<link rel="stylesheet" href="book.css?v=mv97hru0">
 </head>
 <body>
+<svg class="dw-defs" width="0" height="0" aria-hidden="true" focusable="false" style="position:absolute"><defs><pattern id="dw-hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" fill="var(--bg)"/><path d="M0 0 V6" stroke="var(--ink-2)" stroke-width="1.2"/></pattern></defs></svg>
 <a class="skip" href="#main">跳到正文</a>
 <header class="topbar">
   <button class="nav-toggle" type="button" aria-controls="sidebar" aria-expanded="false">目录</button>
@@ -27,9 +28,9 @@
     <div class="reel">
       <aside class="rail" aria-label="本页进度"><ol><li><a href="#识题近似结果的用途"><span class="rn">01<span class="of"> / 05</span></span><span class="rt">近似结果的用途</span></a></li><li><a href="#解法错误方向与补救方式"><span class="rn">02<span class="of"> / 05</span></span><span class="rt">错误方向与补救方式</span></a></li><li><a href="#演算三种近似结构"><span class="rn">03<span class="of"> / 05</span></span><span class="rt">三种近似结构</span></a></li><li><a href="#验算误差的分母与方向"><span class="rn">04<span class="of"> / 05</span></span><span class="rt">误差的分母与方向</span></a></li><li><a href="#变式从估算到计费从候选到证据从预筛到放款去重"><span class="rn">05<span class="of"> / 05</span></span><span class="rt">从估算到计费，从候选到证据，从预筛到放款去重</span></a></li></ol></aside>
       <div class="flow">
-<section class="scene" aria-labelledby="识题近似结果的用途"><header class="scene-head"><h2 id="识题近似结果的用途"><span class="scene-no" aria-hidden="true">01</span><span class="visually-hidden">识题：</span><span class="head">近似结果的用途</span></h2></header><p class="scene-lede">探索、预筛和候选召回适合用近似；业务确认能否容许误差，要看具体承诺了什么。H07 的趋势报表可以展示估算，X01 的用量结算需要按契约核对精确事实；H06 的知识检索可以先给候选，H08 的封禁决定不能凭“相似”自动生效。</p>
+<section class="scene" aria-labelledby="识题近似结果的用途"><header class="scene-head"><h2 id="识题近似结果的用途"><span class="scene-no" aria-hidden="true">01</span><span class="visually-hidden">识题：</span><span class="head">近似结果的用途</span></h2></header><p class="scene-lede">探索、预筛和候选召回适合用近似；业务确认能否容许误差，要看具体承诺了什么。H07 的趋势报表可以展示估算，X01 的用量结算需要按契约核对精确事实；H06 的知识检索可以先给候选，H08 的封禁决定要回到可审计的记录或人工复核，“相似”只提供线索。</p>
 </section>
-<section class="scene" aria-labelledby="解法错误方向与补救方式"><header class="scene-head"><h2 id="解法错误方向与补救方式"><span class="scene-no" aria-hidden="true">02</span><span class="visually-hidden">解法：</span><span class="head">错误方向与补救方式</span></h2></header><p class="scene-lede">这三种近似都牺牲某种精确性，但错误的方向与补救方式各不相同：Bloom 的阳性回到精确集合核对，HLL 的估计只能合并兼容的摘要、不能相加，ANN 漏召回的项靠扩大搜索预算或补充检索找回。先说清允许哪一种错，再选近似方法。</p>
+<section class="scene" aria-labelledby="解法错误方向与补救方式"><header class="scene-head"><h2 id="解法错误方向与补救方式"><span class="scene-no" aria-hidden="true">02</span><span class="visually-hidden">解法：</span><span class="head">错误方向与补救方式</span></h2></header><p class="scene-lede">这三种近似各牺牲一种精确性，错误的方向与补救方式各不相同：Bloom 的阳性回到精确集合核对，HLL 的估计靠合并兼容的摘要组合，相加会把重合的部分算两遍，ANN 漏召回的项靠扩大搜索预算或补充检索找回。先说清允许哪一种错，再选近似方法。</p>
 </section>
 <section class="scene" aria-labelledby="演算三种近似结构"><header class="scene-head"><h2 id="演算三种近似结构"><span class="scene-no" aria-hidden="true">03</span><span class="visually-hidden">演算：</span><span class="head">三种近似结构</span></h2></header><p class="scene-lede">三个小例各显出一种错误：Bloom 把从未插入的 C 报成“可能存在”，HLL 的四个桶只演示更新、估不出可靠人数，ANN 召回不到的 B 再怎么精排也回不来。</p>
 <h3 id="布隆过滤器bloom-filter共享位图与不存在判定">布隆过滤器（Bloom filter）：共享位图与不存在判定</h3>
@@ -68,10 +69,10 @@
 </svg>
 </div>
 <figcaption>C 从未插入，它查的两位都被 A、B 置为 1；D 碰到一个 0 就能确定不在。</figcaption></figure><p>位图只记下哪些位被点亮，不记是哪条记录点亮的，所以阳性结果要回到精确集合核对。在 hash 一致、插入已完整同步且没有错误清位的条件下，已插入元素不会因标准 Bloom 算法产生阴性。分布式同步落后时，新对象仍可能被查成不存在，这类漏报出在运行环节。<a href="https://redis.io/docs/latest/develop/data-types/probabilistic/bloom-filter/" class="ext" rel="noopener">Redis Bloom 文档</a>说明误报、容量与查询语义。</p>
-<p>插入和查询都要算 k 个 hash，成本 O(k)，位图空间 m 位。若每次落点独立且均匀，插入 n 项后，kn 次落点都避开某一位的概率是 <code>(1−1/m)^(kn)</code>，约为 <code>exp(−kn/m)</code>。再近似地把查询涉及的 k 位视为独立，误报率便是 <code>(1−exp(−kn/m))^k</code>。这是参数估算，不是每组数据的精确概率。固定目标误报率时，空间随 n 增长；要求更低的误报率，也需要更多空间。工程上由成熟实现按预计容量和错误预算选参数，再实测误报率。</p>
-<div class="labelled" data-kind="counter"><p class="blk-l">误用反例</p><p>把“可能存在”当成付款事件已处理而直接丢弃，会漏记真正的新事件。普通 Bloom 也不能随意把某项对应的位清零，因为这些位可能与别的项共享。验算用精确集合给出真值，分别统计误报和已插入项的漏报；出现漏报，先查同步、重建与删除协议。</p></div>
+<p>插入和查询都要算 k 个 hash，成本 O(k)，位图空间 m 位。若每次落点独立且均匀，插入 n 项后，kn 次落点都避开某一位的概率是 <code>(1−1/m)^(kn)</code>，约为 <code>exp(−kn/m)</code>。再近似地把查询涉及的 k 位视为独立，误报率便是 <code>(1−exp(−kn/m))^k</code>。这是参数估算，每组数据的实际误报率要实测。固定目标误报率时，空间随 n 增长；要求更低的误报率，也需要更多空间。工程上由成熟实现按预计容量和错误预算选参数，再实测误报率。</p>
+<div class="labelled" data-kind="counter"><p class="blk-l">误用反例</p><p>把“可能存在”当成付款事件已处理而直接丢弃，会漏记真正的新事件。普通 Bloom 的每一位可能由几项共享，把某项对应的位清零，共享这些位的其他项就会变成漏报。验算用精确集合给出真值，分别统计误报和已插入项的漏报；出现漏报，先查同步、重建与删除协议。</p></div>
 <h3 id="hyperlogloghll稀有位模式与去重计数">HyperLogLog（HLL）：稀有位模式与去重计数</h3>
-<p>随机 hash 后，连续很多个前导零很少见；见过的数据越多，遇到这种模式的机会越大。HLL 用 hash 的前几位分桶，用剩余位里首个 1 的位置更新该桶的最大值，再把各桶的值经校正组合，估计去重数。<a href="https://algo.inria.fr/flajolet/Publications/FlFuGaMe07.pdf" class="ext" rel="noopener">Flajolet 等人的原论文 §1、Figure 2</a>给出算法与约 <code>1.04/√m</code> 的渐近标准误差，m 为寄存器数。这个数不是每一次估计的最大误差保证。</p>
+<p>随机 hash 后，连续很多个前导零很少见；见过的数据越多，遇到这种模式的机会越大。HLL 用 hash 的前几位分桶，用剩余位里首个 1 的位置更新该桶的最大值，再把各桶的值经校正组合，估计去重数。<a href="https://algo.inria.fr/flajolet/Publications/FlFuGaMe07.pdf" class="ext" rel="noopener">Flajolet 等人的原论文 §1、Figure 2</a>给出算法与约 <code>1.04/√m</code> 的渐近标准误差，m 为寄存器数。它描述估计误差的分布，单次估计的误差可能更大。</p>
 <p>用 4 个桶演示更新，初始寄存器为 <code>[0,0,0,0]</code>。A 的 hash 写成 <code>00|001…</code>，首个 1 在剩余串第 3 位，得到 <code>[3,0,0,0]</code>；B 为 <code>00|01…</code>，第 2 位不足以替换 3；重复的 A 不改变寄存器；C 为 <code>10|0001…</code>，得到 <code>[3,0,4,0]</code>。重复项因此不增加信息。四个桶太少，代入大样本公式也得不出可靠的人数。</p>
 <figure class="drawing" data-drawing="f08-hll"><div class="dw-scroll" style="--dw-min:600px;--dw-max:840px">
 <svg viewBox="-10 0 700 252" role="img" aria-labelledby="f08-hll-t f08-hll-d">
@@ -124,7 +125,48 @@
 </svg>
 </div>
 <figcaption>每个桶只记见过的最大位置；重复的 A 算出同一个桶、同一个位置，寄存器不变。</figcaption></figure><p>实际实现还有小范围校正等修正。每项更新访问一个寄存器，在常见的固定宽度 hash 模型下为 O(1)，空间主要由精度参数决定；hash、寄存器布局与精度都兼容的摘要，可以逐桶取最大值合并，合并成本 O(m)。<a href="https://redis.io/docs/latest/develop/data-types/probabilistic/hyperloglogs/" class="ext" rel="noopener">Redis HLL 文档</a>给出其实现的内存与标准误差说明，可作为产品能力的参照。</p>
-<div class="labelled" data-kind="counter"><p class="blk-l">误用反例</p><p>周一独立访客约 100、周二约 100，直接相加得到两日独立访客 200。两日的访客可能完全重合，应合并兼容的摘要，或者精确去重。HLL 列不出这些人，也不能当精确的扣费明细。验算用多个已知的精确集合、不同的基数，比较相对误差的分布；重复项和重复合并都不应改变摘要。一次碰巧相等，证明不了精度。</p></div>
+<div class="labelled" data-kind="counter"><p class="blk-l">误用反例</p><p>周一独立访客约 100、周二约 100，直接相加得到两日独立访客 200。两日的访客可能完全重合，应合并兼容的摘要，或者精确去重。</p></div>
+<p>沿用前面四个桶的例子把这件事缩小：周一来了 A、B、C，寄存器为 <code>[3,0,4,0]</code>；周二来了 A、C 和 D，D 的 hash 为 <code>01|1…</code>，周二的寄存器为 <code>[3,1,4,0]</code>。精确地数，两天各 3 人，相加得 6，实际只有 A、B、C、D 4 人。逐桶取最大值合并得 <code>[3,1,4,0]</code>，与把 A、B、C、D 依次插进同一个摘要的结果相同。</p>
+<figure class="drawing" data-drawing="f08-hll-merge"><div class="dw-scroll" style="--dw-min:580px;--dw-max:840px">
+<svg viewBox="0 0 700 214" role="img" aria-labelledby="f08-hll-merge-t f08-hll-merge-d">
+  <title id="f08-hll-merge-t">两日 HLL 摘要的合并与相加</title>
+  <desc id="f08-hll-merge-d">周一访客 A、B、C，寄存器 [3,0,4,0]；周二访客 A、C、D，D 的 hash 为 01|1…，寄存器 [3,1,4,0]。逐桶取最大值合并得 [3,1,4,0]，对应 A、B、C、D 共 4 人；两天精确去重数各 3，直接相加得 6。</desc>
+  <text class="t-s" x="76" y="18">访客</text>
+  <text class="t-s mid" x="305" y="18">桶 00</text><text class="t-s mid" x="355" y="18">桶 01</text><text class="t-s mid" x="405" y="18">桶 10</text><text class="t-s mid" x="455" y="18">桶 11</text>
+  <text class="t-s" x="520" y="18">精确去重数</text>
+  <g data-s="1">
+    <text class="t-b" x="0" y="51">周一</text><text class="t" x="76" y="51">A、B、C</text>
+    <rect class="box" x="280" y="32" width="50" height="28"/><text class="t-n mid" x="305" y="51">3</text>
+    <rect class="box" x="330" y="32" width="50" height="28"/><text class="t-n mid" x="355" y="51">0</text>
+    <rect class="box" x="380" y="32" width="50" height="28"/><text class="t-n mid" x="405" y="51">4</text>
+    <rect class="box" x="430" y="32" width="50" height="28"/><text class="t-n mid" x="455" y="51">0</text>
+    <text class="t-n" x="520" y="51">3</text>
+  </g>
+  <g data-s="2">
+    <text class="t-b" x="0" y="95">周二</text><text class="t" x="76" y="95">A、C、D</text><text class="t-s" x="150" y="95">D = <tspan class="t-n">01|1…</tspan></text>
+    <rect class="box" x="280" y="76" width="50" height="28"/><text class="t-n mid" x="305" y="95">3</text>
+    <rect class="box f3" x="330" y="76" width="50" height="28"/><text class="t-n mid" x="355" y="95">1</text>
+    <rect class="box" x="380" y="76" width="50" height="28"/><text class="t-n mid" x="405" y="95">4</text>
+    <rect class="box" x="430" y="76" width="50" height="28"/><text class="t-n mid" x="455" y="95">0</text>
+    <text class="t-n" x="520" y="95">3</text>
+  </g>
+  <path class="ln-soft" d="M0 120 H700"/>
+  <g data-s="3">
+    <text class="t-b" x="0" y="151">逐桶取最大</text><text class="t" x="96" y="151">A、B、C、D</text>
+    <rect class="box" x="280" y="132" width="50" height="28"/><text class="t-n mid" x="305" y="151">3</text>
+    <rect class="box f3" x="330" y="132" width="50" height="28"/><text class="t-n mid" x="355" y="151">1</text>
+    <rect class="box" x="380" y="132" width="50" height="28"/><text class="t-n mid" x="405" y="151">4</text>
+    <rect class="box" x="430" y="132" width="50" height="28"/><text class="t-n mid" x="455" y="151">0</text>
+    <text class="t-n" x="520" y="151">4</text><text class="t-s" x="540" y="151">并集</text>
+  </g>
+  <g data-s="4">
+    <text class="t-b t-em" x="0" y="195">直接相加</text>
+    <text class="t-s" x="96" y="195">A、C 两天都来，各算了两次</text>
+    <text class="t-n t-em" x="520" y="195">3 + 3 = 6</text>
+  </g>
+</svg>
+</div>
+<figcaption>合并后的寄存器就是把 A、B、C、D 插进同一个摘要的结果；相加把两天都来的 A、C 各算了两次。</figcaption></figure><p>HLL 只保存寄存器，列不出这些人；扣费明细要用精确记录。验算用多个已知的精确集合、不同的基数，比较相对误差的分布；重复项和重复合并都不应改变摘要。精度看误差分布，一次碰巧相等只是一个样本。</p>
 <h3 id="近似最近邻搜索ann搜索预算与召回">近似最近邻搜索（ANN）：搜索预算与召回</h3>
 <p>把对象表示成向量后，就能在空间里计算距离。ANN 为了少做比较，容许漏掉真正最近的点。HNSW（hierarchical navigable small world，分层可导航小世界）用多层邻近图缩小搜索范围；其结构直觉见 <a href="https://arxiv.org/abs/1603.09320" class="ext" rel="noopener">Malkov 与 Yashunin 论文摘要</a>。</p>
 <p>设查询向量 Q=(0,0)，四篇文档 A=(1,0)、B=(0,2)、C=(3,0)、D=(4,0)。欧氏距离为 1、2、3、4，精确 Top-2 是 A、B。搜索预算有限，候选过程只看到 A、C、D，精排后返回 A、C，<code>recall@2=|{A,C}∩{A,B}|/2=1/2</code>。把候选重排得再准确，也找不回从未召回的 B。</p>
@@ -179,8 +221,8 @@
     <footer class="page-foot">正文 <a href="../../../books/saas-engineering/foundations/08-approximation-and-search.md">books/saas-engineering/foundations/08-approximation-and-search.md</a> · <a href="../../../vault/distilled/saas-engineering-atlas/README.md">结构、来源与验证</a></footer>
   </main>
 </div>
-<script src="search-index.js?v=mv95jeod"></script>
-<script src="book.js?v=mv95jeod"></script>
+<script src="search-index.js?v=mv97hru0"></script>
+<script src="book.js?v=mv97hru0"></script>
 
 </body>
 </html>

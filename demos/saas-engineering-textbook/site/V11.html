@@ -4,9 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>V11 · 电表读数、计费数量、账单与核销 · SaaS 工程全景</title>
-<link rel="stylesheet" href="book.css?v=mv95jeod">
+<link rel="stylesheet" href="book.css?v=mv97hru0">
 </head>
 <body>
+<svg class="dw-defs" width="0" height="0" aria-hidden="true" focusable="false" style="position:absolute"><defs><pattern id="dw-hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" fill="var(--bg)"/><path d="M0 0 V6" stroke="var(--ink-2)" stroke-width="1.2"/></pattern></defs></svg>
 <a class="skip" href="#main">跳到正文</a>
 <header class="topbar">
   <button class="nav-toggle" type="button" aria-controls="sidebar" aria-expanded="false">目录</button>
@@ -20,7 +21,7 @@
 <header class="hero">
 <p class="kicker"><a href="group-industry-networks.html">生产、资产、公用与供应网络</a><span class="dot">·</span>V11</p>
 <h1>电表读数、计费数量、账单与核销</h1>
-<p class="lede">电表上报一个数字，用户最终收到一张账单，中间至少有三种不同判断：数字是否代表正确的计量区间，哪些数量适用于本次计费，以及多少钱已经结清。把它们合成一次 <code>SUM(reading) × price</code>，缺失读数、设备更换、费率变化和迟到更正都会变成无法解释的金额差异。计费系统要让每一笔应收与结算都能倒查到数量、质量、期间和规则版本；只给一个看似精确的总额，出了差异便无从解释。原始计量经 <abbr title="validation, estimation and editing：校验、估算与编辑">VEE</abbr> 形成带质量码的测量版本，再按有效安装关系和费率生效边界分窗，得到计费数量；账单按计费数量版本计价，收款按银行交易身份分配核销；迟到的实际值生成新的测量版本。改变判断的是原账单有没有发布：草稿可以废弃重算，已发布的账单只能追加调整，原核销保持不变。</p>
+<p class="lede">电表上报一个数字，用户最终收到一张账单，中间至少有三种不同判断：数字是否代表正确的计量区间，哪些数量适用于本次计费，以及多少钱已经结清。把它们合成一次 <code>SUM(reading) × price</code>，缺失读数、设备更换、费率变化和迟到更正都会变成无法解释的金额差异。计费系统让每一笔应收与结算都能倒查到数量、质量、期间和规则版本。原始计量经 <abbr title="validation, estimation and editing：校验、估算与编辑">VEE</abbr> 形成带质量码的测量版本，再按有效安装关系和费率生效边界分窗，得到计费数量；账单按计费数量版本计价，收款按银行交易身份分配核销；迟到的实际值生成新的测量版本。改变判断的是原账单有没有发布：草稿可以废弃重算，已发布的账单只能追加调整，原核销保持不变。</p>
 
 <div class="cast" aria-label="本例的角色、界面与系统">
 <div class="cast-lane"><p class="cast-k">角色</p><ul><li>计量分析员</li><li>计量复核员</li><li>账务与对账员</li></ul></div>
@@ -101,8 +102,8 @@
 <td>银行交易身份、分配金额、账单引用、撤销与再分配历史</td>
 </tr>
 </tbody></table></div>
-<p>计量分析员能处理异常或申请覆盖，复核员批准例外，账务员发布账单，收款系统提供入账事实。一个账户可以对应多个服务点，一个服务点在期间内可以换表，电表本身也有不同的测量通道。因此接口和唯一键不能只用“表号 + 月份”，服务端要核验租户、有效安装关系、量纲以及期间是否重叠。</p>
-<p>Oracle 的 <a href="https://docs.oracle.com/en/industries/energy-water/meter-solution-cloud-service/23c/mscs-user-guides/Topics/D1_BG_About_Usage_Transactions.html" class="ext" rel="noopener">About Usage Transactions</a> 把 usage transaction 定义为 usage subscription 的 bill determinant 计算记录，数量包含 UOM 等信息并指向来源 measuring component；该章还解释了 calculation period、date breaks 和可配置的质量信息。因而 bill determinant 应理解为“给定期间和口径下可用于计费的数量”：它是数量而不是金额，也不说明客户已经付款。</p>
+<p>计量分析员能处理异常或申请覆盖，复核员批准例外，账务员发布账单，收款系统提供入账事实。一个账户可以对应多个服务点，一个服务点在期间内可以换表，电表本身也有不同的测量通道。因此接口和唯一键按服务点、设备、通道与期间建立，服务端核验租户、有效安装关系、量纲以及期间是否重叠；只用“表号 + 月份”分不开换表前后的两段数据。</p>
+<p>Oracle 的 <a href="https://docs.oracle.com/en/industries/energy-water/meter-solution-cloud-service/23c/mscs-user-guides/Topics/D1_BG_About_Usage_Transactions.html" class="ext" rel="noopener">About Usage Transactions</a> 把 usage transaction 定义为 usage subscription 的 bill determinant 计算记录，数量包含 UOM 等信息并指向来源 measuring component；该章还解释了 calculation period、date breaks 和可配置的质量信息。因而 bill determinant 应理解为“给定期间和口径下可用于计费的数量”：它是数量；金额由账单计算，付款由核销记录。</p>
 </section>
 <section class="scene" aria-labelledby="演算一小时电量与迟到更正"><header class="scene-head"><h2 id="演算一小时电量与迟到更正"><span class="scene-no" aria-hidden="true">03</span><span class="visually-hidden">演算：</span><span class="head">一小时电量与迟到更正</span></h2></header><p class="scene-lede">金额由 VEE 后的分时计费数量和费率算出；迟到的实际值生成新版本和差额调整，已收的款项不变。</p>
 <p>服务点 SP-1 的四个 15 分钟区间如下。前两个区间谷价 0.50 记账单位/kWh，后两个区间峰价 1.00；固定费用为 2.00。第三个区间缺失。本例只在“单个内侧缺口、两侧均为有效同长度区间且无停电标记”时用相邻值均值估算，连续缺口超过一个就转人工处理。这条政策刻意从简，只用于本例。</p>
@@ -145,27 +146,123 @@
 <td>峰</td>
 </tr>
 </tbody></table></div>
-<p>VEE 后总量为 14 kWh；计费数量是谷 5 kWh、峰 9 kWh，另保留估算数量 4 kWh。估算区间比例是 <code>1/4 = 25%</code>，估算电量比例是 <code>4/14 ≈ 28.57%</code>，两者的分母不同。若政策按“估算电量占比不超过 30%”允许发布，本例可以继续；上限换成 25%，就必须阻断，不能拿区间比例通过检查。账单为 <code>5×0.50 + 9×1.00 + 2.00 = 13.50</code>。付款 10.00 只核销部分应收，剩余 3.50；再收到并成功匹配 3.50 才结清。点击“发送账单”不会带来这两笔收款。</p>
-<p>迟到的实际值若为 6 kWh，新计量版本让旧估算保持可查，总量变成 16，谷仍为 5，峰变成 11。按新版本的计费数量，账单金额是 15.50。若原账单已发布，生成 2.00 的差额调整；若原账单还只是草稿，可以废弃草稿并按新版本重算。本例不自动重新扣款；已结清的 13.50 仍记为已收，不因读数更新而改变。若更正值更小，则生成贷项或退款待办，退款的执行与确认另行记录。</p>
-<p>这里有三个直观反例。缺失值当零，账单会少 4.00。把两个价格简单平均成 0.75 再乘 14，得到 12.50，低于正确的 13.50，因为更多电量落在峰段：总电量相同，金额未必相同。累计读数也会被误用：上游累计表读数是 100、103、106、111 kWh，它们应按有效边界差分，不能把四个累计数相加；读数下降可能来自换表、回卷、反向电量或错误，未经设备与通道语义确认就取绝对值，会制造不存在的耗电量。</p>
+<p>VEE 后总量为 14 kWh；计费数量是谷 5 kWh、峰 9 kWh，另保留估算数量 4 kWh。00:30 的费率边界把四个区间分成两段，谷段 2 与 3 相加，峰段估算的 4 与实测的 5 相加。账单为 <code>5×0.50 + 9×1.00 + 2.00 = 13.50</code>。</p>
+<figure class="drawing" data-drawing="v11-intervals"><div class="dw-scroll" style="--dw-min:580px;--dw-max:860px">
+<svg viewBox="0 0 720 300" role="img" aria-labelledby="v11-intervals-t v11-intervals-d">
+  <title id="v11-intervals-t">SP-1 一小时的四个区间与分时计价</title>
+  <desc id="v11-intervals-d">四个 15 分钟区间原始值为 2、3、缺失、5 kWh，第三个区间按相邻均值 (3+5)/2 估算为 4。00:30 的费率边界把前两个区间归入谷段、后两个归入峰段：谷 5 kWh 乘 0.50 得 2.50，峰 9 kWh 乘 1.00 得 9.00，加固定费用 2.00，账单为 13.50。</desc>
+  <path class="ln-soft" d="M120 190 H600"/>
+  <text class="t-n mid" x="120" y="210">00:00</text><text class="t-n mid" x="240" y="210">00:15</text>
+  <text class="t-n mid" x="360" y="210">00:30</text><text class="t-n mid" x="480" y="210">00:45</text>
+  <text class="t-n mid" x="600" y="210">01:00</text>
+  <g data-s="1">
+    <rect class="box f2" x="140" y="150" width="80" height="40"/><text class="t-n mid" x="180" y="142">2</text>
+    <rect class="box f2" x="260" y="130" width="80" height="60"/><text class="t-n mid" x="300" y="122">3</text>
+    <text class="t-s mid" x="420" y="180">缺失</text>
+    <rect class="box f2" x="500" y="90" width="80" height="100"/><text class="t-n mid" x="540" y="82">5</text>
+  </g>
+  <g data-s="2">
+    <rect class="box-dash" x="380" y="110" width="80" height="80"/>
+    <text class="t-s mid" x="420" y="155">估算</text>
+    <text class="t-n mid" x="420" y="102">4</text><text class="t-s mid" x="420" y="84">(3+5)/2</text>
+  </g>
+  <g data-s="3">
+    <path class="ln-strong" d="M360 40 V194"/>
+    <text class="t-b mid" x="240" y="30">谷 · 0.50 /kWh</text><text class="t-b mid" x="480" y="30">峰 · 1.00 /kWh</text>
+  </g>
+  <g data-s="4">
+    <text class="t mid" x="240" y="248">谷 5 kWh × 0.50 = 2.50</text>
+    <text class="t mid" x="480" y="248">峰 9 kWh × 1.00 = 9.00</text>
+  </g>
+  <g data-s="5">
+    <path class="ln-soft" d="M120 264 H700"/>
+    <text class="t end" x="590" y="290">2.50 + 9.00 + 固定 2.00 =</text>
+    <text class="t-big" x="604" y="292">13.50</text>
+  </g>
+</svg>
+</div>
+<figcaption>00:30 的费率边界把四个区间分成谷、峰两段；估算的 4 kWh 落在峰段，按 1.00 计价。</figcaption></figure><p>同一个 4 kWh 估算有两种比例。估算区间比例是 <code>1/4 = 25%</code>，估算电量比例是 <code>4/14 ≈ 28.57%</code>，两者的分母不同。若政策按“估算电量占比不超过 30%”允许发布，本例可以继续；上限换成 25%，发布就被阻断。检查用电量比例；拿区间比例 25% 去比，会把这次发布误判为通过。</p>
+<figure class="drawing" data-drawing="v11-denominators"><div class="dw-scroll" style="--dw-min:600px;--dw-max:880px">
+<svg viewBox="0 0 760 210" role="img" aria-labelledby="v11-denominators-t v11-denominators-d">
+  <title id="v11-denominators-t">同一个估算值的两种比例</title>
+  <desc id="v11-denominators-d">估算区间比例为 1/4 = 25%，估算电量比例为 4/14 ≈ 28.57%。电量比例低于 30% 的上限，可以发布；超过 25% 的上限，发布被阻断。区间比例 25% 恰好落在 25% 上限上。</desc>
+  <path class="ln-soft" d="M170 44 V160"/>
+  <g data-s="1">
+    <text class="t-b end" x="150" y="78">按区间</text><text class="t-s end" x="150" y="96">1/4 = 25%</text>
+    <rect class="box f2" x="170" y="66" width="400" height="30"/>
+  </g>
+  <g data-s="2">
+    <text class="t-b end" x="150" y="134">按电量</text><text class="t-s end" x="150" y="152">4/14 ≈ 28.57%</text>
+    <rect class="box f2" x="170" y="122" width="400" height="30"/>
+    <rect class="box-em" x="570" y="122" width="57" height="30"/>
+  </g>
+  <g data-s="3">
+    <path class="ln-strong" d="M570 40 V168"/><text class="t-s mid" x="570" y="30">上限 25%</text>
+  </g>
+  <g data-s="4">
+    <path class="ln-strong" d="M650 40 V168"/><text class="t-s mid" x="660" y="30">上限 30%</text>
+  </g>
+  <g data-s="5">
+    <text class="t" x="170" y="196">按电量比例：上限 30% 可以发布，上限 25% 阻断。</text>
+  </g>
+</svg>
+</div>
+<figcaption>分子都是估算的 4，分母一个是区间数 4，一个是总电量 14 kWh；越过 25% 上限的是电量比例。</figcaption></figure><p>付款 10.00 只核销部分应收，剩余 3.50；再收到并成功匹配 3.50 才结清。两笔核销各自依据收款回执，点击“发送账单”只是发出应收。</p>
+<p>迟到的实际值若为 6 kWh，新计量版本让旧估算保持可查，总量变成 16，谷仍为 5，峰变成 11。按新版本的计费数量，账单金额是 15.50。若原账单已发布，生成 2.00 的差额调整；若原账单还只是草稿，可以废弃草稿并按新版本重算。已结清的 13.50 仍记为已收，原核销保持；本例不自动重新扣款。若更正值更小，则生成贷项或退款待办，退款的执行与确认另行记录。</p>
+<figure class="drawing" data-drawing="v11-revision"><div class="dw-scroll" style="--dw-min:640px;--dw-max:900px">
+<svg viewBox="0 0 800 330" role="img" aria-labelledby="v11-revision-t v11-revision-d">
+  <title id="v11-revision-t">迟到实际值后的版本链</title>
+  <desc id="v11-revision-d">原链为 VEE-1 第三区间估算 4、D-1 谷 5 峰 9、B-1 13.50、两笔付款 10.00 与 3.50 结清。迟到的实际值 6 生成新测量版本和 D-2 谷 5 峰 11，金额 15.50。原账单已发布时生成 2.00 的调整；原账单还是草稿时废弃草稿并按新版本重算。B-1 与原核销保持。</desc>
+  <text class="t-b mid" x="100" y="24">测量版本</text><text class="t-b mid" x="300" y="24">计费数量</text>
+  <text class="t-b mid" x="500" y="24">账单</text><text class="t-b mid" x="700" y="24">核销</text>
+  <path class="ln-soft" d="M20 38 H780"/>
+  <g data-s="1">
+    <rect class="box" x="20" y="56" width="160" height="56"/><text class="t-b" x="34" y="78">VEE-1</text><text class="t-s" x="34" y="98">区间三估算 4</text>
+    <path class="ln" d="M180 84 H220"/>
+    <rect class="box" x="220" y="56" width="160" height="56"/><text class="t-b" x="234" y="78">D-1</text><text class="t-s" x="234" y="98">谷 5 · 峰 9</text>
+    <path class="ln" d="M380 84 H420"/>
+    <rect class="box" x="420" y="56" width="160" height="56"/><text class="t-b" x="434" y="78">B-1</text><text class="t-n" x="434" y="100">13.50</text>
+    <path class="ln" d="M580 84 H620"/>
+    <rect class="box" x="620" y="56" width="160" height="56"/><text class="t-n" x="634" y="78">10.00 + 3.50</text><text class="t-s" x="634" y="98">已结清 13.50</text>
+  </g>
+  <g data-s="2">
+    <path class="ln-soft" d="M100 112 V150"/><text class="t-s" x="108" y="136">旧估算保持可查</text>
+    <path class="ln-soft" d="M300 112 V150"/><text class="t-s" x="308" y="136">superseded</text>
+    <rect class="box" x="20" y="150" width="160" height="56"/><text class="t-b" x="34" y="172">实际值 6</text><text class="t-s" x="34" y="192">新测量版本</text>
+    <path class="ln" d="M180 178 H220"/>
+    <rect class="box" x="220" y="150" width="160" height="56"/><text class="t-b" x="234" y="172">D-2</text><text class="t-s" x="234" y="192">谷 5 · 峰 11 · 15.50</text>
+  </g>
+  <g data-s="3">
+    <path class="ln" d="M380 178 H420"/>
+    <rect class="box-em" x="420" y="150" width="160" height="56"/><text class="t-b" x="434" y="172">调整 2.00</text><text class="t-s" x="434" y="192">原账单已发布</text>
+    <path class="ln" d="M500 150 V112"/><text class="t-s" x="508" y="136">追加在 B-1 之后</text>
+    <text class="t-s" x="620" y="172">已收 13.50 不变</text>
+  </g>
+  <g data-s="4">
+    <path class="ln-dash" d="M300 206 V270 H420"/>
+    <rect class="box-dash" x="420" y="244" width="250" height="56"/><text class="t-b" x="434" y="266">废弃草稿，按新版本重算</text><text class="t-s" x="434" y="286">原账单还只是草稿</text>
+  </g>
+</svg>
+</div>
+<figcaption>实际值 6 生成新版本，账单按 D-2 增加 2.00；已发布的 B-1 和已结清的 13.50 都留在原处。</figcaption></figure><p>这里有三个直观反例。缺失值当零，账单会少 4.00。把两个价格简单平均成 0.75 再乘 14，得到 12.50，低于正确的 13.50，因为更多电量落在峰段：总电量相同，金额随电量落在哪一段而变。累计读数也会被误用：上游累计表读数是 100、103、106、111 kWh，它们应按有效边界差分，不能把四个累计数相加；读数下降可能来自换表、回卷、反向电量或错误，未经设备与通道语义确认就取绝对值，会制造不存在的耗电量。</p>
 </section>
-<section class="scene" aria-labelledby="窗口边界费率切分与聚合"><header class="scene-head"><h2 id="窗口边界费率切分与聚合"><span class="scene-no" aria-hidden="true">04</span><span class="head">窗口边界、费率切分与聚合</span></h2></header><p class="scene-lede"><code>ALG:windows</code> 先按事件时间把合法计量放入确定的区间，处理重复与版本，再按费率生效边界切分。已有按服务点、通道、时间建立的索引时，对一个期间扫描 n 个区间并汇总为 O(n)；未排序的批次需 O(n log n) 排序，或借索引把排序成本转移到写入。<code>ALG:lookup</code> 根据有效安装关系找到服务点和倍率，不能因为今天 SP-1 装的是新表，就把上月旧表的数据归给新设备。</p>
-<p>一百万只表每 15 分钟一条，每天 9,600 万条，30 天约 28.8 亿条。每画一次月图都扫描全表，代价太高；可以按日、服务点、通道和 TOU 规则版本生成聚合，但日总量支撑不了任意的新费率边界。费率从半点改为 00:37 时，已有的 15 分钟能量值无法精确判断 00:30—00:45 内的负荷分布。按时间比例拆分是另一层估计，要标明估计政策；没有更细的测量，拆分结果就只是估计值。若政策只允许边界与采样对齐，计算服务应拒绝这次费率变更配置。</p>
+<section class="scene" aria-labelledby="窗口边界费率切分与聚合"><header class="scene-head"><h2 id="窗口边界费率切分与聚合"><span class="scene-no" aria-hidden="true">04</span><span class="head">窗口边界、费率切分与聚合</span></h2></header><p class="scene-lede"><code>ALG:windows</code> 先按事件时间把合法计量放入确定的区间，处理重复与版本，再按费率生效边界切分。已有按服务点、通道、时间建立的索引时，对一个期间扫描 n 个区间并汇总为 O(n)；未排序的批次需 O(n log n) 排序，或借索引把排序成本转移到写入。<code>ALG:lookup</code> 根据有效安装关系找到服务点和倍率：上月的数据归上月有效的旧表，即使今天 SP-1 装的已是新表。</p>
+<p>一百万只表每 15 分钟一条，每天 9,600 万条，30 天约 28.8 亿条。月图改读按日、服务点、通道和 TOU 规则版本生成的聚合，省去每次扫描全表；日总量只服务于生成它时的费率边界。费率从半点改为 00:37 时，已有的 15 分钟能量值无法精确判断 00:30—00:45 内的负荷分布。按时间比例拆分是另一层估计，要标明估计政策；没有更细的测量，拆分结果就只是估计值。若政策只允许边界与采样对齐，计算服务应拒绝这次费率变更配置。</p>
 <p>示例使用固定 UTC；真实的本地日历遇到夏令时，一天可能有 92 或 100 个 15 分钟区间，不能硬编码每天 96。保存 UTC 时刻和业务时区、偏移及规则版本，窗口按真实起止建立；若来源只给出有歧义的本地时间，应隔离该数据，不自行选定某个小时。数据库聚合、前缀和可以加速稳定区间的求和，但一旦修订，所有包含该测量的计费数量都要作废重算。<code>ALG:caches</code> 的缓存键至少含 tenant、subscription、period、measurement revision set、TOU 与规则版本；“上月账单”这个键表达不了依据的变化。</p>
 </section>
 <section class="scene" aria-labelledby="人工修订计费接口与技术选型"><header class="scene-head"><h2 id="人工修订计费接口与技术选型"><span class="scene-no" aria-hidden="true">05</span><span class="head">人工修订、计费接口与技术选型</span></h2></header><p class="scene-lede">修订和计算都带基准版本与 operation <abbr title="identifier：标识符">ID</abbr>，得到可重演的身份；复核通过之前页面只显示待复核，旧账单旁保留后续调整的标记。</p>
-<p>异常工作台并列显示原始曲线、VEE 后曲线和质量码，缺失区间用空档，不能画成零线。分析员选择缺口后，预览估算规则、依据样本和受影响的账单；提交 <code>POST /vee-runs/{id}/overrides</code> 时带上基准版本、operation ID、修改值、单位及理由。服务器验证权限与当前版本，同时保存新的测量版本、审核任务和 outbox 记录。页面先显示“修订待复核”，审批通过后才显示“计费依据已更新”；旧账单旁保留“存在后续调整”，不能悄悄换掉 <abbr title="Portable Document Format：便携式文档格式">PDF</abbr> 或金额。</p>
-<p>计算接口 <code>POST /usage-calculations</code> 接收 subscription、半开期间、质量政策和规则版本，输出一个可重演的计算身份；发布账单时再次检查该身份仍然有效。收款回执先匹配银行交易与账户，再生成 allocation。账单号相同可能来自不同租户，金额碰巧相同也不足以认定匹配。对账页面应分别显示应收、已分配收款、待匹配资金和贷项，并写明谁处理剩余差异。</p>
+<p>异常工作台并列显示原始曲线、VEE 后曲线和质量码，缺失区间用空档，不能画成零线。分析员选择缺口后，预览估算规则、依据样本和受影响的账单；提交 <code>POST /vee-runs/{id}/overrides</code> 时带上基准版本、operation ID、修改值、单位及理由。服务器验证权限与当前版本，同时保存新的测量版本、审核任务和 outbox 记录。页面先显示“修订待复核”，审批通过后才显示“计费依据已更新”；旧账单旁保留“存在后续调整”，原 <abbr title="Portable Document Format：便携式文档格式">PDF</abbr> 与金额保持原样。</p>
+<p>计算接口 <code>POST /usage-calculations</code> 接收 subscription、半开期间、质量政策和规则版本，输出一个可重演的计算身份；发布账单时再次检查该身份仍然有效。收款回执先在本租户内匹配银行交易与账户，再生成 allocation：账单号相同可能来自不同租户，金额相同可能只是碰巧。对账页面应分别显示应收、已分配收款、待匹配资金和贷项，并写明谁处理剩余差异。</p>
 <p>前端可用 React/TypeScript 加 Canvas 曲线绘制高密度区间，表格保留可访问的原值和质量明细；数据少时可用 SVG，便于选点和说明，但逐点 DOM 不适合百万级曲线。后端可用 Kotlin/Java 服务承载长时批处理与严格类型的规则模型；Python 便于快速迭代分析规则，但要把规则版本、类型校验和批处理重启点显式保存，不能让临时 notebook 成为隐含的账务权威。两条路线的金额都采用 Decimal 或整数最小单位，收款金额不由浏览器的浮点结果确定。关系库保存有效安装关系、规则、账单及核销，原始计量可分区写入列式存储或时序库；列式扫描适合大批量重算，事务库适合保证发布和核销的唯一性。先用 PostgreSQL 分区和后台 worker 做一个小规模、可解释的原型，测出扫描或存储瓶颈后再拆分，跨库一致性的负担会小很多。</p>
-<p>原始事件经消息投递（结构数据中的 <code>emits → delivers</code>）进入持久接收层；VEE 服务拥有测量修订，usage 服务拥有计费数量，账务域的外部应收系统拥有已发布账单，本地账务适配与核销服务保存映射、操作记录和款项分配。<code>derived_from</code> 边记录计算依据，<code>requests</code> 边表示提交给外部账务或收款系统；数量派生与消息送达不能混用。物理电量、客户应收和银行资金各有各的账；<abbr title="JavaScript Object Notation：结构化数据表示格式，后文保留 JSON">JSON</abbr> 里的箭头只表示记录之间的关系，电能和现金的实际流动另有凭证。</p>
+<p>原始事件经消息投递（结构数据中的 <code>emits → delivers</code>）进入持久接收层；VEE 服务拥有测量修订，usage 服务拥有计费数量，账务域的外部应收系统拥有已发布账单，本地账务适配与核销服务保存映射、操作记录和款项分配。<code>derived_from</code> 边记录计算依据，<code>requests</code> 边表示提交给外部账务或收款系统；数量派生与消息送达是两种边。物理电量、客户应收和银行资金各有各的账；<abbr title="JavaScript Object Notation：结构化数据表示格式，后文保留 JSON">JSON</abbr> 里的箭头只表示记录之间的关系，电能和现金的实际流动另有凭证。</p>
 </section>
 <section class="scene" aria-labelledby="更正未知结果与结算差异"><header class="scene-head"><h2 id="更正未知结果与结算差异"><span class="scene-no" aria-hidden="true">06</span><span class="head">更正、未知结果与结算差异</span></h2></header><p class="scene-lede">更正、重放和未知结果都不另造事实：调整按“原账单 + 新旧计费数量版本”唯一，未知的开票按外部引用核对，供需数量差额先作为待解释差异。</p>
 <p>正常路径为 R-1 原始批次→VEE-1→D-1 计费数量→B-1 账单→两笔已核对付款→核销完成。假如第三个区间补录时 D-1 已发布，修订事件触发 D-2 及调整任务，并保留 D-1 到 B-1 的旧关系。若调整 worker 在保存 2.00 调整后、标记事件消费前崩溃，重放必须返回同一笔调整。这里的业务唯一键是“原账单 + 新旧计费数量版本”，而非每次重试产生的新消息号。</p>
 <p>若账务系统已受理 B-1 但调用超时，operation 保持 <code>unknown</code>，按外部引用核对后再决定是否重试；状态未知时，不记为“开票失败”。若付款通知先到、账单投影还未到，款项先进入待匹配记录，不为凑平余额生成临时账单。两名分析员同时修订同一个区间时，第二位看到版本冲突并比较两份理由，不能让最后写入者覆盖前一人的审核依据。</p>
-<p>客户结清不代表整个供电网络的 settlement 完成。另一个例子里，上游同期间为 100 kWh，下游可归集量为 96 kWh，差额 4 kWh 应先作为待解释差异；它可能涉及测量边界、损耗、时钟偏差或未归集的服务点，不能直接称为窃电，也不能把 4 kWh 自动平摊到账单。本篇只演示差异守恒 <code>100 = 96 + 4</code>。</p>
+<p>客户结清是客户应收的核销，供电网络的 settlement 另有边界。另一个例子里，上游同期间为 100 kWh，下游可归集量为 96 kWh，差额 4 kWh 应先作为待解释差异；它可能涉及测量边界、损耗、时钟偏差或未归集的服务点，不能直接称为窃电，也不能把 4 kWh 自动平摊到账单。本篇只演示差异守恒 <code>100 = 96 + 4</code>。</p>
 <p>前述百万只表的负载平均约 1,111 条/秒，补传峰值按 10 倍设计。待测目标是：持久接收 p95 &lt; 1 秒，正常批次 VEE p95 &lt; 5 分钟，预聚合条件下单账户账单预览 p95 &lt; 2 秒；分别测一个大租户占 50% 流量、全冷缓存、整日回补和 1% 区间修订的情形。批处理按租户和期间设预算，避免一项历史重算挤占当前账期的计算资源。原始分区与聚合分区的保留政策应一起评审，否则聚合虽然还在，账单已无法重新解释。</p>
 </section>
-<section class="scene" aria-labelledby="验算金额质量分母与修订链"><header class="scene-head"><h2 id="验算金额质量分母与修订链"><span class="scene-no" aria-hidden="true">07</span><span class="visually-hidden">验算：</span><span class="head">金额、质量分母与修订链</span></h2></header><p class="scene-lede">每个金额都要能回查输入版本；重复、乱序、并发、跨租户、结果未知和崩溃都不能让数量加倍或调整重复。</p>
+<section class="scene" aria-labelledby="验算金额质量分母与修订链"><header class="scene-head"><h2 id="验算金额质量分母与修订链"><span class="scene-no" aria-hidden="true">07</span><span class="visually-hidden">验算：</span><span class="head">金额、质量分母与修订链</span></h2></header><p class="scene-lede">每个金额都要能回查输入版本；经过重复、乱序、并发、跨租户、结果未知和崩溃，数量只计一次，调整只生成一次。</p>
 <div class="table-wrap"><table>
 <thead>
 <tr>
@@ -210,8 +307,44 @@
 </section>
 <section class="scene" aria-labelledby="变式换表与已收款后的争议"><header class="scene-head"><h2 id="变式换表与已收款后的争议"><span class="scene-no" aria-hidden="true">08</span><span class="visually-hidden">变式：</span><span class="head">换表与已收款后的争议</span></h2></header><p class="scene-lede">换表和收款后的更正都不改写已有记录：安装关系按换表边界切分，已发布的账单靠调整更正。</p>
 <p><strong>练习一：00:30 换表，新表倍率为 2，后两个原始区间值改为 2、2.5，四个区间都已实测。能否继续使用之前的 13.50？</strong></p>
-<p>简答：不能直接沿用。有效安装关系按换表边界切分：前两个区间仍为 2、3 kWh，后两个区间乘倍率得到 4、5 kWh。这组数值恰好仍给出 13.50，但证据链完全不同，估算电量已为零。要守住的是量纲和期间归属，“一个期间一个倍率”的假设在这里失效。检查时故意把旧倍率用到新表上，金额会错成 9.00；即使正确金额碰巧相同，也要断言安装关系与质量码都已更新。</p>
-<p><strong>练习二：实际补录值 6 到达时，13.50 已全额收款，客户提出争议。能否把原账单改成 15.50 并标为未付？</strong></p>
+<p>简答：不能直接沿用。有效安装关系按换表边界切分：前两个区间属旧表（倍率为 1），仍为 2、3 kWh；后两个区间属新表，乘倍率 2 得到 4、5 kWh。这组数值恰好仍给出 13.50，但证据链完全不同，估算电量已为零。要守住的是量纲和期间归属，“一个期间一个倍率”的假设在这里失效。检查时故意把旧倍率用到新表上，金额会错成 9.00；即使正确金额碰巧相同，也要断言安装关系与质量码都已更新。</p>
+<figure class="drawing" data-drawing="v11-swap"><div class="dw-scroll" style="--dw-min:600px;--dw-max:880px">
+<svg viewBox="0 0 780 250" role="img" aria-labelledby="v11-swap-t v11-swap-d">
+  <title id="v11-swap-t">00:30 换表时的倍率归属</title>
+  <desc id="v11-swap-d">00:30 换表。旧表倍率 1，覆盖前两个区间，原始值 2、3；新表倍率 2，覆盖后两个区间，原始值 2、2.5。按有效安装关系得到 2、3、4、5 kWh，账单 13.50；把旧倍率用到新表上得到 2、3、2、2.5 kWh，账单错成 9.00。</desc>
+  <text class="t-n mid" x="160" y="24">00:00</text><text class="t-n mid" x="280" y="24">00:15</text>
+  <text class="t-n mid" x="400" y="24">00:30</text><text class="t-n mid" x="520" y="24">00:45</text><text class="t-n mid" x="640" y="24">01:00</text>
+  <text class="t-b mid" x="720" y="24">账单</text>
+  <g data-s="1">
+    <text class="t-b end" x="140" y="66">安装关系</text>
+    <rect class="box" x="164" y="44" width="232" height="34"/><text class="t mid" x="280" y="66">旧表 · 倍率 1</text>
+    <rect class="box" x="404" y="44" width="232" height="34"/><text class="t mid" x="520" y="66">新表 · 倍率 2</text>
+  </g>
+  <path class="ln-em" d="M400 34 V228"/>
+  <g data-s="2">
+    <text class="t-b end" x="140" y="118">原始值</text>
+    <text class="t-n mid" x="220" y="118">2</text><text class="t-n mid" x="340" y="118">3</text>
+    <text class="t-n mid" x="460" y="118">2</text><text class="t-n mid" x="580" y="118">2.5</text>
+    <path class="ln-soft" d="M20 136 H760"/>
+  </g>
+  <g data-s="3">
+    <text class="t-b end" x="140" y="166">按有效关系</text>
+    <text class="t-s mid" x="220" y="152">×1</text><text class="t-s mid" x="340" y="152">×1</text>
+    <text class="t-s mid" x="460" y="152">×2</text><text class="t-s mid" x="580" y="152">×2</text>
+    <text class="t-n mid" x="220" y="170">2</text><text class="t-n mid" x="340" y="170">3</text>
+    <text class="t-n mid" x="460" y="170">4</text><text class="t-n mid" x="580" y="170">5</text>
+    <text class="t-big mid" x="720" y="172">13.50</text>
+  </g>
+  <g data-s="4">
+    <text class="t-b end" x="140" y="216">旧倍率用到新表</text>
+    <text class="t-s mid" x="460" y="200">×1</text><text class="t-s mid" x="580" y="200">×1</text>
+    <text class="t-n mid" x="220" y="218">2</text><text class="t-n mid" x="340" y="218">3</text>
+    <text class="t-n mid" x="460" y="218">2</text><text class="t-n mid" x="580" y="218">2.5</text>
+    <text class="t-big mid" x="720" y="220">9.00</text>
+  </g>
+</svg>
+</div>
+<figcaption>换表边界把一个期间切成两段安装关系，后两个区间按新表的倍率 2 换算；按此算出 13.50，与无换表、含估算的金额恰好相同。</figcaption></figure><p><strong>练习二：实际补录值 6 到达时，13.50 已全额收款，客户提出争议。能否把原账单改成 15.50 并标为未付？</strong></p>
 <p>简答：不能。原账单和原核销都保留，另生成一笔 2.00 的调整，以 <code>held</code> 挂起争议，本例不自动扣款。每笔收款都要有可追溯的分配；“草稿可以替换”的前提在账单发布后已不成立。若覆盖原金额，客户看起来就只付了原账单的一部分。检查总应收 15.50、已收 13.50、争议余额 2.00，旧收款引用保持不变，调整也不会重复生成。</p>
 <p>迁到 V22 的通信 usage 计费（<code>TR:V11:V22:usage-revision</code>），保留原始记录、去重、版本与调整链的做法仍然适用；通信套餐可能包含免费量、漫游或跨周期封顶，不能直接照搬 TOU 求和。迁到 H01（<code>TR:V11:H01:bill-versus-cash</code>），应收与收款仍各有状态，但服务收入不能由电量 VEE 推导。迁到 V10 的资产维护（<code>TR:V11:V10:quality-versus-action</code>），信号质量与业务动作的分界同样成立：电量估算可以获准发布，安全检查结果却不能靠估算。</p>
 </section>
@@ -341,8 +474,8 @@
     <footer class="page-foot">正文 <a href="../../../books/saas-engineering/packages/industry-networks/V11.md">books/saas-engineering/packages/industry-networks/V11.md</a> · <a href="../../../vault/distilled/saas-engineering-atlas/README.md">结构、来源与验证</a></footer>
   </main>
 </div>
-<script src="search-index.js?v=mv95jeod"></script>
-<script src="book.js?v=mv95jeod"></script>
+<script src="search-index.js?v=mv97hru0"></script>
+<script src="book.js?v=mv97hru0"></script>
 
 </body>
 </html>

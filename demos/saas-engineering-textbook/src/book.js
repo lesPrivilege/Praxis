@@ -220,6 +220,32 @@
   window.addEventListener('DOMContentLoaded', initFigures);
   if (document.readyState !== 'loading') setTimeout(initFigures, 0);
 
+  // staged drawings: reveal data-s steps in order when the figure comes into view; a click replays
+  function initStaged() {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) return;
+    var figs = document.querySelectorAll('.drawing');
+    var io = new IntersectionObserver(function (es) {
+      es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('play'); io.unobserve(e.target); } });
+    }, { threshold: 0.35 });
+    Array.prototype.forEach.call(figs, function (f) {
+      var steps = f.querySelectorAll('[data-s]');
+      if (!steps.length || f.classList.contains('staged')) return;
+      Array.prototype.forEach.call(steps, function (el) { el.style.transitionDelay = ((+el.dataset.s - 1) * 0.75) + 's'; });
+      Array.prototype.forEach.call(f.querySelectorAll('[data-draw]'), function (el) {
+        el.setAttribute('pathLength', '1');
+        el.style.transitionDelay = ((+(el.dataset.draw || 1) - 1) * 0.75) + 's';
+      });
+      f.classList.add('staged');
+      io.observe(f);
+      f.addEventListener('click', function () {
+        f.classList.remove('play'); void f.offsetWidth;
+        setTimeout(function () { f.classList.add('play'); }, 60);
+      });
+    });
+  }
+  window.addEventListener('DOMContentLoaded', initStaged);
+  if (document.readyState !== 'loading') setTimeout(initStaged, 0);
+
   // print: open every collapsed block so nothing is lost on paper
   var opened = [];
   window.addEventListener('beforeprint', function () {

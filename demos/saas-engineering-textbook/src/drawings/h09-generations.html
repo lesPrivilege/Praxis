@@ -1,0 +1,37 @@
+<div class="dw-scroll" style="--dw-min:620px;--dw-max:920px">
+<svg viewBox="0 0 780 240" role="img" aria-labelledby="h09-generations-t h09-generations-d">
+  <title id="h09-generations-t">导出代次与 ERP 记录版本</title>
+  <desc id="h09-generations-d">代次 1 带写前条件 0 写入，ERP 记录版本由 0 变为 1。同一代次、同一 payload 重投，返回原提交结果，版本仍为 1。代次 2 带写前条件 1 写入新金额，版本变为 2。代次 1 随后迟到，代次落后，被拒绝，旧尝试标为 superseded，版本仍为 2。</desc>
+  <g data-s="1">
+    <rect class="box" x="110" y="24" width="120" height="52"/><text class="t-b mid" x="170" y="46">代次 1</text><text class="t-s mid" x="170" y="66">写前 0</text>
+    <path class="ln" d="M170 76 V160 M164 152 L170 160 L176 152"/>
+    <circle class="f-ink" cx="170" cy="166" r="5"/>
+    <text class="t mid" x="170" y="200">0 → 1</text><text class="t-s mid" x="170" y="218">写入</text>
+  </g>
+  <g data-s="2">
+    <rect class="box" x="270" y="24" width="120" height="52"/><text class="t-b mid" x="330" y="46">代次 1 重投</text><text class="t-s mid" x="330" y="66">同一 payload</text>
+    <path class="ln" d="M330 76 V160 M324 152 L330 160 L336 152"/>
+    <circle class="box" cx="330" cy="166" r="5"/>
+    <text class="t mid" x="330" y="200">仍为 1</text><text class="t-s mid" x="330" y="218">返回原提交结果</text>
+  </g>
+  <g data-s="3">
+    <rect class="box f1" x="430" y="24" width="120" height="52"/><text class="t-b mid" x="490" y="46">代次 2</text><text class="t-s mid" x="490" y="66">写前 1 · 新金额</text>
+    <path class="ln" d="M490 76 V160 M484 152 L490 160 L496 152"/>
+    <circle class="f-ink" cx="490" cy="166" r="5"/>
+    <text class="t mid" x="490" y="200">1 → 2</text><text class="t-s mid" x="490" y="218">写入</text>
+  </g>
+  <g data-s="4">
+    <rect class="box-dash" x="590" y="24" width="120" height="52"/><text class="t-b mid" x="650" y="46">代次 1 迟到</text><text class="t-s mid" x="650" y="66">写前 0</text>
+    <path class="ln-em" d="M650 76 V128 M636 128 H664"/>
+    <text class="t-em mid" x="650" y="200">拒绝，仍为 2</text><text class="t-s mid" x="650" y="218">旧尝试 superseded</text>
+  </g>
+  <text class="t-b" x="20" y="171">ERP 记录</text>
+  <path class="ln-strong" d="M90 166 H750"/>
+  <text class="t-n mid" x="128" y="156">版本 0</text>
+  <text class="t-n mid" x="250" y="156">版本 1</text>
+  <text class="t-n mid" x="410" y="156">版本 1</text>
+  <text class="t-n mid" x="570" y="156">版本 2</text>
+  <text class="t-n mid" x="712" y="156">版本 2</text>
+</svg>
+</div>
+<figcaption>写入在同一原子操作中比较代次与目标版本：重投不再递增，落后的代次 1 被拒绝，新金额留在版本 2。</figcaption>

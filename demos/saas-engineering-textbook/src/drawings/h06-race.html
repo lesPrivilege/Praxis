@@ -1,0 +1,25 @@
+<div class="dw-scroll" style="--dw-min:620px;--dw-max:900px">
+<svg viewBox="0 0 780 220" role="img" aria-labelledby="h06-race-t h06-race-d">
+  <title id="h06-race-t">确认与新消息的提交次序</title>
+  <desc id="h06-race-d">消息游标为 7 时，客户确认 r1（带游标 7）与新消息 8 同时在途。新消息先提交时，游标变为 8，确认因 7 与 8 不符被拒绝，页面展示收到新反馈、需重新确认。关闭事务先提交时，原请求关闭，消息 8 转为关联的后续请求，新责任落在后续请求上。</desc>
+  <text class="t" x="20" y="22">消息游标 7；客户确认 r1（带游标 7）与新消息 8“第二个文件仍坏”同时在途</text>
+  <text class="t-s mid" x="295" y="58">先提交</text><text class="t-s mid" x="515" y="58">后提交</text><text class="t-s mid" x="705" y="58">结果</text>
+  <g data-s="1">
+    <text class="t-b" x="20" y="92">次序一</text><text class="t-s" x="20" y="110">新消息先提交</text>
+    <rect class="box" x="200" y="72" width="190" height="46"/><text class="t mid" x="295" y="91">消息 8 提交</text><text class="t-s mid" x="295" y="109">游标 7 → 8</text>
+    <path class="ln" d="M390 95 H420"/>
+    <rect class="box" x="420" y="72" width="190" height="46"/><text class="t mid" x="515" y="91">确认 r1（游标 7）</text><text class="t-s t-em mid" x="515" y="109">7 ≠ 8，拒绝关闭</text>
+    <path class="ln" d="M610 95 H640"/>
+    <rect class="box" x="640" y="72" width="130" height="46"/><text class="t mid" x="705" y="91">收到新反馈</text><text class="t-s mid" x="705" y="109">需重新确认</text>
+  </g>
+  <g data-s="2">
+    <text class="t-b" x="20" y="182">次序二</text><text class="t-s" x="20" y="200">关闭事务先提交</text>
+    <rect class="box" x="200" y="162" width="190" height="46"/><text class="t mid" x="295" y="181">确认 r1（游标 7）</text><text class="t-s mid" x="295" y="199">游标一致，关闭</text>
+    <path class="ln" d="M390 185 H420"/>
+    <rect class="box" x="420" y="162" width="190" height="46"/><text class="t mid" x="515" y="181">消息 8 到达</text><text class="t-s mid" x="515" y="199">转为关联的后续请求</text>
+    <path class="ln" d="M610 185 H640"/>
+    <rect class="box" x="640" y="162" width="130" height="46"/><text class="t mid" x="705" y="181">原请求关闭</text><text class="t-s mid" x="705" y="199">后续请求承接</text>
+  </g>
+</svg>
+</div>
+<figcaption>两种次序里，消息 8 都有负责者：先到时挡住关闭，后到时开出后续请求。</figcaption>

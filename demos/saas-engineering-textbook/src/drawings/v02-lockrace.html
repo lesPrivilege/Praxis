@@ -1,0 +1,41 @@
+<div class="dw-scroll" style="--dw-min:640px;--dw-max:920px">
+<svg viewBox="0 0 800 330" role="img" aria-labelledby="v02-lockrace-t v02-lockrace-d">
+  <title id="v02-lockrace-t">锁定与新增 query 的三种交错</title>
+  <desc id="v02-lockrace-d">先查后写时，T1 读到零个未决 query，T2 随后插入新 query，T1 再写 locked，结果锁住了未解决的问题。共用 gate 时，锁定先取得 gate，后续修改读到 locked 被拒绝；修改先取得 gate，锁定看到新 query 被拒绝。</desc>
+  <text class="t-s" x="160" y="14">时间 →</text>
+  <!-- A -->
+  <text class="t-b" x="0" y="40">先查后写</text>
+  <text class="t-s end" x="150" y="66">锁定事务 T1</text>
+  <text class="t-s end" x="150" y="98">修改事务 T2</text>
+  <g data-s="1">
+    <rect class="box" x="160" y="50" width="170" height="26"/><text class="t-s mid" x="245" y="67">读到 0 个未决 query</text>
+    <rect class="box" x="350" y="82" width="130" height="26"/><text class="t-s mid" x="415" y="99">插入新 query</text>
+    <rect class="box" x="500" y="50" width="130" height="26"/><text class="t-s mid" x="565" y="67">写 locked=true</text>
+    <text class="t-em" x="646" y="84">锁入 1 个</text>
+    <text class="t-em" x="646" y="102">未决 query</text>
+  </g>
+  <path class="ln-soft" d="M0 124 H800"/>
+  <!-- B -->
+  <text class="t-b" x="0" y="150">共用 gate，锁定先取得</text>
+  <text class="t-s end" x="150" y="176">锁定事务 T1</text>
+  <text class="t-s end" x="150" y="208">修改事务 T2</text>
+  <g data-s="2">
+    <rect class="box f3" x="160" y="160" width="270" height="26"/><text class="t-s mid" x="295" y="177">持 gate：核对 manifest，提交锁定</text>
+    <path class="ln-dash" d="M250 205 H430"/><text class="t-s mid" x="340" y="200">等待 gate</text>
+    <rect class="box" x="430" y="192" width="200" height="26"/><text class="t-s mid" x="530" y="209">读到 locked</text>
+    <text class="t" x="646" y="209">修改被拒</text>
+  </g>
+  <path class="ln-soft" d="M0 234 H800"/>
+  <!-- C -->
+  <text class="t-b" x="0" y="260">共用 gate，修改先取得</text>
+  <text class="t-s end" x="150" y="286">锁定事务 T1</text>
+  <text class="t-s end" x="150" y="318">修改事务 T2</text>
+  <g data-s="3">
+    <rect class="box f3" x="160" y="302" width="230" height="26"/><text class="t-s mid" x="275" y="319">持 gate：新 query 提交</text>
+    <path class="ln-dash" d="M230 283 H390"/><text class="t-s mid" x="310" y="278">等待 gate</text>
+    <rect class="box" x="390" y="270" width="240" height="26"/><text class="t-s mid" x="510" y="287">看到新 query</text>
+    <text class="t" x="646" y="287">锁定被拒</text>
+  </g>
+</svg>
+</div>
+<figcaption>没有 gate 时，两个事务各自成功，合起来锁住了一个未解决的 query；共用一行 gate 后，两种先后都以一方明确被拒收尾。</figcaption>

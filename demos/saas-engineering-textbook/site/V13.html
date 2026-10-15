@@ -4,9 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>V13 · 保险：从保障承诺到可核对的赔付 · SaaS 工程全景</title>
-<link rel="stylesheet" href="book.css?v=mv95jeod">
+<link rel="stylesheet" href="book.css?v=mv97hru0">
 </head>
 <body>
+<svg class="dw-defs" width="0" height="0" aria-hidden="true" focusable="false" style="position:absolute"><defs><pattern id="dw-hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" fill="var(--bg)"/><path d="M0 0 V6" stroke="var(--ink-2)" stroke-width="1.2"/></pattern></defs></svg>
 <a class="skip" href="#main">跳到正文</a>
 <header class="topbar">
   <button class="nav-toggle" type="button" aria-controls="sidebar" aria-expanded="false">目录</button>
@@ -20,7 +21,7 @@
 <header class="hero">
 <p class="kicker"><a href="group-commercial-finance.html">交易、财务与资金</a><span class="dot">·</span>V13</p>
 <h1>保险：从保障承诺到可核对的赔付</h1>
-<p class="lede">保险公司承诺：在约定保障范围内，特定事件发生后承担相应责任。收了保费，不等于每次报案都该赔；reserve（赔付准备的业务记录）批准了，也不说明钱已经到了收款人账户。核心机制是按责任分组的余额：可新提交的赔付额同时受核定赔付、已批准估计、已付金额和未确认付款的占用约束。本章覆盖报价、绑定与出单的分界，理赔核定与 reserve 审批，付款结果未知时的恢复，以及条款版本改变怎样改变答案。</p>
+<p class="lede">保险公司承诺：在约定保障范围内，特定事件发生后承担相应责任。保费换来的是保障承诺，每次报案仍要核定责任；reserve（赔付准备的业务记录）记的是批准过的估计，钱是否到了收款人账户，由付款结果证明。核心机制是按责任分组的余额：可新提交的赔付额同时受核定赔付、已批准估计、已付金额和未确认付款的占用约束。本章覆盖报价、绑定与出单的分界，理赔核定与 reserve 审批，付款结果未知时的恢复，以及条款版本改变怎样改变答案。</p>
 
 <div class="cast" aria-label="本例的角色、界面与系统">
 <div class="cast-lane"><p class="cast-k">角色</p><ul><li>核保人员</li><li>理赔人员</li><li>授权主管</li></ul></div>
@@ -61,9 +62,9 @@
 </tbody></table></div>
 </section>
 <section class="scene" aria-labelledby="解法报价承保与理赔的分工"><header class="scene-head"><h2 id="解法报价承保与理赔的分工"><span class="scene-no" aria-hidden="true">02</span><span class="visually-hidden">解法：</span><span class="head">报价、承保与理赔的分工</span></h2></header><p class="scene-lede">承保管未来的风险，理赔管已经发生的事故，两边的对象、状态和批准权限分开；bind 确认保障，issue 交付文件，两者分开取证。</p>
-<p>经纪或投保人员准备 Submission，也就是为新保单发起的投保交易；核保人员决定是否接受风险及条款；出单人员交付保单文件。报案后，理赔员收集事故、损失与受益人证据，授权主管审批超限的 reserve 或付款，资金人员跟踪支付，财务核对下游入账。核保判断的是未来风险，理赔判断的是已经发生的事故；两边虽然都有“批准”按钮，权限仍要各自限定对象范围，不能共用一份。</p>
+<p>经纪或投保人员准备 Submission，也就是为新保单发起的投保交易；核保人员决定是否接受风险及条款；出单人员交付保单文件。报案后，理赔员收集事故、损失与受益人证据，授权主管审批超限的 reserve 或付款，资金人员跟踪支付，财务核对下游入账。核保判断的是未来风险，理赔判断的是已经发生的事故；两边都有“批准”按钮，权限各自限定对象范围，分开授予。</p>
 <p>Guidewire PolicyCenter 的公开文档用 <code>Draft → Quoted</code> 区分投保交易的准备与报价；已报价的交易要退回 Draft 才能修改，改完再重新报价。文档还把 bind 与 issue 区分开：前者确认保障合同，后者交付定义保单的文件，两者可以同时做，也可以分开。因此“有 <abbr title="Portable Document Format：便携式文档格式">PDF</abbr>”和“保障已成立”要分开取证。<a href="https://docs.guidewire.com/cloud/pc/202507/cloudapibf/cloudAPI/topics/122-PCjobTypes/01-submissions/c_submissions.html" class="ext" rel="noopener">Guidewire：Submissions，Overview / Editing a quoted job / Completing the submission</a>。</p>
-<p>本例中，报价 v2 经核保人员和客户确认后 bind，并完成 issue；保单记下保障期间、条款与文件摘要。若文件生成失败，界面显示“已承保，文件待补发”，已存在的保障承诺不倒退成未报价。绑定后若要修改保障，另建带生效时间的变更版本；用今天的保单覆盖历史版本，昨天的事故就会被今天的条款错误裁定。本例只设一条经人工审核的变更通路；真实产品的取消、追溯生效和通知制度不在范围内。</p>
+<p>本例中，报价 v2 经核保人员和客户确认后 bind，并完成 issue；保单记下保障期间、条款与文件摘要。若文件生成失败，界面显示“已承保，文件待补发”，保障承诺保持已绑定。绑定后若要修改保障，另建带生效时间的变更版本；用今天的保单覆盖历史版本，昨天的事故就会被今天的条款错误裁定。本例只设一条经人工审核的变更通路；真实产品的取消、追溯生效和通知制度不在范围内。</p>
 <div class="table-wrap"><table>
 <thead>
 <tr>
@@ -100,22 +101,105 @@
 </section>
 <section class="scene" aria-labelledby="投保与理赔工作台"><header class="scene-head"><h2 id="投保与理赔工作台"><span class="scene-no" aria-hidden="true">03</span><span class="head">投保与理赔工作台</span></h2></header><p class="scene-lede">工作台上的金额只是展示；绑定、核定和付款提交时，服务端都重读版本和授权。事故日与报案日分开显示，结果未知的付款继续占用额度。</p>
 <p>投保列表显示缺失的风险资料，详情并排展示报价版本与当前拟承保版本。点击“绑定报价 v2”时，服务端重读对应版本及授权，页面当前显示的金额不作为权威输入。缺关键信息时，错误提示定位到具体字段，已填内容保留；版本冲突时列出变更项，免得用户不知条款已变就再次批准。</p>
-<p>理赔详情的首屏展示事故日期、报案日期、被保标的、适用保单版本及待补证据。两个日期要分开：第 370 日报来的第 360 日事故，按本例以事故发生日判断保障的政策，仍可进入责任审查；最终是否获赔还要看其他证据，日期比较本身不能直接导向支付。核定页展示损失 6,000、免赔 500、限额 8,000 与计算所得 5,500，让理赔员确认采用的是哪个条款版本。</p>
-<p>reserve 页面按 exposure 与费用类别展开，不只给一个“总额”输入框。普通理赔员的审批权限为全案 reserve 总额 3,000，主管为 6,000；初始赔款 reserve 4,000 加费用 reserve 300 的 set 合计 4,300，普通理赔员提交后要等主管审批，拆成两次 2,000 也绕不过全案限额。这两档额度和反拆分规则是本例设定的。Guidewire 文档能支持的只有：创建 reserve set 时检查该用户的权限额度，超限就建立审批活动，此时金额尚未计入 reserve line；额度可按全案或按 exposure 配置。<a href="https://docs.guidewire.com/cloud/cc/202507/cloudapibf/cloudAPI/topics/112-CCFin/01-reserves/c_creating-reserves.html" class="ext" rel="noopener">Creating reserves，Approval status</a>。</p>
-<p>支付页同时显示已核定赔付、已批准 reserve、已付金额、尚未确定结果的付款和本次可提交额。“发送付款”绑定核定版本、reserve line、收款人版本、金额与 operation <abbr title="identifier：标识符">ID</abbr>；收款账户刚改变时，本例要求重新授权。提交后显示“等待支付结果”；银行结果未知时，占用照旧保留，未刷新的余额卡不当作还可再付的额度。</p>
+<p>理赔详情的首屏展示事故日期、报案日期、被保标的、适用保单版本及待补证据。两个日期要分开：第 370 日报来的第 360 日事故，按本例以事故发生日判断保障的政策，仍可进入责任审查；日期比较只决定能否进入审查，最终是否获赔还要看其他证据。核定页展示损失 6,000、免赔 500、限额 8,000 与计算所得 5,500，让理赔员确认采用的是哪个条款版本。</p>
+<figure class="drawing" data-drawing="v13-dates"><div class="dw-scroll" style="--dw-min:560px;--dw-max:860px">
+<svg viewBox="0 0 720 180" role="img" aria-labelledby="v13-dates-t v13-dates-d">
+  <title id="v13-dates-t">事故日与报案日落在保障区间的两侧</title>
+  <desc id="v13-dates-d">保障区间为 [0,365)。事故发生在第 360 日，落在区间内；报案在第 370 日，已在区间之外。本例按事故发生日判断保障，这宗事故进入责任审查。</desc>
+  <g data-s="1">
+    <rect class="box f1" x="40" y="80" width="150" height="40"/>
+    <rect class="box f1" x="210" y="80" width="300" height="40"/>
+    <path class="ln-soft" d="M193 126 L201 74 M201 126 L209 74"/>
+    <text class="t mid" x="320" y="105">保障区间 [0,365)</text>
+    <text class="t-s mid" x="40" y="140">第 0 日</text>
+    <text class="t-s mid" x="510" y="140">第 365 日</text>
+  </g>
+  <g data-s="2">
+    <path class="ln-em" d="M450 60 V120"/>
+    <circle class="f-em" cx="450" cy="100" r="4"/>
+    <text class="t-b mid t-em" x="450" y="50">第 360 日 事故</text>
+  </g>
+  <g data-s="3">
+    <path class="ln" d="M570 60 V120"/>
+    <circle class="f-ink" cx="570" cy="100" r="4"/>
+    <text class="t-b mid" x="570" y="50">第 370 日 报案</text>
+    <text class="t-s mid" x="450" y="170">按事故发生日判断保障：第 360 日在区间内，进入责任审查</text>
+  </g>
+</svg>
+</div>
+<figcaption>报案日已出保障区间，事故日仍在区间内；本例的日期 guard 读的是事故日。</figcaption></figure><p>reserve 页面按 exposure 与费用类别展开，每条 reserve line 单独录入。普通理赔员的审批权限为全案 reserve 总额 3,000，主管为 6,000；初始赔款 reserve 4,000 加费用 reserve 300 的 set 合计 4,300，普通理赔员提交后要等主管审批，拆成两次 2,000 也绕不过全案限额。这两档额度和反拆分规则是本例设定的。Guidewire 文档能支持的只有：创建 reserve set 时检查该用户的权限额度，超限就建立审批活动，此时金额尚未计入 reserve line；额度可按全案或按 exposure 配置。<a href="https://docs.guidewire.com/cloud/cc/202507/cloudapibf/cloudAPI/topics/112-CCFin/01-reserves/c_creating-reserves.html" class="ext" rel="noopener">Creating reserves，Approval status</a>。</p>
+<p>支付页同时显示已核定赔付、已批准 reserve、已付金额、尚未确定结果的付款和本次可提交额。“发送付款”绑定核定版本、reserve line、收款人版本、金额与 operation <abbr title="identifier：标识符">ID</abbr>；收款账户刚改变时，本例要求重新授权。提交后显示“等待支付结果”；银行结果未知时，占用照旧保留，本次可提交额以服务端的占用记录为准。</p>
 </section>
-<section class="scene" aria-labelledby="演算按责任分组的余额"><header class="scene-head"><h2 id="演算按责任分组的余额"><span class="scene-no" aria-hidden="true">04</span><span class="visually-hidden">演算：</span><span class="head">按责任分组的余额</span></h2></header><p class="scene-lede">可付余额按责任维度分组计算，并扣除结果未知的付款占用；全案总数够用，不说明某个责任够用。</p>
+<section class="scene" aria-labelledby="演算按责任分组的余额"><header class="scene-head"><h2 id="演算按责任分组的余额"><span class="scene-no" aria-hidden="true">04</span><span class="visually-hidden">演算：</span><span class="head">按责任分组的余额</span></h2></header><p class="scene-lede">可付余额按责任维度分组计算，并扣除结果未知的付款占用；够不够付，按每个责任分别判断。</p>
 <p>第 40 日事故后，初估赔款为 4,000，查勘费用估计 300，主管批准两条 reserve。第 45 日确认损失 6,000，按本例条款核定赔付 <code>min(6,000−500,8,000)=5,500</code>，赔款 reserve 追加 1,500；费用仍为 300。已付赔款 2,000 后，未付赔款估计为 <code>5,500−2,000=3,500</code>。若随后一笔 1,000 的付款结果未知，本例可再提交的赔款额度为 <code>5,500−2,000−1,000=2,500</code>，不是 3,500；这 1,000 仍算在尚未确认支付的风险里。</p>
-<p>这里定义 <code>R</code> 为已批准累计估计赔款，<code>P</code> 为已确认支付，<code>U</code> 为已提交、尚未确认成功或失败的占用。reserve 余额为 <code>R−P</code>，可新提交额度为 <code>min(核定赔付−P−U, R−P−U)</code>，并且要满足非负与权限条件。reserve 可以在责任认定前用于估计，因此 <code>R</code> 不能自动替代核定赔付。费用 reserve 的 300 也不能拿来补赔款缺口：它对应另一类支出和另一套授权。</p>
-<p>这一步用 <code>ALG:lookup</code> 加分组累加：用 <code>(tenant, claim, exposure, cost type, cost category, currency)</code> 找到同一 reserve line，再分别累加批准调整、已付和待确认操作。扫描 n 笔交易是 O(n)；按 line 预聚合可以降低反复查询的成本，但要保留事件水位，并在撤销、晚到批准和冲正时重算。小案子不必先引入复杂的流处理；在数据库事务内同时更新金额与版本，更容易核对。Guidewire 的财务计算文档列出的交易类型包括 <code>Reserve</code>、<code>Payment</code>、<code>RecoveryReserve</code> 和 <code>Recovery</code>，并保留费用类别、币种与 exposure 的维度。<a href="https://docs.guidewire.com/cloud/cc/202507/cloudapibf/cloudAPI/topics/112-CCFin/05-financial-calculations/c_financial_calculations.html" class="ext" rel="noopener">Financial calculations</a>。本例暂不实现后两种类型；带金额的交易也要分清方向，不能一律相加。</p>
+<p>这里定义 <code>R</code> 为已批准累计估计赔款，<code>P</code> 为已确认支付，<code>U</code> 为已提交、尚未确认成功或失败的占用。reserve 余额为 <code>R−P</code>，可新提交额度为 <code>min(核定赔付−P−U, R−P−U)</code>，并且要满足非负与权限条件。reserve 可以在责任认定前用于估计，因此 <code>R</code> 与核定赔付分开取值，公式取两者中较紧的一个。费用 reserve 的 300 只用于费用：它对应另一类支出和另一套授权。</p>
+<figure class="drawing" data-drawing="v13-headroom"><div class="dw-scroll" style="--dw-min:600px;--dw-max:900px">
+<svg viewBox="0 0 780 240" role="img" aria-labelledby="v13-headroom-t v13-headroom-d">
+  <title id="v13-headroom-t">赔款 reserve 5,500 被已付与未知付款占用</title>
+  <desc id="v13-headroom-d">赔款 reserve 由第 40 日初估 4,000 加第 45 日追加 1,500，共 5,500，等于核定赔付。已付 P 2,000，结果未知的付款 U 1,000，可新提交 2,500；R−P 为 3,500，是未付赔款估计。费用 reserve 300 是另一条 reserve line。</desc>
+  <g data-s="1">
+    <text class="t-b end" x="160" y="56">赔款 reserve R</text>
+    <text class="t-s end" x="160" y="72">= 核定赔付</text>
+    <rect class="box f1" x="170" y="40" width="400" height="32"/>
+    <rect class="box f1" x="570" y="40" width="150" height="32"/>
+    <text class="t mid" x="370" y="61">第 40 日初估 4,000</text>
+    <text class="t mid" x="645" y="61">第 45 日追加 1,500</text>
+    <text class="t-n" x="728" y="61">5,500</text>
+  </g>
+  <text class="t-b end" x="160" y="131">赔款可提交额度</text>
+  <g data-s="2">
+    <rect class="f-ink" x="170" y="110" width="200" height="32"/>
+    <text class="t mid t-inv" x="270" y="131">已付 P 2,000</text>
+  </g>
+  <g data-s="3">
+    <rect class="box-dash" x="370" y="110" width="100" height="32"/>
+    <text class="t-s mid" x="420" y="130">未知 U 1,000</text>
+    <path class="ln" d="M370 150 V158 H720 V150"/>
+    <text class="t-s mid" x="545" y="174">R − P = 3,500 · 未付赔款估计</text>
+  </g>
+  <g data-s="4">
+    <rect class="box-em" x="470" y="110" width="250" height="32"/>
+    <text class="t-b mid" x="595" y="131">可新提交 2,500</text>
+  </g>
+  <path class="ln-soft" d="M20 194 H760"/>
+  <text class="t-b end" x="160" y="222">费用 reserve</text>
+  <rect class="box f1" x="170" y="206" width="30" height="24"/>
+  <text class="t-s" x="210" y="222">300 · 另一类支出，另一套授权</text>
+</svg>
+</div>
+<figcaption>未知付款 U 和已付 P 一起占用赔款 reserve，可新提交的是 2,500；费用 reserve 的 300 在另一条 line 上。</figcaption></figure><p>这一步用 <code>ALG:lookup</code> 加分组累加：用 <code>(tenant, claim, exposure, cost type, cost category, currency)</code> 找到同一 reserve line，再分别累加批准调整、已付和待确认操作。扫描 n 笔交易是 O(n)；按 line 预聚合可以降低反复查询的成本，但要保留事件水位，并在撤销、晚到批准和冲正时重算。小案子在数据库事务内同时更新金额与版本，最容易核对。Guidewire 的财务计算文档列出的交易类型包括 <code>Reserve</code>、<code>Payment</code>、<code>RecoveryReserve</code> 和 <code>Recovery</code>，并保留费用类别、币种与 exposure 的维度。<a href="https://docs.guidewire.com/cloud/cc/202507/cloudapibf/cloudAPI/topics/112-CCFin/05-financial-calculations/c_financial_calculations.html" class="ext" rel="noopener">Financial calculations</a>。本例暂不实现后两种类型；带金额的交易按方向分别累计。</p>
 <p>反例一是把另一 claimant 的 2,000 reserve 加到本案这位 claimant 的可付余额：全案总数可能合理，付款责任却错了。反例二是把 1,000 CU 与 1,000 个另一币种单位直接相加。反例三是把未知付款 U 归零，随后重发 1,000；两笔后来都成功时，界面无法凭“第一次超时”抹掉第二笔已付出的现金。按完整业务维度分组防的是责任混淆，保留占用防的是重复支付，两者各管一类错误，互不替代。</p>
-<p><code>ALG:</p><ol class="chain" style="--per:5"><li><span class="cn">1</span><span class="ct">graph-paths</code> 负责解释一笔付款的依据：payment</span></li><li><span class="cn">2</span><span class="ct">coverage decision</span></li><li><span class="cn">3</span><span class="ct">exposure</span></li><li><span class="cn">4</span><span class="ct">policy version，以及 payment</span></li><li><span class="cn">5</span><span class="ct">reserve line</span></li></ol><p>沿这些边可以找出“缺了哪个前提”，但能连通不等于满足保障条款。图遍历要检查对象权限、版本及事故时点；路径上出现别的租户的保单节点时，拒绝整条路径，不返回隐藏节点的金额摘要。</p>
+<figure class="drawing" data-drawing="v13-lines"><div class="dw-scroll" style="--dw-min:600px;--dw-max:900px">
+<svg viewBox="0 0 760 250" role="img" aria-labelledby="v13-lines-t v13-lines-d">
+  <title id="v13-lines-t">付款只从一条 reserve line 取额度</title>
+  <desc id="v13-lines-d">同一 claim 下有两个 exposure。本 claimant 的 exposure 有赔款 reserve line 5,500 和费用 reserve line 300；另一 claimant 的 exposure 有赔款 reserve 2,000。付款按 tenant、claim、exposure、cost type、cost category、currency 找到本 claimant 的赔款 line。</desc>
+  <text class="t-n" x="20" y="24">(tenant, claim, exposure, cost type, cost category, currency)</text>
+  <rect class="box" x="20" y="40" width="520" height="196"/>
+  <text class="t-b" x="34" y="62">Claim</text>
+  <rect class="box f1" x="36" y="74" width="170" height="146"/>
+  <text class="t-b" x="50" y="96">exposure</text><text class="t-s" x="50" y="112">另一 claimant</text>
+  <rect class="box" x="50" y="140" width="142" height="44"/>
+  <text class="t" x="62" y="158">赔款 · CU</text><text class="t-n" x="62" y="176">2,000</text>
+  <rect class="box f1" x="222" y="74" width="302" height="146"/>
+  <text class="t-b" x="236" y="96">exposure</text><text class="t-s" x="236" y="112">本 claimant</text>
+  <rect class="box-em" x="236" y="122" width="272" height="40"/>
+  <text class="t" x="250" y="147">赔款 · CU</text><text class="t-n end" x="494" y="147">5,500</text>
+  <rect class="box" x="236" y="170" width="272" height="40"/>
+  <text class="t" x="250" y="195">费用 · CU</text><text class="t-n end" x="494" y="195">300</text>
+  <g data-s="1">
+    <rect class="box" x="596" y="120" width="150" height="44"/>
+    <text class="t-b mid" x="671" y="140">Payment</text><text class="t-s mid" x="671" y="157">赔款 · 本 claimant</text>
+    <path class="ln-strong" d="M596 142 H512 M520 136 L512 142 L520 148"/>
+  </g>
+</svg>
+</div>
+<figcaption>键的六个维度把同一 claim 下的额度分成互不相通的 reserve line；付款只落在键完全相同的那一条上。</figcaption></figure><p><code>ALG:</p><ol class="chain" style="--per:5"><li><span class="cn">1</span><span class="ct">graph-paths</code> 负责解释一笔付款的依据：payment</span></li><li><span class="cn">2</span><span class="ct">coverage decision</span></li><li><span class="cn">3</span><span class="ct">exposure</span></li><li><span class="cn">4</span><span class="ct">policy version，以及 payment</span></li><li><span class="cn">5</span><span class="ct">reserve line</span></li></ol><p>沿这些边可以找出“缺了哪个前提”；路径连通只说明前提齐全，是否满足保障条款另行判断。图遍历要检查对象权限、版本及事故时点；路径上出现别的租户的保单节点时，拒绝整条路径，不返回隐藏节点的金额摘要。</p>
 </section>
 <section class="scene" aria-labelledby="实现拓扑与恢复路径"><header class="scene-head"><h2 id="实现拓扑与恢复路径"><span class="scene-no" aria-hidden="true">05</span><span class="head">实现拓扑与恢复路径</span></h2></header><p class="scene-lede">理赔服务拥有 claim、exposure 和 reserve，付款依赖已批准的 reserve，现金结果由支付参照接口回报；恢复时按原参考号核对，U 只转为 P 一次，结案看责任与操作是否全部完成。</p>
-<figure class="graph-fig"><div class="graph-wrap"><svg class="graph" viewBox="0 0 1092 179" width="1092" height="179" style="max-width:1256px;min-width:874px" role="img" aria-label="V13 · 保险：从保障承诺到可核对的赔付"><defs><marker id="arrow-g1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arrowhead"/></marker></defs><path class="edge" data-type="operates" data-from="Adjuster" data-to="UI" d="M136.5,25.0 Q205.0,25.0 260.0,31.5" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Adjuster" data-to="UI"><rect x="177.0" y="17.0" width="56" height="16" rx="3"/><text x="205.0" y="29.0">operates</text></g><path class="edge" data-type="commands" data-from="UI" data-to="Claims" d="M388.0,39.0 Q449.0,39.0 510.0,39.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="UI" data-to="Claims"><rect x="421.0" y="31.0" width="56" height="16" rx="3"/><text x="449.0" y="43.0">commands</text></g><path class="edge" data-type="owns" data-from="Claims" data-to="Claim" d="M586.0,33.3 Q641.0,25.0 696.0,25.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Claims" data-to="Claim"><rect x="625.0" y="17.0" width="32" height="16" rx="3"/><text x="641.0" y="29.0">owns</text></g><path class="edge" data-type="depends_on" data-from="Claim" data-to="Policy" d="M834.0,25.0 Q895.0,25.0 956.0,25.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Claim" data-to="Policy"><rect x="861.0" y="17.0" width="68" height="16" rx="3"/><text x="895.0" y="29.0">depends_on</text></g><path class="edge" data-type="owns" data-from="Claims" data-to="Reserve" d="M586.0,50.4 Q641.0,67.0 715.0,77.1" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Claims" data-to="Reserve"><rect x="625.0" y="59.0" width="32" height="16" rx="3"/><text x="641.0" y="71.0">owns</text></g><path class="edge" data-type="depends_on" data-from="Payment" data-to="Reserve" d="M150.0,90.2 Q205.0,95.0 264.5,95.0 Q324.0,95.0 386.5,95.0 Q449.0,95.0 498.5,95.0 Q548.0,95.0 594.5,95.0 Q641.0,95.0 715.0,88.4" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Payment" data-to="Reserve"><rect x="415.0" y="87.0" width="68" height="16" rx="3"/><text x="449.0" y="99.0">depends_on</text></g><path class="edge" data-type="requests" data-from="Pay" data-to="Rail" d="M117.0,140.9 Q205.0,129.0 273.0,129.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Pay" data-to="Rail"><rect x="177.0" y="121.0" width="56" height="16" rx="3"/><text x="205.0" y="133.0">requests</text></g><path class="edge" data-type="emits" data-from="Rail" data-to="Result" d="M375.0,129.0 Q449.0,129.0 510.0,129.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Rail" data-to="Result"><rect x="430.0" y="121.0" width="38" height="16" rx="3"/><text x="449.0" y="133.0">emits</text></g><path class="edge" data-type="delivers" data-from="Result" data-to="Inbox" d="M586.0,129.0 Q641.0,129.0 720.5,139.9" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Result" data-to="Inbox"><rect x="613.0" y="121.0" width="56" height="16" rx="3"/><text x="641.0" y="133.0">delivers</text></g><path class="edge" data-type="reads" data-from="Pay" data-to="Inbox" d="M117.0,151.1 Q205.0,163.0 264.5,163.0 Q324.0,163.0 386.5,163.0 Q449.0,163.0 498.5,163.0 Q548.0,163.0 594.5,163.0 Q641.0,163.0 720.5,152.1" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Pay" data-to="Inbox"><rect x="430.0" y="155.0" width="38" height="16" rx="3"/><text x="449.0" y="167.0">reads</text></g><path class="edge" data-type="projects" data-from="Payment" data-to="UI" d="M150.0,74.4 Q205.0,67.0 260.0,54.1" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Payment" data-to="UI"><rect x="177.0" y="59.0" width="56" height="16" rx="3"/><text x="205.0" y="71.0">projects</text></g><g class="node" data-id="Adjuster"><rect x="21.5" y="8.0" width="115" height="34" rx="4"/><text x="79.0" y="29.5">核保与理赔人员</text></g><g class="node" data-id="UI"><rect x="260.0" y="22.0" width="128" height="34" rx="4"/><text x="324.0" y="43.5">保障与理赔工作台</text></g><g class="node" data-id="Claims"><rect x="510.0" y="22.0" width="76" height="34" rx="4"/><text x="548.0" y="43.5">理赔服务</text></g><g class="node" data-id="Claim"><rect x="696.0" y="8.0" width="138" height="34" rx="4"/><text x="765.0" y="29.5">Claim 与 exposure</text></g><g class="node" data-id="Policy"><rect x="956.0" y="8.0" width="128" height="34" rx="4"/><text x="1020.0" y="29.5">事故时点保单版本</text></g><g class="node" data-id="Reserve"><rect x="715.0" y="67.0" width="100" height="34" rx="4"/><text x="765.0" y="88.5">Reserve set</text></g><g class="node" data-id="Payment"><rect x="8.0" y="67.0" width="142" height="34" rx="4"/><text x="79.0" y="88.5">Payment operation</text></g><g class="node" data-id="Pay"><rect x="41.0" y="129.0" width="76" height="34" rx="4"/><text x="79.0" y="150.5">支付服务</text></g><g class="node" data-id="Rail"><rect x="273.0" y="112.0" width="102" height="34" rx="4"/><text x="324.0" y="133.5">支付参照接口</text></g><g class="node" data-id="Result"><rect x="510.0" y="112.0" width="76" height="34" rx="4"/><text x="548.0" y="133.5">支付结果</text></g><g class="node" data-id="Inbox"><rect x="720.5" y="129.0" width="89" height="34" rx="4"/><text x="765.0" y="150.5">持久接收表</text></g></svg></div><details class="edge-list"><summary>图中关系的文字列表</summary><ul><li>核保与理赔人员 <span class="rel">—operates→</span> 保障与理赔工作台</li><li>保障与理赔工作台 <span class="rel">—commands→</span> 理赔服务</li><li>理赔服务 <span class="rel">—owns→</span> Claim 与 exposure</li><li>Claim 与 exposure <span class="rel">—depends_on→</span> 事故时点保单版本</li><li>理赔服务 <span class="rel">—owns→</span> Reserve set</li><li>Payment operation <span class="rel">—depends_on→</span> Reserve set</li><li>支付服务 <span class="rel">—requests→</span> 支付参照接口</li><li>支付参照接口 <span class="rel">—emits→</span> 支付结果</li><li>支付结果 <span class="rel">—delivers→</span> 持久接收表</li><li>支付服务 <span class="rel">—reads→</span> 持久接收表</li><li>Payment operation <span class="rel">—projects→</span> 保障与理赔工作台</li></ul></details></figure><p>React + TypeScript 配合普通表格，就能实现条款差异、reserve 分组和付款明细；长列表可以再加虚拟滚动，但屏外行里的错误也要有提示，不能只藏在看不见的位置。团队以 .NET 为主时，可以用 ASP.NET Core 与 decimal 编写金额规则；Java/Spring 也可行。规则表适合清楚的免赔额和限额比较，复杂责任仍由理赔人员处理；把整段合同交给模型、只取回一个 boolean，说不清授权依据。</p>
+<figure class="graph-fig"><div class="graph-wrap"><svg class="graph" viewBox="0 0 1092 179" width="1092" height="179" style="max-width:1256px;min-width:874px" role="img" aria-label="V13 · 保险：从保障承诺到可核对的赔付"><defs><marker id="arrow-g1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arrowhead"/></marker></defs><path class="edge" data-type="operates" data-from="Adjuster" data-to="UI" d="M136.5,25.0 Q205.0,25.0 260.0,31.5" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Adjuster" data-to="UI"><rect x="177.0" y="17.0" width="56" height="16" rx="3"/><text x="205.0" y="29.0">operates</text></g><path class="edge" data-type="commands" data-from="UI" data-to="Claims" d="M388.0,39.0 Q449.0,39.0 510.0,39.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="UI" data-to="Claims"><rect x="421.0" y="31.0" width="56" height="16" rx="3"/><text x="449.0" y="43.0">commands</text></g><path class="edge" data-type="owns" data-from="Claims" data-to="Claim" d="M586.0,33.3 Q641.0,25.0 696.0,25.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Claims" data-to="Claim"><rect x="625.0" y="17.0" width="32" height="16" rx="3"/><text x="641.0" y="29.0">owns</text></g><path class="edge" data-type="depends_on" data-from="Claim" data-to="Policy" d="M834.0,25.0 Q895.0,25.0 956.0,25.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Claim" data-to="Policy"><rect x="861.0" y="17.0" width="68" height="16" rx="3"/><text x="895.0" y="29.0">depends_on</text></g><path class="edge" data-type="owns" data-from="Claims" data-to="Reserve" d="M586.0,50.4 Q641.0,67.0 715.0,77.1" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Claims" data-to="Reserve"><rect x="625.0" y="59.0" width="32" height="16" rx="3"/><text x="641.0" y="71.0">owns</text></g><path class="edge" data-type="depends_on" data-from="Payment" data-to="Reserve" d="M150.0,90.2 Q205.0,95.0 264.5,95.0 Q324.0,95.0 386.5,95.0 Q449.0,95.0 498.5,95.0 Q548.0,95.0 594.5,95.0 Q641.0,95.0 715.0,88.4" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Payment" data-to="Reserve"><rect x="415.0" y="87.0" width="68" height="16" rx="3"/><text x="449.0" y="99.0">depends_on</text></g><path class="edge" data-type="requests" data-from="Pay" data-to="Rail" d="M117.0,140.9 Q205.0,129.0 273.0,129.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Pay" data-to="Rail"><rect x="177.0" y="121.0" width="56" height="16" rx="3"/><text x="205.0" y="133.0">requests</text></g><path class="edge" data-type="emits" data-from="Rail" data-to="Result" d="M375.0,129.0 Q449.0,129.0 510.0,129.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Rail" data-to="Result"><rect x="430.0" y="121.0" width="38" height="16" rx="3"/><text x="449.0" y="133.0">emits</text></g><path class="edge" data-type="delivers" data-from="Result" data-to="Inbox" d="M586.0,129.0 Q641.0,129.0 720.5,139.9" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Result" data-to="Inbox"><rect x="613.0" y="121.0" width="56" height="16" rx="3"/><text x="641.0" y="133.0">delivers</text></g><path class="edge" data-type="reads" data-from="Pay" data-to="Inbox" d="M117.0,151.1 Q205.0,163.0 264.5,163.0 Q324.0,163.0 386.5,163.0 Q449.0,163.0 498.5,163.0 Q548.0,163.0 594.5,163.0 Q641.0,163.0 720.5,152.1" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Pay" data-to="Inbox"><rect x="430.0" y="155.0" width="38" height="16" rx="3"/><text x="449.0" y="167.0">reads</text></g><path class="edge" data-type="projects" data-from="Payment" data-to="UI" d="M150.0,74.4 Q205.0,67.0 260.0,54.1" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Payment" data-to="UI"><rect x="177.0" y="59.0" width="56" height="16" rx="3"/><text x="205.0" y="71.0">projects</text></g><g class="node" data-id="Adjuster"><rect x="21.5" y="8.0" width="115" height="34" rx="4"/><text x="79.0" y="29.5">核保与理赔人员</text></g><g class="node" data-id="UI"><rect x="260.0" y="22.0" width="128" height="34" rx="4"/><text x="324.0" y="43.5">保障与理赔工作台</text></g><g class="node" data-id="Claims"><rect x="510.0" y="22.0" width="76" height="34" rx="4"/><text x="548.0" y="43.5">理赔服务</text></g><g class="node" data-id="Claim"><rect x="696.0" y="8.0" width="138" height="34" rx="4"/><text x="765.0" y="29.5">Claim 与 exposure</text></g><g class="node" data-id="Policy"><rect x="956.0" y="8.0" width="128" height="34" rx="4"/><text x="1020.0" y="29.5">事故时点保单版本</text></g><g class="node" data-id="Reserve"><rect x="715.0" y="67.0" width="100" height="34" rx="4"/><text x="765.0" y="88.5">Reserve set</text></g><g class="node" data-id="Payment"><rect x="8.0" y="67.0" width="142" height="34" rx="4"/><text x="79.0" y="88.5">Payment operation</text></g><g class="node" data-id="Pay"><rect x="41.0" y="129.0" width="76" height="34" rx="4"/><text x="79.0" y="150.5">支付服务</text></g><g class="node" data-id="Rail"><rect x="273.0" y="112.0" width="102" height="34" rx="4"/><text x="324.0" y="133.5">支付参照接口</text></g><g class="node" data-id="Result"><rect x="510.0" y="112.0" width="76" height="34" rx="4"/><text x="548.0" y="133.5">支付结果</text></g><g class="node" data-id="Inbox"><rect x="720.5" y="129.0" width="89" height="34" rx="4"/><text x="765.0" y="150.5">持久接收表</text></g></svg></div><details class="edge-list"><summary>图中关系的文字列表</summary><ul><li>核保与理赔人员 <span class="rel">—operates→</span> 保障与理赔工作台</li><li>保障与理赔工作台 <span class="rel">—commands→</span> 理赔服务</li><li>理赔服务 <span class="rel">—owns→</span> Claim 与 exposure</li><li>Claim 与 exposure <span class="rel">—depends_on→</span> 事故时点保单版本</li><li>理赔服务 <span class="rel">—owns→</span> Reserve set</li><li>Payment operation <span class="rel">—depends_on→</span> Reserve set</li><li>支付服务 <span class="rel">—requests→</span> 支付参照接口</li><li>支付参照接口 <span class="rel">—emits→</span> 支付结果</li><li>支付结果 <span class="rel">—delivers→</span> 持久接收表</li><li>支付服务 <span class="rel">—reads→</span> 持久接收表</li><li>Payment operation <span class="rel">—projects→</span> 保障与理赔工作台</li></ul></details></figure><p>React + TypeScript 配合普通表格，就能实现条款差异、reserve 分组和付款明细；长列表可以再加虚拟滚动，屏外行里的错误也要有提示。团队以 .NET 为主时，可以用 ASP.NET Core 与 decimal 编写金额规则；Java/Spring 也可行。规则表适合清楚的免赔额和限额比较，复杂责任仍由理赔人员处理；把整段合同交给模型、只取回一个 boolean，说不清授权依据。</p>
 <p>PostgreSQL 保存对象版本、reserve 调整条目、payment 占用与审计引用。照片、查勘文件放进受控对象存储，查询投影只显示当前角色能看到的元数据。数据库 outbox 能让业务决定与待发送任务在同一事务里写入；RabbitMQ 或工作流引擎可以帮着处理重试、超时和人工待办，资金对账仍要另做。支付适配器、保单适配器与总账适配器各自映射 provider account 和外部 ID；总账收到 reserve 信息只是会计交接，银行并没有因此冻结等额现金，claimant 也还没有收到钱。</p>
-<p>正常路径先完成投保、报价与绑定出单，再登记事故、建立 exposure、核定 5,500、批准 reserve 调整、确认首付 2,000 与尾款 3,500。费用 300 若已确认仍需支付，赔款付足了也不能关闭全案；等费用已付或其估计经授权释放、所有 exposure 已处理且没有未知操作时，才能结案。结案 guard 检查责任与操作是否全部完成，不只看合计余额是否为零。</p>
-<p>失败路径可以从 reserve 审批开始：普通理赔员提交 4,300 后，界面显示待批，此时不能安排赔付。主管批准后，下游总账 acknowledgment 暂未到达：reserve 在本例业务账中已批准，交接栏仍待确认；acknowledgment 缺失，不能成为把同一 reserve 再增加一次的理由。支付 1,000 超时后保留 U；按原参考号查询发现已成功，就把 U 转为 P，余额只减少一次。若 worker 在记 P 后、更新消费标记前崩溃，恢复时凭同一 payment ID 读取已付效果；若确认外部失败，则释放 U 并保留失败证据。新证据改变责任判断时，先冻结尚未执行的操作；已付金额走经授权的差额处理，原 decision 不删除，历史付款才有据可查。</p>
+<p>正常路径先完成投保、报价与绑定出单，再登记事故、建立 exposure、核定 5,500、批准 reserve 调整、确认首付 2,000 与尾款 3,500。费用 300 若已确认仍需支付，赔款付足后全案仍保持开放；等费用已付或其估计经授权释放、所有 exposure 已处理且没有未知操作时，才能结案。结案 guard 逐项检查责任与操作是否全部完成。</p>
+<p>失败路径可以从 reserve 审批开始：普通理赔员提交 4,300 后，界面显示待批，赔付等主管批准后才安排。主管批准后，下游总账 acknowledgment 暂未到达：reserve 在本例业务账中已批准，交接栏仍待确认；acknowledgment 缺失，不能成为把同一 reserve 再增加一次的理由。支付 1,000 超时后保留 U；按原参考号查询发现已成功，就把 U 转为 P，余额只减少一次。若 worker 在记 P 后、更新消费标记前崩溃，恢复时凭同一 payment ID 读取已付效果；若确认外部失败，则释放 U 并保留失败证据。新证据改变责任判断时，先冻结尚未执行的操作；已付金额走经授权的差额处理，原 decision 不删除，历史付款才有据可查。</p>
 </section>
 <section class="scene" aria-labelledby="验算规模目标检查项与模型评估"><header class="scene-head"><h2 id="验算规模目标检查项与模型评估"><span class="scene-no" aria-hidden="true">06</span><span class="visually-hidden">验算：</span><span class="head">规模目标、检查项与模型评估</span></h2></header><p class="scene-lede">验收的重点是并发占用和未知付款：同案两人从 2,500 中各提交 2,000 只能成功一个，未知付款保持占用直到核对。</p>
 <p>待测负载为 20 个租户、100 万保单、20 万开放 claim，每案平均 5 条 reserve line、100 笔财务事件；平时 30 次财务写入/秒，集中事件在 15 分钟内新增 5 万报案。报案接收目标 p95 小于 500 ms；查验可以异步，但要先返回一个已持久化的报案 ID。财务提交目标 p99 小于 1 s，只覆盖本地验证与持久化，不包含外部支付耗时。接收延迟、待核验积压和财务生效延迟要分别报告，否则快速返回的 202 会掩盖数小时无人处理的积压。</p>
@@ -173,11 +257,44 @@
 <section class="scene" aria-labelledby="变式条件变化与迁移"><header class="scene-head"><h2 id="变式条件变化与迁移"><span class="scene-no" aria-hidden="true">07</span><span class="visually-hidden">变式：</span><span class="head">条件变化与迁移</span></h2></header><p class="scene-lede">计算绑定条款版本、事故日与报案日分开保存、未知付款保留占用，这三条在条件改变后不变；变的是限额是否起作用、日期 guard 用哪个日期，以及估计能下调到哪里。</p>
 <p><strong>练习 1：核定损失变为 10,000，免赔额和限额不变，应赔多少？</strong></p>
 <p>简答：依本例“先扣免赔、后限额”的条款，<code>min(10,000−500,8,000)=8,000</code>；若写成 <code>min(10,000,8,000)−500</code>，会得到错误的 7,500。不变的是计算要绑定条款版本，变的是这次限额开始起作用。验收要包括超过限额的损失，不能只测 6,000 这种两种顺序结果相同的普通样本。</p>
-<p><strong>练习 2：改成按报告时点判断保障的政策，第 370 日报告第 360 日事故还能照原答案处理吗？</strong></p>
+<figure class="drawing" data-drawing="v13-order"><div class="dw-scroll" style="--dw-min:640px;--dw-max:960px">
+<svg viewBox="0 0 880 220" role="img" aria-labelledby="v13-order-t v13-order-d">
+  <title id="v13-order-t">免赔与限额的先后</title>
+  <desc id="v13-order-d">损失 6,000 时两种顺序都得 5,500。损失 10,000 时，先扣免赔 500、后受限额 8,000 约束，得 8,000；先取限额再扣免赔，得 7,500。</desc>
+  <text class="t-s mid" x="205" y="30">免赔 500</text>
+  <path class="ln-soft" d="M220 36 V200"/>
+  <g data-s="1">
+    <text class="t-b end" x="180" y="64">损失 6,000</text><text class="t-s end" x="180" y="80">两种顺序</text>
+    <rect class="box f3" x="190" y="50" width="30" height="32"/>
+    <rect class="box f2" x="220" y="50" width="330" height="32"/>
+    <text class="t-s mid" x="385" y="70">6,000 − 500</text>
+    <text class="t-n" x="806" y="71">5,500</text>
+  </g>
+  <g data-s="2">
+    <text class="t-b end" x="180" y="124">损失 10,000</text><text class="t-s end" x="180" y="140">先扣免赔、后限额</text>
+    <rect class="box" x="190" y="110" width="600" height="32"/>
+    <rect class="box f3" x="190" y="110" width="30" height="32"/>
+    <rect class="box-em" x="220" y="110" width="480" height="32"/>
+    <text class="t-s mid" x="460" y="130">min(10,000−500, 8,000)</text>
+    <text class="t-s mid" x="745" y="130">限额外</text>
+    <text class="t-n t-em" x="806" y="131">8,000</text>
+  </g>
+  <g data-s="3">
+    <text class="t-b end" x="180" y="184">损失 10,000</text><text class="t-s end" x="180" y="200">先限额、后扣免赔</text>
+    <rect class="box" x="190" y="170" width="600" height="32"/>
+    <rect class="box f3" x="190" y="170" width="30" height="32"/>
+    <rect class="box f2" x="220" y="170" width="450" height="32"/>
+    <text class="t-s mid" x="445" y="190">min(10,000, 8,000)−500</text>
+    <text class="t-s mid" x="730" y="190">限额外</text>
+    <text class="t-n" x="806" y="191">7,500</text>
+  </g>
+</svg>
+</div>
+<figcaption>免赔 500 都扣在损失的开头；先扣免赔时，限额 8,000 量的是扣后的部分，先取限额就少赔 500。</figcaption></figure><p><strong>练习 2：改成按报告时点判断保障的政策，第 370 日报告第 360 日事故还能照原答案处理吗？</strong></p>
 <p>简答：不能。日期 guard 已改变，要按新条款评估报告时点及其例外；旧的事故日测试只证明事故发生在期间内。事故日、报案日仍分别保存，变的是适用规则与所需证据。用同一材料包分别跑两个明确版本，检查输出原因引用了不同的日期。</p>
 <p><strong>练习 3：reserve 5,500，已付 2,000，另有 1,000 未知付款；理赔员现在降低估计至 2,500。能否直接释放 3,000？</strong></p>
 <p>简答：不能，那样会让本例的可用余额变成负数。已付加占用为 3,000，低于这个水平的下调先挂起，核对未知付款，再由授权人员处理差额；不能靠改估计假装付款没发生。测试应观察 U 没有被清空、下调请求与理由仍保留，结果未知时不会重新付款。</p>
-<p>V13 的版本化承诺可迁到 H01 的合同变更（<code>TR:V13:H01:versioned-coverage</code>），额度占用可迁到 V14 的订单预留（<code>TR:V13:V14:reserved-capacity</code>），按责任维度核对可迁到 H03 的分户账（<code>TR:V13:H03:responsibility-dimensions</code>）。但保单责任与购买来的服务权利不是一回事；reserve 也不是银行余额或已确定的应付款，它在事实不全时就记下估计，之后持续修订。V12 的 payoff 要消灭已存在的债权，V13 的结案则要检查所有 exposure 和未决责任，所以“余额归零”不能当作跨行业通用的结束条件。演示可以调免赔额、限额、事故日、审批权限与未知付款，逐项观察是哪一条前提改变了结论。</p>
+<p>V13 的版本化承诺可迁到 H01 的合同变更（<code>TR:V13:H01:versioned-coverage</code>），额度占用可迁到 V14 的订单预留（<code>TR:V13:V14:reserved-capacity</code>），按责任维度核对可迁到 H03 的分户账（<code>TR:V13:H03:responsibility-dimensions</code>）。保单责任与购买来的服务权利性质不同；reserve 在事实不全时就记下估计，之后持续修订，与银行余额或已确定的应付款分开记录。V12 的 payoff 要消灭已存在的债权，V13 的结案则要检查所有 exposure 和未决责任，所以结束条件按行业各自定义，“余额归零”只是贷款的那一条。演示可以调免赔额、限额、事故日、审批权限与未知付款，逐项观察是哪一条前提改变了结论。</p>
 </section>
 <section class="scene" aria-labelledby="进入陌生险种的先查项"><header class="scene-head"><h2 id="进入陌生险种的先查项"><span class="scene-no" aria-hidden="true">08</span><span class="head">进入陌生险种的先查项</span></h2></header><p class="scene-lede">进入一个陌生险种，先识别保障触发依据、被保对象、claimant、exposure、限额共享范围和费用分类，再选择保单版本管理、理赔案件管理与责任分组账务的组合。优先查适用的保单条款和对应产品版本的文档；没有拿到 ACORD 原文，就不要说数据模型符合该标准。用同一合成事故改变日期、免赔顺序和未知付款，验证责任判断、估计与可付额度各自变化；这些业务前提明确之后，通用审批流才有足够的信息决定是否放行。</p>
 <p>拓扑与检查见 <a href="../../../vault/distilled/saas-engineering-atlas/packages/commercial-finance/V13.json">V13.json</a>；来源边界与执行记录见 <a href="../../../vault/distilled/saas-engineering-atlas/packages/commercial-finance/evidence.json">evidence.json</a>、<a href="../../../vault/distilled/saas-engineering-atlas/packages/commercial-finance/CHANGELOG.md">CHANGELOG.md</a>。</p>
@@ -317,8 +434,8 @@
     <footer class="page-foot">正文 <a href="../../../books/saas-engineering/packages/commercial-finance/V13.md">books/saas-engineering/packages/commercial-finance/V13.md</a> · <a href="../../../vault/distilled/saas-engineering-atlas/README.md">结构、来源与验证</a></footer>
   </main>
 </div>
-<script src="search-index.js?v=mv95jeod"></script>
-<script src="book.js?v=mv95jeod"></script>
+<script src="search-index.js?v=mv97hru0"></script>
+<script src="book.js?v=mv97hru0"></script>
 
 </body>
 </html>

@@ -1,0 +1,40 @@
+<div class="dw-scroll" style="--dw-min:580px;--dw-max:840px">
+<svg viewBox="0 0 700 214" role="img" aria-labelledby="f08-hll-merge-t f08-hll-merge-d">
+  <title id="f08-hll-merge-t">两日 HLL 摘要的合并与相加</title>
+  <desc id="f08-hll-merge-d">周一访客 A、B、C，寄存器 [3,0,4,0]；周二访客 A、C、D，D 的 hash 为 01|1…，寄存器 [3,1,4,0]。逐桶取最大值合并得 [3,1,4,0]，对应 A、B、C、D 共 4 人；两天精确去重数各 3，直接相加得 6。</desc>
+  <text class="t-s" x="76" y="18">访客</text>
+  <text class="t-s mid" x="305" y="18">桶 00</text><text class="t-s mid" x="355" y="18">桶 01</text><text class="t-s mid" x="405" y="18">桶 10</text><text class="t-s mid" x="455" y="18">桶 11</text>
+  <text class="t-s" x="520" y="18">精确去重数</text>
+  <g data-s="1">
+    <text class="t-b" x="0" y="51">周一</text><text class="t" x="76" y="51">A、B、C</text>
+    <rect class="box" x="280" y="32" width="50" height="28"/><text class="t-n mid" x="305" y="51">3</text>
+    <rect class="box" x="330" y="32" width="50" height="28"/><text class="t-n mid" x="355" y="51">0</text>
+    <rect class="box" x="380" y="32" width="50" height="28"/><text class="t-n mid" x="405" y="51">4</text>
+    <rect class="box" x="430" y="32" width="50" height="28"/><text class="t-n mid" x="455" y="51">0</text>
+    <text class="t-n" x="520" y="51">3</text>
+  </g>
+  <g data-s="2">
+    <text class="t-b" x="0" y="95">周二</text><text class="t" x="76" y="95">A、C、D</text><text class="t-s" x="150" y="95">D = <tspan class="t-n">01|1…</tspan></text>
+    <rect class="box" x="280" y="76" width="50" height="28"/><text class="t-n mid" x="305" y="95">3</text>
+    <rect class="box f3" x="330" y="76" width="50" height="28"/><text class="t-n mid" x="355" y="95">1</text>
+    <rect class="box" x="380" y="76" width="50" height="28"/><text class="t-n mid" x="405" y="95">4</text>
+    <rect class="box" x="430" y="76" width="50" height="28"/><text class="t-n mid" x="455" y="95">0</text>
+    <text class="t-n" x="520" y="95">3</text>
+  </g>
+  <path class="ln-soft" d="M0 120 H700"/>
+  <g data-s="3">
+    <text class="t-b" x="0" y="151">逐桶取最大</text><text class="t" x="96" y="151">A、B、C、D</text>
+    <rect class="box" x="280" y="132" width="50" height="28"/><text class="t-n mid" x="305" y="151">3</text>
+    <rect class="box f3" x="330" y="132" width="50" height="28"/><text class="t-n mid" x="355" y="151">1</text>
+    <rect class="box" x="380" y="132" width="50" height="28"/><text class="t-n mid" x="405" y="151">4</text>
+    <rect class="box" x="430" y="132" width="50" height="28"/><text class="t-n mid" x="455" y="151">0</text>
+    <text class="t-n" x="520" y="151">4</text><text class="t-s" x="540" y="151">并集</text>
+  </g>
+  <g data-s="4">
+    <text class="t-b t-em" x="0" y="195">直接相加</text>
+    <text class="t-s" x="96" y="195">A、C 两天都来，各算了两次</text>
+    <text class="t-n t-em" x="520" y="195">3 + 3 = 6</text>
+  </g>
+</svg>
+</div>
+<figcaption>合并后的寄存器就是把 A、B、C、D 插进同一个摘要的结果；相加把两天都来的 A、C 各算了两次。</figcaption>

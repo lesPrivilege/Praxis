@@ -1,0 +1,31 @@
+<div class="dw-scroll" style="--dw-min:560px;--dw-max:860px">
+<svg viewBox="0 0 720 224" role="img" aria-labelledby="f02-hash-t f02-hash-d">
+  <title id="f02-hash-t">同一个桶，不同的 key</title>
+  <desc id="f02-hash-d">hash 把 (A,O7) 和 (A,O9) 都放进桶 2，把 (B,O7) 放进桶 5。查 (A,O7) 时先到桶 2，再比较完整 key：(A,O7) 相同，返回；(A,O9) 的 O9 与 O7 不同，排除。</desc>
+  <defs><marker id="f02-hash-ah" viewBox="0 0 8 8" refX="7" refY="4" markerUnits="userSpaceOnUse" markerWidth="9" markerHeight="9" orient="auto"><path class="f-ink" d="M0 0 L8 4 L0 8 z"/></marker></defs>
+  <text class="t-s" x="20" y="20">key</text>
+  <text class="t-s" x="250" y="20">桶</text>
+  <rect class="box" x="20" y="46" width="110" height="36"/><text class="t-n mid" x="75" y="69">(A,O7)</text>
+  <rect class="box" x="20" y="96" width="110" height="36"/><text class="t-n mid" x="75" y="119">(A,O9)</text>
+  <rect class="box" x="20" y="164" width="110" height="36"/><text class="t-n mid" x="75" y="187">(B,O7)</text>
+  <path class="ln" marker-end="url(#f02-hash-ah)" d="M130 64 H258"/>
+  <path class="ln" marker-end="url(#f02-hash-ah)" d="M130 114 H258"/>
+  <path class="ln" marker-end="url(#f02-hash-ah)" d="M130 182 H258"/>
+  <text class="t-s mid" x="190" y="58">hash</text>
+  <rect class="box f1" x="250" y="34" width="180" height="110"/><text class="t-b" x="386" y="94">桶 2</text>
+  <rect class="box" x="262" y="46" width="110" height="36"/><text class="t-n mid" x="317" y="69">(A,O7)</text>
+  <rect class="box" x="262" y="96" width="110" height="36"/><text class="t-n mid" x="317" y="119">(A,O9)</text>
+  <rect class="box f1" x="250" y="156" width="180" height="54"/><text class="t-b" x="386" y="187">桶 5</text>
+  <rect class="box" x="262" y="164" width="110" height="36"/><text class="t-n mid" x="317" y="187">(B,O7)</text>
+  <g data-s="1">
+    <text class="t-b" x="460" y="26">查 (A,O7)</text><text class="t-s" x="460" y="44">先到桶 2，再比较完整 key</text>
+    <rect class="box-em" x="262" y="46" width="110" height="36"/><text class="t-n t-em mid" x="317" y="69">(A,O7)</text>
+    <text class="t t-em" x="460" y="69">key 相同，返回</text>
+  </g>
+  <g data-s="2">
+    <rect class="box f2" x="262" y="96" width="110" height="36"/><text class="t-n mid" x="317" y="119">(A,O9)</text>
+    <text class="t" x="460" y="119">O9 ≠ O7，排除</text>
+  </g>
+</svg>
+</div>
+<figcaption>桶号只缩小候选范围；同桶里的 (A,O7) 与 (A,O9) 靠完整 key 分开，(B,O7) 落在另一个桶。</figcaption>

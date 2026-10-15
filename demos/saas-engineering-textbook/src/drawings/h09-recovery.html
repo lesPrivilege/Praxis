@@ -1,0 +1,35 @@
+<div class="dw-scroll" style="--dw-min:640px;--dw-max:960px">
+<svg viewBox="0 0 822 310" role="img" aria-labelledby="h09-recovery-t h09-recovery-d">
+  <title id="h09-recovery-t">取消意图按 S7 所处状态分路</title>
+  <desc id="h09-recovery-d">S7 仍为 queued、未被认领时，条件更新取消成功，发送被抑制。S7 处于 dispatching 或结果未知时，先保存取消意图并查回：查到全部签署进入 disputed；查到待签或部分签署进入 cancel_pending；查不到请求且无法证明未受理时保持 unknown。S7 已确认发出时，进入 cancel_pending，外部确认后为 cancelled。</desc>
+  <g data-s="1">
+    <rect class="box" x="10" y="140" width="120" height="44"/><text class="t-b mid" x="70" y="167">S7 取消意图</text>
+    <path class="ln" d="M130 162 C 155 162, 155 52, 180 52"/>
+    <path class="ln" d="M130 162 H180"/>
+    <path class="ln" d="M130 162 C 155 162, 155 272, 180 272"/>
+    <rect class="box" x="180" y="30" width="150" height="44"/><text class="t-n mid" x="255" y="50">queued</text><text class="t-s mid" x="255" y="66">尚未认领</text>
+    <rect class="box-em" x="180" y="140" width="150" height="44"/><text class="t-n mid" x="255" y="160">dispatching</text><text class="t-s mid" x="255" y="176">已认领，结果未知</text>
+    <rect class="box" x="180" y="250" width="150" height="44"/><text class="t-n mid" x="255" y="270">sent</text><text class="t-s mid" x="255" y="286">已确认发出</text>
+  </g>
+  <g data-s="2">
+    <path class="ln" d="M330 52 H370"/>
+    <rect class="box" x="370" y="30" width="150" height="44"/><text class="t mid" x="445" y="50">条件更新取消</text><text class="t-s mid" x="445" y="66">认领与取消只一方成功</text>
+    <path class="ln" d="M520 52 H580"/>
+    <rect class="box f1" x="580" y="30" width="232" height="46"/><text class="t-s" x="592" y="48">取消先于认领</text><text class="t" x="592" y="67">已取消，发送被抑制</text>
+  </g>
+  <g data-s="3">
+    <path class="ln" d="M330 272 H580"/>
+    <rect class="box f1" x="580" y="250" width="232" height="46"/><text class="t-s" x="592" y="268">已发出，或查回待签、部分签署</text><text class="t-n" x="592" y="287">cancel_pending → cancelled</text>
+  </g>
+  <g data-s="4">
+    <path class="ln" d="M330 162 H370"/>
+    <rect class="box" x="370" y="140" width="150" height="44"/><text class="t mid" x="445" y="160">保存取消意图</text><text class="t-s mid" x="445" y="176">查回实际状态</text>
+    <path class="ln" d="M520 162 C 550 162, 550 123, 580 123"/>
+    <path class="ln" d="M520 162 C 550 162, 550 193, 580 193"/>
+    <path class="ln" d="M520 162 C 550 162, 550 268, 580 268"/>
+    <rect class="box f1" x="580" y="100" width="232" height="46"/><text class="t-s" x="592" y="118">查回：全部签署</text><text class="t" x="592" y="137">disputed，保留签名与时间</text>
+    <rect class="box-dash" x="580" y="170" width="232" height="46"/><text class="t-s" x="592" y="188">查不到，又无法证明未受理</text><text class="t" x="592" y="207">保持 unknown</text>
+  </g>
+</svg>
+</div>
+<figcaption>只有尚未认领的 queued 尝试能在本地直接取消；已认领的尝试先查回，再按查到的结果分路。</figcaption>

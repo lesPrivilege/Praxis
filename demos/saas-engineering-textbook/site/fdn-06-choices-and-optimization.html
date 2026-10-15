@@ -4,9 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>第六章：有约束的选择与求解 · SaaS 工程全景</title>
-<link rel="stylesheet" href="book.css?v=mv95jeod">
+<link rel="stylesheet" href="book.css?v=mv97hru0">
 </head>
 <body>
+<svg class="dw-defs" width="0" height="0" aria-hidden="true" focusable="false" style="position:absolute"><defs><pattern id="dw-hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" fill="var(--bg)"/><path d="M0 0 V6" stroke="var(--ink-2)" stroke-width="1.2"/></pattern></defs></svg>
 <a class="skip" href="#main">跳到正文</a>
 <header class="topbar">
   <button class="nav-toggle" type="button" aria-controls="sidebar" aria-expanded="false">目录</button>
@@ -20,7 +21,7 @@
 <header class="hero">
 <p class="kicker"><a href="fdn.html">计算与系统方法</a><span class="dot">·</span>第六章</p>
 <h1>有约束的选择与求解</h1>
-<p class="lede">“最便宜”“尽量多”“最快”，缺了对象与约束，都不是完整的题目。写出变量、硬约束和目标之后，方法按条件选：交换论证成立时用贪心，子问题反复出现时用动态规划，规模小而约束复杂时用回溯搜索，要证明最优时用分支限界或成熟求解器。可行与最优是两种结论：最优要有界或求解器的证明状态作证据；时间到了还没找到解，只说明没有找到，不说明无解。</p>
+<p class="lede">“最便宜”“尽量多”“最快”，配上对象与约束，才是完整的题目。写出变量、硬约束和目标之后，方法按条件选：交换论证成立时用贪心，子问题反复出现时用动态规划，规模小而约束复杂时用回溯搜索，要证明最优时用分支限界或成熟求解器。可行与最优是两种结论：最优要有界或求解器的证明状态作证据；时间到了还没找到解，结论是“未找到”，与“已证明无解”是两回事。</p>
 
 
 </header>
@@ -77,9 +78,40 @@
   <text class="t" x="560" y="203">共 3 项</text>
 </svg>
 </div>
-<figcaption>按最早结束选：A 在 3 结束，B 在此前开始而被排除；C 从 3 接上，D 从 5 接上，三项首尾相接。</figcaption></figure><div class="labelled" data-kind="counter"><p class="blk-l">误用反例</p><p>把 B 的价值改成 100，A、C、D 各为 1；完成最多项仍是 A+C+D，但最大价值应选 B+D=101。目标从项数换成价值，最早结束优先就不再成立。V20 的服务数量、V21 的货运收益和 H06 的客户等待若要合成一个分数，要先说明各自的代价。</p></div>
-<h3 id="dp剩余预算的状态表">DP：剩余预算的状态表</h3>
-<p>设预算为 5 单位，候选工作 A 成本 2、价值 3，B 成本 3、价值 4，C 成本 4、价值 5，每件最多选一次。定义 <code>F(i,b)</code> 为前 i 件、预算不超过 b 时的最大价值。处理第 i 件只有两种情形：不选它；或者选它，再用剩余预算处理前面的各件。两种情形合起来不会漏掉任何可行解。</p>
+<figcaption>按最早结束选：A 在 3 结束，B 在此前开始而被排除；C 从 3 接上，D 从 5 接上，三项首尾相接。</figcaption></figure><div class="labelled" data-kind="counter"><p class="blk-l">误用反例</p><p>把 B 的价值改成 100，A、C、D 各为 1；完成最多项仍是 A+C+D，价值只有 3，最大价值应选 B+D=101。目标从项数换成价值，最早结束优先就不再成立。V20 的服务数量、V21 的货运收益和 H06 的客户等待若要合成一个分数，要先说明各自的代价。</p></div>
+<figure class="drawing" data-drawing="f06-value"><div class="dw-scroll" style="--dw-min:560px;--dw-max:860px">
+<svg viewBox="0 0 700 282" role="img" aria-labelledby="f06-value-t f06-value-d">
+  <title id="f06-value-t">同一组预约，两个目标</title>
+  <desc id="f06-value-d">预约 A [0,3)、B [2,4)、C [3,5)、D [5,7)，B 的价值改为 100，A、C、D 各为 1。按项数，最早结束优先选 A、C、D，共 3 项、价值 3；按价值，最优是 B+D=101。填充的是选中的预约。</desc>
+  <path class="ln-soft" d="M150 28 V256"/><text class="t-n mid" x="150" y="274">0</text><path class="ln-soft" d="M202 28 V256"/><text class="t-n mid" x="202" y="274">1</text><path class="ln-soft" d="M254 28 V256"/><text class="t-n mid" x="254" y="274">2</text><path class="ln-soft" d="M306 28 V256"/><text class="t-n mid" x="306" y="274">3</text><path class="ln-soft" d="M358 28 V256"/><text class="t-n mid" x="358" y="274">4</text><path class="ln-soft" d="M410 28 V256"/><text class="t-n mid" x="410" y="274">5</text><path class="ln-soft" d="M462 28 V256"/><text class="t-n mid" x="462" y="274">6</text><path class="ln-soft" d="M514 28 V256"/><text class="t-n mid" x="514" y="274">7</text>
+    <g>
+    <text class="t-b" x="0" y="20">目标：完成最多项</text>
+    <text class="t-b" x="0" y="48">A</text><text class="t-n" x="18" y="48">[0,3)</text><text class="t-s end" x="132" y="48">价值 1</text>
+    <rect class="box f2" x="150" y="34" width="156" height="18"/>
+    <text class="t-b" x="0" y="72">B</text><text class="t-n" x="18" y="72">[2,4)</text><text class="t-s end" x="132" y="72">价值 100</text>
+    <rect class="box" x="254" y="58" width="104" height="18"/>
+    <text class="t-b" x="0" y="96">C</text><text class="t-n" x="18" y="96">[3,5)</text><text class="t-s end" x="132" y="96">价值 1</text>
+    <rect class="box f2" x="306" y="82" width="104" height="18"/>
+    <text class="t-b" x="0" y="120">D</text><text class="t-n" x="18" y="120">[5,7)</text><text class="t-s end" x="132" y="120">价值 1</text>
+    <rect class="box f2" x="410" y="106" width="104" height="18"/>
+    <text class="t-b" x="540" y="70">A + C + D</text><text class="t-s" x="540" y="88">3 项，价值 3</text>
+    </g>
+  <g data-s="1">
+    <text class="t-b" x="0" y="150">目标：最大价值</text>
+    <text class="t-b" x="0" y="178">A</text><text class="t-n" x="18" y="178">[0,3)</text><text class="t-s end" x="132" y="178">价值 1</text>
+    <rect class="box" x="150" y="164" width="156" height="18"/>
+    <text class="t-b" x="0" y="202">B</text><text class="t-n" x="18" y="202">[2,4)</text><text class="t-s end" x="132" y="202">价值 100</text>
+    <rect class="box-em" x="254" y="188" width="104" height="18"/>
+    <text class="t-b" x="0" y="226">C</text><text class="t-n" x="18" y="226">[3,5)</text><text class="t-s end" x="132" y="226">价值 1</text>
+    <rect class="box" x="306" y="212" width="104" height="18"/>
+    <text class="t-b" x="0" y="250">D</text><text class="t-n" x="18" y="250">[5,7)</text><text class="t-s end" x="132" y="250">价值 1</text>
+    <rect class="box-em" x="410" y="236" width="104" height="18"/>
+    <text class="t-b t-em" x="540" y="200">B + D</text><text class="t-s" x="540" y="218">2 项，价值 101</text>
+    </g>
+</svg>
+</div>
+<figcaption>预约与时间都没变，只换了目标：按项数选 A、C、D，按价值选 B、D。</figcaption></figure><h3 id="dp剩余预算的状态表">DP：剩余预算的状态表</h3>
+<p>设预算为 5 单位，候选工作 A 成本 2、价值 3，B 成本 3、价值 4，C 成本 4、价值 5，每件最多选一次。定义 <code>F(i,b)</code> 为前 i 件、预算不超过 b 时的最大价值。处理第 i 件只有两种情形：不选它；或者选它，再用剩余预算处理前面的各件。两种情形合起来覆盖全部可行解。</p>
 <div class="table-wrap wide"><table>
 <thead>
 <tr>
@@ -130,18 +162,77 @@
 </tr>
 </tbody></table></div>
 <p>右下角为 7，由 A+B 得到。每格再记下取值来自哪种情形，就能倒推出方案。状态必须含预算；只记“已经考虑几件”，会把剩余 1 和剩余 3 的两条路径错误地合并。<a href="https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-fall-2011/3484e876d81aba07911a1109f5b5e81e_MIT6_006F11_lec21.pdf" class="ext" rel="noopener">MIT 6.006 Lecture 21 的 Knapsack</a>专门讲解状态不足和 O(nS) 的伪多项式成本。</p>
-<p>整数预算上限为 S 时，表有 O(nS) 个状态，每格做常数次比较；滚动表可以把值的存储降到 O(S)，但倒推方案可能需要额外信息。预算单位从“万元”改为“分”，S 会扩大一百万倍，所以不能只看工作数量判断规模。再加上人员、技能、时间等维度，状态空间可能成倍相乘。这时先考虑求解库，不要为了套用 DP 而删掉约束。</p>
+<p>整数预算上限为 S 时，表有 O(nS) 个状态，每格做常数次比较；滚动表可以把值的存储降到 O(S)，但倒推方案可能需要额外信息。预算单位从“万元”改为“分”，S 会扩大一百万倍，所以规模要连同 S 一起看。再加上人员、技能、时间等维度，状态空间可能成倍相乘。这时先考虑求解库，约束全部留在模型里，而不是为了套用 DP 删掉约束。</p>
 <div class="labelled" data-kind="counter"><p class="blk-l">误用反例</p><p>0/1 选择里每件只能选一次，一维滚动表却从小预算向大预算更新，A 的新结果又被拿来再选一次 A，题目就变成了每件可选无限次。放到业务里，就是同一技师在同一时段被分给两个工作。验算时枚举小样本的全部子集作对照，并核对方案里每件是否只出现一次。</p></div>
 <h3 id="回溯backtracking试探与退回">回溯（backtracking）：试探与退回</h3>
 <p>J1、J2 两项工作同时进行，各需一名技师，且不能是同一人。技师甲能做 J1、J2，乙只能做 J1。先把甲分给 J1，J2 就无人可用，于是撤销这一步；改为乙做 J1、甲做 J2，得到可行分配。搜索树的节点是部分方案，边是下一步选择；一旦明显违反技能、容量或时间约束，立刻停止该分支。</p>
-<p>回溯比列出全部方案再筛选省工作，但最坏情况下仍可能面对指数个子集或阶乘个排列。分支数为 b、深度为 d 时，节点数的粗略上界是 O(b^d)，约束检查的成本另算。回溯机制可参考 <a href="https://cses.fi/book/book.pdf" class="ext" rel="noopener">Laaksonen §5.3–5.4</a>。标准的匹配问题应先用成熟的匹配算法或求解器；这个例子里的回溯说明的是：局部可行不保证整体可行。</p>
+<figure class="drawing" data-drawing="f06-backtrack"><div class="dw-scroll" style="--dw-min:600px;--dw-max:900px">
+<svg viewBox="0 0 760 252" role="img" aria-labelledby="f06-backtrack-t f06-backtrack-d">
+  <title id="f06-backtrack-t">给 J1、J2 分配技师的搜索树</title>
+  <desc id="f06-backtrack-d">甲能做 J1、J2，乙只能做 J1。先把甲分给 J1，J2 无人可用，撤销这一步；改为乙做 J1，再由甲做 J2，得到可行分配。</desc>
+  <defs><marker id="f06-backtrack-ah" viewBox="0 0 8 8" refX="7" refY="4" markerUnits="userSpaceOnUse" markerWidth="9" markerHeight="9" orient="auto"><path class="f-ink" d="M0 0 L8 4 L0 8 z"/></marker></defs>
+  <text class="t-s" x="20" y="224">甲：能做 J1、J2</text>
+  <text class="t-s" x="20" y="242">乙：只能做 J1</text>
+  <rect class="box" x="20" y="96" width="130" height="44"/><text class="t mid" x="85" y="123">J1、J2 待分配</text>
+  <g data-s="1">
+    <path class="ln" marker-end="url(#f06-backtrack-ah)" d="M150 110 L236 62"/>
+    <rect class="box" x="240" y="30" width="140" height="44"/><text class="t mid" x="310" y="57">甲 → J1</text>
+  </g>
+  <g data-s="2">
+    <path class="ln" marker-end="url(#f06-backtrack-ah)" d="M380 52 H456"/>
+    <rect class="box f2" x="460" y="30" width="160" height="44"/><text class="t mid" x="540" y="50">J2 无人可用</text><text class="t-s mid" x="540" y="66">甲已占用，乙不会做</text>
+    <path class="ln-dash" marker-end="url(#f06-backtrack-ah)" d="M540 30 C540 4 330 0 312 26"/>
+    <text class="t-s" x="400" y="12">撤销</text>
+  </g>
+  <g data-s="3">
+    <path class="ln" marker-end="url(#f06-backtrack-ah)" d="M150 126 L236 174"/>
+    <rect class="box" x="240" y="162" width="140" height="44"/><text class="t mid" x="310" y="189">乙 → J1</text>
+  </g>
+  <g data-s="4">
+    <path class="ln" marker-end="url(#f06-backtrack-ah)" d="M380 184 H456"/>
+    <rect class="box-em" x="460" y="162" width="160" height="44"/><text class="t t-em mid" x="540" y="182">甲 → J2</text><text class="t-s mid" x="540" y="198">可行分配</text>
+  </g>
+</svg>
+</div>
+<figcaption>甲 → J1 这一步本身可行，却让 J2 无人可做；退回到根，换乙做 J1，才走到可行分配。</figcaption></figure><p>回溯比列出全部方案再筛选省工作，但最坏情况下仍可能面对指数个子集或阶乘个排列。分支数为 b、深度为 d 时，节点数的粗略上界是 O(b^d)，约束检查的成本另算。回溯机制可参考 <a href="https://cses.fi/book/book.pdf" class="ext" rel="noopener">Laaksonen §5.3–5.4</a>。标准的匹配问题应先用成熟的匹配算法或求解器；这个例子里的回溯说明：每一步局部可行，整体仍可能走不通，要退回重选。</p>
 <div class="labelled" data-kind="counter"><p class="blk-l">误用反例</p><p>搜索时间一到就返回“无解”。时间到只说明没有找到，甚至可能已经找到可行解，只是还没证明最优。验算要把三种结果分开：已证明无解、预算耗尽、已有可行方案。</p></div>
 <h3 id="分支限界branch-and-bound乐观界与剪枝">分支限界（branch and bound）：乐观界与剪枝</h3>
-<p>回到预算 5 的 A、B、C，已找到 A+B，价值 7。考察“必须选 C”的分支：花去 4，剩 1；即使允许把剩余工作切成小份，按最佳的价值/成本比 3/2 填满，最多也只能再得 1.5。所以这个放松后的上界是 6.5，小于现有的 7，可以整枝剪掉。原题不允许切分，但放松题包含原题的所有可行解，所以这个界足够乐观，不会把更好的真实解误删。</p>
-<p>最大化问题用可行方案给下界、用乐观估计给上界；最小化问题方向相反。剪枝是否正确，取决于界是否有效。若上界与当前最好值相等，只求一个最优解时可以剪；要找出所有并列最优方案时，则要保留相等的分支。最坏成本仍可能指数增长；界越紧、可行解找到得越早，通常剪掉的分支越多。<a href="https://web.stanford.edu/class/ee364b/lectures/bb_notes.pdf" class="ext" rel="noopener">Stanford Branch and Bound Notes §1</a>讲解界、分割、停止条件与最坏成本。</p>
+<p>回到预算 5 的 A、B、C，已找到 A+B，价值 7。考察“必须选 C”的分支：花去 4，剩 1；即使允许把剩余工作切成小份，按最佳的价值/成本比 3/2 填满，最多也只能再得 1.5。所以这个放松后的上界是 6.5，小于现有的 7，可以整枝剪掉。原题不允许切分，但放松题包含原题的所有可行解，所以这个界足够乐观，更好的真实解都留在界内。</p>
+<figure class="drawing" data-drawing="f06-bound"><div class="dw-scroll" style="--dw-min:560px;--dw-max:840px">
+<svg viewBox="0 0 700 214" role="img" aria-labelledby="f06-bound-t f06-bound-d">
+  <title id="f06-bound-t">“必须选 C”的分支被剪掉</title>
+  <desc id="f06-bound-d">预算 5。已找到 A+B，价值 3+4=7。必须选 C 的分支花去 4、得 5，剩 1；按最佳价值/成本比 3/2 填满剩余，最多再得 1.5，上界 6.5，小于 7，整枝剪掉。</desc>
+  <path class="ln" d="M150 180 H640"/>
+  <text class="t-n mid" x="150" y="200">0</text>
+  <text class="t-n mid" x="430" y="200">5</text>
+  <text class="t-s" x="600" y="200">价值</text>
+  <g>
+    <text class="t-b" x="0" y="54">已找到 A+B</text>
+    <rect class="box f2" x="150" y="36" width="168" height="28"/><text class="t-n mid" x="234" y="55">A 3</text>
+    <rect class="box f2" x="318" y="36" width="224" height="28"/><text class="t-n mid" x="430" y="55">B 4</text>
+    <path class="ln-strong" d="M542 22 V180"/>
+    <text class="t-n" x="550" y="34">7</text>
+  </g>
+  <g data-s="1">
+    <text class="t-b" x="0" y="120">必须选 C</text>
+    <text class="t-s" x="0" y="138">花去 4，剩 1</text>
+    <rect class="box f2" x="150" y="102" width="280" height="28"/><text class="t-n mid" x="290" y="121">C 5</text>
+  </g>
+  <g data-s="2">
+    <rect class="box-dash" x="430" y="102" width="84" height="28"/><text class="t-n mid" x="472" y="121">1.5</text>
+    <text class="t-s end" x="510" y="156">剩 1 × 3/2，放松后的上界</text>
+  </g>
+  <g data-s="3">
+    <path class="ln-em" d="M514 96 V136"/>
+    <text class="t-n t-em" x="560" y="114">6.5 &lt; 7</text>
+    <text class="t t-em" x="560" y="134">整枝剪掉</text>
+  </g>
+</svg>
+</div>
+<figcaption>乐观地按 3/2 的比率填满剩余预算，这一枝也只到 6.5，够不上已有的 7。</figcaption></figure><p>最大化问题用可行方案给下界、用乐观估计给上界；最小化问题方向相反。剪枝是否正确，取决于界是否有效。若上界与当前最好值相等，只求一个最优解时可以剪；要找出所有并列最优方案时，则要保留相等的分支。最坏成本仍可能指数增长；界越紧、可行解找到得越早，通常剪掉的分支越多。<a href="https://web.stanford.edu/class/ee364b/lectures/bb_notes.pdf" class="ext" rel="noopener">Stanford Branch and Bound Notes §1</a>讲解界、分割、停止条件与最坏成本。</p>
 <div class="labelled" data-kind="counter"><p class="blk-l">误用反例</p><p>把启发式的估计“能赚 6”当成可靠的上界，而这个分支实际能赚 9，最优解就被误剪了。验算时对小实例枚举每个被剪掉的分支，确认它的真实最佳值没有超过界。</p></div>
 </section>
-<section class="scene" aria-labelledby="验算方案最优性证明与资源占用"><header class="scene-head"><h2 id="验算方案最优性证明与资源占用"><span class="scene-no" aria-hidden="true">04</span><span class="visually-hidden">验算：</span><span class="head">方案、最优性证明与资源占用</span></h2></header><p class="scene-lede">求解结果应携带输入快照、约束版本、目标单位、方案、求解状态和停止预算。先用独立的检查器逐条验证硬约束，再检查目标值；要求最优时，记录界或求解器的证明状态。OR-Tools 的 CP-SAT 求解器结合了约束规划（constraint programming，CP）与可满足性（satisfiability，SAT）方法；它的<a href="https://developers.google.com/optimization/cp/cp_solver" class="ext" rel="noopener">返回状态文档</a>区分 <code>OPTIMAL</code>、<code>FEASIBLE</code>、<code>INFEASIBLE</code>、<code>MODEL_INVALID</code>、<code>UNKNOWN</code>，可以对照着理解这几种返回状态。求解器报告的最优，只对输入的模型成立；模型里漏写的技能约束，求解器不会自动补上。</p>
+<section class="scene" aria-labelledby="验算方案最优性证明与资源占用"><header class="scene-head"><h2 id="验算方案最优性证明与资源占用"><span class="scene-no" aria-hidden="true">04</span><span class="visually-hidden">验算：</span><span class="head">方案、最优性证明与资源占用</span></h2></header><p class="scene-lede">求解结果应携带输入快照、约束版本、目标单位、方案、求解状态和停止预算。先用独立的检查器逐条验证硬约束，再检查目标值；要求最优时，记录界或求解器的证明状态。OR-Tools 的 CP-SAT 求解器结合了约束规划（constraint programming，CP）与可满足性（satisfiability，SAT）方法；它的<a href="https://developers.google.com/optimization/cp/cp_solver" class="ext" rel="noopener">返回状态文档</a>区分 <code>OPTIMAL</code>、<code>FEASIBLE</code>、<code>INFEASIBLE</code>、<code>MODEL_INVALID</code>、<code>UNKNOWN</code>，可以对照着理解这几种返回状态。求解器报告的最优，只对输入的模型成立；技能约束要写进模型，求解器才会遵守。</p>
 <p>生产排程先考虑 OR-Tools、整数规划或约束求解器。求解可以放到后台，<abbr title="user interface：用户界面">UI</abbr> 显示正在求解的工作版本、当前的可行方案以及方案是否已确认；调度员接受方案后，仍要原子地占用资源，防止求解期间资源被别人预约。方案算得最优与资源锁定成功，要各有一条证据。</p>
 </section>
 <section class="scene" aria-labelledby="变式从配送到配员"><header class="scene-head"><h2 id="变式从配送到配员"><span class="scene-no" aria-hidden="true">05</span><span class="visually-hidden">变式：</span><span class="head">从配送到配员</span></h2></header><p class="scene-lede">换领域后，原模型的约束要逐项补齐：配员要补技能、日历和角色，限时排程要区分可行方案与已证明的最优。</p>
@@ -154,8 +245,8 @@
     <footer class="page-foot">正文 <a href="../../../books/saas-engineering/foundations/06-choices-and-optimization.md">books/saas-engineering/foundations/06-choices-and-optimization.md</a> · <a href="../../../vault/distilled/saas-engineering-atlas/README.md">结构、来源与验证</a></footer>
   </main>
 </div>
-<script src="search-index.js?v=mv95jeod"></script>
-<script src="book.js?v=mv95jeod"></script>
+<script src="search-index.js?v=mv97hru0"></script>
+<script src="book.js?v=mv97hru0"></script>
 
 </body>
 </html>

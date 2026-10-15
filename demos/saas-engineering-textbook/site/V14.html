@@ -4,9 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>V14 · 投资订单：成交、撤单、分配与结算 · SaaS 工程全景</title>
-<link rel="stylesheet" href="book.css?v=mv95jeod">
+<link rel="stylesheet" href="book.css?v=mv97hru0">
 </head>
 <body>
+<svg class="dw-defs" width="0" height="0" aria-hidden="true" focusable="false" style="position:absolute"><defs><pattern id="dw-hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" fill="var(--bg)"/><path d="M0 0 V6" stroke="var(--ink-2)" stroke-width="1.2"/></pattern></defs></svg>
 <a class="skip" href="#main">跳到正文</a>
 <header class="topbar">
   <button class="nav-toggle" type="button" aria-controls="sidebar" aria-expanded="false">目录</button>
@@ -20,7 +21,7 @@
 <header class="hero">
 <p class="kicker"><a href="group-commercial-finance.html">交易、财务与资金</a><span class="dot">·</span>V14</p>
 <h1>投资订单：成交、撤单、分配与结算</h1>
-<p class="lede">投资订单把一项投资意图写成可执行的数量与价格约束；成交使其中一部分意图成为已发生的交易；分配决定由哪些账户承担这些交易；结算确认证券与资金义务是否已经履行。每一步都有自己的证据。交易员按下“撤单”，只是请求停止后续执行，已经成交的数量不会因此消失。承诺、执行事实、责任归属和资金结果必须分别保存，这一点与本包其他各章相同。本例 100 股限价单先成交 40 股，撤单等待期间又成交 25 股，余量取消后按权重 50:30:20 分为 33、19、13 股，金额从精确的成交总额 651.00 直接分到分。本章还处理撤单太晚被拒、成交纠正后重建分配、连接断开时的未知结果，以及部分结算。撤单确认、成交缺口补齐之前，预留额度不能释放。</p>
+<p class="lede">投资订单把一项投资意图写成可执行的数量与价格约束；成交使其中一部分意图成为已发生的交易；分配决定由哪些账户承担这些交易；结算确认证券与资金义务是否已经履行。每一步都有自己的证据。交易员按下“撤单”，只是请求停止后续执行，已经成交的数量不会因此消失。承诺、执行事实、责任归属和资金结果必须分别保存，这一点与本包其他各章相同。本例 100 股限价单先成交 40 股，撤单等待期间又成交 25 股，余量取消后按权重 50:30:20 分为 33、19、13 股，金额从精确的成交总额 651.00 直接分到分。本章还处理撤单太晚被拒、成交纠正后重建分配、连接断开时的未知结果，以及部分结算。预留额度在撤单确认、成交缺口补齐之后才释放。</p>
 
 <div class="cast" aria-label="本例的角色、界面与系统">
 <div class="cast-lane"><p class="cast-k">角色</p><ul><li>获授权交易员</li><li>分配与交收运营</li></ul></div>
@@ -78,12 +79,12 @@
 <tr>
 <td>经纪商订单</td>
 <td>经纪商账户、交易业务日期与外部订单 <abbr title="identifier：标识符">ID</abbr></td>
-<td>外部报告的状态和本地最后一次核对点；页面不能自行标出 <code>Canceled</code></td>
+<td>外部报告的状态和本地最后一次核对点；<code>Canceled</code> 只按外部报告标出</td>
 </tr>
 <tr>
 <td>撤单尝试</td>
 <td>新的请求 ID，关联原始 <code>ClOrdID</code></td>
-<td><code>prepared → sent → pending → confirmed/rejected</code>，另设 <code>unknown</code>；拒绝撤单不等于拒绝原订单</td>
+<td><code>prepared → sent → pending → confirmed/rejected</code>，另设 <code>unknown</code>；撤单被拒绝时，原订单照旧有效</td>
 </tr>
 <tr>
 <td>成交簿</td>
@@ -98,36 +99,179 @@
 <tr>
 <td>结算义务</td>
 <td>分配行、账户、证券、币种、约定日期与版本</td>
-<td><code>pending → instructed → matched → partial/settled</code>，异常为 <code>failed</code>；接受指令不是履约完成</td>
+<td><code>pending → instructed → matched → partial/settled</code>，异常为 <code>failed</code>；指令被接受之后，履约还要等交收证据</td>
 </tr>
 </tbody></table></div>
-<p>FIX（Financial Information eXchange，金融信息交换协议）的 <code>ExecType</code> 说明这条执行回报为什么发出，<code>OrdStatus</code> 描述回报时订单所处的状态。官方的状态说明明确区分 <code>Pending Cancel</code> 与已取消；B.1.b、B.1.c 展示了撤单等待期间继续成交、撤单太晚被拒绝两种情况，J.1.a、J.1.b 展示了成交被撤销或纠正，因此累计成交量不一定只增不减。本例借用这些消息语义作参照。<a href="https://www.fixtrading.org/wp-content/uploads/download-manager-files/FIX-Latest-as-of-EP284-Order-State-Changes.pdf" class="ext" rel="noopener">FIX Order State Changes，EP284，§1–2、B.1.b–c、J.1.a–b</a>。</p>
-<p>状态因而不能只排成一根进度条。订单已经取消，仍可能有 65 股待分配、待结算；分配已被接受，某账户仍可能缺少交收信息；证券已收到，现金确认仍可能缺失。本例的业务闭环要求：没有可以继续执行的余量，有效成交已全部归属到账户，每项结算义务都取得了相应证据，尚未解决的例外都有负责人。</p>
-</section>
+<p>FIX（Financial Information eXchange，金融信息交换协议）的 <code>ExecType</code> 说明这条执行回报为什么发出，<code>OrdStatus</code> 描述回报时订单所处的状态。官方的状态说明明确区分 <code>Pending Cancel</code> 与已取消；B.1.b、B.1.c 展示了撤单等待期间继续成交、撤单太晚被拒绝两种情况，J.1.a、J.1.b 展示了成交被撤销或纠正，因此累计成交量也可能减少。本例借用这些消息语义作参照。<a href="https://www.fixtrading.org/wp-content/uploads/download-manager-files/FIX-Latest-as-of-EP284-Order-State-Changes.pdf" class="ext" rel="noopener">FIX Order State Changes，EP284，§1–2、B.1.b–c、J.1.a–b</a>。</p>
+<p>状态因而是几条并行推进的线。订单已经取消，仍可能有 65 股待分配、待结算；分配已被接受，某账户仍可能缺少交收信息；证券已收到，现金确认仍可能缺失。例如 A、C 已完成交收，B 只交收了 19 股中的 10 股：已结算 56 股、未结算 9 股，整批仍未 settled。本例的业务闭环要求：没有可以继续执行的余量，有效成交已全部归属到账户，每项结算义务都取得了相应证据，尚未解决的例外都有负责人。</p>
+<figure class="drawing" data-drawing="v14-snapshot"><div class="dw-scroll" style="--dw-min:600px;--dw-max:900px">
+<svg viewBox="0 0 780 230" role="img" aria-labelledby="v14-snapshot-t v14-snapshot-d">
+  <title id="v14-snapshot-t">订单已取消，结算仍未完成</title>
+  <desc id="v14-snapshot-d">同一时刻：经纪商订单 Canceled，成交 65 股、余量 35 股已取消；分配已 accepted，A 33、B 19、C 13；结算义务中 A、C 已完成，B 只交收 19 股中的 10 股，已结算 56 股，未结算 9 股。</desc>
+  <text class="t-b end" x="140" y="56">订单</text><text class="t-s end" x="140" y="72">Canceled</text>
+  <rect class="box f2" x="150" y="44" width="390" height="32"/>
+  <text class="t mid" x="345" y="65">成交 65</text>
+  <rect class="box-dash" x="540" y="44" width="210" height="32"/>
+  <text class="t-s mid" x="645" y="64">余量 35 · 已取消</text>
+  <path class="ln-soft" d="M150 76 V114 M540 76 V114"/>
+  <g data-s="1">
+    <text class="t-b end" x="140" y="126">分配</text><text class="t-s end" x="140" y="142">accepted</text>
+    <rect class="box" x="150" y="114" width="198" height="32"/><text class="t mid" x="249" y="135">A 33</text>
+    <rect class="box" x="348" y="114" width="114" height="32"/><text class="t mid" x="405" y="135">B 19</text>
+    <rect class="box" x="462" y="114" width="78" height="32"/><text class="t mid" x="501" y="135">C 13</text>
+    <path class="ln-soft" d="M150 146 V184 M348 146 V184 M462 146 V184 M540 146 V184"/>
+  </g>
+  <g data-s="2">
+    <text class="t-b end" x="140" y="204">结算义务</text>
+    <rect class="f-ink" x="150" y="184" width="196" height="32"/><text class="t mid t-inv" x="249" y="205">A 33 已交收</text>
+    <rect class="f-ink" x="350" y="184" width="58" height="32"/><text class="t mid t-inv" x="378" y="205">B 10</text>
+    <rect class="box-dash" x="408" y="184" width="54" height="32"/><text class="t-s mid" x="435" y="204">9</text>
+    <rect class="f-ink" x="464" y="184" width="76" height="32"/><text class="t mid t-inv" x="501" y="205">C 13</text>
+    <text class="t-b" x="560" y="198">已结算 56</text>
+    <text class="t-b t-em" x="560" y="218">未结算 9</text>
+  </g>
+</svg>
+</div>
+<figcaption>订单已经停在 Canceled，65 股的分配与结算还在各自推进；B 的 9 股交收之前，整批不能标成 settled。</figcaption></figure></section>
 <section class="scene" aria-labelledby="工作台上的撤单与成交"><header class="scene-head"><h2 id="工作台上的撤单与成交"><span class="scene-no" aria-hidden="true">03</span><span class="head">工作台上的撤单与成交</span></h2></header><p class="scene-lede">页面上的撤单只是一项尝试：撤单确认前到达的成交照样有效，预留额度要等撤单确认、成交缺口核对完成后才释放。</p>
 <p>交易员在交易工作台上同时看到“原始意图 100 股”“已成交数量”“仍可执行数量”“撤单尝试状态”“结算进度”。提交限价单前，预览页列出账户权重、授权版本，以及按限价计算的最大资金占用 <code>100 × 10.10 = 1,010.00</code>。提交后页面先显示“请求已保存”，收到外部受理证据后才显示可执行状态。<abbr title="Hypertext Transfer Protocol：超文本传输协议">HTTP</abbr> 成功只说明本地服务已经受理；连接断开后，用户凭 operation ID 找回同一次尝试。</p>
-<p>正常路径上，先成交 40 股，每股 10.00，交易员随即请求撤销剩余数量；撤单尚未确认时，又成交 25 股，每股 10.04；最后经纪商确认剩余数量不再执行。本地页面此时显示“已取消余量；累计成交 65；待结算 65”，不显示“全部撤销”，35 股未成交数量也不进入成交簿。</p>
+<p>正常路径上，先成交 40 股，每股 10.00，交易员随即请求撤销剩余数量；撤单尚未确认时，又成交 25 股，每股 10.04；最后经纪商确认剩余数量不再执行。本地页面此时显示“已取消余量；累计成交 65；待结算 65”；成交簿只记 65 股，未成交的 35 股随余量取消。</p>
 <p>收到第二笔成交、撤单仍未确认时，本例保留已成交的资金义务 651.00，并按限价为剩余 35 股保留 353.50，共占用 1,004.50。只有撤单确认、成交缺口也核对完成，这 353.50 才释放；651.00 继续归属未结算义务。常见的界面错误是一点撤单就释放全部额度，另一个订单便可能花掉同一笔预算。这里演示的是一条保守、不计费用的购买预算规则；实际资金、保证金与可交易额度的算法因产品而异。</p>
-<p>失败路径上，假设余下 35 股也在撤单确认之前成交，经纪商回报撤单太晚而拒绝，订单就要按 100 股继续分配和结算。撤单按钮这时进入终态并说明原因，不能为了“恢复原意”自动再卖出 35 股：卖出是另一笔市场交易，会带来新的价格与风险，必须另行授权。</p>
+<figure class="drawing" data-drawing="v14-fills"><div class="dw-scroll" style="--dw-min:620px;--dw-max:960px">
+<svg viewBox="0 0 860 290" role="img" aria-labelledby="v14-fills-t v14-fills-d">
+  <title id="v14-fills-t">撤单等待期间的成交与预留额度</title>
+  <desc id="v14-fills-d">100 股限价单先成交 40 股，每股 10.00；交易员请求撤单，撤单待确认时又成交 25 股，每股 10.04；经纪商确认后余量 35 股取消。撤单待确认时占用成交义务 651.00 加剩余 35 股按限价预留 353.50，共 1,004.50；撤单确认、缺口核对完成后释放 353.50，只剩 651.00。</desc>
+  <text class="t-b end" x="140" y="74">数量</text><text class="t-s end" x="140" y="90">限价单 100 股</text>
+  <g data-s="1">
+    <rect class="box f2" x="150" y="62" width="240" height="36"/>
+    <text class="t mid" x="270" y="78">成交 40</text><text class="t-s mid" x="270" y="92">每股 10.00</text>
+  </g>
+  <g data-s="2">
+    <path class="ln" d="M390 34 V60"/><text class="t-b mid" x="390" y="26">撤单请求</text>
+  </g>
+  <g data-s="3">
+    <rect class="box-em" x="390" y="62" width="150" height="36"/>
+    <text class="t mid" x="465" y="78">成交 25</text><text class="t-s mid" x="465" y="92">每股 10.04</text>
+    <text class="t-s mid t-em" x="465" y="50">Pending Cancel 期间</text>
+  </g>
+  <g data-s="4">
+    <rect class="box-dash" x="540" y="62" width="210" height="36"/>
+    <text class="t-s mid" x="645" y="84">余量 35 · 已取消</text>
+    <path class="ln" d="M750 34 V60"/><text class="t-b mid" x="750" y="26">撤单确认</text>
+    <path class="ln" d="M150 106 V114 H540 V106"/>
+    <text class="t-s mid" x="345" y="130">累计成交 65 · 待结算 65</text>
+  </g>
+  <path class="ln-soft" d="M20 152 H840"/>
+  <g data-s="3">
+    <text class="t-b end" x="140" y="186">资金占用</text><text class="t-s end" x="140" y="202">撤单待确认</text>
+    <rect class="f-ink" x="150" y="174" width="391" height="36"/>
+    <text class="t mid t-inv" x="345" y="197">成交义务 651.00</text>
+    <rect class="box f1" x="541" y="174" width="212" height="36"/>
+    <text class="t mid" x="647" y="190">按限价预留 353.50</text><text class="t-s mid" x="647" y="204">剩余 35 股</text>
+    <text class="t-n" x="766" y="197">1,004.50</text>
+  </g>
+  <g data-s="4">
+    <text class="t-b end" x="140" y="246">资金占用</text><text class="t-s end" x="140" y="262">撤单确认、缺口核对后</text>
+    <rect class="f-ink" x="150" y="234" width="391" height="36"/>
+    <text class="t mid t-inv" x="345" y="257">成交义务 651.00</text>
+    <rect class="box-dash" x="541" y="234" width="212" height="36"/>
+    <text class="t-s mid" x="647" y="256">释放 353.50</text>
+    <text class="t-n" x="766" y="257">651.00</text>
+  </g>
+</svg>
+</div>
+<figcaption>撤单请求之后到达的 25 股照样成交；按限价预留的 353.50 要等撤单确认、缺口核对完成才释放，651.00 留给未结算义务。</figcaption></figure><p>失败路径上，假设余下 35 股也在撤单确认之前成交，经纪商回报撤单太晚而拒绝，订单就要按 100 股继续分配和结算。撤单按钮这时进入终态并说明原因。要“恢复原意”，只能另行授权一笔卖出：卖出是另一笔市场交易，会带来新的价格与风险。</p>
 <p>运营人员在分配工作台上看到基于已核对成交集合的算法预览、舍入差异和账户资格检查结果。批准请求附带 <code>execution_set_version</code>；新成交或纠正改变了这个版本，服务就拒绝旧预览并展示差额。在结算工作台上，运营人员按账户查看数量、金额、指令版本、双方匹配结果与实际交收证据。“发送指令”“对方接受”“已结算”分别用不同的文案，免得一次绿色提示抹掉后续责任。</p>
 </section>
 <section class="scene" aria-labelledby="从接口到可核对的成交簿"><header class="scene-head"><h2 id="从接口到可核对的成交簿"><span class="scene-no" aria-hidden="true">04</span><span class="head">从接口到可核对的成交簿</span></h2></header><p class="scene-lede">本例的拓扑以订单服务为控制中心，FIX adapter 隔离对手方协议、身份范围和重传约定。adapter 发出请求，收到回报后先持久化，再更新成交簿和投影。消息里的 <code>CumQty</code> 是累计值，可以用来核对一致性，服务不能把每条消息的累计值再相加；哪条是新增交易、哪条只是状态回报，要按消息语义区分。</p>
 <figure class="graph-fig"><div class="graph-wrap"><svg class="graph" viewBox="0 0 1120 152" width="1120" height="152" style="max-width:1288px;min-width:896px" role="img" aria-label="V14 · 投资订单：成交、撤单、分配与结算"><defs><marker id="arrow-g1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arrowhead"/></marker></defs><path class="edge" data-type="operates" data-from="Trader" data-to="UI" d="M77.5,42.0 Q139.0,42.0 194.0,51.7" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Trader" data-to="UI"><rect x="111.0" y="34.0" width="56" height="16" rx="3"/><text x="139.0" y="46.0">operates</text></g><path class="edge" data-type="commands" data-from="UI" data-to="OMS" d="M322.0,63.0 Q377.0,63.0 432.0,63.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="UI" data-to="OMS"><rect x="349.0" y="55.0" width="56" height="16" rx="3"/><text x="377.0" y="67.0">commands</text></g><path class="edge" data-type="requests" data-from="OMS" data-to="Broker" d="M508.0,49.2 Q575.0,25.0 648.5,25.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="OMS" data-to="Broker"><rect x="547.0" y="17.0" width="56" height="16" rx="3"/><text x="575.0" y="29.0">requests</text></g><path class="edge" data-type="emits" data-from="Broker" data-to="Report" d="M737.5,25.0 Q790.0,25.0 836.0,25.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Broker" data-to="Report"><rect x="771.0" y="17.0" width="38" height="16" rx="3"/><text x="790.0" y="29.0">emits</text></g><path class="edge" data-type="delivers" data-from="Report" data-to="Inbox" d="M912.0,25.0 Q967.0,25.0 1022.0,42.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Report" data-to="Inbox"><rect x="939.0" y="17.0" width="56" height="16" rx="3"/><text x="967.0" y="29.0">delivers</text></g><path class="edge" data-type="reads" data-from="OMS" data-to="Inbox" d="M494.5,80.0 Q575.0,136.0 634.0,136.0 Q693.0,136.0 741.5,136.0 Q790.0,136.0 832.0,136.0 Q874.0,136.0 920.5,136.0 Q967.0,136.0 1045.8,73.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="OMS" data-to="Inbox"><rect x="771.0" y="128.0" width="38" height="16" rx="3"/><text x="790.0" y="140.0">reads</text></g><path class="edge" data-type="owns" data-from="OMS" data-to="Executions" d="M508.0,64.4 Q575.0,67.0 642.0,78.9" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="OMS" data-to="Executions"><rect x="559.0" y="59.0" width="32" height="16" rx="3"/><text x="575.0" y="71.0">owns</text></g><path class="edge" data-type="derived_from" data-from="Allocation" data-to="Executions" d="M508.0,119.8 Q575.0,109.0 642.0,97.1" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Allocation" data-to="Executions"><rect x="535.0" y="101.0" width="80" height="16" rx="3"/><text x="575.0" y="113.0">derived_from</text></g><path class="edge" data-type="depends_on" data-from="Settlement" data-to="Allocation" d="M84.0,121.9 Q139.0,126.0 198.5,126.0 Q258.0,126.0 317.5,126.0 Q377.0,126.0 432.0,126.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Settlement" data-to="Allocation"><rect x="224.0" y="118.0" width="68" height="16" rx="3"/><text x="258.0" y="130.0">depends_on</text></g><path class="edge" data-type="projects" data-from="Settlement" data-to="UI" d="M84.0,106.3 Q139.0,88.0 194.0,76.4" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Settlement" data-to="UI"><rect x="111.0" y="80.0" width="56" height="16" rx="3"/><text x="139.0" y="92.0">projects</text></g><g class="node" data-id="Trader"><rect x="14.5" y="25.0" width="63" height="34" rx="4"/><text x="46.0" y="46.5">交易员</text></g><g class="node" data-id="UI"><rect x="194.0" y="46.0" width="128" height="34" rx="4"/><text x="258.0" y="67.5">订单与分配工作台</text></g><g class="node" data-id="OMS"><rect x="432.0" y="46.0" width="76" height="34" rx="4"/><text x="470.0" y="67.5">订单服务</text></g><g class="node" data-id="Broker"><rect x="648.5" y="8.0" width="89" height="34" rx="4"/><text x="693.0" y="29.5">经纪商接口</text></g><g class="node" data-id="Report"><rect x="836.0" y="8.0" width="76" height="34" rx="4"/><text x="874.0" y="29.5">执行回报</text></g><g class="node" data-id="Inbox"><rect x="1022.0" y="39.0" width="90" height="34" rx="4"/><text x="1067.0" y="60.5">持久 inbox</text></g><g class="node" data-id="Executions"><rect x="642.0" y="71.0" width="102" height="34" rx="4"/><text x="693.0" y="92.5">有效成交集合</text></g><g class="node" data-id="Allocation"><rect x="432.0" y="109.0" width="76" height="34" rx="4"/><text x="470.0" y="130.5">分配版本</text></g><g class="node" data-id="Settlement"><rect x="8.0" y="102.0" width="76" height="34" rx="4"/><text x="46.0" y="123.5">结算义务</text></g></svg></div><details class="edge-list"><summary>图中关系的文字列表</summary><ul><li>交易员 <span class="rel">—operates→</span> 订单与分配工作台</li><li>订单与分配工作台 <span class="rel">—commands→</span> 订单服务</li><li>订单服务 <span class="rel">—requests→</span> 经纪商接口</li><li>经纪商接口 <span class="rel">—emits→</span> 执行回报</li><li>执行回报 <span class="rel">—delivers→</span> 持久 inbox</li><li>订单服务 <span class="rel">—reads→</span> 持久 inbox</li><li>订单服务 <span class="rel">—owns→</span> 有效成交集合</li><li>分配版本 <span class="rel">—derived_from→</span> 有效成交集合</li><li>结算义务 <span class="rel">—depends_on→</span> 分配版本</li><li>结算义务 <span class="rel">—projects→</span> 订单与分配工作台</li></ul></details></figure><p>图中箭头表示信息与责任的流向；<code>delivers</code> 箭头不代表证券交付或资金交割。完整端点与不变量见 <a href="../../../vault/distilled/saas-engineering-atlas/packages/commercial-finance/V14.json">V14.json</a>。本地订单意图由订单服务持有；外部订单状态和回报身份以经纪商为准；结算服务保存义务和确认映射，托管/结算机构仍是本例交收事实的外部来源。</p>
-<p>前端可以用 React/TypeScript 或 Vue/TypeScript 实现表格、版本差异与回放界面；频繁更新时只刷新受影响的行，免得整张表格重排打断操作者。服务器发送事件（Server-Sent Events，<abbr title="Server-Sent Events：服务器发送事件">SSE</abbr>）足以推送回报进度，双向协商较多时可以选择 WebSocket；两者都要在重连后按游标补读，连接在线不等于事实齐全。后端可用 Java/Kotlin 配合独立的 FIX adapter，把交易协议处理与业务规则分开；Python/FastAPI 适合先做这一本地服务，但同样必须使用定点金额和明确的事务边界。以上是本例的实现选项。</p>
+<p>前端可以用 React/TypeScript 或 Vue/TypeScript 实现表格、版本差异与回放界面；频繁更新时只刷新受影响的行，免得整张表格重排打断操作者。服务器发送事件（Server-Sent Events，<abbr title="Server-Sent Events：服务器发送事件">SSE</abbr>）足以推送回报进度，双向协商较多时可以选择 WebSocket；两者都要在重连后按游标补读，补读完成后事实才齐全。后端可用 Java/Kotlin 配合独立的 FIX adapter，把交易协议处理与业务规则分开；Python/FastAPI 适合先做这一本地服务，但同样必须使用定点金额和明确的事务边界。以上是本例的实现选项。</p>
 <p>PostgreSQL 可以保存投资指令、成交版本、分配与 outbox；<code>(tenant, broker_account, execution_identity_scope, ExecID)</code> 约束重复身份。实际 scope 要从对手方约定取得，不能假定 <code>ExecID</code> 永久全局唯一。原始入站内容与解析版本一起保存，读取时仍执行账户授权。在一个数据库事务里写入成交、更新集合版本、登记待处理的分配任务；外部发送放在事务之后，免得把网络延迟绑在行锁上。规模不大时，数据库 outbox 就够用；改用 Kafka 等日志系统，要另外解决顺序分区与消费者恢复，也得不到跨机构的事务。</p>
-<p>FIX 用 <code>AllocationInstruction</code> 把订单分到一个或多个账户，消息带有 <code>AllocID</code>、引用旧分配的 <code>RefAllocID</code> 以及数量、均价等字段；这些字段能支持分配版本追踪，但不规定本章的配额算法。<code>SettlementInstructions</code> 传递结算指示，单凭它证明不了交收已经完成。<a href="https://fiximate.fixtrading.org/legacy/en/FIX.4.4/body_495774.html" class="ext" rel="noopener">FIX 4.4 AllocationInstruction</a>；<a href="https://fiximate.fixtrading.org/en/FIX.Latest/msg28.html" class="ext" rel="noopener">FIX SettlementInstructions</a>。</p>
+<p>FIX 用 <code>AllocationInstruction</code> 把订单分到一个或多个账户，消息带有 <code>AllocID</code>、引用旧分配的 <code>RefAllocID</code> 以及数量、均价等字段；这些字段能支持分配版本追踪，配额算法由本章另定。<code>SettlementInstructions</code> 传递结算指示，交收是否完成另有证据。<a href="https://fiximate.fixtrading.org/legacy/en/FIX.4.4/body_495774.html" class="ext" rel="noopener">FIX 4.4 AllocationInstruction</a>；<a href="https://fiximate.fixtrading.org/en/FIX.Latest/msg28.html" class="ext" rel="noopener">FIX SettlementInstructions</a>。</p>
 </section>
 <section class="scene" aria-labelledby="演算整数股分配与现金尾差"><header class="scene-head"><h2 id="演算整数股分配与现金尾差"><span class="scene-no" aria-hidden="true">05</span><span class="visually-hidden">演算：</span><span class="head">整数股分配与现金尾差</span></h2></header><p class="scene-lede">分配先定股数再定金额：股数取整后，余下的股数给小数余量最大的账户；金额从精确成交总额按分直接分配，均价只用于展示。</p>
 <p>有效成交是 <code>40 × 10.00 + 25 × 10.04 = 651.00</code>，共 65 股。原始权重 50:30:20 由经理在发单前确定；本例等撤单进入终态、回报缺口补齐之后，做一次最终分配，不逐笔追求“谁先拿到好价格”。账户资格和最大数量已经在输入校验中通过。</p>
 <p>按权重得到理论配额 A=32.5、B=19.5、C=13。先取整得到 32、19、13，共 64；还剩 1 股，分给小数余量最大的账户。A、B 同为 0.5，本例按事前固定的账户排序 A、B、C 打破平局，结果是 <strong>33、19、13</strong>。固定次序可以重现，但长期反复出现平局时会偏向同一账户；需要长期公平时，轮换或累计偏差策略必须在发单前批准，并写进状态。</p>
 <p>均价是 <code>651 ÷ 65 = 10.015384…</code>。若先把均价舍入成 10.02 再乘数量，会得到 651.30，比真实成交多 0.30。本例改为直接分配 <strong>65,100 分</strong>：各账户的理论金额为 <code>65100 × 数量 / 65</code>，即 33050.769…、19029.230…、13020 分。取整后还剩 1 分，给余数最大的 A，最终为 <strong>330.51、190.29、130.20</strong>，合计仍为 651.00。均价只用于展示，最终金额来自精确的成交总额与既定的舍入规则。</p>
-<p>这段计算用到 <code>ALG:lookup</code> 和 <code>ALG:top-k</code>。对 m 笔成交，每次从头求和的朴素方案需要 O(m)；按唯一执行身份维护有效集合与汇总后，普通新增可以增量更新，纠正则要先找到被引用的成交，减去它原来的数量与金额，再加入新值。对 a 个账户，完整排序余数需要 O(a log a)；若尾差只涉及 k 个账户，可以用大小为 k 的堆选取候选，代价 O(a log k)。数值守恒来自整数运算与约束，提速方法本身不带来公平性。</p>
-<p>这个算法有两处会失效。把 32.5、19.5、13 各自四舍五入，会分出 66 股，超过有效成交。假设 A 最多只能分 30 股，原算法给 A 的 33 股就不可行；不能先塞给 A 再标上“人工关注”，而要带着容量约束重新求可行分配，或者把分不下去的成交留在明确的待处理账户，由专业人员决定。权重和可行性是两个问题；无论优化什么目标，都不能越过账户授权。</p>
+<figure class="drawing" data-drawing="v14-alloc"><div class="dw-scroll" style="--dw-min:620px;--dw-max:960px">
+<svg viewBox="0 0 800 280" role="img" aria-labelledby="v14-alloc-t v14-alloc-d">
+  <title id="v14-alloc-t">先分股数，再分金额，余量各给一人</title>
+  <desc id="v14-alloc-d">65 股按 50:30:20 的理论配额为 32.5、19.5、13，取整为 32、19、13，余 1 股；A、B 余数同为 0.5，按 A、B、C 次序给 A，得 33、19、13。金额 65,100 分按 33、19、13 股的理论值为 33050.769…、19029.230…、13020，取整后余 1 分，给余数最大的 A，得 330.51、190.29、130.20。</desc>
+  <g data-s="1">
+    <text class="t-b end" x="120" y="86">股数</text><text class="t-s end" x="120" y="102">65</text>
+    <text class="t-s mid" x="274" y="62">32.5</text><text class="t-s mid" x="503" y="62">19.5</text><text class="t-s mid" x="647" y="62">13</text>
+    <rect class="box f1" x="130" y="70" width="288" height="34"/><text class="t-n mid" x="274" y="92">32</text>
+    <rect class="box f1" x="418" y="70" width="171" height="34"/><text class="t-n mid" x="503" y="92">19</text>
+    <rect class="box f1" x="589" y="70" width="117" height="34"/><text class="t-n mid" x="647" y="92">13</text>
+  </g>
+  <g data-s="2">
+    <rect class="box f3" x="714" y="70" width="12" height="34"/>
+    <text class="t-s" x="732" y="92">余 1 股</text>
+    <path class="ln" d="M720 70 V40 H200 V66 M194 59 L200 66 L206 59"/>
+    <text class="t-s mid" x="460" y="32">A、B 余数同为 0.5，按 A、B、C 次序给 A</text>
+    <text class="t-b mid" x="274" y="126">A 33</text><text class="t-b mid" x="503" y="126">B 19</text><text class="t-b mid" x="647" y="126">C 13</text>
+  </g>
+  <g data-s="3">
+    <text class="t-b end" x="120" y="226">金额</text><text class="t-s end" x="120" y="242">65,100 分</text>
+    <text class="t-s mid" x="279" y="202">33050.769…</text><text class="t-s mid" x="513" y="202">19029.230…</text><text class="t-s mid" x="657" y="202">13020</text>
+    <rect class="box f1" x="130" y="210" width="297" height="34"/><text class="t-n mid" x="279" y="232">33050</text>
+    <rect class="box f1" x="427" y="210" width="171" height="34"/><text class="t-n mid" x="513" y="232">19029</text>
+    <rect class="box f1" x="598" y="210" width="117" height="34"/><text class="t-n mid" x="657" y="232">13020</text>
+  </g>
+  <g data-s="4">
+    <rect class="box f3" x="722" y="210" width="12" height="34"/>
+    <text class="t-s" x="740" y="232">余 1 分</text>
+    <path class="ln" d="M728 210 V180 H200 V206 M194 199 L200 206 L206 199"/>
+    <text class="t-s mid" x="460" y="172">余数最大的是 A（0.769…）</text>
+    <text class="t-b mid" x="279" y="266">A 330.51</text><text class="t-b mid" x="513" y="266">B 190.29</text><text class="t-b mid" x="657" y="266">C 130.20</text>
+  </g>
+</svg>
+</div>
+<figcaption>两次分配用同一个办法：先取整，再把剩下的一个单位交给余数最大的账户；金额按最终股数从 65,100 分直接分，合计仍为 651.00。</figcaption></figure><p>这段计算用到 <code>ALG:lookup</code> 和 <code>ALG:top-k</code>。对 m 笔成交，每次从头求和的朴素方案需要 O(m)；按唯一执行身份维护有效集合与汇总后，普通新增可以增量更新，纠正则要先找到被引用的成交，减去它原来的数量与金额，再加入新值。对 a 个账户，完整排序余数需要 O(a log a)；若尾差只涉及 k 个账户，可以用大小为 k 的堆选取候选，代价 O(a log k)。数值守恒来自整数运算与约束，公平性来自取整与平局规则，提速方法只改变代价。</p>
+<p>这个算法有两处会失效。把 32.5、19.5、13 各自四舍五入，会分出 66 股，超过有效成交。假设 A 最多只能分 30 股，原算法给 A 的 33 股就不可行；不能先塞给 A 再标上“人工关注”，而要带着容量约束重新求可行分配，或者把分不下去的成交留在明确的待处理账户，由专业人员决定。权重和可行性是两个问题；任何优化目标都在账户授权的范围内求解。</p>
 </section>
 <section class="scene" aria-labelledby="晚到回报成交纠正与未知结果"><header class="scene-head"><h2 id="晚到回报成交纠正与未知结果"><span class="scene-no" aria-hidden="true">06</span><span class="head">晚到回报、成交纠正与未知结果</span></h2></header><p class="scene-lede">普通重复回报与真正的纠正走不同路径。同一 <code>ExecID</code>、内容相同的重传可以返回已有结果；身份相同而内容不同的，进入冲突队列。纠正带有新的执行身份和引用关系，原笔保留，有效集合随之改变。若被引用的旧成交尚未到达，先记下“缺少被引用执行”，补齐后再处理；纠正不能当作又一笔买入。</p>
-<p>例如第二笔 25 股后来被正式纠正为 20 股，价格仍为 10.04，有效集合变为 60 股、600.80。新分配应为 30、18、12，金额为 300.40、180.24、120.16。旧的 65 股分配已经发送时，不能只改数据库让页面看起来平衡：要先冻结相关的结算动作，对旧分配发起替换或撤销，确认外部状态后再提交新版本。旧义务已经结算的，进入交收后的调整流程，由运营接管；本章不假定原交易可以回滚。</p>
-<p>连接断开造成的未知结果，要和普通失败分开处理。新单发出后超时，adapter 保留原业务身份与发送证据，按双方协议查询或恢复会话；只有确认可以安全重传时，才重用同一身份。创建新的 <code>ClOrdID</code> 可能意味着真正的第二张订单。撤单超时同理：先核对原订单和撤单尝试，同时继续处理成交回报。页面可以显示“尚待核对”，但待确认余量占用的额度不能释放。</p>
-<p>本例以 50 个机构租户、20 个经纪商连接、每日 100 万条回报、开盘峰值每秒 5,000 条、每个批量订单最多 500 个分配账户作为待测负载。目标是：从回报在持久 inbox 落盘起算，普通回报到达工作台的 p95 不超过 500 毫秒；普通提交的本地持久化响应 p95 不超过 300 毫秒；外部受理耗时单独计量。数据库按机构与账户过滤，回报处理按订单串行化；热点大订单不能靠丢弃中间成交来降低延迟。列表可以缓存，但撤单资格、可用额度和分配批准都读取权威版本。观测指标除吞吐外，还要包括回报缺口数、未知尝试的年龄、未分配数量和未结算金额，“队列已消费完”代替不了这些指标。以上都是待测目标，还没有做过负载测量。</p>
+<p>例如有效集合原为 E1（40 股，每股 10.00）和 E2（25 股，每股 10.04）；E2 后来被正式纠正为 20 股，价格仍为 10.04，纠正记录 E2′ 引用 E2，有效集合变为 E1 与 E2′，共 60 股、600.80。新分配应为 30、18、12，金额为 300.40、180.24、120.16。旧的 65 股分配已经发送时，先冻结相关的结算动作，对旧分配发起替换或撤销，确认外部状态后再提交新版本；只改数据库会让页面平衡而外部仍按旧分配执行。旧义务已经结算的，进入交收后的调整流程，由运营接管；本章按原交易已经发生处理。</p>
+<figure class="drawing" data-drawing="v14-correction"><div class="dw-scroll" style="--dw-min:600px;--dw-max:900px">
+<svg viewBox="0 0 800 280" role="img" aria-labelledby="v14-correction-t v14-correction-d">
+  <title id="v14-correction-t">成交纠正后重建分配版本</title>
+  <desc id="v14-correction-d">有效成交集合原为 E1 40 股每股 10.00 与 E2 25 股每股 10.04，共 65 股、651.00，分配为 A 33、B 19、C 13。E2 纠正为 E2′ 20 股，原笔保留；集合变为 60 股、600.80，新分配 A 30、B 18、C 12，金额 300.40、180.24、120.16，取代旧分配。</desc>
+  <text class="t-b" x="70" y="24">有效成交集合</text>
+  <text class="t-b" x="470" y="24">分配</text>
+  <g>
+    <rect class="box" x="70" y="38" width="290" height="86"/>
+    <text class="t-n" x="86" y="62">E1 · 40 × 10.00</text>
+    <text class="t-n" x="86" y="84">E2 · 25 × 10.04</text>
+    <text class="t-b" x="86" y="112">65 股 · 651.00</text>
+    <path class="ln" d="M360 81 H462 M455 75 L462 81 L455 87"/>
+    <rect class="box f1" x="470" y="38" width="300" height="86"/>
+    <text class="t-n" x="486" y="62">A 33 · 330.51</text>
+    <text class="t-n" x="486" y="84">B 19 · 190.29</text>
+    <text class="t-n" x="486" y="106">C 13 · 130.20</text>
+    <text class="t-s" x="470" y="142">分配 v1 · 被 v2 取代</text>
+  </g>
+  <g data-s="1">
+    <path class="ln-em" d="M70 80 H48 V204 H64 M57 198 L64 204 L57 210"/>
+    <text class="t-s t-em" x="86" y="150">E2 纠正为 E2′，原笔保留</text>
+  </g>
+  <g data-s="2">
+    <rect class="box" x="70" y="162" width="290" height="86"/>
+    <text class="t-n" x="86" y="186">E1 · 40 × 10.00</text>
+    <text class="t-n" x="86" y="208">E2′ · 20 × 10.04</text>
+    <text class="t-b" x="86" y="236">60 股 · 600.80</text>
+  </g>
+  <g data-s="3">
+    <path class="ln" d="M360 205 H462 M455 199 L462 205 L455 211"/>
+    <rect class="box" x="470" y="162" width="300" height="86"/>
+    <text class="t-n" x="486" y="186">A 30 · 300.40</text>
+    <text class="t-n" x="486" y="208">B 18 · 180.24</text>
+    <text class="t-n" x="486" y="230">C 12 · 120.16</text>
+    <text class="t-s" x="470" y="266">分配 v2</text>
+  </g>
+</svg>
+</div>
+<figcaption>纠正记录引用原成交，原笔留在成交簿里；有效集合换了版本，分配随之整版重建，旧版本被取代。</figcaption></figure><p>连接断开造成的未知结果，要和普通失败分开处理。新单发出后超时，adapter 保留原业务身份与发送证据，按双方协议查询或恢复会话；只有确认可以安全重传时，才重用同一身份。创建新的 <code>ClOrdID</code> 可能意味着真正的第二张订单。撤单超时同理：先核对原订单和撤单尝试，同时继续处理成交回报。页面可以显示“尚待核对”，待确认余量占用的额度保持不动。</p>
+<p>本例以 50 个机构租户、20 个经纪商连接、每日 100 万条回报、开盘峰值每秒 5,000 条、每个批量订单最多 500 个分配账户作为待测负载。目标是：从回报在持久 inbox 落盘起算，普通回报到达工作台的 p95 不超过 500 毫秒；普通提交的本地持久化响应 p95 不超过 300 毫秒；外部受理耗时单独计量。数据库按机构与账户过滤，回报处理按订单串行化；热点大订单不能靠丢弃中间成交来降低延迟。列表可以缓存，但撤单资格、可用额度和分配批准都读取权威版本。观测指标除吞吐外，还要包括回报缺口数、未知尝试的年龄、未分配数量和未结算金额。以上都是待测目标，还没有做过负载测量。</p>
 </section>
 <section class="scene" aria-labelledby="验算业务闭环的证据"><header class="scene-head"><h2 id="验算业务闭环的证据"><span class="scene-no" aria-hidden="true">07</span><span class="visually-hidden">验算：</span><span class="head">业务闭环的证据</span></h2></header><p class="scene-lede">闭环看有效数量、分配和结算证据在每种扰动下是否仍然对得上：重复不增量，乱序不抹掉成交，纠正使旧分配失效，部分结算不标成 settled。</p>
 <p>本例没有让 <abbr title="artificial intelligence：人工智能">AI</abbr> 下单、分配或确认结算，AI eval 不适用。若以后加入异常摘要助手，它只建议原因与待查证据；模型不能改变数量、批准分配或消除未知状态。评估这个助手，要另建以成交纠正、撤单拒绝和缺失回报为标签的留出集，核算危险的误报与漏报，不能沿用确定性算术检查的通过率。</p>
@@ -335,8 +479,8 @@
     <footer class="page-foot">正文 <a href="../../../books/saas-engineering/packages/commercial-finance/V14.md">books/saas-engineering/packages/commercial-finance/V14.md</a> · <a href="../../../vault/distilled/saas-engineering-atlas/README.md">结构、来源与验证</a></footer>
   </main>
 </div>
-<script src="search-index.js?v=mv95jeod"></script>
-<script src="book.js?v=mv95jeod"></script>
+<script src="search-index.js?v=mv97hru0"></script>
+<script src="book.js?v=mv97hru0"></script>
 
 </body>
 </html>

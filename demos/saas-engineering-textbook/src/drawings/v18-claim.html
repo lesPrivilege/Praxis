@@ -1,0 +1,23 @@
+<div class="dw-scroll" style="--dw-min:620px;--dw-max:900px">
+<svg viewBox="0 0 800 236" role="img" aria-labelledby="v18-claim-t v18-claim-d">
+  <title id="v18-claim-t">撤回与发送认领的两种提交次序</title>
+  <desc id="v18-claim-d">两项本地事务都锁住同一批次与决定版本。撤回先提交时，认领核对 decision_epoch 失败，批次失效。认领先提交时，批次从 frozen 改成 sending，请求离开本地；之后的撤回只设置“可能已发，须核对/纠正”标记，先查接收端，再决定停止或纠正。</desc>
+  <text class="t-b" x="20" y="28">撤回先提交</text>
+  <path class="ln-strong" d="M20 70 H400"/>
+  <circle class="f-ink" cx="60" cy="70" r="4"/><text class="t-s mid" x="60" y="94">P1 frozen</text>
+  <circle class="f-ink" cx="200" cy="70" r="4"/><text class="t mid" x="200" y="56">撤回提交</text><text class="t-s mid" x="200" y="94">锁住批次与决定版本</text>
+  <circle class="f-ink" cx="360" cy="70" r="4"/><text class="t mid" x="360" y="56">认领</text><text class="t-s mid" x="360" y="94">核对 epoch 失败</text>
+  <text class="t-b" x="416" y="75">批次失效</text>
+  <path class="ln-soft" d="M20 118 H780"/>
+  <text class="t-b" x="20" y="146">认领先提交</text>
+  <rect class="f1" x="420" y="160" width="370" height="76"/>
+  <text class="t-s" x="430" y="146">请求已离开本地：在数据库回滚的范围之外</text>
+  <path class="ln-strong" d="M20 196 H420"/><path class="ln-em" d="M420 196 H780"/>
+  <circle class="f-ink" cx="60" cy="196" r="4"/><text class="t-s mid" x="60" y="220">P1 frozen</text>
+  <circle class="f-ink" cx="210" cy="196" r="4"/><text class="t mid" x="210" y="182">认领提交</text><text class="t-s mid" x="210" y="220">frozen → sending</text>
+  <circle class="f-ink" cx="420" cy="196" r="4"/>
+  <circle class="f-ink" cx="540" cy="196" r="4"/><text class="t mid" x="540" y="182">撤回提交</text><text class="t-s mid" x="540" y="220">标记“可能已发”</text>
+  <circle class="f-ink" cx="700" cy="196" r="4"/><text class="t mid" x="700" y="182">查接收端</text><text class="t-s mid" x="700" y="220">再停止或纠正</text>
+</svg>
+</div>
+<figcaption>撤回与认领在本地按提交次序裁定；认领一旦先提交，请求便可能已经送达，撤回只能转成核对和纠正。</figcaption>

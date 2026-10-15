@@ -4,9 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>第七章：复用结果，也保存它成立的条件 · SaaS 工程全景</title>
-<link rel="stylesheet" href="book.css?v=mv95jeod">
+<link rel="stylesheet" href="book.css?v=mv97hru0">
 </head>
 <body>
+<svg class="dw-defs" width="0" height="0" aria-hidden="true" focusable="false" style="position:absolute"><defs><pattern id="dw-hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" fill="var(--bg)"/><path d="M0 0 V6" stroke="var(--ink-2)" stroke-width="1.2"/></pattern></defs></svg>
 <a class="skip" href="#main">跳到正文</a>
 <header class="topbar">
   <button class="nav-toggle" type="button" aria-controls="sidebar" aria-expanded="false">目录</button>
@@ -20,7 +21,7 @@
 <header class="hero">
 <p class="kicker"><a href="fdn.html">计算与系统方法</a><span class="dot">·</span>第七章</p>
 <h1>复用结果，也保存它成立的条件</h1>
-<p class="lede">缓存把“这组输入曾得出这个结果”保存下来，下次遇到相同的请求直接复用，省掉重复计算。结果只在 key 覆盖了所有改变它的输入（对象版本、规则版本、租户与授权上下文）时可信，所以难处在两处：判断输入是否仍然相同，以及内存不够时留下哪些结果。记忆化处理无副作用的纯计算；按最近访问或按访问次数的淘汰策略决定留下谁；版本化 key、事件失效和存活时限决定旧结果何时不再可信。缓存始终是可以从权威记录重建的副本：扣款去重、批准核验和授权不能靠它保证。</p>
+<p class="lede">缓存把“这组输入曾得出这个结果”保存下来，下次遇到相同的请求直接复用，省掉重复计算。结果只在 key 覆盖了所有改变它的输入（对象版本、规则版本、租户与授权上下文）时可信，所以难处在两处：判断输入是否仍然相同，以及内存不够时留下哪些结果。记忆化处理无副作用的纯计算；按最近访问或按访问次数的淘汰策略决定留下谁；版本化 key、事件失效和存活时限决定旧结果何时不再可信。缓存始终是可以从权威记录重建的副本：扣款去重、批准核验和授权由权威记录与持久化边界保证。</p>
 
 
 </header>
@@ -30,9 +31,49 @@
 <section class="scene" aria-labelledby="识题纯计算重复与远端状态重复"><header class="scene-head"><h2 id="识题纯计算重复与远端状态重复"><span class="scene-no" aria-hidden="true">01</span><span class="visually-hidden">识题：</span><span class="head">纯计算重复与远端状态重复</span></h2></header><p class="scene-lede">纯计算的重复可以按输入记住结果；来自远端、持续变化的状态，复用时必须带快照或失效规则。“同一报价计算一百遍”“同一报表被反复打开”都可以考虑复用。报价函数的输入固定且没有副作用，就可以按输入记住结果；报表来自持续变化的数据，缓存就必须带快照或失效规则。H01 的计价、H07 的报表、H09 的文档版本、X01 的租户服务都可能用到缓存，但它们允许的陈旧程度不同。</p>
 </section>
 <section class="scene" aria-labelledby="解法以输入为-key-的记忆化"><header class="scene-head"><h2 id="解法以输入为-key-的记忆化"><span class="scene-no" aria-hidden="true">02</span><span class="visually-hidden">解法：</span><span class="head">以输入为 key 的记忆化</span></h2></header><p class="scene-lede">记忆化的 key 必须包含所有改变结果的输入，漏掉规则版本就会返回旧价；它只适用于没有副作用的计算。</p>
-<p>设服务包 A 价值 3，B 价值 4，组合报价规则只做固定相加。工作台两处都要计算 <code>price(A,B,rule=v2)</code>，第一次得 7，第二次复用。规则升到 v3、加收 1 时，key 必须包含 v3，结果才是 8；只用 A、B 作 key，会返回旧价。第六章 DP 的 <code>(已考虑项目,剩余预算)</code> 也可以作记忆化 key：递归分解时，遇到相同的子题就查表。</p>
-<p>若实际访问 S 个不同的子问题，每个最多做 T 次局部工作，记忆化把重复路径压缩为约 O(ST) 的计算，另付 O(S) 的存储及 key 成本。记忆化并不保证 S 很小；状态不完整会算错，状态分得过细则复用少。<a href="https://docs.python.org/3/library/functools.html" class="ext" rel="noopener">Python functools</a>提供 <code>cache</code> 与 <code>lru_cache</code>，并说明即使内部结构线程安全，同一计算在并发首次访问时仍可能执行多次。</p>
-<div class="labelled" data-kind="counter"><p class="blk-l">误用反例</p><p>给 <code>charge(customer,40)</code> 加缓存，希望避免重复收费。扣款是副作用，缓存被淘汰或服务重启后仍会再执行；多个实例也不共享同一块内存。防止重复扣款，要靠第九章的持久化操作身份与核对协议。验算时比较缓存命中与未命中的输出，并统计纯函数被调用的次数；带副作用的方法另做业务幂等检查。</p></div>
+<p>设服务包 A 价值 3，B 价值 4，组合报价规则只做固定相加。工作台两处都要计算 <code>price(A,B,rule=v2)</code>，第一次得 7，第二次复用。规则升到 v3、加收 1 时，key 必须包含 v3，结果才是 8；只用 A、B 作 key，会返回旧价 7。</p>
+<figure class="drawing" data-drawing="f07-memo-key"><div class="dw-scroll" style="--dw-min:560px;--dw-max:860px">
+<svg viewBox="0 0 720 236" role="img" aria-labelledby="f07-memo-key-t f07-memo-key-d">
+  <title id="f07-memo-key-t">规则版本是否进入记忆化 key</title>
+  <desc id="f07-memo-key-d">A 价值 3，B 价值 4。第一次计算 price(A,B,rule=v2) 得 7 并存入，第二次复用 7。规则升到 v3、加收 1 后，key 含 v3 时未命中，算出 8；key 只有 A、B 时命中旧项，返回旧价 7。</desc>
+  <text class="t-s" x="0" y="18">请求</text>
+  <text class="t-s mid" x="300" y="18">记忆化 key</text>
+  <text class="t-s" x="390" y="18">结果</text>
+  <path class="ln-soft" d="M0 28 H720"/>
+  <g data-s="1">
+    <text class="t-n" x="0" y="57">price(A,B,rule=v2)</text>
+    <path class="ln" d="M180 52 H240"/>
+    <rect class="box" x="240" y="38" width="120" height="28"/><text class="t-n mid" x="300" y="57">(A,B,v2)</text>
+    <path class="ln" d="M360 52 H380"/>
+    <text class="t" x="390" y="57">未命中，计算 3+4 = <tspan class="t-b">7</tspan>，存入</text>
+  </g>
+  <g data-s="2">
+    <text class="t-n" x="0" y="99">price(A,B,rule=v2)</text>
+    <path class="ln" d="M180 94 H240"/>
+    <rect class="box" x="240" y="80" width="120" height="28"/><text class="t-n mid" x="300" y="99">(A,B,v2)</text>
+    <path class="ln" d="M360 94 H380"/>
+    <text class="t" x="390" y="99">命中，复用 <tspan class="t-b">7</tspan></text>
+  </g>
+  <g data-s="3">
+    <path class="ln-soft" d="M0 124 H720"/>
+    <text class="t-s" x="0" y="142">规则升到 v3，加收 1</text>
+    <text class="t-n" x="0" y="177">price(A,B,rule=v3)</text>
+    <path class="ln" d="M180 172 H240"/>
+    <rect class="box" x="240" y="158" width="120" height="28"/><text class="t-n mid" x="300" y="177">(A,B,v3)</text>
+    <path class="ln" d="M360 172 H380"/>
+    <text class="t" x="390" y="177">key 含规则版本：未命中，计算 3+4+1 = <tspan class="t-b">8</tspan></text>
+  </g>
+  <g data-s="4">
+    <path class="ln" d="M180 172 C210 172 210 214 240 214"/>
+    <rect class="box-em" x="240" y="200" width="120" height="28"/><text class="t-n mid t-em" x="300" y="219">(A,B)</text>
+    <path class="ln-em" d="M360 214 H380"/>
+    <text class="t-b t-em" x="390" y="219">key 只有 A、B：命中旧项，返回 7</text>
+  </g>
+</svg>
+</div>
+<figcaption>规则版本在 key 里时，v3 的请求找不到 v2 的结果，重新算出 8；漏掉规则版本，v3 的请求落在 v2 留下的 7 上。</figcaption></figure><p>第六章 DP 的 <code>(已考虑项目,剩余预算)</code> 也可以作记忆化 key：递归分解时，遇到相同的子题就查表。</p>
+<p>若实际访问 S 个不同的子问题，每个最多做 T 次局部工作，记忆化把重复路径压缩为约 O(ST) 的计算，另付 O(S) 的存储及 key 成本。S 的大小取决于状态怎样划分：状态不完整会算错，分得过细则复用少。<a href="https://docs.python.org/3/library/functools.html" class="ext" rel="noopener">Python functools</a>提供 <code>cache</code> 与 <code>lru_cache</code>，并说明即使内部结构线程安全，同一计算在并发首次访问时仍可能执行多次。</p>
+<div class="labelled" data-kind="counter"><p class="blk-l">误用反例</p><p>给 <code>charge(customer,40)</code> 加缓存，希望避免重复收费。扣款是副作用，缓存被淘汰或服务重启后仍会再执行；多个实例也各有各的内存。防止重复扣款，要靠第九章的持久化操作身份与核对协议。验算时比较缓存命中与未命中的输出，并统计纯函数被调用的次数；带副作用的方法另做业务幂等检查。</p></div>
 </section>
 <section class="scene" aria-labelledby="演算同一请求序列上的-lru-与-lfu"><header class="scene-head"><h2 id="演算同一请求序列上的-lru-与-lfu"><span class="scene-no" aria-hidden="true">03</span><span class="visually-hidden">演算：</span><span class="head">同一请求序列上的 LRU 与 LFU</span></h2></header><p class="scene-lede">同一序列上，两种策略前六次请求的命中数相同，留在缓存里的项不同；之后的访问落在哪一项，决定谁更划算。LRU 依赖最近用过的对象很快再被用到，LFU 适合较稳定的热点。</p>
 <h3 id="lruleast-recently-used最近最少使用按最近访问淘汰">LRU（least recently used，最近最少使用）：按最近访问淘汰</h3>
@@ -138,12 +179,12 @@
   <text class="t-s" x="698" y="40">命中/未命中</text>
 </svg>
 </div>
-<figcaption>前六次两种策略都命中 2 次，留下的项不同；第七次 A 落在 LFU 留住的 A 上，LRU 已在第六次把它淘汰。</figcaption></figure><p>LFU 适合较稳定的热点，但永不衰减的旧热度会压住新热点。精确实现可以用频率桶；朴素地按计数扫描，每次淘汰要多花 O(C)，成本不一定是常数。生产缓存可能采样或估计频率；<a href="https://redis.io/docs/latest/develop/reference/eviction/" class="ext" rel="noopener">Redis Key eviction</a>明确说明它的 LRU/LFU 是近似实现，LFU 带频率衰减。所以 Redis 不一定每次都按这里的手算淘汰。</p>
-<div class="labelled" data-kind="counter"><p class="blk-l">误用反例</p><p>只拿一次热缓存的演示比较两种策略，真实流量的热点却每天在换。验算应回放相同的请求序列和对象大小，分别观察命中率、未命中代价、内存，以及热点切换后的恢复时间。命中率提高不一定节省成本：命中的若全是便宜的小查询，昂贵的查询仍未命中，收益可能很小。</p></div>
+<figcaption>前六次两种策略都命中 2 次，留下的项不同；第七次 A 落在 LFU 留住的 A 上，LRU 已在第六次把它淘汰。</figcaption></figure><p>LFU 适合较稳定的热点，但永不衰减的旧热度会压住新热点。精确实现可以用频率桶；朴素地按计数扫描，每次淘汰要多花 O(C)，成本随容量增长。生产缓存可能采样或估计频率；<a href="https://redis.io/docs/latest/develop/reference/eviction/" class="ext" rel="noopener">Redis Key eviction</a>明确说明它的 LRU/LFU 是近似实现，LFU 带频率衰减。Redis 的实际淘汰因此可能与这里的手算不同。</p>
+<div class="labelled" data-kind="counter"><p class="blk-l">误用反例</p><p>只拿一次热缓存的演示比较两种策略，真实流量的热点却每天在换。验算应回放相同的请求序列和对象大小，分别观察命中率、未命中代价、内存，以及热点切换后的恢复时间。节省多少取决于命中了哪些请求：命中的若全是便宜的小查询，昂贵的查询仍未命中，收益就很小。</p></div>
 </section>
 <section class="scene" aria-labelledby="失效旧结果的可信范围"><header class="scene-head"><h2 id="失效旧结果的可信范围"><span class="scene-no" aria-hidden="true">04</span><span class="visually-hidden">失效：</span><span class="head">旧结果的可信范围</span></h2></header><p class="scene-lede">旧结果的可信范围由 key 的维度和失效机制共同划定；“更新后删缓存”仍有竞态，关键操作要回到权威记录。</p>
 <p>缓存 key 可以组合 <code>(tenant, object, object_version, rule_version, locale)</code>，只加入实际改变结果的维度。与权限相关的投影，key 还要带授权上下文；即使 key 已按身份隔离，服务端仍要检查权限。不可变版本的缓存较容易管理：对象从 v2 变成 v3，直接读新 key，旧 key 稍后回收。列表与聚合依赖许多对象，可以用事件失效、版本水位、较短的存活时限（time to live，TTL），或者重算后切换发布指针；选哪一种，看对新鲜度的要求。</p>
-<p>竞态如下：读者从数据库取到 v2，暂未写缓存；写者提交 v3 并删除缓存；读者随后把 v2 写回缓存。简单的“更新后删缓存”仍会留下旧值。版本化写入、拒绝较低版本的覆盖、与事务关联的变更事件，以及关键操作直接查权威记录，各自堵住一类边界情形。写回来源和链路延迟也受控时，TTL 才给得出一个说得清的陈旧上限；读副本延迟和失效事件丢失，TTL 本身修复不了。</p>
+<p>竞态如下：读者从数据库取到 v2，暂未写缓存；写者提交 v3 并删除缓存；读者随后把 v2 写回缓存。简单的“更新后删缓存”仍会留下旧值。版本化写入、拒绝较低版本的覆盖、与事务关联的变更事件，以及关键操作直接查权威记录，各自堵住一类边界情形。写回来源和链路延迟也受控时，TTL 才给得出一个说得清的陈旧上限；读副本延迟和失效事件丢失，要靠版本化写入和查权威记录处理。</p>
 <figure class="drawing" data-drawing="f07-race"><div class="dw-scroll" style="--dw-min:520px;--dw-max:760px">
 <svg viewBox="0 0 640 262" role="img" aria-labelledby="f07-race-t f07-race-d">
   <title id="f07-race-t">更新后删缓存的竞态</title>
@@ -173,9 +214,9 @@
   <text class="t-s" x="86" y="254">从左到右是先后次序，间距不表示时长</text>
 </svg>
 </div>
-<figcaption>删除发生在读者回填之前，读者随后写回的 v2 留在缓存里，“更新后删缓存”没有挡住旧值。</figcaption></figure><p>热点同时过期时，大量请求会一起回源到同一份数据。可以考虑请求合并（single flight）、给过期时间加抖动，以及有限度的后台刷新。允许旧报表临时展示时，要注明输入版本和刷新状态；确认付款、撤权或释放库存之前，则要读取满足业务一致性要求的证据。缓存里旧的“可用”标记，不能当作新的授权。</p>
+<figcaption>删除发生在读者回填之前，读者随后写回的 v2 留在缓存里，“更新后删缓存”没有挡住旧值。</figcaption></figure><p>热点同时过期时，大量请求会一起回源到同一份数据。可以考虑请求合并（single flight）、给过期时间加抖动，以及有限度的后台刷新。允许旧报表临时展示时，要注明输入版本和刷新状态；确认付款、撤权或释放库存之前，则要读取满足业务一致性要求的证据。缓存里旧的“可用”标记不能当作新的授权，授权以当次读取的权威记录为准。</p>
 </section>
-<section class="scene" aria-labelledby="验算去掉缓存后的业务正确性"><header class="scene-head"><h2 id="验算去掉缓存后的业务正确性"><span class="scene-no" aria-hidden="true">05</span><span class="visually-hidden">验算：</span><span class="head">去掉缓存后的业务正确性</span></h2></header><p class="scene-lede">去掉缓存，业务结果和已发生的义务都不应改变。检查 cold/warm 两条路径的结果相同，跨租户的同号对象相互隔离，规则与对象修改后不再复用旧 key。注入三种情形：“提交后尚未失效”“失效后旧值回填”“缓存整体丢失”。系统应能从权威记录重建，不因缓存清空而丢失已发生的义务。再测命中率、数据年龄、回源并发和回源错误，不只测一次成功读取的耗时。</p>
+<section class="scene" aria-labelledby="验算去掉缓存后的业务正确性"><header class="scene-head"><h2 id="验算去掉缓存后的业务正确性"><span class="scene-no" aria-hidden="true">05</span><span class="visually-hidden">验算：</span><span class="head">去掉缓存后的业务正确性</span></h2></header><p class="scene-lede">去掉缓存，业务结果和已发生的义务保持原样。检查 cold/warm 两条路径的结果相同，跨租户的同号对象相互隔离，规则与对象修改后不再复用旧 key。注入三种情形：“提交后尚未失效”“失效后旧值回填”“缓存整体丢失”。缓存清空后，系统从权威记录重建，已发生的义务都还在。再测命中率、数据年龄、回源并发和回源错误。</p>
 </section>
 <section class="scene" aria-labelledby="变式从报表到批准从一个进程到多个实例"><header class="scene-head"><h2 id="变式从报表到批准从一个进程到多个实例"><span class="scene-no" aria-hidden="true">06</span><span class="visually-hidden">变式：</span><span class="head">从报表到批准，从一个进程到多个实例</span></h2></header><p class="scene-lede">两题的共同判断：缓存可以省计算，批准是否仍然有效、扣费是否重复，要由权威记录和持久化边界回答。</p>
 <div class="labelled" data-kind="exercise"><p class="blk-l">题一</p><p>H07 的历史月报缓存，移到 H09 的当前批准核验。<strong>答案：</strong> 不可变的历史版本可以长期复用；当前批准可能因修订或撤回而失效，必须绑定目标版本并核验当前是否有效。反例是缓存了旧批准，放行了新文档。检查撤销后新的执行请求被拒绝，历史审阅记录仍然保留。</p></div>
@@ -187,8 +228,8 @@
     <footer class="page-foot">正文 <a href="../../../books/saas-engineering/foundations/07-reuse-and-invalidation.md">books/saas-engineering/foundations/07-reuse-and-invalidation.md</a> · <a href="../../../vault/distilled/saas-engineering-atlas/README.md">结构、来源与验证</a></footer>
   </main>
 </div>
-<script src="search-index.js?v=mv95jeod"></script>
-<script src="book.js?v=mv95jeod"></script>
+<script src="search-index.js?v=mv97hru0"></script>
+<script src="book.js?v=mv97hru0"></script>
 
 </body>
 </html>

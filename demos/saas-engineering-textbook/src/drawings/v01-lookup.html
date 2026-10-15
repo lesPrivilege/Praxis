@@ -1,0 +1,41 @@
+<div class="dw-scroll" style="--dw-min:600px;--dw-max:900px">
+<svg viewBox="0 0 760 306" role="img" aria-labelledby="v01-lookup-t v01-lookup-d">
+  <title id="v01-lookup-t">按完整身份查找裁决行</title>
+  <desc id="v01-lookup-d">分配项 1 金额 80 查到行 1，L1 待收从 80 变为 0；分配项 2 金额 100 查到行 2，L2 待收从 120 变为 20。分配项 1 重复投递时 key 相同，只记一次。两笔各 100、没有项目引用的付款留在未分配现金。</desc>
+  <defs><marker id="v01-lookup-ah" viewBox="0 0 8 8" refX="7" refY="4" markerUnits="userSpaceOnUse" markerWidth="9" markerHeight="9" orient="auto"><path class="f-ink" d="M0 0 L8 4 L0 8 z"/></marker></defs>
+  <text class="t-b" x="20" y="22">付款分配项</text>
+  <text class="t-b" x="300" y="22">裁决行字典</text>
+  <text class="t-b" x="560" y="22">支付方待收</text>
+  <text class="t-s" x="300" y="40">key = (tenant, payer account, claim ID, claim revision, line sequence, currency)</text>
+  <path class="ln-soft" d="M20 52 H740"/>
+  <!-- matched items -->
+  <rect class="box" x="20" y="68" width="180" height="40"/><text class="t" x="34" y="93">分配项 1 ·</text><text class="t-n" x="110" y="93">80</text>
+  <path class="ln" marker-end="url(#v01-lookup-ah)" d="M200 88 H298"/>
+  <rect class="box" x="300" y="68" width="180" height="40"/><text class="t mid" x="390" y="93">claim 行 1</text>
+  <path class="ln" marker-end="url(#v01-lookup-ah)" d="M480 88 H550"/>
+  <text class="t" x="560" y="93">L1</text><text class="t-n" x="590" y="93">80 → 0</text>
+  <rect class="box" x="20" y="124" width="180" height="40"/><text class="t" x="34" y="149">分配项 2 ·</text><text class="t-n" x="110" y="149">100</text>
+  <path class="ln" marker-end="url(#v01-lookup-ah)" d="M200 144 H298"/>
+  <rect class="box" x="300" y="124" width="180" height="40"/><text class="t mid" x="390" y="149">claim 行 2</text>
+  <path class="ln" marker-end="url(#v01-lookup-ah)" d="M480 144 H550"/>
+  <text class="t" x="560" y="149">L2</text><text class="t-n" x="590" y="149">120 → 20</text>
+  <!-- duplicate delivery -->
+  <g data-s="1">
+    <rect class="box" x="20" y="180" width="180" height="40"/><text class="t" x="34" y="205">分配项 1 重投 ·</text><text class="t-n" x="140" y="205">80</text>
+    <path class="ln-soft" d="M200 200 H250 V88 H296"/>
+    <text class="t-s" x="258" y="196">同一 key</text>
+    <text class="t-s" x="258" y="212">只记一次</text>
+  </g>
+  <!-- unreferenced payments -->
+  <g data-s="2">
+    <path class="ln-soft" d="M20 236 H740"/>
+    <rect class="box" x="20" y="248" width="86" height="36"/><text class="t-n mid" x="63" y="271">100</text>
+    <rect class="box" x="114" y="248" width="86" height="36"/><text class="t-n mid" x="157" y="271">100</text>
+    <text class="t-s" x="20" y="296">没有项目引用</text>
+    <path class="ln" marker-end="url(#v01-lookup-ah)" d="M200 266 H298"/>
+    <rect class="box-em" x="300" y="248" width="180" height="36"/><text class="t mid t-em" x="390" y="271">未分配现金</text>
+    <text class="t-s" x="496" y="271">金额相同，查不到 key，不入任何一行</text>
+  </g>
+</svg>
+</div>
+<figcaption>付款项按六元组 key 找到唯一的裁决行；没有项目引用的两笔 100 进入未分配现金，等人处理。</figcaption>

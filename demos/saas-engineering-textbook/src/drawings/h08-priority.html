@@ -1,0 +1,43 @@
+<div class="dw-scroll" style="--dw-min:600px;--dw-max:880px">
+<svg viewBox="0 0 740 320" role="img" aria-labelledby="h08-priority-t h08-priority-d">
+  <title id="h08-priority-t">累加严重度与 R1 优先级的排序相反</title>
+  <desc id="h08-priority-d">直接累加严重度时，W1 的 a1 60、a2 55、a3 35 共 150，W2 的四个 70 共 280。按 R1，W1 取最高严重度 60，三个信号族加 20，关键资产加 20，得 100；W2 一个信号族、无关键资产，得 70。拆掉 D4 的设备映射后，W1 剩两族，得 60 + 10 + 20 = 90。</desc>
+  <g data-s="1">
+    <text class="t-b" x="10" y="24">直接累加严重度</text>
+    <text class="t end" x="100" y="59">W1 · U17</text>
+    <rect class="box f2" x="110" y="40" width="120" height="28"/><text class="t-s mid" x="170" y="59">a1 60</text>
+    <rect class="box f2" x="230" y="40" width="110" height="28"/><text class="t-s mid" x="285" y="59">a2 55</text>
+    <rect class="box f2" x="340" y="40" width="70" height="28"/><text class="t-s mid" x="375" y="59">a3 35</text>
+    <text class="t-n" x="420" y="59">150</text>
+    <text class="t end" x="100" y="99">W2 · U22</text>
+    <rect class="box f2" x="110" y="80" width="140" height="28"/><text class="t-s mid" x="180" y="99">b1 70</text>
+    <rect class="box f2" x="250" y="80" width="140" height="28"/><text class="t-s mid" x="320" y="99">b2 70</text>
+    <rect class="box f2" x="390" y="80" width="140" height="28"/><text class="t-s mid" x="460" y="99">b3 70</text>
+    <rect class="box f2" x="530" y="80" width="140" height="28"/><text class="t-s mid" x="600" y="99">b4 70</text>
+    <text class="t-n" x="680" y="99">280</text>
+  </g>
+  <path class="ln-soft" d="M10 128 H730"/>
+  <g data-s="2">
+    <text class="t-b" x="10" y="154">R1 优先级</text>
+    <text class="t-s" x="90" y="154">min(100, 最高严重度 + 10 × (信号族数 − 1) + 20 × 关键资产)</text>
+    <text class="t end" x="100" y="189">W1 · U17</text>
+    <rect class="box f2" x="110" y="170" width="120" height="28"/><text class="t-s mid" x="170" y="189">a1 60</text>
+    <rect class="box f1" x="230" y="170" width="40" height="28"/><text class="t-s mid" x="250" y="189">+20</text>
+    <rect class="box f1" x="270" y="170" width="40" height="28"/><text class="t-s mid" x="290" y="189">+20</text>
+    <text class="t-n t-em" x="320" y="189">100</text>
+    <text class="t-s mid" x="250" y="212">三族</text><text class="t-s mid" x="296" y="212">关键资产</text>
+    <text class="t end" x="100" y="249">W2 · U22</text>
+    <rect class="box f2" x="110" y="230" width="140" height="28"/><text class="t-s mid" x="180" y="249">最高 70</text>
+    <text class="t-n" x="260" y="249">70</text>
+  </g>
+  <g data-s="3">
+    <text class="t end" x="100" y="299">W1 · 拆掉 D4</text>
+    <rect class="box f2" x="110" y="280" width="120" height="28"/><text class="t-s mid" x="170" y="299">a1 60</text>
+    <rect class="box f1" x="230" y="280" width="20" height="28"/>
+    <rect class="box f1" x="250" y="280" width="40" height="28"/><text class="t-s mid" x="270" y="299">+20</text>
+    <text class="t-n" x="300" y="299">90</text>
+    <text class="t-s" x="340" y="299">a2 不再算入 U17，剩两族，+10</text>
+  </g>
+</svg>
+</div>
+<figcaption>四条同族告警在累加时压过三族证据；R1 按信号族多样性加分，W1 排到前面。</figcaption>

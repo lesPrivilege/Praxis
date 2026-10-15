@@ -1,0 +1,37 @@
+<div class="dw-scroll" style="--dw-min:640px;--dw-max:940px">
+<svg viewBox="0 0 800 290" role="img" aria-labelledby="h07-lineage-t h07-lineage-d">
+  <title id="h07-lineage-t">从 derived_from 反推影响范围</title>
+  <desc id="h07-lineage-d">JSON 的 derived_from 从结果指向来源：current_orders 指向 orders，daily_completed 与 refund_monitor 指向 current_orders，operations_dashboard 指向 daily_completed。影响分析反向走：完成时间字段改变时，从 orders 到 current_orders、daily_completed、operations_dashboard；金额字段也变时，refund_monitor 也进入候选集合。eligible_regions 只在 daily_completed 中用于过滤，lineage 中没有这条边，由构建 manifest 登记。</desc>
+  <rect class="box" x="20" y="140" width="130" height="40"/><text class="t-n mid" x="85" y="165">orders</text>
+  <rect class="box" x="200" y="140" width="150" height="40"/><text class="t-n mid" x="275" y="165">current_orders</text>
+  <rect class="box" x="420" y="80" width="160" height="40"/><text class="t-n mid" x="500" y="105">daily_completed</text>
+  <rect class="box" x="420" y="200" width="160" height="40"/><text class="t-n mid" x="500" y="225">refund_monitor</text>
+  <rect class="box" x="620" y="80" width="170" height="40"/><text class="t-n mid" x="705" y="105">operations_dashboard</text>
+  <g data-s="1">
+    <path class="ln-soft" d="M150 152 H200 M158 146 L150 152 L158 158"/>
+    <path class="ln-soft" d="M350 152 H378 V92 H420 M358 146 L350 152 L358 158"/>
+    <path class="ln-soft" d="M290 180 V228 H420 M284 188 L290 180 L296 188"/>
+    <path class="ln-soft" d="M580 92 H620 M588 86 L580 92 L588 98"/>
+  </g>
+  <g data-s="2">
+    <path class="ln-strong" d="M150 168 H200 M192 162 L200 168 L192 174"/>
+    <path class="ln-strong" d="M350 168 H392 V108 H420 M412 102 L420 108 L412 114"/>
+    <path class="ln-strong" d="M580 108 H620 M612 102 L620 108 L612 114"/>
+    <text class="t-s" x="20" y="200">完成时间字段改变</text>
+  </g>
+  <g data-s="3">
+    <path class="ln" d="M310 180 V214 H420 M412 208 L420 214 L412 220"/>
+    <text class="t-s" x="590" y="225">金额字段也变时进入</text>
+  </g>
+  <g data-s="4">
+    <rect class="box-dash" x="200" y="30" width="150" height="40"/><text class="t-n mid" x="275" y="55">eligible_regions</text>
+    <path class="ln-dash" d="M350 50 H500 V80"/>
+    <text class="t-s t-em" x="512" y="56">只参与过滤，lineage 中无此边；manifest 登记</text>
+  </g>
+  <path class="ln-soft" d="M20 276 H56 M28 270 L20 276 L28 282"/>
+  <text class="t-s" x="66" y="280">derived_from：结果 → 来源（JSON 的方向）</text>
+  <path class="ln-strong" d="M400 276 H436 M428 270 L436 276 L428 282"/>
+  <text class="t-s" x="446" y="280">影响遍历：来源 → 结果</text>
+</svg>
+</div>
+<figcaption>影响分析逆着 derived_from 走；过滤用的 eligible_regions 不在 lineage 里，靠 manifest 补上这条依赖。</figcaption>

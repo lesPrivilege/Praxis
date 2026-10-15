@@ -1,0 +1,31 @@
+<div class="dw-scroll" style="--dw-min:600px;--dw-max:900px">
+<svg viewBox="0 0 760 252" role="img" aria-labelledby="v01-overdraft-t v01-overdraft-d">
+  <title id="v01-overdraft-t">同一笔到账 180 的并发核销</title>
+  <desc id="v01-overdraft-d">只锁应收时，两人各自看到可用 180，分别写入 80 与 120，合计 200，超出到账 20。付款预算也进入事务时，先成功的 80 把可用额减到 100，第二笔 120 必须拒绝或调整。</desc>
+  <text class="t-b" x="0" y="20">只锁应收</text>
+  <text class="t-s end" x="150" y="54">付款预算</text>
+  <rect class="box" x="160" y="36" width="360" height="28"/><text class="t-n mid" x="340" y="55">可用 180</text>
+  <g data-s="1">
+    <text class="t-s end" x="150" y="94">两人各写一笔</text>
+    <rect class="box f3" x="160" y="76" width="160" height="28"/><text class="t-n mid" x="240" y="95">80</text>
+    <rect class="box f3" x="320" y="76" width="200" height="28"/><text class="t-n mid" x="420" y="95">120</text>
+    <rect class="box-em" x="520" y="76" width="40" height="28"/><text class="t-n mid t-em" x="540" y="95">20</text>
+    <path class="ln-strong" d="M520 30 V112"/>
+    <text class="t-em" x="574" y="95">写入 200，超出 20</text>
+  </g>
+  <path class="ln-soft" d="M0 132 H760"/>
+  <text class="t-b" x="0" y="158">付款预算一起锁</text>
+  <g data-s="2">
+    <text class="t-s end" x="150" y="192">付款预算</text>
+    <rect class="box f3" x="160" y="174" width="160" height="28"/><text class="t-n mid" x="240" y="193">已分 80</text>
+    <rect class="box" x="320" y="174" width="200" height="28"/><text class="t-n mid" x="420" y="193">可用 100</text>
+    <path class="ln-strong" d="M520 168 V246"/>
+  </g>
+  <g data-s="3">
+    <text class="t-s end" x="150" y="232">第二笔</text>
+    <rect class="box-dash" x="320" y="214" width="240" height="28"/><text class="t-n mid" x="440" y="233">120</text>
+    <text class="t" x="574" y="233">超过可用 100：拒绝或调整</text>
+  </g>
+</svg>
+</div>
+<figcaption>付款预算行和应收行在同一事务里加锁，第一笔成功后可用额立即变小，第二笔按新的可用额重查。</figcaption>

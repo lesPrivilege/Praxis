@@ -1,0 +1,37 @@
+<div class="dw-scroll" style="--dw-min:620px;--dw-max:940px">
+<svg viewBox="0 0 800 370" role="img" aria-labelledby="x01-dedup-t x01-dedup-d">
+  <title id="x01-dedup-t">消费键把五条消息归到四条账本记录</title>
+  <desc id="x01-dedup-d">A 的 a=400、b=600、c=300（失败）与 B 的 a=900 各对应一条账本记录，键为 (tenant, run, meter, revision)。重传的 A·a=400 键与 payload 都相同，被忽略。A 的可计费量为 1,000。没有键时 A 变成 1,400；只按 run 去重时，B 的 900 被吞掉。</desc>
+  <text class="t-b" x="20" y="24">收到的终态消息</text>
+  <text class="t-b" x="470" y="24">账本记录 (tenant, run, meter, revision)</text>
+  <g data-s="1">
+    <rect class="box" x="20" y="40" width="170" height="30"/><text class="t-n" x="34" y="60">A · a · 400</text>
+    <rect class="box" x="20" y="80" width="170" height="30"/><text class="t-n" x="34" y="100">A · b · 600</text>
+    <rect class="box" x="20" y="120" width="170" height="30"/><text class="t-n" x="34" y="140">A · c · 300</text><text class="t-s" x="140" y="140">失败</text>
+    <rect class="box" x="20" y="160" width="170" height="30"/><text class="t-n" x="34" y="180">B · a · 900</text>
+    <path class="ln" d="M190 55 H470 M462 49 L470 55 L462 61"/>
+    <path class="ln" d="M190 95 H470 M462 89 L470 95 L462 101"/>
+    <path class="ln" d="M190 135 H470 M462 129 L470 135 L462 141"/>
+    <path class="ln" d="M190 175 H470 M462 169 L470 175 L462 181"/>
+    <rect class="box f1" x="470" y="40" width="200" height="30"/><text class="t-n" x="484" y="60">(A, a, meter, 1)</text>
+    <rect class="box f1" x="470" y="80" width="200" height="30"/><text class="t-n" x="484" y="100">(A, b, meter, 1)</text>
+    <rect class="box f1" x="470" y="120" width="200" height="30"/><text class="t-n" x="484" y="140">(A, c, meter, 1)</text>
+    <rect class="box f1" x="470" y="160" width="200" height="30"/><text class="t-n" x="484" y="180">(B, a, meter, 1)</text>
+    <path class="ln" d="M680 44 H690 V106 H680"/><text class="t" x="698" y="80">A 计费</text><text class="t-n" x="698" y="98">1,000</text>
+    <text class="t-s" x="684" y="140">失败，不计费</text>
+    <text class="t-n" x="684" y="180">B 900</text>
+  </g>
+  <g data-s="2">
+    <rect class="box-dash" x="20" y="210" width="170" height="30"/><text class="t-n" x="34" y="230">A · a · 400</text><text class="t-s" x="128" y="230">重传</text>
+    <path class="ln-em" d="M190 225 L460 60"/>
+    <text class="t-em" x="230" y="236">键与 payload 都相同：忽略</text>
+  </g>
+  <g data-s="3">
+    <path class="ln-soft" d="M20 262 H780"/>
+    <text class="t" x="20" y="290">没有去重键</text><text class="t-n" x="300" y="290">A：400 + 600 + 400 = 1,400</text>
+    <text class="t" x="20" y="320">只按 run=a 去重</text><text class="t-n" x="300" y="320">B 的 900 被当成重复吞掉</text>
+    <text class="t-b" x="20" y="350">(tenant, run, meter, revision)</text><text class="t-n" x="300" y="350">A 1,000 · B 900</text>
+  </g>
+</svg>
+</div>
+<figcaption>tenant 让两个同名的 run a 落到两条记录；revision 相同、payload 相同的重传落回原记录，不再累加。</figcaption>

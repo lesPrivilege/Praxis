@@ -9,7 +9,8 @@
 | `graph.mjs` | 把正文里的 Mermaid flowchart 和案例拓扑用 dagre 排成静态 SVG |
 | `case.mjs` | 案例标题卡上的角色与系统清单；页末的结构面板：三种关系视图、节点、生命周期状态轨与转换表、检查定义、迁移 |
 | `figure-brief.md` | 交给图件制作者的施工说明 |
-| `drawing-brief.md` | 交给静态图绘制者的施工说明 |
+| `drawing-brief.md` | 交给静态图绘制者的施工说明：类名、尺寸、分步出现 |
+| `relation-brief.md` | 交给认领章节的编辑：找出有形状的段落、画出它的关系、改写否定式陈述 |
 | `review-brief.md` | 交给正文审阅者的审阅说明 |
 
 正文中的 `<!-- figure: id -->……<!-- /figure -->` 指令把 `src/figures/<id>` 的交互图件插到该位置，两条注释之间的 Markdown 是没有脚本和打印时的回退内容。链接到 Books 以外的仓库文件时改写成相对路径，链接失效时构建报错。

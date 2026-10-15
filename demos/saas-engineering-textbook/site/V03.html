@@ -4,9 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>V03 · 样品检测、批次放行与分析证书 · SaaS 工程全景</title>
-<link rel="stylesheet" href="book.css?v=mv95jeod">
+<link rel="stylesheet" href="book.css?v=mv97hru0">
 </head>
 <body>
+<svg class="dw-defs" width="0" height="0" aria-hidden="true" focusable="false" style="position:absolute"><defs><pattern id="dw-hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" fill="var(--bg)"/><path d="M0 0 V6" stroke="var(--ink-2)" stroke-width="1.2"/></pattern></defs></svg>
 <a class="skip" href="#main">跳到正文</a>
 <header class="topbar">
   <button class="nav-toggle" type="button" aria-controls="sidebar" aria-expanded="false">目录</button>
@@ -36,7 +37,7 @@
       <div class="flow">
 <p>本例的实验室检测液体材料中的杂质。批次 L1 取样 40 mL，登记为 S1，分出 10 mL 分样 A1 做分析、10 mL 分样 A2 留存，剩余 20 mL 仍在原容器。本例只设一项必需测定，省去真实产品可能需要的鉴别、微生物、稳定性等检验。L1 的合同规格是杂质浓度不超过 9.0 mg/L。取样计划已由专业人员批准；软件只检查记录是否齐备，不负责证明取样的统计代表性。</p>
 <p>LabWare QAQC <abbr title="Software as a Service：软件即服务">SaaS</abbr> 实验室信息管理系统（laboratory information management system，<abbr title="laboratory information management system：实验室信息管理系统">LIMS</abbr>）的厂商页面自述支持样品状态和位置保管链、批次检验与复核、放行功能，以及 CoA 的生成和审批；该页还介绍了仪器性能检查和结果文件导入。<a href="https://www.labware.com/lims/saas/qaqc" class="ext" rel="noopener">LabWare QAQC</a>。</p>
-<section class="scene" aria-labelledby="识题身份先于数值"><header class="scene-head"><h2 id="识题身份先于数值"><span class="scene-no" aria-hidden="true">01</span><span class="visually-hidden">识题：</span><span class="head">身份先于数值</span></h2></header><p class="scene-lede">一个结果可以是 8.5 mg/L，但要复核它，先得知道它属于哪份分样、用了什么方法、来自哪次原始观测。样品标签、仪器序列位置和业务编号都只是查找线索，彼此不能顶替。尤其不要把生产批次和仪器运行中的 test batch 都叫作“批次”、再共用一张表：同一次仪器运行可以装入来自多个 lot 的分样，同一 lot 也可以经过多次运行。</p>
+<section class="scene" aria-labelledby="识题身份先于数值"><header class="scene-head"><h2 id="识题身份先于数值"><span class="scene-no" aria-hidden="true">01</span><span class="visually-hidden">识题：</span><span class="head">身份先于数值</span></h2></header><p class="scene-lede">一个结果可以是 8.5 mg/L，但要复核它，先得知道它属于哪份分样、用了什么方法、来自哪次原始观测。样品标签、仪器序列位置和业务编号是三条各自独立的查找线索。生产批次和仪器运行中的 test batch 中文都可能叫“批次”，它们是两种对象，各用一张表：同一次仪器运行可以装入来自多个 lot 的分样，同一 lot 也可以经过多次运行。</p>
 <div class="table-wrap"><table>
 <thead>
 <tr>
@@ -135,7 +136,31 @@
 </section>
 <section class="scene" aria-labelledby="生命周期与责任边界"><header class="scene-head"><h2 id="生命周期与责任边界"><span class="scene-no" aria-hidden="true">02</span><span class="head">生命周期与责任边界</span></h2></header><p class="scene-lede">样品、运行、结果、批次与证书各有生命周期；异常只把对象带进阻断、调查或暂停状态，不改写原数值，恢复的是后续决定所依赖的证据条件。</p>
 <p>样品的 <code>expected → received → prepared → retained → disposed</code> 说明实物在哪里、是否仍可使用。接收时发现破损、温度偏差或身份冲突，样品进入 <code>quarantined</code>，由指定人员调查后决定接收或拒收。每次分样都要核对母样与空容器；上面的 40 mL 要能对上 10 + 10 + 20 mL。实际制备的损耗单列数量和理由，不能为了凑平守恒式伪造剩余量。本例只接受同单位的简单分样，混合、浓缩和挥发需要另外的物料转换模型。</p>
-<p>运行的 <code>planned → acquiring → acquired → evaluated</code> 说明采集与评价的进度，运行中止时进入 <code>aborted</code>。中止的运行保留已采集的记录；重新采集产生新的 run ID。方法和规格都按 <code>draft → approved → retired</code> 流转；旧版本不再供新任务选用，历史引用照旧保留。C1 批准（<code>draft → approved</code>）后可能到期，发现问题时也可能被撤销（<code>revoked</code>）。到期只阻止以后的使用；追溯性撤销要写明影响起点和原因，才能圈定哪些旧测量需要复查。</p>
+<figure class="drawing" data-drawing="v03-aliquot"><div class="dw-scroll" style="--dw-min:520px;--dw-max:800px">
+<svg viewBox="0 0 680 170" role="img" aria-labelledby="v03-aliquot-t v03-aliquot-d">
+  <title id="v03-aliquot-t">样品 S1 的 40 mL 怎样分开</title>
+  <desc id="v03-aliquot-d">批次 L1 取样 40 mL，登记为样品 S1。分样 A1 10 mL 做分析，分样 A2 10 mL 留存，剩余 20 mL 仍在原容器，10 + 10 + 20 = 40。</desc>
+  <rect class="box f2" x="0" y="64" width="90" height="44"/><text class="t-b mid" x="45" y="91">Lot L1</text>
+  <path class="ln" d="M90 86 H140"/><text class="t-s mid" x="115" y="78">取样</text>
+  <text class="t-b" x="140" y="30">样品 S1 · 40 mL</text>
+  <path class="ln-soft" d="M140 44 V52 H620 V44"/>
+  <rect class="box" x="140" y="64" width="480" height="44"/>
+  <g data-s="1">
+    <rect class="box f3" x="140" y="64" width="120" height="44"/><text class="t-b mid" x="200" y="91">A1 · 10</text>
+    <text class="t-s mid" x="200" y="128">分样 · 分析</text>
+  </g>
+  <g data-s="2">
+    <rect class="box f2" x="260" y="64" width="120" height="44"/><text class="t-b mid" x="320" y="91">A2 · 10</text>
+    <text class="t-s mid" x="320" y="128">分样 · 留存</text>
+  </g>
+  <g data-s="3">
+    <text class="t-b mid" x="500" y="91">原容器 · 20</text>
+    <text class="t-s mid" x="500" y="128">剩余</text>
+    <text class="t-n" x="140" y="160">40 = 10 + 10 + 20 mL</text>
+  </g>
+</svg>
+</div>
+<figcaption>两份分样各取 10 mL，原容器剩 20 mL；三段之和要对上 S1 登记的 40 mL。</figcaption></figure><p>运行的 <code>planned → acquiring → acquired → evaluated</code> 说明采集与评价的进度，运行中止时进入 <code>aborted</code>。中止的运行保留已采集的记录；重新采集产生新的 run ID。方法和规格都按 <code>draft → approved → retired</code> 流转；旧版本不再供新任务选用，历史引用照旧保留。C1 批准（<code>draft → approved</code>）后可能到期，发现问题时也可能被撤销（<code>revoked</code>）。到期只阻止以后的使用；追溯性撤销要写明影响起点和原因，才能圈定哪些旧测量需要复查。</p>
 <p>结果按 <code>captured → calculated → submitted → reviewed</code> 推进，依次经过数值评价和专业复核。校准失效、QC 不合格或单位错误时，结果进入 <code>blocked</code>，并不自动记为产品不合格。测量有效且超过 SP1 的 9.0 mg/L，才记为本例的 <code>oos</code>；数值未超限但不满足本例的不确定度规则时，记为 <code>review_required</code>。复核不改原数值；修正计算产生 <code>T1@2</code>，并保留它对旧版本的替代关系。批次沿 <code>on_hold → review_ready → released</code> 推进，也可能被拒绝（<code>rejected</code>）；放行后发现依据异常，批次进入 <code>reassessment_hold</code>，由质量负责人决定进一步处置。旧证书仍可审计，但暂停继续分发。</p>
 <p>OOS 是 Out-of-Specification，即超出预定规格的结果。FDA 的 OOS 指南要求有科学依据的调查和预定的重测安排，反对反复测试到出现合格结果、再忽略先前的失败。<a href="https://www.fda.gov/media/158416/download" class="ext" rel="noopener">OOS 指南 IV.B.1，印刷页 7–8</a>。本例据此规定：未关闭的 OOS 阻止正常放行；重测必须先引用已批准的调查计划，得到新结果后仍展示全部历史。一次 9.2 mg/L 和后来的 8.5 mg/L，不能用“取最后一个”自动变成合格，也不能临时取平均值 8.85 mg/L 规避原始 OOS。是否证明了实验室错误、是否需要扩大调查，仍由合格人员决定。</p>
 <p>管理员没有能把异常结果直接改成“通过”的开关。<code>blocked</code> 保留阻断原因；单位修正或重新处理产生新的 result version，重新采集还要新开一个 run。<code>review_required</code> 的结果要等具名调查或补充证据得到处置，才可能产生新的可复核版本；复核员不能绕过当前批准的判定规则。<code>oos</code> 保留原始数值与评价；即使调查证明它无效，也在独立的调查决定里写明理由和采用的新结果，旧数值不改为合格。恢复的只是后续决定所依赖的证据条件，历史记录始终可见。</p>
@@ -152,19 +177,129 @@
 <p>方法 M1@3 允许在 0–10 mg/L 范围内用直线 <code>y = a + b x</code> 描述浓度 x 与响应 y 的关系。输入是三个标准点 <code>(0 mg/L, 1 AU)</code>、<code>(5 mg/L, 11 AU)</code>、<code>(10 mg/L, 21 AU)</code>；AU 是本例的任意响应单位。样品响应为 18.0 AU，稀释因子为 1。输出必须同时带浓度、单位、曲线版本与适用范围。</p>
 <p>最小二乘计算先求均值 <code>x̄=5</code>、<code>ȳ=11</code>，再求 <code>b = Σ(x−x̄)(y−ȳ) / Σ(x−x̄)² = 100/50 = 2 AU/(mg/L)</code>，<code>a = ȳ−b x̄ = 1 AU</code>。样品浓度为 <code>(18−1)/2 × 1 = 8.5 mg/L</code>。n 个点只需累计求和，时间 O(n)；批处理读取 n 点时，累加只要 O(1) 空间。为保证数值稳定，计算时先中心化，或采用经过验证的数值库；大数直接相减会损失精度。本例的小数可以用 Python <code>Decimal</code> 精确验算，生产环境还要验证拟合、舍入和方法规定的加权规则。</p>
 <p>独立 QC 用已知 5.0 mg/L 的检查溶液得到 11.2 AU，反算为 5.1 mg/L，偏差 0.1 mg/L，在预定的 ±0.25 mg/L 范围内。QC 点没有参与拟合，所以能独立检查这次运行。若 QC 为 12.0 AU，反算为 5.5 mg/L，即使样品仍是 8.5 mg/L，也应先阻断分析结果并调查。三个校准点恰好共线，并不意味着不确定度为零；标准值、制备、重复性、漂移和基质都可能带来贡献。</p>
-<p>三个标准浓度全相同会使分母为零，必须拒绝；负斜率或方法不允许的斜率也应拒绝。响应 25 AU 反算为 12 mg/L，已在校准范围之外，把直线外推出去的数值既不能报告为合格，也不能报告为不合格。方法可以预先允许稀释后重测，这时要记录制备、稀释因子和新的采集，不能直接把 12 截断成 10。拟合只是响应关系的模型，结果能支持什么判断，取决于模型的适用范围和误差（<code>ALG:approximate</code>）。</p>
-<h3 id="临近限值的判定规则">临近限值的判定规则</h3>
+<p>三个标准浓度全相同会使分母为零，必须拒绝；负斜率或方法不允许的斜率也应拒绝。响应 25 AU 反算为 12 mg/L，已在校准范围之外，把直线外推出去的数值既不能报告为合格，也不能报告为不合格。方法可以预先允许稀释后重测，这时要记录制备、稀释因子和新的采集，不能直接把 12 截断成 10。拟合是响应关系的模型，结果能支持什么判断，取决于模型的适用范围和误差（<code>ALG:approximate</code>）。</p>
+<figure class="drawing" data-drawing="v03-curve"><div class="dw-scroll" style="--dw-min:600px;--dw-max:900px">
+<svg viewBox="0 0 760 330" role="img" aria-labelledby="v03-curve-t v03-curve-d">
+  <title id="v03-curve-t">校准直线与三次逆算</title>
+  <desc id="v03-curve-d">三个标准点 0 mg/L 对 1 AU、5 mg/L 对 11 AU、10 mg/L 对 21 AU，拟合为 y = 1 + 2x。样品 18.0 AU 逆算为 8.5 mg/L；独立 QC 11.2 AU 逆算为 5.1 mg/L，在 5.0 ± 0.25 内；25 AU 外推为 12 mg/L，在方法范围 0–10 mg/L 之外。</desc>
+  <rect class="f1" x="90" y="40" width="500" height="250"/>
+  <text class="t-s" x="100" y="58">M1@3 范围 0–10 mg/L</text>
+  <path class="ln" d="M90 34 V290 H710"/>
+  <text class="t-s" x="10" y="22">响应 / AU</text>
+  <text class="t-s end" x="740" y="324">浓度 / (mg/L)</text>
+  <text class="t-n end" x="82" y="284">1</text><text class="t-n end" x="82" y="184">11</text><text class="t-n end" x="82" y="84">21</text>
+  <text class="t-n mid" x="90" y="308">0</text><text class="t-n mid" x="340" y="308">5</text><text class="t-n mid" x="590" y="308">10</text>
+  <g data-s="1">
+    <path class="ln-strong" data-draw="1" d="M90 280 L590 80"/>
+    <circle class="f-ink" cx="90" cy="280" r="4.5"/><circle class="f-ink" cx="340" cy="180" r="4.5"/><circle class="f-ink" cx="590" cy="80" r="4.5"/>
+    <text class="t" x="420" y="176">y = 1 + 2x</text>
+  </g>
+  <g data-s="2">
+    <path class="ln-em" d="M90 110 H515 V290"/>
+    <circle class="f-em" cx="515" cy="110" r="5"/>
+    <text class="t-n end t-em" x="82" y="114">18.0</text>
+    <text class="t-n mid t-em" x="515" y="308">8.5</text>
+  </g>
+  <g data-s="3">
+    <path class="ln-soft" d="M90 178 H345 V290"/>
+    <circle class="ln" cx="345" cy="178" r="6"/>
+    <path class="ln-soft" d="M262 160 L338 175"/>
+    <text class="t-s" x="104" y="150">QC：11.2 AU → 5.1 mg/L</text>
+    <text class="t-s" x="104" y="166">已知 5.0，允许 ± 0.25</text>
+  </g>
+  <g data-s="4">
+    <path class="ln-dash" d="M590 80 L690 40"/>
+    <path class="ln-dash" d="M90 40 H690 V290"/>
+    <text class="t-n end" x="82" y="44">25</text>
+    <text class="t-n mid" x="690" y="308">12</text>
+    <text class="t-s end" x="680" y="60">25 AU 外推为 12 mg/L，在范围之外</text>
+  </g>
+</svg>
+</div>
+<figcaption>18.0 AU 落在校准范围内，逆算得 8.5 mg/L；25 AU 只能沿直线外推，得到的 12 mg/L 不作报告。</figcaption></figure><h3 id="临近限值的判定规则">临近限值的判定规则</h3>
 <p>为区分“数值在规格内”与“证据足以放行”，本例合同另有规定：报告浓度 <code>c &gt; 9.0 mg/L</code> 进入 OOS；<code>c ≤ 9.0</code> 且 <code>c + U ≤ 9.0</code> 才满足数值放行条件，其余进入人工复核。U 是已由专业方法评价提供的扩展不确定度；本例假设合成标准不确定度 <code>u_c=0.15 mg/L</code>、覆盖因子 <code>k=2</code>，所以 <code>U=0.30 mg/L</code>。u 不从这三个完美的点估计；k=2 也不能无条件解释成精确的 95% 覆盖率。</p>
 <p>18.0 AU 得 <code>c=8.5</code>，上端 <code>8.5+0.3=8.8 mg/L</code>，满足这项数值条件；18.6 AU 得 8.8 mg/L，上端 9.1 mg/L，进入 <code>review_required</code>；19.4 AU 得 9.2 mg/L，进入 <code>oos</code>。三种结果都还要满足校准、QC、身份和复核条件。反例是把 8.8 显示为绿色后跳过人工复核，或把 9.2 的区间与限值有重叠解释为“可能合格”。</p>
-<p>上面的附加判定规则只属于这个非药典合同。WHO 指南对药典和上市许可文件的规格判定说明：限值已经考虑常规分析变化，不应再任意添加容差；指南也讨论了估计不确定度超过目标时的调查。<a href="https://cdn.who.int/media/docs/default-source/medicines/norms-and-standards/guidelines/quality-control/trs1052_annex4.pdf" class="ext" rel="noopener">WHO 6.65–6.67</a>。迁移到真实药品检测时，<code>c + U</code> 公式不是通用监管要求，要先找到适用的批准方法和判定规则。</p>
+<figure class="drawing" data-drawing="v03-decision"><div class="dw-scroll" style="--dw-min:580px;--dw-max:860px">
+<svg viewBox="0 0 720 236" role="img" aria-labelledby="v03-decision-t v03-decision-d">
+  <title id="v03-decision-t">三个浓度对限值 9.0 mg/L 的判定</title>
+  <desc id="v03-decision-d">扩展不确定度 U 为 0.30 mg/L。18.0 AU 得 8.5 mg/L，上端 8.8，满足数值放行条件；18.6 AU 得 8.8 mg/L，上端 9.1，越过 9.0，进入 review_required；19.4 AU 得 9.2 mg/L，超过 9.0，进入 oos。</desc>
+  <path class="ln-strong" d="M380 30 V200"/>
+  <text class="t-b mid" x="380" y="22">SP1 限值 9.0</text>
+  <path class="ln" d="M140 200 H560"/>
+  <path class="ln" d="M230 200 V206 M380 200 V206 M530 200 V206"/>
+  <text class="t-n mid" x="230" y="222">8.5</text><text class="t-n mid" x="380" y="222">9.0</text><text class="t-n mid" x="530" y="222">9.5</text>
+  <text class="t-s" x="570" y="222">mg/L</text>
+  <g data-s="1">
+    <text class="t-s end" x="128" y="70">18.0 AU</text>
+    <path class="ln" d="M230 66 H320 M320 58 V74"/>
+    <circle class="f-ink" cx="230" cy="66" r="5"/>
+    <text class="t-n mid" x="230" y="90">8.5</text><text class="t-s mid" x="320" y="90">+U 8.8</text>
+    <text class="t" x="580" y="70">数值放行条件满足</text>
+  </g>
+  <g data-s="2">
+    <text class="t-s end" x="128" y="120">18.6 AU</text>
+    <path class="ln-em" d="M320 116 H410 M410 108 V124"/>
+    <circle class="f-ink" cx="320" cy="116" r="5"/>
+    <text class="t-n mid" x="320" y="140">8.8</text><text class="t-s mid t-em" x="414" y="140">+U 9.1</text>
+    <text class="t t-em" x="580" y="120">review_required</text>
+  </g>
+  <g data-s="3">
+    <text class="t-s end" x="128" y="170">19.4 AU</text>
+    <circle class="f-ink" cx="440" cy="166" r="5"/>
+    <text class="t-n mid" x="440" y="190">9.2</text>
+    <text class="t" x="580" y="170">oos</text>
+  </g>
+</svg>
+</div>
+<figcaption>8.8 mg/L 本身在限值以内，加上 U 后上端越过 9.0，所以交人工复核；9.2 mg/L 直接超限。</figcaption></figure><p>上面的附加判定规则只属于这个非药典合同。WHO 指南对药典和上市许可文件的规格判定说明：限值已经考虑常规分析变化，不应再任意添加容差；指南也讨论了估计不确定度超过目标时的调查。<a href="https://cdn.who.int/media/docs/default-source/medicines/norms-and-standards/guidelines/quality-control/trs1052_annex4.pdf" class="ext" rel="noopener">WHO 6.65–6.67</a>。迁移到真实药品检测时，<code>c + U</code> 公式不是通用监管要求，要先找到适用的批准方法和判定规则。</p>
 <h3 id="沿证据图追溯失效">沿证据图追溯失效</h3>
 <p><code>T1@1 derived_from C1@1</code> 表示 T1 的计算依赖这条曲线；<code>COA1@1 derived_from T1@1</code> 表示证书引用了这个结果版本。影响查询要反向查找“谁依赖了 C1”，不是顺着 <code>derived_from</code> 从 C1 往上找。朴素做法扫描所有 N 个结果；建好 <code>(tenant, dependency ID, dependency version)</code> 反向索引后，从 C1 广度优先遍历受影响的子图，工作量为 O(Va + Ea)，Va、Ea 是实际访问的节点和边。数据里即使出现错误的循环关系，visited 集合也能让遍历结束；业务层还要拒绝不合法的自我派生（<code>ALG:graph-paths</code>、<code>ALG:lookup</code>）。</p>
-<p>C1 在本例的相对分钟 <code>[0,60)</code> 内可用于采集；T1 在第 50 分钟采集，第 90 分钟才导入。按采集时间算，T1 并没有因为网络迟到而“用了过期曲线”。第 60 分钟的采集则已不在半开区间内。若第 100 分钟发现第 40 分钟以后存在漂移，就记录“影响起点 40”并查出 T1；第 20 分钟的另一个结果是否受影响，按调查结论和适用的时间范围评估。只因“今天 C1 已过期”就废除全部历史结果，或因“采集时显示有效”就认定永远没问题，都丢掉了采集时间这一依据。仪器本身的资格状态还要独立核对；WHO 给出了设备识别、校准/资格状态和记录方面的专业参照。<a href="https://cdn.who.int/media/docs/default-source/medicines/norms-and-standards/guidelines/quality-control/trs1052_annex4.pdf" class="ext" rel="noopener">WHO 5.33–5.44</a>。</p>
-<p>影响查询给出的是必须复查的候选集合，整批产品是否已经不合格由质量负责人判断。处理顺序是先暂停相关的新放行和证书分发，再调查，最后撤销、修订或恢复。</p>
+<p>C1 在本例的相对分钟 <code>[0,60)</code> 内可用于采集；T1 在第 50 分钟采集，第 90 分钟才导入。按采集时间算，T1 用的是区间内的曲线，第 90 分钟导入只是网络迟到。第 60 分钟的采集则已不在半开区间内。若第 100 分钟发现第 40 分钟以后存在漂移，就记录“影响起点 40”并查出 T1；第 20 分钟采集的另一个结果 T0 是否受影响，按调查结论和适用的时间范围评估。只因“今天 C1 已过期”就废除全部历史结果，或因“采集时显示有效”就认定永远没问题，都丢掉了采集时间这一依据。仪器本身的资格状态还要独立核对；WHO 给出了设备识别、校准/资格状态和记录方面的专业参照。<a href="https://cdn.who.int/media/docs/default-source/medicines/norms-and-standards/guidelines/quality-control/trs1052_annex4.pdf" class="ext" rel="noopener">WHO 5.33–5.44</a>。</p>
+<figure class="drawing" data-drawing="v03-window"><div class="dw-scroll" style="--dw-min:600px;--dw-max:900px">
+<svg viewBox="0 0 760 250" role="img" aria-labelledby="v03-window-t v03-window-d">
+  <title id="v03-window-t">C1 的可用区间与影响起点</title>
+  <desc id="v03-window-d">C1 在相对分钟 [0,60) 内可用于采集。T0 在第 20 分钟采集，T1 在第 50 分钟采集、第 90 分钟导入；第 60 分钟的采集已不在区间内。第 100 分钟发现第 40 分钟以后存在漂移，记录影响起点 40，查出 T1；T0 按调查结论评估。</desc>
+  <g data-s="3">
+    <rect class="box-em" x="300" y="30" width="120" height="140"/>
+    <text class="t-s t-em mid" x="300" y="22">影响起点 40</text>
+  </g>
+  <text class="t-b end" x="52" y="66">C1</text>
+  <rect class="box f2" x="60" y="48" width="360" height="28"/>
+  <text class="t-s" x="70" y="66">可用于采集 [0, 60)</text>
+  <circle class="f-ink" cx="60" cy="62" r="4"/>
+  <circle class="ln" cx="420" cy="62" r="4"/>
+  <text class="t-b end" x="52" y="126">采集</text>
+  <path class="ln" d="M40 200 H730"/>
+  <text class="t-s" x="736" y="204">分钟</text>
+  <g>
+    <path class="ln" d="M60 200 V206 M180 200 V206 M300 200 V206 M360 200 V206 M420 200 V206 M600 200 V206 M660 200 V206"/>
+    <text class="t-n mid" x="60" y="222">0</text><text class="t-n mid" x="180" y="222">20</text><text class="t-n mid" x="300" y="222">40</text><text class="t-n mid" x="360" y="222">50</text><text class="t-n mid" x="420" y="222">60</text><text class="t-n mid" x="600" y="222">90</text><text class="t-n mid" x="660" y="222">100</text>
+  </g>
+  <g data-s="1">
+    <circle class="f-ink" cx="180" cy="122" r="5"/><text class="t mid" x="180" y="108">T0</text>
+    <circle class="f-ink" cx="360" cy="122" r="5"/><text class="t mid" x="360" y="108">T1</text>
+    <path class="ln-soft" d="M366 122 H594"/>
+    <rect class="box" x="594" y="114" width="16" height="16"/>
+    <text class="t-s" x="470" y="116">导入延迟</text>
+    <text class="t-s mid" x="602" y="148">第 90 分钟导入</text>
+  </g>
+  <g data-s="2">
+    <circle class="ln" cx="420" cy="184" r="5"/>
+    <text class="t-s" x="432" y="188">第 60 分钟的采集：不在区间内</text>
+  </g>
+  <g data-s="3">
+    <path class="ln-strong" d="M660 40 V190"/>
+    <text class="t-s mid" x="660" y="32">第 100 分钟发现漂移</text>
+    <text class="t-s t-em mid" x="360" y="148">复查</text>
+    <text class="t-s mid" x="180" y="148">按调查结论评估</text>
+  </g>
+</svg>
+</div>
+<figcaption>判断依据是采集时刻：T1 在第 50 分钟采集，落在影响起点 40 与区间终点 60 之间；第 90 分钟才导入并不改变这一点。</figcaption></figure><p>影响查询给出的是必须复查的候选集合，整批产品是否已经不合格由质量负责人判断。处理顺序是先暂停相关的新放行和证书分发，再调查，最后撤销、修订或恢复。</p>
 </section>
 <section class="scene" aria-labelledby="数据流与技术选型"><header class="scene-head"><h2 id="数据流与技术选型"><span class="scene-no" aria-hidden="true">05</span><span class="head">数据流与技术选型</span></h2></header><p class="scene-lede">无论选哪种技术栈，最终放行判断都留在服务端，原始文件只追加并保存摘要，导入按采集身份保证幂等，同一身份送来不同内容就进入隔离。</p>
 <p>本例的拓扑把实物交接留在 sample/aliquot 记录中，箭头只表示人的操作、信息请求、持久化和派生关系。每条边的 payload、失败与核对点见 <abbr title="JavaScript Object Notation：结构化数据表示格式，后文保留 JSON">JSON</abbr>；下图保留其中一条闭环。</p>
-<figure class="graph-fig"><div class="graph-wrap"><svg class="graph" viewBox="0 0 1201 227" width="1201" height="227" style="max-width:1381px;min-width:961px" role="img" aria-label="V03 · 样品检测、批次放行与分析证书"><defs><marker id="arrow-g1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arrowhead"/></marker></defs><path class="edge" data-type="operates" data-from="Analyst" data-to="UI" d="M84.0,124.0 Q152.0,124.0 207.0,138.5" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Analyst" data-to="UI"><rect x="124.0" y="116.0" width="56" height="16" rx="3"/><text x="152.0" y="128.0">operates</text></g><path class="edge" data-type="commands" data-from="UI" data-to="Lab" d="M288.5,135.0 Q364.0,93.0 419.0,93.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="UI" data-to="Lab"><rect x="336.0" y="85.0" width="56" height="16" rx="3"/><text x="364.0" y="97.0">commands</text></g><path class="edge" data-type="requests" data-from="Lab" data-to="Instrument" d="M488.4,76.0 Q563.0,25.0 624.5,25.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Lab" data-to="Instrument"><rect x="535.0" y="17.0" width="56" height="16" rx="3"/><text x="563.0" y="29.0">requests</text></g><path class="edge" data-type="emits" data-from="Instrument" data-to="Event" d="M726.5,25.0 Q800.0,25.0 867.0,25.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Instrument" data-to="Event"><rect x="781.0" y="17.0" width="38" height="16" rx="3"/><text x="800.0" y="29.0">emits</text></g><path class="edge" data-type="delivers" data-from="Event" data-to="Inbox" d="M969.0,25.0 Q1036.0,25.0 1103.0,35.2" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Event" data-to="Inbox"><rect x="1008.0" y="17.0" width="56" height="16" rx="3"/><text x="1036.0" y="29.0">delivers</text></g><path class="edge" data-type="reads" data-from="Lab" data-to="Inbox" d="M508.0,77.8 Q563.0,59.0 619.3,59.0 Q675.5,59.0 737.8,59.0 Q800.0,59.0 859.0,59.0 Q918.0,59.0 977.0,59.0 Q1036.0,59.0 1103.0,48.8" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Lab" data-to="Inbox"><rect x="781.0" y="51.0" width="38" height="16" rx="3"/><text x="800.0" y="63.0">reads</text></g><path class="edge" data-type="owns" data-from="Lab" data-to="Result" d="M503.8,110.0 Q563.0,135.0 619.3,135.0 Q675.5,135.0 737.8,135.0 Q800.0,135.0 880.0,163.5" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Lab" data-to="Result"><rect x="659.5" y="127.0" width="32" height="16" rx="3"/><text x="675.5" y="139.0">owns</text></g><path class="edge" data-type="derived_from" data-from="Result" data-to="Curve" d="M956.0,177.0 Q1036.0,177.0 1110.0,177.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Result" data-to="Curve"><rect x="996.0" y="169.0" width="80" height="16" rx="3"/><text x="1036.0" y="181.0">derived_from</text></g><path class="edge" data-type="projects" data-from="Result" data-to="UI" d="M880.0,187.9 Q800.0,211.0 737.8,211.0 Q675.5,211.0 619.3,211.0 Q563.0,211.0 513.3,211.0 Q463.5,211.0 413.8,211.0 Q364.0,211.0 288.5,169.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Result" data-to="UI"><rect x="535.0" y="203.0" width="56" height="16" rx="3"/><text x="563.0" y="215.0">projects</text></g><path class="edge" data-type="operates" data-from="QA" data-to="UI" d="M97.0,180.0 Q152.0,180.0 207.0,165.5" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="QA" data-to="UI"><rect x="124.0" y="172.0" width="56" height="16" rx="3"/><text x="152.0" y="184.0">operates</text></g><path class="edge" data-type="owns" data-from="Lab" data-to="CoA" d="M483.6,110.0 Q563.0,177.0 637.5,177.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Lab" data-to="CoA"><rect x="547.0" y="169.0" width="32" height="16" rx="3"/><text x="563.0" y="181.0">owns</text></g><path class="edge" data-type="derived_from" data-from="CoA" data-to="Result" d="M713.5,177.0 Q800.0,177.0 880.0,177.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="CoA" data-to="Result"><rect x="760.0" y="169.0" width="80" height="16" rx="3"/><text x="800.0" y="181.0">derived_from</text></g><path class="edge" data-type="requests" data-from="Lab" data-to="ERP" d="M508.0,93.0 Q563.0,93.0 618.0,93.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Lab" data-to="ERP"><rect x="535.0" y="85.0" width="56" height="16" rx="3"/><text x="563.0" y="97.0">requests</text></g><g class="node" data-id="Analyst"><rect x="21.0" y="107.0" width="63" height="34" rx="4"/><text x="52.5" y="128.5">分析员</text></g><g class="node" data-id="UI"><rect x="207.0" y="135.0" width="102" height="34" rx="4"/><text x="258.0" y="156.5">实验室工作台</text></g><g class="node" data-id="Lab"><rect x="419.0" y="76.0" width="89" height="34" rx="4"/><text x="463.5" y="97.5">实验室服务</text></g><g class="node" data-id="Instrument"><rect x="624.5" y="8.0" width="102" height="34" rx="4"/><text x="675.5" y="29.5">仪器数据系统</text></g><g class="node" data-id="Event"><rect x="867.0" y="8.0" width="102" height="34" rx="4"/><text x="918.0" y="29.5">采集完成通知</text></g><g class="node" data-id="Inbox"><rect x="1103.0" y="25.0" width="90" height="34" rx="4"/><text x="1148.0" y="46.5">持久 inbox</text></g><g class="node" data-id="Result"><rect x="880.0" y="160.0" width="76" height="34" rx="4"/><text x="918.0" y="181.5">结果版本</text></g><g class="node" data-id="Curve"><rect x="1110.0" y="160.0" width="76" height="34" rx="4"/><text x="1148.0" y="181.5">校准记录</text></g><g class="node" data-id="QA"><rect x="8.0" y="163.0" width="89" height="34" rx="4"/><text x="52.5" y="184.5">质量负责人</text></g><g class="node" data-id="CoA"><rect x="637.5" y="160.0" width="76" height="34" rx="4"/><text x="675.5" y="181.5">证书快照</text></g><g class="node" data-id="ERP"><rect x="618.0" y="76.0" width="115" height="34" rx="4"/><text x="675.5" y="97.5">库存与交付系统</text></g></svg></div><details class="edge-list"><summary>图中关系的文字列表</summary><ul><li>分析员 <span class="rel">—operates→</span> 实验室工作台</li><li>实验室工作台 <span class="rel">—commands→</span> 实验室服务</li><li>实验室服务 <span class="rel">—requests→</span> 仪器数据系统</li><li>仪器数据系统 <span class="rel">—emits→</span> 采集完成通知</li><li>采集完成通知 <span class="rel">—delivers→</span> 持久 inbox</li><li>实验室服务 <span class="rel">—reads→</span> 持久 inbox</li><li>实验室服务 <span class="rel">—owns→</span> 结果版本</li><li>结果版本 <span class="rel">—derived_from→</span> 校准记录</li><li>结果版本 <span class="rel">—projects→</span> 实验室工作台</li><li>质量负责人 <span class="rel">—operates→</span> 实验室工作台</li><li>实验室服务 <span class="rel">—owns→</span> 证书快照</li><li>证书快照 <span class="rel">—derived_from→</span> 结果版本</li><li>实验室服务 <span class="rel">—requests→</span> 库存与交付系统</li></ul></details></figure><p>一种可行的起点是 React + TypeScript 工作台，配合 Python/FastAPI 或 Java/Spring Boot 服务。Python 便于把已验证的数值库放进计算 worker，Java 适合已有 Java 团队和事务服务；不要为了全栈用同一种语言，就把最终放行判断放到浏览器里做。表单和图可以由前端构建，服务端必须重做权限、单位、版本和证据 guard 检查。列表可以用查询缓存，提交成功后重新读取受影响的对象；旧缓存只用于展示，不能作为签署依据。</p>
+<figure class="graph-fig"><div class="graph-wrap"><svg class="graph" viewBox="0 0 1201 227" width="1201" height="227" style="max-width:1381px;min-width:961px" role="img" aria-label="V03 · 样品检测、批次放行与分析证书"><defs><marker id="arrow-g1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arrowhead"/></marker></defs><path class="edge" data-type="operates" data-from="Analyst" data-to="UI" d="M84.0,124.0 Q152.0,124.0 207.0,138.5" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Analyst" data-to="UI"><rect x="124.0" y="116.0" width="56" height="16" rx="3"/><text x="152.0" y="128.0">operates</text></g><path class="edge" data-type="commands" data-from="UI" data-to="Lab" d="M288.5,135.0 Q364.0,93.0 419.0,93.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="UI" data-to="Lab"><rect x="336.0" y="85.0" width="56" height="16" rx="3"/><text x="364.0" y="97.0">commands</text></g><path class="edge" data-type="requests" data-from="Lab" data-to="Instrument" d="M488.4,76.0 Q563.0,25.0 624.5,25.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Lab" data-to="Instrument"><rect x="535.0" y="17.0" width="56" height="16" rx="3"/><text x="563.0" y="29.0">requests</text></g><path class="edge" data-type="emits" data-from="Instrument" data-to="Event" d="M726.5,25.0 Q800.0,25.0 867.0,25.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Instrument" data-to="Event"><rect x="781.0" y="17.0" width="38" height="16" rx="3"/><text x="800.0" y="29.0">emits</text></g><path class="edge" data-type="delivers" data-from="Event" data-to="Inbox" d="M969.0,25.0 Q1036.0,25.0 1103.0,35.2" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Event" data-to="Inbox"><rect x="1008.0" y="17.0" width="56" height="16" rx="3"/><text x="1036.0" y="29.0">delivers</text></g><path class="edge" data-type="reads" data-from="Lab" data-to="Inbox" d="M508.0,77.8 Q563.0,59.0 619.3,59.0 Q675.5,59.0 737.8,59.0 Q800.0,59.0 859.0,59.0 Q918.0,59.0 977.0,59.0 Q1036.0,59.0 1103.0,48.8" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Lab" data-to="Inbox"><rect x="781.0" y="51.0" width="38" height="16" rx="3"/><text x="800.0" y="63.0">reads</text></g><path class="edge" data-type="owns" data-from="Lab" data-to="Result" d="M503.8,110.0 Q563.0,135.0 619.3,135.0 Q675.5,135.0 737.8,135.0 Q800.0,135.0 880.0,163.5" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Lab" data-to="Result"><rect x="659.5" y="127.0" width="32" height="16" rx="3"/><text x="675.5" y="139.0">owns</text></g><path class="edge" data-type="derived_from" data-from="Result" data-to="Curve" d="M956.0,177.0 Q1036.0,177.0 1110.0,177.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Result" data-to="Curve"><rect x="996.0" y="169.0" width="80" height="16" rx="3"/><text x="1036.0" y="181.0">derived_from</text></g><path class="edge" data-type="projects" data-from="Result" data-to="UI" d="M880.0,187.9 Q800.0,211.0 737.8,211.0 Q675.5,211.0 619.3,211.0 Q563.0,211.0 513.3,211.0 Q463.5,211.0 413.8,211.0 Q364.0,211.0 288.5,169.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Result" data-to="UI"><rect x="535.0" y="203.0" width="56" height="16" rx="3"/><text x="563.0" y="215.0">projects</text></g><path class="edge" data-type="operates" data-from="QA" data-to="UI" d="M97.0,180.0 Q152.0,180.0 207.0,165.5" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="QA" data-to="UI"><rect x="124.0" y="172.0" width="56" height="16" rx="3"/><text x="152.0" y="184.0">operates</text></g><path class="edge" data-type="owns" data-from="Lab" data-to="CoA" d="M483.6,110.0 Q563.0,177.0 637.5,177.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Lab" data-to="CoA"><rect x="547.0" y="169.0" width="32" height="16" rx="3"/><text x="563.0" y="181.0">owns</text></g><path class="edge" data-type="derived_from" data-from="CoA" data-to="Result" d="M713.5,177.0 Q800.0,177.0 880.0,177.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="CoA" data-to="Result"><rect x="760.0" y="169.0" width="80" height="16" rx="3"/><text x="800.0" y="181.0">derived_from</text></g><path class="edge" data-type="requests" data-from="Lab" data-to="ERP" d="M508.0,93.0 Q563.0,93.0 618.0,93.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Lab" data-to="ERP"><rect x="535.0" y="85.0" width="56" height="16" rx="3"/><text x="563.0" y="97.0">requests</text></g><g class="node" data-id="Analyst"><rect x="21.0" y="107.0" width="63" height="34" rx="4"/><text x="52.5" y="128.5">分析员</text></g><g class="node" data-id="UI"><rect x="207.0" y="135.0" width="102" height="34" rx="4"/><text x="258.0" y="156.5">实验室工作台</text></g><g class="node" data-id="Lab"><rect x="419.0" y="76.0" width="89" height="34" rx="4"/><text x="463.5" y="97.5">实验室服务</text></g><g class="node" data-id="Instrument"><rect x="624.5" y="8.0" width="102" height="34" rx="4"/><text x="675.5" y="29.5">仪器数据系统</text></g><g class="node" data-id="Event"><rect x="867.0" y="8.0" width="102" height="34" rx="4"/><text x="918.0" y="29.5">采集完成通知</text></g><g class="node" data-id="Inbox"><rect x="1103.0" y="25.0" width="90" height="34" rx="4"/><text x="1148.0" y="46.5">持久 inbox</text></g><g class="node" data-id="Result"><rect x="880.0" y="160.0" width="76" height="34" rx="4"/><text x="918.0" y="181.5">结果版本</text></g><g class="node" data-id="Curve"><rect x="1110.0" y="160.0" width="76" height="34" rx="4"/><text x="1148.0" y="181.5">校准记录</text></g><g class="node" data-id="QA"><rect x="8.0" y="163.0" width="89" height="34" rx="4"/><text x="52.5" y="184.5">质量负责人</text></g><g class="node" data-id="CoA"><rect x="637.5" y="160.0" width="76" height="34" rx="4"/><text x="675.5" y="181.5">证书快照</text></g><g class="node" data-id="ERP"><rect x="618.0" y="76.0" width="115" height="34" rx="4"/><text x="675.5" y="97.5">库存与交付系统</text></g></svg></div><details class="edge-list"><summary>图中关系的文字列表</summary><ul><li>分析员 <span class="rel">—operates→</span> 实验室工作台</li><li>实验室工作台 <span class="rel">—commands→</span> 实验室服务</li><li>实验室服务 <span class="rel">—requests→</span> 仪器数据系统</li><li>仪器数据系统 <span class="rel">—emits→</span> 采集完成通知</li><li>采集完成通知 <span class="rel">—delivers→</span> 持久 inbox</li><li>实验室服务 <span class="rel">—reads→</span> 持久 inbox</li><li>实验室服务 <span class="rel">—owns→</span> 结果版本</li><li>结果版本 <span class="rel">—derived_from→</span> 校准记录</li><li>结果版本 <span class="rel">—projects→</span> 实验室工作台</li><li>质量负责人 <span class="rel">—operates→</span> 实验室工作台</li><li>实验室服务 <span class="rel">—owns→</span> 证书快照</li><li>证书快照 <span class="rel">—derived_from→</span> 结果版本</li><li>实验室服务 <span class="rel">—requests→</span> 库存与交付系统</li></ul></details></figure><p>一种可行的起点是 React + TypeScript 工作台，配合 Python/FastAPI 或 Java/Spring Boot 服务。Python 便于把已验证的数值库放进计算 worker，Java 适合已有 Java 团队和事务服务；全栈用同一种语言时，最终放行判断同样留在服务端。表单和图可以由前端构建，服务端必须重做权限、单位、版本和证据 guard 检查。列表可以用查询缓存，提交成功后重新读取受影响的对象；旧缓存只用于展示，不能作为签署依据。</p>
 <p>关系数据库适合保存稳定 ID、版本关系、职责和事务决定。PostgreSQL 是候选之一：约束用的组合键包含 tenant，原始结果版本只追加，签署与 outbox 在同一事务内提交。行级安全可以作为隔离的第二道控制，但 PostgreSQL 官方文档明确指出，超级用户、<code>BYPASSRLS</code> 角色以及通常情况下的表所有者会绕过策略；应用的运行账号和测试都不能用这些权限来证明隔离。<a href="https://www.postgresql.org/docs/current/ddl-rowsecurity.html" class="ext" rel="noopener">Row Security Policies</a>。每个租户独占一个数据库，出错时影响范围更小，但要迁移和运维的数据库也更多；共享数据库便于统一查询，但每个连接、后台任务和对象文件请求都要验证授权 scope。</p>
 <p>大体积的仪器原文件放进版本化对象存储，数据库保存对象 key、大小、校验摘要与可读格式版本。导入时先写入暂存区并验证完整性，再在事务中挂接 run 和结果；重启后可以清理未挂接的暂存文件，但不能删除已被引用的原始证据。摘要能检测字节变化，不能证明仪器输出真实或采集合法；只存 PDF 也可能丢掉可以重新处理的原始数据。兼容 S3 的托管对象存储和机构管理的存储服务都可以选，依据是恢复、读取格式与保留要求；哪种存储都不会自动满足记录法规。</p>
 <p>仪器适配器把不同的导出格式转成版本化的内部 schema，原文件必须保留。幂等 key 使用 <code>(tenant, instrument, run ID, acquisition ID)</code>，另存 payload digest。同 key 同摘要时返回原导入结果；同 key 不同摘要时进入冲突隔离，不能用 upsert 覆盖。对于 <abbr title="comma-separated values：逗号分隔值">CSV</abbr>，要验证列名、编码、十进制符号、单位、瓶位和 manifest；无法确定分样身份时停在 <code>unmatched</code>，不能按最相近的样品名猜测。方法允许再处理时，产生新的 result version，引用同一原文件和新的处理参数。消息队列负责延后执行的工作，重启后以数据库里的 operation、inbox、outbox 记录为准；小实验室可以先用数据库 worker，有多个服务或高吞吐时再评估独立的消息系统。</p>
@@ -173,12 +308,12 @@
 <div class="labelled" data-kind="step"><p class="blk-l">正常采集到发证</p><p>接样员接收 S1 并分出 A1/A2；分析员在 M1@3、I1@2 与 C1@1 允许的条件下采集 R1。适配器登记文件 F1，计算出 8.5 mg/L，独立的 Q1 通过。复核员检查身份、原数据、计算和全部异常记录，质量负责人批准 L1。事务保存放行决定与 COA1@1 的内容快照，随后生成文件并发往 ERP。ERP 用证书 ID 和版本返回受理身份；工作台分别显示“已批准”“文件已生成”“ERP 已确认”。最后对账，确认实验室的批准与 ERP 的库存处置一致。</p></div>
 <div class="labelled" data-kind="step"><p class="blk-l">已采集但断网</p><p>仪器完成了 A1 的一次消耗性测定，客户端却超时。operation 停在 <code>unknown</code>，后续按 R1 查到原采集记录；若只收到完成通知、文件还没同步，页面仍显示“等待原始文件”，不能凭一个 <code>completed</code> 字符串造出结果。旧的 <code>acquiring</code> 通知晚到时，接入服务核对当前的采集记录，不回退已核对的状态。原文件已经保存、worker 却在确认消费前崩溃时，恢复流程按 acquisition key 取回同一次导入，补写消费标记；这一步不会重新启动仪器。</p></div>
 <div class="labelled" data-kind="step"><p class="blk-l">已批准后发现校准异常</p><p>C1 的追溯撤销与放行可能同时发生。若只依赖异步的图传播，传播还没到达 L1 的间隙里仍可能签出证书。本例在每个 tenant 的证据状态中维护一个 <code>evidence epoch</code>：撤销先锁定并更新 epoch，保存失效依据和影响任务；放行在同一把锁的保护下核对当前 epoch、读取依赖状态并保存签署。如果签署先提交，后来的撤销仍会触发 <code>reassessment_hold</code> 与通知；如果撤销先提交，旧预览的签署立即冲突。epoch 保证两个决定有可解释的先后，但预知不了尚未发现的实验错误。全租户共用一个 epoch，会让无关批次也重读证据，这是便于审计的初始取舍；规模扩大后可以按仪器或依赖集合细化锁，但要证明每一项依赖都参加了检查。</p></div>
-<p>文件分发和外部库存动作不在数据库事务内。签署成功并不永久授权稍后的发送：文件生成时、worker 实际发送前，都要核对当前的分发资格、证据 epoch 与证书状态；有变化时先重新评价依赖，不能拿旧预览的批准直接继续。撤销要覆盖 <code>approved</code> 与 <code>issued</code>，并取消尚未开始的分发任务。outbox 记录证书 ID、版本和传送身份；接收方若支持按相同身份查询，超时后先查询，不支持时保留未知状态并人工核对。若请求已经发出或正在网络中，随后的撤销不能保证对方没收到，这时进入分发结果核对，并发出撤销通知。证书已撤销而对方早已下载的文件无法远程擦除，要保留分发清单、撤销通知与确认记录。撤销、重新签发和库存冻结都是有人负责的新动作；已经发生在外部的事，不能靠一次“回滚”抹掉。</p>
+<p>文件分发和外部库存动作不在数据库事务内。签署成功授权的是签署那一刻的证据：文件生成时、worker 实际发送前，都要核对当前的分发资格、证据 epoch 与证书状态；有变化时先重新评价依赖，不能拿旧预览的批准直接继续。撤销要覆盖 <code>approved</code> 与 <code>issued</code>，并取消尚未开始的分发任务。outbox 记录证书 ID、版本和传送身份；接收方若支持按相同身份查询，超时后先查询，不支持时保留未知状态并人工核对。若请求已经发出或正在网络中，随后的撤销不能保证对方没收到，这时进入分发结果核对，并发出撤销通知。证书已撤销而对方早已下载的文件无法远程擦除，要保留分发清单、撤销通知与确认记录。撤销、重新签发和库存冻结都是有人负责的新动作；已经发生在外部的事，不能靠一次“回滚”抹掉。</p>
 </section>
 <section class="scene" aria-labelledby="容量假设与性能目标"><header class="scene-head"><h2 id="容量假设与性能目标"><span class="scene-no" aria-hidden="true">07</span><span class="head">容量假设与性能目标</span></h2></header><p class="scene-lede">瓶颈先出现在原文件搬运，而不是曲线计算：文件处理交给异步 worker 并单独计量，撤销在权威层即时阻断动作。容量假设为 20 个 tenant，每 tenant 每工作日 2,000 个样品、每样品 5 项测定，共 200,000 项/日；10% 在 10 分钟内导入，即约 33 项/秒峰值。每项另存平均 1 MB 原文件时约 200 GB/日，实际的仪器格式和运行共享文件会改变这一估算。索引与分页用来优化列表，异步 worker 处理文件校验和报告生成；把 200 GB 文件搬进 Web 请求，会比曲线的 O(n) 计算更早成为瓶颈。</p>
 <p>待测目标是：在上述分布、每 tenant 5 位并发操作员下，列表 p95 小于 500 ms、放行事务 p95 小于 1 s；文件处理单独测等待时间、吞吐与积压年龄，不计入按钮“已登记”的延迟。分别测缓存命中/未命中、大 lot 依赖数量，以及一个仪器批量撤销影响 50,000 个结果的场景。关键读模型的 key 包含 tenant、对象版本、权限 scope 与证据 epoch；撤销在权威层即时阻断动作，界面投影可以延后，但要显示新鲜度和重读入口。公平的 worker 配额防止一个 tenant 的历史重算阻塞其他人的新样品接收。这些数字尚未做负载实测。</p>
 </section>
-<section class="scene" aria-labelledby="验算检查项与所需证据"><header class="scene-head"><h2 id="验算检查项与所需证据"><span class="scene-no" aria-hidden="true">08</span><span class="visually-hidden">验算：</span><span class="head">检查项与所需证据</span></h2></header><p class="scene-lede">每项检查都要求系统保留依据，而不只给结论：重复导入只产生一个结果，重测不能覆盖原 OOS，撤销只影响相关依赖。本例不让 <abbr title="artificial intelligence：人工智能">AI</abbr> 拟合曲线、判断 OOS、作废记录或签署证书，因此没有 AI 决策 eval。以后若加入异常摘要或调查建议，要另建带专业标签的留出集，检查是否漏报原始 OOS、是否无依据地归因、是否暴露跨租户内容。</p>
+<section class="scene" aria-labelledby="验算检查项与所需证据"><header class="scene-head"><h2 id="验算检查项与所需证据"><span class="scene-no" aria-hidden="true">08</span><span class="visually-hidden">验算：</span><span class="head">检查项与所需证据</span></h2></header><p class="scene-lede">每项检查都要求系统同时保留依据和结论：重复导入只产生一个结果，重测保留原 OOS，撤销只影响相关依赖。曲线拟合、OOS 判断、作废记录和签署证书都由确定性规则和专业人员完成，因此本例没有 <abbr title="artificial intelligence：人工智能">AI</abbr> 决策 eval。以后若加入异常摘要或调查建议，要另建带专业标签的留出集，检查是否漏报原始 OOS、是否无依据地归因、是否暴露跨租户内容。</p>
 <div class="table-wrap"><table>
 <thead>
 <tr>
@@ -449,8 +584,8 @@
     <footer class="page-foot">正文 <a href="../../../books/saas-engineering/packages/health-science/V03.md">books/saas-engineering/packages/health-science/V03.md</a> · <a href="../../../vault/distilled/saas-engineering-atlas/README.md">结构、来源与验证</a></footer>
   </main>
 </div>
-<script src="search-index.js?v=mv95jeod"></script>
-<script src="book.js?v=mv95jeod"></script>
+<script src="search-index.js?v=mv97hru0"></script>
+<script src="book.js?v=mv97hru0"></script>
 
 </body>
 </html>

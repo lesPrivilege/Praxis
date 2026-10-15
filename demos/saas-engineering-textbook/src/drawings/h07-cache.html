@@ -1,0 +1,30 @@
+<div class="dw-scroll" style="--dw-min:620px;--dw-max:900px">
+<svg viewBox="0 0 780 230" role="img" aria-labelledby="h07-cache-t h07-cache-d">
+  <title id="h07-cache-t">缓存 key 决定谁拿到哪份结果</title>
+  <desc id="h07-cache-d">以指标名加日期为 key，租户甲与租户乙的同名报表落进同一格，租户乙的 220 元返回给租户甲。key 含 tenant、release ID、查询参数和受众权限摘要时，两个租户各占一格，命中前还检查当前授权版本。</desc>
+  <g data-s="1">
+    <text class="t-b" x="20" y="28">key = 指标名 + 日期</text>
+    <rect class="box" x="20" y="56" width="100" height="36"/><text class="t mid" x="70" y="79">租户乙</text>
+    <rect class="box" x="20" y="148" width="100" height="36"/><text class="t mid" x="70" y="171">租户甲</text>
+    <rect class="box f1" x="190" y="92" width="170" height="56"/>
+    <text class="t-s mid" x="275" y="114">每日已完成订单金额 · 某日</text>
+    <text class="t mid" x="275" y="136"><tspan class="t-n">220</tspan> 元（租户乙）</text>
+    <path class="ln" d="M120 74 H150 V108 H190 M182 102 L190 108 L182 114"/>
+    <path class="ln-em" d="M190 134 H150 V166 H120 M128 160 L120 166 L128 172"/>
+    <text class="t-s t-em" x="20" y="210">租户甲读到租户乙的 220 元</text>
+  </g>
+  <path class="ln-soft" d="M395 16 V214"/>
+  <g data-s="2">
+    <text class="t-b" x="420" y="28">key 含 tenant、release ID、</text>
+    <text class="t-s" x="420" y="46">查询参数、受众权限摘要</text>
+    <rect class="box" x="420" y="66" width="100" height="36"/><text class="t mid" x="470" y="89">租户乙</text>
+    <rect class="box" x="420" y="148" width="100" height="36"/><text class="t mid" x="470" y="171">租户甲</text>
+    <path class="ln-strong" d="M560 60 V196"/>
+    <text class="t-s mid" x="560" y="214">命中前检查当前授权版本</text>
+    <path class="ln" d="M520 84 H600"/><path class="ln" d="M520 166 H600"/>
+    <rect class="box f1" x="600" y="66" width="170" height="36"/><text class="t mid" x="685" y="89">乙 · <tspan class="t-n">220</tspan> 元</text>
+    <rect class="box f1" x="600" y="148" width="170" height="36"/><text class="t mid" x="685" y="171">甲 · 甲自己的结果</text>
+  </g>
+</svg>
+</div>
+<figcaption>同名报表只按指标名和日期取 key 时共用一格；key 带上租户与发布身份，每个租户只命中自己的结果。</figcaption>

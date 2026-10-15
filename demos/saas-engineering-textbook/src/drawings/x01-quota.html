@@ -1,0 +1,42 @@
+<div class="dw-scroll" style="--dw-min:620px;--dw-max:960px">
+<svg viewBox="0 0 820 340" role="img" aria-labelledby="x01-quota-t x01-quota-d">
+  <title id="x01-quota-t">1,500 单位额度下的预留与结算</title>
+  <desc id="x01-quota-d">run 1 预留 800；run 2 再申请 800，合计 1,600 超过 1,500，排队或被拒绝。run 1 核定实际 400，释放 400，run 2 取得 800，已消耗 400 加预留 800 共 1,200。run 2 核定实际 600，总消耗 1,000。失败 run 再消耗 300，总消耗 1,300，剩余 200；计费量仍是 1,000。</desc>
+  <path class="ln-strong" d="M750 30 V300"/><text class="t-n mid" x="750" y="22">额度 1,500</text>
+  <g data-s="1">
+    <text class="t-s" x="150" y="44">两个并发 run 各申请最多 800，run 1 先取得</text>
+    <text class="t-n end" x="138" y="69">800</text>
+    <rect class="box f2" x="150" y="50" width="320" height="28"/><text class="t mid" x="310" y="69">run 1 预留 800</text>
+    <rect class="box" x="470" y="50" width="280" height="28"/><text class="t-s mid" x="610" y="69">剩余 700</text>
+  </g>
+  <g data-s="2">
+    <rect class="box-dash" x="470" y="86" width="320" height="18"/>
+    <text class="t-s mid" x="610" y="99">run 2 申请 800</text>
+    <text class="t-em end" x="460" y="100">800 + 800 = 1,600 &gt; 1,500，排队或拒绝</text>
+  </g>
+  <g data-s="3">
+    <text class="t-s" x="150" y="130">run 1 核定 400，释放 400；run 2 取得 800</text>
+    <text class="t-n end" x="138" y="155">1,200</text>
+    <rect class="box f-ink" x="150" y="136" width="160" height="28"/><text class="t t-inv mid" x="230" y="155">已消耗 400</text>
+    <rect class="box f2" x="310" y="136" width="320" height="28"/><text class="t mid" x="470" y="155">run 2 预留 800</text>
+    <rect class="box" x="630" y="136" width="120" height="28"/><text class="t-s mid" x="690" y="155">剩余 300</text>
+  </g>
+  <g data-s="4">
+    <text class="t-s" x="150" y="196">run 2 核定 600，总消耗 1,000</text>
+    <text class="t-n end" x="138" y="221">1,000</text>
+    <rect class="box f-ink" x="150" y="202" width="400" height="28"/><text class="t t-inv mid" x="350" y="221">已消耗 1,000</text>
+    <rect class="box" x="550" y="202" width="200" height="28"/><text class="t-s mid" x="650" y="221">剩余 500</text>
+  </g>
+  <g data-s="5">
+    <text class="t-s" x="150" y="262">失败 run 消耗 300，总消耗 1,300</text>
+    <text class="t-n end" x="138" y="287">1,300</text>
+    <rect class="box f-ink" x="150" y="268" width="160" height="28"/><text class="t t-inv mid" x="230" y="287">a 400</text>
+    <rect class="box f-ink" x="310" y="268" width="240" height="28"/><text class="t t-inv mid" x="430" y="287">b 600</text>
+    <rect class="box f3" x="550" y="268" width="120" height="28"/><text class="t mid" x="610" y="287">c 300</text>
+    <rect class="box" x="670" y="268" width="80" height="28"/><text class="t-s mid" x="710" y="287">剩余 200</text>
+    <path class="ln" d="M150 304 V310 H550 V304"/><text class="t-b mid" x="350" y="328">计费量 1,000</text>
+    <text class="t-s mid" x="610" y="318">失败，服务承担</text>
+  </g>
+</svg>
+</div>
+<figcaption>检查 已消耗 + 未结算预留 + 新申请 ≤ 额度 在同一事务里完成；实际消耗核定后，多出的预留才归还。</figcaption>

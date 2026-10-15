@@ -1,0 +1,38 @@
+<div class="dw-scroll" style="--dw-min:620px;--dw-max:880px">
+<svg viewBox="0 0 760 250" role="img" aria-labelledby="f09-dedup-t f09-dedup-d">
+  <title id="f09-dedup-t">event ID 与业务唯一键两层去重</title>
+  <desc id="f09-dedup-d">购买 P1 产生事件 E1 与 E2，E1 又被重投一次。event ID 去重挡下 E1 的重投；E2 的 event ID 是新的，到业务唯一键“P1 的开通”时查到已开通，返回原结果。最后开通 1 次。只按 event ID 去重时，E1、E2 各开通一次，共 2 次。</desc>
+  <defs><marker id="f09-dedup-ah" viewBox="0 0 8 8" refX="7" refY="4" markerUnits="userSpaceOnUse" markerWidth="9" markerHeight="9" orient="auto"><path class="f-ink" d="M0 0 L8 4 L0 8 z"/></marker></defs>
+  <text class="t-s" x="0" y="18">购买 P1 的通知</text>
+  <text class="t-b mid" x="250" y="18">event ID 去重</text>
+  <text class="t-b mid" x="470" y="18">业务唯一键：P1 的开通</text>
+  <path class="ln-strong" d="M250 30 V176"/>
+  <path class="ln-strong" d="M470 30 V176"/>
+  <g data-s="1">
+    <rect class="box" x="0" y="44" width="90" height="30"/><text class="t-n mid" x="45" y="64">E1</text>
+    <path class="ln" d="M90 59 H470"/>
+    <path class="ln" marker-end="url(#f09-dedup-ah)" d="M470 59 H600"/>
+    <text class="t-s" x="262" y="52">新 ID，通过</text><text class="t-s" x="482" y="52">首次，执行</text>
+    <rect class="box f2" x="604" y="40" width="150" height="38"/><text class="t-b mid" x="679" y="64">开通 1 次</text>
+  </g>
+  <g data-s="2">
+    <rect class="box" x="0" y="94" width="90" height="30"/><text class="t-n mid" x="45" y="114">E1 重投</text>
+    <path class="ln" d="M90 109 H250"/>
+    <path class="ln" d="M244 103 L256 115 M256 103 L244 115"/>
+    <text class="t" x="262" y="114">已处理过 E1，丢弃</text>
+  </g>
+  <g data-s="3">
+    <rect class="box" x="0" y="144" width="90" height="30"/><text class="t-n mid" x="45" y="164">E2</text>
+    <path class="ln" d="M90 159 H470"/>
+    <text class="t-s" x="262" y="152">新 ID，通过</text>
+    <text class="t-s" x="482" y="152">P1 已开通，返回原结果</text>
+    <path class="ln" marker-end="url(#f09-dedup-ah)" d="M470 159 H679 V82"/>
+  </g>
+  <g data-s="4">
+    <path class="ln-soft" d="M0 196 H760"/>
+    <text class="t-b t-em" x="0" y="226">只按 event ID 去重</text>
+    <text class="t" x="160" y="226">E1、E2 都是新 ID，各开通一次，共 <tspan class="t-b t-em">2 次</tspan></text>
+  </g>
+</svg>
+</div>
+<figcaption>event ID 挡住的是同一条通知的重投；同一次购买的另一条通知，要靠“P1 的开通”这个业务身份挡住。</figcaption>

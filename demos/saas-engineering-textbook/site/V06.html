@@ -4,9 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>V06 · 房晚容量、实体配房与住客账夹 · SaaS 工程全景</title>
-<link rel="stylesheet" href="book.css?v=mv95jeod">
+<link rel="stylesheet" href="book.css?v=mv97hru0">
 </head>
 <body>
+<svg class="dw-defs" width="0" height="0" aria-hidden="true" focusable="false" style="position:absolute"><defs><pattern id="dw-hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" fill="var(--bg)"/><path d="M0 0 V6" stroke="var(--ink-2)" stroke-width="1.2"/></pattern></defs></svg>
 <a class="skip" href="#main">跳到正文</a>
 <header class="topbar">
   <button class="nav-toggle" type="button" aria-controls="sidebar" aria-expanded="false">目录</button>
@@ -20,7 +21,7 @@
 <header class="hero">
 <p class="kicker"><a href="group-commerce-property.html">消费履约、住宿与空间</a><span class="dot">·</span>V06</p>
 <h1>房晚容量、实体配房与住客账夹</h1>
-<p class="lede">酒店向客人承诺的是一段日期内可以使用的住宿资源。Reservation（预订）记录约定，room assignment（配房）把约定落实到实体资源，folio（住客账夹）汇集费用与支付；三者彼此相关，却不能替对方证明完成。本例覆盖逐夜计算的容量、挂房账消费的路由，以及预付款与预授权的区别。改变判断的是酒店是否承诺全程同房：承诺了，预订时就要保留一间覆盖全程的实体房，只扣房型容量兑现不了。</p>
+<p class="lede">酒店向客人承诺的是一段日期内可以使用的住宿资源。Reservation（预订）记录约定，room assignment（配房）把约定落实到实体资源，folio（住客账夹）汇集费用与支付；三者彼此相关，各凭自己的证据完成。本例覆盖逐夜计算的容量、挂房账消费的路由，以及预付款与预授权的区别。改变判断的是酒店是否承诺全程同房：承诺了，预订时除了扣房型容量，还要保留一间覆盖全程的实体房。</p>
 
 <div class="cast" aria-label="本例的角色、界面与系统">
 <div class="cast-lane"><p class="cast-k">角色</p><ul><li>前台与预订员</li><li>清洁员与检查员，权限分开</li><li>经理与财务，按动作授权</li><li>餐厅收银员</li></ul></div>
@@ -60,9 +61,9 @@
 </tr>
 </tbody></table></div>
 </section>
-<section class="scene" aria-labelledby="解法容量承诺与实体交付"><header class="scene-head"><h2 id="解法容量承诺与实体交付"><span class="scene-no" aria-hidden="true">02</span><span class="visually-hidden">解法：</span><span class="head">容量承诺与实体交付</span></h2></header><p class="scene-lede">同一房型的两间房，报价时可以视为同类容量，却未必能在整段住宿内互换。预订服务保存“某房型、哪些夜晚、几间”的承诺；配房服务还要检查每间房的锁定、维修与完整区间。入住还需要一项现场证据：房间已通过检查。这三层检查分别防止超卖、排不出连续同房，以及把尚未准备好的房间交给客人。</p>
+<section class="scene" aria-labelledby="解法容量承诺与实体交付"><header class="scene-head"><h2 id="解法容量承诺与实体交付"><span class="scene-no" aria-hidden="true">02</span><span class="visually-hidden">解法：</span><span class="head">容量承诺与实体交付</span></h2></header><p class="scene-lede">同一房型的两间房，报价时可以视为同类容量；落到整段住宿上，每间房的空闲区间各不相同。预订服务保存“某房型、哪些夜晚、几间”的承诺；配房服务还要检查每间房的锁定、维修与完整区间。入住还需要一项现场证据：房间已通过检查。这三层检查分别防止超卖、排不出连续同房，以及把尚未准备好的房间交给客人。</p>
 <p>Mews 的 Reservation 把 <code>RequestedResourceCategoryId</code> 与可选的 <code>AssignedResourceId</code> 分开，并区分计划与实际起止时间；<code>Confirmed</code>、<code>Started</code>、<code>Processed</code> 分别表示已确认、已入住、已退房。这个数据模型支持上述区分，但没有说明 Mews 内部用哪种配房算法。参见 <a href="https://docs.mews.com/connector-api/operations/reservations#reservation-ver-2023-06-06" class="ext" rel="noopener">Reservation / Service order state</a>。</p>
-<p>本例按对象划分权威与责任，前台的一次点击不能替所有角色决定。</p>
+<p>本例按对象划分权威与责任，每个角色只推进自己负责的对象。</p>
 <div class="table-wrap"><table>
 <thead>
 <tr>
@@ -107,43 +108,209 @@
 <td>预授权与实收分开记录；退款有自己的 <code>pending/confirmed/failed</code>，不回改原收款</td>
 </tr>
 </tbody></table></div>
-<p>folio 是本例的名称；Mews 使用 bill、order、account 等对象。客房状态也不等于住宿占用：房间即使已 inspected，仍可能正被另一位客人使用；客人离店后，房间通常又要重新准备。权限与 guard 都由服务端检查；隐藏“入住”按钮只能减少误操作，替代不了授权。</p>
+<p>folio 是本例的名称；Mews 使用 bill、order、account 等对象。客房状态与住宿占用是两项事实：房间已 inspected，仍可能正被另一位客人使用；客人离店后，房间通常又要重新准备。权限与 guard 都由服务端检查；隐藏“入住”按钮只用来减少误操作。</p>
 </section>
 <section class="scene" aria-labelledby="演算房晚逐夜容量与连续同房"><header class="scene-head"><h2 id="演算房晚逐夜容量与连续同房"><span class="scene-no" aria-hidden="true">03</span><span class="visually-hidden">演算：</span><span class="head">房晚、逐夜容量与连续同房</span></h2></header><p class="scene-lede">房晚、逐夜容量和连续同房是三项不同的计算：前两项按酒店当地日期逐夜计数，第三项要对每晚的空房集合求交集。</p>
-<p>账价的基本单位是酒店当地的住宿夜，而不是从一个 UTC 时间戳到另一个时间戳经过了多少个 24 小时。入住日记为 <code>a</code>、退房日记为 <code>b</code>，计费日期集合是半开区间 <code>[a,b)</code>：包含入住日，不含退房日。主线得到 24、25、26 日三项，金额为 <code>12000 + 15000 + 13000 = 40000</code> 分。相邻预订 <code>[24,27)</code> 与 <code>[27,29)</code> 不会重复计算 27 日的房晚；两次入住之间是否来得及清洁，要另外检查实际时间与准备任务。</p>
+<p>账价的基本单位是酒店当地的住宿夜，而不是从一个 UTC 时间戳到另一个时间戳经过了多少个 24 小时。入住日记为 <code>a</code>、退房日记为 <code>b</code>，计费日期集合是半开区间 <code>[a,b)</code>：包含入住日，不含退房日。主线得到 24、25、26 日三项，金额为 <code>12000 + 15000 + 13000 = 40000</code> 分。相邻预订 <code>[24,27)</code> 与 <code>[27,29)</code> 在 27 日相接，27 日的房晚只算在后者；两次入住之间是否来得及清洁，要另外检查实际时间与准备任务。</p>
 <p><code>Europe/Berlin</code> 的这个输入跨越季节性时钟回拨。两个当地午夜之间是 73 个实际小时；按计划从 15:00 到 11:00 则是 69 小时。用 <code>69 / 24</code> 向下取整会算成两晚，用午夜差除以 24 再向上取整又会算成四晚。按日期计数仍是三晚。数据库保存日期边界、IANA 时区和规则版本，也保存实际 UTC 时间供审计；浏览器所在的时区不能当作酒店时区。夜数、实际占用时长与房价是三种计算，提前抵达、延迟退房或按小时出租都需要新规则。</p>
-<p>容量也按夜计算。假设三晚可售房数 <code>C=[3,2,3]</code>，已有承诺与有效 hold 合计 <code>Q=[2,2,1]</code>，余量是 <code>C-Q=[1,0,2]</code>。再接一间连续三晚，逐夜检查 <code>Q[d]+1≤C[d]</code>，25 日不满足，因此拒绝。平均余量为一间并没有帮助：客人不能把 26 日的空房搬到 25 日使用。<code>C</code> 已扣掉已知不可售的房；<code>Q</code> 不再重复扣维修，避免同一损失计算两次。</p>
-<p>逐个扫描 n 个预订、每个最多覆盖 h 晚，构建逐夜占用表需要 O(nh) 次累计；若每个预订只贡献固定的间数，可以在开始日加数、结束日减数，经排序或日期数组的前缀和得到每日总量，事件排序为 O(n log n)。保存逐夜计数后，一次覆盖 h 晚的申请要检查 h 个桶，代价 O(h)。逐夜计数只回答“每晚够不够”；可售房型、同住人数和维修日历，仍要先记进正确的桶。</p>
-<p>更隐蔽的反例出在实体房间上。只有 A、B 两间，A 在 <code>[24,25)</code> 已占用，B 在 <code>[25,26)</code> 已占用。24 日 B 空，25 日 A 空，每晚都剩一间；新客要求 <code>[24,26)</code> 连住同一间，两间房各有一晚冲突，可行集合为空。对每一晚求空房集合再取交集，错误就显出来了：<code>{B} ∩ {A} = ∅</code>。允许换房可以得到 B→A，但要增加行李转移、客人同意、清洁和交接任务，不能悄悄当作原承诺已经兑现。既有配房若允许移动，也可能重排成功，但要检查锁定与变更权限。</p>
-<p>本例选 <code>ALG:windows</code> 解释房晚，选 <code>ALG:scheduling</code> 解释房间与准备任务的依赖。房间少时可以逐一检查候选房与目标区间；r 间房、h 晚、逐夜布尔表的检查为 O(rh)。大酒店可以按房间索引占用区间，先找无重叠的候选，再检查设施与锁定。偏好评分只用于在可行候选中挑选，不能给“不允许换房”这种硬约束打折，也不能把第一个可行解称为全局最优。</p>
+<figure class="drawing" data-drawing="v06-nights"><div class="dw-scroll" style="--dw-min:620px;--dw-max:920px">
+<svg viewBox="0 0 780 330" role="img" aria-labelledby="v06-nights-t v06-nights-d">
+  <title id="v06-nights-t">按当地日期计数的三晚</title>
+  <desc id="v06-nights-d">R1 的计费日期是半开区间 [24,27)，即 24、25、26 日三晚，房价 120、150、130 EUR，合计 40000 分。相邻预订 [27,29) 从 27 日开始，两者不重复计算 27 日。实际从 24 日 15:00 到 27 日 11:00 是 69 小时，两个当地午夜之间是 73 小时；69 除以 24 向下取整得两晚，73 除以 24 向上取整得四晚，按日期计数是三晚。</desc>
+  <g data-s="1">
+    <path class="ln-soft" d="M120 40 H740"/>
+    <path class="ln-soft" d="M120 34 V300 M240 34 V44 M360 34 V44 M480 34 V200 M480 236 V300 M600 34 V44 M720 34 V44"/>
+    <text class="t-s mid" x="180" y="28">24 日</text><text class="t-s mid" x="300" y="28">25 日</text><text class="t-s mid" x="420" y="28">26 日</text>
+    <text class="t-s mid" x="540" y="28">27 日</text><text class="t-s mid" x="660" y="28">28 日</text>
+    <text class="t-b" x="0" y="82">R1</text><text class="t-s" x="0" y="98">[24,27)</text>
+    <rect class="box f1" x="120" y="58" width="120" height="40"/><text class="t-n mid" x="180" y="83">120 EUR</text>
+    <rect class="box f1" x="240" y="58" width="120" height="40"/><text class="t-n mid" x="300" y="83">150 EUR</text>
+    <rect class="box f1" x="360" y="58" width="120" height="40"/><text class="t-n mid" x="420" y="83">130 EUR</text>
+    <path class="ln-strong" d="M120 110 H480"/><circle class="f-ink" cx="120" cy="110" r="5"/><circle class="box" cx="480" cy="110" r="5"/>
+    <text class="t-b" x="500" y="83">合计 40000 分</text>
+  </g>
+  <g data-s="2">
+    <text class="t" x="0" y="154">相邻预订</text><text class="t-s" x="0" y="170">[27,29)</text>
+    <rect class="box" x="480" y="134" width="120" height="36"/><rect class="box" x="600" y="134" width="120" height="36"/>
+    <text class="t-s mid" x="540" y="156">27 日夜</text><text class="t-s mid" x="660" y="156">28 日夜</text>
+    <path class="ln" d="M480 182 H720"/><circle class="f-ink" cx="480" cy="182" r="5"/><circle class="box" cx="720" cy="182" r="5"/>
+  </g>
+  <g data-s="3">
+    <text class="t" x="0" y="226">实际时间</text>
+    <path class="ln-strong" d="M195 218 H535 M195 210 V226 M535 210 V226"/>
+    <text class="t-s" x="199" y="206">24 日 15:00 入住</text><text class="t-s" x="543" y="222">27 日 11:00 退房</text>
+    <text class="t-n mid" x="365" y="240">69 小时</text>
+    <path class="ln" d="M120 262 H480 M120 254 V270 M480 254 V270"/>
+    <text class="t-s mid" x="300" y="284">两个当地午夜之间 73 小时（跨越时钟回拨）</text>
+  </g>
+  <g data-s="4">
+    <text class="t" x="0" y="318">69 ÷ 24 向下取整 → 2 晚</text>
+    <text class="t" x="260" y="318">73 ÷ 24 向上取整 → 4 晚</text>
+    <text class="t-em" x="520" y="318">按日期计数 → 3 晚</text>
+  </g>
+</svg>
+</div>
+<figcaption>房晚按酒店当地日期的半开区间计数；按实际小时数除以 24，向下取整少一晚，向上取整多一晚。</figcaption></figure><p>容量也按夜计算。假设三晚可售房数 <code>C=[3,2,3]</code>，已有承诺与有效 hold 合计 <code>Q=[2,2,1]</code>，余量是 <code>C-Q=[1,0,2]</code>。再接一间连续三晚，逐夜检查 <code>Q[d]+1≤C[d]</code>，25 日不满足，因此拒绝。平均余量是一间，而容量按夜计：25 日要用 25 日的空房，26 日的空房只能住 26 日。<code>C</code> 已扣掉已知不可售的房；<code>Q</code> 只计承诺与 hold，维修只在 <code>C</code> 里扣一次。</p>
+<figure class="drawing" data-drawing="v06-capacity"><div class="dw-scroll" style="--dw-min:520px;--dw-max:780px">
+<svg viewBox="0 64 640 256" role="img" aria-labelledby="v06-capacity-t v06-capacity-d">
+  <title id="v06-capacity-t">逐夜检查容量</title>
+  <desc id="v06-capacity-d">24、25、26 日可售房数 C 为 3、2、3，已承诺与有效 hold 合计 Q 为 2、2、1，余量为 1、0、2，平均一间。再接一间连续三晚，24 日和 26 日放得下，25 日 2+1 超过 2，请求被拒绝。</desc>
+  <text class="t-s" x="0" y="84">再接一间连续三晚：逐夜检查 Q[d] + 1 ≤ C[d]</text>
+  <g data-s="1">
+    <rect class="box" x="195" y="190" width="70" height="30"/><rect class="box" x="195" y="156" width="70" height="30"/><rect class="box" x="195" y="122" width="70" height="30"/>
+    <rect class="box" x="335" y="190" width="70" height="30"/><rect class="box" x="335" y="156" width="70" height="30"/>
+    <rect class="box" x="475" y="190" width="70" height="30"/><rect class="box" x="475" y="156" width="70" height="30"/><rect class="box" x="475" y="122" width="70" height="30"/>
+    <path class="ln-soft" d="M160 224 H580"/>
+    <text class="t-b mid" x="230" y="242">24 日</text><text class="t-b mid" x="370" y="242">25 日</text><text class="t-b mid" x="510" y="242">26 日</text>
+    <text class="t-s" x="0" y="268">可售 C</text>
+    <text class="t-n mid" x="230" y="268">3</text><text class="t-n mid" x="370" y="268">2</text><text class="t-n mid" x="510" y="268">3</text>
+  </g>
+  <g data-s="2">
+    <rect class="box f-ink" x="195" y="190" width="70" height="30"/><rect class="box f-ink" x="195" y="156" width="70" height="30"/>
+    <rect class="box f-ink" x="335" y="190" width="70" height="30"/><rect class="box f-ink" x="335" y="156" width="70" height="30"/>
+    <rect class="box f-ink" x="475" y="190" width="70" height="30"/>
+    <text class="t-s" x="0" y="288">已承诺与 hold Q</text>
+    <text class="t-n mid" x="230" y="288">2</text><text class="t-n mid" x="370" y="288">2</text><text class="t-n mid" x="510" y="288">1</text>
+  </g>
+  <g data-s="3">
+    <text class="t-s" x="0" y="308">余量 C − Q</text>
+    <text class="t-n mid" x="230" y="308">1</text><text class="t-n mid" x="370" y="308">0</text><text class="t-n mid" x="510" y="308">2</text>
+    <text class="t-s end" x="640" y="308">平均 1</text>
+  </g>
+  <g data-s="4">
+    <rect class="box-dash" x="201" y="128" width="58" height="18"/><text class="t-s mid" x="230" y="141">+1</text>
+    <rect class="box-dash" x="481" y="162" width="58" height="18"/><text class="t-s mid" x="510" y="175">+1</text>
+    <rect class="box-em" x="341" y="128" width="58" height="18"/><text class="t-s mid" x="370" y="141">+1</text>
+    <text class="t mid" x="370" y="114">2 + 1 &gt; 2，拒绝</text>
+  </g>
+</svg>
+</div>
+<figcaption>三晚的余量平均是一间，25 日却是 0；容量按夜检查，一晚放不下，整段请求就被拒绝。</figcaption></figure><p>逐个扫描 n 个预订、每个最多覆盖 h 晚，构建逐夜占用表需要 O(nh) 次累计；若每个预订只贡献固定的间数，可以在开始日加数、结束日减数，经排序或日期数组的前缀和得到每日总量，事件排序为 O(n log n)。保存逐夜计数后，一次覆盖 h 晚的申请要检查 h 个桶，代价 O(h)。逐夜计数只回答“每晚够不够”；可售房型、同住人数和维修日历，仍要先记进正确的桶。</p>
+<p>更隐蔽的反例出在实体房间上。只有 A、B 两间，A 在 <code>[24,25)</code> 已占用，B 在 <code>[25,26)</code> 已占用。24 日 B 空，25 日 A 空，每晚都剩一间；新客要求 <code>[24,26)</code> 连住同一间，两间房各有一晚冲突，可行集合为空。对每一晚求空房集合再取交集，错误就显出来了：<code>{B} ∩ {A} = ∅</code>。允许换房可以得到 B→A，这是对原承诺的变更，要增加行李转移、客人同意、清洁和交接任务。既有配房若允许移动，也可能重排成功，但要检查锁定与变更权限。</p>
+<figure class="drawing" data-drawing="v06-rooms"><div class="dw-scroll" style="--dw-min:520px;--dw-max:780px">
+<svg viewBox="0 0 640 250" role="img" aria-labelledby="v06-rooms-t v06-rooms-d">
+  <title id="v06-rooms-t">每晚有空房，连住却无房</title>
+  <desc id="v06-rooms-d">A 房在 [24,25) 已占用，B 房在 [25,26) 已占用。24 日空房集合为 {B}，25 日为 {A}，交集为空，连住 [24,26) 同一间没有可行房。允许换房时，第一晚 B、第二晚 A。</desc>
+  <text class="t-b mid" x="230" y="34">24 日</text><text class="t-b mid" x="370" y="34">25 日</text>
+  <text class="t-b end" x="148" y="80">A 房</text><text class="t-b end" x="148" y="130">B 房</text>
+  <g data-s="1">
+    <rect class="box f-ink" x="160" y="50" width="140" height="50"/><text class="t mid t-inv" x="230" y="80">已占用</text>
+    <rect class="box" x="300" y="50" width="140" height="50"/><text class="t-s" x="312" y="68">空</text>
+    <rect class="box" x="160" y="100" width="140" height="50"/><text class="t-s" x="172" y="118">空</text>
+    <rect class="box f-ink" x="300" y="100" width="140" height="50"/><text class="t mid t-inv" x="370" y="130">已占用</text>
+  </g>
+  <g data-s="2">
+    <text class="t-s end" x="148" y="182">空房集合</text>
+    <text class="t-n mid" x="230" y="182">{B}</text><text class="t-n mid" x="370" y="182">{A}</text>
+  </g>
+  <g data-s="3">
+    <text class="t-em" x="460" y="182">{B} ∩ {A} = ∅</text>
+    <rect class="box-dash" x="160" y="200" width="280" height="30"/>
+    <text class="t mid" x="300" y="220">[24,26) 连住同一间：无可行房</text>
+  </g>
+  <g data-s="4">
+    <path class="ln-dash" d="M250 132 L398 82"/><path class="ln" d="M388 80 L398 82 L392 91"/>
+    <text class="t" x="460" y="96">允许换房：B → A</text>
+    <text class="t-s" x="460" y="114">另需客人同意、清洁与交接</text>
+  </g>
+</svg>
+</div>
+<figcaption>每晚各剩一间，但剩的不是同一间；连住同房要对每晚的空房集合取交集。</figcaption></figure><p>本例选 <code>ALG:windows</code> 解释房晚，选 <code>ALG:scheduling</code> 解释房间与准备任务的依赖。房间少时可以逐一检查候选房与目标区间；r 间房、h 晚、逐夜布尔表的检查为 O(rh)。大酒店可以按房间索引占用区间，先找无重叠的候选，再检查设施与锁定。偏好评分只在可行候选中挑选；“不允许换房”这种硬约束先筛定候选，第一个可行解也只称作可行解，而非全局最优。</p>
 </section>
 <section class="scene" aria-labelledby="预订清洁与前台的交接"><header class="scene-head"><h2 id="预订清洁与前台的交接"><span class="scene-no" aria-hidden="true">04</span><span class="head">预订、清洁与前台的交接</span></h2></header><p class="scene-lede">预订、配房和入住都以服务端在提交时重新读取的事实为准：hold 在同一事务里占住所有夜晚，入住要等房间 inspected，结果未知时按 operation 查询，不再建一条住宿。</p>
-<p>正常交互从日期表单开始。报价预览显示酒店当地日期、三晚费用、取消规则版本，并提示容量“尚未锁定”。提交时带上 <code>operation_id</code>、报价版本、房型和日期；服务端在同一事务中创建有效期有限的 hold 与所有夜晚的占用。本例承诺不换房，因此还要保留一间覆盖全程的暂定实体房，并对该区间施加冲突约束；只扣房型容量，兑现不了这项承诺。前台可以在入住前把它改配到另一间全程可用的房，这次变更同样要作为原子操作检查。若经营方式只出售房型、不保留实体房，就要把重新排房和安置风险写成明确的政策，不能直接沿用本例的保证。</p>
-<p>重复点击返回同一个 hold。用户确认后，hold 转为 committed；过期后再点确认，要重新查库存，旧页面不能恢复已经释放的容量。渠道送来超出容量的预订时，本例把它放进冲突队列，由经理改房型或安排替代住宿，库存不会被改成负数。</p>
-<p>前台房态板同时显示配房归属、准备进度和数据更新时间。客人抵达时，按钮提交的是“尝试入住 R1 的当前版本”。服务端重新读取配房和检查证据；若房间仍是 cleaned，页面返回“等待房间检查”，住宿保持 expected，也保留客人已经到店这一事实。检查员随后把该房标为 inspected；前台对同一业务动作再发起一次尝试，成功后才显示 in_house。Mews 的 <code>Start reservation</code> 也列出 Confirmed、起点不能在未来、已分配 inspected 房间等前提；文档里的“等”说明这不是完整的 guard 清单。参见 <a href="https://docs.mews.com/connector-api/operations/reservations#start-reservation" class="ext" rel="noopener">Start reservation</a>。</p>
-<p>检查通过后又发现故障时，客房服务生成新的 readiness 版本，旧的入住预览随之失效。服务端拒绝版本冲突并展示变更原因，前台可以改配另一间合格的房；客房人员不能靠更改账单状态绕过故障。入住成功但响应丢失时，这次操作记为 unknown，页面提供按 operation 查询的恢复入口，核对到 in_house 后结束等待。再建一条住宿记录会造成一客多房，所以“没看见成功页”不能当作“没入住”。</p>
+<p>正常交互从日期表单开始。报价预览显示酒店当地日期、三晚费用、取消规则版本，并提示容量“尚未锁定”。提交时带上 <code>operation_id</code>、报价版本、房型和日期；服务端在同一事务中创建有效期有限的 hold 与所有夜晚的占用。本例承诺不换房，因此还要保留一间覆盖全程的暂定实体房，并对该区间施加冲突约束；房型容量与实体区间同时占住。前台可以在入住前把它改配到另一间全程可用的房，这次变更同样要作为原子操作检查。若经营方式只出售房型、不保留实体房，本例的保证随之失效，重新排房和安置风险要写成明确的政策。</p>
+<p>重复点击返回同一个 hold。用户确认后，hold 转为 committed；过期后再点确认，要重新查库存，旧页面不能恢复已经释放的容量。渠道送来超出容量的预订时，本例把它放进冲突队列，由经理改房型或安排替代住宿，库存保持非负。</p>
+<p>前台房态板同时显示配房归属、准备进度和数据更新时间。客人抵达时，按钮提交的是“尝试入住 R1 的当前版本”。服务端重新读取配房和检查证据；若房间仍是 cleaned，页面返回“等待房间检查”，住宿保持 expected，也保留客人已经到店这一事实。检查员随后把该房标为 inspected；前台对同一业务动作再发起一次尝试，成功后才显示 in_house。Mews 的 <code>Start reservation</code> 也列出 Confirmed、起点不能在未来、已分配 inspected 房间等前提；文档里的“等”表明还有未列出的 guard。参见 <a href="https://docs.mews.com/connector-api/operations/reservations#start-reservation" class="ext" rel="noopener">Start reservation</a>。</p>
+<p>检查通过后又发现故障时，客房服务生成新的 readiness 版本，旧的入住预览随之失效。服务端拒绝版本冲突并展示变更原因，前台可以改配另一间合格的房；客房人员不能靠更改账单状态绕过故障。入住成功但响应丢失时，这次操作记为 unknown，页面提供按 operation 查询的恢复入口，核对到 in_house 后结束等待。再建一条住宿记录会造成一客多房；“没看见成功页”只说明结果未知，要按 operation 查清。</p>
 </section>
 <section class="scene" aria-labelledby="挂房账的承担者与账夹"><header class="scene-head"><h2 id="挂房账的承担者与账夹"><span class="scene-no" aria-hidden="true">05</span><span class="head">挂房账的承担者与账夹</span></h2></header><p class="scene-lede">餐厅收到“挂到 A 房”时，A 只是一次查询条件。房间可能换客，也可能住着多位同行人；消费必须绑定明确的客人账户、住宿身份和消费时间。Mews 的销售点系统（point of sale，POS）文档写明，order 记到 customer profile 上，而不是房间或 reservation；可以用 <code>LinkedReservationId</code> 关联预订。<code>Cashlist</code> 表示不应挂账，但不会自动阻止 <abbr title="application programming interface：应用程序接口">API</abbr> posting，是否阻止由 POS 实现决定。参见 <a href="https://docs.mews.com/connector-api/use-cases/point-of-sale" class="ext" rel="noopener">General principles / Customer search / Charge posting</a>。</p>
 <p>本例据此定下更严格的规则：挂账时，账户必须处于本次 in_house 住宿、没有 no-post 限制、客人已确认身份且额度足够。收银员看到匹配的账户后确认，服务端重新验证资格，给这笔消费生成不可变的来源键 <code>(hotel, outlet, ticket, line)</code>。账务服务按 <code>routing_rule_version</code> 决定费用归哪个 folio。主线全部归 G；公司只承担住宿时，三笔房费归公司 folio，餐饮仍归个人 folio。路由改变的是债务承担者，不产生现金，也不能凭“公司名称已填写”认定公司同意付款。</p>
 <p>一笔 60 EUR 的餐饮消费先记入 POS 的待投递记录，账务适配器确认受理后，才能标记为已入账。账夹界面分别显示“消费已记录”“同步等待中”“已核对入账”；网络超时时保留来源键与未知状态。即使连接器不能依赖外部幂等键，本地也能防止自己并行发出两次；已经发出、结果未知的请求要先核对，无法唯一识别时交人工处理，系统给不出通用的 exactly-once 保证。</p>
-<p>离店之后才到达的 POS 消费尤其危险。假设 G 在 10:00 喝咖啡，11:00 离店，11:10 断网恢复，12:00 A 房又住进 H。如果连接器这时按房号重新找住客，就会把旧消费记给 H。正确的恢复使用原 ticket 上的 G、R1、发生时间和当时的授权证据；本例把晚到费用送入旧客的补账审查，检查是否重复、是否允许追收。已经关闭的账单不会在后台被悄悄改写，当前房客也不承担历史欠款。</p>
-</section>
+<p>离店之后才到达的 POS 消费尤其危险。假设 G 在 10:00 喝咖啡，11:00 离店，11:10 断网恢复，12:00 A 房又住进 H。如果连接器这时按房号重新找住客，就会把旧消费记给 H。正确的恢复使用原 ticket 上的 G、R1、发生时间和当时的授权证据；本例把晚到费用送入旧客的补账审查，检查是否重复、是否允许追收。已经关闭的账单保持原样，更正走关联的调整记录；H 的账夹不变，历史欠款仍归 G。</p>
+<figure class="drawing" data-drawing="v06-late-charge"><div class="dw-scroll" style="--dw-min:620px;--dw-max:920px">
+<svg viewBox="0 0 780 260" role="img" aria-labelledby="v06-late-t v06-late-d">
+  <title id="v06-late-t">离店后才到的 POS 消费</title>
+  <desc id="v06-late-d">G 在 10:00 喝咖啡，ticket 记下 G 与 R1；11:00 G 离店，11:10 断网恢复，12:00 A 房住进 H。之后按房号 A 重新找住客会找到 H；按原 ticket 上的 G、R1 和发生时间，这笔消费进入旧客的补账审查。</desc>
+  <path class="ln-soft" d="M100 40 H760"/>
+  <path class="ln-soft" d="M140 34 V46 M300 34 V46 M330 34 V46 M460 34 V46"/>
+  <text class="t-n mid" x="140" y="26">10:00</text><text class="t-n end" x="300" y="26">11:00</text><text class="t-n" x="330" y="26">11:10</text><text class="t-n mid" x="460" y="26">12:00</text>
+  <text class="t-s" x="0" y="84">A 房住客</text><text class="t-s" x="0" y="148">POS ticket</text>
+  <g data-s="1">
+    <rect class="box f2" x="100" y="66" width="200" height="28"/><text class="t" x="110" y="85">G · R1 · in_house</text>
+    <circle class="f-ink" cx="140" cy="144" r="5"/><text class="t" x="150" y="134">咖啡 · G · R1</text>
+  </g>
+  <g data-s="2">
+    <text class="t-s" x="306" y="110">G 离店</text>
+    <path class="ln-dash" d="M146 144 H330"/><text class="t-s" x="200" y="162">断网，未投递</text>
+    <circle class="f-ink" cx="330" cy="144" r="4"/><text class="t-s" x="338" y="162">恢复</text>
+  </g>
+  <g data-s="3">
+    <rect class="box f2" x="460" y="66" width="300" height="28"/><text class="t" x="470" y="85">H 入住</text>
+    <path class="ln" d="M334 144 H600"/>
+  </g>
+  <g data-s="4">
+    <path class="ln-em" d="M600 138 V100 M594 108 L600 100 L606 108"/>
+    <text class="t-s" x="608" y="124">按房号 A 找现住客 → H</text>
+  </g>
+  <g data-s="5">
+    <path class="ln" d="M600 150 V196 M594 188 L600 196 L606 188"/>
+    <text class="t-s" x="608" y="176">按原 ticket 的 G、R1、发生时间</text>
+    <rect class="box" x="520" y="198" width="240" height="48"/>
+    <text class="t-b" x="532" y="218">G / R1 补账审查</text><text class="t-s" x="532" y="236">查重复，查是否允许追收</text>
+  </g>
+</svg>
+</div>
+<figcaption>同一个房号 A 在 10:00 和 12:00 之后对应两位住客；晚到的消费按 ticket 上的原身份找回 G，H 的账夹不变。</figcaption></figure></section>
 <section class="scene" aria-labelledby="预付款预授权与退房后的余额"><header class="scene-head"><h2 id="预付款预授权与退房后的余额"><span class="scene-no" aria-hidden="true">06</span><span class="head">预付款、预授权与退房后的余额</span></h2></header><p class="scene-lede">预付款 100 EUR 已经实际收取；预授权 80 EUR 只是尚待 capture（请款）的授权额度。账务工作台分栏显示实收、有效授权和未收余额，两个数字不能相加后标成“已付 180”。Stripe 的文档把 authorization 与 capture 分开，并要求在授权到期前 capture；具体支持方式和时限随支付方式而变，本例推不出统一的有效期。参见 <a href="https://docs.stripe.com/payments/place-a-hold-on-a-payment-method" class="ext" rel="noopener">Separate authorization and capture</a>。Mews 也有独立的 preauthorization 状态，包括 Chargeable、Pending、Charged、Expired 等；Chargeable 不是已收款。参见 <a href="https://docs.mews.com/connector-api/operations/preauthorizations#preauthorization-state" class="ext" rel="noopener">Preauthorization state</a>。</p>
 <p>主线总费用是 <code>400 + 60 = 460 EUR</code>。扣除实际预付款 100，仍欠 360。若 80 的授权仍有效并成功 capture，新增实收 80，剩余 <code>360-80=280</code>；客人再付 280 后，应收余额才为零。授权失效时，剩余应收仍是 360；重新取得授权或另行付款都是新的操作，不能伪造一次 capture。若客人早已另付全部 360，应释放不再需要的 80 授权，而不是先 capture 再退款。若 80 已经被多收，则要发起独立的退款，并保留原收款与退款的关联。</p>
-<p>“押金”一词在界面上要说明含义。本例的 100 是可抵费用的已收预付款，不是租赁保障金；80 是授权额度。若业务实际收取损坏保证金，应另设独立的用途、扣留依据和退还义务，不能因 folio 有欠款就自动挪用。税务、押金的法律属性和追收授权需要具体业务的专业确认，本例不制定规则。</p>
+<figure class="drawing" data-drawing="v06-balance"><div class="dw-scroll" style="--dw-min:620px;--dw-max:920px">
+<svg viewBox="0 0 780 300" role="img" aria-labelledby="v06-balance-t v06-balance-d">
+  <title id="v06-balance-t">实收、有效授权与未收余额</title>
+  <desc id="v06-balance-d">总费用 460 EUR，其中房费 400、餐饮 60。退房时实收预付款 100，未收 360，另有 80 的有效授权待 capture。capture 80 成功后实收 180、未收 280；客人再付 280 后未收为零。授权失效时未收仍是 360。</desc>
+  <path class="ln-soft" d="M170 34 V42 H650 V34 M650 42 H722 V34"/>
+  <text class="t-s mid" x="410" y="28">房费 400</text><text class="t-s mid" x="686" y="28">餐饮 60</text>
+  <text class="t-b" x="0" y="34">总费用 460 EUR</text>
+  <g data-s="1">
+    <text class="t" x="0" y="77">退房时</text>
+    <rect class="box f-ink" x="170" y="56" width="120" height="32"/><text class="t-s mid t-inv" x="230" y="76">预付 100</text>
+    <rect class="box" x="290" y="56" width="432" height="32"/><text class="t-s mid" x="506" y="76">未收 360</text>
+    <rect class="box-dash" x="290" y="94" width="96" height="20"/><text class="t-s mid" x="338" y="108">授权 80</text>
+    <text class="t-em" x="396" y="109">有效授权，待 capture，不计入实收</text>
+  </g>
+  <g data-s="2">
+    <text class="t" x="0" y="155">capture 80 成功</text>
+    <rect class="box f-ink" x="170" y="134" width="120" height="32"/><text class="t-s mid t-inv" x="230" y="154">预付 100</text>
+    <rect class="box f-ink" x="290" y="134" width="96" height="32"/><text class="t-s mid t-inv" x="338" y="154">请款 80</text>
+    <rect class="box" x="386" y="134" width="336" height="32"/><text class="t-s mid" x="554" y="154">未收 280</text>
+  </g>
+  <g data-s="3">
+    <text class="t" x="0" y="207">客人再付 280</text>
+    <rect class="box f-ink" x="170" y="186" width="120" height="32"/><text class="t-s mid t-inv" x="230" y="206">预付 100</text>
+    <rect class="box f-ink" x="290" y="186" width="96" height="32"/><text class="t-s mid t-inv" x="338" y="206">请款 80</text>
+    <rect class="box f-ink" x="386" y="186" width="336" height="32"/><text class="t-s mid t-inv" x="554" y="206">付款 280 · 未收 0</text>
+  </g>
+  <g data-s="4">
+    <text class="t" x="0" y="259">授权失效</text>
+    <rect class="box f-ink" x="170" y="238" width="120" height="32"/><text class="t-s mid t-inv" x="230" y="258">预付 100</text>
+    <rect class="box" x="290" y="238" width="432" height="32"/><text class="t-s mid" x="506" y="258">未收 360</text>
+    <text class="t-s" x="170" y="290">重新取得授权或另行付款，都是新的操作</text>
+  </g>
+</svg>
+</div>
+<figcaption>授权额度挂在未收部分旁边，capture 成功后才变成实收；授权失效时未收余额保持 360。</figcaption></figure><p>“押金”一词在界面上要说明含义。本例的 100 是可抵费用的已收预付款，不是租赁保障金；80 是授权额度。若业务实际收取损坏保证金，应另设独立的用途、扣留依据和退还义务，不能因 folio 有欠款就自动挪用。税务、押金的法律属性和追收授权需要具体业务的专业确认，本例不制定规则。</p>
 <p>退房工作台先列出所有责任账户的费用、已确认收款、待投递 ticket、待退款与例外。严格路径要求已知的个人费用结清，或有明确获批的公司承担安排，然后才结束住宿。经理也可以按政策批准带欠款离店，记录原因、责任人和到期日；这时住宿已是 departed，receivable 仍然存在。Mews 的 <code>Process reservation</code> 有 <code>AllowOpenBalance</code>、<code>CloseBills</code> 选项，允许在有未清余额时要求填写 Notes；Mews 的 closed bill 可以是尚未付清的 Invoice，也可以是余额为零的 Receipt。因此不能把 Processed 或 closed 单独解释为全部现金已经结算。参见 <a href="https://docs.mews.com/connector-api/operations/reservations#process-reservation" class="ext" rel="noopener">Process reservation</a>、<a href="https://docs.mews.com/connector-api/operations/bills#close-bill" class="ext" rel="noopener">Close bill</a>。</p>
 <p>本例退房时冻结一份账夹快照，停止新的即时挂账，并生成清洁任务与对账任务。离店结束了房间占用，账务却可能还在等公司付款、补账审查或退款。Mews 的 refund 返回独立的 RefundId，退款本身也是一笔 payment，Pending 之后仍可能失败，需要查询结果。参见 <a href="https://docs.mews.com/connector-api/operations/payments#refund-payment" class="ext" rel="noopener">Refund payment</a>。退款按钮按下后显示“退款已发起”，外部确认后才显示“已退款”；银行到账与完整的结算证据仍按支付方式核对。</p>
 </section>
 <section class="scene" aria-labelledby="技术选型与系统拓扑"><header class="scene-head"><h2 id="技术选型与系统拓扑"><span class="scene-no" aria-hidden="true">07</span><span class="head">技术选型与系统拓扑</span></h2></header><p class="scene-lede">模块边界清晰的单体加 PostgreSQL 事务足以守住房晚占用与 outbox；外部付款放不进同一个事务，靠短期 hold 和补偿衔接。</p>
-<p>小团队可以先用 Vue 3 或 React 做日期表、房态板与 folio 明细。React/TypeScript 适合把多个对象的操作状态整理成明确的组件输入，Vue 3 适合以表单和明细为主的渐进式页面；两者都要把“已保存请求”和“已确认业务结果”分开。房态图还应有等价的表格与键盘操作，不能只靠拖拽或颜色表达冲突。</p>
-<p>后端可选 TypeScript/NestJS 以共享接口类型，或 Python/FastAPI 以便编写日期和费用规则；单体中的预订、客房、账务模块已有足够清晰的边界，不必先拆成微服务部署。一条核心调用链是：前台 <code>commands</code> 业务服务，服务在 PostgreSQL 事务内保存 operation、房晚占用及 outbox，worker 经适配器再 <code>requests</code> 外部支付系统。返回或轮询的结果 <code>delivers</code> 到 inbox，核对后更新账务对象；对象再 <code>projects</code> 到工作台。<abbr title="JavaScript Object Notation：结构化数据表示格式，后文保留 JSON">JSON</abbr> 的 <code>owns</code> 表达谁有权改变事实，<code>stores</code> 表达数据库保留什么；消息箭头不表示钥匙或现金已经交付。</p>
+<p>小团队可以先用 Vue 3 或 React 做日期表、房态板与 folio 明细。React/TypeScript 适合把多个对象的操作状态整理成明确的组件输入，Vue 3 适合以表单和明细为主的渐进式页面；两者都要把“已保存请求”和“已确认业务结果”分开。房态图还应有等价的表格与键盘操作，冲突用文字标出，拖拽和颜色只作辅助。</p>
+<p>后端可选 TypeScript/NestJS 以共享接口类型，或 Python/FastAPI 以便编写日期和费用规则；单体中的预订、客房、账务模块已有足够清晰的边界，先作为单体部署。一条核心调用链是：前台 <code>commands</code> 业务服务，服务在 PostgreSQL 事务内保存 operation、房晚占用及 outbox，worker 经适配器再 <code>requests</code> 外部支付系统。返回或轮询的结果 <code>delivers</code> 到 inbox，核对后更新账务对象；对象再 <code>projects</code> 到工作台。<abbr title="JavaScript Object Notation：结构化数据表示格式，后文保留 JSON">JSON</abbr> 的 <code>owns</code> 表达谁有权改变事实，<code>stores</code> 表达数据库保留什么；消息箭头不表示钥匙或现金已经交付。</p>
 <p>PostgreSQL 可以把实体房占用写成 <code>(hotel_id, room_id, daterange)</code>，用 <code>[)</code> 与 exclusion constraint 阻止同一房间的区间重叠。若把普通标量 hotel/room <abbr title="identifier：标识符">ID</abbr> 的相等比较与范围重叠放进同一个通用搜索树（Generalized Search Tree，<abbr title="Generalized Search Tree：通用搜索树">GiST</abbr>）排斥约束，需要相应的运算符类，通常由 <code>btree_gist</code> 扩展提供；实现前检查数据库版本和扩展是否可用。按房型统计的容量仍要单独约束，范围排斥并不能自动证明整个房型没有超卖。另一种起步实现是逐夜库存行：按固定的日期顺序锁定 h 行，全部检查通过后一起扣减，任何一夜失败就整个事务回滚。若采用 serializable 隔离，应用要完整重试被判定为序列化失败的事务，不能只重发最后一条写入。技术能力参照 <a href="https://www.postgresql.org/docs/18/gist.html#GIST-INTRO" class="ext" rel="noopener">GiST Introduction</a>、<a href="https://www.postgresql.org/docs/18/rangetypes.html#RANGETYPES-CONSTRAINT" class="ext" rel="noopener">Range constraints</a>、<a href="https://www.postgresql.org/docs/current/transaction-iso.html#XACT-SERIALIZABLE" class="ext" rel="noopener">Serializable isolation</a>。</p>
-<p>容量提交与外部付款无法放进同一个事务。本例先取得短期 hold，再记录支付尝试；hold 到期而付款迟到成功时，先重查容量，有容量才确认预订，否则创建退款或人工安置义务。这是补偿，不是数据库回滚了一笔已经发生的外部收款。费用使用的数据库唯一键包括酒店、来源系统、ticket 与 line；付款与退款另有独立的 operation ID。订单备注可供人工查找，却不会自动提供外部幂等保证。</p>
+<p>容量提交与外部付款无法放进同一个事务。本例先取得短期 hold，再记录支付尝试；hold 到期而付款迟到成功时，先重查容量，有容量才确认预订，否则创建退款或人工安置义务。这是补偿：已经发生的外部收款由退款或安置义务来对应，数据库回滚撤不回它。费用使用的数据库唯一键包括酒店、来源系统、ticket 与 line；付款与退款另有独立的 operation ID。订单备注可供人工查找，却不会自动提供外部幂等保证。</p>
 </section>
 <section class="scene" aria-labelledby="负载目标与观测指标"><header class="scene-head"><h2 id="负载目标与观测指标"><span class="scene-no" aria-hidden="true">08</span><span class="head">负载目标与观测指标</span></h2></header><p class="scene-lede">负载数值是待测条件；要观测的是超卖、冲突、重试和积压，热点在最后一间房和故障恢复时的 POS 补发。</p>
 <p>负载设为 20 家酒店、每家 150 间房，销售未来 365 天，10 个房型；夜库存表约为 <code>20×10×365=73000</code> 行，实体房全年区间展开的上界约 109.5 万个房晚。每店高峰每秒 20 次查价与可用性查询、5 次改期或确认，40 名前台用户；POS 全部酒店合计每秒 30 条明细，故障恢复时以十倍速持续补发十分钟。这些数值是待测的条件。</p>
 <p>读性能目标为热缓存可用性查询 p95 小于 250 ms、冷读小于 700 ms；库存提交目标为 p95 小于 500 ms；都从应用接收请求计到本地结果返回，不含外部支付的等待。缓存键包含酒店、房型、当地日期区间与规则版本，界面显示数据的新鲜度；确认预订时必须回读库存事务。同时要记录超卖数、锁等待、序列化重试率、拒绝原因与 outbox 最老记录的年龄，否则吞吐提高可能只是把失败藏进了队列。外部确认延迟单独报告，不计入本地的“成功”数。</p>
-<p>最后一间房是热点。两位操作员同时看到余量为一，并不意味着两份确认都有效；同一日期行或可序列化约束只允许一个提交成功，另一个收到具体的冲突，并保留报价供重新挑选。长住预订一次锁住很多日期，固定锁顺序、限制一次改期的跨度、缩短事务都有助于减少阻塞；但不能为了吞吐让长住请求永远排不上。迟到的 POS 入账按来源键核对，按酒店公平处理补发，避免一家离线餐厅拖住所有酒店的退房。</p>
+<p>最后一间房是热点。两位操作员同时看到余量为一时，同一日期行或可序列化约束只允许一个提交成功，另一个收到具体的冲突，并保留报价供重新挑选。长住预订一次锁住很多日期，固定锁顺序、限制一次改期的跨度、缩短事务都有助于减少阻塞；但不能为了吞吐让长住请求永远排不上。迟到的 POS 入账按来源键核对，按酒店公平处理补发，避免一家离线餐厅拖住所有酒店的退房。</p>
 </section>
 <section class="scene" aria-labelledby="验算端到端验收"><header class="scene-head"><h2 id="验算端到端验收"><span class="scene-no" aria-hidden="true">09</span><span class="visually-hidden">验算：</span><span class="head">端到端验收</span></h2></header><p class="scene-lede">拒绝路径与恢复路径的观察结果要和成功路径一并保留；只截取成功列表，证明不了入住与账务正确。</p>
 <p>房间、付款人和资金都不由模型决定，<abbr title="artificial intelligence：人工智能">AI</abbr> eval 不适用；以后若加入只解释状态的自然语言助手，它也不能用模型的猜测替代这些 guard。下表是端到端验收定义，系统实现并实际运行后才能记为通过。</p>
@@ -389,8 +556,8 @@
     <footer class="page-foot">正文 <a href="../../../books/saas-engineering/packages/commerce-property/V06.md">books/saas-engineering/packages/commerce-property/V06.md</a> · <a href="../../../vault/distilled/saas-engineering-atlas/README.md">结构、来源与验证</a></footer>
   </main>
 </div>
-<script src="search-index.js?v=mv95jeod"></script>
-<script src="book.js?v=mv95jeod"></script>
+<script src="search-index.js?v=mv97hru0"></script>
+<script src="book.js?v=mv97hru0"></script>
 
 </body>
 </html>

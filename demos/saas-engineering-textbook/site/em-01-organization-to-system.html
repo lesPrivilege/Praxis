@@ -4,9 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>第一章　组织约束怎样变成软件 · SaaS 工程全景</title>
-<link rel="stylesheet" href="book.css?v=mv95jeod">
+<link rel="stylesheet" href="book.css?v=mv97hru0">
 </head>
 <body>
+<svg class="dw-defs" width="0" height="0" aria-hidden="true" focusable="false" style="position:absolute"><defs><pattern id="dw-hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" fill="var(--bg)"/><path d="M0 0 V6" stroke="var(--ink-2)" stroke-width="1.2"/></pattern></defs></svg>
 <a class="skip" href="#main">跳到正文</a>
 <header class="topbar">
   <button class="nav-toggle" type="button" aria-controls="sidebar" aria-expanded="false">目录</button>
@@ -28,7 +29,7 @@
       <aside class="rail" aria-label="本页进度"><ol><li><a href="#识题先找落空的责任"><span class="rn">01<span class="of"> / 05</span></span><span class="rt">先找落空的责任</span></a></li><li><a href="#解法把不能互相替代的事实分开"><span class="rn">02<span class="of"> / 05</span></span><span class="rt">把不能互相替代的事实分开</span></a></li><li><a href="#演算em-e01-的采购例外"><span class="rn">03<span class="of"> / 05</span></span><span class="rt">EM-E01 的采购例外</span></a></li><li><a href="#验算从结束条件反推证据"><span class="rn">04<span class="of"> / 05</span></span><span class="rt">从结束条件反推证据</span></a></li><li><a href="#变式改变条件后重画边界"><span class="rn">05<span class="of"> / 05</span></span><span class="rt">改变条件后重画边界</span></a></li></ol></aside>
       <div class="flow">
 <p>如果把这件事压成一张 <code>purchase</code> 表加一个 <code>done</code> 勾选框，页面很快就能搭好，问题却都推给了使用者：谁打的勾，依据的是哪批货，金额还是不是批准时的金额，银行是否真的转了账？</p>
-<section class="scene" aria-labelledby="识题先找落空的责任"><header class="scene-head"><h2 id="识题先找落空的责任"><span class="scene-no" aria-hidden="true">01</span><span class="visually-hidden">识题：</span><span class="head">先找落空的责任</span></h2></header><p class="scene-lede">进入陌生业务，先跟着一件工作从提出走到结束。问“你们需要什么系统”，多半只得到一张功能清单；追问“上一次为什么没能按时结束”，更容易看到实际的约束。不要只看最熟练的人一路顺利办完的情形，还要看退回、补件、换人、部分完成和跨期处理。</p>
+<section class="scene" aria-labelledby="识题先找落空的责任"><header class="scene-head"><h2 id="识题先找落空的责任"><span class="scene-no" aria-hidden="true">01</span><span class="visually-hidden">识题：</span><span class="head">先找落空的责任</span></h2></header><p class="scene-lede">进入陌生业务，先跟着一件工作从提出走到结束。问“你们需要什么系统”，多半只得到一张功能清单；追问“上一次为什么没能按时结束”，更容易看到实际的约束。最熟练的人一路顺利办完的情形之外，还要看退回、补件、换人、部分完成和跨期处理。</p>
 <div class="table-wrap"><table>
 <thead>
 <tr>
@@ -68,24 +69,339 @@
 </section>
 <section class="scene" aria-labelledby="解法把不能互相替代的事实分开"><header class="scene-head"><h2 id="解法把不能互相替代的事实分开"><span class="scene-no" aria-hidden="true">02</span><span class="visually-hidden">解法：</span><span class="head">把不能互相替代的事实分开</span></h2></header><p class="scene-lede">能各自变化、由不同的人负责、在不同时间产生的事实分开表示；状态、权威和流程都建立在这种划分上。</p>
 <h3 id="对象按生命周期划分">对象按生命周期划分</h3>
-<p>划分对象，不该从数据库表名出发。两个事物如果能各自变化、由不同的人负责、在不同时间产生，通常要分开表示。采购单已批准，货可能还没交；验收完成了，发票可能还没到；付款已在途，发票上可能仍显示未结清。这些对象彼此有关联，却不能共用一个状态字段。</p>
-<p>对象至少要有身份、范围、当前状态、版本和来源。身份说明两条记录是不是同一件事，范围说明它属于哪个租户、法人或场所，版本说明这次决定依据的是哪一份内容。供应商发票号未必在整个系统里唯一，显示名称也可能改变。技术标识符（identifier，<abbr title="identifier：标识符">ID</abbr>）要保持稳定，业务编号供人查单，外部 ID 供系统核对；三者之间要有映射，不能因为名称相似就自动合并。</p>
-<p>关系也要写明是什么关系。只写“发票关联采购单”，还不足以结算：是引用、替换、冲销，还是占用了该采购单某一行的验收额度？若一张发票占用多次验收，分配关系本身应有数量、单位与有效状态。否则对象都在，决定能否付款的那层关系却没有存下来。</p>
-<p>Palantir 的 Ontology 文档把 objects、properties、links 和 actions、functions 放在同一个面向组织运行的层里描述；按这种建模方式，数据结构和允许发生的变化写在一处。<a href="https://www.palantir.com/docs/foundry/ontology/overview/" class="ext" rel="noopener">Ontology overview</a>。</p>
+<p>采购单、收货与验收、发票、付款各是一个对象，各有一条生命周期，按各自的节奏前进：采购单已批准时，货可能还没交；验收完成时，发票可能还没到；付款在途时，发票仍是未结清。</p>
+<figure class="drawing" data-drawing="em01-lifecycles"><div class="dw-scroll" style="--dw-min:600px;--dw-max:880px">
+<svg viewBox="0 0 760 290" role="img" aria-labelledby="em01-lifecycles-t em01-lifecycles-d">
+  <title id="em01-lifecycles-t">四个对象各自的生命周期</title>
+  <desc id="em01-lifecycles-d">采购单、收货与验收、发票、付款四条生命周期各自前进。时刻一，采购单已批准，货未交；时刻二，验收已完成，发票未到；时刻三，付款在途，发票未结清。</desc>
+  <text class="t-b end" x="140" y="80">采购单</text>
+  <text class="t-b end" x="140" y="135">收货与验收</text>
+  <text class="t-b end" x="140" y="190">发票</text>
+  <text class="t-b end" x="140" y="245">付款</text>
+  <g data-s="1">
+    <path class="ln-dash" d="M160 130 H390"/><path class="ln-dash" d="M160 185 H570"/><path class="ln-dash" d="M160 240 H610"/>
+    <text class="t-s" x="168" y="119">未交货</text><text class="t-s" x="168" y="174">未到</text><text class="t-s" x="168" y="229">未发起</text>
+  </g>
+  <path class="ln-strong" data-draw="1" d="M160 75 H740"/>
+  <path class="ln-strong" data-draw="2" d="M390 130 H740"/>
+  <path class="ln-strong" data-draw="3" d="M570 185 H740"/>
+  <path class="ln-strong" data-draw="3" d="M610 240 H740"/>
+  <g data-s="1"><text class="t" x="168" y="64">已批准</text></g>
+  <g data-s="2"><circle class="f-ink" cx="390" cy="130" r="4"/><text class="t" x="398" y="119">已验收</text></g>
+  <g data-s="3"><circle class="f-ink" cx="570" cy="185" r="4"/><text class="t" x="578" y="174">未结清</text>
+    <circle class="f-ink" cx="610" cy="240" r="4"/><text class="t" x="618" y="229">在途</text></g>
+  <g data-s="4"><path class="ln-soft" d="M300 40 V262"/><text class="t-s mid" x="300" y="30">时刻一</text>
+    <circle class="box" cx="300" cy="75" r="6"/><circle class="box" cx="300" cy="130" r="6"/></g>
+  <g data-s="5"><path class="ln-soft" d="M480 40 V262"/><text class="t-s mid" x="480" y="30">时刻二</text>
+    <circle class="box" cx="480" cy="130" r="6"/><circle class="box" cx="480" cy="185" r="6"/></g>
+  <g data-s="6"><path class="ln-soft" d="M660 40 V262"/><text class="t-s mid" x="660" y="30">时刻三</text>
+    <circle class="box" cx="660" cy="185" r="6"/><circle class="box" cx="660" cy="240" r="6"/></g>
+</svg>
+</div>
+<figcaption>每条竖线上圈出的两个对象处在不同状态；一个共用的状态字段只能记下其中一个。</figcaption></figure><p>每个对象回答五个问题。身份：两条记录是不是同一件事。范围：它属于哪个租户、法人或场所。状态：生命周期走到了哪一步。版本：这次决定依据的是哪一份内容。来源：这项事实由谁、从哪里记下，例如发票来自供应商原单，登记在应付记录里。</p>
+<figure class="drawing" data-drawing="em01-object"><div class="dw-scroll" style="--dw-min:640px;--dw-max:900px">
+<svg viewBox="0 0 880 230" role="img" aria-labelledby="em01-object-t em01-object-d">
+  <title id="em01-object-t">一个对象回答的五个问题</title>
+  <desc id="em01-object-d">身份：两条记录是否同一件事。范围：租户包含法人，法人包含场所。状态：生命周期上的当前位置。版本：决定依据其中一个版本。来源：供应商原单登记为应付记录。</desc>
+  <g data-s="1">
+    <text class="t-b mid" x="88" y="30">身份</text>
+    <rect class="box" x="26" y="72" width="48" height="60"/><rect class="box" x="102" y="72" width="48" height="60"/>
+    <text class="t-s mid" x="50" y="106">记录</text><text class="t-s mid" x="126" y="106">记录</text>
+    <text class="t-b mid" x="88" y="108">=?</text>
+    <text class="t-s mid" x="88" y="200">是不是同一件事</text>
+  </g>
+  <g data-s="2">
+    <text class="t-b mid" x="264" y="30">范围</text>
+    <rect class="box f1" x="186" y="50" width="156" height="124"/>
+    <rect class="box f0" x="200" y="74" width="128" height="90"/>
+    <rect class="box f1" x="214" y="98" width="100" height="56"/>
+    <text class="t-s" x="192" y="65">租户</text><text class="t-s" x="206" y="89">法人</text><text class="t-s" x="220" y="113">场所</text>
+    <circle class="f-ink" cx="264" cy="134" r="5"/>
+    <text class="t-s mid" x="264" y="200">属于哪个租户、法人或场所</text>
+  </g>
+  <g data-s="3">
+    <text class="t-b mid" x="440" y="30">状态</text>
+    <path class="ln-strong" d="M372 110 H463"/><path class="ln-dash" d="M463 110 H508"/>
+    <circle class="f-ink" cx="372" cy="110" r="4"/><circle class="f-ink" cx="417" cy="110" r="4"/>
+    <circle class="box" cx="508" cy="110" r="4"/>
+    <circle class="box" cx="463" cy="110" r="8"/><circle class="f-ink" cx="463" cy="110" r="4"/>
+    <text class="t-s mid" x="463" y="92">此刻</text>
+    <text class="t-s mid" x="440" y="200">走到了哪一步</text>
+  </g>
+  <g data-s="4">
+    <text class="t-b mid" x="616" y="30">版本</text>
+    <rect class="box" x="550" y="72" width="40" height="40"/><text class="t-n mid" x="570" y="97">v1</text>
+    <rect class="box f-ink" x="596" y="72" width="40" height="40"/><text class="t-n mid t-inv" x="616" y="97">v2</text>
+    <rect class="box" x="642" y="72" width="40" height="40"/><text class="t-n mid" x="662" y="97">v3</text>
+    <path class="ln" d="M616 152 V118 M609 126 L616 118 L623 126"/>
+    <text class="t mid" x="616" y="170">决定</text>
+    <text class="t-s mid" x="616" y="200">依据哪一份内容</text>
+  </g>
+  <g data-s="5">
+    <text class="t-b mid" x="792" y="30">来源</text>
+    <rect class="box" x="732" y="54" width="120" height="36"/><text class="t mid" x="792" y="77">供应商原单</text>
+    <path class="ln" d="M792 92 V128 M785 120 L792 128 L799 120"/>
+    <rect class="box" x="732" y="130" width="120" height="36"/><text class="t mid" x="792" y="153">应付记录</text>
+    <text class="t-s mid" x="792" y="200">由谁、从哪里记下</text>
+  </g>
+</svg>
+</div>
+<figcaption>五项属性各回答一个问题；状态只是其中一项。</figcaption></figure><p>身份由三种标识共同承担。技术标识符（identifier，<abbr title="identifier：标识符">ID</abbr>）供系统内部互相引用，创建后不变；业务编号供人查单；外部 ID 由供应商、银行等对方给定，只在对方的范围内唯一。三者记在一张映射表里。供应商甲和乙都可能开出号为 0012 的发票：外部 ID 相同，技术 ID 不同，业务编号分别是 AP-0381 和 AP-0382。名称相近的两条记录，经映射确认是同一身份后才合并。</p>
+<figure class="drawing" data-drawing="em01-ids"><div class="dw-scroll" style="--dw-min:600px;--dw-max:860px">
+<svg viewBox="0 0 800 220" role="img" aria-labelledby="em01-ids-t em01-ids-d">
+  <title id="em01-ids-t">两张号码相同的发票</title>
+  <desc id="em01-ids-d">供应商甲和供应商乙各开出发票号 0012。映射表把两者分别对到技术 ID A 和技术 ID B，业务编号分别是 AP-0381 和 AP-0382。</desc>
+  <text class="t-b mid" x="130" y="26">外部 ID</text><text class="t-s mid" x="130" y="44">对方给定，只在对方范围内唯一</text>
+  <text class="t-b mid" x="410" y="26">技术 ID</text><text class="t-s mid" x="410" y="44">系统内部引用，创建后不变</text>
+  <text class="t-b mid" x="670" y="26">业务编号</text><text class="t-s mid" x="670" y="44">供人查单</text>
+  <path class="ln-soft" d="M20 58 H780"/>
+  <g data-s="1">
+    <rect class="box" x="40" y="78" width="180" height="44"/>
+    <text class="t" x="56" y="105">供应商甲 ·</text><text class="t-n t-em" x="140" y="105">0012</text>
+    <path class="ln" d="M220 100 H330"/>
+    <rect class="box" x="330" y="78" width="160" height="44"/><text class="t-n mid" x="410" y="105">技术 ID A</text>
+    <path class="ln" d="M490 100 H590"/>
+    <rect class="box" x="590" y="78" width="160" height="44"/><text class="t-n mid" x="670" y="105">AP-0381</text>
+  </g>
+  <g data-s="2">
+    <rect class="box" x="40" y="150" width="180" height="44"/>
+    <text class="t" x="56" y="177">供应商乙 ·</text><text class="t-n t-em" x="140" y="177">0012</text>
+    <path class="ln" d="M220 172 H330"/>
+    <rect class="box" x="330" y="150" width="160" height="44"/><text class="t-n mid" x="410" y="177">技术 ID B</text>
+    <path class="ln" d="M490 172 H590"/>
+    <rect class="box" x="590" y="150" width="160" height="44"/><text class="t-n mid" x="670" y="177">AP-0382</text>
+  </g>
+</svg>
+</div>
+<figcaption>外部 ID 相同的两张发票，在映射表里按供应商分开，对到两个技术 ID。</figcaption></figure><p>“发票关联采购单”可能是四种关系中的任何一种，结算时各走不同的规则。引用：发票注明对应的采购单。替换：新版本发票取代旧版本。冲销：贷项发票抵消原发票的金额。占用：发票占用采购单某一行已验收的数量。</p>
+<figure class="drawing" data-drawing="em01-relations"><div class="dw-scroll" style="--dw-min:640px;--dw-max:900px">
+<svg viewBox="0 0 880 230" role="img" aria-labelledby="em01-relations-t em01-relations-d">
+  <title id="em01-relations-t">发票与采购单的四种关系</title>
+  <desc id="em01-relations-d">引用：发票指向采购单。替换：版本 2 取代版本 1。冲销：贷项发票抵消原发票的金额。占用：发票占用采购单一行中已验收的那部分数量。</desc>
+  <g data-s="1">
+    <text class="t-b mid" x="110" y="28">引用</text>
+    <rect class="box" x="18" y="80" width="80" height="44"/><text class="t mid" x="58" y="107">发票</text>
+    <path class="ln" d="M98 102 H132 M124 95 L132 102 L124 109"/>
+    <rect class="box" x="132" y="80" width="80" height="44"/><text class="t mid" x="172" y="107">采购单</text>
+    <text class="t-s mid" x="110" y="212">注明对应的采购单</text>
+  </g>
+  <g data-s="2">
+    <text class="t-b mid" x="330" y="28">替换</text>
+    <rect class="box f1" x="238" y="80" width="80" height="44"/><text class="t-s mid" x="278" y="107">版本 1</text>
+    <path class="ln" d="M248 102 H308"/>
+    <path class="ln" d="M318 102 H342 M334 95 L342 102 L334 109"/>
+    <rect class="box" x="342" y="80" width="80" height="44"/><text class="t mid" x="382" y="107">版本 2</text>
+    <text class="t-s mid" x="330" y="212">新版本取代旧版本</text>
+  </g>
+  <g data-s="3">
+    <text class="t-b mid" x="550" y="28">冲销</text>
+    <path class="ln-strong" d="M470 122 H630"/>
+    <rect class="f-ink" x="492" y="70" width="40" height="52"/>
+    <rect class="box f2" x="568" y="122" width="40" height="52"/>
+    <text class="t-s mid" x="512" y="62">原发票</text><text class="t-s mid" x="588" y="190">贷项发票</text>
+    <text class="t-s mid" x="550" y="212">抵消原发票的金额</text>
+  </g>
+  <g data-s="4">
+    <text class="t-b mid" x="770" y="28">占用</text>
+    <text class="t-s" x="670" y="80">采购单一行</text>
+    <rect class="box f2" x="670" y="88" width="140" height="26"/>
+    <rect class="box" x="810" y="88" width="56" height="26"/>
+    <text class="t-s" x="676" y="105">已验收</text>
+    <path class="ln-strong" d="M670 124 V134 H760 V124"/>
+    <text class="t-s mid" x="715" y="152">发票占用</text>
+    <text class="t-s mid" x="770" y="212">占用已验收的数量</text>
+  </g>
+</svg>
+</div>
+<figcaption>四种关系里，只有占用消耗采购单行上已验收的数量。</figcaption></figure><p>占用关系本身是一个对象，叫作分配。一张发票占用多次验收时，每次占用各有数量、单位与有效状态；付款依据的正是这些分配。</p>
+<figure class="drawing" data-drawing="em01-allocation"><div class="dw-scroll" style="--dw-min:560px;--dw-max:820px">
+<svg viewBox="0 0 720 230" role="img" aria-labelledby="em01-allocation-t em01-allocation-d">
+  <title id="em01-allocation-t">分配：发票与验收之间的对象</title>
+  <desc id="em01-allocation-d">一张发票占用两次验收。每次占用是一条分配记录，各有数量、单位与有效状态。</desc>
+  <g data-s="1">
+  <rect class="box" x="30" y="85" width="130" height="60"/>
+  <text class="t-b mid" x="95" y="120">发票</text>
+  </g>
+  <g data-s="3">
+  <rect class="box" x="570" y="25" width="130" height="60"/>
+  <text class="t-b mid" x="635" y="60">验收一</text>
+  <rect class="box" x="570" y="145" width="130" height="60"/>
+  <text class="t-b mid" x="635" y="180">验收二</text>
+  </g>
+  <g data-s="2">
+  <path class="ln" d="M160 105 L270 55"/><path class="ln" d="M440 55 L570 55"/>
+  <path class="ln" d="M160 125 L270 175"/><path class="ln" d="M440 175 L570 175"/>
+  <rect class="box f1" x="270" y="20" width="170" height="70"/>
+  <text class="t-b" x="284" y="44">分配</text>
+  <text class="t-s" x="284" y="64">数量 · 单位</text>
+  <text class="t-s" x="284" y="80">有效状态</text>
+  <rect class="box f1" x="270" y="140" width="170" height="70"/>
+  <text class="t-b" x="284" y="164">分配</text>
+  <text class="t-s" x="284" y="184">数量 · 单位</text>
+  <text class="t-s" x="284" y="200">有效状态</text>
+  </g>
+</svg>
+</div>
+<figcaption>发票与每次验收之间隔着一条分配记录，各自带数量；付款依据有效的分配。</figcaption></figure><p>Palantir 的 Ontology 文档把 objects、properties、links 和 actions、functions 放在同一个面向组织运行的层里描述；按这种建模方式，数据结构和允许发生的变化写在一处。<a href="https://www.palantir.com/docs/foundry/ontology/overview/" class="ext" rel="noopener">Ontology overview</a>。</p>
 <h3 id="状态是事实的摘要">状态是事实的摘要</h3>
-<p>状态的用处是让人少做判断。会计看到“等待验收”，就该知道缺什么、谁能补齐、补齐后会怎样。只加上“待处理、处理中、已处理”几个状态，这些都回答不了。</p>
+<p>状态的用处是让人少做判断。会计看到“等待验收”，就知道缺什么、谁能补齐、补齐后会怎样；状态名要说出缺的那项事实，“待处理、处理中、已处理”这类通用名称说不出来。</p>
 <p>一次状态转换要同时满足四个条件：</p>
 <div class="eqn"><code class="visually-hidden">允许转换 = 对象身份有效 ∧ 操作者有权 ∧ 前提成立 ∧ 依据版本仍有效</code><div class="eqn-row" aria-hidden="true"><span class="term"><span class="tv word">允许转换</span></span><span class="op eq">=</span><span class="term"><span class="tv word">对象身份有效</span></span><span class="op">∧</span><span class="term"><span class="tv word">操作者有权</span></span><span class="op">∧</span><span class="term"><span class="tv word">前提成立</span></span><span class="op">∧</span><span class="term"><span class="tv word">依据版本仍有效</span></span></div></div>
-<p>转换成功后，新状态和能解释这次变化的记录要一起保存。<code>guard</code> 是转换前必须成立的条件；<code>effect</code> 是转换成功后产生的事实。两者次序不能颠倒，例如先把付款标为完成，再等银行证明。各对象状态的组合也不必列成新状态：采购单、验收、发票和付款各有生命周期，页面按读者的任务组合显示。四个对象各有四种状态，并不意味着要给“采购总单”设计 256 个状态名。</p>
-<p>时间有三个常见含义：事情何时发生、系统何时得知、规则何时适用。例如昨天收货、今天补录、下月起新价格，这三个时点不能挤进一个 <code>updated_at</code>。组织允许补录时，要说明补录改变了哪些历史结果，哪些已对外生效的决定需要另行调整。</p>
-<h3 id="权威落到具体事实与动作">权威落到具体事实与动作</h3>
-<p>说“企业资源计划系统（Enterprise Resource Planning, <abbr title="enterprise resource planning：企业资源计划">ERP</abbr>）是唯一的事实来源”，范围太宽。ERP 可能拥有采购承诺，仓储系统拥有收货事实，质量系统拥有验收处置，银行拥有资金交易结果。每项关键事实指定一个权威记录来源（system of record），其他系统只保存副本或查询投影（read model）。副本可以滞后，执行正式动作前仍要向相应的权威来源核对版本。</p>
-<p>权限也不是一个从低到高排列的总分。管理员可以配置规则，但未必有权批准自己的支出；主管能批准购买，但未必能修改收款账户；agent 能读取工单，并不因此就能关闭工单。一次有用的权限判断要回答：谁，以什么身份，在哪个范围，对哪个对象，执行哪种动作，基于哪些条件。服务端执行这个判断，界面显示可做的动作和拒绝理由。</p>
+<p>转换成功后，新状态和能解释这次变化的记录要一起保存。<code>guard</code> 是转换前必须成立的条件；<code>effect</code> 是转换成功后产生的事实。guard 先成立，effect 才写入：银行证明到达之后，付款才标为完成。</p>
+<p>各对象状态的组合交给页面：采购单、验收、发票和付款各有生命周期，页面按读者的任务组合显示。四个对象各有四种状态，分开记录是四条生命周期、共 16 个状态；把组合列成“采购总单”的状态，则要 <code>4 × 4 × 4 × 4 = 256</code> 个状态名。</p>
+<figure class="drawing" data-drawing="em01-states"><div class="dw-scroll" style="--dw-min:560px;--dw-max:860px">
+<svg viewBox="0 0 700 312" role="img" aria-labelledby="em01-states-t em01-states-d">
+  <title id="em01-states-t">分开记录与合成一个状态</title>
+  <desc id="em01-states-d">左边四条生命周期，采购单、验收、发票、付款各有四种状态，共 16 个，每条各记一个当前状态。右边把四者合成一个“采购总单”状态，16 乘 16 的格子共 256 个状态名。</desc>
+  <g data-s="1">
+    <text class="t-b" x="40" y="24">分开记录</text>
+    <text class="t-b end" x="126" y="77">采购单</text><path class="ln-soft" d="M150 72 H282"/><circle class="box" cx="150" cy="72" r="7"/><circle class="f-ink" cx="194" cy="72" r="7"/><circle class="box" cx="238" cy="72" r="7"/><circle class="box" cx="282" cy="72" r="7"/>
+    <text class="t-b end" x="126" y="125">验收</text><path class="ln-soft" d="M150 120 H282"/><circle class="box" cx="150" cy="120" r="7"/><circle class="box" cx="194" cy="120" r="7"/><circle class="f-ink" cx="238" cy="120" r="7"/><circle class="box" cx="282" cy="120" r="7"/>
+    <text class="t-b end" x="126" y="173">发票</text><path class="ln-soft" d="M150 168 H282"/><circle class="f-ink" cx="150" cy="168" r="7"/><circle class="box" cx="194" cy="168" r="7"/><circle class="box" cx="238" cy="168" r="7"/><circle class="box" cx="282" cy="168" r="7"/>
+    <text class="t-b end" x="126" y="221">付款</text><path class="ln-soft" d="M150 216 H282"/><circle class="box" cx="150" cy="216" r="7"/><circle class="box" cx="194" cy="216" r="7"/><circle class="box" cx="238" cy="216" r="7"/><circle class="f-ink" cx="282" cy="216" r="7"/>
+    <text class="t-n" x="150" y="262">4 × 4 = 16</text>
+    <text class="t-s" x="150" y="282">每条生命周期记一个当前状态</text>
+  </g>
+  <g data-s="2">
+    <text class="t-b" x="420" y="24">合成“采购总单”的状态</text>
+    <text class="t-s" x="420" y="46">列：发票 × 付款，16 种</text>
+    <text class="t-s end" x="410" y="72">行：采购单 × 验收</text>
+    <text class="t-s end" x="410" y="88">16 种</text>
+    <rect class="box" x="420" y="58" width="12" height="12"/> <rect class="box" x="434" y="58" width="12" height="12"/> <rect class="box" x="448" y="58" width="12" height="12"/> <rect class="box" x="462" y="58" width="12" height="12"/> <rect class="box" x="476" y="58" width="12" height="12"/> <rect class="box" x="490" y="58" width="12" height="12"/> <rect class="box" x="504" y="58" width="12" height="12"/> <rect class="box" x="518" y="58" width="12" height="12"/>
+    <rect class="box" x="532" y="58" width="12" height="12"/> <rect class="box" x="546" y="58" width="12" height="12"/> <rect class="box" x="560" y="58" width="12" height="12"/> <rect class="box" x="574" y="58" width="12" height="12"/> <rect class="box" x="588" y="58" width="12" height="12"/> <rect class="box" x="602" y="58" width="12" height="12"/> <rect class="box" x="616" y="58" width="12" height="12"/> <rect class="box" x="630" y="58" width="12" height="12"/>
+    <rect class="box" x="420" y="72" width="12" height="12"/> <rect class="box" x="434" y="72" width="12" height="12"/> <rect class="box" x="448" y="72" width="12" height="12"/> <rect class="box" x="462" y="72" width="12" height="12"/> <rect class="box" x="476" y="72" width="12" height="12"/> <rect class="box" x="490" y="72" width="12" height="12"/> <rect class="box" x="504" y="72" width="12" height="12"/> <rect class="box" x="518" y="72" width="12" height="12"/>
+    <rect class="box" x="532" y="72" width="12" height="12"/> <rect class="box" x="546" y="72" width="12" height="12"/> <rect class="box" x="560" y="72" width="12" height="12"/> <rect class="box" x="574" y="72" width="12" height="12"/> <rect class="box" x="588" y="72" width="12" height="12"/> <rect class="box" x="602" y="72" width="12" height="12"/> <rect class="box" x="616" y="72" width="12" height="12"/> <rect class="box" x="630" y="72" width="12" height="12"/>
+    <rect class="box" x="420" y="86" width="12" height="12"/> <rect class="box" x="434" y="86" width="12" height="12"/> <rect class="box" x="448" y="86" width="12" height="12"/> <rect class="box" x="462" y="86" width="12" height="12"/> <rect class="box" x="476" y="86" width="12" height="12"/> <rect class="box" x="490" y="86" width="12" height="12"/> <rect class="box" x="504" y="86" width="12" height="12"/> <rect class="box" x="518" y="86" width="12" height="12"/>
+    <rect class="box" x="532" y="86" width="12" height="12"/> <rect class="box" x="546" y="86" width="12" height="12"/> <rect class="box" x="560" y="86" width="12" height="12"/> <rect class="box" x="574" y="86" width="12" height="12"/> <rect class="box" x="588" y="86" width="12" height="12"/> <rect class="box" x="602" y="86" width="12" height="12"/> <rect class="box" x="616" y="86" width="12" height="12"/> <rect class="box" x="630" y="86" width="12" height="12"/>
+    <rect class="box" x="420" y="100" width="12" height="12"/> <rect class="box" x="434" y="100" width="12" height="12"/> <rect class="box" x="448" y="100" width="12" height="12"/> <rect class="box" x="462" y="100" width="12" height="12"/> <rect class="box" x="476" y="100" width="12" height="12"/> <rect class="box" x="490" y="100" width="12" height="12"/> <rect class="box" x="504" y="100" width="12" height="12"/> <rect class="box" x="518" y="100" width="12" height="12"/>
+    <rect class="box" x="532" y="100" width="12" height="12"/> <rect class="box" x="546" y="100" width="12" height="12"/> <rect class="box" x="560" y="100" width="12" height="12"/> <rect class="box" x="574" y="100" width="12" height="12"/> <rect class="box" x="588" y="100" width="12" height="12"/> <rect class="box" x="602" y="100" width="12" height="12"/> <rect class="box" x="616" y="100" width="12" height="12"/> <rect class="box" x="630" y="100" width="12" height="12"/>
+    <rect class="box" x="420" y="114" width="12" height="12"/> <rect class="box" x="434" y="114" width="12" height="12"/> <rect class="box" x="448" y="114" width="12" height="12"/> <rect class="box" x="462" y="114" width="12" height="12"/> <rect class="box" x="476" y="114" width="12" height="12"/> <rect class="box" x="490" y="114" width="12" height="12"/> <rect class="box" x="504" y="114" width="12" height="12"/> <rect class="box" x="518" y="114" width="12" height="12"/>
+    <rect class="box" x="532" y="114" width="12" height="12"/> <rect class="box" x="546" y="114" width="12" height="12"/> <rect class="box" x="560" y="114" width="12" height="12"/> <rect class="box" x="574" y="114" width="12" height="12"/> <rect class="box" x="588" y="114" width="12" height="12"/> <rect class="box" x="602" y="114" width="12" height="12"/> <rect class="box" x="616" y="114" width="12" height="12"/> <rect class="box" x="630" y="114" width="12" height="12"/>
+    <rect class="box" x="420" y="128" width="12" height="12"/> <rect class="box" x="434" y="128" width="12" height="12"/> <rect class="box" x="448" y="128" width="12" height="12"/> <rect class="box" x="462" y="128" width="12" height="12"/> <rect class="box" x="476" y="128" width="12" height="12"/> <rect class="box" x="490" y="128" width="12" height="12"/> <rect class="box" x="504" y="128" width="12" height="12"/> <rect class="box" x="518" y="128" width="12" height="12"/>
+    <rect class="box" x="532" y="128" width="12" height="12"/> <rect class="f-em" x="546" y="128" width="12" height="12"/> <rect class="box" x="560" y="128" width="12" height="12"/> <rect class="box" x="574" y="128" width="12" height="12"/> <rect class="box" x="588" y="128" width="12" height="12"/> <rect class="box" x="602" y="128" width="12" height="12"/> <rect class="box" x="616" y="128" width="12" height="12"/> <rect class="box" x="630" y="128" width="12" height="12"/>
+    <rect class="box" x="420" y="142" width="12" height="12"/> <rect class="box" x="434" y="142" width="12" height="12"/> <rect class="box" x="448" y="142" width="12" height="12"/> <rect class="box" x="462" y="142" width="12" height="12"/> <rect class="box" x="476" y="142" width="12" height="12"/> <rect class="box" x="490" y="142" width="12" height="12"/> <rect class="box" x="504" y="142" width="12" height="12"/> <rect class="box" x="518" y="142" width="12" height="12"/>
+    <rect class="box" x="532" y="142" width="12" height="12"/> <rect class="box" x="546" y="142" width="12" height="12"/> <rect class="box" x="560" y="142" width="12" height="12"/> <rect class="box" x="574" y="142" width="12" height="12"/> <rect class="box" x="588" y="142" width="12" height="12"/> <rect class="box" x="602" y="142" width="12" height="12"/> <rect class="box" x="616" y="142" width="12" height="12"/> <rect class="box" x="630" y="142" width="12" height="12"/>
+    <rect class="box" x="420" y="156" width="12" height="12"/> <rect class="box" x="434" y="156" width="12" height="12"/> <rect class="box" x="448" y="156" width="12" height="12"/> <rect class="box" x="462" y="156" width="12" height="12"/> <rect class="box" x="476" y="156" width="12" height="12"/> <rect class="box" x="490" y="156" width="12" height="12"/> <rect class="box" x="504" y="156" width="12" height="12"/> <rect class="box" x="518" y="156" width="12" height="12"/>
+    <rect class="box" x="532" y="156" width="12" height="12"/> <rect class="box" x="546" y="156" width="12" height="12"/> <rect class="box" x="560" y="156" width="12" height="12"/> <rect class="box" x="574" y="156" width="12" height="12"/> <rect class="box" x="588" y="156" width="12" height="12"/> <rect class="box" x="602" y="156" width="12" height="12"/> <rect class="box" x="616" y="156" width="12" height="12"/> <rect class="box" x="630" y="156" width="12" height="12"/>
+    <rect class="box" x="420" y="170" width="12" height="12"/> <rect class="box" x="434" y="170" width="12" height="12"/> <rect class="box" x="448" y="170" width="12" height="12"/> <rect class="box" x="462" y="170" width="12" height="12"/> <rect class="box" x="476" y="170" width="12" height="12"/> <rect class="box" x="490" y="170" width="12" height="12"/> <rect class="box" x="504" y="170" width="12" height="12"/> <rect class="box" x="518" y="170" width="12" height="12"/>
+    <rect class="box" x="532" y="170" width="12" height="12"/> <rect class="box" x="546" y="170" width="12" height="12"/> <rect class="box" x="560" y="170" width="12" height="12"/> <rect class="box" x="574" y="170" width="12" height="12"/> <rect class="box" x="588" y="170" width="12" height="12"/> <rect class="box" x="602" y="170" width="12" height="12"/> <rect class="box" x="616" y="170" width="12" height="12"/> <rect class="box" x="630" y="170" width="12" height="12"/>
+    <rect class="box" x="420" y="184" width="12" height="12"/> <rect class="box" x="434" y="184" width="12" height="12"/> <rect class="box" x="448" y="184" width="12" height="12"/> <rect class="box" x="462" y="184" width="12" height="12"/> <rect class="box" x="476" y="184" width="12" height="12"/> <rect class="box" x="490" y="184" width="12" height="12"/> <rect class="box" x="504" y="184" width="12" height="12"/> <rect class="box" x="518" y="184" width="12" height="12"/>
+    <rect class="box" x="532" y="184" width="12" height="12"/> <rect class="box" x="546" y="184" width="12" height="12"/> <rect class="box" x="560" y="184" width="12" height="12"/> <rect class="box" x="574" y="184" width="12" height="12"/> <rect class="box" x="588" y="184" width="12" height="12"/> <rect class="box" x="602" y="184" width="12" height="12"/> <rect class="box" x="616" y="184" width="12" height="12"/> <rect class="box" x="630" y="184" width="12" height="12"/>
+    <rect class="box" x="420" y="198" width="12" height="12"/> <rect class="box" x="434" y="198" width="12" height="12"/> <rect class="box" x="448" y="198" width="12" height="12"/> <rect class="box" x="462" y="198" width="12" height="12"/> <rect class="box" x="476" y="198" width="12" height="12"/> <rect class="box" x="490" y="198" width="12" height="12"/> <rect class="box" x="504" y="198" width="12" height="12"/> <rect class="box" x="518" y="198" width="12" height="12"/>
+    <rect class="box" x="532" y="198" width="12" height="12"/> <rect class="box" x="546" y="198" width="12" height="12"/> <rect class="box" x="560" y="198" width="12" height="12"/> <rect class="box" x="574" y="198" width="12" height="12"/> <rect class="box" x="588" y="198" width="12" height="12"/> <rect class="box" x="602" y="198" width="12" height="12"/> <rect class="box" x="616" y="198" width="12" height="12"/> <rect class="box" x="630" y="198" width="12" height="12"/>
+    <rect class="box" x="420" y="212" width="12" height="12"/> <rect class="box" x="434" y="212" width="12" height="12"/> <rect class="box" x="448" y="212" width="12" height="12"/> <rect class="box" x="462" y="212" width="12" height="12"/> <rect class="box" x="476" y="212" width="12" height="12"/> <rect class="box" x="490" y="212" width="12" height="12"/> <rect class="box" x="504" y="212" width="12" height="12"/> <rect class="box" x="518" y="212" width="12" height="12"/>
+    <rect class="box" x="532" y="212" width="12" height="12"/> <rect class="box" x="546" y="212" width="12" height="12"/> <rect class="box" x="560" y="212" width="12" height="12"/> <rect class="box" x="574" y="212" width="12" height="12"/> <rect class="box" x="588" y="212" width="12" height="12"/> <rect class="box" x="602" y="212" width="12" height="12"/> <rect class="box" x="616" y="212" width="12" height="12"/> <rect class="box" x="630" y="212" width="12" height="12"/>
+    <rect class="box" x="420" y="226" width="12" height="12"/> <rect class="box" x="434" y="226" width="12" height="12"/> <rect class="box" x="448" y="226" width="12" height="12"/> <rect class="box" x="462" y="226" width="12" height="12"/> <rect class="box" x="476" y="226" width="12" height="12"/> <rect class="box" x="490" y="226" width="12" height="12"/> <rect class="box" x="504" y="226" width="12" height="12"/> <rect class="box" x="518" y="226" width="12" height="12"/>
+    <rect class="box" x="532" y="226" width="12" height="12"/> <rect class="box" x="546" y="226" width="12" height="12"/> <rect class="box" x="560" y="226" width="12" height="12"/> <rect class="box" x="574" y="226" width="12" height="12"/> <rect class="box" x="588" y="226" width="12" height="12"/> <rect class="box" x="602" y="226" width="12" height="12"/> <rect class="box" x="616" y="226" width="12" height="12"/> <rect class="box" x="630" y="226" width="12" height="12"/>
+    <rect class="box" x="420" y="240" width="12" height="12"/> <rect class="box" x="434" y="240" width="12" height="12"/> <rect class="box" x="448" y="240" width="12" height="12"/> <rect class="box" x="462" y="240" width="12" height="12"/> <rect class="box" x="476" y="240" width="12" height="12"/> <rect class="box" x="490" y="240" width="12" height="12"/> <rect class="box" x="504" y="240" width="12" height="12"/> <rect class="box" x="518" y="240" width="12" height="12"/>
+    <rect class="box" x="532" y="240" width="12" height="12"/> <rect class="box" x="546" y="240" width="12" height="12"/> <rect class="box" x="560" y="240" width="12" height="12"/> <rect class="box" x="574" y="240" width="12" height="12"/> <rect class="box" x="588" y="240" width="12" height="12"/> <rect class="box" x="602" y="240" width="12" height="12"/> <rect class="box" x="616" y="240" width="12" height="12"/> <rect class="box" x="630" y="240" width="12" height="12"/>
+    <rect class="box" x="420" y="254" width="12" height="12"/> <rect class="box" x="434" y="254" width="12" height="12"/> <rect class="box" x="448" y="254" width="12" height="12"/> <rect class="box" x="462" y="254" width="12" height="12"/> <rect class="box" x="476" y="254" width="12" height="12"/> <rect class="box" x="490" y="254" width="12" height="12"/> <rect class="box" x="504" y="254" width="12" height="12"/> <rect class="box" x="518" y="254" width="12" height="12"/>
+    <rect class="box" x="532" y="254" width="12" height="12"/> <rect class="box" x="546" y="254" width="12" height="12"/> <rect class="box" x="560" y="254" width="12" height="12"/> <rect class="box" x="574" y="254" width="12" height="12"/> <rect class="box" x="588" y="254" width="12" height="12"/> <rect class="box" x="602" y="254" width="12" height="12"/> <rect class="box" x="616" y="254" width="12" height="12"/> <rect class="box" x="630" y="254" width="12" height="12"/>
+    <rect class="box" x="420" y="268" width="12" height="12"/> <rect class="box" x="434" y="268" width="12" height="12"/> <rect class="box" x="448" y="268" width="12" height="12"/> <rect class="box" x="462" y="268" width="12" height="12"/> <rect class="box" x="476" y="268" width="12" height="12"/> <rect class="box" x="490" y="268" width="12" height="12"/> <rect class="box" x="504" y="268" width="12" height="12"/> <rect class="box" x="518" y="268" width="12" height="12"/>
+    <rect class="box" x="532" y="268" width="12" height="12"/> <rect class="box" x="546" y="268" width="12" height="12"/> <rect class="box" x="560" y="268" width="12" height="12"/> <rect class="box" x="574" y="268" width="12" height="12"/> <rect class="box" x="588" y="268" width="12" height="12"/> <rect class="box" x="602" y="268" width="12" height="12"/> <rect class="box" x="616" y="268" width="12" height="12"/> <rect class="box" x="630" y="268" width="12" height="12"/>
+    <text class="t-n" x="420" y="304">4 × 4 × 4 × 4 = 256</text>
+  </g>
+</svg>
+</div>
+<figcaption>分开记录时，一个对象前进只改它自己那条线；合成一个状态后，四个对象里任何一个前进，都要换到 256 格中的另一格。</figcaption></figure><p>时间有三个常见含义：事情何时发生、系统何时得知、规则何时适用。昨天收货、今天补录、下月起新价格，是同一批货上的三个时点，各记一个字段；一个 <code>updated_at</code> 只装得下其中一个。补录在今天写入，内容却落在昨天的发生时点上；组织允许补录时，要说明补录改变了哪些历史结果，哪些已对外生效的决定需要另行调整。</p>
+<figure class="drawing" data-drawing="em01-times"><div class="dw-scroll" style="--dw-min:560px;--dw-max:860px">
+<svg viewBox="0 0 740 250" role="img" aria-labelledby="em01-times-t em01-times-d">
+  <title id="em01-times-t">同一批货上的三个时点</title>
+  <desc id="em01-times-d">昨天收货，是事情发生的时点；今天补录，是系统得知的时点，补录的内容落回昨天；下月起新价格，是规则开始适用的时点。</desc>
+  <path class="ln-strong" d="M30 120 H720"/>
+  <g data-s="1">
+    <path class="ln" d="M180 108 V132"/>
+    <text class="t-s mid" x="180" y="152">昨天</text>
+    <text class="t-b mid" x="180" y="92">收货</text>
+    <text class="t-s mid" x="180" y="186">发生：事情何时发生</text>
+  </g>
+  <g data-s="2">
+    <path class="ln" d="M380 108 V132"/>
+    <text class="t-s mid" x="380" y="152">今天</text>
+    <text class="t-b mid" x="380" y="92">补录</text>
+    <text class="t-s mid" x="380" y="186">得知：系统何时得知</text>
+    <path class="ln-em" d="M372 72 C340 30 220 30 188 72"/>
+    <path class="ln-em" d="M186 60 L188 72 L199 66"/>
+    <text class="t-s mid" x="280" y="26">补录的内容落在发生时点</text>
+  </g>
+  <g data-s="3">
+    <rect class="f1" x="580" y="108" width="140" height="24"/>
+    <path class="ln-strong" d="M580 120 H720"/>
+    <path class="ln" d="M580 104 V136"/>
+    <text class="t-s mid" x="580" y="152">下月起</text>
+    <text class="t-b mid" x="580" y="92">新价格</text>
+    <text class="t-s mid" x="600" y="186">适用：规则何时适用</text>
+  </g>
+  <text class="t-s" x="30" y="232">一个 updated_at 只装得下其中一个时点</text>
+</svg>
+</div>
+<figcaption>收货、得知与新价格生效是三个时点，各记一个字段；补录在今天写入，内容属于昨天。</figcaption></figure><h3 id="权威落到具体事实与动作">权威落到具体事实与动作</h3>
+<p>权威按单项事实指定，比“企业资源计划系统（Enterprise Resource Planning, <abbr title="enterprise resource planning：企业资源计划">ERP</abbr>）是唯一的事实来源”这句话细一层。ERP 可能拥有采购承诺，仓储系统拥有收货事实，质量系统拥有验收处置，银行拥有资金交易结果。每项关键事实指定一个权威记录来源（system of record），其他系统保存副本或查询投影（read model）。副本可以滞后；执行正式动作前，向相应的权威来源核对版本。</p>
+<figure class="drawing" data-drawing="em01-authority"><div class="dw-scroll" style="--dw-min:600px;--dw-max:900px">
+<svg viewBox="0 0 750 262" role="img" aria-labelledby="em01-authority-t em01-authority-d">
+  <title id="em01-authority-t">每项事实一个权威来源</title>
+  <desc id="em01-authority-d">采购承诺由 ERP 拥有，收货事实由仓储系统拥有，验收处置由质量系统拥有，资金交易结果由银行拥有。其他系统保存可以滞后的副本或查询投影；执行正式动作前，向相应的权威来源核对版本。</desc>
+  <text class="t-s end" x="140" y="58">权威记录来源</text>
+  <text class="t-s end" x="140" y="74">system of record</text>
+  <g data-s="1">
+    <text class="t-b mid" x="220" y="24">采购承诺</text><rect class="box" x="160" y="38" width="120" height="44"/><text class="t mid" x="220" y="65">ERP</text>
+    <text class="t-b mid" x="370" y="24">收货事实</text><rect class="box" x="310" y="38" width="120" height="44"/><text class="t mid" x="370" y="65">仓储系统</text>
+    <text class="t-b mid" x="520" y="24">验收处置</text><rect class="box" x="460" y="38" width="120" height="44"/><text class="t mid" x="520" y="65">质量系统</text>
+    <text class="t-b mid" x="670" y="24">资金交易结果</text><rect class="box" x="610" y="38" width="120" height="44"/><text class="t mid" x="670" y="65">银行</text>
+  </g>
+  <g data-s="2">
+    <text class="t-s end" x="140" y="148">副本或查询投影</text>
+    <text class="t-s end" x="140" y="164">read model</text>
+    <path class="ln-dash" d="M195 82 V136"/><rect class="box-dash" x="160" y="136" width="70" height="36"/><text class="t-s mid" x="195" y="158">副本</text>
+    <path class="ln-dash" d="M345 82 V136"/><rect class="box-dash" x="310" y="136" width="70" height="36"/><text class="t-s mid" x="345" y="158">副本</text>
+    <path class="ln-dash" d="M495 82 V136"/><rect class="box-dash" x="460" y="136" width="70" height="36"/><text class="t-s mid" x="495" y="158">副本</text>
+    <path class="ln-dash" d="M645 82 V136"/><rect class="box-dash" x="610" y="136" width="70" height="36"/><text class="t-s mid" x="645" y="158">副本</text>
+    <text class="t-s" x="200" y="112">可以滞后</text>
+  </g>
+  <g data-s="3">
+    <rect class="box" x="160" y="214" width="570" height="36"/><text class="t-b mid" x="445" y="237">执行正式动作</text>
+    <path class="ln-em" d="M260 214 V82 M253 92 L260 82 L267 92"/>
+    <path class="ln-em" d="M410 214 V82 M403 92 L410 82 L417 92"/>
+    <path class="ln-em" d="M560 214 V82 M553 92 L560 82 L567 92"/>
+    <path class="ln-em" d="M710 214 V82 M703 92 L710 82 L717 92"/>
+    <text class="t-s end" x="140" y="196">执行前核对版本</text>
+  </g>
+</svg>
+</div>
+<figcaption>读取可以走副本；正式动作越过副本，直接向拥有那项事实的系统核对版本。</figcaption></figure><p>权限按动作逐项授予，各项之间没有高低次序。管理员可以配置规则，批准自己的支出是另一项权限；主管能批准购买，修改收款账户另需授权；agent 能读取工单，关闭工单也要另行授权。一次有用的权限判断要回答：谁，以什么身份，在哪个范围，对哪个对象，执行哪种动作，基于哪些条件。服务端执行这个判断，界面显示可做的动作和拒绝理由。</p>
 <p>职责分离有实际成本：审批会增加等待，角色多了要多培训。只有错误、滥用或责任冲突的后果重到值得付出这些成本，才值得多设一道关口。小团队也可以改用事后复核、额度限制或针对特定例外的复核，但要说清楚剩余风险由谁负责。</p>
 <h3 id="流程是责任随时间转移">流程是责任随时间转移</h3>
-<p>流程图有用，在于每次交接都写清传递什么、谁接收、怎样拒收、等待多久后由谁接管。先提交申请、后取得批准，是流程；批准后等一天，是时间；取消后退款，是补偿。三者不能用同一条“下一步”箭头混在一起。</p>
-<p>尚未发出的指令可以取消；已被外部系统受理的指令要核对；已经生效的结果可能需要补偿动作。Camunda 的 compensation 文档把补偿处理挂在已完成的活动上，并写明它的作用范围和触发方式。据此，业务补救和数据库回滚应当分开：退货、退款或恢复配置都是新的工作，能否完成仍有自己的条件。<a href="https://docs.camunda.io/docs/8.8/components/modeler/bpmn/compensation-events/" class="ext" rel="noopener">Compensation events</a>。</p>
-</section>
+<p>流程图有用，在于每次交接都写清传递什么、谁接收、怎样拒收、等待多久后由谁接管。先提交申请、后取得批准，是流程；批准后等一天，是时间；取消后退款，是补偿。三者各用一种连接表示，画成同一条“下一步”箭头就分不出来了。</p>
+<p>一条指令能怎样撤回，看它走到了哪一段：尚未发出的指令可以取消；已被外部系统受理的指令要核对；已经生效的结果可能需要补偿动作。Camunda 的 compensation 文档把补偿处理挂在已完成的活动上，并写明它的作用范围和触发方式。据此，业务补救和数据库回滚应当分开：退货、退款或恢复配置都是新的工作，能否完成仍有自己的条件。<a href="https://docs.camunda.io/docs/8.8/components/modeler/bpmn/compensation-events/" class="ext" rel="noopener">Compensation events</a>。</p>
+<figure class="drawing" data-drawing="em01-remedy"><div class="dw-scroll" style="--dw-min:600px;--dw-max:880px">
+<svg viewBox="0 0 740 270" role="img" aria-labelledby="em01-remedy-t em01-remedy-d">
+  <title id="em01-remedy-t">指令走到哪一段，就用哪种撤回</title>
+  <desc id="em01-remedy-d">指令尚未发出时可以取消；已被外部系统受理时要核对；已经生效后，补救是一项新的工作，例如退货、退款或恢复配置，它有自己的完成条件。</desc>
+  <path class="ln-strong" data-draw="1" d="M30 90 H720"/>
+  <g data-s="1">
+    <text class="t-b mid" x="150" y="60">尚未发出</text>
+    <path class="ln" d="M210 128 H92 M102 121 L92 128 L102 135"/>
+    <text class="t-b mid" x="150" y="160">取消</text>
+    <text class="t-s mid" x="150" y="180">撤下指令</text>
+  </g>
+  <g data-s="2">
+    <path class="ln" d="M270 76 V104"/><text class="t-s mid" x="270" y="120">发出</text>
+    <text class="t-b mid" x="390" y="60">已被外部系统受理</text>
+    <text class="t-b mid" x="390" y="160">核对</text>
+    <text class="t-s mid" x="390" y="180">向外部系统核对结果</text>
+  </g>
+  <g data-s="3">
+    <path class="ln" d="M510 76 V104"/><text class="t-s mid" x="510" y="120">生效</text>
+    <text class="t-b mid" x="625" y="60">已经生效</text>
+    <text class="t-b mid" x="625" y="160">补偿</text>
+    <path class="ln-dash" d="M625 168 V196"/>
+    <rect class="box-em" x="540" y="196" width="170" height="56"/>
+    <text class="t mid" x="625" y="219">新的工作</text>
+    <text class="t-s mid" x="625" y="240">退货 · 退款 · 恢复配置</text>
+  </g>
+</svg>
+</div>
+<figcaption>取消撤下尚未发出的指令，核对查明外部受理的结果；生效之后的补偿是另一项工作，带着自己的完成条件。</figcaption></figure></section>
 <section class="scene" aria-labelledby="演算em-e01-的采购例外"><header class="scene-head"><h2 id="演算em-e01-的采购例外"><span class="scene-no" aria-hidden="true">03</span><span class="visually-hidden">演算：</span><span class="head">EM-E01 的采购例外</span></h2></header><p class="scene-lede">付款资格只覆盖验收合格并完成分配的数量；付款结算后，待检与待收的义务仍留在采购单上。</p>
 <p>一家设备服务企业准备采购 12 台测试终端，每台 800.00 元，不计税费、汇率和运费。公司规定：需求人不能批准自己的请购；本例设备验收合格后才取得付款资格；任何单价变化都要重批。付款由独立的资金人员授权。规则 <code>PUR-3</code> 随这次采购固定保存。</p>
 <div class="table-wrap"><table>
@@ -134,11 +450,11 @@
   <p class="fig-caption">合成例子，数值同正文与 examples.json。12 个方格是承诺的 12 台：实线已到货，虚线尚未收到；蓝色标出这一步刚改变的记录。</p>
 </div>
 <div class="fig-fallback"></div></div>
-<div class="labelled" data-kind="step"><p class="blk-l">第一步：确定承诺</p><p>需求人提交版本 1，预算负责人检查总价 <code>12 × 80,000 = 960,000</code> 分并批准。审批记录指向版本 1、规则 PUR-3、批准人和批准时间，采购单据此发出。需求人如果把单价改成 820.00 元，就产生一个新版本；原批准不覆盖 984,000 分的新承诺。</p></div>
-<div class="labelled" data-kind="step"><p class="blk-l">第二步：核对实物</p><p>收货 10 台中，9 台合格、1 台待检；另有 2 台尚未收到。三种数量相加仍为 12，但只有 9 台满足本例的结算条件。列表上的“收货 10/12”作为摘要没有错，凭它却决定不了是否付款。</p></div>
-<div class="labelled" data-kind="step"><p class="blk-l">第三步：处理发票差异</p><p>发票要求 10 台，可供分配的合格量为 <code>9 − 0 = 9</code> 台，缺口 1 台，整张发票暂缓。会计不能为了凑出匹配把数量改成 9，也不能把待检改成合格。可行的做法是补齐验收，或请供应商出具有依据的修订。主线选后者：发票版本 2 为 9 台、720,000 分，版本 1 保留并标记为被替代。</p></div>
-<div class="labelled" data-kind="step"><p class="blk-l">第四步：取得付款资格</p><p>应付服务重读当前采购单、发票和验收版本，在同一个本地事务里检查余额并占用 9 台，保存匹配依据。此后可用合格量为 0，另一张声称有 1 台的发票不能再用这 9 台的验收证据。</p></div>
-<div class="labelled" data-kind="step"><p class="blk-l">第五步：执行与核对</p><p>资金人员批准 720,000 分，付款服务先保存操作 <code>PAY-17</code> 和待发送记录，再向银行发送。银行受理后连接中断，本地只能记为“结果待核对”。恢复任务凭同一付款参考号核对，确认已结算后保存外部交易引用。页面随后显示“9 台对应款项已结算”；采购单仍保留 1 台待检、2 台待收。</p></div>
+<div class="labelled" data-kind="step"><p class="blk-l">第一步：确定承诺</p><p>需求人提交版本 1，预算负责人检查总价 <code>12 × 80,000 = 960,000</code> 分并批准。审批记录指向版本 1、规则 PUR-3、批准人和批准时间，采购单据此发出。需求人如果把单价改成 820.00 元，就产生一个新版本；原批准只覆盖版本 1，984,000 分的新承诺要重新批准。</p></div>
+<div class="labelled" data-kind="step"><p class="blk-l">第二步：核对实物</p><p>收货 10 台中，9 台合格、1 台待检；另有 2 台尚未收到。三种数量相加仍为 12，满足本例结算条件的是其中 9 台。列表上的“收货 10/12”是一句摘要；付款依据的是合格的 9 台。</p></div>
+<div class="labelled" data-kind="step"><p class="blk-l">第三步：处理发票差异</p><p>发票要求 10 台，可供分配的合格量为 <code>9 − 0 = 9</code> 台，缺口 1 台，整张发票暂缓。会计不能为了凑出匹配把数量改成 9 或把待检改成合格；可行的做法是补齐验收，或请供应商出具有依据的修订。主线选后者：发票版本 2 为 9 台、720,000 分，版本 1 保留并标记为被替代。</p></div>
+<div class="labelled" data-kind="step"><p class="blk-l">第四步：取得付款资格</p><p>应付服务重读当前采购单、发票和验收版本，在同一个本地事务里检查余额并占用 9 台，保存匹配依据。此后可用合格量为 0，这 9 台的验收证据已全部占用；另一张声称有 1 台的发票找不到可用的合格量。</p></div>
+<div class="labelled" data-kind="step"><p class="blk-l">第五步：执行与核对</p><p>资金人员批准 720,000 分，付款服务先保存操作 <code>PAY-17</code> 和待发送记录，再向银行发送。银行受理后连接中断，本地记为“结果待核对”。恢复任务凭同一付款参考号核对，确认已结算后保存外部交易引用。页面随后显示“9 台对应款项已结算”；采购单仍保留 1 台待检、2 台待收。</p></div>
 <figure class="graph-fig"><div class="graph-wrap"><svg class="graph" viewBox="0 0 1288 106" width="1288" height="106" style="max-width:1481px;min-width:1030px" role="img" aria-label="第一章　组织约束怎样变成软件"><defs><marker id="arrow-g1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arrowhead"/></marker></defs><path class="edge" data-type="" data-from="A" data-to="B" d="M123.0,53.0 Q150.0,53.0 177.0,53.0" marker-end="url(#arrow-g1)"/><path class="edge" data-type="" data-from="B" data-to="C" d="M253.0,36.6 Q280.0,25.0 307.0,25.0" marker-end="url(#arrow-g1)"/><path class="edge" data-type="" data-from="B" data-to="D" d="M253.0,69.4 Q280.0,81.0 326.5,81.0" marker-end="url(#arrow-g1)"/><path class="edge" data-type="" data-from="C" data-to="E" d="M422.0,25.0 Q449.0,25.0 482.2,36.0" marker-end="url(#arrow-g1)"/><path class="edge" data-type="" data-from="D" data-to="E" d="M402.5,81.0 Q449.0,81.0 482.2,70.0" marker-end="url(#arrow-g1)"/><path class="edge" data-type="" data-from="E" data-to="F" d="M591.0,53.0 Q618.0,53.0 645.0,53.0" marker-end="url(#arrow-g1)"/><path class="edge" data-type="" data-from="F" data-to="G" d="M786.0,53.0 Q813.0,53.0 840.0,53.0" marker-end="url(#arrow-g1)"/><path class="edge" data-type="" data-from="G" data-to="H" d="M955.0,53.0 Q982.0,53.0 1009.0,53.0" marker-end="url(#arrow-g1)"/><path class="edge" data-type="" data-from="H" data-to="I" d="M1085.0,53.0 Q1112.0,53.0 1139.0,53.0" marker-end="url(#arrow-g1)"/><g class="node" data-id="A"><rect x="8.0" y="36.0" width="115" height="34" rx="4"/><text x="65.5" y="57.5">需求与批准版本</text></g><g class="node" data-id="B"><rect x="177.0" y="36.0" width="76" height="34" rx="4"/><text x="215.0" y="57.5">采购承诺</text></g><g class="node" data-id="C"><rect x="307.0" y="8.0" width="115" height="34" rx="4"/><text x="364.5" y="29.5">收货与验收证据</text></g><g class="node" data-id="D"><rect x="326.5" y="64.0" width="76" height="34" rx="4"/><text x="364.5" y="85.5">发票版本</text></g><g class="node" data-id="E"><rect x="476.0" y="36.0" width="115" height="34" rx="4"/><text x="533.5" y="57.5">匹配与数量分配</text></g><g class="node" data-id="F"><rect x="645.0" y="36.0" width="141" height="34" rx="4"/><text x="715.5" y="57.5">付款授权与操作记录</text></g><g class="node" data-id="G"><rect x="840.0" y="36.0" width="115" height="34" rx="4"/><text x="897.5" y="57.5">外部受理与核对</text></g><g class="node" data-id="H"><rect x="1009.0" y="36.0" width="76" height="34" rx="4"/><text x="1047.0" y="57.5">结算事实</text></g><g class="node" data-id="I"><rect x="1139.0" y="36.0" width="141" height="34" rx="4"/><text x="1209.5" y="57.5">可见结果与剩余义务</text></g></svg></div><details class="edge-list"><summary>图中关系的文字列表</summary><ul><li>需求与批准版本 <span class="rel">→</span> 采购承诺</li><li>采购承诺 <span class="rel">→</span> 收货与验收证据</li><li>采购承诺 <span class="rel">→</span> 发票版本</li><li>收货与验收证据 <span class="rel">→</span> 匹配与数量分配</li><li>发票版本 <span class="rel">→</span> 匹配与数量分配</li><li>匹配与数量分配 <span class="rel">→</span> 付款授权与操作记录</li><li>付款授权与操作记录 <span class="rel">→</span> 外部受理与核对</li><li>外部受理与核对 <span class="rel">→</span> 结算事实</li><li>结算事实 <span class="rel">→</span> 可见结果与剩余义务</li></ul></details></figure><p>图中每条箭头传递的是前提或证据。收货、发票和银行交易各自成为事务，每两段之间尚未完成的责任都留在这条链上。</p>
 </section>
 <section class="scene" aria-labelledby="验算从结束条件反推证据"><header class="scene-head"><h2 id="验算从结束条件反推证据"><span class="scene-no" aria-hidden="true">04</span><span class="visually-hidden">验算：</span><span class="head">从结束条件反推证据</span></h2></header><p class="scene-lede">先核对数量：<code>已合格且已分配 9 + 待检 1 + 待收 2 = 承诺 12</code>。再核对金额：<code>9 × 80,000 = 720,000</code> 分；这一次付款的授权金额、发送金额和结算金额应当相同。最后核对责任：付款完成后，剩余 3 台的履约义务仍在。</p>
@@ -158,35 +474,35 @@
 <tr>
 <td>批准后单价改变</td>
 <td>原批准失效，新版本等待批准</td>
-<td>核对批准所绑定的内容版本；只看有无批准记录不够</td>
+<td>核对批准所绑定的内容版本，而非有无批准记录</td>
 </tr>
 <tr>
 <td>两张发票争用剩余验收量</td>
 <td>只有容量允许的分配成功</td>
-<td>核对有效分配的合计；逐张与原总量比较不够</td>
+<td>核对有效分配的合计，而非逐张与原总量比较</td>
 </tr>
 <tr>
 <td>提交付款后丢失响应</td>
 <td>同一操作进入待核对</td>
-<td>重试不能创建第二笔业务意图</td>
+<td>重试沿用同一操作，业务意图始终只有一笔</td>
 </tr>
 <tr>
 <td>查询暂时无记录</td>
 <td>继续核对或人工接管</td>
-<td>结果未知不改记为确定失败</td>
+<td>结果未知时状态保持待核对</td>
 </tr>
 <tr>
 <td>付款结算后发现质量问题</td>
 <td>新建差异、退货或追偿工作</td>
-<td>不能删除旧结算事实制造“从未付款”</td>
+<td>旧结算事实保留，补救记为新的工作</td>
 </tr>
 </tbody></table></div>
-<p>上表中可计算的几项，可在本地实验里用版本、分配余额和操作身份复现。观察时不要只断言返回了 <code>success</code>；要核对对象的当前值、已保存的证据和仍未关闭的义务，才知道工作推进到了哪一步。</p>
+<p>上表中可计算的几项，可在本地实验里用版本、分配余额和操作身份复现。观察时核对对象的当前值、已保存的证据和仍未关闭的义务，这三项说明工作推进到了哪一步；返回值 <code>success</code> 只说明这次调用结束了。</p>
 </section>
 <section class="scene" aria-labelledby="变式改变条件后重画边界"><header class="scene-head"><h2 id="变式改变条件后重画边界"><span class="scene-no" aria-hidden="true">05</span><span class="visually-hidden">变式：</span><span class="head">改变条件后重画边界</span></h2></header><p class="scene-lede">条件一变，“同一份证据只能占用一次”和“承诺、权限与资金事实分开表示”仍然适用；要重画的是付款前提和操作者身份的检查。</p>
-<p><strong>变式一：剩余 1 台通过验收。</strong> 原来的 10 台发票不能直接复活：主线已有版本 2 的 9 台分配，版本 1 已被替代。应依据真实单据关系处理新增的 1 台，或者先完成受控的修订与重新分配。不变的是同一份证据只能占用一次，变的是验收余额。检查时确认有效分配总量不超过 10，且旧版本没有再产生付款意图。</p>
-<p><strong>变式二：合同改成预付 30%，设备尚未收到。</strong> 承诺、权限和资金事实分开表示，这一点照样适用；但“已验收数量”不能再作为付款的全部前提。预付款要单独表示额度、授权、后续抵扣与未履约风险。<code>960,000 × 30% = 288,000</code> 分是本例预付款上限；后续应付要扣除已确认抵扣的预付款，不能再付完整的 960,000 分。反例是一边保留旧验收分配，一边把预付款当作无关联的现金支出。</p>
-<p><strong>变式三：管理员同时兼任预算负责人。</strong> 一人兼两个角色，不会让操作自动无效。要看他是不是这张请购的需求人、是否在批准范围内，以及组织有没有允许并记录例外；本例仍禁止自批。检查时要用具体的操作者身份和对象关系，不能只看 <code>role=admin</code>。</p>
+<p><strong>变式一：剩余 1 台通过验收。</strong> 10 台的发票版本 1 保持“已被替代”：主线已有版本 2 的 9 台分配。新增的 1 台依据真实单据关系处理，或者先完成受控的修订与重新分配。不变的是同一份证据只能占用一次，变的是验收余额。检查时确认有效分配总量至多 10 台，付款意图只来自当前版本。</p>
+<p><strong>变式二：合同改成预付 30%，设备尚未收到。</strong> 承诺、权限和资金事实分开表示，这一点照样适用；付款前提则扩展到“已验收数量”之外。预付款要单独表示额度、授权、后续抵扣与未履约风险。<code>960,000 × 30% = 288,000</code> 分是本例预付款上限；后续应付扣除已确认抵扣的预付款，全额抵扣后为 <code>960,000 − 288,000 = 672,000</code> 分。反例是一边保留旧验收分配，一边把预付款当作无关联的现金支出。</p>
+<p><strong>变式三：管理员同时兼任预算负责人。</strong> 一人兼两个角色时，操作是否有效看三件事：他是不是这张请购的需求人、是否在批准范围内，以及组织有没有允许并记录例外；本例仍禁止自批。检查时用具体的操作者身份和对象关系判断，<code>role=admin</code> 这一个字段回答不了这三件事。</p>
 <p>换到另一类业务，“承诺—证据—动作—接收”的调查方法可以带走；到了临床、工程或法律场景，由谁、按什么制度认定有效证据，都会不同。先找出这些差别，再复用结构；可继续追踪的对象见 <a href="em-case-connections.html">案例机制入口</a>。</p>
 </section>
       </div>
@@ -195,8 +511,8 @@
     <footer class="page-foot">正文 <a href="../../../books/saas-engineering/enterprise-mechanisms/01-organization-to-system.md">books/saas-engineering/enterprise-mechanisms/01-organization-to-system.md</a> · <a href="../../../vault/distilled/saas-engineering-atlas/README.md">结构、来源与验证</a></footer>
   </main>
 </div>
-<script src="search-index.js?v=mv95jeod"></script>
-<script src="book.js?v=mv95jeod"></script>
-<script src="fig-em-e01-ledger.js?v=mv95jeod"></script>
+<script src="search-index.js?v=mv97hru0"></script>
+<script src="book.js?v=mv97hru0"></script>
+<script src="fig-em-e01-ledger.js?v=mv97hru0"></script>
 </body>
 </html>

@@ -1,0 +1,38 @@
+<div class="dw-scroll" style="--dw-min:600px;--dw-max:900px">
+<svg viewBox="0 0 760 372" role="img" aria-labelledby="h01-chain-t h01-chain-d">
+  <title id="h01-chain-t">开票链：按钮返回成功与席位开通之间</title>
+  <desc id="h01-chain-d">八步开票链分在两个本地事务和其间的外部调用、通知核对里。按钮返回成功落在第二步，只表示 operation 与待发请求已保存；席位在第八步的本地事务里开通，那条权利记录才放行服务访问。</desc>
+  <text class="t-s end" x="196" y="22">提交边界</text>
+  <text class="t-s" x="266" y="22">步骤</text>
+  <path class="ln-soft" d="M240 40 V350"/>
+  <g data-s="1">
+    <path class="ln" d="M206 46 V90"/><path class="ln" d="M206 46 H214"/><path class="ln" d="M206 90 H214"/>
+    <text class="t-b end" x="196" y="72">本地事务一</text>
+    <circle class="f-ink" cx="240" cy="50" r="4"/><text class="t" x="256" y="55">核验授权与 accepted 版本</text>
+    <circle class="f-ink" cx="240" cy="86" r="4"/><text class="t" x="256" y="91">保存 operation 和待发请求</text>
+    <path class="ln-soft" d="M470 86 H520"/><text class="t-b" x="528" y="91">按钮返回成功</text>
+    <text class="t-s" x="528" y="108">请求已保存；按 operation ID 取回</text>
+  </g>
+  <g data-s="2">
+    <path class="ln" d="M206 128 V200"/><path class="ln" d="M206 128 H214"/><path class="ln" d="M206 200 H214"/>
+    <text class="t-b end" x="196" y="160">worker 与</text><text class="t-b end" x="196" y="178">Stripe</text>
+    <circle class="box" cx="240" cy="132" r="5"/><text class="t" x="256" y="137">worker 调用 provider</text>
+    <circle class="box" cx="240" cy="166" r="5"/><text class="t" x="256" y="171">记录外部发票身份</text>
+    <circle class="box" cx="240" cy="200" r="5"/><text class="t" x="256" y="205">查询投影显示 open</text>
+  </g>
+  <g data-s="3">
+    <path class="ln" d="M206 238 V274"/><path class="ln" d="M206 238 H214"/><path class="ln" d="M206 274 H214"/>
+    <text class="t-b end" x="196" y="252">通知与核对</text>
+    <circle class="box" cx="240" cy="238" r="5"/><text class="t" x="256" y="243">收到支付相关通知，存入 inbox</text>
+    <circle class="box" cx="240" cy="274" r="5"/><text class="t" x="256" y="279">核对 invoice 与支付依据</text>
+  </g>
+  <g data-s="4">
+    <path class="ln" d="M206 314 V334"/><path class="ln" d="M206 314 H214"/><path class="ln" d="M206 334 H214"/>
+    <text class="t-b end" x="196" y="329">本地事务二</text>
+    <circle class="f-em" cx="240" cy="324" r="6"/><text class="t" x="256" y="329">开通对应席位，登记消费结果</text>
+    <path class="ln-soft" d="M470 324 H520"/><text class="t-b t-em" x="528" y="329">席位可用</text>
+    <text class="t-s" x="528" y="346">权利记录放行服务访问</text>
+  </g>
+</svg>
+</div>
+<figcaption>按钮返回成功停在第一个本地事务；席位要等支付依据核对之后，在第二个本地事务里开通。</figcaption>

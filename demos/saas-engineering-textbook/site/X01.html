@@ -4,9 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>X01 · 从租户开通到 AI 服务退出 · SaaS 工程全景</title>
-<link rel="stylesheet" href="book.css?v=mv95jeod">
+<link rel="stylesheet" href="book.css?v=mv97hru0">
 </head>
 <body>
+<svg class="dw-defs" width="0" height="0" aria-hidden="true" focusable="false" style="position:absolute"><defs><pattern id="dw-hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" fill="var(--bg)"/><path d="M0 0 V6" stroke="var(--ink-2)" stroke-width="1.2"/></pattern></defs></svg>
 <a class="skip" href="#main">跳到正文</a>
 <header class="topbar">
   <button class="nav-toggle" type="button" aria-controls="sidebar" aria-expanded="false">目录</button>
@@ -20,7 +21,7 @@
 <header class="hero">
 <p class="kicker"><a href="group-data-ai-control.html">数据、文档、安全与 AI SaaS</a><span class="dot">·</span>X01</p>
 <h1>从租户开通到 AI 服务退出</h1>
-<p class="lede">一家 <abbr title="Software as a Service：软件即服务">SaaS</abbr> 向企业客户提供内部文档问答。一次工作算完成，要满足三项：在有效权限下读取被允许的文档，交付可追溯的结果，记下可核对的用量。生成过程中的进度提示说明不了这三项是否已经做到，本例先把完整答案缓冲下来，校核后再交付。机制是让租户、成员关系、运行、用量和账单各走自己的状态轴。本章覆盖开通、生成与交付、计费金额、退出与排空，以及问答质量的 eval。外部结果未知时，保留原请求身份和预留，先核对再处理。</p>
+<p class="lede">一家 <abbr title="Software as a Service：软件即服务">SaaS</abbr> 向企业客户提供内部文档问答。一次工作算完成，要满足三项：在有效权限下读取被允许的文档，交付可追溯的结果，记下可核对的用量。生成过程中的进度提示只说明走到了哪个阶段；本例先把完整答案缓冲下来，校核后再交付，三项是否做到以服务端记录为准。机制是让租户、成员关系、运行、用量和账单各走自己的状态轴。本章覆盖开通、生成与交付、计费金额、退出与排空，以及问答质量的 eval。外部结果未知时，保留原请求身份和预留，先核对再处理。</p>
 
 <div class="cast" aria-label="本例的角色、界面与系统">
 <div class="cast-lane"><p class="cast-k">角色</p><ul><li>租户管理员</li><li>员工</li></ul></div>
@@ -81,7 +82,7 @@
 </tr>
 </tbody></table></div>
 </section>
-<section class="scene" aria-labelledby="解法开通对象与状态轴"><header class="scene-head"><h2 id="解法开通对象与状态轴"><span class="scene-no" aria-hidden="true">02</span><span class="visually-hidden">解法：</span><span class="head">开通对象与状态轴</span></h2></header><p class="scene-lede">租户是一个管理与隔离边界，用户是一个行动主体，membership 是用户在特定租户中的成员关系。一个人可能属于 A 和 B，在 A 是管理员、在 B 是只读者。所以“已登录”回答不了“现在能否读 B 的合同”。服务端根据已验证的身份和当前 membership 选择租户，检查请求中的对象也属于该租户；不能相信浏览器自行提交的 <code>tenant_id</code>。AWS 文档要求将用户身份与租户身份结合，并在架构各层隔离租户资源。<a href="https://docs.aws.amazon.com/wellarchitected/latest/saas-lens/general-design-principles.html" class="ext" rel="noopener">SaaS Lens — General design principles</a>。</p>
+<section class="scene" aria-labelledby="解法开通对象与状态轴"><header class="scene-head"><h2 id="解法开通对象与状态轴"><span class="scene-no" aria-hidden="true">02</span><span class="visually-hidden">解法：</span><span class="head">开通对象与状态轴</span></h2></header><p class="scene-lede">租户是一个管理与隔离边界，用户是一个行动主体，membership 是用户在特定租户中的成员关系。一个人可能属于 A 和 B，在 A 是管理员、在 B 是只读者。所以“现在能否读 B 的合同”要看此人当前在 B 的 membership，“已登录”只说明身份已验证。服务端根据已验证的身份和当前 membership 选择租户，检查请求中的对象也属于该租户；不能相信浏览器自行提交的 <code>tenant_id</code>。AWS 文档要求将用户身份与租户身份结合，并在架构各层隔离租户资源。<a href="https://docs.aws.amazon.com/wellarchitected/latest/saas-lens/general-design-principles.html" class="ext" rel="noopener">SaaS Lens — General design principles</a>。</p>
 <div class="table-wrap"><table>
 <thead>
 <tr>
@@ -116,40 +117,259 @@
 <td>截止窗口、用量明细摘要、价格版本及 provider 回查；submitted 不表示已付款</td>
 </tr>
 </tbody></table></div>
-<p>这几条状态轴各自推进，可以同时处在不同阶段。租户在 draining 时，一个先前准入的 run 仍可能等待回执；成员已 revoked 时，财务仍可能要保留此人的历史消费依据；账单已 frozen 时，迟到用量仍可能抵达。把这些事实都塞进一个 <code>active</code> 布尔值，退出与计费就会互相干扰。</p>
-<p>控制服务负责开通、套餐、成员和退出，执行服务负责检索与生成，计量服务负责事件和账单依据。控制服务拥有跨租户运营能力，它的后台不能直接沿用普通用户 <abbr title="application programming interface：应用程序接口">API</abbr> 那种宽权限连接。高权限操作要写明目标和范围，并记录每次操作；调查日志默认只含 opaque <abbr title="identifier：标识符">ID</abbr>、阶段和用量，原始提示词和私密文档不写进通用日志。</p>
+<p>这几条状态轴各自推进，可以同时处在不同阶段。租户在 draining 时，一个先前准入的 run 仍可能停在 unknown，等待外部回执；成员已 revoked 时，此人名下已 reconciled 的用量记录仍要保留，作为财务的历史消费依据；账单已 frozen 时，迟到用量仍可能抵达。把这些事实都塞进一个 <code>active</code> 布尔值，退出与计费就会互相干扰。</p>
+<figure class="drawing" data-drawing="x01-axes"><div class="dw-scroll" style="--dw-min:600px;--dw-max:880px">
+<svg viewBox="0 0 760 340" role="img" aria-labelledby="x01-axes-t x01-axes-d">
+  <title id="x01-axes-t">同一时刻，五条状态轴停在不同位置</title>
+  <desc id="x01-axes-d">此刻租户在 draining，一个先前准入的 run 在 unknown，等待外部回执；成员已 revoked，此人名下已 reconciled 的用量记录仍保留；账单已 frozen，迟到用量仍在抵达。</desc>
+  <rect class="f1" x="444" y="26" width="52" height="270"/><text class="t-s mid" x="470" y="18">此刻</text>
+  <g data-s="1">
+    <text class="t-b end" x="150" y="69">Tenant</text>
+    <path class="ln-strong" d="M230 64 H470"/>
+    <path class="ln-dash" d="M470 64 H630"/>
+    <circle class="f-ink" cx="230" cy="64" r="4"/>
+    <text class="t-s mid" x="230" y="50">requested</text>
+    <circle class="f-ink" cx="310" cy="64" r="4"/>
+    <text class="t-s mid" x="310" y="50">provisioning</text>
+    <circle class="f-ink" cx="390" cy="64" r="4"/>
+    <text class="t-s mid" x="390" y="50">active</text>
+    <circle class="box" cx="470" cy="64" r="8"/><circle class="f-ink" cx="470" cy="64" r="4"/>
+    <text class="t-b mid" x="470" y="50">draining</text>
+    <circle class="box" cx="550" cy="64" r="4"/>
+    <text class="t-s mid" x="550" y="50">retained</text>
+    <circle class="box" cx="630" cy="64" r="4"/>
+    <text class="t-s mid" x="630" y="50">purged</text>
+  </g>
+  <g data-s="1">
+    <text class="t-b end" x="150" y="121">Run</text>
+    <path class="ln-strong" d="M310 116 H470"/>
+    <path class="ln-dash" d="M470 116 H590"/>
+    <circle class="f-ink" cx="310" cy="116" r="4"/>
+    <text class="t-s mid" x="310" y="102">queued</text>
+    <circle class="f-ink" cx="390" cy="116" r="4"/>
+    <text class="t-s mid" x="390" y="102">running</text>
+    <circle class="box" cx="470" cy="116" r="8"/><circle class="f-ink" cx="470" cy="116" r="4"/>
+    <text class="t-b mid" x="470" y="102">unknown</text>
+    <circle class="box" cx="590" cy="116" r="4"/>
+    <text class="t-s mid" x="590" y="102">succeeded / failed</text>
+    <text class="t-s" x="490" y="134">等待外部回执</text>
+  </g>
+  <g data-s="2">
+    <text class="t-b end" x="150" y="173">Membership</text>
+    <path class="ln-strong" d="M310 168 H470"/>
+    <circle class="f-ink" cx="310" cy="168" r="4"/>
+    <text class="t-s mid" x="310" y="154">pending</text>
+    <circle class="f-ink" cx="390" cy="168" r="4"/>
+    <text class="t-s mid" x="390" y="154">active</text>
+    <circle class="box" cx="470" cy="168" r="8"/><circle class="f-ink" cx="470" cy="168" r="4"/>
+    <text class="t-b mid" x="470" y="154">revoked</text>
+  </g>
+  <g data-s="2">
+    <text class="t-b end" x="150" y="225">Usage entry</text>
+    <path class="ln-strong" d="M390 220 H470"/>
+    <circle class="f-ink" cx="390" cy="220" r="4"/>
+    <text class="t-s mid" x="390" y="206">recorded</text>
+    <circle class="box" cx="470" cy="220" r="8"/><circle class="f-ink" cx="470" cy="220" r="4"/>
+    <text class="t-b mid" x="470" y="206">reconciled</text>
+    <text class="t-s" x="490" y="238">仍保留此人的历史消费依据</text>
+  </g>
+  <g data-s="3">
+    <text class="t-b end" x="150" y="277">Bill</text>
+    <path class="ln-strong" d="M390 272 H470"/>
+    <path class="ln-dash" d="M470 272 H630"/>
+    <circle class="f-ink" cx="390" cy="272" r="4"/>
+    <text class="t-s mid" x="390" y="258">open</text>
+    <circle class="box" cx="470" cy="272" r="8"/><circle class="f-ink" cx="470" cy="272" r="4"/>
+    <text class="t-b mid" x="470" y="258">frozen</text>
+    <circle class="box" cx="550" cy="272" r="4"/>
+    <text class="t-s mid" x="550" y="258">submitted</text>
+    <circle class="box" cx="630" cy="272" r="4"/>
+    <text class="t-s mid" x="630" y="258">reconciled</text>
+    <path class="ln-dash" d="M380 312 L462 279"/><path class="ln" d="M452 280 L462 279 L456 288"/>
+    <text class="t" x="374" y="318" text-anchor="end">迟到用量抵达</text>
+  </g>
+</svg>
+</div>
+<figcaption>五个对象各在自己的轴上前进：租户已在排空，run 还在等回执，账单冻结后仍会收到迟到用量。</figcaption></figure><p>控制服务负责开通、套餐、成员和退出，执行服务负责检索与生成，计量服务负责事件和账单依据。控制服务拥有跨租户运营能力，它的后台不能直接沿用普通用户 <abbr title="application programming interface：应用程序接口">API</abbr> 那种宽权限连接。高权限操作要写明目标和范围，并记录每次操作；调查日志默认只含 opaque <abbr title="identifier：标识符">ID</abbr>、阶段和用量，原始提示词和私密文档不写进通用日志。</p>
 </section>
 <section class="scene" aria-labelledby="从开通页面到第一条回答"><header class="scene-head"><h2 id="从开通页面到第一条回答"><span class="scene-no" aria-hidden="true">03</span><span class="head">从开通页面到第一条回答</span></h2></header><p class="scene-lede">开通和问答都以服务端保存的 operation 或 run 为准，断线后凭同一 ID 找回；只有完整交付才算成功，生成完成不算。</p>
-<p>管理员提交套餐后，后端在一个事务中创建 tenant、开通 operation 与待执行任务，返回 operation ID。工作台分别显示“资源创建中”“成员绑定中”“隔离检查中”；只有全部通过才展示“可使用”。资源调用已经受理但响应丢失时，worker 用原 operation 查资源清单，不能新建另一套同名环境。若只完成存储创建，租户保持 provisioning，重启后继续补齐其余步骤；确定不再开通时，只清理本次 operation 拥有且未被使用的资源。</p>
+<p>管理员提交套餐后，后端在一个事务中创建 tenant、开通 operation 与待执行任务，返回 operation ID。工作台分别显示“资源创建中”“成员绑定中”“隔离检查中”；只有全部通过才展示“可使用”。资源调用已经受理但响应丢失时，worker 用原 operation 查资源清单，找回已经创建的那套环境。若只完成存储创建，租户保持 provisioning，重启后继续补齐其余步骤；确定不再开通时，只清理本次 operation 拥有且未被使用的资源。</p>
 <p>员工进入问答页后选择当前工作区。提交时前端保存 run ID，依次显示排队、检索、生成、结果待核对几个阶段；断线后可用同一 run ID 继续查看。生成期间用服务器发送事件（Server-Sent Events，<abbr title="Server-Sent Events：服务器发送事件">SSE</abbr>）或轮询传递进度，答案正文先缓冲，等生成、引用核对和授权复检都完成后才开放。已核对的完整答案仍可能分块传输；首块、后续每块和断线续传的每一块，都在发送前检查当前 membership、租户与权限 epoch。序号只定位内容块，不构成授权或计量依据。浏览器断网不是服务端回滚：worker 可能已消耗模型资源，必须独立记录最终状态。</p>
-<p>后端的顺序是：</p><ol class="chain" style="--per:5"><li><span class="cn">1</span><span class="ct">解析可信租户上下文</span></li><li><span class="cn">2</span><span class="ct">检查 membership 与额度</span></li><li><span class="cn">3</span><span class="ct">原子预留额度并创建 run</span></li><li><span class="cn">4</span><span class="ct">在授权范围内检索</span></li><li><span class="cn">5</span><span class="ct">调用模型</span></li><li><span class="cn">6</span><span class="ct">核对结果与来源</span></li><li><span class="cn">7</span><span class="ct">再检查权限版本并保存待交付结果与已知消耗</span></li><li><span class="cn">8</span><span class="ct">逐块复检授权并交付</span></li><li><span class="cn">9</span><span class="ct">保存交付终态、最终计费资格和 outbox</span></li><li><span class="cn">10</span><span class="ct">更新用户投影</span></li></ol><p>生成完成与实际交付分别记录；只有完整交付才满足本例“成功交付”的计费条件，服务器写出字节不能代替接收证据。答案完整交付后成员被撤权，此后的重放请求会被拒绝；拒绝重放不影响此前的交付与收费依据。模型输入里的“请改用 B 租户”只是一段文本，不能改写可信上下文。队列消息带 tenant、run 和授权版本；worker 也要复检，不能把入队时的权限永久缓存。</p>
+<p>后端的顺序是：</p><ol class="chain" style="--per:5"><li><span class="cn">1</span><span class="ct">解析可信租户上下文</span></li><li><span class="cn">2</span><span class="ct">检查 membership 与额度</span></li><li><span class="cn">3</span><span class="ct">原子预留额度并创建 run</span></li><li><span class="cn">4</span><span class="ct">在授权范围内检索</span></li><li><span class="cn">5</span><span class="ct">调用模型</span></li><li><span class="cn">6</span><span class="ct">核对结果与来源</span></li><li><span class="cn">7</span><span class="ct">再检查权限版本并保存待交付结果与已知消耗</span></li><li><span class="cn">8</span><span class="ct">逐块复检授权并交付</span></li><li><span class="cn">9</span><span class="ct">保存交付终态、最终计费资格和 outbox</span></li><li><span class="cn">10</span><span class="ct">更新用户投影</span></li></ol><p>生成完成与实际交付分别记录；只有完整交付才满足本例“成功交付”的计费条件，服务器写出字节不能代替接收证据。答案完整交付后成员被撤权，此后的重放请求会被拒绝；拒绝重放不影响此前的交付与收费依据。模型输入里的“请改用 B 租户”只是一段文本，可信上下文始终由服务端确定。队列消息带 tenant、run 和授权版本；worker 执行时按当前授权再复检一次，入队时的权限只是当时的结论。</p>
 <figure class="graph-fig"><div class="graph-wrap"><svg class="graph" viewBox="0 0 975 302" width="975" height="302" style="max-width:1121px;min-width:780px" role="img" aria-label="X01 · 从租户开通到 AI 服务退出"><defs><marker id="arrow-g1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arrowhead"/></marker></defs><path class="edge" data-type="operates" data-from="Admin" data-to="Console" d="M97.0,25.0 Q152.0,25.0 220.0,25.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Admin" data-to="Console"><rect x="124.0" y="17.0" width="56" height="16" rx="3"/><text x="152.0" y="29.0">operates</text></g><path class="edge" data-type="commands" data-from="Console" data-to="Control" d="M309.0,25.0 Q377.0,25.0 432.0,25.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Console" data-to="Control"><rect x="349.0" y="17.0" width="56" height="16" rx="3"/><text x="377.0" y="29.0">commands</text></g><path class="edge" data-type="owns" data-from="Control" data-to="Tenant" d="M508.0,25.0 Q563.0,25.0 641.5,25.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Control" data-to="Tenant"><rect x="547.0" y="17.0" width="32" height="16" rx="3"/><text x="563.0" y="29.0">owns</text></g><path class="edge" data-type="operates" data-from="User" data-to="Chat" d="M80.5,81.0 Q152.0,81.0 230.3,120.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="User" data-to="Chat"><rect x="124.0" y="73.0" width="56" height="16" rx="3"/><text x="152.0" y="85.0">operates</text></g><path class="edge" data-type="commands" data-from="Chat" data-to="Runtime" d="M322.0,137.0 Q377.0,137.0 432.0,137.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Chat" data-to="Runtime"><rect x="349.0" y="129.0" width="56" height="16" rx="3"/><text x="377.0" y="141.0">commands</text></g><path class="edge" data-type="reads" data-from="Runtime" data-to="Docs" d="M498.2,120.0 Q563.0,81.0 618.0,81.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Runtime" data-to="Docs"><rect x="544.0" y="73.0" width="38" height="16" rx="3"/><text x="563.0" y="85.0">reads</text></g><path class="edge" data-type="requests" data-from="Runtime" data-to="Model" d="M508.0,137.0 Q563.0,137.0 620.0,137.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Runtime" data-to="Model"><rect x="535.0" y="129.0" width="56" height="16" rx="3"/><text x="563.0" y="141.0">requests</text></g><path class="edge" data-type="emits" data-from="Runtime" data-to="Usage" d="M498.2,154.0 Q563.0,193.0 637.5,193.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Runtime" data-to="Usage"><rect x="544.0" y="185.0" width="38" height="16" rx="3"/><text x="563.0" y="197.0">emits</text></g><path class="edge" data-type="delivers" data-from="Usage" data-to="Ledger" d="M713.5,193.0 Q788.0,193.0 847.5,200.1" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Usage" data-to="Ledger"><rect x="760.0" y="185.0" width="56" height="16" rx="3"/><text x="788.0" y="197.0">delivers</text></g><path class="edge" data-type="reads" data-from="Billing" data-to="Ledger" d="M713.5,253.5 Q788.0,235.0 847.5,220.8" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Billing" data-to="Ledger"><rect x="769.0" y="227.0" width="38" height="16" rx="3"/><text x="788.0" y="239.0">reads</text></g><path class="edge" data-type="requests" data-from="Billing" data-to="Stripe" d="M713.5,267.7 Q788.0,277.0 843.0,277.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Billing" data-to="Stripe"><rect x="760.0" y="269.0" width="56" height="16" rx="3"/><text x="788.0" y="281.0">requests</text></g><path class="edge" data-type="projects" data-from="Bill" data-to="Chat" d="M80.5,165.0 Q152.0,165.0 207.0,151.3" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Bill" data-to="Chat"><rect x="124.0" y="157.0" width="56" height="16" rx="3"/><text x="152.0" y="169.0">projects</text></g><g class="node" data-id="Admin"><rect x="8.0" y="8.0" width="89" height="34" rx="4"/><text x="52.5" y="29.5">租户管理员</text></g><g class="node" data-id="Console"><rect x="220.0" y="8.0" width="89" height="34" rx="4"/><text x="264.5" y="29.5">租户工作台</text></g><g class="node" data-id="Control"><rect x="432.0" y="8.0" width="76" height="34" rx="4"/><text x="470.0" y="29.5">控制服务</text></g><g class="node" data-id="Tenant"><rect x="641.5" y="8.0" width="68" height="34" rx="4"/><text x="675.5" y="29.5">Tenant</text></g><g class="node" data-id="User"><rect x="24.5" y="64.0" width="56" height="34" rx="4"/><text x="52.5" y="85.5">员工</text></g><g class="node" data-id="Chat"><rect x="207.0" y="120.0" width="115" height="34" rx="4"/><text x="264.5" y="141.5">问答与用量页面</text></g><g class="node" data-id="Runtime"><rect x="432.0" y="120.0" width="76" height="34" rx="4"/><text x="470.0" y="141.5">执行服务</text></g><g class="node" data-id="Docs"><rect x="618.0" y="64.0" width="115" height="34" rx="4"/><text x="675.5" y="85.5">文档与授权存储</text></g><g class="node" data-id="Model"><rect x="620.0" y="120.0" width="111" height="34" rx="4"/><text x="675.5" y="141.5">模型 provider</text></g><g class="node" data-id="Usage"><rect x="637.5" y="176.0" width="76" height="34" rx="4"/><text x="675.5" y="197.5">用量事实</text></g><g class="node" data-id="Ledger"><rect x="847.5" y="190.0" width="115" height="34" rx="4"/><text x="905.0" y="211.5">持久计量 inbox</text></g><g class="node" data-id="Billing"><rect x="637.5" y="246.0" width="76" height="34" rx="4"/><text x="675.5" y="267.5">账务服务</text></g><g class="node" data-id="Stripe"><rect x="843.0" y="260.0" width="124" height="34" rx="4"/><text x="905.0" y="281.5">Stripe 计量参照</text></g><g class="node" data-id="Bill"><rect x="24.5" y="148.0" width="56" height="34" rx="4"/><text x="52.5" y="169.5">Bill</text></g></svg></div><details class="edge-list"><summary>图中关系的文字列表</summary><ul><li>租户管理员 <span class="rel">—operates→</span> 租户工作台</li><li>租户工作台 <span class="rel">—commands→</span> 控制服务</li><li>控制服务 <span class="rel">—owns→</span> Tenant</li><li>员工 <span class="rel">—operates→</span> 问答与用量页面</li><li>问答与用量页面 <span class="rel">—commands→</span> 执行服务</li><li>执行服务 <span class="rel">—reads→</span> 文档与授权存储</li><li>执行服务 <span class="rel">—requests→</span> 模型 provider</li><li>执行服务 <span class="rel">—emits→</span> 用量事实</li><li>用量事实 <span class="rel">—delivers→</span> 持久计量 inbox</li><li>账务服务 <span class="rel">—reads→</span> 持久计量 inbox</li><li>账务服务 <span class="rel">—requests→</span> Stripe 计量参照</li><li>Bill <span class="rel">—projects→</span> 问答与用量页面</li></ul></details></figure><p>详细 payload、失败条件和对象归属在 <a href="../../../vault/distilled/saas-engineering-atlas/packages/data-ai-control/X01.json">X01.json</a>。检索存储必须按 tenant 和当前文档的访问控制列表（access control list，ACL）过滤候选，返回前再次检查引用对象；共享的向量空间、缓存和日志同样在隔离边界之内。其他租户的内容一旦送进模型，泄露就已发生，在答案里隐去租户名称也补救不了。</p>
 </section>
 <section class="scene" aria-labelledby="演算用量去重与计费金额"><header class="scene-head"><h2 id="演算用量去重与计费金额"><span class="scene-no" aria-hidden="true">04</span><span class="visually-hidden">演算：</span><span class="head">用量、去重与计费金额</span></h2></header><p class="scene-lede">本例 A 的内部成本是 1,300 单位，可计费量是 1,000，金额为 2；去重键防止重传多算，业务时间窗口让迟到的消费仍归原期间。</p>
-<p>设套餐按成功交付的计费工作单位收费，每 1,000 单位收 2 个记账单位，无起步费、折扣和税。工作单位在本例中是服务自己定义的计量单位，不等同于任一模型的 token 价格。租户 A 的 run <code>a</code> 成功消耗 400，<code>b</code> 成功消耗 600，<code>c</code> 失败但已消耗 300；B 的 run 也叫 <code>a</code>，成功消耗 900。A 的内部成本依据是 1,300 单位，客户可计费量是 1,000，账单金额为 <code>1,000 × 2 / 1,000 = 2</code>。失败成本由本例服务承担；换一种商业约定也可以收费，但要先改合同与策略，不能在重试代码里自行决定。</p>
-<p>此处用量只接受 0 至 2⁶³−1 的整数，计费资格只接受布尔值或明确的整数 0/1；<code>2</code>、<code>-1</code>、字符串和空值均不能参与资格相乘。接入校验先于持久化，数据库另约束整数用量非负、资格取 0/1。金额以十进制定点数按 <code>单位数 × 2 / 1,000</code> 精确计算，本例不额外舍入；例如 1 单位得到 0.002 个记账单位。若实际货币只允许两位小数，要在价格版本中另定舍入单位、时机与规则，不能直接沿用本例不舍入的算法。</p>
-<p>输入不是“所有收到的消息数”，而是确定 run 身份的一组终态事实。持久唯一键为 <code>(tenant, run, meter, revision)</code>，初始 revision 为 1；相同键且 payload 相同的重复消息忽略，相同键不同 payload 进入 quarantine。没有这个键，网络重传 <code>a=400</code> 会让 A 的可计费量从 1,000 变成 1,400；若去重只看 <code>run=a</code>，B 的合法 900 又会被吞掉。修正以新的 revision 明确替代旧版，并要求连续版本或回查完整链；修正量与原量不能同时累计。</p>
-<p>这是 <code>ALG:lookup</code> 与 <code>ALG:windows</code> 的组合。朴素实现每到一条消息就扫描所有历史找重复，n 条累计最坏要 O(n²) 比较；数据库复合唯一索引使每次索引查找通常为 O(log n)，内存 hash 的平均 O(1) 只适合解释或有界批次，不替代持久账本。窗口用租户合同规定的业务时间区间 <code>[start, end)</code>：恰好等于 end 的消费归下一期；接收时间另存，迟到的消费仍归原业务期间，不挪到收到的月份。</p>
-<p>Stripe 文档说明 meter events 异步处理，汇总与即将开票的数值可能暂未反映新事件；还说明事件可被接受，并不保证已定稿账单会更新。所以本例把“已发出”“provider 已受理”“汇总已核对”“账单已核对”分成四个状态，一次 API 调用成功不足以关闭对账（<a href="https://docs.stripe.com/billing/subscriptions/usage-based/recording-usage-api" class="ext" rel="noopener">Record usage for billing with the API</a>）。</p>
-<p>账务 worker 先冻结窗口与明细摘要，再以稳定 delivery ID 传递用量。安全重试要遵守实际 provider 的去重范围和有效期，一个 idempotency key 不能无限期用下去。超时后保留原请求身份，先核对接收、聚合和错误报告；若无法确定且安全重试条件已失效，就交人工核对。迟到的更正若影响已 frozen 的账单，就创建调整记录、走批准流程，不能悄悄改写已提交的金额。</p>
-<p>外部通知接收端先按 provider 要求验证来源，再存入 durable inbox，随后让 worker 核对对象。Stripe 文档要求使用原始请求体验证签名，并说明通知可能重复、送达顺序不保证。因此事件 ID 去重与业务用量唯一键分别保留：前者防重复消费通知，后者防两个不同通知产生两次收费。通知的到达顺序也不能用来覆盖更可靠的当前对象。<a href="https://docs.stripe.com/webhooks" class="ext" rel="noopener">Stripe webhooks</a>。</p>
+<p>设套餐按成功交付的计费工作单位收费，每 1,000 单位收 2 个记账单位，无起步费、折扣和税。工作单位在本例中是服务自己定义的计量单位，不等同于任一模型的 token 价格。租户 A 的 run <code>a</code> 成功消耗 400，<code>b</code> 成功消耗 600，<code>c</code> 失败但已消耗 300；B 的 run 也叫 <code>a</code>，成功消耗 900。A 的内部成本依据是 1,300 单位，客户可计费量是 1,000，账单金额为 <code>1,000 × 2 / 1,000 = 2</code>。失败成本由本例服务承担；换一种商业约定也可以收费，前提是先改合同与策略，再由计费规则执行，重试代码不参与这个决定。</p>
+<p>此处用量只接受 0 至 2⁶³−1 的整数，计费资格只接受布尔值或明确的整数 0/1；<code>2</code>、<code>-1</code>、字符串和空值均不能参与资格相乘。接入校验先于持久化，数据库另约束整数用量非负、资格取 0/1。金额以十进制定点数按 <code>单位数 × 2 / 1,000</code> 精确计算，本例不额外舍入；例如 1 单位得到 0.002 个记账单位。若实际货币只允许两位小数，要在价格版本中另定舍入单位、时机与规则。</p>
+<p>输入是确定 run 身份的一组终态事实，同一事实的重传只算一次。持久唯一键为 <code>(tenant, run, meter, revision)</code>，初始 revision 为 1；相同键且 payload 相同的重复消息忽略，相同键不同 payload 进入 quarantine。没有这个键，网络重传 <code>a=400</code> 会让 A 的可计费量从 1,000 变成 1,400；若去重只看 <code>run=a</code>，B 的合法 900 又会被吞掉。修正以新的 revision 明确替代旧版，并要求连续版本或回查完整链；计入的只是最新 revision 的量，原量随之退出合计。</p>
+<figure class="drawing" data-drawing="x01-dedup"><div class="dw-scroll" style="--dw-min:620px;--dw-max:940px">
+<svg viewBox="0 0 800 370" role="img" aria-labelledby="x01-dedup-t x01-dedup-d">
+  <title id="x01-dedup-t">消费键把五条消息归到四条账本记录</title>
+  <desc id="x01-dedup-d">A 的 a=400、b=600、c=300（失败）与 B 的 a=900 各对应一条账本记录，键为 (tenant, run, meter, revision)。重传的 A·a=400 键与 payload 都相同，被忽略。A 的可计费量为 1,000。没有键时 A 变成 1,400；只按 run 去重时，B 的 900 被吞掉。</desc>
+  <text class="t-b" x="20" y="24">收到的终态消息</text>
+  <text class="t-b" x="470" y="24">账本记录 (tenant, run, meter, revision)</text>
+  <g data-s="1">
+    <rect class="box" x="20" y="40" width="170" height="30"/><text class="t-n" x="34" y="60">A · a · 400</text>
+    <rect class="box" x="20" y="80" width="170" height="30"/><text class="t-n" x="34" y="100">A · b · 600</text>
+    <rect class="box" x="20" y="120" width="170" height="30"/><text class="t-n" x="34" y="140">A · c · 300</text><text class="t-s" x="140" y="140">失败</text>
+    <rect class="box" x="20" y="160" width="170" height="30"/><text class="t-n" x="34" y="180">B · a · 900</text>
+    <path class="ln" d="M190 55 H470 M462 49 L470 55 L462 61"/>
+    <path class="ln" d="M190 95 H470 M462 89 L470 95 L462 101"/>
+    <path class="ln" d="M190 135 H470 M462 129 L470 135 L462 141"/>
+    <path class="ln" d="M190 175 H470 M462 169 L470 175 L462 181"/>
+    <rect class="box f1" x="470" y="40" width="200" height="30"/><text class="t-n" x="484" y="60">(A, a, meter, 1)</text>
+    <rect class="box f1" x="470" y="80" width="200" height="30"/><text class="t-n" x="484" y="100">(A, b, meter, 1)</text>
+    <rect class="box f1" x="470" y="120" width="200" height="30"/><text class="t-n" x="484" y="140">(A, c, meter, 1)</text>
+    <rect class="box f1" x="470" y="160" width="200" height="30"/><text class="t-n" x="484" y="180">(B, a, meter, 1)</text>
+    <path class="ln" d="M680 44 H690 V106 H680"/><text class="t" x="698" y="80">A 计费</text><text class="t-n" x="698" y="98">1,000</text>
+    <text class="t-s" x="684" y="140">失败，不计费</text>
+    <text class="t-n" x="684" y="180">B 900</text>
+  </g>
+  <g data-s="2">
+    <rect class="box-dash" x="20" y="210" width="170" height="30"/><text class="t-n" x="34" y="230">A · a · 400</text><text class="t-s" x="128" y="230">重传</text>
+    <path class="ln-em" d="M190 225 L460 60"/>
+    <text class="t-em" x="230" y="236">键与 payload 都相同：忽略</text>
+  </g>
+  <g data-s="3">
+    <path class="ln-soft" d="M20 262 H780"/>
+    <text class="t" x="20" y="290">没有去重键</text><text class="t-n" x="300" y="290">A：400 + 600 + 400 = 1,400</text>
+    <text class="t" x="20" y="320">只按 run=a 去重</text><text class="t-n" x="300" y="320">B 的 900 被当成重复吞掉</text>
+    <text class="t-b" x="20" y="350">(tenant, run, meter, revision)</text><text class="t-n" x="300" y="350">A 1,000 · B 900</text>
+  </g>
+</svg>
+</div>
+<figcaption>tenant 让两个同名的 run a 落到两条记录；revision 相同、payload 相同的重传落回原记录，不再累加。</figcaption></figure><p>这是 <code>ALG:lookup</code> 与 <code>ALG:windows</code> 的组合。朴素实现每到一条消息就扫描所有历史找重复，n 条累计最坏要 O(n²) 比较；数据库复合唯一索引使每次索引查找通常为 O(log n)，内存 hash 的平均 O(1) 只适合解释或有界批次，权威记录在持久账本里。窗口用租户合同规定的业务时间区间 <code>[start, end)</code>：恰好等于 end 的消费归下一期；接收时间另存，迟到的消费仍归原业务期间，收到的月份只记在接收时间里。</p>
+<figure class="drawing" data-drawing="x01-window"><div class="dw-scroll" style="--dw-min:600px;--dw-max:900px">
+<svg viewBox="0 0 780 250" role="img" aria-labelledby="x01-window-t x01-window-d">
+  <title id="x01-window-t">按业务时间归期</title>
+  <desc id="x01-window-d">本期窗口为 [start, end)。业务时间恰好等于 end 的消费归下一期。一条业务时间在本期内的消费，在本期账单 frozen 之后才收到，仍归本期，差异另立调整记录。</desc>
+  <rect class="f1" x="120" y="46" width="320" height="56"/>
+  <text class="t-b" x="132" y="66">本期 [start, end)</text>
+  <text class="t-b" x="452" y="66">下一期</text>
+  <text class="t-s end" x="104" y="96">业务时间</text>
+  <path class="ln-strong" d="M120 92 H760"/>
+  <text class="t-n mid" x="120" y="40">start</text><text class="t-n mid" x="440" y="40">end</text>
+  <path class="ln-soft" d="M440 46 V102"/>
+  <text class="t-s end" x="104" y="196">接收时间</text>
+  <path class="ln" d="M120 192 H760"/>
+  <g data-s="1">
+    <circle class="f-ink" cx="440" cy="92" r="5"/>
+    <path class="ln-soft" d="M440 102 V186"/><circle class="f-ink" cx="452" cy="192" r="4"/><path class="ln-soft" d="M440 186 L452 192"/>
+    <text class="t" x="452" y="128">恰好等于 end</text><text class="t-s" x="452" y="146">归下一期</text>
+  </g>
+  <g data-s="2">
+    <path class="ln-dash" d="M540 170 V214"/><text class="t-s mid" x="540" y="230">本期账单 frozen</text>
+  </g>
+  <g data-s="3">
+    <circle class="f-ink" cx="300" cy="92" r="5"/>
+    <path class="ln-em" d="M660 186 V160 H300 V99"/>
+    <circle class="f-ink" cx="660" cy="192" r="4"/>
+    <text class="t-em end" x="290" y="128">迟到，仍归本期</text>
+    <text class="t" x="672" y="182">迟到收到</text><text class="t-s" x="672" y="214">另立调整记录</text>
+  </g>
+</svg>
+</div>
+<figcaption>归期看业务时间：恰在 end 的消费归下一期，冻结后才到的本期消费仍归本期，差异进调整记录。</figcaption></figure><p>Stripe 文档说明 meter events 异步处理，汇总与即将开票的数值可能暂未反映新事件；还说明事件可被接受，并不保证已定稿账单会更新。所以本例把“已发出”“provider 已受理”“汇总已核对”“账单已核对”分成四个状态，四个状态依次到位才关闭对账，一次 API 调用成功只走到第二个（<a href="https://docs.stripe.com/billing/subscriptions/usage-based/recording-usage-api" class="ext" rel="noopener">Record usage for billing with the API</a>）。</p>
+<p>账务 worker 先冻结窗口与明细摘要，再以稳定 delivery ID 传递用量。安全重试要遵守实际 provider 的去重范围和有效期，一个 idempotency key 只在有效期内保护重试。超时后保留原请求身份，先核对接收、聚合和错误报告；若无法确定且安全重试条件已失效，就交人工核对。迟到的用量或更正若影响已 frozen 的账单，就创建调整记录、走批准流程，已提交的金额保持原样。</p>
+<p>外部通知接收端先按 provider 要求验证来源，再存入 durable inbox，随后让 worker 核对对象。Stripe 文档要求使用原始请求体验证签名，并说明通知可能重复、送达顺序不保证。因此事件 ID 去重与业务用量唯一键分别保留：前者防重复消费通知，后者防两个不同通知产生两次收费。当前状态以回查到的 provider 对象为准，通知的到达顺序不参与覆盖。<a href="https://docs.stripe.com/webhooks" class="ext" rel="noopener">Stripe webhooks</a>。</p>
 </section>
 <section class="scene" aria-labelledby="配额预留与用量账本"><header class="scene-head"><h2 id="配额预留与用量账本"><span class="scene-no" aria-hidden="true">05</span><span class="head">配额预留与用量账本</span></h2></header><p class="scene-lede">额度靠同一事务里的原子预留守住，实际消耗核定后才归还余额；结果未知时预留不释放。</p>
-<p>A 的运行额度是 1,500 单位，已消耗为 0。两个并发 run 都申请最多 800：若各自先读剩余额度再写入，都可能通过，造成 1,600 的承诺。服务在同一事务中检查 <code>已消耗 + 未结算预留 + 新申请 ≤ 额度</code>。第一个取得 800 后，第二个被明确拒绝或排队；第一个完成并核定实际 400，释放剩余 400，第二个便可取得 800。第二个实际消耗 600 后，总消耗 1,000；再有失败 run 消耗 300，总消耗为 1,300，剩余 200，而计费量仍是 1,000。</p>
-<p>预留不是估算账单。它限制当下可承诺的资源；实际用量记录历史发生的消耗；计费规则从这些事实选出应收费的部分。外部执行结果 unknown 时，不因浏览器退出就释放全部预留。worker 需先核定实际消耗或确认任务终止，再归还余额。供应商能否硬性限制生成长度、取消后还有多少消耗，是接入时必须测量的边界；本例的额度不变量只在执行确实不超过预留上限的假设下成立。</p>
+<p>A 的运行额度是 1,500 单位，已消耗为 0。两个并发 run 都申请最多 800：若各自先读剩余额度再写入，都可能通过，造成 1,600 的承诺。服务在同一事务中检查 <code>已消耗 + 未结算预留 + 新申请 ≤ 额度</code>。第一个取得 800 后，第二个被明确拒绝或排队；第一个完成并核定实际 400，释放剩余 400，第二个便可取得 800，此时已消耗 400、预留 800，合计 1,200。第二个实际消耗 600 后，总消耗 1,000；再有失败 run 消耗 300，总消耗为 1,300，剩余 200，而计费量仍是 1,000。这三次消耗就是演算中 A 的 run <code>a</code>、<code>b</code>、<code>c</code>。</p>
+<figure class="drawing" data-drawing="x01-quota"><div class="dw-scroll" style="--dw-min:620px;--dw-max:960px">
+<svg viewBox="0 0 820 340" role="img" aria-labelledby="x01-quota-t x01-quota-d">
+  <title id="x01-quota-t">1,500 单位额度下的预留与结算</title>
+  <desc id="x01-quota-d">run 1 预留 800；run 2 再申请 800，合计 1,600 超过 1,500，排队或被拒绝。run 1 核定实际 400，释放 400，run 2 取得 800，已消耗 400 加预留 800 共 1,200。run 2 核定实际 600，总消耗 1,000。失败 run 再消耗 300，总消耗 1,300，剩余 200；计费量仍是 1,000。</desc>
+  <path class="ln-strong" d="M750 30 V300"/><text class="t-n mid" x="750" y="22">额度 1,500</text>
+  <g data-s="1">
+    <text class="t-s" x="150" y="44">两个并发 run 各申请最多 800，run 1 先取得</text>
+    <text class="t-n end" x="138" y="69">800</text>
+    <rect class="box f2" x="150" y="50" width="320" height="28"/><text class="t mid" x="310" y="69">run 1 预留 800</text>
+    <rect class="box" x="470" y="50" width="280" height="28"/><text class="t-s mid" x="610" y="69">剩余 700</text>
+  </g>
+  <g data-s="2">
+    <rect class="box-dash" x="470" y="86" width="320" height="18"/>
+    <text class="t-s mid" x="610" y="99">run 2 申请 800</text>
+    <text class="t-em end" x="460" y="100">800 + 800 = 1,600 &gt; 1,500，排队或拒绝</text>
+  </g>
+  <g data-s="3">
+    <text class="t-s" x="150" y="130">run 1 核定 400，释放 400；run 2 取得 800</text>
+    <text class="t-n end" x="138" y="155">1,200</text>
+    <rect class="box f-ink" x="150" y="136" width="160" height="28"/><text class="t t-inv mid" x="230" y="155">已消耗 400</text>
+    <rect class="box f2" x="310" y="136" width="320" height="28"/><text class="t mid" x="470" y="155">run 2 预留 800</text>
+    <rect class="box" x="630" y="136" width="120" height="28"/><text class="t-s mid" x="690" y="155">剩余 300</text>
+  </g>
+  <g data-s="4">
+    <text class="t-s" x="150" y="196">run 2 核定 600，总消耗 1,000</text>
+    <text class="t-n end" x="138" y="221">1,000</text>
+    <rect class="box f-ink" x="150" y="202" width="400" height="28"/><text class="t t-inv mid" x="350" y="221">已消耗 1,000</text>
+    <rect class="box" x="550" y="202" width="200" height="28"/><text class="t-s mid" x="650" y="221">剩余 500</text>
+  </g>
+  <g data-s="5">
+    <text class="t-s" x="150" y="262">失败 run 消耗 300，总消耗 1,300</text>
+    <text class="t-n end" x="138" y="287">1,300</text>
+    <rect class="box f-ink" x="150" y="268" width="160" height="28"/><text class="t t-inv mid" x="230" y="287">a 400</text>
+    <rect class="box f-ink" x="310" y="268" width="240" height="28"/><text class="t t-inv mid" x="430" y="287">b 600</text>
+    <rect class="box f3" x="550" y="268" width="120" height="28"/><text class="t mid" x="610" y="287">c 300</text>
+    <rect class="box" x="670" y="268" width="80" height="28"/><text class="t-s mid" x="710" y="287">剩余 200</text>
+    <path class="ln" d="M150 304 V310 H550 V304"/><text class="t-b mid" x="350" y="328">计费量 1,000</text>
+    <text class="t-s mid" x="610" y="318">失败，服务承担</text>
+  </g>
+</svg>
+</div>
+<figcaption>检查 已消耗 + 未结算预留 + 新申请 ≤ 额度 在同一事务里完成；实际消耗核定后，多出的预留才归还。</figcaption></figure><p>预留限制当下可承诺的资源；实际用量记录历史发生的消耗；计费规则从这些事实选出应收费的部分。外部执行结果 unknown 时，不因浏览器退出就释放全部预留。worker 需先核定实际消耗或确认任务终止，再归还余额。供应商能否硬性限制生成长度、取消后还有多少消耗，是接入时必须测量的边界；本例的额度不变量只在执行确实不超过预留上限的假设下成立。</p>
 <p><code>ALG:scheduling</code> 在这里用于有资源约束的准入。共享 worker 可按租户轮转取任务，再施加每租户并发上限，让 A 的大队列不会淹没 B；平均吞吐稍有下降，换来可解释的公平性。任务耗时差异很大时，只按任务数轮转仍不公平，可以按估计工作单位分配预算，执行后纠正估算。估计用于调度，不直接进入确定金额。</p>
 </section>
-<section class="scene" aria-labelledby="技术选型与隔离边界"><header class="scene-head"><h2 id="技术选型与隔离边界"><span class="scene-no" aria-hidden="true">06</span><span class="head">技术选型与隔离边界</span></h2></header><p class="scene-lede">一个实现可选 React/Next.js + TypeScript 显示阶段与引用，后端选 TypeScript 服务以共享请求类型，或 Python/FastAPI 便于连接检索和评估工具。共享类型能减少字段不一致，权限检查却不会因此自动具备。SSE 适合单向进度；需要多方协作和双向状态时再考虑 WebSocket。前端缓存必须按 tenant、actor/权限范围、对象版本和策略版本分区；切换工作区立即清空可见旧结果，后台旧请求即使返回也不能覆盖新工作区。</p>
-<p>小规模控制面与计量可以用 PostgreSQL 事务、复合唯一约束和 outbox；文档正文放对象存储，数据库存清单、hash 和 ACL；Redis 可缓存读模型，但权威额度扣减不能只依赖可丢失缓存。共享表配合 row-level security 可增加一道数据库约束，不过 PostgreSQL 官方文档明确指出，超级用户、BYPASSRLS 角色以及通常情况下的表 owner 都能绕过它。应用连接必须采用受限角色，并验证连接池复用时租户上下文不会残留。<a href="https://www.postgresql.org/docs/current/ddl-rowsecurity.html" class="ext" rel="noopener">Row Security Policies</a>。</p>
-<p>另一种选择是为大客户独立数据库乃至独立运行环境，减少资源互扰，但迁移、版本一致性和成本更难控制。AWS 的 full stack isolation 仍强调统一开通与运营；独享基础设施不是每个客户维护一套分叉软件。<a href="https://docs.aws.amazon.com/wellarchitected/latest/saas-lens/full-stack-isolation.html" class="ext" rel="noopener">Full stack isolation</a>。</p>
-<p>测量计划设 100 个租户、20 个并发用户、每秒 20 次准入峰值、每日 10 万 run，单条精简计量记录约 400 字节。30 天原始计量约 <code>100,000 × 30 × 400 = 1.2 GB</code>，不含索引、副本、文档或模型输入。10 个 run 同时运行、平均持续 10 秒，容量只有约 1 run/s；20/s 短峰值必须排队、扩容或拒绝，不能靠“异步”掩盖积压。待测目标为准入 p95 &lt; 200ms、队列等待 p95 &lt; 5s（可承受流量下）、终态到用量可见 p95 &lt; 60s；首 token 延迟另测，不与权限校验和队列等待混为一项。观测要看各租户的分位数和最大积压，不能只看全局均值。</p>
+<section class="scene" aria-labelledby="技术选型与隔离边界"><header class="scene-head"><h2 id="技术选型与隔离边界"><span class="scene-no" aria-hidden="true">06</span><span class="head">技术选型与隔离边界</span></h2></header><p class="scene-lede">一个实现可选 React/Next.js + TypeScript 显示阶段与引用，后端选 TypeScript 服务以共享请求类型，或 Python/FastAPI 便于连接检索和评估工具。共享类型能减少字段不一致，权限检查仍在服务端单独执行。SSE 适合单向进度；需要多方协作和双向状态时再考虑 WebSocket。前端缓存必须按 tenant、actor/权限范围、对象版本和策略版本分区；切换工作区立即清空可见旧结果，后台旧请求即使返回也不能覆盖新工作区。</p>
+<p>小规模控制面与计量可以用 PostgreSQL 事务、复合唯一约束和 outbox；文档正文放对象存储，数据库存清单、hash 和 ACL；Redis 可缓存读模型，权威额度扣减在数据库事务里完成，缓存丢失不影响它。共享表配合 row-level security 可增加一道数据库约束，不过 PostgreSQL 官方文档明确指出，超级用户、BYPASSRLS 角色以及通常情况下的表 owner 都能绕过它。应用连接必须采用受限角色，并验证连接池复用时租户上下文不会残留。<a href="https://www.postgresql.org/docs/current/ddl-rowsecurity.html" class="ext" rel="noopener">Row Security Policies</a>。</p>
+<p>另一种选择是为大客户独立数据库乃至独立运行环境，减少资源互扰，但迁移、版本一致性和成本更难控制。AWS 的 full stack isolation 仍强调统一开通与运营；独享基础设施上运行的仍是同一套软件。<a href="https://docs.aws.amazon.com/wellarchitected/latest/saas-lens/full-stack-isolation.html" class="ext" rel="noopener">Full stack isolation</a>。</p>
+<p>测量计划设 100 个租户、20 个并发用户、每秒 20 次准入峰值、每日 10 万 run，单条精简计量记录约 400 字节。30 天原始计量约 <code>100,000 × 30 × 400 = 1.2 GB</code>，不含索引、副本、文档或模型输入。10 个 run 同时运行、平均持续 10 秒，容量只有约 1 run/s；20/s 短峰值必须排队、扩容或拒绝，不能靠“异步”掩盖积压。待测目标为准入 p95 &lt; 200ms、队列等待 p95 &lt; 5s（可承受流量下）、终态到用量可见 p95 &lt; 60s；首 token 延迟另测，与权限校验和队列等待分开报告。观测要看各租户的分位数和最大积压，全局均值会掩盖单个租户的积压。</p>
 </section>
 <section class="scene" aria-labelledby="退出与排空"><header class="scene-head"><h2 id="退出与排空"><span class="scene-no" aria-hidden="true">07</span><span class="head">退出与排空</span></h2></header><p class="scene-lede">退出先挡住新的运行入口，再让每个在途 run 走到终态、完成用量核对，最后按清单逐项清除；身份 provider 的停用回执只覆盖身份同步。</p>
 <p>正常路径是：管理员发起退出，控制服务将 tenant 从 active 改为 draining，并提高权限 epoch；禁止新的生成和新邀请。已准入 run 按本例政策停止继续执行，已发到外部的调用进入核对，不假定取消立即生效。待这些 run 均有终态和用量，账务完成截止核对，租户进入 retained，只允许约定的导出与审计读取。保留期届满且没有明确 hold，才逐项清除文档、索引、缓存、凭证与相关运行内容；完成清单齐备才显示 purged。备份的到期策略，以及恢复后重新执行删除清单，也必须有验收证据。清除按清单逐项进行，本例不保证即时物理擦除。</p>
-<p>排队中的 run 也必须有结束路径。若退出与 worker 取任务同时发生，两者靠同一 run 的条件更新决出先后：确认尚未派发的任务转为 failed，记录零或已经明确发生的准备成本，并结算、释放预留；一旦派发已发生，就走 running/unknown 的核对路径。撤权之后，queued 的 run 再也等不到启动条件；不给它一条结束路径，租户就永远排空不了。这里使用 failed 表示本次请求未交付，原因字段区分退出取消与技术错误。</p>
-<p>Okta 的跨域身份管理（System for Cross-domain Identity Management，SCIM）2.0 文档说明，移除或停用用户时向应用设置 <code>active=false</code>，不对 SCIM user 执行 DELETE；Okta 内的 suspended 也没有对应的 deprovisioning event。这份文档说明的是身份同步的边界；应用自己的会话、文档和账单是否已经处理，它说明不了。<a href="https://developer.okta.com/docs/api/openapi/okta-scim/guides/scim-20" class="ext" rel="noopener">Okta and SCIM Version 2.0 — Delete users</a>。所以退出时先由本地控制状态挡住运行入口，再分别核对身份 provider、执行队列和存储，不能指望一个 SCIM 回执包揽全部。</p>
-<p>假设撤销发生在检索完成之后、答案返回之前。worker 已拿到 A 的文档，不应继续把答案交给已撤销的成员；最终授权复检发现 epoch 变化，停止交付尚未发送的正文并记录受限原因，已消耗成本仍入账。若第一块已在有效授权下交付，随后权限改变，保留这次交付事实，后续块与重连回放都被拒绝；已经送出的字节收不回来。权限 epoch 变化后旧 run 不自动恢复交付，新授权需重新确认输入与运行身份。失败后的恢复只保留必要的核对信息，交给获授权管理员处理成本和退出进度，不会重新授予成员访问权。租户重新加入时要用新的生命周期身份或 generation，旧消息不能让旧 membership 复活。</p>
-</section>
+<p>排队中的 run 也必须有结束路径。若退出与 worker 取任务同时发生，两者靠同一 run 的条件更新决出先后：确认尚未派发的任务转为 failed，记录零或已经明确发生的准备成本，并结算、释放预留；一旦派发已发生，就走 running/unknown 的核对路径。撤权之后，queued 的 run 再也等不到启动条件，只有这条结束路径能让租户完成排空。这里使用 failed 表示本次请求未交付，原因字段区分退出取消与技术错误。</p>
+<p>Okta 的跨域身份管理（System for Cross-domain Identity Management，SCIM）2.0 文档说明，移除或停用用户时向应用设置 <code>active=false</code>，不对 SCIM user 执行 DELETE；Okta 内的 suspended 也没有对应的 deprovisioning event。这份文档说明的是身份同步的边界；应用自己的会话、文档和账单由应用自己核对。<a href="https://developer.okta.com/docs/api/openapi/okta-scim/guides/scim-20" class="ext" rel="noopener">Okta and SCIM Version 2.0 — Delete users</a>。所以退出时先由本地控制状态挡住运行入口，再分别核对身份 provider、执行队列和存储，SCIM 回执只是其中身份一项的证据。</p>
+<p>假设撤销发生在检索完成之后、答案返回之前。worker 已拿到 A 的文档；最终授权复检发现 epoch 变化，停止交付尚未发送的正文并记录受限原因，已消耗成本仍入账。若第一块已在有效授权下交付，随后权限改变，保留这次交付事实，后续块与重连回放都被拒绝；已经送出的字节收不回来。权限 epoch 变化后旧 run 不自动恢复交付，新授权需重新确认输入与运行身份。失败后的恢复只保留必要的核对信息，交给获授权管理员处理成本和退出进度，不会重新授予成员访问权。租户重新加入时要用新的生命周期身份或 generation，旧消息不能让旧 membership 复活。</p>
+<figure class="drawing" data-drawing="x01-revoke"><div class="dw-scroll" style="--dw-min:600px;--dw-max:920px">
+<svg viewBox="0 0 780 270" role="img" aria-labelledby="x01-revoke-t x01-revoke-d">
+  <title id="x01-revoke-t">撤销落在交付之前与之后</title>
+  <desc id="x01-revoke-d">撤销发生在检索完成之后、答案返回之前：最终授权复检发现 epoch 变化，停止交付正文，记录受限原因，已消耗成本入账。撤销发生在第一块已在有效授权下交付之后：保留第一块的交付事实，后续块与重连回放都被拒绝。</desc>
+  <text class="t-b" x="20" y="30">撤销在答案返回之前</text>
+  <path class="ln" d="M20 80 H380"/>
+  <g class="t-s">
+    <circle class="f-ink" cx="60" cy="80" r="4"/><text class="t-s mid" x="60" y="104">检索完成</text>
+    <circle class="f-ink" cx="160" cy="80" r="4"/><text class="t-s mid" x="160" y="104">生成</text>
+    <circle class="f-ink" cx="260" cy="80" r="4"/><text class="t-s mid" x="260" y="104">核对</text>
+  </g>
+  <g data-s="1">
+    <path class="ln-strong" d="M320 50 V112"/><text class="t-b mid" x="320" y="44">撤销 · epoch 变化</text>
+  </g>
+  <g data-s="2">
+    <rect class="box-dash" x="380" y="64" width="90" height="32"/><text class="t mid" x="425" y="85">正文</text>
+    <text class="t-s" x="484" y="78">最终复检拦下，停止交付</text>
+    <text class="t-s" x="484" y="96">记录受限原因 · 已消耗成本入账</text>
+  </g>
+  <path class="ln-soft" d="M20 136 H760"/>
+  <text class="t-b" x="20" y="166">撤销在第一块交付之后</text>
+  <path class="ln" d="M20 216 H300"/>
+  <circle class="f-ink" cx="60" cy="216" r="4"/><text class="t-s mid" x="60" y="240">检索完成</text>
+  <circle class="f-ink" cx="160" cy="216" r="4"/><text class="t-s mid" x="160" y="240">生成</text>
+  <circle class="f-ink" cx="260" cy="216" r="4"/><text class="t-s mid" x="260" y="240">核对</text>
+  <g data-s="3">
+    <rect class="box f-ink" x="300" y="200" width="70" height="32"/><text class="t t-inv mid" x="335" y="221">块 1</text>
+    <text class="t-s mid" x="335" y="252">已交付，保留</text>
+  </g>
+  <g data-s="4">
+    <path class="ln-strong" d="M410 186 V248"/><text class="t-b mid" x="410" y="180">撤销</text>
+  </g>
+  <g data-s="5">
+    <rect class="box-dash" x="450" y="200" width="70" height="32"/><text class="t mid" x="485" y="221">块 2</text>
+    <text class="t-s mid" x="485" y="252">拒绝</text>
+    <rect class="box-dash" x="560" y="200" width="100" height="32"/><text class="t mid" x="610" y="221">重连回放</text>
+    <text class="t-s mid" x="610" y="252">拒绝</text>
+  </g>
+</svg>
+</div>
+<figcaption>交付前的最后一次复检看当前 epoch：撤销在前，正文一块也不发；撤销在后，已发出的块保留为事实，之后的块和回放都被拒绝。</figcaption></figure></section>
 <section class="scene" aria-labelledby="ai-质量与业务失败标准"><header class="scene-head"><h2 id="ai-质量与业务失败标准"><span class="scene-no" aria-hidden="true">08</span><span class="head">AI 质量与业务失败标准</span></h2></header><p class="scene-lede">问答质量与业务失败分开计：有依据的正确率、缺答案时的拒答率和越权泄露各算各的，工具动作越权必须为零。</p>
 <p>OpenAI 将 Frontier 描述为帮助企业构建、部署和管理 <abbr title="artificial intelligence：人工智能">AI</abbr> agents 的平台，并在官方介绍中讨论上下文、评估、身份及权限。<a href="https://openai.com/index/introducing-openai-frontier/" class="ext" rel="noopener">Introducing OpenAI Frontier</a>。</p>
 <p>问答的实际 eval 应冻结文档版本、ACL、测试身份、模型与配置、检索参数、提示词和判分标准。拟设 200 条留出题：80 条授权且可回答、40 条授权资料缺答案、40 条恶意指令干扰、20 条仅另一租户有答案、20 条权限已撤销。调参集合不能重复用作留出集；两位审核者对事实与引用的分歧要留记录。可回答题按“内容正确且引用支持”统计成功率；缺答案题统计恰当拒答率；两类权限题单独统计越权内容泄露；工具动作越权必须为零，高平均答案分也抵消不了。业务方另设错误成本与放行阈值；200 条样本的结果不能直接当作生产环境安全的证明。</p>
@@ -196,7 +416,7 @@
 <td>检索中撤销、draining 中重放旧请求、清理一处失败：答案交付被挡，新工作被拒，purged 不提前显示，已有费用仍可解释</td>
 </tr>
 </tbody></table></div>
-<p>表中各行是后续实现的验收标准。本地纯计算、SQLite 账本和结构检查覆盖不到 SSE、真实 IAM、PostgreSQL <abbr title="row-level security：行级安全">RLS</abbr>、provider sandbox、崩溃跨进程恢复和上述延迟目标，也说明不了 AI 能否答对。检查身份与所需证据见 <abbr title="JavaScript Object Notation：结构化数据表示格式，后文保留 JSON">JSON</abbr> 的 checks。</p>
+<p>表中各行是后续实现的验收标准。本地纯计算、SQLite 账本和结构检查覆盖计算与结构；SSE、真实 IAM、PostgreSQL <abbr title="row-level security：行级安全">RLS</abbr>、provider sandbox、崩溃跨进程恢复和上述延迟目标要另行实测，AI 能否答对由 eval 回答。检查身份与所需证据见 <abbr title="JavaScript Object Notation：结构化数据表示格式，后文保留 JSON">JSON</abbr> 的 checks。</p>
 </section>
 <section class="scene" aria-labelledby="变式条件变化与迁移"><header class="scene-head"><h2 id="变式条件变化与迁移"><span class="scene-no" aria-hidden="true">10</span><span class="visually-hidden">变式：</span><span class="head">条件变化与迁移</span></h2></header><p class="scene-lede">消费事实、去重身份、租户隔离和授权责任在条件改变后不变；变的是计价策略、隔离落在哪一层，以及未知结果的成本由谁承担。</p>
 <p><strong>练习一：套餐改成失败请求也收费，但不得超过管理员预算。</strong> a、b、c 的数值不变，金额如何变，哪些不变量仍然成立？简答：规则允许全部 1,300 单位计费时，金额变为 2.6；消费事实、去重身份和租户隔离保持不变，bill 引用新的计价策略版本。若只有 2 单位预算，就不能等失败后才发现超额，准入时要按可能发生的最高费用预留。只改账单过滤条件、仍以为“失败总会退回预算”，预算就会被突破；检查时看失败终态后的预算扣减、余额和明细三者是否一致。</p>
@@ -329,8 +549,8 @@
     <footer class="page-foot">正文 <a href="../../../books/saas-engineering/packages/data-ai-control/X01.md">books/saas-engineering/packages/data-ai-control/X01.md</a> · <a href="../../../vault/distilled/saas-engineering-atlas/README.md">结构、来源与验证</a></footer>
   </main>
 </div>
-<script src="search-index.js?v=mv95jeod"></script>
-<script src="book.js?v=mv95jeod"></script>
+<script src="search-index.js?v=mv97hru0"></script>
+<script src="book.js?v=mv97hru0"></script>
 
 </body>
 </html>

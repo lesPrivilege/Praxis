@@ -1,0 +1,34 @@
+<div class="dw-scroll" style="--dw-min:600px;--dw-max:880px">
+<svg viewBox="0 0 730 320" role="img" aria-labelledby="h05-impact-t h05-impact-d">
+  <title id="h05-impact-t">从 DB 沿反向依赖求影响范围</title>
+  <desc id="h05-impact-d">Checkout 依赖 Orders API，Orders API 依赖 DB，Invoice 依赖 DB，Search 依赖 Search Index。变更目标是 DB，反向遍历先得到 Orders API 与 Invoice，再得到 Checkout；Search 不在已知的影响集合里。Checkout 与 Invoice 验证关键路径，Orders API 与 DB 提供诊断信号。</desc>
+  <text class="t-s mid" x="90" y="24">变更目标</text><text class="t-s mid" x="330" y="24">第 1 层</text><text class="t-s mid" x="570" y="24">第 2 层</text>
+  <rect class="ln-soft" x="8" y="36" width="714" height="196"/>
+  <text class="t-s end" x="716" y="224">已登记依赖下的影响范围</text>
+  <g data-s="1">
+    <rect class="box-em" x="20" y="108" width="140" height="44"/><text class="t-b mid" x="90" y="135">DB</text>
+    <text class="t-s mid" x="90" y="172">诊断信号</text>
+  </g>
+  <g data-s="2">
+    <rect class="box" x="260" y="56" width="140" height="44"/><text class="t mid" x="330" y="83">Orders API</text>
+    <text class="t-s mid" x="330" y="118">诊断信号</text>
+    <rect class="box" x="260" y="156" width="140" height="44"/><text class="t mid" x="330" y="183">Invoice</text>
+    <text class="t-s mid" x="330" y="218">验证关键路径</text>
+    <path class="ln" d="M260 78 L160 122 M170 113 L160 122 L172 124"/>
+    <path class="ln" d="M260 178 L160 138 M172 136 L160 138 L170 147"/>
+  </g>
+  <g data-s="3">
+    <rect class="box" x="500" y="56" width="140" height="44"/><text class="t mid" x="570" y="83">Checkout</text>
+    <text class="t-s mid" x="570" y="118">验证关键路径</text>
+    <path class="ln" d="M500 78 H400 M410 71 L400 78 L410 85"/>
+  </g>
+  <g data-s="4">
+    <rect class="box f2" x="500" y="256" width="140" height="40"/><text class="t mid" x="570" y="281">Search</text>
+    <rect class="box f2" x="260" y="256" width="140" height="40"/><text class="t mid" x="330" y="281">Search Index</text>
+    <path class="ln-soft" d="M500 276 H400 M410 269 L400 276 L410 283"/>
+    <text class="t-s" x="20" y="281">不在已知影响集合</text>
+  </g>
+  <text class="t-s" x="20" y="314">箭头：依赖于</text>
+</svg>
+</div>
+<figcaption>依赖边从使用者指向被依赖者，影响范围逆着箭头求出；与 DB 不相连的 Search 留在范围之外。</figcaption>

@@ -1,0 +1,36 @@
+<div class="dw-scroll" style="--dw-min:620px;--dw-max:900px">
+<svg viewBox="0 0 760 296" role="img" aria-labelledby="v09-timing-t v09-timing-d">
+  <title id="v09-timing-t">逐条件的 setup 与 hold 判定</title>
+  <desc id="v09-timing-d">时钟周期 1.00 ns，setup 要求 0.10 ns，数据最晚 0.90 ns 到达。条件 A 延迟 0.82 ns，slack +0.08 ns；条件 B 延迟 0.95 ns，slack −0.05 ns，平均 +0.015 ns 仍拒绝。hold 最早允许 0.07 ns，最短路径 0.04 ns，slack −0.03 ns。周期放宽到 1.10 ns 后最晚到达移到 1.00 ns，setup 达标，hold 不变。</desc>
+  <text class="t-b" x="0" y="20">setup</text>
+  <text class="t end" x="120" y="84">条件 A</text>
+  <text class="t end" x="120" y="124">条件 B</text>
+  <path class="ln-soft" d="M140 150 H700 M130 155 L136 145 M134 155 L140 145"/>
+  <text class="t-s mid" x="205" y="166">0.80</text><text class="t-s mid" x="280" y="166">0.85</text><text class="t-s mid" x="355" y="166">0.90</text><text class="t-s mid" x="430" y="166">0.95</text><text class="t-s mid" x="505" y="166">1.00</text><text class="t-s mid" x="580" y="166">1.05</text><text class="t-s mid" x="655" y="166">1.10 ns</text>
+  <g data-s="1">
+    <path class="ln-soft" d="M505 52 V140"/><text class="t-s" x="509" y="46">时钟沿 1.00</text>
+    <path class="ln-strong" d="M355 52 V140"/><text class="t-s end" x="351" y="46">最晚到达 0.90</text>
+    <path class="ln-soft" d="M355 58 H505"/><text class="t-s mid" x="430" y="72">setup 0.10</text>
+    <path class="ln" d="M140 80 H235"/><circle class="f-ink" cx="235" cy="80" r="4"/><text class="t-s" x="150" y="72">延迟 0.82</text>
+    <path class="ln-dash" d="M235 80 H355"/><text class="t-n mid" x="295" y="72">+0.08</text>
+    <path class="ln" d="M140 120 H430"/><circle class="box-em" cx="430" cy="120" r="5"/><text class="t-s" x="150" y="112">延迟 0.95</text>
+    <text class="t-n t-em mid" x="392" y="112">−0.05</text>
+    <text class="t-s" x="515" y="124">平均 +0.015，仍拒绝</text>
+  </g>
+  <g data-s="3">
+    <path class="ln-dash" d="M655 52 V140"/><text class="t-s" x="659" y="46">周期 1.10</text>
+    <text class="t-s" x="662" y="96">最晚移到 1.00</text><text class="t-s" x="662" y="112">A、B 达标</text>
+  </g>
+  <g data-s="2">
+    <text class="t-b" x="0" y="204">hold</text>
+    <text class="t end" x="120" y="244">最短路径</text>
+    <path class="ln-strong" d="M340 222 V262"/><text class="t-s mid" x="340" y="214">最早允许 0.07</text>
+    <path class="ln" d="M130 240 H250"/><circle class="f-ink" cx="250" cy="240" r="4"/><text class="t-s" x="200" y="232">0.04</text>
+    <path class="ln-dash" d="M250 240 H340"/><text class="t-n mid" x="295" y="232">−0.03</text>
+    <path class="ln-soft" d="M130 270 H600"/>
+    <text class="t-s mid" x="130" y="286">0</text><text class="t-s mid" x="280" y="286">0.05</text><text class="t-s mid" x="430" y="286">0.10</text><text class="t-s mid" x="580" y="286">0.15 ns</text>
+  </g>
+  <g data-s="3"><text class="t-s" x="360" y="245">周期放宽后，这条界线不动</text></g>
+</svg>
+</div>
+<figcaption>每个条件单独与 0.90 ns 比较，B 晚到 0.05 ns 就拒绝；放宽周期把 setup 的界线右移，同沿的 hold 界线留在原处。</figcaption>

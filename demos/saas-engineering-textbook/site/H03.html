@@ -4,9 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>H03 · 子账、对账、关账与管理报告 · SaaS 工程全景</title>
-<link rel="stylesheet" href="book.css?v=mv95jeod">
+<link rel="stylesheet" href="book.css?v=mv97hru0">
 </head>
 <body>
+<svg class="dw-defs" width="0" height="0" aria-hidden="true" focusable="false" style="position:absolute"><defs><pattern id="dw-hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" fill="var(--bg)"/><path d="M0 0 V6" stroke="var(--ink-2)" stroke-width="1.2"/></pattern></defs></svg>
 <a class="skip" href="#main">跳到正文</a>
 <header class="topbar">
   <button class="nav-toggle" type="button" aria-controls="sidebar" aria-expanded="false">目录</button>
@@ -61,8 +62,8 @@
 </tbody></table></div>
 </section>
 <section class="scene" aria-labelledby="解法账目与任务清单的分工"><header class="scene-head"><h2 id="解法账目与任务清单的分工"><span class="scene-no" aria-hidden="true">02</span><span class="visually-hidden">解法：</span><span class="head">账目与任务清单的分工</span></h2></header><p class="scene-lede">子账保留“向哪家供应商、因为哪张发票、尚欠多少”的业务明细；总账把这些事实归入科目与维度，支持统一汇总；对账解释两种记录是否相容；关账日程协调谁在何时提供证据；报告从固定版本的数据计算指标。它们服务于同一个期间，生命周期却各不相同。</p>
-<p>Microsoft Dynamics 365 Finance 的 <strong>Financial period close workspace</strong> 可以按公司、领域和责任人查看关账任务；依赖未完成的任务不能标为完成，任务可附凭证号、说明或报告等材料。<a href="https://learn.microsoft.com/en-us/dynamics365/finance/general-ledger/financial-period-close-workspace" class="ext" rel="noopener">Financial period close workspace</a>。文档说明的是任务之间的依赖，并未说勾选完成会核实凭证内容或锁住期间。</p>
-<p>期间能否过账，由另一套状态控制。Microsoft 的另一篇文档把 Open、On hold、Permanently closed 区分开：On hold 可以重新打开；Permanently closed 不能重开，也不能再记调整；模块与用户组的访问另有控制。<a href="https://learn.microsoft.com/en-us/dynamics365/finance/general-ledger/tasks/mass-financial-period-close" class="ext" rel="noopener">Mass financial period close</a>。本例采用经授权可以重开的冻结流程；日常的“出报表”按钮不借用永久关闭。</p>
+<p>Microsoft Dynamics 365 Finance 的 <strong>Financial period close workspace</strong> 可以按公司、领域和责任人查看关账任务；依赖未完成的任务不能标为完成，任务可附凭证号、说明或报告等材料。<a href="https://learn.microsoft.com/en-us/dynamics365/finance/general-ledger/financial-period-close-workspace" class="ext" rel="noopener">Financial period close workspace</a>。文档说明的是任务之间的依赖；凭证内容的核实和期间锁由别的机制承担。</p>
+<p>期间能否过账，由另一套状态控制。Microsoft 的另一篇文档把 Open、On hold、Permanently closed 区分开：On hold 可以重新打开；Permanently closed 不能重开，也不能再记调整；模块与用户组的访问另有控制。<a href="https://learn.microsoft.com/en-us/dynamics365/finance/general-ledger/tasks/mass-financial-period-close" class="ext" rel="noopener">Mass financial period close</a>。本例采用经授权可以重开的冻结流程；日常的“出报表”走这条冻结流程，永久关闭另作决定。</p>
 <div class="table-wrap"><table>
 <thead>
 <tr>
@@ -72,11 +73,11 @@
 </thead>
 <tbody><tr>
 <td>Subledger entry 子账记录</td>
-<td>应付服务拥有业务金额；身份含租户、法人、来源对象、事件版本。会计日期、业务发生时间与收到时间分别记录，不合并成一个 timestamp</td>
+<td>应付服务拥有业务金额；身份含租户、法人、来源对象、事件版本。会计日期、业务发生时间与收到时间分三个字段记录</td>
 </tr>
 <tr>
 <td>Journal 凭证与 journal line 分录</td>
-<td>总账服务拥有 posted 事实；凭证使用唯一来源映射与规则版本，借贷平衡只是必要检查，不能证明科目、期间或业务真实性</td>
+<td>总账服务拥有 posted 事实；凭证使用唯一来源映射与规则版本，借贷平衡是必要检查；科目、期间与业务真实性另行核对</td>
 </tr>
 <tr>
 <td>Reconciliation 对账运行</td>
@@ -84,7 +85,7 @@
 </tr>
 <tr>
 <td>Accounting period 会计期间</td>
-<td>关账负责人决定开放、冻结与授权重开；总账写入服务执行 guard，后台导入也不能绕过</td>
+<td>关账负责人决定开放、冻结与授权重开；总账写入服务执行 guard，后台导入同样经过这道 guard</td>
 </tr>
 <tr>
 <td>Close task 关账任务</td>
@@ -92,10 +93,10 @@
 </tr>
 <tr>
 <td>Management report 管理报告</td>
-<td>报告服务拥有已发布版本；每个数能追到输入 run、凭证与分类规则，旧版本不会被新数据悄悄覆盖</td>
+<td>报告服务拥有已发布版本；每个数能追到输入 run、凭证与分类规则；新数据进入新版本，旧版本保持原样</td>
 </tr>
 </tbody></table></div>
-<p>应付会计提交业务记录，总账会计处理科目与调整，复核人判断差异，关账负责人冻结期间，管理者读取报告。编制与复核由不同的人承担，以避免职责冲突；能读报告的人不因此获得过账权，同一租户中的法人访问也要单独验证。源票据和总账的更正不能由一个管理员同时直接改写，否则差异就无从解释。</p>
+<p>应付会计提交业务记录，总账会计处理科目与调整，复核人判断差异，关账负责人冻结期间，管理者读取报告。编制与复核由不同的人承担，以避免职责冲突；读报告与过账是两项权限，同一租户中的法人访问也要单独验证。源票据和总账的更正由各自的负责人分别记录，差异才解释得清。</p>
 </section>
 <section class="scene" aria-labelledby="演算一次对账的手算与反例"><header class="scene-head"><h2 id="演算一次对账的手算与反例"><span class="scene-no" aria-hidden="true">03</span><span class="visually-hidden">演算：</span><span class="head">一次对账的手算与反例</span></h2></header><p class="scene-lede">对账要按来源身份逐笔展开才能定位错误；本例总账重复了 A、丢了 B，修复靠追加冲销和补记，既有记录保留。</p>
 <p>本例用正数表示应付增加、负数表示应付减少。正确的子账期末为：</p>
@@ -140,34 +141,170 @@
 <td>总账期末 1,707.00，子账期末 1,050.50</td>
 </tr>
 </tbody></table></div>
-<p>修复时，不能把总账余额字段直接改成 1,050.50。应先确认哪一笔 A 是重复来源，追加与该错误凭证关联的冲销 −707.00，再补记 B 的 +50.50；既有记录保留。修复后的总账变动为 50.50，差异为零。假设 A、B 都按费用处理，则两张发票合计借记费用 757.50、贷记应付 757.50，付款借记应付 707.00、贷记现金 707.00。可见付款清偿的是负债，本例中不会再产生一笔 707.00 的费用。</p>
+<p>修复时，不能把总账余额字段直接改成 1,050.50。应先确认哪一笔 A 是重复来源，追加与该错误凭证关联的冲销 −707.00，再补记 B 的 +50.50；既有记录保留。修复后的总账变动为 50.50，差异为零。</p>
+<figure class="drawing" data-drawing="h03-recon"><div class="dw-scroll" style="--dw-min:600px;--dw-max:900px">
+<svg viewBox="0 0 760 296" role="img" aria-labelledby="h03-recon-t h03-recon-d">
+  <title id="h03-recon-t">按来源键对齐子账与总账</title>
+  <desc id="h03-recon-d">来源键 A 在子账有一笔 +707.00，在总账有两笔 +707.00；B 在子账有 +50.50，总账没有；PAY-A 两侧都是 −707.00。期初 1,000.00，子账期末 1,050.50，总账期末 1,707.00，总账减子账 +656.50。修复时追加冲销 −707.00 关联重复的 A，补记 B +50.50，修复后总账变动 50.50，差异为零。</desc>
+  <text class="t-s" x="20" y="22">来源键</text>
+  <text class="t-b mid" x="180" y="22">子账变动</text>
+  <text class="t-b mid" x="400" y="22">总账变动</text>
+  <text class="t-b" x="520" y="22">修复</text>
+  <text class="t-b" x="20" y="60">A</text>
+  <text class="t-b" x="20" y="146">B</text>
+  <text class="t-b" x="20" y="196">PAY-A</text>
+  <g data-s="1">
+    <rect class="box" x="110" y="40" width="140" height="30"/><text class="t-n end" x="236" y="60">+707.00</text>
+    <rect class="box" x="110" y="126" width="140" height="30"/><text class="t-n end" x="236" y="146">+50.50</text>
+    <rect class="box" x="110" y="176" width="140" height="30"/><text class="t-n end" x="236" y="196">−707.00</text>
+  </g>
+  <g data-s="2">
+    <path class="ln" d="M250 55 H330"/><path class="ln" d="M290 55 V91 H330"/>
+    <rect class="box" x="330" y="40" width="140" height="30"/><text class="t-n end" x="456" y="60">+707.00</text>
+    <rect class="box-em" x="330" y="76" width="140" height="30"/><text class="t-n end" x="456" y="96">+707.00</text>
+    <path class="ln-dash" d="M250 141 H330"/>
+    <rect class="box-dash" x="330" y="126" width="140" height="30"/><text class="t-s" x="342" y="145">未入账</text><text class="t-n end" x="456" y="146">0.00</text>
+    <path class="ln" d="M250 191 H330"/>
+    <rect class="box" x="330" y="176" width="140" height="30"/><text class="t-n end" x="456" y="196">−707.00</text>
+  </g>
+  <path class="ln-soft" d="M20 222 H740"/>
+  <g data-s="3">
+    <text class="t-s" x="20" y="246">期初 1,000.00</text>
+    <text class="t-s" x="20" y="272">期末</text>
+    <text class="t-n end" x="236" y="272">1,050.50</text>
+    <text class="t-n end" x="456" y="272">1,707.00</text>
+    <text class="t-s end" x="456" y="246">总账减子账 +656.50</text>
+  </g>
+  <g data-s="4">
+    <path class="ln-soft" d="M470 91 H510"/><text class="t-n" x="520" y="96">冲销 −707.00</text><text class="t-s" x="520" y="113">关联重复的 A 凭证</text>
+    <path class="ln-soft" d="M470 141 H510"/><text class="t-n" x="520" y="146">补记 +50.50</text>
+    <text class="t" x="520" y="272">变动 50.50 · 差异 0</text>
+    <text class="t-s" x="520" y="246">修复后，既有记录保留</text>
+  </g>
+</svg>
+</div>
+<figcaption>来源键 A 在总账出现两次、B 一次也没有；按键展开后，两处差异各自有了修复动作。</figcaption></figure><p>假设 A、B 都按费用处理，则两张发票合计借记费用 757.50、贷记应付 757.50，付款借记应付 707.00、贷记现金 707.00。可见付款清偿的是负债，本例中不会再产生一笔 707.00 的费用。</p>
 <p><strong>反例一：净差为零的缺账。</strong> 若一笔发票 +100.00 和一笔付款 −100.00 都没有传入总账，期末余额依然对得上，明细却少了两笔。只看总差是否小于 0.01 的程序会错误地关闭对账。检查必须同时看来源覆盖、重复计数、金额、币种、期间和例外处置。借贷总额相等也有类似的盲点：错误地同时借记费用、贷记应付 100.00，仍然平衡。</p>
-<p><strong>反例二：同额异源的错配。</strong> 两个供应商各有一张 100.00 的发票，按金额贪心配对，可能把甲的子账连到乙的总账。系统应先按稳定的来源身份找候选；外部银行记录确实没有相同 ID 时，金额、日期、账户与参考号只能作为待核对的候选，不能为了“自动匹配率”任意消除差异。</p>
-<p><code>ALG:lookup</code> 对每一侧按完整来源键聚合，执行 full outer join，保留仅左侧、仅右侧、同键多笔与金额不等四类情况。若有 n 条子账、m 条总账，逐一互找约为 O(nm)；哈希聚合与连接在内存足够时平均约 O(n+m)，另需内存存放键与累计值。超出内存时，可以按法人、期间和来源类型分区，或排序后合并，排序成本约 O(n log n + m log m)。无论怎样优化，来源键都不能压成金额，未匹配行也不能过滤掉。</p>
-<p>如果允许按“科目＋日期＋币种”汇总过账，源记录与总账就不再一一对应。这时要保存 posting batch 的明细映射和控制总额，再在批内对齐，不要求总账行数等于发票行数。每次对账保留输入摘要、数量与批次成员范围，以免摘要相同却掩盖了明细的差别。</p>
+<figure class="drawing" data-drawing="h03-netzero"><div class="dw-scroll" style="--dw-min:560px;--dw-max:860px">
+<svg viewBox="0 0 720 196" role="img" aria-labelledby="h03-netzero-t h03-netzero-d">
+  <title id="h03-netzero-t">净差为零的缺账</title>
+  <desc id="h03-netzero-d">子账有一笔发票 +100.00 和一笔付款 −100.00，总账两笔都没有。两侧净变动都是 0，净差为零，未匹配的来源却有 2 条。</desc>
+  <text class="t-b mid" x="190" y="22">子账变动</text>
+  <text class="t-b mid" x="430" y="22">总账变动</text>
+  <text class="t-b" x="20" y="61">发票</text>
+  <text class="t-b" x="20" y="111">付款</text>
+  <rect class="box" x="120" y="40" width="140" height="30"/><text class="t-n end" x="246" y="60">+100.00</text>
+  <rect class="box" x="120" y="90" width="140" height="30"/><text class="t-n end" x="246" y="110">−100.00</text>
+  <path class="ln-dash" d="M260 55 H360"/><path class="ln-dash" d="M260 105 H360"/>
+  <rect class="box-dash" x="360" y="40" width="140" height="30"/><text class="t-s" x="372" y="59">未传入</text>
+  <rect class="box-dash" x="360" y="90" width="140" height="30"/><text class="t-s" x="372" y="109">未传入</text>
+  <path class="ln-soft" d="M20 140 H700"/>
+  <g data-s="1">
+    <text class="t-s" x="20" y="170">净变动</text>
+    <text class="t-n end" x="246" y="170">0.00</text>
+    <text class="t-n end" x="486" y="170">0.00</text>
+    <text class="t" x="540" y="170">净差 0</text>
+  </g>
+  <g data-s="2">
+    <text class="t-b t-em" x="540" y="96">未匹配 2 条</text>
+    <path class="ln-soft" d="M510 55 H530 V105 H510"/>
+  </g>
+</svg>
+</div>
+<figcaption>两笔方向相反的缺账在净额里互相抵消；按来源逐笔展开，未匹配条数仍是 2。</figcaption></figure><p><strong>反例二：同额异源的错配。</strong> 两个供应商各有一张 100.00 的发票，按金额贪心配对，可能把甲的子账连到乙的总账。系统应先按稳定的来源身份找候选；外部银行记录确实没有相同 ID 时，金额、日期、账户与参考号只能作为待核对的候选，不能为了“自动匹配率”任意消除差异。</p>
+<p><code>ALG:lookup</code> 对每一侧按完整来源键聚合，执行 full outer join，保留仅左侧、仅右侧、同键多笔与金额不等四类情况。若有 n 条子账、m 条总账，逐一互找约为 O(nm)；哈希聚合与连接在内存足够时平均约 O(n+m)，另需内存存放键与累计值。超出内存时，可以按法人、期间和来源类型分区，或排序后合并，排序成本约 O(n log n + m log m)。无论怎样优化，都按完整来源键连接，未匹配行全部保留。</p>
+<p>如果允许按“科目＋日期＋币种”汇总过账，源记录与总账就不再一一对应。这时要保存 posting batch 的明细映射和控制总额，再在批内对齐，总账行数可以少于发票行数。每次对账保留输入摘要、数量与批次成员范围，以免摘要相同却掩盖了明细的差别。</p>
 </section>
-<section class="scene" aria-labelledby="时间窗口与期间归属"><header class="scene-head"><h2 id="时间窗口与期间归属"><span class="scene-no" aria-hidden="true">04</span><span class="head">时间窗口与期间归属</span></h2></header><p class="scene-lede">10 月 31 日发生、11 月 2 日才到达接口的业务是否属于 10 月，由会计政策决定，与网络延迟无关；<code>ALG:windows</code> 处理的正是这种期间归属，日期筛选只是其中一步。本例规定：冻结前已获专业确认、会计日期落在期间内的记录进入候选集合；每个上游同时给出导出批次号、截止点和控制总数。对账运行固定这些输入，计算途中不混入新批次。</p>
-<p>“取了截止到序号 500 的事件”只说明系统读到了哪里，不能证明现实世界已没有遗漏。应付负责人还要确认该批次的覆盖范围，并登记已收货未到票、未完成调整等已知例外。cutoff 是一致取数条件，完整性声明是业务责任；两者缺一，报告都不能标为“最终版”。半开区间使 11 月 1 日 00:00 只属于下一期间；日期边界采用法人时区，存储中保留明确的会计日期及其规则。</p>
+<section class="scene" aria-labelledby="时间窗口与期间归属"><header class="scene-head"><h2 id="时间窗口与期间归属"><span class="scene-no" aria-hidden="true">04</span><span class="head">时间窗口与期间归属</span></h2></header><p class="scene-lede">10 月 31 日发生、11 月 2 日才到达接口的业务是否属于 10 月，由会计政策决定，与网络延迟无关；<code>ALG:windows</code> 处理的正是这种期间归属，日期筛选只是其中一步。本例规定：冻结前已获专业确认、会计日期落在期间内的记录进入候选集合；每个上游同时给出导出批次号、截止点和控制总数。对账运行固定这些输入，计算途中只用这些批次。</p>
+<p>“取了截止到序号 500 的事件”只说明系统读到了哪里；现实中有没有遗漏，由应付负责人确认该批次的覆盖范围，并登记已收货未到票、未完成调整等已知例外。cutoff 是一致取数条件，完整性声明是业务责任；两者齐备，报告才能标为“最终版”。半开区间使 11 月 1 日 00:00 只属于下一期间；日期边界采用法人时区，存储中保留明确的会计日期及其规则。</p>
 <p>本例期间状态为 open → freezing → frozen。开始冻结后，系统阻止普通的新过账，并记录边界版本；已在执行的事务与冻结动作要经过同一道期间写入检查：要么确定在边界前提交，要么被拒绝后重新提交。如果先读一个 <code>is_closed</code> 布尔值、几秒后再写入，过账就会和关账争抢边界。冻结前所有需要纳入的事务完成，输入核对和调整复核通过，才能生成 frozen 快照。</p>
-<p>迟到发票不能悄悄改变已发布的报告。本例政策允许关账负责人授权重开：记录理由与旧报告版本，期间进入 reopened，重新核对后生成新快照和报告 v2，v1 保留并标明已被替代。若真实政策禁止重开，由专业人员决定下一开放期间的调整及披露；系统不自动替用户决定期间归属。</p>
-</section>
+<p>迟到发票进入新的报告版本，已发布的报告保持原样。本例政策允许关账负责人授权重开：记录理由与旧报告版本，期间进入 reopened，重新核对后生成新快照和报告 v2，v1 保留并标明已被替代。例如 v1 发布后，11 月 2 日收到一张经会计人员认定属于 10 月的 50.00 发票：授权重开、重新对账后，应付期末由 1,050.50 变为 1,100.50，记在 v2 上。若真实政策禁止重开，由专业人员决定下一开放期间的调整及披露；系统不自动替用户决定期间归属。</p>
+<figure class="drawing" data-drawing="h03-late"><div class="dw-scroll" style="--dw-min:600px;--dw-max:900px">
+<svg viewBox="0 0 760 290" role="img" aria-labelledby="h03-late-t h03-late-d">
+  <title id="h03-late-t">迟到发票与报告版本</title>
+  <desc id="h03-late-d">10 月期间为半开区间 [10 月 1 日 00:00, 11 月 1 日 00:00)，11 月 1 日 00:00 属于下一期间。报告 v1 发布，应付期末 1,050.50。11 月 2 日收到一张 50.00 发票，会计人员认定属于 10 月；授权重开、重新对账后生成 v2，应付期末 1,100.50，v2 关联 v1，v1 内容不变并标明已被替代。</desc>
+  <defs><marker id="h03-late-ah" viewBox="0 0 8 8" refX="7" refY="4" markerUnits="userSpaceOnUse" markerWidth="9" markerHeight="9" orient="auto"><path class="f-ink" d="M0 0 L8 4 L0 8 z"/></marker></defs>
+  <path class="ln-soft" d="M120 60 H750"/>
+  <rect class="box f2" x="140" y="42" width="280" height="36"/>
+  <text class="t-b mid" x="280" y="65">10 月期间</text>
+  <circle class="f-ink" cx="140" cy="60" r="4"/>
+  <circle class="box" cx="420" cy="60" r="5"/>
+  <text class="t-s mid" x="140" y="98">10 月 1 日 00:00</text>
+  <text class="t-s mid" x="420" y="98">11 月 1 日 00:00</text>
+  <text class="t-s mid" x="420" y="113">属于下一期间</text>
+  <path class="ln-soft" d="M580 56 V64"/><text class="t-s mid" x="580" y="98">11 月 2 日</text>
+  <text class="t-b end" x="110" y="160">记录</text>
+  <text class="t-b end" x="110" y="232">报告</text>
+  <g data-s="1">
+    <rect class="box" x="430" y="206" width="140" height="44"/>
+    <text class="t-b" x="442" y="225">v1</text><text class="t-s" x="470" y="225">冻结后发布</text>
+    <text class="t-s" x="442" y="243">应付期末</text><text class="t-n" x="494" y="243">1,050.50</text>
+  </g>
+  <g data-s="2">
+    <circle class="f-ink" cx="580" cy="156" r="4"/>
+    <text class="t" x="590" y="152">收到 50.00 发票</text>
+    <path class="ln" marker-end="url(#h03-late-ah)" d="M574 158 C 470 160, 330 140, 300 82"/>
+    <text class="t-s" x="150" y="140">会计人员认定属于 10 月</text>
+  </g>
+  <g data-s="3">
+    <path class="ln" marker-end="url(#h03-late-ah)" d="M584 162 L640 204"/>
+    <text class="t-s" x="626" y="180">授权重开，重新对账</text>
+    <rect class="box" x="600" y="206" width="150" height="44"/>
+    <text class="t-b" x="612" y="225">v2</text><text class="t-s" x="638" y="225">关联 v1</text>
+    <text class="t-s" x="612" y="243">应付期末</text><text class="t-n" x="664" y="243">1,100.50</text>
+    <text class="t-s t-em" x="430" y="272">v1 内容不变，标明已被 v2 替代</text>
+  </g>
+</svg>
+</div>
+<figcaption>迟到的记录按会计日期归回 10 月，结果落在新的 v2 上；已发布的 v1 原样保留。</figcaption></figure></section>
 <section class="scene" aria-labelledby="关账依赖图"><header class="scene-head"><h2 id="关账依赖图"><span class="scene-no" aria-hidden="true">05</span><span class="head">关账依赖图</span></h2></header><p class="scene-lede">依赖图给出合法的先后和时间下界，资源够不够要另算：本例依赖下界为 7 小时，同一会计独占 B、C 时升到 9 小时。</p>
-<p>设 A 为完整导入子账，B 为应付与总账对账，C 为银行核对，D 为差异调整复核，E 为生成报告。依赖为 <code>A → B</code>、<code>B → D</code>、<code>C → D</code>、<code>D → E</code>。全部前提完成且证据版本有效，后继才能开始。报告生成成功，也说明不了 B、C 已正确完成。</p>
+<p>设 A 为完整导入子账，B 为应付与总账对账，C 为银行核对，D 为差异调整复核，E 为生成报告。依赖为 <code>A → B</code>、<code>B → D</code>、<code>C → D</code>、<code>D → E</code>。全部前提完成且证据版本有效，后继才能开始。B、C 是否正确完成，看它们各自的证据；报告生成成功只说明 E 跑完了。</p>
 <p><code>ALG:scheduling</code> 可用入度表做拓扑排序，每完成一个任务，就减少其后继的未完成前提数；对 v 个任务、e 条依赖，遍历为 O(v+e)。入度始终不能归零的节点，提示存在依赖环或未满足的条件。若 A、B、C、D、E 分别需要 2、3、4、1、1 小时，假设资源独立、无工作日限制、时刻 0 开始，则 A 在 2 完成，B 在 5 完成，C 在 4 完成，D 只能在 5 开始，于 6 完成，E 于 7 完成。把五项时长直接相加得 11 小时，是忽略了并行。</p>
-<p>这个 7 小时只是依赖下界。若 B、C 都由同一会计独占处理，该人员至少有 3+4 小时的工作，加上后续 D、E 的 2 小时，下界升至 9 小时；安排 C 在 0–4、B 在 4–7，恰好达到 9，前提是 A 使用另一资源。现实中还有休息日、审批等待和访问限制。拓扑排序给出合法的先后，资源是否够用是另一回事；复杂的人工复核也压不成确定的时长。若新增 <code>E → A</code>，图中出现环，保存模板时就应拒绝，并指出成环的路径，以免任务长期显示“等待”。</p>
+<p>这个 7 小时只是依赖下界。若 B、C 都由同一会计独占处理，该人员至少有 3+4 小时的工作，加上后续 D、E 的 2 小时，下界升至 9 小时；安排 C 在 0–4、B 在 4–7，恰好达到 9，前提是 A 使用另一资源。现实中还有休息日、审批等待和访问限制。拓扑排序给出合法的先后，资源是否够用是另一回事；复杂的人工复核也压不成确定的时长。</p>
+<figure class="drawing" data-drawing="h03-schedule"><div class="dw-scroll" style="--dw-min:640px;--dw-max:940px">
+<svg viewBox="0 0 780 340" role="img" aria-labelledby="h03-schedule-t h03-schedule-d">
+  <title id="h03-schedule-t">关账依赖图的两种排法</title>
+  <desc id="h03-schedule-d">A 完整导入子账 2 小时，B 应付与总账对账 3 小时，C 银行核对 4 小时，D 差异调整复核 1 小时，E 生成报告 1 小时；依赖为 A→B、B→D、C→D、D→E。资源独立时 A [0,2)、B [2,5)、C [0,4)、D [5,6)、E [6,7)，共 7 小时；同一会计独占 B、C 时 C [0,4)、B [4,7)、D [7,8)、E [8,9)，共 9 小时，A 使用另一资源。</desc>
+  <defs><marker id="h03-schedule-ah" viewBox="0 0 8 8" refX="7" refY="4" markerUnits="userSpaceOnUse" markerWidth="9" markerHeight="9" orient="auto"><path class="f-ink" d="M0 0 L8 4 L0 8 z"/></marker></defs>
+  <text class="t-b" x="0" y="18">依赖</text>
+  <rect class="box" x="0" y="60" width="54" height="32"/><text class="t-b mid" x="27" y="81">A</text><text class="t-s mid" x="27" y="108">导入 · 2</text>
+  <rect class="box" x="0" y="190" width="54" height="32"/><text class="t-b mid" x="27" y="211">C</text><text class="t-s mid" x="27" y="238">银行 · 4</text>
+  <rect class="box" x="90" y="60" width="54" height="32"/><text class="t-b mid" x="117" y="81">B</text><text class="t-s mid" x="117" y="108">对账 · 3</text>
+  <rect class="box" x="180" y="125" width="54" height="32"/><text class="t-b mid" x="207" y="146">D</text><text class="t-s mid" x="207" y="173">复核 · 1</text>
+  <rect class="box" x="250" y="125" width="54" height="32"/><text class="t-b mid" x="277" y="146">E</text><text class="t-s mid" x="277" y="173">报告 · 1</text>
+  <path class="ln" marker-end="url(#h03-schedule-ah)" d="M54 76 H87"/>
+  <path class="ln" marker-end="url(#h03-schedule-ah)" d="M144 80 L178 133"/>
+  <path class="ln" marker-end="url(#h03-schedule-ah)" d="M54 204 L178 148"/>
+  <path class="ln" marker-end="url(#h03-schedule-ah)" d="M234 141 H247"/>
+  <text class="t-s" x="0" y="290">时长单位：小时</text>
+  <path class="ln-soft" d="M360 28 V150"/><path class="ln-soft" d="M360 182 V302"/><text class="t-n mid" x="360" y="320">0</text><path class="ln-soft" d="M403 28 V150"/><path class="ln-soft" d="M403 182 V302"/><text class="t-n mid" x="403" y="320">1</text><path class="ln-soft" d="M446 28 V150"/><path class="ln-soft" d="M446 182 V302"/><text class="t-n mid" x="446" y="320">2</text><path class="ln-soft" d="M489 28 V150"/><path class="ln-soft" d="M489 182 V302"/><text class="t-n mid" x="489" y="320">3</text><path class="ln-soft" d="M532 28 V150"/><path class="ln-soft" d="M532 182 V302"/><text class="t-n mid" x="532" y="320">4</text><path class="ln-soft" d="M575 28 V150"/><path class="ln-soft" d="M575 182 V302"/><text class="t-n mid" x="575" y="320">5</text><path class="ln-soft" d="M618 28 V150"/><path class="ln-soft" d="M618 182 V302"/><text class="t-n mid" x="618" y="320">6</text><path class="ln-soft" d="M661 28 V150"/><path class="ln-soft" d="M661 182 V302"/><text class="t-n mid" x="661" y="320">7</text><path class="ln-soft" d="M704 28 V150"/><path class="ln-soft" d="M704 182 V302"/><text class="t-n mid" x="704" y="320">8</text><path class="ln-soft" d="M747 28 V150"/><path class="ln-soft" d="M747 182 V302"/><text class="t-n mid" x="747" y="320">9</text>
+  <path class="ln" d="M360 302 H747"/>
+  <g data-s="1">
+    <text class="t-b" x="360" y="20">资源独立</text>
+    <text class="t mid" x="342" y="44">A</text><rect class="box f3" x="360" y="30" width="86" height="19"/><text class="t-s mid" x="403.0" y="44">[0,2)</text><text class="t mid" x="342" y="68">B</text><rect class="box f3" x="446" y="54" width="129" height="19"/><text class="t-s mid" x="510.5" y="68">[2,5)</text><text class="t mid" x="342" y="92">C</text><rect class="box f3" x="360" y="78" width="172" height="19"/><text class="t-s mid" x="446.0" y="92">[0,4)</text><text class="t mid" x="342" y="116">D</text><rect class="box f3" x="575" y="102" width="43" height="19"/><text class="t-s mid" x="596.5" y="116">[5,6)</text><text class="t mid" x="342" y="140">E</text><rect class="box f3" x="618" y="126" width="43" height="19"/><text class="t-s mid" x="639.5" y="140">[6,7)</text>
+    <path class="ln-strong" d="M661 26 V150"/><text class="t-b mid" x="661" y="20">7 小时</text>
+  </g>
+  <g data-s="2">
+    <text class="t-b" x="360" y="174">同一会计独占 B、C，A 用另一资源</text>
+    <text class="t mid" x="342" y="198">A</text><rect class="box f3" x="360" y="184" width="86" height="19"/><text class="t-s mid" x="403.0" y="198">[0,2)</text><text class="t mid" x="342" y="222">B</text><rect class="box-em" x="532" y="208" width="129" height="19"/><text class="t-s mid" x="596.5" y="222">[4,7)</text><text class="t mid" x="342" y="246">C</text><rect class="box f3" x="360" y="232" width="172" height="19"/><text class="t-s mid" x="446.0" y="246">[0,4)</text><text class="t mid" x="342" y="270">D</text><rect class="box f3" x="661" y="256" width="43" height="19"/><text class="t-s mid" x="682.5" y="270">[7,8)</text><text class="t mid" x="342" y="294">E</text><rect class="box f3" x="704" y="280" width="43" height="19"/><text class="t-s mid" x="725.5" y="294">[8,9)</text>
+    <path class="ln-strong" d="M747 182 V302"/><text class="t-b mid" x="747" y="176">9 小时</text>
+  </g>
+</svg>
+</div>
+<figcaption>依赖给出 7 小时的下界；B、C 由同一会计先后处理时，B 推到 C 之后，下界升到 9 小时。</figcaption></figure><p>若新增 <code>E → A</code>，图中出现环，保存模板时就应拒绝，并指出成环的路径，以免任务长期显示“等待”。</p>
 </section>
 <section class="scene" aria-labelledby="关账工作台与对账命令"><header class="scene-head"><h2 id="关账工作台与对账命令"><span class="scene-no" aria-hidden="true">06</span><span class="head">关账工作台与对账命令</span></h2></header><p class="scene-lede">工作台把计算完成、差异已解释和任务已复核分开显示。</p>
 <p>工作台先按法人、期间、记账币种与对账运行版本筛选。首页给出未完成的前提、差异数量、数据截止点和负责人；对账详情同时展示控制总额与未匹配明细，点击差异可以回到源记录、凭证与处置理由。“差异总额 0”旁边仍要显示未匹配条数，免得一片绿色掩盖相互抵消的错误。</p>
-<p>“运行对账”是带 run ID 的异步命令。服务端校验权限、冻结输入 manifest，并保存 run ID；页面显示 queued、running、failed 或 completed。刷新页面或重新连接后，按同一 run 查询。completed 意味着计算完成；只有经过复核、没有未解释差异且依赖版本未变，才可显示 reconciled。任务完成按钮写入责任人、证据引用与被核对的版本；证据一旦改变，相应任务及其后继结果都要失效，不能只改动一个进度百分比。</p>
+<p>“运行对账”是带 run ID 的异步命令。服务端校验权限、冻结输入 manifest，并保存 run ID；页面显示 queued、running、failed 或 completed。刷新页面或重新连接后，按同一 run 查询。completed 意味着计算完成；只有经过复核、没有未解释差异且依赖版本未变，才可显示 reconciled。任务完成按钮写入责任人、证据引用与被核对的版本；证据一旦改变，相应任务及其后继结果都要失效，进度随之重算。</p>
 <p>下图与结构数据假定总账是独立部署的外部系统：适配器只拥有导入尝试，外部总账拥有 posted 事实，本地保存已核对的副本。单体部署可以把这些服务合在一起，但各对象由谁负责仍要分清。</p>
-<figure class="graph-fig"><div class="graph-wrap"><svg class="graph" viewBox="0 0 954 170" width="954" height="170" style="max-width:1097px;min-width:763px" role="img" aria-label="H03 · 子账、对账、关账与管理报告"><defs><marker id="arrow-g1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arrowhead"/></marker></defs><path class="edge" data-type="operates" data-from="Accountant" data-to="UI" d="M110.0,81.0 Q165.0,81.0 233.0,89.5" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Accountant" data-to="UI"><rect x="137.0" y="73.0" width="56" height="16" rx="3"/><text x="165.0" y="85.0">operates</text></g><path class="edge" data-type="commands" data-from="UI" data-to="Close" d="M322.0,95.0 Q390.0,95.0 445.0,95.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="UI" data-to="Close"><rect x="362.0" y="87.0" width="56" height="16" rx="3"/><text x="390.0" y="99.0">commands</text></g><path class="edge" data-type="emits" data-from="AP" data-to="Batch" d="M110.0,25.0 Q165.0,25.0 220.0,25.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="AP" data-to="Batch"><rect x="146.0" y="17.0" width="38" height="16" rx="3"/><text x="165.0" y="29.0">emits</text></g><path class="edge" data-type="delivers" data-from="Batch" data-to="Ledger" d="M335.0,25.0 Q390.0,25.0 451.5,25.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Batch" data-to="Ledger"><rect x="362.0" y="17.0" width="56" height="16" rx="3"/><text x="390.0" y="29.0">delivers</text></g><path class="edge" data-type="requests" data-from="Ledger" data-to="GL" d="M553.5,25.0 Q615.0,25.0 676.5,25.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Ledger" data-to="GL"><rect x="587.0" y="17.0" width="56" height="16" rx="3"/><text x="615.0" y="29.0">requests</text></g><path class="edge" data-type="owns" data-from="GL" data-to="Journal" d="M752.5,25.0 Q808.0,25.0 878.8,78.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="GL" data-to="Journal"><rect x="792.0" y="17.0" width="32" height="16" rx="3"/><text x="808.0" y="29.0">owns</text></g><path class="edge" data-type="stores" data-from="DB" data-to="Journal" d="M759.0,95.0 Q808.0,95.0 857.0,95.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="DB" data-to="Journal"><rect x="786.0" y="87.0" width="44" height="16" rx="3"/><text x="808.0" y="99.0">stores</text></g><path class="edge" data-type="reads" data-from="Close" data-to="DB" d="M560.0,95.0 Q615.0,95.0 670.0,95.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Close" data-to="DB"><rect x="596.0" y="87.0" width="38" height="16" rx="3"/><text x="615.0" y="99.0">reads</text></g><path class="edge" data-type="derived_from" data-from="Report" data-to="Journal" d="M97.0,147.6 Q165.0,154.0 221.3,154.0 Q277.5,154.0 333.8,154.0 Q390.0,154.0 446.3,154.0 Q502.5,154.0 558.8,154.0 Q615.0,154.0 664.8,154.0 Q714.5,154.0 761.3,154.0 Q808.0,154.0 874.6,112.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Report" data-to="Journal"><rect x="462.5" y="146.0" width="80" height="16" rx="3"/><text x="502.5" y="158.0">derived_from</text></g><path class="edge" data-type="projects" data-from="Report" data-to="UI" d="M97.0,136.5 Q165.0,123.0 233.0,106.1" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Report" data-to="UI"><rect x="137.0" y="115.0" width="56" height="16" rx="3"/><text x="165.0" y="127.0">projects</text></g><g class="node" data-id="Accountant"><rect x="8.0" y="64.0" width="102" height="34" rx="4"/><text x="59.0" y="85.5">会计与复核人</text></g><g class="node" data-id="UI"><rect x="233.0" y="78.0" width="89" height="34" rx="4"/><text x="277.5" y="99.5">关账工作台</text></g><g class="node" data-id="Close"><rect x="445.0" y="78.0" width="115" height="34" rx="4"/><text x="502.5" y="99.5">对账与关账服务</text></g><g class="node" data-id="AP"><rect x="8.0" y="8.0" width="102" height="34" rx="4"/><text x="59.0" y="29.5">应付子账系统</text></g><g class="node" data-id="Batch"><rect x="220.0" y="8.0" width="115" height="34" rx="4"/><text x="277.5" y="29.5">已确认批次事件</text></g><g class="node" data-id="Ledger"><rect x="451.5" y="8.0" width="102" height="34" rx="4"/><text x="502.5" y="29.5">总账适配服务</text></g><g class="node" data-id="GL"><rect x="676.5" y="8.0" width="76" height="34" rx="4"/><text x="714.5" y="29.5">外部总账</text></g><g class="node" data-id="Journal"><rect x="857.0" y="78.0" width="89" height="34" rx="4"/><text x="901.5" y="99.5">已过账凭证</text></g><g class="node" data-id="DB"><rect x="670.0" y="78.0" width="89" height="34" rx="4"/><text x="714.5" y="99.5">事务数据库</text></g><g class="node" data-id="Report"><rect x="21.0" y="127.0" width="76" height="34" rx="4"/><text x="59.0" y="148.5">报告快照</text></g></svg></div><details class="edge-list"><summary>图中关系的文字列表</summary><ul><li>会计与复核人 <span class="rel">—operates→</span> 关账工作台</li><li>关账工作台 <span class="rel">—commands→</span> 对账与关账服务</li><li>应付子账系统 <span class="rel">—emits→</span> 已确认批次事件</li><li>已确认批次事件 <span class="rel">—delivers→</span> 总账适配服务</li><li>总账适配服务 <span class="rel">—requests→</span> 外部总账</li><li>外部总账 <span class="rel">—owns→</span> 已过账凭证</li><li>事务数据库 <span class="rel">—stores→</span> 已过账凭证</li><li>对账与关账服务 <span class="rel">—reads→</span> 事务数据库</li><li>报告快照 <span class="rel">—derived_from→</span> 已过账凭证</li><li>报告快照 <span class="rel">—projects→</span> 关账工作台</li></ul></details></figure><p>本例后端可以用 Java/Spring 或 Python/Django 管理凭证、期间锁与任务，配 PostgreSQL；前端用 React/Vue 展示可展开的差异表和依赖图，也可以先用服务端页面交付可复核的表格。规模小时，直接在事务数据库中计算，减少数据搬运；规模大时，可以把冻结明细导出到 Parquet，用 DuckDB 或独立分析服务计算，但必须保留导出 manifest、版本与校验总额，再把结果登记回权威对账记录。分析副本不能直接授权过账。</p>
+<figure class="graph-fig"><div class="graph-wrap"><svg class="graph" viewBox="0 0 954 170" width="954" height="170" style="max-width:1097px;min-width:763px" role="img" aria-label="H03 · 子账、对账、关账与管理报告"><defs><marker id="arrow-g1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arrowhead"/></marker></defs><path class="edge" data-type="operates" data-from="Accountant" data-to="UI" d="M110.0,81.0 Q165.0,81.0 233.0,89.5" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Accountant" data-to="UI"><rect x="137.0" y="73.0" width="56" height="16" rx="3"/><text x="165.0" y="85.0">operates</text></g><path class="edge" data-type="commands" data-from="UI" data-to="Close" d="M322.0,95.0 Q390.0,95.0 445.0,95.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="UI" data-to="Close"><rect x="362.0" y="87.0" width="56" height="16" rx="3"/><text x="390.0" y="99.0">commands</text></g><path class="edge" data-type="emits" data-from="AP" data-to="Batch" d="M110.0,25.0 Q165.0,25.0 220.0,25.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="AP" data-to="Batch"><rect x="146.0" y="17.0" width="38" height="16" rx="3"/><text x="165.0" y="29.0">emits</text></g><path class="edge" data-type="delivers" data-from="Batch" data-to="Ledger" d="M335.0,25.0 Q390.0,25.0 451.5,25.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Batch" data-to="Ledger"><rect x="362.0" y="17.0" width="56" height="16" rx="3"/><text x="390.0" y="29.0">delivers</text></g><path class="edge" data-type="requests" data-from="Ledger" data-to="GL" d="M553.5,25.0 Q615.0,25.0 676.5,25.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Ledger" data-to="GL"><rect x="587.0" y="17.0" width="56" height="16" rx="3"/><text x="615.0" y="29.0">requests</text></g><path class="edge" data-type="owns" data-from="GL" data-to="Journal" d="M752.5,25.0 Q808.0,25.0 878.8,78.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="GL" data-to="Journal"><rect x="792.0" y="17.0" width="32" height="16" rx="3"/><text x="808.0" y="29.0">owns</text></g><path class="edge" data-type="stores" data-from="DB" data-to="Journal" d="M759.0,95.0 Q808.0,95.0 857.0,95.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="DB" data-to="Journal"><rect x="786.0" y="87.0" width="44" height="16" rx="3"/><text x="808.0" y="99.0">stores</text></g><path class="edge" data-type="reads" data-from="Close" data-to="DB" d="M560.0,95.0 Q615.0,95.0 670.0,95.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Close" data-to="DB"><rect x="596.0" y="87.0" width="38" height="16" rx="3"/><text x="615.0" y="99.0">reads</text></g><path class="edge" data-type="derived_from" data-from="Report" data-to="Journal" d="M97.0,147.6 Q165.0,154.0 221.3,154.0 Q277.5,154.0 333.8,154.0 Q390.0,154.0 446.3,154.0 Q502.5,154.0 558.8,154.0 Q615.0,154.0 664.8,154.0 Q714.5,154.0 761.3,154.0 Q808.0,154.0 874.6,112.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Report" data-to="Journal"><rect x="462.5" y="146.0" width="80" height="16" rx="3"/><text x="502.5" y="158.0">derived_from</text></g><path class="edge" data-type="projects" data-from="Report" data-to="UI" d="M97.0,136.5 Q165.0,123.0 233.0,106.1" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Report" data-to="UI"><rect x="137.0" y="115.0" width="56" height="16" rx="3"/><text x="165.0" y="127.0">projects</text></g><g class="node" data-id="Accountant"><rect x="8.0" y="64.0" width="102" height="34" rx="4"/><text x="59.0" y="85.5">会计与复核人</text></g><g class="node" data-id="UI"><rect x="233.0" y="78.0" width="89" height="34" rx="4"/><text x="277.5" y="99.5">关账工作台</text></g><g class="node" data-id="Close"><rect x="445.0" y="78.0" width="115" height="34" rx="4"/><text x="502.5" y="99.5">对账与关账服务</text></g><g class="node" data-id="AP"><rect x="8.0" y="8.0" width="102" height="34" rx="4"/><text x="59.0" y="29.5">应付子账系统</text></g><g class="node" data-id="Batch"><rect x="220.0" y="8.0" width="115" height="34" rx="4"/><text x="277.5" y="29.5">已确认批次事件</text></g><g class="node" data-id="Ledger"><rect x="451.5" y="8.0" width="102" height="34" rx="4"/><text x="502.5" y="29.5">总账适配服务</text></g><g class="node" data-id="GL"><rect x="676.5" y="8.0" width="76" height="34" rx="4"/><text x="714.5" y="29.5">外部总账</text></g><g class="node" data-id="Journal"><rect x="857.0" y="78.0" width="89" height="34" rx="4"/><text x="901.5" y="99.5">已过账凭证</text></g><g class="node" data-id="DB"><rect x="670.0" y="78.0" width="89" height="34" rx="4"/><text x="714.5" y="99.5">事务数据库</text></g><g class="node" data-id="Report"><rect x="21.0" y="127.0" width="76" height="34" rx="4"/><text x="59.0" y="148.5">报告快照</text></g></svg></div><details class="edge-list"><summary>图中关系的文字列表</summary><ul><li>会计与复核人 <span class="rel">—operates→</span> 关账工作台</li><li>关账工作台 <span class="rel">—commands→</span> 对账与关账服务</li><li>应付子账系统 <span class="rel">—emits→</span> 已确认批次事件</li><li>已确认批次事件 <span class="rel">—delivers→</span> 总账适配服务</li><li>总账适配服务 <span class="rel">—requests→</span> 外部总账</li><li>外部总账 <span class="rel">—owns→</span> 已过账凭证</li><li>事务数据库 <span class="rel">—stores→</span> 已过账凭证</li><li>对账与关账服务 <span class="rel">—reads→</span> 事务数据库</li><li>报告快照 <span class="rel">—derived_from→</span> 已过账凭证</li><li>报告快照 <span class="rel">—projects→</span> 关账工作台</li></ul></details></figure><p>本例后端可以用 Java/Spring 或 Python/Django 管理凭证、期间锁与任务，配 PostgreSQL；前端用 React/Vue 展示可展开的差异表和依赖图，也可以先用服务端页面交付可复核的表格。规模小时，直接在事务数据库中计算，减少数据搬运；规模大时，可以把冻结明细导出到 Parquet，用 DuckDB 或独立分析服务计算，但必须保留导出 manifest、版本与校验总额，再把结果登记回权威对账记录；过账授权只来自权威对账记录。</p>
 <p>金额采用精度明确的小数或整数最小单位，拒绝 NaN、Infinity、币种缺失和不明确的舍入。PostgreSQL 文档把 numeric/decimal 与不精确的浮点类型区分开，并说明声明 scale 后，存储时会相应舍入。<a href="https://www.postgresql.org/docs/current/datatype-numeric.html" class="ext" rel="noopener">Numeric Types §8.1.2、§8.1.3</a>。因此数据库字段类型也要服从金额政策；把所有中间单价过早存成两位小数，大量行累计时可能损失信息。这一条是技术选型上的推论。</p>
 </section>
 <section class="scene" aria-labelledby="故障并发与规模"><header class="scene-head"><h2 id="故障并发与规模"><span class="scene-no" aria-hidden="true">07</span><span class="head">故障、并发与规模</span></h2></header><p class="scene-lede">故障恢复依靠稳定的来源身份、operation ID 和冻结的输入 manifest：超时保持 unknown 并查回，重跑使用同一批输入。</p>
 <p>正常链路是：业务侧确认 A、B、PAY-A；总账按固定映射各过账一次；会计运行对账并检查全部明细；复核人接受处置证据；关账服务完成冻结；报告服务生成 v1，展示应付期末 1,050.50 与费用 757.50，并允许向下追溯来源。银行核对是另一道控制：若现金期初为 2,000.00，本例只有付款 707.00，期末现金为 1,293.00；银行记录里有其他费用时要另外解释，不能因为应付对平就推定现金也对平。</p>
 <p>外部总账的导入请求超时，可能是“凭证已入账、响应未返回”。适配器先保存稳定的 <code>(tenant, company, source_id, accounting_rule_version)</code> 与 operation ID，再发送；超时后保持 unknown，按外部批次或来源引用查回。接收方没有唯一来源约束时，本地重试防不住重复，必须先对账或由人工接管。重复的子账事件不得生成第二笔凭证；更正事件要引用被更正的版本，若早于原事件到达，先暂存，等它依赖的原事件到达，不把孤立的负数冲销当作已经完结。</p>
-<p>报告任务在写出文件后崩溃，可以按同一 report ID 和内容校验找回已生成的对象，再完成登记；未登记的文件不会自动成为发布版本。对账任务在汇总中断后，从同一冻结 manifest 重跑，不偷偷改用新的实时明细。报告缓存键包含租户、法人、期间、report version、mapping version 与权限范围；新版本发布时更新当前版本指针，旧版仍可按明确链接查阅。缓存里的“任务完成”标签不能用来绕过期间 guard。</p>
-<p>假设 50 个租户、500 个法人，每月共 1,000 万条分录，单个法人单个期间最多 200 万条、4,000 个关账任务，20 人同时复核。待测目标为：有索引的 50 行差异列表 p95 800 毫秒，任务命令 p95 1 秒，冻结输入的 200 万行核对在 10 分钟内完成；同时记录内存、磁盘临时数据、队列等待、重跑成本及缓存冷/热条件。扫描期间不长时间持有写锁，一致性由固定快照与输入 manifest 提供。期间冻结与新过账要按先后顺序判定边界，繁忙法人不应靠一把全库锁阻塞其他法人。以上是假设的负载与待测目标，尚未实测。</p>
+<p>报告任务在写出文件后崩溃，可以按同一 report ID 和内容校验找回已生成的对象，再完成登记；未登记的文件不会自动成为发布版本。对账任务在汇总中断后，从同一冻结 manifest 重跑。报告缓存键包含租户、法人、期间、report version、mapping version 与权限范围；新版本发布时更新当前版本指针，旧版仍可按明确链接查阅。期间 guard 只读权威状态，缓存里的“任务完成”标签不参与判断。</p>
+<p>假设 50 个租户、500 个法人，每月共 1,000 万条分录，单个法人单个期间最多 200 万条、4,000 个关账任务，20 人同时复核。待测目标为：有索引的 50 行差异列表 p95 800 毫秒，任务命令 p95 1 秒，冻结输入的 200 万行核对在 10 分钟内完成；同时记录内存、磁盘临时数据、队列等待、重跑成本及缓存冷/热条件。扫描期间不长时间持有写锁，一致性由固定快照与输入 manifest 提供。期间冻结与新过账要按先后顺序判定边界；锁的范围按法人划分，繁忙法人不阻塞其他法人。以上是假设的负载与待测目标，尚未实测。</p>
 </section>
 <section class="scene" aria-labelledby="验算检查项与-ai-使用边界"><header class="scene-head"><h2 id="验算检查项与-ai-使用边界"><span class="scene-no" aria-hidden="true">08</span><span class="visually-hidden">验算：</span><span class="head">检查项与 AI 使用边界</span></h2></header><p class="scene-lede">关账放行要求来源覆盖、版本不变和授权范围同时成立，净差为零或借贷平衡都不能单独放行。</p>
 <div class="table-wrap"><table>
@@ -369,8 +506,8 @@
     <footer class="page-foot">正文 <a href="../../../books/saas-engineering/packages/commercial-finance/H03.md">books/saas-engineering/packages/commercial-finance/H03.md</a> · <a href="../../../vault/distilled/saas-engineering-atlas/README.md">结构、来源与验证</a></footer>
   </main>
 </div>
-<script src="search-index.js?v=mv95jeod"></script>
-<script src="book.js?v=mv95jeod"></script>
+<script src="search-index.js?v=mv97hru0"></script>
+<script src="book.js?v=mv97hru0"></script>
 
 </body>
 </html>

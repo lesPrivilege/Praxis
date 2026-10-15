@@ -1,0 +1,35 @@
+<div class="dw-scroll" style="--dw-min:620px;--dw-max:920px">
+<svg viewBox="0 0 780 270" role="img" aria-labelledby="h09-v8-t h09-v8-d">
+  <title id="h09-v8-t">v8 的审批图取决于字段里的金额</title>
+  <desc id="h09-v8-d">政策规定金额高于 100,000 需加上级审批 E，在 L、F 之后用 1 小时，R 改为等待 E。正文与字段都是 120,000 时，图中有 E，共 4.5 小时。正文为 120,000、字段仍是 80,000 时，算法按字段建图，漏掉 E，得出 3.5 小时。</desc>
+  <text class="t-s" x="20" y="22">政策：金额高于 100,000 时增加上级审批 E</text>
+  <path class="ln-soft" d="M390 40 V250"/>
+  <g data-s="1">
+    <text class="t-b" x="20" y="58">正文 120,000 · 字段 120,000</text>
+    <rect class="box" x="20" y="74" width="64" height="44"/><text class="t-b mid" x="52" y="92">P</text><text class="t-s mid" x="52" y="110">2 小时</text>
+    <rect class="box" x="116" y="74" width="64" height="44"/><text class="t-b mid" x="148" y="92">F</text><text class="t-s mid" x="148" y="110">1 小时</text>
+    <rect class="box f1" x="212" y="74" width="64" height="44"/><text class="t-b mid" x="244" y="92">E</text><text class="t-s mid" x="244" y="110">1 小时</text>
+    <rect class="box" x="308" y="74" width="64" height="44"/><text class="t-b mid" x="340" y="92">R</text><text class="t-s mid" x="340" y="110">0.5 小时</text>
+    <rect class="box" x="116" y="150" width="64" height="44"/><text class="t-b mid" x="148" y="168">L</text><text class="t-s mid" x="148" y="186">3 小时</text>
+    <path class="ln" d="M84 96 H116 M108 90 L116 96 L108 102"/>
+    <path class="ln" d="M180 96 H212 M204 90 L212 96 L204 102"/>
+    <path class="ln" d="M276 96 H308 M300 90 L308 96 L300 102"/>
+    <path class="ln" d="M180 172 H244 V118 M238 126 L244 118 L250 126"/>
+    <text class="t-big" x="20" y="240">4.5</text><text class="t" x="64" y="240">小时</text>
+  </g>
+  <g data-s="2">
+    <text class="t-b" x="410" y="58">正文 120,000 · 字段 80,000</text>
+    <rect class="box" x="410" y="74" width="64" height="44"/><text class="t-b mid" x="442" y="92">P</text><text class="t-s mid" x="442" y="110">2 小时</text>
+    <rect class="box" x="506" y="74" width="64" height="44"/><text class="t-b mid" x="538" y="92">F</text><text class="t-s mid" x="538" y="110">1 小时</text>
+    <rect class="box-dash" x="602" y="74" width="64" height="44"/><text class="t-em mid" x="634" y="101">漏掉 E</text>
+    <rect class="box" x="698" y="74" width="64" height="44"/><text class="t-b mid" x="730" y="92">R</text><text class="t-s mid" x="730" y="110">0.5 小时</text>
+    <rect class="box" x="506" y="150" width="64" height="44"/><text class="t-b mid" x="538" y="168">L</text><text class="t-s mid" x="538" y="186">3 小时</text>
+    <path class="ln" d="M474 96 H506 M498 90 L506 96 L498 102"/>
+    <path class="ln" d="M570 86 C 600 48, 680 48, 714 74 M705 72 L714 74 L711 65"/>
+    <path class="ln" d="M570 172 H730 V118 M724 126 L730 118 L736 126"/>
+    <text class="t-big" x="410" y="240">3.5</text><text class="t" x="454" y="240">小时</text>
+    <text class="t-s" x="500" y="240">算法照常执行，输入的图少了一项审批</text>
+  </g>
+</svg>
+</div>
+<figcaption>同一份 v8 正文，字段写 120,000 时图中有 E，共 4.5 小时；字段停在 80,000 时，拓扑排序正确地算出 3.5 小时，却漏掉了 E。</figcaption>

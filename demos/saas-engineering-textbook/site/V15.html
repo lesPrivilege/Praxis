@@ -4,9 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>V15 · 建造变更、计量与付款 · SaaS 工程全景</title>
-<link rel="stylesheet" href="book.css?v=mv95jeod">
+<link rel="stylesheet" href="book.css?v=mv97hru0">
 </head>
 <body>
+<svg class="dw-defs" width="0" height="0" aria-hidden="true" focusable="false" style="position:absolute"><defs><pattern id="dw-hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" fill="var(--bg)"/><path d="M0 0 V6" stroke="var(--ink-2)" stroke-width="1.2"/></pattern></defs></svg>
 <a class="skip" href="#main">跳到正文</a>
 <header class="topbar">
   <button class="nav-toggle" type="button" aria-controls="sidebar" aria-expanded="false">目录</button>
@@ -33,7 +34,7 @@
     <div class="reel">
       <aside class="rail" aria-label="本页进度"><ol><li><a href="#识题答复批准与计量"><span class="rn">01<span class="of"> / 09</span></span><span class="rt">答复、批准与计量</span></a></li><li><a href="#解法设计版本rfi-与变更批准"><span class="rn">02<span class="of"> / 09</span></span><span class="rt">设计版本、RFI 与变更批准</span></a></li><li><a href="#工作台与提交边界"><span class="rn">03<span class="of"> / 09</span></span><span class="rt">工作台与提交边界</span></a></li><li><a href="#演算影响追溯与累计计量"><span class="rn">04<span class="of"> / 09</span></span><span class="rt">影响追溯与累计计量</span></a></li><li><a href="#实现负载与恢复"><span class="rn">05<span class="of"> / 09</span></span><span class="rt">实现、负载与恢复</span></a></li><li><a href="#验算正常路径失败路径与检查"><span class="rn">06<span class="of"> / 09</span></span><span class="rt">正常路径、失败路径与检查</span></a></li><li><a href="#变式条件改变后的判断"><span class="rn">07<span class="of"> / 09</span></span><span class="rt">条件改变后的判断</span></a></li><li><a href="#进入建造业务的先查项"><span class="rn">08<span class="of"> / 09</span></span><span class="rt">进入建造业务的先查项</span></a></li><li><a href="#case-structure"><span class="rn">09<span class="of"> / 09</span></span><span class="rt">对象、生命周期与迁移</span></a></li></ol></aside>
       <div class="flow">
-<p>本例接续本包的“承诺、资源、履约证据、资金”模型：设计版本说明应当建成什么，变更批准修改承诺，计量证明完成数量，付款结清已到期义务。假设只有一份业主合同、一种币种，不计税、保留金、预付款和索赔利息；现场安全与专业设计判断由有资质的人负责，系统的价格校验代替不了。</p>
+<p>本例接续本包的“承诺、资源、履约证据、资金”模型：设计版本说明应当建成什么，变更批准修改承诺，计量证明完成数量，付款结清已到期义务。假设只有一份业主合同、一种币种，不计税、保留金、预付款和索赔利息；现场安全与专业设计判断由有资质的人负责，系统只做价格校验。</p>
 <section class="scene" aria-labelledby="识题答复批准与计量"><header class="scene-head"><h2 id="识题答复批准与计量"><span class="scene-no" aria-hidden="true">01</span><span class="visually-hidden">识题：</span><span class="head">答复、批准与计量</span></h2></header><p class="scene-lede">处理工程变更，先看一条变化有没有成为确定的承诺，再计算已完成与已付款。同一变更在关系图里可能经多条路径到达；路径多只方便追溯，工程量仍只有一份。</p>
 <div class="table-wrap"><table>
 <thead>
@@ -46,7 +47,7 @@
 <tbody><tr>
 <td>RFI 已答，估价仍待定</td>
 <td>技术澄清、粗略量级估算（rough order of magnitude，ROM）与合同批准各为独立对象；审批针对固定的提交版本</td>
-<td>1,500 的 ROM 不能顶替只有 1,000 的批准；查合同分层和授权矩阵</td>
+<td>可签证额以 1,000 的批准为准，1,500 的 ROM 只作依据；查合同分层和授权矩阵</td>
 </tr>
 <tr>
 <td>同一变更出现在多条路径上</td>
@@ -63,8 +64,8 @@
 <section class="scene" aria-labelledby="解法设计版本rfi-与变更批准"><header class="scene-head"><h2 id="解法设计版本rfi-与变更批准"><span class="scene-no" aria-hidden="true">02</span><span class="visually-hidden">解法：</span><span class="head">设计版本、RFI 与变更批准</span></h2></header><p class="scene-lede">设计版本、RFI、change event 和 variation 是四个独立对象，各有决定权；只有授权代表批准的 variation 改变合同承诺。</p>
 <p>设计发布后就固定为一个版本。设计包 <code>D-17/rev-B</code> 保存文件摘要、适用区域、发布者和取代关系；现场提交的 Request for Information（RFI，信息请求）引用这个确定版本。若 RFI 只保存“最新图纸”链接，两个月后链接指向 rev-C，审核人就说不清当时依据哪一版施工。Autodesk 的页面说明，计算机辅助设计（computer-aided design，<abbr title="computer-aided design：计算机辅助设计">CAD</abbr>）用于二维、三维设计和技术文档，计算机辅助制造（computer-aided manufacturing，<abbr title="computer-aided manufacturing：计算机辅助制造">CAM</abbr>）把设计用于制造；建筑变更审批不在该页范围内。参见 <a href="https://www.autodesk.com/ca-en/solutions/cad-cam" class="ext" rel="noopener">CAD/CAM FAQ</a>。</p>
 <p>RFI 的问题是“梁与风管冲突如何处理”，答复可以是按原设计施工、修改设计或继续调查。答复先消除技术上的歧义，费用由谁承担另有决定。Autodesk 的 RFI 页面说明，RFI 可以关联图纸、模型位置和现场照片，可以为各角色配置动作，也可以由 RFI 新建或关联 Potential Change Order（PCO，潜在变更单）。这些关联方便追溯来源；RFI 答复有没有本例的合同授权，要看批准记录。<code>P05-SRC-autodesk-rfi-C1</code>：<a href="https://construction.autodesk.com/tools/construction-rfi-tracking/" class="ext" rel="noopener">RFIs，Manage / Configure / Connect</a>。</p>
-<p>Change event（变更事件）记录可能影响范围、工期或成本的事实，可以先于定价存在。Procore 用 change event 准备潜在的成本变化，提供 <code>In Scope / Out of Scope / TBD</code> 范围选项，并说明 Cost ROM（粗略量级估算）的输入本身不改变其它工具里的财务数值，预算视图可以另行配置显示。因此一笔 1,500 的估算不能直接当成 1,500 的批准支出。参见 <a href="https://support.procore.com/products/online/user-guide/project-level/change-events/tutorials/create-change-events" class="ext" rel="noopener">Background；Scope；Cost ROM</a>。</p>
-<p>系统把确认后的 change event 转成独立的 variation（变更批准对象），固定具体工作行、数量上限、单价、合同版本、授权人和依据。Procore 的 Change Orders 入口区分 Prime Contract 与 Commitment 等变更单；业主合同与分包承诺可能相关，金额却不能直接相抵。Procore 关于业主合同变更单（Prime Contract Change Order，<abbr title="Prime Contract Change Order：业主合同变更单">PCCO</abbr>）审核的文档要求指定审核人和待审状态，并记录批准或拒绝结果。本例只借用“变更与审查分开”这一点。参见 <a href="https://support.procore.com/products/online/user-guide/project-level/change-orders" class="ext" rel="noopener">Change Orders 分类</a>；<a href="https://support.procore.com/products/online/user-guide/project-level/change-orders/tutorials/approve-or-reject-prime-contract-change-orders" class="ext" rel="noopener">Background；Things to Consider；Steps</a>。</p>
+<p>Change event（变更事件）记录可能影响范围、工期或成本的事实，可以先于定价存在。Procore 用 change event 准备潜在的成本变化，提供 <code>In Scope / Out of Scope / TBD</code> 范围选项，并说明 Cost ROM（粗略量级估算）的输入本身不改变其它工具里的财务数值，预算视图可以另行配置显示。因此 1,500 的估算留在 change event 里，批准支出另由 variation 记录。参见 <a href="https://support.procore.com/products/online/user-guide/project-level/change-events/tutorials/create-change-events" class="ext" rel="noopener">Background；Scope；Cost ROM</a>。</p>
+<p>系统把确认后的 change event 转成独立的 variation（变更批准对象），固定具体工作行、数量上限、单价、合同版本、授权人和依据。Procore 的 Change Orders 入口区分 Prime Contract 与 Commitment 等变更单；业主合同与分包承诺可能相关，金额各记在自己的合同上。Procore 关于业主合同变更单（Prime Contract Change Order，<abbr title="Prime Contract Change Order：业主合同变更单">PCCO</abbr>）审核的文档要求指定审核人和待审状态，并记录批准或拒绝结果。本例只借用“变更与审查分开”这一点。参见 <a href="https://support.procore.com/products/online/user-guide/project-level/change-orders" class="ext" rel="noopener">Change Orders 分类</a>；<a href="https://support.procore.com/products/online/user-guide/project-level/change-orders/tutorials/approve-or-reject-prime-contract-change-orders" class="ext" rel="noopener">Background；Things to Consider；Steps</a>。</p>
 <div class="table-wrap"><table>
 <thead>
 <tr>
@@ -76,7 +77,7 @@
 <tbody><tr>
 <td>Design revision，设计登记服务</td>
 <td>设计负责人发布，现场只确认收到</td>
-<td><code>draft → published → superseded</code>；旧版本保留，发布新版本不回写旧 RFI</td>
+<td><code>draft → published → superseded</code>；旧版本保留，旧 RFI 继续引用原版本</td>
 </tr>
 <tr>
 <td>RFI，项目服务</td>
@@ -104,29 +105,147 @@
 <td><code>prepared → submitted → confirmed / failed / unknown</code>；unknown 不能当作未付重新发款</td>
 </tr>
 </tbody></table></div>
-<p>可见范围要单独控制：分包方可以看自己的报价和现场证据，却不能沿变更图读到另一分包方的价格。查询和图遍历同时受 <abbr title="Software as a Service：软件即服务">SaaS</abbr> 租户、项目成员和合同参与方三级范围限制；前端隐藏金额代替不了授权。</p>
+<p>可见范围要单独控制：分包方可以看自己的报价和现场证据，却不能沿变更图读到另一分包方的价格。查询和图遍历同时受 <abbr title="Software as a Service：软件即服务">SaaS</abbr> 租户、项目成员和合同参与方三级范围限制；授权由服务端判断，前端隐藏金额只改变显示。</p>
 </section>
 <section class="scene" aria-labelledby="工作台与提交边界"><header class="scene-head"><h2 id="工作台与提交边界"><span class="scene-no" aria-hidden="true">03</span><span class="head">工作台与提交边界</span></h2></header><p class="scene-lede">每次提交都由服务端按版本条件写入权威记录；批准落在不可编辑的提交快照上，付款在外部确认之前保持待核对。</p>
 <p>现场工作台默认并排显示适用设计版本、未关闭 RFI、待定金额、已批准金额、已计量金额和已确认付款，让用户认出“可施工但未定价”“已签证但未到账”这样的组合。现场人员在图纸定位处提出 RFI，服务端检查项目成员资格、版本是否仍可引用、附件是否已经上传，然后保存问题、附件摘要和请求身份。断网草稿显示“仅在本设备”，成功写入后才显示 RFI 编号；离线草稿针对的是旧设计时，重新连接后系统会要求确认它是否仍然适用。</p>
-<p>项目经理点击“提出变更”时，预览页列出引用的 RFI、估价、单位和未确定项。批准人看到的是提交快照，不是仍可编辑的表格。服务端用版本条件更新提交状态，把批准人与时间、范围行、金额以及 outbox 事件写入同一事务。后台投影可以稍后更新，再次批准时则读取权威合同记录。另一人改了数量后，旧审批窗口提交批准会收到版本冲突和差异说明，这份批准不会落到新价格上。</p>
-<p>计量员随后提交累计完成量。服务端从已签证累计量计算本期增量，对每个工作行检查单位、批准数量余额和现场证据。财务点击“支付已签证金额”时，服务端生成一个固定的 operation <abbr title="identifier：标识符">ID</abbr>；发给外部财务或银行接口的只是付款请求，确认之前页面保持“已提交，待核对”。适配器查询外部状态或接收通知，先写入 inbox，再确认本地资金记录。图纸文件存储、合同记录和资金事实各有权威边界；下载到本地的图纸副本不能用来重新批准。</p>
+<p>项目经理点击“提出变更”时，预览页列出引用的 RFI、估价、单位和未确定项。批准人看到的是固定的提交快照。服务端用版本条件更新提交状态，把批准人与时间、范围行、金额以及 outbox 事件写入同一事务。后台投影可以稍后更新，再次批准时则读取权威合同记录。另一人改了数量后，旧审批窗口提交批准会收到版本冲突和差异说明，批准只作用于批准人看到的那个版本。</p>
+<p>计量员随后提交累计完成量。服务端从已签证累计量计算本期增量，对每个工作行检查单位、批准数量余额和现场证据。财务点击“支付已签证金额”时，服务端生成一个固定的 operation <abbr title="identifier：标识符">ID</abbr>；发给外部财务或银行接口的只是付款请求，确认之前页面保持“已提交，待核对”。适配器查询外部状态或接收通知，先写入 inbox，再确认本地资金记录。图纸文件存储、合同记录和资金事实各有权威边界；重新批准以设计登记服务里的版本为准，下载到本地的图纸副本只供查看。</p>
 <figure class="graph-fig"><div class="graph-wrap"><svg class="graph" viewBox="0 0 854 213" width="854" height="213" style="max-width:982px;min-width:683px" role="img" aria-label="V15 · 建造变更、计量与付款"><defs><marker id="arrow-g1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arrowhead"/></marker></defs><path class="edge" data-type="operates" data-from="Field" data-to="Desk" d="M97.5,95.0 Q172.0,95.0 239.5,95.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Field" data-to="Desk"><rect x="144.0" y="87.0" width="56" height="16" rx="3"/><text x="172.0" y="99.0">operates</text></g><path class="edge" data-type="commands" data-from="Desk" data-to="Project" d="M328.5,95.0 Q402.0,95.0 469.0,95.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Desk" data-to="Project"><rect x="374.0" y="87.0" width="56" height="16" rx="3"/><text x="402.0" y="99.0">commands</text></g><path class="edge" data-type="owns" data-from="Project" data-to="RFI" d="M584.0,82.1 Q651.0,67.0 754.0,45.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Project" data-to="RFI"><rect x="635.0" y="59.0" width="32" height="16" rx="3"/><text x="651.0" y="71.0">owns</text></g><path class="edge" data-type="derived_from" data-from="CE" data-to="RFI" d="M580.0,25.0 Q651.0,25.0 754.0,36.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="CE" data-to="RFI"><rect x="611.0" y="17.0" width="80" height="16" rx="3"/><text x="651.0" y="29.0">derived_from</text></g><path class="edge" data-type="derived_from" data-from="Variation" data-to="CE" d="M328.5,25.0 Q402.0,25.0 473.0,25.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Variation" data-to="CE"><rect x="362.0" y="17.0" width="80" height="16" rx="3"/><text x="402.0" y="29.0">derived_from</text></g><path class="edge" data-type="depends_on" data-from="Cert" data-to="Variation" d="M111.0,25.0 Q172.0,25.0 239.5,25.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Cert" data-to="Variation"><rect x="138.0" y="17.0" width="68" height="16" rx="3"/><text x="172.0" y="29.0">depends_on</text></g><path class="edge" data-type="reads" data-from="Project" data-to="DB" d="M584.0,101.5 Q651.0,109.0 718.0,109.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Project" data-to="DB"><rect x="632.0" y="101.0" width="38" height="16" rx="3"/><text x="651.0" y="113.0">reads</text></g><path class="edge" data-type="requests" data-from="Pay" data-to="Bank" d="M97.5,176.7 Q172.0,188.0 233.0,188.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Pay" data-to="Bank"><rect x="144.0" y="180.0" width="56" height="16" rx="3"/><text x="172.0" y="192.0">requests</text></g><path class="edge" data-type="emits" data-from="Bank" data-to="Receipt" d="M335.0,188.0 Q402.0,188.0 475.5,188.0" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Bank" data-to="Receipt"><rect x="383.0" y="180.0" width="38" height="16" rx="3"/><text x="402.0" y="192.0">emits</text></g><path class="edge" data-type="delivers" data-from="Receipt" data-to="Inbox" d="M577.5,188.0 Q651.0,188.0 737.0,176.8" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Receipt" data-to="Inbox"><rect x="623.0" y="180.0" width="56" height="16" rx="3"/><text x="651.0" y="192.0">delivers</text></g><path class="edge" data-type="reads" data-from="Pay" data-to="Inbox" d="M97.5,165.3 Q172.0,154.0 228.0,154.0 Q284.0,154.0 343.0,154.0 Q402.0,154.0 464.3,154.0 Q526.5,154.0 588.8,154.0 Q651.0,154.0 737.0,165.2" marker-end="url(#arrow-g1)"/><g class="edge-label" data-from="Pay" data-to="Inbox"><rect x="383.0" y="146.0" width="38" height="16" rx="3"/><text x="402.0" y="158.0">reads</text></g><g class="node" data-id="Field"><rect x="21.5" y="78.0" width="76" height="34" rx="4"/><text x="59.5" y="99.5">现场人员</text></g><g class="node" data-id="Desk"><rect x="239.5" y="78.0" width="89" height="34" rx="4"/><text x="284.0" y="99.5">项目工作台</text></g><g class="node" data-id="Project"><rect x="469.0" y="78.0" width="115" height="34" rx="4"/><text x="526.5" y="99.5">项目与合同服务</text></g><g class="node" data-id="RFI"><rect x="754.0" y="22.0" width="56" height="34" rx="4"/><text x="782.0" y="43.5">RFI</text></g><g class="node" data-id="CE"><rect x="473.0" y="8.0" width="107" height="34" rx="4"/><text x="526.5" y="29.5">Change event</text></g><g class="node" data-id="Variation"><rect x="239.5" y="8.0" width="89" height="34" rx="4"/><text x="284.0" y="29.5">Variation</text></g><g class="node" data-id="Cert"><rect x="8.0" y="8.0" width="103" height="34" rx="4"/><text x="59.5" y="29.5">Certificate</text></g><g class="node" data-id="DB"><rect x="718.0" y="92.0" width="128" height="34" rx="4"/><text x="782.0" y="113.5">版本与计量数据库</text></g><g class="node" data-id="Pay"><rect x="21.5" y="154.0" width="76" height="34" rx="4"/><text x="59.5" y="175.5">付款服务</text></g><g class="node" data-id="Bank"><rect x="233.0" y="171.0" width="102" height="34" rx="4"/><text x="284.0" y="192.5">外部资金系统</text></g><g class="node" data-id="Receipt"><rect x="475.5" y="171.0" width="102" height="34" rx="4"/><text x="526.5" y="192.5">付款结果事件</text></g><g class="node" data-id="Inbox"><rect x="737.0" y="154.0" width="90" height="34" rx="4"/><text x="782.0" y="175.5">持久 inbox</text></g></svg></div><details class="edge-list"><summary>图中关系的文字列表</summary><ul><li>现场人员 <span class="rel">—operates→</span> 项目工作台</li><li>项目工作台 <span class="rel">—commands→</span> 项目与合同服务</li><li>项目与合同服务 <span class="rel">—owns→</span> RFI</li><li>Change event <span class="rel">—derived_from→</span> RFI</li><li>Variation <span class="rel">—derived_from→</span> Change event</li><li>Certificate <span class="rel">—depends_on→</span> Variation</li><li>项目与合同服务 <span class="rel">—reads→</span> 版本与计量数据库</li><li>付款服务 <span class="rel">—requests→</span> 外部资金系统</li><li>外部资金系统 <span class="rel">—emits→</span> 付款结果事件</li><li>付款结果事件 <span class="rel">—delivers→</span> 持久 inbox</li><li>付款服务 <span class="rel">—reads→</span> 持久 inbox</li></ul></details></figure><p>图中 <code>derived_from</code> 标出证据来路，<code>depends_on</code> 标出允许签证的前提，两种边都不表示已经付款。<a href="../../../vault/distilled/saas-engineering-atlas/packages/commerce-property/V15.json">V15.json</a> 保存完整边界与状态转换。</p>
 </section>
 <section class="scene" aria-labelledby="演算影响追溯与累计计量"><header class="scene-head"><h2 id="演算影响追溯与累计计量"><span class="scene-no" aria-hidden="true">04</span><span class="visually-hidden">演算：</span><span class="head">影响追溯与累计计量</span></h2></header><p class="scene-lede">合同上限只由获批工作行决定：影响追溯对可达的 variation 去重求和，付款按有效累计量之差计算本期增量。</p>
-<p>设原合同批准 100 米风管，每米 50 记账单位，金额 5,000。设计 rev-B 引出 RFI-R1，change event E1 估计额外需要 30 米，ROM 为 1,500。复核后批准变更 A1：只增加 20 米，仍按每米 50，因此合同上限为 <code>5,000 + 20 × 50 = 6,000</code>。未获批准的 10 米不能凭“ROM 已存在”进入可签证余额。</p>
-<p>RFI-R1 和另一条现场 issue I1 都关联 E1；RFI-R1 又直接关联 A1。按影响传播顺序解释，<code>rev-B → R1 → E1 → A1</code> 与 <code>rev-B → R1 → A1</code> 都成立，A1 却只有一份。结构 <abbr title="JavaScript Object Notation：结构化数据表示格式，后文保留 JSON">JSON</abbr> 中的 <code>derived_from</code> 从派生对象指向依据；从设计查找下游影响时遍历这些边的反向邻接，回查来源时沿原方向，不能为画顺流程而反转关系类型。若逐条路径累计批准金额，新增的 1,000 会被算成 2,000。正确的查询先在项目权限范围内遍历，得到可达 variation ID 的集合，再按获批工作行 ID 去重求和。发现依赖环时保留错误关系供修复，不递归到进程耗尽。技术澄清图里允许回环；只有表示施工先后的依赖子图要求无环，两种边不能混用。</p>
-<p>这对应 <code>ALG:graph-paths</code>。朴素方法每次从根节点扫描全部记录，会重复查找父子关系；用邻接表遍历，可在访问子图的 <code>O(V + E)</code> 时间内找出受影响对象，访问集合占 <code>O(V)</code> 空间。路径条数可能指数增长，所以 <abbr title="user interface：用户界面">UI</abbr> 默认列出受影响对象和一条可解释的路径，用户展开后再分页显示其它路径。沿图查到的对象只用于追溯，查询者不因此获得对它的审批权限。</p>
-<p>付款计算还要区分累计值与本期值。第一次累计验收原合同 60 米、变更 8 米，签证 <code>60 × 50 + 8 × 50 = 3,400</code>。第二次累计验收原合同 100 米、变更 15 米，累计应签证 5,750，本期增量为 <code>5,750 − 3,400 = 2,350</code>。假设第一期已付 3,400，第二期只付 2,000，当前状态是累计签证 5,750、累计付款 5,400、已签证未付 350、已批准未签证 250。四个数对应不同的义务；合同上限 6,000 与付款之差 600 不能全叫逾期欠款。</p>
-<p>第二个反例是把两期累计量相加：<code>3,400 + 5,750 = 9,150</code>，超过了合同上限，看上去却像正常的报表合计。本例的 guard 以 <code>(合同, 工作行, 计量序列)</code> 保存版本，用新的累计量减去上一有效累计量；少报修正走冲减证书，不能悄悄改写已付期间。集合去重防的是路径重复，增量计算防的是计量重复，两者不能互相代替。</p>
-</section>
+<p>设原合同批准 100 米风管，每米 50 记账单位，金额 5,000。设计 rev-B 引出 RFI-R1，change event E1 估计额外需要 30 米，ROM 为 1,500。复核后批准变更 A1：只增加 20 米，仍按每米 50，因此合同上限为 <code>5,000 + 20 × 50 = 6,000</code>。未获批准的 10 米留在 E1 的估算里，可签证余额只含 A1 批准的 20 米。</p>
+<p>RFI-R1 和另一条现场 issue I1 都关联 E1；RFI-R1 又直接关联 A1。按影响传播顺序解释，<code>rev-B → R1 → E1 → A1</code> 与 <code>rev-B → R1 → A1</code> 都成立，A1 却只有一份。结构 <abbr title="JavaScript Object Notation：结构化数据表示格式，后文保留 JSON">JSON</abbr> 中的 <code>derived_from</code> 从派生对象指向依据；从设计查找下游影响时遍历这些边的反向邻接，回查来源时沿原方向；反向只发生在遍历里，存储的关系类型保持原样。若逐条路径累计批准金额，新增的 1,000 会被算成 2,000。正确的查询先在项目权限范围内遍历，得到可达 variation ID 的集合，再按获批工作行 ID 去重求和。</p>
+<figure class="drawing" data-drawing="v15-paths"><div class="dw-scroll" style="--dw-min:600px;--dw-max:960px">
+<svg viewBox="0 0 800 245" role="img" aria-labelledby="v15-paths-t v15-paths-d">
+  <title id="v15-paths-t">同一变更经两条路径可达</title>
+  <desc id="v15-paths-d">从设计 rev-B 出发，rev-B → R1 → E1 → A1 与 rev-B → R1 → A1 两条路径都到达变更 A1，现场 issue I1 也关联 E1。按 ID 去重后可达集合只有 A1，新增 1,000；逐条路径累加会得到 2,000。</desc>
+  <g data-s="1">
+    <rect class="box" x="20" y="100" width="90" height="40"/><text class="t-n mid" x="65" y="125">rev-B</text>
+    <rect class="box" x="170" y="100" width="100" height="40"/><text class="t-n mid" x="220" y="125">RFI-R1</text>
+    <rect class="box" x="330" y="100" width="90" height="40"/><text class="t-n mid" x="375" y="125">E1</text>
+    <rect class="box" x="330" y="190" width="90" height="40"/><text class="t mid" x="375" y="215">issue I1</text>
+    <path class="ln" d="M375 190 V146 M368 154 L375 146 L382 154"/>
+    <text class="t-s" x="20" y="172">路径一  rev-B → R1 → E1 → A1</text>
+  </g>
+  <rect class="box-em" x="480" y="100" width="90" height="40"/><text class="t-n mid" x="525" y="125">A1</text>
+  <path class="ln-strong" data-draw="1" d="M110 120 H164"/>
+  <path class="ln-strong" data-draw="1" d="M270 120 H324"/>
+  <path class="ln-strong" data-draw="1" d="M420 120 H474"/>
+  <g data-s="1"><path class="ln-strong" d="M158 113 L166 120 L158 127 M318 113 L326 120 L318 127 M468 113 L476 120 L468 127"/></g>
+  <path class="ln-strong" data-draw="2" d="M220 100 C 250 36, 495 36, 525 94"/>
+  <g data-s="2">
+    <path class="ln-strong" d="M517 86 L525 96 L530 84"/>
+    <text class="t-s mid" x="372" y="34">路径二  rev-B → R1 → A1</text>
+  </g>
+  <path class="ln-soft" d="M610 20 V230"/>
+  <g data-s="3">
+    <text class="t-s mid" x="705" y="58">可达 variation，按 ID 去重</text>
+    <text class="t-big mid" x="705" y="100">{ A1 }</text>
+    <text class="t-n mid" x="705" y="128">新增 1,000</text>
+    <text class="t-s mid" x="705" y="186">逐条路径累加</text>
+    <text class="t-n mid" x="705" y="210">1,000 + 1,000 = 2,000</text>
+    <path class="ln" d="M622 206 H788"/>
+  </g>
+</svg>
+</div>
+<figcaption>A1 经两条路径到达，在可达集合里只出现一次；新增批准额按集合求和，是 1,000。</figcaption></figure><p>发现依赖环时保留错误关系供修复，访问集合挡住重复进入，递归在环上停下。技术澄清图里允许回环；只有表示施工先后的依赖子图要求无环，两种边不能混用。</p>
+<p>这对应 <code>ALG:graph-paths</code>。朴素方法每次从根节点扫描全部记录，会重复查找父子关系；用邻接表遍历，可在访问子图的 <code>O(V + E)</code> 时间内找出受影响对象，访问集合占 <code>O(V)</code> 空间。路径条数可能指数增长，所以 <abbr title="user interface：用户界面">UI</abbr> 默认列出受影响对象和一条可解释的路径，用户展开后再分页显示其它路径。沿图查到的对象只用于追溯，审批权限仍按查询者原有的授权判断。</p>
+<p>付款计算还要区分累计值与本期值。第一次累计验收原合同 60 米、变更 8 米，签证 <code>60 × 50 + 8 × 50 = 3,400</code>。第二次累计验收原合同 100 米、变更 15 米，累计应签证 5,750，本期增量为 <code>5,750 − 3,400 = 2,350</code>。假设第一期已付 3,400，第二期只付 2,000，当前状态是累计签证 5,750、累计付款 5,400、已签证未付 350、已批准未签证 250。四个数对应不同的义务：合同上限 6,000 与付款之差 600 由已签证未付的 350 和已批准未签证的 250 组成，可以付款的只有已签证的 350。</p>
+<figure class="drawing" data-drawing="v15-balance"><div class="dw-scroll" style="--dw-min:600px;--dw-max:900px">
+<svg viewBox="0 0 760 336" role="img" aria-labelledby="v15-balance-t v15-balance-d">
+  <title id="v15-balance-t">合同上限 6,000 的四种去向</title>
+  <desc id="v15-balance-d">原合同 100 米为 5,000，变更 A1 批准 20 米为 1,000，合同上限 6,000；E1 估计 30 米、ROM 1,500，其中 10 米未获批准。第二期后累计签证 5,750，累计付款 5,400，已签证未付 350，已批准未签证 250；合同上限与付款之差 600 由 350 和 250 组成。</desc>
+  <!-- overview 0–6,500 -->
+  <text class="t-s end" x="90" y="51">承诺</text>
+  <rect class="box f1" x="100" y="40" width="500" height="14"/>
+  <rect class="box f2" x="600" y="40" width="100" height="14"/>
+  <rect class="box-dash" x="700" y="40" width="50" height="14"/>
+  <text class="t-s end" x="90" y="71">付款</text>
+  <rect class="box f-ink" x="100" y="60" width="540" height="14"/>
+  <rect class="box f2" x="640" y="60" width="35" height="14"/>
+  <rect class="box" x="675" y="60" width="25" height="14"/>
+  <text class="t-s" x="100" y="26">原合同 100 米 · 5,000</text>
+  <text class="t-n mid" x="100" y="94">0</text>
+  <path class="ln-dash" d="M596 34 H754 V80 H596 Z"/>
+  <path class="ln-soft" d="M596 80 L100 132 M754 80 L730 132"/>
+  <!-- zoom 5,000–6,500: x = 100 + (v − 5,000) × 0.42 -->
+  <path class="ln-soft" d="M520 132 V300"/>
+  <text class="t-s" x="526" y="144">合同上限 6,000</text>
+  <g data-s="1">
+    <text class="t-s mid" x="400" y="152">E1 估计 30 米 · ROM 1,500</text>
+    <path class="ln-dash" d="M100 166 V158 H730 V166"/>
+    <text class="t-b end" x="90" y="195">承诺</text>
+    <rect class="box f2" x="100" y="172" width="420" height="36"/>
+    <text class="t mid" x="310" y="195">A1 批准 20 米 · 1,000</text>
+    <rect class="box-dash" x="520" y="172" width="210" height="36"/>
+    <text class="t mid" x="625" y="195">未获批准 10 米</text>
+  </g>
+  <g data-s="2">
+    <text class="t-s mid" x="258" y="224">累计签证 5,750</text>
+    <path class="ln" d="M100 230 H415 V238"/>
+    <text class="t-b end" x="90" y="265">签证</text>
+    <rect class="box f-ink" x="100" y="242" width="168" height="40"/>
+    <text class="t t-inv mid" x="184" y="259">累计付款</text><text class="t-n t-inv mid" x="184" y="276">5,400</text>
+    <rect class="box f1" x="268" y="242" width="147" height="40"/>
+    <text class="t mid" x="341" y="259">已签证未付</text><text class="t-n mid" x="341" y="276">350</text>
+    <rect class="box" x="415" y="242" width="105" height="40"/>
+    <text class="t-s mid" x="467" y="259">已批准未签证</text><text class="t-n mid" x="467" y="276">250</text>
+  </g>
+  <g data-s="3">
+    <path class="ln-em" d="M268 288 V296 H520 V288"/>
+    <text class="t-s t-em mid" x="394" y="314">合同上限与付款之差 600 = 350 + 250</text>
+  </g>
+  <text class="t-n mid" x="100" y="332">5,000</text>
+  <text class="t-n mid" x="268" y="332">5,400</text>
+  <text class="t-n mid" x="415" y="332">5,750</text>
+  <text class="t-n mid" x="730" y="332">6,500</text>
+</svg>
+</div>
+<figcaption>放大 5,000 到 6,500 一段：6,000 的上限里，已付、已签证未付和已批准未签证各占一块，ROM 多出的 10 米留在上限之外。</figcaption></figure><p>第二个反例是把两期累计量相加：<code>3,400 + 5,750 = 9,150</code>，超过了合同上限，看上去却像正常的报表合计。本例的 guard 以 <code>(合同, 工作行, 计量序列)</code> 保存版本，用新的累计量减去上一有效累计量；少报修正另开冲减证书，已付期间的证书保持原样。集合去重防的是路径重复，增量计算防的是计量重复，两者各管一种重复。</p>
+<figure class="drawing" data-drawing="v15-cumulative"><div class="dw-scroll" style="--dw-min:600px;--dw-max:900px">
+<svg viewBox="0 0 760 250" role="img" aria-labelledby="v15-cumulative-t v15-cumulative-d">
+  <title id="v15-cumulative-t">两期累计计量与本期增量</title>
+  <desc id="v15-cumulative-d">第一期累计验收原合同 60 米、变更 8 米，签证 3,400；第二期累计原合同 100 米、变更 15 米，累计 5,750，本期增量 2,350。两期累计值相加得 9,150，越过合同上限 6,000。</desc>
+  <!-- x = 150 + v × 0.06 -->
+  <path class="ln-strong" d="M510 38 V236"/>
+  <text class="t-s mid" x="510" y="28">合同上限 6,000</text>
+  <g data-s="1">
+    <text class="t-b end" x="140" y="72">第一期累计</text>
+    <rect class="box f1" x="150" y="50" width="180" height="34"/><text class="t mid" x="240" y="72">原合同 60 米</text>
+    <rect class="box f2" x="330" y="50" width="24" height="34"/>
+    <text class="t-s mid" x="342" y="99">变更 8 米</text>
+    <text class="t-n end" x="752" y="72">3,400</text>
+  </g>
+  <g data-s="2">
+    <path class="ln-soft" d="M354 84 V140"/>
+    <text class="t-b end" x="140" y="157">第二期累计</text>
+    <rect class="box f1" x="150" y="140" width="300" height="34"/><text class="t mid" x="300" y="162">原合同 100 米</text>
+    <rect class="box f2" x="450" y="140" width="45" height="34"/>
+    <text class="t-s mid" x="472" y="189">变更 15 米</text>
+    <text class="t-n end" x="752" y="162">5,750</text>
+  </g>
+  <g data-s="3">
+    <path class="ln-em" d="M354 132 V124 H495 V132"/>
+    <text class="t-s t-em mid" x="424" y="116">本期增量 2,350</text>
+  </g>
+  <g data-s="4">
+    <text class="t-b end" x="140" y="224">两期相加</text>
+    <rect class="box-dash" x="150" y="202" width="549" height="34"/>
+    <text class="t-n mid" x="330" y="224">3,400 + 5,750</text>
+    <text class="t-n end" x="752" y="224">9,150</text>
+  </g>
+</svg>
+</div>
+<figcaption>每期报的是累计量；本期签证取两次累计之差 2,350，把两期累计值相加会越过 6,000 的上限。</figcaption></figure></section>
 <section class="scene" aria-labelledby="实现负载与恢复"><header class="scene-head"><h2 id="实现负载与恢复"><span class="scene-no" aria-hidden="true">05</span><span class="head">实现、负载与恢复</span></h2></header><p class="scene-lede">批准额度和付款留在有事务语义的权威记录里，图查询、搜索索引和缓存只帮人查找；恢复时先按原操作身份核对，不换身份重发。</p>
 <p>实现可以用 React 或 Vue 构建图纸旁的关联面板和计量表单；若首版只需审批与查询，用服务端模板配少量交互代码，更容易核查每个提交。先用 <abbr title="Portable Document Format：便携式文档格式">PDF</abbr> 页码和标注区域定位就够了；三维查看器会增加模型处理、客户端内存和授权方面的开销，需要构件级追踪时再引入。</p>
-<p>后端可用 Django 或 NestJS 做模块化单体，PostgreSQL 保存项目、不可变批准快照、计量行、唯一操作键和 outbox；大图纸及照片放对象存储，数据库保留摘要和访问范围。关系表加递归查询适合早期有限深度的追溯；专用图数据库适合探索大量跨模型关联，但批准额度和付款仍需要有事务语义的权威记录，不能因为图搜索方便就把金额约束交给最终一致的视图。搜索索引只用来找文字，不作授权依据；索引里查不到批准记录，也不能当作已批准。</p>
-<p>负载目标是 50 个项目，每项目 10,000 份设计版本、20,000 条 RFI/变更关系、200 个活跃审批者；普通详情 <abbr title="application programming interface：应用程序接口">API</abbr> 在 40 个并发读取下 p95 小于 400 ms，授权范围内不超过 2,000 条边的影响查询 p95 小于 1 秒。以上目标尚未实测；文件下载和三维渲染另行测试，缓存命中时间不能当作图纸首次打开的时间。读缓存 key 包含 SaaS 租户、项目、对象版本和权限版本；批准时忽略缓存，版本发布或权限变化使关联视图失效。一个大项目的批量导入按项目分片排队，避免占满所有项目的查询预算。</p>
-<p>这里最危险的恢复动作是“补一次”。外部付款超时后可能已经成功，系统先按 operation ID 查询结果；外部不能按唯一标识确认时，保留为人工待核对，不能换一个 ID 重发。计量证书重复导入时按证书业务身份去重，并比较内容摘要：同 ID 同内容返回原结果，同 ID 不同金额按冲突处理。设计发布晚到时，保留每个版本的发布时间和适用时间，不按通知到达顺序回退现场适用版本。已批准的变更后来撤回，也不能删除已施工的事实；系统另立替代或冲减变更，并显示已签证和已付金额要怎样处理。</p>
+<p>后端可用 Django 或 NestJS 做模块化单体，PostgreSQL 保存项目、不可变批准快照、计量行、唯一操作键和 outbox；大图纸及照片放对象存储，数据库保留摘要和访问范围。关系表加递归查询适合早期有限深度的追溯；专用图数据库适合探索大量跨模型关联，但批准额度和付款仍需要有事务语义的权威记录，金额约束留在这些记录里，最终一致的视图只供查找。搜索索引只用来找文字；授权和批准状态以合同记录为准。</p>
+<p>负载目标是 50 个项目，每项目 10,000 份设计版本、20,000 条 RFI/变更关系、200 个活跃审批者；普通详情 <abbr title="application programming interface：应用程序接口">API</abbr> 在 40 个并发读取下 p95 小于 400 ms，授权范围内不超过 2,000 条边的影响查询 p95 小于 1 秒。以上目标尚未实测；文件下载和三维渲染另行测试，图纸首次打开的时间单独测量，与缓存命中时间分开报告。读缓存 key 包含 SaaS 租户、项目、对象版本和权限版本；批准时忽略缓存，版本发布或权限变化使关联视图失效。一个大项目的批量导入按项目分片排队，避免占满所有项目的查询预算。</p>
+<p>这里最危险的恢复动作是“补一次”。外部付款超时后可能已经成功，系统先按 operation ID 查询结果；外部不能按唯一标识确认时，保留为人工待核对，不能换一个 ID 重发。计量证书重复导入时按证书业务身份去重，并比较内容摘要：同 ID 同内容返回原结果，同 ID 不同金额按冲突处理。设计发布晚到时，保留每个版本的发布时间和适用时间，现场适用版本按这两个时间确定，与通知到达顺序无关。已批准的变更后来撤回时，已施工的事实保留；系统另立替代或冲减变更，并显示已签证和已付金额要怎样处理。</p>
 </section>
 <section class="scene" aria-labelledby="验算正常路径失败路径与检查"><header class="scene-head"><h2 id="验算正常路径失败路径与检查"><span class="scene-no" aria-hidden="true">06</span><span class="visually-hidden">验算：</span><span class="head">正常路径、失败路径与检查</span></h2></header><p class="scene-lede">检查要求每一步提交后前一步的证据仍能追溯，重复、乱序和超时都不改变金额；未授权的施工可以登记，却进不了签证。</p>
-<p>正常路径是发布 rev-B、提出 R1、技术答复、登记 E1、批准 A1、现场提交 8 米变更实测、审核计入首期 3,400、财务付款并核对确认。每一步提交后，前一步的证据仍能追溯。失败路径可以从同一现场事实分叉：R1 已答复但 A1 被拒绝，现场自行施工的 8 米仍可登记为“发生、未授权”，却不能进入本例的签证；项目经理要处理责任和补充授权，系统不能靠删掉现场记录掩盖差异。</p>
+<p>正常路径是发布 rev-B、提出 R1、技术答复、登记 E1、批准 A1、现场提交 8 米变更实测、审核计入首期 3,400、财务付款并核对确认。每一步提交后，前一步的证据仍能追溯。失败路径可以从同一现场事实分叉：R1 已答复但 A1 被拒绝，现场自行施工的 8 米仍可登记为“发生、未授权”，却不能进入本例的签证；现场记录保留，差异留给项目经理处理责任和补充授权。</p>
 <div class="table-wrap"><table>
 <thead>
 <tr>
@@ -175,14 +294,47 @@
 </section>
 <section class="scene" aria-labelledby="变式条件改变后的判断"><header class="scene-head"><h2 id="变式条件改变后的判断"><span class="scene-no" aria-hidden="true">07</span><span class="visually-hidden">变式：</span><span class="head">条件改变后的判断</span></h2></header><p class="scene-lede">三种变化下，付款仍要有明确授权与计量证据；变的是授权从哪里来：紧急指令、限定适用范围的价格修订，或业主与分包两份各自独立的合同。</p>
 <p><strong>练习一：允许紧急抢修先施工，后定价。</strong> RFI 已答复，但变更未批准；现场完成 6 米。能否沿用“已批准才能登记实测”的做法？</p>
-<p>简答：不能。“记录事实”与“可签证”不能放在同一个 guard 里。增加一个有权限、限额和原因的紧急指令对象，允许登记 6 米及其依据；价格确认完成之前，金额留在待定账户。不变的是：付款要有明确授权与计量证据。若紧急指令不规定数量或限额，原模型的批准余额上限就失效；检查时，6 米能出现在现场清单里，却不能凭 RFI 直接按 50 单位自动付款。</p>
+<p>简答：要改。“记录事实”与“可签证”各用一个 guard。增加一个有权限、限额和原因的紧急指令对象，允许登记 6 米及其依据；价格确认完成之前，金额留在待定账户。不变的是：付款要有明确授权与计量证据。若紧急指令不规定数量或限额，原模型的批准余额上限就失效；检查时，6 米能出现在现场清单里，却不能凭 RFI 直接按 50 单位自动付款。</p>
 <p><strong>练习二：另一条变更将每米价格由 50 改为 60，且只对批准后的新增施工生效。</strong> 首期变更 8 米已按 50 签证，后续再做 7 米，该怎样计算？</p>
-<p>简答：变更累计为 <code>8 × 50 + 7 × 60 = 820</code>，其中新增 7 米为 420；不能对全部 15 米重新计算成 900。价格适用范围固定到工作批次或有效区间，旧行不重写。检查旧证书摘要不变，新行指向价格修订及适用批次。若合同规定追溯调价，另开一张 80 的调价差额证书，不能悄悄换掉计价规则。</p>
-<p><strong>练习三：A1 同时影响业主收入和分包成本。</strong> 两边都是 1,000，是否可以合并一个变更节点？</p>
-<p>简答：不能合并。两边保留关联，合同身份各自独立。业主尚未批准收入时，分包成本可能已经承诺；二者之差是风险，不是数据重复。检查一方拒绝时，另一方已经批准的义务不被删除。从 V04 可以带过来的是“同一来源关联多个履约对象”；带不过来的是拆分数量的可加性，拆分数量不能直接当作合同金额的可加分区。</p>
-<p><code>TR:V15:V16:evidence-liability</code> 可迁移到 V16：维修事实、责任判断和扣款权分开，照片和工单只提供证据。建造业的合同变更单不能照搬为住户的押金异议程序。<code>TR:V15:V07:version-impact</code> 可把版本追溯迁到 V07 的设计、生产与检验链，但图上可达只说明存在影响关系，不说明库存批次已经返工或质量已经放行。演示可以改变图中的第二条路径、累计计量或批准上限，同时观察四个金额与拒绝理由。</p>
+<p>简答：变更累计为 <code>8 × 50 + 7 × 60 = 820</code>，其中新增 7 米为 420；不能对全部 15 米重新计算成 900。价格适用范围固定到工作批次或有效区间，旧行不重写。检查旧证书摘要不变，新行指向价格修订及适用批次。若合同规定追溯调价，另开一张 80 的调价差额证书，原有计价规则保持不变。</p>
+<figure class="drawing" data-drawing="v15-price"><div class="dw-scroll" style="--dw-min:580px;--dw-max:880px">
+<svg viewBox="0 0 760 232" role="img" aria-labelledby="v15-price-t v15-price-d">
+  <title id="v15-price-t">价格修订只对批准后的新增施工生效</title>
+  <desc id="v15-price-d">变更累计 15 米：首期 8 米按每米 50 已签证，后续 7 米按每米 60 计 420，合计 820。把全部 15 米按 60 重算会得到 900。合同规定追溯调价时，另开一张 80 的调价差额证书。</desc>
+  <!-- x = 170 + metres × 32 -->
+  <g data-s="1">
+    <text class="t-b end" x="160" y="76">按批次计价</text>
+    <rect class="box f2" x="170" y="52" width="256" height="40"/>
+    <text class="t mid" x="298" y="69">首期 8 米 × 50</text>
+    <text class="t-s mid" x="298" y="85">已签证，旧行不重写</text>
+  </g>
+  <g data-s="2">
+    <path class="ln-em" d="M426 40 V100"/>
+    <text class="t-s t-em mid" x="426" y="30">价格修订：批准后新增施工按 60</text>
+    <rect class="box f1" x="426" y="52" width="224" height="40"/>
+    <text class="t mid" x="538" y="69">后续 7 米 × 60</text>
+    <text class="t-n mid" x="538" y="85">420</text>
+    <text class="t-big mid" x="710" y="80">820</text>
+  </g>
+  <g data-s="3">
+    <text class="t-b end" x="160" y="152">全部按 60 重算</text>
+    <rect class="box-dash" x="170" y="128" width="480" height="40"/>
+    <text class="t mid" x="410" y="153">15 米 × 60</text>
+    <text class="t-big mid" x="710" y="156">900</text>
+    <path class="ln" d="M684 148 H736"/>
+  </g>
+  <g data-s="4">
+    <text class="t-b end" x="160" y="214">合同规定追溯时</text>
+    <rect class="box-dash" x="170" y="192" width="256" height="34"/>
+    <text class="t mid" x="298" y="214">另开调价差额证书 80</text>
+  </g>
+</svg>
+</div>
+<figcaption>价格修订从批准后的新增施工起算；首期 8 米的证书保持原样，追溯调价另开差额证书。</figcaption></figure><p><strong>练习三：A1 同时影响业主收入和分包成本。</strong> 两边都是 1,000，是否可以合并一个变更节点？</p>
+<p>简答：保留两个节点。两边保留关联，合同身份各自独立。业主尚未批准收入时，分包成本可能已经承诺；二者之差是风险，不是数据重复。检查一方拒绝时，另一方已经批准的义务仍然保留。从 V04 可以带过来的是“同一来源关联多个履约对象”；带不过来的是拆分数量的可加性，拆分数量不能直接当作合同金额的可加分区。</p>
+<p><code>TR:V15:V16:evidence-liability</code> 可迁移到 V16：维修事实、责任判断和扣款权分开，照片和工单只提供证据。住户的押金异议程序另有规则，建造业的合同变更单只提供可对照的结构。<code>TR:V15:V07:version-impact</code> 可把版本追溯迁到 V07 的设计、生产与检验链，但图上可达只说明存在影响关系，不说明库存批次已经返工或质量已经放行。演示可以改变图中的第二条路径、累计计量或批准上限，同时观察四个金额与拒绝理由。</p>
 </section>
-<section class="scene" aria-labelledby="进入建造业务的先查项"><header class="scene-head"><h2 id="进入建造业务的先查项"><span class="scene-no" aria-hidden="true">08</span><span class="head">进入建造业务的先查项</span></h2></header><p class="scene-lede">选一项真实类型的现场冲突，收集脱敏的设计版本、RFI、估算、批准工作行、累计计量和付款凭据，先核对它们是否出自同一来源、各自对应不同的责任。成熟解法是文档版本控制、可配置审批、变更成本台账、累计签证和付款核对；图遍历帮助找影响，商业额度仍由合同记录确定。下一步查该项目的合同分层、授权矩阵、计量单位与调价适用范围，不能从某个审批软件的状态推断合同效力。验证样本要同时有一项被拒但现场已施工的变化，以及一个经两条路径关联的获批行；系统既要保留事实，也不能重复增加批准金额。</p>
+<section class="scene" aria-labelledby="进入建造业务的先查项"><header class="scene-head"><h2 id="进入建造业务的先查项"><span class="scene-no" aria-hidden="true">08</span><span class="head">进入建造业务的先查项</span></h2></header><p class="scene-lede">选一项真实类型的现场冲突，收集脱敏的设计版本、RFI、估算、批准工作行、累计计量和付款凭据，先核对它们是否出自同一来源、各自对应不同的责任。成熟解法是文档版本控制、可配置审批、变更成本台账、累计签证和付款核对；图遍历帮助找影响，商业额度仍由合同记录确定。下一步查该项目的合同分层、授权矩阵、计量单位与调价适用范围；合同效力以合同本身为准，审批软件里的状态只是记录。验证样本要同时有一项被拒但现场已施工的变化，以及一个经两条路径关联的获批行；系统保留现场事实，批准金额只计一次。</p>
 <p>证据身份与读取范围见 <a href="../../../vault/distilled/saas-engineering-atlas/packages/commerce-property/evidence.json">evidence.json</a>，执行边界与缺口见 <a href="../../../vault/distilled/saas-engineering-atlas/packages/commerce-property/CHANGELOG.md">CHANGELOG.md</a>。</p>
 </section>
 <section class="scene scene-structure" aria-labelledby="case-structure"><header class="scene-head"><h2 id="case-structure"><span class="scene-no" aria-hidden="true">09</span><span class="visually-hidden">结构：</span><span class="head">对象、生命周期与迁移</span></h2></header><p class="scene-lede">24 个节点、50 条带类型的边、7 个生命周期、12 条检查定义，数据见 <a href="../../../vault/distilled/saas-engineering-atlas/packages/commerce-property/V15.json">V15.json</a>。</p>
@@ -317,8 +469,8 @@
     <footer class="page-foot">正文 <a href="../../../books/saas-engineering/packages/commerce-property/V15.md">books/saas-engineering/packages/commerce-property/V15.md</a> · <a href="../../../vault/distilled/saas-engineering-atlas/README.md">结构、来源与验证</a></footer>
   </main>
 </div>
-<script src="search-index.js?v=mv95jeod"></script>
-<script src="book.js?v=mv95jeod"></script>
+<script src="search-index.js?v=mv97hru0"></script>
+<script src="book.js?v=mv97hru0"></script>
 
 </body>
 </html>

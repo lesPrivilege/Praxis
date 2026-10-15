@@ -1,0 +1,30 @@
+<div class="dw-scroll" style="--dw-min:600px;--dw-max:880px">
+<svg viewBox="0 0 740 280" role="img" aria-labelledby="em03-roles-t em03-roles-d">
+  <title id="em03-roles-t">同一个 8 在三层里的角色</title>
+  <desc id="em03-roles-d">System Schema 里 8 是 ServiceConfig.version 的字段值；Work Schema 把它用作提交前提；Agent Context 把它记作一次读取的结果 config_version 8；提交时服务端再查一遍，实际配置已是 9，提交被拒绝。</desc>
+  <path class="ln-soft" d="M20 68 H720 M20 128 H720 M20 188 H720"/>
+  <g data-s="1">
+    <text class="t-b" x="20" y="38">System Schema</text>
+    <text class="t-big mid" x="300" y="46">8</text>
+    <text class="t" x="350" y="34">字段值</text><text class="t-n" x="350" y="54">ServiceConfig.version</text>
+  </g>
+  <g data-s="2">
+    <text class="t-b" x="20" y="102">Work Schema</text>
+    <text class="t-big mid" x="300" y="108">8</text>
+    <text class="t" x="350" y="96">提交前提</text><text class="t-s" x="350" y="114">提交时当前配置版本应为 8</text>
+  </g>
+  <g data-s="3">
+    <text class="t-b" x="20" y="162">Agent Context</text>
+    <text class="t-big mid" x="300" y="168">8</text>
+    <text class="t" x="350" y="156">一次读取的结果</text><text class="t-n" x="350" y="176">observed_versions.config_version</text>
+  </g>
+  <g data-s="4">
+    <text class="t-b" x="20" y="222">服务端动作边界</text>
+    <text class="t-s" x="20" y="240">提交时再检查</text>
+    <text class="t-big mid" x="270" y="232">8</text><text class="t-b mid" x="300" y="230">≠</text><text class="t-big mid t-em" x="330" y="232">9</text>
+    <text class="t-s mid" x="270" y="256">前提</text><text class="t-s mid" x="330" y="256">实际配置</text>
+    <text class="t-b t-em" x="380" y="230">提交被拒绝</text>
+  </g>
+</svg>
+</div>
+<figcaption>前三层里的 8 是同一个数，角色各不相同；只有服务端提交时的再检查拿它和实际配置比较。</figcaption>

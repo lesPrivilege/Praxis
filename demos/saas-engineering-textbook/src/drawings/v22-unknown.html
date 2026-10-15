@@ -1,0 +1,23 @@
+<div class="dw-scroll" style="--dw-min:620px;--dw-max:920px">
+<svg viewBox="0 0 820 250" role="img" aria-labelledby="v22-unknown-t v22-unknown-d">
+  <title id="v22-unknown-t">激活回执丢失后的核对</title>
+  <desc id="v22-unknown-d">设备配置已成功、网络响应丢失时，本地 activation operation 记为 unknown，服务页显示等待核对，系统不马上再配置，也不释放号码。worker 按 (tenant, network domain, service ID, operation ID) 读取 monitor 或网络库存：确认配置与健康条件后补记 active；确认没有执行才安全重试；查不清时交网络人员处理。</desc>
+  <g data-s="1">
+    <rect class="box" x="20" y="80" width="200" height="60"/><text class="t-b" x="34" y="104">operation · unknown</text><text class="t-s" x="34" y="124">服务页：等待核对</text>
+    <text class="t-s" x="20" y="164">网络已配置，响应丢失</text>
+    <text class="t-s" x="20" y="184">不马上再配置，不释放号码</text>
+  </g>
+  <g data-s="2">
+    <path class="ln" d="M220 110 H260"/>
+    <rect class="box" x="260" y="80" width="270" height="60"/><text class="t-b" x="274" y="100">读取 monitor 或网络库存</text>
+    <text class="t-s" x="274" y="118">tenant · network domain</text><text class="t-s" x="274" y="132">service ID · operation ID</text>
+  </g>
+  <g data-s="3">
+    <path class="ln" d="M530 110 H550 V46 H570"/><path class="ln" d="M550 110 H570"/><path class="ln" d="M550 110 V174 H570"/>
+    <rect class="box" x="570" y="24" width="240" height="44"/><text class="t" x="584" y="42">配置与健康条件已确认</text><text class="t-s" x="584" y="59">补记 SV1 active</text>
+    <rect class="box" x="570" y="88" width="240" height="44"/><text class="t" x="584" y="106">确认没有执行</text><text class="t-s" x="584" y="123">安全重试</text>
+    <rect class="box" x="570" y="152" width="240" height="44"/><text class="t" x="584" y="170">查不清</text><text class="t-s" x="584" y="187">网络人员处理，附最后检查结果</text>
+  </g>
+</svg>
+</div>
+<figcaption>核对结果出来之前，operation 停在 unknown，既不重配，也不释放资源；三种核对结果各走一支。</figcaption>

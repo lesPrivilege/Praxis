@@ -1,0 +1,41 @@
+<div class="dw-scroll" style="--dw-min:620px;--dw-max:880px">
+<svg viewBox="0 0 760 262" role="img" aria-labelledby="f09-stock-t f09-stock-d">
+  <title id="f09-stock-t">库存为 1 时的两次并发承诺</title>
+  <desc id="f09-stock-d">左：甲乙都先读到库存 1，再各自写回 0、各承诺一件，库存为 0，合计承诺 2 件。右：事务内带条件扣减，只有库存仍至少为 1 时才减 1；甲更新 1 行成功，乙更新 0 行失败，合计承诺 1 件。</desc>
+  <defs><marker id="f09-stock-ah" viewBox="0 0 8 8" refX="7" refY="4" markerUnits="userSpaceOnUse" markerWidth="9" markerHeight="9" orient="auto"><path class="f-ink" d="M0 0 L8 4 L0 8 z"/></marker></defs>
+  <!-- left: read then write back -->
+  <text class="t-b" x="0" y="18">先读后写回</text>
+  <text class="t-b mid" x="40" y="48">甲</text><text class="t-b mid" x="170" y="48">库存</text><text class="t-b mid" x="300" y="48">乙</text>
+  <path class="ln-soft" d="M40 58 V200"/><path class="ln-soft" d="M170 58 V200"/><path class="ln-soft" d="M300 58 V200"/>
+  <g data-s="1">
+    <path class="ln" marker-end="url(#f09-stock-ah)" d="M164 80 H46"/><text class="t-n mid" x="105" y="74">读到 1</text>
+    <path class="ln" marker-end="url(#f09-stock-ah)" d="M176 110 H294"/><text class="t-n mid" x="235" y="104">读到 1</text>
+  </g>
+  <g data-s="2">
+    <path class="ln" marker-end="url(#f09-stock-ah)" d="M46 145 H164"/><text class="t-n mid" x="105" y="139">写回 0</text><text class="t-s mid" x="40" y="162">承诺 1 件</text>
+    <path class="ln" marker-end="url(#f09-stock-ah)" d="M294 180 H176"/><text class="t-n mid" x="235" y="174">写回 0</text><text class="t-s mid" x="300" y="197">承诺 1 件</text>
+  </g>
+  <g data-s="3">
+    <rect class="box-em" x="20" y="214" width="300" height="36"/>
+    <text class="t-b mid t-em" x="170" y="237">库存 0，合计承诺 2 件</text>
+  </g>
+  <path class="ln-soft" d="M380 10 V252"/>
+  <!-- right: conditional decrement -->
+  <text class="t-b" x="420" y="18">事务内带条件扣减：库存 ≥ 1 时才减 1</text>
+  <text class="t-b mid" x="460" y="48">甲</text><text class="t-b mid" x="590" y="48">库存</text><text class="t-b mid" x="720" y="48">乙</text>
+  <path class="ln-soft" d="M460 58 V200"/><path class="ln-soft" d="M590 58 V200"/><path class="ln-soft" d="M720 58 V200"/>
+  <g data-s="4">
+    <path class="ln" marker-end="url(#f09-stock-ah)" d="M466 90 H584"/><text class="t-n mid" x="525" y="84">1 → 0</text>
+    <text class="t-s mid" x="460" y="108">更新 1 行，成功</text>
+  </g>
+  <g data-s="5">
+    <path class="ln" marker-end="url(#f09-stock-ah)" d="M714 150 H596"/><text class="t-n mid" x="655" y="144">0 &lt; 1</text>
+    <text class="t-s mid" x="720" y="168">更新 0 行，失败</text>
+  </g>
+  <g data-s="6">
+    <rect class="box" x="440" y="214" width="300" height="36"/>
+    <text class="t-b mid" x="590" y="237">库存 0，合计承诺 1 件</text>
+  </g>
+</svg>
+</div>
+<figcaption>甲乙依据同一个读数各自写回 0，库存只少了 1，承诺却有 2 件；把“仍至少为 1”放进扣减条件，乙的更新影响 0 行，按行数判定失败。</figcaption>

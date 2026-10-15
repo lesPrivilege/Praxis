@@ -1,0 +1,31 @@
+<div class="dw-scroll" style="--dw-min:600px;--dw-max:900px">
+<svg viewBox="0 0 760 236" role="img" aria-labelledby="f04-dfs-t f04-dfs-d">
+  <title id="f04-dfs-t">DFS：共享依赖与环</title>
+  <desc id="f04-dfs-d">图 A→B、A→C、B→D、C→D、D→E。按 B 优先，路径 A→B→D→E；回到 A 后访问 C，C 指向已完成的 D，这是共享依赖。加一条 E→B，访问 E 时遇到仍在当前路径上、尚未完成的 B，发现环 B→D→E→B。</desc>
+  <defs><marker id="f04-dfs-ah" viewBox="0 0 8 8" refX="7" refY="4" markerUnits="userSpaceOnUse" markerWidth="9" markerHeight="9" orient="auto"><path class="f-ink" d="M0 0 L8 4 L0 8 z"/></marker><marker id="f04-dfs-ahe" viewBox="0 0 8 8" refX="7" refY="4" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" orient="auto"><path class="f-em" d="M0 0 L8 4 L0 8 z"/></marker></defs>
+  <rect class="box" x="20" y="98" width="44" height="36"/><text class="t-b mid" x="42" y="121">A</text>
+  <rect class="box" x="150" y="38" width="44" height="36"/><text class="t-b mid" x="172" y="61">B</text>
+  <rect class="box" x="150" y="158" width="44" height="36"/><text class="t-b mid" x="172" y="181">C</text>
+  <rect class="box" x="280" y="98" width="44" height="36"/><text class="t-b mid" x="302" y="121">D</text>
+  <rect class="box" x="410" y="98" width="44" height="36"/><text class="t-b mid" x="432" y="121">E</text>
+  <path class="ln-soft" marker-end="url(#f04-dfs-ah)" d="M64 108 L146 66"/>
+  <path class="ln-soft" marker-end="url(#f04-dfs-ah)" d="M64 124 L146 168"/>
+  <path class="ln-soft" marker-end="url(#f04-dfs-ah)" d="M194 66 L276 108"/>
+  <path class="ln-soft" marker-end="url(#f04-dfs-ah)" d="M194 168 L276 124"/>
+  <path class="ln-soft" marker-end="url(#f04-dfs-ah)" d="M324 116 H406"/>
+  <path class="ln-strong" data-draw="1" d="M64 108 L146 66 M194 66 L276 108 M324 116 H406"/>
+  <g data-s="1"><text class="t" x="500" y="40">路径 A→B→D→E</text></g>
+  <g data-s="2">
+    <path class="ln" marker-end="url(#f04-dfs-ah)" d="M194 168 L276 124"/>
+    <text class="t" x="500" y="96">回到 A，访问 C</text>
+    <text class="t-s" x="500" y="114">C→D 指向已完成的 D：共享依赖</text>
+  </g>
+  <g data-s="3">
+    <path class="ln-em" marker-end="url(#f04-dfs-ahe)" d="M432 98 C432 20 260 14 198 48"/>
+    <text class="t-s t-em" x="352" y="22">加 E→B</text>
+    <text class="t t-em" x="500" y="164">B 仍在当前路径上、尚未完成</text>
+    <text class="t-b t-em" x="500" y="186">环 B→D→E→B</text>
+  </g>
+</svg>
+</div>
+<figcaption>指向已完成节点的边是共享依赖；指回当前路径上未完成节点的边才构成环。</figcaption>

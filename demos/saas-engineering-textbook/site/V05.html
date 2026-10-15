@@ -4,9 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>V05 · 点餐、厨房交接、分账与结账 · SaaS 工程全景</title>
-<link rel="stylesheet" href="book.css?v=mv95jeod">
+<link rel="stylesheet" href="book.css?v=mv97hru0">
 </head>
 <body>
+<svg class="dw-defs" width="0" height="0" aria-hidden="true" focusable="false" style="position:absolute"><defs><pattern id="dw-hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" fill="var(--bg)"/><path d="M0 0 V6" stroke="var(--ink-2)" stroke-width="1.2"/></pattern></defs></svg>
 <a class="skip" href="#main">跳到正文</a>
 <header class="topbar">
   <button class="nav-toggle" type="button" aria-controls="sidebar" aria-expanded="false">目录</button>
@@ -20,7 +21,7 @@
 <header class="hero">
 <p class="kicker"><a href="group-commerce-property.html">消费履约、住宿与空间</a><span class="dot">·</span>V05</p>
 <h1>点餐、厨房交接、分账与结账</h1>
-<p class="lede">餐厅向一桌客人承诺按约定做出食物，并把每份消费和每次付款解释清楚。厨房接单后就可能开始消耗食材，收银却可能到最后才确认谁付多少，两边的节奏不同。所以订单、制作、账单和支付各有状态；一次“取消”无法让已做的菜、客人应付的钱和银行卡交易同时回到起点。送厨以厨房确认为准，撤菜是新请求，已耗的食材用报损解释；split check 拆的是消费责任，split tender 拆的是收款工具，两者都不增加制作数量；整单优惠按责任份额用最大余数法分摊，总额守恒。改变判断的是卡支付结果未知：未决尝试继续占住它的金额，查明被拒绝之前不能再收同一笔余额。</p>
+<p class="lede">餐厅向一桌客人承诺按约定做出食物，并把每份消费和每次付款解释清楚。厨房接单后就可能开始消耗食材，收银却可能到最后才确认谁付多少，两边的节奏不同。所以订单、制作、账单和支付各有状态，取消也按层分别处理：撤菜、调整账单和退款是三件事。送厨以厨房确认为准，撤菜是新请求，已耗的食材用报损解释；split check 拆的是消费责任，split tender 拆的是收款工具，两者都只改动账面，制作数量保持不变；整单优惠按责任份额用最大余数法分摊，总额守恒。改变判断的是卡支付结果未知：未决尝试继续占住它的金额，查明被拒绝之后，才能再收同一笔余额。</p>
 
 <div class="cast" aria-label="本例的角色、界面与系统">
 <div class="cast-lane"><p class="cast-k">角色</p><ul><li>服务员</li><li>厨房人员</li><li>收银员</li><li>经理</li></ul></div>
@@ -61,9 +62,9 @@
 </tbody></table></div>
 </section>
 <section class="scene" aria-labelledby="解法菜单模板与-selection"><header class="scene-head"><h2 id="解法菜单模板与-selection"><span class="scene-no" aria-hidden="true">02</span><span class="visually-hidden">解法：</span><span class="head">菜单模板与 selection</span></h2></header><p class="scene-lede">每一份配置不同的菜是一个独立的 selection，保存接受时的菜单版本、选项和价格；制作、账单和付款再由各自的权威推进状态。</p>
-<p>菜单管理员维护菜品及 modifier（口味、配料或规格选项）。菜单项只是模板，selection 记录这一次要做的菜：客人点一份“不加酱”的主菜，服务员就创建一个 selection；同一道菜另一份正常口味，要另建一个 selection。selection 保存菜单版本、选项树、数量、接受时的价格与备注，菜名后来改了，厨房的旧单也不会变成另一道菜。自由文本备注能提醒工作人员，却不能自动证明某项食物安全要求已经满足；系统无法可靠表达的要求，由工作人员确认。</p>
-<p>Toast 文档把 modifiers 放在 <code>Selection</code> 中，并规定 modifier 数量应与所属 selection 的数量相等；同一道菜的不同份数需要不同 modifier 时，应拆成不同的 selection。按这条约束，“2 份主菜、其中 1 份不加酱”不能写成一行含糊的数量 2。参见 <a href="https://doc.toasttab.com/doc/devguide/apiSpecifyingModifiersAndInstructions.html" class="ext" rel="noopener">Specifying modifiers and instructions，Requirements for modifier quantities</a>（<code>P05-SRC-toast-modifiers-C1</code>）。本例的选项验证和价格快照由自己的服务实现。</p>
-<p>服务员可以新建 selection、发送尚未制作的项目、提出撤菜；厨房确认收到、开始制作、完成或无法停止；收银员在限定余额内收款；经理授权送厨后的撤销、折扣与报损。任何角色都不能按一下按钮就把银行卡扣款记为成功。餐厅是数据边界，桌号只在门店与营业场景内有意义；“12 号桌”不能充当全球订单 <abbr title="identifier：标识符">ID</abbr>。共享设备上切换员工时，当前操作要重新绑定员工身份和权限。</p>
+<p>菜单管理员维护菜品及 modifier（口味、配料或规格选项）。菜单项只是模板，selection 记录这一次要做的菜：客人点一份“不加酱”的主菜，服务员就创建一个 selection；同一道菜另一份正常口味，要另建一个 selection。selection 保存菜单版本、选项树、数量、接受时的价格与备注，菜名后来改了，厨房的旧单仍指向原来那道菜。自由文本备注用来提醒工作人员；某项食物安全要求是否满足，以及系统无法可靠表达的要求，由工作人员确认。</p>
+<p>Toast 文档把 modifiers 放在 <code>Selection</code> 中，并规定 modifier 数量应与所属 selection 的数量相等；同一道菜的不同份数需要不同 modifier 时，应拆成不同的 selection。按这条约束，“2 份主菜、其中 1 份不加酱”写成两个 selection，各为数量 1，而非一行含糊的数量 2。参见 <a href="https://doc.toasttab.com/doc/devguide/apiSpecifyingModifiersAndInstructions.html" class="ext" rel="noopener">Specifying modifiers and instructions，Requirements for modifier quantities</a>（<code>P05-SRC-toast-modifiers-C1</code>）。本例的选项验证和价格快照由自己的服务实现。</p>
+<p>服务员可以新建 selection、发送尚未制作的项目、提出撤菜；厨房确认收到、开始制作、完成或无法停止；收银员在限定余额内收款；经理授权送厨后的撤销、折扣与报损。银行卡扣款是否成功，以支付方的结果为准，任何角色的按钮都只提交请求。餐厅是数据边界，桌号只在门店与营业场景内有意义；“12 号桌”不能充当全球订单 <abbr title="identifier：标识符">ID</abbr>。共享设备上切换员工时，当前操作要重新绑定员工身份和权限。</p>
 <div class="table-wrap"><table>
 <thead>
 <tr>
@@ -95,35 +96,110 @@
 <tr>
 <td>shift close</td>
 <td>门店对账服务；营业日、班次、明细版本</td>
-<td><code>open → balanced</code> 或 <code>exception</code>；账单关闭了，收银抽屉与结算未必相符</td>
+<td><code>open → balanced</code> 或 <code>exception</code>；账单关闭后，收银抽屉与结算另行核对</td>
 </tr>
 </tbody></table></div>
-<p>Toast 的状态名要按它自己的定义理解：<code>approvalStatus</code> 只反映是否送厨，看不出是否已完成或已付款；selection 的 <code>NEW/HOLD/SENT/READY</code> 描述制作进度，其中 <code>READY</code> 依赖餐厅使用 Toast KDS。Toast check 的 <code>PAID</code> 与 <code>CLOSED</code> 还区分付款和小费调整；本例不含小费，这里的 <code>closed</code> 规则不能当作 Toast 的完整行为。参见 <a href="https://doc.toasttab.com/doc/devguide/apiOrdersOrderObjectSummary.html" class="ext" rel="noopener">Order object summary，Order status information</a>。</p>
+<p>Toast 的状态名要按它自己的定义理解：<code>approvalStatus</code> 只反映是否送厨，完成和付款不在这个字段里；selection 的 <code>NEW/HOLD/SENT/READY</code> 描述制作进度，其中 <code>READY</code> 依赖餐厅使用 Toast KDS。Toast check 的 <code>PAID</code> 与 <code>CLOSED</code> 还区分付款和小费调整；本例不含小费，这里的 <code>closed</code> 规则是 Toast 行为的简化。参见 <a href="https://doc.toasttab.com/doc/devguide/apiOrdersOrderObjectSummary.html" class="ext" rel="noopener">Order object summary，Order status information</a>。</p>
 </section>
 <section class="scene" aria-labelledby="送厨交接"><header class="scene-head"><h2 id="送厨交接"><span class="scene-no" aria-hidden="true">03</span><span class="head">送厨交接</span></h2></header><p class="scene-lede">送厨以厨房确认为准，数据库写入只说明请求已保存；送厨之后的撤菜是一个新请求，已经耗用的食材要有处置和责任人。</p>
 <p>点餐页用可选项表达常见口味，提交前列出每份的最终配置；缺少必选项时定位到对应的组，已经选好的内容保留。价格有变化时展示差额，服务员确认后才接受新版本。服务员点“送厨”后，系统把指定 revision 的 selection 固定为制作依据，并保存 ticket 和 outbox；界面先显示“待厨房接收”，得到厨房确认后才显示“厨房已接单”。如果数据库写入就算作已接单，打印机断纸或终端断网时，前厅会向客人报出等待时间，厨房却从没见过这张单。</p>
-<p>同一 <code>ticket_id + revision</code> 重发给可去重的 KDS，厨房屏上只出现一份待做工作；服务员刷新页面也不会生成新 ticket。纸质打印没有可靠的电子完成回执，打印成功了，厨师也未必看到。这种模式下，本例保留“打印结果待确认”，重打的单显著标为副本，并由人员确认；物理副作用并非都能做到 exactly once。厨房拒绝制作时，原 selection 及其承诺保持不变，前厅要向客人提出换菜、等待或取消的方案。</p>
-<p>送厨无法靠数据库回滚撤销，已经送厨的“撤菜”是一个新请求。厨房在尚未制作时可以确认停止；若已经开火，由经理决定继续上菜、重做或报损，并明确调整账单。原 selection 不能删除，否则已经耗用的食材就无从解释。厨房做了什么与客人应付多少，也不能合成同一个布尔值：餐厅可以因服务问题免单，菜却确实做过；也可能菜取消前款已收到，还要另行退款。audit trail 保存原 revision、变更理由、批准人、厨房响应和资金操作引用。</p>
+<p>同一 <code>ticket_id + revision</code> 重发给可去重的 KDS，厨房屏上只出现一份待做工作；服务员刷新页面也不会生成新 ticket。纸质打印没有可靠的电子完成回执，打印成功后，厨师是否看到仍要人员确认。这种模式下，本例保留“打印结果待确认”，重打的单显著标为副本，并由人员确认；物理副作用并非都能做到 exactly once。厨房拒绝制作时，原 selection 及其承诺保持不变，前厅要向客人提出换菜、等待或取消的方案。</p>
+<p>送厨之后，数据库回滚撤不回厨房里的动作，“撤菜”是一个新请求。厨房在尚未制作时可以确认停止；若已经开火，由经理决定继续上菜、重做或报损，并明确调整账单。原 selection 保留，已经耗用的食材靠它解释。厨房做了什么与客人应付多少是两项事实，各记各的：餐厅可以因服务问题免单，菜却确实做过；也可能菜取消前款已收到，还要另行退款。audit trail 保存原 revision、变更理由、批准人、厨房响应和资金操作引用。</p>
 </section>
-<section class="scene" aria-labelledby="分账与多次付款"><header class="scene-head"><h2 id="分账与多次付款"><span class="scene-no" aria-hidden="true">04</span><span class="head">分账与多次付款</span></h2></header><p class="scene-lede">Split check 把消费责任拆到多个 check：两人各付自己的主菜，共享配菜各承担一半。每个新 check 都有自己的应付额和关闭条件。Split tender 是同一个 check 用多次付款覆盖余额，例如 3,000 分现金加 4,399 分银行卡；它不会自动生成两份菜品或两张账单。Toast 的操作文档同时描述了按项目拆账，以及保持账单合并、逐笔输入付款金额和 tender type 的做法。参见 <a href="https://support.toasttab.com/en/article/Splitting-Checks-by-Item-1492811097734" class="ext" rel="noopener">Split Checks on the POS</a>（<code>P05-SRC-toast-split-C1</code>）。同一文档提醒，按项目拆账时服务费和项目级折扣不会自动继承，需要重新处理；下文保持总优惠不变的比例分配是本例政策，不是 Toast 的产品保证。</p>
-<p>分账界面把原 check 放在左侧，拟生成的 A、B 账单放在右侧；共享项目可以分配消费份额，但保留原 selection 与厨房 ticket 的引用。预览同时显示分配前后的金额总和与优惠归属。提交时带上原 check 的 version；两个服务员同时拖动同一个项目时，后提交的一方收到冲突并重新预览，不按“最后写入者胜出”覆盖前者。已经开始付款的账单暂不允许自动拆分，先确认每次支付的归属；否则一笔已付的钱可能留在空账单上，另一张账单又向客人收费。产品若允许拆分已有付款的账单，需要另设款项重分配对象，不能在本例的模型上补一个字段了事。</p>
-<p>不分账时，合并 check 的收款页显示“应付 7,399；已确认 3,000；处理中／待核对 4,399；当前可发起 0”。页面让客人和收银员都能看出，待核对不等于未付款。刷卡超时后，页面保留原 attempt，允许查询、呼叫经理和记录处理意见；页面不提供普通的“再试一次”，因为它会另起第二笔扣款。收现金时录入的是客人这次交付的金额和找零，只有实际记入该 check 的已付额才冲减欠款：交付 5,000、找零 2,000，应用付款为 3,000，不能把 5,000 全计作消费收款。</p>
+<section class="scene" aria-labelledby="分账与多次付款"><header class="scene-head"><h2 id="分账与多次付款"><span class="scene-no" aria-hidden="true">04</span><span class="head">分账与多次付款</span></h2></header><p class="scene-lede">Split check 把消费责任拆到多个 check：两人各付自己的主菜，1,900 分的共享配菜各承担一半，即各 950 分，配菜仍只做一份。每个新 check 都有自己的应付额和关闭条件。Split tender 是同一个 check 用多次付款覆盖余额，例如 3,000 分现金加 4,399 分银行卡；菜品和账单都仍是一份。Toast 的操作文档同时描述了按项目拆账，以及保持账单合并、逐笔输入付款金额和 tender type 的做法。参见 <a href="https://support.toasttab.com/en/article/Splitting-Checks-by-Item-1492811097734" class="ext" rel="noopener">Split Checks on the POS</a>（<code>P05-SRC-toast-split-C1</code>）。同一文档提醒，按项目拆账时服务费和项目级折扣不会自动继承，需要重新处理；下文保持总优惠不变的比例分配是本例政策，不是 Toast 的产品保证。</p>
+<figure class="drawing" data-drawing="v05-layers"><div class="dw-scroll" style="--dw-min:620px;--dw-max:920px">
+<svg viewBox="0 0 780 300" role="img" aria-labelledby="v05-layers-t v05-layers-d">
+  <title id="v05-layers-t">Split check 与 split tender 改动的层</title>
+  <desc id="v05-layers-d">两边的制作层相同：主菜 3,200、共享配菜 1,900 一份、主菜 2,800。Split check 把消费责任拆成 check A（原价 4,150，净付 3,887）和 check B（原价 3,750，净付 3,512），配菜各承担 950，两张账各自收款。Split tender 保留一张 check（原价 7,900，净付 7,399），由现金 3,000 和银行卡 4,399 两次付款覆盖。</desc>
+  <text class="t-b mid" x="240" y="22">Split check：拆消费责任</text>
+  <text class="t-b mid" x="610" y="22">Split tender：拆收款工具</text>
+  <text class="t-s" x="0" y="78">制作</text><text class="t-s" x="0" y="184">消费责任</text><text class="t-s" x="0" y="266">收款工具</text>
+  <path class="ln-soft" d="M425 34 V292"/>
+  <g data-s="1">
+    <rect class="box" x="70" y="50" width="100" height="46"/><text class="t mid" x="120" y="70">主菜</text><text class="t-n mid" x="120" y="88">3,200</text>
+    <rect class="box-em" x="190" y="50" width="100" height="46"/><text class="t mid" x="240" y="70">配菜 · 1 份</text><text class="t-n mid" x="240" y="88">1,900</text>
+    <rect class="box" x="310" y="50" width="100" height="46"/><text class="t mid" x="360" y="70">主菜</text><text class="t-n mid" x="360" y="88">2,800</text>
+    <rect class="box" x="440" y="50" width="100" height="46"/><text class="t mid" x="490" y="70">主菜</text><text class="t-n mid" x="490" y="88">3,200</text>
+    <rect class="box" x="560" y="50" width="100" height="46"/><text class="t mid" x="610" y="70">配菜 · 1 份</text><text class="t-n mid" x="610" y="88">1,900</text>
+    <rect class="box" x="680" y="50" width="100" height="46"/><text class="t mid" x="730" y="70">主菜</text><text class="t-n mid" x="730" y="88">2,800</text>
+  </g>
+  <g data-s="2">
+    <path class="ln" d="M120 96 L145 150 M225 96 L190 150 M255 96 L290 150 M360 96 L335 150"/>
+    <text class="t-s end" x="200" y="128">950</text><text class="t-s" x="280" y="128">950</text>
+    <rect class="box" x="70" y="150" width="150" height="62"/>
+    <text class="t-b" x="82" y="170">check A</text><text class="t-s" x="82" y="186">原价 4,150</text><text class="t-s" x="82" y="202">净付 3,887</text>
+    <rect class="box" x="260" y="150" width="150" height="62"/>
+    <text class="t-b" x="272" y="170">check B</text><text class="t-s" x="272" y="186">原价 3,750</text><text class="t-s" x="272" y="202">净付 3,512</text>
+  </g>
+  <g data-s="3">
+    <path class="ln-dash" d="M145 212 V244 M335 212 V244"/>
+    <rect class="box-dash" x="70" y="244" width="150" height="40"/><text class="t mid" x="145" y="269">A 的付款</text>
+    <rect class="box-dash" x="260" y="244" width="150" height="40"/><text class="t mid" x="335" y="269">B 的付款</text>
+  </g>
+  <g data-s="4">
+    <path class="ln" d="M490 96 L560 150 M610 96 V150 M730 96 L660 150"/>
+    <rect class="box" x="440" y="150" width="340" height="62"/>
+    <text class="t-b mid" x="610" y="174">check</text><text class="t-s mid" x="610" y="196">原价 7,900 · 净付 7,399</text>
+  </g>
+  <g data-s="5">
+    <path class="ln" d="M520 212 V244 M700 212 V244"/>
+    <rect class="box f1" x="440" y="244" width="160" height="40"/><text class="t mid" x="520" y="269">现金 3,000</text>
+    <rect class="box f1" x="620" y="244" width="160" height="40"/><text class="t mid" x="700" y="269">银行卡 4,399</text>
+  </g>
+</svg>
+</div>
+<figcaption>两种拆法改动的层不同，制作层在两边都是同样的三份菜，共享配菜始终只做一份。</figcaption></figure><p>分账界面把原 check 放在左侧，拟生成的 A、B 账单放在右侧；共享项目可以分配消费份额，但保留原 selection 与厨房 ticket 的引用。预览同时显示分配前后的金额总和与优惠归属。提交时带上原 check 的 version；两个服务员同时拖动同一个项目时，后提交的一方收到冲突并重新预览，不按“最后写入者胜出”覆盖前者。已经开始付款的账单暂不允许自动拆分，先确认每次支付的归属；否则一笔已付的钱可能留在空账单上，另一张账单又向客人收费。产品若允许拆分已有付款的账单，需要另设款项重分配对象。</p>
+<p>不分账时，合并 check 的收款页显示“应付 7,399；已确认 3,000；处理中／待核对 4,399；当前可发起 0”。页面把待核对与未付款分开显示，客人和收银员都看得出区别。刷卡超时后，页面保留原 attempt，允许查询、呼叫经理和记录处理意见；页面不提供普通的“再试一次”，因为它会另起第二笔扣款。收现金时录入的是客人这次交付的金额和找零，只有实际记入该 check 的已付额才冲减欠款：交付 5,000、找零 2,000，应用付款为 3,000，不能把 5,000 全计作消费收款。</p>
 </section>
 <section class="scene" aria-labelledby="演算优惠分摊与未知支付占额"><header class="scene-head"><h2 id="演算优惠分摊与未知支付占额"><span class="scene-no" aria-hidden="true">05</span><span class="visually-hidden">演算：</span><span class="head">优惠分摊与未知支付占额</span></h2></header><p class="scene-lede">算法先冻结 selection 和价格，再分消费责任，最后收款。A 的原价责任为 <code>3200 + 1900/2 = 4150</code>，B 为 <code>2800 + 1900/2 = 3750</code>，两者合计仍为 7,900 分。501 分优惠按两人的原价责任分配：A 的理想分配为 <code>501×4150/7900 ≈ 263.1835</code>，B 约 237.8165。取整后为 263 和 237，剩下的 1 分给余数较大的 B，得到 A 净付 3,887、B 净付 3,512，合计 7,399。余数相同时按新 check ID 的固定顺序分配，预览和提交使用同一规则版本。</p>
 <p>朴素实现容易先拆出两张新账单，再对每张重复应用“优惠 501 分”，使总优惠翻倍；也可能把共享项目复制成两份，让厨房再做一盘。正确实现把责任份额记为从原 selection 派生的记录，所有子份额之和为 1，并在同一事务中把原账单标为已替代。共享菜的消费责任可以分成两半，制作任务仍只有一份。一分钱无法平分时，仍用最大余数法安排尾差；尾差只关系到金额守恒，与厨房的制作数量无关。</p>
 <p>分账预览要遍历 n 个消费份额并按余数排序，约 O(n log n)；一桌通常只有几十个份额，用不上复杂的分布式计算。modifier 树的验证按 v 个节点、e 条父子关系遍历，约 O(v+e)，同时检查选项是否属于相应的菜单版本、必选数量、深度上限和重复关系；只凭叶子名称相同不能接受。系统以此防止客户端把另一道菜价格较低的选项拼进当前 selection；真实 provider 的规则还要通过它的 <abbr title="application programming interface：应用程序接口">API</abbr> 再验证。</p>
-<p>若不分账、保留 7,399 分的合并 check，现金成功后已确认 3,000；4,399 的卡尝试已送出，但响应丢失。收款服务使用 <code>可发起金额 = 应付 − 已确认应用金额 − 未决尝试占额</code>，得到 0。未知占额不是已成功的收入，只是为阻止并发重复收费而暂时占住的额度。核对到卡成功后，已确认变为 7,399，未决归零；核对到明确拒绝后，已确认仍为 3,000，未决归零，允许新的尝试收 4,399。错误的实现只减去已确认金额，卡结果未知时仍允许再收 4,399 现金；迟到的成功结果一到，就多收了一份。</p>
-</section>
-<section class="scene" aria-labelledby="技术选型与系统拓扑"><header class="scene-head"><h2 id="技术选型与系统拓扑"><span class="scene-no" aria-hidden="true">06</span><span class="head">技术选型与系统拓扑</span></h2></header><p class="scene-lede">selection、check 份额、付款占额和 outbox 放在同一个事务库里，唯一键保证同一 ticket revision、同一 attempt 只生效一次；缓存和浏览器本地存储都不作最终决定。</p>
-<p>React 或 Vue 可以实现桌台、菜单、拆账和收款工作台；厨房屏需要清晰的大字号、便于操作的焦点顺序，以及刷新后保持不变的 ticket 身份。服务端可以采用 Kotlin/Spring 或 TypeScript/NestJS；强类型的金额与版本对象有助于减少误传，取舍仍看团队能力。PostgreSQL 事务保存 selection、check 份额、付款占额和 outbox，唯一键保证同一 ticket revision、同一 attempt 只产生一次业务效果。菜单的静态内容可以按餐厅、版本、语言缓存；当前应付与可收余额由权威服务确认，本地缓存不作最终决定。浏览器本地存储可以保护未提交的草稿，但断网时的草稿只显示“未送厨”，不能显示成餐厅已接单。</p>
+<p>若不分账、保留 7,399 分的合并 check，现金成功后已确认 3,000；4,399 的卡尝试已送出，但响应丢失。收款服务使用 <code>可发起金额 = 应付 − 已确认应用金额 − 未决尝试占额</code>，得到 0。未知占额是为阻止并发重复收费而暂时占住的额度，不计入已成功的收入。核对到卡成功后，已确认变为 7,399，未决归零；核对到明确拒绝后，已确认仍为 3,000，未决归零，允许新的尝试收 4,399。错误的实现只减去已确认金额，卡结果未知时仍允许再收 4,399 现金；迟到的成功结果一到，应用金额变成 11,798 分，多收了一份。</p>
+<figure class="drawing" data-drawing="v05-hold"><div class="dw-scroll" style="--dw-min:620px;--dw-max:920px">
+<svg viewBox="0 0 780 300" role="img" aria-labelledby="v05-hold-t v05-hold-d">
+  <title id="v05-hold-t">未决卡尝试的占额</title>
+  <desc id="v05-hold-d">应付 7,399。现金交付 5,000、找零 2,000，应用 3,000；4,399 的卡尝试结果未知，占住 4,399，可发起金额为 0。核对为成功，已确认 7,399；核对为拒绝，已确认 3,000，可发起 4,399。错误实现只减已确认，结果未知时再收 4,399 现金，卡迟到成功后应用金额为 11,798。</desc>
+  <text class="t-s" x="130" y="18">可发起金额 ＝ 应付 − 已确认应用金额 − 未决尝试占额</text>
+  <path class="ln-soft" d="M525 40 V292"/><text class="t-s mid" x="525" y="36">应付 7,399</text>
+  <g data-s="1">
+    <text class="t" x="0" y="81">结果未知</text>
+    <rect class="box f-ink" x="130" y="60" width="160" height="32"/><text class="t-s mid t-inv" x="210" y="80">现金 3,000</text>
+    <rect class="box-dash" x="290" y="60" width="235" height="32"/><text class="t-s mid" x="407" y="80">卡 4,399 · unknown 占额</text>
+    <text class="t-s" x="134" y="108">交付 5,000，找零 2,000</text>
+    <text class="t" x="540" y="81">可发起</text><text class="t-n" x="590" y="81">0</text>
+  </g>
+  <g data-s="2">
+    <text class="t" x="0" y="147">核对为成功</text>
+    <rect class="box f-ink" x="130" y="126" width="160" height="32"/><text class="t-s mid t-inv" x="210" y="146">现金 3,000</text>
+    <rect class="box f-ink" x="290" y="126" width="235" height="32"/><text class="t-s mid t-inv" x="407" y="146">卡 4,399 成功</text>
+    <text class="t" x="540" y="147">已确认</text><text class="t-n" x="590" y="147">7,399</text><text class="t" x="650" y="147">可发起</text><text class="t-n" x="700" y="147">0</text>
+  </g>
+  <g data-s="3">
+    <text class="t" x="0" y="199">核对为拒绝</text>
+    <rect class="box f-ink" x="130" y="178" width="160" height="32"/><text class="t-s mid t-inv" x="210" y="198">现金 3,000</text>
+    <rect class="box" x="290" y="178" width="235" height="32"/><text class="t-s mid" x="407" y="198">未决归零</text>
+    <text class="t" x="540" y="199">已确认</text><text class="t-n" x="590" y="199">3,000</text><text class="t" x="650" y="199">可发起</text><text class="t-n" x="700" y="199">4,399</text>
+  </g>
+  <g data-s="4">
+    <text class="t" x="0" y="248">错误实现</text><text class="t-s" x="0" y="264">只减已确认</text>
+    <rect class="box f-ink" x="130" y="236" width="160" height="32"/><text class="t-s mid t-inv" x="210" y="256">现金 3,000</text>
+    <rect class="box f-ink" x="290" y="236" width="235" height="32"/><text class="t-s mid t-inv" x="407" y="256">卡 4,399 迟到成功</text>
+    <rect class="box-em" x="525" y="236" width="235" height="32"/><text class="t-s mid" x="642" y="256">再收现金 4,399</text>
+    <text class="t-em" x="525" y="290">应用 11,798</text>
+  </g>
+</svg>
+</div>
+<figcaption>未决尝试占住 4,399，可发起金额在核对之前一直是 0；只减已确认的实现会在卡迟到成功后多收一份。</figcaption></figure></section>
+<section class="scene" aria-labelledby="技术选型与系统拓扑"><header class="scene-head"><h2 id="技术选型与系统拓扑"><span class="scene-no" aria-hidden="true">06</span><span class="head">技术选型与系统拓扑</span></h2></header><p class="scene-lede">selection、check 份额、付款占额和 outbox 放在同一个事务库里，唯一键保证同一 ticket revision、同一 attempt 只生效一次；最终决定由权威服务作出，缓存和浏览器本地存储只作辅助。</p>
+<p>React 或 Vue 可以实现桌台、菜单、拆账和收款工作台；厨房屏需要清晰的大字号、便于操作的焦点顺序，以及刷新后保持不变的 ticket 身份。服务端可以采用 Kotlin/Spring 或 TypeScript/NestJS；强类型的金额与版本对象有助于减少误传，取舍仍看团队能力。PostgreSQL 事务保存 selection、check 份额、付款占额和 outbox，唯一键保证同一 ticket revision、同一 attempt 只产生一次业务效果。菜单的静态内容可以按餐厅、版本、语言缓存；当前应付与可收余额由权威服务确认。浏览器本地存储可以保护未提交的草稿；断网时的草稿显示“未送厨”，直到厨房确认才算餐厅已接单。</p>
 <p>拓扑中，点餐 <abbr title="user interface：用户界面">UI</abbr> 的 <code>commands</code> 指向订单服务，厨房 UI 的 <code>commands</code> 指向厨房服务；厨房的确认事件经 <code>emits → delivers</code> 更新 ticket。账单服务 <code>owns</code> check，check <code>derived_from</code> selection，tender <code>depends_on</code> 被接受的 check version。资金服务 <code>requests</code> 外部支付方，并 <code>reads</code> 原交易来核对；<code>projects</code> 把厨房、账单与支付三种事实分别呈现出来。Toast 用来参照餐饮对象，Stripe 用来参照回调风险。Stripe 文档讨论签名验证、重复事件与乱序，所以本例的事件消费者保留事件身份，并回查权威结果。参见 <a href="https://docs.stripe.com/webhooks" class="ext" rel="noopener">Stripe Webhooks</a>。</p>
-<p>正常流程中，服务员提交 selection，厨房确认接单并做完，客人收到菜；收银员决定分账还是同账多次付款，资金确认覆盖余额后关闭账单，班次核对现金应用额、找零、卡交易及退款。异常流程中，卡已受理但响应超时，本地把这次尝试记为 unknown；收银页继续保留桌台和责任人，后台按原交易查询。若查询也不可用，由经理在未决清单中接管；本例不自动改收现金。业务允许客人先离店时，另建明确的应收或人工交接记录，不能把它记作已收款。</p>
-<p>送厨事务提交后 worker 崩溃时，重放同一 outbox；重复的副本在 KDS 上按 ticket revision 合并。厨房已确认撤销后，晚到的旧“已接收”消息不能把 ticket 恢复为待做；读取当前 revision 和撤销确认后修复投影。付款状态同样不按消息到达的次序决定。若系统无权查询支付端结果，这笔尝试会一直停在 unknown，自动恢复的前提也就不成立。</p>
+<p>正常流程中，服务员提交 selection，厨房确认接单并做完，客人收到菜；收银员决定分账还是同账多次付款，资金确认覆盖余额后关闭账单，班次核对现金应用额、找零、卡交易及退款。异常流程中，卡已受理但响应超时，本地把这次尝试记为 unknown；收银页继续保留桌台和责任人，后台按原交易查询。若查询也不可用，由经理在未决清单中接管；本例不自动改收现金。业务允许客人先离店时，另建明确的应收或人工交接记录，这笔钱仍是应收。</p>
+<p>送厨事务提交后 worker 崩溃时，重放同一 outbox；重复的副本在 KDS 上按 ticket revision 合并。厨房已确认撤销后，晚到的旧“已接收”消息不能把 ticket 恢复为待做；读取当前 revision 和撤销确认后修复投影。付款状态同样按权威结果决定，与消息到达的次序无关。若系统无权查询支付端结果，这笔尝试会一直停在 unknown，自动恢复的前提也就不成立。</p>
 </section>
 <section class="scene" aria-labelledby="验算容量目标与失败检查"><header class="scene-head"><h2 id="验算容量目标与失败检查"><span class="scene-no" aria-hidden="true">07</span><span class="visually-hidden">验算：</span><span class="head">容量目标与失败检查</span></h2></header><p class="scene-lede">竞争点在同一 check 和同一桌的修改，不在菜单读取；告警和检查要把未送达、制作超时和支付未知分开计量。</p>
-<p>容量目标为 50 家餐厅、每店峰值 60 个活跃桌台、每桌最多 80 个 selection、8 台点餐设备；平台峰值每秒 150 次修改或付款动作。本地提交 p95 目标 300 ms，在线厨房确认可见 p95 目标 2 秒；外部终端时延单独计量，未决交易不能从统计中删除。共享菜单的读取容易缓存，真正的竞争点是同一 check 和同一桌的修改。按 check 版本拒绝冲突，粒度比给整家餐厅加一把锁更细；同一桌的金额占用仍要在短事务里串行处理，避免两台终端同时收走同一笔余额。</p>
+<p>容量目标为 50 家餐厅、每店峰值 60 个活跃桌台、每桌最多 80 个 selection、8 台点餐设备；平台峰值每秒 150 次修改或付款动作。本地提交 p95 目标 300 ms，在线厨房确认可见 p95 目标 2 秒；外部终端时延单独计量，未决交易保留在统计中。共享菜单的读取容易缓存，真正的竞争点是同一 check 和同一桌的修改。按 check 版本拒绝冲突，粒度比给整家餐厅加一把锁更细；同一桌的金额占用仍要在短事务里串行处理，避免两台终端同时收走同一笔余额。</p>
 <p>告警分别统计最老的未接收 ticket、制作超时、未知卡支付已等待的时长和班次差异。厨房正忙不是消息未送达，卡网络慢也不是厨房未完成；混成一个“处理中”，员工就会做错恢复动作。支付 unknown 的核对队列按餐厅公平调度，避免一个大门店的重试淹没其他门店的结账。</p>
-<p><a href="../../../vault/distilled/saas-engineering-atlas/packages/commerce-property/V05.json">结构数据</a>定义了七类必需检查，并列出本例的反例，包括：modifier 数量不匹配应在送厨前拒绝；同一个 ticket 重投不生成第二份制作；撤菜迟到不抹去报损；拆账守恒且不重送厨房；unknown 占额阻止第二次收款；支付被拒绝才释放占额；不同餐厅的同号桌台不能串单；关闭后迟到的未付款消息不能回退当前事实。检查要观察 UI 提示、保存的 selection revision、厨房确认、每次付款和最后余额。配方、收款和是否关账都不由 <abbr title="artificial intelligence：人工智能">AI</abbr> 决定，AI eval 不适用。<abbr title="JavaScript Object Notation：结构化数据表示格式，后文保留 JSON">JSON</abbr> 是验收定义；尚未实施的 UI、设备、网络和负载检查，不能记为已通过。</p>
+<p><a href="../../../vault/distilled/saas-engineering-atlas/packages/commerce-property/V05.json">结构数据</a>定义了七类必需检查，并列出本例的反例，包括：modifier 数量不匹配应在送厨前拒绝；同一个 ticket 重投不生成第二份制作；撤菜迟到不抹去报损；拆账守恒且不重送厨房；unknown 占额阻止第二次收款；支付被拒绝才释放占额；不同餐厅的同号桌台不能串单；关闭后迟到的未付款消息不能回退当前事实。检查要观察 UI 提示、保存的 selection revision、厨房确认、每次付款和最后余额。配方、收款和是否关账都不由 <abbr title="artificial intelligence：人工智能">AI</abbr> 决定，AI eval 不适用。<abbr title="JavaScript Object Notation：结构化数据表示格式，后文保留 JSON">JSON</abbr> 是验收定义；UI、设备、网络和负载检查实施并运行后才记为通过。</p>
 </section>
 <section class="scene" aria-labelledby="变式条件改变后的判断"><header class="scene-head"><h2 id="变式条件改变后的判断"><span class="scene-no" aria-hidden="true">08</span><span class="visually-hidden">变式：</span><span class="head">条件改变后的判断</span></h2></header><p class="scene-lede">三种变化都靠同一组分界判断：配置决定制作，份额决定消费责任，支付证据决定收款。</p>
 <p><strong>练习一：三份同菜中，一份不加酱、两份正常，服务员只提交一个 quantity=3 的 selection，再附 quantity=1 的“无酱”。</strong> 怎样改才能让每一份的责任明确？</p>
@@ -257,8 +333,8 @@
     <footer class="page-foot">正文 <a href="../../../books/saas-engineering/packages/commerce-property/V05.md">books/saas-engineering/packages/commerce-property/V05.md</a> · <a href="../../../vault/distilled/saas-engineering-atlas/README.md">结构、来源与验证</a></footer>
   </main>
 </div>
-<script src="search-index.js?v=mv95jeod"></script>
-<script src="book.js?v=mv95jeod"></script>
+<script src="search-index.js?v=mv97hru0"></script>
+<script src="book.js?v=mv97hru0"></script>
 
 </body>
 </html>

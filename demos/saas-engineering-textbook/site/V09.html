@@ -4,9 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>V09 · 芯片设计的证据依赖与发布 · SaaS 工程全景</title>
-<link rel="stylesheet" href="book.css?v=mv95jeod">
+<link rel="stylesheet" href="book.css?v=mv97hru0">
 </head>
 <body>
+<svg class="dw-defs" width="0" height="0" aria-hidden="true" focusable="false" style="position:absolute"><defs><pattern id="dw-hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" fill="var(--bg)"/><path d="M0 0 V6" stroke="var(--ink-2)" stroke-width="1.2"/></pattern></defs></svg>
 <a class="skip" href="#main">跳到正文</a>
 <header class="topbar">
   <button class="nav-toggle" type="button" aria-controls="sidebar" aria-expanded="false">目录</button>
@@ -60,7 +61,7 @@
 </tr>
 </tbody></table></div>
 </section>
-<section class="scene" aria-labelledby="解法基线运行证据与发布"><header class="scene-head"><h2 id="解法基线运行证据与发布"><span class="scene-no" aria-hidden="true">02</span><span class="visually-hidden">解法：</span><span class="head">基线、运行、证据与发布</span></h2></header><p class="scene-lede">基线、运行、证据和发布包各有权威；证据要在完整输入摘要匹配、预期检查确实执行过时才有效，退出码 0 不够。</p>
+<section class="scene" aria-labelledby="解法基线运行证据与发布"><header class="scene-head"><h2 id="解法基线运行证据与发布"><span class="scene-no" aria-hidden="true">02</span><span class="visually-hidden">解法：</span><span class="head">基线、运行、证据与发布</span></h2></header><p class="scene-lede">基线、运行、证据和发布包各有权威；证据在完整输入摘要匹配、预期检查确实执行过时才有效。</p>
 <p>设计工程师希望尽快试验参数，验证工程师希望报告可复现，发布负责人需要知道究竟批准了什么，算力管理员则控制机器和许可证。这些诉求会互相冲突：重跑所有任务代价高，只复用“文件名相同”的报告，又可能漏掉依赖变化。本例把复用资格和运行成功分开保存。</p>
 <div class="table-wrap"><table>
 <thead>
@@ -92,7 +93,7 @@
 </tr>
 </tbody></table></div>
 <p>冻结基线需要设计工程师的权限、输入齐全且摘要已校验；运行成功需要工具退出、产物登记和校验相容；证据有效，还需要预期的检查真的执行过、报告可解析且输入匹配。只有退出码 0，无法排除检查被关闭或报告为空。发布负责人在最新的候选版本上批准 manifest，审批不自动追随分支的最新提交。</p>
-<p><a href="https://github.com/parallaxsw/OpenSTA" class="ext" rel="noopener">OpenSTA 官方说明</a>把它描述为门级静态时序校验器，列出网表、Liberty、Synopsys 设计约束格式（Synopsys Design Constraints，<abbr title="Synopsys Design Constraints：Synopsys 设计约束格式">SDC</abbr>）、标准寄生参数交换格式（Standard Parasitic Exchange Format，<abbr title="Standard Parasitic Exchange Format：标准寄生参数交换格式">SPEF</abbr>）等输入，并支持时钟不确定性和路径例外。两种格式的名称分别见 <a href="https://www.synopsys.com/community/interoperability-programs/tap-in.html" class="ext" rel="noopener">Synopsys SDC</a> 与 <a href="https://news.synopsys.com/home?item=122632" class="ext" rel="noopener">SPEF 说明</a>。由此可见，“RTL 没变”不足以复用报告：时序约束、单元库或寄生参数变化，也可能改变结论。</p>
+<p><a href="https://github.com/parallaxsw/OpenSTA" class="ext" rel="noopener">OpenSTA 官方说明</a>把它描述为门级静态时序校验器，列出网表、Liberty、Synopsys 设计约束格式（Synopsys Design Constraints，<abbr title="Synopsys Design Constraints：Synopsys 设计约束格式">SDC</abbr>）、标准寄生参数交换格式（Standard Parasitic Exchange Format，<abbr title="Standard Parasitic Exchange Format：标准寄生参数交换格式">SPEF</abbr>）等输入，并支持时钟不确定性和路径例外。两种格式的名称分别见 <a href="https://www.synopsys.com/community/interoperability-programs/tap-in.html" class="ext" rel="noopener">Synopsys SDC</a> 与 <a href="https://news.synopsys.com/home?item=122632" class="ext" rel="noopener">SPEF 说明</a>。由此可见，报告能否复用要看全部输入：RTL 没变时，时序约束、单元库或寄生参数变化，也可能改变结论。</p>
 </section>
 <section class="scene" aria-labelledby="工作台执行器与证据库"><header class="scene-head"><h2 id="工作台执行器与证据库"><span class="scene-no" aria-hidden="true">03</span><span class="head">工作台、执行器与证据库</span></h2></header><p class="scene-lede">运行和回执都带完整身份，收件箱持久化之后再核对；任务列表的绿色只说明任务成功，发布资格由逐项展示的证据矩阵判断。</p>
 <p>工程师先在基线差异页查看变动的输入及受影响的任务，再点击“冻结并运行”。命令携带项目身份、基线版本和 operation <abbr title="identifier：标识符">ID</abbr>。服务端在一个事务内保存运行记录与待发送项，返回可重新打开的 operation 地址。编排器分配到算力后才显示 running；页面同时展示排队原因、执行器 job ID 和输出的最后更新时间。任务列表中的绿色只表示该任务成功，右侧的发布矩阵仍逐项展示条件、报告依据和有效性。</p>
@@ -102,16 +103,88 @@
 </section>
 <section class="scene" aria-labelledby="演算依赖时序和失效范围"><header class="scene-head"><h2 id="演算依赖时序和失效范围"><span class="scene-no" aria-hidden="true">04</span><span class="visually-hidden">演算：</span><span class="head">依赖、时序和失效范围</span></h2></header><p class="scene-lede">关键路径给出无资源竞争时的完成下界，时序按逐条件硬约束判定，变更影响沿反向依赖找出失效集合。</p>
 <p>任务的耗时以分钟计：综合 S 为 4；S 之后并行做等价检查 E（3）与布局布线 P（6）；P 之后并行做时序 T（2）与物理检查 D（5）；发布打包 R（1）依赖 E、T、D。忽略排队和传输时，S 在 4 完成，E 在 7 完成，P 在 10 完成，T 在 12 完成，D 在 15 完成，R 在 16 完成。关键路径是 S→P→D→R，长度 16。把 T 从 2 优化到 1，不会改变总完成时间；把 D 从 5 优化到 3，才把总时间降到 14。</p>
-<p><code>ALG:scheduling</code> 的直接做法是枚举所有路径，再选最长的一条；分叉多时，路径数量可能指数增长。DAG 拓扑排序后，对每个任务计算 <code>finish = duration + max(predecessor.finish)</code>，代价为 O(V+E)，V 为任务数、E 为依赖数。若出现环，就不存在合法的任务顺序，应报告配置错误，而不是无限等待。这样算出的是无资源竞争时的下界：若 T 与 D 争用唯一的检查槽，P 之后要串行 2+5 分钟，R 最早在 18 完成。DAG 算对了，资源计划未必可行；迁到 V21 时要补上的就是容量约束。</p>
-<p>时序报告也不能取平均。这里的 setup 检查忽略时钟偏斜与抖动，时钟周期 1.00 ns、setup 要求 0.10 ns，因此数据最晚应在 0.90 ns 到达。条件 A 的数据延迟 0.82 ns，slack 为 <code>0.90−0.82=+0.08 ns</code>；条件 B 的延迟 0.95 ns，slack 为 <code>−0.05 ns</code>。平均 slack 为 +0.015 ns，仍然必须拒绝，因为 B 没满足要求。若 hold 最早允许的到达时间为 0.07 ns、最短路径为 0.04 ns，则 hold slack 为 <code>0.04−0.07=−0.03 ns</code>；单纯把时钟周期放宽到 1.10 ns，可以让上述 setup 达标，却修不好这个同沿的 hold 例子。真实的时序分析还涉及路径例外、时钟传播等条件，这些简化公式不能当作签核工具。OpenROAD 流程教程的 setup 与 hold 修复小节，提供了二者分开检查的公开实例。</p>
-<p>发布门槛在本例取“所有必需条件都有匹配输入的报告，setup 和 hold 均非负，物理检查和等价检查按政策通过”。最小 slack 可以线性扫描 O(n) 个结果；展示最差的 k 项可用大小为 k 的堆，O(n log k)。Top-K 只改善定位问题的界面，批准时仍检查完整的必需集合；只拿最差的十条报告，可能漏掉一个根本没有产出的条件。</p>
-<p>变更影响也可以手算。依赖图为 S→E、S→P、P→T、P→D、E/T/D→R。若 P 的输入参数变更，失效集合就是 P、T、D、R；E 可以复用，前提是 E 自身的完整输入摘要未变。沿反向依赖遍历需要 O(V+E)，比无差别重跑便宜。反例是缓存键只含 RTL commit：SDC 变严后仍命中旧的 T，界面全部绿色，批准的却是旧条件。缓存键应含 tenant、project、输入 manifest、工具与规则版本；各阶段可以使用自己的依赖子集，但要先证明依赖完整。依赖不明时保守重跑，不能把“未登记”解释成“不影响”。</p>
-</section>
+<p><code>ALG:scheduling</code> 的直接做法是枚举所有路径，再选最长的一条；分叉多时，路径数量可能指数增长。DAG 拓扑排序后，对每个任务计算 <code>finish = duration + max(predecessor.finish)</code>，代价为 O(V+E)，V 为任务数、E 为依赖数。若出现环，就不存在合法的任务顺序，应报告配置错误，而不是无限等待。这样算出的是无资源竞争时的下界：若 T 与 D 争用唯一的检查槽，P 之后要串行 2+5 分钟，R 最早在 18 完成。DAG 给出的是依赖下界，资源计划要另行检查；迁到 V21 时要补上的就是容量约束。</p>
+<figure class="drawing" data-drawing="v09-critical-path"><div class="dw-scroll" style="--dw-min:620px;--dw-max:900px">
+<svg viewBox="0 0 800 372" role="img" aria-labelledby="v09-critical-path-t v09-critical-path-d">
+  <title id="v09-critical-path-t">关键路径与许可证约束下的完成时间</title>
+  <desc id="v09-critical-path-d">S 4 分钟，之后 E 3 分钟与 P 6 分钟并行；P 之后 T 2 分钟与 D 5 分钟并行；R 1 分钟依赖 E、T、D。资源不限时关键路径 S→P→D→R，R 在 16 分钟完成。只有一个检查许可证时 T、D 串行 2+5 分钟，R 最早在 18 分钟完成。</desc>
+    <text class="t-b" x="0" y="20">资源不限：关键路径 S → P → D → R</text>
+  <path class="ln-soft" d="M120 46 V240 M192 46 V240 M264 46 V240 M336 46 V240 M408 46 V240 M480 46 V240 M552 46 V240 M624 46 V240 M696 46 V240 M768 46 V240"/>
+  <text class="t-s mid" x="120" y="40">0</text><text class="t-s mid" x="192" y="40">2</text><text class="t-s mid" x="264" y="40">4</text><text class="t-s mid" x="336" y="40">6</text><text class="t-s mid" x="408" y="40">8</text><text class="t-s mid" x="480" y="40">10</text><text class="t-s mid" x="552" y="40">12</text><text class="t-s mid" x="624" y="40">14</text><text class="t-s mid" x="696" y="40">16</text><text class="t-s mid" x="768" y="40">18</text>
+  <g data-s="1"><text class="t end" x="110" y="69">S 综合</text><rect class="box f3" x="120" y="52" width="144" height="24"/><text class="t-n mid" x="192.0" y="69">4</text></g>
+  <g data-s="1"><text class="t end" x="110" y="101">E 等价检查</text><rect class="box" x="264" y="84" width="108" height="24"/><text class="t-n mid" x="318.0" y="101">3</text></g>
+  <g data-s="1"><text class="t end" x="110" y="133">P 布局布线</text><rect class="box f3" x="264" y="116" width="216" height="24"/><text class="t-n mid" x="372.0" y="133">6</text></g>
+  <g data-s="2"><text class="t end" x="110" y="165">T 时序</text><rect class="box" x="480" y="148" width="72" height="24"/><text class="t-n mid" x="516.0" y="165">2</text></g>
+  <g data-s="2"><text class="t end" x="110" y="197">D 物理检查</text><rect class="box f3" x="480" y="180" width="180" height="24"/><text class="t-n mid" x="570.0" y="197">5</text></g>
+  <g data-s="2"><text class="t end" x="110" y="229">R 发布打包</text><rect class="box f3" x="660" y="212" width="36" height="24"/><text class="t-n mid" x="678.0" y="229">1</text></g>
+  <g data-s="3"><path class="ln-strong" d="M696 46 V240"/><text class="t-n" x="702" y="229">16 分钟</text></g>
+  <g data-s="4">
+  <text class="t-b" x="0" y="272">一个检查许可证：T、D 串行（S、E、P 同上）</text>
+  <path class="ln-soft" d="M120 280 V344 M192 280 V344 M264 280 V344 M336 280 V344 M408 280 V344 M480 280 V344 M552 280 V344 M624 280 V344 M696 280 V344 M768 280 V344"/>
+  <text class="t end" x="110" y="301">T、D</text><rect class="box f3" x="480" y="284" width="252" height="24"/><text class="t-n mid" x="606.0" y="301">T 2 + D 5</text>
+  <text class="t end" x="110" y="333">R 发布打包</text><rect class="box f3" x="732" y="316" width="36" height="24"/><text class="t-n mid" x="750.0" y="333">1</text>
+  <path class="ln-em" d="M768 280 V344"/><text class="t t-em end" x="768" y="364">18 分钟</text>
+  </g>
+</svg>
+</div>
+<figcaption>依赖只给出 16 分钟的下界；T 与 D 争用唯一的检查许可证时，P 之后要串行 7 分钟，发布推到 18 分钟。</figcaption></figure><p>时序报告逐条件判定，不取平均。这里的 setup 检查忽略时钟偏斜与抖动，时钟周期 1.00 ns、setup 要求 0.10 ns，因此数据最晚应在 0.90 ns 到达。条件 A 的数据延迟 0.82 ns，slack 为 <code>0.90−0.82=+0.08 ns</code>；条件 B 的延迟 0.95 ns，slack 为 <code>−0.05 ns</code>。平均 slack 为 +0.015 ns，仍然必须拒绝，因为 B 没满足要求。若 hold 最早允许的到达时间为 0.07 ns、最短路径为 0.04 ns，则 hold slack 为 <code>0.04−0.07=−0.03 ns</code>；单纯把时钟周期放宽到 1.10 ns，最晚到达时刻移到 1.00 ns，可以让上述 setup 达标，却修不好这个同沿的 hold 例子。真实的时序分析还涉及路径例外、时钟传播等条件，这些简化公式不能当作签核工具。OpenROAD 流程教程的 setup 与 hold 修复小节，提供了二者分开检查的公开实例。</p>
+<figure class="drawing" data-drawing="v09-timing"><div class="dw-scroll" style="--dw-min:620px;--dw-max:900px">
+<svg viewBox="0 0 760 296" role="img" aria-labelledby="v09-timing-t v09-timing-d">
+  <title id="v09-timing-t">逐条件的 setup 与 hold 判定</title>
+  <desc id="v09-timing-d">时钟周期 1.00 ns，setup 要求 0.10 ns，数据最晚 0.90 ns 到达。条件 A 延迟 0.82 ns，slack +0.08 ns；条件 B 延迟 0.95 ns，slack −0.05 ns，平均 +0.015 ns 仍拒绝。hold 最早允许 0.07 ns，最短路径 0.04 ns，slack −0.03 ns。周期放宽到 1.10 ns 后最晚到达移到 1.00 ns，setup 达标，hold 不变。</desc>
+  <text class="t-b" x="0" y="20">setup</text>
+  <text class="t end" x="120" y="84">条件 A</text>
+  <text class="t end" x="120" y="124">条件 B</text>
+  <path class="ln-soft" d="M140 150 H700 M130 155 L136 145 M134 155 L140 145"/>
+  <text class="t-s mid" x="205" y="166">0.80</text><text class="t-s mid" x="280" y="166">0.85</text><text class="t-s mid" x="355" y="166">0.90</text><text class="t-s mid" x="430" y="166">0.95</text><text class="t-s mid" x="505" y="166">1.00</text><text class="t-s mid" x="580" y="166">1.05</text><text class="t-s mid" x="655" y="166">1.10 ns</text>
+  <g data-s="1">
+    <path class="ln-soft" d="M505 52 V140"/><text class="t-s" x="509" y="46">时钟沿 1.00</text>
+    <path class="ln-strong" d="M355 52 V140"/><text class="t-s end" x="351" y="46">最晚到达 0.90</text>
+    <path class="ln-soft" d="M355 58 H505"/><text class="t-s mid" x="430" y="72">setup 0.10</text>
+    <path class="ln" d="M140 80 H235"/><circle class="f-ink" cx="235" cy="80" r="4"/><text class="t-s" x="150" y="72">延迟 0.82</text>
+    <path class="ln-dash" d="M235 80 H355"/><text class="t-n mid" x="295" y="72">+0.08</text>
+    <path class="ln" d="M140 120 H430"/><circle class="box-em" cx="430" cy="120" r="5"/><text class="t-s" x="150" y="112">延迟 0.95</text>
+    <text class="t-n t-em mid" x="392" y="112">−0.05</text>
+    <text class="t-s" x="515" y="124">平均 +0.015，仍拒绝</text>
+  </g>
+  <g data-s="3">
+    <path class="ln-dash" d="M655 52 V140"/><text class="t-s" x="659" y="46">周期 1.10</text>
+    <text class="t-s" x="662" y="96">最晚移到 1.00</text><text class="t-s" x="662" y="112">A、B 达标</text>
+  </g>
+  <g data-s="2">
+    <text class="t-b" x="0" y="204">hold</text>
+    <text class="t end" x="120" y="244">最短路径</text>
+    <path class="ln-strong" d="M340 222 V262"/><text class="t-s mid" x="340" y="214">最早允许 0.07</text>
+    <path class="ln" d="M130 240 H250"/><circle class="f-ink" cx="250" cy="240" r="4"/><text class="t-s" x="200" y="232">0.04</text>
+    <path class="ln-dash" d="M250 240 H340"/><text class="t-n mid" x="295" y="232">−0.03</text>
+    <path class="ln-soft" d="M130 270 H600"/>
+    <text class="t-s mid" x="130" y="286">0</text><text class="t-s mid" x="280" y="286">0.05</text><text class="t-s mid" x="430" y="286">0.10</text><text class="t-s mid" x="580" y="286">0.15 ns</text>
+  </g>
+  <g data-s="3"><text class="t-s" x="360" y="245">周期放宽后，这条界线不动</text></g>
+</svg>
+</div>
+<figcaption>每个条件单独与 0.90 ns 比较，B 晚到 0.05 ns 就拒绝；放宽周期把 setup 的界线右移，同沿的 hold 界线留在原处。</figcaption></figure><p>发布门槛在本例取“所有必需条件都有匹配输入的报告，setup 和 hold 均非负，物理检查和等价检查按政策通过”。最小 slack 可以线性扫描 O(n) 个结果；展示最差的 k 项可用大小为 k 的堆，O(n log k)。Top-K 只改善定位问题的界面，批准时仍检查完整的必需集合；只拿最差的十条报告，可能漏掉一个根本没有产出的条件。</p>
+<p>变更影响也可以手算。依赖图为 S→E、S→P、P→T、P→D、E/T/D→R。若 P 的输入参数变更，失效集合就是 P、T、D、R；E 可以复用，前提是 E 自身的完整输入摘要未变。沿反向依赖遍历需要 O(V+E)，比无差别重跑便宜。反例是缓存键只含 RTL commit：SDC 变严后仍命中旧的 T，界面全部绿色，批准的却是旧条件。缓存键应含 tenant、project、输入 manifest、工具与规则版本；各阶段可以使用自己的依赖子集，但要先证明依赖完整。依赖不明时保守重跑，未登记的依赖按受影响处理。</p>
+<figure class="drawing" data-drawing="v09-invalidation"><div class="dw-scroll" style="--dw-min:600px;--dw-max:900px">
+<svg viewBox="0 0 760 290" role="img" aria-labelledby="v09-invalidation-t v09-invalidation-d">
+  <title id="v09-invalidation-t">P 变更后的失效集合</title>
+  <desc id="v09-invalidation-d">依赖为 S→E、S→P、P→T、P→D，E、T、D 都指向 R。P 的输入参数变更后，P、T、D、R 的证据失效；E 的完整输入摘要未变，可以复用。</desc>
+    <g><rect class="box" x="30" y="120" width="70" height="40"/><text class="t-b mid" x="65" y="145">S</text><rect class="box" x="180" y="40" width="70" height="40"/><text class="t-b mid" x="215" y="65">E</text></g>
+  <g><path class="ln" d="M100 132 L180 68 M176.3 76.1 L180 68 L171.3 69.9"/><path class="ln" d="M100 148 L180 212 M171.3 210.1 L180 212 L176.3 203.9"/><path class="ln" d="M250 212 L330 184 M323.8 190.4 L330 184 L321.1 182.9"/><path class="ln" d="M250 228 L330 252 M321.2 253.5 L330 252 L323.5 245.9"/><path class="ln" d="M250 64 L480 132 M471.2 133.6 L480 132 L473.5 125.9"/><path class="ln" d="M400 180 L480 146 M474.2 152.8 L480 146 L471.1 145.4"/><path class="ln" d="M400 258 L480 154 M478.3 162.8 L480 154 L472.0 157.9"/></g>
+  <g><rect class="box" x="180" y="200" width="70" height="40"/><text class="t-b mid" x="215" y="225">P</text><rect class="box" x="330" y="160" width="70" height="40"/><text class="t-b mid" x="365" y="185">T</text><rect class="box" x="330" y="240" width="70" height="40"/><text class="t-b mid" x="365" y="265">D</text><rect class="box" x="480" y="120" width="70" height="40"/><text class="t-b mid" x="515" y="145">R</text></g>
+  <g data-s="1"><rect class="box-em" x="180" y="200" width="70" height="40"/><text class="t-b mid" x="215" y="225">P</text><text class="t t-em mid" x="215" y="262">P 的输入参数变更</text></g>
+  <g data-s="2"><rect class="f-ink" x="330" y="160" width="70" height="40"/><text class="t-b mid t-inv" x="365" y="185">T</text><rect class="f-ink" x="330" y="240" width="70" height="40"/><text class="t-b mid t-inv" x="365" y="265">D</text></g>
+  <g data-s="3"><rect class="f-ink" x="480" y="120" width="70" height="40"/><text class="t-b mid t-inv" x="515" y="145">R</text></g>
+  <g data-s="4"><text class="t-s mid" x="215" y="30">输入摘要未变，复用</text></g>
+  <g data-s="4"><text class="t-b" x="600" y="120">失效：P、T、D、R</text><text class="t-s" x="600" y="140">沿反向依赖找出，O(V+E)</text><text class="t-b" x="600" y="180">复用：E</text></g>
+</svg>
+</div>
+<figcaption>失效只沿依赖向下游扩散：P 变了，T、D 和发布包 R 随之失效，与 P 平行的 E 保留原证据。</figcaption></figure></section>
 <section class="scene" aria-labelledby="正常发布与不可撤回的失败"><header class="scene-head"><h2 id="正常发布与不可撤回的失败"><span class="scene-no" aria-hidden="true">05</span><span class="head">正常发布与不可撤回的失败</span></h2></header><p class="scene-lede">结果未知时按原身份查询，确认对方未受理才重发；旧版本的签名和迟到回执不进入新候选；包已送出后，问题只能追加 withdrawal。</p>
 <p>正常路径中，工程师冻结 B1，编排器持久化 run-1，执行器以既有的尝试身份接收任务，各任务按依赖产生附件。worker 校验摘要和报告覆盖，发布负责人预览 manifest M1 中的基线、报告和检查政策，审批服务原子地检查候选版本后保存签核。连接器把 M1 发送给接收系统，接收方核对摘要并确认后，页面才显示 acknowledged。收到 acknowledgement 只证明对方收到了约定的包；后续的制造与收费各有独立的对象记录完成与否。</p>
 <p>一种失败发生在执行器已启动、网络回执丢失之后。run-1 进入 unknown，调度器用已有的 job 标签和 operation ID 查询执行器，找到同一任务后接回运行；只有确认对方未受理，或执行器提供受约束的幂等提交语义，才重新发送。另一种发生在工程师冻结 B2 的同时，审批者仍打开着 B1 的页面：提交要返回版本冲突及差异，一次旧签名不能批准 B2。来自 B1 的迟到成功回执仍可保存为 B1 的历史证据，但不会让 B2 的矩阵变绿。</p>
 <p>若附件只上传了一半，记录保持 candidate，一个提前到达的“完成”事件不能把它变成 valid。若审批事务已提交而通知 worker 崩溃，重放读取同一个 manifest 和已有的发送尝试，不生成第二个内容不同的包。若接收方已拿到包，后来才发现漏查了条件，本地删除文件撤回不了它的现实影响。发布负责人追加 withdrawal，记录接收方是否确认停止处理；结果未明时，责任与升级入口仍然保留。这种恢复与 V08 的隔离通知相似，但数字包可以按摘要重传，物料不能靠下载重做。</p>
-<p>规模假设为 20 个项目、每项目 500 个候选基线、每基线 200 个任务，约 200 万条任务记录；每天 100 次运行，每次报告与产物共 10 GB，仅按此估算，保留量级就是约 1 TB/日。列表只读元数据与摘要，大文件按需授权获取。待测目标是在 50 个并发读者、冷热缓存分别记录的条件下，元数据列表 p95 小于 500 ms；计算作业单独记录排队、许可证等待、运行与上传时间，网页响应快不等于设计完成快。按项目配额与等待时长安排公平性；取消申请也要停在待核对状态，直到外部确认资源已释放。本轮未测量这些性能数字。</p>
+<p>规模假设为 20 个项目、每项目 500 个候选基线、每基线 200 个任务，约 200 万条任务记录；每天 100 次运行，每次报告与产物共 10 GB，仅按此估算，保留量级就是约 1 TB/日。列表只读元数据与摘要，大文件按需授权获取。待测目标是在 50 个并发读者、冷热缓存分别记录的条件下，元数据列表 p95 小于 500 ms；计算作业单独记录排队、许可证等待、运行与上传时间，网页响应时间与设计完成时间分开度量。按项目配额与等待时长安排公平性；取消申请也要停在待核对状态，直到外部确认资源已释放。本轮未测量这些性能数字。</p>
 </section>
 <section class="scene" aria-labelledby="验算覆盖版本与可恢复发布"><header class="scene-head"><h2 id="验算覆盖版本与可恢复发布"><span class="scene-no" aria-hidden="true">06</span><span class="visually-hidden">验算：</span><span class="head">覆盖、版本与可恢复发布</span></h2></header><p class="scene-lede">发布只在当前候选的必需证据全部匹配时成立；重复、乱序、并发、跨租户和结果未知都不能产生第二个包，也不能让审批混入别的输入。</p>
 <div class="table-wrap"><table>
@@ -273,8 +346,8 @@
     <footer class="page-foot">正文 <a href="../../../books/saas-engineering/packages/industry-networks/V09.md">books/saas-engineering/packages/industry-networks/V09.md</a> · <a href="../../../vault/distilled/saas-engineering-atlas/README.md">结构、来源与验证</a></footer>
   </main>
 </div>
-<script src="search-index.js?v=mv95jeod"></script>
-<script src="book.js?v=mv95jeod"></script>
+<script src="search-index.js?v=mv97hru0"></script>
+<script src="book.js?v=mv97hru0"></script>
 
 </body>
 </html>

@@ -1,0 +1,33 @@
+<div class="dw-scroll" style="--dw-min:620px;--dw-max:900px">
+<svg viewBox="0 0 760 270" role="img" aria-labelledby="em03-granularity-t em03-granularity-d">
+  <title id="em03-granularity-t">三种工具粒度写出的批准</title>
+  <desc id="em03-granularity-d">run_sql(anything) 把对象与权限的工作语义留给调用者拼凑。拆成 set_status、set_approver、set_timestamp 三个工具时，第一个成功、后两个没有执行，批准只写了状态。approve_change 一个动作写出完整的批准。</desc>
+  <text class="t-b mid" x="115" y="24">范围过宽</text>
+  <text class="t-b mid" x="380" y="24">拆到单个字段</text>
+  <text class="t-b mid" x="645" y="24">一个工作动作</text>
+  <g data-s="1">
+    <rect class="box" x="30" y="44" width="170" height="36"/><text class="t-n mid" x="115" y="67">run_sql(anything)</text>
+    <text class="t-s mid" x="115" y="140">对象与权限的工作语义</text>
+    <text class="t-s mid" x="115" y="158">由调用者临时拼凑</text>
+  </g>
+  <g data-s="2">
+    <rect class="box" x="270" y="44" width="220" height="30"/><text class="t-n mid" x="380" y="64">set_status</text>
+    <rect class="box-dash" x="270" y="80" width="220" height="30"/><text class="t-n mid" x="380" y="100">set_approver</text>
+    <rect class="box-dash" x="270" y="116" width="220" height="30"/><text class="t-n mid" x="380" y="136">set_timestamp</text>
+    <path class="ln" d="M380 146 V176"/>
+    <rect class="box" x="300" y="176" width="160" height="66"/>
+    <rect class="f2" x="301" y="177" width="158" height="20"/><text class="t-s" x="310" y="192">状态</text>
+    <text class="t-s" x="310" y="214">批准人：空</text><text class="t-s" x="310" y="234">时间：空</text>
+    <text class="t-b mid t-em" x="380" y="262">不完整的批准</text>
+  </g>
+  <g data-s="3">
+    <rect class="box" x="560" y="44" width="170" height="36"/><text class="t-n mid" x="645" y="67">approve_change</text>
+    <path class="ln" d="M645 80 V176"/>
+    <rect class="box" x="565" y="176" width="160" height="66"/>
+    <rect class="f2" x="566" y="177" width="158" height="64"/>
+    <text class="t-s" x="575" y="192">状态</text><text class="t-s" x="575" y="214">批准人</text><text class="t-s" x="575" y="234">时间</text>
+    <text class="t-b mid" x="645" y="262">完整的批准</text>
+  </g>
+</svg>
+</div>
+<figcaption>三个单字段工具只执行了第一个，留下只写了状态的批准；approve_change 作为一个工作动作，承担写出整份批准的责任。</figcaption>

@@ -4,9 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>V08 · 混合批次的谱系、质量平衡与放行 · SaaS 工程全景</title>
-<link rel="stylesheet" href="book.css?v=mv95jeod">
+<link rel="stylesheet" href="book.css?v=mv97hru0">
 </head>
 <body>
+<svg class="dw-defs" width="0" height="0" aria-hidden="true" focusable="false" style="position:absolute"><defs><pattern id="dw-hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" fill="var(--bg)"/><path d="M0 0 V6" stroke="var(--ink-2)" stroke-width="1.2"/></pattern></defs></svg>
 <a class="skip" href="#main">跳到正文</a>
 <header class="topbar">
   <button class="nav-toggle" type="button" aria-controls="sidebar" aria-expanded="false">目录</button>
@@ -20,7 +21,7 @@
 <header class="hero">
 <p class="kicker"><a href="group-industry-networks.html">生产、资产、公用与供应网络</a><span class="dot">·</span>V08</p>
 <h1>混合批次的谱系、质量平衡与放行</h1>
-<p class="lede">配方说明打算怎样生产，batch record（批生产记录）说明实际发生了什么，质量处置判断这些证据是否足以允许某批产品使用或交付。“按配方完成了，为什么还不能发货”，要靠三者分开记录来解释。比起 P06 的共同模型，这里多一个难点：投入物经过混合、转换和拆分，原有身份无法简单地随实物一起保留，谱系关系要由软件记下来。质量平衡要求同一称量边界内投入等于主产品、废料与留样之和，得率低不等于账不平；谱系用多入多出的转换记录表达，前向遍历给出的是可能受影响的产品集合，不按配方比例缩小；放行绑定一份证据快照，质量决定与仓储解锁分别确认。改变判断的是证据版本：新的超限结果或冻结一到，旧的通过通知和迟到的旧解锁命令都不能再生效。</p>
+<p class="lede">配方说明打算怎样生产，batch record（批生产记录）说明实际发生了什么，质量处置判断这些证据是否足以允许某批产品使用或交付。“按配方完成了，为什么还不能发货”，要靠三者分开记录来解释。比起 P06 的共同模型，这里多一个难点：投入物经过混合、转换和拆分，原有身份无法简单地随实物一起保留，谱系关系要由软件记下来。质量平衡要求同一称量边界内投入等于主产品、废料与留样之和；得率只衡量主产品的占比，得率低时账照样可以平；谱系用多入多出的转换记录表达，前向遍历给出的是可能受影响的产品集合，不按配方比例缩小；放行绑定一份证据快照，质量决定与仓储解锁分别确认。改变判断的是证据版本：新的超限结果或冻结一到，旧的通过通知和迟到的旧解锁命令随即失效。</p>
 
 <div class="cast" aria-label="本例的角色、界面与系统">
 <div class="cast-lane"><p class="cast-k">角色</p><ul><li>投料操作员</li><li>工艺授权人</li><li>质量负责人</li></ul></div>
@@ -60,8 +61,8 @@
 </tr>
 </tbody></table></div>
 </section>
-<section class="scene" aria-labelledby="解法配方批记录与质量处置"><header class="scene-head"><h2 id="解法配方批记录与质量处置"><span class="scene-no" aria-hidden="true">02</span><span class="visually-hidden">解法：</span><span class="head">配方、批记录与质量处置</span></h2></header><p class="scene-lede">配方说明计划，批记录说明执行，样品结果只说明某个样品的数值；放行由授权质量人员凭整套证据批准，一个合格结果不够。</p>
-<p>R7 固定原料规格、目标比例、允许的批量范围、所需设备能力、步骤顺序和检验方案版本，是一份可执行的生产定义；一张成分百分比表算不上完整工艺。投料前的原料批 A1、B1 有供应商身份、在库量和质量状态；实际记录要指向具体批号，只写“用了 A”，追不到同种原料中的异常批。</p>
+<section class="scene" aria-labelledby="解法配方批记录与质量处置"><header class="scene-head"><h2 id="解法配方批记录与质量处置"><span class="scene-no" aria-hidden="true">02</span><span class="visually-hidden">解法：</span><span class="head">配方、批记录与质量处置</span></h2></header><p class="scene-lede">配方说明计划，批记录说明执行，样品结果只说明某个样品的数值；放行由授权质量人员凭整套证据批准。</p>
+<p>R7 固定原料规格、目标比例、允许的批量范围、所需设备能力、步骤顺序和检验方案版本，是一份可执行的生产定义，成分比例只是其中一项。投料前的原料批 A1、B1 有供应商身份、在库量和质量状态；实际记录要指向具体批号，只写“用了 A”，追不到同种原料中的异常批。</p>
 <div class="table-wrap"><table>
 <thead>
 <tr>
@@ -79,7 +80,7 @@
 </tr>
 <tr>
 <td>Material lot；库存服务与质量服务分别负责数量与处置</td>
-<td>数量随投入、产出、拆分与损耗分录变化；质量为 <code>quarantine → released / rejected</code>，已放行的可被 <code>blocked</code>。库存存在不等于可分配</td>
+<td>数量随投入、产出、拆分与损耗分录变化；质量为 <code>quarantine → released / rejected</code>，已放行的可被 <code>blocked</code>。能否分配看质量处置，在库数量只是前提</td>
 </tr>
 <tr>
 <td>Sample / result；实验室系统</td>
@@ -90,7 +91,7 @@
 <td><code>pending → approved / rejected</code>，新信息可触发新一轮复核。签署者、输入证据版本与决定范围一起保存</td>
 </tr>
 </tbody></table></div>
-<p>LabWare QAQC 的公开产品说明列出 sample chain of custody、结果录入、批次状态跟踪、数据复核、lot release 与 COA 报告功能，也明确其 Batch Manager 可以把样品组成 test batch。因此“实验室测试批”不等于“生产批”：一次仪器运行可测多批产品，一批产品也可分多次测试。这里引用的是产品自述的能力范围。参见 <a href="https://www.labware.com/lims/saas/qaqc" class="ext" rel="noopener">LabWare QAQC</a>。</p>
+<p>LabWare QAQC 的公开产品说明列出 sample chain of custody、结果录入、批次状态跟踪、数据复核、lot release 与 COA 报告功能，也明确其 Batch Manager 可以把样品组成 test batch。因此“实验室测试批”与“生产批”是两种对象：一次仪器运行可测多批产品，一批产品也可分多次测试。这里引用的是产品自述的能力范围。参见 <a href="https://www.labware.com/lims/saas/qaqc" class="ext" rel="noopener">LabWare QAQC</a>。</p>
 <p>一个结果落在区间内，只说明某个样品用某种方法测出的数值合格。质量人员还要看到样品身份、代表范围、试验是否有效、必需项目是否齐全，以及偏差是否关闭。本例的 guard 是“执行记录完整、物料谱系闭合、所有必需检验已复核、未解决偏差为零，并由授权质量人员批准”。操作员不能用“再测一次通过”覆盖首次失败；重测是否有效，由另行记录的调查决定，系统不自动挑最好的一次。</p>
 </section>
 <section class="scene" aria-labelledby="转换记录与谱系图"><header class="scene-head"><h2 id="转换记录与谱系图"><span class="scene-no" aria-hidden="true">03</span><span class="head">转换记录与谱系图</span></h2></header><p class="scene-lede">混合用“物料批 → 转换执行 → 产出批”的多入多出记录表达，数量和流向从转换记录读取，图边只记依赖。</p>
@@ -101,17 +102,134 @@
 <p>前端可选 React + TypeScript，配合键盘与扫描枪输入，以及可回查的数值表格；若平板离线是核心需求，可选基于同一 Web 表单的 PWA，但要把草稿与权威记录明确分开。后端可用 FastAPI + Python 处理验证与追溯查询，也可用 Kotlin/Spring 复用企业集成经验，取决于团队的维护能力。PostgreSQL 的外键、decimal 数量、唯一尝试键与事务适合中等规模的账本；原始仪器文件放对象存储，记录校验摘要和来源。邻接表加递归查询足以起步；深层跨厂查询频繁时再考虑图数据库，代价是它要与事务里的数量账保持同步。仪器数据通过文件导入或有文档支持的接口适配，LabWare 的接口、内部数据库和算法不靠猜测。</p>
 </section>
 <section class="scene" aria-labelledby="演算质量平衡与谱系影响范围"><header class="scene-head"><h2 id="演算质量平衡与谱系影响范围"><span class="scene-no" aria-hidden="true">04</span><span class="visually-hidden">演算：</span><span class="head">质量平衡与谱系影响范围</span></h2></header><p class="scene-lede">质量平衡要求投入等于产出、废料与留样之和；谱系遍历给出可能受影响的当前产品范围，按处置边界分项计数，中间物不重复计入。</p>
-<p>R7 的目标投入为 150 kg，A 为 <code>150×2/3=100 kg</code>，B 为 <code>150×1/3=50 kg</code>。本例在同一称量边界内得到主产品 145 kg、废料 3 kg、留样 2 kg，故 <code>100+50=145+3+2</code>。主产品得率 <code>145/150≈96.67%</code>，质量平衡差为 0。得率低不等于账不平；若把留样漏记，差额就会变成 2 kg。假设没有气体逸散或外部加料，差值超过本例 0.1 kg 的容差就阻断记录关闭。真实工艺若有蒸发，就要把适当的测量边界、损耗记录和不确定度纳入模型，不能要求每个物理过程都严格满足等式。</p>
-<p>145 kg 主产品 M1 拆成 P1=80 kg 和 P2=65 kg。随后从 P2 取 20 kg，与另一原料 C1 的 30 kg 合成 M2，产出 49 kg、废料 1 kg；P2 剩 45 kg。假设 A1 后来收到质量异常通知，需要找出可能受影响、仍可处置的产品。前向图遍历为 <code>A1 → PB1 → M1 → P1/P2 → PB2 → M2</code>，当前产品边界是 <code>80+45+49=174 kg</code>。174 大于最初 A1 的 100，并不违反守恒：其他原料也进入了受影响的后代产品。它也不是“174 kg 都由 A1 构成”，更不证明每公斤实际有害。</p>
-<p>每扩展一个节点就查询一遍整个历史记录再找关联，可能为每个节点重复扫描 E 条边；给 <code>(tenant, input_lot_id)</code> 建邻接索引后，带 visited 集合的 BFS/DFS 对命中的子图为 O(V+E)，并保留完整的解释路径。影响数量不能把 M1 的 145、P2 原始的 65 和后代 M2 的 49 直接相加，那会同时计入中间物与末端物。先确定当前余额、已经交付、留样、废弃各自属于什么处置边界，再分项计数；本例的 174 只包含当前可售产品，3+2+1 kg 的废料与留样另列。</p>
+<p>R7 的目标投入为 150 kg，A 为 <code>150×2/3=100 kg</code>，B 为 <code>150×1/3=50 kg</code>。本例在同一称量边界内得到主产品 145 kg、废料 3 kg、留样 2 kg，故 <code>100+50=145+3+2</code>。主产品得率 <code>145/150≈96.67%</code>，质量平衡差为 0。得率衡量主产品占比，平衡差衡量账是否闭合；若把留样漏记，差额就会变成 2 kg。假设没有气体逸散或外部加料，差值超过本例 0.1 kg 的容差就阻断记录关闭。真实工艺若有蒸发，就要把适当的测量边界、损耗记录和不确定度纳入模型，不能要求每个物理过程都严格满足等式。</p>
+<figure class="drawing" data-drawing="v08-balance"><div class="dw-scroll" style="--dw-min:560px;--dw-max:860px">
+<svg viewBox="0 0 720 236" role="img" aria-labelledby="v08-balance-t v08-balance-d">
+  <title id="v08-balance-t">同一称量边界内的质量平衡</title>
+  <desc id="v08-balance-d">投入 A 100 kg、B 50 kg，共 150 kg；产出主产品 145 kg、废料 3 kg、留样 2 kg，共 150 kg，平衡差为 0，主产品得率约 96.67%。漏记留样时产出只有 148 kg，差 2 kg。</desc>
+  <g data-s="1">
+    <text class="t-b" x="0" y="54">投入</text><text class="t-s" x="0" y="72">150 kg</text>
+    <rect class="box f1" x="150" y="40" width="300" height="34"/><text class="t mid" x="300" y="62">A 100 kg</text>
+    <rect class="box f1" x="450" y="40" width="150" height="34"/><text class="t mid" x="525" y="62">B 50 kg</text>
+  </g>
+  <g data-s="2">
+    <text class="t-b" x="0" y="124">产出</text><text class="t-s" x="0" y="142">150 kg · 差 0</text>
+    <rect class="box f2" x="150" y="110" width="435" height="34"/><text class="t mid" x="367" y="132">主产品 145 kg · 得率 ≈ 96.67%</text>
+    <rect class="f-ink" x="585" y="110" width="9" height="34"/>
+    <rect class="box f3" x="594" y="110" width="6" height="34"/>
+    <path class="ln-soft" d="M597 110 V96 H612"/><text class="t-s" x="616" y="100">留样 2 kg</text>
+    <path class="ln-soft" d="M589.5 144 V158 H612"/><text class="t-s" x="616" y="162">废料 3 kg</text>
+  </g>
+  <g data-s="3">
+    <text class="t-b" x="0" y="204">漏记留样</text><text class="t-s" x="0" y="222">148 kg</text>
+    <rect class="box f2" x="150" y="190" width="435" height="34"/><text class="t mid" x="367" y="212">主产品 145 kg</text>
+    <rect class="f-ink" x="585" y="190" width="9" height="34"/>
+    <rect class="box-em" x="594" y="190" width="6" height="34"/>
+    <text class="t t-em" x="612" y="212">差 2 kg</text>
+  </g>
+</svg>
+</div>
+<figcaption>投入与产出在同一边界内两边相等；漏记 2 kg 留样，账上就出现 2 kg 差额，超过 0.1 kg 容差即阻断记录关闭。</figcaption></figure><p>145 kg 主产品 M1 拆成 P1=80 kg 和 P2=65 kg。随后从 P2 取 20 kg，与另一原料 C1 的 30 kg 合成 M2，产出 49 kg、废料 1 kg；P2 剩 45 kg。假设 A1 后来收到质量异常通知，需要找出可能受影响、仍可处置的产品。前向图遍历为 <code>A1 → PB1 → M1 → P1/P2 → PB2 → M2</code>，当前产品边界是 <code>80+45+49=174 kg</code>。174 大于最初 A1 的 100，守恒照样成立：其他原料也进入了受影响的后代产品。174 kg 是可能受影响的产品范围，其中只有一部分来自 A1；每公斤是否实际有害，要由调查判断。</p>
+<figure class="drawing" data-drawing="v08-genealogy"><div class="dw-scroll" style="--dw-min:660px;--dw-max:960px">
+<svg viewBox="0 0 860 300" role="img" aria-labelledby="v08-genealogy-t v08-genealogy-d">
+  <title id="v08-genealogy-t">A1 的前向谱系与当前产品边界</title>
+  <desc id="v08-genealogy-d">A1 100 kg 与 B1 50 kg 经 PB1 得到 M1 145 kg，另出废料 3 kg、留样 2 kg。M1 拆成 P1 80 kg 和 P2 65 kg。P2 取 20 kg 与 C1 30 kg 经 PB2 得到 M2 49 kg、废料 1 kg，P2 剩 45 kg。当前产品边界为 80 + 45 + 49 = 174 kg。</desc>
+  <g data-s="1">
+    <rect class="box" x="20" y="60" width="110" height="40"/><text class="t mid" x="75" y="85">A1 · 100 kg</text>
+    <rect class="box" x="20" y="140" width="110" height="40"/><text class="t mid" x="75" y="165">B1 · 50 kg</text>
+    <path class="ln-strong" d="M130 80 L176 112"/><path class="ln" d="M130 160 L176 128"/>
+    <circle class="box f1" cx="190" cy="120" r="16"/><text class="t-s mid" x="190" y="96">PB1</text>
+    <path class="ln-soft" d="M190 136 V150"/><text class="t-s mid" x="190" y="166">废料 3 · 留样 2</text>
+    <path class="ln-strong" d="M206 120 H240"/>
+    <rect class="box" x="240" y="100" width="120" height="40"/><text class="t mid" x="300" y="125">M1 · 145 kg</text>
+  </g>
+  <g data-s="2">
+    <path class="ln-strong" d="M360 120 H400"/>
+    <circle class="box f1" cx="410" cy="120" r="10"/><text class="t-s mid" x="410" y="100">拆分</text>
+    <path class="ln-strong" d="M418 114 L450 64 M418 126 L450 176"/>
+    <rect class="box f2" x="450" y="40" width="110" height="40"/><text class="t mid" x="505" y="65">P1 · 80 kg</text>
+    <rect class="box f2" x="450" y="160" width="110" height="40"/><text class="t mid" x="505" y="185">P2 · 65 kg</text>
+  </g>
+  <g data-s="3">
+    <path class="ln-strong" d="M560 180 H624"/><text class="t-s mid" x="592" y="172">取 20 kg</text>
+    <text class="t-s mid" x="505" y="218">剩 45 kg</text>
+    <rect class="box" x="590" y="244" width="110" height="40"/><text class="t mid" x="645" y="269">C1 · 30 kg</text>
+    <path class="ln" d="M640 244 V196"/>
+    <circle class="box f1" cx="640" cy="180" r="16"/><text class="t-s mid" x="640" y="156">PB2 · 废料 1</text>
+    <path class="ln-strong" d="M656 180 H700"/>
+    <rect class="box f2" x="700" y="160" width="120" height="40"/><text class="t mid" x="760" y="185">M2 · 49 kg</text>
+  </g>
+  <g data-s="4">
+    <text class="t-b" x="600" y="54">当前产品边界</text>
+    <text class="t t-em" x="600" y="76">80 + 45 + 49 = 174 kg</text>
+  </g>
+</svg>
+</div>
+<figcaption>沿转换记录前向遍历，A1 的影响穿过拆分和二次混合到达 P1、P2 余量与 M2；中间物 M1 和 P2 原始的 65 kg 不再计入。</figcaption></figure><p>每扩展一个节点就查询一遍整个历史记录再找关联，可能为每个节点重复扫描 E 条边；给 <code>(tenant, input_lot_id)</code> 建邻接索引后，带 visited 集合的 BFS/DFS 对命中的子图为 O(V+E)，并保留完整的解释路径。影响数量不能把 M1 的 145、P2 原始的 65 和后代 M2 的 49 直接相加，那会同时计入中间物与末端物。先确定当前余额、已经交付、留样、废弃各自属于什么处置边界，再分项计数；本例的 174 只包含当前可售产品，3+2+1 kg 的废料与留样另列。</p>
 <p>一个反例是只追踪第一条父边，认为 P2 只受 B1 影响，于是漏掉混有 A1 的 M2。另一个反例是按配方比例估算 M2 里只有一小部分 A1，就只冻结相同比例的包装；本例没有“哪一包装不受影响”的分离证据，因此整批 49 kg 都进入待调查范围。图算法给出的是可能影响集合，质量风险与处置仍由专业人员判断。跨租户的边不为查询方便而直接公开；对方只共享经授权的批次关联证明，未知的下游要显示为覆盖缺口。</p>
 </section>
 <section class="scene" aria-labelledby="放行撤回与仓储同步"><header class="scene-head"><h2 id="放行撤回与仓储同步"><span class="scene-no" aria-hidden="true">05</span><span class="head">放行、撤回与仓储同步</span></h2></header><p class="scene-lede">每次 release 绑定一份证据快照，新结果或冻结只能追加处置；质量决定与仓储效果分开确认，迟到的旧命令要靠版本条件或串行发送挡住。</p>
 <p>正常轨迹是 R7 获批、A1/B1 可用、投料与产出记账、样品接收与检验、结果复核、偏差关闭、质量处置批准、仓储解锁。本例规定每次 release 绑定一份证据快照；快照含配方、执行记录、结果版本及当前的冻结版本。签署后的原证据不会因后续编辑而悄悄改变。</p>
 <p>如果结果 v2 显示超限，旧 v1 的通过通知随后才到，系统不把 v1 当作新事实。质量服务读取当前版本，启动 <code>blocked</code> 及影响调查，并保留此前何时、凭什么放行的记录。已出货的部分不会因为数据库里“取消发货”就回到仓库：要另建处置任务，关联客户以及回收或使用限制的证据。发现错误的投入记录时，同样追加纠正关系与原因；旧版图与新版图都要能重演，删掉一条边会让历史决定失去依据。</p>
-<p>仓储解锁 <abbr title="application programming interface：应用程序接口">API</abbr> 已成功而响应丢失时，处置对象为 approved、同步操作为 unknown，页面同时展示两者。适配器先查外部该批次的当前状态和操作引用；若质量随后冻结，当前意图变为禁止分配。只在本地忽略迟到的 release 回执还不够：旧 release 命令也可能晚于 block 到达仓库，把实物重新变成可分配。外部接口若支持条件版本，应让仓储只接受高于已应用版本的状态命令；同版本重放保持原效果。这是集成方需要的能力，现有产品是否支持要逐一核实。</p>
-<p>外部没有版本条件时，适配器按批次串行，只允许一个状态变更处于在途或未知；旧 release 未决时，不并发发送一个指望“覆盖”它的 block。出现新冻结时，立即关闭本地分配入口并告警现场，核对旧命令的终态后再发送 block，随后读取仓储当前状态。若不能证明旧请求已结束，或外部还可能延迟执行，就不能仅凭一次读到 blocked 宣告恢复；保持电子禁分配，并由获授权的现场人员隔离或停止拣货，直到外部处理与实物范围都能核对。外部系统若允许绕过本地直接分配，这条接管路径必须纳入集成验收，否则自动放行不能上线。恢复 worker 仍按当前版本重建待执行意图，不机械重放全部历史动作。质量决定与仓储效果分开记录，调查时便能定位危险窗口出在批准、消息传送还是库存执行环节。</p>
-<p>规模假设为 10 个租户、累计 200 万条转换关系、单批最多 50 个投入行、每日 2 万份样品结果，30 个并发复核者。待测目标为单批详情 p95 小于 800 ms，命中 1 万节点以内的追溯 p95 小于 2 s。超过查询预算时创建持久的追踪任务，结果标记为 incomplete，并保留已访问节点、输入图版本与续查位置；截断的图不能充当“已查全”的证明。谱系缓存 key 带租户、根批次、图版本和授权范围；新转换或更正会让下游缓存失效。放行读取当前权威的冻结与结果版本，不依赖追溯缓存。</p>
+<p>仓储解锁 <abbr title="application programming interface：应用程序接口">API</abbr> 已成功而响应丢失时，处置对象为 approved、同步操作为 unknown，页面同时展示两者。适配器先查外部该批次的当前状态和操作引用；若质量随后冻结，当前意图变为禁止分配。迟到的 release 回执在本地忽略即可；更危险的是旧 release 命令晚于 block 到达仓库，把实物重新变成可分配。外部接口若支持条件版本，应让仓储只接受高于已应用版本的状态命令；同版本重放保持原效果。这是集成方需要的能力，现有产品是否支持要逐一核实。</p>
+<figure class="drawing" data-drawing="v08-late-release"><div class="dw-scroll" style="--dw-min:560px;--dw-max:860px">
+<svg viewBox="0 0 720 210" role="img" aria-labelledby="v08-late-release-t v08-late-release-d">
+  <title id="v08-late-release-t">迟到的 release v7 与已应用的 block v8</title>
+  <desc id="v08-late-release-d">适配器先发出 release v7，后发出 block v8。v7 在途延迟，v8 先到仓储并被应用，已应用版本为 8。v7 随后抵达，带版本条件的仓储因 7 低于 8 拒绝它。</desc>
+  <text class="t-b end" x="96" y="64">适配器</text>
+  <text class="t-b end" x="96" y="154">仓储</text>
+  <path class="ln-soft" d="M110 60 H700 M110 150 H700"/>
+  <g data-s="1">
+    <circle class="f-ink" cx="140" cy="60" r="4"/><text class="t mid" x="140" y="44">release v7</text>
+    <path class="ln" d="M140 60 L554 148 M543 141 L554 148 L542 152"/>
+  </g>
+  <g data-s="2">
+    <circle class="f-ink" cx="260" cy="60" r="4"/><text class="t mid" x="260" y="44">block v8</text>
+    <path class="ln" d="M260 60 L330 150 M320 144 L330 150 L330 139"/>
+    <circle class="f-ink" cx="330" cy="150" r="4"/>
+    <text class="t-s mid" x="330" y="172">应用 v8 · 禁分配</text>
+    <text class="t-s mid" x="330" y="188">已应用版本 8</text>
+  </g>
+  <g data-s="3">
+    <circle class="box-em" cx="560" cy="150" r="5"/>
+    <text class="t t-em mid" x="560" y="174">v7 抵达：7 低于 8，拒绝</text>
+  </g>
+  <text class="t-s end" x="700" y="204">时间 →</text>
+</svg>
+</div>
+<figcaption>发出的次序与抵达的次序可以颠倒；仓储按已应用版本比较，晚到的 v7 不再把这批货变回可分配。</figcaption></figure><p>外部没有版本条件时，适配器按批次串行，只允许一个状态变更处于在途或未知；旧 release 未决时，不并发发送一个指望“覆盖”它的 block。出现新冻结时，立即关闭本地分配入口并告警现场，核对旧命令的终态后再发送 block，随后读取仓储当前状态。若不能证明旧请求已结束，或外部还可能延迟执行，就不能仅凭一次读到 blocked 宣告恢复；保持电子禁分配，并由获授权的现场人员隔离或停止拣货，直到外部处理与实物范围都能核对。外部系统若允许绕过本地直接分配，这条接管路径必须纳入集成验收，否则自动放行不能上线。恢复 worker 仍按当前版本重建待执行意图，不机械重放全部历史动作。质量决定与仓储效果分开记录，调查时便能定位危险窗口出在批准、消息传送还是库存执行环节。</p>
+<figure class="drawing" data-drawing="v08-serial"><div class="dw-scroll" style="--dw-min:600px;--dw-max:880px">
+<svg viewBox="0 0 740 232" role="img" aria-labelledby="v08-serial-t v08-serial-d">
+  <title id="v08-serial-t">无版本条件时按批次串行</title>
+  <desc id="v08-serial-d">适配器发出 release v7 后，v7 处于在途或未知。新冻结到来时，本地分配入口立即关闭并告警现场。适配器核对 v7 的终态之后才发送 block v8，随后读取仓储当前状态。</desc>
+  <text class="t-b end" x="110" y="54">本地分配入口</text>
+  <text class="t-b end" x="110" y="124">适配器</text>
+  <text class="t-b end" x="110" y="194">仓储</text>
+  <path class="ln-soft" d="M124 50 H720 M124 120 H720 M124 190 H720"/>
+  <g data-s="1">
+    <circle class="f-ink" cx="140" cy="120" r="4"/><text class="t-s" x="132" y="100">release v7</text>
+    <rect class="box-dash" x="146" y="108" width="254" height="24"/><text class="t-s" x="156" y="125">v7 在途或未知</text>
+  </g>
+  <g data-s="2">
+    <path class="ln-strong" d="M250 50 H720"/>
+    <circle class="f-ink" cx="250" cy="50" r="4"/>
+    <text class="t-s" x="250" y="36">新冻结：立即关闭，告警现场</text>
+  </g>
+  <g data-s="3">
+    <circle class="box-em" cx="410" cy="120" r="6"/><text class="t t-em mid" x="410" y="154">核对 v7 终态</text>
+  </g>
+  <g data-s="4">
+    <circle class="f-ink" cx="490" cy="120" r="4"/><text class="t-s mid" x="490" y="100">block v8</text>
+    <path class="ln" d="M490 120 L540 190 M529 184 L540 190 L539 178"/>
+  </g>
+  <g data-s="5">
+    <path class="ln-dash" d="M640 120 V186 M635 180 L640 186 L645 180"/>
+    <text class="t-s mid" x="640" y="100">读取仓储当前状态</text>
+  </g>
+  <text class="t-s end" x="720" y="224">时间 →</text>
+</svg>
+</div>
+<figcaption>同一批次只允许一个状态变更在途：旧的 release 有了终态才发 block，其间靠关闭本地分配入口和现场隔离守住实物。</figcaption></figure><p>规模假设为 10 个租户、累计 200 万条转换关系、单批最多 50 个投入行、每日 2 万份样品结果，30 个并发复核者。待测目标为单批详情 p95 小于 800 ms，命中 1 万节点以内的追溯 p95 小于 2 s。超过查询预算时创建持久的追踪任务，结果标记为 incomplete，并保留已访问节点、输入图版本与续查位置；截断的图不能充当“已查全”的证明。谱系缓存 key 带租户、根批次、图版本和授权范围；新转换或更正会让下游缓存失效。放行读取当前权威的冻结与结果版本，不依赖追溯缓存。</p>
 </section>
 <section class="scene" aria-labelledby="验算完整谱系与放行效果"><header class="scene-head"><h2 id="验算完整谱系与放行效果"><span class="scene-no" aria-hidden="true">06</span><span class="visually-hidden">验算：</span><span class="head">完整谱系与放行效果</span></h2></header><p class="scene-lede">数量账、证据版本和仓储效果在重复、乱序、并发和结果未知时都要守住；放行 guard 缺项时明确拒绝，并显示差额或缺失项目。</p>
 <div class="table-wrap"><table>
@@ -167,7 +285,31 @@
 <section class="scene" aria-labelledby="变式改变去向与计量单位"><header class="scene-head"><h2 id="变式改变去向与计量单位"><span class="scene-no" aria-hidden="true">07</span><span class="visually-hidden">变式：</span><span class="head">改变去向与计量单位</span></h2></header><p class="scene-lede">去向或单位一变，判断回到两条规则：每个末端数量只有一个当前去向，数量与单位一起校验。</p>
 <p><strong>练习一：P1 的 80 kg 中已有 30 kg 交给客户，此时 A1 出现异常。</strong> 影响集合是否变成 144 kg？</p>
 <p>简答：不会。在库可售产品确实是 <code>50+45+49=144 kg</code>，但已交付的 30 kg 另列，需要处理的产品范围仍是 174 kg。每个末端数量有且只有一个当前去向；把库存查询当成完整的影响查询，就会少算已交付的部分。反例是出库后从图上删掉那 30 kg，系统便宣称无需客户处置。验证时分别输出在库 144 与已交付 30，二者相加为 174，且交付对象能追到客户处置任务。</p>
-<p><strong>练习二：A 的称量单位由 kg 改为 g，界面仍提交数值 100。</strong> 服务端应怎样处理？</p>
+<figure class="drawing" data-drawing="v08-destinations"><div class="dw-scroll" style="--dw-min:560px;--dw-max:820px">
+<svg viewBox="0 0 680 196" role="img" aria-labelledby="v08-destinations-t v08-destinations-d">
+  <title id="v08-destinations-t">174 kg 的当前去向</title>
+  <desc id="v08-destinations-d">P1 80 kg 中 30 kg 已交给客户、50 kg 在库；P2 在库 45 kg；M2 在库 49 kg。在库 50 + 45 + 49 = 144 kg，加已交付 30 kg，影响范围仍是 174 kg。</desc>
+  <g data-s="1">
+    <path class="ln-soft" d="M120 58 V50 H358 V58"/><text class="t-s mid" x="240" y="44">P1 · 80</text>
+    <path class="ln-soft" d="M362 58 V50 H493 V58"/><text class="t-s mid" x="428" y="44">P2 · 45</text>
+    <path class="ln-soft" d="M497 58 V50 H642 V58"/><text class="t-s mid" x="570" y="44">M2 · 49</text>
+    <text class="t-b" x="0" y="90">影响范围</text><text class="t-s" x="0" y="106">174 kg</text>
+  </g>
+  <g data-s="2">
+    <rect class="box-em" x="120" y="74" width="90" height="36"/><text class="t-s mid" x="165" y="96">已交付 30</text>
+    <rect class="box f2" x="210" y="74" width="150" height="36"/><text class="t-s mid" x="285" y="96">在库 50</text>
+    <rect class="box f2" x="360" y="74" width="135" height="36"/><text class="t-s mid" x="428" y="96">在库 45</text>
+    <rect class="box f2" x="495" y="74" width="147" height="36"/><text class="t-s mid" x="568" y="96">在库 49</text>
+  </g>
+  <g data-s="3">
+    <path class="ln-soft" d="M120 118 V126 H208 V118"/>
+    <text class="t" x="120" y="148">已交付 30 kg</text><text class="t-s" x="120" y="166">→ 客户处置任务</text>
+    <path class="ln-soft" d="M212 118 V126 H642 V118"/>
+    <text class="t mid" x="427" y="148">在库 50 + 45 + 49 = 144 kg</text>
+  </g>
+</svg>
+</div>
+<figcaption>每个末端数量只有一个当前去向；库存查询只看到 144 kg，已交付的 30 kg 要从客户处置任务一侧追到。</figcaption></figure><p><strong>练习二：A 的称量单位由 kg 改为 g，界面仍提交数值 100。</strong> 服务端应怎样处理？</p>
 <p>简答：拒绝执行确认。100 g 只等于 0.1 kg，与 B 的 50 kg 合计 50.1 kg，不能按 150 kg 放行。数量要和单位一起构成一个值；只校验数字、靠界面标签区分单位，这一点就守不住。服务端按受控换算统一单位，发现配方比例不符后拒绝。若现场已经误投，保存真实的投入与偏差，不能把记录改成 100 kg 来补齐账。</p>
 <p><code>TR:V08:V21:traceability-boundary</code> 可以把转换与流转证据接到供应运输；不过运输中拆箱通常不改变物料本质，不应一律记成不可逆转换。迁到资产复机时（<code>TR:V08:V10:evidence-based-release</code>），证据与专业授权照样分开，但复机许可还受现场隔离和设备状态约束，合格样品替代不了检修许可。<code>TR:V08:V07:baseline-versus-actual</code> 回到 V07，版本与实际记录的分离仍然成立；混合物的可能影响集合却不能缩成离散零件一对一的序列号路径。</p>
 </section>
@@ -305,8 +447,8 @@
     <footer class="page-foot">正文 <a href="../../../books/saas-engineering/packages/industry-networks/V08.md">books/saas-engineering/packages/industry-networks/V08.md</a> · <a href="../../../vault/distilled/saas-engineering-atlas/README.md">结构、来源与验证</a></footer>
   </main>
 </div>
-<script src="search-index.js?v=mv95jeod"></script>
-<script src="book.js?v=mv95jeod"></script>
+<script src="search-index.js?v=mv97hru0"></script>
+<script src="book.js?v=mv97hru0"></script>
 
 </body>
 </html>
