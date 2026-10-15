@@ -5,8 +5,8 @@
 ## 最少输入
 
 1. [全景入口](README.md)与[阅读主线](learning-path.md)：先读 [企业机制四章](enterprise-mechanisms/README.md)，建立组织→界面→工作上下文与工具→实施的连接。全书沿“识题→解法→演算→验算→变式”。
-2. [12 章计算与系统方法](foundations/README.md)与其 18 个演算例；[题型、算法与栈索引](problem-index.md)、[33 例目录](case-catalog.md)：先选主线例子，再按需展开行业。
-3. [词表与图语义](semantics.md)、[迁移地图](transfer-map.md)：保留哪些机制、哪些条件必须重查。
+2. [12 章计算与系统方法](foundations/README.md)与其 18 个演算例；[题型、算法与栈索引](problem-index.md)、[案例目录](case-catalog.md)：先选主线例子，再按需展开行业。
+3. [共同词表与读图约定](semantics.md)、[迁移地图](transfer-map.md)：保留哪些机制、哪些条件必须重查。
 4. [来源与证据](../../vault/provenance/saas-engineering-atlas/README.md)、[验证方法](validation.md)：来源事实、作者推理、合成政策分别消费。
 
 Claude 承担写作、编订与可视化：先读一条完整路线建立讲法，再展开其余章节；不需逐条重新核查已审阅的来源和算例。证据侧车供发生语义改动、补充事实或遇到特定疑问时查阅。H01 的当前教材在 `packages/commercial-finance/H01.md`；根部 `example-h01.json` 是早期结构验证 fixture，不是另一个案例或第二份权威正文。

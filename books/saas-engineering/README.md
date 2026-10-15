@@ -8,7 +8,7 @@
 
 先读 [企业软件的工作机制](enterprise-mechanisms/README.md)：采购员、仓管与会计为什么可以对“完成”有不同判断，页面怎样把这些判断连起来，agent 得到哪些上下文与工具才可以推进工作，配置、迁移、培训和退出又怎样影响实现。
 
-接着读 [计算与系统方法](foundations/README.md)，学会在查找、排序、窗口、图、调度、优化、缓存与近似之间选方法，再把算出的结果放进事务、恢复和验证的流程。最后按 [33 例目录](case-catalog.md)进入陌生行业，改变前提，检查哪些方法仍然成立。
+接着读 [计算与系统方法](foundations/README.md)，学会在查找、排序、窗口、图、调度、优化、缓存与近似之间选方法，再把算出的结果放进事务、恢复和验证的流程。最后按 [案例目录](case-catalog.md)进入陌生行业，改变前提，检查哪些方法仍然成立。
 
 ## 入门例题
 
@@ -21,8 +21,8 @@
 | 理解企业的工作方式 | [4 章企业机制](enterprise-mechanisms/README.md)、[共同系统图景](architecture.md) | 一次动作的对象、权威、界面与确认链 |
 | 学习计算与工程方法 | [12 章方法主线](foundations/README.md) | 18 个手算例子与改变条件后的判断 |
 | 从问题选解法、算法或技术栈 | [解题索引](problem-index.md) | 一例演算与首轮查证问题 |
-| 按行业寻找熟悉的起点 | [33 例目录](case-catalog.md)、[六组业务对象](packages/README.md) | 具体案例及原语言术语 |
-| 分清术语与图中箭头 | [共同词表与图语义](semantics.md)、[缩写与原词](terminology.md) | 带类型的关系与各对象的状态 |
+| 按行业寻找熟悉的起点 | [案例目录](case-catalog.md)、[六组行业案例](packages/README.md) | 具体案例及原语言术语 |
+| 分清术语与图中箭头 | [共同词表与读图约定](semantics.md)、[缩写与原词](terminology.md) | 带类型的关系与各对象的状态 |
 | 把一种解法迁到另一行业 | [迁移地图](transfer-map.md) | 保留的机制、改变的条件、反例与检查 |
 | 查来源和实现边界 | [逐 URL 来源](../../vault/provenance/saas-engineering-atlas/README.md)、[验证方法](validation.md) | 主张、读取范围与复查方向 |
 | 交给 Claude 编订为交互 HTML | [消费交接](claude-handoff.md) | 按 Praxis 场景与设计入口制作的交互页 |

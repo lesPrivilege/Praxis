@@ -1,6 +1,6 @@
-# 33 例目录
+# 案例目录
 
-按工作目标选案例；算法入口见 [解题索引](problem-index.md)，跨行业比较见 [迁移地图](transfer-map.md)。
+全书 33 个案例，按工作链选择；算法入口见 [解题索引](problem-index.md)，跨行业比较见 [迁移地图](transfer-map.md)。
 
 | ID | 工作链 | 正文与结构 | 算法家族 |
 |---|---|---|---|
@@ -36,4 +36,4 @@
 | V21 | 约束计划 → 供应批准 → 运输 → 交付 → 运费支付 | [正文](packages/industry-networks/V21.md) · [结构](../../vault/distilled/saas-engineering-atlas/packages/industry-networks/V21.json) | optimization, scheduling, lookup, caches |
 | V22 | Product order → service activation → usage → bill → retirement | [正文](packages/industry-networks/V22.md) · [结构](../../vault/distilled/saas-engineering-atlas/packages/industry-networks/V22.json) | windows, lookup, caches |
 | X01 | Tenant onboarding → isolated service → metering → bill → offboard | [正文](packages/data-ai-control/X01.md) · [结构](../../vault/distilled/saas-engineering-atlas/packages/data-ai-control/X01.json) | lookup, windows, scheduling, caches |
-| X02 | Intercompany operations：集团销售 → 实物流/虚单 → 内外结算 → 合并核对 | [正文](packages/commercial-finance/X02.md) · [结构](../../vault/distilled/saas-engineering-atlas/packages/commercial-finance/X02.json) | graph-paths, lookup |
+| X02 | 集团销售 → 实物流/虚单 → 内外结算 → 合并核对 | [正文](packages/commercial-finance/X02.md) · [结构](../../vault/distilled/saas-engineering-atlas/packages/commercial-finance/X02.json) | graph-paths, lookup |
