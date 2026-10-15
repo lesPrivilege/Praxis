@@ -20,7 +20,7 @@
 
 | 需要 | 入口 |
 |---|---|
-| 连贯学习一类问题、制作交互教材 | [Books](books/README.md) → [SaaS 工程全景](books/saas-engineering/README.md) |
+| 连贯学习一类问题、制作交互教材 | [Books](books/README.md) → [SaaS 工程全景](books/saas-engineering/README.md)；离线交互版见 [demos/saas-engineering-textbook](demos/saas-engineering-textbook/README.md) |
 | 阅读已消费材料、查证来源 | [Vault](vault/README.md) → [主题提炼](vault/distilled/README.md) |
 | 进入 Palantir 方法论主题 | [palantir](palantir/README.md)：一级提炼入口；7 个对象已有不同范围原件及候选笔记，材料参考见 [reading list](palantir/references/README.md)，来源登记与原件仍在 Vault |
 | 进入 Tally SaaS 研究主题 | [tally](tally/README.md)：一级提炼入口；当前仅有《清算 SaaS》书稿登记，材料参考见 `tally/references/README.md`，来源登记与原件仍在 Vault |

@@ -55,7 +55,7 @@ const SECTIONS = [
   })),
   {
     title: '索引与查证',
-    files: ['packages/README.md', 'case-catalog.md', 'problem-index.md', 'transfer-map.md', 'semantics.md', 'terminology.md', 'validation.md'],
+    files: ['packages/README.md', 'case-catalog.md', 'problem-index.md', 'transfer-map.md', 'semantics.md', 'terminology.md'],
   },
 ];
 
@@ -252,7 +252,7 @@ function shell({ rel, ctx, body }) {
   <main id="main" class="page${ctx.isCase ? ' case-page' : ''}">
 ${body}
     <nav class="pager" aria-label="前后章节">${pn(prev, 'prev', '上一篇')}${pn(next, 'next', '下一篇')}</nav>
-    <footer class="page-foot">正文 <a href="${path.relative(path.dirname(path.join(OUT, outRel)), path.join(BOOK, rel))}">books/saas-engineering/${esc(rel)}</a> · <a href="${prefix}validation.html">验证方法</a></footer>
+    <footer class="page-foot">正文 <a href="${path.relative(path.dirname(path.join(OUT, outRel)), path.join(BOOK, rel))}">books/saas-engineering/${esc(rel)}</a> · <a href="${path.relative(path.dirname(path.join(OUT, outRel)), path.join(ATLAS, 'README.md'))}">结构、来源与验证</a></footer>
   </main>
   ${toc}
 </div>

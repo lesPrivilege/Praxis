@@ -46,4 +46,4 @@
 
 ## 延伸入口
 
-[企业机制](enterprise-mechanisms/README.md)解释组织责任为什么会产生这些对象、页面与动作；[计算与系统方法](foundations/README.md)把方法的选择过程展开成可手算的例子，再延伸到事务、恢复与验证。进入一个行业时，从 [案例目录](case-catalog.md)选一个案例，沿 [迁移地图](transfer-map.md)改变条件。制作交互版教材所需的入口和结构文件见 [Claude 交接](claude-handoff.md)。
+[企业机制](enterprise-mechanisms/README.md)解释组织责任为什么会产生这些对象、页面与动作；[计算与系统方法](foundations/README.md)把方法的选择过程展开成可手算的例子，再延伸到事务、恢复与验证。进入一个行业时，从 [案例目录](case-catalog.md)选一个案例，沿 [迁移地图](transfer-map.md)改变条件。

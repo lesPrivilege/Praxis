@@ -24,7 +24,6 @@
 | 按行业寻找熟悉的起点 | [案例目录](case-catalog.md)、[六组行业案例](packages/README.md) | 具体案例及原语言术语 |
 | 分清术语与图中箭头 | [共同词表与读图约定](semantics.md)、[缩写与原词](terminology.md) | 带类型的关系与各对象的状态 |
 | 把一种解法迁到另一行业 | [迁移地图](transfer-map.md) | 保留的机制、改变的条件、反例与检查 |
-| 查来源和实现边界 | [逐 URL 来源](../../vault/provenance/saas-engineering-atlas/README.md)、[验证方法](validation.md) | 主张、读取范围与复查方向 |
-| 交给 Claude 编订为交互 HTML | [消费交接](claude-handoff.md) | 按 Praxis 场景与设计入口制作的交互页 |
+| 查来源和实现边界 | [逐 URL 来源](../../vault/provenance/saas-engineering-atlas/README.md)、[验证方法](../../vault/distilled/saas-engineering-atlas/validation.md) | 主张、读取范围与复查方向 |
 
 案例数值、工程策略和技术栈候选各有前提假设；provider 事实可以按 source/claim ID 回查来源。执行记录、来源日期与覆盖缺口见 [验收回执](../../docs/verification/saas-engineering-atlas-20261014.md)。

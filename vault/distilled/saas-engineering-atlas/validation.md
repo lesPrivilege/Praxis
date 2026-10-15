@@ -31,6 +31,6 @@ git diff --check
 | 负载 | workload、租户分布、冷/热缓存、延迟分位数与积压年龄 |
 | AI eval | 冻结数据、标签、模型配置、分母、留出集、错判后果与拒绝条件 |
 
-各例中的端到端表是未来实现的定义；真实测试执行另留回执。企业机制的两条本地工作链已分别通过 fake 与实际 loopback HTTP 适配器；其函数名中的 end_to_end 指这个合成实验范围，不表示浏览器或外部 provider 验收。无 AI 决策的案例不需要为了名称加入模型。专业同意、放行、信贷、保险、押金与财务政策按实际行业和法域继续确认。实际运行与缺口见 [验收回执](../../docs/verification/saas-engineering-atlas-20261014.md)。
+各例中的端到端表是未来实现的定义；真实测试执行另留回执。企业机制的两条本地工作链已分别通过 fake 与实际 loopback HTTP 适配器；其函数名中的 end_to_end 指这个合成实验范围，不表示浏览器或外部 provider 验收。无 AI 决策的案例不需要为了名称加入模型。专业同意、放行、信贷、保险、押金与财务政策按实际行业和法域继续确认。实际运行与缺口见 [验收回执](../../../docs/verification/saas-engineering-atlas-20261014.md)。
 
-原独立审阅和修复处置见 [复核记录](../../docs/reviews/README.md)。原审阅脚本用于各自冻结版本的缺陷复现，不在当前分支作为通过检查；当前两组回归入口是 `python3 docs/reviews/saas-atlas-repairs-20261014/regression_checks.py` 与 `python3 docs/reviews/saas-whole-book-repairs-20261014/regression_checks.py`，均已纳入统一 runner。
+原独立审阅和修复处置见 [复核记录](../../../docs/reviews/README.md)。原审阅脚本用于各自冻结版本的缺陷复现，不在当前分支作为通过检查；当前两组回归入口是 `python3 docs/reviews/saas-atlas-repairs-20261014/regression_checks.py` 与 `python3 docs/reviews/saas-whole-book-repairs-20261014/regression_checks.py`，均已纳入统一 runner。

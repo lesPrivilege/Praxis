@@ -8,6 +8,7 @@
 - [计算方法资产](foundations/README.md)：12 章映射、18 组样例、来源与本地检查。
 - [包内资产](packages/README.md)：evidence、合成脚本、执行回执与交接历史。
 - [来源整合](../../provenance/saas-engineering-atlas/README.md)：canonical URL、原 ID 别名、主张和读取范围。
-- [Claude 交接](../../../books/saas-engineering/claude-handoff.md)、[验证方法](../../../books/saas-engineering/validation.md)：消费入口与命令。
+- [Claude 交接](claude-handoff.md)：2026-10-15 已消费，交互版见 [demos/saas-engineering-textbook](../../../demos/saas-engineering-textbook/README.md)。
+- [验证方法](validation.md)：重建来源投影、结构校验与合成检查的命令及各层边界。
 
 `example-h01.json` 与 [早期示范](example-h01.md)保留为结构验证 fixture；当前 H01 正文只在 Books。历史研究编写契约见 [worker-contract](worker-contract.md)与[case-template](case-template.md)，不再承担派发任务的入口。

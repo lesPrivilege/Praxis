@@ -36,7 +36,7 @@
 
 - [Knowledge Film 001 ·《金字塔原理》第五版](knowledge-film-001-pyramid-cut5/README.md)：11 分钟的中文知识片，配音先行、网页舞台逐帧渲染；旁白和画面文字按修订后的成文规则重写并经独立审阅。成片检查六项通过；用户看过，认为瓶颈在合成语音。用于内部演示，授权没有核对。[第四版](knowledge-film-001-pyramid/README.md)是冻结的验收版，原样保留。
 
-- [SaaS 工程全景 · 交互教材](saas-engineering-textbook/README.md)：2026-10-15 把 Books 里的 SaaS 工程教材生成为离线多页站点，71 页、33 例结构面板与 9 个交互图件；主线 13 个文件经独立审阅后改写回 Books。构建、Atlas 检查与浏览器逐图件检查已做；用户未目验，读屏和打印未逐页查。
+- [SaaS 工程全景 · 交互教材](saas-engineering-textbook/README.md)：2026-10-15 把 Books 里的 SaaS 工程教材生成为离线多页站点，70 页、33 例结构面板与 9 个交互图件；主线 13 个文件经独立审阅后改写回 Books。构建、Atlas 检查与浏览器逐图件检查已做；用户未目验，读屏和打印未逐页查。
 
 - [DeerFlow 怎样工作](deerflow-explainer/README.md)：2026-10-12 的交互讲解页，单文件离线 HTML，讲开源项目 DeerFlow 的各局部实现；事实读自固定提交的源码与文档，没有运行；八个交互图件与打印已检查，用户目验通过；没有受众测试。
 

@@ -6,4 +6,4 @@
 |---|---|
 | [SaaS 工程全景](saas-engineering/README.md) | vibe coder 经4章企业机制与12章计算方法进入33个行业案例，沿识题、解法、演算、验算和变式学习跨行业迁移 |
 
-把教材做成交互演示时，从书内 Claude 交接进入既有 [Design](../kit/design/README.md)、[场景](../scenarios/README.md)与[Demo](../demos/README.md)。历史书稿仍可从 [Tally](../tally/README.md)与 [Vault](../vault/README.md)查找，不因增加 Books 重复复制来源。
+SaaS 工程全景另有离线交互版：[demos/saas-engineering-textbook](../demos/saas-engineering-textbook/README.md) 从本书正文和 Vault 结构数据生成多页站点，打开其中的 `site/index.html` 阅读；正文改动仍在本目录完成，再重新生成。交接、验证命令等维护材料在 [Vault 资产索引](../vault/distilled/saas-engineering-atlas/README.md)。历史书稿仍可从 [Tally](../tally/README.md)与 [Vault](../vault/README.md)查找，不因增加 Books 重复复制来源。
