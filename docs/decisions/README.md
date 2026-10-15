@@ -57,3 +57,4 @@ accepted 表示本仓库当时采纳；技术实现与使用证据在对应契�
 - [ADR-031：术语取最稳定的说法；讲解页的编排留作参考](031-stable-terms-and-explainer-page.md)（accepted；成文原理第 6 条写明 AI 与 agent 等领域的术语用英文原词；Publish 新增讲解页的编排，是可取用的参考；强调色在交互图里可作当前选中；稳定语义的记号、控件与运动写成工单交给独立的 ClaudeDesign，Kit 暂不新增；使用证据只有一页、一名主笔，未对照）。
 - [ADR-032：承载稳定语义的记号、控件与运动收进 Design](032-semantic-marks-library.md)（accepted；整包在 kit/design/marks，normal/reference，按需取用，可改用外部库或重画）。
 - [ADR-033：互著别裁与内容的持续维护](033-content-discovery-and-retirement.md)（accepted；多入口与独立用途提炼、依赖边界、增量和清退的去向闭合；未执行真实迁移或删除）。
+- [ADR-034：限定说一次；过程材料留在索引；改写后可机器比对不可损失项](034-state-limits-once-and-keep-process-out.md)（accepted；成文原理第 8 条与审阅方法加“重复设防”；Shared 证据把交接、核验和审阅记录归 index；审阅第 7 步可用脚本比对字面量；证据为 SaaS 教材两批编订，未对照）。

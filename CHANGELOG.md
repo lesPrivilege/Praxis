@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-10-15 · SaaS 教材的交互版与编订体例
+
+- 新增 [SaaS 工程全景 · 交互教材](demos/saas-engineering-textbook/README.md)：从 Books 正文与 Vault 结构数据生成的离线多页站点，含 33 例结构面板与 9 个交互图件；全书正文经独立审阅后改写回 Books。交接与验证命令移出读者路径，归入 [Vault 资产索引](vault/distilled/saas-engineering-atlas/README.md)。
+- 并入 [技术文档编订研究](vault/distilled/technical-compilation-writing-research-20261014/README.md)，并在本书上做事后对照，见 [试用记录](vault/distilled/technical-compilation-writing-research-20261014/saas-trial-20261015.md)。
+- [成文原理](kit/write/prose/grammar.md)第 8 条与 [审阅方法](kit/write/prose/review.md)加“重复设防”：限定在读者需要处说一次；[证据与来源](kit/write/shared/evidence.md)把过程材料归 index；审阅第 7 步可用脚本比对不可损失的字面量。兼容扩展，见 [ADR-034](docs/decisions/034-state-limits-once-and-keep-process-out.md)。
+
 ## 2026-10-12 · 并回此前暂存的本地工作
 
 - 10-04 至 10-12 暂存在 stash 的本地工作并回 main：[排列与刻度](kit/design/foundations/placement.md)与 ADR-026、Motion ceiling、两条能力测试短片、Palantir 阅读原件、会话入账与 harness 审计（ADR-030）、互著别裁（原编 ADR-029，改编 [ADR-033](docs/decisions/033-content-discovery-and-retirement.md)）。各项的日期与内容见下方原条目。
