@@ -14,6 +14,7 @@
 | 设计软件视觉与交互、编排可视化 | [Design](kit/design/README.md)；需要依据时查 [参考路由](kit/design/references/README.md) | 可选做法、适用规则、依据与设计产出 |
 | 撰写或改定对外中文成文 | 项目 skill `writing`（`.claude/skills/writing/SKILL.md`）→ [Write / Prose](kit/write/prose/README.md) | 按写作原理成文，附审阅裁决 |
 | 将阅读材料制成视频、查旧片的施工经验 | [Write / Motion](kit/write/motion/README.md) | 分镜、表现参考、旧项目的消费与验收 |
+| 画股权结构图并导出 SVG | [股权结构图](tools/equity-chart/README.md)，[工具目录](tools/README.md) | 离线单文件，自动排版与换行，透明背景原生 SVG |
 | 查定义、接口与验收要求 | [Kit](kit/README.md) | 对应契约与检查项 |
 
 ## 研究与维护

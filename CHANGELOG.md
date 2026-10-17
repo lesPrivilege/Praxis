@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-10-17 · 股权结构图工具
+
+- 新增 [工具](tools/README.md) 目录与第一个工具 [股权结构图](tools/equity-chart/README.md)：单个离线 HTML，ELK.js 0.9.3 分层布局在 Web Worker 中运行，名称自动换行，导出透明背景的原生 SVG。仓库检查覆盖 `tools/`。
+- 两种用法：人在页面上用表格和图上工具栏编辑（加减主体与持股、改比例、拖动调整同级顺序、撤销），agent 用 `render.mjs` 经无头 Chrome 调用同一个 `EC.render` 出图。
+- 在应用内浏览器检查了编辑操作、样例与 20/100/500 主体合成图和 SVG 结构，命令行在 `file://` 下出图成功；没有在其他 SVG 软件、Safari、Firefox 中检查。
+
 ## 2026-10-17 · Writing Kit 修订交接的裁决
 
 - 并入 [Writing Kit 修订交接](vault/distilled/writing-kit-spec-handoff-20261016/README.md)，按 [ADR-036](docs/decisions/036-writing-kit-spec-handoff.md) 裁决：讲解页的结论层从问题讲起，共用机制只在一处讲；成文原理第 6 条加缩写首用；多语言页加外文来源提炼的语言边界；共享验收的固定顺序换成检查面；证据页写明对象自身的历史是正文；审阅加“改正时补进假设”。

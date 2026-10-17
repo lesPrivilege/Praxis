@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>股权结构图</title>
+<style>
+/*@inline styles.css*/
+</style>
+</head>
+<body>
+<main class="app">
+  <aside class="panel">
+    <header class="panel-head">
+      <h1>股权结构图</h1>
+      <p>录入主体与持股关系，导出透明背景的原生 SVG。全部在本机运行。</p>
+    </header>
+
+    <div class="section-head">
+      <div class="tabs" role="tablist" aria-label="编辑方式">
+        <button type="button" role="tab" id="tab-btn-table" aria-controls="tab-table" aria-selected="true">表格</button>
+        <button type="button" role="tab" id="tab-btn-json" aria-controls="tab-json" aria-selected="false">JSON</button>
+      </div>
+      <div class="head-actions">
+        <button id="undo" type="button" class="quiet small" title="撤销（⌘Z）" disabled>撤销</button>
+        <button id="redo" type="button" class="quiet small" title="重做（⇧⌘Z）" disabled>重做</button>
+        <select id="sample" aria-label="载入样例">
+          <option value="">载入…</option>
+          <option value="empty">空白</option>
+          <option value="tree">样例：多级持股</option>
+          <option value="cross">样例：共同与循环持股</option>
+          <option value="gen:20">合成 20 个主体</option>
+          <option value="gen:100">合成 100 个主体</option>
+          <option value="gen:500">合成 500 个主体</option>
+        </select>
+      </div>
+    </div>
+
+    <section id="tab-table" role="tabpanel" aria-labelledby="tab-btn-table" class="grow tables">
+      <div class="section-head">
+        <h2>主体</h2>
+        <button id="add-entity" type="button" class="quiet small">＋ 主体</button>
+      </div>
+      <table id="entity-table" class="rows">
+        <thead><tr><th class="col-handle"><span class="sr-only">排序</span></th><th>名称</th><th class="col-kind">类型</th><th class="col-focus" title="强调">强调</th><th class="col-del"><span class="sr-only">删除</span></th></tr></thead>
+        <tbody></tbody>
+      </table>
+      <div class="section-head">
+        <h2>持股</h2>
+        <button id="add-holding" type="button" class="quiet small">＋ 持股</button>
+      </div>
+      <table id="holding-table" class="rows">
+        <thead><tr><th>股东</th><th>被投企业</th><th class="col-pct">比例 %</th><th class="col-label">标注</th><th class="col-del"><span class="sr-only">删除</span></th></tr></thead>
+        <tbody></tbody>
+      </table>
+      <p id="table-note" class="hint"></p>
+      <p class="hint">在右侧点节点可加股东、加子公司、改名或删除，点连线改比例；拖动节点或表格左侧的把手调整同一层的左右顺序。</p>
+    </section>
+
+    <section id="tab-json" role="tabpanel" aria-labelledby="tab-btn-json" class="grow" hidden>
+      <textarea id="source" spellcheck="false" aria-label="图数据 JSON"></textarea>
+      <p class="hint"><code>entities</code>：id、name、kind（person 为自然人）、focus（强调）；<code>holdings</code>：from 股东、to 被投企业、pct 比例、label 自定义标注。名称里的换行符会被保留。</p>
+    </section>
+
+    <details>
+      <summary>排版与样式</summary>
+      <div class="grid">
+        <label>方向<select id="direction"><option value="DOWN">自上而下</option><option value="RIGHT">自左向右</option></select></label>
+        <label>节点底色<select id="nodeFill"><option value="white">白色</option><option value="tint">浅色</option><option value="none">无填充</option></select></label>
+        <label>字号<input id="fontSize" type="number" min="8" max="40" step="0.5"></label>
+        <label>行高<input id="lineHeight" type="number" min="1" max="2.4" step="0.05"></label>
+        <label>最小宽度<input id="minWidth" type="number" min="24" step="4"></label>
+        <label>最大宽度<input id="maxWidth" type="number" min="24" step="4"></label>
+        <label>横向内边距<input id="padX" type="number" min="0" step="1"></label>
+        <label>纵向内边距<input id="padY" type="number" min="0" step="1"></label>
+        <label>层间距<input id="layerGap" type="number" min="8" step="4"></label>
+        <label>节点间距<input id="nodeGap" type="number" min="4" step="2"></label>
+        <label>画布留白<input id="margin" type="number" min="0" step="2"></label>
+        <label>线宽<input id="strokeWidth" type="number" min="0.25" step="0.1"></label>
+        <label>圆角<input id="radius" type="number" min="0" step="1"></label>
+        <label>箭头<input id="arrow" type="number" min="0" step="1"></label>
+        <label>文字色<input id="textColor" type="color"></label>
+        <label>线条色<input id="lineColor" type="color"></label>
+        <label>比例色<input id="labelColor" type="color"></label>
+        <label>强调色<input id="accent" type="color"></label>
+      </div>
+      <button id="reset-settings" type="button" class="quiet">恢复默认</button>
+    </details>
+  </aside>
+
+  <section class="preview">
+    <div class="toolbar">
+      <p id="status" class="status" role="status"></p>
+      <button id="zoom" type="button" class="quiet"></button>
+      <input id="filename" value="股权结构图" aria-label="文件名">
+      <button id="copy" type="button" class="quiet" data-needs-chart>复制 SVG</button>
+      <button id="export" type="button" data-needs-chart>导出 SVG</button>
+    </div>
+    <ul id="warnings" class="warnings"></ul>
+    <div id="viewport" class="viewport">
+      <div id="stage" class="stage"></div>
+      <div id="node-bar" class="floatbar" hidden>
+        <input id="nb-name" aria-label="名称">
+        <select id="nb-kind" aria-label="类型"><option value="company">企业</option><option value="person">自然人</option></select>
+        <button id="nb-holder" type="button" class="quiet small">＋ 股东</button>
+        <button id="nb-child" type="button" class="quiet small">＋ 子公司</button>
+        <button id="nb-focus" type="button" class="quiet small" aria-pressed="false">强调</button>
+        <button id="nb-delete" type="button" class="quiet small danger">删除</button>
+      </div>
+      <div id="edge-bar" class="floatbar" hidden>
+        <span id="eb-title" class="floatbar-title"></span>
+        <label class="inline">比例 %<input id="eb-pct" inputmode="decimal"></label>
+        <label class="inline">标注<input id="eb-label" placeholder="默认显示比例"></label>
+        <button id="eb-delete" type="button" class="quiet small danger">删除持股</button>
+      </div>
+      <p id="empty-hint" class="empty-hint" hidden>还没有主体。点左侧“＋ 主体”开始，或载入一个样例。</p>
+    </div>
+  </section>
+</main>
+<div id="toast" class="toast" role="status"></div>
+<script>
+/*@inline ../vendor/elk-api.js*/
+</script>
+<script type="text/plain" id="elk-worker">
+/*@inline ../vendor/elk-worker.min.js*/
+</script>
+<script>
+window.EC = { FONT_STACK: "'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans CJK SC', 'Source Han Sans SC', sans-serif" };
+EC.samples = /*@inline-json ../samples*/;
+/*@inline text.js*/
+/*@inline model.js*/
+/*@inline layout.js*/
+/*@inline render.js*/
+/*@inline api.js*/
+/*@inline generate.js*/
+/*@inline app.js*/
+</script>
+</body>
+</html>
