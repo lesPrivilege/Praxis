@@ -3,7 +3,8 @@
 ## 2026-10-17 · Writing Kit 修订交接的裁决
 
 - 并入 [Writing Kit 修订交接](vault/distilled/writing-kit-spec-handoff-20261016/README.md)，按 [ADR-036](docs/decisions/036-writing-kit-spec-handoff.md) 裁决：讲解页的结论层从问题讲起，共用机制只在一处讲；成文原理第 6 条加缩写首用；多语言页加外文来源提炼的语言边界；共享验收的固定顺序换成检查面；证据页写明对象自身的历史是正文；审阅加“改正时补进假设”。
-- 新增默认不启用的 [作者语体](kit/write/prose/author-profile.md)，只在用仓库所有者口吻代拟时取用。私有证据底稿不入库。
+- 新增配置项 [作者语体](kit/write/prose/author-profile.md)，默认关闭；任务要求用仓库所有者口吻，或项目 AGENTS.md 写有 `作者语体：开` 时打开。私有证据底稿留在本机 `vault/private/`，不入库。
+- 并入 AgentScope 知识片的视觉修订（原生 SVG 对象叙事的 cut3 与视觉规格比对）；其余已并入的分支删除。
 - 没有做真实写作试用。
 
 ## 2026-10-15 · SaaS 教材的交互版与编订体例
