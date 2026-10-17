@@ -15,7 +15,7 @@
 | 谁在什么情境下读，材料需要帮他完成什么 | [读者与任务](audience.md) |
 | 证据怎样支持建议，推理缺了哪一环 | [论证与证据链](argument.md) |
 | 按钮、空状态、校验与超时如何写 | [微文案与错误恢复](microcopy.md) |
-| 跨语言、地区或文字方向怎样保住含义 | [多语言与本地化边界](multilingual.md) |
+| 跨语言、地区或文字方向怎样保住含义，外文来源怎样提炼成中文 | [多语言与本地化边界](multilingual.md) |
 | 操作指南、解释、参考页或决策材料如何选 | [文体选择](genres/selection.md) |
 
 这些是普通优先级的可选参考；[写作书目](../../../vault/provenance/design-writing-encyclopedia/writing/README.md)保留来源各自的论述，不将品牌语气或英文规则通用化。

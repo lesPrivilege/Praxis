@@ -59,3 +59,4 @@ accepted 表示本仓库当时采纳；技术实现与使用证据在对应契�
 - [ADR-033：互著别裁与内容的持续维护](033-content-discovery-and-retirement.md)（accepted；多入口与独立用途提炼、依赖边界、增量和清退的去向闭合；未执行真实迁移或删除）。
 - [ADR-034：限定说一次；过程材料留在索引；改写后可机器比对不可损失项](034-state-limits-once-and-keep-process-out.md)（accepted；成文原理第 8 条与审阅方法加“重复设防”；Shared 证据把交接、核验和审阅记录归 index；审阅第 7 步可用脚本比对字面量；证据为 SaaS 教材两批编订，未对照）。
 - [ADR-035：每节先给局部答案；链接写明关系](035-local-answers-and-link-relations.md)（accepted；讲解页的结论层与章层补验收和节首答案；审阅加“目录冒充概览”“摘要逐级稀释”；内容编排要求交叉链接写明关系；取自用户交来的写作规范，只取结构，不取文字）。
+- [ADR-036：Writing Kit 修订交接的裁决](036-writing-kit-spec-handoff.md)（accepted；讲解页结论层从问题讲起；缩写首用；外文来源提炼的语言边界；验收改为检查面；正文历史不是过程材料；改正时不补假设；作者语体单页默认不启用；未试用、未对照）。

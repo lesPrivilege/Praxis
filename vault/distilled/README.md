@@ -26,7 +26,7 @@
 | 需要复用前端、页面、图表或编排材料 | [Frontend design](frontend-design/README.md) | CW、SE、career 和上游方法的分来源消费 |
 | 需要查 Agent Runtime 外部研究 | [Agent Runtime](agent-runtime-survey-20260925/README.md) | 2026-09-25 研究、候选工单和限制 |
 | 需要查 Write/Design 体例候选 | [Write / Design grammar](write-design-grammar/README.md) | 两份 2026-09-27 Chat 的消费结果，不自动成为规范 |
-| 需要审阅 Writing Kit 的学习型讲解与成文修订 | [Writing Kit 修订交接](writing-kit-spec-handoff-20261016/README.md) | 现行规则与候选增量的映射、规格及试用要求；待 Opus 裁决，不替代现行 Kit |
+| 需要审阅 Writing Kit 的学习型讲解与成文修订 | [Writing Kit 修订交接](writing-kit-spec-handoff-20261016/README.md) | 现行规则与候选增量的映射、规格及试用要求；已按 ADR-036 裁决，采纳部分在 Kit |
 | 需要查外部 Design 语义和写作结构 | [Design reference semantics](design-reference-semantics/README.md) · [写作结构补充](writing-structure-20260927/README.md) | 来源主张、消费用途、边界和重访条件 |
 | 需要比较原子化编排与组合 | [样张实验](layout-specimens-20260927/README.md) · [局部筛选](layout-specimens-20260927/review.md) | 已有synthetic样张；保持candidate，检查覆盖与fixture缺陷分别记录 |
 | 需求用风格名表达，或要查尚未进 Kit 的构成维度 | [Design grammar atlas](design-grammar-atlas-20261002/README.md) · [A01 样张](design-grammar-atlas-20261002/a01-reading-relations/README.md) | 研究包与本地 Kit 的对照裁决、候选维度和包内更正；条目本身在 Kit 的视觉语言参考 |

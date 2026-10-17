@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-10-17 · Writing Kit 修订交接的裁决
+
+- 并入 [Writing Kit 修订交接](vault/distilled/writing-kit-spec-handoff-20261016/README.md)，按 [ADR-036](docs/decisions/036-writing-kit-spec-handoff.md) 裁决：讲解页的结论层从问题讲起，共用机制只在一处讲；成文原理第 6 条加缩写首用；多语言页加外文来源提炼的语言边界；共享验收的固定顺序换成检查面；证据页写明对象自身的历史是正文；审阅加“改正时补进假设”。
+- 新增默认不启用的 [作者语体](kit/write/prose/author-profile.md)，只在用仓库所有者口吻代拟时取用。私有证据底稿不入库。
+- 没有做真实写作试用。
+
 ## 2026-10-15 · SaaS 教材的交互版与编订体例
 
 - 新增 [SaaS 工程全景 · 交互教材](demos/saas-engineering-textbook/README.md)：从 Books 正文与 Vault 结构数据生成的离线多页站点，含 33 例结构面板与 9 个交互图件；全书正文经独立审阅后改写回 Books。交接与验证命令移出读者路径，归入 [Vault 资产索引](vault/distilled/saas-engineering-atlas/README.md)。
