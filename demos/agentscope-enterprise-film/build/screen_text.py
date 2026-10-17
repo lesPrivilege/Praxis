@@ -19,7 +19,7 @@ JS=r"""
  }
  const block=e=>[...e.children].every(c=>INLINE.has(c.tagName.toUpperCase())&&[...c.querySelectorAll('*')].every(d=>INLINE.has(d.tagName.toUpperCase())));
  function walk(el,scene){
-  if(el.classList.contains('scene'))scene=el.dataset.scene||el.id;
+  if(el.classList.contains('scene')){scene=el.dataset.scene||el.id;const state=getComputedStyle(el);if(state.visibility==='hidden'||state.display==='none')return;}
   if(!(el.textContent||'').trim())return;
   if(el.tagName.toLowerCase()==='text'||!el.children.length||block(el)){
    if(INLINE.has(el.tagName.toUpperCase())&&el.parentElement&&block(el.parentElement))return;
@@ -44,7 +44,7 @@ JS=r"""
   }
   for(const c of el.children)walk(c,scene);
  }
- walk(Film.stage,'');return rows;
+ walk(Film.stage,Film.activeScene||'');return rows;
 }
 """
 def main():

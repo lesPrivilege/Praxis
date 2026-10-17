@@ -30,3 +30,11 @@
 - 一倍时间轴分段运行与取帧审阅：[第一段](playback-part1.md)、[第二段](playback-part2.md)、[第三段](playback-part3.md)、[第四段](playback-part4.md)。它们不冒充人类连续完整观片。
 
 - [修后编码边界检查](cut2-repair-media-check.json) · [媒体保存回执](media-preservation.json)
+
+## 2026-10-15 视觉复核
+
+用户反馈视觉效果不足，原制作接收不作为视觉接收。[视觉spec diff](visual-spec-diff-20261015.md)对照现有规格、实现及Claude施工产物；[图像对照](visual-diff-20261015/comparison.html)。本轮仅审计，未重绘成片。
+
+## 2026-10-15 视觉修订实施
+
+[第三版](../cut3/README.md)包含47场/53主题的原生SVG重画、11:02核心样段和新双画幅封面。原审计与用户反馈保留；设计卡、独立裁决与实际范围从第三版入口进入。

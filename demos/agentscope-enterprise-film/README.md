@@ -1,15 +1,15 @@
 # AgentScope 企业线 · 从运行机制到业务交付
 
-第二版覆盖 53 个主题，编排为 50 场、52:01，1920×1080 横屏，无 TTS。面向 PM，从文档系统反推职责，再展开消息、循环、工具、权限、上下文、协作、Python 服务和 Java 企业接入。
+第三版覆盖 53 个主题，编排为 47 场、62:19，1920×1080 横屏，无 TTS。面向 PM，从文档系统反推职责，再展开消息、循环、工具、权限、上下文、协作、Python 服务和 Java 企业接入。
 
 ## 交付入口
 
-- 视频：`cut2/out/agentscope-enterprise-cut2.mp4`，本地生成物。
-- [可暂停、跳章的舞台](cut2/film/index.html)
+- 视频：`cut3/out/agentscope-enterprise-cut3.mp4`，本地生成物。
+- [可暂停、跳章的舞台](cut3/film/index.html)
 - [详尽阅读稿](reading-v2.html) · [第一版 Markdown 原稿](reading.md)
-- [4:3 封面](covers/agentscope-4x3.png) · [可编辑 SVG](covers/agentscope-4x3.svg)
-- [3:4 封面](covers/agentscope-3x4.png) · [可编辑 SVG](covers/agentscope-3x4.svg)
-- [主题分镜](script/storyboard.md) · [第二版时间线](cut2/out/timeline.json) · [实际画面文字](cut2/out/screen-text.md)
+- [4:3 封面](cut3/covers/agentscope-4x3.png) · [可编辑 SVG](cut3/covers/agentscope-4x3.svg)
+- [3:4 封面](cut3/covers/agentscope-3x4.png) · [可编辑 SVG](cut3/covers/agentscope-3x4.svg)
+- [主题分镜](script/storyboard.md) · [第三版时间线](cut3/out/timeline.json) · [实际画面文字](cut3/out/screen-text.md)
 - [制作与验收](production.md)
 
 ## 阅读与观看顺序
@@ -28,6 +28,10 @@
 直接打开舞台或阅读稿；舞台全部本地依赖。使用现有 Python、Playwright、Pillow、numpy 和 ffmpeg，重建命令见 [build](build/README.md)。封面在 [cover.py](script/cover.py)分别绘制，无裁切转换。
 
 公开来源原件在 [Vault](../../vault/provenance/agentscope-enterprise-20261012/README.md)，源码固定提交和阅读缺口在 [研究](../../vault/distilled/agentscope-enterprise-20261012/README.md)。说明中的合同助手是贯穿解释案例，不是运行实录。
+
+## 第三版视觉修订
+
+[11:02 核心样段](cut3/proof/film/index.html)先看消息行程、权限闸门、工作区与恢复。第三版以原生SVG重画全片；对象本身承接增量、停泊、配对、分支与恢复路径。构图/动态因果/图文分工修订及检查范围见 [第三版](cut3/README.md)。
 
 ## 第二版与基线
 
