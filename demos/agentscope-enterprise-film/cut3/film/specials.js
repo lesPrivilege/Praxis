@@ -2,10 +2,11 @@
 (() => {
 'use strict';
 const V=window.V3,C=V.C;
-const G=(p,id)=>V.group(p,id),T=(p,x,y,s,z=32,o={})=>V.text(p,x,y,s,z,o),R=(p,x,y,w,h,a={})=>V.rect(p,x,y,w,h,{fill:C.paper,stroke:C.line,'stroke-width':2,...a});
+const G=(p,id)=>V.group(p,id),T=(p,x,y,s,z=32,o={})=>V.text(p,x,y,s,z,o),R=(p,x,y,w,h,a={})=>V.rect(p,x,y,w,h,{fill:C.card,stroke:C.line,'stroke-width':2,...a});
 const O=V.show,S=V.set,M=V.move,L=V.lerp,P=(t,a,d=3)=>V.p(t,a,d),on=(t,a,b=Infinity)=>+(t>=a&&t<b);
-function edge(g,d){return V.path(g,d,{fill:'none',stroke:C.blue,'stroke-width':3});}
-function draw(n,q,len=1800){S(n,{'stroke-dasharray':len,'stroke-dashoffset':len*(1-q),opacity:q>0?1:0});}
+function edge(g,d){const e=V.path(g,d,{fill:'none',stroke:C.blue,'stroke-width':3,'stroke-linejoin':'round'});let s=g.ownerSVGElement||g;e.dataset.arrow=(s.__arrows||(s.__arrows=V.arrows(s,'sp'+(++edge.n)))).blue;return e;}
+edge.n=0;
+function draw(n,q){const len=n.getTotalLength();S(n,{'stroke-dasharray':len,'stroke-dashoffset':len*(1-q),opacity:q>0?1:0,'marker-end':q>.98&&!n.dataset.plain?n.dataset.arrow:'none'});}
 function spec(id,title,duration,phases,motion,build){V.register(id,{title,duration,covers:[id],phases:phases.map(([at,name])=>({at,name})),motion:motion.map(([at,duration,purpose])=>({at,duration,purpose})),build});}
 spec('team','任务交给成员，结果回到同一个 leader',58,
 [[0,'leader与两个真实成员'],[9,'分别发完整任务输入'],[21,'各自上下文独立执行'],[29,'成员结果返回leader'],[40,'leader统一汇总'],[49,'回复结束后的默认清理']],
@@ -21,10 +22,10 @@ spec('team','任务交给成员，结果回到同一个 leader',58,
 spec('structured','候选先过 Schema；无有效结果才进入失败出口',60,
 [[0,'候选风险意见缺依据'],[9,'候选到Schema关口'],[18,'补齐依据后再检查'],[27,'字段有效进入出口'],[39,'另一路上限仍未形成'],[49,'结构化宽限5轮'],[55,'仍无有效结构才None']],
 [[9,3,'候选停在检查线前'],[18,3,'补齐缺失依据'],[27,5,'同一候选通过检查线'],[39,2,'展开未成功的条件支路'],[49,5,'额外迭代预算推进'],[55,2,'仍无有效结果才显示None']],svg=>{
- const root=G(svg,'special-structured');const gate=V.line(root,940,265,940,635,{stroke:C.ink,'stroke-width':5});T(root,940,227,'Schema 检查',35,{anchor:'middle',weight:650});
- const card=G(root,'structured-candidate');V.path(card,'M0 0 H550 L585 35 V330 H0 Z',{fill:C.paper,stroke:C.ink,'stroke-width':2});T(card,25,52,'风险候选',38,{weight:650});T(card,25,109,'位置：合同第 8 条',33);T(card,25,164,'发现：责任口径需一致',33);T(card,25,219,'建议：标明费用基数',33);const evidence=T(card,25,281,'依据：缺失',34,{fill:C.blue});
+ const root=G(svg,'special-structured');const gate=V.line(root,940,265,940,635,{stroke:C.ink,'stroke-width':8,'stroke-linecap':'round'});T(root,940,227,'Schema 检查',35,{anchor:'middle',weight:650});
+ const card=G(root,'structured-candidate');V.path(card,'M0 0 H550 L585 35 V330 H0 Z',{fill:C.card,stroke:C.frame,'stroke-width':2});T(card,25,52,'风险候选',38,{weight:650});T(card,25,109,'位置：合同第 8 条',33);T(card,25,164,'发现：责任口径需一致',33);T(card,25,219,'建议：标明费用基数',33);const evidence=T(card,25,281,'依据：缺失',34,{fill:C.blue});
  const error=T(root,1050,380,'缺少 evidence',35,{mono:true,fill:C.blue}),valid=T(root,1130,265,'字段有效',37,{fill:C.blue,weight:650});const call=T(root,110,231,'临时生成工具提交候选',33,{fill:C.muted});
- const route=edge(root,'M705 465 H925');root.insertBefore(route,card);const branch=G(root,'structured-grace');T(branch,100,724,'条件支路：到 max_iters 仍无有效结构',33,{weight:650});T(branch,100,794,'默认 50 轮',35,{fill:C.muted});const extra=T(branch,700,794,'再给 5 轮',37,{fill:C.blue,weight:650});const fail=T(branch,1235,794,'structured_output = None',35,{mono:true,fill:C.blue});const a=edge(branch,'M410 780 H665'),b=edge(branch,'M970 780 H1190');T(branch,100,861,'有效结果可从检查线退出；宽限并非必然耗尽。',31,{fill:C.muted});
+ const route=edge(root,'M705 465 H928');root.insertBefore(route,card);const branch=G(root,'structured-grace');T(branch,100,724,'条件支路：到 max_iters 仍无有效结构',33,{weight:650});T(branch,100,794,'默认 50 轮',35,{fill:C.muted});const extra=T(branch,700,794,'再给 5 轮',37,{fill:C.blue,weight:650});const fail=T(branch,1235,794,'structured_output = None',35,{mono:true,fill:C.blue});const a=edge(branch,'M410 780 H665'),b=edge(branch,'M970 780 H1190');T(branch,100,861,'有效结果可从检查线退出；宽限并非必然耗尽。',31,{fill:C.muted});
  return {render(t){const stop=P(t,9,3),pass=P(t,27,5);M(card,L(L(100,325,stop),1130,pass),300);evidence.textContent=t<21?'依据：缺失':'依据：附件 B · v3';S(evidence,{fill:t>=21?C.ink:C.blue});O(error,on(t,12,21));O(valid,on(t,32));draw(route,stop,220);O(route,on(t,9,27));O(branch,P(t,39,2));O(extra,on(t,49));draw(a,P(t,49,2),255);O(fail,on(t,55));draw(b,P(t,55,2),220);S(gate,{stroke:t>=27?C.blue:C.ink});V.note(t<9?'临时生成工具提交字段；Schema 先检查结构，业务依据另需核对。':t<18?'本候选缺 evidence，先留在关口；结构校验不会把缺字段当成功。':t<27?'补齐依据再校验，同一候选可以通过；不保证每次生成都需要重试。':t<39?'字段有效只证明结构成立，风险判断与引用内容仍由后续核验。':t<49?'另一路：普通 max_iters 预算用尽且仍没有结构化结果，才启用额外宽限。':t<55?'固定 Python 2.0.10dev：max_iters 默认 50，structured grace 默认 5。':'额外轮次用尽仍未形成有效结构时，structured_output 才是 None。');}};
 });
 spec('middleware','规则环绕各自边界，工具 I/O 只是其中一层',58,
@@ -62,8 +63,8 @@ spec('interrupt','运行中与已暂停，走两种中断入口',60,
 [[0,'两种已有状态'],[10,'运行中取消异步任务'],[23,'接收请求与实际清理分开'],[32,'暂停回复收到中断事件'],[43,'保留部分输出与中断记录'],[51,'外部效果另查回执']],
 [[10,3,'取消请求到达运行中的任务'],[20,3,'当前异步任务结束'],[32,4,'UserInterruptEvent进入原暂停回复'],[43,2,'原回复留下中断记录']],svg=>{
  const root=G(svg,'special-interrupt');T(root,100,257,'入口 A · 当前运行中',37,{weight:650});T(root,100,599,'入口 B · 已暂停',37,{weight:650});
- const running=R(root,500,285,680,195,{stroke:C.blue});T(root,530,335,'模型 / 工具异步任务',35,{weight:650});const runState=T(root,530,408,'正在运行',36,{fill:C.blue});const cancel=T(root,1370,350,'取消请求',37,{fill:C.blue});const rline=edge(root,'M1350 366 H1200');const cross=V.path(root,'M1125 306 L1160 345 M1160 306 L1125 345',{stroke:C.ink,'stroke-width':5});
- const parked=R(root,500,625,680,195,{stroke:C.blue});T(root,530,675,'原回复 R2 · 调用 T2',35,{mono:true,weight:650});const parkState=T(root,530,745,'ASKING · 等待确认',35,{mono:true,fill:C.blue});const event=T(root,1290,685,'UserInterruptEvent',31,{mono:true,fill:C.blue});const evline=edge(root,'M1775 710 H1200');
+ const running=R(root,500,285,680,195,{stroke:C.blue});T(root,530,335,'模型 / 工具异步任务',35,{weight:650});const runState=T(root,530,408,'正在运行',36,{fill:C.blue});const cancel=T(root,1370,350,'取消请求',37,{fill:C.blue});const rline=edge(root,'M1350 366 H1186');const cross=V.path(root,'M1125 306 L1160 345 M1160 306 L1125 345',{stroke:C.ink,'stroke-width':5});
+ const parked=R(root,500,625,680,195,{stroke:C.blue});T(root,530,675,'原回复 R2 · 调用 T2',35,{mono:true,weight:650});const parkState=T(root,530,745,'ASKING · 等待确认',35,{mono:true,fill:C.blue});const event=T(root,1230,690,'UserInterruptEvent',31,{mono:true,fill:C.blue});const evline=edge(root,'M1580 712 H1186');
  const external=T(root,100,874,'外部系统请求若已发出，仍可能完成 → 查询原调用回执',33,{fill:C.ink});const idle=T(root,1370,443,'idle：中断无操作',31,{fill:C.muted});
  return {render(t){draw(rline,P(t,10,3),150);O(cancel,on(t,10));O(cross,on(t,23));runState.textContent=t<13?'正在运行':t<23?'取消请求已接收':'当前异步任务被取消';draw(evline,P(t,32,4),575);O(event,on(t,32));parkState.textContent=t<36?'ASKING · 等待确认':t<43?'收到本回复中断事件':'保存部分输出与中断结果';O(external,on(t,43));O(idle,on(t,23));V.note(t<10?'两行是两种已有状态；运行取消不会先变成“暂停中断”。':t<23?'运行中通常取消当前模型或工具的异步任务；服务接收请求与实际清理完成分开。':t<32?'会话 idle 时中断是无操作；当前任务取消后仍保留必要的运行记录。':t<43?'已暂停的回复接收 UserInterruptEvent，处理等待工具并形成中断结果。':t<51?'中断保留部分输出和工具状态；记录停止，不等于业务系统动作已经撤销。':'外部动作的实际影响另查原回执，再决定继续、补偿或重试。');}};
 });
@@ -73,7 +74,7 @@ spec('java-01-harness-context','Builder 给配置，RuntimeContext 给本次身�
  const root=G(svg,'special-java-context');const builder=R(root,100,250,540,235,{stroke:C.blue});T(root,125,302,'共享 HarnessAgent.Builder',32,{mono:true,weight:650});T(root,125,364,'稳定配置：模型、工具、规则',32);T(root,125,424,'应用启动时配置',32,{fill:C.muted});
  const context=R(root,100,620,540,220,{stroke:C.blue});T(root,125,668,'RuntimeContext',37,{mono:true,weight:650});T(root,125,724,'namespace=N1 / userId=U1',31,{mono:true});T(root,125,777,'agentId=A1 / sessionId=S1',31,{mono:true});
  const instance=R(root,820,400,440,250,{stroke:C.ink});const instanceId=T(root,845,456,'执行实例 I1',39,{weight:650});const state=T(root,845,520,'等待本次身份',32,{fill:C.muted});T(root,845,585,'直接请求：按次新建并关闭',30,{fill:C.muted});
- const storage=G(root,'java-AgentState');V.path(storage,'M0 28 C0 -10 440 -10 440 28 V230 C440 270 0 270 0 230 Z M0 28 C0 65 440 65 440 28',{fill:C.paper,stroke:C.ink,'stroke-width':2});T(storage,220,105,'AgentState · S1',35,{anchor:'middle',mono:true,weight:650});T(storage,220,164,'context / permissions',30,{anchor:'middle',mono:true});T(storage,220,212,'tool state / Plan Mode',30,{anchor:'middle',mono:true});M(storage,1390,395);
+ const storage=G(root,'java-AgentState');V.path(storage,'M0 28 C0 -10 440 -10 440 28 V230 C440 270 0 270 0 230 Z M0 28 C0 65 440 65 440 28',{fill:C.card,stroke:C.frame,'stroke-width':2});T(storage,220,105,'AgentState · S1',35,{anchor:'middle',mono:true,weight:650});T(storage,220,164,'context / permissions',30,{anchor:'middle',mono:true});T(storage,220,212,'tool state / Plan Mode',30,{anchor:'middle',mono:true});M(storage,1390,395);
  const cfg=edge(root,'M650 360 H760 V435 H805'),identity=edge(root,'M650 735 H760 V600 H805'),load=edge(root,'M1380 465 H1270'),save=edge(root,'M1270 600 H1380');const read=T(root,1280,442,'读',30,{fill:C.blue}),write=T(root,1280,650,'写',30,{fill:C.blue});T(root,820,820,'后台 AgentSession：管理器保留执行实例',32,{fill:C.muted});
  return {render(t){O(instance,on(t,10));O(instanceId,on(t,10));O(state,on(t,10));draw(cfg,P(t,10,3),300);draw(identity,P(t,22,3),300);draw(load,P(t,33,3),110);draw(save,P(t,44,3),110);O(read,on(t,33));O(write,on(t,44));instanceId.textContent=t<56?'执行实例 I1':'新执行实例 I2';state.textContent=t<25?'等待本次身份':t<36?'当前身份 N1 / U1 / A1 / S1':t<47?'使用原会话上下文':t<56?'状态已写回 S1':'沿 S1 加载原状态';V.note(t<10?'Builder 保存稳定配置；RuntimeContext 在每次调用中显式提供身份，两者不互相转换。':t<22?'直接请求按次构建 HarnessAgent 实例；执行完关闭实例，避免不同请求共用可变状态。':t<33?'本次调用以 namespace、userId、agentId、sessionId 关联工作身份。':t<44?'相同身份与相同日志后端，把会话状态关联回来；不是依靠复用同一内存实例。':t<53?'本次结果保存后，直接请求实例可关闭；AgentState 与日志继续承担会话连续性。':'下一直接请求可以使用新实例 I2；后台 AgentSession 则由管理器保留实例，生命周期不同。');}};
 });
@@ -82,7 +83,7 @@ spec('java-08-auth-grant-registration','调用授权与运行凭据，沿不同�
 [[13,3,'应用凭证进入Service调用入口'],[25,3,'两个条件共同作用于请求'],[35,3,'注册在受控网络边界内进行'],[47,3,'注册成功返回运行凭据'],[56,3,'运行凭据用于后续连接']],svg=>{
  const root=G(svg,'special-java-auth');T(root,100,225,'用户与资源授权',35,{weight:650});T(root,100,287,'用户 U1 · Namespace N1',35,{mono:true});T(root,100,343,'确定可访问资源与可执行动作',32,{fill:C.muted});
  const rights=G(root,'auth-resource');R(rights,0,0,460,130,{stroke:C.blue});T(rights,24,47,'资源授权判定',35,{weight:650});T(rights,24,99,'用户 / 作用域 / 动作',31,{fill:C.muted});M(rights,740,250);
- const app=G(root,'auth-app-key');V.path(app,'M0 0 H500 V135 H0 Z',{fill:C.paper,stroke:C.ink,'stroke-width':2});T(app,24,46,'Application key',36,{mono:true,weight:650});T(app,24,101,'业务应用调用 Service',32,{fill:C.muted});M(app,100,430);
+ const app=G(root,'auth-app-key');V.path(app,'M0 0 H500 V135 H0 Z',{fill:C.card,stroke:C.frame,'stroke-width':2});T(app,24,46,'Application key',36,{mono:true,weight:650});T(app,24,101,'业务应用调用 Service',32,{fill:C.muted});M(app,100,430);
  const entry=G(root,'auth-entry');T(entry,0,0,'Service 调用入口',36,{weight:650});T(entry,0,59,'应用凭证不替代用户权限',32,{fill:C.muted});M(entry,740,475);
  const action=G(root,'auth-request');R(action,0,0,420,190,{fill:C.pale,stroke:C.blue});T(action,25,48,'同一次业务请求',35,{weight:650});T(action,25,109,'分别满足调用与资源权限',31);M(action,1370,330);
  const userEdge=edge(root,'M610 300 H720'),appEdge=edge(root,'M610 495 H720'),upper=edge(root,'M1220 315 H1280 V385 H1350'),lower=edge(root,'M1220 490 H1280 V465 H1350');

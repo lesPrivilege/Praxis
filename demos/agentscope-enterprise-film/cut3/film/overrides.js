@@ -4,25 +4,30 @@
  for(const id of ['whole','deployment','java-06-interaction-capabilities']){const s=S[id];V.register(id,{title:s.title,duration:id==='whole'?54:id==='deployment'?58:56,covers:[id],phases:[{at:0,name:'辨认对象'},{at:10,name:'建立关系'},{at:22,name:'区别职责'},{at:36,name:'条件与结果'}],motion:[{at:10,duration:3,purpose:'以实际角色建立连接'},{at:22,duration:3,purpose:'展开独立职责与条件'},{at:36,duration:3,purpose:'强调作用对象'}],build(svg){const {g,text,path,group}=helpers(svg),objects=[];
  function T(p,x,y,z,sz=32,o={}){return V.text(p,x,y,z,sz,o);}
  function line(p,x1,y1,x2,y2,c=C.line){return V.line(p,x1,y1,x2,y2,{stroke:c,'stroke-width':2});}
- function rect(p,x,y,w,h){return V.rect(p,x,y,w,h,{stroke:C.ink,'stroke-width':2,fill:C.paper});}
- function folder(p,x,y,w,h){return V.path(p,`M${x} ${y}h100l24 24h${w-124}v${h-24}H${x}Z`,{stroke:C.ink,'stroke-width':2,fill:C.paper});}
+ function rect(p,x,y,w,h){return V.rect(p,x,y,w,h,{stroke:C.edge,'stroke-width':2,fill:C.card,rx:14});}
+ function folder(p,x,y,w,h){return V.path(p,`M${x} ${y}h100l24 24h${w-124}v${h-24}H${x}Z`,{stroke:C.edge,'stroke-width':2,fill:C.card});}
  let a,b,c,d,extras;
+ const arrow=V.arrows(g,'ov-'+id),link=(p,pts,c=C.blue,w=3,head=true)=>V.path(p,V.route(pts),{stroke:c,'stroke-width':w,fill:'none','stroke-linecap':'round','marker-end':head?arrow[c===C.blue?'blue':'slate']:null});
+ const label=(p,x,y,z,c,anchor='start')=>V.set(T(p,x,y,z,30,{fill:c,anchor,weight:550}),{stroke:C.paper,'stroke-width':10,'paint-order':'stroke','stroke-linejoin':'round'});
  if(id==='whole'){
-  a=group('application');V.circle(a,200,340,75,{stroke:C.ink,'stroke-width':2});T(a,200,353,'应用',36,{anchor:'middle',weight:650});T(a,100,470,'合同复核请求',32);
-  b=group('service');rect(b,430,540,460,200);T(b,460,595,'Service',42,{weight:650});T(b,460,651,'请求 · 会话 S1',32);T(b,460,705,'事件与结果回传',32,{fill:C.muted});
-  c=group('agent');V.circle(c,1015,360,135,{stroke:C.ink,'stroke-width':2});T(c,1015,345,'Agent',44,{anchor:'middle',weight:650});T(c,1015,393,'推理与工具',30,{anchor:'middle'});T(c,1015,438,'工作上下文',30,{anchor:'middle'});
-  d=group('workspace');folder(d,1300,570,490,190);T(d,1330,635,'Workspace',40,{weight:650});T(d,1330,690,'文件 · 终端 · 执行环境',30);T(d,1330,735,'contract-v3.pdf',30,{mono:true,fill:C.muted});
-  extras=group('relations');path('M275 340H365V595H420',C.blue,3);text(300,500,'请求',30,{fill:C.blue});
-  V.path(extras,'M780 530V405H870',{stroke:C.blue,'stroke-width':3,fill:'none'});T(extras,580,435,'运行请求',30,{fill:C.blue});
-  V.path(extras,'M920 465L850 500H750',{stroke:C.ink,'stroke-width':2,fill:'none'});T(extras,820,530,'事件 / 结果',30,{fill:C.muted});
-  V.path(extras,'M1150 360H1540V555',{stroke:C.blue,'stroke-width':3,fill:'none'});T(extras,1360,410,'工具访问',30,{fill:C.blue});
-  V.path(extras,'M430 700H80V340H115',{stroke:C.ink,'stroke-width':2,fill:'none'});T(extras,110,675,'回传进展与结果',30,{fill:C.muted});line(extras,900,700,1280,700);T(extras,980,752,'工作区绑定',30,{fill:C.muted});
+  a=group('application');rect(a,100,300,300,150);T(a,130,362,'应用',38,{weight:650});T(a,130,415,'合同复核请求',30,{fill:C.muted});
+  b=group('service');rect(b,560,560,520,200);T(b,595,622,'Service',42,{weight:650});T(b,595,678,'请求 · 会话 S1',32);T(b,595,728,'事件与结果回传',30,{fill:C.muted});
+  c=group('agent');V.circle(c,1015,330,130,{stroke:C.blue,'stroke-width':2.5,fill:C.card});T(c,1015,315,'Agent',44,{anchor:'middle',weight:650});T(c,1015,363,'推理与工具',30,{anchor:'middle'});T(c,1015,405,'工作上下文',30,{anchor:'middle',fill:C.muted});
+  d=group('workspace');folder(d,1360,560,460,200);T(d,1390,645,'Workspace',40,{weight:650});T(d,1390,698,'文件 · 终端 · 执行环境',30);T(d,1390,740,'contract-v3.pdf',30,{mono:true,fill:C.muted});
+  extras=group('relations');
+  link(extras,[[250,450],[250,660],[556,660]]);label(extras,270,560,'请求',C.blue);
+  link(extras,[[1070,560],[1070,452]]);label(extras,1090,520,'运行请求',C.blue);
+  link(extras,[[960,452],[960,556]],C.slate,3);label(extras,940,520,'事件 / 结果',C.muted,'end');
+  link(extras,[[1145,330],[1590,330],[1590,580]]);label(extras,1370,312,'工具访问',C.blue,'middle');
+  link(extras,[[560,720],[160,720],[160,454]],C.slate,3);label(extras,360,762,'回传进展与结果',C.muted,'middle');
+  V.line(extras,1080,680,1360,680,{stroke:C.slate,'stroke-width':3,'stroke-dasharray':'2 8','stroke-linecap':'round'});label(extras,1220,662,'工作区绑定',C.muted,'middle');
  }else if(id==='deployment'){
-  a=group('api');rect(a,130,280,400,140);T(a,165,335,'API 进程',38,{weight:650});T(a,165,390,'接收请求与观察',30);
-  b=group('worker');rect(b,130,590,400,140);T(b,165,645,'Worker 进程',38,{weight:650});T(b,165,700,'执行任务',30);
-  c=group('shared-backend');V.el(c,'ellipse',{cx:1010,cy:340,rx:200,ry:38,stroke:C.ink,'stroke-width':2,fill:C.paper});V.path(c,'M810 340V470C810 525 1210 525 1210 470V340',{stroke:C.ink,'stroke-width':2,fill:C.paper});T(c,1010,428,'共享存储',38,{anchor:'middle',weight:650});rect(c,1370,315,410,180);T(c,1410,380,'共享事件总线',36,{weight:650});T(c,1410,440,'同一连接配置',30,{fill:C.muted});
-  d=group('separate-responsibilities');V.circle(d,990,710,65,{stroke:C.ink,'stroke-width':2});T(d,990,722,'定时器',30,{anchor:'middle'});T(d,850,815,'单一进程持有调度权',30);rect(d,1365,620,410,140);T(d,1400,677,'解析进程',36,{weight:650});T(d,1400,730,'CPU 密集任务',30);T(d,130,835,'副本共用 download_secret',30,{mono:true});
-  extras=group('backend-relationships');V.path(extras,'M530 345H790M530 655H700V445H790M700 445V270H1560V300',{stroke:C.blue,'stroke-width':3,fill:'none'});T(extras,550,480,'相同存储与总线',30,{fill:C.blue});V.path(extras,'M540 700H915M540 650H680V565H1570V605',{stroke:C.line,'stroke-width':2,fill:'none'});T(extras,1370,545,'解析派发',30,{fill:C.muted});
+  a=group('api');rect(a,100,260,400,140);T(a,135,318,'API 进程',38,{weight:650});T(a,135,370,'接收请求与观察',30,{fill:C.muted});
+  b=group('worker');rect(b,100,600,400,140);T(b,135,658,'Worker 进程',38,{weight:650});T(b,135,710,'执行任务',30,{fill:C.muted});
+  c=group('shared-backend');V.path(c,'M760 310 V420 A200 34 0 0 0 1160 420 V310',{stroke:C.frame,'stroke-width':2,fill:C.card});V.el(c,'ellipse',{cx:960,cy:310,rx:200,ry:34,stroke:C.frame,'stroke-width':2,fill:C.card});T(c,960,405,'共享存储',38,{anchor:'middle',weight:650});rect(c,1400,280,420,160);T(c,1435,345,'共享事件总线',36,{weight:650});T(c,1435,400,'同一连接配置',30,{fill:C.muted});
+  d=group('separate-responsibilities');V.circle(d,960,680,62,{stroke:C.frame,'stroke-width':2,fill:C.card});T(d,960,691,'定时器',30,{anchor:'middle',weight:600});T(d,1042,691,'单一进程持有调度权',30,{fill:C.muted});rect(d,1400,620,420,140);T(d,1435,677,'解析进程',36,{weight:650});T(d,1435,730,'CPU 密集任务',30,{fill:C.muted});T(d,100,860,'副本共用 download_secret',30,{mono:true});
+  link(d,[[500,690],[894,690]],C.slate,3);link(d,[[300,740],[300,800],[1610,800],[1610,764]],C.slate,3);label(d,1180,785,'解析派发',C.muted,'middle');
+  extras=group('backend-relationships');V.path(extras,'M500 330 H640 M500 640 H640 M640 330 V640',{stroke:C.blue,'stroke-width':3,fill:'none','stroke-linecap':'round'});link(extras,[[640,365],[756,365]]);link(extras,[[640,330],[640,220],[1610,220],[1610,276]]);label(extras,1125,205,'相同存储与总线',C.blue,'middle');
  }else{
   a=group('capability-contract');text(105,230,'capabilities / available_commands',36,{mono:true,weight:650});text(105,289,'能力与当前状态决定可用入口',32,{fill:C.muted});
   b=group('independent-controls');V.path(b,'M205 365H1555M205 365V430M655 365V430M1105 365V430M1555 365V430',{stroke:C.line,'stroke-width':2,fill:'none'});

@@ -7,14 +7,13 @@
 | 0.0s | whole | navigation | 24 | 54.0 | 01 · 项目全貌 |
 | 0.0s | whole | navigation | 24 | 54.0 | 01 / 47 |
 | 0.0s | whole | content | 48 | 54.0 | AgentScope 接成企业工作系统 |
-| 0.0s | whole | content | 36 | 54.0 | 应用 |
-| 0.0s | whole | content | 32 | 54.0 | 合同复核请求 |
-| 0.0s | whole | content | 30 | 54.0 | 请求 |
+| 0.0s | whole | content | 38 | 54.0 | 应用 |
+| 0.0s | whole | content | 30 | 54.0 | 合同复核请求 |
 | 0.0s | whole | content | 30 | 22.0 | 业务任务 → 运行机制 → 服务交付 |
 | 0.0s | whole | source | 24 | 54.0 | AgentScope 2.0.10dev |
 | 7.5s | whole | content | 42 | 46.5 | Service |
 | 7.5s | whole | content | 32 | 46.5 | 请求 · 会话 S1 |
-| 7.5s | whole | content | 32 | 46.5 | 事件与结果回传 |
+| 7.5s | whole | content | 30 | 46.5 | 事件与结果回传 |
 | 12.5s | whole | content | 44 | 41.5 | Agent |
 | 12.5s | whole | content | 30 | 41.5 | 推理与工具 |
 | 12.5s | whole | content | 30 | 41.5 | 工作上下文 |
@@ -22,29 +21,31 @@
 | 15.5s | whole | content | 30 | 38.5 | 文件 · 终端 · 执行环境 |
 | 15.5s | whole | content | 30 | 38.5 | contract-v3.pdf |
 | 17.5s | whole | content | 30 | 36.5 | 工具访问 |
-| 17.5s | whole | content | 30 | 36.5 | 运行请求 |
 | 17.5s | whole | content | 30 | 36.5 | 事件 / 结果 |
-| 17.5s | whole | content | 30 | 36.5 | 回传进展与结果 |
+| 17.5s | whole | content | 30 | 36.5 | 运行请求 |
+| 17.5s | whole | content | 30 | 36.5 | 请求 |
 | 17.5s | whole | content | 30 | 36.5 | 工作区绑定 |
+| 17.5s | whole | content | 30 | 36.5 | 回传进展与结果 |
 | 22.0s | whole | content | 30 | 14.0 | 应用请求进入 Service，Agent 调用工具与工作区，事件和结果返回应用。 |
 | 36.0s | whole | content | 30 | 18.0 | 产品需求同时涉及推理、执行、状态与交付。 |
 | 54.0s | docs | navigation | 24 | 47.0 | 01 · 项目全貌 |
 | 54.0s | docs | navigation | 24 | 47.0 | 02 / 47 |
 | 54.0s | docs | content | 48 | 47.0 | 文档目录对应四类实现问题 |
-| 54.0s | docs | content | 34 | 47.0 | 项目要解决什么？ |
 | 54.0s | docs | content | 30 | 38.0 | 从使用者需要反推项目结构 |
 | 54.0s | docs | source | 24 | 47.0 | AgentScope 2.0.10dev |
+| 56.0s | docs | content | 30 | 45.0 | 项目要解决什么？ |
 | 62.0s | docs | content | 34 | 39.0 | 构建块 |
-| 62.0s | docs | content | 30 | 39.0 | 消息、模型、工具、上下文：运行由什 |
-| 62.0s | docs | content | 30 | 39.0 | 么组成。 |
+| 62.0s | docs | content | 30 | 39.0 | 消息、模型、工具、上下 |
+| 62.0s | docs | content | 30 | 39.0 | 文：运行由什么组成。 |
 | 69.5s | docs | content | 34 | 31.5 | 编排 |
-| 69.5s | docs | content | 30 | 31.5 | 团队、计划、流水线：复杂工作如何组 |
-| 69.5s | docs | content | 30 | 31.5 | 织。 |
+| 69.5s | docs | content | 30 | 31.5 | 团队、计划、流水线：复 |
+| 69.5s | docs | content | 30 | 31.5 | 杂工作如何组织。 |
 | 77.0s | docs | content | 34 | 24.0 | 部署 |
-| 77.0s | docs | content | 30 | 24.0 | 服务、存储、事件：多人如何持续使用。 |
+| 77.0s | docs | content | 30 | 24.0 | 服务、存储、事件：多人 |
+| 77.0s | docs | content | 30 | 24.0 | 如何持续使用。 |
 | 84.0s | docs | content | 34 | 17.0 | 企业接入 |
-| 84.0s | docs | content | 30 | 17.0 | 身份、权限、文件、恢复：业务怎样接 |
-| 84.0s | docs | content | 30 | 17.0 | 管。 |
+| 84.0s | docs | content | 30 | 17.0 | 身份、权限、文件、恢复： |
+| 84.0s | docs | content | 30 | 17.0 | 业务怎样接管。 |
 | 92.0s | docs | content | 30 | 9.0 | 文档入口对应对象、协作、部署与接入契约。 |
 | 101.0s | lanes | navigation | 24 | 49.0 | 01 · 项目全貌 |
 | 101.0s | lanes | navigation | 24 | 49.0 | 03 / 47 |
@@ -65,7 +66,6 @@
 | 150.0s | migration | navigation | 24 | 45.0 | 01 · 项目全貌 |
 | 150.0s | migration | navigation | 24 | 45.0 | 04 / 47 |
 | 150.0s | migration | content | 48 | 45.0 | Runtime、Studio 的职责归入 2.0 |
-| 150.0s | migration | content | 30 | 45.0 | 职责汇入 |
 | 150.0s | migration | content | 30 | 29.0 | 独立工具的能力转向主项目 |
 | 150.0s | migration | source | 24 | 45.0 | AgentScope 2.0.10dev |
 | 158.0s | migration | content | 34 | 37.0 | 原 Runtime |
@@ -74,22 +74,23 @@
 | 164.5s | migration | content | 30 | 30.5 | 运行轨迹、调试与人工输入。 |
 | 171.0s | migration | content | 34 | 24.0 | AgentScope 2.0 |
 | 171.0s | migration | content | 30 | 24.0 | 主项目承接执行服务和内置 Web UI。 |
+| 173.0s | migration | content | 30 | 22.0 | 职责汇入 |
 | 179.0s | migration | content | 30 | 16.0 | 新方案从 2.0 进入，旧方案按原版本迁移。 |
 | 195.0s | task | navigation | 24 | 45.0 | 01 · 项目全貌 |
 | 195.0s | task | navigation | 24 | 45.0 | 05 / 47 |
 | 195.0s | task | content | 48 | 45.0 | 合同助手的一次工作 |
-| 195.0s | task | content | 30 | 45.0 | 合同 |
-| 195.0s | task | content | 30 | 45.0 | 条款依据 |
-| 195.0s | task | content | 30 | 45.0 | 候选 |
-| 195.0s | task | content | 30 | 45.0 | 业务确认 |
 | 195.0s | task | content | 30 | 36.0 | 按任务次序展开请求链 |
 | 195.0s | task | source | 24 | 45.0 | AgentScope 2.0.10dev |
+| 203.0s | task | navigation | 24 | 37.0 | 合同 |
 | 203.0s | task | content | 34 | 37.0 | 接收任务 |
 | 203.0s | task | content | 30 | 37.0 | 读取合同与复核要求。 |
+| 209.5s | task | navigation | 24 | 30.5 | 条款依据 |
 | 209.5s | task | content | 34 | 30.5 | 获取依据 |
 | 209.5s | task | content | 30 | 30.5 | 检索规则，核对版本。 |
+| 216.0s | task | navigation | 24 | 24.0 | 候选 |
 | 216.0s | task | content | 34 | 24.0 | 生成候选 |
 | 216.0s | task | content | 30 | 24.0 | 形成风险条目与修改建议。 |
+| 223.0s | task | navigation | 24 | 17.0 | 业务确认 |
 | 223.0s | task | content | 34 | 17.0 | 交回业务 |
 | 223.0s | task | content | 30 | 17.0 | 确认动作，保存并发布结 |
 | 223.0s | task | content | 30 | 17.0 | 果。 |
@@ -189,22 +190,22 @@
 | 590.0s | model | navigation | 24 | 45.0 | 02 · Agent 内核 |
 | 590.0s | model | navigation | 24 | 45.0 | 08 / 47 |
 | 590.0s | model | content | 48 | 45.0 | Model 与 Formatter 分担协议转换 |
-| 590.0s | model | content | 30 | 45.0 | 内部结构 |
-| 590.0s | model | content | 30 | 45.0 | 供应商协议 |
-| 590.0s | model | content | 30 | 45.0 | 返回统一结构 |
 | 590.0s | model | content | 30 | 36.0 | 内部消息通过适配层进入模型接口 |
 | 590.0s | model | source | 24 | 45.0 | AgentScope 2.0.10dev |
+| 599.0s | model | navigation | 24 | 36.0 | 内部结构 |
 | 599.0s | model | content | 34 | 36.0 | 内部消息 |
 | 599.0s | model | content | 30 | 36.0 | 保留消息与内容块。 |
 | 605.5s | model | content | 34 | 29.5 | Formatter |
 | 605.5s | model | content | 30 | 29.5 | 转换角色、工具与媒体表 |
 | 605.5s | model | content | 30 | 29.5 | 示。 |
+| 612.0s | model | navigation | 24 | 23.0 | 供应商协议 |
 | 612.0s | model | content | 34 | 23.0 | Model |
 | 612.0s | model | content | 30 | 23.0 | 发送请求，读取响应与用 |
 | 612.0s | model | content | 30 | 23.0 | 量。 |
 | 618.5s | model | content | 34 | 16.5 | 统一输出 |
 | 618.5s | model | content | 30 | 16.5 | 回到 Agent 可消费的结 |
 | 618.5s | model | content | 30 | 16.5 | 构。 |
+| 620.5s | model | content | 30 | 14.5 | 返回统一结构 |
 | 626.0s | model | content | 30 | 9.0 | 更换模型时核对工具、媒体与输出能力。 |
 | 635.0s | tools | navigation | 24 | 47.0 | 02 · Agent 内核 |
 | 635.0s | tools | navigation | 24 | 47.0 | 09 / 47 |
@@ -327,9 +328,9 @@
 | 912.0s | integration | navigation | 24 | 45.0 | 02 · Agent 内核 |
 | 912.0s | integration | navigation | 24 | 45.0 | 12 / 47 |
 | 912.0s | integration | content | 48 | 45.0 | Python、MCP 与 Skill 有不同入口 |
-| 912.0s | integration | content | 34 | 45.0 | Toolkit |
 | 912.0s | integration | content | 30 | 30.0 | 工具能力与任务指导在 Toolkit 汇合 |
 | 912.0s | integration | source | 24 | 45.0 | AgentScope 2.0.10dev |
+| 914.0s | integration | content | 30 | 43.0 | Toolkit |
 | 921.0s | integration | content | 34 | 36.0 | Python 工具 |
 | 921.0s | integration | content | 30 | 36.0 | 本地函数直接承担动作。 |
 | 927.5s | integration | content | 34 | 29.5 | MCP 工具 |
@@ -340,7 +341,7 @@
 | 957.0s | context | navigation | 24 | 45.0 | 03 · 上下文与协作 |
 | 957.0s | context | navigation | 24 | 45.0 | 13 / 47 |
 | 957.0s | context | content | 48 | 45.0 | 模型输入由三层组装 |
-| 957.0s | context | content | 30 | 45.0 | 模型输入 |
+| 957.0s | context | content | 32 | 45.0 | 模型输入 |
 | 957.0s | context | content | 30 | 31.0 | 固定指导、历史摘要与近期消息分开维护 |
 | 957.0s | context | source | 24 | 45.0 | AgentScope 2.0.10dev |
 | 966.0s | context | content | 34 | 36.0 | 系统提示 |
@@ -409,8 +410,6 @@
 | 1199.0s | memory | navigation | 24 | 45.0 | 03 · 上下文与协作 |
 | 1199.0s | memory | navigation | 24 | 45.0 | 16 / 47 |
 | 1199.0s | memory | content | 48 | 45.0 | 长期记忆跨越当前对话 |
-| 1199.0s | memory | content | 30 | 45.0 | 选择写入 |
-| 1199.0s | memory | content | 30 | 45.0 | 按需取回 |
 | 1199.0s | memory | content | 30 | 36.0 | 记忆写入、检索与工作上下文分开 |
 | 1199.0s | memory | source | 24 | 45.0 | AgentScope 2.0.10dev |
 | 1207.0s | memory | content | 34 | 37.0 | 本轮上下文 |
@@ -530,10 +529,10 @@
 | 1499.0s | pipeline | navigation | 24 | 45.0 | 03 · 上下文与协作 |
 | 1499.0s | pipeline | navigation | 24 | 45.0 | 21 / 47 |
 | 1499.0s | pipeline | content | 48 | 45.0 | GoalPipeline 用执行与核验推进目标 |
-| 1499.0s | pipeline | content | 30 | 45.0 | pass / impossible |
-| 1499.0s | pipeline | content | 30 | 45.0 | fail 且预算允许 |
 | 1499.0s | pipeline | content | 30 | 36.0 | 候选结果经 verifier 判定后继续或结束 |
 | 1499.0s | pipeline | source | 24 | 45.0 | AgentScope 2.0.10dev |
+| 1501.0s | pipeline | content | 30 | 43.0 | pass / impossible |
+| 1501.0s | pipeline | content | 30 | 43.0 | 结束 |
 | 1508.0s | pipeline | content | 34 | 36.0 | 执行目标 |
 | 1508.0s | pipeline | content | 30 | 36.0 | executor 形成工作结果。 |
 | 1514.5s | pipeline | content | 34 | 29.5 | 结构报告 |
@@ -543,6 +542,7 @@
 | 1521.0s | pipeline | content | 30 | 23.0 | impossible。 |
 | 1527.5s | pipeline | content | 34 | 16.5 | 反馈修正 |
 | 1527.5s | pipeline | content | 30 | 16.5 | 未通过且预算允许时继续。 |
+| 1529.5s | pipeline | content | 30 | 14.5 | fail 且预算允许 |
 | 1535.0s | pipeline | content | 30 | 9.0 | 格式校验与 verifier 的结果核验各有判定。 |
 | 1544.0s | team | navigation | 24 | 63.0 | 03 · 上下文与协作 |
 | 1544.0s | team | navigation | 24 | 63.0 | 22 / 47 |
@@ -601,9 +601,9 @@
 | 1655.0s | service | navigation | 24 | 45.0 | 04 · Python 服务 |
 | 1655.0s | service | navigation | 24 | 45.0 | 24 / 47 |
 | 1655.0s | service | content | 48 | 45.0 | Agent Service 托管循环之外的资源 |
-| 1655.0s | service | content | 30 | 45.0 | 请求 |
-| 1655.0s | service | content | 30 | 45.0 | 运行 |
-| 1655.0s | service | content | 30 | 45.0 | 记录 |
+| 1655.0s | service | content | 32 | 45.0 | 请求 |
+| 1655.0s | service | content | 32 | 45.0 | 运行 |
+| 1655.0s | service | content | 32 | 45.0 | 记录 |
 | 1655.0s | service | content | 30 | 30.0 | 请求、身份、状态与事件围绕 Agent 组织 |
 | 1655.0s | service | source | 24 | 45.0 | AgentScope 2.0.10dev |
 | 1664.0s | service | content | 34 | 36.0 | 请求层 |
@@ -643,8 +643,8 @@
 | 1745.0s | sessions | content | 44 | 152.0 | W2 |
 | 1745.0s | sessions | content | 33 | 101.0 | 等待运行权，暂不读状态 |
 | 1745.0s | sessions | content | 32 | 152.0 | 锁参数 600s |
-| 1745.0s | sessions | content | 36 | 83.0 | Storage · v0 |
 | 1745.0s | sessions | content | 30 | 152.0 | Redis lease 自动续租 |
+| 1745.0s | sessions | content | 36 | 83.0 | Storage · v0 |
 | 1745.0s | sessions | content | 30 | 152.0 | 内存锁不因 TTL 自动过期 |
 | 1745.0s | sessions | content | 30 | 19.0 | 同一会话的并发请求先争运行锁，只有持有者沿执行线推进。 |
 | 1745.0s | sessions | source | 24 | 152.0 | AgentScope 2.0.10dev |
@@ -689,6 +689,7 @@
 | 2004.0s | background | content | 30 | 20.0 | 后续运行先取得 S1 运行锁再消费结果；可以续当前 run，也可由新 wakeup run 接续。 |
 | 2024.0s | background | content | 34 | 27.0 | 失败支路：若完成前进程退出 |
 | 2024.0s | background | content | 30 | 27.0 | 失败分支：完成前进程退出，执行随之消失；残留 registry 不能恢复 asyncio task。 |
+| 2025.5s | background | content | 30 | 25.5 | 进程已退出 |
 | 2025.5s | background | content | 31 | 25.5 | registry 元数据可残留；asyncio task 已消失 |
 | 2051.0s | workspace | navigation | 24 | 206.0 | 04 · Python 服务 |
 | 2051.0s | workspace | navigation | 24 | 206.0 | 28 / 47 |
@@ -756,18 +757,18 @@
 | 2279.0s | deployment | content | 30 | 14.0 | API 与 Worker 共用后端；调度、解析与下载密钥分别配置。 |
 | 2282.5s | deployment | content | 36 | 32.5 | 解析进程 |
 | 2282.5s | deployment | content | 30 | 32.5 | 定时器 |
-| 2282.5s | deployment | content | 30 | 32.5 | CPU 密集任务 |
 | 2282.5s | deployment | content | 30 | 32.5 | 单一进程持有调度权 |
+| 2282.5s | deployment | content | 30 | 32.5 | CPU 密集任务 |
+| 2282.5s | deployment | content | 30 | 32.5 | 解析派发 |
 | 2282.5s | deployment | content | 30 | 32.5 | 副本共用 download_secret |
 | 2285.5s | deployment | content | 30 | 29.5 | 相同存储与总线 |
-| 2285.5s | deployment | content | 30 | 29.5 | 解析派发 |
 | 2293.0s | deployment | content | 30 | 22.0 | 重复触发、下载失败和阻塞各有原因。 |
 | 2315.0s | observability | navigation | 24 | 46.0 | 04 · Python 服务 |
 | 2315.0s | observability | navigation | 24 | 46.0 | 30 / 47 |
 | 2315.0s | observability | content | 48 | 46.0 | 轨迹连接模型、工具与会话 |
-| 2315.0s | observability | content | 34 | 46.0 | session / reply 身份 |
 | 2315.0s | observability | content | 30 | 37.0 | 界面事件与后台观测解决不同问题 |
 | 2315.0s | observability | source | 24 | 46.0 | AgentScope 2.0.10dev |
+| 2317.0s | observability | content | 30 | 44.0 | session / reply 身份 |
 | 2324.0s | observability | content | 34 | 37.0 | 界面事件 |
 | 2324.0s | observability | content | 30 | 37.0 | 呈现进展与人工确认。 |
 | 2330.5s | observability | content | 34 | 30.5 | 调用轨迹 |
@@ -812,7 +813,6 @@
 | 2449.0s | java-02-agent-session | content | 48 | 48.0 | 即时调用与后台会话分别选择 |
 | 2449.0s | java-02-agent-session | content | 30 | 48.0 | 即时请求 |
 | 2449.0s | java-02-agent-session | content | 30 | 48.0 | 后台会话 |
-| 2449.0s | java-02-agent-session | content | 30 | 48.0 | 原任务续接 |
 | 2449.0s | java-02-agent-session | content | 30 | 39.0 | 应用按任务生命周期选择执行入口 |
 | 2449.0s | java-02-agent-session | source | 24 | 48.0 | Java Harness v2 / Service 2.1.0-BETA1 |
 | 2458.0s | java-02-agent-session | content | 34 | 39.0 | 直接调用 |
@@ -823,6 +823,7 @@
 | 2471.5s | java-02-agent-session | content | 30 | 25.5 | 会话管理器持有 Agent，关闭时中断工作。 |
 | 2479.5s | java-02-agent-session | content | 34 | 17.5 | 任务继续 |
 | 2479.5s | java-02-agent-session | content | 30 | 17.5 | respond 回答等待，resume 继续未完成任务。 |
+| 2481.5s | java-02-agent-session | content | 30 | 15.5 | 原任务续接 |
 | 2488.0s | java-02-agent-session | content | 30 | 9.0 | 观察后台任务时，不再发起另一轮执行。 |
 | 2497.0s | java-03-execution-targets | navigation | 24 | 142.0 | 05 · Java 企业接入 |
 | 2497.0s | java-03-execution-targets | navigation | 24 | 142.0 | 33 / 47 |
@@ -866,7 +867,6 @@
 | 2639.0s | java-04-session-turn-idempotency | navigation | 24 | 48.0 | 05 · Java 企业接入 |
 | 2639.0s | java-04-session-turn-idempotency | navigation | 24 | 48.0 | 34 / 47 |
 | 2639.0s | java-04-session-turn-idempotency | content | 48 | 48.0 | Session 固定目标，Turn 承载任务 |
-| 2639.0s | java-04-session-turn-idempotency | content | 30 | 48.0 | 同 key + 同请求体 |
 | 2639.0s | java-04-session-turn-idempotency | content | 30 | 39.0 | 配置冻结后，幂等键守住一次提交 |
 | 2639.0s | java-04-session-turn-idempotency | source | 24 | 48.0 | Java Harness v2 / Service 2.1.0-BETA1 |
 | 2648.0s | java-04-session-turn-idempotency | content | 34 | 39.0 | Session |
@@ -875,9 +875,9 @@
 | 2655.5s | java-04-session-turn-idempotency | content | 30 | 31.5 | 一次任务；等待审批可阻塞后续任务。 |
 | 2663.0s | java-04-session-turn-idempotency | content | 34 | 24.0 | 幂等重试 |
 | 2663.0s | java-04-session-turn-idempotency | content | 30 | 24.0 | 同 Idempotency-Key 和请求体取回原 Turn。 |
+| 2665.0s | java-04-session-turn-idempotency | content | 30 | 22.0 | 同 key + 同请求体 |
 | 2670.0s | java-04-session-turn-idempotency | content | 34 | 17.0 | 输入阶段 |
-| 2670.0s | java-04-session-turn-idempotency | content | 30 | 17.0 | 202 queued 已接收；input.applied 才已使 |
-| 2670.0s | java-04-session-turn-idempotency | content | 30 | 17.0 | 用。 |
+| 2670.0s | java-04-session-turn-idempotency | content | 30 | 17.0 | 202 queued 已接收；input.applied 才已使用。 |
 | 2678.0s | java-04-session-turn-idempotency | content | 30 | 9.0 | Managed 续接上下文；Team 与 Workflow 每 Turn 独立启动。 |
 | 2687.0s | java-05-snapshot-sse-cursor | navigation | 24 | 168.0 | 05 · Java 企业接入 |
 | 2687.0s | java-05-snapshot-sse-cursor | navigation | 24 | 168.0 | 35 / 47 |
@@ -1033,24 +1033,28 @@
 | 3231.0s | java-orchestration | navigation | 24 | 45.0 | 05 · Java 企业接入 |
 | 3231.0s | java-orchestration | navigation | 24 | 45.0 | 40 / 47 |
 | 3231.0s | java-orchestration | content | 48 | 45.0 | 协作有三种不同层次 |
-| 3231.0s | java-orchestration | content | 30 | 45.0 | 当前 Agent 范围 |
-| 3231.0s | java-orchestration | content | 30 | 45.0 | 成员关系 |
-| 3231.0s | java-orchestration | content | 30 | 45.0 | 依赖关系 |
 | 3231.0s | java-orchestration | content | 30 | 29.0 | Subagent、Team 与 Workflow 按工作关系选择 |
 | 3231.0s | java-orchestration | source | 24 | 45.0 | Java Harness v2 / Service 2.1.0-BETA1 |
+| 3239.0s | java-orchestration | navigation | 24 | 37.0 | 当前 Agent 范围 |
 | 3239.0s | java-orchestration | content | 34 | 37.0 | Subagent |
 | 3239.0s | java-orchestration | content | 30 | 37.0 | 当前 Agent 内委派一段有界任务。 |
+| 3239.0s | java-orchestration | navigation | 26 | 37.0 | Agent |
+| 3239.0s | java-orchestration | navigation | 24 | 37.0 | subagent |
+| 3245.5s | java-orchestration | navigation | 24 | 30.5 | 成员关系 |
 | 3245.5s | java-orchestration | content | 34 | 30.5 | Team |
 | 3245.5s | java-orchestration | content | 30 | 30.5 | 不同成员分工、沟通与汇总。 |
+| 3252.0s | java-orchestration | navigation | 24 | 24.0 | 依赖关系 |
 | 3252.0s | java-orchestration | content | 34 | 24.0 | Workflow |
 | 3252.0s | java-orchestration | content | 30 | 24.0 | 按显式步骤和依赖推进工作。 |
+| 3252.0s | java-orchestration | navigation | 26 | 24.0 | 1 |
+| 3252.0s | java-orchestration | navigation | 26 | 24.0 | 2 |
+| 3252.0s | java-orchestration | navigation | 26 | 24.0 | 3 |
 | 3260.0s | java-orchestration | content | 30 | 16.0 | 文件共享通过明确交付关系配置。 |
 | 3276.0s | java-issue | navigation | 24 | 46.0 | 05 · Java 企业接入 |
 | 3276.0s | java-issue | navigation | 24 | 46.0 | 41 / 47 |
 | 3276.0s | java-issue | content | 48 | 46.0 | Issue 把执行接到工作接受 |
 | 3276.0s | java-issue | content | 30 | 46.0 | 工作定义 / 接收 |
 | 3276.0s | java-issue | content | 30 | 46.0 | 执行 / 运行记录 |
-| 3276.0s | java-issue | content | 30 | 46.0 | 结果交接 |
 | 3276.0s | java-issue | content | 30 | 37.0 | 目标、讨论、执行与接收各留一份记录 |
 | 3276.0s | java-issue | source | 24 | 46.0 | Java Harness v2 / Service 2.1.0-BETA1 |
 | 3285.0s | java-issue | content | 34 | 37.0 | 定义 Issue |
@@ -1061,11 +1065,11 @@
 | 3298.5s | java-issue | content | 30 | 23.5 | 检查执行记录、结果与讨论。 |
 | 3305.5s | java-issue | content | 34 | 16.5 | 人工接收 |
 | 3305.5s | java-issue | content | 30 | 16.5 | 接受或退回需要判断的工作。 |
+| 3307.5s | java-issue | content | 30 | 14.5 | 结果交接 |
 | 3313.0s | java-issue | content | 30 | 9.0 | Run 记录执行，Issue 保留接受或退回的判断。 |
 | 3322.0s | java-auth-scope | navigation | 24 | 46.0 | 05 · Java 企业接入 |
 | 3322.0s | java-auth-scope | navigation | 24 | 46.0 | 42 / 47 |
 | 3322.0s | java-auth-scope | content | 48 | 46.0 | 调用资源与读取工作分别授权 |
-| 3322.0s | java-auth-scope | content | 30 | 46.0 | 作用域内分别判断 |
 | 3322.0s | java-auth-scope | content | 30 | 38.0 | 账户、Namespace、资源与工作可见性分层 |
 | 3322.0s | java-auth-scope | source | 24 | 46.0 | Java Harness v2 / Service 2.1.0-BETA1 |
 | 3331.0s | java-auth-scope | content | 34 | 37.0 | 账户身份 |
@@ -1074,18 +1078,19 @@
 | 3337.5s | java-auth-scope | content | 30 | 30.5 | 选择资源与授权边界。 |
 | 3344.0s | java-auth-scope | content | 34 | 24.0 | 资源动作 |
 | 3344.0s | java-auth-scope | content | 30 | 24.0 | 判断是否可以发现、使用或管理。 |
+| 3346.0s | java-auth-scope | content | 30 | 22.0 | 作用域内分别判断 |
 | 3351.0s | java-auth-scope | content | 34 | 17.0 | 工作共享 |
 | 3351.0s | java-auth-scope | content | 30 | 17.0 | 决定能否读取某个 Issue、会话或文件。 |
 | 3360.0s | java-auth-scope | content | 30 | 8.0 | 可调用 Agent，不等于可读他人的工作。 |
 | 3368.0s | java-budget | navigation | 24 | 47.0 | 05 · Java 企业接入 |
 | 3368.0s | java-budget | navigation | 24 | 47.0 | 43 / 47 |
 | 3368.0s | java-budget | content | 48 | 47.0 | 预算控制工作能继续到哪一步 |
-| 3368.0s | java-budget | content | 30 | 47.0 | 已报告用量 |
-| 3368.0s | java-budget | content | 30 | 47.0 | 配置限制 |
 | 3368.0s | java-budget | content | 30 | 38.0 | Managed 预算按已报告用量决定后续调用 |
 | 3368.0s | java-budget | source | 24 | 47.0 | Java Harness v2 / Service 2.1.0-BETA1 |
+| 3377.0s | java-budget | navigation | 24 | 38.0 | 已报告用量 |
 | 3377.0s | java-budget | content | 34 | 38.0 | 用量归属 |
 | 3377.0s | java-budget | content | 30 | 38.0 | 按 Session 和任务记录消耗。 |
+| 3383.5s | java-budget | navigation | 24 | 31.5 | 配置限制 |
 | 3383.5s | java-budget | content | 34 | 31.5 | Managed 预算 |
 | 3383.5s | java-budget | content | 30 | 31.5 | 限制模型调用次数或累计用量。 |
 | 3391.0s | java-budget | content | 34 | 24.0 | 达到上限 |
@@ -1096,7 +1101,6 @@
 | 3415.0s | java-channels | navigation | 24 | 45.0 | 05 · Java 企业接入 |
 | 3415.0s | java-channels | navigation | 24 | 45.0 | 44 / 47 |
 | 3415.0s | java-channels | content | 48 | 45.0 | 消息渠道连接外部对话与任务 |
-| 3415.0s | java-channels | content | 30 | 45.0 | 原外部对话 |
 | 3415.0s | java-channels | content | 30 | 37.0 | 外部消息与执行记录需要稳定关联 |
 | 3415.0s | java-channels | source | 24 | 45.0 | Java Harness v2 / Service 2.1.0-BETA1 |
 | 3424.0s | java-channels | content | 34 | 36.0 | 消息渠道 |
@@ -1107,12 +1111,11 @@
 | 3437.5s | java-channels | content | 30 | 22.5 | 跟踪对应会话、Issue 和结果。 |
 | 3444.5s | java-channels | content | 34 | 15.5 | 渠道回传 |
 | 3444.5s | java-channels | content | 30 | 15.5 | 把结果送回原外部对话。 |
+| 3446.5s | java-channels | content | 30 | 13.5 | 原外部对话 |
 | 3452.0s | java-channels | content | 30 | 8.0 | 飞书 Issue 路由当前不接 Workflow 目标。 |
 | 3460.0s | java-webhook | navigation | 24 | 46.0 | 05 · Java 企业接入 |
 | 3460.0s | java-webhook | navigation | 24 | 46.0 | 45 / 47 |
 | 3460.0s | java-webhook | content | 48 | 46.0 | Webhook 重复投递按事件身份合并 |
-| 3460.0s | java-webhook | content | 30 | 46.0 | 同一 event_id |
-| 3460.0s | java-webhook | content | 30 | 46.0 | 业务幂等契约另核对 |
 | 3460.0s | java-webhook | content | 30 | 37.0 | 接收通知与执行业务动作分开处理 |
 | 3460.0s | java-webhook | source | 24 | 46.0 | Java Harness v2 / Service 2.1.0-BETA1 |
 | 3469.0s | java-webhook | content | 34 | 37.0 | 发出事件 |
@@ -1121,19 +1124,22 @@
 | 3475.5s | java-webhook | content | 30 | 30.5 | 同一事件可能重复到达。 |
 | 3482.0s | java-webhook | content | 34 | 24.0 | 身份去重 |
 | 3482.0s | java-webhook | content | 30 | 24.0 | 接收方合并同一事件。 |
+| 3484.0s | java-webhook | content | 30 | 22.0 | 同一 event_id |
+| 3488.5s | java-webhook | navigation | 24 | 17.5 | 业务幂等契约另核对 |
 | 3488.5s | java-webhook | content | 34 | 17.5 | 业务处理 |
 | 3488.5s | java-webhook | content | 30 | 17.5 | 副作用使用自己的幂等契约。 |
 | 3497.0s | java-webhook | content | 30 | 9.0 | 通知已接收与业务事务完成分别核对。 |
 | 3506.0s | java-storage | navigation | 24 | 45.0 | 05 · Java 企业接入 |
 | 3506.0s | java-storage | navigation | 24 | 45.0 | 46 / 47 |
 | 3506.0s | java-storage | content | 48 | 45.0 | 恢复需要成套的数据与密钥 |
-| 3506.0s | java-storage | content | 30 | 45.0 | 同一备份点 |
 | 3506.0s | java-storage | content | 30 | 31.0 | 数据库、工作文件和 Artifact 对齐同一备份点 |
 | 3506.0s | java-storage | source | 24 | 45.0 | Java Harness v2 / Service 2.1.0-BETA1 |
+| 3508.0s | java-storage | content | 30 | 43.0 | 同一备份点 |
 | 3515.0s | java-storage | content | 34 | 36.0 | 数据库 |
 | 3515.0s | java-storage | content | 30 | 36.0 | 保存定义、会话、任务与工作状态。 |
 | 3522.0s | java-storage | content | 34 | 29.0 | 文件快照 |
-| 3522.0s | java-storage | content | 30 | 29.0 | 保存对应 Workspace 和 Artifact。 |
+| 3522.0s | java-storage | content | 30 | 29.0 | 保存对应 Workspace 和 |
+| 3522.0s | java-storage | content | 30 | 29.0 | Artifact。 |
 | 3528.5s | java-storage | content | 34 | 22.5 | Vault 密钥 |
 | 3528.5s | java-storage | content | 30 | 22.5 | 使用原密钥解密已经保存的凭据。 |
 | 3537.0s | java-storage | content | 30 | 14.0 | 恢复后核对历史、文件、解密和新任务。 |

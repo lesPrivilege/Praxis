@@ -5,11 +5,11 @@
   const tx=(g,x,y,s,n=32,o={})=>text(g,x,y,s,n,{key:`ws:${s}`, ...o});
   function grow(e,t,at,d=2){const q=p(t,at,d);set(e,{'stroke-dasharray':'1','stroke-dashoffset':1-q,pathLength:1});show(e,q>0?1:0);}
   function directory(g,x,y,w,h,id){
-    const q=group(g,id);path(q,`M${x} ${y+23}V${y}H${x+143}L${x+166} ${y+23}H${x+w}V${y+h}H${x}Z`,{fill:C.paper,stroke:C.ink,'stroke-width':2.5});
+    const q=group(g,id);path(q,`M${x} ${y+23}V${y}H${x+143}L${x+166} ${y+23}H${x+w}V${y+h}H${x}Z`,{fill:C.card,stroke:C.frame,'stroke-width':2});
     tx(q,x+24,y+68,id,34,{weight:600,mono:true});return q;
   }
   function file(g,x,y){
-    const q=group(g,'contract-v3');path(q,`M${x} ${y}H${x+55}L${x+82} ${y+27}V${y+116}H${x}Z`,{fill:C.pale,stroke:C.ink,'stroke-width':2});path(q,`M${x+55} ${y}V${y+27}H${x+82}`,stroke(C.ink));
+    const q=group(g,'contract-v3');path(q,`M${x} ${y}H${x+55}L${x+82} ${y+27}V${y+116}H${x}Z`,{fill:C.pale,stroke:C.frame,'stroke-width':2});path(q,`M${x+55} ${y}V${y+27}H${x+82}`,stroke(C.ink));
     line(q,x+18,y+52,x+62,y+52,stroke());line(q,x+18,y+69,x+62,y+69,stroke());
     tx(q,x+108,y+42,'contract-v3.pdf',36,{weight:600,mono:true});tx(q,x+108,y+91,'已在 W-A 的真实工作文件',30,{fill:C.muted});return q;
   }
@@ -22,23 +22,23 @@
       tx(g,100,218,'Python Agent Service · 用户 U-A',32,{fill:C.muted});
       const aLabel=tx(g,145,286,'Agent A',36,{weight:600});
       const aBrace=path(g,'M160 316H142V526H160',stroke(C.ink,2.5));
-      const pa1=group(g,'PA1');rect(pa1,230,326,380,78,{fill:C.paper,stroke:C.ink,'stroke-width':2});tx(pa1,250,375,'Session PA1',34,{mono:true});
-      const pa2=group(g,'PA2');rect(pa2,230,452,380,78,{fill:C.paper,stroke:C.ink,'stroke-width':2});tx(pa2,250,501,'Session PA2',34,{mono:true});
+      const pa1=group(g,'PA1');rect(pa1,230,326,380,78,{fill:C.card,stroke:C.frame,'stroke-width':2});tx(pa1,250,375,'Session PA1',34,{mono:true});
+      const pa2=group(g,'PA2');rect(pa2,230,452,380,78,{fill:C.card,stroke:C.frame,'stroke-width':2});tx(pa2,250,501,'Session PA2',34,{mono:true});
       const routes=group(g,'routes');
       const r1=path(routes,'M610 365H825V407H1050',stroke(C.ink,3));
       const r2=path(routes,'M610 491H825V407H1050',stroke(C.blue,3));circle(routes,825,407,6,{fill:C.blue});
       const wa=directory(g,1050,300,700,260,'W-A');file(wa,1090,403);
       tx(wa,1290,366,'默认 per_agent',30,{fill:C.muted,mono:true});
-      const b=group(g,'agent-B');tx(b,145,611,'Agent B',36,{weight:600});rect(b,230,632,380,78,{fill:C.paper,stroke:C.ink,'stroke-width':2});tx(b,250,681,'Session PB1',34,{mono:true});path(b,'M610 671H1050',stroke(C.ink,3));directory(b,1050,603,700,107,'W-B');
+      const b=group(g,'agent-B');tx(b,145,611,'Agent B',36,{weight:600});rect(b,230,632,380,78,{fill:C.card,stroke:C.frame,'stroke-width':2});tx(b,250,681,'Session PB1',34,{mono:true});path(b,'M610 671H1050',stroke(C.ink,3));directory(b,1050,603,700,107,'W-B');
       const config=group(g,'new-policy-examples');
       line(config,100,732,1815,732,stroke());tx(config,100,771,'仅对新建会话分配',30,{fill:C.muted});
       const perSession=group(config,'per-session');tx(perSession,100,821,'per_session',32,{weight:600,mono:true});
       tx(perSession,430,786,'PA3',30,{mono:true});tx(perSession,430,859,'PA4',30,{mono:true});
       path(perSession,'M510 775H615V764H720M510 848H615V849H720',stroke(C.blue,2.5));
-      path(perSession,'M720 741H769L782 752H890V788H720ZM720 826H769L782 837H890V873H720Z',{fill:C.paper,stroke:C.ink,'stroke-width':2});
+      path(perSession,'M720 741H769L782 752H890V788H720ZM720 826H769L782 837H890V873H720Z',{fill:C.card,stroke:C.frame,'stroke-width':2});
       const perUser=group(config,'per-user');tx(perUser,1030,821,'per_user',32,{weight:600,mono:true});
       tx(perUser,1300,782,'A / PA5',30,{mono:true});tx(perUser,1300,857,'B / PB2',30,{mono:true});path(perUser,'M1440 773H1510V814H1605M1440 848H1510V814',stroke(C.blue,2.5));
-      path(perUser,'M1605 773H1654L1667 784H1790V855H1605Z',{fill:C.paper,stroke:C.ink,'stroke-width':2});tx(perUser,1625,832,'U-A',30,{mono:true});
+      path(perUser,'M1605 773H1654L1667 784H1790V855H1605Z',{fill:C.card,stroke:C.frame,'stroke-width':2});tx(perUser,1625,832,'U-A',30,{mono:true});
       const resources=group(g,'resource-scopes');
       tx(resources,330,286,'Skills · 按 Agent',30,{fill:C.blue});
       path(resources,'M213 316H199V526H213',stroke(C.blue,3));
@@ -46,7 +46,7 @@
       circle(resources,575,326,5,{fill:C.blue});circle(resources,510,530,5,{fill:C.blue});
       rect(resources,670,235,230,60,{fill:C.pale,stroke:C.blue,'stroke-width':2});tx(resources,689,275,'MCP PA1',30,{mono:true});
       rect(resources,670,545,230,60,{fill:C.pale,stroke:C.blue,'stroke-width':2});tx(resources,689,585,'MCP PA2',30,{mono:true});
-      const local=group(g,'local-host');rect(local,1005,255,790,350,{fill:'none',stroke:C.ink,'stroke-width':2,'stroke-dasharray':'10 7'});tx(local,1120,239,'Local · 主机文件系统 · 无沙箱',32,{weight:600});
+      const local=group(g,'local-host');rect(local,1005,255,790,350,{fill:'none',stroke:C.frame,'stroke-width':2,'stroke-dasharray':'10 7'});tx(local,1120,239,'Local · 主机文件系统 · 无沙箱',32,{weight:600});
       const backend=group(g,'backend-alternatives');
       tx(backend,100,650,'其他后端配置',32,{weight:600});tx(backend,100,698,'执行位置随后端变化',30,{fill:C.muted});
       const backendWire=path(backend,'M925 580V720H1790M925 720H350',stroke(C.ink,2));
@@ -75,20 +75,20 @@
       tx(g,100,277,'J-TURN1',36,{weight:600,mono:true});const run=tx(g,100,321,'run J-RUN1',30,{mono:true,fill:C.muted});
       const xs=[290,620,965,1300,1715];const names=['接受任务','派发工具','外部执行','提交工具结果','观察页面'];
       line(g,230,490,1770,490,stroke(C.line,3));
-      names.forEach((s,i)=>{circle(g,xs[i],490,8,{fill:C.paper,stroke:C.ink,'stroke-width':2});tx(g,xs[i],450,s,32,{anchor:'middle',weight:600});});
+      names.forEach((s,i)=>{circle(g,xs[i],490,8,{fill:C.card,stroke:C.frame,'stroke-width':2});tx(g,xs[i],450,s,32,{anchor:'middle',weight:600});});
       const call=group(g,'J-T1');rect(call,-72,-28,144,56,{fill:C.pale,stroke:C.blue,'stroke-width':2});tx(call,0,12,'J-T1',30,{anchor:'middle',mono:true,weight:600});
       const execution=path(g,'M290 490H1300',stroke(C.blue,4));
-      const durable=group(g,'durable-records');line(durable,290,526,290,673,stroke());rect(durable,130,673,320,98,{fill:C.paper,stroke:C.ink,'stroke-width':2});tx(durable,290,710,'持久接受记录',30,{anchor:'middle'});tx(durable,290,758,'原 turn / 输入',30,{anchor:'middle',fill:C.muted});
-      line(durable,620,526,620,673,stroke());rect(durable,470,673,300,98,{fill:C.paper,stroke:C.ink,'stroke-width':2});tx(durable,620,716,'Checkpoint',30,{anchor:'middle',mono:true});tx(durable,620,755,'Agent 工作状态',30,{anchor:'middle',fill:C.muted});
+      const durable=group(g,'durable-records');line(durable,290,526,290,673,stroke());rect(durable,130,673,320,98,{fill:C.card,stroke:C.frame,'stroke-width':2});tx(durable,290,710,'持久接受记录',30,{anchor:'middle'});tx(durable,290,758,'原 turn / 输入',30,{anchor:'middle',fill:C.muted});
+      line(durable,620,526,620,673,stroke());rect(durable,470,673,300,98,{fill:C.card,stroke:C.frame,'stroke-width':2});tx(durable,620,716,'Checkpoint',30,{anchor:'middle',mono:true});tx(durable,620,755,'Agent 工作状态',30,{anchor:'middle',fill:C.muted});
       const resultRecord=group(g,'committed-result');line(resultRecord,1300,526,1300,673,stroke());rect(resultRecord,1120,673,360,98,{fill:C.pale,stroke:C.blue,'stroke-width':2});tx(resultRecord,1300,716,'J-T1 · 核实结果',30,{anchor:'middle',mono:true});tx(resultRecord,1300,755,'reconcile 保存',30,{anchor:'middle',fill:C.muted});
-      const view=group(g,'observer-view');rect(view,1510,234,350,139,{fill:C.paper,stroke:C.ink,'stroke-width':2});tx(view,1685,282,'页面 / 观察者',32,{anchor:'middle',weight:600});tx(view,1685,329,'读取 committed log',30,{anchor:'middle',mono:true});
+      const view=group(g,'observer-view');rect(view,1510,234,350,139,{fill:C.card,stroke:C.frame,'stroke-width':2});tx(view,1685,282,'页面 / 观察者',32,{anchor:'middle',weight:600});tx(view,1685,329,'读取 committed log',30,{anchor:'middle',mono:true});
       const observer=path(g,'M1715 490H1850V373H1780',stroke(C.ink,3));
       const observerBreak=group(g,'observer-break');path(observerBreak,'M1833 399L1867 427M1867 399L1833 427',stroke(C.ink,4));tx(observerBreak,1685,196,'浏览器断连',30,{anchor:'middle'});
-      const logRecord=group(g,'committed-prefix');line(logRecord,1715,526,1715,673,stroke());rect(logRecord,1520,673,340,98,{fill:C.paper,stroke:C.ink,'stroke-width':2});tx(logRecord,1690,710,'committed log',30,{anchor:'middle',mono:true});tx(logRecord,1690,758,'同一前缀 + cursor',30,{anchor:'middle',fill:C.muted});
+      const logRecord=group(g,'committed-prefix');line(logRecord,1715,526,1715,673,stroke());rect(logRecord,1520,673,340,98,{fill:C.card,stroke:C.frame,'stroke-width':2});tx(logRecord,1690,710,'committed log',30,{anchor:'middle',mono:true});tx(logRecord,1690,758,'同一前缀 + cursor',30,{anchor:'middle',fill:C.muted});
       const reconnect=path(g,'M1690 673V620H1815V392H1715V373',stroke(C.blue,3));
       const interrupted=group(g,'process-break');line(interrupted,1130,463,1130,520,stroke(C.ink,6));line(interrupted,1130,521,1130,579,stroke());tx(interrupted,1130,646,'进程停止',34,{anchor:'middle',weight:600});tx(interrupted,1130,695,'本地结果未提交',30,{anchor:'middle'});
       const unknown=group(g,'unknown-outcome');path(unknown,'M643 548V566H1110V548',stroke(C.blue,3));tx(unknown,876,587,'派发后 → 提交前：外部结果未知',30,{anchor:'middle',fill:C.blue});
-      const external=group(g,'external-system');rect(external,720,251,580,112,{fill:C.paper,stroke:C.ink,'stroke-width':2});tx(external,745,297,'外部系统 · 原回执',32,{weight:600});tx(external,745,342,'J-T1 → 已写入 ORD-42',30,{mono:true});
+      const external=group(g,'external-system');rect(external,720,251,580,112,{fill:C.card,stroke:C.frame,'stroke-width':2});tx(external,745,297,'外部系统 · 原回执',32,{weight:600});tx(external,745,342,'J-T1 → 已写入 ORD-42',30,{mono:true});
       const receiptRoute=path(g,'M1300 310H1435V397H1510V625',stroke(C.blue,2));
       const query=path(g,'M1130 579V397H1170V363',stroke(C.blue,3));const receipt=group(g,'verified-receipt');rect(receipt,-130,-30,260,60,{fill:C.pale,stroke:C.blue,'stroke-width':2});tx(receipt,0,11,'J-T1 · 已核实',30,{mono:true,anchor:'middle'});
       const resume=group(g,'resume-new-run');path(resume,'M620 790V834H1500V520',stroke(C.blue,3));tx(resume,1030,883,'显式 resume · 原 turn / 新 run',32,{anchor:'middle',weight:600});
