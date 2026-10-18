@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-10-19 · 入职书单系列：施工记录归位与 dogfooding
+
+- 各轮审阅代理的原始结果存进 [审阅原始记录](palantir/reading-list-series/verification/reviews/README.md)，来源探索与核验结果存进 [研究交接](palantir/reading-list-series/research/handoffs/README.md)；会话临时路径改写为占位，联络表与截图不入库。
+- 没有参与制作的 Opus 代理从会话日志写成 [过程重建](vault/distilled/palantir-reading-list-series-distill-20261019/README.md)，附二十二份任务书原文与 [登记](vault/intake/palantir-reading-list-series-distill-20261019.json)。
+- 八条候选落地三条：[叙事与分镜交接](kit/write/motion/narrative.md#旁白与屏幕文字的审阅)的结构文字独立审阅不再以对外发布为条件，多人或多代理写成即触发；[工作开展方式](kit/environment/working-methods.md)补“量出来的数异常时先单独再量一段”和“原因不明时”的一次实测反例。均未对照。
+- 验收页更正：ep04 转写记为未通过（识别器漏写英文名，单独转写正确）；`c11ebf4` 的提交说明与表格里“配额未运行”的说法以此为准。空白检查写明取样粒度。
+
 ## 2026-10-17 · Palantir 入职书单视频系列
 
 - 新增 [入职书单视频系列](palantir/reading-list-series/README.md)：一部总论加五集，各读一份（Interviewing Users、Impro、Getting Things Done、Dalio 的早期 PDF、The Looming Tower），另有由同一份正文排出、去掉各集引入与收尾的 33:33 合集。中文旁白按作者语体写成，每集有 4:3 与 3:4 原生封面；画面上的每句引文和出处都对应主张登记里的一条，外部图片只经素材登记上屏。

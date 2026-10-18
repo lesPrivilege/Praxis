@@ -1,0 +1,26 @@
+You are an independent reviewer of the on-screen structural text of a Chinese explainer video series. You did not write it and have no writing context — that is the point (see the Kit's 结构文字的独立审阅).
+
+Project: /Users/lesprivilege/Projects/Praxis/palantir/reading-list-series (six episodes ep00–ep05 about the Palantir onboarding reading list, plus a compilation). The repository owner noticed that chart titles, labels and similar positions often read like casual running prose lifted from the narration rather than independently written, condensed structural language. The Writing Kit already addresses this; review against its current version.
+
+Read first (the current revision in the repo; read them, do not rely on memory):
+- /Users/lesprivilege/Projects/Praxis/kit/write/prose/README.md
+- /Users/lesprivilege/Projects/Praxis/kit/write/prose/grammar.md (especially principles 5 and 6 and the applicability table)
+- /Users/lesprivilege/Projects/Praxis/kit/write/prose/review.md (especially step 6, 结构文字的独立审阅, and the table of problem patterns with examples)
+- /Users/lesprivilege/Projects/Praxis/kit/write/motion/narrative.md (screen text vs narration)
+- /Users/lesprivilege/Projects/Praxis/kit/write/shared/evidence.md (evidence labels and qualifiers you must not change)
+- the project's AGENTS.md and film/AUTHORING.md for the visual grammar (solid / dashed = 本系列的读法 / grey = not read or not found / red = a failure a source states). English domain terms such as FDE stay in English.
+
+Input — what is actually on screen, extracted from the rendered product:
+- verification/screen-text-<a>.json for a in ep00 ep01 ep02 ep03 ep04 ep05 compilation (fields: scene, cls, text, px, x, y, first/last time in seconds, at = narration segment, claim). If verification/screen-text-ep02.json is missing or older than episodes/02-impro/scenes.js, run `python3 build/screen_text.py ep02` from the project directory (it takes a few minutes); do the same for any other stale one. Do not run render.py.
+- Narration for context only: episodes/*/narration.md. Scene code (episodes/*/scenes.js) only to locate where a string is written and how much room it has.
+- Covers: episodes/*/covers/*.svg and assembly/covers/*.svg (their text elements).
+
+Scope: structural positions only — chapter tags, scene and chart titles, table headers and row titles, node and box labels, legends, axis and timeline labels, captions, status and evidence tags, card titles and subtitles, the series map, end-card headings, cover copy. Out of scope: the verbatim English quotes (class kq-en) and their Chinese renderings (kq-zh), the narration, and the source/citation lines' content (you may note form inconsistencies among citation lines, but do not rewrite bibliographic data).
+
+Method (from review.md): group the items by position category across the whole series and look at each category together — same-level items parallel in form, condensed, no colloquial phrasing in structural slots, no sentences cut from the narration, no literal-translation collocations, one wording for one thing across places, no register jumps, no officialese, no nominalisation chains, no labels as questions, no provenance boilerplate. Also flag same-concept wording drift across episodes.
+
+Constraints on every proposal: meaning, numbers, qualifiers (可能, 据…, 未见, 约…) and evidence labels (本系列的读法, 未找到, 未读, etc.) stay unchanged; the proposal fits the original slot (give the original and proposed character counts; do not exceed the original by more than about 20% unless you say why); same-column or same-category items stay parallel; no synonym swaps for variety; do not add facts. Where a label is fine, leave it — report only real problems, and do not pad.
+
+Do not edit any project file. Write your findings to /private/tmp/claude-501/-Users-lesprivilege-Projects-Praxis/c2402f8c-b52f-4965-b89b-998d2c8c8dbd/scratchpad/review/copy-structural.json as
+{"kit_pages_read": [...], "inventories_used": {"ep00": "<mtime>", ...}, "patterns": [{"pattern": "...", "count": n, "examples": ["..."]}], "findings": [{"id": "S001", "assembly": "ep03", "scene": "...", "cls": "...", "category": "chart title|table header|node label|tag|caption|card|cover|chapter tag|legend|...", "time": 123.5, "current": "...", "problem": "<pattern name from review.md or grammar #>", "why": "one sentence", "proposed": "...", "chars": [orig, new], "parallel_group": "optional: ids that must change together", "severity": "must|should|could"}]}
+Then return a short summary: counts by severity and category, the main systemic patterns, and anything you could not check.

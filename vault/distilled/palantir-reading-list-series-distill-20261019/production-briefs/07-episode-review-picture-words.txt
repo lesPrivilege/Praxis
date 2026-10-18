@@ -1,0 +1,74 @@
+export const meta = {
+  name: 'palantir-series-episode-review',
+  description: 'Independent picture and on-screen-text reviews of finished episodes of the Palantir reading-list series',
+  phases: [{ title: 'Review', detail: 'per episode: one picture reviewer, one words-and-evidence reviewer' }],
+}
+
+const ROOT = '/Users/lesprivilege/Projects/Praxis/palantir/reading-list-series'
+const SCRATCH = args.scratch
+const EPS = args.episodes   // [{a:'ep00', unit:'ov', dir:'episodes/00-overview'}]
+
+const FINDINGS = {
+  type: 'object',
+  properties: {
+    assembly: { type: 'string' },
+    lens: { type: 'string' },
+    overall: { type: 'string', description: 'three to five sentences: what works, what most needs fixing' },
+    findings: {
+      type: 'array',
+      items: {
+        type: 'object',
+        properties: {
+          severity: { type: 'string', enum: ['must-fix', 'should-fix', 'consider'] },
+          at: { type: 'string', description: 'time in seconds or span, in the standalone assembly' },
+          segment: { type: 'string' },
+          element: { type: 'string', description: 'the on-screen text or the CSS class / scene' },
+          problem: { type: 'string' },
+          evidence: { type: 'string', description: 'what you saw or read that shows it: frame time, ledger row, rule' },
+          fix: { type: 'string', description: 'a concrete change' },
+        },
+        required: ['severity', 'at', 'element', 'problem', 'evidence', 'fix'],
+      },
+    },
+    sheets: { type: 'array', items: { type: 'string' } },
+  },
+  required: ['assembly', 'lens', 'overall', 'findings'],
+}
+
+const common = (e) => `You are reviewing one finished episode (assembly ${e.a}) of a Chinese explainer-video series, "Palantir 入职书单", in ${ROOT}. You did not build it. Read-only: do not edit any file under the repository. Write any working images only under ${SCRATCH}/review/${e.a}/.
+
+What the episode is: narration in Chinese (episodes' script: ${ROOT}/${e.dir}/script.json, reading copy ${ROOT}/${e.dir}/narration.md if present), timings in ${ROOT}/assembly/timelines/${e.a}.json (segments with per-character times), picture built as an HTML stage (${ROOT}/${e.dir}/scenes.js, scenes.css; shared engine in ${ROOT}/film/). Construction rules the builder followed: ${ROOT}/film/AUTHORING.md. Project rules: ${ROOT}/AGENTS.md. Evidence ledgers: ${ROOT}/research/claims.jsonl (claim_id, statement_zh, quote_en, quote_zh, screen_locator, claim_type, review_state), ${ROOT}/research/assets.jsonl, ${ROOT}/research/sources.json. Screen-text inventory (every text block, first/last time, size, claim IDs): ${ROOT}/verification/screen-text-${e.a}.md — it may be slightly out of date if scenes changed after it was made; the stage is the truth.
+
+See the picture with: cd ${ROOT} && python3 build/frames.py ${e.a} <t1> <t2> … --out ${SCRATCH}/review/${e.a} --name <name> --cols 4   (or --range A B --step S). It renders the stage at those times into one contact sheet PNG; read it with the Read tool. Batch many times into one call (up to ~24 frames per sheet); the machine is shared and slow, so do not render more than ~10 sheets in total. Use --full on a single time when you need to read small text at full resolution.
+
+Settled decisions — do not flag these: author voice is on (first-person narration is intended); English domain terms and book titles stay in English; "本系列的读法" (this series' own reading) is drawn dashed and labelled; solid lines = stated by a source; one blue accent marks the point of the moment, red only for failure; text ≥ 24 px (source lines and credits small by design); the standalone intro is drawn by the shared Series code; the visual style is light paper, ink, restrained.
+
+Report only real problems a first-time viewer or a careful fact-checker would hit, each with the evidence that shows it and a concrete fix. Prefer few, well-supported findings over many speculative ones. Severity: must-fix = wrong, misleading, unreadable or broken; should-fix = clearly weaker than it should be; consider = taste.`
+
+const PICTURE = (e) => `${common(e)}
+
+Your lens: the PICTURE as a viewer experiences it with the narration.
+1. Sync: elements appear when the narration reaches them (not seconds before or after); when narration lists items shown on screen, the screen responds; nothing on screen contradicts what is being said at that moment. Use the per-character timings in the timeline JSON to check specific anchors.
+2. Pacing and holds: stretches of 6 s or more where nothing changes while the narration moves on to new content; empty paper between scenes for a second or more; transitions that blink or jump.
+3. Layout and legibility: one idea per screen, main subject large enough (roughly ≥ 60% of width), overlaps, text running off its box or off the 80 px margins, crowding, misalignment, low contrast, an image too small to read.
+4. Visual grammar: solid vs dashed used correctly (dashed only for the series' own reading), blue used for the point of the moment, red only for failure; drawings that misrepresent what the claim says.
+5. Images: each external image readable, credited on screen, and relevant to what is said.
+Look at every body segment at least at its start, middle and end, and at every scene transition.`
+
+const WORDS = (e) => `${common(e)}
+
+Your lens: the WORDS ON SCREEN and their EVIDENCE.
+1. Structural text (labels, captions, tags, headings) follows kit/write/prose/grammar.md principle 5 (read it: /Users/lesprivilege/Projects/Praxis/kit/write/prose/grammar.md): condensed parallel noun or verb-object phrases, never a sentence cut out of the narration, no questions used as labels (a method's own question may appear as a quotation), the same wording wherever the same thing recurs, parallel items parallel in form. No self-talk or protective/hedging wording on screen.
+2. Fidelity: every quotation on screen (rendered by K.quote from the ledger) — check quote_en against the claim and, where you can, the source text it cites (local snapshots are under /Users/lesprivilege/Projects/Praxis/vault/snapshots/local/); quote_zh is a faithful plain rendering (not adding, not dropping qualifiers, not shifting subject); screen_locator correct and consistent in style within the episode. Spot-check at least five quotes and every number or date on screen.
+3. Claims: every factual statement on screen is supported by a claim whose review_state is checked; inference or the series' reading is marked as such (dashed / labelled), never presented as a source's statement; eyewitness vs official record vs book text not blurred.
+4. Screen vs narration: on-screen wording agrees with what the narration says at that moment (names, numbers, terms the same); Chinese renderings of English terms consistent between narration and screen.
+5. Credits and source lines: present while the cited fact is on screen, matching the claim's source.`
+
+phase('Review')
+const jobs = []
+for (const e of EPS) {
+  jobs.push(() => agent(PICTURE(e), { label: `picture:${e.a}`, phase: 'Review', schema: FINDINGS }))
+  jobs.push(() => agent(WORDS(e), { label: `words:${e.a}`, phase: 'Review', schema: FINDINGS }))
+}
+const results = await parallel(jobs)
+return results.filter(Boolean)

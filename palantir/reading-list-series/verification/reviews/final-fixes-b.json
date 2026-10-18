@@ -1,0 +1,254 @@
+[
+ {
+  "items": [
+   {
+    "item": "1. 02:01.5–02:27.0 source line drops the photo credit",
+    "status": "done",
+    "change": "episodes/00-overview/scenes.js:247 — K.source(root, QURESHI + ' · 照片 Bernd K', …) changed to K.source(root, QURESHI, …). The claim ID ['ov.airbus_toulouse_a350'] and the timing are unchanged. The figure keeps its own credit line (kfig-credit 'Bernd K, CC BY-SA 4.0, via Wikimedia Commons'), and the end card still lists the image credit.",
+    "evidence": "Before: <scratchpad>/final/fix2/ep00/item1-before.png (121.5–147.0). The source line read 'Nabeel Qureshi, Reflections on Palantir, 2024 · 照片 Bernd K'. After: .../fix2/ep00/item1-after.png. The source line now reads 'Nabeel Qureshi, Reflections on Palantir, 2024', and the credit still shows on the photo. The stage booted with no errors."
+   },
+   {
+    "item": "2. Quote cards show no in-card locator",
+    "status": "done",
+    "change": "No change needed. The three K.quote calls (scenes.js:146, 255, 387) pass no locator option, so the shared default of no locator applies to every card.",
+    "evidence": ".../fix2/ep00/item2-quotes.png covers eight cards at 55, 152, 207, 214, 225, 250, 260 and 278: the Qureshi four-books card, the Cowen line, the Looming Tower card, Impro, Mabrey, the Saraf BCC card and Interviewing Users. .../fix2/ep00/item2-agrawal.png covers the Agrawal card at 216.5 and 218.5. None of these cards has a locator line, and each one's source is named only by the bottom-left source line. The Agrawal card now shows curly ‘The Looming Tower’, and the Cowen card shows ‘it’s’."
+   },
+   {
+    "item": "3. Compilation: 01 chapter card dissolves over the ov map",
+    "status": "done",
+    "change": "No change needed. ov-reasons ends at u.bodyEnd + Series.HOLD (315.685 + 0.45 = 316.135) and has no fade-out of its own. The iu chapter card fades in from 315.735 to about 316.085, over the map, which holds until then.",
+    "evidence": ".../fix2/ep00/item3-compilation.png (315.5, 315.8, 316.1, 316.4, 316.8, 317.2). At 315.5 the map is fully shown. At 315.8 the card's paper is coming up over the map, which is partly visible through it. From 316.1 the card covers the map completely, and its number, title and reading build in. No frame in between is blank."
+   },
+   {
+    "item": "4. Standalone: the end card dissolves over the ov outro map, and the ov-next line still shows",
+    "status": "done",
+    "change": "No change needed. In standalone, ov-reasons runs to T('ov.o1','end') + 0.5 = 320.409. The end card starts at about 319.959 (o1 end + 0.05) and fades in by about 320.31, so the map holds until it is covered. ov-next ('下一集 · 01 访谈为决定服务') appears at T('ov.o1') + 0.2.",
+    "evidence": ".../fix2/ep00/item4-outro-end.png (315.5, 316.5, 317.5, 319.5, 319.9, 320.1, 320.3, 320.5, 320.9). From 316.5 the chapter tag is gone, and from 317.5 the ov-next line is under the map. At 319.9 the map and ov-next are still fully shown. At 320.1 the end card's paper covers them, with the map faintly showing through. From 320.3 to 320.9 the source list, the image credit and the end card's own next-episode line (in its fixed slot) come up. No blank frame."
+   }
+  ],
+  "other_observations": "I edited only episodes/00-overview/scenes.js, one line (247), and left scenes.css untouched. Every frames.py run booted the stage with no console errors.\n\nThe header comment at scenes.js:8 says the next scene \"starts fading in 0.1 s before the outgoing one fades\". It still describes the handovers inside the episode (open()/close() at X1–X4), which no item asked me to change. Those handovers fade the outgoing scene out as well, unlike the new rule for joins between parts. The frames show no blank frame at those handovers.\n\nov keeps its own outro inside ov-reasons rather than calling Series.outro, as item 4 requires. Its ov-next line sits at y=830, while the shared sr-next sits at y=820. This makes no visible difference, because the end card replaces both."
+ },
+ {
+  "items": [
+   {
+    "item": "1. 03:42.5 Allen/Lonsdale legend wording and timing",
+    "status": "done",
+    "change": "episodes/03-getting-things-done/scenes.js:556-558: the legend now reads '本系列的读法 · 并置对照' with the dashed sample. It is built right after the Lonsdale row and comes in at T('gtd.b13','一两分钟') - 0.5 (216.6 s), 0.1 s after the row and together with the dashed skip arrow, then holds to the end of the scene. The old legend (it read '原文未提 · 本系列的读法' and came in at 两个前提 - 0.1, about 222.2 s) is removed. Position (380, 872) and the 30px .gtd-legend style are unchanged.",
+    "evidence": "Before: scratchpad/final/fix2/ep03/before-lonsdale.png (legend first appears at 222.6). After: after-lonsdale.png (215.4–225.6, step 0.6; legend comes in with the Lonsdale row at 216.6 and holds through 224.4) and after-lonsdale-222.5.png (full-size frame at 3:42.5: dashed sample + '本系列的读法 · 并置对照' sits under the two rows, clear of the source line)."
+   },
+   {
+    "item": "2. 05:24.5 Mabrey: fill 无 at 手里却",
+    "status": "done",
+    "change": "episodes/03-getting-things-done/scenes.js:784: the 无 in the authority bar now shows at T('gtd.b20','手里却') - 0.2 (324.05 s, landing on 手 at 324.25) instead of 没有任何 - 0.2 (324.6). The 'zero authority' highlight still lands on 没有任何 (line 785). Comment at line 780 updated to match. The timeline puts 手里却 at 324.25 (5:24.25), not the ≈5:23.7 in the brief. I kept the usual 0.2 s lead before the word.",
+    "evidence": "Before: before-mabrey.png (无 first visible at 325.0). After: after-mabrey.png (323.4–326.6, step 0.4): 无 is already in at 324.2. The full contrast (责任 filled blue, 权力 无) holds until the b21 scene fades in over it at 326.1–326.5, about 2 s."
+   },
+   {
+    "item": "3. Quote-card locators",
+    "status": "done",
+    "change": "episodes/03-getting-things-done/scenes.js:551: removed the locator 'Joe Lonsdale, Lessons from Peter Thiel, 8VC, 2010' from the gtd.lonsdale-mention card. Lonsdale is now named twice: in the kicker and in the source line. That was the only card in ep03 that passed a locator. I checked all 17 K.quote calls against the source line on screen while each card is up, and every card's screen_locator is named by that line. No card got locator: true. One borderline case: in b15 (243.1–248.4) the weekly-review card (gtd.weekly-review-checks-next-action, GTD Weekly Review Checklist, 2015) is still on screen while the source line names only 'David Allen, The Tim Ferriss Show #384, 2019'. I did not restore a locator there. The quote sits inside a card headed '每周回顾清单 · 2015', which already names the source, so a locator would repeat the kicker + locator + source-line pattern this item removes for Lonsdale (in b14 it would be named three times).",
+    "evidence": "after-lonsdale.png (from 216.0 on, the card shows only the English and Chinese lines, no locator). check-review-b15.png (239–248) shows the b15 case. Ledger check: every quoted claim's screen_locator appears in the K.source text active at that moment (gtd.ep01-principles-unchanged, the 2001 ch. 1 pair, head-no-time-sense ×2, head-crappy-office, calendar-analogy, clarify-define-work, next-action/project-definition, todo-incomplete, two-min-no-hard-rule, weekly-review card in b14, the two limits, mabrey)."
+   },
+   {
+    "item": "4. 04:43–04:59 source line colon form",
+    "status": "done",
+    "change": "episodes/03-getting-things-done/scenes.js:729: '… · 本系列检索，公开网页，2026-10' → '… · 本系列检索：公开网页，2026-10'. Claim IDs unchanged.",
+    "evidence": "Before: before-evidence.png (284/290/297, comma form). After: after-evidence.png (284/290/298): the source line reads 'David Allen, GTD Podcast #35, 2017 · GTD Times, 2018 · 本系列检索：公开网页，2026-10'. The end card already lists '本系列检索：公开网页，2026-10' (endcard.png)."
+   },
+   {
+    "item": "5a. Join body → outro (344.8–346.4) and outro → end (351.9–353.2)",
+    "status": "done",
+    "change": "No change needed. The gtd-reading scene holds to bodyEnd + HOLD (line 792). The outro paper fades in over it from 345.1, so no frame between the two is bare. The end card fades in over the map from about 352.1, and its list and next line are fully in by about 352.9.",
+    "evidence": "join-body-outro.png (344.8–346.4, step 0.2) and join-outro-end.png (351.9–353.1, step 0.2). The full-episode sweep (boot-check.png, 18–358 step 20) printed no console errors or warnings."
+   },
+   {
+    "item": "5b. Outro: map turns to 04 on 读, next-episode line on 看",
+    "status": "needs_shared_change",
+    "change": "Not fixable in my files. Throughout the outro (346.4–351.9) the map stays focused on 03 and the next-episode line never appears. Cause, checked on the live stage (probe of scene-gtd-outro): film/series.js:204 computes `next = MAP[i + 1] && UNITS[MAP[i + 1].id]`, but UNITS is built from Film.units, and on a standalone stage that holds only the episode's own unit (here ['gtd']). So `next` is undefined: the 读 focus toggle is never registered, and the .sr-next box gets empty text and shows at the segment start (opacity 1 at 347.5 with innerHTML ''). The end card avoids this with `UNITS[b.next] || b.nextInfo`, and the ep03 end block carries nextInfo {no:'04', title:'把错误摆上桌面'}. Suggested shared fix at series.js:204: fall back to the end block's nextInfo, keeping the MAP id for the focus toggle, e.g. `const nm = MAP[i + 1], next = nm && (UNITS[nm.id] || (endCard && endCard.nextInfo && Object.assign({ id: nm.id }, endCard.nextInfo)));`. Every standalone episode with a following one probably has the same problem.",
+    "evidence": "outro-turn-next.png (346.4, 346.6, 346.8, 347.2, 349.4, 349.7, 350.0, 350.6, 351.4): 03 stays blue, nothing below the map. Probe output: at 347.5 and 350.5 the cols are ['iu','im','gtd*','pr','lt'] and .sr-next is '' at opacity 1; Series.units keys = ['gtd']."
+   },
+   {
+    "item": "5c. End card at 353.5 and 359.5",
+    "status": "done",
+    "change": "No change needed. The end card is static: two columns of sources, then 图片 'Robert Scoble, CC BY 2.0, via Wikimedia Commons', and '下一集 · 04 把错误摆上桌面' in its own slot under the sources window. The two frames are identical, so nothing scrolls.",
+    "evidence": "endcard.png (353.5 and 359.5)."
+   }
+  ],
+  "other_observations": "I edited only episodes/03-getting-things-done/scenes.js; scenes.css needed no change. I did not run render.py, mix.py, assemble.py or check.py. Every frames.py run booted the stage without errors, and the full sweep printed no console errors or warnings. All frame sheets are under <scratchpad>/final/fix2/ep03/. The probe script for item 5b is <scratchpad>/probe_outro.py.\n\npalantir/reading-list-series/ is untracked in git, so git diff shows nothing for these edits. They can be confirmed with grep at scenes.js:551, 556-558, 729, 780, 784.\n\nThe shared outro bug (item 5b) is the one item that needs the main session. The b15 weekly-review card (item 3) is left without a locator by judgement. If the main session wants the checklist named in the b15 source line instead, that would be a source-text change at scenes.js:627 and needs its approval."
+ },
+ {
+  "items": [
+   {
+    "item": "1. 01:20.0–01:24.3: the 两句潜台词 beat shows only labels over two empty columns",
+    "status": "done",
+    "change": "episodes/02-impro/scenes.js:375-386. Each subtext line now comes in on 演高地位 / 演低地位 (T('im.b5', h) - 0.2), so it arrives as its heading turns blue. Its Chinese now comes in as the line is spoken (T('im.b5', atL) - 0.2, was atL + 0.35). The comment above the block is updated. I picked the earlier line over the label close-up. A close K.frame on the label block would start pulling the camera about 1.4 s before 79.6, while b4's quotation and lane are still fading out (79.2–79.6), so it would crop them as they go. That is the case AUTHORING warns against. Opening out by 82.5 would also leave less than 1.5 s of settled close shot. I moved the low line the same way so both columns keep one rule; it was showing 1.6 s of blue heading over an empty column.",
+    "evidence": "before-b5.png: labels only from 79.8 to 84.2. after-b5.png (79.6–91.2, 0.4 s step): the high line is in from 82.8 and its Chinese from 84.4; the low line is in from 86.8 and its Chinese from 88.4. The labels are now alone for about 2.5 s (80.0–82.5), while the narration says 他把高和低各写成一句潜台词. after-b5-big.png (81.0, 83.2, 85.2, 89.4 at 960 px): the layout sits centred, with no overlap or crop. The stage boots without errors. All sheets are under <scratchpad>/final/fix2/ep02/"
+   },
+   {
+    "item": "2. 00:29.5–00:44.5 source line without titles or years",
+    "status": "done",
+    "change": "episodes/02-impro/scenes.js:217. The text is now 'International Theatresports Institute · keithjohnstone.com · Bloomsbury, Impro, 2022'. The claim IDs are unchanged. ITI and keithjohnstone.com stay as names only because sources.json records both as undated (未注日期) site pages; Bloomsbury gets the title and year of its 2022 snapshot (credit_zh 'Bloomsbury, Impro, 2022').",
+    "evidence": "before-b1src.png (30, 36, 41) shows the old line. after-b1src.png (29.5, 41, 44.3 at 1280 px) shows the new line on one row at the bottom left. It does not collide with the part cards."
+   },
+   {
+    "item": "3. Curly quotes on screen: 1:24–1:31, 2:37–2:45, 2:54–3:01, 3:20–3:24 rain bubble, 3:52–4:10",
+    "status": "done",
+    "change": "No code change needed. I checked the live stage DOM with a scratch script (tools/quotes.py in the output dir) that walks every text node of the booted ep02 stage. No text node anywhere holds a straight ' or \". At 86, 160, 178, 202, 211.5, 213.8, 236, 244 and 249 s the visible quoted text is all curly: “Don’t come near me, I bite.” / “Don’t bite me, I’m not worth the trouble.”; partner’s, ‘see’; the highlight ‘lock on to’ (the marks() phrase uses the curly form and matches); ‘charming’; the bubble “Pleased to meet you.”; ‘normal’, weren’t, it’s. The Chinese quotations use “ ”: “看见”, “锁定”, “讨人喜欢”, “正常”. ZH_Q splits the subtext and rain lines correctly, and both throw no error. Note that the rain bubble is on screen at 210.6–214 s (3:30–3:34), not 3:20–3:24. At 3:20–3:24 (200–204) the p. 95 quotation with ‘charming’ is on screen. I checked both.",
+    "evidence": "after-b5.png / after-b5-big.png (1:24–1:31); after-q1.png (158, 162, 164.5, 176, 179, 180.8); after-q2.png (202, 211.5, 213.8, 236, 244, 248.6). The DOM dump came from tools/quotes.py."
+   },
+   {
+    "item": "4. Re-check joins 23.5–25.0, 27.4–28.9, 300.0–301.3, 307.9–309.5",
+    "status": "done",
+    "change": "No change needed in ep02. All four handovers are the incoming scene fading in over the outgoing one, which holds, and no frame is bare. Intro to title card: the card paper covers the intro by 24.1. Title to body: the b1 paper and photo come in over the held title at 28.4–28.8. Last body scene to outro: the map comes up over im-uses at 300.4 and is clean at 300.6, with no jump in map position. Outro to end card: the end card covers the map at 308.5–308.9, and the end card's next-episode line '下一集 · 03 把承诺移出脑子' is in its slot.",
+    "evidence": "after-join1.png, after-join2.png, after-join3.png, after-join4.png (0.2 s step); before-join1..4.png for comparison."
+   }
+  ],
+  "other_observations": "I found a shared-code bug outside my files, so I did not change it. In the standalone outro (film/series.js:204, Series.outro), the next episode is found with `UNITS[MAP[i + 1].id]`. In a standalone episode, Film.units holds only that episode's unit; for ep02 Film.units is ['im'], so UNITS['gtd'] is undefined. The result in ep02's outro (301.2–308.9): focus never moves from 02 信任 to 03 on 读. The .sr-next line is shown from about 301 s but its text is empty, because `next ? … : o.last` falls through to undefined, so no next-episode line appears on 看. See after-outro.png (301.6–307.5) and tools/outro.py, whose dump at 302.2/305.5/307.5 shows next='' with opacity 1 and focus=im. The end card already handles this case with `UNITS[b.next] || b.nextInfo` (series.js:103); the outro probably needs the same fallback, for example the end block's nextInfo. This likely affects every standalone outro except the last episode's. Sheets and scratch tools are in <scratchpad>/final/fix2/ep02/ (tools/quotes.py, tools/outro.py, tools/units.py only read the stage through build/common.open_page). I did not run render, mix, assemble, check or the compilation. The only file edited is episodes/02-impro/scenes.js; scenes.css is unchanged."
+ },
+ {
+  "items": [
+   {
+    "item": "1. Quote cards: in-card locators only where the card's source differs from the source line",
+    "status": "done",
+    "change": "The shared K.quote change had already removed every in-card locator in ep04 (before-quotes.png shows none). I checked every card against the source line on screen at the same moment. Only one card differs: the Dalio p. 43 card in pr-limits, which stays up after the source line switches to 'Tarpley Hitt, The New Yorker, 2023-11-16'. That card now gets its locator back: scenes.js:758-760 adds `locator: true` and `K.show(q1.loc, T('pr.b21','内部') - 0.3, …)`, so the card names its source at the same moment the bottom-left line hands over to the New Yorker. The 外部数据 box below it was already placed from q1.root.offsetHeight, so it moves down with the locator. All other cards match their source line and stay without a locator: Qureshi with the NQ line; Dalio cards with matching PDF page or # lines; bel-merit with the '#31b' line; the pr-contrast pair with the combined '#34 · NQ' line; the New Yorker card with its own line. I kept the © no-break helper (scenes.js:31-32) and the `.kq-loc { text-wrap: balance }` rule (scenes.css:10). They are still in use: the restored locator wraps at 700 px to two lines (measured height 74 px), and the helper keeps '© 2011' together.",
+    "evidence": "after-quotes.png (all cards at the same times as before-quotes.png), after-limits.png, after-limits-288-zoom.png (the locator reads 'Ray Dalio, Principles, PDF / © 2011（2016 重排版）, p. 43' under the card while the source line says The New Yorker). Sheets are in <scratchpad>/final/fix2/ep04/"
+   },
+   {
+    "item": "2. 00:44.5–00:50.5 date range with unspaced en dash",
+    "status": "done",
+    "change": "scenes.js:197 now reads '存档所见 2012 年 1 月–2016 年 3 月' (U+2013, no spaces). I tried '2012-01–2016-03' first. In Avenir Next tnum the en dash was nearly indistinguishable from the hyphens and the label read as '2012-01-2016-03' (checked in a zoomed frame), so I used the Chinese form. It matches ep05's '2000 年 3 月'.",
+    "evidence": "after-date.png and after-date-zoom.png (44.5/47.5/49.6 s); before: before-items23.png"
+   },
+   {
+    "item": "3. Quote-phrase underline blue, not red, in pr-jump and pr-optout",
+    "status": "done",
+    "change": "scenes.js:567: `lit([q.hl[0], q.hlz[0]], T('pr.b12','眨眼') - 0.1)` (in a nanosecond / 一眨眼, previously RED). scenes.js:744: `lit([q.hl[1], q.hlz[1]], T('pr.b20','两套') - 0.2)` (two sets of rules / 两套规则, previously RED). After this, the RED constant on line 6 was no longer used, so I removed it. The red jump arc ('ln red'), the 一眨眼 diagram label (.pr-jump-lab) and 被跳过 (.pr-skip-lab) stay red through CSS. In pr-optout, opt-outs and two sets of rules both stay lit: the narration says them as one clause (开了这个口子，就等于让两套规则都名正言顺).",
+    "evidence": "after-item3.png (173.5–178 s and 271–276 s); before: before-items23.png"
+   },
+   {
+    "item": "4. Series-own-work source lines in colon form",
+    "status": "done",
+    "change": "scenes.js:274: '本系列比对：Ray Dalio, Principles, PDF © 2011 · 2015 公开版（Internet Archive 2015-08 存档）与 2016 重排版'. scenes.js:299: 'Nabeel Qureshi, Reflections on Palantir, 2024 · 本系列检索：公开网页，2026-10'.",
+    "evidence": "after-sources.png and after-sources-zoom.png (55 s and 74 s, bottom-left lines)"
+   },
+   {
+    "item": "5a. Join body → outro (333.8–335.4)",
+    "status": "done",
+    "change": "pr-reading, the last body scene, still faded itself out (`tl.to(root, {opacity:0}, to - 0.3)`), which goes against the shared rule of no fade-out of its own. I removed it and the unused `to` parameter (scenes.js:856). The scene now holds until bodyEnd + HOLD while the outro map fades in over it at bodyEnd + 0.05. I also checked the compilation join (1626.9–1628.1): the 05 chapter card fades in over the held reading scene, with no dip and no bare frame.",
+    "evidence": "after-join-body-outro.png (vs before-join-body-outro.png), after-join-compilation.png"
+   },
+   {
+    "item": "5b. Outro: map turns to 05 on 读, next-episode line on 看",
+    "status": "needs_shared_change",
+    "change": "Not working, and it can't be fixed in my files. Over 335.6–341.0 the map stays on 04 throughout and the next-episode line never appears. On the live stage, Series.units / Film.units in the standalone ep04 contain only ['pr']. film/series.js:204 (`next = MAP[i + 1] && UNITS[MAP[i + 1].id]`) therefore gets undefined. The focus-turn onFrame is skipped, and the .sr-next box is built with `o.last` (undefined), so it is empty and invisible. The end card does show the line, because it falls back to `b.nextInfo`. Suggested fix in series.js outro(): fall back to the end block, e.g. `next = MAP[i+1] && (UNITS[MAP[i+1].id] || (endCard && endCard.next === MAP[i+1].id && Object.assign({ id: endCard.next }, endCard.nextInfo)))`. The same lookup probably breaks the outros of the other standalone episodes too. I did not try a per-episode workaround such as passing last/lastWord, because it would misuse the last-episode path and skip the focus turn.",
+    "evidence": "before-outro.png and after-outro-and-end.png (335.6–340.5: 04 stays blue, no line under the map). Probe result: {units:['pr'], seriesUnits:['pr'], next: <div class=\"sr-next\"></div> empty}. Word times: 读 335.94, 看 337.60."
+   },
+   {
+    "item": "5c. Join outro → end (341.0–342.3)",
+    "status": "done",
+    "change": "No change needed. The end card's paper fades in over the held outro map from about 341.1. The list comes up with it, and '下一集 · 05 没有送到的情报' sits in its fixed slot under the sources window. No bare frame.",
+    "evidence": "before-join-outro-end.png, after-outro-and-end.png (341.0–342.3)"
+   }
+  ],
+  "other_observations": "I edited only episodes/04-principles/scenes.js; scenes.css is unchanged. The stage boots without errors on every frames.py run, including the compilation. I did not run render/mix/assemble/check. Outside this task's items, two things I noticed but did not change: (1) on the strip, the 存档所见 label sits tight under the bar (y 712, bar bottom at 700); this was already so. (2) The series map's focus/next-line bug (item 5b) is in film/series.js and needs the main session. Sheet directory: <scratchpad>/final/fix2/ep04/"
+ },
+ {
+  "items": [
+   {
+    "item": "1. 01:10.5–01:14.5 push-in on '推向市场的产品 0': neighbours cut by the left edge; pull-out at 1:14–1:15 touches the edge",
+    "status": "done",
+    "change": "scenes.js:168-178. The neighbours now fade fully out (opacity 0, not 0.2), and each one is timed against the measured camera path. The first box, its arrow and the heading '实际的结果' (also cut at 70.5, as '际的结果') fade out over zIn-1.7 to zIn-1.1 (69.52-70.12); the first box's left edge reaches x=80 at 70.2. The second box and its arrow fade out over zIn-0.45 to zIn+0.2 (70.77-71.42); its edge reaches x=80 at 71.5. On the pull-out each comes back only once it is inside the 80 px margin. The second box returns at zOut-0.5 (74.14; its edge is at 80 px from 74.12). The first box and heading return at back0 = zOut+0.8 (75.44; edge at 80 px from 75.4). scenes.js:181-186: the brace and '访谈的成果' start at x=200 just like the first box, and before the change they began off-frame (brace at 75.0, label at 75.22). Both now start at back0. K.focus and the camera path are unchanged, so the hold is the same: zoom at or above 1.358 from about 71.9 to 73.7. I checked the camera numerically by tracing world transforms at 0.1 s steps; every stage-to-screen x above comes from that trace.",
+    "evidence": "Before: <scratchpad>/final/fix2/ep01/before1/b1.png. In it, '髦安全帽' and '合公司的技术与文化' are cut from 71.0 to 74.0, and '能的方案' is cut at 75.0. After: .../after1/a1.png (69.4-76.4 at 0.2 s) and .../after1/a1-edges.png (70.1, 70.25, 71.35, 71.5, 74.1, 74.25, 75.45, 75.6). The hold shows only box 2. The row reassembles right to left, and nothing is cut or inside the margin while the camera moves. Compilation check: .../compilation/c1.png shows the same behaviour."
+   },
+   {
+    "item": "2. 06:29.5–06:42 header → 'FDE（驻客户现场的工程师）进门之后的头几步'",
+    "status": "done",
+    "change": "scenes.js:985, title text replaced. It fits on one line at 64 px inside the 1520 box and ends left of the third step card's right edge.",
+    "evidence": ".../after2/a2.png, frame 398.0 (before: .../before2/b2.png at 395.0)"
+   },
+   {
+    "item": "3. Corner brackets → “ ”",
+    "status": "done",
+    "change": "scenes.js:551-552: '“希望知道什么”' and '“为什么需要知道”' (b14, about 3:31). scenes.js:868: '“这个你愿意付多少钱”' (b24).",
+    "evidence": ".../after2/a2.png, frames 212.0 and 341.0 (before: .../before2/b2.png)"
+   },
+   {
+    "item": "4. Airbus label",
+    "status": "done",
+    "change": "scenes.js:913. I used the two-line form, as ep00 does: 'Airbus · CEO 的头号难题' / 'A350 产量爬坡'. The colon is gone. The one-line '·' version would be about 660 px and would wrap in the 640 px text column anyway.",
+    "evidence": ".../after2/a2.png, frames 360.0 and 368.0"
+   },
+   {
+    "item": "5. 05:52 legend '本系列的读法' → '本系列的读法 · 并置对照', ep04 look",
+    "status": "done",
+    "change": "scenes.js:54-56: legend() takes an optional kind, printed after ' · '. scenes.js:905: the b25 comparison passes '并置对照'. The b27 legend stays plain '本系列的读法'. scenes.css:11: .iu-legend now has gap 18px and letter-spacing .1em, matching ep04's .pr-legend (same 60 px dashed 3 px ink3 sample, 600 30px sans, ink2).",
+    "evidence": ".../after2/a2-legend.png (ep01 at 354.0) beside .../ref-ep04/ep04-legend.png (ep04 at 294.0, pr.b22). They look the same. Also .../after2/a2.png at 353.0 and 368.0."
+   },
+   {
+    "item": "6. Source line years for Portigal",
+    "status": "done",
+    "change": "scenes.js:949: 'Nabeel Qureshi, Reflections on Palantir, 2024 · Steve Portigal, Interviewing Users, 1st ed., 2013 & 2nd ed., 2023'. It follows the file's existing edition form ('1st ed., 2013', '2nd ed., 2023') and uses '&' as the file's 'Debriefing Worksheet 1 & 2' line does, keeping '·' as the separator between sources. It fits on one line.",
+    "evidence": ".../after2/a2.png, frames 353.0, 360.0 and 368.0 (before: '1st & 2nd ed.' in .../before2/b2.png)"
+   },
+   {
+    "item": "7. Ledger English printed directly with straight apostrophes → K.curly",
+    "status": "done",
+    "change": "None of the ledger strings printed outside K.quote currently contain a straight apostrophe. I checked fg12-roles, fg12-bus, ws1-*, ws2-*, 1e-toc-worldview headings and the LIFE WITH DEVICE heading. Every such path now goes through K.curly anyway. scenes.js:22: claimText = id => K.curly(Film.claim(id).quote_en). scenes.js:957: the ToC headings parsed from statement_zh use .map(K.curly), so the claimText(...) !== heads[0] check still compares like with like. The lit phrases already used ’ ('they’re', 'customer’s') and still match.",
+    "evidence": "The stage boots without errors, and the marks()/heading checks would throw if any text changed. On-screen text is unchanged: .../after2/a2.png and the full sheets above."
+   },
+   {
+    "item": "8. Verify new outro and hold",
+    "status": "needs_shared_change",
+    "change": "No change in my files. The join and the end handover work, but two outro beats are missing because of a defect in film/series.js outro(). In a standalone assembly, Film.units, and so UNITS, holds only the episode's own unit (on the ep01 stage Object.keys(Series.units) is ['iu']). So next = MAP[i + 1] && UNITS[MAP[i + 1].id] is undefined. As a result: (a) the focus never turns to 02 on 读 and stays on 01 through 409.9; (b) the next-episode line is an empty box (on the stage .sr-next innerHTML is '', because o.last is undefined) shown at segment start, so nothing appears on 看 (406.81). The end card does not have this problem because it falls back to b.nextInfo. Suggested fix in series.js:204: const nid = MAP[i + 1] && MAP[i + 1].id, next = nid && (UNITS[nid] || (endCard && endCard.nextInfo)); then compare c.dataset.unit with nid instead of next.id in the onFrame toggle. This probably affects every standalone episode except the last.",
+    "evidence": "Body to outro: .../outro/o1-join.png (401.8-403.6 at 0.15 s). The outro paper fades in over the held body scene from 402.06 to 402.46, so no frame is bare. Focus and next line: .../outro/o2-focus-next.png (403.0-407.5). 01 stays blue at and after 读 (turn 403.35), and no '下一集 · 02 …' line appears at 405.5 or 406.4-407.5. Outro to end: .../outro/o3-end.png (409.9-411.2). The end card fades in over the outro with no bare frame, and its next line '下一集 · 02 地位是一种做法' shows."
+   }
+  ],
+  "other_observations": "All frame sheets are under <scratchpad>/final/fix2/ep01/ (before1, before2, after1, after2, outro, compilation, ref-ep04). In every frames.py run, the ep01 and compilation stages booted without errors and without K.focus warnings. Edited files: palantir/reading-list-series/episodes/01-user-research/scenes.js and scenes.css only. palantir/reading-list-series/ is untracked in git, so these edits have no git diff; line numbers are from the current files. I did not run render.py, mix.py, assemble.py or check.py. Two scratch helpers are in the scratchpad tools/ folder: ev.py evaluates expressions on a stage, and cam.py traces a scene's camera transform and maps stage x to screen x. Main-session note: the map caption '本系列的读法' is above the outro map; that comes from the shared map() and is not part of this episode."
+ },
+ {
+  "items": [
+   {
+    "item": "1. Dashed sample on the 本系列的读法 tags (343.5–361, 362–378)",
+    "status": "done",
+    "change": "scenes.js:613 and :658 now open each lt-ours tag with '<i></i>'. scenes.css:93-95 restyles .lt-ours to match ep04's .pr-legend: flex, 18px gap, 600 30px sans, .1em letter-spacing, ink2 text, and a 60px sample drawn as a 3px dashed ink3 rule. ep04's sample is ink3 (as are ep00, 01 and 03), so I used ink3 rather than full ink.",
+    "evidence": "after-field.png (343.5–377) and the close-up after-tag-zoom.png, compared with ep04ref/ep04-tag.png (ep04 at 296 s): same look. The before state is in before-field.png. All paths are under <scratchpad>/final/fix2/ep05/."
+   },
+   {
+    "item": "2. Book scene gaps (39–43.5 header plus doc head only; 49.5–52 header only)",
+    "status": "done",
+    "change": "scenes.js:121-123: on 上市 (T('lt.b2','上市') - 0.3 ≈ 40.03) the S-1 card's first row comes in whole, together with the second row's label 起初 and its rule. The second row's text still arrives on 起初. scenes.js:132-134: the excerpt sheet's empty card now fades in on 正文 (T('lt.b3','正文') - 0.2 ≈ 50.06). Its head and The Martyr title still fill it on 出版社. A comment notes that the empty sheet stands for the book's text.",
+    "evidence": "after-book.png (38–53 s) against before-book.png. The card is laid out from 40.0 s and the excerpt card is up from 50.2 s. The header is alone only for about 0.2 s between the doc fading out (49.9 s) and the sheet arriving. The sweep is in after-sweep-book.png."
+   },
+   {
+    "item": "3. lt-meet plain line on 11 September at 27 px (162.5–166)",
+    "status": "not_done",
+    "change": "No change. The finding does not hold on the live stage. The plain line's b and span both compute to 34px, the same as the timeline's .lt-line rows, and render at about 34.9 px under the camera's 1.026 scale. In the 1920 frame at 164.5 s the CJK glyphs of '在华盛顿…' measure 33 px of ink, the same as the card row '开始寻找两人'. The only 26 px element in that row is the source tag 委员会报告 (.lt-meet.plain i, about 27 px on screen). Every card's Wright 报道 and 委员会报告 tag uses the same size (.lt-tag 26px). That is probably what was measured.",
+    "evidence": "before-meet.png and before-meet-0164.500.png (full size). A probe of computed styles at 163 and 164.5 gave B 34px, SPAN 34px, I.lt-tag 26px, card .lt-line 34px."
+   },
+   {
+    "item": "4. Inline 24 px Qureshi citation in the lt-lim row (359.5)",
+    "status": "done",
+    "change": "scenes.js:640-643: the 'Qureshi 的理由' row now reads only 这段背景有用 (the cite constant and its <i class=\"lt-cite\"> are removed), and its comment now says the credit is on the source line. scenes.js:652-653: the source line becomes '本系列的对照：The 9/11 Commission Report, 2004, pp. 417–418 · Nabeel Qureshi, Reflections on Palantir, 2024' and also carries lt.qur-reason and ov.qureshi_why_looming_tower. The unused .lt-cite rule is removed from scenes.css.",
+    "evidence": "after-field.png at 359.5 and 361 against before-field.png at 359.5. The row ends at 这段背景有用 and the source line names Reflections on Palantir."
+   },
+   {
+    "item": "5. Quote-card locators (off by default; restore only where the card's source differs from the source line)",
+    "status": "done",
+    "change": "No locator restored. I checked every K.quote card against the source line on screen: ov.qureshi_why_looming_tower against 'Nabeel Qureshi, Reflections on Palantir, 2024'; lt.rep-email against 'The 9/11 Commission Report, 2004, pp. 270–272 · …'; and lt.rep-symptoms, -noowner, -physician, -luck and -needtoknow against the Commission page lines. In each case the line names the card's source. A scan in 0.1 s steps found two handovers where a card sat at full strength with no source line once the in-card locator was gone: the Cole agent's reply at 157.2–157.5 and the physician quote at 280.5–281.1. I made both source lines last until the card leaves. scenes.js:325-326 (b8 line now ends at T('lt.b9') - 0.7, when the reply fades) and scenes.js:502-504 (const out17 = T('lt.b18') - 0.4, shared by the p. 353 line and the card's exit).",
+    "evidence": "after-quote-handover.png (156.8–157.7 and 280.2–281.1). The rescan from 145 to 300 s shows no card above 0.3 opacity without its source line."
+   },
+   {
+    "item": "6. Source line wording (52–59 and 61.5–72)",
+    "status": "done",
+    "change": "scenes.js:138: 'Lawrence Wright, The Looming Tower, 2006（出版方节选）'. scenes.js:168: 'Lawrence Wright, The Agent, The New Yorker, 2006 · The 9/11 Commission Report, 2004 · CIA OIG, Executive Summary, 2005 · 9/11 Memorial panel, 2018'.",
+    "evidence": "after-src.png (53 and 62 s) against before-src.png. The longer second line wraps onto a second line at 24 px ('…Executive Summary, 2005 · / 9/11 Memorial panel, 2018'). It stays clear of the photos and credits. It could only be kept to one line by shortening the text, which I did not do."
+   },
+   {
+    "item": "7. Outro by Series.outro('lt', { last: '全系列完', lastWord: '结束' }) — verify 377.9–379.5, the closing line, and 382.8–384.2",
+    "status": "done",
+    "change": "No change needed: scenes.js:697 already calls Series.outro('lt', { last: '全系列完', lastWord: '结束' }), and lt-field ends at u.bodyEnd + Series.HOLD with no close().",
+    "evidence": "after-outro-in.png (377.9–379.5 in 0.2 s steps): the map fades in over the last body scene, which holds, from about 378.2 s. No frame is bare. after-outro-line.png (379.7–382): 全系列完 shows centred under the map from about 379.8 s, on 结束. after-outro-end.png (382.8–384.2): the end card fades in over the outro, which holds. Probes show the outro at opacity 1 throughout while scene-end goes 0 → 0.56 → 0.99 between 382.9 and 383.2. At 383.2 the end card's paper is fully up and its source and picture lists are still coming in, so that frame is nearly empty paper for about 0.2 s. That comes from series.js end(), not from ep05."
+   }
+  ],
+  "other_observations": "I changed only palantir/reading-list-series/episodes/05-looming-tower/scenes.js and scenes.css. Pre-edit copies are in <scratchpad>/final/fix2/ep05/orig/. Every frames.py run booted the stage with no console or stage errors. I did not run build/check.py, render.py, mix.py or assemble.py.\n\nThings outside my files, for the main session:\n(a) The outro map's own label 本系列的读法 (drawn by Series.map / series.js) is still plain grey text with no dashed sample, so it does not match the episode tags now. It is visible at 378.3–383 in after-outro-in.png and after-outro-line.png.\n(b) At 383.2 the end card's paper is fully up but its lists are still faint: a nearly empty frame for about 0.2 s, from series.js end().\n(c) The .lt-tag source tags inside the chain cards (Wright 报道, 委员会报告) are 26 px. That is above the 24 px source-line exception but below the 30 px floor for text to be read. They work as source labels, so I left them alone. Raising them is a call for the series rules, not an item here.\n\nSmall helper scripts I wrote for checking (probe.py, qscan.py) are in the scratchpad's tools/ folder, not in the repo."
+ }
+]

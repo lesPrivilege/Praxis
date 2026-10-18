@@ -1,0 +1,124 @@
+export const meta = {
+  name: 'reading-list-final-episode-review',
+  description: 'Final review of the six rendered episodes: two per-episode passes, one series-consistency pass, each verified',
+  phases: [{ title: 'Review', detail: 'ep00–02, ep03–05, series consistency (Opus)' }, { title: 'Verify', detail: 'try to refute must/should findings from the frames (Sonnet)' }],
+}
+
+const ROOT = '/Users/lesprivilege/Projects/Praxis/palantir/reading-list-series'
+const S = '/private/tmp/claude-501/-Users-lesprivilege-Projects-Praxis/c2402f8c-b52f-4965-b89b-998d2c8c8dbd/scratchpad/final'
+const EPS = { ep00: '00-overview', ep01: '01-user-research', ep02: '02-impro', ep03: '03-getting-things-done', ep04: '04-principles', ep05: '05-looming-tower' }
+
+const CONTEXT = `
+You are reviewing the FINAL rendered mp4s of a Chinese explainer video series about Palantir's onboarding reading list
+(project: ${ROOT}). Six standalone episodes: ep00 overview (episodes/00-overview), ep01 Interviewing Users, ep02 Impro,
+ep03 Getting Things Done, ep04 Principles (early PDF), ep05 The Looming Tower. Each was reviewed and fixed already; these
+renders contain the fixes. Your job is the last look before the owner watches them.
+
+Material (all read-only for you — do NOT edit any file under ${ROOT}, do not run build/render.py, build/check.py,
+build/mix.py or anything that writes into ${ROOT}; do not kill processes; the machine is rendering the compilation, so
+keep frame extraction modest, at most ~300 extra frames in total):
+- Contact sheets decoded from each finished mp4, every 2 s, each frame labelled with time and chapter:
+  ${S}/<ep>/sheet-*.png (view them with the Read tool).
+- Denser frames when you need them: python3 ${S}/sheets.py <ep> <outdir> --step 0.25 --from <s> --to <s> [--cols 8 --rows 6 --width 384] [--prefix name]
+  Use an outdir under ${S}/review-b/<your label>/ only.
+- Screen-text inventory per episode (every text block, first/last time, class, px size, claim ids): ${ROOT}/verification/screen-text-<ep>.md
+- Subtitles: ${ROOT}/assembly/timelines/<ep>.vtt ; narration segments with times: ${ROOT}/assembly/timelines/<ep>.json (segments[].text/start/end)
+- Scripts: ${ROOT}/episodes/<dir>/script.json and narration.md; scene code (to understand intent): episodes/<dir>/scenes.js
+- Check results: ${ROOT}/verification/check-<ep>.json (all automatic checks passed; transcription not run on this pass)
+- What was changed in the last round, per episode, under “成片审阅后的改动”: ${ROOT}/verification/acceptance.md
+- Series legend and design rules: ${ROOT}/README.md section “画面怎么读”; ${ROOT}/film/AUTHORING.md sections 镜头 and 设计.
+  Legend: solid frame/line = stated by a source; dashed = this series' own reading (labelled 本系列的读法); grey solid = not read
+  or not found; red = a break or failure a source itself records; blue = the point being spoken right now.
+
+Already adjudicated — do not raise again unless you see a NEW concrete defect in them:
+- ep00: the FDE node alone in the left third around 2:43 and 2:53 (deliberate carry across the chapter cut); the ov.b16 Impro quote card (verbatim source, the causal chain follows).
+- ep04: grey on .pr-book / .pr-badge (the 2017 book is genuinely unread).
+- ep03: no close-up at the start of the 代价 chapter (tried; it cropped “6 小时”).
+- Structural wording was reviewed series-wide already; only raise wording if it is a clear defect (wrong, inconsistent with the
+  same thing elsewhere, cut-off, or a sentence lifted from narration into a label).
+
+Severity: must = wrong fact/attribution/number, text cropped/overlapping/unreadable, legend used against its meaning, blank or
+flash frames, a key visual landing more than ~1 s away from the words that name it, broken continuity at a cut; should =
+composition lapse (≥ 2 s of mostly empty stage, content pushed by the camera while fading, a beat that holds too short to read),
+inconsistency across episodes; could = taste. Give each finding the exact time (mm:ss.s), the frame evidence (sheet path +
+frame label, or your dense sheet path), what is wrong, and a concrete suggestion. Report nothing you have not seen in frames.
+`
+
+const FINDINGS = {
+  type: 'object',
+  properties: {
+    verdict: { type: 'string' },
+    fixes_landed: { type: 'array', items: { type: 'object', properties: { assembly: { type: 'string' }, item: { type: 'string' }, landed: { type: 'boolean' }, evidence: { type: 'string' } }, required: ['assembly', 'item', 'landed', 'evidence'] } },
+    findings: { type: 'array', items: { type: 'object', properties: {
+      assembly: { type: 'string' }, time: { type: 'string' }, kind: { type: 'string' },
+      severity: { type: 'string', enum: ['must', 'should', 'could'] },
+      observation: { type: 'string' }, evidence: { type: 'string' }, suggestion: { type: 'string' } },
+      required: ['assembly', 'time', 'kind', 'severity', 'observation', 'evidence', 'suggestion'] } },
+  },
+  required: ['verdict', 'fixes_landed', 'findings'],
+}
+const VERDICTS = {
+  type: 'object',
+  properties: { results: { type: 'array', items: { type: 'object', properties: {
+    index: { type: 'integer' }, real: { type: 'boolean' }, severity_ok: { type: 'boolean' }, note: { type: 'string' } },
+    required: ['index', 'real', 'severity_ok', 'note'] } } },
+  required: ['results'],
+}
+
+const episodePass = eps => `${CONTEXT}
+Your scope: ${eps.join(', ')} (directories ${eps.map(e => 'episodes/' + EPS[e]).join(', ')}).
+1. For each episode, go through EVERY contact sheet in order, with the episode's screen-text inventory and its vtt beside you.
+   Look for anything a first-time viewer would trip on: cropped or overlapping text, a label that fights the narration, a
+   legend colour/dash used against its meaning, empty stage, camera pushing fading content, flashes, text too small, a beat
+   too short to read, leftovers from a previous scene, chapter label (top-left) disagreeing with the narration.
+2. For each bullet under “成片审阅后的改动” of your episodes in acceptance.md, confirm in frames whether it landed
+   (fixes_landed: one entry per bullet clause that is checkable in pictures; use dense frames where 2 s is too coarse).
+3. Check the intro (series map, “这一集”), the outro (下一集 line), and the end card (sources list, two columns when long, no
+   clipping) of each episode.
+Return findings ranked most severe first.`
+
+const seriesPass = `${CONTEXT}
+Your scope: consistency ACROSS all six episodes (ep00–ep05). Others are reviewing each episode in depth; you look sideways.
+Use the six screen-text inventories (fast way to compare classes, sizes and wording side by side) and the contact sheets.
+Compare:
+- Shared furniture: ident, series map and its labels, “这一集 / 最后一集” intro beat, chapter label top-left, source line
+  bottom-left (format: author, title, year; ordering; separators), outro “下一集 · NN 标题” line, end card (heading, sources,
+  columns), cover-like title card. Same element must look and behave the same in every episode.
+- Legend usage: dashed only for 本系列的读法, grey solid for not read / not found, red only for failures a source records,
+  blue only for the spoken point. Note any episode that deviates, with time.
+- Typography and notation: type sizes per class (the inventories carry px), quote cards (English original + Chinese line),
+  edition notation (第 1 版 / 第 2 版), year/number ranges (en dash, 2010–2015), Chinese–English spacing, full-width vs ASCII
+  punctuation, ellipses, names (Qureshi, Saraf, Mabrey, Karp, Lonsdale; FDE glossed as 驻客户现场的工程师) and the same
+  concept labelled the same way in different episodes (e.g. 本系列的读法 · 并置对照, 试点 · 8 到 12 周).
+- Camera grammar: frame/focus moves of similar purpose behave similarly (durations, zoom levels), no episode is notably
+  static or notably busier than the others.
+- Chapter titles in the inventories vs the episode READMEs (${ROOT}/episodes/<dir>/README.md chapter table) and vs the
+  compilation chapter list in ${ROOT}/README.md.
+Return findings ranked most severe first; fixes_landed may be empty.`
+
+const verifyPrompt = (label, r) => `${CONTEXT}
+A reviewer (${label}) reported the findings below on the final mp4s. Your job is to try to REFUTE each must and should
+finding by looking at the actual frames yourself (dense frames via sheets.py into ${S}/review-b/verify-${label}/; at
+most ~200 frames in total). A finding is real only if the defect is visible in the frames at (or within a second of) the
+stated time and a first-time viewer would notice it. Also say whether the severity is right. Skip could-findings (do not
+include them). Default to real=false when you cannot see it.
+
+Findings (index: finding):
+${r.findings.map((f, i) => ({ i, f })).filter(x => x.f.severity !== 'could').map(x => `${x.i}: ${JSON.stringify(x.f)}`).join('\n')}`
+
+const passes = [
+  { label: 'ep00-02', prompt: episodePass(['ep00', 'ep01', 'ep02']) },
+  { label: 'ep03-05', prompt: episodePass(['ep03', 'ep04', 'ep05']) },
+  { label: 'series', prompt: seriesPass },
+]
+
+const out = await pipeline(passes,
+  p => agent(p.prompt, { label: `review:${p.label}`, phase: 'Review', schema: FINDINGS }),
+  (r, p) => {
+    if (!r) return null
+    const toCheck = r.findings.filter(f => f.severity !== 'could')
+    if (!toCheck.length) return { label: p.label, review: r, verdicts: [] }
+    return agent(verifyPrompt(p.label, r), { label: `verify:${p.label}`, phase: 'Verify', schema: VERDICTS, model: 'sonnet' })
+      .then(v => ({ label: p.label, review: r, verdicts: v ? v.results : null }))
+  })
+return out

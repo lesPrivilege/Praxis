@@ -1,0 +1,242 @@
+[
+ {
+  "assembly": "ep02",
+  "lens": "The picture as a viewer experiences it with the narration: sync, pacing, layout and legibility, visual grammar, images",
+  "overall": "Sync is the strongest part of this episode. I checked about 150 anchor words against the stage, and nearly every element lands within 0.1–0.3 s of the word it illustrates. The scene crossfades are clean (empty paper never lasts longer than about 0.7 s at a chapter change), both photos are credited and readable, and the dashed lines and blue highlights follow the series rules. The problems come from how long things stay on screen and from two drawings. A few key visuals vanish about a second after they land: the \"冲突之外 · 照常进行\" label, the third rain panel (\"本意 试雨 ≠ 读成 握手问候\"), and the long b15 and b7 quotes. One collision needs fixing: the moving bust's blue plumb line strikes through the Hamlet quote for about 1.8 s. One drawing adds a claim the source doesn't make: at \"盯住搭档\" the student jumps from just below the partner to just above. The rest is taste: blue that stays on the b19 core too long, the Qureshi quote not containing the head-still example sorted under it, and a loosely related stock photo in b13.",
+  "findings": [
+   {
+    "severity": "should-fix",
+    "segment": "im.b8",
+    "at": "130.8–132.6",
+    "element": "bust plumb line (svg path.ln.blue in .im-bust) over the q44 quote's Chinese line (.kq-zh, '…演哈姆雷特就不行。')",
+    "problem": "When the q44 quote appears, the still-head bust is still parked at the left, shrunk to 0.85. Its blue vertical plumb line runs through the second line of the Chinese quote, crossing '就不'. This scene already uses horizontal strike lines to mean 'not this' (社会地位, later 头衔), so a blue line through quoted words reads as a defect or a deletion.",
+    "evidence": "Full-resolution frame 131.4 s (s4-head-0131.400.png, crop-131.4.png): the blue line enters '就'. DOM probe: the plumb is at x=340, y 452–612, and q44 zh spans x 200–1720, y 369–474, an overlap of 22 px. The quote is at opacity ≥0.89 from 131.0. The bust only starts moving at T('im.b8','悲剧')-0.3 = 132.19 (scenes.js line 384) and clears the text around 132.6.",
+    "fix": "Start the bust's move to the Hamlet position together with the chain exit, i.e. tl.to(fig.box, {x:760,y:20,scale:1,…}, roles - 0.45) on line 384 instead of T('im.b8','悲剧') - 0.3. Alternatively, delay K.show(q44.root) on line 382 until the move ends (about T('im.b8','悲剧') + 0.9)."
+   },
+   {
+    "severity": "should-fix",
+    "segment": "im.b12",
+    "at": "176.4–177.1",
+    "element": "im-pin 学生 (blue) vs 搭档 on the status axis; 锁定 label",
+    "problem": "At the words '学生就会紧紧盯住搭档', the blue 学生 pin jumps across the partner, from 120 px below (left) to 124 px above (right). It had sat below ever since '低一点' in b10. A viewer reads the jump as 'locking on raises the student's status'. The source says only that the status skills lock on and the students become observant. The supposed 'a beat behind → locked' change is not visible: the lag is 0.15 s before the lock and 0 after it, so the side flip is the only visible change.",
+    "evidence": "scenes.js line 438: gap = track([… [lock - 0.5, -120], [lock + 0.1, 124]]), lag = track([[lock - 0.5, 0.15], [lock + 0.1, 0]]), with lock = T('im.b12','盯住搭档') = 176.94. Frame 175.0 shows 学生 left of 搭档; frame 177.3 shows 学生 right of 搭档 with 锁定 under them. Claim im.impro-p44-lock-on: 'The automatic status skills then 'lock on to' the other actor, and the students are transformed into observant … improvisers.'",
+    "fix": "Keep the gap on one side through the lock: drop the [lock + 0.1, 124] key, or keep -120. Show the lock instead by making the pre-lock lag visible (for example 0.6–0.8 s while the partner moves at 163–165 s and during the b11 jitter) and collapsing it to 0 at the lock. The 锁定 bar and label already carry the meaning."
+   },
+   {
+    "severity": "should-fix",
+    "segment": "im.b14",
+    "at": "202.9–204.6 and 212.0–213.4",
+    "element": "rain-example strip (.im-panel ×3, .im-pcap, .im-read 本意 试雨 / ≠ / 读成 握手问候)",
+    "problem": "The three-panel example is shifted late. First, after the b13 diagram clears, the paper is empty apart from the section header for about 1.7 s while the narrator says '他举过一个例子：'. Then the payoff panel, '本意 试雨 ≠ 读成 握手问候', is fully visible for only about 1.1 s before the whole strip fades out for the q99 quote. That is too short to read three lines and take in the comparison the example exists to make.",
+    "evidence": "DOM probe: 试雨/握手问候 opacity is 1.0 from 212.0 to 213.2, 0.85 at 213.4 and 0 at 213.6. scenes.js: the b13 group hides at b14 - 0.4 = 202.66 (line 541), panel 1 shows at T('im.b14','伸出手') - 0.4 = 204.51 (line 560), the intent/neq/taken group shows at 会错了意 - 0.3 = 211.94 (line 569), and the strip hides at 别费心 - 0.75 = 213.19 (line 571). Frames 203.3 and 204.2 are blank paper; frames 212.6 and 213.3 show the payoff panel; frame 213.8 shows only the quote.",
+    "fix": "Show panels[0] at b14 + 0.1, so the empty frame becomes the frame that receives the hand. Reveal panel 3's content with the panel itself at T('im.b14','恼了') - 0.3 instead of at 会错了意. Hide the strip at 别费心 - 0.3, and fade q99 in at 别费心 (its blue mark lands at 已经给了你 = 215.45 anyway). Together this gives the payoff about 3 s."
+   },
+   {
+    "severity": "should-fix",
+    "segment": "im.b4",
+    "at": "69.0–70.2",
+    "element": ".im-calm '冲突之外 · 照常进行'",
+    "problem": "This label carries the point of the sentence: status transactions go on even without conflict. It fades in only after the narrator has finished '没起冲突的时候也一样' and is fully readable for under 1 s before it is cleared for the objection.",
+    "evidence": "DOM probe: opacity 0 at 68.8, 0.61 at 69.0, 1.0 from 69.4 to 69.8, 0.07 at 70.2. Anchors: 冲突 = 68.20, 反驳 = 70.21; the phrase runs about 67.9–69.5. scenes.js line 272 shows it at T('im.b4','冲突') + 0.65, and line 274 hides it at T('im.b4','反驳') - 0.4. Frames 69.3 and 70.0 show it; frame 70.6 does not.",
+    "fix": "Show it with the band at T('im.b4','冲突') - 0.1. Either remove calm from the K.hide list on line 274, so it rides up with the lane at 0.4 opacity (it sits in the lane box and lands at y≈540, clear of the objection at 600), or hide it at 朋友之间 - 0.35 together with the objection's entrance. That gives roughly 2–3 s."
+   },
+   {
+    "severity": "should-fix",
+    "segment": "im.b15, im.b7",
+    "at": "223.8–228.2 and 115.8–120.0",
+    "element": "q55 (.kq-en/.kq-zh, 'however willing the student is consciously…', right column) and q43 ('Finally I explain that I'm keeping my head still…') with the 自我感受/他人观感 arrows",
+    "problem": "Two long quotations are on screen for only about 4 s while a different paraphrase is spoken. q55 runs 5 lines of English and 3 of Chinese next to a second quote, and is gone before a viewer can read either language. In b7 the quote and both effect labels are cleared 0.3 s after '他人观感' lands, so that label is readable for about 1 s.",
+    "evidence": "DOM probe: 'however' reaches opacity 0.85 at 223.8 and 0 at 228.4 (about 4.4 s). The q43 group is at full opacity 115.8–120.0 (about 4.2 s); 他人观感 is 0.67 at 119.0 and 0.26 at 120.2. scenes.js line 594 shows q55 at 嘴上愿意 - 0.4 = 223.54, a full 1.2 s after its header h2 (教这些东西 - 0.2 = 222.32). Line 351 shows q43 at 明显改变 - 0.6 = 115.65, although the bust and the 头不动 label are already up at 113.6. Line 364 hides the q43 group at b8 - 0.4 = 119.84, but the first new b8 element (chainH) only arrives at 122.55.",
+    "fix": "For q55, show it with its header at T('im.b15','教这些东西') - 0.2, which gives about 5.6 s; b16's first items appear at 228.2, so the exit cannot move much later. For q43, show it at T('im.b7','头保持不动'), giving about 6 s. Hide the q43 group at b8 + 0.3 and start the bust's shrink and move (line 365) at b8 + 0.3 as well, which lets 他人观感 hold about 2 s."
+   },
+   {
+    "severity": "consider",
+    "segment": "im.b19",
+    "at": "274–298.9",
+    "element": ".im-core '地位是一种做法' (blue text); dashed connectors; .im-reading",
+    "problem": "Two problems in the closing composition. First, blue stays on the Johnstone core for about 23 s, from 276 until the scene ends, while the narration moves on to the series' own reading (279–288) and then the provenance rows (291–298). The reading's key line '看清在场者的地位升降' stays ink, so blue marks the wrong thing for most of the segment. Second, the two dashed connectors, which are this series' reading, are drawn at 274 with no '本系列的读法' label until 279, and that label then sits on a different box.",
+    "evidence": "scenes.css line 122 sets .im-core color var(--blue) and the scene never returns it to ink. Frames 279.6, 284.6, 291.6, 294.0 and 297.5 all show the blue core with an ink rd2. The connectors are drawn at T('im.b19','回到') - 0.25 = 273.9 (line 697) and the label appears at 推论 - 0.5 = 278.9.",
+    "fix": "At T('im.b19','推论') - 0.3, tween the core text to INK and give the blue to rd2, or to nothing. Optionally draw the connectors at 推论 together with the reading box, or put a small '本系列的读法' tag beside the connectors."
+   },
+   {
+    "severity": "consider",
+    "segment": "im.b9",
+    "at": "140.8–155.2",
+    "element": ".kq Qureshi quote + .im-chip '头不动' under '书中找到 p. 43'",
+    "problem": "The screen sorts five Qureshi examples into 'found' and 'not found', but the Qureshi quote on screen contains only four of them: standing tall, hands showing, slouching, hands in pocket. 头不动, the only 'found' item, has no Qureshi wording on screen. A fact-checker reading the picture sees a head-still example attributed to Qureshi with nothing on screen to back it.",
+    "evidence": "Claim im.qureshi-hands-head-examples: the statement_zh lists '说话时头不动是高地位、头左右乱动是低地位、站直露出双手…', but quote_en is only 'Standing tall with your hands showing is high status, slouching with your hands in your pocket is low status.' Frames 144.6–154.5 show the quote and the chips.",
+    "fix": "Ask the main session to extend the claim's quote_en and quote_zh to include Qureshi's head sentence, so the quote on screen covers every chip. Failing that, mark the 头不动 chip with its own short Qureshi tag."
+   },
+   {
+    "severity": "consider",
+    "segment": "im.b13",
+    "at": "188.1–202.8",
+    "element": "K.figure im.improv-imaginary-ball with caption '剧场游戏 · 想象中的球'",
+    "problem": "For 14.6 s the left 40% of the screen shows a generic Commons photo of an unnamed man miming a ball. It is not from Johnstone's book or classes, and the caption doesn't tie it to the narration about accepting and blocking. Coming one chapter after Johnstone's own portrait, a viewer may take it for one of his classes.",
+    "evidence": "assets.jsonl row im.improv-imaginary-ball: notes 'Actor mimes holding a ball (not viewed)'. Frame 199.8 at full resolution shows the photo beside the 搭档的动作 → 提议 → 接受/阻挡 diagram, which carries the whole idea.",
+    "fix": "Either make the caption say how it relates (for example '剧场游戏 · 一个动作就是一个提议', plus a note that this is not Johnstone's class), or drop the photo and let the offer diagram and the q95 quote take the width."
+   }
+  ],
+  "sheets": [
+   "<scratchpad>/review/ep02/s1-book.png",
+   "<scratchpad>/review/ep02/s2-status.png",
+   "<scratchpad>/review/ep02/s3-sub.png",
+   "<scratchpad>/review/ep02/s4-head.png",
+   "<scratchpad>/review/ep02/s5-partner.png",
+   "<scratchpad>/review/ep02/s6-offer.png",
+   "<scratchpad>/review/ep02/s7-caution.png",
+   "<scratchpad>/review/ep02/s8-uses.png",
+   "<scratchpad>/review/ep02/crop-131.4.png"
+  ]
+ },
+ {
+  "assembly": "ep02",
+  "lens": "words on screen and their evidence",
+  "overall": "The evidence discipline mostly holds. Every quotation comes from a checked ledger claim, and the source line sits under each cited fact. All on-screen numbers and dates match the ledger: 1979, 2007, 208 pages, the part openings 13/33/75/109/143/206, and the full pages 42–44, 46, 50, 55–56. I spot-checked quotes against the sources: Qureshi's hands line and Mabrey's status line against the snapshot and live post, the Georgia Straight \"perversion\" quote (a phone conversation, dated 18 Jul 2007), and the Impro text for pp. 94, 99 and 101 against published reading notes. All are verbatim. The book text is kept apart from Qureshi's recollection (b9) and from the journalist's report (b16), and the series' reading in b19 is dashed and labelled. What most needs fixing is a handful of short labels that say more than the evidence or drop a qualifier: \"常常不自知\", the chapter tag \"只高一点\", and the \"一手说法\" row with no scope. Cut-off quotes are not marked consistently, and the same idea is worded differently across chapter tags, labels and narration. verification/screen-text-ep02.md does not exist, so I built a fresh inventory from the stage in the scratch directory (review/ep02/inv.txt).",
+  "findings": [
+   {
+    "severity": "must-fix",
+    "segment": "im.b4",
+    "at": "68.9–70.1",
+    "element": "im-calm “冲突之外 · 照常进行”",
+    "problem": "The label is readable for only about one second, so most viewers cannot read it. It fades in after the word 冲突 has already been spoken and is hidden again before 反驳.",
+    "evidence": "Frames at 68.8/69.1/69.4/69.7/70.0/70.3 (sheet s5): absent at 68.8, present 69.1–70.0, gone at 70.3. In the code it shows at T('im.b4','冲突')+0.65 (≈68.85, with a 0.7 s fade) and K.hide([q33.root, calm, laneLab], T('im.b4','反驳')-0.4 ≈ 69.81).",
+    "fix": "Show it at T('im.b4','冲突')-0.2 and take `calm` out of the K.hide at `obj`. It is already a child of `lane`, so it will slide and dim with the lane and leave at b5 with the rest. Otherwise drop the label: the quote already says 'continue all the time'."
+   },
+   {
+    "severity": "should-fix",
+    "segment": "im.b13",
+    "at": "201.2–202.8",
+    "element": "im-note dim “常常不自知” (and narration 而且常常没察觉自己在挡)",
+    "problem": "The label raises the evidence strength. The ledger records that the source sentence breaks off at 'even though they may have no idea …', so the object of 'no idea' was never read, and 'may' became 常常 (often). The quote on screen stops at 'most prefer to block' and gives no basis for the label.",
+    "evidence": "im.impro-p95-prefer-block confidence_or_limits: “Snippet; the end of the sentence ('even though they may have no idea ...') is cut off.” Its quote_en ends “…but most prefer to block”. The label sits beside that quote at 202.0 (sheet s3).",
+    "fix": "Use 可能不自知 on screen and 甚至可能没察觉 in the narration. Better still, extend quote_en to '…most prefer to block, even though they may have no idea …' with a trailing ellipsis so the basis is visible. If the rest of the sentence cannot be read, drop the label."
+   },
+   {
+    "severity": "should-fix",
+    "segment": "im.b10–b12",
+    "at": "155.0–187.5 (contradiction visible at 163.0)",
+    "element": "chapter tag “只高一点”",
+    "problem": "The shortened tag drops the qualifier 或低一点. Johnstone's rule, the narration and the picture all cover both directions, and at 163 s the student pin sits below the partner while the tag reads 只高一点. Grammar principle 5: a shortened form keeps its qualifiers.",
+    "evidence": "script.json chapter title 只高一点. Narration b10: 只比搭档高一点，或者低一点. Quote im.impro-p44-above-below-partner: 'just a little above or below'. Frame 163.0 (sheet s2): 学生 sits left of 搭档 on the 低→高 axis.",
+    "fix": "Rename the chapter 只差一点 (or 高低只差一点) in script.json chapters."
+   },
+   {
+    "severity": "should-fix",
+    "segment": "im.b3–b9",
+    "at": "54.5–155.0",
+    "element": "chapter tags “地位是做出来的”, “头不要动”",
+    "problem": "Recurring ideas are worded differently. The tag 地位是做出来的 sits over the label 一种做法 (58.5 s), the title card 地位是一种做法 and the b19 box 地位是一种做法. The tag 头不要动 is a colloquial imperative, while the same idea appears on screen three times as 头不动 (bust label, the b9 chip, the Hamlet label). These two tags are also the only sentence or imperative forms among chapter tags that are otherwise noun phrases, in this episode and in eps 00–05.",
+    "evidence": "Inventory: chrome-chapter 02地位是做出来的 54.5–110.5 together with im-is 一种做法 58.5–63.5. 02头不要动 110.5–155.0 together with im-bust-lab 头不动 114.0–130.5 and im-chip 头不动 144.5–155.0. Other episodes' chapters: 一顶安全帽 / 两个版本 / 邮件洪水 / 病根…",
+    "fix": "Rename the chapters 地位是一种做法 (or 一种做法) and 头不动, so they match the screen labels and the noun-phrase form of the other tags."
+   },
+   {
+    "severity": "should-fix",
+    "segment": "im.b10, b13, b15, b16",
+    "at": "157.0–165.5, 199.0–203.0, 224.0–228.0, 230.5–248.5",
+    "element": "K.quote text for im.impro-p44-above-below-partner, im.impro-p95-prefer-block, im.impro-p55-resistance-safety, im.impro-p99-accept-all-offers, im.straight-2007-perversion",
+    "problem": "Omissions in cut-off quotes are marked inconsistently. Where the Chinese line opens with “……”, the English starts lower-case with no ellipsis ('however willing…', 'everything looks prearranged…', 'perversion.'). Two quotes stop mid-sentence with no mark in either language (“…really 'see' their partner” / “…看见’搭档”; “…most prefer to block”), so viewers read them as complete statements.",
+    "evidence": "Frames 163.0, 202.0, 227.0, 240.0 (sheets s2, s3). Ledger quote_zh starts with …… for p55, p99 and the Straight quote, but quote_en has no leading mark. The p44 and p95 quote_en values end without punctuation. The p.99 sentence in the book begins 'Good improvisers seem telepathic; everything looks prearranged.'",
+    "fix": "Add a leading '…' to quote_en for p55, p99 and the Straight quote, and a trailing '…'/'……' to both languages for p44 and p95. Or give claims a `cut: ['start','end']` field and have K.quote add the marks, so the two languages always agree."
+   },
+   {
+    "severity": "should-fix",
+    "segment": "im.b19",
+    "at": "276.0–298.5",
+    "element": "im-core “地位是一种做法” + im-core-by “Keith Johnstone · Impro”",
+    "problem": "The narration introduces 'Johnstone 那句话：地位是人正在做的一件事' and the screen shows a different Chinese wording in a solid box with a byline, so it reads as his quotation. It is the series' paraphrase, and it is the only Johnstone line on screen that does not come from the ledger. The source sentence is 'Status is a confusing term unless it's understood as something one does.', and the ledger has no quote_zh or screen_locator for it.",
+    "evidence": "im.impro-p36-something-one-does: quote_en 'something one does. You may be low in social status, but play high, and vice versa.', quote_zh None, screen_locator None. Narration b19 at 276.0–277.9: 地位是人正在做的一件事. Frame 277 (sheet s4).",
+    "fix": "Give the claim a quote_zh and put the English “…something one does.” under the box through K.quote, or drop the byline so the box reads as the series' summary sitting on the p. 36 source line. Either way, use one Chinese wording in both the narration and the box."
+   },
+   {
+    "severity": "should-fix",
+    "segment": "im.b7",
+    "at": "116.0–120.0",
+    "element": "im-eff-lab “自我感受” / “他人观感” and the kq-zh of im.impro-p43-head-still",
+    "problem": "One sentence gets three renderings at the same moment, and the two labels are not parallel. Johnstone says 'perceive myself and am perceived by others'. The quote_zh turns perception into feeling (对自己的感受 / 别人对我的感受), the labels split into 感受 and 观感, and the narration says 怎么看自己 / 别人怎么看他.",
+    "evidence": "Frame 118 (sheet s2). Ledger quote_zh: 这会大大改变我对自己的感受，也大大改变别人对我的感受. Narration b7: 改变他怎么看自己，也改变别人怎么看他.",
+    "fix": "Use the labels 自我观感 / 他人观感, and change quote_zh to 这会大大改变我怎么看自己，也大大改变别人怎么看我, so the quote, labels and narration agree."
+   },
+   {
+    "severity": "should-fix",
+    "segment": "im.b9",
+    "at": "141.0–155.0",
+    "element": "Qureshi quote (im.qureshi-hands-head-examples) with chips 书中找到: 头不动 / 可读书页中未见: 站直, 露出双手, 驼背, 手插口袋",
+    "problem": "The scene sorts Qureshi's examples by what the book shows, but the Qureshi quote on screen holds only the four hands and posture examples. The one example filed under 书中找到 (头不动) has no visible Qureshi source, so the comparison looks lopsided to a fact-checker.",
+    "evidence": "Qureshi snapshot: '…keeping your head still while talking is high status, whereas moving your head side to side a lot is low status. Standing tall with your hands showing is high status, slouching with your hands in your pocket is low status.' The ledger quote_en keeps only the last sentence. Frame 153 (sheet s2).",
+    "fix": "Extend quote_en and quote_zh to both of Qureshi's sentences (40 words, inside the ≤40-word note) so 头不动 is visibly his example. If space is tight, the head sentence alone can sit above the chips."
+   },
+   {
+    "severity": "should-fix",
+    "segment": "im.b19",
+    "at": "291.0–298.5",
+    "element": "im-from rows “一手说法 · Qureshi 2024 · Mabrey 2025” / “据书评 · Karp 与 Zamiska 合著 The Technological Republic”",
+    "problem": "The row drops the narration's scope (内部怎样用这本书). Read alone, it says Qureshi and Mabrey are the only first-hand accounts, but the ledger lists other first-hand narrators of the book's distribution, as well as Qureshi's 2025 podcast. The two row labels are also not parallel: 一手说法 is a noun phrase, 据书评 is a prepositional phrase, and only the first row carries years.",
+    "evidence": "Narration 290.6–292.7: Palantir 内部怎样用这本书，我读到的一手说法只有这两位. ov.wording_gradient (checked) names Agrawal, Blumenfeld-Gantz and Saraf as first-hand narrators. ov.podcast_impro_made_fde_read is Qureshi's 2025 interview. Frame 294 (sheet s4).",
+    "fix": "Add a heading 内部用法的出处 above the two rows, and make the rows parallel: 一手说法 | Qureshi 2024 · Mabrey 2025 and 书评转述 | Karp、Zamiska, The Technological Republic, 2025."
+   },
+   {
+    "severity": "should-fix",
+    "segment": "im.b17–b19",
+    "at": "252.0–259.5 (FDE), 260.0–298.5 (Ted Mabrey)",
+    "element": "im-fde “FDE”; column header “Ted Mabrey / 往里用 · Palantir 内部”",
+    "problem": "A first-time viewer of the standalone episode never learns what an FDE is or who Mabrey is. Neither the screen nor the narration expands FDE or gives Mabrey's role. Ep03 does both on screen, so the series is inconsistent.",
+    "evidence": "There is no expansion of FDE anywhere in ep02's script or scenes. The ep03 scenes draw 'Ted Mabrey / Palantir 全球商务负责人' and 'FDE / 驻客户现场的工程师'. The ledger claim ov.mabrey-title is checked.",
+    "fix": "Give the FDE box a second line, 驻客户现场的工程师. Make the right header 'Ted Mabrey / Palantir 全球商务负责人 · 往里用' and add ov.mabrey-title to the b18 source-line claim IDs."
+   },
+   {
+    "severity": "should-fix",
+    "segment": "im.b1",
+    "at": "31.5–44.5",
+    "element": "im-k “Royal Court Theatre · 伦敦 · 副总监”, im-v “探索：让演员更自发、更有反应”",
+    "problem": "Screen and narration disagree at the same moment. The narration says 伦敦皇家宫廷剧院的副艺术总监, the screen says Royal Court Theatre … 副总监. The narration says 更自然, the screen says 更自发, and the source (ITI) says 'spontaneous'.",
+    "evidence": "im.site-royal-court-post: 'Associate Director' / 副总监; its limits note that Google Books says 'Associate Artistic Director'. The Bloomsbury snapshot (line 1370) also has 'Associate Director'. im.iti-origin-spontaneous: 'more spontaneous, responsive and alive'. Frame 35 (sheet s1).",
+    "fix": "Use the title the cited claim supports in both places: change the narration to 副总监, or change the screen to 副艺术总监 and cite the Google Books blurb. Change the narration's 更自然 to 更自发. Consider 皇家宫廷剧院（Royal Court Theatre） so the heard and read names line up."
+   },
+   {
+    "severity": "consider",
+    "segment": "im.b2",
+    "at": "48.5–54.5",
+    "element": "legend “整页可读” and the p. 33–74 zoom",
+    "problem": "p. 40 is drawn as 仅检索片段 (snippets only), but the source record says Google shows p. 40 as a full page; the series only read a snippet crop of it. Pages 47–49, 51–54 and 57–71 were not read at all, yet they carry the same 仅检索片段 swatch.",
+    "evidence": "sources.json im:impro-routledge-2012 access: 'Full-page preview pp.40, 42-44, 46, 50, 55-56 (Google states pp.47-49 and 51-54 are not shown)'. read_scope: 'p.40 only a snippet crop… Not read: … 47-49, 51-54, 57-71'. The claim im.preview-scope omits p. 40.",
+    "fix": "Relabel the blue legend 整页读过 to match the narration's 我读到的, or add p. 40 to the full-page set. Align im.preview-scope with sources.json."
+   },
+   {
+    "severity": "consider",
+    "segment": "im.end and source lines",
+    "at": "308.0–315.0; 29.0–44.5; 293.5–298.5",
+    "element": "end card 出处 list; source lines",
+    "problem": "Credits are in no consistent style. Most Impro sources have no credit_zh, so the end card prints raw ledger titles ('keithjohnstone.com: landing, /writing, /video-1 pages', 'Google Books listing … publisher contents list', 'Commentary on The Technological Republic (Ted Mabrey)'). Some entries lack years (Straight 2007, Mabrey 2025). Source lines mix forms: 'Hollis Robbins, The Technological Republic 书评' has no year, and b1 lists bare site names.",
+    "evidence": "film/series.js line 68 uses s.credit_zh || s.title. Only im:bloomsbury-page-2022 and im:qureshi-2024 among the im: sources have credit_zh. Frame 310 (sheet s4).",
+    "fix": "Add a credit_zh in 'Author, Title, Year' form to each im: source, e.g. 'Guy MacPherson, Improv founder Keith Johnstone recants, Georgia Straight, 2007'. Write the b19 line as 'Hollis Robbins, The Technological Republic (Review), 2025'."
+   },
+   {
+    "severity": "consider",
+    "segment": "im.b13",
+    "at": "188.5–203.0",
+    "element": "photo im.improv-imaginary-ball with caption “剧场游戏 · 想象中的球”",
+    "problem": "Under the heading 'Spontaneity · Blocking and Accepting' the photo reads as Johnstone's exercise, but it is an unrelated theatre-game image. The asset record says it was never viewed, and AUTHORING says examples on screen come from sources.",
+    "evidence": "assets.jsonl im.improv-imaginary-ball notes: 'Actor mimes holding a ball (not viewed).' Neither the caption nor the ledger ties it to Impro.",
+    "fix": "Drop the photo and let the offer→accept/block diagram take the width, or view the image and keep it only if it is captioned as a generic illustration."
+   },
+   {
+    "severity": "consider",
+    "segment": "im.b6",
+    "at": "104.5–110.5",
+    "element": "kq-zh of im.impro-p43-status-specialist",
+    "problem": "The Chinese drops the 'very' that softens 'not very happy or competent' and makes it absolute.",
+    "evidence": "quote_en: 'but not very happy or competent at playing the other'. quote_zh: 演另一种时却既不自在，也不胜任.",
+    "fix": "演另一种时却不太自在，也不太胜任。"
+   }
+  ],
+  "sheets": [
+   "<scratchpad>/review/ep02/s1.png",
+   "<scratchpad>/review/ep02/s2.png",
+   "<scratchpad>/review/ep02/s3.png",
+   "<scratchpad>/review/ep02/s4.png",
+   "<scratchpad>/review/ep02/s5.png",
+   "<scratchpad>/review/ep02/inv.txt"
+  ]
+ }
+]

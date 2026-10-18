@@ -1,0 +1,516 @@
+[
+ {
+  "assembly": "ep00",
+  "lens": "Words on screen and their evidence: structural-text grammar (grammar.md principle 5), quote fidelity, claim support, screen vs narration, credits and source lines",
+  "overall": "The evidence base mostly holds. I checked every on-screen quotation against the Qureshi snapshot, and the Mabrey, Saraf, Agrawal and HN sources online, and each English quote is verbatim. Every number on screen (2015, 3–4 days, one year, four days, 8–12 weeks, the joining and writing years) has a source, apart from the two exceptions listed below. The weak spots are the paraphrased labels. The strike-through on \"难处 · 不在技术\" makes the friction scene say the opposite of what it means. The undated official page is labelled \"写于 2026\". \"无人讲过理由\" and the Impro chain's \"否则\" overstate or invert what the narration and source say. Dashed lines are also used for four different meanings before the legend teaches viewers that dashed means \"本系列的读法\". Smaller problems: the card glosses are lifted from the narration and do not match in form, two quotations are typed into the scene by hand instead of drawn from the ledger, and the end credits list the Qureshi essay twice. I could not check the Lenny's Podcast line (00:24:26) because no transcript snapshot exists locally and the episode page shows no transcript.",
+  "findings": [
+   {
+    "severity": "must-fix",
+    "segment": "ov.b12",
+    "at": "176.0–186.5",
+    "element": ".ov-tag.dim \"难处 · 不在技术\" (struck through) beside \"难处 · 组织里的政治\"",
+    "problem": "The whole phrase \"难处 · 不在技术\" is struck through. Crossing out a negative claim reads as denying it, so on screen the difficulty IS technical, the opposite of the intent. The label also drops the qualifier: narration says \"常常不是技术\", and the source lists technical difficulties before politics.",
+    "evidence": "Frames 183.0 and 185.8 (sheet s2) show the line-through on the full phrase. scenes.css:60 sets text-decoration line-through on .ov-tag.dim. Qureshi essay line 143: \"The data is often in different formats … But often what really gets in the way is organizational politics.\" Grammar principle 5: 缩略时不丢限定词.",
+    "fix": "Strike through only the noun: change the dim tag to \"难处 · 技术\" (struck) and keep \"难处 · 组织里的政治\". Alternatively, drop the strike and write \"常见的难处 · 组织里的政治\" alone."
+   },
+   {
+    "severity": "must-fix",
+    "segment": "ov.b6",
+    "at": "93.0–112.0",
+    "element": "provenance table row \"Palantir 官网入职页 | — | — | 未提及书 | 2026\" under the column head \"写于\"",
+    "problem": "The page has no date, yet the \"写于\" (written in) column gives 2026, the year it was captured. Viewers read it as a 2026 statement, which makes it look current and more authoritative than it is.",
+    "evidence": "Claim ov.official_pages_silent_on_books, confidence_or_limits: \"页面无日期\". sources.json ov:palantir-life, version_or_date: \"undated, fetched 2026-10-17\". Its screen_locator is \"Palantir, Life at Palantir（2026-10-17 抓取）\".",
+    "fix": "Change the cell to \"无日期\", or to \"2026 查\" with a footnote, and keep the column meaning \"date of writing\" for all rows."
+   },
+   {
+    "severity": "should-fix",
+    "segment": "ov.b19",
+    "at": "270.6–291.0",
+    "element": ".ov-legend \"无人讲过理由 · 本系列的读法\"",
+    "problem": "The legend upgrades \"I found no one\" to \"no one ever did\". Narration says \"另外两份，我没找到谁讲过理由\". That is a statement about the search, and the screen turns it into a claim about the world.",
+    "evidence": "script.json ov.b19. Claim ov.inf_interviewing_users_fit says \"没有任何一手理由\" only for what was searched. Grammar principle 4 (证据强度不变) and principle 5 (缩略时不丢限定词).",
+    "fix": "\"未见讲过的理由 · 本系列的读法\", or \"理由未见记载 · 本系列的读法\". Keep the form parallel with the solid legend \"在 Palantir 待过的人讲过理由\"."
+   },
+   {
+    "severity": "should-fix",
+    "segment": "ov.b16",
+    "at": "236.8–245.2",
+    "element": "Impro chain: \"在客户那里做成事\" → \"接进数据，有人用软件\" → \"否则就是失败\", with \"不太可能\" under each connector",
+    "problem": "The premise (\"不懂这些\") is missing, the boxes are positive outcomes, and \"不太可能\" hangs on the arrows. Read left to right, it says \"succeeding → unlikely → integrating data\". \"否则\" then flips the polarity again. Qureshi's chain is all negative: not knowing → unlikely to succeed → unlikely to integrate or get use → failure. Narration says \"那就意味着失败\", not \"否则\".",
+    "evidence": "Frames 241.0 and 244.4 (sheet s3). Essay line 162 / claim ov.qureshi-impro-chain: \"If you didn’t know all this, you were unlikely to succeed … Which meant you were unlikely to integrate customer data or get people to use your software. Which meant failure.\"",
+    "fix": "Add a first node \"不懂地位的机制\". Put the hedge inside the boxes (\"不太可能在客户那里做成事\" → \"不太可能接进数据、让人用上软件\") and end with \"失败\". Remove the edge labels and \"否则\"."
+   },
+   {
+    "severity": "should-fix",
+    "segment": "ov.b8",
+    "at": "113.5–121.0",
+    "element": ".ov-week: label \"FDE 的一周：三四天在客户的办公室\", day boxes 周一–周四 \"客户现场\", 周五 \"公司\"",
+    "problem": "The label says three or four days, but the drawing fixes four (Mon–Thu). Friday is labelled \"公司\", which no cited source says. One screen also calls the same place \"客户的办公室\" in the label and \"客户现场\" in the boxes.",
+    "evidence": "Claim ov.qureshi_fde_onsite_days: \"3-4 days per week\". The Mon–Thu wording exists only in the podcast (limits note, 00:19:43), which is not cited in this scene, and nothing in the ledger mentions Friday at the office. The source line cites only the essay.",
+    "fix": "Draw three solid days plus a fourth hatched or half-filled one. Leave Friday unlabelled, or label it \"其余时间\". Use one term, \"客户现场\", in both the label and the boxes (for example \"FDE 的一周 · 三四天在客户现场\")."
+   },
+   {
+    "severity": "should-fix",
+    "segment": "ov.b6–b10",
+    "at": "88.5–112.0; 108.5–112.0; 161.5–163.0",
+    "element": "dashed rows \"匿名留言\" and \"Palantir 官网入职页\" (.ov-tab-row.dash), the dashed verdict \"找不到依据的\" (.ov-verdict.open), and the dashed box \"隔着一层 / 一张压平了的需求清单\" (.ov-two.far)",
+    "problem": "The series uses dashed lines to mean \"本系列的读法\", and from 270 s the legend and map teach exactly that. Earlier, dashes mark a source of unknown identity, an official record, an absence finding, and the far side of Qureshi's own contrast. A source's statement (Qureshi on the flattened requirements list) is drawn in the inference style.",
+    "evidence": "scenes.css:24, :28 and :50 all set border-style dashed. AUTHORING.md: \"本系列自己的推论…用虚线…来源说过的关系用实线\". This is a settled decision. Claim ov.qureshi-cowen is eyewitness, not inference.",
+    "fix": "Mark weak or contrary accounts with grey ink or a tag such as \"匿名\" or \"官方\", using a solid rule. Draw the \"far\" box solid in grey. Keep dashes only for \"本系列的读法\"."
+   },
+   {
+    "severity": "should-fix",
+    "segment": "ov.b5–b7",
+    "at": "64.5–112.0",
+    "element": "\"入职\" column (Mabrey 2010, Agrawal 2013 …) and the verdict \"能确认的 · 2010–2015 年入职的几位，提到过其中几本\"",
+    "problem": "The joining years are on screen as fact, and the headline verdict rests on Mabrey's 2010. That year appears only in the limits note of ov.mabrey_stratechery_secret, a Stratechery interview that is neither cited in this scene's source line nor listed in the end credits. The claim that bundles the years, ov.cohort_and_dates, is in review_state needs-fix.",
+    "evidence": "ledger: ov.cohort_and_dates review_state \"needs-fix\". ov.mabrey_impro_given_on_joining says nothing about 2010. The source line reads \"Qureshi 2024 · Mabrey 2025 · …\", and the end card (325 s) has no Stratechery entry.",
+    "fix": "Fix and check ov.cohort_and_dates, or add a checked claim with each person's joining year and its source. Add its ID and \"Stratechery 2023\" to the provenance source line so it also reaches the credits."
+   },
+   {
+    "severity": "should-fix",
+    "segment": "ov.b15",
+    "at": "203.0–220.0",
+    "element": "K.quote ov.qureshi_why_looming_tower, Chinese line",
+    "problem": "quote_zh leaves out the opening clause of the English shown directly above it (\"The Looming Tower was obvious enough –\"). That clause is the one tying the sentence to the book, so the Chinese reads as a statement about the company only.",
+    "evidence": "Frames 210 and 217 (sheet s3). quote_en begins \"The Looming Tower was obvious enough – the company was founded …\". quote_zh begins \"公司创立，部分是为了回应 9/11 …\". Snapshot line 158 confirms the English.",
+    "fix": "Change quote_zh in claims.jsonl to begin \"The Looming Tower 的用意很明显：公司创立，部分是为了回应 9/11……\"."
+   },
+   {
+    "severity": "should-fix",
+    "segment": "ov.b10, ov.b15",
+    "at": "148.0–163.0; 215.5–220.0",
+    "element": "\"context is that which is scarce\" (.ov-cowen) and \"Agrawal 与 Blumenfeld-Gantz：这本书突出了了解对手的重要\" (.ov-aside)",
+    "problem": "Both quotations are typed into scenes.js instead of drawn from the ledger. The Cowen line's cited claim (ov.qureshi-cowen) carries a different quote_en, so the ledger guard never sees the words on screen. The Agrawal aside renders a quotation as plain attributed speech without quote marks, and its Chinese is clumsy (\"突出了了解对手的重要\", with no 性). The same pair is also named three ways on screen: \"Apoorv Agrawal 等\", \"Agrawal & Blumenfeld-Gantz\" and \"Agrawal 与 Blumenfeld-Gantz\".",
+    "evidence": "scenes.js:115 and :197. AUTHORING.md: \"画面上的引文一律用 K.quote … 不在场景里手写英文引文\". The Cowen phrase itself is verbatim (essay line 90). Agrawal sentence verified on tailwinds.substack.com.",
+    "fix": "Add a claim whose quote_en is \"Tyler Cowen has a wonderful saying, ‘context is that which is scarce’\" and render it with K.quote, or give ov.qureshi-cowen that quote. Either render ov.agrawal_looming_mandatory with K.quote, or reduce the aside to a label (\"Agrawal 与 Blumenfeld-Gantz · 了解对手\"). Use one name form for the pair throughout."
+   },
+   {
+    "severity": "should-fix",
+    "segment": "ov.b13",
+    "at": "190.5–193.0",
+    "element": ".ov-pilot-fill label \"拿数据权限\"",
+    "problem": "The label sits inside the box that is animated with scaleX from 0 to 1, so for about 2 s the text is squeezed horizontally to an illegible sliver while the narration is on this point.",
+    "evidence": "Frames 190.8 and 191.6 (sheet s4) show the glyphs crushed. scenes.js:166–170 animates the fill box that carries the span with gsap scaleX over 3.2 s.",
+    "fix": "Animate a background element, or clip-path or width, instead of scaling the label's box. Or show the label with K.show once the fill passes about 40 %."
+   },
+   {
+    "severity": "should-fix",
+    "segment": "ov.end",
+    "at": "321.0–328.0",
+    "element": "end credits \"出处\"",
+    "problem": "The same essay is listed twice, once as \"Nabeel S. Qureshi, Reflections on Palantir, 2024\" and once as \"Reflections on Palantir (Qureshi), Wayback 2024-12-31 capture in vault\". The second entry puts internal housekeeping text in front of viewers.",
+    "evidence": "Frame 325 (sheet s4). sources.json has two source_ids, main:qureshi-reflections and ov:qureshi-essay-archive, for the same URL, and the archive entry's title field is the internal note.",
+    "fix": "Point ov.qureshi-cowen and ov.qureshi-impro-chain at ov:qureshi-essay-archive, or merge the two sources, and give the archive record a viewer-facing title or credit_zh (\"Nabeel S. Qureshi, Reflections on Palantir, 2024\")."
+   },
+   {
+    "severity": "should-fix",
+    "segment": "ov.b2, ov.b14–b19",
+    "at": "23.5–51.5; 198.0–291.0",
+    "element": "reading-card glosses \"即兴戏剧 / 九一一之前的那些年 / 怎样访谈用户 / 管住手上的事 / Ray Dalio 的早期 PDF\"",
+    "problem": "The five glosses are not parallel. They mix a noun, a colloquial time phrase, a how-phrase, a verb-object and a description of format and author. Four of them are cut from the narration (\"写九一一事件之前的那些年\", \"讲一个人怎么管住手上的事\"). The fifth describes the format where the others describe the subject. The cards recur in two scenes.",
+    "evidence": "scenes.js:6–10. Grammar principle 5: 不从正文或旁白里截取句子 … 同类位置形式并列. AUTHORING.md: \"不从旁白里截句子\".",
+    "fix": "Use five parallel subject nouns, for example \"即兴戏剧 / 九一一前史 / 用户访谈 / 个人事务管理 / 决策与原则\". The fold corner already marks the PDF."
+   },
+   {
+    "severity": "consider",
+    "segment": "ov.b1, ov.b10, ov.b12",
+    "at": "13.0–51.5; 157.0–163.0; 174.5–186.5",
+    "element": "\"FDE：到客户那边上班、在现场写软件的工程师\", \"人家实际怎么干活的门道\", \"一张压平了的需求清单\", \"要把数据接进来\"",
+    "problem": "These labels are narration phrases copied onto the screen with their spoken register intact (\"那边\", \"人家\", \"怎么干活\", \"要\"). They are not condensed written labels.",
+    "evidence": "Narration in script.json for ov.b1, b10 and b12 contains each phrase word for word. Grammar principle 5 asks for 书面语，不带口语助词.",
+    "fix": "For example: \"FDE · 驻在客户现场写软件的工程师\", \"实际做法的隐性知识\", \"压平的需求清单\", \"接入客户数据\"."
+   },
+   {
+    "severity": "consider",
+    "segment": "ov.b17–b19",
+    "at": "246.0–256.5; 257.5–270.0; 274.0–284.0",
+    "element": "K.quote locator plus the bottom-left source line, both shown at once",
+    "problem": "Each quotation is attributed twice at the same moment, in two different styles (\"Ted Mabrey, Commentary on The Technological Republic, 2025\" next to \"Ted Mabrey, 2025\"). Source lines elsewhere switch between long and short forms. The Saraf locator also cuts the title short and lower-cases it (\"Lessons from Palantir alums\"; the real title is \"Lessons from Palantir Alums About Building a Tech Company\").",
+    "evidence": "Frames 250 and 262 (sheet s3). Saraf title verified on writing.ssaraf.com.",
+    "fix": "Drop K.source while a K.quote locator is on screen, or pass locator:false to K.quote. Use one locator style per episode, and give the Saraf screen_locator its full title or an explicit short title."
+   },
+   {
+    "severity": "consider",
+    "segment": "ov.b5–b6",
+    "at": "61.5–112.0",
+    "element": "table cells: Qureshi row \"四本书 · 一份 PDF | 入职时寄来\"; HN row \"读什么书\" in the \"提到的读物\" column",
+    "problem": "The Qureshi row says the PDF was sent at joining, but he says only that he \"also got\" it. In the HN row, the readings column holds a phrase rather than a reading, while the official row uses \"—\" for the same case.",
+    "evidence": "Claim ov.list_qureshi_principles_pdf: \"这是第一人称，没有说每个新人都拿到\"; quote_en \"I also got an early PDF version…\". scenes.js:58 and :62.",
+    "fix": "Split the cell to \"入职时寄来（四本）· 本人拿到（PDF）\", or move the PDF to a separate row. Put \"—\" (or \"未列书名\") in the HN row's readings cell."
+   }
+  ],
+  "sheets": [
+   "<scratchpad>/review/ep00/s1.png",
+   "<scratchpad>/review/ep00/s2.png",
+   "<scratchpad>/review/ep00/s3.png",
+   "<scratchpad>/review/ep00/s4.png"
+  ]
+ },
+ {
+  "assembly": "ep01",
+  "lens": "Words on screen and their evidence: structural text, quote fidelity, claim support, screen vs narration, credits and source lines",
+  "overall": "The words on screen mostly hold up. I checked about twenty quotations against the local snapshots: chapter 1 of the 2nd edition, the 1st-edition excerpt and table of contents, the 2012 worksheet and fieldwork-guide PDFs, and Qureshi's essay. I also checked the AMA and Greenbook passages live. Every one is verbatim. Every number and date matches its source: 2013, 2015, 2023, 1956, 2012, 2017, 2024, six weeks and four weeks, 8–12 weeks, chapters 2/3/6, and the zero products. Each scene also carries a source line while its facts are on screen. Most labels are condensed and parallel, and most quote_zh renderings are faithful. The one factual error is in b25: Qureshi's general 8–12-week pilot pattern, which he gives as a data-integration example, sits under a column headed \"驻场 · Airbus\" and is called \"一次试点\". After that, the most urgent fixes are the end credits (an internal \"capture in vault\" label, the same essay listed three times, and the list scrolling through the corner mark), the English-only Qureshi quote in b26, and a narration line in b20 that turns the worksheet's instruction into Portigal's habit, which b22 then contradicts.",
+  "findings": [
+   {
+    "severity": "must-fix",
+    "segment": "iu.b25",
+    "at": "355.0–365.0 s (frame 364.5)",
+    "element": "Left column 驻场 · Airbus: iu-cap '一次试点 · 8 到 12 周', bar '拿数据权限' + '演示'",
+    "problem": "The screen presents Qureshi's general 8–12-week pilot pattern as part of the Airbus engagement, and as a single pilot. Qureshi gives it as an example of data-integration politics across customers ('in some cases led to hilarious outcomes – you'd have a company buying an 8-12 week pilot…'), several paragraphs after and apart from the Airbus passage. The narration chains it straight after 'Airbus 那个项目，也是从…开始的；', so viewers will hear it as Airbus too. A smaller related point: the solid Airbus box is headed '起点 · 业务问题'. That is Portigal's term applied to Qureshi's account (the series' mapping), not Qureshi's wording.",
+    "evidence": "vault/snapshots/local/palantir-20261006/qureshi-reflections-on-palantir.html.txt: the A350 sentence is in the 'My first real customer engagement was with Airbus' passage; the pilot sentence is in the 'Why is data integration so hard? … organizational politics' paragraph. Claim ov.data_pilot_weeks statement_zh itself calls it '他举的后果' (of data politics). scenes.js lines 735–750 place pLab/pBar under hA = '驻场 · Airbus'. Frame 364.5 s shows the pilot bar directly under the Airbus box.",
+    "fix": "Screen: change the column head to '驻场 · Qureshi 的回忆' (or move 'Airbus' into the first box only: 'Airbus · CEO 眼里最大的难题：A350 产能爬坡'). Relabel the pilot row '常见的试点 · 8 到 12 周' instead of '一次试点'. Narration b25: split the two facts, e.g. '…Airbus 那个项目，也是从首席执行官最头疼的业务问题开始的。他还写过，有的客户买了八到十二周的试点，整段时间都耗在拿数据权限上；那个六周的研究……'."
+   },
+   {
+    "severity": "must-fix",
+    "segment": "iu.end",
+    "at": "405.5–412.5 s (frame 410.0)",
+    "element": "End card 出处 list (film/series.js end())",
+    "problem": "The credits list the same Qureshi essay three times. One entry is an internal provenance note rather than a credit: 'Reflections on Palantir (Qureshi), Wayback 2024-12-31 capture in vault'. The others are 'Nabeel S. Qureshi, Reflections on Palantir, 2024' and 'Reflections on Palantir（Nabeel Qureshi）'. Because the list is longer than it needs to be, it scrolls up through the corner mark: at 410 s the '出处' heading is cut off at the top edge and the first entry overprints 'Palantir 入职书单'.",
+    "evidence": "Full-resolution frame end-0410.000.png. series.js lines 64–69 key the Map by source_id and fall back to s.title when credit_zh is missing. ov:qureshi-essay-archive has title '…Wayback 2024-12-31 capture in vault' and no credit_zh. iu:qureshi-reflections-2024 has no credit_zh. main:qureshi-reflections has credit_zh 'Nabeel S. Qureshi, Reflections on Palantir, 2024'. All three share the URL nabeelqu.co/reflections-on-palantir.",
+    "fix": "In sources.json, give ov:qureshi-essay-archive and iu:qureshi-reflections-2024 credit_zh 'Nabeel S. Qureshi, Reflections on Palantir, 2024', and give every iu source a credit_zh so no raw title reaches the screen. In series.js, dedupe by value (`[...new Set(src.values())].sort()`). Optionally merge 'Debriefing Worksheet 1/2' into one line. Clip the scrolling column below the corner mark (start the list at y ≥ 190 with an overflow mask) so it never collides with the corner text."
+   },
+   {
+    "severity": "should-fix",
+    "segment": "iu.b26",
+    "at": "374.0–381.5 s (frame 378.0)",
+    "element": "K.quote ov.qureshi-language with kq-loc 'Qureshi, Reflections on Palantir, 2024'",
+    "problem": "This is the only quotation in the episode shown in English with no Chinese line. It is also the only one showing its own locator, and that locator's style ('Qureshi, …') differs from the episode's source lines ('Nabeel Qureshi, Reflections on Palantir, 2024'). Two credits are on screen at once: the TOC source line and the quote locator. The ledger's screen_locator values for this episode's claims use three different styles: 'Steve Portigal, Interviewing Users, 2nd ed., 2023, ch. 1'; '第 2 版 · 第 1 章' / '第 1 版 · 第 3 章' / '第 1 版 · 目录'; and 'Qureshi, Reflections on Palantir, 2024'.",
+    "evidence": "claims.jsonl ov.qureshi-language has no quote_zh. build/ledger.py applies ledger-patch.json only to the episode's own unit (iu), so the episode cannot supply one. Frame 378.0 s shows English only. iu.2e-third-parties, iu.1e-four-weeks and iu.1e-toc-worldview carry the '第 n 版 · …' locators.",
+    "fix": "The main session adds quote_zh to ov.qureshi-language, e.g. '你的成效，直接取决于你能多快学会说客户的语言，真正弄懂他们的业务怎么运转。'. In scenes.js, render it with locator:false and extend the bottom source line from T('iu.b26','也写过') to '… 目录 · Nabeel Qureshi, Reflections on Palantir, 2024'. Normalise the four odd screen_locator values to the 'Author, Title, ed., year, ch.' style."
+   },
+   {
+    "severity": "should-fix",
+    "segment": "iu.b20 / iu.b22",
+    "at": "283.5 s (b20 opening) vs 314.0 s (b22)",
+    "element": "Narration b20 '访谈一结束，他和同伴当场一起填一张复盘表' against the on-screen iu-ws-note 'Fill this out immediately after the interview, together with both interviewers.'",
+    "problem": "The screen correctly shows the worksheet's own instruction. The narration turns that instruction into Portigal's habit. Thirty seconds later, b22 shows his own words that he typically does not fill it in. A careful listener hears a contradiction, and the narration blurs 'what the form says' with 'what he does'.",
+    "evidence": "Claim iu.ws2-immediately statement_zh: '复盘表 2 要求访谈一结束就由两位访谈者一起填写'. Claim iu.ama-worksheet-optional quote 'After an interview, I might do a debrief worksheet – but typically not.' (confirmed on portigal.com AMA page). scenes.js line 599 turns the instruction blue on '当场', tying it to the narration.",
+    "fix": "Narration b20: '复盘表上写着：访谈一结束，两位访谈者当场一起填。表上多数栏目后面……'. Keep b22 as is ('他也说过，他自己通常并不填这张表')."
+   },
+   {
+    "severity": "should-fix",
+    "segment": "iu.b20–b21",
+    "at": "294.5–299.0 s and 299.5–313.5 s (frame 297.0)",
+    "element": "kq-zh '什么让他们感到意外？什么让你感到意外？' (iu.ws2-surprise); kq-zh '…什么让他们意外…' (iu.gb-debrief-frame)",
+    "problem": "At the moment the quote appears, the narration reads the same two questions in a different rendering: '他们被什么惊到了？你被什么惊到了？'. b21 again says '被什么惊到' under a quote that says '什么让他们意外'. Viewers read one Chinese wording while hearing another for the same English.",
+    "evidence": "script b20 '两个问题并排写着：他们被什么惊到了？你被什么惊到了？'. scenes.js line 617 shows qSur at T('iu.b20','两个问题') − 0.1. ledger-patch.json supplies the '意外' renderings.",
+    "fix": "Use one rendering in both places. Either change the two quote_zh values in episodes/01-user-research/ledger-patch.json to '他们被什么惊到了？你被什么惊到了？' and '…什么让他们惊到…', or change the narration to '他们对什么感到意外？你对什么感到意外？' and '被什么意外到' → '对什么感到意外'."
+   },
+   {
+    "severity": "should-fix",
+    "segment": "iu.b13",
+    "at": "189.5–197.0 s (frame 195.0)",
+    "element": "Card .iu-pcard.outside '受访者问题 / 不算计划的一部分' with dashed border and dashed '讨论时的岔路' line",
+    "problem": "Two problems with one card. (1) Next to '业务问题' (business problem) and '研究问题' (research question), '受访者问题' reads as 'the participants' problems', not 'questions to ask participants'; the source and narration mean the latter ('想问受访者的具体问题'). (2) It is drawn dashed, but its content is stated by the source, and the same episode uses dashed for '本系列的读法' (on the intro map, in b25 with a legend, and in b27). That breaks the rule that solid means stated by a source.",
+    "evidence": "Claim iu.plan-participant-guest: 'This isn't really part of the high-level plan… specific questions that people imagine asking participants.' scenes.css line 73 sets .iu-pcard.outside to border-style: dashed. The frame 195 s dashed card sits under the three solid plan cards.",
+    "fix": "Relabel to '问受访者的问题' (keep '不算计划的一部分'). Draw the card and the drift line solid in the soft grey (ink3); its position outside the row already says it is outside the plan."
+   },
+   {
+    "severity": "consider",
+    "segment": "iu.b16",
+    "at": "229.5–245.5 s (frame 244.0)",
+    "element": "iu-meet '第一场启动会' above kq-zh '在第一场工作坊上…到底指什么'",
+    "problem": "On the same screen the label calls the event a '启动会' and the quote calls it a '工作坊'. The narration also asks '到底指谁' while the screen says '到底指什么'.",
+    "evidence": "Source ch1 line 372: 'To kick off the project, we scheduled two activities (loosely based on the Questions Workshop)… In the first workshop…'. Script b16: '我们说的第三方，到底指谁？'.",
+    "fix": "Labels '第一场启动工作坊 / 第二场启动工作坊'. In narration b16, change '到底指谁' to '到底指什么' to match the quote."
+   },
+   {
+    "severity": "consider",
+    "segment": "iu.b11",
+    "at": "163.5–169.0 s (frame 166.0)",
+    "element": "iu-sum '看到的需求，可能是当事人忍得了的麻烦'",
+    "problem": "The on-screen summary drops the qualifier 'perfectly' (完全), which the narration keeps at the same moment ('可能正是对方完全忍得了的东西'). It also swaps the noun and the subject ('麻烦', '当事人').",
+    "evidence": "Claim iu.need-tolerated: 'What you observe as a need may actually be something that your customer is perfectly tolerant of.' quote_zh '…完全忍得了的东西'.",
+    "fix": "'看到的需求，可能是对方完全忍得了的事'."
+   },
+   {
+    "severity": "consider",
+    "segment": "iu.b18–b19",
+    "at": "262.5–283.0 s (frame 274.0)",
+    "element": "iu-label '随客户去现场之前'",
+    "problem": "'随客户去' suggests Portigal goes along with the client, which inverts the relationship the guide and the narration describe ('带客户一起去现场'; the client joins Portigal's team as second interviewer). The roles on the same screen say the opposite.",
+    "evidence": "Guide PDF: 'Thanks for joining our research team in the field… One of us (Portigal Consulting) will be the lead interviewer. You will be second interviewer.' Script b18: '带客户一起去现场之前'.",
+    "fix": "'带客户去现场之前'."
+   },
+   {
+    "severity": "consider",
+    "segment": "iu.b8",
+    "at": "116.5–122.0 s (frame 121.0)",
+    "element": "iu-label pair '设计师与工程师眼中' / '当事人自己'",
+    "problem": "The two labels name parallel viewpoints but are not parallel in form (…眼中 vs …自己).",
+    "evidence": "scenes.js lines 210–211.",
+    "fix": "'设计师与工程师眼中' / '当事人眼中'."
+   }
+  ],
+  "sheets": [
+   "<scratchpad>/review/ep01/s1.png",
+   "<scratchpad>/review/ep01/s2.png",
+   "<scratchpad>/review/ep01/s3.png",
+   "<scratchpad>/review/ep01/end-0410.000.png"
+  ]
+ },
+ {
+  "assembly": "ep01",
+  "lens": "The picture as a viewer experiences it with the narration: sync, pacing and holds, layout and legibility, visual grammar (solid/dashed/blue/red), and images.",
+  "overall": "Sync is the episode's strength. Almost every element is anchored to its word and lands 0.1–0.4 s before it. Lists respond item by item: the four worksheet tags, the three plan cards, the satisficing examples and the six weeks. Red appears only for the failed method and blue marks the point of each moment. The most serious problem is a grammar break in the shared engine. K.draw replaces the CSS dash pattern, so the dashed ties that should mark \"本系列的读法\" in b25 and b27 come out solid, right beside a legend that promises dashed lines. The intro map's connector is solid too, while the same map in the outro is dashed. On facts, the b25 comparison puts Qureshi's generic \"8-12 week pilot\" anecdote under a \"驻场 · Airbus\" heading, and it labels Portigal's business problem \"起点\", which contradicts b14. Smaller issues: a source-stated card drawn dashed in b13, a 1-second blink at the start of b12, and a Portigal photo too small to recognise.",
+  "findings": [
+   {
+    "severity": "must-fix",
+    "segment": "iu.b25, iu.b27 (also iu.b13, intro map)",
+    "at": "349–365 s (b25 ties), 386–396.6 s (b27 arrows), 195.1–197 s (b13 drift line), 4–19.5 s (intro map connector)",
+    "element": "SVG paths with class 'ln dash soft' drawn by K.draw: b25 tie1/tie2/tie3 (scenes.js 741, 760, 763), b27 step arrows (811), b13 drift line (415); series map connector (film/series.js 123, 136)",
+    "problem": "Lines that should be dashed (the series' own reading) render solid, which in this film's grammar means \"stated by a source\". In b25 the solid ties sit directly under the '------ 本系列的读法' legend, so the comparison Airbus ↔ Interviewing Users ↔ 相近的处境 reads as sourced. Only the CSS-bordered '相近的处境' box keeps its dashes. The b27 arrows between the dashed step boxes are solid as well.",
+    "evidence": "film/kit.js lines 94–104: draw() sets q.style.strokeDasharray = len + ' ' + len, and this inline value overrides `.ln.dash { stroke-dasharray: 6 9 }` (film/film.css:64). In the full-res frame at 364.5 s the three ties at y=395, y=645 and x=960 are continuous solid strokes. At 393.0 s the arrows between the b27 boxes are solid. At 195.5 s the drift line is solid. Intro map at 8.0 s (drawn via K.draw): connector solid. Same map in the outro at 397.6 s (show:false, not drawn): connector dashed.",
+    "fix": "Fix it once in film/kit.js, which the main session owns: in draw(), when the path's classList contains 'dash', reveal it without touching stroke-dasharray, e.g. animate a clip-path/mask rect or fade it in with K.show. Alternatively, restore the pattern when the stroke completes: tl.set(q, { strokeDasharray: '', strokeDashoffset: 0 }, at + duration). Afterwards re-render 364.5, 393 and 8.0 to confirm. The same pattern is used in ep00 (scenes.js 150) and ep02 (scenes.js 695), so check those too."
+   },
+   {
+    "severity": "must-fix",
+    "segment": "iu.b25",
+    "at": "355.0–365.1 s",
+    "element": "iu-cap '一次试点 · 8 到 12 周' and iu-pilot bar '拿数据权限 | 演示', placed in the left column under iu-colh '驻场 · Airbus'",
+    "problem": "The picture attributes Qureshi's 8–12-week pilot anecdote to the Airbus engagement. In the essay it is a generic example from the data-integration section (\"you'd have a company buying an 8-12 week pilot … in some cases led to hilarious outcomes\"). It is not about Airbus, where he was embedded for a year. A fact-checker would flag the column as misleading. The narration chains it the same way (\"Airbus 那个项目…；八到十二周的试点耗在拿数据权限上\").",
+    "evidence": "Frame 364.5 s: the bar and its label sit directly below the '驻场 · Airbus' heading at (200,240). Claim ov.data_pilot_weeks reads '他举的后果：客户买了8–12周的试点' with locator 'cleaned line 42'; ov.airbus_toulouse_a350 is at 'cleaned lines 30 and 32'. Vault snapshot qureshi-reflections-on-palantir.html.txt: the pilot sentence is in the 'Why is data integration so hard?' paragraph, separate from the Airbus/Toulouse paragraphs.",
+    "fix": "Retitle the left column to '驻场 · Qureshi 的回顾'. Label the top card 'Airbus · CEO 眼里最大的难题：A350 产能爬坡' and the bar '常有的试点（文中泛指）· 8 到 12 周'. Or give the pilot its own small heading so it is visibly not under Airbus. Reword the narration to match, e.g. '他还写过，常有客户买了八到十二周的试点，全耗在拿数据权限上'."
+   },
+   {
+    "severity": "should-fix",
+    "segment": "iu.b25",
+    "at": "353.1–365.1 s",
+    "element": "Right-column iu-from card '起点 · 业务问题 / 研究计划的第一项'",
+    "problem": "The solid (source-stated) card says the business problem is Portigal's starting point. b14 (197–212 s) just showed the opposite on screen: '可能的起点' with three different entries, and the narration said '项目也不一定从业务问题开头'. Portigal lists the business problem first in the plan; he does not say projects start there. The two screens contradict each other.",
+    "evidence": "Frame 364.5 s shows the card text. Frames 204–212 s show the '可能的起点' chips 一个处境 / 一个研究问题 / 一个方法与工期 above the three plan cards. Claim iu.plan-nonlinear-starts states projects may start from any of the three. iu.plan-summary only lists the plan's contents.",
+    "fix": "Drop '起点' from the Portigal card. Label it '业务问题 · 研究计划的第一项' (or '他会往回问到业务问题'). Keep '起点 · 业务问题' only on the Airbus card, which Qureshi's text supports."
+   },
+   {
+    "severity": "should-fix",
+    "segment": "iu.b13",
+    "at": "189.3–197.0 s",
+    "element": "iu-pcard.outside '受访者问题 · 不算计划的一部分' (dashed border), plus the drift line labelled '讨论时的岔路'",
+    "problem": "A statement Portigal makes himself is drawn in the dashed style the series reserves for its own reading, and no legend is on screen. A viewer who learned in the intro that dashed means '本系列的读法' will take this card as the series' inference. AUTHORING says '同一屏不混用两种含义'.",
+    "evidence": "scenes.css:73 sets `.iu-pcard.outside { border-style: dashed }`. Frames 190.0 and 195.5 s show a dashed card under the 研究问题 card. Claim iu.plan-participant-guest ('This isn't really part of the high-level plan…') is direct-source. The scenes.js header comment acknowledges it as the one exception.",
+    "fix": "Draw the card with a solid grey (ink3) border. Show 'outside the plan' spatially instead: put a solid bracket labelled '计划' over the three plan cards and set the participant-question card below and outside it. Keep the drift line solid (it already renders solid; see the K.draw finding)."
+   },
+   {
+    "severity": "should-fix",
+    "segment": "iu.b12",
+    "at": "168.5–173.1 s",
+    "element": "Opening timeline of the plan scene: grey line, '访谈' (dim), '开工' tick, blue '计划' bar and label",
+    "problem": "For about 2.4 s the screen holds only a thin grey line and a dim '访谈'. Then the 开工/计划 diagram builds and is fully readable for only about 1.1 s before it fades for '一份研究计划'. The one image of the chapter's idea ('the work goes in before the start') is a blink a first-time viewer barely registers. A smaller instance is the '缺口' label in b21, visible about 0.8 s (310.3–311.05 s).",
+    "evidence": "Anchors: 开工之前 = 171.37 s and 研究计划 = 173.32 s. The tick is drawn at 170.87, the blue bar at 171.32–171.92, and everything is hidden at 172.72 (0.4 s fade). Frames 168.9 and 170.4 s are nearly empty. At 171.8–172.6 s the diagram is complete. At 173.0 s it is fading. At 173.2 s only '一份研究计划' remains.",
+    "fix": "Start the tick, '开工', the blue bar and '计划' from the scene start (about 168.8 s), so the idea is on screen while '要挖到东西' is spoken. Keep it until the cards arrive, ideally by shrinking or moving the blue '计划' segment up into the '一份研究计划' heading so the cards grow out of it, rather than fading it at 172.7 s."
+   },
+   {
+    "severity": "should-fix",
+    "segment": "iu.b1",
+    "at": "31.3–34.1 s",
+    "element": "K.figure iu.portigal-lift11-5415516596 at (1200,556) 600×300, with caption 'Steve Portigal 受托访谈安全帽使用者'",
+    "problem": "The photo is meant to show who Portigal is, but he is a small figure on a dark stage. Even after the 2.6× in-frame scale his face is about 25 px tall, and the two-line credit bar covers his lower body. It is on screen for about 2.4 s, so a viewer cannot recognise him. The image adds clutter without information.",
+    "evidence": "Full-res frame 33.8 s: the speaker occupies roughly 60×240 px inside the 600×300 frame, and the credit 'Ivo Näpflin / Lift Conference, CC BY 2.0, via Wikimedia Commons' wraps to two lines over the bottom 65 px. It shows at T('被请去')−0.5 = 31.29 s and is hidden at b2−0.45 = 34.11 s.",
+    "fix": "Crop to head and shoulders at about 5–6× around his face, and move the credit outside the image (a one-line credit under it). Or use one of the other Lift11 frames already in assets.jsonl (5414906513, 5415517296) if they are closer; they are not fetched yet. If no legible crop exists, drop the photo and keep the name caption."
+   },
+   {
+    "severity": "consider",
+    "segment": "iu.b17",
+    "at": "251.3–252.6 s",
+    "element": "sixWeeks() label '商定访谈哪几类顾客' (white text) over the filling iu-wk-fill bar",
+    "problem": "The white label fades in while the dark fill is only about half-grown, so its last characters (几类顾客) sit on the light unfilled cells and wash out for about 1.3 s, right as the narrator says '哪几类顾客'.",
+    "evidence": "Crop of the 251.5 s frame: '商定访谈哪几' is white on dark, and '几类顾客' is white on #e4e8ef, nearly invisible. The fill runs from 定下−0.2 = 250.05 s for 2.8 s (ends 252.85). The label shows at 哪几类−0.1 = 251.28 s.",
+    "fix": "Show the label when the fill completes (e.g. at fill start + 2.8 s), or shorten the fill to finish before 哪几类. Alternatively clip the label to the fill's width."
+   },
+   {
+    "severity": "consider",
+    "segment": "iu.b16",
+    "at": "229.5–239.4 s",
+    "element": "First kickoff quote (iu.2e-third-parties), 37 px, five lines EN and three lines ZH",
+    "problem": "This is the longest static hold in the body, about 10 s with nothing moving, while the narrator paraphrases the quote line by line.",
+    "evidence": "Frames 230.5, 234.0 and 237.0 s are identical. The next change is the second kickoff at 另一场会−0.25 = 239.1 s. The narration passes 第三方 at 233.17 s and 以为 at 235.98 s.",
+    "fix": "Blue-tint the words being spoken: 'third parties' and its 第三方 rendering at 233.0 s, then 'I assumed they knew, and they assumed I knew!' and 我以为他们知道，他们以为我知道 at 235.8 s, and return them to ink when the second quote enters."
+   },
+   {
+    "severity": "consider",
+    "segment": "iu.b6",
+    "at": "96.3–105 s",
+    "element": "iu-use author card '作者公布的材料 / 工作表格 / 采访' at x 760–1160 under the time axis",
+    "problem": "The card sits under a to-scale year axis (2013 at x=360, 120 px per year), so it reads as dating from about 2016–2019. The worksheets and fieldwork guide are from 2012 (before the 1st edition), the AMA from 2017 and the podcast from 2024. The other two cards are tied to their edition dots, which makes the untied middle card look placed in time.",
+    "evidence": "Frame 102.0 s: the middle card sits between the 'Qureshi 入职' (2015) and '第 2 版' (2023) dots. The source lines later state 2012 for the worksheets and guide and 2024 for the Greenbook podcast.",
+    "fix": "Move the author-materials card off the axis's span: put it below the other two, full width, with a small heading such as '书以外 · 2012–2024'. Or give it its own small year ticks (2012, 2017, 2024)."
+   }
+  ],
+  "sheets": [
+   "<scratchpad>/review/ep01/s1.png",
+   "<scratchpad>/review/ep01/s2.png",
+   "<scratchpad>/review/ep01/s3.png",
+   "<scratchpad>/review/ep01/s4.png",
+   "<scratchpad>/review/ep01/s5.png",
+   "<scratchpad>/review/ep01/s6.png",
+   "<scratchpad>/review/ep01/s7.png",
+   "<scratchpad>/review/ep01/s8.png",
+   "<scratchpad>/review/ep01/s9.png",
+   "<scratchpad>/review/ep01/s10.png",
+   "<scratchpad>/review/ep01/z-dash.png",
+   "<scratchpad>/review/ep01/z-map.png",
+   "<scratchpad>/review/ep01/z-251.png"
+  ]
+ },
+ {
+  "assembly": "ep00",
+  "lens": "The picture as a viewer experiences it with the narration: sync, pacing and holds, layout and legibility, visual grammar, images",
+  "overall": "The episode is clean and calm. The five-card opening, the provenance table that fills row by row as each witness is named, the A350 photo with its on-image credit, and the series map whose words turn blue on the narrator's words are well synced and readable. Two drawings say something different from the narration and must be fixed. The Impro causal chain hangs \"不太可能\" on the links between positive outcomes and leaves out the premise. The friction scene strikes through \"难处 · 不在技术\", which is a double negative. Below that, the main weaknesses are systematic. Dashed lines appear four times for sourced statements before the episode teaches the viewer that dashed means \"本系列的读法\", and the two dashed cards go unexplained for 72 s. Three scene changes hard-cut to about a second of empty paper. Several long holds miss the narration's new content: 15 s on the photo while the A350 ramp problem is described, 9.6 s in b1, and the b4 hedge.",
+  "sheets": [
+   "<scratchpad>/review/ep00/s1.png",
+   "<scratchpad>/review/ep00/s2.png",
+   "<scratchpad>/review/ep00/s3.png",
+   "<scratchpad>/review/ep00/s4.png",
+   "<scratchpad>/review/ep00/s5.png",
+   "<scratchpad>/review/ep00/s6.png",
+   "<scratchpad>/review/ep00/full/f.png"
+  ],
+  "findings": [
+   {
+    "severity": "must-fix",
+    "segment": "ov.b16",
+    "at": "233.4–245.2",
+    "element": ".ov-step ×3 + .ov-unlikely 不太可能 ×2 (scene ov-reasons)",
+    "problem": "The Impro causal chain is drawn in a way that reverses Qureshi's logic. The \"不太可能\" labels sit under the connectors between two positive outcomes, so the drawing reads \"在客户那里做成事 → (不太可能) → 接进数据，有人用软件 → (不太可能) → 否则就是失败\". That says succeeding at the client makes getting data unlikely. The premise \"不懂这些\" is never drawn, and \"否则\" is not in the claim. From 233.4 to 236.5 the lower screen is also empty while the narrator speaks the premise.",
+    "evidence": "Full frame at 244.4 shows the labels centred under the connectors at y≈720. Claim ov.qureshi-impro-chain reads: \"If you didn't know all this, you were unlikely to succeed in a customer environment. Which meant you were unlikely to integrate customer data or get people to use your software. Which meant failure.\" Narration reaches 不懂这些 at 234.31, but the first box appears only at 236.52, and the quote has faded by 233.4.",
+    "fix": "Start the chain with a premise node \"不懂地位的机制\" at T('ov.b16','不懂这些')-0.2. Phrase the middle steps as the unlikely outcomes and put the label inside or above each box, e.g. [不懂这些] → [不太可能在客户那里成事] → [不太可能接进数据、有人用软件] → [失败] (red). The connectors stay plain solid arrows. Drop \"否则\"."
+   },
+   {
+    "severity": "must-fix",
+    "segment": "ov.b12",
+    "at": "175.9–186.6",
+    "element": ".ov-tag.dim 难处 · 不在技术 (line-through), .ov-tag 难处 · 组织里的政治",
+    "problem": "The text \"不在技术\" is struck through. Crossing out \"not technical\" reads as \"it is technical\", the opposite of what the narration says (现场最难的，常常不是技术). The second tag also drops the source's hedge: the narration says 往往 and the screen states it flat.",
+    "evidence": "Full frame at 176.5 shows grey, struck-through \"难处 · 不在技术\" (CSS .ov-tag.dim uses text-decoration: line-through) while the narration's 常常不是技术 runs 175.49–176.5. Claim ov.data_politics_essay: \"often what really gets in the way is organizational politics\".",
+    "fix": "Strike only the rejected candidate: change the text to \"难处 · 技术\" and keep the line-through. Alternatively keep \"常常不在技术\" without the strike. Make the second tag \"往往是组织里的政治\"."
+   },
+   {
+    "severity": "should-fix",
+    "segment": "ov.b6–b7, ov.b10, ov.b12",
+    "at": "88.0–112.5; 161.4–163.0; 179.2–186.6",
+    "element": ".ov-tab-row.dash (匿名留言, 官网入职页), .ov-verdict.open 找不到依据的, .ov-two.far 隔着一层, friction 'reach' path (ln dash soft)",
+    "problem": "Dashed lines appear four times for things that are not the series' reading, and none of them is labelled. They mark weaker or contrary sources (HN and the official page), the 'not found' verdict, the far side of Qureshi's own contrast (需求清单), and an FDE's attempted reach to the data. At 270.6 the episode tells the viewer that dashed means \"本系列的读法\", which retroactively misreads these earlier screens: for example, the HN comment and the official page look like the series' inference.",
+    "evidence": "Full frame at 108.8 shows dashed rules above the last two table rows and a dashed left rule on 找不到依据的. Frame 162.2 shows a dashed box around 隔着一层. Frames 182.3–186.3 show a dashed grey line from the FDE box to the red gate. AUTHORING: 本系列自己的推论…用虚线…并写明“本系列的读法”；来源说过的关系用实线。同一屏不混用两种含义.",
+    "fix": "Draw these with solid lines in a lighter weight or grey (var(--ink3) or var(--rule)) so dashed keeps its single meaning. If 找不到依据的 is meant as the author's own judgement, label it 本系列的读法. In the friction scene, a solid soft line already reads as 'trying to reach'; the red gate carries the blockage."
+   },
+   {
+    "severity": "should-fix",
+    "segment": "ov.b14–b19",
+    "at": "197.5–270.6",
+    "element": ".ov-card.small.dashed (Interviewing Users, Principles)",
+    "problem": "The two 'no stated reason' cards are dashed from the moment the scene builds, but the legend that explains dashed (无人讲过理由 · 本系列的读法) only appears in b19. For 73 s the viewer sees two dashed cards with no explanation. Until 201.4 the dashed borders are even more prominent than the pale solid borders of the three stated cards.",
+    "evidence": "Frames 199.0 and 201.6 show dashed ink3 borders on the IU and Principles cards next to the light solid --rule borders of the other three. The class is added at build time (ours.forEach(k => byKey[k].classList.add('dashed'))), and tagO shows at T('ov.b19')+0.1 = 270.59.",
+    "fix": "Build all five cards with the same neutral border. At T('ov.b19')+0.1, switch the two cards to dashed (tween the border style or class) in the same beat as tagO. Alternatively, show both legends together at T('ov.b14','三份')."
+   },
+   {
+    "severity": "should-fix",
+    "segment": "ov.b3→b4, ov.b7→b8, ov.b13→b14, ov.b8→b9",
+    "at": "51.59–52.6; 112.49–113.3; 196.66–197.55; 121.57–122.87",
+    "element": "scene boundaries ov-books→ov-provenance, ov-provenance→ov-field, ov-friction→ov-reasons; week→photo inside ov-field",
+    "problem": "Three scene changes cut hard to empty paper. The outgoing scene vanishes on its last frame with no fade, and the incoming scene's content arrives 0.8–1.0 s later, so the screen blinks to blank. The \"0\" punchline (the episode's title idea) gets only about 1 s of full visibility before the cut. Inside ov-field, the screen is empty for 1.3 s while the narrator says 他第一个真正的客户是.",
+    "evidence": "Frame 51.5 is full and 51.7 is blank, with 52.0–52.3 showing only the chapter tag. Frames 112.3 full / 112.6 blank / 113.0 chapter tag only. Frames 196.6 / 196.9 blank / 197.3 tag only. Frames 121.8 and 122.4 show only chrome and the source line. Scene ends at T(b3,'end')+0.7, T(b7,'end')+0.6 and T(b13,'end')+0.6, while the next scene begins about 0.45 s later.",
+    "fix": "Overlap the scenes as ov-field→ov-friction already does. Give each outgoing scene a 0.4 s opacity fade and extend its `to` until the incoming scene has faded in, e.g. ov-books to T('ov.b4')+0.3 with the fade starting at T('ov.b4')-0.1. In ov-field, bring the photo in at T('ov.b9')+0.1, cross-dissolving with the week strip."
+   },
+   {
+    "severity": "should-fix",
+    "segment": "ov.b9",
+    "at": "125.2–140.2",
+    "element": ".kfig A350 photo + .ov-facts",
+    "problem": "The picture does not change for 15 s while the narration introduces new content: the Airbus CEO's biggest problem, ramping up A350 production. That problem is why the software exists, and nothing on screen marks it.",
+    "evidence": "Frames 125.0, 128.0, 131.0, 135.0 and 138.0 are identical. Narration reaches 首席执行官 at 130.60, 最头疼 at 133.17, 产量 at 135.60 and 写软件 at 139.30, and the chips only appear at 140.22. The claim ov.airbus_toulouse_a350 statement covers the CEO's A350 ramp problem.",
+    "fix": "At T('ov.b9','最头疼')-0.1, add a line in the empty right column between the facts and the chips, e.g. \"CEO 的难题 · A350 产量爬坡\". At T('ov.b9','工单'), let the three chips come out from under it."
+   },
+   {
+    "severity": "should-fix",
+    "segment": "ov.b1",
+    "at": "7.2–23.1",
+    "element": ".ov-who / .ov-who-gloss",
+    "problem": "For 16 s the frame holds a name and two small lines in a top-left band, and most of the screen is empty. From 13.5 to 23.1 nothing changes, and when the narration says 公司寄给他四本书 the screen does not respond.",
+    "evidence": "Frames 13.6, 18.0 and 21.5 are identical. The name block spans roughly 40% of the width. Narration reaches 四本书 at 21.31, but the first card shows only at 23.13 (Impro).",
+    "fix": "At T('ov.b1','四本书')-0.15, bring in the empty outlines of the card row (four solid outlines, with the fifth added when PDF is said). b2 then fills them with titles. This answers \"四本书\" and puts the main subject on screen earlier."
+   },
+   {
+    "severity": "should-fix",
+    "segment": "ov.b4",
+    "at": "52.8–60.9",
+    "element": "K.quote ov.list_qureshi_four_books",
+    "problem": "The quote holds unchanged for 8 s. When the narrator reaches the point of the segment (他不确定公司现在还这么做), its exact words, \"I'm not sure if they still do this\", are on screen but nothing marks them.",
+    "evidence": "Frames 55.0, 58.6 and 60.9 are identical. Narration reaches 不确定 at 58.58 and 还这么做 at 59.67.",
+    "fix": "Colour the opening clause of kq-en and kq-zh in blue at T('ov.b4','不确定')-0.1. Wrap the clause in a span after K.quote builds, keeping the ledger text unchanged."
+   },
+   {
+    "severity": "should-fix",
+    "segment": "ov.b5–b7",
+    "at": "61.0–112.5",
+    "element": ".ov-tab-row cells 写于 / 入职",
+    "problem": "The table's 写于 column gives \"2026\" for the Life at Palantir page. The page is undated; 2026 is only when it was fetched, so a fact-checker would flag this as a wrong authorship date. Mabrey's join year \"2010\" is supported only by claim ov.cohort_and_dates, which is not among the IDs on this screen's source line.",
+    "evidence": "Full frame at 108.8 shows the row \"Palantir 官网入职页 — — 未提及书 2026\". sources.json ov:palantir-life has version_or_date \"undated, fetched 2026-10-17\", and the claim locator says \"2026-10-17 抓取\". The source line carries mabrey_impro_given_on_joining, agrawal_looming_mandatory, saraf_gtd_mandated, hn_2016_optional_by_role and official_pages_silent_on_books, but not cohort_and_dates.",
+    "fix": "Change the cell to \"2026 查阅\" (or rename the column 时间 and write 未注日期). Add 'ov.cohort_and_dates' to the K.source claim list."
+   },
+   {
+    "severity": "should-fix",
+    "segment": "ov.b7",
+    "at": "103.8–112.5",
+    "element": ".ov-tab-row 怎么说 cells tweened to #1f4fe0",
+    "problem": "Blue builds up instead of marking the point of the moment. By 107 s four 怎么说 cells are blue and they stay blue. At 108.4 the actual point, 找不到依据的 / 一份公司正式发布的书单, appears in ink next to four blue cells.",
+    "evidence": "Frames 107.3, 108.8 and 111.0 show four blue cells. The highlights are tweened to blue at 103.79, 104.91 and 106.90 and never revert. The series rule is that one blue accent marks the point of the moment.",
+    "fix": "Revert each cell to ink about 0.9 s after it lights, as the b20 map already does. Alternatively, dim all of them at T('ov.b7','正式的书单')-0.2 so the verdict is the only emphasis."
+   },
+   {
+    "severity": "should-fix",
+    "segment": "ov.b13",
+    "at": "190.1–193.3",
+    "element": ".ov-pilot-fill label 拿数据权限",
+    "problem": "While the bar grows, the label is squashed sideways and barely readable for about 3 s, because scaleX is applied to the box that contains the text.",
+    "evidence": "Full frame at 191.5 shows 拿数据权限 compressed to about a third of its width. The code is gsap.set(fill,{scaleX:0}) then tl.to(fill,{scaleX:1,duration:3.2}).",
+    "fix": "Animate the fill's width or clip-path (inset right 100%→0) instead of scaleX. Alternatively, put the label in a sibling element over the bar and fade it in once the fill has passed it."
+   },
+   {
+    "severity": "should-fix",
+    "segment": "ov.b8",
+    "at": "113.3–121.6",
+    "element": ".ov-week / .ov-day (周一–周四 客户现场, 周五 公司)",
+    "problem": "The week drawing makes \"three to four days\" look like exactly four. It also states a fact no source gives: that the fifth day is spent at the company.",
+    "evidence": "Frames 116.5 and 119.5 show four filled days and a fifth labelled 公司. Claim ov.qureshi_fde_onsite_days says \"3-4 days per week, which meant a ton of travel\" and says nothing about the remaining day.",
+    "fix": "Fill 周一–周三 solid, draw 周四 hatched or half-filled to show it is sometimes onsite, and leave 周五 unlabelled or drop the day names and show \"3–4 / 5\"."
+   },
+   {
+    "severity": "should-fix",
+    "segment": "ov.b11",
+    "at": "170.5–173.1",
+    "element": ".ov-node.plain 别的客户 + connectors a1/a2",
+    "problem": "The 别的客户 box runs into the right margin. The connector to it is a 42 px stub, and neither connector has an arrowhead, so the direction FDE → 产品团队 → 别的客户 is not actually drawn.",
+    "evidence": "Full frame at 171.5 shows the box spanning x 1600–1860, past the 1840 margin. Path a2 is M1550,520 L1592,520, and no marker is defined.",
+    "fix": "Narrow the two main nodes (e.g. 480 px at x 200 and x 820) so 别的客户 fits inside x ≤ 1840 with a connector of at least 120 px. Add arrowheads to both connectors."
+   },
+   {
+    "severity": "should-fix",
+    "segment": "ov.end",
+    "at": "320.6–328.3",
+    "element": "end card 出处 list (Series end())",
+    "problem": "The source list shows Qureshi's essay twice. The second entry reads \"Reflections on Palantir (Qureshi), Wayback 2024-12-31 capture in vault\", an internal storage note that a viewer cannot make sense of.",
+    "evidence": "Frame 321.5 shows both \"Nabeel S. Qureshi, Reflections on Palantir, 2024\" and the 'capture in vault' line. sources.json ov:qureshi-essay-archive has no credit_zh, so end() falls back to its title.",
+    "fix": "Main session: give ov:qureshi-essay-archive credit_zh \"Nabeel S. Qureshi, Reflections on Palantir, 2024\", and make end() collect entries by their text in a Set so identical credits print once."
+   },
+   {
+    "severity": "consider",
+    "segment": "ov.b21",
+    "at": "308.4–316.5",
+    "element": "Series.map in ov-reasons",
+    "problem": "The map sits unchanged for 8 s while the narration moves to the plan for the series (每一份能读到的范围不一样，读到多少，就讲多少).",
+    "evidence": "Frames 307.5 and 312.0 are the same apart from the last highlight reverting. Narration reaches 范围 at 312.83 and 读到多少 at 314.00.",
+    "fix": "At T('ov.b21','接下来'), move the focus to column 01, which the outro then keeps. Alternatively, at '范围', add a small line under each book saying how much of it the episode can read."
+   },
+   {
+    "severity": "consider",
+    "segment": "ov.b10",
+    "at": "147.5–153.6",
+    "element": ".ov-cowen-zh / .ov-cowen",
+    "problem": "The Chinese line that translates the Cowen quote appears 2.6 s before the English quote it translates, sitting under empty space, and 6 s before the narrator says 稀缺. The English line has no quotation marks and is typed into the scene rather than taken from the ledger.",
+    "evidence": "cwz is shown at T('ov.b10')+0.1 = 147.55 and cw at 150.15, while narration reaches 稀缺 at 153.64 (frame 147.7 shows the caption alone). AUTHORING says: 不在场景里手写英文引文.",
+    "fix": "Show only \"经济学家 Tyler Cowen\" at segment start. Show the English line in quotation marks at '一句话', then the Chinese gloss at T('ov.b10','稀缺')-0.1. Consider a ledger claim whose quote_en is the Cowen line."
+   }
+  ]
+ }
+]

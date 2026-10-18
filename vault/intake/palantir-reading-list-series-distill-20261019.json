@@ -1,0 +1,154 @@
+{
+  "schema_version": "1.0",
+  "id": "palantir-reading-list-series-distill-20261019",
+  "kind": "production-reconstruction",
+  "title": "Palantir 入职书单视频系列 · 制作过程重建与 Fresh Distill",
+  "created_at": "2026-10-19",
+  "topic": "palantir-reading-list-series",
+  "local_card": "vault/distilled/palantir-reading-list-series-distill-20261019/README.md",
+  "status": "distilled",
+  "evidence_status": "partial",
+  "adoption": "K1–K3 adopted by the main session 2026-10-19 (kit/write/motion/narrative.md; kit/environment/working-methods.md, reserve material); K4–K8 not adopted",
+  "reference_priority": "normal",
+  "purpose_tags": [
+    "MOTION",
+    "WRITE",
+    "GOVERNANCE"
+  ],
+  "summary": "由没有参与制作的代理按会话日志、工作流记录和仓库里的成品重建入职书单系列的制作过程：Kit 在哪里被读、哪些条文进了任务书、哪些没有触发，十四条失败记录，以及八条 Kit 候选与建议（采纳三条，都是对现有文件的一句改动）。没有改 Kit、docs、CHANGELOG 或任何已有文件。",
+  "executors": {
+    "reconstruction_and_adjudication": "Opus 5.5 子代理（claude-opus-5-5），由制作会话在用户要求 dogfooding 治理之后派出，没有参与制作",
+    "agents": "没有再派子代理",
+    "luna": "Luna 在本环境不可用，没有使用"
+  },
+  "baseline": {
+    "local_head": "c11ebf49eebe5af24d9c0289ff0f12778e6fc7a1",
+    "working_tree": "含制作会话未提交的改动：验收页第四集转写一行、审阅原始记录与研究交接两个新目录、研究与验收的 README、系列 intake 记录"
+  },
+  "materials": [
+    {
+      "id": "palantir-series-frozen-object",
+      "what": "成品与制作目录",
+      "location": "palantir/reading-list-series",
+      "commit": "c11ebf4",
+      "in_repository": true
+    },
+    {
+      "id": "palantir-series-session-log",
+      "what": "制作会话主日志（JSON Lines）",
+      "location": "本机 ~/.claude/projects/-Users-lesprivilege-Projects-Praxis/c2402f8c-b52f-4965-b89b-998d2c8c8dbd.jsonl；同名目录下有 subagents/、workflows/、tool-results/",
+      "range_read": "第 1–23,298 行，按 uuid 去重后读用户消息、工具调用与对用户说的话；思考块没有读",
+      "sha256_of_lines_1_23298": "352d40b930ea90fc3cbf11164a05b361f3a07518123c7d11145ac62851fa0996",
+      "duplicate_lines": "会话恢复时重放历史，13,813 行与前文同一 uuid；报告引用首次出现的行号",
+      "in_repository": false,
+      "not_copied_because": "体积 164 MB，含本机路径与会话上下文；按密钥形状扫描没有发现凭据，仍不入库"
+    },
+    {
+      "id": "palantir-series-subagent-logs",
+      "what": "13 个直接派出的子代理日志",
+      "location": "上述目录的 subagents/agent-*.jsonl",
+      "range_read": "只统计时长、工具调用数和对 kit/、docs/、vault/ 的读取",
+      "in_repository": false
+    },
+    {
+      "id": "palantir-series-workflow-records",
+      "what": "13 次工作流运行记录（9 份脚本、67 个代理）",
+      "location": "上述目录的 workflows/wf_*.json",
+      "range_read": "脚本、代理清单与模型、用时、用量；代理各自的日志不存在",
+      "in_repository": false
+    },
+    {
+      "id": "palantir-series-production-briefs",
+      "what": "二十二份任务书",
+      "location": "vault/distilled/palantir-reading-list-series-distill-20261019/production-briefs",
+      "copied_from": "工作流运行记录的 script 字段与主会话日志里 Agent 调用的 prompt，逐字",
+      "credential_scan": "按 API key、token、AIza、sk-、Bearer、key= 与环境变量文件内容扫描，没有命中，没有删改",
+      "in_repository": true
+    },
+    {
+      "id": "palantir-series-handoff-notes",
+      "what": "制作会话的交接笔记 HANDOFF.md",
+      "location": "制作会话 scratchpad",
+      "sha256": "f0cb5ee41559934fdae1d0a82fb4333634ff835685192fba4acdb91dd5c7b555",
+      "in_repository": false,
+      "use": "看门狗误杀的根因与各阶段状态以它为准；日志里有对应的改动"
+    }
+  ],
+  "related": [
+    "vault/intake/palantir-reading-list-series-20261017.json",
+    "vault/intake/knowledge-film-001-distill-20261005.json"
+  ],
+  "kit_candidates": [
+    {
+      "id": "K1",
+      "target": "kit/write/motion/narrative.md",
+      "recommendation": "adopt",
+      "what": "结构文字独立审阅的触发条件不以对外发布为限；夹在其他审阅里的一项检查代替不了",
+      "ruling": "adopted"
+    },
+    {
+      "id": "K2",
+      "target": "kit/environment/working-methods.md#感知不到的部分",
+      "recommendation": "adopt",
+      "what": "量出来的数异常时先单独再量可疑的一段，分清成品与量具",
+      "ruling": "adopted"
+    },
+    {
+      "id": "K3",
+      "target": "kit/environment/working-methods.md 表格“原因不明时”一行",
+      "recommendation": "adopt",
+      "what": "状态栏记一次真实任务反例",
+      "ruling": "adopted"
+    },
+    {
+      "id": "K4",
+      "target": "palantir/reading-list-series/film/AUTHORING.md",
+      "recommendation": "keep-as-project-practice",
+      "what": "段间衔接：后一段盖住前一段",
+      "ruling": "not adopted"
+    },
+    {
+      "id": "K5",
+      "target": "palantir/reading-list-series/build/README.md",
+      "recommendation": "keep-as-project-practice",
+      "what": "渲染管线故障与修法；可选在 Motion 制作记录注明新片从这套管线起步",
+      "ruling": "not adopted"
+    },
+    {
+      "id": "K6",
+      "target": "kit/environment/working-methods.md#自查通过之后",
+      "recommendation": "reference-only",
+      "what": "每条必改与应改派驳回者",
+      "ruling": "not adopted"
+    },
+    {
+      "id": "K7",
+      "target": "kit/write/prose/genres/narration.md",
+      "recommendation": "drop",
+      "what": "合成语音对外文名的逐字时间不可靠",
+      "ruling": "not adopted"
+    },
+    {
+      "id": "K8",
+      "target": "kit/environment/working-methods.md#检查通过之后",
+      "recommendation": "drop",
+      "what": "检查报告写明取样粒度（现有条文已覆盖）",
+      "ruling": "not adopted; acceptance wording fixed"
+    }
+  ],
+  "scope": {
+    "reading_coverage": "主日志按 uuid 去重后的用户消息、工具调用与对用户说的话；13 个子代理日志的统计；13 次工作流运行的脚本与结果；scratchpad 的 HANDOFF.md；成品的 README、AGENTS.md、施工约定、管线说明、研究页、验收页、审阅原始记录（结构文字、两路审阅、成片审阅、终审）；c11ebf4 的 Kit 与 CHANGELOG 改动",
+    "not_done": "没有看成片、没有听声音；没有重跑渲染、检查或合成；没有重开外部来源；没有读思考块；两路审阅的 135 条发现没有逐条分类",
+    "external_urls_revisited": 0
+  },
+  "pending_index_changes": [],
+  "limitations": [
+    "工作流里的 67 个代理没有单独日志，读了哪些 Kit 文件只能从任务书和自报看",
+    "没有对照组：说一条做法照样做到了的地方，只能说一致；主会话读过的跨会话记忆带着前一部片子的教训，不是干净的对照",
+    "看门狗误杀的根因引自交接笔记，没有复现",
+    "写作期间制作会话仍在运行，日志在增长，项目文件被同时修改；行号指写作时的版本"
+  ],
+  "verification": "2026-10-19 运行 python3 scripts/validate_repository.py：2,004 份 Markdown、926 份 JSON，status pass，没有错误",
+  "revisit_when": "主会话或用户裁决 K1–K3 时；下一部多段成片或系列片开工时；会话日志被清理之前。",
+  "index_note": "Indexed in vault/distilled/README.md and vault/intake/README.md; like the KF001 distill, not read by scripts/build_registry.py."
+}

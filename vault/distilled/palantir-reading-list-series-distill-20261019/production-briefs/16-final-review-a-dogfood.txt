@@ -1,0 +1,50 @@
+export const meta = {
+  name: 'palantir-final-review-a',
+  description: 'Final picture review of four rendered episodes plus a first-time-viewer dogfood pass',
+  phases: [{ title: 'Review' }],
+}
+const ROOT = '/Users/lesprivilege/Projects/Praxis/palantir/reading-list-series'
+const SP = '/private/tmp/claude-501/-Users-lesprivilege-Projects-Praxis/c2402f8c-b52f-4965-b89b-998d2c8c8dbd/scratchpad'
+const EPS = [
+  { a: 'ep00', dir: '00-overview' },
+  { a: 'ep01', dir: '01-interviewing-users' },
+  { a: 'ep02', dir: '02-impro' },
+  { a: 'ep05', dir: '05-looming-tower' },
+]
+const FINDINGS = {
+  type: 'object',
+  properties: {
+    verdict: { type: 'string', description: 'two or three sentences: would you ship this episode as is' },
+    strongest: { type: 'array', items: { type: 'string' }, description: 'up to 3 moments that work, with times' },
+    findings: { type: 'array', items: { type: 'object', properties: {
+      time: { type: 'string', description: 'm:ss or m:ss–m:ss in the standalone mp4' },
+      kind: { type: 'string', enum: ['composition', 'motion', 'legibility', 'consistency', 'copy', 'fact', 'sync', 'audio-text', 'other'] },
+      severity: { type: 'string', enum: ['must', 'should', 'nit'] },
+      observation: { type: 'string', description: 'what a viewer sees, concretely' },
+      evidence: { type: 'string', description: 'sheet file(s) you looked at' },
+      fix: { type: 'string', description: 'smallest fix; name scene id / file / selector when you can find it' },
+    }, required: ['time', 'kind', 'severity', 'observation', 'evidence', 'fix'] } },
+  },
+  required: ['verdict', 'strongest', 'findings'],
+}
+const COMMON = `You are reviewing a FINISHED, rendered Chinese explainer episode (Palantir onboarding reading list series) in ${ROOT}. Read-only: do not edit any file under ${ROOT}; write any scratch files only under ${SP}/final/.
+The series grammar: light cool paper palette, one blue accent, restraint, purposeful motion; structural text (titles, labels, chart titles) written as condensed parallel phrases, not sentences lifted from the narration. A camera layer frames content (slow push-ins, holds). Read ${ROOT}/film/AUTHORING.md (skim) and ${ROOT}/README.md first.
+You cannot watch at real speed or hear audio. Judge from frames decoded from the mp4 plus the subtitles:
+- Contact sheets already built every 2 s: ${SP}/final/<assembly>/sheet-NN.png (labels show time and chapter). Look at EVERY sheet.
+- Denser frames for any span you doubt (decoded from the mp4, labelled):  python3 ${SP}/final/sheets.py <assembly> ${SP}/final/zoom-<assembly>-<name> --from 80 --to 90 --step 0.25 --prefix z   (use --cols 3 --width 640 for detail). Use this for every motion or transition question rather than guessing.
+- Narration as timed text: ${ROOT}/assembly/timelines/<assembly>.vtt ; script: ${ROOT}/episodes/<dir>/script.json ; screen text inventory: ${ROOT}/verification/screen-text-<assembly>.md ; automated checks: ${ROOT}/verification/check-<assembly>.json (holds_to_review = 6–10 s static spans; breaths = <1 s empty paper between scenes).
+- Scene code if you need to name a fix: ${ROOT}/episodes/<dir>/scenes.js and scenes.css.
+Already decided, do not re-raise: the copy review adjudication at ${SP}/review/copy-adjudication.md (read it before reporting copy findings); ep00 has no separate outro scene (the map continues to the end card); sources/credits appear in a small source line at the bottom-left by design.
+Report only what a viewer would actually notice or what is wrong. Severity: must = wrong fact/attribution, unreadable or cropped text, overlapping text, picture contradicting narration, broken transition, an empty or dead screen; should = clear composition/motion weakness worth a fix; nit = taste. Prefer few, concrete, verified findings over many speculative ones; every finding names the sheet you saw it in and a time.`
+
+phase('Review')
+const reviews = EPS.map(e => () => agent(
+  `${COMMON}\n\nYour assembly: ${e.a} (episode dir episodes/${e.dir}). Review the whole episode frame by frame: composition (balance, crowding, cropping, things off the safe area), motion (camera hunting, jumps, abrupt cuts, elements popping, slow dead spans), legibility (small or low-contrast text, text over text), picture–narration sync (does what is shown match what is being said at that moment, per the vtt), and any factual or attribution slip in on-screen text versus the narration and script. Also note the 3–5 hero moments the director built and whether they land.`,
+  { label: `review:${e.a}`, phase: 'Review', schema: FINDINGS }))
+const dogfood = () => agent(
+  `You are a first-time consumer of this repository's Palantir material, a Chinese-speaking engineer who has just joined a team that uses Palantir's onboarding reading list. Start at /Users/lesprivilege/Projects/Praxis/palantir/README.md and find your way to the video series the way a newcomer would, following links only. Read-only: do not edit any repository file; scratch files only under ${SP}/final/dogfood/.
+Answer from the experience: (1) Could you find the series, understand what it is, which file to open, how long each episode is, what order to watch, and what the compilation is? (2) Watch (via frames) the overview episode ep00 and one episode of your choice end to end: sheets every 2 s are at ${SP}/final/ep00/ and ${SP}/final/{ep01,ep02,ep05}/ (ep03 and ep04 are still rendering), subtitles at ${ROOT}/assembly/timelines/<assembly>.vtt. Read the vtt alongside the sheets as if hearing it. Where did you get lost, bored, or unsure what a screen means? What did you learn that you can state in one line per episode? (3) Do the READMEs (series, episodes/*, verification, research) tell a newcomer what is verified and what is the series' own reading? Any broken link, stale number (durations, counts), or jargon left unexplained? (4) Anything that reads like an internal production note rather than material for a viewer.
+Report findings with the same schema: time may be a file path for README issues; kind 'other' for navigation/docs. Severity must = broken link, wrong number, a viewer would be misled; should = friction; nit = taste.`,
+  { label: 'dogfood', phase: 'Review', schema: FINDINGS })
+const out = await parallel([...reviews, dogfood])
+return { ep00: out[0], ep01: out[1], ep02: out[2], ep05: out[3], dogfood: out[4] }

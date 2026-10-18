@@ -1,0 +1,100 @@
+export const meta = {
+  name: 'reading-list-episode-fixes',
+  description: 'One Opus fixer per episode applies the adjudicated final-review items in its own scenes.js/css and verifies them on the live stage',
+  phases: [{ title: 'Fix', detail: 'six episode fixers, own files only' }],
+}
+
+const ROOT = '/Users/lesprivilege/Projects/Praxis/palantir/reading-list-series'
+const S = '/private/tmp/claude-501/-Users-lesprivilege-Projects-Praxis/c2402f8c-b52f-4965-b89b-998d2c8c8dbd/scratchpad/final'
+
+const COMMON = `
+You are fixing one episode of a Chinese explainer video series (project: ${ROOT}). Read ${ROOT}/AGENTS.md and
+${ROOT}/film/AUTHORING.md first (time anchors T(seg, word), scenes, camera K.frame / K.focus, design rules).
+
+Ownership: edit ONLY your episode's scenes.js and scenes.css (paths below). Do not edit film/, build/, research/,
+assembly/, script.json, narration, READMEs or other episodes. Do not run build/render.py, build/mix.py, build/assemble.py
+or build/check.py. If an item needs a change outside your files, do not make it: report it.
+
+The main session has just changed shared code; your episode already uses it:
+- Part joins: a later scene draws on top of an earlier one, so every handover is the incoming scene fading in over the
+  outgoing one, which holds. The last body scene now ends at u.bodyEnd + Series.HOLD with no fade-out of its own.
+- Outros are now built by Series.outro(id) in film/series.js: the map comes up over the last body scene at bodyEnd + 0.05,
+  focus moves to the next reading on 读, and the next-episode line (centred, in the intro reading's slot) shows on 看.
+- K.quote no longer adds an in-card locator line by default; pass locator: true (the ledger's screen_locator) or a text only
+  when the card's source differs from the bottom-left source line on screen at that moment (series rule: the source line names
+  the source). Calls that passed locator:false were cleaned up.
+- K.quote turns straight single quotes in ledger English into ‘ ’ / ’ (K.curly is exported for any other place that prints
+  ledger English).
+- End card: the next-episode line has a fixed slot under the sources window; credits were shortened to 'Author, Title, Year'.
+
+Writing rule for any on-screen text you touch (Kit 成文原理 第 5 条, from the project AGENTS.md): 章名、标签、图注单独撰写：凝练的
+名词或动宾短语，同类并列，不从旁白里截句子，不写问句。引用的书名、人名和英文原词照原样。画面上要读的字不小于 30px；出处行、图片署名例外
+（24px、20px）. Source line format: 'Author, Title, Year[, locator]'; the series' own work in colon form: '本系列比对：…',
+'本系列检索：公开网页，2026-10', '本系列的对照：…'. Legend: solid = stated by a source; dashed = this series' own reading
+(labelled 本系列的读法); grey solid = not read / not found (grey de-emphasis of a contrast partner is adjudicated as fine — do not
+change grey unless an item says so); red = a failure a source records; blue = the point being spoken.
+
+Verify every change on the live stage: python3 build/frames.py <ep> <t1> <t2> … --out <dir> [--cols 6 --width 320]
+or --range <a> <b> --step <s>; put output under ${S}/fix2/<ep>/. The stage must boot without errors (frames.py prints them).
+Look at the frames (Read the PNG) before and after each change. Keep changes minimal and in the file's existing style
+(comment density, helpers). Report per item: done / not done (why), the change (file:line), and the frame sheet that shows it.
+`
+
+const SCHEMA = {
+  type: 'object',
+  properties: {
+    items: { type: 'array', items: { type: 'object', properties: {
+      item: { type: 'string' }, status: { type: 'string', enum: ['done', 'not_done', 'needs_shared_change'] },
+      change: { type: 'string' }, evidence: { type: 'string' } }, required: ['item', 'status', 'change', 'evidence'] } },
+    other_observations: { type: 'string' },
+  },
+  required: ['items', 'other_observations'],
+}
+
+const EPS = [
+  { ep: 'ep00', dir: '00-overview', items: `
+1. 02:01.5–02:27.0: the source line ends with a photo credit ('· 照片 Bernd K…') although the figure shows its own credit line (kfig-credit). Drop the credit from the source line; keep the figure's credit.
+2. Quote cards: confirm none shows an in-card locator now (they used to pass locator:false).
+3. Compilation: ov-reasons now holds instead of fading in the compilation; confirm the 01 card dissolves over the map: python3 build/frames.py compilation 315.5 315.8 316.1 316.4 316.8 317.2.
+4. Standalone: the ov outro stays the map scene; confirm the end card dissolves over it (319.9–320.9) and the ov-next line still shows.` },
+  { ep: 'ep01', dir: '01-user-research', items: `
+1. 01:10.5–01:14.5 push-in on '推向市场的产品 0': the dimmed neighbour boxes ('加功能的方案 … 停止开发', '时髦安全帽 / 不合公司的技术与文化 / 未开发') are cut by the left frame edge for ~2.5 s ('髦安全帽', '合公司的技术与文化'). During the hold fade the two neighbours fully out (not just dim) so nothing readable is cut — or cap the zoom so both stay whole. Keep the ~1.6 s hold. During the pull-out at 1:14–1:15 the leftmost cell also touches the frame edge; keep the row inside the 80 px margin while it moves.
+2. 06:29.5–06:42: header 'FDE 进门之后的头几步' → 'FDE（驻客户现场的工程师）进门之后的头几步' (the gloss ep02/03/05 use). Check it fits.
+3. Corner brackets → “ ”: 「希望知道什么」, 「为什么需要知道」 (≈3:30), 「这个你愿意付多少钱」 (≈5:40).
+4. 05:53–06:12 Airbus label 'Airbus · CEO 的头号难题：A350 产量爬坡' → 'Airbus · CEO 的头号难题 · A350 产量爬坡' (or two lines as ep00 does).
+5. 05:52: the Qureshi pilot vs Portigal six-week comparison is tagged '本系列的读法'; make it '本系列的读法 · 并置对照' with the dashed sample, the same legend look ep04 uses at 04:53 (see episodes/04-principles/scenes.js; reproduce it in your own files).
+6. Source line 'Steve Portigal, Interviewing Users, 1st & 2nd ed.' has no years: add them (1st ed. 2013, 2nd ed. 2023) in the 'Author, Title, Year' form.
+7. Anything else on screen that prints ledger English directly (claimText etc.) with straight apostrophes: use K.curly.
+8. Verify the new outro and hold: 401.8–403.5 (body → outro, no bare frame), 403.0–404.5 (focus turns to 02 on 读), the next line on 看 (~405.5), 409.9–411.2 (outro → end).` },
+  { ep: 'ep02', dir: '02-impro', items: `
+1. 01:20.0–01:24.3: the 两句潜台词 beat shows only three small labels (两句潜台词, 演高地位, 演低地位) and a divider over two empty columns for ~3.5 s, all in the upper half. Frame the label block while it is alone (K.frame, centred and larger) and open out as the first line arrives, or bring the high-status line in earlier (on 演高地位的人在说, ≈82.7 s). Pick what reads best.
+2. 00:29.5–00:44.5 source line 'International Theatresports Institute · keithjohnstone.com · Bloomsbury' has no titles or years; bring it to the series form, as short as possible (e.g. 'International Theatresports Institute · keithjohnstone.com · Bloomsbury, Impro, 2022').
+3. Verify curly quotes on screen: 1:24–1:31 subtext lines (now K.curly), 2:37–2:45, 2:54–3:01 (‘lock on to’ highlight), 3:20–3:24 rain bubble, 3:52–4:10. No straight apostrophes left; Chinese quotations use “ ” (the ledger was changed; the split pattern ZH_Q now matches “…”).
+4. After your edits, re-check the joins: 23.5–25.0, 27.4–28.9, 300.0–301.3, 307.9–309.5.` },
+  { ep: 'ep03', dir: '03-getting-things-done', items: `
+1. 03:42.5 Allen/Lonsdale comparison: the legend reads '原文未提 · 本系列的读法' with a dashed sample; make it '本系列的读法 · 并置对照' (the series wording for side-by-side readings; the grey boxes already say 未提). Bring the legend in with the Lonsdale row (≈3:36.5) so it holds longer.
+2. 05:24.5 Mabrey contrast: fill 无 at 手里却 (≈5:23.7) instead of 没有任何权力, so the complete contrast holds about 2 s.
+3. Quote cards: the Lonsdale card passes locator 'Joe Lonsdale, Lessons from Peter Thiel, 8VC, 2010', so at 03:44 the attribution shows three times (kicker, locator, source line): drop the locator. Check every other card: locators are now off by default; restore one (locator: true) only where the card's source differs from the source line shown at that moment.
+4. 04:43–04:59 source line '… · 本系列检索，公开网页，2026-10' → '… · 本系列检索：公开网页，2026-10'.
+5. Verify the joins and end card: 344.8–346.4 (body → outro), the map turning to 04 on 读, the next line on 看, 351.9–353.2 (outro → end), and the end card at 353.5 and 359.5 (static two columns, next line in its own slot).` },
+  { ep: 'ep04', dir: '04-principles', items: `
+1. Quote cards: ep04 showed a locator on almost every card (00:24 onward, e.g. 02:56.5, 04:34.5), usually repeating the source line. Locators are now off by default; restore one (locator: true or a text) only where the card's source differs from the source line on screen then. Remove helper code that only existed for the in-card locator (e.g. the copyright-year wrap near line 31) if it is now dead.
+2. 00:44.5–00:50.5 '存档所见 2012-01 — 2016-03' (spaced em dash) → an unspaced en dash range, e.g. '2012-01–2016-03' or '2012 年 1 月–2016 年 3 月' (whichever fits and reads better).
+3. 02:53.5–02:58.5 and 04:31–04:37: phrases inside quote cards are underlined in red ('in a nanosecond' / '一眨眼', 'two sets of rules' / '两套规则'). Everywhere else quote emphasis is blue (K.lit); red is for a failure a source records. Use blue for both quote phrases; keep red on the diagram's 一眨眼 arc and on 诊断 · 被跳过.
+4. Source lines with the series' own work: '本系列比对 · …' → '本系列比对：…'; '… · 本系列检索，公开网页，2026-10' → '… · 本系列检索：公开网页，2026-10'.
+5. Verify the joins: 333.8–335.4 (body → outro), the map turning to 05 on 读, the next line on 看, 341.0–342.3 (outro → end).` },
+  { ep: 'ep05', dir: '05-looming-tower', items: `
+1. 05:43.5–06:01 and 06:02–06:18: the tags '本系列的读法 · 并置对照' and '本系列的读法' are plain grey letter-spaced text with no dashed sample; every other episode opens the tag with a dashed sample in ink (see ep04 at 04:53–05:06 in episodes/04-principles/scenes.js and scenes.css). Match that look in your own files.
+2. 00:39.0–00:43.5 and 00:49.5–00:52.0: after Qureshi's quote leaves, the stage holds only the book header and a 31 px doc head for ~4.5 s, then the header alone ~2.5 s. Bring the S-1 card's outline and first row in at 上市前提交的文件 (≈0:40.0) and the excerpt card at 正文 (≈0:50.5), or frame the small content while it is alone.
+3. 02:42.5–02:46: the lt-meet plain line 'Mihdhar 与 Hazmi 在华盛顿杜勒斯机场登上美国航空 77 号航班' renders at 27 px, below the 30 px floor; set it at the timeline's row size (34–35 px).
+4. 05:59.5: the lt-lim row carries an inline 24 px citation 'Nabeel Qureshi, Reflections on Palantir, 2024'; move the citation to the source line.
+5. Quote cards: locators are now off by default (ep05 had them, e.g. the Qureshi card at 00:26–00:38 repeated the source line); restore one only where the card's source differs from the source line shown then.
+6. Source lines: 'Lawrence Wright, The Looming Tower, publisher excerpt' (00:52–00:59) → 'Lawrence Wright, The Looming Tower, 2006（出版方节选）'; 'The Agent, 2006 · …' (01:01.5–01:12) → 'Lawrence Wright, The Agent, The New Yorker, 2006 · …'.
+7. The outro is now Series.outro('lt', { last: '全系列完', lastWord: '结束' }); verify 377.9–379.5 (body → outro, no bare frame), the closing line, and 382.8–384.2 (outro → end).` },
+]
+
+const out = await parallel(EPS.map(e => () =>
+  agent(`${COMMON}\nYour episode: ${e.ep} — files ${ROOT}/episodes/${e.dir}/scenes.js and scenes.css.\nItems (adjudicated; do them all unless one turns out wrong in frames — then say why):\n${e.items}`,
+    { label: `fix:${e.ep}`, phase: 'Fix', schema: SCHEMA })
+    .then(r => ({ ep: e.ep, report: r }))))
+return out

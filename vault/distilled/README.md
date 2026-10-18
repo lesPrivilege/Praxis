@@ -8,6 +8,7 @@
 
 - [Palantir 阅读清单初次提炼 · 2026-10-06](palantir-reading-20261006/README.md)：七份笔记（八份任务书先写后做）。**已由主会话在 dsh 里串行执行**——本机 claude 未登录、无 codex CLI，派不出 subagent，故不是 Luna 集群。最重要的一条：这七份不是散书，是 Palantir 当年发给新人的入职书单（Qureshi 原文行 45）。
 
+- [入职书单系列的过程重建 · 2026-10-19](palantir-reading-list-series-distill-20261019/README.md)：没有参与制作的代理从会话日志重建六集加合集怎样做成，附二十二份任务书原文；八条 Kit 候选里 K1–K3 已落地。
 - [Knowledge Film 001 的过程重建 · 2026-10-05](knowledge-film-001-distill-20261005/README.md)：没有参与制作的代理从会话日志重建一条知识片怎样做成，分 dogfooding、distill、architecture 三部分，附十二份任务书原文；24 条建议里已落地的见 ADR-027、ADR-028。
 
 - [关系图的两条语法 · 2026-10-04](relation-grammar-20261004/README.md)：成立程度与归属的标记、精确指向；清点由只读子代理完成，主会话重读了取用的行，没有对照组。

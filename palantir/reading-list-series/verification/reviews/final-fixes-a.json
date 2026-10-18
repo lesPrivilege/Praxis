@@ -1,0 +1,194 @@
+{
+ "ep00": {
+  "done": [
+   {
+    "item": "1. ov-reasons 4:30–4:37: hold the camera on the five cards and two legends, centred and larger",
+    "change": "episodes/00-overview/scenes.js:473-475 adds `frame(root, 200, 150, 1520, 300, T('ov.b19') + 1.3, qa - 0.6)`. The region is the actual content box: the cards with the lifted card start at y 156, and the legends end at about y 440. Zoom is about 1.11 with the push, which leaves 96–135 px of side margin. The start is T('ov.b19') + 1.3 instead of the suggested -0.3. With -0.3 the camera starts about 1.4 s early because of the 0.4 s lead plus Gaussian smoothing. It then slid the Saraf quote and the envelope rows down onto the source line while they were still fully visible (seen at 269.8–270.2). The end stays at qa - 0.6 as specified.",
+    "verified": "Before: 268.5–279.5 (before-1.png). After: 268.6–271.4 every 0.2 s (after-1a.png, the rejected -0.3 start), then 269.4–272.6 every 0.2 s (after-1b.png). The GTD quote and envelopes stay still until they fade by 270.6. The row glides down from 270.4 and is centred and slightly enlarged from 272.4 to about 276. The iu card lifts at 273.2 inside the frame. after-1c.png covers 273.2–280.0. The camera returns from about 276 and is about 85% back at 277.5. q5 fades in under the row at 277.5–277.8 with no crop or overlap, and the source line shows. Underlining of the quote phrases at 280 is unchanged."
+   },
+   {
+    "item": "2. Map drop 4:52.6–4:53.0: card titles overlapped the map book labels",
+    "change": "episodes/00-overview/scenes.js:508-510, map loop. The card text (c.parts) fades with the file's fade() at drop+0.1 over 0.3 s, gone at drop+0.4 while the card is still falling. The outline fades at drop+0.4 over 0.35 s, gone at drop+0.75 as it lands. The book label K.show starts at drop+0.75, after the outline has gone. Before, the card faded at drop+0.45 for 0.4 s and the label started at drop+0.5. The comment at 496-497 is updated.",
+    "verified": "Before: 292.0–293.4 every 0.1 s (before-2.png) showed doubled 'Interviewing Users', 'Impro', 'Getting Things Done' and 'The Looming Tower' at 292.7–293.1. After: 292.1–293.7 every 0.1 s (after-2.png). No frame shows card text and a book label together. The cards lose their words mid-fall, land as empty outlines at 292.6–292.9, the outlines dissolve, and the labels rise from 292.9 (j=0) to about 293.2 (j=4). All five are settled by 293.4. The neighbouring beats are unchanged: '本系列的读法' at 292.0, and at 296.0 the dashed line, dots and numbers draw over the labels."
+   },
+   {
+    "item": "3. 2:27–2:43 speaker label above the Cowen line",
+    "change": "episodes/00-overview/scenes.js:254. The label text '经济学家 Tyler Cowen' becomes 'Qureshi 引经济学家 Tyler Cowen'. No CSS change.",
+    "verified": "Before: 147.2–162.8 (before-34.png). After: 147.0, 147.6, 149, 150.5, 152, 154, 156, 158, 160, 162.8, 163.3, 164 (after-3.png). The label is one line in its 1100 px slot at rest and also under the 1.5× push at 152–156. The quote, the near/far boxes and the cut to the FDE loop at 163.3–164 are unchanged."
+   },
+   {
+    "item": "4. Mabrey quote widow at 4:06–4:16 (no action, verify the series-wide fix)",
+    "change": "none",
+    "verified": "Frames 246, 250, 254 (before-34.png, which already includes the main session's series-wide fix) and 247, 252, 255 (after.png). The Chinese line breaks into two near-even lines, 在 Palantir…一种属性，用 / 来推动具体局面…固有特质。, with no widow. The English is two lines."
+   }
+  ],
+  "not_done": [
+   {
+    "item": "REJECTED: FDE node alone in the left third at 2:43 and 2:53; changes to the ov.b16 Impro quote card",
+    "why": "Adjudicated REJECTED; left untouched."
+   }
+  ],
+  "sheet": "<scratchpad>/final/fix-ep00/after.png",
+  "notes": "Only episodes/00-overview/scenes.js changed; scenes.css is untouched. The original files are backed up at <scratchpad>/final/ep00-orig/. Every frames.py run booted the stage without errors. I did not run build/check.py or scripts/validate_repository.py.\n\nItem 1 deviates from the suggested start time. A K.frame/K.focus span pulls the camera about 1.4 s before its `from` (a 0.4 s lead plus σ 0.6 s smoothing). So T('ov.b19') - 0.3 moved the still-visible Saraf quote and envelopes down onto the source line, and I used T('ov.b19') + 1.3. Any episode that frames right after a full-screen beat has the same trap. Also, the row spans 1520 px, so the zoom cannot go much past about 1.11 without breaking the 80 px margin. 'Larger' is therefore modest.\n\nPre-existing details I saw but left alone, outside the adjudicated list:\n(a) At about 146.9–147.1 the speaker label fades in over the last ~0.3 alpha of the fading A350 photo. This was there before; the longer label now covers a little more of the photo.\n(b) With the series-wide text-wrap: balance, some Chinese quote lines break inside a word: 东/西 in the Cowen quote (152–162) and 用/来 in the Mabrey quote. That is series-level line breaking, not this episode's layout."
+ },
+ "ep01": {
+  "done": [
+   {
+    "item": "1. iu-hardhat zero close-up retime (1:10–1:14)",
+    "change": "episodes/01-user-research/scenes.js:166-176. zIn is unchanged at T('iu.b4','一样')-0.2. zOut moves from T('iu.b5','这也算作')-0.4 to T('iu.b5','这也算作')+0.3 (≈74.64 s, about T('iu.b5')+0.6). The 'before' dim now starts at zIn-1.15 (≈70.07 s, was zIn-0.2) and runs 0.7 s. Both the dim and the restore are now explicit tl.fromTo with immediateRender:false, per the dims rule. The restore stays at zOut, so it now falls after the hold. The brace draw moves from '这也算作'-0.2 to T('iu.b5','访谈')-0.05 (≈75.0 s), after the pullback is mostly done.",
+    "verified": "before-zero.png and after-zero2.png, 69.0–76.6 s every 0.4 s, plus a camera-transform dump every 0.2 s. At 70.6 s boxes 1–2 are already faint before the push carries them off the left edge (before this fix they were at full ink at 70.6 and 71.0). The 0 lands about 71.6 s, centred: box centre maps to about (962, 540) at scale 1.377. From 72.0 to 73.6 s it moves less than 45 px, and less than 20 px from 72.2 to 73.4 s. That is about 1.6 s of stillness across 也没上市 (72.2–72.9). The pullback runs about 73.8–75.6 s. Boxes 1–2 regain full ink from 74.6 s as they come back into frame. The brace draws 75.0–75.8 s and 访谈的成果 follows at 75.6 s. Later b5 beats (77, 79, 81, 82.6, 84 s) and the hand-off to iu-editions at 84.8 s are unchanged (neighbours.png)."
+   },
+   {
+    "item": "2. iu-satisficing split shot (2:23–2:30)",
+    "change": "episodes/01-user-research/scenes.js:258-260. Added shot [150,150,960,840] from b10-0.4 to wide = T('iu.b10','抽屉')-1.4. The existing wide shot [200,150,1720,770] now runs from wide to b11-0.5. I also changed satNote (line 365) from width 1520 to auto (null), the 'text box hugs its words' rule. Without that, its 1520-wide box would have kept the camera wide and cancelled the narrow shot. The camera comment at lines 250-252 is updated to match.",
+    "verified": "before-sat.png and after-sat.png, 141.6–153.0 s every 0.6 s, plus a camera dump. Before the fix, the term and sling sat in the upper-left third from 143.4 to 150.6 s. After it, the camera eases in at about 143.0–144.4 s, as the sling finishes shrinking. It then holds still at scale about 1.076 from 144.4 to 147.0 s with the term, note, sling and caption centred. It widens over about 147.4–149.4 s, while the narration says 每个项目里都碰得到这种情形, and the drawer example draws at 150.5 s into a frame that already has room. Later frames (153.5, 156, 158, 160, 162 s for the four examples and the balance, 163.5 s for b11) are unchanged."
+   },
+   {
+    "item": "3. ASCII comma in the Herbert Simon note",
+    "change": "episodes/01-user-research/scenes.js:365. 'Herbert Simon，1956' is now 'Herbert Simon, 1956'.",
+    "verified": "crop-satnote.png, a full-resolution crop of the 146.4 s frame, reads 'satisfy + suffice · Herbert Simon, 1956' with an ASCII comma."
+   },
+   {
+    "item": "4. NO ACTION: second workshop quote's orphaned '了。'",
+    "change": "none (series-wide fix by the main session)",
+    "verified": "verify-45.png, 238–246 s every 1 s. From 240 to 245 s the Chinese line breaks evenly as 先跟你说一声，我们已经 / 在写解决方案的代码了。 with no orphan."
+   },
+   {
+    "item": "5. NO ACTION: end card overflow at 6:51",
+    "change": "none (series-wide fix by the main session)",
+    "verified": "verify-45.png, 411 and 413 s. At 413 s the 出处 list sits in two columns. 图片 and 下一集 · 02 地位是一种做法 fit below it with no overflow or scrolling. At 411 s the card is still fading in."
+   }
+  ],
+  "not_done": [],
+  "sheet": "<scratchpad>/final/fix-ep01/after-ep01.png",
+  "notes": "Only episodes/01-user-research/scenes.js changed; scenes.css is unchanged. The originals are backed up in scratchpad/final/fix-ep01/orig/.\n\nTwo places where I went slightly past the item text:\n- **zOut is later than suggested.** I set it to T('iu.b5','这也算作')+0.3 instead of about T('iu.b5')+0.3. Focus/frame transitions are smoothed over a 0.6 s window and start easing about 1 s before the cut, so +0.3 gave only about 1.3–1.4 s of near-stillness. The extra 0.3 s gives about 1.6 s.\n- **satNote width is now auto (null).** Item 2 needed this: the camera frames element boxes, and the note's 1520 px box would otherwise have forced the wide framing.\n\nThe narrow b10 frame [150,150,960,840] is limited by height, so the zoom is only about 1.06 before the slow push-in. The content is now centred, not upper-left. A tighter [150,150,960,800] would give about 1.12 if more is wanted.\n\nI also checked the same beats on the compilation stage (compilation-check.png: iu.b4+11.6/+13.4, iu.b5+1.2, iu.b10+3.9/+6.9/+8.9). They behave the same, and the stage reported no errors.\n\nThe other sheets (before-zero, after-zero2, before-sat, after-sat, neighbours, verify-45) are in the same folder. cam.py there is a small helper that prints a scene's camera transform over time."
+ },
+ "ep02": {
+  "done": [
+   {
+    "item": "1. ACCEPT 4:50–5:00: change the heading '内部用法的出处' to '两种用法的出处'",
+    "change": "episodes/02-impro/scenes.js:905: the im-from-h text now reads '两种用法的出处'. The comment above it now says the accounts of both uses.",
+    "verified": "after-ep02 at 290.6 and 298.0: the heading reads 两种用法的出处 under both column headers. It fits the 280 px box on one line and the rows beside it are unchanged. before-1 has the old heading at 290.5–300."
+   },
+   {
+    "item": "2. ACCEPT 2:54–3:01: lock-on quote shows for longer and the lock plays on the full stage",
+    "change": "scenes.js:623–627: removed K.focus(pair…) and the early hide at close - 1.0. q3.root, stage, lo and hi now hide with the Theatre Machine hide at tm - 0.55. The whole-stage shot() is extended from `close` to tm - 0.6, the point where the focus used to hand over. The `pair` box was only there for the focus, so it is removed along with its onFrame lines, its .im-shot CSS rule (scenes.css) and the 'locked pair' mention in the header comment. One extra change to a neighbouring beat at scenes.js:631: the Theatre Machine quote now enters at tm - 0.1 (was tm - 0.25). Without it, the later q3 fade overlapped the q4 entrance and the two quotations were drawn over each other at 181.4.",
+    "verified": "after-2 at 174.6, 176.5, 177.3, 178.0, 178.5, 179.5, 180.3 and 181.0: the quote and stage stay on screen from about 174.2 to 181.0 (about 6.8 s, was about 3.3 s). The lock at 177.3 plays on the full stage. At 178.0 (2:58) the quote fills the top. after-2-xfade2, 0.1 s steps from 181.2 to 181.8: q3 and the stage are gone by 181.5 and q4 then rises cleanly, with no text over text. At 182.4–185.5 the Theatre Machine highlights (剧团, 欧洲) still land."
+   },
+   {
+    "item": "3. ACCEPT 4:34–4:37: core box enters on 回到",
+    "change": "scenes.js:872: the core box ('地位是一种做法') is shown at T('im.b19','回到') - 0.2 (was T('im.b19','地位是人正在做') - 0.3). The quote q36 (said + 0.4), the lit highlight and the dashed connectors are unchanged.",
+    "verified": "after-3-1 at 275.0, 275.6, 276.0, 276.5, 277.4 and 278.2: the box rises from 275.6 and is fully in at 276.0 under the column headers. The quote follows at about 278.1. At 281.5, 290.6 and 298.0 the connectors, the reading box and the mini pins are unchanged. after-ep02 at 276.0 and 277.2."
+   },
+   {
+    "item": "4. ACCEPT nit 4:10.4–4:12.0: column names come in on 回到",
+    "change": "scenes.js:797–806: new `back = T('im.b17','回到')`. lName is shown at back + 0.1. rName rises to autoAlpha 0.4 at back + 0.22, so the names follow the rule draw at back + 0.1 with its 0.12 stagger. lUse keeps its old time (往外用 - 0.75). At b18, scenes.js:841–842: rName goes from 0.4 to 1 with tl.fromTo(…, immediateRender: false), and rUse is shown at b18 + 0.15 (same time as the old 0.25 stagger). A first try at back - 0.1 overlapped the outgoing 1979/2007 scene at 250.2, so I moved it later.",
+    "verified": "after-4b at 250.1, 250.3, 250.4, 250.5, 250.7, 251.0, 251.5, 252.2 and 252.6: the old scene is gone by 250.4 and the names rise with the rules from 250.4. Qureshi is in ink and Mabrey at 0.4 from about 251.0, then 对外用法 · 面向客户 at 252.6. after-4 at 261.2, 261.6 and 262.4: Qureshi dims, Mabrey goes to full and his use line arrives. after-3-1 at 273.2, 274.4 and 275.0: Qureshi is restored at b19 as before."
+   },
+   {
+    "item": "5. ACCEPT nit 0:46–0:50: legend comes in with the magnified strip",
+    "change": "scenes.js:265–266: the separate legRead show at 预览 - 0.2 is removed. legRead and legSnip now come in together with K.show([legRead, legSnip], za + 0.9, { y: 8, stagger: 0.08 }).",
+    "verified": "after-5 at 46, 47.5, 48.5, 49.2, 49.8, 50.2, 50.6, 51.2, 52 and 53.4: no lone legend at 48.5–50.2. Both legend items appear at 50.6 under the strip and its page labels. At 53.4 the push into 地位 still clears them."
+   },
+   {
+    "item": "6. ACCEPT nit 2:09.3–2:10.6: full chain holds about 2 s",
+    "change": "scenes.js:484: out = roles + 0.3 (was roles - 0.45). The chain hide, the figure's crossing, the fig.lab hide, the q44 entrance (out + 0.9) and the shot boundary all follow `out`.",
+    "verified": "after-6 at 129.4, 130.3, 131.0, 131.3, 131.6, 132.0, 132.6, 133.4, 134.4, 136.6, 138.5 and 139.9: the chain is complete from about 129.3 to 131.3, then fades out by 131.7. The Hamlet quote is in at 132.6. The 学会 highlight lands at 134.4, the gravedigger and labels at 136.6–138.5, and 哈姆雷特 turns blue with its highlight at 139.9."
+   }
+  ],
+  "not_done": [],
+  "sheet": "<scratchpad>/final/fix-ep02/after-ep02.png",
+  "notes": "Only episodes/02-impro/scenes.js and scenes.css changed. The CSS change just deletes the now-unused .im-shot rule.\n\nTwo changes go slightly beyond the items, both to keep the following beats clean:\n- The Theatre Machine quote enters 0.15 s later (tm - 0.1), so it does not overlap the lock-on quote, which now fades later.\n- The b17 column names land at 回到 + 0.1 / + 0.22, so they clear the outgoing scene's crossfade.\n\nThe stage booted without errors on every frames.py run. A compilation check (compilation-check.png: im.b2+5.5, im.b8+10.9, im.b12+4, im.b17+0.8, im.b19+1.5, im.b19+16.5) shows the same fixes there.\n\nNot done: the mp4 has not been re-rendered, so build/check.py has not been run. scripts/validate_repository.py has not been run either.\n\nAll frames are in <scratchpad>/final/fix-ep02/: before-1…6.png, after-2/-2-xfade/-2-xfade2/-3-1/-4/-4b/-5/-6.png. That folder also holds stray single-frame PNGs from the sheets. I did not delete them because a safety check blocked the glob rm."
+ },
+ "ep05": {
+  "done": [
+   {
+    "item": "1. lt-need: the need-to-know quote enters with the section label",
+    "change": "episodes/05-looming-tower/scenes.js:521 K.show(q.root) moved from T('lt.b19','一套制度')-0.3 to T('lt.b19')+0.3. lit(ntk) is still on 需要知道 (line 522).",
+    "verified": "before 291.4, 292.5 and 293.5: only the grey 委员会报告 · 13.3 caption is on screen. After 291.0–291.6: the quote rises in just behind the label and is complete by 291.6. 292.0–294.2: steady. 297.2: need to know and 需要知道 are lit blue. The 共享 ledger still enters at 没有动力."
+   },
+   {
+    "item": "2. lt-need: no blank paper after the ledger leaves; the first branch starts earlier",
+    "change": "scenes.js:562 K.show(R) moved from T('lt.b20','情报报告')-0.4 to away+0.3. I used +0.3 instead of +0.5 because at +0.5 the 305.5 frame was still fully blank. scenes.js:563 edge(e1) moved from 数据本身-0.7 to 数据本身-1.0.",
+    "verified": "before 305.7 and 306.2: blank paper; the box arrives at 306.8. After, checked every 0.1 s from 304.9 to 306.0: at 305.4 情报报告 overlaps the fading ledger, and no frame is blank. 308.3: the branch is drawing. 309.0: 数据本身 is in. 310.5: 来源与手段 follows as before."
+   },
+   {
+    "item": "3. lt-chain: the Commission's account joins while the narration names it",
+    "change": "scenes.js:243-246 adds const join = T('lt.b5')-0.2. The card height growth runs at join-0.15, aC.e shows at join and the 两种记述 tag at join+0.2. They were at 知道-0.45, -0.3 and -0.1. lit(visa2), settle and the K.focus window are unchanged.",
+    "verified": "before 92.0–94.5: the card holds only Wright's account, and the Commission's arrives at 95.6. After 91.8: the card is growing. 92.0: 得知 Mihdhar 持美国签证 / 委员会报告 is in, with 两种记述 fading in. 92.3–96.5: the close-up holds, and the camera does not move until the existing focus exit at 97.4–98.5. 97.4: 持美国签证 lit. 98.5–99.5: column heads back and the March row arriving, as before."
+   },
+   {
+    "item": "4. lt-chain: the first ledger card no longer opens empty",
+    "change": "scenes.js:224 K.show(r1.ls[0]) moved from 马来西亚-0.2 to 电话-0.2.",
+    "verified": "before 76.6–79.3: the card shows only its Wright 报道 tag. After 76.4: the empty frame fades in for 0.2 s. 76.6: 电话得知：马来西亚聚会 is appearing. 76.8–80.0: it holds. 82.0: the Khalid al-Mihdhar line still arrives on 哈立德."
+   },
+   {
+    "item": "5. lt-reasons: the spotlit Commission column gets its first item while 1995 is named",
+    "change": "scenes.js:405 K.show(c1.b) moved from 司法部-0.3 to 追到-0.2. 遭误解、误用 stays on 误解.",
+    "verified": "before 192.0–194.0: the 九一一委员会 column is empty. After 192.6: still empty. 192.8: 1995 年的共享程序 is rising in. 193.2–196.0: it holds. 198.6: 遭误解、误用 appears on 误解."
+   },
+   {
+    "item": "6. lt-book: the four photo cards fade out instead of vanishing",
+    "change": "scenes.js:164-165 adds tl.to([lab, ...cards], { autoAlpha: 0, y: -16, duration: 0.6, stagger: 0.06 }, to - 1.1). That is 71.42 to about 72.26, after narration b3 ends (71.08) and largely ahead of the root close (72.12).",
+    "verified": "before 72.1: four full-strength photos. 72.25: faint. 72.4: gone. After 71.3: full. 71.5: the label and first card are going. 71.7: staggered fade across the four. 71.9–72.0: faint. 72.1: gone. 72.2–72.3: near-empty paper between the scenes. 72.4–73.0: the chain's CIA/FBI heads and rule come in as before."
+   },
+   {
+    "item": "7. lt-field closing reading: the undelivered stub inside the dashed 本系列的读法 frame is dashed",
+    "change": "scenes.js:672-673: the stub class changes from 'ln red' to 'ln red dash', with a comment. The stop bar stays solid red, as the blue link's arrowhead stays solid. The header comment at scenes.css:1-2 now says red dashed is the undelivered message inside the series' reading.",
+    "verified": "before 370.5 and 371.5: solid red stub. After 370.2–370.5: the dashed red stub draws, and the dashes keep while it draws. 371.0–371.5: dashed red stub with the red stop bar. 373.5–378.0: it sits above the dashed blue link and the gate, with FDE below unchanged."
+   },
+   {
+    "item": "8. lt-chain: watchlist label wording",
+    "change": "scenes.js:275: '国务院 TIPOFF 观察名单' becomes '国务院观察名单（TIPOFF）'.",
+    "verified": "109.5 and 110.6: 国务院观察名单（TIPOFF） sits on one line at the left of the 1280-wide red row, with 两人均未列入 at the right and plenty of room between. 115 and 130: the receded row still reads correctly at the top of the June page."
+   }
+  ],
+  "not_done": [],
+  "sheet": "<scratchpad>/final/fix-ep05/after-ep05.png",
+  "notes": "I changed only episodes/05-looming-tower/scenes.js and scenes.css. The episode directory is untracked in git, so I kept the pre-edit copies in scratchpad/final/fix-ep05/orig/. Before sheets are in fix-ep05/before/, and the per-item after sheets are in fix-ep05/after/ (i1–i8, plus i2b, which steps every 0.1 s through the item-2 hand-off). Every frames.py run booted the stage without errors.\n\nTwo deviations from the suggested timings:\n- Item 2: the report node enters at away+0.3, not +0.5, because at +0.5 the 305.5 frame was still fully blank.\n- Item 6: the card fade starts at to-1.1, which leaves about 0.25 s of near-empty paper (72.1–72.35) at the chapter change. That gap is in the narration pause between b3 and b4, like the other scene breaks in this episode.\n\nI did not run check.py, because it needs a rendered mp4 and writes to verification/. I also did not re-check the compilation assembly. All the changes are relative to segment anchors, so they should carry over, but a compilation spot check at the lt-chain and lt-need joins is still open for the main session."
+ },
+ "review_ep03": {
+  "verdict": "Ep03 holds up. Facts and attribution are clean. Picture follows the narration almost everywhere, the camera makes smooth planned moves without hunting, and all five director hero moments land. There are no must-fix items. Two should-fixes: (1) the Mabrey contrast \"权力 · 无\" arrives on the segment's last word and is on screen for only about 1.3 s before the cut; (2) the \"两个目标\" chapter opens on a near-empty wide frame for about 4 s. Two nits: a 5-s static hold in the Clarify scene, and the only dashed \"absence\" boxes in the episode (Lonsdale \"未提\"). On-screen copy matches the ledger, including \"每周至少一次 · 一到两小时\", which Ferriss #384 states as \"an hour or two, at least once a week\". Hero moments: the flood widens from the man to his email to every inbox (0:24–0:35). The head fills with notes that fly out into calendar days, with the 按时查看 return arrow (1:45–2:01). Mom goes from one word to a project and a next action (2:46–3:00). The Allen and Lonsdale rows line up gate by gate (3:32–3:45). The reading diagram goes from close to wide (5:27–5:45). The weekly-review break also lands: weeks 4–6 go red and the 下一步 tags fade (4:03–4:08).",
+  "strongest": [
+   "Mail flood (0:24–0:35, sheet-01): the camera widens with the story, from the man to his email to all ten inboxes. Bars pile in, then the screen splits into 被邮件淹没 and 设过滤规则, with the blue filter line clearing the right half. It returns as the same diagram in 回到驻场 (5:00–5:12) with the opposite emphasis.",
+   "Head to calendar (1:45–2:01, sheet-03): the same notes that crowd the enlarged 脑子 fly out one by one into calendar days, and the last day sends the blue 按时查看 arrow back. One object stays the same object through the change.",
+   "Allen vs Lonsdale (3:32–3:45, sheet-06): Allen's chain slides up into a comparison row. The dashed skip arrow and the two 未提 slots under the blue 下一步已定 / 本来就要做 show exactly which premises the one-line mention drops.",
+   "Weekly review breaking (4:03–4:08, sheet-07): the 回顾 chips drop out of weeks 4–6, their borders turn red, and the 下一步 tags fade with 系统过时 · 方法被放下. Red is used correctly for a break the source reports.",
+   "Evidence table (4:42–5:00, sheet-08): Allen 的说法 | 研究出处 with 未给出 / 未读 / 未找到 states the episode's limits plainly, with no hedging."
+  ],
+  "findings": [
+   {
+    "time": "5:20–5:26 (322.5–326.1 s)",
+    "kind": "sync",
+    "severity": "should",
+    "observation": "The key contrast of the Mabrey beat (full responsibility, zero authority) is on screen for about 1.3 s. The quote arrives at 322.5 and leaves an empty band between the 责任 bar and the quote. The 权力 · 无 row only fades in at about 324.7, on the segment's last word (权力 at 325.29). The reading scene starts cross-fading over it at about 326.1.",
+    "evidence": "sheet-09 at 5:20/5:22 shows the 责任 bar and the quote with an empty slot between them; at 5:24 the 权力 row appears; at 5:26 the scene is fading. Dense frames zoom-ep03-mab/z-01..02 (0.25 s step): 权力 row first visible at 5:24.8, ghosted at 5:26.2. Timeline: 首席执行官 at 322.18, 没有任何 at 324.80, 权力 at 325.29, segment end 325.46. scenes.js line 774 shows [l2, b2] at T('gtd.b20','权力') − 0.6.",
+    "fix": "gtd-mabrey, scenes.js line 774: show the 权力 label and its empty bar with the quote, at K.show([l2, b2], T('gtd.b20','首席执行官') − 0.3, …), so the empty authority bar sits under the full responsibility bar while 'CEO' is said. Hide the 无 span at build (gsap.set(b2.children[0], { autoAlpha: 0 })) and reveal it at T('gtd.b20','没有任何') − 0.2, together with the existing K.lit on 'zero authority'."
+   },
+   {
+    "time": "1:12–1:16 (72.0–76.0 s)",
+    "kind": "composition",
+    "severity": "should",
+    "observation": "The 两个目标 chapter opens on a near-empty wide frame. For about 1.6 s the only element is the grey 33 px kicker 第 1 版 · 第 1 章开头 in the top-left corner. Then two bare numerals, 1 and 2, sit alone until 一切收进脑外的可信系统 arrives at 76.0. Meanwhile the narration runs 在第一版第一章的开头，他说这套方法要达到两个目标. The scene holds a single wide shot at 1.06, so nothing frames the opener. The same pattern appears, milder, at 4:08–4:11 (248.4–250.9 s), where 花在方法上的时间 stands alone before the axis.",
+    "evidence": "sheet-02 at 1:12 (kicker only) and 1:14 (kicker plus numerals); full frame fx03/f73.png is an empty page except for the kicker and the source line. zoom-ep03-goals/z-01: kicker alone 1:12.0–1:13.5, numerals alone 1:14.0–1:15.5. scenes.js line 234 is a single shot [200,160,1720,870] from `from` to `to`. Timeline: 这套 74.10, 第一个 76.21.",
+    "fix": "gtd-goals, scenes.js line 234: open on a close shot, as gtd-editions and gtd-mom already do, then widen when goal 1 is named: shot(root, [200, 160, 1200, 340], from, T('gtd.b4','第一个') − 0.5, 1.3); shot(root, [200, 160, 1720, 870], T('gtd.b4','第一个') − 0.5, to, 1.06). Optionally apply the same treatment to gtd-cost (line 627), with a close shot on the title until T('gtd.b16','中高层') − 0.5."
+   },
+   {
+    "time": "2:05–2:10 (124.8–129.9 s)",
+    "kind": "motion",
+    "severity": "nit",
+    "observation": "About 5 s of static hold on two lines (2 每样输入事先拿定主意 / Clarify 想清楚) while the narration says Allen 说，想清楚并不容易 and moves on to Drucker. Nothing on screen answers 并不容易, and AUTHORING asks for a semantic beat inside spans longer than 4 s.",
+    "evidence": "sheet-04 at 2:06 and 2:08 show identical content; zoom-ep03-calcl/z-01 shows 2:05.0–2:08.5 unchanged apart from a slow push. scenes.js line 362 shows Clarify at T('想清楚') − 0.4; the next element (line 365) waits for 德鲁克 at about 130.2.",
+    "fix": "gtd-clarify, after scenes.js line 362: add one emphasis beat on the gloss, tl.to(cl.querySelector('span'), { color: BLUE, duration: 0.3 }, T('gtd.b7','并不容易') − 0.2). Return it to ink when the Drucker line enters at T('gtd.b7','德鲁克') − 0.3."
+   },
+   {
+    "time": "3:40–3:45 (220.0–225.0 s)",
+    "kind": "consistency",
+    "severity": "nit",
+    "observation": "The two 未提 slots in Lonsdale's row are drawn as grey dashed boxes. Every other absence in this episode is drawn as a solid grey hairline: 未读 at 1:03 and 4:53, 未写明 at 2:21, 未给出 at 4:48, 未找到 at 4:57. The episode's own header rule says the same. 'Lonsdale's line does not mention X' is a checkable fact about the text. Only the skip arrow from 任务 straight to the time limit is the series' reading.",
+    "evidence": "Full frame fx03/f223.png: the 未提 boxes have dashed borders, the legend reads ------- 原文未提 · 本系列的读法, and the arrow from 任务 is dashed. scenes.css line 125 sets .gtd-gate.gap { border-style: dashed }. The scenes.js header (lines 5–6) says: Not read or not written: a solid hairline in --rule, grey text.",
+    "fix": "scenes.css line 125: change .gtd-gate.gap to border-style: solid; border-color: var(--rule). Keep the grey text. Keep the dashed skip arrow (scenes.js line 551) and the legend, so dashes on this screen mean only the series' reading of the omission."
+   }
+  ]
+ }
+}

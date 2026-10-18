@@ -1,0 +1,60 @@
+export const meta = {
+  name: 'palantir-series-scenes',
+  description: 'Build the scenes of series episodes in parallel, one owner per episode directory',
+  phases: [{ title: 'Build', detail: 'one Opus builder per episode' }],
+}
+const ROOT = '/Users/lesprivilege/Projects/Praxis/palantir/reading-list-series'
+const COMMON = (ep) => `You are building the visual scenes for one episode of a Chinese knowledge-video series, "Palantir 入职书单", in the repository /Users/lesprivilege/Projects/Praxis. The project lives in palantir/reading-list-series/. Narration is already synthesised; you build the picture.
+
+You own exactly these files (create or edit only these): palantir/reading-list-series/${ep.dir}/scenes.js, scenes.css, motif.py, ledger-patch.json. Do not edit anything else (other builders work in sibling episode directories at the same time; the main session owns film/, build/, research/, the manifest). Do not commit, push, install anything, or run build/render.py or build/assemble.py.
+
+Read first, in this order:
+1. film/AUTHORING.md — construction rules (time anchors, standalone vs compilation, evidence and asset rules, design, self-check). Follow it exactly.
+2. film/kit.js, film/series.js, film/film.css, film/engine.js — the tools (K.box, K.show, K.draw, K.quote, K.source, K.figure, Series.map, chrome…).
+3. episodes/00-overview/scenes.js and scenes.css — a finished episode in this series; match its visual language (paper, ink, one blue accent for the point of the moment, red only for failure; solid = stated by a source, dashed = this series' own reading). Structural text style: condensed parallel noun or verb-object phrases (kit/write/prose/grammar.md principle 5), never cut from the narration, no questions as labels (a method's own question may appear as a quotation), same wording wherever repeated. The owner dislikes self-talk and protective wording on screen.
+4. ${ep.dir}/script.json (segments ${ep.unit}.i1, ${ep.unit}.b1…, ${ep.unit}.o1) and assembly/timelines/${ep.asm}.json (segment and per-word timings). Anchor on Chinese words with T(); avoid English words as anchors where a Chinese word is near.
+5. research/claims.jsonl rows whose claim_id starts with "${ep.unit}." plus any listed below. Use only rows with review_state "checked". research/assets.jsonl: use only the asset IDs listed below (downloaded, rights approved); no other images.
+
+What the picture should carry, beat by beat (layout is yours; one idea per screen, main subject ≥ 60% of width, text ≥ 30 px except source lines and credits; no blank stretch longer than ~2 s inside the body; elements appear when the narration reaches them, not before):
+${ep.beats}
+
+Standalone-only parts: the intro is drawn for you by Series (do not draw it). Draw the outro only inside \`if (has('${ep.unit}.o1'))\`: ${ep.outro}. Body scenes must not depend on the intro.
+
+Evidence: every on-screen quotation via K.quote(parent, claimId, …); every source line via K.source(root, text, from, to, [claimIds]). The stage refuses unknown or unreviewed claims. For claims you quote that lack quote_zh or screen_locator, add them to ${ep.dir}/ledger-patch.json as {"set": {"${ep.unit}.xxx": {"quote_zh": "…", "screen_locator": "…"}}} and run \`python3 build/ledger.py export\`. quote_zh is a faithful plain Chinese rendering of quote_en; screen_locator is short, e.g. "${ep.locEx}". Do not put a fact on screen that no checked claim supports; list missing claims in your report.
+
+motif.py: draw(x, y, w, h, portrait) returning SVG markup for the cover, drawn natively in the series palette (#0d1826 ink, #3a4658 ink2, #1f4fe0 blue, #c3ccd8 rule; background is provided). Test with \`python3 build/cover.py ${ep.unit}\` and look at the PNGs in ${ep.dir}/covers/. Keep every element inside the given box.
+
+Self-check with build/frames.py (assembly ${ep.asm}), reading each contact sheet with the Read tool: every segment's start, middle and end; transitions at 0.2 s steps where things move; overflow, overlap, text under 30 px, console errors. The machine is shared with other builders; batch timestamps into a few calls.
+
+Report back (read by the main session, not the user): files written; a table of scenes with time spans and the claim IDs/assets each uses; ledger-patch entries; claims you needed but did not have; anything unresolved; the last contact sheet paths.`
+
+const EPS = [
+  { unit: 'gtd', dir: 'episodes/03-getting-things-done', asm: 'ep03', locEx: 'David Allen, Getting Things Done, 2001, ch. 1',
+    outro: 'point to "下一集 · 04 把错误摆上桌面"',
+    beats: `- gtd.b1–b2 email flood at Palantir (Saraf): an outgoing email whose BCC goes to the whole team list, meeting reports fanned out to a long list, the inbox filling; claims ov.saraf_gtd_bcc_mechanism, ov.saraf_gtd_mandated.
+- gtd.b3 editions: a compact strip — 2001 first edition (publisher excerpt, to the start of ch. 1) · 2014 official site already uses the new step names · 2015 rewritten second edition (not read). Show the two sets of names as terms, not as a two-edition text comparison: 2001 chapter names Collection / Processing / Organizing / Reviewing / Doing; later official Capture / Clarify / Organize / Reflect / Engage (gtd.2001-toc-stages, gtd.wb2014-labels, gtd.version-split, gtd.ep01-principles-unchanged).
+- gtd.b4 the two objectives from the start of ch. 1 (gtd.2001-two-objectives, gtd.2001-front-end-decisions).
+- gtd.b5–b6 why move things out of your head: 3 a.m. and cat food (gtd.cat-food), "your head's a crappy office" (gtd.head-crappy-office), the calendar analogy (gtd.calendar-analogy).
+- gtd.b7–b11 the clarify decision drawn natively as a tree: is it actionable → if not: trash / reference / incubate (gtd.clarify-nonactionable-three); if yes: next physical visible action (gtd.next-action-definition); more than one action → project with an outcome (gtd.project-definition); Drucker (gtd.clarify-define-work); the "Mom" example transforming into a project and a next action (gtd.mom-example); the 90% remark (gtd.todo-incomplete).
+- gtd.b12–b13 two-minute rule with its two conditions shown as gates (next action decided; you would do it anyway) and "not a hard rule" (gtd.two-min-condition-2020, gtd.two-min-rationale-speech, gtd.two-min-no-hard-rule); Lonsdale's one line, with the two conditions shown as missing (gtd.lonsdale-mention, gtd.lonsdale-vs-author).
+- gtd.b14–b16 weekly review: one to two hours a week per Allen (gtd.weekly-review-cadence) and the official checklist (gtd.weekly-review-checks-next-action), system decays (gtd.system-decays), time costs 1–6 hours for the first capture (gtd.capture-hours) and about an hour a day for new input (gtd.defining-work-hour).
+- gtd.b17–b18 the author's own limits (gtd.limit-not-overnight, gtd.limit-no-problems-removed, gtd.limit-fall-off); his claims have no research cited in the materials read (gtd.head-no-time-sense, gtd.four-things-claim).
+- gtd.b19–b21 back to the field: Saraf (visibility is the best part, the inbox the other side), Mabrey's "act as if you are the CEO, but with zero authority" (ov.mabrey_owner_no_authority), then this series' reading drawn dashed.
+Asset: gtd.allen-scoble-2009 (portrait of David Allen; credit automatic).` },
+  { unit: 'pr', dir: 'episodes/04-principles', asm: 'ep04', locEx: 'Ray Dalio, Principles, PDF, © 2011, #195b',
+    outro: 'point to "下一集 · 05 没有送到的情报"',
+    beats: `- pr.b1–b4 the PDF: Qureshi's sentence (ov.list_qureshi_principles_pdf); a version strip — © 2011 text · bwater.com served a 123-page PDF from 2012-01 to 2016-03 (the public copy in Qureshi's joining summer) · 2016-03 re-layout, 106 pages · 2017 book (not used); the word-by-word comparison: sequence similarity 0.936, every quoted line present in both (pr.version-2015-match); whether Qureshi's copy is this file: unknown (dashed); Palantir's use of it: not described in public material (pr.qureshi-silent, pr.no-firsthand-else if checked).
+- pr.b5 "Is it true?" — not to be followed blindly (pr.use-not-blind).
+- pr.b6 Pain + Reflection = Progress typeset as an equation; learning from mistakes (pr.pain-reflect).
+- pr.b7–b8 ego barriers, others reluctant to point out mistakes (pr.ego-18, pr.fail-33 — note p.33 is Part 2, about people generally); pain has a limit (pr.pain-bounded).
+- pr.b9–b10 the machine loop Goals → Machine (design + people) → Outcomes, back to design or people (pr.machine-loop); feedback loops separate great and bad organisations (pr.feedback-41).
+- pr.b11–b12 problem vs cause ("I can't get enough sleep" is a cause), proximate vs root cause with the train-schedule / forgetful example, jumping to solutions in a nanosecond (pr.diag-31, pr.diag-root, pr.diag-jump).
+- pr.b13–b16 believability: track record × ability to explain, a 3-level grid (pr.bel-31, pr.bel-31b); ideas still judged on merit (pr.bel-merit); ask three believable people about their reasoning (pr.bel-195b); assertive and open-minded, find truth not win (pr.dis-24). Show the English term "believability" on screen once.
+- pr.b17–b20 Bridgewater as Dalio describes it: mistakes OK, not learning from them not OK (pr.mistake-8); the issues log is mandatory, the asymmetry of trouble vs praise (pr.log-mandatory, pr.log-asymmetry); name the person, not "we" (pr.mistake-15); no opt-outs, two sets of rules (pr.opt-209).
+- pr.b21–b22 limits: Dalio's own claim of 40 years of testing without external data (pr.tested-40-years); the New Yorker account of the dispute over how Principles were used (pr.ny-dispute); this series' juxtaposition, dashed: Dalio's explicit decision-making hierarchy (pr.dis-hierarchy) vs Qureshi's Palantir where nobody could tell anyone what to do (pr.qureshi-no-titles).
+- pr.b23–b24 Qureshi's criticism email with about a thousand people cc'd, not attributed to Dalio (pr.qureshi-criticism); this series' reading drawn dashed.
+Asset: pr.dalio-grameen-2017 (portrait of Ray Dalio; credit automatic).` },
+]
+phase('Build')
+const out = await parallel(EPS.map(ep => () => agent(COMMON(ep), { label: 'scenes:' + ep.unit, phase: 'Build' })))
+return out

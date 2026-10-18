@@ -34,6 +34,7 @@ Nabeel Qureshi 2015 年入职 Palantir 时，公司寄给他四本书，另有�
 | 改画面 | [画面](film/README.md) 与 [施工约定](film/AUTHORING.md) |
 | 看单集与合集怎样由同一份正文排出 | [编排](assembly/README.md) |
 | 看检查结果与审阅记录 | [验收](verification/README.md) |
+| 看这个系列怎样做成、用了 Kit 的哪些部分 | [过程重建](../../vault/distilled/palantir-reading-list-series-distill-20261019/README.md)，附任务书原文 |
 
 项目边界写在 [AGENTS.md](AGENTS.md)：作者语体打开；画面上的引文和出处行都带主张 ID；外部图片只经素材登记进入画面。
 

@@ -1,0 +1,86 @@
+export const meta = {
+  name: 'palantir-final-fixes-a',
+  description: 'Apply adjudicated final-review fixes to ep00, ep01, ep02, ep05 and review the rendered ep03',
+  phases: [{ title: 'Fix' }, { title: 'Review' }],
+}
+const ROOT = '/Users/lesprivilege/Projects/Praxis/palantir/reading-list-series'
+const SP = '/private/tmp/claude-501/-Users-lesprivilege-Projects-Praxis/c2402f8c-b52f-4965-b89b-998d2c8c8dbd/scratchpad'
+const FIXREPORT = {
+  type: 'object',
+  properties: {
+    done: { type: 'array', items: { type: 'object', properties: {
+      item: { type: 'string' }, change: { type: 'string', description: 'file:line and what changed' },
+      verified: { type: 'string', description: 'frames you rendered (times) and what they show' } }, required: ['item', 'change', 'verified'] } },
+    not_done: { type: 'array', items: { type: 'object', properties: { item: { type: 'string' }, why: { type: 'string' } }, required: ['item', 'why'] } },
+    sheet: { type: 'string', description: 'path of an after contact sheet covering every fix' },
+    notes: { type: 'string', description: 'anything the main session must know (e.g. a series-level issue you saw)' },
+  },
+  required: ['done', 'not_done', 'sheet', 'notes'],
+}
+const FINDINGS = {
+  type: 'object',
+  properties: {
+    verdict: { type: 'string' },
+    strongest: { type: 'array', items: { type: 'string' } },
+    findings: { type: 'array', items: { type: 'object', properties: {
+      time: { type: 'string' },
+      kind: { type: 'string', enum: ['composition', 'motion', 'legibility', 'consistency', 'copy', 'fact', 'sync', 'audio-text', 'other'] },
+      severity: { type: 'string', enum: ['must', 'should', 'nit'] },
+      observation: { type: 'string' }, evidence: { type: 'string' }, fix: { type: 'string' },
+    }, required: ['time', 'kind', 'severity', 'observation', 'evidence', 'fix'] } },
+  },
+  required: ['verdict', 'strongest', 'findings'],
+}
+const FIXCOMMON = `You apply an adjudicated list of final-review fixes to one episode of a Chinese explainer series in ${ROOT}. Read ${ROOT}/film/AUTHORING.md first (stage rules, camera: K.frame / K.focus / data-cam, T(seg, word) anchors, the fromTo rule for dims).
+Ownership: edit ONLY episodes/<dir>/scenes.js and episodes/<dir>/scenes.css of your episode. Do not touch film/, build/, script.json, research/, READMEs or any other episode. Change on-screen wording only where an item below says so.
+Verify every item on the live stage, decoded at exact times:  python3 build/frames.py <assembly> <seconds or seg+offset …> --out ${SP}/final/fix-<assembly> --name <n> --cols 3 --width 640   (run from ${ROOT}; it boots headless Chrome in ~4 s and fails loudly if the stage reports errors). Look at before and after frames around each change, and at the neighbouring beats so you do not break what follows. Times in the items refer to the standalone mp4 (= stage time).
+Series-wide changes already made by the main session (do not redo): Chinese quote lines (.kq-zh) now use text-wrap: balance, English quote lines pretty; the end card picks two columns by measured height.
+Items marked REJECTED are listed so you leave them alone. Finish with an after contact sheet covering every fix, and report.`
+const ITEMS = {
+  ep00: { dir: '00-overview', items: `
+1. ACCEPT 4:30–4:37 (ov-reasons, b19 block ~line 464): the five cards and legends sit pinned to the top for ~7 s with two-thirds empty paper below. Hold the camera on the row so it is centred and larger: use the file's frame helper (x, y, w, h) on the row region (about x 150, y 80, w 1620, h 400) from T('ov.b19') - 0.3 to qa - 0.6, or move the row down and back as the reviewer proposed if the frame does not centre it. Check the q5 quote that follows still enters cleanly.
+2. ACCEPT 4:52.6–4:53.0 (map loop in ov-reasons ~line 505): as each card drops onto its map column, its title overlaps the map's book label for ~0.4 s (doubled 'Interviewing Users', 'The Looming Tower'). Fade the card's text before it lands, then its outline, and start the label only after; no frame may show the two texts on top of each other. Check every 0.1 s across the drops.
+3. ACCEPT 2:27–2:43 (~line 254): the speaker slot above the Cowen line reads '经济学家 Tyler Cowen', but the quote is Qureshi's sentence and the source line says Qureshi 2024. Change the label text to 'Qureshi 引经济学家 Tyler Cowen'. Check it still fits on one line in its slot.
+4. NO ACTION (series-wide fix): Mabrey quote widow at 4:06–4:16 — verify only that it now breaks into two even lines.
+REJECTED: the FDE node alone in the left third at 2:43 and 2:53 (deliberate continuity hold); changing the ov.b16 Impro quote card (it is the verbatim source of the narration's first clause; the causal chain follows within seconds).` },
+  ep01: { dir: '01-user-research', items: `
+1. ACCEPT 1:10–1:14 (scene iu-hardhat): the zero close-up never settles; boxes 1–2 slide off the left edge at full ink, the 0 gets ~0.5 s of stillness and the camera pulls back while '也没上市' is still spoken. Retime: start dimming 'before' about 1 s earlier (so 1–2 are faint before the push moves them out), hold the push through the end of '没上市' (zOut to about T('iu.b5') + 0.3 or the next natural anchor), and move the brace draw / opacity restore after it. The 0 should sit still and centred for ≥1.5 s.
+2. ACCEPT 2:23–2:30 (iu-satisficing): the term card and shrunken sling sit in the upper-left third of an empty frame for ~7 s before the other examples arrive at 2:31. Split the shot: frame the term card + sling first (about [150,150,960,840]) until about T('iu.b10','抽屉') - 1.4, then the existing wide frame.
+3. ACCEPT nit (~line 361): 'satisfy + suffice · Herbert Simon，1956' → ASCII comma: 'satisfy + suffice · Herbert Simon, 1956'.
+4. NO ACTION (series-wide fix): the second workshop quote's orphaned '了。' at 3:59–4:05 — verify it now breaks evenly.
+5. NO ACTION (series-wide fix): end card overflow at 6:51 — verify the list now sits in two columns without scrolling.` },
+  ep02: { dir: '02-impro', items: `
+1. ACCEPT 4:50–5:00 (~line 904, im-from-h): heading '内部用法的出处' clashes with the column headers '对外用法 · 面向客户' (Qureshi) / '对内用法' (Mabrey) right above it; the row lists Qureshi too. Change the heading text to '两种用法的出处'.
+2. ACCEPT 2:54–3:01 (~lines 628–635): the lock-on quote is on screen only ~3.3 s (others 8–9 s) because it is hidden early for a push-in that holds ~1 s and bounces back. Drop that K.focus on the pair and the early hide; hide q3.root, stage, lo, hi with the later hide (tm - 0.55) instead, so the quote reads for ~6 s and the lock plays on the full stage. Check the frame at 2:58 is no longer top-empty.
+3. ACCEPT 4:34–4:37 (~line 871): '这两种用法，都回到 Johnstone 那句话' plays over two column headers and empty paper; the 地位是一种做法 box arrives 3 s later. Show the core box at T('im.b19','回到') - 0.2; keep the quote and connectors as they are.
+4. ACCEPT nit 4:10.4–4:12.0 (~line 807): chapter turn shows blank paper then two hairlines for 1.6 s. Bring both column names in on 回到 (Mabrey's already dimmed to 0.4).
+5. ACCEPT nit 0:46–0:50 (~line 247): the 整页读过 legend appears alone 400 px below the bars, 2 s before the magnified strip. Show legRead together with legSnip at za + 0.9.
+6. ACCEPT nit 2:09.3–2:10.6 (~line 483): the four-item chain is complete for only ~1.3 s before clearing. Set out so the full chain holds ~2 s; check the Hamlet beat that follows.
+NOT YOURS: the late subtitle cue im.b17#2 at 4:12 is a timeline issue the main session handles.` },
+  ep05: { dir: '05-looming-tower', items: `
+1. ACCEPT must 4:50.6–4:54.1 (scene lt-need): after the luck quote fades, only a small grey caption is on screen for ~3.5 s at the start of a chapter. Bring the need-to-know quote in with the section label (about T('lt.b19') + 0.3); keep lit(ntk, …) on 需要知道.
+2. ACCEPT must 5:05.3–5:08.6 (lt-need): the paper is fully blank for ~1.4 s mid-sentence after the 共享/不共享 ledger leaves, then a lone report box sits in a frame sized for the network. Show the report node as the ledger leaves (about away + 0.5) and start the first branch ~0.3 s earlier. No blank frame may remain.
+3. ACCEPT 1:32.0–1:37.5 (lt-chain): when the narration and source line switch to the Commission, the picture still shows only the Wright cards; the Commission's account joins at 1:35.6 and the camera pulls out within ~1 s. Move the card growth, the Commission entry and the 两种记述 tag to about T('lt.b5') - 0.2 so the Commission's account joins while it is named; leave lit(visa2, …) and the focus window.
+4. ACCEPT nit 1:16.4–1:19.0 (lt-chain): first ledger card opens empty for ~2.5 s. Show its first line on T('lt.b4','电话') - 0.2.
+5. ACCEPT nit 3:11.2–3:14.8 (lt-reasons): the spotlit 九一一委员会 column stays empty while '往前追到一九九五年' is said. Show its first item on T('lt.b12','追到') - 0.2; keep 遭误解、误用 on 误解.
+6. ACCEPT nit 1:12.1–1:12.4 (lt-book): four large photos vanish in ~0.3 s, the only near-hard cut. Fade the cards (and label) out first over ~0.6 s with a small stagger before the scene's close.
+7. ACCEPT nit 6:10–6:18 (lt-field closing reading, ~line 669): the undelivered stub is solid red inside the dashed 本系列的读法 frame; solid red means a failure a source states. Draw that stub dashed (keep red), matching the dashed blue link.
+8. ACCEPT nit 1:47–2:14 (~line 272): '国务院 TIPOFF 观察名单' → '国务院观察名单（TIPOFF）'; check it fits.` },
+}
+phase('Fix')
+const fixes = Object.entries(ITEMS).map(([a, e]) => () => agent(
+  `${FIXCOMMON}\n\nYour assembly: ${a}, directory episodes/${e.dir}. Adjudicated items:\n${e.items}`,
+  { label: `fix:${a}`, phase: 'Fix', schema: FIXREPORT }))
+const review03 = () => agent(
+  `You are reviewing a FINISHED, rendered Chinese explainer episode (Palantir onboarding reading list series) in ${ROOT}. Read-only: do not edit any file under ${ROOT}; scratch files only under ${SP}/final/.
+The series grammar: light cool paper palette, one blue accent, restraint, purposeful motion; structural text (titles, labels) written as condensed parallel phrases. Solid outlines = stated by a source; dashed = this series' own reading; grey solid = unknown or not found; red = a break a source reports. A camera layer frames content (push-ins, holds). Skim ${ROOT}/film/AUTHORING.md and ${ROOT}/README.md first.
+You cannot watch at real speed or hear audio. Judge from frames decoded from the mp4 plus the subtitles:
+- Contact sheets every 2 s: ${SP}/final/ep03/sheet-NN.png (labels show time and chapter). Look at EVERY sheet.
+- Denser frames for any span you doubt:  python3 ${SP}/final/sheets.py ep03 ${SP}/final/zoom-ep03-<name> --from 80 --to 90 --step 0.25 --prefix z  (add --cols 3 --width 640 for detail). Use this for every motion or transition question.
+- Narration as timed text: ${ROOT}/assembly/timelines/ep03.vtt ; script: ${ROOT}/episodes/03-getting-things-done/script.json ; screen text: ${ROOT}/verification/screen-text-ep03.md ; checks: ${ROOT}/verification/check-ep03.json.
+- Scene code to name a fix: ${ROOT}/episodes/03-getting-things-done/scenes.js and scenes.css.
+Known and already handled, do not report: quote line breaks (Chinese quote lines are being switched to balanced wrapping series-wide; part of this render predates it, which is also why the fidelity check fails at 82 s); end-card column layout. Already decided, do not re-raise: ${SP}/review/copy-adjudication.md (read before any copy finding).
+Review the whole episode: composition (balance, crowding, cropping, empty frames), motion (camera hunting, jumps, abrupt cuts, popping, dead spans), legibility, picture–narration sync against the vtt, and any factual or attribution slip in on-screen text versus narration and script. Note whether the director's 3–5 hero moments land. Severity: must = wrong fact/attribution, unreadable/cropped/overlapping text, picture contradicting narration, broken transition, empty or dead screen; should = clear weakness worth a fix; nit = taste. Few, concrete, verified findings; each names the sheet and a time, and the smallest fix with scene id / line.`,
+  { label: 'review:ep03', phase: 'Review', schema: FINDINGS })
+const out = await parallel([...fixes, review03])
+return { ep00: out[0], ep01: out[1], ep02: out[2], ep05: out[3], review_ep03: out[4] }

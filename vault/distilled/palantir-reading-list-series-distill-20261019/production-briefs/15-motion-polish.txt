@@ -1,0 +1,67 @@
+export const meta = {
+  name: 'episode-motion-polish',
+  description: 'One Opus director per episode: fix camera framing, build hero moments, no wording changes',
+  phases: [{ title: 'Polish', detail: 'six episode directors in parallel, each owning its scenes.js/css' }],
+}
+
+const ROOT = '/Users/lesprivilege/Projects/Praxis/palantir/reading-list-series'
+const SCRATCH = '/private/tmp/claude-501/-Users-lesprivilege-Projects-Praxis/c2402f8c-b52f-4965-b89b-998d2c8c8dbd/scratchpad/polish'
+const EPS = [
+  { a: 'ep00', dir: '00-overview', u: 'ov', title: '一份不讲编程的书单 (overview)' },
+  { a: 'ep01', dir: '01-user-research', u: 'iu', title: '访谈为决定服务 (Interviewing Users)' },
+  { a: 'ep02', dir: '02-impro', u: 'im', title: '地位是一种做法 (Impro)' },
+  { a: 'ep03', dir: '03-getting-things-done', u: 'gtd', title: '把承诺移出脑子 (Getting Things Done)' },
+  { a: 'ep04', dir: '04-principles', u: 'pr', title: '把错误摆上桌面 (Principles PDF)' },
+  { a: 'ep05', dir: '05-looming-tower', u: 'lt', title: '没有送到的情报 (The Looming Tower)' },
+]
+
+const SCHEMA = {
+  type: 'object',
+  properties: {
+    changes: { type: 'array', items: { type: 'object', properties: {
+      scene: { type: 'string' }, at: { type: 'string', description: 'segment id + word or seconds' },
+      kind: { type: 'string', description: 'framing | hero | focus | lit | continuity | composition | hold | fix' },
+      what: { type: 'string' }, why: { type: 'string' } }, required: ['scene', 'kind', 'what'] } },
+    sheets: { type: 'array', items: { type: 'string' }, description: 'paths of before/after contact sheets' },
+    remaining: { type: 'array', items: { type: 'string' }, description: 'weak spots left, honestly' },
+    kit_requests: { type: 'array', items: { type: 'string' }, description: 'changes you would want in film/ (you may not edit it)' },
+    boot_ok: { type: 'boolean' },
+  },
+  required: ['changes', 'remaining', 'boot_ok'],
+}
+
+const brief = e => `You are the motion and picture director for one episode of a Chinese explainer film series: ${e.a} "${e.title}", in ${ROOT}/episodes/${e.dir}/. The films are HTML stages on one paused GSAP timeline, rendered frame by frame; every frame is a pure function of t.
+
+Goal from the owner: polish so the motion and the visuals are excellent — a film, not a slide deck — inside the series' restrained grammar (light cool paper, ink and grey, one blue for the point of the moment, red only for a failure a source states; solid = stated by a source, dashed ONLY for 本系列的读法, grey solid = not read / not found). Motion carries meaning: appear, settle, connect, replace, transform, camera moves. No decorative floating or wobble.
+
+Read first: ${ROOT}/film/AUTHORING.md (rules, timing with T(), ownership), ${ROOT}/film/kit.js, ${ROOT}/film/camera.js, ${ROOT}/film/series.js, then your episode's narration.md, scenes.js, scenes.css and README.md.
+
+What is new in the shared engine (just added; use it):
+- A camera (film/camera.js) frames each scene's visible content in the safe area x 150–1770, y 150–930 (between the chapter tag top-left and the source line bottom-left): centred, enlarged up to 1.3× when content is small, left as laid out when it does not fit or bleeds off the stage; it looks 1 s ahead and 0.5 s back, is smoothed, adds a slow push-in and a small dolly between scenes. Opt-outs per scene: root.dataset.cam = 'drift' (push + dolly only) or 'off'. data-cam="ignore" on an element keeps it out of the framing; data-cam="fixed" keeps a direct child of root on the scene instead of the camera layer (grain, vignette, .chrome, .source, .sr-corner already are).
+- K.focus(el, from, to, {zoom: 1.5, pad: 60}) — the camera pushes in on one element for that span (e.g. the phrase of a quote the narration lands on, the node of a diagram that is the point). Use it for a few hero beats per episode, not everywhere; give the viewer time to read the surroundings first.
+- K.lit(spans, at) — the highlight of a phrase: turns blue and a thin rule draws under it. Use it instead of bare colour tweens for phrases inside quotes and running text (keep colour tweens for boxes and borders).
+- K.figure images now push in slowly (5%) over their scene.
+
+Your job, in order:
+1. Look at your whole episode with the camera on: python3 build/frames.py ${e.a} --range <start> <end> --step 2 --cols 6 --width 384 --out ${SCRATCH}/${e.a} --name before-XX (break it into a few ranges; read each sheet with the Read tool). Note bad framing: content cropped, jumpy re-framing, zooms that make a sparse frame feel empty or a dense one cramped, camera hunting while items arrive one by one, holds over 6 s where nothing changes while the narration moves on.
+2. Fix framing per scene (layout tweaks, data-cam modes, ignore marks). A layout that only fills the top half of the frame should be recomposed so the frame is used: bigger key element, better balance.
+3. Pick 3–5 hero moments in your episode where motion can carry the meaning, and build them well: object continuity (the same element transforms into its next state instead of fade-out/fade-in), staged reveals timed to the narration's words, drawn connections, a K.focus push-in on the line that matters, K.lit on the phrase being quoted, counters, a clean match between scenes. Each must serve what the narration says at that moment. Quality over quantity.
+4. Remove dead holds (>6 s with no change while narration continues) with beats tied to narration words.
+
+Hard constraints:
+- Do NOT change any visible wording (labels, titles, tags, captions, quotes, source lines): an independent copy review is running and its edits come later. You may move, resize, restyle, time and animate text, not reword it. Keep every K.source call and claim ID; do not add claims or images; do not touch research/ or the ledgers.
+- You own only episodes/${e.dir}/scenes.js and scenes.css. Do not edit film/, build/, other episodes, script.json or narration. If you need a kit change, put it in kit_requests.
+- Determinism: anchor every action with T(segment, word) (Chinese words only), no hard-coded seconds, no Math.random/Date/CSS transitions; Film.onFrame callbacks are pure functions of t. GSAP gotcha: at boot the engine renders the end then rewinds while scenes are hidden, so a later autoAlpha tween on an element can record 0 as its start; when you dim/undim something already visible, use tl.fromTo with explicit start values and immediateRender:false.
+- Body scenes must also work in the compilation (no intro/outro there): python3 build/frames.py compilation ... should show your body scenes intact.
+- Type on screen ≥ 30 px for text to read (source lines 24, credits 20). Nothing may overlap the chapter tag or the source line; nothing cropped by the frame.
+- Do not run build/render.py, mix.py or check.py; no mp4s. Stills only via build/frames.py.
+
+Verify: the episode boots with no console errors (frames.py prints them), and after-sheets at 2 s steps over the whole episode plus 0.2 s steps through each hero moment and each scene transition. Save sheets under ${SCRATCH}/${e.a}/ with names before-*/after-*.
+
+Return the structured report: each change (scene, anchor, kind, what, why), sheet paths, the weak spots that remain (honestly), kit requests, and whether it boots.`
+
+phase('Polish')
+const results = await parallel(EPS.map(e => () =>
+  agent(brief(e), { label: `polish:${e.a}`, phase: 'Polish', schema: SCHEMA, model: 'opus' })
+    .then(r => ({ a: e.a, ...r }))))
+return results.filter(Boolean)

@@ -9,6 +9,7 @@
 | `check-<编排>.json` | `check.py`：成片检查各项与原始数据 |
 | `screen-text-<编排>.{md,json}` | `screen_text.py`：画面文字清单 |
 | `heard.json` | `check.py`：转写缓存，按音频哈希 |
+| [reviews/](reviews/README.md) | 各轮审阅代理交回的原始结果，裁决写在 [验收](acceptance.md) |
 
 静止一项只把超过 10 秒画面不变当作失败：一屏停多久由内容决定，6–10 秒的停留列在 `holds_to_review` 里，由人看是否该加一拍。空白一项把 1 秒以下的空纸当作场景之间的换气，列在 `breaths` 里。
 
