@@ -14,6 +14,7 @@
 | 旁白带领的短说明，请求一项决定 | [薪酬基线说明片](../../../demos/role-baseline-film/README.md) · [复用说明](../../../demos/role-baseline-film/README.md#拿这套管线做下一条短片) | 一两分钟、几场画面的片子从这里起步：目录平，只有一条配音线；多章长片从金字塔第五版起步。成片检查通过；制作方没有听过声音，无受众测试。音视频不入 Git |
 | 无配音的知识讲解 | [Write 分支知识片](../../../demos/write-kit-film/README.md) · [读速怎么定](../../../demos/write-kit-film/README.md#读速怎么定) | 没有声音时，节奏由读速定：从渲染后的画面文字清单核算新出现字数；沿用薪酬基线说明片的管线。成片检查六项通过；制作方没有按实际速度完整看过，无受众测试。音视频不入 Git |
 | 无配音的长讲解 | [AgentScope 企业线](../../../demos/agentscope-enterprise-film/README.md) | 文档与固定源码研究、阅读稿、显式运动窗口、DOM 读速与双画幅封面；使用与验收范围见项目记录 |
+| 旁白带领的系列片，单集与合集同源 | [Palantir 入职书单系列](../../../palantir/reading-list-series/README.md) · [验收](../../../palantir/reading-list-series/verification/README.md) | 六集与合集由同一份正文排出，合集正文画面直接取自单集成片（按输入指纹判断是否过期）；主张与素材两份登记由舞台强制；每集两路独立画面审阅后修订；原生双画幅封面。成片检查见验收页；制作方没有按实际速度听过，无受众测试。音视频不入 Git |
 | 可操作的机制演算与视频 | [A3](../../../demos/visual-grammar/a3-event-state-context/README.md) · [消费记录](../../../demos/visual-grammar/a3-event-state-context/consumption.md) · [验收](../../../demos/visual-grammar/a3-event-state-context/acceptance.md) | HTML 与 Remotion；已渲染和抽样检查，连续原生观看与部分依赖快照缺失 |
 | 空间遮挡、跨层对象身份 | [MC01](../../../demos/motion-ceiling-lab/mc01-request/README.md) · [选型与编排](../../../demos/motion-ceiling-lab/mc01-request/plan.md) · [验收](../../../demos/motion-ceiling-lab/mc01-request/acceptance.md) | WebGL2 与 Canvas；局部运行和变体已检查，无受众测试 |
 | 短动态简报 | [动态简报 specimen](../../../vault/distilled/ai-capability-assessment/motion/README.md) | 96 秒案例；播放器与受众验证见原记录的缺口 |

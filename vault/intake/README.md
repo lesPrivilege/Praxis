@@ -92,3 +92,5 @@ Intake 只登记材料身份、覆盖、处理状态、附件和缺口，不重�
 - [Knowledge Film 001 过程重建登记](knowledge-film-001-distill-20261005.json) → [消费与失败记录](../distilled/knowledge-film-001-distill-20261005/README.md)：原工单及主日志只登记定位与 hash，未快照入库；本地批次未进入通用 registry，按本入口发现。
 
 - [Chat ingestion 与 Astra-era harness audit 讨论摘录 · 2026-10-09](chat-ingestion-harness-20261009.json)：两份粘贴文本、无会话身份；[原件](../archive/chat/chat-ingestion-harness-20261009/README.md)、[提炼](../distilled/chat-ingestion-harness-20261009/README.md)、[来源账本](../provenance/chat-ingestion-harness-20261009/README.md)。
+
+- [Palantir 入职书单视频系列 · 2026-10-17](palantir-reading-list-series-20261017.json)：原 Chat、用户转交的生产交接稿（仅供开工参考）与本轮新增来源；[原 Chat](../archive/chat/palantir-reading-list-series-20261017.md)、[交接稿快照](../snapshots/local/palantir-series-handoff-20261017/README.md)、[来源快照](../snapshots/local/palantir-series-20261017/README.md)；消费在 [系列项目](../../palantir/reading-list-series/README.md)。

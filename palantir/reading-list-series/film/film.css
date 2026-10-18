@@ -1,0 +1,145 @@
+/* Stage is always 1920×1080; the player scales it. Tokens first, then shared parts.
+   Each unit's own rules live in episodes/<unit>/scenes.css with the unit's class prefix.
+   Adapted from demos/role-baseline-film/film/film.css. */
+:root {
+  --paper: #f2f4f7; --paper2: #e5e9ef; --paper3: #d6dce5;
+  --ink: #0d1826; --ink2: #3a4658; --ink3: #7d8a9c; --rule: #c3ccd8;
+  --blue: #1f4fe0; --blue-soft: #dfe7fb; --blue-lite: #8fb0ff;
+  --red: #dd4a3c; --red-soft: #f9e3df;
+  --night: #0a1018; --night2: #111a27; --night3: #1a2636; --nightline: #2a394e; --moon: #dfe6f0; --moon2: #93a2b8;
+  --serif: "Iowan Old Style", "Songti SC", "Songti TC", serif;
+  --sans: "Avenir Next", "PingFang SC", "Helvetica Neue", sans-serif;
+  --mono: Menlo, "PingFang SC", monospace;
+  --type: "American Typewriter", "Courier New", "Songti SC", serif;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; background: #05080d; overflow: hidden; }
+body { font-family: var(--sans); color: var(--ink); -webkit-font-smoothing: antialiased; text-rendering: geometricPrecision; }
+
+#viewport { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; }
+#stage { position: relative; width: 1920px; height: 1080px; flex: none; overflow: hidden; background: var(--paper); transform-origin: center center; }
+body.render #viewport { display: block; }
+body.render #stage { transform: none !important; }
+body.render #hud { display: none; }
+
+.scene { position: absolute; inset: 0; overflow: hidden; visibility: hidden; isolation: isolate; }
+.scene.paper { background: var(--paper); color: var(--ink); }
+.scene.night { background: var(--night); color: var(--moon); }
+.fill { position: absolute; inset: 0; }
+/* The layer the camera frames (film/camera.js); fixed parts stay on the scene. */
+.cam-world { position: absolute; inset: 0; transform-origin: 0 0; }
+.abs { position: absolute; }
+
+/* Paper grain: static, so frames stay deterministic. */
+.grain { position: absolute; inset: 0; pointer-events: none; opacity: .5; mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='320' height='320'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' seed='7'/><feColorMatrix values='0 0 0 0 .5  0 0 0 0 .55  0 0 0 0 .62  0 0 0 .16 0'/></filter><rect width='320' height='320' filter='url(%23n)'/></svg>"); }
+.night .grain { mix-blend-mode: screen; opacity: .35; }
+.vignette { position: absolute; inset: 0; pointer-events: none; background: radial-gradient(ellipse at 50% 46%, rgba(10,16,24,0) 55%, rgba(10,16,24,.10) 100%); }
+.night .vignette { background: radial-gradient(ellipse at 50% 46%, rgba(0,0,0,0) 45%, rgba(0,0,0,.55) 100%); }
+
+/* Type */
+.serif { font-family: var(--serif); }
+.sans { font-family: var(--sans); }
+.mono { font-family: var(--mono); }
+.t-hero { font-family: var(--serif); font-weight: 900; font-size: 148px; line-height: 1.12; letter-spacing: .01em; }
+.t-display { font-family: var(--serif); font-weight: 700; font-size: 92px; line-height: 1.22; letter-spacing: .01em; }
+.t-title { font-family: var(--serif); font-weight: 700; font-size: 64px; line-height: 1.3; }
+.t-lead { font-family: var(--serif); font-weight: 400; font-size: 46px; line-height: 1.55; }
+.t-body { font-family: var(--sans); font-weight: 400; font-size: 34px; line-height: 1.6; }
+.t-small { font-family: var(--sans); font-weight: 500; font-size: 26px; line-height: 1.5; letter-spacing: .02em; }
+.t-label { font-family: var(--sans); font-weight: 600; font-size: 24px; letter-spacing: .16em; text-transform: uppercase; color: var(--ink3); }
+.t-num { font-family: "Avenir Next", var(--sans); font-weight: 600; font-feature-settings: "tnum" 1, "lnum" 1; letter-spacing: -.01em; }
+.blue { color: var(--blue); } .red { color: var(--red); } .dim { color: var(--ink3); }
+.night .dim { color: var(--moon2); }
+em { font-style: normal; color: var(--blue); }
+.ch { display: inline-block; }
+
+.lines .line-mask { overflow: hidden; padding: .06em 0 .1em; margin: -.06em 0 -.1em; }
+.lines .line-inner { display: block; will-change: transform; white-space: nowrap; }
+
+/* Lines in diagrams */
+svg .ln { fill: none; stroke: var(--ink); stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+svg .ln.thin { stroke-width: 1.5; stroke: var(--rule); }
+svg .ln.soft { stroke: var(--ink3); stroke-width: 2; }
+svg .ln.blue { stroke: var(--blue); stroke-width: 3; }
+svg .ln.red { stroke: var(--red); stroke-width: 3; }
+svg .ln.dash { stroke-dasharray: 6 9; }
+.night svg .ln { stroke: var(--moon); }
+.night svg .ln.thin { stroke: var(--nightline); }
+
+/* Chrome */
+.chrome { position: absolute; inset: 0; pointer-events: none; z-index: 50; }
+.chrome-chapter { position: absolute; left: 80px; top: 64px; display: flex; align-items: center; gap: 18px; font-family: var(--sans); font-size: 24px; font-weight: 600; letter-spacing: .14em; color: var(--ink2); }
+.chrome-chapter b { font-family: "Avenir Next", var(--sans); font-weight: 700; color: var(--ink); letter-spacing: .08em; }
+.chrome-chapter i { display: block; width: 44px; height: 2px; background: var(--ink); }
+.chrome.dark .chrome-chapter { color: var(--moon2); } .chrome.dark .chrome-chapter b { color: var(--moon); } .chrome.dark .chrome-chapter i { background: var(--moon); }
+.chrome-badge { position: absolute; right: 80px; top: 60px; font-size: 22px; font-weight: 600; letter-spacing: .12em; padding: 8px 18px 7px; border: 2px solid currentColor; border-radius: 4px; color: var(--ink3); }
+.chrome.dark .chrome-badge { color: var(--moon2); }
+.source { position: absolute; left: 80px; bottom: 44px; z-index: 60; font-family: var(--sans); font-size: 24px; line-height: 1.5; letter-spacing: .02em; color: var(--ink3); max-width: 1500px; }
+.source.dark { color: var(--moon2); }
+.source::before { content: ""; display: inline-block; width: 28px; height: 2px; background: currentColor; vertical-align: middle; margin-right: 14px; transform: translateY(-2px); }
+
+/* Chapter card */
+.card-no { font-size: 56px; letter-spacing: .1em; color: var(--blue); }
+.card-rule { background: var(--ink); }
+.card-title .line-inner { letter-spacing: .04em; }
+.card-sub { color: var(--ink2); }
+
+/* ---------------------------------------------------------------- series
+   One accent: blue marks the point the scene is about. Red only for a break or failure.
+   Solid lines are established relations, dashed ones are not yet or not shown by the source. */
+.sr-title .line-inner { letter-spacing: .03em; }
+.sr-tag { color: var(--ink2); }
+.sr-corner { font: 600 24px var(--sans); letter-spacing: .14em; color: var(--ink3); }
+.sr-end-win { overflow: hidden; -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 36px, #000 calc(100% - 60px), transparent 100%); mask-image: linear-gradient(to bottom, transparent 0, #000 36px, #000 calc(100% - 60px), transparent 100%); }
+.sr-end-win.still { -webkit-mask-image: none; mask-image: none; }
+.sr-end { padding-top: 36px; }
+.sr-end.two { column-count: 2; column-gap: 80px; }
+.sr-end.two .sr-end-li { font-size: 26px; line-height: 1.45; break-inside: avoid; }
+.sr-end-h { column-span: all; font: 700 30px var(--sans); letter-spacing: .18em; color: var(--ink3); margin: 36px 0 14px; }
+.sr-end-h:first-child { margin-top: 0; }
+.sr-end-li { font: 400 30px/1.55 var(--sans); color: var(--ink2); padding-left: 1.2em; text-indent: -1.2em; }   /* a wrapped title hangs under its first line */
+.sr-end-next { font: 500 36px var(--sans); color: var(--ink); }
+.sr-end-next b { color: var(--blue); font-family: "Avenir Next", var(--sans); margin: 0 6px; }
+
+/* Series map */
+.sr-intro-reading { font: 500 36px var(--sans); color: var(--ink2); text-align: center; }
+.sr-next { font: 500 36px var(--sans); color: var(--ink2); text-align: center; }   /* the outro's line, in the intro reading's slot */
+.sr-next b { color: var(--blue); font-family: "Avenir Next", var(--sans); margin: 0 8px; }
+.sr-map-label { display: flex; align-items: center; gap: 18px; font: 600 30px var(--sans); letter-spacing: .16em; color: var(--ink3); }
+.sr-map-label i { display: inline-block; width: 60px; border-top: 3px dashed var(--ink3); }
+.sr-map-col { text-align: center; }
+.sr-map-no { position: absolute; left: 0; right: 0; top: 40px; font-size: 30px; color: var(--ink3); }
+.sr-map-word { position: absolute; left: 0; right: 0; top: 96px; font: 700 76px var(--serif); color: var(--ink); }
+.sr-map-dot { position: absolute; left: 50%; top: 200px; width: 20px; height: 20px; margin-left: -10px; border-radius: 50%; background: var(--paper); border: 3px solid var(--ink3); }
+.sr-map-book { position: absolute; left: 12px; right: 12px; top: 250px; font: 500 30px/1.35 var(--sans); color: var(--ink2); }
+.sr-map-col.focus .sr-map-word, .sr-map-col.focus .sr-map-no { color: var(--blue); }
+.sr-map-col.focus .sr-map-dot { background: var(--blue); border-color: var(--blue); }
+.sr-map-col.focus .sr-map-book { color: var(--ink); }
+
+/* Quote: English as written, the Chinese rendering under it, then the locator. */
+.kq { --qs: 40px; }
+.kq-en { font-family: var(--serif); font-size: var(--qs); line-height: 1.42; color: var(--ink); }
+.kq-zh { font-family: var(--serif); font-size: calc(var(--qs) * .82); line-height: 1.6; color: var(--ink2); margin-top: .7em; }
+.kq-en { text-wrap: pretty; }          /* no lone last word */
+.kq-zh { text-wrap: balance; }         /* even lines: `pretty` still leaves a lone last character in Chinese */
+.kq-loc { font: 500 26px var(--sans); letter-spacing: .04em; color: var(--ink3); margin-top: 1.1em; }
+.kq-loc:empty { display: none; }
+.night .kq-en { color: var(--moon); } .night .kq-zh, .night .kq-loc { color: var(--moon2); }
+
+/* External image with its credit line. */
+.kfig { overflow: hidden; background: var(--paper2); }
+.kfig img { display: block; width: 100%; height: 100%; }
+.kfig-credit { position: absolute; right: 0; bottom: 0; max-width: 100%; padding: 6px 12px 5px; font: 500 20px/1.35 var(--sans); color: #f2f4f7; background: rgba(13,24,38,.62); }
+.kfig-credit.left { right: auto; left: 0; }
+
+/* A synthetic teaching case says so where it is shown. */
+.case-tag { font: 600 22px var(--sans); letter-spacing: .12em; color: var(--ink3); border: 2px solid var(--rule); border-radius: 4px; padding: 6px 14px 5px; }
+
+/* Player HUD (not rendered into the film) */
+#hud { position: fixed; left: 0; right: 0; bottom: 0; padding: 10px 16px; display: flex; gap: 12px; align-items: center; font: 13px/1 Menlo, monospace; color: #b8c4d6; background: linear-gradient(transparent, rgba(0,0,0,.75)); opacity: 0; transition: opacity .2s; z-index: 10; }
+body:hover #hud { opacity: 1; }
+#hud button { font: inherit; color: inherit; background: #1c2838; border: 1px solid #33445c; border-radius: 4px; padding: 6px 10px; cursor: pointer; }
+#hud input[type=range] { flex: 1; accent-color: #6f95ff; }
+#hud select { font: inherit; color: inherit; background: #1c2838; border: 1px solid #33445c; border-radius: 4px; padding: 5px; }
+

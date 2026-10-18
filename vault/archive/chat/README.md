@@ -42,3 +42,5 @@
 - [提炼Palantir书单方法](palantir-20261001.json)：2026-10-01取回4轮7消息，无截断、无附件，hasMore=false；[登记与覆盖](../../intake/palantir-20261001.json)。
 
 - [Chat ingestion 与 Astra-era harness audit 讨论摘录 · 2026-10-09](chat-ingestion-harness-20261009/README.md)：两份用户提供的完整粘贴文本；无可确认 conversation / turn ID，不代表完整对话导出；字节、hash 与覆盖见 [intake](../../intake/chat-ingestion-harness-20261009.json)。
+
+- [MiMo与Seed使用对比](palantir-reading-list-series-20261017.md)：12 轮，选中分支；从 TTS 选型谈到 Palantir 书单讲解系列的取材与编排，第 10 轮按原文删节（文中注明）；[登记](../../intake/palantir-reading-list-series-20261017.json)。

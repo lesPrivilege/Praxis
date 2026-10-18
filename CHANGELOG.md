@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-10-17 · Palantir 入职书单视频系列
+
+- 新增 [入职书单视频系列](palantir/reading-list-series/README.md)：一部总论加五集，各读一份（Interviewing Users、Impro、Getting Things Done、Dalio 的早期 PDF、The Looming Tower），另有由同一份正文排出、去掉各集引入与收尾的 33:33 合集。中文旁白按作者语体写成，每集有 4:3 与 3:4 原生封面；画面上的每句引文和出处都对应主张登记里的一条，外部图片只经素材登记上屏。
+- 原 Chat 与交接稿入账：[归档](vault/archive/chat/palantir-reading-list-series-20261017.md)、[入账记录](vault/intake/palantir-reading-list-series-20261017.json)，另有两份新来源快照。交接稿按“仅供参考”裁决，采用与不采用的写在系列页。旧提炼里“这五份是入职书单”等几处说法回到原文更正，见 [系列研究](palantir/reading-list-series/research/README.md#对旧记录的更正)。
+- Sonnet 代理探索与核验来源；Opus 代理冷读稿子、施工画面、审阅画面与结构文字、做镜头导演和成片审阅；主会话逐条裁决，记在 [验收](palantir/reading-list-series/verification/acceptance.md)。
+- Kit 只加两处记录：[口播旁白体例](kit/write/prose/genres/narration.md)的“悬念后揭晓”一行补上冒号揭晓（合成语音在冒号处停顿）；[Motion](kit/write/motion/README.md) 的制作记录加本系列一行。
+- 没有人带声音按实际速度看过成片；几处人名读音与没跑成的转写比对留给人，见验收页。
+
 ## 2026-10-17 · 股权结构图工具
 
 - 新增 [工具](tools/README.md) 目录与第一个工具 [股权结构图](tools/equity-chart/README.md)：单个离线 HTML，ELK.js 0.9.3 分层布局在 Web Worker 中运行，名称自动换行，导出透明背景的原生 SVG。仓库检查覆盖 `tools/`。
