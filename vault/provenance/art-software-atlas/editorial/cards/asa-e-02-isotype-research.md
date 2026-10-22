@@ -3,7 +3,7 @@ id: ASA-E-02
 status: verified
 url: https://isotype.univie.ac.at/en/
 grammar_paths:
-  - kit/design/composition/editorial-translations.md
+  - dsh-praxis/kit/design/composition/editorial-translations.md
 history_record: vault/provenance/art-software-atlas/editorial/CHANGELOG.md
 ---
 
@@ -25,4 +25,4 @@ history_record: vault/provenance/art-software-atlas/editorial/CHANGELOG.md
 
 **重访条件：** 需要超出概述的历史归因，或要评估受众理解时。
 
-**派生参考：** [编辑传统的媒介转译](../../../../../kit/design/composition/editorial-translations.md)。历史记录：[CHANGELOG](../CHANGELOG.md)。
+**派生参考：** [编辑传统的媒介转译](../../../../../dsh-praxis/kit/design/composition/editorial-translations.md)。历史记录：[CHANGELOG](../CHANGELOG.md)。

@@ -9,7 +9,7 @@
 | 历史研究、裁决与施工输入 | 本页下方的研究、母稿、证据和工单链接 | 保留用于回查和再次消费；[交付蓝图](delivery-plan.md)是 2026-09-23 的历史计划，不是当前执行指令 |
 | 静态答卷呈现 | [呈现目录](rendered/README.md) · [呈现验收记录](rendered/verification.md) | 当前 HTML/PDF 为 `AI交付能力测试-answer-孙广昊.html` 与 `AI交付能力测试-answer-孙广昊.pdf`；仍有未验收范围。旧 `answer.html`/`answer.pdf` 已不存在，本入口不把历史旧名当作 canonical 产物 |
 | 动态简报 | [Motion 目录](motion/README.md) | Remotion 源码、时间线和成片入口已登记；外部播放器与移动端完整观看、无旁白观众测试仍未完成 |
-| 重新施工或对外交付 | [Reporting](../../../dsh-praxis/kit/task/README.md) → [Write](../../../dsh-praxis/kit/README.md) / [Design](../../../kit/design/README.md) → [Verification](../../../kit/verification/README.md) | 只有用户/main 另定范围、owner、canonical 文件名和验收条件后才进入下一阶段；不从历史工单自动派发 |
+| 重新施工或对外交付 | [Reporting](../../../dsh-praxis/kit/task/README.md) → [Write](../../../dsh-praxis/kit/README.md) / [Design](../../../dsh-praxis/kit/design/README.md) → [Verification](../../../kit/verification/README.md) | 只有用户/main 另定范围、owner、canonical 文件名和验收条件后才进入下一阶段；不从历史工单自动派发 |
 
 | 阅读需要 | 入口 | 可查内容 |
 |---|---|---|

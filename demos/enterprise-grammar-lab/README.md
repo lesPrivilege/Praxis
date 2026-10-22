@@ -95,7 +95,7 @@ npm run contract   # 改了契约之后重新生成类型
 | [企业工作面九项](../../kit/grammar/README.md) | `d4fd387` | 当作对象页的检查表 | 九项都有落点；“AI 的动作返回可审查结果，人工决定保留独立记录”在付款复核台第一次用上 |
 | [工作与接口契约](../../kit/contracts/README.md) | `d4fd387` | 六个契约面用来组织场景契约和 OpenAPI；“来源、推断、规则结果、人工决定可区分” | 采用 |
 | [Adapter 边界](../../kit/adapters/README.md) | `d4fd387` | “外部 provider 不得成为领域 schema 的所有者”“demo persona 明确标注” | 公共契约不带任何场景的词 |
-| [状态与可达性](../../kit/design/interaction/states.md)、[界面参考](../../kit/design/references/interface.md) U01、U02、U04、U06、U07 | `d4fd387` | 不可用的理由写在页面上；没有真实进度不画百分比；标签页标明对象和版本；分组靠留白不靠卡片；结果未知与终态分开 | 采用；U01 只量了尺寸 |
+| [状态与可达性](../../dsh-praxis/kit/design/interaction/states.md)、[界面参考](../../dsh-praxis/kit/design/references/interface.md) U01、U02、U04、U06、U07 | `d4fd387` | 不可用的理由写在页面上；没有真实进度不画百分比；标签页标明对象和版本；分组靠留白不靠卡片；结果未知与终态分开 | 采用；U01 只量了尺寸 |
 | [Enterprise UI 候选](../../kit/ui/README.md) | `d4fd387` | 状态矩阵作为每个面板的覆盖目标 | 状态都做了；候选组件名没有对应到实现 |
 | [晋升规则](../../docs/decisions/002-promotion.md) | accepted | 判断哪些组件算候选 | 工作面现在有两个独立场景在用，是候选 |
 | `ref-refine`、`ref-ant-design`、`ref-storybook` | 卡片 2026-09-18 | 资源的列表与详情、逻辑与界面分离；Ant Design 作为组件来源；“组件 × 状态 × fixture”的想法 | 前两条采用；Storybook 没有安装，改用固定地址触发状态 |

@@ -22,6 +22,6 @@ snapshot_status: not-captured
 
 **限制：** README 是维护方说明；自述兼容表、星数、功能、安全、导出和社区目录未独立复验。README 的大量演示图片没有视觉检查。网页仓库页显示 Apache License 2.0，但不自动说明打包上游材料的权利。
 
-**Derived grammar:** [Agent design resources](../../../../../kit/design/references/agent-design-resources.md) — ASA-G-AGENT-DESIGN-SYSTEM-CONTRACT / ASA-G-AGENT-COMPONENT-RETRIEVAL
+**Derived grammar:** [Agent design resources](../../../../../dsh-praxis/kit/design/references/agent-design-resources.md) — ASA-G-AGENT-DESIGN-SYSTEM-CONTRACT / ASA-G-AGENT-COMPONENT-RETRIEVAL
 
 **History:** [Research history](../CHANGELOG.md)

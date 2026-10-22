@@ -1,0 +1,47 @@
+{
+  "name": "dsh-praxis",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Praxis 个人 FDE 工作 Kit：分层体例、来源与挂载维护、任务取用与运行记录；DSH 插件、MCP 服务与命令行共用一套操作。",
+  "type": "module",
+  "main": "adapters/dsh.js",
+  "exports": {
+    ".": "./adapters/dsh.js",
+    "./core": "./core/index.js",
+    "./tools": "./adapters/tools.js",
+    "./client": "./adapters/client.js",
+    "./package.json": "./package.json"
+  },
+  "bin": {
+    "praxis": "adapters/cli.js",
+    "praxis-mcp": "adapters/mcp.js"
+  },
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "scripts": {
+    "test": "node --test core/*.test.mjs adapters/*.test.mjs"
+  },
+  "keywords": [
+    "dsh-plugin",
+    "praxis"
+  ],
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "inject": [
+        "@deepseek-ai/dsh-client-ui-sidebar-right"
+      ],
+      "platform": "web"
+    }
+  },
+  "files": [
+    "core/*.js",
+    "adapters/*.js",
+    "ui/",
+    "cordis.patch.yml",
+    "README.md"
+  ]
+}

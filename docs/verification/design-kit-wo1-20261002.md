@@ -50,12 +50,12 @@
 
 | 位置 | 原文 | 改为 | 理由 |
 |---|---|---|---|
-| [视觉语言参考](../../kit/design/references/languages.md) VL01“名字推不出的” | 必用 Helvetica 或固定列数；禁色、禁插画；…… | 加“只用无衬线、只用摄影” | H01 自己的配图就是反例；首轮冷启动里代理凭通用知识写过“只用无衬线” |
+| [视觉语言参考](../../dsh-praxis/kit/design/references/languages.md) VL01“名字推不出的” | 必用 Helvetica 或固定列数；禁色、禁插画；…… | 加“只用无衬线、只用摄影” | H01 自己的配图就是反例；首轮冷启动里代理凭通用知识写过“只用无衬线” |
 | 同页 VL01 来源状态 | H01、H02 `verified`（文字，未看海报） | H01 `verified`（文字，另看过页内一张海报）；H02 `verified`（全文文字，海报图未看） | 看图范围如实分开 |
 | 同页 VL03 来源状态 | H08、H09 `unavailable` | H09 `partial`，H08 `verified`，并注明 H08 的释名与断代自相矛盾 | CARI 可读 |
 | 同页 VL07 来源状态 | H10 `unavailable` | H10 `verified`；注明“可见的状态窗”只有包内自述的看图为据 | CARI 可读；H15 的图仍没看到 |
 | 同页图像说明 | 原作图像本仓库都没有看过 | 只看过 H01 页内的一张海报 | 如实 |
-| [问题地图](../../kit/design/foundations/relations.md) G12“要保住的” | 不靠隐藏必要内容换整齐 | 必要内容收起后仍能到达，不为整齐而删掉 | WCAG 对重排的解释写明：挪动或收起内容不算丢失，只要仍能到达。原句容易被读成不许折叠 |
+| [问题地图](../../dsh-praxis/kit/design/foundations/relations.md) G12“要保住的” | 不靠隐藏必要内容换整齐 | 必要内容收起后仍能到达，不为整齐而删掉 | WCAG 对重排的解释写明：挪动或收起内容不算丢失，只要仍能到达。原句容易被读成不许折叠 |
 
 没有新增条目、参数或规则。VL04 没有改：H18 仍不可读。
 
@@ -63,7 +63,7 @@
 
 可以当依据用：
 
-- 问题地图的 G01、G11、G12 三行和“怎样检验一条关系”一节，连同它们指向的 [空间编排](../../kit/design/composition/layout.md)与 [Publish 编排](../../dsh-praxis/kit/publish/html/composition.md)。
+- 问题地图的 G01、G11、G12 三行和“怎样检验一条关系”一节，连同它们指向的 [空间编排](../../dsh-praxis/kit/design/composition/layout.md)与 [Publish 编排](../../dsh-praxis/kit/publish/html/composition.md)。
 - VL01 改后的整行。
 - A01 样张与夹具 F1，作为已见样本；工单二的新内容不能与它相同。
 

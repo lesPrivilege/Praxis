@@ -2,7 +2,7 @@
 
 - URL: http://ibaraki-kasugaoka-church.jp/e-top.html
 - Catalog: [catalog.json](../catalog.json) · History: [CHANGELOG.md](../CHANGELOG.md)
-- Grammar: [Ando《光之教会》](../../../../../kit/design/composition/spatial-materials.md#asa-g-ando-church-of-the-light)
+- Grammar: [Ando《光之教会》](../../../../../dsh-praxis/kit/design/composition/spatial-materials.md#asa-g-ando-church-of-the-light)
 - Read: church English homepage and “Regarding the suspension of tours” notice。
 - Supports: ASA-S-06-C09。
 

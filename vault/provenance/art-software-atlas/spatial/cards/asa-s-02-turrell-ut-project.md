@@ -2,7 +2,7 @@
 
 - URL: https://turrell.utexas.edu/
 - Catalog: [catalog.json](../catalog.json) · History: [CHANGELOG.md](../CHANGELOG.md)
-- Grammar: [Turrell Skyspace](../../../../../kit/design/composition/spatial-materials.md#asa-g-turrell-skyspace)
+- Grammar: [Turrell Skyspace](../../../../../dsh-praxis/kit/design/composition/spatial-materials.md#asa-g-turrell-skyspace)
 - Read: 首页“The Color Inside”、观访和 light sequence 段落。
 - Supports: C02、ASA-S-02-C03。
 

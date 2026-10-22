@@ -18,8 +18,8 @@
 
 | 参考 | 通过范围 | 明确未通过/未执行 |
 |---|---|---|
-| [REF-COMP-001](../../kit/design/references/curated/comparison-continuity.md) | 查阅按属性组织并置比较的结构方法 | 原fixture数字不作为事实；窄屏HTML对象标签的可访问关系有缺口，源代码不能原样作为验收实现；跨域和更大负载未验证 |
-| [REF-COMP-002](../../kit/design/references/curated/note-adjacency.md) | 查阅内容顺序与边注/句后投影的职责分工 | 原浮动、边距、断点不采纳为固定参数；多注释碰撞、读屏、缩放、打印、跨字体未验证 |
+| [REF-COMP-001](../../dsh-praxis/kit/design/references/curated/comparison-continuity.md) | 查阅按属性组织并置比较的结构方法 | 原fixture数字不作为事实；窄屏HTML对象标签的可访问关系有缺口，源代码不能原样作为验收实现；跨域和更大负载未验证 |
+| [REF-COMP-002](../../dsh-praxis/kit/design/references/curated/note-adjacency.md) | 查阅内容顺序与边注/句后投影的职责分工 | 原浮动、边距、断点不采纳为固定参数；多注释碰撞、读屏、缩放、打印、跨字体未验证 |
 
 两卡状态为`reviewed / partial / reference / preferred`，适用范围限定为结构参考。材料没有变成生产组件。Q06-d、T05-c、C05等继续留普通候选/实验；其中统计措辞、条件作用范围或投影问题不因进入参考入口而被豁免。单一fixture不足以声称代码通用，但不妨碍对已经观察并泛化的结构建立有边界的查阅入口。
 

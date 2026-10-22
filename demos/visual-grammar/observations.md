@@ -1,6 +1,6 @@
 # 本轮 grammar 观察
 
-2026-09-29，Opus 施工三件作品后的记录。它们是场景内观察，还不是 Kit 规范：每条只有本工场一个场景支持，按 [ADR-002](../../docs/decisions/002-promotion.md) 至少还需要两个独立场景。可以晋升时，从这里提炼回 [Design](../../kit/design/README.md)。
+2026-09-29，Opus 施工三件作品后的记录。它们是场景内观察，还不是 Kit 规范：每条只有本工场一个场景支持，按 [ADR-002](../../docs/decisions/002-promotion.md) 至少还需要两个独立场景。可以晋升时，从这里提炼回 [Design](../../dsh-praxis/kit/design/README.md)。
 
 | 观察 | 在哪件作品里得到 | 反例或边界 |
 |---|---|---|

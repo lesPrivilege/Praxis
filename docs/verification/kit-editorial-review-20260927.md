@@ -5,7 +5,7 @@
 ## 改动范围
 
 - [文档结构契约](../architecture/documentation.md)：Kit 体例、活跃条目准入、约束强度、distilled 语义和反馈退出。
-- [Design 入口](../../kit/design/README.md)、[语法](../../kit/design/grammar.md)与[参考索引](../../kit/design/references.md)：按任务阅读、通用判断和带范围的参考消费。
+- [Design 入口](../../dsh-praxis/kit/design/README.md)、[语法](../../dsh-praxis/kit/design/README.md)与[参考索引](../../dsh-praxis/kit/design/references/README.md)：按任务阅读、通用判断和带范围的参考消费。
 - [答卷历史 profile](../../vault/distilled/ai-capability-assessment/design-profile-20260924.md)：保留原入口中的具体样式与交付选择，未修改既有答卷产物。
 - [入账规范](../governance/intake.md)：原 Chat、泛化内容和公开披露的边界；未实现存储或 Git 隔离。
 - [Reporting grammar](../../dsh-praxis/kit/task/brief.md)：展项中 description、图注、来源和方法说明的职责；[Demo 准入](../../demos/README.md)补足材料来路。

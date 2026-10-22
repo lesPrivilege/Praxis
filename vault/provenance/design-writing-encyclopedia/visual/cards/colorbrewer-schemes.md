@@ -20,4 +20,4 @@ url: https://colorbrewer2.org/learnmore/schemes_full.html
 
 ## 关联
 
-[Color 语法](../../../../../kit/design/composition/color.md)；涉及数量基线、单位与缺失值时同时查[图形编码](../../../../../kit/design/composition/encoding.md)。
+[Color 语法](../../../../../dsh-praxis/kit/design/composition/color.md)；涉及数量基线、单位与缺失值时同时查[图形编码](../../../../../dsh-praxis/kit/design/composition/encoding.md)。

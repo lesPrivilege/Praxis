@@ -12,4 +12,4 @@ url: https://skills.wheresryan.sh/anatomy
 
 若后续需要安装/运行流程或 exact skill instructions，先重访该页面；不要用相邻 README 代替页面自身。
 
-[对象表现语法](../../../../../kit/design/composition/object-representation.md)使用其他已读材料；本条只是未取得正文的站点线索。
+[对象表现语法](../../../../../dsh-praxis/kit/design/composition/object-representation.md)使用其他已读材料；本条只是未取得正文的站点线索。

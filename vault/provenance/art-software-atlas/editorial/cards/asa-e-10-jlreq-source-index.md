@@ -3,7 +3,7 @@ id: ASA-E-10
 status: verified
 url: https://raw.githubusercontent.com/w3c/jlreq/gh-pages/index.html
 grammar_paths:
-  - kit/design/composition/editorial-translations.md
+  - dsh-praxis/kit/design/composition/editorial-translations.md
 history_record: vault/provenance/art-software-atlas/editorial/CHANGELOG.md
 ---
 
@@ -25,4 +25,4 @@ history_record: vault/provenance/art-software-atlas/editorial/CHANGELOG.md
 
 **重访条件：** 上游仓库的图示 markup 或报告版本变化时。
 
-**派生参考：** [编辑传统的媒介转译](../../../../../kit/design/composition/editorial-translations.md)。历史记录：[CHANGELOG](../CHANGELOG.md)。
+**派生参考：** [编辑传统的媒介转译](../../../../../dsh-praxis/kit/design/composition/editorial-translations.md)。历史记录：[CHANGELOG](../CHANGELOG.md)。

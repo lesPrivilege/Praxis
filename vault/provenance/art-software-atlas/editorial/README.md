@@ -1,6 +1,6 @@
 # 编辑与信息设计研究
 
-本流考察两种范围明确的编辑传统：Isotype 图像数量表达与日文纵排。来源主张记录在 Vault；由证据推导的软件转译集中维护于 [Kit 语法](../../../../kit/design/composition/editorial-translations.md)。
+本流考察两种范围明确的编辑传统：Isotype 图像数量表达与日文纵排。来源主张记录在 Vault；由证据推导的软件转译集中维护于 [Kit 语法](../../../../dsh-praxis/kit/design/composition/editorial-translations.md)。
 
 请通过[目录](catalog.json)查找 URL 级来源身份，通过[来源卡](cards/README.md)查看阅读位置与限制，通过[实体记录](entities.json)查找具体作品和实现媒介。本流的研究材料属于参考，并非已采纳标准。涉及图像的主张须以对应图像已直接检查为前提。
 

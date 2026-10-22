@@ -27,7 +27,7 @@ foundations 的 `curriculum.json` 以 `reader_root` 加章节 `path` 定位 Book
 
 Claude 可以重写正文、调整主次和渐进展开，自由选择统一 UI、图形、交互、motion、技术栈与多代理工作方式。保留 case/object/claim/source ID、provider 名称、原语言术语、单位、条件和证据类别；语义变化记在消费项目中。避免为了统一外观把各行业的 release、hold、acceptance 或 completed 合成一种状态。
 
-在现有 [场景模板](../../../scenarios/_template/README.md)建立具体消费场景；从 [Design](../../../kit/design/README.md)、[Write / Publish](../../../dsh-praxis/kit/publish/html/README.md)与[Motion](../../../dsh-praxis/kit/publish/video/README.md)选择表达方法，按 [Demo 入口](../../../demos/README.md)记录运行边界。当前交付没有 HTML 实现，正文维护在 Books，证据与结构资产维护在 Vault。
+在现有 [场景模板](../../../scenarios/_template/README.md)建立具体消费场景；从 [Design](../../../dsh-praxis/kit/design/README.md)、[Write / Publish](../../../dsh-praxis/kit/publish/html/README.md)与[Motion](../../../dsh-praxis/kit/publish/video/README.md)选择表达方法，按 [Demo 入口](../../../demos/README.md)记录运行边界。当前交付没有 HTML 实现，正文维护在 Books，证据与结构资产维护在 Vault。
 
 ## 覆盖与继续研究
 

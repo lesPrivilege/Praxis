@@ -104,13 +104,13 @@ polish 沿用交接列出的工作面：`.app-shell`、`.sidebar`、`.topbar`、
 
 | 条目 | 取用 | 偏离或限制 |
 |---|---|---|
-| [按属性维持比较](../../kit/design/references/curated/comparison-continuity.md) REF-COMP-001 | 窄屏的变化表：每个观测项是一个属性块，当前与基线是两个固定槽位 | 只有两个对象；多于两份记录的对照没有做 |
-| [界面参考](../../kit/design/references/interface.md) U01 | 宽屏控件不低于 24 px；900 px 以下导航 40 px，720 px 以下按钮、选择器、折叠标题 44 px | 44 px 是窄屏下的选择，不是 WCAG 的通用要求；按宽度而不是指针类型切换 |
+| [按属性维持比较](../../dsh-praxis/kit/design/references/curated/comparison-continuity.md) REF-COMP-001 | 窄屏的变化表：每个观测项是一个属性块，当前与基线是两个固定槽位 | 只有两个对象；多于两份记录的对照没有做 |
+| [界面参考](../../dsh-praxis/kit/design/references/interface.md) U01 | 宽屏控件不低于 24 px；900 px 以下导航 40 px，720 px 以下按钮、选择器、折叠标题 44 px | 44 px 是窄屏下的选择，不是 WCAG 的通用要求；按宽度而不是指针类型切换 |
 | U04 | 概况靠字阶与留白成组，不再套卡；来源与记录各是一张面板里的行 | — |
 | U05 | 界面文字 12／13 px，层级靠字号与字重 | 字号是本项目的选择 |
 | U06 | 进度条只显示采集器给出的任务计数 | — |
-| [状态与可达性](../../kit/design/interaction/states.md) | 状态用形状加文字；必要信息不放在悬停里；焦点可见 | 读屏未测 |
-| [运动判断](../../kit/design/motion/grammar.md) | 每段运动先对应一种变化；减少运动下保留文字反馈 | 时长是本项目的选择 |
+| [状态与可达性](../../dsh-praxis/kit/design/interaction/states.md) | 状态用形状加文字；必要信息不放在悬停里；焦点可见 | 读屏未测 |
+| [运动判断](../../dsh-praxis/kit/design/motion/grammar.md) | 每段运动先对应一种变化；减少运动下保留文字反馈 | 时长是本项目的选择 |
 | [成文原理](../../dsh-praxis/kit/writing/principles.md)第 5 条、[审阅方法](../../dsh-praxis/kit/writing/review.md) | 结构位置并列、凝练；独立审阅后逐条裁决 | 见下节 |
 
 ## 结构文字审阅

@@ -10,7 +10,7 @@
 
 ## 决定
 
-1. Design / Foundations 新增两页，与 [构成关系与问题地图](../../kit/design/foundations/relations.md)并列：[成立程度与归属的标记](../../kit/design/foundations/standing.md)和 [精确指向](../../kit/design/foundations/anchoring.md)。两页给问题、不随画法改变的约束、一套默认和最容易犯的错，不给色值和尺寸。
+1. Design / Foundations 新增两页，与 [构成关系与问题地图](../../dsh-praxis/kit/design/foundations/relations.md)并列：[成立程度与归属的标记](../../dsh-praxis/kit/design/foundations/standing.md)和 [精确指向](../../dsh-praxis/kit/design/foundations/anchoring.md)。两页给问题、不随画法改变的约束、一套默认和最容易犯的错，不给色值和尺寸。
 2. 不规定某一种线型的含义。规定的是：一张图里一种画法只回答一个问题；回答先写成词，画法只是重复；图例由同一份输入得出；不认识的状态拒绝画。“实线已成立、虚线未生效、实心已确认、空心未确认、强调色等人决定”只是关系图一族的默认。
 3. 一条指向分开写对象、版本、范围，缺哪一层标哪一层；位置相邻是呈现，不是指向；对象出新版本，旧指向不跟着走。
 4. 每页给三级做法：只用文字，一张图，几张图连成一张。第一级不依赖任何图件，任何材料都能做到；后两级不新增信息。这是对“普及与提高并重”的落实：普及的是第一级和那几条约束，提高的是做得好的图和组合。
@@ -18,9 +18,9 @@
 
 ## 与既有决定的关系
 
-沿用 ADR-018 的层次：泛化判断在 Kit，生成器、样板和输入是它的取用。不改 ADR-002：共享运行组件的晋升门槛照旧，本决定晋升的是知识说明。不改 ADR-017：没有新增优先参考卡；[注释保持邻接](../../kit/design/references/curated/note-adjacency.md)照旧，精确指向一页写明了两者的分工。内容上的定义仍在 [共同工作语法](../../kit/grammar/work.md)和 [证据与来源](../../dsh-praxis/kit/writing/evidence.md)，这两页没有改。
+沿用 ADR-018 的层次：泛化判断在 Kit，生成器、样板和输入是它的取用。不改 ADR-002：共享运行组件的晋升门槛照旧，本决定晋升的是知识说明。不改 ADR-017：没有新增优先参考卡；[注释保持邻接](../../dsh-praxis/kit/design/references/curated/note-adjacency.md)照旧，精确指向一页写明了两者的分工。内容上的定义仍在 [共同工作语法](../../kit/grammar/work.md)和 [证据与来源](../../dsh-praxis/kit/writing/evidence.md)，这两页没有改。
 
-[图形编码](../../kit/design/composition/encoding.md)原有的“不要默认虚线在所有领域都表示候选”保留，并加了一句指向新页。问题地图的 G03、G11 两行各加了一个链接。
+[图形编码](../../dsh-praxis/kit/design/composition/encoding.md)原有的“不要默认虚线在所有领域都表示候选”保留，并加了一句指向新页。问题地图的 G03、G11 两行各加了一个链接。
 
 ## 没有采纳的
 

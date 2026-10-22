@@ -6,8 +6,8 @@
 
 - 要决定页面与章节如何承载论证：读 [内容编排](composition.md)。
 - 要放入图表、引文、截图或证据：读 [展项与说明](exhibits.md)。
-- 要选择具体图形、尺度、字体或表现方式：进入 [Design / Composition](../../../../kit/design/composition/README.md)。
-- 窄屏比较或局部注释有困难时，先比对 [按属性维持比较](../../../../kit/design/references/curated/comparison-continuity.md)与 [注释保持邻接](../../../../kit/design/references/curated/note-adjacency.md)；内容职责仍由本分支维护，样张数字和代码不直接继承。
+- 要选择具体图形、尺度、字体或表现方式：进入 [Design / Composition](../../design/composition/README.md)。
+- 窄屏比较或局部注释有困难时，先比对 [按属性维持比较](../../design/references/curated/comparison-continuity.md)与 [注释保持邻接](../../design/references/curated/note-adjacency.md)；内容职责仍由本分支维护，样张数字和代码不直接继承。
 - 要向不读原件的读者讲清一个系统、项目或机制的各个局部：内容组织读 Writing 的 [机制讲解](../../writing/organization/mechanism.md)，页面分层与可见性取用 [讲解页的编排](explainer.md)，任务类型列出它时照读；没有类型、只按 brief 做时，它是一份做过一次的参考，不是必经步骤。
 - 需要检验真实输出：用 [共享验收](../verification.md)。
 

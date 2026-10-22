@@ -7,7 +7,7 @@
 Kit 的目录应体现读者进入的任务与工作模式。README 选路，具体指南执行，grammar 解释判断，references 再按用途展开到提炼和来源；不要求挂载时一次读完。
 
 - 建立 [Write](../../dsh-praxis/kit/README.md)。`prose/`维护成文原理、审校和按需加载的`genres/`；`publish/`维护空间编排、展项与说明职责；`motion/`维护时间叙事与分镜交接；`shared/`维护跨模式证据与内容验收。
-- [Design](../../kit/design/README.md)分为`foundations/`、`composition/`、`interaction/`、`motion/`与`references/`。最后一支继续按编排、界面、设计系统和样张分路，保留已有来源ID与证据边界。
+- [Design](../../dsh-praxis/kit/design/README.md)分为`foundations/`、`composition/`、`interaction/`、`motion/`与`references/`。最后一支继续按编排、界面、设计系统和样张分路，保留已有来源ID与证据边界。
 - Reporting 保留材料目的、组织动作、受众和文体选择；已经泛化的表达规则迁入 Write。具体文体如能力测试答卷只在 Prose/Genres 触发，不成为所有材料的默认体例。
 - 写作原理从项目 skill 迁入 Kit。`writing` skill 保留名称和触发范围，成为有明确依赖的薄入口，按任务读取 Prose；挂载 Kit 后不依赖某个宿主的skill机制也能找到原理。
 - 目录内维护真实规则、指南或来源入口，不只新建空README。已是单一职责的短契约维持原路径，不为目录深度继续拆分。
@@ -22,7 +22,7 @@ Kit 的目录应体现读者进入的任务与工作模式。README 选路，具
 | Reporting 中视觉、展项与媒介投影 | [Publish](../../dsh-praxis/kit/publish/html/README.md) | 保留mode路由，无第二份正文 |
 | `assessment-answer-profile.md` | [Prose/Genres答卷体例](../../dsh-praxis/kit/writing/genres/assessment-answer.md) | 保留历史路径到达 |
 | `kit/design/grammar.md` | Design 的四个判断分支 | 旧锚点转为导航 |
-| `kit/design/references.md` | [分用途参考](../../kit/design/references/README.md) | 旧路径仅作兼容入口 |
+| `kit/design/references.md` | [分用途参考](../../dsh-praxis/kit/design/references/README.md) | 旧路径仅作兼容入口 |
 
 旧ADR、审计和研究保留当时表述；它们不承担当前规范权威。当前任务入口、维护约定与skill同步迁移。新索引不复制原件，也不把历史 accepted 解释成所有项目适用。
 

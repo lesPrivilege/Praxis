@@ -2,7 +2,7 @@
 
 - URL: https://www.w3.org/TR/css-color-4/
 - Catalog: [catalog.json](../catalog.json) · History: [CHANGELOG.md](../CHANGELOG.md)
-- Grammar: [Turrell Skyspace](../../../../../kit/design/composition/spatial-materials.md#asa-g-turrell-skyspace)
+- Grammar: [Turrell Skyspace](../../../../../dsh-praxis/kit/design/composition/spatial-materials.md#asa-g-turrell-skyspace)
 - Read: Abstract、Introduction and color-space/gamut scope。
 - Supports: ASA-S-09-C13。
 

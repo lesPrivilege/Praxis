@@ -2,7 +2,7 @@
 
 来源：[Science 研究论文页面](https://www.science.org/doi/10.1126/science.1135491) · 状态：partial（摘要和参考 / 讨论部分可读；全文受登录墙限制）
 
-用途：将具体 girih 建构解释作为研究假说与复原方法，而非普遍历史事实。派生参考见 [Material relations](../../../../../kit/design/composition/material-relations.md)。
+用途：将具体 girih 建构解释作为研究假说与复原方法，而非普遍历史事实。派生参考见 [Material relations](../../../../../dsh-praxis/kit/design/composition/material-relations.md)。
 
 ## 摘要与定位
 
@@ -22,5 +22,5 @@ Peter J. Lu 与 Paul J. Steinhardt 的研究摘要提出一种历史解释：部
 
 ## 关联
 
-- Grammar：[ASA-G-ISLAMIC-GEOMETRIC-SURFACES](../../../../../kit/design/composition/material-relations.md)
+- Grammar：[ASA-G-ISLAMIC-GEOMETRIC-SURFACES](../../../../../dsh-praxis/kit/design/composition/material-relations.md)
 - History：[CHANGELOG.md](../CHANGELOG.md)

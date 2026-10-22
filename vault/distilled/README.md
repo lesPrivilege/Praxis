@@ -76,7 +76,7 @@
 - [前端设计素材与消费记录](frontend-design/README.md)：CW Pages、CW/SE 消费链、career HTML、真实构图锚点及上游解释/可视化方法。
 - [Agent Runtime 机制研究 · 2026-09-25](agent-runtime-survey-20260925/README.md)：DeepSeek 新版、Orchestra 同名候选、多 provider 网关和 Astra 处置；不声称已安装或运行外部项目。
 - [Write / Design grammar](write-design-grammar/README.md)：两份 2026-09-27 Chat 的材料 lineage、Kit 路由、admission、Demo provenance、Write–Design ownership、Report HTML anatomy 及 Atom/Pattern/Composition 候选；当前分支和知识所有权以 [ADR-016](../../docs/decisions/016-progressive-kit-structure.md) 与 Write/Design 入口为准，ADR-015保留首轮治理理由。
-- 当前执行入口已经分层：[Write](../../dsh-praxis/kit/README.md)（`shared/`、`prose/`、`publish/`、`motion/`）与 [Design](../../kit/design/README.md)（`foundations/`、`composition/`、`interaction/`、`motion/`、`references/`）；本目录只保留其来源与消费记录。
+- 当前执行入口已经分层：[Write](../../dsh-praxis/kit/README.md)（`shared/`、`prose/`、`publish/`、`motion/`）与 [Design](../../dsh-praxis/kit/design/README.md)（`foundations/`、`composition/`、`interaction/`、`motion/`、`references/`）；本目录只保留其来源与消费记录。
 - [Design 外部参考语义](design-reference-semantics/README.md)：逐来源区分 URL 卡片、Chat 候选、本地消费和项目决定。
 - [写作结构补充语义 · 2026-09-27](writing-structure-20260927/README.md)：5 个官方页面的 supplemental 消费，逐 URL 见 [`../provenance/writing-structure-20260927/catalog.json`](../provenance/writing-structure-20260927/catalog.json)；不恢复 Design Grammar Chat 的 7 个 `missing-original` 占位。
 - [原子化编排样张工单 · 2026-09-27](layout-specimens-20260927/README.md) · [可直接 paste 的 Opus 工单](layout-specimens-20260927/brief.md)：手动派发后已形成实验样张，现有 [局部筛选](layout-specimens-20260927/review.md)；原工单保留来路，未晋升 Kit。

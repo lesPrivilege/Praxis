@@ -3,7 +3,7 @@ id: ASA-E-06
 status: verified
 url: https://www.w3.org/TR/jlreq/
 grammar_paths:
-  - kit/design/composition/editorial-translations.md
+  - dsh-praxis/kit/design/composition/editorial-translations.md
 history_record: vault/provenance/art-software-atlas/editorial/CHANGELOG.md
 ---
 
@@ -25,4 +25,4 @@ W3C Japanese Layout Task Force 编写的文档描述日文排版需求，主要�
 
 **重访条件：** 落实具体排版要求、核实规范状态，或引用具体图示时。
 
-**派生参考：** [编辑传统的媒介转译](../../../../../kit/design/composition/editorial-translations.md)。历史记录：[CHANGELOG](../CHANGELOG.md)。
+**派生参考：** [编辑传统的媒介转译](../../../../../dsh-praxis/kit/design/composition/editorial-translations.md)。历史记录：[CHANGELOG](../CHANGELOG.md)。

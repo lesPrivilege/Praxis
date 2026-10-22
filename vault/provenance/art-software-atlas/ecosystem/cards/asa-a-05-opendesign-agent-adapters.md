@@ -21,6 +21,6 @@ snapshot_status: not-captured
 
 **限制：** 维护方的架构说明，未读取 TypeScript 实现或运行适配器。文档声称的权限委托不是对任一 agent CLI 沙箱、批准行为或配置安全性的独立证明。
 
-**Derived grammar:** [Agent design resources](../../../../../kit/design/references/agent-design-resources.md) — ASA-G-AGENT-DESIGN-SYSTEM-CONTRACT / ASA-G-AGENT-COMPONENT-RETRIEVAL
+**Derived grammar:** [Agent design resources](../../../../../dsh-praxis/kit/design/references/agent-design-resources.md) — ASA-G-AGENT-DESIGN-SYSTEM-CONTRACT / ASA-G-AGENT-COMPONENT-RETRIEVAL
 
 **History:** [Research history](../CHANGELOG.md)

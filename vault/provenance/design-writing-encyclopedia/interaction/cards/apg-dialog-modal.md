@@ -19,6 +19,6 @@ WAI-ARIA Authoring Practices Guide 的模态对话框模式，界定覆盖在主
 
 可用于短暂、聚焦的任务，尤其确认、编辑或选择。不要把长内容、持续浏览任务随意塞入模态而阻断上下文；若背景仍可操作，需选择非模态模式并匹配其焦点模型。只读指导页，未运行其多层弹窗/日期选择示例，也未检查项目实际实现。
 
-重访触发：模态规则或焦点恢复发生变化、复杂结构/不可逆操作需要选初始焦点时。关联语法：[navigation.md](../../../../../kit/design/interaction/navigation.md)、[feedback.md](../../../../../kit/design/interaction/feedback.md)。
+重访触发：模态规则或焦点恢复发生变化、复杂结构/不可逆操作需要选初始焦点时。关联语法：[navigation.md](../../../../../dsh-praxis/kit/design/interaction/navigation.md)、[feedback.md](../../../../../dsh-praxis/kit/design/interaction/feedback.md)。
 
 许可状态：未保存原文/代码，重用前核对 W3C 页面许可。证据形态：页面文字，未看图、未运行代码。

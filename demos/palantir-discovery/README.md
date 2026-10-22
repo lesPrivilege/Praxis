@@ -21,7 +21,7 @@
 考虑过但没有做的方向：
 
 - 线性步进（S0 → E1 → … → S1）：会暗示取证必须按这个顺序走，brief 明确说不要求线性流程，所以改成任意加减。
-- 分支用标签页切换：互斥的标签页让人无法同时比较前提，按 [空间编排](../../kit/design/composition/layout.md)不拆。
+- 分支用标签页切换：互斥的标签页让人无法同时比较前提，按 [空间编排](../../dsh-praxis/kit/design/composition/layout.md)不拆。
 - S0→S1 的动态说明或视频：这一版的核心是读者自己改材料，动态说明只能看不能改；若需要会前播放，再按 [分镜交接](../../dsh-praxis/kit/publish/video/narrative.md)另做，并单独检查驻留与字幕。
 - 单独的 Slides：打印版已经给出同时可见的对照表，没有另外的沟通困难需要它解决。
 
@@ -97,7 +97,7 @@
 
 ## Kit 消费记录
 
-第一版只按 Design 入口取用：[设计判断契约](../../kit/design/foundations/grammar.md)、[空间编排](../../kit/design/composition/layout.md)、[图形编码](../../kit/design/composition/encoding.md)、[状态与可达性](../../kit/design/interaction/states.md)、[运动判断](../../kit/design/motion/grammar.md)，以及 Write 的 [证据与来源](../../dsh-praxis/kit/writing/evidence.md)、[媒介验收](../../dsh-praxis/kit/publish/verification.md)和 [分镜交接](../../dsh-praxis/kit/publish/video/narrative.md)。页面文字没有经过 [成文原理](../../dsh-praxis/kit/writing/principles.md)和 [审阅方法](../../dsh-praxis/kit/writing/review.md)，Design 的参考卡也一张没读。用户读完页面后指出文案别扭，追问 Write 是否完成消费；原因和入口的修订见 [ADR-023](../../docs/decisions/023-consume-by-artifact-component.md)。
+第一版只按 Design 入口取用：[设计判断契约](../../dsh-praxis/kit/design/foundations/grammar.md)、[空间编排](../../dsh-praxis/kit/design/composition/layout.md)、[图形编码](../../dsh-praxis/kit/design/composition/encoding.md)、[状态与可达性](../../dsh-praxis/kit/design/interaction/states.md)、[运动判断](../../dsh-praxis/kit/design/motion/grammar.md)，以及 Write 的 [证据与来源](../../dsh-praxis/kit/writing/evidence.md)、[媒介验收](../../dsh-praxis/kit/publish/verification.md)和 [分镜交接](../../dsh-praxis/kit/publish/video/narrative.md)。页面文字没有经过 [成文原理](../../dsh-praxis/kit/writing/principles.md)和 [审阅方法](../../dsh-praxis/kit/writing/review.md)，Design 的参考卡也一张没读。用户读完页面后指出文案别扭，追问 Write 是否完成消费；原因和入口的修订见 [ADR-023](../../docs/decisions/023-consume-by-artifact-component.md)。
 
 修订后补做：
 

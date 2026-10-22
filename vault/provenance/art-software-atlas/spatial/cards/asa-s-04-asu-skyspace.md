@@ -2,7 +2,7 @@
 
 - URL: https://cfo.asu.edu/skyspace
 - Catalog: [catalog.json](../catalog.json) · History: [CHANGELOG.md](../CHANGELOG.md)
-- Grammar: [Turrell Skyspace](../../../../../kit/design/composition/spatial-materials.md#asa-g-turrell-skyspace)
+- Grammar: [Turrell Skyspace](../../../../../dsh-praxis/kit/design/composition/spatial-materials.md#asa-g-turrell-skyspace)
 - Read: “Investigating light and perception”、“The architecture and landscape”、“Access and pathways”。
 - Supports: ASA-S-04-C05、ASA-S-04-C06。
 

@@ -1,6 +1,6 @@
 # 排列与刻度 · 清点与裁决
 
-2026-10-04。上一轮把关系图的“成立程度”和“指向”各泛化成一页 Kit 条目，当时列出的第三条是“轨与挂接行”：几项内容沿一条线排开，行挂在线上。这一轮清点了仓库里这类排法怎样使用位置，对照四份公开规范的用词，泛化成 [排列与刻度](../../../kit/design/foundations/placement.md)。裁决见 [ADR-026](../../../docs/decisions/026-placement-and-scale.md)，样板在 [grammar-specimens](../../../demos/editable-native-svg/grammar-specimens/README.md)。
+2026-10-04。上一轮把关系图的“成立程度”和“指向”各泛化成一页 Kit 条目，当时列出的第三条是“轨与挂接行”：几项内容沿一条线排开，行挂在线上。这一轮清点了仓库里这类排法怎样使用位置，对照四份公开规范的用词，泛化成 [排列与刻度](../../../dsh-praxis/kit/design/foundations/placement.md)。裁决见 [ADR-026](../../../docs/decisions/026-placement-and-scale.md)，样板在 [grammar-specimens](../../../demos/editable-native-svg/grammar-specimens/README.md)。
 
 状态是 `distilled / partial / candidate`：清点由三个只读的 Claude Sonnet 子代理完成，Luna 在这个会话不可用；主会话重读了写进本页的每一行，其余行没有逐一复核。登记见 [intake](../../intake/placement-grammar-20261004.json)。
 
@@ -49,8 +49,8 @@
 
 主会话重读了下面几句，新页面与它们一致，没有改动它们。
 
-- [图形编码](../../../kit/design/composition/encoding.md)：“数量比较需要共同尺度”“长度有尺度”。
-- [空间编排](../../../kit/design/composition/layout.md)：“并置支持同时比较，堆叠支持连续阅读”“宽窄投影可以改变排列，但比较口径和必要条件应当可达”。
+- [图形编码](../../../dsh-praxis/kit/design/composition/encoding.md)：“数量比较需要共同尺度”“长度有尺度”。
+- [空间编排](../../../dsh-praxis/kit/design/composition/layout.md)：“并置支持同时比较，堆叠支持连续阅读”“宽窄投影可以改变排列，但比较口径和必要条件应当可达”。
 - [视觉渲染评审](../reporting/visual-renderer-review.md)第 62、63 行：“时间轴用真实间距；若为顺序排列，注明不是比例时间”“同一图组比较同一量时共用尺度；不同尺度分开并直标”。这两句来自 career-kit 的快照，一直留在 Vault，没有进 Kit。
 - [工单二的迁移题](../design-kit-workorders-20261002/wo2-unfamiliar-briefs/README.md)第 73、88 行：三步用时是约数、区间和未知时，读过 Kit 的和不读仓库的都拒绝画比例尺，理由是“未知画不出长度，分钟和工作日差两个量级”；三步同单位而其中一步是区间时，都用了比例尺，把区间画成实心加斜纹。同页第 92 行写着“仓库里没有画区间的规则”。
 - [A01 样张](../design-grammar-atlas-20261002/a01-reading-relations/README.md)第 13 行，变体丙：三个环节共用一条时间尺，处置是“保留，限时长有差别的日程”。

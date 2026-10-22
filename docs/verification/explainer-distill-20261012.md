@@ -18,7 +18,7 @@
 | 归组 | 四十项左右的中间件按六个执行位置归组，写明没有逐项列出 | 页面第 3 章的图与图注 | 同上正例 |
 | 独立审阅 | 结构文字与正文各出一张意见表，逐条裁决 | 40 条意见，多数采纳；没有留逐条的裁决表 | 没有新条文；审阅页已有 |
 | 术语 | 取最稳定的说法，AI 与 agent 领域用英文原词 | 用户原话；初稿的译名没有被独立审阅指出 | [成文原理](../../dsh-praxis/kit/writing/principles.md)第 6 条；[审阅方法](../../dsh-praxis/kit/writing/review.md)偏差表与裁决记录 |
-| 强调色 | 交互图里表示当前选中，写进图例 | 页面的图例；与 Kit 默认不同，记在项目说明里 | [成立程度的标记](../../kit/design/foundations/standing.md)可调情形一句 |
+| 强调色 | 交互图里表示当前选中，写进图例 | 页面的图例；与 Kit 默认不同，记在项目说明里 | [成立程度的标记](../../dsh-praxis/kit/design/foundations/standing.md)可调情形一句 |
 | 记号与控件 | 不在本会话绘制，写成自足的工单 | 用户原话 | [工单](../../demos/editable-native-svg/claude-design-order-20261012.md)；Kit 暂不新增 |
 
 ## 验证
@@ -44,5 +44,5 @@
 ## 之后（同日）
 
 - 本地 main 合并了艺术与软件图谱分支，工作区改到新基线 `ae1471e` 上重放。审阅裁决的表已随 main 移出审阅方法，本次那一行不再追加，裁决以 ADR-031 为准。ADR 由 029 改为 031：029 已被 main 占用，030 被本地一份未恢复的 stash 占用。
-- ClaudeDesign 的交付经用户看过，收进 [kit/design/marks](../../kit/design/marks/README.md)（[ADR-032](../decisions/032-semantic-marks-library.md)）。主会话看了记号总览和控件页的截图，重新运行生成脚本，三个生成文件内容未变；运动页没有看。
-- 讲解页取用 18 个记号，看了宽屏和 500 px 的截图；效果与缺口见该包的 [checks.md](../../kit/design/marks/checks.md)。375 px、打印和键盘在加记号之后没有重查。
+- ClaudeDesign 的交付经用户看过，收进 [kit/design/marks](../../dsh-praxis/kit/design/marks/README.md)（[ADR-032](../decisions/032-semantic-marks-library.md)）。主会话看了记号总览和控件页的截图，重新运行生成脚本，三个生成文件内容未变；运动页没有看。
+- 讲解页取用 18 个记号，看了宽屏和 500 px 的截图；效果与缺口见该包的 [checks.md](../../dsh-praxis/kit/design/marks/checks.md)。375 px、打印和键盘在加记号之后没有重查。

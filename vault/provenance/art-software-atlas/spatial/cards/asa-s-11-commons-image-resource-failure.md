@@ -2,7 +2,7 @@
 
 - URL: https://upload.wikimedia.org/wikipedia/commons/4/4b/Ibaraki_Kasugaoka_Church_light_cross.jpg?utm_campaign=index&utm_content=thumbnail_unscaled&utm_source=commons.wikimedia.org
 - Catalog: [catalog.json](../catalog.json) · History: [CHANGELOG.md](../CHANGELOG.md)
-- Grammar: [Ando《光之教会》](../../../../../kit/design/composition/spatial-materials.md#asa-g-ando-church-of-the-light)
+- Grammar: [Ando《光之教会》](../../../../../dsh-praxis/kit/design/composition/spatial-materials.md#asa-g-ando-church-of-the-light)
 - Attempt: Wikimedia Commons file-page “Original file” link, same public upload URL, requested once via permitted network fetch.
 - Supported claims: none; request returned HTTP 403 and produced no image body.
 

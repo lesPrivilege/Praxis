@@ -2,7 +2,7 @@
 
 - URL: https://www.10plus1.jp/archive/ando/index.php?inc=ando025&no=
 - Catalog: [catalog.json](../catalog.json) · History: [CHANGELOG.md](../CHANGELOG.md)
-- Grammar: [Ando《光之教会》](../../../../../kit/design/composition/spatial-materials.md#asa-g-ando-church-of-the-light)
+- Grammar: [Ando《光之教会》](../../../../../dsh-praxis/kit/design/composition/spatial-materials.md#asa-g-ando-church-of-the-light)
 - Read: archive heading and image-section labels for facade, interior, and ceiling views。
 - Supports: ASA-S-07-C10。
 

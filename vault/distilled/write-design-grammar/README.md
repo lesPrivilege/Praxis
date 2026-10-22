@@ -28,7 +28,7 @@
 
 - **初次消费**：两份 Chat 原件先作为 source material 读取、去偶然化并登记为本目录的 distilled candidate；Chat 中的 assistant 建议仍不是仓库指令。
 - **首轮收敛**：[ADR-015](../../../docs/decisions/015-kit-editorial-contract.md) 接受 Kit 文档的渐进阅读、证据边界、准入和反馈条件，并把 Write/Design 的职责先收敛为治理路由。
-- **本轮后续采纳**：[ADR-016](../../../docs/decisions/016-progressive-kit-structure.md) 将这套路由落实为真实的 [Write](../../../dsh-praxis/kit/README.md) 与 [Design](../../../kit/design/README.md) 分支；这是目录和入口的更新，不是把所有候选 schema 或 renderer 一并采纳。
+- **本轮后续采纳**：[ADR-016](../../../docs/decisions/016-progressive-kit-structure.md) 将这套路由落实为真实的 [Write](../../../dsh-praxis/kit/README.md) 与 [Design](../../../dsh-praxis/kit/design/README.md) 分支；这是目录和入口的更新，不是把所有候选 schema 或 renderer 一并采纳。
 
 ## 当前裁决映射
 
@@ -37,7 +37,7 @@
 本轮后续采纳由 [ADR-016](../../../docs/decisions/016-progressive-kit-structure.md) 落实：
 
 - [Write](../../../dsh-praxis/kit/README.md) 通过 `prose/`、`publish/`、`motion/`、`shared/` 分别承载成文、空间编排、时间叙事和跨模式证据/验收；
-- [Design](../../../kit/design/README.md) 通过 `foundations/`、`composition/`、`interaction/`、`motion/`、`references/` 承载设计判断、编排、状态、运动和分用途参考；
+- [Design](../../../dsh-praxis/kit/design/README.md) 通过 `foundations/`、`composition/`、`interaction/`、`motion/`、`references/` 承载设计判断、编排、状态、运动和分用途参考；
 - [Reporting](../../../dsh-praxis/kit/task/README.md) 仍负责任务目的、读者、组织动作和文体选择；已泛化的表达规则通过 Write/Design 入口消费。
 
 这些是当前的目录与任务入口，不表示已有通用 Atom/Pattern/Composition registry、完整 specimen 库或 renderer contract。

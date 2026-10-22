@@ -1,6 +1,6 @@
 # 关系图的两条语法 · 清点与裁决
 
-2026-10-04。可编辑原生 SVG 的第一批交付了四个关系图件，四个件各自处理“成立到哪一步”和“指向谁”，写法并不一致。这一轮把仓库里这两件事的既有做法清点了一遍，对照三份 W3C 文档的用词，泛化成两页 Kit 条目：[成立程度与归属的标记](../../../kit/design/foundations/standing.md)和 [精确指向](../../../kit/design/foundations/anchoring.md)。裁决见 [ADR-025](../../../docs/decisions/025-relation-marks-and-anchors.md)，样板在 [grammar-specimens](../../../demos/editable-native-svg/grammar-specimens/README.md)。
+2026-10-04。可编辑原生 SVG 的第一批交付了四个关系图件，四个件各自处理“成立到哪一步”和“指向谁”，写法并不一致。这一轮把仓库里这两件事的既有做法清点了一遍，对照三份 W3C 文档的用词，泛化成两页 Kit 条目：[成立程度与归属的标记](../../../dsh-praxis/kit/design/foundations/standing.md)和 [精确指向](../../../dsh-praxis/kit/design/foundations/anchoring.md)。裁决见 [ADR-025](../../../docs/decisions/025-relation-marks-and-anchors.md)，样板在 [grammar-specimens](../../../demos/editable-native-svg/grammar-specimens/README.md)。
 
 状态是 `distilled / partial / candidate`：清点由三个只读的 Claude Sonnet 子代理完成，Luna 在这个会话不可用；主会话重读了写进本页的每一行，其余行没有逐一复核。登记见 [intake](../../intake/relation-grammar-20261004.json)。
 
@@ -26,7 +26,7 @@
 | 与成立无关 | `vault/distilled/layout-specimens-20260927/atoms/quantity.css:553` | 例外分支 |
 | | `vault/distilled/layout-specimens-20260927/atoms/enum.css:337` | 参考线 |
 
-这些用法各自在自己的图里都说得通。问题出在第一批的四个生成器：`rel-tracks` 的虚线表示未生效，`rel-qualify` 的虚线表示证据未核对，两种意思落在同一种画法上，独立复查当时就指出了这一点。[图形编码](../../../kit/design/composition/encoding.md)早已写着“不要默认虚线在所有领域都表示候选”。
+这些用法各自在自己的图里都说得通。问题出在第一批的四个生成器：`rel-tracks` 的虚线表示未生效，`rel-qualify` 的虚线表示证据未核对，两种意思落在同一种画法上，独立复查当时就指出了这一点。[图形编码](../../../dsh-praxis/kit/design/composition/encoding.md)早已写着“不要默认虚线在所有领域都表示候选”。
 
 强调色的情况相反。子代理列出二十二种用法，其中“标在人作决定的地方”在五处独立出现：答卷线图（`style.css:349`）、视觉工场的观察（`observations.md:9`）、Palantir 打样的说明、企业实验的主题文件和本批的 `rel-tracks`。其余用法是导航、数据系列、推荐项之类，与成立程度无关。
 

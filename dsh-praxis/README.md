@@ -1,17 +1,20 @@
 # dsh-praxis · 个人 FDE 工作 Kit 与控制面
 
-一套个人 FDE 工作 Kit，加上让人和 Agent 共同维护它的控制面；做成后以 DSH 插件和 MCP 提供给 agent 调用。个人使用，不发布。
+一套个人 FDE 工作 Kit，加上让人和 Agent 共同维护它的控制面；以 DSH 插件、MCP 服务和命令行提供给 agent 与人。个人使用，不发布。
 
-**现状：Task、Writing、Publish 已迁入 [dsh-praxis/kit](kit/README.md)，做内容表达任务从这里进入。** Design 仍在 `kit/design/`，与 Materials 数据层一起迁；数据层、MCP、DSH 插件与 UI 都还没有写。
+**现状：四层 Kit 都在 [dsh-praxis/kit](kit/README.md)；控制面已实现并装进本机 DSH。** 同一套操作有四个入口：DSH 插件（原生工具、系统提示词入口段、右侧栏“Praxis”标签）、MCP 服务（仓库根 `.mcp.json`）、命令行、独立网页。
 
 | 要做什么 | 读哪里 |
 |---|---|
-| 做一件内容表达任务 | [Kit 入口](kit/README.md)，从 Task 开始 |
+| 做一件内容表达任务 | [Kit 入口](kit/README.md)，从 Task 开始；agent 用 `praxis_resolve` |
+| 浏览、维护来源挂载与预设 | [控制面](ui/README.md)：DSH 右侧栏“Praxis”，或 `node dsh-praxis/adapters/cli.js serve` |
+| 把插件接进 DSH 或别的 agent | [Adapters](adapters/README.md) |
 | 理解五层分工，判断一条做法该归哪一层 | [分层体例](layers.md) |
-| 入账、维护条目，或弄清目录控件的含义 | [对象与操作](objects.md) |
-| 查字段与校验规则 | [Schemas](schemas/README.md) |
-| 找一个现有 Kit 页面的新归属，或开始下一步迁移 | [迁移映射](migration.md) |
+| 弄清对象、操作和目录控件的含义 | [对象与操作](objects.md) |
+| 改代码 | [Core](core/README.md)；测试 `node --test core/*.test.mjs adapters/*.test.mjs` |
+| 备份或恢复控制面写下的数据 | [Data](data/README.md) |
+| 查一个旧 Kit 页面去了哪里 | [迁移映射](migration.md) |
 
-一句话的分层：Task 决定这次做什么、走哪条 Publish 流水线、取哪些 Writing 方法与 Design 范式；Writing 与 Design 常驻；Publish 按媒介分 html、video 等流水线；Materials 把来源与资产分五级展开。内容组织归 Writing，媒介编排与制作归 Publish。
+一句话的分层：Task 决定这次做什么、走哪条 Publish 流水线、取哪些 Writing 方法与 Design 范式；Writing 与 Design 常驻；Publish 按媒介分 html、video 流水线，预设记下流水线的默认配置；Materials 把来源与资产分五级展开。内容组织归 Writing，媒介编排与制作归 Publish。
 
-下一步是 Materials 数据层与 Design 迁移，见 [迁移映射](migration.md#还没迁)。裁决与理由见 [ADR-037](../docs/decisions/037-dsh-praxis-layered-grammar.md)；需求来源是一段 ChatGPT 讨论，[原 Chat](../vault/archive/chat/dsh-praxis-control-plane-20261023.md) 与 [入账登记](../vault/intake/dsh-praxis-control-plane-20261023.json)在 Vault。
+裁决与理由见 [ADR-037](../docs/decisions/037-dsh-praxis-layered-grammar.md)（分层体例）和 [ADR-038](../docs/decisions/038-dsh-praxis-control-plane.md)（控制面的实现）；需求来源是一段 ChatGPT 讨论，[原 Chat](../vault/archive/chat/dsh-praxis-control-plane-20261023.md) 与 [入账登记](../vault/intake/dsh-praxis-control-plane-20261023.json)在 Vault。

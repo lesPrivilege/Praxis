@@ -49,7 +49,7 @@ Kit 活跃条目的准入、薄使用记录与退出条件统一见 [文档结�
 
 ## 设计与写作的增量
 
-设计与内容表达分别在 [Design](../../kit/design/README.md) 与 [dsh-praxis Kit](../../dsh-praxis/kit/README.md)，按任务分支维护。新来源先登记到 Vault 并形成可读摘要，按需提炼为普通优先级的可选参考 grammar；参考用途验收决定是否优先取用，规范采纳另行裁决，只有能跨项目复用的结论才进入规范。写作原理在 [成文原理](../../dsh-praxis/kit/writing/principles.md)，审阅方法与偏差在 [审阅方法](../../dsh-praxis/kit/writing/review.md)，消费和审阅历史在独立验收记录；项目 skill `writing` 只负责按需进入 Kit。分支迁移后删除旧路径，不留导航入口（[ADR-037](../decisions/037-dsh-praxis-layered-grammar.md)）。
+设计与内容表达分别在 [Design](../../dsh-praxis/kit/design/README.md) 与 [dsh-praxis Kit](../../dsh-praxis/kit/README.md)，按任务分支维护。新来源先登记到 Vault 并形成可读摘要，按需提炼为普通优先级的可选参考 grammar；参考用途验收决定是否优先取用，规范采纳另行裁决，只有能跨项目复用的结论才进入规范。写作原理在 [成文原理](../../dsh-praxis/kit/writing/principles.md)，审阅方法与偏差在 [审阅方法](../../dsh-praxis/kit/writing/review.md)，消费和审阅历史在独立验收记录；项目 skill `writing` 只负责按需进入 Kit。分支迁移后删除旧路径，不留导航入口（[ADR-037](../decisions/037-dsh-praxis-layered-grammar.md)）。
 
 ## 参考的持续消费
 

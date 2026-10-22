@@ -18,6 +18,6 @@ WAI-ARIA Authoring Practices Guide 的 Accordion Pattern 页面，描述垂直�
 
 可用于判断“展开一段同层级内容”是否适合 accordion，并检查键盘与面板关联。不要把 accordion 用成不同目的地的站点导航，也不要用它隐藏必须先知悉的费用、权限或不可逆影响。APG 模式指导和示例不是产品的无障碍测试报告；浏览器/辅助技术组合、本地 DOM 与折叠实现均未测试。
 
-重访触发：项目打算复用该模式、APG 页面修订，或添加嵌套/大批量面板时。关联语法：[navigation.md](../../../../../kit/design/interaction/navigation.md)，[controls.md](../../../../../kit/design/interaction/controls.md)。
+重访触发：项目打算复用该模式、APG 页面修订，或添加嵌套/大批量面板时。关联语法：[navigation.md](../../../../../dsh-praxis/kit/design/interaction/navigation.md)，[controls.md](../../../../../dsh-praxis/kit/design/interaction/controls.md)。
 
 许可状态：W3C WAI Material 的许可须按页面许可说明确认；未复制原文或代码，不作宽泛再许可结论。证据形态：页面正文文字直接访问；未看示例截图或运行示例。

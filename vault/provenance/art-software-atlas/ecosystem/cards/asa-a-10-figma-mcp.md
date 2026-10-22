@@ -21,6 +21,6 @@ snapshot_status: not-captured
 
 **限制：** 仅文档文本，没有连接服务、读取账号权限矩阵或进行画布写入；文档对能力的描述不代表该用户客户端获准连接。政府版和客户端目录有特定限制。
 
-**Derived grammar:** [Agent design resources](../../../../../kit/design/references/agent-design-resources.md) — ASA-G-AGENT-DESIGN-SYSTEM-CONTRACT / ASA-G-AGENT-COMPONENT-RETRIEVAL
+**Derived grammar:** [Agent design resources](../../../../../dsh-praxis/kit/design/references/agent-design-resources.md) — ASA-G-AGENT-DESIGN-SYSTEM-CONTRACT / ASA-G-AGENT-COMPONENT-RETRIEVAL
 
 **History:** [Research history](../CHANGELOG.md)

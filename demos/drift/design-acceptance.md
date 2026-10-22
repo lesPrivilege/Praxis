@@ -20,9 +20,9 @@
 
 | Kit 参考 | 本次消费 | 覆盖范围 |
 |---|---|---|
-| [精确指向](../../kit/design/foundations/anchoring.md) | 每个时间绑定其观测对象及版本 | 当前和基线分别读取自身字段 |
-| [REF-COMP-001 · 按属性维持比较](../../kit/design/references/curated/comparison-continuity.md) | 同一属性下保留两个稳定槽位 | 两个对象，宽屏横向、窄屏上下相邻 |
-| [REF-COMP-002 · 注释保持邻接](../../kit/design/references/curated/note-adjacency.md) | 时间紧随所解释的读数 | 每份读数一条时间说明，随宽度自然换行 |
+| [精确指向](../../dsh-praxis/kit/design/foundations/anchoring.md) | 每个时间绑定其观测对象及版本 | 当前和基线分别读取自身字段 |
+| [REF-COMP-001 · 按属性维持比较](../../dsh-praxis/kit/design/references/curated/comparison-continuity.md) | 同一属性下保留两个稳定槽位 | 两个对象，宽屏横向、窄屏上下相邻 |
+| [REF-COMP-002 · 注释保持邻接](../../dsh-praxis/kit/design/references/curated/note-adjacency.md) | 时间紧随所解释的读数 | 每份读数一条时间说明，随宽度自然换行 |
 
 只消费上述结构关系。参考卡自身的研究验收不替代 Drift 的实际验证。
 

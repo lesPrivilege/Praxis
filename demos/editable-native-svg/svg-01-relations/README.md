@@ -32,7 +32,7 @@ SVG-01 要求先画可编辑的关系与限定（R01–R10、R17、R18），选�
 - R10 和 R18 在 `0.3.0` 由 `rel-pair` 画出。两项的形状相同：一行是一个字段，两栏是同一个对象的两份内容。R10 测了未变、已改、新增、已删除、待定和长标签；R18 测了全选、空选、依据旧版本的选取和选取之后才有的字段。行数多到要筛选和排序的业务表格仍然用 HTML 表格，那是 R40 的范围。
 - R16、R19、R33 登记在 SVG-02 名下。`rel-rail` 因为排法相同顺带画出了它们的一部分，登记为 `partial`：R16 的时刻、区间、截止、重叠、零时长和未知的结束，R19 的深链、宽树、空根和多个上级的拒用，R33 的同钟面不同偏移和几栏共用的时间基准。没有画的是 R33 的依赖关系、R19 的折叠，以及时长本身是区间时的画法。SVG-02 接手时自行决定沿用、修改还是重画。
 
-画法按 [成立程度与归属的标记](../../../kit/design/foundations/standing.md)的默认分配：线型回答“生效了吗”，端点回答“确认了吗”，蓝色只标等人决定的那一处，归属写成字。每个回答同时写成词，图例由图自己生成。位置按 [排列与刻度](../../../kit/design/foundations/placement.md)：次序有没有含义、间距是不是时长、并排的几栏是否共用一条标尺，写成一句读法放在图脚，也由图自己生成。
+画法按 [成立程度与归属的标记](../../../dsh-praxis/kit/design/foundations/standing.md)的默认分配：线型回答“生效了吗”，端点回答“确认了吗”，蓝色只标等人决定的那一处，归属写成字。每个回答同时写成词，图例由图自己生成。位置按 [排列与刻度](../../../dsh-praxis/kit/design/foundations/placement.md)：次序有没有含义、间距是不是时长、并排的几栏是否共用一条标尺，写成一句读法放在图脚，也由图自己生成。
 
 ## 怎么改
 
@@ -120,10 +120,10 @@ node src/check.mjs   # 自动检查，写 evidence/check.json；浏览器段需�
 
 代码、输入和图形都是本批新写的，没有复制任何库的源码、图形、字体或数据。字体使用系统字体，文件里不带字体。方法上的参考如下，都只取了做法：
 
-- [REF-COMP-002 注释保持邻接](../../../kit/design/references/curated/note-adjacency.md)：限定语在内容顺序上紧跟所限定的主张，宽版再摆到右侧。本批的用法是它的一次新消费：多条和长条的限定语在两种宽度下都没有碰撞（见验收回执 P02），但对象换成了 SVG 里的主张列表，不是正文段落。
+- [REF-COMP-002 注释保持邻接](../../../dsh-praxis/kit/design/references/curated/note-adjacency.md)：限定语在内容顺序上紧跟所限定的主张，宽版再摆到右侧。本批的用法是它的一次新消费：多条和长条的限定语在两种宽度下都没有碰撞（见验收回执 P02），但对象换成了 SVG 里的主张列表，不是正文段落。
 - [原子编排筛选记录](../../../vault/distilled/layout-specimens-20260927/review.md)里 T05-c 的失败：括线围住了条件块，目标只靠标签表达。`rel-qualify` 反过来让括线量被限定的主张，并用自动检查核对。
 - 研究页的 [S01、S04、S05、S08](../../../vault/distilled/editable-native-svg-20261004/README.md)：分组与 title/desc、复杂图的长说明、数据与几何分开、关系输入与生成几何分开。S02（SVG 文本）的正文登记方没有读到，本批没有使用 SVG 2 的文本换行，换行由生成器自己算。
-- 成立程度、指向和位置的写法依据 Kit 的 [三页判断](../../../kit/design/foundations/README.md)，它们由本作品泛化而来，见 [ADR-025](../../../docs/decisions/025-relation-marks-and-anchors.md)和 [ADR-026](../../../docs/decisions/026-placement-and-scale.md)。
+- 成立程度、指向和位置的写法依据 Kit 的 [三页判断](../../../dsh-praxis/kit/design/foundations/README.md)，它们由本作品泛化而来，见 [ADR-025](../../../docs/decisions/025-relation-marks-and-anchors.md)和 [ADR-026](../../../docs/decisions/026-placement-and-scale.md)。
 - 时间图“文字让开、引线接回标尺”和“只知道时长不知道落点的不贴刻度”两处，参考了原子编排实验 Q07-b 与 V02-c 的做法和它们自己记下的失败（等距被读成等长、区间画成点），见 [清点](../../../vault/distilled/placement-grammar-20261004/README.md)；没有复制它们的代码。
 - 页面文字按 [Write / Prose](../../../dsh-praxis/kit/writing/README.md)写；配色与线型取自用户此前对视觉的要求（浅冷色、单一强调色、实线已定虚线未定）。
 

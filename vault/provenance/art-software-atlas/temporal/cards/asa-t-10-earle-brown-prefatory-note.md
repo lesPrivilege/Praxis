@@ -14,4 +14,4 @@ Earle Brown 的公开说明讨论了 *Folio and 4 Systems* 中的图形谱与演
 
 ## 阅读位置与用途
 
-PDF 第 1–2 页（页码 0–1）：开头对 time continuum / performer response 的说明，及 “December 1952” 下关于可选方向、时长、旋转与图形关系的段落。供 [score and time](../../../../../kit/design/motion/score-and-time.md)；[CHANGELOG](../CHANGELOG.md)。
+PDF 第 1–2 页（页码 0–1）：开头对 time continuum / performer response 的说明，及 “December 1952” 下关于可选方向、时长、旋转与图形关系的段落。供 [score and time](../../../../../dsh-praxis/kit/design/motion/score-and-time.md)；[CHANGELOG](../CHANGELOG.md)。

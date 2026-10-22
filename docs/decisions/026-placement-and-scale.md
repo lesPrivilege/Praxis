@@ -10,7 +10,7 @@
 
 ## 决定
 
-1. Design / Foundations 新增 [排列与刻度](../../kit/design/foundations/placement.md)，与 [成立程度与归属的标记](../../kit/design/foundations/standing.md)、[精确指向](../../kit/design/foundations/anchoring.md)并列，体例相同：问题、不随排法改变的约束、一套默认、三级做法、最容易犯的错。不给间距和尺寸。
+1. Design / Foundations 新增 [排列与刻度](../../dsh-praxis/kit/design/foundations/placement.md)，与 [成立程度与归属的标记](../../dsh-praxis/kit/design/foundations/standing.md)、[精确指向](../../dsh-praxis/kit/design/foundations/anchoring.md)并列，体例相同：问题、不随排法改变的约束、一套默认、三级做法、最容易犯的错。不给间距和尺寸。
 2. 不规定“时间轴怎样画”。规定的是：位置回答了哪几个问题（谁先谁后、隔了多久、属于谁、是不是同一个）要写成一句读法放进图里，读者会顺手读出而图不表示的也要说一句；没有量就不按比例画；并排的线要么共用一条标尺，要么写明各排各的。
 3. 每一项自己带着位置词，线、间距和缩进只是重复。这是第一级做法，任何材料都做得到；一条线和几条线并排是后两级，不新增信息。
 4. 实现留在 `demos/editable-native-svg/svg-01-relations`，版本 0.3.0：新增 `rel-rail`（清单、先后、时间三种读法，可以带上下级或并排的栏）和 `rel-pair`（前后对照与选取）；`rel-tracks` 在图脚补上读法。样板页加第三节。它们是候选实现，不是 Kit 的共享组件。
@@ -18,9 +18,9 @@
 
 ## 与既有决定的关系
 
-沿用 ADR-018 和 ADR-025 的层次：泛化判断在 Kit，生成器、样板和输入是它的取用。不改 ADR-002：晋升的是知识说明，不是运行组件。不改 ADR-017：[按属性维持比较](../../kit/design/references/curated/comparison-continuity.md)照旧管窄屏下怎样保住比较，新页只在第 10 条写了宽窄不改变先后、时刻和对应。
+沿用 ADR-018 和 ADR-025 的层次：泛化判断在 Kit，生成器、样板和输入是它的取用。不改 ADR-002：晋升的是知识说明，不是运行组件。不改 ADR-017：[按属性维持比较](../../dsh-praxis/kit/design/references/curated/comparison-continuity.md)照旧管窄屏下怎样保住比较，新页只在第 10 条写了宽窄不改变先后、时刻和对应。
 
-[图形编码](../../kit/design/composition/encoding.md)的“长度有尺度”后面加了半句和一个链接。[成立程度与归属的标记](../../kit/design/foundations/standing.md)的“归属优先用位置”后面补了“位置说明归谁，不说明谁有权限”。[精确指向](../../kit/design/foundations/anchoring.md)的状态一节原先写着时间范围和字段集合还没有画法，现在改为指向新页。问题地图的 G01、G10 两行各加了一个链接。
+[图形编码](../../dsh-praxis/kit/design/composition/encoding.md)的“长度有尺度”后面加了半句和一个链接。[成立程度与归属的标记](../../dsh-praxis/kit/design/foundations/standing.md)的“归属优先用位置”后面补了“位置说明归谁，不说明谁有权限”。[精确指向](../../dsh-praxis/kit/design/foundations/anchoring.md)的状态一节原先写着时间范围和字段集合还没有画法，现在改为指向新页。问题地图的 G01、G10 两行各加了一个链接。
 
 ## 没有采纳的
 

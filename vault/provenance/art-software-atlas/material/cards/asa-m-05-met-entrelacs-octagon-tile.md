@@ -2,7 +2,7 @@
 
 来源：[The Metropolitan Museum of Art object record](https://www.metmuseum.org/art/collection/search/452379) · 状态：verified（仅限馆方对象说明）
 
-用途：单件建筑构件、材料和纹样的连接案例。派生参考见 [Material relations](../../../../../kit/design/composition/material-relations.md)。
+用途：单件建筑构件、材料和纹样的连接案例。派生参考见 [Material relations](../../../../../dsh-praxis/kit/design/composition/material-relations.md)。
 
 ## 摘要与定位
 
@@ -22,5 +22,5 @@
 
 ## 关联
 
-- Grammar：[ASA-G-ISLAMIC-GEOMETRIC-SURFACES](../../../../../kit/design/composition/material-relations.md)
+- Grammar：[ASA-G-ISLAMIC-GEOMETRIC-SURFACES](../../../../../dsh-praxis/kit/design/composition/material-relations.md)
 - History：[CHANGELOG.md](../CHANGELOG.md)

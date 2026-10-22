@@ -20,4 +20,4 @@ url: https://www.w3.org/TR/clreq-gap/
 
 ## 关联
 
-[Typography 语法](../../../../../kit/design/composition/typography.md)；历史已登记的 [CLReq requirements 卡 S04](../../../design-grammar-atlas-20261002/cards/s04-w3c-clreq.md)侧重完整需求与地区规则，本卡补充单独的 gap report URL，二者不重复身份。
+[Typography 语法](../../../../../dsh-praxis/kit/design/composition/typography.md)；历史已登记的 [CLReq requirements 卡 S04](../../../design-grammar-atlas-20261002/cards/s04-w3c-clreq.md)侧重完整需求与地区规则，本卡补充单独的 gap report URL，二者不重复身份。

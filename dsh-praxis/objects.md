@@ -72,16 +72,19 @@
 
 ## 现有数据怎样对上
 
-Materials 的权威数据现在是 `vault/provenance/**/catalog.json` 里的来源记录：49 个 catalog（27 个 `cards: maintained`，22 个 `generated`），共 1119 条，字段名一百多种。下表只列各 catalog 共有或用于发现的字段；其余按 catalog 自有字段原样保留在 Source 的 `extensions`，不为统一表面强行映射。数据层切片之前不搬家。
+Materials 的权威数据是 `vault/provenance/**/catalog.json` 里的来源记录：49 个 catalog（27 个 `cards: maintained`，22 个 `generated`），共 1119 条，字段名一百多种。下表只列各 catalog 共有或用于发现的字段；其余按 catalog 自有字段保留在原记录里，core 读详情时整条带出。
+
+**挂载关系留在 catalog，维护信息在 `dsh-praxis/data/`。** 一条 Binding 是来源 `grammar_paths` 里的一项；它的 description、取用题解、启用、收藏、优先级、tag 与 review 存在 [data/bindings.json](data/README.md)，按 `<来源 ID>@<页面路径>` 对上。新建挂载会把页面路径写进 `grammar_paths`，删除会移出、维护信息留下以便恢复。这样 SaaS 图谱等已有脚本照常读 `grammar_paths`，不用为控制面改动。
 
 | 现有字段 | 新对象 | 说明 |
 |---|---|---|
 | `id`、`slug`、`aliases`、`title`、`url`、`original_url`、`summary_zh`、`status`、`limits`、`revisit_trigger`、`history_record` | Source | 来源自有 ID 与 registry 的 `namespace:slug` 都保留，解析到同一个 Source |
 | `supported_claims`（claim_id、locator、claim） | Source 的 `excerpts` | 第 4 级 |
-| `grammar_paths`、`grammar_ids` | 每个路径或 ID 一条 Binding | 现在挂在来源上，迁移时拆开 |
-| `reference_priority`、`reference_status` | Binding 的 `priority` 与 Source 的采纳状态 | 现在一个来源只有一个优先级；拆成 Binding 后各单元可以不同 |
+| `grammar_paths` | 每个路径一条 Binding | 关系仍由 catalog 维护；挂载目标是页面路径，不限于 Kit 单元（SaaS 教材章节也在其中） |
+| `grammar_ids` | 单元别名 | 页面里写的语法 ID 解析到同一单元 |
+| `reference_priority`、`reference_status` | Binding 的 `priority` 默认值与 Source 的采纳状态 | 挂载上设了优先级就以挂载为准，否则沿用来源的 `reference_priority` |
 | `purpose_tags`、`facets` | Binding 的 `tags`，Source 的 `facets` | 用途 tag 跟着用途走 |
-| `snapshot_path`、`snapshot_sha256`、`snapshot_status`、`accessed_at`、`snapshot_gap` | MaterialRevision | 566 条记录有 `snapshot_path`，各生成一个版本；只有缺口的记在 Source 的 `materials_gap` |
+| `snapshot_path`、`snapshot_sha256`、`snapshot_status`、`accessed_at`、`snapshot_gap` | MaterialRevision | 566 条记录有 `snapshot_path`，指向当前版本；refresh 新增的每个版本登记在 `vault/intake/praxis-captures.json`，旧版本保留 |
 | 来源卡正文 | Source 的概要与 Binding 的题解 | `cards: generated` 的卡由 catalog 生成，编辑写回 catalog；`cards: maintained` 的卡正文是权威，编辑写回卡片（[ADR-022](../docs/decisions/022-source-card-ownership.md)） |
 
-`scripts/build_registry.py` 的扩展投影不带 `reference_priority`、`reference_status`、`grammar_ids`，所以 registry 只能用来列表和搜索，详情与编辑必须回到 catalog。Kit 里的参考路由页（[Design 参考路由](../kit/design/references/README.md)及其下各页、`curated/` 卡片）是今天手写的目录视图，数据层建好后改为由 Binding 生成。
+`scripts/build_registry.py` 的扩展投影不带 `reference_priority`、`reference_status`、`grammar_ids`，所以 core 用 registry 列表和搜索，详情与编辑回到 catalog；写入 catalog 后重跑 `build_registry.py`。Kit 里的参考路由页（[Design 参考路由](kit/design/references/README.md)及其下各页、`curated/` 卡片）仍是手写的目录视图，控制面的目录页是同一批挂载的另一个视图。

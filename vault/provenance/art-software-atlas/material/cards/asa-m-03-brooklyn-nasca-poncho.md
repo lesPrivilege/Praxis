@@ -2,7 +2,7 @@
 
 来源：[Brooklyn Museum object record](https://www.brooklynmuseum.org/objects/38958) · 状态：verified（仅限对象记录文字）
 
-用途：不同于连续经纬布面的离散色区织造案例。派生参考见 [Material relations](../../../../../kit/design/composition/material-relations.md)。
+用途：不同于连续经纬布面的离散色区织造案例。派生参考见 [Material relations](../../../../../dsh-praxis/kit/design/composition/material-relations.md)。
 
 ## 摘要
 
@@ -25,5 +25,5 @@ Brooklyn Museum 将作品登记为南秘鲁出土的 Nasca Poncho or Tunic（100
 
 ## 关联
 
-- Grammar：[ASA-G-ANDEAN-WOVEN-GARMENTS](../../../../../kit/design/composition/material-relations.md)
+- Grammar：[ASA-G-ANDEAN-WOVEN-GARMENTS](../../../../../dsh-praxis/kit/design/composition/material-relations.md)
 - History：[CHANGELOG.md](../CHANGELOG.md)

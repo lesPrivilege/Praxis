@@ -12,4 +12,4 @@ Processing 官方参考说明 `randomSeed(seed)` 设置 `random()` 的种子。�
 
 ## 阅读位置与用途
 
-Description、Example 与 Syntax。供 [rule systems](../../../../../kit/design/motion/rule-systems.md)；[CHANGELOG](../CHANGELOG.md)。
+Description、Example 与 Syntax。供 [rule systems](../../../../../dsh-praxis/kit/design/motion/rule-systems.md)；[CHANGELOG](../CHANGELOG.md)。

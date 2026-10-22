@@ -25,12 +25,12 @@ dot 写的一份校订意见，27,570 字节，一个文件。它审的是一份
 |---|---|---|---|
 | 叙事与论证顺序 | 材料层面在 [Reporting](../../../dsh-praxis/kit/task/brief.md)；句段层面在 [成文原理](../../../dsh-praxis/kit/writing/principles.md) | [内容编排](../../../dsh-praxis/kit/publish/html/composition.md)要求重排时保留依赖关系；[时间叙事](../../../dsh-praxis/kit/publish/video/narrative.md)管它怎样随时间显现 | 不动 |
 | 证据 | [证据与来源](../../../dsh-praxis/kit/writing/evidence.md) | Reporting、展项、成文原理第 4 条都指过来 | 补上四条底线和“投影、改编与新增” |
-| 密度 | [空间编排](../../../kit/design/composition/layout.md)的容量检查 | 内容编排只说先保关系再调密度 | 不动。没有专门规则，问题地图 G07 有一行 |
+| 密度 | [空间编排](../../../dsh-praxis/kit/design/composition/layout.md)的容量检查 | 内容编排只说先保关系再调密度 | 不动。没有专门规则，问题地图 G07 有一行 |
 | 层级 | 内容的主次在内容编排；视觉层级在空间编排 | 两页互相链接 | 不动 |
-| 图形 | [图形编码](../../../kit/design/composition/encoding.md)；内容职责在 [展项与说明](../../../dsh-praxis/kit/publish/html/exhibits.md) | 内容编排原先另写了一份箭头、长度、颜色的语义 | 去重：内容编排改为链接，独有的两句并进图形编码 |
+| 图形 | [图形编码](../../../dsh-praxis/kit/design/composition/encoding.md)；内容职责在 [展项与说明](../../../dsh-praxis/kit/publish/html/exhibits.md) | 内容编排原先另写了一份箭头、长度、颜色的语义 | 去重：内容编排改为链接，独有的两句并进图形编码 |
 | 强调 | 什么重要由任务和内容定；怎样强调在空间编排 | — | 不动 |
 | 分页 | 内容编排（Pre-read 与 Live、页面承载的任务）；导出检查在 [验收](../../../dsh-praxis/kit/publish/verification.md) | — | Publish 入口补上“阅读单元、分页、密度、收起” |
-| 时间节奏 | 认知任务与驻留在时间叙事；运动在 [运动判断](../../../kit/design/motion/grammar.md) | — | 运动判断补一句：补间不是观测，排序变化与数量变化不混在一段运动里 |
+| 时间节奏 | 认知任务与驻留在时间叙事；运动在 [运动判断](../../../dsh-praxis/kit/design/motion/grammar.md) | — | 运动判断补一句：补间不是观测，排序变化与数量变化不混在一段运动里 |
 
 补充文件对这八项的边界说明（例如“不能因版面放不下就静默删掉条件”“视觉降权可能改变实际理解”）本地大多已有对应的句子，没有逐条再写。
 

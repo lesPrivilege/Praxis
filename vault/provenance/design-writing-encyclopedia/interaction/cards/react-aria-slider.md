@@ -18,6 +18,6 @@ Adobe React Aria 的 slider API 文档，说明其 hook 提供滑块行为和无
 
 把它作为控件职责拆分与潜在键盘/拖动状态清单，和 APG/WCAG 条文及目标项目实现进行比较。不能照搬 React API 到其他框架；不能以隐藏 range input 或源码存在推断语义可靠；不能声称实现通过了实际键盘或读屏测试。
 
-重访触发：为连续范围控件写实现契约、React Aria API 大改版或需要对照另一套成熟库时。关联语法：[controls.md](../../../../../kit/design/interaction/controls.md)。
+重访触发：为连续范围控件写实现契约、React Aria API 大改版或需要对照另一套成熟库时。关联语法：[controls.md](../../../../../dsh-praxis/kit/design/interaction/controls.md)。
 
 许可状态：代码未复制也未执行，使用前查当前 Adobe 开源许可与具体包版本。证据形态：文档文字/API 阅读；未安装依赖、未运行示例或屏幕阅读器。

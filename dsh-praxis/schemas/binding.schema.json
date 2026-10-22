@@ -2,35 +2,106 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "binding.schema.json",
   "title": "Binding",
-  "description": "一个来源挂到一个单元上的关系。素材第 1 级（目录行）与第 3 级（取用题解）。",
+  "description": "一个来源挂到一个单元上的关系。关系本身在来源的 grammar_paths，这里是它的维护信息。素材第 1 级（目录行）与第 3 级（取用题解）。",
   "type": "object",
-  "required": ["id", "source", "unit", "description", "enabled", "favorite", "priority", "state", "revision"],
+  "required": [
+    "id",
+    "source",
+    "target",
+    "description",
+    "enabled",
+    "favorite",
+    "priority",
+    "state",
+    "revision"
+  ],
   "properties": {
-    "id": {"$ref": "common.schema.json#/$defs/id"},
-    "source": {"$ref": "common.schema.json#/$defs/id"},
-    "unit": {"$ref": "common.schema.json#/$defs/id", "description": "KitUnit 或 grammar ID"},
-    "description": {"$ref": "common.schema.json#/$defs/description"},
+    "id": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "source": {
+      "$ref": "common.schema.json#/$defs/id"
+    },
+    "target": {
+      "$ref": "common.schema.json#/$defs/repoPath",
+      "description": "挂载到的页面：Kit 单元或其他消费页的仓库路径；同时出现在来源 catalog 的 grammar_paths"
+    },
+    "description": {
+      "$ref": "common.schema.json#/$defs/description"
+    },
     "usage": {
       "type": "object",
       "description": "取用题解",
-      "required": ["problem", "how"],
+      "required": [
+        "problem",
+        "how"
+      ],
       "properties": {
-        "problem": {"type": "string", "description": "适用的问题"},
-        "how": {"type": "string", "description": "怎样取用"},
-        "conditions": {"type": "string"},
-        "limits": {"type": "string", "description": "不适用或容易误用的情形"},
-        "examples": {"type": "array", "items": {"type": "string"}}
+        "problem": {
+          "type": "string",
+          "description": "适用的问题"
+        },
+        "how": {
+          "type": "string",
+          "description": "怎样取用"
+        },
+        "conditions": {
+          "type": "string"
+        },
+        "limits": {
+          "type": "string",
+          "description": "不适用或容易误用的情形"
+        },
+        "examples": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
       },
       "additionalProperties": false
     },
-    "enabled": {"type": "boolean", "description": "进入任务默认可选范围"},
-    "favorite": {"type": "boolean"},
-    "priority": {"enum": ["preferred", "normal"]},
-    "tags": {"type": "array", "items": {"type": "string"}},
-    "state": {"enum": ["active", "removed"], "description": "删除即 removed，可撤销"},
-    "reviews": {"type": "array", "items": {"$ref": "common.schema.json#/$defs/review"}},
-    "revision": {"$ref": "common.schema.json#/$defs/revision"},
-    "history": {"type": "array", "items": {"$ref": "common.schema.json#/$defs/change"}}
+    "enabled": {
+      "type": "boolean",
+      "description": "进入任务默认可选范围"
+    },
+    "favorite": {
+      "type": "boolean"
+    },
+    "priority": {
+      "enum": [
+        "preferred",
+        "normal"
+      ]
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "state": {
+      "enum": [
+        "active",
+        "removed"
+      ],
+      "description": "删除即 removed，可撤销"
+    },
+    "reviews": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/review"
+      }
+    },
+    "revision": {
+      "$ref": "common.schema.json#/$defs/revision"
+    },
+    "history": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/change"
+      }
+    }
   },
   "additionalProperties": false
 }

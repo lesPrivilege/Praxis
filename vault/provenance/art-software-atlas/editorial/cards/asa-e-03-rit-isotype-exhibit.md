@@ -3,7 +3,7 @@ id: ASA-E-03
 status: verified
 url: https://digitalexhibits.rit.edu/s/cary-exhibits/page/words-divide-pictures-unite-otto-neurath-isotype-and-the-unity-of-science1
 grammar_paths:
-  - kit/design/composition/editorial-translations.md
+  - dsh-praxis/kit/design/composition/editorial-translations.md
 history_record: vault/provenance/art-software-atlas/editorial/CHANGELOG.md
 ---
 
@@ -25,4 +25,4 @@ Rochester Institute of Technology 的 Cary Graphic Arts Collection 展览标出�
 
 **重访条件：** 描述任何图版外观、解释历史数据，或主张其普遍易读时。
 
-**派生参考：** [编辑传统的媒介转译](../../../../../kit/design/composition/editorial-translations.md)。历史记录：[CHANGELOG](../CHANGELOG.md)。
+**派生参考：** [编辑传统的媒介转译](../../../../../dsh-praxis/kit/design/composition/editorial-translations.md)。历史记录：[CHANGELOG](../CHANGELOG.md)。

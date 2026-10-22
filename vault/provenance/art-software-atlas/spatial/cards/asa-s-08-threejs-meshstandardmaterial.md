@@ -2,7 +2,7 @@
 
 - URL: https://threejs.org/docs/pages/MeshStandardMaterial.html
 - Catalog: [catalog.json](../catalog.json) · History: [CHANGELOG.md](../CHANGELOG.md)
-- Grammar: [Ando《光之教会》](../../../../../kit/design/composition/spatial-materials.md#asa-g-ando-church-of-the-light)
+- Grammar: [Ando《光之教会》](../../../../../dsh-praxis/kit/design/composition/spatial-materials.md#asa-g-ando-church-of-the-light)
 - Read: MeshStandardMaterial API entry in official three.js documentation。
 - Supports: ASA-S-08-C12。
 

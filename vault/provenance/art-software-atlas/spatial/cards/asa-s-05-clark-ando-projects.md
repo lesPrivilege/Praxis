@@ -2,7 +2,7 @@
 
 - URL: https://www.clarkart.edu/microsites/tadao-ando-architect/projects
 - Catalog: [catalog.json](../catalog.json) · History: [CHANGELOG.md](../CHANGELOG.md)
-- Grammar: [Ando《光之教会》](../../../../../kit/design/composition/spatial-materials.md#asa-g-ando-church-of-the-light)
+- Grammar: [Ando《光之教会》](../../../../../dsh-praxis/kit/design/composition/spatial-materials.md#asa-g-ando-church-of-the-light)
 - Read: “Church of the Light, Ibaraki, Osaka, Japan”项目条目。
 - Supports: ASA-S-05-C07、ASA-S-05-C08。
 

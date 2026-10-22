@@ -41,9 +41,9 @@
 - **MC01（同样无声）**：[plan](../../motion-ceiling-lab/mc01-request/plan.md)第9–34行先定两句理解结果，再设计四层板、遮挡、请求与两条回执路径，最后选WebGL2/Canvas。它为路径与深度找到了内容理由，不能推成“全片需要3D”。本轮查看原生54秒帧与第一张回执的序列图。
 - **Schema闸门**：[README](../../visual-grammar/schema-gate/README.md)第7、24–28行把原文压缩、到达、校验、弹回、保留与人工批准落实成不同动作；本轮查看63.1/63.8秒原生帧。参考中的合成/制作页脚不移植到本片。
 - **10月15日SaaS教材**：[静态图工单](../../saas-engineering-textbook/build/drawing-brief.md)第7、11–19行、[图件工单](../../saas-engineering-textbook/build/figure-brief.md)、[README](../../saas-engineering-textbook/README.md)第120–124行。先找需要读者脑补的关系，再画正文已有对象；图形位置、字阶、强调有清楚职责。独立Opus给14条版式意见，主会话另逐张看18静态图，两者不能合并成18图独立审阅通过。本轮实际重渲染F09/F12两图。
-- **新marks库**：[README](../../../kit/design/marks/README.md)第7行已说明小记号与重编排的分工。其Claude来源由checks/ADR-032支持，工单文件名不能单独证明。补图标可以增强辨认，不承担上述主体设计。SaaS控件的≤200ms也不能直接套到影片的讲解动作。
+- **新marks库**：[README](../../../dsh-praxis/kit/design/marks/README.md)第7行已说明小记号与重编排的分工。其Claude来源由checks/ADR-032支持，工单文件名不能单独证明。补图标可以增强辨认，不承担上述主体设计。SaaS控件的≤200ms也不能直接套到影片的讲解动作。
 
-Kit的[布局](../../../kit/design/composition/layout.md)与[对象表征](../../../kit/design/composition/object-representation.md)已经提供对应判断；对象表征页的Git记录为2026-10-11。10月15日SaaS作品属于本次新对照，不追溯为10月12日影片当时必须遵守的项目规格。冷色、字体、圆角、3D均不自动成为下一版硬规。
+Kit的[布局](../../../dsh-praxis/kit/design/composition/layout.md)与[对象表征](../../../dsh-praxis/kit/design/composition/object-representation.md)已经提供对应判断；对象表征页的Git记录为2026-10-11。10月15日SaaS作品属于本次新对照，不追溯为10月12日影片当时必须遵守的项目规格。冷色、字体、圆角、3D均不自动成为下一版硬规。
 
 ## 4. 下一版应补的spec与试做顺序
 

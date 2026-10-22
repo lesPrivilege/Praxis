@@ -3,7 +3,7 @@ id: ASA-E-08
 status: verified
 url: https://www.w3.org/TR/css-ruby-1/
 grammar_paths:
-  - kit/design/composition/editorial-translations.md
+  - dsh-praxis/kit/design/composition/editorial-translations.md
 history_record: vault/provenance/art-software-atlas/editorial/CHANGELOG.md
 ---
 
@@ -25,4 +25,4 @@ CSS 模块将 ruby 描述为附着在 base text 上的一小段注记，常用�
 
 **重访条件：** 规定 ruby 标记行为，或测试浏览器与打印引擎时。
 
-**派生参考：** [编辑传统的媒介转译](../../../../../kit/design/composition/editorial-translations.md)。历史记录：[CHANGELOG](../CHANGELOG.md)。
+**派生参考：** [编辑传统的媒介转译](../../../../../dsh-praxis/kit/design/composition/editorial-translations.md)。历史记录：[CHANGELOG](../CHANGELOG.md)。

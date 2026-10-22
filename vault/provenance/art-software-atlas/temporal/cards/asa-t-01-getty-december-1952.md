@@ -12,4 +12,4 @@ Getty Research Institute 的作品记录将此件识别为 Earle Brown 1952 年�
 
 ## 阅读位置与用途
 
-作品标题、制作人、日期、收藏位置及正文中描述矩形、方向、参数、random number tables 与 improvisation 的段落。供 [score and time](../../../../../kit/design/motion/score-and-time.md) 引用；批次边界见 [CHANGELOG](../CHANGELOG.md)。
+作品标题、制作人、日期、收藏位置及正文中描述矩形、方向、参数、random number tables 与 improvisation 的段落。供 [score and time](../../../../../dsh-praxis/kit/design/motion/score-and-time.md) 引用；批次边界见 [CHANGELOG](../CHANGELOG.md)。

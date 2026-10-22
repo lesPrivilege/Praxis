@@ -40,4 +40,4 @@
 
 逐段映射回原稿，核对未遗漏的限定、单位与来源，再按 [媒介验收](../verification.md)检查实际输出。未做观众测试时只报告制作和观看范围，不称叙事效果已验证。
 
-本契约消费 [Write–Design 边界](../../../../vault/distilled/write-design-grammar/write-design-boundary.md)与既有 [动态简报](../../../../vault/distilled/ai-capability-assessment/motion/README.md)的交接对象。镜头、字体运动与缓动的选择由 [Design / Motion](../../../../kit/design/motion/README.md)维护，renderer API 留在具体项目。
+本契约消费 [Write–Design 边界](../../../../vault/distilled/write-design-grammar/write-design-boundary.md)与既有 [动态简报](../../../../vault/distilled/ai-capability-assessment/motion/README.md)的交接对象。镜头、字体运动与缓动的选择由 [Design / Motion](../../design/motion/README.md)维护，renderer API 留在具体项目。

@@ -103,7 +103,7 @@
 | 没有打开的 | 与这次任务的关系 |
 |---|---|
 | [内容与媒介验收](../../../dsh-praxis/kit/publish/verification.md) | 第 15 行要求交付前核对文字是否经过 Prose 审阅、视觉与运动是否经过 Design。制作期间一次也没有打开，10-18 16:14 才读（L23194） |
-| [Design](../../../kit/design/README.md)全部分支 | 镜头模块、段间衔接、灰与虚线的图例都在项目里自定，没有查 Design/Motion |
+| [Design](../../../dsh-praxis/kit/design/README.md)全部分支 | 镜头模块、段间衔接、灰与虚线的图例都在项目里自定，没有查 Design/Motion |
 | [工作开展方式](../../../kit/environment/working-methods.md)八条备用素材 | 一次也没有打开。其中“把研究交出去”“自查通过之后”“感知不到的部分”三条照样做到了；“原因不明时”没有做到，见失败记录 F2 |
 | [KF001 的过程重建](../knowledge-film-001-distill-20261005/README.md) | 制作期间没有打开；它的教训经会话记忆带进来（L67 读了 `knowledge-film-001.md` 等六份记忆） |
 | [消费记录模板](../../../docs/verification/reference-consumption-template.md) | 项目里没有 Kit 取用记录；项目 AGENTS.md 写了用到哪些条文，没有写哪些没有经过 |
@@ -226,7 +226,7 @@
 
 - **这次失败的位置不是缺条文。** 结构文字的独立审阅、交给别人写时带上第 5 条、文字清单，ADR-027 之后都已写在叙事交接页。缺的是触发：条件写成“对外发布时”，这个系列不发布，于是没有做。改的是一句条件。
 - **工作开展方式的三条备用素材没有被读，照样做到了。** 依据 [对照、留出、代价](../../../kit/environment/working-methods.md#要说一条规则有用)，“两边都做到的部分不记在规则名下”。这次不是干净的对照：主会话读过的跨会话记忆带着 KF001 的教训（L67）。能说的只是：这三条没有起作用的证据，状态栏不升级。“原因不明时”没有读，也没有做到，失败 F2 是它的反例，可以记进状态栏。
-- **管线、衔接与 TTS 都是项目的。** Kit 写明不维护 renderer API（[Design/Motion](../../../kit/design/motion/README.md)第 10 行），只有一个消费者的段间衔接按 ADR-002 的精神先留在项目里。
+- **管线、衔接与 TTS 都是项目的。** Kit 写明不维护 renderer API（[Design/Motion](../../../dsh-praxis/kit/design/motion/README.md)第 10 行），只有一个消费者的段间衔接按 ADR-002 的精神先留在项目里。
 
 不建议做的：为系列片新建 Kit 分支；把这套引擎或管线抽成共享层；为渲染故障新建集中的失败目录；为 TTS 写通用约定。
 

@@ -11,6 +11,6 @@
 | 交互库、实验目录与数字艺术档案 | [发现与组件](discovery/README.md) | 从集合回到单件及实现契约的方法 |
 | Open Design 候选与面向 agent 的设计资源 | [设计资源生态](ecosystem/README.md) | 名称歧义、供应方分类、集成与权限边界 |
 
-只想解决设计问题时读 [操作入口](../../../kit/design/references/art-software-atlas.md)，不必通读书目。按软件平台、输入方式和交互问题找现有入口或研究缺口，读 [软件交互范围](software-scope.md)。查字段与结构取舍读 [架构](architecture.md)；组合查询读 [分面查询](facets.md) 与 [索引](index.json)；字段维护读 [叶子登记](grammar.json)、[书目表](bibliography.csv) 与 [模式](schema.json)；规划下一轮读 [研究流地图](streams.md)。既有 [Design / Write 书目](../design-writing-encyclopedia/README.md)保持原位。
+只想解决设计问题时读 [操作入口](../../../dsh-praxis/kit/design/references/art-software-atlas.md)，不必通读书目。按软件平台、输入方式和交互问题找现有入口或研究缺口，读 [软件交互范围](software-scope.md)。查字段与结构取舍读 [架构](architecture.md)；组合查询读 [分面查询](facets.md) 与 [索引](index.json)；字段维护读 [叶子登记](grammar.json)、[书目表](bibliography.csv) 与 [模式](schema.json)；规划下一轮读 [研究流地图](streams.md)。既有 [Design / Write 书目](../design-writing-encyclopedia/README.md)保持原位。
 
 来源摘要支持离线初筛，外部原件与运行依赖没有整体快照。日期、访问活动、版本与失败见各分支 CHANGELOG 及 [交付记录](../../../docs/verification/art-software-atlas-20261011/README.md)。所有语法为 normal / reference；最终选择由消费设计师依据任务、受众与约束裁决。

@@ -11,10 +11,10 @@ Kit 通过目录逐层展开工作语境。先选这次工作，再读有关分�
 | 当前任务 | 第一入口 | 需要时再展开 |
 |---|---|---|
 | 不确定材料要促成什么理解或决定 | [Task](../dsh-praxis/kit/task/README.md) | 任务类型、brief、文体和组织动作 |
-| 制作图文、网页、Slides 或视频 | [Task](../dsh-praxis/kit/task/README.md) → [Writing](../dsh-praxis/kit/writing/README.md) + [Publish](../dsh-praxis/kit/publish/README.md) + [Design](design/README.md) | 内容组织与成文、按媒介编排与制作、视觉与交互 |
+| 制作图文、网页、Slides 或视频 | [Task](../dsh-praxis/kit/task/README.md) → [Writing](../dsh-praxis/kit/writing/README.md) + [Publish](../dsh-praxis/kit/publish/README.md) + [Design](../dsh-praxis/kit/design/README.md) | 内容组织与成文、按媒介编排与制作、视觉与交互 |
 | 写作、改写或审校纯文本 | [Writing](../dsh-praxis/kit/writing/README.md) | 成文原理、审阅与文体 |
 | 只规范空格、标点或链接，不动措辞 | [格式检查](../dsh-praxis/kit/writing/language/format.md) | 不需要成文原理 |
-| 判断如何表现内容、数据或交互；图表与界面任务可以直接从这里开始 | [Design](design/README.md) | Foundations / Composition / Interaction / Motion / References |
+| 判断如何表现内容、数据或交互；图表与界面任务可以直接从这里开始 | [Design](../dsh-praxis/kit/design/README.md) | Foundations / Composition / Interaction / Motion / References |
 
 一件产物常要用到几支。按产物的组成部分取用，不按请求的叫法：产物里写给读者的成句文字，包括正文、图注、页面说明、界面标签、按钮和状态提示，按 [Writing](../dsh-praxis/kit/writing/README.md)写，按 [审阅方法](../dsh-praxis/kit/writing/review.md)查；阅读顺序、展项和说明的分工过 [Publish](../dsh-praxis/kit/publish/README.md)；视觉、交互和运动过 Design，遇到它列出的情形先读对应参考。交互网页和带图的报告通常三支都用到。
 
@@ -34,6 +34,6 @@ Kit 通过目录逐层展开工作语境。先选这次工作，再读有关分�
 
 ## 验收、来路与维护
 
-交付读 [Verification](verification/README.md)。设计与写作按来源深入时，可从 [来源书目](design/references/README.md#按来源进入)选择日常设计/写作方法、艺术实践或软件资源生态；任务语法仍在原分支。研究从 [Vault主题](../vault/distilled/README.md)找，原件再沿索引回查；不让阶段工单成为默认施工指令。
+交付读 [Verification](verification/README.md)。设计与写作按来源深入时，可从 [来源书目](../dsh-praxis/kit/design/references/README.md#按来源进入)选择日常设计/写作方法、艺术实践或软件资源生态；任务语法仍在原分支。研究从 [Vault主题](../vault/distilled/README.md)找，原件再沿索引回查；不让阶段工单成为默认施工指令。
 
 挂载与分工见 [Agent.md](Agent.md)，新增、使用反馈与退出见 [文档体例](../docs/architecture/documentation.md)和 [修订流程](../docs/governance/evolution.md)。职责归属、规则强度与两条入口路径见 [ADR-019](../docs/decisions/019-expression-owners-and-entry-paths.md)，目录迁移见 [ADR-016](../docs/decisions/016-progressive-kit-structure.md)；旧 Writing 和 Design grammar 路径保留导航，不再维护副本。

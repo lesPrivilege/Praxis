@@ -102,7 +102,7 @@
 | [成文审阅](../../../dsh-praxis/kit/writing/review.md)、[Prose 入口](../../../dsh-praxis/kit/writing/README.md)、项目 skill `writing` | 旁白和屏幕文字没有经过任何语言审阅；两份独立审校查的是事实和画面 |
 | [内容与媒介验收](../../../dsh-praxis/kit/publish/verification.md) | 第 7 行要求交付前核对文字是否经过 Prose 审阅。叙事交接页第 24 行有指向它的链接，主会话读了那一页，没有点进去 |
 | [Publish](../../../dsh-praxis/kit/publish/html/README.md) | 观看页和出处表是编排好的页面 |
-| [Design 入口](../../../kit/design/README.md)与各分支 | [成立程度的标记](../../../kit/design/foundations/standing.md)第 36 行规定实线是已成立、虚线是未成立；施工约定第 63 行自己写了同一条 |
+| [Design 入口](../../../dsh-praxis/kit/design/README.md)与各分支 | [成立程度的标记](../../../dsh-praxis/kit/design/foundations/standing.md)第 36 行规定实线是已成立、虚线是未成立；施工约定第 63 行自己写了同一条 |
 | [anti-slop 提炼](../reporting/writing-anti-slop.md) | 工单点名的参考。Kit 和 docs 里没有任何链接指向它 |
 | Motion ceiling 研究及其来源卡（缺件；原定位 `../motion-ceiling-20261004/README.md`） | 工单点名的 `awesome-opus-5.5-video` 在历史记录中称已有来源卡；当前仓库缺件，原定位 `../../provenance/motion-ceiling-20261004/cards/w02-zhuyansen-awesome-opus-5-5-video.md`；主会话只读了讲这次研究的跨会话笔记 |
 | 视觉语法工场的舞台运行层与导出管线 | 读了说明，没有用，另写了一套 |
@@ -248,7 +248,7 @@
 | extension | 只对一类产物生效的约定。现有的落点是 [Genres](../../../dsh-praxis/kit/writing/genres/README.md)和项目自己的施工约定 | 出现第二个同类消费者之前留在项目里 |
 | reference | Kit 里的备用素材和参考分支，状态 `reference` 或 `candidate` | 登记来路和边界 |
 | external index | `vault/references`、`vault/provenance` 的来源记录 | 逐 URL 登记 |
-| example | `demos/` 下的项目，以及 [样张索引](../../../kit/design/references/specimens.md)里的条目 | 项目自带说明和验收范围 |
+| example | `demos/` 下的项目，以及 [样张索引](../../../dsh-praxis/kit/design/references/specimens.md)里的条目 | 项目自带说明和验收范围 |
 | failure catalog | 没有集中的位置。现行做法是反例跟着规则写（文档结构契约第 64 行），管线的失败写在管线自己的说明里 | 见 Δ5 |
 | archive | `vault/archive/chat` 与 `vault/snapshots` | 只读保存 |
 | 不进入 | — | — |

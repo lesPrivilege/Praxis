@@ -2,7 +2,7 @@
 
 - URL: https://www.aros.dk/en/skyspace
 - Catalog: [catalog.json](../catalog.json) · History: [CHANGELOG.md](../CHANGELOG.md)
-- Grammar: [Turrell Skyspace](../../../../../kit/design/composition/spatial-materials.md#asa-g-turrell-skyspace)
+- Grammar: [Turrell Skyspace](../../../../../dsh-praxis/kit/design/composition/spatial-materials.md#asa-g-turrell-skyspace)
 - Read: 页面“How to experience As Seen Below”下 Open Sky、Colour Shift、Twilight 段落；“What is a Skyspace?”段落。
 - Supports: ASA-S-01-C01、ASA-S-01-C02。
 

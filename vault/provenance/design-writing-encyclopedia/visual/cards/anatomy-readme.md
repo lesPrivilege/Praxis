@@ -24,4 +24,4 @@ Anatomy 将技术概念转成带结构和运行关系的真实机器隐喻。REA
 
 ## 关联
 
-可操作语法：[DWG-V-OBJECTS](../../../../../kit/design/composition/object-representation.md)。
+可操作语法：[DWG-V-OBJECTS](../../../../../dsh-praxis/kit/design/composition/object-representation.md)。

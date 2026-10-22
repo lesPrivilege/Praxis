@@ -13,7 +13,7 @@ Praxis 由 Enterprise、Reporting、Work System 三个消费域和共享 Environ
 | [vault/snapshots](../../vault/snapshots/README.md) / [archive/chat](../../vault/archive/chat/README.md) | 版本原件、原始对话 | 按定位回查 |
 | [docs/decisions](../decisions/README.md) | 接受、延后、拒绝及其理由 | 更新规范 |
 | [kit](../../kit/README.md) | 当前定义、契约与验收规则 | 消费到任务 |
-| [dsh-praxis](../../dsh-praxis/README.md) | 个人 FDE 工作 Kit 的分层体例与控制面；内容表达与设计分支按迁移映射逐步迁入 | 迁移、实现 |
+| [dsh-praxis](../../dsh-praxis/README.md) | 个人 FDE 工作 Kit（Task、Writing、Design、Publish）与控制面；挂载维护信息、预设与运行记录在 dsh-praxis/data | 消费到任务、DSH 插件与 MCP |
 | [scenarios](../../scenarios/README.md) / [demos](../../demos/README.md) | 闭环定义 / 演示实现 | 验证、反馈 |
 
 知识晋升：`vault → docs/decisions → kit → scenario/demo`。
@@ -29,7 +29,7 @@ Praxis 由 Enterprise、Reporting、Work System 三个消费域和共享 Environ
 
 ## 表达与设计的跨域消费
 
-内容表达按 [dsh-praxis 分层体例](../../dsh-praxis/layers.md)分工：[Task](../../dsh-praxis/kit/task/README.md)负责材料目的与组织决定，[Writing](../../dsh-praxis/kit/writing/README.md)负责成文与内容组织，[Publish](../../dsh-praxis/kit/publish/README.md)按媒介编排与制作，[Design](../../kit/design/README.md)以视觉、交互和运动判断支持它们。三者按任务组合取用，不是依次都要过的流程；规则的归属与强度见 [ADR-019](../decisions/019-expression-owners-and-entry-paths.md)。Skill 为有界入口，知识正文通过目录渐进读取，迁移见 [ADR-016](../decisions/016-progressive-kit-structure.md)。
+内容表达按 [dsh-praxis 分层体例](../../dsh-praxis/layers.md)分工：[Task](../../dsh-praxis/kit/task/README.md)负责材料目的与组织决定，[Writing](../../dsh-praxis/kit/writing/README.md)负责成文与内容组织，[Publish](../../dsh-praxis/kit/publish/README.md)按媒介编排与制作，[Design](../../dsh-praxis/kit/design/README.md)以视觉、交互和运动判断支持它们。三者按任务组合取用，不是依次都要过的流程；规则的归属与强度见 [ADR-019](../decisions/019-expression-owners-and-entry-paths.md)。Skill 为有界入口，知识正文通过目录渐进读取，迁移见 [ADR-016](../decisions/016-progressive-kit-structure.md)。
 
 ## 文档职责
 

@@ -21,6 +21,6 @@ snapshot_status: not-captured
 
 **限制：** 规范描述协议，不验证某个 MCP server 的实现、工具副作用或客户端的人机确认 UI。工具注释不应盲目信任。页面在 URL 中固定一个协议日期版本；应按当前协议复核。
 
-**Derived grammar:** [Agent design resources](../../../../../kit/design/references/agent-design-resources.md) — ASA-G-AGENT-DESIGN-SYSTEM-CONTRACT / ASA-G-AGENT-COMPONENT-RETRIEVAL
+**Derived grammar:** [Agent design resources](../../../../../dsh-praxis/kit/design/references/agent-design-resources.md) — ASA-G-AGENT-DESIGN-SYSTEM-CONTRACT / ASA-G-AGENT-COMPONENT-RETRIEVAL
 
 **History:** [Research history](../CHANGELOG.md)

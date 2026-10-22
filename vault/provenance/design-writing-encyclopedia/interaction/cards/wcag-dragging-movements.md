@@ -19,6 +19,6 @@ WCAG 2.2 AA 成功准则 2.5.7 的 WAI Understanding 页面。页面标注为 in
 
 支持区分替代路径需要覆盖哪类输入，以及“keyboard equivalent”与“single-pointer non-drag alternative”的验收分别写。准则仅约束 web content author 解释的 pointer actions，不自动约束 web/native 所有交互。替代控制的等价性和规范例外仍须以具体页面流程验证。没有检查任何具体网页或运行产品，因此不支持已符合性结论。
 
-重访触发：需作正式符合性判断、W3C 修订该准则、或拖动承担精确路径约束时。关联语法：[controls.md](../../../../../kit/design/interaction/controls.md)（`DWG-I-CONTROLS`）。
+重访触发：需作正式符合性判断、W3C 修订该准则、或拖动承担精确路径约束时。关联语法：[controls.md](../../../../../dsh-praxis/kit/design/interaction/controls.md)（`DWG-I-CONTROLS`）。
 
 许可状态：已阅读 [WAI Material use policy](https://www.w3.org/WAI/about/using-wai-material/)；它说明通常可免费使用但需明确署名并链接，且一般不可修改，普通 WAI 材料遵循 W3C Document License。其内容支持在这里读写链接与自有摘要，但未明示允许将若干原文摘录另行保存成 source snapshot；因此未保存源文摘录。证据形态：W3C Understanding 全文，文字访问；未看图片（通过文字读取了图注）或运行示例。

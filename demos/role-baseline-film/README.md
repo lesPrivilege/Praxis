@@ -52,10 +52,10 @@
 | [成文审阅](../../dsh-praxis/kit/writing/review.md) | 列不可损失项；数句式；把画面文字抽成清单按位置类别看了一遍，图题因此从名词短语改成与另两个并列的判断句 |
 | [证据与来源](../../dsh-praxis/kit/writing/evidence.md) | 上一节的变动说明；前提“公司不统一采购”在片子和 txt 里都放在诉求旁边 |
 | [叙事与分镜交接](../../dsh-praxis/kit/publish/video/narrative.md) | 一段一个认知任务；画面文字不从念白里截；从渲染后的舞台抽文字清单 |
-| [运动判断](../../kit/design/motion/grammar.md) | 运动只用来表示出现、延伸、移动和替换；柱里的读数直接替换，不做数字滚动，中间帧不会被读成数据 |
-| [成立程度与归属的标记](../../kit/design/foundations/standing.md) | 蓝色只给等审批的 29K；虚线表示尚未成立；每个状态都写成词：未建立、时间未定、待审批 |
-| [排列与刻度](../../kit/design/foundations/placement.md) | 入职、第一个项目、晋升只有先后，没有时长，图里写了读法；两根柱共用一条从零起的标尺 |
-| [图形编码](../../kit/design/composition/encoding.md) | 柱长从零起；工具费用纹理和文字区分，不单靠颜色 |
+| [运动判断](../../dsh-praxis/kit/design/motion/grammar.md) | 运动只用来表示出现、延伸、移动和替换；柱里的读数直接替换，不做数字滚动，中间帧不会被读成数据 |
+| [成立程度与归属的标记](../../dsh-praxis/kit/design/foundations/standing.md) | 蓝色只给等审批的 29K；虚线表示尚未成立；每个状态都写成词：未建立、时间未定、待审批 |
+| [排列与刻度](../../dsh-praxis/kit/design/foundations/placement.md) | 入职、第一个项目、晋升只有先后，没有时长，图里写了读法；两根柱共用一条从零起的标尺 |
+| [图形编码](../../dsh-praxis/kit/design/composition/encoding.md) | 柱长从零起；工具费用纹理和文字区分，不单靠颜色 |
 | [内容与媒介验收](../../dsh-praxis/kit/publish/verification.md) | “做了什么检查、没做什么”一节的分法 |
 | [金字塔片第五版](../knowledge-film-001-pyramid-cut5/README.md)及其[施工约定](../knowledge-film-001-pyramid-cut5/film/AUTHORING.md) | 配音先行、词级时间锚点、逐帧渲染的整条管线；引擎原样取用，脚本改写后放在 [build](build/README.md) |
 
@@ -68,7 +68,7 @@ Kit 版本是 main `02ca9ea` 加工作区里未提交的改动。只有一次制
 - 从任务入口到旁白体例、标记、排列和旧管线，一路都有链接，没有断点。
 - “感知不到的部分”“自查通过之后”两条备用做法，从内容表达的入口读不到，这次是从金字塔片的项目说明里取到了同样的做法。[内容验收](../../dsh-praxis/kit/publish/verification.md)已加一句入口。
 - 把 txt 编成 Word 和 PDF 时没有回到 Publish。事后对照 [内容编排](../../dsh-praxis/kit/publish/html/composition.md)，标题、段落和表格各自承担的内容身份没有出入。
-- 测算图里的参考线和差额括线画成了虚线，旁边各写了词（收入预期、差）。[标记页](../../kit/design/foundations/standing.md)的默认分配管的是关系图；数量图上的线型按 [图形编码](../../kit/design/composition/encoding.md)写进图里即可，不需要另立规则。
+- 测算图里的参考线和差额括线画成了虚线，旁边各写了词（收入预期、差）。[标记页](../../dsh-praxis/kit/design/foundations/standing.md)的默认分配管的是关系图；数量图上的线型按 [图形编码](../../dsh-praxis/kit/design/composition/encoding.md)写进图里即可，不需要另立规则。
 - 引擎和管线是从金字塔片拷来的第二份。两条片子的目录和配音线路不同，没有抽公共层。
 
 ## 拿这套管线做下一条短片

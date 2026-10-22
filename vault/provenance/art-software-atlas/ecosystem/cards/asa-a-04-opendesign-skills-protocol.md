@@ -21,6 +21,6 @@ snapshot_status: not-captured
 
 **限制：** 项目协议，不等于所有 agent 对 OD 扩展字段的支持。未安装或启动 registry，也未对兼容声明作跨客户端测试。只读取页面前段字段说明，不推断完整插件权限。
 
-**Derived grammar:** [Agent design resources](../../../../../kit/design/references/agent-design-resources.md) — ASA-G-AGENT-DESIGN-SYSTEM-CONTRACT / ASA-G-AGENT-COMPONENT-RETRIEVAL
+**Derived grammar:** [Agent design resources](../../../../../dsh-praxis/kit/design/references/agent-design-resources.md) — ASA-G-AGENT-DESIGN-SYSTEM-CONTRACT / ASA-G-AGENT-COMPONENT-RETRIEVAL
 
 **History:** [Research history](../CHANGELOG.md)

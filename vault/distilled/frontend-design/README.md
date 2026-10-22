@@ -37,4 +37,4 @@
 
 历史页面和源仓库记录可以说明“当时看到什么、哪条关系被取用、落在哪个任务”，不能证明 Praxis 当前页面已渲染、打印、适配窄屏、通过读屏或满足无障碍 conformance。外部 URL 是否 verified、partial 或 unavailable 由各自 provenance catalog 记录；本目录的链接可达不改变该状态。
 
-需要把某条材料晋升为可重复的 Kit 规则时，回到 [Design 入口](../../../kit/design/README.md) 和治理文档，由项目决定建立唯一维护位置；不要在本目录复制 token、组件契约或 renderer 规范。新增材料先登记 intake、保存必要快照，再补本目录的消费记录。
+需要把某条材料晋升为可重复的 Kit 规则时，回到 [Design 入口](../../../dsh-praxis/kit/design/README.md) 和治理文档，由项目决定建立唯一维护位置；不要在本目录复制 token、组件契约或 renderer 规范。新增材料先登记 intake、保存必要快照，再补本目录的消费记录。

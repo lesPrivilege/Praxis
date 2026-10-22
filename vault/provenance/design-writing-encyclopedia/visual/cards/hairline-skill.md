@@ -22,4 +22,4 @@ url: https://hairline.lucasmarkes.com/skill
 
 ## 关联
 
-[对象表征语法](../../../../../kit/design/composition/object-representation.md)。
+[对象表征语法](../../../../../dsh-praxis/kit/design/composition/object-representation.md)。

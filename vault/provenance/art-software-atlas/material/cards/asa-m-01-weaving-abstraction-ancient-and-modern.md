@@ -2,7 +2,7 @@
 
 来源：[原始公报 PDF](https://resources.metmuseum.org/resources/metpublications/pdf/Weaving_Abstraction.pdf) · 状态：verified（限已读文本主张）
 
-用途：织物结构、古代安第斯纺织品语境与语法综合。派生参考见 [Material relations](../../../../../kit/design/composition/material-relations.md)。
+用途：织物结构、古代安第斯纺织品语境与语法综合。派生参考见 [Material relations](../../../../../dsh-praxis/kit/design/composition/material-relations.md)。
 
 ## 摘要
 
@@ -26,5 +26,5 @@ Iria Candela 与 Joanne Pillsbury 的 Met Bulletin 以古代安第斯纺织与�
 
 ## 关联
 
-- Grammar：[ASA-G-ANDEAN-WOVEN-GARMENTS](../../../../../kit/design/composition/material-relations.md)
+- Grammar：[ASA-G-ANDEAN-WOVEN-GARMENTS](../../../../../dsh-praxis/kit/design/composition/material-relations.md)
 - History：[CHANGELOG.md](../CHANGELOG.md)

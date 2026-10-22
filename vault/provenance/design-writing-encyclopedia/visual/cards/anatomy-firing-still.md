@@ -22,4 +22,4 @@ url: https://raw.githubusercontent.com/wheresryan22/anatomy/main/.github/assets/
 
 图片来自上游 repository 的 `.webp` 静态资源，没有进入仓库快照目录。上游首页声明 MIT，但嵌入的机械图及第三方构件权利是否完全由该声明覆盖仍需向上游许可文件/作者确认；不要因开源代码推定图片可独立商用或再发布。
 
-语法：[DWG-V-OBJECTS](../../../../../kit/design/composition/object-representation.md)；文字来路：[DWV-01](anatomy-readme.md)。
+语法：[DWG-V-OBJECTS](../../../../../dsh-praxis/kit/design/composition/object-representation.md)；文字来路：[DWV-01](anatomy-readme.md)。

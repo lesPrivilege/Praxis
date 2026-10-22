@@ -12,8 +12,8 @@
 
 | 去向 | 内容 |
 |---|---|
-| [构成关系与问题地图](../../../kit/design/foundations/relations.md) | 泛化层：一条关系要说清的五件事、十五个问题各自可以调的和要保住的、约束强度、检验方法。按 [ADR-018](../../../docs/decisions/018-generalized-design-relations.md)保留在 Kit |
-| [视觉语言参考](../../../kit/design/references/languages.md) | 问题地图的一种取用：八个条目改写成 VL01–VL08，含名称与别名、范围、可以试的关系、名字推不出的、来源状态 |
+| [构成关系与问题地图](../../../dsh-praxis/kit/design/foundations/relations.md) | 泛化层：一条关系要说清的五件事、十五个问题各自可以调的和要保住的、约束强度、检验方法。按 [ADR-018](../../../docs/decisions/018-generalized-design-relations.md)保留在 Kit |
+| [视觉语言参考](../../../dsh-praxis/kit/design/references/languages.md) | 问题地图的一种取用：八个条目改写成 VL01–VL08，含名称与别名、范围、可以试的关系、名字推不出的、来源状态 |
 | [逐来源登记](../../provenance/design-grammar-atlas-20261002/README.md) | 47 条来源各重访一次，其中 16 条由主会话再读一次；现为 34 verified、12 partial、1 unavailable |
 | [A01 样张](a01-reading-relations/README.md) | 用夹具 F1 做的一件原子样张，消费了 VL01、VL02、VL04 |
 | 本页 | 校订意见与本地现状的对照、十五个问题的本地覆盖、包内需更正之处 |
@@ -22,8 +22,8 @@
 
 | 包内意见或材料 | 本地现状 | 裁决 |
 |---|---|---|
-| 入口用任务语言触发 | [Kit 入口](../../../kit/README.md)和 [Design 入口](../../../kit/design/README.md)已是“任务 → 分支 → 产物” | 已覆盖，不改 |
-| index 做路由并给停止条件 | 分支 README 与 [参考路由](../../../kit/design/references/README.md)已分层；冷启动六题过五题 | 已覆盖，只补下面一处断点 |
+| 入口用任务语言触发 | [Kit 入口](../../../kit/README.md)和 [Design 入口](../../../dsh-praxis/kit/design/README.md)已是“任务 → 分支 → 产物” | 已覆盖，不改 |
+| index 做路由并给停止条件 | 分支 README 与 [参考路由](../../../dsh-praxis/kit/design/references/README.md)已分层；冷启动六题过五题 | 已覆盖，只补下面一处断点 |
 | content 按问题和关系写 | Foundations、Composition、Interaction、Motion 已按判断拆分 | 已覆盖，不改 |
 | 风格名与别名能被找到 | 仓库里没有任何风格名条目，代理只能凭通用知识作答 | 采纳：新增 VL01–VL08 并在三处入口挂接 |
 | 给 Design 写一段 skill description | 本地没有 Design skill；ADR-015 不采纳把 Kit 压成 skill | 不采纳。文案留在包内，某个宿主只暴露 description 时再取 |
@@ -65,7 +65,7 @@
 | 零散 | G02 字体层级、G03 色彩分工、G07 密度节奏、G13 中文排版、G15 空间与声音 | 只有个别语句或参考条目，没有行长行距、对比、类别/顺序/发散色义、标点禁则方面的规则 |
 | 缺失 | G04 形状与命中区、G05 图像角色、G06 材质、G14 双向文字 | 本地未检索到对应规则 |
 
-候选原文在包内 [维度索引](../../snapshots/local/design-grammar-atlas-20261002/research/grammar-dimensions.md)，按问题分成四页。包对运动的措辞比本地强：包把“减少运动时语义等价”列为建议目标，本地 [运动判断](../../../kit/design/motion/grammar.md)只要求检查偏好并保留反馈。两者不冲突，本地措辞不改。
+候选原文在包内 [维度索引](../../snapshots/local/design-grammar-atlas-20261002/research/grammar-dimensions.md)，按问题分成四页。包对运动的措辞比本地强：包把“减少运动时语义等价”列为建议目标，本地 [运动判断](../../../dsh-praxis/kit/design/motion/grammar.md)只要求检查偏好并保留反馈。两者不冲突，本地措辞不改。
 
 ## 包内需更正之处
 

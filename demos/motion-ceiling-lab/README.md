@@ -29,7 +29,7 @@
 
 交接稿写于 main `9514ce4`，本目录的施工材料逐字切自它，下面几处已经和现状不符，以这里为准：
 
-- 交接稿说可编辑原生 SVG 研究包没有合并。它已经并入 main，并且有了 [成立程度与归属的标记](../../kit/design/foundations/standing.md)和 [精确指向](../../kit/design/foundations/anchoring.md)两页。MC02 的 brief 写的“自行定义对应合同，后续才对接”因此要改成先读这两页和 [SVG-01 的图件](../editable-native-svg/svg-01-relations/README.md)。MC01 的线型、端点和强调色已经按第一页的默认分配。
+- 交接稿说可编辑原生 SVG 研究包没有合并。它已经并入 main，并且有了 [成立程度与归属的标记](../../dsh-praxis/kit/design/foundations/standing.md)和 [精确指向](../../dsh-praxis/kit/design/foundations/anchoring.md)两页。MC02 的 brief 写的“自行定义对应合同，后续才对接”因此要改成先读这两页和 [SVG-01 的图件](../editable-native-svg/svg-01-relations/README.md)。MC01 的线型、端点和强调色已经按第一页的默认分配。
 - 交接稿提到的研究分支 `research/motion-ceiling-20261004` 和 32 个成员的 ZIP 不在本机。用户交来的是一份由五段消息重组的转运副本，其中“固定版本逐文件入口”在第 17 项处截断。施工材料里凡是写“源仓相对路径”的地方，指的是那条分支上的文件，本仓库没有。
 - 交接稿的来源记录里，本会话只用 GitHub API 核对了 16 个仓库的身份，其余没有打开。借用任何来源的机制之前，先读原件。
 - 交接稿不授权安装依赖、付费、调用外部模型、发布、推送或读取私密材料。MC01 没有做其中任何一项；这条边界对后面五件同样有效，直到用户另外说。

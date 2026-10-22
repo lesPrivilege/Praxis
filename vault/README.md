@@ -46,11 +46,11 @@ Vault 保存研究材料、来源身份、提炼结果和可回查的原件。�
 - 2026-09-20： [架构审阅消费](distilled/themes/architecture-review-2026-09-20.md) · [文档实践与选型](distilled/themes/documentation-practices.md)。
 - 2026-09-25： [Agent Runtime 研究与裁决](distilled/agent-runtime-survey-20260925/README.md)。
 - 2026-09-27： [Write / Design 两份 Chat 的消费入口](distilled/write-design-grammar/README.md)，原件见 [Opus Chat](archive/chat/opus-remotion-video-20260927.json) 与 [Design Grammar Chat](archive/chat/design-grammar-20260927.json)。
-- 2026-09-27： [写作结构补充来源](distilled/writing-structure-20260927/README.md) 与 [原子化编排实验](distilled/layout-specimens-20260927/README.md)。实验已有产物和 [局部筛选](distilled/layout-specimens-20260927/review.md)；两项泛化结构说明进入 [Kit优先参考](../kit/design/references/curated/README.md)，其余仍按原状态消费。
+- 2026-09-27： [写作结构补充来源](distilled/writing-structure-20260927/README.md) 与 [原子化编排实验](distilled/layout-specimens-20260927/README.md)。实验已有产物和 [局部筛选](distilled/layout-specimens-20260927/review.md)；两项泛化结构说明进入 [Kit优先参考](../dsh-praxis/kit/design/references/curated/README.md)，其余仍按原状态消费。
 
 - 2026-09-28/29：[视觉语法材料与开放施工](distilled/visual-grammar-20260928/README.md)，原件和研究留Vault，实施交接见 [demos工场](../demos/visual-grammar/README.md)。
 
-- 2026-10-02：[Design grammar atlas 消费与裁决](distilled/design-grammar-atlas-20261002/README.md)，含 47 条来源重访和一件阅读关系样张；进入 Kit 的是 [构成关系与问题地图](../kit/design/foundations/relations.md)和 [视觉语言参考](../kit/design/references/languages.md)。
+- 2026-10-02：[Design grammar atlas 消费与裁决](distilled/design-grammar-atlas-20261002/README.md)，含 47 条来源重访和一件阅读关系样张；进入 Kit 的是 [构成关系与问题地图](../dsh-praxis/kit/design/foundations/relations.md)和 [视觉语言参考](../dsh-praxis/kit/design/references/languages.md)。
 - 2026-10-02：[PraxisDesignKit 工单提案](distilled/design-kit-workorders-20261002/README.md)，五包串行工单与 Motion 附录；各包做到哪一步、下一包要什么输入，只在该页的裁决表里记。
 - 2026-10-02：[Write / Present 架构校订补充](distilled/write-present-supplement-20261002/README.md)，对照本地后按 ADR-019 落位：不新建 Present，Write 规则分三种强度，入口分消费与维护两条路；附一件投影与改编的对照样张。
 - 2026-10-02：[内容架构与能力语法审阅](distilled/content-architecture-review-20261002/README.md)，对照本地后只校订了入口措辞与文档体例（ADR-020）；九类能力语法候选和交付生命周期登记为候选，等真实素材；附三条企业工作路线与三个反例的前后走读。

@@ -20,7 +20,7 @@
 初次消费后的路由原则由 [ADR-015](../../../docs/decisions/015-kit-editorial-contract.md) 采纳，并落在文档结构契约中；它保留了“目录和 README 承担渐进引导”的历史治理语义。本轮后续采纳由 [ADR-016](../../../docs/decisions/016-progressive-kit-structure.md) 落实为真实入口：
 
 - [Write](../../../dsh-praxis/kit/README.md) → `prose/`、`publish/`、`motion/`、`shared/`；
-- [Design](../../../kit/design/README.md) → `foundations/`、`composition/`、`interaction/`、`motion/`、`references/`。
+- [Design](../../../dsh-praxis/kit/design/README.md) → `foundations/`、`composition/`、`interaction/`、`motion/`、`references/`。
 
 因此本页来源中的示例目录不再是当前入口的唯一依据，当前任务应按上述 README 选路；目录存在也不证明通用 renderer 或所有下游契约已经完成。
 

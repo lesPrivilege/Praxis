@@ -1,6 +1,6 @@
 # Interaction research
 
-本目录记录外部交互与动效来源的独立 URL 身份、消费摘要和范围限制。卡片中的摘要仅说明实际核对内容；新入口和判断语法见 [Kit Interaction](../../../../kit/design/interaction/README.md) 与 [motion choreography](../../../../kit/design/motion/choreography.md)。
+本目录记录外部交互与动效来源的独立 URL 身份、消费摘要和范围限制。卡片中的摘要仅说明实际核对内容；新入口和判断语法见 [Kit Interaction](../../../../dsh-praxis/kit/design/interaction/README.md) 与 [motion choreography](../../../../dsh-praxis/kit/design/motion/choreography.md)。
 
 - [catalog.json](catalog.json)：本 stream 独立登记的 URL。
 - [cards/](cards/README.md)：来源级离线摘要与主张定位。

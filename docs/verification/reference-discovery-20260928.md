@@ -18,7 +18,7 @@
 
 ## 首批高权重参考的范围
 
-[REF-COMP-001](../../kit/design/references/curated/comparison-continuity.md)与[REF-COMP-002](../../kit/design/references/curated/note-adjacency.md)验收的是已泛化结构说明的查阅价值。main看过对应1440/375截图，本轮核对了HTML/CSS。E06-b的窄屏可访问对象标签、共享数字和实现均有边界；W03-b的多注释碰撞与跨字体等未测。高权重只作用于两张说明卡，不改变实验本体和未验收代码的状态。
+[REF-COMP-001](../../dsh-praxis/kit/design/references/curated/comparison-continuity.md)与[REF-COMP-002](../../dsh-praxis/kit/design/references/curated/note-adjacency.md)验收的是已泛化结构说明的查阅价值。main看过对应1440/375截图，本轮核对了HTML/CSS。E06-b的窄屏可访问对象标签、共享数字和实现均有边界；W03-b的多注释碰撞与跨字体等未测。高权重只作用于两张说明卡，不改变实验本体和未验收代码的状态。
 
 每张卡有稳定ID、任务、取用说明、来源、验收范围、不适用条件和消费/维护入口。实际demo消费者尚无记录；后续 supports/challenges/extends 先登记观察，再由main修订、降级或停止推荐。
 

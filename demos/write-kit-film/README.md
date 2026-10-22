@@ -64,7 +64,7 @@
 | 底线第 2 条丢了“逻辑关系是真的”；第 3 条丢了“经验”；第 4 条丢了“任务” | 采纳，补回 | [证据与来源 · 底线](../../dsh-praxis/kit/writing/evidence.md)；第 7 条脚注引用了“关系是真的”，必须在底线里出现过 |
 | 色带第三档漏了“和读者” | 采纳 | Write 入口原文 |
 | 第 5 张卡标“编辑启发式”与强度表“结构位置的取形跨语体适用”有出入 | 改写后采纳：仍标编辑启发式，脚注写明跨语体适用 | 强度表该行不是单一档 |
-| 验收表 PDF 一行漏“内容未截断”；末句漏“和同步” | 采纳 | [内容与媒介验收](../../dsh-praxis/kit/publish/verification.md)、[运动判断](../../kit/design/motion/grammar.md) |
+| 验收表 PDF 一行漏“内容未截断”；末句漏“和同步” | 采纳 | [内容与媒介验收](../../dsh-praxis/kit/publish/verification.md)、[运动判断](../../dsh-praxis/kit/design/motion/grammar.md) |
 | 页面没写“无对照组”，画面却写了 | 采纳，去掉 | 页面没有这句，属新增而且没有来路 |
 | 片尾变动说明不全：删字没列、“违反第 3、4 条”和“无对照组”未标新增 | 采纳，补“删改”“新增”两行，“看不到”改为说谁看不到 | 变动说明写四件事 |
 | 图例“改稿前/改稿后”与同帧“改前/改后”不一 | 采纳，右栏列头也改为“改稿前/改稿后” | 同帧同叫法 |
@@ -102,8 +102,8 @@
 | 读了 | 用在哪里 |
 |---|---|
 | [Write](../../dsh-praxis/kit/README.md)、[成文原理](../../dsh-praxis/kit/writing/principles.md)、[成文审阅](../../dsh-praxis/kit/writing/review.md)、[证据与来源](../../dsh-praxis/kit/writing/evidence.md)、[内容与媒介验收](../../dsh-praxis/kit/publish/verification.md) | 片子的内容本身，也是撰写画面文字的规则：结构位置的文字单独撰写、凝练、并列 |
-| [叙事与分镜交接](../../dsh-praxis/kit/publish/video/narrative.md)、[运动判断](../../kit/design/motion/grammar.md) | 一场一个认知任务；运动只表示出现、延伸、划去、替换；中间帧不被读成数据；条形图从零起 |
-| [成立程度与归属的标记](../../kit/design/foundations/standing.md)、[排列与刻度](../../kit/design/foundations/placement.md)、[图形编码](../../kit/design/composition/encoding.md) | 虚线表示“不能”，实线表示成立；强度带的宽度只表示顺序、不按比例，画面上写明；14→2、19→5 是共用零线的横向条 |
+| [叙事与分镜交接](../../dsh-praxis/kit/publish/video/narrative.md)、[运动判断](../../dsh-praxis/kit/design/motion/grammar.md) | 一场一个认知任务；运动只表示出现、延伸、划去、替换；中间帧不被读成数据；条形图从零起 |
+| [成立程度与归属的标记](../../dsh-praxis/kit/design/foundations/standing.md)、[排列与刻度](../../dsh-praxis/kit/design/foundations/placement.md)、[图形编码](../../dsh-praxis/kit/design/composition/encoding.md) | 虚线表示“不能”，实线表示成立；强度带的宽度只表示顺序、不按比例，画面上写明；14→2、19→5 是共用零线的横向条 |
 | [薪酬基线说明片](../role-baseline-film/README.md)的管线 | 引擎、工具、渲染器、联络表和文字清单原样取用；配音与混音去掉 |
 | 外部：Netflix 简体中文字幕规范 | 读速上限，见上 |
 

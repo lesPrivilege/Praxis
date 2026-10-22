@@ -1,6 +1,6 @@
 # ASA temporal stream · scores, rule systems, and time
 
-This stream records public research on time-based scores, rule-governed variation, and computational clocks. Sources remain references; the Kit entries at [score and time](../../../../kit/design/motion/score-and-time.md) and [rule systems](../../../../kit/design/motion/rule-systems.md) are bounded working grammars, not adopted implementation standards.
+This stream records public research on time-based scores, rule-governed variation, and computational clocks. Sources remain references; the Kit entries at [score and time](../../../../dsh-praxis/kit/design/motion/score-and-time.md) and [rule systems](../../../../dsh-praxis/kit/design/motion/rule-systems.md) are bounded working grammars, not adopted implementation standards.
 
 - [Source catalog](catalog.json) preserves URL-level identity and claim links.
 - [Source cards](cards/README.md) hold each URL’s independent summary, limits, and precise reading scope.

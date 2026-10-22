@@ -3,7 +3,7 @@ id: ASA-E-09
 status: partial
 url: https://dl.ndl.go.jp/pid/2390577
 grammar_paths:
-  - kit/design/composition/editorial-translations.md
+  - dsh-praxis/kit/design/composition/editorial-translations.md
 history_record: vault/provenance/art-software-atlas/editorial/CHANGELOG.md
 ---
 
@@ -25,4 +25,4 @@ National Diet Library Digital Collections 的记录将该对象标为 *新聞総
 
 **重访条件：** 能打开稳定页面图像，或目录提供 IIIF/PDF 版本时。
 
-**派生参考：** [编辑传统的媒介转译](../../../../../kit/design/composition/editorial-translations.md)。历史记录：[CHANGELOG](../CHANGELOG.md)。
+**派生参考：** [编辑传统的媒介转译](../../../../../dsh-praxis/kit/design/composition/editorial-translations.md)。历史记录：[CHANGELOG](../CHANGELOG.md)。

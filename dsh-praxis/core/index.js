@@ -1,0 +1,216 @@
+// dsh-praxis core: one set of operations shared by the DSH plugin, the MCP server,
+// the CLI and the control plane UI.
+import { createHash } from 'node:crypto'
+import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs'
+import { dirname, join, resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
+import { Kit, LAYERS, clip } from './kit.js'
+import { Materials } from './materials.js'
+import { Collection, readJson } from './store.js'
+import { PRESET_FIELDS, presetId, validatePreset } from './presets.js'
+
+export { ConflictError } from './store.js'
+
+/** The repository root: explicit, PRAXIS_ROOT, or the checkout this package lives in. */
+export function findRoot(explicit) {
+  const start = explicit ?? process.env.PRAXIS_ROOT ?? join(dirname(fileURLToPath(import.meta.url)), '..', '..')
+  const root = resolve(start)
+  if (!existsSync(join(root, 'dsh-praxis', 'layers.md'))) throw new Error(`not a Praxis checkout: ${root}`)
+  return root
+}
+
+export function createPraxis(options = {}) {
+  const repo = findRoot(options.root)
+  const dataDir = join(repo, 'dsh-praxis', 'data')
+  const materials = new Materials(repo, dataDir, { rebuild: options.rebuild })
+  const kit = () => new Kit(repo)
+  const presets = new Collection(join(dataDir, 'presets.json'), join(dataDir, 'history.jsonl'))
+
+  return {
+    repo,
+    layers: LAYERS,
+    materials,
+    kit,
+
+    /** Resident entries plus the routes into each layer: what every task starts with. */
+    entry() {
+      const k = kit()
+      return {
+        resident: k.list().filter((u) => u.resident).map(brief),
+        layers: Object.keys(LAYERS).map((layer) => ({ layer, entry: brief(k.find(layer)) })),
+        task_types: k.taskTypes().map((t) => ({ id: t.id, title: t.title, description: t.description, pipelines: t.pipelines })),
+      }
+    },
+
+    units({ layer } = {}) {
+      return kit().list(layer).map(brief)
+    },
+
+    unit(ref) {
+      return kit().read(ref)
+    },
+
+    taskTypes() {
+      return kit().taskTypes()
+    },
+
+    /**
+     * What to read for a task: resident units, then the units the task type lists
+     * (filtered by pipeline), then enabled bindings on those units as material rows.
+     */
+    resolve({ task_type, pipeline, units = [], preset, materials_limit = 12 } = {}) {
+      const k = kit()
+      const picked = new Map()
+      const add = (unit, reason) => {
+        if (!unit) return
+        const seen = picked.get(unit.id)
+        if (seen) seen.reasons.push(reason)
+        else picked.set(unit.id, { id: unit.id, title: unit.title, description: clip(unit.description, 100), path: unit.path, version: unit.version, reasons: [reason] })
+      }
+      for (const u of k.list().filter((u) => u.resident)) add(u, '常驻')
+      let type
+      if (task_type) {
+        type = k.taskType(task_type)
+        if (!type) throw new Error(`unknown task type: ${task_type}`)
+        const chosen = pipeline ?? type.pipelines[0]
+        if (pipeline && !type.pipelines.includes(pipeline)) throw new Error(`${type.id} has no ${pipeline} pipeline`)
+        add(k.find(`publish/${chosen}`), `流水线 ${chosen}`)
+        for (const layer of ['writing', 'design', 'publish']) {
+          for (const item of type[layer]) {
+            if (item.when && item.when !== chosen) continue
+            add(k.find(item.unit), `任务类型 ${type.title} 列出${item.when ? `（${item.when}）` : ''}`)
+          }
+        }
+        pipeline = chosen
+      }
+      for (const ref of units) {
+        const u = k.find(ref)
+        if (!u) throw new Error(`unknown unit: ${ref}`)
+        add(u, '本次指定')
+      }
+      const targets = new Set([...picked.values()].map((u) => u.path))
+      const rows = materials.listBindings()
+        .filter((b) => b.enabled && targets.has(b.target.split('#')[0]))
+        .sort((a, b) => Number(b.priority === 'preferred') - Number(a.priority === 'preferred') || Number(b.favorite) - Number(a.favorite))
+        .slice(0, materials_limit)
+        .map((b) => ({ binding: b.id, title: b.title, description: clip(b.description, 100), priority: b.priority, favorite: b.favorite }))
+      const chosenPreset = preset ? this.preset(preset)
+        : Object.entries(presets.all()).map(([id, p]) => ({ id, ...p })).find((p) => p.pipeline === pipeline && p.default && p.state !== 'removed')
+      if (preset && !chosenPreset) throw new Error(`unknown preset: ${preset}`)
+      return {
+        preset: chosenPreset ? { id: chosenPreset.id, title: chosenPreset.title, values: chosenPreset.values, revision: chosenPreset.revision } : undefined,
+        task_type: type ? { id: type.id, title: type.title, outcome: type.outcome, acceptance: type.acceptance, version: type.version } : undefined,
+        pipeline,
+        units: [...picked.values()],
+        materials: rows,
+      }
+    },
+
+    /**
+     * Record that a piece of work read these units and bindings at their current versions,
+     * and produced these artifacts. Returns the run record.
+     */
+    consume({ title, task_type, pipeline, preset, overrides, units = [], bindings = [], sources = [], artifacts = [], by, note }) {
+      if (!title?.trim()) throw new Error('consume needs a title')
+      const k = kit()
+      const unitRefs = units.map((ref) => {
+        const u = k.find(ref)
+        if (!u) throw new Error(`unknown unit: ${ref}`)
+        return { id: u.id, path: u.path, version: u.version }
+      })
+      const bindingRefs = bindings.map((id) => {
+        const b = materials.binding(id)
+        if (!b) throw new Error(`unknown binding: ${id}`)
+        return { id, revision: b.revision }
+      })
+      const sourceRefs = sources.map((id) => {
+        const s = materials.source(id)
+        if (!s) throw new Error(`unknown source: ${id}`)
+        return { id: s.id, snapshot: s.snapshot?.sha256 ?? null }
+      })
+      const artifactRefs = artifacts.map((path) => {
+        const full = join(repo, path)
+        return existsSync(full)
+          ? { path, sha256: createHash('sha256').update(readFileSync(full)).digest('hex') }
+          : { path, sha256: null, note: 'not in repository' }
+      })
+      const presetRef = preset ? (() => { const p = this.preset(preset); if (!p) throw new Error(`unknown preset: ${preset}`); return { id: p.id, revision: p.revision, values: p.values } })() : undefined
+      const at = new Date().toISOString()
+      const id = `${at.slice(0, 10)}-${createHash('sha256').update(at + title).digest('hex').slice(0, 8)}`
+      const run = { id, title: title.trim(), at, by, task_type, pipeline, preset: presetRef, overrides, units: unitRefs, bindings: bindingRefs, sources: sourceRefs, artifacts: artifactRefs, note }
+      const path = join(dataDir, 'runs', `${id}.json`)
+      mkdirSync(dirname(path), { recursive: true })
+      writeFileSync(path, JSON.stringify(run, null, 2) + '\n')
+      materials.bindings.log({ op: 'consume', id, by, title: run.title })
+      return run
+    },
+
+    presetFields() {
+      return PRESET_FIELDS
+    },
+
+    presets({ pipeline, includeRemoved = false } = {}) {
+      return Object.entries(presets.all())
+        .map(([id, p]) => ({ id, ...p }))
+        .filter((p) => (!pipeline || p.pipeline === pipeline) && (includeRemoved || p.state !== 'removed'))
+    },
+
+    preset(id) {
+      const p = presets.get(id)
+      return p ? { id, ...p } : undefined
+    },
+
+    /** Create (no id) or update a preset; updates must carry the revision they read. */
+    savePreset({ id, pipeline, title, description, values, tags, default: isDefault, expected_revision, by, reason, task }) {
+      const current = id ? presets.get(id) : undefined
+      if (id && !current) throw new Error(`unknown preset: ${id}`)
+      const next = { pipeline: pipeline ?? current?.pipeline, title: title ?? current?.title, description: description ?? current?.description,
+        values: values ?? current?.values ?? {}, tags: tags ?? current?.tags ?? [], default: isDefault ?? current?.default ?? false }
+      validatePreset(next)
+      const key = id ?? presetId(next.pipeline, next.title)
+      if (!id && presets.get(key)) throw new Error(`preset exists: ${key}`)
+      if (next.default) {
+        for (const [other, p] of Object.entries(presets.all())) {
+          if (other !== key && p.pipeline === next.pipeline && p.default) presets.update(other, undefined, (cur) => ({ ...cur, default: false }), { op: 'preset-default-off', by })
+        }
+      }
+      const saved = presets.update(key, id ? expected_revision : 0, (cur = {}) => ({ ...cur, ...next, state: 'active' }), { op: 'preset', by, reason, task })
+      return { id: key, ...saved }
+    },
+
+    removePreset({ id, expected_revision, by, reason }) {
+      if (!presets.get(id)) throw new Error(`unknown preset: ${id}`)
+      const saved = presets.update(id, expected_revision, (cur) => ({ ...cur, state: 'removed', default: false }), { op: 'preset-remove', by, reason })
+      return { id, ...saved }
+    },
+
+    runs({ limit = 20 } = {}) {
+      const dir = join(dataDir, 'runs')
+      if (!existsSync(dir)) return []
+      return readdirSync(dir).filter((f) => f.endsWith('.json')).sort().reverse().slice(0, limit)
+        .map((f) => readJson(join(dir, f)))
+    },
+
+    /** Runs whose recorded unit or binding versions are older than the current ones. */
+    stale() {
+      const k = kit()
+      return this.runs({ limit: 1000 }).map((run) => {
+        const units = run.units.filter((u) => k.find(u.id)?.version !== u.version).map((u) => u.id)
+        const bindings = run.bindings.filter((b) => (materials.binding(b.id)?.revision ?? -1) !== b.revision).map((b) => b.id)
+        const preset = run.preset && presets.get(run.preset.id)?.revision !== run.preset.revision ? run.preset.id : undefined
+        return { run: run.id, title: run.title, units, bindings, preset }
+      }).filter((r) => r.units.length || r.bindings.length || r.preset)
+    },
+
+    history({ limit = 50 } = {}) {
+      const path = join(dataDir, 'history.jsonl')
+      if (!existsSync(path)) return []
+      return readFileSync(path, 'utf8').trim().split('\n').filter(Boolean).slice(-limit).reverse().map((l) => JSON.parse(l))
+    },
+  }
+}
+
+function brief(u) {
+  if (!u) return undefined
+  return { id: u.id, layer: u.layer, title: u.title, description: u.description, path: u.path, resident: u.resident, version: u.version }
+}

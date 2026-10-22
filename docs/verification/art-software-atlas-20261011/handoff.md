@@ -2,7 +2,7 @@
 
 ## 范围与进入方式
 
-从 [操作入口](../../../kit/design/references/art-software-atlas.md)取用，从 [来源书目](../../../vault/provenance/art-software-atlas/README.md)追溯。12 条深度参考跨材料构造、编辑排印、光与空间、谱/规则、交互选择、发现机制和 agent 设计资源；56 个新 URL、2 个复用身份、46 个实体及 141 条限定关系组成有界目录，不是完整艺术史百科。
+从 [操作入口](../../../dsh-praxis/kit/design/references/art-software-atlas.md)取用，从 [来源书目](../../../vault/provenance/art-software-atlas/README.md)追溯。12 条深度参考跨材料构造、编辑排印、光与空间、谱/规则、交互选择、发现机制和 agent 设计资源；56 个新 URL、2 个复用身份、46 个实体及 141 条限定关系组成有界目录，不是完整艺术史百科。
 
 [架构](../../../vault/provenance/art-software-atlas/architecture.md)定义渐进层次、正交分面、实体区别、维护与退出；[索引](../../../vault/provenance/art-software-atlas/index.json)按语法优先投影；[研究流](../../../vault/provenance/art-software-atlas/streams.md)列下一次从哪里开始、缺什么、怎样收束。Open Design 未得到用户指定 URL，保留两个候选；主研究对象只因文档较充分而选，不推定用户意指。
 

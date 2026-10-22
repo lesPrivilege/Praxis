@@ -18,6 +18,6 @@ Apple 官方 SF Symbols 目录/产品概览页面。正文定位它为与 San Fr
 
 可将其用作 Apple 平台图标对齐、字重/尺度系统化、方向本地化、符号动画与变量表达的参考；不构成其他平台授权，不表示所有 symbol 都有全部能力，更不支持从 marketing page 推断动画在真实界面的易读性。HIG page DWI-005 的搜索摘要另提示 app icon/logo/trademark 使用限制；该正式条款没有在本页展开，查阅 Apple 当前 license 前不要复制或部署符号资产。
 
-重访触发：选择具体 SF Symbol、目标 OS 版本变化、或需用其动画/变量渲染时，查 HIG、许可证、应用版本 API 文档并实际预览。关联语法：[controls.md](../../../../../kit/design/interaction/controls.md)（`DWG-I-CONTROLS`）、[choreography.md](../../../../../kit/design/motion/choreography.md)（`DWG-M-CHOREOGRAPHY`）。
+重访触发：选择具体 SF Symbol、目标 OS 版本变化、或需用其动画/变量渲染时，查 HIG、许可证、应用版本 API 文档并实际预览。关联语法：[controls.md](../../../../../dsh-praxis/kit/design/interaction/controls.md)（`DWG-I-CONTROLS`）、[choreography.md](../../../../../dsh-praxis/kit/design/motion/choreography.md)（`DWG-M-CHOREOGRAPHY`）。
 
 许可状态：只阅读官方网页，未下载、复制或嵌入任何 symbol；Apple asset license 未审阅，禁止据此推断许可。证据形态：官方网站全文文字；未查看网页图像、未播放动效、未运行 Apple 工具或应用。

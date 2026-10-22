@@ -20,6 +20,6 @@ WCAG 2.2 AA SC 4.1.3 的 WAI Understanding 页面。页面明确标为 informati
 
 此来源可指导反馈分类和审查边界；页中引用 role=status、role=alert、role=log 和 progress live-region 属 sufficient techniques，并不意味着它们是唯一可行方法，也不应把所有内容改变都转为播报。正式适用性要结合规范文本、技术支持矩阵和目标辅助技术测试。
 
-重访触发：撰写正式 WCAG 验收、选定自动公告实现、或核实例外时。关联语法：[feedback.md](../../../../../kit/design/interaction/feedback.md)（`DWG-I-FEEDBACK`）。
+重访触发：撰写正式 WCAG 验收、选定自动公告实现、或核实例外时。关联语法：[feedback.md](../../../../../dsh-praxis/kit/design/interaction/feedback.md)（`DWG-I-FEEDBACK`）。
 
 许可状态：已读 [WAI Material use policy](https://www.w3.org/WAI/about/using-wai-material/)；通常可免费用但需署名及链接，正文不可随意修改。普通 WAI 材料按 W3C Document License；该说明未明示简摘可单独作为 source snapshot，因此没有保存摘录。证据形态：W3C Understanding 全文直接读文字，没有运行代码或测试辅助技术。

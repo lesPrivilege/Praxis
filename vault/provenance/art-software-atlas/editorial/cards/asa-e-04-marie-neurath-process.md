@@ -3,7 +3,7 @@ id: ASA-E-04
 status: verified
 url: https://research.reading.ac.uk/picturingscience/wp-content/uploads/sites/86/Unorganized/designprocessMN.pdf
 grammar_paths:
-  - kit/design/composition/editorial-translations.md
+  - dsh-praxis/kit/design/composition/editorial-translations.md
 history_record: vault/provenance/art-software-atlas/editorial/CHANGELOG.md
 ---
 
@@ -25,4 +25,4 @@ Sue Walker 在 *The Gower Handbook of Information Design* 的章节中，描述 
 
 **重访条件：** 将印刷跨页作为视觉参照，或描述某张具体图表如何呈现时。
 
-**派生参考：** [编辑传统的媒介转译](../../../../../kit/design/composition/editorial-translations.md)。历史记录：[CHANGELOG](../CHANGELOG.md)。
+**派生参考：** [编辑传统的媒介转译](../../../../../dsh-praxis/kit/design/composition/editorial-translations.md)。历史记录：[CHANGELOG](../CHANGELOG.md)。

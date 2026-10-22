@@ -3,7 +3,7 @@ id: ASA-E-05
 status: verified
 url: https://www.isotyperevisited.org/isotype-collection/
 grammar_paths:
-  - kit/design/composition/editorial-translations.md
+  - dsh-praxis/kit/design/composition/editorial-translations.md
 history_record: vault/provenance/art-software-atlas/editorial/CHANGELOG.md
 ---
 
@@ -25,4 +25,4 @@ history_record: vault/provenance/art-software-atlas/editorial/CHANGELOG.md
 
 **重访条件：** 需要定位并直接查看某件原作或档案材料时。
 
-**派生参考：** [编辑传统的媒介转译](../../../../../kit/design/composition/editorial-translations.md)。历史记录：[CHANGELOG](../CHANGELOG.md)。
+**派生参考：** [编辑传统的媒介转译](../../../../../dsh-praxis/kit/design/composition/editorial-translations.md)。历史记录：[CHANGELOG](../CHANGELOG.md)。

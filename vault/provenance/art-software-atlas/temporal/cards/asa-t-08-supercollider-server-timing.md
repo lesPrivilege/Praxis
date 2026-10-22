@@ -12,4 +12,4 @@ SuperCollider 官方指南区分 logical time 与 physical time，并解释在 O
 
 ## 阅读位置与用途
 
-“Latency”段落的 logical/physical time 区分、成对 Routine 例子与末尾应用建议。供 [score and time](../../../../../kit/design/motion/score-and-time.md) 和 [rule systems](../../../../../kit/design/motion/rule-systems.md)；[CHANGELOG](../CHANGELOG.md)。
+“Latency”段落的 logical/physical time 区分、成对 Routine 例子与末尾应用建议。供 [score and time](../../../../../dsh-praxis/kit/design/motion/score-and-time.md) 和 [rule systems](../../../../../dsh-praxis/kit/design/motion/rule-systems.md)；[CHANGELOG](../CHANGELOG.md)。

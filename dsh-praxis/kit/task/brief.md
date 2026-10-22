@@ -34,7 +34,7 @@
 
 ## 视觉是有语义的表达
 
-展项选择和内容职责见 [Publish / html](../publish/html/README.md)，表现手法见 [Design](../../../kit/design/README.md)。
+展项选择和内容职责见 [Publish / html](../publish/html/README.md)，表现手法见 [Design](../design/README.md)。
 
 ## 内容结构与媒介投影
 

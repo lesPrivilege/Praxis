@@ -12,4 +12,4 @@ Tone.js 版本化 API 文档把 Transport 定义为音乐事件时间线，列�
 
 ## 阅读位置与用途
 
-Overview、scheduleRepeat、start/stop 与事件 API 说明。供 [score and time](../../../../../kit/design/motion/score-and-time.md) 和 [rule systems](../../../../../kit/design/motion/rule-systems.md)；[CHANGELOG](../CHANGELOG.md)。
+Overview、scheduleRepeat、start/stop 与事件 API 说明。供 [score and time](../../../../../dsh-praxis/kit/design/motion/score-and-time.md) 和 [rule systems](../../../../../dsh-praxis/kit/design/motion/rule-systems.md)；[CHANGELOG](../CHANGELOG.md)。

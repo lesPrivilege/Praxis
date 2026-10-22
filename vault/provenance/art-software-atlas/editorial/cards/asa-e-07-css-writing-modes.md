@@ -3,7 +3,7 @@ id: ASA-E-07
 status: verified
 url: https://www.w3.org/TR/css-writing-modes-4/
 grammar_paths:
-  - kit/design/composition/editorial-translations.md
+  - dsh-praxis/kit/design/composition/editorial-translations.md
 history_record: vault/provenance/art-software-atlas/editorial/CHANGELOG.md
 ---
 
@@ -25,4 +25,4 @@ CSS 模块将行内方向、块级流向和字形方向区分为书写模式的�
 
 **重访条件：** 选择当前 HTML/CSS 属性、测试渲染器或支持混合文字时。
 
-**派生参考：** [编辑传统的媒介转译](../../../../../kit/design/composition/editorial-translations.md)。历史记录：[CHANGELOG](../CHANGELOG.md)。
+**派生参考：** [编辑传统的媒介转译](../../../../../dsh-praxis/kit/design/composition/editorial-translations.md)。历史记录：[CHANGELOG](../CHANGELOG.md)。

@@ -49,8 +49,8 @@
 | 位置 | 改动 |
 |---|---|
 | [A01 说明](../../vault/distilled/design-grammar-atlas-20261002/a01-reading-relations/README.md) | 观察 3 补一句适用范围；新增“后来的取用”一节 |
-| [视觉语言参考](../../kit/design/references/languages.md) | “已有消费”加一行：VL01 在工单二迁移题上的取用与结果 |
-| [问题地图](../../kit/design/foundations/relations.md) | “来路与状态”的使用证据加上这六次冷读及其限定 |
+| [视觉语言参考](../../dsh-praxis/kit/design/references/languages.md) | “已有消费”加一行：VL01 在工单二迁移题上的取用与结果 |
+| [问题地图](../../dsh-praxis/kit/design/foundations/relations.md) | “来路与状态”的使用证据加上这六次冷读及其限定 |
 | `vault/distilled/design-kit-workorders-20261002/wo2-unfamiliar-briefs/` | 两份冻结的协议、九份报告、检查脚本与结果 |
 | 提案提炼页、登记、索引、CHANGELOG | 工单二状态 |
 

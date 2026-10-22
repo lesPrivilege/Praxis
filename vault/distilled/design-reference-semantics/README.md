@@ -4,12 +4,12 @@
 
 当前范围覆盖：
 
-- [Design 参考分支](../../../kit/design/references/README.md) 的 C01–C25、U01–U09、P01；旧的 `kit/design/references.md` 仍保留为兼容入口；
+- [Design 参考分支](../../../dsh-praxis/kit/design/references/README.md) 的 C01–C25、U01–U09、P01；旧的 `kit/design/references.md` 仍保留为兼容入口；
 - 已登记的 Design System 与 frontend URL 卡片（ref-*）；
 - CW、Schema Engineering、解释与可视化上游的本地消费记录；
 - Design Grammar 与 Opus 5.5 Remotion Chat 的已保存原件。
 
-主索引是 [Design 参考分支](../../../kit/design/references/README.md)，逐用途入口分别是 [composition](../../../kit/design/references/composition.md)、[interface](../../../kit/design/references/interface.md)、[systems](../../../kit/design/references/systems.md) 和 [specimens](../../../kit/design/references/specimens.md)；旧的 [兼容入口](../../../kit/design/references.md) 仍可用于历史链接。本页是语义解释层；需要逐条状态、消费位置或证据路径时回到对应分支。
+主索引是 [Design 参考分支](../../../dsh-praxis/kit/design/references/README.md)，逐用途入口分别是 [composition](../../../dsh-praxis/kit/design/references/composition.md)、[interface](../../../dsh-praxis/kit/design/references/interface.md)、[systems](../../../dsh-praxis/kit/design/references/systems.md) 和 [specimens](../../../dsh-praxis/kit/design/references/specimens.md)；旧的 [兼容入口](../../../dsh-praxis/kit/design/references/README.md) 仍可用于历史链接。本页是语义解释层；需要逐条状态、消费位置或证据路径时回到对应分支。
 
 ## 如何区分来源说法和项目决定
 
@@ -23,7 +23,7 @@
 
 accepted 在 references.md 中表示本地消费处置；它不表示来源主张已经核实，也不表示当前渲染或无障碍检查已经通过。verified、partial 是 URL 卡片的来源证据状态，和 Kit 的采纳状态分开。
 
-本页还区分三个时间层：两份 Chat 原件先完成初次消费并保留为 `chat-candidate`；[ADR-015](../../../docs/decisions/015-kit-editorial-contract.md) 是首轮治理收敛，接受渐进阅读、证据边界和初步 ownership 路由；[ADR-016](../../../docs/decisions/016-progressive-kit-structure.md) 是本轮后续采纳，把入口落实为真实的 [Write](../../../dsh-praxis/kit/README.md) 与 [Design](../../../kit/design/README.md) 分支。ADR-015 的历史叙述和 Chat 候选继续保留，ADR-016 不等于采纳所有候选 schema、样张或 renderer。
+本页还区分三个时间层：两份 Chat 原件先完成初次消费并保留为 `chat-candidate`；[ADR-015](../../../docs/decisions/015-kit-editorial-contract.md) 是首轮治理收敛，接受渐进阅读、证据边界和初步 ownership 路由；[ADR-016](../../../docs/decisions/016-progressive-kit-structure.md) 是本轮后续采纳，把入口落实为真实的 [Write](../../../dsh-praxis/kit/README.md) 与 [Design](../../../dsh-praxis/kit/design/README.md) 分支。ADR-015 的历史叙述和 Chat 候选继续保留，ADR-016 不等于采纳所有候选 schema、样张或 renderer。
 
 ## 读取窗口和证据范围
 
@@ -34,7 +34,7 @@ accepted 在 references.md 中表示本地消费处置；它不表示来源主�
 | Design System / frontend URL 卡片 | 2026-09-18 | vault/references/design-systems/、vault/references/frontend/ | verified 是该轮官方入口核验；partial 保留未核实差异 |
 | CW/SE 前端消费链 | 2026-09-23；CW/SE 记录各自保留源提交 | vault/distilled/frontend-design/、vault/provenance/*-frontend-references/、vault/snapshots/local/downloads/ | 消费边界和验证缺口以本地记录为准 |
 | 解释、结构化与可视化上游 | 2026-09-23，固定 commit 快照 | vault/distilled/frontend-design/explanation-visualization-index.md 与对应快照 | 可复用方法参考；未安装、未执行 |
-| GOV.UK、ONS、W3C、MDN、Vercel、Clerk、Refero、Opus 页面 | 2026-09-24，按 references.md 记录 | [Design composition route](../../../kit/design/references/composition.md) 的 C13–C24 | 无正文快照；引用前重新核对 |
+| GOV.UK、ONS、W3C、MDN、Vercel、Clerk、Refero、Opus 页面 | 2026-09-24，按 references.md 记录 | [Design composition route](../../../dsh-praxis/kit/design/references/composition.md) 的 C13–C24 | 无正文快照；引用前重新核对 |
 | Design Grammar Chat | 2026-09-27，5 turns / 10 messages | vault/archive/chat/design-grammar-20260927.json；登记见 vault/intake/chat-captures.json | 用户意图和 assistant 候选分开读取 |
 | Opus 5.5 Remotion Chat | 2026-09-27，5 turns / 10 messages | vault/archive/chat/opus-remotion-video-20260927.json；登记见 vault/intake/chat-captures.json | Kit/Reference/Demo 边界的候选语义，不是当前规范 |
 
@@ -44,12 +44,12 @@ accepted 在 references.md 中表示本地消费处置；它不表示来源主�
 
 | 需要回答的问题 | 先读 | 当前状态 |
 |---|---|---|
-| 这段内容是否需要图，以及图应表达什么关系 | [D04 论证到视觉路由](#d04-论证关系先于图式) | ADR-016 后进入 [Write/Publish](../../../dsh-praxis/kit/publish/html/README.md) 与 [Design/Composition](../../../kit/design/composition/README.md)；通用 registry 仍候选 |
+| 这段内容是否需要图，以及图应表达什么关系 | [D04 论证到视觉路由](#d04-论证关系先于图式) | ADR-016 后进入 [Write/Publish](../../../dsh-praxis/kit/publish/html/README.md) 与 [Design/Composition](../../../dsh-praxis/kit/design/composition/README.md)；通用 registry 仍候选 |
 | 图、表、正文和证据怎样分工 | [D05 证据装置](#d05-证据装置与-description) | [Write/Publish](../../../dsh-praxis/kit/publish/html/exhibits.md) 与 [Write/Shared](../../../dsh-praxis/kit/writing/evidence.md) 提供薄入口；完整 schema 仍候选 |
-| 版面或页面怎样保留层级、导航和退化路径 | [D06 层级与编排](#d06-层级与编排)、[D07 导航与渐进增强](#d07-导航与渐进增强) | [Write/Publish](../../../dsh-praxis/kit/publish/html/README.md) 与 [Design/Composition](../../../kit/design/composition/README.md) / [Interaction](../../../kit/design/interaction/README.md) 分工；不是单一模板 |
-| 交互状态、未知结果、权限和可达性如何表达 | [D08 状态、权限与可达性](#d08-状态权限与可达性) | [Design/Interaction](../../../kit/design/interaction/README.md) 与 [Write/Shared](../../../dsh-praxis/kit/writing/evidence.md)；实际 conformance 仍需项目验证 |
-| 需要动效或 Remotion 时怎样划边界 | [D09 动效与 Opus 样本](#d09-动效与-opus-样本) | [Write/Motion](../../../dsh-praxis/kit/publish/video/README.md) 与 [Design/Motion](../../../kit/design/motion/README.md) 提供语义交接；通用 renderer 仍候选 |
-| 要不要引入某个设计系统或组件库 | [D10 外部设计系统是 donor](#d10-外部设计系统是-donor) | [Design/references/systems](../../../kit/design/references/systems.md) 提供 URL 路由；状态仍为 verified / partial，不作为依赖 |
+| 版面或页面怎样保留层级、导航和退化路径 | [D06 层级与编排](#d06-层级与编排)、[D07 导航与渐进增强](#d07-导航与渐进增强) | [Write/Publish](../../../dsh-praxis/kit/publish/html/README.md) 与 [Design/Composition](../../../dsh-praxis/kit/design/composition/README.md) / [Interaction](../../../dsh-praxis/kit/design/interaction/README.md) 分工；不是单一模板 |
+| 交互状态、未知结果、权限和可达性如何表达 | [D08 状态、权限与可达性](#d08-状态权限与可达性) | [Design/Interaction](../../../dsh-praxis/kit/design/interaction/README.md) 与 [Write/Shared](../../../dsh-praxis/kit/writing/evidence.md)；实际 conformance 仍需项目验证 |
+| 需要动效或 Remotion 时怎样划边界 | [D09 动效与 Opus 样本](#d09-动效与-opus-样本) | [Write/Motion](../../../dsh-praxis/kit/publish/video/README.md) 与 [Design/Motion](../../../dsh-praxis/kit/design/motion/README.md) 提供语义交接；通用 renderer 仍候选 |
+| 要不要引入某个设计系统或组件库 | [D10 外部设计系统是 donor](#d10-外部设计系统是-donor) | [Design/references/systems](../../../dsh-praxis/kit/design/references/systems.md) 提供 URL 路由；状态仍为 verified / partial，不作为依赖 |
 | Kit 本身如何挂载、查找和消费参考 | [D01 Kit 边界](#d01-kit边界与渐进披露)、[D02 索引和 registry](#d02-索引与-atompatterncomposition) | D01 已由 ADR-016 落实为真实分支；D02 的 registry/schema 仍为 chat-candidate |
 
 ## D01 Kit 边界与渐进披露
@@ -68,7 +68,7 @@ Kit 的入口应提供目录语义、README 路由和按需展开的文档；Ref
 
 ### 本轮处置
 
-初次消费后的“可挂载、可导航、渐进阅读”体例由 [ADR-015](../../../docs/decisions/015-kit-editorial-contract.md) 首轮采纳，目录表达职责，README 按任务选路，正文解释判断和完成条件；本页保留 Chat 作为来源和召回材料，不把 assistant 的整段建议复制进 Kit。本轮后续采纳由 [ADR-016](../../../docs/decisions/016-progressive-kit-structure.md) 落实为真实分支：任务从 [Write](../../../dsh-praxis/kit/README.md) 的 `prose/`、`publish/`、`motion/`、`shared/`，或 [Design](../../../kit/design/README.md) 的 `foundations/`、`composition/`、`interaction/`、`motion/`、`references/` 进入；参考再按 [Design references README](../../../kit/design/references/README.md) 分用途展开。对应的结构原则仍由 [文档结构契约](../../../docs/architecture/documentation.md) 维护。
+初次消费后的“可挂载、可导航、渐进阅读”体例由 [ADR-015](../../../docs/decisions/015-kit-editorial-contract.md) 首轮采纳，目录表达职责，README 按任务选路，正文解释判断和完成条件；本页保留 Chat 作为来源和召回材料，不把 assistant 的整段建议复制进 Kit。本轮后续采纳由 [ADR-016](../../../docs/decisions/016-progressive-kit-structure.md) 落实为真实分支：任务从 [Write](../../../dsh-praxis/kit/README.md) 的 `prose/`、`publish/`、`motion/`、`shared/`，或 [Design](../../../dsh-praxis/kit/design/README.md) 的 `foundations/`、`composition/`、`interaction/`、`motion/`、`references/` 进入；参考再按 [Design references README](../../../dsh-praxis/kit/design/references/README.md) 分用途展开。对应的结构原则仍由 [文档结构契约](../../../docs/architecture/documentation.md) 维护。
 
 ### 何时重访
 
@@ -94,7 +94,7 @@ Design Grammar Chat 的 assistant item 642af881-392e-4183-823b-690570044254 建�
 
 ### 何时重访
 
-当 Opus/Remotion 或其他 specimen lab 产出可重复的样本，并且至少有独立 consumer、验收和失败记录时重访；届时再决定是否进入 [Design / Foundations](../../../kit/design/foundations/README.md)、[Design / Composition](../../../kit/design/composition/README.md) 的规范位置，或保留在 demos/vault。
+当 Opus/Remotion 或其他 specimen lab 产出可重复的样本，并且至少有独立 consumer、验收和失败记录时重访；届时再决定是否进入 [Design / Foundations](../../../dsh-praxis/kit/design/foundations/README.md)、[Design / Composition](../../../dsh-praxis/kit/design/composition/README.md) 的规范位置，或保留在 demos/vault。
 
 ## D03 Write 与 Design 的 ownership 候选
 
@@ -112,7 +112,7 @@ Design Grammar Chat 的 assistant item 8c00023e-4b1c-4ffc-9773-0c33bf80c0ac 提�
 
 ### 本轮处置
 
-[ADR-015](../../../docs/decisions/015-kit-editorial-contract.md) 保留为初次治理收敛：Reporting 维护论证、内容结构和证据职责，现有 Writing skill 保留成文职责，Design 维护视觉与交互判断。此处的 Write/Design assistant 建议仍作为语义来源保留，不把 Writing skill 搬入 Design，也不新建重复的 ownership contract。[ADR-016](../../../docs/decisions/016-progressive-kit-structure.md) 后续把这条边界落实为 [Write](../../../dsh-praxis/kit/README.md) 的四个 mode 与 [Design](../../../kit/design/README.md) 的五个分支；这是可发现性和维护位置的采纳，不改变 semantic necessity 与 aesthetic treatment 的分工。
+[ADR-015](../../../docs/decisions/015-kit-editorial-contract.md) 保留为初次治理收敛：Reporting 维护论证、内容结构和证据职责，现有 Writing skill 保留成文职责，Design 维护视觉与交互判断。此处的 Write/Design assistant 建议仍作为语义来源保留，不把 Writing skill 搬入 Design，也不新建重复的 ownership contract。[ADR-016](../../../docs/decisions/016-progressive-kit-structure.md) 后续把这条边界落实为 [Write](../../../dsh-praxis/kit/README.md) 的四个 mode 与 [Design](../../../dsh-praxis/kit/design/README.md) 的五个分支；这是可发现性和维护位置的采纳，不改变 semantic necessity 与 aesthetic treatment 的分工。
 
 ### 何时重访
 
@@ -134,7 +134,7 @@ Design Grammar Chat 的 assistant item 8c00023e-4b1c-4ffc-9773-0c33bf80c0ac 提�
 
 ### 本轮处置
 
-初次收敛后的通用判断继续由 [Design / Foundations](../../../kit/design/foundations/grammar.md) 与 [Design / Composition](../../../kit/design/composition/README.md) 承载：从读者任务、材料关系、证据和媒介开始，选择表、图或正文；[Write / Publish](../../../dsh-praxis/kit/publish/html/README.md) 负责内容展项和阅读职责。历史答卷的线型、强调色、排印和交付参数留在 Vault profile。C05–C07 继续作为进入 grammar 的证据路径，不再把单次 profile 当全局规则；ADR-016 只是把这些入口分支化，不把所有图表 schema 或 renderer 变成公共 contract。
+初次收敛后的通用判断继续由 [Design / Foundations](../../../dsh-praxis/kit/design/foundations/grammar.md) 与 [Design / Composition](../../../dsh-praxis/kit/design/composition/README.md) 承载：从读者任务、材料关系、证据和媒介开始，选择表、图或正文；[Write / Publish](../../../dsh-praxis/kit/publish/html/README.md) 负责内容展项和阅读职责。历史答卷的线型、强调色、排印和交付参数留在 Vault profile。C05–C07 继续作为进入 grammar 的证据路径，不再把单次 profile 当全局规则；ADR-016 只是把这些入口分支化，不把所有图表 schema 或 renderer 变成公共 contract。
 
 ### 何时重访
 
@@ -174,7 +174,7 @@ CW/SE/career-kit 的页面是历史样本或本地消费记录，不证明当前
 
 ### 何时重访
 
-换内容家族、增加窄屏/打印/视频 renderer 或遇到页面层级争议时，回到 [Write / Publish](../../../dsh-praxis/kit/publish/html/README.md) 与 [Design / Composition](../../../kit/design/composition/README.md) 的职责，再回具体快照做实际输出验收；若引用的是未存快照的源仓库坐标，先复核当前 commit。
+换内容家族、增加窄屏/打印/视频 renderer 或遇到页面层级争议时，回到 [Write / Publish](../../../dsh-praxis/kit/publish/html/README.md) 与 [Design / Composition](../../../dsh-praxis/kit/design/composition/README.md) 的职责，再回具体快照做实际输出验收；若引用的是未存快照的源仓库坐标，先复核当前 commit。
 
 ## D07 导航与渐进增强
 
@@ -192,7 +192,7 @@ SE C08 的 reader 记录使用原生 details 目录、无 JS 可用和打印隐�
 
 ### 何时重访
 
-长文超过当前目录复杂度、引入新的移动端导航、需要打印/无 JS 保证或浏览器行为发生变化时，回到 [Design / Interaction](../../../kit/design/interaction/README.md) 与 [Write / Publish](../../../dsh-praxis/kit/publish/html/README.md) 的当前职责，重新读取官方页面并验收键盘、焦点、顺序和分页。
+长文超过当前目录复杂度、引入新的移动端导航、需要打印/无 JS 保证或浏览器行为发生变化时，回到 [Design / Interaction](../../../dsh-praxis/kit/design/interaction/README.md) 与 [Write / Publish](../../../dsh-praxis/kit/publish/html/README.md) 的当前职责，重新读取官方页面并验收键盘、焦点、顺序和分页。
 
 ## D08 状态、权限与可达性
 
@@ -210,7 +210,7 @@ CW 的本地消费记录提供了两组不同语义。U01/CW-FE-R01 把 24 CSS p
 
 ### 何时重访
 
-实现或修改 tabs、menus、proposals、unknown/error、touch/coarse 操作和 responsive layout 时，先按 [Design / Interaction](../../../kit/design/interaction/README.md) 与 [Write / Shared](../../../dsh-praxis/kit/writing/evidence.md) 的职责重新读取对应标准，再按实际 target geometry、200% 文字缩放、布局重排、文字间距、键盘/焦点和真实状态分别运行验收。标准版本、源页面或本地 owner 改变时也应重访。
+实现或修改 tabs、menus、proposals、unknown/error、touch/coarse 操作和 responsive layout 时，先按 [Design / Interaction](../../../dsh-praxis/kit/design/interaction/README.md) 与 [Write / Shared](../../../dsh-praxis/kit/writing/evidence.md) 的职责重新读取对应标准，再按实际 target geometry、200% 文字缩放、布局重排、文字间距、键盘/焦点和真实状态分别运行验收。标准版本、源页面或本地 owner 改变时也应重访。
 
 ## D09 动效与 Opus 样本
 
@@ -230,13 +230,13 @@ C20/C21 是单个页面集合的 profile 选择，不是 Design Kit 的普遍风
 
 ### 何时重访
 
-新增视频/Remotion renderer、交互动效、字幕/音频或减弱动效分支时，先按 [Write / Motion](../../../dsh-praxis/kit/publish/video/README.md) 与 [Design / Motion](../../../kit/design/motion/README.md) 的语义交接重新裁决；Opus 页面更新、skill 版本变化或准备复制样式时重新读取来源并核对许可证。分支存在不代表通用 renderer 已采纳。
+新增视频/Remotion renderer、交互动效、字幕/音频或减弱动效分支时，先按 [Write / Motion](../../../dsh-praxis/kit/publish/video/README.md) 与 [Design / Motion](../../../dsh-praxis/kit/design/motion/README.md) 的语义交接重新裁决；Opus 页面更新、skill 版本变化或准备复制样式时重新读取来源并核对许可证。分支存在不代表通用 renderer 已采纳。
 
 ## D10 外部设计系统是 donor
 
 ### 是什么
 
-URL 级卡片把每条外部来源的状态和边界分开。ref-atlassian、ref-carbon、ref-polaris、ref-primer、ref-ant-design、ref-ant-design-pro、ref-refine、ref-storybook、ref-mui-x、ref-blueprint 的入口页在 2026-09-18 记录为 verified；ref-lightning 因页面抽取为空保留 partial。按任务的 Design 路由见 [Design references/systems](../../../kit/design/references/systems.md)，逐条原 URL 卡片仍见 [Vault references](../../references/README.md)。
+URL 级卡片把每条外部来源的状态和边界分开。ref-atlassian、ref-carbon、ref-polaris、ref-primer、ref-ant-design、ref-ant-design-pro、ref-refine、ref-storybook、ref-mui-x、ref-blueprint 的入口页在 2026-09-18 记录为 verified；ref-lightning 因页面抽取为空保留 partial。按任务的 Design 路由见 [Design references/systems](../../../dsh-praxis/kit/design/references/systems.md)，逐条原 URL 卡片仍见 [Vault references](../../references/README.md)。
 
 ### Kit 消费什么
 
@@ -281,10 +281,10 @@ P01 是 2026-09-24 能力测试答卷的产出索引，能复用问题—答案�
 
 本轮已完成的主要处置：
 
-1. D01 的渐进阅读体例由 ADR-015 首轮采纳；本轮由 [ADR-016](../../../docs/decisions/016-progressive-kit-structure.md) 将 canonical 入口落实到 [Write](../../../dsh-praxis/kit/README.md) 与 [Design](../../../kit/design/README.md)，结构原则仍由 [文档结构契约](../../../docs/architecture/documentation.md)维护。
+1. D01 的渐进阅读体例由 ADR-015 首轮采纳；本轮由 [ADR-016](../../../docs/decisions/016-progressive-kit-structure.md) 将 canonical 入口落实到 [Write](../../../dsh-praxis/kit/README.md) 与 [Design](../../../dsh-praxis/kit/design/README.md)，结构原则仍由 [文档结构契约](../../../docs/architecture/documentation.md)维护。
 2. D02 的 Atom/Pattern/Composition 资产 schema、canonical/expressive specimen 库和通用 renderer contract 仍为 candidate；没有生产样本和独立 consumer，本轮不建立 registry。
 3. D03 初次按 Reporting → Writing → Design 路由收敛；本轮由 ADR-016 细化为 Write 的 `prose/publish/motion/shared` 与 Design 的 `foundations/composition/interaction/motion/references`，材料目的、组织动作和 brief 仍由 Reporting 维护，具体成文、展项、时间交接、证据与视觉判断按分支进入。
-4. D04 的通用判断现在按任务进入 [Design / Foundations](../../../kit/design/foundations/README.md)、[Design / Composition](../../../kit/design/composition/README.md) 与 [Write / Publish](../../../dsh-praxis/kit/publish/html/README.md)；答卷 profile、色值、字号、动效参数和交付参数留在 Vault profile。
+4. D04 的通用判断现在按任务进入 [Design / Foundations](../../../dsh-praxis/kit/design/foundations/README.md)、[Design / Composition](../../../dsh-praxis/kit/design/composition/README.md) 与 [Write / Publish](../../../dsh-praxis/kit/publish/html/README.md)；答卷 profile、色值、字号、动效参数和交付参数留在 Vault profile。
 5. D05 的 Exhibit、description、source、method note 仍是薄的跨模式语义；Write/Publish 与 Write/Shared 提供入口，但完整内容 registry 和 renderer schema 未采纳。
 6. D09 的 Write/Motion 与 Design/Motion 分支已建立语义交接；Remotion 工程、camera、spring、曲线库和通用 renderer 仍待实际 consumer、观看验收和失败证据。
 

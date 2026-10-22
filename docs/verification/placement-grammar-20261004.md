@@ -6,7 +6,7 @@
 
 | 内容 | 位置 |
 |---|---|
-| 一页泛化判断 | [排列与刻度](../../kit/design/foundations/placement.md)；入口在 Design README 的“先读”表、Foundations README、问题地图的 G01 与 G10 两行；图形编码、成立程度、精确指向三页各补了半句 |
+| 一页泛化判断 | [排列与刻度](../../dsh-praxis/kit/design/foundations/placement.md)；入口在 Design README 的“先读”表、Foundations README、问题地图的 G01 与 G10 两行；图形编码、成立程度、精确指向三页各补了半句 |
 | 裁决 | [ADR-026](../decisions/026-placement-and-scale.md) |
 | 清点与外部用词对照 | [提炼页](../../vault/distilled/placement-grammar-20261004/README.md)、[intake](../../vault/intake/placement-grammar-20261004.json)、四张 [来源卡](../../vault/provenance/placement-grammar-20261004/cards/README.md) |
 | 实现 | [svg-01-relations](../../demos/editable-native-svg/svg-01-relations/README.md) 升到 0.3.0，新增 `rail.mjs`、`pair.mjs`；版本图补了读法；组合件补了一句并收紧了连线 |

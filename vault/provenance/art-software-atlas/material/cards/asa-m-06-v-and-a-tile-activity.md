@@ -2,7 +2,7 @@
 
 来源：[Victoria and Albert Museum education page](https://www.vam.ac.uk/articles/design-and-make-your-own-islamic-tile-and-printed-pattern/) · 状态：verified（限教育页所写活动）
 
-用途：区分馆藏图像说明与今日教学活动的再设计。派生参考见 [Material relations](../../../../../kit/design/composition/material-relations.md)。
+用途：区分馆藏图像说明与今日教学活动的再设计。派生参考见 [Material relations](../../../../../dsh-praxis/kit/design/composition/material-relations.md)。
 
 ## 摘要与定位
 
@@ -21,5 +21,5 @@
 
 ## 关联
 
-- Grammar：[ASA-G-ISLAMIC-GEOMETRIC-SURFACES](../../../../../kit/design/composition/material-relations.md)
+- Grammar：[ASA-G-ISLAMIC-GEOMETRIC-SURFACES](../../../../../dsh-praxis/kit/design/composition/material-relations.md)
 - History：[CHANGELOG.md](../CHANGELOG.md)

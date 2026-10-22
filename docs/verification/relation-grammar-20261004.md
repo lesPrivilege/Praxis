@@ -6,7 +6,7 @@
 
 | 内容 | 位置 |
 |---|---|
-| 两页泛化判断 | [成立程度与归属的标记](../../kit/design/foundations/standing.md)、[精确指向](../../kit/design/foundations/anchoring.md)；入口在 Design README 的“先读”表、Foundations README、问题地图的 G03 与 G11 两行、图形编码的图例一句 |
+| 两页泛化判断 | [成立程度与归属的标记](../../dsh-praxis/kit/design/foundations/standing.md)、[精确指向](../../dsh-praxis/kit/design/foundations/anchoring.md)；入口在 Design README 的“先读”表、Foundations README、问题地图的 G03 与 G11 两行、图形编码的图例一句 |
 | 裁决 | [ADR-025](../decisions/025-relation-marks-and-anchors.md) |
 | 清点与外部用词对照 | [提炼页](../../vault/distilled/relation-grammar-20261004/README.md)、[intake](../../vault/intake/relation-grammar-20261004.json)、三张 [来源卡](../../vault/provenance/relation-grammar-20261004/cards/README.md) |
 | 实现 | [svg-01-relations](../../demos/editable-native-svg/svg-01-relations/README.md) 升到 0.2.0，新增 `standing.mjs`、`sheet.mjs` |

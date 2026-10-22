@@ -14,4 +14,4 @@
 - [累计整合与复验](consolidation.md)：来源入口、兼容路径、可运行查询及新上下文任务；[独立复核](consolidation-review.md)单独记录裁决。
 - [本地审阅与合并交接](local-review-handoff.md)：累计审阅范围与保护工作区要求。
 
-当前入口：[来源书目](../../../vault/provenance/art-software-atlas/README.md) · [操作入口](../../../kit/design/references/art-software-atlas.md)。
+当前入口：[来源书目](../../../vault/provenance/art-software-atlas/README.md) · [操作入口](../../../dsh-praxis/kit/design/references/art-software-atlas.md)。

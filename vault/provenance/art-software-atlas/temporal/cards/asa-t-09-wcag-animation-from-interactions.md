@@ -12,4 +12,4 @@ W3C 对 WCAG 2.2 成功准则 2.3.3 的理解文件说明：由交互触发、�
 
 ## 阅读位置与用途
 
-“In Brief”, “Success Criterion”, “Intent”, “Examples” 和 “Sufficient Techniques”。供 [score and time](../../../../../kit/design/motion/score-and-time.md) 与 [rule systems](../../../../../kit/design/motion/rule-systems.md)；[CHANGELOG](../CHANGELOG.md)。
+“In Brief”, “Success Criterion”, “Intent”, “Examples” 和 “Sufficient Techniques”。供 [score and time](../../../../../dsh-praxis/kit/design/motion/score-and-time.md) 与 [rule systems](../../../../../dsh-praxis/kit/design/motion/rule-systems.md)；[CHANGELOG](../CHANGELOG.md)。

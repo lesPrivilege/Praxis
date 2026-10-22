@@ -9,11 +9,11 @@
 沿主会话实际的阅读路径找到四个原因：
 
 1. [Kit 任务入口](../../kit/README.md)按请求的叫法分到一支。“设计打样”落在 Design 那一行，入口没有说一件产物可能要过几支。
-2. [Design 入口](../../kit/design/README.md)写着“图表和界面任务可以直接从这里开始，不必先过 Write”，没有把页面上写给读者的文字排除在外。
+2. [Design 入口](../../dsh-praxis/kit/design/README.md)写着“图表和界面任务可以直接从这里开始，不必先过 Write”，没有把页面上写给读者的文字排除在外。
 3. 项目 skill `writing` 只在用户明确要求撰写时触发，网页里的文字不在触发范围内。
 4. 唯一写着“撰写对外中文成文时从 Prose 读规则”的一句在 [Kit 使用指引](../../kit/Agent.md)第 5 步。按 [ADR-019](019-expression-owners-and-entry-paths.md)，做任务时不预读这一页。
 
-Design 参考卡的情形相同：窄屏比较、注释邻接等触发条件写在 [参考路由](../../kit/design/references/README.md)和 Publish 入口里，从 Design 入口进来的人看不到。
+Design 参考卡的情形相同：窄屏比较、注释邻接等触发条件写在 [参考路由](../../dsh-praxis/kit/design/references/README.md)和 Publish 入口里，从 Design 入口进来的人看不到。
 
 ## 决定
 

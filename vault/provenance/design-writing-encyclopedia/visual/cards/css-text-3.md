@@ -24,4 +24,4 @@ W3C TR 的文档授权信息见页面版权和 license link；本卡仅保存 12
 
 ## 关联
 
-[Typography 语法](../../../../../kit/design/composition/typography.md)，同中文需求资料：[DWV-08](chinese-layout-gap.md)。
+[Typography 语法](../../../../../dsh-praxis/kit/design/composition/typography.md)，同中文需求资料：[DWV-08](chinese-layout-gap.md)。

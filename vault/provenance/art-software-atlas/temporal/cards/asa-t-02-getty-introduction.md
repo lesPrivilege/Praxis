@@ -12,4 +12,4 @@ Getty Research Institute 的跨学科导论将战后实验谱描述为一种可�
 
 ## 阅读位置与用途
 
-“Important precedents”段落中 David Tudor 与 notation 的关系，以及后续 Cage course、Fluxus 段落。供 [score and time](../../../../../kit/design/motion/score-and-time.md)；[CHANGELOG](../CHANGELOG.md)。
+“Important precedents”段落中 David Tudor 与 notation 的关系，以及后续 Cage course、Fluxus 段落。供 [score and time](../../../../../dsh-praxis/kit/design/motion/score-and-time.md)；[CHANGELOG](../CHANGELOG.md)。

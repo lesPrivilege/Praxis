@@ -21,6 +21,6 @@ snapshot_status: not-captured
 
 **限制：** 只读取产品页自述，没有追踪其源代码仓库、实体所有权或现场行为；页面对其他产品的比较性陈述未采纳。无法判断它是否与用户心中的项目相符。
 
-**Derived grammar:** [Agent design resources](../../../../../kit/design/references/agent-design-resources.md) — ASA-G-AGENT-DESIGN-SYSTEM-CONTRACT / ASA-G-AGENT-COMPONENT-RETRIEVAL
+**Derived grammar:** [Agent design resources](../../../../../dsh-praxis/kit/design/references/agent-design-resources.md) — ASA-G-AGENT-DESIGN-SYSTEM-CONTRACT / ASA-G-AGENT-COMPONENT-RETRIEVAL
 
 **History:** [Research history](../CHANGELOG.md)

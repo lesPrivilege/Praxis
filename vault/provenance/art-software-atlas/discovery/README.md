@@ -8,4 +8,4 @@
 | 从实验或工具目录扩展实现路线 | [Codrops demos](cards/codrops-demos.md)、[Awesome Creative Coding](cards/creative-coding-directory.md) |
 | 用选择范围探索数据，分清库与示例责任 | [D3 brush](cards/d3-brush.md)、[Observable 示例](cards/brushable-scatterplot.md) |
 
-消费语法：[范围选择](../../../../kit/design/interaction/extent-selection.md)、[来源接力](../../../../kit/design/references/discovery-relay.md)。记录身份在 [catalog](catalog.json)，实体在 [entities](entities.json)，读取与实验历史在 [CHANGELOG](CHANGELOG.md)。
+消费语法：[范围选择](../../../../dsh-praxis/kit/design/interaction/extent-selection.md)、[来源接力](../../../../dsh-praxis/kit/design/references/discovery-relay.md)。记录身份在 [catalog](catalog.json)，实体在 [entities](entities.json)，读取与实验历史在 [CHANGELOG](CHANGELOG.md)。

@@ -52,7 +52,7 @@ Mnemos 的验收账是区分“实现”和“接受”的关键：`docs/design/
 2. 只展开 [`core-model.md`](../work-system/core-model.md) 的 Event/State/Context 与 Capture→Follow 段。
 3. 需要状态边界时展开 Attention Assistant 快照的 `state-contract.md` 与 `human-decision-loop.md`。
 4. 读主线 [`demos/visual-grammar/scenario.md`](../../../demos/visual-grammar/scenario.md) 约定的 synthetic fixture、身份字段、unknown/recovery、seek 与验收。
-5. 技术路线由 Opus 选择；需要现成 motion 证据时才展开 [`kit/design/motion/grammar.md`](../../../kit/design/motion/grammar.md) 或 `VG-PX-REMOTION` 的 README / STORYBOARD / timeline。
+5. 技术路线由 Opus 选择；需要现成 motion 证据时才展开 [`kit/design/motion/grammar.md`](../../../dsh-praxis/kit/design/motion/grammar.md) 或 `VG-PX-REMOTION` 的 README / STORYBOARD / timeline。
 
 ### `PX-03` Mnemos 产品叙事
 

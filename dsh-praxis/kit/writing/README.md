@@ -37,7 +37,7 @@
 
 这些是普通优先级的可选参考；[写作书目](../../../vault/provenance/design-writing-encyclopedia/writing/README.md)保留来源各自的论述，不将品牌语气或英文规则通用化。
 
-项目 skill `writing` 是本层的薄入口，原理只在这里维护。页面和图表编排转 [Publish](../publish/html/README.md)，视觉表现转 [Design](../../../kit/design/README.md)；分层见 [分层体例](../../layers.md)。
+项目 skill `writing` 是本层的薄入口，原理只在这里维护。页面和图表编排转 [Publish](../publish/html/README.md)，视觉表现转 [Design](../design/README.md)；分层见 [分层体例](../../layers.md)。
 
 ## 按需取用外部参考
 

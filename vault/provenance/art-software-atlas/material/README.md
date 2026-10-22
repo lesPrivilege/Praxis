@@ -1,6 +1,6 @@
 # Material practices · 材料实践
 
-本支线把具体材料、制作约束和可观察的形式关系连起来，为设计与软件表达提供有边界的参考。来源卡保留来源语境与证据范围；派生语法在 [Material relations](../../../../kit/design/composition/material-relations.md) 单点维护。
+本支线把具体材料、制作约束和可观察的形式关系连起来，为设计与软件表达提供有边界的参考。来源卡保留来源语境与证据范围；派生语法在 [Material relations](../../../../dsh-praxis/kit/design/composition/material-relations.md) 单点维护。
 
 ## 当前范围
 

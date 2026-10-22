@@ -6,7 +6,7 @@
 
 审计只提出处置，不迁移、删除或改写规范。历史验收、原 Chat、来源卡和旧工单作为当时证据保留；它们的旧状态不是“错误事实”，问题在于当前入口没有标明时间与替代路径。审计角色为 Sol；最终采用与编订由 Astra/main 裁决。
 
-迁移前的内容职责建议：材料任务从 [Reporting brief](../../../templates/reporting/README.md) 确定读者与所需决定，由 [Reporting grammar](../../../dsh-praxis/kit/task/brief.md) 拥有 artifact family、论证、证据和内容结构；只有进入对外中文成文时，加载项目 Writing skill 处理句法、语体和段落；需要图表、视觉、界面或动效判断时进入 [Design grammar](../../../kit/design/grammar.md)；交付按 [Kit 验收](../../../kit/verification/README.md) 收束。[能力测试回答体例](../../../dsh-praxis/kit/writing/genres/assessment-answer.md) 属开放题专用 profile，不应被读成所有材料的默认文体。当前 `kit/README.md` 的任务表可承接这条路径，能力表应回到查定义与状态用途；内容搬运由主代理按实际消费者决定，不预建空分支。
+迁移前的内容职责建议：材料任务从 [Reporting brief](../../../templates/reporting/README.md) 确定读者与所需决定，由 [Reporting grammar](../../../dsh-praxis/kit/task/brief.md) 拥有 artifact family、论证、证据和内容结构；只有进入对外中文成文时，加载项目 Writing skill 处理句法、语体和段落；需要图表、视觉、界面或动效判断时进入 [Design grammar](../../../dsh-praxis/kit/design/README.md)；交付按 [Kit 验收](../../../kit/verification/README.md) 收束。[能力测试回答体例](../../../dsh-praxis/kit/writing/genres/assessment-answer.md) 属开放题专用 profile，不应被读成所有材料的默认文体。当前 `kit/README.md` 的任务表可承接这条路径，能力表应回到查定义与状态用途；内容搬运由主代理按实际消费者决定，不预建空分支。
 
 ## 范围和方法
 
@@ -24,7 +24,7 @@
 
 ### F2 · P1 · 原件披露边界有规则但尚无发布前清单
 
-- **定位**：[入账规范](../../governance/intake.md#L29) 第 29–33 行已经明确原件本地索引不构成外发授权、索引元数据也须检查；[Kit Design 参考](../../../kit/design/references.md#L7) 第 7 行直接写本机用户名和源仓库绝对路径；[frontend catalog](../../../vault/distilled/frontend-design/catalog.json#L13) 第 13、21、29、37 行也保存本机源仓库路径。审计时 `git ls-files` 显示 `vault/archive/chat` 17、`vault/snapshots` 545、`vault/chat-inventory.json` 与 `vault/registry.json` 各 1 个已跟踪文件，合计 564 个。
+- **定位**：[入账规范](../../governance/intake.md#L29) 第 29–33 行已经明确原件本地索引不构成外发授权、索引元数据也须检查；[Kit Design 参考](../../../dsh-praxis/kit/design/references/README.md#L7) 第 7 行直接写本机用户名和源仓库绝对路径；[frontend catalog](../../../vault/distilled/frontend-design/catalog.json#L13) 第 13、21、29、37 行也保存本机源仓库路径。审计时 `git ls-files` 显示 `vault/archive/chat` 17、`vault/snapshots` 545、`vault/chat-inventory.json` 与 `vault/registry.json` 各 1 个已跟踪文件，合计 564 个。
 - **契约与影响**：这是披露准备缺口，不能由 `vault` 目录名或 `.gitignore` 自动化解。若将 Git 历史、仓库或生成索引交给外部，原件内容和身份/路径信息都可能随之传播；本审计未发现也未声称这些文件已经公开，亦未逐项判定敏感性。
 - **建议**：保持原件及稳定 ID；在任何公开/云端交付前按目标受众列出实际同步集合，逐项审查原件、catalog、README 和生成投影，决定需要泛化、过滤或独立存储的范围。物理分仓、历史清理和迁移须另做消费者盘点与决定，不在本审计执行。
 
@@ -48,7 +48,7 @@
 
 ### F6 · P2 · Design 活跃索引仍集中承载一次答卷的风格裁决
 
-- **定位**：[Design 参考](../../../kit/design/references.md#L32) 第 32–37 行的 C20–C25 含阅读进度线、奶油纸底/Didone、Vercel 字阶、Clerk 渐变等一次答卷采纳或拒绝；同页第 57 行 P01 才把答卷标为历史 specimen/profile。[Design README](../../../kit/design/README.md#L11) 第 11、13 行已明确项目 profile 与跨项目规则的边界。
+- **定位**：[Design 参考](../../../dsh-praxis/kit/design/references/README.md#L32) 第 32–37 行的 C20–C25 含阅读进度线、奶油纸底/Didone、Vercel 字阶、Clerk 渐变等一次答卷采纳或拒绝；同页第 57 行 P01 才把答卷标为历史 specimen/profile。[Design README](../../../dsh-praxis/kit/design/README.md#L11) 第 11、13 行已明确项目 profile 与跨项目规则的边界。
 - **契约与影响**：ADR-015 裁决项目配色、字体和动效参数留在 Vault profile；参考索引可保留稳定 ID，但在活跃 Kit 主表连续展示项目 taste，增加新任务把 `accepted/rejected` 误读为通用判断的机会。现有边界文字缓和了风险，因此是导航清晰度问题，不是宣称已错误晋升。
 - **建议**：合并入口，不删历史。主索引保留 ID、来源身份、消费位置和一行边界；把详细答卷风格取舍集中到已有 [design profile](../../../vault/distilled/ai-capability-assessment/design-profile-20260924.md)。通用 grammar 只接受可迁移的判断和失败路径。
 
@@ -68,7 +68,7 @@
 
 - [assessment-layout-review](../assessment-layout-review-20260923.md#L3) 第 3、11–15 行记录当时静态截图范围、未通过与后续授权；[Astra 验收](../assessment-astra-20260923/README.md#L3) 第 3、15–23 行把文字修订、浏览器限制和未验收分开。这些记录不应因后续页面存在而改写为“已通过”。
 - [write-design-grammar README](../../../vault/distilled/write-design-grammar/README.md#L3) 第 3、25–33 行将 Chat 候选与 ADR-015 采纳范围分开；[reference semantics](../../../vault/distilled/design-reference-semantics/README.md#L24) 第 24、67–95 行区分本地消费、证据和候选。它们属于 Vault 研究层，重复解释是追溯用途，不等于规范重复。
-- [writing-structure 补充提炼](../../../vault/distilled/writing-structure-20260927/README.md#L40) 第 40–57 行保留未快照和 missing-original 边界；[Design 参考](../../../kit/design/references.md#L5) 第 5、7 行也明确在线读取与历史源坐标。审计没有把这些缺口误记为已核实来源。
+- [writing-structure 补充提炼](../../../vault/distilled/writing-structure-20260927/README.md#L40) 第 40–57 行保留未快照和 missing-original 边界；[Design 参考](../../../dsh-praxis/kit/design/references/README.md#L5) 第 5、7 行也明确在线读取与历史源坐标。审计没有把这些缺口误记为已核实来源。
 
 ## 可独立分派的文件所有权工单
 

@@ -14,7 +14,7 @@
 | 丁 · 轮廓分组 | 粗轮廓切块，主题和参加方式各垫一层硬偏移 | VL04 Neubrutalism（H18，本轮未能重访） | 留作对照 |
 | 戊 · 只换皮 | 甲的结构不变，只换衬线、底色和强调色 | 无 | 反例，不算另一种关系 |
 
-做法遵循 [问题地图的检验方法](../../../../kit/design/foundations/relations.md)。条目编号见 [视觉语言参考](../../../../kit/design/references/languages.md)，来源编号见 [逐源卡](../../../provenance/design-grammar-atlas-20261002/cards/README.md)。每个样张的自由选择、先读到什么和加长后的表现写在页面末尾的记录表里，数据源是 [variants.json](variants.json)。
+做法遵循 [问题地图的检验方法](../../../../dsh-praxis/kit/design/foundations/relations.md)。条目编号见 [视觉语言参考](../../../../dsh-praxis/kit/design/references/languages.md)，来源编号见 [逐源卡](../../../provenance/design-grammar-atlas-20261002/cards/README.md)。每个样张的自由选择、先读到什么和加长后的表现写在页面末尾的记录表里，数据源是 [variants.json](variants.json)。
 
 ## 三条可带走的观察
 

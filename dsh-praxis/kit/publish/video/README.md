@@ -1,6 +1,6 @@
 # Publish / video · 时间叙事
 
-将既有论证转成有时间顺序的视听表达。先读 [叙事与分镜交接](narrative.md)，确定每段时间承载的认知任务，再去 [Design / Motion](../../../../kit/design/motion/README.md)选择运动与表现。
+将既有论证转成有时间顺序的视听表达。先读 [叙事与分镜交接](narrative.md)，确定每段时间承载的认知任务，再去 [Design / Motion](../../design/motion/README.md)选择运动与表现。
 
 有旁白或屏幕文字的片子同时要用到 Writing：旁白按 [口播旁白体例](../../writing/genres/narration.md)撰写，屏幕上的结构文字按 [成文原理](../../writing/principles.md)第 5 条撰写，两者的审阅见叙事页的“旁白与屏幕文字的审阅”一节。
 
@@ -19,4 +19,4 @@
 | 空间遮挡、跨层对象身份 | [MC01](../../../../demos/motion-ceiling-lab/mc01-request/README.md) · [选型与编排](../../../../demos/motion-ceiling-lab/mc01-request/plan.md) · [验收](../../../../demos/motion-ceiling-lab/mc01-request/acceptance.md) | WebGL2 与 Canvas；局部运行和变体已检查，无受众测试 |
 | 短动态简报 | [动态简报 specimen](../../../../vault/distilled/ai-capability-assessment/motion/README.md) | 96 秒案例；播放器与受众验证见原记录的缺口 |
 
-技术、时长和声音按具体任务选择。视觉运动参考见 [Design / Motion](../../../../kit/design/motion/README.md)；选型理由、消费与验收记录留在项目中。
+技术、时长和声音按具体任务选择。视觉运动参考见 [Design / Motion](../../design/motion/README.md)；选型理由、消费与验收记录留在项目中。

@@ -1,6 +1,6 @@
 # 分层体例
 
-一次任务由五层内容组合完成：Task 决定这次做什么、交给哪条 Publish 流水线、取哪些 Writing 方法与 Design 范式；Materials 提供逐级展开的来源与资产。Writing 与 Design 常驻，其余按任务读取。Task、Writing、Publish 在 [dsh-praxis/kit](kit/README.md)；Design 仍在 `kit/design/`，Materials 仍是 `vault/provenance/` 的来源记录，两者随数据层迁入。
+一次任务由五层内容组合完成：Task 决定这次做什么、交给哪条 Publish 流水线、取哪些 Writing 方法与 Design 范式；Materials 提供逐级展开的来源与资产。Writing 与 Design 常驻，其余按任务读取。四层的页面都在 [dsh-praxis/kit](kit/README.md)；Materials 是 `vault/provenance/` 的来源记录，加上 [data](data/README.md) 里的维护信息。
 
 ## 五层各管什么
 
@@ -12,7 +12,7 @@
 | Publish | 内容怎样适配一种媒介，经过制作和检查成为交付物；每种媒介一条流水线 | 内容组织、视觉范式本身 | Task 选定流水线后读取 |
 | Materials | 来源与资产是什么、怎样取用、依据在哪里、原件在哪里 | 规则与方法 | 按条目逐级展开，最多五级 |
 
-**常驻**指每次任务都在上下文里的只有三样：Writing 与 Design 的入口 description、底线（[证据与来源的底线](kit/writing/evidence.md#底线)和 [设计判断契约](../kit/design/foundations/grammar.md)的开头一段），以及去往各分支的路由表。正文不常驻。Publish 和 Materials 从不常驻；Task 只读选中的那一份。
+**常驻**指每次任务都在上下文里的只有三样：Writing 与 Design 的入口 description、底线（[证据与来源的底线](kit/writing/evidence.md#底线)和 [设计判断契约](kit/design/foundations/grammar.md)的开头一段），以及去往各分支的路由表。正文不常驻。Publish 和 Materials 从不常驻；Task 只读选中的那一份。
 
 ## 一次任务怎样展开
 

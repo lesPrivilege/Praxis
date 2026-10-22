@@ -72,11 +72,11 @@
 
 | 审阅的议题 | 本地已有 | 本地没有 | 处置 |
 |---|---|---|---|
-| 媒介按语义选，不按格式排等级 | [展项与说明](../../../dsh-praxis/kit/publish/html/exhibits.md)、[图形编码](../../../kit/design/composition/encoding.md)、Reporting brief 的 Renderer | 什么时候值得承担网页或原型的依赖与交互成本 | 暂缓 |
+| 媒介按语义选，不按格式排等级 | [展项与说明](../../../dsh-praxis/kit/publish/html/exhibits.md)、[图形编码](../../../dsh-praxis/kit/design/composition/encoding.md)、Reporting brief 的 Renderer | 什么时候值得承担网页或原型的依赖与交互成本 | 暂缓 |
 | 多种媒介共用一份事实 | [证据与来源](../../../dsh-praxis/kit/writing/evidence.md)的投影、改编与新增（ADR-019） | 视频配一份精确文字参考这种组合 | 暂缓 |
 | 探索、分享、发布不是由轻到重的一条轴 | 没有对应的说法 | — | 记为候选，不建标签 |
 | 用途与生命周期、版本与复现承诺、交付检查与责任 | 场景模板第 5 节和现场闭环移交一行已有版本、允许用途、接收依据、未决项与支持；brief 有 Review | 预计有效多久、何时失效或撤回；要复现的是结论、外观、行为还是构建过程 | 留到第四批，需要一件真实交付 |
-| 八个检查维度 | 正确与来路在证据与来源、分层验收；可访问在[状态与可达性](../../../kit/design/interaction/states.md)、[时间叙事](../../../dsh-praxis/kit/publish/video/narrative.md)和[内容验收](../../../dsh-praxis/kit/publish/verification.md)；目标环境在内容验收的按输出检查；数据边界在 [Environment](../../../kit/environment/README.md)与 [Demo 准入](../../../demos/README.md)；复现在 Demo 准入的消费版本与运行；留存与处置在场景模板第 5 节 | 性能；许可只在入账和 UI 候选里出现 | 不建检查目录。有真实交付时按需取用，缺的两项到时再定落点 |
+| 八个检查维度 | 正确与来路在证据与来源、分层验收；可访问在[状态与可达性](../../../dsh-praxis/kit/design/interaction/states.md)、[时间叙事](../../../dsh-praxis/kit/publish/video/narrative.md)和[内容验收](../../../dsh-praxis/kit/publish/verification.md)；目标环境在内容验收的按输出检查；数据边界在 [Environment](../../../kit/environment/README.md)与 [Demo 准入](../../../demos/README.md)；复现在 Demo 准入的消费版本与运行；留存与处置在场景模板第 5 节 | 性能；许可只在入账和 UI 候选里出现 | 不建检查目录。有真实交付时按需取用，缺的两项到时再定落点 |
 | 从临时样张提炼长期元素 | ADR-018 的泛化先于原子、[参考生命周期](../../../docs/governance/reference-lifecycle.md) | — | 已有并保留 |
 | “代码生成成本接近零”没有被证明 | 没有对应条文，本地也不这样假设 | — | 不写 |
 

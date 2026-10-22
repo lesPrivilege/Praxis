@@ -61,4 +61,4 @@ Vault 保存观察、实验、来源与历史；来源摘要与可选参考 gram
 
 合并或退出的条目保留稳定 ID、去向与理由记录；旧路径提供到唯一当前正文的转向，未有替代时明确说明。不要删除仍被消费者引用的来源身份，也不要在多个入口维护同一摘要或同一 grammar。
 
-本机制由 [ADR-017](../decisions/017-reviewed-reference-priority.md)采纳。首批 [优先编排参考](../../kit/design/references/curated/README.md)的验收范围是结构观察与查阅；代码仍为实验实现。
+本机制由 [ADR-017](../decisions/017-reviewed-reference-priority.md)采纳。首批 [优先编排参考](../../dsh-praxis/kit/design/references/curated/README.md)的验收范围是结构观察与查阅；代码仍为实验实现。

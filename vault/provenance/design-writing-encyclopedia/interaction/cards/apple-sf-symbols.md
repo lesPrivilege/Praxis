@@ -17,6 +17,6 @@ Apple HIG 的 SF Symbols 使用页面，是实际 UI 使用细节的官方入口
 
 作为 Apple 系统内 icon 语义/规范的回查入口；产品视觉参照能力见 DWI-008。它不能作为 Web 跨平台许可依据，也不意味着全部符号都能商用、复制或重绘。需实际选用素材时先看当期授权条款，并核对该符号的标记和用途。
 
-重访触发：导入具体符号、制作跨平台产品、或 Apple 条款/工具版本变化时。关联语法：[controls.md](../../../../../kit/design/interaction/controls.md)（`DWG-I-CONTROLS`）。
+重访触发：导入具体符号、制作跨平台产品、或 Apple 条款/工具版本变化时。关联语法：[controls.md](../../../../../dsh-praxis/kit/design/interaction/controls.md)（`DWG-I-CONTROLS`）。
 
 许可状态：未下载或嵌入资产；实际使用前须核对 Apple license。证据形态：官方 search excerpt 与 title/metadata；HIG 正文细节不可访问，partial。

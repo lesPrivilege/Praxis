@@ -22,4 +22,4 @@ url: https://raw.githubusercontent.com/lucasmarkes/hairline/main/assets/hero.gif
 
 图像来自 Hairline 的公开仓库。项目首页自述 MIT，但本卡不替上游确认其中所有图形、品牌标记的再发布范围；图像未被复制进本地快照。
 
-语法：[DWG-V-OBJECTS](../../../../../kit/design/composition/object-representation.md)；方法文字：[DWV-04](hairline-inspo.md)、[DWV-05](hairline-skill.md)。
+语法：[DWG-V-OBJECTS](../../../../../dsh-praxis/kit/design/composition/object-representation.md)；方法文字：[DWV-04](hairline-inspo.md)、[DWV-05](hairline-skill.md)。

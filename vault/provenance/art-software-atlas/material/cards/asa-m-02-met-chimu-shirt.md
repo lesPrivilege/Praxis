@@ -2,7 +2,7 @@
 
 来源：[The Metropolitan Museum of Art collection record](https://www.metmuseum.org/en/art/collection/search/312784) · 状态：verified（仅限对象记录文字）
 
-用途：一件具体 Chimú 服饰与 tapestry-weave 馆方术语。派生参考见 [Material relations](../../../../../kit/design/composition/material-relations.md)。
+用途：一件具体 Chimú 服饰与 tapestry-weave 馆方术语。派生参考见 [Material relations](../../../../../dsh-praxis/kit/design/composition/material-relations.md)。
 
 ## 摘要
 
@@ -23,5 +23,5 @@
 
 ## 关联
 
-- Grammar：[ASA-G-ANDEAN-WOVEN-GARMENTS](../../../../../kit/design/composition/material-relations.md)
+- Grammar：[ASA-G-ANDEAN-WOVEN-GARMENTS](../../../../../dsh-praxis/kit/design/composition/material-relations.md)
 - History：[CHANGELOG.md](../CHANGELOG.md)

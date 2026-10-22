@@ -5,6 +5,6 @@
 - [来源目录](catalog.json) 与 [来源卡](cards/)
 - [实体关系](entities.json)
 - [本轮记录](CHANGELOG.md)
-- [Kit：空间、光与材料](../../../../kit/design/composition/spatial-materials.md)
+- [Kit：空间、光与材料](../../../../dsh-praxis/kit/design/composition/spatial-materials.md)
 
 本轮读了十一个公开网页 URL 的文本（含一个未纳入主张的替代 Commons 候选页），并登记了一条未能读取的官方图片 URL。UT 与 Wikimedia Commons 图像读取失败；未声称完成实际视觉检视。来源卡逐项标明文本定位、图像证据边界与重访条件。

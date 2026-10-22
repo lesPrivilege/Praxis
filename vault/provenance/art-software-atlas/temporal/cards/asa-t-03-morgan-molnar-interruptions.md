@@ -12,4 +12,4 @@ Morgan Library 的馆藏记录将 *Interruptions* 识别为 Molnar 于 1968 年�
 
 ## 阅读位置与用途
 
-记录字段与 Notes 正文。供 [rule systems](../../../../../kit/design/motion/rule-systems.md)；[CHANGELOG](../CHANGELOG.md)。
+记录字段与 Notes 正文。供 [rule systems](../../../../../dsh-praxis/kit/design/motion/rule-systems.md)；[CHANGELOG](../CHANGELOG.md)。

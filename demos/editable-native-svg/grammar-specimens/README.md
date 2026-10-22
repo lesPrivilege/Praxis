@@ -1,6 +1,6 @@
 # 三条关系语法的样板
 
-2026-10-04，图件版本 `0.3.0`。这一页用同一份合成内容（一张破损古籍的调阅单）演示 Kit 里的三页判断怎样落到材料上：[成立程度与归属的标记](../../../kit/design/foundations/standing.md)、[精确指向](../../../kit/design/foundations/anchoring.md)和 [排列与刻度](../../../kit/design/foundations/placement.md)。每条语法做三级：只用文字，一张图，几张图连成一张；另各附一个反例。第三节是 `0.3.0` 加的。
+2026-10-04，图件版本 `0.3.0`。这一页用同一份合成内容（一张破损古籍的调阅单）演示 Kit 里的三页判断怎样落到材料上：[成立程度与归属的标记](../../../dsh-praxis/kit/design/foundations/standing.md)、[精确指向](../../../dsh-praxis/kit/design/foundations/anchoring.md)和 [排列与刻度](../../../dsh-praxis/kit/design/foundations/placement.md)。每条语法做三级：只用文字，一张图，几张图连成一张；另各附一个反例。第三节是 `0.3.0` 加的。
 
 | 当前需要 | 入口 |
 |---|---|

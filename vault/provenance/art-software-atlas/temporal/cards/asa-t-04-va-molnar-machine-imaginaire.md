@@ -12,4 +12,4 @@ V&A 博物馆文章把 Molnar 的 “machine imaginaire” 解释为手工与数
 
 ## 阅读位置与用途
 
-“machine imaginaire” 与 manual algorithmic practice 的前两段、关于 authorship 的段落。供 [rule systems](../../../../../kit/design/motion/rule-systems.md)；[CHANGELOG](../CHANGELOG.md)。
+“machine imaginaire” 与 manual algorithmic practice 的前两段、关于 authorship 的段落。供 [rule systems](../../../../../dsh-praxis/kit/design/motion/rule-systems.md)；[CHANGELOG](../CHANGELOG.md)。

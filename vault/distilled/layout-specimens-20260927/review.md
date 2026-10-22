@@ -61,4 +61,4 @@ Main复算26个周人次之和为12,480，与总计一致。东坡4,570 ÷ 124 �
 
 ## 后续登记：优先结构参考
 
-按 [ADR-017](../../../docs/decisions/017-reviewed-reference-priority.md)，E06-b与W03-b的泛化说明已经通过有限的结构查阅验收，分别登记为 [REF-COMP-001](../../../kit/design/references/curated/comparison-continuity.md) 与 [REF-COMP-002](../../../kit/design/references/curated/note-adjacency.md)。高权重作用于这两张说明卡的取用顺序；本实验代码、fixture与其余样张仍保留此前状态。新demo或真实任务的增量回卡片，不在这里另维护第二份当前规则。
+按 [ADR-017](../../../docs/decisions/017-reviewed-reference-priority.md)，E06-b与W03-b的泛化说明已经通过有限的结构查阅验收，分别登记为 [REF-COMP-001](../../../dsh-praxis/kit/design/references/curated/comparison-continuity.md) 与 [REF-COMP-002](../../../dsh-praxis/kit/design/references/curated/note-adjacency.md)。高权重作用于这两张说明卡的取用顺序；本实验代码、fixture与其余样张仍保留此前状态。新demo或真实任务的增量回卡片，不在这里另维护第二份当前规则。

@@ -21,6 +21,6 @@ snapshot_status: not-captured
 
 **限制：** 页面上的功能、价格、隐私和数量均为厂商自述；未测试桌面程序、协作、分享、分析开关、导出或数据流。页面没有为各功能分别列出权限与依赖。
 
-**Derived grammar:** [Agent design resources](../../../../../kit/design/references/agent-design-resources.md) — ASA-G-AGENT-DESIGN-SYSTEM-CONTRACT / ASA-G-AGENT-COMPONENT-RETRIEVAL
+**Derived grammar:** [Agent design resources](../../../../../dsh-praxis/kit/design/references/agent-design-resources.md) — ASA-G-AGENT-DESIGN-SYSTEM-CONTRACT / ASA-G-AGENT-COMPONENT-RETRIEVAL
 
 **History:** [Research history](../CHANGELOG.md)

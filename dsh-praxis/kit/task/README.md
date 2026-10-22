@@ -5,7 +5,7 @@
 1. 有匹配的 [任务类型](types/README.md)就取用：它列出读者、结果、默认流水线、要读的 Writing 与 Design 单元和验收。
 2. 没有匹配的，填 [brief](../../../templates/reporting/README.md)（读者、期待、阶段、证据、张力与 Ask），读 [材料目的与组织动作](brief.md)形成主张、替代方案和所需决定。同类 brief 用过两次以上，再沉淀成任务类型。
 3. 用 [选择表达媒介](media-choice.md)定流水线：页面与报告走 [Publish / html](../publish/html/README.md)，时间叙事走 [Publish / video](../publish/video/README.md)。同一份内容出两种媒介时各走一条，共用事实、来源和主要判断。
-4. 按任务展开 [Writing](../writing/README.md)与 [Design](../../../kit/design/README.md)，只读列出的单元。
+4. 按任务展开 [Writing](../writing/README.md)与 [Design](../design/README.md)，只读列出的单元。
 5. 交付按 [内容与媒介验收](../publish/verification.md)与 [分层验收](../../../kit/verification/README.md)分别检查材料和业务接收。
 
 产物：事实可追溯、论证自足的材料，并写明读完要对方批准、选择、修改或执行什么；不需要对方做什么时也写明。做到这几点就停，不补齐其他候选文体。

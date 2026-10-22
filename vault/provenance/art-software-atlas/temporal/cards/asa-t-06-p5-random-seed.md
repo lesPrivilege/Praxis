@@ -12,4 +12,4 @@ p5.js 官方 API 参考说 `randomSeed()` 设置 `random()` 和 `randomGaussian(
 
 ## 阅读位置与用途
 
-正文说明与 Parameters。供 [rule systems](../../../../../kit/design/motion/rule-systems.md)；[CHANGELOG](../CHANGELOG.md)。
+正文说明与 Parameters。供 [rule systems](../../../../../dsh-praxis/kit/design/motion/rule-systems.md)；[CHANGELOG](../CHANGELOG.md)。

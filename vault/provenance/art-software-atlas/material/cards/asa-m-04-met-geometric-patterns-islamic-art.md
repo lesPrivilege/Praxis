@@ -2,7 +2,7 @@
 
 来源：[The Metropolitan Museum of Art essay](https://www.metmuseum.org/en/essays/geometric-patterns-in-islamic-art) · 状态：verified（限馆方综述文本）
 
-用途：几何图案的媒介范围、组合方式与地域史提示。派生参考见 [Material relations](../../../../../kit/design/composition/material-relations.md)。
+用途：几何图案的媒介范围、组合方式与地域史提示。派生参考见 [Material relations](../../../../../dsh-praxis/kit/design/composition/material-relations.md)。
 
 ## 摘要与定位
 
@@ -21,5 +21,5 @@ Met 伊斯兰艺术部的综述将几何纹饰与书法、植物纹样并列为�
 
 ## 关联
 
-- Grammar：[ASA-G-ISLAMIC-GEOMETRIC-SURFACES](../../../../../kit/design/composition/material-relations.md)
+- Grammar：[ASA-G-ISLAMIC-GEOMETRIC-SURFACES](../../../../../dsh-praxis/kit/design/composition/material-relations.md)
 - History：[CHANGELOG.md](../CHANGELOG.md)

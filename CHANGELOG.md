@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-10-23 · dsh-praxis 控制面与 DSH 插件
+
+- 实现 [dsh-praxis](dsh-praxis/README.md) 的控制面：[core](dsh-praxis/core/README.md)（Kit 单元索引、任务展开、来源与挂载维护、收录、快照刷新、预设、运行记录与 stale、导出恢复），[工具表](dsh-praxis/adapters/README.md)经 DSH 插件、DSH 右侧栏标签、MCP 服务（`.mcp.json`）、命令行和 [网页](dsh-praxis/ui/README.md)提供。取舍见 [ADR-038](docs/decisions/038-dsh-praxis-control-plane.md)。
+- `kit/design/` 迁入 `dsh-praxis/kit/design/`；来源 catalog、艺术软件图谱与 SaaS 图谱的路径随之更新，艺术软件图谱回归测试的期望值同步改路径。
+- 插件以 `link:` 装进本机 DSH 的 desktop profile（包 dsh-praxis），桌面应用重启后加载；验证在临时 headless 与 web profile 里做，之后已删除。
+- `node --test` 15 项、仓库检查、`test_atlas_index.py` 与 SaaS 图谱检查通过。没有真实任务里的使用，没有对照。
+
 ## 2026-10-23 · dsh-praxis：Task、Writing、Publish 迁入
 
 - 按 [迁移映射](dsh-praxis/migration.md)把内容表达部分迁进 [dsh-praxis/kit](dsh-praxis/kit/README.md)：Writing（底线、成文原理、内容组织、文体、语言约定、审阅、作者语体），Task（入口、材料目的与组织动作、现场闭环与驻场组织接口、选择表达媒介、技术说明与工作报告两个任务类型），Publish（html、video 两条流水线与共用验收）。`kit/write/`、`kit/writing/`、`kit/reporting/` 删除，不留导航；取舍补记在 [ADR-037](docs/decisions/037-dsh-praxis-layered-grammar.md#补充taskwritingpublish-迁入2026-10-23)。
@@ -53,7 +60,7 @@
 
 ## 2026-10-12 · 并回此前暂存的本地工作
 
-- 10-04 至 10-12 暂存在 stash 的本地工作并回 main：[排列与刻度](kit/design/foundations/placement.md)与 ADR-026、Motion ceiling、两条能力测试短片、Palantir 阅读原件、会话入账与 harness 审计（ADR-030）、互著别裁（原编 ADR-029，改编 [ADR-033](docs/decisions/033-content-discovery-and-retirement.md)）。各项的日期与内容见下方原条目。
+- 10-04 至 10-12 暂存在 stash 的本地工作并回 main：[排列与刻度](dsh-praxis/kit/design/foundations/placement.md)与 ADR-026、Motion ceiling、两条能力测试短片、Palantir 阅读原件、会话入账与 harness 审计（ADR-030）、互著别裁（原编 ADR-029，改编 [ADR-033](docs/decisions/033-content-discovery-and-retirement.md)）。各项的日期与内容见下方原条目。
 - 两边改了同一段时：正文体例取 main 较晚的写法（[ADR-029](docs/decisions/029-design-writing-reference-encyclopedia.md)），stash 独有的判断并入其中，即指向排列与刻度的入口、治理文档里以职责代替模型名、Write / Motion 的制作记录表。AgentScope 知识片取已完成的第二版；索引由脚本重新生成。
 - 没有重新验收各项工作本身。
 
@@ -61,9 +68,9 @@
 
 - [成文原理](dsh-praxis/kit/writing/principles.md)第 6 条：术语取目标读者之间最稳定的说法；在 AI 与 agent 这类术语主要以英文流通的领域用英文原词，不临时造译名，首次出现时交代含义。[审阅方法](dsh-praxis/kit/writing/review.md)偏差表加一行。兼容扩展，强度不变。见 [ADR-031](docs/decisions/031-stable-terms-and-explainer-page.md)。
 - Write / Publish 新增 [讲解页的编排](dsh-praxis/kit/publish/html/explainer.md)：每个局部回答四问、四层的可见性、事实底稿、可调之处与反例。可取用的参考，不是必经步骤。
-- [成立程度的标记](kit/design/foundations/standing.md)可调情形加一句：交互图里强调色可作“当前选中”。
+- [成立程度的标记](dsh-praxis/kit/design/foundations/standing.md)可调情形加一句：交互图里强调色可作“当前选中”。
 - 新增演示 [DeerFlow 怎样工作](demos/deerflow-explainer/README.md)；稳定语义的记号、控件与运动写成 [工单](demos/editable-native-svg/claude-design-order-20261012.md)，交给独立的 ClaudeDesign。
-- 交付收进 Design 的 [记号、控件与运动](kit/design/marks/README.md)：57 个原生 SVG 记号、11 个控件、10 种运动，grammar 与这一版画法分开；normal/reference，按需取用。讲解页的系统全景图取用了 18 个记号，效果与缺口记在该包的 [检查与取用记录](kit/design/marks/checks.md)。见 [ADR-032](docs/decisions/032-semantic-marks-library.md)。
+- 交付收进 Design 的 [记号、控件与运动](dsh-praxis/kit/design/marks/README.md)：57 个原生 SVG 记号、11 个控件、10 种运动，grammar 与这一版画法分开；normal/reference，按需取用。讲解页的系统全景图取用了 18 个记号，效果与缺口记在该包的 [检查与取用记录](dsh-praxis/kit/design/marks/checks.md)。见 [ADR-032](docs/decisions/032-semantic-marks-library.md)。
 ## 2026-10-12 · AgentScope 企业线视频与封面交付
 
 - 新增 [AgentScope 企业线知识片](demos/agentscope-enterprise-film/README.md)：公开文档与固定源码研究形成 53 场、横屏无 TTS 视频，以及可暂停舞台、详尽阅读稿和两张原生绘制封面。Python 2.0 与 Java Harness/Service 分开讲解，旧 Runtime/Studio 只讲迁移。
@@ -116,7 +123,7 @@
 
 ## 2026-10-08 · 发现入口与消费记录
 
-- 保留现有目录；在 [Write / Motion](dsh-praxis/kit/publish/video/README.md)连接长片、机制演算、空间表达的施工与消费记录，[Design / Motion](kit/design/motion/README.md)补外部研究入口，[demos](demos/README.md)补 Motion ceiling 工场。各项目的技术与参数继续留在项目内。
+- 保留现有目录；在 [Write / Motion](dsh-praxis/kit/publish/video/README.md)连接长片、机制演算、空间表达的施工与消费记录，[Design / Motion](dsh-praxis/kit/design/motion/README.md)补外部研究入口，[demos](demos/README.md)补 Motion ceiling 工场。各项目的技术与参数继续留在项目内。
 - [Palantir reading list](palantir/references/README.md)逐项链接已有候选笔记；上层入口区分候选提炼与已采纳正文，历史任务书标明已经执行，主题入口补已有消费项目。补金字塔过程重建的 intake 导航。
 - 本轮由主代理编订、两位 Luna 只读追溯；只核对仓库内记录，没有重新访问外部来源、补快照、运行渲染或制作视频。金字塔主日志与研究网页未快照，A3 部分运行依赖未快照，Motion ceiling 多数外部来源仍未读；四本阅读材料全文仍缺。未新增专用交接文档或重复的制作流程。
 - 验证：`python3 scripts/validate_repository.py` 通过；Luna 定向走读 Dalio 已读边界、Impro 缺正文、机制类视频选型与金字塔过程追溯四条路径，无断链。属于维护走读，未做新主笔制作或对照实验。
@@ -160,13 +167,13 @@
 
 ## 2026-10-04 · 排列与刻度
 
-- Design / Foundations 新增 [排列与刻度](kit/design/foundations/placement.md)：把几项内容沿一条线排开时，位置回答了哪几个问题要写成一句读法放进图里；没有量就不按比例画；并排的线要么共用一条标尺，要么写明各排各的。见 [ADR-026](docs/decisions/026-placement-and-scale.md)。属于兼容扩展：新增一页和几处入口链接；[图形编码](kit/design/composition/encoding.md)、[成立程度与归属的标记](kit/design/foundations/standing.md)、[精确指向](kit/design/foundations/anchoring.md)各补了半句，原有规则的含义没有变。
+- Design / Foundations 新增 [排列与刻度](dsh-praxis/kit/design/foundations/placement.md)：把几项内容沿一条线排开时，位置回答了哪几个问题要写成一句读法放进图里；没有量就不按比例画；并排的线要么共用一条标尺，要么写明各排各的。见 [ADR-026](docs/decisions/026-placement-and-scale.md)。属于兼容扩展：新增一页和几处入口链接；[图形编码](dsh-praxis/kit/design/composition/encoding.md)、[成立程度与归属的标记](dsh-praxis/kit/design/foundations/standing.md)、[精确指向](dsh-praxis/kit/design/foundations/anchoring.md)各补了半句，原有规则的含义没有变。
 - 可编辑原生 SVG 的图件升到 0.3.0：新增 `rel-rail` 和 `rel-pair` 两件，版本图在图脚补上位置的读法；样板页加第三节。它们是 demo 里的候选实现，不是 Kit 的共享组件。
 - [回执](docs/verification/placement-grammar-20261004.md)记录检查、独立复查、两次冷读与对照、未做的事。使用证据只有合成内容和同一名制作者。
 
 ## 2026-10-04 · 关系图的成立程度与精确指向
 
-- Design / Foundations 新增 [成立程度与归属的标记](kit/design/foundations/standing.md)和 [精确指向](kit/design/foundations/anchoring.md)，各给不随画法改变的约束、关系图的默认和“只用文字、一张图、几张图连起来”的三级做法，见 [ADR-025](docs/decisions/025-relation-marks-and-anchors.md)。属于兼容扩展：新增两页和几处入口链接，既有规则的含义没有变。
+- Design / Foundations 新增 [成立程度与归属的标记](dsh-praxis/kit/design/foundations/standing.md)和 [精确指向](dsh-praxis/kit/design/foundations/anchoring.md)，各给不随画法改变的约束、关系图的默认和“只用文字、一张图、几张图连起来”的三级做法，见 [ADR-025](docs/decisions/025-relation-marks-and-anchors.md)。属于兼容扩展：新增两页和几处入口链接，既有规则的含义没有变。
 - 可编辑原生 SVG 的四个关系图件升到 0.2.0，状态词和指向改用共同的一套，新增组合件；另有一页样板。它们是 demo 里的候选实现，不是 Kit 的共享组件。
 - [回执](docs/verification/relation-grammar-20261004.md)记录检查、两次冷读与对照、未做的事。使用证据只有合成内容和同一名制作者。
 
@@ -235,7 +242,7 @@
 - 平台产品扫盲与思维导图归属，见 ADR-012。
 - AI 能力测试：研究登记、五题回答母稿、问题—答案树与离线 HTML 答卷（`vault/distilled/ai-capability-assessment/rendered/`），回答体例见 ADR-013。
 - 前端设计与可视化参考的召回、裁决与消费记录（CW、Schema Engineering、career-kit、外部 DESIGN.md、W3C/WCAG、GOV.UK、ONS）。
-- 建立 [kit/design](kit/design/README.md) 与 [kit/writing](dsh-praxis/kit/writing/README.md)，写作原理由项目 skill `writing` 自足承载，见 ADR-014；旧的全局 house-style skill 停用。
+- 建立 [kit/design](dsh-praxis/kit/design/README.md) 与 [kit/writing](dsh-praxis/kit/writing/README.md)，写作原理由项目 skill `writing` 自足承载，见 ADR-014；旧的全局 house-style skill 停用。
 - 第三方网页快照中的预签名 S3 凭证已脱敏，另存为带日期的新版本路径。
 
 ## 2026-09-27 · Kit 结构落实与独立审计
@@ -267,7 +274,7 @@
 
 - 入账用户提供的 44 文件研究包并逐文件 hash；47 条外部来源各重访一次，32 verified、11 partial、4 unavailable，只读文字。
 - 包的校订意见基于远端旧基线；关于入口与路由的部分，本地已由 ADR-015/016/017 覆盖。
-- 按用户裁决保留泛化层（[ADR-018](docs/decisions/018-generalized-design-relations.md)）：新增 [构成关系与问题地图](kit/design/foundations/relations.md)，收十五个构成问题、约束强度与检验方法；[视觉语言参考](kit/design/references/languages.md)（VL01–VL08）、样张和打样提案作为它的取用方式挂出。
+- 按用户裁决保留泛化层（[ADR-018](docs/decisions/018-generalized-design-relations.md)）：新增 [构成关系与问题地图](dsh-praxis/kit/design/foundations/relations.md)，收十五个构成问题、约束强度与检验方法；[视觉语言参考](dsh-praxis/kit/design/references/languages.md)（VL01–VL08）、样张和打样提案作为它的取用方式挂出。
 - 按包内 A01 提案做了一件 [阅读关系样张](vault/distilled/design-grammar-atlas-20261002/a01-reading-relations/README.md)：一份夹具、一份 HTML、五套样式；得到断行与字重两处失配。
 - 六题冷启动走读、补入口后的复跑与全部未做项见 [回执](docs/verification/design-grammar-atlas-20261002.md)。Opus 主会话裁决，Sonnet 只读代理对照、重访与走读。
 
@@ -275,7 +282,7 @@
 
 - 入账 dot 的 [下一轮串行工单与 Motion 提案](vault/distilled/design-kit-workorders-20261002/README.md)：五包工单逐包裁决，附录的 16 个外部链接登记为 unverified。
 - 执行工单一：九项更正逐条对回包内原句，主会话直接重读 16 条来源并看了一张原作海报；三行首轮记法撤回，atlas 来源现为 34 verified、12 partial、1 unavailable。
-- Kit 只改措辞：[视觉语言参考](kit/design/references/languages.md)的 VL01、VL03、VL07 与图像说明，[问题地图](kit/design/foundations/relations.md)的 G12 一句。没有新增条目或规则。
+- Kit 只改措辞：[视觉语言参考](dsh-praxis/kit/design/references/languages.md)的 VL01、VL03、VL07 与图像说明，[问题地图](dsh-praxis/kit/design/foundations/relations.md)的 G12 一句。没有新增条目或规则。
 - 放行给下一包的输入、悬置项与未做项见 [回执](docs/verification/design-kit-wo1-20261002.md)。工单二至五未开工。
 
 ## 2026-10-02 · 工单二：陌生 brief 冷读
@@ -327,7 +334,7 @@
 - 复查三篇公开来源：Lonsdale 第 5、6 条在交接里对应反了，作品已逐条改写；Portigal 页面遇到人机验证，主会话没有亲自读到。
 - 没有做：受众测试、减少动效和读屏软件下的实际检查。方法仍是项目候选，`palantir/` 主题和 Kit 规则没有改。
 - 用户读页面后指出文案别扭：页面文字没有经过 Write / Prose，Design 参考卡也没读。按 [审阅方法](dsh-praxis/kit/writing/review.md)改了 63 处，按两张优先参考卡加了“判读一览”，记录见作品 README。
-- 入口修订见 [ADR-023](docs/decisions/023-consume-by-artifact-component.md)：[Kit 任务入口](kit/README.md)按产物的组成部分分到几支；[Design 入口](kit/design/README.md)写明页面文字仍按 Prose 写和审，并加一张先读哪张参考的表；[媒介验收](dsh-praxis/kit/publish/verification.md)加交付前的分工核对；[成文原理](dsh-praxis/kit/writing/principles.md)的结构位置加上按钮、图例和状态提示；`writing` skill 在产物含中文文字时也加载。一次改前改后对照：改后的代理打开了审阅方法和四种 Design 参考，改前只看到名字。
+- 入口修订见 [ADR-023](docs/decisions/023-consume-by-artifact-component.md)：[Kit 任务入口](kit/README.md)按产物的组成部分分到几支；[Design 入口](dsh-praxis/kit/design/README.md)写明页面文字仍按 Prose 写和审，并加一张先读哪张参考的表；[媒介验收](dsh-praxis/kit/publish/verification.md)加交付前的分工核对；[成文原理](dsh-praxis/kit/writing/principles.md)的结构位置加上按钮、图例和状态提示；`writing` skill 在产物含中文文字时也加载。一次改前改后对照：改后的代理打开了审阅方法和四种 Design 参考，改前只看到名字。
 
 ## 2026-10-03 · 成文原理开头的写作姿态
 

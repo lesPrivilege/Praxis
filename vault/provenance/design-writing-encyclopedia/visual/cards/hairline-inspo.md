@@ -24,4 +24,4 @@ url: https://hairline.lucasmarkes.com/inspo
 
 ## 关联
 
-[对象表征语法](../../../../../kit/design/composition/object-representation.md)，尤其是静态缩小状态和对象职责；同一项目的流程和样例见 [DWV-05](hairline-skill.md)。
+[对象表征语法](../../../../../dsh-praxis/kit/design/composition/object-representation.md)，尤其是静态缩小状态和对象职责；同一项目的流程和样例见 [DWV-05](hairline-skill.md)。

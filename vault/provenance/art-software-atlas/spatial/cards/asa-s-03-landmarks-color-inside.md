@@ -2,7 +2,7 @@
 
 - URL: https://landmarks.utexas.edu/artwork/color-inside
 - Catalog: [catalog.json](../catalog.json) · History: [CHANGELOG.md](../CHANGELOG.md)
-- Grammar: [Turrell Skyspace](../../../../../kit/design/composition/spatial-materials.md#asa-g-turrell-skyspace)
+- Grammar: [Turrell Skyspace](../../../../../dsh-praxis/kit/design/composition/spatial-materials.md#asa-g-turrell-skyspace)
 - Read: artwork metadata、medium/dimensions、作品说明与“Light program visit”相关段落。
 - Supports: C03、ASA-S-03-C04。
 
