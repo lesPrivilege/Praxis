@@ -26,7 +26,7 @@
 
 - [入职书单视频系列](reading-list-series/README.md)：一部总论加五集，每集一份读物，另有由同一份正文排出的合集；中文旁白、4:3 与 3:4 封面、逐句出处与图片权利登记。2026-10-17 起施工，研究登记与各单元证据密度见 [系列研究](reading-list-series/research/README.md)。
 - [首次设计打样](../demos/palantir-discovery/README.md)：一页交互网页；保留 Lonsdale 条目错配的修正及页面验收。
-- 改编为文字、页面或视频时，内容规则与制作参考从 [Write](../kit/write/README.md)按媒介展开。
+- 改编为文字、页面或视频时，内容规则与制作参考从 [Write](../dsh-praxis/kit/README.md)按媒介展开。
 
 ## 处理边界
 

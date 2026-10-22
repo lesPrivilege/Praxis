@@ -1,6 +1,6 @@
 # 候选条目 · 由 MC01 得出
 
-MC01 做完之后，下面四条在施工中被实际执行过，各有一个反例。它们是候选，没有提交 Kit 裁决；只有一件作品、一名制作者、合成内容，证据很薄。归属建议按 [ADR-019](../../docs/decisions/019-expression-owners-and-entry-paths.md)：前三条属于 [Design / Motion](../../kit/design/motion/grammar.md)，第四条属于 [Write / Motion](../../kit/write/motion/narrative.md)。Kit 现有的运动判断已经写了“运动与真实状态同步”“补间不是观测”，下面只列它没有写到的部分。
+MC01 做完之后，下面四条在施工中被实际执行过，各有一个反例。它们是候选，没有提交 Kit 裁决；只有一件作品、一名制作者、合成内容，证据很薄。归属建议按 [ADR-019](../../docs/decisions/019-expression-owners-and-entry-paths.md)：前三条属于 [Design / Motion](../../kit/design/motion/grammar.md)，第四条属于 [Write / Motion](../../dsh-praxis/kit/publish/video/narrative.md)。Kit 现有的运动判断已经写了“运动与真实状态同步”“补间不是观测”，下面只列它没有写到的部分。
 
 ## 1. 三个时钟分开写
 

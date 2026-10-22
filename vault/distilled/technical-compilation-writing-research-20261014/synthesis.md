@@ -22,7 +22,7 @@
 
 ## 原语言、术语与中文表达
 
-来源层保留原标题、原词、原句定位和固定版本，中文解释在提炼层形成。保留原语言不是保留生硬直译。PingCAP 的翻译约定同时要求忠实和自然，Google 强调同概念同术语，Praxis 已有多语言规则保护事实、单位和模态强度。稳定译法应来自目标领域和现有词表；没有稳定中文时，保留原词并解释用途。[术语来源卡](cards/terminology.md)、[PingCAP](cards/pingcap.md)、[Praxis 多语言约定](../../../kit/write/prose/multilingual.md)
+来源层保留原标题、原词、原句定位和固定版本，中文解释在提炼层形成。保留原语言不是保留生硬直译。PingCAP 的翻译约定同时要求忠实和自然，Google 强调同概念同术语，Praxis 已有多语言规则保护事实、单位和模态强度。稳定译法应来自目标领域和现有词表；没有稳定中文时，保留原词并解释用途。[术语来源卡](cards/terminology.md)、[PingCAP](cards/pingcap.md)、[Praxis 多语言约定](../../../dsh-praxis/kit/writing/language/multilingual.md)
 
 用户要求缩写首用展开，比 Google 针对专业开发者的默认更严格；Google 对部分熟知缩写允许例外。SaaS 教材仍按本任务要求，第一次承担解释作用时给出英文全称、稳定中文和当前用途。独立图、独立页面与较远章节应提供可见的简短解释；词表能帮助维护一致性，却不能要求读者离开推理去查每个词。标题和标签可以保持简洁，完整解释放在邻接正文、图注或可访问说明中。[Google Abbreviations](cards/terminology.md)、[AI Infra](cards/infra-book.md)
 

@@ -27,7 +27,7 @@ foundations 的 `curriculum.json` 以 `reader_root` 加章节 `path` 定位 Book
 
 Claude 可以重写正文、调整主次和渐进展开，自由选择统一 UI、图形、交互、motion、技术栈与多代理工作方式。保留 case/object/claim/source ID、provider 名称、原语言术语、单位、条件和证据类别；语义变化记在消费项目中。避免为了统一外观把各行业的 release、hold、acceptance 或 completed 合成一种状态。
 
-在现有 [场景模板](../../../scenarios/_template/README.md)建立具体消费场景；从 [Design](../../../kit/design/README.md)、[Write / Publish](../../../kit/write/publish/README.md)与[Motion](../../../kit/write/motion/README.md)选择表达方法，按 [Demo 入口](../../../demos/README.md)记录运行边界。当前交付没有 HTML 实现，正文维护在 Books，证据与结构资产维护在 Vault。
+在现有 [场景模板](../../../scenarios/_template/README.md)建立具体消费场景；从 [Design](../../../kit/design/README.md)、[Write / Publish](../../../dsh-praxis/kit/publish/html/README.md)与[Motion](../../../dsh-praxis/kit/publish/video/README.md)选择表达方法，按 [Demo 入口](../../../demos/README.md)记录运行边界。当前交付没有 HTML 实现，正文维护在 Books，证据与结构资产维护在 Vault。
 
 ## 覆盖与继续研究
 
@@ -37,7 +37,7 @@ Claude 可以重写正文、调整主次和渐进展开，自由选择统一 UI�
 
 ## 文字职责与最终成文
 
-本轮成文使用 Praxis [Prose 原理](../../../kit/write/prose/grammar.md)与[证据约定](../../../kit/write/shared/evidence.md)。解释正文承担完整推理，标题稳定概括学习问题，图内标签保持短而明确，图注补足独立读图所需条件，操作文字说明动作及确认结果；这些职责不共用一套机械句型。本稿保留对象、关系与计算语义，不预制整套界面微文案。
+本轮成文使用 Praxis [Prose 原理](../../../dsh-praxis/kit/writing/principles.md)与[证据约定](../../../dsh-praxis/kit/writing/evidence.md)。解释正文承担完整推理，标题稳定概括学习问题，图内标签保持短而明确，图注补足独立读图所需条件，操作文字说明动作及确认结果；这些职责不共用一套机械句型。本稿保留对象、关系与计算语义，不预制整套界面微文案。
 
 可视化改变了读者取得信息的方式后，Claude 仍是最终作者：可以让图承担一段解释，重写相邻正文和图注，调整篇章节奏。保留论证、条件、单位和证据身份即可，不必照搬现有段落块。来源层维持原语言与术语；中文译法与英文全称见 [术语索引](../../../books/saas-engineering/terminology.md)，独立图中首次出现的缩写可从 `reader_term_ids` 取得同一解释，勿把译文回写成来源原话。
 

@@ -8,7 +8,7 @@
 | 知识可消费性 | 从任务找到输入、定义、产物与下一责任；模板和规则一致 | 正常与反例走读、实际使用断点 |
 | 材料与呈现 | 主张依据、假设标签、图表单位/分母/时间、读者决定、导出逐页检查 | brief、引用与目视检查记录 |
 | 系统行为 | 正常/异常、权限拒绝、缺证据、人工修正、版本变化、结果未知与重复执行 | fixture、预期输出、运行 trace |
-| 业务接受与影响 | 接收标准、实际采用、质量、额外劳动、可比基线和观察窗口 | 接收记录与 [价值账本](../work-system/field-governance.md) |
+| 业务接受与影响 | 接收标准、实际采用、质量、额外劳动、可比基线和观察窗口 | 接收记录与 [价值账本](../../dsh-praxis/kit/task/field-governance.md) |
 | 运营与退出 | 责任、支持、恢复、未决义务、退出与资料处置 | 移交确认、观察点与演练记录 |
 
 ## 必查反例
@@ -22,6 +22,6 @@
 | 同一来源重复导入 | 同一义务有稳定身份，核对已有记录 |
 | 报告已被接收 | 业务动作仍按其独立授权与接收条件推进 |
 
-企业 demo 另查 [企业工作面九项](../grammar/README.md)，登记假数据、mock 身份和集成覆盖。业务指标按 [现场治理](../work-system/field-governance.md) 保留独立口径。
+企业 demo 另查 [企业工作面九项](../grammar/README.md)，登记假数据、mock 身份和集成覆盖。业务指标按 [现场治理](../../dsh-praxis/kit/task/field-governance.md) 保留独立口径。
 
 文档验证运行 `python3 scripts/validate_repository.py`；命令范围见 [脚本](../../scripts/README.md)，结果记入 [验收回执](../../docs/verification/README.md)。

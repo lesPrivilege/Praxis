@@ -1,6 +1,6 @@
 # 分层体例
 
-一次任务由五层内容组合完成：Task 决定这次做什么、交给哪条 Publish 流水线、取哪些 Writing 方法与 Design 范式；Materials 提供逐级展开的来源与资产。Writing 与 Design 常驻，其余按任务读取。
+一次任务由五层内容组合完成：Task 决定这次做什么、交给哪条 Publish 流水线、取哪些 Writing 方法与 Design 范式；Materials 提供逐级展开的来源与资产。Writing 与 Design 常驻，其余按任务读取。Task、Writing、Publish 在 [dsh-praxis/kit](kit/README.md)；Design 仍在 `kit/design/`，Materials 仍是 `vault/provenance/` 的来源记录，两者随数据层迁入。
 
 ## 五层各管什么
 
@@ -12,11 +12,11 @@
 | Publish | 内容怎样适配一种媒介，经过制作和检查成为交付物；每种媒介一条流水线 | 内容组织、视觉范式本身 | Task 选定流水线后读取 |
 | Materials | 来源与资产是什么、怎样取用、依据在哪里、原件在哪里 | 规则与方法 | 按条目逐级展开，最多五级 |
 
-**常驻**指每次任务都在上下文里的只有三样：Writing 与 Design 的入口 description、底线（[证据与来源的底线](../kit/write/shared/evidence.md#底线)和 [设计判断契约](../kit/design/foundations/grammar.md)的开头一段），以及去往各分支的路由表。正文不常驻。Publish 和 Materials 从不常驻；Task 只读选中的那一份。
+**常驻**指每次任务都在上下文里的只有三样：Writing 与 Design 的入口 description、底线（[证据与来源的底线](kit/writing/evidence.md#底线)和 [设计判断契约](../kit/design/foundations/grammar.md)的开头一段），以及去往各分支的路由表。正文不常驻。Publish 和 Materials 从不常驻；Task 只读选中的那一份。
 
 ## 一次任务怎样展开
 
-1. **选 Task。** 任务类型写明读者、要促成的结果、默认流水线、取用的 Writing 与 Design 单元、素材查询和验收。没有合适的类型时，按 [材料目的与组织动作](../kit/reporting/grammar.md)现写 brief，用过两次以上再沉淀成类型。
+1. **选 Task。** 任务类型写明读者、要促成的结果、默认流水线、取用的 Writing 与 Design 单元、素材查询和验收。没有合适的类型时，按 [材料目的与组织动作](kit/task/brief.md)现写 brief，用过两次以上再沉淀成类型。
 2. **定流水线。** Task 给出默认流水线；同一份内容要出两种媒介时，各走一条流水线，共用事实、来源和主要判断。
 3. **展开方法。** 只读 Task 列出的 Writing 与 Design 单元的正文；读正文时遇到具体问题，再进入该单元的范例与参考。
 4. **取素材。** 按 Task 的素材查询或正文里的引用，从目录级开始，需要时逐级展开到原件。
@@ -49,7 +49,7 @@
 
 ## 规则冲突时
 
-冲突次序只维护一份，现在在 [Write 的三种强度](../kit/write/README.md#规则有三种强度)，Writing 迁入后随之移动：先守住任务的准确、完整、可访问和交付约束，再依次是本次明确的风格要求、语言约定、文体、作者或品牌偏好、通用启发式。Personal 不因最后加载而获得更高优先级；两条强要求不能同时满足时，在运行记录里写明裁决。
+冲突次序只维护一份，在 [Writing 的三种强度](kit/writing/README.md#规则有三种强度)：先守住任务的准确、完整、可访问和交付约束，再依次是本次明确的风格要求、语言约定、文体、作者或品牌偏好、通用启发式。Personal 不因最后加载而获得更高优先级；两条强要求不能同时满足时，在运行记录里写明裁决。
 
 ## 每层内部怎样分级
 
@@ -63,9 +63,9 @@ Task、Writing、Design、Publish 的每个单元都分三级展开：
 
 各层在这三级之外还有自己的分支：
 
-- **Writing**：底线（常驻）、内容组织（机制讲解、方案比较、论证与证据链、读者与背景）、文体（口播旁白、能力测试回答、微文案等）、审阅、语言约定、personal。语言约定按语言分支，中文、英文各自维护；英文分支在有实际规则时建立，不从中文翻译。语言之间的关系分三种：独立成文、翻译、本地化或改写，见 [多语言边界](../kit/write/prose/multilingual.md)。Personal 是作用在各分支上的配置维度，不是一个阅读级别，分常用偏好、作者语体（默认关闭，见 [作者语体](../kit/write/prose/author-profile.md)）、项目与客户约定三类，各自写明作用的语言、文体或项目。
+- **Writing**：底线（常驻）、内容组织（读者与任务、论证与证据链、机制讲解）、文体（口播旁白、能力测试回答、微文案等）、审阅、语言约定、personal。语言约定按语言分支，中文、英文各自维护；英文分支在有实际规则时建立，不从中文翻译。语言之间的关系分三种：独立成文、翻译、本地化或改写，见 [多语言边界](kit/writing/language/multilingual.md)。Personal 是作用在各分支上的配置维度，不是一个阅读级别，分常用偏好、作者语体（默认关闭，见 [作者语体](kit/writing/author-profile.md)）、项目与客户约定三类，各自写明作用的语言、文体或项目。
 - **Design**：沿用 Foundations（常驻判断契约）、Composition、Interaction、Motion、Marks。
 - **Publish**：每条流水线有编排规范、制作步骤、检查和产物类型四部分。先有 html（网页、报告、Slides、PDF 共用空间编排）和 video；新流水线在真实任务需要时建立。流水线的可调参数（模板、画幅、TTS provider 与 voice、风格、tag、创作方向）写成 preset，不写进编排规范。
-- **Task**：通用的 brief 方法，FDE 工作主线（[现场闭环](../kit/work-system/field-loop.md)的阶段可合并、退回或结束），以及任务类型。技术说明与工作报告从已有的讲解页编排和 Reporting 写成；方案比较、操作指南在第一次真实任务时写。
+- **Task**：通用的 brief 方法，FDE 工作主线（[现场闭环](kit/task/field-loop.md)的阶段可合并、退回或结束），以及 [任务类型](kit/task/types/README.md)：现有技术说明与工作报告，方案比较、操作指南在第一次真实任务时写。
 
 Materials 的五级展开见 [对象与操作](objects.md#素材的五级展开)。

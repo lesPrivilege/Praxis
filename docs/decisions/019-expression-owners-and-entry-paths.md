@@ -15,15 +15,15 @@
 
 ## 决定
 
-1. 不新建 Present。空间上的编排由 [Write / Publish](../../kit/write/publish/README.md)维护，时间上的显现由 [Write / Motion](../../kit/write/motion/README.md)维护；入口补上“改成另一种媒介或篇幅”“阅读单元、分页、密度、收起”这些说法。出现第二类独立消费者反复绕过 Write 只取编排规则时再议。
+1. 不新建 Present。空间上的编排由 [Write / Publish](../../dsh-praxis/kit/publish/html/README.md)维护，时间上的显现由 [Write / Motion](../../dsh-praxis/kit/publish/video/README.md)维护；入口补上“改成另一种媒介或篇幅”“阅读单元、分页、密度、收起”这些说法。出现第二类独立消费者反复绕过 Write 只取编排规则时再议。
 2. Reporting、Write、Design 按所作的决定分工，任务只取用得着的分支，不是依次都要过的流程。编排、图形或运动改变了事实、限定、证据关系或因果含义时，回到维护那条规则的分支重新判断。八类编排问题的归属见 [归属表](../../vault/distilled/write-present-supplement-20261002/README.md#八类问题的归属)。
 3. 每条规则只有一份正文。图形怎样忠实表达数量、关系和状态，正文在 [图形编码](../../kit/design/composition/encoding.md)；Publish 只决定用哪种展项并链接过去。
-4. Write 的规则分三种强度，写在 [Write 入口](../../kit/write/README.md#规则有三种强度)：
-   - 底线四条，正文在 [证据与来源](../../kit/write/shared/evidence.md#底线)，任何语言和模式都适用。
+4. Write 的规则分三种强度，写在 [Write 入口](../../dsh-praxis/kit/writing/README.md#规则有三种强度)：
+   - 底线四条，正文在 [证据与来源](../../dsh-praxis/kit/writing/evidence.md#底线)，任何语言和模式都适用。
    - 语言约定按输出语言取用。目前只有中文；不为英文预建空文件。
-   - 编辑启发式与文体是对外中文技术成文的默认，[成文原理](../../kit/write/prose/grammar.md#强度与适用范围)逐条写明强度和可以不照做的情形。八条原文不改。
-5. 换媒介或改篇幅分投影、改编和新增三种。只有投影可以说内容没有变；改编和新增附变动说明。正文在 [证据与来源](../../kit/write/shared/evidence.md)。
-6. 机械检查另设入口 [格式检查](../../kit/write/prose/format.md)：先划不动的范围，可以直接改的、只报不改的、需要判断的分开。本仓库没有 lint 工具，这一页定的是边界。
+   - 编辑启发式与文体是对外中文技术成文的默认，[成文原理](../../dsh-praxis/kit/writing/principles.md#强度与适用范围)逐条写明强度和可以不照做的情形。八条原文不改。
+5. 换媒介或改篇幅分投影、改编和新增三种。只有投影可以说内容没有变；改编和新增附变动说明。正文在 [证据与来源](../../dsh-praxis/kit/writing/evidence.md)。
+6. 机械检查另设入口 [格式检查](../../dsh-praxis/kit/writing/language/format.md)：先划不动的范围，可以直接改的、只报不改的、需要判断的分开。本仓库没有 lint 工具，这一页定的是边界。
 7. 入口分两条路。做任务从 [Kit 任务入口](../../kit/README.md)进，读到输入、约束和完成标准都清楚就开工；维护仓库才读 Kit 使用约定、架构和入账规范。根 `AGENTS.md` 与 `kit/AGENTS.md` 相应改写，授权、来源只读、分工与校验几条不变。
 
 ## 没有采纳的

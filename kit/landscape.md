@@ -6,9 +6,9 @@
 
 | 当前问题 | 下一产物 | 使用位置 |
 |---|---|---|
-| 问题是什么、值得改变吗 | 现状流程、基线、受影响者、替代方案 | [现场闭环](work-system/field-loop.md) |
+| 问题是什么、值得改变吗 | 现状流程、基线、受影响者、替代方案 | [现场闭环](../dsh-praxis/kit/task/field-loop.md) |
 | 怎样做一次有边界的介入 | 对象、证据、动作、责任与停止条件 | [场景模板](../scenarios/_template/README.md) |
-| 怎样判断结果、交给谁 | 分层证据、接收与后续责任 | [验收](verification/README.md)、[现场闭环](work-system/field-loop.md) |
+| 怎样判断结果、交给谁 | 分层证据、接收与后续责任 | [验收](verification/README.md)、[现场闭环](../dsh-praxis/kit/task/field-loop.md) |
 | 怎样写材料促成决定 | 读者、主张、证据与决策请求 | [Reporting brief](../templates/reporting/README.md) |
 | 怎样整理事件与后续工作 | 候选变化、确认状态、持续义务 | [工作系统](work-system/README.md) |
 | 怎样准备环境与消费知识 | 能力盘点、账号 scope、固定版本 | [Environment](environment/README.md) |

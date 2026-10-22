@@ -6,7 +6,7 @@
 
 R1 是本轮委托提供的可复用要求及召回摘要，不是原 Chat 的消息身份。摘要标明角色与时间，但没有取得逐条原文或原消息 ID；本回执不伪造引文、来源映射或原文覆盖数量，不保存私有原 Chat。当前委托授权最小修订，具体架构建议仍须对照正式裁决。
 
-真实路径为 [Write](../../kit/write/README.md)下的 Prose、Publish、Motion、Shared；[旧 Writing](../../kit/writing/README.md)只有导航。writing skill 位于 [项目薄入口](../../.claude/skills/writing/SKILL.md)，仓库没有 `.agents/skills`。上下游从 [Kit](../../kit/README.md)、[Reporting](../../kit/reporting/README.md)及 [Agent 指引](../../kit/Agent.md)到达；成文经 grammar/review、Shared 和相应文体交付。没有预设新目录。
+真实路径为 [Write](../../dsh-praxis/kit/README.md)下的 Prose、Publish、Motion、Shared；[旧 Writing](../../dsh-praxis/kit/writing/README.md)只有导航。writing skill 位于 [项目薄入口](../../.claude/skills/writing/SKILL.md)，仓库没有 `.agents/skills`。上下游从 [Kit](../../kit/README.md)、[Reporting](../../dsh-praxis/kit/task/README.md)及 [Agent 指引](../../kit/Agent.md)到达；成文经 grammar/review、Shared 和相应文体交付。没有预设新目录。
 
 主代理读治理、关键成文页并编订；Luna 只读 Write 全部页面、上下游入口、相关 ADR 和 Vault 摘要，不读原 Chat，不修改文件。规范裁决见 [ADR-024](../decisions/024-prose-defaults-and-review-scope.md)。
 
@@ -44,9 +44,9 @@ R1 是本轮委托提供的可复用要求及召回摘要，不是原 Chat 的�
 | 来源片段 | 审阅后 / 退回候选 | 检查结果 |
 |---|---|---|
 | [Kit 入口](../../kit/README.md)：读到输入、约束和完成标准都清楚、要求之间没有冲突，就可以开工 | 保留原句；退回“读到输入清楚就开工” | 完成条件与冲突限定承重。导航不增加事实，仍帮助行动；不因“阅读指引”标签删除 |
-| [Reporting grammar](../../kit/reporting/grammar.md)：先填写 brief 的六项最小契约，再选文体 | 改为信息尚不清楚时补 brief，已清楚时直接取用；后续 evidence-led 等区别和证据身份保留 | 只修矛盾前提，保留术语、材料混合方式和 Demo 的证据边界，不以短句减少必要复杂度 |
+| [Reporting grammar](../../dsh-praxis/kit/task/brief.md)：先填写 brief 的六项最小契约，再选文体 | 改为信息尚不清楚时补 brief，已清楚时直接取用；后续 evidence-led 等区别和证据身份保留 | 只修矛盾前提，保留术语、材料混合方式和 Demo 的证据边界，不以短句减少必要复杂度 |
 | [工作方式](../../kit/environment/working-methods.md)：压力情形下的遵循从十次里八次降到五次，普通情形不变；这是维护者报告的小样本，本仓库没有复跑 | 保留；退回“删短规则会降低遵循率” | 后者把转述小样本泛化成规律，丢了样本、情形和未复跑范围；短了却破坏准确性 |
-| [分镜交接](../../kit/write/motion/narrative.md)：只有声音承担的信息需要可达的文字替代；只是装饰的声音不承担事实证明 | 保留；退回“声音都要配字幕” | 条件与两类声音的区别不能丢；分号连接对照关系，不能靠统一短句或同义词替换改掉 |
+| [分镜交接](../../dsh-praxis/kit/publish/video/narrative.md)：只有声音承担的信息需要可达的文字替代；只是装饰的声音不承担事实证明 | 保留；退回“声音都要配字幕” | 条件与两类声音的区别不能丢；分号连接对照关系，不能靠统一短句或同义词替换改掉 |
 
 这些是规则适用与不适用的人工检查，不是模型效果对照实验。没有真实读者、独立留出任务或自动发现数据，不声称减少用时或提升理解。
 

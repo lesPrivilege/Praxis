@@ -63,7 +63,7 @@
 
 可以当依据用：
 
-- 问题地图的 G01、G11、G12 三行和“怎样检验一条关系”一节，连同它们指向的 [空间编排](../../kit/design/composition/layout.md)与 [Publish 编排](../../kit/write/publish/composition.md)。
+- 问题地图的 G01、G11、G12 三行和“怎样检验一条关系”一节，连同它们指向的 [空间编排](../../kit/design/composition/layout.md)与 [Publish 编排](../../dsh-praxis/kit/publish/html/composition.md)。
 - VL01 改后的整行。
 - A01 样张与夹具 F1，作为已见样本；工单二的新内容不能与它相同。
 

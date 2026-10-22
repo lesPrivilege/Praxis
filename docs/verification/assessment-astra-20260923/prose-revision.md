@@ -50,7 +50,7 @@
 
 ## 体例与交接
 
-[回答体例](../../../kit/reporting/assessment-answer-profile.md)与[唯一Claude工单](../../../vault/distilled/ai-capability-assessment/claude-paste-order.md)加入句法审阅：按整段核对具体动作、主语、指代和因果；不设置“记录、规则、机制”禁用词，也不把每句机械改成“系统应当”。内部模型可留在结构数据，正文只使用当下论证需要的名称。
+[回答体例](../../../dsh-praxis/kit/writing/genres/assessment-answer.md)与[唯一Claude工单](../../../vault/distilled/ai-capability-assessment/claude-paste-order.md)加入句法审阅：按整段核对具体动作、主语、指代和因果；不设置“记录、规则、机制”禁用词，也不把每句机械改成“系统应当”。内部模型可留在结构数据，正文只使用当下论证需要的名称。
 
 ## 检查范围
 

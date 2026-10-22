@@ -6,7 +6,7 @@
 
 本次视觉召回围绕五个明确用途展开：Q4 的概率分布、均值与严重尾部交互；Q3 的 `unknown` 状态与回放；Q5 的原子 diff 与反事实矩阵；统一入口的长文导览；以及静态打印。主结论仍来自 [交付蓝图](delivery-plan.md) 和 [回答母稿](answer-draft.md)：首版只有 Q4 的分布演示需要交互，Q3 与 Q5 以可打印的静态工件承载判断。
 
-已消费的本 kit 入口和提炼包括 [Reporting README](../../../kit/reporting/README.md)、[能力测试回答体例](../../../kit/reporting/assessment-answer-profile.md)、[Visual Grammar、Renderer 与 Review](../reporting/visual-renderer-review.md)、[本地设计提炼](../reporting/local-design.md) 和 [Downloads 依赖清单](../reporting/downloads.md)。career-kit 的本地快照登记为 6 个图式库入口文件，本文实际定向读取 README、图式目录、绘制规范、视觉记号和图式样张；其余 career-kit 内容没有扩大消费。
+已消费的本 kit 入口和提炼包括 [Reporting README](../../../dsh-praxis/kit/task/README.md)、[能力测试回答体例](../../../dsh-praxis/kit/writing/genres/assessment-answer.md)、[Visual Grammar、Renderer 与 Review](../reporting/visual-renderer-review.md)、[本地设计提炼](../reporting/local-design.md) 和 [Downloads 依赖清单](../reporting/downloads.md)。career-kit 的本地快照登记为 6 个图式库入口文件，本文实际定向读取 README、图式目录、绘制规范、视觉记号和图式样张；其余 career-kit 内容没有扩大消费。
 
 Courtwork 的 [local-projects 登记](../../intake/local-projects.json) 给出的原仓库路径是 `/Users/lesprivilege/Projects/Courtwork`，快照共 219 个文件、1,757,666 bytes，原仓库只读。本文定向读取其设计总纲、数据可视化、状态/投影契约、阅读与输出边界、表面层级和完成面等入口；manifest 标为 `deep_read` 的核心文件与 `indexed` 的目录级文件保持区分，没有把目录级索引当作逐件验证。
 

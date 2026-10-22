@@ -111,11 +111,11 @@ polish 沿用交接列出的工作面：`.app-shell`、`.sidebar`、`.topbar`、
 | U06 | 进度条只显示采集器给出的任务计数 | — |
 | [状态与可达性](../../kit/design/interaction/states.md) | 状态用形状加文字；必要信息不放在悬停里；焦点可见 | 读屏未测 |
 | [运动判断](../../kit/design/motion/grammar.md) | 每段运动先对应一种变化；减少运动下保留文字反馈 | 时长是本项目的选择 |
-| [成文原理](../../kit/write/prose/grammar.md)第 5 条、[审阅方法](../../kit/write/prose/review.md) | 结构位置并列、凝练；独立审阅后逐条裁决 | 见下节 |
+| [成文原理](../../dsh-praxis/kit/writing/principles.md)第 5 条、[审阅方法](../../dsh-praxis/kit/writing/review.md) | 结构位置并列、凝练；独立审阅后逐条裁决 | 见下节 |
 
 ## 结构文字审阅
 
-结构文字从渲染后的页面抽成清单，交给没有参与撰写的审阅者（Claude Sonnet，只读）按[审阅方法](../../kit/write/prose/review.md)审了一遍，主笔逐条裁决。审阅者和主笔都是模型，没有人读过。
+结构文字从渲染后的页面抽成清单，交给没有参与撰写的审阅者（Claude Sonnet，只读）按[审阅方法](../../dsh-praxis/kit/writing/review.md)审了一遍，主笔逐条裁决。审阅者和主笔都是模型，没有人读过。
 
 | 位置 | 原文 | 裁决 | 依据 |
 |---|---|---|---|

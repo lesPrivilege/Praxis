@@ -18,7 +18,7 @@ ADR-011 已让文档结构承担使用指引，ADR-014 已区分跨项目 Design
 | Kit 准入与长期维护 | 采纳必要、可复用、可发现、可执行、可验证与可维护要求；真实使用反馈支持复核和退出 | 同上；沿用 [修订流程](../governance/evolution.md) |
 | 外部参考的 distilled 语义 | 采纳来源主张、项目推断、取用价值、边界与重访的区分；每 URL 身份仍由原 catalog 维护 | [入账规范](../governance/intake.md)、[Design 索引](../../kit/design/references.md) |
 | Design 跨项目判断与项目样式 | 将通用判断留在 grammar；答卷参数保留到 Vault profile；历史 accepted 限定到对应消费者 | [设计语法](../../kit/design/grammar.md)、[历史 profile](../../vault/distilled/ai-capability-assessment/design-profile-20260924.md) |
-| Write 与 Design 的交界 | 在现有 Reporting 维护论证、内容结构和证据职责，Writing 保留成文职责，Design 维护视觉与交互判断 | [内容结构与媒介投影](../../kit/reporting/grammar.md) |
+| Write 与 Design 的交界 | 在现有 Reporting 维护论证、内容结构和证据职责，Writing 保留成文职责，Design 维护视觉与交互判断 | [内容结构与媒介投影](../../dsh-praxis/kit/task/brief.md) |
 | 内容原子与样本 registry | 采纳按语义职责描述展项；完整 Atom/Pattern/Composition schema、canonical/expressive specimen 库留作候选，由实际产出触发 | Reporting grammar；研究提炼 |
 | 原 Chat 与公开面 | 原件本地备查，公开或云端交付使用经过消费、泛化与披露检查的内容；索引也检查披露范围 | [消费与披露](../governance/intake.md) |
 | Demo 的材料来路 | 在既有准入中串联来源、提炼、借用范围与自身增量；原 Chat 不进入 Demo 作为规范 | [Demo 准入](../../demos/README.md) |

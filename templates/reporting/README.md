@@ -1,6 +1,6 @@
 # Reporting brief
 
-先填写六项：Audience、Expectation、Ask、Stage、Evidence、Tension。Ask 是材料需要促成的决定或行动，其余字段按任务展开；文体与视觉细节见 [Reporting Kit](../../kit/reporting/README.md)。
+先填写六项：Audience、Expectation、Ask、Stage、Evidence、Tension。Ask 是材料需要促成的决定或行动，其余字段按任务展开；文体与视觉细节见 [Task](../../dsh-praxis/kit/task/README.md)。
 
 | 字段 | 要回答的问题 |
 |---|---|
@@ -21,4 +21,4 @@
 
 完成检查：六项 brief 可支撑材料选择；未知列入待验证项；各项主张有依据或假设标签；事实经过对应复核。Evidence posture 只说明论述方式，证据等级按具体来源判断。
 
-与 grammar 的对应关系：intent = Organizational action，audience = Audience，decision = Ask，evidence = Evidence，visual = Visual，surface = Renderer。完成六项 brief 后，按 [组织动作表](../../kit/reporting/grammar.md#先确定组织动作) 选择 artifact family，再确定呈现形式。
+与 grammar 的对应关系：intent = Organizational action，audience = Audience，decision = Ask，evidence = Evidence，visual = Visual，surface = Renderer。完成六项 brief 后，按 [组织动作表](../../dsh-praxis/kit/task/brief.md#先确定组织动作) 选择 artifact family，再确定呈现形式。

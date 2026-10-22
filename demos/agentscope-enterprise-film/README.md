@@ -42,4 +42,4 @@
 - 第一版保留：`out/agentscope-enterprise.mp4`，53 场、32:14；[原舞台](film/index.html)、[原阅读稿](reading.html)。
 - [四段机制样片](quality/prototypes/README.md)保留初次时序与集成证据。
 
-封面按各自画幅原生绘制，不改变横屏视频；此项已记入 [后续视频交付要求](../../kit/write/motion/narrative.md#多平台封面与交付表述)。
+封面按各自画幅原生绘制，不改变横屏视频；此项已记入 [后续视频交付要求](../../dsh-praxis/kit/publish/video/narrative.md#多平台封面与交付表述)。

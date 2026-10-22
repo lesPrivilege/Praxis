@@ -9,7 +9,7 @@
 | 历史研究、裁决与施工输入 | 本页下方的研究、母稿、证据和工单链接 | 保留用于回查和再次消费；[交付蓝图](delivery-plan.md)是 2026-09-23 的历史计划，不是当前执行指令 |
 | 静态答卷呈现 | [呈现目录](rendered/README.md) · [呈现验收记录](rendered/verification.md) | 当前 HTML/PDF 为 `AI交付能力测试-answer-孙广昊.html` 与 `AI交付能力测试-answer-孙广昊.pdf`；仍有未验收范围。旧 `answer.html`/`answer.pdf` 已不存在，本入口不把历史旧名当作 canonical 产物 |
 | 动态简报 | [Motion 目录](motion/README.md) | Remotion 源码、时间线和成片入口已登记；外部播放器与移动端完整观看、无旁白观众测试仍未完成 |
-| 重新施工或对外交付 | [Reporting](../../../kit/reporting/README.md) → [Write](../../../kit/write/README.md) / [Design](../../../kit/design/README.md) → [Verification](../../../kit/verification/README.md) | 只有用户/main 另定范围、owner、canonical 文件名和验收条件后才进入下一阶段；不从历史工单自动派发 |
+| 重新施工或对外交付 | [Reporting](../../../dsh-praxis/kit/task/README.md) → [Write](../../../dsh-praxis/kit/README.md) / [Design](../../../kit/design/README.md) → [Verification](../../../kit/verification/README.md) | 只有用户/main 另定范围、owner、canonical 文件名和验收条件后才进入下一阶段；不从历史工单自动派发 |
 
 | 阅读需要 | 入口 | 可查内容 |
 |---|---|---|
@@ -23,7 +23,7 @@
 | 检查事实、假设与覆盖 | [证据 index](evidence-index.md) | 主张、来源、状态与未决项 |
 | 复核证据 | [Q1–Q3](../../provenance/ai-assessment-q123/README.md)、[Q4–Q5](../../provenance/ai-assessment-q45/README.md)、[原 Chat 引用](../../provenance/ai-assessment-chat/README.md) | 逐 URL 状态、正文快照及未恢复占位 |
 
-登记：[本批 intake](../../intake/ai-capability-assessment-20260923.json)；已采纳的跨任务写作约定见 [回答体例](../../../kit/reporting/assessment-answer-profile.md)。数字、来源覆盖与验证结果以 [验收记录](../../../docs/verification/ai-capability-assessment-20260923.md) 为准。
+登记：[本批 intake](../../intake/ai-capability-assessment-20260923.json)；已采纳的跨任务写作约定见 [回答体例](../../../dsh-praxis/kit/writing/genres/assessment-answer.md)。数字、来源覆盖与验证结果以 [验收记录](../../../docs/verification/ai-capability-assessment-20260923.md) 为准。
 
 实际图表与展示实现召回：[CW Pages](cw-pages-reference-index.md) · [career HTML](career-html-reference-index.md)。
 

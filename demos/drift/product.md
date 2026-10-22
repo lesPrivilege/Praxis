@@ -30,7 +30,7 @@ Drift 是网络、设备与浏览器观测看板。产品按“读到值 → 理
 
 界面使用稳定的产品名称；`source_id`、`comparison_key`、`duration_ms` 等字段留在实现契约。旧记录的值、状态、时间与方法版本原样保存；现行展示词典负责已知字段的名称和说明。
 
-写作按 [Praxis 成文原理](../../kit/write/prose/grammar.md)及[审阅方法](../../kit/write/prose/review.md)执行，并取用用户指定的 ASD-STE100 明确、具体、术语稳定原则。本轮未完成该标准全文核验，未采用其受控英文词表或作合规认定。
+写作按 [Praxis 成文原理](../../dsh-praxis/kit/writing/principles.md)及[审阅方法](../../dsh-praxis/kit/writing/review.md)执行，并取用用户指定的 ASD-STE100 明确、具体、术语稳定原则。本轮未完成该标准全文核验，未采用其受控英文词表或作合规认定。
 
 ## 当前字段与实现
 

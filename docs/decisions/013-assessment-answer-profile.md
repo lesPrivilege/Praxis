@@ -8,7 +8,7 @@
 
 ## 采纳
 
-在 [回答体例](../../kit/reporting/assessment-answer-profile.md) 单点维护：判断先行；机制有边界；反例与验收支持判断；个人案例区分文档、实现和实测；概念用自然语言展开，不硬翻译、不加面向读者的叙事；来源、技术版本、核查状态和实践快照集中在index，正文只保留实质判断与成立条件。
+在 [回答体例](../../dsh-praxis/kit/writing/genres/assessment-answer.md) 单点维护：判断先行；机制有边界；反例与验收支持判断；个人案例区分文档、实现和实测；概念用自然语言展开，不硬翻译、不加面向读者的叙事；来源、技术版本、核查状态和实践快照集中在index，正文只保留实质判断与成立条件。
 
 本套题按 [回答母稿](../../vault/distilled/ai-capability-assessment/answer-draft.md) 编订，并作以下裁决：
 

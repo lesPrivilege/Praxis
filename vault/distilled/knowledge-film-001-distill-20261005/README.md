@@ -90,8 +90,8 @@
 任务入口的路由起了作用，证据与验收两条规则在产物里看得到，其余只能说一致。
 
 - **入口路由。** 主会话从 `kit/README.md` 走到 Write、Write/Motion、Design/Motion、成文原理和证据契约，用了 42 秒，没有读维护文档（L29、L59）。这是 [ADR-019](../../../docs/decisions/019-expression-owners-and-entry-paths.md)要的结果。
-- **观看范围如实报告。** [叙事与分镜交接](../../../kit/write/motion/narrative.md)第 20、24 行要求联络表不代替完整观看、没做观众测试就只报告制作范围。成品 README 第 118–123 行和交付说明（L1477）都写了“没有人完整看过、听过”。同一句话也在主会话读过的跨会话笔记里，两个来源分不开。
-- **证据身份。** 出处表把每一行标成主会话亲核、代理核查、推论或自撰，另列没采用的说法和没核到原件的地方；第二章全程标“合成案例”，示意图标“示意，不是实验结果”。这与 [证据与来源](../../../kit/write/shared/evidence.md)一致。归因没有对照。
+- **观看范围如实报告。** [叙事与分镜交接](../../../dsh-praxis/kit/publish/video/narrative.md)第 20、24 行要求联络表不代替完整观看、没做观众测试就只报告制作范围。成品 README 第 118–123 行和交付说明（L1477）都写了“没有人完整看过、听过”。同一句话也在主会话读过的跨会话笔记里，两个来源分不开。
+- **证据身份。** 出处表把每一行标成主会话亲核、代理核查、推论或自撰，另列没采用的说法和没核到原件的地方；第二章全程标“合成案例”，示意图标“示意，不是实验结果”。这与 [证据与来源](../../../dsh-praxis/kit/writing/evidence.md)一致。归因没有对照。
 - **前一个 demo 的管线说明。** 主会话读了视觉语法工场的管线说明（L59），自己的取帧脚本沿用了同一组浏览器参数、同一种“成片抽帧对新渲染”的比对和 `pipe:0` 的写法。代码没有复用。
 - **仓库约定。** 每个代理只拥有自己的文件，README 逐层补齐，三次运行仓库校验，共用的索引文件没有碰，模型如实写明。
 
@@ -99,9 +99,9 @@
 
 | 没有被打开的 | 与这次任务的关系 |
 |---|---|
-| [成文审阅](../../../kit/write/prose/review.md)、[Prose 入口](../../../kit/write/prose/README.md)、项目 skill `writing` | 旁白和屏幕文字没有经过任何语言审阅；两份独立审校查的是事实和画面 |
-| [内容与媒介验收](../../../kit/write/shared/verification.md) | 第 7 行要求交付前核对文字是否经过 Prose 审阅。叙事交接页第 24 行有指向它的链接，主会话读了那一页，没有点进去 |
-| [Publish](../../../kit/write/publish/README.md) | 观看页和出处表是编排好的页面 |
+| [成文审阅](../../../dsh-praxis/kit/writing/review.md)、[Prose 入口](../../../dsh-praxis/kit/writing/README.md)、项目 skill `writing` | 旁白和屏幕文字没有经过任何语言审阅；两份独立审校查的是事实和画面 |
+| [内容与媒介验收](../../../dsh-praxis/kit/publish/verification.md) | 第 7 行要求交付前核对文字是否经过 Prose 审阅。叙事交接页第 24 行有指向它的链接，主会话读了那一页，没有点进去 |
+| [Publish](../../../dsh-praxis/kit/publish/html/README.md) | 观看页和出处表是编排好的页面 |
 | [Design 入口](../../../kit/design/README.md)与各分支 | [成立程度的标记](../../../kit/design/foundations/standing.md)第 36 行规定实线是已成立、虚线是未成立；施工约定第 63 行自己写了同一条 |
 | [anti-slop 提炼](../reporting/writing-anti-slop.md) | 工单点名的参考。Kit 和 docs 里没有任何链接指向它 |
 | Motion ceiling 研究及其来源卡（缺件；原定位 `../motion-ceiling-20261004/README.md`） | 工单点名的 `awesome-opus-5.5-video` 在历史记录中称已有来源卡；当前仓库缺件，原定位 `../../provenance/motion-ceiling-20261004/cards/w02-zhuyansen-awesome-opus-5-5-video.md`；主会话只读了讲这次研究的跨会话笔记 |
@@ -113,7 +113,7 @@
 
 ### 哪些 friction 暴露出来
 
-- **口播没有入口。** [成文原理](../../../kit/write/prose/grammar.md)第 3 行写明默认用于对外中文技术成文。Write/Motion 给的是分镜的语义契约，没有旁白的语体。主会话读完能用的只有四条底线。
+- **口播没有入口。** [成文原理](../../../dsh-praxis/kit/writing/principles.md)第 3 行写明默认用于对外中文技术成文。Write/Motion 给的是分镜的语义契约，没有旁白的语体。主会话读完能用的只有四条底线。
 - **审阅判准与用户的原话相反（制作当时；现已由 ADR-027 改回）。** 审阅方法第 16 行写“不以‘更像人写的’代替判准”，第 11 行写结构位置“名词短语与完整陈述都可以使用”。这两处是 2026-10-03 依据一份转述改的，[回执](../../../docs/verification/writing-review-20261003.md)第 7 行写明没有取得原话。原话在 2026-09-23 答卷会话的日志里：用户说裁决的“指标依然是更接近人类作者和人类语言”（该日志 L1060），说表头和字段口语化、“孤悬”、“显然是 llm 语言”（L1139）。仓库自己的记录也是这样写的：[答卷验收](../ai-capability-assessment/rendered/verification.md)第 128 行“裁决标准由用户确定：更接近人类作者写的中文”，第 113 行“表头改为并列的名词短语”。2026-10-05 用户对这部片子说的是同一件事（L1559）。
 - **交付前的核对没有触发点。** Kit 的入口让读者“读到输入、约束和完成标准都清楚就开工”。验收页在交付时才用得上，那时没有东西把制作方带回去。
 - **共用的检出。** 另一个会话有未提交的改动，主会话因此不动 `demos/README.md`、`CHANGELOG.md` 和根 `.gitignore`。成品没有进任何索引，仓库校验照样通过：校验不检查 demo 是否登记。
@@ -245,7 +245,7 @@
 | 去向 | Praxis 里的位置 | 进入条件 |
 |---|---|---|
 | core | Kit 的规则正文 | 用户裁决；涉及术语、目录或晋升规则时写 ADR |
-| extension | 只对一类产物生效的约定。现有的落点是 [Genres](../../../kit/write/prose/genres/README.md)和项目自己的施工约定 | 出现第二个同类消费者之前留在项目里 |
+| extension | 只对一类产物生效的约定。现有的落点是 [Genres](../../../dsh-praxis/kit/writing/genres/README.md)和项目自己的施工约定 | 出现第二个同类消费者之前留在项目里 |
 | reference | Kit 里的备用素材和参考分支，状态 `reference` 或 `candidate` | 登记来路和边界 |
 | external index | `vault/references`、`vault/provenance` 的来源记录 | 逐 URL 登记 |
 | example | `demos/` 下的项目，以及 [样张索引](../../../kit/design/references/specimens.md)里的条目 | 项目自带说明和验收范围 |

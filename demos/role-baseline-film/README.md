@@ -28,7 +28,7 @@
 
 ## 内容口径
 
-来源有三份：用户贴入的一份薪酬补充说明（模型起草的长稿）、用户随后口述的原始想法、用户补来的一份参考短稿。三份有出入时按用户口述的为准。按 [证据与来源](../../kit/write/shared/evidence.md)，这是一次改编，变动如下。
+来源有三份：用户贴入的一份薪酬补充说明（模型起草的长稿）、用户随后口述的原始想法、用户补来的一份参考短稿。三份有出入时按用户口述的为准。按 [证据与来源](../../dsh-praxis/kit/writing/evidence.md)，这是一次改编，变动如下。
 
 | 项 | 做法 |
 |---|---|
@@ -46,17 +46,17 @@
 
 | 读了哪一页 | 用在哪里 |
 |---|---|
-| [Reporting](../../kit/reporting/README.md)、[组织动作](../../kit/reporting/grammar.md) | 定成“请求决定”：片头和 txt 第一节先给诉求，再给依据和条件。读者、决定和证据用户已经给出，没有另填 brief |
-| [成文原理](../../kit/write/prose/grammar.md) | txt 以岗位、数字和费用作主语；画面上的章名、图题、标签按第 5 条单独撰写，同类位置并列 |
-| [口播旁白体例](../../kit/write/prose/genres/narration.md) | 数字写成汉字再交给语音；同一样东西只叫“工具费”；“到手”只指税后，“剩”只指付完工具费之后 |
-| [成文审阅](../../kit/write/prose/review.md) | 列不可损失项；数句式；把画面文字抽成清单按位置类别看了一遍，图题因此从名词短语改成与另两个并列的判断句 |
-| [证据与来源](../../kit/write/shared/evidence.md) | 上一节的变动说明；前提“公司不统一采购”在片子和 txt 里都放在诉求旁边 |
-| [叙事与分镜交接](../../kit/write/motion/narrative.md) | 一段一个认知任务；画面文字不从念白里截；从渲染后的舞台抽文字清单 |
+| [Reporting](../../dsh-praxis/kit/task/README.md)、[组织动作](../../dsh-praxis/kit/task/brief.md) | 定成“请求决定”：片头和 txt 第一节先给诉求，再给依据和条件。读者、决定和证据用户已经给出，没有另填 brief |
+| [成文原理](../../dsh-praxis/kit/writing/principles.md) | txt 以岗位、数字和费用作主语；画面上的章名、图题、标签按第 5 条单独撰写，同类位置并列 |
+| [口播旁白体例](../../dsh-praxis/kit/writing/genres/narration.md) | 数字写成汉字再交给语音；同一样东西只叫“工具费”；“到手”只指税后，“剩”只指付完工具费之后 |
+| [成文审阅](../../dsh-praxis/kit/writing/review.md) | 列不可损失项；数句式；把画面文字抽成清单按位置类别看了一遍，图题因此从名词短语改成与另两个并列的判断句 |
+| [证据与来源](../../dsh-praxis/kit/writing/evidence.md) | 上一节的变动说明；前提“公司不统一采购”在片子和 txt 里都放在诉求旁边 |
+| [叙事与分镜交接](../../dsh-praxis/kit/publish/video/narrative.md) | 一段一个认知任务；画面文字不从念白里截；从渲染后的舞台抽文字清单 |
 | [运动判断](../../kit/design/motion/grammar.md) | 运动只用来表示出现、延伸、移动和替换；柱里的读数直接替换，不做数字滚动，中间帧不会被读成数据 |
 | [成立程度与归属的标记](../../kit/design/foundations/standing.md) | 蓝色只给等审批的 29K；虚线表示尚未成立；每个状态都写成词：未建立、时间未定、待审批 |
 | [排列与刻度](../../kit/design/foundations/placement.md) | 入职、第一个项目、晋升只有先后，没有时长，图里写了读法；两根柱共用一条从零起的标尺 |
 | [图形编码](../../kit/design/composition/encoding.md) | 柱长从零起；工具费用纹理和文字区分，不单靠颜色 |
-| [内容与媒介验收](../../kit/write/shared/verification.md) | “做了什么检查、没做什么”一节的分法 |
+| [内容与媒介验收](../../dsh-praxis/kit/publish/verification.md) | “做了什么检查、没做什么”一节的分法 |
 | [金字塔片第五版](../knowledge-film-001-pyramid-cut5/README.md)及其[施工约定](../knowledge-film-001-pyramid-cut5/film/AUTHORING.md) | 配音先行、词级时间锚点、逐帧渲染的整条管线；引擎原样取用，脚本改写后放在 [build](build/README.md) |
 
 读了没有用上的：[Motion ceiling 提炼](../../vault/distilled/motion-ceiling-20261004/README.md)，这条片子没有空间遮挡和跨层对象。没有读的：Interaction、References 里的外部作品卡。Publish 在制作时没有读，见下一节。
@@ -66,8 +66,8 @@
 Kit 版本是 main `02ca9ea` 加工作区里未提交的改动。只有一次制作，没有对照组。
 
 - 从任务入口到旁白体例、标记、排列和旧管线，一路都有链接，没有断点。
-- “感知不到的部分”“自查通过之后”两条备用做法，从内容表达的入口读不到，这次是从金字塔片的项目说明里取到了同样的做法。[内容验收](../../kit/write/shared/verification.md)已加一句入口。
-- 把 txt 编成 Word 和 PDF 时没有回到 Publish。事后对照 [内容编排](../../kit/write/publish/composition.md)，标题、段落和表格各自承担的内容身份没有出入。
+- “感知不到的部分”“自查通过之后”两条备用做法，从内容表达的入口读不到，这次是从金字塔片的项目说明里取到了同样的做法。[内容验收](../../dsh-praxis/kit/publish/verification.md)已加一句入口。
+- 把 txt 编成 Word 和 PDF 时没有回到 Publish。事后对照 [内容编排](../../dsh-praxis/kit/publish/html/composition.md)，标题、段落和表格各自承担的内容身份没有出入。
 - 测算图里的参考线和差额括线画成了虚线，旁边各写了词（收入预期、差）。[标记页](../../kit/design/foundations/standing.md)的默认分配管的是关系图；数量图上的线型按 [图形编码](../../kit/design/composition/encoding.md)写进图里即可，不需要另立规则。
 - 引擎和管线是从金字塔片拷来的第二份。两条片子的目录和配音线路不同，没有抽公共层。
 

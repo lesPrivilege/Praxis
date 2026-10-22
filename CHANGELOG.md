@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-10-23 · dsh-praxis：Task、Writing、Publish 迁入
+
+- 按 [迁移映射](dsh-praxis/migration.md)把内容表达部分迁进 [dsh-praxis/kit](dsh-praxis/kit/README.md)：Writing（底线、成文原理、内容组织、文体、语言约定、审阅、作者语体），Task（入口、材料目的与组织动作、现场闭环与驻场组织接口、选择表达媒介、技术说明与工作报告两个任务类型），Publish（html、video 两条流水线与共用验收）。`kit/write/`、`kit/writing/`、`kit/reporting/` 删除，不留导航；取舍补记在 [ADR-037](docs/decisions/037-dsh-praxis-layered-grammar.md#补充taskwritingpublish-迁入2026-10-23)。
+- 成文原理第 6 条正文拆到 [中文语言约定](dsh-praxis/kit/writing/language/zh.md)，编号不变；讲解页拆成 Writing 的 [机制讲解](dsh-praxis/kit/writing/organization/mechanism.md)与 Publish / html 的 [讲解页的编排](dsh-praxis/kit/publish/html/explainer.md)。
+- 维护中的页面、`writing` skill、根 README 与 Kit 入口改指新位置；历史记录只改 Markdown 链接目标。来源 catalog 的 `grammar_paths` 随之更新，registry 重新生成。
+- 走读：一个 Sonnet 代理从 AGENTS.md 冷读路由“给同事写一页 tools/equity-chart 技术说明”，经 Task → 任务类型 → Writing / Publish / Design 到达完整阅读集，没有断链。据它的报告改了四处：类型页列出的单元照读、html 入口不再称其“非必经”；任务兼有两类时怎样选；导航与渐进披露改为按需；分层体例写明 Design 与 Materials 仍在原处。用法类内容不在四问框架里、首次使用者的校准没有专门页，记为观察，未改规则。只走了路由，没有写出页面，没有对照。
+- Design 与 Materials 数据层没有迁。
+
 ## 2026-10-23 · dsh-praxis 分层体例
 
 - 新增 [dsh-praxis](dsh-praxis/README.md)：个人 FDE 工作 Kit 与控制面的分层体例（Task、Writing、Design、Publish、Materials）、对象与操作、五种对象的 schema 草案和现有 Kit 的迁移映射。裁决见 [ADR-037](docs/decisions/037-dsh-praxis-layered-grammar.md)。没有写代码，没有迁移任何 Kit 页面。
@@ -11,7 +19,7 @@
 
 - 各轮审阅代理的原始结果存进 [审阅原始记录](palantir/reading-list-series/verification/reviews/README.md)，来源探索与核验结果存进 [研究交接](palantir/reading-list-series/research/handoffs/README.md)；会话临时路径改写为占位，联络表与截图不入库。
 - 没有参与制作的 Opus 代理从会话日志写成 [过程重建](vault/distilled/palantir-reading-list-series-distill-20261019/README.md)，附二十二份任务书原文与 [登记](vault/intake/palantir-reading-list-series-distill-20261019.json)。
-- 八条候选落地三条：[叙事与分镜交接](kit/write/motion/narrative.md#旁白与屏幕文字的审阅)的结构文字独立审阅不再以对外发布为条件，多人或多代理写成即触发；[工作开展方式](kit/environment/working-methods.md)补“量出来的数异常时先单独再量一段”和“原因不明时”的一次实测反例。均未对照。
+- 八条候选落地三条：[叙事与分镜交接](dsh-praxis/kit/publish/video/narrative.md#旁白与屏幕文字的审阅)的结构文字独立审阅不再以对外发布为条件，多人或多代理写成即触发；[工作开展方式](kit/environment/working-methods.md)补“量出来的数异常时先单独再量一段”和“原因不明时”的一次实测反例。均未对照。
 - 验收页更正：ep04 转写记为未通过（识别器漏写英文名，单独转写正确）；`c11ebf4` 的提交说明与表格里“配额未运行”的说法以此为准。空白检查写明取样粒度。
 
 ## 2026-10-17 · Palantir 入职书单视频系列
@@ -19,7 +27,7 @@
 - 新增 [入职书单视频系列](palantir/reading-list-series/README.md)：一部总论加五集，各读一份（Interviewing Users、Impro、Getting Things Done、Dalio 的早期 PDF、The Looming Tower），另有由同一份正文排出、去掉各集引入与收尾的 33:33 合集。中文旁白按作者语体写成，每集有 4:3 与 3:4 原生封面；画面上的每句引文和出处都对应主张登记里的一条，外部图片只经素材登记上屏。
 - 原 Chat 与交接稿入账：[归档](vault/archive/chat/palantir-reading-list-series-20261017.md)、[入账记录](vault/intake/palantir-reading-list-series-20261017.json)，另有两份新来源快照。交接稿按“仅供参考”裁决，采用与不采用的写在系列页。旧提炼里“这五份是入职书单”等几处说法回到原文更正，见 [系列研究](palantir/reading-list-series/research/README.md#对旧记录的更正)。
 - Sonnet 代理探索与核验来源；Opus 代理冷读稿子、施工画面、审阅画面与结构文字、做镜头导演和成片审阅；主会话逐条裁决，记在 [验收](palantir/reading-list-series/verification/acceptance.md)。
-- Kit 只加两处记录：[口播旁白体例](kit/write/prose/genres/narration.md)的“悬念后揭晓”一行补上冒号揭晓（合成语音在冒号处停顿）；[Motion](kit/write/motion/README.md) 的制作记录加本系列一行。
+- Kit 只加两处记录：[口播旁白体例](dsh-praxis/kit/writing/genres/narration.md)的“悬念后揭晓”一行补上冒号揭晓（合成语音在冒号处停顿）；[Motion](dsh-praxis/kit/publish/video/README.md) 的制作记录加本系列一行。
 - 没有人带声音按实际速度看过成片；几处人名读音与没跑成的转写比对留给人，见验收页。
 
 ## 2026-10-17 · 股权结构图工具
@@ -31,7 +39,7 @@
 ## 2026-10-17 · Writing Kit 修订交接的裁决
 
 - 并入 [Writing Kit 修订交接](vault/distilled/writing-kit-spec-handoff-20261016/README.md)，按 [ADR-036](docs/decisions/036-writing-kit-spec-handoff.md) 裁决：讲解页的结论层从问题讲起，共用机制只在一处讲；成文原理第 6 条加缩写首用；多语言页加外文来源提炼的语言边界；共享验收的固定顺序换成检查面；证据页写明对象自身的历史是正文；审阅加“改正时补进假设”。
-- 新增配置项 [作者语体](kit/write/prose/author-profile.md)，默认关闭；任务要求用仓库所有者口吻，或项目 AGENTS.md 写有 `作者语体：开` 时打开。私有证据底稿留在本机 `vault/private/`，不入库。
+- 新增配置项 [作者语体](dsh-praxis/kit/writing/author-profile.md)，默认关闭；任务要求用仓库所有者口吻，或项目 AGENTS.md 写有 `作者语体：开` 时打开。私有证据底稿留在本机 `vault/private/`，不入库。
 - 并入 AgentScope 知识片的视觉修订（原生 SVG 对象叙事的 cut3 与视觉规格比对）；其余已并入的分支删除。
 - 没有做真实写作试用。
 
@@ -39,7 +47,7 @@
 
 - 新增 [SaaS 工程全景 · 交互教材](demos/saas-engineering-textbook/README.md)：从 Books 正文与 Vault 结构数据生成的离线多页站点，含 33 例结构面板与 9 个交互图件；全书正文经独立审阅后改写回 Books。交接与验证命令移出读者路径，归入 [Vault 资产索引](vault/distilled/saas-engineering-atlas/README.md)。
 - 并入 [技术文档编订研究](vault/distilled/technical-compilation-writing-research-20261014/README.md)，并在本书上做事后对照，见 [试用记录](vault/distilled/technical-compilation-writing-research-20261014/saas-trial-20261015.md)。
-- [成文原理](kit/write/prose/grammar.md)第 8 条与 [审阅方法](kit/write/prose/review.md)加“重复设防”：限定在读者需要处说一次；[证据与来源](kit/write/shared/evidence.md)把过程材料归 index；审阅第 7 步可用脚本比对不可损失的字面量。兼容扩展，见 [ADR-034](docs/decisions/034-state-limits-once-and-keep-process-out.md)。
+- [成文原理](dsh-praxis/kit/writing/principles.md)第 8 条与 [审阅方法](dsh-praxis/kit/writing/review.md)加“重复设防”：限定在读者需要处说一次；[证据与来源](dsh-praxis/kit/writing/evidence.md)把过程材料归 index；审阅第 7 步可用脚本比对不可损失的字面量。兼容扩展，见 [ADR-034](docs/decisions/034-state-limits-once-and-keep-process-out.md)。
 - 来路标签（例子是构造的、不对应某家产品或标准）不算限定，写在约定页或 index；SaaS 书据此删去，补记在 ADR-034。教材站点改为分场版式，并加 18 张手绘 SVG。
 - 用户交来的写作规范只取结构：讲解页每节先给局部答案，审阅加“目录冒充概览”“摘要逐级稀释”，交叉链接写明关系，见 [ADR-035](docs/decisions/035-local-answers-and-link-relations.md)；原件登记在 [Vault](vault/distilled/technical-compilation-writing-research-20261014/knowledge-organization-spec-20261015.md)。
 
@@ -51,8 +59,8 @@
 
 ## 2026-10-12 · 术语与讲解页的编排
 
-- [成文原理](kit/write/prose/grammar.md)第 6 条：术语取目标读者之间最稳定的说法；在 AI 与 agent 这类术语主要以英文流通的领域用英文原词，不临时造译名，首次出现时交代含义。[审阅方法](kit/write/prose/review.md)偏差表加一行。兼容扩展，强度不变。见 [ADR-031](docs/decisions/031-stable-terms-and-explainer-page.md)。
-- Write / Publish 新增 [讲解页的编排](kit/write/publish/explainer.md)：每个局部回答四问、四层的可见性、事实底稿、可调之处与反例。可取用的参考，不是必经步骤。
+- [成文原理](dsh-praxis/kit/writing/principles.md)第 6 条：术语取目标读者之间最稳定的说法；在 AI 与 agent 这类术语主要以英文流通的领域用英文原词，不临时造译名，首次出现时交代含义。[审阅方法](dsh-praxis/kit/writing/review.md)偏差表加一行。兼容扩展，强度不变。见 [ADR-031](docs/decisions/031-stable-terms-and-explainer-page.md)。
+- Write / Publish 新增 [讲解页的编排](dsh-praxis/kit/publish/html/explainer.md)：每个局部回答四问、四层的可见性、事实底稿、可调之处与反例。可取用的参考，不是必经步骤。
 - [成立程度的标记](kit/design/foundations/standing.md)可调情形加一句：交互图里强调色可作“当前选中”。
 - 新增演示 [DeerFlow 怎样工作](demos/deerflow-explainer/README.md)；稳定语义的记号、控件与运动写成 [工单](demos/editable-native-svg/claude-design-order-20261012.md)，交给独立的 ClaudeDesign。
 - 交付收进 Design 的 [记号、控件与运动](kit/design/marks/README.md)：57 个原生 SVG 记号、11 个控件、10 种运动，grammar 与这一版画法分开；normal/reference，按需取用。讲解页的系统全景图取用了 18 个记号，效果与缺口记在该包的 [检查与取用记录](kit/design/marks/checks.md)。见 [ADR-032](docs/decisions/032-semantic-marks-library.md)。
@@ -60,7 +68,7 @@
 
 - 新增 [AgentScope 企业线知识片](demos/agentscope-enterprise-film/README.md)：公开文档与固定源码研究形成 53 场、横屏无 TTS 视频，以及可暂停舞台、详尽阅读稿和两张原生绘制封面。Python 2.0 与 Java Harness/Service 分开讲解，旧 Runtime/Studio 只讲迁移。
 - 三位 Luna 做有界探索，Astra 裁决范围并独立审阅；事实和图形语义修订、编码及检查见 [制作记录](demos/agentscope-enterprise-film/production.md)。公开来源、原件 hash 与局部缺口保留 Vault。
-- 按用户新增要求，在唯一 [Motion 交接契约](kit/write/motion/narrative.md#多平台封面与交付表述)记录后续视频默认交付 4:3 与 3:4 原生封面，封面与成片画幅独立；制作状态和泛泛保护话语进入过程文档。新要求不追补历史成片。
+- 按用户新增要求，在唯一 [Motion 交接契约](dsh-praxis/kit/publish/video/narrative.md#多平台封面与交付表述)记录后续视频默认交付 4:3 与 3:4 原生封面，封面与成片画幅独立；制作状态和泛泛保护话语进入过程文档。新要求不追补历史成片。
 - 一次外部误重置移除了在制目录；研究包与管线在临时目录恢复，转入独立分支保存本次成果。仓库验证与成片范围见 [验收回执](docs/verification/agentscope-enterprise-film-20261012.md)。
 
 ## 2026-10-11 · 艺术与软件语法参考书
@@ -77,13 +85,13 @@
 
 - 新增 [Write 分支知识片](demos/write-kit-film/README.md)：只给题目（编译成知识讲解视频，不做配音），由主会话沿 Kit 入口取用 Write 各页，引用 Netflix 简体中文字幕规范的读速上限（成人每秒 9 字），沿用薪酬基线说明片的管线、去掉配音与混音，做成 245 秒的无声片。时间由人定，读速写成检查：任意 4 秒窗口新出现的字不超过 36 个。
 - 画面文字由一位未参与撰写的 Opus 审阅者做结构审阅并对照 Kit 原文核对事实，主会话裁决：13 项采纳（含 1 项改写后采纳）、2 项保留；其中四条底线、三档强度与验收表的几处措辞回到原文，一处页面没有的说法（“无对照组”）去掉。
-- Kit 只动一处入口：[Write / Motion](kit/write/motion/README.md)的制作记录加一行，写明无声片怎样定时。规则含义没有改，没有新增目录、ADR 或依赖；观察和复用说明留在项目说明里。
+- Kit 只动一处入口：[Write / Motion](dsh-praxis/kit/publish/video/README.md)的制作记录加一行，写明无声片怎样定时。规则含义没有改，没有新增目录、ADR 或依赖；观察和复用说明留在项目说明里。
 - 成片检查六项通过（流、保真、静止、空白、读速、字号）；制作方没有按实际速度完整看过，没有受众测试，审阅只有一位审阅者、一轮。验证：`python3 scripts/validate_repository.py`。
 
 ## 2026-10-10 · 视频能力测试与一次回流
 
 - 新增 [薪酬基线说明片](demos/role-baseline-film/README.md)：只给题目，由主会话沿 Kit 入口取用规则、参考和金字塔片的管线，做成 97 秒说明片与一份 txt（另编 Word 与 PDF），材料合成。成片检查七项通过；制作方没有听过声音，独立冷读没有完成，没有受众测试。
-- Kit 只动两处入口：[内容验收](kit/write/shared/verification.md)加一句，指向“感知不到的部分”和“自查通过之后”两条备用做法，这次从内容表达的入口读不到它们；[Write / Motion](kit/write/motion/README.md)的制作记录加一行，写明短片从哪个项目起步。规则含义没有改，没有新增目录、ADR 或依赖。
+- Kit 只动两处入口：[内容验收](dsh-praxis/kit/publish/verification.md)加一句，指向“感知不到的部分”和“自查通过之后”两条备用做法，这次从内容表达的入口读不到它们；[Write / Motion](dsh-praxis/kit/publish/video/README.md)的制作记录加一行，写明短片从哪个项目起步。规则含义没有改，没有新增目录、ADR 或依赖。
 - 取用记录、观察和复用说明都留在项目说明里，没有写进各规则页。引擎与管线仍是从金字塔片拷来的一份，没有抽公共层。
 - 主会话（Opus）完成；交给独立审阅者的一次冷读随会话中断，没有交回。验证：`python3 scripts/validate_repository.py` 通过。
 
@@ -108,7 +116,7 @@
 
 ## 2026-10-08 · 发现入口与消费记录
 
-- 保留现有目录；在 [Write / Motion](kit/write/motion/README.md)连接长片、机制演算、空间表达的施工与消费记录，[Design / Motion](kit/design/motion/README.md)补外部研究入口，[demos](demos/README.md)补 Motion ceiling 工场。各项目的技术与参数继续留在项目内。
+- 保留现有目录；在 [Write / Motion](dsh-praxis/kit/publish/video/README.md)连接长片、机制演算、空间表达的施工与消费记录，[Design / Motion](kit/design/motion/README.md)补外部研究入口，[demos](demos/README.md)补 Motion ceiling 工场。各项目的技术与参数继续留在项目内。
 - [Palantir reading list](palantir/references/README.md)逐项链接已有候选笔记；上层入口区分候选提炼与已采纳正文，历史任务书标明已经执行，主题入口补已有消费项目。补金字塔过程重建的 intake 导航。
 - 本轮由主代理编订、两位 Luna 只读追溯；只核对仓库内记录，没有重新访问外部来源、补快照、运行渲染或制作视频。金字塔主日志与研究网页未快照，A3 部分运行依赖未快照，Motion ceiling 多数外部来源仍未读；四本阅读材料全文仍缺。未新增专用交接文档或重复的制作流程。
 - 验证：`python3 scripts/validate_repository.py` 通过；Luna 定向走读 Dalio 已读边界、Impro 缺正文、机制类视频选型与金字塔过程追溯四条路径，无断链。属于维护走读，未做新主笔制作或对照实验。
@@ -133,21 +141,21 @@
 
 - 把 ADR-027、ADR-028 新增的两种独立审阅写明是可以取用的做法，不是每件任务的必经步骤；口播旁白页的随稿材料改成按任务取用。条文的含义没有变，强度写清了。
 - [工作开展方式 · 备用素材](kit/environment/working-methods.md)加三条：把研究交出去、自查通过之后、感知不到的部分。它们是备用素材，不默认加载。
-- [Motion 入口](kit/write/motion/README.md)、[演示实现](demos/README.md)和 [Distilled](vault/distilled/README.md)各加一处指向 Knowledge Film 001 的样例和过程重建。
+- [Motion 入口](dsh-praxis/kit/publish/video/README.md)、[演示实现](demos/README.md)和 [Distilled](vault/distilled/README.md)各加一处指向 Knowledge Film 001 的样例和过程重建。
 - Knowledge Film 001 第五版收尾：片尾塔补上第五片叶子，成片检查六项通过（旁白转写比对第一次跑）。记录在 [回执](docs/verification/narration-distill-20261005.md)的“收尾时的调整”一节。
 
 ## 2026-10-05 · 口播旁白与独立冷读
 
-- Write / Prose 新增文体页 [口播旁白](kit/write/prose/genres/narration.md)：为耳朵写的指代、主干、读音和叫法，口播里要数的六种句式，旁白与画面文字的对应，随稿交付的句式统计和读音清单。见 [ADR-028](docs/decisions/028-narration-genre-and-cold-read.md)。
-- [审阅方法](kit/write/prose/review.md)新增“成文的独立冷读”，结构文字的独立审阅补三项产出，常见偏差表加七行结构文字的例子；[成文原理](kit/write/prose/grammar.md)第 5 条加一句“同一句话在几处出现时逐字一致”。
+- Write / Prose 新增文体页 [口播旁白](dsh-praxis/kit/writing/genres/narration.md)：为耳朵写的指代、主干、读音和叫法，口播里要数的六种句式，旁白与画面文字的对应，随稿交付的句式统计和读音清单。见 [ADR-028](docs/decisions/028-narration-genre-and-cold-read.md)。
+- [审阅方法](dsh-praxis/kit/writing/review.md)新增“成文的独立冷读”，结构文字的独立审阅补三项产出，常见偏差表加七行结构文字的例子；[成文原理](dsh-praxis/kit/writing/principles.md)第 5 条加一句“同一句话在几处出现时逐字一致”。
 - Prose 入口加两处：把撰写交给别人时把条文写进任务书；空泛写法的自查指向 Vault 里已有的候选提炼。
 - 属于兼容扩展。[回执](docs/verification/narration-distill-20261005.md)记录这次提炼对照的过程、进入与没有进入的内容、一次入口走读。使用证据只有一条片子和同一名主笔。
 
 ## 2026-10-05 · 成文审阅的目标与结构位置
 
-- Write / Prose 按用户裁决恢复两项，见 [ADR-027](docs/decisions/027-prose-review-goal-and-structural-text.md)：[审阅方法](kit/write/prose/review.md)以让成文更接近人类作者写出的中文为目标；[成文原理](kit/write/prose/grammar.md)第 5 条的结构位置回到凝练、并列的短语，画面上的短文字计入结构位置，第 6 条恢复“模型惯用的搭配”。
+- Write / Prose 按用户裁决恢复两项，见 [ADR-027](docs/decisions/027-prose-review-goal-and-structural-text.md)：[审阅方法](dsh-praxis/kit/writing/review.md)以让成文更接近人类作者写出的中文为目标；[成文原理](dsh-praxis/kit/writing/principles.md)第 5 条的结构位置回到凝练、并列的短语，画面上的短文字计入结构位置，第 6 条恢复“模型惯用的搭配”。
 - 审阅新增两步：通篇检查句式是否重复；结构文字多的材料由没有参与撰写的审阅者单独审。
-- Write / Motion 的 [叙事与分镜交接](kit/write/motion/narrative.md)新增“旁白与屏幕文字的审阅”一节，把旁白接到成文审阅、屏幕上的结构文字接到独立审阅，并要求写进撰写者的任务书。属于兼容扩展。
+- Write / Motion 的 [叙事与分镜交接](dsh-praxis/kit/publish/video/narrative.md)新增“旁白与屏幕文字的审阅”一节，把旁白接到成文审阅、屏幕上的结构文字接到独立审阅，并要求写进撰写者的任务书。属于兼容扩展。
 - 属于规则含义的变化，修订 ADR-024 的两处。新任务适用；ADR-024 生效期间按旧条文审过的材料没有重审。[回执](docs/verification/prose-review-restoration-20261005.md)记录召回、核对、改动和未做的事。
 
 ## 2026-10-04 · 排列与刻度
@@ -227,7 +235,7 @@
 - 平台产品扫盲与思维导图归属，见 ADR-012。
 - AI 能力测试：研究登记、五题回答母稿、问题—答案树与离线 HTML 答卷（`vault/distilled/ai-capability-assessment/rendered/`），回答体例见 ADR-013。
 - 前端设计与可视化参考的召回、裁决与消费记录（CW、Schema Engineering、career-kit、外部 DESIGN.md、W3C/WCAG、GOV.UK、ONS）。
-- 建立 [kit/design](kit/design/README.md) 与 [kit/writing](kit/writing/README.md)，写作原理由项目 skill `writing` 自足承载，见 ADR-014；旧的全局 house-style skill 停用。
+- 建立 [kit/design](kit/design/README.md) 与 [kit/writing](dsh-praxis/kit/writing/README.md)，写作原理由项目 skill `writing` 自足承载，见 ADR-014；旧的全局 house-style skill 停用。
 - 第三方网页快照中的预签名 S3 凭证已脱敏，另存为带日期的新版本路径。
 
 ## 2026-09-27 · Kit 结构落实与独立审计
@@ -281,7 +289,7 @@
 
 - 入账 dot 的 [Write / Present 架构校订补充](vault/distilled/write-present-supplement-20261002/README.md)；它审的是远端旧基线，对照本地后按 [ADR-019](docs/decisions/019-expression-owners-and-entry-paths.md)落位，不新建 Present。
 - 根 `AGENTS.md` 与 Kit 入口分成“做任务”与“维护仓库”两条路，写明读到哪里停。
-- Write 的规则分底线、语言约定、编辑启发式三种强度；成文原理八条原文不改，新增强度表；新增 [格式检查](kit/write/prose/format.md)。
+- Write 的规则分底线、语言约定、编辑启发式三种强度；成文原理八条原文不改，新增强度表；新增 [格式检查](dsh-praxis/kit/writing/language/format.md)。
 - 换媒介或改篇幅分投影、改编与新增，改编附变动说明；配一件 [对照样张](vault/distilled/write-present-supplement-20261002/projection-vs-adaptation/README.md)。
 - 图形语义去掉第二份正文；运动判断补“补间不是观测”。
 - 四条取用路线前后走读共十次：内容都守住，读取量只在一个任务上下降。见 [回执](docs/verification/write-present-supplement-20261002.md)。
@@ -291,7 +299,7 @@
 
 - 入账一份没有署名的 [内容架构与能力语法审阅](vault/distilled/content-architecture-review-20261002/README.md)；它读的是远端旧基线，逐条对照本地后只执行第一批，裁决见 [ADR-020](docs/decisions/020-entry-calibration-and-depth-check.md)。目录不动。
 - [Kit 任务入口](kit/README.md)写明改一句话、解释通用概念、规则确定的转换不必进分支，只守证据底线；改正一处把企业工作面九项标成“共同语法”的链接。
-- [Reporting 入口](kit/reporting/README.md)把“写明要对方决定或去做什么”提到产物一行，做到就停。[工作系统](kit/work-system/README.md)的研究层改为按需；[企业工作面九项](kit/grammar/README.md)写明什么任务不必读。
+- [Reporting 入口](dsh-praxis/kit/task/README.md)把“写明要对方决定或去做什么”提到产物一行，做到就停。[工作系统](kit/work-system/README.md)的研究层改为按需；[企业工作面九项](kit/grammar/README.md)写明什么任务不必读。
 - [文档结构契约](docs/architecture/documentation.md)加场景取值与工具能力两行，加写深条目的五问检查。
 - 六个合成任务前后走读共十四次：三条企业工作路线改动前就走得通；小请求的读取量从 6、7 个文件降到 2、3 个；个人经营一题的提案改动后有了明确请求。见 [回执](docs/verification/content-architecture-review-20261002.md)。
 - 九类能力语法候选、交付生命周期与后四批没有进 Kit，等真实素材；13 个外部来源没有打开。
@@ -318,12 +326,12 @@
 - 据此做了 [从诉求到决定](demos/palantir-discovery/README.md)：一页离线交互网页，读者加减五张合成材料，台账和四个分支的判读随之改写，选择只模拟；同一文件打印成 A4 带 S0/S1 对照表。
 - 复查三篇公开来源：Lonsdale 第 5、6 条在交接里对应反了，作品已逐条改写；Portigal 页面遇到人机验证，主会话没有亲自读到。
 - 没有做：受众测试、减少动效和读屏软件下的实际检查。方法仍是项目候选，`palantir/` 主题和 Kit 规则没有改。
-- 用户读页面后指出文案别扭：页面文字没有经过 Write / Prose，Design 参考卡也没读。按 [审阅方法](kit/write/prose/review.md)改了 63 处，按两张优先参考卡加了“判读一览”，记录见作品 README。
-- 入口修订见 [ADR-023](docs/decisions/023-consume-by-artifact-component.md)：[Kit 任务入口](kit/README.md)按产物的组成部分分到几支；[Design 入口](kit/design/README.md)写明页面文字仍按 Prose 写和审，并加一张先读哪张参考的表；[媒介验收](kit/write/shared/verification.md)加交付前的分工核对；[成文原理](kit/write/prose/grammar.md)的结构位置加上按钮、图例和状态提示；`writing` skill 在产物含中文文字时也加载。一次改前改后对照：改后的代理打开了审阅方法和四种 Design 参考，改前只看到名字。
+- 用户读页面后指出文案别扭：页面文字没有经过 Write / Prose，Design 参考卡也没读。按 [审阅方法](dsh-praxis/kit/writing/review.md)改了 63 处，按两张优先参考卡加了“判读一览”，记录见作品 README。
+- 入口修订见 [ADR-023](docs/decisions/023-consume-by-artifact-component.md)：[Kit 任务入口](kit/README.md)按产物的组成部分分到几支；[Design 入口](kit/design/README.md)写明页面文字仍按 Prose 写和审，并加一张先读哪张参考的表；[媒介验收](dsh-praxis/kit/publish/verification.md)加交付前的分工核对；[成文原理](dsh-praxis/kit/writing/principles.md)的结构位置加上按钮、图例和状态提示；`writing` skill 在产物含中文文字时也加载。一次改前改后对照：改后的代理打开了审阅方法和四种 Design 参考，改前只看到名字。
 
 ## 2026-10-03 · 成文原理开头的写作姿态
 
-- 用户贴来一份写作姿态建议，主张单立 preamble 文件；按用户要求由 Opus 裁决，目标是文质彬彬、辞达。没有新建文件，把八条原理里还没写明的部分写成 [成文原理](kit/write/prose/grammar.md)开头一段：文辞与内容相称，不凑结构，不抹平复杂与分歧。裁决记在 [当时的审阅裁决](https://github.com/lesPrivilege/Praxis/blob/02ca9ea4b0faa6a9376523883c1f9f7afd5cf154/kit/write/prose/review.md#审阅裁决记录)。
+- 用户贴来一份写作姿态建议，主张单立 preamble 文件；按用户要求由 Opus 裁决，目标是文质彬彬、辞达。没有新建文件，把八条原理里还没写明的部分写成 [成文原理](dsh-praxis/kit/writing/principles.md)开头一段：文辞与内容相称，不凑结构，不抹平复杂与分歧。裁决记在 [当时的审阅裁决](https://github.com/lesPrivilege/Praxis/blob/02ca9ea4b0faa6a9376523883c1f9f7afd5cf154/kit/write/prose/review.md#审阅裁决记录)。
 
 ## 2026-10-04 · 企业工作面语法实验第一轮
 

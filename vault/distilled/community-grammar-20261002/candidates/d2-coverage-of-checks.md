@@ -12,7 +12,7 @@ Anthropic 的 DOCX 技能（固定在 `8a1541c`），该目录是独立的 Propr
 
 ## 与本地的关系
 
-细化。[内容验收](../../../../kit/write/shared/verification.md)的按输出检查表已有“不足以证明完成的证据”一栏，[证据与来源](../../../../kit/write/shared/evidence.md)要求改编附变动说明。本地缺的是“检查的覆盖范围要写出来”和“与原件比对，而不是只看有没有标记”。当日 [投影与改编样张](../../write-present-supplement-20261002/projection-vs-adaptation/README.md)的构建脚本做的就是与原稿逐字比对，是同一个做法的一次使用。
+细化。[内容验收](../../../../dsh-praxis/kit/publish/verification.md)的按输出检查表已有“不足以证明完成的证据”一栏，[证据与来源](../../../../dsh-praxis/kit/writing/evidence.md)要求改编附变动说明。本地缺的是“检查的覆盖范围要写出来”和“与原件比对，而不是只看有没有标记”。当日 [投影与改编样张](../../write-present-supplement-20261002/projection-vs-adaptation/README.md)的构建脚本做的就是与原稿逐字比对，是同一个做法的一次使用。
 
 ## 为什么暂缓
 

@@ -5,11 +5,11 @@ description: 撰写、改写或审校对外中文文本，以及裁决相关审�
 
 # 写作入口
 
-本 skill 依赖当前项目挂载的 Praxis Kit。先读 [Prose 入口](../../../kit/write/prose/README.md)，按任务加载成文原理、审阅方法或专门文体。
+本 skill 依赖当前项目挂载的 Praxis Kit。先读 [Writing 入口](../../../dsh-praxis/kit/writing/README.md)，按任务加载成文原理、审阅方法或专门文体。
 
-- 写作或改写：读 [成文原理](../../../kit/write/prose/grammar.md)和 [证据契约](../../../kit/write/shared/evidence.md)。
-- 审校或裁决意见：再读 [审阅方法](../../../kit/write/prose/review.md)，逐条采纳、改写后采纳或退回。
-- 专门文体和外部参考：只按 Prose 入口的适用条件继续读取。
-- 作者语体是配置项，默认关闭：任务要求用仓库所有者本人口吻，或项目 AGENTS.md 写有 `作者语体：开` 时，再读 [作者语体](../../../kit/write/prose/author-profile.md)。
+- 写作或改写：读 [成文原理](../../../dsh-praxis/kit/writing/principles.md)和 [证据契约](../../../dsh-praxis/kit/writing/evidence.md)。
+- 审校或裁决意见：再读 [审阅方法](../../../dsh-praxis/kit/writing/review.md)，逐条采纳、改写后采纳或退回。
+- 专门文体和外部参考：只按 Writing 入口的适用条件继续读取。
+- 作者语体是配置项，默认关闭：任务要求用仓库所有者本人口吻，或项目 AGENTS.md 写有 `作者语体：开` 时，再读 [作者语体](../../../dsh-praxis/kit/writing/author-profile.md)。
 
 交付成文；修改记录按用户要求和实质改动提供。用户指定的文风与交付要求优先。若本地 Kit 路径不存在，先定位实际挂载路径；仍不可用时说明缺失，不声称已按 Kit 核验，也不从记忆重建一份规则副本。

@@ -18,7 +18,7 @@
 
 ## 与既有决定的关系
 
-沿用 ADR-018 的层次：泛化判断在 Kit，生成器、样板和输入是它的取用。不改 ADR-002：共享运行组件的晋升门槛照旧，本决定晋升的是知识说明。不改 ADR-017：没有新增优先参考卡；[注释保持邻接](../../kit/design/references/curated/note-adjacency.md)照旧，精确指向一页写明了两者的分工。内容上的定义仍在 [共同工作语法](../../kit/grammar/work.md)和 [证据与来源](../../kit/write/shared/evidence.md)，这两页没有改。
+沿用 ADR-018 的层次：泛化判断在 Kit，生成器、样板和输入是它的取用。不改 ADR-002：共享运行组件的晋升门槛照旧，本决定晋升的是知识说明。不改 ADR-017：没有新增优先参考卡；[注释保持邻接](../../kit/design/references/curated/note-adjacency.md)照旧，精确指向一页写明了两者的分工。内容上的定义仍在 [共同工作语法](../../kit/grammar/work.md)和 [证据与来源](../../dsh-praxis/kit/writing/evidence.md)，这两页没有改。
 
 [图形编码](../../kit/design/composition/encoding.md)原有的“不要默认虚线在所有领域都表示候选”保留，并加了一句指向新页。问题地图的 G03、G11 两行各加了一个链接。
 

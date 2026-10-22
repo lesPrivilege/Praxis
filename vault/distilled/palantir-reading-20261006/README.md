@@ -72,5 +72,5 @@ Dalio 那一份的可迁移句在第 03 号笔记里（p41 反馈回路、p106 �
 ## 下一步
 
 1. 补齐四本书正文后按来源重访（05、06、07 三份尤其需要）
-2. 若要把这批做成对外可读的中文材料，走 Write / Prose：撰写前读 [成文原理](../../../kit/write/prose/grammar.md)，审阅前读 [审阅方法](../../../kit/write/prose/review.md)
+2. 若要把这批做成对外可读的中文材料，走 Write / Prose：撰写前读 [成文原理](../../../dsh-praxis/kit/writing/principles.md)，审阅前读 [审阅方法](../../../dsh-praxis/kit/writing/review.md)
 3. 采纳与否归 `docs/decisions`，本页不产生任何规则

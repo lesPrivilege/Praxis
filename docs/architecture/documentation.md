@@ -69,9 +69,9 @@ Distilled 表示材料已提炼为取用说明；事实核实与规范采纳另�
 
 ## 当前目录如何承担这些职责
 
-[Write](../../kit/write/README.md)按 Prose、Publish、Motion 逐层展开，Shared 维护跨模式证据与验收，Prose/Genres 只在专门文体触发时读取。[Design](../../kit/design/README.md)按 Foundations、Composition、Interaction、Motion 分开判断，并将 References 按编排、界面、系统与样张再分路。
+[dsh-praxis Kit](../../dsh-praxis/kit/README.md)按 Task、Writing、Publish 分层，[证据与来源](../../dsh-praxis/kit/writing/evidence.md)贯穿各层，文体只在专门文体触发时读取。[Design](../../kit/design/README.md)按 Foundations、Composition、Interaction、Motion 分开判断，并将 References 按编排、界面、系统与样张再分路。
 
-每个分支提供现有内容及下一步入口。规则迁移后，旧路径链接新正文；历史 ADR、Chat 和验收保留当时记录。目录深度按任务分工确定。
+每个分支提供现有内容及下一步入口。规则迁移后删除旧路径，仍在维护的页面改指新正文；历史 ADR、Chat 和验收保留当时记录，只把链接目标改到新位置（[ADR-037](../decisions/037-dsh-praxis-layered-grammar.md)）。目录深度按任务分工确定。
 
 ## 编订操作
 

@@ -77,7 +77,7 @@ for path in paths:
         elif not resolved.exists():
             errors.append(f'Broken link: {path.relative_to(ROOT)} -> {target}')
         elif (path.name in ('README.md', 'CHANGELOG.md') and path.parent == ROOT
-              and resolved in {ROOT / 'kit/write/prose/review.md',
+              and resolved in {ROOT / 'dsh-praxis/kit/writing/review.md',
                                ROOT / 'docs/governance/intake.md',
                                ROOT / 'docs/governance/reference-lifecycle.md'}
               and urlsplit(target).fragment):

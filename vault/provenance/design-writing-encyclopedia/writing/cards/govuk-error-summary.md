@@ -21,6 +21,6 @@ GOV.UK 要求表单有验证错误时，在页面顶部提供 error summary，�
 
 ## 链接
 
-- Kit 候选语义：[微文案与错误恢复](../../../../../kit/write/prose/microcopy.md)。
+- Kit 候选语义：[微文案与错误恢复](../../../../../dsh-praxis/kit/writing/genres/microcopy.md)。
 - 配对来源：[GOV.UK Error message](govuk-error-message.md)。
 - 范围记录：[目录](../catalog.json)、[研究记录](../CHANGELOG.md)。

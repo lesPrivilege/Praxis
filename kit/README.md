@@ -4,27 +4,27 @@ Kit 通过目录逐层展开工作语境。先选这次工作，再读有关分�
 
 读到输入、约束和完成标准都清楚、要求之间没有冲突，就可以开工。下面各入口按任务组合取用，不是依次都要过的流程；做到一半发现编排、图形或运动改变了意思，再回到维护那条规则的分支。入账、迁移和晋升是维护工作，不是每件任务的前置。
 
-不是每个请求都要进分支。改一句话、解释一个通用概念、做一次规则确定的转换，事实和要求已经齐了就直接做，只守 [底线](write/shared/evidence.md#底线)：事实、范围、条件和确定性照原样，要求有两种读法时说出来。成段的对外成文、要促成决定的材料，或问的是本仓库自己的定义，再从下面选入口。
+不是每个请求都要进分支。改一句话、解释一个通用概念、做一次规则确定的转换，事实和要求已经齐了就直接做，只守 [底线](../dsh-praxis/kit/writing/evidence.md#底线)：事实、范围、条件和确定性照原样，要求有两种读法时说出来。成段的对外成文、要促成决定的材料，或问的是本仓库自己的定义，再从下面选入口。
 
 ## 内容表达与设计
 
 | 当前任务 | 第一入口 | 需要时再展开 |
 |---|---|---|
-| 不确定材料要促成什么理解或决定 | [Reporting](reporting/README.md) | brief、文体和组织动作 |
-| 制作图文、网页、Slides 或视频 | [Write](write/README.md) + [Design](design/README.md) | 文字与叙事、视觉与交互；各按产物组成进入分支 |
-| 写作、改写或审校纯文本 | [Write / Prose](write/prose/README.md) | 成文原理、审阅与文体 |
-| 只规范空格、标点或链接，不动措辞 | [格式检查](write/prose/format.md) | 不需要成文原理 |
+| 不确定材料要促成什么理解或决定 | [Task](../dsh-praxis/kit/task/README.md) | 任务类型、brief、文体和组织动作 |
+| 制作图文、网页、Slides 或视频 | [Task](../dsh-praxis/kit/task/README.md) → [Writing](../dsh-praxis/kit/writing/README.md) + [Publish](../dsh-praxis/kit/publish/README.md) + [Design](design/README.md) | 内容组织与成文、按媒介编排与制作、视觉与交互 |
+| 写作、改写或审校纯文本 | [Writing](../dsh-praxis/kit/writing/README.md) | 成文原理、审阅与文体 |
+| 只规范空格、标点或链接，不动措辞 | [格式检查](../dsh-praxis/kit/writing/language/format.md) | 不需要成文原理 |
 | 判断如何表现内容、数据或交互；图表与界面任务可以直接从这里开始 | [Design](design/README.md) | Foundations / Composition / Interaction / Motion / References |
 
-一件产物常要用到几支。按产物的组成部分取用，不按请求的叫法：产物里写给读者的成句文字，包括正文、图注、页面说明、界面标签、按钮和状态提示，按 [Prose](write/prose/README.md)写，按 [审阅方法](write/prose/review.md)查；阅读顺序、展项和说明的分工过 [Publish](write/publish/README.md)；视觉、交互和运动过 Design，遇到它列出的情形先读对应参考。交互网页和带图的报告通常三支都用到。
+一件产物常要用到几支。按产物的组成部分取用，不按请求的叫法：产物里写给读者的成句文字，包括正文、图注、页面说明、界面标签、按钮和状态提示，按 [Writing](../dsh-praxis/kit/writing/README.md)写，按 [审阅方法](../dsh-praxis/kit/writing/review.md)查；阅读顺序、展项和说明的分工过 [Publish](../dsh-praxis/kit/publish/README.md)；视觉、交互和运动过 Design，遇到它列出的情形先读对应参考。交互网页和带图的报告通常三支都用到。
 
-Write 的 [Shared](write/shared/README.md)贯穿表达模式；具体项目保持自己的风格、运行实现和消费记录。样张与历史产出是参考，不能自动变成全局规则。
+内容表达、编排与制作已迁入 [dsh-praxis Kit](../dsh-praxis/kit/README.md)，分层见 [分层体例](../dsh-praxis/layers.md)；[证据与来源](../dsh-praxis/kit/writing/evidence.md)贯穿各层。具体项目保持自己的风格、运行实现和消费记录。样张与历史产出是参考，不能自动变成全局规则。
 
 ## 企业工作与环境
 
 | 当前任务 | 第一入口 | 所得产物 |
 |---|---|---|
-| 发现业务问题与机会 | [工作全景](landscape.md)、[现场闭环](work-system/field-loop.md) | 问题、证据与验证机会 |
+| 发现业务问题与机会 | [工作全景](landscape.md)、[现场闭环](../dsh-praxis/kit/task/field-loop.md) | 问题、证据与验证机会 |
 | 将会议与来源转成工作状态 | [Work System](work-system/README.md) | 状态差异、责任与交接 |
 | 定义试点和实现边界 | [场景模板](../scenarios/_template/README.md) | 场景契约、fixture、验收 |
 | 动作失败、中断或结果不明，要决定怎样恢复 | [工作契约](contracts/README.md)的失败与恢复、[共同工作语法](grammar/work.md)的不变量与反例 | 先核对什么、恢复步骤、停下来找人的条件 |

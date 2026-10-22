@@ -21,6 +21,6 @@
 
 ## 链接
 
-- Kit 候选语义：[微文案与错误恢复](../../../../../kit/write/prose/microcopy.md)、[多语言写作与本地化边界](../../../../../kit/write/prose/multilingual.md)。
+- Kit 候选语义：[微文案与错误恢复](../../../../../dsh-praxis/kit/writing/genres/microcopy.md)、[多语言写作与本地化边界](../../../../../dsh-praxis/kit/writing/language/multilingual.md)。
 - 与其页面级对应组件互补：[GOV.UK Error summary](govuk-error-summary.md)。
 - 范围记录：[目录](../catalog.json)、[研究记录](../CHANGELOG.md)。

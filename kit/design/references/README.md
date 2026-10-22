@@ -19,7 +19,7 @@
 | 查交互模拟、镜头控制或连续缩放的外部作品 | [Skillry 等作品与技术卡](../../../vault/provenance/visual-grammar-external-20260928/cards/README.md) | 卡片内的来源 ID | 水模拟、镜头实验、黑洞与连续缩放，以及对应工具；已读页面说明，媒体和源码运行未验收 |
 | 比较视频表现与制作方法，包括 Opus 作品 | [Motion ceiling 研究](../../../vault/distilled/motion-ceiling-20261004/README.md) | w01–w17、r01–r18 | 作品、模板、渲染与声音线索；按逐源状态选择原件，本地消费见 MC01 |
 
-Opus 作品按上述任务入口查找，模型归属按来源记录；取用价值由作品内容和验证范围判断。已采纳的设计语法见 [Design 各分支](../README.md)，本地制作与失败记录见 [Write / Motion](../../write/motion/README.md#已有制作与消费记录)。
+Opus 作品按上述任务入口查找，模型归属按来源记录；取用价值由作品内容和验证范围判断。已采纳的设计语法见 [Design 各分支](../README.md)，本地制作与失败记录见 [Publish / video](../../../dsh-praxis/kit/publish/video/README.md#已有制作与消费记录)。
 
 从织物、编辑、空间、乐谱、规则、软件组件或 agent 设计生态探索新方向，先读 [艺术与软件操作入口](art-software-atlas.md)。
 

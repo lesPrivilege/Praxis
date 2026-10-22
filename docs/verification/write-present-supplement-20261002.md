@@ -9,10 +9,10 @@
 | 事项 | 改动 |
 |---|---|
 | 入口分两条路 | 根 `AGENTS.md` 第一段拆成“用 Kit 完成一件任务”与“维护这个仓库”；`kit/AGENTS.md`、[Kit 任务入口](../../kit/README.md)、[Kit 使用约定](../../kit/Agent.md)相应改写，并写明读到哪里停 |
-| Write 的规则分三种强度 | [Write 入口](../../kit/write/README.md)新增强度表与冲突次序；四条底线写进 [证据与来源](../../kit/write/shared/evidence.md)；[成文原理](../../kit/write/prose/grammar.md)新增“强度与适用范围”一节，八条原文不改；[Prose 入口](../../kit/write/prose/README.md)写明按输出语言取用 |
-| 投影、改编与新增 | 写进证据与来源；[Publish 入口](../../kit/write/publish/README.md)补上改媒介、阅读单元、分页与收起 |
-| 一条规则一份正文 | [内容编排](../../kit/write/publish/composition.md)里图形语义的一句改为链接，独有的两点并进 [图形编码](../../kit/design/composition/encoding.md)；[验收](../../kit/write/shared/verification.md)里“删套话”一句改为按读者是否受损判断 |
-| 机械检查 | 新增 [格式检查](../../kit/write/prose/format.md)一页 |
+| Write 的规则分三种强度 | [Write 入口](../../dsh-praxis/kit/README.md)新增强度表与冲突次序；四条底线写进 [证据与来源](../../dsh-praxis/kit/writing/evidence.md)；[成文原理](../../dsh-praxis/kit/writing/principles.md)新增“强度与适用范围”一节，八条原文不改；[Prose 入口](../../dsh-praxis/kit/writing/README.md)写明按输出语言取用 |
+| 投影、改编与新增 | 写进证据与来源；[Publish 入口](../../dsh-praxis/kit/publish/html/README.md)补上改媒介、阅读单元、分页与收起 |
+| 一条规则一份正文 | [内容编排](../../dsh-praxis/kit/publish/html/composition.md)里图形语义的一句改为链接，独有的两点并进 [图形编码](../../kit/design/composition/encoding.md)；[验收](../../dsh-praxis/kit/publish/verification.md)里“删套话”一句改为按读者是否受损判断 |
+| 机械检查 | 新增 [格式检查](../../dsh-praxis/kit/writing/language/format.md)一页 |
 | 运动 | [运动判断](../../kit/design/motion/grammar.md)补一句：补间不是观测；排序变化与数量变化不混在一段运动里 |
 | Design 入口 | 写明图表与界面任务可以直接从这里开始 |
 | 架构文档 | [架构](../architecture/README.md)与 [体例契约](../architecture/documentation.md)各加一句指向 ADR-019 |

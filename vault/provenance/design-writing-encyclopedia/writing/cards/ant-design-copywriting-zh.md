@@ -25,5 +25,5 @@ Ant Design 把界面文案当作产品与用户之间的沟通，提出从用户
 
 ## 链接
 
-- Kit 候选语义：[微文案与错误恢复](../../../../../kit/write/prose/microcopy.md)、[多语言写作与本地化边界](../../../../../kit/write/prose/multilingual.md)。
+- Kit 候选语义：[微文案与错误恢复](../../../../../dsh-praxis/kit/writing/genres/microcopy.md)、[多语言写作与本地化边界](../../../../../dsh-praxis/kit/writing/language/multilingual.md)。
 - 范围记录：[目录](../catalog.json)、[研究记录](../CHANGELOG.md)。

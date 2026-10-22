@@ -4,7 +4,7 @@
 
 ## 从工作与关系开始
 
-先读 [设计判断](foundations/grammar.md)，具体编排转 [空间编排](composition/layout.md)与 [图形编码](composition/encoding.md)。内容与展项职责见 [Write / Publish](../write/publish/README.md)。
+先读 [设计判断](foundations/grammar.md)，具体编排转 [空间编排](composition/layout.md)与 [图形编码](composition/encoding.md)。内容与展项职责见 [Publish / html](../../dsh-praxis/kit/publish/html/README.md)。
 
 ## 让层级、状态和操作可辨认
 
@@ -12,7 +12,7 @@
 
 ## 动效与媒介
 
-读 [Design / Motion](motion/README.md)；叙事与分镜由 [Write / Motion](../write/motion/README.md)维护。
+读 [Design / Motion](motion/README.md)；叙事与分镜由 [Write / Motion](../../dsh-praxis/kit/publish/video/README.md)维护。
 
 ## 消费与检查
 

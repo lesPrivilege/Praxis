@@ -6,7 +6,7 @@
 
 审计只提出处置，不迁移、删除或改写规范。历史验收、原 Chat、来源卡和旧工单作为当时证据保留；它们的旧状态不是“错误事实”，问题在于当前入口没有标明时间与替代路径。审计角色为 Sol；最终采用与编订由 Astra/main 裁决。
 
-迁移前的内容职责建议：材料任务从 [Reporting brief](../../../templates/reporting/README.md) 确定读者与所需决定，由 [Reporting grammar](../../../kit/reporting/grammar.md) 拥有 artifact family、论证、证据和内容结构；只有进入对外中文成文时，加载项目 Writing skill 处理句法、语体和段落；需要图表、视觉、界面或动效判断时进入 [Design grammar](../../../kit/design/grammar.md)；交付按 [Kit 验收](../../../kit/verification/README.md) 收束。[能力测试回答体例](../../../kit/reporting/assessment-answer-profile.md) 属开放题专用 profile，不应被读成所有材料的默认文体。当前 `kit/README.md` 的任务表可承接这条路径，能力表应回到查定义与状态用途；内容搬运由主代理按实际消费者决定，不预建空分支。
+迁移前的内容职责建议：材料任务从 [Reporting brief](../../../templates/reporting/README.md) 确定读者与所需决定，由 [Reporting grammar](../../../dsh-praxis/kit/task/brief.md) 拥有 artifact family、论证、证据和内容结构；只有进入对外中文成文时，加载项目 Writing skill 处理句法、语体和段落；需要图表、视觉、界面或动效判断时进入 [Design grammar](../../../kit/design/grammar.md)；交付按 [Kit 验收](../../../kit/verification/README.md) 收束。[能力测试回答体例](../../../dsh-praxis/kit/writing/genres/assessment-answer.md) 属开放题专用 profile，不应被读成所有材料的默认文体。当前 `kit/README.md` 的任务表可承接这条路径，能力表应回到查定义与状态用途；内容搬运由主代理按实际消费者决定，不预建空分支。
 
 ## 范围和方法
 
@@ -19,7 +19,7 @@
 ### F1 · P1 · 当前主题入口把已形成的产物写成未执行
 
 - **定位**：[主题 README](../../../vault/distilled/ai-capability-assessment/README.md#L3) 第 3、10–12、29 行；[交付蓝图](../../../vault/distilled/ai-capability-assessment/delivery-plan.md#L3) 第 3、34–36 行。相反，[rendered README](../../../vault/distilled/ai-capability-assessment/rendered/README.md#L3) 第 3–10 行和 [motion README](../../../vault/distilled/ai-capability-assessment/motion/README.md#L3) 第 3–11 行已记录页面与视频路径。
-- **契约与影响**：`documentation.md` 第 8、19、42 行要求 README 给当前状态和下一产物，回执注明版本与范围。新读者从 Kit 的 [Reporting 入口](../../../kit/reporting/README.md#L18) 到此，会把旧的“尚未生成页面”“交给 Claude 实现”当成当前计划，找不到现有呈现及其未完成验收。
+- **契约与影响**：`documentation.md` 第 8、19、42 行要求 README 给当前状态和下一产物，回执注明版本与范围。新读者从 Kit 的 [Reporting 入口](../../../dsh-praxis/kit/task/README.md#L18) 到此，会把旧的“尚未生成页面”“交给 Claude 实现”当成当前计划，找不到现有呈现及其未完成验收。
 - **建议**：修导航并补状态。主题 README 用日期分开“历史研究/施工输入”和“当前可查产物/未验收”；把 rendered、motion 与各自 verification 作为现状入口。交付蓝图保留原貌或加历史阶段说明，停止作为当前执行指令。不要据文件存在声称视觉、交互或招聘交付通过。
 
 ### F2 · P1 · 原件披露边界有规则但尚无发布前清单

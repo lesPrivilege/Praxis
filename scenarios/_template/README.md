@@ -7,7 +7,7 @@
 - 场景 ID 与 revision、固定的 Kit commit 或版本、owner、工作范围、使用者、专业复核者与最终接收者。
 - 当前流程、真实问题、输入可得性、基线及观察窗口。
 - 期望改变、非 AI 替代方案、继续条件与停止条件。
-- 启动所需人员、账号、数据权限与支持条件，参照 [现场治理](../../kit/work-system/field-governance.md)。
+- 启动所需人员、账号、数据权限与支持条件，参照 [现场治理](../../dsh-praxis/kit/task/field-governance.md)。
 
 ## 2. 对象、证据与动作
 
@@ -31,7 +31,7 @@
 - fixture、预期输出、正常路径及上表反例；建议目录 `schemas/ policies/ fixtures/ expected/`，实际创建时各加 README。
 - 按 [分层验收](../../kit/verification/README.md) 记录范围、版本、证据、结果和缺口。
 - 记录 acceptance、correction、missing context、覆盖率、复核时间及新增人工劳动；保留样本、分母和观察窗口。
-- 净减负及 Value / Asset Ledger 按 [现场治理](../../kit/work-system/field-governance.md) 计算；未知值保持未知，合成数据只用于演练。
+- 净减负及 Value / Asset Ledger 按 [现场治理](../../dsh-praxis/kit/task/field-governance.md) 计算；未知值保持未知，合成数据只用于演练。
 
 ## 5. 接收与后续责任
 

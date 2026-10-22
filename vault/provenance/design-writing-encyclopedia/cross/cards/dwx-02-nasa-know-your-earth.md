@@ -23,4 +23,4 @@ original_url: "https://svs.gsfc.nasa.gov/10605"
 
 不要用逐字稿的历史数值支持当前气候结论；也不要因为页面提供视频与 transcript 就推断两者信息等价、播放器无障碍或影片已达到可访问性要求。视频没有被播放或观察，具体画面与声音分工未知。
 
-本来源支撑 [Kit / 媒介选择](../../../../../kit/write/publish/media-choice.md)关于旁白、屏幕结构文字、逐字稿和画面描述需各自交接的判断。访问记录与许可边界见 [README](../README.md) 和 [CHANGELOG](../CHANGELOG.md)。
+本来源支撑 [Kit / 媒介选择](../../../../../dsh-praxis/kit/task/media-choice.md)关于旁白、屏幕结构文字、逐字稿和画面描述需各自交接的判断。访问记录与许可边界见 [README](../README.md) 和 [CHANGELOG](../CHANGELOG.md)。

@@ -32,9 +32,9 @@
 | 研究包的机制 | 本地已有 | 关系 | 处置 |
 |---|---|---|---|
 | 按任务逐层取用知识，带排除条件 | 两条入口路径和“读到哪里停”（ADR-019）；“不是每个请求都要进分支”（ADR-020）；[参考生命周期](../../../docs/governance/reference-lifecycle.md)的按需求发现 | 同义 | 不动。研究包建议补的负例，上一轮刚补过 |
-| 判断绑定到可检查的证据 | [证据与来源](../../../kit/write/shared/evidence.md)的底线；[驻场组织接口](../../../kit/work-system/field-governance.md)的分开证明结果 | 同义；调试领域的“单一假设”本地没有 | 候选 [M2](candidates/m2-single-falsifiable-hypothesis.md)，备用素材 |
+| 判断绑定到可检查的证据 | [证据与来源](../../../dsh-praxis/kit/writing/evidence.md)的底线；[驻场组织接口](../../../dsh-praxis/kit/task/field-governance.md)的分开证明结果 | 同义；调试领域的“单一假设”本地没有 | 候选 [M2](candidates/m2-single-falsifiable-hypothesis.md)，备用素材 |
 | 部分成功后先对账，再局部恢复 | [共同工作语法](../../../kit/grammar/work.md)的“外部动作结果未知”；[工作契约](../../../kit/contracts/README.md)的失败与恢复 | 细化：本地没有“部分成功”这一格 | 候选 [M1](candidates/m1-partial-success-reconciliation.md)，备用素材。对照已全部做到，不写成规则；入口加了一行路由 |
-| 完成、失败与证据不足分开 | [分层验收](../../../kit/verification/README.md)的四种结果；[内容验收](../../../kit/write/shared/verification.md)的“不足以证明完成的证据” | 大部分同义 | [D1](candidates/d1-terminal-states.md)、[D2](candidates/d2-coverage-of-checks.md)，备用素材，暂缓写成规则 |
+| 完成、失败与证据不足分开 | [分层验收](../../../kit/verification/README.md)的四种结果；[内容验收](../../../dsh-praxis/kit/publish/verification.md)的“不足以证明完成的证据” | 大部分同义 | [D1](candidates/d1-terminal-states.md)、[D2](candidates/d2-coverage-of-checks.md)，备用素材，暂缓写成规则 |
 | 用对照和陌生任务决定接纳或撤回 | 文档结构契约的走读验收；参考生命周期的独立上下文观察 | 细化：本地没有说怎样才算“起了作用” | 候选 [M3](candidates/m3-control-and-holdout.md)，备用素材；[文档结构契约](../../../docs/architecture/documentation.md#验收)的验收列为默认做法 |
 
 ## 十个样本逐个处置

@@ -6,10 +6,10 @@
 
 | 需要 | 已有位置 | 现状与研究增量 |
 |---|---|---|
-| 中文成文、原词、结构文字 | [Prose 原理](../../../kit/write/prose/grammar.md)、[审阅](../../../kit/write/prose/review.md) | 已要求证据强度不变、术语稳定、标题/标签单独撰写。无需再造“技术风格指南” |
-| 原语言与翻译 | [多语言](../../../kit/write/prose/multilingual.md) | 已有源语言、locale、事实/单位保护和术语表；本书补实际首用位置和独立阅读面检查 |
-| 证据、公开边界、原件 | [Shared evidence](../../../kit/write/shared/evidence.md)、[入账](../../../docs/governance/intake.md) | 已区分事实/推断/合成与逐 URL 身份；无需复制一套来源库 |
-| 图文、图注与跨媒介 | [Exhibits](../../../kit/write/publish/exhibits.md)、[Shared verification](../../../kit/write/shared/verification.md) | 已有图注、来源、方法说明职责；待实际教材渲染后检查是否保住这些职责 |
+| 中文成文、原词、结构文字 | [Prose 原理](../../../dsh-praxis/kit/writing/principles.md)、[审阅](../../../dsh-praxis/kit/writing/review.md) | 已要求证据强度不变、术语稳定、标题/标签单独撰写。无需再造“技术风格指南” |
+| 原语言与翻译 | [多语言](../../../dsh-praxis/kit/writing/language/multilingual.md) | 已有源语言、locale、事实/单位保护和术语表；本书补实际首用位置和独立阅读面检查 |
+| 证据、公开边界、原件 | [Shared evidence](../../../dsh-praxis/kit/writing/evidence.md)、[入账](../../../docs/governance/intake.md) | 已区分事实/推断/合成与逐 URL 身份；无需复制一套来源库 |
+| 图文、图注与跨媒介 | [Exhibits](../../../dsh-praxis/kit/publish/html/exhibits.md)、[Shared verification](../../../dsh-praxis/kit/publish/verification.md) | 已有图注、来源、方法说明职责；待实际教材渲染后检查是否保住这些职责 |
 | 页面类型与维护 | [文档实践](../themes/documentation-practices.md)、[文档体例](../../../docs/architecture/documentation.md) | 已消费 Diátaxis、任务导航、唯一规则位置与使用反馈；无需重做全站分类 |
 | 薄 skill 入口 | [writing skill](../../../.claude/skills/writing/SKILL.md) | 已路由到唯一规则；社区短 skill 不是当前缺失能力 |
 | SaaS 共同语义、学习路径 | [learning-path](https://github.com/lesPrivilege/Praxis/blob/6d9e6c1807f7f77f36ef1cbd4e5c1a090d6a8cc8/books/saas-engineering/learning-path.md)、[semantics](https://github.com/lesPrivilege/Praxis/blob/6d9e6c1807f7f77f36ef1cbd4e5c1a090d6a8cc8/books/saas-engineering/semantics.md) | 已有三条路线、变式和状态/权威区别；本研究不将它们误报为待新建 |

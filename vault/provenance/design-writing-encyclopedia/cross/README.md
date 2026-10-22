@@ -1,6 +1,6 @@
 # 跨媒介来源研究
 
-收录表达形式选择、媒介间语义交接与视听/图像替代的信息来源。这里的来源摘要支持有限判断，不作为强制规则；活跃的普通参考入口在 [Kit / Write / Publish / 媒介选择](../../../../kit/write/publish/media-choice.md) 与 [Kit / Design / References / 阅读来源](../../../../kit/design/references/reading-sources.md)。
+收录表达形式选择、媒介间语义交接与视听/图像替代的信息来源。这里的来源摘要支持有限判断，不作为强制规则；活跃的普通参考入口在 [Kit / Write / Publish / 媒介选择](../../../../dsh-praxis/kit/task/media-choice.md) 与 [Kit / Design / References / 阅读来源](../../../../kit/design/references/reading-sources.md)。
 
 `cards/` 是新核查来源的唯一当前摘要位置；机器登记见 [catalog.json](catalog.json)，历史和复核过程见 [CHANGELOG.md](CHANGELOG.md)。既有来源沿用原始 canonical card，本 README 说明当前支持范围，复核过程保存在变更记录。
 

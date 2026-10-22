@@ -1,0 +1,20 @@
+# 现场闭环
+
+依据当前任务选择阶段；阶段可合并、退回或直接结束。组织启动条件、净减负口径及 Value / Asset Ledger 维护在 [现场治理](field-governance.md)。
+
+| 阶段 | 消除的未知 | 最小产物 | 下一决定与责任 |
+|---|---|---|---|
+| 发现 | 谁遇到什么问题，现状怎样 | 流程、样例、基线与未知清单 | 业务 owner 确认问题 |
+| 选择 | 相比非 AI 方案是否值得介入 | 替代方案、收益假设、成本、风险、接收者与停止条件 | 责任人决定启动、补证或停止 |
+| 介入 | 哪个动作能在什么边界内进行 | [场景契约](../../../scenarios/_template/README.md)、输入、权限、版本与人工检查 | 确认授权及可恢复范围 |
+| 验证与试点 | 质量、成本与采用能否成立 | [分层证据](../../../kit/verification/README.md)、可比基线、观察窗口及额外劳动 | 接收者判断继续、修订或退出 |
+| 移交 | 谁接收什么、谁处理剩余问题 | 版本、允许用途、接收依据、未决项、支持与下一观察点 | 接收者确认责任，原负责人跟踪未接收项 |
+| 运营、扩展或退出 | 条件与收益是否持续成立 | 使用反馈、失败记录、责任及数据处置 | 责任人决定维护、扩展、撤回或退出 |
+
+移交后持续义务按其履行条件关闭；每次扩展重新检查对象、权限、责任与证据覆盖。知识反馈按 [修订流程](../../../docs/governance/evolution.md) 返回对应条目。
+
+## 阶段参考路由
+
+需要选择某一阶段的证据和退出条件时，按阶段查[现场实践参考族](../../../vault/references/field-practice/README.md)：发现先看 [FDPM](../../../vault/references/field-practice/scale-fdpm.md)，介入与生产化先看 [FDE](../../../vault/references/field-practice/scale-fde.md)，工作面密度或人机协作再看 [Enterprise Design](../../../vault/references/field-practice/scale-enterprise-design.md)，重复模式能否回流平台时查 [Enterprise Core](../../../vault/references/field-practice/scale-enterprise-core.md)。消费的是 field signal、production outcome、field-to-core 和 shared-pattern 检查；这些卡片不构成岗位 SLA 或平台实现承诺。
+
+需要跨进程长任务、重试或恢复时，再查 [workflow 参考族](../../../vault/references/workflow/README.md) 中的 [Camunda](../../../vault/references/workflow/camunda.md) 或 [Temporal](../../../vault/references/workflow/temporal.md)，只消费 process/runtime、workflow/activity 和 durability 的区分，不因为现场阶段表出现这些词就引入 engine。

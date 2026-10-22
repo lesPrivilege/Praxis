@@ -20,5 +20,5 @@ Google 将这份指南定位为面向软件开发者和其它技术从业者的�
 
 ## 链接
 
-- Kit 候选语义：[论证与证据链](../../../../../kit/write/prose/argument.md)、[读者、任务与背景](../../../../../kit/write/prose/audience.md)、[文体选择与组合](../../../../../kit/write/prose/genres/selection.md)。
+- Kit 候选语义：[论证与证据链](../../../../../dsh-praxis/kit/writing/organization/argument.md)、[读者、任务与背景](../../../../../dsh-praxis/kit/writing/organization/audience.md)、[文体选择与组合](../../../../../dsh-praxis/kit/writing/genres/selection.md)。
 - 读取范围与许可记录：[目录](../catalog.json)、[研究记录](../CHANGELOG.md)。

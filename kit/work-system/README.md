@@ -20,8 +20,8 @@
 
 | 任务 | 入口 |
 |---|---|
-| 选择驻场机会、试点和移交 | [现场闭环](field-loop.md)、[组织接口](field-governance.md) |
-| 把确认状态写成材料 | [汇报与设计](../reporting/README.md) |
+| 选择驻场机会、试点和移交 | [现场闭环](../../dsh-praxis/kit/task/field-loop.md)、[组织接口](../../dsh-praxis/kit/task/field-governance.md) |
+| 把确认状态写成材料 | [汇报与设计](../../dsh-praxis/kit/task/README.md) |
 | 选择工具控制面 | [工具与来源登记](../../vault/provenance/work-system/README.md) |
 | 将重复模式用于企业场景 | [企业工作面](../grammar/README.md)、[场景模板](../../scenarios/_template/README.md) |
 

@@ -12,4 +12,4 @@
 
 ## 2026-10-17
 
-- 已并入 main 并裁决，结果见 [ADR-036](../../../docs/decisions/036-writing-kit-spec-handoff.md)。基线早于 ADR-035，整体图景一项大半已由它覆盖；作者资料改写为 [作者语体](../../../kit/write/prose/author-profile.md)。本包保留为候选与来源记录，不再待裁决。
+- 已并入 main 并裁决，结果见 [ADR-036](../../../docs/decisions/036-writing-kit-spec-handoff.md)。基线早于 ADR-035，整体图景一项大半已由它覆盖；作者资料改写为 [作者语体](../../../dsh-praxis/kit/writing/author-profile.md)。本包保留为候选与来源记录，不再待裁决。

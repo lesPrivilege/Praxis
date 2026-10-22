@@ -4,7 +4,7 @@
 
 本卡消费 [`material-classification-20260919.json`](../../archive/chat/material-classification-20260919.json)，对应 thread `6aad6d08-6b1c-83ec-b4a2-4f8cbd95adb8`（标题：建立材料分类体系）。归档按 `newest_first` 保存，含 2 个 turn、4 个 message item，全部已阅读；无附件、外链或 citation placeholder。`T=` 表示稳定 turn ID，`I=` 表示稳定 item ID。
 
-本卡把用户目标与历史 assistant 建议分开保存。历史建议是候选提炼，不能单凭原聊天证明行业事实或效果；已采纳的工作契约以 [ADR-008](../../../docs/decisions/008-artifact-field-governance.md)、[Reporting grammar](../../../kit/reporting/grammar.md) 和 [驻场组织接口](../../../kit/work-system/field-governance.md) 为准。
+本卡把用户目标与历史 assistant 建议分开保存。历史建议是候选提炼，不能单凭原聊天证明行业事实或效果；已采纳的工作契约以 [ADR-008](../../../docs/decisions/008-artifact-field-governance.md)、[Reporting grammar](../../../dsh-praxis/kit/task/brief.md) 和 [驻场组织接口](../../../dsh-praxis/kit/task/field-governance.md) 为准。
 
 当前消费边界是：材料先按工作语义路由，再填写六项最小 brief；八类工作目的只作为可扩展标签，不创建八套空目录；证据姿态说明论述的主要承重方式，不代表证据等级；演示、采用、净减负和经营改善分开证明；Value Ledger 与 Asset Ledger 分开记录。具体文体、行业模板和共享实现仍需真实任务与晋升门槛验证。
 

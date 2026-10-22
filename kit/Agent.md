@@ -16,11 +16,11 @@
 
 只是取用 Kit 做一件任务时，读完第 1、2 步就可以开工；分工、入账与晋升几节在维护仓库时适用。
 
-1. 从 [任务入口](README.md) 选择业务发现、场景验证、内容表达、设计、工作整理或环境准备；Write 再按 prose / publish / motion 选 mode。
+1. 从 [任务入口](README.md) 选择业务发现、场景验证、内容表达、设计、工作整理或环境准备；内容表达从 [dsh-praxis Kit](../dsh-praxis/kit/README.md)的 Task 选流水线与方法。
 2. 先读相关分支的 README 和所需规则；需要参考时先看任务匹配的优先参考，未覆盖再看普通参考，依据不足时回查 Vault 原件。不要仅因标为preferred就提升来源可信度或规范优先级。
 3. 企业 demo 复制 [场景契约](../scenarios/_template/README.md) 的结构；材料写作先选 artifact family、读者、需要的决定及证据。
 4. 区分已采纳规范、场景候选、外部参考与未验证陈述。引用用稳定来源 ID 加本地相对路径。
-5. 撰写对外中文成文时，从 [Write / Prose](write/prose/README.md)读取规则；项目内 skill `writing`（`.claude/skills/writing/SKILL.md`）是同一分支的薄入口；设计、可视化编排与界面选型，从 [Design](design/README.md) 按需取用，裁决记回项目自己的 index。
+5. 撰写对外中文成文时，从 [Writing](../dsh-praxis/kit/writing/README.md)读取规则；项目内 skill `writing`（`.claude/skills/writing/SKILL.md`）是同一分支的薄入口；设计、可视化编排与界面选型，从 [Design](design/README.md) 按需取用，裁决记回项目自己的 index。
 6. 交付前按 [验收](verification/README.md) 和相应场景检查，不把精美页面当成证据。
 
 Kit 的目录和 README 承担渐进引导；新条目的必要性、复用入口、使用反馈和退出条件见 [体例契约](../docs/architecture/documentation.md)。外部提炼先说明取用价值与边界，再按需展开原件；`distilled` 不代表已经采纳。

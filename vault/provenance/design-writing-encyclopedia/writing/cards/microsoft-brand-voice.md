@@ -20,5 +20,5 @@ voice 与 tone 的区分有助于在评估不同情境下的产品语气时，�
 
 ## 链接
 
-- Kit 候选语义：[读者、任务与背景](../../../../../kit/write/prose/audience.md)、[微文案与错误恢复](../../../../../kit/write/prose/microcopy.md)、[文体选择与组合](../../../../../kit/write/prose/genres/selection.md)、[多语言边界](../../../../../kit/write/prose/multilingual.md)。
+- Kit 候选语义：[读者、任务与背景](../../../../../dsh-praxis/kit/writing/organization/audience.md)、[微文案与错误恢复](../../../../../dsh-praxis/kit/writing/genres/microcopy.md)、[文体选择与组合](../../../../../dsh-praxis/kit/writing/genres/selection.md)、[多语言边界](../../../../../dsh-praxis/kit/writing/language/multilingual.md)。
 - 范围与复查记录：[目录](../catalog.json)、[研究记录](../CHANGELOG.md)。

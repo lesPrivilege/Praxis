@@ -29,3 +29,13 @@
 延续 [ADR-019](019-expression-owners-and-entry-paths.md) 的表达归属，把其中 Write 下的 Publish 与 Motion 升为独立的 Publish 层；延续 [ADR-022](022-source-card-ownership.md) 的来源卡归属和 [ADR-029](029-design-writing-reference-encyclopedia.md) 的来源与可选 grammar 双向连接，后者的连接在新体例里由 Binding 承载。旧 ADR 的正文不改。
 
 体例还没有经过真实任务走读，也没有对照。第一次 Writing 迁移后用一件真实写作任务从新入口走一遍；三级展开让选路变慢，或“换媒介是否成立”在某条做法上判不清时，重访本决定。
+
+## 补充：Task、Writing、Publish 迁入（2026-10-23）
+
+同日按迁移映射迁完前三步：`kit/write/`、`kit/writing/`、`kit/reporting/` 删除，`kit/work-system/` 的两页现场闭环移入 Task。迁移中的三处取舍：
+
+- **成文原理只拆出第 6 条。** 第 6 条正文进中文语言约定，原条目留一句指向，八条编号不变，各处“第 N 条”的引用不失效。第 4 条本来就是底线在成文里的用法并链向底线，留在原位，不按映射初稿并入底线。
+- **讲解页按“换媒介是否成立”拆开。** 四问、整体图景、事实底稿和两条反例进 Writing 的机制讲解；四层可见性、可调项和“条件收进折叠区”反例留 Publish / html。
+- **历史记录只改链接目标。** ADR、CHANGELOG、Vault 提炼与验收、项目记录里的 Markdown 链接改到新位置；其中以文字记下的路径（走读报告、工具调用记录、片中屏幕文字）不改，它们记录的是当时读了什么。来源 catalog 的 `grammar_paths` 是维护中的数据，一并改了；registry 重新生成。
+
+旧路径不留导航入口，文档结构契约与修订流程里“旧路径保留导航”的说法相应改掉。

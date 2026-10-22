@@ -6,7 +6,7 @@
 
 示例中的Q2计时表作调整：所有终点统一以请求发出为起点。Q3“参数错误即可重试”不作无条件规则，需确认原请求未执行；变更参数不能借用原请求的幂等保证。其余初始延迟目标、构造分布、假设计费与法域限制保持原身份。
 
-编订：Astra/main；登记与来源探索：Luna Max（gpt-5.6-luna）；日期：2026-09-23。正文采用连续自然语言，研究状态与来源映射在本索引维护。最终呈现采用 [回答体例](../../../kit/reporting/assessment-answer-profile.md)，改动判断见 [交叉核验](cross-check.md)。
+编订：Astra/main；登记与来源探索：Luna Max（gpt-5.6-luna）；日期：2026-09-23。正文采用连续自然语言，研究状态与来源映射在本索引维护。最终呈现采用 [回答体例](../../../dsh-praxis/kit/writing/genres/assessment-answer.md)，改动判断见 [交叉核验](cross-check.md)。
 
 ## 句法修订
 

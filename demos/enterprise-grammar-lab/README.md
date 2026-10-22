@@ -99,7 +99,7 @@ npm run contract   # 改了契约之后重新生成类型
 | [Enterprise UI 候选](../../kit/ui/README.md) | `d4fd387` | 状态矩阵作为每个面板的覆盖目标 | 状态都做了；候选组件名没有对应到实现 |
 | [晋升规则](../../docs/decisions/002-promotion.md) | accepted | 判断哪些组件算候选 | 工作面现在有两个独立场景在用，是候选 |
 | `ref-refine`、`ref-ant-design`、`ref-storybook` | 卡片 2026-09-18 | 资源的列表与详情、逻辑与界面分离；Ant Design 作为组件来源；“组件 × 状态 × fixture”的想法 | 前两条采用；Storybook 没有安装，改用固定地址触发状态 |
-| [成文原理](../../kit/write/prose/grammar.md) | `d4fd387` | 标签用名词短语，状态提示用完整陈述，对象作主语 | 用于全部界面文字和本目录文档 |
+| [成文原理](../../dsh-praxis/kit/writing/principles.md) | `d4fd387` | 标签用名词短语，状态提示用完整陈述，对象作主语 | 用于全部界面文字和本目录文档 |
 
 没有取用任何外部项目的代码。
 

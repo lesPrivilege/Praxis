@@ -10,7 +10,7 @@
 
 - **整包放在 [kit/design/marks](../../kit/design/marks/README.md)，在 Design 入口单列为“自撰库”，与外部参考分开。** 记号、控件页、运动页、色值和生成来源只此一份，原交付目录 `demos/semantic-marks` 不保留。
 - **强度是 normal/reference。** 没有任务必须用它；grammar 与这一版画法分开写，消费者可以整套用、只取几项或按 grammar 重画。
-- **发现入口三处**：Design 入口、Design / Motion 入口、Write / Publish 的 [讲解页的编排](../../kit/write/publish/explainer.md)。
+- **发现入口三处**：Design 入口、Design / Motion 入口、Write / Publish 的 [讲解页的编排](../../dsh-praxis/kit/publish/html/explainer.md)。
 - **不据第一次取用改词表。** 取用时看到的缺口记在该包的 [checks.md](../../kit/design/marks/checks.md)，等别的任务再遇到同样的缺口时再定。
 
 ## 证据与限度

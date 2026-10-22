@@ -17,7 +17,7 @@
 | 借鉴Claude实际作品 | 原比较稿已指出对象连续性、失败分支、空间/恢复路径 | **P1，部分落实。** 改出了11展项，但没有把原比较稿逐项转成可否决的图形与分镜验收。 |
 | 视觉接收 | 自动检查110状态、逆序、ID、字号、曝光、编码；模型查看分段采样帧 | **P0，验收缺口。** `final-delivery.md`第5、9–16行的接收依据未覆盖构图优劣、画面主角、关系表达与场间视觉节奏。技术通过项维持有效，视觉接收结论收回。 |
 
-证据：[brief](../brief.md)、[原分镜](../script/storyboard.md)、[原编译器](../script/compile.py)、[第二版编译器](../script/compile_cut2.py)、[通用模板](../script/stage-template.js)、[状态验收](cut2-state-acceptance.md)、[原比较](comparison-baseline.md)、[Kit分镜](../../../kit/write/motion/narrative.md)。
+证据：[brief](../brief.md)、[原分镜](../script/storyboard.md)、[原编译器](../script/compile.py)、[第二版编译器](../script/compile_cut2.py)、[通用模板](../script/stage-template.js)、[状态验收](cut2-state-acceptance.md)、[原比较](comparison-baseline.md)、[Kit分镜](../../../dsh-praxis/kit/publish/video/narrative.md)。
 
 ## 2. 与实际 Claude artifact 的具体差别
 

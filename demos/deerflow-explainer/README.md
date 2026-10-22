@@ -8,7 +8,7 @@
 
 ## 选定的形式
 
-连续的长页，不做 16:9 幻灯片。读者会按自己的问题跳读和回查，需要可滚动的正文、可展开的细节层和可点选的图；固定画幅会把每个局部压成等大的一页。各章的主图是独立、可步进的图件，将来要成片时可按 [分镜交接](../../kit/write/motion/narrative.md)另做。
+连续的长页，不做 16:9 幻灯片。读者会按自己的问题跳读和回查，需要可滚动的正文、可展开的细节层和可点选的图；固定画幅会把每个局部压成等大的一页。各章的主图是独立、可步进的图件，将来要成片时可按 [分镜交接](../../dsh-praxis/kit/publish/video/narrative.md)另做。
 
 | 层 | 内容 | 做法 |
 |---|---|---|
@@ -53,7 +53,7 @@
 
 ## 后续
 
-形式上的取舍和术语一条已在用户目验后提炼：[讲解页的编排](../../kit/write/publish/explainer.md)是可取用的参考，术语一条进了 [成文原理](../../kit/write/prose/grammar.md)第 6 条。来源仓库更新快，复用前按新提交重读默认值。预览配置在 `.claude/launch.json` 的 `deerflow-explainer`。
+形式上的取舍和术语一条已在用户目验后提炼：[讲解页的编排](../../dsh-praxis/kit/publish/html/explainer.md)是可取用的参考，术语一条进了 [成文原理](../../dsh-praxis/kit/writing/principles.md)第 6 条。来源仓库更新快，复用前按新提交重读默认值。预览配置在 `.claude/launch.json` 的 `deerflow-explainer`。
 
 ## 2026-10-12 加记号
 

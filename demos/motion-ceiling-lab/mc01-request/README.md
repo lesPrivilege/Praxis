@@ -93,7 +93,7 @@ python3 demos/motion-ceiling-lab/mc01-request/verify.py
 |---|---|---|
 | 交接稿的 MC01 brief、合同与 `request_chain`（[快照](../../../vault/snapshots/local/motion-ceiling-handoff-20261004/motion-ceiling-handoff-20261004.md)） | 读者与问题、正常与失败输入、验收项、三个时钟分开的要求 | 照 brief 做；六个事件逐字使用 |
 | [成立程度与归属的标记](../../../kit/design/foundations/standing.md) | 线型、端点、强调色各回答哪个问题 | 按默认分配；“线型回答走过了吗”是把“生效了吗”用在路径上，写在页面文字版的图例里 |
-| [运动判断](../../../kit/design/motion/grammar.md)、[叙事与分镜交接](../../../kit/write/motion/narrative.md) | 运动与真实状态同步；每段时间解决一个认知任务 | 段落表按后者的最小分镜表组织 |
+| [运动判断](../../../kit/design/motion/grammar.md)、[叙事与分镜交接](../../../dsh-praxis/kit/publish/video/narrative.md) | 运动与真实状态同步；每段时间解决一个认知任务 | 段落表按后者的最小分镜表组织 |
 | 视觉语法工场的 [运行层](../../visual-grammar/_runtime/README.md)与 [流水线](../../visual-grammar/_pipeline/README.md) | 舞台、时间轴、静态分镜、导出与检查 | 原样使用；流水线改了一处源文件哈希的路径算法 |
 | 交接稿为 MC01 指的两个外部来源（W12、R08） | 无 | 本会话没有打开，没有借用 |
 

@@ -125,7 +125,7 @@ node src/check.mjs   # 自动检查，写 evidence/check.json；浏览器段需�
 - 研究页的 [S01、S04、S05、S08](../../../vault/distilled/editable-native-svg-20261004/README.md)：分组与 title/desc、复杂图的长说明、数据与几何分开、关系输入与生成几何分开。S02（SVG 文本）的正文登记方没有读到，本批没有使用 SVG 2 的文本换行，换行由生成器自己算。
 - 成立程度、指向和位置的写法依据 Kit 的 [三页判断](../../../kit/design/foundations/README.md)，它们由本作品泛化而来，见 [ADR-025](../../../docs/decisions/025-relation-marks-and-anchors.md)和 [ADR-026](../../../docs/decisions/026-placement-and-scale.md)。
 - 时间图“文字让开、引线接回标尺”和“只知道时长不知道落点的不贴刻度”两处，参考了原子编排实验 Q07-b 与 V02-c 的做法和它们自己记下的失败（等距被读成等长、区间画成点），见 [清点](../../../vault/distilled/placement-grammar-20261004/README.md)；没有复制它们的代码。
-- 页面文字按 [Write / Prose](../../../kit/write/prose/README.md)写；配色与线型取自用户此前对视觉的要求（浅冷色、单一强调色、实线已定虚线未定）。
+- 页面文字按 [Write / Prose](../../../dsh-praxis/kit/writing/README.md)写；配色与线型取自用户此前对视觉的要求（浅冷色、单一强调色、实线已定虚线未定）。
 
 ## 下一步
 

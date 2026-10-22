@@ -2,7 +2,7 @@
 
 软件工程中的视觉与交互均在本目录范围内，包括网页、原生应用、开发者工具、数据可视化、游戏与空间界面。按平台查现有入口和待研究项，见 [软件交互范围](../../vault/provenance/art-software-atlas/software-scope.md)。
 
-从正在做的判断进入有关分支。内容为何需要表达、图注和来源承担什么职责，由 [Write](../write/README.md)维护；本目录处理如何让这些关系可见、可操作或随时间呈现。
+从正在做的判断进入有关分支。内容为何需要表达、图注和来源承担什么职责，由 [Writing](../../dsh-praxis/kit/writing/README.md)与 [Publish](../../dsh-praxis/kit/publish/README.md)维护；本目录处理如何让这些关系可见、可操作或随时间呈现。
 
 | 当前需要 | 分支 | 产物 |
 |---|---|---|
@@ -16,7 +16,7 @@
 | 查成熟方法、来源或样张 | [References](references/README.md) | 按任务消费的解释、限制和原件来路 |
 | 需求里出现风格名，或要探索一种视觉语言 | [视觉语言参考](references/languages.md) | 名字对应的范围、可以试的构成关系与来源状态 |
 
-图表和界面任务从本页开始；说明、标注、按钮、状态提示和图注按 [Write / Prose](../write/prose/README.md)撰写与审阅。设计取舍有争议时，回查 Foundations。
+图表和界面任务从本页开始；说明、标注、按钮、状态提示和图注按 [Writing](../../dsh-praxis/kit/writing/README.md)撰写与审阅。设计取舍有争议时，回查 Foundations。
 
 可按更具体的问题继续：
 
@@ -38,7 +38,7 @@
 
 - [记号、控件与运动](marks/README.md)：57 个原生 SVG 记号、11 个控件、10 种运动，含义与一版参考画法分开写。给节点、状态或步骤配小记号，或取用讲解页常见的控件时看；较重的编排仍按内容绘制。
 
-文字、图、可操作对象或运动之间拿不定时，读 [媒介选择](../write/publish/media-choice.md)。想知道当前有哪些可用判断和盲区，查 [覆盖地图](../../vault/provenance/design-writing-encyclopedia/coverage.md)。
+文字、图、可操作对象或运动之间拿不定时，读 [媒介选择](../../dsh-praxis/kit/task/media-choice.md)。想知道当前有哪些可用判断和盲区，查 [覆盖地图](../../vault/provenance/design-writing-encyclopedia/coverage.md)。
 
 其余情形依据不足时，再展开 [References](references/README.md) 和 Vault。配色、字体、密度与媒介参数在消费者项目决定，历史 accepted 不自动扩散为全局规则。
 

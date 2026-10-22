@@ -1,6 +1,6 @@
 # 第五版的改稿记录
 
-2026-10-05。第四版冻结后，用户指出文案容易看出来自模型、结构化短文本写成了平铺的陈述；Kit 的成文规则随后修订（[ADR-027](../../../docs/decisions/027-prose-review-goal-and-structural-text.md)）。这一版按修订后的[成文原理](../../../kit/write/prose/grammar.md)和[审阅方法](../../../kit/write/prose/review.md)改稿，是新条文的第一次使用。
+2026-10-05。第四版冻结后，用户指出文案容易看出来自模型、结构化短文本写成了平铺的陈述；Kit 的成文规则随后修订（[ADR-027](../../../docs/decisions/027-prose-review-goal-and-structural-text.md)）。这一版按修订后的[成文原理](../../../dsh-praxis/kit/writing/principles.md)和[审阅方法](../../../dsh-praxis/kit/writing/review.md)改稿，是新条文的第一次使用。
 
 不可损失项：事实审校定下的事实、数字、归属和限定词（“按麦肯锡自己的说法”“差不多都”“多半”“按明托自己的说法”“荷兰有实验”“直译”等）；段号和分段（一段对应画面的一个节拍）。
 

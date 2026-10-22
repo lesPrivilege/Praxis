@@ -66,7 +66,7 @@ python3 scripts/validate_repository.py
 
 ## 来源与历史
 
-场景 `drift-environment-observation`，运行契约版本 `0.2`，消费 Kit 基线 `88f2c65`。写作使用 [Praxis Prose](../../kit/write/prose/README.md)，本轮按用户指定的明确、具体、术语稳定原则收敛。
+场景 `drift-environment-observation`，运行契约版本 `0.2`，消费 Kit 基线 `88f2c65`。写作使用 [Praxis Prose](../../dsh-praxis/kit/writing/README.md)，本轮按用户指定的明确、具体、术语稳定原则收敛。
 
 设计的既有消费记录见 [CW-FE-R07](../../vault/distilled/frontend-design/cw-consumption.md)。采集研究保留在[原核查目录](../../vault/provenance/drift-checkers-20260930/README.md)与[数据源登记](../../vault/provenance/drift-providers-20260930/README.md)；这些历史材料与既有私有观测保持原貌。本轮只重访 IANA，未新增网页快照，数据源实时准确性仍待实际观测核验。ASD-STE100 官方全文本轮未完成核验，取用范围限于用户指定的写作原则。
 

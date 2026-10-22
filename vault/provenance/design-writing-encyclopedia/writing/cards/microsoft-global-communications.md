@@ -19,5 +19,5 @@
 
 ## 链接
 
-- Kit 候选语义：[多语言写作与本地化边界](../../../../../kit/write/prose/multilingual.md)。
+- Kit 候选语义：[多语言写作与本地化边界](../../../../../dsh-praxis/kit/writing/language/multilingual.md)。
 - 范围和授权记录：[目录](../catalog.json)、[研究记录](../CHANGELOG.md)。

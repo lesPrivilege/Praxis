@@ -22,5 +22,5 @@ Purdue OWL 将 Toulmin Method 教给学术写作者时，先以三个基础部�
 
 ## 链接
 
-- Kit 候选语义：[论证与证据链](../../../../../kit/write/prose/argument.md)。
+- Kit 候选语义：[论证与证据链](../../../../../dsh-praxis/kit/writing/organization/argument.md)。
 - 目录与历史：[目录](../catalog.json)、[研究记录](../CHANGELOG.md)。

@@ -10,7 +10,7 @@
 |---|---|---|
 | L01 | [原子编排 README](../layout-specimens-20260927/README.md)、[局部筛选](../layout-specimens-20260927/review.md)、specimens 的 job/input_shape/avoid_when 字段、两张 Kit 优先卡；实际看 T05-c 宽屏、E06-b 窄屏、W03-b 窄屏截图 | 三张截图独立确认：T05-c 括线围条件块、目标靠标签表达；E06-b 同属性同时呈现多对象与缺失类型；W03-b 注释跟句后。取用关系、输入形状和反例，不重验 280 变体、旧算术或运行兼容性 |
 | L02 | [A01 阅读关系入口](../design-grammar-atlas-20261002/a01-reading-relations/README.md)、Kit 问题地图与来路；实际看 span-375 | 窄屏把持续区间排成同尺段，长标题/正文仍保留。它不是本轮的原生 SVG 或通用时间件验收；其他 A01 输出未看 |
-| L03 | 根 AGENTS/README，Kit Agent、Design 各相关入口、[共同工作语法](../../../kit/grammar/work.md)、[Reporting](../../../kit/reporting/grammar.md)、[展项](../../../kit/write/publish/exhibits.md)、Motion、Prose、文档/入账/参考治理与有效 ADR 索引及相关正文 | 真实任务系统覆盖发现、决定、实现、验收、推进、复盘与移交；对象/证据/规则/建议/决定/状态/事件独立。只读文字，不宣称业务系统已实现；本轮只修改发现链接，不迁移规则 |
+| L03 | 根 AGENTS/README，Kit Agent、Design 各相关入口、[共同工作语法](../../../kit/grammar/work.md)、[Reporting](../../../dsh-praxis/kit/task/brief.md)、[展项](../../../dsh-praxis/kit/publish/html/exhibits.md)、Motion、Prose、文档/入账/参考治理与有效 ADR 索引及相关正文 | 真实任务系统覆盖发现、决定、实现、验收、推进、复盘与移交；对象/证据/规则/建议/决定/状态/事件独立。只读文字，不宣称业务系统已实现；本轮只修改发现链接，不迁移规则 |
 | L04 | [视觉工场入口](../../../demos/visual-grammar/README.md)、wake/work-orders/demo、[A3 README](../../../demos/visual-grammar/a3-event-state-context/README.md)与 model.mjs 的 fold/BEATS、schema-gate fixture；实际看 A3 playback-28s | 拒绝仍是历史、候选不改状态、投影不删源字段适合做编辑与 Motion 不变量。看的是既有截图，不是本轮播放/视频解码；A3 按整体事项版本判旧上下文，不能替代材料独立版本测试 |
 | L05 | 用户委托转述企业付款复核台作者回执 | 未提交、43 项通过、16 处修复、8 处留存及版本风险均为作者报告，未取得完整原件、路径或远端对应代码。只形成 F01/R17/R27 的合成风险要求，不独立确认数字、不修项目 |
 

@@ -25,4 +25,4 @@ NASA 将 Eyes 介绍为多个3D可视化应用的集合。页面分别描述太�
 
 不能据官方介绍宣称当前数据、操作效果、真实用户理解、可访问性或稳定离线能力。若将其作为实现样张，需要另外进行实际运行和按适用用户场景验证。
 
-本卡支撑 [Kit / 媒介选择](../../../../../kit/write/publish/media-choice.md)。来源复核和未验证项另见 [README](../README.md) 与 [CHANGELOG](../CHANGELOG.md)。
+本卡支撑 [Kit / 媒介选择](../../../../../dsh-praxis/kit/task/media-choice.md)。来源复核和未验证项另见 [README](../README.md) 与 [CHANGELOG](../CHANGELOG.md)。

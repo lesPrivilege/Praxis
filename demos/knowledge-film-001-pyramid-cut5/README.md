@@ -130,6 +130,6 @@ python3 audio/build_voice_aligned.py
 - 没有受众测试。
 - 明托的书没有读到合法的全文，书中的说法都经由二手笔记，片中按转述处理。
 - 配乐是程序合成的保守铺底，没有经过听审。
-- Kit 的取用记录：这一版读了 [成文原理](../../kit/write/prose/grammar.md)和 [审阅方法](../../kit/write/prose/review.md)（ADR-027 之后的版本），两位审阅者的任务书都要求先读这两页。Motion 分支和 Design 分支这一版没有重读。
+- Kit 的取用记录：这一版读了 [成文原理](../../dsh-praxis/kit/writing/principles.md)和 [审阅方法](../../dsh-praxis/kit/writing/review.md)（ADR-027 之后的版本），两位审阅者的任务书都要求先读这两页。Motion 分支和 Design 分支这一版没有重读。
 
 返回 [演示实现](../README.md)。
