@@ -1,0 +1,760 @@
+{
+  "document_type": "dsh-praxis.design-review",
+  "document_version": "0.2",
+  "status": "review-and-proposal",
+  "created_at_utc": "2026-10-22 16:15:54 UTC",
+  "language": "zh-CN",
+  "target": {
+    "repository": "https://github.com/lesPrivilege/Praxis",
+    "implementation_directory": "dsh-praxis/",
+    "reviewed_revision": "9f9f69d4ec38fdfab140316906a5e32d66e29c93",
+    "positioning": "个人 FDE 工作 Kit，支持 DSH、独立 MCP 调用和可视化维护",
+    "implementation_status": "No plugin implementation, repository mutation, installation, deployment, or scheduled job was performed in this review."
+  },
+  "confirmed_requirements": [
+    {
+      "id": "R01",
+      "statement": "先在 Praxis repo 的 dsh-praxis/ 下承载；按个人习惯 fresh 重构，无公开 release 需求。"
+    },
+    {
+      "id": "R02",
+      "statement": "先 review Kit 体例与实现方式，再逐步 grill 与补全功能及 control plane。"
+    },
+    {
+      "id": "R03",
+      "statement": "Design 以 design grammar 编排的藏书目录为核心，每条 source 有摘要、description、取用指引及本地材料。"
+    },
+    {
+      "id": "R04",
+      "statement": "支持手工管理、tag、收藏、推荐取用偏好、快照更新；agent 与人类维护同一份数据。"
+    },
+    {
+      "id": "R05",
+      "statement": "按任务渐进展开 Kit，不默认挂载全部来源与规则。"
+    },
+    {
+      "id": "R06",
+      "statement": "RSI/explore 可主动登记来源并进入缓存，供后续消费。"
+    },
+    {
+      "id": "R07",
+      "statement": "Workflow 可个人化定制；存储与结构解耦，统一接入 Praxis control plane。"
+    },
+    {
+      "id": "R08",
+      "statement": "覆盖或逐步验证 Design、Writing、Video、Publish、Reporting；Video 可配置 TTS provider、风格、tag 和创作方向。"
+    },
+    {
+      "id": "R09",
+      "statement": "Publish 可保留 MD 底稿、HTML 可视化和 motion 材料；artifact 可统一查询与管理。"
+    },
+    {
+      "id": "R10",
+      "statement": "可以打包、备份，以 plugin/MCP 给其他 agent 使用，并维护必要的版本对齐与 review。"
+    },
+    {
+      "id": "R11",
+      "statement": "Writing 纳入中文与英文规范，具有 skill-like description、分级内容与 user personal 部分。"
+    },
+    {
+      "id": "R12",
+      "statement": "Control plane 的 UI 级体例与 grammar 保持稳定；内容主要由 Agent 按范例维护，UI 可以智能化演进，入账与消费等工作方式保持稳定。"
+    }
+  ],
+  "review_findings": [
+    {
+      "id": "F01",
+      "finding": "现有 Kit 已区分来源说明、grammar 取用、采纳规则与项目消费；fresh 重构应迁移这些语义与人工题解。",
+      "implication": "旧文件布局和生成 registry 是迁移输入；不要用生成索引作为唯一可编辑主数据。",
+      "sources": [
+        "https://github.com/lesPrivilege/Praxis/blob/9f9f69d4ec38fdfab140316906a5e32d66e29c93/kit/design/references/README.md",
+        "https://github.com/lesPrivilege/Praxis/blob/9f9f69d4ec38fdfab140316906a5e32d66e29c93/docs/decisions/029-design-writing-reference-encyclopedia.md",
+        "https://github.com/lesPrivilege/Praxis/blob/9f9f69d4ec38fdfab140316906a5e32d66e29c93/docs/decisions/022-source-card-ownership.md"
+      ]
+    },
+    {
+      "id": "F02",
+      "finding": "现有中文 author-profile 默认关闭，并将作者偏好限制为语体、句法和判断呈现；事实与任务要求有独立约束。",
+      "implication": "区分常用偏好与代拟本人声音；新 personal 默认策略尚未由用户确认。",
+      "sources": [
+        "https://github.com/lesPrivilege/Praxis/blob/9f9f69d4ec38fdfab140316906a5e32d66e29c93/kit/write/prose/author-profile.md"
+      ]
+    },
+    {
+      "id": "F03",
+      "finding": "已读多语言页强调语言各自的规范，以及翻译、本地化与改写的不同边界。",
+      "implication": "中文、英文需要独立语言分支；已读多语言页不够充当完整英文写作规范，英文条目仍需逐步建设。",
+      "sources": [
+        "https://github.com/lesPrivilege/Praxis/blob/9f9f69d4ec38fdfab140316906a5e32d66e29c93/kit/write/prose/multilingual.md"
+      ]
+    },
+    {
+      "id": "F04",
+      "finding": "现有 FDE field loop 允许阶段按任务合并、退回或结束；field governance 分开维护收益证据和可复用资产证据。",
+      "implication": "以实际工作、验证和交付组织 Kit；用真实任务选择最小流程，不强制填完统一阶段表。",
+      "sources": [
+        "https://github.com/lesPrivilege/Praxis/blob/9f9f69d4ec38fdfab140316906a5e32d66e29c93/kit/work-system/field-loop.md",
+        "https://github.com/lesPrivilege/Praxis/blob/9f9f69d4ec38fdfab140316906a5e32d66e29c93/kit/work-system/field-governance.md",
+        "https://github.com/lesPrivilege/Praxis/blob/9f9f69d4ec38fdfab140316906a5e32d66e29c93/scenarios/_template/README.md"
+      ]
+    },
+    {
+      "id": "F05",
+      "finding": "DSH 官方文档存在本地插件包、UI 扩展入口及 MCP 接入方式。",
+      "implication": "业务模型可独立于 DSH，DSH 作为交互适配层；实际兼容性须按用户安装版本做集成验证。",
+      "sources": [
+        "https://deepseek-harness.github.io/deepseek-harness/en/develop/basic/publish",
+        "https://deepseek-harness.github.io/deepseek-harness/en/guide/mcp-memory",
+        "https://deepseek-harness.github.io/deepseek-harness/en/reference/subsystems/slots",
+        "https://deepseek-harness.github.io/deepseek-harness/en/reference/subsystems/sidebar-right"
+      ],
+      "verification_limit": "Documentation review only; no local DSH execution was performed."
+    }
+  ],
+  "proposed_architecture": {
+    "status": "proposal",
+    "fde_spine": [
+      "理解现场问题、样例与现状",
+      "选择介入点并形成可验证方案",
+      "试作与核查",
+      "形成交付并移交",
+      "反馈、维护、沉淀可复用内容"
+    ],
+    "components": [
+      {
+        "component": "Kit",
+        "responsibility": "任务入口、description、语言和文体规范、选用的来源题解、personal 规则。"
+      },
+      {
+        "component": "Registry and materials",
+        "responsibility": "来源身份、grammar 关系、手工编排、版本化快照、附件与可重建索引。"
+      },
+      {
+        "component": "Workflow modules",
+        "responsibility": "各模块自己的输入、配置、运行逻辑、review 和存储适配。"
+      },
+      {
+        "component": "Common domain actions",
+        "responsibility": "为 Agent、UI、DSH 和 MCP 提供稳定的入账、编排、解析、消费、刷新与修订操作；共用字段语义、引用规则、版本检查与历史记录。"
+      },
+      {
+        "component": "Control plane",
+        "responsibility": "提供稳定的对象与交互体例、可智能编排的视图、任务消费入口、变更解释和异常处理；不要求人类承担日常逐记录维护。"
+      },
+      {
+        "component": "Host adapters",
+        "responsibility": "DSH 插件和 MCP 暴露业务能力；不拥有唯一的知识副本。"
+      }
+    ],
+    "execution_topology": "待裁决：是否要求关闭 DSH 后仍持续执行任务。第一版可复用本地业务库；有明确后台需求时再引入常驻服务。",
+    "directory_proposal": [
+      {
+        "path": "dsh-praxis/README.md",
+        "purpose": "定位、启动入口、当前能力与任务路由。"
+      },
+      {
+        "path": "dsh-praxis/kit/",
+        "purpose": "FDE 专属入口、Writing 层级、领域题解和模块清单。共通规则通过显式引用解析，迁移时逐条转移唯一 owner。"
+      },
+      {
+        "path": "dsh-praxis/modules/",
+        "purpose": "Design、Writing、Video、Publish、Reporting 的模块定义与实现；模块可连接外部存储。"
+      },
+      {
+        "path": "dsh-praxis/core/",
+        "purpose": "身份、版本、来源/材料动作、有效配置解析、运行与 artifact 公共契约。"
+      },
+      {
+        "path": "dsh-praxis/adapters/",
+        "purpose": "DSH、MCP 及必要的命令行入口。"
+      },
+      {
+        "path": "dsh-praxis/ui/",
+        "purpose": "共同外壳及各模块的控制界面。"
+      },
+      {
+        "path": "dsh-praxis/schemas/",
+        "purpose": "可共享给表单、agent 参数与数据校验的结构。"
+      },
+      {
+        "path": "dsh-praxis/docs/",
+        "purpose": "设计决定、迁移映射、操作说明和维护记录。"
+      }
+    ],
+    "content_ownership": "同一规范只有一个可编辑 owner。初期可从既有 kit/ 显式引用；迁入 dsh-praxis 后保留旧 ID/路径映射。打包时解析并固化依赖，不产生第二份独立维护的规则。",
+    "data_location": "代码目录已确定；个人资料、真实项目材料、运行数据的物理根目录与 Git 跟踪策略尚未确定。不能从代码放在 repo 下推导为所有运行数据提交仓库。"
+  },
+  "writing_model": {
+    "status": "proposal",
+    "discovery_and_reading_levels": [
+      {
+        "level": "L0",
+        "content": "name + description + 适用范围 + 下一层入口",
+        "load": "能力发现时只读取短描述；描述说明何时用、产出什么、何时继续展开。"
+      },
+      {
+        "level": "L1",
+        "content": "共同写作原则",
+        "load": "按任务读取事实、证据、论证、读者、交付所需部分。"
+      },
+      {
+        "level": "L2",
+        "content": "中文 / 英文语言规范",
+        "load": "按目标语言选择；双语任务同时引用两个语言分支和语言版本关系。"
+      },
+      {
+        "level": "L3",
+        "content": "FDE 文体与 workflow 写作要求",
+        "load": "例如 discovery memo、方案、状态报告、技术说明、交付文档、旁白。"
+      },
+      {
+        "level": "L4",
+        "content": "例子、术语、来源题解与原始参考",
+        "load": "遇到具体问题再按需展开；原始来源不自动升级为指令。"
+      }
+    ],
+    "personal": {
+      "structure": "独立叠加维度，不用读取先后代表规则权威。",
+      "candidate_groups": [
+        "日常偏好：详略、术语、常见表达取舍",
+        "作者语体：是否代拟本人声音，按语言分别维护",
+        "项目或客户约定：读者、品牌、交付和既有文档习惯"
+      ],
+      "activation": "任务可显式选择；可按语言、文体、项目配置默认。沿用当前作者语体默认关闭作为暂定基线，等待用户确认。",
+      "evidence_boundary": "保留人手写入与 agent 推断的区别；示例和历史立场不当作本次事实。",
+      "precedence": "具体任务与事实约束明确处理；personal 不凭最后加载而覆盖内容事实、语言约定或项目交付要求。冲突要能在有效配置视图中解释。",
+      "maintenance": "按已有 personal 范例、明确任务与适用范围进行修改可作为日常 Agent 工作。是否从未明确表态的行为中推断并推广新偏好，保留为独立的学习策略问题；不用于阻止普通内容维护。"
+    },
+    "language_relations": [
+      "独立写作：共同事实材料，两种语言各自成文。",
+      "翻译：记录源文版本和对应目标版本。",
+      "本地化或改写：明确允许变化的表达、例子和结构，并保留版本关系。"
+    ],
+    "editing_surfaces": "Agent 按稳定的条目体例与范例维护 description、正文、适用范围、示例、引用及已有 personal 规则；UI 提供同一份内容的智能阅读、编排与修改入口。常规修改保留版本并直接生效，不预设逐条人工批准。",
+    "proposed_unit_fields": [
+      "id",
+      "description",
+      "applies_to",
+      "body_ref",
+      "children",
+      "references",
+      "owner",
+      "revision"
+    ],
+    "field_note": "字段是评审草案，不是已经发布或实现的数据协议。"
+  },
+  "data_model": {
+    "status": "proposal",
+    "entities": [
+      {
+        "entity": "Source",
+        "meaning": "一个外部来源的逻辑身份、出处、标题、作者或发布者、概要；可对应多个快照。"
+      },
+      {
+        "entity": "GrammarBinding",
+        "meaning": "source 与某个 grammar 的关系，包含该语境下的取用说明、适用条件和偏好。"
+      },
+      {
+        "entity": "MaterialRevision",
+        "meaning": "实际取得的原文、片段、图片、音频、附件等；保存取得时间、内容指纹和可解析位置。"
+      },
+      {
+        "entity": "KitUnit",
+        "meaning": "有 owner 与版本的规范或题解；通过 description 被发现。"
+      },
+      {
+        "entity": "Preset",
+        "meaning": "可编辑的 workflow、项目或个人默认配置。"
+      },
+      {
+        "entity": "Run",
+        "meaning": "一次任务实际解析的输入、规则版本、preset 和临时覆盖值。"
+      },
+      {
+        "entity": "Attempt",
+        "meaning": "某次执行、重试、状态、错误及检查点；与同一 Run 的产物关联。"
+      },
+      {
+        "entity": "ArtifactRevision",
+        "meaning": "文稿、HTML、图表、音频、字幕、视频等产物版本，以及输入和派生关系。"
+      }
+    ],
+    "curation_vs_cache": [
+      {
+        "kind": "持久编排",
+        "examples": "人或 Agent 维护的说明、tag、收藏、取用偏好、个人规范与 review 判断。",
+        "rule": "必须备份；刷新和重建索引不覆盖。记录维护者、修改依据和范围，不以操作者是 Agent 为由降为临时缓存。"
+      },
+      {
+        "kind": "版本化材料",
+        "examples": "网页快照、摘录、附件、音频与已交付产物。",
+        "rule": "按实际保存的版本登记；失效 URL 不改变已有版本。"
+      },
+      {
+        "kind": "派生缓存",
+        "examples": "全文索引、缩略图、可重做的中间渲染。",
+        "rule": "标记可重建及依赖；重建后不丢人工维护信息。"
+      }
+    ],
+    "consistency": "Agent 和 UI 使用相同的对象与操作 grammar。默认通过公共动作写入 canonical store，携带 expected_revision 防止静默覆盖；普通有效修改直接生效。是否正式支持裸文件编辑与自动导入，仍待确认。",
+    "review": "Agent 是日常维护和检查主路径。来源收藏、取用偏好、证据地位、规范采纳分别建模；保留变更依据与版本。Review 处理具体质量问题、冲突和结构演变，不要求人类逐条确认常规入账与修订，也不等同于 DSH 工具审批。",
+    "shared_management": "共享身份、查询和动作不要求迁移所有 workflow 的私有数据库、文件或游标。"
+  },
+  "workflows": [
+    {
+      "id": "design",
+      "entry": "按 grammar 的藏书目录",
+      "config": "标签、收藏、语境化推荐、快照刷新策略",
+      "output": "选用参考集、设计材料、项目消费记录",
+      "notes": "同一来源可用于多个 grammar，每条关系有独立题解。"
+    },
+    {
+      "id": "writing",
+      "entry": "按任务与目标语言选择写作 Kit",
+      "config": "语言、文体、读者、personal profile、项目词表",
+      "output": "有来源和版本的文稿",
+      "notes": "中文和英文独立维护；description 负责发现，详细规则按需读取。"
+    },
+    {
+      "id": "publish",
+      "entry": "选择底稿与发布 preset",
+      "config": "读者、模板、HTML/视觉/motion 输出要求",
+      "output": "MD 底稿及派生 HTML、视觉或 motion 产物",
+      "notes": "记录底稿版本到渲染产物的关系。实际对外发布是单独动作。"
+    },
+    {
+      "id": "video",
+      "entry": "选择脚本、素材和 video preset",
+      "config": "TTS provider/voice/语言、风格、tag、创作方向、画面参数",
+      "output": "音频、字幕、预览、视频",
+      "notes": "provider 密钥引用与普通配置分离；保存实际使用的 provider 与参数，不承诺生成完全可重现。"
+    },
+    {
+      "id": "reporting",
+      "entry": "选择报告周期、材料范围和接收者",
+      "config": "报告结构、来源、游标、读者、personal/profile 与输出样式",
+      "output": "源材料范围清晰的报告和附件",
+      "notes": "可以保留独立存储，通过模块接口接入公共目录、运行记录与产物查询。"
+    }
+  ],
+  "lifecycle": {
+    "intake": "Agent 发现 source → 去重并入账 → 保存可取得材料并标明未取得部分 → 按范例补齐摘要与取用题解 → 校验后可搜索与消费。UI 展示过程和结果，并可发起同样操作。",
+    "refresh": "Agent 取得新快照，按范例比较差异并更新适用的题解和推荐；保留已有编排与历史任务所用版本。遇到实际冲突时单独处理，不把全部刷新转成人工审批。",
+    "run": "选择 workflow 与 preset → 解析 Kit 和材料 → 保存本次配置 → 执行与检查 → 登记产物及派生关系。",
+    "feedback": "RSI/explore 可以直接补充来源、题解和既有结构内的内容。新的规范主张、由行为推断的个人偏好、以及改变对象语义的 grammar 演变分别记录适用范围，避免以一次局部改动无声改变全局含义。",
+    "progressive_context": "目录浏览不等于注入模型上下文；显示实际加载的条目、理由与版本。"
+  },
+  "packaging_and_restore": {
+    "status": "proposal",
+    "plugin_bundle": "代码、Kit、模块契约、模板、非私有默认值和依赖清单；按目标 DSH 版本验证后本地安装，无需公开发布。",
+    "workspace_backup": "人工内容、来源关系、材料与产物、运行记录、可重建项清单、逻辑路径映射和必要的配置引用。",
+    "restore_acceptance": "换一个 workspace 恢复后能找到同一来源与产物、继续编辑；可重建索引；缺失外部文件有可处理记录。",
+    "compatibility_axes": [
+      "DSH/plugin compatibility",
+      "data schema version",
+      "Kit revision",
+      "workflow revision",
+      "material revision",
+      "provider/model metadata"
+    ],
+    "limits": "安装包不能自动替代个人数据备份；数据导出也不能自动保证运行环境可复现。"
+  },
+  "implementation_slices": [
+    {
+      "stage": "1",
+      "goal": "建立 FDE Kit 入口与分级 Writing 的最小可编辑单元",
+      "deliverables": "description、选择性读取、中文/英文分支、personal 作用域、既有条目的 owner 映射。 同时提供可由 Agent 模仿的完整维护范例、共享写入动作与 UI 结果视图。",
+      "acceptance": "同一真实 FDE 写作任务可解释为何读取哪些规则；关闭 personal 后事实不变；相同单元能被 UI 与 agent 修改并看到同一版本。 Agent 按范例完成一项条目修订，无需人工逐字段填写；修改在 UI 和 MCP 中一致可见。"
+    },
+    {
+      "stage": "2",
+      "goal": "Design 来源闭环",
+      "deliverables": "入账、按 grammar 浏览、关系题解、tag/收藏、材料版本、搜索与快照状态。",
+      "acceptance": "一个 source 被两个 grammar 使用时保留不同题解；刷新材料不丢人工标签与说明；选入任务只加载必要内容。 常规入账与刷新由 Agent 完成，界面可解释结果；持久编排不因 Agent 维护而被当作可丢弃缓存。"
+    },
+    {
+      "stage": "3",
+      "goal": "用一条真实 FDE 交付 workflow 验证共同底层",
+      "deliverables": "建议从 Writing + Publish 或已有 Reporting 任务选择其一；保存输入与配置快照、MD 和派生 HTML。",
+      "acceptance": "能从产物追到输入及规则版本；输入更新能识别受影响产物；失败可定位并重试，已完成材料不必无差别重做。"
+    },
+    {
+      "stage": "4",
+      "goal": "Video 与独立 Reporting 接入，检查解耦是否成立",
+      "deliverables": "TTS adapter 和参数表单、音频/字幕/视频产物链；独立存储模块的查询与动作接入。",
+      "acceptance": "不改变核心来源身份即可接入第二类素材；模块独立数据能被共同 control plane 管理。"
+    },
+    {
+      "stage": "5",
+      "goal": "打包、恢复和兼容性闭环",
+      "deliverables": "本地 plugin 安装包、MCP 入口、数据迁移与备份恢复说明。",
+      "acceptance": "另一 agent 可以按 description 发现并消费；独立 workspace 可恢复已有个人内容。"
+    }
+  ],
+  "open_decisions": [
+    {
+      "id": "Q6",
+      "question": "首版的入账后消费优先由当前 Agent 任务带动，还是允许 workflow 订阅材料变化并自动起草？",
+      "recommended_initial_choice": "各 workflow 独立配置。首版建议先跑通真实任务内的入账与消费，同时保留订阅接口；若自动产出是首要目标，则先明确运行寿命和失败恢复。",
+      "importance": "决定消费触发、后台服务、运行记录与 UI 的主要工作入口。"
+    },
+    {
+      "id": "Q2",
+      "question": "是否要求关闭 DSH 后仍定时更新、继续 TTS/render 或生成报告？",
+      "recommended_initial_choice": "先确认真实需求；有需求再决定常驻本地服务。",
+      "importance": "决定执行层的进程寿命和运行恢复机制。"
+    },
+    {
+      "id": "Q3",
+      "question": "第一条闭环选择哪一个已有真实 FDE 任务？",
+      "recommended_initial_choice": "选高频且有现成材料与可检查交付的 Writing/Publish 或 Reporting 任务。",
+      "importance": "决定首版 schema 的必要字段与验收。"
+    },
+    {
+      "id": "Q4",
+      "question": "是否正式支持直接编辑裸文件作为一等入口？",
+      "recommended_initial_choice": "先支持公共动作与可导出文件；若裸文件为必需，再明确导入校验、冲突及所有权。",
+      "importance": "影响一致性与索引重建策略。"
+    },
+    {
+      "id": "Q5",
+      "question": "个人规范和实际项目数据的根目录与 Git 跟踪方式如何安排？",
+      "recommended_initial_choice": "实现路径与数据路径分别配置；不要把代码放进 repo 误解为所有数据都随仓库提交。",
+      "importance": "影响备份、可移植性和目录约定。"
+    }
+  ],
+  "research_scope": {
+    "method": "Targeted review of official documentation and the pinned Praxis repository; findings are design inputs, not implementation validation.",
+    "external_practice_searches": 6,
+    "external_practice_candidates_requested": 30,
+    "external_practice_unique_pages_read": 10,
+    "counting_note": "30 denotes requested candidate slots, not 30 distinct reviewed sources. DSH and repository review are tracked separately.",
+    "source_snapshots_archived": false,
+    "benchmark_or_runtime_tests_performed": false
+  },
+  "source_register": [
+    {
+      "id": "zotero-collections-tags",
+      "title": "Zotero: Collections and Tags",
+      "url": "https://www.zotero.org/support/collections_and_tags",
+      "observed": "A single item can belong to multiple collections; tags and saved searches offer other ways to organize the same library.",
+      "use_note": "给同一 source 保留一个身份；grammar 分类、tag 与保存的筛选视图不复制来源。每个 grammar 关系单独保存取用题解。",
+      "scope": "Catalog organization; does not specify Praxis rule authority or write-conflict behavior.",
+      "grammar_tags": [
+        "sources/catalog",
+        "design/grammar",
+        "organization/tags"
+      ],
+      "evidence_kind": "official_documentation",
+      "access_status": "read",
+      "retrieved_at_utc": "2026-10-22 16:15:54 UTC",
+      "adoption_status": "reference_only",
+      "snapshot": {
+        "status": "not_archived",
+        "local_path": null,
+        "content_hash": null
+      },
+      "notes": "Observed facts and proposed Praxis use are separated. This review record is not a production source registry."
+    },
+    {
+      "id": "zotero-data-directory",
+      "title": "Zotero: The Zotero Data Directory",
+      "url": "https://www.zotero.org/support/zotero_data/",
+      "observed": "The data directory separates the database from attachment storage; linked files may live elsewhere. Sync and export are not equivalent to a complete historical backup.",
+      "use_note": "恢复包要覆盖人工元数据、正文、实际附件和外部文件引用；全文索引单列为可重建内容。",
+      "scope": "Data ownership and backup boundaries; not a prescribed database schema.",
+      "grammar_tags": [
+        "storage/backup",
+        "sources/materials"
+      ],
+      "evidence_kind": "official_documentation",
+      "access_status": "read",
+      "retrieved_at_utc": "2026-10-22 16:15:54 UTC",
+      "adoption_status": "reference_only",
+      "snapshot": {
+        "status": "not_archived",
+        "local_path": null,
+        "content_hash": null
+      },
+      "notes": "Observed facts and proposed Praxis use are separated. This review record is not a production source registry."
+    },
+    {
+      "id": "calibre-gui",
+      "title": "calibre: The Graphical User Interface",
+      "url": "https://manual.calibre-ebook.com/gui.html",
+      "observed": "The library supports editing descriptions and tags, multiple formats for an item, and associated data files. Adding files normally makes managed copies.",
+      "use_note": "一个逻辑条目可以关联多种文件与可视化预览。作为 managed-copy 的对照，Praxis 仍需显式决定复制导入或引用外部文件。",
+      "scope": "Catalog interaction and file ownership; no claim that copying every FDE project asset is appropriate.",
+      "grammar_tags": [
+        "sources/detail",
+        "artifacts/formats"
+      ],
+      "evidence_kind": "official_documentation",
+      "access_status": "read",
+      "retrieved_at_utc": "2026-10-22 16:15:54 UTC",
+      "adoption_status": "reference_only",
+      "snapshot": {
+        "status": "not_archived",
+        "local_path": null,
+        "content_hash": null
+      },
+      "notes": "Observed facts and proposed Praxis use are separated. This review record is not a production source registry."
+    },
+    {
+      "id": "quarto-profiles",
+      "title": "Quarto: Project Profiles",
+      "url": "https://quarto.org/docs/projects/profiles.html",
+      "observed": "Named profiles compose project configuration, with activation and merging rules.",
+      "use_note": "将可编辑 preset 与每次 run 解析后的配置快照分开。语言、受众、输出格式可以是 preset 维度。",
+      "scope": "Configuration composition; immutable run snapshots are a Praxis proposal, not a Quarto guarantee.",
+      "grammar_tags": [
+        "workflow/configuration",
+        "publish/presets"
+      ],
+      "evidence_kind": "official_documentation",
+      "access_status": "read",
+      "retrieved_at_utc": "2026-10-22 16:15:54 UTC",
+      "adoption_status": "reference_only",
+      "snapshot": {
+        "status": "not_archived",
+        "local_path": null,
+        "content_hash": null
+      },
+      "notes": "Observed facts and proposed Praxis use are separated. This review record is not a production source registry."
+    },
+    {
+      "id": "quarto-execution",
+      "title": "Quarto: Managing Execution",
+      "url": "https://quarto.org/docs/projects/code-execution.html",
+      "observed": "Quarto distinguishes execution caching, freeze behavior, and rendering. External input changes may require explicit refresh.",
+      "use_note": "MD 底稿与 HTML 产物保持派生关系；显式登记数据依赖和刷新理由，避免把缓存命中当成输入没有变化。",
+      "scope": "Execution and rendering behavior; not complete automatic dependency invalidation.",
+      "grammar_tags": [
+        "publish/rendering",
+        "workflow/invalidation"
+      ],
+      "evidence_kind": "official_documentation",
+      "access_status": "read",
+      "retrieved_at_utc": "2026-10-22 16:15:54 UTC",
+      "adoption_status": "reference_only",
+      "snapshot": {
+        "status": "not_archived",
+        "local_path": null,
+        "content_hash": null
+      },
+      "notes": "Observed facts and proposed Praxis use are separated. This review record is not a production source registry."
+    },
+    {
+      "id": "remotion-schema",
+      "title": "Remotion: Defining a schema for your props",
+      "url": "https://www.remotion.dev/docs/schemas",
+      "observed": "A schema can validate video props and support controls in Remotion Studio.",
+      "use_note": "Video 模块用同一配置 schema 支撑校验、control plane 表单和 agent 参数。",
+      "scope": "Typed video properties; TTS provider adapters are separate Praxis work.",
+      "grammar_tags": [
+        "video/settings",
+        "control-plane/forms"
+      ],
+      "evidence_kind": "official_documentation",
+      "access_status": "read",
+      "retrieved_at_utc": "2026-10-22 16:15:54 UTC",
+      "adoption_status": "reference_only",
+      "snapshot": {
+        "status": "not_archived",
+        "local_path": null,
+        "content_hash": null
+      },
+      "notes": "Observed facts and proposed Praxis use are separated. This review record is not a production source registry."
+    },
+    {
+      "id": "remotion-parameterized",
+      "title": "Remotion: Parameterized videos",
+      "url": "https://www.remotion.dev/docs/parameterized-rendering",
+      "observed": "Default props, input props, validation, and transformations participate in parameterized video rendering.",
+      "use_note": "保存素材、文案、风格和渲染参数的已解析版本；音频、字幕、视频分别登记为有来源关系的产物。",
+      "scope": "Parameterized rendering; does not guarantee deterministic third-party speech generation.",
+      "grammar_tags": [
+        "video/rendering",
+        "artifacts/lineage"
+      ],
+      "evidence_kind": "official_documentation",
+      "access_status": "read",
+      "retrieved_at_utc": "2026-10-22 16:15:54 UTC",
+      "adoption_status": "reference_only",
+      "snapshot": {
+        "status": "not_archived",
+        "local_path": null,
+        "content_hash": null
+      },
+      "notes": "Observed facts and proposed Praxis use are separated. This review record is not a production source registry."
+    },
+    {
+      "id": "dagster-concepts",
+      "title": "Dagster: Concepts",
+      "url": "https://dagster.io/docs/getting-started/concepts",
+      "observed": "Dagster distinguishes assets, dependencies, materializations, executions, resources, and checks.",
+      "use_note": "借用持久产物、执行记录和质量检查相互区分的模型；Praxis 初版可用本地函数与脚本实现。",
+      "scope": "Conceptual reference only; no decision to install Dagster or build a general orchestrator.",
+      "grammar_tags": [
+        "workflow/runs",
+        "artifacts/identity",
+        "review/checks"
+      ],
+      "evidence_kind": "official_documentation",
+      "access_status": "read",
+      "retrieved_at_utc": "2026-10-22 16:15:54 UTC",
+      "adoption_status": "reference_only",
+      "snapshot": {
+        "status": "not_archived",
+        "local_path": null,
+        "content_hash": null
+      },
+      "notes": "Observed facts and proposed Praxis use are separated. This review record is not a production source registry."
+    },
+    {
+      "id": "dagster-sensors",
+      "title": "Dagster: Sensors",
+      "url": "https://dagster.io/docs/guides/automate/sensors",
+      "observed": "Sensors can produce run requests or skip decisions. Run keys support deduplication and cursors track progress.",
+      "use_note": "将新素材发现、去重、游标推进、运行触发和重试分开记录；仅对配置了触发规则的 workflow 启动任务。",
+      "scope": "Run-request deduplication is not exactly-once external side effects. No recurring automation has been created.",
+      "grammar_tags": [
+        "workflow/intake",
+        "workflow/triggers"
+      ],
+      "evidence_kind": "official_documentation",
+      "access_status": "read",
+      "retrieved_at_utc": "2026-10-22 16:15:54 UTC",
+      "adoption_status": "reference_only",
+      "snapshot": {
+        "status": "not_archived",
+        "local_path": null,
+        "content_hash": null
+      },
+      "notes": "Observed facts and proposed Praxis use are separated. This review record is not a production source registry."
+    },
+    {
+      "id": "dagster-asset-storage",
+      "title": "Dagster: Passing data between assets",
+      "url": "https://dagster.io/docs/guides/build/assets/passing-data-between-assets",
+      "observed": "Assets can communicate through explicit external storage; IO managers are an optional abstraction.",
+      "use_note": "Reporting 等模块可以保留独立的存储与游标，只向 Praxis 登记必要的描述、接口、运行和产物引用。",
+      "scope": "Storage boundary reference; not all intermediate steps need to become first-class assets.",
+      "grammar_tags": [
+        "workflow/storage",
+        "reporting/integration"
+      ],
+      "evidence_kind": "official_documentation",
+      "access_status": "read",
+      "retrieved_at_utc": "2026-10-22 16:15:54 UTC",
+      "adoption_status": "reference_only",
+      "snapshot": {
+        "status": "not_archived",
+        "local_path": null,
+        "content_hash": null
+      },
+      "notes": "Observed facts and proposed Praxis use are separated. This review record is not a production source registry."
+    }
+  ],
+  "updated_at_utc": "2026-10-22 16:23:23 UTC",
+  "decision_log": [
+    {
+      "revision": "0.1",
+      "date_utc": "2026-10-22 16:15:54 UTC",
+      "change": "建立个人 FDE Kit、分级 Writing、来源管理与 workflow 接入的评审草案。"
+    },
+    {
+      "revision": "0.2",
+      "date_utc": "2026-10-22 16:23:23 UTC",
+      "source": "User clarification in conversation",
+      "change": "明确 Agent 为日常内容主要维护者；撤回以逐条人工确认作为常规维护默认路径的建议；将稳定的 control-plane grammar、操作范例和智能 UI 分开设计。",
+      "scope_limit": "本次澄清确定维护方式；不自动视为允许从任意历史行为推断并改变所有个人默认，也不改变当前作者语体开关。"
+    }
+  ],
+  "control_plane_grammar": {
+    "status": "User direction confirmed; details below are an implementation proposal.",
+    "maintenance_model": "Agent 为日常维护主路径，可按范例直接修改；人类通过任务指示、界面编排、范例修订与纠错表达意图。常规有效修改不进入默认逐条人工审批队列。",
+    "stable_contracts": [
+      "对象身份与引用：source、grammar 关系、材料版本、Kit 单元、配置、运行与产物。",
+      "条目语义与阅读结构：是什么、从哪里来、适用于什么、如何消费、当前版本及相关记录。",
+      "常用操作的输入与结果：入账、编排、解析、消费、刷新、修订。",
+      "持久数据与可重建内容的边界，以及历史版本和引用的连续性。",
+      "同一操作在 Agent、UI、DSH 和 MCP 入口上的语义一致。"
+    ],
+    "flexible_content": [
+      "具体来源、摘要、取用题解、标签、收藏、分类条目与关系。",
+      "现有结构内的 Writing 正文、语言规范、任务文体和明确范围内的 personal 内容。",
+      "推荐列表、任务参考集、专题视图、比较视图与辅助说明。",
+      "模块预设和实际工作中的材料、运行、产物。"
+    ],
+    "grammar_scope": "UI 的对象语义和操作契约与某一领域的分类树分别维护。新增分类节点通常属于既有结构内的内容操作；改变字段含义、身份模型或消费接口属于 grammar 演变。",
+    "examples_as_contract": [
+      "每个常用操作提供可直接模仿的完整正例：输入、所处语境、输出记录与完成条件。",
+      "提供少量边界例：同一 source 被多个 grammar 消费、来源更新、正文暂不可取、不同语言规则、重复记录与并发修改。",
+      "范例帮助 Agent 理解取舍与题解写法；schema 负责可机械检查的字段、类型、引用和版本。",
+      "校验通过不能替代内容质量判断；Agent 在任务内检查摘要与题解的依据，并把具体冲突写入结果。"
+    ],
+    "ordinary_changes": {
+      "effect": "按现有 grammar 和任务范围完成的有效修改直接生效。",
+      "history": "保留操作者、任务、采用的范例或规则版本、改动理由、前后版本与相关来源。",
+      "integrity": "检查必需字段、稳定 ID、可解析引用、材料状态、语言与任务适用范围；并发变更避免静默覆盖。",
+      "review": "日常维护由 Agent 完成检查；具体冲突、来源不明或结构演变单独处理。处理路径不自动等同于要求用户审批。"
+    },
+    "intelligent_ui": {
+      "functions": [
+        "将自然语言意图转换为可查看结果的结构化操作。",
+        "按任务形成专题视图、候选参考集与消费说明。",
+        "解释为什么推荐或读取某项内容，以及相较上次发生了什么变化。",
+        "显示资料新旧、关联项目和可能受影响的产物。",
+        "在稳定操作契约上增加新的视图与交互。"
+      ],
+      "consistency": "智能 UI 使用共同业务操作，不维护另一份数据库或隐藏的权威状态。视图可以变化，数据含义和动作结果保持一致。"
+    },
+    "operation_examples": [
+      {
+        "operation": "capture",
+        "meaning": "登记一个来源及当前可取得的材料。",
+        "result": "稳定 source ID、出处、摘要或待补齐状态、材料引用与登记依据；重复请求可合并到已有身份。"
+      },
+      {
+        "operation": "curate",
+        "meaning": "维护分类、tag、收藏、关系题解与取用偏好。",
+        "result": "原有对象上形成可追溯的修订；同一来源在不同 grammar 下保留各自题解。"
+      },
+      {
+        "operation": "resolve",
+        "meaning": "根据任务、语言、文体和个人配置选择所需 Kit 与材料。",
+        "result": "渐进展开的条目与选用理由，不默认挂载全部来源。"
+      },
+      {
+        "operation": "consume",
+        "meaning": "把选定内容接入一次实际工作。",
+        "result": "记录使用了哪些条目和版本，并关联任务/运行；消费清单不要求复制所有原始文件。"
+      },
+      {
+        "operation": "refresh",
+        "meaning": "取得新的材料版本并评估当前题解与推荐是否仍适用。",
+        "result": "新增材料版本、内容差异及必要的条目修订；历史任务保持其使用版本。"
+      },
+      {
+        "operation": "revise",
+        "meaning": "按范例改进现有 Kit、说明或明确范围内的配置。",
+        "result": "记录修订内容、依据与适用范围；结构协议变化使用显式迁移。"
+      }
+    ],
+    "pending_trigger_choice": "消费可由当前任务主动选择，也可由 workflow 订阅新材料触发；需要明确首版优先路径与每个 workflow 的自动化范围。"
+  },
+  "deferred_decisions": [
+    {
+      "id": "D1",
+      "question": "Agent 是否可以从未明确表态的改稿或使用行为中推断并推广新的 personal 默认？",
+      "note": "这是独立的学习策略问题。用户已经明确日常维护应主要由 Agent 按范例完成；不再以本问题作为常规内容修改的默认审批前置。"
+    }
+  ],
+  "withdrawn_proposals": [
+    {
+      "proposal": "将 Agent 推断或修改的内容一般性地置于候选队列，等待用户逐条接受。",
+      "disposition": "撤回其作为常规维护默认路径的地位；普通内容由 Agent 按范例维护并直接生效。个人偏好从行为中学习仍可单独定义策略。"
+    }
+  ]
+}

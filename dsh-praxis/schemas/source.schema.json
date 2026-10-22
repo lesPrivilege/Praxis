@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "source.schema.json",
+  "title": "Source",
+  "description": "一个来源的身份。素材第 2 级（来源条目）与第 4 级（摘录与注解）。",
+  "type": "object",
+  "required": ["id", "kind", "title", "origin", "summary", "read_scope", "evidence_status", "revision"],
+  "properties": {
+    "id": {"$ref": "common.schema.json#/$defs/id"},
+    "aliases": {"type": "array", "items": {"$ref": "common.schema.json#/$defs/id"}},
+    "kind": {"enum": ["web", "book", "paper", "repository", "chat", "project-record", "self-authored", "artwork"]},
+    "title": {"type": "string"},
+    "origin": {
+      "type": "object",
+      "properties": {
+        "url": {"type": "string"},
+        "canonical_url": {"type": "string"},
+        "locator": {"type": "string", "description": "非 URL 来源的定位：书目、会话与 turn ID、本地原路径"},
+        "publisher": {"type": "string"}
+      },
+      "minProperties": 1,
+      "additionalProperties": false
+    },
+    "language": {"type": "string"},
+    "summary": {"type": "string", "description": "以自己的话写的概要，足够初步离线理解"},
+    "read_scope": {"type": "string", "description": "实际读取的范围与证据形态：读过文字、看过输出、执行过实现"},
+    "evidence_status": {"enum": ["verified", "partial", "unavailable"]},
+    "adoption": {"enum": ["reference", "accepted"], "default": "reference", "description": "是否已由 ADR 采纳为规范；与优先级、收藏无关"},
+    "excerpts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "locator", "claim"],
+        "properties": {
+          "id": {"$ref": "common.schema.json#/$defs/id"},
+          "locator": {"type": "string"},
+          "claim": {"type": "string", "description": "这段材料支持的说法"},
+          "note": {"type": "string", "description": "译释或本仓库的说明，与原文区分"},
+          "material": {"$ref": "common.schema.json#/$defs/id", "description": "摘录所在的 MaterialRevision"}
+        },
+        "additionalProperties": false
+      }
+    },
+    "materials": {"type": "array", "items": {"$ref": "common.schema.json#/$defs/id"}},
+    "materials_gap": {"type": "string", "description": "取不到或未保存的部分"},
+    "limits": {"type": "string"},
+    "revisit_when": {"type": "string"},
+    "facets": {"type": "object", "description": "按入账规范的分面结构"},
+    "extensions": {"type": "object", "description": "来源 catalog 自有字段，原样保留"},
+    "card": {"$ref": "common.schema.json#/$defs/repoPath"},
+    "card_ownership": {"enum": ["generated", "maintained"], "description": "generated 编辑写回记录；maintained 编辑写回卡片"},
+    "history_record": {"$ref": "common.schema.json#/$defs/repoPath"},
+    "retired": {"type": "boolean", "default": false, "description": "退出目录，历史消费仍可解析"},
+    "revision": {"$ref": "common.schema.json#/$defs/revision"}
+  },
+  "additionalProperties": false
+}

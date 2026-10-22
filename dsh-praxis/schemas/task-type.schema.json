@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "task-type.schema.json",
+  "title": "TaskType",
+  "description": "一种任务：为谁完成什么，用哪条流水线，取哪些 Writing 与 Design 单元，查哪些素材，怎样验收。",
+  "type": "object",
+  "required": ["id", "title", "description", "reader", "outcome", "pipelines", "writing", "design", "acceptance", "revision"],
+  "properties": {
+    "id": {"$ref": "common.schema.json#/$defs/id"},
+    "title": {"type": "string"},
+    "description": {"$ref": "common.schema.json#/$defs/description"},
+    "reader": {"type": "string", "description": "读者及其已知状态"},
+    "outcome": {"type": "string", "description": "要促成的理解、决定或行动"},
+    "pipelines": {"type": "array", "minItems": 1, "items": {"enum": ["html", "video"]}, "description": "第一项为默认流水线"},
+    "writing": {"type": "array", "items": {"$ref": "common.schema.json#/$defs/id"}},
+    "design": {"type": "array", "items": {"$ref": "common.schema.json#/$defs/id"}},
+    "per_pipeline": {
+      "type": "object",
+      "description": "某条流水线额外取用的单元",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "writing": {"type": "array", "items": {"$ref": "common.schema.json#/$defs/id"}},
+          "design": {"type": "array", "items": {"$ref": "common.schema.json#/$defs/id"}},
+          "publish": {"type": "array", "items": {"$ref": "common.schema.json#/$defs/id"}}
+        },
+        "additionalProperties": false
+      }
+    },
+    "materials": {
+      "type": "object",
+      "description": "素材查询；省略表示只取正文里引用到的",
+      "properties": {
+        "units": {"type": "array", "items": {"$ref": "common.schema.json#/$defs/id"}, "description": "挂在这些单元上、已启用的 Binding"},
+        "tags": {"type": "array", "items": {"type": "string"}},
+        "favorites_only": {"type": "boolean", "default": false}
+      },
+      "additionalProperties": false
+    },
+    "acceptance": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+    "examples": {"type": "array", "items": {"$ref": "common.schema.json#/$defs/repoPath"}},
+    "revision": {"$ref": "common.schema.json#/$defs/revision"},
+    "history": {"type": "array", "items": {"$ref": "common.schema.json#/$defs/change"}}
+  },
+  "additionalProperties": false
+}

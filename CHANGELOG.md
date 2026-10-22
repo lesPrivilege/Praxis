@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-10-23 · dsh-praxis 分层体例
+
+- 新增 [dsh-praxis](dsh-praxis/README.md)：个人 FDE 工作 Kit 与控制面的分层体例（Task、Writing、Design、Publish、Materials）、对象与操作、五种对象的 schema 草案和现有 Kit 的迁移映射。裁决见 [ADR-037](docs/decisions/037-dsh-praxis-layered-grammar.md)。没有写代码，没有迁移任何 Kit 页面。
+- 需求来源入账：ChatGPT 讨论的 [原 Chat](vault/archive/chat/dsh-praxis-control-plane-20261023.md)、评审记录 v0.2 [快照](vault/snapshots/local/dsh-praxis-control-plane-20261023/README.md)与 [登记](vault/intake/dsh-praxis-control-plane-20261023.json)。原 Chat 所说 registry 不带 `reference_priority` 等字段，回到 `scripts/build_registry.py` 核实属实。
+- schema 草案在 2026-10-23 用 `jsonschema` 4.26（draft 2020-12）校验：六个 schema 合法，`examples.json` 十个实例通过，实例里的路径与快照 hash 可在仓库解析。仓库检查覆盖 `dsh-praxis/`。
+- 未做：真实任务走读、对照，DSH 本机版本核对。
+
 ## 2026-10-19 · 入职书单系列：施工记录归位与 dogfooding
 
 - 各轮审阅代理的原始结果存进 [审阅原始记录](palantir/reading-list-series/verification/reviews/README.md)，来源探索与核验结果存进 [研究交接](palantir/reading-list-series/research/handoffs/README.md)；会话临时路径改写为占位，联络表与截图不入库。

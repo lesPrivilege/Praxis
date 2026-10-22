@@ -44,3 +44,5 @@
 - [Chat ingestion 与 Astra-era harness audit 讨论摘录 · 2026-10-09](chat-ingestion-harness-20261009/README.md)：两份用户提供的完整粘贴文本；无可确认 conversation / turn ID，不代表完整对话导出；字节、hash 与覆盖见 [intake](../../intake/chat-ingestion-harness-20261009.json)。
 
 - [MiMo与Seed使用对比](palantir-reading-list-series-20261017.md)：12 轮，选中分支；从 TTS 选型谈到 Palantir 书单讲解系列的取材与编排，第 10 轮按原文删节（文中注明）；[登记](../../intake/palantir-reading-list-series-20261017.json)。
+
+- [规划Praxis插件 control plane](dsh-praxis-control-plane-20261023.md)：15 轮导出加用户另附的末轮回复，选中分支；dsh-praxis 的定位、分层与控制面，附评审记录 v0.2 快照；[登记](../../intake/dsh-praxis-control-plane-20261023.json)。

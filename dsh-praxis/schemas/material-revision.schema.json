@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "material-revision.schema.json",
+  "title": "MaterialRevision",
+  "description": "实际取得的一份原件或资产。素材第 5 级。新版本另建记录，不改旧版本。",
+  "type": "object",
+  "required": ["id", "source", "kind", "path", "sha256", "size_bytes", "captured_at"],
+  "properties": {
+    "id": {"$ref": "common.schema.json#/$defs/id"},
+    "source": {"$ref": "common.schema.json#/$defs/id"},
+    "kind": {"enum": ["snapshot", "document", "image", "audio", "video", "code", "template", "component", "data"]},
+    "path": {"$ref": "common.schema.json#/$defs/repoPath"},
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "size_bytes": {"type": "integer", "minimum": 0},
+    "captured_at": {"type": "string", "format": "date-time"},
+    "origin_locator": {"type": "string", "description": "取得时的原位置"},
+    "previous": {"$ref": "common.schema.json#/$defs/id", "description": "同一来源的上一版"},
+    "offline": {
+      "type": "object",
+      "description": "离线自足的三层，分别报告",
+      "properties": {
+        "summary_local": {"type": "boolean"},
+        "original_local": {"type": "boolean"},
+        "assets_complete": {"type": "boolean"}
+      },
+      "additionalProperties": false
+    },
+    "license_state": {"type": "string"}
+  },
+  "additionalProperties": false
+}

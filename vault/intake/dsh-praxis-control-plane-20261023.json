@@ -1,0 +1,71 @@
+{
+ "schema_version": "1.0",
+ "id": "dsh-praxis-control-plane-20261023",
+ "kind": "chat-capture-and-handoff",
+ "title": "规划 Praxis 插件 control plane：原 Chat 与评审记录 v0.2",
+ "created_at": "2026-10-23",
+ "status": "consumed",
+ "source": "vault/archive/chat/dsh-praxis-control-plane-20261023.md",
+ "raw_backup": "vault/archive/chat/dsh-praxis-control-plane-20261023.md",
+ "raw_backup_sha256": "e7373a65e2d8279505d7886d6cbc39cfc149e701d3b060657118a41aa10f7aff",
+ "conversation_id": "6ada3159-c90c-83ec-8974-8fe45f656606",
+ "topic_path": "dsh-praxis/README.md",
+ "scope": {
+  "turns": 16,
+  "messages": 16,
+  "selection_rule": "用户粘贴的 ChatGPT 导出（所选分支 0f330901…，15 轮）整体归档；同一条消息末尾附带的第 15 轮回复原样收为第 16 轮，没有 turn/item ID。",
+  "truncated_messages": "导出将第 8、12、14 轮标为 partial；正文按导出原样保存，未回原 Chat 补全。",
+  "excluded": [
+   "原 Chat 的其他分支",
+   "原 Chat 中的内嵌图片与可交互示例（第 16 轮末尾提到的控件示例）",
+   "第 16 轮提到的评审记录 v0.3（未随交接提供）"
+  ],
+  "attachments": [
+   {
+    "id": "dsh-praxis-control-plane-20261023-file-001",
+    "relative_path": "dsh-praxis-fde-kit-review-20261022.json",
+    "original_path": "/Users/lesprivilege/Downloads/Add to Claude/规划Praxis插件 control plane/dsh-praxis-fde-kit-review-20261022.json",
+    "snapshot_path": "vault/snapshots/local/dsh-praxis-control-plane-20261023/dsh-praxis-fde-kit-review-20261022.json",
+    "size_bytes": 40568,
+    "source_mtime": "2026-10-23T00:53:35+08:00",
+    "sha256": "02e90b2389a3921d3e6e258708ee313ee2e658f3f637f868ca800b96ff01dec5",
+    "relevance": "ChatGPT 起草的评审记录 v0.2：需求 R01–R12、评审发现 F01–F05、架构与数据模型草案、实现切片、未决问题；document_version 0.2，早于第 16 轮所说的 v0.3",
+    "distilled_to": "dsh-praxis/README.md"
+   }
+  ],
+  "citation_placeholders": "导出提示引用元数据结构不明，部分链接可能缺失；没有逐条恢复。"
+ },
+ "user_decisions_in_chat": [
+  "Turn 1：基于 Praxis 为 DSH 做插件，覆盖几条 workflow；design/writing 来源有摘要和索引；素材按规范存在本地 workspace；artifact 统一管理；个人工作流，不涉及 release；先审体例与实现方式，再 grill 并逐步补全功能与 control plane。",
+  "Turn 3：Design Kit 可以是单独的 control plane，每条带 description 与 source，可分类、打 tag，见到参考即入账；agent 可直接修改，人可在 control plane 编排；插件可打包、备份，作为 plugin/MCP 给其他 agent 调用；需要版本对齐与 review。",
+  "Turn 5：workflow 可以个人化定制（如 reporting），存储与结构解耦，统一接入 Praxis control plane。",
+  "Turn 7：Design 像藏书目录，按 design grammar 划分来源，description 指引取用；条目可手动管理、打 tag、推荐取用偏好、收藏、定期更新快照；不默认挂载全部，渐进展开；UX 与 agent 都能维护，数据统一缓存。",
+  "Turn 9：作为一次 fresh 重构；RSI/explore 任务可主动登记来源入缓存；Video（TTS provider、风格、tag、方向）、Publish（MD 底稿、HTML 可视化/motion）、Reporting 也可测试；工作流设计参考成熟实践。",
+  "Turn 11：先挂在 Praxis repo 下的 dsh-praxis/ 目录，主要是一套 FDE 工作 Kit；Writing 纳入中英文规范，分级维护，有类 skill 的 description、各级内容和 user personal 部分。",
+  "Turn 13：control plane UI 级的体例 grammar 稳定，但主要不由人修正，agent 按范例修改，UI 更智能；入账与消费等工作方式保持稳定。",
+  "Turn 15：先设计分层体例；design、writing 常驻；素材分级最全；publish 分 video、HTML 等 pipeline；不同 task 类型调用不同的 design 范式与 writing 内容组织技巧，并问这部分是否该叫 publish 规范。",
+  "本次会话（2026-10-23，Claude Code）：本轮交付体例规范与迁移映射，不写代码；按任务组织内容的技巧归 Writing，Publish 只管媒介编排与制作；新体例与现有 kit/ 并行，逐分支迁移，迁完删除旧路径、不留兼容层。"
+ ],
+ "handoff_adjudication": "ChatGPT 的方案按材料取用，裁决记在 ADR-037。采用：五层分工（Task、Writing、Design、Publish、Materials）、Agent 按范例为日常维护主路径、对象与操作体例、五级素材、条目四个控件语义、Preset/Run/Artifact 区分（推迟到首个运行切片）。改动：评审记录的 dsh-praxis/ 七目录方案只建当前有内容的部分；Writing 的 L0–L4 改为与其他层共用的三级展开（入口、正文、参考）加语言分支；现有 kit/reporting 归 Task 层而非一个 workflow 模块。未采用：Personal 推断偏好的候选队列（原 Chat 第 14 轮已撤回，学习策略留待以后单独定义）。",
+ "verification_by_main_session": [
+  "原 Chat 第 6、8 轮称 build_registry.py 的扩展投影不带 reference_priority、reference_status：2026-10-23 读 scripts/build_registry.py 第 62–64 行的扩展字段元组核实属实（grammar_ids、optional_reference 同样不带）。",
+  "原 Chat 所述 catalog 的 cards: generated | maintained 区分：读 vault/provenance/design-writing-encyclopedia/interaction/catalog.json 核实存在（该 catalog 为 maintained）。"
+ ],
+ "cited_urls_not_consumed": [
+  {"url": "https://deepseek-harness.github.io/deepseek-harness/en/develop/basic/publish", "cited_in": "Turn 8, 12", "status": "cited-not-verified"},
+  {"url": "https://deepseek-harness.github.io/deepseek-harness/en/reference/subsystems/slots", "cited_in": "Turn 8", "status": "cited-not-verified"},
+  {"url": "https://deepseek-harness.github.io/deepseek-harness/en/reference/subsystems/sidebar-right", "cited_in": "Turn 8", "status": "cited-not-verified"},
+  {"url": "https://deepseek-harness.github.io/deepseek-harness/en/guide/mcp-memory", "cited_in": "Turn 8, 12", "status": "cited-not-verified"},
+  {"url": "https://www.zotero.org/support/collections_and_tags", "cited_in": "Turn 12", "status": "cited-not-verified"},
+  {"url": "https://quarto.org/docs/projects/profiles.html", "cited_in": "Turn 12", "status": "cited-not-verified"},
+  {"url": "https://quarto.org/docs/projects/code-execution.html", "cited_in": "Turn 12", "status": "cited-not-verified"},
+  {"url": "https://www.remotion.dev/docs/schemas", "cited_in": "Turn 12", "status": "cited-not-verified"},
+  {"url": "https://docs.dagster.io/getting-started/concepts", "cited_in": "Turn 12", "status": "cited-not-verified"},
+  {"url": "https://docs.dagster.io/guides/automate/sensors", "cited_in": "Turn 12", "status": "cited-not-verified"}
+ ],
+ "cited_urls_note": "以上链接只在原 Chat 中被引用，本次未打开、未快照，也没有建来源卡；评审记录的 source_register 另列 zotero-data-directory、calibre-gui、remotion-parameterized、dagster-asset-storage 四项，同样未核实。实现 DSH 适配或参照这些机制时再按入账规范逐条登记。",
+ "gaps": [
+  "评审记录 v0.3 与第 16 轮的可交互控件示例未随交接提供。",
+  "DSH 插件包、侧栏与 MCP 的实际能力未在本机安装版本上核对。"
+ ]
+}

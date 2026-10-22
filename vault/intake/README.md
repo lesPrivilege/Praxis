@@ -95,3 +95,4 @@ Intake 只登记材料身份、覆盖、处理状态、附件和缺口，不重�
 
 - [入职书单系列过程重建登记](palantir-reading-list-series-distill-20261019.json) → [消费与失败记录](../distilled/palantir-reading-list-series-distill-20261019/README.md)：主日志与工作流记录只登记定位与 hash，未快照入库；按本入口发现。
 - [Palantir 入职书单视频系列 · 2026-10-17](palantir-reading-list-series-20261017.json)：原 Chat、用户转交的生产交接稿（仅供开工参考）与本轮新增来源；[原 Chat](../archive/chat/palantir-reading-list-series-20261017.md)、[交接稿快照](../snapshots/local/palantir-series-handoff-20261017/README.md)、[来源快照](../snapshots/local/palantir-series-20261017/README.md)；消费在 [系列项目](../../palantir/reading-list-series/README.md)。
+- [dsh-praxis 控制面规划 · 2026-10-23](dsh-praxis-control-plane-20261023.json)：原 Chat 与 ChatGPT 起草的评审记录 v0.2；[原 Chat](../archive/chat/dsh-praxis-control-plane-20261023.md)、[评审记录快照](../snapshots/local/dsh-praxis-control-plane-20261023/README.md)；消费在 [dsh-praxis](../../dsh-praxis/README.md)。

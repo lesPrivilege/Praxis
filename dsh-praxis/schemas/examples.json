@@ -1,0 +1,161 @@
+{
+  "note": "每种对象一个实例，取自仓库现有内容；用于检查 schema 草案能否承载真实数据，不是迁移后的数据。",
+  "kit_units": [
+    {
+      "id": "writing.baseline",
+      "layer": "writing",
+      "kind": "baseline",
+      "title": "证据与来源的底线",
+      "description": "任何语言、任何模式都守：事实不虚构不歪曲，范围、条件和确定性照原样，改写不丢任务需要的信息。",
+      "resident": true,
+      "strength": "baseline",
+      "body": "kit/write/shared/evidence.md#底线",
+      "owner": "kit/write/shared/evidence.md",
+      "revision": 1
+    },
+    {
+      "id": "writing.personal.author-voice",
+      "layer": "writing",
+      "kind": "personal",
+      "title": "作者语体：仓库所有者",
+      "description": "要求用仓库所有者本人口吻代拟时读取；只影响句法、判断呈现和语域。",
+      "strength": "heuristic",
+      "applies_to": {"languages": ["zh"]},
+      "body": "kit/write/prose/author-profile.md",
+      "owner": "kit/write/prose/author-profile.md",
+      "personal": {"group": "author-voice", "default_on": false, "switch": "任务要求用本人口吻，或项目 AGENTS.md 写有“作者语体：开”"},
+      "revision": 1
+    },
+    {
+      "id": "design.foundations.judgment",
+      "layer": "design",
+      "kind": "entry",
+      "title": "设计判断契约",
+      "description": "有多种视觉方案、担心个人样式被写成普遍规则时读；先定读者要理解、比较或做什么。",
+      "resident": true,
+      "strength": "heuristic",
+      "body": "kit/design/foundations/grammar.md",
+      "owner": "kit/design/foundations/grammar.md",
+      "revision": 1
+    },
+    {
+      "id": "publish.html.explainer",
+      "layer": "publish",
+      "kind": "method",
+      "title": "讲解页的编排",
+      "description": "向不读原件的读者讲清一个系统的各个局部时取用：结论层、章层与写明关系的链接。",
+      "strength": "reference",
+      "applies_to": {"pipelines": ["html"], "task_types": ["task.technical-explainer"]},
+      "body": "kit/write/publish/explainer.md",
+      "owner": "kit/write/publish/explainer.md",
+      "revision": 1
+    },
+    {
+      "id": "writing.genre.narration",
+      "layer": "writing",
+      "kind": "genre",
+      "title": "口播旁白体例",
+      "description": "由人或合成语音读出、只听一遍的文字：视频旁白、讲解录音。",
+      "strength": "heuristic",
+      "applies_to": {"pipelines": ["video"]},
+      "body": "kit/write/prose/genres/narration.md",
+      "owner": "kit/write/prose/genres/narration.md",
+      "revision": 1
+    }
+  ],
+  "task_types": [
+    {
+      "id": "task.technical-explainer",
+      "title": "技术说明",
+      "description": "向不读原件的读者讲清一个系统、项目或机制；读完能说出对象、核心关系、主要分支和改变判断的条件。",
+      "reader": "懂一般技术、没读过原件的同行或客户",
+      "outcome": "理解对象的分工与连接，能据此判断是否采用或怎样接入",
+      "pipelines": ["html", "video"],
+      "writing": ["writing.baseline", "writing.method.mechanism", "writing.method.argument"],
+      "design": ["design.foundations.judgment", "design.foundations.relations", "design.foundations.anchoring"],
+      "per_pipeline": {
+        "html": {"publish": ["publish.html.explainer", "publish.html.exhibits"], "design": ["design.interaction.navigation"]},
+        "video": {"publish": ["publish.video.narrative"], "writing": ["writing.genre.narration"], "design": ["design.motion.judgment"]}
+      },
+      "materials": {"units": ["design.foundations.relations"], "favorites_only": false},
+      "acceptance": [
+        "只读结论层也能说出对象、核心关系、主要分支和改变判断的条件",
+        "每条事实说法能回到来源条目或摘录",
+        "按所走流水线的检查通过"
+      ],
+      "revision": 1
+    }
+  ],
+  "sources": [
+    {
+      "id": "DWI-001",
+      "aliases": ["provenance-design-writing-encyclopedia-interaction:apg-accordion-pattern"],
+      "kind": "web",
+      "title": "WAI-ARIA APG Accordion Pattern",
+      "origin": {"url": "https://www.w3.org/WAI/ARIA/apg/patterns/accordion/", "publisher": "W3C WAI"},
+      "language": "en",
+      "summary": "WAI 模式页解释标题/面板的键盘与展开状态关联；用于判断分段披露，未测试产品实现。",
+      "read_scope": "official_page_text_opened; no example execution or image review",
+      "evidence_status": "verified",
+      "adoption": "reference",
+      "excerpts": [
+        {"id": "DWI-001-C1", "locator": "About This Pattern; Keyboard Interaction; Roles, States, and Properties", "claim": "Accordion 标题控制相关内容面板，Enter/Space 控制展开状态。"},
+        {"id": "DWI-001-C2", "locator": "Roles, States, and Properties", "claim": "aria-expanded 与面板可见状态同步，aria-controls 指向面板；region 可选且大量区域需谨慎。"}
+      ],
+      "materials_gap": "未保存页面快照",
+      "limits": "直接读页面文字，未运行 APG 示例；不证明任何控件实现通过无障碍测试。",
+      "revisit_when": "APG 模式修订、引入嵌套/大量 accordion 或正式验收前重访。",
+      "extensions": {"license_state": "W3C page license not assessed for reuse; no source text or code copied"},
+      "card": "vault/provenance/design-writing-encyclopedia/interaction/cards/apg-accordion.md",
+      "card_ownership": "maintained",
+      "history_record": "vault/provenance/design-writing-encyclopedia/interaction/CHANGELOG.md",
+      "revision": 1
+    },
+    {
+      "id": "chat:dsh-praxis-control-plane-20261023",
+      "kind": "chat",
+      "title": "规划 Praxis 插件 control plane",
+      "origin": {"url": "https://chatgpt.com/c/6ada3159-c90c-83ec-8974-8fe45f656606", "locator": "vault/archive/chat/dsh-praxis-control-plane-20261023.md"},
+      "language": "zh",
+      "summary": "与 ChatGPT 讨论 dsh-praxis 的定位、分层与控制面；用户在其中给出了需求与几项裁决，附评审记录 v0.2。",
+      "read_scope": "用户粘贴的导出全文与一份 JSON 附件；原 Chat 未重新打开",
+      "evidence_status": "partial",
+      "materials": ["chat:dsh-praxis-control-plane-20261023:review-v0.2"],
+      "materials_gap": "评审记录 v0.3 与可交互示例未随交接提供",
+      "revision": 1
+    }
+  ],
+  "bindings": [
+    {
+      "id": "DWI-001@design.interaction.navigation",
+      "source": "DWI-001",
+      "unit": "design.interaction.navigation",
+      "description": "分段披露的键盘与状态约定：标题控制面板，展开状态同步到 aria-expanded。",
+      "usage": {
+        "problem": "长内容要分段折叠，又要键盘和读屏可用",
+        "how": "按摘录 C1、C2 核对标题按钮、展开状态与面板关联",
+        "conditions": "一组平级、可独立展开的区段",
+        "limits": "只说明模式，不证明某个实现通过无障碍测试；大量区段不必都设 region"
+      },
+      "enabled": true,
+      "favorite": false,
+      "priority": "normal",
+      "tags": ["PROGRESSIVE_DISCLOSURE", "KEYBOARD", "ARIA"],
+      "state": "active",
+      "revision": 1
+    }
+  ],
+  "material_revisions": [
+    {
+      "id": "chat:dsh-praxis-control-plane-20261023:review-v0.2",
+      "source": "chat:dsh-praxis-control-plane-20261023",
+      "kind": "data",
+      "path": "vault/snapshots/local/dsh-praxis-control-plane-20261023/dsh-praxis-fde-kit-review-20261022.json",
+      "sha256": "02e90b2389a3921d3e6e258708ee313ee2e658f3f637f868ca800b96ff01dec5",
+      "size_bytes": 40568,
+      "captured_at": "2026-10-23T00:53:35+08:00",
+      "origin_locator": "/Users/lesprivilege/Downloads/Add to Claude/规划Praxis插件 control plane/dsh-praxis-fde-kit-review-20261022.json",
+      "offline": {"summary_local": true, "original_local": true, "assets_complete": true}
+    }
+  ]
+}

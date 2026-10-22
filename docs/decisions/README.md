@@ -60,3 +60,4 @@ accepted 表示本仓库当时采纳；技术实现与使用证据在对应契�
 - [ADR-034：限定说一次；过程材料留在索引；改写后可机器比对不可损失项](034-state-limits-once-and-keep-process-out.md)（accepted；成文原理第 8 条与审阅方法加“重复设防”；Shared 证据把交接、核验和审阅记录归 index；审阅第 7 步可用脚本比对字面量；证据为 SaaS 教材两批编订，未对照）。
 - [ADR-035：每节先给局部答案；链接写明关系](035-local-answers-and-link-relations.md)（accepted；讲解页的结论层与章层补验收和节首答案；审阅加“目录冒充概览”“摘要逐级稀释”；内容编排要求交叉链接写明关系；取自用户交来的写作规范，只取结构，不取文字）。
 - [ADR-036：Writing Kit 修订交接的裁决](036-writing-kit-spec-handoff.md)（accepted；讲解页结论层从问题讲起；缩写首用；外文来源提炼的语言边界；验收改为检查面；正文历史不是过程材料；改正时不补假设；作者语体单页默认不启用；未试用、未对照）。
+- [ADR-037：dsh-praxis 的分层体例](037-dsh-praxis-layered-grammar.md)（accepted；Task、Writing、Design、Publish、Materials 五层，内容组织归 Writing、媒介编排归 Publish，Agent 按范例维护，并行迁移迁完即删；只有体例与 schema 草案，未实现、未走读）。

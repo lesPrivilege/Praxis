@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "kit-unit.schema.json",
+  "title": "KitUnit",
+  "description": "Task、Writing、Design、Publish 中的一个单元；三级展开：description、正文、范例与参考。",
+  "type": "object",
+  "required": ["id", "layer", "kind", "title", "description", "body", "owner", "revision"],
+  "properties": {
+    "id": {"$ref": "common.schema.json#/$defs/id"},
+    "layer": {"enum": ["task", "writing", "design", "publish"]},
+    "kind": {
+      "enum": ["entry", "baseline", "method", "paradigm", "genre", "language", "review", "personal", "pipeline", "check"],
+      "description": "单元在本层里的角色；task 层的任务类型另用 task-type.schema.json"
+    },
+    "title": {"type": "string"},
+    "description": {"$ref": "common.schema.json#/$defs/description"},
+    "resident": {"type": "boolean", "default": false, "description": "description 是否每次任务都在上下文；只有 Writing、Design 的入口与底线为 true"},
+    "strength": {
+      "enum": ["baseline", "language", "heuristic", "reference"],
+      "description": "底线、语言约定、编辑启发式与文体、可选参考；冲突次序见 Write 的三种强度"
+    },
+    "applies_to": {
+      "type": "object",
+      "properties": {
+        "languages": {"type": "array", "items": {"type": "string"}},
+        "task_types": {"type": "array", "items": {"$ref": "common.schema.json#/$defs/id"}},
+        "pipelines": {"type": "array", "items": {"enum": ["html", "video"]}},
+        "projects": {"type": "array", "items": {"type": "string"}}
+      },
+      "additionalProperties": false
+    },
+    "body": {"$ref": "common.schema.json#/$defs/repoPath", "description": "正文所在的 Markdown，可带 #锚点"},
+    "owner": {"$ref": "common.schema.json#/$defs/repoPath", "description": "唯一可编辑来源；迁移前指向 kit/，迁移后指向 dsh-praxis/kit/"},
+    "children": {"type": "array", "items": {"$ref": "common.schema.json#/$defs/id"}},
+    "examples": {"type": "array", "items": {"$ref": "common.schema.json#/$defs/repoPath"}},
+    "personal": {
+      "type": "object",
+      "description": "仅 kind 为 personal 时填写",
+      "required": ["group", "default_on"],
+      "properties": {
+        "group": {"enum": ["preference", "author-voice", "project-convention"]},
+        "default_on": {"type": "boolean"},
+        "switch": {"type": "string", "description": "打开或关闭的条件"}
+      },
+      "additionalProperties": false
+    },
+    "revision": {"$ref": "common.schema.json#/$defs/revision"},
+    "history": {"type": "array", "items": {"$ref": "common.schema.json#/$defs/change"}}
+  },
+  "if": {"properties": {"kind": {"const": "personal"}}},
+  "then": {"required": ["personal"]},
+  "additionalProperties": false
+}
