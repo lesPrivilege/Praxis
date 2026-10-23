@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-10-23 · Jev 专章
+
+- 新增 [jev](jev/README.md)：Jev 与 System One 决策模型的快照（2026-10-23），中文底稿七章加两个附录、单文件网页（两处步进运动）、五条线 236 个来源与 288 条主张的登记。材料与产物都在该目录，原 Chat 按用户要求存于 `jev/research/inputs/`，没有进 `vault/archive/chat`。
+- ChatGPT 两份 Deep Research 报告只作核对对象，40 处说法与来源不符或无法核实，见 [更正](jev/research/corrections.md)。
+- 一次 Sonnet 冷读审阅，主会话逐条裁决，见 [记录](jev/review-20261023.md)。Kit 消费记在 dsh-praxis 运行记录 `2026-10-22-5eb2c727`。
+- 仓库检查的覆盖目录加入 `jev`。没有 Kit 规则变动；未做读者测试与屏幕阅读器检查。
+
 ## 2026-10-23 · dsh-praxis 控制面与 DSH 插件
 
 - 实现 [dsh-praxis](dsh-praxis/README.md) 的控制面：[core](dsh-praxis/core/README.md)（Kit 单元索引、任务展开、来源与挂载维护、收录、快照刷新、预设、运行记录与 stale、导出恢复），[工具表](dsh-praxis/adapters/README.md)经 DSH 插件、DSH 右侧栏标签、MCP 服务（`.mcp.json`）、命令行和 [网页](dsh-praxis/ui/README.md)提供。取舍见 [ADR-038](docs/decisions/038-dsh-praxis-control-plane.md)。

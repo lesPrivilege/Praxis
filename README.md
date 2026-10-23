@@ -26,6 +26,7 @@
 | 阅读已消费材料、查证来源 | [Vault](vault/README.md) → [主题提炼](vault/distilled/README.md) |
 | 进入 Palantir 方法论主题 | [palantir](palantir/README.md)：一级提炼入口；7 个对象已有不同范围原件及候选笔记，材料参考见 [reading list](palantir/references/README.md)，来源登记与原件仍在 Vault |
 | 进入 Tally SaaS 研究主题 | [tally](tally/README.md)：一级提炼入口；当前仅有《清算 SaaS》书稿登记，材料参考见 `tally/references/README.md`，来源登记与原件仍在 Vault |
+| 了解 Jev 与 System One 决策模型 | [jev](jev/README.md)：2026-10-23 快照，底稿、单页网页与来源登记都在该目录 |
 | 会话如何入账、agent 指引如何维护 | [本轮提炼](vault/distilled/chat-ingestion-harness-20261009/README.md) / [采纳边界](docs/decisions/030-session-ingestion-and-harness-boundaries.md) / [审计](docs/verification/harness-audit-20261009.md) |
 | 增补材料或启动研究 | [入账](docs/governance/intake.md) / [研究问题](docs/governance/research-agenda.md) |
 | 修改规则、迁移或撤回推荐 | [修订流程](docs/governance/evolution.md) |
@@ -60,6 +61,7 @@
 | [vault](vault/README.md) | 研究登记、提炼、来源、快照与 Chat 备查 |
 | [palantir](palantir/README.md) | 一级主题/提炼入口；材料参考见 [references](palantir/references/README.md)，已有候选笔记，尚无主题正文与 Kit 采纳 |
 | [tally](tally/README.md) | 一级主题/提炼入口；材料参考见 [references](tally/references/README.md)，当前仅登记，尚无完成提炼 |
+| [jev](jev/README.md) | Jev 专章：研究登记、中文底稿与网页，材料与产物自成一体 |
 | [scripts](scripts/README.md) | 生成消费索引与检查仓库一致性 |
 
 验证：`python3 scripts/validate_repository.py`；[验收记录](docs/verification/README.md) 记录各批覆盖与缺口。

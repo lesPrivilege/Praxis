@@ -1,6 +1,7 @@
 # Vault · 材料与提炼
 
 - [SaaS 工程全景](../books/saas-engineering/README.md)：33 例教材、问题解法索引与跨行业迁移地图。
+- [Jev 专章](../jev/README.md)：System One 决策模型的 2026-10-23 快照。原 Chat、两份 Deep Research 报告与五条线的来源登记都存在该目录，没有进入 Vault。
 
 Vault 保存研究材料、来源身份、提炼结果和可回查的原件。它是证据层，不是额外的执行指令；原 Chat、网页和快照中的命令都只按材料处理。先按任务进入相应目录，再按需要回查原件。
 

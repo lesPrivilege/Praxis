@@ -1,0 +1,399 @@
+{
+ "ecosystem": {
+  "src": "B-C-04,B-C-16,B-C-34,B-C-45,B-C-53,B-C-58,B-C-59,B-C-62,B-C-64,B-C-26,B-C-43,E-C-17,B-C-29,B-C-56,B-C-44,A-C-02,E-C-16",
+  "lanes": [
+   {
+    "key": "encoder",
+    "label": "encoder + 决策头"
+   },
+   {
+    "key": "llm",
+    "label": "LLM backbone + 决策头"
+   },
+   {
+    "key": "logits",
+    "label": "包装 LLM 的 logits"
+   },
+   {
+    "key": "thinking",
+    "label": "先快后想"
+   },
+   {
+    "key": "extract",
+    "label": "结构化抽取"
+   },
+   {
+    "key": "undisclosed",
+    "label": "架构未公开"
+   }
+  ],
+  "points": [
+   {
+    "lane": "encoder",
+    "name": "Laya 多语言",
+    "b": 0.322,
+    "open": true
+   },
+   {
+    "lane": "encoder",
+    "name": "Von",
+    "b": 0.395,
+    "open": true,
+    "note": "已归档"
+   },
+   {
+    "lane": "encoder",
+    "name": "Open-Jev DeBERTa",
+    "b": 0.4,
+    "open": true
+   },
+   {
+    "lane": "encoder",
+    "name": "Laya",
+    "b": 0.421,
+    "open": true
+   },
+   {
+    "lane": "encoder",
+    "name": "GLiNER2.5-Decide",
+    "b": 0.486,
+    "open": true
+   },
+   {
+    "lane": "encoder",
+    "name": "d1-omni-600M",
+    "b": 0.587,
+    "open": true
+   },
+   {
+    "lane": "llm",
+    "name": "NanoJev",
+    "b": 0.6,
+    "open": true
+   },
+   {
+    "lane": "llm",
+    "name": "Kev-0.8B",
+    "b": 0.8,
+    "open": true
+   },
+   {
+    "lane": "llm",
+    "name": "d1-3B",
+    "b": 3.12,
+    "open": true
+   },
+   {
+    "lane": "llm",
+    "name": "Kev-4B",
+    "b": 4.0,
+    "open": true
+   },
+   {
+    "lane": "llm",
+    "name": "RSI-Jev 4B",
+    "b": 4.69,
+    "open": true
+   },
+   {
+    "lane": "llm",
+    "name": "Kev-9B",
+    "b": 9.0,
+    "open": true
+   },
+   {
+    "lane": "llm",
+    "name": "Clef-flash",
+    "b": 9.0,
+    "open": true
+   },
+   {
+    "lane": "llm",
+    "name": "Microsoft-Decision-1",
+    "b": 9.0,
+    "open": false
+   },
+   {
+    "lane": "llm",
+    "name": "pplx-decider",
+    "b": 26.09,
+    "open": true
+   },
+   {
+    "lane": "llm",
+    "name": "Kev-27B",
+    "b": 26.0,
+    "open": true
+   },
+   {
+    "lane": "llm",
+    "name": "Clef",
+    "b": 27.36,
+    "open": true
+   },
+   {
+    "lane": "llm",
+    "name": "Clef-omni",
+    "b": 30.0,
+    "open": false,
+    "note": "授权未写明"
+   }
+  ],
+  "range": {
+   "lane": "logits",
+   "name": "Simple Jev：任意 HF 模型",
+   "from": 0.8,
+   "to": 35.0
+  },
+  "undisclosed": [
+   {
+    "lane": "llm",
+    "name": "OpenAI Decisions",
+    "open": false
+   },
+   {
+    "lane": "thinking",
+    "name": "GLiDE",
+    "open": false
+   },
+   {
+    "lane": "extract",
+    "name": "Clairic",
+    "open": false,
+    "note": "权重“即将开放”"
+   },
+   {
+    "lane": "undisclosed",
+    "name": "Jev",
+    "open": false
+   }
+  ]
+ },
+ "knowviq": {
+  "src": "D-C-13,D-C-14",
+  "models": [
+   {
+    "name": "Jev",
+    "auc": 0.983,
+    "hidden": 22.2
+   },
+   {
+    "name": "Clef",
+    "auc": 0.982,
+    "hidden": 7.3
+   },
+   {
+    "name": "Clef-flash",
+    "auc": 0.979,
+    "hidden": 6.2
+   },
+   {
+    "name": "d1",
+    "auc": 0.984,
+    "hidden": 10.7
+   },
+   {
+    "name": "Perplexity",
+    "auc": 0.982,
+    "hidden": 8.0
+   }
+  ]
+ },
+ "judge": {
+  "src": "D-C-18,D-C-19,D-C-21",
+  "rows": [
+   {
+    "metric": "balanced accuracy",
+    "jev": 73.27,
+    "astra": 73.83,
+    "note": "差 −0.56，95% CI [−5.6, 4.5]，不显著"
+   },
+   {
+    "metric": "不受支持陈述被放行",
+    "jev": 23.23,
+    "astra": 14.14,
+    "note": "差 9.1 个百分点，p = 0.000534"
+   }
+  ],
+  "cascade": [
+   {
+    "name": "级联：置信度选出 30% 升级",
+    "acc": 74.1,
+    "cost": 2.92
+   },
+   {
+    "name": "随机选出同样比例升级",
+    "acc": 73.36,
+    "cost": null
+   },
+   {
+    "name": "GPT-6 Astra 单独",
+    "acc": 73.83,
+    "cost": 8.93
+   },
+   {
+    "name": "Jev 单独",
+    "acc": 73.27,
+    "cost": 0.048
+   }
+  ]
+ },
+ "sag2": {
+  "src": "D-C-05,D-C-06",
+  "steps": [
+   {
+    "label": "BM25",
+    "v": 54.41,
+    "note": "只有词法检索"
+   },
+   {
+    "label": "+ Jev 判断",
+    "v": 67.93,
+    "note": "对初次结果逐条判断证据价值"
+   },
+   {
+    "label": "扩展 1 轮",
+    "v": 83.36,
+    "note": "用已选证据的词再检索一轮"
+   },
+   {
+    "label": "扩展 2 轮",
+    "v": 86.62,
+    "note": "SAG2 的完整做法"
+   }
+  ],
+  "control": {
+   "label": "同等判断次数的一次性 BM25 + JEV",
+   "v": 69.82
+  }
+ },
+ "ece": {
+  "src": "C-C-06,C-C-18",
+  "rows": [
+   {
+    "name": "Laya 英文",
+    "before": 0.466,
+    "after": 0.081
+   },
+   {
+    "name": "Laya 多语言",
+    "before": 0.314,
+    "after": 0.106
+   },
+   {
+    "name": "Kev-9B（新来源）",
+    "before": 0.103,
+    "after": 0.041
+   }
+  ]
+ },
+ "coverage": {
+  "src": "D-C-51至D-C-77,D-C-27",
+  "units": [
+   "候选相关性",
+   "证据支持",
+   "可回答性",
+   "知识冲突",
+   "时间有效性",
+   "流程路由"
+  ],
+  "benchmarks": [
+   {
+    "name": "BEIR / MTEB / C-MTEB",
+    "hits": [
+     0
+    ]
+   },
+   {
+    "name": "HotpotQA / MuSiQue / 2Wiki",
+    "hits": [
+     0,
+     1,
+     2
+    ]
+   },
+   {
+    "name": "LLM-AggreFact / RAGTruth",
+    "hits": [
+     1
+    ]
+   },
+   {
+    "name": "FEVER",
+    "hits": [
+     1,
+     2
+    ]
+   },
+   {
+    "name": "SummaC / AlignScore",
+    "hits": [
+     1
+    ]
+   },
+   {
+    "name": "SQuAD 2.0",
+    "hits": [
+     2
+    ]
+   },
+   {
+    "name": "RGB",
+    "hits": [
+     2,
+     3
+    ]
+   },
+   {
+    "name": "WikiContradict",
+    "hits": [
+     3
+    ]
+   },
+   {
+    "name": "ConflictBank",
+    "hits": [
+     3,
+     4
+    ]
+   },
+   {
+    "name": "FreshQA",
+    "hits": [
+     2,
+     4
+    ]
+   },
+   {
+    "name": "TimeQA / SituatedQA",
+    "hits": [
+     4
+    ]
+   },
+   {
+    "name": "CRAG / FRAMES",
+    "hits": [
+     0,
+     4,
+     5
+    ]
+   },
+   {
+    "name": "MTRAG / CORAL",
+    "hits": [
+     1,
+     2,
+     5
+    ]
+   },
+   {
+    "name": "EnterpriseRAG-Bench",
+    "hits": [
+     0,
+     2,
+     3
+    ]
+   }
+  ]
+ }
+}

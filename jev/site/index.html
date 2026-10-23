@@ -1,0 +1,668 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Jev 与决策模型快照</title>
+<meta name="description" content="Jev 与 System One 决策模型：接口、开放实现、私有化微调、评测与企业知识库中的位置。快照日期 2026-10-23。">
+<style>
+:root {
+  --paper: #ffffff; --wash: #f2f5f9; --rule: #d6dde6; --rule-strong: #74828f;
+  --ink: #15202b; --ink-2: #3d4a58; --ink-3: #5d6a78;
+  --accent: #1b58cf; --accent-wash: #e8effc;
+  --sans: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Noto Sans CJK SC", "Source Han Sans SC", "Microsoft YaHei", sans-serif;
+  --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --measure: 44em; --wide: 760px; --gutter: 16px;
+  --t-state: 200ms; --ease: cubic-bezier(.2, 0, 0, 1);
+}
+@media (prefers-reduced-motion: reduce) { :root { --t-state: 0ms; } }
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--paper); color: var(--ink); font: 16px/1.75 var(--sans); }
+main { padding: 0 var(--gutter) 80px; }
+main > * { max-width: var(--measure); margin-left: auto; margin-right: auto; }
+main > figure, main > .wide { max-width: var(--wide); }
+header.top { max-width: var(--measure); margin: 0 auto; padding: 56px var(--gutter) 8px; }
+.kicker { font-size: 13px; color: var(--ink-3); letter-spacing: .02em; margin: 0 0 8px; }
+h1 { font-size: 34px; line-height: 1.3; margin: 0 0 16px; font-weight: 600; }
+h2 { font-size: 25px; line-height: 1.35; margin: 72px auto 8px; font-weight: 600; padding-top: 16px; border-top: 1px solid var(--rule); }
+h3 { font-size: 19px; line-height: 1.4; margin: 36px auto 4px; font-weight: 600; }
+.answer { font-size: 18px; color: var(--ink); margin-top: 8px; }
+p, li { margin: 0 0 12px; }
+a { color: var(--accent); text-underline-offset: 2px; }
+code { font: 14px var(--mono); background: var(--wash); padding: 1px 4px; border-radius: 4px; }
+.lede { font-size: 18px; color: var(--ink-2); }
+nav.toc { max-width: var(--measure); margin: 24px auto 0; padding: 0 var(--gutter); font-size: 14px; color: var(--ink-3); }
+nav.toc ol { display: flex; flex-wrap: wrap; gap: 4px 18px; list-style: none; padding: 0; margin: 0; }
+nav.toc a { color: var(--ink-2); text-decoration: none; }
+nav.toc a:hover { color: var(--accent); }
+ol.claims { padding-left: 1.4em; }
+ol.claims li { margin-bottom: 14px; }
+ol.claims strong { font-weight: 600; }
+.conditions { background: var(--wash); padding: 14px 18px; border-radius: 6px; }
+.conditions h3 { margin-top: 0; font-size: 16px; }
+.conditions ul { margin: 0; padding-left: 1.2em; }
+figure { margin: 28px auto 32px; }
+figcaption { font-size: 14px; color: var(--ink-2); margin-top: 8px; }
+figure > .fig-title { font-size: 16px; font-weight: 600; margin: 0 0 4px; }
+figure > .fig-intro { font-size: 14px; color: var(--ink-3); margin: 0 0 12px; }
+.src { font-size: 13px; color: var(--ink-3); margin: 6px 0 0; }
+.src a { color: var(--ink-3); }
+table { width: 100%; border-collapse: collapse; font-size: 14px; line-height: 1.55; margin: 12px 0 8px; }
+th, td { text-align: left; vertical-align: top; padding: 8px 10px 8px 0; border-bottom: 1px solid var(--rule); }
+thead th { font-weight: 600; color: var(--ink-2); border-bottom: 1px solid var(--rule-strong); }
+tbody th { font-weight: 600; }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.scroll table { min-width: 560px; }
+table.matrix td { text-align: center; color: var(--ink); padding-right: 6px; }
+table.matrix thead th { font-size: 13px; text-align: center; }
+table.matrix thead th:first-child, table.matrix tbody th, table.matrix tfoot th { text-align: left; }
+table.matrix tfoot td, table.matrix tfoot th { color: var(--ink-3); font-weight: 600; border-bottom: none; }
+svg.chart { width: 100%; height: auto; display: block; font-family: var(--sans); }
+.chart-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+@media (max-width: 560px) { .chart-wrap svg.chart { min-width: 620px; } }
+@media print { .chart-wrap svg.chart { min-width: 0; } }
+svg .grid { stroke: var(--rule); stroke-width: 1; }
+svg .rule { stroke: var(--rule); stroke-width: 1; }
+svg .tick, svg .note { font-size: 12px; fill: var(--ink-3); }
+svg .head { font-size: 13px; font-weight: 600; fill: var(--ink-2); }
+svg .lane { font-size: 13px; font-weight: 600; fill: var(--ink-2); }
+svg .name { font-size: 13px; fill: var(--ink); }
+svg .val { font-size: 12px; fill: var(--ink-2); font-variant-numeric: tabular-nums; }
+svg .dot { fill: var(--ink); }
+svg .dot.hollow { fill: var(--paper); stroke: var(--ink); stroke-width: 1.5; }
+svg .hot { fill: var(--accent); stroke: var(--accent); }
+svg text.hot { stroke: none; font-weight: 600; }
+svg .stem { stroke: var(--rule-strong); stroke-width: 1.5; }
+svg .stem.hot { stroke: var(--accent); }
+svg .bar { fill: var(--ink-2); }
+svg .bar.hot { fill: var(--accent); stroke: none; }
+svg .band { stroke: var(--ink-2); stroke-width: 6; stroke-linecap: round; opacity: .35; }
+svg .slope { stroke: var(--ink-2); stroke-width: 1.5; fill: none; }
+svg .ref { stroke: var(--ink-3); stroke-width: 1.5; }
+.legend { display: flex; flex-wrap: wrap; gap: 4px 18px; font-size: 13px; color: var(--ink-2); margin: 4px 0 8px; }
+.legend span::before { content: ""; display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; vertical-align: -1px; }
+.legend .l-open::before { background: var(--ink); }
+.legend .l-host::before { border: 1.5px solid var(--ink); }
+.legend .l-hot::before { background: var(--accent); }
+.legend .l-band::before { width: 18px; height: 6px; border-radius: 3px; background: var(--ink-2); opacity: .35; }
+/* the call shape */
+.call { display: grid; grid-template-columns: 1fr 1fr; gap: 0; border: 1px solid var(--rule); border-radius: 6px; overflow: hidden; }
+.call > div { padding: 14px 16px; }
+.call > div + div { border-left: 1px solid var(--rule); background: var(--wash); }
+.call h4 { margin: 0 0 8px; font-size: 14px; color: var(--ink-2); font-weight: 600; }
+.call dl { margin: 0; font-size: 14px; line-height: 1.6; }
+.call dt { font: 600 13px var(--mono); margin-top: 8px; }
+.call dd { margin: 0; color: var(--ink-2); }
+@media (max-width: 560px) { .call { grid-template-columns: 1fr; } .call > div + div { border-left: none; border-top: 1px solid var(--rule); } }
+/* steppers */
+.controls { display: flex; align-items: center; gap: 8px; margin: 10px 0 4px; font-size: 14px; }
+.controls button { font: inherit; font-size: 14px; min-height: 36px; padding: 4px 14px; border: 1px solid var(--rule-strong); background: var(--paper); color: var(--ink); border-radius: 6px; cursor: pointer; }
+.controls button:hover { background: var(--wash); }
+.controls button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.controls button[disabled] { color: var(--ink-3); border-color: var(--rule); cursor: default; background: var(--paper); }
+.controls .count { color: var(--ink-3); font-variant-numeric: tabular-nums; margin-left: 4px; }
+.js .stepper-fig .step { opacity: .12; transition: opacity var(--t-state) var(--ease); }
+.js .stepper-fig .step.on { opacity: 1; }
+.pipe { list-style: none; padding: 0; margin: 12px 0 0; counter-reset: s; }
+.pipe > li { position: relative; margin: 0; padding: 12px 14px 12px 52px; border-left: 3px solid transparent; transition: background var(--t-state) var(--ease), border-color var(--t-state) var(--ease); }
+.pipe > li + li { border-top: 1px solid var(--rule); }
+.pipe > li::before { counter-increment: s; content: counter(s); position: absolute; left: 14px; top: 13px; width: 24px; height: 24px; border-radius: 50%; border: 1.5px solid var(--ink-2); font-size: 13px; line-height: 21px; text-align: center; color: var(--ink-2); }
+.pipe .who { font-size: 12px; color: var(--ink-3); letter-spacing: .02em; }
+.pipe .stage { font-weight: 600; }
+.pipe .detail { font-size: 14px; color: var(--ink-2); margin: 6px 0 0; }
+.pipe .detail p { margin: 0 0 6px; }
+.pipe .authority .who { color: var(--ink); font-weight: 600; }
+.js .pipe .detail { display: none; }
+.js .pipe > li.on { background: var(--accent-wash); border-left-color: var(--accent); }
+.js .pipe > li.on::before { border-color: var(--accent); background: var(--accent); color: var(--paper); }
+.js .pipe > li.on .detail { display: block; }
+details { border-top: 1px solid var(--rule); padding: 8px 0; }
+details > summary { cursor: pointer; font-weight: 600; font-size: 15px; }
+details[open] > summary { margin-bottom: 8px; }
+ol.sources { font-size: 13px; color: var(--ink-2); padding-left: 0; list-style: none; columns: 2 320px; column-gap: 32px; }
+ol.sources li { break-inside: avoid; margin-bottom: 6px; }
+ol.sources .sid { font: 12px var(--mono); color: var(--ink-3); }
+.foot { font-size: 13px; color: var(--ink-3); }
+@media (max-width: 560px) { h1 { font-size: 27px; } h2 { font-size: 21px; } .answer, .lede { font-size: 16px; } }
+@media print {
+  @page { size: A4; margin: 16mm 14mm; }
+  body { font-size: 11pt; }
+  nav.toc, .controls { display: none; }
+  .js .pipe .detail { display: block; }
+  .js .pipe > li.on { background: none; border-left-color: transparent; }
+  .js .pipe > li.on::before { background: none; color: var(--ink-2); border-color: var(--ink-2); }
+  .js .stepper-fig .step { opacity: 1; }
+  h2 { break-before: page; }
+  figure, table, .pipe > li { break-inside: avoid; }
+  a { color: var(--ink); }
+}
+</style>
+</head>
+<body>
+<header class="top">
+  <p class="kicker">Praxis · Jev 专章 · 快照 2026-10-23</p>
+  <h1>Jev 与 System One 决策模型</h1>
+  <p class="lede">一类不写文字、只回答带类型问题的模型：它是什么，哪些实现可以私有化，怎样评测，以及在企业知识库里放在哪一步。</p>
+</header>
+<nav class="toc" aria-label="章节">
+  <ol>
+    <li><a href="#conclusion">结论</a></li>
+    <li><a href="#jev">一 · Jev</a></li>
+    <li><a href="#ecosystem">二 · 生态</a></li>
+    <li><a href="#private">三 · 私有化</a></li>
+    <li><a href="#eval">四 · 评测</a></li>
+    <li><a href="#enterprise">五 · 企业知识库</a></li>
+    <li><a href="#db">附录 · 数据库</a></li>
+    <li><a href="#faq">追问</a></li>
+    <li><a href="#sources">来源</a></li>
+  </ol>
+</nav>
+<main>
+
+<h2 id="conclusion">结论</h2>
+<p class="answer">Jev 读一段 state，回答一组带类型的问题（是否、选一个、打分），每个答案附概率，不生成文本。同样的请求格式五周内已有十几个开放或托管的实现，数据平台把它做成了 SQL 函数。在企业知识库里，它适合承担检索之后、回答之前的判断；权限、版本和生效时间仍由源系统决定。</p>
+<ol class="claims">
+  <li><strong>接口固定，模型可换。</strong>Laya、Kev、Clef、Liquid 的托管 d1、GLiDE 直接沿用 Jev 的请求格式，Perplexity 与 OpenAI 推出了同类 API，Databricks 的 <code>ai_decide</code> 写明与之兼容。<a href="#ecosystem">见二</a></li>
+  <li><strong>Jev 本身没有私有化途径。</strong>它只有托管 API，不接受客户数据微调，没有找到 VPC 或本地部署的官方方案；私有化走开放权重，从几亿参数的 Laya 到 27B 的 Kev 都有完整的训练与服务命令。<a href="#private">见三</a></li>
+  <li><strong>概率要先校准，阈值要按模型定。</strong>Knowviq 用自己产品的流量测了五个模型，可回答性 AUC 几乎相同；套同一个 0.75 阈值，Jev 隐藏了 22.2% 的好答案，其余模型 6–11%。<a href="#eval">见四</a></li>
+  <li><strong>总体分数相近，错误可以不同。</strong>495 条陈述的核验中，Jev 与 GPT-6 Astra 的 balanced accuracy 没有显著差异，Jev 放行的不受支持陈述多 9 个百分点。<a href="#eval">见四</a></li>
+  <li><strong>公开证据以自测为主，企业知识治理还没有公开评测。</strong>厂商与使用方自测居多，学术评测都不在企业知识库上做；点名的企业案例只有 TypeSafe 自己发布的一例；版本冲突、生效时间、撤权这类判断，公开数据覆盖最薄。<a href="#enterprise">见五</a></li>
+</ol>
+<div class="conditions">
+  <h3>改变这些判断的条件</h3>
+  <ul>
+    <li>TypeSafe 提供私有部署或客户微调：第 2 条改写。</li>
+    <li>出现在真实企业知识库上、按决策单元报告误拒与误放的独立评测：第 5 条改写。</li>
+    <li>某个开放实现在中文判断任务上发布可复现的校准结果：私有化路线的比较要重做。</li>
+  </ul>
+</div>
+
+<h2 id="jev">一 · Jev</h2>
+<p class="answer">TypeSafe AI 于 2026-09-15 发布的第一个 System One model，只以托管 API 提供：输入每百万 token 0.042 美元，输出免费。</p>
+
+<figure>
+  <p class="fig-title">一次调用的形状</p>
+  <p class="fig-intro">请求与响应的字段，按 TypeSafe 的 API 参考。同一段 state 上的问题在一次调用里一起作答。</p>
+  <div class="call">
+    <div>
+      <h4>请求</h4>
+      <dl>
+        <dt>model</dt><dd>版本或别名，如 <code>jev-latest</code></dd>
+        <dt>state</dt><dd>字符串、JSON 对象或数组；每个请求至多 64k token</dd>
+        <dt>questions</dt><dd>以问题 ID 为键；每个问题写 <code>type</code>、<code>instructions</code>、<code>criteria</code>，单个问题至多 32k token</dd>
+        <dt>type</dt><dd><code>noul</code> 是或否；<code>choice</code> 从至多 255 个选项中选一个；<code>score</code> 2 到 10 级的有序量表</dd>
+      </dl>
+    </div>
+    <div>
+      <h4>响应</h4>
+      <dl>
+        <dt>model</dt><dd>实际作答的版本号，如 <code>jev-1.13.0</code></dd>
+        <dt>answers · noul</dt><dd>为“是”的概率</dd>
+        <dt>answers · choice</dt><dd>选中的项、每个选项的概率、confidence</dd>
+        <dt>answers · score</dt><dd>可带小数的分数、每一级的概率、confidence</dd>
+        <dt>usage</dt><dd>按输入 token 计费</dd>
+      </dl>
+    </div>
+  </div>
+  <p class="src" data-ids="A-C-11,A-C-12,A-C-13,A-C-28">来源：<a href="https://docs.typesafe.ai/api/system-one.md">TypeSafe AI docs，System One (API reference / OpenAPI)</a>；<a href="https://docs.typesafe.ai/models">TypeSafe AI docs，Models</a></p>
+</figure>
+
+<h3>价格与速度的口径</h3>
+<p>四种速度说法测的是不同的东西，只能连同测量位置和请求形状一起读。</p>
+<div class="scroll"><table>
+  <thead><tr><th>说法</th><th>出处</th><th>口径</th></tr></thead>
+  <tbody>
+    <tr><td>端到端 70–500 ms，比同等智能的 LLM 快 40–200 倍</td><td>TypeSafe 发布文章</td><td>针对适合 System One 的查询；评测从美国西海岸发出</td></tr>
+    <tr><td>快 193.6 倍、便宜 444.6 倍</td><td>TypeSafe 首页</td><td>四个自建 workflow eval；TypeSafe 自称这是真实收益的高端</td></tr>
+    <tr><td>中位数 98–122 ms</td><td>Knowviq</td><td>美国西部测试机，每次几千 token、许多问题</td></tr>
+    <tr><td>中位数 524 ms</td><td>Cloudflare</td><td>调用 TypeSafe 托管 API 的往返</td></tr>
+  </tbody>
+</table></div>
+<p class="src" data-ids="A-C-15,A-C-16,D-C-16,B-C-36">来源：<a href="https://typesafe.ai/blog/introducing-system-one-models-and-jev">TypeSafe，Introducing System One Models &amp; Jev</a>；<a href="https://knowviq.com/blog/decision-models">Knowviq，Decision models compared</a>；<a href="https://blog.cloudflare.com/clef-decision-models/">Cloudflare，Introducing Clef: our open-source decision models, and new RL fine-tuning platform</a></p>
+
+<h3>训练、评测与企业条款</h3>
+<p>训练方法称为 Reinforcement Learning for Calibrated Decisions（RLCD，以概率校准为目标的强化学习），目标是“带有诚实概率的答案”；架构、参数量和训练数据都没有公开。TypeSafe 不发布标准 benchmark 排行，自建的 Workflow evals 以 GPT-6 Astra 与 Claude Fable 5.1 的平均输出为参考答案，测的是与两家前沿模型的一致程度。</p>
+<p>企业页列出 SOC 2 Type II、企业客户可向销售申请零数据保留、不用客户数据训练。模型页写明 Jev 不用客户数据做 fine-tune，所有账户用同一套权重；VPC 或本地部署没有找到官方方案。当前版本 <code>jev-1.13.0</code>（09-15），<code>jev-1.14.0</code>（10-14）为预览，加入了图像输入。</p>
+<p class="src" data-ids="A-C-07,A-C-09,A-C-20,A-C-24,A-C-25,A-C-26,A-C-18">来源：<a href="https://typesafe.ai/blog/introducing-system-one-models-and-jev">TypeSafe，Introducing System One Models &amp; Jev</a>；<a href="https://techcrunch.com/2026/09/18/a-new-kind-of-ai-model-from-a-chatgpt-inventor-is-thrilling-developers/">Tim Fernholz，A new kind of AI model from a ChatGPT inventor is thrilling developers</a>；<a href="https://typesafe.ai/blog/antibenchmaxxing">TypeSafe AI blog，Lies, Damned Lies, and Benchmarks</a>；<a href="https://typesafe.ai/enterprise">TypeSafe AI，Put Jev to work (Enterprise)</a>；<a href="https://docs.typesafe.ai/models">TypeSafe AI docs，Models</a></p>
+
+<h2 id="ecosystem">二 · 开源替代与兼容生态</h2>
+<p class="answer">五周内出现了十几个实现，按“决策怎样产生”分为五条路线；同一路线内的差别主要在规模、授权和是否校准过。</p>
+
+<figure class="wide">
+  <p class="fig-title">各实现的规模与是否开放权重</p>
+  <p class="fig-intro">横轴为参数量，对数刻度。几亿参数的 encoder 能在 T4 或 CPU 上几十毫秒作答，零样本弱、需要微调；LLM 路线零样本能力接近 Jev，27B 需要 80 GB 级 GPU。</p>
+  <div class="legend"><span class="l-open">开放权重</span><span class="l-host">只有托管服务，或权重授权未写明</span><span class="l-band">可接任意模型</span></div>
+  <div class="chart-wrap"><svg viewBox="0 0 760 706" role="img" aria-labelledby="eco-t eco-d" class="chart">
+<title id="eco-t">开放与托管决策模型的规模</title>
+<desc id="eco-d">按实现路线分组，横轴为参数量（对数刻度，0.3B 到 35B）；实心点为开放权重，空心点为只有托管服务。</desc>
+<line x1="200.0" x2="200.0" y1="26" y2="676" class="grid"/>
+<text x="200.0" y="694.0" class="tick" text-anchor="middle">0.3B</text>
+<line x1="311.3" x2="311.3" y1="26" y2="676" class="grid"/>
+<text x="311.3" y="694.0" class="tick" text-anchor="middle">1B</text>
+<line x1="412.9" x2="412.9" y1="26" y2="676" class="grid"/>
+<text x="412.9" y="694.0" class="tick" text-anchor="middle">3B</text>
+<line x1="524.2" x2="524.2" y1="26" y2="676" class="grid"/>
+<text x="524.2" y="694.0" class="tick" text-anchor="middle">10B</text>
+<line x1="625.7" x2="625.7" y1="26" y2="676" class="grid"/>
+<text x="625.7" y="694.0" class="tick" text-anchor="middle">30B</text>
+<text x="700.0" y="20.0" class="tick" text-anchor="middle">规模未公布</text>
+<line x1="668" x2="668" y1="26" y2="676" class="rule"/>
+<text x="0.0" y="49.0" class="lane" text-anchor="start">encoder + 决策头</text>
+<line x1="0" x2="760" y1="54" y2="54" class="rule"/>
+<text x="14.0" y="71.0" class="name" text-anchor="start">Laya 多语言</text>
+<circle cx="206.5" cy="67.0" r="5" class="dot"><title>Laya 多语言：约 0.322B</title></circle>
+<text x="14.0" y="93.0" class="name" text-anchor="start">Von（已归档）</text>
+<circle cx="225.4" cy="89.0" r="5" class="dot"><title>Von：约 0.395B</title></circle>
+<text x="14.0" y="115.0" class="name" text-anchor="start">Open-Jev DeBERTa</text>
+<circle cx="226.6" cy="111.0" r="5" class="dot"><title>Open-Jev DeBERTa：约 0.4B</title></circle>
+<text x="14.0" y="137.0" class="name" text-anchor="start">Laya</text>
+<circle cx="231.3" cy="133.0" r="5" class="dot"><title>Laya：约 0.421B</title></circle>
+<text x="14.0" y="159.0" class="name" text-anchor="start">GLiNER2.5-Decide</text>
+<circle cx="244.6" cy="155.0" r="5" class="dot"><title>GLiNER2.5-Decide：约 0.486B</title></circle>
+<text x="14.0" y="181.0" class="name" text-anchor="start">d1-omni-600M</text>
+<circle cx="262.1" cy="177.0" r="5" class="dot"><title>d1-omni-600M：约 0.587B</title></circle>
+<text x="0.0" y="203.0" class="lane" text-anchor="start">LLM backbone + 决策头</text>
+<line x1="0" x2="760" y1="208" y2="208" class="rule"/>
+<text x="14.0" y="225.0" class="name" text-anchor="start">NanoJev</text>
+<circle cx="264.1" cy="221.0" r="5" class="dot"><title>NanoJev：约 0.6B</title></circle>
+<text x="14.0" y="247.0" class="name" text-anchor="start">Kev-0.8B</text>
+<circle cx="290.7" cy="243.0" r="5" class="dot"><title>Kev-0.8B：约 0.8B</title></circle>
+<text x="14.0" y="269.0" class="name" text-anchor="start">d1-3B</text>
+<circle cx="416.5" cy="265.0" r="5" class="dot"><title>d1-3B：约 3.12B</title></circle>
+<text x="14.0" y="291.0" class="name" text-anchor="start">Kev-4B</text>
+<circle cx="439.5" cy="287.0" r="5" class="dot"><title>Kev-4B：约 4B</title></circle>
+<text x="14.0" y="313.0" class="name" text-anchor="start">RSI-Jev 4B</text>
+<circle cx="454.2" cy="309.0" r="5" class="dot"><title>RSI-Jev 4B：约 4.69B</title></circle>
+<text x="14.0" y="335.0" class="name" text-anchor="start">Kev-9B</text>
+<circle cx="514.4" cy="331.0" r="5" class="dot"><title>Kev-9B：约 9B</title></circle>
+<text x="14.0" y="357.0" class="name" text-anchor="start">Clef-flash</text>
+<circle cx="514.4" cy="353.0" r="5" class="dot"><title>Clef-flash：约 9B</title></circle>
+<text x="14.0" y="379.0" class="name" text-anchor="start">Microsoft-Decision-1</text>
+<circle cx="514.4" cy="375.0" r="5" class="dot hollow"><title>Microsoft-Decision-1：约 9B</title></circle>
+<text x="14.0" y="401.0" class="name" text-anchor="start">pplx-decider</text>
+<circle cx="612.8" cy="397.0" r="5" class="dot"><title>pplx-decider：约 26.09B</title></circle>
+<text x="14.0" y="423.0" class="name" text-anchor="start">Kev-27B</text>
+<circle cx="612.5" cy="419.0" r="5" class="dot"><title>Kev-27B：约 26B</title></circle>
+<text x="14.0" y="445.0" class="name" text-anchor="start">Clef</text>
+<circle cx="617.2" cy="441.0" r="5" class="dot"><title>Clef：约 27.36B</title></circle>
+<text x="14.0" y="467.0" class="name" text-anchor="start">Clef-omni（授权未写明）</text>
+<circle cx="625.7" cy="463.0" r="5" class="dot hollow"><title>Clef-omni：约 30B</title></circle>
+<text x="14.0" y="489.0" class="name" text-anchor="start">OpenAI Decisions</text>
+<circle cx="700" cy="485.0" r="5" class="dot hollow"/>
+<text x="0.0" y="511.0" class="lane" text-anchor="start">包装 LLM 的 logits</text>
+<line x1="0" x2="760" y1="516" y2="516" class="rule"/>
+<text x="14.0" y="533.0" class="name" text-anchor="start">Simple Jev：任意 HF 模型</text>
+<line x1="290.7" x2="640.0" y1="529.0" y2="529.0" class="band"/>
+<text x="0.0" y="555.0" class="lane" text-anchor="start">先快后想</text>
+<line x1="0" x2="760" y1="560" y2="560" class="rule"/>
+<text x="14.0" y="577.0" class="name" text-anchor="start">GLiDE</text>
+<circle cx="700" cy="573.0" r="5" class="dot hollow"/>
+<text x="0.0" y="599.0" class="lane" text-anchor="start">结构化抽取</text>
+<line x1="0" x2="760" y1="604" y2="604" class="rule"/>
+<text x="14.0" y="621.0" class="name" text-anchor="start">Clairic（权重“即将开放”）</text>
+<circle cx="700" cy="617.0" r="5" class="dot hollow"/>
+<text x="0.0" y="643.0" class="lane" text-anchor="start">架构未公开</text>
+<line x1="0" x2="760" y1="648" y2="648" class="rule"/>
+<text x="14.0" y="665.0" class="name" text-anchor="start">Jev</text>
+<circle cx="700" cy="661.0" r="5" class="dot hollow"/>
+</svg></div>
+  <figcaption>Clairic 不在固定选项里选，而是填出带类型的字段（数值、日期、预测）；GLiDE 在不确定时追加推理。两者把同一接口延伸到了分类之外。</figcaption>
+  <p class="src" data-ids="B-C-04,B-C-16,B-C-34,B-C-45,B-C-53,B-C-56,B-C-44,E-C-17,E-C-16">来源：<a href="https://github.com/NandhaKishorM/laya">Laya（NandhaKishorM/laya）</a>；<a href="https://github.com/jaredpalmer/kev">Kev（jaredpalmer/kev）</a>；<a href="https://blog.cloudflare.com/clef-decision-models/">Cloudflare，Introducing Clef: our open-source decision models, and new RL fine-tuning platform</a>；<a href="https://huggingface.co/LiquidAI/d1-3B">Liquid AI，d1-3B 与 d1-omni-600M 模型卡</a>；<a href="https://huggingface.co/perplexity-ai/pplx-decider-v1-27b">Perplexity，pplx-decider-v1-27b 模型卡</a>；<a href="https://fastino.ai/blog/introducing-glide-the-first-thinking-decision-model">Fastino，Introducing GLiDE</a>；<a href="https://blog.cloudflare.com/clairic-extraction-model">Cloudflare，Introducing Clairic, a new System One class of extraction models</a>；<a href="https://www.infoworld.com/article/4234290/microsoft-separates-decision-making-from-generative-ai-with-a-new-model.html">InfoWorld，Microsoft separates decision-making from generative AI with a new model</a>；<a href="https://community.openai.com/t/decisions-api-is-now-available-in-public-beta/1403877">Decisions API is now available in Public Beta</a></p>
+</figure>
+
+<h3>授权与托管价格</h3>
+<div class="scroll"><table>
+  <thead><tr><th>实现</th><th>权重授权</th><th class="num">托管输入价 / 百万 token</th></tr></thead>
+  <tbody>
+    <tr><td>Jev</td><td>不开放</td><td class="num">$0.042</td></tr>
+    <tr><td>Laya</td><td>Apache-2.0（Node 运行时代码为 MIT）</td><td class="num">—</td></tr>
+    <tr><td>Kev</td><td>Apache-2.0</td><td class="num">—</td></tr>
+    <tr><td>Clef / Clef-flash</td><td>Apache-2.0</td><td class="num">$0.24 / $0.038</td></tr>
+    <tr><td>pplx-decider</td><td>Apache-2.0（v1）</td><td class="num">$0.02（v1.2）</td></tr>
+    <tr><td>Liquid d1-3B</td><td>LFM Open License</td><td class="num">Liquid 未公布</td></tr>
+    <tr><td>GLiDE</td><td>来源说法不一</td><td class="num">$0.15 或 $0.30（转引）</td></tr>
+  </tbody>
+</table></div>
+<p>价格按 2026-10-23 读取，此前多家已降价。单价不能直接比：Knowviq 的同一批请求，d1 与 Perplexity 计出的输入 token 约为 Jev 的 6.4 倍。</p>
+<p class="src" data-ids="A-C-16,B-C-03,B-C-18,B-C-41,B-C-54,B-C-47,B-C-56,D-04">来源：<a href="https://typesafe.ai/blog/introducing-system-one-models-and-jev">TypeSafe，Introducing System One Models &amp; Jev</a>；<a href="https://huggingface.co/convaiinnovations/laya">Convai Innovations，convaiinnovations/laya</a>；<a href="https://github.com/jaredpalmer/kev">Kev（jaredpalmer/kev）</a>；<a href="https://blog.cloudflare.com/clef-faster-cheaper-multimodal/">Cloudflare，Introducing Clef-omni with full multimodality, plus a faster Clef and a cheaper Clef-flash</a>；<a href="https://docs.perplexity.ai/docs/decisions/quickstart">Perplexity Decisions API quickstart</a>；<a href="https://huggingface.co/LiquidAI/d1-3B">Liquid AI，d1-3B 与 d1-omni-600M 模型卡</a>；<a href="https://fastino.ai/blog/introducing-glide-the-first-thinking-decision-model">Fastino，Introducing GLiDE</a>；<a href="https://knowviq.com/blog/decision-models">Knowviq，Decision models compared</a></p>
+
+<h3>自报成绩的读法</h3>
+<p>各项目的数字几乎都由作者自己测。Laya 的 0.766 对 Jev 0.727 是在该 benchmark 的训练划分上微调后的版本，未微调时 0.362；Kev-27B “与 Jev 相差一点以内”只在新来源准确率上成立，Decision Index 上差 1.7 分。Decision Index 是 Hugging Face 上的社区榜单，Artificial Analysis 另有一个同名指数，JevBench 的排名随版本变化，三者都不是 TypeSafe 的。</p>
+<p class="src" data-ids="B-C-08,B-C-20,A-C-21,D-C-35,D-C-38">来源：<a href="https://huggingface.co/convaiinnovations/laya">Convai Innovations，convaiinnovations/laya</a>；<a href="https://github.com/jaredpalmer/kev">Kev（jaredpalmer/kev）</a>；<a href="https://huggingface.co/spaces/multimodalart/jev-decision-index">Decision Index（Hugging Face Space）</a>；<a href="https://benchlm.ai/benchmarks/jevbench">JevBench</a>；<a href="https://benchlm.ai/md/benchmarks/artificial-analysis-decision-index.md">Artificial Analysis Decision Index</a></p>
+
+<h2 id="private">三 · 私有数据微调与部署</h2>
+<p class="answer">私有化只能走开放权重。各实现都用 API 请求的形状加标签作训练样本，训练的是决策函数，知识留在知识库里；训练后要在留出数据上重新拟合温度。</p>
+
+<h3>各实现写明的流程</h3>
+<div class="scroll"><table>
+  <thead><tr><th>实现</th><th>训练</th><th>服务</th><th>来源点名的硬件</th></tr></thead>
+  <tbody>
+    <tr><td>Laya</td><td><code>laya-train --data … --base multilingual</code>；训练前留出至多 400 条校准</td><td><code>laya-serve</code>，私有 checkpoint 经 <code>LAYA_EXTRA_MODELS</code> 注册</td><td>T4；Apple Silicon</td></tr>
+    <tr><td>Kev</td><td><code>python -m kev.train</code>；0.8–9B 训 LoRA 与 pointer head，27B 训全部参数</td><td><code>python -m kev.serve</code>，端口 8009</td><td>L4 到 B200；9B 约 17 GB，27B 约 66 GB</td></tr>
+    <tr><td>Simple Jev</td><td>RFDT：只训答案 token 的 logits</td><td><code>hf_server.py</code></td><td>未验证的 GPU 示例</td></tr>
+    <tr><td>JevAny</td><td><code>jevany train --config recipes/sft.toml</code></td><td><code>jevany serve</code></td><td>CUDA</td></tr>
+  </tbody>
+</table></div>
+<p>Kev 的默认微调 skill 在 Modal 云 GPU 上跑；它和 RFDT 都可以调用外部 API 给样本补标签。私有数据不得出域时，用本地入口，关掉补标签。</p>
+<p class="src" data-ids="C-C-01,C-C-04,C-C-08,C-C-12,C-C-14,C-C-16,C-C-17,C-C-22,C-C-24,C-C-25">来源：<a href="https://github.com/NandhaKishorM/laya/blob/main/docs/finetune.md">NandhaKishorM，Fine-tuning Laya on your own decisions (docs/finetune.md)</a>；<a href="https://github.com/NandhaKishorM/laya">Laya（NandhaKishorM/laya）</a>；<a href="https://github.com/jaredpalmer/kev">Kev（jaredpalmer/kev）</a>；<a href="https://github.com/jaredpalmer/kev/blob/main/skills/kev-finetune/README.md">jaredpalmer，kev-finetune skill README</a>；<a href="https://github.com/featherless-ai/simple-jev/blob/main/RFDT/README.md">Featherless AI，RFDT README (Really Fancy Decision Training)</a>；<a href="https://github.com/SimpleJev/JevAny">SimpleJev/JevAny</a></p>
+
+<figure>
+  <p class="fig-title">温度缩放前后的校准误差</p>
+  <p class="fig-intro">Laya 与 Kev 的发布版本都过度自信。在留出数据上做温度缩放（用一个温度参数整体压缩或拉开概率）后，校准误差（ECE，预测概率与实际准确率的平均差距）降到原来的一半以下。Laya 按问题类型与选项数各拟一个温度，Kev 每个 checkpoint 存一个。</p>
+  <div class="chart-wrap"><svg viewBox="0 0 760 240" role="img" aria-labelledby="ec-t ec-d" class="chart">
+<title id="ec-t">温度缩放前后的校准误差</title>
+<desc id="ec-d">Laya 英文 0.466 到 0.081；Laya 多语言 0.314 到 0.106；Kev-9B 在新来源上 0.103 到 0.041。</desc>
+<text x="300.0" y="16.0" class="head" text-anchor="middle">发布版本</text>
+<text x="520.0" y="16.0" class="head" text-anchor="middle">温度缩放后</text>
+<line x1="260" x2="560" y1="200.0" y2="200.0" class="grid"/>
+<text x="250.0" y="204.0" class="tick" text-anchor="end">0</text>
+<line x1="260" x2="560" y1="115.0" y2="115.0" class="grid"/>
+<text x="250.0" y="119.0" class="tick" text-anchor="end">0.25</text>
+<line x1="260" x2="560" y1="30.0" y2="30.0" class="grid"/>
+<text x="250.0" y="34.0" class="tick" text-anchor="end">0.5</text>
+<line x1="300" x2="520" y1="41.6" y2="172.5" class="slope"/>
+<circle cx="300" cy="41.6" r="5" class="dot"/>
+<circle cx="520" cy="172.5" r="5" class="dot"/>
+<text x="286.0" y="45.6" class="val" text-anchor="end">Laya 英文 0.466</text>
+<text x="532.0" y="176.5" class="val" text-anchor="start">0.081</text>
+<line x1="300" x2="520" y1="93.2" y2="164.0" class="slope"/>
+<circle cx="300" cy="93.2" r="5" class="dot"/>
+<circle cx="520" cy="164.0" r="5" class="dot"/>
+<text x="286.0" y="97.2" class="val" text-anchor="end">Laya 多语言 0.314</text>
+<text x="532.0" y="176.0" class="val" text-anchor="start">0.106</text>
+<line x1="300" x2="520" y1="165.0" y2="186.1" class="slope"/>
+<circle cx="300" cy="165.0" r="5" class="dot"/>
+<circle cx="520" cy="186.1" r="5" class="dot"/>
+<text x="310.0" y="159.0" class="val" text-anchor="start">Kev-9B（新来源） 0.103</text>
+<text x="532.0" y="184.1" class="val" text-anchor="start">0.041</text>
+</svg></div>
+  <figcaption>Laya 两组数字背后的 benchmark 与样本量，README 的相应段落没有写；Kev 的数字是 9B 在新来源上的结果。</figcaption>
+  <p class="src" data-ids="C-C-06,C-C-18">来源：<a href="https://github.com/NandhaKishorM/laya">Laya（NandhaKishorM/laya）</a>；<a href="https://github.com/jaredpalmer/kev">Kev（jaredpalmer/kev）</a></p>
+</figure>
+
+<h3>自报的微调收益</h3>
+<p>Kev 的作者用 5,219 条已标注的消费金融投诉训练一个 epoch，Kev-4B 准确率从 0.804 升到 0.904，作者说明这是分布内的收益。Kev 的示例工作负载用 1,050 条生成数据，在 H100 上约 15 分钟，准确率 67.7% 到 73.6%。没有找到在企业知识库判断上做微调的公开材料。</p>
+<p class="src" data-ids="C-C-19,C-C-20">来源：<a href="https://github.com/jaredpalmer/kev">Kev（jaredpalmer/kev）</a>；<a href="https://github.com/jaredpalmer/kev/blob/main/skills/kev-finetune/README.md">jaredpalmer，kev-finetune skill README</a></p>
+
+<h2 id="eval">四 · 评测</h2>
+<p class="answer">已发表的评测反复给出同一个结论：总体指标相近的模型，在部署关心的那一种错误上可以差得很远。区分能力与阈值上的误拒、误放要分开测。</p>
+
+<figure class="wide">
+  <p class="fig-title">AUC 相近，同一阈值下隐藏的好答案相差三倍</p>
+  <p class="fig-intro">Knowviq 用自己搜索产品的 938 次真实检查测了五个模型。AUC 衡量模型把正例排在负例前面的能力，与阈值无关；可回答性闸门的 AUC 都在 0.98 左右；统一用 0.75 作阈值时，被隐藏的好答案从 6.2% 到 22.2%。</p>
+  <div class="chart-wrap"><svg viewBox="0 0 760 226" role="img" aria-labelledby="kv-t kv-d" class="chart">
+<title id="kv-t">可回答性闸门：AUC 与 0.75 阈值下隐藏的好答案</title>
+<desc id="kv-d">五个模型的 AUC 在 0.979 到 0.984 之间；同一 0.75 阈值下隐藏的好答案从 6.2% 到 22.2%，Jev 最高。</desc>
+<text x="130.0" y="16.0" class="head" text-anchor="start">AUC（647 项）</text>
+<text x="450.0" y="16.0" class="head" text-anchor="start">0.75 阈值下隐藏的好答案</text>
+<line x1="130.0" x2="130.0" y1="34" y2="200" class="grid"/>
+<text x="130.0" y="216.0" class="tick" text-anchor="middle">0.95</text>
+<line x1="255.0" x2="255.0" y1="34" y2="200" class="grid"/>
+<text x="255.0" y="216.0" class="tick" text-anchor="middle">0.975</text>
+<line x1="380.0" x2="380.0" y1="34" y2="200" class="grid"/>
+<text x="380.0" y="216.0" class="tick" text-anchor="middle">1</text>
+<line x1="450.0" x2="450.0" y1="34" y2="200" class="grid"/>
+<text x="450.0" y="216.0" class="tick" text-anchor="middle">0%</text>
+<line x1="566.0" x2="566.0" y1="34" y2="200" class="grid"/>
+<text x="566.0" y="216.0" class="tick" text-anchor="middle">10%</text>
+<line x1="682.0" x2="682.0" y1="34" y2="200" class="grid"/>
+<text x="682.0" y="216.0" class="tick" text-anchor="middle">20%</text>
+<text x="0.0" y="50.0" class="name" text-anchor="start">Jev</text>
+<circle cx="295.0" cy="46" r="5" class="dot"/>
+<text x="305.0" y="50.0" class="val" text-anchor="start">0.983</text>
+<line x1="450.0" x2="707.5" y1="46" y2="46" class="stem hot"/>
+<circle cx="707.5" cy="46" r="5" class="dot hot"/>
+<text x="717.5" y="50.0" class="val hot" text-anchor="start">22.2%</text>
+<text x="0.0" y="80.0" class="name" text-anchor="start">Clef</text>
+<circle cx="290.0" cy="76" r="5" class="dot"/>
+<text x="300.0" y="80.0" class="val" text-anchor="start">0.982</text>
+<line x1="450.0" x2="534.7" y1="76" y2="76" class="stem"/>
+<circle cx="534.7" cy="76" r="5" class="dot"/>
+<text x="544.7" y="80.0" class="val" text-anchor="start">7.3%</text>
+<text x="0.0" y="110.0" class="name" text-anchor="start">Clef-flash</text>
+<circle cx="275.0" cy="106" r="5" class="dot"/>
+<text x="285.0" y="110.0" class="val" text-anchor="start">0.979</text>
+<line x1="450.0" x2="521.9" y1="106" y2="106" class="stem"/>
+<circle cx="521.9" cy="106" r="5" class="dot"/>
+<text x="531.9" y="110.0" class="val" text-anchor="start">6.2%</text>
+<text x="0.0" y="140.0" class="name" text-anchor="start">d1</text>
+<circle cx="300.0" cy="136" r="5" class="dot"/>
+<text x="310.0" y="140.0" class="val" text-anchor="start">0.984</text>
+<line x1="450.0" x2="574.1" y1="136" y2="136" class="stem"/>
+<circle cx="574.1" cy="136" r="5" class="dot"/>
+<text x="584.1" y="140.0" class="val" text-anchor="start">10.7%</text>
+<text x="0.0" y="170.0" class="name" text-anchor="start">Perplexity</text>
+<circle cx="290.0" cy="166" r="5" class="dot"/>
+<text x="300.0" y="170.0" class="val" text-anchor="start">0.982</text>
+<line x1="450.0" x2="542.8" y1="166" y2="166" class="stem"/>
+<circle cx="542.8" cy="166" r="5" class="dot"/>
+<text x="552.8" y="170.0" class="val" text-anchor="start">8.0%</text>
+</svg></div>
+  <figcaption>可回答性标签只有 12 个“否”，另加 100 个错配的负例。Knowviq 为 Clef 单独定阈值后，误显示与误隐藏率与 Jev 在原阈值下基本一致。</figcaption>
+  <p class="src" data-ids="D-C-13,D-C-14,D-04">来源：<a href="https://knowviq.com/blog/decision-models">Knowviq，Decision models compared</a></p>
+</figure>
+
+<figure>
+  <p class="fig-title">准确率相近，放行的错误不同</p>
+  <p class="fig-intro">495 条人工标注陈述（LLM-AggreFact 开发集），判断证据是否支持陈述。balanced accuracy 是正负两类准确率的平均。</p>
+  <div class="chart-wrap"><svg viewBox="0 0 760 170" role="img" aria-labelledby="jd-t jd-d" class="chart">
+<title id="jd-t">Jev 与 GPT-6 Astra 在 495 条陈述上的对照</title>
+<desc id="jd-d">balanced accuracy 73.27 对 73.83，差异不显著；不受支持陈述被放行 23.23% 对 14.14%。</desc>
+<text x="0.0" y="34.0" class="name" text-anchor="start">balanced accuracy</text>
+<rect x="200" y="20" width="337.0" height="14" class="bar"/>
+<text x="545.0" y="31.0" class="val" text-anchor="start">Jev 73.27%</text>
+<rect x="200" y="42" width="339.6" height="14" class="bar"/>
+<text x="547.6" y="53.0" class="val" text-anchor="start">Astra 73.83%</text>
+<text x="200.0" y="80.0" class="note" text-anchor="start">差 −0.56，95% CI [−5.6, 4.5]，不显著</text>
+<text x="0.0" y="112.0" class="name" text-anchor="start">不受支持陈述被放行</text>
+<rect x="200" y="98" width="106.9" height="14" class="bar hot"/>
+<text x="314.9" y="109.0" class="val hot" text-anchor="start">Jev 23.23%</text>
+<rect x="200" y="120" width="65.0" height="14" class="bar"/>
+<text x="273.0" y="131.0" class="val" text-anchor="start">Astra 14.14%</text>
+<text x="200.0" y="158.0" class="note" text-anchor="start">差 9.1 个百分点，p = 0.000534</text>
+</svg></div>
+  <div class="scroll"><table>
+    <thead><tr><th>升级策略</th><th class="num">balanced accuracy</th><th class="num">每千条成本</th></tr></thead>
+    <tbody>
+      <tr><td>置信度选出约 30% 升级给 Astra</td><td class="num">74.10</td><td class="num">$2.92</td></tr>
+      <tr><td>随机选出同样比例升级</td><td class="num">73.36（均值）</td><td class="num">同上</td></tr>
+      <tr><td>GPT-6 Astra 单独</td><td class="num">73.83</td><td class="num">$8.93</td></tr>
+      <tr><td>Jev 单独</td><td class="num">73.27</td><td class="num">$0.048</td></tr>
+    </tbody>
+  </table></div>
+  <figcaption>负责拦截错误依据的组件，应以放行率而不是总体分数评判。论文的结论是：级联省下的钱来自升级的比例；同样预算下随机升级，结果与按置信度升级无法区分。成本按 token 建模，不是实付。</figcaption>
+  <p class="src" data-ids="D-C-18,D-C-19,D-C-20,D-C-21">来源：<a href="https://arxiv.org/html/2610.20634">Do Rosario 与 Atef，Jev-as-a-Judge（arXiv 2610.20634）</a></p>
+</figure>
+
+<figure>
+  <p class="fig-title">SAG2：按已选证据再检索带来的增益</p>
+  <p class="fig-intro">SAG2（单作者论文）在 MuSiQue 1,000 题子集上的 Recall@10，即前十个结果找回的标注证据比例。逐步加上 Jev 判断与按已选证据的扩展。</p>
+  <div class="controls" data-for="sag2" hidden>
+    <button type="button" data-act="prev" aria-label="上一步">上一步</button>
+    <button type="button" data-act="next" aria-label="下一步">下一步</button>
+    <span class="count" aria-live="polite"></span>
+  </div>
+  <div id="sag2"><div class="chart-wrap"><svg viewBox="0 0 760 210" role="img" aria-labelledby="sg-t sg-d" class="chart stepper-fig">
+<title id="sg-t">SAG2 在 MuSiQue 上的消融</title>
+<desc id="sg-d">Recall@10：BM25 54.41；加 Jev 判断 67.93；按已选证据扩展一轮 83.36，两轮 86.62。同等判断次数的一次性 BM25 + JEV 为 69.82。</desc>
+<line x1="160.0" x2="160.0" y1="6" y2="170" class="grid"/>
+<text x="160.0" y="188.0" class="tick" text-anchor="middle">0</text>
+<line x1="430.0" x2="430.0" y1="6" y2="170" class="grid"/>
+<text x="430.0" y="188.0" class="tick" text-anchor="middle">50</text>
+<line x1="700.0" x2="700.0" y1="6" y2="170" class="grid"/>
+<text x="700.0" y="188.0" class="tick" text-anchor="middle">100</text>
+<g class="step" data-step="0">
+<text x="0.0" y="27.0" class="name" text-anchor="start">BM25</text>
+<rect x="160" y="12" width="293.8" height="20" class="bar"/>
+<text x="461.8" y="27.0" class="val" text-anchor="start">54.41</text>
+</g>
+<g class="step" data-step="1">
+<text x="0.0" y="65.0" class="name" text-anchor="start">+ Jev 判断</text>
+<rect x="160" y="50" width="366.8" height="20" class="bar"/>
+<text x="534.8" y="65.0" class="val" text-anchor="start">67.93</text>
+</g>
+<g class="step" data-step="2">
+<text x="0.0" y="103.0" class="name" text-anchor="start">扩展 1 轮</text>
+<rect x="160" y="88" width="450.1" height="20" class="bar"/>
+<text x="618.1" y="103.0" class="val" text-anchor="start">83.36</text>
+</g>
+<g class="step" data-step="3">
+<text x="0.0" y="141.0" class="name" text-anchor="start">扩展 2 轮</text>
+<rect x="160" y="126" width="467.7" height="20" class="bar"/>
+<text x="635.7" y="141.0" class="val" text-anchor="start">86.62</text>
+</g>
+<g class="step" data-step="3"><line x1="537.0" x2="537.0" y1="4" y2="172" class="ref"/>
+<text x="531.0" y="204.0" class="note" text-anchor="end">同等判断次数的一次性 BM25 + JEV 69.82</text></g>
+</svg></div></div>
+  <figcaption>判断次数相同的预算下，一次性 BM25 + JEV 只有 69.82；差距来自“用已选证据再检索”。语料是题目对应的正确段落与干扰段落的汇集，不是全量 Wikipedia；MuSiQue 也参与了方法开发。</figcaption>
+  <p class="src" data-ids="D-C-02,D-C-05,D-C-06,D-C-07">来源：<a href="https://arxiv.org/html/2610.22588">Wu，SAG2（arXiv 2610.22588）</a></p>
+</figure>
+
+<h3>按决策单元找公开数据</h3>
+<p>企业知识库要测的判断分为六类。可回答性与证据支持的公开数据最多，流程路由只有两组多轮对话数据，版本替代与撤权没有现成数据。</p>
+<div class="scroll wide"><table class="matrix"><thead><tr><th scope="col">公开数据</th><th scope="col">候选相关性</th><th scope="col">证据支持</th><th scope="col">可回答性</th><th scope="col">知识冲突</th><th scope="col">时间有效性</th><th scope="col">流程路由</th></tr></thead><tbody><tr><th scope="row">BEIR / MTEB / C-MTEB</th><td>●</td><td></td><td></td><td></td><td></td><td></td></tr><tr><th scope="row">HotpotQA / MuSiQue / 2Wiki</th><td>●</td><td>●</td><td>●</td><td></td><td></td><td></td></tr><tr><th scope="row">LLM-AggreFact / RAGTruth</th><td></td><td>●</td><td></td><td></td><td></td><td></td></tr><tr><th scope="row">FEVER</th><td></td><td>●</td><td>●</td><td></td><td></td><td></td></tr><tr><th scope="row">SummaC / AlignScore</th><td></td><td>●</td><td></td><td></td><td></td><td></td></tr><tr><th scope="row">SQuAD 2.0</th><td></td><td></td><td>●</td><td></td><td></td><td></td></tr><tr><th scope="row">RGB</th><td></td><td></td><td>●</td><td>●</td><td></td><td></td></tr><tr><th scope="row">WikiContradict</th><td></td><td></td><td></td><td>●</td><td></td><td></td></tr><tr><th scope="row">ConflictBank</th><td></td><td></td><td></td><td>●</td><td>●</td><td></td></tr><tr><th scope="row">FreshQA</th><td></td><td></td><td>●</td><td></td><td>●</td><td></td></tr><tr><th scope="row">TimeQA / SituatedQA</th><td></td><td></td><td></td><td></td><td>●</td><td></td></tr><tr><th scope="row">CRAG / FRAMES</th><td>●</td><td></td><td></td><td></td><td>●</td><td>●</td></tr><tr><th scope="row">MTRAG / CORAL</th><td></td><td>●</td><td>●</td><td></td><td></td><td>●</td></tr><tr><th scope="row">EnterpriseRAG-Bench</th><td>●</td><td></td><td>●</td><td>●</td><td></td><td></td></tr></tbody><tfoot><tr><th scope="row">覆盖的数据组数</th><td>4</td><td>5</td><td>7</td><td>4</td><td>4</td><td>2</td></tr></tfoot></table></div>
+<p>CRAG 与 RGB 不可商用，LLM-AggreFact 禁止演绎且只限评测。</p>
+<p class="src" data-ids="D-C-51至D-C-77">来源：<a href="https://arxiv.org/abs/2108.00573">Trivedi et al.，MuSiQue</a>；<a href="https://arxiv.org/abs/1809.09600">Yang et al.，HotpotQA</a>；<a href="https://arxiv.org/abs/2011.01060">Ho et al.，2WikiMultiHopQA</a>；<a href="https://arxiv.org/abs/2104.08663">Thakur et al.，BEIR</a>；<a href="https://arxiv.org/abs/2210.07316">Muennighoff et al.，MTEB</a>；<a href="https://arxiv.org/abs/2404.10774">Tang，MiniCheck (introduces LLM-AggreFact)</a>；<a href="https://arxiv.org/abs/2401.00396">Niu et al.，RAGTruth</a>；<a href="https://arxiv.org/abs/1803.05355">Thorne et al.，FEVER</a>；<a href="https://arxiv.org/abs/2111.09525">Laban et al.，SummaC</a>；<a href="https://arxiv.org/abs/2305.16739">Zha et al.，AlignScore</a>；<a href="https://arxiv.org/abs/1806.03822">Rajpurkar，SQuAD 2.0 (Know What You Don&#x27;t Know)</a>；<a href="https://arxiv.org/abs/2406.04744">Yang et al.，CRAG</a>；<a href="https://arxiv.org/abs/2409.12941">Krishna et al.，FRAMES (Fact, Fetch, and Reason)</a>；<a href="https://arxiv.org/abs/2309.01431">Chen，RGB (Benchmarking LLMs in RAG)</a>；<a href="https://arxiv.org/abs/2408.12076">Su et al.，ConflictBank</a>；<a href="https://arxiv.org/abs/2406.13805">Hou et al.，WikiContradict</a>；<a href="https://arxiv.org/abs/2310.03214">Vu et al.，FreshLLMs / FreshQA</a>；<a href="https://arxiv.org/abs/2109.06157">Zhang，SituatedQA</a>；<a href="https://arxiv.org/abs/2108.06314">Chen，TimeQA</a>；<a href="https://arxiv.org/abs/2501.03468">Katsis et al.，MTRAG (IBM)</a>；<a href="https://arxiv.org/abs/2410.23090">Cheng et al.，CORAL</a>；<a href="https://arxiv.org/abs/2103.06268">Hendrycks et al.，CUAD</a>；<a href="https://arxiv.org/abs/2309.07597">Xiao et al.，C-Pack (introduces C-MTEB)</a>；<a href="https://arxiv.org/abs/2004.05986">Xu et al.，CLUE</a>；<a href="https://arxiv.org/abs/2309.15217">Es et al.，RAGAS</a>；<a href="https://arxiv.org/abs/2311.09476">Saad-Falcon et al.，ARES</a>；<a href="https://arxiv.org/abs/2406.16828">Pradeep et al.，Ragnarok (TREC 2024 RAG track framework)</a></p>
+
+<h3>阈值的选法</h3>
+<p>Hamel Husain 与 Antaripa Saha 给出一个可以照做的流程：分层五折交叉验证；在 precision 与 recall 都不低于 80% 的阈值里选 F1 最高的，没有满足的就退回不加约束的 F1 最优并记下这一折；之后在 log-odds 上拟合 Platt scaling（用一条逻辑回归校正概率），所有模型用同一组折，画 reliability 图，报 Brier 分数（预测概率与实际结果之差的平方均值）。他们的数据只有 98 条 trace，门槛只用来引导选择。</p>
+<p class="src" data-ids="C-C-27,C-C-28">来源：<a href="https://hamel.dev/blog/posts/decision-model-evals/index.html">How To Use Decision Models for Evals</a></p>
+
+<h2 id="enterprise">五 · 企业知识库</h2>
+<p class="answer">决策模型放在检索之后、回答之前，回答相关、支持、够不够这几个问题。谁能看什么、哪一版有效，在检索时由源系统按同步过来的权限判定。</p>
+
+<figure class="wide">
+  <p class="fig-title">一个问题经过的判断</p>
+  <p class="fig-intro">六步各由谁判断、依据是什么。强调色标出当前一步。</p>
+  <div class="controls" data-for="pipe" hidden>
+    <button type="button" data-act="prev">上一步</button>
+    <button type="button" data-act="play" aria-pressed="false">播放</button>
+    <button type="button" data-act="next">下一步</button>
+    <span class="count" aria-live="polite"></span>
+  </div>
+  <ol class="pipe" id="pipe">
+    <li class="authority">
+      <span class="who">源系统</span><br><span class="stage">权限过滤</span>
+      <div class="detail"><p>在查询时按源系统同步过来的权限判定：Microsoft Copilot 只返回用户本来有权访问的内容，Elastic 在查询时套用角色查询，Glean 按每份文档的 ACL 判定、未知的组不匹配任何人。决策模型不进入这一步。</p></div>
+    </li>
+    <li>
+      <span class="who">检索</span><br><span class="stage">找出候选</span>
+      <div class="detail"><p>BM25、向量检索，或像 SAG2 那样用已选证据的词再检索。候选池固定之后，才能公平比较后面几步的模型。</p></div>
+    </li>
+    <li>
+      <span class="who">决策模型 · score 或 noul</span><br><span class="stage">结果相关性</span>
+      <div class="detail"><p>每条结果打分。Knowviq 对 Jev 的规则是 score ≥ 2.5 且 confidence ≥ 0.7 才显示；换成 Clef，confidence 要降到 0.3 才表现相当。</p></div>
+    </li>
+    <li>
+      <span class="who">决策模型 · noul</span><br><span class="stage">可回答性闸门</span>
+      <div class="detail"><p>现有证据够不够回答。0.75 阈值下 Jev 隐藏了 22.2% 的好答案，其余模型 6–11%：阈值按模型定。</p></div>
+    </li>
+    <li>
+      <span class="who">决策模型 · choice 或 noul</span><br><span class="stage">逐句证据支持</span>
+      <div class="detail"><p>草稿答案逐句对照证据，不受支持的句子不显示。Perplexity 的 cookbook 以 0.7 作 supported 的起点阈值，注明需要自己验证。</p></div>
+    </li>
+    <li class="authority">
+      <span class="who">应用与人</span><br><span class="stage">升级与登记</span>
+      <div class="detail"><p>低置信的交给强模型或人；会话里的限制条件由应用保存。每次决策记下输入、问题、答案、概率与模型版本，阈值据此重定，换版本据此回归。</p></div>
+    </li>
+  </ol>
+  <figcaption>第 1、6 步的判断依据是权威数据与确定性规则，第 3 到 5 步是概率，阈值决定它们的去向。</figcaption>
+  <p class="src" data-ids="E-C-61,E-C-62,E-C-63,D-C-05,D-04,D-C-14,E-C-15,E-C-25,E-C-70">来源：<a href="https://learn.microsoft.com/en-us/microsoftsearch/semantic-index-for-copilot">Microsoft Learn，Semantic indexing for Microsoft Copilot</a>；<a href="https://www.elastic.co/docs/deploy-manage/users-roles/cluster-or-deployment-auth/controlling-access-at-document-field-level">Controlling access at the document and field level (Elastic)</a>；<a href="https://developers.glean.com/libraries/indexing-sdk/permissions">Permissions (Glean Indexing SDK)</a>；<a href="https://arxiv.org/html/2610.22588">Wu，SAG2（arXiv 2610.22588）</a>；<a href="https://knowviq.com/blog/decision-models">Knowviq，Decision models compared</a>；<a href="https://docs.perplexity.ai/docs/cookbook/examples/decisions-api-answer-gate/README">Perplexity，Judge Citation Accuracy with Decisions API (cookbook)</a>；<a href="https://www.largitdata.com/en/blog/jev-system-one-model-open-source-benchmark/">LargitData，Jev: System One Models, Use Cases, Open Source and Benchmarks</a>；<a href="https://www.kai-waehner.de/blog/2026/10/20/how-decision-models-became-a-new-ai-category-after-jev/">Kai Waehner，How Decision Models Became a New AI Category After Jev</a></p>
+</figure>
+
+<h3>公开可读的用法</h3>
+<div class="scroll"><table>
+  <thead><tr><th>使用方</th><th>判断点</th><th>自报结果</th></tr></thead>
+  <tbody>
+    <tr><td>Knowviq</td><td>结果相关性、可回答性、逐句支持</td><td>见四；后来另开页面改用 Clef 并重定阈值</td></tr>
+    <tr><td>Southbridge AI</td><td>竞选财务数据的实体匹配，不确定的交给第二个模型</td><td>模型成本降 99.56%，准确率与 Fable 相差 0.5 个百分点以内</td></tr>
+    <tr><td>Astronomer</td><td>给 4,000 个职位名称打标签（对照测试；生产仍用 Snowflake <code>AI_CLASSIFY</code>）</td><td>66 秒、0.16 美元；置信度 0.99 以上与 Cortex 一致 98%，0.50 以下 40%</td></tr>
+    <tr><td>LargitData</td><td>多轮问答的路由、范围、模式、限制</td><td>四项同时正确：Jev 61.4%，自托管 Gemma 4 31B 77.0%</td></tr>
+  </tbody>
+</table></div>
+<p>TypeSafe 称“三分之一的 Fortune 500”在用 Jev，没有点名；它发布过一个客户案例（Jack &amp; Jill，候选人筛选成本降 88%），此外没有找到点名企业的部署案例。</p>
+<p class="src" data-ids="E-C-24,E-C-27,E-C-28,E-C-29,E-C-25,A-C-29,E-C-74">来源：<a href="https://knowviq.com/blog/decision-models">Knowviq，Decision models compared</a>；<a href="https://www.southbridge.ai/blog/jev-entity-resolution">Southbridge AI，Using system-one models inside high-throughput data pipelines</a>；<a href="https://www.astronomer.io/blog/what-jev-will-do-to-data-engineering/">Astronomer，What Jev will do to data engineering</a>；<a href="https://www.largitdata.com/en/blog/jev-system-one-model-open-source-benchmark/">LargitData，Jev: System One Models, Use Cases, Open Source and Benchmarks</a>；<a href="https://typesafe.ai/blog/series-ai">TypeSafe AI blog，TypeSafe A raises Series AI (sic)</a>；<a href="https://venturebeat.com/data/decision-models-like-jev-handle-what-sql-rules-cannot-heres-how-data-teams-use-them">VentureBeat，Decision models like Jev handle what SQL rules cannot. Here&#x27;s how data teams use them</a></p>
+
+<h3>到演示为止的实施顺序</h3>
+<p>这是根据前面几章的发现提出的设计建议，没有生产验证，不预设算力、成本与工程实现。</p>
+<div class="scroll"><table>
+  <thead><tr><th>阶段</th><th>内容</th><th>完成的标志</th></tr></thead>
+  <tbody>
+    <tr><td>选一个判断点</td><td>从证据支持或可回答性开始</td><td>写清问题、选项，以及放行错了与拦截错了各自的后果</td></tr>
+    <tr><td>建私有标注集</td><td>按项目、原件、版本与时间分组切分；另留一份含旧版取代、冲突、撤销、证据缺失的变化集</td><td>训练、校准、测试三份互不重叠</td></tr>
+    <tr><td>同一候选池上比较</td><td>规则或 BM25、托管决策模型、开放权重实现、专用中文 encoder</td><td>每个模型的区分能力、各自阈值下的误拒与误放、校准误差、延迟</td></tr>
+    <tr><td>按模型定阈值</td><td>交叉验证选阈值，Platt 或温度缩放校准</td><td>阈值与校准参数随模型版本登记</td></tr>
+    <tr><td>接进演示流程</td><td>按上图六步；低置信升级</td><td>一条可回放的演示，每一步的输入、概率、阈值与去向都看得见</td></tr>
+  </tbody>
+</table></div>
+
+<h2 id="db">附录 · 数据库里的判断列</h2>
+<p class="answer">数据仓库早已把“判断”做成 SQL 函数，背后是生成式 LLM；Jev 发布后，判断列的类型变严格了，每一行带上了概率，单行成本低到可以对全表运行。</p>
+<div class="scroll"><table>
+  <thead><tr><th>平台</th><th>函数</th><th>背后的模型</th><th>状态</th></tr></thead>
+  <tbody>
+    <tr><td>Databricks</td><td><code>ai_decide(state, questions)</code>：noul、choice、score</td><td>未点名，文档称可能更换</td><td>Beta，2026-09-30；写明与 TypeSafe API 兼容</td></tr>
+    <tr><td>Snowflake</td><td>Snowflake Decision，经 <code>AI_COMPLETE</code></td><td>未点名</td><td>私有预览，10-07；Decision Fast 10-19</td></tr>
+    <tr><td>MotherDuck</td><td><code>prompt_jev()</code></td><td>Jev，数据由 TypeSafe 在美国处理</td><td>09-21 上线</td></tr>
+    <tr><td>DuckDB 社区扩展</td><td><code>jev()</code>、<code>jev_choice()</code> 等；<code>anofox_decide</code> 可接本地 Kev</td><td>Jev 或兼容服务</td><td>DuckDB 博客 09-29</td></tr>
+    <tr><td>PostgreSQL</td><td><code>pg-jev</code></td><td>Jev 或本地兼容服务</td><td>个人项目</td></tr>
+    <tr><td>Snowflake、BigQuery、Fabric、ClickHouse</td><td><code>AI_FILTER</code>、<code>AI.IF</code>、<code>ai.classify</code>、<code>aiFilter</code> 等</td><td>生成式 LLM</td><td>已有或 Beta</td></tr>
+  </tbody>
+</table></div>
+<p>直接调用 Jev 的扩展会把行内容发到 TypeSafe；DuckDB 的博文提醒不要用在无权外传的数据上。Databricks 在自己的安全边界内处理，不存调用参数。判断写进列以后，问题定义、概率列、模型版本和决策日志都要像数据一样版本化；没有找到用 System One 模型作语义算子的数据库论文。</p>
+<p class="src" data-ids="E-C-34,E-C-35,E-C-37,E-C-39,E-C-42,E-C-43,E-C-44,E-C-46,E-C-47,E-C-48,E-C-38,E-C-57,E-14">来源：<a href="https://docs.databricks.com/aws/en/sql/language-manual/functions/ai_decide">ai_decide function (Databricks SQL reference)</a>；<a href="https://databricks.com/blog/introducing-aidecide-make-fast-decisions-your-governed-data">Databricks，Introducing ai_decide: make fast decisions on your governed data</a>；<a href="https://docs.snowflake.com/en/release-notes/2026/other/2026-10-07-ai-complete-snowflake-decision-preview">Oct 7, 2026: Snowflake Decision with AI_COMPLETE (Private Preview)</a>；<a href="https://motherduck.com/docs/about-motherduck/release-notes">MotherDuck release notes</a>；<a href="https://duckdb.org/2026/09/29/jev">DuckDB blog，Jev and DuckDB: Plain-English Conditions in SQL</a>；<a href="https://duckdb.org/community_extensions/extensions/anofox_decide">DuckDB community extensions，anofox_decide (DuckDB community extension)</a>；<a href="https://github.com/realZachi/pg-jev">realZachi，pg-jev README</a>；<a href="https://docs.cloud.google.com/bigquery/docs/generative-ai-overview">Google Cloud，Generative AI overview (BigQuery)</a>；<a href="https://learn.microsoft.com/en-us/fabric/data-science/ai-functions/overview">Microsoft，AI Functions: Transform data at scale with AI (Fabric)</a>；<a href="https://clickhouse.com/blog/ai-functions-in-clickhouse">AI functions in ClickHouse</a>；<a href="https://docs.snowflake.com/en/user-guide/snowflake-cortex/aisql">Snowflake，Cortex AI Functions overview (AISQL)</a>；<a href="https://arxiv.org/abs/2606.08090">Kim，Fast LLM-Based Semantic Filtering: From a Unified Framework to an Adaptive Two-Phase Method</a>；<a href="https://www.astronomer.io/blog/what-jev-will-do-to-data-engineering/">Astronomer，What Jev will do to data engineering</a></p>
+
+<h2 id="faq">常见追问</h2>
+<details><summary>有没有能在本地跑的中文模型？</summary><p>Laya 多语言版（322M，mmBERT 底座，自报在 51 种语言中 48 种可用）和 Liquid d1-3B（16 种语言）是开放权重。另一条路是直接微调中文 encoder（<code>bert-base-chinese</code>、<code>chinese-roberta-wwm-ext</code>，或 1,800 多种语言的 mmBERT）。中文判断任务上的校准结果，没有找到。<a href="#private">见三</a></p></details>
+<details><summary>微调需要多少数据和算力？</summary><p>这里只记录各来源点名的硬件和自报结果：Laya 的 notebook 用两块 T4，Kev 的示例在 H100 上约 15 分钟。本专章不预设算力与成本。<a href="#private">见三</a></p></details>
+<details><summary>哪个榜单可信？</summary><p>几个榜单同名不同物，排名随版本变化，分数多为自报。先看单项评测的设置：比的是零样本还是微调后，阈值是否按模型定，标签从哪里来。<a href="#eval">见四</a></p></details>
+<details><summary>能不能让模型判断权限？</summary><p>不应该。可查到的企业检索产品都在查询时按源系统同步的 ACL 判定权限，未知身份按拒绝处理。<a href="#enterprise">见五</a></p></details>
+<details><summary>Jev 的数据会留在哪里？</summary><p>企业客户可向销售申请零数据保留，TypeSafe 不用客户数据训练；但调用本身要把 state 发到 TypeSafe 的托管服务。<a href="#jev">见一</a></p></details>
+
+<h2 id="sources">来源与核实范围</h2>
+<p>2026-10-23，按五条线读取一手来源，逐条登记读取范围、日期依据与测量方；作者亲自核对了最承重的几页（TypeSafe 发布文章、Knowviq 对比、SAG2 与 Jev-as-a-Judge 的摘要、Databricks <code>ai_decide</code> 参考页、Astronomer 博文），并裁决来源之间的冲突。大部分网页经摘要式工具读取；微信文章、JevBench 预印本与 Oracle 博客被拦截，没有绕过。</p>
+<p>来源之间仍未裁定的：GLiDE 的授权，Perplexity 的价格随日期变化，Liquid d1 在不同目录里的上下文长度与价格。</p>
+<p>本页引用的 85 个来源：</p>
+<ol class="sources"><li><span class="sid">A-02</span> <a href="https://typesafe.ai/blog/introducing-system-one-models-and-jev">TypeSafe，Introducing System One Models &amp; Jev</a>，2026-09-15</li><li><span class="sid">A-05</span> <a href="https://docs.typesafe.ai/api/system-one.md">TypeSafe AI docs，System One (API reference / OpenAPI)</a></li><li><span class="sid">A-10</span> <a href="https://docs.typesafe.ai/models">TypeSafe AI docs，Models</a>，2026-10-14</li><li><span class="sid">A-14</span> <a href="https://typesafe.ai/enterprise">TypeSafe AI，Put Jev to work (Enterprise)</a></li><li><span class="sid">A-16</span> <a href="https://typesafe.ai/blog/antibenchmaxxing">TypeSafe AI blog，Lies, Damned Lies, and Benchmarks</a>，2026-09-11</li><li><span class="sid">A-17</span> <a href="https://typesafe.ai/blog/series-ai">TypeSafe AI blog，TypeSafe A raises Series AI (sic)</a>，2026-10-09</li><li><span class="sid">A-23</span> <a href="https://techcrunch.com/2026/09/18/a-new-kind-of-ai-model-from-a-chatgpt-inventor-is-thrilling-developers/">Tim Fernholz，A new kind of AI model from a ChatGPT inventor is thrilling developers</a>，2026-09-18</li><li><span class="sid">A-30</span> <a href="https://huggingface.co/spaces/multimodalart/jev-decision-index">Decision Index（Hugging Face Space）</a>，2026-10-10</li><li><span class="sid">A-31</span> <a href="https://github.com/jaredpalmer/kev">Kev（jaredpalmer/kev）</a>，2026-10-01</li><li><span class="sid">B-01</span> <a href="https://github.com/NandhaKishorM/laya">Laya（NandhaKishorM/laya）</a></li><li><span class="sid">B-03</span> <a href="https://huggingface.co/convaiinnovations/laya">Convai Innovations，convaiinnovations/laya</a></li><li><span class="sid">B-08</span> <a href="https://github.com/SimpleJev/JevAny">SimpleJev/JevAny</a></li><li><span class="sid">B-09</span> <a href="https://github.com/TianyuCodings/NanoJev">TianyuCodings/NanoJev</a></li><li><span class="sid">B-11</span> <a href="https://github.com/featherless-ai/simple-jev">featherless-ai/simple-jev</a></li><li><span class="sid">B-12</span> <a href="https://blog.cloudflare.com/clef-decision-models/">Cloudflare，Introducing Clef: our open-source decision models, and new RL fine-tuning platform</a>，2026-10-01</li><li><span class="sid">B-15</span> <a href="https://blog.cloudflare.com/clef-faster-cheaper-multimodal/">Cloudflare，Introducing Clef-omni with full multimodality, plus a faster Clef and a cheaper Clef-flash</a>，2026-10-09</li><li><span class="sid">B-16</span> <a href="https://blog.cloudflare.com/clairic-extraction-model">Cloudflare，Introducing Clairic, a new System One class of extraction models</a>，2026-10-19</li><li><span class="sid">B-18</span> <a href="https://huggingface.co/LiquidAI/d1-3B">Liquid AI，d1-3B 与 d1-omni-600M 模型卡</a></li><li><span class="sid">B-21</span> <a href="https://docs.perplexity.ai/docs/decisions/quickstart">Perplexity Decisions API quickstart</a></li><li><span class="sid">B-22</span> <a href="https://huggingface.co/perplexity-ai/pplx-decider-v1-27b">Perplexity，pplx-decider-v1-27b 模型卡</a></li><li><span class="sid">B-24</span> <a href="https://fastino.ai/blog/introducing-glide-the-first-thinking-decision-model">Fastino，Introducing GLiDE</a>，2026-09-30</li><li><span class="sid">B-25</span> <a href="https://huggingface.co/fastino/GLiNER2.5-Decide">Fastino，GLiNER2.5-Decide</a></li><li><span class="sid">B-26</span> <a href="https://github.com/Shanghua-Gao/RSI-Jev">Shanghua-Gao，RSI-Jev</a></li><li><span class="sid">B-30</span> <a href="https://github.com/wfzyx/von">wfzyx/von</a></li><li><span class="sid">B-32</span> <a href="https://huggingface.co/com-kotobalabs/open-jev-deberta-v3-large">Kotoba Labs，open-jev-deberta-v3-large</a></li><li><span class="sid">C-01</span> <a href="https://github.com/NandhaKishorM/laya/blob/main/docs/finetune.md">NandhaKishorM，Fine-tuning Laya on your own decisions (docs/finetune.md)</a>，2026-10-10</li><li><span class="sid">C-05</span> <a href="https://github.com/jaredpalmer/kev/blob/main/skills/kev-finetune/README.md">jaredpalmer，kev-finetune skill README</a>，2026-10-15</li><li><span class="sid">C-08</span> <a href="https://github.com/featherless-ai/simple-jev/blob/main/RFDT/README.md">Featherless AI，RFDT README (Really Fancy Decision Training)</a>，2026-10-07</li><li><span class="sid">C-12</span> <a href="https://hamel.dev/blog/posts/decision-model-evals/index.html">How To Use Decision Models for Evals</a>，2026-10-20</li><li><span class="sid">D-02</span> <a href="https://arxiv.org/html/2610.22588">Wu，SAG2（arXiv 2610.22588）</a>，2026-10-15</li><li><span class="sid">D-04</span> <a href="https://knowviq.com/blog/decision-models">Knowviq，Decision models compared</a>，2026-10-02</li><li><span class="sid">D-06</span> <a href="https://arxiv.org/html/2610.20634">Do Rosario 与 Atef，Jev-as-a-Judge（arXiv 2610.20634）</a>，2026-09-30</li><li><span class="sid">D-10</span> <a href="https://arxiv.org/html/2605.05253">Sun，EnterpriseRAG-Bench</a>，2026-05-05</li><li><span class="sid">D-18</span> <a href="https://benchlm.ai/benchmarks/jevbench">JevBench</a>，2026-10-19</li><li><span class="sid">D-19</span> <a href="https://benchlm.ai/md/benchmarks/artificial-analysis-decision-index.md">Artificial Analysis Decision Index</a>，2026-10-19</li><li><span class="sid">D-32</span> <a href="https://arxiv.org/abs/2108.00573">Trivedi et al.，MuSiQue</a>，2021-08-02</li><li><span class="sid">D-34</span> <a href="https://arxiv.org/abs/1809.09600">Yang et al.，HotpotQA</a>，2018-09-25</li><li><span class="sid">D-36</span> <a href="https://arxiv.org/abs/2011.01060">Ho et al.，2WikiMultiHopQA</a>，2020-11-02</li><li><span class="sid">D-37</span> <a href="https://arxiv.org/abs/2104.08663">Thakur et al.，BEIR</a>，2021-04-17</li><li><span class="sid">D-38</span> <a href="https://arxiv.org/abs/2210.07316">Muennighoff et al.，MTEB</a>，2022-10-13</li><li><span class="sid">D-39</span> <a href="https://arxiv.org/abs/2404.10774">Tang，MiniCheck (introduces LLM-AggreFact)</a>，2024-04-16</li><li><span class="sid">D-41</span> <a href="https://arxiv.org/abs/2401.00396">Niu et al.，RAGTruth</a>，2023-12-31</li><li><span class="sid">D-43</span> <a href="https://arxiv.org/abs/1803.05355">Thorne et al.，FEVER</a>，2018-03-14</li><li><span class="sid">D-44</span> <a href="https://arxiv.org/abs/2111.09525">Laban et al.，SummaC</a>，2021-11-18</li><li><span class="sid">D-45</span> <a href="https://arxiv.org/abs/2305.16739">Zha et al.，AlignScore</a>，2023-05-26</li><li><span class="sid">D-46</span> <a href="https://arxiv.org/abs/1806.03822">Rajpurkar，SQuAD 2.0 (Know What You Don&#x27;t Know)</a>，2018-06-11</li><li><span class="sid">D-48</span> <a href="https://arxiv.org/abs/2406.04744">Yang et al.，CRAG</a>，2024-06-07</li><li><span class="sid">D-50</span> <a href="https://arxiv.org/abs/2409.12941">Krishna et al.，FRAMES (Fact, Fetch, and Reason)</a>，2024-09-19</li><li><span class="sid">D-52</span> <a href="https://arxiv.org/abs/2309.01431">Chen，RGB (Benchmarking LLMs in RAG)</a>，2023-09-04</li><li><span class="sid">D-54</span> <a href="https://arxiv.org/abs/2408.12076">Su et al.，ConflictBank</a>，2024-08-22</li><li><span class="sid">D-55</span> <a href="https://arxiv.org/abs/2406.13805">Hou et al.，WikiContradict</a>，2024-06-19</li><li><span class="sid">D-57</span> <a href="https://arxiv.org/abs/2310.03214">Vu et al.，FreshLLMs / FreshQA</a>，2023-10-05</li><li><span class="sid">D-59</span> <a href="https://arxiv.org/abs/2109.06157">Zhang，SituatedQA</a>，2021-09-13</li><li><span class="sid">D-60</span> <a href="https://arxiv.org/abs/2108.06314">Chen，TimeQA</a>，2021-08-13</li><li><span class="sid">D-61</span> <a href="https://arxiv.org/abs/2501.03468">Katsis et al.，MTRAG (IBM)</a>，2025-01-07</li><li><span class="sid">D-63</span> <a href="https://arxiv.org/abs/2410.23090">Cheng et al.，CORAL</a>，2024-10-30</li><li><span class="sid">D-65</span> <a href="https://arxiv.org/abs/2103.06268">Hendrycks et al.，CUAD</a>，2021-03-10</li><li><span class="sid">D-67</span> <a href="https://arxiv.org/abs/2309.07597">Xiao et al.，C-Pack (introduces C-MTEB)</a>，2023-09-14</li><li><span class="sid">D-68</span> <a href="https://arxiv.org/abs/2004.05986">Xu et al.，CLUE</a>，2020-04-13</li><li><span class="sid">D-69</span> <a href="https://arxiv.org/abs/2309.15217">Es et al.，RAGAS</a>，2023-09-26</li><li><span class="sid">D-70</span> <a href="https://arxiv.org/abs/2311.09476">Saad-Falcon et al.，ARES</a>，2023-11-16</li><li><span class="sid">D-71</span> <a href="https://arxiv.org/abs/2406.16828">Pradeep et al.，Ragnarok (TREC 2024 RAG track framework)</a>，2024-06-24</li><li><span class="sid">E-07</span> <a href="https://www.infoworld.com/article/4234290/microsoft-separates-decision-making-from-generative-ai-with-a-new-model.html">InfoWorld，Microsoft separates decision-making from generative AI with a new model</a>，2026-10-13</li><li><span class="sid">E-12</span> <a href="https://www.largitdata.com/en/blog/jev-system-one-model-open-source-benchmark/">LargitData，Jev: System One Models, Use Cases, Open Source and Benchmarks</a>，2026-09-20</li><li><span class="sid">E-13</span> <a href="https://www.southbridge.ai/blog/jev-entity-resolution">Southbridge AI，Using system-one models inside high-throughput data pipelines</a>，2026-09-20</li><li><span class="sid">E-14</span> <a href="https://www.astronomer.io/blog/what-jev-will-do-to-data-engineering/">Astronomer，What Jev will do to data engineering</a>，2026-09-22</li><li><span class="sid">E-15</span> <a href="https://venturebeat.com/data/decision-models-like-jev-handle-what-sql-rules-cannot-heres-how-data-teams-use-them">VentureBeat，Decision models like Jev handle what SQL rules cannot. Here&#x27;s how data teams use them</a>，2026-10-19</li><li><span class="sid">E-16</span> <a href="https://databricks.com/blog/introducing-aidecide-make-fast-decisions-your-governed-data">Databricks，Introducing ai_decide: make fast decisions on your governed data</a>，2026-09-30</li><li><span class="sid">E-17</span> <a href="https://docs.databricks.com/aws/en/sql/language-manual/functions/ai_decide">ai_decide function (Databricks SQL reference)</a></li><li><span class="sid">E-20</span> <a href="https://docs.snowflake.com/en/release-notes/2026/other/2026-10-07-ai-complete-snowflake-decision-preview">Oct 7, 2026: Snowflake Decision with AI_COMPLETE (Private Preview)</a>，2026-10-07</li><li><span class="sid">E-23</span> <a href="https://docs.snowflake.com/en/user-guide/snowflake-cortex/aisql">Snowflake，Cortex AI Functions overview (AISQL)</a></li><li><span class="sid">E-25</span> <a href="https://motherduck.com/docs/about-motherduck/release-notes">MotherDuck release notes</a></li><li><span class="sid">E-29</span> <a href="https://duckdb.org/2026/09/29/jev">DuckDB blog，Jev and DuckDB: Plain-English Conditions in SQL</a>，2026-09-29</li><li><span class="sid">E-30</span> <a href="https://duckdb.org/community_extensions/extensions/anofox_decide">DuckDB community extensions，anofox_decide (DuckDB community extension)</a></li><li><span class="sid">E-31</span> <a href="https://github.com/realZachi/pg-jev">realZachi，pg-jev README</a></li><li><span class="sid">E-32</span> <a href="https://docs.cloud.google.com/bigquery/docs/generative-ai-overview">Google Cloud，Generative AI overview (BigQuery)</a></li><li><span class="sid">E-34</span> <a href="https://learn.microsoft.com/en-us/fabric/data-science/ai-functions/overview">Microsoft，AI Functions: Transform data at scale with AI (Fabric)</a></li><li><span class="sid">E-35</span> <a href="https://clickhouse.com/blog/ai-functions-in-clickhouse">AI functions in ClickHouse</a>，2026-09-11</li><li><span class="sid">E-43</span> <a href="https://arxiv.org/abs/2606.08090">Kim，Fast LLM-Based Semantic Filtering: From a Unified Framework to an Adaptive Two-Phase Method</a></li><li><span class="sid">E-47</span> <a href="https://learn.microsoft.com/en-us/microsoftsearch/semantic-index-for-copilot">Microsoft Learn，Semantic indexing for Microsoft Copilot</a></li><li><span class="sid">E-48</span> <a href="https://www.elastic.co/docs/deploy-manage/users-roles/cluster-or-deployment-auth/controlling-access-at-document-field-level">Controlling access at the document and field level (Elastic)</a></li><li><span class="sid">E-49</span> <a href="https://developers.glean.com/libraries/indexing-sdk/permissions">Permissions (Glean Indexing SDK)</a></li><li><span class="sid">E-57</span> <a href="https://www.kai-waehner.de/blog/2026/10/20/how-decision-models-became-a-new-ai-category-after-jev/">Kai Waehner，How Decision Models Became a New AI Category After Jev</a>，2026-10-20</li><li><span class="sid">E-58</span> <a href="https://community.openai.com/t/decisions-api-is-now-available-in-public-beta/1403877">Decisions API is now available in Public Beta</a>，2026-10-06</li><li><span class="sid">E-60</span> <a href="https://docs.perplexity.ai/docs/cookbook/examples/decisions-api-answer-gate/README">Perplexity，Judge Citation Accuracy with Decisions API (cookbook)</a></li></ol>
+<p class="foot">快照日期 2026-10-23。数字、价格与版本都可能在此后变化。</p>
+</main>
+<script>
+(function () {
+  document.documentElement.classList.add('js');
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function stepper(id, items, show, auto) {
+    var box = document.querySelector('.controls[data-for="' + id + '"]');
+    if (!box || !items.length) return;
+    box.hidden = false;
+    var i = 0, timer = null, count = box.querySelector('.count');
+    var prev = box.querySelector('[data-act="prev"]'), next = box.querySelector('[data-act="next"]'), play = box.querySelector('[data-act="play"]');
+    function render() {
+      show(i);
+      count.textContent = (i + 1) + ' / ' + items.length;
+      prev.disabled = i === 0;
+      next.disabled = i === items.length - 1;
+    }
+    function stop() { if (timer) { clearInterval(timer); timer = null; } if (play) { play.textContent = '播放'; play.setAttribute('aria-pressed', 'false'); } }
+    prev.addEventListener('click', function () { stop(); if (i > 0) { i--; render(); } });
+    next.addEventListener('click', function () { stop(); if (i < items.length - 1) { i++; render(); } });
+    if (play) play.addEventListener('click', function () {
+      if (timer) { stop(); return; }
+      if (i === items.length - 1) { i = 0; render(); }
+      play.textContent = '暂停'; play.setAttribute('aria-pressed', 'true');
+      timer = setInterval(function () { if (i < items.length - 1) { i++; render(); } else { stop(); } }, reduce ? 4000 : 2600);
+    });
+    render();
+  }
+  var steps = Array.prototype.slice.call(document.querySelectorAll('#sag2 .step'));
+  var n = 0; steps.forEach(function (g) { n = Math.max(n, +g.getAttribute('data-step') + 1); });
+  var sagItems = []; for (var k = 0; k < n; k++) sagItems.push(k);
+  stepper('sag2', sagItems, function (i) { steps.forEach(function (g) { g.classList.toggle('on', +g.getAttribute('data-step') <= i); }); });
+  var stages = Array.prototype.slice.call(document.querySelectorAll('#pipe > li'));
+  stepper('pipe', stages, function (i) { stages.forEach(function (li, j) { li.classList.toggle('on', j === i); if (j === i) li.setAttribute('aria-current', 'step'); else li.removeAttribute('aria-current'); }); });
+  window.addEventListener('beforeprint', function () { document.querySelectorAll('details').forEach(function (d) { d.open = true; }); });
+})();
+</script>
+</body>
+</html>
