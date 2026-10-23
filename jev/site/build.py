@@ -110,6 +110,9 @@ def t(x, y, s, cls='', anchor='start'):
     return f'<text x="{x:.1f}" y="{y:.1f}" class="{cls}" text-anchor="{anchor}">{esc(s)}</text>'
 
 
+LANE = {'encoder': 'aqua', 'llm': 'blue', 'logits': 'amber', 'thinking': 'violet', 'extract': 'magenta', 'undisclosed': 'slate'}
+
+
 def fig_ecosystem():
     e = data['ecosystem']
     lo, hi = math.log10(0.3), math.log10(35)
@@ -117,7 +120,7 @@ def fig_ecosystem():
     X = lambda b: x0 + (math.log10(b) - lo) / (hi - lo) * (x1 - x0)
     rows = []
     for lane in e['lanes']:
-        rows.append(('lane', lane['label']))
+        rows.append(('lane', (lane['label'], lane['key'])))
         rows += [('pt', p) for p in e['points'] if p['lane'] == lane['key']]
         if e['range']['lane'] == lane['key']:
             rows.append(('range', e['range']))
@@ -137,21 +140,24 @@ def fig_ecosystem():
     for kind, p in rows:
         cy = y + row / 2
         if kind == 'lane':
-            out.append(t(0, cy + 4, p, 'lane'))
+            hue = LANE[p[1]]
+            out.append(f'<rect x="0" y="{cy - 5:.1f}" width="10" height="10" rx="2" class="fill-{hue}"/>')
+            out.append(t(16, cy + 4, p[0], 'lane'))
             out.append(f'<line x1="0" x2="760" y1="{y + row - 2}" y2="{y + row - 2}" class="rule"/>')
         elif kind == 'pt':
             x = X(p['b'])
-            cls = 'dot' if p['open'] else 'dot hollow'
+            hue = LANE[p['lane']]
+            cls = f'dot fill-{hue}' if p['open'] else f'dot hollow stroke-{hue}'
             label = p['name'] + (f'（{p["note"]}）' if p.get('note') else '')
             out.append(t(14, cy + 4, label, 'name'))
             out.append(f'<circle cx="{x:.1f}" cy="{cy:.1f}" r="5" class="{cls}"><title>{esc(p["name"])}：约 {p["b"]:g}B</title></circle>')
         elif kind == 'range':
             out.append(t(14, cy + 4, p['name'], 'name'))
-            out.append(f'<line x1="{X(p["from"]):.1f}" x2="{X(p["to"]):.1f}" y1="{cy:.1f}" y2="{cy:.1f}" class="band"/>')
+            out.append(f'<line x1="{X(p["from"]):.1f}" x2="{X(p["to"]):.1f}" y1="{cy:.1f}" y2="{cy:.1f}" class="band stroke-{LANE[p["lane"]]}"/>')
         else:
             label = p['name'] + (f'（{p["note"]}）' if p.get('note') else '')
             out.append(t(14, cy + 4, label, 'name'))
-            out.append(f'<circle cx="700" cy="{cy:.1f}" r="5" class="dot hollow"/>')
+            out.append(f'<circle cx="700" cy="{cy:.1f}" r="5" class="dot hollow stroke-{LANE[p["lane"]]}"/>')
         y += row
     out.append('</svg>')
     return '\n'.join(out)
@@ -198,9 +204,9 @@ def fig_judge():
         out.append(t(0, y + 14, r['metric'], 'name'))
         for k, (who, v) in enumerate((('Jev', r['jev']), ('Astra', r['astra']))):
             yy = y + k * 22
-            hot = who == 'Jev' and r['metric'] != 'balanced accuracy'
-            out.append(f'<rect x="200" y="{yy}" width="{X(v) - 200:.1f}" height="14" class="{"bar hot" if hot else "bar"}"/>')
-            out.append(t(X(v) + 8, yy + 11, f'{who} {v:.2f}%', 'val hot' if hot else 'val'))
+            hue = 'blue' if who == 'Jev' else 'amber'
+            out.append(f'<rect x="200" y="{yy}" width="{X(v) - 200:.1f}" height="14" rx="2" class="fill-{hue}"/>')
+            out.append(t(X(v) + 8, yy + 11, f'{who} {v:.2f}%', 'val'))
         out.append(t(200, y + 60, r['note'], 'note'))
         y += 78
     out.append('</svg>')
@@ -219,7 +225,8 @@ def fig_sag2():
         y = 12 + i * 38
         out.append(f'<g class="step" data-step="{i}">')
         out.append(t(0, y + 15, st['label'], 'name'))
-        out.append(f'<rect x="160" y="{y}" width="{X(st["v"]) - 160:.1f}" height="20" class="bar"/>')
+        hue = ('slate', 'blue', 'aqua', 'aqua')[i]
+        out.append(f'<rect x="160" y="{y}" width="{X(st["v"]) - 160:.1f}" height="20" rx="2" class="fill-{hue}"/>')
         out.append(t(X(st['v']) + 8, y + 15, f'{st["v"]:.2f}', 'val'))
         out.append('</g>')
     c = s['control']
@@ -242,8 +249,9 @@ def fig_ece():
         out += [f'<line x1="{xa - 40}" x2="{xb + 40}" y1="{Y(v):.1f}" y2="{Y(v):.1f}" class="grid"/>', t(xa - 50, Y(v) + 4, f'{v:g}', 'tick', 'end')]
     for r in rows:
         a, b = Y(r['before']), Y(r['after'])
-        out.append(f'<line x1="{xa}" x2="{xb}" y1="{a:.1f}" y2="{b:.1f}" class="slope"/>')
-        out += [f'<circle cx="{xa}" cy="{a:.1f}" r="5" class="dot"/>', f'<circle cx="{xb}" cy="{b:.1f}" r="5" class="dot"/>']
+        hue = 'blue' if r['name'].startswith('Kev') else 'aqua'
+        out.append(f'<line x1="{xa}" x2="{xb}" y1="{a:.1f}" y2="{b:.1f}" class="slope stroke-{hue}"/>')
+        out += [f'<circle cx="{xa}" cy="{a:.1f}" r="5" class="dot fill-{hue}"/>', f'<circle cx="{xb}" cy="{b:.1f}" r="5" class="dot fill-{hue}"/>']
         out.append(t(xa - 14, a + 4, f'{r["name"]} {r["before"]:.3f}', 'val', 'end') if r['before'] > 0.2 else t(xa + 10, a - 6, f'{r["name"]} {r["before"]:.3f}', 'val'))
         out.append(t(xb + 12, b + 4 + (8 if r['name'].startswith('Laya 多') else 0) - (6 if r['name'].startswith('Kev') else 0), f'{r["after"]:.3f}', 'val'))
     out.append('</svg>')
