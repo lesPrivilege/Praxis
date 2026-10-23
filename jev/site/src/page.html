@@ -10,13 +10,13 @@
   --paper: #ffffff; --wash: #f2f5f9; --rule: #d6dde6; --rule-strong: #74828f;
   --ink: #15202b; --ink-2: #3d4a58; --ink-3: #5d6a78;
   --accent: #1b58cf; --accent-wash: #e8effc;
-  /* hues: each one carries a meaning named in a legend; text uses the darker -t steps */
-  --blue: #2a78d6; --blue-t: #1c5cab; --blue-w: #eaf2fc;
-  --aqua: #1baf7a; --aqua-t: #127a55; --aqua-w: #e5f6ef;
-  --amber: #eda100; --amber-t: #8a5d00; --amber-w: #fdf4dc;
-  --violet: #6250d6; --violet-t: #4a3aa7; --violet-w: #efedfb;
-  --magenta: #e87ba4; --magenta-t: #a8396a; --magenta-w: #fcecf2;
-  --slate: #74828f;
+  /* two accents: blue = the subject, current position and interaction; amber = risk and conditions that change a judgment.
+     Everything else stays in ink and slate. Text uses the darker -t steps. */
+  --blue: #2a78d6; --blue-t: #1c5cab; --blue-w: #eaf2fc; --blue-2: #9ec5f4;
+  --amber: #eda100; --amber-t: #8a5d00; --amber-w: #fdf6e3;
+  --slate: #74828f; --slate-2: #c3cbd3;
+  /* named type steps (C22): display, title, section, body, ui, note, micro */
+  --fs-display: 34px; --fs-title: 25px; --fs-section: 19px; --fs-lead: 18px; --fs-body: 16px; --fs-ui: 14px; --fs-note: 13px; --fs-micro: 12px;
   --sans: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Noto Sans CJK SC", "Source Han Sans SC", "Microsoft YaHei", sans-serif;
   --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
   --measure: 680px; --wide: 760px; --gutter: 24px; --toc: 184px;
@@ -25,10 +25,11 @@
 @media (prefers-reduced-motion: reduce) { :root { --t-state: 0ms; } }
 * { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; }
-body { margin: 0; background: var(--paper); color: var(--ink); font: 16px/1.75 var(--sans); }
+body { margin: 0; background: var(--paper); color: var(--ink); font: var(--fs-body)/1.75 var(--sans); }
 /* One column, one left edge: text runs to --measure, figures to --wide. On wide screens the chapter list sits beside it. */
 .frame { display: grid; grid-template-columns: minmax(0, var(--wide)); grid-template-areas: "head" "toc" "main"; justify-content: center; padding: 0 var(--gutter); }
-header.top { grid-area: head; padding: 56px 0 8px; max-width: var(--measure); }
+header.top { grid-area: head; padding: 56px 0 8px; max-width: var(--wide); }
+header.top h1, header.top .lede { max-width: var(--measure); }
 main { grid-area: main; padding: 0 0 96px; min-width: 0; }
 main > * { max-width: var(--measure); }
 main > figure, main > .wide, main > .scroll { max-width: var(--wide); }
@@ -36,40 +37,51 @@ main > figure, main > .wide, main > .scroll { max-width: var(--wide); }
   .frame { grid-template-columns: var(--toc) minmax(0, var(--wide)); grid-template-areas: "toc head" "toc main"; column-gap: 64px; }
 }
 .kicker { font-size: 13px; color: var(--ink-3); letter-spacing: .02em; margin: 0 0 8px; }
-h1 { font-size: 34px; line-height: 1.3; margin: 0 0 16px; font-weight: 600; }
-h2 { font-size: 25px; line-height: 1.35; margin: 80px 0 8px; font-weight: 600; padding-top: 18px; border-top: 1px solid var(--rule); position: relative; scroll-margin-top: 24px; }
-h2::before { content: ""; position: absolute; left: 0; top: -2px; width: 48px; height: 3px; background: var(--hue, var(--slate)); border-radius: 2px; }
-h2 .no { color: var(--hue-t, var(--ink-3)); margin-right: 10px; }
-h3 { font-size: 19px; line-height: 1.4; margin: 40px 0 4px; font-weight: 600; }
-[data-hue="blue"] { --hue: var(--blue); --hue-t: var(--blue-t); }
-[data-hue="aqua"] { --hue: var(--aqua); --hue-t: var(--aqua-t); }
-[data-hue="violet"] { --hue: var(--violet); --hue-t: var(--violet-t); }
-[data-hue="amber"] { --hue: var(--amber); --hue-t: var(--amber-t); }
-[data-hue="magenta"] { --hue: var(--magenta); --hue-t: var(--magenta-t); }
-.answer { font-size: 18px; color: var(--ink); margin-top: 8px; }
+h1 { font-size: var(--fs-display); line-height: 1.3; margin: 0 0 16px; font-weight: 600; }
+h2 { font-size: var(--fs-title); line-height: 1.35; margin: 80px 0 8px; font-weight: 600; padding-top: 18px; border-top: 1px solid var(--rule); position: relative; scroll-margin-top: 24px; }
+h2::before { content: ""; position: absolute; left: 0; top: -2px; width: 48px; height: 3px; background: var(--blue); border-radius: 2px; }
+h2 .no { color: var(--blue-t); margin-right: 10px; }
+h3 { font-size: var(--fs-section); line-height: 1.4; margin: 40px 0 4px; font-weight: 600; }
+
+.answer { font-size: var(--fs-lead); color: var(--ink); margin-top: 8px; }
 p, li { margin: 0 0 12px; }
 a { color: var(--accent); text-underline-offset: 2px; }
 code { font: 14px var(--mono); background: var(--wash); padding: 1px 4px; border-radius: 4px; }
-.lede { font-size: 18px; color: var(--ink-2); }
+.lede { font-size: var(--fs-lead); color: var(--ink-2); }
 nav.toc { grid-area: toc; margin: 20px 0 0; font-size: 14px; line-height: 1.5; }
 nav.toc ol { display: flex; flex-wrap: wrap; gap: 6px 18px; list-style: none; padding: 0; margin: 0; }
 nav.toc li { margin: 0; }
 nav.toc a { color: var(--ink-2); text-decoration: none; display: inline-flex; align-items: center; gap: 8px; }
-nav.toc a::before { content: ""; width: 8px; height: 8px; border-radius: 2px; background: var(--hue, var(--rule-strong)); flex: none; }
-nav.toc a:hover, nav.toc a[aria-current] { color: var(--hue-t, var(--ink)); }
+nav.toc a:hover, nav.toc a[aria-current] { color: var(--blue-t); }
 nav.toc a[aria-current] { font-weight: 600; }
 @media (min-width: 1120px) {
   nav.toc { position: sticky; top: 56px; align-self: start; margin-top: 64px; }
   nav.toc::before { content: "章节"; display: block; font-size: 12px; color: var(--ink-3); letter-spacing: .04em; margin-bottom: 10px; }
   nav.toc ol { flex-direction: column; gap: 2px; border-left: 1px solid var(--rule); }
   nav.toc a { padding: 5px 0 5px 14px; margin-left: -1px; border-left: 2px solid transparent; }
-  nav.toc a[aria-current] { border-left-color: var(--hue, var(--ink)); }
+  nav.toc a[aria-current] { border-left-color: var(--blue); }
 }
 ol.claims { padding-left: 1.4em; }
 ol.claims li { margin-bottom: 14px; }
 ol.claims strong { font-weight: 600; }
-.conditions { background: var(--violet-w); padding: 14px 18px; border-radius: 6px; border-left: 3px solid var(--violet); }
-.conditions h3 { color: var(--violet-t); }
+/* reading progress (C20): one thin line */
+.progress { position: fixed; top: 0; left: 0; height: 3px; width: 100%; transform-origin: 0 50%; transform: scaleX(0); background: var(--blue); z-index: 10; }
+/* key figures (C07): the first screen shows the judgments; each links to its chapter */
+.figures { list-style: none; padding: 0; margin: 28px 0 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0; border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); max-width: var(--wide); }
+.figures li { margin: 0; }
+.figures a { display: block; height: 100%; padding: 16px 12px 14px; text-decoration: none; color: var(--ink-2); }
+.figures li + li a { border-left: 1px solid var(--rule); }
+.figures a:hover { background: var(--wash); }
+.figures b { display: block; font-size: 20px; line-height: 1.2; font-weight: 600; color: var(--ink); font-variant-numeric: tabular-nums; letter-spacing: -.01em; white-space: nowrap; }
+.figures .risk b { color: var(--amber-t); }
+.figures .risk a { box-shadow: inset 0 3px 0 var(--amber); }
+.figures span { display: block; font-size: var(--fs-note); line-height: 1.5; margin-top: 6px; }
+@media (max-width: 760px) { .figures { grid-template-columns: repeat(2, minmax(0, 1fr)); } .figures li + li a { border-left: none; } .figures li:nth-child(even) a { border-left: 1px solid var(--rule); } .figures li:last-child { grid-column: 1 / -1; } }
+details.data { border-top: none; padding: 4px 0 0; margin-top: 8px; }
+details.data > summary { font-size: var(--fs-note); font-weight: 400; color: var(--ink-3); }
+details.data table { font-size: var(--fs-note); }
+.conditions { background: var(--amber-w); padding: 14px 18px; border-radius: 6px; border-left: 3px solid var(--amber); }
+.conditions h3 { color: var(--amber-t); }
 .conditions h3 { margin-top: 0; font-size: 16px; }
 .conditions ul { margin: 0; padding-left: 1.2em; }
 figure { margin: 32px 0 36px; }
@@ -103,19 +115,19 @@ svg .name { font-size: 13px; fill: var(--ink); }
 svg .val { font-size: 12px; fill: var(--ink-2); font-variant-numeric: tabular-nums; }
 svg .dot { fill: var(--ink-2); }
 svg .dot.hollow { fill: var(--paper); stroke: var(--ink); stroke-width: 1.5; }
-svg .hot { fill: var(--blue); stroke: var(--blue); }
-svg text.hot { stroke: none; font-weight: 600; fill: var(--blue-t); }
+svg .hot { fill: var(--amber); stroke: var(--amber); }
+svg text.hot { stroke: none; font-weight: 600; fill: var(--amber-t); }
 svg .stem { stroke: var(--rule-strong); stroke-width: 1.5; }
-svg .stem.hot { stroke: var(--blue); }
+svg .stem.hot { stroke: var(--amber); }
 svg .bar { fill: var(--ink-2); }
 svg .bar.hot { fill: var(--accent); stroke: none; }
 svg .band { stroke: var(--ink-2); stroke-width: 6; stroke-linecap: round; opacity: .35; }
 svg .slope { stroke: var(--ink-2); stroke-width: 1.5; fill: none; }
 svg .ref { stroke: var(--ink-3); stroke-width: 1.5; }
-svg .fill-blue { fill: var(--blue); } svg .fill-aqua { fill: var(--aqua); } svg .fill-amber { fill: var(--amber); }
-svg .fill-violet { fill: var(--violet); } svg .fill-magenta { fill: var(--magenta); } svg .fill-slate { fill: var(--slate); }
-svg .stroke-blue { stroke: var(--blue); } svg .stroke-aqua { stroke: var(--aqua); } svg .stroke-amber { stroke: var(--amber); }
-svg .stroke-violet { stroke: var(--violet); } svg .stroke-magenta { stroke: var(--magenta); } svg .stroke-slate { stroke: var(--slate); }
+svg .fill-blue { fill: var(--blue); } svg .fill-blue-2 { fill: var(--blue-2); } svg .fill-blue-3 { fill: var(--blue-t); } svg .fill-amber { fill: var(--amber); }
+svg .fill-slate { fill: var(--slate); } svg .fill-slate-2 { fill: var(--slate-2); } svg .fill-ink { fill: var(--ink-2); }
+svg .stroke-blue { stroke: var(--blue); } svg .stroke-amber { stroke: var(--amber); } svg .stroke-slate { stroke: var(--slate); } svg .stroke-ink { stroke: var(--ink-2); }
+svg text.risk { fill: var(--amber-t); font-weight: 600; }
 svg .dot.hollow { fill: var(--paper); stroke-width: 2; }
 svg .slope { stroke-width: 2; }
 svg .band { opacity: .45; }
@@ -148,7 +160,6 @@ svg .band { opacity: .45; }
 .pipe > li { position: relative; margin: 0; padding: 12px 14px 12px 52px; border-left: 3px solid transparent; transition: background var(--t-state) var(--ease), border-color var(--t-state) var(--ease); }
 .pipe > li + li { border-top: 1px solid var(--rule); }
 .pipe > li { --c: var(--slate); --c-t: var(--ink-2); --c-w: var(--wash); }
-.pipe > li[data-actor="retrieval"] { --c: var(--aqua); --c-t: var(--aqua-t); --c-w: var(--aqua-w); }
 .pipe > li[data-actor="decision"] { --c: var(--blue); --c-t: var(--blue-t); --c-w: var(--blue-w); }
 .pipe > li::before { counter-increment: s; content: counter(s); position: absolute; left: 14px; top: 13px; width: 24px; height: 24px; border-radius: 50%; border: 1.5px solid var(--c); font-size: 13px; line-height: 21px; text-align: center; color: var(--c-t); }
 .pipe > li[data-actor="authority"]::before { border-radius: 4px; }
@@ -171,7 +182,7 @@ ol.sources .sid { font: 12px var(--mono); color: var(--ink-3); }
 @media print {
   @page { size: A4; margin: 16mm 14mm; }
   body { font-size: 11pt; }
-  nav.toc, .controls { display: none; }
+  nav.toc, .controls, .progress { display: none; }
   .js .pipe .detail { display: block; }
   .js .pipe > li.on { background: none; border-left-color: transparent; }
   .js .pipe > li.on::before { background: none; color: var(--c-t); border-color: var(--c); }
@@ -184,20 +195,28 @@ ol.sources .sid { font: 12px var(--mono); color: var(--ink-3); }
 </style>
 </head>
 <body>
+<div class="progress" aria-hidden="true"></div>
 <div class="frame">
 <header class="top">
   <p class="kicker">Praxis · Jev 专章 · 快照 2026-10-23</p>
   <h1>Jev 与 System One 决策模型</h1>
   <p class="lede">一类不写文字、只回答带类型问题的模型：它是什么，哪些实现可以私有化，怎样评测，以及在企业知识库里放在哪一步。</p>
+  <ul class="figures" aria-label="关键数字">
+    <li><a href="#jev"><b>$0.042</b><span>Jev 每百万输入 token 的价格，输出免费</span></a></li>
+    <li><a href="#ecosystem"><b>0.3–27B</b><span>开放权重实现的参数规模，从 encoder 到 LLM</span></a></li>
+    <li><a href="#private"><b>0.466→0.081</b><span>Laya 温度缩放前后的校准误差</span></a></li>
+    <li class="risk"><a href="#eval"><b>22.2%</b><span>0.75 阈值下 Jev 隐藏的好答案（Knowviq）</span></a></li>
+    <li><a href="#enterprise"><b>1</b><span>点名企业的部署案例，由 TypeSafe 自己发布</span></a></li>
+  </ul>
 </header>
 <nav class="toc" aria-label="章节">
   <ol>
     <li><a href="#conclusion">结论</a></li>
-    <li><a href="#jev" data-hue="blue">一 · Jev</a></li>
-    <li><a href="#ecosystem" data-hue="aqua">二 · 生态</a></li>
-    <li><a href="#private" data-hue="violet">三 · 私有化</a></li>
-    <li><a href="#eval" data-hue="amber">四 · 评测</a></li>
-    <li><a href="#enterprise" data-hue="magenta">五 · 企业知识库</a></li>
+    <li><a href="#jev">一 · Jev</a></li>
+    <li><a href="#ecosystem">二 · 生态</a></li>
+    <li><a href="#private">三 · 私有化</a></li>
+    <li><a href="#eval">四 · 评测</a></li>
+    <li><a href="#enterprise">五 · 企业知识库</a></li>
     <li><a href="#db">附录 · 数据库</a></li>
     <li><a href="#faq">追问</a></li>
     <li><a href="#sources">来源</a></li>
@@ -223,7 +242,7 @@ ol.sources .sid { font: 12px var(--mono); color: var(--ink-3); }
   </ul>
 </div>
 
-<h2 id="jev" data-hue="blue"><span class="no">一</span>Jev</h2>
+<h2 id="jev"><span class="no">一</span>Jev</h2>
 <p class="answer">TypeSafe AI 于 2026-09-15 发布的第一个 System One model，只以托管 API 提供：输入每百万 token 0.042 美元，输出免费。</p>
 
 <figure>
@@ -271,12 +290,12 @@ ol.sources .sid { font: 12px var(--mono); color: var(--ink-3); }
 <p>企业页列出 SOC 2 Type II、企业客户可向销售申请零数据保留、不用客户数据训练。模型页写明 Jev 不用客户数据做 fine-tune，所有账户用同一套权重；VPC 或本地部署没有找到官方方案。当前版本 <code>jev-1.13.0</code>（09-15），<code>jev-1.14.0</code>（10-14）为预览，加入了图像输入。</p>
 <p class="src" data-src="A-C-07,A-C-09,A-C-20,A-C-24,A-C-25,A-C-26,A-C-18"></p>
 
-<h2 id="ecosystem" data-hue="aqua"><span class="no">二</span>开源替代与兼容生态</h2>
+<h2 id="ecosystem"><span class="no">二</span>开源替代与兼容生态</h2>
 <p class="answer">五周内出现了十几个实现，按“决策怎样产生”分为五条路线；同一路线内的差别主要在规模、授权和是否校准过。</p>
 
 <figure class="wide">
   <p class="fig-title">各实现的规模与是否开放权重</p>
-  <p class="fig-intro">横轴为参数量，对数刻度；颜色区分实现路线。几亿参数的 encoder 能在 T4 或 CPU 上几十毫秒作答，零样本弱、需要微调；LLM 路线零样本能力接近 Jev，27B 需要 80 GB 级 GPU。</p>
+  <p class="fig-intro">横轴为参数量，对数刻度。几亿参数的 encoder 能在 T4 或 CPU 上几十毫秒作答，零样本弱、需要微调；LLM 路线零样本能力接近 Jev，27B 需要 80 GB 级 GPU。</p>
   <div class="legend"><span class="l-open">开放权重</span><span class="l-host">只有托管服务，或权重授权未写明</span><span class="l-band">可接任意模型</span></div>
   {{FIG:ecosystem}}
   <figcaption>Clairic 不在固定选项里选，而是填出带类型的字段（数值、日期、预测）；GLiDE 在不确定时追加推理。两者把同一接口延伸到了分类之外。</figcaption>
@@ -303,7 +322,7 @@ ol.sources .sid { font: 12px var(--mono); color: var(--ink-3); }
 <p>各项目的数字几乎都由作者自己测。Laya 的 0.766 对 Jev 0.727 是在该 benchmark 的训练划分上微调后的版本，未微调时 0.362；Kev-27B “与 Jev 相差一点以内”只在新来源准确率上成立，Decision Index 上差 1.7 分。Decision Index 是 Hugging Face 上的社区榜单，Artificial Analysis 另有一个同名指数，JevBench 的排名随版本变化，三者都不是 TypeSafe 的。</p>
 <p class="src" data-src="B-C-08,B-C-20,A-C-21,D-C-35,D-C-38"></p>
 
-<h2 id="private" data-hue="violet"><span class="no">三</span>私有数据微调与部署</h2>
+<h2 id="private"><span class="no">三</span>私有数据微调与部署</h2>
 <p class="answer">私有化只能走开放权重。各实现都用 API 请求的形状加标签作训练样本，训练的是决策函数，知识留在知识库里；训练后要在留出数据上重新拟合温度。</p>
 
 <h3>各实现写明的流程</h3>
@@ -322,8 +341,7 @@ ol.sources .sid { font: 12px var(--mono); color: var(--ink-3); }
 <figure>
   <p class="fig-title">温度缩放前后的校准误差</p>
   <p class="fig-intro">Laya 与 Kev 的发布版本都过度自信。在留出数据上做温度缩放（用一个温度参数整体压缩或拉开概率）后，校准误差（ECE，预测概率与实际准确率的平均差距）降到原来的一半以下。Laya 按问题类型与选项数各拟一个温度，Kev 每个 checkpoint 存一个。</p>
-  <div class="legend"><span class="sw" style="--c: var(--aqua)">Laya（encoder 路线）</span><span class="sw" style="--c: var(--blue)">Kev（LLM backbone 路线）</span></div>
-  {{FIG:ece}}
+    {{FIG:ece}}
   <figcaption>Laya 两组数字背后的 benchmark 与样本量，README 的相应段落没有写；Kev 的数字是 9B 在新来源上的结果。</figcaption>
   <p class="src" data-src="C-C-06,C-C-18"></p>
 </figure>
@@ -332,7 +350,7 @@ ol.sources .sid { font: 12px var(--mono); color: var(--ink-3); }
 <p>Kev 的作者用 5,219 条已标注的消费金融投诉训练一个 epoch，Kev-4B 准确率从 0.804 升到 0.904，作者说明这是分布内的收益。Kev 的示例工作负载用 1,050 条生成数据，在 H100 上约 15 分钟，准确率 67.7% 到 73.6%。没有找到在企业知识库判断上做微调的公开材料。</p>
 <p class="src" data-src="C-C-19,C-C-20"></p>
 
-<h2 id="eval" data-hue="amber"><span class="no">四</span>评测</h2>
+<h2 id="eval"><span class="no">四</span>评测</h2>
 <p class="answer">已发表的评测反复给出同一个结论：总体指标相近的模型，在部署关心的那一种错误上可以差得很远。区分能力与阈值上的误拒、误放要分开测。</p>
 
 <figure class="wide">
@@ -346,7 +364,7 @@ ol.sources .sid { font: 12px var(--mono); color: var(--ink-3); }
 <figure>
   <p class="fig-title">准确率相近，放行的错误不同</p>
   <p class="fig-intro">495 条人工标注陈述（LLM-AggreFact 开发集），判断证据是否支持陈述。balanced accuracy 是正负两类准确率的平均。</p>
-  <div class="legend"><span class="sw" style="--c: var(--blue)">Jev</span><span class="sw" style="--c: var(--amber)">GPT-6 Astra</span></div>
+  <div class="legend"><span class="sw" style="--c: var(--blue)">Jev</span><span class="sw" style="--c: var(--slate)">GPT-6 Astra</span></div>
   {{FIG:judge}}
   <div class="scroll"><table>
     <thead><tr><th>升级策略</th><th class="num">balanced accuracy</th><th class="num">每千条成本</th></tr></thead>
@@ -363,14 +381,13 @@ ol.sources .sid { font: 12px var(--mono); color: var(--ink-3); }
 
 <figure>
   <p class="fig-title">SAG2：按已选证据再检索带来的增益</p>
-  <p class="fig-intro">SAG2（单作者论文）在 MuSiQue 1,000 题子集上的 Recall@10，即前十个结果找回的标注证据比例。逐步加上 Jev 判断与按已选证据的扩展。</p>
+  <p class="fig-intro">SAG2（单作者论文）在 MuSiQue 1,000 题子集上的 Recall@10，即前十个结果找回的标注证据比例。逐步加上 Jev 判断与按已选证据的扩展，颜色越深加上的环节越多。</p>
   <div class="controls" data-for="sag2" hidden>
     <button type="button" data-act="prev" aria-label="上一步">上一步</button>
     <button type="button" data-act="next" aria-label="下一步">下一步</button>
     <span class="count" aria-live="polite"></span>
   </div>
-  <div class="legend"><span class="sw" style="--c: var(--slate)">词法检索</span><span class="sw" style="--c: var(--blue)">加上决策模型判断</span><span class="sw" style="--c: var(--aqua)">按已选证据再检索</span></div>
-  <div id="sag2">{{FIG:sag2}}</div>
+    <div id="sag2">{{FIG:sag2}}</div>
   <figcaption>判断次数相同的预算下，一次性 BM25 + JEV 只有 69.82；差距来自“用已选证据再检索”。语料是题目对应的正确段落与干扰段落的汇集，不是全量 Wikipedia；MuSiQue 也参与了方法开发。</figcaption>
   <p class="src" data-src="D-C-02,D-C-05,D-C-06,D-C-07"></p>
 </figure>
@@ -385,13 +402,13 @@ ol.sources .sid { font: 12px var(--mono); color: var(--ink-3); }
 <p>Hamel Husain 与 Antaripa Saha 给出一个可以照做的流程：分层五折交叉验证；在 precision 与 recall 都不低于 80% 的阈值里选 F1 最高的，没有满足的就退回不加约束的 F1 最优并记下这一折；之后在 log-odds 上拟合 Platt scaling（用一条逻辑回归校正概率），所有模型用同一组折，画 reliability 图，报 Brier 分数（预测概率与实际结果之差的平方均值）。他们的数据只有 98 条 trace，门槛只用来引导选择。</p>
 <p class="src" data-src="C-C-27,C-C-28"></p>
 
-<h2 id="enterprise" data-hue="magenta"><span class="no">五</span>企业知识库</h2>
+<h2 id="enterprise"><span class="no">五</span>企业知识库</h2>
 <p class="answer">决策模型放在检索之后、回答之前，回答相关、支持、够不够这几个问题。谁能看什么、哪一版有效，在检索时由源系统按同步过来的权限判定。</p>
 
 <figure class="wide">
   <p class="fig-title">一个问题经过的判断</p>
-  <p class="fig-intro">六步各由谁判断、依据是什么。颜色区分判断者，底色标出当前一步。</p>
-  <div class="legend"><span class="sq" style="--c: var(--slate)">权威数据与规则</span><span class="sw" style="--c: var(--aqua)">检索</span><span class="sw" style="--c: var(--blue)">决策模型</span></div>
+  <p class="fig-intro">六步各由谁判断、依据是什么。蓝色是决策模型做判断的三步，底色标出当前一步。</p>
+  <div class="legend"><span class="sw" style="--c: var(--blue)">决策模型判断</span><span class="sq" style="--c: var(--slate)">权威数据与规则（方形编号）</span></div>
   <div class="controls" data-for="pipe" hidden>
     <button type="button" data-act="prev">上一步</button>
     <button type="button" data-act="play" aria-pressed="false">播放</button>
@@ -525,7 +542,15 @@ ol.sources .sid { font: 12px var(--mono); color: var(--ink-3); }
     heads.forEach(function (h, j) { if (h && h.getBoundingClientRect().top < 140) k = j; });
     links.forEach(function (a, j) { if (j === k) a.setAttribute('aria-current', 'location'); else a.removeAttribute('aria-current'); });
   }
-  window.addEventListener('scroll', spy, { passive: true }); spy();
+  var bar = document.querySelector('.progress');
+  function progress() {
+    var max = document.documentElement.scrollHeight - innerHeight;
+    bar.style.transform = 'scaleX(' + (max > 0 ? Math.min(1, scrollY / max) : 0) + ')';
+    var cur = links.filter(function (a) { return a.hasAttribute('aria-current'); })[0];
+    var hue = cur && cur.getAttribute('data-hue');
+    if (hue) bar.setAttribute('data-hue', hue); else bar.removeAttribute('data-hue');
+  }
+  window.addEventListener('scroll', function () { spy(); progress(); }, { passive: true }); spy(); progress();
   window.addEventListener('beforeprint', function () { document.querySelectorAll('details').forEach(function (d) { d.open = true; }); });
 })();
 </script>

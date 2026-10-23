@@ -110,7 +110,7 @@ def t(x, y, s, cls='', anchor='start'):
     return f'<text x="{x:.1f}" y="{y:.1f}" class="{cls}" text-anchor="{anchor}">{esc(s)}</text>'
 
 
-LANE = {'encoder': 'aqua', 'llm': 'blue', 'logits': 'amber', 'thinking': 'violet', 'extract': 'magenta', 'undisclosed': 'slate'}
+
 
 
 def fig_ecosystem():
@@ -140,24 +140,22 @@ def fig_ecosystem():
     for kind, p in rows:
         cy = y + row / 2
         if kind == 'lane':
-            hue = LANE[p[1]]
-            out.append(f'<rect x="0" y="{cy - 5:.1f}" width="10" height="10" rx="2" class="fill-{hue}"/>')
-            out.append(t(16, cy + 4, p[0], 'lane'))
+            out.append(t(0, cy + 4, p[0], 'lane'))
             out.append(f'<line x1="0" x2="760" y1="{y + row - 2}" y2="{y + row - 2}" class="rule"/>')
         elif kind == 'pt':
             x = X(p['b'])
-            hue = LANE[p['lane']]
-            cls = f'dot fill-{hue}' if p['open'] else f'dot hollow stroke-{hue}'
+            cls = 'dot fill-ink' if p['open'] else 'dot hollow stroke-ink'
             label = p['name'] + (f'（{p["note"]}）' if p.get('note') else '')
             out.append(t(14, cy + 4, label, 'name'))
             out.append(f'<circle cx="{x:.1f}" cy="{cy:.1f}" r="5" class="{cls}"><title>{esc(p["name"])}：约 {p["b"]:g}B</title></circle>')
         elif kind == 'range':
             out.append(t(14, cy + 4, p['name'], 'name'))
-            out.append(f'<line x1="{X(p["from"]):.1f}" x2="{X(p["to"]):.1f}" y1="{cy:.1f}" y2="{cy:.1f}" class="band stroke-{LANE[p["lane"]]}"/>')
+            out.append(f'<line x1="{X(p["from"]):.1f}" x2="{X(p["to"]):.1f}" y1="{cy:.1f}" y2="{cy:.1f}" class="band stroke-ink"/>')
         else:
             label = p['name'] + (f'（{p["note"]}）' if p.get('note') else '')
             out.append(t(14, cy + 4, label, 'name'))
-            out.append(f'<circle cx="700" cy="{cy:.1f}" r="5" class="dot hollow stroke-{LANE[p["lane"]]}"/>')
+            hue = 'blue' if p['name'] == 'Jev' else 'ink'
+            out.append(f'<circle cx="700" cy="{cy:.1f}" r="5" class="dot hollow stroke-{hue}"/>')
         y += row
     out.append('</svg>')
     return '\n'.join(out)
@@ -184,10 +182,10 @@ def fig_knowviq():
         cy = top + i * row
         hot = r['name'] == 'Jev'
         out.append(t(0, cy + 4, r['name'], 'name'))
-        out.append(f'<circle cx="{X(L, r["auc"]):.1f}" cy="{cy}" r="5" class="dot"/>')
+        out.append(f'<circle cx="{X(L, r["auc"]):.1f}" cy="{cy}" r="5" class="dot"><title>{esc(r["name"])}：AUC {r["auc"]:.3f}</title></circle>')
         out.append(t(X(L, r['auc']) + 10, cy + 4, f'{r["auc"]:.3f}', 'val'))
         out.append(f'<line x1="{X(R, 0):.1f}" x2="{X(R, r["hidden"]):.1f}" y1="{cy}" y2="{cy}" class="{"stem hot" if hot else "stem"}"/>')
-        out.append(f'<circle cx="{X(R, r["hidden"]):.1f}" cy="{cy}" r="5" class="{"dot hot" if hot else "dot"}"/>')
+        out.append(f'<circle cx="{X(R, r["hidden"]):.1f}" cy="{cy}" r="5" class="{"dot hot" if hot else "dot"}"><title>{esc(r["name"])}：隐藏 {r["hidden"]}%</title></circle>')
         out.append(t(X(R, r['hidden']) + 10, cy + 4, f'{r["hidden"]}%', 'val hot' if hot else 'val'))
     out.append('</svg>')
     return '\n'.join(out)
@@ -204,10 +202,10 @@ def fig_judge():
         out.append(t(0, y + 14, r['metric'], 'name'))
         for k, (who, v) in enumerate((('Jev', r['jev']), ('Astra', r['astra']))):
             yy = y + k * 22
-            hue = 'blue' if who == 'Jev' else 'amber'
-            out.append(f'<rect x="200" y="{yy}" width="{X(v) - 200:.1f}" height="14" rx="2" class="fill-{hue}"/>')
+            hue = 'blue' if who == 'Jev' else 'slate'
+            out.append(f'<rect x="200" y="{yy}" width="{X(v) - 200:.1f}" height="14" rx="2" class="fill-{hue}"><title>{who} · {esc(r["metric"])}：{v:.2f}%</title></rect>')
             out.append(t(X(v) + 8, yy + 11, f'{who} {v:.2f}%', 'val'))
-        out.append(t(200, y + 60, r['note'], 'note'))
+        out.append(t(200, y + 60, r['note'], 'note' if r['metric'] == 'balanced accuracy' else 'note risk'))
         y += 78
     out.append('</svg>')
     return '\n'.join(out)
@@ -225,8 +223,8 @@ def fig_sag2():
         y = 12 + i * 38
         out.append(f'<g class="step" data-step="{i}">')
         out.append(t(0, y + 15, st['label'], 'name'))
-        hue = ('slate', 'blue', 'aqua', 'aqua')[i]
-        out.append(f'<rect x="160" y="{y}" width="{X(st["v"]) - 160:.1f}" height="20" rx="2" class="fill-{hue}"/>')
+        hue = ('slate-2', 'blue-2', 'blue', 'blue-3')[i]
+        out.append(f'<rect x="160" y="{y}" width="{X(st["v"]) - 160:.1f}" height="20" rx="2" class="fill-{hue}"><title>{esc(st["label"])}：{st["v"]:.2f}（{esc(st["note"])}）</title></rect>')
         out.append(t(X(st['v']) + 8, y + 15, f'{st["v"]:.2f}', 'val'))
         out.append('</g>')
     c = s['control']
@@ -249,9 +247,8 @@ def fig_ece():
         out += [f'<line x1="{xa - 40}" x2="{xb + 40}" y1="{Y(v):.1f}" y2="{Y(v):.1f}" class="grid"/>', t(xa - 50, Y(v) + 4, f'{v:g}', 'tick', 'end')]
     for r in rows:
         a, b = Y(r['before']), Y(r['after'])
-        hue = 'blue' if r['name'].startswith('Kev') else 'aqua'
-        out.append(f'<line x1="{xa}" x2="{xb}" y1="{a:.1f}" y2="{b:.1f}" class="slope stroke-{hue}"/>')
-        out += [f'<circle cx="{xa}" cy="{a:.1f}" r="5" class="dot fill-{hue}"/>', f'<circle cx="{xb}" cy="{b:.1f}" r="5" class="dot fill-{hue}"/>']
+        out.append(f'<line x1="{xa}" x2="{xb}" y1="{a:.1f}" y2="{b:.1f}" class="slope stroke-slate"/>')
+        out += [f'<circle cx="{xa}" cy="{a:.1f}" r="5" class="dot fill-slate"/>', f'<circle cx="{xb}" cy="{b:.1f}" r="5" class="dot fill-blue"/>']
         out.append(t(xa - 14, a + 4, f'{r["name"]} {r["before"]:.3f}', 'val', 'end') if r['before'] > 0.2 else t(xa + 10, a - 6, f'{r["name"]} {r["before"]:.3f}', 'val'))
         out.append(t(xb + 12, b + 4 + (8 if r['name'].startswith('Laya 多') else 0) - (6 if r['name'].startswith('Kev') else 0), f'{r["after"]:.3f}', 'val'))
     out.append('</svg>')
@@ -274,9 +271,37 @@ FIGS = {'ecosystem': fig_ecosystem, 'knowviq': fig_knowviq, 'judge': fig_judge,
         'sag2': fig_sag2, 'ece': fig_ece, 'coverage': table_coverage}
 
 page = (SITE / 'src' / 'page.html').read_text()
+LANE_NAME = {lane['key']: lane['label'] for lane in data['ecosystem']['lanes']}
+
+
+def table(head, rows):
+    th = ''.join(f'<th scope="col"{" class=\"num\"" if i else ""}>{esc(h)}</th>' for i, h in enumerate(head))
+    tr = ''.join('<tr>' + ''.join(f'<td{" class=\"num\"" if i else ""}>{esc(str(c))}</td>' for i, c in enumerate(r)) + '</tr>' for r in rows)
+    return f'<details class="data"><summary>数据表</summary><div class="scroll"><table><thead><tr>{th}</tr></thead><tbody>{tr}</tbody></table></div></details>'
+
+
+def data_table(key):
+    if key == 'ecosystem':
+        e = data['ecosystem']
+        rows = [(p['name'], LANE_NAME[p['lane']], f'约 {p["b"]:g}B', '开放' if p['open'] else '未开放或未写明') for p in e['points']]
+        rows.append((e['range']['name'], LANE_NAME[e['range']['lane']], '随所接模型', '—'))
+        rows += [(p['name'], LANE_NAME[p['lane']], '未公布', '未开放' if p['lane'] != 'extract' else '未开放（称即将开放）') for p in e['undisclosed']]
+        return table(('实现', '路线', '参数量', '权重'), rows)
+    if key == 'knowviq':
+        return table(('模型', '可回答性 AUC', '0.75 阈值下隐藏的好答案'), [(m['name'], f'{m["auc"]:.3f}', f'{m["hidden"]}%') for m in data['knowviq']['models']])
+    if key == 'judge':
+        return table(('指标', 'Jev', 'GPT-6 Astra'), [(r['metric'], f'{r["jev"]:.2f}%', f'{r["astra"]:.2f}%') for r in data['judge']['rows']])
+    if key == 'sag2':
+        s2 = data['sag2']
+        return table(('步骤', 'Recall@10'), [(st['label'], f'{st["v"]:.2f}') for st in s2['steps']] + [(s2['control']['label'], f'{s2["control"]["v"]:.2f}')])
+    if key == 'ece':
+        return table(('实现', '发布版本', '温度缩放后'), [(r['name'], f'{r["before"]:.3f}', f'{r["after"]:.3f}') for r in data['ece']['rows']])
+    return ''
+
+
 def place(m):
     out = FIGS[m.group(1)]()
-    return out if out.startswith('<table') else f'<div class="chart-wrap">{out}</div>'
+    return out if out.startswith('<table') else f'<div class="chart-wrap">{out}</div>{data_table(m.group(1))}'
 
 
 page = re.sub(r'\{\{FIG:(\w+)\}\}', place, page)

@@ -10,13 +10,13 @@
   --paper: #ffffff; --wash: #f2f5f9; --rule: #d6dde6; --rule-strong: #74828f;
   --ink: #15202b; --ink-2: #3d4a58; --ink-3: #5d6a78;
   --accent: #1b58cf; --accent-wash: #e8effc;
-  /* hues: each one carries a meaning named in a legend; text uses the darker -t steps */
-  --blue: #2a78d6; --blue-t: #1c5cab; --blue-w: #eaf2fc;
-  --aqua: #1baf7a; --aqua-t: #127a55; --aqua-w: #e5f6ef;
-  --amber: #eda100; --amber-t: #8a5d00; --amber-w: #fdf4dc;
-  --violet: #6250d6; --violet-t: #4a3aa7; --violet-w: #efedfb;
-  --magenta: #e87ba4; --magenta-t: #a8396a; --magenta-w: #fcecf2;
-  --slate: #74828f;
+  /* two accents: blue = the subject, current position and interaction; amber = risk and conditions that change a judgment.
+     Everything else stays in ink and slate. Text uses the darker -t steps. */
+  --blue: #2a78d6; --blue-t: #1c5cab; --blue-w: #eaf2fc; --blue-2: #9ec5f4;
+  --amber: #eda100; --amber-t: #8a5d00; --amber-w: #fdf6e3;
+  --slate: #74828f; --slate-2: #c3cbd3;
+  /* named type steps (C22): display, title, section, body, ui, note, micro */
+  --fs-display: 34px; --fs-title: 25px; --fs-section: 19px; --fs-lead: 18px; --fs-body: 16px; --fs-ui: 14px; --fs-note: 13px; --fs-micro: 12px;
   --sans: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Noto Sans CJK SC", "Source Han Sans SC", "Microsoft YaHei", sans-serif;
   --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
   --measure: 680px; --wide: 760px; --gutter: 24px; --toc: 184px;
@@ -25,10 +25,11 @@
 @media (prefers-reduced-motion: reduce) { :root { --t-state: 0ms; } }
 * { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; }
-body { margin: 0; background: var(--paper); color: var(--ink); font: 16px/1.75 var(--sans); }
+body { margin: 0; background: var(--paper); color: var(--ink); font: var(--fs-body)/1.75 var(--sans); }
 /* One column, one left edge: text runs to --measure, figures to --wide. On wide screens the chapter list sits beside it. */
 .frame { display: grid; grid-template-columns: minmax(0, var(--wide)); grid-template-areas: "head" "toc" "main"; justify-content: center; padding: 0 var(--gutter); }
-header.top { grid-area: head; padding: 56px 0 8px; max-width: var(--measure); }
+header.top { grid-area: head; padding: 56px 0 8px; max-width: var(--wide); }
+header.top h1, header.top .lede { max-width: var(--measure); }
 main { grid-area: main; padding: 0 0 96px; min-width: 0; }
 main > * { max-width: var(--measure); }
 main > figure, main > .wide, main > .scroll { max-width: var(--wide); }
@@ -36,40 +37,51 @@ main > figure, main > .wide, main > .scroll { max-width: var(--wide); }
   .frame { grid-template-columns: var(--toc) minmax(0, var(--wide)); grid-template-areas: "toc head" "toc main"; column-gap: 64px; }
 }
 .kicker { font-size: 13px; color: var(--ink-3); letter-spacing: .02em; margin: 0 0 8px; }
-h1 { font-size: 34px; line-height: 1.3; margin: 0 0 16px; font-weight: 600; }
-h2 { font-size: 25px; line-height: 1.35; margin: 80px 0 8px; font-weight: 600; padding-top: 18px; border-top: 1px solid var(--rule); position: relative; scroll-margin-top: 24px; }
-h2::before { content: ""; position: absolute; left: 0; top: -2px; width: 48px; height: 3px; background: var(--hue, var(--slate)); border-radius: 2px; }
-h2 .no { color: var(--hue-t, var(--ink-3)); margin-right: 10px; }
-h3 { font-size: 19px; line-height: 1.4; margin: 40px 0 4px; font-weight: 600; }
-[data-hue="blue"] { --hue: var(--blue); --hue-t: var(--blue-t); }
-[data-hue="aqua"] { --hue: var(--aqua); --hue-t: var(--aqua-t); }
-[data-hue="violet"] { --hue: var(--violet); --hue-t: var(--violet-t); }
-[data-hue="amber"] { --hue: var(--amber); --hue-t: var(--amber-t); }
-[data-hue="magenta"] { --hue: var(--magenta); --hue-t: var(--magenta-t); }
-.answer { font-size: 18px; color: var(--ink); margin-top: 8px; }
+h1 { font-size: var(--fs-display); line-height: 1.3; margin: 0 0 16px; font-weight: 600; }
+h2 { font-size: var(--fs-title); line-height: 1.35; margin: 80px 0 8px; font-weight: 600; padding-top: 18px; border-top: 1px solid var(--rule); position: relative; scroll-margin-top: 24px; }
+h2::before { content: ""; position: absolute; left: 0; top: -2px; width: 48px; height: 3px; background: var(--blue); border-radius: 2px; }
+h2 .no { color: var(--blue-t); margin-right: 10px; }
+h3 { font-size: var(--fs-section); line-height: 1.4; margin: 40px 0 4px; font-weight: 600; }
+
+.answer { font-size: var(--fs-lead); color: var(--ink); margin-top: 8px; }
 p, li { margin: 0 0 12px; }
 a { color: var(--accent); text-underline-offset: 2px; }
 code { font: 14px var(--mono); background: var(--wash); padding: 1px 4px; border-radius: 4px; }
-.lede { font-size: 18px; color: var(--ink-2); }
+.lede { font-size: var(--fs-lead); color: var(--ink-2); }
 nav.toc { grid-area: toc; margin: 20px 0 0; font-size: 14px; line-height: 1.5; }
 nav.toc ol { display: flex; flex-wrap: wrap; gap: 6px 18px; list-style: none; padding: 0; margin: 0; }
 nav.toc li { margin: 0; }
 nav.toc a { color: var(--ink-2); text-decoration: none; display: inline-flex; align-items: center; gap: 8px; }
-nav.toc a::before { content: ""; width: 8px; height: 8px; border-radius: 2px; background: var(--hue, var(--rule-strong)); flex: none; }
-nav.toc a:hover, nav.toc a[aria-current] { color: var(--hue-t, var(--ink)); }
+nav.toc a:hover, nav.toc a[aria-current] { color: var(--blue-t); }
 nav.toc a[aria-current] { font-weight: 600; }
 @media (min-width: 1120px) {
   nav.toc { position: sticky; top: 56px; align-self: start; margin-top: 64px; }
   nav.toc::before { content: "章节"; display: block; font-size: 12px; color: var(--ink-3); letter-spacing: .04em; margin-bottom: 10px; }
   nav.toc ol { flex-direction: column; gap: 2px; border-left: 1px solid var(--rule); }
   nav.toc a { padding: 5px 0 5px 14px; margin-left: -1px; border-left: 2px solid transparent; }
-  nav.toc a[aria-current] { border-left-color: var(--hue, var(--ink)); }
+  nav.toc a[aria-current] { border-left-color: var(--blue); }
 }
 ol.claims { padding-left: 1.4em; }
 ol.claims li { margin-bottom: 14px; }
 ol.claims strong { font-weight: 600; }
-.conditions { background: var(--violet-w); padding: 14px 18px; border-radius: 6px; border-left: 3px solid var(--violet); }
-.conditions h3 { color: var(--violet-t); }
+/* reading progress (C20): one thin line */
+.progress { position: fixed; top: 0; left: 0; height: 3px; width: 100%; transform-origin: 0 50%; transform: scaleX(0); background: var(--blue); z-index: 10; }
+/* key figures (C07): the first screen shows the judgments; each links to its chapter */
+.figures { list-style: none; padding: 0; margin: 28px 0 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0; border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); max-width: var(--wide); }
+.figures li { margin: 0; }
+.figures a { display: block; height: 100%; padding: 16px 12px 14px; text-decoration: none; color: var(--ink-2); }
+.figures li + li a { border-left: 1px solid var(--rule); }
+.figures a:hover { background: var(--wash); }
+.figures b { display: block; font-size: 20px; line-height: 1.2; font-weight: 600; color: var(--ink); font-variant-numeric: tabular-nums; letter-spacing: -.01em; white-space: nowrap; }
+.figures .risk b { color: var(--amber-t); }
+.figures .risk a { box-shadow: inset 0 3px 0 var(--amber); }
+.figures span { display: block; font-size: var(--fs-note); line-height: 1.5; margin-top: 6px; }
+@media (max-width: 760px) { .figures { grid-template-columns: repeat(2, minmax(0, 1fr)); } .figures li + li a { border-left: none; } .figures li:nth-child(even) a { border-left: 1px solid var(--rule); } .figures li:last-child { grid-column: 1 / -1; } }
+details.data { border-top: none; padding: 4px 0 0; margin-top: 8px; }
+details.data > summary { font-size: var(--fs-note); font-weight: 400; color: var(--ink-3); }
+details.data table { font-size: var(--fs-note); }
+.conditions { background: var(--amber-w); padding: 14px 18px; border-radius: 6px; border-left: 3px solid var(--amber); }
+.conditions h3 { color: var(--amber-t); }
 .conditions h3 { margin-top: 0; font-size: 16px; }
 .conditions ul { margin: 0; padding-left: 1.2em; }
 figure { margin: 32px 0 36px; }
@@ -103,19 +115,19 @@ svg .name { font-size: 13px; fill: var(--ink); }
 svg .val { font-size: 12px; fill: var(--ink-2); font-variant-numeric: tabular-nums; }
 svg .dot { fill: var(--ink-2); }
 svg .dot.hollow { fill: var(--paper); stroke: var(--ink); stroke-width: 1.5; }
-svg .hot { fill: var(--blue); stroke: var(--blue); }
-svg text.hot { stroke: none; font-weight: 600; fill: var(--blue-t); }
+svg .hot { fill: var(--amber); stroke: var(--amber); }
+svg text.hot { stroke: none; font-weight: 600; fill: var(--amber-t); }
 svg .stem { stroke: var(--rule-strong); stroke-width: 1.5; }
-svg .stem.hot { stroke: var(--blue); }
+svg .stem.hot { stroke: var(--amber); }
 svg .bar { fill: var(--ink-2); }
 svg .bar.hot { fill: var(--accent); stroke: none; }
 svg .band { stroke: var(--ink-2); stroke-width: 6; stroke-linecap: round; opacity: .35; }
 svg .slope { stroke: var(--ink-2); stroke-width: 1.5; fill: none; }
 svg .ref { stroke: var(--ink-3); stroke-width: 1.5; }
-svg .fill-blue { fill: var(--blue); } svg .fill-aqua { fill: var(--aqua); } svg .fill-amber { fill: var(--amber); }
-svg .fill-violet { fill: var(--violet); } svg .fill-magenta { fill: var(--magenta); } svg .fill-slate { fill: var(--slate); }
-svg .stroke-blue { stroke: var(--blue); } svg .stroke-aqua { stroke: var(--aqua); } svg .stroke-amber { stroke: var(--amber); }
-svg .stroke-violet { stroke: var(--violet); } svg .stroke-magenta { stroke: var(--magenta); } svg .stroke-slate { stroke: var(--slate); }
+svg .fill-blue { fill: var(--blue); } svg .fill-blue-2 { fill: var(--blue-2); } svg .fill-blue-3 { fill: var(--blue-t); } svg .fill-amber { fill: var(--amber); }
+svg .fill-slate { fill: var(--slate); } svg .fill-slate-2 { fill: var(--slate-2); } svg .fill-ink { fill: var(--ink-2); }
+svg .stroke-blue { stroke: var(--blue); } svg .stroke-amber { stroke: var(--amber); } svg .stroke-slate { stroke: var(--slate); } svg .stroke-ink { stroke: var(--ink-2); }
+svg text.risk { fill: var(--amber-t); font-weight: 600; }
 svg .dot.hollow { fill: var(--paper); stroke-width: 2; }
 svg .slope { stroke-width: 2; }
 svg .band { opacity: .45; }
@@ -148,7 +160,6 @@ svg .band { opacity: .45; }
 .pipe > li { position: relative; margin: 0; padding: 12px 14px 12px 52px; border-left: 3px solid transparent; transition: background var(--t-state) var(--ease), border-color var(--t-state) var(--ease); }
 .pipe > li + li { border-top: 1px solid var(--rule); }
 .pipe > li { --c: var(--slate); --c-t: var(--ink-2); --c-w: var(--wash); }
-.pipe > li[data-actor="retrieval"] { --c: var(--aqua); --c-t: var(--aqua-t); --c-w: var(--aqua-w); }
 .pipe > li[data-actor="decision"] { --c: var(--blue); --c-t: var(--blue-t); --c-w: var(--blue-w); }
 .pipe > li::before { counter-increment: s; content: counter(s); position: absolute; left: 14px; top: 13px; width: 24px; height: 24px; border-radius: 50%; border: 1.5px solid var(--c); font-size: 13px; line-height: 21px; text-align: center; color: var(--c-t); }
 .pipe > li[data-actor="authority"]::before { border-radius: 4px; }
@@ -171,7 +182,7 @@ ol.sources .sid { font: 12px var(--mono); color: var(--ink-3); }
 @media print {
   @page { size: A4; margin: 16mm 14mm; }
   body { font-size: 11pt; }
-  nav.toc, .controls { display: none; }
+  nav.toc, .controls, .progress { display: none; }
   .js .pipe .detail { display: block; }
   .js .pipe > li.on { background: none; border-left-color: transparent; }
   .js .pipe > li.on::before { background: none; color: var(--c-t); border-color: var(--c); }
@@ -184,20 +195,28 @@ ol.sources .sid { font: 12px var(--mono); color: var(--ink-3); }
 </style>
 </head>
 <body>
+<div class="progress" aria-hidden="true"></div>
 <div class="frame">
 <header class="top">
   <p class="kicker">Praxis · Jev 专章 · 快照 2026-10-23</p>
   <h1>Jev 与 System One 决策模型</h1>
   <p class="lede">一类不写文字、只回答带类型问题的模型：它是什么，哪些实现可以私有化，怎样评测，以及在企业知识库里放在哪一步。</p>
+  <ul class="figures" aria-label="关键数字">
+    <li><a href="#jev"><b>$0.042</b><span>Jev 每百万输入 token 的价格，输出免费</span></a></li>
+    <li><a href="#ecosystem"><b>0.3–27B</b><span>开放权重实现的参数规模，从 encoder 到 LLM</span></a></li>
+    <li><a href="#private"><b>0.466→0.081</b><span>Laya 温度缩放前后的校准误差</span></a></li>
+    <li class="risk"><a href="#eval"><b>22.2%</b><span>0.75 阈值下 Jev 隐藏的好答案（Knowviq）</span></a></li>
+    <li><a href="#enterprise"><b>1</b><span>点名企业的部署案例，由 TypeSafe 自己发布</span></a></li>
+  </ul>
 </header>
 <nav class="toc" aria-label="章节">
   <ol>
     <li><a href="#conclusion">结论</a></li>
-    <li><a href="#jev" data-hue="blue">一 · Jev</a></li>
-    <li><a href="#ecosystem" data-hue="aqua">二 · 生态</a></li>
-    <li><a href="#private" data-hue="violet">三 · 私有化</a></li>
-    <li><a href="#eval" data-hue="amber">四 · 评测</a></li>
-    <li><a href="#enterprise" data-hue="magenta">五 · 企业知识库</a></li>
+    <li><a href="#jev">一 · Jev</a></li>
+    <li><a href="#ecosystem">二 · 生态</a></li>
+    <li><a href="#private">三 · 私有化</a></li>
+    <li><a href="#eval">四 · 评测</a></li>
+    <li><a href="#enterprise">五 · 企业知识库</a></li>
     <li><a href="#db">附录 · 数据库</a></li>
     <li><a href="#faq">追问</a></li>
     <li><a href="#sources">来源</a></li>
@@ -223,7 +242,7 @@ ol.sources .sid { font: 12px var(--mono); color: var(--ink-3); }
   </ul>
 </div>
 
-<h2 id="jev" data-hue="blue"><span class="no">一</span>Jev</h2>
+<h2 id="jev"><span class="no">一</span>Jev</h2>
 <p class="answer">TypeSafe AI 于 2026-09-15 发布的第一个 System One model，只以托管 API 提供：输入每百万 token 0.042 美元，输出免费。</p>
 
 <figure>
@@ -271,12 +290,12 @@ ol.sources .sid { font: 12px var(--mono); color: var(--ink-3); }
 <p>企业页列出 SOC 2 Type II、企业客户可向销售申请零数据保留、不用客户数据训练。模型页写明 Jev 不用客户数据做 fine-tune，所有账户用同一套权重；VPC 或本地部署没有找到官方方案。当前版本 <code>jev-1.13.0</code>（09-15），<code>jev-1.14.0</code>（10-14）为预览，加入了图像输入。</p>
 <p class="src" data-ids="A-C-07,A-C-09,A-C-20,A-C-24,A-C-25,A-C-26,A-C-18">来源：<a href="https://typesafe.ai/blog/introducing-system-one-models-and-jev">TypeSafe，Introducing System One Models &amp; Jev</a>；<a href="https://techcrunch.com/2026/09/18/a-new-kind-of-ai-model-from-a-chatgpt-inventor-is-thrilling-developers/">Tim Fernholz，A new kind of AI model from a ChatGPT inventor is thrilling developers</a>；<a href="https://typesafe.ai/blog/antibenchmaxxing">TypeSafe AI blog，Lies, Damned Lies, and Benchmarks</a>；<a href="https://typesafe.ai/enterprise">TypeSafe AI，Put Jev to work (Enterprise)</a>；<a href="https://docs.typesafe.ai/models">TypeSafe AI docs，Models</a></p>
 
-<h2 id="ecosystem" data-hue="aqua"><span class="no">二</span>开源替代与兼容生态</h2>
+<h2 id="ecosystem"><span class="no">二</span>开源替代与兼容生态</h2>
 <p class="answer">五周内出现了十几个实现，按“决策怎样产生”分为五条路线；同一路线内的差别主要在规模、授权和是否校准过。</p>
 
 <figure class="wide">
   <p class="fig-title">各实现的规模与是否开放权重</p>
-  <p class="fig-intro">横轴为参数量，对数刻度；颜色区分实现路线。几亿参数的 encoder 能在 T4 或 CPU 上几十毫秒作答，零样本弱、需要微调；LLM 路线零样本能力接近 Jev，27B 需要 80 GB 级 GPU。</p>
+  <p class="fig-intro">横轴为参数量，对数刻度。几亿参数的 encoder 能在 T4 或 CPU 上几十毫秒作答，零样本弱、需要微调；LLM 路线零样本能力接近 Jev，27B 需要 80 GB 级 GPU。</p>
   <div class="legend"><span class="l-open">开放权重</span><span class="l-host">只有托管服务，或权重授权未写明</span><span class="l-band">可接任意模型</span></div>
   <div class="chart-wrap"><svg viewBox="0 0 760 706" role="img" aria-labelledby="eco-t eco-d" class="chart">
 <title id="eco-t">开放与托管决策模型的规模</title>
@@ -293,71 +312,65 @@ ol.sources .sid { font: 12px var(--mono); color: var(--ink-3); }
 <text x="625.7" y="694.0" class="tick" text-anchor="middle">30B</text>
 <text x="700.0" y="20.0" class="tick" text-anchor="middle">规模未公布</text>
 <line x1="668" x2="668" y1="26" y2="676" class="rule"/>
-<rect x="0" y="40.0" width="10" height="10" rx="2" class="fill-aqua"/>
-<text x="16.0" y="49.0" class="lane" text-anchor="start">encoder + 决策头</text>
+<text x="0.0" y="49.0" class="lane" text-anchor="start">encoder + 决策头</text>
 <line x1="0" x2="760" y1="54" y2="54" class="rule"/>
 <text x="14.0" y="71.0" class="name" text-anchor="start">Laya 多语言</text>
-<circle cx="206.5" cy="67.0" r="5" class="dot fill-aqua"><title>Laya 多语言：约 0.322B</title></circle>
+<circle cx="206.5" cy="67.0" r="5" class="dot fill-ink"><title>Laya 多语言：约 0.322B</title></circle>
 <text x="14.0" y="93.0" class="name" text-anchor="start">Von（已归档）</text>
-<circle cx="225.4" cy="89.0" r="5" class="dot fill-aqua"><title>Von：约 0.395B</title></circle>
+<circle cx="225.4" cy="89.0" r="5" class="dot fill-ink"><title>Von：约 0.395B</title></circle>
 <text x="14.0" y="115.0" class="name" text-anchor="start">Open-Jev DeBERTa</text>
-<circle cx="226.6" cy="111.0" r="5" class="dot fill-aqua"><title>Open-Jev DeBERTa：约 0.4B</title></circle>
+<circle cx="226.6" cy="111.0" r="5" class="dot fill-ink"><title>Open-Jev DeBERTa：约 0.4B</title></circle>
 <text x="14.0" y="137.0" class="name" text-anchor="start">Laya</text>
-<circle cx="231.3" cy="133.0" r="5" class="dot fill-aqua"><title>Laya：约 0.421B</title></circle>
+<circle cx="231.3" cy="133.0" r="5" class="dot fill-ink"><title>Laya：约 0.421B</title></circle>
 <text x="14.0" y="159.0" class="name" text-anchor="start">GLiNER2.5-Decide</text>
-<circle cx="244.6" cy="155.0" r="5" class="dot fill-aqua"><title>GLiNER2.5-Decide：约 0.486B</title></circle>
+<circle cx="244.6" cy="155.0" r="5" class="dot fill-ink"><title>GLiNER2.5-Decide：约 0.486B</title></circle>
 <text x="14.0" y="181.0" class="name" text-anchor="start">d1-omni-600M</text>
-<circle cx="262.1" cy="177.0" r="5" class="dot fill-aqua"><title>d1-omni-600M：约 0.587B</title></circle>
-<rect x="0" y="194.0" width="10" height="10" rx="2" class="fill-blue"/>
-<text x="16.0" y="203.0" class="lane" text-anchor="start">LLM backbone + 决策头</text>
+<circle cx="262.1" cy="177.0" r="5" class="dot fill-ink"><title>d1-omni-600M：约 0.587B</title></circle>
+<text x="0.0" y="203.0" class="lane" text-anchor="start">LLM backbone + 决策头</text>
 <line x1="0" x2="760" y1="208" y2="208" class="rule"/>
 <text x="14.0" y="225.0" class="name" text-anchor="start">NanoJev</text>
-<circle cx="264.1" cy="221.0" r="5" class="dot fill-blue"><title>NanoJev：约 0.6B</title></circle>
+<circle cx="264.1" cy="221.0" r="5" class="dot fill-ink"><title>NanoJev：约 0.6B</title></circle>
 <text x="14.0" y="247.0" class="name" text-anchor="start">Kev-0.8B</text>
-<circle cx="290.7" cy="243.0" r="5" class="dot fill-blue"><title>Kev-0.8B：约 0.8B</title></circle>
+<circle cx="290.7" cy="243.0" r="5" class="dot fill-ink"><title>Kev-0.8B：约 0.8B</title></circle>
 <text x="14.0" y="269.0" class="name" text-anchor="start">d1-3B</text>
-<circle cx="416.5" cy="265.0" r="5" class="dot fill-blue"><title>d1-3B：约 3.12B</title></circle>
+<circle cx="416.5" cy="265.0" r="5" class="dot fill-ink"><title>d1-3B：约 3.12B</title></circle>
 <text x="14.0" y="291.0" class="name" text-anchor="start">Kev-4B</text>
-<circle cx="439.5" cy="287.0" r="5" class="dot fill-blue"><title>Kev-4B：约 4B</title></circle>
+<circle cx="439.5" cy="287.0" r="5" class="dot fill-ink"><title>Kev-4B：约 4B</title></circle>
 <text x="14.0" y="313.0" class="name" text-anchor="start">RSI-Jev 4B</text>
-<circle cx="454.2" cy="309.0" r="5" class="dot fill-blue"><title>RSI-Jev 4B：约 4.69B</title></circle>
+<circle cx="454.2" cy="309.0" r="5" class="dot fill-ink"><title>RSI-Jev 4B：约 4.69B</title></circle>
 <text x="14.0" y="335.0" class="name" text-anchor="start">Kev-9B</text>
-<circle cx="514.4" cy="331.0" r="5" class="dot fill-blue"><title>Kev-9B：约 9B</title></circle>
+<circle cx="514.4" cy="331.0" r="5" class="dot fill-ink"><title>Kev-9B：约 9B</title></circle>
 <text x="14.0" y="357.0" class="name" text-anchor="start">Clef-flash</text>
-<circle cx="514.4" cy="353.0" r="5" class="dot fill-blue"><title>Clef-flash：约 9B</title></circle>
+<circle cx="514.4" cy="353.0" r="5" class="dot fill-ink"><title>Clef-flash：约 9B</title></circle>
 <text x="14.0" y="379.0" class="name" text-anchor="start">Microsoft-Decision-1</text>
-<circle cx="514.4" cy="375.0" r="5" class="dot hollow stroke-blue"><title>Microsoft-Decision-1：约 9B</title></circle>
+<circle cx="514.4" cy="375.0" r="5" class="dot hollow stroke-ink"><title>Microsoft-Decision-1：约 9B</title></circle>
 <text x="14.0" y="401.0" class="name" text-anchor="start">pplx-decider</text>
-<circle cx="612.8" cy="397.0" r="5" class="dot fill-blue"><title>pplx-decider：约 26.09B</title></circle>
+<circle cx="612.8" cy="397.0" r="5" class="dot fill-ink"><title>pplx-decider：约 26.09B</title></circle>
 <text x="14.0" y="423.0" class="name" text-anchor="start">Kev-27B</text>
-<circle cx="612.5" cy="419.0" r="5" class="dot fill-blue"><title>Kev-27B：约 26B</title></circle>
+<circle cx="612.5" cy="419.0" r="5" class="dot fill-ink"><title>Kev-27B：约 26B</title></circle>
 <text x="14.0" y="445.0" class="name" text-anchor="start">Clef</text>
-<circle cx="617.2" cy="441.0" r="5" class="dot fill-blue"><title>Clef：约 27.36B</title></circle>
+<circle cx="617.2" cy="441.0" r="5" class="dot fill-ink"><title>Clef：约 27.36B</title></circle>
 <text x="14.0" y="467.0" class="name" text-anchor="start">Clef-omni（授权未写明）</text>
-<circle cx="625.7" cy="463.0" r="5" class="dot hollow stroke-blue"><title>Clef-omni：约 30B</title></circle>
+<circle cx="625.7" cy="463.0" r="5" class="dot hollow stroke-ink"><title>Clef-omni：约 30B</title></circle>
 <text x="14.0" y="489.0" class="name" text-anchor="start">OpenAI Decisions</text>
-<circle cx="700" cy="485.0" r="5" class="dot hollow stroke-blue"/>
-<rect x="0" y="502.0" width="10" height="10" rx="2" class="fill-amber"/>
-<text x="16.0" y="511.0" class="lane" text-anchor="start">包装 LLM 的 logits</text>
+<circle cx="700" cy="485.0" r="5" class="dot hollow stroke-ink"/>
+<text x="0.0" y="511.0" class="lane" text-anchor="start">包装 LLM 的 logits</text>
 <line x1="0" x2="760" y1="516" y2="516" class="rule"/>
 <text x="14.0" y="533.0" class="name" text-anchor="start">Simple Jev：任意 HF 模型</text>
-<line x1="290.7" x2="640.0" y1="529.0" y2="529.0" class="band stroke-amber"/>
-<rect x="0" y="546.0" width="10" height="10" rx="2" class="fill-violet"/>
-<text x="16.0" y="555.0" class="lane" text-anchor="start">先快后想</text>
+<line x1="290.7" x2="640.0" y1="529.0" y2="529.0" class="band stroke-ink"/>
+<text x="0.0" y="555.0" class="lane" text-anchor="start">先快后想</text>
 <line x1="0" x2="760" y1="560" y2="560" class="rule"/>
 <text x="14.0" y="577.0" class="name" text-anchor="start">GLiDE</text>
-<circle cx="700" cy="573.0" r="5" class="dot hollow stroke-violet"/>
-<rect x="0" y="590.0" width="10" height="10" rx="2" class="fill-magenta"/>
-<text x="16.0" y="599.0" class="lane" text-anchor="start">结构化抽取</text>
+<circle cx="700" cy="573.0" r="5" class="dot hollow stroke-ink"/>
+<text x="0.0" y="599.0" class="lane" text-anchor="start">结构化抽取</text>
 <line x1="0" x2="760" y1="604" y2="604" class="rule"/>
 <text x="14.0" y="621.0" class="name" text-anchor="start">Clairic（权重“即将开放”）</text>
-<circle cx="700" cy="617.0" r="5" class="dot hollow stroke-magenta"/>
-<rect x="0" y="634.0" width="10" height="10" rx="2" class="fill-slate"/>
-<text x="16.0" y="643.0" class="lane" text-anchor="start">架构未公开</text>
+<circle cx="700" cy="617.0" r="5" class="dot hollow stroke-ink"/>
+<text x="0.0" y="643.0" class="lane" text-anchor="start">架构未公开</text>
 <line x1="0" x2="760" y1="648" y2="648" class="rule"/>
 <text x="14.0" y="665.0" class="name" text-anchor="start">Jev</text>
-<circle cx="700" cy="661.0" r="5" class="dot hollow stroke-slate"/>
-</svg></div>
+<circle cx="700" cy="661.0" r="5" class="dot hollow stroke-blue"/>
+</svg></div><details class="data"><summary>数据表</summary><div class="scroll"><table><thead><tr><th scope="col">实现</th><th scope="col" class="num">路线</th><th scope="col" class="num">参数量</th><th scope="col" class="num">权重</th></tr></thead><tbody><tr><td>Laya 多语言</td><td class="num">encoder + 决策头</td><td class="num">约 0.322B</td><td class="num">开放</td></tr><tr><td>Von</td><td class="num">encoder + 决策头</td><td class="num">约 0.395B</td><td class="num">开放</td></tr><tr><td>Open-Jev DeBERTa</td><td class="num">encoder + 决策头</td><td class="num">约 0.4B</td><td class="num">开放</td></tr><tr><td>Laya</td><td class="num">encoder + 决策头</td><td class="num">约 0.421B</td><td class="num">开放</td></tr><tr><td>GLiNER2.5-Decide</td><td class="num">encoder + 决策头</td><td class="num">约 0.486B</td><td class="num">开放</td></tr><tr><td>d1-omni-600M</td><td class="num">encoder + 决策头</td><td class="num">约 0.587B</td><td class="num">开放</td></tr><tr><td>NanoJev</td><td class="num">LLM backbone + 决策头</td><td class="num">约 0.6B</td><td class="num">开放</td></tr><tr><td>Kev-0.8B</td><td class="num">LLM backbone + 决策头</td><td class="num">约 0.8B</td><td class="num">开放</td></tr><tr><td>d1-3B</td><td class="num">LLM backbone + 决策头</td><td class="num">约 3.12B</td><td class="num">开放</td></tr><tr><td>Kev-4B</td><td class="num">LLM backbone + 决策头</td><td class="num">约 4B</td><td class="num">开放</td></tr><tr><td>RSI-Jev 4B</td><td class="num">LLM backbone + 决策头</td><td class="num">约 4.69B</td><td class="num">开放</td></tr><tr><td>Kev-9B</td><td class="num">LLM backbone + 决策头</td><td class="num">约 9B</td><td class="num">开放</td></tr><tr><td>Clef-flash</td><td class="num">LLM backbone + 决策头</td><td class="num">约 9B</td><td class="num">开放</td></tr><tr><td>Microsoft-Decision-1</td><td class="num">LLM backbone + 决策头</td><td class="num">约 9B</td><td class="num">未开放或未写明</td></tr><tr><td>pplx-decider</td><td class="num">LLM backbone + 决策头</td><td class="num">约 26.09B</td><td class="num">开放</td></tr><tr><td>Kev-27B</td><td class="num">LLM backbone + 决策头</td><td class="num">约 26B</td><td class="num">开放</td></tr><tr><td>Clef</td><td class="num">LLM backbone + 决策头</td><td class="num">约 27.36B</td><td class="num">开放</td></tr><tr><td>Clef-omni</td><td class="num">LLM backbone + 决策头</td><td class="num">约 30B</td><td class="num">未开放或未写明</td></tr><tr><td>Simple Jev：任意 HF 模型</td><td class="num">包装 LLM 的 logits</td><td class="num">随所接模型</td><td class="num">—</td></tr><tr><td>OpenAI Decisions</td><td class="num">LLM backbone + 决策头</td><td class="num">未公布</td><td class="num">未开放</td></tr><tr><td>GLiDE</td><td class="num">先快后想</td><td class="num">未公布</td><td class="num">未开放</td></tr><tr><td>Clairic</td><td class="num">结构化抽取</td><td class="num">未公布</td><td class="num">未开放（称即将开放）</td></tr><tr><td>Jev</td><td class="num">架构未公开</td><td class="num">未公布</td><td class="num">未开放</td></tr></tbody></table></div></details>
   <figcaption>Clairic 不在固定选项里选，而是填出带类型的字段（数值、日期、预测）；GLiDE 在不确定时追加推理。两者把同一接口延伸到了分类之外。</figcaption>
   <p class="src" data-ids="B-C-04,B-C-16,B-C-34,B-C-45,B-C-53,B-C-56,B-C-44,E-C-17,E-C-16">来源：<a href="https://github.com/NandhaKishorM/laya">Laya（NandhaKishorM/laya）</a>；<a href="https://github.com/jaredpalmer/kev">Kev（jaredpalmer/kev）</a>；<a href="https://blog.cloudflare.com/clef-decision-models/">Cloudflare，Introducing Clef: our open-source decision models, and new RL fine-tuning platform</a>；<a href="https://huggingface.co/LiquidAI/d1-3B">Liquid AI，d1-3B 与 d1-omni-600M 模型卡</a>；<a href="https://huggingface.co/perplexity-ai/pplx-decider-v1-27b">Perplexity，pplx-decider-v1-27b 模型卡</a>；<a href="https://fastino.ai/blog/introducing-glide-the-first-thinking-decision-model">Fastino，Introducing GLiDE</a>；<a href="https://blog.cloudflare.com/clairic-extraction-model">Cloudflare，Introducing Clairic, a new System One class of extraction models</a>；<a href="https://www.infoworld.com/article/4234290/microsoft-separates-decision-making-from-generative-ai-with-a-new-model.html">InfoWorld，Microsoft separates decision-making from generative AI with a new model</a>；<a href="https://community.openai.com/t/decisions-api-is-now-available-in-public-beta/1403877">Decisions API is now available in Public Beta</a></p>
 </figure>
@@ -382,7 +395,7 @@ ol.sources .sid { font: 12px var(--mono); color: var(--ink-3); }
 <p>各项目的数字几乎都由作者自己测。Laya 的 0.766 对 Jev 0.727 是在该 benchmark 的训练划分上微调后的版本，未微调时 0.362；Kev-27B “与 Jev 相差一点以内”只在新来源准确率上成立，Decision Index 上差 1.7 分。Decision Index 是 Hugging Face 上的社区榜单，Artificial Analysis 另有一个同名指数，JevBench 的排名随版本变化，三者都不是 TypeSafe 的。</p>
 <p class="src" data-ids="B-C-08,B-C-20,A-C-21,D-C-35,D-C-38">来源：<a href="https://huggingface.co/convaiinnovations/laya">Convai Innovations，convaiinnovations/laya</a>；<a href="https://github.com/jaredpalmer/kev">Kev（jaredpalmer/kev）</a>；<a href="https://huggingface.co/spaces/multimodalart/jev-decision-index">Decision Index（Hugging Face Space）</a>；<a href="https://benchlm.ai/benchmarks/jevbench">JevBench</a>；<a href="https://benchlm.ai/md/benchmarks/artificial-analysis-decision-index.md">Artificial Analysis Decision Index</a></p>
 
-<h2 id="private" data-hue="violet"><span class="no">三</span>私有数据微调与部署</h2>
+<h2 id="private"><span class="no">三</span>私有数据微调与部署</h2>
 <p class="answer">私有化只能走开放权重。各实现都用 API 请求的形状加标签作训练样本，训练的是决策函数，知识留在知识库里；训练后要在留出数据上重新拟合温度。</p>
 
 <h3>各实现写明的流程</h3>
@@ -401,8 +414,7 @@ ol.sources .sid { font: 12px var(--mono); color: var(--ink-3); }
 <figure>
   <p class="fig-title">温度缩放前后的校准误差</p>
   <p class="fig-intro">Laya 与 Kev 的发布版本都过度自信。在留出数据上做温度缩放（用一个温度参数整体压缩或拉开概率）后，校准误差（ECE，预测概率与实际准确率的平均差距）降到原来的一半以下。Laya 按问题类型与选项数各拟一个温度，Kev 每个 checkpoint 存一个。</p>
-  <div class="legend"><span class="sw" style="--c: var(--aqua)">Laya（encoder 路线）</span><span class="sw" style="--c: var(--blue)">Kev（LLM backbone 路线）</span></div>
-  <div class="chart-wrap"><svg viewBox="0 0 760 240" role="img" aria-labelledby="ec-t ec-d" class="chart">
+    <div class="chart-wrap"><svg viewBox="0 0 760 240" role="img" aria-labelledby="ec-t ec-d" class="chart">
 <title id="ec-t">温度缩放前后的校准误差</title>
 <desc id="ec-d">Laya 英文 0.466 到 0.081；Laya 多语言 0.314 到 0.106；Kev-9B 在新来源上 0.103 到 0.041。</desc>
 <text x="300.0" y="16.0" class="head" text-anchor="middle">发布版本</text>
@@ -413,22 +425,22 @@ ol.sources .sid { font: 12px var(--mono); color: var(--ink-3); }
 <text x="250.0" y="119.0" class="tick" text-anchor="end">0.25</text>
 <line x1="260" x2="560" y1="30.0" y2="30.0" class="grid"/>
 <text x="250.0" y="34.0" class="tick" text-anchor="end">0.5</text>
-<line x1="300" x2="520" y1="41.6" y2="172.5" class="slope stroke-aqua"/>
-<circle cx="300" cy="41.6" r="5" class="dot fill-aqua"/>
-<circle cx="520" cy="172.5" r="5" class="dot fill-aqua"/>
+<line x1="300" x2="520" y1="41.6" y2="172.5" class="slope stroke-slate"/>
+<circle cx="300" cy="41.6" r="5" class="dot fill-slate"/>
+<circle cx="520" cy="172.5" r="5" class="dot fill-blue"/>
 <text x="286.0" y="45.6" class="val" text-anchor="end">Laya 英文 0.466</text>
 <text x="532.0" y="176.5" class="val" text-anchor="start">0.081</text>
-<line x1="300" x2="520" y1="93.2" y2="164.0" class="slope stroke-aqua"/>
-<circle cx="300" cy="93.2" r="5" class="dot fill-aqua"/>
-<circle cx="520" cy="164.0" r="5" class="dot fill-aqua"/>
+<line x1="300" x2="520" y1="93.2" y2="164.0" class="slope stroke-slate"/>
+<circle cx="300" cy="93.2" r="5" class="dot fill-slate"/>
+<circle cx="520" cy="164.0" r="5" class="dot fill-blue"/>
 <text x="286.0" y="97.2" class="val" text-anchor="end">Laya 多语言 0.314</text>
 <text x="532.0" y="176.0" class="val" text-anchor="start">0.106</text>
-<line x1="300" x2="520" y1="165.0" y2="186.1" class="slope stroke-blue"/>
-<circle cx="300" cy="165.0" r="5" class="dot fill-blue"/>
+<line x1="300" x2="520" y1="165.0" y2="186.1" class="slope stroke-slate"/>
+<circle cx="300" cy="165.0" r="5" class="dot fill-slate"/>
 <circle cx="520" cy="186.1" r="5" class="dot fill-blue"/>
 <text x="310.0" y="159.0" class="val" text-anchor="start">Kev-9B（新来源） 0.103</text>
 <text x="532.0" y="184.1" class="val" text-anchor="start">0.041</text>
-</svg></div>
+</svg></div><details class="data"><summary>数据表</summary><div class="scroll"><table><thead><tr><th scope="col">实现</th><th scope="col" class="num">发布版本</th><th scope="col" class="num">温度缩放后</th></tr></thead><tbody><tr><td>Laya 英文</td><td class="num">0.466</td><td class="num">0.081</td></tr><tr><td>Laya 多语言</td><td class="num">0.314</td><td class="num">0.106</td></tr><tr><td>Kev-9B（新来源）</td><td class="num">0.103</td><td class="num">0.041</td></tr></tbody></table></div></details>
   <figcaption>Laya 两组数字背后的 benchmark 与样本量，README 的相应段落没有写；Kev 的数字是 9B 在新来源上的结果。</figcaption>
   <p class="src" data-ids="C-C-06,C-C-18">来源：<a href="https://github.com/NandhaKishorM/laya">Laya（NandhaKishorM/laya）</a>；<a href="https://github.com/jaredpalmer/kev">Kev（jaredpalmer/kev）</a></p>
 </figure>
@@ -437,7 +449,7 @@ ol.sources .sid { font: 12px var(--mono); color: var(--ink-3); }
 <p>Kev 的作者用 5,219 条已标注的消费金融投诉训练一个 epoch，Kev-4B 准确率从 0.804 升到 0.904，作者说明这是分布内的收益。Kev 的示例工作负载用 1,050 条生成数据，在 H100 上约 15 分钟，准确率 67.7% 到 73.6%。没有找到在企业知识库判断上做微调的公开材料。</p>
 <p class="src" data-ids="C-C-19,C-C-20">来源：<a href="https://github.com/jaredpalmer/kev">Kev（jaredpalmer/kev）</a>；<a href="https://github.com/jaredpalmer/kev/blob/main/skills/kev-finetune/README.md">jaredpalmer，kev-finetune skill README</a></p>
 
-<h2 id="eval" data-hue="amber"><span class="no">四</span>评测</h2>
+<h2 id="eval"><span class="no">四</span>评测</h2>
 <p class="answer">已发表的评测反复给出同一个结论：总体指标相近的模型，在部署关心的那一种错误上可以差得很远。区分能力与阈值上的误拒、误放要分开测。</p>
 
 <figure class="wide">
@@ -461,36 +473,36 @@ ol.sources .sid { font: 12px var(--mono); color: var(--ink-3); }
 <line x1="682.0" x2="682.0" y1="34" y2="200" class="grid"/>
 <text x="682.0" y="216.0" class="tick" text-anchor="middle">20%</text>
 <text x="0.0" y="50.0" class="name" text-anchor="start">Jev</text>
-<circle cx="295.0" cy="46" r="5" class="dot"/>
+<circle cx="295.0" cy="46" r="5" class="dot"><title>Jev：AUC 0.983</title></circle>
 <text x="305.0" y="50.0" class="val" text-anchor="start">0.983</text>
 <line x1="450.0" x2="707.5" y1="46" y2="46" class="stem hot"/>
-<circle cx="707.5" cy="46" r="5" class="dot hot"/>
+<circle cx="707.5" cy="46" r="5" class="dot hot"><title>Jev：隐藏 22.2%</title></circle>
 <text x="717.5" y="50.0" class="val hot" text-anchor="start">22.2%</text>
 <text x="0.0" y="80.0" class="name" text-anchor="start">Clef</text>
-<circle cx="290.0" cy="76" r="5" class="dot"/>
+<circle cx="290.0" cy="76" r="5" class="dot"><title>Clef：AUC 0.982</title></circle>
 <text x="300.0" y="80.0" class="val" text-anchor="start">0.982</text>
 <line x1="450.0" x2="534.7" y1="76" y2="76" class="stem"/>
-<circle cx="534.7" cy="76" r="5" class="dot"/>
+<circle cx="534.7" cy="76" r="5" class="dot"><title>Clef：隐藏 7.3%</title></circle>
 <text x="544.7" y="80.0" class="val" text-anchor="start">7.3%</text>
 <text x="0.0" y="110.0" class="name" text-anchor="start">Clef-flash</text>
-<circle cx="275.0" cy="106" r="5" class="dot"/>
+<circle cx="275.0" cy="106" r="5" class="dot"><title>Clef-flash：AUC 0.979</title></circle>
 <text x="285.0" y="110.0" class="val" text-anchor="start">0.979</text>
 <line x1="450.0" x2="521.9" y1="106" y2="106" class="stem"/>
-<circle cx="521.9" cy="106" r="5" class="dot"/>
+<circle cx="521.9" cy="106" r="5" class="dot"><title>Clef-flash：隐藏 6.2%</title></circle>
 <text x="531.9" y="110.0" class="val" text-anchor="start">6.2%</text>
 <text x="0.0" y="140.0" class="name" text-anchor="start">d1</text>
-<circle cx="300.0" cy="136" r="5" class="dot"/>
+<circle cx="300.0" cy="136" r="5" class="dot"><title>d1：AUC 0.984</title></circle>
 <text x="310.0" y="140.0" class="val" text-anchor="start">0.984</text>
 <line x1="450.0" x2="574.1" y1="136" y2="136" class="stem"/>
-<circle cx="574.1" cy="136" r="5" class="dot"/>
+<circle cx="574.1" cy="136" r="5" class="dot"><title>d1：隐藏 10.7%</title></circle>
 <text x="584.1" y="140.0" class="val" text-anchor="start">10.7%</text>
 <text x="0.0" y="170.0" class="name" text-anchor="start">Perplexity</text>
-<circle cx="290.0" cy="166" r="5" class="dot"/>
+<circle cx="290.0" cy="166" r="5" class="dot"><title>Perplexity：AUC 0.982</title></circle>
 <text x="300.0" y="170.0" class="val" text-anchor="start">0.982</text>
 <line x1="450.0" x2="542.8" y1="166" y2="166" class="stem"/>
-<circle cx="542.8" cy="166" r="5" class="dot"/>
+<circle cx="542.8" cy="166" r="5" class="dot"><title>Perplexity：隐藏 8.0%</title></circle>
 <text x="552.8" y="170.0" class="val" text-anchor="start">8.0%</text>
-</svg></div>
+</svg></div><details class="data"><summary>数据表</summary><div class="scroll"><table><thead><tr><th scope="col">模型</th><th scope="col" class="num">可回答性 AUC</th><th scope="col" class="num">0.75 阈值下隐藏的好答案</th></tr></thead><tbody><tr><td>Jev</td><td class="num">0.983</td><td class="num">22.2%</td></tr><tr><td>Clef</td><td class="num">0.982</td><td class="num">7.3%</td></tr><tr><td>Clef-flash</td><td class="num">0.979</td><td class="num">6.2%</td></tr><tr><td>d1</td><td class="num">0.984</td><td class="num">10.7%</td></tr><tr><td>Perplexity</td><td class="num">0.982</td><td class="num">8.0%</td></tr></tbody></table></div></details>
   <figcaption>可回答性标签只有 12 个“否”，另加 100 个错配的负例。Knowviq 为 Clef 单独定阈值后，误显示与误隐藏率与 Jev 在原阈值下基本一致。</figcaption>
   <p class="src" data-ids="D-C-13,D-C-14,D-04">来源：<a href="https://knowviq.com/blog/decision-models">Knowviq，Decision models compared</a></p>
 </figure>
@@ -498,23 +510,23 @@ ol.sources .sid { font: 12px var(--mono); color: var(--ink-3); }
 <figure>
   <p class="fig-title">准确率相近，放行的错误不同</p>
   <p class="fig-intro">495 条人工标注陈述（LLM-AggreFact 开发集），判断证据是否支持陈述。balanced accuracy 是正负两类准确率的平均。</p>
-  <div class="legend"><span class="sw" style="--c: var(--blue)">Jev</span><span class="sw" style="--c: var(--amber)">GPT-6 Astra</span></div>
+  <div class="legend"><span class="sw" style="--c: var(--blue)">Jev</span><span class="sw" style="--c: var(--slate)">GPT-6 Astra</span></div>
   <div class="chart-wrap"><svg viewBox="0 0 760 170" role="img" aria-labelledby="jd-t jd-d" class="chart">
 <title id="jd-t">Jev 与 GPT-6 Astra 在 495 条陈述上的对照</title>
 <desc id="jd-d">balanced accuracy 73.27 对 73.83，差异不显著；不受支持陈述被放行 23.23% 对 14.14%。</desc>
 <text x="0.0" y="34.0" class="name" text-anchor="start">balanced accuracy</text>
-<rect x="200" y="20" width="337.0" height="14" rx="2" class="fill-blue"/>
+<rect x="200" y="20" width="337.0" height="14" rx="2" class="fill-blue"><title>Jev · balanced accuracy：73.27%</title></rect>
 <text x="545.0" y="31.0" class="val" text-anchor="start">Jev 73.27%</text>
-<rect x="200" y="42" width="339.6" height="14" rx="2" class="fill-amber"/>
+<rect x="200" y="42" width="339.6" height="14" rx="2" class="fill-slate"><title>Astra · balanced accuracy：73.83%</title></rect>
 <text x="547.6" y="53.0" class="val" text-anchor="start">Astra 73.83%</text>
 <text x="200.0" y="80.0" class="note" text-anchor="start">差 −0.56，95% CI [−5.6, 4.5]，不显著</text>
 <text x="0.0" y="112.0" class="name" text-anchor="start">不受支持陈述被放行</text>
-<rect x="200" y="98" width="106.9" height="14" rx="2" class="fill-blue"/>
+<rect x="200" y="98" width="106.9" height="14" rx="2" class="fill-blue"><title>Jev · 不受支持陈述被放行：23.23%</title></rect>
 <text x="314.9" y="109.0" class="val" text-anchor="start">Jev 23.23%</text>
-<rect x="200" y="120" width="65.0" height="14" rx="2" class="fill-amber"/>
+<rect x="200" y="120" width="65.0" height="14" rx="2" class="fill-slate"><title>Astra · 不受支持陈述被放行：14.14%</title></rect>
 <text x="273.0" y="131.0" class="val" text-anchor="start">Astra 14.14%</text>
-<text x="200.0" y="158.0" class="note" text-anchor="start">差 9.1 个百分点，p = 0.000534</text>
-</svg></div>
+<text x="200.0" y="158.0" class="note risk" text-anchor="start">差 9.1 个百分点，p = 0.000534</text>
+</svg></div><details class="data"><summary>数据表</summary><div class="scroll"><table><thead><tr><th scope="col">指标</th><th scope="col" class="num">Jev</th><th scope="col" class="num">GPT-6 Astra</th></tr></thead><tbody><tr><td>balanced accuracy</td><td class="num">73.27%</td><td class="num">73.83%</td></tr><tr><td>不受支持陈述被放行</td><td class="num">23.23%</td><td class="num">14.14%</td></tr></tbody></table></div></details>
   <div class="scroll"><table>
     <thead><tr><th>升级策略</th><th class="num">balanced accuracy</th><th class="num">每千条成本</th></tr></thead>
     <tbody>
@@ -530,14 +542,13 @@ ol.sources .sid { font: 12px var(--mono); color: var(--ink-3); }
 
 <figure>
   <p class="fig-title">SAG2：按已选证据再检索带来的增益</p>
-  <p class="fig-intro">SAG2（单作者论文）在 MuSiQue 1,000 题子集上的 Recall@10，即前十个结果找回的标注证据比例。逐步加上 Jev 判断与按已选证据的扩展。</p>
+  <p class="fig-intro">SAG2（单作者论文）在 MuSiQue 1,000 题子集上的 Recall@10，即前十个结果找回的标注证据比例。逐步加上 Jev 判断与按已选证据的扩展，颜色越深加上的环节越多。</p>
   <div class="controls" data-for="sag2" hidden>
     <button type="button" data-act="prev" aria-label="上一步">上一步</button>
     <button type="button" data-act="next" aria-label="下一步">下一步</button>
     <span class="count" aria-live="polite"></span>
   </div>
-  <div class="legend"><span class="sw" style="--c: var(--slate)">词法检索</span><span class="sw" style="--c: var(--blue)">加上决策模型判断</span><span class="sw" style="--c: var(--aqua)">按已选证据再检索</span></div>
-  <div id="sag2"><div class="chart-wrap"><svg viewBox="0 0 760 210" role="img" aria-labelledby="sg-t sg-d" class="chart stepper-fig">
+    <div id="sag2"><div class="chart-wrap"><svg viewBox="0 0 760 210" role="img" aria-labelledby="sg-t sg-d" class="chart stepper-fig">
 <title id="sg-t">SAG2 在 MuSiQue 上的消融</title>
 <desc id="sg-d">Recall@10：BM25 54.41；加 Jev 判断 67.93；按已选证据扩展一轮 83.36，两轮 86.62。同等判断次数的一次性 BM25 + JEV 为 69.82。</desc>
 <line x1="160.0" x2="160.0" y1="6" y2="170" class="grid"/>
@@ -548,27 +559,27 @@ ol.sources .sid { font: 12px var(--mono); color: var(--ink-3); }
 <text x="700.0" y="188.0" class="tick" text-anchor="middle">100</text>
 <g class="step" data-step="0">
 <text x="0.0" y="27.0" class="name" text-anchor="start">BM25</text>
-<rect x="160" y="12" width="293.8" height="20" rx="2" class="fill-slate"/>
+<rect x="160" y="12" width="293.8" height="20" rx="2" class="fill-slate-2"><title>BM25：54.41（只有词法检索）</title></rect>
 <text x="461.8" y="27.0" class="val" text-anchor="start">54.41</text>
 </g>
 <g class="step" data-step="1">
 <text x="0.0" y="65.0" class="name" text-anchor="start">+ Jev 判断</text>
-<rect x="160" y="50" width="366.8" height="20" rx="2" class="fill-blue"/>
+<rect x="160" y="50" width="366.8" height="20" rx="2" class="fill-blue-2"><title>+ Jev 判断：67.93（对初次结果逐条判断证据价值）</title></rect>
 <text x="534.8" y="65.0" class="val" text-anchor="start">67.93</text>
 </g>
 <g class="step" data-step="2">
 <text x="0.0" y="103.0" class="name" text-anchor="start">扩展 1 轮</text>
-<rect x="160" y="88" width="450.1" height="20" rx="2" class="fill-aqua"/>
+<rect x="160" y="88" width="450.1" height="20" rx="2" class="fill-blue"><title>扩展 1 轮：83.36（用已选证据的词再检索一轮）</title></rect>
 <text x="618.1" y="103.0" class="val" text-anchor="start">83.36</text>
 </g>
 <g class="step" data-step="3">
 <text x="0.0" y="141.0" class="name" text-anchor="start">扩展 2 轮</text>
-<rect x="160" y="126" width="467.7" height="20" rx="2" class="fill-aqua"/>
+<rect x="160" y="126" width="467.7" height="20" rx="2" class="fill-blue-3"><title>扩展 2 轮：86.62（SAG2 的完整做法）</title></rect>
 <text x="635.7" y="141.0" class="val" text-anchor="start">86.62</text>
 </g>
 <g class="step" data-step="3"><line x1="537.0" x2="537.0" y1="4" y2="172" class="ref"/>
 <text x="531.0" y="204.0" class="note" text-anchor="end">同等判断次数的一次性 BM25 + JEV 69.82</text></g>
-</svg></div></div>
+</svg></div><details class="data"><summary>数据表</summary><div class="scroll"><table><thead><tr><th scope="col">步骤</th><th scope="col" class="num">Recall@10</th></tr></thead><tbody><tr><td>BM25</td><td class="num">54.41</td></tr><tr><td>+ Jev 判断</td><td class="num">67.93</td></tr><tr><td>扩展 1 轮</td><td class="num">83.36</td></tr><tr><td>扩展 2 轮</td><td class="num">86.62</td></tr><tr><td>同等判断次数的一次性 BM25 + JEV</td><td class="num">69.82</td></tr></tbody></table></div></details></div>
   <figcaption>判断次数相同的预算下，一次性 BM25 + JEV 只有 69.82；差距来自“用已选证据再检索”。语料是题目对应的正确段落与干扰段落的汇集，不是全量 Wikipedia；MuSiQue 也参与了方法开发。</figcaption>
   <p class="src" data-ids="D-C-02,D-C-05,D-C-06,D-C-07">来源：<a href="https://arxiv.org/html/2610.22588">Wu，SAG2（arXiv 2610.22588）</a></p>
 </figure>
@@ -583,13 +594,13 @@ ol.sources .sid { font: 12px var(--mono); color: var(--ink-3); }
 <p>Hamel Husain 与 Antaripa Saha 给出一个可以照做的流程：分层五折交叉验证；在 precision 与 recall 都不低于 80% 的阈值里选 F1 最高的，没有满足的就退回不加约束的 F1 最优并记下这一折；之后在 log-odds 上拟合 Platt scaling（用一条逻辑回归校正概率），所有模型用同一组折，画 reliability 图，报 Brier 分数（预测概率与实际结果之差的平方均值）。他们的数据只有 98 条 trace，门槛只用来引导选择。</p>
 <p class="src" data-ids="C-C-27,C-C-28">来源：<a href="https://hamel.dev/blog/posts/decision-model-evals/index.html">How To Use Decision Models for Evals</a></p>
 
-<h2 id="enterprise" data-hue="magenta"><span class="no">五</span>企业知识库</h2>
+<h2 id="enterprise"><span class="no">五</span>企业知识库</h2>
 <p class="answer">决策模型放在检索之后、回答之前，回答相关、支持、够不够这几个问题。谁能看什么、哪一版有效，在检索时由源系统按同步过来的权限判定。</p>
 
 <figure class="wide">
   <p class="fig-title">一个问题经过的判断</p>
-  <p class="fig-intro">六步各由谁判断、依据是什么。颜色区分判断者，底色标出当前一步。</p>
-  <div class="legend"><span class="sq" style="--c: var(--slate)">权威数据与规则</span><span class="sw" style="--c: var(--aqua)">检索</span><span class="sw" style="--c: var(--blue)">决策模型</span></div>
+  <p class="fig-intro">六步各由谁判断、依据是什么。蓝色是决策模型做判断的三步，底色标出当前一步。</p>
+  <div class="legend"><span class="sw" style="--c: var(--blue)">决策模型判断</span><span class="sq" style="--c: var(--slate)">权威数据与规则（方形编号）</span></div>
   <div class="controls" data-for="pipe" hidden>
     <button type="button" data-act="prev">上一步</button>
     <button type="button" data-act="play" aria-pressed="false">播放</button>
@@ -723,7 +734,15 @@ ol.sources .sid { font: 12px var(--mono); color: var(--ink-3); }
     heads.forEach(function (h, j) { if (h && h.getBoundingClientRect().top < 140) k = j; });
     links.forEach(function (a, j) { if (j === k) a.setAttribute('aria-current', 'location'); else a.removeAttribute('aria-current'); });
   }
-  window.addEventListener('scroll', spy, { passive: true }); spy();
+  var bar = document.querySelector('.progress');
+  function progress() {
+    var max = document.documentElement.scrollHeight - innerHeight;
+    bar.style.transform = 'scaleX(' + (max > 0 ? Math.min(1, scrollY / max) : 0) + ')';
+    var cur = links.filter(function (a) { return a.hasAttribute('aria-current'); })[0];
+    var hue = cur && cur.getAttribute('data-hue');
+    if (hue) bar.setAttribute('data-hue', hue); else bar.removeAttribute('data-hue');
+  }
+  window.addEventListener('scroll', function () { spy(); progress(); }, { passive: true }); spy(); progress();
   window.addEventListener('beforeprint', function () { document.querySelectorAll('details').forEach(function (d) { d.open = true; }); });
 })();
 </script>
