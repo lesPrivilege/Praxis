@@ -17,15 +17,17 @@ const SLUG = /^[A-Za-z0-9][A-Za-z0-9._-]*$/
 
 // Signals that a binding needs someone now. Default states (no curated description, never
 // reviewed, disabled) are not signals: the source summary stands in until someone has a reason
-// to curate. `changed`: the source got a new snapshot after the binding's last review.
-export const SIGNALS = ['needs_work', 'changed']
+// to curate. `changed`: the source's content changed after the binding's last review.
+// `unreachable`: the last check could not fetch the source.
+export const SIGNALS = ['needs_work', 'changed', 'unreachable']
 
-export function signalsOf(b, changedAt) {
+export function signalsOf(b, state) {
   const last = b.reviews.at(-1)
-  const since = changedAt?.get(b.source)
+  const since = state?.changed.get(b.source)
   return [
     last?.verdict === 'needs-work' && 'needs_work',
-    since && !(last?.at > since) && 'changed',
+    since && !(last?.at >= since) && 'changed',
+    state?.unreachable.has(b.source) && 'unreachable',
   ].filter(Boolean)
 }
 
@@ -88,10 +90,9 @@ export class Materials {
       reference_status: record.reference_status,
       read_scope: base.evidence_modality ?? record.evidence_modality,
       captured_for: base.captured_for ?? record.captured_for,
-      excerpts: (base.supported_claims ?? record.supported_claims ?? []).map((c) => ({ id: c.claim_id, locator: c.locator, claim: c.claim })),
-      snapshot: record.snapshot_path
-        ? { path: record.snapshot_path, sha256: record.snapshot_sha256, status: record.snapshot_status }
-        : undefined,
+      // Catalogs write a claim as {claim}, {claim_zh} or a bare string.
+      excerpts: (base.supported_claims ?? record.supported_claims ?? []).map((c) => (typeof c === 'string' ? { claim: c } : { id: c.claim_id, locator: c.locator, claim: c.claim ?? c.claim_zh })),
+      ...this.observed(base.id, record),
       record,
     }
   }
@@ -150,7 +151,7 @@ export class Materials {
 
   compose(id, s, target, rec = {}, cache) {
     const active = (s?.grammar_paths ?? []).includes(target)
-    const changed = cache ? (cache.changed ??= this.changedSources()) : this.changedSources()
+    const state = cache ? (cache.state ??= this.sourceState()) : this.sourceState()
     const b = {
       id,
       source: s?.id ?? rec.source,
@@ -168,18 +169,53 @@ export class Materials {
       revision: rec.revision ?? 0,
       evidence_status: s?.evidence_status,
     }
-    b.signals = signalsOf(b, changed)
+    b.signals = signalsOf(b, state)
     return b
   }
 
-  /** Sources whose refresh found new content, with the time of the latest such snapshot. */
-  changedSources() {
-    const intake = readJson(join(this.repo, CAPTURE_INTAKE), { source_snapshots: [] })
+  /**
+   * What refresh has seen of each source, oldest first: kept snapshots and hash checks. A source
+   * changed when an observed hash differs from the one before it; it is unreachable when its latest
+   * check failed.
+   */
+  observations() {
+    const intake = readJson(join(this.repo, CAPTURE_INTAKE), {})
     const out = new Map()
-    for (const snap of intake.source_snapshots ?? []) {
-      if (snap.previous && !(out.get(snap.source_id) > snap.captured_at)) out.set(snap.source_id, snap.captured_at)
-    }
+    const add = (id, o) => (out.get(id) ?? out.set(id, []).get(id)).push(o)
+    for (const x of intake.source_snapshots ?? []) add(x.source_id, { at: x.captured_at, sha256: x.sha256, snapshot: { path: x.snapshot_path, sha256: x.sha256, status: 'captured' } })
+    for (const x of intake.source_checks ?? []) add(x.source_id, { at: x.checked_at, sha256: x.sha256, check: x })
+    for (const list of out.values()) list.sort((a, b) => a.at.localeCompare(b.at))
     return out
+  }
+
+  /** Sources whose content changed (with the time of the latest change) and sources that are unreachable now. */
+  sourceState() {
+    const changed = new Map()
+    const unreachable = new Set()
+    for (const [id, list] of this.observations()) {
+      let seen
+      for (const o of list) {
+        if (!o.sha256) continue
+        if (seen && seen !== o.sha256) changed.set(id, o.at)
+        seen = o.sha256
+      }
+      if (list.at(-1).check?.status === 'unreachable') unreachable.add(id)
+    }
+    return { changed, unreachable }
+  }
+
+  /**
+   * A source's latest kept snapshot (from refresh, else the one its record names), its latest check,
+   * and `version`: the content hash last observed, which a run records as what it read.
+   */
+  observed(id, record = {}) {
+    const list = this.observations().get(id) ?? []
+    const kept = list.filter((o) => o.snapshot).at(-1)?.snapshot
+    const snapshot = kept ?? (record.snapshot_path ? { path: record.snapshot_path, sha256: record.snapshot_sha256, status: record.snapshot_status } : undefined)
+    const last = list.filter((o) => o.check).at(-1)?.check
+    const check = last ? { at: last.checked_at, status: last.status, http: last.http, sha256: last.sha256, error: last.error } : undefined
+    const version = list.filter((o) => o.sha256).at(-1)?.sha256 ?? snapshot?.sha256 ?? null
+    return { snapshot, check, version }
   }
 
   /** Sources captured through the control plane that no unit binds yet. */
@@ -383,47 +419,57 @@ export class Materials {
   }
 
   /**
-   * Save the current bytes of a source URL as a new versioned snapshot. The catalog record
-   * points at the latest version; every version is registered in the capture intake.
+   * Check a source URL against upstream: record whether it answered and the hash of what it served,
+   * not the content. A hash different from the last one observed means the source changed. With
+   * `keep`, also save the bytes as a versioned snapshot (old versions stay), for a source that may
+   * disappear or whose exact version matters.
    */
-  async refresh(sourceId, { by, reason, task, fetchImpl = fetch } = {}) {
+  async refresh(sourceId, { keep = false, by, reason, task, fetchImpl = fetch } = {}) {
     const s = this.source(sourceId)
     if (!s) throw new Error(`unknown source: ${sourceId}`)
     if (!s.url?.startsWith('http')) throw new Error('refresh needs an http(s) URL')
-    const res = await fetchImpl(s.url, { redirect: 'follow' })
-    if (!res.ok) throw new Error(`fetch failed: ${res.status}`)
-    const bytes = Buffer.from(await res.arrayBuffer())
-    const sha = createHash('sha256').update(bytes).digest('hex')
-    const previous = s.snapshot
-    if (previous?.sha256 === sha) return { changed: false, snapshot: previous }
-    const ext = extFor(res.headers.get('content-type') ?? '')
-    const slug = s.id.slice(s.id.indexOf(':') + 1)
-    const ns = s.id.slice(0, s.id.indexOf(':'))
-    const date = new Date().toISOString().slice(0, 10)
-    const rel = `vault/snapshots/local/praxis/${ns}/${slug}/${date}-${sha.slice(0, 12)}${ext}`
-    mkdirSync(dirname(join(this.repo, rel)), { recursive: true })
-    writeFileSync(join(this.repo, rel), bytes)
-    const snapshot = { path: rel, sha256: sha, status: 'captured', size_bytes: bytes.length, previous: previous?.path ?? null }
+    let res
+    let bytes
+    let error
+    try {
+      res = await fetchImpl(s.url, { redirect: 'follow' })
+      if (res.ok) bytes = Buffer.from(await res.arrayBuffer())
+      else error = `HTTP ${res.status}`
+    } catch (e) {
+      error = e.message
+    }
+    const at = new Date().toISOString()
+    const sha = bytes && createHash('sha256').update(bytes).digest('hex')
+    const contentType = res?.headers.get('content-type') ?? null
+    const check = bytes
+      ? { source_id: s.id, checked_at: at, status: 'ok', http: res.status, sha256: sha, size_bytes: bytes.length, content_type: contentType, by }
+      : { source_id: s.id, checked_at: at, status: 'unreachable', http: res?.status ?? null, error, by }
+    let snapshot
+    if (bytes && keep && s.snapshot?.sha256 !== sha) {
+      const slug = s.id.slice(s.id.indexOf(':') + 1).replace(/[^A-Za-z0-9._-]/g, '-')
+      const ns = s.id.slice(0, s.id.indexOf(':'))
+      const rel = `vault/snapshots/local/praxis/${ns}/${slug}/${at.slice(0, 10)}-${sha.slice(0, 12)}${extFor(contentType ?? '')}`
+      mkdirSync(dirname(join(this.repo, rel)), { recursive: true })
+      writeFileSync(join(this.repo, rel), bytes)
+      snapshot = { path: rel, sha256: sha, status: 'captured', size_bytes: bytes.length, previous: s.snapshot?.path ?? null }
+    }
     const intakePath = join(this.repo, CAPTURE_INTAKE)
     withLock(intakePath, () => {
       const intake = readJson(intakePath, captureIntake())
-      intake.source_snapshots.push({
-        source_id: s.id, snapshot_path: rel, sha256: sha, size_bytes: bytes.length,
-        original_path: s.url, source_mtime: null, captured_at: new Date().toISOString(),
-        content_type: res.headers.get('content-type'), previous: previous?.path ?? null, by,
-      })
+      intake.source_checks ??= []
+      intake.source_checks.push(check)
+      if (snapshot) {
+        intake.source_snapshots.push({
+          source_id: s.id, snapshot_path: snapshot.path, sha256: sha, size_bytes: bytes.length,
+          original_path: s.url, source_mtime: null, captured_at: at, content_type: contentType, previous: snapshot.previous, by,
+        })
+      }
       writeJson(intakePath, intake, 1)
     })
-    const catalogPath = join(this.repo, s.record_path)
-    withLock(catalogPath, () => {
-      const catalog = readJson(catalogPath)
-      const rec = catalog.sources.find((x) => x.slug === slug)
-      Object.assign(rec, { snapshot_path: rel, snapshot_sha256: sha, snapshot_size_bytes: bytes.length, snapshot_status: 'captured' })
-      writeJson(catalogPath, catalog)
-    })
-    this.rebuild({ snapshots: true })
-    this.bindings.log({ op: 'refresh', id: s.id, snapshot: rel, by, reason, task })
-    return { changed: true, snapshot, bindings: this.listBindings({ source: s.id }).map((b) => b.id) }
+    if (snapshot) this.rebuild({ snapshots: true })
+    this.bindings.log({ op: 'refresh', id: s.id, status: check.status, sha256: sha, snapshot: snapshot?.path, by, reason, task })
+    const changed = !!sha && s.version !== null && s.version !== sha
+    return { reachable: !!bytes, changed, check, snapshot, bindings: changed || !bytes ? this.listBindings({ source: s.id }).map((b) => b.id) : [] }
   }
 }
 
@@ -507,8 +553,9 @@ function captureIntake() {
     schema_version: '1.0',
     id: 'praxis-captures',
     kind: 'capture-snapshots',
-    title: 'dsh-praxis 刷新得到的来源快照',
-    note: '每次 refresh 新增一个版本；旧版本保留，供历史消费回查。',
+    title: 'dsh-praxis 对来源的检查与快照',
+    note: '每次 refresh 记一条检查（状态与内容 hash，不存正文）；要求保留时另存一个快照版本，旧版本保留，供历史消费回查。',
+    source_checks: [],
     source_snapshots: [],
   }
 }

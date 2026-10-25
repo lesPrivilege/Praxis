@@ -147,8 +147,8 @@ export const TOOLS = [
   },
   {
     name: 'praxis_refresh',
-    description: '重新取得来源 URL 的当前内容，字节变了就存为新版本快照（旧版本保留），返回受影响的挂载，供检查题解是否仍适用。',
-    parameters: { source: str('来源 ID'), ...who },
+    description: '对照上游检查一个来源 URL：记下是否打得开和内容 hash，不存正文。hash 与上次看到的不同就是来源变了，打不开就是链接失效，两者都返回受影响的挂载，供检查说明是否仍适用。keep 为 true 时另存一份快照（旧版本保留），用于原件可能消失、或需要固定版本的来源。',
+    parameters: { source: str('来源 ID'), keep: bool('另存一份快照'), ...who },
     required: ['source'],
     run: (p, a) => p.materials.refresh(a.source, a),
     writes: true,
@@ -161,13 +161,13 @@ export const TOOLS = [
   },
   {
     name: 'praxis_consume',
-    description: '交付前调用：记录这次工作实际读过的单元和来源（按当前版本），并把交付的文件登记为产物。文件必须在已登记项目的目录里（用 praxis_projects 查，没有就先用 praxis_project 登记），记录带上所属项目。读过的来源与读过的单元之间的挂载随之记下，之后任何一边改了，这次运行会被列为过期。同一文件内容未变不重复登记；内容变了记为新版本；文件挪了位置时用 artifact 指明是哪件产物。只记实际读过、用过的；文件必须已经存在。返回运行记录，其中 artifacts 给出每个文件的产物 ID 与版本。',
+    description: '交付前调用：记录这次工作实际读过的单元和来源（按当前版本），并把交付的文件登记为产物。文件必须在已登记项目的目录里（用 praxis_projects 查，没有就先用 praxis_project 登记），记录带上所属项目。文件由某条已登记的管线产出时，用 made_with 写上那条管线的来源 ID。读过的来源与读过的单元之间的挂载随之记下，之后任何一边改了，这次运行会被列为过期。同一文件内容未变不重复登记；内容变了记为新版本；文件挪了位置时用 artifact 指明是哪件产物。只记实际读过、用过的；文件必须已经存在。返回运行记录，其中 artifacts 给出每个文件的产物 ID 与版本。',
     parameters: {
       title: str('这次工作'), task_type: str('任务类型 ID'), pipeline: str('html 或 video'), preset: str('用的预设 ID'), overrides: { type: 'object', description: '这次对预设的临时改动' },
       units: list('读过的单元'), sources: list('实际读过的来源 ID：resolve 素材里的 source，或 praxis_search、praxis_source 得到的 ID'),
       artifacts: { type: 'array', description: '交付的文件：路径字符串，或带说明的对象。仓库内用仓库路径，仓库外用绝对路径', items: { anyOf: [
         { type: 'string' },
-        { type: 'object', properties: { path: str('文件路径'), title: str('产物名称；省略用文件名'), description: str('它是什么、给谁用'), artifact: str('已有产物 ID：文件换了位置或改了名时指明'),
+        { type: 'object', properties: { path: str('文件路径'), title: str('产物名称；省略用文件名'), description: str('它是什么、给谁用'), artifact: str('已有产物 ID：文件换了位置或改了名时指明'), made_with: str('产出它的管线：登记为来源的管线 ID（在 publish 单元的素材里）'),
           derived_from: { type: 'array', description: '由哪些产物派生，如 HTML 由 MD 底稿生成', items: { anyOf: [{ type: 'string' }, { type: 'object', properties: { artifact: str('产物 ID'), version: num('版本；省略为最新') }, required: ['artifact'] }] } } }, required: ['path'] },
       ] } },
       note: str('说明'), by: who.by,

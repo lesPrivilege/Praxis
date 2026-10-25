@@ -105,7 +105,7 @@ export function createPraxis(options = {}) {
     /**
      * One source as a reader deciding whether to use or keep it needs it: the record, what its
      * collection was gathered for, the pages it serves and the task types that reach them, and the
-     * runs that read it with what they delivered.
+     * runs that read it or made artifacts with it, with what they delivered.
      */
     source(ref) {
       const found = materials.source(ref)
@@ -120,8 +120,11 @@ export function createPraxis(options = {}) {
       })
       const types = new Map()
       for (const r of relations) for (const t of reach.get(r.unit) ?? []) types.set(t.id, t)
-      const used_by = this.runs({ limit: 1000 }).filter((r) => r.sources.some((x) => x.id === s.id))
-        .map((r) => ({ id: r.id, title: r.title, at: r.at, by: r.by, artifacts: r.artifacts.map((a) => ({ artifact: a.artifact, version: a.version, path: a.path })) }))
+      // A run used a source when it read it, or when one of its artifacts was made with it (a pipeline).
+      const used_by = this.runs({ limit: 1000 })
+        .filter((r) => r.sources.some((x) => x.id === s.id) || r.artifacts.some((a) => a.made_with === s.id))
+        .map((r) => ({ id: r.id, title: r.title, at: r.at, by: r.by, read: r.sources.some((x) => x.id === s.id),
+          artifacts: r.artifacts.map((a) => ({ artifact: a.artifact, version: a.version, path: a.path, made: a.made_with === s.id })) }))
       return { ...s, collection: collectionOf(repo, materials.registry(), s), relations, serves: [...types.values()], used_by }
     },
 
@@ -143,7 +146,7 @@ export function createPraxis(options = {}) {
       for (const ref of sources) {
         const s = materials.source(ref)
         if (!s) throw new Error(`unknown source: ${ref}`)
-        read.set(s.id, { id: s.id, snapshot: s.snapshot?.sha256 ?? null })
+        read.set(s.id, { id: s.id, sha256: s.version })
       }
       const sourceRefs = [...read.values()]
       const unitPaths = new Set(unitRefs.map((u) => u.path))
@@ -155,14 +158,17 @@ export function createPraxis(options = {}) {
         const item = this.artifacts.prepare(a)
         const home = projects.of(item.path)
         if (!home) throw new Error(`${item.path} is not inside a registered project; register its folder with praxis_project first`)
-        return { ...item, project: home.project.id }
+        // The pipeline that produced the file is a registered source; the record says which.
+        const made = item.made_with && materials.source(item.made_with)
+        if (item.made_with && !made) throw new Error(`unknown pipeline source: ${item.made_with}`)
+        return { ...item, project: home.project.id, made_with: made?.id }
       })
       const presetRef = preset ? (() => { const p = this.preset(preset); if (!p) throw new Error(`unknown preset: ${preset}`); return { id: p.id, revision: p.revision, values: p.values } })() : undefined
       const at = new Date().toISOString()
       const id = `${at.slice(0, 10)}-${createHash('sha256').update(at + title).digest('hex').slice(0, 8)}`
       const artifactRefs = delivered.map((item) => {
         const { id: artifact, version, path, sha256 } = this.artifacts.register(item, { run: id, by })
-        return { artifact, version, path, sha256, project: item.project }
+        return { artifact, version, path, sha256, project: item.project, made_with: item.made_with }
       })
       const run = { id, title: title.trim(), at, by, task_type, pipeline, preset: presetRef, overrides, units: unitRefs, bindings: bindingRefs, sources: sourceRefs, artifacts: artifactRefs, note }
       const path = join(dataDir, 'runs', `${id}.json`)
@@ -201,6 +207,7 @@ export function createPraxis(options = {}) {
           const run = runs.get(v.run)
           return {
             version: i + 1, sha256: v.sha256, size: v.size, at: v.at, by: v.by, derived_from: v.derived_from ?? [],
+            made_with: v.made_with ? { id: v.made_with, title: materials.source(v.made_with)?.title ?? v.made_with } : undefined,
             run: run ? { id: run.id, title: run.title, at: run.at, task_type: run.task_type, pipeline: run.pipeline,
               units: run.units.map((u) => u.id), bindings: run.bindings.map((b) => b.id), sources: run.sources.map((s) => ({ id: s.id, title: materials.source(s.id)?.title ?? s.id })),
               changed: stale.get(run.id) ?? null } : null,
@@ -288,18 +295,18 @@ export function createPraxis(options = {}) {
         .map((f) => readJson(join(dir, f)))
     },
 
-    /** Runs whose recorded unit, binding, source snapshot or preset versions are older than the current ones. */
+    /** Runs whose recorded unit, binding, source content or preset versions are older than the current ones. */
     stale() {
       const k = kit()
-      const snapshots = new Map()
-      const snapshotOf = (id) => {
-        if (!snapshots.has(id)) snapshots.set(id, materials.source(id)?.snapshot?.sha256 ?? null)
-        return snapshots.get(id)
+      const versions = new Map()
+      const versionOf = (id) => {
+        if (!versions.has(id)) versions.set(id, materials.source(id)?.version ?? null)
+        return versions.get(id)
       }
       return this.runs({ limit: 1000 }).map((run) => {
         const units = run.units.filter((u) => k.find(u.id)?.version !== u.version).map((u) => u.id)
         const bindings = run.bindings.filter((b) => (materials.binding(b.id)?.revision ?? -1) !== b.revision).map((b) => b.id)
-        const sources = (run.sources ?? []).filter((s) => snapshotOf(s.id) !== s.snapshot).map((s) => s.id)
+        const sources = (run.sources ?? []).filter((s) => versionOf(s.id) !== s.sha256).map((s) => s.id)
         const preset = run.preset && presets.get(run.preset.id)?.revision !== run.preset.revision ? run.preset.id : undefined
         return { run: run.id, title: run.title, units, bindings, sources, preset }
       }).filter((r) => r.units.length || r.bindings.length || r.sources.length || r.preset)
@@ -389,7 +396,7 @@ function material(b, s) {
   return {
     binding: b.id, source: b.source, title: b.title, description: clip(b.description, 100),
     url: s?.url, evidence_status: s?.evidence_status, read_scope: s?.read_scope ? clip(s.read_scope, 100) : undefined,
-    excerpts: excerpts.slice(0, 4).map((e) => ({ locator: e.locator, claim: clip(e.claim, 120) })),
+    excerpts: excerpts.slice(0, 4).map((e) => ({ ...(e.locator ? { locator: e.locator } : {}), claim: clip(e.claim ?? '', 120) })),
     more_excerpts: excerpts.length > 4 ? excerpts.length - 4 : undefined,
     snapshot: s?.snapshot?.path, card: s?.card, priority: b.priority, favorite: b.favorite,
   }

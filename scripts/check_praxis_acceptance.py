@@ -191,17 +191,19 @@ def run_checks(probe, temporary, baseline, checks):
           'Original description' in history_text and 'Replacement description' in history_text)
     probe.ok('curate', {'binding': BINDING_B, 'expected_revision': 0, 'description': 'New target'})
     probe.ok('remove', {'binding': BINDING_A, 'expected_revision': 2})
-    first_snapshot = probe.ok('refresh', {'source': SOURCE})
+    first_check = probe.ok('refresh', {'source': SOURCE})
     consumed = probe.ok('consume', {'title': 'Source-only consumption', 'sources': [SOURCE]})
     LocalSource.body = b'version two'
-    second_snapshot = probe.ok('refresh', {'source': SOURCE})
+    # Keep this version as a snapshot so the restore check below has bytes to carry.
+    second_snapshot = probe.ok('refresh', {'source': SOURCE, 'keep': True})
     stale = probe.ok('stale')
     upkeep = probe.ok('upkeep')
-    check('source_refresh_stale', 'A consumed source with changed snapshot marks its run stale.',
-          {'snapshot_changed': first_snapshot['snapshot']['sha256'] != second_snapshot['snapshot']['sha256'],
+    check('source_refresh_stale', 'A hash check stores no content; a consumed source whose content changed marks its run stale.',
+          {'first_stored': first_check.get('snapshot'), 'content_changed': second_snapshot['changed'],
            'stale_runs': len(stale), 'upkeep_stale_runs': len(upkeep['stale']),
            'binding_changed_signal': any('changed' in b['signals'] for b in upkeep['bindings'])},
-          any(r['run'] == consumed['id'] for r in stale)
+          first_check.get('snapshot') is None and second_snapshot['changed']
+          and any(r['run'] == consumed['id'] for r in stale)
           and any(r['run'] == consumed['id'] for r in upkeep['stale']))
 
     probe.ok('preset_save', {'pipeline': 'html', 'title': 'A', 'default': True})

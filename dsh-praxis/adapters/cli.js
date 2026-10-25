@@ -2,8 +2,12 @@
 // praxis <tool> [json-args]   e.g.  praxis resolve '{"task_type":"technical-explainer"}'
 // praxis serve [port]          control plane at http://127.0.0.1:7878/
 // praxis export|check|restore <archive.tar.gz> [--force]   control plane state backup
+import * as http from 'node:http'
 import { createPraxis } from '../core/index.js'
 import { TOOLS, callTool } from './tools.js'
+
+// This is Praxis's own process: source checks go through HTTP(S)_PROXY like other command-line tools.
+http.setGlobalProxyFromEnv?.()
 
 const [name, raw] = process.argv.slice(2)
 if (name === 'serve') {

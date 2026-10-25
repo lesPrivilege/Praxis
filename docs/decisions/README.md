@@ -65,3 +65,5 @@ accepted 表示本仓库当时采纳；技术实现与使用证据在对应契�
 - [ADR-039：dsh-praxis 的产物登记与取用](039-dsh-praxis-artifacts.md)（accepted；产物记录与版本，字节留在原处；consume 同时登记；review 写明版本；信号只有 missing 与 needs_work；预览、显示、打开交给 DSH；拖出用 DownloadURL 待桌面实测；工具值统一为无损 JSON）。
 - [ADR-040：dsh-praxis 的来源闭环](040-dsh-praxis-source-loop.md)（accepted；名册说清每条来源的收录缘由、所挂页面、服务的任务与读过它的运行；resolve 素材带原件 URL 与摘录定位；consume 记读过的来源并推出挂载；关系只在来源自己的记录上，Kit 页引用已登记来源须有关系；项目内来源索引按引用登记；capture 成批并写明任务）。
 - [ADR-041：dsh-praxis 的项目与产物位置](041-dsh-praxis-projects.md)（accepted；项目是带布局的目录，底稿、中间产物、最终产物各按 glob；产物属于包含它的最深项目，consume 拒收项目外的文件；违例只报不搬：misplaced 与未登记的最终产物）。
+- [ADR-042：dsh-praxis 对照上游检查来源，写回保留原排版](042-dsh-praxis-upstream-checks.md)（accepted；refresh 默认只记状态与内容 hash，keep 才存快照；变化与失效从观察记录推出，新增 unreachable 信号；运行记内容 hash；写回 JSON 只改动到的部分）。
+- [ADR-043：dsh-praxis 的生产管线登记为来源](043-dsh-praxis-pipelines-as-sources.md)（accepted；已有生产管线按本地定位登记为来源，挂到 publish/video 与 publish/html 并写明何时用；产物记下 `made_with`；脚本留在原项目）。

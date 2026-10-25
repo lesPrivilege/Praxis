@@ -18,18 +18,103 @@ export function readJson(path, fallback) {
   return JSON.parse(readFileSync(path, 'utf8'))
 }
 
-// Keep the file's own indentation so hand-maintained JSON does not churn.
+// Rewrite a JSON file in its own formatting: parts whose data did not change are copied from the old
+// text, so a hand-formatted catalog (inline arrays, its own indentation) changes only where its data did.
 export function writeJson(path, data, indent) {
   mkdirSync(dirname(path), { recursive: true })
+  const text = existsSync(path) ? patchJson(readFileSync(path, 'utf8'), data, indent) : JSON.stringify(data, null, indent ?? 2)
   const tmp = `${path}.${process.pid}.tmp`
-  writeFileSync(tmp, JSON.stringify(data, null, indent ?? detectIndent(path)) + '\n')
+  writeFileSync(tmp, text + '\n')
   renameSync(tmp, path)
 }
 
-export function detectIndent(path) {
-  if (!existsSync(path)) return 2
-  const m = readFileSync(path, 'utf8').match(/^\{\n( +)"/)
-  return m ? m[1].length : 2
+/**
+ * Serialize `value` reusing `text`, the file's current JSON. An unchanged value keeps its old text. A
+ * container whose old children are still there in order keeps its text too, with only changed values
+ * replaced and new children appended with its own separator; otherwise it is laid out again, inline
+ * if it was inline. New parts follow their parent's style and the file's indent unit (or `indent`).
+ */
+export function patchJson(text, value, indent) {
+  const unit = indent !== undefined ? ' '.repeat(indent) : (text.match(/\n([ \t]+)\S/)?.[1] ?? '  ')
+  const slice = (n) => text.slice(n.start, n.end)
+  const same = (n, v) => (n.json ??= JSON.stringify(JSON.parse(slice(n)))) === JSON.stringify(v)
+  const padAt = (pos) => text.slice(text.lastIndexOf('\n', pos - 1) + 1, pos).match(/^[ \t]*/)[0]
+  const emit = (v, node, pad, flat) => {
+    if (node && v !== undefined && same(node, v)) return slice(node)
+    if (v === null || typeof v !== 'object') return JSON.stringify(v)
+    const object = !Array.isArray(v)
+    const old = node?.type === (object ? 'object' : 'array') ? node : undefined
+    const inline = old ? !slice(old).includes('\n') : flat
+    const kids = old ? (object ? old.entries : old.items) : []
+    const valueOf = (c) => (object ? c.node : c)
+    const startOf = (c) => (object ? c.keyStart : c.start)
+    const inner = kids.length ? padAt(startOf(kids[0])) : pad + unit
+    const entries = object ? Object.entries(v).filter(([, x]) => x !== undefined) : v.map((x, i) => [i, x])
+    const render = ([k, x], oldValue) => (object ? `${JSON.stringify(k)}: ` : '') + emit(x, oldValue, inner, inline)
+    if (kids.length && kids.length <= entries.length && (!object || kids.every((c, i) => entries[i][0] === c.key))) {
+      let out = ''
+      let at = old.start
+      kids.forEach((c, i) => {
+        out += text.slice(at, valueOf(c).start) + emit(entries[i][1], valueOf(c), inner, inline)
+        at = valueOf(c).end
+      })
+      const sep = kids.length > 1 ? text.slice(valueOf(kids.at(-2)).end, startOf(kids.at(-1))) : inline ? ', ' : `,\n${inner}`
+      for (const e of entries.slice(kids.length)) out += sep + render(e)
+      return out + text.slice(at, old.end)
+    }
+    const used = new Set()
+    const parts = entries.map(([k, x], i) => {
+      if (object) return render([k, x], kids.find((c) => c.key === k)?.node)
+      const j = kids.findIndex((n, m) => !used.has(m) && same(n, x))
+      if (j >= 0) { used.add(j); return slice(kids[j]) }
+      return render([k, x], kids[i] && !used.has(i) ? kids[i] : undefined)
+    })
+    const [open, close] = object ? ['{', '}'] : ['[', ']']
+    if (!parts.length) return open + close
+    if (inline) return open + parts.join(', ') + close
+    return `${open}\n${parts.map((p) => inner + p).join(',\n')}\n${old ? padAt(old.end - 1) : pad}${close}`
+  }
+  return emit(value, parseSpans(text), '', false)
+}
+
+/** Parse JSON keeping where each value starts and ends, and where each key starts. */
+function parseSpans(text) {
+  let i = 0
+  const ws = () => { while (i < text.length && ' \t\n\r'.includes(text[i])) i++ }
+  const string = () => {
+    const start = i++
+    while (text[i] !== '"') i += text[i] === '\\' ? 2 : 1
+    i++
+    return JSON.parse(text.slice(start, i))
+  }
+  const value = () => {
+    ws()
+    const start = i
+    if (text[i] === '{' || text[i] === '[') {
+      const object = text[i++] === '{'
+      const children = []
+      ws()
+      while (text[i] !== (object ? '}' : ']')) {
+        if (object) {
+          ws()
+          const keyStart = i
+          const key = string()
+          ws()
+          i++
+          children.push({ key, keyStart, node: value() })
+        } else children.push(value())
+        ws()
+        if (text[i] === ',') i++
+        ws()
+      }
+      i++
+      return object ? { type: 'object', start, end: i, entries: children } : { type: 'array', start, end: i, items: children }
+    }
+    if (text[i] === '"') string()
+    else while (i < text.length && !' \t\n\r,]}'.includes(text[i])) i++
+    return { type: 'value', start, end: i }
+  }
+  return value()
 }
 
 export function withLock(path, fn) {

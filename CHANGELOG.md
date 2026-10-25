@@ -1,5 +1,16 @@
 # Changelog
 
+## 2026-10-25 · dsh-praxis 管线登记为来源；Design 挂载说明按位置写
+
+- 已有的 5 条生产管线按本地定位登记为来源：书单系列、薪酬基线短片、金字塔长片、Jev 网页构建器、SaaS 教材站点生成器。它们挂到 publish/video 与 publish/html，写明何时用；脚本留在原项目。consume 的产物可带 `made_with` 写明由哪条管线产出，来源条目列出用它产出的运行与产物。已知的 8 件产物补记了管线。取舍见 [ADR-043](docs/decisions/043-dsh-praxis-pipelines-as-sources.md)。
+- 108 条 Design 挂载的说明改为按位置写：这个来源对这一页有什么用、何时打开。Opus 子代理起草，主会话逐条审阅后经 `praxis_curate` 写入。两条关系的去留待用户决定，见 [回执](docs/verification/dsh-praxis-pipelines-roster-20261025.md)。
+
+## 2026-10-25 · dsh-praxis 对照上游检查来源；写回保留原排版
+
+- `praxis_refresh` 默认只记一条检查（状态、HTTP 码、内容 hash），不存正文；相邻两次 hash 不同是来源变了，最近一次打不开是链接失效，挂载新增 `unreachable` 信号；`keep: true` 才另存快照，快照指针以 intake 为准，所有来源都适用。运行记下读到的内容 hash。取舍见 [ADR-042](docs/decisions/042-dsh-praxis-upstream-checks.md)。
+- JSON 写回按文件原有排版：数据没变的部分照抄，手工排版的 catalog 只改动到的行；267 个文件原样写回逐字不变。
+- 修正：`12105ed` 之后，technical-explainer 的 html 流水线 resolve 出错。原因是部分 catalog 把说法写成 `claim_zh` 或纯字符串，素材摘录读不到。现在三种写法都读出；适配层测试对真实仓库的每个任务类型跑一遍 resolve。挂载在来源变化的同一毫秒内 review，不再误报 `changed`。命令行与 MCP 服务的来源检查走 `HTTP(S)_PROXY`；被任务类型取到的 11 个来源首轮检查都打得开。27 项测试、探针 14 项通过。
+
 ## 2026-10-25 · dsh-praxis 项目与产物位置；下一轮工单
 
 - [下一轮工单](dsh-praxis/work-order.md)：先自用跑通（A1 项目与产物、A2 管线、A3 worker 自主消费、A4 名册维护），再拆出 release（B1–B7）。设计原则写在工单开头：名册登记链接与功效，不收录原件正文；经渐进目录逐级展开，是否打开原件由模型决定；消费过的留本地记录；链接随上游同步、增减淘汰。上一轮工单改名为 [work-order-artifacts](dsh-praxis/work-order-artifacts.md)。

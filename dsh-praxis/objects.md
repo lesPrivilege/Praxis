@@ -4,7 +4,7 @@
 
 ## 谁来维护
 
-**Agent 是日常维护的主路径。** 入账、补摘要、写取用题解、归类、打 tag、刷新快照、按范例修订 Kit 单元，都由 Agent 完成；校验通过后直接生效，不进人工审批队列。人通过任务指示、界面编排、修订范例和纠错表达意图，界面上的操作与 Agent 调用同一组操作。
+**Agent 是日常维护的主路径。** 入账、补摘要、写取用题解、归类、打 tag、对照上游检查来源、按范例修订 Kit 单元，都由 Agent 完成；校验通过后直接生效，不进人工审批队列。人通过任务指示、界面编排、修订范例和纠错表达意图，界面上的操作与 Agent 调用同一组操作。
 
 每次修改记下操作者、所属任务、依据的范例或规则版本、改动理由，以及前后版本。写入时带上读取时的版本号（`expected_revision`）；版本已变就返回差异，重新处理，不整段覆盖别人刚改的内容。
 
@@ -21,7 +21,7 @@
 | MaterialRevision | 实际取得的一份原件或资产：快照、附件、图片、音视频、代码、模板、组件 | [material-revision](schemas/material-revision.schema.json) |
 | Preset、Run | 可编辑的默认配置；一次任务实际用到的输入、单元版本与配置 | 实现见 [core](core/README.md) |
 | Project | 一件工作所在的目录：根、用途、布局（哪些路径放底稿、中间产物、最终产物，按 glob）；产物属于包含它的最深一个项目 | 实现见 [projects.js](core/projects.js)，取舍见 [ADR-041](../docs/decisions/041-dsh-praxis-projects.md) |
-| Artifact | 一次交付的文件：身份、按内容区分的版本（sha256、产出它的 Run、派生自哪一版）、绑定版本的 review；字节留在主人的工作区 | 实现见 [artifacts.js](core/artifacts.js)，取舍见 [ADR-039](../docs/decisions/039-dsh-praxis-artifacts.md) |
+| Artifact | 一次交付的文件：身份、按内容区分的版本（sha256、产出它的 Run、派生自哪一版、用哪条登记为来源的管线做成）、绑定版本的 review；字节留在主人的工作区 | 实现见 [artifacts.js](core/artifacts.js)，取舍见 [ADR-039](../docs/decisions/039-dsh-praxis-artifacts.md) |
 
 同一个来源用在两个单元上，是两条 Binding，各有题解、启用状态和 review；来源身份只有一个。同一个文件可以既是某次任务的 Artifact，又是后来任务的 MaterialRevision，身份与用途分开记。
 
@@ -86,7 +86,7 @@ Materials 的权威数据是 `vault/provenance/**/catalog.json` 里的来源记�
 | `grammar_ids` | 单元别名 | 页面里写的语法 ID 解析到同一单元 |
 | `reference_priority`、`reference_status` | Binding 的 `priority` 默认值与 Source 的采纳状态 | 挂载上设了优先级就以挂载为准，否则沿用来源的 `reference_priority` |
 | `purpose_tags`、`facets` | Binding 的 `tags`，Source 的 `facets` | 用途 tag 跟着用途走 |
-| `snapshot_path`、`snapshot_sha256`、`snapshot_status`、`accessed_at`、`snapshot_gap` | MaterialRevision | 566 条记录有 `snapshot_path`，指向当前版本；refresh 新增的每个版本登记在 `vault/intake/praxis-captures.json`，旧版本保留 |
+| `snapshot_path`、`snapshot_sha256`、`snapshot_status`、`accessed_at`、`snapshot_gap` | MaterialRevision | 566 条记录有 `snapshot_path`，指向当前版本；refresh 默认只记一条检查（是否打得开、内容 hash），要求保留时另存快照版本；两者都登记在 `vault/intake/praxis-captures.json`，旧版本保留，见 [ADR-042](../docs/decisions/042-dsh-praxis-upstream-checks.md) |
 | 来源卡正文 | Source 的概要与 Binding 的题解 | `cards: generated` 的卡由 catalog 生成，编辑写回 catalog；`cards: maintained` 的卡正文是权威，编辑写回卡片（[ADR-022](../docs/decisions/022-source-card-ownership.md)） |
 
 `scripts/build_registry.py` 的扩展投影不带 `reference_priority`、`reference_status`、`grammar_ids`，所以 core 用 registry 列表和搜索，详情与编辑回到 catalog；写入 catalog 后重跑 `build_registry.py`。Kit 里的参考路由页（[Design 参考路由](kit/design/references/README.md)及其下各页、`curated/` 卡片）仍是手写的目录视图，控制面的目录页是同一批挂载的另一个视图。

@@ -109,4 +109,9 @@ test('tool values are lossless JSON: absent fields omitted, non-JSON values refu
   // DSH's own check: a value survives a JSON round trip unchanged, with no undefined anywhere.
   const lossless = (v) => assert.deepStrictEqual(JSON.parse(JSON.stringify(v)), v)
   for (const name of ['praxis_upkeep', 'praxis_stale', 'praxis_entry', 'praxis_runs', 'praxis_artifacts', 'praxis_presets']) lossless(await tools.find((t) => t.name === name).execute({}))
+  // Every task type resolves on the real repository, with whatever claim shapes its catalogs use.
+  const resolve = tools.find((t) => t.name === 'praxis_resolve')
+  for (const t of (await tools.find((x) => x.name === 'praxis_entry').execute({})).task_types) {
+    for (const pipeline of t.pipelines) lossless(await resolve.execute({ task_type: t.id, pipeline }))
+  }
 })

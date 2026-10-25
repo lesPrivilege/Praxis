@@ -92,7 +92,8 @@ export class Artifacts {
   register(item, { run, by } = {}) {
     const found = item.artifact ? [item.artifact, this.store.get(item.artifact)] : this.find(item.path)
     const at = new Date().toISOString()
-    const version = { sha256: item.fp.sha256, size: item.fp.size, mtime_ms: item.fp.mtime_ms, at, run, by, ...(item.derived.length ? { derived_from: item.derived } : {}) }
+    const version = { sha256: item.fp.sha256, size: item.fp.size, mtime_ms: item.fp.mtime_ms, at, run, by,
+      ...(item.derived.length ? { derived_from: item.derived } : {}), ...(item.made_with ? { made_with: item.made_with } : {}) }
     if (found) {
       const [id, rec] = found
       const latest = rec.versions.at(-1)

@@ -1,6 +1,6 @@
 # 下一轮工单：自用跑通，再拆出 release
 
-状态：2026-10-25 编制；四项决定已确认，A1 已施工，例外已按用户指示处理（[ADR-041](../docs/decisions/041-dsh-praxis-projects.md)，[回执](../docs/verification/dsh-praxis-projects-20261025.md)）。上一轮的产物工单见 [work-order-artifacts](work-order-artifacts.md)，来源闭环见 [ADR-040](../docs/decisions/040-dsh-praxis-source-loop.md)。
+状态：2026-10-25 编制；四项决定已确认。A2 按用户改定的做法施工（管线登记为来源，[ADR-043](../docs/decisions/043-dsh-praxis-pipelines-as-sources.md)）；A4 除集合类来源的增减淘汰外已施工（[ADR-042](../docs/decisions/042-dsh-praxis-upstream-checks.md)，[回执](../docs/verification/dsh-praxis-pipelines-roster-20261025.md)）。A1 已施工，例外已按用户指示处理（[ADR-041](../docs/decisions/041-dsh-praxis-projects.md)，[回执](../docs/verification/dsh-praxis-projects-20261025.md)）。上一轮的产物工单见 [work-order-artifacts](work-order-artifacts.md)，来源闭环见 [ADR-040](../docs/decisions/040-dsh-praxis-source-loop.md)。
 
 ## 目标与完成体验
 
@@ -126,10 +126,10 @@ agent 打开原件是按链接与定位去读，不是读 Praxis 存下的正文
 
 ### A4. 名册维护
 
-- **挂载说明按位置写：** 先改 Design 的 78 条，写清这个来源对这一页有什么用；用 [审阅方法](kit/writing/review.md)检查，不抄概要。
-- **与上游同步：** 失效的链接、内容已变的来源进 upkeep；集合类来源（作品集、组件库、动画库）的上游增减时，提出增补或淘汰，由人或 agent 处理，带理由记进 history。
-- **refresh 只判断变化：** 默认只记内容 hash、状态与时间，用来发现链接失效或内容变化，不存正文；需要固定版本时才存快照。先覆盖被运行读过、或挂在常驻与任务类型单元上的来源。
-- **写回不重排：** curate 写回 JSON 时保持原有排版，只改动到的字段。
+- **挂载说明按位置写：**（已施工：Design 108 条。）先改 Design 的 78 条，写清这个来源对这一页有什么用；用 [审阅方法](kit/writing/review.md)检查，不抄概要。
+- **与上游同步：** 失效的链接、内容已变的来源进 upkeep；集合类来源（作品集、组件库、动画库）的上游增减时，提出增补或淘汰，由人或 agent 处理，带理由记进 history。（失效与内容变化已施工；集合类来源的增减淘汰待做。）
+- **refresh 只判断变化：** 默认只记内容 hash、状态与时间，用来发现链接失效或内容变化，不存正文；需要固定版本时才存快照。先覆盖被运行读过、或挂在常驻与任务类型单元上的来源。（已施工，见 ADR-042；被任务类型取到的 11 个来源已检查。）
+- **写回不重排：** curate 写回 JSON 时保持原有排版，只改动到的字段。（已施工，与 refresh 一并见 [ADR-042](../docs/decisions/042-dsh-praxis-upstream-checks.md)。）
 
 完成标志：
 - Design 挂载说明不再与来源概要相同；

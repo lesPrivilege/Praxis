@@ -4,6 +4,7 @@ import { mkdtempSync, mkdirSync, readFileSync, writeFileSync, existsSync } from 
 import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 import { createPraxis, ConflictError } from './index.js'
+import { patchJson } from './store.js'
 import { exportState, checkArchive, restoreState } from './backup.js'
 import { jsonValue } from '../adapters/tools.js'
 import { utimesSync, renameSync, unlinkSync } from 'node:fs'
@@ -203,19 +204,29 @@ test('stale finds runs whose consumed source got a new snapshot', async () => {
   assert.equal(p.upkeep().stale[0].run, run.id)
 })
 
-test('refresh saves a versioned snapshot and skips unchanged bytes', async () => {
+test('refresh checks upstream by hash without storing content; keep saves a snapshot; a dead link is a signal', async () => {
   const { root, p } = setup()
   let body = '<html>v1</html>'
-  const fetchImpl = async () => new Response(body, { headers: { 'content-type': 'text/html' } })
+  let up = true
+  const fetchImpl = async () => (up ? new Response(body, { headers: { 'content-type': 'text/html' } }) : new Response('gone', { status: 404 }))
   const first = await p.materials.refresh(SRC, { fetchImpl, by: 'test' })
-  assert.equal(first.changed, true)
-  assert.ok(existsSync(join(root, first.snapshot.path)))
-  assert.equal((await p.materials.refresh(SRC, { fetchImpl })).changed, false)
+  assert.deepEqual([first.reachable, first.changed, first.snapshot, first.check.status], [true, false, undefined, 'ok'], 'the first check is the baseline')
+  assert.equal(existsSync(join(root, 'vault/snapshots/local/praxis')), false, 'no content stored')
   body = '<html>v2</html>'
   const second = await p.materials.refresh(SRC, { fetchImpl })
-  assert.equal(second.snapshot.previous, first.snapshot.path)
-  const intake = JSON.parse(readFileSync(join(root, 'vault/intake/praxis-captures.json'), 'utf8'))
-  assert.equal(intake.source_snapshots.length, 2)
+  assert.deepEqual([second.changed, second.bindings], [true, [BIND]])
+  assert.deepEqual(p.materials.binding(BIND).signals, ['changed'])
+  const kept = await p.materials.refresh(SRC, { fetchImpl, keep: true })
+  assert.ok(existsSync(join(root, kept.snapshot.path)))
+  assert.equal(p.materials.source(SRC).snapshot.sha256, kept.check.sha256)
+  assert.equal((await p.materials.refresh(SRC, { fetchImpl, keep: true })).snapshot, undefined, 'the same bytes are not kept twice')
+  up = false
+  const dead = await p.materials.refresh(SRC, { fetchImpl })
+  assert.deepEqual([dead.reachable, dead.check.error], [false, 'HTTP 404'])
+  assert.deepEqual(p.materials.binding(BIND).signals, ['changed', 'unreachable'])
+  up = true
+  await p.materials.refresh(SRC, { fetchImpl })
+  assert.deepEqual(p.materials.binding(BIND).signals, ['changed'], 'a link that answers again is no longer flagged')
 })
 
 test('upkeep lists only signals: needs-work, changed sources, stale runs, unbound captures', async () => {
@@ -366,11 +377,12 @@ test('artifacts: moving a file keeps identity only when the bytes are the latest
 test('resolve hands over the way to the original; source shows why it is here, where it serves and who read it', () => {
   const { root, p } = setup({ project: true })
   const catalog = JSON.parse(readFileSync(join(root, CATALOG), 'utf8'))
-  catalog.sources[0].supported_claims = [{ claim_id: 'C1', locator: 'Keyboard Interaction', claim: 'Enter 与 Space 切换展开。' }]
+  catalog.sources[0].supported_claims = [{ claim_id: 'C1', locator: 'Keyboard Interaction', claim: 'Enter 与 Space 切换展开。' }, { claim_id: 'C2', locator: 'Roles', claim_zh: '中文字段名的说法。' }, '只有一句话的说法']
   writeFileSync(join(root, CATALOG), JSON.stringify(catalog))
   p.materials.rebuild()
   const [m] = p.resolve({ task_type: 'explainer' }).materials
-  assert.deepEqual([m.source, m.url, m.evidence_status, m.excerpts], [SRC, 'https://example.org/apg/', 'verified', [{ locator: 'Keyboard Interaction', claim: 'Enter 与 Space 切换展开。' }]])
+  assert.deepEqual([m.source, m.url, m.evidence_status, m.excerpts], [SRC, 'https://example.org/apg/', 'verified',
+    [{ locator: 'Keyboard Interaction', claim: 'Enter 与 Space 切换展开。' }, { locator: 'Roles', claim: '中文字段名的说法。' }, { claim: '只有一句话的说法' }]], 'every claim shape catalogs use comes through')
   writeFileSync(join(root, 'page.html'), '<p>v1</p>')
   const run = p.consume({ title: '讲解页', units: ['design/controls'], sources: [m.source], artifacts: ['page.html'] })
   const s = p.source(SRC)
@@ -379,6 +391,14 @@ test('resolve hands over the way to the original; source shows why it is here, w
   assert.deepEqual(s.used_by.map((r) => [r.id, r.artifacts.map((a) => a.artifact)]), [[run.id, [run.artifacts[0].artifact]]])
   assert.deepEqual(p.artifact(run.artifacts[0].artifact).versions[0].run.sources, [{ id: SRC, title: 'APG Accordion' }])
   assert.equal(s.record, undefined, 'the raw record stays out of the tool value')
+  // A pipeline is a registered source; an artifact names the one that made it.
+  const [pipe] = p.materials.capture([{ locator: 'work/build/README.md', title: '短片管线', summary: '念白、合成、逐帧渲染。', read_scope: '读了 README', limits: '要凭据', revisit_when: '下一条短片时' }], { task: '登记管线' })
+  writeFileSync(join(root, 'cut.html'), '<p>cut</p>')
+  assert.throws(() => p.consume({ title: '成片', artifacts: [{ path: 'cut.html', made_with: 'no:such' }] }), /unknown pipeline source/)
+  const made = p.consume({ title: '成片', artifacts: [{ path: 'cut.html', made_with: pipe.id }] })
+  assert.equal(made.artifacts[0].made_with, pipe.id)
+  assert.deepEqual(p.artifact(made.artifacts[0].artifact).versions[0].made_with, { id: pipe.id, title: '短片管线' })
+  assert.deepEqual(p.source(pipe.id).used_by.map((r) => [r.id, r.read, r.artifacts.map((x) => x.made)]), [[made.id, false, [true]]])
 })
 
 test('a project source index is registered by reference, related through its registration, and read like any source', () => {
@@ -434,4 +454,21 @@ test('projects: deliverables live in a registered project; the layout says where
   p.saveProject({ id: 'series', expected_revision: series.revision, layout: { final: ['out/*.mp4', '*.txt'] } })
   assert.deepEqual(p.upkeep().artifacts, [], 'widening the layout resolves the misplaced file; nothing was moved')
   assert.ok(existsSync(join(root, 'work/series/notes.txt')))
+})
+
+test('JSON writes keep the file\'s own formatting and change only what changed', () => {
+  const hand = '{\n  "a": ["x", "y"],\n  "list": [{"slug": "s1", "tags": ["A", "B"]},\n    {"slug": "s2"}\n  ],\n  "n": 1\n}'
+  const v = JSON.parse(hand)
+  v.list[1].grammar_paths = ['p.md']
+  v.a = ['y']
+  assert.equal(patchJson(hand, v), '{\n  "a": ["y"],\n  "list": [{"slug": "s1", "tags": ["A", "B"]},\n    {"slug": "s2", "grammar_paths": ["p.md"]}\n  ],\n  "n": 1\n}')
+  for (const indent of [1, 2, 4]) {
+    const text = JSON.stringify({ x: [1, 2], y: { z: 'q', w: [{ k: 1 }], e: [] } }, null, indent)
+    const next = JSON.parse(text)
+    next.y.w.push({ k: 2 })
+    next.y.n = [3]
+    delete next.y.z
+    assert.equal(patchJson(text, next), JSON.stringify(next, null, indent), `canonical files stay canonical (indent ${indent})`)
+    assert.equal(patchJson(text, JSON.parse(text)), text, 'unchanged data, unchanged text')
+  }
 })

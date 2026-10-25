@@ -19,7 +19,7 @@ The plugin adds `praxis_*` tools and a short entry to the system prompt. For a t
 
 Open **Praxis** from the right sidebar's guide.
 
-- **Catalog**: the four layers, then their areas, then pages. Each step shows descriptions and counts; a page opens to its sources as cards. On a card you can switch a source on or off, star it, refetch it, rewrite its description, record a review or delete it (deletions can be restored). **Capture a source** registers a new reference.
+- **Catalog**: the four layers, then their areas, then pages. Each step shows descriptions and counts; a page opens to its sources as cards. On a card you can switch a source on or off, star it, check it against upstream (is the link alive, did the content change), rewrite its description, record a review or delete it (deletions can be restored). **Capture a source** registers a new reference.
 - **Task**: pick a task type and pipeline to see exactly what the agent would read, the sources it may use and the acceptance checks.
 - **Artifacts**: the files a piece of work delivered, grouped by project; a project's header says where it keeps drafts, intermediate builds and finals, and which final files are not registered yet. Open one to see its versions, the pages and sources each version was based on, and the reviews of each version; preview it, show it in Finder, open it in its default app or drag it out.
 - **Presets**: defaults per pipeline, such as the TTS voice and aspect ratios for video or the theme for html. Only the name of an environment variable is stored, never a key.
