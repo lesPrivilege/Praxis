@@ -100,6 +100,8 @@ test('curate: revisions advance and a stale expected_revision is refused', () =>
   assert.equal(second.binding.description, '键盘与展开状态。', 'earlier curation kept')
   assert.equal(p.resolve({ task_type: 'explainer' }).materials.length, 0, 'disabled binding not offered')
   assert.throws(() => p.materials.curate(BIND, { state: 'removed' }), /not curatable/)
+  const revisions = p.history({ id: BIND }).map((h) => [h.revision, h.set.description, h.set.enabled])
+  assert.deepEqual(revisions, [[2, undefined, false], [1, '键盘与展开状态。', undefined]], 'each revision keeps the values it set')
 })
 
 test('curate on a new target creates the relation in the catalog', () => {
@@ -157,6 +159,19 @@ test('consume records versions; stale finds runs whose units or bindings changed
   assert.deepEqual(stale.bindings, [BIND])
 })
 
+test('stale finds runs whose consumed source got a new snapshot', async () => {
+  const { p } = setup()
+  let body = 'v1'
+  const fetchImpl = async () => new Response(body, { headers: { 'content-type': 'text/plain' } })
+  await p.materials.refresh(SRC, { fetchImpl })
+  const run = p.consume({ title: '只用来源', sources: [SRC] })
+  assert.deepEqual(p.stale(), [])
+  body = 'v2'
+  await p.materials.refresh(SRC, { fetchImpl })
+  assert.deepEqual(p.stale().map((r) => [r.run, r.sources]), [[run.id, [SRC]]])
+  assert.equal(p.upkeep().stale[0].run, run.id)
+})
+
 test('refresh saves a versioned snapshot and skips unchanged bytes', async () => {
   const { root, p } = setup()
   let body = '<html>v1</html>'
@@ -211,19 +226,40 @@ test('presets: validated per pipeline, one default, recorded by runs', () => {
   assert.equal(p.presets({ pipeline: 'video' }).length, 1)
 })
 
+test('a refused preset save changes no preset', () => {
+  const { p } = setup()
+  const a = p.savePreset({ pipeline: 'html', title: 'A', default: true })
+  const b = p.savePreset({ pipeline: 'html', title: 'B' })
+  p.savePreset({ id: b.id, expected_revision: b.revision, description: '改过' })
+  const before = p.presets()
+  assert.throws(() => p.savePreset({ id: b.id, expected_revision: b.revision, default: true }), ConflictError)
+  assert.deepEqual(p.presets(), before)
+  p.savePreset({ id: b.id, expected_revision: b.revision + 1, default: true })
+  assert.deepEqual(p.presets().filter((x) => x.default).map((x) => x.id), [b.id])
+  assert.equal(p.preset(a.id).default, false)
+})
+
 test('export, check and restore the control plane state', () => {
   const { root, p } = setup()
   p.materials.curate(BIND, { favorite: true, description: '导出前。' })
+  const MOVED = `${SRC}@dsh-praxis/kit/design/motion.md`
+  p.materials.curate(MOVED, { description: '新挂载。' })
+  p.materials.remove(BIND)
   const archive = join(root, 'state.tar.gz')
   mkdirSync(join(root, 'dsh-praxis'), { recursive: true })
   writeFileSync(join(root, 'dsh-praxis/package.json'), '{"version":"0.0.0"}')
   const out = exportState(root, archive)
   assert.ok(out.files >= 2)
   assert.equal(checkArchive(archive).ok, true)
+  p.materials.restore(BIND)
   p.materials.curate(BIND, { description: '导出后改过。' })
-  const blocked = restoreState(root, archive)
+  p.materials.remove(MOVED)
+  const rebuild = rebuildFor(root)
+  const blocked = restoreState(root, archive, { rebuild })
   assert.equal(blocked.restored, 0)
   assert.ok(blocked.conflicts.includes('dsh-praxis/data/bindings.json'))
-  restoreState(root, archive, { force: true })
+  assert.ok(blocked.conflicts.includes(CATALOG), 'existing source catalogs travel with the state')
+  restoreState(root, archive, { force: true, rebuild })
   assert.equal(p.materials.binding(BIND).description, '导出前。')
+  assert.deepEqual(p.materials.listBindings().map((b) => b.id), [MOVED], 'added and removed relations come back as exported')
 })

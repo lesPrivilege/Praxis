@@ -171,12 +171,11 @@ export function createPraxis(options = {}) {
       validatePreset(next)
       const key = id ?? presetId(next.pipeline, next.title)
       if (!id && presets.get(key)) throw new Error(`preset exists: ${key}`)
-      if (next.default) {
-        for (const [other, p] of Object.entries(presets.all())) {
-          if (other !== key && p.pipeline === next.pipeline && p.default) presets.update(other, undefined, (cur) => ({ ...cur, default: false }), { op: 'preset-default-off', by })
-        }
-      }
-      const saved = presets.update(key, id ? expected_revision : 0, (cur = {}) => ({ ...cur, ...next, state: 'active' }), { op: 'preset', by, reason, task })
+      // The old default is cleared in the same write, so a refused save leaves every preset as it was.
+      const also = (records) => (next.default ? Object.entries(records) : [])
+        .filter(([other, p]) => other !== key && p.pipeline === next.pipeline && p.default)
+        .map(([other]) => ({ id: other, fn: (cur) => ({ ...cur, default: false }), change: { op: 'preset-default-off', by } }))
+      const saved = presets.update(key, id ? expected_revision : 0, (cur = {}) => ({ ...cur, ...next, state: 'active' }), { op: 'preset', by, reason, task }, { also })
       return { id: key, ...saved }
     },
 
@@ -193,15 +192,21 @@ export function createPraxis(options = {}) {
         .map((f) => readJson(join(dir, f)))
     },
 
-    /** Runs whose recorded unit or binding versions are older than the current ones. */
+    /** Runs whose recorded unit, binding, source snapshot or preset versions are older than the current ones. */
     stale() {
       const k = kit()
+      const snapshots = new Map()
+      const snapshotOf = (id) => {
+        if (!snapshots.has(id)) snapshots.set(id, materials.source(id)?.snapshot?.sha256 ?? null)
+        return snapshots.get(id)
+      }
       return this.runs({ limit: 1000 }).map((run) => {
         const units = run.units.filter((u) => k.find(u.id)?.version !== u.version).map((u) => u.id)
         const bindings = run.bindings.filter((b) => (materials.binding(b.id)?.revision ?? -1) !== b.revision).map((b) => b.id)
+        const sources = (run.sources ?? []).filter((s) => snapshotOf(s.id) !== s.snapshot).map((s) => s.id)
         const preset = run.preset && presets.get(run.preset.id)?.revision !== run.preset.revision ? run.preset.id : undefined
-        return { run: run.id, title: run.title, units, bindings, preset }
-      }).filter((r) => r.units.length || r.bindings.length || r.preset)
+        return { run: run.id, title: run.title, units, bindings, sources, preset }
+      }).filter((r) => r.units.length || r.bindings.length || r.sources.length || r.preset)
     },
 
     /**
@@ -218,10 +223,12 @@ export function createPraxis(options = {}) {
       }
     },
 
-    history({ limit = 50 } = {}) {
+    /** Newest first; with `id`, every revision of one binding, preset or source with the fields it set. */
+    history({ limit = 50, id } = {}) {
       const path = join(dataDir, 'history.jsonl')
       if (!existsSync(path)) return []
-      return readFileSync(path, 'utf8').trim().split('\n').filter(Boolean).slice(-limit).reverse().map((l) => JSON.parse(l))
+      const all = readFileSync(path, 'utf8').trim().split('\n').filter(Boolean).map((l) => JSON.parse(l))
+      return (id ? all.filter((h) => h.id === id) : all).slice(-limit).reverse()
     },
   }
 }

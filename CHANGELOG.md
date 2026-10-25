@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-10-25 · dsh-praxis 整合包验收与修复
+
+- [整合包验收](docs/verification/dsh-praxis-acceptance-20261025.md)：DSH 桌面内置控制面实际打开并读写，MCP 与 CLI 真实进程共数据；[补充探针](scripts/check_praxis_acceptance.py)找出五类缺陷，增量入账见 [原 Chat](vault/archive/chat/dsh-praxis-control-plane-20261025.md)。
+- 修复：备份带上全部来源 catalog 并在恢复后重建派生索引；预设保存被拒时不再取消原默认；查不到的单元与来源在 MCP、CLI、DSH、HTTP 上都是失败调用；`stale` 比对已消费来源的快照；维护记录带每一版写下的字段值，`praxis_history` 可按 `id` 回查。UI review 带上所见 revision。
+- 探针 9 项、`node --test` 18 项通过。DSH 桌面未重启复验；npm 包不单独携带 Kit，仍需完整仓库。
+
 ## 2026-10-25 · dsh-praxis 控制面：渐进披露、轻维护、中英界面
 
 - [控制面](dsh-praxis/ui/README.md)的目录改成 层 → 领域 → 单元 的渐进披露，加上“Kit 之外的挂载”按路径展开；单元页以来源卡片为主，正文按需展开。界面对齐 DSH 客户端的 token 与控件形状，嵌入时跟随 DSH 的明暗与语言。

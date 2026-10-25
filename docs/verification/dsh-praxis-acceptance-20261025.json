@@ -1,0 +1,116 @@
+{
+  "checked_at": "2026-10-25T05:36:43.536742+00:00",
+  "commit": "179e227b0d56476423be1f9b8c0d87fc561a38dc",
+  "environment": {
+    "node": "v25.9.0",
+    "python": "3.14.2",
+    "system": "Darwin"
+  },
+  "command": "python3 scripts/check_praxis_acceptance.py",
+  "scope": "Isolated fixture; real CLI/MCP processes, registry/snapshot builders and loopback HTTP.",
+  "not_checked": [
+    "DSH desktop/UI",
+    "external network",
+    "concurrent writes",
+    "corrupt or malicious archives"
+  ],
+  "checks": [
+    {
+      "id": "mcp_initialize_list",
+      "expected": "Negotiate 2025-11-25 and expose core operations.",
+      "observed": {
+        "protocol": "2025-11-25",
+        "tools": 21
+      },
+      "passed": true
+    },
+    {
+      "id": "mcp_cli_shared_state",
+      "expected": "Each process immediately reads the other process write.",
+      "observed": {
+        "cli_revision": 1,
+        "mcp_revision": 2,
+        "cli_description": "Original description",
+        "mcp_description": "Replacement description"
+      },
+      "passed": true
+    },
+    {
+      "id": "unit_lookup_error",
+      "expected": "Missing lookup returns CLI nonzero and MCP isError:true.",
+      "observed": {
+        "cli_exit": 0,
+        "mcp_isError": false
+      },
+      "passed": false
+    },
+    {
+      "id": "source_lookup_error",
+      "expected": "Missing lookup returns CLI nonzero and MCP isError:true.",
+      "observed": {
+        "cli_exit": 0,
+        "mcp_isError": false
+      },
+      "passed": false
+    },
+    {
+      "id": "resolve_lookup_error",
+      "expected": "Missing lookup returns CLI nonzero and MCP isError:true.",
+      "observed": {
+        "cli_exit": 1,
+        "mcp_isError": true
+      },
+      "passed": true
+    },
+    {
+      "id": "description_history_values",
+      "expected": "History retains both successive description values.",
+      "observed": {
+        "entries": 2,
+        "old_value_retained": false,
+        "new_value_retained": false
+      },
+      "passed": false
+    },
+    {
+      "id": "source_refresh_stale",
+      "expected": "A consumed source with changed snapshot marks its run stale.",
+      "observed": {
+        "snapshot_changed": true,
+        "stale_runs": 0,
+        "upkeep_stale_runs": 0,
+        "binding_changed_signal": true
+      },
+      "passed": false
+    },
+    {
+      "id": "stale_preset_no_partial_write",
+      "expected": "Reject stale save without changing any preset.",
+      "observed": {
+        "exit": 1,
+        "defaults_before": [
+          "html/a"
+        ],
+        "defaults_after": [],
+        "state_unchanged": false
+      },
+      "passed": false
+    },
+    {
+      "id": "backup_existing_catalog",
+      "expected": "Restore added/removed relations and latest source snapshot pointer.",
+      "observed": {
+        "archive_valid": true,
+        "exported_files": 7,
+        "restored_files": 7,
+        "active_targets": [
+          "dsh-praxis/kit/design/controls.md"
+        ],
+        "latest_snapshot_pointer_restored": false,
+        "snapshot_bytes_restored": true
+      },
+      "passed": false
+    }
+  ],
+  "passed": false
+}

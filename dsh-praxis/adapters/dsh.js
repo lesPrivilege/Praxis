@@ -22,12 +22,7 @@ export function apply(ctx, config = {}) {
       },
       // Reads may run beside each other; writes keep the default serial order.
       ...(tool.writes ? {} : { isConcurrencySafe: () => true }),
-      async execute(args) {
-        const value = await callTool(praxis, tool.name, args, 'dsh')
-        // A lookup miss is a tool error, not a successful value.
-        if (value && typeof value === 'object' && Object.keys(value).length === 1 && typeof value.error === 'string') throw new Error(value.error)
-        return value
-      },
+      execute: (args) => callTool(praxis, tool.name, args, 'dsh'),
     })
   }
 

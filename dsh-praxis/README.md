@@ -4,6 +4,8 @@
 
 **现状：四层 Kit 都在 [dsh-praxis/kit](kit/README.md)；控制面已实现并装进本机 DSH。** 同一套操作有四个入口：DSH 插件（原生工具、系统提示词入口段、右侧栏“Praxis”标签）、MCP 服务（仓库根 `.mcp.json`）、命令行、独立网页。
 
+验证范围见 [整合包验收](../docs/verification/dsh-praxis-acceptance-20261025.md)：桌面入口与共数据主路径已实测；验收发现的备份、冲突、错误语义与版本追踪缺陷已修，补充探针 9 项通过。
+
 | 要做什么 | 读哪里 |
 |---|---|
 | 第一次用，想知道它是什么、在 DSH 里怎么用 | [用户说明](docs/DETAIL.zh.md)（[English](docs/DETAIL.md)），也是 DSH 插件详情页 |

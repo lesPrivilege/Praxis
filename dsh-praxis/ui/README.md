@@ -1,6 +1,6 @@
 # 控制面
 
-单个离线 HTML：[index.html](index.html)，无外部依赖。配色、圆角、发丝线和控件形状取 DeepSeek Harness 客户端的 design-platform 别名 token。嵌在 DSH 侧栏里时跟随 DSH 的明暗与界面语言（`<html lang>`），单独打开时跟随系统，右上角可切换中英文。界面文字有中英两套；Kit 正文、来源标题、说明与摘要保留原语言。由 [http.js](../adapters/http.js)提供，DSH 插件挂在 `/praxis/`，单独运行用 `node dsh-praxis/adapters/cli.js serve`。
+单个离线 HTML：[index.html](index.html)，无外部依赖。配色、圆角、发丝线和控件形状取 DeepSeek Harness 客户端的 design-platform 别名 token。嵌在 DSH 侧栏里时跟随 DSH 的明暗与界面语言（`<html lang>`），单独打开时跟随系统，右上角可切换中英文。界面文字有中英两套；Kit 正文、来源标题、说明与摘要保留原语言。由 [http.js](../adapters/http.js)提供，DSH 插件挂在 DSH 已认证的 `/api/praxis`（页面）与 `/api/praxis.call`（调用），单独运行用 `node dsh-praxis/adapters/cli.js serve`。
 
 | 页 | 做什么 |
 |---|---|

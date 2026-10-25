@@ -19,11 +19,12 @@ if (!name || name === 'help' || name === '--help') {
 }
 if (['export', 'check', 'restore'].includes(name)) {
   const { exportState, checkArchive, restoreState } = await import('../core/backup.js')
-  const repo = createPraxis().repo
+  const praxis = createPraxis()
+  const repo = praxis.repo
   const arg = raw ?? `praxis-state-${new Date().toISOString().slice(0, 10)}.tar.gz`
   const result = name === 'export' ? exportState(repo, arg)
     : name === 'check' ? (({ ok, problems, manifest }) => ({ ok, problems, created_at: manifest.created_at, repository_commit: manifest.repository_commit, files: manifest.files.length }))(checkArchive(arg))
-    : restoreState(repo, arg, { force: process.argv.includes('--force') })
+    : restoreState(repo, arg, { force: process.argv.includes('--force'), rebuild: () => praxis.materials.rebuild({ snapshots: true }) })
   console.log(JSON.stringify(result, null, 1))
   process.exit(0)
 }

@@ -80,9 +80,12 @@ export class Collection {
 
   /**
    * Apply fn(current) -> next under the lock. expected is the revision the caller read
-   * (0 or undefined for a new record). Returns the stored record.
+   * (0 or undefined for a new record). `also(records)` may return further changes
+   * [{id, fn, change}] that land in the same write, only once the check has passed.
+   * Each history line carries the fields that revision set, so any revision can be replayed.
+   * Returns the stored record.
    */
-  update(id, expected, fn, change) {
+  update(id, expected, fn, change, { also } = {}) {
     return withLock(this.path, () => {
       const doc = readJson(this.path, { schema_version: '1.0', records: {} })
       const current = doc.records[id]
@@ -90,16 +93,30 @@ export class Collection {
       if (expected !== undefined && expected !== null && expected !== actual) {
         throw new ConflictError(id, expected, actual, current)
       }
-      const next = { ...fn(current ? structuredClone(current) : undefined), revision: actual + 1 }
-      doc.records[id] = next
+      const lines = []
+      const apply = (key, step, note) => {
+        const cur = doc.records[key]
+        const next = { ...step(cur ? structuredClone(cur) : undefined), revision: (cur?.revision ?? 0) + 1 }
+        doc.records[key] = next
+        lines.push({ at: new Date().toISOString(), id: key, revision: next.revision, ...note, ...delta(cur, next) })
+        return next
+      }
+      const next = apply(id, fn, change)
+      for (const other of also?.(doc.records) ?? []) apply(other.id, other.fn, other.change)
       writeJson(this.path, doc)
       if (this.historyPath) {
         mkdirSync(dirname(this.historyPath), { recursive: true })
-        appendFileSync(this.historyPath, JSON.stringify({
-          at: new Date().toISOString(), id, revision: next.revision, ...change,
-        }) + '\n')
+        appendFileSync(this.historyPath, lines.map((l) => JSON.stringify(l) + '\n').join(''))
       }
       return next
     })
   }
+}
+
+/** The fields a revision set and the ones it dropped. */
+function delta(before = {}, after) {
+  const set = {}
+  for (const [k, v] of Object.entries(after)) if (k !== 'revision' && JSON.stringify(before[k]) !== JSON.stringify(v)) set[k] = v
+  const unset = Object.keys(before).filter((k) => k !== 'revision' && !(k in after))
+  return { set, ...(unset.length ? { unset } : {}) }
 }

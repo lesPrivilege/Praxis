@@ -1,6 +1,8 @@
 // Export the control plane's persistent state as one archive with a hash manifest,
 // and check an archive before restoring it. Plugin code and Kit pages travel with the
-// repository; this carries what the control plane itself wrote.
+// repository; this carries what the control plane itself writes: its own data, captured
+// sources and snapshots, and every source catalog, since bindings and refreshes edit the
+// grammar_paths and snapshot pointers of existing records. Derived indexes are rebuilt on restore.
 import { createHash } from 'node:crypto'
 import { execFileSync } from 'node:child_process'
 import { copyFileSync, existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs'
@@ -23,8 +25,16 @@ function files(repo, rel) {
 
 const sha = (buf) => createHash('sha256').update(buf).digest('hex')
 
+/** Catalogs the registry projects sources from: the records curate, remove, restore and refresh write. */
+function catalogs(repo) {
+  const path = join(repo, 'vault/registry.json')
+  if (!existsSync(path)) return []
+  const rels = JSON.parse(readFileSync(path, 'utf8')).sources.map((s) => s.record_path).filter((p) => p?.endsWith('catalog.json'))
+  return [...new Set(rels)].filter((rel) => existsSync(join(repo, rel)))
+}
+
 export function exportState(repo, dest) {
-  const list = STATE_PATHS.flatMap((rel) => files(repo, rel)).sort()
+  const list = [...new Set([...STATE_PATHS.flatMap((rel) => files(repo, rel)), ...catalogs(repo)])].sort()
   let commit = null
   try { commit = execFileSync('git', ['rev-parse', 'HEAD'], { cwd: repo, encoding: 'utf8' }).trim() } catch {}
   const manifest = {
@@ -59,8 +69,12 @@ export function checkArchive(archive) {
   return { ok: problems.length === 0, problems, manifest, unpacked: stage }
 }
 
-/** Copy a checked archive into the repository. Files that differ locally are reported and left alone unless forced. */
-export function restoreState(repo, archive, { force = false } = {}) {
+/**
+ * Copy a checked archive into the repository, then rebuild the derived registry and snapshot
+ * manifest from the restored records. Files that differ locally are reported and left alone unless forced.
+ */
+export function restoreState(repo, archive, { force = false, rebuild } = {}) {
+  if (typeof rebuild !== 'function') throw new Error('restore needs rebuild: the registry and snapshot manifest are derived from the restored records')
   const check = checkArchive(archive)
   if (!check.ok) throw new Error(`archive check failed: ${check.problems.join('; ')}`)
   const conflicts = check.manifest.files
@@ -72,5 +86,6 @@ export function restoreState(repo, archive, { force = false } = {}) {
     mkdirSync(dirname(join(repo, rel)), { recursive: true })
     copyFileSync(join(check.unpacked, rel), join(repo, rel))
   }
+  rebuild()
   return { restored: paths.length, conflicts }
 }

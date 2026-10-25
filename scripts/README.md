@@ -2,6 +2,7 @@
 
 - [SaaS 整合索引](build_saas_atlas_indexes.py)、[整合校验](validate_saas_atlas_integration.py)与[合成检查入口](run_saas_atlas_checks.py)：保留 canonical URL/别名/主张范围，验证全案例迁移，执行作者局部模型；教材入口在 [Books](../books/saas-engineering/README.md)。
 - [SaaS atlas 契约校验](validate_saas_atlas.py)：运行 `python3 scripts/validate_saas_atlas.py --self-test` 检查案例身份、分包、来源引用、typed relations 与失败检查定义；不执行业务。
+- [Praxis 运行验收探针](check_praxis_acceptance.py)：运行 `python3 scripts/check_praxis_acceptance.py`，在自动清理的临时库中通过真实 MCP/CLI 进程检查共数据、错误语义、预设冲突、来源变化、历史值与备份恢复；使用原版索引构建脚本和本机 HTTP 来源。输出 JSON，未满足预期时退出非零；不修改真实数据，不安装依赖。DSH 桌面与外网边界另验，当前结果见 [验收回执](../docs/verification/dsh-praxis-acceptance-20261025.md)。
 
 在仓库根目录运行下列命令。catalog 与 intake 是编辑源，registry 和清单是生成投影。来源卡分两种，由每份 catalog 的 `cards` 字段声明，见[来源卡由谁维护](#来源卡由谁维护)。
 

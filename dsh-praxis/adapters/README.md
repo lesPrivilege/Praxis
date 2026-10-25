@@ -4,11 +4,13 @@
 
 | 入口 | 文件 | 怎样用 |
 |---|---|---|
-| DSH 插件 | [dsh.js](dsh.js) | 包的主入口。原生注册全部工具（只读工具可并行，查不到时报工具错误）；用 `systemPrompt.section` 加入口段（常驻单元与任务类型，约 700 字，每次组装时读取）；在 DSH 的 Connection 上注册两条精确路由 `GET /api/praxis`（页面）与 `POST /api/praxis.call`（`{tool, args}`），Web 与桌面应用都走 DSH 自己的浏览器认证 |
+| DSH 插件 | [dsh.js](dsh.js) | 包的主入口。原生注册全部工具（只读工具可并行）；用 `systemPrompt.section` 加入口段（常驻单元与任务类型，约 700 字，每次组装时读取）；在 DSH 的 Connection 上注册两条精确路由 `GET /api/praxis`（页面）与 `POST /api/praxis.call`（`{tool, args}`），Web 与桌面应用都走 DSH 自己的浏览器认证 |
 | DSH 客户端 | [client.js](client.js) | 右侧栏标签类型“Praxis”，内嵌 `/api/praxis`，`keepMounted` 保留状态；引导卡文字经 `ctx.locale` 的中英词典 |
 | MCP | [mcp.js](mcp.js) | stdio 服务，供 Claude Code、Codex 等 agent 调用；仓库根的 `.mcp.json` 已登记 |
 | 命令行 | [cli.js](cli.js) | `node dsh-praxis/adapters/cli.js <工具名> '<JSON 参数>'`；`help` 列出工具 |
 | 控制面 | [http.js](http.js) | 两条路由的 Fetch 处理；不经 DSH 时 `node dsh-praxis/adapters/cli.js serve [端口]`，默认 <http://127.0.0.1:7878/> |
+
+失败在各入口语义一致：查不到条目、参数错误、版本冲突都是失败的调用——DSH 工具错误、MCP `isError: true`、命令行退出码 1、HTTP 400（冲突 409，附当前内容）——不当作带 `error` 字段的成功结果返回。
 
 命令行另有 `export`、`check`、`restore <archive.tar.gz> [--force]`，备份与恢复控制面写下的数据，见 [Data](../data/README.md)。
 

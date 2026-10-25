@@ -10,7 +10,8 @@ const calls = []
 const fake = {
   entry: () => ({ resident: [{ id: 'writing', description: '写作入口。' }], layers: [], task_types: [{ id: 'task/types/x', description: '一种任务。', pipelines: ['html'] }] }),
   resolve: (a) => { calls.push(['resolve', a]); return { units: [] } },
-  materials: { curate: (id, patch, opts) => { calls.push(['curate', id, patch, opts.by]); return { ok: true } } },
+  unit: () => undefined,
+  materials: { curate: (id, patch, opts) => { calls.push(['curate', id, patch, opts.by]); return { ok: true } }, source: () => undefined },
 }
 
 test('every tool has a valid object schema whose required keys exist', () => {
@@ -38,10 +39,13 @@ test('MCP: initialize, list, call, errors', async () => {
   await handle({ jsonrpc: '2.0', id: 4, method: 'tools/call', params: { name: 'praxis_unit', arguments: {} } })
   assert.equal(out[3].result.isError, true)
   assert.match(out[3].result.content[0].text, /missing ref/)
+  await handle({ jsonrpc: '2.0', id: 41, method: 'tools/call', params: { name: 'praxis_unit', arguments: { ref: 'no/such' } } })
+  await handle({ jsonrpc: '2.0', id: 42, method: 'tools/call', params: { name: 'praxis_source', arguments: { id: 'no:such' } } })
+  assert.deepEqual(out.slice(4, 6).map((m) => [m.result.isError, JSON.parse(m.result.content[0].text).error]), [[true, 'unknown unit: no/such'], [true, 'unknown source: no:such']])
   await handle({ jsonrpc: '2.0', id: 5, method: 'resources/list' })
-  assert.equal(out[4].error.code, -32601)
+  assert.equal(out[6].error.code, -32601)
   await handle({ jsonrpc: '2.0', id: 6, method: 'initialize', params: { protocolVersion: '1999-01-01' } })
-  assert.equal(out[5].result.protocolVersion, '2026-07-28')
+  assert.equal(out[7].result.protocolVersion, '2026-07-28')
 })
 
 const call = (body, headers = { 'content-type': 'application/json' }) => new Request(`http://dsh${CALL_PATH}`, { method: 'POST', headers, body: JSON.stringify(body) })

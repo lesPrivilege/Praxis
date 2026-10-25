@@ -46,3 +46,4 @@
 - [MiMo与Seed使用对比](palantir-reading-list-series-20261017.md)：12 轮，选中分支；从 TTS 选型谈到 Palantir 书单讲解系列的取材与编排，第 10 轮按原文删节（文中注明）；[登记](../../intake/palantir-reading-list-series-20261017.json)。
 
 - [规划Praxis插件 control plane](dsh-praxis-control-plane-20261023.md)：15 轮导出加用户另附的末轮回复，选中分支；dsh-praxis 的定位、分层与控制面，附评审记录 v0.2 快照；[登记](../../intake/dsh-praxis-control-plane-20261023.json)。
+- [规划Praxis插件 control plane · 2026-10-25 增量原件](dsh-praxis-control-plane-20261025.md)：同一 conversation 的 20-turn 导出，选中分支 `bf9bb6b8-ccdd-4aa9-aaf8-42a633957e0b`；与 2026-10-23 原件共享前 15 轮，补有带 message ID 的第 16–20 轮。原件 SHA-256 为 `55d5993f…fcee`，仍标 `partial`；v0.3 评审附件、内嵌图片与 widgets 不在文件中。不要新建主题，覆盖与增量 review 见同一 [登记](../../intake/dsh-praxis-control-plane-20261023.json)。

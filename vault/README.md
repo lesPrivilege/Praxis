@@ -57,5 +57,6 @@ Vault 保存研究材料、来源身份、提炼结果和可回查的原件。�
 - 2026-10-02：[内容架构与能力语法审阅](distilled/content-architecture-review-20261002/README.md)，对照本地后只校订了入口措辞与文档体例（ADR-020）；九类能力语法候选和交付生命周期登记为候选，等真实素材；附三条企业工作路线与三个反例的前后走读。
 - 2026-10-02：[社区 Skills 与 Prompts 的可迁移语法](distilled/community-grammar-20261002/README.md)，十个社区样本的工作机制；五条泛化后收进 Kit 的 [工作开展方式 · 备用素材](../kit/environment/working-methods.md)，不是规则；带对照组的走读显示其中一条当前执行模型不读也做得到（ADR-021）。
 - 2026-10-02：[自足性审查](distilled/self-contained-review-20261002/README.md)，一份针对 `ff96b9a` 的减法与加法建议逐条对回本地的结果；来源卡由谁维护的裁决在 ADR-022。
+- 2026-10-25：[dsh-praxis 控制面规划增量原件](archive/chat/dsh-praxis-control-plane-20261025.md) 是同一 conversation 的 20-turn 版本；旧原件保留，覆盖与去重记录见 [intake](intake/dsh-praxis-control-plane-20261023.json)。新原件仍为 partial，v0.3 评审附件与 ATC 测试实际结果缺失。
 
 这些入口只说明材料在哪里、已消费到什么程度和下一步去哪里；不要以目录名称推断安装、运行、发布或视觉验收状态。

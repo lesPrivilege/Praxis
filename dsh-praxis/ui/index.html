@@ -484,7 +484,7 @@ const STRINGS = {
     'cap.titleField': '标题', 'cap.summary': '概要', 'cap.summaryPh': '是什么，能支持什么判断', 'cap.scope': '读取范围', 'cap.scopePh': '读过正文 / 看过输出 / 运行过实现',
     'cap.tags': '用途 tag', 'cap.evidence': '证据状态', 'cap.limits': '边界', 'cap.limitsPh': '不能证明什么', 'cap.revisit': '何时重访', 'cap.submit': '登记',
     'up.attention': '需要处理', 'up.none': '没有要处理的事', 'up.stale': '交付过期', 'up.staleNone': '交付都与当前 Kit 一致', 'up.unbound': '新登记未挂载',
-    'up.unboundNone': '没有待挂载的来源', 'up.attachTo': '挂到单元', 'up.unitPh': '单元 ID', 'up.preset': '预设已改',
+    'up.unboundNone': '没有待挂载的来源', 'up.attachTo': '挂到单元', 'up.unitPh': '单元 ID', 'up.preset': '预设已改', 'up.source': '来源已更新',
     'log.runs': '运行', 'log.history': '维护记录', 'log.noRuns': '还没有运行', 'log.noHistory': '还没有维护',
   },
   en: {
@@ -518,7 +518,7 @@ const STRINGS = {
     'cap.titleField': 'Title', 'cap.summary': 'Summary', 'cap.summaryPh': 'What it is and what judgment it supports', 'cap.scope': 'What was read', 'cap.scopePh': 'Read the text / saw the output / ran it',
     'cap.tags': 'Purpose tags', 'cap.evidence': 'Evidence', 'cap.limits': 'Limits', 'cap.limitsPh': 'What it cannot show', 'cap.revisit': 'When to revisit', 'cap.submit': 'Capture',
     'up.attention': 'Needs attention', 'up.none': 'Nothing needs attention', 'up.stale': 'Stale deliveries', 'up.staleNone': 'Every delivery matches the current Kit', 'up.unbound': 'Captured, not attached',
-    'up.unboundNone': 'Nothing waiting to be attached', 'up.attachTo': 'Attach to unit', 'up.unitPh': 'Unit ID', 'up.preset': 'Preset changed',
+    'up.unboundNone': 'Nothing waiting to be attached', 'up.attachTo': 'Attach to unit', 'up.unitPh': 'Unit ID', 'up.preset': 'Preset changed', 'up.source': 'Source updated',
     'log.runs': 'Runs', 'log.history': 'Maintenance', 'log.noRuns': 'No runs yet', 'log.noHistory': 'No maintenance yet',
   },
 }
@@ -921,7 +921,7 @@ function detail(b, act) {
   const review = el('form', { class: 'actions', onsubmit: (e) => {
     e.preventDefault()
     const d = Object.fromEntries(new FormData(review))
-    act(() => api('praxis_review', { binding: b.id, verdict: d.verdict, note: d.note.trim() || undefined }), t('toast.reviewed'))
+    act(() => api('praxis_review', { binding: b.id, revision: b.revision, verdict: d.verdict, note: d.note.trim() || undefined }), t('toast.reviewed'))
   } },
     el('div', { class: 'seg' }, segment('verdict', VERDICTS.map((v) => ({ value: v, label: t(`v.${v}`) })), 'accurate')),
     el('input', { name: 'note', placeholder: t('f.reviewNote'), 'aria-label': t('f.reviewNote'), style: 'flex:1;min-width:160px;width:auto' }),
@@ -984,7 +984,7 @@ async function loadAttention() {
       r.stale.map((s) => el('li', {},
         el('span', { style: 'min-width:0' }, el('span', { class: 't' }, s.title), el('span', { class: 'line' }, t('up.stale'))),
         el('span', { class: 'chips' }, s.units.map((x) => el('button', { class: 'chip mono jump', onclick: () => openInCatalog({ kind: 'unit', id: x }) }, x)),
-          s.bindings.map((x) => chip(x.slice(0, x.lastIndexOf('@')), 'mono outline')), s.preset ? chip(t('up.preset'), 'warn') : null))),
+          s.bindings.map((x) => chip(x.slice(0, x.lastIndexOf('@')), 'mono outline')), s.sources.length ? chip(t('up.source'), 'warn') : null, s.preset ? chip(t('up.preset'), 'warn') : null))),
       r.unbound.map(unboundRow))
       : el('div', { class: 'empty compact' }, svg(ICONS.check), t('up.none')))
 }

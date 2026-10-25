@@ -5,6 +5,8 @@ const str = (description) => ({ type: 'string', description })
 const bool = (description) => ({ type: 'boolean', description })
 const num = (description) => ({ type: 'integer', description })
 const list = (description) => ({ type: 'array', items: { type: 'string' }, description })
+// A lookup miss is a failed call on every surface: CLI exit 1, MCP isError, DSH tool error, HTTP 400.
+const missing = (message) => { throw new Error(message) }
 const who = {
   by: str('操作者，人或 agent 的名称；省略时用调用方名称'),
   reason: str('为什么改'),
@@ -34,7 +36,7 @@ export const TOOLS = [
     description: '读一个 Kit 单元的全文。参数可以是单元 ID（writing/organization/mechanism）、仓库路径或语法 ID（DWG-I-CONTROLS）。',
     parameters: { ref: str('单元 ID、路径或语法 ID') },
     required: ['ref'],
-    run: (p, a) => p.unit(a.ref) ?? { error: `unknown unit: ${a.ref}` },
+    run: (p, a) => p.unit(a.ref) ?? missing(`unknown unit: ${a.ref}`),
   },
   {
     name: 'praxis_units',
@@ -55,7 +57,7 @@ export const TOOLS = [
     required: ['id'],
     run: (p, a) => {
       const s = p.materials.source(a.id)
-      if (!s) return { error: `unknown source: ${a.id}` }
+      if (!s) missing(`unknown source: ${a.id}`)
       const { record, ...rest } = s
       return rest
     },
@@ -139,7 +141,7 @@ export const TOOLS = [
   },
   {
     name: 'praxis_upkeep',
-    description: '现在需要人处理的事，通常为空：review 结论为待改（needs_work）或来源在上次 review 后变了（changed）的挂载、交付后所用单元或挂载又改过的运行、新登记还没挂到单元的来源。未写说明、未 review 是默认状态，不列。',
+    description: '现在需要人处理的事，通常为空：review 结论为待改（needs_work）或来源在上次 review 后变了（changed）的挂载、交付后所用单元、挂载、来源或预设又改过的运行、新登记还没挂到单元的来源。未写说明、未 review 是默认状态，不列。',
     parameters: {},
     run: (p) => p.upkeep(),
   },
@@ -185,14 +187,14 @@ export const TOOLS = [
   },
   {
     name: 'praxis_stale',
-    description: '列出所用单元或挂载在之后改过的运行记录，用来判断哪些交付可能要重看。',
+    description: '列出所用单元、挂载、来源快照或预设在之后改过的运行记录，用来判断哪些交付可能要重看。',
     parameters: {},
     run: (p) => p.stale(),
   },
   {
     name: 'praxis_history',
-    description: '最近的维护记录：谁在什么任务里改了什么、为什么。',
-    parameters: { limit: num('条数，默认 50') },
+    description: '最近的维护记录：谁在什么任务里改了什么、为什么；每条带这一版写下的字段值（set），按 id 过滤可回查一条挂载或预设的每个版本。',
+    parameters: { limit: num('条数，默认 50'), id: str('只看这条挂载、预设或来源的记录') },
     run: (p, a) => p.history(a),
   },
 ]
