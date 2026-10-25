@@ -93,3 +93,20 @@ consume 显式记录来源 v1 hash，随后 refresh 得到 v2。挂载出现 cha
 主代理负责桌面验证、范围收敛和最终接收；Luna（gpt-5.6-luna）负责原对话覆盖与增量入账；运行检查 worker 使用默认继承模型，具体型号未确认。未另启 Astra，关键结论由主代理依据复现证据裁定。
 
 `python3 scripts/validate_repository.py` 通过，errors 为空（2047 Markdown、951 JSON、1106 snapshots）；`git diff --check` 通过。功能探针未通过不能被结构校验通过抵消。
+
+## 补充：DSH 调用方反馈与只读核对
+
+本节补充用户转述的 DSH 自测及本会话随后核对，不改写上文 `179e227` 的历史结果。核对时 HEAD 为 `535dd67`，工作区另有 Kit 正文修改；该提交已包含上一轮缺陷修复，本节没有重跑其完整验收。只保留提炼后的发现，没有归档本次消息原文或附件。
+
+| 事项 | 证据与判断 |
+|---|---|
+| DSH 原生调用可达 | 调用方报告 units、entry、search、presets、runs 可读。这是新增调用方证据，没有附完整调用日志，不扩大为所有读写路径已验证 |
+| Kit 数量 | 随后直接调用当前 core 得到 76 个单元：Task 8、Writing 18、Publish 8、Design 42；常驻仍是 4 个。反馈中的粗略分层数量不作为精确基线 |
+| 预设与运行 | 只读核对为 0 个预设、4 条运行。空预设表示尚未配置，不是功能错误；有具体任务再确定 provider 等值，不用占位配置填满列表 |
+| 版本与产物 hash | 能支持身份比对和变化检测；旧正文、旧文件能否取回取决于是否保留相应版本。不能仅凭 run 中有版本号和 hash 宣称已完成历史内容回查 |
+
+调用方报告 `praxis_upkeep` 失败并出现 `value is not lossless JSON`。本次直接执行 `createPraxis().upkeep()`，得到非空 `stale` 列表，其中每个未变更预设的条目均有自有字段 `preset: undefined`。这不是“没有待办”的空结果情形。
+
+本机 DeepSeek Harness 应用包中的 `snapshotToolValue` 对 `snapshotJsonValue` 失败抛出上述错误；其 `walkJsonValue` 会拒绝 undefined，包括对象中的字段值。[DSH adapter](../../dsh-praxis/adapters/dsh.js) 将 core 原始对象直接返回；CLI/HTTP/MCP 输出中使用的 JSON 序列化则会丢弃这类字段。因此确认了与报错吻合的返回值契约缺陷。本次读取了已装应用包源码，未复制或快照宿主代码，也未重新发起真实模型工具调用；调用方的具体报错来自其自测反馈。
+
+建议下一轮在共同返回值边界与 DSH adapter 之间明确 JSON 可表示性，检查其他含可选字段的工具；具体在 core 构造时省略缺省字段、用有定义的 null，或在适配层规范化，由 Opus 裁决。不要只验证 `JSON.stringify` 能执行，也不要无差别吞掉不合法值来掩盖数据错误。至少覆盖 upkeep 无待办、有 stale 但无 preset、存在预设变更及嵌套可选字段。落实到 [下一轮工单](../../dsh-praxis/work-order.md)。

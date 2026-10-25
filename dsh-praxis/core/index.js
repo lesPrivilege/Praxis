@@ -6,6 +6,7 @@ import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { Kit, LAYERS, clip } from './kit.js'
 import { Materials } from './materials.js'
+import { Artifacts } from './artifacts.js'
 import { Collection, readJson } from './store.js'
 import { PRESET_FIELDS, presetId, validatePreset } from './presets.js'
 
@@ -25,11 +26,13 @@ export function createPraxis(options = {}) {
   const materials = new Materials(repo, dataDir, { rebuild: options.rebuild })
   const kit = () => new Kit(repo)
   const presets = new Collection(join(dataDir, 'presets.json'), join(dataDir, 'history.jsonl'))
+  const artifacts = new Artifacts(repo, dataDir)
 
   return {
     repo,
     layers: LAYERS,
     materials,
+    artifacts,
     kit,
 
     /** Resident entries plus the routes into each layer: what every task starts with. */
@@ -109,8 +112,9 @@ export function createPraxis(options = {}) {
     },
 
     /**
-     * Record that a piece of work read these units and bindings at their current versions,
-     * and produced these artifacts. Returns the run record.
+     * Record that a piece of work read these units, bindings and sources at their current versions
+     * and delivered these files. Each file is registered as an artifact version (see artifacts.js);
+     * everything is checked before anything is written. Returns the run record.
      */
     consume({ title, task_type, pipeline, preset, overrides, units = [], bindings = [], sources = [], artifacts = [], by, note }) {
       if (!title?.trim()) throw new Error('consume needs a title')
@@ -130,21 +134,68 @@ export function createPraxis(options = {}) {
         if (!s) throw new Error(`unknown source: ${id}`)
         return { id: s.id, snapshot: s.snapshot?.sha256 ?? null }
       })
-      const artifactRefs = artifacts.map((path) => {
-        const full = join(repo, path)
-        return existsSync(full)
-          ? { path, sha256: createHash('sha256').update(readFileSync(full)).digest('hex') }
-          : { path, sha256: null, note: 'not in repository' }
-      })
+      const delivered = artifacts.map((a) => this.artifacts.prepare(a))
       const presetRef = preset ? (() => { const p = this.preset(preset); if (!p) throw new Error(`unknown preset: ${preset}`); return { id: p.id, revision: p.revision, values: p.values } })() : undefined
       const at = new Date().toISOString()
       const id = `${at.slice(0, 10)}-${createHash('sha256').update(at + title).digest('hex').slice(0, 8)}`
+      const artifactRefs = delivered.map((item) => {
+        const { id: artifact, version, path, sha256 } = this.artifacts.register(item, { run: id, by })
+        return { artifact, version, path, sha256 }
+      })
       const run = { id, title: title.trim(), at, by, task_type, pipeline, preset: presetRef, overrides, units: unitRefs, bindings: bindingRefs, sources: sourceRefs, artifacts: artifactRefs, note }
       const path = join(dataDir, 'runs', `${id}.json`)
       mkdirSync(dirname(path), { recursive: true })
       writeFileSync(path, JSON.stringify(run, null, 2) + '\n')
       materials.bindings.log({ op: 'consume', id, by, title: run.title })
       return run
+    },
+
+    /**
+     * Delivered files, latest change first. Each row carries its live status (current, modified:
+     * unregistered bytes, missing), whether the run behind the latest version used something that has
+     * changed since (basis_changed), and its signals: missing, needs_work (latest version's last verdict).
+     */
+    artifactList({ query, medium, signal, include_removed = false, limit = 50 } = {}) {
+      const staleRuns = new Set(this.stale().map((r) => r.run))
+      const terms = (query ?? '').toLowerCase().split(/\s+/).filter(Boolean)
+      return Object.entries(artifacts.store.all())
+        .map(([id, rec]) => summarize(id, rec, artifacts, staleRuns))
+        .filter((a) => (include_removed || a.state !== 'removed') && (!medium || a.medium === medium) && (!signal || a.signals.includes(signal) || (signal === 'basis_changed' && a.basis_changed))
+          && terms.every((t) => `${a.title} ${a.description ?? ''} ${a.path}`.toLowerCase().includes(t)))
+        .sort((a, b) => b.updated_at.localeCompare(a.updated_at))
+        .slice(0, limit)
+    },
+
+    /** One artifact with every version, the run behind it and what that run used, and its reviews. */
+    artifact(id) {
+      const rec = artifacts.get(id)
+      if (!rec) return undefined
+      const stale = new Map(this.stale().map((r) => [r.run, r]))
+      const runs = new Map(this.runs({ limit: 1000 }).map((r) => [r.id, r]))
+      const head = summarize(id, rec, artifacts, new Set(stale.keys()))
+      return {
+        ...head,
+        versions: rec.versions.map((v, i) => {
+          const run = runs.get(v.run)
+          return {
+            version: i + 1, sha256: v.sha256, size: v.size, at: v.at, by: v.by, derived_from: v.derived_from ?? [],
+            run: run ? { id: run.id, title: run.title, at: run.at, task_type: run.task_type, pipeline: run.pipeline,
+              units: run.units.map((u) => u.id), bindings: run.bindings.map((b) => b.id), sources: run.sources.map((s) => s.id),
+              changed: stale.get(run.id) ?? null } : null,
+            reviews: rec.reviews.filter((r) => r.version === i + 1),
+          }
+        }),
+      }
+    },
+
+    reviewArtifact(args) {
+      artifacts.review(args.id, args)
+      return this.artifact(args.id)
+    },
+
+    updateArtifact(args) {
+      artifacts.update(args.id, args)
+      return this.artifact(args.id)
     },
 
     presetFields() {
@@ -220,6 +271,7 @@ export function createPraxis(options = {}) {
           .map((b) => ({ id: b.id, title: b.title, target: b.target, unit: units.get(b.target.split('#')[0]) ?? null, signals: b.signals, revision: b.revision })),
         stale: this.stale(),
         unbound: materials.unboundCaptures(),
+        artifacts: this.artifactList({ limit: 1000 }).filter((a) => a.signals.length),
       }
     },
 
@@ -230,6 +282,18 @@ export function createPraxis(options = {}) {
       const all = readFileSync(path, 'utf8').trim().split('\n').filter(Boolean).map((l) => JSON.parse(l))
       return (id ? all.filter((h) => h.id === id) : all).slice(-limit).reverse()
     },
+  }
+}
+
+function summarize(id, rec, artifacts, staleRuns) {
+  const latest = rec.versions.at(-1)
+  const status = artifacts.status(rec)
+  const review = rec.reviews.filter((r) => r.version === rec.versions.length).at(-1) ?? null
+  const signals = [status === 'missing' && 'missing', review?.verdict === 'needs-work' && 'needs_work'].filter(Boolean)
+  return {
+    id, title: rec.title, description: rec.description, medium: rec.medium, path: rec.path, absolute: artifacts.absolute(rec.path),
+    version: rec.versions.length, sha256: latest.sha256, status, basis_changed: !!latest.run && staleRuns.has(latest.run), review, signals, state: rec.state,
+    created_at: rec.created_at, updated_at: rec.reviews.at(-1)?.at > latest.at ? rec.reviews.at(-1).at : latest.at, revision: rec.revision,
   }
 }
 

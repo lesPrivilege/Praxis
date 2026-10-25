@@ -84,6 +84,7 @@ input:focus-visible, select:focus-visible, textarea:focus-visible { outline: non
 /* buttons: capsules */
 .btn { display: inline-flex; align-items: center; justify-content: center; gap: 4px; height: 28px; padding: 0 12px; border: .5px solid var(--l3); border-radius: 14px; corner-shape: round; background: transparent; color: var(--text); font-size: 12px; cursor: pointer; white-space: nowrap; transition: background .1s; }
 .btn:hover { background: var(--hover); }
+a.btn { text-decoration: none; }
 .btn:active { background: var(--press); }
 .btn svg { width: 14px; height: 14px; }
 .btn.primary { border-color: transparent; background: var(--primary); color: var(--on-primary); font-weight: 500; }
@@ -392,6 +393,11 @@ pre.md { white-space: pre-wrap; font: 12px/1.65 var(--mono); padding: 14px 16px;
   .timeline li::before { left: 4.5px; }
   .timeline time { grid-column: 2; grid-row: 2; }
 }
+.art-head { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 10px; align-items: start; cursor: grab; }
+.art-head h2 { margin: 0; font-size: 15px; font-weight: 600; }
+.art-head .desc { margin: 2px 0 0; }
+.art-head .meta { margin-top: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+#art-list .item { grid-template-columns: 16px minmax(0, 1fr) auto; }
 </style>
 <script>
 // Inside DSH the pane is a same-origin iframe: follow the host's theme switch.
@@ -439,6 +445,9 @@ try { if (parent !== window) new MutationObserver(syncTheme).observe(parent.docu
   <section class="view" id="task">
     <div class="split"><div class="panel side section" id="task-side"></div><div class="panel main-pane" id="task-out"></div></div>
   </section>
+  <section class="view" id="artifacts">
+    <div class="split drill" id="art-split"><div class="panel side" id="art-list"></div><div class="panel main-pane" id="art-detail"></div></div>
+  </section>
   <section class="view" id="presets">
     <div class="split drill" id="preset-split"><div class="panel side" id="preset-list"></div><div class="panel main-pane" id="preset-edit"></div></div>
   </section>
@@ -454,7 +463,7 @@ try { if (parent !== window) new MutationObserver(syncTheme).observe(parent.docu
 // standalone toggle. Kit pages, source titles, descriptions and summaries keep their own language.
 const STRINGS = {
   zh: {
-    'tab.catalog': '目录', 'tab.task': '任务', 'tab.presets': '预设', 'tab.log': '记录',
+    'tab.catalog': '目录', 'tab.task': '任务', 'tab.artifacts': '产物', 'tab.presets': '预设', 'tab.log': '记录',
     'stat.units': '单元', 'stat.bindings': '挂载', 'stat.local': '本机控制面',
     'lang.switch': 'English',
     'kit.search': '搜索单元', 'kit.source': '来源', 'kit.other': 'Kit 之外的挂载', 'kit.lede': '整合包：Task、Writing、Design、Publish 四层做法，加上挂在各页上的来源。agent 按任务取用其中一部分。', 'kit.none': '没有匹配的单元',
@@ -485,10 +494,10 @@ const STRINGS = {
     'cap.tags': '用途 tag', 'cap.evidence': '证据状态', 'cap.limits': '边界', 'cap.limitsPh': '不能证明什么', 'cap.revisit': '何时重访', 'cap.submit': '登记',
     'up.attention': '需要处理', 'up.none': '没有要处理的事', 'up.stale': '交付过期', 'up.staleNone': '交付都与当前 Kit 一致', 'up.unbound': '新登记未挂载',
     'up.unboundNone': '没有待挂载的来源', 'up.attachTo': '挂到单元', 'up.unitPh': '单元 ID', 'up.preset': '预设已改', 'up.source': '来源已更新',
-    'log.runs': '运行', 'log.history': '维护记录', 'log.noRuns': '还没有运行', 'log.noHistory': '还没有维护',
+    'log.runs': '运行', 'log.history': '维护记录', 'art.preview': '预览', 'art.reveal': '在 Finder 中显示', 'art.open': '打开', 'art.drag': '拖出文件', 'art.failed': '没有完成：', 'art.search': '找产物', 'art.noMatch': '没有匹配的产物', 'art.none': '还没有交付登记的产物', 'art.pick': '选一件产物', 'art.versions': '版本', 'art.derived': '派生自', 'art.basis': '依据已变', 'art.review': '记录 v{v} 的 review', 'art.reviewed': '已记录', 'art.edit': '名称与说明', 'art.title': '名称', 'art.desc': '它是什么、给谁用', 'art.save': '保存', 'art.saved': '已保存', 'art.remove': '移除', 'art.removed': '已移除', 'art.back': '产物', 'art.noRun': '运行记录不在', 'art.used': '用了', 'as.missing': '找不到文件', 'as.modified': '有未登记改动', 'as.needs_work': '待改', 'as.basis_changed': '依据已变', 'av.needs-work': '待改', 'av.checked': '已核对', 'av.accepted': '已接受', 'log.noRuns': '还没有运行', 'log.noHistory': '还没有维护',
   },
   en: {
-    'tab.catalog': 'Catalog', 'tab.task': 'Task', 'tab.presets': 'Presets', 'tab.log': 'Log',
+    'tab.catalog': 'Catalog', 'tab.task': 'Task', 'tab.artifacts': 'Artifacts', 'tab.presets': 'Presets', 'tab.log': 'Log',
     'stat.units': 'units', 'stat.bindings': 'bindings', 'stat.local': 'Local control plane',
     'lang.switch': '中文',
     'kit.search': 'Search units', 'kit.source': 'Source', 'kit.other': 'Bound outside the Kit', 'kit.lede': 'A bundle of working methods in four layers (Task, Writing, Design, Publish) with the sources bound to each page. Agents take the part a task needs.', 'kit.none': 'No matching units',
@@ -519,7 +528,7 @@ const STRINGS = {
     'cap.tags': 'Purpose tags', 'cap.evidence': 'Evidence', 'cap.limits': 'Limits', 'cap.limitsPh': 'What it cannot show', 'cap.revisit': 'When to revisit', 'cap.submit': 'Capture',
     'up.attention': 'Needs attention', 'up.none': 'Nothing needs attention', 'up.stale': 'Stale deliveries', 'up.staleNone': 'Every delivery matches the current Kit', 'up.unbound': 'Captured, not attached',
     'up.unboundNone': 'Nothing waiting to be attached', 'up.attachTo': 'Attach to unit', 'up.unitPh': 'Unit ID', 'up.preset': 'Preset changed', 'up.source': 'Source updated',
-    'log.runs': 'Runs', 'log.history': 'Maintenance', 'log.noRuns': 'No runs yet', 'log.noHistory': 'No maintenance yet',
+    'log.runs': 'Runs', 'log.history': 'Maintenance', 'art.preview': 'Preview', 'art.reveal': 'Show in Finder', 'art.open': 'Open', 'art.drag': 'Drag the file out', 'art.failed': 'Not done: ', 'art.search': 'Find an artifact', 'art.noMatch': 'No matching artifacts', 'art.none': 'No delivered artifacts yet', 'art.pick': 'Pick an artifact', 'art.versions': 'Versions', 'art.derived': 'Derived from', 'art.basis': 'Basis changed', 'art.review': 'Review v{v}', 'art.reviewed': 'Review recorded', 'art.edit': 'Name and description', 'art.title': 'Name', 'art.desc': 'What it is, for whom', 'art.save': 'Save', 'art.saved': 'Saved', 'art.remove': 'Remove', 'art.removed': 'Removed', 'art.back': 'Artifacts', 'art.noRun': 'Run record missing', 'art.used': 'Used', 'as.missing': 'File not found', 'as.modified': 'Unregistered changes', 'as.needs_work': 'Needs work', 'as.basis_changed': 'Basis changed', 'av.needs-work': 'Needs work', 'av.checked': 'Checked', 'av.accepted': 'Accepted', 'log.noRuns': 'No runs yet', 'log.noHistory': 'No maintenance yet',
   },
 }
 // Preset field labels come from core in Chinese; English labels live here with the rest of the interface.
@@ -641,7 +650,7 @@ function when(iso) {
 const stamp = (iso) => new Intl.DateTimeFormat(LANG === 'zh' ? 'zh-CN' : 'en', { month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false }).format(new Date(iso))
 
 // ---- shell
-const VIEWS = [['catalog', 'layers'], ['task', 'flow'], ['presets', 'sliders'], ['log', 'activity']]
+const VIEWS = [['catalog', 'layers'], ['task', 'flow'], ['artifacts', 'inbox'], ['presets', 'sliders'], ['log', 'activity']]
 if (embedded) $('#brand').remove()
 else fill($('#brand'), svg(ICONS.mark), el('span', {}, 'Praxis'))
 fill($('#tabs'), VIEWS.map(([view, icon]) => el('button', { role: 'tab', 'data-view': view, 'aria-selected': view === 'catalog', onclick: () => show(view) }, svg(ICONS[icon]), t(`tab.${view}`))))
@@ -651,6 +660,7 @@ function show(view) {
   if (view === 'log') loadLog()
   if (view === 'task') loadTaskTypes()
   if (view === 'presets') loadPresets()
+  if (view === 'artifacts') loadArtifacts()
 }
 function renderStats() {
   fill($('#stats'),
@@ -971,7 +981,7 @@ function openInCatalog(next) { show('catalog'); go(next) }
 async function loadAttention() {
   if (!units.length) await refreshData()
   const r = await api('praxis_upkeep')
-  const n = r.bindings.length + r.stale.length + r.unbound.length
+  const n = r.bindings.length + r.stale.length + r.unbound.length + r.artifacts.length
   const tab = $('.tabs button[data-view="log"]')
   $('.badge', tab)?.remove()
   if (n) tab.append(el('span', { class: 'badge', 'aria-label': `${t('up.attention')} ${n}` }, String(n)))
@@ -985,6 +995,9 @@ async function loadAttention() {
         el('span', { style: 'min-width:0' }, el('span', { class: 't' }, s.title), el('span', { class: 'line' }, t('up.stale'))),
         el('span', { class: 'chips' }, s.units.map((x) => el('button', { class: 'chip mono jump', onclick: () => openInCatalog({ kind: 'unit', id: x }) }, x)),
           s.bindings.map((x) => chip(x.slice(0, x.lastIndexOf('@')), 'mono outline')), s.sources.length ? chip(t('up.source'), 'warn') : null, s.preset ? chip(t('up.preset'), 'warn') : null))),
+      r.artifacts.map((a) => el('li', {},
+        el('button', { class: 'row-link', onclick: () => { show('artifacts'); openArtifact(a.id) } }, el('span', { class: 't' }, a.title), el('span', { class: 'mono' }, a.path)),
+        el('span', { class: 'chips' }, signalChips(a)))),
       r.unbound.map(unboundRow))
       : el('div', { class: 'empty compact' }, svg(ICONS.check), t('up.none')))
 }
@@ -1174,13 +1187,122 @@ fill($('#capture'), capForm)
 
 // ---- log
 const logCard = (icon, title, n, body) => [el('div', { class: 'h' }, svg(ICONS[icon], 'glyph'), title, el('span', { class: 'count' }, String(n))), body]
+// ---- artifacts. Inside DSH, preview / reveal / open go to the client half (adapters/client.js);
+// standalone, the file route opens the file in a new tab. Dragging a row hands the file to the OS.
+let hostSeq = 0
+function host(action, path) {
+  return new Promise((resolve) => {
+    const id = ++hostSeq
+    const done = (e) => {
+      if (e.source !== parent || e.data?.type !== 'praxis:file:result' || e.data.id !== id) return
+      removeEventListener('message', done)
+      resolve(e.data)
+    }
+    addEventListener('message', done)
+    parent.postMessage({ type: 'praxis:file', id, action, path }, location.origin)
+  })
+}
+const fileUrl = (id) => new URL(`/api/praxis.file?artifact=${encodeURIComponent(id)}`, location.href).href
+const MIME = { html: 'text/html', md: 'text/markdown', txt: 'text/plain', svg: 'image/svg+xml', png: 'image/png', jpg: 'image/jpeg', pdf: 'application/pdf', json: 'application/json', mp4: 'video/mp4' }
+const MEDIUM_ICON = { html: 'code', text: 'doc', image: 'mark', pdf: 'doc', video: 'play', audio: 'play', document: 'doc', slides: 'play', sheet: 'sliders' }
+const ART_VERDICTS = ['needs-work', 'checked', 'accepted']
+
+function dragFile(a) {
+  return (e) => {
+    const name = a.path.split('/').pop()
+    e.dataTransfer.effectAllowed = 'copy'
+    e.dataTransfer.setData('DownloadURL', `${MIME[name.split('.').pop()] ?? 'application/octet-stream'}:${name}:${fileUrl(a.id)}`)
+    e.dataTransfer.setData('text/uri-list', fileUrl(a.id))
+  }
+}
+const signalChips = (a) => [a.status === 'modified' ? chip(t('as.modified'), 'outline') : null, ...a.signals.map((g) => chip(t(`as.${g}`), 'warn'))]
+
+let artList = []
+async function loadArtifacts(selectId) {
+  artList = await api('praxis_artifacts', { limit: 500 })
+  const search = el('input', { type: 'search', placeholder: t('art.search'), 'aria-label': t('art.search') })
+  const rows = el('div')
+  const draw = () => {
+    const q = search.value.trim().toLowerCase()
+    const shown = artList.filter((a) => !q || `${a.title} ${a.description ?? ''} ${a.path}`.toLowerCase().includes(q))
+    fill(rows, shown.length ? shown.map((a) => el('button', { class: 'item', draggable: 'true', ondragstart: dragFile(a), 'aria-current': a.id === selectId, onclick: () => openArtifact(a.id) },
+      svg(ICONS[MEDIUM_ICON[a.medium]] ?? ICONS.doc, 'glyph'),
+      el('span', { style: 'min-width:0' }, el('span', { class: 't' }, a.title), el('span', { class: 'id' }, a.path)),
+      el('span', { class: 'chips' }, a.status === 'modified' ? el('span', { class: 'chip outline', title: t('as.modified'), 'aria-label': t('as.modified') }, svg(ICONS.refresh)) : null,
+        a.signals.map((g) => chip(t(`as.${g}`), 'warn')), chip(`v${a.version}`, 'mono')))) : empty('inbox', t(artList.length ? 'art.noMatch' : 'art.none')))
+  }
+  search.addEventListener('input', draw)
+  fill($('#art-list'), artList.length ? el('div', { class: 'field', style: 'margin: 6px 6px 8px' }, svg(ICONS.search), search) : null, rows)
+  draw()
+  if (selectId) openArtifact(selectId)
+  else if (!$('#art-split').classList.contains('focus')) fill($('#art-detail'), empty('inbox', t(artList.length ? 'art.pick' : 'art.none')))
+}
+
+async function openArtifact(id) {
+  const a = await api('praxis_artifact', { id })
+  $('#art-split').classList.add('focus')
+  for (const x of document.querySelectorAll('#art-list .item')) x.setAttribute('aria-current', x.querySelector('.id')?.textContent === a.path)
+  const run = (action) => async () => {
+    const r = await host(action, a.absolute)
+    if (!r.ok) toast(t('art.failed') + (r.error || action), true)
+  }
+  const tool = (icon, label, onclick) => el('button', { class: 'btn', type: 'button', onclick }, svg(ICONS[icon]), label)
+  const act = async (fn, ok) => {
+    try { await fn(); toast(ok); await loadArtifacts(a.id) }
+    catch (e) { toast(e.status === 409 ? t('toast.conflict') : e.message, true); if (e.status === 409) await loadArtifacts(a.id) }
+  }
+  const review = el('form', { class: 'actions', onsubmit: (e) => {
+    e.preventDefault()
+    const d = Object.fromEntries(new FormData(review))
+    act(() => api('praxis_artifact_review', { id: a.id, version: a.version, verdict: d.verdict, note: d.note.trim() || undefined }), t('art.reviewed'))
+  } },
+    el('div', { class: 'seg' }, segment('verdict', ART_VERDICTS.map((v) => ({ value: v, label: t(`av.${v}`) })), 'checked')),
+    el('input', { name: 'note', placeholder: t('f.reviewNote'), 'aria-label': t('f.reviewNote'), style: 'flex:1;min-width:160px;width:auto' }),
+    el('button', { class: 'btn primary', type: 'submit' }, t('art.review', { v: a.version })))
+  const edit = el('form', { onsubmit: (e) => {
+    e.preventDefault()
+    const d = Object.fromEntries(new FormData(edit))
+    act(() => api('praxis_artifact_update', { id: a.id, expected_revision: a.revision, title: d.title.trim(), description: d.description.trim() || undefined }), t('art.saved'))
+  } },
+    el('div', { class: 'grid2' },
+      el('div', {}, el('label', {}, t('art.title')), el('input', { name: 'title', value: a.title, required: true })),
+      el('div', {}, el('label', {}, t('art.desc')), el('input', { name: 'description', value: a.description ?? '' }))),
+    el('div', { class: 'actions' }, el('button', { class: 'btn', type: 'submit' }, t('art.save')),
+      el('button', { class: 'btn ghost', type: 'button', onclick: () => act(() => api('praxis_artifact_update', { id: a.id, expected_revision: a.revision, state: 'removed' }), t('art.removed')) }, svg(ICONS.trash), t('art.remove'))))
+  const version = (v) => el('li', {}, el('time', {}, stamp(v.at)), el('span', { class: 'dot' }),
+    el('div', { style: 'min-width:0' },
+      el('div', { class: 'chips' }, chip(`v${v.version}`, v.version === a.version ? 'mono accent' : 'mono'), el('span', { class: 'meta' }, v.run ? v.run.title : t('art.noRun')),
+        v.run?.changed ? chip(t('art.basis'), 'warn') : null),
+      v.run && (v.run.units.length || v.run.sources.length) ? el('div', { class: 'chips', style: 'margin-top:4px' }, el('span', { class: 'meta' }, t('art.used')),
+        v.run.units.map((u) => el('button', { class: 'chip mono jump', onclick: () => openInCatalog({ kind: 'unit', id: u }) }, u)),
+        v.run.sources.map((x) => chip(x, 'mono outline'))) : null,
+      v.derived_from.length ? el('div', { class: 'chips', style: 'margin-top:4px' }, el('span', { class: 'meta' }, t('art.derived')),
+        v.derived_from.map((d) => el('button', { class: 'chip mono jump', onclick: () => openArtifact(d.artifact) }, `${d.artifact} v${d.version}`))) : null,
+      v.reviews.length ? el('ul', { class: 'reviews' }, v.reviews.map((r) => el('li', {}, chip(t(`av.${r.verdict}`), r.verdict === 'needs-work' ? 'warn' : 'accent'), r.by || '', r.note || ''))) : null))
+  fill($('#art-detail'),
+    el('button', { class: 'btn ghost back', type: 'button', onclick: () => { $('#art-split').classList.remove('focus'); loadArtifacts() } }, svg(ICONS.back), t('art.back')),
+    el('div', { class: 'section' },
+      el('div', { class: 'art-head', draggable: 'true', title: t('art.drag'), ondragstart: dragFile(a) },
+        svg(ICONS[MEDIUM_ICON[a.medium]] ?? ICONS.doc, 'glyph'),
+        el('div', { style: 'min-width:0' }, el('h2', {}, a.title), a.description ? el('p', { class: 'desc' }, a.description) : null, el('div', { class: 'mono meta', title: a.absolute }, a.path)),
+        el('span', { class: 'chips' }, signalChips(a), chip(`v${a.version}`, 'mono'))),
+      el('div', { class: 'actions' }, embedded
+        ? [tool('search', t('art.preview'), run('preview')), tool('folder', t('art.reveal'), run('reveal')), tool('up', t('art.open'), run('open'))]
+        : el('a', { class: 'btn', href: fileUrl(a.id), target: '_blank', rel: 'noopener' }, svg(ICONS.search), t('art.preview')))),
+    el('div', { class: 'section' }, review),
+    el('div', { class: 'section' }, el('div', { class: 'h' }, svg(ICONS.clock, 'glyph'), t('art.versions'), el('span', { class: 'count' }, String(a.versions.length))),
+      el('ol', { class: 'timeline' }, [...a.versions].reverse().map(version))),
+    el('div', { class: 'section' }, el('div', { class: 'h' }, t('art.edit')), edit))
+}
+
 async function loadLog() {
   loadAttention()
   const [runList, history] = await Promise.all([api('praxis_runs'), api('praxis_history', { limit: 60 })])
   fill($('#runs'), logCard('clock', t('log.runs'), runList.length, runList.length
     ? el('ol', { class: 'timeline' }, runList.map((r) => el('li', {}, el('time', {}, stamp(r.at)), el('span', { class: 'dot' }),
       el('div', {}, el('div', {}, r.title), el('div', { class: 'chips', style: 'margin-top:4px' },
-        chip(`${r.units.length}`, 'mono', 'doc'), chip(`${r.bindings.length}`, 'mono', 'layers'), chip(`${r.artifacts.length}`, 'mono', 'inbox'))))))
+        chip(`${r.units.length}`, 'mono', 'doc'), chip(`${r.bindings.length}`, 'mono', 'layers'),
+        r.artifacts.length ? el('button', { class: 'chip mono jump', onclick: () => { show('artifacts'); if (r.artifacts[0].artifact) openArtifact(r.artifacts[0].artifact) } }, svg(ICONS.inbox), String(r.artifacts.length)) : null)))))
     : empty('clock', t('log.noRuns'))))
   fill($('#history'), logCard('activity', t('log.history'), history.length, history.length
     ? el('ol', { class: 'timeline' }, history.map((h) => el('li', {}, el('time', {}, stamp(h.at)), el('span', { class: 'dot' }),

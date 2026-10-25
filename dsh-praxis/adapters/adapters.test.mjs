@@ -2,7 +2,7 @@ import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { createServer } from './mcp.js'
 import { CALL_PATH, PAGE_PATH, hostIsLoopback, praxisFetch } from './http.js'
-import { TOOLS, inputSchema } from './tools.js'
+import { TOOLS, inputSchema, jsonValue } from './tools.js'
 import { apply, entryText } from './dsh.js'
 
 // A stand-in core: adapters only route calls, so they are tested against a fake.
@@ -79,11 +79,33 @@ test('DSH plugin registers every tool, two Connection routes and a prompt sectio
   }
   apply(ctx, { root: new URL('../..', import.meta.url).pathname })
   assert.equal(tools.length, TOOLS.length)
-  assert.deepEqual(routes.map((r) => [r.path, r.methods]), [[PAGE_PATH, ['GET', 'HEAD']], [CALL_PATH, ['POST']]])
+  assert.deepEqual(routes.map((r) => [r.path, r.methods]), [[PAGE_PATH, ['GET', 'HEAD']], [CALL_PATH, ['POST']], ['/api/praxis.file', ['GET', 'HEAD']]])
   assert.equal(tools.find((t) => t.name === 'praxis_units').isConcurrencySafe(), true)
   assert.equal(tools.find((t) => t.name === 'praxis_curate').isConcurrencySafe, undefined)
   await assert.rejects(tools.find((t) => t.name === 'praxis_unit').execute({ ref: 'no/such/unit' }), /unknown unit/)
   assert.equal(sections[0].name, 'praxis:entry')
   assert.match(sections[0].text(), /praxis_resolve/)
   assert.ok(entryText(fake).includes('x（html）'))
+})
+
+test('HTTP file route serves registered artifact files only, by id', async () => {
+  const repo = new URL('../..', import.meta.url).pathname.replace(/\/$/, '')
+  const records = { 'readme-1': { path: 'dsh-praxis/README.md' }, 'gone-2': { path: 'dsh-praxis/no-such.md' } }
+  const handle = praxisFetch({ artifacts: { get: (id) => records[id], absolute: (p) => `${repo}/${p}` } }, 'test')
+  const get = (query) => handle(new Request(`http://dsh/api/praxis.file?${query}`))
+  const ok = await get('artifact=readme-1')
+  assert.equal(ok.status, 200)
+  assert.match(ok.headers.get('content-type'), /^text\/markdown/)
+  assert.equal(ok.headers.get('content-security-policy'), 'sandbox')
+  for (const bad of ['artifact=gone-2', 'artifact=nope', 'path=dsh-praxis/README.md', '']) assert.equal((await get(bad)).status, 404, bad)
+})
+
+test('tool values are lossless JSON: absent fields omitted, non-JSON values refused', async () => {
+  assert.deepEqual(jsonValue({ a: 1, b: undefined, c: [{ d: undefined, e: null }] }), { a: 1, c: [{ e: null }] })
+  for (const bad of [{ n: NaN }, { f: () => 1 }, { d: new Date(0) }, [undefined]]) assert.throws(() => jsonValue(bad), /not/)
+  const tools = []
+  apply({ tools: { register: (t) => tools.push(t) }, effect: (fn) => fn() }, { root: new URL('../..', import.meta.url).pathname, prompt: false })
+  // DSH's own check: a value survives a JSON round trip unchanged, with no undefined anywhere.
+  const lossless = (v) => assert.deepStrictEqual(JSON.parse(JSON.stringify(v)), v)
+  for (const name of ['praxis_upkeep', 'praxis_stale', 'praxis_entry', 'praxis_runs', 'praxis_artifacts', 'praxis_presets']) lossless(await tools.find((t) => t.name === name).execute({}))
 })

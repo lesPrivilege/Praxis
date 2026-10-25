@@ -1,5 +1,6 @@
 // DSH web client half: a right-sidebar tab type "Praxis" whose body embeds the control plane
-// the server half serves on the authenticated /api channel of the same origin.
+// the server half serves on the authenticated /api channel of the same origin. The body also
+// relays the frame's file requests to the host: preview in DSH's document tab, reveal, open.
 window.__ModuleLoader__.load({
   id: 'dsh-praxis',
   factory: (require) => {
@@ -21,12 +22,44 @@ window.__ModuleLoader__.load({
         React.createElement('rect', { x: 4, y: 15.2, width: 8, height: 3.2, rx: 1.6, opacity: 0.45 }))
     }
 
+    // The address DSH's document preview claims, as @deepseek-ai/dsh-util-workspace-path spells it.
+    const segment = (s) => encodeURIComponent(s).replace(/%3A/gi, ':')
+    const fileAddress = (sessionId, path) => `dsh-resource://file/session/${segment(sessionId)}/${path.split('/').map(segment).join('/')}`
+
     function apply(ctx) {
       ctx.effect(() => ctx.locale.register(NS, COPY), 'dsh-praxis: locale')
       const t = ctx.locale.bind(NS)
 
-      function Body() {
+      // {type:'praxis:file', id, action:'preview'|'reveal'|'open', path:<absolute>} from the frame only.
+      async function fileAction(tab, sessionId, { action, path }) {
+        if (action === 'preview') {
+          if (!sessionId) return { ok: false, error: 'no session' }
+          ;(tab?.actions ?? ctx.sidebarRight).openResource(fileAddress(sessionId, path))
+          return { ok: true }
+        }
+        if (action === 'reveal' || action === 'open') {
+          const result = await ctx.remote.session.openWorkspacePath(action === 'reveal' ? { path, action } : { path })
+          return { ok: !!result?.ok }
+        }
+        return { ok: false, error: `unknown action: ${action}` }
+      }
+
+      function Body({ sessionId, useTabInfo }) {
+        const frame = React.useRef(null)
+        const tab = useTabInfo?.().tab
+        React.useEffect(() => {
+          function onMessage(event) {
+            const data = event.data
+            if (!frame.current || event.source !== frame.current.contentWindow || data?.type !== 'praxis:file') return
+            fileAction(tab, sessionId, data)
+              .catch((error) => ({ ok: false, error: String(error?.message ?? error) }))
+              .then((result) => event.source.postMessage({ type: 'praxis:file:result', id: data.id, ...result }, location.origin))
+          }
+          window.addEventListener('message', onMessage)
+          return () => window.removeEventListener('message', onMessage)
+        }, [tab, sessionId])
         return React.createElement('iframe', {
+          ref: frame,
           src: '/api/praxis',
           title: t('frame'),
           style: { border: 0, width: '100%', height: '100%', display: 'block', background: 'transparent' },
@@ -45,7 +78,7 @@ window.__ModuleLoader__.load({
     }
 
     module.exports.apply = apply
-    module.exports.inject = ['slots', 'sidebarRightTabs', 'locale']
+    module.exports.inject = ['slots', 'sidebarRightTabs', 'sidebarRight', 'locale', 'remote', 'remote.session']
     return module.exports
   },
 })

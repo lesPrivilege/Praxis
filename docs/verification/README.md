@@ -2,6 +2,8 @@
 
 - [dsh-praxis 整合包 · 2026-10-25](dsh-praxis-acceptance-20261025.md)：DSH 桌面内置控制面与 MCP/CLI 共数据实测；16 项原有测试通过，补充探针发现备份、冲突、错误语义和版本追踪缺陷，同日修复后探针 9 项通过。
 
+- [dsh-praxis 产物登记与取用 · 2026-10-25](dsh-praxis-artifacts-20261025.md)：23 项测试、探针 12 项、独立控制面检查；DSH 桌面里的预览、打开与拖出附测试步骤，待用户实测。
+
 - [SaaS 工程全景 checkpoint](saas-engineering-atlas-20261014.md)：契约与分包检查、仓库验证和未执行范围。
 
 - [AgentScope 知识片 · 2026-10-12](agentscope-enterprise-film-20261012.md)：内容、原生封面、渲染、来源索引与仓库验证范围。

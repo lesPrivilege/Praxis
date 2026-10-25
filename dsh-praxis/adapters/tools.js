@@ -141,16 +141,54 @@ export const TOOLS = [
   },
   {
     name: 'praxis_upkeep',
-    description: '现在需要人处理的事，通常为空：review 结论为待改（needs_work）或来源在上次 review 后变了（changed）的挂载、交付后所用单元、挂载、来源或预设又改过的运行、新登记还没挂到单元的来源。未写说明、未 review 是默认状态，不列。',
+    description: '现在需要人处理的事，通常为空：review 结论为待改（needs_work）或来源在上次 review 后变了（changed）的挂载、交付后所用单元、挂载、来源或预设又改过的运行、新登记还没挂到单元的来源、找不到文件或最新版 review 待改的产物。未写说明、未 review 是默认状态，不列。',
     parameters: {},
     run: (p) => p.upkeep(),
   },
   {
     name: 'praxis_consume',
-    description: '记录一次实际工作用了哪些单元、挂载和来源（按当前版本），以及产出了哪些产物。交付前调用。',
-    parameters: { title: str('这次工作'), task_type: str('任务类型 ID'), pipeline: str('html 或 video'), preset: str('用的预设 ID'), overrides: { type: 'object', description: '这次对预设的临时改动' }, units: list('读过的单元'), bindings: list('用过的挂载 ID'), sources: list('用过的来源 ID'), artifacts: list('产物的仓库路径'), note: str('说明'), by: who.by },
+    description: '交付前调用：记录这次工作实际读过的单元、用过的挂载和来源（按当前版本），并把交付的文件登记为产物。同一文件内容未变不重复登记；内容变了记为新版本；文件挪了位置时用 artifact 指明是哪件产物。只记实际读过、用过的；文件必须已经存在。返回运行记录，其中 artifacts 给出每个文件的产物 ID 与版本。',
+    parameters: {
+      title: str('这次工作'), task_type: str('任务类型 ID'), pipeline: str('html 或 video'), preset: str('用的预设 ID'), overrides: { type: 'object', description: '这次对预设的临时改动' },
+      units: list('读过的单元'), bindings: list('用过的挂载 ID'), sources: list('用过的来源 ID'),
+      artifacts: { type: 'array', description: '交付的文件：路径字符串，或带说明的对象。仓库内用仓库路径，仓库外用绝对路径', items: { anyOf: [
+        { type: 'string' },
+        { type: 'object', properties: { path: str('文件路径'), title: str('产物名称；省略用文件名'), description: str('它是什么、给谁用'), artifact: str('已有产物 ID：文件换了位置或改了名时指明'),
+          derived_from: { type: 'array', description: '由哪些产物派生，如 HTML 由 MD 底稿生成', items: { anyOf: [{ type: 'string' }, { type: 'object', properties: { artifact: str('产物 ID'), version: num('版本；省略为最新') }, required: ['artifact'] }] } } }, required: ['path'] },
+      ] } },
+      note: str('说明'), by: who.by,
+    },
     required: ['title'],
     run: (p, a) => p.consume(a),
+    writes: true,
+  },
+  {
+    name: 'praxis_artifacts',
+    description: '列出交付过的产物（最近变动在前）：名称、媒介、路径、当前版本、文件状态（current / modified 有未登记改动 / missing 找不到）、basis_changed（产出最新版本的运行所用的单元、挂载、来源或预设之后改过）、最新版本的最近一次 review，以及需要处理的信号（missing 记录找不到文件、needs_work 最新版 review 待改）。',
+    parameters: { query: str('名称、说明或路径里的关键词'), medium: str('html、text、image、pdf、video、audio 等'), signal: str('missing、needs_work，或 basis_changed'), include_removed: bool('包括已移除的'), limit: num('条数，默认 50') },
+    run: (p, a) => p.artifactList(a),
+  },
+  {
+    name: 'praxis_artifact',
+    description: '读一件产物：每个版本的 hash、时间、产出它的运行（用了哪些单元、挂载、来源，之后哪些改过）、派生关系，以及针对各版本的 review。',
+    parameters: { id: str('产物 ID') },
+    required: ['id'],
+    run: (p, a) => p.artifact(a.id) ?? missing(`unknown artifact: ${a.id}`),
+  },
+  {
+    name: 'praxis_artifact_review',
+    description: '对产物的某一版本记录 review。必须写明看的是哪一版；新版本不继承旧版本的结论。verdict：needs-work 待改、checked 已按验收项核对、accepted 主人接受。',
+    parameters: { id: str('产物 ID'), version: num('被 review 的版本'), verdict: str('needs-work、checked 或 accepted'), note: str('意见'), by: who.by },
+    required: ['id', 'version', 'verdict'],
+    run: (p, a) => p.reviewArtifact(a),
+    writes: true,
+  },
+  {
+    name: 'praxis_artifact_update',
+    description: '改产物的名称或说明、移除或恢复，或在文件挪了位置后指向新路径。新路径上的文件必须与最新版本内容相同；内容不同是新版本，用 praxis_consume 登记。带上读到的 revision。',
+    parameters: { id: str('产物 ID'), expected_revision: num('读取时的 revision'), title: str('名称'), description: str('它是什么、给谁用'), path: str('文件的新位置'), state: str('active 或 removed'), ...who },
+    required: ['id'],
+    run: (p, a) => p.updateArtifact(a),
     writes: true,
   },
   {
@@ -208,5 +246,26 @@ export async function callTool(praxis, name, args = {}, caller) {
   if (!tool) throw new Error(`unknown tool: ${name}`)
   for (const key of tool.required ?? []) if (args[key] === undefined) throw new Error(`missing ${key}`)
   const a = tool.writes ? { by: caller, ...args } : args
-  return await tool.run(praxis, a)
+  return jsonValue(await tool.run(praxis, a), name)
+}
+
+/**
+ * Every surface receives the same JSON value. DSH checks tool values losslessly and refuses
+ * `undefined`; JSON.stringify drops it. An absent optional field is therefore omitted here, and
+ * anything else JSON cannot hold (NaN, functions, class instances, holes) is an error, not a guess.
+ */
+export function jsonValue(value, at = 'value') {
+  if (value === null || typeof value === 'string' || typeof value === 'boolean') return value
+  if (typeof value === 'number') {
+    if (Number.isFinite(value)) return value
+    throw new Error(`${at} is not a finite number`)
+  }
+  if (Array.isArray(value)) return value.map((v, i) => jsonValue(v, `${at}[${i}]`))
+  const proto = value && typeof value === 'object' ? Object.getPrototypeOf(value) : undefined
+  if (proto === Object.prototype || proto === null) {
+    const out = {}
+    for (const [k, v] of Object.entries(value)) if (v !== undefined) out[k] = jsonValue(v, `${at}.${k}`)
+    return out
+  }
+  throw new Error(`${at} is not JSON (${value === undefined ? 'undefined' : typeof value})`)
 }

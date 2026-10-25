@@ -58,4 +58,6 @@ Praxis 由 Enterprise、Reporting、Work System 三个消费域和共享 Environ
 
 ## 实现入口
 
+Praxis 插件下一轮的整合包与产物取用设计见 [架构参考](../../dsh-praxis/architecture.md)及[工单](../../dsh-praxis/work-order.md)。两者是待 Opus worker 裁决的提案，不替代现有 ADR。
+
 首个实现从 [场景模板](../../scenarios/_template/README.md) 和 [Demo 准入](../../demos/README.md) 开始；技术候选见 [架构理由](rationale.md#实现候选与触发)。

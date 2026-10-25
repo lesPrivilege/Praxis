@@ -1,16 +1,24 @@
 // HTTP surface for the control plane, as two exact routes:
 //   GET  /api/praxis       the page
 //   POST /api/praxis.call  {tool, args} → the tool's result as JSON
+//   GET  /api/praxis.file  ?artifact=<id> → that artifact's file, for drag-out and standalone preview
 // Inside DSH they register on the Connection's exact Fetch routes, so DSH's own browser trust and
 // session authentication apply on Web and Desktop alike. `serve()` runs the same handler standalone
 // on a loopback port for use without DSH.
 import { createServer } from 'node:http'
-import { readFileSync } from 'node:fs'
+import { readFileSync, statSync } from 'node:fs'
+import { basename, extname } from 'node:path'
 import { ConflictError } from '../core/index.js'
 import { callTool } from './tools.js'
 
 export const PAGE_PATH = '/api/praxis'
 export const CALL_PATH = '/api/praxis.call'
+export const FILE_PATH = '/api/praxis.file'
+
+const TYPES = { '.html': 'text/html', '.htm': 'text/html', '.md': 'text/markdown', '.txt': 'text/plain', '.json': 'application/json', '.csv': 'text/csv',
+  '.svg': 'image/svg+xml', '.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.gif': 'image/gif', '.webp': 'image/webp',
+  '.pdf': 'application/pdf', '.mp4': 'video/mp4', '.mp3': 'audio/mpeg' }
+
 
 const UI = new URL('../ui/index.html', import.meta.url)
 const LOOPBACK = new Set(['127.0.0.1', 'localhost', '[::1]', '::1'])
@@ -34,8 +42,25 @@ export function praxisFetch(praxis, caller = 'ui') {
         return json(400, { error: error.message })
       }
     }
+    if (pathname === FILE_PATH && (request.method === 'GET' || request.method === 'HEAD')) {
+      // Only files registered as artifacts are served, by id; the path comes from the record.
+      const rec = praxis.artifacts.get(new URL(request.url).searchParams.get('artifact') ?? '')
+      const full = rec && praxis.artifacts.absolute(rec.path)
+      if (!full || !isFile(full)) return json(404, { error: 'no such artifact file' })
+      const type = TYPES[extname(full).toLowerCase()] ?? 'application/octet-stream'
+      return new Response(request.method === 'HEAD' ? null : readFileSync(full), { headers: {
+        'Content-Type': type.startsWith('text/') ? `${type}; charset=utf-8` : type,
+        'Content-Disposition': `inline; filename*=UTF-8''${encodeURIComponent(basename(full))}`,
+        // The bytes are the user's own file; they never run with the control plane's origin.
+        'Content-Security-Policy': 'sandbox', 'X-Content-Type-Options': 'nosniff', 'Cache-Control': 'no-store',
+      } })
+    }
     return json(404, { error: 'not found' })
   }
+}
+
+function isFile(path) {
+  try { return statSync(path).isFile() } catch { return false }
 }
 
 export function hostIsLoopback(req) {

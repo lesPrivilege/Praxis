@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-10-25 · dsh-praxis 产物登记与取用
+
+- 交付的文件成为 [产物](dsh-praxis/core/artifacts.js)：`praxis_consume` 同时登记，同一内容不重复，内容变了是新版本，review 写明版本，挪位置要求内容一致；状态每次从文件读出，只有找不到文件和最新版待改进维护清单。新增 `praxis_artifacts`、`praxis_artifact`、`praxis_artifact_review`、`praxis_artifact_update`。取舍见 [ADR-039](docs/decisions/039-dsh-praxis-artifacts.md)。
+- 控制面加“产物”视图；DSH 里预览交给文档预览，显示与打开交给 `openWorkspacePath`，经客户端插件转交；文件路由只给已登记产物。拖出用 HTML5 `DownloadURL`，DSH 没有原生接口，待桌面实测。
+- 4 条既有运行的 18 个文件按当时 hash 一次投影为产物版本。DSH 调用方反馈的 `value is not lossless JSON` 在 `callTool` 统一修正。
+- 23 项测试、[验收探针](scripts/check_praxis_acceptance.py) 12 项通过；DSH 桌面未测，步骤见 [回执](docs/verification/dsh-praxis-artifacts-20261025.md)。[架构参考](dsh-praxis/architecture.md)与 [工单](dsh-praxis/work-order.md)随本轮入库。
+
 ## 2026-10-25 · Kit 正文去旁白，入口段按 description 撰写
 
 - [成文原理](dsh-praxis/kit/writing/principles.md)第 5 条把目录里的说明（description）列为结构位置，第 8 条点名自述：页面讲什么、怎样读由标题、顺序和入口段承担；[审阅方法](dsh-praxis/kit/writing/review.md)常见偏差加“页面自述”一行。

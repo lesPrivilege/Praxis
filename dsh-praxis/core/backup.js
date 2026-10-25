@@ -33,6 +33,12 @@ function catalogs(repo) {
   return [...new Set(rels)].filter((rel) => existsSync(join(repo, rel)))
 }
 
+function artifactFiles(repo) {
+  const path = join(repo, 'dsh-praxis/data/artifacts.json')
+  if (!existsSync(path)) return 0
+  return Object.values(JSON.parse(readFileSync(path, 'utf8')).records).filter((r) => r.state !== 'removed').length
+}
+
 export function exportState(repo, dest) {
   const list = [...new Set([...STATE_PATHS.flatMap((rel) => files(repo, rel)), ...catalogs(repo)])].sort()
   let commit = null
@@ -42,6 +48,8 @@ export function exportState(repo, dest) {
     created_at: new Date().toISOString(),
     repository_commit: commit,
     package_version: JSON.parse(readFileSync(join(repo, 'dsh-praxis/package.json'), 'utf8')).version,
+    // Artifact files stay in their owners' workspaces; the archive carries their records and hashes only.
+    not_included: { artifact_files: artifactFiles(repo) },
     files: list.map((rel) => {
       const buf = readFileSync(join(repo, rel))
       return { path: rel, sha256: sha(buf), size_bytes: buf.length }
@@ -50,7 +58,7 @@ export function exportState(repo, dest) {
   const stage = mkdtempSync(join(tmpdir(), 'praxis-export-'))
   writeFileSync(join(stage, 'manifest.json'), JSON.stringify(manifest, null, 2) + '\n')
   execFileSync('tar', ['-czf', dest, '-C', stage, 'manifest.json', '-C', repo, ...list])
-  return { archive: dest, files: list.length, bytes: manifest.files.reduce((n, f) => n + f.size_bytes, 0) }
+  return { archive: dest, files: list.length, bytes: manifest.files.reduce((n, f) => n + f.size_bytes, 0), not_included: manifest.not_included }
 }
 
 /** Unpack into a scratch directory and compare every file with the manifest. */

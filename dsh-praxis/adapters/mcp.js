@@ -8,7 +8,7 @@ import { TOOLS, callTool, inputSchema } from './tools.js'
 
 const VERSIONS = ['2026-07-28', '2025-11-25', '2025-06-18', '2025-03-26', '2024-11-05']
 const pkg = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'))
-const INSTRUCTIONS = 'Praxis 是个人 FDE 工作 Kit。做写作、编排、设计或报告任务时，先 praxis_entry 或 praxis_resolve，只读结果里列出的单元；遇到值得留下的参考用 praxis_capture 登记、praxis_curate 挂到单元上；交付前用 praxis_consume 记下用了什么。修改带上读到的 revision。'
+const INSTRUCTIONS = 'Praxis 是个人 FDE 工作 Kit。做写作、编排、设计或报告任务时，先 praxis_entry 或 praxis_resolve，只读结果里列出的单元；遇到值得留下的参考用 praxis_capture 登记、praxis_curate 挂到单元上；交付前用 praxis_consume 记下实际用了什么，并把交付的文件登记为产物；改过再交付就再登记一次，记为新版本。修改带上读到的 revision。'
 
 export function createServer({ praxis = createPraxis(), write }) {
   let client = 'mcp'

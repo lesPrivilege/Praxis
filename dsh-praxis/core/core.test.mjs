@@ -5,6 +5,7 @@ import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 import { createPraxis, ConflictError } from './index.js'
 import { exportState, checkArchive, restoreState } from './backup.js'
+import { utimesSync, renameSync, unlinkSync } from 'node:fs'
 
 const CATALOG = 'vault/provenance/demo/catalog.json'
 
@@ -262,4 +263,70 @@ test('export, check and restore the control plane state', () => {
   restoreState(root, archive, { force: true, rebuild })
   assert.equal(p.materials.binding(BIND).description, '导出前。')
   assert.deepEqual(p.materials.listBindings().map((b) => b.id), [MOVED], 'added and removed relations come back as exported')
+})
+
+test('artifacts: consume registers files; same bytes dedupe, new bytes are a new version', () => {
+  const { root, p } = setup()
+  writeFileSync(join(root, 'brief.md'), '# v1\n')
+  writeFileSync(join(root, 'page.html'), '<p>v1</p>')
+  const first = p.consume({ title: '底稿与页面', artifacts: ['brief.md', { path: 'page.html', title: '讲解页', derived_from: [] }], by: 'agent' })
+  const [md, html] = first.artifacts
+  assert.deepEqual([md.version, html.version], [1, 1])
+  assert.equal(p.artifact(html.artifact).title, '讲解页')
+  const retry = p.consume({ title: '重试', artifacts: ['brief.md'] })
+  assert.equal(retry.artifacts[0].artifact, md.artifact, 'a retry finds the same artifact')
+  assert.equal(p.artifact(md.artifact).versions.length, 1, 'and adds no version')
+  writeFileSync(join(root, 'page.html'), '<p>v2</p>')
+  const second = p.consume({ title: '修订', artifacts: [{ path: 'page.html', derived_from: [md.artifact] }] })
+  const detail = p.artifact(html.artifact)
+  assert.equal(second.artifacts[0].version, 2)
+  assert.deepEqual(detail.versions.map((v) => [v.version, v.run.id]), [[1, first.id], [2, second.id]])
+  assert.deepEqual(detail.versions[1].derived_from, [{ artifact: md.artifact, version: 1 }])
+  assert.equal(p.artifactList().length, 2)
+  assert.throws(() => p.consume({ title: '缺文件', artifacts: ['nope.md'] }), /not found/)
+  assert.equal(p.runs().length, 3, 'a refused consume writes no run')
+})
+
+test('artifacts: reviews bind to a version; status and signals follow the file and its basis', () => {
+  const { root, p } = setup()
+  writeFileSync(join(root, 'page.html'), '<p>v1</p>')
+  const run = p.consume({ title: '页面', units: ['writing/organization/mechanism'], artifacts: ['page.html'] })
+  const id = run.artifacts[0].artifact
+  p.reviewArtifact({ id, version: 1, verdict: 'needs-work', note: '图注太长', by: 'owner' })
+  assert.deepEqual(p.artifactList()[0].signals, ['needs_work'])
+  assert.throws(() => p.reviewArtifact({ id, version: 2, verdict: 'accepted' }), /no version 2/)
+  writeFileSync(join(root, 'page.html'), '<p>v2</p>')
+  assert.deepEqual([p.artifactList()[0].status, p.artifactList()[0].signals], ['modified', ['needs_work']], 'later edits are status, not a signal')
+  p.consume({ title: '改', artifacts: ['page.html'] })
+  const now = p.artifactList()[0]
+  assert.deepEqual([now.version, now.status, now.review, now.signals], [2, 'current', null, []], 'v2 does not inherit the v1 verdict')
+  p.reviewArtifact({ id, version: 2, verdict: 'accepted', by: 'owner' })
+  assert.deepEqual(p.artifact(id).versions.map((v) => v.reviews.map((r) => r.verdict)), [['needs-work'], ['accepted']])
+  writeFileSync(join(root, 'dsh-praxis/kit/writing/organization/mechanism.md'), '# 机制讲解\n\n改过了。\n')
+  assert.equal(p.artifactList()[0].basis_changed, false, 'the latest run did not use the changed unit')
+  const old = p.artifact(id).versions[0].run
+  assert.deepEqual(old.changed.units, ['writing/organization/mechanism'], 'v1 shows its basis changed')
+  unlinkSync(join(root, 'page.html'))
+  assert.deepEqual(p.upkeep().artifacts.map((a) => [a.id, a.signals]), [[id, ['missing']]])
+})
+
+test('artifacts: moving a file keeps identity only when the bytes are the latest version', () => {
+  const { root, p } = setup()
+  writeFileSync(join(root, 'page.html'), '<p>v1</p>')
+  const id = p.consume({ title: '页面', artifacts: ['page.html'] }).artifacts[0].artifact
+  mkdirSync(join(root, 'out'))
+  renameSync(join(root, 'page.html'), join(root, 'out/page.html'))
+  assert.equal(p.artifactList()[0].status, 'missing')
+  writeFileSync(join(root, 'other.html'), '<p>other</p>')
+  const rev = p.artifact(id).revision
+  assert.throws(() => p.updateArtifact({ id, expected_revision: rev, path: 'other.html' }), /not version 1/)
+  const moved = p.updateArtifact({ id, expected_revision: rev, path: join(root, 'out/page.html') })
+  assert.deepEqual([moved.path, moved.status, moved.version], ['out/page.html', 'current', 1], 'repo files are stored repo-relative')
+  assert.throws(() => p.updateArtifact({ id, expected_revision: rev, title: 'x' }), ConflictError)
+  writeFileSync(join(root, 'out/page.html'), '<p>v2</p>')
+  utimesSync(join(root, 'out/page.html'), new Date(), new Date())
+  assert.equal(p.consume({ title: '改', artifacts: [{ path: 'out/page.html', artifact: id }] }).artifacts[0].version, 2)
+  p.updateArtifact({ id, state: 'removed' })
+  assert.equal(p.artifactList().length, 0)
+  assert.equal(p.artifactList({ include_removed: true }).length, 1)
 })

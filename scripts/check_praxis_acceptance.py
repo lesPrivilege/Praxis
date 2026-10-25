@@ -215,8 +215,33 @@ def run_checks(probe, temporary, baseline, checks):
            'defaults_after': [p['id'] for p in after if p['default']], 'state_unchanged': before == after},
           rejected['exit'] != 0 and before == after)
 
+    write(probe.root, 'out/brief.html', '<p>v1</p>')
+    first = probe.ok('consume', {'title': 'Deliver brief', 'artifacts': [{'path': 'out/brief.html', 'title': 'Brief'}]})
+    artifact = first['artifacts'][0]['artifact']
+    listed = json.loads(probe.call('artifacts')['content'][0]['text'])
+    reviewed = probe.call('artifact_review', {'id': artifact, 'version': 1, 'verdict': 'needs-work', 'note': 'shorten'})
+    write(probe.root, 'out/brief.html', '<p>v2</p>')
+    second = probe.ok('consume', {'title': 'Revise brief', 'artifacts': ['out/brief.html']})
+    retry = probe.ok('consume', {'title': 'Retry', 'artifacts': ['out/brief.html']})
+    detail = probe.ok('artifact', {'id': artifact})
+    check('artifact_versions_and_reviews', 'CLI registers, MCP reads and reviews v1; v2 does not inherit the v1 verdict; a retry adds no version.',
+          {'mcp_listed': [a['id'] for a in listed], 'review_isError': reviewed.get('isError'),
+           'versions': [v['version'] for v in detail['versions']], 'latest_review': detail['review'],
+           'v1_reviews': [r['verdict'] for r in detail['versions'][0]['reviews']],
+           'second_and_retry': [second['artifacts'][0]['version'], retry['artifacts'][0]['version']]},
+          [a['id'] for a in listed] == [artifact] and not reviewed.get('isError')
+          and [v['version'] for v in detail['versions']] == [1, 2] and detail['review'] is None
+          and [r['verdict'] for r in detail['versions'][0]['reviews']] == ['needs-work']
+          and [second['artifacts'][0]['version'], retry['artifacts'][0]['version']] == [2, 2])
+    cli = probe.cli('artifact', {'id': 'not-here'})
+    mcp = probe.call('artifact', {'id': 'not-here'})
+    check('artifact_lookup_error', 'Missing artifact returns CLI nonzero and MCP isError:true.',
+          {'cli_exit': cli['exit'], 'mcp_isError': mcp.get('isError')}, cli['exit'] != 0 and mcp.get('isError') is True)
+
     archive = str(temporary / 'state.tar.gz')
     exported = probe.ok('export', archive)
+    check('backup_declares_artifact_files', 'Export says artifact files are not in the archive.',
+          {'not_included': exported.get('not_included')}, (exported.get('not_included') or {}).get('artifact_files') == 1)
     checked = probe.ok('check', archive)
     restored_root = temporary / 'restored'
     shutil.copytree(probe.root, restored_root)
