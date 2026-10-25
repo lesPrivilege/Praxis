@@ -22,7 +22,7 @@ export const TOOLS = [
   },
   {
     name: 'praxis_resolve',
-    description: '按任务类型和流水线列出这次要读的 Kit 单元（附选用理由）和挂在这些单元上的已启用素材。只读结果里的单元，不默认加载全部。',
+    description: '按任务类型和流水线列出这次要读的 Kit 单元（附选用理由）和挂在这些单元上的已启用素材。只读结果里的单元，不默认加载全部。每条素材带 source ID、原件 URL、证据状态、读取范围、摘录（定位与说法）和本地快照路径：需要核对或引用时按定位回原件，读过的来源在 praxis_consume 的 sources 里写上。',
     parameters: {
       task_type: str('任务类型 ID，如 technical-explainer、work-report'),
       pipeline: str('html 或 video；省略用任务类型的默认流水线'),
@@ -52,15 +52,10 @@ export const TOOLS = [
   },
   {
     name: 'praxis_source',
-    description: '读一个来源的条目：出处、概要、证据状态、限制、摘录与定位、快照；不含原件全文。',
+    description: '读一个来源的条目：出处、概要、证据状态、读取范围、限制、摘录与定位、快照；它所在的集合当初为什么收录；挂在哪些页面、经这些页面服务哪些任务类型；哪些运行读过它、交付了什么。不含原件全文。',
     parameters: { id: str('来源 ID 或别名') },
     required: ['id'],
-    run: (p, a) => {
-      const s = p.materials.source(a.id)
-      if (!s) missing(`unknown source: ${a.id}`)
-      const { record, ...rest } = s
-      return rest
-    },
+    run: (p, a) => p.source(a.id) ?? missing(`unknown source: ${a.id}`),
   },
   {
     name: 'praxis_bindings',
@@ -70,11 +65,11 @@ export const TOOLS = [
   },
   {
     name: 'praxis_curate',
-    description: '维护一条挂载：改 description、取用题解、启用、收藏、优先级或 tag；挂载不存在时新建（目标页必须存在）。带上读到的 revision 作为 expected_revision，版本已变会被拒绝并返回当前内容。常规修改直接生效。',
+    description: '维护一条挂载：改 description、取用题解、启用、收藏、优先级或 tag；挂载不存在时新建（目标页必须存在），关系写在来源自己的记录上（项目内来源索引写在它的登记里）。description 写这个来源对这一页有什么用，不抄来源概要。带上读到的 revision 作为 expected_revision，版本已变会被拒绝并返回当前内容。常规修改直接生效。',
     parameters: {
       binding: str('挂载 ID：<来源 ID>@<单元路径>'),
       expected_revision: num('读取时的 revision；新建填 0'),
-      description: str('目录行的说明，240 字以内：何时用、取用什么'),
+      description: str('目录行的说明，240 字以内：这一页何时用它、取用什么'),
       usage: { type: 'object', description: '取用题解', properties: { problem: str('适用的问题'), how: str('怎样取用'), conditions: str('条件'), limits: str('不适用或易误用的情形'), examples: list('例子') }, required: ['problem', 'how'] },
       enabled: bool('进入任务默认可选范围'),
       favorite: bool('个人收藏'),
@@ -117,18 +112,37 @@ export const TOOLS = [
   },
   {
     name: 'praxis_capture',
-    description: '登记一个新来源（explore 或 RSI 中遇到的参考）。同一 URL 已登记时返回已有条目。写出 catalog 记录与来源卡；之后用 praxis_curate 把它挂到单元上。',
+    description: '登记新来源（一次任务里 explore 或用户指定的来源线得到的参考），可一次多条：全部核对后一次写入，同一 URL 已登记的返回已有条目。task 写这批来源为哪件任务收录，留在每条记录上，供人 review 时知道它为什么在名册里。写出 catalog 记录与来源卡；之后用 praxis_curate 挂到单元上。来源已在项目里有自己的登记文件时，用 praxis_register_index 按引用登记，不逐条复制。',
     parameters: {
-      url: str('原 URL'), locator: str('非 URL 来源的定位'), title: str('标题'),
-      summary: str('以自己的话写的概要：是什么、能支持什么判断'),
-      read_scope: str('实际读取范围与证据形态：读过文字、看过输出、执行过实现'),
-      evidence_status: str('verified、partial 或 unavailable；默认 partial'),
-      limits: str('边界：不能证明什么'), revisit_when: str('何时重访'), tags: list('用途 tag'),
-      excerpts: { type: 'array', description: '摘录：定位与它支持的说法', items: { type: 'object', properties: { locator: str('定位'), claim: str('支持的说法') }, required: ['locator', 'claim'] } },
-      usage_note: str('本 Kit 取用什么（写进来源卡）'), slug: str('可选的稳定 slug'), ...who,
+      sources: { type: 'array', description: '要登记的来源', items: { type: 'object', properties: {
+        url: str('原 URL'), locator: str('非 URL 来源的定位'), title: str('标题'),
+        summary: str('以自己的话写的概要：是什么、能支持什么判断'),
+        read_scope: str('实际读取范围与证据形态：读过文字、看过输出、执行过实现'),
+        evidence_status: str('verified、partial 或 unavailable；默认 partial'),
+        limits: str('边界：不能证明什么'), revisit_when: str('何时重访'), tags: list('用途 tag'),
+        excerpts: { type: 'array', description: '摘录：定位与它支持的说法', items: { type: 'object', properties: { locator: str('定位'), claim: str('支持的说法') }, required: ['locator', 'claim'] } },
+        usage_note: str('本 Kit 取用什么（写进来源卡）'), slug: str('可选的稳定 slug'),
+      }, required: ['title', 'summary', 'read_scope', 'limits', 'revisit_when'] } },
+      task: str('这批来源为哪件任务收录'), by: who.by, reason: who.reason,
     },
-    required: ['title', 'summary', 'read_scope', 'limits', 'revisit_when'],
-    run: (p, a) => p.materials.capture(a, a),
+    required: ['sources', 'task'],
+    run: (p, a) => p.materials.capture(a.sources, a),
+    writes: true,
+  },
+  {
+    name: 'praxis_register_index',
+    description: '按引用登记一个项目自己的来源索引：文件留在项目里，Praxis 原地读取，来源进入名册（ID 为 <登记 ID>:<条目 ID>），可搜索、挂到单元、在运行里记为读过。fields 把名册字段对到项目字段名；status 把项目的状态值对到 verified、partial、unavailable；excerpts 指向按来源 ID 关联的主张文件（JSON Lines）。同一 ID 再登记即更新，已有挂载保留。',
+    parameters: {
+      id: str('登记 ID，如 jev-research'), path: str('索引文件的仓库路径（JSON）'), list: str('记录列表所在的键；文件本身是列表时省略'),
+      title: str('索引名称'), purpose: str('为什么收录这批来源、服务哪些任务'), limits: str('这批来源共同的边界：怎样读的、不能证明什么'), revisit_when: str('何时重访'),
+      fields: { type: 'object', description: '名册字段 → 项目字段名；id 与 title 必填，可选 url、summary、read_scope、status、tags', properties: {
+        id: str('条目 ID 字段'), title: str('标题字段'), url: str('URL 字段'), summary: str('概要字段'), read_scope: str('读取范围字段'), status: str('状态字段'), tags: str('分组或用途字段') }, required: ['id', 'title'] },
+      status: { type: 'object', description: '项目状态值 → verified、partial 或 unavailable', additionalProperties: { type: 'string' } },
+      excerpts: { type: 'object', description: '主张文件', properties: { path: str('JSON Lines 文件路径'), id: str('主张 ID 字段'), source: str('来源 ID 字段'), locator: str('定位字段'), claim: str('说法字段') }, required: ['path', 'id', 'source', 'locator', 'claim'] },
+      by: who.by, reason: who.reason,
+    },
+    required: ['id', 'path', 'title', 'purpose', 'limits', 'revisit_when', 'fields'],
+    run: (p, a) => p.materials.registerIndex(a, a),
     writes: true,
   },
   {
@@ -147,10 +161,10 @@ export const TOOLS = [
   },
   {
     name: 'praxis_consume',
-    description: '交付前调用：记录这次工作实际读过的单元、用过的挂载和来源（按当前版本），并把交付的文件登记为产物。同一文件内容未变不重复登记；内容变了记为新版本；文件挪了位置时用 artifact 指明是哪件产物。只记实际读过、用过的；文件必须已经存在。返回运行记录，其中 artifacts 给出每个文件的产物 ID 与版本。',
+    description: '交付前调用：记录这次工作实际读过的单元和来源（按当前版本），并把交付的文件登记为产物。读过的来源与读过的单元之间的挂载随之记下，之后任何一边改了，这次运行会被列为过期。同一文件内容未变不重复登记；内容变了记为新版本；文件挪了位置时用 artifact 指明是哪件产物。只记实际读过、用过的；文件必须已经存在。返回运行记录，其中 artifacts 给出每个文件的产物 ID 与版本。',
     parameters: {
       title: str('这次工作'), task_type: str('任务类型 ID'), pipeline: str('html 或 video'), preset: str('用的预设 ID'), overrides: { type: 'object', description: '这次对预设的临时改动' },
-      units: list('读过的单元'), bindings: list('用过的挂载 ID'), sources: list('用过的来源 ID'),
+      units: list('读过的单元'), sources: list('实际读过的来源 ID：resolve 素材里的 source，或 praxis_search、praxis_source 得到的 ID'),
       artifacts: { type: 'array', description: '交付的文件：路径字符串，或带说明的对象。仓库内用仓库路径，仓库外用绝对路径', items: { anyOf: [
         { type: 'string' },
         { type: 'object', properties: { path: str('文件路径'), title: str('产物名称；省略用文件名'), description: str('它是什么、给谁用'), artifact: str('已有产物 ID：文件换了位置或改了名时指明'),

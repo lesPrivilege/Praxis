@@ -161,6 +161,8 @@ a.btn { text-decoration: none; }
 .reviews { list-style: none; margin: 10px 0 0; padding: 0; font-size: 12px; color: var(--muted); }
 .reviews li { display: flex; gap: 6px; align-items: center; padding: 3px 0; flex-wrap: wrap; }
 .source { margin-top: 12px; padding: 12px; border: .5px solid var(--l3); border-radius: 12px; background: var(--layer); }
+.source .src-row { display: flex; gap: 8px; align-items: baseline; margin-top: 8px; }
+.source .src-row > .label { flex: none; min-width: 6em; margin: 0; }
 .source p { margin: 4px 0; }
 pre.md { white-space: pre-wrap; font: 12px/1.65 var(--mono); padding: 14px 16px; margin: 0; max-height: 60vh; overflow: auto; color: var(--muted); border-bottom: .5px solid var(--l3); background: var(--platform); }
 .empty { display: grid; justify-items: center; gap: 8px; padding: 36px 16px; color: var(--faint); text-align: center; font-size: 12px; }
@@ -491,7 +493,8 @@ const STRINGS = {
     'preset.default': '{p} 默认', 'preset.delete': '删除', 'preset.back': '预设', 'preset.isDefault': '默认',
     'cap.title': '登记来源', 'cap.lede': '同一 URL 只登记一次；登记后在目录里挂到单元。', 'cap.locator': '非 URL 定位', 'cap.locatorPh': '书目、路径或档案号',
     'cap.titleField': '标题', 'cap.summary': '概要', 'cap.summaryPh': '是什么，能支持什么判断', 'cap.scope': '读取范围', 'cap.scopePh': '读过正文 / 看过输出 / 运行过实现',
-    'cap.tags': '用途 tag', 'cap.evidence': '证据状态', 'cap.limits': '边界', 'cap.limitsPh': '不能证明什么', 'cap.revisit': '何时重访', 'cap.submit': '登记',
+    'cap.tags': '用途 tag', 'cap.evidence': '证据状态', 'cap.limits': '边界', 'cap.limitsPh': '不能证明什么', 'cap.revisit': '何时重访', 'cap.submit': '登记', 'cap.task': '为哪件任务收录', 'cap.taskPh': '这件任务需要它做什么',
+    'src.read': '读取范围：', 'src.collected': '收录缘由', 'src.capturedFor': '登记时', 'src.pages': '挂在', 'src.noPages': '还没有挂到页面', 'src.serves': '服务的任务', 'src.usedBy': '读过它的运行', 'src.unused': '还没有运行记下读过它',
     'up.attention': '需要处理', 'up.none': '没有要处理的事', 'up.stale': '交付过期', 'up.staleNone': '交付都与当前 Kit 一致', 'up.unbound': '新登记未挂载',
     'up.unboundNone': '没有待挂载的来源', 'up.attachTo': '挂到单元', 'up.unitPh': '单元 ID', 'up.preset': '预设已改', 'up.source': '来源已更新', 'up.reload': '插件代码已更新，重启 DSH 后生效',
     'log.runs': '运行', 'log.history': '维护记录', 'art.preview': '预览', 'art.reveal': '在 Finder 中显示', 'art.open': '打开', 'art.drag': '拖出文件', 'art.failed': '没有完成：', 'art.search': '找产物', 'art.noMatch': '没有匹配的产物', 'art.none': '还没有交付登记的产物', 'art.pick': '选一件产物', 'art.versions': '版本', 'art.derived': '派生自', 'art.basis': '依据已变', 'art.review': '记录 v{v} 的 review', 'art.reviewed': '已记录', 'art.edit': '名称与说明', 'art.title': '名称', 'art.desc': '它是什么、给谁用', 'art.save': '保存', 'art.saved': '已保存', 'art.remove': '移除', 'art.removed': '已移除', 'art.back': '产物', 'art.noRun': '运行记录不在', 'art.used': '用了', 'as.missing': '找不到文件', 'as.modified': '有未登记改动', 'as.needs_work': '待改', 'as.basis_changed': '依据已变', 'av.needs-work': '待改', 'av.checked': '已核对', 'av.accepted': '已接受', 'log.noRuns': '还没有运行', 'log.noHistory': '还没有维护',
@@ -525,7 +528,8 @@ const STRINGS = {
     'preset.default': 'Default for {p}', 'preset.delete': 'Delete', 'preset.back': 'Presets', 'preset.isDefault': 'Default',
     'cap.title': 'Capture a source', 'cap.lede': 'Each URL is captured once; attach it to a unit from the catalog.', 'cap.locator': 'Locator without URL', 'cap.locatorPh': 'Citation, path or archive number',
     'cap.titleField': 'Title', 'cap.summary': 'Summary', 'cap.summaryPh': 'What it is and what judgment it supports', 'cap.scope': 'What was read', 'cap.scopePh': 'Read the text / saw the output / ran it',
-    'cap.tags': 'Purpose tags', 'cap.evidence': 'Evidence', 'cap.limits': 'Limits', 'cap.limitsPh': 'What it cannot show', 'cap.revisit': 'When to revisit', 'cap.submit': 'Capture',
+    'cap.tags': 'Purpose tags', 'cap.evidence': 'Evidence', 'cap.limits': 'Limits', 'cap.limitsPh': 'What it cannot show', 'cap.revisit': 'When to revisit', 'cap.submit': 'Capture', 'cap.task': 'Collected for which task', 'cap.taskPh': 'What this task needs it for',
+    'src.read': 'Read: ', 'src.collected': 'Collected for', 'src.capturedFor': 'Captured', 'src.pages': 'Attached to', 'src.noPages': 'Not attached to a page yet', 'src.serves': 'Serves tasks', 'src.usedBy': 'Read by runs', 'src.unused': 'No run has recorded reading it',
     'up.attention': 'Needs attention', 'up.none': 'Nothing needs attention', 'up.stale': 'Stale deliveries', 'up.staleNone': 'Every delivery matches the current Kit', 'up.unbound': 'Captured, not attached',
     'up.unboundNone': 'Nothing waiting to be attached', 'up.attachTo': 'Attach to unit', 'up.unitPh': 'Unit ID', 'up.preset': 'Preset changed', 'up.source': 'Source updated', 'up.reload': 'Plugin code changed; restart DSH to load it',
     'log.runs': 'Runs', 'log.history': 'Maintenance', 'art.preview': 'Preview', 'art.reveal': 'Show in Finder', 'art.open': 'Open', 'art.drag': 'Drag the file out', 'art.failed': 'Not done: ', 'art.search': 'Find an artifact', 'art.noMatch': 'No matching artifacts', 'art.none': 'No delivered artifacts yet', 'art.pick': 'Pick an artifact', 'art.versions': 'Versions', 'art.derived': 'Derived from', 'art.basis': 'Basis changed', 'art.review': 'Review v{v}', 'art.reviewed': 'Review recorded', 'art.edit': 'Name and description', 'art.title': 'Name', 'art.desc': 'What it is, for whom', 'art.save': 'Save', 'art.saved': 'Saved', 'art.remove': 'Remove', 'art.removed': 'Removed', 'art.back': 'Artifacts', 'art.noRun': 'Run record missing', 'art.used': 'Used', 'as.missing': 'File not found', 'as.modified': 'Unregistered changes', 'as.needs_work': 'Needs work', 'as.basis_changed': 'Basis changed', 'av.needs-work': 'Needs work', 'av.checked': 'Checked', 'av.accepted': 'Accepted', 'log.noRuns': 'No runs yet', 'log.noHistory': 'No maintenance yet',
@@ -941,16 +945,28 @@ function detail(b, act) {
     el('div', { class: 'actions' }, el('button', { class: 'btn ghost', type: 'button', onclick: (e) => showSource(b.source, e.currentTarget) }, svg(ICONS.doc), t('card.entry'))))
 }
 
+// A source as a reviewer needs it: what it is, why it was collected, where it serves, and who read it.
 async function showSource(id, anchor) {
   const s = await api('praxis_source', { id })
-  anchor.closest('.detail').append(el('div', { class: 'source' },
+  const row = (label, ...body) => el('div', { class: 'src-row' }, el('span', { class: 'label' }, label), el('div', { class: 'chips' }, ...body))
+  anchor.parentElement.after(el('div', { class: 'source' },
     el('div', { class: 'crumb' }, el('span', { class: `dot ${s.evidence_status}` }), s.id),
-    s.url ? el('p', { class: 'meta' }, s.url) : null,
-    el('p', {}, s.summary),
+    s.url ? el('p', { class: 'meta' }, el('a', { href: s.url, target: '_blank', rel: 'noopener' }, s.url)) : null,
+    s.summary ? el('p', {}, s.summary) : null,
+    s.read_scope ? el('p', { class: 'desc' }, t('src.read') + s.read_scope) : null,
     s.limits?.length ? el('p', { class: 'desc' }, t('card.limits') + s.limits.join('；')) : null,
     s.excerpts?.length ? el('ul', { class: 'reviews' }, s.excerpts.map((x) => el('li', {}, `${x.claim}（${x.locator}）`))) : null,
-    el('p', { class: 'meta' }, `${s.card || '—'}${s.snapshot ? ' · ' + s.snapshot.path : ''}`)))
-  anchor.remove()
+    s.collection ? row(t('src.collected'), el('span', {}, [s.collection.title || s.collection.id, s.collection.purpose].filter(Boolean).join('：'))) : null,
+    s.captured_for ? row(t('src.capturedFor'), el('span', {}, `${s.captured_for.task} · ${s.captured_for.by || '—'} · ${stamp(s.captured_for.at)}`)) : null,
+    row(t('src.pages'), ...(s.relations.length ? s.relations.map((r) => r.unit
+      ? el('button', { class: 'chip mono jump', onclick: () => openInCatalog({ kind: 'unit', id: r.unit }) }, r.unit)
+      : chip(r.target, 'mono outline')) : [el('span', { class: 'meta' }, t('src.noPages'))])),
+    s.serves.length ? row(t('src.serves'), ...s.serves.map((x) => chip(x.title))) : null,
+    row(t('src.usedBy'), ...(s.used_by.length ? s.used_by.map((r) => el('span', { class: 'chips' }, el('span', { class: 'meta' }, `${stamp(r.at)} ${r.title}`),
+      r.artifacts.map((a) => el('button', { class: 'chip mono jump', onclick: () => { show('artifacts'); openArtifact(a.artifact) } }, `${a.artifact} v${a.version}`)))) : [el('span', { class: 'meta' }, t('src.unused'))])),
+    el('p', { class: 'meta' }, `${s.card || s.record_path || '—'}${s.snapshot ? ' · ' + s.snapshot.path : ''}`)))
+  if (anchor.classList.contains('btn')) anchor.remove()
+  else anchor.disabled = true
 }
 
 function addPanel(path) {
@@ -1164,11 +1180,11 @@ const capField = (name, label, attrs = {}, tag = 'input') => el('div', {}, el('l
 const capForm = el('form', { class: 'panel', style: 'max-width: 760px; margin: 0 auto', onsubmit: async (e) => {
   e.preventDefault()
   const d = Object.fromEntries(new FormData(capForm))
-  const args = { ...d, tags: d.tags.split(/\s+/).filter(Boolean) }
-  for (const k of ['url', 'locator']) if (!args[k]) delete args[k]
+  const { task, ...item } = { ...d, tags: d.tags.split(/\s+/).filter(Boolean) }
+  for (const k of ['url', 'locator']) if (!item[k]) delete item[k]
   try {
-    const r = await api('praxis_capture', args)
-    toast(r.existing ? t('toast.existing', { id: r.source.id }) : t('toast.captured', { id: r.source.id }))
+    const [r] = await api('praxis_capture', { sources: [item], task })
+    toast(r.existing ? t('toast.existing', { id: r.id }) : t('toast.captured', { id: r.id }))
     if (!r.existing) { capForm.reset(); refreshData() }
   } catch (err) { toast(err.message, true) }
 } },
@@ -1177,6 +1193,7 @@ const capForm = el('form', { class: 'panel', style: 'max-width: 760px; margin: 0
   el('div', { class: 'section' },
     el('div', { class: 'grid2' }, capField('url', 'URL', { type: 'url', placeholder: 'https://' }), capField('locator', t('cap.locator'), { placeholder: t('cap.locatorPh') })),
     capField('title', t('cap.titleField'), { required: true }),
+    capField('task', t('cap.task'), { required: true, placeholder: t('cap.taskPh') }),
     capField('summary', t('cap.summary'), { required: true, placeholder: t('cap.summaryPh') }, 'textarea'),
     el('div', { class: 'grid2' }, capField('read_scope', t('cap.scope'), { required: true, placeholder: t('cap.scopePh') }), capField('tags', t('cap.tags'), { placeholder: t('f.spaces') })),
     el('div', { class: 'label' }, t('cap.evidence')),
@@ -1276,7 +1293,7 @@ async function openArtifact(id) {
         v.run?.changed ? chip(t('art.basis'), 'warn') : null),
       v.run && (v.run.units.length || v.run.sources.length) ? el('div', { class: 'chips', style: 'margin-top:4px' }, el('span', { class: 'meta' }, t('art.used')),
         v.run.units.map((u) => el('button', { class: 'chip mono jump', onclick: () => openInCatalog({ kind: 'unit', id: u }) }, u)),
-        v.run.sources.map((x) => chip(x, 'mono outline'))) : null,
+        v.run.sources.map((x) => el('button', { class: 'chip outline jump', title: x.id, onclick: (e) => showSource(x.id, e.currentTarget) }, x.title))) : null,
       v.derived_from.length ? el('div', { class: 'chips', style: 'margin-top:4px' }, el('span', { class: 'meta' }, t('art.derived')),
         v.derived_from.map((d) => el('button', { class: 'chip mono jump', onclick: () => openArtifact(d.artifact) }, `${d.artifact} v${d.version}`))) : null,
       v.reviews.length ? el('ul', { class: 'reviews' }, v.reviews.map((r) => el('li', {}, chip(t(`av.${r.verdict}`), r.verdict === 'needs-work' ? 'warn' : 'accent'), r.by || '', r.note || ''))) : null))

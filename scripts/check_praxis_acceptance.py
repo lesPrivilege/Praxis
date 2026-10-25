@@ -66,6 +66,7 @@ def fixture(root, source_url):
             'created_at': None, 'evidence_status': 'partial', 'summary': 'Empty fixture',
             'local_card': None, 'limitations': [], 'revisit_when': 'never',
         })
+    write(root, 'vault/project-indexes.json', {'indexes': []})
     write(root, 'vault/intake/local-projects.json', {'projects': []})
     write(root, 'vault/intake/downloads.json', {'entries': []})
     catalog = {**empty_catalog, 'registry_extensions': True, 'sources': [{
@@ -237,6 +238,40 @@ def run_checks(probe, temporary, baseline, checks):
     mcp = probe.call('artifact', {'id': 'not-here'})
     check('artifact_lookup_error', 'Missing artifact returns CLI nonzero and MCP isError:true.',
           {'cli_exit': cli['exit'], 'mcp_isError': mcp.get('isError')}, cli['exit'] != 0 and mcp.get('isError') is True)
+
+    # Source loop: a project index registered by reference, related through its registration, handed
+    # over by resolve with its URL and excerpts, recorded as read, and shown with its runs. A references
+    # catalog source keeps a relation curated onto it (it used to be dropped by the registry builder).
+    write(probe.root, 'proj/research/sources.json', {'sources': [
+        {'id': 'S-1', 'title': 'Vendor docs', 'url': 'https://vendor.example/docs', 'notes': 'Docs.', 'access': 'read-full'}]})
+    write(probe.root, 'proj/research/claims.jsonl', json.dumps({'id': 'C-1', 'source_id': 'S-1', 'locator': 'Pricing', 'claim': 'Priced per token.'}) + '\n')
+    registered = probe.call('register_index', {'id': 'proj-research', 'path': 'proj/research/sources.json', 'list': 'sources', 'title': 'Proj ledger',
+        'purpose': 'Fact-check the Proj chapter', 'limits': 'fixture', 'revisit_when': 'fixture',
+        'fields': {'id': 'id', 'title': 'title', 'url': 'url', 'summary': 'notes', 'status': 'access'}, 'status': {'read-full': 'verified'},
+        'excerpts': {'path': 'proj/research/claims.jsonl', 'id': 'id', 'source': 'source_id', 'locator': 'locator', 'claim': 'claim'}})
+    probe.ok('curate', {'binding': f'proj-research:S-1@{TARGET_A}', 'expected_revision': 0, 'description': 'Pricing for controls'})
+    refs = json.loads((probe.root / 'vault/references/catalog.json').read_text())
+    refs['resources'].append({'id': 'ref-guide', 'name': 'Guide', 'originalUrl': 'https://guide.example', 'canonicalUrl': 'https://guide.example',
+        'accessDate': '2026-10-25', 'verification': {'status': 'partial', 'summary': 'A guide.'}, 'purpose': ['GUIDE'],
+        'cardPath': 'vault/references/cards/guide.md', 'doNotCopy': ['fixture'], 'revisitTrigger': 'fixture'})
+    write(probe.root, 'vault/references/catalog.json', refs)
+    build(probe.root)
+    probe.ok('curate', {'binding': f'ref-guide@{TARGET_A}', 'expected_revision': 0})
+    resolved = probe.ok('resolve', {'units': ['design/controls']})
+    row = next((m for m in resolved['materials'] if m['source'] == 'proj-research:S-1'), {})
+    run = probe.ok('consume', {'title': 'Use the ledger', 'units': ['design/controls'], 'sources': ['proj-research:S-1']})
+    source = json.loads(probe.call('source', {'id': 'proj-research:S-1'})['content'][0]['text'])
+    check('source_loop', 'Project index by reference; resolve gives URL and excerpts; consume records the source and its binding; source shows purpose and runs; a references-catalog relation survives the rebuild.',
+          {'register_isError': registered.get('isError'), 'material': {k: row.get(k) for k in ['url', 'evidence_status', 'excerpts']},
+           'run_bindings': [b['id'] for b in run['bindings']], 'collection_purpose': (source.get('collection') or {}).get('purpose'),
+           'used_by': [r['id'] for r in source.get('used_by', [])],
+           'reference_relation': f'ref-guide@{TARGET_A}' in [b['id'] for b in probe.ok('bindings', {'source': 'ref-guide'})]},
+          not registered.get('isError') and row.get('url') == 'https://vendor.example/docs'
+          and row.get('excerpts') == [{'locator': 'Pricing', 'claim': 'Priced per token.'}]
+          and [b['id'] for b in run['bindings']] == [f'proj-research:S-1@{TARGET_A}']
+          and (source.get('collection') or {}).get('purpose') == 'Fact-check the Proj chapter'
+          and [r['id'] for r in source.get('used_by', [])] == [run['id']]
+          and f'ref-guide@{TARGET_A}' in [b['id'] for b in probe.ok('bindings', {'source': 'ref-guide'})])
 
     archive = str(temporary / 'state.tar.gz')
     exported = probe.ok('export', archive)

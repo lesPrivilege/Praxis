@@ -1,13 +1,14 @@
 // Export the control plane's persistent state as one archive with a hash manifest,
 // and check an archive before restoring it. Plugin code and Kit pages travel with the
 // repository; this carries what the control plane itself writes: its own data, captured
-// sources and snapshots, and every source catalog, since bindings and refreshes edit the
-// grammar_paths and snapshot pointers of existing records. Derived indexes are rebuilt on restore.
+// sources and snapshots, and every file holding a source record, since bindings and refreshes edit
+// the grammar_paths and snapshot pointers of existing records. Derived indexes are rebuilt on restore.
 import { createHash } from 'node:crypto'
 import { execFileSync } from 'node:child_process'
 import { copyFileSync, existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
+import { PROJECT_INDEXES } from './materials.js'
 
 export const STATE_PATHS = [
   'dsh-praxis/data',
@@ -25,11 +26,15 @@ function files(repo, rel) {
 
 const sha = (buf) => createHash('sha256').update(buf).digest('hex')
 
-/** Catalogs the registry projects sources from: the records curate, remove, restore and refresh write. */
+/**
+ * Files holding the source records that curate, remove, restore and refresh write: every catalog or
+ * intake the registry projects from, and for project indexes the registration (the project's own
+ * index file belongs to the project and travels with it).
+ */
 function catalogs(repo) {
   const path = join(repo, 'vault/registry.json')
   if (!existsSync(path)) return []
-  const rels = JSON.parse(readFileSync(path, 'utf8')).sources.map((s) => s.record_path).filter((p) => p?.endsWith('catalog.json'))
+  const rels = JSON.parse(readFileSync(path, 'utf8')).sources.map((s) => (s.kind === 'project-index' ? PROJECT_INDEXES : s.record_path)).filter(Boolean)
   return [...new Set(rels)].filter((rel) => existsSync(join(repo, rel)))
 }
 

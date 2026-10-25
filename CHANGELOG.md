@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-10-25 · dsh-praxis 来源闭环
+
+- 名册对人和 agent 说清每条来源：`praxis_source` 与控制面的来源条目给出收录缘由（集合的用途或 capture 时的任务）、挂在哪些页面、经这些页面服务哪些任务类型、哪些运行读过它并交付了什么。取舍见 [ADR-040](docs/decisions/040-dsh-praxis-source-loop.md)。
+- resolve 的素材带 source ID、原件 URL、证据状态、读取范围、摘录定位与快照；`praxis_consume` 的 `sources` 记实际读过的来源，挂载由“读过的来源 × 读过的单元”推出，`bindings` 参数去掉。
+- 关系只在来源自己的记录上：registry 构建脚本为所有记录形态带出 `grammar_paths`（此前只有扩展 catalog，挂到其他来源上的关系重建后会消失）；Kit 页引用已登记来源的卡片就必须有这条关系，validator 检查，补上 45 条。
+- `praxis_register_index` 按引用登记项目自己的来源索引，登记在 [`vault/project-indexes.json`](vault/project-indexes.json)；Jev 研究登记 236 条由此进入名册，`jev/` 不变。`praxis_capture` 改为成批，写明为哪件任务收录。
+- 25 项测试、[验收探针](scripts/check_praxis_acceptance.py) 13 项、仓库校验通过；素材对交付的帮助与 DSH 桌面待测，见 [回执](docs/verification/dsh-praxis-source-loop-20261025.md)。
+
 ## 2026-10-25 · dsh-praxis 旧代码提示与 DSH 实测补登
 
 - DSH 会话实测报回的三项问题（经插件的 `value is not lossless JSON`、consume 报错但运行已写、插件少产物四件工具）都出自同一个旧进程：DSH 在后两次提交之前启动，跑的是 `179e227` 的代码。`praxis_entry` 与 `praxis_upkeep` 现在带 `reload`，宿主运行的服务端代码比磁盘旧时出现，控制面“需要处理”显示一行。

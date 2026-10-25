@@ -75,7 +75,7 @@
 
 Materials 的权威数据是 `vault/provenance/**/catalog.json` 里的来源记录：49 个 catalog（27 个 `cards: maintained`，22 个 `generated`），共 1119 条，字段名一百多种。下表只列各 catalog 共有或用于发现的字段；其余按 catalog 自有字段保留在原记录里，core 读详情时整条带出。
 
-**挂载关系留在 catalog，维护信息在 `dsh-praxis/data/`。** 一条 Binding 是来源 `grammar_paths` 里的一项；它的 description、取用题解、启用、收藏、优先级、tag 与 review 存在 [data/bindings.json](data/README.md)，按 `<来源 ID>@<页面路径>` 对上。新建挂载会把页面路径写进 `grammar_paths`，删除会移出、维护信息留下以便恢复。这样 SaaS 图谱等已有脚本照常读 `grammar_paths`，不用为控制面改动。
+**挂载关系留在来源自己的记录上，维护信息在 `dsh-praxis/data/`。** 一条 Binding 是来源 `grammar_paths` 里的一项（项目内来源索引的关系在 `vault/project-indexes.json` 的登记里，见 [ADR-040](../docs/decisions/040-dsh-praxis-source-loop.md)）；它的 description、取用题解、启用、收藏、优先级、tag 与 review 存在 [data/bindings.json](data/README.md)，按 `<来源 ID>@<页面路径>` 对上。新建挂载会把页面路径写进 `grammar_paths`，删除会移出、维护信息留下以便恢复。这样 SaaS 图谱等已有脚本照常读 `grammar_paths`，不用为控制面改动。
 
 | 现有字段 | 新对象 | 说明 |
 |---|---|---|

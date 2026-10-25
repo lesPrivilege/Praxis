@@ -50,12 +50,30 @@ function rebuildFor(root) {
       const cat = JSON.parse(readFileSync(join(root, rel), 'utf8'))
       const ns = rel === CATALOG ? 'provenance-demo' : 'provenance-praxis-captures'
       for (const s of cat.sources) {
-        sources.push({ id: `${ns}:${s.slug}`, title: s.title, canonical_url: s.url, evidence_status: s.status, summary: s.summary_zh,
+        sources.push({ id: `${ns}:${s.slug}`, collection: ns, title: s.title, canonical_url: s.url, evidence_status: s.status, summary: s.summary_zh,
           purpose_tags: s.purpose_tags ?? [], local_card: s.card_path, record_path: rel, limitations: [s.limits], revisit_when: s.revisit_trigger,
+          ...(s.supported_claims ? { supported_claims: s.supported_claims } : {}), ...(s.captured_for ? { captured_for: s.captured_for } : {}),
           ...(s.grammar_paths ? { grammar_paths: s.grammar_paths } : {}) })
       }
     }
-    writeFileSync(join(root, 'vault/registry.json'), JSON.stringify({ sources }, null, 2) + '\n')
+    // Project indexes registered by reference: read in place, fields mapped, relations from the registration.
+    const collections = []
+    const regs = existsSync(join(root, 'vault/project-indexes.json')) ? JSON.parse(readFileSync(join(root, 'vault/project-indexes.json'), 'utf8')).indexes : []
+    for (const reg of regs) {
+      const data = JSON.parse(readFileSync(join(root, reg.path), 'utf8'))
+      const claims = reg.excerpts ? readFileSync(join(root, reg.excerpts.path), 'utf8').trim().split('\n').map((l) => JSON.parse(l)) : []
+      const f = reg.fields
+      for (const r of reg.list ? data[reg.list] : data) {
+        const local = String(r[f.id])
+        sources.push({ id: `${reg.id}:${local}`, kind: 'project-index', collection: reg.id, title: r[f.title], canonical_url: f.url ? r[f.url] : null,
+          evidence_status: reg.status?.[r[f.status]] ?? 'partial', summary: f.summary ? r[f.summary] ?? '' : '', purpose_tags: [], local_card: null, record_path: reg.path,
+          limitations: [reg.limits], revisit_when: reg.revisit_when,
+          supported_claims: claims.filter((c) => c[reg.excerpts.source] === local).map((c) => ({ claim_id: c[reg.excerpts.id], locator: c[reg.excerpts.locator], claim: c[reg.excerpts.claim] })),
+          ...(reg.relations?.[local] ? { grammar_paths: reg.relations[local] } : {}) })
+      }
+      collections.push({ id: reg.id, path: reg.path, title: reg.title, purpose: reg.purpose })
+    }
+    writeFileSync(join(root, 'vault/registry.json'), JSON.stringify({ collections, sources }, null, 2) + '\n')
   }
 }
 
@@ -136,29 +154,37 @@ test('review records the reviewed revision', () => {
   assert.throws(() => p.materials.review(BIND, { verdict: 'fine' }), /verdict/)
 })
 
-test('capture writes catalog, card and registry entry, and dedupes by URL', () => {
+test('capture: a batch is checked whole, written once, deduped by URL, and says what it was collected for', () => {
   const { root, p } = setup()
-  const input = { url: 'https://example.org/new-guide?utm_source=x', title: 'New Guide', summary: '一份指南。', read_scope: '读了正文', limits: '未运行示例。', revisit_when: '改版时。', tags: ['GUIDE'] }
-  const made = p.materials.capture(input, { by: 'test' })
-  assert.equal(made.existing, false)
-  assert.equal(made.source.id, 'provenance-praxis-captures:new-guide')
+  const item = (url, title) => ({ url, title, summary: '一份指南。', read_scope: '读了正文', limits: '未运行示例。', revisit_when: '改版时。', tags: ['GUIDE'] })
+  assert.throws(() => p.materials.capture([item('https://example.org/a', 'A')]), /needs task/)
+  assert.throws(() => p.materials.capture([item('https://example.org/a', 'A'), { url: 'https://x.org' }], { task: '调研' }), /needs title/)
+  assert.equal(existsSync(join(root, 'vault/provenance/praxis-captures/catalog.json')), false, 'a refused batch writes nothing')
+  const made = p.materials.capture([
+    item('https://example.org/new-guide?utm_source=x', 'New Guide'),
+    item('https://example.org/new-guide', 'Same Guide'),
+    item('https://example.org/apg', 'APG again'),
+    item('https://example.org/other', 'Other Guide'),
+  ], { task: '技术说明页的交互调研', by: 'test' })
+  assert.deepEqual(made.map((m) => [m.id, m.existing]), [
+    ['provenance-praxis-captures:new-guide', false], ['provenance-praxis-captures:new-guide', true], [SRC, true], ['provenance-praxis-captures:other-guide', false]])
   assert.ok(existsSync(join(root, 'vault/provenance/praxis-captures/new-guide.md')))
   assert.ok(existsSync(join(root, 'vault/provenance/praxis-captures/README.md')))
-  assert.equal(p.materials.capture({ ...input, url: 'https://example.org/new-guide' }).existing, true)
-  assert.equal(p.materials.capture({ ...input, url: 'https://example.org/apg' }).source.id, SRC)
-  assert.throws(() => p.materials.capture({ url: 'https://x.org' }), /needs title/)
+  assert.equal(p.source('provenance-praxis-captures:other-guide').captured_for.task, '技术说明页的交互调研')
 })
 
 test('consume records versions; stale finds runs whose units or bindings changed', () => {
   const { root, p } = setup()
-  const run = p.consume({ title: '讲解页', task_type: 'explainer', units: ['writing/organization/mechanism'], bindings: [BIND], by: 'test' })
+  const run = p.consume({ title: '讲解页', task_type: 'explainer', units: ['writing/organization/mechanism', 'design/controls'], sources: [SRC, SRC], by: 'test' })
   assert.equal(p.runs()[0].id, run.id)
+  assert.deepEqual([run.sources.map((s) => s.id), run.bindings.map((b) => b.id)], [[SRC], [BIND]], 'the binding joining a read source to a read unit is recorded')
   assert.deepEqual(p.stale(), [])
   writeFileSync(join(root, 'dsh-praxis/kit/writing/organization/mechanism.md'), '# 机制讲解\n\n改过了。\n')
   p.materials.curate(BIND, { favorite: true })
   const [stale] = p.stale()
   assert.deepEqual(stale.units, ['writing/organization/mechanism'])
   assert.deepEqual(stale.bindings, [BIND])
+  assert.throws(() => p.consume({ title: 'x', sources: ['no:such'] }), /unknown source/)
 })
 
 test('stale finds runs whose consumed source got a new snapshot', async () => {
@@ -203,7 +229,7 @@ test('upkeep lists only signals: needs-work, changed sources, stale runs, unboun
   assert.deepEqual(signals(), ['changed'])
   p.materials.review(BIND, { verdict: 'needs-work', by: 'test' })
   assert.deepEqual(signals(), ['needs_work'])
-  p.materials.capture({ url: 'https://example.org/new', title: '新来源', summary: '概要', read_scope: '读过', limits: '边界', revisit_when: '修订时' }, { by: 'test' })
+  p.materials.capture([{ url: 'https://example.org/new', title: '新来源', summary: '概要', read_scope: '读过', limits: '边界', revisit_when: '修订时' }], { task: '测试', by: 'test' })
   const up = p.upkeep()
   assert.deepEqual(up.bindings.map((b) => [b.id, b.unit, b.signals]), [[BIND, 'design/controls', ['needs_work']]])
   assert.deepEqual(up.unbound.map((s) => s.title), ['新来源'])
@@ -332,4 +358,47 @@ test('artifacts: moving a file keeps identity only when the bytes are the latest
   assert.equal(p.artifactList({ include_removed: true }).length, 1)
   // Writes report through the same lossless boundary as reads; a refusal there would follow a committed write.
   for (const v of [removed, p.reviewArtifact({ id, version: 2, verdict: 'checked' }), p.consume({ title: '无预设', artifacts: ['out/page.html'] }), p.artifact(id), p.upkeep(), p.entry()]) jsonValue(v)
+})
+
+test('resolve hands over the way to the original; source shows why it is here, where it serves and who read it', () => {
+  const { root, p } = setup()
+  const catalog = JSON.parse(readFileSync(join(root, CATALOG), 'utf8'))
+  catalog.sources[0].supported_claims = [{ claim_id: 'C1', locator: 'Keyboard Interaction', claim: 'Enter 与 Space 切换展开。' }]
+  writeFileSync(join(root, CATALOG), JSON.stringify(catalog))
+  p.materials.rebuild()
+  const [m] = p.resolve({ task_type: 'explainer' }).materials
+  assert.deepEqual([m.source, m.url, m.evidence_status, m.excerpts], [SRC, 'https://example.org/apg/', 'verified', [{ locator: 'Keyboard Interaction', claim: 'Enter 与 Space 切换展开。' }]])
+  writeFileSync(join(root, 'page.html'), '<p>v1</p>')
+  const run = p.consume({ title: '讲解页', units: ['design/controls'], sources: [m.source], artifacts: ['page.html'] })
+  const s = p.source(SRC)
+  assert.deepEqual(s.relations.map((r) => r.unit), ['design/controls'])
+  assert.deepEqual(s.serves.map((t) => t.id), ['task/types/explainer'])
+  assert.deepEqual(s.used_by.map((r) => [r.id, r.artifacts.map((a) => a.artifact)]), [[run.id, [run.artifacts[0].artifact]]])
+  assert.deepEqual(p.artifact(run.artifacts[0].artifact).versions[0].run.sources, [{ id: SRC, title: 'APG Accordion' }])
+  assert.equal(s.record, undefined, 'the raw record stays out of the tool value')
+})
+
+test('a project source index is registered by reference, related through its registration, and read like any source', () => {
+  const { root, p } = setup()
+  mkdirSync(join(root, 'proj/research'), { recursive: true })
+  const index = { as_of: '2026-10-23', sources: [
+    { id: 'A-01', title: 'Vendor docs', canonical_url: 'https://vendor.example/docs', notes: '官方文档。', access: 'read-full' },
+    { id: 'A-02', title: 'Blog post', canonical_url: 'https://vendor.example/blog', notes: '', access: 'blocked' },
+  ] }
+  writeFileSync(join(root, 'proj/research/sources.json'), JSON.stringify(index))
+  writeFileSync(join(root, 'proj/research/claims.jsonl'), JSON.stringify({ id: 'C-1', source_id: 'A-01', locator: 'Pricing', claim: '按 token 计价。' }) + '\n')
+  const reg = { id: 'proj-research', path: 'proj/research/sources.json', list: 'sources', title: 'Proj 研究登记', purpose: '为 Proj 专章核对事实', limits: '摘要式抓取', revisit_when: '新版本时',
+    fields: { id: 'id', title: 'title', url: 'canonical_url', summary: 'notes', status: 'access' }, status: { 'read-full': 'verified', blocked: 'unavailable' },
+    excerpts: { path: 'proj/research/claims.jsonl', id: 'id', source: 'source_id', locator: 'locator', claim: 'claim' } }
+  assert.throws(() => p.materials.registerIndex({ ...reg, status: { 'read-full': 'verified' } }), /blocked needs a mapping/)
+  assert.throws(() => p.materials.registerIndex({ ...reg, fields: { ...reg.fields, author: 'x' } }), /unknown author/)
+  assert.deepEqual(p.materials.registerIndex(reg, { by: 'test' }), { id: 'proj-research', path: reg.path, created: true, sources: 2 })
+  const s = p.source('proj-research:A-01')
+  assert.deepEqual([s.url, s.evidence_status, s.excerpts.map((e) => e.claim), s.collection.purpose], ['https://vendor.example/docs', 'verified', ['按 token 计价。'], '为 Proj 专章核对事实'])
+  p.materials.curate('proj-research:A-01@dsh-praxis/kit/design/controls.md', { description: '控件页取它的计价说法' }, { expected_revision: 0 })
+  assert.deepEqual(JSON.parse(readFileSync(join(root, 'vault/project-indexes.json'), 'utf8')).indexes[0].relations, { 'A-01': ['dsh-praxis/kit/design/controls.md'] })
+  assert.deepEqual(JSON.parse(readFileSync(join(root, 'proj/research/sources.json'), 'utf8')), index, 'the project file is not touched')
+  p.materials.registerIndex({ ...reg, title: '改名' })
+  assert.deepEqual(p.materials.listBindings({ source: 'proj-research:A-01' }).map((b) => b.description), ['控件页取它的计价说法'], 'registering again keeps relations')
+  assert.ok(p.resolve({ task_type: 'explainer' }).materials.some((m) => m.source === 'proj-research:A-01'))
 })

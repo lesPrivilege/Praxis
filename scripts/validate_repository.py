@@ -131,10 +131,27 @@ if registry_path.exists():
     registry = json.loads(registry_path.read_text())
     source_ids = [source['id'] for source in registry['sources']]
     for source in registry['sources']:
+        # A project index's record lives in the project's own file and is as complete as the project keeps it.
+        if source.get('kind') == 'project-index':
+            if not source['title'] or not source['original_locator']:
+                errors.append(f"Incomplete project source record: {source['id']}")
+            continue
         if not source['summary'] or not source['evidence_status']:
             errors.append(f"Incomplete source record: {source['id']}")
         if not source['local_card'] or not (ROOT / source['local_card']).is_file():
             errors.append(f"Missing source card: {source['id']}")
+    # One place for a page's sources: a Kit page that cites a registered source through its card
+    # carries the relation on the source record, so resolve and the control plane see it too.
+    by_card = {s['local_card']: s for s in registry['sources'] if s.get('local_card')}
+    for page in sorted((ROOT / 'dsh-praxis/kit').rglob('*.md')):
+        rel = page.relative_to(ROOT).as_posix()
+        for target in markdown_targets(page.read_text()):
+            path = target.split('#')[0]
+            if not path or re.match(r'^[a-z]+:', path):
+                continue
+            cited = by_card.get((page.parent / path).resolve().relative_to(ROOT).as_posix()) if (page.parent / path).resolve().is_relative_to(ROOT) else None
+            if cited and rel not in cited.get('grammar_paths', []):
+                errors.append(f"Cited source without relation: {rel} cites {cited['id']}; add the page to its grammar_paths")
     if len(source_ids) != len(set(source_ids)):
         errors.append('Duplicate source IDs in registry')
     expected_citations = {(m['turn_id'], m['item_id'], int(i))

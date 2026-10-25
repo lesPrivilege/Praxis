@@ -1,5 +1,6 @@
-// Materials: sources come from the provenance catalogs (listed through the
-// derived registry), relations from each source's grammar_paths, and curation
+// Materials: sources come from the vault catalogs and from project source indexes registered by
+// reference (all listed through the derived registry); relations from each source's grammar_paths,
+// kept on the source's own record (for a project index, in its registration); and curation
 // (enable, favorite, description, usage, tags, reviews) from the binding store.
 import { createHash } from 'node:crypto'
 import { execFileSync } from 'node:child_process'
@@ -10,6 +11,7 @@ import { clip } from './kit.js'
 
 export const CAPTURE_CATALOG = 'vault/provenance/praxis-captures/catalog.json'
 export const CAPTURE_INTAKE = 'vault/intake/praxis-captures.json'
+export const PROJECT_INDEXES = 'vault/project-indexes.json'
 
 const SLUG = /^[A-Za-z0-9][A-Za-z0-9._-]*$/
 
@@ -74,6 +76,7 @@ export class Materials {
       title: base.title,
       kind: base.kind,
       url: base.canonical_url ?? record.url,
+      collection: base.collection,
       summary: base.summary,
       evidence_status: base.evidence_status,
       purpose_tags: base.purpose_tags ?? [],
@@ -83,7 +86,9 @@ export class Materials {
       record_path: base.record_path,
       reference_priority: record.reference_priority,
       reference_status: record.reference_status,
-      excerpts: (record.supported_claims ?? []).map((c) => ({ id: c.claim_id, locator: c.locator, claim: c.claim })),
+      read_scope: base.evidence_modality ?? record.evidence_modality,
+      captured_for: base.captured_for ?? record.captured_for,
+      excerpts: (base.supported_claims ?? record.supported_claims ?? []).map((c) => ({ id: c.claim_id, locator: c.locator, claim: c.claim })),
       snapshot: record.snapshot_path
         ? { path: record.snapshot_path, sha256: record.snapshot_sha256, status: record.snapshot_status }
         : undefined,
@@ -197,6 +202,7 @@ export class Materials {
     if (patch.description !== undefined && patch.description.length > 240) throw new Error('description over 240 characters')
     if (patch.priority !== undefined && !['preferred', 'normal'].includes(patch.priority)) throw new Error('priority must be preferred or normal')
     if (patch.usage !== undefined && (!patch.usage.problem || !patch.usage.how)) throw new Error('usage needs problem and how')
+    this.relationFile(s)
     const stored = this.bindings.update(id, expected_revision, (cur = {}) => ({
       ...cur, source: s.id, target, title: s.title, ...patch, state: 'active',
     }), { op: 'curate', by, reason, task, example, fields: Object.keys(patch) })
@@ -235,19 +241,25 @@ export class Materials {
     return this.binding(id)
   }
 
-  /** Add or drop one target in the catalog record, then refresh the derived registry entry. */
+  /** The file that holds a source's relations; refuses a source whose record cannot be found there. */
+  relationFile(s) {
+    const file = s.kind === 'project-index' ? PROJECT_INDEXES : s.record_path
+    if (!editRelations(readJson(join(this.repo, file), {}), s, (list) => list)) throw new Error(`no record for ${s.id} in ${file}`)
+    return file
+  }
+
+  /** Add or drop one target on the source's own record, then refresh the derived registry entry. */
   setRelation(s, target, present) {
-    const path = join(this.repo, s.record_path)
-    const slug = s.id.slice(s.id.indexOf(':') + 1)
+    const path = join(this.repo, this.relationFile(s))
     withLock(path, () => {
-      const catalog = readJson(path)
-      const rec = catalog.sources.find((x) => x.slug === slug)
-      const list = rec.grammar_paths ?? []
-      const has = list.includes(target)
-      if (present === has) return
-      rec.grammar_paths = present ? [...list, target] : list.filter((t) => t !== target)
-      if (!rec.grammar_paths.length) delete rec.grammar_paths
-      writeJson(path, catalog)
+      const data = readJson(path)
+      let changed = false
+      editRelations(data, s, (list) => {
+        if (present === list.includes(target)) return list
+        changed = true
+        return present ? [...list, target] : list.filter((t) => t !== target)
+      })
+      if (changed) writeJson(path, data)
     })
     this.rebuild()
   }
@@ -259,54 +271,115 @@ export class Materials {
   }
 
   /**
-   * Register a new source in the capture catalog, or return the existing one with the same URL.
-   * Writes the catalog record, a source card and the registry entry.
+   * Register new sources in the capture catalog in one write. Every item is checked first; an item
+   * whose URL is already registered returns that source instead. `task` says what the sources were
+   * collected for and stays on each record, so a reviewer can see why it is in the roster.
    */
-  capture(input, { by, reason, task } = {}) {
-    const url = input.url?.trim()
-    const locator = input.locator?.trim()
-    if (!url && !locator) throw new Error('capture needs url or locator')
-    for (const field of ['title', 'summary', 'read_scope', 'limits', 'revisit_when']) {
-      if (!input[field]?.trim()) throw new Error(`capture needs ${field}`)
-    }
-    if (url) {
-      const norm = normalizeUrl(url)
-      const dup = this.registry().sources.find((s) => s.canonical_url && normalizeUrl(s.canonical_url) === norm)
-      if (dup) return { source: this.source(dup.id), existing: true }
-    }
-    const slug = input.slug ?? slugify(input.title, url ?? locator)
-    if (!SLUG.test(slug)) throw new Error(`bad slug: ${slug}`)
-    const status = input.evidence_status ?? 'partial'
-    if (!['verified', 'partial', 'unavailable'].includes(status)) throw new Error('evidence_status must be verified, partial or unavailable')
+  capture(items, { task, by, reason } = {}) {
+    if (!task?.trim()) throw new Error('capture needs task: what these sources were collected for')
+    if (!Array.isArray(items) || !items.length) throw new Error('capture needs at least one source')
     const catalogPath = join(this.repo, CAPTURE_CATALOG)
-    const cardRel = `${dirname(CAPTURE_CATALOG)}/${slug}.md`
-    const record = {
-      slug,
-      url: url ?? locator,
-      original_url: url ?? null,
-      title: input.title.trim(),
-      status,
-      summary_zh: input.summary.trim(),
-      limits: input.limits.trim(),
-      revisit_trigger: input.revisit_when.trim(),
-      card_path: cardRel,
-      purpose_tags: input.tags ?? [],
-      evidence_modality: input.read_scope.trim(),
-      history_record: `${dirname(CAPTURE_CATALOG)}/CHANGELOG.md`,
-      ...(input.excerpts?.length ? { supported_claims: input.excerpts.map((e, i) => ({ claim_id: `${slug}-C${i + 1}`, locator: e.locator, claim: e.claim })) } : {}),
-    }
-    withLock(catalogPath, () => {
-      const catalog = readJson(catalogPath, captureCatalog())
-      if (catalog.sources.some((s) => s.slug === slug)) throw new Error(`slug exists: ${slug}`)
-      catalog.sources.push(record)
-      writeJson(catalogPath, catalog, 2)
+    const byUrl = new Map(this.registry().sources.filter((s) => s.canonical_url).map((s) => [normalizeUrl(s.canonical_url), s.id]))
+    const slugs = new Set(readJson(catalogPath, captureCatalog()).sources.map((s) => s.slug))
+    const at = new Date().toISOString()
+    const plan = items.map((input) => {
+      const url = input.url?.trim()
+      const locator = input.locator?.trim()
+      if (!url && !locator) throw new Error('capture needs url or locator')
+      for (const field of ['title', 'summary', 'read_scope', 'limits', 'revisit_when']) {
+        if (!input[field]?.trim()) throw new Error(`capture needs ${field}: ${input.title ?? url ?? locator}`)
+      }
+      if (url && byUrl.has(normalizeUrl(url))) return { id: byUrl.get(normalizeUrl(url)), existing: true }
+      const slug = input.slug ?? slugify(input.title, url ?? locator)
+      if (!SLUG.test(slug)) throw new Error(`bad slug: ${slug}`)
+      if (slugs.has(slug)) throw new Error(`slug exists: ${slug}`)
+      const status = input.evidence_status ?? 'partial'
+      if (!['verified', 'partial', 'unavailable'].includes(status)) throw new Error('evidence_status must be verified, partial or unavailable')
+      const id = `provenance-praxis-captures:${slug}`
+      slugs.add(slug)
+      if (url) byUrl.set(normalizeUrl(url), id)
+      const record = {
+        slug,
+        url: url ?? locator,
+        original_url: url ?? null,
+        title: input.title.trim(),
+        status,
+        summary_zh: input.summary.trim(),
+        limits: input.limits.trim(),
+        revisit_trigger: input.revisit_when.trim(),
+        card_path: `${dirname(CAPTURE_CATALOG)}/${slug}.md`,
+        purpose_tags: input.tags ?? [],
+        evidence_modality: input.read_scope.trim(),
+        captured_for: { task: task.trim(), by, at },
+        history_record: `${dirname(CAPTURE_CATALOG)}/CHANGELOG.md`,
+        ...(input.excerpts?.length ? { supported_claims: input.excerpts.map((e, i) => ({ claim_id: `${slug}-C${i + 1}`, locator: e.locator, claim: e.claim })) } : {}),
+      }
+      return { id, record, input }
     })
-    writeCard(join(this.repo, cardRel), record, input)
-    ensureCaptureDocs(this.repo)
-    const id = `provenance-praxis-captures:${slug}`
+    const fresh = plan.filter((p) => p.record)
+    if (fresh.length) {
+      withLock(catalogPath, () => {
+        const catalog = readJson(catalogPath, captureCatalog())
+        for (const { record } of fresh) if (catalog.sources.some((s) => s.slug === record.slug)) throw new Error(`slug exists: ${record.slug}`)
+        catalog.sources.push(...fresh.map((p) => p.record))
+        catalog.as_of = at.slice(0, 10)
+        writeJson(catalogPath, catalog, 2)
+      })
+      for (const { record, input } of fresh) writeCard(join(this.repo, record.card_path), record, input)
+      ensureCaptureDocs(this.repo)
+      this.rebuild()
+      for (const { id } of fresh) this.bindings.log({ op: 'capture', id, by, reason, task })
+    }
+    return plan.map(({ id, existing }) => {
+      const s = this.source(id)
+      return { id, title: s.title, url: s.url, existing: !!existing }
+    })
+  }
+
+  /**
+   * Register a project's own source index by reference: the file stays in the project and is read in
+   * place. `fields` maps registry fields (id, title, url, summary, read_scope, status, tags) to the
+   * project's names; `status` maps its status values to verified, partial or unavailable; `excerpts`
+   * names a JSON Lines file of claims joined by source id. Registering the same id again updates the
+   * registration and keeps its relations.
+   */
+  registerIndex({ id, path, list, title, purpose, limits, revisit_when, fields, status, excerpts }, { by, reason } = {}) {
+    for (const [k, v] of Object.entries({ id, path, title, purpose, limits, revisit_when })) if (!v?.trim()) throw new Error(`register_index needs ${k}`)
+    if (!SLUG.test(id)) throw new Error(`bad id: ${id}`)
+    if (!fields?.id || !fields?.title) throw new Error('fields needs id and title')
+    const unknown = Object.keys(fields).filter((k) => !INDEX_FIELDS.includes(k))
+    if (unknown.length) throw new Error(`fields: unknown ${unknown.join(', ')}; use ${INDEX_FIELDS.join(', ')}`)
+    if (!existsSync(join(this.repo, path))) throw new Error(`file not found: ${path}`)
+    const data = readJson(join(this.repo, path))
+    const records = list ? data?.[list] : data
+    if (!Array.isArray(records)) throw new Error(`${path}${list ? ` .${list}` : ''} is not a list of records`)
+    const seen = new Set()
+    for (const r of records) {
+      const local = r?.[fields.id]
+      if (local === undefined || local === null || !r[fields.title]) throw new Error(`a record in ${path} lacks ${fields.id} or ${fields.title}`)
+      if (seen.has(String(local))) throw new Error(`duplicate ${fields.id} in ${path}: ${local}`)
+      seen.add(String(local))
+      const value = fields.status ? r[fields.status] : undefined
+      if (value !== undefined && !['verified', 'partial', 'unavailable'].includes(status?.[value] ?? value)) throw new Error(`status value ${value} needs a mapping to verified, partial or unavailable`)
+    }
+    if (excerpts) {
+      for (const k of ['path', 'id', 'source', 'locator', 'claim']) if (!excerpts[k]) throw new Error(`excerpts needs ${k}`)
+      if (!existsSync(join(this.repo, excerpts.path))) throw new Error(`file not found: ${excerpts.path}`)
+    }
+    const regPath = join(this.repo, PROJECT_INDEXES)
+    let created
+    withLock(regPath, () => {
+      const reg = readJson(regPath, { indexes: [] })
+      const cur = reg.indexes.find((r) => r.id === id)
+      const next = { id, title: title.trim(), path, ...(list ? { list } : {}), purpose: purpose.trim(), limits: limits.trim(), revisit_when: revisit_when.trim(),
+        fields, ...(status ? { status } : {}), ...(excerpts ? { excerpts } : {}), relations: cur?.relations ?? {} }
+      created = !cur
+      reg.indexes = cur ? reg.indexes.map((r) => (r.id === id ? next : r)) : [...reg.indexes, next]
+      writeJson(regPath, reg)
+    })
     this.rebuild()
-    this.bindings.log({ op: 'capture', id, by, reason, task })
-    return { source: this.source(id), existing: false }
+    this.bindings.log({ op: 'register-index', id, path, by, reason })
+    return { id, path, created, sources: records.length }
   }
 
   /**
@@ -352,6 +425,36 @@ export class Materials {
     this.bindings.log({ op: 'refresh', id: s.id, snapshot: rel, by, reason, task })
     return { changed: true, snapshot, bindings: this.listBindings({ source: s.id }).map((b) => b.id) }
   }
+}
+
+export const INDEX_FIELDS = ['id', 'title', 'url', 'summary', 'read_scope', 'status', 'tags']
+
+/**
+ * Apply fn to the relation list a source keeps: on its record in a catalog, a references catalog,
+ * a reading-list intake or a package intake; for a project index, in the registration. Returns
+ * false when the file holds no record for the source.
+ */
+function editRelations(data, s, fn) {
+  if (s.kind === 'project-index') {
+    const reg = data.indexes?.find((r) => r.id === s.collection)
+    if (!reg) return false
+    const local = s.id.slice(s.collection.length + 1)
+    const next = fn(reg.relations?.[local] ?? [])
+    reg.relations = { ...reg.relations }
+    if (next.length) reg.relations[local] = next
+    else delete reg.relations[local]
+    return true
+  }
+  const slug = s.id.slice(s.id.indexOf(':') + 1)
+  const rec = data.resources?.find((r) => r.id === s.id)
+    ?? data.explicit_url_identities?.find((r) => r.source_id === s.id)
+    ?? (data.id === s.id ? data : undefined)
+    ?? data.sources?.find((r) => r.slug === slug)
+  if (!rec) return false
+  const next = fn(rec.grammar_paths ?? [])
+  if (next.length) rec.grammar_paths = next
+  else delete rec.grammar_paths
+  return true
 }
 
 function matchTarget(t, target) {

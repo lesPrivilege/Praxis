@@ -2,6 +2,7 @@
 
 - [dsh-praxis 整合包 · 2026-10-25](dsh-praxis-acceptance-20261025.md)：DSH 桌面内置控制面与 MCP/CLI 共数据实测；16 项原有测试通过，补充探针发现备份、冲突、错误语义和版本追踪缺陷，同日修复后探针 9 项通过。
 
+- [dsh-praxis 来源闭环 · 2026-10-25](dsh-praxis-source-loop-20261025.md)：25 项测试、探针 13 项、新 validator 规则下补上 45 条关系、Jev 研究登记按引用进入名册；素材对交付的帮助与 DSH 桌面待测。
 - [dsh-praxis 产物登记与取用 · 2026-10-25](dsh-praxis-artifacts-20261025.md)：23 项测试、探针 12 项、独立控制面检查；DSH 桌面里的预览、打开与拖出附测试步骤，待用户实测。
 
 - [SaaS 工程全景 checkpoint](saas-engineering-atlas-20261014.md)：契约与分包检查、仓库验证和未执行范围。

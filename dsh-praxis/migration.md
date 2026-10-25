@@ -33,7 +33,7 @@
 |---|---|---|
 | `kit/design/` 全部（foundations、composition、interaction、motion、marks、references） | [Design](kit/design/README.md) | 整体迁入，结构不变；来源 catalog 的 `grammar_paths`、SaaS 图谱与艺术软件图谱的索引随之改路径 |
 | `kit/design/grammar.md`、`references.md` | 删除 | 旧路径入口 |
-| `vault/provenance/**/catalog.json` | Materials 权威数据，原地 | 控制面读写：挂载关系在 `grammar_paths`，维护信息在 [data](data/README.md)，见 [对象与操作](objects.md#现有数据怎样对上) |
+| `vault/provenance/**/catalog.json` | Materials 权威数据，原地 | 控制面读写：挂载关系在各来源记录的 `grammar_paths`（项目内来源索引的在 `vault/project-indexes.json`），维护信息在 [data](data/README.md)，见 [对象与操作](objects.md#现有数据怎样对上) |
 | `kit/` 其余：AGENTS.md、Agent.md、landscape.md、adapters、contracts、environment、grammar、ui、verification、work-system 其余 | 不迁 | 企业工作与环境；打包与恢复时引用 [workspace 契约](../kit/environment/workspace-contract.md) |
 
 [Design 参考路由](kit/design/references/README.md)与 `curated/` 卡片仍是手写的目录页；控制面的目录是同一批挂载按单元排的另一个视图。

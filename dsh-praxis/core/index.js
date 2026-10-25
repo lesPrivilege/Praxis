@@ -2,7 +2,7 @@
 // the CLI and the control plane UI.
 import { createHash } from 'node:crypto'
 import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs'
-import { dirname, join, resolve } from 'node:path'
+import { dirname, join, relative, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { Kit, LAYERS, clip } from './kit.js'
 import { Materials } from './materials.js'
@@ -79,40 +79,14 @@ export function createPraxis(options = {}) {
      */
     resolve({ task_type, pipeline, units = [], preset, materials_limit = 12 } = {}) {
       const k = kit()
-      const picked = new Map()
-      const add = (unit, reason) => {
-        if (!unit) return
-        const seen = picked.get(unit.id)
-        if (seen) seen.reasons.push(reason)
-        else picked.set(unit.id, { id: unit.id, title: unit.title, description: clip(unit.description, 100), path: unit.path, version: unit.version, reasons: [reason] })
-      }
-      for (const u of k.list().filter((u) => u.resident)) add(u, '常驻')
-      let type
-      if (task_type) {
-        type = k.taskType(task_type)
-        if (!type) throw new Error(`unknown task type: ${task_type}`)
-        const chosen = pipeline ?? type.pipelines[0]
-        if (pipeline && !type.pipelines.includes(pipeline)) throw new Error(`${type.id} has no ${pipeline} pipeline`)
-        add(k.find(`publish/${chosen}`), `流水线 ${chosen}`)
-        for (const layer of ['writing', 'design', 'publish']) {
-          for (const item of type[layer]) {
-            if (item.when && item.when !== chosen) continue
-            add(k.find(item.unit), `任务类型 ${type.title} 列出${item.when ? `（${item.when}）` : ''}`)
-          }
-        }
-        pipeline = chosen
-      }
-      for (const ref of units) {
-        const u = k.find(ref)
-        if (!u) throw new Error(`unknown unit: ${ref}`)
-        add(u, '本次指定')
-      }
+      const { picked, type, pipeline: chosen } = pick(k, { task_type, pipeline, units })
+      pipeline = chosen
       const targets = new Set([...picked.values()].map((u) => u.path))
       const rows = materials.listBindings()
         .filter((b) => b.enabled && targets.has(b.target.split('#')[0]))
         .sort((a, b) => Number(b.priority === 'preferred') - Number(a.priority === 'preferred') || Number(b.favorite) - Number(a.favorite))
         .slice(0, materials_limit)
-        .map((b) => ({ binding: b.id, title: b.title, description: clip(b.description, 100), priority: b.priority, favorite: b.favorite }))
+        .map((b) => material(b, materials.source(b.source)))
       const chosenPreset = preset ? this.preset(preset)
         : Object.entries(presets.all()).map(([id, p]) => ({ id, ...p })).find((p) => p.pipeline === pipeline && p.default && p.state !== 'removed')
       if (preset && !chosenPreset) throw new Error(`unknown preset: ${preset}`)
@@ -126,11 +100,35 @@ export function createPraxis(options = {}) {
     },
 
     /**
-     * Record that a piece of work read these units, bindings and sources at their current versions
-     * and delivered these files. Each file is registered as an artifact version (see artifacts.js);
-     * everything is checked before anything is written. Returns the run record.
+     * One source as a reader deciding whether to use or keep it needs it: the record, what its
+     * collection was gathered for, the pages it serves and the task types that reach them, and the
+     * runs that read it with what they delivered.
      */
-    consume({ title, task_type, pipeline, preset, overrides, units = [], bindings = [], sources = [], artifacts = [], by, note }) {
+    source(ref) {
+      const found = materials.source(ref)
+      if (!found) return undefined
+      const { record, ...s } = found
+      const k = kit()
+      const units = new Map(k.list().map((u) => [u.path, u]))
+      const reach = servedBy(k)
+      const relations = materials.listBindings({ source: s.id }).map((b) => {
+        const u = units.get(b.target.split('#')[0])
+        return { binding: b.id, target: b.target, unit: u?.id, description: b.description, description_curated: b.description_curated, enabled: b.enabled, signals: b.signals }
+      })
+      const types = new Map()
+      for (const r of relations) for (const t of reach.get(r.unit) ?? []) types.set(t.id, t)
+      const used_by = this.runs({ limit: 1000 }).filter((r) => r.sources.some((x) => x.id === s.id))
+        .map((r) => ({ id: r.id, title: r.title, at: r.at, by: r.by, artifacts: r.artifacts.map((a) => ({ artifact: a.artifact, version: a.version, path: a.path })) }))
+      return { ...s, collection: collectionOf(repo, materials.registry(), s), relations, serves: [...types.values()], used_by }
+    },
+
+    /**
+     * Record that a piece of work read these units and sources at their current versions and
+     * delivered these files. The bindings recorded are those joining a read source to a read unit,
+     * so a later change to either marks the run stale. Each file is registered as an artifact version
+     * (see artifacts.js); everything is checked before anything is written. Returns the run record.
+     */
+    consume({ title, task_type, pipeline, preset, overrides, units = [], sources = [], artifacts = [], by, note }) {
       if (!title?.trim()) throw new Error('consume needs a title')
       const k = kit()
       const unitRefs = units.map((ref) => {
@@ -138,16 +136,17 @@ export function createPraxis(options = {}) {
         if (!u) throw new Error(`unknown unit: ${ref}`)
         return { id: u.id, path: u.path, version: u.version }
       })
-      const bindingRefs = bindings.map((id) => {
-        const b = materials.binding(id)
-        if (!b) throw new Error(`unknown binding: ${id}`)
-        return { id, revision: b.revision }
-      })
-      const sourceRefs = sources.map((id) => {
-        const s = materials.source(id)
-        if (!s) throw new Error(`unknown source: ${id}`)
-        return { id: s.id, snapshot: s.snapshot?.sha256 ?? null }
-      })
+      const read = new Map()
+      for (const ref of sources) {
+        const s = materials.source(ref)
+        if (!s) throw new Error(`unknown source: ${ref}`)
+        read.set(s.id, { id: s.id, snapshot: s.snapshot?.sha256 ?? null })
+      }
+      const sourceRefs = [...read.values()]
+      const unitPaths = new Set(unitRefs.map((u) => u.path))
+      const bindingRefs = materials.listBindings()
+        .filter((b) => read.has(b.source) && unitPaths.has(b.target.split('#')[0]))
+        .map((b) => ({ id: b.id, revision: b.revision }))
       const delivered = artifacts.map((a) => this.artifacts.prepare(a))
       const presetRef = preset ? (() => { const p = this.preset(preset); if (!p) throw new Error(`unknown preset: ${preset}`); return { id: p.id, revision: p.revision, values: p.values } })() : undefined
       const at = new Date().toISOString()
@@ -194,7 +193,7 @@ export function createPraxis(options = {}) {
           return {
             version: i + 1, sha256: v.sha256, size: v.size, at: v.at, by: v.by, derived_from: v.derived_from ?? [],
             run: run ? { id: run.id, title: run.title, at: run.at, task_type: run.task_type, pipeline: run.pipeline,
-              units: run.units.map((u) => u.id), bindings: run.bindings.map((b) => b.id), sources: run.sources.map((s) => s.id),
+              units: run.units.map((u) => u.id), bindings: run.bindings.map((b) => b.id), sources: run.sources.map((s) => ({ id: s.id, title: materials.source(s.id)?.title ?? s.id })),
               changed: stale.get(run.id) ?? null } : null,
             reviews: rec.reviews.filter((r) => r.version === i + 1),
           }
@@ -299,6 +298,80 @@ export function createPraxis(options = {}) {
       return (id ? all.filter((h) => h.id === id) : all).slice(-limit).reverse()
     },
   }
+}
+
+/** The units a task reads: resident ones, the pipeline entry, what the task type lists, then any named. */
+function pick(k, { task_type, pipeline, units = [] }) {
+  const picked = new Map()
+  const add = (unit, reason) => {
+    if (!unit) return
+    const seen = picked.get(unit.id)
+    if (seen) seen.reasons.push(reason)
+    else picked.set(unit.id, { id: unit.id, title: unit.title, description: clip(unit.description, 100), path: unit.path, version: unit.version, reasons: [reason] })
+  }
+  for (const u of k.list().filter((u) => u.resident)) add(u, '常驻')
+  let type
+  if (task_type) {
+    type = k.taskType(task_type)
+    if (!type) throw new Error(`unknown task type: ${task_type}`)
+    const chosen = pipeline ?? type.pipelines[0]
+    if (pipeline && !type.pipelines.includes(pipeline)) throw new Error(`${type.id} has no ${pipeline} pipeline`)
+    add(k.find(`publish/${chosen}`), `流水线 ${chosen}`)
+    for (const layer of ['writing', 'design', 'publish']) {
+      for (const item of type[layer]) {
+        if (item.when && item.when !== chosen) continue
+        add(k.find(item.unit), `任务类型 ${type.title} 列出${item.when ? `（${item.when}）` : ''}`)
+      }
+    }
+    pipeline = chosen
+  }
+  for (const ref of units) {
+    const u = k.find(ref)
+    if (!u) throw new Error(`unknown unit: ${ref}`)
+    add(u, '本次指定')
+  }
+  return { picked, type, pipeline }
+}
+
+/** Unit id → the task types whose resolve reaches it, over every pipeline each type has. */
+function servedBy(k) {
+  const out = new Map()
+  for (const t of k.taskTypes()) {
+    for (const pipeline of t.pipelines) {
+      for (const id of pick(k, { task_type: t.id, pipeline }).picked.keys()) {
+        if (!out.has(id)) out.set(id, new Map())
+        out.get(id).set(t.id, { id: t.id, title: t.title })
+      }
+    }
+  }
+  return new Map([...out].map(([id, types]) => [id, [...types.values()]]))
+}
+
+// A material row carries what an agent needs to reach the original: the URL or locator, the
+// passages the record vouches for with their locators, how it was read, and any local snapshot.
+// The source ID is what consume takes once the agent has read it.
+function material(b, s) {
+  const excerpts = s?.excerpts ?? []
+  return {
+    binding: b.id, source: b.source, title: b.title, description: clip(b.description, 100),
+    url: s?.url, evidence_status: s?.evidence_status, read_scope: s?.read_scope ? clip(s.read_scope, 100) : undefined,
+    excerpts: excerpts.slice(0, 4).map((e) => ({ locator: e.locator, claim: clip(e.claim, 120) })),
+    more_excerpts: excerpts.length > 4 ? excerpts.length - 4 : undefined,
+    snapshot: s?.snapshot?.path, card: s?.card, priority: b.priority, favorite: b.favorite,
+  }
+}
+
+/** The collection a source came in with, and what it was gathered for: a registration's purpose or the catalog README's lede. */
+function collectionOf(repo, registry, s) {
+  const c = registry.collections.find((x) => x.id === s.collection)
+  if (!c) return undefined
+  if (c.purpose) return { id: c.id, title: c.title, path: c.path, purpose: c.purpose }
+  const readme = join(repo, dirname(c.path), 'README.md')
+  if (!existsSync(readme)) return { id: c.id, path: c.path }
+  const text = readFileSync(readme, 'utf8')
+  const title = text.match(/^#\s+(.+)$/m)?.[1]
+  const lede = text.split(/\n\s*\n/).map((p) => p.trim()).find((p) => p && !/^[#|>!<-]/.test(p) && !/^\[/.test(p))
+  return { id: c.id, title, path: c.path, readme: relative(repo, readme), purpose: lede ? clip(lede.replace(/\[([^\]]+)\]\([^)]*\)/g, '$1').replace(/\s+/g, ' '), 240) : undefined }
 }
 
 function summarize(id, rec, artifacts, staleRuns) {

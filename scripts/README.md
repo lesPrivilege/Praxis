@@ -12,7 +12,7 @@ Drift 的 Pages 产物由 [build_drift_pages.py](build_drift_pages.py)构建，[
 |---|---|---|---|
 | 新 Chat 或对话增量 | `vault/intake/chat-captures.json` 与版本归档 | `python3 scripts/build_chat_inventory.py` | `vault/chat-inventory.json` |
 | 新来源或核查更新 | `cards` 为 `generated` 的 `provenance/catalog.json` | `python3 scripts/render_source_cards.py` | 这些 catalog 的逐源卡与两页索引；其余目录不动 |
-| 入账与来源映射变更 | intake 与 catalog | `python3 scripts/build_registry.py` | `vault/registry.json` |
+| 入账与来源映射变更 | intake、catalog 与 `vault/project-indexes.json` 登记的项目索引 | `python3 scripts/build_registry.py` | `vault/registry.json` |
 | 新增原件快照 | 对应 intake 的原始定位与 hash | `python3 scripts/build_snapshot_manifest.py` | `vault/snapshot-manifest.json` |
 | 修改完成 | 当前工作树 | `python3 scripts/validate_repository.py` | 终端中的计数、错误与通过状态 |
 

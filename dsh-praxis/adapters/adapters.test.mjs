@@ -11,6 +11,7 @@ const fake = {
   entry: () => ({ resident: [{ id: 'writing', description: '写作入口。' }], layers: [], task_types: [{ id: 'task/types/x', description: '一种任务。', pipelines: ['html'] }] }),
   resolve: (a) => { calls.push(['resolve', a]); return { units: [] } },
   unit: () => undefined,
+  source: () => undefined,
   materials: { curate: (id, patch, opts) => { calls.push(['curate', id, patch, opts.by]); return { ok: true } }, source: () => undefined },
 }
 
