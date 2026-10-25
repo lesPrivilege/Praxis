@@ -493,7 +493,7 @@ const STRINGS = {
     'cap.titleField': '标题', 'cap.summary': '概要', 'cap.summaryPh': '是什么，能支持什么判断', 'cap.scope': '读取范围', 'cap.scopePh': '读过正文 / 看过输出 / 运行过实现',
     'cap.tags': '用途 tag', 'cap.evidence': '证据状态', 'cap.limits': '边界', 'cap.limitsPh': '不能证明什么', 'cap.revisit': '何时重访', 'cap.submit': '登记',
     'up.attention': '需要处理', 'up.none': '没有要处理的事', 'up.stale': '交付过期', 'up.staleNone': '交付都与当前 Kit 一致', 'up.unbound': '新登记未挂载',
-    'up.unboundNone': '没有待挂载的来源', 'up.attachTo': '挂到单元', 'up.unitPh': '单元 ID', 'up.preset': '预设已改', 'up.source': '来源已更新',
+    'up.unboundNone': '没有待挂载的来源', 'up.attachTo': '挂到单元', 'up.unitPh': '单元 ID', 'up.preset': '预设已改', 'up.source': '来源已更新', 'up.reload': '插件代码已更新，重启 DSH 后生效',
     'log.runs': '运行', 'log.history': '维护记录', 'art.preview': '预览', 'art.reveal': '在 Finder 中显示', 'art.open': '打开', 'art.drag': '拖出文件', 'art.failed': '没有完成：', 'art.search': '找产物', 'art.noMatch': '没有匹配的产物', 'art.none': '还没有交付登记的产物', 'art.pick': '选一件产物', 'art.versions': '版本', 'art.derived': '派生自', 'art.basis': '依据已变', 'art.review': '记录 v{v} 的 review', 'art.reviewed': '已记录', 'art.edit': '名称与说明', 'art.title': '名称', 'art.desc': '它是什么、给谁用', 'art.save': '保存', 'art.saved': '已保存', 'art.remove': '移除', 'art.removed': '已移除', 'art.back': '产物', 'art.noRun': '运行记录不在', 'art.used': '用了', 'as.missing': '找不到文件', 'as.modified': '有未登记改动', 'as.needs_work': '待改', 'as.basis_changed': '依据已变', 'av.needs-work': '待改', 'av.checked': '已核对', 'av.accepted': '已接受', 'log.noRuns': '还没有运行', 'log.noHistory': '还没有维护',
   },
   en: {
@@ -527,7 +527,7 @@ const STRINGS = {
     'cap.titleField': 'Title', 'cap.summary': 'Summary', 'cap.summaryPh': 'What it is and what judgment it supports', 'cap.scope': 'What was read', 'cap.scopePh': 'Read the text / saw the output / ran it',
     'cap.tags': 'Purpose tags', 'cap.evidence': 'Evidence', 'cap.limits': 'Limits', 'cap.limitsPh': 'What it cannot show', 'cap.revisit': 'When to revisit', 'cap.submit': 'Capture',
     'up.attention': 'Needs attention', 'up.none': 'Nothing needs attention', 'up.stale': 'Stale deliveries', 'up.staleNone': 'Every delivery matches the current Kit', 'up.unbound': 'Captured, not attached',
-    'up.unboundNone': 'Nothing waiting to be attached', 'up.attachTo': 'Attach to unit', 'up.unitPh': 'Unit ID', 'up.preset': 'Preset changed', 'up.source': 'Source updated',
+    'up.unboundNone': 'Nothing waiting to be attached', 'up.attachTo': 'Attach to unit', 'up.unitPh': 'Unit ID', 'up.preset': 'Preset changed', 'up.source': 'Source updated', 'up.reload': 'Plugin code changed; restart DSH to load it',
     'log.runs': 'Runs', 'log.history': 'Maintenance', 'art.preview': 'Preview', 'art.reveal': 'Show in Finder', 'art.open': 'Open', 'art.drag': 'Drag the file out', 'art.failed': 'Not done: ', 'art.search': 'Find an artifact', 'art.noMatch': 'No matching artifacts', 'art.none': 'No delivered artifacts yet', 'art.pick': 'Pick an artifact', 'art.versions': 'Versions', 'art.derived': 'Derived from', 'art.basis': 'Basis changed', 'art.review': 'Review v{v}', 'art.reviewed': 'Review recorded', 'art.edit': 'Name and description', 'art.title': 'Name', 'art.desc': 'What it is, for whom', 'art.save': 'Save', 'art.saved': 'Saved', 'art.remove': 'Remove', 'art.removed': 'Removed', 'art.back': 'Artifacts', 'art.noRun': 'Run record missing', 'art.used': 'Used', 'as.missing': 'File not found', 'as.modified': 'Unregistered changes', 'as.needs_work': 'Needs work', 'as.basis_changed': 'Basis changed', 'av.needs-work': 'Needs work', 'av.checked': 'Checked', 'av.accepted': 'Accepted', 'log.noRuns': 'No runs yet', 'log.noHistory': 'No maintenance yet',
   },
 }
@@ -981,12 +981,13 @@ function openInCatalog(next) { show('catalog'); go(next) }
 async function loadAttention() {
   if (!units.length) await refreshData()
   const r = await api('praxis_upkeep')
-  const n = r.bindings.length + r.stale.length + r.unbound.length + r.artifacts.length
+  const n = (r.reload ? 1 : 0) + r.bindings.length + r.stale.length + r.unbound.length + r.artifacts.length
   const tab = $('.tabs button[data-view="log"]')
   $('.badge', tab)?.remove()
   if (n) tab.append(el('span', { class: 'badge', 'aria-label': `${t('up.attention')} ${n}` }, String(n)))
   fill($('#attention'), el('div', { class: 'h' }, svg(ICONS.alert, 'glyph'), t('up.attention'), el('span', { class: 'count' }, String(n))),
     n ? el('ul', { class: 'ulist' },
+      r.reload ? el('li', {}, el('span', { class: 't' }, t('up.reload'))) : null,
       r.bindings.map((b) => el('li', {},
         el('button', { class: 'row-link', onclick: () => openInCatalog(b.unit ? { kind: 'unit', id: b.unit } : { kind: 'target', path: b.target.split('#')[0] }) },
           el('span', { class: 't' }, b.title), el('span', { class: 'mono' }, b.unit ?? b.target)),

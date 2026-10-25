@@ -1,7 +1,7 @@
 // dsh-praxis core: one set of operations shared by the DSH plugin, the MCP server,
 // the CLI and the control plane UI.
 import { createHash } from 'node:crypto'
-import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs'
+import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs'
 import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { Kit, LAYERS, clip } from './kit.js'
@@ -11,6 +11,13 @@ import { Collection, readJson } from './store.js'
 import { PRESET_FIELDS, presetId, validatePreset } from './presets.js'
 
 export { ConflictError } from './store.js'
+
+// The server code this process loaded. A long-running host (DSH, the MCP server, the control plane)
+// keeps running it after the files change; reload() says so, so an agent does not test old code.
+const PACKAGE = join(dirname(fileURLToPath(import.meta.url)), '..')
+const codeStamp = () => Math.max(...['core', 'adapters'].flatMap((d) => readdirSync(join(PACKAGE, d))
+  .filter((f) => f.endsWith('.js')).map((f) => statSync(join(PACKAGE, d, f)).mtimeMs)))
+const LOADED = { at: new Date().toISOString(), stamp: codeStamp() }
 
 /** The repository root: explicit, PRAXIS_ROOT, or the checkout this package lives in. */
 export function findRoot(explicit) {
@@ -42,7 +49,14 @@ export function createPraxis(options = {}) {
         resident: k.list().filter((u) => u.resident).map(brief),
         layers: Object.keys(LAYERS).map((layer) => ({ layer, entry: brief(k.find(layer)) })),
         task_types: k.taskTypes().map((t) => ({ id: t.id, title: t.title, description: t.description, pipelines: t.pipelines })),
+        reload: this.reload(),
       }
+    },
+
+    /** Set when the package's server code changed after this process loaded it: restart the host. */
+    reload() {
+      const stamp = codeStamp()
+      return stamp > LOADED.stamp ? { loaded_at: LOADED.at, changed_at: new Date(stamp).toISOString() } : undefined
     },
 
     units({ layer } = {}) {
@@ -262,7 +276,8 @@ export function createPraxis(options = {}) {
 
     /**
      * What needs someone now, across the Kit and outside targets: bindings with a signal, runs whose
-     * units or bindings changed after delivery, and captured sources no unit binds yet. Usually empty.
+     * units or bindings changed after delivery, captured sources no unit binds yet, artifacts with a
+     * signal, and reload when this process runs older code than the files. Usually empty.
      */
     upkeep() {
       const units = new Map(kit().list().map((u) => [u.path, u.id]))
@@ -272,6 +287,7 @@ export function createPraxis(options = {}) {
         stale: this.stale(),
         unbound: materials.unboundCaptures(),
         artifacts: this.artifactList({ limit: 1000 }).filter((a) => a.signals.length),
+        reload: this.reload(),
       }
     },
 

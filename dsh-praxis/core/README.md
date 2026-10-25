@@ -10,7 +10,7 @@
 | [artifacts.js](artifacts.js) | 产物：交付文件的身份、按内容区分的版本（sha256、产出它的运行、派生自哪一版）、绑定版本的 review、状态（current、modified、missing，每次从文件读出）；字节留在原处 |
 | [presets.js](presets.js) | 每条流水线的预设字段与校验；只记密钥所在的环境变量名 |
 | [backup.js](backup.js) | 控制面写下的状态的导出、校验与恢复：data、收录与快照，以及挂载和刷新会改的全部来源 catalog；恢复后重建 registry 与快照清单 |
-| [index.js](index.js) | 入口、resolve、预设、consume、运行记录与 stale 检查（单元、挂载、来源快照、预设任一变了就算）；`consume` 先核对再写，同时登记交付的文件；`artifactList`、`artifact` 给出产物与每一版的依据；`upkeep()` 汇总现在需要人处理的事（有信号的挂载、过期交付、未挂载的新登记、找不到文件或最新版待改的产物），通常为空 |
+| [index.js](index.js) | 入口、resolve、预设、consume、运行记录与 stale 检查（单元、挂载、来源快照、预设任一变了就算）；`consume` 先核对再写，同时登记交付的文件；`artifactList`、`artifact` 给出产物与每一版的依据；`upkeep()` 汇总现在需要人处理的事（有信号的挂载、过期交付、未挂载的新登记、找不到文件或最新版待改的产物，以及宿主运行旧代码时的 `reload`），通常为空；`entry()` 同样带 `reload` |
 
 数据归属：来源事实与挂载关系（`grammar_paths`）在 `vault/provenance/**/catalog.json`；挂载上的维护信息（description、取用题解、启用、收藏、优先级、tag、review）、运行记录、产物记录和维护记录在 [data](../data/README.md)；产物文件本身留在主人的工作区。registry 与快照清单是派生的，写入后由 `scripts/build_registry.py`、`scripts/build_snapshot_manifest.py` 重建。
 

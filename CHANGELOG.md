@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-10-25 · dsh-praxis 旧代码提示与 DSH 实测补登
+
+- DSH 会话实测报回的三项问题（经插件的 `value is not lossless JSON`、consume 报错但运行已写、插件少产物四件工具）都出自同一个旧进程：DSH 在后两次提交之前启动，跑的是 `179e227` 的代码。`praxis_entry` 与 `praxis_upkeep` 现在带 `reload`，宿主运行的服务端代码比磁盘旧时出现，控制面“需要处理”显示一行。
+- core 测试把写工具的返回值也过一遍无损 JSON 边界。实测运行的两份文件按当时 hash 补登为产物。经过见 [回执](docs/verification/dsh-praxis-artifacts-20261025.md#dsh-会话实测)。
+
 ## 2026-10-25 · dsh-praxis 产物登记与取用
 
 - 交付的文件成为 [产物](dsh-praxis/core/artifacts.js)：`praxis_consume` 同时登记，同一内容不重复，内容变了是新版本，review 写明版本，挪位置要求内容一致；状态每次从文件读出，只有找不到文件和最新版待改进维护清单。新增 `praxis_artifacts`、`praxis_artifact`、`praxis_artifact_review`、`praxis_artifact_update`。取舍见 [ADR-039](docs/decisions/039-dsh-praxis-artifacts.md)。

@@ -16,7 +16,7 @@ const who = {
 export const TOOLS = [
   {
     name: 'praxis_entry',
-    description: 'Praxis Kit 的入口：常驻单元（Writing、Design 的入口与底线）、各层入口和任务类型。开始一件写作、编排、设计或报告任务时先调用。',
+    description: 'Praxis Kit 的入口：常驻单元（Writing、Design 的入口与底线）、各层入口和任务类型。开始一件写作、编排、设计或报告任务时先调用。带 reload 时，宿主运行的是旧代码，重启后再用。',
     parameters: {},
     run: (p) => p.entry(),
   },
@@ -141,7 +141,7 @@ export const TOOLS = [
   },
   {
     name: 'praxis_upkeep',
-    description: '现在需要人处理的事，通常为空：review 结论为待改（needs_work）或来源在上次 review 后变了（changed）的挂载、交付后所用单元、挂载、来源或预设又改过的运行、新登记还没挂到单元的来源、找不到文件或最新版 review 待改的产物。未写说明、未 review 是默认状态，不列。',
+    description: '现在需要人处理的事，通常为空：review 结论为待改（needs_work）或来源在上次 review 后变了（changed）的挂载、交付后所用单元、挂载、来源或预设又改过的运行、新登记还没挂到单元的来源、找不到文件或最新版 review 待改的产物、宿主运行旧代码时的 reload。未写说明、未 review 是默认状态，不列。',
     parameters: {},
     run: (p) => p.upkeep(),
   },

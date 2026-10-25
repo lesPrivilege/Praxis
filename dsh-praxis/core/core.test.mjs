@@ -5,6 +5,7 @@ import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 import { createPraxis, ConflictError } from './index.js'
 import { exportState, checkArchive, restoreState } from './backup.js'
+import { jsonValue } from '../adapters/tools.js'
 import { utimesSync, renameSync, unlinkSync } from 'node:fs'
 
 const CATALOG = 'vault/provenance/demo/catalog.json'
@@ -326,7 +327,9 @@ test('artifacts: moving a file keeps identity only when the bytes are the latest
   writeFileSync(join(root, 'out/page.html'), '<p>v2</p>')
   utimesSync(join(root, 'out/page.html'), new Date(), new Date())
   assert.equal(p.consume({ title: '改', artifacts: [{ path: 'out/page.html', artifact: id }] }).artifacts[0].version, 2)
-  p.updateArtifact({ id, state: 'removed' })
+  const removed = p.updateArtifact({ id, state: 'removed' })
   assert.equal(p.artifactList().length, 0)
   assert.equal(p.artifactList({ include_removed: true }).length, 1)
+  // Writes report through the same lossless boundary as reads; a refusal there would follow a committed write.
+  for (const v of [removed, p.reviewArtifact({ id, version: 2, verdict: 'checked' }), p.consume({ title: '无预设', artifacts: ['out/page.html'] }), p.artifact(id), p.upkeep(), p.entry()]) jsonValue(v)
 })
