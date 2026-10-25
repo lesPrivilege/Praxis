@@ -1,6 +1,8 @@
 # 材料目的与组织动作
 
-一份材料要促成什么理解、决定与行动，用什么文体起步。没有合适的 [任务类型](types/README.md)时，按本页现写 brief。成文由 [Writing](../writing/README.md)执行，页面和时间叙事由 Publish 的流水线执行。
+一份材料要促成什么理解、决定与行动，用什么文体起步；没有合适的 [任务类型](types/README.md)时，据此现写 brief。
+
+成文由 [Writing](../writing/README.md)执行，页面和时间叙事由 Publish 的流水线执行。
 
 ## 先确定组织动作
 
@@ -30,7 +32,7 @@
 
 ## 主张与证据
 
-规则在 Writing 的 [证据与来源](../writing/evidence.md)，这里不维护副本。
+规则见 Writing 的 [证据与来源](../writing/evidence.md)。
 
 ## 视觉是有语义的表达
 

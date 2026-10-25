@@ -1,17 +1,19 @@
 # 产品软件界面参考
 
-本页是 U01–U09 的 canonical route，覆盖控件尺寸、对象状态、界面层级、密度和 conceptual donor。返回 [Design 参考路由](README.md) 或 [兼容入口](README.md)。URL 证据与 Kit 消费状态分开记录；本页不把历史 CW handoff 变成 Praxis 的通用 runtime contract。
+U01–U09：控件尺寸、对象状态、界面层级、密度和 conceptual donor 的参考条目，定义产品界面、控件状态和可访问性检查时回查。
+
+URL 证据与 Kit 消费状态分开记录；历史 CW handoff 不是 Praxis 的通用 runtime contract。返回 [Design 参考路由](README.md)。
 
 ## 尺寸、缩放与控件语义
 
-| ID | 参考 | 状态 | 是什么 / Kit 消费什么 | 边界 | 消费位置 | 重访与证据 |
+| ID | 参考 | 状态 | 内容 / Kit 消费 | 边界 | 消费位置 | 重访与证据 |
 |---|---|---|---|---|---|---|
 | U01 | WCAG 目标尺寸与缩放（CW-FE-R01） | accepted | 本地消费把 24 CSS px 作为报告的 AA 下限，44 px 作为 coarse/high-consequence 路径选择，并把 200% 文字缩放、布局重排、文字间距分别列为检查项 | 24 与 44 是不同准则；不把 44 px 说成通用 WCAG 要求，也不声称控件已通过 | CW 工作台 | 开始 UI 验收时重读标准并测 geometry；[消费记录](../../../../vault/distilled/frontend-design/cw-consumption.md) |
 | U02 | W3C APG Tabs（CW-FE-R01、R03） | accepted | tab 识别对象、版本与范围；关闭/切换是视图动作，不等于取消、删除或批准 | 本地 handoff 未独立证明所有实现和焦点状态 | CW 工作台 | tabs/Preview 改动时复核 APG 与真实焦点；同上 |
 
 ## 运行时状态、表面与密度
 
-| ID | 参考 | 状态 | 是什么 / Kit 消费什么 | 边界 | 消费位置 | 重访与证据 |
+| ID | 参考 | 状态 | 内容 / Kit 消费 | 边界 | 消费位置 | 重访与证据 |
 |---|---|---|---|---|---|---|
 | U03 | CW 能力消费（CW-FE-R04） | accepted | 录入、启用、已用、已加载分别标示；proposal 需人审 Apply/Reject | CW 运行时本地边界，不是 Praxis 通用 runtime contract | CW 运行时 | 运行时状态或 owner 改动时复查；[消费记录](../../../../vault/distilled/frontend-design/cw-consumption.md) |
 | U04 | CW 表面层级 `surface-hierarchy.md`（参考 Radix、Atlassian Elevation） | accepted | 分组靠留白、对齐和字阶；卡片给独立对象；提示框不承载必要信息 | CW 本地决定，Radix/Atlassian 仅 donor；不生成全局 token | CW 工作台；答卷去掉嵌套框 | 新表面层级或组件任务时回查源记录；CW 原仓库 |
@@ -21,7 +23,7 @@
 
 ## Conceptual donors 与站点拆解
 
-| ID | 参考 | 状态 | 是什么 / Kit 消费什么 | 边界 | 消费位置 | 重访与证据 |
+| ID | 参考 | 状态 | 内容 / Kit 消费 | 边界 | 消费位置 | 重访与证据 |
 |---|---|---|---|---|---|---|
 | U08 | Carbon、Radix | reference | 控件尺寸、图标尺寸、组间距和标签字形分开设定，作为 conceptual donor | 不照搬数值、不引入依赖；具体 URL 卡片分别是 partial 或需重访 | — | 具体 control/token 任务时复查 `cw-carbon-button-style`、`cw-radix-spacing` |
 | U09 | Linear、Vercel、Stripe 等站点拆解 | reference | 记录冷调科技站的字阶、描边和克制动效观察 | 站点拆解不是当前官方 grammar 或版本承诺 | — | 需要同类视觉方向时重访；[快照](../../../../vault/snapshots/local/downloads/files/anti-ai-slop-kit/03-范例档案/06-冷调科技站拆解.md) |

@@ -4,6 +4,8 @@
 
 <!-- ASA-G-RULE-SYSTEMS -->
 
+把规则、伪随机和有限扰动转成软件时，分清作者约束、算法展开与实例选择，让结果可重现、可暂停、可比较。
+
 ## 来路与边界
 
 V&A 将 Molnar 的 “machine imaginaire” 描述为以网格、数学和自设约束手工探索几何组合；Morgan Library 记录称 *Interruptions*（1968）由她编程、经穿孔卡输入绘图仪，随机成分形成空隙。[V&A 来源卡](../../../../vault/provenance/art-software-atlas/temporal/cards/asa-t-04-va-molnar-machine-imaginaire.md)保存策展解释，[Morgan 对象记录](../../../../vault/provenance/art-software-atlas/temporal/cards/asa-t-03-morgan-molnar-interruptions.md)保存馆藏说明。

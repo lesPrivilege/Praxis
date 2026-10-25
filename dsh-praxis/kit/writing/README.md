@@ -1,6 +1,8 @@
 # Writing · 成文、内容组织与语言
 
-主张、论证、内容怎样组织、用什么文体、按哪门语言的约定写，以及谁的口吻。产物是论证连贯、证据身份不变的成文，或交给 Publish 编排的底稿。本层常驻：本页和 [底线](evidence.md#底线)每次任务都在，其余按任务展开。用户已给出的口吻和阅读偏好决定此次行文基调，具体个人用字不自动成为通用规则。
+主张与论证、内容组织、文体、语言约定和口吻怎样定；产物是论证连贯、证据身份不变的成文，或交给 Publish 编排的底稿。
+
+本层常驻：本页和 [底线](evidence.md#底线)每次任务都在，其余按任务展开。用户已给出的口吻和阅读偏好决定此次行文基调，具体个人用字不自动成为通用规则。
 
 | 分支 | 管什么 | 什么时候读 |
 |---|---|---|
@@ -26,14 +28,14 @@
 
 ## 有具体疑问时深入
 
-| 当前问题 | 可选参考 |
+| 疑问 | 可选参考 |
 |---|---|
-| 谁在什么情境下读，材料需要帮他完成什么 | [读者与任务](organization/audience.md) |
-| 证据怎样支持建议，推理缺了哪一环 | [论证与证据链](organization/argument.md) |
+| 读者、使用情境与材料要完成的任务 | [读者与任务](organization/audience.md) |
+| 证据对建议的支持与推理的缺环 | [论证与证据链](organization/argument.md) |
 | 向不读原件的人讲清一个系统的各个局部 | [机制讲解](organization/mechanism.md) |
-| 按钮、空状态、校验与超时如何写 | [微文案与错误恢复](genres/microcopy.md) |
-| 跨语言、地区或文字方向怎样保住含义，外文来源怎样提炼成中文 | [多语言与本地化边界](language/multilingual.md) |
-| 操作指南、解释、参考页或决策材料如何选 | [文体选择](genres/selection.md) |
+| 按钮、空状态、校验与超时的文字 | [微文案与错误恢复](genres/microcopy.md) |
+| 跨语言、地区或文字方向时保住含义；外文来源提炼成中文 | [多语言与本地化边界](language/multilingual.md) |
+| 操作指南、解释、参考页与决策材料的选择 | [文体选择](genres/selection.md) |
 
 这些是普通优先级的可选参考；[写作书目](../../../vault/provenance/design-writing-encyclopedia/writing/README.md)保留来源各自的论述，不将品牌语气或英文规则通用化。
 
@@ -44,12 +46,12 @@
 外部指南提供具体问题的参考，权重低于本次任务与适用的 Kit 规则，不默认整份加载。先取足以支持判断的部分，需要细节才读来源卡和原文。
 
 - 段落与列表：围绕一个主题组织段落，按顺序、集合或术语解释选择列表，同类结构保持对应。取用 [Google 段落结构](../../../vault/provenance/writing-structure-20260927/cards/google-paragraph-structure.md)和 [列表](../../../vault/provenance/writing-structure-20260927/cards/google-lists.md)；句数与英文标点不转成中文硬规则。
-- 中文技术文档：需要检查指代或表达习惯时，查 [中文技术文档指南 · 文本](../../../vault/provenance/write-present-supplement-20261002/cards/p04-ruanyf-document-style-guide-text.md)。只取与任务相符的提示，不采纳其句长阈值或将作者取舍视为普适规范；这份补充来源未恢复早期 Chat 的指南引用身份。
-- 空泛写法的自查：想对照一份“删掉也不改变后文”的句式清单时，查 [Writing Grammar 与 Kill AI Slop](../../../vault/distilled/reporting/writing-anti-slop.md)。它是 Vault 里的候选提炼，不是已采纳的规则，也不当禁词表用；句式重复的检查以 [审阅方法](review.md)为准。
+- 中文技术文档：需要检查指代或表达习惯时，查 [中文技术文档指南 · 文本](../../../vault/provenance/write-present-supplement-20261002/cards/p04-ruanyf-document-style-guide-text.md)。只取与任务相符的提示，不采纳其句长阈值或将作者取舍视为普适规范。
+- 空泛写法的自查：想对照一份“删掉也不改变后文”的句式清单时，查 [Writing Grammar 与 Kill AI Slop](../../../vault/distilled/reporting/writing-anti-slop.md)。它是 Vault 里的候选提炼，不当禁词表用；句式重复的检查以 [审阅方法](review.md)为准。
 - ASD-STE100：仅在任务要求该受控英文标准时再核对官方版本、全文与适用范围。已有核查记录显示官方访问受限，未提炼规则，也不宣称按该标准合规；访问范围见 [审阅回执](../../../docs/verification/writing-review-20261003.md#外部参考核查)。
 
 ### 更细的结构选择
 
-需要决定标题、段落、列表或表格的语义结构时，查 [写作结构补充语义](../../../vault/distilled/writing-structure-20260927/README.md)，按其中的 heading、paragraph、list、table 选择启发式消费；需要逐 URL 回查时进入该页列出的 provenance 卡片。该目录是 supplemental-candidate，来源未恢复原 Chat 占位，也不是已采纳的 Kit 规则或 HTML 通过结论。
+需要决定标题、段落、列表或表格的语义结构时，查 [写作结构补充语义](../../../vault/distilled/writing-structure-20260927/README.md)，按其中的 heading、paragraph、list、table 选择启发式消费；需要逐 URL 回查时进入该页列出的 provenance 卡片。该目录是 supplemental-candidate，不是已采纳的 Kit 规则。
 
-写作时只取与当前 artifact family 和语言/renderer 有关的结构判断，并把实际采用的结构和验收反馈记入项目 index；“需要标题/段落/列表时查该提炼”是发现入口，不等于固定句数、行数或中文机械规则。
+写作时只取与当前 artifact family 和语言/renderer 有关的结构判断，不转成固定句数、行数或中文机械规则；实际采用的结构和验收反馈记入项目 index。

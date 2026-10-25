@@ -2,7 +2,9 @@
 
 语法 ID：`DWG-M-CHOREOGRAPHY` · 取用：可选普通参考（`normal` / `reference`）。
 
-本页把 [运动判断](grammar.md) 扩展到状态连续、可中断操作和减少动态替代；只针对界面运动，不处理视频叙事。Apple HIG 可提供平台参考，但具体时长、曲线和动效 API 仍由目标环境决定。
+界面运动怎样保持状态连续、允许中断与反向，以及减少动态时用什么替代；只用于界面，不用于视频叙事。
+
+运动是否必要见 [运动判断](grammar.md)。Apple HIG 可作平台参考，具体时长、曲线和动效 API 由目标环境决定。
 
 ## 先确定运动在说什么
 
@@ -39,6 +41,6 @@ W3C WCAG 2.2 的 2.3.3 Animation from Interactions 位于 AAA；2.2.2 Pause, Sto
 
 按一项高频变化做可见行为走读：快速重复触发、反向、键盘触发、取消、系统偏好开/关、窄屏、加载失败。记录真实运行的环境和未覆盖项。仅读 HIG/规范或查看组件源码不能证明页面的运行行为。
 
-`prompt-motion.com` 是动态作品与提示词条目聚合页的线索，能够帮助找到想研究的作品/提示词。其首页、作者提示词或静态条目不能单独验证输出视频、运动质量或控制实际效果；要把它作为动态参考，需明确取得并实际观看具体成品，记录作品 URL、来源归属、所见时间和限制。它尚无运动行为验证证据。
+`prompt-motion.com` 是动态作品与提示词条目聚合页的线索，能够帮助找到想研究的作品/提示词。其首页、作者提示词或静态条目不能单独验证输出视频、运动质量或控制实际效果；要把它作为动态参考，需明确取得并实际观看具体成品，记录作品 URL、来源归属、所见时间和限制。
 
-[Prompt Motion 线索卡（DWI-006）](../../../../vault/provenance/design-writing-encyclopedia/interaction/cards/prompt-motion-entry.md)保留具体条目与未观看边界，仅用于寻找待研究作品。
+[Prompt Motion 线索卡（DWI-006）](../../../../vault/provenance/design-writing-encyclopedia/interaction/cards/prompt-motion-entry.md)保留具体条目与未观看边界。

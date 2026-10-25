@@ -1,6 +1,8 @@
 # 驻场组织接口
 
-状态：已采纳的工作与证据约束；不是经现场验证的通用成功方法。依据：[材料分类与组织接口提炼](../../../vault/distilled/reporting/material-classification.md)、[ADR-008](../../../docs/decisions/008-artifact-field-governance.md)。
+驻场工作的启动与合作条件、分开证明结果的口径、净减负算法和 Value / Asset Ledger；已采纳为工作与证据约束，尚未经现场验证。
+
+依据：[材料分类与组织接口提炼](../../../vault/distilled/reporting/material-classification.md)、[ADR-008](../../../docs/decisions/008-artifact-field-governance.md)。
 
 ## 启动与合作
 

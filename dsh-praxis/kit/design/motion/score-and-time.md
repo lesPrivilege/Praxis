@@ -4,6 +4,8 @@
 
 <!-- ASA-G-OPEN-SCORE -->
 
+把图形谱或事件谱转成时序内容、交互动画时，分清谱面约束、可选解释与本次 realization，并让事件时间与画面、声音的同步可检查。
+
 ## 来路与范围
 
 战后实验谱可用图形、文字和 diagrams 将解释留给演奏者。Getty 的 *The Scores Project* 记录了特定欧美谱系；其 *December 1952* 条目称，矩形可表示声音事件，演奏者可选择时值、音高聚合、强度与页面方向。这不是所有图形谱或即兴音乐的通史。Brown 对作品和表演时间的说明见 [作者说明](../../../../vault/provenance/art-software-atlas/temporal/cards/asa-t-10-earle-brown-prefatory-note.md)；来源文本没有替代谱面图像或演出记录。[Getty 导论](../../../../vault/provenance/art-software-atlas/temporal/cards/asa-t-02-getty-introduction.md) 与 [Brown 作品记录](../../../../vault/provenance/art-software-atlas/temporal/cards/asa-t-01-getty-december-1952.md)保留各自范围。
@@ -41,4 +43,4 @@
 
 后续可比较明确时间轴、文字指令、自由阅读与 performer realization；跨到舞蹈、现场行为或视频时，可再区分可编译关系与演出者判断。
 
-Brown 的原说明以直接演出为先，除总时长外不预先定义事件；进一步确定须有谱与说明依据。本页事件表是现代软件设计试验，不是 Brown 作品的复演。见 [ASA-T-10 原说明](../../../../vault/provenance/art-software-atlas/temporal/cards/asa-t-10-earle-brown-prefatory-note.md)。
+Brown 的原说明以直接演出为先，除总时长外不预先定义事件；进一步确定须有谱与说明依据。见 [ASA-T-10 原说明](../../../../vault/provenance/art-software-atlas/temporal/cards/asa-t-10-earle-brown-prefatory-note.md)。

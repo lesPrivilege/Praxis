@@ -1,12 +1,14 @@
 # 内容与数据可视化编排参考
 
-本页是 C01–C25 的 canonical route。它记录内容关系、数据表达、章节导航、动效和历史版式观察；条目是可回查的消费记录，不是对所有项目的统一视觉 token。返回 [Design 参考路由](README.md) 或 [兼容入口](README.md)。
+C01–C25：内容关系、数据表达、章节导航、动效和历史版式的参考条目，组织内容、关系、数据图和页面节奏时按状态、边界与证据回查。
+
+条目是可回查的消费记录，不是对所有项目的统一视觉 token。返回 [Design 参考路由](README.md)。
 
 CW 指 `/Users/lesprivilege/Projects/Courtwork`；C02、C03、C06、C09 等未存快照的行号对应当时读取的提交 `f3ccc27`。SE 指 Schema Engineering；未存快照的坐标对应当时读取的提交 `adbd793`。当前源仓库、浏览器和无障碍状态不能由这些历史坐标推导。
 
 ## 关系、数据与信息层级
 
-| ID | 参考 | 状态 | 是什么 / Kit 消费什么 | 边界 | 消费位置 | 重访与证据 |
+| ID | 参考 | 状态 | 内容 / Kit 消费 | 边界 | 消费位置 | 重访与证据 |
 |---|---|---|---|---|---|---|
 | C01 | CW Pages 闭环图 `site/src/assets/diagram.svg` | accepted | 本地 SVG 示范关系线、箭头和状态；消费为关系图的线型语法 | 单个图形快照，不是通用 renderer 或产品视觉 | 答卷 Q3、Q5 线图 | 改图式或换 renderer 时复查；[快照](../../../../vault/snapshots/local/downloads/cw-pages-recall-20260923/diagram.svg) |
 | C02 | CW 图形样式 `site/src/site.css` 869–907、1030–1041 | accepted | 本地记录报告虚线、线宽、单一强调色和高对比度替代样式 | 源仓库未存本段快照，不能声称当前 CSS 或全站符合 | 答卷五题线图 | 引用前按当前提交复核；CW 原仓库历史坐标 |
@@ -18,7 +20,7 @@ CW 指 `/Users/lesprivilege/Projects/Courtwork`；C02、C03、C06、C09 等未�
 
 ## 导航、披露与响应式阅读
 
-| ID | 参考 | 状态 | 是什么 / Kit 消费什么 | 边界 | 消费位置 | 重访与证据 |
+| ID | 参考 | 状态 | 内容 / Kit 消费 | 边界 | 消费位置 | 重访与证据 |
 |---|---|---|---|---|---|---|
 | C08 | SE 阅读器目录 `papers/dist/*reader*paper-v1.html` 205–224、308 | accepted | 原生 `details` 目录、无 JS 基本可读、打印隐藏 | 源仓库未存快照，不能把历史 reader 行为当当前站点事实 | 答卷窄屏章节菜单 | reader 结构或浏览器变化时复核；SE 历史坐标 |
 | C09 | CW 导览章节路径 `site/src/product-pages.css` 108–111 | accepted | 窄屏章节导航纵向排列，保留位置语义 | 源 CSS 未存快照；不规定所有页面必须相同导航 | 答卷窄屏章节菜单 | breakpoints 或导航对象变化时复核；CW 历史坐标 |
@@ -34,7 +36,7 @@ CW 指 `/Users/lesprivilege/Projects/Courtwork`；C02、C03、C06、C09 等未�
 
 ## 动效、类型与反模式观察
 
-| ID | 参考 | 状态 | 是什么 / Kit 消费什么 | 边界 | 消费位置 | 重访与证据 |
+| ID | 参考 | 状态 | 内容 / Kit 消费 | 边界 | 消费位置 | 重访与证据 |
 |---|---|---|---|---|---|---|
 | C19 | 动效判断框架（本地 skill emil-design-eng） | accepted | 先判断是否该动、为何动，再定属性与曲线；键盘操作和减弱动效单独裁决 | 本地 skill 方法，不是外部标准；不强制减弱动效只留淡入 | 答卷动效 | skill 版本或 renderer 变化时重读 |
 | C20 | [Claude Opus 5.5 100 HTML Files](https://miaai-lab.github.io/Claude-Opus-5.5-100-HTML-Files/) 008 长文页 | accepted（阅读进度线） | 取阅读进度线作为单次页面反馈机制 | 只采纳该机制；页面配色、字体、滚动动效等留在一次性 profile；历史文字读取，时点见来源记录 | 答卷翻页条 | 复用样式或页面更新时重读并核对 profile |

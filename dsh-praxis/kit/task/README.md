@@ -14,7 +14,7 @@
 
 任务落在现场工作的哪一段，由 [现场闭环](field-loop.md)判断：发现、选择、介入、验证与试点、移交、运营扩展或退出，阶段可合并、退回或结束。启动条件、净减负口径与 Value / Asset Ledger 在 [驻场组织接口](field-governance.md)。
 
-## 需要参考时
+## 参考与样例
 
 - 按材料类型找研究和样例：[Reporting 提炼](../../../vault/distilled/reporting/README.md)。
 - 按原始来源回查：[逐源登记](../../../vault/provenance/reporting/README.md)。

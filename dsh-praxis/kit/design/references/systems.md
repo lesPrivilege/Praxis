@@ -1,12 +1,14 @@
 # 设计系统与前端参考
 
-本页是 `ref-*` URL 卡片的 canonical route。它只提供 Design 需要的消费摘要；每条原 URL、canonical URL、原对话主张、核验差异、证据链接和重访触发仍以 Vault 卡片为准。卡片的 `verified`、`partial` 是来源证据状态，不是 Kit 的 `accepted` 状态。返回 [Design 参考路由](README.md) 或 [兼容入口](README.md)。
+设计系统与前端框架参考的消费摘要：各家可借的组织方式、来源证据状态与重访条件，查成熟设计系统或前端参考的原文入口时使用。
+
+每张 `ref-*` 卡片的原 URL、canonical URL、原对话主张、核验差异、证据链接和重访触发以 Vault 卡片为准。卡片的 `verified`、`partial` 是来源证据状态，不是 Kit 的 `accepted` 状态。返回 [Design 参考路由](README.md)。
 
 这些卡片保留历史官方入口核查；若卡片或本页注明需要重读，引用前按原 URL 复核。没有保存正文快照时，在线页面不能被当作离线证据。
 
 ## Design system 组织
 
-| 来源 ID | URL 卡片 | 状态 | Kit 消费什么 | 边界与重访 |
+| 来源 ID | URL 卡片 | 状态 | Kit 消费内容 | 边界与重访 |
 |---|---|---|---|---|
 | ref-atlassian | [Atlassian Design System](../../../../vault/references/design-systems/atlassian.md) | verified | foundations、tokens、components、patterns、accessibility、content、AI patterns 的层次线索 | trusted fundamentals 的精确措辞未直接核实；需要导航、表单或状态 grammar 时重访 |
 | ref-carbon | [IBM Carbon](../../../../vault/references/design-systems/carbon.md) | verified | enterprise component/template 组织和 form/side-panel 等检索入口 | 主页不逐项证明所有 pattern；需要 form mode、read-only 或 migration 时重访 |
@@ -16,7 +18,7 @@
 
 ## Frontend framework 与 workshop 组织
 
-| 来源 ID | URL 卡片 | 状态 | Kit 消费什么 | 边界与重访 |
+| 来源 ID | URL 卡片 | 状态 | Kit 消费内容 | 边界与重访 |
 |---|---|---|---|---|
 | ref-ant-design-pro | [Ant Design Pro](../../../../vault/references/frontend/ant-design-pro.md) | verified | enterprise shell、template→page、responsive/theme/i18n | 不复制工程栈和品牌；需要模板或权限细节时重访 |
 | ref-ant-design | [Ant Design](../../../../vault/references/frontend/ant-design.md) | verified | design values、components、themes 和 design/development ecology | 不锁版本、不复制品牌；组件 API 或 token 升级时重访 |
@@ -27,6 +29,6 @@
 
 ## 维护
 
-逐 URL 的 canonical 登记只保留在 `vault/references` 或 `vault/provenance` 的一个位置；本页不复制原件。需要将某个系统的观察提炼为跨项目语法时，先在项目 index 记录实际消费，再按 [文档结构契约](../../../../docs/architecture/documentation.md) 与修订流程提出裁决。
+逐 URL 的 canonical 登记只保留在 `vault/references` 或 `vault/provenance` 的一个位置。需要将某个系统的观察提炼为跨项目语法时，先在项目 index 记录实际消费，再按 [文档结构契约](../../../../docs/architecture/documentation.md) 与修订流程提出裁决。
 
 已有品牌规范需要让 coding agent 按需查找时，读 [设计资源的包、组件与集成](agent-design-resources.md)；该入口区分同名项目、设计系统包、registry、Skill 和 MCP，不要求安装。

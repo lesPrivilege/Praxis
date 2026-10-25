@@ -1,5 +1,7 @@
 # 设计判断契约
 
+判断一种视觉方案是否让读者要理解、比较或操作的关系可辨认，以及哪些样式选择不能写成普遍规则；有多种方案需要取舍时使用。
+
 先明确读者需要理解、比较或采取什么动作，设计方案应使相应关系可辨认。语义必要性来自 [Task](../../task/README.md)或具体产品任务，视觉表现应有可以说明的用途。
 
 ## 判断顺序
@@ -15,4 +17,4 @@
 
 项目 index 记录所用条目、版本、改用理由、实际输出和限制。反复覆盖、来源漂移或没有消费者时，按 [修订机制](../../../../docs/governance/evolution.md)复核。新作品先作为可检查的 specimen，晋升仍需明确裁决。
 
-本页收敛旧 Design grammar 的跨领域判断；来路见 [参考语义](../../../../vault/distilled/design-reference-semantics/README.md)。历史答卷的具体选择在 [profile](../../../../vault/distilled/ai-capability-assessment/design-profile-20260924.md)，不复制进本页。
+来路见 [参考语义](../../../../vault/distilled/design-reference-semantics/README.md)；历史答卷的具体选择见 [profile](../../../../vault/distilled/ai-capability-assessment/design-profile-20260924.md)。

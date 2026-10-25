@@ -2,7 +2,9 @@
 
 ID：`DWG-W-MULTILINGUAL` · Priority：`normal`（可选参考）
 
-适用文本要翻译、从外文来源提炼、面向多语读者或在不同地区上线时。先确定哪个语言版本承载事实和产品契约，再让目标语言编辑者按其语体和用户认知写出可用文本。不要把中文的搭配、标点、语序或表达偏好移植到其它语言；也不要把英文指南的大小写、句式和长度写成中文规则。
+文本要翻译、从外文来源提炼、面向多语读者或在不同地区上线时，分清翻译、本地化与改写，保住事实与契约所在的语言边界。
+
+先确定哪个语言版本承载事实和产品契约，再让目标语言编辑者按其语体和用户认知写出可用文本。不要把中文的搭配、标点、语序或表达偏好移植到其它语言；也不要把英文指南的大小写、句式和长度写成中文规则。
 
 ## 翻译与本地化承担不同工作
 
@@ -10,7 +12,7 @@ ID：`DWG-W-MULTILINGUAL` · Priority：`normal`（可选参考）
 - **本地化（localization / L10n）**还要适配具体地区的语言、文化、政治与产品要求，包括日期、数字、单位、示例、法律提示、支付路径和支持方式。
 - **跨文化改写或 transcreation**在明确授权和边界内重写表达形式。它可改比喻、节奏或例子，必须记录哪些内容变了及为什么。
 
-Microsoft Global communications 的区分把 localization 视为对内容及其它产品元素的地区适配，并指出可预期内容会被不同国家读者阅读或继续本地化。此处引用的是 Microsoft 的全球沟通建议；它鼓励适配，不意味着项目有所有地区的专业把关或当地合法性结论。
+Microsoft Global communications 的区分把 localization 视为对内容及其它产品元素的地区适配，并指出可预期内容会被不同国家读者阅读或继续本地化。
 
 ## 维护可追溯的语言边界
 
@@ -23,7 +25,7 @@ Microsoft Global communications 的区分把 localization 视为对内容及其�
 
 ## 具体示例与误用
 
-**合成英文提示：**“Retry after 10 minutes. Your draft is saved.”简体中文目标版本可能需按产品实际语气与状态写成“10 分钟后重试。草稿已保存。”若系统并未确实保存草稿，就不能因为英文源句存在而照译。
+**英文提示：**“Retry after 10 minutes. Your draft is saved.”简体中文目标版本可能需按产品实际语气与状态写成“10 分钟后重试。草稿已保存。”若系统并未确实保存草稿，就不能因为英文源句存在而照译。
 
 **误用：**对中文按钮机械要求 sentence case、英文 contraction 和固定字符数，再把超出宽度的文字随意截断。这会把语言特定形式冒充成跨语言规则，还可能删掉对象或限定条件。正确做法是保留动作含义与对象，由目标语言、设计空间及组件行为共同确定措辞和布局。
 
@@ -33,8 +35,8 @@ Microsoft Global communications 的区分把 localization 视为对内容及其�
 
 ## 来源与范围
 
-- [Microsoft · Global communications（DWW-003）](../../../../vault/provenance/design-writing-encyclopedia/writing/cards/microsoft-global-communications.md)：页面区分 translation 与 localization；本页关于 locale 的任务由 Kit 综合而来，并非 Microsoft 完整本地化规范。
+- [Microsoft · Global communications（DWW-003）](../../../../vault/provenance/design-writing-encyclopedia/writing/cards/microsoft-global-communications.md)：页面区分 translation 与 localization；locale 记录与维护的做法是 Kit 的综合。
 - [Ant Design · 文案（DWW-006）](../../../../vault/provenance/design-writing-encyclopedia/writing/cards/ant-design-copywriting-zh.md)：中文产品界面的专门参照；其词表、语气与标点取舍不自动适用于所有中文产品或其它中文文体。
 - [Microsoft brand voice（DWW-002）](../../../../vault/provenance/design-writing-encyclopedia/writing/cards/microsoft-brand-voice.md)：品牌 tone 可以随具体情境调整，只作产品写作的有限对照。
 
-这些卡只支持其已读文字中的术语与具体指南选择，不证明哪个语言版本是所有内容的唯一源头，也不涵盖每一地区的要求。本页不是法律意见、机器翻译规范或完整地区化标准。
+这些卡只支持其已读文字中的术语与具体指南选择，不涵盖每一地区的要求。

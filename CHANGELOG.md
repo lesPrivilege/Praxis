@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-10-25 · Kit 正文去旁白，入口段按 description 撰写
+
+- [成文原理](dsh-praxis/kit/writing/principles.md)第 5 条把目录里的说明（description）列为结构位置，第 8 条点名自述：页面讲什么、怎样读由标题、顺序和入口段承担；[审阅方法](dsh-praxis/kit/writing/review.md)常见偏差加“页面自述”一行。
+- 两名 Opus 审阅者按此清理 `dsh-praxis/kit` 四层 72 页：删去“本页回答/只写/不替代……”一类自述、重复设防与来路标签，每页入口段改写成 description（这页决定什么、何时用，约 100 字内），表头与标题改为按位置撰写；规则强度、锚点与来源事实不变。主会话逐项复核，补回一处证据身份（论证示例改为“假设走读……”），示例为构造的约定写在 [Kit 入口](dsh-praxis/kit/README.md)。
+- 未改：正文里的修订触发（约 25 处，留待单独决定是否移到 index）、跨层共用的问句式表头与“最小产物与何时停”一类标题（ADR 按文字引用）。
+
 ## 2026-10-25 · dsh-praxis 整合包验收与修复
 
 - [整合包验收](docs/verification/dsh-praxis-acceptance-20261025.md)：DSH 桌面内置控制面实际打开并读写，MCP 与 CLI 真实进程共数据；[补充探针](scripts/check_praxis_acceptance.py)找出五类缺陷，增量入账见 [原 Chat](vault/archive/chat/dsh-praxis-control-plane-20261025.md)。

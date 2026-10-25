@@ -1,6 +1,6 @@
 # Composition · 空间与编码
 
-内容关系已经确定后，从需要解决的视觉问题进入。
+内容关系确定后，决定层级、排印、色彩、对象表现与图形编码，产出能被实际内容检验的布局或图形。
 
 - 层级、阅读顺序、主次与宽窄重排：读 [空间编排](layout.md)。
 - 字阶、字体角色、中西文混排与断行：读 [排印关系](typography.md)。
@@ -13,4 +13,4 @@
 - 从织物与几何构造寻找关系：读 [材料实践](material-relations.md)；图形计数与日文排印读 [编辑转译](editorial-translations.md)；光、空间与材质读 [空间材料](spatial-materials.md)。这些是带原语境的普通参考，不是主题参数。
 - 其他编排方法与历史样张：进入 [普通编排参考](../references/composition.md)；优先卡片的验收范围不是通用实现通过。
 
-输出是能够被实际内容检验的布局或图形，不是一套强制主题。标题、description、图注、来源等内容职责在 [Publish / html](../../publish/html/README.md)维护。
+标题、description、图注、来源等内容职责在 [Publish / html](../../publish/html/README.md)维护。

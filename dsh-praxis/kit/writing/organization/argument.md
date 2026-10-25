@@ -2,7 +2,9 @@
 
 ID：`DWG-W-ARGUMENT` · Priority：`normal`（可选参考）
 
-当任务需要解释原因、比较方案、作出建议或诊断结果时，用本页先搭论证，再按 [成文原理](../principles.md)写成中文。它补充论证判断，不替代证据底线与审阅方法。若任务只要准确转录或格式调整，不强加论证结构。
+解释原因、比较方案、作出建议或诊断结果时，先按任务选论证关系、分开证据与推理，再按 [成文原理](../principles.md)写成中文。
+
+任务只要准确转录或格式调整时，不强加论证结构。
 
 ## 先确定读者要作出的判断
 
@@ -18,7 +20,7 @@ ID：`DWG-W-ARGUMENT` · Priority：`normal`（可选参考）
 | 诊断问题 | 预期状态 → 实际状态 → 差异来源 → 检查或恢复 | 证据缺口与无法控制的故障分别说明 |
 | 定义概念 | 类属 → 区别条件 → 正例与边界例 | 定义可支持本文后续判断，例子不能冒充全部范围 |
 
-Purdue OWL 对 Toulmin Method 的教学说明把论证拆成六个部分，以 **claim / grounds / warrant** 为基础：主张、事实与证据、以及连接证据和主张的 warrant；按需加入 backing、qualifier 和 rebuttal。此页采用这组术语检查核心推理，同时把它改写成中文写作取用语：**主张**说清要读者接受什么；**证据**说明观察或来源支持哪一部分；**推理理由（warrant）**解释证据为何支持该主张；**范围条件**指出何时成立；**反例或替代解释**说明结论的边界。它们对应 Toulmin 模型的核心与可选补充，但并非逐项同义或强制步骤。本页的任务路由表、文本顺序示例和取用边界是 Kit 为本地任务所作的综合，不是 Purdue 的模型内容。参见 [DWW-007 · Purdue OWL 的教学说明](../../../../vault/provenance/design-writing-encyclopedia/writing/cards/purdue-toulmin-method.md)。不是每段都要齐列五项，但关键主张不能只靠语气或结论重复来支撑。
+Purdue OWL 对 Toulmin Method 的教学说明把论证拆成六个部分，以 **claim / grounds / warrant** 为基础：主张、事实与证据、以及连接证据和主张的 warrant；按需加入 backing、qualifier 和 rebuttal。这组术语用来检查核心推理，改写成中文写作取用语：**主张**说清要读者接受什么；**证据**说明观察或来源支持哪一部分；**推理理由（warrant）**解释证据为何支持该主张；**范围条件**指出何时成立；**反例或替代解释**说明结论的边界。它们对应 Toulmin 模型的核心与可选补充，但不逐项同义。上表的任务路由、示例的文本顺序和取用边界是 Kit 的综合，不出自 Purdue。参见 [DWW-007 · Purdue OWL 的教学说明](../../../../vault/provenance/design-writing-encyclopedia/writing/cards/purdue-toulmin-method.md)。不是每段都要齐列五项，但关键主张不能只靠语气或结论重复来支撑。
 
 ## 证据与推理不要混写
 
@@ -26,22 +28,22 @@ Purdue OWL 对 Toulmin Method 的教学说明把论证拆成六个部分，以 *
 
 当证据不足，缩窄主张、写明缺口，或提出下一项能区分解释的检查。不要用“显然”“因此”补上没验证的因果，也不要靠免责声明掩盖正文仍过强的判断。资料相互冲突时，呈现差异各自的来源、口径和影响；没有理由时不替它们凑成单一结论。
 
-## 小型合成示例
+## 示例
 
 **问题：**要不要默认要求新用户完成一次导入？
 
-**论证：**在合成的走读记录中，三位新用户有两位在没有样例时停在空状态。这个观察说明空状态缺少下一步线索；它还不能证明强制导入会提高长期留存。建议先在空状态提供可跳过的样例导入，并记录导入完成与退出位置，再决定是否扩大。这个建议适用于首次进入且没有数据的账号；已有数据的账号不应重复提示。
+**论证：**假设走读三位新用户，其中两位在没有样例时停在空状态。这个观察说明空状态缺少下一步线索；它还不能证明强制导入会提高长期留存。建议先在空状态提供可跳过的样例导入，并记录导入完成与退出位置，再决定是否扩大。这个建议适用于首次进入且没有数据的账号；已有数据的账号不应重复提示。
 
-这里的“三位”是为说明论证结构而构造，不是研究结果。推理把一个观察支持的窄结论与尚未验证的长期效果分开。
+推理把一个观察支持的窄结论与尚未验证的长期效果分开。
 
 **反例：**“两位用户没找到导入，所以强制导入肯定会提升留存。”它把小样本观察跳成因果结论，也没交代既有数据用户的边界。
 
-## 何时不用这套完整链条
+## 不用完整链条的情形
 
 - 短答案可将判断和关键条件直接写出，只有读者需要复核时才补更长推导。
 - 流程指南按前置条件与动作顺序组织，读者的操作次序优先于先答后证。
 - 叙事或口播可延后信息，但悬念不能让读者在行动前错过风险或决定条件。
-- 法律、政策和标准文本的结论需按相应解释方法处理，不能由此页替代专业审查。
+- 法律、政策和标准文本的结论按相应解释方法和专业审查处理。
 
 ## 验收
 
@@ -49,8 +51,8 @@ Purdue OWL 对 Toulmin Method 的教学说明把论证拆成六个部分，以 *
 
 ## 来源与范围
 
-- [Purdue OWL · Toulmin Argument（DWW-007）](../../../../vault/provenance/design-writing-encyclopedia/writing/cards/purdue-toulmin-method.md)：claim、grounds、warrant 的教学解释，以及 backing、qualifier、rebuttal 的可选位置。Purdue OWL 是本页所读的二手教学说明；没有阅读 Toulmin 原著。
+- [Purdue OWL · Toulmin Argument（DWW-007）](../../../../vault/provenance/design-writing-encyclopedia/writing/cards/purdue-toulmin-method.md)：claim、grounds、warrant 的教学解释，以及 backing、qualifier、rebuttal 的可选位置。Purdue OWL 是所读的二手教学说明，没有阅读 Toulmin 原著；页面许可限制复制。
 - [Google developer documentation style guide 总览（DWW-001）](../../../../vault/provenance/design-writing-encyclopedia/writing/cards/google-style-guide-about.md)：具体项目风格和读者需要可以先于通用指南；这是本页把模型作为可选检查工具的依据。
 - [GOV.UK user-needs 既有卡](../../../../vault/provenance/documentation-practices/cards/govuk-user-needs.md)：任务与用户研究作为写作问题起点；该来源来自公共服务研究，证据要求不能直接泛化为通用论证学说。
 
-来源是取用线索，不是效果证据。Purdue 页的许可提示限制复制，本页仅作原创概述；没有阅读 Toulmin 的《The Uses of Argument》，也没有验证这套链条提升本 Kit 成文效果。
+这些来源是取用线索；这套链条能否改善本 Kit 的成文，尚未验证。

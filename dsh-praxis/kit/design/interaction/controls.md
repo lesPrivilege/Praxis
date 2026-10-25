@@ -2,7 +2,7 @@
 
 语法 ID：`DWG-I-CONTROLS` · 取用：可选普通参考（`normal` / `reference`）。
 
-此页补充 [交互状态](states.md)：先定义控件要完成的动作，再选择语义、状态表达和输入路径。适用于界面设计评审、原型与实现契约；它是判断语法，不是组件库 API，也不是完整 WCAG 验收。
+按控件要完成的动作选择语义、状态表达和输入路径，用于界面设计评审、原型与实现契约；状态与可达性另见 [交互状态](states.md)。
 
 ## 动作先于外形
 
@@ -28,7 +28,7 @@
 
 成熟库可帮助拆解实现职责，但它的 API 不是跨栈规范。React Aria 的 Slider 页面分别暴露 label、output、轨道、thumb、焦点 thumb、dragging 与格式化值，提示设计者把直接操纵、键盘焦点和数值读数一起约定；仅读文档，未安装或执行。[DWI-007](../../../../vault/provenance/design-writing-encyclopedia/interaction/cards/react-aria-slider.md)
 
-方向键、Enter、Space、Escape、Home/End 的约定按匹配的 APG pattern 采用；不要从一个 widget 移植另一类 widget 的按键习惯。复合控件减少 Tab 停靠点时，内部方向导航和读屏名称/状态也必须成套实现，并在真实浏览器与辅助技术组合下验证。APG 是模式参考及示例，不是实现通过的证明。
+方向键、Enter、Space、Escape、Home/End 的约定按匹配的 APG pattern 采用；不要从一个 widget 移植另一类 widget 的按键习惯。复合控件减少 Tab 停靠点时，内部方向导航和读屏名称/状态也必须成套实现，并在真实浏览器与辅助技术组合下验证。
 
 ## worked example：筛选面板
 
@@ -46,7 +46,7 @@
 
 ### 图标来源边界
 
-Apple SF Symbols 官方 overview 描述面向 Apple 平台的符号字重、尺度、方向适配和动态 rendering 能力，可借作平台图标特征观察；它不构成跨平台图标库推荐或许可文本。Apple HIG 的官方搜索摘要另警示 app icon、logo、trademark 相关限制。实际选用具体 symbol 前，先核对 Apple 当前 HIG/许可、该 symbol 的具体限制和目标系统版本；此处不复制资产，也不推断 Web 使用授权。[DWI-005](../../../../vault/provenance/design-writing-encyclopedia/interaction/cards/apple-sf-symbols.md) [DWI-008](../../../../vault/provenance/design-writing-encyclopedia/interaction/cards/apple-sf-symbols-overview.md)
+Apple SF Symbols 官方 overview 描述面向 Apple 平台的符号字重、尺度、方向适配和动态 rendering 能力，可借作平台图标特征观察；它不构成跨平台图标库推荐或许可文本。Apple HIG 的官方搜索摘要另警示 app icon、logo、trademark 相关限制。实际选用具体 symbol 前，先核对 Apple 当前 HIG/许可、该 symbol 的具体限制和目标系统版本；Web 使用授权不能由此推断。[DWI-005](../../../../vault/provenance/design-writing-encyclopedia/interaction/cards/apple-sf-symbols.md) [DWI-008](../../../../vault/provenance/design-writing-encyclopedia/interaction/cards/apple-sf-symbols-overview.md)
 
 ## 证据边界
 

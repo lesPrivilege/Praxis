@@ -10,7 +10,9 @@ source_stream: vault/provenance/art-software-atlas/ecosystem/catalog.json
 
 # 面向 agent 的设计资源
 
-先辨认要交给 agent 的是什么。设计系统包表达品牌与产品约束；组件 registry 分发实现；Skill 描述工作过程；MCP server 提供工具接口；adapter 连接已有 runtime。OpenDesign 将 functional Skill 与 design template 分置于不同目录/API，这些名称应按项目本义读取。
+把设计约束、组件和设计上下文交给 agent 时，先辨认交出的是设计系统包、组件 registry、Skill、MCP server 还是 adapter，再选连接与检索方式。
+
+设计系统包表达品牌与产品约束；组件 registry 分发实现；Skill 描述工作过程；MCP server 提供工具接口；adapter 连接已有 runtime。OpenDesign 将 functional Skill 与 design template 分置于不同目录/API，这些名称应按项目本义读取。
 
 这里的 OpenDesign 指 `open-design.ai` 及其链接的 `nexu-io/open-design`；`opendesigner.io` 是另一个同名候选。需要指定产品时先核对身份，见下方逐源记录。
 
