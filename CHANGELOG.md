@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-10-25 · dsh-praxis 项目与产物位置；下一轮工单
+
+- [下一轮工单](dsh-praxis/work-order.md)：先自用跑通（A1 项目与产物、A2 管线、A3 worker 自主消费、A4 名册维护），再拆出 release（B1–B7）。设计原则写在工单开头：名册登记链接与功效，不收录原件正文；经渐进目录逐级展开，是否打开原件由模型决定；消费过的留本地记录；链接随上游同步、增减淘汰。上一轮工单改名为 [work-order-artifacts](dsh-praxis/work-order-artifacts.md)。
+- A1：项目是带布局的目录（底稿、中间产物、最终产物各按 glob，从模板开始），产物属于包含它的最深项目；consume 拒收项目外的文件；upkeep 只报两种例外：产物不在约定位置（`misplaced`）、最终产物路径里有没登记的文件。新增 `praxis_projects`、`praxis_project`；控制面的产物按项目分组。取舍见 [ADR-041](docs/decisions/041-dsh-praxis-projects.md)。
+- 三个试点（jev、Palantir 书单系列、技术说明页）登记，不搬文件，找出 14 条例外并按用户指示处理：7 件非交付件的产物记录移除（可恢复），7 个成片一次登记；26 项测试、探针 14 项通过，见 [回执](docs/verification/dsh-praxis-projects-20261025.md)。
+
 ## 2026-10-25 · dsh-praxis 来源闭环
 
 - 名册对人和 agent 说清每条来源：`praxis_source` 与控制面的来源条目给出收录缘由（集合的用途或 capture 时的任务）、挂在哪些页面、经这些页面服务哪些任务类型、哪些运行读过它并交付了什么。取舍见 [ADR-040](docs/decisions/040-dsh-praxis-source-loop.md)。

@@ -1,6 +1,6 @@
 # dsh-praxis 产物登记与取用 · 2026-10-25
 
-基线：`eb00ef7`（含 [整合包验收](dsh-praxis-acceptance-20261025.md)五项修复与 Kit 清理）。按 [下一轮工单](../../dsh-praxis/work-order.md)施工，取舍见 [ADR-039](../decisions/039-dsh-praxis-artifacts.md)。
+基线：`eb00ef7`（含 [整合包验收](dsh-praxis-acceptance-20261025.md)五项修复与 Kit 清理）。按 [下一轮工单](../../dsh-praxis/work-order-artifacts.md)施工，取舍见 [ADR-039](../decisions/039-dsh-praxis-artifacts.md)。
 
 ## 已验证
 

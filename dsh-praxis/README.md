@@ -8,7 +8,7 @@
 
 | 要做什么 | 读哪里 |
 |---|---|
-| 接手下一轮整合包与产物管理工作 | [架构参考](architecture.md)与[下一轮工单](work-order.md)；设计提案，由 Opus worker 最后裁决 |
+| 接手下一轮工作 | [下一轮工单](work-order.md)：先自用跑通（项目与产物、管线、worker 自主消费、名册维护），再拆出 release；上一轮见 [产物工单](work-order-artifacts.md)与 [架构参考](architecture.md) |
 | 第一次用，想知道它是什么、在 DSH 里怎么用 | [用户说明](docs/DETAIL.zh.md)（[English](docs/DETAIL.md)），也是 DSH 插件详情页 |
 | 做一件内容表达任务 | [Kit 入口](kit/README.md)，从 Task 开始；agent 用 `praxis_resolve` |
 | 浏览、维护来源挂载与预设 | [控制面](ui/README.md)：DSH 右侧栏“Praxis”，或 `node dsh-praxis/adapters/cli.js serve` |

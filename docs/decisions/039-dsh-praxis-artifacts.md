@@ -1,6 +1,6 @@
 # ADR-039：dsh-praxis 的产物登记与取用
 
-日期：2026-10-25。状态：accepted（用户指示“这一轮先从第一性原理完成施工”，按 [下一轮工单](../../dsh-praxis/work-order.md)与 [架构参考](../../dsh-praxis/architecture.md)执行，主会话裁决下列选择）。主会话（Claude Opus 5.5）实现并验证；DSH 接口由一名 Sonnet 代理只读调研，结论经主会话抽查。
+日期：2026-10-25。状态：accepted（用户指示“这一轮先从第一性原理完成施工”，按 [下一轮工单](../../dsh-praxis/work-order-artifacts.md)与 [架构参考](../../dsh-praxis/architecture.md)执行，主会话裁决下列选择）。主会话（Claude Opus 5.5）实现并验证；DSH 接口由一名 Sonnet 代理只读调研，结论经主会话抽查。
 
 ## 问题与依据
 

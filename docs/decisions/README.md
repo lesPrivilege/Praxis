@@ -64,3 +64,4 @@ accepted 表示本仓库当时采纳；技术实现与使用证据在对应契�
 - [ADR-038：dsh-praxis 控制面的实现](038-dsh-praxis-control-plane.md)（accepted；一套 core 五个入口；挂载关系留在 catalog、维护信息在 dsh-praxis/data；允许直接改文件；不设常驻服务；不引入依赖；Design 一并迁入；已在临时 DSH profile 里验证，桌面应用待重启）。
 - [ADR-039：dsh-praxis 的产物登记与取用](039-dsh-praxis-artifacts.md)（accepted；产物记录与版本，字节留在原处；consume 同时登记；review 写明版本；信号只有 missing 与 needs_work；预览、显示、打开交给 DSH；拖出用 DownloadURL 待桌面实测；工具值统一为无损 JSON）。
 - [ADR-040：dsh-praxis 的来源闭环](040-dsh-praxis-source-loop.md)（accepted；名册说清每条来源的收录缘由、所挂页面、服务的任务与读过它的运行；resolve 素材带原件 URL 与摘录定位；consume 记读过的来源并推出挂载；关系只在来源自己的记录上，Kit 页引用已登记来源须有关系；项目内来源索引按引用登记；capture 成批并写明任务）。
+- [ADR-041：dsh-praxis 的项目与产物位置](041-dsh-praxis-projects.md)（accepted；项目是带布局的目录，底稿、中间产物、最终产物各按 glob；产物属于包含它的最深项目，consume 拒收项目外的文件；违例只报不搬：misplaced 与未登记的最终产物）。

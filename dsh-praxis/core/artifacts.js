@@ -8,9 +8,10 @@ import { basename, extname, isAbsolute, join, relative, resolve, sep } from 'nod
 import { Collection } from './store.js'
 
 export const VERDICTS = ['needs-work', 'checked', 'accepted']
-// Signals are what needs someone: the record lost its file, or a review asked for changes. Later edits
+// Signals are what needs someone: the record lost its file, a review asked for changes, or the file
+// sits outside every project or outside where its project keeps drafts and finals. Later edits
 // (status modified) and a changed basis are shown, not signalled: the next delivery records them.
-export const ARTIFACT_SIGNALS = ['missing', 'needs_work']
+export const ARTIFACT_SIGNALS = ['missing', 'needs_work', 'misplaced']
 
 const MEDIA = {
   html: 'html', htm: 'html', md: 'text', txt: 'text', json: 'text', pdf: 'pdf',

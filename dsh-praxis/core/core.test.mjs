@@ -77,11 +77,14 @@ function rebuildFor(root) {
   }
 }
 
-function setup() {
+// With `project`, the fixture root is a project whose drafts are top-level .md files and finals .html or out/.
+function setup({ project = false } = {}) {
   const root = fixture()
   const rebuild = rebuildFor(root)
   rebuild()
-  return { root, p: createPraxis({ root, rebuild }) }
+  const p = createPraxis({ root, rebuild })
+  if (project) p.saveProject({ expected_revision: 0, root: '.', title: 'Fixture', purpose: '测试交付', layout: { draft: ['*.md'], final: ['*.html', 'out/**'] } })
+  return { root, p }
 }
 
 const SRC = 'provenance-demo:apg'
@@ -293,7 +296,7 @@ test('export, check and restore the control plane state', () => {
 })
 
 test('artifacts: consume registers files; same bytes dedupe, new bytes are a new version', () => {
-  const { root, p } = setup()
+  const { root, p } = setup({ project: true })
   writeFileSync(join(root, 'brief.md'), '# v1\n')
   writeFileSync(join(root, 'page.html'), '<p>v1</p>')
   const first = p.consume({ title: '底稿与页面', artifacts: ['brief.md', { path: 'page.html', title: '讲解页', derived_from: [] }], by: 'agent' })
@@ -315,7 +318,7 @@ test('artifacts: consume registers files; same bytes dedupe, new bytes are a new
 })
 
 test('artifacts: reviews bind to a version; status and signals follow the file and its basis', () => {
-  const { root, p } = setup()
+  const { root, p } = setup({ project: true })
   writeFileSync(join(root, 'page.html'), '<p>v1</p>')
   const run = p.consume({ title: '页面', units: ['writing/organization/mechanism'], artifacts: ['page.html'] })
   const id = run.artifacts[0].artifact
@@ -338,7 +341,7 @@ test('artifacts: reviews bind to a version; status and signals follow the file a
 })
 
 test('artifacts: moving a file keeps identity only when the bytes are the latest version', () => {
-  const { root, p } = setup()
+  const { root, p } = setup({ project: true })
   writeFileSync(join(root, 'page.html'), '<p>v1</p>')
   const id = p.consume({ title: '页面', artifacts: ['page.html'] }).artifacts[0].artifact
   mkdirSync(join(root, 'out'))
@@ -361,7 +364,7 @@ test('artifacts: moving a file keeps identity only when the bytes are the latest
 })
 
 test('resolve hands over the way to the original; source shows why it is here, where it serves and who read it', () => {
-  const { root, p } = setup()
+  const { root, p } = setup({ project: true })
   const catalog = JSON.parse(readFileSync(join(root, CATALOG), 'utf8'))
   catalog.sources[0].supported_claims = [{ claim_id: 'C1', locator: 'Keyboard Interaction', claim: 'Enter 与 Space 切换展开。' }]
   writeFileSync(join(root, CATALOG), JSON.stringify(catalog))
@@ -401,4 +404,34 @@ test('a project source index is registered by reference, related through its reg
   p.materials.registerIndex({ ...reg, title: '改名' })
   assert.deepEqual(p.materials.listBindings({ source: 'proj-research:A-01' }).map((b) => b.description), ['控件页取它的计价说法'], 'registering again keeps relations')
   assert.ok(p.resolve({ task_type: 'explainer' }).materials.some((m) => m.source === 'proj-research:A-01'))
+})
+
+test('projects: deliverables live in a registered project; the layout says where drafts and finals go', () => {
+  const { root, p } = setup()
+  mkdirSync(join(root, 'work/series/out'), { recursive: true })
+  mkdirSync(join(root, 'work/series/draft'), { recursive: true })
+  writeFileSync(join(root, 'work/series/draft/ep01.md'), '# 第一集\n')
+  writeFileSync(join(root, 'work/series/out/ep01.mp4'), 'video')
+  writeFileSync(join(root, 'work/series/out/ep02.mp4'), 'video')
+  writeFileSync(join(root, 'work/series/out/ep01.mix.wav'), 'audio')
+  writeFileSync(join(root, 'work/series/out/README.md'), '# out\n')
+  writeFileSync(join(root, 'work/series/notes.txt'), '随手记')
+  assert.throws(() => p.consume({ title: '交付', artifacts: ['work/series/out/ep01.mp4'] }), /not inside a registered project/)
+  assert.throws(() => p.saveProject({ expected_revision: 0, root: 'work/none', title: '无', purpose: 'x' }), /not a directory/)
+  assert.throws(() => p.saveProject({ expected_revision: 0, root: 'work/series', title: 'Series', purpose: 'x', layout: { final: ['../out/**'] } }), /relative to the root/)
+  const series = p.saveProject({ expected_revision: 0, root: 'work/series', title: 'Series', purpose: '讲解视频系列', layout: { final: ['out/*.mp4'], build: ['out/*.wav', 'build/**'] } })
+  assert.deepEqual([series.id, series.layout.draft, series.unregistered], ['series', ['draft/**'], ['out/ep01.mp4', 'out/ep02.mp4']], 'template fills roles not given; README and intermediates are not finals')
+  p.saveProject({ expected_revision: 0, root: 'work', title: 'Work', purpose: '外层' })
+  assert.throws(() => p.saveProject({ expected_revision: 0, root: 'work/series', title: 'Again', purpose: 'x' }), /already has this root/)
+  const run = p.consume({ title: '第一集', artifacts: ['work/series/draft/ep01.md', 'work/series/out/ep01.mp4', 'work/series/notes.txt'] })
+  assert.deepEqual(run.artifacts.map((a) => a.project), ['series', 'series', 'series'], 'the deepest project holds the file')
+  const byPath = Object.fromEntries(p.artifactList({ project: 'series' }).map((a) => [a.project_path, [a.role ?? null, a.signals]]))
+  assert.deepEqual(byPath, { 'draft/ep01.md': ['draft', []], 'out/ep01.mp4': ['final', []], 'notes.txt': [null, ['misplaced']] })
+  const up = p.upkeep()
+  assert.deepEqual(up.projects.map((x) => [x.id, x.unregistered]), [['series', ['out/ep02.mp4']]])
+  assert.deepEqual(up.artifacts.map((a) => a.project_path), ['notes.txt'])
+  assert.deepEqual(p.projectList({ path: 'work/series/out/ep01.mp4' }).map((x) => x.id), ['series'])
+  p.saveProject({ id: 'series', expected_revision: series.revision, layout: { final: ['out/*.mp4', '*.txt'] } })
+  assert.deepEqual(p.upkeep().artifacts, [], 'widening the layout resolves the misplaced file; nothing was moved')
+  assert.ok(existsSync(join(root, 'work/series/notes.txt')))
 })

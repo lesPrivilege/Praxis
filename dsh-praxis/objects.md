@@ -20,6 +20,7 @@
 | Binding | 一个来源挂到一个单元上的关系：目录里的 description、取用题解、启用、收藏、优先级、tag 与 review | [binding](schemas/binding.schema.json) |
 | MaterialRevision | 实际取得的一份原件或资产：快照、附件、图片、音视频、代码、模板、组件 | [material-revision](schemas/material-revision.schema.json) |
 | Preset、Run | 可编辑的默认配置；一次任务实际用到的输入、单元版本与配置 | 实现见 [core](core/README.md) |
+| Project | 一件工作所在的目录：根、用途、布局（哪些路径放底稿、中间产物、最终产物，按 glob）；产物属于包含它的最深一个项目 | 实现见 [projects.js](core/projects.js)，取舍见 [ADR-041](../docs/decisions/041-dsh-praxis-projects.md) |
 | Artifact | 一次交付的文件：身份、按内容区分的版本（sha256、产出它的 Run、派生自哪一版）、绑定版本的 review；字节留在主人的工作区 | 实现见 [artifacts.js](core/artifacts.js)，取舍见 [ADR-039](../docs/decisions/039-dsh-praxis-artifacts.md) |
 
 同一个来源用在两个单元上，是两条 Binding，各有题解、启用状态和 review；来源身份只有一个。同一个文件可以既是某次任务的 Artifact，又是后来任务的 MaterialRevision，身份与用途分开记。

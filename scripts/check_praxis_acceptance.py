@@ -217,6 +217,11 @@ def run_checks(probe, temporary, baseline, checks):
           rejected['exit'] != 0 and before == after)
 
     write(probe.root, 'out/brief.html', '<p>v1</p>')
+    outside = probe.cli('consume', {'title': 'No project yet', 'artifacts': ['out/brief.html']})
+    project = probe.call('project', {'expected_revision': 0, 'root': '.', 'title': 'Fixture', 'purpose': 'Acceptance deliveries',
+                                     'layout': {'draft': ['*.md'], 'final': ['out/**']}})
+    check('artifact_needs_project', 'A delivery outside every registered project is refused; MCP registers the project the CLI then uses.',
+          {'outside_exit': outside['exit'], 'project_isError': project.get('isError')}, outside['exit'] != 0 and not project.get('isError'))
     first = probe.ok('consume', {'title': 'Deliver brief', 'artifacts': [{'path': 'out/brief.html', 'title': 'Brief'}]})
     artifact = first['artifacts'][0]['artifact']
     listed = json.loads(probe.call('artifacts')['content'][0]['text'])

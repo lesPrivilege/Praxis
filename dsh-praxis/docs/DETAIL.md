@@ -21,9 +21,9 @@ Open **Praxis** from the right sidebar's guide.
 
 - **Catalog**: the four layers, then their areas, then pages. Each step shows descriptions and counts; a page opens to its sources as cards. On a card you can switch a source on or off, star it, refetch it, rewrite its description, record a review or delete it (deletions can be restored). **Capture a source** registers a new reference.
 - **Task**: pick a task type and pipeline to see exactly what the agent would read, the sources it may use and the acceptance checks.
-- **Artifacts**: the files a piece of work delivered. Open one to see its versions, the pages and sources each version was based on, and the reviews of each version; preview it, show it in Finder, open it in its default app or drag it out.
+- **Artifacts**: the files a piece of work delivered, grouped by project; a project's header says where it keeps drafts, intermediate builds and finals, and which final files are not registered yet. Open one to see its versions, the pages and sources each version was based on, and the reviews of each version; preview it, show it in Finder, open it in its default app or drag it out.
 - **Presets**: defaults per pipeline, such as the TTS voice and aspect ratios for video or the theme for html. Only the name of an environment variable is stored, never a key.
-- **Log**: anything that needs attention (a review marked *needs work*, a source that changed since it was reviewed, a delivery whose pages, sources or presets changed later, an artifact whose file is gone or whose latest version needs work, a captured source not yet bound), then runs and maintenance history. It is usually empty; the tab shows a count when it is not.
+- **Log**: anything that needs attention (a review marked *needs work*, a source that changed since it was reviewed, a delivery whose pages, sources or presets changed later, an artifact whose file is gone, whose latest version needs work or that sits outside its project's layout, a project with unregistered final files, a captured source not yet bound), then runs and maintenance history. It is usually empty; the tab shows a count when it is not.
 
 A source without a curated description, or one nobody has reviewed, is the normal state. The source summary stands in until someone has a reason to curate it.
 

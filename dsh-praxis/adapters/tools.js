@@ -155,13 +155,13 @@ export const TOOLS = [
   },
   {
     name: 'praxis_upkeep',
-    description: '现在需要人处理的事，通常为空：review 结论为待改（needs_work）或来源在上次 review 后变了（changed）的挂载、交付后所用单元、挂载、来源或预设又改过的运行、新登记还没挂到单元的来源、找不到文件或最新版 review 待改的产物、宿主运行旧代码时的 reload。未写说明、未 review 是默认状态，不列。',
+    description: '现在需要人处理的事，通常为空：review 结论为待改（needs_work）或来源在上次 review 后变了（changed）的挂载、交付后所用单元、挂载、来源或预设又改过的运行、新登记还没挂到单元的来源、找不到文件、最新版 review 待改或放错位置的产物、最终产物路径里有未登记文件的项目、宿主运行旧代码时的 reload。未写说明、未 review 是默认状态，不列。',
     parameters: {},
     run: (p) => p.upkeep(),
   },
   {
     name: 'praxis_consume',
-    description: '交付前调用：记录这次工作实际读过的单元和来源（按当前版本），并把交付的文件登记为产物。读过的来源与读过的单元之间的挂载随之记下，之后任何一边改了，这次运行会被列为过期。同一文件内容未变不重复登记；内容变了记为新版本；文件挪了位置时用 artifact 指明是哪件产物。只记实际读过、用过的；文件必须已经存在。返回运行记录，其中 artifacts 给出每个文件的产物 ID 与版本。',
+    description: '交付前调用：记录这次工作实际读过的单元和来源（按当前版本），并把交付的文件登记为产物。文件必须在已登记项目的目录里（用 praxis_projects 查，没有就先用 praxis_project 登记），记录带上所属项目。读过的来源与读过的单元之间的挂载随之记下，之后任何一边改了，这次运行会被列为过期。同一文件内容未变不重复登记；内容变了记为新版本；文件挪了位置时用 artifact 指明是哪件产物。只记实际读过、用过的；文件必须已经存在。返回运行记录，其中 artifacts 给出每个文件的产物 ID 与版本。',
     parameters: {
       title: str('这次工作'), task_type: str('任务类型 ID'), pipeline: str('html 或 video'), preset: str('用的预设 ID'), overrides: { type: 'object', description: '这次对预设的临时改动' },
       units: list('读过的单元'), sources: list('实际读过的来源 ID：resolve 素材里的 source，或 praxis_search、praxis_source 得到的 ID'),
@@ -177,9 +177,28 @@ export const TOOLS = [
     writes: true,
   },
   {
+    name: 'praxis_projects',
+    description: '项目：一件工作所在的目录，带布局（哪些路径放底稿、中间产物、最终产物）。列出每个项目的布局、登记了多少产物、最终产物路径里还有哪些文件没登记。给 path 时只返回包含它的项目：开工前用它确认产物该放哪里。',
+    parameters: { path: str('一个文件或目录的路径'), include_removed: bool('包含已移除的项目') },
+    run: (p, a) => p.projectList(a),
+  },
+  {
+    name: 'praxis_project',
+    description: '登记或修改一个项目。新登记填 expected_revision 0；布局从模板开始（standard：draft/** 放底稿，build/** 放中间产物，out/** 放最终产物），layout 里给出的角色替换模板对应的路径模式（相对项目根的 glob）。产物只能登记在已登记项目的目录里，底稿与最终产物应落在布局约定的位置；Praxis 不移动文件。',
+    parameters: {
+      id: str('项目 ID；新登记可省略，由名称生成'), expected_revision: num('读取时的 revision；新登记填 0'),
+      root: str('项目根目录'), title: str('名称'), purpose: str('这个项目做什么'), template: str('布局模板：standard'),
+      layout: { type: 'object', description: '按角色给出路径模式，替换模板对应部分', properties: { draft: list('底稿'), build: list('中间产物'), final: list('最终产物') } },
+      state: str('active 或 removed'), by: who.by, reason: who.reason,
+    },
+    required: ['expected_revision'],
+    run: (p, a) => p.saveProject(a),
+    writes: true,
+  },
+  {
     name: 'praxis_artifacts',
-    description: '列出交付过的产物（最近变动在前）：名称、媒介、路径、当前版本、文件状态（current / modified 有未登记改动 / missing 找不到）、basis_changed（产出最新版本的运行所用的单元、挂载、来源或预设之后改过）、最新版本的最近一次 review，以及需要处理的信号（missing 记录找不到文件、needs_work 最新版 review 待改）。',
-    parameters: { query: str('名称、说明或路径里的关键词'), medium: str('html、text、image、pdf、video、audio 等'), signal: str('missing、needs_work，或 basis_changed'), include_removed: bool('包括已移除的'), limit: num('条数，默认 50') },
+    description: '列出交付过的产物（最近变动在前）：名称、媒介、路径、当前版本、文件状态（current / modified 有未登记改动 / missing 找不到）、basis_changed（产出最新版本的运行所用的单元、挂载、来源或预设之后改过）、所属项目与在项目里的角色（draft、build、final）、最新版本的最近一次 review，以及需要处理的信号（missing 记录找不到文件、needs_work 最新版 review 待改、misplaced 不在任何项目里或不在项目约定的底稿与最终产物位置）。',
+    parameters: { query: str('名称、说明或路径里的关键词'), medium: str('html、text、image、pdf、video、audio 等'), signal: str('missing、needs_work、misplaced，或 basis_changed'), project: str('项目 ID'), include_removed: bool('包括已移除的'), limit: num('条数，默认 50') },
     run: (p, a) => p.artifactList(a),
   },
   {

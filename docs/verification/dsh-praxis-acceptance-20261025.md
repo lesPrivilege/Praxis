@@ -109,4 +109,4 @@ consume 显式记录来源 v1 hash，随后 refresh 得到 v2。挂载出现 cha
 
 本机 DeepSeek Harness 应用包中的 `snapshotToolValue` 对 `snapshotJsonValue` 失败抛出上述错误；其 `walkJsonValue` 会拒绝 undefined，包括对象中的字段值。[DSH adapter](../../dsh-praxis/adapters/dsh.js) 将 core 原始对象直接返回；CLI/HTTP/MCP 输出中使用的 JSON 序列化则会丢弃这类字段。因此确认了与报错吻合的返回值契约缺陷。本次读取了已装应用包源码，未复制或快照宿主代码，也未重新发起真实模型工具调用；调用方的具体报错来自其自测反馈。
 
-建议下一轮在共同返回值边界与 DSH adapter 之间明确 JSON 可表示性，检查其他含可选字段的工具；具体在 core 构造时省略缺省字段、用有定义的 null，或在适配层规范化，由 Opus 裁决。不要只验证 `JSON.stringify` 能执行，也不要无差别吞掉不合法值来掩盖数据错误。至少覆盖 upkeep 无待办、有 stale 但无 preset、存在预设变更及嵌套可选字段。落实到 [下一轮工单](../../dsh-praxis/work-order.md)。
+建议下一轮在共同返回值边界与 DSH adapter 之间明确 JSON 可表示性，检查其他含可选字段的工具；具体在 core 构造时省略缺省字段、用有定义的 null，或在适配层规范化，由 Opus 裁决。不要只验证 `JSON.stringify` 能执行，也不要无差别吞掉不合法值来掩盖数据错误。至少覆盖 upkeep 无待办、有 stale 但无 preset、存在预设变更及嵌套可选字段。落实到 [下一轮工单](../../dsh-praxis/work-order-artifacts.md)。

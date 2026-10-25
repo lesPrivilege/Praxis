@@ -400,6 +400,12 @@ pre.md { white-space: pre-wrap; font: 12px/1.65 var(--mono); padding: 14px 16px;
 .art-head .desc { margin: 2px 0 0; }
 .art-head .meta { margin-top: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 #art-list .item { grid-template-columns: 16px minmax(0, 1fr) auto; }
+.art-group + .art-group { margin-top: 10px; }
+.art-group-head { display: flex; flex-wrap: wrap; gap: 6px; align-items: baseline; padding: 6px 10px 4px; }
+.art-group-head .t { font-weight: 600; }
+.art-group-head .unreg { flex-basis: 100%; }
+.art-group-head .unreg summary { cursor: pointer; list-style: none; }
+.art-group-head .unreg ul { margin: 6px 0 0; padding-left: 18px; font-size: 12px; color: var(--muted); }
 </style>
 <script>
 // Inside DSH the pane is a same-origin iframe: follow the host's theme switch.
@@ -497,7 +503,7 @@ const STRINGS = {
     'src.read': '读取范围：', 'src.collected': '收录缘由', 'src.capturedFor': '登记时', 'src.pages': '挂在', 'src.noPages': '还没有挂到页面', 'src.serves': '服务的任务', 'src.usedBy': '读过它的运行', 'src.unused': '还没有运行记下读过它',
     'up.attention': '需要处理', 'up.none': '没有要处理的事', 'up.stale': '交付过期', 'up.staleNone': '交付都与当前 Kit 一致', 'up.unbound': '新登记未挂载',
     'up.unboundNone': '没有待挂载的来源', 'up.attachTo': '挂到单元', 'up.unitPh': '单元 ID', 'up.preset': '预设已改', 'up.source': '来源已更新', 'up.reload': '插件代码已更新，重启 DSH 后生效',
-    'log.runs': '运行', 'log.history': '维护记录', 'art.preview': '预览', 'art.reveal': '在 Finder 中显示', 'art.open': '打开', 'art.drag': '拖出文件', 'art.failed': '没有完成：', 'art.search': '找产物', 'art.noMatch': '没有匹配的产物', 'art.none': '还没有交付登记的产物', 'art.pick': '选一件产物', 'art.versions': '版本', 'art.derived': '派生自', 'art.basis': '依据已变', 'art.review': '记录 v{v} 的 review', 'art.reviewed': '已记录', 'art.edit': '名称与说明', 'art.title': '名称', 'art.desc': '它是什么、给谁用', 'art.save': '保存', 'art.saved': '已保存', 'art.remove': '移除', 'art.removed': '已移除', 'art.back': '产物', 'art.noRun': '运行记录不在', 'art.used': '用了', 'as.missing': '找不到文件', 'as.modified': '有未登记改动', 'as.needs_work': '待改', 'as.basis_changed': '依据已变', 'av.needs-work': '待改', 'av.checked': '已核对', 'av.accepted': '已接受', 'log.noRuns': '还没有运行', 'log.noHistory': '还没有维护',
+    'log.runs': '运行', 'log.history': '维护记录', 'art.preview': '预览', 'art.reveal': '在 Finder 中显示', 'art.open': '打开', 'art.drag': '拖出文件', 'art.failed': '没有完成：', 'art.search': '找产物', 'art.noMatch': '没有匹配的产物', 'art.none': '还没有交付登记的产物', 'art.pick': '选一件产物', 'art.versions': '版本', 'art.derived': '派生自', 'art.basis': '依据已变', 'art.review': '记录 v{v} 的 review', 'art.reviewed': '已记录', 'art.edit': '名称与说明', 'art.title': '名称', 'art.desc': '它是什么、给谁用', 'art.save': '保存', 'art.saved': '已保存', 'art.remove': '移除', 'art.removed': '已移除', 'art.back': '产物', 'art.noRun': '运行记录不在', 'art.used': '用了', 'as.missing': '找不到文件', 'as.modified': '有未登记改动', 'as.needs_work': '待改', 'as.misplaced': '不在约定位置', 'art.outside': '不在任何项目里', 'art.unregistered': '{n} 个最终产物未登记', 'role.draft': '底稿', 'role.build': '中间', 'role.final': '最终', 'up.unregistered': '最终产物未登记', 'as.basis_changed': '依据已变', 'av.needs-work': '待改', 'av.checked': '已核对', 'av.accepted': '已接受', 'log.noRuns': '还没有运行', 'log.noHistory': '还没有维护',
   },
   en: {
     'tab.catalog': 'Catalog', 'tab.task': 'Task', 'tab.artifacts': 'Artifacts', 'tab.presets': 'Presets', 'tab.log': 'Log',
@@ -532,7 +538,7 @@ const STRINGS = {
     'src.read': 'Read: ', 'src.collected': 'Collected for', 'src.capturedFor': 'Captured', 'src.pages': 'Attached to', 'src.noPages': 'Not attached to a page yet', 'src.serves': 'Serves tasks', 'src.usedBy': 'Read by runs', 'src.unused': 'No run has recorded reading it',
     'up.attention': 'Needs attention', 'up.none': 'Nothing needs attention', 'up.stale': 'Stale deliveries', 'up.staleNone': 'Every delivery matches the current Kit', 'up.unbound': 'Captured, not attached',
     'up.unboundNone': 'Nothing waiting to be attached', 'up.attachTo': 'Attach to unit', 'up.unitPh': 'Unit ID', 'up.preset': 'Preset changed', 'up.source': 'Source updated', 'up.reload': 'Plugin code changed; restart DSH to load it',
-    'log.runs': 'Runs', 'log.history': 'Maintenance', 'art.preview': 'Preview', 'art.reveal': 'Show in Finder', 'art.open': 'Open', 'art.drag': 'Drag the file out', 'art.failed': 'Not done: ', 'art.search': 'Find an artifact', 'art.noMatch': 'No matching artifacts', 'art.none': 'No delivered artifacts yet', 'art.pick': 'Pick an artifact', 'art.versions': 'Versions', 'art.derived': 'Derived from', 'art.basis': 'Basis changed', 'art.review': 'Review v{v}', 'art.reviewed': 'Review recorded', 'art.edit': 'Name and description', 'art.title': 'Name', 'art.desc': 'What it is, for whom', 'art.save': 'Save', 'art.saved': 'Saved', 'art.remove': 'Remove', 'art.removed': 'Removed', 'art.back': 'Artifacts', 'art.noRun': 'Run record missing', 'art.used': 'Used', 'as.missing': 'File not found', 'as.modified': 'Unregistered changes', 'as.needs_work': 'Needs work', 'as.basis_changed': 'Basis changed', 'av.needs-work': 'Needs work', 'av.checked': 'Checked', 'av.accepted': 'Accepted', 'log.noRuns': 'No runs yet', 'log.noHistory': 'No maintenance yet',
+    'log.runs': 'Runs', 'log.history': 'Maintenance', 'art.preview': 'Preview', 'art.reveal': 'Show in Finder', 'art.open': 'Open', 'art.drag': 'Drag the file out', 'art.failed': 'Not done: ', 'art.search': 'Find an artifact', 'art.noMatch': 'No matching artifacts', 'art.none': 'No delivered artifacts yet', 'art.pick': 'Pick an artifact', 'art.versions': 'Versions', 'art.derived': 'Derived from', 'art.basis': 'Basis changed', 'art.review': 'Review v{v}', 'art.reviewed': 'Review recorded', 'art.edit': 'Name and description', 'art.title': 'Name', 'art.desc': 'What it is, for whom', 'art.save': 'Save', 'art.saved': 'Saved', 'art.remove': 'Remove', 'art.removed': 'Removed', 'art.back': 'Artifacts', 'art.noRun': 'Run record missing', 'art.used': 'Used', 'as.missing': 'File not found', 'as.modified': 'Unregistered changes', 'as.needs_work': 'Needs work', 'as.misplaced': 'Outside the layout', 'art.outside': 'Outside every project', 'art.unregistered': '{n} final files not registered', 'role.draft': 'Drafts', 'role.build': 'Builds', 'role.final': 'Finals', 'up.unregistered': 'Final files not registered', 'as.basis_changed': 'Basis changed', 'av.needs-work': 'Needs work', 'av.checked': 'Checked', 'av.accepted': 'Accepted', 'log.noRuns': 'No runs yet', 'log.noHistory': 'No maintenance yet',
   },
 }
 // Preset field labels come from core in Chinese; English labels live here with the rest of the interface.
@@ -997,7 +1003,7 @@ function openInCatalog(next) { show('catalog'); go(next) }
 async function loadAttention() {
   if (!units.length) await refreshData()
   const r = await api('praxis_upkeep')
-  const n = (r.reload ? 1 : 0) + r.bindings.length + r.stale.length + r.unbound.length + r.artifacts.length
+  const n = (r.reload ? 1 : 0) + r.bindings.length + r.stale.length + r.unbound.length + r.artifacts.length + r.projects.length
   const tab = $('.tabs button[data-view="log"]')
   $('.badge', tab)?.remove()
   if (n) tab.append(el('span', { class: 'badge', 'aria-label': `${t('up.attention')} ${n}` }, String(n)))
@@ -1015,6 +1021,9 @@ async function loadAttention() {
       r.artifacts.map((a) => el('li', {},
         el('button', { class: 'row-link', onclick: () => { show('artifacts'); openArtifact(a.id) } }, el('span', { class: 't' }, a.title), el('span', { class: 'mono' }, a.path)),
         el('span', { class: 'chips' }, signalChips(a)))),
+      r.projects.map((p) => el('li', {},
+        el('button', { class: 'row-link', onclick: () => show('artifacts') }, el('span', { class: 't' }, p.title), el('span', { class: 'line' }, t('up.unregistered'))),
+        el('span', { class: 'chips' }, chip(String(p.unregistered_count), 'warn')))),
       r.unbound.map(unboundRow))
       : el('div', { class: 'empty compact' }, svg(ICONS.check), t('up.none')))
 }
@@ -1236,21 +1245,36 @@ function dragFile(a) {
 const signalChips = (a) => [a.status === 'modified' ? chip(t('as.modified'), 'outline') : null, ...a.signals.map((g) => chip(t(`as.${g}`), 'warn'))]
 
 let artList = []
+// Artifacts are grouped by the project that holds them; a project's header says where it keeps
+// drafts, builds and finals, and which final files are not registered yet.
 async function loadArtifacts(selectId) {
-  artList = await api('praxis_artifacts', { limit: 500 })
+  const [list, projs] = await Promise.all([api('praxis_artifacts', { limit: 500 }), api('praxis_projects')])
+  artList = list
   const search = el('input', { type: 'search', placeholder: t('art.search'), 'aria-label': t('art.search') })
   const rows = el('div')
+  const row = (a) => el('button', { class: 'item', 'data-id': a.id, draggable: 'true', ondragstart: dragFile(a), 'aria-current': a.id === selectId, onclick: () => openArtifact(a.id) },
+    svg(ICONS[MEDIUM_ICON[a.medium]] ?? ICONS.doc, 'glyph'),
+    el('span', { style: 'min-width:0' }, el('span', { class: 't' }, a.title), el('span', { class: 'id', title: a.path }, a.project_path ?? a.path)),
+    el('span', { class: 'chips' }, a.status === 'modified' ? el('span', { class: 'chip outline', title: t('as.modified'), 'aria-label': t('as.modified') }, svg(ICONS.refresh)) : null,
+      a.signals.map((g) => chip(t(`as.${g}`), 'warn')), chip(`v${a.version}`, 'mono')))
+  const layout = (p) => ['draft', 'build', 'final'].map((r) => `${t(`role.${r}`)} ${(p.layout[r] ?? []).join(', ') || '—'}`).join(' · ')
+  const group = (head, items) => el('section', { class: 'art-group' }, head, items)
   const draw = () => {
     const q = search.value.trim().toLowerCase()
     const shown = artList.filter((a) => !q || `${a.title} ${a.description ?? ''} ${a.path}`.toLowerCase().includes(q))
-    fill(rows, shown.length ? shown.map((a) => el('button', { class: 'item', draggable: 'true', ondragstart: dragFile(a), 'aria-current': a.id === selectId, onclick: () => openArtifact(a.id) },
-      svg(ICONS[MEDIUM_ICON[a.medium]] ?? ICONS.doc, 'glyph'),
-      el('span', { style: 'min-width:0' }, el('span', { class: 't' }, a.title), el('span', { class: 'id' }, a.path)),
-      el('span', { class: 'chips' }, a.status === 'modified' ? el('span', { class: 'chip outline', title: t('as.modified'), 'aria-label': t('as.modified') }, svg(ICONS.refresh)) : null,
-        a.signals.map((g) => chip(t(`as.${g}`), 'warn')), chip(`v${a.version}`, 'mono')))) : empty('inbox', t(artList.length ? 'art.noMatch' : 'art.none')))
+    const groups = projs.map((p) => {
+      const items = shown.filter((a) => a.project?.id === p.id)
+      if (q && !items.length) return null
+      const missing = p.unregistered.length ? el('details', { class: 'unreg' }, el('summary', {}, chip(t('art.unregistered', { n: p.unregistered.length }), 'warn')),
+        el('ul', {}, p.unregistered.map((f) => el('li', { class: 'mono' }, f)))) : null
+      return group(el('div', { class: 'art-group-head' }, el('span', { class: 't' }, p.title), el('span', { class: 'id', title: layout(p) }, p.root || '.'), missing), items.map(row))
+    })
+    const outside = shown.filter((a) => !a.project)
+    if (outside.length) groups.push(group(el('div', { class: 'art-group-head' }, el('span', { class: 't' }, t('art.outside'))), outside.map(row)))
+    fill(rows, groups.some(Boolean) ? groups : empty('inbox', t(artList.length ? 'art.noMatch' : 'art.none')))
   }
   search.addEventListener('input', draw)
-  fill($('#art-list'), artList.length ? el('div', { class: 'field', style: 'margin: 6px 6px 8px' }, svg(ICONS.search), search) : null, rows)
+  fill($('#art-list'), artList.length || projs.length ? el('div', { class: 'field', style: 'margin: 6px 6px 8px' }, svg(ICONS.search), search) : null, rows)
   draw()
   if (selectId) openArtifact(selectId)
   else if (!$('#art-split').classList.contains('focus')) fill($('#art-detail'), empty('inbox', t(artList.length ? 'art.pick' : 'art.none')))
@@ -1259,7 +1283,7 @@ async function loadArtifacts(selectId) {
 async function openArtifact(id) {
   const a = await api('praxis_artifact', { id })
   $('#art-split').classList.add('focus')
-  for (const x of document.querySelectorAll('#art-list .item')) x.setAttribute('aria-current', x.querySelector('.id')?.textContent === a.path)
+  for (const x of document.querySelectorAll('#art-list .item')) x.setAttribute('aria-current', x.dataset.id === a.id)
   const run = (action) => async () => {
     const r = await host(action, a.absolute)
     if (!r.ok) toast(t('art.failed') + (r.error || action), true)

@@ -7,6 +7,7 @@ import { fileURLToPath } from 'node:url'
 import { Kit, LAYERS, clip } from './kit.js'
 import { Materials } from './materials.js'
 import { Artifacts } from './artifacts.js'
+import { DELIVERED, Projects, TEMPLATES } from './projects.js'
 import { Collection, readJson } from './store.js'
 import { PRESET_FIELDS, presetId, validatePreset } from './presets.js'
 
@@ -34,12 +35,14 @@ export function createPraxis(options = {}) {
   const kit = () => new Kit(repo)
   const presets = new Collection(join(dataDir, 'presets.json'), join(dataDir, 'history.jsonl'))
   const artifacts = new Artifacts(repo, dataDir)
+  const projects = new Projects(repo, dataDir)
 
   return {
     repo,
     layers: LAYERS,
     materials,
     artifacts,
+    projects,
     kit,
 
     /** Resident entries plus the routes into each layer: what every task starts with. */
@@ -147,13 +150,19 @@ export function createPraxis(options = {}) {
       const bindingRefs = materials.listBindings()
         .filter((b) => read.has(b.source) && unitPaths.has(b.target.split('#')[0]))
         .map((b) => ({ id: b.id, revision: b.revision }))
-      const delivered = artifacts.map((a) => this.artifacts.prepare(a))
+      // A delivered file is recorded with its project: the location is part of the record.
+      const delivered = artifacts.map((a) => {
+        const item = this.artifacts.prepare(a)
+        const home = projects.of(item.path)
+        if (!home) throw new Error(`${item.path} is not inside a registered project; register its folder with praxis_project first`)
+        return { ...item, project: home.project.id }
+      })
       const presetRef = preset ? (() => { const p = this.preset(preset); if (!p) throw new Error(`unknown preset: ${preset}`); return { id: p.id, revision: p.revision, values: p.values } })() : undefined
       const at = new Date().toISOString()
       const id = `${at.slice(0, 10)}-${createHash('sha256').update(at + title).digest('hex').slice(0, 8)}`
       const artifactRefs = delivered.map((item) => {
         const { id: artifact, version, path, sha256 } = this.artifacts.register(item, { run: id, by })
-        return { artifact, version, path, sha256 }
+        return { artifact, version, path, sha256, project: item.project }
       })
       const run = { id, title: title.trim(), at, by, task_type, pipeline, preset: presetRef, overrides, units: unitRefs, bindings: bindingRefs, sources: sourceRefs, artifacts: artifactRefs, note }
       const path = join(dataDir, 'runs', `${id}.json`)
@@ -168,12 +177,12 @@ export function createPraxis(options = {}) {
      * unregistered bytes, missing), whether the run behind the latest version used something that has
      * changed since (basis_changed), and its signals: missing, needs_work (latest version's last verdict).
      */
-    artifactList({ query, medium, signal, include_removed = false, limit = 50 } = {}) {
+    artifactList({ query, medium, signal, project, include_removed = false, limit = 50 } = {}) {
       const staleRuns = new Set(this.stale().map((r) => r.run))
       const terms = (query ?? '').toLowerCase().split(/\s+/).filter(Boolean)
       return Object.entries(artifacts.store.all())
-        .map(([id, rec]) => summarize(id, rec, artifacts, staleRuns))
-        .filter((a) => (include_removed || a.state !== 'removed') && (!medium || a.medium === medium) && (!signal || a.signals.includes(signal) || (signal === 'basis_changed' && a.basis_changed))
+        .map(([id, rec]) => summarize(id, rec, artifacts, staleRuns, projects))
+        .filter((a) => (include_removed || a.state !== 'removed') && (!medium || a.medium === medium) && (!project || a.project?.id === project) && (!signal || a.signals.includes(signal) || (signal === 'basis_changed' && a.basis_changed))
           && terms.every((t) => `${a.title} ${a.description ?? ''} ${a.path}`.toLowerCase().includes(t)))
         .sort((a, b) => b.updated_at.localeCompare(a.updated_at))
         .slice(0, limit)
@@ -185,7 +194,7 @@ export function createPraxis(options = {}) {
       if (!rec) return undefined
       const stale = new Map(this.stale().map((r) => [r.run, r]))
       const runs = new Map(this.runs({ limit: 1000 }).map((r) => [r.id, r]))
-      const head = summarize(id, rec, artifacts, new Set(stale.keys()))
+      const head = summarize(id, rec, artifacts, new Set(stale.keys()), projects)
       return {
         ...head,
         versions: rec.versions.map((v, i) => {
@@ -199,6 +208,29 @@ export function createPraxis(options = {}) {
           }
         }),
       }
+    },
+
+    /**
+     * Projects with their layout, how many artifacts each holds, and the files in its final paths
+     * that no artifact records. With `path`, only the project holding that path.
+     */
+    projectList({ path, include_removed = false } = {}) {
+      const list = path ? [projects.of(projects.normalize(path))?.project].filter(Boolean) : projects.list({ include_removed })
+      const records = Object.values(artifacts.store.all()).filter((r) => r.state !== 'removed')
+      return list.map((p) => {
+        const held = records.map((r) => projects.of(r.path)).filter((h) => h?.project.id === p.id).map((h) => h.path)
+        const registered = new Set(held)
+        return { ...p, absolute: projects.absolute(p.root), artifacts: held.length, unregistered: p.state === 'removed' ? [] : projects.finals(p).filter((f) => !registered.has(f)) }
+      })
+    },
+
+    saveProject(args) {
+      const { id } = projects.save(args)
+      return this.projectList({ include_removed: true }).find((p) => p.id === id)
+    },
+
+    projectTemplates() {
+      return TEMPLATES
     },
 
     reviewArtifact(args) {
@@ -286,6 +318,8 @@ export function createPraxis(options = {}) {
         stale: this.stale(),
         unbound: materials.unboundCaptures(),
         artifacts: this.artifactList({ limit: 1000 }).filter((a) => a.signals.length),
+        projects: this.projectList().filter((p) => p.unregistered.length)
+          .map((p) => ({ id: p.id, title: p.title, root: p.root, unregistered: p.unregistered.slice(0, 20), unregistered_count: p.unregistered.length })),
         reload: this.reload(),
       }
     },
@@ -374,13 +408,16 @@ function collectionOf(repo, registry, s) {
   return { id: c.id, title, path: c.path, readme: relative(repo, readme), purpose: lede ? clip(lede.replace(/\[([^\]]+)\]\([^)]*\)/g, '$1').replace(/\s+/g, ' '), 240) : undefined }
 }
 
-function summarize(id, rec, artifacts, staleRuns) {
+function summarize(id, rec, artifacts, staleRuns, projects) {
   const latest = rec.versions.at(-1)
   const status = artifacts.status(rec)
   const review = rec.reviews.filter((r) => r.version === rec.versions.length).at(-1) ?? null
-  const signals = [status === 'missing' && 'missing', review?.verdict === 'needs-work' && 'needs_work'].filter(Boolean)
+  const home = projects.of(rec.path)
+  const role = home ? projects.role(home.project, home.path) : undefined
+  const signals = [status === 'missing' && 'missing', review?.verdict === 'needs-work' && 'needs_work', !DELIVERED.includes(role) && 'misplaced'].filter(Boolean)
   return {
     id, title: rec.title, description: rec.description, medium: rec.medium, path: rec.path, absolute: artifacts.absolute(rec.path),
+    project: home ? { id: home.project.id, title: home.project.title } : undefined, project_path: home?.path, role,
     version: rec.versions.length, sha256: latest.sha256, status, basis_changed: !!latest.run && staleRuns.has(latest.run), review, signals, state: rec.state,
     created_at: rec.created_at, updated_at: rec.reviews.at(-1)?.at > latest.at ? rec.reviews.at(-1).at : latest.at, revision: rec.revision,
   }

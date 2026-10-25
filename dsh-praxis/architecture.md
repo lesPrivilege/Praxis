@@ -1,6 +1,6 @@
 # Praxis 整合包：架构参考
 
-状态：设计提案，已由 [ADR-039](../docs/decisions/039-dsh-praxis-artifacts.md)裁决并实现；与 ADR 不一致处以 ADR 为准。本文提炼产品目的与建议边界，不新增已采纳 ADR，不冻结字段、界面布局或实现技术。执行入口见 [下一轮工单](work-order.md)；已有分层与对象定义继续以 [layers](layers.md)、[objects](objects.md)为准。
+状态：设计提案，已由 [ADR-039](../docs/decisions/039-dsh-praxis-artifacts.md)裁决并实现；与 ADR 不一致处以 ADR 为准。本文提炼产品目的与建议边界，不新增已采纳 ADR，不冻结字段、界面布局或实现技术。执行入口见 [产物工单](work-order-artifacts.md)；已有分层与对象定义继续以 [layers](layers.md)、[objects](objects.md)为准。
 
 ## 产品目的
 
