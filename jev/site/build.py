@@ -134,7 +134,8 @@ def fig_ecosystem():
         x = X(b)
         out.append(f'<line x1="{x:.1f}" x2="{x:.1f}" y1="{top - 8}" y2="{h - 30}" class="grid"/>')
         out.append(t(x, h - 12, f'{b:g}B', 'tick', 'middle'))
-    out.append(t(700, top - 14, '规模未公布', 'tick', 'middle'))
+    out.append(t(700, top - 14, '规模未公开', 'tick', 'middle'))
+    out.append(t((x0 + x1) / 2, top - 14, '参数量（对数刻度）', 'tick', 'middle'))
     out.append(f'<line x1="668" x2="668" y1="{top - 8}" y2="{h - 30}" class="rule"/>')
     y = top
     for kind, p in rows:
@@ -216,7 +217,7 @@ def fig_sag2():
     X = lambda v: 160 + v / 100 * 540
     out = ['<svg viewBox="0 0 760 210" role="img" aria-labelledby="sg-t sg-d" class="chart stepper-fig">',
            '<title id="sg-t">SAG2 在 MuSiQue 上的消融</title>',
-           '<desc id="sg-d">Recall@10：BM25 54.41；加 Jev 判断 67.93；按已选证据扩展一轮 83.36，两轮 86.62。同等判断次数的一次性 BM25 + JEV 为 69.82。</desc>']
+           '<desc id="sg-d">Recall@10：BM25 54.41；加 Jev 判断 67.93；按已选证据扩展一轮 83.36，两轮 86.62。同等判断次数的一次性 BM25 + Jev 为 69.82。</desc>']
     for v in (0, 50, 100):
         out += [f'<line x1="{X(v):.1f}" x2="{X(v):.1f}" y1="6" y2="170" class="grid"/>', t(X(v), 188, f'{v}', 'tick', 'middle')]
     for i, st in enumerate(s['steps']):
@@ -285,7 +286,7 @@ def data_table(key):
         e = data['ecosystem']
         rows = [(p['name'], LANE_NAME[p['lane']], f'约 {p["b"]:g}B', '开放' if p['open'] else '未开放或未写明') for p in e['points']]
         rows.append((e['range']['name'], LANE_NAME[e['range']['lane']], '随所接模型', '—'))
-        rows += [(p['name'], LANE_NAME[p['lane']], '未公布', '未开放' if p['lane'] != 'extract' else '未开放（称即将开放）') for p in e['undisclosed']]
+        rows += [(p['name'], LANE_NAME[p['lane']], '未公开', '未开放' if p['lane'] != 'extract' else '未开放（称即将开放）') for p in e['undisclosed']]
         return table(('实现', '路线', '参数量', '权重'), rows)
     if key == 'knowviq':
         return table(('模型', '可回答性 AUC', '0.75 阈值下隐藏的好答案'), [(m['name'], f'{m["auc"]:.3f}', f'{m["hidden"]}%') for m in data['knowviq']['models']])

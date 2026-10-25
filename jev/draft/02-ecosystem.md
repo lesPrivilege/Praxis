@@ -9,7 +9,7 @@ Jev 发布后五周内，同一种调用形状已有十几个实现：有的开�
 | encoder 加 decision head | 双向 encoder 读入 state 与问题，一个决策头一次前向给出全部问题的分布 | Laya、Open-Jev DeBERTa、GLiNER2.5-Decide、Von | 几亿参数，T4 或 CPU 上几十毫秒；零样本弱，需要按任务 fine-tune；上下文 512 到 8k |
 | LLM backbone 加 head 或 LoRA | 冻结或后训练一个 Qwen 等 LLM，接决策头或 LoRA 适配器 | Kev、Clef、Perplexity Decider、Liquid d1-3B、RSI-Jev、JevAny、NanoJev | 0.6B 到 27B；零样本能力接近 Jev；27B 需要 80 GB 级 GPU |
 | 包装任意 LLM 的 logits | 不加新头，读 LLM 在答案 token 上的 next-token logits | Simple Jev（Featherless） | 换一个 HF 模型即可；概率是 token 分布，不是专门校准过的输出 |
-| 先快后想（thinking） | 先给一遍快速答案，领先答案不确定时追加推理再并入概率 | Fastino GLiDE | 难题更准，单次耗时不固定；冷启动要等 |
+| 按需追加推理（thinking） | 先给一遍快速答案，领先答案不确定时追加推理再并入概率 | Fastino GLiDE | 难题更准，单次耗时不固定；冷启动要等 |
 | 结构化抽取 | 不在固定选项里选，而是填出带类型的字段：数值、日期、时长、列表、估计、预测 | Cloudflare Clairic（预览） | 2026-10-19 发布，权重“即将开放”，大小与授权未公布 |
 
 〔B-01, B-06, B-11, B-12, B-16, B-24, B-30, B-32〕
