@@ -1,13 +1,12 @@
 # 控制面
 
-单个离线 HTML：[index.html](index.html)，无外部依赖，跟随系统明暗，在 DSH 侧栏宽度下也能用。由 [http.js](../adapters/http.js)提供，DSH 插件挂在 `/praxis/`，单独运行用 `node dsh-praxis/adapters/cli.js serve`。
+单个离线 HTML：[index.html](index.html)，无外部依赖。配色、圆角、发丝线和控件形状取 DeepSeek Harness 客户端的 design-platform 别名 token，嵌在 DSH 侧栏里跟随 DSH 的明暗，单独打开时跟随系统；侧栏宽度下单栏，目录与预设先列表、点开后进详情。由 [http.js](../adapters/http.js)提供，DSH 插件挂在 `/praxis/`，单独运行用 `node dsh-praxis/adapters/cli.js serve`。
 
 | 页 | 做什么 |
 |---|---|
-| 目录 | 按层浏览单元，读正文；每个单元下的挂载一行一条：名称、description、启用、收藏、删除（可恢复）；展开后改说明、取用题解、优先级与 tag，记录 review，查看来源条目；“添加来源”搜索后挂到当前单元 |
+| 目录 | 单元列表：按层分组或按最近更新、来源数排序，每行是标题、description、来源数与最近改动时间。点开一个单元看它的 description、来源卡片和维护筛选（未启用、未写说明、未 review、待改）；卡片展开后启用、收藏、重取来源、删除（可恢复），改说明、取用题解、优先级与 tag，记录 review，查看来源条目。正文只在需要时展开。“来源”按钮登记新来源（同一 URL 返回已有条目），单元页的“来源”把已登记的来源挂上来 |
 | 任务 | 选任务类型、流水线与预设，列出要读的单元（附理由）、可取用的素材、预设的值与验收 |
 | 预设 | 按流水线维护默认配置：video 的 TTS provider、音色、语言、语速、画幅、风格、方向；html 的模板、明暗、打印与离线要求；每条流水线可设一个默认 |
-| 收录 | 登记新来源，同一 URL 返回已有条目 |
 | 记录 | 可能要重看的交付、运行记录、维护记录 |
 
 页面上的每个操作都调用 agent 用的同一个工具；修改带 revision，被别人先改了会提示并载入最新版本。

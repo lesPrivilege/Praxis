@@ -43,7 +43,9 @@ export function createPraxis(options = {}) {
     },
 
     units({ layer } = {}) {
-      return kit().list(layer).map(brief)
+      const k = kit()
+      const updated = k.updatedAt()
+      return k.list(layer).map((u) => ({ ...brief(u), updated_at: updated.get(u.path) ?? null }))
     },
 
     unit(ref) {

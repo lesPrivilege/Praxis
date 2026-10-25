@@ -1,5 +1,6 @@
 // Kit units are the Markdown pages of each layer. The index is derived on read;
 // the pages are the only editable source.
+import { execFileSync } from 'node:child_process'
 import { createHash } from 'node:crypto'
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs'
 import { join, posix, relative } from 'node:path'
@@ -109,6 +110,21 @@ export class Kit {
 
   list(layer) {
     return [...this.units.values()].filter((u) => !layer || u.layer === layer)
+  }
+
+  /** Last commit time per unit path, from one git log pass; empty outside a git checkout. */
+  updatedAt() {
+    if (this.updated) return this.updated
+    this.updated = new Map()
+    try {
+      const out = execFileSync('git', ['log', '--format=%x00%cI', '--name-only', '--', ...Object.values(LAYERS)], { cwd: this.repo, encoding: 'utf8', maxBuffer: 64 << 20 })
+      let at = null
+      for (const line of out.split('\n')) {
+        if (line.startsWith('\0')) at = line.slice(1)
+        else if (line && !this.updated.has(line)) this.updated.set(line, at)
+      }
+    } catch {}
+    return this.updated
   }
 
   /** Accept a unit id, a repo path (optionally with #anchor) or a stable grammar ID. */

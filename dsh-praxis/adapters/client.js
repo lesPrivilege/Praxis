@@ -9,9 +9,11 @@ window.__ModuleLoader__.load({
     const TAB = 'dsh-praxis/control-plane'
 
     function Icon() {
-      return React.createElement('svg', { viewBox: '0 0 48 48', width: 48, height: 48, fill: 'none', stroke: 'currentColor', strokeWidth: 2, 'aria-hidden': true },
-        React.createElement('rect', { x: 8, y: 10, width: 32, height: 28, rx: 3 }),
-        React.createElement('path', { d: 'M8 18h32M18 18v20' }))
+      // Same mark as the control plane's header: three layers, shortening downward.
+      return React.createElement('svg', { viewBox: '0 0 24 24', width: 48, height: 48, fill: 'currentColor', 'aria-hidden': true },
+        React.createElement('rect', { x: 4, y: 4, width: 16, height: 3.2, rx: 1.6 }),
+        React.createElement('rect', { x: 4, y: 9.6, width: 12, height: 3.2, rx: 1.6, opacity: 0.7 }),
+        React.createElement('rect', { x: 4, y: 15.2, width: 8, height: 3.2, rx: 1.6, opacity: 0.45 }))
     }
 
     function Body() {
