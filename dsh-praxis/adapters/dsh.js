@@ -1,12 +1,12 @@
-// DSH plugin (cordis): registers the Praxis tools natively and puts the resident
-// Kit entries into the system prompt. Enable with
+// DSH plugin (cordis): registers the Praxis tools natively, adds the resident Kit entries as a
+// system-prompt section, and serves the control plane on two exact Connection routes. Enable with
 //   dsh plugin --profile <profile> add link:<path to dsh-praxis>
 import { createPraxis } from '../core/index.js'
 import { TOOLS, callTool, inputSchema } from './tools.js'
-import { createHandler } from './http.js'
+import { CALL_PATH, PAGE_PATH, praxisFetch } from './http.js'
 
 export const name = 'praxis'
-export const inject = { tools: { required: true }, webServer: { required: false } }
+export const inject = { tools: { required: true }, connection: { required: false }, systemPrompt: { required: false } }
 
 export function apply(ctx, config = {}) {
   const praxis = createPraxis({ root: config.root })
@@ -20,25 +20,29 @@ export function apply(ctx, config = {}) {
         schema: {},
         render: (_args, value) => [{ type: 'text', text: JSON.stringify(value) }],
       },
+      // Reads may run beside each other; writes keep the default serial order.
+      ...(tool.writes ? {} : { isConcurrencySafe: () => true }),
       async execute(args) {
-        return await callTool(praxis, tool.name, args, 'dsh')
+        const value = await callTool(praxis, tool.name, args, 'dsh')
+        // A lookup miss is a tool error, not a successful value.
+        if (value && typeof value === 'object' && Object.keys(value).length === 1 && typeof value.error === 'string') throw new Error(value.error)
+        return value
       },
     })
   }
 
-  // Control plane at http://<dsh host>:<port>/praxis/ when the host has a web server.
-  const webServer = ctx.webServer
-  if (webServer) {
-    const handler = createHandler(praxis, { prefix: '/praxis', caller: 'dsh-ui' })
-    ctx.effect(() => webServer.register({ kind: 'prefix', path: '/praxis', handler }))
+  // The control plane rides DSH's authenticated /api channel, on Web and Desktop alike.
+  const connection = ctx.connection
+  if (connection) {
+    const fetch = praxisFetch(praxis, 'dsh-ui')
+    ctx.effect(() => connection.fetch.register({ path: PAGE_PATH, methods: ['GET', 'HEAD'], requestBody: 'buffered', fetch }), 'dsh-praxis: page route')
+    ctx.effect(() => connection.fetch.register({ path: CALL_PATH, methods: ['POST'], requestBody: 'buffered', fetch }), 'dsh-praxis: call route')
   }
 
-  if (config.prompt === false) return
-  ctx.on('system-prompt/assemble', async (_assembly, _context, next) => {
-    const assembled = await next()
-    assembled.sections.push({ name: 'praxis:entry', text: entryText(praxis) })
-    return assembled
-  })
+  const systemPrompt = ctx.systemPrompt
+  if (config.prompt === false || !systemPrompt) return
+  // Read at each assembly, so Kit edits reach the next request without a restart.
+  ctx.effect(() => systemPrompt.section({ name: 'praxis:entry', order: 9000, interpolate: false, text: () => entryText(praxis) }), 'dsh-praxis: prompt section')
 }
 
 // Kept short: it is sent with every request. Everything else is read through the tools.

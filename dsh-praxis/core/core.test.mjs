@@ -172,6 +172,26 @@ test('refresh saves a versioned snapshot and skips unchanged bytes', async () =>
   assert.equal(intake.source_snapshots.length, 2)
 })
 
+test('upkeep lists only signals: needs-work, changed sources, stale runs, unbound captures', async () => {
+  const { p } = setup()
+  const signals = () => p.materials.binding(BIND).signals
+  assert.deepEqual(signals(), [])
+  assert.deepEqual(p.upkeep().bindings, [])
+  p.materials.review(BIND, { verdict: 'accurate', by: 'test' })
+  let body = 'v1'
+  const fetchImpl = async () => new Response(body, { headers: { 'content-type': 'text/html' } })
+  await p.materials.refresh(SRC, { fetchImpl })
+  body = 'v2'
+  await p.materials.refresh(SRC, { fetchImpl })
+  assert.deepEqual(signals(), ['changed'])
+  p.materials.review(BIND, { verdict: 'needs-work', by: 'test' })
+  assert.deepEqual(signals(), ['needs_work'])
+  p.materials.capture({ url: 'https://example.org/new', title: '新来源', summary: '概要', read_scope: '读过', limits: '边界', revisit_when: '修订时' }, { by: 'test' })
+  const up = p.upkeep()
+  assert.deepEqual(up.bindings.map((b) => [b.id, b.unit, b.signals]), [[BIND, 'design/controls', ['needs_work']]])
+  assert.deepEqual(up.unbound.map((s) => s.title), ['新来源'])
+})
+
 test('presets: validated per pipeline, one default, recorded by runs', () => {
   const { p } = setup()
   assert.throws(() => p.savePreset({ pipeline: 'video', title: '旁白', values: { tts_voice: 'x' } }), /tts_provider is required/)

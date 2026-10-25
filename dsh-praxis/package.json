@@ -2,7 +2,7 @@
   "name": "dsh-praxis",
   "version": "0.1.0",
   "private": true,
-  "description": "Praxis 个人 FDE 工作 Kit：分层体例、来源与挂载维护、任务取用与运行记录；DSH 插件、MCP 服务与命令行共用一套操作。",
+  "description": "Praxis: a bundle of working methods (Task, Writing, Design, Publish) with their sources, served to agents as tools and kept in order from a DSH sidebar panel.",
   "type": "module",
   "main": "adapters/dsh.js",
   "exports": {
@@ -10,7 +10,8 @@
     "./core": "./core/index.js",
     "./tools": "./adapters/tools.js",
     "./client": "./adapters/client.js",
-    "./package.json": "./package.json"
+    "./package.json": "./package.json",
+    "./locale/*.json": "./locale/*.json"
   },
   "bin": {
     "praxis": "adapters/cli.js",
@@ -32,7 +33,8 @@
     },
     "client": {
       "inject": [
-        "@deepseek-ai/dsh-client-ui-sidebar-right"
+        "@deepseek-ai/dsh-client-ui-sidebar-right",
+        "@deepseek-ai/dsh-client-locale"
       ],
       "platform": "web"
     }
@@ -41,7 +43,11 @@
     "core/*.js",
     "adapters/*.js",
     "ui/",
+    "locale/*.json",
+    "docs",
+    "icon.svg",
     "cordis.patch.yml",
     "README.md"
-  ]
+  ],
+  "icon": "./icon.svg"
 }

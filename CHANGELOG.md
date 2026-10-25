@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-10-25 · dsh-praxis 控制面：渐进披露、轻维护、中英界面
+
+- [控制面](dsh-praxis/ui/README.md)的目录改成 层 → 领域 → 单元 的渐进披露，加上“Kit 之外的挂载”按路径展开；单元页以来源卡片为主，正文按需展开。界面对齐 DSH 客户端的 token 与控件形状，嵌入时跟随 DSH 的明暗与语言。
+- 维护只列信号：新增 `praxis_upkeep`（待改、来源已变的挂载，过期交付，未挂载的新登记），放在“记录”顶部，通常为空；未写说明、未 review 不再计数。取舍补记在 [ADR-038](docs/decisions/038-dsh-praxis-control-plane.md#补充目录维护与语言2026-10-25)。
+- 单元带最近一次提交时间（一次 `git log`）。界面文字中英两套，Kit 与来源内容保留原语言；DSH 侧栏引导卡随语言切换。
+- 对齐 DSH 官方插件文档：控制面改走 DSH Connection 的两条精确路由（`/api/praxis`、`/api/praxis.call`），桌面应用里也能打开，且受 DSH 会话认证保护；入口段改用 `systemPrompt.section`；侧栏标签 `keepMounted`、引导卡中英词典；补插件展示信息与用户文档 [DETAIL](dsh-praxis/docs/DETAIL.zh.md)。未做：schemastery `Config`、发布。
+- `node --test` 16 项、仓库检查通过；在本机 DSH web profile 里核对认证、侧栏、数据读写、主题与语言切换，profile 已恢复。桌面应用没有重启验证；没有真实任务里的使用，没有他人读过界面。
+
 ## 2026-10-23 · Jev 专章
 
 - 新增 [jev](jev/README.md)：Jev 与 System One 决策模型的快照（2026-10-23），中文底稿七章加两个附录、单文件网页（两处步进运动）、五条线 236 个来源与 288 条主张的登记。材料与产物都在该目录，原 Chat 按用户要求存于 `jev/research/inputs/`，没有进 `vault/archive/chat`。

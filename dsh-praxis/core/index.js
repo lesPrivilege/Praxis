@@ -204,6 +204,20 @@ export function createPraxis(options = {}) {
       }).filter((r) => r.units.length || r.bindings.length || r.preset)
     },
 
+    /**
+     * What needs someone now, across the Kit and outside targets: bindings with a signal, runs whose
+     * units or bindings changed after delivery, and captured sources no unit binds yet. Usually empty.
+     */
+    upkeep() {
+      const units = new Map(kit().list().map((u) => [u.path, u.id]))
+      return {
+        bindings: materials.listBindings().filter((b) => b.signals.length)
+          .map((b) => ({ id: b.id, title: b.title, target: b.target, unit: units.get(b.target.split('#')[0]) ?? null, signals: b.signals, revision: b.revision })),
+        stale: this.stale(),
+        unbound: materials.unboundCaptures(),
+      }
+    },
+
     history({ limit = 50 } = {}) {
       const path = join(dataDir, 'history.jsonl')
       if (!existsSync(path)) return []

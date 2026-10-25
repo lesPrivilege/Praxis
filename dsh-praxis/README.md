@@ -6,6 +6,7 @@
 
 | 要做什么 | 读哪里 |
 |---|---|
+| 第一次用，想知道它是什么、在 DSH 里怎么用 | [用户说明](docs/DETAIL.zh.md)（[English](docs/DETAIL.md)），也是 DSH 插件详情页 |
 | 做一件内容表达任务 | [Kit 入口](kit/README.md)，从 Task 开始；agent 用 `praxis_resolve` |
 | 浏览、维护来源挂载与预设 | [控制面](ui/README.md)：DSH 右侧栏“Praxis”，或 `node dsh-praxis/adapters/cli.js serve` |
 | 把插件接进 DSH 或别的 agent | [Adapters](adapters/README.md) |

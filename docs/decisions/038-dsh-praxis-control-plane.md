@@ -32,3 +32,13 @@
 - Kit 单元本身的 description review：目前 review 只在挂载上。
 - MCP 的 resources 与 prompts。
 - 没有对照，没有真实任务里的使用证据。
+
+## 补充：目录、维护与语言（2026-10-25）
+
+- **目录按层 → 领域 → 单元渐进披露。** 每一级只给 description 与计数，正文按需展开；挂在 Kit 之外的来源（目前 428 条在 `books/saas-engineering`）按路径逐级展开。层名 Task、Writing、Design、Publish 不做顶层标签：进门的人带着任务，层是规则的归属。
+- **维护只列信号，不记账。** 挂载的信号只有两种：review 结论为待改、来源在上次 review 后变了。未写说明、未 review、未启用是默认状态，不算缺口、不计数。`praxis_upkeep` 汇总有信号的挂载、过期交付和还没挂上的新登记，通常为空；控制面把它放在“记录”顶部，有事时标签显示数字。一版按领域与缺口画矩阵的维护面被否：523 条“未写说明”只是另一本算不清的账。
+- **界面中英两套，内容保留原语言。** 嵌在 DSH 里跟随 DSH 的 `<html lang>` 与明暗，单独打开时跟随系统并可切换；Kit 正文、来源标题、说明与摘要不翻译。层名作为 Kit 术语两种语言都用英文。
+- **对齐 DSH 官方插件文档。** 原先控制面挂在 `webServer` 的 `/praxis/` 前缀路由上：桌面应用的 Host 关掉了 webserver，这条路由在桌面里根本不存在；Web 上它又落在 DSH 的会话认证之外。改为在 `ctx.connection.fetch` 上注册两条精确路由（`GET /api/praxis`、`POST /api/praxis.call`），桌面与 Web 都由 DSH 做 Host/Origin 检查和会话认证，未登录 401。其余对齐：入口段改用 `ctx.systemPrompt.section`（文字每次组装时读取）；客户端引导卡经 `ctx.locale` 的中英词典，标签 `keepMounted`；嵌入时直接读宿主的 `--dsw-alias-*` token；只读工具标 `isConcurrencySafe`，查不到时抛错成为工具错误；补插件展示信息（`locale/en.json`、`zh.json`、`docs/DETAIL*.md`、`icon.svg`）。依据：DSH `docs/subsystems/sidebar-right.md`、`docs/cookbook/adding-a-package.md`（plugin display metadata）、`packages/client/connection/README.md`、`packages/client/locale/README.md`、`packages/core/system-prompt/README.md`，以及桌面 Host 的 `/api/*` 分派代码。
+- **没有对齐的。** schemastery `Config` 需要 `@deepseek-ai/schemastery` 依赖，没有加，`config.root` 与 `config.prompt` 仍无表单；`private: true` 保留，不发布；悬停样式没有移到 `@media (hover:hover)`；工具说明仍是中文。
+- **在本机 DSH 里验证。** 临时把插件链进 web profile，`dsh --profile web` 下核对：两条路由未登录 401、旧 `/praxis/` 404；登录后侧栏引导卡、标签页、数据读写、宿主 token、明暗与语言切换都正常。之后用 `dsh plugin remove` 移除并按备份恢复 profile 文件。桌面应用本身没有重启验证。
+

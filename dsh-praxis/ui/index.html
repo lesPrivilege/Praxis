@@ -170,14 +170,12 @@ pre.md { white-space: pre-wrap; font: 12px/1.65 var(--mono); padding: 14px 16px;
 .h .count { margin-left: auto; }
 .chips { display: flex; gap: 4px; flex-wrap: wrap; }
 
-/* catalog: a settings-style list of units; a unit page holds its description, its source cards and their upkeep */
-.pages { max-width: 920px; margin: 0 auto; }
-.pages.focus > .list-pane, .pages:not(.focus) > .main-pane { display: none; }
+/* catalog: a settings-style list of units; a unit page holds its description and its source cards */
 .page-head { display: flex; align-items: center; gap: 10px 14px; flex-wrap: wrap; padding: 6px 4px 12px; }
 .page-head h1 { margin: 0; font-size: 22px; font-weight: 600; letter-spacing: -.01em; }
 .page-head .tools { display: flex; align-items: center; gap: 6px; flex: 1 1 280px; justify-content: flex-end; }
-.page-head .field { flex: 1; max-width: 300px; }
-.sort { display: inline-flex; gap: 4px; width: auto; padding: 0 8px; font-size: 12px; }
+.page-head .field { flex: 1; min-width: 160px; max-width: 300px; }
+.sort { display: inline-flex; white-space: nowrap; gap: 4px; width: auto; padding: 0 8px; font-size: 12px; }
 .group-block + .group-block { margin-top: 12px; }
 .group-toggle { display: flex; align-items: center; gap: 6px; border: 0; background: none; padding: 6px 4px 4px; font-size: 13px; font-weight: 500; cursor: pointer; }
 .group-toggle svg { width: 12px; height: 12px; color: var(--faint); transform: rotate(90deg); transition: transform .15s var(--ease); }
@@ -206,7 +204,7 @@ pre.md { white-space: pre-wrap; font: 12px/1.65 var(--mono); padding: 14px 16px;
 .hero .sub { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 3px; color: var(--faint); font-size: 11px; }
 .hero-actions { display: flex; align-items: center; gap: 6px; }
 .lede { margin: 14px 4px 0; max-width: 72ch; color: var(--muted); line-height: 1.65; }
-#unit pre.md { margin: 12px 4px 0; border: .5px solid var(--l3); border-radius: 12px; }
+#cat-body pre.md { margin: 12px 4px 0; border: .5px solid var(--l3); border-radius: 12px; }
 .attach { margin: 14px 4px 0; border: .5px solid var(--l3); border-radius: 12px; background: var(--layer); overflow: hidden; }
 .attach-bar { display: flex; gap: 6px; align-items: center; padding: 8px; }
 .attach-bar .field { flex: 1; }
@@ -214,9 +212,9 @@ pre.md { white-space: pre-wrap; font: 12px/1.65 var(--mono); padding: 14px 16px;
 .search-results li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 8px 12px; border-top: .5px solid var(--l2); }
 .search-results .name { display: flex; align-items: center; gap: 6px; font-weight: 500; }
 .search-results .line { margin-top: 2px; color: var(--muted); font-size: 12px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-.upkeep { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin: 22px 4px 10px; }
-.upkeep h3 { display: flex; align-items: center; gap: 6px; margin: 0 6px 0 0; font-size: 15px; font-weight: 600; }
-.upkeep .inline { margin-left: auto; }
+.sources-bar { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin: 22px 4px 10px; }
+.sources-bar h3 { display: flex; align-items: center; gap: 6px; margin: 0 6px 0 0; font-size: 15px; font-weight: 600; }
+.sources-bar .inline { margin-left: auto; }
 .pill { display: inline-flex; align-items: center; gap: 5px; height: 24px; padding: 0 9px; border: 0; border-radius: 12px; corner-shape: round; background: var(--platform); color: var(--muted); font-size: 12px; cursor: pointer; }
 .pill b { font: 500 11px var(--mono); color: var(--faint); }
 .pill:hover { background: var(--hover); }
@@ -243,6 +241,52 @@ pre.md { white-space: pre-wrap; font: 12px/1.65 var(--mono); padding: 14px 16px;
 .card.open .detail { display: block; }
 .card-controls { display: flex; align-items: center; gap: 2px; }
 .card-controls .grow { flex: 1; }
+
+/* catalog pages: breadcrumb head, layer and target cards, folder rows */
+.pages { max-width: 920px; margin: 0 auto; }
+.title-block { flex: 1 1 280px; min-width: 0; }
+.kit-lede { margin: 2px 0 0; color: var(--muted); font-size: 12px; max-width: 60ch; }
+.crumbs { display: flex; align-items: center; gap: 4px; min-width: 0; flex: 1 1 240px; overflow: hidden; white-space: nowrap; font-size: 13px; }
+.crumbs button { border: 0; background: none; padding: 2px 6px; border-radius: 8px; color: var(--muted); cursor: pointer; overflow: hidden; text-overflow: ellipsis; max-width: 220px; }
+.crumbs button:hover { background: var(--hover); color: var(--text); }
+.crumbs .sep { color: var(--dimmed); }
+.crumbs .here { padding: 2px 6px; font-weight: 500; overflow: hidden; text-overflow: ellipsis; }
+.section-title { display: flex; align-items: center; gap: 6px; margin: 22px 4px 8px; font-size: 15px; font-weight: 600; }
+.nav-card { display: flex; text-align: left; font: inherit; color: inherit; cursor: pointer; }
+.nav-card > span { display: flex; }
+.card-top { align-items: center; gap: 10px; }
+.card-top .card-title { font-size: 15px; }
+.card .go { width: 14px; height: 14px; color: var(--faint); margin-left: auto; flex: none; }
+.nav-card .card-desc { display: -webkit-box; }
+.mix { gap: 2px; height: 4px; margin-top: 2px; border-radius: 2px; overflow: hidden; }
+.mix i { display: block; min-width: 3px; background: var(--l4); }
+.mix i:nth-child(2n) { background: var(--l3); }
+.tile.stack { box-shadow: inset 0 0 0 .5px var(--l4), 3px 3px 0 -.5px var(--layer), 3px 3px 0 0 var(--l3); }
+.unit-row .sub.mono { font-size: 11px; color: var(--faint); }
+.unit-row .aside .chip.warn svg { width: 11px; height: 11px; }
+.pill.alert b { color: var(--warn-label); }
+.chip.jump { border: 0; cursor: pointer; }
+.chip.jump:hover { background: var(--hover); color: var(--text); }
+.tabs .badge { min-width: 16px; height: 16px; padding: 0 4px; border-radius: 8px; background: var(--warn); color: #fff; font: 600 10px/16px var(--mono); text-align: center; }
+.lang { width: auto; padding: 0 6px; gap: 4px; display: inline-flex; font-size: 11px; }
+.lang svg { width: 14px; height: 14px; }
+
+/* attention list in the log view */
+.row-link { display: grid; grid-template-columns: 14px minmax(0, 1fr); column-gap: 8px; align-items: center; width: 100%; padding: 4px; border: 0; border-radius: 8px; background: none; text-align: left; cursor: pointer; }
+.row-link:hover { background: var(--hover); }
+.row-link .t { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 13px; }
+.row-link .mono { grid-column: 2; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 10.5px; color: var(--faint); }
+.ulist .row-link { grid-template-columns: minmax(0, 1fr); }
+.ulist .row-link .mono { grid-column: 1; }
+.ulist.boxed { margin: 0 4px; padding: 4px; border: .5px solid var(--l3); border-radius: 14px; background: var(--layer); }
+.ulist.boxed li { margin: 0; }
+.ulist .name { display: flex; align-items: center; gap: 6px; font-weight: 500; }
+.ulist .line { display: block; margin-top: 2px; color: var(--muted); font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.attach-to { display: flex; gap: 6px; align-items: center; }
+.attach-to input { width: 180px; }
+.hint { margin: 10px 8px 0; }
+.empty.compact { padding: 8px 0 2px; grid-auto-flow: column; justify-content: start; gap: 6px; }
+.empty.compact svg { width: 16px; height: 16px; }
 
 /* task */
 .opts { display: grid; gap: 2px; margin: 0 -4px; }
@@ -333,8 +377,16 @@ pre.md { white-space: pre-wrap; font: 12px/1.65 var(--mono); padding: 14px 16px;
   .tile.lg { width: 40px; height: 40px; border-radius: 11px; }
   .hero h2 { font-size: 17px; line-height: 24px; }
   .hero-actions { grid-column: 1 / -1; }
-  .lede, .upkeep, .attach, #unit pre.md { margin-left: 10px; margin-right: 10px; }
+  .lede, .sources-bar, .attach, #cat-body pre.md { margin-left: 10px; margin-right: 10px; }
   .cards { grid-template-columns: minmax(0, 1fr); padding: 0 10px 16px; }
+  #cat-body > .section-title { margin-left: 10px; margin-right: 10px; }
+  .ulist li { grid-template-columns: minmax(0, 1fr); }
+  .ulist .chips { justify-content: flex-start; }
+  .crumbs { flex: 1 1 100%; order: 0; }
+  .crumbs button { max-width: 110px; }
+  .page-head .tools { flex: 1 1 100%; }
+  .page-head .field { max-width: none; }
+
   .card { padding: 12px 14px; border-radius: 14px; }
   .timeline li { grid-template-columns: 10px minmax(0, 1fr); }
   .timeline li::before { left: 4.5px; }
@@ -343,10 +395,33 @@ pre.md { white-space: pre-wrap; font: 12px/1.65 var(--mono); padding: 14px 16px;
 </style>
 <script>
 // Inside DSH the pane is a same-origin iframe: follow the host's theme switch.
+// Embedded, the host's --dsw-alias-* values are read live and mapped onto this page's names, so a
+// host palette change reaches the panel; the literals below are the standalone fallback.
+const HOST_TOKENS = {
+  '--bg': 'bg-base', '--layer': 'bg-layer-1', '--platform': 'bg-module-platform', '--active-item': 'button-ghost-active-fill',
+  '--hover': 'interactive-bg-hover', '--press': 'interactive-bg-active',
+  '--l1': 'border-l1', '--l2': 'border-l2', '--l3': 'border-l3', '--l4': 'border-l4',
+  '--text': 'label-primary', '--muted': 'label-secondary', '--faint': 'label-tertiary', '--dimmed': 'label-dimmed',
+  '--primary': 'brand-primary', '--primary-hover': 'button-primary-hover', '--on-primary': 'label-primary-foreground',
+  '--accent': 'state-business-primary', '--ok': 'state-success-primary', '--warn': 'state-warn-primary', '--warn-label': 'state-warn-label', '--danger': 'state-error-primary',
+  '--toast': 'button-contrast-fill', '--on-toast': 'label-primary-inverted',
+}
 function syncTheme() {
+  const root = document.documentElement
   let dark = matchMedia('(prefers-color-scheme: dark)').matches
-  try { if (parent !== window) { dark = parent.document.body.hasAttribute('data-ds-dark-theme'); document.documentElement.classList.add('embedded') } } catch {}
-  document.documentElement.dataset.theme = dark ? 'dark' : 'light'
+  try {
+    if (parent !== window) {
+      dark = parent.document.body.hasAttribute('data-ds-dark-theme')
+      root.classList.add('embedded')
+      const host = parent.getComputedStyle(parent.document.body)
+      for (const [mine, alias] of Object.entries(HOST_TOKENS)) {
+        const value = host.getPropertyValue(`--dsw-alias-${alias}`).trim()
+        if (value) root.style.setProperty(mine, value)
+        else root.style.removeProperty(mine)
+      }
+    }
+  } catch {}
+  root.dataset.theme = dark ? 'dark' : 'light'
 }
 syncTheme()
 matchMedia('(prefers-color-scheme: dark)').addEventListener('change', syncTheme)
@@ -356,84 +431,119 @@ try { if (parent !== window) new MutationObserver(syncTheme).observe(parent.docu
 <body>
 <header class="top">
   <div class="brand" id="brand"></div>
-  <nav class="tabs" role="tablist" aria-label="视图">
-    <button role="tab" data-view="catalog" aria-selected="true" data-icon="layers">目录</button>
-    <button role="tab" data-view="task" aria-selected="false" data-icon="flow">任务</button>
-    <button role="tab" data-view="presets" aria-selected="false" data-icon="sliders">预设</button>
-    <button role="tab" data-view="log" aria-selected="false" data-icon="activity">记录</button>
-  </nav>
+  <nav class="tabs" role="tablist" id="tabs" aria-label="Views"></nav>
   <div class="stats" id="stats"></div>
 </header>
 <main>
-  <section class="view on" id="catalog">
-    <div class="pages" id="catalog-split">
-      <div class="list-pane">
-        <div class="page-head">
-          <h1>Kit</h1>
-          <div class="seg" id="layer-seg"></div>
-          <div class="tools">
-            <div class="field" id="tree-search"><input id="tree-filter" placeholder="搜索单元" aria-label="搜索单元"></div>
-            <button class="icon sort" id="sort" title="切换排序"></button>
-            <button class="btn primary" id="add-source">来源</button>
-          </div>
-        </div>
-        <div id="unit-list"></div>
-      </div>
-      <div class="main-pane" id="unit"></div>
-    </div>
-  </section>
+  <section class="view on" id="catalog"><div class="pages"><div class="page-head" id="cat-head"></div><div id="cat-body"></div></div></section>
   <section class="view" id="task">
-    <div class="split">
-      <div class="panel side section">
-        <div class="h">任务类型</div>
-        <div class="opts" id="task-types"></div>
-        <div class="label">流水线</div>
-        <div class="seg" id="task-pipeline"></div>
-        <label for="task-preset">预设</label>
-        <select id="task-preset"><option value="">流水线默认</option></select>
-      </div>
-      <div class="panel main-pane" id="task-out"></div>
-    </div>
+    <div class="split"><div class="panel side section" id="task-side"></div><div class="panel main-pane" id="task-out"></div></div>
   </section>
   <section class="view" id="presets">
-    <div class="split drill" id="preset-split">
-      <div class="panel side" id="preset-list"></div>
-      <div class="panel main-pane" id="preset-edit"></div>
-    </div>
+    <div class="split drill" id="preset-split"><div class="panel side" id="preset-list"></div><div class="panel main-pane" id="preset-edit"></div></div>
   </section>
-  <section class="view" id="capture">
-    <form class="panel" id="cap-form" style="max-width: 760px; margin: 0 auto">
-      <button class="btn ghost" type="button" id="cap-back" style="margin: 8px 8px 0">Kit</button>
-      <div class="head"><div class="crumb" id="cap-crumb"></div><h2>登记来源</h2><p class="desc">同一 URL 只登记一次；登记后在目录里挂到单元。</p></div>
-      <div class="section">
-        <div class="grid2">
-          <div><label for="cap-url">URL</label><input id="cap-url" name="url" type="url" placeholder="https://"></div>
-          <div><label for="cap-locator">非 URL 定位</label><input id="cap-locator" name="locator" placeholder="书目、路径或档案号"></div>
-        </div>
-        <label for="cap-title">标题</label><input id="cap-title" name="title" required>
-        <label for="cap-summary">概要</label><textarea id="cap-summary" name="summary" required placeholder="是什么，能支持什么判断"></textarea>
-        <div class="grid2">
-          <div><label for="cap-scope">读取范围</label><input id="cap-scope" name="read_scope" required placeholder="读过正文 / 看过输出 / 运行过实现"></div>
-          <div><label for="cap-tags">用途 tag</label><input id="cap-tags" name="tags" placeholder="空格分隔"></div>
-        </div>
-        <div class="label">证据状态</div>
-        <div class="seg" id="cap-status"></div>
-        <label for="cap-limits">边界</label><textarea id="cap-limits" name="limits" required placeholder="不能证明什么"></textarea>
-        <label for="cap-revisit">何时重访</label><input id="cap-revisit" name="revisit_when" required>
-        <div class="actions"><button class="btn primary" type="submit" id="cap-submit">登记</button></div>
-      </div>
-    </form>
-  </section>
+  <section class="view" id="capture"></section>
   <section class="view" id="log">
-    <div class="stack">
-      <div class="panel section" id="stale"></div>
-      <div class="panel section" id="runs"></div>
-      <div class="panel section" id="history"></div>
-    </div>
+    <div class="stack"><div class="panel section" id="attention"></div><div class="panel section" id="runs"></div><div class="panel section" id="history"></div></div>
   </section>
 </main>
+<datalist id="unit-ids"></datalist>
 <div class="toast" id="toast" role="status" aria-live="polite"><span class="dot"></span><span class="msg"></span></div>
 <script>
+// ---- language: the interface follows DSH's locale when embedded, else the browser or the
+// standalone toggle. Kit pages, source titles, descriptions and summaries keep their own language.
+const STRINGS = {
+  zh: {
+    'tab.catalog': '目录', 'tab.task': '任务', 'tab.presets': '预设', 'tab.log': '记录',
+    'stat.units': '单元', 'stat.bindings': '挂载', 'stat.local': '本机控制面',
+    'lang.switch': 'English',
+    'kit.search': '搜索单元', 'kit.source': '来源', 'kit.other': 'Kit 之外的挂载', 'kit.lede': '整合包：Task、Writing、Design、Publish 四层做法，加上挂在各页上的来源。agent 按任务取用其中一部分。', 'kit.none': '没有匹配的单元',
+    'sort.order': '目录顺序', 'sort.updated': '最近更新', 'sort.sources': '来源最多', 'sort.title': '切换排序',
+    'n.units': '{n} 个单元', 'n.sources': '{n} 个来源', 'n.files': '{n} 个文件',
+    'when.today': '今天', 'when.days': '{n} 天前',
+    'unit.resident': '常驻', 'unit.version': '内容版本', 'unit.body': '正文', 'unit.contents': '内容', 'unit.results': '搜索结果',
+    'card.off': '未启用', 'gap.needs_work': '待改', 'gap.changed': '来源已变',
+    'card.removed': '已删除', 'card.showRemoved': '已删除', 'card.noGap': '这一项没有缺口', 'card.empty': '还没有挂来源',
+    'card.enable': '启用', 'card.enableTitle': '启用：进入任务默认可选范围', 'card.favorite': '收藏', 'card.refetch': '重取来源',
+    'card.refetchTitle': '重取来源：内容变了就存新快照', 'card.delete': '删除（可恢复）', 'card.restore': '恢复', 'card.entry': '来源条目', 'card.limits': '边界：',
+    'card.preferred': '优先',
+    'f.description': '目录说明 · 240 字内', 'f.problem': '适用的问题', 'f.how': '怎样取用', 'f.conditions': '条件', 'f.limits': '不适用或易误用',
+    'f.priority': '优先级', 'f.normal': '普通', 'f.preferred': '优先', 'f.tags': 'tag', 'f.save': '保存', 'f.spaces': '空格分隔',
+    'v.accurate': '准确', 'v.revised': '已改', 'v.needs-work': '待改', 'f.reviewNote': 'review 说明', 'f.review': 'review',
+    'attach.search': '搜索已登记的来源：标题、摘要或 tag', 'attach.do': '挂载', 'attach.done': '已挂载', 'attach.new': '登记新来源',
+    'toast.saved': '已保存', 'toast.conflict': '已被他人更新，已载入最新版本', 'toast.restored': '已恢复', 'toast.disabled': '已停用', 'toast.enabled': '已启用',
+    'toast.unfav': '已取消收藏', 'toast.fav': '已收藏', 'toast.snapNew': '已存新快照，检查说明是否仍适用', 'toast.snapSame': '来源内容没变',
+    'toast.deleted': '已删除，可恢复', 'toast.reviewed': '已记录 review', 'toast.captured': '已登记：{id}', 'toast.existing': '已有条目：{id}',
+    'toast.presetDeleted': '已删除，旧运行记录仍保留它的值', 'toast.reopen': '已被他人更新，请重新打开',
+    'task.types': '任务类型', 'task.pipeline': '流水线', 'task.default': '默认', 'task.preset': '预设', 'task.presetDefault': '流水线默认',
+    'task.noTypes': '还没有任务类型', 'task.units': '要读的单元', 'task.materials': '素材', 'task.noMaterials': '这些单元上没有已启用的来源',
+    'task.acceptance': '验收', 'reason.resident': '常驻', 'reason.type': '类型', 'reason.pipeline': '流水线 {p}', 'yes': '是', 'no': '否',
+    'preset.new': '{p} 预设', 'preset.pick': '选一个预设，或新建', 'preset.newTitle': '新建 {p} 预设', 'preset.name': '名称', 'preset.when': '什么时候用',
+    'preset.default': '{p} 默认', 'preset.delete': '删除', 'preset.back': '预设', 'preset.isDefault': '默认',
+    'cap.title': '登记来源', 'cap.lede': '同一 URL 只登记一次；登记后在目录里挂到单元。', 'cap.locator': '非 URL 定位', 'cap.locatorPh': '书目、路径或档案号',
+    'cap.titleField': '标题', 'cap.summary': '概要', 'cap.summaryPh': '是什么，能支持什么判断', 'cap.scope': '读取范围', 'cap.scopePh': '读过正文 / 看过输出 / 运行过实现',
+    'cap.tags': '用途 tag', 'cap.evidence': '证据状态', 'cap.limits': '边界', 'cap.limitsPh': '不能证明什么', 'cap.revisit': '何时重访', 'cap.submit': '登记',
+    'up.attention': '需要处理', 'up.none': '没有要处理的事', 'up.stale': '交付过期', 'up.staleNone': '交付都与当前 Kit 一致', 'up.unbound': '新登记未挂载',
+    'up.unboundNone': '没有待挂载的来源', 'up.attachTo': '挂到单元', 'up.unitPh': '单元 ID', 'up.preset': '预设已改',
+    'log.runs': '运行', 'log.history': '维护记录', 'log.noRuns': '还没有运行', 'log.noHistory': '还没有维护',
+  },
+  en: {
+    'tab.catalog': 'Catalog', 'tab.task': 'Task', 'tab.presets': 'Presets', 'tab.log': 'Log',
+    'stat.units': 'units', 'stat.bindings': 'bindings', 'stat.local': 'Local control plane',
+    'lang.switch': '中文',
+    'kit.search': 'Search units', 'kit.source': 'Source', 'kit.other': 'Bound outside the Kit', 'kit.lede': 'A bundle of working methods in four layers (Task, Writing, Design, Publish) with the sources bound to each page. Agents take the part a task needs.', 'kit.none': 'No matching units',
+    'sort.order': 'Kit order', 'sort.updated': 'Recently updated', 'sort.sources': 'Most sources', 'sort.title': 'Change sort',
+    'n.units': '{n} units', 'n.sources': '{n} sources', 'n.files': '{n} files',
+    'when.today': 'today', 'when.days': '{n}d ago',
+    'unit.resident': 'Resident', 'unit.version': 'Content version', 'unit.body': 'Page text', 'unit.contents': 'Contents', 'unit.results': 'Results',
+    'card.off': 'Disabled', 'gap.needs_work': 'Needs work', 'gap.changed': 'Source changed',
+    'card.removed': 'Removed', 'card.showRemoved': 'Removed', 'card.noGap': 'Nothing missing here', 'card.empty': 'No sources yet',
+    'card.enable': 'Enabled', 'card.enableTitle': 'Enabled: offered to tasks by default', 'card.favorite': 'Favorite', 'card.refetch': 'Refetch source',
+    'card.refetchTitle': 'Refetch the source; a changed page is saved as a new snapshot', 'card.delete': 'Delete (restorable)', 'card.restore': 'Restore', 'card.entry': 'Source entry', 'card.limits': 'Limits: ',
+    'card.preferred': 'Preferred',
+    'f.description': 'Catalog description · up to 240 characters', 'f.problem': 'Problem it fits', 'f.how': 'How to use it', 'f.conditions': 'Conditions', 'f.limits': 'Limits and misuse',
+    'f.priority': 'Priority', 'f.normal': 'Normal', 'f.preferred': 'Preferred', 'f.tags': 'Tags', 'f.save': 'Save', 'f.spaces': 'Space-separated',
+    'v.accurate': 'Accurate', 'v.revised': 'Revised', 'v.needs-work': 'Needs work', 'f.reviewNote': 'Review note', 'f.review': 'Review',
+    'attach.search': 'Search captured sources by title, summary or tag', 'attach.do': 'Attach', 'attach.done': 'Attached', 'attach.new': 'Capture a new source',
+    'toast.saved': 'Saved', 'toast.conflict': 'Someone else changed this; the latest version is loaded', 'toast.restored': 'Restored', 'toast.disabled': 'Disabled', 'toast.enabled': 'Enabled',
+    'toast.unfav': 'Removed from favorites', 'toast.fav': 'Added to favorites', 'toast.snapNew': 'New snapshot saved; check the description still fits', 'toast.snapSame': 'Source unchanged',
+    'toast.deleted': 'Deleted; you can restore it', 'toast.reviewed': 'Review recorded', 'toast.captured': 'Captured: {id}', 'toast.existing': 'Already captured: {id}',
+    'toast.presetDeleted': 'Deleted; past runs keep its values', 'toast.reopen': 'Someone else changed this; reopen it',
+    'task.types': 'Task type', 'task.pipeline': 'Pipeline', 'task.default': 'Default', 'task.preset': 'Preset', 'task.presetDefault': 'Pipeline default',
+    'task.noTypes': 'No task types yet', 'task.units': 'Units to read', 'task.materials': 'Materials', 'task.noMaterials': 'No enabled sources on these units',
+    'task.acceptance': 'Acceptance', 'reason.resident': 'Resident', 'reason.type': 'Type', 'reason.pipeline': 'Pipeline {p}', 'yes': 'Yes', 'no': 'No',
+    'preset.new': '{p} preset', 'preset.pick': 'Pick a preset or create one', 'preset.newTitle': 'New {p} preset', 'preset.name': 'Name', 'preset.when': 'When to use it',
+    'preset.default': 'Default for {p}', 'preset.delete': 'Delete', 'preset.back': 'Presets', 'preset.isDefault': 'Default',
+    'cap.title': 'Capture a source', 'cap.lede': 'Each URL is captured once; attach it to a unit from the catalog.', 'cap.locator': 'Locator without URL', 'cap.locatorPh': 'Citation, path or archive number',
+    'cap.titleField': 'Title', 'cap.summary': 'Summary', 'cap.summaryPh': 'What it is and what judgment it supports', 'cap.scope': 'What was read', 'cap.scopePh': 'Read the text / saw the output / ran it',
+    'cap.tags': 'Purpose tags', 'cap.evidence': 'Evidence', 'cap.limits': 'Limits', 'cap.limitsPh': 'What it cannot show', 'cap.revisit': 'When to revisit', 'cap.submit': 'Capture',
+    'up.attention': 'Needs attention', 'up.none': 'Nothing needs attention', 'up.stale': 'Stale deliveries', 'up.staleNone': 'Every delivery matches the current Kit', 'up.unbound': 'Captured, not attached',
+    'up.unboundNone': 'Nothing waiting to be attached', 'up.attachTo': 'Attach to unit', 'up.unitPh': 'Unit ID', 'up.preset': 'Preset changed',
+    'log.runs': 'Runs', 'log.history': 'Maintenance', 'log.noRuns': 'No runs yet', 'log.noHistory': 'No maintenance yet',
+  },
+}
+// Preset field labels come from core in Chinese; English labels live here with the rest of the interface.
+const FIELD_EN = {
+  tts_provider: ['TTS provider', 'e.g. mimo, seed, system'], tts_voice: ['Voice'], tts_language: ['Language', 'zh-CN, en-US'], tts_rate: ['Speech rate', '1 is normal speed'],
+  api_key_env: ['Key environment variable', 'Variable name only, never the key'], aspect: ['Aspect ratios', '16:9 9:16 4:3 3:4'], style: ['Visual style'],
+  direction: ['Creative direction'], cover_aspects: ['Cover aspect ratios', '4:3 3:4'], template: ['Template or starter project', 'Repository path'],
+  theme: ['Theme and palette'], print: ['Print version'], offline: ['Offline, self-contained'],
+}
+const embedded = (() => { try { return parent !== window && !!parent.document } catch { return false } })()
+function detectLang() {
+  if (embedded) return (parent.document.documentElement.lang || 'en').startsWith('zh') ? 'zh' : 'en'
+  let saved = null
+  try { saved = localStorage.getItem('praxis-lang') } catch {}
+  return saved || (navigator.language.startsWith('zh') ? 'zh' : 'en')
+}
+const LANG = detectLang()
+document.documentElement.lang = LANG === 'zh' ? 'zh-CN' : 'en'
+document.title = LANG === 'zh' ? 'Praxis 控制面' : 'Praxis control plane'
+if (embedded) new MutationObserver(() => detectLang() !== LANG && location.reload()).observe(parent.document.documentElement, { attributes: true, attributeFilter: ['lang'] })
+const t = (key, vars = {}) => (STRINGS[LANG][key] ?? STRINGS.zh[key] ?? key).replace(/\{(\w+)\}/g, (_, k) => vars[k] ?? '')
+const fieldLabel = (f) => LANG === 'en' && FIELD_EN[f.key] ? FIELD_EN[f.key][0] : f.label
+const fieldHint = (f) => LANG === 'en' && FIELD_EN[f.key] ? (FIELD_EN[f.key][1] ?? '') : (f.hint ?? '')
+
 const S = (body, fill) => `<svg viewBox="0 0 24 24" fill="${fill ? 'currentColor' : 'none'}" stroke="${fill ? 'none' : 'currentColor'}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${body}</svg>`
 const ICONS = {
   mark: S('<rect x="4" y="4" width="16" height="3.2" rx="1.6" fill="currentColor" stroke="none"/><rect x="4" y="9.6" width="12" height="3.2" rx="1.6" fill="currentColor" stroke="none" opacity=".7"/><rect x="4" y="15.2" width="8" height="3.2" rx="1.6" fill="currentColor" stroke="none" opacity=".45"/>'),
@@ -442,17 +552,21 @@ const ICONS = {
   sliders: S('<path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/>'),
   inbox: S('<path d="M4 13l2.5-8h11L20 13v6H4z"/><path d="M4 13h5l1 2h4l1-2h5"/>'),
   activity: S('<path d="M3 12h4l3-7 4 14 3-7h4"/>'),
+  wrench: S('<path d="M14.5 6.5a4 4 0 0 0 5 5L12 19a2.1 2.1 0 0 1-3-3z"/><path d="M14.5 6.5L17 4a4 4 0 0 1 3 3l-2.5 2.5"/>'),
   search: S('<circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2"/>'),
   doc: S('<path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4M10 12h5M10 16h5"/>'),
+  folder: S('<path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>'),
   plus: S('<path d="M12 5v14M5 12h14"/>'),
   chevron: S('<path d="M9 6l6 6-6 6"/>'),
+  down: S('<path d="M6 9l6 6 6-6"/>'),
   back: S('<path d="M15 6l-6 6 6 6"/>'),
-  close: S('<path d="M6 6l12 12M18 6L6 18"/>'),
   star: S('<path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9l-5.2 2.7 1-5.8-4.3-4.1 5.9-.9z"/>', true),
   starOff: S('<path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9l-5.2 2.7 1-5.8-4.3-4.1 5.9-.9z"/>'),
   trash: S('<path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/>'),
   undo: S('<path d="M9 7H4v5"/><path d="M4 12a8 8 0 1 0 2.3-5.7L4 8.5"/>'),
+  refresh: S('<path d="M20 11a8 8 0 0 0-14.3-4.6L4 8"/><path d="M4 4v4h4"/><path d="M4 13a8 8 0 0 0 14.3 4.6L20 16"/><path d="M20 20v-4h-4"/>'),
   circle: S('<circle cx="12" cy="12" r="8"/>'),
+  check: S('<circle cx="12" cy="12" r="8"/><path d="M8.5 12.5l2.5 2.5 4.5-5"/>'),
   up: S('<path d="M12 19V5M6 11l6-6 6 6"/>'),
   alert: S('<path d="M12 4l9 16H3z"/><path d="M12 10v4M12 17h.01"/>'),
   clock: S('<circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/>'),
@@ -460,8 +574,7 @@ const ICONS = {
   code: S('<path d="M8 8l-4 4 4 4M16 8l4 4-4 4"/>'),
   play: S('<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M10 9l5 3-5 3z"/>'),
   sort: S('<path d="M8 4v16M4 8l4-4 4 4M16 20V4M12 16l4 4 4-4"/>'),
-  down: S('<path d="M6 9l6 6 6-6"/>'),
-  refresh: S('<path d="M20 11a8 8 0 0 0-14.3-4.6L4 8"/><path d="M4 4v4h4"/><path d="M4 13a8 8 0 0 0 14.3 4.6L20 16"/><path d="M20 20v-4h-4"/>'),
+  globe: S('<circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.5 2.6 2.5 14.4 0 17M12 3.5c-2.5 2.6-2.5 14.4 0 17"/>'),
   auto: S('<circle cx="12" cy="12" r="8"/><path d="M12 4v16" /><path d="M12 4a8 8 0 0 1 0 16z" fill="currentColor"/>'),
 }
 const GLYPHS = {
@@ -471,14 +584,17 @@ const GLYPHS = {
   publish: S('<path d="M12 15V4M7 9l5-5 5 5M5 15v4h14v-4"/>'),
   materials: ICONS.layers,
 }
+// Layer names are the Kit's own terms and stay in English in both languages.
 const LAYER_NAMES = { task: 'Task', writing: 'Writing', design: 'Design', publish: 'Publish' }
 const PIPELINE_ICON = { html: 'code', video: 'play' }
 const EVIDENCE = ['verified', 'partial', 'unavailable']
-const EVIDENCE_ORDER = ['verified', 'verified-in-scope', 'partial', 'unverified', 'unavailable']
+// Signals a binding needs someone now; defaults such as an uncurated description are not signals.
+const SIGNALS = ['needs_work', 'changed']
+const VERDICTS = ['accurate', 'revised', 'needs-work']
 
-const base = location.pathname.replace(/\/(index\.html)?$/, '')
+// One authenticated route serves every tool: inside DSH it sits on DSH's /api channel, standalone on the local server.
 async function api(tool, args = {}) {
-  const res = await fetch(`${base}/api/${tool}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(args) })
+  const res = await fetch('/api/praxis.call', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ tool, args }) })
   const body = await res.json()
   if (!res.ok) { const e = new Error(body.error || res.statusText); e.status = res.status; e.current = body.current; throw e }
   return body
@@ -492,36 +608,43 @@ const el = (tag, attrs = {}, ...kids) => {
     else if (k.startsWith('aria-')) node.setAttribute(k, String(v))
     else if (v !== undefined && v !== null && v !== false) node.setAttribute(k, v === true ? '' : v)
   }
-  for (const kid of kids.flat()) if (kid !== null && kid !== undefined && kid !== false) node.append(kid)
+  for (const kid of kids.flat(Infinity)) if (kid !== null && kid !== undefined && kid !== false) node.append(kid)
   return node
 }
-const svg = (markup, cls) => { const t = document.createElement('template'); t.innerHTML = markup; const s = t.content.firstChild; if (cls) s.setAttribute('class', cls); return s }
+const fill = (node, ...kids) => node.replaceChildren(...kids.flat(Infinity).filter((k) => k !== null && k !== undefined && k !== false))
+const svg = (markup, cls) => { const tpl = document.createElement('template'); tpl.innerHTML = markup; const s = tpl.content.firstChild; if (cls) s.setAttribute('class', cls); return s }
 const glyph = (layer) => svg(GLYPHS[layer] || GLYPHS.materials, 'glyph')
 const layerOf = (id) => id.split('/')[0]
 const empty = (icon, text) => el('div', { class: 'empty' }, svg(ICONS[icon]), text)
 const chip = (text, cls = '', icon) => el('span', { class: `chip ${cls}` }, icon ? svg(ICONS[icon]) : null, text)
+const segment = (name, options, value) => options.map((o) => el('label', {},
+  el('input', { type: 'radio', name, value: o.value, checked: o.value === value }), o.icon ? svg(o.icon) : null, o.label))
+const tile = (layer, big, stack) => el('span', { class: `tile${big ? ' lg' : ''}${stack ? ' stack' : ''}` }, glyph(layer))
 
 let toastTimer
 function toast(msg, err = false) {
-  const t = $('#toast')
-  t.className = `toast show${err ? ' err' : ''}`
-  $('.msg', t).textContent = msg
+  const box = $('#toast')
+  box.className = `toast show${err ? ' err' : ''}`
+  $('.msg', box).textContent = msg
   clearTimeout(toastTimer)
-  toastTimer = setTimeout(() => t.classList.remove('show'), 2400)
+  toastTimer = setTimeout(() => box.classList.remove('show'), 2400)
 }
-const segment = (name, options, value) => options.map((o) => el('label', {},
-  el('input', { type: 'radio', name, value: o.value, checked: o.value === value }), o.icon ? svg(o.icon) : null, o.label))
+const fmtDate = new Intl.DateTimeFormat(LANG === 'zh' ? 'zh-CN' : 'en', { month: 'short', day: 'numeric' })
+const fmtDateYear = new Intl.DateTimeFormat(LANG === 'zh' ? 'zh-CN' : 'en', { year: 'numeric', month: 'short', day: 'numeric' })
+function when(iso) {
+  if (!iso) return ''
+  const d = new Date(iso), days = Math.floor((Date.now() - d) / 864e5)
+  if (days < 1) return t('when.today')
+  if (days < 7) return t('when.days', { n: days })
+  return (d.getFullYear() === new Date().getFullYear() ? fmtDate : fmtDateYear).format(d)
+}
+const stamp = (iso) => new Intl.DateTimeFormat(LANG === 'zh' ? 'zh-CN' : 'en', { month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false }).format(new Date(iso))
 
 // ---- shell
-$('#brand').append(svg(ICONS.mark), el('span', {}, 'Praxis'))
-$('#tree-search').prepend(svg(ICONS.search))
-$('#cap-crumb').append(svg(ICONS.inbox, 'glyph'), 'materials / capture')
-$('#cap-back').prepend(svg(ICONS.back))
-$('#cap-back').addEventListener('click', () => show('catalog'))
-for (const b of document.querySelectorAll('.tabs button')) {
-  b.prepend(svg(ICONS[b.dataset.icon]))
-  b.addEventListener('click', () => show(b.dataset.view))
-}
+const VIEWS = [['catalog', 'layers'], ['task', 'flow'], ['presets', 'sliders'], ['log', 'activity']]
+if (embedded) $('#brand').remove()
+else fill($('#brand'), svg(ICONS.mark), el('span', {}, 'Praxis'))
+fill($('#tabs'), VIEWS.map(([view, icon]) => el('button', { role: 'tab', 'data-view': view, 'aria-selected': view === 'catalog', onclick: () => show(view) }, svg(ICONS[icon]), t(`tab.${view}`))))
 function show(view) {
   for (const x of document.querySelectorAll('.tabs button')) x.setAttribute('aria-selected', x.dataset.view === (view === 'capture' ? 'catalog' : view))
   for (const v of document.querySelectorAll('.view')) v.classList.toggle('on', v.id === view)
@@ -529,167 +652,238 @@ function show(view) {
   if (view === 'task') loadTaskTypes()
   if (view === 'presets') loadPresets()
 }
-function renderStats(bindingCount) {
-  $('#stats').replaceChildren(
-    el('span', {}, el('b', {}, String(units.length)), el('span', { class: 'lbl' }, '单元')),
-    el('span', {}, el('b', {}, String(bindingCount)), el('span', { class: 'lbl' }, '挂载')),
-    el('span', { class: 'live', title: '本机控制面' }, el('span', { class: 'dot verified' }), el('span', { class: 'lbl' }, 'local')))
+function renderStats() {
+  fill($('#stats'),
+    el('span', {}, el('b', {}, String(units.length)), el('span', { class: 'lbl' }, t('stat.units'))),
+    el('span', {}, el('b', {}, String(bindings.length)), el('span', { class: 'lbl' }, t('stat.bindings'))),
+    embedded ? null : el('button', { class: 'icon lang', title: t('lang.switch'), 'aria-label': t('lang.switch'), onclick: () => {
+      try { localStorage.setItem('praxis-lang', LANG === 'zh' ? 'en' : 'zh') } catch {}
+      location.reload()
+    } }, svg(ICONS.globe), el('span', {}, LANG === 'zh' ? 'EN' : '中')),
+    el('span', { class: 'live', title: t('stat.local') }, el('span', { class: 'dot verified' })))
 }
 
-// ---- catalog: units read as a list; a unit opens to its description, its source index and the upkeep on that index
-let units = [], counts = {}, current = null, showRemoved = false, cardFilter = 'all', listScroll = 0
-const view = { layer: '', sort: 'layer', q: '' }
-const SORTS = { layer: '按层', updated: '最近更新', sources: '来源最多' }
-const VERDICT = { accurate: '准确', revised: '已改', 'needs-work': '待改' }
-const collapsed = new Set()
+// ---- catalog: progressive disclosure, layer → area → unit, each step showing only descriptions
+// and counts; a unit page holds its source index. Targets outside the Kit
+// (for example a book's pages) get the same treatment by path.
+let units = [], byId = new Map(), bindings = [], byPath = {}, route = { kind: 'home' }, showRemoved = false, cardFilter = 'all', sortKey = 'order'
+const SORTS = ['order', 'updated', 'sources']
 
-async function loadTree() {
-  units = await api('praxis_units')
-  const all = await api('praxis_bindings', {})
-  counts = {}
-  for (const b of all) { const key = b.target.split('#')[0]; counts[key] = (counts[key] || 0) + 1 }
-  renderStats(all.length)
-  renderList()
+async function refreshData() {
+  ;[units, bindings] = await Promise.all([api('praxis_units'), api('praxis_bindings', {})])
+  byId = new Map(units.map((u) => [u.id, u]))
+  byPath = {}
+  for (const b of bindings) (byPath[b.target.split('#')[0]] ??= []).push(b)
+  renderStats()
+}
+async function loadCatalog() {
+  await refreshData()
+  renderCatalog()
 }
 
-function when(iso) {
-  if (!iso) return ''
-  const d = new Date(iso), days = Math.floor((Date.now() - d) / 864e5)
-  if (days < 1) return '今天'
-  if (days < 7) return `${days} 天前`
-  const md = `${d.getMonth() + 1}月${d.getDate()}日`
-  return d.getFullYear() === new Date().getFullYear() ? md : `${d.getFullYear()}年${md}`
+// The nearest existing ancestor; a page may sit under a folder that has no README of its own.
+function parentOf(id) {
+  const parts = id.split('/')
+  for (let i = parts.length - 1; i > 0; i--) { const p = parts.slice(0, i).join('/'); if (byId.has(p)) return p }
+  return null
 }
-const tile = (layer, big) => el('span', { class: `tile${big ? ' lg' : ''}` }, glyph(layer))
+const childrenOf = (id) => units.filter((u) => u.id !== id && parentOf(u.id) === id)
+const under = (id) => units.filter((u) => u.id === id || u.id.startsWith(`${id}/`))
+const bindingsUnder = (id) => under(id).flatMap((u) => byPath[u.path] ?? [])
+const alerts = (list) => list.filter((b) => b.signals.length).length
+const kitPaths = () => new Set(units.map((u) => u.path))
+const outside = () => { const kit = kitPaths(); return bindings.filter((b) => !kit.has(b.target.split('#')[0])) }
+const pathOf = (b) => b.target.split('#')[0]
+function sorted(list, size = (u) => bindingsUnder(u.id).length) {
+  if (sortKey === 'updated') return [...list].sort((a, b) => (b.updated_at || '').localeCompare(a.updated_at || ''))
+  if (sortKey === 'sources') return [...list].sort((a, b) => size(b) - size(a))
+  return list
+}
+
+function go(next) {
+  route = next
+  searchInput.value = ''
+  cardFilter = 'all'
+  window.scrollTo(0, 0)
+  renderCatalog()
+}
+
+const searchInput = el('input', { placeholder: t('kit.search'), 'aria-label': t('kit.search'), oninput: () => renderBody() })
+const searchField = el('div', { class: 'field' }, svg(ICONS.search), searchInput)
+const sortButton = el('button', { class: 'icon sort', title: t('sort.title'), onclick: () => { sortKey = SORTS[(SORTS.indexOf(sortKey) + 1) % SORTS.length]; renderSort(); renderBody() } })
+const renderSort = () => fill(sortButton, svg(ICONS.sort), el('span', { class: 'lbl' }, t(`sort.${sortKey}`)))
+renderSort()
+const addButton = el('button', { class: 'btn primary', onclick: () => show('capture') }, svg(ICONS.plus), t('cap.title'))
+
+function crumbs() {
+  const home = { label: 'Kit', route: { kind: 'home' } }
+  if (route.kind === 'unit') {
+    const trail = []
+    for (let id = route.id; id; id = parentOf(id)) trail.unshift({ label: id.includes('/') ? byId.get(id)?.title ?? id : LAYER_NAMES[id] ?? id, route: { kind: 'unit', id } })
+    return [home, ...trail]
+  }
+  if (route.kind === 'target') {
+    const parts = route.path.split('/')
+    const trail = [{ label: parts.slice(0, 2).join('/'), route: { kind: 'target', path: parts.slice(0, 2).join('/') } },
+      ...parts.slice(2).map((part, i) => ({ label: part, route: { kind: 'target', path: parts.slice(0, i + 3).join('/') } }))]
+    return [home, ...trail]
+  }
+  return []
+}
+
+function renderCatalog() {
+  const trail = crumbs()
+  fill($('#cat-head'),
+    trail.length
+      ? el('nav', { class: 'crumbs', 'aria-label': 'Breadcrumb' }, trail.map((c, i) => [
+        i ? el('span', { class: 'sep', 'aria-hidden': 'true' }, '/') : null,
+        i < trail.length - 1 ? el('button', { onclick: () => go(c.route) }, c.label) : el('span', { class: 'here', 'aria-current': 'page' }, c.label)]))
+      : el('div', { class: 'title-block' }, el('h1', {}, 'Kit'), el('p', { class: 'kit-lede' }, t('kit.lede'))),
+    el('div', { class: 'tools' }, searchField, sortButton, route.kind === 'home' ? addButton : null))
+  renderBody()
+}
+
+function renderBody() {
+  const body = $('#cat-body')
+  const q = searchInput.value.trim().toLowerCase()
+  if (q) {
+    const hits = units.filter((u) => (u.id + u.title + u.description).toLowerCase().includes(q))
+    return fill(body, hits.length ? [sectionTitle(t('unit.results'), hits.length), el('div', { class: 'unit-rows' }, sorted(hits).map(unitRow))] : empty('search', t('kit.none')))
+  }
+  if (route.kind === 'unit' && byId.has(route.id)) return renderUnit(body, byId.get(route.id))
+  if (route.kind === 'target') return renderTarget(body, route.path)
+  renderHome(body)
+}
+
+const sectionTitle = (text, n) => el('h3', { class: 'section-title' }, text, n === undefined ? null : chip(String(n)))
+const countChips = (list, nUnits) => [
+  nUnits ? el('span', { class: 'src', title: t('n.units', { n: nUnits }) }, svg(ICONS.doc), String(nUnits)) : null,
+  list.length ? el('span', { class: 'src', title: t('n.sources', { n: list.length }) }, svg(ICONS.layers), String(list.length)) : null,
+  alerts(list) ? chip(String(alerts(list)), 'warn', 'alert') : null,
+]
+
+// Layer cards on the home page carry a strip whose segments are the layer's areas, sized by unit count.
+function renderHome(body) {
+  const groups = new Map()
+  for (const b of outside()) { const key = pathOf(b).split('/').slice(0, 2).join('/'); (groups.get(key) ?? groups.set(key, []).get(key)).push(b) }
+  fill(body,
+    el('div', { class: 'cards' }, Object.keys(LAYER_NAMES).map((l) => byId.get(l)).filter(Boolean).map((u) => {
+      const areas = childrenOf(u.id)
+      const list = bindingsUnder(u.id)
+      return el('button', { class: 'card nav-card', onclick: () => go({ kind: 'unit', id: u.id }) },
+        el('span', { class: 'card-top' }, tile(u.layer, false, true), el('span', { class: 'card-title' }, LAYER_NAMES[u.layer]), u.resident ? chip(t('unit.resident'), 'accent') : null, svg(ICONS.chevron, 'go')),
+        el('span', { class: 'card-desc' }, u.description),
+        el('span', { class: 'mix', 'aria-hidden': 'true' }, areas.map((a) => el('i', { style: `flex:${under(a.id).length}`, title: a.title }))),
+        el('span', { class: 'card-foot' }, countChips(list, under(u.id).length - 1)))
+    })),
+    groups.size ? [sectionTitle(t('kit.other'), outside().length), el('div', { class: 'cards' }, [...groups].map(([key, list]) =>
+      el('button', { class: 'card nav-card', onclick: () => go({ kind: 'target', path: key }) },
+        el('span', { class: 'card-top' }, el('span', { class: 'tile stack' }, svg(ICONS.folder, 'glyph')), el('span', { class: 'card-title mono' }, key), svg(ICONS.chevron, 'go')),
+        el('span', { class: 'card-desc' }, t('n.files', { n: new Set(list.map(pathOf)).size })),
+        el('span', { class: 'card-foot' }, countChips(list)))))] : null)
+}
 
 function unitRow(u) {
-  const n = counts[u.path] || 0
-  return el('button', { class: 'unit-row', onclick: () => openUnit(u.id) },
-    tile(u.layer),
+  const kids = childrenOf(u.id).length
+  return el('button', { class: 'unit-row', onclick: () => go({ kind: 'unit', id: u.id }) },
+    tile(u.layer, false, kids),
     el('span', { class: 'body' },
-      el('span', { class: 'title' }, el('span', { class: 't' }, u.title), u.resident ? chip('常驻', 'accent') : null),
+      el('span', { class: 'title' }, el('span', { class: 't' }, u.title), u.resident ? chip(t('unit.resident'), 'accent') : null),
       el('span', { class: 'sub' }, el('span', { class: 'mono' }, u.id), ' · ', u.description)),
-    el('span', { class: 'aside' },
-      n ? el('span', { class: 'src', title: `${n} 个来源` }, svg(ICONS.layers), String(n)) : null,
+    el('span', { class: 'aside' }, countChips(kids ? bindingsUnder(u.id) : byPath[u.path] ?? [], kids ? under(u.id).length - 1 : 0),
       el('time', { datetime: u.updated_at || '', title: u.updated_at || '' }, when(u.updated_at))))
 }
 
-function renderList() {
-  const q = view.q.toLowerCase()
-  let list = units.filter((u) => (!view.layer || u.layer === view.layer) && (!q || (u.id + u.title + u.description).toLowerCase().includes(q)))
-  if (view.sort === 'updated') list = list.sort((a, b) => (b.updated_at || '').localeCompare(a.updated_at || ''))
-  if (view.sort === 'sources') list = list.sort((a, b) => (counts[b.path] || 0) - (counts[a.path] || 0))
-  const box = $('#unit-list')
-  if (!list.length) return box.replaceChildren(empty('search', '没有匹配的单元'))
-  if (view.sort !== 'layer') return box.replaceChildren(el('div', { class: 'unit-rows' }, list.map(unitRow)))
-  box.replaceChildren(...Object.keys(LAYER_NAMES).flatMap((layer) => {
-    const rows = list.filter((u) => u.layer === layer)
-    if (!rows.length) return []
-    const open = !collapsed.has(layer)
-    return [el('section', { class: 'group-block' },
-      el('button', { class: 'group-toggle', 'aria-expanded': open, onclick: () => { open ? collapsed.add(layer) : collapsed.delete(layer); renderList() } },
-        svg(ICONS.chevron), LAYER_NAMES[layer], chip(String(rows.length))),
-      open ? el('div', { class: 'unit-rows' }, rows.map(unitRow)) : null)]
-  }))
-}
-
-$('#layer-seg').append(...segment('layer', [{ value: '', label: '全部' }, ...Object.entries(LAYER_NAMES).map(([value, label]) => ({ value, label }))], ''))
-$('#layer-seg').addEventListener('change', (e) => { view.layer = e.target.value; renderList() })
-$('#tree-filter').addEventListener('input', (e) => { view.q = e.target.value.trim(); renderList() })
-function renderSort() { $('#sort').replaceChildren(svg(ICONS.sort), el('span', { class: 'lbl' }, SORTS[view.sort])) }
-$('#sort').addEventListener('click', () => {
-  const keys = Object.keys(SORTS)
-  view.sort = keys[(keys.indexOf(view.sort) + 1) % keys.length]
-  renderSort(); renderList()
-})
-renderSort()
-$('#add-source').prepend(svg(ICONS.plus))
-$('#add-source').addEventListener('click', () => show('capture'))
-
-function closeUnit() {
-  current = null
-  $('#catalog-split').classList.remove('focus')
-  window.scrollTo(0, listScroll)
-}
-
-async function openUnit(id) {
-  const u = units.find((x) => x.id === id)
-  if (!u) return
-  if (!current) listScroll = window.scrollY
-  current = u
-  cardFilter = 'all'
-  $('#catalog-split').classList.add('focus')
-  window.scrollTo(0, 0)
-  $('#unit').replaceChildren(
-    el('button', { class: 'btn ghost', onclick: closeUnit }, svg(ICONS.back), 'Kit'),
-    el('header', { class: 'hero' }, tile(u.layer, true),
+function renderUnit(body, u) {
+  const kids = childrenOf(u.id)
+  const own = byPath[u.path] ?? []
+  const withSources = !kids.length || own.length
+  fill(body,
+    el('header', { class: 'hero' }, tile(u.layer, true, kids.length),
       el('div', { style: 'min-width:0' },
-        el('h2', {}, u.title, u.resident ? chip('常驻', 'accent') : null),
-        el('div', { class: 'sub' }, chip(LAYER_NAMES[u.layer], 'outline'), el('span', { class: 'mono' }, u.id), el('span', { class: 'mono', title: '内容版本' }, u.version),
+        el('h2', {}, u.title, u.resident ? chip(t('unit.resident'), 'accent') : null),
+        el('div', { class: 'sub' }, chip(LAYER_NAMES[u.layer], 'outline'), el('span', { class: 'mono' }, u.id), el('span', { class: 'mono', title: t('unit.version') }, u.version),
           u.updated_at ? el('time', { title: u.updated_at }, when(u.updated_at)) : null)),
       el('div', { class: 'hero-actions' },
-        el('button', { class: 'icon', title: '正文', 'aria-label': '正文', html: ICONS.doc, onclick: () => readUnit(u.id) }),
-        el('button', { class: 'btn primary', onclick: () => addPanel(u) }, svg(ICONS.plus), '来源'))),
+        el('button', { class: 'icon', title: t('unit.body'), 'aria-label': t('unit.body'), html: ICONS.doc, onclick: () => readUnit(u.id) }),
+        el('button', { class: 'btn primary', onclick: () => addPanel(u.path) }, svg(ICONS.plus), t('kit.source')))),
     el('p', { class: 'lede' }, u.description),
     el('div', { id: 'add-panel' }),
-    el('div', { class: 'upkeep', id: 'upkeep' }),
-    el('div', { class: 'cards', id: 'cards' }))
-  await loadCards()
+    kids.length ? [sectionTitle(t('unit.contents'), kids.length), el('div', { class: 'unit-rows' }, sorted(kids).map(unitRow))] : null,
+    withSources ? [el('div', { class: 'sources-bar', id: 'sources-bar' }), el('div', { class: 'cards', id: 'cards' })] : null)
+  if (withSources) loadCards(u.path)
+}
+
+function renderTarget(body, path) {
+  const list = outside().filter((b) => pathOf(b) === path || pathOf(b).startsWith(`${path}/`))
+  const children = new Map()
+  for (const b of list) {
+    if (pathOf(b) === path) continue
+    const key = `${path}/${pathOf(b).slice(path.length + 1).split('/')[0]}`
+    ;(children.get(key) ?? children.set(key, []).get(key)).push(b)
+  }
+  const own = list.filter((b) => pathOf(b) === path)
+  const rows = sortKey === 'sources' ? [...children].sort((a, b) => b[1].length - a[1].length) : [...children].sort((a, b) => a[0].localeCompare(b[0]))
+  fill(body,
+    el('header', { class: 'hero' }, el('span', { class: `tile lg${children.size ? ' stack' : ''}` }, svg(ICONS[children.size ? 'folder' : 'doc'], 'glyph')),
+      el('div', { style: 'min-width:0' }, el('h2', {}, path.split('/').pop()), el('div', { class: 'sub' }, el('span', { class: 'mono' }, path))),
+      el('div', { class: 'hero-actions' }, el('span', { class: 'aside' }, countChips(list)))),
+    children.size ? [sectionTitle(t('unit.contents'), children.size), el('div', { class: 'unit-rows' }, rows.map(([key, items]) => {
+      const folder = items.some((b) => pathOf(b) !== key)
+      return el('button', { class: 'unit-row', onclick: () => go({ kind: 'target', path: key }) },
+        el('span', { class: `tile${folder ? ' stack' : ''}` }, svg(ICONS[folder ? 'folder' : 'doc'], 'glyph')),
+        el('span', { class: 'body' }, el('span', { class: 'title' }, el('span', { class: 't' }, key.split('/').pop())), el('span', { class: 'sub mono' }, key)),
+        el('span', { class: 'aside' }, countChips(items)))
+    }))] : null,
+    own.length ? [el('div', { class: 'sources-bar', id: 'sources-bar' }), el('div', { class: 'cards', id: 'cards' })] : null)
+  if (own.length) loadCards(path)
 }
 
 async function readUnit(id) {
-  const open = $('#unit pre.md')
+  const open = $('#cat-body pre.md')
   if (open) return open.remove()
   const u = await api('praxis_unit', { ref: id })
-  $('#unit .lede').after(el('pre', { class: 'md' }, u.body))
+  $('#cat-body .lede').after(el('pre', { class: 'md' }, u.body))
 }
 
-// The upkeep filters are the maintenance method: each names a gap in the index and narrows the cards to it.
-const UPKEEP = [
-  ['all', '全部', () => true],
-  ['off', '未启用', (b) => !b.enabled],
-  ['uncurated', '未写说明', (b) => !b.description_curated],
-  ['unreviewed', '未 review', (b) => !b.reviews.length],
-  ['needs', '待改', (b) => b.reviews.at(-1)?.verdict === 'needs-work'],
-]
-async function loadCards(openId) {
-  const u = current
-  const list = (await api('praxis_bindings', { target: u.path, include_removed: showRemoved })).filter((b) => b.target.split('#')[0] === u.path)
-  if (current !== u) return
+// Signal pills appear only when a binding needs someone; they narrow the cards to it.
+async function loadCards(path, openId) {
+  const token = route
+  const list = (await api('praxis_bindings', { target: path, include_removed: showRemoved })).filter((b) => pathOf(b) === path)
+  if (route !== token || !$('#cards')) return
   const live = list.filter((b) => b.state !== 'removed')
-  const test = (UPKEEP.find(([k]) => k === cardFilter) || UPKEEP[0])[2]
-  $('#upkeep').replaceChildren(
-    el('h3', {}, '来源', chip(String(live.length))),
-    ...UPKEEP.slice(1).flatMap(([key, label, f]) => {
-      const n = live.filter(f).length
-      return n ? [el('button', { class: 'pill', 'aria-pressed': cardFilter === key, onclick: () => { cardFilter = cardFilter === key ? 'all' : key; loadCards() } }, label, el('b', {}, String(n)))] : []
+  fill($('#sources-bar'),
+    el('h3', {}, t('kit.source'), chip(String(live.length))),
+    SIGNALS.map((g) => {
+      const n = live.filter((b) => b.signals.includes(g)).length
+      return n ? el('button', { class: 'pill alert', 'aria-pressed': cardFilter === g, onclick: () => { cardFilter = cardFilter === g ? 'all' : g; loadCards(path) } }, t(`gap.${g}`), el('b', {}, String(n))) : null
     }),
-    el('label', { class: 'inline' }, el('input', { type: 'checkbox', class: 'toggle', checked: showRemoved, onchange: (e) => { showRemoved = e.target.checked; loadCards() } }), '已删除'))
-  const shown = list.filter((b) => b.state === 'removed' || test(b))
+    el('label', { class: 'inline' }, el('input', { type: 'checkbox', class: 'toggle', checked: showRemoved, onchange: (e) => { showRemoved = e.target.checked; loadCards(path) } }), t('card.showRemoved')))
+  const shown = list.filter((b) => b.state === 'removed' || cardFilter === 'all' || b.signals.includes(cardFilter))
     .sort((a, b) => (b.priority === 'preferred') - (a.priority === 'preferred') || b.favorite - a.favorite || b.enabled - a.enabled)
-  $('#cards').replaceChildren(...(shown.length ? shown.map((b) => card(b, b.id === openId)) : [empty('layers', list.length ? '这一项没有缺口' : '还没有挂来源')]))
+  fill($('#cards'), shown.length ? shown.map((b) => card(b, path, b.id === openId)) : empty('layers', list.length ? t('card.noGap') : t('card.empty')))
 }
 
-function card(b, open) {
+function card(b, path, open) {
   const art = el('article', { class: `card${b.enabled ? '' : ' off'}${b.state === 'removed' ? ' removed' : ''}${open ? ' open' : ''}` })
   const act = async (fn, ok) => {
-    try { const res = await fn(); toast(typeof ok === 'function' ? ok(res) : ok); await loadCards(b.id); loadTree() }
-    catch (e) { toast(e.status === 409 ? '已被他人更新，已载入最新版本' : e.message, true); if (e.status === 409) await loadCards(b.id) }
+    try { const res = await fn(); toast(typeof ok === 'function' ? ok(res) : ok); await refreshData(); await loadCards(path, b.id) }
+    catch (e) { toast(e.status === 409 ? t('toast.conflict') : e.message, true); if (e.status === 409) await loadCards(path, b.id) }
   }
   const last = b.reviews.at(-1)
-  const head = el('button', { class: 'card-head', 'aria-expanded': open, onclick: () => head.setAttribute('aria-expanded', art.classList.toggle('open')) },
+  const head = el('button', { class: 'card-head', 'aria-expanded': !!open, onclick: () => head.setAttribute('aria-expanded', art.classList.toggle('open')) },
     el('span', { class: 'card-title' }, b.title),
-    b.state === 'removed' ? chip('已删除') : b.enabled ? null : chip('未启用'),
+    b.state === 'removed' ? chip(t('card.removed')) : b.enabled ? null : chip(t('card.off')),
     svg(ICONS.down))
   art.append(head,
     el('p', { class: 'card-desc' }, b.description),
     el('div', { class: 'card-foot' },
       el('span', { class: `dot ${b.evidence_status || ''}`, title: b.evidence_status || '—' }),
-      b.priority === 'preferred' ? chip('优先', 'accent', 'up') : null,
-      b.favorite ? el('span', { class: 'fav', html: ICONS.star, title: '收藏' }) : null,
-      (b.tags || []).map((t) => chip(t, 'mono tag')),
-      b.description_curated ? null : chip('概要', 'outline'),
-      last ? chip(`r${last.revision} ${VERDICT[last.verdict] || last.verdict}`, last.verdict === 'needs-work' ? 'warn' : '') : null),
+      b.priority === 'preferred' ? chip(t('card.preferred'), 'accent', 'up') : null,
+      b.favorite ? el('span', { class: 'fav', html: ICONS.star, title: t('card.favorite') }) : null,
+      (b.tags || []).map((x) => chip(x, 'mono tag')),
+      b.signals.map((g) => chip(t(`gap.${g}`), 'warn')),
+      last ? chip(`r${last.revision} ${t(`v.${last.verdict}`)}`) : null),
     detail(b, act))
   return art
 }
@@ -697,133 +891,172 @@ function card(b, open) {
 function detail(b, act) {
   const f = (name, label, value, tag = 'input') => el('div', {}, el('label', {}, label), el(tag, { name, value: tag === 'input' ? (value ?? '') : null }, tag === 'textarea' ? (value ?? '') : null))
   const controls = b.state === 'removed'
-    ? el('div', { class: 'card-controls' }, el('button', { class: 'btn', onclick: () => act(() => api('praxis_restore', { binding: b.id, expected_revision: b.revision }), '已恢复') }, svg(ICONS.undo), '恢复'))
+    ? el('div', { class: 'card-controls' }, el('button', { class: 'btn', onclick: () => act(() => api('praxis_restore', { binding: b.id, expected_revision: b.revision }), t('toast.restored')) }, svg(ICONS.undo), t('card.restore')))
     : el('div', { class: 'card-controls' },
-      el('label', { class: 'inline', title: '启用：进入任务默认可选范围' },
-        el('button', { class: 'switch', type: 'button', role: 'switch', 'aria-checked': b.enabled, 'aria-label': '启用',
-          onclick: () => act(() => api('praxis_curate', { binding: b.id, expected_revision: b.revision, enabled: !b.enabled }), b.enabled ? '已停用' : '已启用') }), '启用'),
+      el('label', { class: 'inline', title: t('card.enableTitle') },
+        el('button', { class: 'switch', type: 'button', role: 'switch', 'aria-checked': b.enabled, 'aria-label': t('card.enable'),
+          onclick: () => act(() => api('praxis_curate', { binding: b.id, expected_revision: b.revision, enabled: !b.enabled }), b.enabled ? t('toast.disabled') : t('toast.enabled')) }), t('card.enable')),
       el('span', { class: 'grow' }),
-      el('button', { class: `icon${b.favorite ? ' on' : ''}`, 'aria-pressed': b.favorite, 'aria-label': '收藏', title: '收藏', html: b.favorite ? ICONS.star : ICONS.starOff,
-        onclick: () => act(() => api('praxis_curate', { binding: b.id, expected_revision: b.revision, favorite: !b.favorite }), b.favorite ? '已取消收藏' : '已收藏') }),
-      el('button', { class: 'icon', 'aria-label': '重取来源', title: '重取来源：内容变了就存新快照', html: ICONS.refresh,
-        onclick: () => act(() => api('praxis_refresh', { source: b.source }), (r) => r.changed ? '已存新快照，检查说明是否仍适用' : '来源内容没变') }),
-      el('button', { class: 'icon danger', 'aria-label': '删除', title: '删除（可恢复）', html: ICONS.trash,
-        onclick: () => act(() => api('praxis_remove', { binding: b.id, expected_revision: b.revision }), '已删除，可恢复') }))
+      el('button', { class: `icon${b.favorite ? ' on' : ''}`, 'aria-pressed': b.favorite, 'aria-label': t('card.favorite'), title: t('card.favorite'), html: b.favorite ? ICONS.star : ICONS.starOff,
+        onclick: () => act(() => api('praxis_curate', { binding: b.id, expected_revision: b.revision, favorite: !b.favorite }), b.favorite ? t('toast.unfav') : t('toast.fav')) }),
+      el('button', { class: 'icon', 'aria-label': t('card.refetch'), title: t('card.refetchTitle'), html: ICONS.refresh,
+        onclick: () => act(() => api('praxis_refresh', { source: b.source }), (r) => r.changed ? t('toast.snapNew') : t('toast.snapSame')) }),
+      el('button', { class: 'icon danger', 'aria-label': t('card.delete'), title: t('card.delete'), html: ICONS.trash,
+        onclick: () => act(() => api('praxis_remove', { binding: b.id, expected_revision: b.revision }), t('toast.deleted')) }))
+  if (b.state === 'removed') return el('div', { class: 'detail' }, controls)
   const u = b.usage || {}
   const form = el('form', { onsubmit: (e) => {
     e.preventDefault()
     const d = Object.fromEntries(new FormData(form))
-    const patch = { binding: b.id, expected_revision: b.revision, description: d.description.trim(), priority: d.priority,
-      tags: d.tags.split(/\s+/).filter(Boolean) }
+    const patch = { binding: b.id, expected_revision: b.revision, description: d.description.trim(), priority: d.priority, tags: d.tags.split(/\s+/).filter(Boolean) }
     if (d.problem.trim() || d.how.trim()) patch.usage = { problem: d.problem.trim(), how: d.how.trim(), conditions: d.conditions.trim() || undefined, limits: d.limits.trim() || undefined }
-    act(() => api('praxis_curate', patch), '已保存')
+    act(() => api('praxis_curate', patch), t('toast.saved'))
   } },
-    f('description', '目录说明 · 240 字内', b.description, 'textarea'),
-    el('div', { class: 'grid2' }, f('problem', '适用的问题', u.problem), f('how', '怎样取用', u.how), f('conditions', '条件', u.conditions), f('limits', '不适用或易误用', u.limits)),
+    f('description', t('f.description'), b.description, 'textarea'),
+    el('div', { class: 'grid2' }, f('problem', t('f.problem'), u.problem), f('how', t('f.how'), u.how), f('conditions', t('f.conditions'), u.conditions), f('limits', t('f.limits'), u.limits)),
     el('div', { class: 'grid2' },
-      el('div', {}, el('div', { class: 'label' }, '优先级'), el('div', { class: 'seg' }, segment('priority', [{ value: 'normal', label: '普通' }, { value: 'preferred', label: '优先', icon: ICONS.up }], b.priority === 'preferred' ? 'preferred' : 'normal'))),
-      f('tags', 'tag', (b.tags || []).join(' '))),
-    el('div', { class: 'actions' }, el('button', { class: 'btn primary', type: 'submit' }, '保存'), el('span', { class: 'meta' }, `r${b.revision} · ${b.source}`)))
+      el('div', {}, el('div', { class: 'label' }, t('f.priority')), el('div', { class: 'seg' }, segment('priority', [{ value: 'normal', label: t('f.normal') }, { value: 'preferred', label: t('f.preferred'), icon: ICONS.up }], b.priority === 'preferred' ? 'preferred' : 'normal'))),
+      f('tags', t('f.tags'), (b.tags || []).join(' '))),
+    el('div', { class: 'actions' }, el('button', { class: 'btn primary', type: 'submit' }, t('f.save')), el('span', { class: 'meta' }, `r${b.revision} · ${b.source}`)))
   const review = el('form', { class: 'actions', onsubmit: (e) => {
     e.preventDefault()
     const d = Object.fromEntries(new FormData(review))
-    act(() => api('praxis_review', { binding: b.id, verdict: d.verdict, note: d.note.trim() || undefined }), '已记录 review')
+    act(() => api('praxis_review', { binding: b.id, verdict: d.verdict, note: d.note.trim() || undefined }), t('toast.reviewed'))
   } },
-    el('div', { class: 'seg' }, segment('verdict', Object.entries(VERDICT).map(([value, label]) => ({ value, label })), 'accurate')),
-    el('input', { name: 'note', placeholder: 'review 说明', 'aria-label': 'review 说明', style: 'flex:1;min-width:160px;width:auto' }),
-    el('button', { class: 'btn', type: 'submit' }, 'review'))
-  const reviews = b.reviews.length ? el('ul', { class: 'reviews' }, b.reviews.map((r) => el('li', {}, chip(`r${r.revision}`, 'mono'), chip(VERDICT[r.verdict] || r.verdict, r.verdict === 'needs-work' ? 'warn' : 'accent'), r.by || '', r.note || ''))) : null
-  return el('div', { class: 'detail' }, controls, b.state === 'removed' ? null : [form, review, reviews,
-    el('div', { class: 'actions' }, el('button', { class: 'btn ghost', type: 'button', onclick: (e) => showSource(b.source, e.currentTarget) }, svg(ICONS.doc), '来源条目'))])
+    el('div', { class: 'seg' }, segment('verdict', VERDICTS.map((v) => ({ value: v, label: t(`v.${v}`) })), 'accurate')),
+    el('input', { name: 'note', placeholder: t('f.reviewNote'), 'aria-label': t('f.reviewNote'), style: 'flex:1;min-width:160px;width:auto' }),
+    el('button', { class: 'btn', type: 'submit' }, t('f.review')))
+  const reviews = b.reviews.length ? el('ul', { class: 'reviews' }, b.reviews.map((r) => el('li', {}, chip(`r${r.revision}`, 'mono'), chip(t(`v.${r.verdict}`), r.verdict === 'needs-work' ? 'warn' : 'accent'), r.by || '', r.note || ''))) : null
+  return el('div', { class: 'detail' }, controls, form, review, reviews,
+    el('div', { class: 'actions' }, el('button', { class: 'btn ghost', type: 'button', onclick: (e) => showSource(b.source, e.currentTarget) }, svg(ICONS.doc), t('card.entry'))))
 }
 
 async function showSource(id, anchor) {
   const s = await api('praxis_source', { id })
-  const box = el('div', { class: 'source' },
+  anchor.closest('.detail').append(el('div', { class: 'source' },
     el('div', { class: 'crumb' }, el('span', { class: `dot ${s.evidence_status}` }), s.id),
     s.url ? el('p', { class: 'meta' }, s.url) : null,
     el('p', {}, s.summary),
-    s.limits?.length ? el('p', { class: 'desc' }, '边界：' + s.limits.join('；')) : null,
+    s.limits?.length ? el('p', { class: 'desc' }, t('card.limits') + s.limits.join('；')) : null,
     s.excerpts?.length ? el('ul', { class: 'reviews' }, s.excerpts.map((x) => el('li', {}, `${x.claim}（${x.locator}）`))) : null,
-    el('p', { class: 'meta' }, `${s.card || '—'}${s.snapshot ? ' · ' + s.snapshot.path : ''}`))
-  anchor.closest('.detail').append(box)
+    el('p', { class: 'meta' }, `${s.card || '—'}${s.snapshot ? ' · ' + s.snapshot.path : ''}`)))
   anchor.remove()
 }
 
-function addPanel(u) {
+function addPanel(path) {
   const box = $('#add-panel')
   if (box.childElementCount) return box.replaceChildren()
-  const input = el('input', { placeholder: '搜索已登记的来源：标题、摘要或 tag', 'aria-label': '搜索来源' })
+  const input = el('input', { placeholder: t('attach.search'), 'aria-label': t('attach.search') })
   const results = el('ul', { class: 'search-results' })
   let timer
   input.addEventListener('input', () => { clearTimeout(timer); timer = setTimeout(async () => {
     const hits = await api('praxis_search', { query: input.value, limit: 15 })
-    results.replaceChildren(...hits.map((h) => el('li', {},
+    fill(results, hits.map((h) => el('li', {},
       el('div', { style: 'min-width:0' }, el('div', { class: 'name' }, el('span', { class: `dot ${h.evidence_status}` }), h.title), el('div', { class: 'line' }, h.summary)),
-      h.grammar_paths.includes(u.path) ? chip('已挂载')
+      h.grammar_paths.includes(path) ? chip(t('attach.done'))
         : el('button', { class: 'btn', onclick: async () => {
-          try { await api('praxis_curate', { binding: `${h.id}@${u.path}`, expected_revision: 0 }); toast('已挂载'); box.replaceChildren(); loadCards(); loadTree() }
+          try { await api('praxis_curate', { binding: `${h.id}@${path}`, expected_revision: 0 }); toast(t('attach.done')); await refreshData(); renderBody() }
           catch (err) { toast(err.message, true) }
-        } }, svg(ICONS.plus), '挂载'))))
+        } }, svg(ICONS.plus), t('attach.do')))))
   }, 200) })
-  box.replaceChildren(el('div', { class: 'attach' },
-    el('div', { class: 'attach-bar' }, el('div', { class: 'field' }, svg(ICONS.search), input),
-      el('button', { class: 'btn ghost', onclick: () => show('capture') }, '登记新来源')),
+  fill(box, el('div', { class: 'attach' },
+    el('div', { class: 'attach-bar' }, el('div', { class: 'field' }, svg(ICONS.search), input), el('button', { class: 'btn ghost', onclick: () => show('capture') }, t('attach.new'))),
     results))
   input.focus()
 }
 
+// ---- attention: what needs someone now, usually nothing. It sits at the top of the log view, and the
+// log tab carries its count; no tallies of default states.
+function openInCatalog(next) { show('catalog'); go(next) }
+async function loadAttention() {
+  if (!units.length) await refreshData()
+  const r = await api('praxis_upkeep')
+  const n = r.bindings.length + r.stale.length + r.unbound.length
+  const tab = $('.tabs button[data-view="log"]')
+  $('.badge', tab)?.remove()
+  if (n) tab.append(el('span', { class: 'badge', 'aria-label': `${t('up.attention')} ${n}` }, String(n)))
+  fill($('#attention'), el('div', { class: 'h' }, svg(ICONS.alert, 'glyph'), t('up.attention'), el('span', { class: 'count' }, String(n))),
+    n ? el('ul', { class: 'ulist' },
+      r.bindings.map((b) => el('li', {},
+        el('button', { class: 'row-link', onclick: () => openInCatalog(b.unit ? { kind: 'unit', id: b.unit } : { kind: 'target', path: b.target.split('#')[0] }) },
+          el('span', { class: 't' }, b.title), el('span', { class: 'mono' }, b.unit ?? b.target)),
+        el('span', { class: 'chips' }, b.signals.map((g) => chip(t(`gap.${g}`), 'warn'))))),
+      r.stale.map((s) => el('li', {},
+        el('span', { style: 'min-width:0' }, el('span', { class: 't' }, s.title), el('span', { class: 'line' }, t('up.stale'))),
+        el('span', { class: 'chips' }, s.units.map((x) => el('button', { class: 'chip mono jump', onclick: () => openInCatalog({ kind: 'unit', id: x }) }, x)),
+          s.bindings.map((x) => chip(x.slice(0, x.lastIndexOf('@')), 'mono outline')), s.preset ? chip(t('up.preset'), 'warn') : null))),
+      r.unbound.map(unboundRow))
+      : el('div', { class: 'empty compact' }, svg(ICONS.check), t('up.none')))
+}
+
+function unboundRow(s) {
+  const input = el('input', { list: 'unit-ids', placeholder: t('up.unitPh'), 'aria-label': t('up.attachTo') })
+  return el('li', {},
+    el('span', { style: 'min-width:0' }, el('span', { class: 'name' }, el('span', { class: `dot ${s.evidence_status}` }), el('span', { class: 't' }, s.title)), el('span', { class: 'line' }, t('up.unbound'))),
+    el('form', { class: 'attach-to', onsubmit: async (e) => {
+      e.preventDefault()
+      const u = byId.get(input.value.trim())
+      if (!u) return toast(t('kit.none'), true)
+      try { await api('praxis_curate', { binding: `${s.id}@${u.path}`, expected_revision: 0 }); toast(t('attach.done')); await refreshData(); loadAttention() }
+      catch (err) { toast(err.message, true) }
+    } }, input, el('button', { class: 'btn', type: 'submit' }, svg(ICONS.plus), t('up.attachTo'))))
+}
+
 // ---- task
-let typesLoaded = false, taskTypes = []
+let typesLoaded = false
 async function loadTaskTypes() {
   if (typesLoaded) return
   const [entry, ps] = await Promise.all([api('praxis_entry'), api('praxis_presets')])
-  taskTypes = entry.task_types
-  $('#task-types').replaceChildren(...taskTypes.map((t, i) => el('label', { class: 'opt', title: t.description },
-    el('input', { type: 'radio', name: 'task-type', value: t.id, checked: i === 0 }),
-    el('span', {}, el('span', {}, t.title), el('span', { class: 'chips' }, t.pipelines.map((p) => chip(p, 'mono', PIPELINE_ICON[p])))))))
-  $('#task-pipeline').replaceChildren(...segment('task-pipeline', [{ value: '', label: '默认', icon: ICONS.auto }, { value: 'html', label: 'html', icon: ICONS.code }, { value: 'video', label: 'video', icon: ICONS.play }], ''))
-  $('#task-preset').append(...ps.presets.map((p) => el('option', { value: p.id }, `${p.pipeline} · ${p.title}`)))
+  fill($('#task-side'),
+    el('div', { class: 'h' }, t('task.types')),
+    el('div', { class: 'opts' }, entry.task_types.map((tt, i) => el('label', { class: 'opt', title: tt.description },
+      el('input', { type: 'radio', name: 'task-type', value: tt.id, checked: i === 0 }),
+      el('span', {}, el('span', {}, tt.title), el('span', { class: 'chips' }, tt.pipelines.map((p) => chip(p, 'mono', PIPELINE_ICON[p]))))))),
+    el('div', { class: 'label' }, t('task.pipeline')),
+    el('div', { class: 'seg' }, segment('task-pipeline', [{ value: '', label: t('task.default'), icon: ICONS.auto }, { value: 'html', label: 'html', icon: ICONS.code }, { value: 'video', label: 'video', icon: ICONS.play }], '')),
+    el('label', { for: 'task-preset' }, t('task.preset')),
+    el('select', { id: 'task-preset' }, el('option', { value: '' }, t('task.presetDefault')), ps.presets.map((p) => el('option', { value: p.id }, `${p.pipeline} · ${p.title}`))))
+  $('#task-side').addEventListener('change', resolveTask)
   typesLoaded = true
-  resolve()
+  resolveTask()
 }
-for (const id of ['task-types', 'task-pipeline', 'task-preset']) $(`#${id}`).addEventListener('change', resolve)
-async function resolve() {
+async function resolveTask() {
   const out = $('#task-out')
   const type = $('input[name="task-type"]:checked')?.value
   const pipeline = $('input[name="task-pipeline"]:checked')?.value
-  if (!type) return out.replaceChildren(empty('flow', '还没有任务类型'))
+  if (!type) return fill(out, empty('flow', t('task.noTypes')))
   try {
     const r = await api('praxis_resolve', { task_type: type, pipeline: pipeline || undefined, preset: $('#task-preset').value || undefined })
-    const byLayer = (layer) => r.units.filter((u) => layerOf(u.id) === layer)
-    const flow = [...Object.keys(LAYER_NAMES).map((l) => [l, LAYER_NAMES[l], byLayer(l).length]), ['materials', 'Materials', r.materials.length]]
-    out.replaceChildren(
+    const flow = [...Object.keys(LAYER_NAMES).map((l) => [l, LAYER_NAMES[l], r.units.filter((u) => layerOf(u.id) === l).length]), ['materials', 'Materials', r.materials.length]]
+    fill(out,
       el('div', { class: 'head' },
         el('div', { class: 'crumb' }, glyph('task'), r.task_type.id, el('span', {}, '·'), r.task_type.version),
         el('h2', {}, r.task_type.title, chip(r.pipeline, 'accent mono', PIPELINE_ICON[r.pipeline])),
         el('p', { class: 'desc' }, r.task_type.outcome)),
-      el('div', { class: 'flow' }, flow.flatMap(([l, name, n], i) => [
+      el('div', { class: 'flow' }, flow.map(([l, name, n], i) => [
         i ? el('span', { class: 'link', 'aria-hidden': 'true' }) : null,
         el('div', { class: `node${n ? '' : ' dim'}` }, glyph(l), el('b', {}, String(n)), el('span', {}, name))])),
-      el('div', { class: 'section' }, el('div', { class: 'h' }, '要读的单元', el('span', { class: 'count' }, String(r.units.length))),
+      el('div', { class: 'section' }, el('div', { class: 'h' }, t('task.units'), el('span', { class: 'count' }, String(r.units.length))),
         el('ul', { class: 'ulist' }, r.units.map((u) => el('li', {},
-          el('a', { href: '#', onclick: (e) => { e.preventDefault(); show('catalog'); openUnit(u.id) } },
-            el('span', { class: 't' }, u.title), el('div', { class: 'id mono' }, u.id)),
+          el('a', { href: '#', onclick: (e) => { e.preventDefault(); openInCatalog({ kind: 'unit', id: u.id }) } }, el('span', { class: 't' }, u.title), el('div', { class: 'id mono' }, u.id)),
           el('span', { class: 'chips' }, u.reasons.map(reasonChip)))))),
-      el('div', { class: 'section' }, el('div', { class: 'h' }, '素材', el('span', { class: 'count' }, String(r.materials.length))),
+      el('div', { class: 'section' }, el('div', { class: 'h' }, t('task.materials'), el('span', { class: 'count' }, String(r.materials.length))),
         r.materials.length ? el('ul', { class: 'ulist' }, r.materials.map((m) => el('li', { title: m.description },
           el('span', { style: 'min-width:0' }, el('span', { class: 't' }, m.title), el('div', { class: 'line desc', style: 'margin:0;font-size:12px' }, m.description)),
-          el('span', { class: 'chips' }, m.priority === 'preferred' ? chip('优先', 'accent', 'up') : null, m.favorite ? el('span', { class: 'icon on', html: ICONS.star, 'aria-label': '收藏' }) : null))))
-          : el('p', { class: 'meta' }, '这些单元上没有已启用的来源')),
+          el('span', { class: 'chips' }, m.priority === 'preferred' ? chip(t('card.preferred'), 'accent', 'up') : null, m.favorite ? el('span', { class: 'fav', html: ICONS.star, title: t('card.favorite') }) : null))))
+          : el('p', { class: 'meta' }, t('task.noMaterials'))),
       r.preset ? el('div', { class: 'section' }, el('div', { class: 'h' }, svg(ICONS.sliders, 'glyph'), r.preset.title),
-        el('dl', { class: 'kv' }, Object.entries(r.preset.values).flatMap(([k, v]) => [el('dt', {}, k), el('dd', {}, valueView(k, v))]))) : null,
-      el('div', { class: 'section' }, el('div', { class: 'h' }, '验收', el('span', { class: 'count' }, String(r.task_type.acceptance.length))),
+        el('dl', { class: 'kv' }, Object.entries(r.preset.values).map(([k, v]) => [el('dt', {}, k), el('dd', {}, valueView(k, v))]))) : null,
+      el('div', { class: 'section' }, el('div', { class: 'h' }, t('task.acceptance'), el('span', { class: 'count' }, String(r.task_type.acceptance.length))),
         el('ul', { class: 'checks' }, r.task_type.acceptance.map((a) => el('li', {}, svg(ICONS.circle), a)))))
-  } catch (e) { out.replaceChildren(empty('alert', e.message)) }
+  } catch (e) { fill(out, empty('alert', e.message)) }
 }
-// Reasons read as sentences ("任务类型 技术说明 列出（html）"); the chip keeps the kind, the title keeps the sentence.
+// Core writes reasons as sentences for the agent ("任务类型 技术说明 列出（html）"); the chip keeps the kind in the
+// interface language, the title keeps the sentence.
 function reasonChip(x) {
-  const c = x === '常驻' ? chip('常驻', 'accent') : /^任务类型/.test(x) ? chip(x.includes('（') ? `类型 · ${x.match(/（(.+)）/)[1]}` : '类型') : chip(x)
+  const pipe = x.match(/^流水线 (\S+)/)
+  const type = x.match(/^任务类型 .+ 列出(?:（(.+)）)?$/)
+  const c = x === '常驻' ? chip(t('reason.resident'), 'accent') : pipe ? chip(t('reason.pipeline', { p: pipe[1] })) : type ? chip(type[1] ? `${t('reason.type')} · ${type[1]}` : t('reason.type')) : chip(x)
   c.title = x
   return c
 }
@@ -836,7 +1069,7 @@ function ratios(list) {
 }
 function valueView(k, v) {
   if (Array.isArray(v) && v.some((x) => RATIO.test(x))) return ratios(v)
-  if (typeof v === 'boolean') return chip(v ? '是' : '否', v ? 'accent' : '')
+  if (typeof v === 'boolean') return chip(v ? t('yes') : t('no'), v ? 'accent' : '')
   if (k.endsWith('_env')) return el('span', { class: 'mono' }, svg(ICONS.lock, 'glyph'), ' ', String(v))
   return Array.isArray(v) ? v.join(' ') : String(v)
 }
@@ -845,18 +1078,18 @@ function valueView(k, v) {
 let presetData = null
 async function loadPresets(selectId) {
   presetData = await api('praxis_presets')
-  $('#preset-list').replaceChildren(...Object.keys(presetData.fields).map((pipeline) => {
+  fill($('#preset-list'), Object.keys(presetData.fields).map((pipeline) => {
     const list = presetData.presets.filter((x) => x.pipeline === pipeline)
     return el('div', { class: 'group' },
       el('div', { class: 'group-head' }, svg(ICONS[PIPELINE_ICON[pipeline]] || ICONS.sliders, 'glyph'), pipeline, el('span', { class: 'count' }, String(list.length))),
       list.map((pr) => el('button', { class: 'item', 'aria-current': pr.id === selectId, onclick: () => editPreset(pr.id) },
-        pr.default ? el('span', { class: 'pin', title: '默认' }) : el('span'),
+        pr.default ? el('span', { class: 'pin', title: t('preset.isDefault') }) : el('span'),
         el('span', { style: 'min-width:0' }, el('span', { class: 't' }, pr.title), el('span', { class: 'id' }, pr.id)),
-        pr.default ? chip('默认', 'accent') : el('span'))),
-      el('button', { class: 'new', onclick: () => editPreset(null, pipeline) }, svg(ICONS.plus), `${pipeline} 预设`))
+        pr.default ? chip(t('preset.isDefault'), 'accent') : el('span'))),
+      el('button', { class: 'new', onclick: () => editPreset(null, pipeline) }, svg(ICONS.plus), t('preset.new', { p: pipeline })))
   }))
   if (selectId) editPreset(selectId)
-  else if (!$('#preset-edit').childElementCount || !$('#preset-split').classList.contains('focus')) $('#preset-edit').replaceChildren(empty('sliders', '选一个预设，或新建'))
+  else if (!$('#preset-split').classList.contains('focus')) fill($('#preset-edit'), empty('sliders', t('preset.pick')))
 }
 function editPreset(id, pipeline) {
   const pr = id ? presetData.presets.find((x) => x.id === id) : { pipeline, title: '', values: {}, tags: [], revision: 0 }
@@ -864,12 +1097,12 @@ function editPreset(id, pipeline) {
   $('#preset-split').classList.add('focus')
   const input = (f) => {
     const v = pr.values?.[f.key]
-    if (f.type === 'boolean') return el('div', { class: 'seg' }, segment(f.key, [{ value: '', label: '—' }, { value: 'true', label: '是' }, { value: 'false', label: '否' }], v === true ? 'true' : v === false ? 'false' : ''))
-    if (f.type === 'text') return el('textarea', { name: f.key, id: `pf-${f.key}`, placeholder: f.hint || '' }, v ?? '')
-    const node = el('input', { name: f.key, id: `pf-${f.key}`, value: Array.isArray(v) ? v.join(' ') : (v ?? ''), placeholder: f.hint || '', required: f.required })
+    if (f.type === 'boolean') return el('div', { class: 'seg' }, segment(f.key, [{ value: '', label: '—' }, { value: 'true', label: t('yes') }, { value: 'false', label: t('no') }], v === true ? 'true' : v === false ? 'false' : ''))
+    if (f.type === 'text') return el('textarea', { name: f.key, id: `pf-${f.key}`, placeholder: fieldHint(f) }, v ?? '')
+    const node = el('input', { name: f.key, id: `pf-${f.key}`, value: Array.isArray(v) ? v.join(' ') : (v ?? ''), placeholder: fieldHint(f), required: f.required })
     if (f.type !== 'list' || !f.key.includes('aspect')) return node
     const preview = el('div', { style: 'margin-top:8px' }, ratios(node.value.split(/\s+/)))
-    node.addEventListener('input', () => preview.replaceChildren(ratios(node.value.split(/\s+/))))
+    node.addEventListener('input', () => fill(preview, ratios(node.value.split(/\s+/))))
     return el('div', {}, node, preview)
   }
   const form = el('form', { onsubmit: async (e) => {
@@ -885,70 +1118,82 @@ function editPreset(id, pipeline) {
       const saved = await api('praxis_preset_save', { id: id || undefined, expected_revision: id ? pr.revision : undefined, pipeline: pr.pipeline,
         title: d.title.trim(), description: d.description.trim() || undefined, tags: d.tags.split(/\s+/).filter(Boolean), default: d.default === 'on', values })
       await loadPresets(saved.id)
-      toast('已保存')
-    } catch (err) { toast(err.status === 409 ? '已被他人更新，请重新打开' : err.message, true) }
+      toast(t('toast.saved'))
+    } catch (err) { toast(err.status === 409 ? t('toast.reopen') : err.message, true) }
   } },
-    el('button', { class: 'btn ghost back', type: 'button', onclick: () => { $('#preset-split').classList.remove('focus'); loadPresets() } }, svg(ICONS.back), '预设'),
+    el('button', { class: 'btn ghost back', type: 'button', onclick: () => { $('#preset-split').classList.remove('focus'); loadPresets() } }, svg(ICONS.back), t('preset.back')),
     el('div', { class: 'head' },
       el('div', { class: 'crumb' }, svg(ICONS[PIPELINE_ICON[pr.pipeline]] || ICONS.sliders, 'glyph'), id ? `${id} · r${pr.revision}` : `${pr.pipeline} · new`),
-      el('h2', {}, id ? pr.title : `新建 ${pr.pipeline} 预设`, pr.default ? chip('默认', 'accent') : null)),
+      el('h2', {}, id ? pr.title : t('preset.newTitle', { p: pr.pipeline }), pr.default ? chip(t('preset.isDefault'), 'accent') : null)),
     el('div', { class: 'section' },
       el('div', { class: 'grid2' },
-        el('div', {}, el('label', { for: 'pf-title' }, '名称'), el('input', { name: 'title', id: 'pf-title', value: pr.title, required: true })),
-        el('div', {}, el('label', { for: 'pf-desc' }, '什么时候用'), el('input', { name: 'description', id: 'pf-desc', value: pr.description ?? '' }))),
+        el('div', {}, el('label', { for: 'pf-title' }, t('preset.name')), el('input', { name: 'title', id: 'pf-title', value: pr.title, required: true })),
+        el('div', {}, el('label', { for: 'pf-desc' }, t('preset.when')), el('input', { name: 'description', id: 'pf-desc', value: pr.description ?? '' }))),
       el('div', { class: 'grid2' }, fields.map((f) => el('div', {},
-        f.type === 'boolean' ? el('div', { class: 'label' }, f.label) : el('label', { for: `pf-${f.key}` }, f.key.endsWith('_env') ? svg(ICONS.lock, 'glyph') : null, ' ', f.label, f.required ? ' *' : ''),
+        f.type === 'boolean' ? el('div', { class: 'label' }, fieldLabel(f)) : el('label', { for: `pf-${f.key}` }, f.key.endsWith('_env') ? svg(ICONS.lock, 'glyph') : null, ' ', fieldLabel(f), f.required ? ' *' : ''),
         input(f)))),
-      el('label', { for: 'pf-tags' }, 'tag'), el('input', { name: 'tags', id: 'pf-tags', value: (pr.tags || []).join(' '), placeholder: '空格分隔' }),
+      el('label', { for: 'pf-tags' }, t('f.tags')), el('input', { name: 'tags', id: 'pf-tags', value: (pr.tags || []).join(' '), placeholder: t('f.spaces') }),
       el('div', { class: 'actions' },
-        el('label', { class: 'inline' }, el('input', { type: 'checkbox', class: 'toggle', name: 'default', checked: !!pr.default }), `${pr.pipeline} 默认`),
+        el('label', { class: 'inline' }, el('input', { type: 'checkbox', class: 'toggle', name: 'default', checked: !!pr.default }), t('preset.default', { p: pr.pipeline })),
         el('span', { style: 'flex:1' }),
         id ? el('button', { class: 'btn ghost', type: 'button', onclick: async () => {
-          try { await api('praxis_preset_remove', { id, expected_revision: pr.revision }); toast('已删除，旧运行记录仍保留它的值'); $('#preset-split').classList.remove('focus'); $('#preset-edit').replaceChildren(); loadPresets() }
+          try { await api('praxis_preset_remove', { id, expected_revision: pr.revision }); toast(t('toast.presetDeleted')); $('#preset-split').classList.remove('focus'); loadPresets() }
           catch (err) { toast(err.message, true) }
-        } }, svg(ICONS.trash), '删除') : null,
-        el('button', { class: 'btn primary', type: 'submit' }, '保存'))))
-  $('#preset-edit').replaceChildren(form)
+        } }, svg(ICONS.trash), t('preset.delete')) : null,
+        el('button', { class: 'btn primary', type: 'submit' }, t('f.save')))))
+  fill($('#preset-edit'), form)
   for (const b of document.querySelectorAll('#preset-list .item')) b.setAttribute('aria-current', 'false')
 }
 
 // ---- capture
-$('#cap-status').append(...segment('evidence_status', EVIDENCE.map((s) => ({ value: s, label: s })), 'partial'))
-for (const l of document.querySelectorAll('#cap-status label')) l.prepend(el('span', { class: `dot ${$('input', l).value}` }))
-$('#cap-form').addEventListener('submit', async (e) => {
+const capField = (name, label, attrs = {}, tag = 'input') => el('div', {}, el('label', { for: `cap-${name}` }, label), el(tag, { id: `cap-${name}`, name, ...attrs }))
+const capForm = el('form', { class: 'panel', style: 'max-width: 760px; margin: 0 auto', onsubmit: async (e) => {
   e.preventDefault()
-  const d = Object.fromEntries(new FormData(e.target))
+  const d = Object.fromEntries(new FormData(capForm))
   const args = { ...d, tags: d.tags.split(/\s+/).filter(Boolean) }
   for (const k of ['url', 'locator']) if (!args[k]) delete args[k]
   try {
     const r = await api('praxis_capture', args)
-    toast(r.existing ? `已有条目：${r.source.id}` : `已登记：${r.source.id}`)
-    if (!r.existing) e.target.reset()
+    toast(r.existing ? t('toast.existing', { id: r.source.id }) : t('toast.captured', { id: r.source.id }))
+    if (!r.existing) { capForm.reset(); refreshData() }
   } catch (err) { toast(err.message, true) }
-})
+} },
+  el('button', { class: 'btn ghost', type: 'button', style: 'margin: 8px 8px 0', onclick: () => show('catalog') }, svg(ICONS.back), 'Kit'),
+  el('div', { class: 'head' }, el('div', { class: 'crumb' }, svg(ICONS.inbox, 'glyph'), 'materials / capture'), el('h2', {}, t('cap.title')), el('p', { class: 'desc' }, t('cap.lede'))),
+  el('div', { class: 'section' },
+    el('div', { class: 'grid2' }, capField('url', 'URL', { type: 'url', placeholder: 'https://' }), capField('locator', t('cap.locator'), { placeholder: t('cap.locatorPh') })),
+    capField('title', t('cap.titleField'), { required: true }),
+    capField('summary', t('cap.summary'), { required: true, placeholder: t('cap.summaryPh') }, 'textarea'),
+    el('div', { class: 'grid2' }, capField('read_scope', t('cap.scope'), { required: true, placeholder: t('cap.scopePh') }), capField('tags', t('cap.tags'), { placeholder: t('f.spaces') })),
+    el('div', { class: 'label' }, t('cap.evidence')),
+    el('div', { class: 'seg' }, EVIDENCE.map((s) => el('label', {}, el('input', { type: 'radio', name: 'evidence_status', value: s, checked: s === 'partial' }), el('span', { class: `dot ${s}` }), s))),
+    capField('limits', t('cap.limits'), { required: true, placeholder: t('cap.limitsPh') }, 'textarea'),
+    capField('revisit_when', t('cap.revisit'), { required: true }),
+    el('div', { class: 'actions' }, el('button', { class: 'btn primary', type: 'submit' }, t('cap.submit')))))
+fill($('#capture'), capForm)
 
 // ---- log
 const logCard = (icon, title, n, body) => [el('div', { class: 'h' }, svg(ICONS[icon], 'glyph'), title, el('span', { class: 'count' }, String(n))), body]
 async function loadLog() {
-  const [stale, runList, history] = await Promise.all([api('praxis_stale'), api('praxis_runs'), api('praxis_history', { limit: 60 })])
-  $('#stale').replaceChildren(...logCard('alert', '要重看的交付', stale.length, stale.length
-    ? el('ul', { class: 'ulist' }, stale.map((s) => el('li', {}, el('span', {}, el('span', { class: 't' }, s.title)),
-      el('span', { class: 'chips' }, s.units.map((x) => chip(x, 'mono')), s.bindings.map((x) => chip(x.split('@')[0], 'mono outline'))))))
-    : empty('check', '交付都与当前 Kit 一致')))
-  $('#runs').replaceChildren(...logCard('clock', '运行', runList.length, runList.length
-    ? el('ol', { class: 'timeline' }, runList.map((r) => el('li', {}, el('time', {}, r.at.slice(5, 16).replace('T', ' ')), el('span', { class: 'dot' }),
+  loadAttention()
+  const [runList, history] = await Promise.all([api('praxis_runs'), api('praxis_history', { limit: 60 })])
+  fill($('#runs'), logCard('clock', t('log.runs'), runList.length, runList.length
+    ? el('ol', { class: 'timeline' }, runList.map((r) => el('li', {}, el('time', {}, stamp(r.at)), el('span', { class: 'dot' }),
       el('div', {}, el('div', {}, r.title), el('div', { class: 'chips', style: 'margin-top:4px' },
-        chip(`${r.units.length}`, 'mono', 'layers'), chip(`${r.bindings.length}`, 'mono', 'inbox'), chip(`${r.artifacts.length}`, 'mono', 'doc'))))))
-    : empty('clock', '还没有运行')))
-  $('#history').replaceChildren(...logCard('activity', '维护', history.length, history.length
-    ? el('ol', { class: 'timeline' }, history.map((h) => el('li', {}, el('time', {}, h.at.slice(5, 16).replace('T', ' ')), el('span', { class: 'dot' }),
+        chip(`${r.units.length}`, 'mono', 'doc'), chip(`${r.bindings.length}`, 'mono', 'layers'), chip(`${r.artifacts.length}`, 'mono', 'inbox'))))))
+    : empty('clock', t('log.noRuns'))))
+  fill($('#history'), logCard('activity', t('log.history'), history.length, history.length
+    ? el('ol', { class: 'timeline' }, history.map((h) => el('li', {}, el('time', {}, stamp(h.at)), el('span', { class: 'dot' }),
       el('div', { style: 'min-width:0' }, el('span', { class: 'chips' }, chip(h.op, `op ${h.op.replace('praxis_', '')}`), h.id ? el('span', { class: 'meta' }, h.id) : null),
         h.by || h.reason ? el('div', { class: 'desc', style: 'margin-top:2px;font-size:12px' }, [h.by, h.reason].filter(Boolean).join(' · ')) : null))))
-    : empty('activity', '还没有维护')))
+    : empty('activity', t('log.noHistory'))))
 }
-ICONS.check = S('<circle cx="12" cy="12" r="8"/><path d="M8.5 12.5l2.5 2.5 4.5-5"/>')
 
-loadTree()
+loadCatalog().then(() => {
+  fill($('#unit-ids'), units.map((u) => el('option', { value: u.id }, u.title)))
+  loadAttention()
+})
+
 </script>
 </body>
 </html>

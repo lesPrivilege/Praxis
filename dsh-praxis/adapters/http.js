@@ -1,13 +1,42 @@
-// HTTP surface for the control plane: GET <prefix>/ serves the UI, POST <prefix>/api/<tool>
-// calls a tool with a JSON body. Loopback hosts only; writes need a JSON body, so a
-// cross-site form post cannot reach them.
+// HTTP surface for the control plane, as two exact routes:
+//   GET  /api/praxis       the page
+//   POST /api/praxis.call  {tool, args} → the tool's result as JSON
+// Inside DSH they register on the Connection's exact Fetch routes, so DSH's own browser trust and
+// session authentication apply on Web and Desktop alike. `serve()` runs the same handler standalone
+// on a loopback port for use without DSH.
 import { createServer } from 'node:http'
 import { readFileSync } from 'node:fs'
 import { ConflictError } from '../core/index.js'
-import { TOOLS, callTool, inputSchema } from './tools.js'
+import { callTool } from './tools.js'
+
+export const PAGE_PATH = '/api/praxis'
+export const CALL_PATH = '/api/praxis.call'
 
 const UI = new URL('../ui/index.html', import.meta.url)
 const LOOPBACK = new Set(['127.0.0.1', 'localhost', '[::1]', '::1'])
+
+const json = (status, body) => new Response(JSON.stringify(body), { status, headers: { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' } })
+
+/** One Fetch-shaped handler for both routes. Writes need a JSON body, so a cross-site form post cannot reach them. */
+export function praxisFetch(praxis, caller = 'ui') {
+  return async function fetch(request) {
+    const { pathname } = new URL(request.url)
+    if (pathname === PAGE_PATH && (request.method === 'GET' || request.method === 'HEAD')) {
+      return new Response(request.method === 'HEAD' ? null : readFileSync(UI, 'utf8'), { headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store' } })
+    }
+    if (pathname === CALL_PATH && request.method === 'POST') {
+      if (!String(request.headers.get('content-type') ?? '').startsWith('application/json')) return json(415, { error: 'JSON body required' })
+      try {
+        const { tool, args = {} } = await request.json()
+        return json(200, await callTool(praxis, tool, args, caller))
+      } catch (error) {
+        if (error instanceof ConflictError) return json(409, { error: error.message, current: error.current })
+        return json(400, { error: error.message })
+      }
+    }
+    return json(404, { error: 'not found' })
+  }
+}
 
 export function hostIsLoopback(req) {
   const raw = String(req.headers.host ?? '')
@@ -16,39 +45,18 @@ export function hostIsLoopback(req) {
   return LOOPBACK.has(name.toLowerCase())
 }
 
-function send(res, status, body, type = 'application/json; charset=utf-8') {
-  res.writeHead(status, { 'Content-Type': type, 'Cache-Control': 'no-store' })
-  res.end(typeof body === 'string' ? body : JSON.stringify(body))
-}
-
-export function createHandler(praxis, { prefix = '', caller = 'ui' } = {}) {
-  return async function handle(req, res) {
-    if (!hostIsLoopback(req)) return send(res, 403, { error: 'loopback only' })
-    const path = String(req.url ?? '').split('?')[0].slice(prefix.length) || '/'
-    if (req.method === 'GET' && (path === '/' || path === '/index.html')) {
-      return send(res, 200, readFileSync(UI, 'utf8'), 'text/html; charset=utf-8')
-    }
-    if (req.method === 'GET' && path === '/api') {
-      return send(res, 200, TOOLS.map((t) => ({ name: t.name, description: t.description, parameters: inputSchema(t), writes: !!t.writes })))
-    }
-    const m = path.match(/^\/api\/(praxis_[a-z_]+)$/)
-    if (req.method === 'POST' && m) {
-      if (!String(req.headers['content-type'] ?? '').startsWith('application/json')) return send(res, 415, { error: 'JSON body required' })
-      let body = ''
-      for await (const chunk of req) body += chunk
-      try {
-        const args = body ? JSON.parse(body) : {}
-        return send(res, 200, await callTool(praxis, m[1], args, caller))
-      } catch (error) {
-        if (error instanceof ConflictError) return send(res, 409, { error: error.message, current: error.current })
-        return send(res, 400, { error: error.message })
-      }
-    }
-    return send(res, 404, { error: 'not found' })
-  }
-}
-
 export function serve(praxis, { port = 7878, host = '127.0.0.1' } = {}) {
-  const server = createServer(createHandler(praxis, { caller: `ui:${process.env.USER ?? 'user'}` }))
+  const handle = praxisFetch(praxis, `ui:${process.env.USER ?? 'user'}`)
+  const server = createServer(async (req, res) => {
+    if (!hostIsLoopback(req)) { res.writeHead(403); return res.end() }
+    const url = new URL(req.url ?? '/', `http://${req.headers.host ?? 'localhost'}`)
+    if (url.pathname === '/') url.pathname = PAGE_PATH
+    const chunks = []
+    if (req.method === 'POST') for await (const chunk of req) chunks.push(chunk)
+    const headers = Object.entries(req.headers).filter(([, v]) => typeof v === 'string')
+    const response = await handle(new Request(url, { method: req.method, headers, body: chunks.length ? Buffer.concat(chunks) : undefined }))
+    res.writeHead(response.status, Object.fromEntries(response.headers))
+    res.end(Buffer.from(await response.arrayBuffer()))
+  })
   return new Promise((resolve) => server.listen(port, host, () => resolve(server)))
 }

@@ -13,6 +13,20 @@ export const CAPTURE_INTAKE = 'vault/intake/praxis-captures.json'
 
 const SLUG = /^[A-Za-z0-9][A-Za-z0-9._-]*$/
 
+// Signals that a binding needs someone now. Default states (no curated description, never
+// reviewed, disabled) are not signals: the source summary stands in until someone has a reason
+// to curate. `changed`: the source got a new snapshot after the binding's last review.
+export const SIGNALS = ['needs_work', 'changed']
+
+export function signalsOf(b, changedAt) {
+  const last = b.reviews.at(-1)
+  const since = changedAt?.get(b.source)
+  return [
+    last?.verdict === 'needs-work' && 'needs_work',
+    since && !(last?.at > since) && 'changed',
+  ].filter(Boolean)
+}
+
 export function bindingId(sourceId, target) {
   return `${sourceId}@${target}`
 }
@@ -131,7 +145,8 @@ export class Materials {
 
   compose(id, s, target, rec = {}, cache) {
     const active = (s?.grammar_paths ?? []).includes(target)
-    return {
+    const changed = cache ? (cache.changed ??= this.changedSources()) : this.changedSources()
+    const b = {
       id,
       source: s?.id ?? rec.source,
       target,
@@ -148,6 +163,25 @@ export class Materials {
       revision: rec.revision ?? 0,
       evidence_status: s?.evidence_status,
     }
+    b.signals = signalsOf(b, changed)
+    return b
+  }
+
+  /** Sources whose refresh found new content, with the time of the latest such snapshot. */
+  changedSources() {
+    const intake = readJson(join(this.repo, CAPTURE_INTAKE), { source_snapshots: [] })
+    const out = new Map()
+    for (const snap of intake.source_snapshots ?? []) {
+      if (snap.previous && !(out.get(snap.source_id) > snap.captured_at)) out.set(snap.source_id, snap.captured_at)
+    }
+    return out
+  }
+
+  /** Sources captured through the control plane that no unit binds yet. */
+  unboundCaptures() {
+    return this.registry().sources
+      .filter((s) => s.record_path === CAPTURE_CATALOG && !(s.grammar_paths ?? []).length)
+      .map((s) => ({ id: s.id, title: s.title, summary: clip(s.summary ?? '', 160), evidence_status: s.evidence_status, purpose_tags: s.purpose_tags ?? [] }))
   }
 
   /** Curate a binding. Creating one (a new target) also adds the target to the source's grammar_paths. */

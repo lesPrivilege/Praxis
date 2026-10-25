@@ -1,7 +1,7 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { createServer } from './mcp.js'
-import { createHandler, hostIsLoopback } from './http.js'
+import { CALL_PATH, PAGE_PATH, hostIsLoopback, praxisFetch } from './http.js'
 import { TOOLS, inputSchema } from './tools.js'
 import { apply, entryText } from './dsh.js'
 
@@ -44,45 +44,42 @@ test('MCP: initialize, list, call, errors', async () => {
   assert.equal(out[5].result.protocolVersion, '2026-07-28')
 })
 
-function fakeReq(method, url, body, headers = {}) {
-  const chunks = body ? [Buffer.from(JSON.stringify(body))] : []
-  return { method, url, headers: { host: '127.0.0.1:7878', 'content-type': 'application/json', ...headers }, async *[Symbol.asyncIterator]() { yield* chunks } }
-}
-function fakeRes() {
-  const res = { status: 0, body: '', writeHead(s) { res.status = s }, end(b) { res.body = String(b ?? '') } }
-  return res
-}
+const call = (body, headers = { 'content-type': 'application/json' }) => new Request(`http://dsh${CALL_PATH}`, { method: 'POST', headers, body: JSON.stringify(body) })
 
-test('HTTP: UI, tool calls, loopback and JSON guards', async () => {
-  const handle = createHandler(fake, { prefix: '/praxis' })
-  let res = fakeRes(); await handle(fakeReq('GET', '/praxis/'), res)
-  assert.equal(res.status, 200); assert.match(res.body, /Praxis 控制面/)
-  res = fakeRes(); await handle(fakeReq('POST', '/praxis/api/praxis_resolve', { task_type: 'x' }), res)
+test('HTTP: page and call routes, JSON guard, errors', async () => {
+  const fetch = praxisFetch(fake)
+  let res = await fetch(new Request(`http://dsh${PAGE_PATH}`))
+  assert.equal(res.status, 200); assert.match(await res.text(), /Praxis 控制面/)
+  res = await fetch(call({ tool: 'praxis_resolve', args: { task_type: 'x' } }))
   assert.equal(res.status, 200)
   assert.deepEqual(calls.at(-1), ['resolve', { task_type: 'x' }])
-  res = fakeRes(); await handle(fakeReq('POST', '/praxis/api/praxis_resolve', {}, { host: 'evil.example:7878' }), res)
-  assert.equal(res.status, 403)
-  res = fakeRes(); await handle(fakeReq('POST', '/praxis/api/praxis_resolve', {}, { 'content-type': 'text/plain' }), res)
+  res = await fetch(call({ tool: 'praxis_resolve' }, { 'content-type': 'text/plain' }))
   assert.equal(res.status, 415)
-  res = fakeRes(); await handle(fakeReq('POST', '/praxis/api/praxis_nope', {}), res)
+  res = await fetch(call({ tool: 'praxis_nope' }))
   assert.equal(res.status, 400)
+  res = await fetch(new Request(`http://dsh${CALL_PATH}`))
+  assert.equal(res.status, 404)
   assert.equal(hostIsLoopback({ headers: { host: '[::1]:80' } }), true)
+  assert.equal(hostIsLoopback({ headers: { host: 'evil.example:7878' } }), false)
 })
 
-test('DSH plugin registers every tool and adds a short entry section', async () => {
+test('DSH plugin registers every tool, two Connection routes and a prompt section', async () => {
   const tools = []
-  const handlers = {}
   const routes = []
+  const sections = []
   const ctx = {
     tools: { register: (t) => tools.push(t) },
-    on: (event, fn) => { handlers[event] = fn },
-    webServer: { register: (r) => routes.push(r) },
+    connection: { fetch: { register: (r) => { routes.push(r); return async () => {} } } },
+    systemPrompt: { section: (s) => { sections.push(s); return () => {} } },
     effect: (fn) => fn(),
   }
   apply(ctx, { root: new URL('../..', import.meta.url).pathname })
   assert.equal(tools.length, TOOLS.length)
-  assert.equal(routes[0].path, '/praxis')
-  const assembled = await handlers['system-prompt/assemble'](null, null, async () => ({ sections: [] }))
-  assert.equal(assembled.sections[0].name, 'praxis:entry')
-  assert.ok(entryText(fake).includes('task/types/x'.replace('task/types/', '')))
+  assert.deepEqual(routes.map((r) => [r.path, r.methods]), [[PAGE_PATH, ['GET', 'HEAD']], [CALL_PATH, ['POST']]])
+  assert.equal(tools.find((t) => t.name === 'praxis_units').isConcurrencySafe(), true)
+  assert.equal(tools.find((t) => t.name === 'praxis_curate').isConcurrencySafe, undefined)
+  await assert.rejects(tools.find((t) => t.name === 'praxis_unit').execute({ ref: 'no/such/unit' }), /unknown unit/)
+  assert.equal(sections[0].name, 'praxis:entry')
+  assert.match(sections[0].text(), /praxis_resolve/)
+  assert.ok(entryText(fake).includes('x（html）'))
 })

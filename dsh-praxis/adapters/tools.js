@@ -138,6 +138,12 @@ export const TOOLS = [
     writes: true,
   },
   {
+    name: 'praxis_upkeep',
+    description: '现在需要人处理的事，通常为空：review 结论为待改（needs_work）或来源在上次 review 后变了（changed）的挂载、交付后所用单元或挂载又改过的运行、新登记还没挂到单元的来源。未写说明、未 review 是默认状态，不列。',
+    parameters: {},
+    run: (p) => p.upkeep(),
+  },
+  {
     name: 'praxis_consume',
     description: '记录一次实际工作用了哪些单元、挂载和来源（按当前版本），以及产出了哪些产物。交付前调用。',
     parameters: { title: str('这次工作'), task_type: str('任务类型 ID'), pipeline: str('html 或 video'), preset: str('用的预设 ID'), overrides: { type: 'object', description: '这次对预设的临时改动' }, units: list('读过的单元'), bindings: list('用过的挂载 ID'), sources: list('用过的来源 ID'), artifacts: list('产物的仓库路径'), note: str('说明'), by: who.by },
