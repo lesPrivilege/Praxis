@@ -7,7 +7,7 @@ import { fileURLToPath } from 'node:url'
 import { Kit, LAYERS, clip } from './kit.js'
 import { Materials } from './materials.js'
 import { Artifacts } from './artifacts.js'
-import { DELIVERED, Projects, TEMPLATES } from './projects.js'
+import { ALLOWED, Projects, TEMPLATES } from './projects.js'
 import { Collection, readJson } from './store.js'
 import { PRESET_FIELDS, presetId, validatePreset } from './presets.js'
 
@@ -421,7 +421,7 @@ function summarize(id, rec, artifacts, staleRuns, projects) {
   const review = rec.reviews.filter((r) => r.version === rec.versions.length).at(-1) ?? null
   const home = projects.of(rec.path)
   const role = home ? projects.role(home.project, home.path) : undefined
-  const signals = [status === 'missing' && 'missing', review?.verdict === 'needs-work' && 'needs_work', !DELIVERED.includes(role) && 'misplaced'].filter(Boolean)
+  const signals = [status === 'missing' && 'missing', review?.verdict === 'needs-work' && 'needs_work', !ALLOWED.includes(role) && 'misplaced'].filter(Boolean)
   return {
     id, title: rec.title, description: rec.description, medium: rec.medium, path: rec.path, absolute: artifacts.absolute(rec.path),
     project: home ? { id: home.project.id, title: home.project.title } : undefined, project_path: home?.path, role,

@@ -218,6 +218,8 @@ test('refresh checks upstream by hash without storing content; keep saves a snap
   assert.deepEqual(p.materials.binding(BIND).signals, ['changed'])
   const kept = await p.materials.refresh(SRC, { fetchImpl, keep: true })
   assert.ok(existsSync(join(root, kept.snapshot.path)))
+  assert.ok(kept.snapshot.path.startsWith('vault/snapshots/praxis-captures/'), 'kept snapshots live under the captures folder')
+  assert.deepEqual(readFileSync(join(root, kept.snapshot.path), 'utf8'), '<html>v2</html>')
   assert.equal(p.materials.source(SRC).snapshot.sha256, kept.check.sha256)
   assert.equal((await p.materials.refresh(SRC, { fetchImpl, keep: true })).snapshot, undefined, 'the same bytes are not kept twice')
   up = false
@@ -424,6 +426,26 @@ test('a project source index is registered by reference, related through its reg
   p.materials.registerIndex({ ...reg, title: '改名' })
   assert.deepEqual(p.materials.listBindings({ source: 'proj-research:A-01' }).map((b) => b.description), ['控件页取它的计价说法'], 'registering again keeps relations')
   assert.ok(p.resolve({ task_type: 'explainer' }).materials.some((m) => m.source === 'proj-research:A-01'))
+})
+
+test('projects: evidence is allowed and tmp ignored; layouts without those roles are filled from the template', () => {
+  const { root, p } = setup()
+  for (const d of ['evidence', 'tmp', 'out']) mkdirSync(join(root, 'work/ev', d), { recursive: true })
+  writeFileSync(join(root, 'work/ev/evidence/receipt.md'), '# 回执\n')
+  writeFileSync(join(root, 'work/ev/tmp/scratch.txt'), 'x')
+  writeFileSync(join(root, 'work/ev/out/a.html'), '<p>a</p>')
+  const ev = p.saveProject({ expected_revision: 0, root: 'work/ev', title: 'Ev', purpose: '回执测试', layout: { final: ['out/*.html'] } })
+  assert.deepEqual([ev.layout.evidence, ev.layout.tmp, ev.unregistered], [['evidence/**'], ['tmp/**'], ['out/a.html']], 'evidence files are never unregistered finals')
+  assert.throws(() => p.saveProject({ id: 'ev', expected_revision: ev.revision, layout: { scratch: ['x/**'] } }), /layout role must be/)
+  const run = p.consume({ title: '回执', artifacts: ['work/ev/evidence/receipt.md', 'work/ev/out/a.html'] })
+  assert.equal(run.artifacts.length, 2)
+  const roles = Object.fromEntries(p.artifactList({ project: 'ev' }).map((a) => [a.project_path, [a.role, a.signals]]))
+  assert.deepEqual(roles, { 'evidence/receipt.md': ['evidence', []], 'out/a.html': ['final', []] })
+  assert.equal(p.projects.role(p.projects.get('ev'), 'tmp/scratch.txt'), 'tmp')
+  // a project registered before these roles existed gains them on its next save
+  const old = p.projects.store.update('ev', ev.revision, (cur) => ({ ...cur, layout: { draft: ['draft/**'], build: ['build/**'], final: ['out/*.html'] } }), { op: 'project' })
+  const again = p.saveProject({ id: 'ev', expected_revision: old.revision, title: 'Ev 2' })
+  assert.deepEqual([again.layout.evidence, again.layout.final], [['evidence/**'], ['out/*.html']])
 })
 
 test('projects: deliverables live in a registered project; the layout says where drafts and finals go', () => {

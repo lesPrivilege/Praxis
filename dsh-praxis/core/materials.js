@@ -447,8 +447,9 @@ export class Materials {
     let snapshot
     if (bytes && keep && s.snapshot?.sha256 !== sha) {
       const slug = s.id.slice(s.id.indexOf(':') + 1).replace(/[^A-Za-z0-9._-]/g, '-')
-      const ns = s.id.slice(0, s.id.indexOf(':'))
-      const rel = `vault/snapshots/local/praxis/${ns}/${slug}/${at.slice(0, 10)}-${sha.slice(0, 12)}${extFor(contentType ?? '')}`
+      const name = new URL(s.url).pathname.split('/').filter(Boolean).at(-1)?.replace(/[^A-Za-z0-9._-]/g, '-').replace(/^\.+/, '') || 'index.html'
+      let rel = `vault/snapshots/praxis-captures/${slug}/${name}`
+      if (existsSync(join(this.repo, rel))) rel = `vault/snapshots/praxis-captures/${slug}/${sha.slice(0, 12)}-${name}` // an older version stays where it is
       mkdirSync(dirname(join(this.repo, rel)), { recursive: true })
       writeFileSync(join(this.repo, rel), bytes)
       snapshot = { path: rel, sha256: sha, status: 'captured', size_bytes: bytes.length, previous: s.snapshot?.path ?? null }
@@ -522,16 +523,6 @@ function slugify(title, fallback) {
   const ascii = title.normalize('NFKD').replace(/[^\x00-\x7f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
   if (ascii.length >= 3) return ascii.slice(0, 60).replace(/-$/, '')
   return 'src-' + createHash('sha256').update(fallback).digest('hex').slice(0, 10)
-}
-
-function extFor(type) {
-  if (type.includes('html')) return '.html'
-  if (type.includes('json')) return '.json'
-  if (type.includes('pdf')) return '.pdf'
-  if (type.includes('png')) return '.png'
-  if (type.includes('jpeg')) return '.jpg'
-  if (type.includes('svg')) return '.svg'
-  return '.txt'
 }
 
 function captureCatalog() {

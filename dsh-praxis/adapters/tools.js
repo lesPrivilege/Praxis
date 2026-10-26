@@ -184,11 +184,11 @@ export const TOOLS = [
   },
   {
     name: 'praxis_project',
-    description: '登记或修改一个项目。新登记填 expected_revision 0；布局从模板开始（standard：draft/** 放底稿，build/** 放中间产物，out/** 放最终产物），layout 里给出的角色替换模板对应的路径模式（相对项目根的 glob）。产物只能登记在已登记项目的目录里，底稿与最终产物应落在布局约定的位置；Praxis 不移动文件。',
+    description: '登记或修改一个项目。新登记填 expected_revision 0；布局从模板开始（standard：draft/** 放底稿，build/** 放中间产物，out/** 放最终产物，evidence/** 放验收回执与留存帧（进 Git），tmp/** 放临时文件（不进 Git）；evidence 里的文件不算错放，tmp 不被检查），layout 里给出的角色替换模板对应的路径模式（相对项目根的 glob）。产物只能登记在已登记项目的目录里，底稿与最终产物应落在布局约定的位置；Praxis 不移动文件。',
     parameters: {
       id: str('项目 ID；新登记可省略，由名称生成'), expected_revision: num('读取时的 revision；新登记填 0'),
       root: str('项目根目录'), title: str('名称'), purpose: str('这个项目做什么'), template: str('布局模板：standard'),
-      layout: { type: 'object', description: '按角色给出路径模式，替换模板对应部分', properties: { draft: list('底稿'), build: list('中间产物'), final: list('最终产物') } },
+      layout: { type: 'object', description: '按角色给出路径模式，替换模板对应部分', properties: { draft: list('底稿'), build: list('中间产物'), final: list('最终产物'), evidence: list('验收回执与留存帧'), tmp: list('临时文件') } },
       state: str('active 或 removed'), by: who.by, reason: who.reason,
     },
     required: ['expected_revision'],
@@ -197,7 +197,7 @@ export const TOOLS = [
   },
   {
     name: 'praxis_artifacts',
-    description: '列出交付过的产物（最近变动在前）：名称、媒介、路径、当前版本、文件状态（current / modified 有未登记改动 / missing 找不到）、basis_changed（产出最新版本的运行所用的单元、挂载、来源或预设之后改过）、所属项目与在项目里的角色（draft、build、final）、最新版本的最近一次 review，以及需要处理的信号（missing 记录找不到文件、needs_work 最新版 review 待改、misplaced 不在任何项目里或不在项目约定的底稿与最终产物位置）。',
+    description: '列出交付过的产物（最近变动在前）：名称、媒介、路径、当前版本、文件状态（current / modified 有未登记改动 / missing 找不到）、basis_changed（产出最新版本的运行所用的单元、挂载、来源或预设之后改过）、所属项目与在项目里的角色（draft、build、final、evidence、tmp）、最新版本的最近一次 review，以及需要处理的信号（missing 记录找不到文件、needs_work 最新版 review 待改、misplaced 不在任何项目里或不在项目约定的底稿、最终产物与 evidence 位置）。',
     parameters: { query: str('名称、说明或路径里的关键词'), medium: str('html、text、image、pdf、video、audio 等'), signal: str('missing、needs_work、misplaced，或 basis_changed'), project: str('项目 ID'), include_removed: bool('包括已移除的'), limit: num('条数，默认 50') },
     run: (p, a) => p.artifactList(a),
   },
