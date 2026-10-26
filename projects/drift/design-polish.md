@@ -1,6 +1,6 @@
 # Drift · Opus polish 交付说明
 
-状态：已执行，待 Astra 验收。日期：2026-10-05。输入是 [Opus 设计交接](design-handoff.md)与[产品说明](product.md)；改动限于 [index.html](index.html)、[style.css](style.css)、[app.js](app.js) 的展示部分和 [verify.py](verify.py)，后端、接口、存储与比较逻辑没有动。
+状态：已执行，待 Astra 验收。日期：2026-10-05。输入是 Opus 设计交接与[产品说明](product.md)；改动限于 [index.html](index.html)、[style.css](style.css)、[app.js](app.js) 的展示部分和 [verify.py](verify.py)，后端、接口、存储与比较逻辑没有动。
 
 ## 改动
 
@@ -177,3 +177,5 @@ python3 scripts/validate_repository.py
 2. “本地采集器”与“本机服务端”的定名。
 3. 交接里列出的 `--quiet`、`--amber-bg`、`--green` 已删；后续字段若需要“正常”色，再按用途加回。
 4. 后续字段接入时，读数走 `readingHTML` 的字段表 `fieldLabels`，状态走 `phaseKind`，不需要新增组件。
+
+2026-10-26：本文提到的 `design-handoff.md` 已按 ADR-044 删除，结论以本文和回执为准；登记见 `docs/governance/retired-paths.json`。

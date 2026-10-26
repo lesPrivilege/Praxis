@@ -2,7 +2,7 @@
 
 2026-10-12，主代理。2426–3121 秒，11 场；原生 1920×1080，无声。
 
-时间轴由 `performance.now` 与 requestAnimationFrame 连续推进，没有跳过保持时间。实际运行 695.023 秒，41,701 次动画帧回调，142 张 PNG。原始目标时刻与截图实际时刻见 [日志](playback-part4/capture-log.json)，可重建 [采集程序](playback-part4/capture.py)。这是完整分段时轴运行加阶段图像观察；并非人类对每一帧的连续感知，也没有 PM 受众测试。
+时间轴由 `performance.now` 与 requestAnimationFrame 连续推进，没有跳过保持时间。实际运行 695.023 秒，41,701 次动画帧回调，142 张 PNG。原始目标时刻与截图实际时刻见 日志，可重建 采集程序。这是完整分段时轴运行加阶段图像观察；并非人类对每一帧的连续感知，也没有 PM 受众测试。
 
 主代理实际查看 26 张原生图：Artifact 五个稳定阶段、九个普通场最终态、闭环十个稳定阶段、Artifact 发布转场的两个中间帧。没有把保存的其余图像算成已逐帧人工审阅。五个 Artifact 阶段从工作文件、JF1、JA1、读取记录到下载，文件名始终是 review-v3.md；闭环继续引用同一 R2/T2 与 JS1/JF1/JA1。
 
@@ -25,3 +25,5 @@
 此段运行后仅SSE与structured场修订，二者都在本段之前；本段机制、文字与3121秒终点不变。最终媒体比对与仓库验收另列，不以此记录替代。
 
 返回 [质量目录](README.md)。
+
+2026-10-26：本文提到的 `playback-part4/capture-log.json`、`playback-part4/capture.py` 已按 ADR-044 删除，结论以本文和回执为准；登记见 `docs/governance/retired-paths.json`。

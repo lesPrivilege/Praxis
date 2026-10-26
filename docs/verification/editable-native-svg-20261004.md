@@ -7,7 +7,7 @@
 - [项目入口](../../projects/editable-native-svg/README.md)、[覆盖](../../projects/editable-native-svg/coverage.md) / [机器登记](../../projects/editable-native-svg/catalog.json)：44 项需求，22 独立关系候选、14 组合、8 暂不抽取；编辑维度、压力边界、拒用条件、组合依赖和逐项依据已登记。
 - [可编辑合同](../../projects/editable-native-svg/delivery-contract.md)：语义/DOM 身份、文字与几何、多实例引用、容器、长标签、等效文本、Motion、许可、安全与编辑器往返的候选要求。
 - [发现与可视索引设计](../../projects/editable-native-svg/discovery.md)、[反例/验收](../../projects/editable-native-svg/acceptance.md)、[六组合成输入](../../projects/editable-native-svg/fixtures.json)：包含材料/事项/旧阅读依据的独立版本反例；Flash 的新内容消费规格未执行。
-- [五批工单](../../projects/editable-native-svg/work-orders.md) / [fresh Opus 最小交接](../../projects/editable-native-svg/wake-opus.md)：按现有手动唤醒体例保存，全部未开工，视觉裁决留 Opus。
+- [五批工单](../../projects/editable-native-svg/work-orders.md) / fresh Opus 最小交接：按现有手动唤醒体例保存，全部未开工，视觉裁决留 Opus。
 - [研究](../../vault/distilled/editable-native-svg-20261004/README.md)、[intake](../../vault/intake/editable-native-svg-20261004.json)、[来源卡](../../vault/provenance/editable-native-svg-20261004/README.md)：18 个 URL 的身份/摘要/访问范围，15 个相关文字读取、1 个仅目录、2 个访问失败；五张实际查看的既有截图有 hash。
 
 Kit 只给 Design README 增加一条需求触发的发现链接，没有加入候选实现或新规范；demos/Vault/intake/研究/来源/验收入口同步挂接。来源卡与 registry 按既有脚本生成；未修改旧来源/快照/项目实现，未建立 SVG taxonomy、共享 runtime 或新 ADR。知识条目、优先参考与共享运行组件各沿既有不同准入。
@@ -43,3 +43,5 @@ Kit 只给 Design README 增加一条需求触发的发现链接，没有加入�
 ## 后续
 
 同日，一个新的 Claude Opus 5.5 会话在 `9514ce4` 上应用了本登记包并交付 SVG-01，回执另见 [SVG-01 验收回执](../../projects/editable-native-svg/svg-01-relations/acceptance.md)。上文“未运行项”描述的是登记轮结束时的状态，没有改写。
+
+2026-10-26：本文提到的 `../../projects/editable-native-svg/wake-opus.md` 已按 ADR-044 删除，结论以本文和回执为准；登记见 `docs/governance/retired-paths.json`。

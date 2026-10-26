@@ -6,7 +6,7 @@
 - 根 README 收成一张五行表，第一性原理正文移到 [架构理由](docs/architecture/rationale.md#goal-与第一性原理)，研究与维护入口移到 [docs](docs/README.md)。新建 [projects 索引](projects/README.md)，按知识与教材、讲解页与看板、视频、设计语法工场分组。
 - 新建 gitignored 的 `work/`，根目录四个 capture 原件移入；`AGENTS.md` 加一句去处。validator 加根目录白名单与项目布局两道门：不在白名单的根条目报错，已登记项目里不落在任何布局角色的文件报 `misplaced` 警告（当前 131 条，都是老项目，`layout_enforced` 为 true 才升为错误）。
 - 控制面登记：jev、dsh-praxis-explainer 改 root；books、tally、palantir、saas-engineering-textbook 新登记。books 与 textbook 的最终产物尚未逐件登记，`praxis_projects` 的 `unregistered` 列出它们。
-- 清理：删除 drift 根级 12 张可重跑的截图与 2 个结构 JSON（回执 `acceptance-20261005` 保留）、agentscope 一份失败转码脚本。各项目的交接稿、唤醒 prompt 与取帧目录被 README、ADR 或回执引用，留待用户逐项决定，清单在验收回执。
+- 清理：删除 drift 根级 12 张可重跑的截图与 2 个结构 JSON（回执 `acceptance-20261005` 保留）、agentscope 一份失败转码脚本。同日用户裁定再删 11 组过程性文件（取帧目录、交接稿、唤醒 prompt、已执行工单，约 230 M，27 个路径）：登记在 [retired-paths.json](docs/governance/retired-paths.json)，31 个文件的链接改为纯文字并注明删除，ADR 原文不动，validator 放行 ADR 指向退役路径的链接。清单见 [回执](docs/verification/repository-layout-20261026.md)。
 - 未做：`dsh-praxis/kit` 归并 `kit/`、`dsh-praxis` 改名 `control/`（第三阶段，插件正在另一会话测试）；`demos/quant-fieldguide` 在途，完成后迁入。
 
 ## 2026-10-26 · 目录治理方案：ADR-044 草案与迁移工单
@@ -27,7 +27,7 @@
 
 ## 2026-10-25 · dsh-praxis 项目与产物位置；下一轮工单
 
-- [下一轮工单](dsh-praxis/work-order.md)：先自用跑通（A1 项目与产物、A2 管线、A3 worker 自主消费、A4 名册维护），再拆出 release（B1–B7）。设计原则写在工单开头：名册登记链接与功效，不收录原件正文；经渐进目录逐级展开，是否打开原件由模型决定；消费过的留本地记录；链接随上游同步、增减淘汰。上一轮工单改名为 [work-order-artifacts](dsh-praxis/work-order-artifacts.md)。
+- [下一轮工单](dsh-praxis/work-order.md)：先自用跑通（A1 项目与产物、A2 管线、A3 worker 自主消费、A4 名册维护），再拆出 release（B1–B7）。设计原则写在工单开头：名册登记链接与功效，不收录原件正文；经渐进目录逐级展开，是否打开原件由模型决定；消费过的留本地记录；链接随上游同步、增减淘汰。上一轮工单改名为 work-order-artifacts。
 - A1：项目是带布局的目录（底稿、中间产物、最终产物各按 glob，从模板开始），产物属于包含它的最深项目；consume 拒收项目外的文件；upkeep 只报两种例外：产物不在约定位置（`misplaced`）、最终产物路径里有没登记的文件。新增 `praxis_projects`、`praxis_project`；控制面的产物按项目分组。取舍见 [ADR-041](docs/decisions/041-dsh-praxis-projects.md)。
 - 三个试点（jev、Palantir 书单系列、技术说明页）登记，不搬文件，找出 14 条例外并按用户指示处理：7 件非交付件的产物记录移除（可恢复），7 个成片一次登记；26 项测试、探针 14 项通过，见 [回执](docs/verification/dsh-praxis-projects-20261025.md)。
 
@@ -147,7 +147,7 @@
 - [成文原理](dsh-praxis/kit/writing/principles.md)第 6 条：术语取目标读者之间最稳定的说法；在 AI 与 agent 这类术语主要以英文流通的领域用英文原词，不临时造译名，首次出现时交代含义。[审阅方法](dsh-praxis/kit/writing/review.md)偏差表加一行。兼容扩展，强度不变。见 [ADR-031](docs/decisions/031-stable-terms-and-explainer-page.md)。
 - Write / Publish 新增 [讲解页的编排](dsh-praxis/kit/publish/html/explainer.md)：每个局部回答四问、四层的可见性、事实底稿、可调之处与反例。可取用的参考，不是必经步骤。
 - [成立程度的标记](dsh-praxis/kit/design/foundations/standing.md)可调情形加一句：交互图里强调色可作“当前选中”。
-- 新增演示 [DeerFlow 怎样工作](projects/deerflow-explainer/README.md)；稳定语义的记号、控件与运动写成 [工单](projects/editable-native-svg/claude-design-order-20261012.md)，交给独立的 ClaudeDesign。
+- 新增演示 [DeerFlow 怎样工作](projects/deerflow-explainer/README.md)；稳定语义的记号、控件与运动写成 工单，交给独立的 ClaudeDesign。
 - 交付收进 Design 的 [记号、控件与运动](dsh-praxis/kit/design/marks/README.md)：57 个原生 SVG 记号、11 个控件、10 种运动，grammar 与这一版画法分开；normal/reference，按需取用。讲解页的系统全景图取用了 18 个记号，效果与缺口记在该包的 [检查与取用记录](dsh-praxis/kit/design/marks/checks.md)。见 [ADR-032](docs/decisions/032-semantic-marks-library.md)。
 ## 2026-10-12 · AgentScope 企业线视频与封面交付
 

@@ -2,7 +2,7 @@
 
 Drift 按“读到值 → 理解含义 → 比较变化”组织观测。概览显示当前读数、状态、来源与采集时间；字段详情解释读取方法；选定基线后，可逐项比较后续记录。评分暂不作为前置条件。
 
-[产品说明与字段计划](product.md)维护现行术语、已实现字段和待补维度；[polish 验收与 grammar 增补](design-acceptance.md)维护当前裁决和独立验证；[Opus 设计交接](design-handoff.md)与[原交付说明](design-polish.md)保留施工输入和作者回执。
+[产品说明与字段计划](product.md)维护现行术语、已实现字段和待补维度；[polish 验收与 grammar 增补](design-acceptance.md)维护当前裁决和独立验证；Opus 设计交接与[原交付说明](design-polish.md)保留施工输入和作者回执。
 
 [Praxis Pages](pages.md)采用仅手动触发的发布流程，当前静态发布包为合成演示；公网真实观测 API 后续按独立契约接入。
 
@@ -90,3 +90,5 @@ python3 scripts/validate_repository.py
 其他 OS、其他浏览器、200% 缩放、VoiceOver、长期运行、数据库归属正确性与业务采用尚未验收。外部源码有固定 commit 摘录与本地 hash，网页摘录不等于完整站点离线快照；Pages 部署也未与固定 commit 建立对应关系。迁移指南仍是独立研究登记，没有执行迁移操作。
 
 </details>
+
+2026-10-26：本文提到的 `design-handoff.md` 已按 ADR-044 删除，结论以本文和回执为准；登记见 `docs/governance/retired-paths.json`。

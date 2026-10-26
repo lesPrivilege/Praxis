@@ -1,6 +1,6 @@
 # dsh-praxis 产物登记与取用 · 2026-10-25
 
-基线：`eb00ef7`（含 [整合包验收](dsh-praxis-acceptance-20261025.md)五项修复与 Kit 清理）。按 [下一轮工单](../../dsh-praxis/work-order-artifacts.md)施工，取舍见 [ADR-039](../decisions/039-dsh-praxis-artifacts.md)。
+基线：`eb00ef7`（含 [整合包验收](dsh-praxis-acceptance-20261025.md)五项修复与 Kit 清理）。按 下一轮工单施工，取舍见 [ADR-039](../decisions/039-dsh-praxis-artifacts.md)。
 
 ## 已验证
 
@@ -54,3 +54,5 @@ DSH 里的一名 agent 以本插件为工具做了一份技术说明页（`proje
 ## 覆盖边界
 
 重启后的 DSH 桌面没有运行过；没有真实模型在当前代码上调用 consume 登记产物；没有并发压力测试；旧运行投影后，modified 的 4 件按设计不进维护清单。
+
+2026-10-26：本文提到的 `../../dsh-praxis/work-order-artifacts.md` 已按 ADR-044 删除，结论以本文和回执为准；登记见 `docs/governance/retired-paths.json`。

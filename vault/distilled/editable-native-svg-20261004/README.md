@@ -30,7 +30,7 @@
 - S08/S12：Mermaid [flowchart](https://mermaid.js.org/syntax/flowchart.html)与 [accessibility](https://mermaid.js.org/config/accessibility.html)提供关系 DSL 与 accTitle/accDescr 入口。可作为输入机制参考；不能把官方示例的 loose securityLevel 当安全默认。
 - S13：Remotion [useCurrentFrame](https://www.remotion.dev/docs/use-current-frame)提供 frame 输入。项目沿用已有显式时间驱动/seek 的方向，Motion 只在有时间任务时适配。
 - S14：D3 shape [LICENSE](https://github.com/d3/d3-shape/blob/main/LICENSE)文字为 ISC；适用范围只到这个访问时文件。其他库、数据、字体和具体复用提交许可尚未核查。
-- S15/S16：官方 [模型配置](https://code.claude.com/docs/en/model-config) / [CLI](https://code.claude.com/docs/en/cli-reference)支持报告 `claude --model opus` 的新会话路径；本环境 PATH 未找到 CLI，未查认证或调用，详见 [启动交接](../../../projects/editable-native-svg/wake-opus.md)。
+- S15/S16：官方 [模型配置](https://code.claude.com/docs/en/model-config) / [CLI](https://code.claude.com/docs/en/cli-reference)支持报告 `claude --model opus` 的新会话路径；本环境 PATH 未找到 CLI，未查认证或调用，详见 启动交接。
 
 S17 的 Remotion `/docs/svg` 与 S18 的 Mermaid securityLevel schema 路径均返回 Internal Error，明确不支持 API/安全主张。重访在实际采用对应栈时触发，不凭 URL 猜规则，也不安装以绕过失败。网页可访问只支持该读取范围，外部源码与示例许可、浏览器差异、离线依赖、编辑器兼容均未验收。
 
@@ -53,3 +53,5 @@ Git 跟踪的独立 `.svg` 共 16 个，全部在 Vault 的本地快照：三份
 本轮只读了 `cw-pages-recall-20260923/diagram.svg`、`pipeline.svg` 与 Tally 的 `fig02-authority.svg` 的 XML 源码与节点结构，没有看这三张实际图、渲染或运行编辑。不能从存在 text/path/ID 就宣称可参数化复用、编辑器兼容、许可已核或多实例安全。其余 13 个仅枚举文件身份，未消费，保留在 Vault。
 
 A3 的 `src/index.tsx` 另读到原生 text/path 与固定 defs ID（grid、arrowS、arrowC），说明它有可编辑源码，也提醒同 DOM 多实例不能原样粘贴；本轮没有实际执行碰撞测试。旧编排实验是 HTML 内的 SVG/布局表达，不应与独立 SVG 文件数量混计。优先从这些成果的关系和失败边界取用，绘制时再决定适合拆出的源码范围与许可。
+
+2026-10-26：本文提到的 `../../../projects/editable-native-svg/wake-opus.md` 已按 ADR-044 删除，结论以本文和回执为准；登记见 `docs/governance/retired-paths.json`。

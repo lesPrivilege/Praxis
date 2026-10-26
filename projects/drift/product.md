@@ -1,6 +1,6 @@
 # Drift 产品说明与字段计划
 
-状态：现行。更新日期：2026-10-05。运行入口与验证记录见 [README](README.md)，当前前端裁决见 [polish 验收](design-acceptance.md)，原施工输入见 [Opus 交接](design-handoff.md)。
+状态：现行。更新日期：2026-10-05。运行入口与验证记录见 [README](README.md)，当前前端裁决见 [polish 验收](design-acceptance.md)，原施工输入见 Opus 交接。
 
 ## 产品定位
 
@@ -84,3 +84,5 @@ Drift 是网络、设备与浏览器观测看板。产品按“读到值 → 理
 - **跨环境待验证**：其他 OS／浏览器、数据源实时准确性与长期采集表现。
 
 交接与公开演示使用合成输入、文档示例地址及构造名称。实际采集的敏感值留在私有记录；公开产物交付前检查真实 IP、私有主机名、用户路径与可关联的原始指纹。
+
+2026-10-26：本文提到的 `design-handoff.md` 已按 ADR-044 删除，结论以本文和回执为准；登记见 `docs/governance/retired-paths.json`。

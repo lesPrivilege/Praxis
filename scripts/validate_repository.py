@@ -60,6 +60,7 @@ for name in OWNED:
         if not (directory / 'README.md').exists():
             errors.append(f'Missing README: {directory.relative_to(ROOT)}')
 
+RETIRED = {r['path'] for r in json.loads((ROOT / 'docs/governance/retired-paths.json').read_text())['retired']}
 paths = [ROOT / 'README.md', ROOT / 'AGENTS.md', ROOT / 'CHANGELOG.md']
 for name in OWNED:
     paths.extend(p for p in (ROOT / name).rglob('*') if p.is_file() and managed(p))
@@ -86,6 +87,10 @@ for path in paths:
         if not resolved.is_relative_to(ROOT):
             errors.append(f'External local dependency: {path.relative_to(ROOT)} -> {target}')
         elif not resolved.exists():
+            rel_target = resolved.relative_to(ROOT).as_posix()
+            if path.relative_to(ROOT).as_posix().startswith('docs/decisions/') and any(
+                    rel_target == r or rel_target.startswith(r + '/') for r in RETIRED):
+                continue  # ADR text is immutable; the path is listed in docs/governance/retired-paths.json
             errors.append(f'Broken link: {path.relative_to(ROOT)} -> {target}')
         elif (path.name in ('README.md', 'CHANGELOG.md') and path.parent == ROOT
               and resolved in {ROOT / 'dsh-praxis/kit/writing/review.md',

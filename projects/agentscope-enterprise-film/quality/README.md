@@ -5,13 +5,13 @@
 [阶段审计](completion-audit.md) · [项目](../README.md)。第二版完成前，已交付第一版的入口保持可用。
 
 - [第一版与参考比较](comparison-baseline.md)
-- [机制构件交接](mechanism-lab-handoff.md)
+- 机制构件交接
 - [新版阅读稿检查](reader-v2-check.json)
 
 - [四段状态样片](prototypes/README.md)
 - 深度与默认补查保留在 [现有研究主题](../../../vault/distilled/agentscope-enterprise-20261012/README.md)。
 
-- [Service 回放与执行目标矩阵交接](service-lab-handoff.md)：两种新展项，15帧与API检查通过，待主片集成。
+- Service 回放与执行目标矩阵交接：两种新展项，15帧与API检查通过，待主片集成。
 
 - [Service结构检查](service-check.json) · [Service API检查](service-api-check.json)
 
@@ -24,7 +24,7 @@
 ## 完整第二版
 
 - [50场/53主题舞台](../cut2/film/index.html) · [最终画面文字](../cut2/out/screen-text.md)
-- [局部内容增量](content-v2-handoff.md) · [Runtime机制](runtime-lab-handoff.md) · [工作区与闭环](work-lab-handoff.md)
+- 局部内容增量 · Runtime机制 · 工作区与闭环
 - [110状态与动态因果验收](cut2-state-acceptance.md) · [最终媒体检查](../cut2/out/check-report.json)
 - [独立裁决与修后追加](cut2-independent-review.md)
 - 一倍时间轴分段运行与取帧审阅：[第一段](playback-part1.md)、[第二段](playback-part2.md)、[第三段](playback-part3.md)、[第四段](playback-part4.md)。它们不冒充人类连续完整观片。
@@ -38,3 +38,5 @@
 ## 2026-10-15 视觉修订实施
 
 [第三版](../cut3/README.md)包含47场/53主题的原生SVG重画、11:02核心样段和新双画幅封面。原审计与用户反馈保留；设计卡、独立裁决与实际范围从第三版入口进入。
+
+2026-10-26：本文提到的 `content-v2-handoff.md`、`mechanism-lab-handoff.md`、`runtime-lab-handoff.md`、`service-lab-handoff.md`、`work-lab-handoff.md` 已按 ADR-044 删除，结论以本文和回执为准；登记见 `docs/governance/retired-paths.json`。

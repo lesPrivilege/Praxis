@@ -40,7 +40,7 @@
 - **金字塔第五版**：[施工约定](../../knowledge-film-001-pyramid-cut5/film/AUTHORING.md)、[第二章源码](../../knowledge-film-001-pyramid-cut5/film/js/scenes/c2-case.js)第105–195行。先有论证动作，再组织同一批材料、总览与局部；原项目README记录Opus主会话/分镜与Sonnet研究审片。本轮重渲染200.777与219.397秒并实际查看。
 - **MC01（同样无声）**：[plan](../../motion-ceiling-lab/mc01-request/plan.md)第9–34行先定两句理解结果，再设计四层板、遮挡、请求与两条回执路径，最后选WebGL2/Canvas。它为路径与深度找到了内容理由，不能推成“全片需要3D”。本轮查看原生54秒帧与第一张回执的序列图。
 - **Schema闸门**：[README](../../visual-grammar/schema-gate/README.md)第7、24–28行把原文压缩、到达、校验、弹回、保留与人工批准落实成不同动作；本轮查看63.1/63.8秒原生帧。参考中的合成/制作页脚不移植到本片。
-- **10月15日SaaS教材**：[静态图工单](../../saas-engineering-textbook/build/drawing-brief.md)第7、11–19行、[图件工单](../../saas-engineering-textbook/build/figure-brief.md)、[README](../../saas-engineering-textbook/README.md)第120–124行。先找需要读者脑补的关系，再画正文已有对象；图形位置、字阶、强调有清楚职责。独立Opus给14条版式意见，主会话另逐张看18静态图，两者不能合并成18图独立审阅通过。本轮实际重渲染F09/F12两图。
+- **10月15日SaaS教材**：静态图工单第7、11–19行、图件工单、[README](../../saas-engineering-textbook/README.md)第120–124行。先找需要读者脑补的关系，再画正文已有对象；图形位置、字阶、强调有清楚职责。独立Opus给14条版式意见，主会话另逐张看18静态图，两者不能合并成18图独立审阅通过。本轮实际重渲染F09/F12两图。
 - **新marks库**：[README](../../../dsh-praxis/kit/design/marks/README.md)第7行已说明小记号与重编排的分工。其Claude来源由checks/ADR-032支持，工单文件名不能单独证明。补图标可以增强辨认，不承担上述主体设计。SaaS控件的≤200ms也不能直接套到影片的讲解动作。
 
 Kit的[布局](../../../dsh-praxis/kit/design/composition/layout.md)与[对象表征](../../../dsh-praxis/kit/design/composition/object-representation.md)已经提供对应判断；对象表征页的Git记录为2026-10-11。10月15日SaaS作品属于本次新对照，不追溯为10月12日影片当时必须遵守的项目规格。冷色、字体、圆角、3D均不自动成为下一版硬规。
@@ -71,3 +71,5 @@ Kit的[布局](../../../dsh-praxis/kit/design/composition/layout.md)与[对象�
 ## 实际执行范围
 
 主代理与两名explorer读了上述规格、施工与审阅记录，核对当前编译器/Lab并实际看图；本轮九张证据图均实际查看。对照页提供三组并置，金字塔两帧与MC01另留原图。没有重看52分钟全片或为参考做整体排名，没有新增外部来源、依赖安装、目标项目运行或影片实现修改。差距结论限定到构图、表征、分镜与验收证据；仓库验证回执随本轮审计保存。
+
+2026-10-26：本文提到的 `../../saas-engineering-textbook/build/drawing-brief.md`、`../../saas-engineering-textbook/build/figure-brief.md` 已按 ADR-044 删除，结论以本文和回执为准；登记见 `docs/governance/retired-paths.json`。

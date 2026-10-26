@@ -1,6 +1,6 @@
 # 下一轮工单：自用跑通，再拆出 release
 
-状态：2026-10-25 编制；四项决定已确认。A2 按用户改定的做法施工（管线登记为来源，[ADR-043](../docs/decisions/043-dsh-praxis-pipelines-as-sources.md)）；A4 除集合类来源的增减淘汰外已施工（[ADR-042](../docs/decisions/042-dsh-praxis-upstream-checks.md)，[回执](../docs/verification/dsh-praxis-pipelines-roster-20261025.md)）。A1 已施工，例外已按用户指示处理（[ADR-041](../docs/decisions/041-dsh-praxis-projects.md)，[回执](../docs/verification/dsh-praxis-projects-20261025.md)）。上一轮的产物工单见 [work-order-artifacts](work-order-artifacts.md)，来源闭环见 [ADR-040](../docs/decisions/040-dsh-praxis-source-loop.md)。
+状态：2026-10-25 编制；四项决定已确认。A2 按用户改定的做法施工（管线登记为来源，[ADR-043](../docs/decisions/043-dsh-praxis-pipelines-as-sources.md)）；A4 除集合类来源的增减淘汰外已施工（[ADR-042](../docs/decisions/042-dsh-praxis-upstream-checks.md)，[回执](../docs/verification/dsh-praxis-pipelines-roster-20261025.md)）。A1 已施工，例外已按用户指示处理（[ADR-041](../docs/decisions/041-dsh-praxis-projects.md)，[回执](../docs/verification/dsh-praxis-projects-20261025.md)）。上一轮的产物工单见 work-order-artifacts，来源闭环见 [ADR-040](../docs/decisions/040-dsh-praxis-source-loop.md)。
 
 ## 目标与完成体验
 
@@ -210,3 +210,5 @@ MCP 增加 resources 与 prompts，做渐进披露：
 - 每个切片一份回执：写明实际基线、验证方式、未验证项。
 - 桌面实测与真实 agent 任务的证据，和隔离夹具的证据分开报告。
 - 插件代码改后，DSH 要重启才加载；测前先看 `praxis_entry` 是否带 `reload`。
+
+2026-10-26：本文提到的 `work-order-artifacts.md` 已按 ADR-044 删除，结论以本文和回执为准；登记见 `docs/governance/retired-paths.json`。

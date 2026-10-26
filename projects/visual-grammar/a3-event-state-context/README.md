@@ -9,7 +9,7 @@
 | 理解本次取用 | [消费摘要](consumption.md) | 用了什么、为何、改编、新增与未复用边界 |
 | 核对输入与公开边界 | [内容基线](baseline.md) / [来源](sources.md) | 真实研究主题、合成数据、来源版本与披露范围 |
 | 修改与复现 | [源码](src/README.md) | HTML 模板、共享演算模型、Remotion 工程和验证脚本 |
-| Review 呈现 | [简明验收页](acceptance.html) / [详细报告](acceptance.md) / [证据](evidence/README.md) | 实际测试、关键帧、截图、失败修正与剩余限制 |
+| Review 呈现 | 简明验收页 / [详细报告](acceptance.md) / [证据](evidence/README.md) | 实际测试、关键帧、截图、失败修正与剩余限制 |
 | 查本轮增量 | [2026-10-02 回合](rounds/2026-10-02/README.md) | 施工经过的简短决策与工具轨迹，不复制当前状态 |
 
 ## 目的与场景
@@ -40,3 +40,5 @@ npm run preview
 本项目保留 brief、内容基线、源码、必要生成资产、成品入口、消费摘要和本轮回执；Vault 保持外部参考、研究与原始资料的来源位置。Kit 本轮零修改，没有泛化 patch 或共享 renderer 晋升。这样项目能独立消费与 review，输出仍附在输入、施工与证据旁，而不是成为孤立 output。
 
 旧四件作品、历史回执和工场 owner 全部保留。当前入口只在本 README 维护，回合只记增量。该体例是本次局部验证，不是全仓强制规则；后续迁移建议见验收报告。
+
+2026-10-26：本文提到的 `acceptance.html` 已按 ADR-044 删除，结论以本文和回执为准；登记见 `docs/governance/retired-paths.json`。

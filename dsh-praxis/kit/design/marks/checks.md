@@ -44,7 +44,7 @@
 
 ## 来路
 
-2026-10-12 按 [工单](../../../../projects/editable-native-svg/claude-design-order-20261012.md)绘制，执行者是 Claude Opus 5.5（Claude Code 会话），没有用图标库、框架或别的模型。用户看过后收进 Kit，裁决见 [ADR-032](../../../../docs/decisions/032-semantic-marks-library.md)。
+2026-10-12 按 工单绘制，执行者是 Claude Opus 5.5（Claude Code 会话），没有用图标库、框架或别的模型。用户看过后收进 Kit，裁决见 [ADR-032](../../../../docs/decisions/032-semantic-marks-library.md)。
 
 工单里行不通或有意没照做的地方：
 
@@ -67,3 +67,5 @@
 - 18 px 下 subagent、模型、沙箱三个记号的细部偏小；节点名换行时第二行排到记号下面，没有做悬挂缩进。
 
 这些是一次取用的观察，不据此改记号或补词表。
+
+2026-10-26：本文提到的 `../../../../projects/editable-native-svg/claude-design-order-20261012.md` 已按 ADR-044 删除，结论以本文和回执为准；登记见 `docs/governance/retired-paths.json`。

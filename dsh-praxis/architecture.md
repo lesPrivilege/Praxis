@@ -1,6 +1,6 @@
 # Praxis 整合包：架构参考
 
-状态：设计提案，已由 [ADR-039](../docs/decisions/039-dsh-praxis-artifacts.md)裁决并实现；与 ADR 不一致处以 ADR 为准。本文提炼产品目的与建议边界，不新增已采纳 ADR，不冻结字段、界面布局或实现技术。执行入口见 [产物工单](work-order-artifacts.md)；已有分层与对象定义继续以 [layers](layers.md)、[objects](objects.md)为准。
+状态：设计提案，已由 [ADR-039](../docs/decisions/039-dsh-praxis-artifacts.md)裁决并实现；与 ADR 不一致处以 ADR 为准。本文提炼产品目的与建议边界，不新增已采纳 ADR，不冻结字段、界面布局或实现技术。执行入口见 产物工单；已有分层与对象定义继续以 [layers](layers.md)、[objects](objects.md)为准。
 
 ## 产品目的
 
@@ -90,3 +90,5 @@ flowchart TB
 产品目标与用户明确的隐私边界是设计输入。本文的对象拆分、存储方式、界面组织、接口名称、实施顺序和可携带形式均为建议。**Opus worker 保留最后技术与设计裁决权**：可以合并、替换、缩减或延后建议，以当前代码、DSH 能力和真实任务证据说明理由，无需逐条照搬本文或旧 Chat。
 
 裁决不能通过改写验收名称掩盖尚未完成的能力。确实改变当前已采纳契约时记录相应决定和迁移影响；日常实现取舍写进工单回执即可。完整任务产出、依据回查和直接取用应有观察证据，代码存在或单测通过只是其中一层。
+
+2026-10-26：本文提到的 `work-order-artifacts.md` 已按 ADR-044 删除，结论以本文和回执为准；登记见 `docs/governance/retired-paths.json`。
