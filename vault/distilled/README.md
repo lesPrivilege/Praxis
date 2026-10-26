@@ -1,6 +1,6 @@
 # Distilled · 主题提炼与研究消费
 
-- [SaaS 工程全景](../../books/saas-engineering/README.md)：33 例、共同系统图景、题型与算法索引；研究候选。
+- [SaaS 工程全景](../../projects/books/saas-engineering/README.md)：33 例、共同系统图景、题型与算法索引；研究候选。
 
 - [AgentScope 企业线研究 · 2026-10-12](agentscope-enterprise-20261012/README.md)：文档系统、Python 2.0、Java Harness/Service 与历史 Runtime/Studio 迁移；消费到知识片。
 
@@ -91,9 +91,9 @@
 
 - [视觉语法选编研究](visual-grammar-20260928/README.md)：本地项目证据与外部样例如何进入小型演示，供Opus渐进披露施工，不代表已产出成片。
 
-- [Palantir](../../palantir/README.md)：一级方法论提炼成果入口；五本书与两篇背景文章的阅读清单位于其 references，当前尚无完成提炼的文档。
+- [Palantir](../../projects/palantir/README.md)：一级方法论提炼成果入口；五本书与两篇背景文章的阅读清单位于其 references，当前尚无完成提炼的文档。
 
-- [Tally · SaaS](../../tally/README.md)：一级 SaaS 提炼成果入口；《清算 SaaS》六部23章书稿的参考登记位于其 references，当前尚无完成提炼的文档。
+- [Tally · SaaS](../../projects/tally/README.md)：一级 SaaS 提炼成果入口；《清算 SaaS》六部23章书稿的参考登记位于其 references，当前尚无完成提炼的文档。
 
 - [Chat ingestion 与 Astra-era harness audit 讨论 · 2026-10-09](chat-ingestion-harness-20261009/README.md)：区分来源记录、耐久项目状态与后续 worker context；记录减法优先的 harness 审查方法及未裁决边界。两份摘录并非完整会话；audit 不代表已完成或候选规则已采纳。
 

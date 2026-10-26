@@ -41,7 +41,7 @@ Vault 保存观察、实验、来源与历史；来源摘要与可选参考 gram
 
 ## 从demo和实际工作回流
 
-需要回流时，消费者可在自己的独立变更或验收记录中简记实际任务与产物、参考 ID、采用/改写/拒绝及理由、判断或输出的变化、遗漏或过度读取、缺口跟进；使用 [薄消费记录模板](../verification/reference-consumption-template.md)即可。时间与版本只放记录，不放普通来源卡或 grammar。Demo 仍按 [准入](../../demos/README.md)填写其必要验收，无需每次任务重述整张参考卡或另开全套日志。
+需要回流时，消费者可在自己的独立变更或验收记录中简记实际任务与产物、参考 ID、采用/改写/拒绝及理由、判断或输出的变化、遗漏或过度读取、缺口跟进；使用 [薄消费记录模板](../verification/reference-consumption-template.md)即可。时间与版本只放记录，不放普通来源卡或 grammar。Demo 仍按 [准入](../../projects/README.md)填写其必要验收，无需每次任务重述整张参考卡或另开全套日志。
 
 回流时先把项目观察放入Vault或项目记录，标明`supports / challenges / extends / duplicates`。Luna提炼可重复部分与缺口，main裁决保持、修改、提升或降级，并同步受影响的任务入口。个人风格与一次性修补留项目；实现晋升不因有漂亮样张而跳过验证。
 

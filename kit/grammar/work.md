@@ -39,4 +39,4 @@
 | 来源重复导入 | 按事件与义务身份核对既有记录 | 每次导入创建同一承诺 |
 | 责任移交 | 记录接收依据、未决项和下一责任 | 发出通知即视为对方承担全部义务 |
 
-具体填写见 [场景模板](../../scenarios/_template/README.md)，接口约束见 [契约](../contracts/README.md)，反例检查见 [验收](../verification/README.md)。
+具体填写见 [场景模板](../../templates/scenario/README.md)，接口约束见 [契约](../contracts/README.md)，反例检查见 [验收](../verification/README.md)。

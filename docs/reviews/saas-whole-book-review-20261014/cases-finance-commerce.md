@@ -13,8 +13,8 @@ Severity here concerns the reader's task: **medium** materially misdirects metho
 ### FC-01 — Manufacturing transfer points to the BI chapter
 
 - **Severity:** medium; transfer selection.
-- **Location:** `books/saas-engineering/packages/commercial-finance/H03.md:143`; `vault/distilled/saas-engineering-atlas/transfer-proposals.json:67`.
-- **Evidence:** `TR:H03:H07:dependency-not-capacity` is explained using production scheduling, equipment, materials, and process constraints. H07 is titled “数据变化如何成为可信的 BI 发布” at `books/saas-engineering/packages/data-ai-control/H07.md:1`. V07 is the manufacturing/design case, “一件产品怎样带着设计依据走到收款”, at `books/saas-engineering/packages/industry-networks/V07.md:1`. The transfer-proposal occurrence was compared exactly with H03 line 143 and matches it; the error is propagated, not an independently worded interpretation. The proposal is classified `additional-reading`, rather than an integrated transfer-map row.
+- **Location:** `projects/books/saas-engineering/packages/commercial-finance/H03.md:143`; `vault/distilled/saas-engineering-atlas/transfer-proposals.json:67`.
+- **Evidence:** `TR:H03:H07:dependency-not-capacity` is explained using production scheduling, equipment, materials, and process constraints. H07 is titled “数据变化如何成为可信的 BI 发布” at `projects/books/saas-engineering/packages/data-ai-control/H07.md:1`. V07 is the manufacturing/design case, “一件产品怎样带着设计依据走到收款”, at `projects/books/saas-engineering/packages/industry-networks/V07.md:1`. The transfer-proposal occurrence was compared exactly with H03 line 143 and matches it; the error is propagated, not an independently worded interpretation. The proposal is classified `additional-reading`, rather than an integrated transfer-map row.
 - **Reader consequence:** a reader recognizing resource-constrained production scheduling follows the stable identifier to a BI publication example. The otherwise useful distinction between dependency order and resource feasibility loses its intended destination.
 - **Remedy:** decide the intended transfer. If manufacturing is intended, retarget to V07 and update the stable ID and all its occurrences consistently. If BI is intended, retain H07 but replace the production-specific explanation with H07's actual dependencies and missing conditions. Provide a clickable case link beside the ID.
 - **Acceptance:** following the repaired reference reaches the case described in the prose; the proposal context and any generated index agree. Preserve H03's seven-hour/nine-hour derivation and the distinction between topological order and resource feasibility.
@@ -23,7 +23,7 @@ Severity here concerns the reader's task: **medium** materially misdirects metho
 ### FC-02 — Finance introduction promises three commands but supplies none
 
 - **Severity:** medium; verification entry.
-- **Location:** `books/saas-engineering/packages/commercial-finance/README.md:60` and `:63`.
+- **Location:** `projects/books/saas-engineering/packages/commercial-finance/README.md:60` and `:63`.
 - **Evidence:** “本地可执行计算与反例检查使用 Python 标准库：” is followed by two blank lines, then “第一条…第二条…第三条…”. There is no intervening code block or command list. The source package README is now a three-line Books pointer, so it does not supply the missing instructions. `vault/distilled/saas-engineering-atlas/packages/commercial-finance/checks.py:3` still says to run with the path shown in README. The three commands can be recovered from the source `CHANGELOG.md:24`, `:28`, and `:30`, but this requires leaving the learning path to search delivery history.
 - **Reader consequence:** a novice reaches the package's advertised verification step without knowing what to run or which of the three descriptions refers to which checker. The global Books validation page is an alternative route, so this is a local entry failure rather than absence of executable checks.
 - **Remedy:** restore named, linked commands or link to a dedicated package verification page. State the working directory and standard-library requirement. Keep the existing statement that these checks do not establish browser, provider, concurrency-database, performance, or AI-evaluation success. Replace ordinal descriptions with checker names so omission or reordering cannot silently detach their scope.
@@ -33,7 +33,7 @@ Severity here concerns the reader's task: **medium** materially misdirects metho
 ### FC-03 — H01's first executable formula assumes unexplained notation
 
 - **Severity:** low; calculation prerequisite.
-- **Location:** `books/saas-engineering/packages/commercial-finance/H01.md:63`.
+- **Location:** `projects/books/saas-engineering/packages/commercial-finance/H01.md:63`.
 - **Evidence:** the first cumulative formula uses `floor` and `clamp(t−s,0,e−s)` without a local definition of those operators. A search of the Books tree found no other `clamp` explanation. The subsequent 100-cent/three-day example teaches cumulative rounding well, but does not show why an observation before service starts produces zero or why an observation after its end stops at the full amount.
 - **Reader consequence:** readers can copy the displayed in-range numbers without necessarily being able to calculate the formula at its boundaries or translate it into code correctly.
 - **Remedy:** add a short local gloss: `clamp` restricts elapsed time to the stated lower and upper bounds, while `floor` rounds down to integer minor units. Add one before-start and one after-end substitution, or link an immediately available equivalent piecewise definition. No new algorithm or long prerequisite chapter is needed.
@@ -43,7 +43,7 @@ Severity here concerns the reader's task: **medium** materially misdirects metho
 ### FC-04 — A few domain abbreviations never acquire a local meaning
 
 - **Severity:** low; terminology/first use.
-- **Locations:** `books/saas-engineering/packages/commercial-finance/V12.md:5`; `books/saas-engineering/packages/commercial-finance/V13.md:5`; `books/saas-engineering/packages/commerce-property/V15.md:25`; `books/saas-engineering/packages/commerce-property/V16.md:23`.
+- **Locations:** `projects/books/saas-engineering/packages/commercial-finance/V12.md:5`; `projects/books/saas-engineering/packages/commercial-finance/V13.md:5`; `projects/books/saas-engineering/packages/commerce-property/V15.md:25`; `projects/books/saas-engineering/packages/commerce-property/V16.md:23`.
 - **Evidence:** `CU`, `PCCO`, and `IWMS` appear without an expansion in the entire Books tree, including `terminology.md`. V12 does define the precision as 0.01 CU; the omission is the identity of the synthetic currency label, not its arithmetic precision. V15 gives useful surrounding contract distinctions but does not connect `PCCO` explicitly to its provider object. V16 explains the category's coverage but leaves the category acronym opaque.
 - **Reader consequence:** readers cannot reliably distinguish an invented unit label, a provider-specific object abbreviation, and a product-category term. That distinction matters to selecting documentation and transferring a method.
 - **Remedy:** define CU locally as the example's fictitious currency unit; expand PCCO from the cited provider's object name and retain its provider scope; expand and explain IWMS at first use or omit the unused acronym. Add index entries only where those terms are useful recurring navigation. Verify provider wording from the existing primary source before editorial adoption.

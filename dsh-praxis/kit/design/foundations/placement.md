@@ -57,7 +57,7 @@
 2. 一条线。把位置词画成位置，附一句读法。
 3. 几条线并排。共用一条标尺并写明，跨线的先后才读得出来；不共用就写明各排各的。
 
-[样板](../../../../demos/editable-native-svg/grammar-specimens/index.html)用同一份内容把三级各做了一遍。第三级里，审核、规则生效和调阅单的改动分在三栏、共用一条标尺，读者看得出审核在新规则生效之前，改动在它之后；各排各的版本图回答不了这个问题。
+[样板](../../../../projects/editable-native-svg/grammar-specimens/index.html)用同一份内容把三级各做了一遍。第三级里，审核、规则生效和调阅单的改动分在三栏、共用一条标尺，读者看得出审核在新规则生效之前，改动在它之后；各排各的版本图回答不了这个问题。
 
 ## 正例与最容易犯的错
 
@@ -83,7 +83,7 @@
 
 ## 来路与证据边界
 
-本页默认已采纳，裁决见 [ADR-026](../../../../docs/decisions/026-placement-and-scale.md)。实现在 [svg-01-relations](../../../../demos/editable-native-svg/svg-01-relations/README.md)的 `rail.mjs`（先后、时间、上下级、并排的栏）和 `pair.mjs`（前后对照与选取）。
+本页默认已采纳，裁决见 [ADR-026](../../../../docs/decisions/026-placement-and-scale.md)。实现在 [svg-01-relations](../../../../projects/editable-native-svg/svg-01-relations/README.md)的 `rail.mjs`（先后、时间、上下级、并排的栏）和 `pair.mjs`（前后对照与选取）。
 
 与已有页面的关系：[图形编码](../composition/encoding.md)写了“长度有尺度”和“数量比较需要共同尺度”，本页把这两句用到时间和并排的线上，并补上“没有量就不按比例画”。[成立程度与归属的标记](standing.md)说归属优先用位置，本页第 9 条补了另一半：位置说明归谁，不说明谁有权限。[精确指向](anchoring.md)留下的两个缺口，时间范围和字段集合，现在各有一种画法：沿标尺的区间，和对照表里的选取。
 

@@ -4,7 +4,7 @@
 
 ## 交付范围
 
-- [V03.md](../../../../../books/saas-engineering/packages/health-science/V03.md)：原创中文教材；共同对象模型、并行生命周期、权限与交互、曲线/QC/判定/失效图演算、故障恢复、技术选择、规模假设、检查、三道条件变化题和行业探索入口。
+- [V03.md](../../../../../projects/books/saas-engineering/packages/health-science/V03.md)：原创中文教材；共同对象模型、并行生命周期、权限与交互、曲线/QC/判定/失效图演算、故障恢复、技术选择、规模假设、检查、三道条件变化题和行业探索入口。
 - [V03.json](V03.json)：27 个节点、62 条有类型边、13 个生命周期、14 个检查定义；所有实现拓扑均为 synthetic。
 - [evidence.json](evidence.json)：5 个来源读取记录（已有 LABWARE + 4 个新 URL），18 条主张，其中 source_fact 8、synthetic 9、inference 1。
 - [synthetic-v03.py](synthetic-v03.py)：21 个 Python 标准库合成测试方法，包含预期拒绝与 known-bad 策略反例。

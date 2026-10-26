@@ -8,7 +8,7 @@ The cases generally support the complete learning sequence: identify a failure, 
 
 ### HI-01 — Medium: V21 loses the competing reservation quantities
 
-- **Reader location:** `books/saas-engineering/packages/industry-networks/V21.md:73`.
+- **Reader location:** `projects/books/saas-engineering/packages/industry-networks/V21.md:73`.
 - **Contract location:** `vault/distilled/saas-engineering-atlas/packages/industry-networks/V21.json:1140`.
 - **Evidence:** The chapter describes “两项发运同时预留最后 16 托盘” and expects only one reservation to succeed. The JSON explicitly specifies “两项发运各申请物理预留16”: two requests of 16, or 32 requested against 16 available. Earlier chapter prose describes the normal shipments as S1=10 and S2=6 (`V21.md:19`, `V21.md:60`); those two requests can both fit.
 - **Reader impact:** A learner following the normal fixture can infer that concurrent access itself requires rejecting one valid shipment. The omitted per-request quantity changes the acceptance oracle, rather than merely shortening the text.
@@ -17,24 +17,24 @@ The cases generally support the complete learning sequence: identify a failure, 
 
 ### HI-02 — Low: method-selection routes rely on unexplained system categories
 
-- **Primary locations:** `books/saas-engineering/packages/industry-networks/V10.md:15`, `V10.md:89`; `books/saas-engineering/packages/industry-networks/V07.md:13`, `V07.md:19`, `V07.md:106`; `books/saas-engineering/packages/health-science/README.md:35`, `books/saas-engineering/packages/health-science/V01.md:150`.
-- **Additional examples:** `books/saas-engineering/packages/health-science/V02.md:32` (CRA); `books/saas-engineering/packages/industry-networks/V09.md:30` and `V09.md:64` (SDC/SPEF, then SDC as the changed dependency); `books/saas-engineering/packages/industry-networks/V22.md:37` (OSS/BSS).
-- **Evidence:** EAM/CMMS/FSM are the proposed categories a novice should investigate for maintenance, but neither V10 nor `books/saas-engineering/terminology.md` expands them. PLM/MES/CAE and EHR/HIS/LIS have the same gap at research-selection points. Searches of the main terminology, foundations terms, enterprise-mechanisms terms, and machine terminology did not provide these missing entries.
+- **Primary locations:** `projects/books/saas-engineering/packages/industry-networks/V10.md:15`, `V10.md:89`; `projects/books/saas-engineering/packages/industry-networks/V07.md:13`, `V07.md:19`, `V07.md:106`; `projects/books/saas-engineering/packages/health-science/README.md:35`, `projects/books/saas-engineering/packages/health-science/V01.md:150`.
+- **Additional examples:** `projects/books/saas-engineering/packages/health-science/V02.md:32` (CRA); `projects/books/saas-engineering/packages/industry-networks/V09.md:30` and `V09.md:64` (SDC/SPEF, then SDC as the changed dependency); `projects/books/saas-engineering/packages/industry-networks/V22.md:37` (OSS/BSS).
+- **Evidence:** EAM/CMMS/FSM are the proposed categories a novice should investigate for maintenance, but neither V10 nor `projects/books/saas-engineering/terminology.md` expands them. PLM/MES/CAE and EHR/HIS/LIS have the same gap at research-selection points. Searches of the main terminology, foundations terms, enterprise-mechanisms terms, and machine terminology did not provide these missing entries.
 - **Reader impact:** The prose teaches the responsibility split but leaves the learner without enough vocabulary to recognize or search for the corresponding mature system family. SDC is additionally used in a correctness counterexample before its role as a timing-constraint input is explained.
 - **Remedy:** At the first point where each category matters, give its expansion and one short responsibility definition; link reusable definitions to the terminology index. Explain input-file roles in V09 locally. Do not insert expansions into every repeated occurrence or rename stable identifiers.
 - **Acceptance:** A cold reader can distinguish asset management, maintenance work management, and field-service scheduling from V10 alone; distinguish design lifecycle, execution, and resource planning from V07; and identify why an SDC change invalidates a timing report without following an external product link.
 
 ### HI-03 — Low: V02 points to a Python script in the wrong directory
 
-- **Location:** `books/saas-engineering/packages/health-science/V02.md:122`.
+- **Location:** `projects/books/saas-engineering/packages/health-science/V02.md:122`.
 - **Evidence:** “本目录的 Python 脚本” refers to local model checks, but the Books directory contains only README/V01/V02/V03 Markdown. The actual file is `vault/distilled/saas-engineering-atlas/packages/health-science/synthetic-v02.py`; it is not directly linked in V02. V01 provides the stronger pattern at `V01.md:130`, naming and linking its actual script.
-- **Reader impact:** The reader reaches the verification stage but cannot follow the stated local route. The global `books/saas-engineering/validation.md` runner remains available, so this is a bounded discovery problem, not missing test implementation.
+- **Reader impact:** The reader reaches the verification stage but cannot follow the stated local route. The global `projects/books/saas-engineering/validation.md` runner remains available, so this is a bounded discovery problem, not missing test implementation.
 - **Remedy:** Replace the directory-relative claim with a direct script link and a short scope sentence, retaining that local model checks do not execute the entire end-to-end table. Optionally link the central verification instructions rather than repeat maintenance commands in every case.
 - **Acceptance:** The case provides a working path to `synthetic-v02.py` and accurately distinguishes the three-form local fixture from the twelve-form/UI/export scenario.
 
 ### HI-04 — Low: production directions remain in the case endings
 
-- **Locations:** `books/saas-engineering/packages/industry-networks/V09.md:97`, `V21.md:89`, `V22.md:90`.
+- **Locations:** `projects/books/saas-engineering/packages/industry-networks/V09.md:97`, `V21.md:89`, `V22.md:90`.
 - **Evidence:** These endings say “HTML 和动效不限定”, describe the text as “教材与目录底稿” whose later visual layout is left to an implementer, and specify that later visualization, motion, or “多 agent” implementation is unrestricted.
 - **Reader impact:** After useful domain investigation advice, the voice switches to instructions for the book-production team. This does not help the learner decide which evidence or method to use.
 - **Remedy:** Move production discretion to `claude-handoff.md` or the project handoff. Preserve concrete suggested interactions when they teach a mechanism, such as changing a license count or delaying a receipt, and preserve the explicit synthetic, unmeasured, and not-yet-executed boundaries.

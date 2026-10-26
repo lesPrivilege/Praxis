@@ -1,6 +1,6 @@
 # ADR-044：仓库目录按角色分流，源流只走一个方向
 
-日期：2026-10-26。状态：proposed。用户提出 Kit、Vault 与产物管理混乱，要求一套源流清晰、可渐进披露的目录结构；主会话（Claude Fable 5.1）盘点现状后起草。施工按 [迁移工单](../governance/repository-layout-migration.md)分三阶段，本轮不搬文件。采纳、修订或拒绝由用户裁决后改状态。
+日期：2026-10-26。状态：accepted（第一、二阶段已施工；第三阶段等插件测试告一段落）。用户提出 Kit、Vault 与产物管理混乱，要求一套源流清晰、可渐进披露的目录结构；主会话（Claude Fable 5.1）盘点现状后起草，用户同日同意搬动并清理过程性文件。施工按 [迁移工单](../governance/repository-layout-migration.md)分三阶段，旧新路径见 [迁移映射](../governance/repository-layout-map.md)。
 
 ## 问题与依据
 

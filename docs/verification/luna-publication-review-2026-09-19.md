@@ -21,7 +21,7 @@
 
 Downloads 选择登记明确把个人照片、简历/考试书/学术论文、恢复码及无关项目排除在快照之外；本次未发现这些被排除文件的内容。career-kit 当前复制的 10 个文件是入口和企业汇报图式规则，未发现简历、联系方式或投递记录，但其目录身份仍是个人求职仓库，因此按范围排除。
 
-已识别的示例/测试材料没有被当成真实数据。例如 `scenarios/_template/` 明确要求 synthetic/public/redacted fixture；`vault/distilled/work-system/r3/environment-manifest.md` 中的 Client A/B 是抽象示例；`vault/snapshots/local/downloads/extracted-bsdtar/implementation-plan/courtwork-implementation-plan-20260910/evidence/core-client-lifecycle-result.json` 明确写明 synthetic workers、无真实 Core 数据库/provider。这些不是客户结果或凭据。
+已识别的示例/测试材料没有被当成真实数据。例如 `templates/scenario/` 明确要求 synthetic/public/redacted fixture；`vault/distilled/work-system/r3/environment-manifest.md` 中的 Client A/B 是抽象示例；`vault/snapshots/local/downloads/extracted-bsdtar/implementation-plan/courtwork-implementation-plan-20260910/evidence/core-client-lifecycle-result.json` 明确写明 synthetic workers、无真实 Core 数据库/provider。这些不是客户结果或凭据。
 
 发现的是发布卫生问题，而非秘密：绝对用户路径共 700 次，集中在 `vault/snapshot-manifest.json`（348）、`vault/intake/local-projects.json`（231）、`vault/intake/downloads.json`（120）和 `vault/distilled/reporting/downloads.md`（1）。快照内另有少量临时 worktree、`/mnt/data` 和 `/path/to` 示例定位。它们应在公开 Git 中排除或改成相对/占位路径。
 

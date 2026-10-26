@@ -10,7 +10,7 @@
 | 命令行、MCP 与真实构建脚本 | `python3 scripts/check_praxis_acceptance.py` | 13 项通过；`source_loop` 走完登记、挂载、resolve、consume、来源条目，references catalog 上的新关系经重建仍在 |
 | 每页来源一处 | `python3 scripts/validate_repository.py`，新规则：Kit 页引用已登记来源的卡片，就要在它的 `grammar_paths` 里 | 施工前 45 处违反；补关系后通过 |
 | registry 重建 | 补关系前后与 `HEAD` 的 registry 逐条比较 | 来源 ID 不变；只有关系所在的记录变化 |
-| 项目索引 | 用 `praxis_register_index` 登记 `jev/research/sources.json`，主张取自 `claims.jsonl` | 236 条进入名册，186 条带摘录（共 288 条主张）；`jev/` 下文件未改 |
+| 项目索引 | 用 `praxis_register_index` 登记 `projects/jev/research/sources.json`，主张取自 `claims.jsonl` | 236 条进入名册，186 条带摘录（共 288 条主张）；`projects/jev/` 下文件未改 |
 | 控制面 | 应用内浏览器（端口 7879）：一条挂载的来源条目、登记表单 | 显示收录缘由、挂在哪些页面、服务的任务类型、读过它的运行；表单要求“为哪件任务收录”；无控制台错误 |
 
 ## 补上的关系

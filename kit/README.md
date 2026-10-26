@@ -26,7 +26,7 @@ Kit 通过目录逐层展开工作语境。先选这次工作，再读有关分�
 |---|---|---|
 | 发现业务问题与机会 | [工作全景](landscape.md)、[现场闭环](../dsh-praxis/kit/task/field-loop.md) | 问题、证据与验证机会 |
 | 将会议与来源转成工作状态 | [Work System](work-system/README.md) | 状态差异、责任与交接 |
-| 定义试点和实现边界 | [场景模板](../scenarios/_template/README.md) | 场景契约、fixture、验收 |
+| 定义试点和实现边界 | [场景模板](../templates/scenario/README.md) | 场景契约、fixture、验收 |
 | 动作失败、中断或结果不明，要决定怎样恢复 | [工作契约](contracts/README.md)的失败与恢复、[共同工作语法](grammar/work.md)的不变量与反例 | 先核对什么、恢复步骤、停下来找人的条件 |
 | 准备新环境或运行角色 | [Environment](environment/README.md) | scope、能力与运行消费契约 |
 

@@ -65,7 +65,7 @@
   4. 来源条目给出用途与运行；
   5. references catalog 上新建的关系经重建仍在。
 - `python3 scripts/validate_repository.py` 通过，含新规则。
-- 实测：Jev 研究登记按引用进入名册（`jev-research`，236 条，186 条带主张摘录），`jev/` 下的文件未改。
+- 实测：Jev 研究登记按引用进入名册（`jev-research`，236 条，186 条带主张摘录），`projects/jev/` 下的文件未改。
 - 控制面在应用内浏览器里检查了来源条目和登记表单，无控制台错误。
 
 经过与覆盖边界见 [来源闭环回执](../verification/dsh-praxis-source-loop-20261025.md)。

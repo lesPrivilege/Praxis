@@ -10,7 +10,7 @@
 
 ## 边界
 
-读取路径绑定 books/saas-engineering 与 saas-engineering-atlas 的结构；用户当时尚未目验站点。
+读取路径绑定 projects/books/saas-engineering 与 saas-engineering-atlas 的结构；用户当时尚未目验站点。
 
 ## 何时重访
 

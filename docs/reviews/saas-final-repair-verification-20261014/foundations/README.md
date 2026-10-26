@@ -48,8 +48,8 @@ Exact frozen locations:
 
 - [`check_examples.py`](../../../../vault/distilled/saas-engineering-atlas/foundations/check_examples.py):184 validates weights; lines 197–199 compare and store `d + w` against infinity.
 - Same file, lines 513 and 516–520: finite coordinate guard followed by unchecked subtraction/squaring and exact-rank labeling.
-- [Chapter 4](../../../../books/saas-engineering/foundations/04-graphs-and-connectivity.md):31 states the finite/nonnegative and null-for-unreachable contracts.
-- [Chapter 8](../../../../books/saas-engineering/foundations/08-approximation-and-search.md):41 states the finite coordinate domain.
+- [Chapter 4](../../../../projects/books/saas-engineering/foundations/04-graphs-and-connectivity.md):31 states the finite/nonnegative and null-for-unreachable contracts.
+- [Chapter 8](../../../../projects/books/saas-engineering/foundations/08-approximation-and-search.md):41 states the finite coordinate domain.
 
 Minimal route repro, after loading the module as `F`:
 

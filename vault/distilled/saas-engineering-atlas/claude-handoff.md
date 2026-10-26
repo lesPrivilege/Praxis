@@ -4,9 +4,9 @@
 
 ## 最少输入
 
-1. [全景入口](../../../books/saas-engineering/README.md)与[阅读主线](../../../books/saas-engineering/learning-path.md)：先读 [企业机制四章](../../../books/saas-engineering/enterprise-mechanisms/README.md)，建立组织→界面→工作上下文与工具→实施的连接。全书沿“识题→解法→演算→验算→变式”。
-2. [12 章计算与系统方法](../../../books/saas-engineering/foundations/README.md)与其 18 个演算例；[题型、算法与栈索引](../../../books/saas-engineering/problem-index.md)、[案例目录](../../../books/saas-engineering/case-catalog.md)：先选主线例子，再按需展开行业。
-3. [共同词表与读图约定](../../../books/saas-engineering/semantics.md)、[迁移地图](../../../books/saas-engineering/transfer-map.md)：保留哪些机制、哪些条件必须重查。
+1. [全景入口](../../../projects/books/saas-engineering/README.md)与[阅读主线](../../../projects/books/saas-engineering/learning-path.md)：先读 [企业机制四章](../../../projects/books/saas-engineering/enterprise-mechanisms/README.md)，建立组织→界面→工作上下文与工具→实施的连接。全书沿“识题→解法→演算→验算→变式”。
+2. [12 章计算与系统方法](../../../projects/books/saas-engineering/foundations/README.md)与其 18 个演算例；[题型、算法与栈索引](../../../projects/books/saas-engineering/problem-index.md)、[案例目录](../../../projects/books/saas-engineering/case-catalog.md)：先选主线例子，再按需展开行业。
+3. [共同词表与读图约定](../../../projects/books/saas-engineering/semantics.md)、[迁移地图](../../../projects/books/saas-engineering/transfer-map.md)：保留哪些机制、哪些条件必须重查。
 4. [来源与证据](../../provenance/saas-engineering-atlas/README.md)、[验证方法](validation.md)：来源事实、作者推理、合成政策分别消费。
 
 Claude 承担写作、编订与可视化：先读一条完整路线建立讲法，再展开其余章节；不需逐条重新核查已审阅的来源和算例。证据侧车供发生语义改动、补充事实或遇到特定疑问时查阅。H01 的当前教材在 `packages/commercial-finance/H01.md`；根部 `example-h01.json` 是早期结构验证 fixture，不是另一个案例或第二份权威正文。
@@ -27,7 +27,7 @@ foundations 的 `curriculum.json` 以 `reader_root` 加章节 `path` 定位 Book
 
 Claude 可以重写正文、调整主次和渐进展开，自由选择统一 UI、图形、交互、motion、技术栈与多代理工作方式。保留 case/object/claim/source ID、provider 名称、原语言术语、单位、条件和证据类别；语义变化记在消费项目中。避免为了统一外观把各行业的 release、hold、acceptance 或 completed 合成一种状态。
 
-在现有 [场景模板](../../../scenarios/_template/README.md)建立具体消费场景；从 [Design](../../../dsh-praxis/kit/design/README.md)、[Write / Publish](../../../dsh-praxis/kit/publish/html/README.md)与[Motion](../../../dsh-praxis/kit/publish/video/README.md)选择表达方法，按 [Demo 入口](../../../demos/README.md)记录运行边界。当前交付没有 HTML 实现，正文维护在 Books，证据与结构资产维护在 Vault。
+在现有 [场景模板](../../../templates/scenario/README.md)建立具体消费场景；从 [Design](../../../dsh-praxis/kit/design/README.md)、[Write / Publish](../../../dsh-praxis/kit/publish/html/README.md)与[Motion](../../../dsh-praxis/kit/publish/video/README.md)选择表达方法，按 [Demo 入口](../../../projects/README.md)记录运行边界。当前交付没有 HTML 实现，正文维护在 Books，证据与结构资产维护在 Vault。
 
 ## 覆盖与继续研究
 
@@ -39,6 +39,6 @@ Claude 可以重写正文、调整主次和渐进展开，自由选择统一 UI�
 
 本轮成文使用 Praxis [Prose 原理](../../../dsh-praxis/kit/writing/principles.md)与[证据约定](../../../dsh-praxis/kit/writing/evidence.md)。解释正文承担完整推理，标题稳定概括学习问题，图内标签保持短而明确，图注补足独立读图所需条件，操作文字说明动作及确认结果；这些职责不共用一套机械句型。本稿保留对象、关系与计算语义，不预制整套界面微文案。
 
-可视化改变了读者取得信息的方式后，Claude 仍是最终作者：可以让图承担一段解释，重写相邻正文和图注，调整篇章节奏。保留论证、条件、单位和证据身份即可，不必照搬现有段落块。来源层维持原语言与术语；中文译法与英文全称见 [术语索引](../../../books/saas-engineering/terminology.md)，独立图中首次出现的缩写可从 `reader_term_ids` 取得同一解释，勿把译文回写成来源原话。
+可视化改变了读者取得信息的方式后，Claude 仍是最终作者：可以让图承担一段解释，重写相邻正文和图注，调整篇章节奏。保留论证、条件、单位和证据身份即可，不必照搬现有段落块。来源层维持原语言与术语；中文译法与英文全称见 [术语索引](../../../projects/books/saas-engineering/terminology.md)，独立图中首次出现的缩写可从 `reader_term_ids` 取得同一解释，勿把译文回写成来源原话。
 
 术语优先采用成熟生态已有的名称与解释习惯。请保留通用机制、标准/provider 定义与本书编订归纳之间的层次；不要因页面需要统一就重命名为一套新的行业语法，也不要把单一厂商的做法写成普遍共识。图形可统一表达方式，领域词的差异由显式映射保留。

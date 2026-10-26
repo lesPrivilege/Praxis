@@ -31,7 +31,7 @@
 - `E09-a`、`T05-a`、`T05-b`、`T06-a`、`T06-b`、`C02-a`：分别借用中立对照、条件作用域、内联条件、紧随主张的反例和结论先行的决定说明结构。页面内容与数据全部按本题重新编写。
 - `atoms-comparison-scope`：同题本地发现记录，仅用于确认上述材料入口和三个要求的结构对应；它不是业务事实来源。
 
-Kit 和分支文档只提供工作约束：`kit/Agent.md`、`docs/architecture/README.md`、`docs/governance/intake.md`、`demos/README.md`、`kit/write/publish/composition.md`、`kit/write/publish/exhibits.md`、`kit/write/shared/verification.md`、`kit/design/composition/layout.md` 与 `kit/design/interaction/states.md`。本页没有消费真实客户资料，也没有引入外部 URL、远程字体、图片或模板。
+Kit 和分支文档只提供工作约束：`kit/Agent.md`、`docs/architecture/README.md`、`docs/governance/intake.md`、`projects/README.md`、`kit/write/publish/composition.md`、`kit/write/publish/exhibits.md`、`kit/write/shared/verification.md`、`kit/design/composition/layout.md` 与 `kit/design/interaction/states.md`。本页没有消费真实客户资料，也没有引入外部 URL、远程字体、图片或模板。
 
 ## 新增实现与检查范围
 

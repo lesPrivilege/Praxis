@@ -1,0 +1,504 @@
+{
+  "summary": "Final picture review of four rendered episodes plus a first-time-viewer dogfood pass",
+  "agentCount": 5,
+  "logs": [],
+  "result": {
+    "ep00": {
+      "verdict": "I would ship ep00 after three small fixes. I found no wrong facts, cropped text or broken cuts. On-screen text matches the narration and the claims ledger (cohort years, table rows, Airbus caption, quote attributions), and every chapter change crossfades cleanly. The weak spots are two short motion and composition lapses in 入选理由 (a 7 s frame that is two-thirds empty under the card row, and garbled text where the cards land on the map) and one widowed character in the Mabrey translation.",
+      "strongest": [
+        "2:28–2:37: The Cowen line works best of all. The camera pushes to about 1.5x on “context is that which is scarce” while it is said, then pulls back smoothly (about 1.5 s, checked frame by frame) to show the 人在客户现场 / 隔着一层 pair.",
+        "3:08–3:16: The pilot bar. 获取数据权限 fills the 8–12 weeks in ink, and 演示 is squeezed into a blue sliver right on “最后一周”. The narration is turned into a picture with no extra words.",
+        "2:52–3:04: The FDE node carries across the chapter cut from 驻场工作 into 组织阻力. Then 技术 is struck through, the line reaches for the data, and a red gate drops on “挡路”. Both the continuity and the colour grammar land."
+      ],
+      "findings": [
+        {
+          "time": "4:30–4:37",
+          "kind": "composition",
+          "severity": "should",
+          "observation": "For about 7 s the only things on screen are the five small cards and their two legends, pinned to the top edge (stage y about 100–420). The lower two-thirds is empty paper and the camera does not move (drift mode, 1.0x). The narration over it is “另外两份，我没找到谁讲过理由 / Interviewing Users 跟 Qureshi 讲的现场对得上”. Nothing new comes in until the Lenny's Podcast quote at about 4:37.7.",
+          "evidence": "sheet-07 (4:30–4:36), zoom-ep00-i (4:28–4:39, 1 s steps), zoom-ep00-s (4:31 and 4:34 at 960 px)",
+          "fix": "In episodes/00-overview/scenes.js, ov-reasons, the b19 block (around line 464), reuse the opening move. Bring the row (its legends are children of it) back to the middle with tl.to(row, { y: 230, duration: 1.0, ease: 'power2.inOut' }, T('ov.b19') - 0.2). Return it to y: 0 at qa - 0.9, before q5 shows. Another option is a frame(root, 150, 80, 1620, 400, T('ov.b19') - 0.3, qa - 0.6) so the camera centres and enlarges the row for this beat."
+        },
+        {
+          "time": "4:52.6–4:53.0",
+          "kind": "motion",
+          "severity": "should",
+          "observation": "As each card drops onto its map column, the map's book label fades in at the same spot while the card is still mostly opaque. For about 0.4 s two texts sit on top of each other: “Interviewing Users” over “Users”, “Getting Things Done” over “Getting Things / Done”, and “The Looming Tower” twice. It reads as a smear at the moment the hero move should resolve.",
+          "evidence": "sheet-08 (4:52), zoom-ep00-h (4:52.5), zoom-ep00-u (4:52.8 at 960 px)",
+          "fix": "In episodes/00-overview/scenes.js, the map loop in ov-reasons (around line 505), fade the card's text before it lands: tl.to(c.parts, { autoAlpha: 0, duration: 0.25 }, drop + 0.2). Then fade the outline with tl.to(c, { autoAlpha: 0, duration: 0.3 }, drop + 0.5). Start the label only after that: K.show(bk, drop + 0.75, ...). This way the card text and the book label never overlap."
+        },
+        {
+          "time": "4:06–4:16",
+          "kind": "legibility",
+          "severity": "should",
+          "observation": "The Chinese line of the Mabrey quote breaks as “……而不是界定一个人的固有特 / 质。”. One character sits alone on the second line, the word 特质 is split, and the blue underline on that phrase is broken across the two lines. The quote holds for about 10 s, so the widow is easy to see.",
+          "evidence": "sheet-07 (4:06–4:14), zoom-ep00-p (4:14–4:16.5), zoom-ep00-q (4:12 at 1280 px)",
+          "fix": "Change only q3 in ov-reasons (scenes.js around line 441). Either give it a narrower width so the break moves (for example K.quote(root, 'ov.mabrey_impro_purpose_status', 200, 0, 1400, …) in place of the shared QW=1520), or set q3.zh.style.textWrap = 'balance'. A series-wide `text-wrap: pretty` on the zh quote class in film.css (owned by the main session) would prevent the same problem elsewhere."
+        },
+        {
+          "time": "2:43.5–2:47.5, 2:53.5–2:59.3",
+          "kind": "composition",
+          "severity": "nit",
+          "observation": "Twice the FDE node (480×200 at stage x 200–680) sits alone in the left third at 1.0x for 4–6 s, with the right two-thirds empty. The first time is before the chain to 产品团队 arrives. The second is after the cut, until the data sources appear on “数据”, with only the 难处 · 技术 tag added. This is deliberate pre-framing for the continuity hero, but it reads as waiting.",
+          "evidence": "sheet-05 (2:44–2:58), zoom-ep00-l (2:42–2:47.5), zoom-ep00-t (2:45 at 960 px), zoom-ep00-v (2:52–2:57.5)",
+          "fix": "In ov-friction (scenes.js around line 300), bring the three 数据源 boxes in grey and unlabelled at the scene start so the right side is occupied, and light them on “数据”. Alternatively, add a matching K.focus(fde, …, { zoom: 1.2 }) at the end of ov-field and the start of ov-friction, released before the next element enters, so the node still holds across the cut."
+        }
+      ]
+    },
+    "ep01": {
+      "verdict": "ep01 can ship after two or three small fixes. It has no must-level problem. Every fact and attribution on screen matches the claims ledger and the narration, no text is cropped outside camera moves, and the automated checks show no holds or blank spans. What remains: the zero close-up at 1:10 is rushed, the satisficing term card at 2:23 sits off to the left of a mostly empty frame, and one Chinese quote line leaves an orphaned 了。",
+      "strongest": [
+        "2:04–2:24: the airplane sling. The bag is drawn, twists into a rope, and the same path wraps the phone and hooks onto the tray latch, each step on its narration word. The drawing then shrinks into the first of the four satisficing examples, so the object carries straight into the concept.",
+        "3:49–3:58: the camera pushes in on the 'third parties' workshop quote and holds about 5 s. 'third parties' and then 'I assumed they knew…' light up in English and Chinese as they are spoken, and the camera pulls back on 另一场会 to set the second workshop beside it.",
+        "5:59–6:05: the camera closes on the Airbus card and the 8-to-12-week pilot bar. The bar fills with 获取数据权限 under 整段时间都耗在拿数据权限上, then the camera pulls back as the book's six-week bar arrives beside it under the 本系列的读法 legend (dashed ties)."
+      ],
+      "findings": [
+        {
+          "time": "1:10–1:14",
+          "kind": "motion",
+          "severity": "should",
+          "observation": "The zero close-up (hero beat 1) never settles. The camera pans right starting at 1:10.5, and the first two boxes slide off the left edge still at full ink ('的方案 / 开发' cut at 1:10.5–1:11.0) before the dimming starts. The camera reaches the '推向市场的产品 0' box around 1:12.0 and is already pulling back at 1:12.8, while '也没上市' is still being spoken. The 0 gets about 0.5 s of stillness, and the edge crop is visible again during the pull-back (1:13.5–1:14.0).",
+          "evidence": "sheet-02 (1:10, 1:12); zoom-ep01-zero/z-01.png (1:08–1:15.5 at 0.5 s); zoom-ep01-zero2/z-01.png (1:11.5–1:14.5 at 0.25 s: box widths peak 1:12.0–1:12.5 and shrink from 1:12.8)",
+          "fix": "In episodes/01-user-research/scenes.js, scene iu-hardhat: move zOut from T('iu.b5','这也算作')-0.4 to about T('iu.b5')+0.3, so the hold spans the silence after 没上市. Move the brace draw and the opacity restore of `before` to about T('iu.b5','成果')-0.4. Start the dimming tween of `before` at zIn-1.2 instead of zIn-0.2, so boxes 1–2 are already faint when the push slides them out of frame."
+        },
+        {
+          "time": "2:23–2:30",
+          "kind": "composition",
+          "severity": "should",
+          "observation": "For about 7 s, the key term card ('够用就行 satisficing / satisfy + suffice · Herbert Simon, 1956') and the shrunken sling sit in the upper-left third, and the rest of the frame is empty paper. The camera already holds the wide four-example frame, but the other three examples only start arriving at 2:31.",
+          "evidence": "sheet-04 (2:24–2:30), zoom-ep01-sat/z-01.png (2:23–2:31), full-res still at 2:27 (t147.png)",
+          "fix": "In iu-satisficing, split the b10 shot. Use shot(root,[150,150,960,840], b10-0.4, T('iu.b10','抽屉')-1.4) so the camera centres on the term and the sling while 'satisficing' is said. Then use the existing wide [200,150,1720,770] shot from T('iu.b10','抽屉')-1.4 to b11-0.5, so the camera makes room as the drawer arrives."
+        },
+        {
+          "time": "3:59–4:05",
+          "kind": "legibility",
+          "severity": "should",
+          "observation": "In the second workshop quote, the Chinese line breaks as '先跟你说一声，我们已经在写解决方案的代码' with '了。' alone on the second line. This orphan stays on screen for about 6 s at full ink, while the first quote beside it is dimmed.",
+          "evidence": "sheet-07 (4:00–4:04), full-res still at 4:02 (t242.png)",
+          "fix": "In iu-plan b16, widen q2: K.quote(root,'iu.misalignment-sidebar', 960, 400, 800, …), so the 22 glyphs at 36px fit on one line and the right edge stays inside the 80px margin. Alternatively, set text-wrap: balance on that quote's zh line."
+        },
+        {
+          "time": "2:24–2:38",
+          "kind": "copy",
+          "severity": "nit",
+          "observation": "The Latin label 'satisfy + suffice · Herbert Simon，1956' uses a full-width Chinese comma, which shows as a wide gap before 1956 in the spaced sans line.",
+          "evidence": "still t147.png (2:27), sheet-04",
+          "fix": "In iu-satisficing satNote, use 'satisfy + suffice · Herbert Simon, 1956' (ASCII comma and space)."
+        },
+        {
+          "time": "6:51–6:58",
+          "kind": "composition",
+          "severity": "nit",
+          "observation": "The end card's 10 sources and 1 credit overflow the 800px window by a few lines because two titles wrap, so the list scrolls. The 出处 header and the first entry scroll out of the top, leaving a cut 'Karen Lynch)' fragment under the fade mask by 6:56. A two-column layout would fit the whole list without scrolling.",
+          "evidence": "sheet-11 (6:50–6:56), zoom-ep01-end/z-01.png (6:51–6:57)",
+          "fix": "In film/series.js end(), choose the layout by measured height rather than by entry count (> 12). If col.scrollHeight exceeds 740, add 'two' first, and fall back to scrolling only if two columns still overflow. This is a series-level change and applies to every episode."
+        }
+      ]
+    },
+    "ep02": {
+      "verdict": "Ship ep02 after four small fixes. It is a clean, well-timed episode. The pictures land on their words, nothing is cropped or overlapping, and no on-screen fact disagrees with the ledger or the narration. Before release, fix: the label clash in the closing layout (内部用法 heading over 对外用法 Qureshi), the lock push-in that leaves the lock-on quote only about 3 s on screen, the 3 s of near-empty frame that opens the final beat, and one subtitle cue that comes about 1 s late.",
+      "strongest": [
+        "0:45–0:55: the four part cards glide into a page strip. The fully read pages light up inside the Status chapter, and pp. 33–74 are drawn magnified below the strip. Everything else then recedes, the camera pushes into the 地位 box, and the next chapter opens on the same word, large and blue. The match cut lands.",
+        "1:51–2:20: the camera closes on the head as 头保持不动 is said and the blue plumb line draws through it. The chain then fans out from the still head to four behaviours (2:04–2:10). The same figure crosses to Hamlet's place while the gravedigger wags his head. This is the clearest picture-to-word sync in the episode.",
+        "3:24–3:35: the rain example in three panels. The hand feels for rain, the partner grips it with \"Pleased to meet you\", and the third panel resolves to 本意 试雨 ≠ 读成 握手问候, each beat on its word. Also good: at 4:29–4:33 头衔 is struck through and 局面中赢得的权威 grows out from behind it."
+      ],
+      "findings": [
+        {
+          "time": "4:50–5:00",
+          "kind": "consistency",
+          "severity": "should",
+          "observation": "In the closing layout the heading 内部用法的出处 introduces the row 一手说法 · Qureshi 2024 · Mabrey 2025. Directly above it on the same frame, Qureshi's column header reads 对外用法 · 面向客户 and Mabrey's reads 对内用法. A viewer reads Qureshi as both the outward use and a source for the inward use. The clash came from two separate fixes: the episode review added the heading, and copy item S028 renamed the column subtitles. Neither adjudication saw the two together.",
+          "evidence": "final/ep02/sheet-08.png (4:50–4:58); full-resolution frame final/ep02-full/f-296.png; screen-text-ep02.md rows at 290.5 s and 252.5 s",
+          "fix": "scenes.js line 904 (im-from-h): change 内部用法的出处 to 两种用法的出处 (or Palantir 用法的出处), so the heading no longer collides with 对外/对内用法."
+        },
+        {
+          "time": "2:54–3:01",
+          "kind": "motion",
+          "severity": "should",
+          "observation": "The lock-on quote (2 lines of English, 3 of Chinese) is on screen for only about 3.3 s (2:54.3–2:57.6). The other two quotes in this scene each hold 8–9 s. The quote is hidden early so the push-in on the locked pair can start. That push-in holds for barely a second (2:59–3:00) and then pulls straight back out while the pins fade (3:00.4–3:01.2), so the move reads as an in-and-out bounce. In between, at 2:58.0, the top 40% of the frame is empty.",
+          "evidence": "final/ep02/sheet-05.png (2:54–3:00); final/zoom-ep02-lock/z-01.png (2:52–3:01.5); full-resolution frame final/ep02-full/f-178.png",
+          "fix": "scenes.js lines 628–632: drop K.focus(pair, close, tm-0.6) and the early K.hide([q3.root, stage, lo, hi], close-1.0). Add q3.root, stage, lo and hi to the tm-0.55 hide on line 635 instead. The lock then plays on the full stage with the quote readable for about 6.5 s."
+        },
+        {
+          "time": "4:34–4:37",
+          "kind": "sync",
+          "severity": "should",
+          "observation": "The narration says 这两种用法，都回到 Johnstone 那句话 (4:34.4–4:37.1). For those 3 s the screen shows only the two column headers at the top, and the frame is otherwise empty. The 地位是一种做法 box arrives only at 4:37.4, and the dashed connectors that show the two uses converging arrive at about 4:40. The picture of 'both lead back' therefore comes 3–5 s after the sentence that states it.",
+          "evidence": "final/ep02/sheet-07.png (4:34, 4:36); final/zoom-ep02-b19/z-01.png (4:34.4–4:37.2)",
+          "fix": "scenes.js line 871: show core at T('im.b19','回到') - 0.2 instead of said - 0.3. The box then lands on 都回到. Keep the quote at said + 0.4 and the connectors with the reading label as they are."
+        },
+        {
+          "time": "4:11.6–4:13.5",
+          "kind": "audio-text",
+          "severity": "should",
+          "observation": "The voice speaks 'Qureshi 把这本书往外用' from about 4:11.6 to 4:13.2. The subtitle cue im.b17#2 appears only at 4:12.68 and lasts 0.78 s (about 18 characters per second), so viewers with subtitles on see it flash late. The timeline squeezes the phrase's character timings into 252.68–253.17 s. The picture is unaffected: the name enters at about 4:12.0.",
+          "evidence": "assembly/timelines/ep02.vtt cue im.b17#2; assembly/timelines/ep02.json im.b17 character times; out/ep02.narration.wav loudness at 251.6–253.2 s",
+          "fix": "Re-align im.b17 in the timeline build (the English token 'Qureshi' pulls the alignment late) so the cue starts at about 4:11.6. Afterwards check that T('im.b17','往外用') still lands at about 4:13."
+        },
+        {
+          "time": "4:10.4–4:12.0",
+          "kind": "composition",
+          "severity": "nit",
+          "observation": "At the chapter turn 回到 Palantir the frame is blank paper, then two hairline rules for about 1.6 s, before Qureshi's name enters.",
+          "evidence": "final/ep02/sheet-07.png (4:10); final/zoom-ep02-uses/z-01.png (4:10.4–4:12.0)",
+          "fix": "scenes.js line 807: bring both column names in on 回到 (Mabrey's already dimmed to 0.4) instead of Qureshi's at 往外用 - 1.0."
+        },
+        {
+          "time": "0:46–0:50",
+          "kind": "composition",
+          "severity": "nit",
+          "observation": "For about 4 s the page strip sits in the top third of the frame and the lower half is empty. The 整页读过 legend appears alone at the bottom left at 0:48.5, about 400 px below the blue bars it explains, and 2 s before the magnified strip fills the gap.",
+          "evidence": "final/ep02/sheet-02.png (0:46, 0:48); final/zoom-ep02-map/z-01.png; full-resolution frame final/ep02-full/f-46.5.png",
+          "fix": "scenes.js line 247: show legRead together with legSnip at za + 0.9. Optionally frame only the strip region until za - 0.6 before widening."
+        },
+        {
+          "time": "2:09.3–2:10.6",
+          "kind": "motion",
+          "severity": "nit",
+          "observation": "The four-item chain is complete on screen for only about 1.3 s before it clears for the Hamlet beat. 更大的空间 barely registers.",
+          "evidence": "final/ep02/sheet-04.png (2:08, 2:10); final/zoom-ep02-chain/z-01.png",
+          "fix": "scenes.js line 483: set out to roles + 0.3 so the full chain holds about 2 s. The figure's move and the quote follow from out."
+        }
+      ]
+    },
+    "ep05": {
+      "verdict": "This is close to shippable. The on-screen facts and attributions match the narration and the ledger: dates, page numbers, Dulles/Flight 77, the S-1 founding line, and the four sources. The three focus beats and the chip morph work. Fix the two dead spans in the 需要知道 chapter first: 4:50.6–4:54.1, where only a small gray caption is on screen, and 5:05.3–5:06.7, where the paper is fully blank mid-sentence. Both are one-line timing changes in lt-need. The second half of the passport close-up also deserves a small retime.",
+      "strongest": [
+        "1:44–1:50: the red 未送到 stubs run out of the CIA cards and stop short of the empty FBI column, then the red-bordered TIPOFF row lands on 观察名单. The episode's argument is drawn plainly and in sync.",
+        "4:04–4:15: the four accounts relight side by side on 彼此对不上, each with its marked phrase. The three label chips then drop away and the camera comes in on 'not the disease / 不是病根', which turns blue on 病根.",
+        "5:42–5:47: Qureshi's four control chips travel down and across into the right column of the dashed 并置对照 frame as the same elements. On 权限 and 查看, only the two matches turn blue, with dashed links. The series grammar (dashed = our reading) is used exactly."
+      ],
+      "findings": [
+        {
+          "time": "4:50.6–4:54.1",
+          "kind": "composition",
+          "severity": "must",
+          "observation": "After the luck quote fades, the screen is empty paper with only the small gray 30px caption '委员会报告 · 13.3 信息共享' in the top-left for about 3.5 s. Meanwhile the narration says '讲信息共享的那一节，委员会把这些事都归到一套制度上'. The need-to-know quote arrives only at 4:54.2. The ink scan shows only about 130 dark pixels per frame in this span, which reads as a dead screen at the start of a chapter.",
+          "evidence": "<scratchpad>/final/ep05/sheet-08.png (4:50, 4:52); zoom-ep05-gap2/z-01.png (0.25 s frames 4:49.5–4:54.8)",
+          "fix": "In episodes/05-looming-tower/scenes.js, scene lt-need: bring the quote in with the section label. Change `K.show(q.root, T('lt.b19', '一套制度') - 0.3, { y: 14 })` to about `T('lt.b19') + 0.3`. Keep `lit(ntk, T('lt.b19', '需要知道') - 0.3)` so the emphasis still lands on the word."
+        },
+        {
+          "time": "5:05.3–5:08.6",
+          "kind": "composition",
+          "severity": "must",
+          "observation": "The 共享/不共享 ledger and quote fade out at 5:05.2. The paper is then completely blank for about 1.4 s while the narration has started '委员会提出的办法是'. After that, a single small 情报报告 box sits alone in a frame sized for the whole network until 数据本身 arrives at about 5:09. The blank reads as a hiccup mid-sentence.",
+          "evidence": "<scratchpad>/final/ep05/sheet-08.png (5:06, 5:08); zoom-ep05-gap/z-01.png (0.25 s frames 5:04–5:08.2). The ink scan shows 0 from 305.4 to 306.6.",
+          "fix": "In scenes.js, scene lt-need: show the report node as the ledger leaves. Change `K.show(R, T('lt.b20', '情报报告') - 0.4, …)` to `K.show(R, away + 0.5, …)`, which is about T('lt.b20'). Optionally start `edge(e1, …)` and D 0.3 s earlier so the first branch follows sooner."
+        },
+        {
+          "time": "1:32.0–1:37.5",
+          "kind": "sync",
+          "severity": "should",
+          "observation": "The passport close-up holds the two Wright-tagged cards, static, from 1:29.5 to 1:35.5. At 1:32.0 the narration switches to '委员会的报告里写着，二〇〇〇年一月', and at 1:32.5 the source line switches to 'The 9/11 Commission Report…'. The picture still shows only 'Wright 报道' cards. The Commission's account ('得知 Mihdhar 持美国签证 / 委员会报告') joins only at 1:35.6, after an empty grow of the card at 1:35. The camera then pulls out 1.6x→1x in about 1.1 s (1:36.4–1:37.5). So the hero's second half (the same visa told by the Commission) is seen at zoom for under a second.",
+          "evidence": "<scratchpad>/final/ep05/sheet-03.png (1:30–1:38); zoom-ep05-pass/z-01.png (1:28–1:37); full05/f92.png (Commission source line under Wright-only cards)",
+          "fix": "In scenes.js, scene lt-chain: move the card growth `tl.to(r2.c, { height: full … }, T('lt.b5','知道') - 0.45)`, `K.show(aC.e, …)` and the 两种记述 `K.show(d2.querySelector('i'), …)` to about `T('lt.b5') - 0.2`, so the Commission's account joins while the narration names the Commission. Leave `lit(visa2, T('lt.b5','签证') - 0.2)` and the focus window as they are."
+        },
+        {
+          "time": "1:16.4–1:19.0",
+          "kind": "sync",
+          "severity": "nit",
+          "observation": "The first ledger card opens as an empty bordered box with only the gray 'Wright 报道' tag for about 2.5 s. The narration has already said '从一通电话里得知' when the box appears; '电话得知：马来西亚聚会' fills in only on 马来西亚.",
+          "evidence": "<scratchpad>/final/ep05/sheet-02.png (1:16, 1:18); zoom-ep05-pass/z-01.png (1:16–1:19)",
+          "fix": "In scenes.js, scene lt-chain: `K.show(r1.ls[0], T('lt.b4', '电话') - 0.2, …)` instead of the 马来西亚 anchor. The line already starts with 电话得知."
+        },
+        {
+          "time": "3:11.2–3:14.8",
+          "kind": "sync",
+          "severity": "nit",
+          "observation": "The 九一一委员会 column is spotlit, and the other three recede, but its list stays empty for about 3.5 s while the narration says '委员会的报告往前追到一九九五年'. '1995 年的共享程序' arrives only on 司法部 (3:15), after the year has been said.",
+          "evidence": "<scratchpad>/final/ep05/sheet-06.png (3:12–3:16); zoom-ep05-c12/z-01.png",
+          "fix": "In scenes.js, scene lt-reasons: `K.show(c1.b, T('lt.b12', '追到') - 0.2, …)`, and keep 遭误解、误用 on 误解."
+        },
+        {
+          "time": "1:12.1–1:12.4",
+          "kind": "motion",
+          "severity": "nit",
+          "observation": "The four source photos (Wright portrait, report cover, CIA and FBI HQ) go from full to gone in about 0.3 s at the cut to the CIA/FBI ledger. With four large dark images, the power2.in root fade reads almost as a flash cut, the only near-hard cut in the episode. A 20.6 mean-diff jump in a single 0.1 s step.",
+          "evidence": "<scratchpad>/final/zoom-ep05-cut72/z-01.png (0.1 s frames 1:11.6–1:12.9)",
+          "fix": "In scenes.js, scene lt-book: fade the four cards (and the label) out first, e.g. `tl.to(cards, { autoAlpha: 0, duration: 0.6, ease: 'power2.inOut', stagger: 0.04 }, to - 0.9)`, before close(root, to)."
+        },
+        {
+          "time": "6:10–6:18",
+          "kind": "consistency",
+          "severity": "nit",
+          "observation": "The closing diagram sits in the dashed '本系列的读法' frame with dashed person boxes and a blue dashed '接通信息' link, but the undelivered stub from 持有信息的人 is drawn solid red. In this series, solid red means a failure a source states, and here the failure is the series' own generalization.",
+          "evidence": "<scratchpad>/final/ep05/sheet-10.png (6:10–6:16); zoom-ep05-end/z-01.png",
+          "fix": "In scenes.js, scene lt-field, closing reading: draw the stub `drawn(sv2, 'M752,455 L940,455', …)` dashed (as the blue link is), or in gray, instead of 'ln red'."
+        }
+      ]
+    },
+    "dogfood": {
+      "verdict": "I found the series in two hops (palantir/README → 已有消费 → series README), and its table tells me what the series is, how long each episode runs, the order (00→05) and that the compilation is the same body text without the intros and outros. After ep00 I could say: the \"list\" rests on a few people who joined between 2010 and 2015 remembering it, there is no official document, and the five readings map to an FDE's on-site job (problem, trust, commitments, right and wrong, mission). After ep05 I could say: the CIA's knowledge of al-Mihdhar's visa never reached the FBI; the Commission blames the lack of anyone in charge and a need-to-know regime; and two of its design points line up with Palantir's controls, which the episode marks as its own reading. I would ship both films after two small attribution fixes in ep00. I would not ship the docs as they are: they have a broken link, a stale claim count, a parent README that overstates what the reading list is, and production change logs sitting where viewers will read them.",
+      "strongest": [
+        "ep00 1:00–1:52: the source table fills row by row with 寄来 / 必读 / 选读, then settles into 可以确认 vs 未找到依据. This was the moment I understood how far the 'onboarding list' claim actually goes.",
+        "ep00 3:08–3:16: the 8–12-week pilot bar fills almost entirely with 获取数据权限 and leaves a thin blue sliver for 演示. I got 'organizational politics, not tech' at a glance.",
+        "ep05 1:12–2:46 and 5:44–6:00: the CIA/FBI two-column timeline, where red 未送到 stubs stop at the divide. Later the dashed 本系列的读法 · 并置对照 panel matches only two of five items and states 设计来源 无一手材料, a clear line between fact and the series' own reading."
+      ],
+      "findings": [
+        {
+          "time": "projects/palantir/reading-list-series/verification/README.md",
+          "kind": "other",
+          "severity": "must",
+          "observation": "The second sentence says the human review and viewing records are in [验收](acceptance.md), but that file does not exist. The series README sends newcomers to this page for '检查结果与审阅记录', so the review-records half of that route leads nowhere.",
+          "evidence": "Link check over palantir/README.md and every reading-list-series/**/*.md: this is the only missing target. `find` shows no acceptance.md under palantir/.",
+          "fix": "Write verification/acceptance.md (per-episode human review and viewing outcomes), or drop the clause and point to where reviews actually live (the episode READMEs)."
+        },
+        {
+          "time": "projects/palantir/reading-list-series/episodes/02-impro/README.md",
+          "kind": "other",
+          "severity": "must",
+          "observation": "The README says '画面用到 34 条主张', but the current render puts 35 claims on screen. Every other episode's count matches.",
+          "evidence": "out/ep02.inputs.json used.claims has 35 entries; verification/check-ep02.json ledger.claims_on_screen = 35. The other episodes match: ep00 22, ep01 55, ep03 42, ep04 36, ep05 36.",
+          "fix": "Change 34 to 35, or generate this line from `build/ledger.py used` so it cannot drift."
+        },
+        {
+          "time": "projects/palantir/README.md",
+          "kind": "fact",
+          "severity": "must",
+          "observation": "Line 18, in the entry README a newcomer reads first, says '这七份不是散书——它们是 Palantir 当年发给新人的入职书单'. The series says something different: five readings ('四本书，另有一份…PDF'). ep00 also says at 1:47 that no company document confirms a formal list. The seven objects include two background articles (Qureshi, Lonsdale) that were never on the list. A reader comes away with the wrong count and an overstated 'official list'.",
+          "evidence": "palantir/README.md:18. The distilled README itself says '这五份是…入职书单'. ep00.vtt 01:47 and screen text '未找到依据 · 一份公司正式发布的书单'.",
+          "fix": "Rewrite as: 五份读物（四本书与一份早期 PDF）据几位 2010–2015 年入职者回忆是发给新人的；未找到公司正式书单. Add this to the 对旧记录的更正 list in research/README.md."
+        },
+        {
+          "time": "projects/palantir/README.md",
+          "kind": "other",
+          "severity": "should",
+          "observation": "The video series is not under 入口. It appears second under '已有消费' (repo jargon), after a 当前状态 block about the 2026-10-06 acquisition batch, which includes '主会话在 dsh 里串行执行（claude 未登录、无 codex CLI，不是 Luna 集群）'. A newcomer has to read through the source-acquisition logistics before finding what to watch.",
+          "evidence": "projects/palantir/README.md lines 7–14 (status and executor note) and 23–25 (series link).",
+          "fix": "Put one line near the top: '想看讲解：入职书单视频系列 → reading-list-series/README.md'. Move the executor and dsh note to the vault distill record."
+        },
+        {
+          "time": "projects/palantir/README.md",
+          "kind": "fact",
+          "severity": "should",
+          "observation": "The 处理边界 and 当前状态 sections still say Impro has only '出版方描述、目录与产品详情' and that four books are partial with one metadata-only. ep02 now reads pages 33–56 of the Routledge 2012 Google Books preview. A newcomer can't tell which statement is current.",
+          "evidence": "palantir/README.md:10 and :31 vs research/README.md (02 Impro: 'Google Books 的出版方预览：书页 42–46、50、55–56 整页'), episodes/02-impro/README.md.",
+          "fix": "Mark these sections as 'as of 2026-10-06' and add a line pointing to research/README.md for what the series read later."
+        },
+        {
+          "time": "projects/palantir/reading-list-series/README.md",
+          "kind": "other",
+          "severity": "should",
+          "observation": "'成片…out/ep00.mp4' is the only answer to 'which file do I open'. out/*, assets/files/* and the cover PNGs are all gitignored, so a fresh checkout has no film, no audio and no photos. The fallback film/index.html?a=ep01 then runs silent (no mix.wav) with missing pictures until fetch_assets.py and the TTS pipeline (credentials) are run. The README does not say any of this.",
+          "evidence": "palantir/reading-list-series/.gitignore (out/*, assets/files/*, covers/*.png); film/README.md ('声音读 out/<编排>.mix.wav，没有时舞台照常走'); build/README.md.",
+          "fix": "Add a 怎样观看 line: where finished mp4s are kept or shared; without them, run `python3 build/fetch_assets.py` and then open film/index.html?a=ep00 (silent unless mix.wav exists). Remove '与 PNG 预览' or say it is generated."
+        },
+        {
+          "time": "projects/palantir/reading-list-series/README.md",
+          "kind": "consistency",
+          "severity": "should",
+          "observation": "The table gives the compilation ('合集') the same title as ep00, '一份不讲编程的书单'. The in-film title is 'Palantir 入职书单 · 合集' with the tagline '合集 · 四本书与一份早期 PDF'. Two rows with one title make it easy to open the wrong file. The README also gives no chapter starts for the 33:33 compilation.",
+          "evidence": "README table rows 00 and 合集; assembly/timelines/compilation.json title, series.compilation_zh and chapters (00 0:03, 01 5:16, 02 11:39, 03 16:16, 04 21:47, 05 27:08).",
+          "fix": "Name the row '合集 · 四本书与一份早期 PDF' (or whatever the cover uses) and add a one-line chapter list. Add 'order: 00→05, or the compilation for one sitting'."
+        },
+        {
+          "time": "projects/palantir/reading-list-series/README.md",
+          "kind": "copy",
+          "severity": "should",
+          "observation": "The landing page reads half as a production log. '怎样做出来的' covers 探索代理, 核验代理, 冷读代理, Opus 施工代理, Opus 导演代理, 主会话, camera.js and the voice name. '交接稿与本项目的取舍' covers '用户转交的生产交接稿…先出作品再做 dogfooding'. Several terms go unexplained: 编排, 主张 ID, 作者语体, 口播体例, 结构文字. None of this helps a viewer, and it pushes down what does: how to tell fact from the series' reading.",
+          "evidence": "README.md lines 30, 32–39, 41–43.",
+          "fix": "Keep a 3-line 'how it was checked' for viewers: every quote carries a source line, and 本系列的读法 is marked with a dashed line. Move the agent pipeline and the handoff decisions to build/README.md or verification/."
+        },
+        {
+          "time": "projects/palantir/reading-list-series/episodes/*/README.md",
+          "kind": "copy",
+          "severity": "should",
+          "observation": "After the useful chapter table, every episode README has four internal change-log bullets (稿子的冷读与事实核对, 画面审阅后的改动, 镜头与动效, 结构文字审阅后的改动). Examples: ep05 '修正一处高亮不显示的程序错误和一次切到文字的镜头移动' and the TTS timestamp note; ep00 '没有采纳的：只给配音改写“A三五零”'. A viewer can't easily pick out the verified scope and the series' reading from them.",
+          "evidence": "episodes/00-overview … 05-looming-tower README.md, bullets 3–6.",
+          "fix": "In each README keep: scope read, what is source vs 本系列的读法, and the limits. Move the four change-log bullets to verification/review-epNN.md (which could also serve as the missing acceptance.md)."
+        },
+        {
+          "time": "projects/palantir/reading-list-series/episodes/README.md",
+          "kind": "other",
+          "severity": "should",
+          "observation": "The README says every episode directory contains ledger-patch.json ('施工时补的引文译文，合并进研究登记后可删'). None of the six directories has one, and the parenthetical is a production TODO, not a description.",
+          "evidence": "ls episodes/*/ shows README.md, covers, motif.py, narration.md, scenes.css, scenes.js, script.json, and no ledger-patch.json.",
+          "fix": "Delete the ledger-patch.json clause."
+        },
+        {
+          "time": "projects/palantir/reading-list-series/README.md",
+          "kind": "other",
+          "severity": "should",
+          "observation": "Nothing tells a viewer the on-screen legend in one place. Dashed means 本系列的读法. Grey solid means 未读或未找到. Red solid means a failure the source itself reports. The bottom line is 出处. These rules appear only as scattered '改用灰色实线' notes inside episode change logs. On screen the legends are clear, but a reader of the docs can't learn how to tell verified from interpreted.",
+          "evidence": "ep00/ep05 sheets (legend '未见有人讲过理由 · 本系列的读法', '本系列的读法 · 并置对照'); episode READMEs 画面审阅后的改动 bullets.",
+          "fix": "Add a four-line 画面怎么读 block to the series README."
+        },
+        {
+          "time": "projects/palantir/reading-list-series/verification/README.md",
+          "kind": "other",
+          "severity": "should",
+          "observation": "The series README says '成片逐项检查，见验收', and the verification page lists only file types. It does not show results. In the JSON: the narration (transcription) check did not run for ep02, ep04 and ep05 ('pass': null, HTTP 429). Fidelity fails for ep03 and ep04 (stale renders). A newcomer would assume everything passed.",
+          "evidence": "verification/check-ep02.json, check-ep04.json, check-ep05.json narration.error 'HTTP Error 429'; check-ep03.json and check-ep04.json fidelity.pass false (min PSNR 11.7 / 16.0).",
+          "fix": "Add a generated pass/fail table per assembly to verification/README.md, with 'not run' shown explicitly, and rerun the narration checks."
+        },
+        {
+          "time": "projects/palantir/reading-list-series/research/README.md",
+          "kind": "fact",
+          "severity": "should",
+          "observation": "The claims row says '画面只接受 checked', but three claims marked checked-with-limits are on screen. The review-state vocabulary in the table never mentions checked-with-limits.",
+          "evidence": "claims.jsonl review_state counts: checked 439, needs-fix 22, checked-with-limits 3, unverified 1. ov.cohort_and_dates, pr.no-firsthand-else and gtd.no-independent-evaluation all appear in out/ep0*.inputs.json used.claims.",
+          "fix": "Write '画面只接受 checked 与 checked-with-limits（限度写在出处行或念白里）'."
+        },
+        {
+          "time": "2:27–2:43",
+          "kind": "fact",
+          "severity": "should",
+          "observation": "In ep00 the speaker slot above the quote reads '经济学家 Tyler Cowen', but the quote is Qureshi's sentence ('Tyler Cowen has a wonderful saying, …'). The source line at the bottom says Qureshi 2024. On every other quote screen that slot names the speaker, so this one reads as if Cowen wrote it.",
+          "evidence": "ep00 sheet-05 at 2:28–2:40; full-res frame dogfood/ep00-150.png; screen-text-ep00.md row 147.0s class ov-speaker.",
+          "fix": "In episodes/00-overview/scenes.js (ov.b9/ov.b10, .ov-speaker), change the label to 'Qureshi 引经济学家 Tyler Cowen', or move it into the quote as a gloss."
+        },
+        {
+          "time": "3:41–3:53",
+          "kind": "consistency",
+          "severity": "should",
+          "observation": "Under the legend 'Palantir 员工或前员工讲过理由' the screen shows 'Impro is popular with nerds partly because…'. The narration paraphrases it as '像拆机器一样拆开来讲：同一个演员只改几处身体上的动作…', and 受书呆子欢迎 is never heard. The ep02 README itself says this line explains the book's popularity among techies, not why it was handed out. The actual reason (the causal chain) only arrives at 3:54.",
+          "evidence": "ep00 sheet-06 3:40–3:52; full-res frame dogfood/ep00-221.png; ep00.vtt 03:40–03:53; episodes/02-impro/README.md ('解释的是书在技术人里受欢迎，不是发书的理由').",
+          "fix": "In ov.b16, either use the narration's own framing ('他先说这本书在技术人里受欢迎，因为…') or drop the quote card and let the causal chain carry the reason."
+        },
+        {
+          "time": "1:47–2:14",
+          "kind": "legibility",
+          "severity": "nit",
+          "observation": "In ep05 the row '国务院 TIPOFF 观察名单 · 两人均未列入' shows TIPOFF in caps with no gloss. The narration says only '美国国务院的观察名单'.",
+          "evidence": "ep05 sheet-03 1:48–1:58 and sheet-04 2:00–2:14.",
+          "fix": "Drop 'TIPOFF', or write '国务院观察名单（TIPOFF）'."
+        },
+        {
+          "time": "4:52",
+          "kind": "motion",
+          "severity": "nit",
+          "observation": "In ep00, while the five cards re-sort into series order, the 2 s sample catches titles drawn on top of each other ('Interviewing Users' and 'The Looming Tower' doubled). It is brief, but it is the only messy frame in the episode.",
+          "evidence": "ep00 sheet-08 4:52 frame vs dogfood/ep00-292.png (clean at 4:52.0 full-res, so it is mid-flight).",
+          "fix": "In episodes/00-overview/scenes.js (ov.b20), stagger the card moves or fade the outgoing labels before they cross."
+        },
+        {
+          "time": "projects/palantir/reading-list-series/README.md",
+          "kind": "other",
+          "severity": "nit",
+          "observation": "The link text '[assembly/covers](assembly/README.md)' names the covers folder but opens the assembly README. assembly/covers/README.md exists.",
+          "evidence": "README.md line 17.",
+          "fix": "Point the link to assembly/covers/README.md."
+        }
+      ]
+    }
+  },
+  "workflowProgress": [
+    {
+      "type": "workflow_phase",
+      "index": 1,
+      "title": "Review"
+    },
+    {
+      "type": "workflow_agent",
+      "index": 1,
+      "label": "review:ep00",
+      "phaseIndex": 1,
+      "phaseTitle": "Review",
+      "agentId": "a1bcd9de57759dadb",
+      "model": "claude-opus-5-5",
+      "state": "done",
+      "startedAt": 1792245706745,
+      "queuedAt": 1792245706720,
+      "attempt": 1,
+      "lastToolName": "StructuredOutput",
+      "lastToolSummary": "I would ship ep00 after three small fixes. I found no wrong…",
+      "promptPreview": "You are reviewing a FINISHED, rendered Chinese explainer episode (Palantir onboarding reading list series) in palantir/reading-list-series. Read-only: do not edit any file under palantir/reading-list-series; write any scratch files only under <session-tmp>…",
+      "promptFramed": true,
+      "lastProgressAt": 1792246424839,
+      "tokens": 236243,
+      "toolCalls": 60,
+      "durationMs": 718093,
+      "resultPreview": "{\"verdict\":\"I would ship ep00 after three small fixes. I found no wrong facts, cropped text or broken cuts. On-screen text matches the narration and the claims ledger (cohort years, table rows, Airbus caption, quote attributions), and every chapter change crossfades cleanly. The weak spots are two short motion and composition lapses in 入选理由 (a 7 s frame that is two-thirds empty under the card row,…"
+    },
+    {
+      "type": "workflow_agent",
+      "index": 2,
+      "label": "review:ep01",
+      "phaseIndex": 1,
+      "phaseTitle": "Review",
+      "agentId": "addac288187029450",
+      "model": "claude-opus-5-5",
+      "state": "done",
+      "startedAt": 1792245706745,
+      "queuedAt": 1792245706720,
+      "attempt": 1,
+      "lastToolName": "StructuredOutput",
+      "lastToolSummary": "ep01 can ship after two or three small fixes. It has no mus…",
+      "promptPreview": "You are reviewing a FINISHED, rendered Chinese explainer episode (Palantir onboarding reading list series) in palantir/reading-list-series. Read-only: do not edit any file under palantir/reading-list-series; write any scratch files only under <session-tmp>…",
+      "promptFramed": true,
+      "lastProgressAt": 1792246286676,
+      "tokens": 249008,
+      "toolCalls": 60,
+      "durationMs": 578059,
+      "resultPreview": "{\"verdict\":\"ep01 can ship after two or three small fixes. It has no must-level problem. Every fact and attribution on screen matches the claims ledger and the narration, no text is cropped outside camera moves, and the automated checks show no holds or blank spans. What remains: the zero close-up at 1:10 is rushed, the satisficing term card at 2:23 sits off to the left of a mostly empty frame, and…"
+    },
+    {
+      "type": "workflow_agent",
+      "index": 3,
+      "label": "review:ep02",
+      "phaseIndex": 1,
+      "phaseTitle": "Review",
+      "agentId": "a7b0a7ff3d470b6df",
+      "model": "claude-opus-5-5",
+      "state": "done",
+      "startedAt": 1792245706745,
+      "queuedAt": 1792245706720,
+      "attempt": 1,
+      "lastToolName": "StructuredOutput",
+      "lastToolSummary": "Ship ep02 after four small fixes. It is a clean, well-timed…",
+      "promptPreview": "You are reviewing a FINISHED, rendered Chinese explainer episode (Palantir onboarding reading list series) in palantir/reading-list-series. Read-only: do not edit any file under palantir/reading-list-series; write any scratch files only under <session-tmp>…",
+      "promptFramed": true,
+      "lastProgressAt": 1792246283015,
+      "tokens": 234516,
+      "toolCalls": 49,
+      "durationMs": 574397,
+      "resultPreview": "{\"verdict\":\"Ship ep02 after four small fixes. It is a clean, well-timed episode. The pictures land on their words, nothing is cropped or overlapping, and no on-screen fact disagrees with the ledger or the narration. Before release, fix: the label clash in the closing layout (内部用法 heading over 对外用法 Qureshi), the lock push-in that leaves the lock-on quote only about 3 s on screen, the 3 s of near-em…"
+    },
+    {
+      "type": "workflow_agent",
+      "index": 4,
+      "label": "review:ep05",
+      "phaseIndex": 1,
+      "phaseTitle": "Review",
+      "agentId": "a7d1a5396bd234fea",
+      "model": "claude-opus-5-5",
+      "state": "done",
+      "startedAt": 1792245706745,
+      "queuedAt": 1792245706720,
+      "attempt": 1,
+      "lastToolName": "StructuredOutput",
+      "lastToolSummary": "This is close to shippable. The on-screen facts and attribu…",
+      "promptPreview": "You are reviewing a FINISHED, rendered Chinese explainer episode (Palantir onboarding reading list series) in palantir/reading-list-series. Read-only: do not edit any file under palantir/reading-list-series; write any scratch files only under <session-tmp>…",
+      "promptFramed": true,
+      "lastProgressAt": 1792246478221,
+      "tokens": 251069,
+      "toolCalls": 60,
+      "durationMs": 769602,
+      "resultPreview": "{\"verdict\":\"This is close to shippable. The on-screen facts and attributions match the narration and the ledger: dates, page numbers, Dulles/Flight 77, the S-1 founding line, and the four sources. The three focus beats and the chip morph work. Fix the two dead spans in the 需要知道 chapter first: 4:50.6–4:54.1, where only a small gray caption is on screen, and 5:05.3–5:06.7, where the paper is fully b…"
+    },
+    {
+      "type": "workflow_agent",
+      "index": 5,
+      "label": "dogfood",
+      "phaseIndex": 1,
+      "phaseTitle": "Review",
+      "agentId": "a7264719eff5488c4",
+      "model": "claude-opus-5-5",
+      "state": "done",
+      "startedAt": 1792245706745,
+      "queuedAt": 1792245706720,
+      "attempt": 1,
+      "lastToolName": "StructuredOutput",
+      "lastToolSummary": "I found the series in two hops (palantir/README → 已有消费 …",
+      "promptPreview": "You are a first-time consumer of this repository's Palantir material, a Chinese-speaking engineer who has just joined a team that uses Palantir's onboarding reading list. Start at palantir/README.md and find your way to the video series the way a newcomer would, following links only. Read-only: do not edit any repository file; scratch files only under /private/t…",
+      "promptFramed": true,
+      "lastProgressAt": 1792246261568,
+      "tokens": 216143,
+      "toolCalls": 64,
+      "durationMs": 552949,
+      "resultPreview": "{\"verdict\":\"I found the series in two hops (palantir/README → 已有消费 → series README), and its table tells me what the series is, how long each episode runs, the order (00→05) and that the compilation is the same body text without the intros and outros. After ep00 I could say: the \\\"list\\\" rests on a few people who joined between 2010 and 2015 remembering it, there is no official document, and the f…"
+    }
+  ],
+  "totalTokens": 1186979,
+  "totalToolCalls": 293
+}

@@ -13,7 +13,7 @@ from urllib.parse import unquote, urlsplit
 ROOT = Path(__file__).resolve().parents[3]
 HERE = Path(__file__).resolve().parent
 ATLAS = ROOT / 'vault/distilled/saas-engineering-atlas'
-BOOK = ROOT / 'books/saas-engineering'
+BOOK = ROOT / 'projects/books/saas-engineering'
 FROZEN = '5e6b7e3bc4e7d2bcfe737c231ddfe0c3be015f5b'
 BASE = 'cd8d77b6166a6fc566f6aa09b4d9af3e11537408'
 
@@ -100,7 +100,7 @@ def main():
         array_positions=[1, 2, 3], selected_values=values[1:4], prefix=prefix)
 
     changed = subprocess.check_output(['git', 'diff', '--name-only', BASE, FROZEN, '--',
-        'books/saas-engineering'], cwd=ROOT, text=True).splitlines()
+        'projects/books/saas-engineering'], cwd=ROOT, text=True).splitlines()
     links = []
     for rel in changed:
         path = ROOT / rel

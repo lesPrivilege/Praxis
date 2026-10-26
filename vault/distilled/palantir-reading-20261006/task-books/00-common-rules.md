@@ -40,7 +40,7 @@
 
 Palantir 这批材料的价值常常在具体处境里，先立一个塔尖，容易把现场摩擦压成一句管理箴言。**先看材料，塔的形状由材料决定。**
 
-出处：[The Pyramid Principle 一片的 dossier.md:39](../../../../demos/knowledge-film-001-pyramid-cut5/research/dossier.md)。
+出处：[The Pyramid Principle 一片的 dossier.md:39](../../../../projects/knowledge-film-001-pyramid-cut5/research/dossier.md)。
 
 ## 交付格式
 

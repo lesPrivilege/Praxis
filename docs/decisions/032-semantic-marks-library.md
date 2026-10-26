@@ -1,6 +1,6 @@
 # ADR-032：承载稳定语义的记号、控件与运动收进 Design，作可取用的参考
 
-日期：2026-10-12。状态：accepted（用户裁决）。主会话（Claude Opus 5.5）验收并登记；绘制由另一个 Claude Code 会话按 [工单](../../demos/editable-native-svg/claude-design-order-20261012.md)完成。
+日期：2026-10-12。状态：accepted（用户裁决）。主会话（Claude Opus 5.5）验收并登记；绘制由另一个 Claude Code 会话按 [工单](../../projects/editable-native-svg/claude-design-order-20261012.md)完成。
 
 ## 背景
 

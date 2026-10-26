@@ -44,7 +44,7 @@ def chapter_routes(claim):
     """Project reader routes without changing the author's original chapter paths."""
     origin = Path(claim['origin_path'])
     if 'case_id' in claim:
-        return [str(Path('books/saas-engineering/packages') / origin.parent.name / (claim['case_id'] + '.md'))]
+        return [str(Path('projects/books/saas-engineering/packages') / origin.parent.name / (claim['case_id'] + '.md'))]
     routes = []
     for path in claim.get('chapter_paths', claim.get('local_paths', [claim['chapter']] if 'chapter' in claim else [])):
         chapter = Path(path)
@@ -56,9 +56,9 @@ def chapter_routes(claim):
             routes.append(chapter.as_posix())
         elif chapter.parts[0] == 'vault':
             relative = chapter.relative_to('vault/distilled/saas-engineering-atlas')
-            routes.append((Path('books/saas-engineering') / relative).as_posix())
+            routes.append((Path('projects/books/saas-engineering') / relative).as_posix())
         else:
-            routes.append((Path('books/saas-engineering') / origin.parent.name / chapter).as_posix())
+            routes.append((Path('projects/books/saas-engineering') / origin.parent.name / chapter).as_posix())
     return routes
 
 def build():
@@ -117,7 +117,7 @@ def build():
             'limits': '每项主张保留自己的 locator 与 limitations；URL 合并不扩大任一读取范围。无 provider 执行或全文快照。',
             'purpose_tags': ['GRAMMAR'], 'card_path': 'vault/provenance/saas-engineering-atlas/sources.md',
             'supported_claims': supported,
-            'grammar_paths': sorted({'books/saas-engineering/README.md'} | {
+            'grammar_paths': sorted({'projects/books/saas-engineering/README.md'} | {
                 path for c in scoped for path in chapter_routes(c)}),
             'history_record': 'vault/provenance/saas-engineering-atlas/reviews.json',
             'review_ids': review_ids, 'evidence_modality': ['text_read'] if scoped else [],

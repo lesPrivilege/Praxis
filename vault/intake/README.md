@@ -4,7 +4,7 @@
 
 - [AgentScope 企业线研究](agentscope-enterprise-20261012.json)：本次公开源研究的范围与消费归属。
 
-- [Palantir 阅读清单 · 2026-10-01 登记，10-06 取得原件](palantir-20261001.json)：7 个对象、8 个显式 URL；当前对象证据为 3 个 `verified`、4 个 `partial`，URL 记录为 4 个 `verified`、4 个 `partial`，四本书正文仍缺。[阅读入口与候选笔记](../../palantir/references/README.md)，[原件快照](../snapshots/local/palantir-20261006/README.md)，[回执](../../docs/verification/palantir-source-acquisition-20261006.md)。
+- [Palantir 阅读清单 · 2026-10-01 登记，10-06 取得原件](palantir-20261001.json)：7 个对象、8 个显式 URL；当前对象证据为 3 个 `verified`、4 个 `partial`，URL 记录为 4 个 `verified`、4 个 `partial`，四本书正文仍缺。[阅读入口与候选笔记](../../projects/palantir/references/README.md)，[原件快照](../snapshots/local/palantir-20261006/README.md)，[回执](../../docs/verification/palantir-source-acquisition-20261006.md)。
 
 - [可编辑原生 SVG · 2026-10-04](editable-native-svg-20261004.json)：需求覆盖、独立版本风险与 fresh Opus 工单；[研究入口](../distilled/editable-native-svg-20261004/README.md)，当前未绘制。
 
@@ -70,11 +70,11 @@ Intake 只登记材料身份、覆盖、处理状态、附件和缺口，不重�
 
 - [SourceWeft比较 · 2026-09-28](sourceweft-praxis-20260928.json)：1轮2消息及逐URL补充核查，原citation占位保留缺口；消费至 [研究与架构差异](../distilled/sourceweft-praxis-20260928/README.md)。
 
-- [视觉语法语料库 · 2026-09-28](visual-grammar-20260928.json)：3轮6消息及技术栈截图，Luna本地项目与外部来源定向追溯；[Opus施工入口](../../demos/visual-grammar/README.md)。
+- [视觉语法语料库 · 2026-09-28](visual-grammar-20260928.json)：3轮6消息及技术栈截图，Luna本地项目与外部来源定向追溯；[Opus施工入口](../../projects/visual-grammar/README.md)。
 
-- [Palantir · 2026-10-01](palantir-20261001.json)：4轮7消息、8个未核实 URL 与10个 missing-original 引用占位；[阅读入口](../../palantir/README.md)。
+- [Palantir · 2026-10-01](palantir-20261001.json)：4轮7消息、8个未核实 URL 与10个 missing-original 引用占位；[阅读入口](../../projects/palantir/README.md)。
 
-- [Tally · SaaS · 2026-10-01](tally-saas-20261001.json)：72文件完整快照与hash；[书稿阅读入口](../../tally/README.md)。
+- [Tally · SaaS · 2026-10-01](tally-saas-20261001.json)：72文件完整快照与hash；[书稿阅读入口](../../projects/tally/README.md)。
 
 - [Design grammar atlas · 2026-10-02](design-grammar-atlas-20261002.json)：44 文件研究包的完整快照与 hash，另记 47 条来源的重访与六题冷启动走读；[消费与裁决](../distilled/design-grammar-atlas-20261002/README.md)。
 - [PraxisDesignKit 工单提案 · 2026-10-02](design-kit-workorders-20261002.json)：单文件提案的快照与 hash，另记 16 个未重访的外部链接；[入账与裁决](../distilled/design-kit-workorders-20261002/README.md)。
@@ -83,7 +83,7 @@ Intake 只登记材料身份、覆盖、处理状态、附件和缺口，不重�
 - [社区 Skills 与 Prompts 研究包 · 2026-10-02](community-grammar-20261002.json)：三个文件的快照与 hash，45 个外部链接里主会话读了 8 个；[对照与裁决](../distilled/community-grammar-20261002/README.md)。
 - [自足性审查 · 2026-10-02](self-contained-review-20261002.json)：单文件审查的快照与 hash，引用的都是本仓库自己的文件，没有外部来源；[对照与裁决](../distilled/self-contained-review-20261002/README.md)。
 - [知识组织与解释性写作规范 · 2026-10-15](knowledge-organization-spec-20261015.json)：单文件规范的快照与 hash，22 条外部参考未回查；[取用与退回](../distilled/technical-compilation-writing-research-20261014/knowledge-organization-spec-20261015.md)。
-- [Palantir 设计交接包 · 2026-10-03](palantir-design-handoff-20261003.json)：七个文件的快照与 hash，9 个外部链接复查了作品用到的 3 个；据此做的作品见 [demos/palantir-discovery](../../demos/palantir-discovery/README.md)。
+- [Palantir 设计交接包 · 2026-10-03](palantir-design-handoff-20261003.json)：七个文件的快照与 hash，9 个外部链接复查了作品用到的 3 个；据此做的作品见 [demos/palantir-discovery](../../projects/palantir-discovery/README.md)。
 
 - [Design / Write 书目与语法参考登记](design-writing-encyclopedia-20261011.json)：公开来源的细读摘要、可选语法与有界分面；[阅读入口与覆盖](../provenance/design-writing-encyclopedia/README.md)，[历史与验收](../../docs/verification/design-writing-encyclopedia-20261011/README.md)。
 
@@ -94,6 +94,6 @@ Intake 只登记材料身份、覆盖、处理状态、附件和缺口，不重�
 - [Chat ingestion 与 Astra-era harness audit 讨论摘录 · 2026-10-09](chat-ingestion-harness-20261009.json)：两份粘贴文本、无会话身份；[原件](../archive/chat/chat-ingestion-harness-20261009/README.md)、[提炼](../distilled/chat-ingestion-harness-20261009/README.md)、[来源账本](../provenance/chat-ingestion-harness-20261009/README.md)。
 
 - [入职书单系列过程重建登记](palantir-reading-list-series-distill-20261019.json) → [消费与失败记录](../distilled/palantir-reading-list-series-distill-20261019/README.md)：主日志与工作流记录只登记定位与 hash，未快照入库；按本入口发现。
-- [Palantir 入职书单视频系列 · 2026-10-17](palantir-reading-list-series-20261017.json)：原 Chat、用户转交的生产交接稿（仅供开工参考）与本轮新增来源；[原 Chat](../archive/chat/palantir-reading-list-series-20261017.md)、[交接稿快照](../snapshots/local/palantir-series-handoff-20261017/README.md)、[来源快照](../snapshots/local/palantir-series-20261017/README.md)；消费在 [系列项目](../../palantir/reading-list-series/README.md)。
+- [Palantir 入职书单视频系列 · 2026-10-17](palantir-reading-list-series-20261017.json)：原 Chat、用户转交的生产交接稿（仅供开工参考）与本轮新增来源；[原 Chat](../archive/chat/palantir-reading-list-series-20261017.md)、[交接稿快照](../snapshots/local/palantir-series-handoff-20261017/README.md)、[来源快照](../snapshots/local/palantir-series-20261017/README.md)；消费在 [系列项目](../../projects/palantir/reading-list-series/README.md)。
 - [dsh-praxis 控制面规划 · 2026-10-23](dsh-praxis-control-plane-20261023.json)：原 Chat 与 ChatGPT 起草的评审记录 v0.2；[原 Chat](../archive/chat/dsh-praxis-control-plane-20261023.md)、[评审记录快照](../snapshots/local/dsh-praxis-control-plane-20261023/README.md)；消费在 [dsh-praxis](../../dsh-praxis/README.md)。
   - 2026-10-25 增量原件：[20-turn 原 Chat 导出](../archive/chat/dsh-praxis-control-plane-20261025.md)，与旧原件共享前 15 轮，补有第 16–20 轮；同一稳定材料 ID 追加 `source_versions` 与 coverage review，旧原件不覆盖。新原件仍为 partial；v0.3 评审附件及 Add to Claude 的实际读取结果缺失，Turn 19–20 仅作 ATC 兼容性测试材料。

@@ -1,4 +1,4 @@
-> 历史研究编写契约。当前阅读从 [全景入口](../../../books/saas-engineering/README.md)开始；本页不派发新的任务。
+> 历史研究编写契约。当前阅读从 [全景入口](../../../projects/books/saas-engineering/README.md)开始；本页不派发新的任务。
 
 # 案例模板
 

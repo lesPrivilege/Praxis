@@ -4,7 +4,7 @@
 
 ## 问题与依据
 
-[DeerFlow 讲解页](../../demos/deerflow-explainer/README.md)是一次用 Kit 做的交互讲解。用户目验通过后说：“可以 distill 完成 kit 维护了。”制作过程中用户给过四条意见，其中两条 Kit 里没有：
+[DeerFlow 讲解页](../../projects/deerflow-explainer/README.md)是一次用 Kit 做的交互讲解。用户目验通过后说：“可以 distill 完成 kit 维护了。”制作过程中用户给过四条意见，其中两条 Kit 里没有：
 
 - 术语。“有些术语类 grammar，建议优先采纳最稳定的语义，一般是英文，而不临时作生硬翻译，这反而更能达意，尤其是 ai 与 agent 这个领域，这也会作为 writing kit 的小修订。”初稿把 agent、run、artifact、StreamBridge 等译成了智能体、运行、产物、流桥，独立审阅没有把它列为问题。
 - 读者与颗粒度。“颗粒度需要经得起追问，但不会到源码技术细节的程度”；“不预设角色是 pm，pm 只是颗粒度参考，其依然可能是工程师背景，只是不再 review code”。
@@ -18,12 +18,12 @@
 - **[成文原理](../../dsh-praxis/kit/writing/principles.md)第 6 条写明术语取最稳定的说法。** 在术语主要以英文流通的领域，稳定的通常是英文原词，直接使用，不临时造译名；已经通行的中文说法照用；英文原词首次出现时交代一次含义。[审阅方法](../../dsh-praxis/kit/writing/review.md)的偏差表加一行，裁决记录加一条。强度不变，仍是中文语言约定。
 - **Publish 新增 [讲解页的编排](../../dsh-praxis/kit/publish/html/explainer.md)，作为可以取用的参考。** 写每个局部回答的四问、四层的可见性、事实底稿要留下的四样东西、可以调的三处、一个正例和三个反例。Publish 入口加一处指向它，写明不是必经步骤。
 - **[成立程度的标记](../../dsh-praxis/kit/design/foundations/standing.md)“可以调整的情形”加一句。** 供读者点选或步进的图里，强调色可以改作“当前选中”，写进图例；它与“等人决定”不放进同一张图。
-- **稳定语义的记号、控件与运动，写成工单交给独立的 ClaudeDesign 绘制。** 用户先问能否在 Kit 里备一套原生 SVG 图标，随后指定：“派一单 paste，我交给独立的 ClaudeDesign 绘制”，范围是“HTML 与 video 两种编排方式里那些能够承载稳定语义的指引或控件”，Kit 中的 Design 参考可用。[工单](../../demos/editable-native-svg/claude-design-order-20261012.md)全文自足。用户对成果的期待是：“可以推广和泛化，会是一套稳定的 grammar，同时消费时不会过拟合，不限制下一次开工时取用或重新绘制。”工单因此要求 grammar 与这一版的画法分开写。成果回交后是候选，用户 review 之后再进 Kit；这次 Kit 里不新增图标或组件，也不加发现链接。
+- **稳定语义的记号、控件与运动，写成工单交给独立的 ClaudeDesign 绘制。** 用户先问能否在 Kit 里备一套原生 SVG 图标，随后指定：“派一单 paste，我交给独立的 ClaudeDesign 绘制”，范围是“HTML 与 video 两种编排方式里那些能够承载稳定语义的指引或控件”，Kit 中的 Design 参考可用。[工单](../../projects/editable-native-svg/claude-design-order-20261012.md)全文自足。用户对成果的期待是：“可以推广和泛化，会是一套稳定的 grammar，同时消费时不会过拟合，不限制下一次开工时取用或重新绘制。”工单因此要求 grammar 与这一版的画法分开写。成果回交后是候选，用户 review 之后再进 Kit；这次 Kit 里不新增图标或组件，也不加发现链接。
 
 ## 没有进入的
 
 - 讲解页的具体参数：章数、配色、字号、八个图件的造型和实现。它们留在项目里。
-- 分区调研的任务书。[工单原文](../../demos/deerflow-explainer/research/BRIEF.md)留在项目里；“把研究交出去”在 [工作开展方式](../../kit/environment/working-methods.md)已有备用素材，没有再写一份。
+- 分区调研的任务书。[工单原文](../../projects/deerflow-explainer/research/BRIEF.md)留在项目里；“把研究交出去”在 [工作开展方式](../../kit/environment/working-methods.md)已有备用素材，没有再写一份。
 - 哪些中文术语算“已经通行”的清单。按读者和领域判断，不列表。
 - 独立审阅把结构文字和冷读合成一轮的做法。只用过这一次，审阅页已有的两种做法没有改。
 

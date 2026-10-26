@@ -67,4 +67,4 @@ accepted 表示本仓库当时采纳；技术实现与使用证据在对应契�
 - [ADR-041：dsh-praxis 的项目与产物位置](041-dsh-praxis-projects.md)（accepted；项目是带布局的目录，底稿、中间产物、最终产物各按 glob；产物属于包含它的最深项目，consume 拒收项目外的文件；违例只报不搬：misplaced 与未登记的最终产物）。
 - [ADR-042：dsh-praxis 对照上游检查来源，写回保留原排版](042-dsh-praxis-upstream-checks.md)（accepted；refresh 默认只记状态与内容 hash，keep 才存快照；变化与失效从观察记录推出，新增 unreachable 信号；运行记内容 hash；写回 JSON 只改动到的部分）。
 - [ADR-043：dsh-praxis 的生产管线登记为来源](043-dsh-praxis-pipelines-as-sources.md)（accepted；已有生产管线按本地定位登记为来源，挂到 publish/video 与 publish/html 并写明何时用；产物记下 `made_with`；脚本留在原项目）。
-- [ADR-044：仓库目录按角色分流，源流只走一个方向](044-repository-layout-by-role.md)（proposed；根目录只留五条流、三个工具目录与 gitignored 的 `work/`；项目统一进 `projects/`，布局加验收证据与临时物两个角色；capture 原件进快照目录；validator 加根目录白名单与项目布局两道门；三阶段迁移见 [工单](../governance/repository-layout-migration.md)，本轮未搬文件，待用户裁决）。
+- [ADR-044：仓库目录按角色分流，源流只走一个方向](044-repository-layout-by-role.md)（accepted；根目录只留五条流、三个工具目录与 gitignored 的 `work/`；项目统一进 `projects/`，布局加验收证据与临时物两个角色；validator 加根目录白名单与项目布局两道门；第一、二阶段 2026-10-26 施工，见 [工单](../governance/repository-layout-migration.md)与[映射](../governance/repository-layout-map.md)；第三阶段 Kit 归一与 `control/` 改名未做）。

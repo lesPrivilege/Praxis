@@ -1,6 +1,6 @@
 # 排列与刻度 · 清点与裁决
 
-2026-10-04。上一轮把关系图的“成立程度”和“指向”各泛化成一页 Kit 条目，当时列出的第三条是“轨与挂接行”：几项内容沿一条线排开，行挂在线上。这一轮清点了仓库里这类排法怎样使用位置，对照四份公开规范的用词，泛化成 [排列与刻度](../../../dsh-praxis/kit/design/foundations/placement.md)。裁决见 [ADR-026](../../../docs/decisions/026-placement-and-scale.md)，样板在 [grammar-specimens](../../../demos/editable-native-svg/grammar-specimens/README.md)。
+2026-10-04。上一轮把关系图的“成立程度”和“指向”各泛化成一页 Kit 条目，当时列出的第三条是“轨与挂接行”：几项内容沿一条线排开，行挂在线上。这一轮清点了仓库里这类排法怎样使用位置，对照四份公开规范的用词，泛化成 [排列与刻度](../../../dsh-praxis/kit/design/foundations/placement.md)。裁决见 [ADR-026](../../../docs/decisions/026-placement-and-scale.md)，样板在 [grammar-specimens](../../../projects/editable-native-svg/grammar-specimens/README.md)。
 
 状态是 `distilled / partial / candidate`：清点由三个只读的 Claude Sonnet 子代理完成，Luna 在这个会话不可用；主会话重读了写进本页的每一行，其余行没有逐一复核。登记见 [intake](../../intake/placement-grammar-20261004.json)。
 
@@ -27,16 +27,16 @@
 | | 同目录 `quantity.html:774`、`quantity.css:421`（Q07-b 宽版） | 横向位置按天数 | 写了：“位置按真实天数” |
 | | 同目录 `quantity.css:407`（Q07-b 窄版） | 竖排，上间距是天数乘 1.1 像素，再加文字高度 | 图题仍写“位置按真实天数”，实际已不严格成比例 |
 | | 同目录 `quantity.html:780` | 停开五晚画成比例轴上的一个点 | 没有；同页 `:748` 自己把“区间事件被画成一个点”列为已见失败 |
-| | `demos/visual-grammar/attention-grammars/scene.js:261–262` | 三条轨共用一条按秒的横轴 | 没有刻度，也没有说三条轨共用 |
+| | `projects/visual-grammar/attention-grammars/scene.js:261–262` | 三条轨共用一条按秒的横轴 | 没有刻度，也没有说三条轨共用 |
 | | `vault/distilled/design-grammar-atlas-20261002/a01-reading-relations/specimen.css:112` | 三段的宽度按分钟 | 卡片里没有，说明在卡片外的画廊文字里 |
 | 只有先后 | 同目录 `quantity.css:559`（Q09-b） | 五个等宽的列，时刻间隔是 15、5、10、10 分钟 | 没有 |
 | | 同目录 `enum.css:89`、`enum.html:87`（E01-c） | 五个等宽的列，横向是步骤次序 | 图题只写“按执行角色分道” |
-| | `demos/visual-grammar/event-state-context/scene.js:124` | 事件卡片每 256 像素一格，事件的播放时刻并不等距 | 没有 |
-| | `demos/enterprise-grammar-lab/web/workbench/AuditTimeline.tsx:26`、`backend/payment/domain.ts:391` | 时间线等距，新的在上 | 方向和间距都没有写 |
+| | `projects/visual-grammar/event-state-context/scene.js:124` | 事件卡片每 256 像素一格，事件的播放时刻并不等距 | 没有 |
+| | `projects/enterprise-grammar-lab/web/workbench/AuditTimeline.tsx:26`、`backend/payment/domain.ts:391` | 时间线等距，新的在上 | 方向和间距都没有写 |
 | | `vault/distilled/ai-capability-assessment/rendered/exhibits.py:197` | 四段等距 | 写了：“刻度间距不代表实际时长” |
 | 是不是同一个 | 同目录 `quantity.css:579`、`quantity.html:1041`（Q09-c） | 泳道的同一列是同一时刻 | 靠表头；窄屏丢掉后，画廊文字承认“这是泳道在窄屏上的真实损失” |
 | | `vault/distilled/ai-capability-assessment/rendered/exhibits.py:417`、`:422` | 两条道各排各的，只有一条“现在”的竖线是共用的 | 写了：“两项分别审查，一项的理由不能用于另一项” |
-| | `demos/palantir-discovery/index.html:1044–1047` | 前后两栏按属性对齐，格子里写“不变”“未知” | 靠表头 |
+| | `projects/palantir-discovery/index.html:1044–1047` | 前后两栏按属性对齐，格子里写“不变”“未知” | 靠表头 |
 | | `vault/distilled/layout-specimens-20260927/specimens.json:6624` | 两份同构的算式并排 | 记为失败：“并排两份 V04-a 的步骤行不能跨槽对齐” |
 | | 同目录 `patterns/patterns.html:1065` | 日历时间和周序两种坐标并在一个单元里 | 画廊文字承认同一事件落在两种坐标上，连不起来 |
 | 属于谁 | 同目录 `atoms/wayfinding.css:30–31`（W01-c） | 每层缩进 12 像素，另写“章、节、小节” | 写成了词 |
@@ -71,9 +71,9 @@
 | 内容 | 位置 |
 |---|---|
 | 泛化的判断，不带参数 | `kit/design/foundations/placement.md` |
-| 先后、时间、上下级、并排的栏 | `demos/editable-native-svg/svg-01-relations/src/rail.mjs`，版本 0.3.0 |
+| 先后、时间、上下级、并排的栏 | `projects/editable-native-svg/svg-01-relations/src/rail.mjs`，版本 0.3.0 |
 | 前后对照与选取 | 同目录 `pair.mjs` |
-| 三级做法的样板 | `demos/editable-native-svg/grammar-specimens/` 的第三节 |
+| 三级做法的样板 | `projects/editable-native-svg/grammar-specimens/` 的第三节 |
 | 清点的逐行表 | 没有入库。三份报告留在会话记录里；本页只收主会话重读过的行 |
 
 ## 缺口

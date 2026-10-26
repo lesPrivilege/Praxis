@@ -28,4 +28,4 @@
 
 ## 去向
 
-第 1、2、3 条写进 Kit，见 [ADR-035](../../../docs/decisions/035-local-answers-and-link-relations.md)；第 4 条作为第 1 条的检查写在审阅方法里。SaaS 书的试用记录见 [交互教材项目](../../../demos/saas-engineering-textbook/README.md)第四轮。
+第 1、2、3 条写进 Kit，见 [ADR-035](../../../docs/decisions/035-local-answers-and-link-relations.md)；第 4 条作为第 1 条的检查写在审阅方法里。SaaS 书的试用记录见 [交互教材项目](../../../projects/saas-engineering-textbook/README.md)第四轮。

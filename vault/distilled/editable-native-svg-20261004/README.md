@@ -2,7 +2,7 @@
 
 本轮需要的是后续 Agent 能自主发现、选择、修改和组合的表达能力。SVG 的文件格式与可缩放性只解决一部分；可复用单位仍是一条可检验的构成关系，有身份的输入和编辑边界让它能在陌生内容上成立。文字转路径或用 SVG 包住整页图片会失去这种编辑能力。
 
-已登记 44 项需求（22 独立、14 组合、8 暂不抽取），[绘制项目](../../../demos/editable-native-svg/README.md)提供合同、六组合成输入、反例、可视索引设计与五批 fresh Opus 工单。当前是 `registered / partial / candidate / normal`，没有新 SVG、视觉打样、Opus 调用或 Flash 消费。实际基线 `d4fd38765af52f6bd2b9ae422cf016ac0ad1ae96`；完整登记见 [intake](../../intake/editable-native-svg-20261004.json)。
+已登记 44 项需求（22 独立、14 组合、8 暂不抽取），[绘制项目](../../../projects/editable-native-svg/README.md)提供合同、六组合成输入、反例、可视索引设计与五批 fresh Opus 工单。当前是 `registered / partial / candidate / normal`，没有新 SVG、视觉打样、Opus 调用或 Flash 消费。实际基线 `d4fd38765af52f6bd2b9ae422cf016ac0ad1ae96`；完整登记见 [intake](../../intake/editable-native-svg-20261004.json)。
 
 ## 既有成果的读取与图像观察
 
@@ -11,10 +11,10 @@
 | L01 | [原子编排 README](../layout-specimens-20260927/README.md)、[局部筛选](../layout-specimens-20260927/review.md)、specimens 的 job/input_shape/avoid_when 字段、两张 Kit 优先卡；实际看 T05-c 宽屏、E06-b 窄屏、W03-b 窄屏截图 | 三张截图独立确认：T05-c 括线围条件块、目标靠标签表达；E06-b 同属性同时呈现多对象与缺失类型；W03-b 注释跟句后。取用关系、输入形状和反例，不重验 280 变体、旧算术或运行兼容性 |
 | L02 | [A01 阅读关系入口](../design-grammar-atlas-20261002/a01-reading-relations/README.md)、Kit 问题地图与来路；实际看 span-375 | 窄屏把持续区间排成同尺段，长标题/正文仍保留。它不是本轮的原生 SVG 或通用时间件验收；其他 A01 输出未看 |
 | L03 | 根 AGENTS/README，Kit Agent、Design 各相关入口、[共同工作语法](../../../kit/grammar/work.md)、[Reporting](../../../dsh-praxis/kit/task/brief.md)、[展项](../../../dsh-praxis/kit/publish/html/exhibits.md)、Motion、Prose、文档/入账/参考治理与有效 ADR 索引及相关正文 | 真实任务系统覆盖发现、决定、实现、验收、推进、复盘与移交；对象/证据/规则/建议/决定/状态/事件独立。只读文字，不宣称业务系统已实现；本轮只修改发现链接，不迁移规则 |
-| L04 | [视觉工场入口](../../../demos/visual-grammar/README.md)、wake/work-orders/demo、[A3 README](../../../demos/visual-grammar/a3-event-state-context/README.md)与 model.mjs 的 fold/BEATS、schema-gate fixture；实际看 A3 playback-28s | 拒绝仍是历史、候选不改状态、投影不删源字段适合做编辑与 Motion 不变量。看的是既有截图，不是本轮播放/视频解码；A3 按整体事项版本判旧上下文，不能替代材料独立版本测试 |
+| L04 | [视觉工场入口](../../../projects/visual-grammar/README.md)、wake/work-orders/demo、[A3 README](../../../projects/visual-grammar/a3-event-state-context/README.md)与 model.mjs 的 fold/BEATS、schema-gate fixture；实际看 A3 playback-28s | 拒绝仍是历史、候选不改状态、投影不删源字段适合做编辑与 Motion 不变量。看的是既有截图，不是本轮播放/视频解码；A3 按整体事项版本判旧上下文，不能替代材料独立版本测试 |
 | L05 | 用户委托转述企业付款复核台作者回执 | 未提交、43 项通过、16 处修复、8 处留存及版本风险均为作者报告，未取得完整原件、路径或远端对应代码。只形成 F01/R17/R27 的合成风险要求，不独立确认数字、不修项目 |
 
-五张实际查看的原图与 hash 在 intake 的 `images`；相对链接如下：[T05-c](../layout-specimens-20260927/checks/atoms__text-T05-c-1440.png)、[E06-b](../layout-specimens-20260927/checks/atoms__enum-E06-b-375.png)、[W03-b](../layout-specimens-20260927/checks/atoms__wayfinding-W03-b-375.png)、[A01 span](../design-grammar-atlas-20261002/a01-reading-relations/checks/span-375.png)、[A3 28 秒](../../../demos/visual-grammar/a3-event-state-context/evidence/playback-28s.png)。本轮不把历史制作方或 main 的看图/测试计为本次独立验收。
+五张实际查看的原图与 hash 在 intake 的 `images`；相对链接如下：[T05-c](../layout-specimens-20260927/checks/atoms__text-T05-c-1440.png)、[E06-b](../layout-specimens-20260927/checks/atoms__enum-E06-b-375.png)、[W03-b](../layout-specimens-20260927/checks/atoms__wayfinding-W03-b-375.png)、[A01 span](../design-grammar-atlas-20261002/a01-reading-relations/checks/span-375.png)、[A3 28 秒](../../../projects/visual-grammar/a3-event-state-context/evidence/playback-28s.png)。本轮不把历史制作方或 main 的看图/测试计为本次独立验收。
 
 仓库未建立本任务专属 description/index/content 文件体系；实际采用 README、grammar、参考说明和 specimens.json 的渐进入口。未创建新的 taxonomy 平台。项目 `.agents/skills` 未找到，工作区 `.agents` 无技能目录；相关 writing skill 已读取并用于中文成文，不读取快照中的旧 skill 作为指令。
 
@@ -30,7 +30,7 @@
 - S08/S12：Mermaid [flowchart](https://mermaid.js.org/syntax/flowchart.html)与 [accessibility](https://mermaid.js.org/config/accessibility.html)提供关系 DSL 与 accTitle/accDescr 入口。可作为输入机制参考；不能把官方示例的 loose securityLevel 当安全默认。
 - S13：Remotion [useCurrentFrame](https://www.remotion.dev/docs/use-current-frame)提供 frame 输入。项目沿用已有显式时间驱动/seek 的方向，Motion 只在有时间任务时适配。
 - S14：D3 shape [LICENSE](https://github.com/d3/d3-shape/blob/main/LICENSE)文字为 ISC；适用范围只到这个访问时文件。其他库、数据、字体和具体复用提交许可尚未核查。
-- S15/S16：官方 [模型配置](https://code.claude.com/docs/en/model-config) / [CLI](https://code.claude.com/docs/en/cli-reference)支持报告 `claude --model opus` 的新会话路径；本环境 PATH 未找到 CLI，未查认证或调用，详见 [启动交接](../../../demos/editable-native-svg/wake-opus.md)。
+- S15/S16：官方 [模型配置](https://code.claude.com/docs/en/model-config) / [CLI](https://code.claude.com/docs/en/cli-reference)支持报告 `claude --model opus` 的新会话路径；本环境 PATH 未找到 CLI，未查认证或调用，详见 [启动交接](../../../projects/editable-native-svg/wake-opus.md)。
 
 S17 的 Remotion `/docs/svg` 与 S18 的 Mermaid securityLevel schema 路径均返回 Internal Error，明确不支持 API/安全主张。重访在实际采用对应栈时触发，不凭 URL 猜规则，也不安装以绕过失败。网页可访问只支持该读取范围，外部源码与示例许可、浏览器差异、离线依赖、编辑器兼容均未验收。
 
@@ -40,7 +40,7 @@ S17 的 Remotion `/docs/svg` 与 S18 的 Mermaid securityLevel schema 路径均�
 
 知识条目需要必要性、入口、行为改变、边界和验证，不能套共享 runtime 的三个独立场景条件；共享运行组件仍遵守 ADR-002。此轮没有规范晋升，不创建新 ADR 把候选写成 accepted。后续 Opus 的具体参数、视觉语言和实现留项目；参考用途通过后按既有分支提炼一处，入口只链接它。
 
-最小消费路径用现有 README 和 job/input_shape/use/avoid 的做法；[可视索引设计](../../../demos/editable-native-svg/discovery.md)要求真实预览、编辑边界、正常/压力/失败状态和等效文本，不先画占位图。Flash 用未见过内容验实际发现、选择、调整、组合，允许失败与拒用，不要求消融双盲，也不宣称效果合格。
+最小消费路径用现有 README 和 job/input_shape/use/avoid 的做法；[可视索引设计](../../../projects/editable-native-svg/discovery.md)要求真实预览、编辑边界、正常/压力/失败状态和等效文本，不先画占位图。Flash 用未见过内容验实际发现、选择、调整、组合，允许失败与拒用，不要求消融双盲，也不宣称效果合格。
 
 ## 可重访的缺口
 

@@ -1,6 +1,6 @@
 # SaaS 教材试用记录与 Kit 候选
 
-2026-10-15。[候选约定](candidate-convention.md)与 SaaS 教材的实际编订对照。教材的实际做法见 [交互教材项目](../../../demos/saas-engineering-textbook/README.md)，提交 `d2fac37`（主线 13 个文件）与 `cdabdcf`（其余 54 个文件）。试用不是按 [试用计划](saas-dogfood-plan.md)先立基线再比较的对照实验：候选约定在编订完成后才读到，下表是事后对照，只能说明两者在哪里一致、哪里分歧，不能说明约定带来了多少改进。
+2026-10-15。[候选约定](candidate-convention.md)与 SaaS 教材的实际编订对照。教材的实际做法见 [交互教材项目](../../../projects/saas-engineering-textbook/README.md)，提交 `d2fac37`（主线 13 个文件）与 `cdabdcf`（其余 54 个文件）。试用不是按 [试用计划](saas-dogfood-plan.md)先立基线再比较的对照实验：候选约定在编订完成后才读到，下表是事后对照，只能说明两者在哪里一致、哪里分歧，不能说明约定带来了多少改进。
 
 ## 逐条对照
 

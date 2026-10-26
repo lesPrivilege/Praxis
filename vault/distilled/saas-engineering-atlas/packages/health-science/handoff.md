@@ -11,7 +11,7 @@
 
 ## 阅读与后续消费
 
-[README](../../../../../books/saas-engineering/packages/health-science/README.md) 从证据、决定与后果建立共同模型；[V01](../../../../../books/saas-engineering/packages/health-science/V01.md)、[V02](../../../../../books/saas-engineering/packages/health-science/V02.md)、[V03](../../../../../books/saas-engineering/packages/health-science/V03.md) 以识题、解法、演算、验算与变式建立可迁移的解题方法。每例保留完整对象/权限/状态/UI与后端闭环、手算与反例、恢复路径、规模假设、技术候选、练习及进入陌生行业的探索方向。对应 JSON 保存稳定语义 ID、typed topology、并行生命周期与检查，供 Claude 在已有 Praxis 中编订和制作互动 HTML/motion；没有规定布局、动效或多代理编排。
+[README](../../../../../projects/books/saas-engineering/packages/health-science/README.md) 从证据、决定与后果建立共同模型；[V01](../../../../../projects/books/saas-engineering/packages/health-science/V01.md)、[V02](../../../../../projects/books/saas-engineering/packages/health-science/V02.md)、[V03](../../../../../projects/books/saas-engineering/packages/health-science/V03.md) 以识题、解法、演算、验算与变式建立可迁移的解题方法。每例保留完整对象/权限/状态/UI与后端闭环、手算与反例、恢复路径、规模假设、技术候选、练习及进入陌生行业的探索方向。对应 JSON 保存稳定语义 ID、typed topology、并行生命周期与检查，供 Claude 在已有 Praxis 中编订和制作互动 HTML/motion；没有规定布局、动效或多代理编排。
 
 本包可直接消费的事实来自公开 primary source；工程模型、权限策略、数值、算法、栈与性能目标均标明自身身份。来源种子仍用 `CTMS`、`EDC`、`LABWARE`、`FHIR_ORDER`、`FHIR_REPORT`、`DICOM`、`STRIPE_INV`，厂商名称未被地域分类或通用占位名替换。
 

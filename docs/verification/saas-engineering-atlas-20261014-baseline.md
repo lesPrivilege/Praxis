@@ -2,7 +2,7 @@
 
 ## 范围
 
-基于 `main` 的 `10f87cd17baaf27214be2f51410c795b7a2b8995`；目标 branch `cloud/saas-engineering-atlas-20261014`。交付 [研究入口](../../books/saas-engineering/README.md)、教材主线、worker 契约、33 案例分包、63 来源种子和 H01 合成示例。新来源核查只覆盖 4 个页面的局部主张。
+基于 `main` 的 `10f87cd17baaf27214be2f51410c795b7a2b8995`；目标 branch `cloud/saas-engineering-atlas-20261014`。交付 [研究入口](../../projects/books/saas-engineering/README.md)、教材主线、worker 契约、33 案例分包、63 来源种子和 H01 合成示例。新来源核查只覆盖 4 个页面的局部主张。
 
 ## 检查结果
 

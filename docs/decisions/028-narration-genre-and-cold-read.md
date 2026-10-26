@@ -4,7 +4,7 @@
 
 ## 问题与依据
 
-[ADR-027](027-prose-review-goal-and-structural-text.md)恢复了成文审阅的目标和结构位置的取形，并写明新条文还没有在真实任务上用过。同一天，这些条文在 [Knowledge Film 001 第五版](../../demos/knowledge-film-001-pyramid-cut5/research/review-cut5.md)的改稿上用了第一次。用户看过后说：“修订后的 writing 效果不错，值得泛化和 distill dogfooding trace 到 kit。”
+[ADR-027](027-prose-review-goal-and-structural-text.md)恢复了成文审阅的目标和结构位置的取形，并写明新条文还没有在真实任务上用过。同一天，这些条文在 [Knowledge Film 001 第五版](../../projects/knowledge-film-001-pyramid-cut5/research/review-cut5.md)的改稿上用了第一次。用户看过后说：“修订后的 writing 效果不错，值得泛化和 distill dogfooding trace 到 kit。”
 
 改稿过程里有四样东西，条文里原先没有，或者只写在了针对视频的那一页：
 

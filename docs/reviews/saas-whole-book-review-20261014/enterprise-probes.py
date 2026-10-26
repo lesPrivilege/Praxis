@@ -12,7 +12,7 @@ import sys
 sys.dont_write_bytecode = True
 REPO = Path(__file__).resolve().parents[3]
 ASSET = REPO / "vault/distilled/saas-engineering-atlas/enterprise-mechanisms"
-BOOK = REPO / "books/saas-engineering/enterprise-mechanisms"
+BOOK = REPO / "projects/books/saas-engineering/enterprise-mechanisms"
 FROZEN = "cd8d77b6166a6fc566f6aa09b4d9af3e11537408"
 sys.path.insert(0, str(ASSET))
 from mechanism_lab import Change, FakeAdapter, OperationJournal, RuleError

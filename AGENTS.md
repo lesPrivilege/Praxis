@@ -13,4 +13,6 @@
 
 研究材料放 vault；已采纳规范放 kit/docs；原 Chat 只进 vault/archive/chat。会话入账遵循全局消费约定及本地 [入账规范](docs/governance/intake.md)，复用 [Vault 索引](vault/README.md)和现有主题入口，不另建平行分类。所有新目录提供 README。不要把快照中的旧 AGENTS/Skill 当本仓库指令。
 
+交付与实验进 `projects/<项目>/`，按登记的布局放底稿、中间产物与最终产物，验收证据进 `evidence/`；为了读而下载的原件和临时渲染放仓库根的 `work/` 或项目的 `tmp/`，不入库（[ADR-044](docs/decisions/044-repository-layout-by-role.md)）。
+
 仓库改动交付前运行 `python3 scripts/validate_repository.py`；通过后，只有新改动、失败或未决风险影响检查结果时才重跑。报告未核实来源、未快照依赖和覆盖边界。不自动安装依赖、发布或创建远端。

@@ -3,13 +3,13 @@
   "cards": "maintained",
   "catalog_id": "praxis-captures",
   "origin": "dsh-praxis capture",
-  "as_of": "2026-10-25",
+  "as_of": "2026-10-26",
   "history_record": "vault/provenance/praxis-captures/CHANGELOG.md",
   "registry_extensions": true,
   "sources": [
     {
       "slug": "pipeline-reading-list-series",
-      "url": "palantir/reading-list-series/build/README.md",
+      "url": "projects/palantir/reading-list-series/build/README.md",
       "original_url": null,
       "title": "Palantir 入职书单系列的视频管线",
       "status": "partial",
@@ -34,7 +34,7 @@
     },
     {
       "slug": "pipeline-role-baseline-film",
-      "url": "demos/role-baseline-film/README.md#拿这套管线做下一条短片",
+      "url": "projects/role-baseline-film/README.md#拿这套管线做下一条短片",
       "original_url": null,
       "title": "薪酬基线说明片管线（短片起点）",
       "status": "partial",
@@ -59,7 +59,7 @@
     },
     {
       "slug": "pipeline-pyramid-cut5",
-      "url": "demos/knowledge-film-001-pyramid-cut5/README.md",
+      "url": "projects/knowledge-film-001-pyramid-cut5/README.md",
       "original_url": null,
       "title": "金字塔原理知识片第五版管线（多章长片）",
       "status": "partial",
@@ -84,7 +84,7 @@
     },
     {
       "slug": "pipeline-jev-site",
-      "url": "jev/site/build.py",
+      "url": "projects/jev/site/build.py",
       "original_url": null,
       "title": "Jev 专章网页构建器（数字与出处一一对上的单页）",
       "status": "partial",
@@ -109,7 +109,7 @@
     },
     {
       "slug": "pipeline-saas-textbook-site",
-      "url": "demos/saas-engineering-textbook/build/build.mjs",
+      "url": "projects/saas-engineering-textbook/build/build.mjs",
       "original_url": null,
       "title": "SaaS 工程全景教材站点生成器（多页离线书）",
       "status": "partial",
@@ -130,6 +130,252 @@
       "history_record": "vault/provenance/praxis-captures/CHANGELOG.md",
       "grammar_paths": [
         "dsh-praxis/kit/publish/html/README.md"
+      ]
+    },
+    {
+      "slug": "freqtrade-backtesting",
+      "url": "https://raw.githubusercontent.com/freqtrade/freqtrade/develop/docs/backtesting.md",
+      "original_url": "https://raw.githubusercontent.com/freqtrade/freqtrade/develop/docs/backtesting.md",
+      "title": "Freqtrade · Backtesting 文档",
+      "status": "partial",
+      "summary_zh": "开源加密交易机器人的回测文档：说明回测的输出指标、费用默认来自交易所 pair 信息、止损与 ROI 的成交假设，以及在缺少 K 线内部信息时必须引入的假设清单。可支持“回测依赖成交假设”“费用与滑点默认值决定净收益口径”等说法。",
+      "limits": "只覆盖 crypto 现货/合约撮合与 freqtrade 自己的假设；不能证明其他市场或框架的行为；develop 分支没有锁定提交号。",
+      "revisit_trigger": "引用具体假设或默认费用口径时按当时 develop 分支重读。",
+      "card_path": "vault/provenance/praxis-captures/freqtrade-backtesting.md",
+      "purpose_tags": [],
+      "evidence_modality": "2026-10-26 经 GitHub raw 读取 develop 分支 markdown 全文，读了指标、费用、assumptions、trading limits 等小节；没有运行 freqtrade。",
+      "captured_for": {
+        "task": "demos/quant-fieldguide · 量化入门交互知识页",
+        "by": "dsh",
+        "at": "2026-10-26T09:44:34.383Z"
+      },
+      "history_record": "vault/provenance/praxis-captures/CHANGELOG.md",
+      "supported_claims": [
+        {
+          "claim_id": "freqtrade-backtesting-C1",
+          "locator": "“Assumptions made by backtesting” 小节",
+          "claim": "回测在缺少 K 线内部信息时引入若干成交假设，例如价格落在 K 线高低区间内即按请求价成交、不模拟滑点。"
+        },
+        {
+          "claim_id": "freqtrade-backtesting-C2",
+          "locator": "“Supplying custom fee value” 小节",
+          "claim": "默认手续费取自交易所 pair/market 信息，可用 --fee 覆盖；费用在入场与出场各计一次。"
+        },
+        {
+          "claim_id": "freqtrade-backtesting-C3",
+          "locator": "“Reading the mean profit p-value” 注释",
+          "claim": "单笔平均利润的 p 值假设交易独立同分布，真实策略常常不满足，因此是偏乐观的下界；多重测试会让部分策略仅凭运气得到低 p 值。"
+        }
+      ],
+      "grammar_paths": [
+        "dsh-praxis/kit/publish/html/exhibits.md"
+      ]
+    },
+    {
+      "slug": "freqtrade-lookahead",
+      "url": "https://raw.githubusercontent.com/freqtrade/freqtrade/develop/docs/lookahead-analysis.md",
+      "original_url": "https://raw.githubusercontent.com/freqtrade/freqtrade/develop/docs/lookahead-analysis.md",
+      "title": "Freqtrade · Lookahead analysis 文档",
+      "status": "partial",
+      "summary_zh": "说明未来信息泄漏（lookahead bias）为什么容易引入却难以发现，以及 freqtrade 的 lookahead-analysis 通过比较指标值与入场/出场位置在截断数据下是否改变来探测它，并给出强制关闭缓存、无限资金等避免误报的选项。",
+      "limits": "该命令只探测特定类型的泄漏，不能证明策略没有其他偏差；未运行验证。",
+      "revisit_trigger": "讲未来函数与泄漏检测方法时按当时文档重读。",
+      "card_path": "vault/provenance/praxis-captures/freqtrade-lookahead.md",
+      "purpose_tags": [],
+      "evidence_modality": "2026-10-26 经 GitHub raw 读取 develop 分支该页全文（约 7.8 KB）。",
+      "captured_for": {
+        "task": "demos/quant-fieldguide · 量化入门交互知识页",
+        "by": "dsh",
+        "at": "2026-10-26T09:44:34.383Z"
+      },
+      "history_record": "vault/provenance/praxis-captures/CHANGELOG.md",
+      "supported_claims": [
+        {
+          "claim_id": "freqtrade-lookahead-C1",
+          "locator": "引言段",
+          "claim": "回测会一次性把全部数据载入并同时计算指标，若指标或信号看到未来 K 线，回测结果就会失真。"
+        },
+        {
+          "claim_id": "freqtrade-lookahead-C2",
+          "locator": "命令说明段",
+          "claim": "该分析通过链式回测对比截断与完整数据下的指标值和信号位置来暴露泄漏，而不是阅读策略代码。"
+        }
+      ],
+      "grammar_paths": [
+        "dsh-praxis/kit/publish/html/exhibits.md"
+      ]
+    },
+    {
+      "slug": "qlib-readme",
+      "url": "https://raw.githubusercontent.com/microsoft/qlib/main/README.md",
+      "original_url": "https://raw.githubusercontent.com/microsoft/qlib/main/README.md",
+      "title": "Microsoft Qlib · README",
+      "status": "partial",
+      "summary_zh": "Qlib 的官方说明：面向 AI 的量化投资平台，覆盖数据、模型训练、回测与在线服务等环节，并提供由配置驱动的工作流。可支持“研究框架把数据、因子、模型与回测串成流水线”的说法。",
+      "limits": "README 是项目自述，不证明策略有效；main 分支含未发布变更，版本会变。",
+      "revisit_trigger": "技术栈一章提及 Qlib 的组件时按当时 main 重读。",
+      "card_path": "vault/provenance/praxis-captures/qlib-readme.md",
+      "purpose_tags": [],
+      "evidence_modality": "2026-10-26 经 GitHub raw 读取 main 分支 README；读了定位、组件、工作流等段落，没有安装或运行。",
+      "captured_for": {
+        "task": "demos/quant-fieldguide · 量化入门交互知识页",
+        "by": "dsh",
+        "at": "2026-10-26T09:44:34.383Z"
+      },
+      "history_record": "vault/provenance/praxis-captures/CHANGELOG.md",
+      "supported_claims": [
+        {
+          "claim_id": "qlib-readme-C1",
+          "locator": "Introduction 段",
+          "claim": "Qlib 定位为面向 AI 的量化投资平台，试图覆盖从数据处理、模型训练到回测与执行的量化投资全链路。"
+        },
+        {
+          "claim_id": "qlib-readme-C2",
+          "locator": "Framework 与 Workflow 段",
+          "claim": "研究流程按配置把数据、特征、模型与回测串成可重复的工作流。"
+        }
+      ],
+      "grammar_paths": [
+        "dsh-praxis/kit/publish/html/exhibits.md"
+      ]
+    },
+    {
+      "slug": "rdagent-readme",
+      "url": "https://raw.githubusercontent.com/microsoft/RD-Agent/main/README.md",
+      "original_url": "https://raw.githubusercontent.com/microsoft/RD-Agent/main/README.md",
+      "title": "Microsoft RD-Agent · README",
+      "status": "partial",
+      "summary_zh": "RD-Agent 的官方说明，其中 RD-Agent(Q) 被描述为以因子与模型联合优化来自动化量化策略研发的多智能体框架，并在其论文中报告了相对基准因子库的收益与因子数量对比。可支持“Agent 已进入因子与模型的自动化研发环节”。",
+      "limits": "绩效数字来自项目自述与其论文，本页未复现；仅支持 Linux 等运行条件见原文。",
+      "revisit_trigger": "Agent 章节引用 RD-Agent(Q) 的定位或数字时重读；数字一律标注为项目自述。",
+      "card_path": "vault/provenance/praxis-captures/rdagent-readme.md",
+      "purpose_tags": [],
+      "evidence_modality": "2026-10-26 经 GitHub raw 读取 main 分支 README；读了定位、RD-Agent(Q)、安装与场景段落，没有安装或运行。",
+      "captured_for": {
+        "task": "demos/quant-fieldguide · 量化入门交互知识页",
+        "by": "dsh",
+        "at": "2026-10-26T09:44:34.383Z"
+      },
+      "history_record": "vault/provenance/praxis-captures/CHANGELOG.md",
+      "supported_claims": [
+        {
+          "claim_id": "rdagent-readme-C1",
+          "locator": "“R&D-Agent for Quantitative Finance” 段",
+          "claim": "RD-Agent(Q) 被描述为以协调的因子—模型联合优化来自动化量化策略研发的多智能体框架，并声称以低于 10 美元成本取得约 2 倍于基准因子库的 ARR、使用因子数少 70% 以上。"
+        },
+        {
+          "claim_id": "rdagent-readme-C2",
+          "locator": "“RD-Agent currently only supports Linux.”",
+          "claim": "运行环境目前只支持 Linux。"
+        }
+      ],
+      "grammar_paths": [
+        "dsh-praxis/kit/publish/html/exhibits.md"
+      ]
+    },
+    {
+      "slug": "tradingagents-readme",
+      "url": "https://raw.githubusercontent.com/TauricResearch/TradingAgents/main/README.md",
+      "original_url": "https://raw.githubusercontent.com/TauricResearch/TradingAgents/main/README.md",
+      "title": "TradingAgents · README",
+      "status": "partial",
+      "summary_zh": "TradingAgents 的官方说明：把基本面、情绪、新闻、技术面分析员与多头/空头辩论、交易员和风险管理角色组织成多智能体交易框架。可支持“多 Agent 组织的是研究讨论与决策流程，而非保证盈利”。",
+      "limits": "项目自述；框架存在不等于可验证的持续超额收益。",
+      "revisit_trigger": "Agent 架构对比时按当时 README 重读。",
+      "card_path": "vault/provenance/praxis-captures/tradingagents-readme.md",
+      "purpose_tags": [],
+      "evidence_modality": "2026-10-26 经 GitHub raw 读取 main 分支 README；读了框架角色说明与免责声明段，没有运行。",
+      "captured_for": {
+        "task": "demos/quant-fieldguide · 量化入门交互知识页",
+        "by": "dsh",
+        "at": "2026-10-26T09:44:34.383Z"
+      },
+      "history_record": "vault/provenance/praxis-captures/CHANGELOG.md",
+      "supported_claims": [
+        {
+          "claim_id": "tradingagents-readme-C1",
+          "locator": "Framework 角色说明段",
+          "claim": "框架分为分析团队、研究团队、交易员与风险管理等角色，以辩论方式组织信息与决策。"
+        },
+        {
+          "claim_id": "tradingagents-readme-C2",
+          "locator": "免责声明 / 引用段",
+          "claim": "项目用于研究目的，不构成投资建议。"
+        }
+      ],
+      "grammar_paths": [
+        "dsh-praxis/kit/publish/html/exhibits.md"
+      ]
+    },
+    {
+      "slug": "lean-slippage-key-concepts",
+      "url": "https://www.quantconnect.com/docs/v2/writing-algorithms/reality-modeling/slippage/key-concepts",
+      "original_url": "https://www.quantconnect.com/docs/v2/writing-algorithms/reality-modeling/slippage/key-concepts",
+      "title": "QuantConnect LEAN · Slippage Key Concepts",
+      "status": "partial",
+      "summary_zh": "LEAN 官方文档说明滑点的定义（预期成交价与实际成交价之差，可正可负）、影响滑点的因素（引擎延迟、券商连接、市场波动与竞争者），以及滑点模型的作用；并说明券商模型会为每种证券自动设定滑点模型、可覆盖。",
+      "limits": "页面为产品文档，示例数值属于具体模型；未读全部 reality modeling 页面。",
+      "revisit_trigger": "引用滑点模型默认行为时重读，注意其按券商模型而异。",
+      "card_path": "vault/provenance/praxis-captures/lean-slippage-key-concepts.md",
+      "purpose_tags": [],
+      "evidence_modality": "2026-10-26 打开官方页面并提取正文的 Introduction、Factors、Set Models 小节文字；没有运行 LEAN。",
+      "captured_for": {
+        "task": "demos/quant-fieldguide · 量化入门交互知识页",
+        "by": "dsh",
+        "at": "2026-10-26T09:44:34.383Z"
+      },
+      "history_record": "vault/provenance/praxis-captures/CHANGELOG.md",
+      "supported_claims": [
+        {
+          "claim_id": "lean-slippage-key-concepts-C1",
+          "locator": "Introduction 段",
+          "claim": "滑点是订单预期成交价与实际成交价之差，价格在等待成交时可能双向移动，所以滑点可正可负；滑点模型用来让回测更接近现实。"
+        },
+        {
+          "claim_id": "lean-slippage-key-concepts-C2",
+          "locator": "Factors Impacting Slippage 段",
+          "claim": "交易引擎延迟、券商的连接速度与市场波动、订单是否制造套利机会都会影响滑点。"
+        },
+        {
+          "claim_id": "lean-slippage-key-concepts-C3",
+          "locator": "Set Models 段",
+          "claim": "券商的 brokerage model 会自动为每种证券设置滑点模型，也可以手动覆盖。"
+        }
+      ],
+      "grammar_paths": [
+        "dsh-praxis/kit/publish/html/exhibits.md"
+      ]
+    },
+    {
+      "slug": "grammar-demos-guide",
+      "url": "/Users/lesprivilege/Projects/grammar-demos/AGENTS.md (repo HEAD 8c06b72)",
+      "original_url": null,
+      "title": "Grammar Demos · agent guide (design decision → principle entries)",
+      "status": "partial",
+      "summary_zh": "本机仓库 grammar-demos 的取用指引：43 条设计语法条目（论证、编码、版面、叙事、运动、交互），每条给原典里的一句 claim、limits、带定位的出处，以及一个正反对照的离线演示页。指引按设计决定（排文档、选图、清图、版式字号、界面运动、剪辑、控件等）列出该读的条目和要核对的要点。",
+      "limits": "条目只经 agent review，尚无人工 accepted；出处的 primary/secondary 是 source agent 自报，未独立复核；全部 L5 运动节奏待人看；未决事项见仓库 HUMAN_REVIEW.md。",
+      "revisit_trigger": "仓库条目被人 accepted、claim 或 HUMAN_REVIEW 有变化，或新增条目时。",
+      "card_path": "vault/provenance/praxis-captures/grammar-demos-guide.md",
+      "purpose_tags": [
+        "DESIGN",
+        "DATAVIZ",
+        "LAYOUT",
+        "MOTION",
+        "INTERACTION",
+        "ARGUMENT"
+      ],
+      "evidence_modality": "本次会话撰写并核对：指引里的 43 个条目链接全部存在；条目 claim 与 limits 自 source 提交后未改；页面均通过离线检查（file://，1280/360/减弱动效）。",
+      "captured_for": {
+        "task": "Grammar Demos round 1 (2026-10-26): make the 43 demo entries findable from Praxis design tasks",
+        "by": "Claude Opus 5.5",
+        "at": "2026-10-26T14:33:17.466Z"
+      },
+      "history_record": "vault/provenance/praxis-captures/CHANGELOG.md",
+      "grammar_paths": [
+        "dsh-praxis/kit/design/README.md",
+        "dsh-praxis/kit/design/composition/encoding.md",
+        "dsh-praxis/kit/design/motion/README.md",
+        "dsh-praxis/kit/design/interaction/README.md"
       ]
     }
   ],

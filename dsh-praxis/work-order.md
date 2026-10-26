@@ -46,7 +46,7 @@
 | 数据位置 | 数据目录固定为 `<仓库>/dsh-praxis/data`。来源名册是 `vault/registry.json`，由 `scripts/build_registry.py` 从整个 vault 投影，写死 21 个 intake 文件；core 写入后调 Python 重建 | 没有这个仓库就没有名册 |
 | Kit 自足 | 61 页正文链到 Kit 之外：vault 236 处、docs 40 处、demos 24 处、palantir 2 处 | fresh 安装后链接失效；来源只能经关系披露 |
 | 项目与产物 | 产物路径只有“仓库相对”或“绝对”，没有项目对象；中间产物无人管 | 无法按项目管理，也无法约束目录 |
-| 管线 | video 只有预设字段，执行在各项目自带的脚本里（如 `palantir/reading-list-series`）；html 靠 agent 手写 | 管线不在 Praxis 里，fresh 用户拿不到 |
+| 管线 | video 只有预设字段，执行在各项目自带的脚本里（如 `projects/palantir/reading-list-series`）；html 靠 agent 手写 | 管线不在 Praxis 里，fresh 用户拿不到 |
 | 消费 | 5 条运行里 0 条记下来源；装载是全局的：25 个工具约 13k 字符，加约 700 字的提示段 | 自主消费没有证据，其他会话也要背这份成本 |
 | 名册质量 | Design 的 78 条挂载里 76 条照抄来源概要；328 个已挂载来源只有 7 个有快照；curate 写手工排版的 JSON 会重排格式 | 人 review 时看不出这条来源对这一页的用处 |
 | 仓库 | 6943 个文件，demos 2.5G、vault 780M；books、jev、palantir、tally、wx-cli-again 是自用项目 | release 包要与这些分开 |
@@ -82,7 +82,7 @@ upkeep 只增加两类信号：
 
 中间产物的数量、大小不进清单。
 
-试点：`jev/`、`palantir/reading-list-series/`、`dsh-praxis-explainer/`。三者现有结构不同，先看模板能否不改文件就套上；套不上的地方记成模板的选项，不为单个项目加特例。
+试点：`projects/jev/`、`projects/palantir/reading-list-series/`、`projects/dsh-praxis-explainer/`。三者现有结构不同，先看模板能否不改文件就套上；套不上的地方记成模板的选项，不为单个项目加特例。
 
 完成标志：
 - 三个项目已登记，控制面按项目列出最终产物；

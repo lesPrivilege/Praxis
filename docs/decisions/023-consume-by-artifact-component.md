@@ -4,7 +4,7 @@
 
 ## 问题
 
-2026-10-03 主会话按一份设计交接做 [Palantir 首次设计打样](../../demos/palantir-discovery/README.md)，一页中文交互网页。它从 Kit 任务入口进了 Design，页面文字没有经过 Write / Prose 的成文原理和审阅方法，Design 的参考卡也一张没读。用户读页面时觉得文案别扭，追问 Write 是否完成消费。
+2026-10-03 主会话按一份设计交接做 [Palantir 首次设计打样](../../projects/palantir-discovery/README.md)，一页中文交互网页。它从 Kit 任务入口进了 Design，页面文字没有经过 Write / Prose 的成文原理和审阅方法，Design 的参考卡也一张没读。用户读页面时觉得文案别扭，追问 Write 是否完成消费。
 
 沿主会话实际的阅读路径找到四个原因：
 

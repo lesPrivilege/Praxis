@@ -38,13 +38,13 @@
 
 ## 仓库校验
 
-`python3 scripts/validate_repository.py` 在交回时报 fail，共 10 条，都不在本目录：8 条是 `demos/motion-ceiling-lab`、`demos/role-baseline-film`、`demos/write-kit-film` 缺 README，2 条是 `vault/distilled/knowledge-film-001-distill-20261005` 里的断链。本目录没有报错。那三个目录和那一页属于别的会话尚未提交的工作，这里没有动。
+`python3 scripts/validate_repository.py` 在交回时报 fail，共 10 条，都不在本目录：8 条是 `projects/motion-ceiling-lab`、`projects/role-baseline-film`、`projects/write-kit-film` 缺 README，2 条是 `vault/distilled/knowledge-film-001-distill-20261005` 里的断链。本目录没有报错。那三个目录和那一页属于别的会话尚未提交的工作，这里没有动。
 
 以上是交回时的记录，当时目录在 `demos/semantic-marks`。收进 Kit 时只改了 README 的取用说明、相对链接和证据边界，并把来路与取用记录移到本页，三个生成文件重新生成后内容未变。
 
 ## 来路
 
-2026-10-12 按 [工单](../../../../demos/editable-native-svg/claude-design-order-20261012.md)绘制，执行者是 Claude Opus 5.5（Claude Code 会话），没有用图标库、框架或别的模型。用户看过后收进 Kit，裁决见 [ADR-032](../../../../docs/decisions/032-semantic-marks-library.md)。
+2026-10-12 按 [工单](../../../../projects/editable-native-svg/claude-design-order-20261012.md)绘制，执行者是 Claude Opus 5.5（Claude Code 会话），没有用图标库、框架或别的模型。用户看过后收进 Kit，裁决见 [ADR-032](../../../../docs/decisions/032-semantic-marks-library.md)。
 
 工单里行不通或有意没照做的地方：
 
@@ -57,7 +57,7 @@
 
 ## 第一次取用
 
-2026-10-12 用在 [DeerFlow 讲解页](../../../../demos/deerflow-explainer/README.md)的系统全景图和“默认开、默认关”两个小标题上：把用到的 18 个 `<symbol>` 拷进页面，节点名前放 18 px 的记号。只看了宽屏和 500 px 的截图，没有读者对照。
+2026-10-12 用在 [DeerFlow 讲解页](../../../../projects/deerflow-explainer/README.md)的系统全景图和“默认开、默认关”两个小标题上：把用到的 18 个 `<symbol>` 拷进页面，节点名前放 18 px 的记号。只看了宽屏和 500 px 的截图，没有读者对照。
 
 看到的效果和缺口：
 

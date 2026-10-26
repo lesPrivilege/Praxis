@@ -21,7 +21,7 @@ ADR-011 已让文档结构承担使用指引，ADR-014 已区分跨项目 Design
 | Write 与 Design 的交界 | 在现有 Reporting 维护论证、内容结构和证据职责，Writing 保留成文职责，Design 维护视觉与交互判断 | [内容结构与媒介投影](../../dsh-praxis/kit/task/brief.md) |
 | 内容原子与样本 registry | 采纳按语义职责描述展项；完整 Atom/Pattern/Composition schema、canonical/expressive specimen 库留作候选，由实际产出触发 | Reporting grammar；研究提炼 |
 | 原 Chat 与公开面 | 原件本地备查，公开或云端交付使用经过消费、泛化与披露检查的内容；索引也检查披露范围 | [消费与披露](../governance/intake.md) |
-| Demo 的材料来路 | 在既有准入中串联来源、提炼、借用范围与自身增量；原 Chat 不进入 Demo 作为规范 | [Demo 准入](../../demos/README.md) |
+| Demo 的材料来路 | 在既有准入中串联来源、提炼、借用范围与自身增量；原 Chat 不进入 Demo 作为规范 | [Demo 准入](../../projects/README.md) |
 | Write/Motion、渲染器和空目录蓝图 | 延后；由具体时间媒介交付检验后再决定长期分支 | 保留研究来路，不宣称实现 |
 | 将 Kit 扁平化为一个 Skill | 不采纳；继续使用目录与正文渐进引导 | 保留 ADR-014 的既有 Writing skill 职责 |
 

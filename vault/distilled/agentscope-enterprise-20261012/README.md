@@ -8,7 +8,7 @@
 
 - [关键裁决](adjudication.md)
 
-[逐源登记](../../provenance/agentscope-enterprise-20261012/README.md) · [消费知识片](../../../demos/agentscope-enterprise-film/README.md)
+[逐源登记](../../provenance/agentscope-enterprise-20261012/README.md) · [消费知识片](../../../projects/agentscope-enterprise-film/README.md)
 
 边界：研究只覆盖公开文档和选定静态源码。Java 默认恢复机制的文档存在 EVENT_LOG 与旧 AgentStateStore 叙述冲突，未把冲突默认值写入成片。文档内嵌 OpenAPI 局部版本漂移单独保留，不用于推断当前 router。商业版、SLA、目标项目的运行表现和受众理解均未验证。
 

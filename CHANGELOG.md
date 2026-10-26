@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-10-26 · 目录按角色分流：第一、二阶段施工
+
+- 按 [ADR-044](docs/decisions/044-repository-layout-by-role.md)（accepted）把一切交付与实验迁入 `projects/`：17 个演示实现、jev、palantir、tally、books、dsh-praxis-explainer；场景契约模板迁到 `templates/scenario/`，`scenarios/saas-engineering-textbook` 并入同名项目；旧新路径见 [迁移映射](docs/governance/repository-layout-map.md)。全部 `git mv`，235 个 Markdown 与 59 个 JSON/脚本/配置的路径同步改写，registry 重建；运行记录与 history 保留旧路径。
+- 根 README 收成一张五行表，第一性原理正文移到 [架构理由](docs/architecture/rationale.md#goal-与第一性原理)，研究与维护入口移到 [docs](docs/README.md)。新建 [projects 索引](projects/README.md)，按知识与教材、讲解页与看板、视频、设计语法工场分组。
+- 新建 gitignored 的 `work/`，根目录四个 capture 原件移入；`AGENTS.md` 加一句去处。validator 加根目录白名单与项目布局两道门：不在白名单的根条目报错，已登记项目里不落在任何布局角色的文件报 `misplaced` 警告（当前 131 条，都是老项目，`layout_enforced` 为 true 才升为错误）。
+- 控制面登记：jev、dsh-praxis-explainer 改 root；books、tally、palantir、saas-engineering-textbook 新登记。books 与 textbook 的最终产物尚未逐件登记，`praxis_projects` 的 `unregistered` 列出它们。
+- 清理：删除 drift 根级 12 张可重跑的截图与 2 个结构 JSON（回执 `acceptance-20261005` 保留）、agentscope 一份失败转码脚本。各项目的交接稿、唤醒 prompt 与取帧目录被 README、ADR 或回执引用，留待用户逐项决定，清单在验收回执。
+- 未做：`dsh-praxis/kit` 归并 `kit/`、`dsh-praxis` 改名 `control/`（第三阶段，插件正在另一会话测试）；`demos/quant-fieldguide` 在途，完成后迁入。
+
 ## 2026-10-26 · 目录治理方案：ADR-044 草案与迁移工单
 
 - 盘点 Kit、Vault 与产物管理的散落：根目录叠着生命周期与主题两套逻辑，Kit 分在 `kit/` 与 `dsh-praxis/kit/` 两处，capture 原件和日志没有合法去处，一件交付的来路要拼四处索引。[ADR-044](docs/decisions/044-repository-layout-by-role.md)（proposed）提出五条流各一个索引、知识只沿 `vault → docs → kit → projects` 一个方向、项目布局加验收证据与临时物两个角色、validator 加两道门、渐进披露三层固定格式。
@@ -27,7 +36,7 @@
 - 名册对人和 agent 说清每条来源：`praxis_source` 与控制面的来源条目给出收录缘由（集合的用途或 capture 时的任务）、挂在哪些页面、经这些页面服务哪些任务类型、哪些运行读过它并交付了什么。取舍见 [ADR-040](docs/decisions/040-dsh-praxis-source-loop.md)。
 - resolve 的素材带 source ID、原件 URL、证据状态、读取范围、摘录定位与快照；`praxis_consume` 的 `sources` 记实际读过的来源，挂载由“读过的来源 × 读过的单元”推出，`bindings` 参数去掉。
 - 关系只在来源自己的记录上：registry 构建脚本为所有记录形态带出 `grammar_paths`（此前只有扩展 catalog，挂到其他来源上的关系重建后会消失）；Kit 页引用已登记来源的卡片就必须有这条关系，validator 检查，补上 45 条。
-- `praxis_register_index` 按引用登记项目自己的来源索引，登记在 [`vault/project-indexes.json`](vault/project-indexes.json)；Jev 研究登记 236 条由此进入名册，`jev/` 不变。`praxis_capture` 改为成批，写明为哪件任务收录。
+- `praxis_register_index` 按引用登记项目自己的来源索引，登记在 [`vault/project-indexes.json`](vault/project-indexes.json)；Jev 研究登记 236 条由此进入名册，`projects/jev/` 不变。`praxis_capture` 改为成批，写明为哪件任务收录。
 - 25 项测试、[验收探针](scripts/check_praxis_acceptance.py) 13 项、仓库校验通过；素材对交付的帮助与 DSH 桌面待测，见 [回执](docs/verification/dsh-praxis-source-loop-20261025.md)。
 
 ## 2026-10-25 · dsh-praxis 旧代码提示与 DSH 实测补登
@@ -64,9 +73,9 @@
 
 ## 2026-10-23 · Jev 专章
 
-- 新增 [jev](jev/README.md)：Jev 与 System One 决策模型的快照（2026-10-23），中文底稿七章加两个附录、单文件网页（两处步进运动）、五条线 236 个来源与 288 条主张的登记。材料与产物都在该目录，原 Chat 按用户要求存于 `jev/research/inputs/`，没有进 `vault/archive/chat`。
-- ChatGPT 两份 Deep Research 报告只作核对对象，40 处说法与来源不符或无法核实，见 [更正](jev/research/corrections.md)。
-- 一次 Sonnet 冷读审阅，主会话逐条裁决，见 [记录](jev/review-20261023.md)。Kit 消费记在 dsh-praxis 运行记录 `2026-10-22-5eb2c727`。
+- 新增 [jev](projects/jev/README.md)：Jev 与 System One 决策模型的快照（2026-10-23），中文底稿七章加两个附录、单文件网页（两处步进运动）、五条线 236 个来源与 288 条主张的登记。材料与产物都在该目录，原 Chat 按用户要求存于 `projects/jev/research/inputs/`，没有进 `vault/archive/chat`。
+- ChatGPT 两份 Deep Research 报告只作核对对象，40 处说法与来源不符或无法核实，见 [更正](projects/jev/research/corrections.md)。
+- 一次 Sonnet 冷读审阅，主会话逐条裁决，见 [记录](projects/jev/review-20261023.md)。Kit 消费记在 dsh-praxis 运行记录 `2026-10-22-5eb2c727`。
 - 仓库检查的覆盖目录加入 `jev`。没有 Kit 规则变动；未做读者测试与屏幕阅读器检查。
 
 ## 2026-10-23 · dsh-praxis 控制面与 DSH 插件
@@ -93,16 +102,16 @@
 
 ## 2026-10-19 · 入职书单系列：施工记录归位与 dogfooding
 
-- 各轮审阅代理的原始结果存进 [审阅原始记录](palantir/reading-list-series/verification/reviews/README.md)，来源探索与核验结果存进 [研究交接](palantir/reading-list-series/research/handoffs/README.md)；会话临时路径改写为占位，联络表与截图不入库。
+- 各轮审阅代理的原始结果存进 [审阅原始记录](projects/palantir/reading-list-series/verification/reviews/README.md)，来源探索与核验结果存进 [研究交接](projects/palantir/reading-list-series/research/handoffs/README.md)；会话临时路径改写为占位，联络表与截图不入库。
 - 没有参与制作的 Opus 代理从会话日志写成 [过程重建](vault/distilled/palantir-reading-list-series-distill-20261019/README.md)，附二十二份任务书原文与 [登记](vault/intake/palantir-reading-list-series-distill-20261019.json)。
 - 八条候选落地三条：[叙事与分镜交接](dsh-praxis/kit/publish/video/narrative.md#旁白与屏幕文字的审阅)的结构文字独立审阅不再以对外发布为条件，多人或多代理写成即触发；[工作开展方式](kit/environment/working-methods.md)补“量出来的数异常时先单独再量一段”和“原因不明时”的一次实测反例。均未对照。
 - 验收页更正：ep04 转写记为未通过（识别器漏写英文名，单独转写正确）；`c11ebf4` 的提交说明与表格里“配额未运行”的说法以此为准。空白检查写明取样粒度。
 
 ## 2026-10-17 · Palantir 入职书单视频系列
 
-- 新增 [入职书单视频系列](palantir/reading-list-series/README.md)：一部总论加五集，各读一份（Interviewing Users、Impro、Getting Things Done、Dalio 的早期 PDF、The Looming Tower），另有由同一份正文排出、去掉各集引入与收尾的 33:33 合集。中文旁白按作者语体写成，每集有 4:3 与 3:4 原生封面；画面上的每句引文和出处都对应主张登记里的一条，外部图片只经素材登记上屏。
-- 原 Chat 与交接稿入账：[归档](vault/archive/chat/palantir-reading-list-series-20261017.md)、[入账记录](vault/intake/palantir-reading-list-series-20261017.json)，另有两份新来源快照。交接稿按“仅供参考”裁决，采用与不采用的写在系列页。旧提炼里“这五份是入职书单”等几处说法回到原文更正，见 [系列研究](palantir/reading-list-series/research/README.md#对旧记录的更正)。
-- Sonnet 代理探索与核验来源；Opus 代理冷读稿子、施工画面、审阅画面与结构文字、做镜头导演和成片审阅；主会话逐条裁决，记在 [验收](palantir/reading-list-series/verification/acceptance.md)。
+- 新增 [入职书单视频系列](projects/palantir/reading-list-series/README.md)：一部总论加五集，各读一份（Interviewing Users、Impro、Getting Things Done、Dalio 的早期 PDF、The Looming Tower），另有由同一份正文排出、去掉各集引入与收尾的 33:33 合集。中文旁白按作者语体写成，每集有 4:3 与 3:4 原生封面；画面上的每句引文和出处都对应主张登记里的一条，外部图片只经素材登记上屏。
+- 原 Chat 与交接稿入账：[归档](vault/archive/chat/palantir-reading-list-series-20261017.md)、[入账记录](vault/intake/palantir-reading-list-series-20261017.json)，另有两份新来源快照。交接稿按“仅供参考”裁决，采用与不采用的写在系列页。旧提炼里“这五份是入职书单”等几处说法回到原文更正，见 [系列研究](projects/palantir/reading-list-series/research/README.md#对旧记录的更正)。
+- Sonnet 代理探索与核验来源；Opus 代理冷读稿子、施工画面、审阅画面与结构文字、做镜头导演和成片审阅；主会话逐条裁决，记在 [验收](projects/palantir/reading-list-series/verification/acceptance.md)。
 - Kit 只加两处记录：[口播旁白体例](dsh-praxis/kit/writing/genres/narration.md)的“悬念后揭晓”一行补上冒号揭晓（合成语音在冒号处停顿）；[Motion](dsh-praxis/kit/publish/video/README.md) 的制作记录加本系列一行。
 - 没有人带声音按实际速度看过成片；几处人名读音与没跑成的转写比对留给人，见验收页。
 
@@ -121,7 +130,7 @@
 
 ## 2026-10-15 · SaaS 教材的交互版与编订体例
 
-- 新增 [SaaS 工程全景 · 交互教材](demos/saas-engineering-textbook/README.md)：从 Books 正文与 Vault 结构数据生成的离线多页站点，含 33 例结构面板与 9 个交互图件；全书正文经独立审阅后改写回 Books。交接与验证命令移出读者路径，归入 [Vault 资产索引](vault/distilled/saas-engineering-atlas/README.md)。
+- 新增 [SaaS 工程全景 · 交互教材](projects/saas-engineering-textbook/README.md)：从 Books 正文与 Vault 结构数据生成的离线多页站点，含 33 例结构面板与 9 个交互图件；全书正文经独立审阅后改写回 Books。交接与验证命令移出读者路径，归入 [Vault 资产索引](vault/distilled/saas-engineering-atlas/README.md)。
 - 并入 [技术文档编订研究](vault/distilled/technical-compilation-writing-research-20261014/README.md)，并在本书上做事后对照，见 [试用记录](vault/distilled/technical-compilation-writing-research-20261014/saas-trial-20261015.md)。
 - [成文原理](dsh-praxis/kit/writing/principles.md)第 8 条与 [审阅方法](dsh-praxis/kit/writing/review.md)加“重复设防”：限定在读者需要处说一次；[证据与来源](dsh-praxis/kit/writing/evidence.md)把过程材料归 index；审阅第 7 步可用脚本比对不可损失的字面量。兼容扩展，见 [ADR-034](docs/decisions/034-state-limits-once-and-keep-process-out.md)。
 - 来路标签（例子是构造的、不对应某家产品或标准）不算限定，写在约定页或 index；SaaS 书据此删去，补记在 ADR-034。教材站点改为分场版式，并加 18 张手绘 SVG。
@@ -138,12 +147,12 @@
 - [成文原理](dsh-praxis/kit/writing/principles.md)第 6 条：术语取目标读者之间最稳定的说法；在 AI 与 agent 这类术语主要以英文流通的领域用英文原词，不临时造译名，首次出现时交代含义。[审阅方法](dsh-praxis/kit/writing/review.md)偏差表加一行。兼容扩展，强度不变。见 [ADR-031](docs/decisions/031-stable-terms-and-explainer-page.md)。
 - Write / Publish 新增 [讲解页的编排](dsh-praxis/kit/publish/html/explainer.md)：每个局部回答四问、四层的可见性、事实底稿、可调之处与反例。可取用的参考，不是必经步骤。
 - [成立程度的标记](dsh-praxis/kit/design/foundations/standing.md)可调情形加一句：交互图里强调色可作“当前选中”。
-- 新增演示 [DeerFlow 怎样工作](demos/deerflow-explainer/README.md)；稳定语义的记号、控件与运动写成 [工单](demos/editable-native-svg/claude-design-order-20261012.md)，交给独立的 ClaudeDesign。
+- 新增演示 [DeerFlow 怎样工作](projects/deerflow-explainer/README.md)；稳定语义的记号、控件与运动写成 [工单](projects/editable-native-svg/claude-design-order-20261012.md)，交给独立的 ClaudeDesign。
 - 交付收进 Design 的 [记号、控件与运动](dsh-praxis/kit/design/marks/README.md)：57 个原生 SVG 记号、11 个控件、10 种运动，grammar 与这一版画法分开；normal/reference，按需取用。讲解页的系统全景图取用了 18 个记号，效果与缺口记在该包的 [检查与取用记录](dsh-praxis/kit/design/marks/checks.md)。见 [ADR-032](docs/decisions/032-semantic-marks-library.md)。
 ## 2026-10-12 · AgentScope 企业线视频与封面交付
 
-- 新增 [AgentScope 企业线知识片](demos/agentscope-enterprise-film/README.md)：公开文档与固定源码研究形成 53 场、横屏无 TTS 视频，以及可暂停舞台、详尽阅读稿和两张原生绘制封面。Python 2.0 与 Java Harness/Service 分开讲解，旧 Runtime/Studio 只讲迁移。
-- 三位 Luna 做有界探索，Astra 裁决范围并独立审阅；事实和图形语义修订、编码及检查见 [制作记录](demos/agentscope-enterprise-film/production.md)。公开来源、原件 hash 与局部缺口保留 Vault。
+- 新增 [AgentScope 企业线知识片](projects/agentscope-enterprise-film/README.md)：公开文档与固定源码研究形成 53 场、横屏无 TTS 视频，以及可暂停舞台、详尽阅读稿和两张原生绘制封面。Python 2.0 与 Java Harness/Service 分开讲解，旧 Runtime/Studio 只讲迁移。
+- 三位 Luna 做有界探索，Astra 裁决范围并独立审阅；事实和图形语义修订、编码及检查见 [制作记录](projects/agentscope-enterprise-film/production.md)。公开来源、原件 hash 与局部缺口保留 Vault。
 - 按用户新增要求，在唯一 [Motion 交接契约](dsh-praxis/kit/publish/video/narrative.md#多平台封面与交付表述)记录后续视频默认交付 4:3 与 3:4 原生封面，封面与成片画幅独立；制作状态和泛泛保护话语进入过程文档。新要求不追补历史成片。
 - 一次外部误重置移除了在制目录；研究包与管线在临时目录恢复，转入独立分支保存本次成果。仓库验证与成片范围见 [验收回执](docs/verification/agentscope-enterprise-film-20261012.md)。
 
@@ -159,14 +168,14 @@
 
 ## 2026-10-12 · 无配音知识片
 
-- 新增 [Write 分支知识片](demos/write-kit-film/README.md)：只给题目（编译成知识讲解视频，不做配音），由主会话沿 Kit 入口取用 Write 各页，引用 Netflix 简体中文字幕规范的读速上限（成人每秒 9 字），沿用薪酬基线说明片的管线、去掉配音与混音，做成 245 秒的无声片。时间由人定，读速写成检查：任意 4 秒窗口新出现的字不超过 36 个。
+- 新增 [Write 分支知识片](projects/write-kit-film/README.md)：只给题目（编译成知识讲解视频，不做配音），由主会话沿 Kit 入口取用 Write 各页，引用 Netflix 简体中文字幕规范的读速上限（成人每秒 9 字），沿用薪酬基线说明片的管线、去掉配音与混音，做成 245 秒的无声片。时间由人定，读速写成检查：任意 4 秒窗口新出现的字不超过 36 个。
 - 画面文字由一位未参与撰写的 Opus 审阅者做结构审阅并对照 Kit 原文核对事实，主会话裁决：13 项采纳（含 1 项改写后采纳）、2 项保留；其中四条底线、三档强度与验收表的几处措辞回到原文，一处页面没有的说法（“无对照组”）去掉。
 - Kit 只动一处入口：[Write / Motion](dsh-praxis/kit/publish/video/README.md)的制作记录加一行，写明无声片怎样定时。规则含义没有改，没有新增目录、ADR 或依赖；观察和复用说明留在项目说明里。
 - 成片检查六项通过（流、保真、静止、空白、读速、字号）；制作方没有按实际速度完整看过，没有受众测试，审阅只有一位审阅者、一轮。验证：`python3 scripts/validate_repository.py`。
 
 ## 2026-10-10 · 视频能力测试与一次回流
 
-- 新增 [薪酬基线说明片](demos/role-baseline-film/README.md)：只给题目，由主会话沿 Kit 入口取用规则、参考和金字塔片的管线，做成 97 秒说明片与一份 txt（另编 Word 与 PDF），材料合成。成片检查七项通过；制作方没有听过声音，独立冷读没有完成，没有受众测试。
+- 新增 [薪酬基线说明片](projects/role-baseline-film/README.md)：只给题目，由主会话沿 Kit 入口取用规则、参考和金字塔片的管线，做成 97 秒说明片与一份 txt（另编 Word 与 PDF），材料合成。成片检查七项通过；制作方没有听过声音，独立冷读没有完成，没有受众测试。
 - Kit 只动两处入口：[内容验收](dsh-praxis/kit/publish/verification.md)加一句，指向“感知不到的部分”和“自查通过之后”两条备用做法，这次从内容表达的入口读不到它们；[Write / Motion](dsh-praxis/kit/publish/video/README.md)的制作记录加一行，写明短片从哪个项目起步。规则含义没有改，没有新增目录、ADR 或依赖。
 - 取用记录、观察和复用说明都留在项目说明里，没有写进各规则页。引擎与管线仍是从金字塔片拷来的一份，没有抽公共层。
 - 主会话（Opus）完成；交给独立审阅者的一次冷读随会话中断，没有交回。验证：`python3 scripts/validate_repository.py` 通过。
@@ -192,8 +201,8 @@
 
 ## 2026-10-08 · 发现入口与消费记录
 
-- 保留现有目录；在 [Write / Motion](dsh-praxis/kit/publish/video/README.md)连接长片、机制演算、空间表达的施工与消费记录，[Design / Motion](dsh-praxis/kit/design/motion/README.md)补外部研究入口，[demos](demos/README.md)补 Motion ceiling 工场。各项目的技术与参数继续留在项目内。
-- [Palantir reading list](palantir/references/README.md)逐项链接已有候选笔记；上层入口区分候选提炼与已采纳正文，历史任务书标明已经执行，主题入口补已有消费项目。补金字塔过程重建的 intake 导航。
+- 保留现有目录；在 [Write / Motion](dsh-praxis/kit/publish/video/README.md)连接长片、机制演算、空间表达的施工与消费记录，[Design / Motion](dsh-praxis/kit/design/motion/README.md)补外部研究入口，[demos](projects/README.md)补 Motion ceiling 工场。各项目的技术与参数继续留在项目内。
+- [Palantir reading list](projects/palantir/references/README.md)逐项链接已有候选笔记；上层入口区分候选提炼与已采纳正文，历史任务书标明已经执行，主题入口补已有消费项目。补金字塔过程重建的 intake 导航。
 - 本轮由主代理编订、两位 Luna 只读追溯；只核对仓库内记录，没有重新访问外部来源、补快照、运行渲染或制作视频。金字塔主日志与研究网页未快照，A3 部分运行依赖未快照，Motion ceiling 多数外部来源仍未读；四本阅读材料全文仍缺。未新增专用交接文档或重复的制作流程。
 - 验证：`python3 scripts/validate_repository.py` 通过；Luna 定向走读 Dalio 已读边界、Impro 缺正文、机制类视频选型与金字塔过程追溯四条路径，无断链。属于维护走读，未做新主笔制作或对照实验。
 
@@ -202,7 +211,7 @@
 - 逐条实访阅读清单的 8 个 URL，取得 9 个文件、3,998,632 字节：[原件快照](vault/snapshots/local/palantir-20261006/README.md)。此前 8 个 URL 全部 `unverified`、7 个对象都没有本地原件。
 - 三份是全文：Qureshi、Lonsdale，以及 Dalio 的 2011 版权 106 页 PDF。四本书只有片段：Portigal 的第 2 版第 1 章、Wright 的出版方授权节选、Allen 的官方节选，Johnstone 只有出版方描述与目录。
 - 原站直连两个被拒：Qureshi 返回 429，Rosenfeld 与 Bloomsbury 返回 403，都没有绕过；这三份经 Internet Archive 存档取得。Dalio 的登记 URL 已失效为官网首页，PDF 是经 2016 年存档取回的。
-- 阅读清单与[主题入口](palantir/README.md)改写为按实际证据边界登记；`unverified` 归零，改为 3 个 `verified`、5 个 `partial`。GTD 的节选据版权页为 2001 年版，与登记 URL 所指 2015 版不同，已写明。
+- 阅读清单与[主题入口](projects/palantir/README.md)改写为按实际证据边界登记；`unverified` 归零，改为 3 个 `verified`、5 个 `partial`。GTD 的节选据版权页为 2001 年版，与登记 URL 所指 2015 版不同，已写明。
 - 另取得 Portigal 自行免费发布的 6 份实践 PDF（363,054 字节：筛选问卷、访谈提纲、现场参与说明、两份复盘表、顶部摘要），取自作者自己站点的媒体库，不是第三方转载。共 15 个文件、4,365,133 字节。
 - Internet Archive 有 Impro、The Looming Tower、Getting Things Done 三份扫描件，但都是受控借阅（`access-restricted-item`，抓取全文返回 401），需用使用者自己的账号借阅；本轮没有登录、没有替借、没有绕过闸门。
 - 影子图书馆（zlib、Anna’s Archive、libgen 等）未接触：所涉四本为版权期内商业书，是来源不授权，个人学习用途不构成豁免。补齐只走购买、借阅或使用者提供合法副本。
@@ -217,7 +226,7 @@
 
 - 把 ADR-027、ADR-028 新增的两种独立审阅写明是可以取用的做法，不是每件任务的必经步骤；口播旁白页的随稿材料改成按任务取用。条文的含义没有变，强度写清了。
 - [工作开展方式 · 备用素材](kit/environment/working-methods.md)加三条：把研究交出去、自查通过之后、感知不到的部分。它们是备用素材，不默认加载。
-- [Motion 入口](dsh-praxis/kit/publish/video/README.md)、[演示实现](demos/README.md)和 [Distilled](vault/distilled/README.md)各加一处指向 Knowledge Film 001 的样例和过程重建。
+- [Motion 入口](dsh-praxis/kit/publish/video/README.md)、[演示实现](projects/README.md)和 [Distilled](vault/distilled/README.md)各加一处指向 Knowledge Film 001 的样例和过程重建。
 - Knowledge Film 001 第五版收尾：片尾塔补上第五片叶子，成片检查六项通过（旁白转写比对第一次跑）。记录在 [回执](docs/verification/narration-distill-20261005.md)的“收尾时的调整”一节。
 
 ## 2026-10-05 · 口播旁白与独立冷读
@@ -333,7 +342,7 @@
 ## 2026-09-28/29 · 视觉语法材料与当前工作收尾
 
 - 入账“建立视觉语法语料库”3轮6消息及截图；四组Luna追溯Courtwork、Schema Engineering、Praxis与相邻项目，以及21个独立外部URL。
-- 在 [视觉语法工场](demos/visual-grammar/README.md)准备8个开放工单、原仓库/外部索引和Opus唤醒prompt。Astra整理材料结构，Opus自由选择技术栈、grammar、激进效果与实现。
+- 在 [视觉语法工场](projects/visual-grammar/README.md)准备8个开放工单、原仓库/外部索引和Opus唤醒prompt。Astra整理材料结构，Opus自由选择技术栈、grammar、激进效果与实现。
 - 梳理既有Kit迁移、研究入口与答卷产物改名后的链接；历史研究与验收保留其原范围，当前入口采用最新状态。原子化编排实验现已有产物，27日“尚无样张”是当时状态，当前见 [研究与筛选](vault/distilled/layout-specimens-20260927/README.md)。
 - 本轮材料检查与全仓收尾结果见 [验收](docs/verification/visual-grammar-20260928.md)，不代表新demo或视频已经制作。
 
@@ -399,9 +408,9 @@
 ## 2026-10-03 · Palantir 首次设计打样
 
 - 入账用户交来的 [设计交接包](vault/snapshots/local/palantir-design-handoff-20261003/README.md)（七个文件），登记见 [入账记录](vault/intake/palantir-design-handoff-20261003.json)。
-- 据此做了 [从诉求到决定](demos/palantir-discovery/README.md)：一页离线交互网页，读者加减五张合成材料，台账和四个分支的判读随之改写，选择只模拟；同一文件打印成 A4 带 S0/S1 对照表。
+- 据此做了 [从诉求到决定](projects/palantir-discovery/README.md)：一页离线交互网页，读者加减五张合成材料，台账和四个分支的判读随之改写，选择只模拟；同一文件打印成 A4 带 S0/S1 对照表。
 - 复查三篇公开来源：Lonsdale 第 5、6 条在交接里对应反了，作品已逐条改写；Portigal 页面遇到人机验证，主会话没有亲自读到。
-- 没有做：受众测试、减少动效和读屏软件下的实际检查。方法仍是项目候选，`palantir/` 主题和 Kit 规则没有改。
+- 没有做：受众测试、减少动效和读屏软件下的实际检查。方法仍是项目候选，`projects/palantir/` 主题和 Kit 规则没有改。
 - 用户读页面后指出文案别扭：页面文字没有经过 Write / Prose，Design 参考卡也没读。按 [审阅方法](dsh-praxis/kit/writing/review.md)改了 63 处，按两张优先参考卡加了“判读一览”，记录见作品 README。
 - 入口修订见 [ADR-023](docs/decisions/023-consume-by-artifact-component.md)：[Kit 任务入口](kit/README.md)按产物的组成部分分到几支；[Design 入口](dsh-praxis/kit/design/README.md)写明页面文字仍按 Prose 写和审，并加一张先读哪张参考的表；[媒介验收](dsh-praxis/kit/publish/verification.md)加交付前的分工核对；[成文原理](dsh-praxis/kit/writing/principles.md)的结构位置加上按钮、图例和状态提示；`writing` skill 在产物含中文文字时也加载。一次改前改后对照：改后的代理打开了审阅方法和四种 Design 参考，改前只看到名字。
 
@@ -411,27 +420,27 @@
 
 ## 2026-10-04 · 企业工作面语法实验第一轮
 
-- 按用户贴入的两段任务来文，用 Kit 的企业工作语法和一份场景契约施工了 [事项工作台](demos/enterprise-grammar-lab/README.md)：React 与 Ant Design 前端、OpenAPI 契约、模拟冲突与结果未知等行为的假后端，数据全部合成。来文没有入账 Vault；技术栈只在该目录内选定，没有写实现 ADR。
-- [施工发现](demos/enterprise-grammar-lab/evals/README.md)记录了逐项判据、Kit 起作用和没有内容的地方，以及独立复查找出的缺陷和处置。只做了受 Kit 约束的一组，没有对照组，没有换领域。
+- 按用户贴入的两段任务来文，用 Kit 的企业工作语法和一份场景契约施工了 [事项工作台](projects/enterprise-grammar-lab/README.md)：React 与 Ant Design 前端、OpenAPI 契约、模拟冲突与结果未知等行为的假后端，数据全部合成。来文没有入账 Vault；技术栈只在该目录内选定，没有写实现 ADR。
+- [施工发现](projects/enterprise-grammar-lab/evals/README.md)记录了逐项判据、Kit 起作用和没有内容的地方，以及独立复查找出的缺陷和处置。只做了受 Kit 约束的一组，没有对照组，没有换领域。
 - 用户随后给了一份研究 brief 作参考（未入账）。按它的反例表对照后补了 fixture 自洽检查、风险的下一步归属和离开前的拦截；它建议的付款复核场景留作第二个独立场景的候选。
 - Kit、docs 和 Vault 没有改动；`.gitignore` 增加 `node_modules/`，`.claude/launch.json` 增加两条本地启动配置。
 
 ## 2026-10-04 · 企业工作面语法实验第二轮
 
-- 用户决定做研究 brief 建议的场景。在同一目录加了第二个工作台 [付款复核台](demos/enterprise-grammar-lab/scenarios/payment-review.md)：规则检查、预制的机器提议和人的判断分开呈现，金额是带币种的精确值，依据按“材料、版本、位置”打开。
-- 为了让两个场景共用，把契约的公共部分、后端内核和工作面与场景解开。[第二轮施工发现](demos/enterprise-grammar-lab/evals/round-2.md)记录了改了多少、公共层里原先藏着哪些第一个场景的形状，以及两个场景各写了一遍、暂不抽取的部分。
+- 用户决定做研究 brief 建议的场景。在同一目录加了第二个工作台 [付款复核台](projects/enterprise-grammar-lab/scenarios/payment-review.md)：规则检查、预制的机器提议和人的判断分开呈现，金额是带币种的精确值，依据按“材料、版本、位置”打开。
+- 为了让两个场景共用，把契约的公共部分、后端内核和工作面与场景解开。[第二轮施工发现](projects/enterprise-grammar-lab/evals/round-2.md)记录了改了多少、公共层里原先藏着哪些第一个场景的形状，以及两个场景各写了一遍、暂不抽取的部分。
 - Kit、docs 和 Vault 没有改动。工作面按 ADR-002 是两个独立场景在用的候选，没有申请晋升。
 
 ## 2026-10-04 · 企业工作面语法实验收尾
 
-- 按用户转来的三条收尾建议处置第二轮末留下的问题：不做无 Kit 对照组，结论限定为两轮怎样消费了 Kit；技术栈记在只对该 demo 有效的 [实现 ADR](demos/enterprise-grammar-lab/stack-adr.md)，不进 `docs/decisions`；教训先留成四条带反例的 [候选条目](demos/enterprise-grammar-lab/evals/candidates.md)，没有提交裁决。
+- 按用户转来的三条收尾建议处置第二轮末留下的问题：不做无 Kit 对照组，结论限定为两轮怎样消费了 Kit；技术栈记在只对该 demo 有效的 [实现 ADR](projects/enterprise-grammar-lab/stack-adr.md)，不进 `docs/decisions`；教训先留成四条带反例的 [候选条目](projects/enterprise-grammar-lab/evals/candidates.md)，没有提交裁决。
 - 用户给的交接稿（未入账）推荐的场景已经做完，只拿它的 12 条不变量对照了现状：五条有，七条部分有，没有因此改代码。
 - Kit、docs 和 Vault 没有改动。
 
 ## 2026-10-04 · 企业工作面语法实验：合并后的独立复验
 
 - 用户另找的执行者在 `9514ce4` 上做了独立复验（交接稿未入账），只到代码和后端。它报告的两处 fixture 检查漏检属实并已修：状态与记录是否一致改为把记录按动作允许的步骤走一遍；付款复核台的记录不能指向不存在的机器提议。测试 43 项变 45 项。
-- 它报告的另外两处是已记录的未修项（材料版本不带动事项版本；切换身份和整页离开绕过离开前的拦截），没有改；后一处补了浏览器实测。记录见 [合并后的独立复验](demos/enterprise-grammar-lab/evals/reverification.md)。
+- 它报告的另外两处是已记录的未修项（材料版本不带动事项版本；切换身份和整页离开绕过离开前的拦截），没有改；后一处补了浏览器实测。记录见 [合并后的独立复验](projects/enterprise-grammar-lab/evals/reverification.md)。
 - 用户随后决定给关标签页和刷新加离开确认：有未提交的填写或结果未知时页面请求浏览器确认。页面侧的行为已验证；确认框本身在内置浏览器面板里不显示，没有在普通浏览器里看过。
 
 

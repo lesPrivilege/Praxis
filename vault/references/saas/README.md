@@ -1,6 +1,6 @@
 # Reference Index · saas
 
-- [SaaS 工程全景研究来源](../../provenance/saas-engineering-atlas/README.md)：跨业务案例的公共来源种子与局部核查，消费正文见 [教材入口](../../../books/saas-engineering/README.md)。
+- [SaaS 工程全景研究来源](../../provenance/saas-engineering-atlas/README.md)：跨业务案例的公共来源种子与局部核查，消费正文见 [教材入口](../../../projects/books/saas-engineering/README.md)。
 
 本目录只登记本轮末轮显式 URL 的官方核查结果；每个 URL 单独一张卡片。摘要用于决定何时重访，不构成依赖或版本锁定。
 

@@ -2,9 +2,9 @@
 
 ## 交付入口
 
-[README](../../../../books/saas-engineering/foundations/README.md)是渐进学习入口，12 章为连续中文教材，按“识题→解法→演算→验算→变式”展开。第 1 章建立对象与动作，第 2–8 章解释算法选择，第 9–11 章连接界面、服务、存储、异步任务、恢复和验证，第 12 章提供 33 案例地图与跨行业练习。
+[README](../../../../projects/books/saas-engineering/foundations/README.md)是渐进学习入口，12 章为连续中文教材，按“识题→解法→演算→验算→变式”展开。第 1 章建立对象与动作，第 2–8 章解释算法选择，第 9–11 章连接界面、服务、存储、异步任务、恢复和验证，第 12 章提供 33 案例地图与跨行业练习。
 
-正文已完成事实范围、术语和算例核验。编纂可直接使用正文及 [examples.json](examples.json)中的 18 组小输入；[curriculum.json](curriculum.json)记录章节、既有 ALG 标识、案例、来源和样例的关系。[terms.md](../../../../books/saas-engineering/foundations/terms.md)保留原文术语及容易混淆的区别，[evidence.json](evidence.json)保留 40 个一手来源的原文标题、定位和主张范围。
+正文已完成事实范围、术语和算例核验。编纂可直接使用正文及 [examples.json](examples.json)中的 18 组小输入；[curriculum.json](curriculum.json)记录章节、既有 ALG 标识、案例、来源和样例的关系。[terms.md](../../../../projects/books/saas-engineering/foundations/terms.md)保留原文术语及容易混淆的区别，[evidence.json](evidence.json)保留 40 个一手来源的原文标题、定位和主张范围。
 
 ## 来源与变更边界
 

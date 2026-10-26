@@ -20,4 +20,4 @@
 
 ## 已有产出
 
-[DeerFlow 讲解页](../../../../demos/deerflow-explainer/README.md)是这类任务的第一份产出，机制讲解与讲解页编排都从它提炼。
+[DeerFlow 讲解页](../../../../projects/deerflow-explainer/README.md)是这类任务的第一份产出，机制讲解与讲解页编排都从它提炼。

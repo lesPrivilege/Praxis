@@ -12,7 +12,7 @@ from itertools import permutations
 
 ROOT=Path(__file__).resolve().parents[3]
 ATLAS=ROOT/'vault/distilled/saas-engineering-atlas'
-BOOK=ROOT/'books/saas-engineering'
+BOOK=ROOT/'projects/books/saas-engineering'
 sys.path.insert(0,str(ATLAS/'enterprise-mechanisms'))
 import mechanism_lab as M
 import test_mechanism_lab as T

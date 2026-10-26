@@ -12,7 +12,7 @@
 - `reference-pointer`：复用已有索引、来源卡或 Chat intake 的身份与边界；本批未重新核验外部正文。
 - `gap`：未找到可核实来源或当前缺少验证；不得用邻近记录补齐。
 
-首件候选的最短阅读路径和 6 个有界工单见 [`vault/distilled/visual-grammar-20260928/local-exploration.md`](../../distilled/visual-grammar-20260928/local-exploration.md)。视觉语法的对外施工入口由主线 `demos/visual-grammar/` 维护；原 Chat 仅通过 intake/archive 回查，本目录不复制对话正文。
+首件候选的最短阅读路径和 6 个有界工单见 [`vault/distilled/visual-grammar-20260928/local-exploration.md`](../../distilled/visual-grammar-20260928/local-exploration.md)。视觉语法的对外施工入口由主线 `projects/visual-grammar/` 维护；原 Chat 仅通过 intake/archive 回查，本目录不复制对话正文。
 
 本批对探索前已有的 scoped prior-index 搜索没有发现 `Skillry` / `skillry` 的 ID、URL 或 source card。随后独立的 Luna 外部追溯已登记 [`visual-grammar-external-20260928`](../visual-grammar-external-20260928/README.md) 共 21 个 URL，其中包含 Skillry specimen；这批 supplemental 记录不能冒充原 Chat 隐藏引用，也不能把 Skillry 作者自述提升为独立验证。现有 `SourceWeft skill provenance` 卡片仍只是相邻 runtime 参考，不能代替 Skillry。
 

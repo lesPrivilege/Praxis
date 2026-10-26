@@ -52,7 +52,7 @@
 2. 一张图。按上面的分配把词重复成画法，附上自动得出的图例。
 3. 几张图连成一张。各图共用同一套分配和同一份图例，图例只出现一次。
 
-[样板](../../../../demos/editable-native-svg/grammar-specimens/index.html)用同一份内容把三级各做了一遍。
+[样板](../../../../projects/editable-native-svg/grammar-specimens/index.html)用同一份内容把三级各做了一遍。
 
 ## 正例与最容易犯的错
 

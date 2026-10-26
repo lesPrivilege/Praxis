@@ -4,7 +4,7 @@
 
 ## 交付内容与证据边界
 
-[README](../../../../../books/saas-engineering/packages/industry-networks/README.md)建立共同模型，V07、V08、V09、V10、V11、V21、V22 各有正文和结构 JSON。每例将运行状态、依据版本、权限、UI 反馈、计算、恢复与验收连成一条解释，并附改变前提的练习及短答。[evidence.json](evidence.json)区分 source_fact、inference、synthetic；公开来源只按实际读取范围支持主张。
+[README](../../../../../projects/books/saas-engineering/packages/industry-networks/README.md)建立共同模型，V07、V08、V09、V10、V11、V21、V22 各有正文和结构 JSON。每例将运行状态、依据版本、权限、UI 反馈、计算、恢复与验收连成一条解释，并附改变前提的练习及短答。[evidence.json](evidence.json)区分 source_fact、inference、synthetic；公开来源只按实际读取范围支持主张。
 
 [synthetic_checks.py](synthetic_checks.py)提供 Python 标准库的计算与 SQLite 合成事务检查；它不实现网络、现场控制、并发压力、完整 EPCIS、EDA、VEE 产品、UI 或 AI。仓库检查验证结构与本地链接，不证明教学系统已上线。
 

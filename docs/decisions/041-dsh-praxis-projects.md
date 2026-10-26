@@ -12,9 +12,9 @@
 
 产物只有“仓库相对”或“绝对”两种路径，没有项目这个对象：看不出一件产物属于哪件工作，也管不到中间产物。三个试点的结构各不相同，没有一套固定目录能不搬文件就套上：
 
-- `jev/`：底稿在 `draft/`，网页在 `site/`，与构建脚本、构建源放在一起，研究登记在 `research/`。
-- `palantir/reading-list-series/`：成片 mp4 与配音 wav、输入 json 同在 `out/`。
-- `dsh-praxis-explainer/`：两个文件平放在根目录。
+- `projects/jev/`：底稿在 `draft/`，网页在 `site/`，与构建脚本、构建源放在一起，研究登记在 `research/`。
+- `projects/palantir/reading-list-series/`：成片 mp4 与配音 wav、输入 json 同在 `out/`。
+- `projects/dsh-praxis-explainer/`：两个文件平放在根目录。
 
 ## 决定
 

@@ -1,6 +1,6 @@
 # 工作与接口契约
 
-填写 [场景模板](../../scenarios/_template/README.md) 时按下表确定字段；术语定义见 [共同工作语法](../grammar/work.md)。
+填写 [场景模板](../../templates/scenario/README.md) 时按下表确定字段；术语定义见 [共同工作语法](../grammar/work.md)。
 
 | 契约面 | 必须明确 | 检查点 |
 |---|---|---|

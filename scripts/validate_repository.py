@@ -8,9 +8,20 @@ from pathlib import Path
 from urllib.parse import unquote, urlsplit
 
 ROOT = Path(__file__).resolve().parents[1]
-OWNED = ['docs', 'kit', 'scenarios', 'templates', 'demos', 'vault', 'scripts', 'palantir', 'tally', 'books', 'tools', 'dsh-praxis', 'jev']
+OWNED = ['docs', 'kit', 'templates', 'projects', 'vault', 'scripts', 'tools', 'dsh-praxis']
+# Root allowlist (ADR-044): routing files, the five streams, tool directories, scratch.
+ROOT_ALLOWED = {'README.md', 'AGENTS.md', 'CHANGELOG.md', 'kit', 'vault', 'docs', 'projects', 'dsh-praxis',
+                'scripts', 'tools', 'templates', 'work', 'demos',
+                '.git', '.github', '.claude', '.mcp.json', '.gitattributes', '.gitignore', '.obsidian', '.DS_Store',
+                'wx-cli-again'}
+# 'demos' and 'wx-cli-again' are transitional: one in-flight project and an ignored unrelated checkout.
 errors = []
+warnings = []
 counts = {'markdown': 0, 'json': 0, 'snapshots': 0}
+
+for entry in sorted(ROOT.iterdir()):
+    if entry.name not in ROOT_ALLOWED:
+        errors.append(f'Root entry not in allowlist (ADR-044): {entry.name}')
 
 
 def managed(path):
@@ -87,6 +98,29 @@ for path in paths:
                         re.findall(r'^#{1,6} (.+)$', resolved.read_text(), re.M)}
             if unquote(urlsplit(target).fragment) not in headings:
                 errors.append(f'Broken heading link: {path.relative_to(ROOT)} -> {target}')
+
+
+# Project layout (ADR-041/044): files in a registered project must sit in a layout role.
+# Reported as warnings until a project opts in with "layout_enforced": true.
+import fnmatch, subprocess
+projects_file = ROOT / 'dsh-praxis/data/projects.json'
+if projects_file.exists():
+    tracked = set(subprocess.run(['git', 'ls-files', '-z'], cwd=ROOT, capture_output=True, text=True).stdout.split('\0'))
+    for pid, rec in json.loads(projects_file.read_text())['records'].items():
+        root = rec['root']
+        if root.startswith('/') or not (ROOT / root).is_dir():
+            continue
+        globs = [g for role in rec.get('layout', {}).values() for g in role] + ['README.md', '**/README.md', 'evidence/**', 'scenario/**']
+        for rel in sorted(t for t in tracked if t.startswith(root + '/')):
+            inner = rel[len(root) + 1:]
+            if any(fnmatch.fnmatch(inner, g) or fnmatch.fnmatch(inner, g.replace('**', '*')) for g in globs):
+                continue
+            # a nested registered project owns its own files
+            if any(rel.startswith(o['root'] + '/') for k, o in json.loads(projects_file.read_text())['records'].items()
+                   if k != pid and not o['root'].startswith('/') and o['root'].startswith(root + '/')):
+                continue
+            msg = f'misplaced: {rel} (project {pid}, no layout role)'
+            (errors if rec.get('layout_enforced') else warnings).append(msg)
 
 manifest = ROOT / 'vault' / 'snapshot-manifest.json'
 if manifest.exists():
@@ -218,5 +252,5 @@ else:
                 errors.append(f"Shared source card omits a URL: {card} lacks {source['slug']} ({rel})")
     counts['generated_source_cards'] = len(expected_cards)
 
-print(json.dumps({'counts': counts, 'errors': errors, 'status': 'fail' if errors else 'pass'}, ensure_ascii=False, indent=2))
+print(json.dumps({'counts': counts, 'warnings': {'count': len(warnings), 'sample': warnings[:15]}, 'errors': errors, 'status': 'fail' if errors else 'pass'}, ensure_ascii=False, indent=2))
 sys.exit(bool(errors))

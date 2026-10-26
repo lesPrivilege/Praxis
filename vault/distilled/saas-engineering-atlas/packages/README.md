@@ -1,6 +1,6 @@
 # SaaS 案例研究资产
 
-教材分组见 [Books](../../../../books/saas-engineering/packages/README.md)。这里保留每包的 topology、evidence、脚本、回执与原作者交接；[manifest](manifest.json)保存稳定映射。
+教材分组见 [Books](../../../../projects/books/saas-engineering/packages/README.md)。这里保留每包的 topology、evidence、脚本、回执与原作者交接；[manifest](manifest.json)保存稳定映射。
 
 - [P01 · 交易、财务与资金](commercial-finance/README.md)
 - [P02 · 人员、专业服务与接收](people-service/README.md)

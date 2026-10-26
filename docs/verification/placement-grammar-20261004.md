@@ -9,8 +9,8 @@
 | 一页泛化判断 | [排列与刻度](../../dsh-praxis/kit/design/foundations/placement.md)；入口在 Design README 的“先读”表、Foundations README、问题地图的 G01 与 G10 两行；图形编码、成立程度、精确指向三页各补了半句 |
 | 裁决 | [ADR-026](../decisions/026-placement-and-scale.md) |
 | 清点与外部用词对照 | [提炼页](../../vault/distilled/placement-grammar-20261004/README.md)、[intake](../../vault/intake/placement-grammar-20261004.json)、四张 [来源卡](../../vault/provenance/placement-grammar-20261004/cards/README.md) |
-| 实现 | [svg-01-relations](../../demos/editable-native-svg/svg-01-relations/README.md) 升到 0.3.0，新增 `rail.mjs`、`pair.mjs`；版本图补了读法；组合件补了一句并收紧了连线 |
-| 样板 | [grammar-specimens](../../demos/editable-native-svg/grammar-specimens/README.md) 的第三节 |
+| 实现 | [svg-01-relations](../../projects/editable-native-svg/svg-01-relations/README.md) 升到 0.3.0，新增 `rail.mjs`、`pair.mjs`；版本图补了读法；组合件补了一句并收紧了连线 |
+| 样板 | [grammar-specimens](../../projects/editable-native-svg/grammar-specimens/README.md) 的第三节 |
 | 登记 | R10、R18 改为 `drawn`；SVG-02 名下的 R16、R19、R33 改为 `partial`，工单表里写明第二批可以沿用、修改或重画 |
 
 ## 对上一轮说法的更正
@@ -21,9 +21,9 @@
 
 | 检查 | 结果 |
 |---|---|
-| `python3 scripts/validate_repository.py` | 在工作区里直接运行不通过：21 条断链全部在另一个会话尚未写完的 `demos/motion-ceiling-lab` 和它的 Vault 条目里，本轮的路径里没有错误。把工作区复制一份、去掉那几个目录后运行，通过：来源记录 599（新增 4），来源卡投影 350 |
-| `python3 demos/editable-native-svg/check-registration.py` | 通过 |
-| `node src/check.mjs`（svg-01-relations） | 32 项全部通过，含浏览器实测；明细见该作品的 [验收回执](../../demos/editable-native-svg/svg-01-relations/acceptance.md#030-的复验) |
+| `python3 scripts/validate_repository.py` | 在工作区里直接运行不通过：21 条断链全部在另一个会话尚未写完的 `projects/motion-ceiling-lab` 和它的 Vault 条目里，本轮的路径里没有错误。把工作区复制一份、去掉那几个目录后运行，通过：来源记录 599（新增 4），来源卡投影 350 |
+| `python3 projects/editable-native-svg/check-registration.py` | 通过 |
+| `node src/check.mjs`（svg-01-relations） | 32 项全部通过，含浏览器实测；明细见该作品的 [验收回执](../../projects/editable-native-svg/svg-01-relations/acceptance.md#030-的复验) |
 | 独立复查 | 一个只读子代理报了 13 组问题，11 组经运行确认；除两项外全部修了并各加了检查，修完没有再复查。明细同上 |
 | 外部来源 | 四份原页由子代理取回全文摘句；主会话另行取回，核对了写进来源卡的句子，`aria-posinset` 一条没有单独核对到；没有通读，没有快照 |
 | 仓库内清点 | 子代理列出五十四种构造；主会话重读了写进提炼页的 19 行和 7 处已有说法，行号对得上 |
@@ -31,7 +31,7 @@
 
 ## 冷读与对照
 
-两个任务，各用一份没有用来调过样板的合成内容。每个任务两份：一份从根 `AGENTS.md` 进仓库、自己找指引；一份不读仓库，只看任务。四个都是 Claude Sonnet 子代理，互不相见。任务书没有点页面名字。截图在 [evidence](../../demos/editable-native-svg/grammar-specimens/evidence/README.md)的 `cold-read-c.png` 和 `cold-read-d.png`。
+两个任务，各用一份没有用来调过样板的合成内容。每个任务两份：一份从根 `AGENTS.md` 进仓库、自己找指引；一份不读仓库，只看任务。四个都是 Claude Sonnet 子代理，互不相见。任务书没有点页面名字。截图在 [evidence](../../projects/editable-native-svg/grammar-specimens/evidence/README.md)的 `cold-read-c.png` 和 `cold-read-d.png`。
 
 | 任务 | 读了 Kit 的一份 | 对照 |
 |---|---|---|

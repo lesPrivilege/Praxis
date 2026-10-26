@@ -2,7 +2,7 @@
 
 状态：`distilled / partial / candidate`，取用优先级 normal。重建、判断与编订由一个没有参与制作的 Opus 5.5 子代理完成，没有再派子代理；Luna 在本环境不可用。登记见 [intake](../../intake/palantir-reading-list-series-distill-20261019.json)。本页由子代理写成时没有改 Kit、docs、CHANGELOG 和任何已有文件；主会话随后的裁决见 [Kit 候选](#kit-候选)末尾。
 
-对象是 [入职书单系列](../../../palantir/reading-list-series/README.md)：一部总论、五集和一部 33:33 的合集，提交在 main 的 `c11ebf4`，另有一处验收页改动没有提交。本页不评价片子好不好，只回答这次制作怎样用了 Kit、哪里绕开了、哪里失败了，以及哪些做法值得留下。
+对象是 [入职书单系列](../../../projects/palantir/reading-list-series/README.md)：一部总论、五集和一部 33:33 的合集，提交在 main 的 `c11ebf4`，另有一处验收页改动没有提交。本页不评价片子好不好，只回答这次制作怎样用了 Kit、哪里绕开了、哪里失败了，以及哪些做法值得留下。
 
 依据的写法：`L123` 指主会话日志第 123 行；子代理日志写代理编号前九位加行号；仓库文件写路径与行号；工作流写运行编号 `wf_…`。时间是 UTC，本机时间加 8 小时。“推断”标出的内容不是日志或文件里直接看到的。
 
@@ -70,7 +70,7 @@
 | 成片审阅 ×6、首次使用者 ×1 | Opus | 14–25 分钟 | 无 | 发现与修法；首次使用者另查了文档 |
 | 终审 ×3、驳回者 ×3 | Opus、Sonnet | 32 分钟（整批） | 无 | 经驳回后留下的必改与应改 |
 
-各轮审阅的原始结果由主会话在 10-18 归入项目：[审阅原始记录](../../../palantir/reading-list-series/verification/reviews/README.md)与[研究交接](../../../palantir/reading-list-series/research/handoffs/README.md)。本页写作时这两处还没有提交。
+各轮审阅的原始结果由主会话在 10-18 归入项目：[审阅原始记录](../../../projects/palantir/reading-list-series/verification/reviews/README.md)与[研究交接](../../../projects/palantir/reading-list-series/research/handoffs/README.md)。本页写作时这两处还没有提交。
 
 ### 用户的介入
 
@@ -91,10 +91,10 @@
 
 ### 哪些已有能力真正有用
 
-- **入账。** Kit 使用约定与入账规范读过之后（L56），原 Chat、交接稿和两份新来源都按规范登记了快照、哈希与索引行（L280–L296、L1178、L1952、L3054）。交接稿被当作数据裁决：采用了目录方案、两份登记、同源编排、双封面，没有采用固定六段与统一片头话术（[系列说明](../../../palantir/reading-list-series/README.md)第 51 行）。
+- **入账。** Kit 使用约定与入账规范读过之后（L56），原 Chat、交接稿和两份新来源都按规范登记了快照、哈希与索引行（L280–L296、L1178、L1952、L3054）。交接稿被当作数据裁决：采用了目录方案、两份登记、同源编排、双封面，没有采用固定六段与统一片头话术（[系列说明](../../../projects/palantir/reading-list-series/README.md)第 51 行）。
 - **口播体例与审阅方法进了冷读任务书。** 第 2 份任务书逐字列出四份 Kit 文件、问题类别和句式计数。六集冷读都标出了“铺垫加冒号揭晓”，主会话据此给体例补了一行（L4251）。这是本次唯一由施工证据推动、并落进 Kit 的条文。
 - **“把第 5 条写进任务书”。** [叙事交接](../../../dsh-praxis/kit/publish/video/narrative.md)第 29 行这一条，主会话读过（L130）也照做了：施工、修改与文字审阅共十二份任务书带着第 5 条的转述。这条起的作用有限，见“哪些 friction 暴露出来”。
-- **结构文字的独立审阅。** 用户提出之后，主会话写的任务书（第 14 份）照着审阅方法的步骤：拿成片抽出的文字清单、按位置分类整体看、意见带字数与并列组。审阅者交回 76 条，主会话改写后采纳 13 条，驳回的理由也写了（[裁决](../../../palantir/reading-list-series/verification/reviews/copy-adjudication.md)）。
+- **结构文字的独立审阅。** 用户提出之后，主会话写的任务书（第 14 份）照着审阅方法的步骤：拿成片抽出的文字清单、按位置分类整体看、意见带字数与并列组。审阅者交回 76 条，主会话改写后采纳 13 条，驳回的理由也写了（[裁决](../../../projects/palantir/reading-list-series/verification/reviews/copy-adjudication.md)）。
 - **双画幅封面与“不称效果已验证”。** 叙事交接第 33 行的 4:3 与 3:4 原生封面做了；验收页把“带声音按实际速度看”列为要由人来做的事。
 - **证据身份。** 主张登记按原典、作者其他材料、亲历者、官方档案、推论、未解决分开标，舞台拒绝没有登记或没有审过的主张。这与证据与来源一致；登记由舞台强制，这一层是本项目自己加的。
 
@@ -119,7 +119,7 @@
 
 ### 哪些规范过重
 
-- **每个目录一份 README。** 校验器要求 `palantir/` 下每个目录都有 README，被忽略的生成目录也一样（`HANDOFF.md` Gotchas）；制作中途因各集 README 未写而校验失败（L3070）。
+- **每个目录一份 README。** 校验器要求 `projects/palantir/` 下每个目录都有 README，被忽略的生成目录也一样（`HANDOFF.md` Gotchas）；制作中途因各集 README 未写而校验失败（L3070）。
 - **逐 URL 入账。** 来源登记在项目的 `sources.json` 里，127 条，没有逐条建 Vault 来源卡。这个取舍让入账没有拖慢制作；代价是 Vault 里查不到这些来源。
 
 ### 哪些能力缺失
@@ -132,8 +132,8 @@
 
 ### 哪些 repo、目录、工具的设计影响 Agent 工作
 
-- **舞台强制登记。** 没有登记、没有审过的主张和权利未明的图片，舞台拒绝启动（[项目约定](../../../palantir/reading-list-series/AGENTS.md)第 8–9 行）。研究、施工和审阅三方都绕不开它；探索代理只交回 `explorer-only` 的 Impro 主张时，施工就被挡在核验之后（`HANDOFF.md` “Running in background”一节）。
-- **输入指纹。** 合集正文直接取自单集成片，渲染时比对画面所依赖输入的指纹，对不上就拒绝（L4140；[管线](../../../palantir/reading-list-series/build/README.md)第 9 行）。登记改动不再连带整片重渲。
+- **舞台强制登记。** 没有登记、没有审过的主张和权利未明的图片，舞台拒绝启动（[项目约定](../../../projects/palantir/reading-list-series/AGENTS.md)第 8–9 行）。研究、施工和审阅三方都绕不开它；探索代理只交回 `explorer-only` 的 Impro 主张时，施工就被挡在核验之后（`HANDOFF.md` “Running in background”一节）。
+- **输入指纹。** 合集正文直接取自单集成片，渲染时比对画面所依赖输入的指纹，对不上就拒绝（L4140；[管线](../../../projects/palantir/reading-list-series/build/README.md)第 9 行）。登记改动不再连带整片重渲。
 - **文件所有权。** 每个施工、修改、导演代理只写自己那一集的 `scenes.js` 与 `scenes.css`，共用的 `film/` 与登记由主会话维护。三轮十八个修改代理并行，没有一次文件冲突。
 - **从旧片复制管线。** 引擎和构建脚本由薪酬基线说明片的管线复制改写（L347–L520）。这次修好的 Chrome 启动、看门狗与拼接都只在本项目里，源头那套没有改。
 - **会话日志重放。** 日志在恢复时把历史重新写一遍，行号容易引错；本页按 uuid 去重后引用首次出现的行。
@@ -144,7 +144,7 @@
 |---|---|---|
 | 早期几轮渲染顺利 | Chrome 的更新程序那几次没有占住输出（推断） | 14:04 起连续挂起，直到改了启动方式 |
 | “空白检查通过” | 空白不足 1 秒。检查按每秒两帧取样、1 秒以上才判失败 | 终审在密联络表上看到 0.3–0.7 秒的空底，都在段间（`final-review-b.json` 第一组的 verdict） |
-| 字幕与声音对齐 | 字幕从每句声音实际起处开始（L11416） | 画面上按词对齐的动作仍用服务给的时间，英文名附近可能早晚零点几秒（[验收](../../../palantir/reading-list-series/verification/acceptance.md)第 25 行） |
+| 字幕与声音对齐 | 字幕从每句声音实际起处开始（L11416） | 画面上按词对齐的动作仍用服务给的时间，英文名附近可能早晚零点几秒（[验收](../../../projects/palantir/reading-list-series/verification/acceptance.md)第 25 行） |
 | Saraf 与 Qureshi 读对了 | 该处有约 0.35–0.5 秒语音（验收第 24 行） | 没有人听过 |
 | 提交里带上了第四集的新检查结果 | 用户的检查比提交早 35 秒结束（L18067） | 提交里的验收表仍写“未运行（配额）” |
 
@@ -157,7 +157,7 @@
 | 编号 | 做法或事实 | 证据 | 适用条件与边界 | 去向 |
 |---|---|---|---|---|
 | R1 | 研究分两层：探索代理交回主张、`cannot_say` 与证据密度裁决，另一个代理逐条核验引文与定位 | 第 1 份任务书第 22–55 行；13 个代理；核验改出 Impro 的九条主语偏移 | 与工作开展方式“把研究交出去”一致；这次没有读那一条 | 不进入（已有） |
-| R2 | 单元按证据密度裁决能否独立成集；主会话改判了探索代理“合并”的建议 | [研究](../../../palantir/reading-list-series/research/README.md)第 13–24 行 | 系列内容以“能合法读到的范围”为界 | example |
+| R2 | 单元按证据密度裁决能否独立成集；主会话改判了探索代理“合并”的建议 | [研究](../../../projects/palantir/reading-list-series/research/README.md)第 13–24 行 | 系列内容以“能合法读到的范围”为界 | example |
 | R3 | 主张与素材登记由舞台强制 | 项目 AGENTS.md 第 8–9 行 | 有引文和外部图片的成片 | example |
 | R4 | 回原文后更正旧提炼，原记录不改写，更正记在新项目 | 研究页“对旧记录的更正” | 与入账规范一致 | 不进入（已有） |
 
@@ -239,8 +239,8 @@
 | K1 | 结构文字独立审阅的触发条件写成“文字多又要对外发布时”，不发布的多人成片就不触发；规则写进任务书也不够 | 十二份任务书带第 5 条，独立审阅仍有 76 条（29 条口语、23 条截句）；用户提出才做（L6662）；KF001 同一类问题 | `kit/write/motion/narrative.md` 第 27 行 | 把“文字多又要对外发布时”改为“屏幕文字由几个人或几个代理写成、或者文字多时”；句末补“夹在事实或画面审阅里的一项检查，代替不了这一遍” | 采纳 |
 | K2 | 量不到时用测量代替，量具本身也会错 | 转写把 Qureshi 听成假名（L4191）；年份写法误判（L4807）；第四集整章漏写英文名、单独转写正确（L18067）；KF001 F7 检查脚本取帧偏一帧 | `kit/environment/working-methods.md`“感知不到的部分”第一段末 | 补一句：“量出来的数异常时，先把可疑的一段单独再量一次，分清是成品的问题还是量具的问题；结果照原样记，不因为找到了解释就改成通过。” | 采纳（备用素材，不是规则） |
 | K3 | “原因不明时”没有实测记录 | 渲染挂起时先后叠了两层缓解，第二层自己成了故障（F2、F3）；找到根因之后问题消失（L12145、L16597）。这一条当时没有被打开 | 同页开头表格“原因不明时”一行的状态栏 | “来源已回读。未实测”改为“来源已回读。真实任务一次反例：没有读这一条，先叠缓解再找原因，缓解本身成了新故障” | 采纳（只改状态栏） |
-| K4 | 多段成片的段间闪空底 | 两轮出现；施工约定第 36 行已写项目规则 | `palantir/reading-list-series/film/AUTHORING.md`（已在） | 不新增 | 留作项目做法；第二部多段成片重复出现时，再考虑 Design/Motion 加一句“段与段交接时，后一段盖住前一段” |
-| K5 | 渲染管线的故障与修法 | F1、F2、F3、F5、F6 | `palantir/reading-list-series/build/README.md` 第 20 行（已在） | 不新增 | 留作项目做法。可选：[Motion 制作记录](../../../dsh-praxis/kit/publish/video/README.md)本系列一行补“新片从这套管线起步”，免得下一部再从旧管线复制 |
+| K4 | 多段成片的段间闪空底 | 两轮出现；施工约定第 36 行已写项目规则 | `projects/palantir/reading-list-series/film/AUTHORING.md`（已在） | 不新增 | 留作项目做法；第二部多段成片重复出现时，再考虑 Design/Motion 加一句“段与段交接时，后一段盖住前一段” |
+| K5 | 渲染管线的故障与修法 | F1、F2、F3、F5、F6 | `projects/palantir/reading-list-series/build/README.md` 第 20 行（已在） | 不新增 | 留作项目做法。可选：[Motion 制作记录](../../../dsh-praxis/kit/publish/video/README.md)本系列一行补“新片从这套管线起步”，免得下一部再从旧管线复制 |
 | K6 | 审阅意见多时，对每条再派一个驳回者 | 终审三组各配一个 Sonnet 驳回者；四处灰色意见被驳回后改为改图例说明（验收第 37 行） | `kit/environment/working-methods.md`“自查通过之后” | 不新增 | 仅作参考。只有一次使用，没有对照，不知道驳回者挡下的是误报还是真问题 |
 | K7 | 合成语音对外文名给出不可靠的逐字时间 | F11；W5；P6 | `kit/write/prose/genres/narration.md` 第 48 行的读音清单 | 不新增 | 不进入。这是服务的行为，不是口播的写法；项目里已记 |
 | K8 | 检查报告写“没有找到”，没有写取样粒度 | 验收第 17 行写空白检查“没有找到停在空纸上的一刻”，取样是每秒两帧 | `kit/environment/working-methods.md`“检查通过之后” | 不新增 | 不进入。现有一条已经要求写明检查看了哪一部分；这是一次没有照做 |
@@ -251,9 +251,9 @@
 
 | 记录的说法 | 日志或文件里看到的 |
 |---|---|
-| [验收](../../../palantir/reading-list-series/verification/acceptance.md)第 17 行：空白检查“也没有找到停在空纸上的一刻” | 检查按每秒两帧取样、1 秒以上才判失败（[管线](../../../palantir/reading-list-series/build/README.md)第 11 行）。上一轮的 0.3–0.7 秒空底是审阅者在密联络表上看到的，检查没有报。修改后由修改代理在舞台上逐个核对，主会话看过合集的接缝（L17885）；没有一次比 1 秒更细的全片空白扫描 |
+| [验收](../../../projects/palantir/reading-list-series/verification/acceptance.md)第 17 行：空白检查“也没有找到停在空纸上的一刻” | 检查按每秒两帧取样、1 秒以上才判失败（[管线](../../../projects/palantir/reading-list-series/build/README.md)第 11 行）。上一轮的 0.3–0.7 秒空底是审阅者在密联络表上看到的，检查没有报。修改后由修改代理在舞台上逐个核对，主会话看过合集的接缝（L17885）；没有一次比 1 秒更细的全片空白扫描 |
 | `c11ebf4` 的提交说明与其中的验收表：第四集转写因限流没有运行 | 同一提交里的 `check-ep04.json` 已是未通过。主会话发现后改了验收页，没有提交（L18067） |
-| [结构文字裁决](../../../palantir/reading-list-series/verification/reviews/copy-adjudication.md)：S002–S008 照原建议采纳 | S003 同时列在“改写后采纳”里。验收页写照原建议 62 条，与去掉重复后的数一致 |
+| [结构文字裁决](../../../projects/palantir/reading-list-series/verification/reviews/copy-adjudication.md)：S002–S008 照原建议采纳 | S003 同时列在“改写后采纳”里。验收页写照原建议 62 条，与去掉重复后的数一致 |
 | 交接稿第 0 节：主生产期不更新 Kit，作品完成后再做回流 | 两处 Kit 改动发生在 08:27 和 08:36，那时成片还没有一部定稿（L4251、L4459）。改动都很小，一处有六份冷读作证据。交接稿本身只是参考 |
 
 ## 没能核实或检查的部分
@@ -279,4 +279,4 @@
 
 2026-10-19 在仓库根目录运行 `python3 scripts/validate_repository.py`：2,004 份 Markdown、926 份 JSON，状态 `pass`，没有错误。校验没有覆盖的：本页与 intake 记录没有进任何索引页，也没有核对登记脚本是否读取这条记录。
 
-[结构化主题](../README.md) · [登记](../../intake/palantir-reading-list-series-distill-20261019.json) · [成品](../../../palantir/reading-list-series/README.md)
+[结构化主题](../README.md) · [登记](../../intake/palantir-reading-list-series-distill-20261019.json) · [成品](../../../projects/palantir/reading-list-series/README.md)

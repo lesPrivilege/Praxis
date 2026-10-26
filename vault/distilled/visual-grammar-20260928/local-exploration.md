@@ -51,7 +51,7 @@ Mnemos 的验收账是区分“实现”和“接受”的关键：`docs/design/
 1. 先读本文件的概念材料定位和 `VG-PX-CORE-MODEL`。
 2. 只展开 [`core-model.md`](../work-system/core-model.md) 的 Event/State/Context 与 Capture→Follow 段。
 3. 需要状态边界时展开 Attention Assistant 快照的 `state-contract.md` 与 `human-decision-loop.md`。
-4. 读主线 [`demos/visual-grammar/scenario.md`](../../../demos/visual-grammar/scenario.md) 约定的 synthetic fixture、身份字段、unknown/recovery、seek 与验收。
+4. 读主线 [`projects/visual-grammar/scenario.md`](../../../projects/visual-grammar/scenario.md) 约定的 synthetic fixture、身份字段、unknown/recovery、seek 与验收。
 5. 技术路线由 Opus 选择；需要现成 motion 证据时才展开 [`kit/design/motion/grammar.md`](../../../dsh-praxis/kit/design/motion/grammar.md) 或 `VG-PX-REMOTION` 的 README / STORYBOARD / timeline。
 
 ### `PX-03` Mnemos 产品叙事
@@ -77,8 +77,8 @@ Mnemos 的验收账是区分“实现”和“接受”的关键：`docs/design/
 
 ## 交接给 Astra / Opus
 
-Astra整理来源身份、材料关系和复用入口，Opus自行选择题材与表现；Kit晋升另按仓库流程；不需要替 Opus 预先决定镜头、技术栈、颜色或强度。Opus 接到一个工单后，应把 `intent / storyboard / fixture / timeline / scene code / render config / source IDs / borrowed-adapted-new / failure / review` 写入对应 `demos/visual-grammar/` 子目录。
+Astra整理来源身份、材料关系和复用入口，Opus自行选择题材与表现；Kit晋升另按仓库流程；不需要替 Opus 预先决定镜头、技术栈、颜色或强度。Opus 接到一个工单后，应把 `intent / storyboard / fixture / timeline / scene code / render config / source IDs / borrowed-adapted-new / failure / review` 写入对应 `projects/visual-grammar/` 子目录。
 
 本批已做的是本地来源登记、精选快照、实现与候选分层、短阅读路径和缺口报告；未做的是新 demo、外部 URL 验证、依赖安装、浏览器/真机验收、音频分析、3D 构建与完整视频观看。任何工单完成声明都应按自己的回执和实际检查范围重建，不从本交接自动继承“通过”。
 
-本地候选 `PX-01…06` 与主线 `VG-01…08` 分开编号，主线见 [开放工单](../../../demos/visual-grammar/work-orders.md)。先前索引中的Skillry缺口已由本轮 [外部追溯](../../provenance/visual-grammar-external-20260928/README.md)补充21个URL；这是新登记，不是恢复旧Chat的隐藏引用。
+本地候选 `PX-01…06` 与主线 `VG-01…08` 分开编号，主线见 [开放工单](../../../projects/visual-grammar/work-orders.md)。先前索引中的Skillry缺口已由本轮 [外部追溯](../../provenance/visual-grammar-external-20260928/README.md)补充21个URL；这是新登记，不是恢复旧Chat的隐藏引用。

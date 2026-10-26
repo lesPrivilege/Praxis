@@ -4,7 +4,7 @@
 
 2026-10-14。交付分支 `cloud/saas-engineering-atlas-20261014`，整合起点 `ae1827f34c6df067348d2454d7e5c9331ceda25d`。六个固定案例提交、foundations 与 enterprise-mechanisms 最终提交均已合并。案例、基础章与全书三份独立复核均已接收，26项问题完成定点修复并通过回归；最终定点独立复查仍待后续，当前回执不是独立终审结论。原始架构检查点记录见 [baseline](saas-engineering-atlas-20261014-baseline.md)。
 
-教材唯一正文在 [Books / SaaS 工程全景](../../books/saas-engineering/README.md)。Vault 保留结构、证据、合成脚本与作者历史。整合已建立共同开篇、4章企业机制、12章计算方法主线、七个业务问题、三条阅读路径、题型/解法/算法/栈索引、共同语义与 typed transfer 图；没有 HTML、main merge、CI 或部署。
+教材唯一正文在 [Books / SaaS 工程全景](../../projects/books/saas-engineering/README.md)。Vault 保留结构、证据、合成脚本与作者历史。整合已建立共同开篇、4章企业机制、12章计算方法主线、七个业务问题、三条阅读路径、题型/解法/算法/栈索引、共同语义与 typed transfer 图；没有 HTML、main merge、CI 或部署。
 
 ## 固定输入
 

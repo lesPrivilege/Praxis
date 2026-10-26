@@ -4,7 +4,7 @@
 
 ## 触发
 
-用户看过 [Knowledge Film 001](../../demos/knowledge-film-001-pyramid/README.md)的成片后提出两点，并说这类问题是泛化的：
+用户看过 [Knowledge Film 001](../../projects/knowledge-film-001-pyramid/README.md)的成片后提出两点，并说这类问题是泛化的：
 
 - “目前的文案依然有些奇怪，能够很容易分辨来自于 llm。”
 - “有的结构化短文本，其撰写方式依然是普通正文式的，像一个扁平陈述，而不是凝练的小标题。”
@@ -69,7 +69,7 @@ writing skill 是薄入口，指向的两页没有改名，未改。
 
 ## 没做的
 
-- 新条文的第一次使用是该片第五版的改稿，过程与裁决见[改稿记录](../../demos/knowledge-film-001-pyramid-cut5/research/review-cut5.md)。两轮审阅都由模型完成，用户还没有目验这一版。
+- 新条文的第一次使用是该片第五版的改稿，过程与裁决见[改稿记录](../../projects/knowledge-film-001-pyramid-cut5/research/review-cut5.md)。两轮审阅都由模型完成，用户还没有目验这一版。
 - ADR-024 生效期间按旧条文审过的材料没有重审，例如 Palantir 打样页的页面文字。
 - 用户这两天贴来的几段 Chat 材料没有入账到 Vault。
 - 没有读者测试。“更接近人类作者”目前只能由用户目验判断。

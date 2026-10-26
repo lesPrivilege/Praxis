@@ -4,13 +4,13 @@
 
 ## 触发
 
-用户看过 [Knowledge Film 001 第五版](../../demos/knowledge-film-001-pyramid-cut5/README.md)后说：“修订后的 writing 效果不错，值得泛化和 distill dogfooding trace 到 kit。”原句里是“效果不做”，用户随即更正为“效果不错”。
+用户看过 [Knowledge Film 001 第五版](../../projects/knowledge-film-001-pyramid-cut5/README.md)后说：“修订后的 writing 效果不错，值得泛化和 distill dogfooding trace 到 kit。”原句里是“效果不做”，用户随即更正为“效果不错”。
 
 主会话对范围的理解：提炼的是这次按 ADR-027 改稿的过程，也就是旁白和画面文字怎样写、怎样审。[第二阶段报告](../../vault/distilled/knowledge-film-001-distill-20261005/README.md)里与写作无关的建议不在这次范围内。
 
 ## 过程与去向
 
-过程的原始记录是[改稿记录](../../demos/knowledge-film-001-pyramid-cut5/research/review-cut5.md)。下表逐步对照：这一步里什么起了作用，证据在哪里，去了 Kit 的哪里。
+过程的原始记录是[改稿记录](../../projects/knowledge-film-001-pyramid-cut5/research/review-cut5.md)。下表逐步对照：这一步里什么起了作用，证据在哪里，去了 Kit 的哪里。
 
 | 步骤 | 起作用的做法 | 证据 | 去向 |
 |---|---|---|---|
@@ -72,7 +72,7 @@
 |---|---|
 | 把强度降回默认与做法 | 独立冷读和结构文字的独立审阅写明是可以取用的做法，不是每件任务的必经步骤；口播旁白页写明是文体默认；随稿的句式统计和读音清单改成按任务取用 |
 | 留下三条与写作无关的做法 | [工作开展方式 · 备用素材](../../kit/environment/working-methods.md)加三行：把研究交出去时要回“证据不支持什么”；自查通过之后请没有参与的人再查；感知不到的部分先量、其余写明交给谁。它们是备用素材，不是规则，不默认加载 |
-| 加入口 | [Motion 入口](../../dsh-praxis/kit/publish/video/README.md)指向这条片子的能运行样例和过程重建；[演示实现](../../demos/README.md)和 [Distilled](../../vault/distilled/README.md)的索引各加一行 |
+| 加入口 | [Motion 入口](../../dsh-praxis/kit/publish/video/README.md)指向这条片子的能运行样例和过程重建；[演示实现](../../projects/README.md)和 [Distilled](../../vault/distilled/README.md)的索引各加一行 |
 
 没有写进 Kit 的仍然留在项目和过程重建里：技术栈、渲染与配音的参数、十六条失败记录、画面的配色与字号。第二阶段报告的建议里，索引登记（第 3、5、6 条）和校验脚本的修改（第 16 条）没有做。
 

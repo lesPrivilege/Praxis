@@ -12,7 +12,7 @@ Severity measures impact on this teaching package. Medium means a promised local
 
 ### EMR-01 — Medium: the fixed acceptance denominator is caller-controlled
 
-**Locations:** `vault/distilled/saas-engineering-atlas/enterprise-mechanisms/mechanism_lab.py:371–383`; `examples.json:170–181`; `books/saas-engineering/enterprise-mechanisms/03-schema-tools-completion.md:101,111,123`; test coverage at `test_mechanism_lab.py:171–183`.
+**Locations:** `vault/distilled/saas-engineering-atlas/enterprise-mechanisms/mechanism_lab.py:371–383`; `examples.json:170–181`; `projects/books/saas-engineering/enterprise-mechanisms/03-schema-tools-completion.md:101,111,123`; test coverage at `test_mechanism_lab.py:171–183`.
 
 The chapter requires the fixed suite of ten probes, and the data policy specifies both `required_probes_passed=10` and `probe_total=10`. `OperationJournal.accept` checks only that `passed == total`, that `total > 0`, and that an evidence reference exists. After the normal confirmed effect, both `accept(..., 1, 1, ...)` and `accept(..., 9, 9, ...)` return `closed`. The supplied test only rejects 8/10 and accepts 10/10, so it cannot catch a reduced denominator.
 

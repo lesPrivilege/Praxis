@@ -19,9 +19,9 @@
 
 | 取用 | 去向 | 状态 |
 |---|---|---|
-| 六件 brief、合同、工单、原子、合成输入 | [演示目录](../../../demos/motion-ceiling-lab/README.md)，逐字切自快照 | 施工材料；合同和原子是候选 |
-| MC01 的 brief 与 `request_chain` 输入 | [第一件作品](../../../demos/motion-ceiling-lab/mc01-request/README.md) | 已交付，验收范围见其回执 |
-| “三个时钟分开”“镜头不改变事实”“遮挡后仍能找回对象”“倒放是回看”等约束 | 在 MC01 里实际执行，并写成 [候选条目](../../../demos/motion-ceiling-lab/candidates.md) | 候选，等用户裁决是否进 Kit |
+| 六件 brief、合同、工单、原子、合成输入 | [演示目录](../../../projects/motion-ceiling-lab/README.md)，逐字切自快照 | 施工材料；合同和原子是候选 |
+| MC01 的 brief 与 `request_chain` 输入 | [第一件作品](../../../projects/motion-ceiling-lab/mc01-request/README.md) | 已交付，验收范围见其回执 |
+| “三个时钟分开”“镜头不改变事实”“遮挡后仍能找回对象”“倒放是回看”等约束 | 在 MC01 里实际执行，并写成 [候选条目](../../../projects/motion-ceiling-lab/candidates.md) | 候选，等用户裁决是否进 Kit |
 
 运动语法表的九行和技术选栈表没有逐行验证，留在快照里，用到哪一行再读哪一行。
 

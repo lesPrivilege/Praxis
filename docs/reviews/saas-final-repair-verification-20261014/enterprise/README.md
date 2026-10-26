@@ -18,7 +18,7 @@ Machine-readable decisions, commands, author-test results and nine input hashes 
 
 ## WB-02 residual: terminal contradiction is lost when its effect is invalid
 
-The repaired chapter explicitly promises to preserve conflicting terminal observations, including a changed terminal receipt, and block further acceptance. This promise appears at [chapter03:127](../../../../books/saas-engineering/enterprise-mechanisms/03-schema-tools-completion.md#不成功时怎样继续), the final paragraph of the [lab guide](../../../../books/saas-engineering/enterprise-mechanisms/lab-guide.md), and synthetic claim `WB:claim:evidence-conflict` in [repair evidence](../../../../vault/provenance/saas-engineering-atlas/whole-book-repair-evidence.json) at line166. The examples sidecar also carries the conflict-blocking invariant at line247.
+The repaired chapter explicitly promises to preserve conflicting terminal observations, including a changed terminal receipt, and block further acceptance. This promise appears at [chapter03:127](../../../../projects/books/saas-engineering/enterprise-mechanisms/03-schema-tools-completion.md#不成功时怎样继续), the final paragraph of the [lab guide](../../../../projects/books/saas-engineering/enterprise-mechanisms/lab-guide.md), and synthetic claim `WB:claim:evidence-conflict` in [repair evidence](../../../../vault/provenance/saas-engineering-atlas/whole-book-repair-evidence.json) at line166. The examples sidecar also carries the conflict-blocking invariant at line247.
 
 Exact reproduction uses the normal approved r3 intent and shipped providers:
 

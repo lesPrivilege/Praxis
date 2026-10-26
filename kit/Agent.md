@@ -4,7 +4,7 @@
 
 **Goal：让工作环境、业务探索和专业交付，都从已消费的证据、清楚的工作语义和可复用契约起步；让本次工作的有效增量提高下一次工作的起点。**
 
-第一性原理的权威文本维护在 [根 README](../README.md#goal-与第一性原理)。本入口保留 Goal 摘要；修改目标时同步更新此摘要，并按 [增量与修订机制](../docs/governance/evolution.md) 记录缘由和影响。
+第一性原理的权威文本维护在 [架构理由](../docs/architecture/rationale.md#goal-与第一性原理)。本入口保留 Goal 摘要；修改目标时同步更新此摘要，并按 [增量与修订机制](../docs/governance/evolution.md) 记录缘由和影响。
 
 ## 架构理由与执行边界
 
@@ -18,7 +18,7 @@
 
 1. 从 [任务入口](README.md) 选择业务发现、场景验证、内容表达、设计、工作整理或环境准备；内容表达从 [dsh-praxis Kit](../dsh-praxis/kit/README.md)的 Task 选流水线与方法。
 2. 先读相关分支的 README 和所需规则；需要参考时先看任务匹配的优先参考，未覆盖再看普通参考，依据不足时回查 Vault 原件。不要仅因标为preferred就提升来源可信度或规范优先级。
-3. 企业 demo 复制 [场景契约](../scenarios/_template/README.md) 的结构；材料写作先选 artifact family、读者、需要的决定及证据。
+3. 企业 demo 复制 [场景契约](../templates/scenario/README.md) 的结构；材料写作先选 artifact family、读者、需要的决定及证据。
 4. 区分已采纳规范、场景候选、外部参考与未验证陈述。引用用稳定来源 ID 加本地相对路径。
 5. 撰写对外中文成文时，从 [Writing](../dsh-praxis/kit/writing/README.md)读取规则；项目内 skill `writing`（`.claude/skills/writing/SKILL.md`）是同一分支的薄入口；设计、可视化编排与界面选型，从 [Design](../dsh-praxis/kit/design/README.md) 按需取用，裁决记回项目自己的 index。
 6. 交付前按 [验收](verification/README.md) 和相应场景检查，不把精美页面当成证据。

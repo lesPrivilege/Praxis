@@ -9,23 +9,23 @@
 | 两页泛化判断 | [成立程度与归属的标记](../../dsh-praxis/kit/design/foundations/standing.md)、[精确指向](../../dsh-praxis/kit/design/foundations/anchoring.md)；入口在 Design README 的“先读”表、Foundations README、问题地图的 G03 与 G11 两行、图形编码的图例一句 |
 | 裁决 | [ADR-025](../decisions/025-relation-marks-and-anchors.md) |
 | 清点与外部用词对照 | [提炼页](../../vault/distilled/relation-grammar-20261004/README.md)、[intake](../../vault/intake/relation-grammar-20261004.json)、三张 [来源卡](../../vault/provenance/relation-grammar-20261004/cards/README.md) |
-| 实现 | [svg-01-relations](../../demos/editable-native-svg/svg-01-relations/README.md) 升到 0.2.0，新增 `standing.mjs`、`sheet.mjs` |
-| 样板 | [grammar-specimens](../../demos/editable-native-svg/grammar-specimens/README.md) |
+| 实现 | [svg-01-relations](../../projects/editable-native-svg/svg-01-relations/README.md) 升到 0.2.0，新增 `standing.mjs`、`sheet.mjs` |
+| 样板 | [grammar-specimens](../../projects/editable-native-svg/grammar-specimens/README.md) |
 
 ## 检查
 
 | 检查 | 结果 |
 |---|---|
 | `python3 scripts/validate_repository.py` | 通过；来源记录 595（新增 3），来源卡投影 344 |
-| `python3 demos/editable-native-svg/check-registration.py` | 通过 |
-| `node src/check.mjs`（svg-01-relations） | 23 项全部通过，含浏览器实测；明细见该作品的 [验收回执](../../demos/editable-native-svg/svg-01-relations/acceptance.md#020-的复验) |
+| `python3 projects/editable-native-svg/check-registration.py` | 通过 |
+| `node src/check.mjs`（svg-01-relations） | 23 项全部通过，含浏览器实测；明细见该作品的 [验收回执](../../projects/editable-native-svg/svg-01-relations/acceptance.md#020-的复验) |
 | 外部来源 | 三份 W3C 原页由主会话在内置浏览器里打开，核对了写进来源卡的句子；没有通读，没有快照 |
 | 仓库内清点 | 子代理给出逐行表；主会话重读了写进提炼页的 26 行，更正了其中一处行号，舍掉一行对不上的 |
 | 看图 | 样板页 1440 与 375 视口的整页截图、组合图的宽窄两版、0.2.0 预览页里改动过的图 |
 
 ## 冷读与对照
 
-两个任务，各用一份没有用来调过样板的合成内容。每个任务跑两份：一份从根 `AGENTS.md` 进仓库、自己找指引；一份不读仓库，只看任务。四个都是 Claude Sonnet 子代理，互不相见。任务书没有点页面名字，只要求报告打开过的文件和每条做法的出处。截图在 [evidence](../../demos/editable-native-svg/grammar-specimens/evidence/README.md)。
+两个任务，各用一份没有用来调过样板的合成内容。每个任务跑两份：一份从根 `AGENTS.md` 进仓库、自己找指引；一份不读仓库，只看任务。四个都是 Claude Sonnet 子代理，互不相见。任务书没有点页面名字，只要求报告打开过的文件和每条做法的出处。截图在 [evidence](../../projects/editable-native-svg/grammar-specimens/evidence/README.md)。
 
 | 任务 | 读了 Kit 的一份 | 对照 |
 |---|---|---|

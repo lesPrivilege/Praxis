@@ -69,7 +69,7 @@ GitLab 的文档方法补上维护面：把文档当作实现、使用和排障�
 | [`vault/README.md`](../../../vault/README.md) | 研究层次和默认阅读入口 | 先按主题提炼消费，再按需回查逐源、快照和 Chat；显式标出已消费、候选和缺口 | `DIA-03`、`GL-STYLE-01`–`GL-STYLE-02`、`GL-NAV-01` |
 | [`docs/governance/README.md`](../../../docs/governance/README.md) | 入账、角色、裁决、修订与消费分流 | 用新增材料、提出候选、申请采纳、验证消费、重访/撤回五个动作路由；角色解释下沉至指南 | `GOV-UR-01`–`GOV-UR-03`、`GL-STYLE-01`、`GL-NAV-02` |
 
-`kit/grammar/README.md`、`kit/contracts/README.md`、`kit/verification/README.md` 和 `scenarios/_template/README.md` 不是单纯的目录索引，它们可分别承担概念/参考、任务契约、分层验收和场景模板。若继续修订，应保持各自页面类型：定义不要变成历史论证，契约和模板要能直接填写，验收要能留下实际消费断点和下一责任。
+`kit/grammar/README.md`、`kit/contracts/README.md`、`kit/verification/README.md` 和 `templates/scenario/README.md` 不是单纯的目录索引，它们可分别承担概念/参考、任务契约、分层验收和场景模板。若继续修订，应保持各自页面类型：定义不要变成历史论证，契约和模板要能直接填写，验收要能留下实际消费断点和下一责任。
 
 候选写回顺序为：先改首层入口导航，再明确内容类型和唯一维护位置，最后才把消费验收和反馈字段放入契约、验收与场景模板。这样可以先用架构减少旁白，再用消费证据决定是否需要新增字段或自动检查。
 

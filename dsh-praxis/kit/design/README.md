@@ -30,7 +30,7 @@
 | 图里或页面里既有已定的、也有未定的、被否的或等人决定的内容 | [成立程度与归属的标记](foundations/standing.md) |
 | 证据、条件、注释或判断要指向某个对象的某个版本、某一处 | [精确指向](foundations/anchoring.md) |
 | 把步骤、版本、事件、层级或前后对照沿一条线排开，或者把几条线并排 | [排列与刻度](foundations/placement.md) |
-| 需要可改文字、关系、数据并可组合的原生 SVG | [SVG 需求与绘制项目](../../../demos/editable-native-svg/README.md)：候选登记与分批工单；第一批有六个关系图件和一个组合件，仍是候选，未经用户 review |
+| 需要可改文字、关系、数据并可组合的原生 SVG | [SVG 需求与绘制项目](../../../projects/editable-native-svg/README.md)：候选登记与分批工单；第一批有六个关系图件和一个组合件，仍是候选，未经用户 review |
 
 ## 自撰库
 

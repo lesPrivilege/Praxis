@@ -2,7 +2,7 @@
 
 2026-09-28，Astra/main。用户明确：可以使用尽可能多的技术栈、grammar与激进效果；Astra只厘清原始材料和外部参考结构，供Opus自由发挥且不必重新造轮子。本文件是项目材料编目说明，不是创作限制或Kit采纳ADR。
 
-[开放工单](../../../demos/visual-grammar/work-orders.md)提供选题起点，[来源地图](../../../demos/visual-grammar/sources.md)提供渐进召回，原材料身份与逐消息覆盖见 [intake](../../intake/visual-grammar-20260928.json)。作品数量、顺序、表现、技术栈、复用架构均由Opus选择，可以组合工单或另立题材。
+[开放工单](../../../projects/visual-grammar/work-orders.md)提供选题起点，[来源地图](../../../projects/visual-grammar/sources.md)提供渐进召回，原材料身份与逐消息覆盖见 [intake](../../intake/visual-grammar-20260928.json)。作品数量、顺序、表现、技术栈、复用架构均由Opus选择，可以组合工单或另立题材。
 
 ## 原 Chat 提供的研究方向
 

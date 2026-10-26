@@ -9,7 +9,7 @@
 | 区分处理、证据与采纳程度 | [状态词表](status-vocabulary.md) | 分维度状态记录 |
 | 验收参考并决定先读什么 | [参考生命周期](reference-lifecycle.md) | 优先卡片、任务入口和demo增量回流 |
 | 修订、迁移、移交或清退内容 | [增量与修订](evolution.md) | 影响分析、去向、入口更新与回执 |
-| 把目录按角色分流 | [迁移工单](repository-layout-migration.md)（依据 [ADR-044](../decisions/044-repository-layout-by-role.md)，proposed） | 三阶段清单、完成标准与风险 |
+| 把目录按角色分流 | [迁移工单](repository-layout-migration.md)（依据 [ADR-044](../decisions/044-repository-layout-by-role.md)）、[迁移映射](repository-layout-map.md) | 三阶段清单、完成标准、旧新路径 |
 | 编订 README 和契约 | [文档结构](../architecture/documentation.md) | 任务路径与唯一维护位置 |
 | 移交其他项目消费 | [消费分流](consumption-map.md) | 候选、接收责任与验证条件 |
 | 查裁决与 Agent 执行约定 | [ADR](../decisions/README.md)、[Agent](../../kit/Agent.md) | 当前规则与职责 |

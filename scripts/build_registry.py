@@ -139,7 +139,7 @@ def build():
                 )
 
     def add_message(turn_id, item_id, role, classification, paths, record_path):
-        paths = [p if p.startswith(('vault/', 'palantir/', 'tally/'))
+        paths = [p if p.startswith(('vault/', 'projects/palantir/', 'projects/tally/'))
                  else 'vault/distilled/' + p for p in paths]
         materials.append({'id': 'chat:' + chat_lookup[(turn_id, item_id)] + ':' + item_id,
                           'kind': 'chat-message', 'conversation_id': chat_lookup[(turn_id, item_id)],

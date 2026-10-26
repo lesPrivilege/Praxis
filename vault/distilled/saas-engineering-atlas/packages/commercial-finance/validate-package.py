@@ -32,7 +32,7 @@ for case in ['H01','H02','H03','V12','V13','V14','X02']:
  d=json.loads((p/f'{case}.json').read_text())
  for cid in d['claim_ids']:
   if cid in claims: assert set(claims[cid]['source_ids'])<=set(d['source_ids']),(case,cid)
- text=(root/'books/saas-engineering/packages/commercial-finance'/f'{case}.md').read_text()
+ text=(root/'projects/books/saas-engineering/packages/commercial-finance'/f'{case}.md').read_text()
  cited=set(re.findall(r'(?:H\d{2}|V\d{2}|X\d{2}):claim:[a-z0-9-]+',text))
  assert cited<=set(d['claim_ids']),(case,cited-set(d['claim_ids']))
  assert len(re.findall(r'\*\*练习',text))>=2,case

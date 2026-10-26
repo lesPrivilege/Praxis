@@ -9,7 +9,7 @@ from pathlib import Path
 from urllib.parse import unquote, urlsplit
 
 ROOT = Path(__file__).resolve().parents[3]
-BOOK = ROOT / 'books/saas-engineering'
+BOOK = ROOT / 'projects/books/saas-engineering'
 ATLAS = ROOT / 'vault/distilled/saas-engineering-atlas'
 FROZEN = 'cd8d77b6166a6fc566f6aa09b4d9af3e11537408'
 
@@ -36,7 +36,7 @@ def anchors(text):
 
 
 def main():
-    paths = [ROOT / 'books/README.md', *sorted(BOOK.rglob('*.md'))]
+    paths = [ROOT / 'projects/books/README.md', *sorted(BOOK.rglob('*.md'))]
     cases = sorted(BOOK.glob('packages/*/[HVX][0-9][0-9].md'))
     foundations = sorted((BOOK / 'foundations').glob('[0-9][0-9]-*.md'))
     enterprise = sorted((BOOK / 'enterprise-mechanisms').glob('[0-9][0-9]-*.md'))

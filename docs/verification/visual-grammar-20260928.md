@@ -6,7 +6,7 @@
 
 [入账](../../vault/intake/visual-grammar-20260928.json)归档3轮6消息、1截图；6个原Chat citation保持missing-original。截图底部原帖URL截断，没有猜测补全。Luna分别追溯Courtwork、Schema Engineering、Praxis/Mnemos/Mnemos Prototype/Attention Assistant，以及21个独立外部URL。
 
-[演示工场](../../demos/visual-grammar/README.md)提供8个开放素材工单、渐进来源地图、场景与工程记录、表现技术组合和可粘贴的Opus唤醒prompt。用户最新要求已落实：Astra只厘清材料结构，不限制技术栈、grammar、激进效果、作品数量与顺序；选题、实现和复用架构交Opus。
+[演示工场](../../projects/visual-grammar/README.md)提供8个开放素材工单、渐进来源地图、场景与工程记录、表现技术组合和可粘贴的Opus唤醒prompt。用户最新要求已落实：Astra只厘清材料结构，不限制技术栈、grammar、激进效果、作品数量与顺序；选题、实现和复用架构交Opus。
 
 ## 消费走读
 

@@ -13,7 +13,7 @@
 1. Design / Foundations 新增 [排列与刻度](../../dsh-praxis/kit/design/foundations/placement.md)，与 [成立程度与归属的标记](../../dsh-praxis/kit/design/foundations/standing.md)、[精确指向](../../dsh-praxis/kit/design/foundations/anchoring.md)并列，体例相同：问题、不随排法改变的约束、一套默认、三级做法、最容易犯的错。不给间距和尺寸。
 2. 不规定“时间轴怎样画”。规定的是：位置回答了哪几个问题（谁先谁后、隔了多久、属于谁、是不是同一个）要写成一句读法放进图里，读者会顺手读出而图不表示的也要说一句；没有量就不按比例画；并排的线要么共用一条标尺，要么写明各排各的。
 3. 每一项自己带着位置词，线、间距和缩进只是重复。这是第一级做法，任何材料都做得到；一条线和几条线并排是后两级，不新增信息。
-4. 实现留在 `demos/editable-native-svg/svg-01-relations`，版本 0.3.0：新增 `rel-rail`（清单、先后、时间三种读法，可以带上下级或并排的栏）和 `rel-pair`（前后对照与选取）；`rel-tracks` 在图脚补上读法。样板页加第三节。它们是候选实现，不是 Kit 的共享组件。
+4. 实现留在 `projects/editable-native-svg/svg-01-relations`，版本 0.3.0：新增 `rel-rail`（清单、先后、时间三种读法，可以带上下级或并排的栏）和 `rel-pair`（前后对照与选取）；`rel-tracks` 在图脚补上读法。样板页加第三节。它们是候选实现，不是 Kit 的共享组件。
 5. 第一批工单里没有画的 R10 和只画了一半的 R18 由 `rel-pair` 画出。R16、R19、R33 登记在第二批工单名下，这一轮只是因为同一种排法顺带画出了它们的一部分，登记为 `partial`；第二批接手时自行决定沿用、修改还是重画。
 
 ## 与既有决定的关系

@@ -1,5 +1,6 @@
 # 验收回执
 
+- [目录按角色分流 · 2026-10-26](repository-layout-20261026.md)：ADR-044 第一、二阶段；validator 两道新门通过，27 项测试，9 个项目可定位；两处删除，十一组过程性文件留待决定。
 - [dsh-praxis 整合包 · 2026-10-25](dsh-praxis-acceptance-20261025.md)：DSH 桌面内置控制面与 MCP/CLI 共数据实测；16 项原有测试通过，补充探针发现备份、冲突、错误语义和版本追踪缺陷，同日修复后探针 9 项通过。
 
 - [dsh-praxis 管线登记与挂载说明 · 2026-10-25](dsh-praxis-pipelines-roster-20261025.md)：27 项测试、探针 14 项；resolve 修正、首轮来源检查、5 条管线登记、108 条 Design 挂载说明按位置写入；两条关系待用户决定。
@@ -59,9 +60,9 @@
 - [2026-10-02 自足性审查的消费](self-contained-review-20261002.md)：十一条建议逐条对回本地；隔离副本里实跑显示来源卡生成脚本会覆盖 108 张手写卡，改为由 catalog 声明卡片归属，校验加两项；工单状态、ADR 索引和一处入口链接已校订；真实任务的消费验收没有做。
 - [2026-10-03 Writing skill 与成文规则审阅](writing-review-20261003.md)：召回摘要与现有规范逐项对照；收窄句式、语体与交付默认，检查四段现有文本；官方 STE 访问受限，Write 纯文本职责迁移未执行。
 - [2026-10-06 Palantir 阅读清单原件取得](palantir-source-acquisition-20261006.md)：8 个 URL 逐条实访，取得 15 个文件；3 个全文、4 个片段，另取到 Portigal 自行发布的 6 份实践 PDF。Internet Archive 的三份扫描件为受控借阅（抓取返回 401），影子图书馆未接触；10 个引用占位未恢复，四本书正文仍缺，没有提炼。
-- [2026-10-03 Palantir 首次设计打样](../../demos/palantir-discovery/README.md#验收记录)：交接包入账，做成一页离线交互网页和 A4 打印样张；五条交互路径、宽窄屏和打印逐页检查通过；Lonsdale 条目对应改正；页面文字补做 Prose 审校；减少动效、读屏和受众测试没有做。入口修订与对照走读见 [ADR-023](../decisions/023-consume-by-artifact-component.md)。
+- [2026-10-03 Palantir 首次设计打样](../../projects/palantir-discovery/README.md#验收记录)：交接包入账，做成一页离线交互网页和 A4 打印样张；五条交互路径、宽窄屏和打印逐页检查通过；Lonsdale 条目对应改正；页面文字补做 Prose 审校；减少动效、读屏和受众测试没有做。入口修订与对照走读见 [ADR-023](../decisions/023-consume-by-artifact-component.md)。
 
-- [2026-10-02 A3 真实任务消费与双媒介施工](../../demos/visual-grammar/a3-event-state-context/acceptance.md)：指定 b76ece4 基线，VG-01 合成输入改编，交互 HTML 与 84 秒 Remotion MP4；实际消费/工具轨迹、渲染、解码、隔离 Chromium 交互与抽样目检证据。原生屏幕通道失联，连续原生观看、真实浏览器 200% 缩放与受众验证仍未执行；未做消融/双盲或 Kit 因果归因。
+- [2026-10-02 A3 真实任务消费与双媒介施工](../../projects/visual-grammar/a3-event-state-context/acceptance.md)：指定 b76ece4 基线，VG-01 合成输入改编，交互 HTML 与 84 秒 Remotion MP4；实际消费/工具轨迹、渲染、解码、隔离 Chromium 交互与抽样目检证据。原生屏幕通道失联，连续原生观看、真实浏览器 200% 缩放与受众验证仍未执行；未做消融/双盲或 Kit 因果归因。
 - [2026-10-05 成文审阅目标与结构位置的恢复](prose-review-restoration-20261005.md)：知识片的文案反馈触发；从答卷会话日志召回用户原裁决，与 ADR-024 之后的条文有两处相反；按用户裁决恢复，并新增句式重复检查和结构文字的独立审阅；ASD-STE100 官方页面仍无法访问；新条文尚未使用。
 - [2026-10-05 第五版改稿过程的提炼](narration-distill-20261005.md)：用户评价改后文案效果不错并要求泛化；逐步对照改稿过程与 Kit 的去向，新增口播旁白文体页和成文的独立冷读；五项内容没有进入；证据只有一条片子和同一名主笔，没有对照。
 

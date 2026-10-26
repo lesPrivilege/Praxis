@@ -23,7 +23,7 @@
 
 **Qureshi。** 存档全文七节，与作者自办 Substack 同源文本比对，正文相似度 0.977；差异只在导航与评论区，Substack 侧 `datePublished` 为 2024-10-15，与存档页面标注一致。未另存 Substack 页面。
 
-**Lonsdale。** 原页九条齐全，日期 2010-04-11。这一条此前的 2026-10-03 打样已由主会话在浏览器读过并改正了条目对应（见 [Palantir 首次设计打样](../../demos/palantir-discovery/README.md#验收记录)），本轮是首次保存原件。
+**Lonsdale。** 原页九条齐全，日期 2010-04-11。这一条此前的 2026-10-03 打样已由主会话在浏览器读过并改正了条目对应（见 [Palantir 首次设计打样](../../projects/palantir-discovery/README.md#验收记录)），本轮是首次保存原件。
 
 **Dalio。** 登记 URL 已失效为官网首页，PDF 不再提供。经存档取得的文件 `pdfinfo` 报 106 页、标题「Principles by Ray Dalio」、作者 Ray Dalio、Creator Adobe InDesign CC 2015、CreationDate 2016-03-04；正文标 Copyright © 2011 Ray Dalio，分 Part 1/2/3。这是 2011 版权版本，与 2017 年成书《Principles: Life & Work》不是同一版本。
 

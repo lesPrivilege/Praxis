@@ -1,8 +1,8 @@
-> 历史研究编写契约。当前阅读从 [全景入口](../../../books/saas-engineering/README.md)开始；本页不派发新的任务。
+> 历史研究编写契约。当前阅读从 [全景入口](../../../projects/books/saas-engineering/README.md)开始；本页不派发新的任务。
 
 # Cloud worker 契约
 
-每个 worker 领取 [工作包](../../../books/saas-engineering/packages/README.md)中的一个 package ID，基于父线程提供的 checkpoint commit 创建独立 branch。任务是写出能支持理解与判断的案例，交付给父线程整合。checkpoint 阶段只完成分包，不启动全部案例研究。
+每个 worker 领取 [工作包](../../../projects/books/saas-engineering/packages/README.md)中的一个 package ID，基于父线程提供的 checkpoint commit 创建独立 branch。任务是写出能支持理解与判断的案例，交付给父线程整合。checkpoint 阶段只完成分包，不启动全部案例研究。
 
 ## 输入与写入范围
 
@@ -14,7 +14,7 @@ worker 只写 `packages/<package-slug>/`。每例用 `<case-id>.md` 与 `<case-i
 
 ## 最小交付
 
-每例正文按模板贯通 actor/object/state、业务机制、UI、后端与 integration、至少一个实际有用的算法推演、性能与恢复、eval 和端到端检查。依 [教材主线](../../../books/saas-engineering/learning-path.md)接回共同企业图景；每例至少两道改变前提的迁移题，附简答、不变量、失效条件与可观察检查，不能只交词条或摘要。结构 JSON 只保存稳定身份、拓扑、状态转换、算法引用、主张引用与 checks，不把整篇散文复制成数据库。
+每例正文按模板贯通 actor/object/state、业务机制、UI、后端与 integration、至少一个实际有用的算法推演、性能与恢复、eval 和端到端检查。依 [教材主线](../../../projects/books/saas-engineering/learning-path.md)接回共同企业图景；每例至少两道改变前提的迁移题，附简答、不变量、失效条件与可观察检查，不能只交词条或摘要。结构 JSON 只保存稳定身份、拓扑、状态转换、算法引用、主张引用与 checks，不把整篇散文复制成数据库。
 
 案例 JSON 字段沿用示例：`contract_version, case_id, title, scope, synthetic, source_ids, nodes, edges, lifecycles, algorithm_ids, claim_ids, checks`。节点包含 `id, type, label, authority, tenant_scope`；边包含 `id, type, from, to, payload, timing, invariant, failure, basis, claim_ids`；生命周期包含 `object_id, states, transitions`；转换包含 `from, to, trigger, guard, durable_effect, recovery`。检查包含 `id, kind, given, when, then, evidence_required`。
 

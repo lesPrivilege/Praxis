@@ -8,7 +8,7 @@
 |---|---|---|
 | 首页重复说明理由与未实现能力，任务入口仍按能力排布 | 任务、入口与产物前置；理由进入专页，状态保留在能力目录 | [根入口](../../README.md)、[Kit](../../kit/README.md)、[架构入口](../architecture/README.md) |
 | 子域入口描述原则，却让读者自行拼接步骤 | 工作系统按整理步骤；Reporting 从 brief 到产物；Environment 从盘点到验证 | [工作系统](../../kit/work-system/README.md)、[Reporting](../../dsh-praxis/kit/task/README.md)、[Environment](../../kit/environment/README.md) |
-| 共同语法未接到场景、恢复与接收字段 | 定义相邻概念；模板、契约与验收共同覆盖版本、未知结果、重复执行和持续义务 | [语法](../../kit/grammar/work.md)、[契约](../../kit/contracts/README.md)、[模板](../../scenarios/_template/README.md)、[验收](../../kit/verification/README.md) |
+| 共同语法未接到场景、恢复与接收字段 | 定义相邻概念；模板、契约与验收共同覆盖版本、未知结果、重复执行和持续义务 | [语法](../../kit/grammar/work.md)、[契约](../../kit/contracts/README.md)、[模板](../../templates/scenario/README.md)、[验收](../../kit/verification/README.md) |
 | 维护规则缺少消费者版本与迁移处理 | 固定版本、唯一位置、兼容扩展、破坏性变化与停止推荐 | [修订流程](../governance/evolution.md) |
 | 领域知识容易绑定一种运行身份 | 明确 Role / Kit / Runtime / Provider / Model 及宿主状态权威 | [ADR-010](../decisions/010-domain-kit-consumers.md) |
 | 新来源被生成器统一写成 Chat 补充追溯 | catalog 声明独立研究身份，生成准确的入口和来源卡 | [来源渲染器](../../scripts/render_source_cards.py)、[研究登记](../../vault/provenance/documentation-practices/catalog.json) |

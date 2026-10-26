@@ -205,7 +205,7 @@ class FoundationRepairs(unittest.TestCase):
 
 class EditorialRepairs(unittest.TestCase):
     def test_repaired_navigation_punctuation_and_pinned_sources(self):
-        book=ROOT/'books/saas-engineering/packages'
+        book=ROOT/'projects/books/saas-engineering/packages'
         for path in book.glob('*/*.md'):
             prose=path.read_text()
             for residue in ('见 。','对应 。','。、','记录这组原创演算。',' 为上述构造例子，金额只用于教学。'):
