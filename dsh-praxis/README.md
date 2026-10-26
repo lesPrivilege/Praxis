@@ -21,6 +21,6 @@
 
 一句话的分层：Task 决定这次做什么、走哪条 Publish 流水线、取哪些 Writing 方法与 Design 范式；Writing 与 Design 常驻；Publish 按媒介分 html、video 流水线，预设记下流水线的默认配置；Materials 把来源与资产分五级展开。内容组织归 Writing，媒介编排与制作归 Publish。
 
-裁决与理由见 [ADR-037](../docs/decisions/037-dsh-praxis-layered-grammar.md)（分层体例）和 [ADR-038](../docs/decisions/038-dsh-praxis-control-plane.md)（控制面的实现）；需求来源是一段 ChatGPT 讨论，[原 Chat](../vault/archive/chat/dsh-praxis-control-plane-20261023.md) 与 [入账登记](../vault/intake/dsh-praxis-control-plane-20261023.json)在 Vault。
+它与 Praxis 仓库、MCP、数据与 release 的关系见 [ADR-045](../docs/decisions/045-praxis-and-dsh-praxis-relations.md)。裁决与理由见 [ADR-037](../docs/decisions/037-dsh-praxis-layered-grammar.md)（分层体例）和 [ADR-038](../docs/decisions/038-dsh-praxis-control-plane.md)（控制面的实现）；需求来源是一段 ChatGPT 讨论，[原 Chat](../vault/archive/chat/dsh-praxis-control-plane-20261023.md) 与 [入账登记](../vault/intake/dsh-praxis-control-plane-20261023.json)在 Vault。
 
 2026-10-26：本文提到的 `work-order-artifacts.md` 已按 ADR-044 删除，结论以本文和回执为准；登记见 `docs/governance/retired-paths.json`。

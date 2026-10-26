@@ -1,6 +1,6 @@
 # 迁移工单：目录按角色分流
 
-状态：2026-10-26 编制，依据 [ADR-044](../decisions/044-repository-layout-by-role.md)（proposed）。三个阶段串行；每阶段开工前用户确认，完工写一份验收回执进 [docs/verification](../verification/README.md)。本轮只编制，不搬文件。
+状态：2026-10-26 编制并当日施工。第一阶段 1.1–1.4、1.6 与第二阶段 2.1–2.7 已完成（[回执](../verification/repository-layout-20261026.md)，[映射](repository-layout-map.md)）；1.5、1.7 的实现在分支 `wip/dsh-praxis-layout-roles`（插件任务接手）；第三阶段由 ADR-045 撤回。依据 [ADR-044](../decisions/044-repository-layout-by-role.md)。
 
 ## 原则
 
@@ -41,7 +41,9 @@
 
 不做：不动 `dsh-praxis/`；不改 Kit 正文内容。
 
-## 第三阶段：Kit 归一，控制面独立
+## 第三阶段：Kit 归一，控制面独立（已撤回）
+
+2026-10-26 由 [ADR-045](../decisions/045-praxis-and-dsh-praxis-relations.md)撤回：`dsh-praxis/` 整个是 release 包，包内 Kit 不出包；根 `kit/` 与 `dsh-praxis/kit` 是两种 Kit。下表只作记录。
 
 目标：只有一个 `kit/`；`dsh-praxis/` 改名 `control/`，只剩代码、数据与插件文档。
 

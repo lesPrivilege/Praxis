@@ -18,6 +18,7 @@
 
 | 项目 | 是什么 | 做到哪 |
 |---|---|---|
+| [quant-fieldguide](quant-fieldguide/README.md) | 量化的底层原理与 Agent 时代：面向懂领域读者的单文件交互知识页 | 底稿阶段，2026-10-26 停工；无页面、无最终产物 |
 | [deerflow-explainer](deerflow-explainer/README.md) | DeerFlow 各局部实现的单文件交互讲解页 | 八个交互图件与打印已检查，用户目验通过；无受众测试 |
 | [dsh-praxis-explainer](dsh-praxis-explainer/README.md) | 以 dsh-praxis 插件自身为题的技术说明页，DSH 会话所作 | 用来测试插件；两个文件 |
 | [palantir-discovery](palantir-discovery/README.md) | 从诉求到决定：Palantir 首次设计打样，一页离线交互网页 | 宽窄屏、打印与五条交互路径已检查；无受众验证 |
@@ -56,5 +57,3 @@
 | 后续 | 接收者、维护责任、下一验证或退出条件 |
 
 demo 禁止通过软链接、绝对路径或 live query 读取真实企业资料。项目用普通子目录；需要独立历史时另建仓库并登记关系，不以嵌套 `.git` 附加历史。中间产物与成片默认不入库，按项目 `.gitignore` 列外；临时物进项目的 `tmp/` 或仓库根的 `work/`。
-
-在途：[量化入门交互知识页](../demos/quant-fieldguide/)仍在 `demos/`，由另一会话施工，完成后迁入这里。

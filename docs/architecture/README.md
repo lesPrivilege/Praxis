@@ -26,6 +26,10 @@ Praxis 由 Enterprise、Reporting、Work System 三个消费域和共享 Environ
 
 主题目录保存已接收的提炼正文，`references` 提供材料入口；Chat 原文、会话溯源、入账记录与快照由 Vault 保存。Kit 采纳结果见决策记录。
 
+## Praxis 与 dsh-praxis
+
+Praxis 是知识与证据库；`dsh-praxis/` 是可独立发布的单元：表达 Kit 加控制面加运行数据，MCP 是控制面的一个入口，数据全部进 Git。根 `kit/` 是企业工作 Kit，不进 release 包；`projects/` 属于 Praxis，控制面只记位置。七个名字的定义与分工见 [ADR-045](../decisions/045-praxis-and-dsh-praxis-relations.md)。
+
 ## 表达与设计的跨域消费
 
 内容表达按 [dsh-praxis 分层体例](../../dsh-praxis/layers.md)分工：[Task](../../dsh-praxis/kit/task/README.md)负责材料目的与组织决定，[Writing](../../dsh-praxis/kit/writing/README.md)负责成文与内容组织，[Publish](../../dsh-praxis/kit/publish/README.md)按媒介编排与制作，[Design](../../dsh-praxis/kit/design/README.md)以视觉、交互和运动判断支持它们。三者按任务组合取用，不是依次都要过的流程；规则的归属与强度见 [ADR-019](../decisions/019-expression-owners-and-entry-paths.md)。Skill 为有界入口，知识正文通过目录渐进读取，迁移见 [ADR-016](../decisions/016-progressive-kit-structure.md)。

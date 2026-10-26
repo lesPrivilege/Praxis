@@ -18,6 +18,6 @@
 | 根 README 的“研究与维护”表 | `docs/README.md` | |
 | 根 README 的“Goal 与第一性原理”正文 | `docs/architecture/rationale.md` | 根页只留 Goal 一句 |
 
-未迁：`dsh-praxis/kit` 归并到 `kit/`、`dsh-praxis` 改名 `control/` 是第三阶段，等插件测试告一段落。
+不迁：`dsh-praxis/kit` 与 `dsh-praxis` 保持原位，第三阶段由 [ADR-045](../decisions/045-praxis-and-dsh-praxis-relations.md)撤回。2026-10-26 稍后 `demos/quant-fieldguide` 也迁入 `projects/quant-fieldguide`，`demos/` 删除。
 
 登记改动：`dsh-praxis/data/projects.json` 与 `artifacts.json` 的仓库相对路径同步改写；`runs/` 与 `history.jsonl` 是历史记录，保留旧路径。`vault/registry.json` 重建。

@@ -11,10 +11,10 @@ ROOT = Path(__file__).resolve().parents[1]
 OWNED = ['docs', 'kit', 'templates', 'projects', 'vault', 'scripts', 'tools', 'dsh-praxis']
 # Root allowlist (ADR-044): routing files, the five streams, tool directories, scratch.
 ROOT_ALLOWED = {'README.md', 'AGENTS.md', 'CHANGELOG.md', 'kit', 'vault', 'docs', 'projects', 'dsh-praxis',
-                'scripts', 'tools', 'templates', 'work', 'demos',
+                'scripts', 'tools', 'templates', 'work',
                 '.git', '.github', '.claude', '.mcp.json', '.gitattributes', '.gitignore', '.obsidian', '.DS_Store',
                 'wx-cli-again'}
-# 'demos' and 'wx-cli-again' are transitional: one in-flight project and an ignored unrelated checkout.
+# 'wx-cli-again' is transitional: an ignored unrelated checkout.
 errors = []
 warnings = []
 counts = {'markdown': 0, 'json': 0, 'snapshots': 0}

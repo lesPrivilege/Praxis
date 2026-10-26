@@ -7,7 +7,7 @@
 - 新建 gitignored 的 `work/`，根目录四个 capture 原件移入；`AGENTS.md` 加一句去处。validator 加根目录白名单与项目布局两道门：不在白名单的根条目报错，已登记项目里不落在任何布局角色的文件报 `misplaced` 警告（当前 131 条，都是老项目，`layout_enforced` 为 true 才升为错误）。
 - 控制面登记：jev、dsh-praxis-explainer 改 root；books、tally、palantir、saas-engineering-textbook 新登记。books 与 textbook 的最终产物尚未逐件登记，`praxis_projects` 的 `unregistered` 列出它们。
 - 清理：删除 drift 根级 12 张可重跑的截图与 2 个结构 JSON（回执 `acceptance-20261005` 保留）、agentscope 一份失败转码脚本。同日用户裁定再删 11 组过程性文件（取帧目录、交接稿、唤醒 prompt、已执行工单，约 230 M，27 个路径）：登记在 [retired-paths.json](docs/governance/retired-paths.json)，31 个文件的链接改为纯文字并注明删除，ADR 原文不动，validator 放行 ADR 指向退役路径的链接。清单见 [回执](docs/verification/repository-layout-20261026.md)。
-- 未做：`dsh-praxis/kit` 归并 `kit/`、`dsh-praxis` 改名 `control/`（第三阶段，插件正在另一会话测试）；`demos/quant-fieldguide` 在途，完成后迁入。
+- 同日第二轮：在途的 quant-fieldguide 停工后迁入 `projects/`，`demos/` 删除；13 个迁入的演示全部登记为项目，布局按现有结构写，`misplaced` 警告 131 → 0。[ADR-045](docs/decisions/045-praxis-and-dsh-praxis-relations.md) 一张表说清 Praxis、dsh-praxis、控制面、MCP、数据、release 与 praxis task 各指什么：两个 Kit 不合并，ADR-044 第三阶段撤回；插件开发（布局角色、capture 快照位置）另立任务，实现留在分支 `wip/dsh-praxis-layout-roles`。
 
 ## 2026-10-26 · 目录治理方案：ADR-044 草案与迁移工单
 
