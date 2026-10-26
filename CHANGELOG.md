@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-10-26 · 目录治理方案：ADR-044 草案与迁移工单
+
+- 盘点 Kit、Vault 与产物管理的散落：根目录叠着生命周期与主题两套逻辑，Kit 分在 `kit/` 与 `dsh-praxis/kit/` 两处，capture 原件和日志没有合法去处，一件交付的来路要拼四处索引。[ADR-044](docs/decisions/044-repository-layout-by-role.md)（proposed）提出五条流各一个索引、知识只沿 `vault → docs → kit → projects` 一个方向、项目布局加验收证据与临时物两个角色、validator 加两道门、渐进披露三层固定格式。
+- [迁移工单](docs/governance/repository-layout-migration.md)分三阶段：清根目录立规矩、建 `projects/` 迁入交付、Kit 归一与控制面独立；每阶段之间跑一轮真实交付。本轮只编制，未搬文件、未改校验脚本。
+
 ## 2026-10-25 · dsh-praxis 管线登记为来源；Design 挂载说明按位置写
 
 - 已有的 5 条生产管线按本地定位登记为来源：书单系列、薪酬基线短片、金字塔长片、Jev 网页构建器、SaaS 教材站点生成器。它们挂到 publish/video 与 publish/html，写明何时用；脚本留在原项目。consume 的产物可带 `made_with` 写明由哪条管线产出，来源条目列出用它产出的运行与产物。已知的 8 件产物补记了管线。取舍见 [ADR-043](docs/decisions/043-dsh-praxis-pipelines-as-sources.md)。
