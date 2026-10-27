@@ -5,8 +5,9 @@
 // resources/list, resources/templates/list, resources/read, prompts/list and prompts/get.
 import { createInterface } from 'node:readline'
 import { randomUUID } from 'node:crypto'
-import { readFileSync } from 'node:fs'
+import { readFileSync, realpathSync } from 'node:fs'
 import * as http from 'node:http'
+import { fileURLToPath } from 'node:url'
 import { createPraxis, ConflictError } from '../core/index.js'
 import { TOOLS, callTool, inputSchema, jsonValue } from './tools.js'
 
@@ -122,7 +123,8 @@ export function createServer({ praxis = createPraxis(), write }) {
   }
 }
 
-if (import.meta.url === `file://${process.argv[1]}` || process.argv[1]?.endsWith('/praxis-mcp')) {
+// Run as a program (directly or through the praxis-mcp bin link); the real paths match even through symlinks.
+if (process.argv[1] && realpathSync(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const handle = createServer({ write: (msg) => process.stdout.write(JSON.stringify(msg) + '\n') })
   const rl = createInterface({ input: process.stdin })
   rl.on('line', (line) => {

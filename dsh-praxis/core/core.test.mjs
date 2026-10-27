@@ -177,7 +177,8 @@ test('refresh checks upstream by hash without storing content; keep saves a snap
   const { root, p } = setup()
   let body = '<html>v1</html>'
   let up = true
-  const fetchImpl = async () => (up ? new Response(body, { headers: { 'content-type': 'text/html' } }) : new Response('gone', { status: 404 }))
+  let blocked = false
+  const fetchImpl = async () => (blocked ? new Response('no', { status: 403 }) : up ? new Response(body, { headers: { 'content-type': 'text/html' } }) : new Response('gone', { status: 404 }))
   const first = await p.materials.refresh(SRC, { fetchImpl, by: 'test' })
   assert.deepEqual([first.reachable, first.changed, first.snapshot, first.check.status], [true, false, undefined, 'ok'], 'the first check is the baseline')
   assert.equal(existsSync(join(root, 'data/snapshots')), false, 'no content stored')
@@ -191,6 +192,10 @@ test('refresh checks upstream by hash without storing content; keep saves a snap
   assert.deepEqual(readFileSync(join(root, kept.snapshot.path), 'utf8'), '<html>v2</html>')
   assert.equal(p.materials.source(SRC).snapshot.sha256, kept.check.sha256)
   assert.equal((await p.materials.refresh(SRC, { fetchImpl, keep: true })).snapshot, undefined, 'the same bytes are not kept twice')
+  blocked = true
+  assert.equal((await p.materials.refresh(SRC, { fetchImpl })).reachable, false)
+  assert.deepEqual(p.materials.binding(BIND).signals, ['changed'], 'a refusal is not a dead link')
+  blocked = false
   up = false
   const dead = await p.materials.refresh(SRC, { fetchImpl })
   assert.deepEqual([dead.reachable, dead.check.error], [false, 'HTTP 404'])
@@ -198,6 +203,24 @@ test('refresh checks upstream by hash without storing content; keep saves a snap
   up = true
   await p.materials.refresh(SRC, { fetchImpl })
   assert.deepEqual(p.materials.binding(BIND).signals, ['changed'], 'a link that answers again is no longer flagged')
+})
+
+test('an HTML page is compared by its text: markup that changes per load is not a change', async () => {
+  const { root, p } = setup()
+  const page = (nonce, text) => `<html><head><script nonce="${nonce}">var t=${nonce}</script><style>.a{}</style></head><body><!-- ${nonce} --><p data-n="${nonce}">${text}</p></body></html>`
+  let body = page(1, '正文')
+  const fetchImpl = async () => new Response(body, { headers: { 'content-type': 'text/html; charset=utf-8' } })
+  // An older check of the same page that recorded only the bytes has no basis to compare against.
+  writeFileSync(join(root, 'data/checks.jsonl'), JSON.stringify({ source: SRC, at: '2026-01-01T00:00:00.000Z', status: 'ok', http: 200, sha256: 'old-bytes', content_type: 'text/html' }) + '\n')
+  const first = await p.materials.refresh(SRC, { fetchImpl })
+  assert.equal(first.changed, false, 'a check that recorded only bytes is not compared')
+  body = page(2, '正文')
+  const second = await p.materials.refresh(SRC, { fetchImpl })
+  assert.notEqual(second.check.sha256, first.check.sha256)
+  assert.deepEqual([second.changed, p.materials.binding(BIND).signals], [false, []])
+  body = page(3, '改过的正文')
+  assert.equal((await p.materials.refresh(SRC, { fetchImpl })).changed, true)
+  assert.deepEqual(p.materials.binding(BIND).signals, ['changed'])
 })
 
 test('upkeep lists only signals: needs-work, changed sources, stale runs, unbound captures', async () => {

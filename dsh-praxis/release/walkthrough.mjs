@@ -20,7 +20,7 @@ const checks = []
 const check = (id, passed, observed) => checks.push({ id, passed: !!passed, observed })
 
 // 1. Install: the shipped files only, no data folder.
-const shipped = JSON.parse(execFileSync('npm', ['pack', '--dry-run', '--json'], { cwd: PKG, encoding: 'utf8' }))[0].files.map((f) => f.path)
+const shipped = JSON.parse(execFileSync('npm', ['pack', '--dry-run', '--json', '--offline'], { cwd: PKG, encoding: 'utf8' }))[0].files.map((f) => f.path)
 for (const rel of shipped) { mkdirSync(dirname(join(pkg, rel)), { recursive: true }); cpSync(join(PKG, rel), join(pkg, rel)) }
 mkdirSync(home); mkdirSync(work)
 check('install_has_no_data', !existsSync(join(pkg, 'data')) && shipped.some((f) => f.startsWith('kit/')), { files: shipped.length })
@@ -44,6 +44,8 @@ const env = { ...process.env, DSH_HOME: home, PRAXIS_DATA: '', NO_PROXY: '127.0.
 delete env.PRAXIS_DATA
 const server = spawn(process.execPath, [join(pkg, 'adapters/mcp.js')], { cwd: work, env, stdio: ['pipe', 'pipe', 'inherit'] })
 const pending = new Map()
+// A server that never starts or dies mid-run fails the walkthrough instead of leaving it waiting.
+server.on('exit', (code) => { if (pending.size) { console.error(`MCP server exited (${code}) with ${pending.size} call(s) waiting`); process.exit(1) } })
 createInterface({ input: server.stdout }).on('line', (line) => { const m = JSON.parse(line); pending.get(m.id)?.(m); pending.delete(m.id) })
 let next = 1
 const rpc = (method, params) => new Promise((resolve) => { const id = next++; pending.set(id, resolve); server.stdin.write(JSON.stringify({ jsonrpc: '2.0', id, method, params }) + '\n') })

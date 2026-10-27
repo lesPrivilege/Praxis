@@ -21,15 +21,32 @@ export const INDEX_FIELDS = ['id', 'title', 'url', 'summary', 'read_scope', 'sta
 // Signals that a binding needs someone now. Default states (no curated description, never
 // reviewed, disabled) are not signals: the source summary stands in until someone has a reason
 // to curate. `changed`: the source's content changed after the binding's last review.
-// `unreachable`: the last check could not fetch the source.
+// `unreachable`: the last check found the link gone (404, 410, or a host that no longer resolves).
+// A refusal, a rate limit or a timeout says more about the network that checked than about the link.
 export const SIGNALS = ['needs_work', 'changed', 'unreachable']
+const GONE = (c) => c.status === 'unreachable' && ([404, 410].includes(c.http) || c.error === 'ENOTFOUND')
+
+// What a check compares: an HTML page by its text, since markup carries per-load tokens and its bytes
+// differ on every fetch; anything else by its bytes. An HTML check without a text hash has no basis.
+const isHtml = (type) => /html/i.test(type ?? '')
+const contentKey = (c) => c.text_sha256 ?? (c.sha256 && !isHtml(c.content_type) ? c.sha256 : undefined)
+export function pageText(html) {
+  return html
+    .replace(/<!--[\s\S]*?-->/g, ' ')
+    .replace(/<(script|style|noscript|template|svg)\b[\s\S]*?<\/\1\s*>/gi, ' ')
+    .replace(/<[^>]*>/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+}
 
 export function signalsOf(b, state) {
   const last = b.reviews.at(-1)
   const since = state?.changed.get(b.source)
+  // A review records the source version it saw; one recorded before that is placed by time.
+  const seen = last && (last.source_version !== undefined ? last.source_version === state?.current.get(b.source) : last.at >= since)
   return [
     last?.verdict === 'needs-work' && 'needs_work',
-    since && !(last?.at >= since) && 'changed',
+    since && !seen && 'changed',
     state?.unreachable.has(b.source) && 'unreachable',
   ].filter(Boolean)
 }
@@ -277,7 +294,7 @@ export class Materials {
     const reviewed = revision ?? b.revision
     this.bindings.update(b.id, undefined, (cur = {}) => ({
       ...cur, source: b.source, target: b.target, title: b.title, state: cur?.state ?? b.state,
-      reviews: [...(cur?.reviews ?? []), { revision: reviewed, by, verdict, note, at: new Date().toISOString() }],
+      reviews: [...(cur?.reviews ?? []), { revision: reviewed, source_version: this.source(b.source)?.version ?? null, by, verdict, note, at: new Date().toISOString() }],
     }), { op: 'review', by, verdict })
     return this.binding(b.id)
   }
@@ -303,20 +320,23 @@ export class Materials {
     return out
   }
 
-  /** Sources whose content changed (with the time of the latest change) and sources unreachable now. */
+  /** Sources whose content changed (with the time of the latest change), their current content, and sources whose link is gone. */
   sourceState() {
     const changed = new Map()
+    const current = new Map()
     const unreachable = new Set()
     for (const [id, list] of this.observations()) {
       let seen
       for (const o of list) {
-        if (!o.sha256) continue
-        if (seen && seen !== o.sha256) changed.set(id, o.at)
-        seen = o.sha256
+        const key = contentKey(o)
+        if (!key) continue
+        if (seen && seen !== key) changed.set(id, o.at)
+        seen = key
       }
-      if (list.at(-1).status === 'unreachable') unreachable.add(id)
+      if (seen) current.set(id, seen)
+      if (GONE(list.at(-1))) unreachable.add(id)
     }
-    return { changed, unreachable }
+    return { changed, current, unreachable }
   }
 
   /** The latest kept snapshot (else the one the record names), the latest check, and `version`: the hash a run records. */
@@ -326,13 +346,13 @@ export class Materials {
     const snapshot = kept ? { path: this.paths.normalize(join(this.where.snapshots, kept.snapshot.path)), sha256: kept.snapshot.sha256, status: 'captured' } : s.snapshot
     const last = list.at(-1)
     const check = last ? { at: last.at, status: last.status, http: last.http, sha256: last.sha256, error: last.error } : undefined
-    const version = list.filter((o) => o.sha256).at(-1)?.sha256 ?? snapshot?.sha256 ?? null
+    const version = list.map(contentKey).filter(Boolean).at(-1) ?? snapshot?.sha256 ?? null
     return { snapshot, check, version }
   }
 
   /**
-   * Check a source URL against upstream: whether it answered and the hash of what it served, not the
-   * content. With `keep`, also save the bytes under the snapshots folder (old versions stay). For a
+   * Check a source URL against upstream: whether it answered and the hash of what it served (an HTML
+   * page also by the hash of its text), not the content. With `keep`, also save the bytes under the snapshots folder (old versions stay). For a
    * collection (a source with a members pattern), also record the member links the page lists.
    */
   async refresh(sourceId, { keep = false, by, reason, task, fetchImpl = fetch } = {}) {
@@ -347,14 +367,16 @@ export class Materials {
       if (res.ok) bytes = Buffer.from(await res.arrayBuffer())
       else error = `HTTP ${res.status}`
     } catch (e) {
-      error = e.message
+      error = e.cause?.code ?? e.message
     }
     const at = new Date().toISOString()
     const sha = bytes && createHash('sha256').update(bytes).digest('hex')
     const contentType = res?.headers.get('content-type') ?? null
     const check = bytes
-      ? { source: s.id, at, status: 'ok', http: res.status, sha256: sha, size_bytes: bytes.length, content_type: contentType, by }
+      ? { source: s.id, at, status: 'ok', http: res.status, sha256: sha, ...(isHtml(contentType) ? { text_sha256: createHash('sha256').update(pageText(bytes.toString('utf8'))).digest('hex') } : {}), size_bytes: bytes.length, content_type: contentType, by }
       : { source: s.id, at, status: 'unreachable', http: res?.status ?? null, error, by }
+    // The last comparable check, else (for bytes) the snapshot the record names; the first check is the baseline.
+    const before = (this.observations().get(s.id) ?? []).map(contentKey).filter(Boolean).at(-1) ?? (check.text_sha256 ? undefined : s.snapshot?.sha256)
     if (bytes && keep && s.snapshot?.sha256 !== sha) {
       const slug = s.id.slice(s.id.indexOf(':') + 1).replace(/[^A-Za-z0-9._-]/g, '-')
       const name = new URL(s.url).pathname.split('/').filter(Boolean).at(-1)?.replace(/[^A-Za-z0-9._-]/g, '-').replace(/^\.+/, '') || 'index.html'
@@ -368,7 +390,7 @@ export class Materials {
     mkdirSync(dirname(this.checksPath), { recursive: true })
     appendFileSync(this.checksPath, JSON.stringify(check) + '\n')
     this.bindings.log({ op: 'refresh', id: s.id, status: check.status, sha256: sha, snapshot: check.snapshot?.path, by, reason, task })
-    const changed = !!sha && s.version !== null && s.version !== sha
+    const changed = !!before && !!contentKey(check) && before !== contentKey(check)
     const { members: listed, ...shown } = check
     return {
       reachable: !!bytes, changed, check: listed ? { ...shown, members: listed.length } : shown,

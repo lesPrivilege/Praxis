@@ -8,7 +8,7 @@
 | `sources.json` | 自有来源：ID 为 `praxis:<slug>`，记链接或定位、概要、读取范围、证据状态、边界、何时重访、摘录、收录任务、Kit 分类、集合的成员模式（含带理由跳过的成员）与所属集合、淘汰理由与 revision；不存原件 |
 | `packs.json` | 按引用接入的来源包：`vault`（registry 格式，读 `vault/registry.json`）与 `jev-research`（Jev 专章的来源索引，经字段映射读取）；Praxis 只读这些文件，不写 |
 | `bindings.json` | 挂载：在名册里新建、移除、恢复或编辑过的关系，以及挂载上的维护信息（description、取用题解、启用、收藏、优先级、tag、review、状态与 revision），按 `<来源 ID>@<页面路径>` 对上。来源包声明的关系（vault 记录的 `grammar_paths`）没被动过时不在这里 |
-| `checks.jsonl` | 追加式来源检查：来源、时间、状态、HTTP 码、内容 hash、大小与类型，打不开时记错误；集合类来源另记成员链接；另存快照时记快照路径 |
+| `checks.jsonl` | 追加式来源检查：来源、时间、状态、HTTP 码、内容 hash（HTML 另记正文 hash）、大小与类型，打不开时记错误；集合类来源另记成员链接；另存快照时记快照路径 |
 | `presets.json` | 预设：流水线、名称、字段值、tag、是否默认、revision |
 | `projects.json` | 项目：根目录（仓库内为仓库路径，仓库外为绝对路径）、名称、用途、布局（按角色给路径模式：draft 底稿、build 中间产物、final 最终产物、evidence 验收回执与留存帧进 Git、tmp 临时文件不进 Git；缺的角色由模板 standard 补齐）、状态与 revision |
 | `artifacts.json` | 产物：名称、说明、媒介、位置（仓库内为仓库路径，仓库外为绝对路径）、版本（sha256、大小、时间、运行、派生自）、按版本的 review、状态与 revision。文件本身不在这里 |
