@@ -5,7 +5,7 @@ import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, unlinkSync,
 import { dirname, join } from 'node:path'
 import { PACKAGE, locate } from './paths.js'
 import { Kit, LAYERS, clip } from './kit.js'
-import { Materials } from './materials.js'
+import { FORMS, Materials, signalsOf } from './materials.js'
 import { Artifacts } from './artifacts.js'
 import { ALLOWED, Projects, TEMPLATES } from './projects.js'
 import { Collection, readJson } from './store.js'
@@ -112,9 +112,10 @@ export function createPraxis(options = {}) {
 
     /**
      * What to read for a task: resident units, then the units the task type lists
-     * (filtered by pipeline), then enabled bindings on those units as material rows.
+     * (filtered by pipeline), then enabled bindings on those units as material rows (web sources),
+     * then exemplars: local pipelines, examples and accepted deliveries that serve those units.
      */
-    resolve({ task_type, pipeline, units = [], preset, materials_limit = 12 } = {}) {
+    resolve({ task_type, pipeline, units = [], preset, materials_limit = 12, exemplars_limit = 8 } = {}) {
       const k = kit()
       const { picked, type, pipeline: chosen } = pick(k, { task_type, pipeline, units })
       pipeline = chosen
@@ -124,6 +125,7 @@ export function createPraxis(options = {}) {
         .sort((a, b) => Number(b.priority === 'preferred') - Number(a.priority === 'preferred') || Number(b.favorite) - Number(a.favorite))
         .slice(0, materials_limit)
         .map((b) => material(b, materials.source(b.source)))
+      const exemplars = this.exemplars(targets).slice(0, exemplars_limit)
       const chosenPreset = preset ? this.preset(preset)
         : Object.entries(presets.all()).map(([id, p]) => ({ id, ...p })).find((p) => p.pipeline === pipeline && p.default && p.state !== 'removed')
       if (preset && !chosenPreset) throw new Error(`unknown preset: ${preset}`)
@@ -133,13 +135,31 @@ export function createPraxis(options = {}) {
         pipeline,
         units: [...picked.values()],
         materials: rows,
+        exemplars,
       }
+    },
+
+    /**
+     * Local products offered on these Kit pages: pipelines first, then examples, then deliveries a
+     * review accepted, at most three of a kind so one kind does not crowd out the others. Missing
+     * files and ones a review sent back are left out.
+     */
+    exemplars(paths) {
+      const rank = { pipeline: 0, example: 1, delivery: 2 }
+      return Object.entries(artifacts.store.all())
+        .filter(([, r]) => r.state !== 'removed' && r.serves?.length)
+        .map(([id, r]) => ({ id, r, page: r.serves.find((x) => paths.has(x.target.split('#')[0])) }))
+        .filter(({ r, page }) => page && (r.kind !== 'delivery' || (r.review?.verdict === 'accepted' && r.review.version === r.versions.length)) && r.review?.verdict !== 'needs-work')
+        .filter(({ r }) => artifacts.status(r) !== 'missing')
+        .sort((a, b) => rank[a.r.kind] - rank[b.r.kind] || a.r.title.localeCompare(b.r.title))
+        .filter((x, i, all) => all.slice(0, i).filter((y) => y.r.kind === x.r.kind).length < 3)
+        .map(({ id, r, page }) => ({ artifact: id, kind: r.kind, title: r.title, description: page.description ?? r.description, page: page.target, path: r.path, absolute: artifacts.absolute(r.path), version: r.versions.length }))
     },
 
     /**
      * One source as a reader deciding whether to use or keep it needs it: the record, what its
      * collection was gathered for, the pages it serves and the task types that reach them, and the
-     * runs that read it or made artifacts with it, with what they delivered.
+     * runs that read it, with what they delivered.
      */
     source(ref) {
       const found = materials.source(ref)
@@ -154,12 +174,10 @@ export function createPraxis(options = {}) {
       })
       const types = new Map()
       for (const r of relations) for (const t of reach.get(r.unit) ?? []) types.set(t.id, t)
-      // A run used a source when it read it, or when one of its artifacts was made with it (a pipeline).
       const used_by = this.runs({ limit: 1000 })
-        .filter((r) => r.sources.some((x) => x.id === s.id) || r.artifacts.some((a) => a.made_with === s.id))
-        .map((r) => ({ id: r.id, title: r.title, at: r.at, by: r.by, read: r.sources.some((x) => x.id === s.id),
-          artifacts: r.artifacts.map((a) => ({ artifact: a.artifact, version: a.version, path: a.path, made: a.made_with === s.id })) }))
-      return { ...s, members: s.members ? { pattern: s.members.pattern, skipped: s.members.skipped, ...materials.members(s.id) } : undefined, collection: materials.collectionOf(found), relations, serves: [...types.values()], used_by }
+        .filter((r) => r.sources.some((x) => x.id === s.id))
+        .map((r) => ({ id: r.id, title: r.title, at: r.at, by: r.by, artifacts: r.artifacts.map((a) => ({ artifact: a.artifact, version: a.version, path: a.path })) }))
+      return { ...s, members: s.members ? { pattern: s.members.pattern, skipped: s.members.skipped, ...materials.members(s.id), ledger: materials.ledger(s.id) } : undefined, collection: materials.collectionOf(found), relations, serves: [...types.values()], used_by }
     },
 
     /**
@@ -187,15 +205,14 @@ export function createPraxis(options = {}) {
       const bindingRefs = materials.listBindings()
         .filter((b) => read.has(b.source) && unitPaths.has(b.target.split('#')[0]))
         .map((b) => ({ id: b.id, revision: b.revision }))
-      // A delivered file is recorded with its project: the location is part of the record.
+      // A delivery is recorded with its project: the location is part of the record. A pipeline or example may sit anywhere.
       const delivered = artifacts.map((a) => {
         const item = this.artifacts.prepare(a)
         const home = projects.of(item.path)
-        if (!home) throw new Error(`${item.path} is not inside a registered project; register its folder with praxis_project first`)
-        // The pipeline that produced the file is a registered source; the record says which.
-        const made = item.made_with && materials.source(item.made_with)
-        if (item.made_with && !made) throw new Error(`unknown pipeline source: ${item.made_with}`)
-        return { ...item, project: home.project.id, made_with: made?.id }
+        if (!home && (item.kind ?? 'delivery') === 'delivery') throw new Error(`${item.path} is not inside a registered project; register its folder with praxis_project first`)
+        // The pipeline that produced the file is a pipeline artifact; the record says which.
+        if (item.made_with && this.artifacts.get(item.made_with)?.kind !== 'pipeline') throw new Error(`not a pipeline artifact: ${item.made_with}`)
+        return { ...item, project: home?.project.id }
       })
       const presetRef = preset ? (() => { const p = this.preset(preset); if (!p) throw new Error(`unknown preset: ${preset}`); return { id: p.id, revision: p.revision, values: p.values } })() : undefined
       const at = new Date().toISOString()
@@ -218,35 +235,37 @@ export function createPraxis(options = {}) {
      * unregistered bytes, missing), whether the run behind the latest version used something that has
      * changed since (basis_changed), and its signals: missing, needs_work (latest version's last verdict).
      */
-    artifactList({ query, medium, signal, project, include_removed = false, limit = 50 } = {}) {
+    artifactList({ query, medium, kind, signal, project, include_removed = false, limit = 50 } = {}) {
       const staleRuns = new Set(this.stale().map((r) => r.run))
       const terms = (query ?? '').toLowerCase().split(/\s+/).filter(Boolean)
       return Object.entries(artifacts.store.all())
         .map(([id, rec]) => summarize(id, rec, artifacts, staleRuns, projects))
-        .filter((a) => (include_removed || a.state !== 'removed') && (!medium || a.medium === medium) && (!project || a.project?.id === project) && (!signal || a.signals.includes(signal) || (signal === 'basis_changed' && a.basis_changed))
+        .filter((a) => (include_removed || a.state !== 'removed') && (!medium || a.medium === medium) && (!kind || a.kind === kind) && (!project || a.project?.id === project) && (!signal || a.signals.includes(signal) || (signal === 'basis_changed' && a.basis_changed))
           && terms.every((t) => `${a.title} ${a.description ?? ''} ${a.path}`.toLowerCase().includes(t)))
         .sort((a, b) => b.updated_at.localeCompare(a.updated_at))
         .slice(0, limit)
     },
 
-    /** One artifact with every version, the run behind it and what that run used, and its reviews. */
+    /** One artifact with every version, the run behind it and what that run used, its latest review and the pages it serves. */
     artifact(id) {
       const rec = artifacts.get(id)
       if (!rec) return undefined
       const stale = new Map(this.stale().map((r) => [r.run, r]))
       const runs = new Map(this.runs({ limit: 1000 }).map((r) => [r.id, r]))
       const head = summarize(id, rec, artifacts, new Set(stale.keys()), projects)
+      const units = new Map(kit().list().map((u) => [u.path, u.id]))
       return {
         ...head,
+        serves: head.serves.map((x) => ({ ...x, unit: units.get(x.target.split('#')[0]) ?? null })),
         versions: rec.versions.map((v, i) => {
           const run = runs.get(v.run)
           return {
             version: i + 1, sha256: v.sha256, size: v.size, at: v.at, by: v.by, derived_from: v.derived_from ?? [],
-            made_with: v.made_with ? { id: v.made_with, title: materials.source(v.made_with)?.title ?? v.made_with } : undefined,
+            made_with: v.made_with ? { id: v.made_with, title: artifacts.get(v.made_with)?.title ?? v.made_with } : undefined,
             run: run ? { id: run.id, title: run.title, at: run.at, task_type: run.task_type, pipeline: run.pipeline,
               units: run.units.map((u) => u.id), bindings: run.bindings.map((b) => b.id), sources: run.sources.map((s) => ({ id: s.id, title: materials.source(s.id)?.title ?? s.id })),
               changed: stale.get(run.id) ?? null } : null,
-            reviews: rec.reviews.filter((r) => r.version === i + 1),
+            review: rec.review?.version === i + 1 ? rec.review : null,
           }
         }),
       }
@@ -348,22 +367,64 @@ export function createPraxis(options = {}) {
     },
 
     /**
-     * What needs someone now, across the Kit and outside targets: bindings with a signal, runs whose
-     * units or bindings changed after delivery, captured sources no unit binds yet, artifacts with a
-     * signal, and reload when this process runs older code than the files. Usually empty.
+     * The catalog as an outline: Kit layer → area → form → sources. Every catalogued source, own or a
+     * pack's, sits under each area it is filed in or serves through a page. Without `area` or `query`
+     * it returns the outline with counts; with either, the rows. `form` narrows both.
+     */
+    catalog({ area, form, query } = {}) {
+      const k = kit()
+      const areas = k.areas()
+      const units = new Map(k.list().map((u) => [u.path, u]))
+      const areaOf = (place) => areas.filter((a) => place === a || place.startsWith(`${a}/`)).sort((a, b) => b.length - a.length)[0] ?? ''
+      const filed = materials.filedUnder()
+      const pages = new Map()
+      for (const b of materials.listBindings()) {
+        const u = units.get(b.target.split('#')[0])
+        if (u) pages.set(b.source, [...(pages.get(b.source) ?? []), u.id])
+      }
+      const state = materials.sourceState()
+      const terms = (query ?? '').toLowerCase().split(/\s+/).filter(Boolean)
+      const groups = new Map()
+      for (const s of materials.roster().list) {
+        if (!s.form || s.state === 'retired' || (form && s.form !== form)) continue
+        if (terms.length && !terms.every((t) => [s.title, s.description, s.summary, s.url].join(' ').toLowerCase().includes(t))) continue
+        const row = {
+          id: s.id, title: s.title, form: s.form, description: s.description, url: s.url, evidence_status: s.evidence_status,
+          pack: s.pack, member_of: s.member_of, collection: s.members ? true : undefined, pages: pages.get(s.id) ?? [],
+          signals: signalsOf({ source: s.id, review: s.review }, state),
+        }
+        for (const a of new Set((filed.get(s.id) ?? ['']).map(areaOf))) {
+          if (area !== undefined && a !== area && !a.startsWith(`${area}/`)) continue
+          ;(groups.get(a) ?? groups.set(a, []).get(a)).push(row)
+        }
+      }
+      const order = ['', ...areas]
+      const outline = [...groups].sort(([a], [b]) => order.indexOf(a) - order.indexOf(b)).map(([a, rows]) => {
+        const u = a ? k.find(a) : undefined
+        const forms = FORMS.map((f) => ({ form: f, sources: rows.filter((r) => r.form === f).sort((x, y) => x.title.localeCompare(y.title)) })).filter((f) => f.sources.length)
+        return { area: a, title: u?.title, description: u?.description, count: rows.length,
+          forms: area !== undefined || terms.length ? forms : forms.map((f) => ({ form: f.form, count: f.sources.length })) }
+      })
+      return { forms: FORMS, areas: outline }
+    },
+
+    /**
+     * What needs someone now, across the Kit and outside targets: bindings with a signal, catalog
+     * entries with a signal no binding shows, own sources the catalog cannot place, collection
+     * differences, revision conflicts, artifacts with a signal, and reload when this process runs
+     * older code than the files. Usually empty. Stale runs and unregistered finals are shown where
+     * they live (runs, the project), not here: nothing waits on them until someone delivers again.
      */
     upkeep() {
       const units = new Map(kit().list().map((u) => [u.path, u.id]))
       return {
         bindings: materials.listBindings().filter((b) => b.signals.length)
           .map((b) => ({ id: b.id, title: b.title, target: b.target, unit: units.get(b.target.split('#')[0]) ?? null, signals: b.signals, revision: b.revision })),
-        stale: this.stale(),
-        unbound: materials.unboundCaptures(),
+        unfiled: materials.unfiled(),
+        sources: catalogSignals(materials),
         collections: materials.collections(),
         revisions: this.revisionList().filter((r) => r.conflict),
         artifacts: this.artifactList({ limit: 1000 }).filter((a) => a.signals.length),
-        projects: this.projectList().filter((p) => p.unregistered.length)
-          .map((p) => ({ id: p.id, title: p.title, root: p.root, unregistered: p.unregistered.slice(0, 20), unregistered_count: p.unregistered.length })),
         reload: this.reload(),
       }
     },
@@ -442,16 +503,29 @@ function material(b, s) {
 function summarize(id, rec, artifacts, staleRuns, projects) {
   const latest = rec.versions.at(-1)
   const status = artifacts.status(rec)
-  const review = rec.reviews.filter((r) => r.version === rec.versions.length).at(-1) ?? null
+  const review = rec.review?.version === rec.versions.length ? rec.review : null
   const home = projects.of(rec.path)
   const role = home ? projects.role(home.project, home.path) : undefined
-  const signals = [status === 'missing' && 'missing', review?.verdict === 'needs-work' && 'needs_work', !ALLOWED.includes(role) && 'misplaced'].filter(Boolean)
+  const kind = rec.kind
+  const signals = [status === 'missing' && 'missing', review?.verdict === 'needs-work' && 'needs_work', kind === 'delivery' && !ALLOWED.includes(role) && 'misplaced'].filter(Boolean)
   return {
-    id, title: rec.title, description: rec.description, medium: rec.medium, path: rec.path, absolute: artifacts.absolute(rec.path),
+    id, title: rec.title, description: rec.description, medium: rec.medium, kind, serves: rec.serves ?? [], path: rec.path, absolute: artifacts.absolute(rec.path),
     project: home ? { id: home.project.id, title: home.project.title } : undefined, project_path: home?.path, role,
     version: rec.versions.length, sha256: latest.sha256, status, basis_changed: !!latest.run && staleRuns.has(latest.run), review, signals, state: rec.state,
-    created_at: rec.created_at, updated_at: rec.reviews.at(-1)?.at > latest.at ? rec.reviews.at(-1).at : latest.at, revision: rec.revision,
+    created_at: rec.created_at, updated_at: rec.review?.at > latest.at ? rec.review.at : latest.at, revision: rec.revision,
   }
+}
+
+// Catalog entries with a signal: a review of the entry asked for changes, or the source changed or
+// went away while no binding of it already carries that.
+function catalogSignals(materials) {
+  const shown = new Map()
+  for (const b of materials.listBindings()) for (const g of b.signals) shown.set(b.source, new Set([...(shown.get(b.source) ?? []), g]))
+  const state = materials.sourceState()
+  return materials.roster().list.filter((s) => s.form && s.state !== 'retired').flatMap((s) => {
+    const signals = signalsOf({ source: s.id, review: s.review }, state).filter((g) => g === 'needs_work' || !shown.get(s.id)?.has(g))
+    return signals.length ? [{ id: s.id, title: s.title, signals, revision: s.entry_revision }] : []
+  })
 }
 
 function brief(u) {

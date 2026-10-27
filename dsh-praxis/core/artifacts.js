@@ -1,9 +1,13 @@
 // Artifacts: the files a piece of work delivered. The bytes stay where their owner keeps them,
 // inside this repository or in another workspace; Praxis keeps the identity, one version per
-// distinct content (sha256), the run each version came from, what it was derived from, and
-// reviews bound to a version. Status is read from the file each time, never stored.
+// distinct content (sha256), the run each version came from, what it was derived from, and the
+// latest review, bound to a version. Status is read from the file each time, never stored.
+// Three kinds: a delivery (what a task delivered), a pipeline (how to make one kind of delivery
+// again) and an example (a specimen made to show a pattern). One that `serves` Kit pages is offered
+// to tasks on those pages: pipelines and examples, and deliveries once accepted. Process records
+// (dogfooding and review logs) are not artifacts; the run is their only trace.
 import { createHash } from 'node:crypto'
-import { readFileSync, statSync } from 'node:fs'
+import { existsSync, readFileSync, statSync } from 'node:fs'
 import { basename, extname, join } from 'node:path'
 import { Collection } from './store.js'
 import { pathsFor } from './paths.js'
@@ -13,6 +17,7 @@ export const VERDICTS = ['needs-work', 'checked', 'accepted']
 // sits outside every project or outside where its project keeps drafts and finals. Later edits
 // (status modified) and a changed basis are shown, not signalled: the next delivery records them.
 export const ARTIFACT_SIGNALS = ['missing', 'needs_work', 'misplaced']
+export const KINDS = ['delivery', 'pipeline', 'example']
 
 const MEDIA = {
   html: 'html', htm: 'html', md: 'text', txt: 'text', json: 'text', pdf: 'pdf',
@@ -73,6 +78,8 @@ export class Artifacts {
     if (!fp) throw new Error(`artifact file not found: ${item.path}`)
     const all = this.store.all()
     if (item.artifact && !all[item.artifact]) throw new Error(`unknown artifact: ${item.artifact}`)
+    if (item.kind !== undefined && !KINDS.includes(item.kind)) throw new Error(`kind must be ${KINDS.join(', ')}`)
+    this.checkServes(item.serves)
     const derived = (item.derived_from ?? []).map((d) => {
       const ref = typeof d === 'string' ? { artifact: d } : d
       const rec = all[ref.artifact]
@@ -102,6 +109,8 @@ export class Artifacts {
         path: item.path,
         ...(item.title ? { title: item.title } : {}),
         ...(item.description ? { description: item.description } : {}),
+        ...(item.kind ? { kind: item.kind } : {}),
+        ...(item.serves ? { serves: item.serves } : {}),
         versions: latest.sha256 === item.fp.sha256 ? cur.versions : [...cur.versions, version],
         state: 'active',
       }), { op: 'artifact', by, run })
@@ -113,9 +122,10 @@ export class Artifacts {
       description: item.description,
       path: item.path,
       medium: mediumOf(item.path),
+      kind: item.kind ?? 'delivery',
+      ...(item.serves?.length ? { serves: item.serves } : {}),
       created_at: at,
       versions: [version],
-      reviews: [],
       state: 'active',
     }), { op: 'artifact', by, run })
     return { id, version: 1, path: item.path, sha256: item.fp.sha256, created: true }
@@ -126,25 +136,32 @@ export class Artifacts {
     return rec ? { id, ...rec } : undefined
   }
 
-  /** A review names the version it looked at, so a later version never inherits it. */
+  /** Pages an artifact serves must exist; each says when to look at it there. */
+  checkServes(serves) {
+    for (const x of serves ?? []) if (!x.target || !existsSync(this.absolute(x.target.split('#')[0]))) throw new Error(`serves needs an existing page: ${x.target}`)
+  }
+
+  /** The latest review only, naming the version it looked at, so a later version never inherits it. */
   review(id, { version, verdict, note, by }) {
     const rec = this.store.get(id)
     if (!rec) throw new Error(`unknown artifact: ${id}`)
     if (!VERDICTS.includes(verdict)) throw new Error(`verdict must be ${VERDICTS.join(', ')}`)
     if (!Number.isInteger(version) || !rec.versions[version - 1]) throw new Error(`${id} has no version ${version}`)
     const saved = this.store.update(id, undefined, (cur) => ({
-      ...cur, reviews: [...cur.reviews, { version, verdict, note, by, at: new Date().toISOString() }],
+      ...cur, review: { version, verdict, note, by, at: new Date().toISOString() },
     }), { op: 'artifact-review', by, verdict, version })
     return { id, ...saved }
   }
 
   /**
-   * Rename, describe, remove or restore, or point at the file's new place. A new place must hold
+   * Rename, describe, set its kind or the pages it serves, remove or restore, or point at the file's new place. A new place must hold
    * the latest version's bytes; different bytes are a new version and go through consume.
    */
-  update(id, { expected_revision, title, description, path, state, by, reason }) {
+  update(id, { expected_revision, title, description, kind, serves, path, state, by, reason }) {
     const rec = this.store.get(id)
     if (!rec) throw new Error(`unknown artifact: ${id}`)
+    if (kind !== undefined && !KINDS.includes(kind)) throw new Error(`kind must be ${KINDS.join(', ')}`)
+    this.checkServes(serves)
     if (state !== undefined && !['active', 'removed'].includes(state)) throw new Error('state must be active or removed')
     let moved
     if (path !== undefined) {
@@ -158,6 +175,8 @@ export class Artifacts {
       ...cur,
       ...(title !== undefined ? { title } : {}),
       ...(description !== undefined ? { description } : {}),
+      ...(kind !== undefined ? { kind } : {}),
+      ...(serves !== undefined ? { serves } : {}),
       ...(state !== undefined ? { state } : {}),
       ...(moved ? { path: moved.path, versions: cur.versions.map((v, i) => (i === cur.versions.length - 1 ? { ...v, mtime_ms: moved.mtime_ms } : v)) } : {}),
     }), { op: 'artifact-update', by, reason })

@@ -16,7 +16,7 @@ dsh plugin --profile <profile> add /path/to/dsh-praxis-<版本>.tgz
 
 `link:` 指向目录本身；打包文件会复制一份进 profile。装完重启 DSH 才会加载插件，profile 由桌面应用管理时重启桌面应用。插件代码更新后同样要重启：`praxis_entry` 的结果带 `reload` 时，宿主还在运行旧代码。
 
-插件给 agent 会话注册 worker 用的 10 个工具：`praxis_entry`、`praxis_resolve`、`praxis_unit`、`praxis_search`、`praxis_source`、`praxis_capture`、`praxis_curate`、`praxis_consume`、`praxis_projects`、`praxis_project`。维护名册、预设与产物的其余工具在控制面、命令行与 MCP。
+插件给 agent 会话注册 worker 用的 11 个工具：`praxis_entry`、`praxis_resolve`、`praxis_unit`、`praxis_search`、`praxis_catalog`、`praxis_source`、`praxis_capture`、`praxis_curate`、`praxis_consume`、`praxis_projects`、`praxis_project`。维护名册、预设与产物的其余工具在控制面、命令行与 MCP。
 
 插件配置写在 profile 的 `cordis.patch.yml`：
 
@@ -101,11 +101,12 @@ node <包>/adapters/cli.js export [archive.tar.gz]  # 备份，见下文
 6. **交付：** `consume` 记下读过的单元与来源，并把交付的文件登记为产物。
 
 之后 `upkeep` 列出需要人处理的事，通常为空：
-- 挂载：review 待改、来源变了或链接失效；
-- 运行：交付后所用的单元、挂载、来源或预设又改过；
-- 来源：新登记还没挂上；集合在上游新增或下线了成员；
+- 挂载与编目：review 待改、来源变了或链接失效；
+- 来源：编目放不下（没有形态，或既无 Kit 分类也未挂到页面）；集合在上游新增或下线了成员；
 - Kit 修订：与包内更新后的原页冲突；
-- 产物与项目：文件找不到、最新版 review 待改或放错位置；最终产物路径里有未登记的文件。
+- 产物：文件找不到、最新版 review 待改，或交付物放错位置。
+
+交付后所用单元又改过的运行、项目里未登记的最终产物，分别在运行记录与项目上标出，不进 upkeep：再交付之前，它们不等人处理。
 
 ## 备份与恢复
 

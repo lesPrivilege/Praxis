@@ -15,4 +15,6 @@
 
 草案早于名册的现行存储：binding 草案仍写关系在来源的 `grammar_paths`。现行做法是关系与维护信息都在名册里，见 [名册怎样组成](../objects.md#名册怎样组成)。
 
-SourcePack、KitRevision、Preset、Run、Project、Artifact 没有 schema 草案，实现见 [core](../core/README.md)。
+现行名册的自有来源只收网页，`origin.locator` 只见于来源包里的条目；形态、Kit 分类与 description 记在编目里，见 [对象与操作](../objects.md#对象)。
+
+SourcePack、CatalogEntry、KitRevision、Preset、Run、Project、Artifact 没有 schema 草案，实现见 [core](../core/README.md)。

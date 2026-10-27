@@ -1,10 +1,13 @@
 // Materials: the roster of sources and their relations to Kit pages and other targets.
-// Praxis registers links, not text: a source records where the original is (URL or locator), what
-// it is for, how it was read and which passages back which claims. Sources come from Praxis's own
-// store (capture) and from source packs registered by reference (a registry file, or a project's
-// own index read through field maps); packs stay where their owner keeps them and are never written.
-// Relations are bindings: a pack may declare some, and the binding store records every relation
-// made, removed or curated through Praxis, so all of a page's sources are read in one place.
+// Praxis registers links, not text: a source records where the original is (a URL), what it is
+// for, how it was read and which passages back which claims. Sources come from Praxis's own store
+// (capture) and from source packs registered by reference (a registry file, or a project's own
+// index read through field maps); packs stay where their owner keeps them and are never written.
+// The catalog files any roster source, own or a pack's, by form and Kit area with a description
+// and its latest review. Relations are bindings: a pack may declare some, and the binding store records
+// every relation made, removed or curated through Praxis, so all of a page's sources are read in one place.
+// Local work (drafts, project files, distilled notes) is not a source: it is recorded as an
+// artifact trace in the task output layer.
 import { createHash } from 'node:crypto'
 import { appendFileSync, existsSync, mkdirSync, readFileSync, statSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
@@ -24,6 +27,9 @@ export const INDEX_FIELDS = ['id', 'title', 'url', 'summary', 'read_scope', 'sta
 // `unreachable`: the last check found the link gone (404, 410, or a host that no longer resolves).
 // A refusal, a rate limit or a timeout says more about the network that checked than about the link.
 export const SIGNALS = ['needs_work', 'changed', 'unreachable']
+// What kind of thing a source is: the catalog's second level under a Kit area.
+export const FORMS = ['standard', 'practice', 'component-library', 'case-library', 'case', 'skill', 'tool', 'article', 'research']
+export const VERDICTS = ['accurate', 'revised', 'needs-work']
 const GONE = (c) => c.status === 'unreachable' && ([404, 410].includes(c.http) || c.error === 'ENOTFOUND')
 
 // What a check compares: an HTML page by its text, since markup carries per-load tokens and its bytes
@@ -40,7 +46,7 @@ export function pageText(html) {
 }
 
 export function signalsOf(b, state) {
-  const last = b.reviews.at(-1)
+  const last = b.review
   const since = state?.changed.get(b.source)
   // A review records the source version it saw; one recorded before that is placed by time.
   const seen = last && (last.source_version !== undefined ? last.source_version === state?.current.get(b.source) : last.at >= since)
@@ -65,6 +71,7 @@ export class Materials {
     this.bindings = new Collection(join(where.data, 'bindings.json'), history)
     this.own = new Collection(join(where.data, 'sources.json'), history)
     this.packs = new Collection(join(where.data, 'packs.json'), history)
+    this.catalog = new Collection(join(where.data, 'catalog.json'), history)
     this.checksPath = join(where.data, 'checks.jsonl')
   }
 
@@ -73,12 +80,17 @@ export class Materials {
   /** Every source, own first, then each active pack's; reread when any file behind them changes. */
   roster() {
     const packs = Object.entries(this.packs.all()).map(([id, p]) => ({ id, ...p })).filter((p) => p.state !== 'removed')
-    const files = [this.own.path, this.packs.path, ...packs.flatMap((p) => [p.path, p.excerpts?.path].filter(Boolean).map((f) => this.paths.absolute(f)))]
+    const files = [this.own.path, this.packs.path, this.catalog.path, ...packs.flatMap((p) => [p.path, p.excerpts?.path].filter(Boolean).map((f) => this.paths.absolute(f)))]
     const key = files.map((f) => { try { const st = statSync(f); return `${f}@${st.mtimeMs}/${st.size}` } catch { return f } }).join('|')
     if (this.cache?.key === key) return this.cache.value
     const list = []
     for (const [id, r] of Object.entries(this.own.all())) list.push(ownEntry(id, r))
     for (const p of packs) list.push(...(p.kind === 'registry' ? this.registryEntries(p) : this.indexEntries(p)))
+    const catalog = this.catalog.all()
+    for (const s of list) {
+      const e = catalog[s.id]
+      if (e) Object.assign(s, { form: e.form, category: e.category, description: e.description, review: e.review, entry_revision: e.revision })
+    }
     const byId = new Map()
     for (const s of list) {
       if (!byId.has(s.id)) byId.set(s.id, s)
@@ -144,7 +156,8 @@ export class Materials {
     const s = this.roster().byId.get(ref)
     if (!s) return undefined
     const { declared, ...rest } = s
-    return { ...rest, purpose_tags: s.tags, ...this.observed(s) }
+    const signals = s.form ? signalsOf({ source: s.id, review: s.review }, this.sourceState()) : []
+    return { ...rest, purpose_tags: s.tags, signals, ...this.observed(s) }
   }
 
   /** What a source's collection was gathered for: the pack registration's purpose, or its catalog README's lede. */
@@ -164,7 +177,7 @@ export class Materials {
     return { id: c.id, title, path: c.path, readme: this.paths.normalize(readme), purpose: lede ? clip(lede.replace(/\[([^\]]+)\]\([^)]*\)/g, '$1').replace(/\s+/g, ' '), 240) : undefined }
   }
 
-  search({ query = '', tag, status, category, limit = 20 } = {}) {
+  search({ query = '', tag, status, category, form, limit = 20 } = {}) {
     const terms = query.toLowerCase().split(/\s+/).filter(Boolean)
     const filed = category ? this.filedUnder() : undefined
     const hits = []
@@ -172,14 +185,15 @@ export class Materials {
       if (s.state === 'retired') continue
       if (tag && !s.tags.includes(tag)) continue
       if (status && s.evidence_status !== status) continue
+      if (form && s.form !== form) continue
       if (category && !(filed.get(s.id) ?? []).some((c) => c === category || c.startsWith(`${category}/`))) continue
-      const hay = [s.id, s.title, s.summary, s.url ?? s.locator ?? '', ...s.tags, ...s.aliases].join(' ').toLowerCase()
+      const hay = [s.id, s.title, s.description ?? '', s.summary, s.url ?? s.locator ?? '', ...s.tags, ...s.aliases].join(' ').toLowerCase()
       const score = terms.reduce((n, t) => n + (hay.includes(t) ? (s.title?.toLowerCase().includes(t) ? 3 : 1) : -100), 0)
       if (!terms.length || score > 0) hits.push({ score, s })
     }
     hits.sort((a, b) => b.score - a.score)
     return hits.slice(0, limit).map(({ s }) => ({
-      id: s.id, title: s.title, summary: clip(s.summary ?? '', 160), evidence_status: s.evidence_status, purpose_tags: s.tags, category: s.category,
+      id: s.id, title: s.title, description: s.description, summary: clip(s.summary ?? '', 160), form: s.form, evidence_status: s.evidence_status, purpose_tags: s.tags, category: s.category,
     }))
   }
 
@@ -234,7 +248,7 @@ export class Materials {
       source: s?.id ?? rec.source,
       target,
       title: s?.title ?? rec.title,
-      description: rec.description ?? clip(s?.summary ?? '', 160),
+      description: rec.description ?? s?.description ?? clip(s?.summary ?? '', 160),
       description_curated: rec.description !== undefined,
       usage: rec.usage,
       enabled: rec.enabled ?? true,
@@ -243,7 +257,7 @@ export class Materials {
       tags: rec.tags ?? s?.tags ?? [],
       state: rec.state === 'removed' ? 'removed' : 'active',
       declared: !!s?.declared.includes(target),
-      reviews: rec.reviews ?? [],
+      review: rec.review,
       revision: rec.revision ?? 0,
       evidence_status: s?.evidence_status,
     }
@@ -287,23 +301,55 @@ export class Materials {
     return this.binding(b.id)
   }
 
+  /** The latest review replaces the one before; history.jsonl keeps the earlier ones. */
   review(id, { revision, verdict, note, by }) {
     const b = this.binding(id)
     if (!b) throw new Error(`unknown binding: ${id}`)
-    if (!['accurate', 'revised', 'needs-work'].includes(verdict)) throw new Error('verdict must be accurate, revised or needs-work')
+    if (!VERDICTS.includes(verdict)) throw new Error(`verdict must be ${VERDICTS.join(', ')}`)
     const reviewed = revision ?? b.revision
     this.bindings.update(b.id, undefined, (cur = {}) => ({
       ...cur, source: b.source, target: b.target, title: b.title, state: cur?.state ?? b.state,
-      reviews: [...(cur?.reviews ?? []), { revision: reviewed, source_version: this.source(b.source)?.version ?? null, by, verdict, note, at: new Date().toISOString() }],
+      review: { revision: reviewed, source_version: this.source(b.source)?.version ?? null, by, verdict, note, at: new Date().toISOString() },
     }), { op: 'review', by, verdict })
     return this.binding(b.id)
   }
 
-  /** Own sources no active binding relates to a page yet. */
-  unboundCaptures() {
+  /** Own sources the catalog cannot place: no form, or neither a Kit area nor a page that binds them. */
+  unfiled() {
     const bound = new Set(this.listBindings().map((b) => b.source))
-    return this.roster().list.filter((s) => s.pack === undefined && s.state !== 'retired' && !bound.has(s.id))
-      .map((s) => ({ id: s.id, title: s.title, summary: clip(s.summary ?? '', 160), evidence_status: s.evidence_status, purpose_tags: s.tags, category: s.category }))
+    return this.roster().list.filter((s) => s.pack === undefined && s.state !== 'retired' && (!s.form || (!s.category && !bound.has(s.id))))
+      .map((s) => ({ id: s.id, title: s.title, summary: clip(s.summary ?? '', 160), evidence_status: s.evidence_status, form: s.form, category: s.category }))
+  }
+
+  // ---- the catalog -----------------------------------------------------------------------------
+
+  /** File a roster source, own or a pack's, by form, Kit area and description. A pack is never written. */
+  file(id, patch, { expected_revision, by, reason, task } = {}) {
+    const s = this.roster().byId.get(id)
+    if (!s) throw new Error(`unknown source: ${id}`)
+    for (const key of Object.keys(patch)) if (!['form', 'category', 'description'].includes(key)) throw new Error(`not a catalog field: ${key}`)
+    this.checkEntry(patch)
+    this.cache = undefined
+    this.catalog.update(s.id, expected_revision, (cur = {}) => ({ ...cur, ...patch }), { op: 'file', by, reason, task, fields: Object.keys(patch) })
+    return this.source(s.id)
+  }
+
+  checkEntry({ form, category, description }) {
+    if (form !== undefined && !FORMS.includes(form)) throw new Error(`form must be ${FORMS.join(', ')}`)
+    if (category && !this.categories().includes(category)) throw new Error(`category must be a Kit area: ${this.categories().join(', ')}`)
+    if (description !== undefined && (!description.trim() || description.length > 240)) throw new Error('description must be 1–240 characters')
+  }
+
+  /** Review a catalog entry's description; the review names the entry revision and source version it saw. */
+  reviewEntry(id, { revision, verdict, note, by }) {
+    const s = this.roster().byId.get(id)
+    if (!s?.form) throw new Error(`not in the catalog: ${id}`)
+    if (!VERDICTS.includes(verdict)) throw new Error(`verdict must be ${VERDICTS.join(', ')}`)
+    this.cache = undefined
+    this.catalog.update(s.id, undefined, (cur) => ({
+      ...cur, review: { revision: revision ?? cur.revision, source_version: this.source(s.id)?.version ?? null, by, verdict, note, at: new Date().toISOString() },
+    }), { op: 'review', by, verdict })
+    return this.source(s.id)
   }
 
   // ---- what refresh has seen -------------------------------------------------------------------
@@ -405,7 +451,7 @@ export class Materials {
   /**
    * Register sources in one write. Every item is checked first; an item whose URL is already in the
    * roster returns that source instead. `task` says what they were collected for and stays on each.
-   * `category` files a source under a Kit area (layer or layer/area) until a binding places it;
+   * `form`, `category` (a Kit area) and `description` file it in the catalog;
    * `members` marks a collection whose upstream lists member links matching the pattern;
    * `member_of` names the collection a member came from.
    */
@@ -414,39 +460,41 @@ export class Materials {
     if (!Array.isArray(items) || !items.length) throw new Error('capture needs at least one source')
     const { list, byId } = this.roster()
     const byUrl = new Map(list.filter((s) => s.url).map((s) => [normalizeUrl(s.url), s.id]))
-    const areas = new Set(this.categories())
     const at = new Date().toISOString()
     const ids = new Set()
     const plan = items.map((input) => {
       const url = input.url?.trim()
-      const locator = input.locator?.trim()
-      if (!url && !locator) throw new Error('capture needs url or locator')
-      for (const field of ['title', 'summary', 'read_scope', 'limits', 'revisit_when']) {
-        if (!input[field]?.trim()) throw new Error(`capture needs ${field}: ${input.title ?? url ?? locator}`)
+      if (!/^https?:\/\//.test(url ?? '')) throw new Error(`capture needs an http(s) url; local work is recorded as an artifact: ${input.title ?? url ?? ''}`)
+      for (const field of ['title', 'summary', 'read_scope', 'limits', 'revisit_when', 'form', 'description']) {
+        if (!input[field]?.trim()) throw new Error(`capture needs ${field}: ${input.title ?? url}`)
       }
-      if (url && byUrl.has(normalizeUrl(url))) return { id: byUrl.get(normalizeUrl(url)), existing: true }
-      const slug = input.slug ?? slugify(input.title, url ?? locator)
+      if (byUrl.has(normalizeUrl(url))) return { id: byUrl.get(normalizeUrl(url)), existing: true }
+      const slug = input.slug ?? slugify(input.title, url)
       if (!SLUG.test(slug)) throw new Error(`bad slug: ${slug}`)
       const id = `${OWN}:${slug}`
       if (byId.has(id) || ids.has(id)) throw new Error(`source exists: ${id}`)
       const status = input.evidence_status ?? 'partial'
       if (!STATUSES.includes(status)) throw new Error(`evidence_status must be ${STATUSES.join(', ')}`)
-      if (input.category && !areas.has(input.category)) throw new Error(`category must be a Kit area: ${[...areas].join(', ')}`)
+      this.checkEntry(input)
       if (input.members && !input.members.pattern) throw new Error('members needs pattern: a glob over member link URLs')
       if (input.member_of && byId.get(input.member_of)?.members === undefined) throw new Error(`not a collection source: ${input.member_of}`)
       ids.add(id)
-      if (url) byUrl.set(normalizeUrl(url), id)
+      byUrl.set(normalizeUrl(url), id)
       const record = {
-        title: input.title.trim(), ...(url ? { url } : { locator }), summary: input.summary.trim(),
+        title: input.title.trim(), url, summary: input.summary.trim(),
         read_scope: input.read_scope.trim(), evidence_status: status, limits: input.limits.trim(), revisit_when: input.revisit_when.trim(),
-        tags: input.tags ?? [], ...(input.category ? { category: input.category } : {}),
+        tags: input.tags ?? [],
         ...(input.members ? { members: { pattern: input.members.pattern } } : {}), ...(input.member_of ? { member_of: input.member_of } : {}),
         excerpts: (input.excerpts ?? []).map((e, i) => ({ id: `${slug}-C${i + 1}`, locator: e.locator, claim: e.claim })),
         captured_for: { task: task.trim(), by, at }, state: 'active',
       }
-      return { id, record }
+      const entry = { form: input.form, description: input.description.trim(), ...(input.category ? { category: input.category } : {}) }
+      return { id, record, entry }
     })
-    for (const { id, record } of plan.filter((p) => p.record)) this.own.update(id, 0, () => record, { op: 'capture', by, reason, task })
+    for (const { id, record, entry } of plan.filter((p) => p.record)) {
+      this.own.update(id, 0, () => record, { op: 'capture', by, reason, task })
+      this.catalog.update(id, 0, () => entry, { op: 'file', by, reason, task, fields: Object.keys(entry) })
+    }
     this.cache = undefined
     return plan.map(({ id, existing }) => {
       const s = this.source(id)
@@ -454,14 +502,14 @@ export class Materials {
     })
   }
 
-  /** Revise an own source's record: what it is, how it was read, where it is filed, whether it is a collection. */
+  /** Revise an own source's record: what it is, how it was read, whether it is a collection. Filing goes through file(). */
   updateOwn(id, patch, { expected_revision, by, reason, task } = {}) {
     const cur = this.own.get(id)
     if (!cur) throw new Error(`not an own source: ${id}; pack sources are maintained in their pack`)
-    const allowed = ['title', 'url', 'locator', 'summary', 'read_scope', 'evidence_status', 'limits', 'revisit_when', 'tags', 'category', 'members', 'member_of', 'excerpts']
+    const allowed = ['title', 'url', 'summary', 'read_scope', 'evidence_status', 'limits', 'revisit_when', 'tags', 'members', 'member_of', 'excerpts']
     for (const key of Object.keys(patch)) if (!allowed.includes(key)) throw new Error(`not editable: ${key}`)
+    if (patch.url !== undefined && !/^https?:\/\//.test(patch.url)) throw new Error('url must be http(s)')
     if (patch.evidence_status && !STATUSES.includes(patch.evidence_status)) throw new Error(`evidence_status must be ${STATUSES.join(', ')}`)
-    if (patch.category && !this.categories().includes(patch.category)) throw new Error('category must be a Kit area')
     if (patch.members && !patch.members.pattern) throw new Error('members needs pattern')
     if (patch.member_of && this.roster().byId.get(patch.member_of)?.members === undefined) throw new Error(`not a collection source: ${patch.member_of}`)
     const next = { ...patch }
@@ -501,6 +549,28 @@ export class Materials {
       added: latest.members.filter((u) => !earlier.has(normalizeUrl(u)) && !known.has(normalizeUrl(u))),
       gone: roster.filter((m) => m.state !== 'retired' && !upstream.has(normalizeUrl(m.url))).map((m) => ({ id: m.id, title: m.title, url: m.url })),
     }
+  }
+
+  /**
+   * Every member link the latest check found, each with what the roster did about it: `registered`
+   * (the source with that link, active or retired), `skipped` (with the reason) or `open`; `added` marks
+   * links new since the check before. Undefined before the first check that saw members.
+   */
+  ledger(id) {
+    const s = this.roster().byId.get(id)
+    const seen = (this.observations().get(id) ?? []).filter((o) => o.members)
+    const [before, latest] = [seen.at(-2), seen.at(-1)]
+    if (!s?.members || !latest) return undefined
+    const earlier = new Set((before?.members ?? latest.members).map(normalizeUrl))
+    const byUrl = new Map(this.roster().list.filter((m) => m.url).map((m) => [normalizeUrl(m.url), m]))
+    const skipped = new Map(Object.entries(s.members.skipped ?? {}).map(([u, reason]) => [normalizeUrl(u), reason]))
+    return latest.members.map((url) => {
+      const key = normalizeUrl(url)
+      const m = byUrl.get(key)
+      const entry = m ? { url, state: 'registered', id: m.id, title: m.title, retired: m.state === 'retired' }
+        : skipped.has(key) ? { url, state: 'skipped', reason: skipped.get(key) } : { url, state: 'open' }
+      return { ...entry, added: !earlier.has(key) }
+    })
   }
 
   /** Decline an upstream member link for a reason, so the collection stops proposing it. */
@@ -576,10 +646,10 @@ export class Materials {
 
 function ownEntry(id, r) {
   return {
-    id, aliases: [], pack: undefined, collection: OWN, kind: r.url ? 'external-url' : 'local', title: r.title,
-    url: r.url, locator: r.locator, summary: r.summary, evidence_status: r.evidence_status, tags: r.tags ?? [],
+    id, aliases: [], pack: undefined, collection: OWN, kind: 'external-url', title: r.title,
+    url: r.url, summary: r.summary, evidence_status: r.evidence_status, tags: r.tags ?? [],
     limits: [r.limits], revisit_when: r.revisit_when, card: undefined, read_scope: r.read_scope, captured_for: r.captured_for,
-    priority: undefined, category: r.category, excerpts: r.excerpts ?? [], snapshot: undefined, declared: [],
+    priority: undefined, excerpts: r.excerpts ?? [], snapshot: undefined, declared: [],
     members: r.members, member_of: r.member_of, state: r.state ?? 'active', retired: r.retired, revision: r.revision,
   }
 }

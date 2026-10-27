@@ -14,6 +14,7 @@
 | `fresh_roster_is_empty` | 新名册没有素材，任务仍能取到单元 |
 | `related_source_reaches_the_task_with_its_link` | 登记并挂上的来源出现在任务素材里，带原件 URL 与摘录定位 |
 | `roster_files_by_category` | 按 Kit 分类能查到归了类的集合来源 |
+| `catalog_files_by_area_and_form` | 来源编目在该区域下按形态列出登记的集合与成员，各带 description |
 | `run_records_units_sources_and_session` | consume 记下读过的单元、来源和来源会话 |
 | `finals_registered_and_in_place` | 底稿与成品登记在项目里，最终产物路径没有未登记的文件 |
 | `artifacts_carry_roles_without_signals` | 产物带底稿或最终产物的角色，没有信号 |

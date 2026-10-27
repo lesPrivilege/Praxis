@@ -9,15 +9,15 @@ Praxis is a bundle of working methods for writing, laying out, designing and rep
 | Design | How relations become visual, interactive or moving form |
 | Publish | How content is produced for a medium: html pages or video |
 
-Sources are bound to pages: a reference, an example, an outside document. The roster keeps links, locators, summaries and excerpts, never the original's text. Each binding has a short description saying what the source does for that page and when to open it.
+Sources are references on the web: standards, established practice, component libraries, case libraries, articles. The roster keeps links, summaries and excerpts, never the original's text. The source catalog files them by Kit area and form, each with a short description saying when to open it and what to take; a binding to a page can add what is particular to that page. Local products are not sources. They are artifacts of three kinds: deliveries, pipelines (how to make one kind of delivery again) and examples (specimens made to show a pattern). Pipelines and examples that name the pages they serve, and accepted deliveries, reach a task after the web materials. Process records are not kept.
 
 ## What the agent does
 
-The plugin registers 10 tools in agent sessions and adds a short entry to the system prompt. For a task, the agent:
+The plugin registers 11 tools in agent sessions and adds a short entry to the system prompt. For a task, the agent:
 
 1. Calls `praxis_resolve` with a task type and a pipeline, and reads only the pages it returns with `praxis_unit`. Writing and Design entry pages are always in context; everything else is read on demand.
-2. Goes back to an original through the material's link and excerpt locator when it needs to check or borrow something; `praxis_search` and `praxis_source` look up the roster.
-3. Registers references worth keeping with `praxis_capture`, in batches and with the task they were found for, then binds them to pages with `praxis_curate`.
+2. Goes back to an original through the material's link and excerpt locator when it needs to check or borrow something; `praxis_catalog` browses the source catalog by area and form; `praxis_search` and `praxis_source` look up the roster.
+3. Registers web references worth keeping with `praxis_capture`, in batches, with the task they were found for, a form and a description, and binds them to pages with `praxis_curate` where a page needs them.
 4. Asks `praxis_projects` which project the delivery folder belongs to, registering one with `praxis_project` if there is none, and puts its files where the project's layout says.
 5. Before delivery, records the pages and sources it read with `praxis_consume` and registers the delivered files as artifacts; delivering a changed file again adds a version. The run records the session, so the text of an original the agent read can be found again in that session's transcript.
 

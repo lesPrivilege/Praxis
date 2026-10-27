@@ -75,8 +75,8 @@ export function statusText(praxis) {
   const entry = praxis.entry()
   const up = praxis.upkeep()
   const counts = [
-    ['挂载', up.bindings.length], ['过期运行', up.stale.length], ['未挂载的新来源', up.unbound.length], ['集合有变化', up.collections.length],
-    ['产物', up.artifacts.length], ['项目有未登记的最终产物', up.projects.length],
+    ['挂载', up.bindings.length], ['编目放不下的来源', up.unfiled.length], ['编目条目', up.sources.length], ['集合有变化', up.collections.length],
+    ['单元修订冲突', up.revisions.length], ['产物', up.artifacts.length],
   ].filter(([, n]) => n)
   return [
     `任务类型：${entry.task_types.map((t) => t.id.replace('task/types/', '')).join('、')}`,

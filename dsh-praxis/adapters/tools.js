@@ -4,12 +4,20 @@
 // delivered); a host that keeps every session's context lean shows only those. The rest maintain the
 // roster and records and stay on the control plane, the CLI and MCP.
 
+import { FORMS } from '../core/materials.js'
+
 const str = (description) => ({ type: 'string', description })
 const bool = (description) => ({ type: 'boolean', description })
 const num = (description) => ({ type: 'integer', description })
 const list = (description) => ({ type: 'array', items: { type: 'string' }, description })
 // A lookup miss is a failed call on every surface: CLI exit 1, MCP isError, DSH tool error, HTTP 400.
 const missing = (message) => { throw new Error(message) }
+// How a source is filed, written into the tools that file one, so maintenance needs no exploration first.
+const FILING = `编目规则：形态看来源本身。规范性文本（WCAG、APG、W3C、MDN）是 standard；一家设计系统或平台的指南是 practice；逐个说明组件的文档是 component-library；收一批作品或样式的站点是 case-library；单件作品或单页是 case；写给 agent 的指令（SKILL.md、design.md）是 skill；库、服务或工具的文档是 tool；文章、博客是 article；论文与研究是 research。category 填会用到它的 Kit 页所在的区域（如 design/interaction）；拿不准就填层（design、writing、publish、task），不自建区域。description 写“<何时>时打开；取<什么>。”，一两个短句。`
+// What local work is recorded, and what is left out as noise.
+const LOCAL = `本地产物只登记三类：delivery（真实交付，在已登记项目里）、pipeline（再做同类交付的方法：构建脚本或写明步骤的 README）、example（为示范某种做法预先做的样张）。pipeline 与 example 用 serves 写它服务哪些 Kit 页、何时对照，可以不在项目里；delivery 经 review 接受（accepted）且写了 serves，才作为范例给到任务。过程记录（dogfooding、review 记录、蒸馏笔记、会话纪要）不登记，运行记录就是它们的痕迹。`
+const serves = { type: 'array', description: '它服务的 Kit 页：何时对照、看什么', items: { type: 'object', properties: { target: str('Kit 页路径，如 kit/design/interaction/controls.md'), description: str('“<何时>时对照；看<什么>。”') }, required: ['target'] } }
+
 const who = {
   by: str('操作者，人或 agent 的名称；省略时用调用方名称'),
   reason: str('为什么改'),
@@ -27,7 +35,7 @@ export const TOOLS = [
   {
     name: 'praxis_resolve',
     agent: true,
-    description: '按任务类型和流水线列出这次要读的 Kit 单元（附选用理由）和挂在这些单元上的已启用素材。只读结果里的单元，不默认加载全部。每条素材带 source ID、原件 URL、证据状态、读取范围、摘录（定位与说法）和本地快照路径：需要核对或引用时按定位回原件，读过的来源在 praxis_consume 的 sources 里写上。',
+    description: '按任务类型和流水线列出这次要读的 Kit 单元（附选用理由）和挂在这些单元上的已启用素材。只读结果里的单元，不默认加载全部。每条素材带 source ID、原件 URL、证据状态、读取范围、摘录（定位与说法）和本地快照路径：需要核对或引用时按定位回原件，读过的来源在 praxis_consume 的 sources 里写上。之后的 exemplars 是服务这些单元的本地 pipeline、example 与已接受的交付（路径与说明）：先用网页素材，要照着做或重复同类交付时再打开范例。',
     parameters: {
       task_type: str('任务类型 ID，如 technical-explainer、work-report'),
       pipeline: str('html 或 video；省略用任务类型的默认流水线'),
@@ -75,14 +83,33 @@ export const TOOLS = [
   {
     name: 'praxis_search',
     agent: true,
-    description: '在名册的全部来源里按关键词、用途 tag、证据状态或 Kit 分类（层或层下的区域，如 design、design/motion）查找，返回目录级信息。',
-    parameters: { query: str('空格分隔的关键词'), tag: str('用途 tag，如 ARIA'), status: str('verified、partial 或 unavailable'), category: str('Kit 分类：层或区域，如 design/motion'), limit: num('最多返回几条，默认 20') },
+    description: '在名册的全部来源里按关键词、用途 tag、证据状态、形态或 Kit 分类（层或层下的区域，如 design、design/motion）查找，返回目录级信息：已编目的来源带形态与 description。',
+    parameters: { query: str('空格分隔的关键词'), tag: str('用途 tag，如 ARIA'), status: str('verified、partial 或 unavailable'), form: str(`形态：${FORMS.join('、')}`), category: str('Kit 分类：层或区域，如 design/motion'), limit: num('最多返回几条，默认 20') },
     run: (p, a) => p.materials.search(a),
+  },
+  {
+    name: 'praxis_catalog',
+    agent: true,
+    description: `来源编目：按 Kit 的层与区域，再按形态（${FORMS.join('、')}）排成纲目，每条带 description（何时打开、取什么）。不给 area 与 query 时只返回纲目与各形态的条数；给 area（如 design/interaction）或 query 时返回条目：标题、description、URL、证据状态、所挂页面与信号。找某类做法或范例时先看纲目再展开一个区域，读原件用 URL，详情用 praxis_source。`,
+    parameters: { area: str('Kit 区域，如 design/motion；给出时返回该区域及其子区域的条目'), form: str('只看一种形态'), query: str('空格分隔的关键词') },
+    run: (p, a) => p.catalog(a),
+  },
+  {
+    name: 'praxis_file',
+    description: `编目一个来源（自有来源或来源包里的条目）：形态、Kit 分类与 description，240 字以内，同时服务目录浏览、agent 发现与 review；挂载上没写 description 时沿用它。来源包从不被写入，编目记在名册里。带上读到的 entry_revision（首次编目填 0）。${FILING}`,
+    parameters: { source: str('来源 ID'), expected_revision: num('读到的 entry_revision；首次编目填 0'), form: str(`形态：${FORMS.join('、')}`), category: str('Kit 分类：层或区域，如 design/interaction'), description: str('何时打开、取什么'), ...who },
+    required: ['source'],
+    run: (p, a) => {
+      const patch = {}
+      for (const k of ['form', 'category', 'description']) if (a[k] !== undefined) patch[k] = a[k]
+      return p.materials.file(a.source, patch, a)
+    },
+    writes: true,
   },
   {
     name: 'praxis_source',
     agent: true,
-    description: '读一个来源的条目：出处、概要、证据状态、读取范围、限制、摘录与定位、快照、最近一次上游检查；它为什么收录（自有来源的收录任务，或来源包的用途）；挂在哪些页面、经这些页面服务哪些任务类型；哪些运行读过它、交付了什么；集合类来源另列上游新增与下线的条目。不含原件全文。',
+    description: '读一个来源的条目：出处、编目（形态、Kit 分类、description 与它的 review）、概要、证据状态、读取范围、限制、摘录与定位、快照、最近一次上游检查；它为什么收录（自有来源的收录任务，或来源包的用途）；挂在哪些页面、经这些页面服务哪些任务类型；哪些运行读过它、交付了什么；集合类来源另列成员账目（上游每条成员链接：已登记、不收录或未处理）与上游新增、下线。不含原件全文。',
     parameters: { id: str('来源 ID 或别名') },
     required: ['id'],
     run: (p, a) => p.source(a.id) ?? missing(`unknown source: ${a.id}`),
@@ -135,19 +162,19 @@ export const TOOLS = [
   },
   {
     name: 'praxis_review',
-    description: '记录一次 description review：针对当前或指定 revision，结论为 accurate、revised 或 needs-work。',
-    parameters: { binding: str('挂载 ID'), verdict: str('accurate、revised 或 needs-work'), note: str('说明'), revision: num('被检查的 revision；省略为当前'), by: who.by },
-    required: ['binding', 'verdict'],
-    run: (p, a) => p.materials.review(a.binding, a),
+    description: '记录一次 description review：挂载的 description（binding），或来源编目的 description（source）。针对当前或指定 revision，结论为 accurate、revised 或 needs-work。',
+    parameters: { binding: str('挂载 ID'), source: str('来源 ID：review 它的编目'), verdict: str('accurate、revised 或 needs-work'), note: str('说明'), revision: num('被检查的 revision；省略为当前'), by: who.by },
+    required: ['verdict'],
+    run: (p, a) => (a.binding ? p.materials.review(a.binding, a) : a.source ? p.materials.reviewEntry(a.source, a) : missing('review needs binding or source')),
     writes: true,
   },
   {
     name: 'praxis_capture',
     agent: true,
-    description: '登记新来源（一次任务里 explore 或用户指定的来源线得到的参考），可一次多条：全部核对后一次写入，同一 URL 已在名册的返回已有条目。名册只记链接、定位、概要与摘录，不存原件。task 写这批来源为哪件任务收录，留在每条记录上，供人 review 时知道它为什么在名册里。category 把还没挂到页面的来源归到 Kit 的层或区域；之后用 praxis_curate 挂到单元上。作品集、组件库这类会随上游增减的集合，用 members 给出成员链接的 URL 模式，refresh 时会对照上游列出新增与下线；从集合里登记的成员用 member_of 指回集合。来源已在项目里有自己的登记文件时，用 praxis_register_index 按引用登记，不逐条复制。',
+    description: `登记新来源（一次任务里 explore 或用户指定的来源线得到的网页参考），可一次多条：全部核对后一次写入，同一 URL 已在名册的返回已有条目。名册只记链接、概要与摘录，不存原件；本地文件、项目材料和自己的笔记不是来源，用 praxis_consume 记为产物 trace。task 写这批来源为哪件任务收录，留在每条记录上，供人 review 时知道它为什么在名册里。form（${FORMS.join('、')}）、category（Kit 的层或区域）与 description（何时打开、取什么）把它编进来源编目；之后可用 praxis_curate 挂到具体单元上。${FILING}作品集、组件库这类会随上游增减的集合，用 members 给出成员链接的 URL 模式，refresh 时会对照上游列出新增与下线；从集合里登记的成员用 member_of 指回集合。来源已在项目里有自己的登记文件时，用 praxis_register_index 按引用登记，不逐条复制。`,
     parameters: {
       sources: { type: 'array', description: '要登记的来源', items: { type: 'object', properties: {
-        url: str('原 URL'), locator: str('非 URL 来源的定位'), title: str('标题'),
+        url: str('原 URL（http 或 https）'), title: str('标题'), form: str(`形态：${FORMS.join('、')}`), description: str('何时打开、取什么，240 字以内'),
         summary: str('以自己的话写的概要：是什么、能支持什么判断'),
         read_scope: str('实际读取范围与证据形态：读过文字、看过输出、执行过实现'),
         evidence_status: str('verified、partial 或 unavailable；默认 partial'),
@@ -156,7 +183,7 @@ export const TOOLS = [
         category: str('Kit 分类：层或区域，如 design/motion'), slug: str('可选的稳定 slug'),
         members: { type: 'object', description: '这是一个集合：成员链接的 URL 模式（* 不跨 /，** 跨 /）', properties: { pattern: str('URL glob') }, required: ['pattern'] },
         member_of: str('这条来自哪个集合来源（ID）'),
-      }, required: ['title', 'summary', 'read_scope', 'limits', 'revisit_when'] } },
+      }, required: ['url', 'title', 'form', 'description', 'summary', 'read_scope', 'limits', 'revisit_when'] } },
       task: str('这批来源为哪件任务收录'), by: who.by, reason: who.reason,
     },
     required: ['sources', 'task'],
@@ -188,11 +215,11 @@ export const TOOLS = [
   },
   {
     name: 'praxis_source_update',
-    description: '修订一条自有来源的记录：标题、链接或定位、概要、读取范围、证据状态、边界、何时重访、tag、Kit 分类、摘录；members 把它标为集合（给出成员链接的 URL 模式），member_of 指明它来自哪个集合。带上读到的 revision。来源包里的条目在来源包自己那里维护。',
+    description: '修订一条自有来源的记录：标题、链接、概要、读取范围、证据状态、边界、何时重访、tag、摘录；members 把它标为集合（给出成员链接的 URL 模式），member_of 指明它来自哪个集合。形态、Kit 分类与 description 用 praxis_file 改。带上读到的 revision。来源包里的条目在来源包自己那里维护。',
     parameters: {
       source: str('来源 ID'), expected_revision: num('读到的 revision'),
-      title: str('标题'), url: str('URL'), locator: str('非 URL 来源的定位'), summary: str('概要'), read_scope: str('读取范围'), evidence_status: str('verified、partial 或 unavailable'),
-      limits: str('边界'), revisit_when: str('何时重访'), tags: list('用途 tag'), category: str('Kit 分类'),
+      title: str('标题'), url: str('URL'), summary: str('概要'), read_scope: str('读取范围'), evidence_status: str('verified、partial 或 unavailable'),
+      limits: str('边界'), revisit_when: str('何时重访'), tags: list('用途 tag'),
       members: { type: 'object', description: '集合：成员链接的 URL 模式', properties: { pattern: str('URL glob') }, required: ['pattern'] }, member_of: str('所属集合来源 ID'),
       excerpts: { type: 'array', description: '摘录', items: { type: 'object', properties: { locator: str('定位'), claim: str('支持的说法') }, required: ['locator', 'claim'] } },
       ...who,
@@ -200,7 +227,7 @@ export const TOOLS = [
     required: ['source', 'expected_revision'],
     run: (p, a) => {
       const patch = {}
-      for (const k of ['title', 'url', 'locator', 'summary', 'read_scope', 'evidence_status', 'limits', 'revisit_when', 'tags', 'category', 'members', 'member_of', 'excerpts']) if (a[k] !== undefined) patch[k] = a[k]
+      for (const k of ['title', 'url', 'summary', 'read_scope', 'evidence_status', 'limits', 'revisit_when', 'tags', 'members', 'member_of', 'excerpts']) if (a[k] !== undefined) patch[k] = a[k]
       return p.materials.updateOwn(a.source, patch, a)
     },
     writes: true,
@@ -231,20 +258,21 @@ export const TOOLS = [
   },
   {
     name: 'praxis_upkeep',
-    description: '现在需要人处理的事，通常为空：review 结论为待改（needs_work）或来源在上次 review 后变了（changed）的挂载、交付后所用单元、挂载、来源或预设又改过的运行、新登记还没挂到单元的来源、上游有新增或下线成员的集合、与包里更新后的原页冲突的单元修订、找不到文件、最新版 review 待改或放错位置的产物、最终产物路径里有未登记文件的项目、宿主运行旧代码时的 reload。未写说明、未 review 是默认状态，不列。',
+    description: '现在需要人处理的事，通常为空：review 结论为待改（needs_work）或来源在上次 review 后变了（changed）的挂载、编目放不下的自有来源（没有形态，或既无 Kit 分类也无挂载）、有信号而挂载上看不到的编目条目、上游有新增或下线成员的集合、与包里更新后的原页冲突的单元修订、找不到文件、最新版 review 待改或放错位置的产物、宿主运行旧代码时的 reload。未写说明、未 review 是默认状态，不列。',
     parameters: {},
     run: (p) => p.upkeep(),
   },
   {
     name: 'praxis_consume',
     agent: true,
-    description: '交付前调用：记录这次工作实际读过的单元和来源（按当前版本），并把交付的文件登记为产物。文件必须在已登记项目的目录里（用 praxis_projects 查，没有就先用 praxis_project 登记），记录带上所属项目。文件由某条已登记的管线产出时，用 made_with 写上那条管线的来源 ID。读过的来源与读过的单元之间的挂载随之记下，之后任何一边改了，这次运行会被列为过期。同一文件内容未变不重复登记；内容变了记为新版本；文件挪了位置时用 artifact 指明是哪件产物。只记实际读过、用过的；文件必须已经存在。返回运行记录，其中 artifacts 给出每个文件的产物 ID 与版本。',
+    description: `交付前调用：记录这次工作实际读过的单元和来源（按当前版本），并把交付的文件登记为产物。文件必须在已登记项目的目录里（用 praxis_projects 查，没有就先用 praxis_project 登记），记录带上所属项目。${LOCAL}文件由某条已登记的管线产出时，用 made_with 写上那件 pipeline 产物的 ID。读过的来源与读过的单元之间的挂载随之记下，之后任何一边改了，这次运行会被列为过期。同一文件内容未变不重复登记；内容变了记为新版本；文件挪了位置时用 artifact 指明是哪件产物。只记实际读过、用过的；文件必须已经存在。返回运行记录，其中 artifacts 给出每个文件的产物 ID 与版本。`,
     parameters: {
       title: str('这次工作'), task_type: str('任务类型 ID'), pipeline: str('html 或 video'), preset: str('用的预设 ID'), overrides: { type: 'object', description: '这次对预设的临时改动' },
       units: list('读过的单元'), sources: list('实际读过的来源 ID：resolve 素材里的 source，或 praxis_search、praxis_source 得到的 ID'),
       artifacts: { type: 'array', description: '交付的文件：路径字符串，或带说明的对象。仓库内用仓库路径，仓库外用绝对路径', items: { anyOf: [
         { type: 'string' },
-        { type: 'object', properties: { path: str('文件路径'), title: str('产物名称；省略用文件名'), description: str('它是什么、给谁用'), artifact: str('已有产物 ID：文件换了位置或改了名时指明'), made_with: str('产出它的管线：登记为来源的管线 ID（在 publish 单元的素材里）'),
+        { type: 'object', properties: { path: str('文件路径'), title: str('产物名称；省略用文件名'), description: str('它是什么、给谁用'), artifact: str('已有产物 ID：文件换了位置或改了名时指明'), made_with: str('产出它的管线：kind 为 pipeline 的产物 ID（在 resolve 的 exemplars 里）'),
+          kind: str('delivery（默认）、pipeline 或 example'), serves,
           derived_from: { type: 'array', description: '由哪些产物派生，如 HTML 由 MD 底稿生成', items: { anyOf: [{ type: 'string' }, { type: 'object', properties: { artifact: str('产物 ID'), version: num('版本；省略为最新') }, required: ['artifact'] }] } } }, required: ['path'] },
       ] } },
       note: str('说明'), by: who.by,
@@ -276,13 +304,13 @@ export const TOOLS = [
   },
   {
     name: 'praxis_artifacts',
-    description: '列出交付过的产物（最近变动在前）：名称、媒介、路径、当前版本、文件状态（current / modified 有未登记改动 / missing 找不到）、basis_changed（产出最新版本的运行所用的单元、挂载、来源或预设之后改过）、所属项目与在项目里的角色（draft、build、final、evidence、tmp）、最新版本的最近一次 review，以及需要处理的信号（missing 记录找不到文件、needs_work 最新版 review 待改、misplaced 不在任何项目里或不在项目约定的底稿、最终产物与 evidence 位置）。',
-    parameters: { query: str('名称、说明或路径里的关键词'), medium: str('html、text、image、pdf、video、audio 等'), signal: str('missing、needs_work、misplaced，或 basis_changed'), project: str('项目 ID'), include_removed: bool('包括已移除的'), limit: num('条数，默认 50') },
+    description: '列出交付过的产物（最近变动在前）：名称、媒介、路径、当前版本、文件状态（current / modified 有未登记改动 / missing 找不到）、basis_changed（产出最新版本的运行所用的单元、挂载、来源或预设之后改过）、所属项目与在项目里的角色（draft、build、final、evidence、tmp）、最新版本的最近一次 review，以及需要处理的信号（missing 记录找不到文件、needs_work 最新版 review 待改、misplaced 交付物不在任何项目里或不在项目约定的底稿、最终产物与 evidence 位置）。kind 为 delivery、pipeline 或 example；pipeline 与 example 不按项目布局检查，serves 写它服务的 Kit 页。',
+    parameters: { query: str('名称、说明或路径里的关键词'), medium: str('html、text、image、pdf、video、audio 等'), kind: str('delivery、pipeline 或 example'), signal: str('missing、needs_work、misplaced，或 basis_changed'), project: str('项目 ID'), include_removed: bool('包括已移除的'), limit: num('条数，默认 50') },
     run: (p, a) => p.artifactList(a),
   },
   {
     name: 'praxis_artifact',
-    description: '读一件产物：每个版本的 hash、时间、产出它的运行（用了哪些单元、挂载、来源，之后哪些改过）、派生关系，以及针对各版本的 review。',
+    description: '读一件产物：种类与它服务的 Kit 页、每个版本的 hash、时间、产出它的运行（用了哪些单元、挂载、来源，之后哪些改过）、派生关系与产出它的管线，以及最近一次 review（写明针对哪一版）。',
     parameters: { id: str('产物 ID') },
     required: ['id'],
     run: (p, a) => p.artifact(a.id) ?? missing(`unknown artifact: ${a.id}`),
@@ -297,8 +325,8 @@ export const TOOLS = [
   },
   {
     name: 'praxis_artifact_update',
-    description: '改产物的名称或说明、移除或恢复，或在文件挪了位置后指向新路径。新路径上的文件必须与最新版本内容相同；内容不同是新版本，用 praxis_consume 登记。带上读到的 revision。',
-    parameters: { id: str('产物 ID'), expected_revision: num('读取时的 revision'), title: str('名称'), description: str('它是什么、给谁用'), path: str('文件的新位置'), state: str('active 或 removed'), ...who },
+    description: `改产物的名称或说明、种类与服务的 Kit 页、移除或恢复，或在文件挪了位置后指向新路径。新路径上的文件必须与最新版本内容相同；内容不同是新版本，用 praxis_consume 登记。带上读到的 revision。${LOCAL}`,
+    parameters: { id: str('产物 ID'), expected_revision: num('读取时的 revision'), title: str('名称'), description: str('它是什么、给谁用'), kind: str('delivery、pipeline 或 example'), serves, path: str('文件的新位置'), state: str('active 或 removed'), ...who },
     required: ['id'],
     run: (p, a) => p.updateArtifact(a),
     writes: true,

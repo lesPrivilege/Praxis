@@ -1,6 +1,6 @@
 # ADR-043：dsh-praxis 的生产管线登记为来源
 
-日期：2026-10-25。状态：accepted。[下一轮工单](../../dsh-praxis/work-order.md) A2 原定从现有脚本里收拢一条视频链进 Praxis。用户改为：把已有的生产管线登记为本地来源，挂到 Publish 的 video 与 html 页，写明何时用；运行记下每件产物由哪条管线产出；不把脚本复制进 Praxis。主会话（Claude Opus 5.5）实现并验证。
+日期：2026-10-25。状态：accepted（管线登记为来源一节已由 [ADR-048](048-local-products-and-convergence.md) 取代：管线改为 pipeline 产物）。[下一轮工单](../../dsh-praxis/work-order.md) A2 原定从现有脚本里收拢一条视频链进 Praxis。用户改为：把已有的生产管线登记为本地来源，挂到 Publish 的 video 与 html 页，写明何时用；运行记下每件产物由哪条管线产出；不把脚本复制进 Praxis。主会话（Claude Opus 5.5）实现并验证。
 
 ## 问题与依据
 

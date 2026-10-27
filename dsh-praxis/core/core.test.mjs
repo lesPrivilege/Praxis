@@ -122,14 +122,16 @@ test('review records the reviewed revision', () => {
   const { p } = setup()
   p.materials.curate(BIND, { description: '新说明。' })
   const b = p.materials.review(BIND, { verdict: 'accurate', by: 'agent', note: 'ok' })
-  assert.equal(b.reviews[0].revision, 1)
+  assert.equal(b.review.revision, 1)
   assert.throws(() => p.materials.review(BIND, { verdict: 'fine' }), /verdict/)
 })
 
 test('capture: a batch is checked whole, written once, deduped by URL, and says what it was collected for', () => {
   const { p } = setup()
-  const item = (url, title) => ({ url, title, summary: '一份指南。', read_scope: '读了正文', limits: '未运行示例。', revisit_when: '改版时。', tags: ['GUIDE'] })
+  const item = (url, title) => ({ url, title, form: 'practice', description: '做交互说明时打开；取键盘约定。', summary: '一份指南。', read_scope: '读了正文', limits: '未运行示例。', revisit_when: '改版时。', tags: ['GUIDE'] })
   assert.throws(() => p.materials.capture([item('https://example.org/a', 'A')]), /needs task/)
+  assert.throws(() => p.materials.capture([{ ...item(undefined, 'Notes'), locator: 'work/notes.md' }], { task: '调研' }), /http\(s\) url; local work is recorded as an artifact/)
+  assert.throws(() => p.materials.capture([{ ...item('https://example.org/a', 'A'), form: 'blog' }], { task: '调研' }), /form must be/)
   assert.throws(() => p.materials.capture([item('https://example.org/a', 'A'), { url: 'https://x.org' }], { task: '调研' }), /needs title/)
   assert.throws(() => p.materials.capture([{ ...item('https://example.org/a', 'A'), category: 'nowhere' }], { task: '调研' }), /category must be a Kit area/)
   assert.deepEqual(p.materials.own.all(), {}, 'a refused batch writes nothing')
@@ -143,7 +145,7 @@ test('capture: a batch is checked whole, written once, deduped by URL, and says 
     ['praxis:new-guide', false], ['praxis:new-guide', true], [SRC, true], ['praxis:other-guide', false]])
   assert.equal(p.source('praxis:other-guide').captured_for.task, '技术说明页的交互调研')
   assert.deepEqual(p.materials.search({ category: 'design' }).map((s) => s.id).sort(), ['praxis:other-guide', SRC], 'filed by category, or by the page a binding serves')
-  assert.deepEqual(p.upkeep().unbound.map((s) => s.id), ['praxis:new-guide', 'praxis:other-guide'])
+  assert.deepEqual(p.upkeep().unfiled.map((s) => s.id), ['praxis:new-guide'], 'a source with neither a Kit area nor a page cannot be placed')
 })
 
 test('consume records versions; stale finds runs whose units or bindings changed', () => {
@@ -170,7 +172,8 @@ test('stale finds runs whose consumed source got a new snapshot', async () => {
   body = 'v2'
   await p.materials.refresh(SRC, { fetchImpl })
   assert.deepEqual(p.stale().map((r) => [r.run, r.sources]), [[run.id, [SRC]]])
-  assert.equal(p.upkeep().stale[0].run, run.id)
+  assert.equal(p.stale()[0].run, run.id)
+  assert.equal(p.upkeep().stale, undefined, 'a stale run waits for the next delivery, not in upkeep')
 })
 
 test('refresh checks upstream by hash without storing content; keep saves a snapshot; a dead link is a signal', async () => {
@@ -223,7 +226,7 @@ test('an HTML page is compared by its text: markup that changes per load is not 
   assert.deepEqual(p.materials.binding(BIND).signals, ['changed'])
 })
 
-test('upkeep lists only signals: needs-work, changed sources, stale runs, unbound captures', async () => {
+test('upkeep lists only signals: needs-work, changed sources, stale runs, unfiled sources, catalog entries no binding shows', async () => {
   const { p } = setup()
   const signals = () => p.materials.binding(BIND).signals
   assert.deepEqual(signals(), [])
@@ -237,10 +240,14 @@ test('upkeep lists only signals: needs-work, changed sources, stale runs, unboun
   assert.deepEqual(signals(), ['changed'])
   p.materials.review(BIND, { verdict: 'needs-work', by: 'test' })
   assert.deepEqual(signals(), ['needs_work'])
-  p.materials.capture([{ url: 'https://example.org/new', title: '新来源', summary: '概要', read_scope: '读过', limits: '边界', revisit_when: '修订时' }], { task: '测试', by: 'test' })
+  const [fresh] = p.materials.capture([{ url: 'https://example.org/new', title: '新来源', form: 'article', description: '查做法时打开；取步骤。', summary: '概要', read_scope: '读过', limits: '边界', revisit_when: '修订时' }], { task: '测试', by: 'test' })
+  p.materials.file(SRC, { form: 'standard', description: '写控件时打开；取键盘约定。' }, { expected_revision: 0, by: 'test' })
+  p.materials.reviewEntry(SRC, { verdict: 'needs-work', by: 'test' })
+  p.materials.reviewEntry(fresh.id, { verdict: 'needs-work', by: 'test' })
   const up = p.upkeep()
   assert.deepEqual(up.bindings.map((b) => [b.id, b.unit, b.signals]), [[BIND, 'design/controls', ['needs_work']]])
-  assert.deepEqual(up.unbound.map((s) => s.title), ['新来源'])
+  assert.deepEqual(up.unfiled.map((s) => s.title), ['新来源'])
+  assert.deepEqual(up.sources.map((s) => [s.id, s.signals]), [[fresh.id, ['needs_work']], [SRC, ['needs_work']]], 'an entry review is its own; a change shows once')
 })
 
 test('presets: validated per pipeline, one default, recorded by runs', () => {
@@ -332,7 +339,7 @@ test('artifacts: reviews bind to a version; status and signals follow the file a
   const now = p.artifactList()[0]
   assert.deepEqual([now.version, now.status, now.review, now.signals], [2, 'current', null, []], 'v2 does not inherit the v1 verdict')
   p.reviewArtifact({ id, version: 2, verdict: 'accepted', by: 'owner' })
-  assert.deepEqual(p.artifact(id).versions.map((v) => v.reviews.map((r) => r.verdict)), [['needs-work'], ['accepted']])
+  assert.deepEqual(p.artifact(id).versions.map((v) => v.review?.verdict ?? null), [null, 'accepted'], 'only the latest review is kept')
   writeFileSync(join(root, 'pkg/kit/writing/organization/mechanism.md'), '# 机制讲解\n\n改过了。\n')
   assert.equal(p.artifactList()[0].basis_changed, false, 'the latest run did not use the changed unit')
   const old = p.artifact(id).versions[0].run
@@ -380,14 +387,16 @@ test('resolve hands over the way to the original; source shows why it is here, w
   assert.deepEqual(s.used_by.map((r) => [r.id, r.artifacts.map((a) => a.artifact)]), [[run.id, [run.artifacts[0].artifact]]])
   assert.deepEqual(p.artifact(run.artifacts[0].artifact).versions[0].run.sources, [{ id: SRC, title: 'APG Accordion' }])
   assert.deepEqual([s.card, s.collection.purpose], ['vault/provenance/demo/apg.md', '交互参考。'])
-  // A pipeline is a registered source; an artifact names the one that made it.
-  const [pipe] = p.materials.capture([{ locator: 'work/build/README.md', title: '短片管线', summary: '念白、合成、逐帧渲染。', read_scope: '读了 README', limits: '要凭据', revisit_when: '下一条短片时' }], { task: '登记管线' })
+  // A pipeline is a pipeline artifact that serves a page; an artifact names the one that made it, and resolve offers it after the web sources.
+  writeFileSync(join(root, 'build.md'), '# 短片管线\n\n念白、合成、逐帧渲染。\n')
+  const [pipe] = p.consume({ title: '登记管线', artifacts: [{ path: 'build.md', kind: 'pipeline', title: '短片管线', serves: [{ target: 'kit/design/controls.md', description: '要再做一条短片时对照；看合成与渲染步骤。' }] }] }).artifacts
   writeFileSync(join(root, 'cut.html'), '<p>cut</p>')
-  assert.throws(() => p.consume({ title: '成片', artifacts: [{ path: 'cut.html', made_with: 'no:such' }] }), /unknown pipeline source/)
-  const made = p.consume({ title: '成片', artifacts: [{ path: 'cut.html', made_with: pipe.id }] })
-  assert.equal(made.artifacts[0].made_with, pipe.id)
-  assert.deepEqual(p.artifact(made.artifacts[0].artifact).versions[0].made_with, { id: pipe.id, title: '短片管线' })
-  assert.deepEqual(p.source(pipe.id).used_by.map((r) => [r.id, r.read, r.artifacts.map((x) => x.made)]), [[made.id, false, [true]]])
+  assert.throws(() => p.consume({ title: '成片', artifacts: [{ path: 'cut.html', made_with: run.artifacts[0].artifact }] }), /not a pipeline artifact/)
+  const made = p.consume({ title: '成片', artifacts: [{ path: 'cut.html', made_with: pipe.artifact }] })
+  assert.deepEqual(p.artifact(made.artifacts[0].artifact).versions[0].made_with, { id: pipe.artifact, title: '短片管线' })
+  const offered = p.resolve({ task_type: 'explainer' })
+  assert.deepEqual([offered.materials[0].source, offered.exemplars.map((x) => [x.artifact, x.kind, x.page, x.description])],
+    [SRC, [[pipe.artifact, 'pipeline', 'kit/design/controls.md', '要再做一条短片时对照；看合成与渲染步骤。']]], 'web sources first, then exemplars')
 })
 
 test('a project source index is registered by reference as a pack, related in the roster, and read like any source', () => {
@@ -456,7 +465,8 @@ test('projects: deliverables live in a registered project; the layout says where
   const byPath = Object.fromEntries(p.artifactList({ project: 'series' }).map((a) => [a.project_path, [a.role ?? null, a.signals]]))
   assert.deepEqual(byPath, { 'draft/ep01.md': ['draft', []], 'out/ep01.mp4': ['final', []], 'notes.txt': [null, ['misplaced']] })
   const up = p.upkeep()
-  assert.deepEqual(up.projects.map((x) => [x.id, x.unregistered]), [['series', ['out/ep02.mp4']]])
+  assert.deepEqual(p.projectList().filter((x) => x.unregistered.length).map((x) => [x.id, x.unregistered]), [['series', ['out/ep02.mp4']]])
+  assert.equal(up.projects, undefined, 'unregistered finals show on the project, not in upkeep')
   assert.deepEqual(up.artifacts.map((a) => a.project_path), ['notes.txt'])
   assert.deepEqual(p.projectList({ path: 'work/series/out/ep01.mp4' }).map((x) => x.id), ['series'])
   p.saveProject({ id: 'series', expected_revision: series.revision, layout: { final: ['out/*.mp4', '*.txt'] } })
@@ -468,9 +478,9 @@ test('a collection follows its upstream: new member links are proposed once, mem
   const { p } = setup()
   let page = '<a href="items/a.html">a</a> <a href="items/b.html">b</a> <a href="/about">about</a>'
   const fetchImpl = async () => new Response(page, { headers: { 'content-type': 'text/html' } })
-  const item = { url: 'https://gallery.example/', title: '作品集', summary: '一组页面作品。', read_scope: '看过首页', limits: '只看列表', revisit_when: '每月' }
+  const item = { url: 'https://gallery.example/', title: '作品集', form: 'case-library', description: '找版式样例时打开；取成页的版式。', summary: '一组页面作品。', read_scope: '看过首页', limits: '只看列表', revisit_when: '每月' }
   const [c] = p.materials.capture([{ ...item, members: { pattern: 'https://gallery.example/items/*.html' } }], { task: '找版式样例', by: 'test' })
-  const [a] = p.materials.capture([{ url: 'https://gallery.example/items/a.html', title: 'A', summary: '一页。', read_scope: '读过', limits: '无', revisit_when: '改版时', member_of: c.id }], { task: '找版式样例' })
+  const [a] = p.materials.capture([{ url: 'https://gallery.example/items/a.html', title: 'A', form: 'case', description: '看长文版式时打开。', summary: '一页。', read_scope: '读过', limits: '无', revisit_when: '改版时', member_of: c.id }], { task: '找版式样例' })
   assert.throws(() => p.materials.capture([{ ...item, url: 'https://x.example/', member_of: a.id }], { task: 't' }), /not a collection/)
   const first = await p.materials.refresh(c.id, { fetchImpl })
   assert.deepEqual([first.members.upstream, first.members.added, first.members.gone], [2, [], []], 'the first check is the baseline')
@@ -482,10 +492,45 @@ test('a collection follows its upstream: new member links are proposed once, mem
   p.materials.skipMember(c.id, 'https://gallery.example/items/d.html', { reason: '风格不合', by: 'test' })
   p.materials.retire(a.id, { reason: '上游已下线', by: 'test' })
   assert.deepEqual([p.materials.members(c.id).added, p.materials.members(c.id).gone], [['https://gallery.example/items/c.html'], []])
+  assert.deepEqual(p.materials.ledger(c.id).map((e) => [e.url.split('/').at(-1), e.state, e.added]),
+    [['b.html', 'open', false], ['c.html', 'open', true], ['d.html', 'skipped', true]], 'the ledger lists every upstream link with what was done about it')
+  const [b] = p.materials.capture([{ url: 'https://gallery.example/items/b.html', title: 'B', form: 'case', description: '看长文版式时打开。', summary: '一页。', read_scope: '读过', limits: '无', revisit_when: '改版时', member_of: c.id }], { task: '找版式样例' })
+  assert.deepEqual(p.source(c.id).members.ledger[0], { url: 'https://gallery.example/items/b.html', state: 'registered', id: b.id, title: 'B', retired: false, added: false })
   assert.equal(p.materials.search({ query: 'A' }).some((s) => s.id === a.id), false, 'a retired source leaves the active lists')
-  const revised = p.materials.updateOwn(c.id, { category: 'design' }, { expected_revision: 2, by: 'test' })
+  const revised = p.materials.file(c.id, { category: 'design' }, { expected_revision: 1, by: 'test' })
   assert.equal(revised.category, 'design')
+  assert.throws(() => p.materials.updateOwn(c.id, { category: 'design' }), /not editable: category/)
   assert.throws(() => p.materials.updateOwn(SRC, { title: 'x' }), /not an own source/)
+})
+
+test('the catalog files any source by form and Kit area; local work is an example, pipeline or delivery that serves pages', () => {
+  const { root, p } = setup({ project: true })
+  assert.deepEqual(p.catalog().areas, [], 'nothing is catalogued until it is filed')
+  const filed = p.materials.file(SRC, { form: 'standard', description: '写折叠控件时打开；取键盘约定。' }, { expected_revision: 0, by: 'test' })
+  assert.deepEqual([filed.form, filed.description, filed.pack], ['standard', '写折叠控件时打开；取键盘约定。', 'vault'], 'a pack source is filed in the roster, not in the pack')
+  assert.equal(p.materials.binding(BIND).description, '写折叠控件时打开；取键盘约定。', 'a binding without its own description shows the entry\'s')
+  p.materials.capture([{ url: 'https://example.org/motion', title: 'Motion guide', form: 'practice', category: 'design', description: '编排动效时打开；取时长与缓动。', summary: '动效指南。', read_scope: '读过', limits: '无', revisit_when: '改版时' }], { task: '测试' })
+  const outline = p.catalog()
+  assert.deepEqual(outline.areas.map((a) => [a.area, a.count, a.forms]), [['design', 2, [{ form: 'standard', count: 1 }, { form: 'practice', count: 1 }]]])
+  const rows = p.catalog({ area: 'design', form: 'practice' })
+  assert.deepEqual(rows.areas[0].forms[0].sources.map((r) => [r.title, r.description]), [['Motion guide', '编排动效时打开；取时长与缓动。']])
+  assert.deepEqual(p.catalog({ query: '键盘' }).areas[0].forms[0].sources.map((r) => [r.id, r.pages]), [[SRC, ['design/controls']]])
+  assert.throws(() => p.materials.file(SRC, { form: 'standard' }, { expected_revision: 0 }), /revision/)
+  const notes = join(mkdtempSync(join(tmpdir(), 'praxis-notes-')), 'controls.md')
+  writeFileSync(notes, '# 控件笔记')
+  assert.throws(() => p.consume({ title: '笔记', artifacts: [notes] }), /not inside a registered project/)
+  assert.throws(() => p.consume({ title: '笔记', artifacts: [{ path: notes, kind: 'trace' }] }), /kind must be/)
+  const run = p.consume({ title: '控件样张', artifacts: [{ path: notes, kind: 'example', serves: [{ target: 'kit/design/controls.md', description: '定键盘约定时对照；看三种控件。' }] }] })
+  const example = p.artifact(run.artifacts[0].artifact)
+  assert.deepEqual([example.kind, example.project, example.signals, example.serves.map((x) => x.unit)], ['example', undefined, [], ['design/controls']], 'an example is not held to a project layout')
+  assert.deepEqual(p.resolve({ units: ['design/controls'] }).exemplars.map((x) => x.artifact), [example.id])
+  // A delivery serves a page only once a review accepted its latest version.
+  writeFileSync(join(root, 'page.html'), '<p>页</p>')
+  const page = p.consume({ title: '页面', artifacts: [{ path: 'page.html', serves: [{ target: 'kit/design/controls.md' }] }] }).artifacts[0].artifact
+  assert.deepEqual(p.resolve({ units: ['design/controls'] }).exemplars.map((x) => x.artifact), [example.id])
+  p.reviewArtifact({ id: page, version: 1, verdict: 'accepted', by: 'owner' })
+  assert.deepEqual(p.resolve({ units: ['design/controls'] }).exemplars.map((x) => [x.artifact, x.kind]), [[example.id, 'example'], [page, 'delivery']])
+  assert.deepEqual(p.artifactList({ kind: 'example' }).map((a) => a.id), [example.id])
 })
 
 test('a unit revision lives in the overlay, applies everywhere, and conflicts when the package page changes', () => {

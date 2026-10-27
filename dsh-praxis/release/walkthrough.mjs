@@ -72,15 +72,17 @@ try {
   const unit = before.units.find((u) => u.id.startsWith('design')) ?? before.units[0]
   const area = (await tool('praxis_units')).filter((u) => u.path.endsWith('/README.md')).map((u) => u.id).find((id) => unit.id.startsWith(id))
   const [col, member] = await tool('praxis_capture', { task: '缓存系统讲解页的版式参考', sources: [
-    { url: `${origin}/`, title: '版式作品集', summary: '一组长文页面作品。', read_scope: '看过列表页', limits: '只看列表', revisit_when: '每月', category: area, members: { pattern: `${origin}/items/*.html` } },
+    { url: `${origin}/`, title: '版式作品集', form: 'case-library', description: '做长文讲解页时打开；取成页的版式。', summary: '一组长文页面作品。', read_scope: '看过列表页', limits: '只看列表', revisit_when: '每月', category: area, members: { pattern: `${origin}/items/*.html` } },
   ] }).then(async ([c]) => [c, (await tool('praxis_capture', { task: '缓存系统讲解页的版式参考', sources: [
-    { url: `${origin}/items/a.html`, title: '作品 A', summary: '一页长文。', read_scope: '读过全文', limits: '单件作品', revisit_when: '改版时', member_of: c.id, excerpts: [{ locator: '标题区', claim: '大字号标题配窄栏正文。' }] },
+    { url: `${origin}/items/a.html`, title: '作品 A', form: 'case', description: '定长文标题区时对照；取大字号标题配窄栏正文。', summary: '一页长文。', read_scope: '读过全文', limits: '单件作品', revisit_when: '改版时', member_of: c.id, excerpts: [{ locator: '标题区', claim: '大字号标题配窄栏正文。' }] },
   ] }))[0]])
   await tool('praxis_curate', { binding: `${member.id}@${unit.path}`, expected_revision: 0, description: '做长文页时打开，取标题区与窄栏的比例。' })
   const after = await tool('praxis_resolve', { task_type: type.id, pipeline: 'html' })
   const material = after.materials.find((m) => m.source === member.id)
   check('related_source_reaches_the_task_with_its_link', material?.url === `${origin}/items/a.html` && material.excerpts[0].locator === '标题区', material)
   check('roster_files_by_category', (await tool('praxis_search', { category: area })).some((s) => s.id === col.id), area)
+  const shelf = (await tool('praxis_catalog', { area })).areas.find((a) => a.area === area)
+  check('catalog_files_by_area_and_form', ['case-library', 'case'].every((f) => shelf?.forms.some((g) => g.form === f && g.sources.some((r) => r.description))), shelf?.forms.map((g) => [g.form, g.sources.length]))
   await tool('praxis_refresh', { source: col.id })
 
   // 4. Deliver into a project: draft and final in the template's places, recorded with what was read.
