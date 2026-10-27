@@ -41,10 +41,6 @@ ID：`DWG-W-GENRE` · Priority：`normal`（可选参考）
 
 读者最先看到的内容是否对应眼下任务？结构有没有帮助发现答案、完成动作或复核主张？组合的两种形状是否各有不同工作？低风险读者能否略过进阶细节，遇到例外的人能否找到完整条件？实际消费走读前，只能称为依据内容推演出的选择，不能称为已验证的易用性。
 
-## 来源与范围
+## 证据边界
 
-- [Google developer documentation style guide 总览（DWW-001）](../../../../vault/provenance/design-writing-encyclopedia/writing/cards/google-style-guide-about.md)：该指南服务软件开发者，且明确要求项目指引优先；这支持按项目和读者选文体。
-- [Microsoft brand voice（DWW-002）](../../../../vault/provenance/design-writing-encyclopedia/writing/cards/microsoft-brand-voice.md)：稳定品牌 voice 与可随情境变化的 tone 区分；只代表微软品牌选择。
-- [GOV.UK user-needs 既有卡](../../../../vault/provenance/documentation-practices/cards/govuk-user-needs.md)：由实际任务及其结果来研究内容需求；是公共服务语境。
-
-这些来源支持先看任务与语境；文体映射表是否适用于各领域，尚未检验。
+文体映射表是否适用于各领域，尚未检验。

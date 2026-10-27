@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-10-27 · dsh-praxis 拆成可发布的包
+
+- 按 [ADR-046](docs/decisions/046-dsh-praxis-package-and-roster.md) 施工工单剩下的 A3、A4 与 B1–B7。数据根经 `core/paths.js` 一处解析：显式参数、`PRAXIS_DATA`、包旁的 `data/`、`$DSH_HOME/dsh-praxis`；这个仓库以 `data/settings.json` 的 `base` 与 `snapshots` 运行在仓库模式。core 不再调用 Python。
+- 名册改为自有来源（`sources.json`）加来源包（`packs.json`）：vault 的 registry 与 Jev 研究登记按引用接入，只读；关系都在 `bindings.json`。`vault/project-indexes.json` 与 `vault/intake/praxis-captures.json` 迁入数据根（`packs.json`、`checks.jsonl`），旧路径登记在 [retired-paths.json](docs/governance/retired-paths.json)。`build_registry.py` 不再读项目索引，改为投影读者需要的字段。
+- 包内 Kit 只链包内：75 条自有来源，挂载 582 → 705 条。Kit 修订进数据根的覆盖层；MCP 加 resources 与 prompts；DSH 只注册 worker 的 10 个工具，加 `/praxis` 与 resolve、consume 的工具卡片；运行记下来源会话；集合来源随上游提出增减。
+- 包的说明随之更新：[README](dsh-praxis/README.md)、新增 [安装与运行](dsh-praxis/INSTALL.md)、用户说明、分层体例、对象与操作、schemas、core 与 adapters；随包发布的 Markdown 只链包内。`engines` 改为 Node 22.20 起：`fs.globSync` 与 `path.matchesGlob` 自这一版起都是稳定 API。版本 0.2.0；[release/walkthrough.mjs](dsh-praxis/release/README.md) 是发布前的脚本化走查。A3 对照一轮见 [回执](docs/verification/dsh-praxis-release-split-20261027.md)：worker 不经提示自己取用与登记，来源没有用上；对照项目按用户指示清理。未做：换任务重做对照、真实 fresh agent 在新 profile 里的走查、发布。
+
 ## 2026-10-26 · 目录按角色分流：第一、二阶段施工
 
 - 按 [ADR-044](docs/decisions/044-repository-layout-by-role.md)（accepted）把一切交付与实验迁入 `projects/`：17 个演示实现、jev、palantir、tally、books、dsh-praxis-explainer；场景契约模板迁到 `templates/scenario/`，`scenarios/saas-engineering-textbook` 并入同名项目；旧新路径见 [迁移映射](docs/governance/repository-layout-map.md)。全部 `git mv`，235 个 Markdown 与 59 个 JSON/脚本/配置的路径同步改写，registry 重建；运行记录与 history 保留旧路径。
@@ -36,7 +43,7 @@
 - 名册对人和 agent 说清每条来源：`praxis_source` 与控制面的来源条目给出收录缘由（集合的用途或 capture 时的任务）、挂在哪些页面、经这些页面服务哪些任务类型、哪些运行读过它并交付了什么。取舍见 [ADR-040](docs/decisions/040-dsh-praxis-source-loop.md)。
 - resolve 的素材带 source ID、原件 URL、证据状态、读取范围、摘录定位与快照；`praxis_consume` 的 `sources` 记实际读过的来源，挂载由“读过的来源 × 读过的单元”推出，`bindings` 参数去掉。
 - 关系只在来源自己的记录上：registry 构建脚本为所有记录形态带出 `grammar_paths`（此前只有扩展 catalog，挂到其他来源上的关系重建后会消失）；Kit 页引用已登记来源的卡片就必须有这条关系，validator 检查，补上 45 条。
-- `praxis_register_index` 按引用登记项目自己的来源索引，登记在 [`vault/project-indexes.json`](vault/project-indexes.json)；Jev 研究登记 236 条由此进入名册，`projects/jev/` 不变。`praxis_capture` 改为成批，写明为哪件任务收录。
+- `praxis_register_index` 按引用登记项目自己的来源索引，登记在 `vault/project-indexes.json`（2026-10-27 迁入 `dsh-praxis/data/packs.json`）；Jev 研究登记 236 条由此进入名册，`projects/jev/` 不变。`praxis_capture` 改为成批，写明为哪件任务收录。
 - 25 项测试、[验收探针](scripts/check_praxis_acceptance.py) 13 项、仓库校验通过；素材对交付的帮助与 DSH 桌面待测，见 [回执](docs/verification/dsh-praxis-source-loop-20261025.md)。
 
 ## 2026-10-25 · dsh-praxis 旧代码提示与 DSH 实测补登

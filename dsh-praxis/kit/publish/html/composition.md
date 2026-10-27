@@ -18,8 +18,6 @@
 
 布局先保障关系可读，再尝试对齐、旁注、并置、留白和密度。不要强求每页相同容器，也不让视觉变体改变对比口径。展项的说明分工见 [exhibits](exhibits.md)。
 
-## 参考与验证
-
-标题、列表与表格的外部候选方法见 [结构写作提炼](../../../../vault/distilled/writing-structure-20260927/README.md)。原子—组合研究见 [设计 pipeline](../../../../vault/distilled/write-design-grammar/design-pipeline.md)，样张库仍待实作。
+## 验证
 
 检查宽窄阅读顺序、长文本、来源可达和最终导出；结果记录在项目，不因一种样张精美就把它提升为唯一主题。

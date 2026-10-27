@@ -4,8 +4,9 @@
 // reviews bound to a version. Status is read from the file each time, never stored.
 import { createHash } from 'node:crypto'
 import { readFileSync, statSync } from 'node:fs'
-import { basename, extname, isAbsolute, join, relative, resolve, sep } from 'node:path'
+import { basename, extname, join } from 'node:path'
 import { Collection } from './store.js'
+import { pathsFor } from './paths.js'
 
 export const VERDICTS = ['needs-work', 'checked', 'accepted']
 // Signals are what needs someone: the record lost its file, a review asked for changes, or the file
@@ -23,20 +24,18 @@ const MEDIA = {
 export const mediumOf = (path) => MEDIA[extname(path).slice(1).toLowerCase()] ?? 'file'
 
 export class Artifacts {
-  constructor(repo, dataDir) {
-    this.repo = repo
-    this.store = new Collection(join(dataDir, 'artifacts.json'), join(dataDir, 'history.jsonl'))
+  constructor(where) {
+    this.paths = pathsFor(where)
+    this.store = new Collection(join(where.data, 'artifacts.json'), join(where.data, 'history.jsonl'))
   }
 
-  /** Repository files are kept repo-relative so records survive moving the checkout; others absolute. */
+  /** Files under the base folder are kept relative to it, so records survive moving it; others absolute. */
   normalize(path) {
-    const abs = resolve(this.repo, path)
-    const rel = relative(this.repo, abs)
-    return rel && !rel.startsWith('..') && !isAbsolute(rel) ? rel.split(sep).join('/') : abs
+    return this.paths.normalize(path)
   }
 
   absolute(path) {
-    return isAbsolute(path) ? path : join(this.repo, path)
+    return this.paths.absolute(path)
   }
 
   /** Content and stat of a regular file, or null. */

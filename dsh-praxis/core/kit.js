@@ -5,12 +5,12 @@ import { createHash } from 'node:crypto'
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs'
 import { join, posix, relative } from 'node:path'
 
-// Where each layer's pages live. Design moves here when the Materials data layer does.
+// Where each layer's pages live, relative to the package.
 export const LAYERS = {
-  task: 'dsh-praxis/kit/task',
-  writing: 'dsh-praxis/kit/writing',
-  publish: 'dsh-praxis/kit/publish',
-  design: 'dsh-praxis/kit/design',
+  task: 'kit/task',
+  writing: 'kit/writing',
+  publish: 'kit/publish',
+  design: 'kit/design',
 }
 
 // Units whose description is in context for every task (see layers.md).
@@ -78,17 +78,23 @@ export function unitId(layer, root, file) {
 }
 
 export class Kit {
-  constructor(repo) {
-    this.repo = repo
+  /**
+   * Units are read from the package's Kit; a unit's path is package-relative (`kit/…`). A page in the
+   * overlay folder (same relative path) replaces the package's page: revisions a user or agent made
+   * live in their data, and a package upgrade never overwrites them.
+   */
+  constructor(pkg, overlay) {
+    this.pkg = pkg
+    this.overlay = overlay
     this.units = new Map()
     this.byPath = new Map()
     this.byAlias = new Map()
     for (const [layer, rootRel] of Object.entries(LAYERS)) {
-      const root = join(repo, rootRel)
+      const root = join(pkg, rootRel)
       if (!existsSync(root)) continue
       for (const file of walk(root)) {
-        const text = readFileSync(file, 'utf8')
-        const path = relative(repo, file).split('\\').join('/')
+        const path = relative(pkg, file).split('\\').join('/')
+        const text = this.text(path)
         const id = unitId(layer, root, file)
         const aliases = [...text.matchAll(ID_LINE)].map((m) => m[1])
         const unit = {
@@ -100,12 +106,33 @@ export class Kit {
           resident: RESIDENT.includes(id),
           aliases: [...new Set(aliases)],
           version: createHash('sha256').update(text).digest('hex').slice(0, 12),
+          ...(this.revised(path) ? { overlay: true } : {}),
         }
         this.units.set(id, unit)
         this.byPath.set(path, unit)
         for (const alias of unit.aliases) this.byAlias.set(alias, unit)
       }
     }
+  }
+
+  /** A page's text: the overlay's revision when there is one, else the package's page. */
+  text(path) {
+    return readFileSync(this.revised(path) ?? join(this.pkg, path), 'utf8')
+  }
+
+  /** The package's own page, whatever the overlay holds. */
+  packaged(path) {
+    return readFileSync(join(this.pkg, path), 'utf8')
+  }
+
+  revised(path) {
+    const file = this.overlay && join(this.overlay, path)
+    return file && existsSync(file) ? file : undefined
+  }
+
+  /** The Kit's areas: each layer and each folder with a README, by unit id (`design`, `design/composition`). */
+  areas() {
+    return this.list().filter((u) => u.path.endsWith('/README.md')).map((u) => u.id).sort()
   }
 
   list(layer) {
@@ -117,7 +144,7 @@ export class Kit {
     if (this.updated) return this.updated
     this.updated = new Map()
     try {
-      const out = execFileSync('git', ['log', '--format=%x00%cI', '--name-only', '--', ...Object.values(LAYERS)], { cwd: this.repo, encoding: 'utf8', maxBuffer: 64 << 20 })
+      const out = execFileSync('git', ['log', '--relative', '--format=%x00%cI', '--name-only', '--', ...Object.values(LAYERS)], { cwd: this.pkg, encoding: 'utf8', maxBuffer: 64 << 20, stdio: ['ignore', 'pipe', 'ignore'] })
       let at = null
       for (const line of out.split('\n')) {
         if (line.startsWith('\0')) at = line.slice(1)
@@ -127,7 +154,7 @@ export class Kit {
     return this.updated
   }
 
-  /** Accept a unit id, a repo path (optionally with #anchor) or a stable grammar ID. */
+  /** Accept a unit id, a package path `kit/…` (optionally with #anchor) or a stable grammar ID. */
   find(ref) {
     if (!ref) return undefined
     const bare = ref.split('#')[0]
@@ -137,7 +164,7 @@ export class Kit {
   read(ref) {
     const unit = this.find(ref)
     if (!unit) return undefined
-    return { ...unit, body: readFileSync(join(this.repo, unit.path), 'utf8') }
+    return { ...unit, body: this.text(unit.path) }
   }
 
   /** Task types are the pages under task/types; their table rows name the units to read. */
@@ -150,7 +177,7 @@ export class Kit {
   taskType(ref) {
     const unit = this.find(ref) ?? this.find(`task/types/${ref}`)
     if (!unit || !unit.id.startsWith('task/types/')) return undefined
-    const text = readFileSync(join(this.repo, unit.path), 'utf8')
+    const text = this.text(unit.path)
     const rows = {}
     for (const m of text.matchAll(/^\| *([^|]+?) *\| *(.+?) *\|$/gm)) rows[m[1]] = m[2]
     const linked = (cell) => {

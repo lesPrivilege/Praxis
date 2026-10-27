@@ -1,34 +1,15 @@
 # 设计系统与前端参考
 
-设计系统与前端框架参考的消费摘要：各家可借的组织方式、来源证据状态与重访条件，查成熟设计系统或前端参考的原文入口时使用。
+查成熟设计系统或前端框架时，借各家的组织方式，品牌、工程栈与版本不照搬。
 
-每张 `ref-*` 卡片的原 URL、canonical URL、原对话主张、核验差异、证据链接和重访触发以 Vault 卡片为准。卡片的 `verified`、`partial` 是来源证据状态，不是 Kit 的 `accepted` 状态。返回 [Design 参考路由](README.md)。
+返回 [Design 参考路由](README.md)。
 
-这些卡片保留历史官方入口核查；若卡片或本页注明需要重读，引用前按原 URL 复核。没有保存正文快照时，在线页面不能被当作离线证据。
+设计系统可借的是层次：foundations、tokens、components、patterns、accessibility、content 怎样分层，Product UI 与 Brand UI、primitives 与 tokens 怎样分开，企业组件与模板怎样组合。前端框架与 workshop 可借 enterprise shell 与 template→page 的组织、headless 的 provider 边界与逻辑/UI 分离、隔离的 story fixture 与 docs/testing/a11y addons，以及 data-dense grid、桌面工作台的分层控件与 table。
 
-## Design system 组织
-
-| 来源 ID | URL 卡片 | 状态 | Kit 消费内容 | 边界与重访 |
-|---|---|---|---|---|
-| ref-atlassian | [Atlassian Design System](../../../../vault/references/design-systems/atlassian.md) | verified | foundations、tokens、components、patterns、accessibility、content、AI patterns 的层次线索 | trusted fundamentals 的精确措辞未直接核实；需要导航、表单或状态 grammar 时重访 |
-| ref-carbon | [IBM Carbon](../../../../vault/references/design-systems/carbon.md) | verified | enterprise component/template 组织和 form/side-panel 等检索入口 | 主页不逐项证明所有 pattern；需要 form mode、read-only 或 migration 时重访 |
-| ref-polaris | [Shopify Polaris](../../../../vault/references/design-systems/polaris.md) | verified | web-components、layout、icon、event 和 extension surface | object/progressive disclosure 需文档复查；不复制电商对象边界 |
-| ref-primer | [GitHub Primer](../../../../vault/references/design-systems/primer.md) | verified | Product UI、Brand UI、Accessibility、Primitives/tokens 分层 | “克制”是 Praxis 评价，不是 Primer 原句；需要 token、icon、command 或 a11y 时重访 |
-| ref-lightning | [Salesforce Lightning](../../../../vault/references/design-systems/lightning.md) | partial | CRM record、related activity、status/path/action 的待查方向 | 页面抽取为空，原清单无法核实；需要 CRM record grammar 时重新找稳定官方页面 |
-
-## Frontend framework 与 workshop 组织
-
-| 来源 ID | URL 卡片 | 状态 | Kit 消费内容 | 边界与重访 |
-|---|---|---|---|---|
-| ref-ant-design-pro | [Ant Design Pro](../../../../vault/references/frontend/ant-design-pro.md) | verified | enterprise shell、template→page、responsive/theme/i18n | 不复制工程栈和品牌；需要模板或权限细节时重访 |
-| ref-ant-design | [Ant Design](../../../../vault/references/frontend/ant-design.md) | verified | design values、components、themes 和 design/development ecology | 不锁版本、不复制品牌；组件 API 或 token 升级时重访 |
-| ref-refine | [Refine](../../../../vault/references/frontend/refine.md) | verified | headless provider boundary、resource list/show/create/edit、logic/UI separation | 不引入完整 meta-framework；provider 名称不等于 Praxis contract |
-| ref-storybook | [Storybook](../../../../vault/references/frontend/storybook.md) | verified | isolated workshop、story fixture、docs/testing/a11y addons | 精确状态矩阵是 Kit 推荐，不是上游声明；新 primitive 状态或视觉回归时重访 |
-| ref-mui-x | [MUI X](../../../../vault/references/frontend/mui-x.md) | verified | data-dense grid、date/time、tree/chart 和 open-core 边界 | 不作为默认视觉体系；高级能力和 license 需逐项重访 |
-| ref-blueprint | [Palantir Blueprint](../../../../vault/references/frontend/blueprint.md) | verified | desktop data-dense workspace、layered controls、table | 不把 desktop-first 直接套移动端；tree/inspector 需重访 |
+品牌、完整工程栈和电商等领域的对象边界不照搬，desktop-first 的做法不直接套到移动端，provider 名称不当作本仓库的 contract；open-core 的高级能力与许可逐项核对。这些站点随版本变化，引用具体组件、pattern 或 token 前按当前官方页面复核。
 
 ## 维护
 
-逐 URL 的 canonical 登记只保留在 `vault/references` 或 `vault/provenance` 的一个位置。需要将某个系统的观察提炼为跨项目语法时，先在项目 index 记录实际消费，再按 [文档结构契约](../../../../docs/architecture/documentation.md) 与修订流程提出裁决。
+需要将某个系统的观察提炼为跨项目语法时，先在项目 index 记录实际消费，再按修订流程提出裁决。
 
 已有品牌规范需要让 coding agent 按需查找时，读 [设计资源的包、组件与集成](agent-design-resources.md)；该入口区分同名项目、设计系统包、registry、Skill 和 MCP，不要求安装。

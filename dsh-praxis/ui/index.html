@@ -111,7 +111,7 @@ a.btn { text-decoration: none; }
 .seg label { flex: 1; margin: 0; display: flex; align-items: center; justify-content: center; gap: 4px; height: 24px; padding: 0 9px; border-radius: 12px; corner-shape: round; color: var(--muted); font-size: 12px; cursor: pointer; white-space: nowrap; }
 .seg label svg { width: 14px; height: 14px; }
 .seg label:hover { color: var(--text); }
-.seg input { position: absolute; opacity: 0; pointer-events: none; }
+.seg input { position: absolute; width: 0; min-height: 0; padding: 0; opacity: 0; pointer-events: none; }
 .seg label:has(input:checked) { background: var(--layer); color: var(--text); box-shadow: 0 0 0 .5px var(--l3), 0 1px 2px rgba(0 0 0 / .06); }
 .seg label:has(input:focus-visible) { outline: 2px solid var(--primary); }
 
@@ -283,6 +283,7 @@ pre.md { white-space: pre-wrap; font: 12px/1.65 var(--mono); padding: 14px 16px;
 .ulist .row-link .mono { grid-column: 1; }
 .ulist.boxed { margin: 0 4px; padding: 4px; border: .5px solid var(--l3); border-radius: 14px; background: var(--layer); }
 .ulist.boxed li { margin: 0; }
+.ulist.packs { margin-bottom: 16px; }
 .ulist .name { display: flex; align-items: center; gap: 6px; font-weight: 500; }
 .ulist .line { display: block; margin-top: 2px; color: var(--muted); font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .attach-to { display: flex; gap: 6px; align-items: center; }
@@ -331,8 +332,8 @@ pre.md { white-space: pre-wrap; font: 12px/1.65 var(--mono); padding: 14px 16px;
 .timeline .dot { margin-top: 4px; color: var(--accent); }
 .timeline time { font: 11px var(--mono); color: var(--faint); padding-top: 2px; }
 .op { font: 500 11px/17px var(--mono); }
-.op.remove { color: var(--danger); background: color-mix(in srgb, var(--danger) 10%, transparent); }
-.op.restore, .op.capture { color: var(--ok); background: color-mix(in srgb, var(--ok) 10%, transparent); }
+.op.remove, .op.retire { color: var(--danger); background: color-mix(in srgb, var(--danger) 10%, transparent); }
+.op.restore, .op.capture, .op.revert-unit { color: var(--ok); background: color-mix(in srgb, var(--ok) 10%, transparent); }
 .op.review { color: var(--accent); background: color-mix(in srgb, var(--accent) 10%, transparent); }
 
 /* toast: top-anchored contrast capsule, as DSH's */
@@ -383,6 +384,7 @@ pre.md { white-space: pre-wrap; font: 12px/1.65 var(--mono); padding: 14px 16px;
   .lede, .sources-bar, .attach, #cat-body pre.md { margin-left: 10px; margin-right: 10px; }
   .cards { grid-template-columns: minmax(0, 1fr); padding: 0 10px 16px; }
   #cat-body > .section-title { margin-left: 10px; margin-right: 10px; }
+  #cat-body > .ulist.packs { margin: 0 10px 16px; }
   .ulist li { grid-template-columns: minmax(0, 1fr); }
   .ulist .chips { justify-content: flex-start; }
   .crumbs { flex: 1 1 100%; order: 0; }
@@ -504,6 +506,14 @@ const STRINGS = {
     'up.attention': '需要处理', 'up.none': '没有要处理的事', 'up.stale': '交付过期', 'up.staleNone': '交付都与当前 Kit 一致', 'up.unbound': '新登记未挂载',
     'up.unboundNone': '没有待挂载的来源', 'up.attachTo': '挂到单元', 'up.unitPh': '单元 ID', 'up.preset': '预设已改', 'up.source': '来源已更新', 'up.reload': '插件代码已更新，重启 DSH 后生效',
     'log.runs': '运行', 'log.history': '维护记录', 'art.preview': '预览', 'art.reveal': '在 Finder 中显示', 'art.open': '打开', 'art.drag': '拖出文件', 'art.failed': '没有完成：', 'art.search': '找产物', 'art.noMatch': '没有匹配的产物', 'art.none': '还没有交付登记的产物', 'art.pick': '选一件产物', 'art.versions': '版本', 'art.derived': '派生自', 'art.madeWith': '管线', 'art.basis': '依据已变', 'art.review': '记录 v{v} 的 review', 'art.reviewed': '已记录', 'art.edit': '名称与说明', 'art.title': '名称', 'art.desc': '它是什么、给谁用', 'art.save': '保存', 'art.saved': '已保存', 'art.remove': '移除', 'art.removed': '已移除', 'art.back': '产物', 'art.noRun': '运行记录不在', 'art.used': '用了', 'as.missing': '找不到文件', 'as.modified': '有未登记改动', 'as.needs_work': '待改', 'as.misplaced': '不在约定位置', 'art.outside': '不在任何项目里', 'art.unregistered': '{n} 个最终产物未登记', 'role.draft': '底稿', 'role.build': '中间', 'role.final': '最终', 'up.unregistered': '最终产物未登记', 'as.basis_changed': '依据已变', 'av.needs-work': '待改', 'av.checked': '已核对', 'av.accepted': '已接受', 'log.noRuns': '还没有运行', 'log.noHistory': '还没有维护',
+    'kit.packs': '来源包', 'pack.file': '文件',
+    'src.pack': '来源包', 'src.category': 'Kit 分类', 'src.memberOf': '所属集合', 'src.revisit': '何时重访：', 'src.excerpts': '摘录',
+    'src.edit': '编辑', 'src.retire': '淘汰', 'src.retired': '已淘汰', 'src.retireReason': '淘汰理由', 'src.members': '成员',
+    'src.upstream': '上游 {n}', 'src.inRoster': '已收录 {n}', 'src.added': '上游新增', 'src.gone': '上游已下线', 'src.skip': '不收录', 'src.skipReason': '不收录的理由',
+    'toast.retired': '已淘汰', 'toast.skipped': '已标为不收录', 'f.cancel': '取消',
+    'cap.category': 'Kit 分类', 'cap.categoryNone': '不归类', 'cap.pattern': '集合的成员链接模式', 'cap.patternPh': 'https://example.com/items/*', 'cap.memberOf': '所属集合', 'cap.memberOfPh': '集合来源 ID',
+    'unit.revised': '已修订', 'unit.revisedTitle': '用户数据里的修订：{r}', 'unit.revert': '撤回修订', 'toast.reverted': '已恢复包里的原页',
+    'up.added': '{c} 上游新增', 'up.gone': '{c} 上游已下线', 'up.conflict': '修订与包里更新后的原页冲突',
   },
   en: {
     'tab.catalog': 'Catalog', 'tab.task': 'Task', 'tab.artifacts': 'Artifacts', 'tab.presets': 'Presets', 'tab.log': 'Log',
@@ -539,6 +549,14 @@ const STRINGS = {
     'up.attention': 'Needs attention', 'up.none': 'Nothing needs attention', 'up.stale': 'Stale deliveries', 'up.staleNone': 'Every delivery matches the current Kit', 'up.unbound': 'Captured, not attached',
     'up.unboundNone': 'Nothing waiting to be attached', 'up.attachTo': 'Attach to unit', 'up.unitPh': 'Unit ID', 'up.preset': 'Preset changed', 'up.source': 'Source updated', 'up.reload': 'Plugin code changed; restart DSH to load it',
     'log.runs': 'Runs', 'log.history': 'Maintenance', 'art.preview': 'Preview', 'art.reveal': 'Show in Finder', 'art.open': 'Open', 'art.drag': 'Drag the file out', 'art.failed': 'Not done: ', 'art.search': 'Find an artifact', 'art.noMatch': 'No matching artifacts', 'art.none': 'No delivered artifacts yet', 'art.pick': 'Pick an artifact', 'art.versions': 'Versions', 'art.derived': 'Derived from', 'art.madeWith': 'Pipeline', 'art.basis': 'Basis changed', 'art.review': 'Review v{v}', 'art.reviewed': 'Review recorded', 'art.edit': 'Name and description', 'art.title': 'Name', 'art.desc': 'What it is, for whom', 'art.save': 'Save', 'art.saved': 'Saved', 'art.remove': 'Remove', 'art.removed': 'Removed', 'art.back': 'Artifacts', 'art.noRun': 'Run record missing', 'art.used': 'Used', 'as.missing': 'File not found', 'as.modified': 'Unregistered changes', 'as.needs_work': 'Needs work', 'as.misplaced': 'Outside the layout', 'art.outside': 'Outside every project', 'art.unregistered': '{n} final files not registered', 'role.draft': 'Drafts', 'role.build': 'Builds', 'role.final': 'Finals', 'up.unregistered': 'Final files not registered', 'as.basis_changed': 'Basis changed', 'av.needs-work': 'Needs work', 'av.checked': 'Checked', 'av.accepted': 'Accepted', 'log.noRuns': 'No runs yet', 'log.noHistory': 'No maintenance yet',
+    'kit.packs': 'Source packs', 'pack.file': 'File',
+    'src.pack': 'Pack', 'src.category': 'Kit area', 'src.memberOf': 'Member of', 'src.revisit': 'Revisit: ', 'src.excerpts': 'Excerpts',
+    'src.edit': 'Edit', 'src.retire': 'Retire', 'src.retired': 'Retired', 'src.retireReason': 'Reason to retire', 'src.members': 'Members',
+    'src.upstream': '{n} upstream', 'src.inRoster': '{n} in roster', 'src.added': 'New upstream', 'src.gone': 'Gone upstream', 'src.skip': 'Skip', 'src.skipReason': 'Reason to skip',
+    'toast.retired': 'Retired', 'toast.skipped': 'Skipped', 'f.cancel': 'Cancel',
+    'cap.category': 'Kit area', 'cap.categoryNone': 'None', 'cap.pattern': 'Collection member link pattern', 'cap.patternPh': 'https://example.com/items/*', 'cap.memberOf': 'Member of collection', 'cap.memberOfPh': 'Collection source ID',
+    'unit.revised': 'Revised', 'unit.revisedTitle': 'Revised in your data: {r}', 'unit.revert': 'Revert revision', 'toast.reverted': 'Package page restored',
+    'up.added': 'New in {c}', 'up.gone': 'Gone from {c}', 'up.conflict': 'Revision conflicts with the updated package page',
   },
 }
 // Preset field labels come from core in Chinese; English labels live here with the rest of the interface.
@@ -687,14 +705,26 @@ function renderStats() {
 // and counts; a unit page holds its source index. Targets outside the Kit
 // (for example a book's pages) get the same treatment by path.
 let units = [], byId = new Map(), bindings = [], byPath = {}, route = { kind: 'home' }, showRemoved = false, cardFilter = 'all', sortKey = 'order'
+// Unit revisions in the user's data overlay, by unit path; source packs by id (read-only).
+let revisions = new Map(), packs = []
 const SORTS = ['order', 'updated', 'sources']
 
 async function refreshData() {
-  ;[units, bindings] = await Promise.all([api('praxis_units'), api('praxis_bindings', {})])
+  let revs
+  ;[units, bindings, revs, packs] = await Promise.all([api('praxis_units'), api('praxis_bindings', {}), api('praxis_revisions'), api('praxis_packs')])
   byId = new Map(units.map((u) => [u.id, u]))
+  revisions = new Map(revs.map((r) => [r.path, r]))
   byPath = {}
   for (const b of bindings) (byPath[b.target.split('#')[0]] ??= []).push(b)
   renderStats()
+  renderAreas()
+}
+// Kit areas a source may be filed under: units whose page is a folder README (layers included).
+const areas = () => units.filter((u) => u.path.endsWith('/README.md')).map((u) => u.id).sort()
+function areaOf(id) {
+  const set = new Set(areas())
+  for (let x = id; x; x = parentOf(x)) if (set.has(x)) return x
+  return ''
 }
 async function loadCatalog() {
   await refreshData()
@@ -800,7 +830,10 @@ function renderHome(body) {
       el('button', { class: 'card nav-card', onclick: () => go({ kind: 'target', path: key }) },
         el('span', { class: 'card-top' }, el('span', { class: 'tile stack' }, svg(ICONS.folder, 'glyph')), el('span', { class: 'card-title mono' }, key), svg(ICONS.chevron, 'go')),
         el('span', { class: 'card-desc' }, t('n.files', { n: new Set(list.map(pathOf)).size })),
-        el('span', { class: 'card-foot' }, countChips(list)))))] : null)
+        el('span', { class: 'card-foot' }, countChips(list)))))] : null,
+    packs.length ? [sectionTitle(t('kit.packs'), packs.length), el('ul', { class: 'ulist boxed packs' }, packs.map((p) => el('li', {},
+      el('span', { style: 'min-width:0' }, el('span', { class: 'name' }, p.title), el('span', { class: 'line', title: p.purpose }, p.purpose), el('span', { class: 'id mono', title: t('pack.file') }, p.path)),
+      el('span', { class: 'chips' }, chip(p.kind, 'mono outline'), el('span', { class: 'src', title: t('n.sources', { n: p.sources }) }, svg(ICONS.layers), String(p.sources))))))] : null)
 }
 
 function unitRow(u) {
@@ -818,16 +851,21 @@ function renderUnit(body, u) {
   const kids = childrenOf(u.id)
   const own = byPath[u.path] ?? []
   const withSources = !kids.length || own.length
+  const rev = revisions.get(u.path)
   fill(body,
     el('header', { class: 'hero' }, tile(u.layer, true, kids.length),
       el('div', { style: 'min-width:0' },
-        el('h2', {}, u.title, u.resident ? chip(t('unit.resident'), 'accent') : null),
+        el('h2', {}, u.title, u.resident ? chip(t('unit.resident'), 'accent') : null,
+          rev ? chip(t('unit.revised'), 'accent') : null,
+          rev?.conflict ? chip(t('up.conflict'), 'warn') : null),
         el('div', { class: 'sub' }, chip(LAYER_NAMES[u.layer], 'outline'), el('span', { class: 'mono' }, u.id), el('span', { class: 'mono', title: t('unit.version') }, u.version),
           u.updated_at ? el('time', { title: u.updated_at }, when(u.updated_at)) : null)),
       el('div', { class: 'hero-actions' },
         el('button', { class: 'icon', title: t('unit.body'), 'aria-label': t('unit.body'), html: ICONS.doc, onclick: () => readUnit(u.id) }),
+        rev ? el('button', { class: 'btn', onclick: () => revertUnit(u.id, rev.revision) }, svg(ICONS.undo), t('unit.revert')) : null,
         el('button', { class: 'btn primary', onclick: () => addPanel(u.path) }, svg(ICONS.plus), t('kit.source')))),
     el('p', { class: 'lede' }, u.description),
+    rev ? el('p', { class: 'lede meta' }, t('unit.revisedTitle', { r: rev.reason }), rev.example ? ` · ${rev.example}` : '') : null,
     el('div', { id: 'add-panel' }),
     kids.length ? [sectionTitle(t('unit.contents'), kids.length), el('div', { class: 'unit-rows' }, sorted(kids).map(unitRow))] : null,
     withSources ? [el('div', { class: 'sources-bar', id: 'sources-bar' }), el('div', { class: 'cards', id: 'cards' })] : null)
@@ -864,6 +902,13 @@ async function readUnit(id) {
   if (open) return open.remove()
   const u = await api('praxis_unit', { ref: id })
   $('#cat-body .lede').after(el('pre', { class: 'md' }, u.body))
+}
+// The package's page applies again; the revised text stays in history.
+async function revertUnit(id, revision) {
+  try { await api('praxis_unit_revert', { unit: id, expected_revision: revision }); toast(t('toast.reverted')) }
+  catch (e) { toast(e.status === 409 ? t('toast.conflict') : e.message, true) }
+  await refreshData()
+  renderBody()
 }
 
 // Signal pills appear only when a binding needs someone; they narrow the cards to it.
@@ -952,29 +997,108 @@ function detail(b, act) {
 }
 
 // A source as a reviewer needs it: what it is, why it was collected, where it serves, and who read it.
+// Own sources are edited and retired here; a pack's sources are read-only and name their pack.
 async function showSource(id, anchor) {
+  const box = el('div', { class: 'source' })
+  anchor.parentElement.after(box)
+  if (anchor.classList.contains('btn')) anchor.remove()
+  else anchor.disabled = true
+  await drawSource(box, id)
+}
+const sourceRow = (label, ...body) => el('div', { class: 'src-row' }, el('span', { class: 'label' }, label), el('div', { class: 'chips' }, ...body))
+// A one-line form that asks why before it acts (retire, skip).
+function reasonForm(label, placeholder, run) {
+  const input = el('input', { required: true, placeholder, 'aria-label': placeholder })
+  return el('form', { class: 'attach-to', onsubmit: (e) => { e.preventDefault(); run(input.value.trim()) } }, input, el('button', { class: 'btn', type: 'submit' }, label))
+}
+// A collection's upstream differences, shared by the source sheet and upkeep: capture or skip an added
+// link, retire a member gone upstream. `act(fn, ok)` runs the write and redraws its surface.
+const addedRow = (c, url, act) => el('li', {},
+  el('span', { style: 'min-width:0' }, el('a', { class: 'id mono', href: url, target: '_blank', rel: 'noopener', title: url }, url), c.title ? el('span', { class: 'line' }, t('up.added', { c: c.title })) : null),
+  el('span', { class: 'chips' },
+    el('button', { class: 'btn', type: 'button', onclick: () => captureFrom({ url, member_of: c.id }) }, svg(ICONS.plus), t('cap.submit')),
+    reasonForm(t('src.skip'), t('src.skipReason'), (reason) => act(() => api('praxis_skip_member', { source: c.id, url, reason, expected_revision: c.revision }), t('toast.skipped')))))
+const goneRow = (c, m, act) => el('li', {},
+  el('span', { style: 'min-width:0' }, el('span', { class: 't' }, m.title), el('span', { class: 'line' }, c.title ? t('up.gone', { c: c.title }) : m.url)),
+  el('span', { class: 'chips' }, reasonForm(t('src.retire'), t('src.retireReason'), (reason) => act(() => api('praxis_retire', { source: m.id, reason }), t('toast.retired')))))
+
+async function drawSource(box, id) {
   const s = await api('praxis_source', { id })
-  const row = (label, ...body) => el('div', { class: 'src-row' }, el('span', { class: 'label' }, label), el('div', { class: 'chips' }, ...body))
-  anchor.parentElement.after(el('div', { class: 'source' },
-    el('div', { class: 'crumb' }, el('span', { class: `dot ${s.evidence_status}` }), s.id),
-    s.url ? el('p', { class: 'meta' }, el('a', { href: s.url, target: '_blank', rel: 'noopener' }, s.url)) : null,
+  const row = sourceRow
+  const own = s.pack === undefined
+  const act = async (fn, ok) => {
+    try { await fn(); toast(ok) }
+    catch (e) { toast(e.status === 409 ? t('toast.conflict') : e.message, true) }
+    await refreshData()
+    await drawSource(box, s.id)
+  }
+  const pack = packs.find((p) => p.id === s.pack)
+  const m = s.members
+  const slot = el('div')
+  const toggle = (make) => () => slot.childElementCount ? slot.replaceChildren() : fill(slot, make())
+  fill(box,
+    el('div', { class: 'crumb' }, el('span', { class: `dot ${s.evidence_status}` }), s.id, s.state === 'retired' ? chip(t('src.retired'), 'warn') : null),
+    s.url ? el('p', { class: 'meta' }, el('a', { href: s.url, target: '_blank', rel: 'noopener' }, s.url))
+      : s.locator ? el('p', { class: 'meta' }, s.locator) : null,
     s.summary ? el('p', {}, s.summary) : null,
     s.read_scope ? el('p', { class: 'desc' }, t('src.read') + s.read_scope) : null,
     s.check ? el('p', { class: 'desc' }, t('src.check') + `${stamp(s.check.at)} · ${s.check.status === 'ok' ? 'HTTP ' + s.check.http : t('gap.unreachable') + (s.check.error ? ' · ' + s.check.error : '')}`) : null,
-    s.limits?.length ? el('p', { class: 'desc' }, t('card.limits') + s.limits.join('；')) : null,
-    s.excerpts?.length ? el('ul', { class: 'reviews' }, s.excerpts.map((x) => el('li', {}, `${x.claim}（${x.locator}）`))) : null,
-    s.collection ? row(t('src.collected'), el('span', {}, [s.collection.title || s.collection.id, s.collection.purpose].filter(Boolean).join('：'))) : null,
+    s.limits?.filter(Boolean).length ? el('p', { class: 'desc' }, t('card.limits') + s.limits.filter(Boolean).join('；')) : null,
+    s.revisit_when ? el('p', { class: 'desc' }, t('src.revisit') + s.revisit_when) : null,
+    s.excerpts?.length ? el('ul', { class: 'reviews' }, s.excerpts.map((x) => el('li', {}, x.claim, x.locator ? el('span', { class: 'meta' }, x.locator) : null))) : null,
+    s.retired ? row(t('src.retired'), el('span', {}, [s.retired.reason, s.retired.by, s.retired.at && stamp(s.retired.at)].filter(Boolean).join(' · '))) : null,
+    own ? null : row(t('src.pack'), el('span', { title: pack?.path ?? s.pack }, pack?.title ?? s.pack)),
+    !own && s.collection ? row(t('src.collected'), el('span', {}, [s.collection.title || s.collection.id, s.collection.purpose].filter(Boolean).join('：'))) : null,
     s.captured_for ? row(t('src.capturedFor'), el('span', {}, `${s.captured_for.task} · ${s.captured_for.by || '—'} · ${stamp(s.captured_for.at)}`)) : null,
+    s.category ? row(t('src.category'), byId.has(s.category)
+      ? el('button', { class: 'chip mono jump', onclick: () => openInCatalog({ kind: 'unit', id: s.category }) }, s.category) : chip(s.category, 'mono outline')) : null,
+    s.member_of ? row(t('src.memberOf'), el('button', { class: 'chip mono jump', onclick: () => drawSource(box, s.member_of) }, s.member_of)) : null,
+    m ? row(t('src.members'), chip(t('src.upstream', { n: m.upstream }), 'mono'), chip(t('src.inRoster', { n: m.in_roster }), 'mono'), el('span', { class: 'meta' }, stamp(m.checked_at))) : null,
+    m?.added.length ? [el('div', { class: 'label' }, t('src.added')), el('ul', { class: 'ulist' }, m.added.map((url) => addedRow({ id: s.id, revision: s.revision }, url, act)))] : null,
+    m?.gone.length ? [el('div', { class: 'label' }, t('src.gone')), el('ul', { class: 'ulist' }, m.gone.map((x) => goneRow({}, x, act)))] : null,
     row(t('src.pages'), ...(s.relations.length ? s.relations.map((r) => r.unit
       ? el('button', { class: 'chip mono jump', onclick: () => openInCatalog({ kind: 'unit', id: r.unit }) }, r.unit)
       : chip(r.target, 'mono outline')) : [el('span', { class: 'meta' }, t('src.noPages'))])),
     s.serves.length ? row(t('src.serves'), ...s.serves.map((x) => chip(x.title))) : null,
     row(t('src.usedBy'), ...(s.used_by.length ? s.used_by.map((r) => el('span', { class: 'chips' }, el('span', { class: 'meta' }, `${stamp(r.at)} ${r.title}`),
       r.artifacts.filter((a) => r.read || a.made).map((a) => el('button', { class: 'chip mono jump', onclick: () => { show('artifacts'); openArtifact(a.artifact) } }, `${a.artifact} v${a.version}`)))) : [el('span', { class: 'meta' }, t('src.unused'))])),
-    el('p', { class: 'meta' }, `${s.card || s.record_path || '—'}${s.snapshot ? ' · ' + s.snapshot.path : ''}`)))
-  if (anchor.classList.contains('btn')) anchor.remove()
-  else anchor.disabled = true
+    s.card || s.snapshot ? el('p', { class: 'meta' }, [s.card, s.snapshot?.path].filter(Boolean).join(' · ')) : null,
+    own && s.state !== 'retired' ? el('div', { class: 'actions' },
+      el('button', { class: 'btn', type: 'button', onclick: toggle(() => sourceEditor(s, act, () => slot.replaceChildren())) }, t('src.edit')),
+      el('button', { class: 'btn ghost', type: 'button', onclick: toggle(() => reasonForm(t('src.retire'), t('src.retireReason'),
+        (reason) => act(() => api('praxis_retire', { source: s.id, reason, expected_revision: s.revision }), t('toast.retired')))) }, svg(ICONS.trash), t('src.retire')),
+      el('span', { class: 'meta' }, `r${s.revision}`)) : null,
+    slot)
 }
+
+// Edit an own source's record; only changed fields are sent, with the revision read.
+function sourceEditor(s, act, close) {
+  const cur = { title: s.title ?? '', [s.url ? 'url' : 'locator']: s.url ?? s.locator ?? '', summary: s.summary ?? '', read_scope: s.read_scope ?? '',
+    evidence_status: s.evidence_status ?? 'partial', limits: (s.limits ?? []).filter(Boolean).join('；'), revisit_when: s.revisit_when ?? '', tags: (s.tags ?? []).join(' '), category: s.category ?? '' }
+  const f = (name, label, tag = 'input', attrs = {}) => el('div', {}, el('label', {}, label), el(tag, { name, ...(tag === 'input' ? { value: cur[name] } : {}), ...attrs }, tag === 'textarea' ? cur[name] : null))
+  const form = el('form', { onsubmit: (e) => {
+    e.preventDefault()
+    const d = Object.fromEntries(new FormData(form))
+    const patch = {}
+    for (const k of Object.keys(cur)) if ((d[k] ?? '').trim() !== cur[k]) patch[k] = k === 'tags' ? d.tags.split(/\s+/).filter(Boolean) : d[k].trim()
+    if (d.pattern?.trim()) patch.members = { pattern: d.pattern.trim() }
+    if (!Object.keys(patch).length) return close()
+    act(() => api('praxis_source_update', { source: s.id, expected_revision: s.revision, ...patch }), t('toast.saved'))
+  } },
+    f('title', t('cap.titleField'), 'input', { required: true }),
+    s.url ? f('url', 'URL', 'input', { type: 'url', required: true }) : f('locator', t('cap.locator'), 'input', { required: true }),
+    f('summary', t('cap.summary'), 'textarea', { required: true }),
+    el('div', { class: 'grid2' }, f('read_scope', t('cap.scope'), 'input', { required: true }), f('tags', t('cap.tags'), 'input', { placeholder: t('f.spaces') })),
+    el('div', { class: 'label' }, t('cap.evidence')),
+    el('div', { class: 'seg' }, EVIDENCE.map((v) => el('label', {}, el('input', { type: 'radio', name: 'evidence_status', value: v, checked: v === cur.evidence_status }), el('span', { class: `dot ${v}` }), v))),
+    f('limits', t('cap.limits'), 'textarea', { required: true }),
+    el('div', { class: 'grid2' }, f('revisit_when', t('cap.revisit'), 'input', { required: true }),
+      el('div', {}, el('label', {}, t('cap.category')), areaSelect('category', cur.category))),
+    s.members || s.url ? el('div', {}, el('label', {}, t('cap.pattern')), el('input', { name: 'pattern', placeholder: t('cap.patternPh') })) : null,
+    el('div', { class: 'actions' }, el('button', { class: 'btn primary', type: 'submit' }, t('f.save')), el('button', { class: 'btn ghost', type: 'button', onclick: close }, t('f.cancel'))))
+  return form
+}
+const areaSelect = (name, value, id) => el('select', { name, id }, el('option', { value: '' }, t('cap.categoryNone')), areas().map((a) => el('option', { value: a, selected: a === value }, a)))
 
 function addPanel(path) {
   const box = $('#add-panel')
@@ -986,14 +1110,14 @@ function addPanel(path) {
     const hits = await api('praxis_search', { query: input.value, limit: 15 })
     fill(results, hits.map((h) => el('li', {},
       el('div', { style: 'min-width:0' }, el('div', { class: 'name' }, el('span', { class: `dot ${h.evidence_status}` }), h.title), el('div', { class: 'line' }, h.summary)),
-      h.grammar_paths.includes(path) ? chip(t('attach.done'))
+      (byPath[path] ?? []).some((b) => b.source === h.id) ? chip(t('attach.done'))
         : el('button', { class: 'btn', onclick: async () => {
           try { await api('praxis_curate', { binding: `${h.id}@${path}`, expected_revision: 0 }); toast(t('attach.done')); await refreshData(); renderBody() }
           catch (err) { toast(err.message, true) }
         } }, svg(ICONS.plus), t('attach.do')))))
   }, 200) })
   fill(box, el('div', { class: 'attach' },
-    el('div', { class: 'attach-bar' }, el('div', { class: 'field' }, svg(ICONS.search), input), el('button', { class: 'btn ghost', onclick: () => show('capture') }, t('attach.new'))),
+    el('div', { class: 'attach-bar' }, el('div', { class: 'field' }, svg(ICONS.search), input), el('button', { class: 'btn ghost', onclick: () => captureFrom({ category: route.kind === 'unit' ? areaOf(route.id) : '' }) }, t('attach.new'))),
     results))
   input.focus()
 }
@@ -1004,7 +1128,14 @@ function openInCatalog(next) { show('catalog'); go(next) }
 async function loadAttention() {
   if (!units.length) await refreshData()
   const r = await api('praxis_upkeep')
-  const n = (r.reload ? 1 : 0) + r.bindings.length + r.stale.length + r.unbound.length + r.artifacts.length + r.projects.length
+  const differences = r.collections.reduce((k, c) => k + (c.added?.length ?? 0) + (c.gone?.length ?? 0), 0)
+  const n = (r.reload ? 1 : 0) + r.bindings.length + r.stale.length + r.unbound.length + differences + r.revisions.length + r.artifacts.length + r.projects.length
+  const act = async (fn, ok) => {
+    try { await fn(); toast(ok) }
+    catch (e) { toast(e.status === 409 ? t('toast.conflict') : e.message, true) }
+    await refreshData()
+    loadAttention()
+  }
   const tab = $('.tabs button[data-view="log"]')
   $('.badge', tab)?.remove()
   if (n) tab.append(el('span', { class: 'badge', 'aria-label': `${t('up.attention')} ${n}` }, String(n)))
@@ -1019,6 +1150,10 @@ async function loadAttention() {
         el('span', { style: 'min-width:0' }, el('span', { class: 't' }, s.title), el('span', { class: 'line' }, t('up.stale'))),
         el('span', { class: 'chips' }, s.units.map((x) => el('button', { class: 'chip mono jump', onclick: () => openInCatalog({ kind: 'unit', id: x }) }, x)),
           s.bindings.map((x) => chip(x.slice(0, x.lastIndexOf('@')), 'mono outline')), s.sources.length ? chip(t('up.source'), 'warn') : null, s.preset ? chip(t('up.preset'), 'warn') : null))),
+      r.collections.map((c) => [(c.added ?? []).map((url) => addedRow(c, url, act)), (c.gone ?? []).map((m) => goneRow(c, m, act))]),
+      r.revisions.map((x) => el('li', {},
+        el('button', { class: 'row-link', onclick: () => openInCatalog({ kind: 'unit', id: x.unit }) }, el('span', { class: 't' }, byId.get(x.unit)?.title ?? x.unit), el('span', { class: 'mono' }, t('up.conflict'))),
+        el('span', { class: 'chips' }, el('button', { class: 'btn', type: 'button', onclick: () => act(() => api('praxis_unit_revert', { unit: x.unit, expected_revision: x.revision }), t('toast.reverted')) }, svg(ICONS.undo), t('unit.revert'))))),
       r.artifacts.map((a) => el('li', {},
         el('button', { class: 'row-link', onclick: () => { show('artifacts'); openArtifact(a.id) } }, el('span', { class: 't' }, a.title), el('span', { class: 'mono' }, a.path)),
         el('span', { class: 'chips' }, signalChips(a)))),
@@ -1190,8 +1325,9 @@ const capField = (name, label, attrs = {}, tag = 'input') => el('div', {}, el('l
 const capForm = el('form', { class: 'panel', style: 'max-width: 760px; margin: 0 auto', onsubmit: async (e) => {
   e.preventDefault()
   const d = Object.fromEntries(new FormData(capForm))
-  const { task, ...item } = { ...d, tags: d.tags.split(/\s+/).filter(Boolean) }
-  for (const k of ['url', 'locator']) if (!item[k]) delete item[k]
+  const { task, pattern, ...item } = { ...d, tags: d.tags.split(/\s+/).filter(Boolean) }
+  for (const k of ['url', 'locator', 'category', 'member_of']) if (!item[k]?.trim()) delete item[k]
+  if (pattern.trim()) item.members = { pattern: pattern.trim() }
   try {
     const [r] = await api('praxis_capture', { sources: [item], task })
     toast(r.existing ? t('toast.existing', { id: r.id }) : t('toast.captured', { id: r.id }))
@@ -1210,8 +1346,21 @@ const capForm = el('form', { class: 'panel', style: 'max-width: 760px; margin: 0
     el('div', { class: 'seg' }, EVIDENCE.map((s) => el('label', {}, el('input', { type: 'radio', name: 'evidence_status', value: s, checked: s === 'partial' }), el('span', { class: `dot ${s}` }), s))),
     capField('limits', t('cap.limits'), { required: true, placeholder: t('cap.limitsPh') }, 'textarea'),
     capField('revisit_when', t('cap.revisit'), { required: true }),
+    el('div', { class: 'grid2' }, el('div', { id: 'cap-area' }), capField('member_of', t('cap.memberOf'), { placeholder: t('cap.memberOfPh') })),
+    capField('pattern', t('cap.pattern'), { placeholder: t('cap.patternPh') }),
     el('div', { class: 'actions' }, el('button', { class: 'btn primary', type: 'submit' }, t('cap.submit')))))
 fill($('#capture'), capForm)
+// The area list comes from the units; refreshData redraws it and keeps the choice.
+function renderAreas() {
+  const box = $('#cap-area')
+  fill(box, el('label', { for: 'cap-category' }, t('cap.category')), areaSelect('category', $('#cap-category')?.value ?? '', 'cap-category'))
+}
+// Open the capture form prefilled: from a unit page (its area), or from a collection's new member link.
+function captureFrom(values) {
+  show('capture')
+  for (const [k, v] of Object.entries(values)) if (capForm.elements[k]) capForm.elements[k].value = v ?? ''
+  window.scrollTo(0, 0)
+}
 
 // ---- log
 const logCard = (icon, title, n, body) => [el('div', { class: 'h' }, svg(ICONS[icon], 'glyph'), title, el('span', { class: 'count' }, String(n))), body]

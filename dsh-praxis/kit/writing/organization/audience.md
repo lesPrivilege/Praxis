@@ -10,7 +10,7 @@ ID：`DWG-W-AUDIENCE` · Priority：`normal`（可选参考）
 
 用一行表达：**[角色/读者] 在 [触发情境] 需要 [完成的任务]，以便 [获得的结果]；当前约束是 [时间、权限、知识或设备]。** 例如：“值班人员在夜间告警后，需要判断是否回滚，以便恢复服务；他只有监控摘要，尚未拿到数据库日志。”角色可按任务换，不必做成永久人格标签。
 
-先找现有证据：用户访谈与观察、搜索词、支持问题、失败记录、分析数据和实际任务产物。委托方意见与团队假设可以提供线索，但来源不是用户证据；保留为待验证假设。研究和服务设计的 GOV.UK 指南建议在不同阶段持续研究、纳入辅助角色和有困难的用户，并把稳定需要与具体 user story 区分（见其既有来源卡及重读记录）。
+先找现有证据：用户访谈与观察、搜索词、支持问题、失败记录、分析数据和实际任务产物。委托方意见与团队假设可以提供线索，但来源不是用户证据；保留为待验证假设。研究和服务设计的 GOV.UK 指南建议在不同阶段持续研究、纳入辅助角色和有困难的用户，并把稳定需要与具体 user story 区分。
 
 最少核对这些维度：
 
@@ -38,10 +38,6 @@ ID：`DWG-W-AUDIENCE` · Priority：`normal`（可选参考）
 
 实际读者或有依据的代理能否说明：何时会来读、想完成什么、需要做出什么决定、下一步在哪里？不同角色是否真的需要不同内容或次序？对读者的假设由什么证据支撑，何时复核？可用的经验包括任务走读与支持问题复盘；尚未做就记未验证，不用“用户友好”替代结果。
 
-## 来源与范围
+## 证据边界
 
-- [GOV.UK · Learning about users and their needs（既有卡）](../../../../vault/provenance/documentation-practices/cards/govuk-user-needs.md)：真实任务、研究来源、辅助角色和验证需要；此来源是公共服务研究指导。
-- [Google developer documentation style guide 总览（DWW-001）](../../../../vault/provenance/design-writing-encyclopedia/writing/cards/google-style-guide-about.md)：通用编辑建议需要让位于具体项目与领域读者。
-- [Microsoft brand voice（DWW-002）](../../../../vault/provenance/design-writing-encyclopedia/writing/cards/microsoft-brand-voice.md)：同一品牌 voice 可按语境与客户状态调整 tone；仅表示 Microsoft 自有写作选择。
-
-这几张卡分别支持读者研究、项目规则优先和特定品牌声调的区分；任务句模板尚无实际用户走读证据。
+任务句模板尚无实际用户走读证据。

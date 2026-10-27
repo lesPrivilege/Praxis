@@ -1,35 +1,37 @@
 // Projects: the directory a piece of work lives in, with a layout that says which paths hold its
-// drafts, intermediate builds and final products. A delivered file belongs to the project whose
+// drafts, intermediate builds, final products, acceptance evidence and scratch. A delivered file belongs to the project whose
 // root holds it; the layout tells whether it sits where that project keeps drafts or finals.
 // Praxis records and checks; it never moves files.
 import { existsSync, globSync, statSync } from 'node:fs'
-import { basename, isAbsolute, join, matchesGlob, relative, resolve, sep } from 'node:path'
+import { basename, isAbsolute, join, matchesGlob, relative, sep } from 'node:path'
 import { Collection } from './store.js'
+import { pathsFor } from './paths.js'
 
-export const ROLES = ['draft', 'build', 'final']
+export const ROLES = ['draft', 'build', 'final', 'evidence', 'tmp']
 // Where artifacts belong: drafts and final products. Builds are intermediate and never registered.
 export const DELIVERED = ['draft', 'final']
+// Evidence (receipts, kept frames; versioned) is allowed beside them: never misplaced, never an unregistered final.
+// Scratch (tmp; not versioned) is none of these.
+export const ALLOWED = [...DELIVERED, 'evidence']
 export const TEMPLATES = {
-  standard: { draft: ['draft/**'], build: ['build/**'], final: ['out/**'] },
+  standard: { draft: ['draft/**'], build: ['build/**'], final: ['out/**'], evidence: ['evidence/**'], tmp: ['tmp/**'] },
 }
 const SLUG = /^[a-z0-9][a-z0-9-]*$/
 const SKIP = new Set(['node_modules', '.git', '__pycache__'])
 
 export class Projects {
-  constructor(repo, dataDir) {
-    this.repo = repo
-    this.store = new Collection(join(dataDir, 'projects.json'), join(dataDir, 'history.jsonl'))
+  constructor(where) {
+    this.paths = pathsFor(where)
+    this.store = new Collection(join(where.data, 'projects.json'), join(where.data, 'history.jsonl'))
   }
 
-  /** Repository folders are kept repo-relative ('' is the repository itself); others absolute. */
+  /** Folders under the base folder are kept relative to it ('' is the base itself); others absolute. */
   normalize(path) {
-    const abs = resolve(this.repo, path)
-    const rel = relative(this.repo, abs)
-    return !rel.startsWith('..') && !isAbsolute(rel) ? rel.split(sep).join('/') : abs
+    return this.paths.normalize(path)
   }
 
   absolute(root) {
-    return isAbsolute(root) ? root : join(this.repo, root)
+    return this.paths.absolute(root)
   }
 
   list({ include_removed = false } = {}) {
@@ -49,12 +51,12 @@ export class Projects {
     for (const p of this.list()) {
       const rel = relative(this.absolute(p.root), abs)
       if (rel.startsWith('..') || isAbsolute(rel)) continue
-      if (!best || p.root.length > best.project.root.length) best = { project: p, path: rel.split(sep).join('/') }
+      if (!best || this.absolute(p.root).length > this.absolute(best.project.root).length) best = { project: p, path: rel.split(sep).join('/') }
     }
     return best
   }
 
-  /** draft, build or final, by the first matching pattern in that order; undefined when none matches. */
+  /** The role (see ROLES), by the first matching pattern in that order; undefined when none matches. */
   role(project, path) {
     return ROLES.find((r) => (project.layout[r] ?? []).some((g) => matchesGlob(path, g)))
   }
@@ -82,7 +84,7 @@ export class Projects {
     if (nextRoot === undefined) throw new Error('project needs root')
     if (!existsSync(this.absolute(nextRoot)) || !statSync(this.absolute(nextRoot)).isDirectory()) throw new Error(`not a directory: ${root}`)
     if (template !== undefined && !TEMPLATES[template]) throw new Error(`template must be ${Object.keys(TEMPLATES).join(', ')}`)
-    const base = template ? TEMPLATES[template] : current?.layout ?? TEMPLATES.standard
+    const base = template ? TEMPLATES[template] : { ...TEMPLATES.standard, ...current?.layout }
     const nextLayout = { ...base, ...layout }
     for (const [r, globs] of Object.entries(nextLayout)) {
       if (!ROLES.includes(r)) throw new Error(`layout role must be ${ROLES.join(', ')}`)

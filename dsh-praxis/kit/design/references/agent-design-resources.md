@@ -5,7 +5,6 @@ reference_priority: normal
 grammar_ids:
   - ASA-G-AGENT-DESIGN-SYSTEM-CONTRACT
   - ASA-G-AGENT-COMPONENT-RETRIEVAL
-source_stream: vault/provenance/art-software-atlas/ecosystem/catalog.json
 ---
 
 # 面向 agent 的设计资源
@@ -14,7 +13,7 @@ source_stream: vault/provenance/art-software-atlas/ecosystem/catalog.json
 
 设计系统包表达品牌与产品约束；组件 registry 分发实现；Skill 描述工作过程；MCP server 提供工具接口；adapter 连接已有 runtime。OpenDesign 将 functional Skill 与 design template 分置于不同目录/API，这些名称应按项目本义读取。
 
-这里的 OpenDesign 指 `open-design.ai` 及其链接的 `nexu-io/open-design`；`opendesigner.io` 是另一个同名候选。需要指定产品时先核对身份，见下方逐源记录。
+这里的 OpenDesign 指 `open-design.ai` 及其链接的 `nexu-io/open-design`；`opendesigner.io` 是另一个同名候选。需要指定产品时先核对身份。
 
 <a id="asa-g-agent-design-system-contract"></a>
 
@@ -51,6 +50,6 @@ shadcn registry 分发组件、hooks、页面与配置；MCP 用 `tools/list` �
 
 **最小例子。** 要给设置页加日期选择器，先检索 `DatePicker` 及目标框架，再读 token 与 disabled/error 例子，核对版本、许可和依赖后形成安装差异。若组件来自 Figma，先读选中 frame 与绑定组件；需要回写时单独确认目标和变更。
 
-**失效情形。** 同名 Card 可能属于不同框架；只按名称复制会遗漏依赖和状态。工具宣称只读也不能替代检查实际行为。下一步从 [标本](specimens.md) 或 [界面](interface.md) 找到实现，沿 [阅读来源](reading-sources.md) 回查具体文档；集成检查范围见 [来源生态](../../../../vault/provenance/art-software-atlas/ecosystem/README.md)。
+**失效情形。** 同名 Card 可能属于不同框架；只按名称复制会遗漏依赖和状态。工具宣称只读也不能替代检查实际行为。下一步从 [标本](specimens.md) 或 [界面](interface.md) 找到实现，沿 [阅读来源](reading-sources.md) 回查具体文档。
 
-来源卡与直接依据： [ASA-A-01 product site](../../../../vault/provenance/art-software-atlas/ecosystem/cards/asa-a-01-opendesign-site.md)、[ASA-A-02 repository](../../../../vault/provenance/art-software-atlas/ecosystem/cards/asa-a-02-opendesign-repository.md)、[ASA-A-03 package contract](../../../../vault/provenance/art-software-atlas/ecosystem/cards/asa-a-03-opendesign-design-systems.md)、[ASA-A-04 skills protocol](../../../../vault/provenance/art-software-atlas/ecosystem/cards/asa-a-04-opendesign-skills-protocol.md)、[ASA-A-05 runtime adapters](../../../../vault/provenance/art-software-atlas/ecosystem/cards/asa-a-05-opendesign-agent-adapters.md)、[ASA-A-06 distinct-name candidate](../../../../vault/provenance/art-software-atlas/ecosystem/cards/asa-a-06-opendesigner-candidate.md)、[D01 Agent Skills](../../../../vault/provenance/design-grammar-atlas-20261002/cards/d01-agent-skills-specification.md)、[ASA-A-08 MCP tools](../../../../vault/provenance/art-software-atlas/ecosystem/cards/asa-a-08-mcp-tools-spec.md)、[ASA-A-09 shadcn registry](../../../../vault/provenance/art-software-atlas/ecosystem/cards/asa-a-09-shadcn-registry.md)、[ASA-A-10 Figma MCP](../../../../vault/provenance/art-software-atlas/ecosystem/cards/asa-a-10-figma-mcp.md)。来源证据限于文本读取；无 demo 执行、代码检查或视觉审阅。
+OpenDesign、MCP、shadcn 与 Figma 的说法均取自文档文本，未执行 demo、检查代码或做视觉审阅。

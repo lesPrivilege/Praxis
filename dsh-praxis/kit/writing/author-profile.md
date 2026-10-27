@@ -51,4 +51,4 @@
 
 ## 来路与证据边界
 
-取用：可选普通参考（`normal` / `reference`），按上面的配置项开关。偏好归纳自所有者的一批对话原文，私有证据底稿不在本仓库；示例为构造。尚无启用、关闭与换受众的对照试用。候选全文与交接见 [Writing Kit 修订交接](../../../vault/distilled/writing-kit-spec-handoff-20261016/AUTHOR-PROFILE.md)，裁决见 [ADR-036](../../../docs/decisions/036-writing-kit-spec-handoff.md)。
+取用：可选普通参考（`normal` / `reference`），按上面的配置项开关。偏好归纳自所有者的一批对话原文，私有证据底稿不在本仓库；示例为构造。尚无启用、关闭与换受众的对照试用。

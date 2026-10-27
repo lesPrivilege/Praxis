@@ -20,12 +20,10 @@
 
 ## 验收边界
 
-来路为 [LAB-20260927/E06-b](../../../../../vault/distilled/layout-specimens-20260927/atoms/enum.html#E06-b)，观察范围为4对象、5属性，见 [宽屏](../../../../../vault/distilled/layout-specimens-20260927/checks/atoms__enum-E06-b-1440.png)与 [窄屏](../../../../../vault/distilled/layout-specimens-20260927/checks/atoms__enum-E06-b-375.png)。截图库中同属性并置关系可见，main又核对了两个投影的HTML。
+验收所据的样张比较4个对象、5个属性；宽屏1440与窄屏375的截图中同属性并置关系可见，两个投影的HTML也已核对。
 
 原例中的机构、数字或成本结论不采用。原fixture有分母缺口；窄屏HTML以`aria-hidden`隐藏对象图例且没有为每个数值提供对象名称，不适合原样复制为已验收可访问表格。多个投影保持数据一致、长表导航、读屏和缩放仍须在消费者实现里验证。
 
 ## 消费与维护
 
 消费者记录本ID、参考版本、对象/属性数量、实际布局、替代关系和检查结果。首次迁往其他领域、对象数或文字负载明显变化，以及发现比较关系或标签丢失时重访；若该结构不再改善比较，降低优先级，而不是强行套用。
-
-已有验收、使用轨迹和修订缘由见 [历史记录](../../../../../docs/verification/design-writing-encyclopedia-20261011/body-history.md)；新反馈按 [参考生命周期](../../../../../docs/governance/reference-lifecycle.md)维护，不在本卡追加日志。

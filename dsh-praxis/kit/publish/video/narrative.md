@@ -36,10 +36,10 @@
 
 封面为多平台发布预留，与成片画幅独立；横屏视频保持自己的尺寸和时间线。指定平台模板时按其要求调整并记明取舍。制作状态与泛泛保护性措辞留过程文档，成片和封面由内容承担；会影响理解的具体条件、来源和示例身份仍准确交代。
 
-此默认来自 2026-10-12 用户对 [AgentScope 知识片](../../../../projects/agentscope-enterprise-film/README.md)的交付要求，适用于后续新视频，不追补历史成片。双画幅已原生绘制并检查；多平台发布效果尚未验证。
+此默认自 2026-10-12 起适用于新视频，不追补历史成片。双画幅已原生绘制并检查；多平台发布效果尚未验证。
 
 ## 完成与回流
 
 逐段映射回原稿，核对未遗漏的限定、单位与来源，再按 [媒介验收](../verification.md)检查实际输出。未做观众测试时只报告制作和观看范围，不称叙事效果已验证。
 
-本契约消费 [Write–Design 边界](../../../../vault/distilled/write-design-grammar/write-design-boundary.md)与既有 [动态简报](../../../../vault/distilled/ai-capability-assessment/motion/README.md)的交接对象。镜头、字体运动与缓动的选择由 [Design / Motion](../../design/motion/README.md)维护，renderer API 留在具体项目。
+镜头、字体运动与缓动的选择由 [Design / Motion](../../design/motion/README.md)维护，renderer API 留在具体项目。

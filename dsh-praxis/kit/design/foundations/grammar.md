@@ -15,6 +15,4 @@
 
 ## 维护与使用
 
-项目 index 记录所用条目、版本、改用理由、实际输出和限制。反复覆盖、来源漂移或没有消费者时，按 [修订机制](../../../../docs/governance/evolution.md)复核。新作品先作为可检查的 specimen，晋升仍需明确裁决。
-
-来路见 [参考语义](../../../../vault/distilled/design-reference-semantics/README.md)；历史答卷的具体选择见 [profile](../../../../vault/distilled/ai-capability-assessment/design-profile-20260924.md)。
+项目 index 记录所用条目、版本、改用理由、实际输出和限制。反复覆盖、来源漂移或没有消费者时复核。新作品先作为可检查的 specimen，晋升仍需明确裁决。

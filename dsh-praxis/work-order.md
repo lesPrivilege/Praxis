@@ -1,6 +1,6 @@
 # 下一轮工单：自用跑通，再拆出 release
 
-状态：2026-10-25 编制；四项决定已确认。A2 按用户改定的做法施工（管线登记为来源，[ADR-043](../docs/decisions/043-dsh-praxis-pipelines-as-sources.md)）；A4 除集合类来源的增减淘汰外已施工（[ADR-042](../docs/decisions/042-dsh-praxis-upstream-checks.md)，[回执](../docs/verification/dsh-praxis-pipelines-roster-20261025.md)）。A1 已施工，例外已按用户指示处理（[ADR-041](../docs/decisions/041-dsh-praxis-projects.md)，[回执](../docs/verification/dsh-praxis-projects-20261025.md)）。上一轮的产物工单见 work-order-artifacts，来源闭环见 [ADR-040](../docs/decisions/040-dsh-praxis-source-loop.md)。
+状态：2026-10-25 编制；四项决定已确认。2026-10-27：A3 的代码、A4 的集合同步与 B1–B7 已施工（[ADR-046](../docs/decisions/046-dsh-praxis-package-and-roster.md)）；A3 的对照实验做了一轮：worker 不经提示自己取用与登记，来源没有用上，素材是否帮助交付未得结论（[回执](../docs/verification/dsh-praxis-release-split-20261027.md)）。剩下：换一件需要外部参考的任务重做对照、真实 fresh agent 在新 profile 里的走查、发布。此前：A2 按用户改定的做法施工（管线登记为来源，[ADR-043](../docs/decisions/043-dsh-praxis-pipelines-as-sources.md)）；A4 除集合类来源的增减淘汰外已施工（[ADR-042](../docs/decisions/042-dsh-praxis-upstream-checks.md)，[回执](../docs/verification/dsh-praxis-pipelines-roster-20261025.md)）。A1 已施工，例外已按用户指示处理（[ADR-041](../docs/decisions/041-dsh-praxis-projects.md)，[回执](../docs/verification/dsh-praxis-projects-20261025.md)）。上一轮的产物工单见 work-order-artifacts，来源闭环见 [ADR-040](../docs/decisions/040-dsh-praxis-source-loop.md)。
 
 ## 目标与完成体验
 
@@ -124,10 +124,12 @@ agent 打开原件是按链接与定位去读，不是读 Praxis 存下的正文
 
 完成标志：在一个 fresh DSH 会话里，没有人提到 Praxis，worker 完成上面的取用与登记；对照结果写进回执。
 
+施工情况（2026-10-27，ADR-046）：代码已完成。DSH 只注册标 `agent` 的 10 个工具（entry、resolve、unit、search、source、capture、curate、consume、projects、project），按“名称、说明、参数 schema”的 JSON 计约 8.7k 字符；入口段只进 agent 会话；`/praxis` 不带文字时打开控制面，带文字时在会话界面列出任务类型与待处理事项；resolve 与 consume 显示为卡片；运行记下 DSH 会话 ID 或 MCP 连接。对照实验与 fresh 会话的验收待做。
+
 ### A4. 名册维护
 
 - **挂载说明按位置写：**（已施工：Design 108 条。）先改 Design 的 78 条，写清这个来源对这一页有什么用；用 [审阅方法](kit/writing/review.md)检查，不抄概要。
-- **与上游同步：** 失效的链接、内容已变的来源进 upkeep；集合类来源（作品集、组件库、动画库）的上游增减时，提出增补或淘汰，由人或 agent 处理，带理由记进 history。（失效与内容变化已施工；集合类来源的增减淘汰待做。）
+- **与上游同步：** 失效的链接、内容已变的来源进 upkeep；集合类来源（作品集、组件库、动画库）的上游增减时，提出增补或淘汰，由人或 agent 处理，带理由记进 history。（已施工：失效与内容变化见 ADR-042；集合类来源用 `members.pattern` 声明成员，refresh 第一次只作基线，之后列出上游新增与下线，新增的可 capture 或带理由跳过，见 ADR-046，已用一个真实作品集验证。）
 - **refresh 只判断变化：** 默认只记内容 hash、状态与时间，用来发现链接失效或内容变化，不存正文；需要固定版本时才存快照。先覆盖被运行读过、或挂在常驻与任务类型单元上的来源。（已施工，见 ADR-042；被任务类型取到的 11 个来源已检查。）
 - **写回不重排：** curate 写回 JSON 时保持原有排版，只改动到的字段。（已施工，与 refresh 一并见 [ADR-042](../docs/decisions/042-dsh-praxis-upstream-checks.md)。）
 
@@ -142,6 +144,8 @@ agent 打开原件是按链接与定位去读，不是读 Praxis 存下的正文
 
 ### B1. 数据目录与仓库模式
 
+（已施工，见 ADR-046：`core/paths.js` 一处解析，数据根依次取显式参数、`PRAXIS_DATA`、包旁的 `data/`、`$DSH_HOME/dsh-praxis`；这个仓库靠 `data/settings.json` 的 `base` 与 `snapshots` 运行在仓库模式。）
+
 一个配置决定数据根：
 - 默认在插件自己的数据目录，DSH、MCP、命令行共用；
 - 仓库模式指回 `dsh-praxis/data` 与 vault。
@@ -150,11 +154,15 @@ core 不再调用仓库里的 Python 脚本，所有路径经同一处解析。
 
 ### B2. 名册自有存储与预设分类
 
+（已施工，见 ADR-046：自有来源在 `sources.json`，vault 与 Jev 研究登记作为来源包登记在 `packs.json`，关系都在 `bindings.json`，检查迁到 `checks.jsonl`。）
+
 来源名册改为 Praxis 自己的存储，存链接、定位、摘录说法与关系，不存正文；按预设的分类目录组织（按层与领域，与 Kit 的层对应）：
 - fresh 安装得到空名册和建好的目录；
 - 这个仓库的 vault 用 [ADR-040](../docs/decisions/040-dsh-praxis-source-loop.md) 的按引用登记机制作为来源包接入，vault 结构与 `build_registry.py` 留在仓库这一侧。
 
 ### B3. 基础 Kit 自足
+
+（已施工，见 ADR-046：75 条自有来源，挂载 582 → 705 条；validator 加了包内 Kit 不链包外的规则。）
 
 包内 Kit 正文不链到包外：
 - 正文对来源卡的引用改为关系，由名册披露；
@@ -165,9 +173,13 @@ validator 为包内 Kit 加一条规则：没有包外链接。
 
 ### B4. 用户覆盖层与 RSI
 
+（覆盖层已施工，见 ADR-046：`praxis_unit_revise` 写进 `overlay/kit/…`，冲突进 upkeep，`praxis_unit_revert` 撤回。RSI 的边界还没写进 Kit 使用约定。）
+
 用户与 agent 对 Kit 单元的修订存进数据层的覆盖层，带依据的范例与 history；包升级时，有冲突的修订进 upkeep。RSI 的边界写进 [Kit 使用约定](../kit/Agent.md)对应位置：agent 自主改的是数据层，包内 Kit 随版本更新。
 
 ### B5. 其他 agent 的封装
+
+（已施工，见 ADR-046：resources、prompts 与 instructions。`npx` 起服务未做：包为 private，未发布。）
 
 MCP 增加 resources 与 prompts，做渐进披露：
 - **resources：** 渐进目录本身：入口、层、单元、来源条目（链接与定位，不含原件正文）、产物；
@@ -177,6 +189,8 @@ MCP 增加 resources 与 prompts，做渐进披露：
 命令行读写同一份数据，可用 `npx` 起服务。
 
 ### B6. fresh 目录走查，作为 release 的回归测试
+
+（脚本化走查已施工：[release/walkthrough.mjs](release/README.md)经 MCP 走协议层，`npm run walkthrough` 运行。真实 fresh agent 在新 profile 里的走查待做。）
 
 脚本化：
 1. 新 profile 安装插件；
@@ -191,6 +205,8 @@ MCP 增加 resources 与 prompts，做渐进披露：
 只用合成材料，个人数据不进包。
 
 ### B7. 打包
+
+（已施工：`package.json` 的 `files` 决定包的内容，版本 0.2.0，安装说明见 [INSTALL.md](INSTALL.md)。发布与创建远端由用户执行。）
 
 确定包的内容与版本，写安装说明。发布与创建远端由用户执行。
 

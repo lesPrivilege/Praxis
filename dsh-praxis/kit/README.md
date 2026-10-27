@@ -2,7 +2,7 @@
 
 先选 [Task](task/README.md)：这次为谁做什么，走哪条流水线，读哪些方法；Writing 与 Design 常驻，Publish 在选定流水线后读。
 
-四层都在这里维护；Materials 的来源记录在 `vault/provenance/`，挂载维护信息在 [data](../data/README.md)，用控制面或 praxis 工具查看与修改。分工见 [分层体例](../layers.md)，迁移进度见 [迁移映射](../migration.md)。各页示例里的产品、数据、人物与阈值均为构造。
+四层都在这里维护。每页挂载的来源记在控制面的名册里，随 `praxis_resolve` 返回的 materials 或控制面中该页的条目给出。分工见 [分层体例](../layers.md)。各页示例里的产品、数据、人物与阈值均为构造。
 
 | 层 | 入口 | 读取方式 |
 |---|---|---|

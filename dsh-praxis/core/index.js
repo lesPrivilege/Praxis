@@ -1,13 +1,13 @@
 // dsh-praxis core: one set of operations shared by the DSH plugin, the MCP server,
 // the CLI and the control plane UI.
 import { createHash } from 'node:crypto'
-import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs'
-import { dirname, join, relative, resolve } from 'node:path'
-import { fileURLToPath } from 'node:url'
+import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, unlinkSync, writeFileSync } from 'node:fs'
+import { dirname, join } from 'node:path'
+import { PACKAGE, locate } from './paths.js'
 import { Kit, LAYERS, clip } from './kit.js'
 import { Materials } from './materials.js'
 import { Artifacts } from './artifacts.js'
-import { DELIVERED, Projects, TEMPLATES } from './projects.js'
+import { ALLOWED, Projects, TEMPLATES } from './projects.js'
 import { Collection, readJson } from './store.js'
 import { PRESET_FIELDS, presetId, validatePreset } from './presets.js'
 
@@ -15,30 +15,24 @@ export { ConflictError } from './store.js'
 
 // The server code this process loaded. A long-running host (DSH, the MCP server, the control plane)
 // keeps running it after the files change; reload() says so, so an agent does not test old code.
-const PACKAGE = join(dirname(fileURLToPath(import.meta.url)), '..')
 const codeStamp = () => Math.max(...['core', 'adapters'].flatMap((d) => readdirSync(join(PACKAGE, d))
   .filter((f) => f.endsWith('.js')).map((f) => statSync(join(PACKAGE, d, f)).mtimeMs)))
 const LOADED = { at: new Date().toISOString(), stamp: codeStamp() }
 
-/** The repository root: explicit, PRAXIS_ROOT, or the checkout this package lives in. */
-export function findRoot(explicit) {
-  const start = explicit ?? process.env.PRAXIS_ROOT ?? join(dirname(fileURLToPath(import.meta.url)), '..', '..')
-  const root = resolve(start)
-  if (!existsSync(join(root, 'dsh-praxis', 'layers.md'))) throw new Error(`not a Praxis checkout: ${root}`)
-  return root
-}
-
+/** One Praxis over a data root (see paths.js): `data` overrides where it reads and writes; `package` where the Kit is read (tests). */
 export function createPraxis(options = {}) {
-  const repo = findRoot(options.root)
-  const dataDir = join(repo, 'dsh-praxis', 'data')
-  const materials = new Materials(repo, dataDir, { rebuild: options.rebuild })
-  const kit = () => new Kit(repo)
+  const where = locate({ data: options.data, package: options.package })
+  const dataDir = where.data
+  const overlay = join(dataDir, 'overlay')
+  const kit = () => new Kit(where.package, overlay)
+  const revisions = new Collection(join(dataDir, 'revisions.json'), join(dataDir, 'history.jsonl'))
+  const materials = new Materials(where, { categories: () => kit().areas() })
   const presets = new Collection(join(dataDir, 'presets.json'), join(dataDir, 'history.jsonl'))
-  const artifacts = new Artifacts(repo, dataDir)
-  const projects = new Projects(repo, dataDir)
+  const artifacts = new Artifacts(where)
+  const projects = new Projects(where)
 
   return {
-    repo,
+    where,
     layers: LAYERS,
     materials,
     artifacts,
@@ -77,6 +71,46 @@ export function createPraxis(options = {}) {
     },
 
     /**
+     * Revise a Kit unit in the user's data: the whole page as it should read, why, and the example it
+     * rests on (a run, a review, an artifact). It takes effect at once for every surface; the package's
+     * page stays as shipped, and the revision records which version of it it was written against.
+     */
+    reviseUnit({ unit: ref, body, expected_revision, reason, example, by, task }) {
+      const k = kit()
+      const u = k.find(ref)
+      if (!u) throw new Error(`unknown unit: ${ref}`)
+      if (!reason?.trim()) throw new Error('a revision needs reason')
+      if (!/^# .+/m.test(body ?? '')) throw new Error('body must be the whole page, starting with its # title')
+      const base = hash(k.packaged(u.path))
+      const saved = revisions.update(u.path, expected_revision, (cur = {}) => ({ ...cur, unit: u.id, base, reason: reason.trim(), example, state: 'active' }), { op: 'revise-unit', by, reason, task, example })
+      const file = join(overlay, u.path)
+      mkdirSync(dirname(file), { recursive: true })
+      writeFileSync(file, body.endsWith('\n') ? body : `${body}\n`)
+      return { ...this.unit(u.id), revision: saved.revision }
+    },
+
+    /** Drop a unit's revision: the package's page applies again. The revised text stays in history. */
+    revertUnit({ unit: ref, expected_revision, reason, by }) {
+      const u = kit().find(ref)
+      const rec = u && revisions.get(u.path)
+      if (!rec || rec.state !== 'active') throw new Error(`no revision for: ${ref}`)
+      const file = join(overlay, u.path)
+      const body = readFileSync(file, 'utf8')
+      revisions.update(u.path, expected_revision, (cur) => ({ ...cur, state: 'reverted' }), { op: 'revert-unit', by, reason, body })
+      unlinkSync(file)
+      return this.unit(u.id)
+    },
+
+    /** Revisions in the overlay; `conflict` when the package's page changed after the revision was written. */
+    revisionList() {
+      const k = kit()
+      return Object.entries(revisions.all()).filter(([, r]) => r.state === 'active').map(([path, r]) => ({
+        path, unit: r.unit, reason: r.reason, example: r.example, revision: r.revision,
+        conflict: existsSync(join(where.package, path)) ? hash(k.packaged(path)) !== r.base : true,
+      }))
+    },
+
+    /**
      * What to read for a task: resident units, then the units the task type lists
      * (filtered by pipeline), then enabled bindings on those units as material rows.
      */
@@ -110,7 +144,7 @@ export function createPraxis(options = {}) {
     source(ref) {
       const found = materials.source(ref)
       if (!found) return undefined
-      const { record, ...s } = found
+      const s = found
       const k = kit()
       const units = new Map(k.list().map((u) => [u.path, u]))
       const reach = servedBy(k)
@@ -125,7 +159,7 @@ export function createPraxis(options = {}) {
         .filter((r) => r.sources.some((x) => x.id === s.id) || r.artifacts.some((a) => a.made_with === s.id))
         .map((r) => ({ id: r.id, title: r.title, at: r.at, by: r.by, read: r.sources.some((x) => x.id === s.id),
           artifacts: r.artifacts.map((a) => ({ artifact: a.artifact, version: a.version, path: a.path, made: a.made_with === s.id })) }))
-      return { ...s, collection: collectionOf(repo, materials.registry(), s), relations, serves: [...types.values()], used_by }
+      return { ...s, members: s.members ? { pattern: s.members.pattern, skipped: s.members.skipped, ...materials.members(s.id) } : undefined, collection: materials.collectionOf(found), relations, serves: [...types.values()], used_by }
     },
 
     /**
@@ -134,12 +168,12 @@ export function createPraxis(options = {}) {
      * so a later change to either marks the run stale. Each file is registered as an artifact version
      * (see artifacts.js); everything is checked before anything is written. Returns the run record.
      */
-    consume({ title, task_type, pipeline, preset, overrides, units = [], sources = [], artifacts = [], by, note }) {
+    consume({ title, task_type, pipeline, preset, overrides, units = [], sources = [], artifacts = [], by, note, session }) {
       if (!title?.trim()) throw new Error('consume needs a title')
       const k = kit()
       const unitRefs = units.map((ref) => {
         const u = k.find(ref)
-        if (!u) throw new Error(`unknown unit: ${ref}`)
+        if (!u) throw new Error(`unknown unit: ${ref}; pass the unit id as resolve lists it (e.g. writing/evidence), without a version`)
         return { id: u.id, path: u.path, version: u.version }
       })
       const read = new Map()
@@ -170,12 +204,13 @@ export function createPraxis(options = {}) {
         const { id: artifact, version, path, sha256 } = this.artifacts.register(item, { run: id, by })
         return { artifact, version, path, sha256, project: item.project, made_with: item.made_with }
       })
-      const run = { id, title: title.trim(), at, by, task_type, pipeline, preset: presetRef, overrides, units: unitRefs, bindings: bindingRefs, sources: sourceRefs, artifacts: artifactRefs, note }
+      const run = { id, title: title.trim(), at, by, session, task_type, pipeline, preset: presetRef, overrides, units: unitRefs, bindings: bindingRefs, sources: sourceRefs, artifacts: artifactRefs, note }
       const path = join(dataDir, 'runs', `${id}.json`)
       mkdirSync(dirname(path), { recursive: true })
       writeFileSync(path, JSON.stringify(run, null, 2) + '\n')
       materials.bindings.log({ op: 'consume', id, by, title: run.title })
-      return run
+      // The caller gets each file's absolute path too, for opening it; the record keeps the stored path.
+      return { ...run, artifacts: artifactRefs.map((a) => ({ ...a, absolute: this.artifacts.absolute(a.path) })) }
     },
 
     /**
@@ -324,6 +359,8 @@ export function createPraxis(options = {}) {
           .map((b) => ({ id: b.id, title: b.title, target: b.target, unit: units.get(b.target.split('#')[0]) ?? null, signals: b.signals, revision: b.revision })),
         stale: this.stale(),
         unbound: materials.unboundCaptures(),
+        collections: materials.collections(),
+        revisions: this.revisionList().filter((r) => r.conflict),
         artifacts: this.artifactList({ limit: 1000 }).filter((a) => a.signals.length),
         projects: this.projectList().filter((p) => p.unregistered.length)
           .map((p) => ({ id: p.id, title: p.title, root: p.root, unregistered: p.unregistered.slice(0, 20), unregistered_count: p.unregistered.length })),
@@ -402,26 +439,13 @@ function material(b, s) {
   }
 }
 
-/** The collection a source came in with, and what it was gathered for: a registration's purpose or the catalog README's lede. */
-function collectionOf(repo, registry, s) {
-  const c = registry.collections.find((x) => x.id === s.collection)
-  if (!c) return undefined
-  if (c.purpose) return { id: c.id, title: c.title, path: c.path, purpose: c.purpose }
-  const readme = join(repo, dirname(c.path), 'README.md')
-  if (!existsSync(readme)) return { id: c.id, path: c.path }
-  const text = readFileSync(readme, 'utf8')
-  const title = text.match(/^#\s+(.+)$/m)?.[1]
-  const lede = text.split(/\n\s*\n/).map((p) => p.trim()).find((p) => p && !/^[#|>!<-]/.test(p) && !/^\[/.test(p))
-  return { id: c.id, title, path: c.path, readme: relative(repo, readme), purpose: lede ? clip(lede.replace(/\[([^\]]+)\]\([^)]*\)/g, '$1').replace(/\s+/g, ' '), 240) : undefined }
-}
-
 function summarize(id, rec, artifacts, staleRuns, projects) {
   const latest = rec.versions.at(-1)
   const status = artifacts.status(rec)
   const review = rec.reviews.filter((r) => r.version === rec.versions.length).at(-1) ?? null
   const home = projects.of(rec.path)
   const role = home ? projects.role(home.project, home.path) : undefined
-  const signals = [status === 'missing' && 'missing', review?.verdict === 'needs-work' && 'needs_work', !DELIVERED.includes(role) && 'misplaced'].filter(Boolean)
+  const signals = [status === 'missing' && 'missing', review?.verdict === 'needs-work' && 'needs_work', !ALLOWED.includes(role) && 'misplaced'].filter(Boolean)
   return {
     id, title: rec.title, description: rec.description, medium: rec.medium, path: rec.path, absolute: artifacts.absolute(rec.path),
     project: home ? { id: home.project.id, title: home.project.title } : undefined, project_path: home?.path, role,
@@ -433,4 +457,8 @@ function summarize(id, rec, artifacts, staleRuns, projects) {
 function brief(u) {
   if (!u) return undefined
   return { id: u.id, layer: u.layer, title: u.title, description: u.description, path: u.path, resident: u.resident, version: u.version }
+}
+
+function hash(text) {
+  return createHash('sha256').update(text).digest('hex').slice(0, 12)
 }

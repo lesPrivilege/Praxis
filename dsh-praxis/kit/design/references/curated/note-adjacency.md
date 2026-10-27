@@ -18,12 +18,10 @@
 
 ## 验收边界
 
-来路为 [LAB-20260927/W03-b](../../../../../vault/distilled/layout-specimens-20260927/atoms/wayfinding.html#W03-b)。[宽屏](../../../../../vault/distilled/layout-specimens-20260927/checks/atoms__wayfinding-W03-b-1440.png)中注释在页边，[窄屏](../../../../../vault/distilled/layout-specimens-20260927/checks/atoms__wayfinding-W03-b-375.png)中位于所注句后；HTML的注释节点确在完整句后，CSS以容器条件切换空间呈现，不依赖JS搬动节点。
+样张截图中，注释在宽屏1440位于页边，在窄屏375位于所注句后；HTML的注释节点确在完整句后，CSS以容器条件切换空间呈现，不依赖JS搬动节点。
 
 现有证据只覆盖每段少量注释的示例。多条或长注释可能碰撞，边栏还可能与其他原子争用；原例640px阈值、15rem边宽和浮动实现都不是本卡推荐的固定参数。没有验证读屏顺序、200%缩放、打印或不同系统字体，不把代码直接推荐为成熟组件；原例中的成本文字也不作为事实或论证范本。
 
 ## 消费与维护
 
 消费者记录本ID、实际注释长度/数量、布局容器和宽窄表现。注释远离所限内容、发生碰撞、重排打断句子或复用时被迫手动定位，都是复核触发；新demo可提出插入点、语义关联或槽位契约的增量，main裁决后更新本页。
-
-已有验收、使用轨迹和修订缘由见 [历史记录](../../../../../docs/verification/design-writing-encyclopedia-20261011/body-history.md)；新反馈按 [参考生命周期](../../../../../docs/governance/reference-lifecycle.md)维护，不在本卡追加日志。

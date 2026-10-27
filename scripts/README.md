@@ -12,11 +12,13 @@ Drift 的 Pages 产物由 [build_drift_pages.py](build_drift_pages.py)构建，[
 |---|---|---|---|
 | 新 Chat 或对话增量 | `vault/intake/chat-captures.json` 与版本归档 | `python3 scripts/build_chat_inventory.py` | `vault/chat-inventory.json` |
 | 新来源或核查更新 | `cards` 为 `generated` 的 `provenance/catalog.json` | `python3 scripts/render_source_cards.py` | 这些 catalog 的逐源卡与两页索引；其余目录不动 |
-| 入账与来源映射变更 | intake、catalog 与 `vault/project-indexes.json` 登记的项目索引 | `python3 scripts/build_registry.py` | `vault/registry.json` |
+| 入账与来源映射变更 | intake 与 catalog | `python3 scripts/build_registry.py` | `vault/registry.json` |
 | 新增原件快照 | 对应 intake 的原始定位与 hash | `python3 scripts/build_snapshot_manifest.py` | `vault/snapshot-manifest.json` |
 | 修改完成 | 当前工作树 | `python3 scripts/validate_repository.py` | 终端中的计数、错误与通过状态 |
 
 同批新增 Chat、来源与快照时依次运行表中命令。provenance 子目录 catalog 自动发现；新材料类别须接入 registry 对应读取逻辑。
+
+`vault/registry.json` 是 dsh-praxis 名册里的 vault 来源包（登记在 `dsh-praxis/data/packs.json`），名册只读它、不打开 catalog。因此 registry 除身份与关系（`grammar_paths`）外，还投影读者需要的字段：`reference_priority`、`reference_status`、快照指针（`snapshot_path`、`snapshot_sha256`、`snapshot_status`）、摘录（`supported_claims`）、读取范围（`evidence_modality`）与收录任务（`captured_for`）。项目自己的来源索引不经 registry，在 dsh-praxis 里按引用登记为来源包。
 
 ## 来源卡由谁维护
 

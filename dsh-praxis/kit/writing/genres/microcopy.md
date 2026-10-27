@@ -47,11 +47,6 @@ ID：`DWG-W-MICROCOPY` · Priority：`normal`（可选参考）
 
 拿一个真实或合成状态走读：用户能否辨认发生了什么、影响什么、自己是否能修正、下一步是什么、原有输入是否保留？失败次数与状态读法是否可观察？如果只审了字符串、没运行交互，就只报告文字审阅，不能声称恢复流程可用。
 
-## 来源与范围
+## 证据边界
 
-- [GOV.UK Error message（DWW-004）](../../../../vault/provenance/design-writing-encyclopedia/writing/cards/govuk-error-message.md)：字段错误的说明、保留输入，以及与服务问题的区分。
-- [GOV.UK Error summary（DWW-005）](../../../../vault/provenance/design-writing-encyclopedia/writing/cards/govuk-error-summary.md)：页面级错误发现、字段定位和键盘焦点要求。
-- [Ant Design · 文案（DWW-006）](../../../../vault/provenance/design-writing-encyclopedia/writing/cards/ant-design-copywriting-zh.md)：中文 UI 的立足点、术语、重要信息和错误下一步；卡片记录原页面一处前后表述冲突。
-- [Microsoft brand voice（DWW-002）](../../../../vault/provenance/design-writing-encyclopedia/writing/cards/microsoft-brand-voice.md)：其自身品牌的声调取舍，供情境差异对照，不作为通用语气规则。
-
-这些来源只读了页面，未做运行时或用户效果验证；具体字段、语气、可访问实现和错误行为按目标产品复核。
+所依据的设计系统指南只读了页面，未做运行时或用户效果验证；具体字段、语气、可访问实现和错误行为按目标产品复核。

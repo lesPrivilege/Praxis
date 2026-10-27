@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "binding.schema.json",
   "title": "Binding",
-  "description": "一个来源挂到一个单元上的关系。关系本身在来源的 grammar_paths，这里是它的维护信息。素材第 1 级（目录行）与第 3 级（取用题解）。",
+  "description": "一个来源挂到一个单元上的关系与它的维护信息。来源包可以声明关系，名册里新建、移除、恢复的关系与维护信息记在数据根的 bindings.json。素材第 1 级（目录行）与第 3 级（取用题解）。",
   "type": "object",
   "required": [
     "id",
@@ -24,7 +24,7 @@
     },
     "target": {
       "$ref": "common.schema.json#/$defs/repoPath",
-      "description": "挂载到的页面：Kit 单元或其他消费页的仓库路径；同时出现在来源 catalog 的 grammar_paths"
+      "description": "挂载到的页面：包内 Kit 页写 kit/…，其他页写相对 base 的路径或绝对路径"
     },
     "description": {
       "$ref": "common.schema.json#/$defs/description"

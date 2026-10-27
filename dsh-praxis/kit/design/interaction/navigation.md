@@ -11,9 +11,9 @@
 选合适的结构：
 
 - **站点/应用导航**：进入不同目的地，使用真实链接或原生导航控件，当前页可辨识，返回路径清楚。
-- **Tabs**：在同一视图区域中切换平行、互斥的面板。APG 给出单一 Tab 停靠点、箭头导航和自动/手动激活变体；自动激活适合内容可立即呈现的面板，异步或明显延迟时采用手动激活，避免方向键每移动一次都触发慢加载。[APG Tabs Pattern（CW-FE-R03）](../../../../vault/provenance/cw-frontend-references/cards/cw-wai-aria-tabs.md)
-- **Accordion**：分段显示同一层级内容。打开与关闭作用于关联面板，不等于导航到别处；支持单开或多开是产品变体。按需展开前让标题能说明隐藏内容是什么。[DWI-001](../../../../vault/provenance/design-writing-encyclopedia/interaction/cards/apg-accordion.md)
-- **Dialog**：短暂聚焦一个任务；模态时背景内容不可交互，并以遮罩、变暗等视觉处理区分当前模态任务。打开时焦点进入，Escape 或明确关闭路径退出，通常回到触发控件；若完成后流程已转到新对象，焦点可去合理的下一步。[DWI-002](../../../../vault/provenance/design-writing-encyclopedia/interaction/cards/apg-dialog-modal.md)
+- **Tabs**：在同一视图区域中切换平行、互斥的面板。APG 给出单一 Tab 停靠点、箭头导航和自动/手动激活变体；自动激活适合内容可立即呈现的面板，异步或明显延迟时采用手动激活，避免方向键每移动一次都触发慢加载。
+- **Accordion**：分段显示同一层级内容。打开与关闭作用于关联面板，不等于导航到别处；支持单开或多开是产品变体。按需展开前让标题能说明隐藏内容是什么。
+- **Dialog**：短暂聚焦一个任务；模态时背景内容不可交互，并以遮罩、变暗等视觉处理区分当前模态任务。打开时焦点进入，Escape 或明确关闭路径退出，通常回到触发控件；若完成后流程已转到新对象，焦点可去合理的下一步。
 
 不要只靠颜色区分当前位置。提供可见选中状态、可读标签和适当程序化状态。Tab 的 `aria-selected`、toggle 的 `aria-pressed`、Accordion 的 `aria-expanded` 不互换。面板里没有其他可聚焦内容时，检查 APG 对面板是否进入 Tab 序列的建议。
 

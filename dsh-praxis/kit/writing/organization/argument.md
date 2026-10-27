@@ -20,7 +20,7 @@ ID：`DWG-W-ARGUMENT` · Priority：`normal`（可选参考）
 | 诊断问题 | 预期状态 → 实际状态 → 差异来源 → 检查或恢复 | 证据缺口与无法控制的故障分别说明 |
 | 定义概念 | 类属 → 区别条件 → 正例与边界例 | 定义可支持本文后续判断，例子不能冒充全部范围 |
 
-Purdue OWL 对 Toulmin Method 的教学说明把论证拆成六个部分，以 **claim / grounds / warrant** 为基础：主张、事实与证据、以及连接证据和主张的 warrant；按需加入 backing、qualifier 和 rebuttal。这组术语用来检查核心推理，改写成中文写作取用语：**主张**说清要读者接受什么；**证据**说明观察或来源支持哪一部分；**推理理由（warrant）**解释证据为何支持该主张；**范围条件**指出何时成立；**反例或替代解释**说明结论的边界。它们对应 Toulmin 模型的核心与可选补充，但不逐项同义。上表的任务路由、示例的文本顺序和取用边界是 Kit 的综合，不出自 Purdue。参见 [DWW-007 · Purdue OWL 的教学说明](../../../../vault/provenance/design-writing-encyclopedia/writing/cards/purdue-toulmin-method.md)。不是每段都要齐列五项，但关键主张不能只靠语气或结论重复来支撑。
+Toulmin 模型把论证拆成六个部分，以 **claim / grounds / warrant** 为基础：主张、事实与证据、以及连接证据和主张的 warrant；按需加入 backing、qualifier 和 rebuttal。这组术语用来检查核心推理，改写成中文写作取用语：**主张**说清要读者接受什么；**证据**说明观察或来源支持哪一部分；**推理理由（warrant）**解释证据为何支持该主张；**范围条件**指出何时成立；**反例或替代解释**说明结论的边界。它们对应 Toulmin 模型的核心与可选补充，但不逐项同义。不是每段都要齐列五项，但关键主张不能只靠语气或结论重复来支撑。
 
 ## 证据与推理不要混写
 
@@ -49,10 +49,6 @@ Purdue OWL 对 Toulmin Method 的教学说明把论证拆成六个部分，以 *
 
 能否从正文中指认主张、证据、推理理由和范围？替代解释是否与主张强度相称？反例是否真的会改变判断？证据缺口是否可见？有新建议时，读者是否知道下一步及观察什么？然后按 [审阅方法](../review.md)核对表述没有提升证据身份。
 
-## 来源与范围
+## 证据边界
 
-- [Purdue OWL · Toulmin Argument（DWW-007）](../../../../vault/provenance/design-writing-encyclopedia/writing/cards/purdue-toulmin-method.md)：claim、grounds、warrant 的教学解释，以及 backing、qualifier、rebuttal 的可选位置。Purdue OWL 是所读的二手教学说明，没有阅读 Toulmin 原著；页面许可限制复制。
-- [Google developer documentation style guide 总览（DWW-001）](../../../../vault/provenance/design-writing-encyclopedia/writing/cards/google-style-guide-about.md)：具体项目风格和读者需要可以先于通用指南；这是本页把模型作为可选检查工具的依据。
-- [GOV.UK user-needs 既有卡](../../../../vault/provenance/documentation-practices/cards/govuk-user-needs.md)：任务与用户研究作为写作问题起点；该来源来自公共服务研究，证据要求不能直接泛化为通用论证学说。
-
-这些来源是取用线索；这套链条能否改善本 Kit 的成文，尚未验证。
+这套链条能否改善本 Kit 的成文，尚未验证。

@@ -115,7 +115,7 @@ if projects_file.exists():
         root = rec['root']
         if root.startswith('/') or not (ROOT / root).is_dir():
             continue
-        globs = [g for role in rec.get('layout', {}).values() for g in role] + ['README.md', '**/README.md', 'evidence/**', 'scenario/**']
+        globs = [g for role in rec.get('layout', {}).values() for g in role] + ['README.md', '**/README.md', 'scenario/**']
         for rel in sorted(t for t in tracked if t.startswith(root + '/')):
             inner = rel[len(root) + 1:]
             if any(fnmatch.fnmatch(inner, g) or fnmatch.fnmatch(inner, g.replace('**', '*')) for g in globs):
@@ -165,32 +165,29 @@ if inventory_path.exists():
     if len(identities) != inventory['counts']['messages']:
         errors.append('Chat message count does not match inventory')
 
+# dsh-praxis ships as a package: its Kit links only inside the package. Sources reach a page as
+# relations in the roster (praxis_resolve, the control plane), not as links in the body.
+PACKAGE = ROOT / 'dsh-praxis'
+# Top-level entries the package ships (package.json `files`); data, work orders and migration records stay in the repository.
+SHIPPED = {Path(f.split('/')[0].replace('*', '')).name or f for f in json.loads((PACKAGE / 'package.json').read_text())['files']} | {'package.json'}
+for page in sorted((PACKAGE / 'kit').rglob('*.md')):
+    for target in markdown_targets(page.read_text()):
+        path = target.split('#')[0]
+        if not path or re.match(r'^[a-z]+:', path):
+            continue
+        target = (page.parent / path).resolve()
+        if not target.is_relative_to(PACKAGE) or target.relative_to(PACKAGE).parts[0] not in SHIPPED:
+            errors.append(f"Link leaves the dsh-praxis package: {page.relative_to(ROOT).as_posix()} -> {path}")
+
 registry_path = ROOT / 'vault/registry.json'
 if registry_path.exists():
     registry = json.loads(registry_path.read_text())
     source_ids = [source['id'] for source in registry['sources']]
     for source in registry['sources']:
-        # A project index's record lives in the project's own file and is as complete as the project keeps it.
-        if source.get('kind') == 'project-index':
-            if not source['title'] or not source['original_locator']:
-                errors.append(f"Incomplete project source record: {source['id']}")
-            continue
         if not source['summary'] or not source['evidence_status']:
             errors.append(f"Incomplete source record: {source['id']}")
         if not source['local_card'] or not (ROOT / source['local_card']).is_file():
             errors.append(f"Missing source card: {source['id']}")
-    # One place for a page's sources: a Kit page that cites a registered source through its card
-    # carries the relation on the source record, so resolve and the control plane see it too.
-    by_card = {s['local_card']: s for s in registry['sources'] if s.get('local_card')}
-    for page in sorted((ROOT / 'dsh-praxis/kit').rglob('*.md')):
-        rel = page.relative_to(ROOT).as_posix()
-        for target in markdown_targets(page.read_text()):
-            path = target.split('#')[0]
-            if not path or re.match(r'^[a-z]+:', path):
-                continue
-            cited = by_card.get((page.parent / path).resolve().relative_to(ROOT).as_posix()) if (page.parent / path).resolve().is_relative_to(ROOT) else None
-            if cited and rel not in cited.get('grammar_paths', []):
-                errors.append(f"Cited source without relation: {rel} cites {cited['id']}; add the page to its grammar_paths")
     if len(source_ids) != len(set(source_ids)):
         errors.append('Duplicate source IDs in registry')
     expected_citations = {(m['turn_id'], m['item_id'], int(i))

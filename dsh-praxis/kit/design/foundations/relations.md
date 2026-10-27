@@ -36,11 +36,11 @@ Design 的可复用单位是一条构成关系；风格名、样张、原子、�
 | G14 双向文字：内容怎样既正确存储又正确呈现 | 基础方向、内嵌片段的方向与隔离、逻辑起止边、需要镜像的图标 | 字符存储顺序、数字与产品名、成对标点、读序；不整串反转，不镜像一切 | G01、G09、G10 | 部分：[多语言边界](../../writing/language/multilingual.md)；双向排版的深入操作仍缺 |
 | G15 空间与声音：深度和声音是否帮助定位、因果或情境 | 参照框架、深度与遮挡、声源锚定、反馈频率与音量 | 重要提示有替代通道；可静音；动作与声源对应 | G05、G06、G08 | 部分：[对象的抽象与表现](../composition/object-representation.md)与 [时间叙事](../../publish/video/narrative.md)；声音空间定位仍缺 |
 
-各行的本地深度不同；已展开的可选参考不自动成为规范，“部分”仍有明确缺口。更细的候选笔记、可做的原子比较和逐条来源在 [提炼与裁决](../../../../vault/distilled/design-grammar-atlas-20261002/README.md)。
+各行的本地深度不同；已展开的可选参考不自动成为规范，“部分”仍有明确缺口。
 
 ## 约束强度
 
-三种强度按 [体例契约](../../../../docs/architecture/documentation.md)区分：
+约束分三种强度：
 
 - “换什么都要保住的”一栏是内容与语义的边界，换表现方式不得破坏。
 - 外部标准的数值门槛（对比度、目标尺寸、重排、减少运动）只在项目明确采用某个标准、版本和级别后成为规则，例外跟着条款走。
@@ -65,11 +65,9 @@ Design 的可复用单位是一条构成关系；风格名、样张、原子、�
 |---|---|---|
 | 一个风格名 | [视觉语言参考](../references/languages.md) | 名字对应的范围和可以试的关系（VL01–VL08） |
 | 一个编排难题 | [Composition](../composition/README.md)、[优先参考](../references/curated/README.md) | 规则、已验收的结构方法和样张家族 |
-| 想看一条关系落到内容上的样子 | [A01 阅读关系样张](../../../../vault/distilled/design-grammar-atlas-20261002/a01-reading-relations/README.md)、[编排实验](../../../../vault/distilled/layout-specimens-20260927/README.md) | 同内容多关系的对照与失配记录 |
-| 准备自己打样 | 包内 [打样提案与夹具](../../../../vault/snapshots/local/design-grammar-atlas-20261002/briefs/atomic-task-proposals.md) | A01–A04 四个问题和 F1–F3 三组合成内容，只作参考 |
 
 条目、样张和原子可以增删改名；问题地图和检验方法不依赖其中任何一个。
 
-## 来路与证据边界
+## 证据边界
 
-[覆盖地图](../../../../vault/provenance/design-writing-encyclopedia/coverage.md)区分已有判断、可选参考与缺口。既有样张和冷读只支持局部结构消费，没有跨受众效果证明。采纳、来源核查和使用轨迹见 [记录](../../../../docs/verification/design-writing-encyclopedia-20261011/body-history.md)。
+既有样张和冷读只支持局部结构消费，没有跨受众效果证明。

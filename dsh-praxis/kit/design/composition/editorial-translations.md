@@ -18,8 +18,6 @@ reference_priority: normal
 
 维也纳大学研究将 Isotype 追溯至 Vienna Method of Pictorial Statistics，并记录团体迁居和后续发展。归属涉及 Marie Neurath、符号设计者 Gerd Arntz，以及编辑、研究人员、艺术家和“transformers”等协作角色。“International”表达的是愿望；“words divide — pictures unite”也不能证明图像天然普世，RIT Cary 展览指出这句口号可能贬低文字、高估图像。
 
-**来源卡：**[ASA-E-01](../../../../vault/provenance/art-software-atlas/editorial/cards/asa-e-01-isotype-documents.md) · [ASA-E-02](../../../../vault/provenance/art-software-atlas/editorial/cards/asa-e-02-isotype-research.md) · [ASA-E-03](../../../../vault/provenance/art-software-atlas/editorial/cards/asa-e-03-rit-isotype-exhibit.md) · [ASA-E-04](../../../../vault/provenance/art-software-atlas/editorial/cards/asa-e-04-marie-neurath-process.md) · [ASA-E-05](../../../../vault/provenance/art-software-atlas/editorial/cards/asa-e-05-isotype-collection.md)
-
 ### 传达意图与可操作关系
 
 在部分比较图表中，Isotype 保持符号大小稳定，以重复次数表达数量。明确计数单位（如“每个符号代表 10 人”），类别确有差异时才换符号，并同时给出标签、图例、来源、分母和不确定性。图形负责比较，文字补足数据背景。
@@ -51,8 +49,6 @@ RIT 展览列出 *Modern Man in the Making* (1939) 第 73 页 “Annual Iron Pro
 
 W3C 的 Requirements for Japanese Text Layout（JLReq）由 Japanese Layout Task Force 编写，主要参考 JIS X 4051，也涉及其他版面设计问题。文档说明其目的是描述排版需求和问题，而不是直接给出完整实现。日文出版物既可以横排，也可以纵排；同一页上也可能混用两种方向。不要推断所有日文都采用纵排，也不要把页面阅读顺序简化成通用的“从右到左”风格。
 
-**来源卡：**[ASA-E-06](../../../../vault/provenance/art-software-atlas/editorial/cards/asa-e-06-jlreq.md) · [ASA-E-07](../../../../vault/provenance/art-software-atlas/editorial/cards/asa-e-07-css-writing-modes.md) · [ASA-E-08](../../../../vault/provenance/art-software-atlas/editorial/cards/asa-e-08-css-ruby.md) · [ASA-E-09](../../../../vault/provenance/art-software-atlas/editorial/cards/asa-e-09-ndl-newspaper-survey.md) · [ASA-E-10](../../../../vault/provenance/art-software-atlas/editorial/cards/asa-e-10-jlreq-source-index.md) · [ASA-E-11](../../../../vault/provenance/art-software-atlas/editorial/cards/asa-e-11-jlreq-vertical-comma-figure.md) · [ASA-E-12](../../../../vault/provenance/art-software-atlas/editorial/cards/asa-e-12-jlreq-horizontal-mixed-script-figure.md)
-
 ### 传达意图与可操作关系
 
 将排版视为一组互相关联的约束：行内和块级流向、字形方向、标点位置、禁止出现在行首或行尾的字符、ruby 注记关联、标题、版面边饰，以及跨页顺序。纵排正文行内由上至下，列从右向左推进；标题、数字、拉丁字串、注释和表格可有局部规则。Ruby 注记与正文字符有发音或释义关系，换行时须保留。它服务于特定阅读方式，不是通用装饰。
@@ -71,10 +67,10 @@ W3C 的 Requirements for Japanese Text Layout（JLReq）由 Japanese Layout Task
 
 ### 范例身份与证据边界
 
-已查看两张 JLReq 图示：144 × 360 的 `img2_11.png` 对比纵排汉数字与读点间距；480 × 172 的 `img2_1.png` 展示五行日文标点，但没有实际西文字母或数字，不能验证西文混排。它们只说明特定排版选择。图示说明与身份见 [ASA-E-11](../../../../vault/provenance/art-software-atlas/editorial/cards/asa-e-11-jlreq-vertical-comma-figure.md) 和 [ASA-E-12](../../../../vault/provenance/art-software-atlas/editorial/cards/asa-e-12-jlreq-horizontal-mixed-script-figure.md)。
+已查看两张 JLReq 图示：144 × 360 的 `img2_11.png` 对比纵排汉数字与读点间距；480 × 172 的 `img2_1.png` 展示五行日文标点，但没有实际西文字母或数字，不能验证西文混排。它们只说明特定排版选择。
 
-National Diet Library 记录了 *新聞総覧 大正2年版*（*Shinbun Sōran*, Taishō 2 edition），编者和出版者均为 Japan Telegraphic News Agency。可将其作为后续检查对象；当前未查看页面图像，不描述其版面。见 [ASA-E-09](../../../../vault/provenance/art-software-atlas/editorial/cards/asa-e-09-ndl-newspaper-survey.md)。
+National Diet Library 记录了 *新聞総覧 大正2年版*（*Shinbun Sōran*, Taishō 2 edition），编者和出版者均为 Japan Telegraphic News Agency。可将其作为后续检查对象；当前未查看页面图像，不描述其版面。
 
 ### 验证边界
 
-JLReq 描述排版需求，CSS Writing Modes 与 CSS Ruby 的规范状态不同；本文没有验证跨引擎互通性或具体字体组合。来源范围和阅读记录见[编辑研究目录](../../../../vault/provenance/art-software-atlas/editorial/README.md)。
+JLReq 描述排版需求，CSS Writing Modes 与 CSS Ruby 的规范状态不同；本文没有验证跨引擎互通性或具体字体组合。

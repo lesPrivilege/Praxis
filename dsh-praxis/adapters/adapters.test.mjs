@@ -2,7 +2,8 @@ import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { createServer } from './mcp.js'
 import { CALL_PATH, PAGE_PATH, hostIsLoopback, praxisFetch } from './http.js'
-import { TOOLS, inputSchema, jsonValue } from './tools.js'
+import { TOOLS, callTool, inputSchema, jsonValue } from './tools.js'
+import { createPraxis } from '../core/index.js'
 import { apply, entryText } from './dsh.js'
 
 // A stand-in core: adapters only route calls, so they are tested against a fake.
@@ -43,13 +44,32 @@ test('MCP: initialize, list, call, errors', async () => {
   await handle({ jsonrpc: '2.0', id: 41, method: 'tools/call', params: { name: 'praxis_unit', arguments: { ref: 'no/such' } } })
   await handle({ jsonrpc: '2.0', id: 42, method: 'tools/call', params: { name: 'praxis_source', arguments: { id: 'no:such' } } })
   assert.deepEqual(out.slice(4, 6).map((m) => [m.result.isError, JSON.parse(m.result.content[0].text).error]), [[true, 'unknown unit: no/such'], [true, 'unknown source: no:such']])
-  await handle({ jsonrpc: '2.0', id: 5, method: 'resources/list' })
+  await handle({ jsonrpc: '2.0', id: 5, method: 'sampling/createMessage' })
   assert.equal(out[6].error.code, -32601)
   await handle({ jsonrpc: '2.0', id: 6, method: 'initialize', params: { protocolVersion: '1999-01-01' } })
   assert.equal(out[7].result.protocolVersion, '2026-07-28')
 })
 
 const call = (body, headers = { 'content-type': 'application/json' }) => new Request(`http://dsh${CALL_PATH}`, { method: 'POST', headers, body: JSON.stringify(body) })
+
+test('MCP resources are the catalog (links, never originals) and prompts start a task type', async () => {
+  const out = []
+  const handle = createServer({ praxis: createPraxis(), write: (m) => out.push(m) })
+  await handle({ jsonrpc: '2.0', id: 1, method: 'resources/list' })
+  const uris = out[0].result.resources.map((r) => r.uri)
+  assert.equal(uris[0], 'praxis://entry')
+  assert.ok(uris.includes('praxis://unit/design/foundations/grammar'))
+  await handle({ jsonrpc: '2.0', id: 2, method: 'resources/read', params: { uri: 'praxis://unit/writing' } })
+  assert.match(out[1].result.contents[0].text, /^# /)
+  await handle({ jsonrpc: '2.0', id: 3, method: 'resources/read', params: { uri: 'praxis://source/ref-ant-design-pro' } })
+  assert.equal(JSON.parse(out[2].result.contents[0].text).url, 'https://github.com/ant-design/ant-design-pro')
+  await handle({ jsonrpc: '2.0', id: 4, method: 'resources/read', params: { uri: 'praxis://source/no-such' } })
+  assert.equal(out[3].error.code, -32603)
+  await handle({ jsonrpc: '2.0', id: 5, method: 'prompts/list' })
+  const name = out[4].result.prompts[0].name
+  await handle({ jsonrpc: '2.0', id: 6, method: 'prompts/get', params: { name, arguments: { brief: '给新同事讲清一个系统' } } })
+  assert.match(out[5].result.messages[0].content.text, /praxis_resolve/)
+})
 
 test('HTTP: page and call routes, JSON guard, errors', async () => {
   const fetch = praxisFetch(fake)
@@ -68,24 +88,31 @@ test('HTTP: page and call routes, JSON guard, errors', async () => {
   assert.equal(hostIsLoopback({ headers: { host: 'evil.example:7878' } }), false)
 })
 
-test('DSH plugin registers every tool, two Connection routes and a prompt section', async () => {
+test('DSH plugin registers the worker tools, three Connection routes, /praxis and an agent-only prompt section', async () => {
   const tools = []
   const routes = []
   const sections = []
+  const commands = []
   const ctx = {
     tools: { register: (t) => tools.push(t) },
     connection: { fetch: { register: (r) => { routes.push(r); return async () => {} } } },
     systemPrompt: { section: (s) => { sections.push(s); return () => {} } },
+    commands: { register: (c) => { commands.push(c); return () => {} } },
     effect: (fn) => fn(),
   }
-  apply(ctx, { root: new URL('../..', import.meta.url).pathname })
-  assert.equal(tools.length, TOOLS.length)
+  apply(ctx, {})
+  assert.deepEqual(tools.map((t) => t.name), TOOLS.filter((t) => t.agent).map((t) => t.name))
+  assert.ok(!tools.some((t) => t.name === 'praxis_preset_save'), 'maintenance tools stay off the session')
+  assert.equal(commands[0].name, 'praxis')
+  assert.match(commands[0].handler({ rawInput: '' }).text, /任务类型/)
   assert.deepEqual(routes.map((r) => [r.path, r.methods]), [[PAGE_PATH, ['GET', 'HEAD']], [CALL_PATH, ['POST']], ['/api/praxis.file', ['GET', 'HEAD']]])
-  assert.equal(tools.find((t) => t.name === 'praxis_units').isConcurrencySafe(), true)
+  assert.equal(tools.find((t) => t.name === 'praxis_unit').isConcurrencySafe(), true)
   assert.equal(tools.find((t) => t.name === 'praxis_curate').isConcurrencySafe, undefined)
   await assert.rejects(tools.find((t) => t.name === 'praxis_unit').execute({ ref: 'no/such/unit' }), /unknown unit/)
   assert.equal(sections[0].name, 'praxis:entry')
   assert.match(sections[0].text(), /praxis_resolve/)
+  assert.match(sections[0].text({ agent: {} }), /praxis_resolve/)
+  assert.equal(sections[0].text({ agent: undefined, scope: 'title' }), '', 'not in non-agent prompts')
   assert.ok(entryText(fake).includes('x（html）'))
 })
 
@@ -104,14 +131,12 @@ test('HTTP file route serves registered artifact files only, by id', async () =>
 test('tool values are lossless JSON: absent fields omitted, non-JSON values refused', async () => {
   assert.deepEqual(jsonValue({ a: 1, b: undefined, c: [{ d: undefined, e: null }] }), { a: 1, c: [{ e: null }] })
   for (const bad of [{ n: NaN }, { f: () => 1 }, { d: new Date(0) }, [undefined]]) assert.throws(() => jsonValue(bad), /not/)
-  const tools = []
-  apply({ tools: { register: (t) => tools.push(t) }, effect: (fn) => fn() }, { root: new URL('../..', import.meta.url).pathname, prompt: false })
-  // DSH's own check: a value survives a JSON round trip unchanged, with no undefined anywhere.
+  // DSH's own check, on the real data: a value survives a JSON round trip unchanged, with no undefined anywhere.
+  const praxis = createPraxis()
   const lossless = (v) => assert.deepStrictEqual(JSON.parse(JSON.stringify(v)), v)
-  for (const name of ['praxis_upkeep', 'praxis_stale', 'praxis_entry', 'praxis_runs', 'praxis_artifacts', 'praxis_presets']) lossless(await tools.find((t) => t.name === name).execute({}))
-  // Every task type resolves on the real repository, with whatever claim shapes its catalogs use.
-  const resolve = tools.find((t) => t.name === 'praxis_resolve')
-  for (const t of (await tools.find((x) => x.name === 'praxis_entry').execute({})).task_types) {
-    for (const pipeline of t.pipelines) lossless(await resolve.execute({ task_type: t.id, pipeline }))
+  for (const name of ['praxis_upkeep', 'praxis_stale', 'praxis_entry', 'praxis_runs', 'praxis_artifacts', 'praxis_presets', 'praxis_packs']) lossless(await callTool(praxis, name, {}))
+  // Every task type resolves, with whatever claim shapes the source packs use.
+  for (const t of (await callTool(praxis, 'praxis_entry', {})).task_types) {
+    for (const pipeline of t.pipelines) lossless(await callTool(praxis, 'praxis_resolve', { task_type: t.id, pipeline }))
   }
 })

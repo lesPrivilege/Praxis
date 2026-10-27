@@ -12,10 +12,6 @@
 
 安第斯纺织跨越多个地区、时期与结构。Met 公报描述背带织机由织者倾身调节经线张力，并以横向纬线覆盖纵向经线解释特定 Wari tunic 的 tapestry weave；Chimú 对象记录也以此术语描述一件带袖衫。Brooklyn Museum 的 Nasca 对象则被称为 discontinuous warp and weft：经、纬线随色区和织作时段变化。它与连续贯穿布幅的经纬结构不同。衣物还可能由多片缝合，或由织成面板改制而来，因此几何、开口、接缝和穿戴方向不能仅当作图案蒙版。具体图像意义仍不确定，图像未实际检查。
 
-- [ASA-M-01：Met, *Weaving Abstraction in Ancient and Modern Art*](../../../../vault/provenance/art-software-atlas/material/cards/asa-m-01-weaving-abstraction-ancient-and-modern.md)
-- [ASA-M-02：Chimú Shirt, object 1979.206.588](../../../../vault/provenance/art-software-atlas/material/cards/asa-m-02-met-chimu-shirt.md)
-- [ASA-M-03：Nasca Poncho or Tunic, accession 34.1579](../../../../vault/provenance/art-software-atlas/material/cards/asa-m-03-brooklyn-nasca-poncho.md)
-
 ### 可操作关系
 
 1. **经纬线有独立身份。** 记录纱线方向、路径、颜色、材料和张力；标出哪一组覆盖另一组。平面格点不能替代上下穿插。
@@ -50,11 +46,6 @@ Nasca 对象可作为后续复杂目标：模型须能表示经纬都在色区�
 ### 语境与关键区别
 
 Islamic geometric patterns 是跨地域、时期和媒介的综述标签，不会自动给出生成方法。Met 讨论圆、多边形、星形及复杂组合；单件 tile 记录的是可能来自陵墓檐带的一块石质陶土构件，馆方文字描述其八边形、八角星与半八边形交织。Lu 与 Steinhardt 提出部分 girih 纹样可由带线多边形拼接解释，同时讨论连续直尺与圆规构图等替代方法；这是一种研究假说，不是历史定论。V&A 的折纸、拼贴和马铃薯印章是当代儿童教育活动。
-
-- [ASA-M-04：Met, *Geometric Patterns in Islamic Art*](../../../../vault/provenance/art-software-atlas/material/cards/asa-m-04-met-geometric-patterns-islamic-art.md)
-- [ASA-M-05：Tile 1972.88, Bukhara / Samarqand](../../../../vault/provenance/art-software-atlas/material/cards/asa-m-05-met-entrelacs-octagon-tile.md)
-- [ASA-M-06：V&A 教育活动页](../../../../vault/provenance/art-software-atlas/material/cards/asa-m-06-v-and-a-tile-activity.md)
-- [ASA-M-07：Lu & Steinhardt, “Decagonal and Quasi-Crystalline Tilings...”](../../../../vault/provenance/art-software-atlas/material/cards/asa-m-07-science-girih-tilings.md)
 
 具体 tile、手稿和建筑纹带的图像未实际检查。
 

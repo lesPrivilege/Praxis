@@ -33,10 +33,6 @@ Microsoft Global communications 的区分把 localization 视为对内容及其�
 
 每个语言版本的主张、条件、数字、术语和行动结果是否一致？目标语言读者能否直接完成任务？地区特有的信息和格式是否经本地熟悉者检查？画面/辅助技术的字符串是否都覆盖到？若只有逐字译稿，没有界面测试或当地复核，明说边界。
 
-## 来源与范围
+## 证据边界
 
-- [Microsoft · Global communications（DWW-003）](../../../../vault/provenance/design-writing-encyclopedia/writing/cards/microsoft-global-communications.md)：页面区分 translation 与 localization；locale 记录与维护的做法是 Kit 的综合。
-- [Ant Design · 文案（DWW-006）](../../../../vault/provenance/design-writing-encyclopedia/writing/cards/ant-design-copywriting-zh.md)：中文产品界面的专门参照；其词表、语气与标点取舍不自动适用于所有中文产品或其它中文文体。
-- [Microsoft brand voice（DWW-002）](../../../../vault/provenance/design-writing-encyclopedia/writing/cards/microsoft-brand-voice.md)：品牌 tone 可以随具体情境调整，只作产品写作的有限对照。
-
-这些卡只支持其已读文字中的术语与具体指南选择，不涵盖每一地区的要求。
+所依据的指南只支持其已读文字中的术语与具体选择，不涵盖每一地区的要求。

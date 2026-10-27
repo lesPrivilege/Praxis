@@ -13,4 +13,4 @@
 - 要向不读原件的读者讲清一个系统、项目或机制的各个局部：内容组织读 Writing 的 [机制讲解](../../writing/organization/mechanism.md)，页面分层与可见性取用 [讲解页的编排](explainer.md)，任务类型列出它时照读，只按 brief 做时可选。
 - 需要检验真实输出：用 [共享验收](../verification.md)。
 
-本分支定义内容职责，不固定主题和 renderer。需要比较原子化编排，读 [实验样张](../../../../vault/distilled/layout-specimens-20260927/README.md)和 [局部筛选](../../../../vault/distilled/layout-specimens-20260927/review.md)；可直接取样、改编并比较失败对照，无需先获main批准；审阅范围按记录消费，尚未形成已采纳组件库。
+本分支定义内容职责，不固定主题和 renderer，尚未形成已采纳组件库。需要比较原子化编排时，可直接取实验样张改编，并比较失败对照。

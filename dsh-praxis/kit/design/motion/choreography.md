@@ -25,7 +25,7 @@
 
 ## 减少动态的有意义替代
 
-先依目标平台检测系统偏好，再按内容逐项审查。持续自动移动可暂停；纯装饰动画可移除；位置关系可以用轻微不位移的高亮、边框或标签提示；层级转换可以瞬时切换并更新标题/面包屑。Apple 对其生态建议减少对某些运动敏感的表现，同时提醒不要把所有动画无差别取消，以免丢失可理解性。替代方案须在实际设备、常用路径和系统偏好开启时走读。[Apple HIG Motion（S10）](../../../../vault/provenance/design-grammar-atlas-20261002/cards/s10-apple-hig-motion.md) Apple SF Symbols 的图标动画概览见 [DWI-008](../../../../vault/provenance/design-writing-encyclopedia/interaction/cards/apple-sf-symbols-overview.md)，但产品页介绍不代替播放检查与许可核对。
+先依目标平台检测系统偏好，再按内容逐项审查。持续自动移动可暂停；纯装饰动画可移除；位置关系可以用轻微不位移的高亮、边框或标签提示；层级转换可以瞬时切换并更新标题/面包屑。Apple 对其生态建议减少对某些运动敏感的表现，同时提醒不要把所有动画无差别取消，以免丢失可理解性。替代方案须在实际设备、常用路径和系统偏好开启时走读。Apple SF Symbols 图标动画的产品页介绍不代替播放检查与许可核对。
 
 W3C WCAG 2.2 的 2.3.3 Animation from Interactions 位于 AAA；2.2.2 Pause, Stop, Hide 为 A，覆盖符合其范围的自动移动/闪烁内容。先核对每条标准的触发条件与例外，并声明产品选择的合规目标；不要把网页规范推成任意原生应用都适用的事实。[WCAG 2.2 正式标准](https://www.w3.org/TR/WCAG22/)
 
@@ -42,5 +42,3 @@ W3C WCAG 2.2 的 2.3.3 Animation from Interactions 位于 AAA；2.2.2 Pause, Sto
 按一项高频变化做可见行为走读：快速重复触发、反向、键盘触发、取消、系统偏好开/关、窄屏、加载失败。记录真实运行的环境和未覆盖项。仅读 HIG/规范或查看组件源码不能证明页面的运行行为。
 
 `prompt-motion.com` 是动态作品与提示词条目聚合页的线索，能够帮助找到想研究的作品/提示词。其首页、作者提示词或静态条目不能单独验证输出视频、运动质量或控制实际效果；要把它作为动态参考，需明确取得并实际观看具体成品，记录作品 URL、来源归属、所见时间和限制。
-
-[Prompt Motion 线索卡（DWI-006）](../../../../vault/provenance/design-writing-encyclopedia/interaction/cards/prompt-motion-entry.md)保留具体条目与未观看边界。

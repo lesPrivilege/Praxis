@@ -16,50 +16,6 @@ def relations(record):
     return {'grammar_paths': record['grammar_paths']} if record.get('grammar_paths') else {}
 
 
-PROJECT_INDEXES = 'vault/project-indexes.json'
-
-
-def project_indexes():
-    """Source indexes that live in a project and are read in place. The registration maps the
-    project's field names and status values onto registry fields, and holds the relations,
-    because the project owns (and may regenerate) its own file."""
-    sources, collections = [], []
-    for reg in read(PROJECT_INDEXES)['indexes']:
-        data = read(reg['path'])
-        records = data[reg['list']] if reg.get('list') else data
-        f = reg['fields']
-        claims = {}
-        if reg.get('excerpts'):
-            x = reg['excerpts']
-            for line in (ROOT / x['path']).read_text().splitlines():
-                if line.strip():
-                    c = json.loads(line)
-                    claims.setdefault(c[x['source']], []).append(
-                        {'claim_id': c[x['id']], 'locator': c[x['locator']], 'claim': c[x['claim']]})
-        for r in records:
-            local = str(r[f['id']])
-            url = r.get(f['url']) if f.get('url') else None
-            status = r.get(f['status']) if f.get('status') else None
-            record = {
-                'id': reg['id'] + ':' + local, 'kind': 'project-index', 'collection': reg['id'],
-                'title': r[f['title']], 'original_locator': url or local, 'canonical_url': url or None,
-                'reviewed_at': data.get('as_of') if isinstance(data, dict) else None,
-                'evidence_status': reg.get('status', {}).get(status, status or 'partial'),
-                'summary': r.get(f['summary'], '') if f.get('summary') else '',
-                'purpose_tags': [r[f['tags']]] if f.get('tags') and r.get(f['tags']) else [],
-                'local_card': None, 'record_path': reg['path'],
-                'limitations': [reg['limits']], 'revisit_when': reg['revisit_when'],
-                'evidence_modality': r.get(f['read_scope']) if f.get('read_scope') else None,
-                'supported_claims': claims.get(local, []),
-            }
-            if reg.get('relations', {}).get(local):
-                record['grammar_paths'] = reg['relations'][local]
-            sources.append(record)
-        collections.append({'id': reg['id'], 'path': reg['path'], 'source_count': len(records),
-                            'title': reg['title'], 'purpose': reg['purpose'], 'registration': PROJECT_INDEXES})
-    return sources, collections
-
-
 def build():
     sources, citations, collections = [], [], []
     refs_path = 'vault/references/catalog.json'
@@ -104,6 +60,9 @@ def build():
                 'local_card': s.get('card_path') or str(Path(rel).parent / 'cards' / (s['slug'] + '.md')), 'record_path': rel,
                 'limitations': [s['limits']], 'revisit_when': s['revisit_trigger'],
                 **relations(s),
+                # What a reader needs to reach and weigh the original, read by dsh-praxis without opening the catalog.
+                **{key: s[key] for key in ('reference_priority', 'reference_status', 'snapshot_path', 'snapshot_sha256',
+                                           'snapshot_status', 'supported_claims', 'evidence_modality', 'captured_for') if key in s},
             }
             # Keep historical registry identities. Source-owned IDs are aliases,
             # and optional discovery/provenance fields remain source-owned.
@@ -238,9 +197,6 @@ def build():
             **relations(data),
         })
         collections.append({'id': data['topic'], 'path': rel, 'source_count': 1})
-    project_sources, project_collections = project_indexes()
-    sources.extend(project_sources)
-    collections.extend(project_collections)
     return {'schema_version': '1.0', 'generated_from': 'scripts/build_registry.py',
             'note': 'Derived index; edit source catalogs, then rebuild. Snapshot processing status remains in intake.',
             'collections': collections, 'chat_counts': chats['counts'],

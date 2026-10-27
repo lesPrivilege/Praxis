@@ -6,7 +6,7 @@
 
 ## 先确定组织动作
 
-填写 [brief](../../../templates/reporting/README.md)，依次确定 intent → audience → decision → evidence → visual → surface。
+填写 brief，依次确定 intent → audience → decision → evidence → visual → surface。
 
 | 需要完成的动作 | 起步文体 | 必须包含 |
 |---|---|---|
@@ -18,11 +18,11 @@
 | 推进工作 | Status / Pilot / Handoff | 当前状态、变更、阻塞、owner、下一步 |
 | 复盘改进 | Postmortem | 时间线、事实、原因假设、改进与验证 |
 
-完整20类候选见提炼层；不要求每次生成全套文档。高管、工程师或现场worker使用同一证据基础，但改变背景解释、细节深度和ask顺序。
+不要求每次生成全套文档。高管、工程师或现场worker使用同一证据基础，但改变背景解释、细节深度和ask顺序。
 
 ## 材料路由与逐步对齐
 
-补充依据：[材料分类提炼](../../../vault/distilled/reporting/material-classification.md)，采纳范围见 [ADR-008](../../../docs/decisions/008-artifact-field-governance.md)。回应对方期待，以能够共同理解的语义推进；不同受众共享事实基础，允许调整解释深度、叙事顺序和展示形式，不改变已知事实与限制。
+回应对方期待，以能够共同理解的语义推进；不同受众共享事实基础，允许调整解释深度、叙事顺序和展示形式，不改变已知事实与限制。
 
 工作目的使用可扩展词表：align（对齐）、discover（发现）、decide（决定）、design（设计）、deliver（交付）、review（复盘）、escalate（升级裁决）、transfer（移交）。选一个主要目的，必要时补次要目的；它们是路由标签，不要求建立八套目录，也不替代既有 artifact family。
 
@@ -44,4 +44,4 @@
 
 ## Review顺序
 
-统一执行 [内容与媒介验收](../publish/verification.md)，业务接收另按 [分层验收](../../../kit/verification/README.md)。
+统一执行 [内容与媒介验收](../publish/verification.md)，业务接收另按 [驻场组织接口](field-governance.md#分开证明结果)分开证明。

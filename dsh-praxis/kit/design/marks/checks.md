@@ -38,13 +38,13 @@
 
 ## 仓库校验
 
-`python3 scripts/validate_repository.py` 在交回时报 fail，共 10 条，都不在本目录：8 条是 `projects/motion-ceiling-lab`、`projects/role-baseline-film`、`projects/write-kit-film` 缺 README，2 条是 `vault/distilled/knowledge-film-001-distill-20261005` 里的断链。本目录没有报错。那三个目录和那一页属于别的会话尚未提交的工作，这里没有动。
+交回时仓库校验没有报本目录的错误。
 
-以上是交回时的记录，当时目录在 `demos/semantic-marks`。收进 Kit 时只改了 README 的取用说明、相对链接和证据边界，并把来路与取用记录移到本页，三个生成文件重新生成后内容未变。
+以上是交回时的记录。收进 Kit 时只改了 README 的取用说明、相对链接和证据边界，并把来路与取用记录移到本页，三个生成文件重新生成后内容未变。
 
 ## 来路
 
-2026-10-12 按 工单绘制，执行者是 Claude Opus 5.5（Claude Code 会话），没有用图标库、框架或别的模型。用户看过后收进 Kit，裁决见 [ADR-032](../../../../docs/decisions/032-semantic-marks-library.md)。
+2026-10-12 按工单绘制，执行者是 Claude Opus 5.5（Claude Code 会话），没有用图标库、框架或别的模型。用户看过后收进 Kit。
 
 工单里行不通或有意没照做的地方：
 
@@ -57,7 +57,7 @@
 
 ## 第一次取用
 
-2026-10-12 用在 [DeerFlow 讲解页](../../../../projects/deerflow-explainer/README.md)的系统全景图和“默认开、默认关”两个小标题上：把用到的 18 个 `<symbol>` 拷进页面，节点名前放 18 px 的记号。只看了宽屏和 500 px 的截图，没有读者对照。
+2026-10-12 用在 DeerFlow 讲解页的系统全景图和“默认开、默认关”两个小标题上：把用到的 18 个 `<symbol>` 拷进页面，节点名前放 18 px 的记号。只看了宽屏和 500 px 的截图，没有读者对照。
 
 看到的效果和缺口：
 
@@ -67,5 +67,3 @@
 - 18 px 下 subagent、模型、沙箱三个记号的细部偏小；节点名换行时第二行排到记号下面，没有做悬挂缩进。
 
 这些是一次取用的观察，不据此改记号或补词表。
-
-2026-10-26：本文提到的 `../../../../projects/editable-native-svg/claude-design-order-20261012.md` 已按 ADR-044 删除，结论以本文和回执为准；登记见 `docs/governance/retired-paths.json`。

@@ -21,8 +21,8 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parents[1]
 CATALOG = 'vault/provenance/demo/catalog.json'
 SOURCE = 'provenance-demo:source'
-TARGET_A = 'dsh-praxis/kit/design/controls.md'
-TARGET_B = 'dsh-praxis/kit/design/motion.md'
+TARGET_A = 'kit/design/controls.md'
+TARGET_B = 'kit/design/motion.md'
 BINDING_A = f'{SOURCE}@{TARGET_A}'
 BINDING_B = f'{SOURCE}@{TARGET_B}'
 
@@ -66,7 +66,6 @@ def fixture(root, source_url):
             'created_at': None, 'evidence_status': 'partial', 'summary': 'Empty fixture',
             'local_card': None, 'limitations': [], 'revisit_when': 'never',
         })
-    write(root, 'vault/project-indexes.json', {'indexes': []})
     write(root, 'vault/intake/local-projects.json', {'projects': []})
     write(root, 'vault/intake/downloads.json', {'entries': []})
     catalog = {**empty_catalog, 'registry_extensions': True, 'sources': [{
@@ -76,6 +75,11 @@ def fixture(root, source_url):
     }]}
     write(root, CATALOG, catalog)
     build(root)
+    # Repository mode: the package keeps its data beside it, relative paths start at the repository,
+    # and the vault registry is a source pack read by reference.
+    write(root, 'dsh-praxis/data/settings.json', {'base': '../..', 'snapshots': '../../vault/snapshots/praxis-captures'})
+    write(root, 'dsh-praxis/data/packs.json', {'schema_version': '1.0', 'records': {'vault': {
+        'kind': 'registry', 'path': 'vault/registry.json', 'root': '', 'title': 'Vault', 'purpose': 'Fixture vault', 'state': 'active', 'revision': 1}}})
     return catalog
 
 
@@ -95,8 +99,9 @@ class LocalSource(BaseHTTPRequestHandler):
 class Probe:
     def __init__(self, root, temporary):
         self.root = root
-        self.env = {**os.environ, 'PRAXIS_ROOT': str(root), 'TMPDIR': str(temporary),
-                    'USER': 'acceptance-fixture'}
+        self.env = {**os.environ, 'TMPDIR': str(temporary), 'USER': 'acceptance-fixture',
+                    'NO_PROXY': '127.0.0.1,localhost', 'no_proxy': '127.0.0.1,localhost'}
+        self.env.pop('PRAXIS_DATA', None)
         self.sequence = 0
         self.mcp = subprocess.Popen(
             ['node', str(root / 'dsh-praxis/adapters/mcp.js')], env=self.env,
@@ -113,13 +118,12 @@ class Probe:
             stream.close()
 
     def cli(self, name, args=None, root=None):
-        command = ['node', str(self.root / 'dsh-praxis/adapters/cli.js'), name]
+        command = ['node', str((root or self.root) / 'dsh-praxis/adapters/cli.js'), name]
         if isinstance(args, list):
             command.extend(args)
         elif args is not None:
             command.append(args if isinstance(args, str) else json.dumps(args))
-        result = subprocess.run(command, env={**self.env, 'PRAXIS_ROOT': str(root or self.root)},
-                                text=True, capture_output=True, timeout=30)
+        result = subprocess.run(command, env=self.env, text=True, capture_output=True, timeout=30)
         return {'exit': result.returncode,
                 'value': json.loads(result.stdout) if result.stdout.strip() else None,
                 'stderr': result.stderr.strip()}
@@ -282,26 +286,25 @@ def run_checks(probe, temporary, baseline, checks):
 
     archive = str(temporary / 'state.tar.gz')
     exported = probe.ok('export', archive)
-    check('backup_declares_artifact_files', 'Export says artifact files are not in the archive.',
-          {'not_included': exported.get('not_included')}, (exported.get('not_included') or {}).get('artifact_files') == 1)
     checked = probe.ok('check', archive)
+    paths = [f['path'] for f in json.loads(subprocess.run(['tar', '-xOzf', archive, 'manifest.json'], capture_output=True, text=True).stdout)['files']]
+    check('backup_carries_data_and_snapshots', 'The archive holds the data root and the snapshots folder kept outside it, and nothing from the vault pack.',
+          {'roots': sorted({p.split('/')[0] for p in paths}), 'vault_files': [p for p in paths if 'catalog.json' in p or 'registry' in p]},
+          {p.split('/')[0] for p in paths} == {'data', 'snapshots'} and 'data/bindings.json' in paths and not any('catalog.json' in p for p in paths))
     restored_root = temporary / 'restored'
     shutil.copytree(probe.root, restored_root)
-    for relative in ['dsh-praxis/data', 'vault/snapshots/local/praxis']:
-        shutil.rmtree(restored_root / relative, ignore_errors=True)
+    shutil.rmtree(restored_root / 'vault/snapshots/praxis-captures', ignore_errors=True)
+    for item in (restored_root / 'dsh-praxis/data').iterdir():
+        if item.name != 'settings.json':
+            shutil.rmtree(item) if item.is_dir() else item.unlink()
     write(restored_root, CATALOG, baseline)
-    for relative in ['vault/intake/praxis-captures.json', 'vault/snapshot-manifest.json']:
-        (restored_root / relative).unlink(missing_ok=True)
     build(restored_root)
-    # The baseline catalog intentionally differs; authorize overwrite only in this fixture.
     restored = probe.ok('restore', [archive, '--force'], restored_root)
-    # Verify even after explicitly regenerating projections from restored source data.
-    build(restored_root)
     bindings = probe.ok('bindings', {'include_removed': True}, restored_root)
     active = [b['id'] for b in bindings if b['state'] == 'active']
     source = probe.ok('source', {'id': SOURCE}, restored_root)
     snapshot = source.get('snapshot', {})
-    check('backup_existing_catalog', 'Restore added/removed relations and latest source snapshot pointer.',
+    check('backup_restores_roster', 'Restore brings back added and removed relations and the latest snapshot, with the vault pack untouched.',
           {'archive_valid': checked['ok'], 'exported_files': exported['files'],
            'restored_files': restored['restored'], 'active_targets': [b['target'] for b in bindings if b['state'] == 'active'],
            'latest_snapshot_pointer_restored': snapshot.get('sha256') == second_snapshot['snapshot']['sha256'],
@@ -317,8 +320,8 @@ def main():
         'environment': {'node': subprocess.check_output(['node', '--version'], text=True).strip(),
                         'python': platform.python_version(), 'system': platform.system()},
         'command': 'python3 scripts/check_praxis_acceptance.py',
-        'scope': 'Isolated fixture; real CLI/MCP processes, registry/snapshot builders and loopback HTTP.',
-        'not_checked': ['DSH desktop/UI', 'external network', 'concurrent writes', 'corrupt or malicious archives'],
+        'scope': 'Isolated repository-mode fixture; real CLI/MCP processes, the registry builder and loopback HTTP.',
+        'not_checked': ['DSH desktop/UI', 'external network', 'concurrent writes', 'corrupt or malicious archives', 'release install (see dsh-praxis/release/walkthrough.mjs)'],
         'checks': [],
     }
     try:

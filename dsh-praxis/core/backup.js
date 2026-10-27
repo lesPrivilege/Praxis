@@ -1,69 +1,50 @@
-// Export the control plane's persistent state as one archive with a hash manifest,
-// and check an archive before restoring it. Plugin code and Kit pages travel with the
-// repository; this carries what the control plane itself writes: its own data, captured
-// sources and snapshots, and every file holding a source record, since bindings and refreshes edit
-// the grammar_paths and snapshot pointers of existing records. Derived indexes are rebuilt on restore.
+// Export everything Praxis writes as one archive with a hash manifest, and check an archive before
+// restoring it. That is the data root (roster, bindings, packs, presets, projects, artifacts, runs,
+// checks, history) and the snapshots folder when it lies outside the data root. Plugin code and the
+// Kit travel with the package; pack files and artifact files stay with their owners.
 import { createHash } from 'node:crypto'
-import { execFileSync } from 'node:child_process'
 import { copyFileSync, existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
-import { dirname, join } from 'node:path'
-import { PROJECT_INDEXES } from './materials.js'
-
-export const STATE_PATHS = [
-  'dsh-praxis/data',
-  'vault/provenance/praxis-captures',
-  'vault/intake/praxis-captures.json',
-  'vault/snapshots/local/praxis',
-]
-
-function files(repo, rel) {
-  const full = join(repo, rel)
-  if (!existsSync(full)) return []
-  if (statSync(full).isFile()) return [rel]
-  return readdirSync(full).flatMap((name) => (name.endsWith('.lock') || name.endsWith('.tmp') ? [] : files(repo, `${rel}/${name}`)))
-}
+import { dirname, join, relative } from 'node:path'
+import { execFileSync } from 'node:child_process'
+import { PACKAGE } from './paths.js'
 
 const sha = (buf) => createHash('sha256').update(buf).digest('hex')
 
-/**
- * Files holding the source records that curate, remove, restore and refresh write: every catalog or
- * intake the registry projects from, and for project indexes the registration (the project's own
- * index file belongs to the project and travels with it).
- */
-function catalogs(repo) {
-  const path = join(repo, 'vault/registry.json')
-  if (!existsSync(path)) return []
-  const rels = JSON.parse(readFileSync(path, 'utf8')).sources.map((s) => (s.kind === 'project-index' ? PROJECT_INDEXES : s.record_path)).filter(Boolean)
-  return [...new Set(rels)].filter((rel) => existsSync(join(repo, rel)))
+function files(dir, prefix = '') {
+  if (!existsSync(dir)) return []
+  return readdirSync(dir).flatMap((name) => {
+    if (name.endsWith('.lock') || name.endsWith('.tmp') || name === '.DS_Store') return []
+    const full = join(dir, name)
+    return statSync(full).isDirectory() ? files(full, `${prefix}${name}/`) : [`${prefix}${name}`]
+  })
 }
 
-function artifactFiles(repo) {
-  const path = join(repo, 'dsh-praxis/data/artifacts.json')
-  if (!existsSync(path)) return 0
-  return Object.values(JSON.parse(readFileSync(path, 'utf8')).records).filter((r) => r.state !== 'removed').length
+/** The archive's two roots: `data/` and, when kept elsewhere, `snapshots/`. */
+function roots(where) {
+  const inside = !relative(where.data, where.snapshots).startsWith('..')
+  return { data: where.data, ...(inside ? {} : { snapshots: where.snapshots }) }
 }
 
-export function exportState(repo, dest) {
-  const list = [...new Set([...STATE_PATHS.flatMap((rel) => files(repo, rel)), ...catalogs(repo)])].sort()
-  let commit = null
-  try { commit = execFileSync('git', ['rev-parse', 'HEAD'], { cwd: repo, encoding: 'utf8' }).trim() } catch {}
+export function exportState(where, dest) {
+  const list = Object.entries(roots(where)).flatMap(([name, dir]) => files(dir).map((rel) => ({ name, rel, abs: join(dir, rel) })))
   const manifest = {
     kind: 'dsh-praxis-state',
     created_at: new Date().toISOString(),
-    repository_commit: commit,
-    package_version: JSON.parse(readFileSync(join(repo, 'dsh-praxis/package.json'), 'utf8')).version,
-    // Artifact files stay in their owners' workspaces; the archive carries their records and hashes only.
-    not_included: { artifact_files: artifactFiles(repo) },
-    files: list.map((rel) => {
-      const buf = readFileSync(join(repo, rel))
-      return { path: rel, sha256: sha(buf), size_bytes: buf.length }
+    package_version: JSON.parse(readFileSync(join(PACKAGE, 'package.json'), 'utf8')).version,
+    files: list.map(({ name, rel, abs }) => {
+      const buf = readFileSync(abs)
+      return { path: `${name}/${rel}`, sha256: sha(buf), size_bytes: buf.length }
     }),
   }
   const stage = mkdtempSync(join(tmpdir(), 'praxis-export-'))
   writeFileSync(join(stage, 'manifest.json'), JSON.stringify(manifest, null, 2) + '\n')
-  execFileSync('tar', ['-czf', dest, '-C', stage, 'manifest.json', '-C', repo, ...list])
-  return { archive: dest, files: list.length, bytes: manifest.files.reduce((n, f) => n + f.size_bytes, 0), not_included: manifest.not_included }
+  for (const { name, rel, abs } of list) {
+    mkdirSync(dirname(join(stage, name, rel)), { recursive: true })
+    copyFileSync(abs, join(stage, name, rel))
+  }
+  execFileSync('tar', ['-czf', dest, '-C', stage, 'manifest.json', ...Object.keys(roots(where)).filter((n) => existsSync(join(stage, n)))])
+  return { archive: dest, files: list.length, bytes: manifest.files.reduce((n, f) => n + f.size_bytes, 0) }
 }
 
 /** Unpack into a scratch directory and compare every file with the manifest. */
@@ -74,7 +55,7 @@ export function checkArchive(archive) {
   if (manifest.kind !== 'dsh-praxis-state') throw new Error('not a dsh-praxis state archive')
   const problems = []
   for (const f of manifest.files) {
-    if (f.path.startsWith('/') || f.path.split('/').includes('..')) problems.push(`unsafe path ${f.path}`)
+    if (f.path.startsWith('/') || f.path.split('/').includes('..') || !/^(data|snapshots)\//.test(f.path)) problems.push(`unsafe path ${f.path}`)
     const p = join(stage, f.path)
     if (!existsSync(p)) problems.push(`missing ${f.path}`)
     else if (sha(readFileSync(p)) !== f.sha256) problems.push(`hash mismatch ${f.path}`)
@@ -82,23 +63,19 @@ export function checkArchive(archive) {
   return { ok: problems.length === 0, problems, manifest, unpacked: stage }
 }
 
-/**
- * Copy a checked archive into the repository, then rebuild the derived registry and snapshot
- * manifest from the restored records. Files that differ locally are reported and left alone unless forced.
- */
-export function restoreState(repo, archive, { force = false, rebuild } = {}) {
-  if (typeof rebuild !== 'function') throw new Error('restore needs rebuild: the registry and snapshot manifest are derived from the restored records')
+/** Copy a checked archive back. Files that differ locally are reported and left alone unless forced. */
+export function restoreState(where, archive, { force = false } = {}) {
   const check = checkArchive(archive)
   if (!check.ok) throw new Error(`archive check failed: ${check.problems.join('; ')}`)
+  const dirs = { data: where.data, snapshots: where.snapshots }
+  const target = (path) => join(dirs[path.slice(0, path.indexOf('/'))], path.slice(path.indexOf('/') + 1))
   const conflicts = check.manifest.files
-    .filter((f) => existsSync(join(repo, f.path)) && sha(readFileSync(join(repo, f.path))) !== f.sha256)
+    .filter((f) => existsSync(target(f.path)) && sha(readFileSync(target(f.path))) !== f.sha256)
     .map((f) => f.path)
   if (conflicts.length && !force) return { restored: 0, conflicts }
-  const paths = check.manifest.files.map((f) => f.path)
-  for (const rel of paths) {
-    mkdirSync(dirname(join(repo, rel)), { recursive: true })
-    copyFileSync(join(check.unpacked, rel), join(repo, rel))
+  for (const f of check.manifest.files) {
+    mkdirSync(dirname(target(f.path)), { recursive: true })
+    copyFileSync(join(check.unpacked, f.path), target(f.path))
   }
-  rebuild()
-  return { restored: paths.length, conflicts }
+  return { restored: check.manifest.files.length, conflicts }
 }

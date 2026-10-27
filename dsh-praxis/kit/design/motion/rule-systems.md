@@ -8,7 +8,7 @@
 
 ## 来路与边界
 
-V&A 将 Molnar 的 “machine imaginaire” 描述为以网格、数学和自设约束手工探索几何组合；Morgan Library 记录称 *Interruptions*（1968）由她编程、经穿孔卡输入绘图仪，随机成分形成空隙。[V&A 来源卡](../../../../vault/provenance/art-software-atlas/temporal/cards/asa-t-04-va-molnar-machine-imaginaire.md)保存策展解释，[Morgan 对象记录](../../../../vault/provenance/art-software-atlas/temporal/cards/asa-t-03-morgan-molnar-interruptions.md)保存馆藏说明。
+V&A 将 Molnar 的 “machine imaginaire” 描述为以网格、数学和自设约束手工探索几何组合；Morgan Library 记录称 *Interruptions*（1968）由她编程、经穿孔卡输入绘图仪，随机成分形成空隙。
 
 规则是作者选择的约束或映射；伪随机是算法按种子产生的数列；不确定性也可能来自演奏者、输入、环境或数据。称结果为“偶然”时说明机制，不能从视觉结果倒推作者使用过随机数。
 
@@ -23,8 +23,8 @@ V&A 将 Molnar 的 “machine imaginaire” 描述为以网格、数学和自设
 ## 软件路径与取舍
 
 1. **枚举参数表与 SVG/canvas**：适合小集合的审阅和逐项比较，可附索引；组合数会快速膨胀，抽样不可称为穷举。
-2. **Processing 或 p5.js 固定种子**：用 `randomSeed()` 重现指定伪随机函数的序列，并让 seed 成为探索控制项。不同 API、版本和语言不因此共享序列。见 [Processing](../../../../vault/provenance/art-software-atlas/temporal/cards/asa-t-05-processing-random-seed.md) 与 [p5.js](../../../../vault/provenance/art-software-atlas/temporal/cards/asa-t-06-p5-random-seed.md)。
-3. **事件与声音层**：Tone.js Transport 可在浏览器侧按 transport 时间排程；SuperCollider 提供服务器、clock 与 latency 模型。图像与声音的同步仍取决于目标环境。见 [Tone.js](../../../../vault/provenance/art-software-atlas/temporal/cards/asa-t-07-tonejs-transport.md) 和 [SuperCollider](../../../../vault/provenance/art-software-atlas/temporal/cards/asa-t-08-supercollider-server-timing.md)。
+2. **Processing 或 p5.js 固定种子**：用 `randomSeed()` 重现指定伪随机函数的序列，并让 seed 成为探索控制项。不同 API、版本和语言不因此共享序列。
+3. **事件与声音层**：Tone.js Transport 可在浏览器侧按 transport 时间排程；SuperCollider 提供服务器、clock 与 latency 模型。图像与声音的同步仍取决于目标环境。
 
 ## 构造性夹具
 
@@ -47,4 +47,4 @@ V&A 将 Molnar 的 “machine imaginaire” 描述为以网格、数学和自设
 
 ## 邻接研究
 
-可扩展到手工步骤谱、游戏规则、绘图仪和变奏编辑器，比较伪随机、演奏者选择、环境噪声与作者规则留下的 provenance。交互动画的适用范围见 [WCAG 2.2 2.3.3 来源卡](../../../../vault/provenance/art-software-atlas/temporal/cards/asa-t-09-wcag-animation-from-interactions.md)。
+可扩展到手工步骤谱、游戏规则、绘图仪和变奏编辑器，比较伪随机、演奏者选择、环境噪声与作者规则留下的 provenance。交互动画的适用范围按 WCAG 2.2 SC 2.3.3 判断。

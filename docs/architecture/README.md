@@ -12,7 +12,7 @@ Praxis 由 Enterprise、Reporting、Work System 三个消费域和共享 Environ
 | [vault/snapshots](../../vault/snapshots/README.md) / [archive/chat](../../vault/archive/chat/README.md) | 版本原件、原始对话 | 按定位回查 |
 | [docs/decisions](../decisions/README.md) | 接受、延后、拒绝及其理由 | 更新规范 |
 | [kit](../../kit/README.md) | 当前定义、契约与验收规则 | 消费到任务 |
-| [dsh-praxis](../../dsh-praxis/README.md) | 个人 FDE 工作 Kit（Task、Writing、Design、Publish）与控制面；挂载维护信息、预设与运行记录在 dsh-praxis/data | 消费到任务、DSH 插件与 MCP |
+| [dsh-praxis](../../dsh-praxis/README.md) | 个人 FDE 工作 Kit（Task、Writing、Design、Publish）、来源名册与控制面；名册、挂载、预设、项目、产物与运行记录在 dsh-praxis/data，vault 作为来源包按引用接入 | 消费到任务、DSH 插件与 MCP |
 | [projects](../../projects/README.md) | 一切交付与实验：教材、讲解页、视频、语法工场；场景契约模板在 [templates/scenario](../../templates/scenario/README.md) | 验证、反馈、登记产物 |
 
 知识晋升：`vault → docs/decisions → kit → projects`（[ADR-044](../decisions/044-repository-layout-by-role.md)）。
@@ -28,7 +28,7 @@ Praxis 由 Enterprise、Reporting、Work System 三个消费域和共享 Environ
 
 ## Praxis 与 dsh-praxis
 
-Praxis 是知识与证据库；`dsh-praxis/` 是可独立发布的单元：表达 Kit 加控制面加运行数据，MCP 是控制面的一个入口，数据全部进 Git。根 `kit/` 是企业工作 Kit，不进 release 包；`projects/` 属于 Praxis，控制面只记位置。七个名字的定义与分工见 [ADR-045](../decisions/045-praxis-and-dsh-praxis-relations.md)。
+Praxis 是知识与证据库；`dsh-praxis/` 是可独立发布的包：表达 Kit 加控制面，MCP 是控制面的一个入口。数据根可配置；这个仓库以仓库模式接入同一个包，数据在 `dsh-praxis/data`，进 Git，vault 作为来源包按引用接入（[ADR-046](../decisions/046-dsh-praxis-package-and-roster.md)）。根 `kit/` 是企业工作 Kit，不进 release 包；`projects/` 属于 Praxis，控制面只记位置。七个名字的定义与分工见 [ADR-045](../decisions/045-praxis-and-dsh-praxis-relations.md)。
 
 ## 表达与设计的跨域消费
 
@@ -61,7 +61,7 @@ Praxis 是知识与证据库；`dsh-praxis/` 是可独立发布的单元：表�
 
 ## 实现入口
 
-Praxis 插件下一轮的工作见 [下一轮工单](../../dsh-praxis/work-order.md)：先自用跑通，再拆出 release。已实施的产物取用设计见 [架构参考](../../dsh-praxis/architecture.md)与 产物工单，裁决以 ADR 为准。
+Praxis 插件的工作见 [工单](../../dsh-praxis/work-order.md)：自用与 release 拆分已施工（ADR-046），剩下 worker 自主消费的对照实验、真实 fresh agent 的走查与发布。已实施的产物取用设计见 [架构参考](../../dsh-praxis/architecture.md)与 产物工单，裁决以 ADR 为准。
 
 首个实现从 [场景模板](../../templates/scenario/README.md) 和 [Demo 准入](../../projects/README.md) 开始；技术候选见 [架构理由](rationale.md#实现候选与触发)。
 

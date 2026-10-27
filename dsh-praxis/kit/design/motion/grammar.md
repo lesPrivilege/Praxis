@@ -12,4 +12,4 @@
 
 不要把界面缓动的经验直接推广为视频镜头语言。单帧支持构图检查，联络表支持前后对应，整段播放才支持节奏和同步检查。播放器和受众没有测试时明确保留缺口。
 
-依据是既有 C16/C19 动效判断以及 [Write–Design 研究](../../../../vault/distilled/write-design-grammar/write-design-boundary.md)。当前采纳语义边界与检查方式；曲线库、camera、spring与Remotion组件尚未形成跨项目规范。
+曲线库、camera、spring与Remotion组件由项目选择，没有跨项目规范。

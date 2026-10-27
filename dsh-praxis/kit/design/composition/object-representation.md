@@ -40,9 +40,9 @@ reference_priority: normal
 
 ## 两类来源的选择差异
 
-Anatomy 的项目说明描述的是把技术概念拟成真实机械对象：由许多小的实心、着色部件组成，支持 hover/keyboard、读数、拆解，并在关节处检查关系。它还把火焰、水、光等超出线条表达能力的效果分层置入 SVG 与 WebGL。还看了 README 链接的 firing still：可见浅色实面与细轮廓共同分出发动机部件、支架和底板，喷焰的发光层可见；作者文字称该类效果可由 WebGL 分层实现，没有用透明线框替代发动机本体；没有操作示例或核对技术准确性。这个选择适合读者需要辨认部件如何协作、动作与读数如何一致的情形。[Anatomy README 来源卡](../../../../vault/provenance/design-writing-encyclopedia/visual/cards/anatomy-readme.md)。
+Anatomy 的项目说明描述的是把技术概念拟成真实机械对象：由许多小的实心、着色部件组成，支持 hover/keyboard、读数、拆解，并在关节处检查关系。它还把火焰、水、光等超出线条表达能力的效果分层置入 SVG 与 WebGL。还看了 README 链接的 firing still：可见浅色实面与细轮廓共同分出发动机部件、支架和底板，喷焰的发光层可见；作者文字称该类效果可由 WebGL 分层实现，没有用透明线框替代发动机本体；没有操作示例或核对技术准确性。这个选择适合读者需要辨认部件如何协作、动作与读数如何一致的情形。
 
-Hairline 则明确把对象做成产品界面中的小型仪器，采用统一线宽的等距线图，以紧凑、低视觉负担为目标，并把指针响应按距离衰减。其过程强调先量参考响应，再把观察写成可否决的规则；视觉试稿需要被编辑而非崇拜。它更适合轻量、低占比、关系或反馈有清楚隐喻的图形，不替代真实机械构造。看了 README 的静态 hero GIF 第一帧：卡片盘、柱阵、窗口层、点阵、传送带与转盘以浅灰细线画在不透明白色底片上；这不是只剩轮廓的透明 wireframe，也未核实动画每一帧。[Hairline 制作过程来源卡](../../../../vault/provenance/design-writing-encyclopedia/visual/cards/hairline-inspo.md)、[Hairline skill 来源卡](../../../../vault/provenance/design-writing-encyclopedia/visual/cards/hairline-skill.md)。
+Hairline 则明确把对象做成产品界面中的小型仪器，采用统一线宽的等距线图，以紧凑、低视觉负担为目标，并把指针响应按距离衰减。其过程强调先量参考响应，再把观察写成可否决的规则；视觉试稿需要被编辑而非崇拜。它更适合轻量、低占比、关系或反馈有清楚隐喻的图形，不替代真实机械构造。看了 README 的静态 hero GIF 第一帧：卡片盘、柱阵、窗口层、点阵、传送带与转盘以浅灰细线画在不透明白色底片上；这不是只剩轮廓的透明 wireframe，也未核实动画每一帧。
 
 两个取向的差别源于读者目标、显示尺寸和结构需要：一个强化真实部件间的结构，一个强调小图形与微交互。优先问“哪个最低复杂度的表达保住了读者需要的关系”，再比较线与填充，而不是先决定要仿哪一家。
 
@@ -61,4 +61,4 @@ Hairline 则明确把对象做成产品界面中的小型仪器，采用统一�
 
 代码/SVG 可以证明几何关系存在；静态预览可以支持轮廓、遮挡与标签审查；运行与交互需要真正操作；对象科学/工程正确性要由领域证据校核；读者理解需单独观察。证据包括作者文档、Anatomy 静态图和 Hairline GIF 的首帧；没有连续观看动效或运行外部技能。
 
-静态视觉证据分别见 [Anatomy firing still（DWV-02）](../../../../vault/provenance/design-writing-encyclopedia/visual/cards/anatomy-firing-still.md) 与 [Hairline 首帧（DWV-06）](../../../../vault/provenance/design-writing-encyclopedia/visual/cards/hairline-hero-gif.md)。它们只支持所见轮廓、表面与遮挡；[Anatomy 站点线索（DWV-03）](../../../../vault/provenance/design-writing-encyclopedia/visual/cards/anatomy-skill-landing.md)正文未取得，不能拿邻近 README 代替。
+Anatomy firing still 与 Hairline 首帧只支持所见轮廓、表面与遮挡。
