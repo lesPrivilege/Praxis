@@ -1,0 +1,288 @@
+{
+  "schema_version": "1.0",
+  "research_date": "2026-10-28",
+  "scope": [
+    "contract_review",
+    "redlining",
+    "playbooks",
+    "clm",
+    "approval",
+    "signature",
+    "obligations"
+  ],
+  "method": {
+    "search_provider": "Exa",
+    "search_queries": 25,
+    "sources_reviewed": 125,
+    "deduplicated_high_relevance_urls": 37,
+    "official_pages_deep_read": 23,
+    "interactive_browser_available": false,
+    "verified_interaction_count": 0
+  },
+  "evidence_statuses": {
+    "observed_public_page": "公开帮助中心或网页中的可核对描述，不代表登录后实测",
+    "observed_recording": "官方录屏中可定位的画面或讲解",
+    "vendor_claim": "厂商产品、营销、安全或性能陈述，未作独立验证",
+    "inferred": "由一项或多项已标注事实推断",
+    "proposed": "面向 Agent 产品建设的建议",
+    "unknown": "公开证据不足"
+  },
+  "products": [
+    {
+      "id": "spellbook",
+      "name": "Spellbook",
+      "category": ["contract_review", "redlining", "playbooks"],
+      "target_users": ["law_firm_lawyer", "in_house_legal"],
+      "buyer": ["law_firm", "legal_department"],
+      "primary_surfaces": [
+        {"name": "Microsoft Word add-in", "evidence": "observed_public_page"},
+        {"name": "Associate", "evidence": "vendor_claim", "unknowns": ["完整导航与端到端状态"]}
+      ],
+      "business_objects": ["Document", "Playbook", "Rule", "Question", "Reference", "Revision", "Comment", "Prompt", "Team", "LibraryFolder"],
+      "flows": [
+        {
+          "id": "spellbook-playbook-review",
+          "name": "Playbook review",
+          "input": ["document", "playbook", "run_target:full_document|redlines"],
+          "states": ["running", "passed", "failed", "fallback", "completed", "no_relevant_redline"],
+          "actions": ["show", "dismiss", "apply", "edit", "regenerate", "ask_for_changes", "insert_at_cursor", "apply_all", "export"],
+          "source_trace": "numbered reference bubble jumps to source passage",
+          "unknowns": ["cancel", "partial_failure", "undo_after_apply_all", "concurrent_conflict"]
+        },
+        {
+          "id": "spellbook-first-party-redline",
+          "name": "First-party redline-aware review",
+          "outcomes": ["accept_redline", "reject_redline", "accept_or_reject_with_revision", "no_relevant_redline"],
+          "human_boundary": "user applies recommended action; unmatched redlines are handled manually",
+          "important_semantics": "reject preserves an auditable redline by accepting the incoming change then appending original text as a new redline"
+        }
+      ],
+      "decision_targets": {
+        "revision_candidate": "directly supported",
+        "risk_exception": "not found",
+        "rule_release": "not found"
+      },
+      "permissions": {
+        "roles": ["Admin", "Editor", "Viewer", "Consumer"],
+        "scopes": ["All", "Own", "Shared"],
+        "limitations": ["no individual user sharing for resources", "Library sharing at folder level", "no audit log for role/resource sharing changes", "no dedicated admin portal"]
+      },
+      "commercial": {
+        "public_price": null,
+        "pricing_model": "custom_quote",
+        "charging_unit": "team_members_on_license",
+        "trial": "7_days_vendor_claim",
+        "services": ["group_or_team_training", "online_support", "dedicated_support_over_10", "playbook_build_service"],
+        "legal_professional_services": "not_found"
+      },
+      "security_vendor_claims": ["Zero Data Retention", "customer data not used for training", "SOC 2 Type II"],
+      "sources": ["sp-01", "sp-02", "sp-03", "sp-04", "sp-05"]
+    },
+    {
+      "id": "luminance",
+      "name": "Luminance",
+      "category": ["negotiation", "contract_intelligence", "workflow", "repository"],
+      "target_users": ["legal", "legal_ops", "procurement", "finance", "sales"],
+      "buyer": ["enterprise_legal", "cross_functional_operations"],
+      "primary_surfaces": [
+        {"name": "live contract home screen", "evidence": "observed_public_page", "source_age": "2022"},
+        {"name": "Microsoft Word", "evidence": "vendor_claim"},
+        {"name": "Workflow Editor", "evidence": "observed_public_page", "source_age": "2022"},
+        {"name": "Repository", "evidence": "vendor_claim"}
+      ],
+      "business_objects": ["Contract", "Matter", "Clause", "Position", "Playbook", "Checklist", "Precedent", "WorkflowStage", "Condition", "Task", "Approval", "ContractFamily", "Obligation", "Renewal"],
+      "flows": [
+        {
+          "id": "luminance-negotiation",
+          "name": "Precedent/playbook to markup",
+          "input": ["incoming_contract", "preferred_positions", "fallback_language", "portfolio_precedent"],
+          "actions": ["compare", "run_checklist", "generate_redline", "review_tracked_change", "approve_modification", "route_exception"],
+          "source_trace": "source-backed answers and repository links claimed; exact UI not verified",
+          "unknowns": ["candidate_undo", "bulk_preview", "partial_failure", "approval_short_circuit"]
+        },
+        {
+          "id": "luminance-workflow",
+          "name": "Conditional collaborative workflow",
+          "states_examples": ["Under Review", "With Counterparty", "Executed"],
+          "actions": ["route_by_condition", "parallel_review", "notify", "return_to_owner", "insert_recommended_amendment"],
+          "human_boundary": "non-standard terms and exceptions route to Legal"
+        },
+        {
+          "id": "luminance-portfolio",
+          "name": "Portfolio comparison",
+          "scale_vendor_claim": "up to 10000 contracts",
+          "output": ["deviation", "risk", "renewal", "financial_exposure", "source_backed_answer"],
+          "unknowns": ["result_table_schema", "bulk_action", "export_permissions", "long_job_state"]
+        }
+      ],
+      "decision_targets": {
+        "revision_candidate": "supported by official product description",
+        "risk_exception": "routing supported; approval state not verified",
+        "rule_release": "not found"
+      },
+      "commercial": {
+        "public_price": null,
+        "pricing_model": "order_form",
+        "usage_contract": "maximum documents plus annual 200_percent fair-usage cap relative to subscription allowance",
+        "services_boundary": "support does not normally include monitoring, interpretation, or corrective action on outputs",
+        "legal_professional_services": "not_found"
+      },
+      "deployment_and_security_vendor_commitments": ["AWS cloud", "customer selected data centre subject to availability", "same-region backup", "isolated customer instance", "MFA", "SSO on request", "24-hour backups", "24-hour RTO/RPO for primary data-centre failure", "deletion 30 days plus up to 30 days from backups"],
+      "sources": ["lu-01", "lu-02", "lu-03", "lu-04", "lu-05", "lu-06", "lu-07"]
+    },
+    {
+      "id": "ironclad",
+      "name": "Ironclad",
+      "category": ["clm", "workflow", "playbooks", "signature", "repository"],
+      "target_users": ["contract_requester", "workflow_participant", "document_approver", "clause_approver", "signature_coordinator", "legal_ops", "admin"],
+      "buyer": ["enterprise_legal", "legal_ops", "business_operations"],
+      "primary_surfaces": ["Dashboard", "Start Workflow", "Launch Form", "Workflow Page", "Activity Feed", "Workflow Designer", "Repository", "Ironclad Editor", "Jurist"],
+      "business_objects": ["Workflow", "WorkflowType", "LaunchForm", "Question", "Property", "Condition", "DocumentVersion", "ApprovalLayer", "ClausePosition", "ExceptionRequest", "SignaturePacket", "RepositoryRecord"],
+      "flows": [
+        {
+          "id": "ironclad-clm",
+          "name": "Create to archive",
+          "states": ["saved_form", "Create", "Review", "Sign", "Archive", "RepositoryRecord"],
+          "actions": ["submit", "save_form", "edit_info", "update_document", "edit_in_editor", "mark_approved", "send_for_signature", "go_back_to_review", "archive_approve"],
+          "invariants": ["required form questions block Review or Signature", "version changes may require reapproval", "go back to Review after sending signature packet voids envelope", "Archive approval precedes Repository record creation"]
+        },
+        {
+          "id": "ironclad-playbook-exception",
+          "name": "Clause review and exception",
+          "input": ["document_version", "playbook_position", "preferred_or_fallback_language"],
+          "actions": ["view_flagged_term", "insert_suggested_redline", "accept_change", "reject_change", "bulk_accept_or_reject", "request_exception", "select_approver", "record_reason", "send_reminder"],
+          "human_boundary": "clause approver decides exception; users decide suggested text"
+        }
+      ],
+      "decision_targets": {
+        "revision_candidate": "supported",
+        "risk_exception": "Request an exception with approver and reason",
+        "rule_release": "admin configuration supported; formal release approval not found"
+      },
+      "permissions": {
+        "dimensions": ["seat_type", "workflow_access", "playbook_permission", "clause_approver_role", "admin_role"],
+        "audit_log": "paid Security & Data Pro add-on; no backfill before enablement"
+      },
+      "commercial": {
+        "public_price": null,
+        "pricing_model": "tailored_quote",
+        "pricing_dimensions": ["products", "users", "workflows", "growth"],
+        "possible_add_ons": ["API_and_integrations", "additional_instances", "enhanced_success_plan", "Security_and_Data_Pro"],
+        "implementation": ["self_led", "Ironclad_legal_engineers", "partner", "custom_SOW"],
+        "services": ["Academy", "live_group_training", "customer_success", "support_levels"]
+      },
+      "security_vendor_claims": ["TLS 1.2+", "AES-256", "US-hosted GCP", "multi-zone", "SOC/ISO certifications in Security Portal"],
+      "sources": ["ic-01", "ic-02", "ic-03", "ic-04", "ic-05", "ic-06", "ic-07", "ic-08"]
+    },
+    {
+      "id": "juro",
+      "name": "Juro",
+      "category": ["clm", "intake_agent", "ai_review", "negotiation", "approval", "signature"],
+      "target_users": ["workspace_admin", "business_requester", "legal_reviewer", "approver", "signer", "legal_ops"],
+      "buyer": ["legal_department", "legal_ops", "business_operations"],
+      "primary_surfaces": ["Workflows/Agents", "Operator", "DocumentRecord", "DocumentMembers", "IntakeReview", "WordAddIn", "ToDo", "Timeline"],
+      "business_objects": ["Workspace", "IntakeAgent", "DocumentType", "Identifier", "Template", "Smartfield", "Playbook", "Approver", "Signatory", "DocumentRecord", "ReviewCycle", "DocumentVersion", "InternalComment"],
+      "flows": [
+        {
+          "id": "juro-intake-agent",
+          "name": "Third-party paper intake",
+          "states": ["inactive_agent", "active_agent", "submission_review", "Sent for legal review", "Legal review", "Sent for approval"],
+          "actions": ["suggest_document_type", "confirm_type", "answer_context", "yes_upload", "start_over", "extract_smartfields", "run_ai_review", "approve_suggestion", "decline_suggestion", "complete_review"],
+          "constraints": ["one file", "DOCX maximum 30MB", "PDF maximum 100MB", "automatic AI review only for unsigned DOCX", "requester confirms AI document type suggestion"]
+        },
+        {
+          "id": "juro-first-vs-third-party",
+          "name": "Different review semantics",
+          "first_party": "review counterparty redlines only in Juro",
+          "third_party": "review full document in Word and generate priority redlines",
+          "actions": ["accept", "reject", "comment", "query_or_rewrite", "mark_review_complete", "reopen_review_cycle"],
+          "irreversible": "accept or reject redline cannot be undone according to help page"
+        },
+        {
+          "id": "juro-asynchronous-negotiation",
+          "name": "Locked version exchange",
+          "states": ["asynchronous_disabled", "NEGOTIATION", "counterparty_editing_locked_internal", "new_version_returned", "internal_review"],
+          "invariants": ["cannot retroactively disable after trigger", "other side locked while one side redlines", "must send back new version to unlock", "flow requires Juro signature execution"]
+        },
+        {
+          "id": "juro-document-approval",
+          "name": "Approval gate",
+          "states": ["TO APPROVE", "approved_ready_to_sign", "rejected_back_to_creator", "internal_change_retriggers_approval"],
+          "decision_target": "document_or_version",
+          "conditional_reapproval": "approvers bound to specific smartfields re-enter only when those fields change",
+          "unknowns": ["external_change_reapproval", "signature_rollback_voiding", "complete_version_hash_binding"]
+        }
+      ],
+      "decision_targets": {
+        "revision_candidate": "supported",
+        "risk_exception": "not found as separate clause exception object",
+        "document_approval": "supported",
+        "rule_release": "not found"
+      },
+      "commercial": {
+        "public_price": null,
+        "pricing_model": "custom_package_after_questionnaire",
+        "pricing_inputs_observed": ["contract_volume", "contract_types", "AI_features", "integrations"],
+        "charging_unit": "unknown",
+        "services": ["Legal_Engineer_template_and_workspace_setup", "integration_support", "admin_training", "activation_and_adoption_support"],
+        "implementation_timing_vendor_claim_conflict": ["average 21 days", "average 18 days at time of writing"]
+      },
+      "security_vendor_claims": ["SOC 2 Type II", "Cyber Essentials", "AWS and Mongo Atlas", "AES-256 at rest", "TLS 1.2/1.3", "complete backups every 2 hours", "RPO 2 hours", "RTO 2 hours"],
+      "sources": ["ju-01", "ju-02", "ju-03", "ju-04", "ju-05", "ju-06", "ju-07", "ju-08"]
+    }
+  ],
+  "source_index": [
+    {"id": "sp-01", "url": "https://help.spellbook.legal/en/articles/9926250-playbooks-overview", "type": "official_help", "status": "observed_public_page"},
+    {"id": "sp-02", "url": "https://help.spellbook.legal/en/articles/15656286-comprehensive-review", "type": "official_help", "status": "observed_public_page"},
+    {"id": "sp-03", "url": "https://help.spellbook.legal/en/articles/13875622-first-party-playbooks-redline-review", "type": "official_help", "status": "observed_public_page"},
+    {"id": "sp-04", "url": "https://help.spellbook.legal/en/articles/12650543-access-controls", "type": "official_help", "status": "observed_public_page"},
+    {"id": "sp-05", "url": "https://spellbook.com/pricing", "type": "official_pricing", "status": "observed_public_page"},
+    {"id": "lu-01", "url": "https://www.luminance.com/platform/product/negotiation", "type": "official_product", "status": "vendor_claim"},
+    {"id": "lu-02", "url": "https://www.luminance.com/blogs/product-feature-spotlight-luminance%E2%80%99s-workflow-editor", "type": "official_blog_2022", "status": "observed_public_page"},
+    {"id": "lu-03", "url": "https://www.luminance.com/blogs/the-latest-from-luminance", "type": "official_blog_2024", "status": "vendor_claim"},
+    {"id": "lu-04", "url": "https://www.luminance.com/platform/product/repository", "type": "official_product", "status": "vendor_claim"},
+    {"id": "lu-05", "url": "https://www.luminance.com/legal/master-agreement", "type": "official_legal", "status": "observed_public_page"},
+    {"id": "lu-06", "url": "https://www.luminance.com/legal/technical-organisational-measures", "type": "official_legal", "status": "vendor_commitment"},
+    {"id": "lu-07", "url": "https://www.luminance.com/security/", "type": "official_security", "status": "vendor_claim"},
+    {"id": "ic-01", "url": "https://support.ironcladapp.com/hc/en-us/articles/12403203760663-Get-Started-with-Ironclad-for-Contract-Requesters", "type": "official_help", "status": "observed_public_page"},
+    {"id": "ic-02", "url": "https://support.ironcladapp.com/hc/en-us/articles/12403007165847-Customize-Launch-Forms-in-Workflow-Designer", "type": "official_help", "status": "observed_public_page"},
+    {"id": "ic-03", "url": "https://support.ironcladapp.com/hc/en-us/articles/12275685560215-Ironclad-AI-Playbooks-Overview", "type": "official_help", "status": "observed_public_page"},
+    {"id": "ic-04", "url": "https://support.ironcladapp.com/hc/en-us/articles/28661084734999-Use-AI-Precise-Redlining-to-Review-a-Contract", "type": "official_help", "status": "observed_public_page"},
+    {"id": "ic-05", "url": "https://support.ironcladapp.com/hc/en-us/articles/37137144013207-Accept-and-Reject-Jurist-s-Changes", "type": "official_help", "status": "observed_public_page"},
+    {"id": "ic-06", "url": "https://support.ironcladapp.com/hc/en-us/articles/33834526166807-Audit-Log-Overview", "type": "official_help", "status": "observed_public_page"},
+    {"id": "ic-07", "url": "https://ironcladapp.com/pricing", "type": "official_pricing", "status": "observed_public_page"},
+    {"id": "ic-08", "url": "https://ironcladapp.com/why/implementation-success", "type": "official_services", "status": "vendor_claim"},
+    {"id": "ju-01", "url": "https://intercom.help/juro/en/articles/15922311-contract-intake-and-review", "type": "official_help_beta", "status": "observed_public_page"},
+    {"id": "ju-02", "url": "https://intercom.help/juro/en/articles/12691465-ai-review-in-juro", "type": "official_help", "status": "observed_public_page"},
+    {"id": "ju-03", "url": "https://intercom.help/juro/en/articles/16019964-setting-up-ai-review-playbooks", "type": "official_help", "status": "observed_public_page"},
+    {"id": "ju-04", "url": "https://intercom.help/juro/en/articles/5897857-negotiating-in-juro", "type": "official_help", "status": "observed_public_page"},
+    {"id": "ju-05", "url": "https://intercom.help/juro/en/articles/5653139-handling-approvals", "type": "official_help", "status": "observed_public_page"},
+    {"id": "ju-06", "url": "https://juro.com/pricing", "type": "official_pricing", "status": "observed_public_page"},
+    {"id": "ju-07", "url": "https://juro.com/learn/implementing-juro", "type": "official_services", "status": "vendor_claim"},
+    {"id": "ju-08", "url": "https://trust.juro.com/", "type": "official_trust_center", "status": "vendor_claim"}
+  ],
+  "screenshot_backlog": [
+    {"id": "SC-SP-01", "product": "Spellbook", "url": "https://help.spellbook.legal/en/articles/9926250-playbooks-overview", "state": "Rules and Questions with references and failed rule", "status": "pending_browser"},
+    {"id": "SC-SP-02", "product": "Spellbook", "url": "https://help.spellbook.legal/en/articles/13875622-first-party-playbooks-redline-review", "state": "redline run target and four outcomes", "status": "pending_browser"},
+    {"id": "SC-LU-01", "product": "Luminance", "url": "https://www.luminance.com/resources/videos/luminance-ai-powered-negotiation/", "state": "Traffic Light and Auto Mark-Up with video timestamp", "status": "pending_browser"},
+    {"id": "SC-LU-02", "product": "Luminance", "url": "https://www.luminance.com/blogs/product-feature-spotlight-luminance%E2%80%99s-workflow-editor", "state": "home screen and Workflow Editor; label source as 2022", "status": "pending_browser"},
+    {"id": "SC-IC-01", "product": "Ironclad", "url": "https://support.ironcladapp.com/hc/en-us/articles/12403203760663-Get-Started-with-Ironclad-for-Contract-Requesters", "state": "launch, approval, sign rollback, archive", "status": "pending_browser"},
+    {"id": "SC-IC-02", "product": "Ironclad", "url": "https://support.ironcladapp.com/hc/en-us/articles/28661084734999-Use-AI-Precise-Redlining-to-Review-a-Contract", "state": "playbook sidebar, clause exception and redline suggestions", "status": "pending_browser"},
+    {"id": "SC-JU-01", "product": "Juro", "url": "https://intercom.help/juro/en/articles/15922311-contract-intake-and-review", "state": "Operator submission, intake review, human completion", "status": "pending_browser"},
+    {"id": "SC-JU-02", "product": "Juro", "url": "https://intercom.help/juro/en/articles/5897857-negotiating-in-juro", "state": "NEGOTIATION lock and new-version handoff", "status": "pending_browser"}
+  ],
+  "proposed_agent_objects": [
+    "ReviewRun",
+    "Finding",
+    "RuleEvaluation",
+    "SourceSpan",
+    "RevisionCandidate",
+    "ExceptionRequest",
+    "RevisionDecision",
+    "ExceptionDecision",
+    "RuleReleaseDecision",
+    "ApprovalInvalidatedEvent",
+    "OutcomeUnknownEvent"
+  ],
+  "recheck_on_or_before": "2027-01-28"
+}

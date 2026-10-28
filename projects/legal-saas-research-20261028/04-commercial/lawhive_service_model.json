@@ -1,0 +1,278 @@
+{
+  "meta": {
+    "title": "Lawhive service model comparison",
+    "accessed_utc": "2026-10-28",
+    "jurisdiction_scope": "UK public pages; entity/regulatory details mainly England and Wales",
+    "search_tool": "Exa",
+    "investigation_angles": 4,
+    "search_queries": 12,
+    "sources_reviewed": 80,
+    "result_rows_returned": 67,
+    "unique_result_urls": 31,
+    "registration_or_intake_submitted": false,
+    "private_data_uploaded": false,
+    "contact_made": false,
+    "verified_interaction_count": 0,
+    "browser_constraint": "Main research executor had no cloud interactive browser; delegated visual worker captured public home/intake states without submission",
+    "recommended_recheck_by": "2026-11-28"
+  },
+  "classification": {
+    "summary": "Hybrid technology/referral platform plus regulated legal-service delivery",
+    "not_single_category": [
+      "not pure B2C SaaS",
+      "not only a price-comparison marketplace",
+      "not one undifferentiated law firm entity"
+    ],
+    "layers": [
+      {
+        "layer": "public_information",
+        "provider": "Lawhive Ltd",
+        "legal_advice": false,
+        "engagement_created": false,
+        "source_ids": ["LH-01"]
+      },
+      {
+        "layer": "technology_platform",
+        "provider": "Lawhive Ltd",
+        "capabilities": ["website", "communications", "document management", "document storage", "payments"],
+        "source_ids": ["LH-02"]
+      },
+      {
+        "layer": "referral_and_matching",
+        "provider": "Lawhive Ltd",
+        "client_action": "submit matter information and authorize referral",
+        "economic_relation": "Lawyer pays Lawhive referral/platform fee",
+        "source_ids": ["LH-01", "LH-02"]
+      },
+      {
+        "layer": "regulated_legal_service",
+        "provider": "the specific Lawyer directly engaged by the client",
+        "possible_provider_types": ["law firm", "freelance solicitor", "recognised sole practice", "licensed conveyancer", "chartered legal executive", "other lawyer"],
+        "source_ids": ["LH-02"]
+      },
+      {
+        "layer": "ai_production_tool",
+        "provider": "Lawhive technology used by lawyers",
+        "public_claimed_uses": ["legal questions", "drafting", "communication", "briefings", "next-step prediction"],
+        "mandatory_review_gate_observed": false,
+        "source_ids": ["LH-06", "LH-07", "LH-08"]
+      }
+    ]
+  },
+  "entities": [
+    {
+      "name": "Lawhive Ltd",
+      "company_number": "13800100",
+      "role": ["site operator", "technology platform", "referral/introduction", "communications/documents/payments"],
+      "law_firm": false,
+      "provides_legal_advice": false,
+      "source_ids": ["LH-01", "LH-02"]
+    },
+    {
+      "name": "Lawhive Legal Ltd",
+      "company_number": "14651095",
+      "sra_id": "8003766",
+      "role": "affiliated SRA-regulated law firm within the provider network",
+      "not_all_cases_assumed": true,
+      "source_ids": ["LH-01", "LH-04", "LH-05"]
+    },
+    {
+      "name": "Lawyer",
+      "role": "directly engaged professional/legal-service provider",
+      "professional_duties": ["conflict check", "AML/KYC", "confidentiality", "regulatory compliance", "legal advice", "professional indemnity"],
+      "source_ids": ["LH-02"]
+    }
+  ],
+  "engagement_state_model": {
+    "sequence_semantics": "illustrative_gates_not_universal_linear_funnel",
+    "partial_order_constraints": [
+      "conflict_and_identity_checks_before_accepting_client_or_instructions",
+      "payment_on_account_before_lawyer_starts_work",
+      "written_instructions_can_authorise_work_during_cooling_off_period"
+    ],
+    "unknown_ordering": [
+      "quote_vs_lawyer_assignment",
+      "client_care_acceptance_vs_payment",
+      "payment_vs_written_instructions_by_matter_type"
+    ],
+    "states": [
+    {
+      "state": "visitor",
+      "observed": "service categories and quote/callback CTA",
+      "source_ids": ["LH-03"]
+    },
+    {
+      "state": "enquiry_started",
+      "observed": "public onboarding route plus delegated worker capture of first step: Tell us about your case, three-part progress, free-text field, dates/deadlines/ideal-outcome prompts and Continue",
+      "visual_evidence_ids": ["46"],
+      "interaction_boundary": "worker did not enter text or click Continue; anonymous journey is not an account or submitted consultation",
+      "unknown": ["later questions", "validation behavior", "save draft", "upload", "back/withdraw"],
+      "source_ids": ["LH-04"]
+    },
+    {
+      "state": "case_information_submitted",
+      "effect": "authorizes Lawhive to refer and transmit case details",
+      "not_effect": "does not itself make Lawhive Ltd the legal adviser",
+      "source_ids": ["LH-01"]
+    },
+    {
+      "state": "quote_or_callback",
+      "observed": "service pages advertise quote or callback; many advertise no-obligation fixed fee",
+      "pricing_classification": "case_and_service_specific",
+      "source_ids": ["LH-03", "LH-09", "LH-10"]
+    },
+    {
+      "state": "lawyer_candidate",
+      "unknown": ["matching algorithm", "ranking", "client choice", "quote-before-or-after selection"]
+    },
+    {
+      "state": "pre_engagement_checks",
+      "gates": ["conflict check", "identity verification", "AML/KYC"],
+      "failure_outcomes": ["decline", "suspend", "terminate"],
+      "source_ids": ["LH-02"]
+    },
+    {
+      "state": "engaged",
+      "relationship": "client directly engages specific Lawyer and accepts Lawyer terms/client-care letter",
+      "source_ids": ["LH-01", "LH-02"]
+    },
+    {
+      "state": "funded",
+      "rule": "payment on account before Lawyer starts; card or bank transfer through Service unless otherwise authorized",
+      "source_ids": ["LH-02"]
+    },
+    {
+      "state": "work_authorised",
+      "trigger": "written instructions through Service",
+      "cooling_off": "consumer may have 14 days; early work creates payment liability and completed work can end cancellation right",
+      "source_ids": ["LH-02"]
+    },
+    {
+      "state": "matter_active",
+      "platform_claims": ["updates", "messaging", "case status", "documents"],
+      "logged_in_ui_verified": false,
+      "source_ids": ["LH-02", "LH-11"]
+    },
+    {
+      "state": "completed_or_terminated",
+      "file_retention_claim": "usually seven years, subject to law/SRA rules and matter terms",
+      "lien_if_unpaid": true,
+      "source_ids": ["LH-02"]
+    }
+    ]
+  },
+  "pricing": {
+    "model": "matter-scoped quote with prepayment; fixed-fee language common but not universal across public pages",
+    "observed": [
+      "multiple service pages advertise no-obligation fixed-fee quotes",
+      "homepage/about language permits fixed fee or hourly billing",
+      "small-business page shows examples as low as GBP 149 and GBP 199",
+      "lawyer must be paid on account before starting",
+      "court, expert, counsel, hearing, travel and other disbursements may be additional"
+    ],
+    "unknown": [
+      "universal minimum fee",
+      "VAT treatment per quote",
+      "scope-change pricing",
+      "refund calculation",
+      "platform fee share",
+      "client-money settlement path"
+    ],
+    "source_ids": ["LH-02", "LH-03", "LH-09", "LH-10", "LH-12", "LH-13"]
+  },
+  "responsibility": {
+    "lawhive_ltd": "technology/referral service; terms exclude responsibility/duty of care for Lawyer legal services subject to non-excludable law",
+    "lawyer": "sole provider of legal services; professional duties and liability",
+    "lawhive_guarantee": "may cover paid work Lawhive determines below acceptable standard; does not guarantee desired outcome",
+    "complaints": "start with Lawyer/firm; Lawhive may help; Lawhive Legal Ltd has separate complaints policy; Legal Ombudsman may be available",
+    "source_ids": ["LH-01", "LH-02", "LH-05"]
+  },
+  "ai_artifact_transition": {
+    "observed": [
+      "Lawyer-facing AI is marketed for questions, drafting, communication and next-step prediction",
+      "Labs page demonstrates briefing and demand-letter drafts",
+      "historical 2023 official research documented reasoning/empathy limits and described co-pilot positioning",
+      "terms assign legal-service responsibility to Lawyer"
+    ],
+    "inferred": "AI output is best treated as candidate work product that a Lawyer must review and adopt before client reliance or external use; public pages do not prove a mandatory product gate.",
+    "proposed_states": [
+      "client_input_received",
+      "facts_normalised",
+      "ai_working_draft",
+      "lawyer_review_required",
+      "lawyer_revised_or_adopted",
+      "client_instruction_confirmed",
+      "approved_for_external_use",
+      "sent_or_filed"
+    ],
+    "distinct_approvals": [
+      "accept AI candidate text",
+      "confirm client instructions",
+      "approve external sending/filing"
+    ],
+    "unknown": [
+      "prompt/source trace retention",
+      "version lineage",
+      "mandatory human-review control",
+      "who can send or file",
+      "client visibility of AI provenance"
+    ],
+    "source_ids": ["LH-01", "LH-02", "LH-06", "LH-07", "LH-08"]
+  },
+  "observed_inferred_proposed": {
+    "observed": [
+      "Lawhive Ltd is not a law firm and does not provide legal advice.",
+      "The specific Lawyer is directly engaged and provides legal services.",
+      "Lawhive Legal Ltd is an affiliated SRA-regulated firm, not necessarily the provider on every matter.",
+      "Lawyers pay Lawhive referral/platform fees.",
+      "Clients prepay before work and can instruct in writing through the Service.",
+      "The Service includes communications, documents/storage and payments."
+    ],
+    "inferred": [
+      "The business model combines a two-sided platform, legal-operations layer, AI production system and regulated delivery capacity.",
+      "Marketplace and law-firm labels each describe only part of the model.",
+      "AI drafts should remain internal candidates until the responsible Lawyer adopts them."
+    ],
+    "proposed": [
+      "Model platform, quote, engagement, regulated provider, payment, AI draft and external artifact as separate objects.",
+      "Require conflict/KYC/engagement/payment gates before work starts.",
+      "Record Lawyer adoption, client instruction and external-send approval as separate events."
+    ]
+  },
+  "screenshot_backlog": [
+    {"id":"LH-SS-01","url":"https://lawhive.co.uk/","state":"home service entry and quote CTA plus UK service-model section","status":"captured_by_worker_not_materialized","visual_evidence_ids":["43","47"]},
+    {"id":"LH-SS-02","url":"https://lawhive.co.uk/onboarding/journey","state":"first intake question after loading; do not submit","status":"captured_by_worker_not_materialized","visual_evidence_ids":["46"],"interaction_boundary":"no input and no Continue click"},
+    {"id":"LH-SS-03","url":"https://lawhive.co.uk/legal/terms-of-service","state":"sections 9 and 15","status":"pending_browser_capture"},
+    {"id":"LH-SS-04","url":"https://lawhive.co.uk/legal/client-solicitor-engagement-terms","state":"definitions, checks, payments and section 22","status":"pending_browser_capture"},
+    {"id":"LH-SS-05","url":"https://lawhive.co.uk/work-with-us","state":"consultant model, AI, operations and prepaid clients","status":"pending_browser_capture"},
+    {"id":"LH-SS-06","url":"https://labs.lawhive.co.uk/","state":"Lawrence briefing/demand-letter demonstration","status":"pending_browser_capture","warning":"vendor demo, not production matter audit"},
+    {"id":"LH-SS-07","url":"https://lawhive.co.uk/small-business","state":"price examples, four-step service narrative and portal copy","status":"pending_browser_capture"}
+  ],
+  "sources": [
+    {"source_id":"LH-01","type":"official_terms","url":"https://lawhive.co.uk/legal/terms-of-service","accessed_utc":"2026-10-28","supports":["Lawhive Ltd role","not a law firm","affiliate identity","referral authorization","direct Lawyer engagement","platform fee","guarantee"],"status":"observed_public_page"},
+    {"source_id":"LH-02","type":"official_engagement_terms","url":"https://lawhive.co.uk/legal/client-solicitor-engagement-terms","accessed_utc":"2026-10-28","supports":["Lawyer definition","Service definition","responsibility","conflict","AML/KYC","prepayment","written instructions","PII","complaints","storage"],"status":"observed_public_page"},
+    {"source_id":"LH-03","type":"official_home","url":"https://lawhive.co.uk/","accessed_utc":"2026-10-28","supports":["service navigation","quote/callback CTA","lawyer network","pricing language"],"status":"vendor_claim"},
+    {"source_id":"LH-04","type":"official_intake_route","url":"https://lawhive.co.uk/onboarding/journey","accessed_utc":"2026-10-28","supports":["intake loading state","entity disclaimer"],"status":"observed_public_page_partial"},
+    {"source_id":"LH-05","type":"official_affiliate_complaints","url":"https://lawhive.co.uk/legal/lawhive-legal-feedback-complaints","accessed_utc":"2026-10-28","supports":["Lawhive Legal Ltd identity","complaints process"],"status":"observed_public_page"},
+    {"source_id":"LH-06","type":"official_lawyer_recruiting","url":"https://lawhive.co.uk/work-with-us","accessed_utc":"2026-10-28","supports":["consultant model","platform operations","lawyer-facing AI","prepaid clients"],"status":"vendor_claim"},
+    {"source_id":"LH-07","type":"official_research_careers","url":"https://labs.lawhive.co.uk/","accessed_utc":"2026-10-28","supports":["AI briefing/draft demonstration","OS/marketplace/regulatory narrative"],"status":"vendor_demo_claim"},
+    {"source_id":"LH-08","type":"official_research_article","url":"https://lawhive.co.uk/data-insight/lawrence-ai-paralegal","published":"2023-11-22","updated":"2023-11-27","accessed_utc":"2026-10-28","supports":["AI limitations","human empathy","historical co-pilot positioning"],"status":"historical_vendor_research"},
+    {"source_id":"LH-09","type":"official_service_page","url":"https://lawhive.co.uk/commercial","accessed_utc":"2026-10-28","supports":["no-obligation fixed-fee quote","lawyer matching"],"status":"vendor_claim"},
+    {"source_id":"LH-10","type":"official_service_page","url":"https://lawhive.co.uk/small-business","accessed_utc":"2026-10-28","supports":["GBP 149/199 examples","fixed-fee quote","service narrative","portal"],"status":"vendor_claim"},
+    {"source_id":"LH-11","type":"official_about","url":"https://lawhive.co.uk/about-us","accessed_utc":"2026-10-28","supports":["platform + AI + regulated firm narrative","sign-in updates/messages/case"],"status":"vendor_claim"},
+    {"source_id":"LH-12","type":"official_service_page","url":"https://lawhive.co.uk/litigation","accessed_utc":"2026-10-28","supports":["quote","court/expert/counsel/disbursement costs"],"status":"vendor_claim"},
+    {"source_id":"LH-13","type":"official_faq","url":"https://lawhive.co.uk/faqs","accessed_utc":"2026-10-28","supports":["FAQ question inventory only"],"status":"partial_no_answers_extracted"}
+  ],
+  "unknowns": [
+    "Actual dynamic intake fields and validation states",
+    "Quote generation algorithm and human involvement",
+    "Matching/ranking and whether clients choose among Lawyers",
+    "Exact ordering of quote, conflict, KYC, payment, client-care letter and assignment by matter type",
+    "Logged-in matter UI, permissions, audit and error states",
+    "Mandatory human-review gate for AI work product",
+    "Platform fee/fee share and Lawyer settlement",
+    "Which provider entity handles each case",
+    "AI tool pricing to Lawyers",
+    "US or non-UK service structure"
+  ]
+}

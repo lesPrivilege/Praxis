@@ -1,0 +1,20 @@
+{
+  "as_of": "2026-10-28",
+  "evidence_scope": "public_pages_and_official_help_only",
+  "verified_interaction": false,
+  "atomic_mechanisms": [
+    {"id":"M-001","name":"editable_authority_set","observed_in":["vLex Vincent"],"transition":"selected -> deselected -> applied -> new_research_run","human_boundary":"user chooses evidence set","cost":["run lineage","citation remapping","audit"]},
+    {"id":"M-002","name":"precise_source_anchor","observed_in":["Lexis+ with Protégé","vLex Vincent"],"transition":"generated_claim -> supporting_excerpt -> original_document","human_boundary":"lawyer verifies support","cost":["document versioning","OCR anchors","permission-aware retrieval"]},
+    {"id":"M-003","name":"candidate_edit_decision","observed_in":["CoCounsel Legal","Spellbook","Ironclad"],"transition":"proposed -> edited/regenerated -> applied|dismissed|superseded","human_boundary":"lawyer accepts text","cost":["tracked-change integration","undo","staleness"]},
+    {"id":"M-004","name":"rule_version_approval","evidence_status":"proposed","observed_in":[],"supporting_signals":["Spellbook and Ironclad expose rule/playbook configuration and permissions, but not this complete lifecycle"],"transition":"draft -> approved -> active -> retired","human_boundary":"authorized rule owner approves policy","cost":["versioning","scope","rollback"]},
+    {"id":"M-005","name":"contract_exception_approval","observed_in":["Ironclad"],"transition":"deviation -> exception_requested -> pending -> approved|rejected","human_boundary":"clause approver decides","cost":["routing","reason capture","version binding","reminders"]},
+    {"id":"M-006","name":"review_stage_batch","observed_in":["DISCO","RelativityOne"],"transition":"search_results -> stage -> batch -> checkout -> coded -> QC -> production","human_boundary":"reviewer codes; admin reassigns; QC validates","cost":["context preservation","locks","assignment audit"]}
+  ],
+  "decision_objects": [
+    {"event":"risk.accepted","object":"finding_or_deviation","not_equivalent_to":["candidate_edit.applied","rule_version.approved"]},
+    {"event":"candidate_edit.applied","object":"candidate_revision","not_equivalent_to":["risk.accepted","exception.approved"]},
+    {"event":"rule_version.approved","object":"playbook_rule_version","not_equivalent_to":["transaction_exception.approved"]},
+    {"event":"exception.approved","object":"specific_clause_version","not_equivalent_to":["rule_version.approved"]}
+  ],
+  "sources": ["S-MECH-001","S-MECH-002","S-MECH-003","S-MECH-004","S-MECH-005","S-MECH-006","S-MECH-007","S-MECH-008","S-MECH-009","S-MECH-010"]
+}

@@ -1,0 +1,329 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-10-28T00:00:00Z",
+  "research_scope": [
+    "law_firm_matter_case_management",
+    "litigation_evidence_ediscovery"
+  ],
+  "method": {
+    "search_provider": "Exa",
+    "workstreams": 4,
+    "search_result_slots_reviewed": 90,
+    "retained_source_records": 34,
+    "retained_unique_urls": 40,
+    "browser_interaction_available": false,
+    "verified_interaction_count": 0,
+    "evidence_boundary": "Public help, product, developer, legal, security and commercial pages only; no logged-in product interaction."
+  },
+  "evidence_statuses": [
+    "observed_public_page",
+    "vendor_claim",
+    "inferred",
+    "proposed",
+    "unknown"
+  ],
+  "products": [
+    {
+      "product_id": "clio_manage",
+      "name": "Clio Manage",
+      "domain": "matter_case_management",
+      "evidence_grade": "A-",
+      "target_users": ["lawyers", "paralegals", "firm_administrators", "billing_staff", "clients_via_portal"],
+      "buyers": ["law_firm_owner", "firm_operations", "IT", "enterprise_procurement"],
+      "primary_object": "matter",
+      "global_navigation": {
+        "observed": ["header_global_search", "recent_contacts_and_matters", "billing_timer", "create_assets", "notifications", "module_side_navigation"],
+        "status": "observed_public_page",
+        "source_ids": ["clio_nav"]
+      },
+      "objects": ["contact", "matter", "task", "document", "communication", "calendar_event", "time_entry", "expense", "bill", "trust_request", "payment", "portal_share"],
+      "workflows": [
+        {
+          "workflow_id": "clio_task_client_completion",
+          "input": ["existing_matter", "task_name", "assignee"],
+          "states": ["created", "assigned", "outstanding", "completed_by_client", "reopened"],
+          "actions": ["create", "notify", "mark_complete", "undo", "mark_not_complete"],
+          "human_boundary": "Client completion is not legal approval.",
+          "source_ids": ["clio_tasks", "clio_client_portal"]
+        },
+        {
+          "workflow_id": "clio_portal_share_revoke",
+          "input": ["matter_folder_document_or_folder", "participants"],
+          "states": ["not_shared", "shared", "unshared"],
+          "actions": ["share", "notify", "add_files_to_shared_folder", "stop_sharing"],
+          "preconditions": ["document_must_be_in_matter_folder"],
+          "unknown": ["downloaded_copy_revocation", "offline_cache_disposition"],
+          "source_ids": ["clio_share"]
+        }
+      ],
+      "permissions": {
+        "observed": ["standard_and_custom_roles", "most_permissive_role_inheritance", "private_task_visibility"],
+        "unknown": ["all_plan_gates", "portal_role_matrix"]
+      },
+      "commercial": {
+        "pricing_model": "per_user_tiered_subscription",
+        "public_price": "starting_at_USD_49_per_user",
+        "tiers": ["Starter", "Core", "Signature", "Elite"],
+        "services": ["24_5_live_support_vendor_claim", "training_vendor_claim", "data_migration_vendor_claim"],
+        "api_integrations": ["REST_API", "webhooks", "custom_actions", "Clio_Payments_API"],
+        "unknown": ["regional_total_prices", "enterprise_quote", "API_limits_by_plan"]
+      },
+      "security_vendor_claims": ["SOC_2_Type_II", "SOC_1_Type_II", "TLS_1_2_plus", "AES_256", "regional_AI_processing", "AI_respects_existing_permissions"],
+      "agent_references": {
+        "observed": ["matter_is_stable_root_record", "task_and_share_are_reversible_business_actions"],
+        "inferred": ["check_matter_ownership_and_permissions_before_action"],
+        "proposed": ["separate_completed_by_client_from_legal_review_approval"]
+      },
+      "source_ids": ["clio_nav", "clio_matter", "clio_tasks", "clio_share", "clio_client_portal", "clio_roles", "clio_pricing", "clio_developer", "clio_security"]
+    },
+    {
+      "product_id": "litify",
+      "name": "Litify",
+      "domain": "enterprise_matter_case_management",
+      "evidence_grade": "B-",
+      "target_users": ["mid_large_law_firms", "corporate_legal", "public_legal_services"],
+      "buyers": ["law_firm_management", "legal_operations", "IT_Salesforce_owner"],
+      "primary_object": "matter",
+      "objects": ["intake", "legal_service_request", "matter", "matter_plan", "task", "document", "time_entry", "bill", "invoice", "dashboard"],
+      "workflows": [
+        {
+          "workflow_id": "litify_intake_to_matter_plan",
+          "states": ["request_started", "triaged", "matter_opened", "matter_plan_applied"],
+          "actions": ["dynamic_question_branching", "qualification_recommendation", "route_to_specialist", "apply_templated_task_list"],
+          "human_boundary": "Public sources do not prove autonomous final matter acceptance or rejection.",
+          "unknown": ["rule_editor", "override", "exact_intake_to_matter_transition", "exception_approval", "plan_version_migration"],
+          "source_ids": ["litify_platform", "litify_elm"]
+        },
+        {
+          "workflow_id": "litify_document_generation_and_filing",
+          "states": ["template_selected", "data_merged", "edited", "shared_or_sent_for_signature", "filed_to_matter"],
+          "actions": ["auto_fill", "conditional_logic", "freeform_edit", "live_edit", "share_link", "e_signature", "save_to_case_file"],
+          "unknown": ["accept_reject_redline", "rollback", "conflict_resolution", "e_signature_failure"],
+          "source_ids": ["litify_docrio"]
+        }
+      ],
+      "permissions": {
+        "observed": ["Salesforce_user_level_permissions_vendor_claim", "support_login_requires_customer_grant"],
+        "unknown": ["matter_level_ethical_wall", "audit_log_UI", "batch_undo"]
+      },
+      "commercial": {
+        "current_public_price": "not_found_quote_demo",
+        "historical_pricing_model": "annual_per_team_member_2022_source",
+        "services": ["implementation", "online_training", "onsite_workshops", "change_management", "Salesforce_configuration", "dedicated_customer_success"],
+        "api_integrations": ["Salesforce_REST_API", "Docrio_API", "approved_integrator_key"],
+        "unknown": ["2026_billing_unit", "minimum_seats", "implementation_fees", "API_limits"]
+      },
+      "security_vendor_claims": ["Salesforce_and_AWS_hosting", "MFA", "encryption", "AI_single_tenant_architecture", "no_model_training_on_customer_data"],
+      "agent_references": {
+        "observed": ["matter_plan_template_is_distinct_from_execution_instance"],
+        "inferred": ["tenant_custom_objects_and_fields_preclude_one_fixed_schema"],
+        "proposed": ["qualification_recommendation_requires_authorized_acceptance_event"]
+      },
+      "source_ids": ["litify_platform", "litify_elm", "litify_docrio", "litify_services", "litify_api", "litify_security", "litify_ai_security", "litify_buyer_guide_2022"]
+    },
+    {
+      "product_id": "relativity_air",
+      "name": "Relativity aiR / RelativityOne",
+      "domain": "ediscovery",
+      "evidence_grade": "A",
+      "target_users": ["ediscovery_service_provider", "law_firm_review_team", "corporate_legal", "government"],
+      "buyers": ["ediscovery_leader", "litigation_support", "legal_operations", "information_security", "procurement"],
+      "primary_object": "workspace_document",
+      "objects": ["matter", "workspace", "data_source", "custodian", "collection_job", "processing_set", "saved_search", "review_queue", "batch", "document", "coding_layout", "production_set"],
+      "workflows": [
+        {
+          "workflow_id": "relativity_collect_process_recover",
+          "states": ["configured", "validated", "collecting", "reported", "processing", "partial_exception", "blocked_job_error", "resolved_or_escalated"],
+          "actions": ["validate_connection", "run_collection", "download_reports", "classify_exception", "retry", "download_replace", "rerun_inventory", "escalate_support"],
+          "failure_model": ["file_exception_job_continues", "job_exception_blocks", "warning_may_continue_with_missing_metadata", "error_blocks"],
+          "source_ids": ["relativity_data_sources", "relativity_collection", "relativity_processing_errors"]
+        },
+        {
+          "workflow_id": "relativity_review_queue",
+          "states": ["saved_search_prepared", "queue_started", "batch_available", "batch_checked_out", "reviewing", "coding_saved", "batch_complete_or_pending"],
+          "actions": ["check_out", "start", "code", "save_and_next", "check_in_complete", "check_in_pending", "reload_after_conflict"],
+          "concurrency": "same_document_may_be_checked_out_in_two_queues",
+          "human_boundary": "Coding decision is not rule approval or production approval.",
+          "source_ids": ["relativity_review_queue", "relativity_review_guide", "relativity_viewer"]
+        },
+        {
+          "workflow_id": "relativity_production",
+          "states": ["review_population", "draft_production_population", "conflict_checked", "production_approved", "produced", "exported_and_QCed"],
+          "actions": ["batch_review", "privilege_analysis", "remove_privileged_family", "tag_output_format", "apply_Bates_and_confidentiality", "export", "QC", "encrypt_and_deliver"],
+          "source_ids": ["relativity_review_produce"]
+        }
+      ],
+      "permissions": {
+        "model": "groups_to_workspace_object_tab_item_and_feature_action",
+        "granular_actions": true,
+        "source_ids": ["relativity_processing_guide"]
+      },
+      "commercial": {
+        "pricing_model": "committed_data_volume_or_pay_as_you_go",
+        "contract_terms": ["one_year", "three_year"],
+        "per_user_fee": false,
+        "included_AI": ["claiR", "Assist", "aiR_Review", "Privilege", "Case_Strategy"],
+        "separate_addons": ["Data_Breach_Response", "Translate", "FOIA", "Legal_Hold"],
+        "success_tiers": ["Standard", "Enhanced", "Premier"],
+        "public_numeric_price": "not_found"
+      },
+      "security_vendor_claims": ["Azure_hosting", "ISO_27001", "ISO_27018", "SOC_2_Type_II", "SOC_3", "HIPAA", "IRAP", "FedRAMP"],
+      "agent_references": {
+        "observed": ["queue_is_saved_search_projection", "batch_is_assignment_object", "coding_decision_is_document_field_state", "production_set_is_distinct_output_object"],
+        "inferred": ["concurrent_document_edits_need_version_conflict_handling"],
+        "proposed": ["failure_recovery_should_classify_blast_radius_and_allowed_remedies_before_retry"]
+      },
+      "source_ids": ["relativity_review_queue", "relativity_viewer", "relativity_review_guide", "relativity_review_produce", "relativity_data_sources", "relativity_collection", "relativity_processing_errors", "relativity_processing_guide", "relativity_pricing", "relativity_data_management", "relativity_success", "relativity_compliance", "relativity_api"]
+    },
+    {
+      "product_id": "everlaw",
+      "name": "Everlaw",
+      "domain": "ediscovery_and_litigation_case_building",
+      "evidence_grade": "A",
+      "target_users": ["law_firms", "corporate_legal", "government", "service_providers"],
+      "buyers": ["ediscovery_leader", "litigation_support", "legal_operations", "government_procurement", "information_security"],
+      "primary_object": "project_document",
+      "objects": ["project", "assignment", "search", "binder", "story", "draft", "deposition", "document_set", "batch_action", "export", "document", "production_protocol", "QC_check"],
+      "global_navigation": {
+        "sidebar": ["views", "filters", "document_overview", "folders"],
+        "tabs": ["All", "Assignments", "Searches", "Binders", "Storybuilder", "Document_Sets", "Batches_and_Exports"],
+        "permission_filtered": true,
+        "source_ids": ["everlaw_home"]
+      },
+      "workflows": [
+        {
+          "workflow_id": "everlaw_search_review_batch_modify",
+          "states": ["search_results", "selected_scope", "batch_change_preview", "queued_or_running", "completed_or_failed", "eligible_undo"],
+          "actions": ["select_or_deselect", "open_review_window", "apply_codes_ratings_notes_binders_story", "resolve_conflict_admin_only", "monitor", "undo_if_eligible"],
+          "risk": "all_search_results_selected_by_default",
+          "required_agent_guard": ["selected_count", "total_count", "filter_snapshot", "reversibility"],
+          "source_ids": ["everlaw_results", "everlaw_batch", "everlaw_review_window"]
+        },
+        {
+          "workflow_id": "everlaw_native_upload",
+          "states": ["examine", "PDF_conversion", "text_conversion", "artifact_conversion", "complete", "complete_with_errors"],
+          "actions": ["view_report", "locate_errored_documents", "fix_password_or_container_or_file", "reprocess"],
+          "failure_model": "examine_error_prevents_later_stages",
+          "source_ids": ["everlaw_upload_errors"]
+        },
+        {
+          "workflow_id": "everlaw_preproduction_QC",
+          "states": ["protocol_created", "criteria_bound", "QC_run", "warnings_present_or_clear", "resolved_or_waived", "produced"],
+          "actions": ["enable_disable_standard_checks", "create_project_custom_checks", "template_checks", "resolve_warning"],
+          "human_boundary": "Warning is not automatic rejection; no evidence supports autonomous waiver.",
+          "source_ids": ["everlaw_qc"]
+        }
+      ],
+      "permissions": {
+        "observed": ["project_admin_document_access", "permission_filtered_menus", "assignment_and_project_default_layouts", "admin_only_conflict_resolution"],
+        "audit": ["user_activity", "configuration_changes", "deletions", "updates", "timestamp", "IP", "action", "requested_metadata"]
+      },
+      "commercial": {
+        "pricing_model": "per_GB_data_managed_plus_usage",
+        "subscription_forms": ["case", "annual_platform"],
+        "unlimited_users": true,
+        "unlimited_uploads": true,
+        "included_AI": ["single_document_AI_actions", "Writing_Assistant"],
+        "usage_credits": ["batch_AI_actions", "Deep_Dive_natural_language_querying"],
+        "included_services": ["standard_migration", "onboarding", "initial_database", "live_training", "ESI_protocol_review", "support"],
+        "paid_professional_services": ["STR_creation", "managed_export", "load_file_transformation", "custom_scripts"],
+        "paid_service_basis": "SOW_hourly",
+        "public_numeric_price": "not_found"
+      },
+      "security_vendor_claims": ["AWS", "TLS_1_2_plus", "AES_256", "MFA", "SSO", "granular_user_management", "average_uptime_over_99_9_percent"],
+      "agent_references": {
+        "observed": ["homepage_separates_objects_and_long_running_batch_export_events", "review_layout_can_be_admin_default"],
+        "inferred": ["batch_actions_need_explicit_scope_confirmation_due_to_default_all_selection"],
+        "proposed": ["QC_warning_object_should_keep_check_version_violations_remedy_waiver_and_blocking_state"]
+      },
+      "source_ids": ["everlaw_home", "everlaw_results", "everlaw_batch", "everlaw_review_window", "everlaw_upload_errors", "everlaw_qc", "everlaw_pricing", "everlaw_services", "everlaw_security", "everlaw_dpa"]
+    }
+  ],
+  "mechanism_matrix": [
+    {
+      "mechanism": "stable_primary_record",
+      "problem": "Keep tasks, evidence, finance and communications attached to one legal work identity.",
+      "implementations": {"Clio": "matter", "Litify": "matter", "Relativity": "workspace_document", "Everlaw": "project_document"}
+    },
+    {
+      "mechanism": "template_to_execution_instance",
+      "problem": "Standardize repeatable work without erasing matter-specific deviation.",
+      "implementations": {"Clio": "task_lists_workflows", "Litify": "Matter_Plan", "Relativity": "saved_search_to_queue_batch", "Everlaw": "project_template_assignment"}
+    },
+    {
+      "mechanism": "partial_success_and_recovery",
+      "problem": "Represent completion with failed items and target recovery precisely.",
+      "implementations": {"Clio": "unknown", "Litify": "unknown", "Relativity": "file_exception_vs_job_exception", "Everlaw": "complete_with_errors_by_stage"}
+    },
+    {
+      "mechanism": "batch_scope_guard",
+      "problem": "Prevent unintended mass changes.",
+      "required_fields": ["filter_snapshot", "selected_count", "total_count", "permission", "reversibility", "preview"],
+      "counterexample": "Everlaw search results are selected all by default, so hidden scope is dangerous."
+    },
+    {
+      "mechanism": "decision_object_separation",
+      "problem": "Avoid treating task completion, document coding, risk acceptance and rule approval as one approval event.",
+      "required_events": ["business_task_completion", "document_decision", "risk_acceptance_or_QC_waiver", "rule_or_template_approval", "production_output_approval"]
+    }
+  ],
+  "screenshot_backlog": [
+    {"product": "Clio", "url": "https://help.clio.com/hc/en-us/articles/16681289917595-Matter-s-Dashboard", "state": "matter_dashboard", "status": "pending_browser"},
+    {"product": "Clio", "url": "https://help.clio.com/hc/en-us/articles/57018750464283-Work-With-Your-Law-Firm-in-Clio-for-Clients", "state": "task_complete_and_undo", "status": "pending_browser"},
+    {"product": "Litify", "url": "https://www.litify.com/platform", "state": "platform_feature_sections", "status": "pending_browser"},
+    {"product": "Relativity", "url": "https://help.relativity.com/RelativityOne/Content/Relativity/Review_Center/Reviewing_documents_using_Review_Center.htm", "state": "review_queue_and_batch_check_in", "status": "pending_browser"},
+    {"product": "Relativity", "url": "https://help.relativity.com/RelativityOne/Content/Relativity/Processing/Processing_error_resolution.htm", "state": "exception_actions", "status": "pending_browser"},
+    {"product": "Everlaw", "url": "https://support.everlaw.com/hc/en-us/articles/204779929-Batch-Modify", "state": "batch_scope_preview_progress_undo", "status": "pending_browser"},
+    {"product": "Everlaw", "url": "https://support.everlaw.com/hc/en-us/articles/38847085136795-Pre-Production-QC-Checks", "state": "standard_and_custom_QC", "status": "pending_browser"}
+  ],
+  "gaps": [
+    "No logged-in interaction or screenshots.",
+    "Litify detailed navigation, item states, failures and audit UI are not publicly documented in sufficient depth.",
+    "Current enterprise numeric prices and implementation fees are not public for Litify, Relativity or Everlaw.",
+    "Vendor security and AI data claims were not independently technically verified.",
+    "Offline/downloaded-copy revocation and cross-tenant behavior were not tested."
+  ],
+  "recheck_on_or_before": "2027-01-28",
+  "sources": [
+    {"source_id": "clio_nav", "url": "https://help.clio.com/hc/en-us/articles/9290390462875-Navigate-Clio-Manage", "type": "official_help", "updated": "2026-09-15"},
+    {"source_id": "clio_matter", "url": "https://help.clio.com/hc/en-us/articles/16681289917595-Matter-s-Dashboard", "type": "official_help", "updated": "2026-09-23"},
+    {"source_id": "clio_tasks", "url": "https://help.clio.com/hc/en-us/articles/9204917906971-Manage-Tasks-in-Clio-Manage", "type": "official_help", "updated": "2026-10-15"},
+    {"source_id": "clio_share", "url": "https://help.clio.com/hc/en-us/articles/57017985344923-Share-Documents-Invoices-and-Events-With-Clients", "type": "official_help", "updated": "2026-10-15"},
+    {"source_id": "clio_client_portal", "url": "https://help.clio.com/hc/en-us/articles/57018750464283-Work-With-Your-Law-Firm-in-Clio-for-Clients", "type": "official_help", "updated": "2026-10-14"},
+    {"source_id": "clio_roles", "url": "https://help.clio.com/hc/en-us/articles/9200279456667-Roles-and-Permissions-in-Clio-Manage", "type": "official_help", "updated": "2026-07-30"},
+    {"source_id": "clio_pricing", "url": "https://www.clio.com/pricing/", "type": "official_commercial", "accessed": "2026-10-28"},
+    {"source_id": "clio_developer", "url": "https://docs.developers.clio.com/guides/clio-manage/", "type": "official_developer", "accessed": "2026-10-28"},
+    {"source_id": "clio_security", "url": "https://www.clio.com/security/", "type": "official_security_vendor_claim", "accessed": "2026-10-28"},
+    {"source_id": "litify_platform", "url": "https://www.litify.com/platform", "type": "official_product_vendor_claim", "accessed": "2026-10-28"},
+    {"source_id": "litify_elm", "url": "https://www.litify.com/enterprise-legal-management-software", "type": "official_product_vendor_claim", "accessed": "2026-10-28"},
+    {"source_id": "litify_docrio", "url": "https://www.litify.com/blog/docriov3", "type": "official_product_article", "published": "2025-04-21"},
+    {"source_id": "litify_services", "url": "https://www.litify.com/services-customer-success", "type": "official_services", "accessed": "2026-10-28"},
+    {"source_id": "litify_api", "url": "https://www.litify.com/legal/litify-api-integration-agreement", "type": "official_legal", "accessed": "2026-10-28"},
+    {"source_id": "litify_security", "url": "https://www.litify.com/blog/data-security-best-practices-at-litify", "type": "official_security_vendor_claim", "published": "2022-06-30"},
+    {"source_id": "litify_ai_security", "url": "https://www.litify.com/news/litify-announces-responsible-ai-development-approach-with-aws-anthropic", "type": "official_press_release_vendor_claim", "published": "2024-07-09"},
+    {"source_id": "litify_buyer_guide_2022", "url": "https://web.litify.com/rs/722-RPB-496/images/PracticeManagement-BuyersGuide2022-1.pdf", "type": "third_party_old_commercial", "published": "2022"},
+    {"source_id": "relativity_review_queue", "url": "https://help.relativity.com/RelativityOne/Content/Relativity/Review_Center/Reviewing_documents_using_Review_Center.htm", "type": "official_help"},
+    {"source_id": "relativity_viewer", "url": "https://help.relativity.com/RelativityOne/Content/System_Guides/User_quick_reference/Review_Interface_QRG/Review_interface.htm", "type": "official_help"},
+    {"source_id": "relativity_review_guide", "url": "https://help.relativity.com/PDFDownloads/R1_PDF/RelativityOne%20-%20Review%20Center%20Guide.pdf", "type": "official_guide_pdf"},
+    {"source_id": "relativity_review_produce", "url": "https://help.relativity.com/RelativityOne/Content/Getting_Started/Review_Template/Reviewing_and_producing_documents.htm", "type": "official_workflow_guide"},
+    {"source_id": "relativity_data_sources", "url": "https://help.relativity.com/RelativityOne/Content/Collect/Data_sources/Data_sources.htm", "type": "official_help"},
+    {"source_id": "relativity_collection", "url": "https://help.relativity.com/RelativityOne/Content/Collect/Collection/Collection.htm", "type": "official_help"},
+    {"source_id": "relativity_processing_errors", "url": "https://help.relativity.com/RelativityOne/Content/Relativity/Processing/Processing_error_resolution.htm", "type": "official_help"},
+    {"source_id": "relativity_processing_guide", "url": "https://help.relativity.com/PDFDownloads/R1_PDF/RelativityOne%20-%20Processing%20User%20Guide.pdf", "type": "official_guide_pdf"},
+    {"source_id": "relativity_pricing", "url": "https://www.relativity.com/platform/pricing/", "type": "official_commercial", "accessed": "2026-10-28"},
+    {"source_id": "relativity_data_management", "url": "https://help.relativity.com/RelativityOne/Content/Relativity/Data_Management.htm", "type": "official_help"},
+    {"source_id": "relativity_success", "url": "https://www.relativity.com/support/customer-success/", "type": "official_services", "accessed": "2026-10-28"},
+    {"source_id": "relativity_compliance", "url": "https://www.relativity.com/calder7-security/compliance-privacy/", "type": "official_security_vendor_claim", "accessed": "2026-10-28"},
+    {"source_id": "relativity_api", "url": "https://platform.relativity.com/RelativityOne/Content/Integrate/APIS-Services.htm", "type": "official_developer"},
+    {"source_id": "everlaw_home", "url": "https://support.everlaw.com/hc/en-us/articles/205124389-General-Homepage-Overview", "type": "official_help", "updated": "2026-08-06"},
+    {"source_id": "everlaw_results", "url": "https://support.everlaw.com/hc/en-us/articles/204778899-Search-Results-Table", "type": "official_help", "updated": "2026-10-16"},
+    {"source_id": "everlaw_batch", "url": "https://support.everlaw.com/hc/en-us/articles/204779929-Batch-Modify", "type": "official_help", "updated": "2026-02-26"},
+    {"source_id": "everlaw_review_window", "url": "https://support.everlaw.com/hc/en-us/articles/115003480583-Full-Screen-Review-Window-Customization", "type": "official_help", "updated": "2026-10-08"},
+    {"source_id": "everlaw_upload_errors", "url": "https://support.everlaw.com/hc/en-us/articles/360002614631-Identifying-and-Troubleshooting-Native-Upload-Errors", "type": "official_help", "updated": "2026-10-08"},
+    {"source_id": "everlaw_qc", "url": "https://support.everlaw.com/hc/en-us/articles/38847085136795-Pre-Production-QC-Checks", "type": "official_help", "updated": "2026-05-11"},
+    {"source_id": "everlaw_pricing", "url": "https://www.everlaw.com/pricing-b/", "type": "official_commercial", "accessed": "2026-10-28"},
+    {"source_id": "everlaw_services", "url": "https://support.everlaw.com/hc/en-us/articles/4428367197851-Everlaw-Professional-Services", "type": "official_help_services", "updated": "2025-04-29"},
+    {"source_id": "everlaw_security", "url": "https://www.everlaw.com/trust/security/", "type": "official_security_vendor_claim", "accessed": "2026-10-28"},
+    {"source_id": "everlaw_dpa", "url": "https://www.everlaw.com/legal/customer-data-processing-addendum/", "type": "official_legal", "accessed": "2026-10-28"}
+  ]
+}

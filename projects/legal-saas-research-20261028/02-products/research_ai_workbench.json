@@ -1,0 +1,546 @@
+{
+  "schema_version": "1.0",
+  "title": "法律研究、引用核验与 AI-native 律师工作台",
+  "accessed_utc": "2026-10-28",
+  "authoritative_markdown": "research_ai_workbench.md",
+  "scope": {
+    "deep_dive_products": 4,
+    "products": [
+      "CoCounsel Legal / Westlaw",
+      "Lexis+ with Protégé",
+      "vLex Vincent",
+      "Legora"
+    ],
+    "verified_interaction_count": 0,
+    "browser_screenshots_count": 0,
+    "search_calls": 43,
+    "requested_result_slots": 344,
+    "returned_result_slots": 312,
+    "invalid_search_calls": 4,
+    "unique_cited_urls": 31
+  },
+  "evidence_statuses": [
+    "observed_public_page",
+    "vendor_claim",
+    "inferred",
+    "unknown"
+  ],
+  "products": [
+    {
+      "id": "cocounsel",
+      "name": "CoCounsel Legal / Westlaw",
+      "buyers": ["law_firm", "in_house", "government", "academic"],
+      "primary_objects": [
+        "chat_session",
+        "matter_folder",
+        "skill",
+        "prompt",
+        "database",
+        "uploaded_file",
+        "deliverable"
+      ],
+      "global_workspace": {
+        "status": "observed_public_page",
+        "elements": [
+          "homepage",
+          "new_chat",
+          "matter_folders",
+          "chat_history",
+          "library_prompts_skills",
+          "databases",
+          "device_database_dms_upload"
+        ],
+        "source_ids": ["CC-TRAIN", "CC-MCP"]
+      },
+      "flows": [
+        {
+          "id": "cc-research",
+          "name": "research_to_cited_report",
+          "states": [
+            "question_and_jurisdiction",
+            "processing_or_waiting_inferred_from_documented_duration",
+            "cited_report",
+            "source_link_to_westlaw_or_practical_law",
+            "follow_up_or_deliverable"
+          ],
+          "unknown": [
+            "editable_authority_set",
+            "citation_rejection_state",
+            "result_version_graph"
+          ],
+          "source_ids": ["CC-FEATURES", "CC-MCP"]
+        },
+        {
+          "id": "cc-tabular",
+          "name": "cross_document_review_to_table",
+          "states": [
+            "upload_documents",
+            "define_or_manage_questions",
+            "processing",
+            "review_table",
+            "open_source_passage"
+          ],
+          "unknown": [
+            "human_edit_provenance",
+            "revert_ai_value",
+            "cell_lock"
+          ],
+          "source_ids": ["CC-TABULAR"]
+        },
+        {
+          "id": "cc-connector",
+          "name": "host_agent_to_professional_agent",
+          "states": [
+            "no_session",
+            "start_session",
+            "upload_and_list_files",
+            "ask_cocounsel",
+            "processing_or_waiting_inferred_from_documented_duration",
+            "answer_or_deliverable",
+            "error_retry_reauth_or_support"
+          ],
+          "source_ids": ["CC-MCP"]
+        }
+      ],
+      "commercial": {
+        "pricing_status": "dynamic_or_sales_assisted; amount_not_exposed_in_retrieved_official_page",
+        "billing_dimensions": [
+          "package",
+          "attorney_or_sector",
+          "term",
+          "jurisdiction_and_content_scope"
+        ],
+        "software_vs_content": "Essentials is analysis/drafting; Legal packages add Westlaw/Practical Law content rights",
+        "services": ["product_training", "trainer", "technical_support", "account_support", "client_manager"],
+        "source_ids": ["CC-PRICE", "CC-TRAIN"]
+      },
+      "security_claims": {
+        "status": "vendor_claim",
+        "claims": [
+          "no_training_on_customer_content_or_prompts",
+          "TLS_1_2_in_transit",
+          "AES_256_at_rest",
+          "zero_retention_API_to_LLM_providers",
+          "organization_configurable_retention",
+          "Australia_local_processing_for_Australian_product"
+        ],
+        "scope_warning": "Australia statements must not be generalized globally",
+        "source_ids": ["CC-AU"]
+      },
+      "evidence_gaps": [
+        "logged_in_visual_navigation",
+        "empty_and_permission_denied_states",
+        "cell_level_review_provenance",
+        "brief_builder_intermediate_stages",
+        "current_dynamic_price_amount"
+      ]
+    },
+    {
+      "id": "lexis_protege",
+      "name": "Lexis+ with Protégé",
+      "previous_name": "Lexis+ AI",
+      "renamed": "2026-02",
+      "buyers": ["law_firm", "in_house", "government", "academic"],
+      "primary_objects": [
+        "task",
+        "conversation",
+        "temporary_upload",
+        "vault",
+        "draft",
+        "citation",
+        "source_link"
+      ],
+      "global_workspace": {
+        "status": "observed_public_page",
+        "elements": [
+          "experience_dock_ai_assistant",
+          "home_task_cards",
+          "recent_conversations",
+          "left_vault_pane",
+          "split_draft_and_citations"
+        ],
+        "source_ids": ["LX-UK-GUIDE", "LX-US-FAQ"]
+      },
+      "flows": [
+        {
+          "id": "lx-research",
+          "name": "ask_to_linked_citation",
+          "states": [
+            "ask_legal_question",
+            "generating",
+            "response_completed",
+            "linked_citations",
+            "open_source",
+            "unlinked_citation_requires_manual_check"
+          ],
+          "source_ids": ["LX-US-FAQ"]
+        },
+        {
+          "id": "lx-upload",
+          "name": "upload_to_per_document_results",
+          "states": [
+            "empty_upload_box_actions_disabled",
+            "upload_files_or_text",
+            "files_visible_actions_enabled",
+            "ask_or_summarize",
+            "per_document_result_tabs",
+            "follow_up_until_conversation_limit"
+          ],
+          "source_ids": ["LX-UPLOAD"]
+        },
+        {
+          "id": "lx-draft",
+          "name": "sources_to_editable_draft_to_word",
+          "states": [
+            "generate_draft",
+            "split_pane_editing",
+            "direct_edit_or_track_changes",
+            "select_text_expand_condense_simplify_redraft",
+            "save_and_exit_or_download_word"
+          ],
+          "acceptance_object": "candidate_text",
+          "source_ids": ["LX-UK-GUIDE"]
+        },
+        {
+          "id": "lx-shepardize",
+          "name": "uploaded_document_citation_validation",
+          "states": [
+            "upload_draft",
+            "summarize_upload",
+            "shepardize_citations",
+            "graph_or_full_analysis",
+            "human_review"
+          ],
+          "acceptance_object": "citation_status_review_not_document_approval",
+          "source_ids": ["LX-SHEP"]
+        }
+      ],
+      "commercial": {
+        "pricing_status": "custom_quote",
+        "billing_dimensions": ["organization_size", "capabilities", "content_scope", "seats"],
+        "warning": "Public Lexis+ research prices do not establish Protégé AI price",
+        "services": ["support_center", "webinars", "tutorials", "account_representative"],
+        "source_ids": ["LX-PRODUCT", "LX-RESOURCES"]
+      },
+      "security_claims": {
+        "status": "vendor_claim_outdated_review_needed",
+        "document_date": "2023",
+        "claims": [
+          "encrypted_at_rest_and_in_transit",
+          "customer_data_not_used_to_train_models",
+          "90_day_chat_history_unless_saved",
+          "limited_vetted_support_access",
+          "SOC_2_Type_II_equivalent_controls"
+        ],
+        "source_ids": ["LX-SEC"]
+      },
+      "evidence_gaps": [
+        "current_logged_in_UI_after_2026_rename",
+        "vault_permission_model",
+        "collaborative_draft_version_graph",
+        "workflow_failures_and_empty_states",
+        "API_quota_and_pricing"
+      ]
+    },
+    {
+      "id": "vlex_vincent",
+      "name": "vLex Vincent",
+      "buyers": ["law_firm", "in_house", "government", "academic", "individual"],
+      "primary_objects": [
+        "workflow",
+        "research_question",
+        "authority_list",
+        "jurisdiction_result",
+        "comparative_table",
+        "vincent_table",
+        "human_cell_correction"
+      ],
+      "flows": [
+        {
+          "id": "vl-authority",
+          "name": "question_to_editable_authority_set_to_regenerated_memo",
+          "states": [
+            "question_and_jurisdiction",
+            "running",
+            "memo_left_authorities_right",
+            "open_source_summary_excerpt",
+            "modify_list",
+            "deselect_authority",
+            "apply_and_regenerate",
+            "download_pdf_word_or_copy"
+          ],
+          "acceptance_object": "evidence_candidate",
+          "source_ids": ["VL-ASK"]
+        },
+        {
+          "id": "vl-jurisdiction",
+          "name": "multi_jurisdiction_question_to_comparative_table",
+          "states": [
+            "question_and_multiple_jurisdictions",
+            "individual_answers",
+            "expand_full_answer_and_authorities",
+            "comparative_table",
+            "copy_download_or_share_url"
+          ],
+          "source_ids": ["VL-COMPARE-J"]
+        },
+        {
+          "id": "vl-table",
+          "name": "document_extraction_to_human_correction_with_revert",
+          "states": [
+            "bulk_documents",
+            "dynamic_table",
+            "add_edit_delete_columns",
+            "change_output_format_and_reassess_column",
+            "open_cell_citation_and_source_highlight",
+            "human_corrected_cell_visually_marked",
+            "view_or_revert_to_ai_original",
+            "csv_or_excel_export"
+          ],
+          "acceptance_object": "corrected_field_value",
+          "source_ids": ["VL-TABLE-CORRECT"]
+        }
+      ],
+      "commercial": {
+        "pricing_status": "not_found_for_Vincent; demo_and_structured_trial_sales_flow",
+        "warning": "vLex Library subscriptions and content credits do not establish Vincent AI price",
+        "services": [
+          "personalized_demo",
+          "structured_trial_with_success_criteria",
+          "free_subscription_training",
+          "webinars",
+          "videos",
+          "account_manager"
+        ],
+        "source_ids": ["VL-DEMO"]
+      },
+      "security_claims": {
+        "status": "vendor_claim",
+        "claims": [
+          "SOC_2",
+          "ISO_27001",
+          "envelope_encryption",
+          "model_provider_zero_retention",
+          "uploaded_material_not_used_for_training",
+          "RBAC_and_audit",
+          "configurable_US_AU_EU_data_residency"
+        ],
+        "source_ids": ["VL-SEC", "VL-DATA"]
+      },
+      "evidence_gaps": [
+        "logged_in_workflow_library_visual",
+        "share_URL_access_expiry_and_permission",
+        "failure_and_permission_denied_states",
+        "Vincent_AI_price_and_usage_unit",
+        "concurrent_table_editing"
+      ]
+    },
+    {
+      "id": "legora",
+      "name": "Legora",
+      "buyers": ["large_law_firm", "mid_size_law_firm", "in_house", "knowledge_management", "legal_operations"],
+      "primary_objects": [
+        "project",
+        "workflow_definition",
+        "workflow_run",
+        "agent_chat",
+        "tabular_review",
+        "editor_document",
+        "portal_share"
+      ],
+      "flows": [
+        {
+          "id": "lg-research-editor",
+          "name": "research_to_exact_passage_to_editor",
+          "states": [
+            "research_scope",
+            "parallel_source_investigation",
+            "cited_finding",
+            "open_exact_passage_in_context",
+            "send_to_editor",
+            "ai_assisted_refinement",
+            "accept_or_reject_candidate_text",
+            "word_export"
+          ],
+          "acceptance_object": "candidate_text",
+          "source_ids": ["LG-RESEARCH", "LG-EDITOR"]
+        },
+        {
+          "id": "lg-tabular",
+          "name": "documents_as_rows_prompts_as_columns",
+          "states": [
+            "import_from_dms_repository_or_vdr",
+            "documents_rows_prompts_columns",
+            "format_filter_sort",
+            "review_mode",
+            "mark_as_reviewed",
+            "lock_cells",
+            "use_table_as_context_for_assistant_or_editor"
+          ],
+          "source_ids": ["LG-TABULAR"]
+        },
+        {
+          "id": "lg-workflow-run",
+          "name": "workflow_definition_to_run_to_human_unblock",
+          "states": [
+            "definition_with_tools_references_precedents_styles",
+            "permissions_and_library_share",
+            "run_with_documents_and_context",
+            "running_computing",
+            "running_waiting_for_answer_approval_or_continue",
+            "completed_answer_and_citations",
+            "failed_terminal_answer_null_inspect_chat"
+          ],
+          "source_ids": ["LG-WORKFLOWS", "LG-MCP-HELP"]
+        },
+        {
+          "id": "lg-portal",
+          "name": "firm_knowledge_to_client_service",
+          "states": [
+            "host_selects_files_reviews_workflows",
+            "admin_or_role_permission",
+            "publish_to_branded_portal",
+            "guest_runs_hidden_workflow_or_queries_shared_files",
+            "host_controls_access_and_audit"
+          ],
+          "source_ids": ["LG-PORTAL", "LG-TERMS"]
+        }
+      ],
+      "commercial": {
+        "pricing_status": "order_form; public_amount_not_found",
+        "billing_model": ["platform_fee", "credits_for_AI_and_agentic_features"],
+        "portal_rule": "External users within Order Form cap do not consume credits; internal users do; above cap requires written agreement",
+        "services": [
+          "implementation_work",
+          "AI_readiness_and_benchmarking",
+          "AI_champions_program_with_4_to_6_month_delivery_lead",
+          "human_AI_advisory"
+        ],
+        "source_ids": ["LG-TERMS", "LG-ADVISORY"]
+      },
+      "security_claims": {
+        "status": "vendor_or_contract_claim",
+        "claims": [
+          "ISO_27001_2022_ISMS",
+          "AES_256_at_rest",
+          "TLS_1_2_or_higher",
+          "annual_penetration_test",
+          "backup_every_4_hours",
+          "logical_tenant_separation",
+          "critical_security_logs_at_least_12_months",
+          "subscriber_instructed_retention"
+        ],
+        "source_ids": ["LG-SEC"]
+      },
+      "visual_evidence": [
+        {"id":"37","state":"drafting_edit_suggestions","source_id":"LG-WORD-ADDIN","status":"official_marketing_product_illustration_not_interaction"},
+        {"id":"38","state":"playbook_rule_reasoning_suggestion_bulk_apply","source_id":"LG-WORD-ADDIN","status":"official_marketing_product_illustration_not_interaction"},
+        {"id":"39","state":"fill_template_input_concept","source_id":"LG-WORD-ADDIN","status":"official_marketing_product_illustration_not_interaction"}
+      ],
+      "evidence_gaps": [
+        "workflow_definition_version_and_rollback",
+        "workflow_publication_approval",
+        "cell_edit_provenance_and_revert",
+        "logged_in_permissions_denial",
+        "credit_price_and_consumption_rates"
+      ]
+    }
+  ],
+  "atomic_mechanisms": [
+    {
+      "id": "M-EVIDENCESET",
+      "observed_in": ["vlex_vincent"],
+      "problem": "answer_quality_depends_on_selected_authorities",
+      "mechanism": "editable_evidence_set_then_regenerate",
+      "required_objects": ["evidence_candidate", "evidence_set_version", "derived_result"],
+      "required_events": ["authority_removed", "evidence_set_applied", "result_invalidated", "result_regenerated"],
+      "human_boundary": "removing_a_source_is_not_approving_the_legal_conclusion"
+    },
+    {
+      "id": "M-HUMAN-CORRECTION",
+      "observed_in": ["vlex_vincent"],
+      "problem": "manual_correction_must_not_destroy_AI_provenance",
+      "mechanism": "retain_ai_original_and_mark_human_value_with_revert",
+      "required_objects": ["cell", "ai_value", "human_value", "source_anchor", "actor"],
+      "required_events": ["cell_corrected", "ai_original_viewed", "cell_reverted"]
+    },
+    {
+      "id": "M-RUN-REASON",
+      "observed_in": ["legora", "cocounsel"],
+      "problem": "running_can_mean_computing_or_waiting_for_a_human",
+      "mechanism": "status_plus_wait_reason_plus_next_responsible_actor",
+      "required_events": ["run_started", "run_waiting", "approval_requested", "answer_requested", "run_resumed", "run_failed"]
+    },
+    {
+      "id": "M-SCOPE-TIER",
+      "observed_in": ["lexis_protege", "cocounsel", "legora"],
+      "problem": "temporary_input_and_reusable_knowledge_have_different_retention_and_permissions",
+      "mechanism": "explicit_temporary_session_vault_database_matter_project_scopes",
+      "required_objects": ["input", "scope", "retention_policy", "permission_set"]
+    },
+    {
+      "id": "M-DELIVERABLE",
+      "observed_in": ["cocounsel", "lexis_protege", "legora"],
+      "problem": "final_work_product_requires_identity_version_and_export_not_chat_copy",
+      "mechanism": "deliverable_as_versioned_object",
+      "required_events": ["deliverable_created", "candidate_edit_accepted_or_rejected", "deliverable_saved", "deliverable_exported_or_shared"]
+    }
+  ],
+  "acceptance_object_distinctions": [
+    {
+      "type": "accept_risk",
+      "meaning": "business_or_legal_owner_accepts_a_known_exception_or_exposure",
+      "observed_ui_evidence": "not_sufficiently_verified_in_these_four_products"
+    },
+    {
+      "type": "accept_candidate_text",
+      "meaning": "editor_adopts_a_proposed_change_into_the_working_document",
+      "observed_in": ["lexis_protege", "legora"]
+    },
+    {
+      "type": "approve_rule_or_workflow_definition",
+      "meaning": "authorized_owner_publishes_or_activates_a_reusable_rule",
+      "observed_ui_evidence": "workflow_permission_and_share_observed_but_formal_approval_state_unknown"
+    }
+  ],
+  "sources": [
+    {"source_id":"CC-TRAIN","product":"cocounsel","type":"official_training_catalog","url":"https://training.thomsonreuters.com/playlist/1_ve1fdgp8","evidence_status":"observed_public_page"},
+    {"source_id":"CC-MCP","product":"cocounsel","type":"official_connector_guide","url":"https://cocoagent-service.cocounsel.thomsonreuters.com/mcp/guide","evidence_status":"observed_public_page"},
+    {"source_id":"CC-FEATURES","product":"cocounsel","type":"official_product_page","url":"https://www.thomsonreuters.com.au/en-au/products/cocounsel-legal/features.html","evidence_status":"observed_public_page_and_vendor_claim"},
+    {"source_id":"CC-TABULAR","product":"cocounsel","type":"official_training_page","url":"https://training.thomsonreuters.com/media/How+to+review+and+analyze+documents+with+Tabular+Analysis/1_yqpl3s0t","evidence_status":"observed_public_page"},
+    {"source_id":"CC-PRICE","product":"cocounsel","type":"official_pricing_page","url":"https://www.thomsonreuters.ca/en-ca/products/cocounsel-essentials/plans-pricing","evidence_status":"observed_public_page"},
+    {"source_id":"CC-AU","product":"cocounsel","type":"official_product_security_FAQ","url":"https://www.thomsonreuters.com.au/en-au/products/cocounsel.html","evidence_status":"vendor_claim"},
+    {"source_id":"LX-UK-GUIDE","product":"lexis_protege","type":"official_user_guide_pdf","url":"https://supportcenter.lexisnexis.com/euf/assets/files/UK_LexisPlus_with_Protege_User_Guide.pdf","evidence_status":"observed_public_page"},
+    {"source_id":"LX-US-FAQ","product":"lexis_protege","type":"official_help","url":"https://help.lexisnexis.com/Flare/lexisplusai/US/en_US/Content/FAQ/whatisAI.htm","evidence_status":"observed_public_page_and_vendor_claim"},
+    {"source_id":"LX-UPLOAD","product":"lexis_protege","type":"official_help","url":"https://help.lexisnexis.com/Flare/lexisplusai/US/en_US/Content/FAQ/upload.htm","evidence_status":"observed_public_page"},
+    {"source_id":"LX-SHEP","product":"lexis_protege","type":"official_research_tip","url":"https://www.lexisnexis.com/community/infopro/b/researchtip/posts/knowledge-research-consultant-research-tip-shepardize-the-citations-in-an-uploaded-document","evidence_status":"observed_public_page"},
+    {"source_id":"LX-PRODUCT","product":"lexis_protege","type":"official_product_page","url":"https://www.lexisnexis.com/en-us/products/lexis-plus-protege.page","evidence_status":"observed_public_page"},
+    {"source_id":"LX-RESOURCES","product":"lexis_protege","type":"official_resource_catalog","url":"https://www.lexisnexis.com/en-us/products/lexis-plus-protege/resources.page","evidence_status":"observed_public_page"},
+    {"source_id":"LX-SEC","product":"lexis_protege","type":"official_security_pdf","url":"https://www.lexisnexis.com/documents/20231025032201_small.pdf","evidence_status":"vendor_claim_review_for_recency"},
+    {"source_id":"VL-ASK","product":"vlex_vincent","type":"official_help","url":"https://support.vlex.com/vincent-by-vlex/vincent/core-workflows/ask-a-research-question","evidence_status":"observed_public_page"},
+    {"source_id":"VL-COMPARE-J","product":"vlex_vincent","type":"official_help","url":"https://support.vlex.com/vincent-by-vlex/vincent/core-workflows/compare-jurisdictions","evidence_status":"observed_public_page"},
+    {"source_id":"VL-TABLE-CORRECT","product":"vlex_vincent","type":"official_help","url":"https://support.vlex.com/vincent-by-vlex/vincent/core-workflows/tabular-review/correct-a-cell-in-tabular-review-and-revert-to-vincents-answer","evidence_status":"observed_public_page"},
+    {"source_id":"VL-DEMO","product":"vlex_vincent","type":"official_help","url":"https://support.vlex.com/vincent-by-vlex/vincent/support-and-account-administration/requesting-a-demo-or-trial-of-vincent","evidence_status":"observed_public_page"},
+    {"source_id":"VL-SEC","product":"vlex_vincent","type":"official_security_page","url":"https://vlex.com/security","evidence_status":"vendor_claim"},
+    {"source_id":"VL-DATA","product":"vlex_vincent","type":"official_help_security","url":"https://support.vlex.com/vincent-by-vlex/vincent/security-privacy-and-compliance/understanding-data-protection","evidence_status":"vendor_claim"},
+    {"source_id":"LG-RESEARCH","product":"legora","type":"official_product_page","url":"https://legora.com/product/legal-research","evidence_status":"observed_public_page_and_vendor_claim"},
+    {"source_id":"LG-EDITOR","product":"legora","type":"official_product_page","url":"https://legora.com/product/editor","evidence_status":"observed_public_page"},
+    {"source_id":"LG-TABULAR","product":"legora","type":"official_product_page","url":"https://legora.com/product/tabular-review","evidence_status":"observed_public_page"},
+    {"source_id":"LG-WORKFLOWS","product":"legora","type":"official_product_page","url":"https://legora.com/product/workflows","evidence_status":"observed_public_page_and_vendor_claim"},
+    {"source_id":"LG-MCP-HELP","product":"legora","type":"official_help","url":"https://support.legora.com/es/how-to-use-legora-from-an-mcp-client","language":"es","evidence_status":"observed_public_page"},
+    {"source_id":"LG-PORTAL","product":"legora","type":"official_product_page","url":"https://legora.com/product/portal","evidence_status":"observed_public_page_and_vendor_claim"},
+    {"source_id":"LG-TERMS","product":"legora","type":"official_terms","url":"https://legora.com/legal/cbp-general-terms-and-conditions-_aug26","evidence_status":"observed_public_page"},
+    {"source_id":"LG-SEC","product":"legora","type":"official_security_measures","url":"https://legora.com/legal/security-measures","evidence_status":"vendor_or_contract_claim"},
+    {"source_id":"LG-ADVISORY","product":"legora","type":"official_services_page","url":"https://legora.com/landing/advisory-services","evidence_status":"observed_public_page"},
+    {"source_id":"LG-WORD-ADDIN","product":"legora","type":"official_product_page_with_marketing_illustrations","url":"https://legora.com/product/word-add-in","evidence_status":"official_marketing_product_illustration_not_interaction"}
+  ],
+  "review_after": "2027-01-28",
+  "known_limitations": [
+    "no_cloud_browser",
+    "no_saved_screenshots",
+    "no_login_or_trial",
+    "no_full_recording_view",
+    "help_and_marketing_pages_are_not_interaction_audits",
+    "vendor_security_and_accuracy_claims_are_not_independently_verified"
+  ]
+}

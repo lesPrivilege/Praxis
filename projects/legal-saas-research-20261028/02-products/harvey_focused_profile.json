@@ -1,0 +1,39 @@
+{
+  "schema_version": "1.0",
+  "as_of": "2026-10-28",
+  "product": "Harvey",
+  "profile_level": "focused_evidence_graded_profile_outside_12_full_deep_dives",
+  "evidence_grade": {"objects_and_flows":"A-","agent_governance":"B","commercial_and_failure_states":"C_or_unknown"},
+  "verified_interaction": false,
+  "primary_surfaces": ["Sidebar","Global Search","Assistant","Vault","Review Tables","Playbook Builder","Harvey for Word","Agents/Workflow Builder","History","Library"],
+  "business_objects": ["AssistantThread","Vault","ReviewTable","ReviewRow","ReviewColumn","ReviewCell","Playbook","PlaybookRule","CandidateRedline","AgentDefinition","AgentRun","Connector","SourceAnchor"],
+  "flows": [
+    {"id":"harvey-playbook-review","transition":"contract -> playbook run(all|selected rules) -> acceptable|needs_review|not_acceptable -> reasoning/source location -> edit|apply|dismiss|ask_revision -> redline","human_boundaries":["mark reviewed is not risk acceptance","apply text is not rule approval"],"unknowns":["bulk impact preview","partial failure","undo","concurrent conflict"]},
+    {"id":"harvey-playbook-builder","transition":"template|existing playbook|up to 10 negotiated contracts|vault files|marked comments -> creation agent/manual editor -> rule table + explanations + citations -> save -> share/view|edit","human_boundaries":["save is not necessarily organization policy approval"],"unknowns":["universal peer review lifecycle","retire and rollback"]},
+    {"id":"harvey-review-table","transition":"vault documents/file groups -> rows x question columns -> answer+reasoning+citations -> edit|comment|refresh|verify|flag|lock -> export","human_boundaries":["user edited value takes precedence","verification target is cell value"],"unknowns":["upstream change invalidation","concurrent merge","bulk undo"]},
+    {"id":"harvey-agent-governance","transition":"saved definition -> share request(scope,access) -> conditional admin approval -> shared -> run","access_levels":["Run","View","Edit","Full"],"human_boundaries":["selected connector tools can require human confirmation"],"unknowns":["complete run failure state machine"]}
+  ],
+  "source_types": ["assistant_answer_source_link","review_table_sentence_citation","word_in_document_or_edit_citation"],
+  "commercial": {"public_price":"not_found","commercial_model":"unknown","services_observed":["help_center","academy_training"],"implementation_and_support_sla":"unknown","separate_capabilities":["Targeted Source Features","Ask LexisNexis","Covered AI Services","connectors"]},
+  "sources": [
+    {"source_id":"HV-START","type":"official_help","title":"Getting Started with Harvey","url":"https://help.harvey.ai/articles/getting-started-with-harvey","updated":"2026-10-07","status":"observed_public_page"},
+    {"source_id":"HV-PB-REVIEW","type":"official_help","title":"Harvey for Word: Playbooks Guide","url":"https://help.harvey.ai/articles/word-add-in-playbooks-guide","updated":"2026-06-02","status":"observed_public_page"},
+    {"source_id":"HV-PB-BUILD","type":"official_help","title":"Create a Playbook","url":"https://help.harvey.ai/articles/create-a-playbook","updated":"2026-07-20","status":"observed_public_page"},
+    {"source_id":"HV-RT","type":"official_help_topic","title":"Review Tables","url":"https://help.harvey.ai/topics/review-tables","status":"observed_public_page"},
+    {"source_id":"HV-RT-API","type":"official_developer_docs","title":"Review Tables API","url":"https://developers.harvey.ai/guides/review_tables","status":"observed_public_page"},
+    {"source_id":"HV-AGENTS","type":"official_help_topic","title":"Agents & Workflows","url":"https://help.harvey.ai/topics/workflows","status":"observed_public_page"},
+    {"source_id":"HV-AGENTS-RN","type":"official_release_notes","title":"Release Notes - Agents","url":"https://help.harvey.ai/release-notes/category/agents","status":"observed_public_page"},
+    {"source_id":"HV-RT-RN","type":"official_release_notes","title":"Release Notes - Review Tables","url":"https://help.harvey.ai/release-notes/category/review-tables","status":"observed_public_page"},
+    {"source_id":"HV-CONNECT","type":"official_product_page","title":"Connector Library","url":"https://www.harvey.ai/platform/connector-library","status":"observed_public_page_and_vendor_claim"},
+    {"source_id":"HV-TERMS","type":"official_terms","title":"Service Terms","url":"https://www.harvey.ai/legal/service-terms","updated":"2026-09-16","status":"vendor_contract_commitment"},
+    {"source_id":"HV-WORD-CITE","type":"official_release_note","title":"Edit & In-Document Citations","url":"https://help.harvey.ai/release-notes/in-document-citations","published":"2026-04-15","status":"observed_public_page"},
+    {"source_id":"HV-ACADEMY","type":"official_help","title":"Getting Started with Harvey Academy","url":"https://help.harvey.ai/articles/harvey-academy","status":"observed_public_page"},
+    {"source_id":"HV-CONTRACT-AGENT-BLOG","type":"official_blog_product_demo","title":"Contract review agents in Harvey","url":"https://www.harvey.ai/blog/contract-review-agents-in-harvey","status":"official_marketing_product_illustration_not_interaction"}
+  ],
+  "visual_evidence": [
+    {"id":"40","state":"agent_setup","status":"official_marketing_product_illustration_not_interaction"},
+    {"id":"41","state":"contract_review_benchmark","status":"official_marketing_product_illustration_not_interaction"},
+    {"id":"42","state":"contract_intelligence_standards","status":"official_marketing_product_illustration_not_interaction"}
+  ],
+  "screenshot_backlog": ["HV-01","HV-02","HV-03","HV-04","HV-05","HV-06"]
+}
