@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-11-01 · 架构收敛
+
+- 按 [ADR-049](docs/decisions/049-architecture-convergence.md) 定位：Design 与 Writing 为核，名册与 stream 编目，Reporting、现场工作、视频都是下游工作流。根 `kit/` 不动，改定位。架构总页、根 README 与各入口随之更新。
+- 新增 Stream：数据根 `streams/` 一页自撰加挂载，`praxis_resolve` 带 `stream` 消费。第一条是[视觉与运动语法](dsh-praxis/data/streams/visual-motion-grammar.md)。
+- 入账原 Chat“视觉设计语法”与三张附图；回执见 [架构收敛](docs/verification/architecture-convergence-20261101.md)。
+
 ## 2026-10-27 · dsh-praxis 拆成可发布的包
 
 - 按 [ADR-046](docs/decisions/046-dsh-praxis-package-and-roster.md) 施工工单剩下的 A3、A4 与 B1–B7。数据根经 `core/paths.js` 一处解析：显式参数、`PRAXIS_DATA`、包旁的 `data/`、`$DSH_HOME/dsh-praxis`；这个仓库以 `data/settings.json` 的 `base` 与 `snapshots` 运行在仓库模式。core 不再调用 Python。

@@ -3,7 +3,7 @@
 import { createHash } from 'node:crypto'
 import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, unlinkSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
-import { PACKAGE, locate } from './paths.js'
+import { PACKAGE, locate, pathsFor } from './paths.js'
 import { Kit, LAYERS, clip } from './kit.js'
 import { FORMS, Materials, signalsOf } from './materials.js'
 import { Artifacts } from './artifacts.js'
@@ -24,7 +24,8 @@ export function createPraxis(options = {}) {
   const where = locate({ data: options.data, package: options.package })
   const dataDir = where.data
   const overlay = join(dataDir, 'overlay')
-  const kit = () => new Kit(where.package, overlay)
+  const streams = { dir: join(dataDir, 'streams'), path: pathsFor(where).normalize }
+  const kit = () => new Kit(where.package, overlay, streams)
   const revisions = new Collection(join(dataDir, 'revisions.json'), join(dataDir, 'history.jsonl'))
   const materials = new Materials(where, { categories: () => kit().areas() })
   const presets = new Collection(join(dataDir, 'presets.json'), join(dataDir, 'history.jsonl'))
@@ -46,6 +47,8 @@ export function createPraxis(options = {}) {
         resident: k.list().filter((u) => u.resident).map(brief),
         layers: Object.keys(LAYERS).map((layer) => ({ layer, entry: brief(k.find(layer)) })),
         task_types: k.taskTypes().map((t) => ({ id: t.id, title: t.title, description: t.description, pipelines: t.pipelines })),
+        streams: k.list('stream').map(brief),
+        streams_dir: streams.dir,
         reload: this.reload(),
       }
     },
@@ -79,6 +82,7 @@ export function createPraxis(options = {}) {
       const k = kit()
       const u = k.find(ref)
       if (!u) throw new Error(`unknown unit: ${ref}`)
+      if (u.layer === 'stream') throw new Error(`a stream is edited in place: ${u.path}`)
       if (!reason?.trim()) throw new Error('a revision needs reason')
       if (!/^# .+/m.test(body ?? '')) throw new Error('body must be the whole page, starting with its # title')
       const base = hash(k.packaged(u.path))
@@ -112,17 +116,19 @@ export function createPraxis(options = {}) {
 
     /**
      * What to read for a task: resident units, then the units the task type lists
-     * (filtered by pipeline), then enabled bindings on those units as material rows (web sources),
-     * then exemplars: local pipelines, examples and accepted deliveries that serve those units.
+     * (filtered by pipeline), then a named stream with the units it draws on, then enabled bindings
+     * on those units as material rows (web sources, the stream's own first), then exemplars: local
+     * pipelines, examples and accepted deliveries that serve those units.
      */
-    resolve({ task_type, pipeline, units = [], preset, materials_limit = 12, exemplars_limit = 8 } = {}) {
+    resolve({ task_type, pipeline, stream, units = [], preset, materials_limit = 12, exemplars_limit = 8 } = {}) {
       const k = kit()
-      const { picked, type, pipeline: chosen } = pick(k, { task_type, pipeline, units })
+      const { picked, type, pipeline: chosen, stream: own } = pick(k, { task_type, pipeline, stream, units })
       pipeline = chosen
       const targets = new Set([...picked.values()].map((u) => u.path))
+      const authored = (b) => Number(b.target.split('#')[0] === own?.path)
       const rows = materials.listBindings()
         .filter((b) => b.enabled && targets.has(b.target.split('#')[0]))
-        .sort((a, b) => Number(b.priority === 'preferred') - Number(a.priority === 'preferred') || Number(b.favorite) - Number(a.favorite))
+        .sort((a, b) => authored(b) - authored(a) || Number(b.priority === 'preferred') - Number(a.priority === 'preferred') || Number(b.favorite) - Number(a.favorite))
         .slice(0, materials_limit)
         .map((b) => material(b, materials.source(b.source)))
       const exemplars = this.exemplars(targets).slice(0, exemplars_limit)
@@ -133,6 +139,7 @@ export function createPraxis(options = {}) {
         preset: chosenPreset ? { id: chosenPreset.id, title: chosenPreset.title, values: chosenPreset.values, revision: chosenPreset.revision } : undefined,
         task_type: type ? { id: type.id, title: type.title, outcome: type.outcome, acceptance: type.acceptance, version: type.version } : undefined,
         pipeline,
+        stream: own ? brief(own) : undefined,
         units: [...picked.values()],
         materials: rows,
         exemplars,
@@ -439,8 +446,8 @@ export function createPraxis(options = {}) {
   }
 }
 
-/** The units a task reads: resident ones, the pipeline entry, what the task type lists, then any named. */
-function pick(k, { task_type, pipeline, units = [] }) {
+/** The units a task reads: resident ones, the pipeline entry, what the task type lists, a stream and what it draws on, then any named. */
+function pick(k, { task_type, pipeline, stream, units = [] }) {
   const picked = new Map()
   const add = (unit, reason) => {
     if (!unit) return
@@ -464,12 +471,18 @@ function pick(k, { task_type, pipeline, units = [] }) {
     }
     pipeline = chosen
   }
+  const own = stream ? k.find(stream) ?? k.find(`stream/${stream}`) : undefined
+  if (stream && own?.layer !== 'stream') throw new Error(`unknown stream: ${stream}`)
+  if (own) {
+    add(own, '指定的 stream')
+    for (const u of k.draws(own)) add(u, `stream ${own.title} 取用`)
+  }
   for (const ref of units) {
     const u = k.find(ref)
     if (!u) throw new Error(`unknown unit: ${ref}`)
     add(u, '本次指定')
   }
-  return { picked, type, pipeline }
+  return { picked, type, pipeline, stream: own }
 }
 
 /** Unit id → the task types whose resolve reaches it, over every pipeline each type has. */

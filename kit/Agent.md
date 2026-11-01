@@ -41,7 +41,7 @@ Kit 的目录和 README 承担渐进引导；新条目的必要性、复用入�
 
 ## 入账
 
-遵循 [统一规范](../docs/governance/intake.md)：先生成材料ID和元数据，再保留必要原件，提炼后连入索引，最后验证。已有记录新增review，不默默覆盖历史来源。外部来源每个URL有自己的记录与摘要；同产品可以共享主题卡。只有引用占位时，登记missing-original，不伪造原链接。
+用户自己的主张进 [stream](../dsh-praxis/data/streams/README.md)，外部材料按下述入账。遵循 [统一规范](../docs/governance/intake.md)：先生成材料ID和元数据，再保留必要原件，提炼后连入索引，最后验证。已有记录新增review，不默默覆盖历史来源。外部来源每个URL有自己的记录与摘要；同产品可以共享主题卡。只有引用占位时，登记missing-original，不伪造原链接。
 
 ## 晋升
 

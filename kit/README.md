@@ -22,6 +22,8 @@ Kit 通过目录逐层展开工作语境。先选这次工作，再读有关分�
 
 ## 企业工作与环境
 
+这一节是下游工作流：现场工作在这里取语义与契约，写什么、怎样表现回到上一节（[ADR-049](../docs/decisions/049-architecture-convergence.md)）。
+
 | 当前任务 | 第一入口 | 所得产物 |
 |---|---|---|
 | 发现业务问题与机会 | [工作全景](landscape.md)、[现场闭环](../dsh-praxis/kit/task/field-loop.md) | 问题、证据与验证机会 |

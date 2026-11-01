@@ -8,6 +8,7 @@
 | `sources.json` | 自有来源，都是网页：ID 为 `praxis:<slug>`，记 URL、概要、读取范围、证据状态、边界、何时重访、摘录、收录任务、集合的成员模式（含带理由跳过的成员）与所属集合、淘汰理由与 revision；不存原件 |
 | `catalog.json` | 来源编目：按来源 ID 记形态、Kit 分类、description 与最近一次 review（含 revision 与当时的来源版本）；自有来源与来源包里的条目都可编目，来源包本身不被写入 |
 | `packs.json` | 按引用接入的来源包：`vault`（registry 格式，读 `vault/registry.json`）与 `jev-research`（Jev 专章的来源索引，经字段映射读取）；Praxis 只读这些文件，不写 |
+| [streams/](streams/README.md) | 用户自撰的探索方向，一页一条；手写，进 Git，备份随数据根走 |
 | `bindings.json` | 挂载：在名册里新建、移除、恢复或编辑过的关系，以及挂载上的维护信息（description、取用题解、启用、收藏、优先级、tag、最近一次 review、状态与 revision），按 `<来源 ID>@<页面路径>` 对上。来源包声明的关系（vault 记录的 `grammar_paths`）没被动过时不在这里 |
 | `checks.jsonl` | 追加式来源检查：来源、时间、状态、HTTP 码、内容 hash（HTML 另记正文 hash）、大小与类型，打不开时记错误；集合类来源另记成员链接；另存快照时记快照路径 |
 | `presets.json` | 预设：流水线、名称、字段值、tag、是否默认、revision |

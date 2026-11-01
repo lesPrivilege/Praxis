@@ -1,6 +1,6 @@
 # ADR-045：Praxis 与 dsh-praxis 的关系；撤回 ADR-044 第三阶段
 
-日期：2026-10-26。状态：accepted。用户裁定 DSH 插件是单独的开发任务，本轮不做；本轮只理清 Praxis、dsh-praxis、MCP、控制面、数据、release 与 praxis task 的关系，并收敛项目目录。主会话（Claude Fable 5.1）编订。
+日期：2026-10-26。状态：accepted（“Praxis”一行与“根 `kit/` 是企业工作 Kit”的定位已由 [ADR-049](049-architecture-convergence.md) 改定，分工不变）。用户裁定 DSH 插件是单独的开发任务，本轮不做；本轮只理清 Praxis、dsh-praxis、MCP、控制面、数据、release 与 praxis task 的关系，并收敛项目目录。主会话（Claude Fable 5.1）编订。
 
 ## 问题
 

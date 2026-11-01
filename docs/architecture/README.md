@@ -1,6 +1,15 @@
 # 架构
 
-Praxis 由 Enterprise、Reporting、Work System 三个消费域和共享 Environment 组成。任务入口见 [Kit](../../kit/README.md)，设计取舍见 [架构理由](rationale.md)。
+Praxis 积累设计与写作的判断和来源；工作流把它们带到具体场景（[ADR-049](../decisions/049-architecture-convergence.md)）。任务入口见 [Kit](../../kit/README.md)，设计取舍见 [架构理由](rationale.md)。
+
+| 位置 | 是什么 | 在哪 |
+|---|---|---|
+| 核 | Design、Writing：判断与方法，常驻 | [Design](../../dsh-praxis/kit/design/README.md)、[Writing](../../dsh-praxis/kit/writing/README.md) |
+| 编目 | 名册（收藏）与 stream（自撰） | [dsh-praxis/data](../../dsh-praxis/data/README.md)、[streams](../../dsh-praxis/data/streams/README.md) |
+| 证据 | 原件、提炼、裁决与回执 | [vault](../../vault/README.md)、[docs](../README.md) |
+| 下游 | 工作流：Task 类型、Publish 流水线、现场工作语义、场景模板、交付 | [Task](../../dsh-praxis/kit/task/README.md)、[Publish](../../dsh-praxis/kit/publish/README.md)、[kit](../../kit/README.md)、[templates](../../templates/README.md)、[projects](../../projects/README.md) |
+
+下游是一个位置，不是目录。可跨场景复用的表达方法回到核，依附场景的状态与交付留在下游。新材料走收藏，新主张走 stream，新场景走 Task 类型或流水线，这张表不随之变化。
 
 ## 内容归属
 
@@ -11,8 +20,8 @@ Praxis 由 Enterprise、Reporting、Work System 三个消费域和共享 Environ
 | [vault/references](../../vault/references/README.md) / [provenance](../../vault/provenance/README.md) | 逐 URL 来源、引用恢复与缺口 | 支持或修订主张 |
 | [vault/snapshots](../../vault/snapshots/README.md) / [archive/chat](../../vault/archive/chat/README.md) | 版本原件、原始对话 | 按定位回查 |
 | [docs/decisions](../decisions/README.md) | 接受、延后、拒绝及其理由 | 更新规范 |
-| [kit](../../kit/README.md) | 当前定义、契约与验收规则 | 消费到任务 |
-| [dsh-praxis](../../dsh-praxis/README.md) | 个人 FDE 工作 Kit（Task、Writing、Design、Publish）、来源名册与控制面；名册、挂载、预设、项目、产物与运行记录在 dsh-praxis/data，vault 作为来源包按引用接入 | 消费到任务、DSH 插件与 MCP |
+| [kit](../../kit/README.md) | 现场工作的定义、契约与验收规则 | 消费到任务 |
+| [dsh-praxis](../../dsh-praxis/README.md) | 表达 Kit（Task、Writing、Design、Publish）、来源名册与控制面；名册、挂载、stream、预设、项目、产物与运行记录在 dsh-praxis/data，vault 作为来源包按引用接入 | 消费到任务、DSH 插件与 MCP |
 | [projects](../../projects/README.md) | 一切交付与实验：教材、讲解页、视频、语法工场；场景契约模板在 [templates/scenario](../../templates/scenario/README.md) | 验证、反馈、登记产物 |
 
 知识晋升：`vault → docs/decisions → kit → projects`（[ADR-044](../decisions/044-repository-layout-by-role.md)）。
@@ -28,7 +37,7 @@ Praxis 由 Enterprise、Reporting、Work System 三个消费域和共享 Environ
 
 ## Praxis 与 dsh-praxis
 
-Praxis 是知识与证据库；`dsh-praxis/` 是可独立发布的包：表达 Kit 加控制面，MCP 是控制面的一个入口。数据根可配置；这个仓库以仓库模式接入同一个包，数据在 `dsh-praxis/data`，进 Git，vault 作为来源包按引用接入（[ADR-046](../decisions/046-dsh-praxis-package-and-roster.md)）。根 `kit/` 是企业工作 Kit，不进 release 包；`projects/` 属于 Praxis，控制面只记位置。七个名字的定义与分工见 [ADR-045](../decisions/045-praxis-and-dsh-praxis-relations.md)。
+这个仓库是自用的 Praxis，含证据、裁决与交付；`dsh-praxis/` 是可独立发布的包：表达 Kit 加控制面，MCP 是控制面的一个入口。数据根可配置；这个仓库以仓库模式接入同一个包，数据在 `dsh-praxis/data`，进 Git，vault 作为来源包按引用接入（[ADR-046](../decisions/046-dsh-praxis-package-and-roster.md)）。根 `kit/` 是下游的现场工作语义，不进 release 包；`projects/` 属于 Praxis，控制面只记位置。七个名字的定义与分工见 [ADR-045](../decisions/045-praxis-and-dsh-praxis-relations.md)。
 
 ## 表达与设计的跨域消费
 

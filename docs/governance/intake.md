@@ -2,7 +2,7 @@
 
 ## 处理链
 
-`discover → register → snapshot/extract → distill → verify → index → govern`。发现不等于消费，消费不等于采纳。
+`discover → register → snapshot/extract → distill → verify → index → govern`。发现不等于消费，消费不等于采纳。用户自己的主张不走这条链，写进 [stream](../../dsh-praxis/data/streams/README.md)；它引用的来源照常入账，新的风格、配色、笔触只是新来源，不新增分类。
 
 每批在独立 CHANGELOG 或变更记录中登记范围、扫描时间、筛选规则、排除项、处理数量、失败与待补项。每个材料有稳定ID、类型、标题、原始定位、当前本地路径、关联主题、处理状态和摘要入口。Chat定位使用conversation/turn/item ID，不只写“上一轮”。
 

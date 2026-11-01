@@ -1,6 +1,6 @@
 # Praxis
 
-Praxis is a bundle of working methods for writing, laying out, designing and reporting, with a roster of sources. The methods come in four layers, each a set of short pages:
+Praxis is a bundle of working methods for writing, laying out, designing and reporting, with a roster of sources and your own authored streams. The methods come in four layers, each a set of short pages:
 
 | Layer | What it decides |
 |---|---|

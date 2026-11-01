@@ -58,6 +58,28 @@ const REGISTRY = 'vault/registry.json'
 const SRC = 'provenance-demo:apg'
 const BIND = `${SRC}@kit/design/controls.md`
 
+test('stream: an authored page in the data root reads as a unit and resolves with what it draws on', () => {
+  const { p } = setup()
+  mkdirSync(join(p.where.data, 'streams'), { recursive: true })
+  writeFileSync(join(p.where.data, 'streams', 'README.md'), '# Streams\n')
+  writeFileSync(join(p.where.data, 'streams', 'visual.md'), '# 视觉语法\n\n成熟语法加少量陌生化。\n\n取用 `kit/design/motion.md` 与 `kit/nope.md`。\n')
+  assert.deepEqual(p.entry().streams.map((s) => s.id), ['stream/visual'])
+  const s = p.unit('stream/visual')
+  assert.match(s.body, /陌生化/)
+  assert.equal(s.description, '成熟语法加少量陌生化。')
+
+  const before = p.resolve({ task_type: 'explainer' })
+  assert.ok(!before.units.some((u) => u.id === 'stream/visual'), 'not read unless named')
+  const r = p.resolve({ stream: 'visual' })
+  assert.equal(r.stream.id, 'stream/visual')
+  assert.ok(r.units.some((u) => u.id === 'design/motion'), 'draws on the Kit units it names')
+  p.materials.curate(`${SRC}@${s.path}`, { description: '这条 stream 用它。' }, { expected_revision: 0 })
+  assert.equal(p.resolve({ stream: 'visual' }).materials[0].binding, `${SRC}@${s.path}`, "the stream's own sources come first")
+
+  assert.throws(() => p.resolve({ stream: 'nope' }), /unknown stream/)
+  assert.throws(() => p.reviseUnit({ unit: 'stream/visual', body: '# x\n', reason: 'r', expected_revision: 0 }), /edited in place/)
+})
+
 test('resolve: resident units, then the type units for the chosen pipeline, then materials', () => {
   const { p } = setup()
   const html = p.resolve({ task_type: 'explainer' })

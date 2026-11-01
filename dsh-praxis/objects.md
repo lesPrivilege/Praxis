@@ -20,6 +20,7 @@
 | CatalogEntry | 一个来源在来源编目里的位置与说明：形态、Kit 分类、description（何时打开、取什么）与对它的 review；自有来源与来源包里的条目都可编目，记在名册里 | 实现见 [materials.js](core/materials.js) |
 | SourcePack | 按引用接入的一组来源：一份 registry 格式的文件，或项目自己的来源索引；文件留在主人那里，Praxis 原地读取、从不写入 | 实现见 [materials.js](core/materials.js) |
 | Binding | 一个来源挂到一个页面上的关系：目录里的 description、取用题解、启用、收藏、优先级、tag 与 review；关系与维护信息都在名册里 | [binding](schemas/binding.schema.json) |
+| Stream | 一页自撰：一个持续探索的方向，写主张、未决问题和取用的 Kit 单元；文件在数据根的 `streams/`，来源挂到这一页。读作 `stream` 层的单元，不进包，修订直接改文件 | 实现见 [kit.js](core/kit.js)，用法见 [Streams](data/streams/README.md) |
 | MaterialRevision | 实际取得的一份原件或资产：快照、附件、图片、音视频、代码、模板、组件 | [material-revision](schemas/material-revision.schema.json) |
 | KitRevision | 对一个 Kit 单元的修订：整页存在数据根的覆盖层，记理由、依据的范例，以及写修订时包内原页的 hash | 实现见 [index.js](core/index.js) |
 | Preset、Run | 可编辑的默认配置；一次任务实际用到的输入、单元版本、来源与配置，以及来源会话 | 实现见 [core](core/README.md) |
@@ -30,7 +31,9 @@
 
 **本地产物不是来源。** 本地的东西只有三类值得留下：真实交付，质量较高，常带一条可复用的管线；管线本身；为示范某种做法预先做的样张，强模型可以借来自己设计，受限模型可以照着做。它们记在产物这一层，写明 `serves` 的管线与范例、以及经 review 接受的交付，在 resolve 里排在网页素材之后，每类至多三件。项目约定、蒸馏笔记、dogfooding 与 review 记录只对当初那件工作成立，留下来只会增加噪声，不登记；运行记录就是它们的痕迹。Writing 的 personal 部分写在 Kit 里，不经名册。
 
-**取用顺序。** 网页来源与稳定的本地产物是优先取用的对象：先读网页素材，要照着做或重复同类交付时打开范例与管线，按“标准化重复加组装”使用。
+**新材料不改体例。** 新的风格、配色、笔触是新来源；有限收敛的经典做法写成 Kit 单元，或登记为 example、pipeline；用户自己的主张写成 Stream。这些都不新增形态、区域或对象。
+
+**取用顺序。** 找外部参考先查名册，名册不够或要核实时才上网，确有增量再写回。网页来源与稳定的本地产物是优先取用的对象：先读网页素材，要照着做或重复同类交付时打开范例与管线，按“标准化重复加组装”使用。
 
 **review 只留最近一次。** 挂载、编目与产物各存最近一次 review，信号只看它；更早的结论在维护记录里。
 
@@ -78,7 +81,7 @@
 | file | 任何 Source，加形态、Kit 分类或 description | 编目的一次可追溯修订；来源包从不被写入 |
 | catalog | 可选的区域、形态、关键词 | 来源编目的纲目：层 → 区域 → 形态 → 来源；不给区域与关键词时只给各形态的条数 |
 | curate | Source 与目标页，或已有 Binding | Binding 的题解、description、tag、启用、收藏、优先级的一次可追溯修订；目标页还没有这条关系时新建 |
-| resolve | 任务类型或 brief、流水线、预设 | 要读的单元与素材清单，附选用理由；之后是服务这些单元的范例（pipeline、example、已接受的交付）；不默认挂载全部 |
+| resolve | 任务类型或 brief、流水线、stream、预设 | 要读的单元与素材清单，附选用理由；指定 stream 时带上这一页、它取用的单元，它的素材排在最前；之后是服务这些单元的范例（pipeline、example、已接受的交付）；不默认挂载全部 |
 | consume | resolve 的结果与一次运行 | 运行记录写下实际用到的单元、来源及其版本、由它们推出的挂载、交付的产物和来源会话；不复制原件 |
 | refresh | Source | 一条检查：是否打得开、内容 hash；要求保留时另存快照，旧版本保留。集合类来源另记页面上的成员链接 |
 | retire | 自有 Source 与理由 | 来源离开名册的活动列表，挂载随之停用，记录与历史保留 |

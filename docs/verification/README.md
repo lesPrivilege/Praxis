@@ -1,5 +1,6 @@
 # 验收回执
 
+- [架构收敛 · 2026-11-01](architecture-convergence-20261101.md)：ADR-049 的定位与 Stream；真实数据上 resolve 走通；DSH 与 MCP 未重载。
 - [本地产物三类与收敛 · 2026-10-27](local-products-convergence-20261027.md)：产物分交付、管线、范例；resolve 先网页素材后范例；50 条过程记录离开，vault 的 5 条管线改为 pipeline 产物，grammar-demos 43 条作范例；review 只留最近一次；upkeep 为空。
 - [来源编目与本地材料转 trace · 2026-10-27](source-catalog-20261027.md)：名册只收网页来源，36 条全部按 Kit 区域与形态编目；63 件本地材料转为产物 trace，带 76 条当初依据的页；集合加成员账目；控制面新增“来源”页。
 - [Kit 来源省察与 design 来源召回 · 2026-10-27](kit-source-review-20261027.md)：Kit 挂载 277 → 282（移除 37、改挂 7、改写 7、淘汰 11 条自有来源、召回 40 条）；链接失效只认 404、410 与域名不存在，HTML 按正文 hash 判断变化，upkeep 挂载信号归零；修 MCP 服务经符号链接路径不启动。

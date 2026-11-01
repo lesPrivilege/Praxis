@@ -81,11 +81,13 @@ export class Kit {
   /**
    * Units are read from the package's Kit; a unit's path is package-relative (`kit/…`). A page in the
    * overlay folder (same relative path) replaces the package's page: revisions a user or agent made
-   * live in their data, and a package upgrade never overwrites them.
+   * live in their data, and a package upgrade never overwrites them. `streams` is the data root's
+   * folder of authored pages ({ dir, path: file → record path }); they read as units of layer `stream`.
    */
-  constructor(pkg, overlay) {
+  constructor(pkg, overlay, streams) {
     this.pkg = pkg
     this.overlay = overlay
+    this.streamFiles = new Map()
     this.units = new Map()
     this.byPath = new Map()
     this.byAlias = new Map()
@@ -113,11 +115,27 @@ export class Kit {
         for (const alias of unit.aliases) this.byAlias.set(alias, unit)
       }
     }
+    for (const name of streams && existsSync(streams.dir) ? readdirSync(streams.dir).sort() : []) {
+      if (!name.endsWith('.md') || name === 'README.md') continue
+      const file = join(streams.dir, name)
+      const text = readFileSync(file, 'utf8')
+      const id = `stream/${name.replace(/\.md$/, '')}`
+      const path = streams.path(file)
+      const unit = { id, layer: 'stream', title: (text.match(/^# (.+)$/m)?.[1] ?? id).trim(), description: describe(text), path, resident: false, aliases: [], version: createHash('sha256').update(text).digest('hex').slice(0, 12) }
+      this.streamFiles.set(path, file)
+      this.units.set(id, unit)
+      this.byPath.set(path, unit)
+    }
   }
 
-  /** A page's text: the overlay's revision when there is one, else the package's page. */
+  /** A page's text: a stream's file, the overlay's revision when there is one, else the package's page. */
   text(path) {
-    return readFileSync(this.revised(path) ?? join(this.pkg, path), 'utf8')
+    return readFileSync(this.streamFiles.get(path) ?? this.revised(path) ?? join(this.pkg, path), 'utf8')
+  }
+
+  /** The Kit units a stream page names by path (`kit/….md`). */
+  draws(unit) {
+    return [...new Set(this.text(unit.path).match(/\bkit\/[\w./-]+\.md/g) ?? [])].map((path) => this.find(path)).filter(Boolean)
   }
 
   /** The package's own page, whatever the overlay holds. */

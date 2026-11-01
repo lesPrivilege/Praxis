@@ -1,6 +1,6 @@
 # 分层体例
 
-一次任务由五层内容组合完成：Task 决定这次做什么、交给哪条 Publish 流水线、取哪些 Writing 方法与 Design 范式；Materials 提供逐级展开的来源与资产。Writing 与 Design 常驻，其余按任务读取。四层的页面都在 [Kit](kit/README.md)，随包发布；Materials 是名册：自有来源与按引用接入的来源包，经挂载连到 Kit 页，存在数据根里。
+一次任务由五层内容组合完成：Task 决定这次做什么、交给哪条 Publish 流水线、取哪些 Writing 方法与 Design 范式；Materials 提供逐级展开的来源与资产。Writing 与 Design 常驻，是核；Materials 是编目；Task 与 Publish 是把它们带到场景的下游工作流。四层的页面都在 [Kit](kit/README.md)，随包发布；Materials 是名册：自有来源与按引用接入的来源包，经挂载连到 Kit 页，存在数据根里。
 
 ## 五层各管什么
 

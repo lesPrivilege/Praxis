@@ -13,7 +13,7 @@ const list = (description) => ({ type: 'array', items: { type: 'string' }, descr
 // A lookup miss is a failed call on every surface: CLI exit 1, MCP isError, DSH tool error, HTTP 400.
 const missing = (message) => { throw new Error(message) }
 // How a source is filed, written into the tools that file one, so maintenance needs no exploration first.
-const FILING = `编目规则：形态看来源本身。规范性文本（WCAG、APG、W3C、MDN）是 standard；一家设计系统或平台的指南是 practice；逐个说明组件的文档是 component-library；收一批作品或样式的站点是 case-library；单件作品或单页是 case；写给 agent 的指令（SKILL.md、design.md）是 skill；库、服务或工具的文档是 tool；文章、博客是 article；论文与研究是 research。category 填会用到它的 Kit 页所在的区域（如 design/interaction）；拿不准就填层（design、writing、publish、task），不自建区域。description 写“<何时>时打开；取<什么>。”，一两个短句。`
+const FILING = `编目规则：形态看来源本身。规范性文本（WCAG、APG、W3C、MDN）是 standard；一家设计系统或平台的指南是 practice；逐个说明组件的文档是 component-library；收一批作品或样式的站点是 case-library；单件作品或单页是 case；写给 agent 的指令（SKILL.md、design.md）是 skill；库、服务或工具的文档是 tool；文章、博客是 article；论文与研究是 research。category 填会用到它的 Kit 页所在的区域（如 design/interaction）；拿不准就填层（design、writing、publish、task），不自建区域；新的风格、配色、笔触只是新来源，不新增形态或区域。description 写“<何时>时打开；取<什么>。”，一两个短句。`
 // What local work is recorded, and what is left out as noise.
 const LOCAL = `本地产物只登记三类：delivery（真实交付，在已登记项目里）、pipeline（再做同类交付的方法：构建脚本或写明步骤的 README）、example（为示范某种做法预先做的样张）。pipeline 与 example 用 serves 写它服务哪些 Kit 页、何时对照，可以不在项目里；delivery 经 review 接受（accepted）且写了 serves，才作为范例给到任务。过程记录（dogfooding、review 记录、蒸馏笔记、会话纪要）不登记，运行记录就是它们的痕迹。`
 const serves = { type: 'array', description: '它服务的 Kit 页：何时对照、看什么', items: { type: 'object', properties: { target: str('Kit 页路径，如 kit/design/interaction/controls.md'), description: str('“<何时>时对照；看<什么>。”') }, required: ['target'] } }
@@ -28,17 +28,18 @@ export const TOOLS = [
   {
     name: 'praxis_entry',
     agent: true,
-    description: 'Praxis Kit 的入口：常驻单元（Writing、Design 的入口与底线）、各层入口和任务类型。开始一件写作、编排、设计或报告任务时先调用。带 reload 时，宿主运行的是旧代码，重启后再用。',
+    description: 'Praxis Kit 的入口：常驻单元（Writing、Design 的入口与底线）、各层入口、任务类型和 stream（自撰的持续探索，文件在 streams_dir）。开始一件写作、编排、设计或报告任务时先调用。带 reload 时，宿主运行的是旧代码，重启后再用。',
     parameters: {},
     run: (p) => p.entry(),
   },
   {
     name: 'praxis_resolve',
     agent: true,
-    description: '按任务类型和流水线列出这次要读的 Kit 单元（附选用理由）和挂在这些单元上的已启用素材。只读结果里的单元，不默认加载全部。每条素材带 source ID、原件 URL、证据状态、读取范围、摘录（定位与说法）和本地快照路径：需要核对或引用时按定位回原件，读过的来源在 praxis_consume 的 sources 里写上。之后的 exemplars 是服务这些单元的本地 pipeline、example 与已接受的交付（路径与说明）：先用网页素材，要照着做或重复同类交付时再打开范例。',
+    description: '按任务类型和流水线，或指定的 stream，列出这次要读的 Kit 单元（附选用理由）和挂在这些单元上的已启用素材。只读结果里的单元，不默认加载全部。每条素材带 source ID、原件 URL、证据状态、读取范围、摘录（定位与说法）和本地快照路径：需要核对或引用时按定位回原件，读过的来源在 praxis_consume 的 sources 里写上。之后的 exemplars 是服务这些单元的本地 pipeline、example 与已接受的交付（路径与说明）：先用网页素材，要照着做或重复同类交付时再打开范例。',
     parameters: {
       task_type: str('任务类型 ID，如 technical-explainer、work-report'),
       pipeline: str('html 或 video；省略用任务类型的默认流水线'),
+      stream: str('stream ID，如 visual-motion-grammar：用户点名一条 stream 时填，可与任务类型同用；结果带上这一页、它取用的单元和挂在它上面的素材'),
       units: list('另外指定的单元 ID、路径或语法 ID'),
       preset: str('预设 ID；省略用该流水线的默认预设'),
     },
@@ -47,7 +48,7 @@ export const TOOLS = [
   {
     name: 'praxis_unit',
     agent: true,
-    description: '读一个 Kit 单元的全文。参数可以是单元 ID（writing/organization/mechanism）、仓库路径或语法 ID（DWG-I-CONTROLS）。',
+    description: '读一个 Kit 单元或 stream 的全文。参数可以是单元 ID（writing/organization/mechanism、stream/visual-motion-grammar）、仓库路径或语法 ID（DWG-I-CONTROLS）。',
     parameters: { ref: str('单元 ID、路径或语法 ID') },
     required: ['ref'],
     run: (p, a) => p.unit(a.ref) ?? missing(`unknown unit: ${a.ref}`),
@@ -76,8 +77,8 @@ export const TOOLS = [
   },
   {
     name: 'praxis_units',
-    description: '列出某层（task、writing、design、publish）或全部 Kit 单元的 ID、标题和 description。',
-    parameters: { layer: str('task、writing、design 或 publish；省略列出全部') },
+    description: '列出某层（task、writing、design、publish、stream）或全部单元的 ID、标题和 description。',
+    parameters: { layer: str('task、writing、design、publish 或 stream；省略列出全部') },
     run: (p, a) => p.units(a),
   },
   {
@@ -123,7 +124,7 @@ export const TOOLS = [
   {
     name: 'praxis_curate',
     agent: true,
-    description: '维护一条挂载：改 description、取用题解、启用、收藏、优先级或 tag；挂载不存在时新建（目标页必须存在；Kit 页写 kit/…），关系记在名册里，不写来源包。description 写这个来源对这一页有什么用，不抄来源概要。带上读到的 revision 作为 expected_revision，版本已变会被拒绝并返回当前内容。常规修改直接生效。',
+    description: '维护一条挂载：改 description、取用题解、启用、收藏、优先级或 tag；挂载不存在时新建（目标页必须存在；Kit 页写 kit/…，stream 写 praxis_entry 给出的路径），关系记在名册里，不写来源包。description 写这个来源对这一页有什么用，不抄来源概要。带上读到的 revision 作为 expected_revision，版本已变会被拒绝并返回当前内容。常规修改直接生效。',
     parameters: {
       binding: str('挂载 ID：<来源 ID>@<目标路径>，Kit 页如 kit/design/controls.md'),
       expected_revision: num('读取时的 revision；新建填 0'),
