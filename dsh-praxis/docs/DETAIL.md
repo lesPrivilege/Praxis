@@ -1,13 +1,13 @@
 # Praxis
 
-Praxis is a bundle of working methods for writing, laying out, designing and reporting, with a roster of sources and your own authored streams. The methods come in four layers, each a set of short pages:
+Praxis builds up judgment and methods for design and writing, with a roster of sources and your own authored streams; workflows carry them into specific work. The methods come in four layers, each a set of short pages:
 
-| Layer | What it decides |
-|---|---|
-| Task | What this piece of work is for, which pipeline it takes, and which pages to read |
-| Writing | How the content is argued and organised, in which genre and language |
-| Design | How relations become visual, interactive or moving form |
-| Publish | How content is produced for a medium: html pages or video |
+| Layer | Position | What it decides |
+|---|---|---|
+| Design | Core | How relations become visual, interactive or moving form |
+| Writing | Core | How the content is argued and organised, in which genre and language |
+| Task | Workflow | What this piece of work is for, which pipeline it takes, and which pages to read |
+| Publish | Workflow | How content is produced for a medium: html pages or video |
 
 Sources are references on the web: standards, established practice, component libraries, case libraries, articles. The roster keeps links, summaries and excerpts, never the original's text. The source catalog files them by Kit area and form, each with a short description saying when to open it and what to take; a binding to a page can add what is particular to that page. Local products are not sources. They are artifacts of three kinds: deliveries, pipelines (how to make one kind of delivery again) and examples (specimens made to show a pattern). Pipelines and examples that name the pages they serve, and accepted deliveries, reach a task after the web materials. Process records are not kept.
 
@@ -33,8 +33,8 @@ The tools that maintain the roster, presets and artifacts stay on the control pl
 
 Open **Praxis** from the right sidebar's guide.
 
-- **Catalog**: the four layers, then their areas, then pages. Each step shows descriptions and counts; a page opens to its sources as cards. On a card you can switch a source on or off, star it, check it against upstream (is the link alive, did the content change), rewrite its description, record a review or delete it (deletions can be restored). **Capture a source** registers a new reference; it can be filed under a layer or area first and bound to a page later.
-- **Task**: pick a task type and pipeline to see exactly what the agent would read, the sources it may use and the acceptance checks.
+- **Catalog**: the home page groups the core (Design, Writing), streams and the downstream workflows (Task, Publish). Layers open to areas and areas to pages, each step showing descriptions and counts; a page or stream opens to its sources as cards. On a card you can switch a source on or off, star it, check it against upstream (is the link alive, did the content change), rewrite its description, record a review or delete it (deletions can be restored). **Capture a source** registers a new reference; it can be filed under a layer or area first and bound to a page later.
+- **Task**: pick a task type and pipeline, and optionally a stream, to see exactly what the agent would read, the sources it may use and the acceptance checks.
 - **Artifacts**: the files a piece of work delivered, grouped by project; a project's header says where it keeps drafts, intermediate builds and finals, and which final files are not registered yet. Open one to see its versions, the pages and sources each version was based on, and the reviews of each version; preview it, show it in Finder, open it in its default app or drag it out.
 - **Presets**: defaults per pipeline, such as the TTS voice and aspect ratios for video or the theme for html. Only the name of an environment variable is stored, never a key.
 - **Log**: what needs attention, then runs and maintenance history. Attention covers a review marked *needs work*, a source that changed since it was reviewed or whose link no longer opens; a delivery whose pages, sources or presets changed later; a captured source not yet bound; a collection (a gallery, a component library) whose upstream added or dropped members; a page revision that conflicts with an updated page in the package; an artifact whose file is gone, whose latest version needs work or that sits outside its project's layout; a project with unregistered final files. It is usually empty; the tab shows a count when it is not.
