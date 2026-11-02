@@ -687,6 +687,262 @@
       },
       "state": "active",
       "revision": 1
+    },
+    "praxis:azivor-reference": {
+      "title": "Reference — A Visual Collection（AI 公司视觉图库）",
+      "url": "https://azivor.github.io/reference/",
+      "summary": "公开图库，收四家 AI 公司的 90 件品牌与研究配图，每件带署名和策展人写的设计观察，可按公司和图像处理类型筛选。能支持的判断：编辑拼贴、纸面与物理隐喻、天体尺度、暗场弧光各自成立的条件。图像类型里 Photo + graphic 占 78 件。它展示的是品牌传播材料，不是这些公司的产品界面规范。",
+      "read_scope": "ChatGPT 读了仓库 Azivor/reference 的 data/references.json（commit 2cc52b3a，tree 3d01c685，blob ddf48f02），覆盖 90/90 条元数据与策展人观察，并按章节中文提炼；0/90 张高清图逐张看过，外链未批量复核。本会话读了提炼包的 README、横向专题与目录，没有看图。",
+      "evidence_status": "partial",
+      "limits": "归纳不是品牌官方规范；未做像素级核验，不能据此给色值、字号或动效时长。图片版权归各家，不能作生产素材。不说明法律 SaaS 的交互，合同审阅等任务流另查。",
+      "revisit_when": "上游 references.json 增删条目时，按稳定 ID 只修订变化章节；需要颜色、字级或细部位置时，回原出处看高清图。",
+      "tags": [
+        "visual-reference",
+        "brand",
+        "editorial",
+        "collage",
+        "cinematic",
+        "material"
+      ],
+      "excerpts": [
+        {
+          "id": "azivor-reference-C1",
+          "locator": "https://github.com/Azivor/reference/blob/main/data/references.json",
+          "claim": "90 条原始记录：Anthropic 60、Perplexity 12、OpenAI 11、Grok / xAI 7；Image treatment 是跨品牌筛选，不是第五个集合"
+        }
+      ],
+      "captured_for": {
+        "task": "入账 2026-11-02 ChatGPT「参考库分析」：Reference 图库逐章 distill 索引（vault/distilled/reference-gallery-20261031）",
+        "by": "mcp:claude-code",
+        "at": "2026-11-02T06:30:37.433Z"
+      },
+      "state": "active",
+      "revision": 2
+    },
+    "praxis:open-claude-ui": {
+      "title": "Open Claude UI（社区对 Claude Desktop 界面的 React 还原）",
+      "url": "https://github.com/Caho1/open-claude-ui",
+      "summary": "社区项目，React 示例组件加 CSS 令牌与 Tailwind 扩展，自称逆向还原 Claude Desktop。可支持的判断：导航密、正文疏、输入紧凑的密度分工；正文 15px 与控制 12px、元信息 10–11px 的三级字号；用弱表面差异而非卡片组织空间；工具授权 pending/running/success/error 的局部状态。实现有缺口：多处注释声称的焦点管理、hover/focus 阴影、窄屏折叠未接通。",
+      "read_scope": "云端代理读固定提交 c1f923ae0051a871941b98a0e2e3183a545e6a85 的源码与配置（读过文字），并在公开演示站 openclaudeui.com 截图 7 张、测 DOM；未运行仓库代码。本会话只读了研究正文。",
+      "evidence_status": "partial",
+      "limits": "非 Anthropic 官方规范；演示站不对应固定提交；Tailwind 版本未锁定，换算值以 16px 根字号为条件；MIT 许可不覆盖字体、商标与资产；组件可访问性不完整，不能当合格样本。",
+      "revisit_when": "上游提交在 c1f923ae 之后有界面或令牌改动时；或 Kit 新增 agent 产品界面页、需要对照源码核值时。",
+      "tags": [
+        "agent-ui",
+        "chat",
+        "tokens",
+        "density",
+        "tool-approval"
+      ],
+      "excerpts": [
+        {
+          "id": "open-claude-ui-C1",
+          "locator": "code-examples/cds-theme.css L89–186 @c1f923ae",
+          "claim": "语义表面 surface-0..3、边框透明度与圆角表达式；气泡圆角实际约 11.765px，注释写的 18px fallback 不生效"
+        },
+        {
+          "id": "open-claude-ui-C2",
+          "locator": "code-examples/ChatComposer.tsx L98–265 @c1f923ae",
+          "claim": "输入区外 16px、壳内 14px、操作间 6px；IME 合成输入不发送；只绑定默认阴影"
+        },
+        {
+          "id": "open-claude-ui-C3",
+          "locator": "code-examples/McpToolDecisionCard.tsx L54–220 @c1f923ae",
+          "claim": "工具授权四态与单次/始终允许/拒绝；允许后 1200ms 自动 success 是模拟"
+        },
+        {
+          "id": "open-claude-ui-C4",
+          "locator": "https://openclaudeui.com/docs/components/conversation",
+          "claim": "演示站实测输入 15/21px、slash 菜单五项向上弹出；文档站尺寸不等于组件尺寸"
+        }
+      ],
+      "captured_for": {
+        "task": "入账 2026-10-28 云端研究包：agent 产品界面与 SaaS 官网/价格浮层设计参考（vault/distilled/agent-design-reference-20261028）",
+        "by": "mcp:claude-code",
+        "at": "2026-10-28T11:27:53.939Z"
+      },
+      "state": "active",
+      "revision": 1
+    },
+    "praxis:linear-pricing": {
+      "title": "Linear 定价页",
+      "url": "https://linear.app/pricing",
+      "summary": "四列方案几乎不加容器，用细线分列；方案名大于功能文字，价格不做夸张数字；Enterprise 用 Custom 与 Annual billing only 标出另一种交易关系；客户标识留出呼吸后进比较表。首页（linear.app）短承诺下紧接真实任务界面，可支持“一个主张对应一个具体对象”。",
+      "read_scope": "云端代理 2026-10-28 截图首页 1 帧、定价 2 帧（看过输出），未登录；本会话未重开页面。",
+      "evidence_status": "partial",
+      "limits": "截图为单一断点瞬时状态；价格与套餐会变；黑底灰字对比度未测；不是登录后产品流程。",
+      "revisit_when": "设计方案比较或升级对话框需要核对现行结构时；页面改版后。",
+      "tags": [
+        "pricing",
+        "saas-website",
+        "comparison"
+      ],
+      "excerpts": [
+        {
+          "id": "linear-pricing-C1",
+          "locator": "https://linear.app/pricing 首屏",
+          "claim": "Basic 与 Business 各自紧邻年付开关，计费单位与周期相邻"
+        },
+        {
+          "id": "linear-pricing-C2",
+          "locator": "https://linear.app/ 首屏",
+          "claim": "左齐大标题下由首屏下缘切入真实任务界面"
+        }
+      ],
+      "captured_for": {
+        "task": "入账 2026-10-28 云端研究包：agent 产品界面与 SaaS 官网/价格浮层设计参考（vault/distilled/agent-design-reference-20261028）",
+        "by": "mcp:claude-code",
+        "at": "2026-10-28T11:27:53.939Z"
+      },
+      "state": "active",
+      "revision": 1
+    },
+    "praxis:stripe-pricing-zh-us": {
+      "title": "Stripe 定价页（美国中文版）",
+      "url": "https://stripe.com/zh-us/pricing",
+      "summary": "定价首屏把“标准”与“定制”并列成两种入口：标准侧给费率与自助入口，定制侧深底列折扣与地区条件；其下页内分段入口与四列小图标清单。首页（stripe.com/zh-us）中文长标题叠在流动色带上，色彩只负责识别与过渡，条款回到规则网格。",
+      "read_scope": "云端代理 2026-10-28 截图首页 1 帧、定价 2 帧，浏览器自动落在 zh-us，未登录；本会话未重开页面。",
+      "evidence_status": "partial",
+      "limits": "费率为当时页面状态，不是报价；地区版本不同内容不同；动画为瞬时采样。",
+      "revisit_when": "需要把自助软件与人工服务并列呈现时；页面改版后。",
+      "tags": [
+        "pricing",
+        "saas-website",
+        "chinese-typography"
+      ],
+      "excerpts": [
+        {
+          "id": "stripe-pricing-zh-us-C1",
+          "locator": "https://stripe.com/zh-us/pricing 首屏",
+          "claim": "标准与定制两种商业关系并列，而非一张巨型价格矩阵"
+        }
+      ],
+      "captured_for": {
+        "task": "入账 2026-10-28 云端研究包：agent 产品界面与 SaaS 官网/价格浮层设计参考（vault/distilled/agent-design-reference-20261028）",
+        "by": "mcp:claude-code",
+        "at": "2026-10-28T11:27:53.939Z"
+      },
+      "state": "active",
+      "revision": 1
+    },
+    "praxis:notion-pricing": {
+      "title": "Notion 定价页",
+      "url": "https://www.notion.com/pricing",
+      "summary": "不是四张横排卡：两大主列分别表述“组织基础”与“AI 工作空间”，Free/Plus 归一侧，Business/Enterprise 归另一侧并以淡蓝底关联；周期控制与币种在方案区上方；推荐标签很小。首页（notion.com）居中粗体大标题配轮换动词胶囊，插画只在边缘。",
+      "read_scope": "云端代理 2026-10-28 截图首页 1 帧、定价 2 帧，拒绝可选 Cookie 后重拍，未登录；本会话未重开页面。",
+      "evidence_status": "partial",
+      "limits": "当前宽度下导航为汉堡菜单，非桌面全展开；分组只在价值线确实不同时才可借；轮换动词标题不适合产品内计费确认。",
+      "revisit_when": "产品有两条价值线需要在定价上分组时；页面改版后。",
+      "tags": [
+        "pricing",
+        "saas-website",
+        "grouping"
+      ],
+      "excerpts": [
+        {
+          "id": "notion-pricing-C1",
+          "locator": "https://www.notion.com/pricing 首屏",
+          "claim": "双主列按价值分组，Free/Plus 与 Business/Enterprise 纵向归组"
+        }
+      ],
+      "captured_for": {
+        "task": "入账 2026-10-28 云端研究包：agent 产品界面与 SaaS 官网/价格浮层设计参考（vault/distilled/agent-design-reference-20261028）",
+        "by": "mcp:claude-code",
+        "at": "2026-10-28T11:27:53.939Z"
+      },
+      "state": "active",
+      "revision": 1
+    },
+    "praxis:vercel-pricing": {
+      "title": "Vercel 定价页",
+      "url": "https://vercel.com/pricing",
+      "summary": "左对齐两行大标题进入三列浅边框方案，价格数字强于方案名；第二屏不堆功能表，而讲按实际执行计费与限额、提醒、停止用量等成本控制，税费说明紧贴套餐。首页（vercel.com）短标题、中央符号、三句说明三段构图，靠受众已有认知成立。",
+      "read_scope": "云端代理 2026-10-28 截图首页 1 帧、定价 2 帧，未登录；本会话未重开页面。",
+      "evidence_status": "partial",
+      "limits": "首页高空白构图依赖品牌认知，新产品不宜照搬；CTA 下部未进入视口；动态图示为瞬时状态。",
+      "revisit_when": "设计用量型计费说明或产品内额度提示时；页面改版后。",
+      "tags": [
+        "pricing",
+        "saas-website",
+        "usage-billing"
+      ],
+      "excerpts": [
+        {
+          "id": "vercel-pricing-C1",
+          "locator": "https://vercel.com/pricing 第二屏",
+          "claim": "成本控制机制与税费说明紧邻套餐"
+        }
+      ],
+      "captured_for": {
+        "task": "入账 2026-10-28 云端研究包：agent 产品界面与 SaaS 官网/价格浮层设计参考（vault/distilled/agent-design-reference-20261028）",
+        "by": "mcp:claude-code",
+        "at": "2026-10-28T11:27:53.939Z"
+      },
+      "state": "active",
+      "revision": 1
+    },
+    "praxis:ramp-pricing": {
+      "title": "Ramp 定价页",
+      "url": "https://ramp.com/pricing",
+      "summary": "Free/Plus/Enterprise 三列顶部分别标 AI-assisted、AI-powered、AI-tailored；中间列只高亮边框与标签；Plus 单价下紧贴平台费与年付优惠；深入内容按业务模块组织，高阶列列出实施范围、集成验证、培训与变更管理。首页（ramp.com）点阵底、短价值句接邮箱输入。",
+      "read_scope": "云端代理 2026-10-28 截图首页 1 帧、定价 2 帧，未填写表单；本会话未重开页面。",
+      "evidence_status": "partial",
+      "limits": "截图断点可见横向滚动条，不是响应式范例；AI 档位标签需配权限与人工介入定义才有意义；产品内不宜重复索取邮箱。",
+      "revisit_when": "给 agent 服务分档或写实施服务范围时；页面改版后。",
+      "tags": [
+        "pricing",
+        "saas-website",
+        "service-tiers",
+        "ai"
+      ],
+      "excerpts": [
+        {
+          "id": "ramp-pricing-C1",
+          "locator": "https://ramp.com/pricing 首屏",
+          "claim": "三档按 AI 介入程度命名，平台费紧贴单价"
+        }
+      ],
+      "captured_for": {
+        "task": "入账 2026-10-28 云端研究包：agent 产品界面与 SaaS 官网/价格浮层设计参考（vault/distilled/agent-design-reference-20261028）",
+        "by": "mcp:claude-code",
+        "at": "2026-10-28T11:27:53.939Z"
+      },
+      "state": "active",
+      "revision": 1
+    },
+    "praxis:intercom-pricing": {
+      "title": "Intercom 定价页与 Outcome Pricing 说明弹窗",
+      "url": "https://www.intercom.com/pricing",
+      "summary": "纵向宽行方案：左侧对象、计费与 CTA，右侧关键差异，细线划界；年付/月付为分段控件；每席位费与每 outcome 费并列。价格旁信息控件打开 Outcome Pricing modal，先解释计费关系与限额，再用小表分类定价，底部留销售出口；关闭后回到同一区段。自动聊天邀请压在 modal 上，是层级竞争的反例。首页（intercom.com）黑灰标题、衬线正文、边缘人物照片。",
+      "read_scope": "云端代理 2026-10-28 截图 5 帧，实际点击打开并关闭说明弹窗；未测键盘焦点、读屏与移动端；本会话未重开页面。",
+      "evidence_status": "partial",
+      "limits": "公开官网弹窗，不是产品内升级实测；被聊天邀请遮挡区域不作证据；促销与价格为当时状态；信息弹窗不能替代交易确认。",
+      "revisit_when": "设计产品内价格说明、服务 drawer 或计费确认时；页面改版后。",
+      "tags": [
+        "pricing",
+        "popover",
+        "modal",
+        "layering"
+      ],
+      "excerpts": [
+        {
+          "id": "intercom-pricing-C1",
+          "locator": "https://www.intercom.com/pricing Expert 价格旁 info 控件",
+          "claim": "计费定义在原位展开，Close 后回到 Advanced/Expert 原区段"
+        },
+        {
+          "id": "intercom-pricing-C2",
+          "locator": "https://www.intercom.com/pricing 图 18–20",
+          "claim": "自动聊天邀请越过 modal，营销浮层不应高于费用说明"
+        }
+      ],
+      "captured_for": {
+        "task": "入账 2026-10-28 云端研究包：agent 产品界面与 SaaS 官网/价格浮层设计参考（vault/distilled/agent-design-reference-20261028）",
+        "by": "mcp:claude-code",
+        "at": "2026-10-28T11:27:53.939Z"
+      },
+      "state": "active",
+      "revision": 1
     }
   }
 }

@@ -144,7 +144,7 @@ export class Materials {
         id: `${p.id}:${local}`, aliases: [], pack: p.id, collection: p.id, kind: 'project-index', title: r[f.title],
         url, locator: url ? undefined : `${p.path}#${local}`,
         summary: f.summary ? r[f.summary] ?? '' : '', evidence_status: p.status?.[status] ?? status ?? 'partial',
-        tags: f.tags && r[f.tags] ? [r[f.tags]] : [], limits: [p.limits], revisit_when: p.revisit_when, card: undefined,
+        tags: f.tags && r[f.tags] ? [r[f.tags]].flat() : [], limits: [p.limits], revisit_when: p.revisit_when, card: undefined,
         read_scope: f.read_scope ? r[f.read_scope] : undefined, captured_for: undefined, priority: undefined, category: undefined,
         excerpts: byLocal.get(local) ?? [], snapshot: undefined, declared: [], state: 'active',
       }

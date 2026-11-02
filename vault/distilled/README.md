@@ -1,6 +1,9 @@
 # Distilled · 主题提炼与研究消费
 
 - [SaaS 工程全景](../../projects/books/saas-engineering/README.md)：33 例、共同系统图景、题型与算法索引；研究候选。
+- [Reference 图库逐章索引 · 2026-10-31](reference-gallery-20261031/README.md)：Anthropic、Perplexity、OpenAI、Grok 共 90 件视觉作品的线索、语法对照与按需展开协议；来源包已接入名册，未进 Kit。
+
+- [Agent 产品界面与 SaaS 官网设计参考 · 2026-10-28](agent-design-reference-20261028/README.md)：Open Claude UI 源码换算与 SaaS 定价页、价格浮层 27 张截图；来源已进名册，未进 Kit。
 
 - [AgentScope 企业线研究 · 2026-10-12](agentscope-enterprise-20261012/README.md)：文档系统、Python 2.0、Java Harness/Service 与历史 Runtime/Studio 迁移；消费到知识片。
 
