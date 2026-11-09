@@ -35,7 +35,7 @@ export const TOOLS = [
   {
     name: 'praxis_resolve',
     agent: true,
-    description: '按任务类型和流水线，或指定的 stream，列出这次要读的 Kit 单元（附选用理由）和挂在这些单元上的已启用素材。只读结果里的单元，不默认加载全部。每条素材带 source ID、原件 URL、证据状态、读取范围、摘录（定位与说法）和本地快照路径：需要核对或引用时按定位回原件，读过的来源在 praxis_consume 的 sources 里写上。之后的 exemplars 是服务这些单元的本地 pipeline、example 与已接受的交付（路径与说明）：先用网页素材，要照着做或重复同类交付时再打开范例。',
+    description: '按任务类型和流水线，或指定的 stream，列出这次要读的 Kit 单元（附选用理由）和挂在这些单元上的全部已启用来源。只读结果里的单元，不默认加载全部。素材每个来源一行：source ID、原件 URL、证据状态、description，pages 写它挂在其中哪几页。排序依次是 stream 自己的来源、preferred、收藏、挂的页多的；前 12 行另带读取范围、这些页上的取用题解、摘录（定位与说法）和本地快照路径，其余行只到 description，凭 description 判断要不要用，要用时 praxis_source 取摘录（more_excerpts 是还有几条）。需要核对或引用时按定位回原件，读过的来源在 praxis_consume 的 sources 里写上。之后的 exemplars 是服务这些单元的本地 pipeline、example 与已接受的交付（路径与说明）：先用网页素材，要照着做或重复同类交付时再打开范例。',
     parameters: {
       task_type: str('任务类型 ID，如 technical-explainer、work-report'),
       pipeline: str('html 或 video；省略用任务类型的默认流水线'),
@@ -84,14 +84,14 @@ export const TOOLS = [
   {
     name: 'praxis_search',
     agent: true,
-    description: '在名册的全部来源里按关键词、用途 tag、证据状态、形态或 Kit 分类（层或层下的区域，如 design、design/motion）查找，返回目录级信息：已编目的来源带形态与 description。',
+    description: '在名册的全部来源里按关键词、用途 tag、证据状态、形态或 Kit 分类（层或层下的区域，如 design、design/motion）查找。每个关键词都要命中：标题、description、挂载上写的说明与取用题解、tag、概要、链接或摘录；标题里命中的排前。返回目录级信息：已编目的来源带形态与 description；摘录命中时 matched 给出至多两条（定位与说法），可直接按定位回原件。',
     parameters: { query: str('空格分隔的关键词'), tag: str('用途 tag，如 ARIA'), status: str('verified、partial 或 unavailable'), form: str(`形态：${FORMS.join('、')}`), category: str('Kit 分类：层或区域，如 design/motion'), limit: num('最多返回几条，默认 20') },
     run: (p, a) => p.materials.search(a),
   },
   {
     name: 'praxis_catalog',
     agent: true,
-    description: `来源编目：按 Kit 的层与区域，再按形态（${FORMS.join('、')}）排成纲目，每条带 description（何时打开、取什么）。不给 area 与 query 时只返回纲目与各形态的条数；给 area（如 design/interaction）或 query 时返回条目：标题、description、URL、证据状态、所挂页面与信号。找某类做法或范例时先看纲目，再展开一个区域，凭 description 判断要不要深入；praxis_source 给出读取范围与摘录定位，采用前按 URL 回原件读，不以概要代替原件。`,
+    description: `来源编目：按 Kit 的层与区域，再按形态（${FORMS.join('、')}）排成纲目，每条带 description（何时打开、取什么）。不给 area 与 query 时只返回纲目与各形态的条数；给 area（如 design/interaction）或 query 时返回条目：标题、description、URL、证据状态、所挂页面与信号；query 与 praxis_search 一样查标题、description、挂载说明、tag、概要、链接与摘录，摘录命中时 matched 给出那几条。找某类做法或范例时先看纲目，再展开一个区域，凭 description 判断要不要深入；praxis_source 给出读取范围与摘录定位，采用前按 URL 回原件读，不以概要代替原件。`,
     parameters: { area: str('Kit 区域，如 design/motion；给出时返回该区域及其子区域的条目'), form: str('只看一种形态'), query: str('空格分隔的关键词') },
     run: (p, a) => p.catalog(a),
   },
@@ -270,7 +270,8 @@ export const TOOLS = [
     description: `交付前调用：记录这次工作实际读过的单元和来源（按当前版本），并把交付的文件登记为产物。文件必须在已登记项目的目录里（用 praxis_projects 查，没有就先用 praxis_project 登记），记录带上所属项目。${LOCAL}文件由某条已登记的管线产出时，用 made_with 写上那件 pipeline 产物的 ID。读过的来源与读过的单元之间的挂载随之记下，之后任何一边改了，这次运行会被列为过期。同一文件内容未变不重复登记；内容变了记为新版本；文件挪了位置时用 artifact 指明是哪件产物。只记实际读过、用过的；文件必须已经存在。返回运行记录，其中 artifacts 给出每个文件的产物 ID 与版本。`,
     parameters: {
       title: str('这次工作'), task_type: str('任务类型 ID'), pipeline: str('html 或 video'), preset: str('用的预设 ID'), overrides: { type: 'object', description: '这次对预设的临时改动' },
-      units: list('读过的单元'), sources: list('实际读过的来源 ID：resolve 素材里的 source，或 praxis_search、praxis_source 得到的 ID'),
+      units: list('读过的单元'),
+      sources: { type: 'array', description: '实际读过的来源：ID（resolve 素材里的 source，或 praxis_search、praxis_source 得到的），或带用途的对象。用途写这次工作用它做什么：取了哪一处、支撑了哪个判断；记进运行记录，列在来源的活动里，不进来源的说明', items: { anyOf: [{ type: 'string' }, { type: 'object', properties: { id: str('来源 ID'), use: str('这次用它做什么，一句') }, required: ['id'] }] } },
       artifacts: { type: 'array', description: '交付的文件：路径字符串，或带说明的对象。仓库内用仓库路径，仓库外用绝对路径', items: { anyOf: [
         { type: 'string' },
         { type: 'object', properties: { path: str('文件路径'), title: str('产物名称；省略用文件名'), description: str('它是什么、给谁用'), artifact: str('已有产物 ID：文件换了位置或改了名时指明'), made_with: str('产出它的管线：kind 为 pipeline 的产物 ID（在 resolve 的 exemplars 里）'),

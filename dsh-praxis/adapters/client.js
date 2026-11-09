@@ -109,7 +109,7 @@ window.__ModuleLoader__.load({
           h('div', { className: 'pxc-section' }, h('span', { className: 'pxc-label' }, t('units')),
             h('ul', { className: 'pxc-list' }, units.map((u) => h('li', { key: u.id }, h('button', { type: 'button', className: 'pxc-file', onClick: () => openPage({ tab: 'kit', unit: u.id }) }, u.title), h('span', { className: 'pxc-dim' }, u.reasons?.join('；')))))),
           mats.length ? h('div', { className: 'pxc-section' }, h('span', { className: 'pxc-label' }, t('materials')),
-            h('ul', { className: 'pxc-list' }, mats.map((m) => h('li', { key: m.binding }, h('button', { type: 'button', className: 'pxc-file', onClick: () => openPage({ tab: 'sources', source: m.source }) }, m.title), h('span', { className: 'pxc-dim' }, m.description))))) : null)
+            h('ul', { className: 'pxc-list' }, mats.map((m) => h('li', { key: m.source }, h('button', { type: 'button', className: 'pxc-file', onClick: () => openPage({ tab: 'sources', source: m.source }) }, m.title), h('span', { className: 'pxc-dim' }, m.description))))) : null)
       }
       function ConsumeRow({ block, phase, openFile }) {
         const v = valueOf(block)
@@ -653,7 +653,7 @@ window.__ModuleLoader__.load({
           h(Block, { label: t('task.units'), aside: h('span', { className: 'pxs-caption' }, String(r.units.length)) }, h('div', { className: 'pxs-list' }, r.units.map((u) =>
             h(Entry, { key: u.id, dataKey: `unit:${u.id}`, glyph: h(Glyph, { name: u.id.split('/')[0] }), title: u.title, sub: u.id, desc: u.description, onOpen: () => go({ tab: 'kit', unit: u.id }), aside: u.reasons.map((x) => h(P.Tag, { key: x, tone: 'neutral' }, x)) })))),
           h(Block, { label: t('task.materials'), aside: h('span', { className: 'pxs-caption' }, String(r.materials.length)) }, r.materials.length ? h('div', { className: 'pxs-list' }, r.materials.map((m) =>
-            h(Entry, { key: m.binding, dataKey: `source:${m.source}`, last: m.source === last, intent: intentOn(sources, m.source), glyph: h(Glyph, { name: m.form ?? 'article' }), title: m.title, sub: hostOf(m.url), desc: m.description,
+            h(Entry, { key: m.source, dataKey: `source:${m.source}`, last: m.source === last, intent: intentOn(sources, m.source), glyph: h(Glyph, { name: m.form ?? 'article' }), title: m.title, sub: hostOf(m.url), desc: m.description,
               onOpen: () => openSource(m.source, { list: r.materials.map((x) => x.source), seed: { title: m.title, url: m.url, form: m.form } }), aside: h(ReadWord, { row: m, t }) }))) : h('p', { className: 'pxs-none' }, t('task.noMaterials'))),
           r.exemplars.length ? h(Block, { label: t('task.exemplars'), aside: h('span', { className: 'pxs-caption' }, String(r.exemplars.length)) }, h('div', { className: 'pxs-list' }, r.exemplars.map((x) =>
             h(Entry, { key: x.artifact, dataKey: `artifact:${x.artifact}`, glyph: h(Glyph, { name: 'archive' }), title: x.title, sub: t(`kind.${x.kind}`), desc: x.description ?? x.path, onOpen: () => go({ tab: 'artifacts', artifact: x.artifact }) })))) : null,
@@ -850,13 +850,28 @@ window.__ModuleLoader__.load({
       const switchMode = (v) => { remember('praxis.sources.tab', v); up(v === 'review' ? { tab: 'sources', mode: 'review' } : { tab: 'sources' }) }
       const keep = (r) => (filter === 'open' ? !reviewed(r) : filter === 'needs-work' ? reviewed(r) && r.review.verdict === 'needs-work' : filter === 'reviewed' ? reviewed(r) : true)
       const terms = query.trim().toLowerCase().split(/\s+/).filter(Boolean)
+      const said = terms.join(' ')
+      // Core matches more than the row shows: notes written on bindings and the excerpts. Its answer
+      // comes a moment after the instant match below and only adds to it, with the passages that hold
+      // a searched word; an answer to an older query is ignored.
+      const [found, setFound] = React.useState({ q: '', hits: new Map() })
+      React.useEffect(() => {
+        if (!said) return
+        const timer = setTimeout(() => call('praxis_catalog', { query: said }).then((r) => {
+          const hits = new Map()
+          for (const area of r.areas) for (const group of area.forms) for (const x of group.sources ?? []) hits.set(x.id, x.matched)
+          setFound({ q: said, hits })
+        }, () => {}), 150)
+        return () => clearTimeout(timer)
+      }, [said])
+      const hits = found.q === said ? found.hits : null
       const filtering = terms.length > 0 || !!tag
       // A changed filter shows its result from the top.
       const asked = `${filter}|${tag}|${terms.join(' ')}`
       const before = React.useRef(asked)
       React.useEffect(() => { if (before.current !== asked && active) scroller?.current?.scrollTo({ top: 0 }); before.current = asked }, [asked])
-      const match = (r) => (!tag || r.tags?.includes(tag)) && terms.every((x) => [r.title, r.description, r.url, r.id, ...(r.tags ?? [])].join(' ').toLowerCase().includes(x))
-      const shown = (rows ?? []).filter((r) => (mode === 'catalog' || keep(r)) && match(r))
+      const match = (r) => (!tag || r.tags?.includes(tag)) && (terms.every((x) => [r.title, r.description, r.url, r.id, ...(r.tags ?? [])].join(' ').toLowerCase().includes(x)) || !!hits?.has(r.id))
+      const shown = (rows ?? []).filter((r) => (mode === 'catalog' || keep(r)) && match(r)).map((r) => (hits?.get(r.id) ? { ...r, matched: hits.get(r.id) } : r))
       const layers = mode === 'catalog' && catalog ? shelves(catalog.outline, catalog.forms, shown) : []
       const full = (g) => filtering || openAreas.has(g.area)
       // What ← → step through: the sources in the order they are drawn.
@@ -902,7 +917,7 @@ window.__ModuleLoader__.load({
      * with the Praxis MCP can look it up and record it, and any other agent can still follow the links.
      */
     const cartText = (items) => [
-      'Use these sources from Praxis for this work. Each says when it applies; open the original at its link before relying on it. With the Praxis MCP, praxis_source <id> gives the read scope and where the excerpts are, and praxis_consume should list the ids you used.',
+      'Use these sources from Praxis for this work. Each says when it applies; open the original at its link before relying on it. With the Praxis MCP, praxis_source <id> gives the read scope and where the excerpts are, and praxis_consume should list the ids you used, each with what you used it for.',
       ...items.map((x, i) => `${i + 1}. ${x.title} — ${x.url}${x.description ? ` — When: ${x.description}` : ''} (praxis: ${x.id})`),
     ].join('\n')
 
@@ -1059,7 +1074,8 @@ window.__ModuleLoader__.load({
           h('span', { className: 'pxs-tile', title: t(`form.${row.form}`) }, h(Glyph, { name: row.form })),
           h('span', { className: 'pxs-row-text' },
             h('span', { className: 'pxs-row-title', dir: 'auto' }, row.title, h('span', { className: 'pxs-host' }, hostOf(row.url))),
-            h('span', { className: 'pxs-row-desc', dir: 'auto', title: row.description }, row.description))),
+            h('span', { className: 'pxs-row-desc', dir: 'auto', title: row.description }, row.description),
+            row.matched ? h('span', { className: 'pxs-row-found', dir: 'auto', title: row.matched[0].claim }, h('q', null, row.matched[0].claim), row.matched[0].locator ? h('small', null, row.matched[0].locator) : null) : null)),
         h('span', { className: 'pxs-row-side' }, h(StateTag, { row, t }), h(ReadWord, { row, t }), h('time', { dateTime: row.captured_at }, day(row.captured_at)), h(CartButton, { row, t, pick }), h(RowMenu, { row, t, onReviewed, onConflict })))
     }
 
@@ -1072,7 +1088,7 @@ window.__ModuleLoader__.load({
     function SourceCard({ row, t, pick, sources, last, onOpen, onTag, tag }) {
       return h('div', { className: 'pxs-card', 'data-key': `source:${row.id}`, 'data-picked': pick.inCart(row.id) || undefined, 'data-last': last || undefined },
         h('button', { type: 'button', className: 'pxs-card-main', onClick: onOpen, ...intentOn(sources, row.id) },
-          row.preview ? h('span', { className: 'pxs-card-look', dir: 'auto' }, h('q', null, row.preview.claim), h('small', null, row.preview.locator)) : null,
+          (row.matched?.[0] ?? row.preview) ? (({ claim, locator }) => h('span', { className: 'pxs-card-look', dir: 'auto' }, h('q', null, claim), h('small', null, locator)))(row.matched?.[0] ?? row.preview) : null,
           h('span', { className: 'pxs-card-title', dir: 'auto' }, row.title),
           h('span', { className: 'pxs-card-meta' }, h(Glyph, { name: row.form, size: 12 }), h('span', null, [t(`form.${row.form}`), hostOf(row.url)].filter(Boolean).join(' · '))),
           h('span', { className: 'pxs-card-desc', dir: 'auto' }, row.description)),
@@ -1230,7 +1246,7 @@ window.__ModuleLoader__.load({
                 h('span', { dir: 'auto' }, d.captured_for ? t('d.collected', { task: d.captured_for.task ?? '—' }) : [t('d.fromPack', { pack: d.collection.title ?? '—' }), d.collection.purpose ? ` — ${d.collection.purpose}` : ''].join(''),
                   d.captured_for?.by ? h('span', { className: 'pxs-caption' }, ' · ', d.captured_for.by) : null,
                   d.captured_for?.session?.id ? [' · ', h('button', { key: 's', type: 'button', className: 'pxs-link', onClick: () => openSession(d.captured_for.session.id) }, t('ask.session'))] : null)) : null,
-              runs.slice(0, 6).map((r, i) => h('li', { key: i }, h('time', null, day(r.at)), h('span', { dir: 'auto' }, t('d.readFor', { title: r.title }),
+              runs.slice(0, 6).map((r, i) => h('li', { key: i }, h('time', null, day(r.at)), h('span', { dir: 'auto' }, t('d.readFor', { title: r.title }), r.use ? h('span', { className: 'pxs-caption' }, ' — ', r.use) : null,
                 r.artifacts.map((a) => h(React.Fragment, { key: a.artifact }, ' · ', h('button', { type: 'button', className: 'pxs-link', onClick: () => go({ tab: 'artifacts', artifact: a.artifact }) }, `${a.path.split('/').pop()} v${a.version}`))))))),
             runs.length ? null : h(None, null, t('d.noRuns')))))
     }
@@ -1386,6 +1402,7 @@ window.__ModuleLoader__.load({
 .pxs-row-title{font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .pxs-host{margin-left:8px;color:var(--dsw-alias-label-tertiary);font-weight:400;font-size:12.5px}
 .pxs-row-desc{color:var(--dsw-alias-label-secondary);font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pxs-row-found{color:var(--dsw-alias-label-tertiary);font-size:12.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.pxs-row-found q{quotes:none}.pxs-row-found small{margin-left:8px;font-size:11px}
 .pxs-row-side{flex:none;display:flex;align-items:center;gap:10px;padding-right:4px;color:var(--dsw-alias-label-tertiary);font-size:12.5px;font-variant-numeric:tabular-nums}
 .pxs-row-side time{min-width:52px;text-align:right}
 .pxs-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px}

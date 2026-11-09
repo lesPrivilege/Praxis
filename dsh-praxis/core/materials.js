@@ -182,8 +182,41 @@ export class Materials {
     return { id: c.id, title, path: c.path, readme: this.paths.normalize(readme), purpose: lede ? clip(lede.replace(/\[([^\]]+)\]\([^)]*\)/g, '$1').replace(/\s+/g, ' '), 240) : undefined }
   }
 
-  search({ query = '', tag, status, category, form, limit = 20 } = {}) {
+  /**
+   * The test for one query, shared by search, the catalog and the Praxis page. Every word must be
+   * found: in the title, the descriptions (the catalog's and those written on bindings), usage
+   * notes, tags, the summary, the link or the excerpts. A word counts most in the title, then in a
+   * description, note or tag. For a source that matches it returns the score and the excerpts that
+   * hold a word, with their locators; otherwise undefined. With no words every source matches.
+   */
+  matcher(query = '') {
     const terms = query.toLowerCase().split(/\s+/).filter(Boolean)
+    if (!terms.length) return () => ({ score: 0, matched: [] })
+    const notes = new Map()
+    const usage = (u) => (u ? [u.problem, u.how, u.conditions, u.limits, ...(u.examples ?? [])].filter(Boolean).join(' ') : '')
+    for (const b of this.listBindings()) notes.set(b.source, [...(notes.get(b.source) ?? []), b.description_curated ? b.description : '', usage(b.usage)])
+    return (s) => {
+      const excerpts = (s.excerpts ?? []).map((e) => ({ e, text: `${e.locator ?? ''} ${e.claim ?? ''}`.toLowerCase() }))
+      const fields = [
+        [3, s.title ?? ''],
+        [2, [s.description ?? '', ...(notes.get(s.id) ?? []), ...(s.tags ?? [])].join(' ')],
+        [1, [s.id, s.summary ?? '', s.url ?? s.locator ?? '', ...(s.aliases ?? []), ...excerpts.map((x) => x.text)].join(' ')],
+      ].map(([w, text]) => [w, text.toLowerCase()])
+      let score = 0
+      for (const t of terms) {
+        const w = Math.max(0, ...fields.filter(([, text]) => text.includes(t)).map(([w]) => w))
+        if (!w) return undefined
+        score += w
+      }
+      const matched = excerpts.filter((x) => terms.some((t) => x.text.includes(t))).slice(0, 2)
+        .map(({ e }) => ({ ...(e.locator ? { locator: e.locator } : {}), claim: clip(e.claim ?? '', 120) }))
+      return { score, matched }
+    }
+  }
+
+  /** Find sources by words (see matcher), tag, evidence status, form or Kit area; excerpts that hold a word come back as `matched`. */
+  search({ query = '', tag, status, category, form, limit = 20 } = {}) {
+    const match = this.matcher(query)
     const filed = category ? this.filedUnder() : undefined
     const hits = []
     for (const s of this.roster().list) {
@@ -192,13 +225,13 @@ export class Materials {
       if (status && s.evidence_status !== status) continue
       if (form && s.form !== form) continue
       if (category && !(filed.get(s.id) ?? []).some((c) => c === category || c.startsWith(`${category}/`))) continue
-      const hay = [s.id, s.title, s.description ?? '', s.summary, s.url ?? s.locator ?? '', ...s.tags, ...s.aliases].join(' ').toLowerCase()
-      const score = terms.reduce((n, t) => n + (hay.includes(t) ? (s.title?.toLowerCase().includes(t) ? 3 : 1) : -100), 0)
-      if (!terms.length || score > 0) hits.push({ score, s })
+      const hit = match(s)
+      if (hit) hits.push({ s, ...hit })
     }
     hits.sort((a, b) => b.score - a.score)
-    return hits.slice(0, limit).map(({ s }) => ({
+    return hits.slice(0, limit).map(({ s, matched }) => ({
       id: s.id, title: s.title, description: s.description, summary: clip(s.summary ?? '', 160), form: s.form, evidence_status: s.evidence_status, purpose_tags: s.tags, category: s.category,
+      matched: matched.length ? matched : undefined,
     }))
   }
 

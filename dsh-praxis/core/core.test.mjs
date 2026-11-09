@@ -74,7 +74,8 @@ test('stream: an authored page in the data root reads as a unit and resolves wit
   assert.equal(r.stream.id, 'stream/visual')
   assert.ok(r.units.some((u) => u.id === 'design/motion'), 'draws on the Kit units it names')
   p.materials.curate(`${SRC}@${s.path}`, { description: '这条 stream 用它。' }, { expected_revision: 0 })
-  assert.equal(p.resolve({ stream: 'visual' }).materials[0].binding, `${SRC}@${s.path}`, "the stream's own sources come first")
+  const [first] = p.resolve({ stream: 'visual' }).materials
+  assert.deepEqual([first.source, first.pages, first.description], [SRC, ['stream/visual'], '这条 stream 用它。'], "the stream's own sources come first, with the stream's note")
 
   assert.throws(() => p.resolve({ stream: 'nope' }), /unknown stream/)
   assert.throws(() => p.reviseUnit({ unit: 'stream/visual', body: '# x\n', reason: 'r', expected_revision: 0 }), /edited in place/)
@@ -89,7 +90,7 @@ test('resolve: resident units, then the type units for the chosen pipeline, then
   assert.ok(ids.includes('writing/organization/mechanism'))
   assert.ok(ids.includes('publish/html'))
   assert.ok(!ids.includes('design/motion'), 'video-only unit left out of html')
-  assert.equal(html.materials[0].binding, BIND)
+  assert.deepEqual([html.materials[0].source, html.materials[0].pages], [SRC, ['design/controls']])
   const video = p.resolve({ task_type: 'explainer', pipeline: 'video' })
   assert.ok(video.units.some((u) => u.id === 'design/motion'))
   assert.throws(() => p.resolve({ task_type: 'nope' }), /unknown task type/)
@@ -620,4 +621,41 @@ test('lifecycles: a retired source stays readable but takes no writes; a rewrite
   assert.throws(() => p.materials.reviewEntry(g.id, { verdict: 'accurate', by: 'person' }), /retired/)
   assert.throws(() => p.materials.retire(g.id, { reason: '再次', by: 'person' }), /retired/, 'retiring is final and happens once')
   assert.deepEqual(p.materials.capture([item], { task: '再收', by: 'agent' }).map((r) => [r.id, r.existing, r.retired]), [[g.id, true, true]], 'capturing a retired URL says so')
+})
+
+test('resolve lists the whole shelf, one row per source; search reads notes and excerpts; consume keeps what a source was used for', () => {
+  const { root, p } = setup({ project: true })
+  const item = (url, title, extra = {}) => ({ url, title, form: 'practice', category: 'design', description: '做交互说明时打开；取做法。', summary: '一份指南。', read_scope: '读了正文', limits: '未运行示例。', revisit_when: '改版时。', ...extra })
+  const [a, b, c] = p.materials.capture([
+    item('https://example.org/alpha', 'Alpha', { excerpts: [{ locator: '§2', claim: 'The shared element travels between the two places.' }] }),
+    item('https://example.org/beta', 'Beta'),
+    item('https://example.org/gamma', 'Gamma'),
+  ], { task: '购物车动效', by: 'test' }).map((x) => x.id)
+  const on = (id, page, patch) => p.materials.curate(`${id}@kit/design/${page}.md`, patch, { expected_revision: 0 })
+  on(a, 'controls', { enabled: true })
+  on(a, 'motion', { enabled: true })
+  on(b, 'controls', { favorite: true })
+  on(c, 'motion', { usage: { problem: '编排几段运动的先后', how: '先看第 3 节的时序表。' } })
+  const units = ['design/controls', 'design/motion']
+
+  const shelf = p.resolve({ units, detailed: 2 }).materials
+  assert.deepEqual(shelf.map((m) => [m.source, m.pages]), [[b, ['design/controls']], [a, ['design/controls', 'design/motion']], [SRC, ['design/controls']], [c, ['design/motion']]],
+    'one row per source: starred first, then the one on more pages, then roster order; nothing cut')
+  assert.deepEqual(shelf[1].excerpts, [{ locator: '§2', claim: 'The shared element travels between the two places.' }], 'the first rows carry the reading aids')
+  assert.deepEqual([shelf[2].excerpts, shelf[2].read_scope, shelf[2].description.length > 0], [undefined, undefined, true], 'the rest are a catalog line')
+  assert.deepEqual(p.resolve({ units }).materials.find((m) => m.source === c).usage, [{ problem: '编排几段运动的先后', how: '先看第 3 节的时序表。' }], 'a usage note on those pages comes with a detailed row')
+
+  const [hit] = p.materials.search({ query: 'travels' })
+  assert.deepEqual([hit.id, hit.matched], [a, [{ locator: '§2', claim: 'The shared element travels between the two places.' }]], 'an excerpt is searched and returned with where it is')
+  assert.deepEqual(p.materials.search({ query: '时序表' }).map((x) => x.id), [c], 'a usage note on a binding is searched')
+  assert.deepEqual(p.materials.search({ query: 'travels 时序表' }), [], 'every word must be found')
+  const row = p.catalog({ query: 'travels' }).areas.flatMap((x) => x.forms.flatMap((f) => f.sources)).find((x) => x.id === a)
+  assert.deepEqual([row.matched[0].locator, row.preview.locator], ['§2', '§2'], 'the catalog query matches the same way')
+
+  writeFileSync(join(root, 'page.html'), '<p>v1</p>')
+  const run = p.consume({ title: '购物车动效', units: ['design/controls'], sources: [{ id: a, use: '取 §2 的位移做法' }, a, { id: b, use: ' ' }], artifacts: ['page.html'] })
+  assert.deepEqual(run.sources.map((x) => [x.id, x.use]), [[a, '取 §2 的位移做法'], [b, undefined]])
+  assert.equal(p.source(a).used_by[0].use, '取 §2 的位移做法', "the use is the source's activity")
+  assert.equal(p.source(a).description, '做交互说明时打开；取做法。', 'and never enters its entry')
+  assert.deepEqual(p.artifact(run.artifacts[0].artifact).versions[0].run.sources.map((x) => x.use), ['取 §2 的位移做法', undefined])
 })

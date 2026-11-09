@@ -115,23 +115,35 @@ export function createPraxis(options = {}) {
     },
 
     /**
-     * What to read for a task: resident units, then the units the task type lists
-     * (filtered by pipeline), then a named stream with the units it draws on, then enabled bindings
-     * on those units as material rows (web sources, the stream's own first), then exemplars: local
-     * pipelines, examples and accepted deliveries that serve those units.
+     * What to read for a task: resident units, then the units the task type lists (filtered by
+     * pipeline), then a named stream with the units it draws on; then every enabled source on those
+     * units, one row each with the pages it is on; then exemplars: local pipelines, examples and
+     * accepted deliveries that serve those units. Nothing on the shelf is cut, because the agent
+     * judges relevance better than word matching does: the first `detailed` rows carry the reading
+     * aids, the rest a catalog line, and praxis_source gives the rest of any of them.
      */
-    resolve({ task_type, pipeline, stream, units = [], preset, materials_limit = 12, exemplars_limit = 8 } = {}) {
+    resolve({ task_type, pipeline, stream, units = [], preset, detailed = 12, exemplars_limit = 8 } = {}) {
       const k = kit()
       const { picked, type, pipeline: chosen, stream: own } = pick(k, { task_type, pipeline, stream, units })
       pipeline = chosen
-      const targets = new Set([...picked.values()].map((u) => u.path))
-      const authored = (b) => Number(b.target.split('#')[0] === own?.path)
-      const rows = materials.listBindings()
-        .filter((b) => b.enabled && targets.has(b.target.split('#')[0]))
-        .sort((a, b) => authored(b) - authored(a) || Number(b.priority === 'preferred') - Number(a.priority === 'preferred') || Number(b.favorite) - Number(a.favorite))
-        .slice(0, materials_limit)
-        .map((b) => material(b, materials.source(b.source)))
-      const exemplars = this.exemplars(targets).slice(0, exemplars_limit)
+      const pageOf = new Map([...picked.values()].map((u) => [u.path, u.id]))
+      const shelf = new Map()
+      for (const b of materials.listBindings()) {
+        const page = b.enabled && pageOf.get(b.target.split('#')[0])
+        if (!page) continue
+        if (!shelf.has(b.source)) shelf.set(b.source, [])
+        shelf.get(b.source).push({ ...b, page })
+      }
+      // Every step of the order can be said: the stream's own sources, then ones marked preferred,
+      // then starred ones, then those on more of the pages this task reads; ties keep roster order.
+      const authored = (b) => b.target.split('#')[0] === own?.path
+      const preferred = (b) => b.priority === 'preferred'
+      const lead = (b) => [authored(b), preferred(b), b.favorite, b.description_curated].map(Number)
+      const rows = [...shelf.values()]
+        .map((bs) => ({ bs: bs.sort((x, y) => byKeys(lead(x), lead(y))), key: [bs.some(authored), bs.some(preferred), bs.some((b) => b.favorite), new Set(bs.map((b) => b.page)).size].map(Number) }))
+        .sort((x, y) => byKeys(x.key, y.key))
+        .map(({ bs }, i) => material(bs, materials.source(bs[0].source), i < detailed))
+      const exemplars = this.exemplars(new Set(pageOf.keys())).slice(0, exemplars_limit)
       const chosenPreset = preset ? this.preset(preset)
         : Object.entries(presets.all()).map(([id, p]) => ({ id, ...p })).find((p) => p.pipeline === pipeline && p.default && p.state !== 'removed')
       if (preset && !chosenPreset) throw new Error(`unknown preset: ${preset}`)
@@ -183,7 +195,7 @@ export function createPraxis(options = {}) {
       for (const r of relations) for (const t of reach.get(r.unit) ?? []) types.set(t.id, t)
       const used_by = this.runs({ limit: 1000 })
         .filter((r) => r.sources.some((x) => x.id === s.id))
-        .map((r) => ({ id: r.id, title: r.title, at: r.at, by: r.by, artifacts: r.artifacts.map((a) => ({ artifact: a.artifact, version: a.version, path: a.path })) }))
+        .map((r) => ({ id: r.id, title: r.title, at: r.at, by: r.by, use: r.sources.find((x) => x.id === s.id).use, artifacts: r.artifacts.map((a) => ({ artifact: a.artifact, version: a.version, path: a.path })) }))
       return { ...s, members: s.members ? { pattern: s.members.pattern, skipped: s.members.skipped, ...materials.members(s.id), ledger: materials.ledger(s.id) } : undefined, collection: materials.collectionOf(found), relations, serves: [...types.values()], used_by }
     },
 
@@ -201,11 +213,15 @@ export function createPraxis(options = {}) {
         if (!u) throw new Error(`unknown unit: ${ref}; pass the unit id as resolve lists it (e.g. writing/evidence), without a version`)
         return { id: u.id, path: u.path, version: u.version }
       })
+      // A source comes as its ID, or with what this work used it for; that use is activity, kept in
+      // the run and shown with the source, never written into its entry.
       const read = new Map()
       for (const ref of sources) {
-        const s = materials.source(ref)
-        if (!s) throw new Error(`unknown source: ${ref}`)
-        read.set(s.id, { id: s.id, sha256: s.version })
+        const { id: want, use } = typeof ref === 'string' ? { id: ref } : ref
+        const s = materials.source(want)
+        if (!s) throw new Error(`unknown source: ${want}`)
+        const uses = [...new Set([read.get(s.id)?.use, use?.trim()].filter(Boolean))]
+        read.set(s.id, { id: s.id, sha256: s.version, ...(uses.length ? { use: uses.join('；') } : {}) })
       }
       const sourceRefs = [...read.values()]
       const unitPaths = new Set(unitRefs.map((u) => u.path))
@@ -270,7 +286,7 @@ export function createPraxis(options = {}) {
             version: i + 1, sha256: v.sha256, size: v.size, at: v.at, by: v.by, derived_from: v.derived_from ?? [],
             made_with: v.made_with ? { id: v.made_with, title: artifacts.get(v.made_with)?.title ?? v.made_with } : undefined,
             run: run ? { id: run.id, title: run.title, at: run.at, task_type: run.task_type, pipeline: run.pipeline,
-              units: run.units.map((u) => u.id), bindings: run.bindings.map((b) => b.id), sources: run.sources.map((s) => ({ id: s.id, title: materials.source(s.id)?.title ?? s.id })),
+              units: run.units.map((u) => u.id), bindings: run.bindings.map((b) => b.id), sources: run.sources.map((s) => ({ id: s.id, title: materials.source(s.id)?.title ?? s.id, ...(s.use ? { use: s.use } : {}) })),
               changed: stale.get(run.id) ?? null } : null,
             review: rec.review?.version === i + 1 ? rec.review : null,
           }
@@ -390,11 +406,13 @@ export function createPraxis(options = {}) {
         if (u) pages.set(b.source, [...(pages.get(b.source) ?? []), u.id])
       }
       const state = materials.sourceState()
-      const terms = (query ?? '').toLowerCase().split(/\s+/).filter(Boolean)
+      const match = materials.matcher(query ?? '')
+      const terms = (query ?? '').split(/\s+/).filter(Boolean)
       const groups = new Map()
       for (const s of materials.roster().list) {
         if (!s.form || s.state === 'retired' || (form && s.form !== form)) continue
-        if (terms.length && !terms.every((t) => [s.title, s.description, s.summary, s.url, ...(s.tags ?? [])].join(' ').toLowerCase().includes(t))) continue
+        const hit = match(s)
+        if (!hit) continue
         const row = {
           id: s.id, title: s.title, form: s.form, description: s.description, url: s.url, evidence_status: s.evidence_status,
           pack: s.pack, member_of: s.member_of, collection: s.members ? true : undefined, pages: pages.get(s.id) ?? [],
@@ -402,9 +420,11 @@ export function createPraxis(options = {}) {
           // What a person reviewing the catalog needs per row: which description revision is current,
           // the latest review and the revision it saw, and when the source came in.
           entry_revision: s.entry_revision, captured_at: s.captured_for?.at,
-          // Use tags find a source across areas; the first excerpt previews what it says, with where.
+          // Use tags find a source across areas; the first excerpt previews what it says, with where, and
+          // with a query `matched` holds the excerpts a searched word is in.
           tags: s.tags?.length ? s.tags : undefined,
           preview: s.excerpts?.[0] ? { claim: s.excerpts[0].claim, locator: s.excerpts[0].locator } : undefined,
+          matched: hit.matched.length ? hit.matched : undefined,
           // `current`: the description the review judged is still the description (states.js).
           review: s.review ? (({ verdict, revision, by, at, current }) => ({ verdict, revision, by, at, current }))(materials.entryReview(s)) : undefined,
         }
@@ -507,18 +527,33 @@ function servedBy(k) {
   return new Map([...out].map(([id, types]) => [id, [...types.values()]]))
 }
 
-// A material row carries what an agent needs to reach the original: the URL or locator, the
-// passages the record vouches for with their locators, how it was read, and any local snapshot.
-// The source ID is what consume takes once the agent has read it.
-function material(b, s) {
+// A material row is one source on the pages a task reads (its bindings there, leading one first):
+// the way to the original, which of those pages it is on, and its description from the leading
+// binding. A detailed row adds how it was read, the usage notes on those pages, the passages the
+// record vouches for with their locators, and any local snapshot; a catalog row says how many
+// excerpts praxis_source has. The source ID is what consume takes once the agent has read it.
+function material(bs, s, detailed) {
+  const [b] = bs
   const excerpts = s?.excerpts ?? []
+  const row = {
+    source: b.source, title: b.title, form: s?.form, url: s?.url, evidence_status: s?.evidence_status, description: clip(b.description, 100),
+    pages: [...new Set(bs.map((x) => x.page))],
+    ...(bs.some((x) => x.priority === 'preferred') ? { priority: 'preferred' } : {}), ...(bs.some((x) => x.favorite) ? { favorite: true } : {}),
+  }
+  if (!detailed) return { ...row, more_excerpts: excerpts.length || undefined }
+  const usage = bs.map((x) => x.usage).filter(Boolean)
   return {
-    binding: b.id, source: b.source, title: b.title, form: s?.form, description: clip(b.description, 100),
-    url: s?.url, evidence_status: s?.evidence_status, read_scope: s?.read_scope ? clip(s.read_scope, 100) : undefined,
+    ...row, read_scope: s?.read_scope ? clip(s.read_scope, 100) : undefined, usage: usage.length ? usage : undefined,
     excerpts: excerpts.slice(0, 4).map((e) => ({ ...(e.locator ? { locator: e.locator } : {}), claim: clip(e.claim ?? '', 120) })),
     more_excerpts: excerpts.length > 4 ? excerpts.length - 4 : undefined,
-    snapshot: s?.snapshot?.path, card: s?.card, priority: b.priority, favorite: b.favorite,
+    snapshot: s?.snapshot?.path, card: s?.card,
   }
+}
+
+/** Compare two key lists, larger first, item by item. */
+function byKeys(x, y) {
+  for (let i = 0; i < x.length; i++) if (x[i] !== y[i]) return y[i] - x[i]
+  return 0
 }
 
 function summarize(id, rec, artifacts, staleRuns, projects) {
