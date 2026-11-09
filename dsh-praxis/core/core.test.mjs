@@ -538,7 +538,14 @@ test('the catalog files any source by form and Kit area; local work is an exampl
   assert.deepEqual(rows.areas[0].forms[0].sources.map((r) => [r.title, r.description]), [['Motion guide', '编排动效时打开；取时长与缓动。']])
   assert.deepEqual(p.catalog({ query: '键盘' }).areas[0].forms[0].sources.map((r) => [r.id, r.pages]), [[SRC, ['design/controls']]])
   assert.throws(() => p.materials.file(SRC, { form: 'standard' }, { expected_revision: 0 }), /revision/)
-  const notes = join(mkdtempSync(join(tmpdir(), 'praxis-notes-')), 'controls.md')
+  // A review holds until the entry is edited again; the review write itself does not reopen it.
+  const row = () => p.catalog({ query: '键盘' }).areas[0].forms[0].sources[0]
+  assert.equal(row().review, undefined)
+  p.materials.reviewEntry(SRC, { verdict: 'accurate', by: 'person' })
+  assert.deepEqual([row().review.verdict, row().review.current], ['accurate', true])
+  p.materials.file(SRC, { description: '写折叠控件时打开；取键盘与焦点约定。' }, { expected_revision: row().entry_revision, by: 'test' })
+  assert.equal(row().review.current, false, 'an edit after the review reopens the entry')
+  const notes =join(mkdtempSync(join(tmpdir(), 'praxis-notes-')), 'controls.md')
   writeFileSync(notes, '# 控件笔记')
   assert.throws(() => p.consume({ title: '笔记', artifacts: [notes] }), /not inside a registered project/)
   assert.throws(() => p.consume({ title: '笔记', artifacts: [{ path: notes, kind: 'trace' }] }), /kind must be/)

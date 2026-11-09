@@ -399,6 +399,11 @@ export function createPraxis(options = {}) {
           id: s.id, title: s.title, form: s.form, description: s.description, url: s.url, evidence_status: s.evidence_status,
           pack: s.pack, member_of: s.member_of, collection: s.members ? true : undefined, pages: pages.get(s.id) ?? [],
           signals: signalsOf({ source: s.id, review: s.review }, state),
+          // What a person reviewing the catalog needs per row: which description revision is current,
+          // the latest review and the revision it saw, and when the source came in.
+          entry_revision: s.entry_revision, captured_at: s.captured_for?.at,
+          // The review write is itself a catalog revision, so a review is current while it was the last write.
+          review: s.review ? { verdict: s.review.verdict, revision: s.review.revision, by: s.review.by, at: s.review.at, current: s.entry_revision === s.review.revision + 1 } : undefined,
         }
         for (const a of new Set((filed.get(s.id) ?? ['']).map(areaOf))) {
           if (area !== undefined && a !== area && !a.startsWith(`${area}/`)) continue

@@ -41,6 +41,10 @@ Open **Praxis** from the right sidebar's guide.
 
 A source without a curated description, or one nobody has reviewed, is the normal state. The source summary stands in until someone has a reason to curate it.
 
+## Source review
+
+**Praxis** in the left sidebar opens the source review page, built from DSH's own controls. Each catalogued source is one row, newest first, with its title, form and description (when to open it, what to take). Expand a row to see the original link, summary, why it was collected, Kit area, read scope, limits, excerpts and the pages it is attached to, then record a verdict: **Accurate**, **Needs work**, or **Rewrite** the description and record it as revised, with an optional note. The row confirms and folds away. *To review* lists sources whose current description has no review; if the entry is edited after a review, it comes back. *Needs work*, *Reviewed* and *All* give the other views. *Open control plane* in the header opens the full control plane in the right sidebar.
+
 ## Revising the Kit
 
 A revision of a page, by a person or an agent, is stored in the user's data and takes effect at once on every surface; the page in the package stays as shipped. When a package upgrade changes that page, the revision is listed as needing attention, to be merged or reverted; a reverted revision's full text stays in the history.

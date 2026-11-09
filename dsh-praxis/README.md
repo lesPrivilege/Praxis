@@ -13,7 +13,7 @@ Praxis 是一套设计与写作的工作方法（Kit），加一份来源名册�
 
 | 入口 | 给谁 | 提供什么 |
 |---|---|---|
-| DSH 插件 | DSH 里的 agent 会话与人 | worker 用的 10 个工具、系统提示里的入口段、`/praxis` 命令、右侧栏“Praxis”控制面、resolve 与 consume 的工具卡片 |
+| DSH 插件 | DSH 里的 agent 会话与人 | worker 用的 10 个工具、系统提示里的入口段、`/praxis` 命令、右侧栏“Praxis”控制面、左侧栏“Praxis”来源 review 页、resolve 与 consume 的工具卡片 |
 | MCP | 其他 agent（Claude Code、Codex 等） | 全部工具，加 resources（入口、单元、来源、产物）与 prompts（每个任务类型一条） |
 | 命令行 | 人与脚本 | 全部工具，加备份、校验与恢复 |
 | 独立网页 | 不经 DSH 的人 | 与 DSH 右侧栏相同的控制面，默认 <http://127.0.0.1:7878/> |

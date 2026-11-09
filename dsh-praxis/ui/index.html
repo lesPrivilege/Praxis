@@ -19,6 +19,7 @@
   --shadow: 0 4px 12px 0 rgba(0 0 0 / .02), 0 2px 8px 0 rgba(0 0 0 / .04);
   --mono: 'SF Mono', 'JetBrains Mono', 'Fira Code', Consolas, Menlo, 'PingFang SC', monospace;
   --ease: cubic-bezier(.4, 0, .2, 1);
+  --settle: cubic-bezier(.22, 1, .36, 1);
   color-scheme: light;
 }
 :root[data-theme="dark"] {
@@ -50,19 +51,36 @@ button { font: inherit; color: inherit; }
 :root.embedded .top { background: color-mix(in srgb, var(--layer) 88%, transparent); }
 .brand { display: flex; align-items: center; gap: 6px; font-weight: 500; font-size: 13px; }
 .brand svg { width: 16px; height: 16px; }
-.tabs { display: flex; gap: 2px; }
-.tabs button { display: flex; align-items: center; gap: 4px; height: 24px; padding: 0 9px; border: 0; border-radius: 12px; corner-shape: round; background: none; color: var(--muted); font-size: 12px; cursor: pointer; white-space: nowrap; transition: background var(--ease) .1s; }
+.tabs { --fade-l: 0px; --fade-r: 0px; position: relative; display: flex; gap: 2px; min-width: 0; max-width: 100%; overflow-x: auto; scrollbar-width: none; overscroll-behavior-x: contain;
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 var(--fade-l), #000 calc(100% - var(--fade-r)), transparent);
+  mask-image: linear-gradient(to right, transparent, #000 var(--fade-l), #000 calc(100% - var(--fade-r)), transparent); }
+.tabs::-webkit-scrollbar { display: none; }
+.tabs button { position: relative; z-index: 1; flex: none; display: flex; align-items: center; gap: 4px; height: 24px; padding: 0 9px; border: 0; border-radius: 12px; corner-shape: round; background: none; color: var(--muted); font-size: 12px; cursor: pointer; white-space: nowrap; transition: color .2s ease; }
 .tabs button svg { width: 14px; height: 14px; }
-.tabs button:hover { background: var(--hover); }
-.tabs button[aria-selected="true"] { color: var(--text); background: var(--active-item); }
+.tabs button:hover:not([aria-selected="true"]) { color: var(--text); }
+.tabs button:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+.tabs button[aria-selected="true"] { color: var(--text); }
+/* One pill glides under the active tab: the edge facing the target leads, so it stretches a little and settles. */
+.tabs .glide { position: absolute; z-index: 0; top: 0; height: 24px; left: 0; width: 0; border-radius: 12px; corner-shape: round; background: var(--active-item); opacity: 0; pointer-events: none;
+  transition: left .38s var(--settle), width .38s var(--settle), opacity .16s ease; }
+.tabs .glide[data-dir="right"] { transition-duration: .4s, .27s, .16s; }
+.tabs .glide[data-dir="left"] { transition-duration: .27s, .4s, .16s; }
 .stats { margin-left: auto; display: flex; align-items: center; gap: 10px; color: var(--faint); font-size: 11px; }
 .live { display: inline-flex; align-items: center; gap: 5px; }
 .stats b { color: var(--text); font: 500 12px var(--mono); margin-right: 3px; }
+.tick { display: inline-flex; vertical-align: bottom; height: 1.4em; line-height: 1.4em; overflow: hidden; }
+.tick .col { display: inline-block; height: 1.4em; overflow: hidden; }
+.tick .roll { display: flex; flex-direction: column; transition: transform .9s var(--settle); }
+.tick .roll > span { height: 1.4em; }
 main { padding: 12px; max-width: 1360px; margin: 0 auto; }
 .view { display: none; }
 .view.on { display: block; animation: rise .16s var(--ease); }
 @keyframes rise { from { opacity: 0; transform: translateY(3px); } }
-@media (prefers-reduced-motion: reduce) { .view.on { animation: none; } * { transition: none !important; } }
+.skel { display: grid; gap: 10px; padding: 14px 12px; }
+.skel i { display: block; height: 10px; border-radius: 5px; background: linear-gradient(90deg, var(--l1) 0%, var(--l2) 50%, var(--l1) 100%) 0 0 / 200% 100%; animation: sweep 1.4s linear infinite; }
+.skel i:nth-child(3n+1) { width: 38%; } .skel i:nth-child(3n+2) { width: 82%; } .skel i:nth-child(3n) { width: 64%; }
+@keyframes sweep { from { background-position: 100% 0; } to { background-position: -100% 0; } }
+@media (prefers-reduced-motion: reduce) { .view.on, .skel i { animation: none; } * { transition: none !important; } }
 
 .split { display: grid; grid-template-columns: 280px minmax(0, 1fr); gap: 12px; align-items: start; }
 .panel { background: var(--layer); border: .5px solid var(--l2); border-radius: 12px; min-width: 0; }
@@ -108,7 +126,9 @@ a.btn { text-decoration: none; }
 
 /* segmented radios: pills in a tray */
 .seg { display: flex; gap: 2px; padding: 2px; background: var(--platform); border-radius: 14px; corner-shape: round; }
-.seg label { flex: 1; margin: 0; display: flex; align-items: center; justify-content: center; gap: 4px; height: 24px; padding: 0 9px; border-radius: 12px; corner-shape: round; color: var(--muted); font-size: 12px; cursor: pointer; white-space: nowrap; }
+.seg label { flex: 1; margin: 0; display: flex; align-items: center; justify-content: center; gap: 4px; height: 24px; padding: 0 9px; border-radius: 12px; corner-shape: round; color: var(--muted); font-size: 12px; cursor: pointer; white-space: nowrap;
+  transition: background-color .2s ease, color .2s ease, box-shadow .2s ease, scale .2s var(--settle); }
+.seg label:active { scale: .97; }
 .seg label svg { width: 14px; height: 14px; }
 .seg label:hover { color: var(--text); }
 .seg input { position: absolute; width: 0; min-height: 0; padding: 0; opacity: 0; pointer-events: none; }
@@ -373,7 +393,7 @@ pre.md { white-space: pre-wrap; font: 12px/1.65 var(--mono); padding: 14px 16px;
 @media (max-width: 560px) {
   .top { padding: 6px 8px; }
   .tabs { order: 3; width: 100%; }
-  .tabs button { flex: 1; justify-content: center; padding: 0 4px; }
+  .tabs button { flex: 1 0 auto; justify-content: center; padding: 0 8px; }
   .stats .lbl { display: none; }
   main { padding: 0; }
   .panel { border: 0; border-radius: 0; background: transparent; }
@@ -469,20 +489,20 @@ try { if (parent !== window) new MutationObserver(syncTheme).observe(parent.docu
   <div class="stats" id="stats"></div>
 </header>
 <main>
-  <section class="view on" id="catalog"><div class="pages"><div class="page-head" id="cat-head"></div><div id="cat-body"></div></div></section>
-  <section class="view" id="sources"><div class="pages"><div class="page-head" id="src-head"></div><div id="src-body"></div></div></section>
+  <section class="view on" id="catalog"><div class="pages"><div class="page-head" id="cat-head"></div><div id="cat-body"><div class="skel" aria-busy="true"><i></i><i></i><i></i><i></i><i></i><i></i></div></div></div></section>
+  <section class="view" id="sources"><div class="pages"><div class="page-head" id="src-head"></div><div id="src-body"><div class="skel" aria-busy="true"><i></i><i></i><i></i><i></i><i></i><i></i></div></div></div></section>
   <section class="view" id="task">
-    <div class="split"><div class="panel side section" id="task-side"></div><div class="panel main-pane" id="task-out"></div></div>
+    <div class="split"><div class="panel side section" id="task-side"><div class="skel" aria-busy="true"><i></i><i></i><i></i><i></i><i></i><i></i></div></div><div class="panel main-pane" id="task-out"></div></div>
   </section>
   <section class="view" id="artifacts">
-    <div class="split drill" id="art-split"><div class="panel side" id="art-list"></div><div class="panel main-pane" id="art-detail"></div></div>
+    <div class="split drill" id="art-split"><div class="panel side" id="art-list"><div class="skel" aria-busy="true"><i></i><i></i><i></i><i></i><i></i><i></i></div></div><div class="panel main-pane" id="art-detail"></div></div>
   </section>
   <section class="view" id="presets">
-    <div class="split drill" id="preset-split"><div class="panel side" id="preset-list"></div><div class="panel main-pane" id="preset-edit"></div></div>
+    <div class="split drill" id="preset-split"><div class="panel side" id="preset-list"><div class="skel" aria-busy="true"><i></i><i></i><i></i><i></i><i></i><i></i></div></div><div class="panel main-pane" id="preset-edit"></div></div>
   </section>
   <section class="view" id="capture"></section>
   <section class="view" id="log">
-    <div class="stack"><div class="panel section" id="attention"></div><div class="panel section" id="runs"></div><div class="panel section" id="history"></div></div>
+    <div class="stack"><div class="panel section" id="attention"></div><div class="panel section" id="runs"><div class="skel" aria-busy="true"><i></i><i></i><i></i><i></i><i></i><i></i></div></div><div class="panel section" id="history"></div></div>
   </section>
 </main>
 <div class="toast" id="toast" role="status" aria-live="polite"><span class="dot"></span><span class="msg"></span></div>
@@ -712,9 +732,44 @@ const stamp = (iso) => new Intl.DateTimeFormat(LANG === 'zh' ? 'zh-CN' : 'en', {
 const VIEWS = [['catalog', 'layers'], ['sources', 'book'], ['task', 'flow'], ['artifacts', 'inbox'], ['presets', 'sliders'], ['log', 'activity']]
 if (embedded) $('#brand').remove()
 else fill($('#brand'), svg(ICONS.mark), el('span', {}, 'Praxis'))
-fill($('#tabs'), VIEWS.map(([view, icon]) => el('button', { role: 'tab', 'data-view': view, 'aria-selected': view === 'catalog', onclick: () => show(view) }, svg(ICONS[icon]), t(`tab.${view}`))))
+fill($('#tabs'), el('span', { class: 'glide', 'aria-hidden': true }),
+  VIEWS.map(([view, icon]) => el('button', { role: 'tab', 'data-view': view, 'aria-selected': view === 'catalog', tabindex: view === 'catalog' ? 0 : -1, onclick: () => show(view) }, svg(ICONS[icon]), t(`tab.${view}`))))
+$('#tabs').addEventListener('keydown', (e) => {
+  const tabs = [...document.querySelectorAll('.tabs button')]
+  const at = tabs.indexOf(document.activeElement)
+  const to = { ArrowLeft: at - 1, ArrowRight: at + 1, Home: 0, End: tabs.length - 1 }[e.key]
+  if (at < 0 || to === undefined) return
+  e.preventDefault()
+  const next = tabs[(to + tabs.length) % tabs.length]
+  next.focus()
+  show(next.dataset.view)
+})
+// The pill under the active tab, and soft edges only on the sides that can scroll.
+function placeGlide(animate = true) {
+  const nav = $('#tabs'), pill = $('.glide', nav), on = $('button[aria-selected="true"]', nav)
+  if (!on || !on.offsetWidth) return
+  const prev = parseFloat(pill.style.left) || 0
+  pill.dataset.dir = on.offsetLeft > prev ? 'right' : 'left'
+  if (!animate || !pill.dataset.ready) pill.style.transition = 'none'
+  Object.assign(pill.style, { left: `${on.offsetLeft}px`, width: `${on.offsetWidth}px`, opacity: 1 })
+  if (pill.style.transition) { void pill.offsetWidth; pill.style.transition = ''; pill.dataset.ready = '1' }
+  const left = on.offsetLeft - (nav.clientWidth - on.offsetWidth) / 2
+  if (nav.scrollWidth > nav.clientWidth + 1) nav.scrollTo({ left: Math.max(0, left), behavior: animate ? 'smooth' : 'auto' })
+}
+function tabFades() {
+  const nav = $('#tabs'), max = nav.scrollWidth - nav.clientWidth
+  nav.style.setProperty('--fade-l', nav.scrollLeft > 1 ? '20px' : '0px')
+  nav.style.setProperty('--fade-r', nav.scrollLeft < max - 1 ? '20px' : '0px')
+}
+$('#tabs').addEventListener('scroll', tabFades, { passive: true })
+{ const ro = new ResizeObserver(() => { placeGlide(false); tabFades() }); for (const x of [$('#tabs'), ...document.querySelectorAll('.tabs button')]) ro.observe(x) }
 function show(view) {
-  for (const x of document.querySelectorAll('.tabs button')) x.setAttribute('aria-selected', x.dataset.view === (view === 'capture' ? 'sources' : view))
+  for (const x of document.querySelectorAll('.tabs button')) {
+    const on = x.dataset.view === (view === 'capture' ? 'sources' : view)
+    x.setAttribute('aria-selected', on)
+    x.tabIndex = on ? 0 : -1
+  }
+  placeGlide()
   for (const v of document.querySelectorAll('.view')) v.classList.toggle('on', v.id === view)
   if (view === 'log') loadLog()
   if (view === 'sources') loadSources()
@@ -722,10 +777,24 @@ function show(view) {
   if (view === 'presets') loadPresets()
   if (view === 'artifacts') loadArtifacts()
 }
+// affectUI Number Ticker: every digit is a column of 0–9 that rolls to its new place; the first
+// render counts in from zero. The real number stays readable as the element's label.
+const ticks = new Map()
+function ticker(key, n) {
+  const digits = String(n).split('')
+  const box = el('b', { class: 'tick', 'aria-label': String(n), role: 'text' },
+    digits.map(() => el('span', { class: 'col', 'aria-hidden': true }, el('span', { class: 'roll' }, '0123456789'.split('').map((d) => el('span', {}, d))))))
+  const from = String(ticks.get(key) ?? 0).padStart(digits.length, '0').slice(-digits.length)
+  const rolls = [...box.querySelectorAll('.roll')]
+  rolls.forEach((r, i) => { r.style.transform = `translateY(${-Number(from[i]) * 10}%)` })
+  requestAnimationFrame(() => requestAnimationFrame(() => rolls.forEach((r, i) => { r.style.transform = `translateY(${-Number(digits[i]) * 10}%)` })))
+  ticks.set(key, n)
+  return box
+}
 function renderStats() {
   fill($('#stats'),
-    el('span', {}, el('b', {}, String(units.length)), el('span', { class: 'lbl' }, t('stat.units'))),
-    el('span', {}, el('b', {}, String(bindings.length)), el('span', { class: 'lbl' }, t('stat.bindings'))),
+    el('span', {}, ticker('units', units.length), el('span', { class: 'lbl' }, t('stat.units'))),
+    el('span', {}, ticker('bindings', bindings.length), el('span', { class: 'lbl' }, t('stat.bindings'))),
     embedded ? null : el('button', { class: 'icon lang', title: t('lang.switch'), 'aria-label': t('lang.switch'), onclick: () => {
       try { localStorage.setItem('praxis-lang', LANG === 'zh' ? 'en' : 'zh') } catch {}
       location.reload()

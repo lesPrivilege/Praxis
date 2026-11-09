@@ -1,6 +1,6 @@
 # 控制面
 
-单个离线 HTML：[index.html](index.html)，无外部依赖。配色、圆角、发丝线和控件形状取 DeepSeek Harness 客户端的 design-platform 别名 token。嵌在 DSH 侧栏里时跟随 DSH 的明暗与界面语言（`<html lang>`），单独打开时跟随系统，右上角可切换中英文。界面文字有中英两套；Kit 正文、来源标题、说明与摘要保留原语言。由 [http.js](../adapters/http.js)提供，DSH 插件挂在 DSH 已认证的 `/api/praxis`（页面）、`/api/praxis.call`（调用）与 `/api/praxis.file`（产物文件），单独运行用 `node dsh-praxis/adapters/cli.js serve`。
+单个离线 HTML：[index.html](index.html)，无外部依赖。顶部标签下有一块滑动的底色跟着当前页走，侧栏窄时标签横向滚动、两端淡出，方向键切换；数据到达前各列表显示扫光骨架，顶部计数逐位滚到新值（交互取自 affectUI 的 Segmented Control、Shimmer Loader 与 Number Ticker，按 DSH token 重写）。来源 review 另有一页在 DSH 左侧栏，用 DSH 自带控件写在 [client.js](../adapters/client.js) 里，与本页调用同一组工具。配色、圆角、发丝线和控件形状取 DeepSeek Harness 客户端的 design-platform 别名 token。嵌在 DSH 侧栏里时跟随 DSH 的明暗与界面语言（`<html lang>`），单独打开时跟随系统，右上角可切换中英文。界面文字有中英两套；Kit 正文、来源标题、说明与摘要保留原语言。由 [http.js](../adapters/http.js)提供，DSH 插件挂在 DSH 已认证的 `/api/praxis`（页面）、`/api/praxis.call`（调用）与 `/api/praxis.file`（产物文件），单独运行用 `node dsh-praxis/adapters/cli.js serve`。
 
 | 页 | 做什么 |
 |---|---|
