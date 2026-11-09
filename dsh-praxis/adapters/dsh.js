@@ -63,7 +63,7 @@ export function apply(ctx, config = {}) {
 export function entryText(praxis) {
   const entry = praxis.entry()
   const lines = [
-    'Praxis Kit：写作、编排、设计与报告的方法，加一份来源名册。做这类任务时先 praxis_resolve（任务类型 + 流水线），只读结果列出的单元（praxis_unit 读全文）；素材是挂在这些单元上的全部来源，每个一行：description 是索引，用来判断要不要打开，靠后的行只到 description，要用时 praxis_source 取摘录；要采用一个来源，按 URL 与摘录定位回原件读，consume 只记真正读过原件的来源。用户点名一条 stream 时，resolve 带上 stream。要找外部参考，先 praxis_catalog、praxis_search，名册不够或要核实时才上网；值得留下的新参考用 praxis_capture 成批登记、写明为哪件任务收录，再用 praxis_curate 挂到单元上。产物放在已登记项目的约定位置（praxis_projects 查，没有就 praxis_project 登记）；交付前用 praxis_consume 记下实际读过的单元和来源（可给每个来源写一句这次用它做什么），并登记交付的文件。',
+    'Praxis Kit：写作、编排、设计与报告的方法，加一份来源名册。做这类任务时先 praxis_resolve（任务类型 + 流水线），只读结果列出的单元（praxis_unit 读全文）；素材是挂在这些单元上的全部来源，每个一行：description 是索引，用来判断要不要打开，靠后的行只到 description，要用时 praxis_source 取摘录；原件失效时读素材 stock 给的本地版本，praxis_stock 可以再备一版；要采用一个来源，按 URL 与摘录定位回原件读，consume 只记真正读过原件的来源。用户点名一条 stream 时，resolve 带上 stream。要找外部参考，先 praxis_catalog、praxis_search，名册不够或要核实时才上网；值得留下的新参考用 praxis_capture 成批登记、写明为哪件任务收录，再用 praxis_curate 挂到单元上。产物放在已登记项目的约定位置（praxis_projects 查，没有就 praxis_project 登记）；交付前用 praxis_consume 记下实际读过的单元和来源（可给每个来源写一句这次用它做什么），并登记交付的文件。',
     '常驻：',
     ...entry.resident.map((u) => `- ${u.id}：${u.description}`),
     '任务类型：',

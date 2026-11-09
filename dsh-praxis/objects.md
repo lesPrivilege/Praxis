@@ -21,7 +21,7 @@
 | SourcePack | 按引用接入的一组来源：一份 registry 格式的文件，或项目自己的来源索引；文件留在主人那里，Praxis 原地读取、从不写入 | 实现见 [materials.js](core/materials.js) |
 | Binding | 一个来源挂到一个页面上的关系：目录里的 description、取用题解、启用、收藏、优先级、tag 与 review；关系与维护信息都在名册里 | [binding](schemas/binding.schema.json) |
 | Stream | 一页自撰：一个持续探索的方向，写主张、未决问题和取用的 Kit 单元；文件在数据根的 `streams/`，来源挂到这一页。读作 `stream` 层的单元，不进包，修订直接改文件 | 实现见 [kit.js](core/kit.js)，用法见数据根 `streams/README.md` |
-| MaterialRevision | 实际取得的一份原件或资产：快照、附件、图片、音视频、代码、模板、组件 | [material-revision](schemas/material-revision.schema.json) |
+| MaterialRevision | 实际取得的一份原件或资产：一个库存版本（download 或 distill），或来源包记录的快照 | 库存见 [stock.js](core/stock.js)；草案 [material-revision](schemas/material-revision.schema.json) |
 | KitRevision | 对一个 Kit 单元的修订：整页存在数据根的覆盖层，记理由、依据的范例，以及写修订时包内原页的 hash | 实现见 [index.js](core/index.js) |
 | Preset、Run | 可编辑的默认配置；一次任务实际用到的输入、单元版本、来源与配置，以及来源会话 | 实现见 [core](core/README.md) |
 | Project | 一件工作所在的目录：根、用途、布局（哪些路径放底稿、中间产物、最终产物，按 glob）；产物属于包含它的最深一个项目 | 实现见 [projects.js](core/projects.js) |
@@ -55,7 +55,7 @@
 | 2 来源条目 | 出处、概要、语言、实际读取范围、证据状态 | 这是什么，已经取得什么？ | Source |
 | 3 取用题解 | 适用问题、用法、条件、限制、范例 | 在这次工作里怎么用？ | Binding 的 `usage` |
 | 4 摘录与注解 | 可定位的片段、图表、代码，以及译释与说明 | 判断依据具体在哪里？ | Source 的 `excerpts` |
-| 5 原件与附件 | 原件（按链接打开）、需要固定版本时另存的快照、可复用资产 | 怎样回查或直接取用？ | Source 的链接；MaterialRevision |
+| 5 原件与附件 | 原件（按链接打开）、本地库存的版本、可复用资产 | 怎样回查或直接取用？ | Source 的链接；MaterialRevision |
 
 级别只表示展开深度。启用、收藏、优先级、证据状态和采纳状态分别存，不互相推断：收藏不提高证据等级，preferred 不等于已采纳为规范。
 
@@ -83,7 +83,8 @@
 | curate | Source 与目标页，或已有 Binding | Binding 的题解、description、tag、启用、收藏、优先级的一次可追溯修订；目标页还没有这条关系时新建 |
 | resolve | 任务类型、流水线、stream、预设，或另外指定的单元 | 要读的单元，附选用理由；这些单元上全部已启用的来源，每个来源一行，写明挂在其中哪几页，不截断：前 12 行带读取范围、题解、摘录与快照，其余到 description 为止，相关与否由 agent 对照任务判断；指定 stream 时带上这一页与它取用的单元，它的素材排在最前；之后是服务这些单元的范例（pipeline、example、已接受的交付）；不默认加载全部单元 |
 | consume | resolve 的结果与一次运行 | 运行记录写下实际用到的单元、来源及其版本（每个来源可附一句这次用它做什么）、由它们推出的挂载、交付的产物和来源会话；不复制原件，用途是活动，不写回来源的说明 |
-| refresh | Source | 一条检查：是否打得开、内容 hash；要求保留时另存快照，旧版本保留。集合类来源另记页面上的成员链接 |
+| refresh | Source | 一条检查：是否打得开、内容 hash，不存正文。集合类来源另记页面上的成员链接 |
+| stock | Source 与 download、distill 或 list | download 按版本留下原件取得的内容（与最新版本相同时不建新版本），distill 留下 agent 写的提炼；版本只增不改，删除要人确认；resolve 只披露最新版本的位置 |
 | retire | 自有 Source 与理由 | 来源离开名册的活动列表，挂载随之停用，记录与历史保留 |
 | revise | KitUnit 修订后的整页，加理由与依据的范例 | 修订写进覆盖层，立即对所有入口生效，包内原页不动；包升级后原页变了，列为冲突，合并或撤回（revert） |
 
@@ -92,7 +93,7 @@
 ## 名册怎样组成
 
 **名册由自有来源与来源包合成。** 自有来源存在数据根的 `sources.json`：capture 写入，`praxis_source_update` 修订，`praxis_retire` 淘汰。来源包登记在 `packs.json`，分两种格式：
-- `registry`：Praxis registry 格式的文件，一组来源记录，记录里的相对路径以登记的 `root` 为起点；
+- `registry`：Praxis registry 格式的文件，一组来源记录，记录里的相对路径以登记的 `root` 为起点；写在另一份包旁边的来源包，按那份包的路径声明 Kit 页，登记时用 `kit` 写明那个路径，这些关系就落到本包的 `kit/…`；
 - `index`：项目自己的来源索引，经 `fields` 把名册字段对到项目字段名，`status` 把项目的状态值对到 verified、partial、unavailable，`excerpts` 指向按来源 ID 关联的主张文件（JSON Lines）；条目 ID 为 `<登记 ID>:<条目 ID>`。
 
 来源包里的条目在来源包自己那里维护，名册只读。

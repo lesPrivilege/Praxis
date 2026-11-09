@@ -6,7 +6,7 @@ import { TOOLS, callTool, inputSchema, jsonValue } from './tools.js'
 import { createPraxis } from '../core/index.js'
 import { apply, entryText } from './dsh.js'
 import { askPrompt, createAsks } from './ask.js'
-import { mkdtempSync } from 'node:fs'
+import { mkdtempSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 
@@ -117,16 +117,25 @@ test('DSH plugin registers the worker tools, three Connection routes, /praxis an
   assert.ok(entryText(fake).includes('x（html）'))
 })
 
-test('HTTP file route serves registered artifact files only, by id', async () => {
+test('HTTP file route serves registered artifact files by id and stocked files a manifest lists', async () => {
   const repo = new URL('../..', import.meta.url).pathname.replace(/\/$/, '')
   const records = { 'readme-1': { path: 'dsh-praxis/README.md' }, 'gone-2': { path: 'dsh-praxis/no-such.md' } }
-  const handle = praxisFetch({ artifacts: { get: (id) => records[id], absolute: (p) => `${repo}/${p}` } }, 'test')
+  const dir = mkdtempSync(join(tmpdir(), 'praxis-file-'))
+  writeFileSync(join(dir, 'paper.pdf'), '%PDF-1.4')
+  writeFileSync(join(dir, 'index.html'), '<p>kept page</p>')
+  const listed = (id, version, file) => (id === 'praxis:a' && version === '20261109T000000Z' && ['paper.pdf', 'index.html'].includes(file) ? join(dir, file) : undefined)
+  const handle = praxisFetch({ artifacts: { get: (id) => records[id], absolute: (p) => `${repo}/${p}` }, stock: { file: listed } }, 'test')
   const get = (query) => handle(new Request(`http://dsh/api/praxis.file?${query}`))
   const ok = await get('artifact=readme-1')
   assert.equal(ok.status, 200)
   assert.match(ok.headers.get('content-type'), /^text\/markdown/)
   assert.equal(ok.headers.get('content-security-policy'), 'sandbox')
   for (const bad of ['artifact=gone-2', 'artifact=nope', 'path=dsh-praxis/README.md', '']) assert.equal((await get(bad)).status, 404, bad)
+  const pdf = await get('source=praxis:a&version=20261109T000000Z&file=paper.pdf')
+  assert.deepEqual([pdf.status, pdf.headers.get('content-type'), pdf.headers.get('content-security-policy')], [200, 'application/pdf', null], 'a PDF is shown, not run')
+  const page = await get('source=praxis:a&version=20261109T000000Z&file=index.html')
+  assert.equal(page.headers.get('content-security-policy'), 'sandbox', 'a kept page never runs with the page origin')
+  for (const bad of ['source=praxis:a&version=20261109T000000Z&file=../settings.json', 'source=praxis:b&version=20261109T000000Z&file=paper.pdf']) assert.equal((await get(bad)).status, 404, bad)
 })
 
 test('tool values are lossless JSON: absent fields omitted, non-JSON values refused', async () => {
@@ -170,4 +179,25 @@ test('a capture request runs as a Host-created agent session; outside DSH the ro
   assert.deepEqual(done.captured, [], 'only sources captured in its own session count')
   await assert.rejects(asks.start('   '), /nothing to capture/)
   assert.match(askPrompt('a'), /打开原件读/)
+})
+
+test('a distill request runs as an agent session that saves through praxis_stock', async () => {
+  const data = mkdtempSync(join(tmpdir(), 'praxis-distill-'))
+  const versions = []
+  const praxis = { where: { data }, materials: { roster: () => ({ list: [] }), source: (id) => (id === 'praxis:x' ? { id, title: 'X', url: 'https://x.example' } : undefined) }, stock: { list: () => versions } }
+  const sent = []
+  let idle
+  const agent = { session: {}, followup: (m) => sent.push(m), whenIdle: () => new Promise((r) => { idle = r }) }
+  const services = { sessionController: { create: async () => {}, resolveAgent: async () => ({ agent }) }, agents: { get: () => agent } }
+  const asks = createAsks({ get: (name) => services[name] }, praxis)
+  const handle = praxisFetch(praxis, 'test', asks)
+  const ask = await (await handle(new Request('http://dsh/api/praxis.ask', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ distill: 'praxis:x' }) }))).json()
+  assert.deepEqual([ask.kind, ask.source, ask.status, ask.distilled], ['distill', 'praxis:x', 'running', []])
+  assert.match(sent[0].content[0].text, /praxis_source praxis:x/)
+  assert.match(sent[0].content[0].text, /praxis_stock[\s\S]*distill/)
+  assert.match(sent[0].content[0].text, /不改任何文件，也不跑命令/)
+  versions.push({ kind: 'distill', version: '20991231T000000Z', at: new Date(Date.now() + 1000).toISOString() })
+  idle(); await new Promise((r) => setTimeout(r, 0))
+  assert.deepEqual([asks.list()[0].status, asks.list()[0].distilled], ['done', ['20991231T000000Z']])
+  await assert.rejects(asks.distill('praxis:nope'), /unknown source/)
 })

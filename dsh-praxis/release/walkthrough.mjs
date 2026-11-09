@@ -35,7 +35,11 @@ check('shipped_links_resolve_inside', outside.length === 0, outside.slice(0, 10)
 
 // A stand-in upstream: a gallery page that lists member pages.
 let gallery = '<a href="/items/a.html">a</a><a href="/items/b.html">b</a>'
-const upstream = createServer((req, res) => { res.setHeader('content-type', 'text/html'); res.end(req.url === '/' ? gallery : `<h1>${req.url}</h1>`) })
+const offline = new Set()
+const upstream = createServer((req, res) => {
+  if (offline.has(req.url)) { res.statusCode = 404; return res.end('gone') }
+  res.setHeader('content-type', 'text/html'); res.end(req.url === '/' ? gallery : `<h1>${req.url}</h1>`)
+})
 await new Promise((r) => upstream.listen(0, '127.0.0.1', r))
 const origin = `http://127.0.0.1:${upstream.address().port}`
 
@@ -98,6 +102,14 @@ try {
   check('finals_registered_and_in_place', projects[0]?.id === project.id && projects[0].artifacts === 2 && projects[0].unregistered.length === 0, projects[0] && { artifacts: projects[0].artifacts, unregistered: projects[0].unregistered })
   const arts = await tool('praxis_artifacts', { project: project.id })
   check('artifacts_carry_roles_without_signals', arts.every((a) => ['draft', 'final'].includes(a.role) && a.signals.length === 0), arts.map((a) => [a.project_path, a.role, a.signals]))
+
+  // 4b. Stock: keep a copy of the member page; when the original is gone, the task still gets the copy.
+  const kept = await tool('praxis_stock', { source: member.id, action: 'download' })
+  offline.add('/items/a.html')
+  await tool('praxis_refresh', { source: member.id })
+  const later = (await tool('praxis_resolve', { task_type: type.id, pipeline: 'html' })).materials.find((m) => m.source === member.id)
+  check('stock_survives_offline_original', later?.original_gone === true && later.stock?.download?.version === kept.version && existsSync(join(later.stock.download.path, 'index.html')),
+    later && { gone: later.original_gone, stock: later.stock })
 
   // 5. Upstream moves: the collection adds a member and drops the one in the roster; upkeep proposes both.
   gallery = '<a href="/items/b.html">b</a><a href="/items/c.html">c</a>'

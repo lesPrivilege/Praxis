@@ -15,7 +15,7 @@ const VERSIONS = ['2026-07-28', '2025-11-25', '2025-06-18', '2025-03-26', '2024-
 // This is Praxis's own process: source checks go through HTTP(S)_PROXY. The DSH plugin leaves the host's network settings alone.
 http.setGlobalProxyFromEnv?.()
 const pkg = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'))
-const INSTRUCTIONS = 'Praxis：写作、编排、设计与报告的方法 Kit，加一份来源名册（只记链接、定位与用途，不存原件）。顺序：praxis_entry 或 praxis://entry 看入口；praxis_resolve 按任务类型与流水线取得要读的单元与挂在上面的全部来源，只读列出的单元；素材凭 description 判断要不要用，要用的按 URL 与摘录定位回原件读，靠后只到 description 的行用 praxis_source 取摘录；用户点名一条 stream 时，resolve 带上 stream；要找外部参考，先 praxis_catalog、praxis_search，名册不够或要核实时才上网；新参考用 praxis_capture 成批登记并写明为哪件任务收录，再 praxis_curate 挂到单元上；产物放在已登记项目的约定位置；交付前 praxis_consume 记下读过的单元与来源（可给每个来源写一句这次用它做什么）并登记交付文件。修改带上读到的 revision。按任务类型开工可用 prompts。'
+const INSTRUCTIONS = 'Praxis：写作、编排、设计与报告的方法 Kit，加一份来源名册（只记链接、定位与用途，不存原件）。顺序：praxis_entry 或 praxis://entry 看入口；praxis_resolve 按任务类型与流水线取得要读的单元与挂在上面的全部来源，只读列出的单元；素材凭 description 判断要不要用，要用的按 URL 与摘录定位回原件读，靠后只到 description 的行用 praxis_source 取摘录；原件失效时读 stock 给的本地版本；用户点名一条 stream 时，resolve 带上 stream；要找外部参考，先 praxis_catalog、praxis_search，名册不够或要核实时才上网；新参考用 praxis_capture 成批登记并写明为哪件任务收录，再 praxis_curate 挂到单元上；产物放在已登记项目的约定位置；交付前 praxis_consume 记下读过的单元与来源（可给每个来源写一句这次用它做什么）并登记交付文件。修改带上读到的 revision。按任务类型开工可用 prompts。'
 const MIME = { json: 'application/json', md: 'text/markdown' }
 const resource = (uri, name, description, mimeType) => ({ uri, name, description, mimeType })
 

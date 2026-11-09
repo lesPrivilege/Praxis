@@ -35,7 +35,7 @@ export const TOOLS = [
   {
     name: 'praxis_resolve',
     agent: true,
-    description: '按任务类型和流水线，或指定的 stream，列出这次要读的 Kit 单元（附选用理由）和挂在这些单元上的全部已启用来源。只读结果里的单元，不默认加载全部。素材每个来源一行：source ID、原件 URL、证据状态、description，pages 写它挂在其中哪几页。排序依次是 stream 自己的来源、preferred、收藏、挂的页多的；前 12 行另带读取范围、这些页上的取用题解、摘录（定位与说法）和本地快照路径，其余行只到 description，凭 description 判断要不要用，要用时 praxis_source 取摘录（more_excerpts 是还有几条）。需要核对或引用时按定位回原件，读过的来源在 praxis_consume 的 sources 里写上。之后的 exemplars 是服务这些单元的本地 pipeline、example 与已接受的交付（路径与说明）：先用网页素材，要照着做或重复同类交付时再打开范例。',
+    description: '按任务类型和流水线，或指定的 stream，列出这次要读的 Kit 单元（附选用理由）和挂在这些单元上的全部已启用来源。只读结果里的单元，不默认加载全部。素材每个来源一行：source ID、原件 URL、证据状态、description，pages 写它挂在其中哪几页。排序依次是 stream 自己的来源、preferred、收藏、挂的页多的；前 12 行另带读取范围、这些页上的取用题解、摘录（定位与说法）和本地快照路径，其余行只到 description，凭 description 判断要不要用，要用时 praxis_source 取摘录（more_excerpts 是还有几条）。有本地库存的行带 stock：最新 download 与 distill 版本的目录，不附正文；original_gone 表示原件链接已失效，这时读库存。需要核对或引用时按定位回原件，读过的来源在 praxis_consume 的 sources 里写上，读的是库存就写 stock: <版本>。之后的 exemplars 是服务这些单元的本地 pipeline、example 与已接受的交付（路径与说明）：先用网页素材，要照着做或重复同类交付时再打开范例。',
     parameters: {
       task_type: str('任务类型 ID，如 technical-explainer、work-report'),
       pipeline: str('html 或 video；省略用任务类型的默认流水线'),
@@ -252,10 +252,19 @@ export const TOOLS = [
   },
   {
     name: 'praxis_refresh',
-    description: '对照上游检查一个来源 URL：记下是否打得开和内容 hash，不存正文；集合类来源另记页面上列出的成员链接，返回与名册的差别（新增 added、下线 gone）。hash 与上次看到的不同就是来源变了，打不开就是链接失效，两者都返回受影响的挂载，供检查说明是否仍适用。keep 为 true 时另存一份快照（旧版本保留），用于原件可能消失、或需要固定版本的来源。',
-    parameters: { source: str('来源 ID'), keep: bool('另存一份快照'), ...who },
+    description: '对照上游检查一个来源 URL：记下是否打得开和内容 hash，不存正文；集合类来源另记页面上列出的成员链接，返回与名册的差别（新增 added、下线 gone）。hash 与上次看到的不同就是来源变了，打不开就是链接失效，两者都返回受影响的挂载，供检查说明是否仍适用。要留一份原件，用 praxis_stock。',
+    parameters: { source: str('来源 ID'), ...who },
     required: ['source'],
     run: (p, a) => p.materials.refresh(a.source, a),
+    writes: true,
+  },
+  {
+    name: 'praxis_stock',
+    agent: true,
+    description: '来源的本地库存：按版本留下原件取得的内容，原件失效或改动后仍可读，运行也能写明读的是哪一版。download 由 Host 抓取原件，建一个新版本：GitHub 仓库存某个提交的源码归档与 README，网页存页面与它引用的图片、样式和预览图，其他文件存原样；下载的内容不运行、不解开；单个版本上限 50 MB。内容与最新的 download 版本相同就不建新版本，返回 unchanged。distill 存一份提炼：读过原件后写的 Markdown，写它是什么、何时用、关键做法，每条带回原件的定位，Praxis 在文首标明是提炼。list 列出版本。库存不进常驻上下文：resolve 只给最新版本的目录，读不读由你判断；读了库存，在 praxis_consume 的 sources 里写 stock: <版本>。版本只增不改，删除要人确认，这个工具不删。',
+    parameters: { source: str('来源 ID'), action: str('download、distill 或 list'), text: str('distill：提炼正文（Markdown）'), based_on: str('distill：依据的 download 版本；省略为原件'), model: str('distill：写提炼的模型'), locators: list('distill：依据的定位'), ...who },
+    required: ['source', 'action'],
+    run: (p, a) => p.stockAction(a),
     writes: true,
   },
   {
@@ -271,7 +280,7 @@ export const TOOLS = [
     parameters: {
       title: str('这次工作'), task_type: str('任务类型 ID'), pipeline: str('html 或 video'), preset: str('用的预设 ID'), overrides: { type: 'object', description: '这次对预设的临时改动' },
       units: list('读过的单元'),
-      sources: { type: 'array', description: '实际读过的来源：ID（resolve 素材里的 source，或 praxis_search、praxis_source 得到的），或带用途的对象。用途写这次工作用它做什么：取了哪一处、支撑了哪个判断；记进运行记录，列在来源的活动里，不进来源的说明', items: { anyOf: [{ type: 'string' }, { type: 'object', properties: { id: str('来源 ID'), use: str('这次用它做什么，一句') }, required: ['id'] }] } },
+      sources: { type: 'array', description: '实际读过的来源：ID（resolve 素材里的 source，或 praxis_search、praxis_source 得到的），或带用途的对象。用途写这次工作用它做什么：取了哪一处、支撑了哪个判断；记进运行记录，列在来源的活动里，不进来源的说明。读的是本地库存时写 stock（版本名，如 20261109T101500Z）', items: { anyOf: [{ type: 'string' }, { type: 'object', properties: { id: str('来源 ID'), use: str('这次用它做什么，一句'), stock: str('读的库存版本') }, required: ['id'] }] } },
       artifacts: { type: 'array', description: '交付的文件：路径字符串，或带说明的对象。仓库内用仓库路径，仓库外用绝对路径', items: { anyOf: [
         { type: 'string' },
         { type: 'object', properties: { path: str('文件路径'), title: str('产物名称；省略用文件名'), description: str('它是什么、给谁用'), artifact: str('已有产物 ID：文件换了位置或改了名时指明'), made_with: str('产出它的管线：kind 为 pipeline 的产物 ID（在 resolve 的 exemplars 里）'),

@@ -13,7 +13,7 @@ export const PACKAGE = resolve(dirname(fileURLToPath(import.meta.url)), '..')
  * The data root: explicit, PRAXIS_DATA, the package's own data folder when it has one (a checkout
  * that keeps its data beside the code), else the plugin folder in the DSH home ($DSH_HOME/dsh-praxis).
  * settings.json in the data root may name `base`, the folder relative paths are written against
- * (a repository), and `snapshots`, where kept originals go; both relative to the data root.
+ * (a repository), relative to the data root. Stock lives in the data root (stock.js).
  */
 export function locate({ data, package: pkg = PACKAGE } = {}) {
   const root = resolve(data ?? process.env.PRAXIS_DATA ?? (existsSync(join(pkg, 'data')) ? join(pkg, 'data')
@@ -24,7 +24,6 @@ export function locate({ data, package: pkg = PACKAGE } = {}) {
     kit: join(pkg, 'kit'),
     data: root,
     base: settings.base !== undefined ? resolve(root, settings.base) : undefined,
-    snapshots: resolve(root, settings.snapshots ?? 'snapshots'),
   }
 }
 

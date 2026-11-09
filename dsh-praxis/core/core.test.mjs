@@ -7,6 +7,7 @@ import { createPraxis, ConflictError } from './index.js'
 import { patchJson } from './store.js'
 import { exportState, checkArchive, restoreState } from './backup.js'
 import { jsonValue } from '../adapters/tools.js'
+import { createStock, pageAssets } from './stock.js'
 import { utimesSync, renameSync, unlinkSync } from 'node:fs'
 
 // A package (Kit pages) and a data root whose base is the fixture, with a vault registry as a pack.
@@ -199,25 +200,19 @@ test('stale finds runs whose consumed source got a new snapshot', async () => {
   assert.equal(p.upkeep().stale, undefined, 'a stale run waits for the next delivery, not in upkeep')
 })
 
-test('refresh checks upstream by hash without storing content; keep saves a snapshot; a dead link is a signal', async () => {
+test('refresh checks upstream by hash without storing content; a dead link is a signal', async () => {
   const { root, p } = setup()
   let body = '<html>v1</html>'
   let up = true
   let blocked = false
   const fetchImpl = async () => (blocked ? new Response('no', { status: 403 }) : up ? new Response(body, { headers: { 'content-type': 'text/html' } }) : new Response('gone', { status: 404 }))
   const first = await p.materials.refresh(SRC, { fetchImpl, by: 'test' })
-  assert.deepEqual([first.reachable, first.changed, first.snapshot, first.check.status], [true, false, undefined, 'ok'], 'the first check is the baseline')
-  assert.equal(existsSync(join(root, 'data/snapshots')), false, 'no content stored')
+  assert.deepEqual([first.reachable, first.changed, first.check.status], [true, false, 'ok'], 'the first check is the baseline')
+  assert.equal(existsSync(join(root, 'data/stock')), false, 'no content stored')
   body = '<html>v2</html>'
   const second = await p.materials.refresh(SRC, { fetchImpl })
   assert.deepEqual([second.changed, second.bindings], [true, [BIND]])
   assert.deepEqual(p.materials.binding(BIND).signals, ['changed'])
-  const kept = await p.materials.refresh(SRC, { fetchImpl, keep: true })
-  assert.ok(existsSync(join(root, kept.snapshot.path)))
-  assert.ok(kept.snapshot.path.startsWith('data/snapshots/apg/'), 'kept snapshots live under the snapshots folder')
-  assert.deepEqual(readFileSync(join(root, kept.snapshot.path), 'utf8'), '<html>v2</html>')
-  assert.equal(p.materials.source(SRC).snapshot.sha256, kept.check.sha256)
-  assert.equal((await p.materials.refresh(SRC, { fetchImpl, keep: true })).snapshot, undefined, 'the same bytes are not kept twice')
   blocked = true
   assert.equal((await p.materials.refresh(SRC, { fetchImpl })).reachable, false)
   assert.deepEqual(p.materials.binding(BIND).signals, ['changed'], 'a refusal is not a dead link')
@@ -658,4 +653,107 @@ test('resolve lists the whole shelf, one row per source; search reads notes and 
   assert.equal(p.source(a).used_by[0].use, '取 §2 的位移做法', "the use is the source's activity")
   assert.equal(p.source(a).description, '做交互说明时打开；取做法。', 'and never enters its entry')
   assert.deepEqual(p.artifact(run.artifacts[0].artifact).versions[0].run.sources.map((x) => x.use), ['取 §2 的位移做法', undefined])
+})
+
+test('stock keeps versions of an original; an unchanged original adds none; resolve, runs and the source page name the version', async () => {
+  const { root, p } = setup({ project: true })
+  const png = Buffer.from([0x89, 0x50, 0x4e, 0x47, 1, 2, 3])
+  let page = '<html><head><meta property="og:image" content="/og.png"><link rel="stylesheet" href="/s.css"></head><body><h1>Guide</h1><img src="img/a.png"><img src="data:image/png;base64,xx"></body></html>'
+  let pdf = Buffer.from('%PDF-1.4 v1')
+  let commit = 'a'.repeat(40)
+  let gone = false
+  const ok = (body, type) => new Response(body, { headers: { 'content-type': type } })
+  const fetchImpl = async (url) => {
+    const u = String(url)
+    if (gone && u.startsWith('https://example.org/apg')) return new Response('gone', { status: 404 })
+    if (u === 'https://example.org/apg/') return ok(page, 'text/html; charset=utf-8')
+    if (u === 'https://example.org/og.png' || u === 'https://example.org/apg/img/a.png') return ok(png, 'image/png')
+    if (u === 'https://example.org/s.css') return ok('h1{}', 'text/css')
+    if (u === 'https://example.org/paper.pdf') return ok(pdf, 'application/pdf')
+    if (u === 'https://github.com/acme/widget') return ok('<html><head><meta property="og:image" content="https://opengraph.githubassets.com/1/acme/widget"></head><body><img src="/avatar.png">widget</body></html>', 'text/html')
+    if (u === 'https://opengraph.githubassets.com/1/acme/widget') return ok(png, 'image/png')
+    if (u === 'https://api.github.com/repos/acme/widget') return Response.json({ default_branch: 'main' })
+    if (u === 'https://api.github.com/repos/acme/widget/commits/main') return Response.json({ sha: commit })
+    if (u.startsWith('https://api.github.com/repos/acme/widget/readme?ref=')) return Response.json({ name: 'README.md', encoding: 'base64', content: Buffer.from('# Widget').toString('base64'), download_url: 'https://raw.githubusercontent.com/acme/widget/main/README.md' })
+    if (u.startsWith('https://codeload.github.com/acme/widget/tar.gz/')) return ok(Buffer.from(`archive ${u.slice(-40)}`), 'application/x-gzip')
+    return new Response('nope', { status: 404 })
+  }
+  const item = (url, title, form) => ({ url, title, form, category: 'design', description: '做交互说明时打开；取做法。', summary: '一份材料。', read_scope: '读了正文', limits: '无', revisit_when: '改版时' })
+  const [paper, widget] = p.materials.capture([item('https://example.org/paper.pdf', 'Paper', 'research'), item('https://github.com/acme/widget', 'Widget', 'tool')], { task: '备货', by: 'test' }).map((x) => x.id)
+
+  // A page: the page itself, its preview image, stylesheet and images (not inline data), with the preview as cover.
+  const v1 = await p.stockAction({ source: SRC, action: 'download', fetchImpl, by: 'test' })
+  assert.deepEqual([v1.kind, v1.files, v1.cover], ['download', 4, 'assets/01-og.png'])
+  const m1 = JSON.parse(readFileSync(join(v1.path, 'manifest.json'), 'utf8'))
+  assert.deepEqual(m1.files.map((f) => [f.path, f.from]), [['index.html', 'https://example.org/apg/'], ['assets/01-og.png', 'https://example.org/og.png'], ['assets/02-s.css', 'https://example.org/s.css'], ['assets/03-a.png', 'https://example.org/apg/img/a.png']])
+  assert.ok(v1.path.startsWith(join(root, 'data', 'stock', 'provenance-demo_apg')), 'stock lives in the data root, one folder per source')
+  assert.equal((await p.stockAction({ source: SRC, action: 'download', fetchImpl })).unchanged, true, 'the same text adds no version')
+  page = page.replace('Guide', 'Guide, second edition')
+  const v2 = await p.stockAction({ source: SRC, action: 'download', fetchImpl })
+  assert.deepEqual(v2.changes, { added: [], removed: [], changed: ['index.html'] })
+  assert.equal(p.source(SRC).stock.restock, undefined, 'the download itself is a check, so nothing to restock')
+  page = page.replace('second', 'third')
+  await p.materials.refresh(SRC, { fetchImpl })
+  assert.equal(p.source(SRC).stock.restock, true, 'upstream moved after the latest download')
+  const v3 = await p.stockAction({ source: SRC, action: 'download', fetchImpl })
+  assert.equal(p.source(SRC).stock.restock, undefined)
+
+  // A file, and a repository as one commit's archive and README with the repository's preview as cover.
+  const f1 = await p.stockAction({ source: paper, action: 'download', fetchImpl })
+  pdf = Buffer.from('%PDF-1.4 v2')
+  const f2 = await p.stockAction({ source: paper, action: 'download', fetchImpl })
+  assert.deepEqual([f1.files, f2.changes.changed], [1, ['paper.pdf']])
+  const r1 = await p.stockAction({ source: widget, action: 'download', fetchImpl })
+  assert.deepEqual([r1.commit, r1.files, r1.cover], [commit, 3, 'cover.png'])
+  assert.equal(readFileSync(join(r1.path, 'README.md'), 'utf8'), '# Widget')
+  commit = 'b'.repeat(40)
+  const r2 = await p.stockAction({ source: widget, action: 'download', fetchImpl })
+  assert.deepEqual(r2.changes, { added: ['repo-bbbbbbbbbbbb.tar.gz'], removed: ['repo-aaaaaaaaaaaa.tar.gz'], changed: [] })
+  assert.deepEqual((await p.stockAction({ source: widget, action: 'list' })).map((v) => v.version), [r1.version, r2.version])
+
+  // A distill is its own version, headed as a distill.
+  const d = await p.stockAction({ source: SRC, action: 'distill', text: '它是什么：键盘约定（§1）。', based_on: v3.version, model: 'test-model', locators: ['§1'] })
+  assert.match(readFileSync(join(d.path, 'distill.md'), 'utf8'), /^> 提炼，不是原件。原件：https:\/\/example\.org\/apg\/；依据：库存版本 \d{8}T\d{6}Z。\n\n它是什么/)
+  await assert.rejects(p.stockAction({ source: SRC, action: 'distill', text: 'x', based_on: '20000101T000000Z' }), /no download version/)
+  await assert.rejects(p.stockAction({ source: SRC, action: 'distill', text: ' ' }), /needs text/)
+
+  // The task gets the latest of each kind; a gone original says so, and the stock still reads.
+  const row = () => p.resolve({ task_type: 'explainer' }).materials.find((m) => m.source === SRC)
+  assert.deepEqual([row().stock.download.version, row().stock.distill.version, row().original_gone], [v3.version, d.version, undefined])
+  gone = true
+  await assert.rejects(p.stockAction({ source: SRC, action: 'download', fetchImpl }), /unreachable: HTTP 404/)
+  assert.deepEqual([row().original_gone, existsSync(join(row().stock.download.path, 'index.html'))], [true, true])
+  assert.equal(p.stock.file(SRC, v3.version, 'index.html'), join(v3.path, 'index.html'))
+  for (const bad of ['../manifest.json', '../../settings.json', 'nope.html']) assert.equal(p.stock.file(SRC, v3.version, bad), undefined, bad)
+
+  // A run that read stock names the version; the source page lists the versions and that run.
+  const run = p.consume({ title: '离线读', sources: [{ id: SRC, stock: v3.version, use: '读库存里的指南' }] })
+  assert.equal(run.sources[0].stock, v3.version)
+  assert.throws(() => p.consume({ title: 'x', sources: [{ id: SRC, stock: '20000101T000000Z' }] }), /no stock version/)
+  const s = p.source(SRC)
+  assert.deepEqual([s.stock.versions.length, s.stock.kind, s.used_by[0].stock], [4, 'distill', v3.version])
+})
+
+test('stock stays within its limit and reads the references a page makes', async () => {
+  const root = mkdtempSync(join(tmpdir(), 'praxis-stock-'))
+  const stock = createStock({ root, limit: 2000 })
+  const big = Buffer.alloc(3000)
+  const fetchImpl = async (url) => (String(url).endsWith('.pdf') ? new Response(big, { headers: { 'content-type': 'application/pdf' } })
+    : String(url).endsWith('.png') ? new Response(big, { headers: { 'content-type': 'image/png' } })
+      : new Response('<p><img src="/big.png"></p>', { headers: { 'content-type': 'text/html' } }))
+  const { manifest } = await stock.download({ id: 'praxis:x', url: 'https://example.org/x' }, { fetchImpl })
+  assert.deepEqual([manifest.files.map((f) => f.path), manifest.missing.map((m) => m.reason)], [['index.html'], [`over ${2000 / 1048576} MB in all`]])
+  await assert.rejects(stock.download({ id: 'praxis:y', url: 'https://example.org/y.pdf' }, { fetchImpl }), /over .* MB; nothing stocked/)
+  assert.deepEqual(pageAssets('<meta name="twitter:image" content="/t.png"><link href="/a.css" rel="stylesheet"><img src="b.png"><img src="b.png">', 'https://e.org/p/').map((a) => [a.role, a.url]),
+    [['cover', 'https://e.org/t.png'], ['style', 'https://e.org/a.css'], ['image', 'https://e.org/p/b.png']])
+})
+
+test('a registry pack written beside another copy of the package reaches this Kit through its kit path', () => {
+  const { root, p } = setup()
+  writeFileSync(join(root, 'vault/old-registry.json'), JSON.stringify({ sources: [
+    { id: 'old:guide', title: 'Old guide', canonical_url: 'https://example.org/old', evidence_status: 'verified', summary: '旧包旁写的来源。', grammar_paths: ['repo/dsh-praxis/kit/design/controls.md'] },
+  ] }))
+  p.materials.registerPack({ id: 'old', format: 'registry', path: 'vault/old-registry.json', root: '.', title: 'Old', purpose: '测试', kit: 'repo/dsh-praxis/kit' })
+  assert.deepEqual(p.materials.listBindings({ source: 'old:guide' }).map((b) => b.target), ['kit/design/controls.md'])
+  assert.ok(p.resolve({ units: ['design/controls'] }).materials.some((m) => m.source === 'old:guide'), 'its relation reaches the task')
 })

@@ -7,6 +7,7 @@ import { PACKAGE, locate, pathsFor } from './paths.js'
 import { Kit, LAYERS, clip } from './kit.js'
 import { FORMS, Materials, signalsOf } from './materials.js'
 import { Artifacts } from './artifacts.js'
+import { checkKeyOf, createStock } from './stock.js'
 import { ALLOWED, Projects, TEMPLATES } from './projects.js'
 import { Collection, readJson } from './store.js'
 import { PRESET_FIELDS, presetId, validatePreset } from './presets.js'
@@ -31,6 +32,22 @@ export function createPraxis(options = {}) {
   const presets = new Collection(join(dataDir, 'presets.json'), join(dataDir, 'history.jsonl'))
   const artifacts = new Artifacts(where)
   const projects = new Projects(where)
+  const stock = createStock({ root: join(dataDir, 'stock') })
+
+  /**
+   * A source's stock as shelves and pages show it: its latest version, the latest download's cover,
+   * and `restock` when a check since that download saw the original change.
+   */
+  const stockOf = (id, state = materials.sourceState()) => {
+    const all = stock.list(id)
+    if (!all.length) return undefined
+    const last = all.at(-1)
+    const got = stock.lastDownload(id)
+    // A copy whose upstream state is unknown (an imported snapshot) cannot say whether upstream moved since.
+    const key = got && checkKeyOf(got.upstream)
+    const restock = !!key && state.current.has(id) && state.current.get(id) !== key
+    return { version: last.version, at: last.at, kind: last.kind, ...(got?.cover ? { cover: { version: got.version, file: got.cover } } : {}), ...(restock ? { restock: true } : {}) }
+  }
 
   return {
     where,
@@ -38,6 +55,7 @@ export function createPraxis(options = {}) {
     materials,
     artifacts,
     projects,
+    stock,
     kit,
 
     /** Resident entries plus the routes into each layer: what every task starts with. */
@@ -139,10 +157,11 @@ export function createPraxis(options = {}) {
       const authored = (b) => b.target.split('#')[0] === own?.path
       const preferred = (b) => b.priority === 'preferred'
       const lead = (b) => [authored(b), preferred(b), b.favorite, b.description_curated].map(Number)
+      const gone = materials.sourceState().unreachable
       const rows = [...shelf.values()]
         .map((bs) => ({ bs: bs.sort((x, y) => byKeys(lead(x), lead(y))), key: [bs.some(authored), bs.some(preferred), bs.some((b) => b.favorite), new Set(bs.map((b) => b.page)).size].map(Number) }))
         .sort((x, y) => byKeys(x.key, y.key))
-        .map(({ bs }, i) => material(bs, materials.source(bs[0].source), i < detailed))
+        .map(({ bs }, i) => material(bs, materials.source(bs[0].source), i < detailed, stock.latest(bs[0].source), gone.has(bs[0].source)))
       const exemplars = this.exemplars(new Set(pageOf.keys())).slice(0, exemplars_limit)
       const chosenPreset = preset ? this.preset(preset)
         : Object.entries(presets.all()).map(([id, p]) => ({ id, ...p })).find((p) => p.pipeline === pipeline && p.default && p.state !== 'removed')
@@ -156,6 +175,31 @@ export function createPraxis(options = {}) {
         materials: rows,
         exemplars,
       }
+    },
+
+    /**
+     * Stock a source: download a new version of its original (or say it is unchanged), keep an
+     * agent's distill, or list its versions. A download also observes the original, so it is
+     * recorded with the source's checks; a version is never changed or deleted here.
+     */
+    async stockAction({ source, action, text, based_on, model, locators, by, fetchImpl } = {}) {
+      const s = materials.source(source)
+      if (!s) throw new Error(`unknown source: ${source}`)
+      if (action === 'list') return stock.list(s.id).map(stock.brief)
+      if (s.state === 'retired') throw new Error(`${s.id} is retired; it takes no new stock`)
+      if (action === 'distill') {
+        const m = stock.distill(s, { text, based_on, model, locators, by })
+        materials.bindings.log({ op: 'stock', id: s.id, kind: 'distill', version: m.version, by })
+        return stock.brief(m)
+      }
+      if (action !== 'download') throw new Error('action must be download, distill or list')
+      if (!s.url?.startsWith('http')) throw new Error('download needs an http(s) URL')
+      let got
+      try { got = await stock.download(s, { by, fetchImpl }) } catch (e) { if (e.check) materials.recordCheck(s.id, { ...e.check, via: 'stock' }); throw e }
+      materials.recordCheck(s.id, { ...got.check, via: 'stock' })
+      if (got.unchanged) return { unchanged: true, latest: stock.brief(got.manifest) }
+      materials.bindings.log({ op: 'stock', id: s.id, kind: 'download', version: got.manifest.version, by })
+      return stock.brief(got.manifest)
     },
 
     /**
@@ -195,8 +239,9 @@ export function createPraxis(options = {}) {
       for (const r of relations) for (const t of reach.get(r.unit) ?? []) types.set(t.id, t)
       const used_by = this.runs({ limit: 1000 })
         .filter((r) => r.sources.some((x) => x.id === s.id))
-        .map((r) => ({ id: r.id, title: r.title, at: r.at, by: r.by, use: r.sources.find((x) => x.id === s.id).use, artifacts: r.artifacts.map((a) => ({ artifact: a.artifact, version: a.version, path: a.path })) }))
-      return { ...s, members: s.members ? { pattern: s.members.pattern, skipped: s.members.skipped, ...materials.members(s.id), ledger: materials.ledger(s.id) } : undefined, collection: materials.collectionOf(found), relations, serves: [...types.values()], used_by }
+        .map((r) => { const read = r.sources.find((x) => x.id === s.id); return { id: r.id, title: r.title, at: r.at, by: r.by, use: read.use, stock: read.stock, artifacts: r.artifacts.map((a) => ({ artifact: a.artifact, version: a.version, path: a.path })) } })
+      const versions = stock.list(s.id).map(stock.brief)
+      return { ...s, stock: versions.length ? { versions, ...stockOf(s.id) } : undefined, members: s.members ? { pattern: s.members.pattern, skipped: s.members.skipped, ...materials.members(s.id), ledger: materials.ledger(s.id) } : undefined, collection: materials.collectionOf(found), relations, serves: [...types.values()], used_by }
     },
 
     /**
@@ -217,11 +262,12 @@ export function createPraxis(options = {}) {
       // the run and shown with the source, never written into its entry.
       const read = new Map()
       for (const ref of sources) {
-        const { id: want, use } = typeof ref === 'string' ? { id: ref } : ref
+        const { id: want, use, stock: version } = typeof ref === 'string' ? { id: ref } : ref
         const s = materials.source(want)
         if (!s) throw new Error(`unknown source: ${want}`)
+        if (version && !stock.list(s.id).some((m) => m.version === version)) throw new Error(`no stock version ${version} for ${s.id}; praxis_source lists its versions`)
         const uses = [...new Set([read.get(s.id)?.use, use?.trim()].filter(Boolean))]
-        read.set(s.id, { id: s.id, sha256: s.version, ...(uses.length ? { use: uses.join('；') } : {}) })
+        read.set(s.id, { id: s.id, sha256: s.version, ...(version ? { stock: version } : {}), ...(uses.length ? { use: uses.join('；') } : {}) })
       }
       const sourceRefs = [...read.values()]
       const unitPaths = new Set(unitRefs.map((u) => u.path))
@@ -286,7 +332,7 @@ export function createPraxis(options = {}) {
             version: i + 1, sha256: v.sha256, size: v.size, at: v.at, by: v.by, derived_from: v.derived_from ?? [],
             made_with: v.made_with ? { id: v.made_with, title: artifacts.get(v.made_with)?.title ?? v.made_with } : undefined,
             run: run ? { id: run.id, title: run.title, at: run.at, task_type: run.task_type, pipeline: run.pipeline,
-              units: run.units.map((u) => u.id), bindings: run.bindings.map((b) => b.id), sources: run.sources.map((s) => ({ id: s.id, title: materials.source(s.id)?.title ?? s.id, ...(s.use ? { use: s.use } : {}) })),
+              units: run.units.map((u) => u.id), bindings: run.bindings.map((b) => b.id), sources: run.sources.map((s) => ({ id: s.id, title: materials.source(s.id)?.title ?? s.id, ...(s.use ? { use: s.use } : {}), ...(s.stock ? { stock: s.stock } : {}) })),
               changed: stale.get(run.id) ?? null } : null,
             review: rec.review?.version === i + 1 ? rec.review : null,
           }
@@ -425,6 +471,8 @@ export function createPraxis(options = {}) {
           tags: s.tags?.length ? s.tags : undefined,
           preview: s.excerpts?.[0] ? { claim: s.excerpts[0].claim, locator: s.excerpts[0].locator } : undefined,
           matched: hit.matched.length ? hit.matched : undefined,
+          // What is in stock: the latest version, a cover, and whether upstream moved since the latest download.
+          stock: stockOf(s.id, state),
           // `current`: the description the review judged is still the description (states.js).
           review: s.review ? (({ verdict, revision, by, at, current }) => ({ verdict, revision, by, at, current }))(materials.entryReview(s)) : undefined,
         }
@@ -528,17 +576,18 @@ function servedBy(k) {
 }
 
 // A material row is one source on the pages a task reads (its bindings there, leading one first):
-// the way to the original, which of those pages it is on, and its description from the leading
-// binding. A detailed row adds how it was read, the usage notes on those pages, the passages the
+// the way to the original, which of those pages it is on, its description from the leading binding,
+// the latest local version of each kind (`stock`) and `original_gone` when the link no longer answers. A detailed row adds how it was read, the usage notes on those pages, the passages the
 // record vouches for with their locators, and any local snapshot; a catalog row says how many
 // excerpts praxis_source has. The source ID is what consume takes once the agent has read it.
-function material(bs, s, detailed) {
+function material(bs, s, detailed, kept, gone) {
   const [b] = bs
   const excerpts = s?.excerpts ?? []
   const row = {
     source: b.source, title: b.title, form: s?.form, url: s?.url, evidence_status: s?.evidence_status, description: clip(b.description, 100),
     pages: [...new Set(bs.map((x) => x.page))],
     ...(bs.some((x) => x.priority === 'preferred') ? { priority: 'preferred' } : {}), ...(bs.some((x) => x.favorite) ? { favorite: true } : {}),
+    ...(gone ? { original_gone: true } : {}), ...(kept ? { stock: kept } : {}),
   }
   if (!detailed) return { ...row, more_excerpts: excerpts.length || undefined }
   const usage = bs.map((x) => x.usage).filter(Boolean)

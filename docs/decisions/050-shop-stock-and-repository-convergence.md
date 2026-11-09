@@ -1,6 +1,6 @@
 # ADR-050：开店与购物，来源备货，仓库收敛为 Praxis-dsh
 
-日期：2026-11-09。状态：accepted（spec；六项裁定见文末，均由用户在本会话裁定，尚未施工）。用户在本会话里先后提出：来源加入购物车，选好后去 chat 施工，也可导出给别的 agent；来源详情提供 Download 或 distill，由 agent 按时间戳在 Praxis 自己的目录里建缓存，尽量拿到不依赖原件存活的资源，接近安装但不一次进入 context，快照纳入版本管理并可 update；仓库收敛为 fresh 安装的 release 版 Praxis 加导入的资源，项目目录转为 Praxis 自己的缓存目录，项目只收敛到 Praxis-dsh；shop 作为核心交互，登记来源就是商品上架，可视化、界面与 motion 围绕“开店与购物”展开，需要 Blender 时交 Codex 制作，Praxis 自己的参考资源照常可用。主会话（Claude Opus 5.5）对照 ADR-045 至 ADR-049 与 0.3.0 的代码编写本 spec。
+日期：2026-11-09。状态：accepted（六项裁定见文末，均由用户在本会话裁定；第 1–4 步已施工，第 5 步等用户确认，见文末“施工”）。用户在本会话里先后提出：来源加入购物车，选好后去 chat 施工，也可导出给别的 agent；来源详情提供 Download 或 distill，由 agent 按时间戳在 Praxis 自己的目录里建缓存，尽量拿到不依赖原件存活的资源，接近安装但不一次进入 context，快照纳入版本管理并可 update；仓库收敛为 fresh 安装的 release 版 Praxis 加导入的资源，项目目录转为 Praxis 自己的缓存目录，项目只收敛到 Praxis-dsh；shop 作为核心交互，登记来源就是商品上架，可视化、界面与 motion 围绕“开店与购物”展开，需要 Blender 时交 Codex 制作，Praxis 自己的参考资源照常可用。主会话（Claude Opus 5.5）对照 ADR-045 至 ADR-049 与 0.3.0 的代码编写本 spec。
 
 ## 问题
 
@@ -96,3 +96,12 @@ Shop 的立体素材（Blender，Codex）与 1–3 并行，接到界面的素�
 - 原件失效后来源仍可用，且读的是哪个版本有据可查；库存只在需要时披露，不增加常驻上下文。
 - 代码仓库变小、可公开、按版本发布；数据目录保留全部研究与交付，不依赖插件的仓库模式。
 - 代价：数据目录要单独备份；迁移一次性改写 `settings.json` 与快照登记；三个来源包的路径依赖 `base` 不变。
+
+## 施工（2026-11-09）
+
+按 [工单](../../dsh-praxis/work-order-shop.md)施工，各步的验收与发现记在工单里。
+
+- **第 1–3 步**：Shop 的 Browse 与 Manage、For、New 与 Recently used、On the same pages、Copy IDs；`core/stock.js` 与 `praxis_stock`（download、distill、list），`praxis_refresh` 去掉 `keep`；商品页的 Stock 栏、Quick look 与 Distill，Manage 的 Link only 与 Restock。
+- **第 4 步**：`release/migrate.mjs` 把数据根复制到新目录并核对两边答得一样。演练补了两处本 spec 没写到的：stream 页的挂载随数据根的位置改名；registry 来源包按仓库里的包路径声明 Kit 页，登记加 `kit` 字段后读成 `kit/…`。`vault/distilled` 里没有逐个来源的提炼，不导入。
+- **第 5 步**未动：备份、新远端、subtree split、release tag、删去 `dsh-praxis/`、桌面 DSH 改装，以及数据根放在本目录根还是子目录，都等用户确认。
+

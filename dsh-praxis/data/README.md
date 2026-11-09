@@ -4,13 +4,14 @@
 
 | 文件 | 内容 |
 |---|---|
-| `settings.json` | `base: ../..`：记录里的相对路径以仓库根为起点；`snapshots: ../../vault/snapshots/praxis-captures`：refresh 另存的快照放进 vault |
+| `settings.json` | `base: ../..`：记录里的相对路径以仓库根为起点 |
 | `sources.json` | 自有来源，都是网页：ID 为 `praxis:<slug>`，记 URL、概要、读取范围、证据状态、边界、何时重访、摘录、收录任务、集合的成员模式（含带理由跳过的成员）与所属集合、淘汰理由与 revision；不存原件 |
 | `catalog.json` | 来源编目：按来源 ID 记形态、Kit 分类、description 与最近一次 review（含 revision 与当时的来源版本）；自有来源与来源包里的条目都可编目，来源包本身不被写入 |
-| `packs.json` | 按引用接入的来源包：`vault`（registry 格式，读 `vault/registry.json`）与 `jev-research`（Jev 专章的来源索引，经字段映射读取）；Praxis 只读这些文件，不写 |
+| `packs.json` | 按引用接入的来源包：`vault`（registry 格式，读 `vault/registry.json`）与 `jev-research`（Jev 专章的来源索引，经字段映射读取）；Praxis 只读这些文件，不写。registry 来源包可带 `kit`：它声明 Kit 页时用的路径（如 `dsh-praxis/kit`），换到别处安装的包也读成 `kit/…` |
 | [streams/](streams/README.md) | 用户自撰的探索方向，一页一条；手写，进 Git，备份随数据根走 |
 | `bindings.json` | 挂载：在名册里新建、移除、恢复或编辑过的关系，以及挂载上的维护信息（description、取用题解、启用、收藏、优先级、tag、最近一次 review、状态与 revision），按 `<来源 ID>@<页面路径>` 对上。来源包声明的关系（vault 记录的 `grammar_paths`）没被动过时不在这里 |
-| `checks.jsonl` | 追加式来源检查：来源、时间、状态、HTTP 码、内容 hash（HTML 另记正文 hash）、大小与类型，打不开时记错误；集合类来源另记成员链接；另存快照时记快照路径 |
+| `checks.jsonl` | 追加式来源检查：来源、时间、状态、HTTP 码、内容 hash（HTML 另记正文 hash）、大小与类型，打不开时记错误；集合类来源另记成员链接；备货时的抓取也记一条（`via: stock`） |
+| `stock/` | 来源的本地库存：`<来源>/<UTC 时间戳>/` 一个版本，`manifest.json` 记来源、取自哪个 URL、文件清单（路径、sha256、大小、来源 URL）、原件当时的 hash、封面、没取的文件与原因、与上一版的差别；distill 版本是 `distill.md` 加依据与模型。版本只增不改；只有 `manifest.json` 与 `distill.md` 进 Git |
 | `presets.json` | 预设：流水线、名称、字段值、tag、是否默认、revision |
 | `projects.json` | 项目：根目录（仓库内为仓库路径，仓库外为绝对路径）、名称、用途、布局（按角色给路径模式：draft 底稿、build 中间产物、final 最终产物、evidence 验收回执与留存帧进 Git、tmp 临时文件不进 Git；缺的角色由模板 standard 补齐）、状态与 revision |
 | `artifacts.json` | 产物：名称、说明、媒介、种类（`delivery` 交付、`pipeline` 管线、`example` 范例）、`serves`（作为范例服务哪些 Kit 页、何时对照）、位置（仓库内为仓库路径，仓库外为绝对路径）、版本（sha256、大小、时间、运行、派生自）、最近一次 review（写明针对哪一版）、状态与 revision。文件本身不在这里 |
@@ -18,6 +19,6 @@
 | `history.jsonl` | 追加式维护记录：时间、操作、对象、revision、操作者、任务、理由，以及这一版写下的字段值（`set`）；`praxis_history` 按 `id` 过滤可回查一条挂载、来源或预设的每个版本 |
 | [runs/](runs/README.md) | 每次 consume 一个文件：读了哪些单元（含版本）与来源（含内容 hash），读过的来源与单元之间的挂载（含 revision），产物（产物 ID、版本、hash），以及来源会话 |
 
-`node dsh-praxis/adapters/cli.js export state.tar.gz` 把本目录和快照目录（`vault/snapshots/praxis-captures`，在本目录之外）打成一个带 hash 清单的包；`check` 校验包，`restore` 恢复，本地已改过的文件默认不覆盖。vault 的 catalog 与 registry、Jev 的来源索引、产物文件都留在各自的位置，不在包里。
+`node dsh-praxis/adapters/cli.js export state.tar.gz` 把本目录（含库存）打成一个带 hash 清单的包；`check` 校验包，`restore` 恢复，本地已改过的文件默认不覆盖。vault 的 catalog 与 registry、Jev 的来源索引、产物文件都留在各自的位置，不在包里。
 
 可以直接编辑这些 JSON；core 每次调用都重新读取。直接编辑不经过 revision 检查，也不留维护记录，改完运行 `python3 scripts/validate_repository.py`。

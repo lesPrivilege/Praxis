@@ -13,6 +13,7 @@
 | [artifacts.js](artifacts.js) | 产物：交付文件的身份、按内容区分的版本（sha256、产出它的运行、派生自哪一版）、绑定版本的 review、状态（current、modified、missing，每次从文件读出）；字节留在原处 |
 | [presets.js](presets.js) | 每条流水线的预设字段与校验；只记密钥所在的环境变量名 |
 | [backup.js](backup.js) | 数据根的导出、校验与恢复；快照目录在数据根之外时一并处理。来源包的文件与产物文件不在其中 |
+| [stock.js](stock.js) | 来源的本地库存：数据根 `stock/<来源>/<UTC 时间戳>/` 一个版本，带 manifest，只增不改；download 经 Host 抓取（GitHub 仓库存某个提交的源码归档与 README，网页存页面与它引用的图片、样式和预览图，其他文件存原样），与最新版本内容相同就不建新版本，单版上限 50 MB；distill 存 agent 写的提炼并在文首标明；`file()` 只给 manifest 列出的文件 |
 | [index.js](index.js) | 入口、resolve（可带 stream；素材是这些单元上的全部已启用来源，每个来源一行并写明挂在哪几页，前 12 行带摘录定位、题解与快照，其余到 description；之后是服务这些单元的范例：pipeline、example 与已接受的交付）、来源编目（`catalog()` 按层、区域、形态排纲目）、来源条目（收录缘由、所挂页面、服务的任务类型、读过它的运行与产物）、Kit 修订（`reviseUnit` 写覆盖层并记下包内原页的 hash，`revertUnit` 撤回，`revisionList` 标出与包内更新后的原页冲突的修订）、预设、consume、运行记录与 stale 检查；`consume` 先核对再写，记下读过的来源（可带一句用途）、由它推出所用挂载和来源会话，同时登记交付的文件；`upkeep()` 汇总现在需要人处理的事，通常为空；`entry()` 与 `upkeep()` 在宿主运行旧代码时带 `reload` |
 
 数据归属：Praxis 写下的一切在数据根（名册、挂载、预设、项目、产物记录、运行记录、来源检查、维护记录、Kit 修订）；来源包的文件留在主人那里，Praxis 只读；产物文件留在主人的工作区；包内 Kit 不被写入。数据根与 `settings.json` 见 [安装与运行](../INSTALL.md#数据根)。

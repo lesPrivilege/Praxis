@@ -20,6 +20,17 @@
 | `artifacts_carry_roles_without_signals` | 产物带底稿或最终产物的角色，没有信号 |
 | `upkeep_proposes_roster_revisions` | 上游集合新增与下线成员后，upkeep 列出两者 |
 | `data_lives_in_the_plugin_folder` | 写下的数据都在 `$DSH_HOME/dsh-praxis` |
+| `stock_survives_offline_original` | 来源备了一版库存，原件下线后，任务素材写明原件失效，并给出库存版本的目录 |
 | `package_untouched` | 包目录里没有写入数据 |
 
 输出一份 JSON（临时目录、是否通过、每项检查与观察值）；有检查不通过时退出码为 1，中途出错记为 `walkthrough_completed` 不通过。
+
+## 迁移到独立的数据根
+
+[migrate.mjs](migrate.mjs) 把这个仓库的数据根复制到一个空目录，并核对副本与原数据答得一样（ADR-050 第 4、5 步）：
+
+```bash
+node release/migrate.mjs data <新数据根>
+```
+
+原数据根只读。副本逐个文件照搬，另做四处改动：`settings.json` 的 `base` 写成绝对路径；按旧包路径（`dsh-praxis/kit/…`）声明 Kit 页的 registry 来源包，登记加上 `kit`，换到别处安装的包也能对上；挂在 stream 页上的挂载随数据根改名，`bindings.json` 与运行记录里的挂载跟着改，`history.jsonl` 保留原名；来源包记录的快照文件在、且 sha256 对得上的，导入为 `stock/` 的 download 版本，时间取记录的 `reviewed_at`（快照本身的时间没有记）。之后在两边对每个任务类型与流水线、每条 stream 和两两组合跑 `praxis_resolve`，比较挂载数、过期运行与 upkeep；除库存和 stream 页自己的路径外都要一致，不一致时退出码为 1。

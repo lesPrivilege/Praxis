@@ -24,7 +24,7 @@ window.__ModuleLoader__.load({
         'review.question': 'Is this description right?', 'review.last': 'Last: {v}, {by}, {at}', 'review.note': 'What is wrong', 'review.noteHint': '⌘/Ctrl + Enter to send, Esc to cancel',
         'review.sendNeedsWork': 'Mark needs work and send to Praxis', 'review.cancel': 'Cancel', 'review.recorded': 'Recorded: {v}', 'review.sentToAgent': 'Marked needs work; Praxis is revising it',
         'ev.verified': 'Original read', 'ev.partial': 'Partly read', 'ev.unavailable': 'Not read',
-        'tab.kit': 'Kit', 'tab.sources': 'Sources', 'tab.task': 'Task', 'tab.artifacts': 'Artifacts', 'tab.log': 'Log',
+        'tab.kit': 'Kit', 'tab.shop': 'Shop', 'tab.task': 'Task', 'tab.artifacts': 'Artifacts', 'tab.log': 'Log',
         'kit.core': 'Core', 'kit.flow': 'Downstream workflows', 'kit.other': 'Outside the Kit', 'kit.files': '{n} files', 'kit.packs': 'Source packs', 'kit.failed': 'Could not load the Kit:',
         'kit.sources': 'Sources on this page', 'kit.showRemoved': 'Show removed', 'kit.noSources': 'No sources on this page', 'kit.restore': 'Restore', 'kit.favorite': 'Star', 'kit.enabled': 'Use in tasks',
         'kit.check': 'Check the original', 'kit.bindingAccurate': 'Description here is accurate', 'kit.bindingNeedsWork': 'Description here needs work', 'kit.remove': 'Remove from this page',
@@ -41,9 +41,9 @@ window.__ModuleLoader__.load({
         'log.attention': 'Needs attention', 'log.reload': 'Plugin code changed; restart DSH to load it', 'log.unfiled': 'Not catalogued', 'log.sendFile': 'Send to Praxis to file', 'log.added': 'New upstream member', 'log.sendCapture': 'Send to Praxis', 'log.skip': 'Skip', 'log.skipWhy': 'Why skip it',
         'log.gone': 'Gone upstream', 'log.retire': 'Retire', 'log.retireWhy': 'Why retire it', 'log.none': 'Nothing needs attention', 'log.runs': 'Runs', 'log.runCounts': '{u} units · {s} sources', 'log.noRuns': 'No runs yet', 'log.history': 'Maintenance', 'log.noHistory': 'No maintenance yet',
         'ask.forUnit': 'Find sources for Kit unit {id} ({title}): check the roster first, then look further if needed; read each original, capture it and attach it to this page, describing when this page uses it and what to take.', 'ask.file': 'Source {id} ({title}) is not catalogued. Read the original, then set form, category and description, and attach it where it clearly serves.', 'ask.member': '{url}\nA new upstream member of collection {id}.',
-        'tab.label': 'Sections', 'tab.scope': 'Sources', 'tab.catalog': 'Catalog', 'tab.review': 'Review', 'tab.catalogHint': '{n} sources', 'layer.design': 'Design', 'layer.writing': 'Writing', 'layer.task': 'Task', 'layer.publish': 'Publish', 'layer.stream': 'Stream', 'd.checked': 'Original checked {at}: HTTP {http}', 'd.unreachable': 'The original could not be reached when checked on {at}. The excerpts and read scope below are what Praxis has.', 'd.noCheck': 'Original not checked yet', 'd.activity': 'Activity', 'd.collected': 'Collected for: {task}', 'd.fromPack': 'From the {pack} pack', 'd.readFor': 'Read for: {title}', 'd.read': 'What was read', 'd.noExcerpts': 'No excerpts; read the whole original before using it', 'd.noPages': 'Not attached to any Kit page', 'd.serves': 'Reaches these task types', 'd.noRuns': 'No run has read it', 'd.revisit': 'When to revisit',
+        'tab.label': 'Sections', 'tab.scope': 'Shop', 'tab.browse': 'Browse', 'tab.manage': 'Manage', 'tab.browseHint': '{n} sources', 'shop.for': 'For', 'shop.forAny': 'Anything', 'shop.forTypes': 'Task types', 'shop.forStreams': 'Streams', 'shop.forPages': 'Kit pages', 'shop.forTask': '{n} sources, in the order an agent gets them', 'shop.forPage': '{n} sources on this page', 'shop.new': 'New', 'shop.newBasis': 'Latest collected first', 'shop.used': 'Recently used', 'shop.usedBasis': 'Latest read by a run first', 'd.neighbours': 'On the same pages', 'cart.copyIds': 'Copy IDs', 'stock.label': 'Stock', 'stock.linkOnly': 'Link only: no local copy yet', 'stock.download': 'Download', 'stock.update': 'Update', 'stock.getting': 'Getting a copy of the original…', 'stock.unchanged': 'The original has not changed since the copy of {at}', 'stock.kind.download': 'Download', 'stock.kind.distill': 'Distill', 'stock.files': '{n} files', 'stock.added': '{n} added', 'stock.removed': '{n} removed', 'stock.changed': '{n} changed', 'stock.missing': '{n} not kept', 'stock.look': 'Quick look', 'stock.lookFrom': 'Version of {at}', 'stock.restock': 'The original changed after the latest download', 'stock.in': 'In stock', 'd.unreachableStock': 'The original could not be reached when checked on {at}. A local copy from {v} is under Stock.', 'review.f.link-only': 'Link only', 'review.f.restock': 'Restock', 'review.empty.link-only': 'Every source has a local copy', 'review.empty.restock': 'Nothing to restock', 'layer.design': 'Design', 'layer.writing': 'Writing', 'layer.task': 'Task', 'layer.publish': 'Publish', 'layer.stream': 'Stream', 'd.checked': 'Original checked {at}: HTTP {http}', 'd.unreachable': 'The original could not be reached when checked on {at}. The excerpts and read scope below are what Praxis has.', 'd.noCheck': 'Original not checked yet', 'd.activity': 'Activity', 'd.collected': 'Collected for: {task}', 'd.fromPack': 'From the {pack} pack', 'd.readFor': 'Read for: {title}', 'd.read': 'What was read', 'd.noExcerpts': 'No excerpts; read the whole original before using it', 'd.noPages': 'Not attached to any Kit page', 'd.serves': 'Reaches these task types', 'd.noRuns': 'No run has read it', 'd.revisit': 'When to revisit',
         'ask.label': 'Capture or change sources', 'ask.placeholder': 'Paste links or a conversation, or tell Praxis what to change', 'ask.unavailable': 'No agent here; open Praxis in DSH to paste links', 'ask.send': 'Send',
-        'ask.running': 'Reading the originals and filing', 'ask.done': 'Captured {n}:', 'ask.doneNone': 'Done; nothing new captured', 'ask.failed': 'Did not finish', 'ask.stopped': 'Session stopped before finishing', 'ask.session': 'Session',
+        'ask.running': 'Reading the originals and filing', 'ask.distilling': 'Writing a distill of {title}', 'ask.distilled': 'Distill saved:', 'ask.distillNone': 'The session ended without saving a distill', 'stock.distill': 'Distill', 'stock.distilling': 'An agent is writing a distill from the original', 'ask.done': 'Captured {n}:', 'ask.doneNone': 'Done; nothing new captured', 'ask.failed': 'Did not finish', 'ask.stopped': 'Session stopped before finishing', 'ask.session': 'Session',
         'ask.revise': 'The description of source {id} ({title}) was marked needs work: {note}. Read the original, then rewrite its description; change form, category or attachment descriptions if needed.', 'ask.noNote': 'no reason given',
         'v.accurate': 'Accurate', 'v.revised': 'Revised', 'v.needs-work': 'Needs work',
         'form.standard': 'Standard', 'form.practice': 'Practice', 'form.component-library': 'Component library', 'form.case-library': 'Case library', 'form.case': 'Case', 'form.skill': 'Skill', 'form.tool': 'Tool', 'form.article': 'Article', 'form.research': 'Research' },
@@ -109,7 +109,7 @@ window.__ModuleLoader__.load({
           h('div', { className: 'pxc-section' }, h('span', { className: 'pxc-label' }, t('units')),
             h('ul', { className: 'pxc-list' }, units.map((u) => h('li', { key: u.id }, h('button', { type: 'button', className: 'pxc-file', onClick: () => openPage({ tab: 'kit', unit: u.id }) }, u.title), h('span', { className: 'pxc-dim' }, u.reasons?.join('；')))))),
           mats.length ? h('div', { className: 'pxc-section' }, h('span', { className: 'pxc-label' }, t('materials')),
-            h('ul', { className: 'pxc-list' }, mats.map((m) => h('li', { key: m.source }, h('button', { type: 'button', className: 'pxc-file', onClick: () => openPage({ tab: 'sources', source: m.source }) }, m.title), h('span', { className: 'pxc-dim' }, m.description))))) : null)
+            h('ul', { className: 'pxc-list' }, mats.map((m) => h('li', { key: m.source }, h('button', { type: 'button', className: 'pxc-file', onClick: () => openPage({ tab: 'shop', source: m.source }) }, m.title), h('span', { className: 'pxc-dim' }, m.description))))) : null)
       }
       function ConsumeRow({ block, phase, openFile }) {
         const v = valueOf(block)
@@ -154,8 +154,8 @@ window.__ModuleLoader__.load({
       if (!res.ok) throw Object.assign(new Error(body.error || res.statusText), { status: res.status })
       return body
     }
-    async function asks(text) {
-      const res = await fetch('/api/praxis.ask', text === undefined ? {} : { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ text }) })
+    async function asks(request) {
+      const res = await fetch('/api/praxis.ask', request === undefined ? {} : { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(typeof request === 'string' ? { text: request } : request) })
       const body = await res.json()
       if (!res.ok) throw new Error(body.error || res.statusText)
       return body
@@ -234,15 +234,15 @@ window.__ModuleLoader__.load({
     // original. Tabs: Kit, Sources, Task, Artifacts, Log. The composer at the bottom is how records
     // change: people say it, an agent session writes it.
     //
-    // A place is a tab and where in it: a unit, a folder, an artifact, the review queue. Each tab keeps
+    // A place is a tab and where in it: a unit, a folder, an artifact, Manage in the Shop. Each tab keeps
     // its place, its filters and its scroll offset while another tab is in front. Going back up puts
     // the offset back and hands focus to the item you came from. A source opens over the place it was
     // opened from; ← → step through the list it was opened from; Esc or the trail goes back.
-    const TABS = ['kit', 'sources', 'task', 'artifacts', 'log']
+    const TABS = ['kit', 'shop', 'task', 'artifacts', 'log']
     const LAYERS = ['design', 'writing', 'task', 'publish']
     const keyOf = (n) => `${n.tab}:${n.unit ?? n.target ?? n.artifact ?? n.mode ?? ''}${n.source ? `#${n.source}` : ''}`
     const placeOf = ({ source, list, from, ...place }) => place
-    const homeOf = (tab) => (tab === 'sources' && recall('praxis.sources.tab', 'catalog') === 'review' ? { tab, mode: 'review' } : { tab })
+    const homeOf = (tab) => (tab === 'shop' && recall('praxis.shop.view', 'browse') === 'manage' ? { tab, mode: 'manage' } : { tab })
 
     async function loadKit() {
       const [units, bindings, revisions, packs] = await Promise.all([call('praxis_units'), call('praxis_bindings', {}), call('praxis_revisions'), call('praxis_packs')])
@@ -260,7 +260,9 @@ window.__ModuleLoader__.load({
         if (!asked.has(id)) asked.set(id, call('praxis_source', { id }).then((d) => { known.set(id, d); return d }, (e) => { asked.delete(id); throw e }))
         return asked.get(id)
       }
-      return { get, peek: (id) => known.get(id), put: (id, d) => { known.set(id, d); asked.set(id, Promise.resolve(d)) }, forget: (id) => { asked.delete(id); known.delete(id) }, clear: () => { asked.clear(); known.clear() } }
+      return { get, peek: (id) => known.get(id), put: (id, d) => { known.set(id, d); asked.set(id, Promise.resolve(d)) }, forget: (id) => { asked.delete(id); known.delete(id) }, clear: () => { asked.clear(); known.clear() },
+        // Ask again even when a record is kept: a check, a review or new stock may have come in since.
+        fresh: (id) => { asked.delete(id); return get(id) } }
     }
     /** Pointer or focus resting on a source for a moment fetches its record. */
     const intentOn = (sources, id) => {
@@ -304,11 +306,11 @@ window.__ModuleLoader__.load({
       const reloadCatalog = React.useCallback(() => loadCatalog().then((c) => { setCatalog(c); setCatalogError(null) }, (e) => setCatalogError(String(e.message ?? e))), [])
       const loadUpkeep = React.useCallback(() => call('praxis_upkeep').then((r) => setAttention(upkeepCount(r)), () => {}), [])
       React.useEffect(() => { reloadKit(); loadUpkeep(); asks().then(setRequests, () => {}) }, [reloadKit, loadUpkeep])
-      const wantCatalog = drawn.has('sources')
+      const wantCatalog = drawn.has('shop')
       React.useEffect(() => { if (wantCatalog) reloadCatalog() }, [wantCatalog, reloadCatalog, stamp])
       React.useEffect(() => { sources.clear() }, [stamp, sources])
       useReturn(nav.tab === 'kit', reloadKit)
-      useReturn(nav.tab === 'sources', reloadCatalog)
+      useReturn(nav.tab === 'shop', reloadCatalog)
       // While an agent is working, look again every few seconds; when it settles, everything reloads.
       const running = requests.asks.some((a) => a.status === 'running')
       React.useEffect(() => {
@@ -365,7 +367,7 @@ window.__ModuleLoader__.load({
           for (const id of chain) line.push({ label: kit.byId.get(id)?.title ?? id, to: { tab: 'kit', unit: id }, key: `unit:${id}` })
         }
         if (place.target) place.target.split('/').forEach((part, i, all) => { const path = all.slice(0, i + 1).join('/'); line.push({ label: part, to: { tab: 'kit', target: path }, key: `target:${path}` }) })
-        if (place.mode === 'review') line.push({ label: t('tab.review'), to: { tab: 'sources', mode: 'review' } })
+        if (place.mode === 'manage') line.push({ label: t('tab.manage'), to: { tab: 'shop', mode: 'manage' } })
         if (place.artifact) line.push({ label: label ?? place.artifact, to: { tab: 'artifacts', artifact: place.artifact }, key: `artifact:${place.artifact}` })
         return line
       }
@@ -396,7 +398,7 @@ window.__ModuleLoader__.load({
         // The tab already in front: close the source, or go up to the tab's first level, or to its top.
         if (cur.source) return closeSource()
         const line = lineage(cur)
-        if (line.length > 1 && cur.tab !== 'sources') return up(line[0].to, line[1].key)
+        if (line.length > 1 && cur.tab !== 'shop') return up(line[0].to, line[1].key)
         scroll.current?.scrollTo({ top: 0, behavior: 'smooth' })
       }
       // Esc closes the innermost thing first: a field's own use of it, then an open source, then one
@@ -407,7 +409,7 @@ window.__ModuleLoader__.load({
         if (e.target.closest?.('input, textarea, select, [contenteditable="true"]')) return
         const cur = here.current
         const line = lineage(cur)
-        if (!cur.source && !(line.length > 1 && cur.tab !== 'sources')) return
+        if (!cur.source && !(line.length > 1 && cur.tab !== 'shop')) return
         e.preventDefault()
         e.stopPropagation()
         if (cur.source) closeSource()
@@ -416,7 +418,7 @@ window.__ModuleLoader__.load({
       React.useEffect(() => {
         const on = (e) => {
           const r = e.detail ?? {}
-          if (r.source) move({ ...placeOf(places.current.sources ?? homeOf('sources')), source: r.source, list: [r.source] })
+          if (r.source) move({ ...placeOf(places.current.shop ?? homeOf('shop')), source: r.source, list: [r.source] })
           else if (r.tab) go(r)
         }
         window.addEventListener(GO, on)
@@ -425,6 +427,11 @@ window.__ModuleLoader__.load({
 
       const send = async (text) => {
         const ask = await asks(text)
+        setRequests((r) => ({ ...r, asks: [ask, ...r.asks] }))
+      }
+      // A distill is an agent's work too: it reads the original and saves a summary as a stock version.
+      const distill = async (id) => {
+        const ask = await asks({ distill: id })
         setRequests((r) => ({ ...r, asks: [ask, ...r.asks] }))
       }
       const refresh = () => { reloadKit(); loadUpkeep(); sources.clear() }
@@ -437,7 +444,7 @@ window.__ModuleLoader__.load({
       const panes = TABS.filter((v) => drawn.has(v)).map((v) => {
         const active = v === nav.tab
         const props = { ...shared, nav: placeOf(active ? nav : places.current[v] ?? homeOf(v)), active: active && !nav.source }
-        const body = v === 'sources' ? h(SourcesView, { ...props, catalog, catalogError, reloadCatalog, onReviewed: reviewedInList })
+        const body = v === 'shop' ? h(ShopView, { ...props, catalog, catalogError, reloadCatalog, onReviewed: reviewedInList })
           : v === 'task' ? h(TaskView, props)
             : v === 'artifacts' ? h(ArtifactsView, props)
               : v === 'log' ? h(LogView, { ...props, onCount: setAttention })
@@ -449,10 +456,11 @@ window.__ModuleLoader__.load({
         const list = nav.list ?? []
         const at = list.indexOf(nav.source)
         const line = lineage(placeOf(nav), nav.from)
-        detail = h(SourceDetail, { key: nav.source, id: nav.source, quiet: stepping.current, seed: rowsById.get(nav.source) ?? seeds.current.get(nav.source), t, go, kit, openSession, pick, sources, send, onReviewed,
+        detail = h(SourceDetail, { key: nav.source, id: nav.source, quiet: stepping.current, seed: rowsById.get(nav.source) ?? seeds.current.get(nav.source), t, go, kit, openSession, pick, sources, send, onReviewed, openSource, shelf: catalog?.rows, stamp,
+          distill: requests.available ? distill : undefined, distilling: requests.asks.some((a) => a.status === 'running' && a.kind === 'distill' && a.source === nav.source),
           steps: { prev: at > 0 ? list[at - 1] : null, next: at >= 0 ? list[at + 1] ?? null : null }, onStep: stepSource,
           trail: line.map((x, i) => ({ label: x.label, onClick: i === line.length - 1 ? closeSource : () => up(x.to, line[i + 1].key) })),
-          onTag: (x) => go({ tab: 'sources', tag: x, at: Date.now() }) })
+          onTag: (x) => go({ tab: 'shop', tag: x, at: Date.now() }) })
       }
 
       return h('section', { className: 'pxs-page', 'aria-label': 'Praxis', onKeyDown },
@@ -831,24 +839,57 @@ window.__ModuleLoader__.load({
         h(P.Button, { variant: 'primary', size: 'sm', type: 'submit', disabled: !text.trim() }, label))
     }
 
-    // ---- Sources: the catalog by Kit area and form, and the review queue --------------------
-    // Catalog and Review are two places in the tab, each keeping its own scroll offset; filters,
-    // search, tag and open shelves stay as they were while a source is open or another tab in front.
-    function SourcesView({ t, up, nav, catalog, catalogError, reloadCatalog, onReviewed, openSource, last, pick, sources, scroller, active }) {
-      const mode = nav.mode === 'review' ? 'review' : 'catalog'
+    // ---- Shop: Browse lays the catalog out as shelves; Manage is the review queue ------------
+    // Browse and Manage are two places in the tab, each keeping its own scroll offset. What Browse
+    // shops for, the filters, search, tag and open shelves stay as they were while a source is open or
+    // another tab is in front.
+    function ShopView({ t, up, nav, kit, catalog, catalogError, reloadCatalog, onReviewed, openSource, last, pick, sources, scroller, active, stamp }) {
+      const mode = nav.mode === 'manage' ? 'manage' : 'browse'
       const [filter, setFilter] = React.useState('open')
       const [query, setQuery] = React.useState('')
       const [searching, setSearching] = React.useState(false)
-      const [view, setView] = React.useState(() => recall('praxis.sources.view', 'list'))
+      const [view, setView] = React.useState(() => recall('praxis.shop.layout', 'list'))
       const [tag, setTag] = React.useState(null)
       const [openAreas, setOpenAreas] = React.useState(() => new Set())
       // A tag picked on a source page arrives with the place it sends you to.
       React.useEffect(() => { if (nav.tag) { setTag(nav.tag); setQuery(''); setSearching(false) } }, [nav.tag, nav.at])
 
       const rows = catalog?.rows ?? null
-      const switchView = (v) => { setView(v); remember('praxis.sources.view', v) }
-      const switchMode = (v) => { remember('praxis.sources.tab', v); up(v === 'review' ? { tab: 'sources', mode: 'review' } : { tab: 'sources' }) }
-      const keep = (r) => (filter === 'open' ? !reviewed(r) : filter === 'needs-work' ? reviewed(r) && r.review.verdict === 'needs-work' : filter === 'reviewed' ? reviewed(r) : true)
+      const byId = React.useMemo(() => new Map((rows ?? []).map((r) => [r.id, r])), [rows])
+      const switchView = (v) => { setView(v); remember('praxis.shop.layout', v) }
+      const switchMode = (v) => { remember('praxis.shop.view', v); up(v === 'manage' ? { tab: 'shop', mode: 'manage' } : { tab: 'shop' }) }
+      const keep = (r) => (filter === 'open' ? !reviewed(r) : filter === 'needs-work' ? reviewed(r) && r.review.verdict === 'needs-work' : filter === 'reviewed' ? reviewed(r)
+        : filter === 'link-only' ? !r.stock : filter === 'restock' ? !!r.stock?.restock : true)
+
+      // Shopping for a need: a task type or a stream lays out what praxis_resolve hands that task, in
+      // its order, catalogued or not; a Kit page lays out the sources on it. '' shops for anything.
+      const [need, setNeed] = React.useState('')
+      const [wanted, setWanted] = React.useState(null)
+      const neededAt = React.useRef(0)
+      React.useEffect(() => {
+        if (!need || need.startsWith('page:')) return
+        const n = ++neededAt.current
+        const id = need.slice(need.indexOf(':') + 1)
+        call('praxis_resolve', need.startsWith('type:') ? { task_type: id } : { stream: id }).then((r) => r.materials, () => [])
+          .then((list) => { if (n === neededAt.current) setWanted({ need, list }) })
+      }, [need, stamp])
+      const needRows = !need ? null : need.startsWith('page:') ? (rows ?? []).filter((r) => r.pages?.includes(need.slice(5)))
+        : wanted?.need === need ? wanted.list.map((m) => byId.get(m.source) ?? { id: m.source, title: m.title, url: m.url, form: m.form, description: m.description, evidence_status: m.evidence_status, tags: [], areas: [], pages: m.pages }) : null
+      const units = kit?.units ?? []
+      const types = units.filter((u) => u.id.startsWith('task/types/'))
+      const streams = units.filter((u) => u.id.startsWith('stream/'))
+      const pageIds = [...new Set((rows ?? []).flatMap((r) => r.pages ?? []))].sort()
+
+      // What runs read lately, latest first, for the Recently used row.
+      const [used, setUsed] = React.useState([])
+      const loadUsed = React.useCallback(() => call('praxis_runs', { limit: 40 }).then((runs) => {
+        const ids = []
+        for (const r of [...runs].sort((a, b) => String(b.at).localeCompare(String(a.at)))) for (const x of r.sources ?? []) if (!ids.includes(x.id)) ids.push(x.id)
+        setUsed(ids)
+      }, () => {}), [])
+      React.useEffect(() => { loadUsed() }, [loadUsed, stamp])
+      useReturn(active, loadUsed)
+
       const terms = query.trim().toLowerCase().split(/\s+/).filter(Boolean)
       const said = terms.join(' ')
       // Core matches more than the row shows: notes written on bindings and the excerpts. Its answer
@@ -866,40 +907,56 @@ window.__ModuleLoader__.load({
       }, [said])
       const hits = found.q === said ? found.hits : null
       const filtering = terms.length > 0 || !!tag
+      const shopping = mode === 'browse' && !!need
       // A changed filter shows its result from the top.
-      const asked = `${filter}|${tag}|${terms.join(' ')}`
+      const asked = `${mode}|${need}|${filter}|${tag}|${said}`
       const before = React.useRef(asked)
       React.useEffect(() => { if (before.current !== asked && active) scroller?.current?.scrollTo({ top: 0 }); before.current = asked }, [asked])
       const match = (r) => (!tag || r.tags?.includes(tag)) && (terms.every((x) => [r.title, r.description, r.url, r.id, ...(r.tags ?? [])].join(' ').toLowerCase().includes(x)) || !!hits?.has(r.id))
-      const shown = (rows ?? []).filter((r) => (mode === 'catalog' || keep(r)) && match(r)).map((r) => (hits?.get(r.id) ? { ...r, matched: hits.get(r.id) } : r))
-      const layers = mode === 'catalog' && catalog ? shelves(catalog.outline, catalog.forms, shown) : []
+      const pool = shopping ? needRows : rows
+      const shown = (pool ?? []).filter((r) => (mode === 'browse' || keep(r)) && match(r)).map((r) => (hits?.get(r.id) ? { ...r, matched: hits.get(r.id) } : r))
+      const layers = mode === 'browse' && !shopping && catalog ? shelves(catalog.outline, catalog.forms, shown) : []
       const full = (g) => filtering || openAreas.has(g.area)
-      // What ← → step through: the sources in the order they are drawn.
-      const order = () => [...new Set((mode === 'catalog' ? layers.flatMap((l) => l.groups.flatMap((g) => onShelf(g, full(g)))) : shown).map((r) => r.id))]
-      const open = (id) => openSource(id, { list: order() })
+      // Before the shelves, while nothing narrows them: the newest arrivals and what runs read lately.
+      const strips = mode === 'browse' && !shopping && !filtering && rows ? [
+        { area: 'new', title: t('shop.new'), basis: t('shop.newBasis'), own: rows.filter((r) => r.captured_at) },
+        { area: 'used', title: t('shop.used'), basis: t('shop.usedBasis'), own: used.map((x) => byId.get(x)).filter(Boolean) },
+      ].filter((x) => x.own.length) : []
+      // What ← → step through: the sources in the order they are drawn, or the row a source was opened from.
+      const order = () => [...new Set((mode === 'browse' && !shopping ? layers.flatMap((l) => l.groups.flatMap((g) => onShelf(g, full(g)))) : shown).map((r) => r.id))]
+      const open = (r, list) => openSource(r.id, { list: list ?? order(), seed: r })
       const pickTag = (x) => setTag((cur) => (cur === x ? null : x))
-      const clearAll = () => { setQuery(''); setTag(null); setSearching(false) }
-      const entry = (r) => (view === 'grid'
-        ? h(SourceCard, { key: r.id, row: r, t, pick, sources, onTag: pickTag, tag, last: r.id === last, onOpen: () => open(r.id) })
-        : h(SourceRow, { key: r.id, row: r, t, pick, sources, last: r.id === last, onOpen: () => open(r.id), onReviewed, onConflict: () => open(r.id) }))
+      const clearAll = () => { setQuery(''); setTag(null); setSearching(false); setNeed('') }
+      const entry = (r, list) => (view === 'grid'
+        ? h(SourceCard, { key: r.id, row: r, t, pick, sources, onTag: pickTag, tag, last: r.id === last, onOpen: () => open(r, list) })
+        : h(SourceRow, { key: r.id, row: r, t, pick, sources, last: r.id === last, onOpen: () => open(r, list), onReviewed, onConflict: () => open(r, list) }))
 
       let body
       if (catalogError && !rows) body = h(Empty, { title: t('review.failedTitle'), hint: catalogError, action: h(P.Button, { variant: 'outline', size: 'sm', onClick: reloadCatalog }, t('review.retry')) })
-      else if (!rows) body = h('div', { className: 'pxs-list', 'aria-busy': true }, [0, 1, 2, 3, 4].map((i) => h('div', { key: i, className: 'pxs-skel' }, h('i'), h('i'))))
-      else if (!shown.length) body = filtering ? h(Empty, { title: t('review.noMatch'), hint: t('review.noMatchHint'), action: h(P.Button, { variant: 'outline', size: 'sm', onClick: clearAll }, t('review.clearAll')) })
-        : mode === 'catalog' ? h(Empty, { title: t('review.empty.all'), hint: t('review.empty.allHint') }) : h(Empty, { title: t(`review.empty.${filter}`) })
-      else if (mode === 'catalog') body = h(Outline, { layers, t, view, entry, filtering, full, setOpenAreas })
-      else body = h('div', { className: view === 'grid' ? 'pxs-grid' : 'pxs-list' }, shown.map(entry))
+      else if (!rows || (shopping && !needRows)) body = h('div', { className: 'pxs-list', 'aria-busy': true }, [0, 1, 2, 3, 4].map((i) => h('div', { key: i, className: 'pxs-skel' }, h('i'), h('i'))))
+      else if (!shown.length) body = filtering || shopping ? h(Empty, { title: t('review.noMatch'), hint: t('review.noMatchHint'), action: h(P.Button, { variant: 'outline', size: 'sm', onClick: clearAll }, t('review.clearAll')) })
+        : mode === 'browse' ? h(Empty, { title: t('review.empty.all'), hint: t('review.empty.allHint') }) : h(Empty, { title: t(`review.empty.${filter}`) })
+      else if (shopping || mode === 'manage') body = h('div', { className: view === 'grid' ? 'pxs-grid' : 'pxs-list' }, shown.map((r) => entry(r)))
+      else body = h(React.Fragment, null, strips.length ? h(Strips, { strips, t, view, entry, openAreas, setOpenAreas }) : null, h(Outline, { layers, t, view, entry, filtering, full, setOpenAreas }))
 
+      // What the filters leave, said once beside them: a status message, read out when it changes.
+      const status = !rows ? '' : filtering ? t('review.matches', { n: shown.length })
+        : shopping ? (needRows ? t(need.startsWith('page:') ? 'shop.forPage' : 'shop.forTask', { n: shown.length }) : '')
+          : mode === 'browse' ? t('tab.browseHint', { n: rows.length }) : ''
       return h(React.Fragment, null,
         h('div', { className: 'pxs-bar' },
           h('div', { className: 'pxs-modes' }, h(P.SegmentedControl, { label: t('tab.scope'), value: mode, onChange: switchMode,
-            options: [{ value: 'catalog', label: t('tab.catalog') }, { value: 'review', label: t('tab.review') }] }),
-          mode === 'review' ? h('div', { className: 'pxs-pills', role: 'group', 'aria-label': t('review.filter') },
-            ['open', 'needs-work', 'reviewed', 'all'].map((v) => h(P.Pill, { key: v, active: filter === v, 'aria-pressed': filter === v, onClick: () => setFilter(v) }, t(`review.f.${v}`)))) : null,
+            options: [{ value: 'browse', label: t('tab.browse') }, { value: 'manage', label: t('tab.manage') }] }),
+          mode === 'browse' && kit ? h('label', { className: 'pxs-select pxs-for' }, h('span', { className: 'pxs-caption' }, t('shop.for')),
+            h('select', { value: need, onChange: (e) => setNeed(e.target.value) },
+              h('option', { value: '' }, t('shop.forAny')),
+              types.length ? h('optgroup', { label: t('shop.forTypes') }, types.map((u) => h('option', { key: u.id, value: `type:${u.id}` }, u.title))) : null,
+              streams.length ? h('optgroup', { label: t('shop.forStreams') }, streams.map((u) => h('option', { key: u.id, value: `stream:${u.id}` }, u.title))) : null,
+              pageIds.length ? h('optgroup', { label: t('shop.forPages') }, pageIds.map((id) => h('option', { key: id, value: `page:${id}` }, kit.byId.get(id)?.title ?? id))) : null)) : null,
+          mode === 'manage' ? h('div', { className: 'pxs-pills', role: 'group', 'aria-label': t('review.filter') },
+            ['open', 'needs-work', 'reviewed', 'link-only', 'restock', 'all'].map((v) => h(P.Pill, { key: v, active: filter === v, 'aria-pressed': filter === v, onClick: () => setFilter(v) }, t(`review.f.${v}`)))) : null,
           tag ? h('button', { type: 'button', className: 'pxs-tag-on', 'aria-label': `${t('review.clearTag')}: ${tag}`, onClick: () => setTag(null) }, '#', tag, h(Glyph, { name: 'close', size: 12 })) : null,
-          // What the filters leave, said once beside them: a status message, read out when it changes.
-          h('span', { className: 'pxs-caption', role: 'status' }, !rows ? '' : filtering ? t('review.matches', { n: shown.length }) : mode === 'catalog' ? t('tab.catalogHint', { n: rows.length }) : '')),
+          h('span', { className: 'pxs-caption', role: 'status' }, status)),
           h('div', { className: 'pxs-icons' },
             searching ? h(P.Input, { className: 'pxs-search', type: 'search', role: 'searchbox', value: query, autoFocus: true, placeholder: t('review.search'), 'aria-label': t('review.search'),
               icon: h(P.IconSearchOutlineRegular, { size: 14 }), onChange: (e) => setQuery(e.target.value),
@@ -911,6 +968,25 @@ window.__ModuleLoader__.load({
         body)
     }
 
+    // Two rows before the shelves, each in an order it names: newest collected, latest read by a run.
+    // Each shows a few and opens in full like an area's shelf; ← → walk the row as drawn.
+    function Strips({ strips, t, view, entry, openAreas, setOpenAreas }) {
+      return h('section', { className: 'pxs-layer pxs-strips' }, strips.map((x) => {
+        const all = openAreas.has(x.area)
+        const rows = all ? x.own : x.own.slice(0, SHELF)
+        const toggle = (e) => {
+          const head = e.currentTarget.closest('.pxs-area')
+          setOpenAreas((cur) => { const next = new Set(cur); all ? next.delete(x.area) : next.add(x.area); return next })
+          if (all) requestAnimationFrame(() => head?.scrollIntoView({ block: 'nearest' }))
+        }
+        return h('section', { key: x.area, className: 'pxs-area' },
+          h('header', { className: 'pxs-area-head' },
+            h('div', { className: 'pxs-area-text' }, h('h3', { className: 'pxs-area-title' }, x.title), h('p', { className: 'pxs-area-desc' }, x.basis)),
+            x.own.length > SHELF ? h('button', { type: 'button', className: 'pxs-shelf-more', 'aria-expanded': all, onClick: toggle }, all ? t('shelf.less') : t('shelf.all', { n: x.own.length })) : null),
+          h('div', { className: view === 'grid' ? 'pxs-grid' : 'pxs-list' }, rows.map((r) => entry(r, rows.map((y) => y.id)))))
+      }))
+    }
+
     /** Requests from the last day: running ones shimmer, finished ones name what was captured. */
     /**
      * What the cart hands on: each source with its link, when it applies and its Praxis ID, so an agent
@@ -920,12 +996,25 @@ window.__ModuleLoader__.load({
       'Use these sources from Praxis for this work. Each says when it applies; open the original at its link before relying on it. With the Praxis MCP, praxis_source <id> gives the read scope and where the excerpts are, and praxis_consume should list the ids you used, each with what you used it for.',
       ...items.map((x, i) => `${i + 1}. ${x.title} — ${x.url}${x.description ? ` — When: ${x.description}` : ''} (praxis: ${x.id})`),
     ].join('\n')
+    /** The IDs alone, for an agent that has the Praxis MCP and looks each one up itself. */
+    const idsText = (items) => ['Praxis source IDs. With the Praxis MCP, praxis_source <id> gives each one; praxis_consume should list the ones you used.', ...items.map((x) => x.id)].join('\n')
+    const calm = () => matchMedia('(prefers-reduced-motion: reduce)').matches
 
     function Cart({ t, items, setItems, openSource, addToChat }) {
       const [copied, setCopied] = React.useState(null)
-      const copy = () => navigator.clipboard.writeText(cartText(items)).then(() => setCopied('ok'), () => setCopied('failed'))
+      const box = React.useRef(null)
+      const copy = (what) => navigator.clipboard.writeText(what === 'ids' ? idsText(items) : cartText(items)).then(() => setCopied({ what, ok: true }), () => setCopied({ what, ok: false }))
       React.useEffect(() => { if (!copied) return; const id = setTimeout(() => setCopied(null), 1800); return () => clearTimeout(id) }, [copied])
-      return h('section', { className: 'pxs-cart', 'aria-label': t('cart.label') },
+      const said = (what, label) => (copied?.what === what ? t(copied.ok ? 'cart.copied' : 'cart.copyFailed') : label)
+      // Checking out into a chat hands the sources over and folds the cart away.
+      const checkout = () => {
+        addToChat(cartText(items))
+        const el = box.current
+        if (!el || calm()) return setItems([])
+        el.style.overflow = 'hidden'
+        el.animate([{ height: `${el.offsetHeight}px`, opacity: 1 }, { height: '0px', opacity: 0 }], { duration: 220, easing: 'cubic-bezier(.4,0,1,1)' }).finished.finally(() => setItems([]))
+      }
+      return h('section', { className: 'pxs-cart', 'aria-label': t('cart.label'), ref: box },
         h('header', null,
           h(Glyph, { name: 'cart' }), h('b', null, t('cart.count', { n: items.length })),
           h('button', { type: 'button', className: 'pxs-link', onClick: () => setItems([]) }, t('cart.clear'))),
@@ -933,8 +1022,9 @@ window.__ModuleLoader__.load({
           h('button', { type: 'button', className: 'pxs-cart-item', 'data-key': `source:${x.id}`, title: x.description, onClick: () => openSource(x.id, { list: items.map((y) => y.id), seed: x }) }, x.title),
           h('button', { type: 'button', className: 'pxs-cart-x', 'aria-label': `${t('cart.remove')}: ${x.title}`, onClick: () => setItems((c) => c.filter((y) => y.id !== x.id)) }, h(Glyph, { name: 'close', size: 12 }))))),
         h('footer', null,
-          h(P.Button, { variant: 'ghost', size: 'sm', icon: h(Glyph, { name: 'copy', size: 14 }), onClick: copy }, copied === 'ok' ? t('cart.copied') : copied === 'failed' ? t('cart.copyFailed') : t('cart.copy')),
-          addToChat ? h(P.Button, { size: 'sm', icon: h(Glyph, { name: 'chat', size: 14 }), onClick: () => { addToChat(cartText(items)); setItems([]) } }, t('cart.chat')) : null))
+          h(P.Button, { variant: 'ghost', size: 'sm', icon: h(Glyph, { name: 'copy', size: 14 }), onClick: () => copy('text') }, said('text', t('cart.copy'))),
+          h(P.Button, { variant: 'ghost', size: 'sm', onClick: () => copy('ids') }, said('ids', t('cart.copyIds'))),
+          addToChat ? h(P.Button, { size: 'sm', icon: h(Glyph, { name: 'chat', size: 14 }), onClick: checkout }, t('cart.chat')) : null))
     }
 
     function AskStrip({ asks, t, openSession, openSource }) {
@@ -943,7 +1033,8 @@ window.__ModuleLoader__.load({
       return h('ul', { className: 'pxs-asks', 'aria-live': 'polite' }, recent.map((a) => h('li', { key: a.id, 'data-status': a.status },
         a.status === 'running' ? h('span', { className: 'pxs-spin', 'aria-hidden': true }) : h(a.status === 'done' ? P.IconCheckOutlineRegular : P.IconWarningOutlineRegular, { size: 14 }),
         h('span', { className: 'pxs-ask-text' },
-          a.status === 'running' ? h(P.TextShimmer, { active: true }, t('ask.running'))
+          a.status === 'running' ? h(P.TextShimmer, { active: true }, a.kind === 'distill' ? t('ask.distilling', { title: a.text }) : t('ask.running'))
+            : a.status === 'done' && a.kind === 'distill' ? (a.distilled?.length ? [t('ask.distilled'), ' ', h('button', { key: 's', type: 'button', className: 'pxs-link', onClick: () => openSource(a.source, { list: [a.source], seed: { title: a.text } }) }, a.text)] : t('ask.distillNone'))
             : a.status === 'done' ? (a.captured.length ? [t('ask.done', { n: a.captured.length }), ...a.captured.slice(0, 3).map((x) => h(React.Fragment, { key: x.id }, ' ',
               h('button', { type: 'button', className: 'pxs-link', onClick: () => openSource(x.id, { list: a.captured.map((y) => y.id), seed: x }) }, x.title)))] : t('ask.doneNone'))
               : t(`ask.${a.status}`)),
@@ -1061,22 +1152,42 @@ window.__ModuleLoader__.load({
     }
 
     // Add to cart: the one action a person takes on a source besides reading it.
+    // Adding to the cart sends a small likeness of the item from the button to the cart, so the eye
+    // follows where it went; with reduced motion the cart's count changing says it.
+    function flyToCart(from) {
+      if (!from || calm()) return
+      const start = from.getBoundingClientRect()
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        const count = document.querySelector('.pxs-cart header b')
+        if (!count) return
+        const end = count.getBoundingClientRect()
+        const dot = document.createElement('span')
+        dot.className = 'pxs-fly'
+        dot.style.left = `${start.left + start.width / 2 - 6}px`
+        dot.style.top = `${start.top + start.height / 2 - 6}px`
+        document.body.append(dot)
+        const dx = end.left - (start.left + start.width / 2)
+        const dy = end.top + end.height / 2 - (start.top + start.height / 2)
+        dot.animate([{ transform: 'translate(0, 0) scale(1)', opacity: 1 }, { transform: `translate(${dx}px, ${dy}px) scale(.6)`, opacity: .5 }], { duration: 420, easing: 'cubic-bezier(.3,.7,.2,1)' })
+          .finished.finally(() => { dot.remove(); count.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.12)' }, { transform: 'scale(1)' }], { duration: 220, easing: 'ease-out' }) })
+      }))
+    }
     function CartButton({ row, t, pick, label }) {
       const on = pick.inCart(row.id)
       const name = t(on ? 'cart.remove' : 'cart.add')
       return h('button', { type: 'button', className: label ? 'pxs-cart-add' : 'pxs-cart-btn', 'aria-pressed': on, 'aria-label': name, title: name,
-        onClick: (e) => { e.stopPropagation(); pick.toggleCart(row) } }, h(Glyph, { name: on ? 'cartIn' : 'cartAdd' }), label ? h('span', null, t(on ? 'cart.in' : 'cart.add')) : null)
+        onClick: (e) => { e.stopPropagation(); pick.toggleCart(row); if (!on) flyToCart(e.currentTarget) } }, h(Glyph, { name: on ? 'cartIn' : 'cartAdd' }), label ? h('span', null, t(on ? 'cart.in' : 'cart.add')) : null)
     }
 
     function SourceRow({ row, t, pick, sources, last, onOpen, onReviewed, onConflict }) {
       return h('div', { className: 'pxs-row', 'data-key': `source:${row.id}`, 'data-last': last || undefined },
         h('button', { type: 'button', className: 'pxs-row-main', onClick: onOpen, ...intentOn(sources, row.id) },
-          h('span', { className: 'pxs-tile', title: t(`form.${row.form}`) }, h(Glyph, { name: row.form })),
+          h('span', { className: 'pxs-tile', title: row.form ? t(`form.${row.form}`) : undefined }, h(Glyph, { name: row.form ?? 'article' })),
           h('span', { className: 'pxs-row-text' },
             h('span', { className: 'pxs-row-title', dir: 'auto' }, row.title, h('span', { className: 'pxs-host' }, hostOf(row.url))),
             h('span', { className: 'pxs-row-desc', dir: 'auto', title: row.description }, row.description),
             row.matched ? h('span', { className: 'pxs-row-found', dir: 'auto', title: row.matched[0].claim }, h('q', null, row.matched[0].claim), row.matched[0].locator ? h('small', null, row.matched[0].locator) : null) : null)),
-        h('span', { className: 'pxs-row-side' }, h(StateTag, { row, t }), h(ReadWord, { row, t }), h('time', { dateTime: row.captured_at }, day(row.captured_at)), h(CartButton, { row, t, pick }), h(RowMenu, { row, t, onReviewed, onConflict })))
+        h('span', { className: 'pxs-row-side' }, h(StateTag, { row, t }), h(StockTag, { row, t }), h(ReadWord, { row, t }), h('time', { dateTime: row.captured_at }, day(row.captured_at)), h(CartButton, { row, t, pick }), row.form ? h(RowMenu, { row, t, onReviewed, onConflict }) : null))
     }
 
     const Tags = ({ tags, active, onTag, max = 3 }) => (tags?.length ? h('span', { className: 'pxs-tags' },
@@ -1088,13 +1199,14 @@ window.__ModuleLoader__.load({
     function SourceCard({ row, t, pick, sources, last, onOpen, onTag, tag }) {
       return h('div', { className: 'pxs-card', 'data-key': `source:${row.id}`, 'data-picked': pick.inCart(row.id) || undefined, 'data-last': last || undefined },
         h('button', { type: 'button', className: 'pxs-card-main', onClick: onOpen, ...intentOn(sources, row.id) },
-          (row.matched?.[0] ?? row.preview) ? (({ claim, locator }) => h('span', { className: 'pxs-card-look', dir: 'auto' }, h('q', null, claim), h('small', null, locator)))(row.matched?.[0] ?? row.preview) : null,
+          row.stock?.cover && !row.matched ? h('img', { className: 'pxs-card-cover', src: stockUrl(row.id, row.stock.cover.version, row.stock.cover.file), alt: '', loading: 'lazy' })
+            : (row.matched?.[0] ?? row.preview) ? (({ claim, locator }) => h('span', { className: 'pxs-card-look', dir: 'auto' }, h('q', null, claim), h('small', null, locator)))(row.matched?.[0] ?? row.preview) : null,
           h('span', { className: 'pxs-card-title', dir: 'auto' }, row.title),
           h('span', { className: 'pxs-card-meta' }, h(Glyph, { name: row.form, size: 12 }), h('span', null, [t(`form.${row.form}`), hostOf(row.url)].filter(Boolean).join(' · '))),
           h('span', { className: 'pxs-card-desc', dir: 'auto' }, row.description)),
         h('div', { className: 'pxs-card-foot' },
           h(Tags, { tags: row.tags, active: tag, onTag }),
-          h('span', { className: 'pxs-card-facts' }, h(StateTag, { row, t }), h(ReadWord, { row, t }), h('time', { dateTime: row.captured_at }, day(row.captured_at))),
+          h('span', { className: 'pxs-card-facts' }, h(StateTag, { row, t }), h(StockTag, { row, t }), h(ReadWord, { row, t }), h('time', { dateTime: row.captured_at }, day(row.captured_at))),
           h(CartButton, { row, t, pick })))
     }
 
@@ -1119,7 +1231,84 @@ window.__ModuleLoader__.load({
     }
     const None = ({ children }) => h('p', { className: 'pxs-none' }, children)
 
-    function SourceDetail({ id, quiet, seed, t, go, kit, openSession, pick, sources, steps, onStep, trail, onTag, onReviewed, send }) {
+    // ---- Stock: local versions of a source's original ------------------------------------------
+    const stockUrl = (id, version, file) => `/api/praxis.file?source=${encodeURIComponent(id)}&version=${encodeURIComponent(version)}&file=${encodeURIComponent(file)}`
+    const size = (n) => (n >= 1048576 ? `${(n / 1048576).toFixed(1)} MB` : n >= 1024 ? `${Math.round(n / 1024)} KB` : `${n} B`)
+    const moment = (iso) => (iso ? new Intl.DateTimeFormat(document.documentElement.lang || undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }).format(new Date(iso)) : '')
+    /** A kept page as readable text: the words of its main content, block ends as line breaks; nothing in it runs. */
+    function readable(html) {
+      const doc = new DOMParser().parseFromString(html.replace(/<\/(p|div|h[1-6]|li|tr|section|article|header|footer|blockquote|pre|dd|dt)>|<br\s*\/?>/gi, '$&\n'), 'text/html')
+      const main = doc.querySelector('main, [role="main"], article') ?? doc.body
+      main?.querySelectorAll('script, style, noscript, template, svg, nav, aside, form, button, [hidden], [aria-hidden="true"]').forEach((n) => n.remove())
+      return (main?.textContent ?? '').split('\n').map((l) => l.replace(/\s+/g, ' ').trim()).filter(Boolean).join('\n')
+    }
+    // The shelves say a source is in stock only when it is; a link alone is the usual state.
+    const StockTag = ({ row, t }) => (row.stock ? h('span', { className: 'pxs-stock', title: moment(row.stock.at) }, t('stock.in')) : null)
+
+    // A look inside one version without leaving Praxis: the cover and words of a page, a repository's
+    // README, a distill, or a PDF, image or video as the browser shows it.
+    function QuickLook({ t, id, v, url }) {
+      const [m, setM] = React.useState(null)
+      const [text, setText] = React.useState(null)
+      React.useEffect(() => { fetch(stockUrl(id, v.version, 'manifest.json')).then((r) => r.json()).then(setM, () => setM({ files: [] })) }, [id, v.version])
+      const files = m?.files ?? []
+      const main = v.kind === 'distill' ? 'distill.md' : (files.find((f) => f.path === 'index.html') ?? files.find((f) => /^readme/i.test(f.path)) ?? files.find((f) => !f.path.startsWith('assets/') && f.path !== m?.cover && !/\.tar\.gz$/.test(f.path)))?.path
+      const ext = main ? main.split('.').pop().toLowerCase() : ''
+      const textual = /^(html?|md|markdown|rst|txt|json|csv)$/.test(ext)
+      React.useEffect(() => {
+        if (!main || !textual) return
+        fetch(stockUrl(id, v.version, main)).then((r) => r.text()).then((x) => setText(/^html?$/.test(ext) ? readable(x) : x), () => setText(''))
+      }, [main])
+      const src = main && stockUrl(id, v.version, main)
+      return h('div', { className: 'pxs-look' },
+        h('p', { className: 'pxs-caption' }, t('stock.lookFrom', { at: moment(v.at) }), url ? [' · ', h('a', { key: 'o', href: url, target: '_blank', rel: 'noreferrer', className: 'pxs-link' }, t('review.openOriginal'))] : null),
+        !m ? h('div', { className: 'pxs-skel' }, h('i'), h('i')) : h(React.Fragment, null,
+          m.cover ? h('img', { className: 'pxs-look-cover', src: stockUrl(id, v.version, m.cover), alt: '' }) : null,
+          ext === 'pdf' ? h('iframe', { className: 'pxs-look-frame', src, title: main }) : null,
+          /^(png|jpe?g|gif|webp)$/.test(ext) && main !== m.cover ? h('img', { className: 'pxs-look-cover', src, alt: '' }) : null,
+          /^(mp4|webm)$/.test(ext) ? h('video', { className: 'pxs-look-cover', controls: true, preload: 'metadata', src }) : null,
+          /^(mp3|ogg)$/.test(ext) ? h('audio', { controls: true, preload: 'metadata', src }) : null,
+          textual ? (text === null ? h('div', { className: 'pxs-skel' }, h('i'), h('i')) : h('pre', { className: 'pxs-look-text', dir: 'auto' }, text.slice(0, 8000))) : null))
+    }
+
+    // Stock on a source page: the versions, newest first, what changed between them, and the button
+    // that gets a copy (or a newer one). Getting a copy says it is under way, never how far.
+    function StockBlock({ t, id, row, stock, onChanged, distill, distilling }) {
+      const [busy, setBusy] = React.useState(false)
+      const [problem, setProblem] = React.useState(null)
+      const [said, setSaid] = React.useState(null)
+      const [look, setLook] = React.useState(null)
+      const versions = stock?.versions ?? []
+      const has = versions.some((v) => v.kind === 'download')
+      const download = async () => {
+        setBusy(true); setProblem(null); setSaid(null)
+        try {
+          const r = await call('praxis_stock', { source: id, action: 'download' })
+          if (r.unchanged) setSaid(t('stock.unchanged', { at: moment(r.latest.at) }))
+          await onChanged()
+        } catch (e) { setProblem(String(e.message ?? e)) } finally { setBusy(false) }
+      }
+      const facts = (v) => [t(`stock.kind.${v.kind}`), size(v.bytes), v.files > 1 ? t('stock.files', { n: v.files }) : null,
+        ...['added', 'removed', 'changed'].map((k) => (v.changes?.[k]?.length ? t(`stock.${k}`, { n: v.changes[k].length }) : null)),
+        v.missing ? t('stock.missing', { n: v.missing }) : null].filter(Boolean).join(' · ')
+      return h(Block, { label: t('stock.label'), aside: versions.length ? h('span', { className: 'pxs-caption' }, String(versions.length)) : null },
+        versions.length ? h('ol', { className: 'pxs-versions pxs-stock-list' }, [...versions].reverse().map((v) => h('li', { key: v.version },
+          h('time', { dateTime: v.at }, moment(v.at)),
+          h('div', null,
+            h('p', null, facts(v), ' ', h('button', { type: 'button', className: 'pxs-link', 'aria-expanded': look === v.version, onClick: () => setLook(look === v.version ? null : v.version) }, t('stock.look'))),
+            look === v.version ? h(QuickLook, { t, id, v, url: row.url }) : null))))
+          : h(None, null, t('stock.linkOnly')),
+        stock?.restock ? h('p', { className: 'pxs-fact' }, t('stock.restock')) : null,
+        said ? h('p', { className: 'pxs-fact', role: 'status' }, said) : null,
+        problem ? h('p', { className: 'pxs-problem', role: 'alert' }, problem) : null,
+        row.url?.startsWith('http') ? h('div', { className: 'pxs-buttons' },
+          busy ? h('span', { className: 'pxs-busy', role: 'status' }, h('span', { className: 'pxs-spin', 'aria-hidden': true }), t('stock.getting'))
+            : h(P.Button, { variant: stock?.restock ? 'primary' : 'outline', size: 'sm', onClick: download }, t(has ? 'stock.update' : 'stock.download')),
+          distilling ? h('span', { className: 'pxs-busy', role: 'status' }, h('span', { className: 'pxs-spin', 'aria-hidden': true }), t('stock.distilling'))
+            : distill ? h(P.Button, { variant: 'ghost', size: 'sm', onClick: () => distill(id).catch((e) => setProblem(String(e.message ?? e))) }, t('stock.distill')) : null) : null)
+    }
+
+    function SourceDetail({ id, quiet, seed, t, go, kit, openSession, pick, sources, steps, onStep, trail, onTag, onReviewed, send, openSource, shelf, stamp, distill, distilling }) {
       // Drawn from the record already fetched when there is one, else from the row it was opened from.
       const [d, setD] = React.useState(() => sources.peek(id) ?? null)
       const [problem, setProblem] = React.useState(null)
@@ -1140,9 +1329,13 @@ window.__ModuleLoader__.load({
       React.useEffect(() => { if (done) (verdictBar.current?.querySelector('button') ?? head.current)?.focus({ preventScroll: true }) }, [done])
       React.useEffect(() => {
         let live = true
-        sources.get(id).then((x) => { if (live) setD(x) }, (e) => { if (live) setProblem(String(e.message ?? e)) })
+        // Drawn at once from a kept record, then from a fresh one, which may know a newer check or stock.
+        ;(sources.peek(id) ? sources.fresh(id) : sources.get(id)).then((x) => { if (live) setD(x) }, (e) => { if (live) setProblem(String(e.message ?? e)) })
         return () => { live = false }
       }, [id, sources])
+      // When an agent settles (a capture or a distill), the record may have changed under the page.
+      const settled = React.useRef(stamp)
+      React.useEffect(() => { if (settled.current === stamp) return; settled.current = stamp; sources.fresh(id).then(setD, () => {}) }, [stamp])
       // The neighbours load now, so ← → draw at once.
       React.useEffect(() => { for (const x of [steps.prev, steps.next]) if (x) sources.get(x).catch(() => {}) }, [steps.prev, steps.next, sources])
       const row = { id, title: id, form: 'article', ...seed, ...d }
@@ -1181,6 +1374,10 @@ window.__ModuleLoader__.load({
       const runs = d?.used_by ?? []
       const link = (href, text, cls = 'pxs-loc') => h('a', { href, target: '_blank', rel: 'noreferrer', className: cls }, text)
       const pageTitle = (b) => (b.unit && kit?.byId.get(b.unit)?.title) || b.unit || b.target
+      // Its neighbours: other catalogued sources on the pages it is on, those sharing more pages first.
+      const mine = new Set(pages.map((b) => b.unit).filter(Boolean))
+      const neighbours = mine.size && shelf ? shelf.filter((r) => r.id !== id && r.pages?.some((p) => mine.has(p)))
+        .map((r) => ({ r, n: r.pages.filter((p) => mine.has(p)).length })).sort((a, b) => b.n - a.n || a.r.title.localeCompare(b.r.title)).slice(0, 6).map((x) => x.r) : []
       const stepButton = (to, glyph, label) => h('button', { type: 'button', className: 'pxs-step', disabled: !to, 'aria-label': label, title: to ? `${label} (${glyph === 'back' ? '←' : '→'})` : undefined, onClick: () => onStep(to) }, h(Glyph, { name: glyph, size: 14 }))
       // Its Kit area: its own category, else the areas of the pages it is attached to.
       const areas = row.category ? [row.category] : [...new Set((d?.relations ?? []).map((b) => b.unit?.split('/').slice(0, 2).join('/')).filter(Boolean))]
@@ -1197,7 +1394,8 @@ window.__ModuleLoader__.load({
           h('div', { className: 'pxs-detail-actions' }, h(CartButton, { row, t, pick, label: true }),
             row.url ? h('a', { className: 'pxs-open', href: row.url, target: '_blank', rel: 'noreferrer' }, t('review.openOriginal'), h(Glyph, { name: 'out', size: 14 })) : null)),
         // An original that stopped answering changes how everything below can be used: say it first.
-        check && check.status !== 'ok' ? h('p', { className: 'pxs-notice', role: 'note' }, h(P.IconWarningOutlineRegular, { size: 14 }), h('span', null, t('d.unreachable', { at: day(check.at) }))) : null,
+        check && check.status !== 'ok' ? h('p', { className: 'pxs-notice', role: 'note' }, h(P.IconWarningOutlineRegular, { size: 14 }),
+          h('span', null, d?.stock ? t('d.unreachableStock', { at: day(check.at), v: moment(d.stock.at) }) : t('d.unreachable', { at: day(check.at) }))) : null,
         h('p', { className: 'pxs-when', dir: 'auto' }, row.description),
         h(Tags, { tags: row.tags, onTag, max: 12 }),
         problem ? h('p', { className: 'pxs-problem', role: 'alert' }, problem) : null,
@@ -1238,6 +1436,14 @@ window.__ModuleLoader__.load({
                 h(Glyph, { name: 'forward', size: 14 })))))
               : h(None, null, t('d.noPages')),
             d.serves?.length ? h('p', { className: 'pxs-serves' }, h('span', { className: 'pxs-caption' }, t('d.serves')), d.serves.map((x) => h(P.Tag, { key: x.id, tone: 'neutral' }, x.title))) : null),
+          neighbours.length ? h(Block, { label: t('d.neighbours') },
+            h('ul', { className: 'pxs-paths' }, neighbours.map((r) => h('li', { key: r.id },
+              h('button', { type: 'button', className: 'pxs-path', 'data-key': `source:${r.id}`, ...intentOn(sources, r.id), onClick: () => openSource(r.id, { list: neighbours.map((x) => x.id), seed: r }) },
+                h(Glyph, { name: r.form ?? 'article', size: 14 }),
+                h('span', { className: 'pxs-path-text' },
+                  h('span', { className: 'pxs-path-title', dir: 'auto' }, r.title),
+                  h('span', { className: 'pxs-path-desc', dir: 'auto' }, [t(`form.${r.form}`), hostOf(r.url)].filter(Boolean).join(' · '))),
+                h(Glyph, { name: 'forward', size: 14 })))))) : null,
           // Activity is the roster's record of this source, apart from the entry above: what it was
           // collected for and which runs read it. The entry reads the same in any project; this does not.
           h(Block, { label: t('d.activity') },
@@ -1248,7 +1454,13 @@ window.__ModuleLoader__.load({
                   d.captured_for?.session?.id ? [' · ', h('button', { key: 's', type: 'button', className: 'pxs-link', onClick: () => openSession(d.captured_for.session.id) }, t('ask.session'))] : null)) : null,
               runs.slice(0, 6).map((r, i) => h('li', { key: i }, h('time', null, day(r.at)), h('span', { dir: 'auto' }, t('d.readFor', { title: r.title }), r.use ? h('span', { className: 'pxs-caption' }, ' — ', r.use) : null,
                 r.artifacts.map((a) => h(React.Fragment, { key: a.artifact }, ' · ', h('button', { type: 'button', className: 'pxs-link', onClick: () => go({ tab: 'artifacts', artifact: a.artifact }) }, `${a.path.split('/').pop()} v${a.version}`))))))),
-            runs.length ? null : h(None, null, t('d.noRuns')))))
+            runs.length ? null : h(None, null, t('d.noRuns'))),
+          h(StockBlock, { t, id, row, stock: d.stock, distill, distilling, onChanged: async () => {
+            sources.forget(id)
+            const next = await sources.get(id)
+            setD(next)
+            onReviewed({ id, stock: next.stock ? (({ versions, ...latest }) => latest)(next.stock) : undefined })
+          } })))
     }
 
     // affectUI Text Area: grows with the text, a count that warns near the limit, ⌘/Ctrl+Enter saves, Escape cancels.
@@ -1311,6 +1523,14 @@ window.__ModuleLoader__.load({
 .pxs-task-picks{display:grid;gap:12px;margin:18px 0 6px}
 .pxs-task-selects{display:flex;flex-wrap:wrap;align-items:flex-end;gap:12px 18px}
 .pxs-select{display:flex;flex-direction:column;gap:4px}
+.pxs-for{flex-direction:row;align-items:center;gap:8px}.pxs-for select{min-width:0;max-width:220px;height:28px}
+.pxs-stock{font-size:11.5px;color:var(--dsw-alias-state-business-primary);white-space:nowrap}
+.pxs-card-cover{display:block;width:100%;aspect-ratio:1.91/1;object-fit:cover;margin-bottom:8px;border-radius:10px;background:var(--dsw-alias-bg-layer-1)}
+.pxs-look{margin:8px 0 4px;display:grid;gap:8px}.pxs-look-cover{display:block;max-width:100%;max-height:320px;border-radius:8px;border:.5px solid var(--dsw-alias-border-l2)}
+.pxs-look-frame{width:100%;height:420px;border:.5px solid var(--dsw-alias-border-l2);border-radius:8px;background:var(--dsw-alias-bg-base)}
+.pxs-look-text{margin:0;max-height:320px;overflow:auto;padding:10px 12px;border-radius:8px;background:var(--dsw-alias-bg-layer-1);font:inherit;font-size:12.5px;line-height:1.6;white-space:pre-wrap;overflow-wrap:anywhere;color:var(--dsw-alias-label-secondary)}
+.pxs-busy{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--dsw-alias-label-secondary)}
+.pxs-fly{position:fixed;z-index:2147483000;width:12px;height:12px;border-radius:50%;background:var(--dsw-alias-state-business-primary);box-shadow:var(--dsw-shadow-lv2);pointer-events:none}
 .pxs-select select,.pxs-fields input,.pxs-fields select{min-width:180px;height:32px;padding:0 10px;border:.5px solid var(--dsw-alias-border-l3);border-radius:8px;background:var(--dsw-alias-bg-base);color:inherit;font:inherit;font-size:13px}
 .pxs-select select:focus-visible,.pxs-fields input:focus-visible,.pxs-fields select:focus-visible{outline:2px solid var(--dsw-focus-ring-color);outline-offset:0}
 .pxs-result{transition:opacity .15s ease}

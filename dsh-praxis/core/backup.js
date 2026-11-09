@@ -1,11 +1,11 @@
 // Export everything Praxis writes as one archive with a hash manifest, and check an archive before
-// restoring it. That is the data root (roster, bindings, packs, presets, projects, artifacts, runs,
-// checks, history) and the snapshots folder when it lies outside the data root. Plugin code and the
-// Kit travel with the package; pack files and artifact files stay with their owners.
+// restoring it. That is the data root: roster, bindings, packs, presets, projects, artifacts, runs,
+// checks, history and stock. Plugin code and the Kit travel with the package; pack files and artifact
+// files stay with their owners.
 import { createHash } from 'node:crypto'
 import { copyFileSync, existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
-import { dirname, join, relative } from 'node:path'
+import { dirname, join } from 'node:path'
 import { execFileSync } from 'node:child_process'
 import { PACKAGE } from './paths.js'
 
@@ -20,11 +20,8 @@ function files(dir, prefix = '') {
   })
 }
 
-/** The archive's two roots: `data/` and, when kept elsewhere, `snapshots/`. */
-function roots(where) {
-  const inside = !relative(where.data, where.snapshots).startsWith('..')
-  return { data: where.data, ...(inside ? {} : { snapshots: where.snapshots }) }
-}
+/** The archive's one root, `data/`. */
+const roots = (where) => ({ data: where.data })
 
 export function exportState(where, dest) {
   const list = Object.entries(roots(where)).flatMap(([name, dir]) => files(dir).map((rel) => ({ name, rel, abs: join(dir, rel) })))
@@ -55,7 +52,7 @@ export function checkArchive(archive) {
   if (manifest.kind !== 'dsh-praxis-state') throw new Error('not a dsh-praxis state archive')
   const problems = []
   for (const f of manifest.files) {
-    if (f.path.startsWith('/') || f.path.split('/').includes('..') || !/^(data|snapshots)\//.test(f.path)) problems.push(`unsafe path ${f.path}`)
+    if (f.path.startsWith('/') || f.path.split('/').includes('..') || !/^data\//.test(f.path)) problems.push(`unsafe path ${f.path}`)
     const p = join(stage, f.path)
     if (!existsSync(p)) problems.push(`missing ${f.path}`)
     else if (sha(readFileSync(p)) !== f.sha256) problems.push(`hash mismatch ${f.path}`)
@@ -67,7 +64,7 @@ export function checkArchive(archive) {
 export function restoreState(where, archive, { force = false } = {}) {
   const check = checkArchive(archive)
   if (!check.ok) throw new Error(`archive check failed: ${check.problems.join('; ')}`)
-  const dirs = { data: where.data, snapshots: where.snapshots }
+  const dirs = { data: where.data }
   const target = (path) => join(dirs[path.slice(0, path.indexOf('/'))], path.slice(path.indexOf('/') + 1))
   const conflicts = check.manifest.files
     .filter((f) => existsSync(target(f.path)) && sha(readFileSync(target(f.path))) !== f.sha256)

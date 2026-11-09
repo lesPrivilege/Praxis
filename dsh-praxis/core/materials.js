@@ -9,7 +9,7 @@
 // Local work (drafts, project files, distilled notes) is not a source: it is recorded as an
 // artifact trace in the task output layer.
 import { createHash } from 'node:crypto'
-import { appendFileSync, existsSync, mkdirSync, readFileSync, statSync, writeFileSync } from 'node:fs'
+import { appendFileSync, existsSync, mkdirSync, readFileSync, statSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { Collection, ConflictError, readJson } from './store.js'
 import { EVIDENCE, VERDICTS as VERDICT_LIST, reviewCurrent, seenDescription, writable } from './states.js'
@@ -101,6 +101,10 @@ export class Materials {
     const reg = readJson(this.paths.absolute(p.path), { sources: [] })
     const root = this.paths.absolute(p.root ?? dirname(p.path))
     const at = (rel) => (rel ? this.paths.normalize(join(root, rel)) : undefined)
+    // A pack written beside an older copy of the package names Kit pages by that copy's path; the
+    // registration's `kit` says where that was, so its pages read as this package's `kit/…`.
+    const kitAt = p.kit ? this.paths.normalize(this.paths.absolute(p.kit)) : undefined
+    const page = (path) => (kitAt && path.startsWith(`${kitAt}/`) ? `kit/${path.slice(kitAt.length + 1)}` : path)
     return reg.sources.map((s) => {
       const url = s.canonical_url ?? (/^https?:/.test(s.original_locator ?? '') ? s.original_locator : undefined)
       return {
@@ -110,7 +114,7 @@ export class Materials {
         limits: s.limitations ?? [], revisit_when: s.revisit_when, card: at(s.local_card),
         read_scope: s.evidence_modality, captured_for: s.captured_for, priority: s.reference_priority, category: undefined,
         excerpts: claims(s.supported_claims), snapshot: s.snapshot_path ? { path: at(s.snapshot_path), sha256: s.snapshot_sha256, status: s.snapshot_status } : undefined,
-        declared: (s.grammar_paths ?? []).map((t) => this.paths.normalize(join(root, t.split('#')[0])) + (t.includes('#') ? t.slice(t.indexOf('#')) : '')),
+        declared: (s.grammar_paths ?? []).map((t) => page(this.paths.normalize(join(root, t.split('#')[0]))) + (t.includes('#') ? t.slice(t.indexOf('#')) : '')),
         state: 'active',
       }
     })
@@ -430,23 +434,27 @@ export class Materials {
     return { changed, current, unreachable }
   }
 
-  /** The latest kept snapshot (else the one the record names), the latest check, and `version`: the hash a run records. */
+  /** The snapshot a pack record names, the latest check, and `version`: the hash a run records. */
   observed(s) {
     const list = this.observations().get(s.id) ?? []
-    const kept = list.filter((o) => o.snapshot).at(-1)
-    const snapshot = kept ? { path: this.paths.normalize(join(this.where.snapshots, kept.snapshot.path)), sha256: kept.snapshot.sha256, status: 'captured' } : s.snapshot
     const last = list.at(-1)
     const check = last ? { at: last.at, status: last.status, http: last.http, sha256: last.sha256, error: last.error } : undefined
-    const version = list.map(contentKey).filter(Boolean).at(-1) ?? snapshot?.sha256 ?? null
-    return { snapshot, check, version }
+    const version = list.map(contentKey).filter(Boolean).at(-1) ?? s.snapshot?.sha256 ?? null
+    return { snapshot: s.snapshot, check, version }
+  }
+
+  /** Add one observation of a source's original to checks.jsonl: a refresh, or the fetch a stock download made. */
+  recordCheck(sourceId, check) {
+    mkdirSync(dirname(this.checksPath), { recursive: true })
+    appendFileSync(this.checksPath, JSON.stringify({ source: sourceId, ...check }) + '\n')
   }
 
   /**
    * Check a source URL against upstream: whether it answered and the hash of what it served (an HTML
-   * page also by the hash of its text), not the content. With `keep`, also save the bytes under the snapshots folder (old versions stay). For a
+   * page also by the hash of its text), not the content; keeping a copy is stock's work (stock.js). For a
    * collection (a source with a members pattern), also record the member links the page lists.
    */
-  async refresh(sourceId, { keep = false, by, reason, task, fetchImpl = fetch } = {}) {
+  async refresh(sourceId, { by, reason, task, fetchImpl = fetch } = {}) {
     const s = this.source(sourceId)
     if (!s) throw new Error(`unknown source: ${sourceId}`)
     if (!s.url?.startsWith('http')) throw new Error('refresh needs an http(s) URL')
@@ -468,24 +476,14 @@ export class Materials {
       : { source: s.id, at, status: 'unreachable', http: res?.status ?? null, error, by }
     // The last comparable check, else (for bytes) the snapshot the record names; the first check is the baseline.
     const before = (this.observations().get(s.id) ?? []).map(contentKey).filter(Boolean).at(-1) ?? (check.text_sha256 ? undefined : s.snapshot?.sha256)
-    if (bytes && keep && s.snapshot?.sha256 !== sha) {
-      const slug = s.id.slice(s.id.indexOf(':') + 1).replace(/[^A-Za-z0-9._-]/g, '-')
-      const name = new URL(s.url).pathname.split('/').filter(Boolean).at(-1)?.replace(/[^A-Za-z0-9._-]/g, '-').replace(/^\.+/, '') || 'index.html'
-      let rel = `${slug}/${name}`
-      if (existsSync(join(this.where.snapshots, rel))) rel = `${slug}/${sha.slice(0, 12)}-${name}` // an older version stays where it is
-      mkdirSync(dirname(join(this.where.snapshots, rel)), { recursive: true })
-      writeFileSync(join(this.where.snapshots, rel), bytes)
-      check.snapshot = { path: rel, sha256: sha, size_bytes: bytes.length, previous: s.snapshot?.path ?? null }
-    }
     if (bytes && s.members) check.members = memberLinks(bytes.toString('utf8'), s.url, s.members.pattern)
-    mkdirSync(dirname(this.checksPath), { recursive: true })
-    appendFileSync(this.checksPath, JSON.stringify(check) + '\n')
-    this.bindings.log({ op: 'refresh', id: s.id, status: check.status, sha256: sha, snapshot: check.snapshot?.path, by, reason, task })
+    const { source: _, ...observed } = check
+    this.recordCheck(s.id, observed)
+    this.bindings.log({ op: 'refresh', id: s.id, status: check.status, sha256: sha, by, reason, task })
     const changed = !!before && !!contentKey(check) && before !== contentKey(check)
     const { members: listed, ...shown } = check
     return {
       reachable: !!bytes, changed, check: listed ? { ...shown, members: listed.length } : shown,
-      snapshot: check.snapshot ? { ...check.snapshot, path: this.paths.normalize(join(this.where.snapshots, check.snapshot.path)) } : undefined,
       bindings: changed || !bytes ? this.listBindings({ source: s.id }).map((b) => b.id) : [],
       members: s.members ? this.members(s.id) : undefined,
     }
@@ -646,7 +644,7 @@ export class Materials {
    * summary, read_scope, status and tags to its names; `status` maps its status values to verified,
    * partial or unavailable; `excerpts` names a JSON Lines file of claims joined by source id.
    */
-  registerPack({ id, format = 'index', path, root, list, title, purpose, limits, revisit_when, fields, status, excerpts }, { by, reason } = {}) {
+  registerPack({ id, format = 'index', path, root, list, title, purpose, limits, revisit_when, fields, status, excerpts, kit }, { by, reason } = {}) {
     for (const [k, v] of Object.entries({ id, path, title, purpose })) if (!v?.trim()) throw new Error(`register_index needs ${k}`)
     if (!SLUG.test(id) || id === OWN) throw new Error(`bad id: ${id}`)
     if (!existsSync(this.paths.absolute(path))) throw new Error(`file not found: ${path}`)
@@ -654,7 +652,7 @@ export class Materials {
     let next
     if (format === 'registry') {
       if (!Array.isArray(data?.sources)) throw new Error(`${path} has no sources list`)
-      next = { kind: 'registry', path: this.paths.normalize(path), root: this.paths.normalize(root ?? dirname(this.paths.absolute(path))), title: title.trim(), purpose: purpose.trim() }
+      next = { kind: 'registry', path: this.paths.normalize(path), root: this.paths.normalize(root ?? dirname(this.paths.absolute(path))), title: title.trim(), purpose: purpose.trim(), ...(kit ? { kit } : {}) }
     } else if (format === 'index') {
       for (const [k, v] of Object.entries({ limits, revisit_when })) if (!v?.trim()) throw new Error(`register_index needs ${k}`)
       if (!fields?.id || !fields?.title) throw new Error('fields needs id and title')
