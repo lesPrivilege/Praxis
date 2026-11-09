@@ -394,7 +394,7 @@ export function createPraxis(options = {}) {
       const groups = new Map()
       for (const s of materials.roster().list) {
         if (!s.form || s.state === 'retired' || (form && s.form !== form)) continue
-        if (terms.length && !terms.every((t) => [s.title, s.description, s.summary, s.url].join(' ').toLowerCase().includes(t))) continue
+        if (terms.length && !terms.every((t) => [s.title, s.description, s.summary, s.url, ...(s.tags ?? [])].join(' ').toLowerCase().includes(t))) continue
         const row = {
           id: s.id, title: s.title, form: s.form, description: s.description, url: s.url, evidence_status: s.evidence_status,
           pack: s.pack, member_of: s.member_of, collection: s.members ? true : undefined, pages: pages.get(s.id) ?? [],
@@ -402,6 +402,9 @@ export function createPraxis(options = {}) {
           // What a person reviewing the catalog needs per row: which description revision is current,
           // the latest review and the revision it saw, and when the source came in.
           entry_revision: s.entry_revision, captured_at: s.captured_for?.at,
+          // Use tags find a source across areas; the first excerpt previews what it says, with where.
+          tags: s.tags?.length ? s.tags : undefined,
+          preview: s.excerpts?.[0] ? { claim: s.excerpts[0].claim, locator: s.excerpts[0].locator } : undefined,
           // The review write is itself a catalog revision, so a review is current while it was the last write.
           review: s.review ? { verdict: s.review.verdict, revision: s.review.revision, by: s.review.by, at: s.review.at, current: s.entry_revision === s.review.revision + 1 } : undefined,
         }

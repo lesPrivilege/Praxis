@@ -1,6 +1,6 @@
 # ADR-047：来源编目，本地材料转为产物 trace
 
-日期：2026-10-27。状态：accepted（“本地材料是产物 trace”一节已由 [ADR-048](048-local-products-and-convergence.md) 取代：本地产物分交付、管线、范例三类，过程记录不登记）。用户要求每条来源都有 description，供渐进展开与 human review，并按分组的纲要体例收录来源索引，使其能被发现、消费和 review；随后裁定本地材料不与网络来源并列，只作 dogfooding 记录、task trace 与当初的消费记录，管理面走任务产出那一层；Writing 只有 personal 部分可以预先确定，不加其他本地项目依赖；Design 要搜罗广备，作为类书。分组轴、description 归属、本轮范围与读取入口由用户在选项中确认。主会话（Claude Opus 5.5）设计、实现、迁移并验证。
+日期：2026-10-27。状态：accepted（“本地材料是产物 trace”一节已由 [ADR-048](048-local-products-and-convergence.md) 取代：本地产物分交付、管线、范例三类，过程记录不登记；“名册只收网页来源”经 [ADR-050](050-shop-stock-and-repository-convergence.md) 补充：名册仍只存链接，原件正文可以备货到数据根的 `stock/` 版本里）。用户要求每条来源都有 description，供渐进展开与 human review，并按分组的纲要体例收录来源索引，使其能被发现、消费和 review；随后裁定本地材料不与网络来源并列，只作 dogfooding 记录、task trace 与当初的消费记录，管理面走任务产出那一层；Writing 只有 personal 部分可以预先确定，不加其他本地项目依赖；Design 要搜罗广备，作为类书。分组轴、description 归属、本轮范围与读取入口由用户在选项中确认。主会话（Claude Opus 5.5）设计、实现、迁移并验证。
 
 ## 问题
 

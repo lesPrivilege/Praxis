@@ -11,7 +11,7 @@
 import { createHash } from 'node:crypto'
 import { appendFileSync, existsSync, mkdirSync, readFileSync, statSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
-import { Collection, readJson } from './store.js'
+import { Collection, ConflictError, readJson } from './store.js'
 import { pathsFor } from './paths.js'
 import { clip } from './kit.js'
 
@@ -306,6 +306,8 @@ export class Materials {
     const b = this.binding(id)
     if (!b) throw new Error(`unknown binding: ${id}`)
     if (!VERDICTS.includes(verdict)) throw new Error(`verdict must be ${VERDICTS.join(', ')}`)
+    // A verdict is about the description the reviewer saw: if it changed since, say so instead of recording it.
+    if (revision != null && revision !== b.revision) throw new ConflictError(b.id, revision, b.revision, b)
     const reviewed = revision ?? b.revision
     this.bindings.update(b.id, undefined, (cur = {}) => ({
       ...cur, source: b.source, target: b.target, title: b.title, state: cur?.state ?? b.state,
@@ -345,6 +347,7 @@ export class Materials {
     const s = this.roster().byId.get(id)
     if (!s?.form) throw new Error(`not in the catalog: ${id}`)
     if (!VERDICTS.includes(verdict)) throw new Error(`verdict must be ${VERDICTS.join(', ')}`)
+    if (revision != null && revision !== s.entry_revision) throw new ConflictError(s.id, revision, s.entry_revision, { description: s.description, revision: s.entry_revision })
     this.cache = undefined
     this.catalog.update(s.id, undefined, (cur) => ({
       ...cur, review: { revision: revision ?? cur.revision, source_version: this.source(s.id)?.version ?? null, by, verdict, note, at: new Date().toISOString() },

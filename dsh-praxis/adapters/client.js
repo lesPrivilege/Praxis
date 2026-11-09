@@ -17,8 +17,8 @@ window.__ModuleLoader__.load({
         'review.controlPlane': 'Control plane', 'review.filter': 'Filter', 'review.search': 'Find a source', 'review.view': 'View', 'review.view.list': 'List', 'review.view.grid': 'Grid', 'review.more': 'More',
         'review.f.open': 'To review', 'review.f.needs-work': 'Needs work', 'review.f.reviewed': 'Reviewed', 'review.f.all': 'All',
         'review.empty.open': 'Every current description has been reviewed. New sources show up here.', 'review.empty.needs-work': 'No source is marked needs work.', 'review.empty.reviewed': 'Nothing reviewed yet.', 'review.empty.all': 'No sources yet. Paste a link below.',
-        'review.noMatch': 'No matching sources', 'review.failed': 'Could not read the roster:', 'review.noArea': 'Unfiled',
-        'review.openOriginal': 'Open original', 'review.markAccurate': 'Description is accurate', 'review.markNeedsWork': 'Description needs work',
+        'review.noMatch': 'No matching sources', 'review.changed': 'The description changed while you were reading. Read the new one, then decide.', 'review.tag': 'Tag', 'review.clearTag': 'Clear tag', 'review.failed': 'Could not read the roster:', 'review.noArea': 'Unfiled',
+        'review.openOriginal': 'Open original', 'cart.add': 'Add to cart', 'cart.remove': 'Remove from cart', 'cart.in': 'In cart', 'cart.label': 'Cart', 'cart.count': '{n} in cart', 'cart.clear': 'Clear', 'cart.chat': 'Open in chat', 'cart.copy': 'Copy', 'cart.copied': 'Copied', 'cart.copyFailed': 'Could not copy', 'cart.hint': 'Take these sources into a chat, or copy them for another agent', 'review.markAccurate': 'Description is accurate', 'review.markNeedsWork': 'Description needs work',
         'review.scope': 'How far it was read', 'review.excerpts': 'Where in the original', 'review.limits': 'Limits', 'review.summary': 'Summary', 'review.why': 'Why it was collected', 'review.pages': 'Attached to',
         'review.question': 'Is this description right?', 'review.last': 'Last: {v}, {by}, {at}', 'review.note': 'What is wrong; Praxis will fix it', 'review.noteHint': '⌘/Ctrl + Enter to send, Esc to cancel',
         'review.sendNeedsWork': 'Mark needs work and send to Praxis', 'review.cancel': 'Cancel', 'review.recorded': 'Recorded: {v}', 'review.sentToAgent': 'Marked needs work; Praxis is revising it',
@@ -133,7 +133,7 @@ window.__ModuleLoader__.load({
         return () => style.remove()
       }, 'dsh-praxis: styles')
       ctx.effect(() => ctx.slots.inject('sidebar.panellist', () => ctx.slots.register({ name: 'sidebar.panellist', id: PANEL, order: 40, locale: NS, label: () => t('panel') }, PanelIcon)), 'dsh-praxis: sidebar entry')
-      ctx.effect(() => ctx.slots.inject('main', () => ctx.slots.register({ name: 'main', key: PANEL, locale: NS, inject: () => ({ openSession: (id) => ctx.uiWorkspace.openSession(id), openPath }) }, PraxisPage)), 'dsh-praxis: page')
+      ctx.effect(() => ctx.slots.inject('main', () => ctx.slots.register({ name: 'main', key: PANEL, locale: NS, inject: () => ({ openSession: (id) => ctx.uiWorkspace.openSession(id), openPath, addToChat: (prompt) => ctx.uiWorkspace.startSession(undefined, { prompt, whenDraftExists: 'append' }) }) }, PraxisPage)), 'dsh-praxis: page')
     }
 
     // ---- sources page -------------------------------------------------------------------------
@@ -194,6 +194,12 @@ window.__ModuleLoader__.load({
       refresh: ['M13 8a5 5 0 1 1-1.5-3.6', 'M13 3v2.5h-2.5'],
       sliders: ['M3 5h6', 'M11 5h2', 'M3 11h2', 'M7 11h6', 'M10 3.5v3', 'M6 9.5v3'],
       star: ['M8 2.5l1.7 3.5 3.8.5-2.8 2.7.7 3.8L8 11.2 4.6 13l.7-3.8L2.5 6.5l3.8-.5z'],
+      cart: ['M1.8 2.8h1.7l1.5 7.2h7.2l1.4-5.2H4.1', 'M5.6 12.9a.8.8 0 1 0 1.6 0 .8.8 0 1 0-1.6 0', 'M10.9 12.9a.8.8 0 1 0 1.6 0 .8.8 0 1 0-1.6 0'],
+      cartAdd: ['M1.8 2.8h1.7l1.5 7.2h7.2l1.4-5.2H4.1', 'M5.6 12.9a.8.8 0 1 0 1.6 0 .8.8 0 1 0-1.6 0', 'M10.9 12.9a.8.8 0 1 0 1.6 0 .8.8 0 1 0-1.6 0', 'M8.7 5.9v2.8', 'M7.3 7.3h2.8'],
+      cartIn: ['M1.8 2.8h1.7l1.5 7.2h7.2l1.4-5.2H4.1', 'M5.6 12.9a.8.8 0 1 0 1.6 0 .8.8 0 1 0-1.6 0', 'M10.9 12.9a.8.8 0 1 0 1.6 0 .8.8 0 1 0-1.6 0', 'M7.2 7.3l1.1 1.1 2-2.1'],
+      copy: ['M5.5 5.5h7v7h-7z', 'M3.5 10.5v-7h7'],
+      chat: ['M3 3.5h10v7H7.2L4.5 13v-2.5H3z'],
+      close: ['M4.5 4.5l7 7', 'M11.5 4.5l-7 7'],
       starOn: ['M8 2.5l1.7 3.5 3.8.5-2.8 2.7.7 3.8L8 11.2 4.6 13l.7-3.8L2.5 6.5l3.8-.5z'],
     }
     const Glyph = ({ name, size = 16 }) => h('svg', { viewBox: '0 0 16 16', width: size, height: size, 'aria-hidden': true, ...stroke },
@@ -235,7 +241,7 @@ window.__ModuleLoader__.load({
       return { units, bindings, byPath, byId: new Map(units.map((u) => [u.id, u])), revisions: new Map(revisions.map((r) => [r.path, r])), packs }
     }
 
-    function PraxisPage({ t, openSession, openPath }) {
+    function PraxisPage({ t, openSession, openPath, addToChat }) {
       const [nav, setNav] = React.useState(() => ({ tab: recall('praxis.tab', 'kit') }))
       const [kit, setKit] = React.useState(null)
       const [kitError, setKitError] = React.useState(null)
@@ -243,6 +249,12 @@ window.__ModuleLoader__.load({
       const [requests, setRequests] = React.useState({ available: false, asks: [] })
       const [stamp, setStamp] = React.useState(0)
       const scroll = React.useRef(null)
+      // The cart: sources a person picked to work with, kept in this browser until taken into a chat.
+      const [cart, setCart] = React.useState(() => { try { return JSON.parse(recall('praxis.cart', '[]')) } catch { return [] } })
+      React.useEffect(() => { remember('praxis.cart', JSON.stringify(cart)) }, [cart])
+      const toggleCart = React.useCallback((row) => setCart((c) => (c.some((x) => x.id === row.id) ? c.filter((x) => x.id !== row.id)
+        : [...c, { id: row.id, title: row.title, url: row.url, description: row.description }])), [])
+      const inCart = (id) => cart.some((x) => x.id === id)
 
       const reloadKit = React.useCallback(() => loadKit().then(setKit, (e) => setKitError(String(e.message ?? e))), [])
       const loadUpkeep = React.useCallback(() => call('praxis_upkeep').then((r) => setAttention(upkeepCount(r)), () => {}), [])
@@ -276,7 +288,7 @@ window.__ModuleLoader__.load({
         setRequests((r) => ({ ...r, asks: [ask, ...r.asks] }))
       }
       const refresh = () => { reloadKit(); loadUpkeep() }
-      const shared = { t, go, nav, kit, send, refresh, openSession, openPath, stamp }
+      const shared = { t, go, nav, kit, send, refresh, openSession, openPath, stamp, inCart, toggleCart, scroller: scroll }
 
       const view = nav.tab === 'sources' ? h(SourcesView, { ...shared, key: 'sources' })
         : nav.tab === 'task' ? h(TaskView, { ...shared, key: 'task' })
@@ -293,7 +305,9 @@ window.__ModuleLoader__.load({
             TABS.map((v) => h('button', { key: v, type: 'button', className: 'pxs-tab', 'aria-current': nav.tab === v ? 'page' : undefined, onClick: () => go({ tab: v }) },
               t(`tab.${v}`), v === 'log' && attention ? h('span', { className: 'pxs-badge', 'aria-label': t('log.attention') }, String(attention)) : null))),
           view)),
-        h(Composer, { t, available: requests.available, onSend: send }, h(AskStrip, { asks: requests.asks, t, openSession })))
+        h(Composer, { t, available: requests.available, onSend: send },
+          h(AskStrip, { asks: requests.asks, t, openSession }),
+          cart.length ? h(Cart, { t, items: cart, setItems: setCart, go, addToChat }) : null))
     }
 
     const upkeepCount = (r) => (r.reload ? 1 : 0) + r.bindings.length + r.unfiled.length + r.sources.length + r.revisions.length + r.artifacts.length
@@ -646,7 +660,7 @@ window.__ModuleLoader__.load({
     }
 
     // ---- Sources: the catalog by Kit area and form, and the review queue --------------------
-    function SourcesView({ t, go, nav, send, openSession, stamp }) {
+    function SourcesView({ t, go, nav, send, openSession, stamp, inCart, toggleCart, scroller }) {
       const [rows, setRows] = React.useState(null)
       const [outline, setOutline] = React.useState({ areas: [], forms: [] })
       const [mode, setMode] = React.useState(() => recall('praxis.sources.tab', 'catalog'))
@@ -655,6 +669,11 @@ window.__ModuleLoader__.load({
       const [query, setQuery] = React.useState('')
       const [searching, setSearching] = React.useState(false)
       const [view, setView] = React.useState(() => recall('praxis.sources.view', 'list'))
+      const [tag, setTag] = React.useState(null)
+      const [openAreas, setOpenAreas] = React.useState(() => new Set())
+      // Coming back from a source returns to the same place: filters, search and open areas live here,
+      // and the scroll offset is put back once the list is drawn again.
+      const place = React.useRef(0)
 
       const load = React.useCallback(() => {
         setError(null)
@@ -665,20 +684,29 @@ window.__ModuleLoader__.load({
       const update = (next) => setRows((all) => all.map((r) => (r.id === next.id ? { ...r, ...next } : r)))
       const switchView = (v) => { setView(v); remember('praxis.sources.view', v) }
       const switchMode = (v) => { setMode(v); remember('praxis.sources.tab', v) }
-      const open = (id) => go({ tab: 'sources', source: id })
+      const open = (id) => { place.current = scroller?.current?.scrollTop ?? 0; go({ tab: 'sources', source: id }) }
+      const returning = React.useRef(false)
+      const back = () => { returning.current = true; go({ tab: 'sources' }) }
+      const pickTag = (x) => { setTag((cur) => (cur === x ? null : x)); scroller?.current?.scrollTo({ top: 0 }) }
       const keep = (r) => (filter === 'open' ? !reviewed(r) : filter === 'needs-work' ? reviewed(r) && r.review.verdict === 'needs-work' : filter === 'reviewed' ? reviewed(r) : true)
       const terms = query.trim().toLowerCase().split(/\s+/).filter(Boolean)
-      const match = (r) => terms.every((x) => [r.title, r.description, r.url, r.id].join(' ').toLowerCase().includes(x))
+      const match = (r) => (!tag || r.tags?.includes(tag)) && terms.every((x) => [r.title, r.description, r.url, r.id, ...(r.tags ?? [])].join(' ').toLowerCase().includes(x))
       const shown = (rows ?? []).filter((r) => (mode === 'catalog' || keep(r)) && match(r))
-      const entry = (r) => (view === 'grid' ? h(SourceCard, { key: r.id, row: r, t, onOpen: () => open(r.id) }) : h(SourceRow, { key: r.id, row: r, t, onOpen: () => open(r.id), onReviewed: update }))
+      const pick = { inCart, toggleCart }
+      const entry = (r) => (view === 'grid' ? h(SourceCard, { key: r.id, row: r, t, pick, onTag: pickTag, tag, onOpen: () => open(r.id) }) : h(SourceRow, { key: r.id, row: r, t, pick, onOpen: () => open(r.id), onReviewed: update, onConflict: () => open(r.id) }))
       const current = nav.source && (rows?.find((r) => r.id === nav.source) ?? (rows ? { id: nav.source, title: nav.source, form: 'article', areas: [], description: '' } : null))
 
-      if (current) return h(SourceDetail, { row: current, t, openSession, onBack: () => go({ tab: 'sources' }), onReviewed: update, send })
+      React.useLayoutEffect(() => {
+        if (current || !returning.current || !rows) return
+        returning.current = false
+        scroller?.current?.scrollTo({ top: place.current })
+      })
+      if (current) return h(SourceDetail, { row: current, t, openSession, pick: { inCart, toggleCart }, onBack: back, onTag: (x) => { setTag(x); go({ tab: 'sources' }) }, onReviewed: update, send })
       let body
       if (error) body = h('p', { className: 'pxs-empty' }, h(P.StateDot, { state: 'error' }), ' ', t('review.failed'), ' ', error)
       else if (!rows) body = h('div', { className: 'pxs-list', 'aria-busy': true }, [0, 1, 2, 3, 4].map((i) => h('div', { key: i, className: 'pxs-skel' }, h('i'), h('i'))))
-      else if (!shown.length) body = h('p', { className: 'pxs-empty' }, terms.length ? t('review.noMatch') : mode === 'catalog' ? t('review.empty.all') : t(`review.empty.${filter}`))
-      else if (mode === 'catalog') body = h(Outline, { areas: outline.areas, forms: outline.forms, rows: shown, t, view, entry, searching: terms.length > 0 })
+      else if (!shown.length) body = h('p', { className: 'pxs-empty' }, terms.length || tag ? t('review.noMatch') : mode === 'catalog' ? t('review.empty.all') : t(`review.empty.${filter}`))
+      else if (mode === 'catalog') body = h(Outline, { areas: outline.areas, forms: outline.forms, rows: shown, t, view, entry, searching: terms.length > 0 || !!tag, openAreas, setOpenAreas })
       else body = h('div', { className: view === 'grid' ? 'pxs-grid' : 'pxs-list' }, shown.map(entry))
 
       return h(React.Fragment, null,
@@ -687,7 +715,8 @@ window.__ModuleLoader__.load({
             options: [{ value: 'catalog', label: t('tab.catalog') }, { value: 'review', label: t('tab.review') }] }),
           mode === 'review' ? h('div', { className: 'pxs-pills', role: 'group', 'aria-label': t('review.filter') },
             ['open', 'needs-work', 'reviewed', 'all'].map((v) => h(P.Pill, { key: v, active: filter === v, 'aria-pressed': filter === v, onClick: () => setFilter(v) }, t(`review.f.${v}`))))
-            : h('span', { className: 'pxs-caption' }, t('tab.catalogHint', { n: rows?.length ?? 0 }))),
+            : h('span', { className: 'pxs-caption' }, t('tab.catalogHint', { n: rows?.length ?? 0 })),
+          tag ? h('button', { type: 'button', className: 'pxs-tag-on', 'aria-label': `${t('review.clearTag')}: ${tag}`, onClick: () => setTag(null) }, '#', tag, h(Glyph, { name: 'close', size: 12 })) : null),
           h('div', { className: 'pxs-icons' },
             searching ? h(P.Input, { className: 'pxs-search', type: 'search', role: 'searchbox', value: query, autoFocus: true, placeholder: t('review.search'), 'aria-label': t('review.search'),
               icon: h(P.IconSearchOutlineRegular, { size: 14 }), onChange: (e) => setQuery(e.target.value),
@@ -700,6 +729,31 @@ window.__ModuleLoader__.load({
     }
 
     /** Requests from the last day: running ones shimmer, finished ones name what was captured. */
+    /**
+     * What the cart hands on: each source with its link, when it applies and its Praxis ID, so an agent
+     * with the Praxis MCP can look it up and record it, and any other agent can still follow the links.
+     */
+    const cartText = (items) => [
+      'Use these sources from Praxis for this work. Each says when it applies; open the original at its link before relying on it. With the Praxis MCP, praxis_source <id> gives the read scope and where the excerpts are, and praxis_consume should list the ids you used.',
+      ...items.map((x, i) => `${i + 1}. ${x.title} — ${x.url}${x.description ? ` — When: ${x.description}` : ''} (praxis: ${x.id})`),
+    ].join('\n')
+
+    function Cart({ t, items, setItems, go, addToChat }) {
+      const [copied, setCopied] = React.useState(null)
+      const copy = () => navigator.clipboard.writeText(cartText(items)).then(() => setCopied('ok'), () => setCopied('failed'))
+      React.useEffect(() => { if (!copied) return; const id = setTimeout(() => setCopied(null), 1800); return () => clearTimeout(id) }, [copied])
+      return h('section', { className: 'pxs-cart', 'aria-label': t('cart.label') },
+        h('header', null,
+          h(Glyph, { name: 'cart' }), h('b', null, t('cart.count', { n: items.length })), h('span', { className: 'pxs-caption' }, t('cart.hint')),
+          h('button', { type: 'button', className: 'pxs-link', onClick: () => setItems([]) }, t('cart.clear'))),
+        h('ul', null, items.map((x) => h('li', { key: x.id },
+          h('button', { type: 'button', className: 'pxs-cart-item', title: x.description, onClick: () => go({ tab: 'sources', source: x.id }) }, x.title),
+          h('button', { type: 'button', className: 'pxs-cart-x', 'aria-label': `${t('cart.remove')}: ${x.title}`, onClick: () => setItems((c) => c.filter((y) => y.id !== x.id)) }, h(Glyph, { name: 'close', size: 12 }))))),
+        h('footer', null,
+          h(P.Button, { variant: 'ghost', size: 'sm', icon: h(Glyph, { name: 'copy', size: 14 }), onClick: copy }, copied === 'ok' ? t('cart.copied') : copied === 'failed' ? t('cart.copyFailed') : t('cart.copy')),
+          addToChat ? h(P.Button, { size: 'sm', icon: h(Glyph, { name: 'chat', size: 14 }), onClick: () => { addToChat(cartText(items)); setItems([]) } }, t('cart.chat')) : null))
+    }
+
     function AskStrip({ asks, t, openSession }) {
       const recent = asks.filter((a) => a.status === 'running' || Date.now() - Date.parse(a.done_at ?? a.at) < 864e5).slice(0, 4)
       if (!recent.length) return null
@@ -718,12 +772,21 @@ window.__ModuleLoader__.load({
       const [busy, setBusy] = React.useState(false)
       const [problem, setProblem] = React.useState(null)
       const ref = React.useRef(null)
-      React.useLayoutEffect(() => {
+      // Fit the text; measure again when the width changes, since a page opened hidden measures at zero width.
+      const fit = React.useCallback(() => {
         const el = ref.current
         if (!el) return
         el.style.height = 'auto'
         el.style.height = `${Math.min(el.scrollHeight, 6 * 22 + 4)}px`
-      }, [text])
+      }, [])
+      React.useLayoutEffect(fit, [text, fit])
+      React.useEffect(() => {
+        if (!ref.current || typeof ResizeObserver === 'undefined') return
+        let width = 0
+        const watch = new ResizeObserver(([e]) => { if (e.contentRect.width !== width) { width = e.contentRect.width; fit() } })
+        watch.observe(ref.current)
+        return () => watch.disconnect()
+      }, [fit])
       const submit = async () => {
         if (!text.trim() || busy || !available) return
         setBusy(true); setProblem(null)
@@ -743,7 +806,7 @@ window.__ModuleLoader__.load({
 
     // The catalog's own structure, kept from the control plane: Kit layer → area (title and
     // description) → form, each group folding open; the entries inside are the same rows or cards.
-    function Outline({ areas, forms, rows, t, view, entry, searching }) {
+    function Outline({ areas, forms, rows, t, view, entry, searching, openAreas, setOpenAreas }) {
       const groups = areas.map((a) => {
         const own = rows.filter((r) => r.areas.some((x) => x.area === a.area))
         return { ...a, byForm: forms.map((f) => ({ form: f, rows: own.filter((r) => r.form === f) })).filter((g) => g.rows.length), n: own.length }
@@ -755,7 +818,8 @@ window.__ModuleLoader__.load({
       }
       return h('div', { className: 'pxs-outline' }, layers.map((l) => h('section', { key: l.layer || '-', className: 'pxs-layer' },
         h('h2', { className: 'pxs-layer-title' }, l.layer ? t(`layer.${l.layer}`) : t('review.noArea')),
-        l.groups.map((g) => h('details', { key: g.area || '-', className: 'pxs-area', open: searching || undefined },
+        l.groups.map((g) => h('details', { key: g.area || '-', className: 'pxs-area', open: searching || openAreas.has(g.area) || undefined,
+          onToggle: (e) => { if (searching) return; const on = e.currentTarget.open; setOpenAreas((cur) => { const next = new Set(cur); on ? next.add(g.area) : next.delete(g.area); return next }) } },
           h('summary', null,
             h('span', { className: 'pxs-area-head' }, h('span', { className: 'pxs-area-title' }, g.title || g.area || t('review.noArea')), h('span', { className: 'pxs-caption' }, g.area)),
             g.description ? h('span', { className: 'pxs-area-desc', dir: 'auto' }, g.description) : null,
@@ -774,11 +838,12 @@ window.__ModuleLoader__.load({
     const readOf = (status) => (status === 'verified' ? 'verified' : status === 'unavailable' ? 'unavailable' : 'partial')
     const ReadWord = ({ row, t }) => h('span', { className: 'pxs-ev' }, t(`ev.${readOf(row.evidence_status)}`))
 
-    function RowMenu({ row, t, onReviewed }) {
+    function RowMenu({ row, t, onReviewed, onConflict }) {
       const [open, setOpen] = React.useState(false)
       const verdict = async (v) => {
         setOpen(false)
-        const s = await call('praxis_review', { source: row.id, verdict: v })
+        let s
+        try { s = await call('praxis_review', { source: row.id, verdict: v, revision: row.entry_revision }) } catch (e) { if (e.status === 409) return onConflict?.(); throw e }
         onReviewed({ id: row.id, entry_revision: s.entry_revision, review: { verdict: v, revision: s.review?.revision, by: s.review?.by, at: s.review?.at, current: true } })
       }
       return h(P.Menu, { open, onClose: () => setOpen(false), align: 'end', portal: true,
@@ -789,27 +854,44 @@ window.__ModuleLoader__.load({
         h(P.MenuItemButton, { icon: h(P.IconWarningOutlineRegular, { size: 14 }), onSelect: () => verdict('needs-work') }, t('review.markNeedsWork')))
     }
 
-    function SourceRow({ row, t, onOpen, onReviewed }) {
+    // Add to cart: the one action a person takes on a source besides reading it.
+    function CartButton({ row, t, pick, label }) {
+      const on = pick.inCart(row.id)
+      const name = t(on ? 'cart.remove' : 'cart.add')
+      return h('button', { type: 'button', className: label ? 'pxs-cart-add' : 'pxs-cart-btn', 'aria-pressed': on, 'aria-label': name, title: name,
+        onClick: (e) => { e.stopPropagation(); pick.toggleCart(row) } }, h(Glyph, { name: on ? 'cartIn' : 'cartAdd' }), label ? h('span', null, t(on ? 'cart.in' : 'cart.add')) : null)
+    }
+
+    function SourceRow({ row, t, pick, onOpen, onReviewed, onConflict }) {
       return h('div', { className: 'pxs-row' },
         h('button', { type: 'button', className: 'pxs-row-main', onClick: onOpen },
           h('span', { className: 'pxs-tile', title: t(`form.${row.form}`) }, h(Glyph, { name: row.form })),
           h('span', { className: 'pxs-row-text' },
             h('span', { className: 'pxs-row-title', dir: 'auto' }, row.title, h('span', { className: 'pxs-host' }, hostOf(row.url))),
             h('span', { className: 'pxs-row-desc', dir: 'auto' }, row.description))),
-        h('span', { className: 'pxs-row-side' }, h(StateTag, { row, t }), h(ReadWord, { row, t }), h('time', { dateTime: row.captured_at }, day(row.captured_at)), h(RowMenu, { row, t, onReviewed })))
+        h('span', { className: 'pxs-row-side' }, h(StateTag, { row, t }), h(ReadWord, { row, t }), h('time', { dateTime: row.captured_at }, day(row.captured_at)), h(CartButton, { row, t, pick }), h(RowMenu, { row, t, onReviewed, onConflict })))
     }
 
     // A card is the same record as a row, laid out for scanning: what it is, where it lives, when to open it.
-    function SourceCard({ row, t, onOpen }) {
-      return h('button', { type: 'button', className: 'pxs-card', onClick: onOpen },
-        h('span', { className: 'pxs-card-head' },
-          h('span', { className: 'pxs-tile' }, h(Glyph, { name: row.form })),
-          h('span', { className: 'pxs-card-text' },
-            h('span', { className: 'pxs-row-title', dir: 'auto' }, row.title),
-            h('span', { className: 'pxs-caption' }, hostOf(row.url)))),
-        h('span', { className: 'pxs-card-desc', dir: 'auto' }, row.description),
-        h('span', { className: 'pxs-card-foot' },
-          h(ReadWord, { row, t }), h('time', { dateTime: row.captured_at }, day(row.captured_at)), h(StateTag, { row, t })))
+    const Tags = ({ tags, active, onTag, max = 3 }) => (tags?.length ? h('span', { className: 'pxs-tags' },
+      tags.slice(0, max).map((x) => h('button', { key: x, type: 'button', className: 'pxs-tagchip', 'aria-pressed': active === x, onClick: (e) => { e.stopPropagation(); onTag?.(x) } }, '#', x))) : null)
+
+    // A card reads like an item on a shelf: a look at what is inside (the first excerpt, with where it
+    // is in the original), what it is and where it lives, when to open it, then its use tags.
+    function SourceCard({ row, t, pick, onOpen, onTag, tag }) {
+      return h('div', { className: 'pxs-card', 'data-picked': pick.inCart(row.id) || undefined },
+        h('button', { type: 'button', className: 'pxs-card-main', onClick: onOpen },
+          row.preview ? h('span', { className: 'pxs-card-look', dir: 'auto' }, h('q', null, row.preview.claim), h('small', null, row.preview.locator)) : null,
+          h('span', { className: 'pxs-card-head' },
+            h('span', { className: 'pxs-tile' }, h(Glyph, { name: row.form })),
+            h('span', { className: 'pxs-card-text' },
+              h('span', { className: 'pxs-row-title', dir: 'auto' }, row.title),
+              h('span', { className: 'pxs-caption' }, hostOf(row.url)))),
+          h('span', { className: 'pxs-card-desc', dir: 'auto' }, row.description),
+          h('span', { className: 'pxs-card-foot' },
+            h(ReadWord, { row, t }), h('time', { dateTime: row.captured_at }, day(row.captured_at)), h(StateTag, { row, t }))),
+        h(Tags, { tags: row.tags, active: tag, onTag }),
+        h(CartButton, { row, t, pick }))
     }
 
     // Full-page detail, one fixed schema for every source so the eye learns where things are:
@@ -831,7 +913,7 @@ window.__ModuleLoader__.load({
     }
     const None = ({ children }) => h('p', { className: 'pxs-none' }, children)
 
-    function SourceDetail({ row, t, openSession, onBack, onReviewed, send }) {
+    function SourceDetail({ row, t, openSession, pick, onBack, onTag, onReviewed, send }) {
       const [d, setD] = React.useState(null)
       const [problem, setProblem] = React.useState(null)
       const [asking, setAsking] = React.useState(false)
@@ -843,7 +925,13 @@ window.__ModuleLoader__.load({
       async function verdict(v) {
         setBusy(true); setProblem(null)
         try {
-          const s = await call('praxis_review', { source: row.id, verdict: v, note: note.trim() || undefined })
+          // The verdict is about the description on screen; if it changed meanwhile, show the new one first.
+          const seen = d?.entry_revision ?? row.entry_revision
+          let s
+          try { s = await call('praxis_review', { source: row.id, verdict: v, note: note.trim() || undefined, revision: seen }) } catch (e) {
+            if (e.status !== 409) throw e
+            setD(await call('praxis_source', { id: row.id })); setProblem(t('review.changed')); return
+          }
           onReviewed({ id: row.id, entry_revision: s.entry_revision, review: { verdict: v, revision: s.review?.revision, by: s.review?.by, at: s.review?.at, current: true } })
           // A description marked needs work goes to an agent, the only one who rewrites records.
           if (v === 'needs-work') await send(t('ask.revise', { id: row.id, title: row.title, note: note.trim() || t('ask.noNote') }))
@@ -863,8 +951,10 @@ window.__ModuleLoader__.load({
           h('div', { className: 'pxs-detail-title' },
             h('h1', { dir: 'auto' }, d?.title ?? row.title),
             h('p', { className: 'pxs-caption' }, [t(`form.${row.form}`), hostOf(row.url), row.areas.map((a) => a.title || a.area || t('review.noArea')).join(' · ')].filter(Boolean).join(' · '))),
-          (d?.url ?? row.url) ? h('a', { className: 'pxs-open', href: d?.url ?? row.url, target: '_blank', rel: 'noreferrer' }, t('review.openOriginal'), h(Glyph, { name: 'out', size: 14 })) : null),
+          h('div', { className: 'pxs-detail-actions' }, h(CartButton, { row: { ...row, ...(d ? { title: d.title, url: d.url, description: d.description } : {}) }, t, pick, label: true }),
+            (d?.url ?? row.url) ? h('a', { className: 'pxs-open', href: d?.url ?? row.url, target: '_blank', rel: 'noreferrer' }, t('review.openOriginal'), h(Glyph, { name: 'out', size: 14 })) : null)),
         h('p', { className: 'pxs-when', dir: 'auto' }, d?.description ?? row.description),
+        h(Tags, { tags: d?.tags ?? row.tags, onTag, max: 12 }),
         problem ? h('p', { className: 'pxs-problem', role: 'alert' }, problem) : null,
         !d ? h('div', { className: 'pxs-skel' }, h('i'), h('i'), h('i')) : h(React.Fragment, null,
           h('div', { className: 'pxs-stats' },
@@ -934,11 +1024,10 @@ window.__ModuleLoader__.load({
     }
 
     const PAGE_CSS = `
-.pxs-page{--pxs-rule:rgb(196 64 44);--pxs-rule-soft:rgb(196 64 44 / .12);position:relative;width:100%;height:100%;min-height:0;display:flex;flex-direction:column;color:var(--dsw-alias-label-primary);background:var(--dsw-alias-bg-base);font-size:14px;line-height:1.6}
+.pxs-page{position:relative;width:100%;height:100%;min-height:0;display:flex;flex-direction:column;color:var(--dsw-alias-label-primary);background:var(--dsw-alias-bg-base);font-size:14px;line-height:1.6}
 .pxs-scroll{flex:1;min-height:0;overflow:auto;scrollbar-gutter:stable}
 .pxs-content{max-width:880px;margin:0 auto;padding:0 clamp(20px,4vw,48px) 140px;min-height:100%;box-sizing:border-box}
-body[data-ds-dark-theme] .pxs-page{--pxs-rule:rgb(232 112 90);--pxs-rule-soft:rgb(232 112 90 / .16)}
-.pxs-wait{display:inline-flex;align-items:center;height:20px;padding:0 8px;border-radius:999px;background:var(--pxs-rule-soft);color:var(--pxs-rule);font-size:12px;font-weight:500}
+.pxs-wait{display:inline-flex;align-items:center;height:20px;padding:0 8px;border-radius:999px;background:var(--dsw-alias-state-business-tertiary);color:var(--dsw-alias-state-business-primary);font-size:12px;font-weight:500}
 .pxs-ev{font-size:12px;color:var(--dsw-alias-label-tertiary);white-space:nowrap}
 .pxs-head{padding-top:48px}
 [data-platform=darwin] .pxs-head{padding-top:calc(48px + var(--dsh-frame-top-clearance,0px))}
@@ -950,7 +1039,7 @@ body[data-ds-dark-theme] .pxs-page{--pxs-rule:rgb(232 112 90);--pxs-rule-soft:rg
 .pxs-tab[aria-current=page]{color:var(--dsw-alias-label-primary);font-weight:500}
 .pxs-tab[aria-current=page]::after{content:"";position:absolute;left:0;right:0;bottom:-.5px;height:2px;border-radius:1px;background:var(--dsw-alias-label-primary)}
 .pxs-tab:focus-visible{outline:2px solid var(--dsw-focus-ring-color);outline-offset:2px;border-radius:4px}
-.pxs-badge{min-width:16px;height:16px;padding:0 4px;border-radius:8px;background:var(--pxs-rule);color:#fff;font:600 10px/16px ui-monospace,'SF Mono',Menlo,monospace;text-align:center}
+.pxs-badge{min-width:16px;height:16px;padding:0 4px;border-radius:8px;background:var(--dsw-alias-state-business-primary);color:var(--dsw-static-neutral-bluish-00);font-size:10px;line-height:16px;font-weight:600;font-variant-numeric:tabular-nums;text-align:center}
 .pxs-modes{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px}
 .pxs-page-body{animation:pxs-in .36s cubic-bezier(.22,1,.36,1)}
 .pxs-crumbs{display:flex;flex-wrap:wrap;align-items:center;gap:2px;margin:18px 0 14px;font-size:13px;color:var(--dsw-alias-label-tertiary)}
@@ -1027,7 +1116,27 @@ body[data-ds-dark-theme] .pxs-page{--pxs-rule:rgb(232 112 90);--pxs-rule-soft:rg
 .pxs-view{display:grid;place-items:center;width:30px;height:30px;padding:0;border:0;border-radius:8px;background:none;color:var(--dsw-alias-label-tertiary);cursor:pointer;transition:background-color .16s ease,color .16s ease,box-shadow .16s ease}
 .pxs-view:hover{color:var(--dsw-alias-label-primary);background:var(--dsw-alias-interactive-bg-hover)}
 .pxs-view[aria-pressed=true]{color:var(--dsw-alias-state-business-primary);box-shadow:inset 0 0 0 1px var(--dsw-alias-state-business-primary)}
-.pxs-view:focus-visible,.pxs-row-main:focus-visible,.pxs-card:focus-visible,.pxs-back:focus-visible,.pxs-link:focus-visible,.pxs-open:focus-visible,.pxs-send:focus-visible{outline:2px solid var(--dsw-focus-ring-color);outline-offset:2px}
+.pxs-view:focus-visible,.pxs-row-main:focus-visible,.pxs-card-main:focus-visible,.pxs-cart-btn:focus-visible,.pxs-cart-add:focus-visible,.pxs-cart-item:focus-visible,.pxs-cart-x:focus-visible,.pxs-back:focus-visible,.pxs-link:focus-visible,.pxs-open:focus-visible,.pxs-send:focus-visible{outline:2px solid var(--dsw-focus-ring-color);outline-offset:2px}
+.pxs-cart-btn{flex:none;display:inline-grid;place-items:center;width:28px;height:28px;padding:0;border:0;border-radius:8px;background:none;color:var(--dsw-alias-label-tertiary);cursor:pointer;opacity:0;transition:opacity .16s ease,background-color .16s ease,color .16s ease}
+.pxs-cart-btn:hover{background:var(--dsw-alias-interactive-bg-hover);color:var(--dsw-alias-label-primary)}
+.pxs-cart-btn[aria-pressed=true]{opacity:1;color:var(--dsw-alias-state-business-primary)}
+.pxs-row:hover .pxs-cart-btn,.pxs-card:hover .pxs-cart-btn,.pxs-cart-btn:focus-visible{opacity:1}
+@media (hover:none){.pxs-cart-btn{opacity:1}}
+.pxs-detail-actions{display:flex;align-items:center;gap:8px;flex:none}
+.pxs-cart-add{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 12px;border:0;border-radius:999px;background:none;box-shadow:inset 0 0 0 .5px var(--dsw-alias-border-l4);color:var(--dsw-alias-label-primary);font:inherit;font-size:13px;cursor:pointer}
+.pxs-cart-add:hover{background:var(--dsw-alias-interactive-bg-hover)}
+.pxs-cart-add[aria-pressed=true]{color:var(--dsw-alias-state-business-primary);background:var(--dsw-alias-state-business-tertiary);box-shadow:none}
+.pxs-cart{margin:0 auto 8px;padding:10px 12px;border-radius:16px;background:var(--dsw-alias-bg-base);box-shadow:inset 0 0 0 .5px var(--dsw-alias-border-l3),var(--dsw-shadow-lv2);display:grid;gap:8px}
+.pxs-cart header{display:flex;align-items:center;gap:8px;min-width:0}
+.pxs-cart header svg{flex:none;color:var(--dsw-alias-state-business-primary)}
+.pxs-cart header b{font-weight:600;white-space:nowrap}
+.pxs-cart header .pxs-caption{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pxs-cart ul{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:6px;max-height:64px;overflow:auto}
+.pxs-cart li{display:inline-flex;align-items:center;max-width:100%;border-radius:999px;background:var(--dsw-alias-bg-layer-1);box-shadow:inset 0 0 0 .5px var(--dsw-alias-border-l2)}
+.pxs-cart-item{max-width:240px;padding:3px 4px 3px 10px;border:0;background:none;color:var(--dsw-alias-label-primary);font:inherit;font-size:12.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:pointer}
+.pxs-cart-x{display:inline-grid;place-items:center;width:22px;height:22px;margin-right:2px;padding:0;border:0;border-radius:50%;background:none;color:var(--dsw-alias-label-tertiary);cursor:pointer}
+.pxs-cart-x:hover{background:var(--dsw-alias-interactive-bg-hover);color:var(--dsw-alias-label-primary)}
+.pxs-cart footer{display:flex;justify-content:flex-end;gap:6px}
 .pxs-asks{list-style:none;margin:0 auto 8px;padding:0;display:grid;gap:4px}
 .pxs-asks li{display:flex;align-items:center;gap:8px;min-height:32px;padding:4px 12px;border-radius:12px;background:var(--dsw-alias-bg-layer-1);box-shadow:inset 0 0 0 .5px var(--dsw-alias-border-l2);font-size:13px;color:var(--dsw-alias-label-secondary);animation:pxs-in .36s cubic-bezier(.22,1,.36,1)}
 .pxs-asks li[data-status=done] svg{color:var(--dsw-alias-state-business-primary)}
@@ -1048,9 +1157,23 @@ body[data-ds-dark-theme] .pxs-page{--pxs-rule:rgb(232 112 90);--pxs-rule-soft:rg
 .pxs-row-side{flex:none;display:flex;align-items:center;gap:10px;padding-right:4px;color:var(--dsw-alias-label-tertiary);font-size:12.5px;font-variant-numeric:tabular-nums}
 .pxs-row-side time{min-width:52px;text-align:right}
 .pxs-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px}
-.pxs-card{display:flex;flex-direction:column;gap:10px;min-height:148px;padding:14px 16px;border:0;border-radius:16px;background:var(--dsw-alias-bg-base);box-shadow:inset 0 0 0 .5px var(--dsw-alias-border-l3),0 1px 2px rgba(0,0,0,.04);color:inherit;font:inherit;text-align:left;cursor:pointer;overflow:hidden;transition:box-shadow .2s ease,transform .2s cubic-bezier(.22,1,.36,1)}
-@media (hover:hover){.pxs-card:hover{transform:translateY(-1px);box-shadow:inset 0 0 0 .5px var(--dsw-alias-border-l4),0 6px 18px rgba(0,0,0,.06)}}
-.pxs-card-head{display:flex;align-items:center;gap:10px;min-width:0}
+.pxs-card{position:relative;display:flex;min-height:148px;border:0;border-radius:16px;background:var(--dsw-alias-bg-base);box-shadow:inset 0 0 0 .5px var(--dsw-alias-border-l3),var(--dsw-shadow-lv1);color:inherit;font:inherit;text-align:left;cursor:pointer;overflow:hidden;transition:box-shadow .2s ease,transform .2s cubic-bezier(.22,1,.36,1)}
+@media (hover:hover){.pxs-card:hover{transform:translateY(-1px);box-shadow:inset 0 0 0 .5px var(--dsw-alias-border-l4),var(--dsw-shadow-lv2)}}
+.pxs-card-main{flex:1;min-width:0;display:flex;flex-direction:column;gap:10px;padding:14px 16px;border:0;border-radius:inherit;background:none;color:inherit;font:inherit;text-align:left;cursor:pointer}
+.pxs-card[data-picked]{box-shadow:inset 0 0 0 1px var(--dsw-alias-state-business-primary),var(--dsw-shadow-lv1)}
+.pxs-card .pxs-cart-btn{position:absolute;top:10px;right:10px}
+.pxs-card-look{display:grid;gap:4px;padding:10px 12px;border-radius:10px;background:var(--dsw-alias-bg-layer-1)}
+.pxs-card-look q{color:var(--dsw-alias-label-primary);font-size:12.5px;line-height:1.55;quotes:none;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.pxs-card-look small{color:var(--dsw-alias-label-tertiary);font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pxs-card{flex-direction:column}
+.pxs-card>.pxs-tags{padding:0 16px 14px;margin-top:-4px}
+.pxs-tags{display:flex;flex-wrap:wrap;gap:4px 6px}
+.pxs-tagchip{padding:1px 8px;border:0;border-radius:999px;background:var(--dsw-alias-bg-layer-1);color:var(--dsw-alias-label-secondary);font:inherit;font-size:11.5px;cursor:pointer}
+.pxs-tagchip:hover{background:var(--dsw-alias-interactive-bg-hover);color:var(--dsw-alias-label-primary)}
+.pxs-tagchip[aria-pressed=true],.pxs-tag-on{background:var(--dsw-alias-state-business-tertiary);color:var(--dsw-alias-state-business-primary)}
+.pxs-tag-on{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border:0;border-radius:999px;font:inherit;font-size:12px;cursor:pointer}
+.pxs-detail .pxs-tags{margin:-4px 0 16px}
+.pxs-card-head{padding-right:28px;display:flex;align-items:center;gap:10px;min-width:0}
 .pxs-card-desc{flex:1;color:var(--dsw-alias-label-secondary);font-size:13px;line-height:1.55;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
 .pxs-card-foot{display:flex;align-items:center;gap:10px;color:var(--dsw-alias-label-tertiary);font-size:12px;font-variant-numeric:tabular-nums}
 .pxs-card-foot time{margin-right:auto}
@@ -1126,8 +1249,8 @@ a.pxs-loc{color:var(--dsw-alias-state-business-primary)}
 .pxs-count[data-near]{color:var(--dsw-alias-state-error-primary)}
 .pxs-dock{position:absolute;left:0;right:0;bottom:0;padding:0 clamp(20px,4vw,48px) 20px;pointer-events:none;background:linear-gradient(to bottom,transparent,var(--dsw-alias-bg-base) 40%)}
 .pxs-dock>*{pointer-events:auto;max-width:784px;margin-left:auto;margin-right:auto}
-.pxs-composer{display:flex;align-items:center;gap:10px;padding:10px 10px 10px 22px;border-radius:28px;background:var(--dsw-alias-bg-base);box-shadow:inset 0 0 0 .5px var(--dsw-alias-border-l3),0 4px 16px rgba(0,0,0,.06);transition:box-shadow .2s ease}
-.pxs-composer:focus-within{box-shadow:inset 0 0 0 .5px var(--dsw-alias-border-l4),0 6px 22px rgba(0,0,0,.08)}
+.pxs-composer{display:flex;align-items:center;gap:10px;padding:10px 10px 10px 22px;border-radius:28px;background:var(--dsw-alias-bg-base);box-shadow:inset 0 0 0 .5px var(--dsw-alias-border-l3),var(--dsw-shadow-lv2);transition:box-shadow .2s ease}
+.pxs-composer:focus-within{box-shadow:inset 0 0 0 .5px var(--dsw-alias-border-l4),var(--dsw-shadow-lv3)}
 .pxs-composer textarea{box-sizing:border-box;flex:1;min-height:36px;max-height:136px;padding:7px 0;border:0;outline:0;background:none;color:inherit;font:inherit;font-size:15px;line-height:22px;resize:none}
 .pxs-composer textarea::placeholder{color:var(--dsw-alias-label-tertiary)}
 .pxs-send{flex:none;display:grid;place-items:center;width:36px;height:36px;padding:0;border:0;border-radius:50%;background:var(--dsw-alias-label-primary);color:var(--dsw-alias-bg-base);cursor:pointer;transition:opacity .16s ease,transform .16s ease}

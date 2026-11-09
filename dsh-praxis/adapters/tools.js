@@ -164,7 +164,7 @@ export const TOOLS = [
   {
     name: 'praxis_review',
     description: '记录一次 description review：挂载的 description（binding），或来源编目的 description（source）。针对当前或指定 revision，结论为 accurate、revised 或 needs-work。',
-    parameters: { binding: str('挂载 ID'), source: str('来源 ID：review 它的编目'), verdict: str('accurate、revised 或 needs-work'), note: str('说明'), revision: num('被检查的 revision；省略为当前'), by: who.by },
+    parameters: { binding: str('挂载 ID'), source: str('来源 ID：review 它的编目'), verdict: str('accurate、revised 或 needs-work'), note: str('说明'), revision: num('看到的 revision（来源用 entry_revision）；与当前不同时拒绝，先读新内容再判断；省略为当前'), by: who.by },
     required: ['verdict'],
     run: (p, a) => (a.binding ? p.materials.review(a.binding, a) : a.source ? p.materials.reviewEntry(a.source, a) : missing('review needs binding or source')),
     writes: true,
