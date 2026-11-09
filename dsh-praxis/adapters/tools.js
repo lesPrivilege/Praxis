@@ -54,11 +54,23 @@ export const TOOLS = [
     run: (p, a) => p.unit(a.ref) ?? missing(`unknown unit: ${a.ref}`),
   },
   {
-    name: 'praxis_unit_revise',
-    description: '修订一个 Kit 单元：给出修订后的整页（从 # 标题开始）、理由和依据的范例（某次运行、review 或产物）。修订存在用户数据里，立即对所有入口生效；包里的原页不动，包升级后原页变了，upkeep 会把这条修订列为冲突。带上读到的 revision（新修订填 0）。',
-    parameters: { unit: str('单元 ID 或路径'), body: str('修订后的整页 Markdown'), expected_revision: num('读到的 revision：从未修订过的单元填 0；撤回过的单元填 praxis_upkeep 或上次返回的 revision'), reason: str('为什么改'), example: str('依据：运行 ID、review 或产物'), by: who.by, task: who.task },
-    required: ['unit', 'body', 'reason', 'expected_revision'],
-    run: (p, a) => p.reviseUnit(a),
+    name: 'praxis_outline',
+    agent: true,
+    description: '改 Kit 的纲目，人和 agent 用同一组动作；全部写进 Praxis 数据的覆盖层，包里的原页不动，立即对所有入口生效。add：在已有区域下加一页（path 写 kit/<层>/…/<名>.md；写 …/README.md 是新区域，下面再加页，层级不限）。revise：改一页的整页正文。remove：把一页拿出 Kit；挂在上面的来源要么用 into 并到另一页（合并），要么先移走；区域要等下面没有页才能拿出。restore：把拿出的页放回。拆分是 add 新页、revise 原页，再用 praxis_curate 把来源挂到新页。改名或挪位置是 add 新页再 remove 旧页并 into 新页。每次带理由；revise、remove、restore 带上读到的 revision（从未改过的页填 0）。',
+    parameters: {
+      action: str('add、revise、remove 或 restore'), path: str('add 与 restore：页的路径，如 kit/design/foundations/glass.md'), unit: str('revise 与 remove：单元 ID 或路径'),
+      body: str('add 与 revise：整页 Markdown，从 # 标题开始'), into: str('remove：来源并到哪一页（单元 ID 或路径）'),
+      expected_revision: num('读到的 revision'), reason: str('为什么改'), example: str('依据：运行 ID、review 或产物'), by: who.by, task: who.task,
+    },
+    required: ['action', 'reason'],
+    run: (p, a) => {
+      const { action, ...rest } = a
+      if (action === 'add') return p.addUnit(rest)
+      if (action === 'revise') return p.reviseUnit(rest)
+      if (action === 'remove') return p.removeUnit(rest)
+      if (action === 'restore') return p.restoreUnit(rest)
+      throw new Error(`action must be add, revise, remove or restore: ${action}`)
+    },
     writes: true,
   },
   {
@@ -71,9 +83,9 @@ export const TOOLS = [
   },
   {
     name: 'praxis_revisions',
-    description: '列出用户数据里对 Kit 单元的修订：理由、依据、是否与包里更新后的原页冲突。',
+    description: '列出用户数据里对 Kit 的改动：revisions 是改过或加上的页（理由、依据、是否与包里更新后的原页冲突），removed 是拿出 Kit 的页（并到了哪一页）。',
     parameters: {},
-    run: (p) => p.revisionList(),
+    run: (p) => ({ revisions: p.revisionList(), removed: p.removedUnits() }),
   },
   {
     name: 'praxis_units',
@@ -367,6 +379,28 @@ export const TOOLS = [
     parameters: { id: str('预设 ID'), expected_revision: num('读到的 revision'), ...who },
     required: ['id'],
     run: (p, a) => p.removePreset(a),
+    writes: true,
+  },
+  {
+    name: 'praxis_views',
+    description: 'Praxis 页上存下的 Shop 看法：名称与筛选（需要、tag、搜索词、分组）。',
+    parameters: {},
+    run: (p) => p.views(),
+  },
+  {
+    name: 'praxis_view_save',
+    description: '存一个 Shop 看法，或改它的名称与筛选。新建不传 id；修改传 id 和读到的 revision。',
+    parameters: { id: str('看法 ID；新建时省略'), expected_revision: num('修改时读到的 revision'), title: str('名称'),
+      filter: { type: 'object', description: 'need（type:<id>、stream:<id> 或 page:<id>）、tag、query、group（area、form 或 none）' }, ...who },
+    run: (p, a) => p.saveView(a),
+    writes: true,
+  },
+  {
+    name: 'praxis_view_remove',
+    description: '删除一个 Shop 看法（保留记录）。',
+    parameters: { id: str('看法 ID'), expected_revision: num('读到的 revision'), ...who },
+    required: ['id'],
+    run: (p, a) => p.removeView(a),
     writes: true,
   },
   {

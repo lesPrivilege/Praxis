@@ -28,7 +28,7 @@ window.__ModuleLoader__.load({
         'kit.core': 'Core', 'kit.flow': 'Downstream workflows', 'kit.other': 'Outside the Kit', 'kit.files': '{n} files', 'kit.packs': 'Source packs', 'kit.failed': 'Could not load the Kit:',
         'kit.sources': 'Sources on this page', 'kit.showRemoved': 'Show removed', 'kit.noSources': 'No sources on this page', 'kit.restore': 'Restore', 'kit.favorite': 'Star', 'kit.enabled': 'Use in tasks',
         'kit.check': 'Check the original', 'kit.bindingAccurate': 'Description here is accurate', 'kit.bindingNeedsWork': 'Description here needs work', 'kit.remove': 'Remove from this page',
-        'unit.resident': 'Always in context', 'unit.revised': 'Revised', 'unit.conflict': 'Revision conflicts with the updated page', 'unit.revisedWhy': 'Revised because: {r}', 'unit.read': 'Show full text', 'unit.hide': 'Hide full text', 'unit.revert': 'Revert revision', 'unit.askSources': 'Ask Praxis for sources', 'unit.contents': 'Contents',
+        'unit.resident': 'Always in context', 'unit.revised': 'Revised', 'unit.added': 'Added', 'unit.addedWhy': 'Added because: {r}', 'outline.add': 'Add page', 'outline.addDo': 'Add', 'outline.title': 'Title', 'outline.name': 'File name', 'outline.when': 'When to read it', 'outline.why': 'Why', 'outline.holds': 'An area: holds pages of its own', 'outline.remove': 'Remove or merge', 'outline.removeDo': 'Remove', 'outline.into': 'Move its sources to', 'outline.intoNone': 'Nowhere (it has none)', 'outline.removeNote': 'The page leaves the Kit; its text stays in the data and can be restored from the Kit home.', 'outline.areaNote': 'An area leaves only once no page is left under it.', 'outline.removed': 'Removed pages', 'outline.mergedInto': 'Merged into {u}', 'outline.restore': 'Restore', 'unit.conflict': 'Revision conflicts with the updated page', 'unit.revisedWhy': 'Revised because: {r}', 'unit.read': 'Show full text', 'unit.hide': 'Hide full text', 'unit.revert': 'Revert revision', 'unit.askSources': 'Ask Praxis for sources', 'unit.contents': 'Contents',
         'task.type': 'Task type', 'task.pipeline': 'Pipeline', 'task.default': 'Default', 'task.preset': 'Preset', 'task.presetDefault': 'Pipeline default', 'task.noStream': 'None', 'task.flow': 'Units per layer',
         'task.units': 'Units to read', 'task.materials': 'Materials', 'task.noMaterials': 'No sources for these units', 'task.exemplars': 'Examples and pipelines', 'task.presetValues': 'Preset: {p}', 'task.acceptance': 'Acceptance',
         'task.presets': 'Presets', 'task.isDefault': 'Default', 'task.newPreset': 'New {p} preset', 'task.presetName': 'Name', 'task.presetWhen': 'When to use', 'task.makeDefault': 'Default for {p}', 'task.save': 'Save', 'task.removePreset': 'Delete preset', 'yes': 'Yes', 'no': 'No',
@@ -41,9 +41,9 @@ window.__ModuleLoader__.load({
         'log.attention': 'Needs attention', 'log.reload': 'Plugin code changed; restart DSH to load it', 'log.unfiled': 'Not catalogued', 'log.sendFile': 'Send to Praxis to file', 'log.added': 'New upstream member', 'log.sendCapture': 'Send to Praxis', 'log.skip': 'Skip', 'log.skipWhy': 'Why skip it',
         'log.gone': 'Gone upstream', 'log.retire': 'Retire', 'log.retireWhy': 'Why retire it', 'log.none': 'Nothing needs attention', 'log.runs': 'Runs', 'log.runCounts': '{u} units · {s} sources', 'log.noRuns': 'No runs yet', 'log.history': 'Maintenance', 'log.noHistory': 'No maintenance yet',
         'ask.forUnit': 'Find sources for Kit unit {id} ({title}): check the roster first, then look further if needed; read each original, capture it and attach it to this page, describing when this page uses it and what to take.', 'ask.file': 'Source {id} ({title}) is not catalogued. Read the original, then set form, category and description, and attach it where it clearly serves.', 'ask.member': '{url}\nA new upstream member of collection {id}.',
-        'tab.label': 'Sections', 'tab.scope': 'Shop', 'tab.browse': 'Browse', 'tab.manage': 'Manage', 'tab.browseHint': '{n} sources', 'shop.for': 'For', 'shop.forAny': 'Anything', 'shop.forTypes': 'Task types', 'shop.forStreams': 'Streams', 'shop.forPages': 'Kit pages', 'shop.forTask': '{n} sources, in the order an agent gets them', 'shop.forPage': '{n} sources on this page', 'shop.new': 'New', 'shop.newBasis': 'Latest collected first', 'shop.used': 'Recently used', 'shop.usedBasis': 'Latest read by a run first', 'd.neighbours': 'On the same pages', 'cart.copyIds': 'Copy IDs', 'stock.label': 'Stock', 'stock.linkOnly': 'Link only: no local copy yet', 'stock.download': 'Download', 'stock.update': 'Update', 'stock.getting': 'Getting a copy of the original…', 'stock.unchanged': 'The original has not changed since the copy of {at}', 'stock.kind.download': 'Download', 'stock.kind.distill': 'Distill', 'stock.files': '{n} files', 'stock.added': '{n} added', 'stock.removed': '{n} removed', 'stock.changed': '{n} changed', 'stock.missing': '{n} not kept', 'stock.look': 'Quick look', 'stock.lookFrom': 'Version of {at}', 'stock.restock': 'The original changed after the latest download', 'stock.in': 'In stock', 'd.unreachableStock': 'The original could not be reached when checked on {at}. A local copy from {v} is under Stock.', 'review.f.link-only': 'Link only', 'review.f.restock': 'Restock', 'review.empty.link-only': 'Every source has a local copy', 'review.empty.restock': 'Nothing to restock', 'layer.design': 'Design', 'layer.writing': 'Writing', 'layer.task': 'Task', 'layer.publish': 'Publish', 'layer.stream': 'Stream', 'd.checked': 'Original checked {at}: HTTP {http}', 'd.unreachable': 'The original could not be reached when checked on {at}. The excerpts and read scope below are what Praxis has.', 'd.noCheck': 'Original not checked yet', 'd.activity': 'Activity', 'd.collected': 'Collected for: {task}', 'd.fromPack': 'From the {pack} pack', 'd.readFor': 'Read for: {title}', 'd.read': 'What was read', 'd.noExcerpts': 'No excerpts; read the whole original before using it', 'd.noPages': 'Not attached to any Kit page', 'd.serves': 'Reaches these task types', 'd.noRuns': 'No run has read it', 'd.revisit': 'When to revisit',
+        'tab.label': 'Sections', 'tab.scope': 'Shop', 'tab.browse': 'Browse', 'tab.manage': 'Manage', 'tab.browseHint': '{n} sources', 'shop.for': 'For', 'shop.forAny': 'Anything', 'shop.forTypes': 'Task types', 'shop.forStreams': 'Streams', 'shop.forPages': 'Kit pages', 'shop.forTask': '{n} sources, in the order an agent gets them', 'shop.forPage': '{n} sources on this page', 'shop.all': 'All', 'shop.views': 'Views', 'shop.group': 'Group by', 'shop.group.area': 'Area', 'shop.group.form': 'Form', 'shop.group.none': 'Nothing', 'shop.viewSave': 'Save view', 'shop.viewName': 'Name this view', 'shop.viewUpdate': 'Save changes', 'shop.viewRename': 'Rename', 'shop.viewRemove': 'Remove view', 'shop.new': 'New', 'shop.newBasis': 'Latest collected first', 'shop.used': 'Recently used', 'shop.usedBasis': 'Latest read by a run first', 'd.neighbours': 'On the same pages', 'cart.copyIds': 'Copy IDs', 'stock.label': 'Stock', 'stock.linkOnly': 'Link only: no local copy yet', 'stock.download': 'Download', 'stock.update': 'Update', 'stock.getting': 'Getting a copy of the original…', 'stock.unchanged': 'The original has not changed since the copy of {at}', 'stock.kind.download': 'Download', 'stock.kind.distill': 'Distill', 'stock.files': '{n} files', 'stock.added': '{n} added', 'stock.removed': '{n} removed', 'stock.changed': '{n} changed', 'stock.missing': '{n} not kept', 'stock.look': 'Quick look', 'stock.lookFrom': 'Version of {at}', 'stock.restock': 'The original changed after the latest download', 'stock.in': 'In stock', 'd.unreachableStock': 'The original could not be reached when checked on {at}. A local copy from {v} is under Stock.', 'review.f.link-only': 'Link only', 'review.f.restock': 'Restock', 'review.empty.link-only': 'Every source has a local copy', 'review.empty.restock': 'Nothing to restock', 'layer.design': 'Design', 'layer.writing': 'Writing', 'layer.task': 'Task', 'layer.publish': 'Publish', 'layer.stream': 'Stream', 'd.checked': 'Original checked {at}: HTTP {http}', 'd.unreachable': 'The original could not be reached when checked on {at}. The excerpts and read scope below are what Praxis has.', 'd.noCheck': 'Original not checked yet', 'd.activity': 'Activity', 'd.collected': 'Collected for: {task}', 'd.fromPack': 'From the {pack} pack', 'd.readFor': 'Read for: {title}', 'd.read': 'What was read', 'd.noExcerpts': 'No excerpts; read the whole original before using it', 'd.noPages': 'Not attached to any Kit page', 'd.serves': 'Reaches these task types', 'd.noRuns': 'No run has read it', 'd.revisit': 'When to revisit',
         'ask.label': 'Capture or change sources', 'ask.placeholder': 'Paste links or a conversation, or tell Praxis what to change', 'ask.unavailable': 'No agent here; open Praxis in DSH to paste links', 'ask.send': 'Send',
-        'ask.running': 'Reading the originals and filing', 'ask.distilling': 'Writing a distill of {title}', 'ask.distilled': 'Distill saved:', 'ask.distillNone': 'The session ended without saving a distill', 'stock.distill': 'Distill', 'stock.distilling': 'An agent is writing a distill from the original', 'ask.done': 'Captured {n}:', 'ask.doneNone': 'Done; nothing new captured', 'ask.failed': 'Did not finish', 'ask.stopped': 'Session stopped before finishing', 'ask.session': 'Session',
+        'ask.running': 'Reading the originals and filing', 'ask.distilling': 'Writing a distill of {title}', 'ask.distilled': 'Distill saved:', 'ask.distillNone': 'The session ended without saving a distill', 'stock.distill': 'Distill', 'stock.distilling': 'An agent is writing a distill from the original', 'ask.done': 'Captured {n}:', 'ask.doneNone': 'Done; nothing new captured', 'ask.failed': 'Did not finish', 'ask.stopped': 'Session stopped before finishing', 'ask.session': 'Session', 'ask.more': '{n} more', 'ask.fewer': 'Fewer', 'ask.dismiss': 'Dismiss',
         'ask.revise': 'The description of source {id} ({title}) was marked needs work: {note}. Read the original, then rewrite its description; change form, category or attachment descriptions if needed.', 'ask.noNote': 'no reason given',
         'v.accurate': 'Accurate', 'v.revised': 'Revised', 'v.needs-work': 'Needs work',
         'form.standard': 'Standard', 'form.practice': 'Practice', 'form.component-library': 'Component library', 'form.case-library': 'Case library', 'form.case': 'Case', 'form.skill': 'Skill', 'form.tool': 'Tool', 'form.article': 'Article', 'form.research': 'Research' },
@@ -202,6 +202,9 @@ window.__ModuleLoader__.load({
       copy: ['M5.5 5.5h7v7h-7z', 'M3.5 10.5v-7h7'],
       chat: ['M3 3.5h10v7H7.2L4.5 13v-2.5H3z'],
       close: ['M4.5 4.5l7 7', 'M11.5 4.5l-7 7'],
+      clock: ['M8 2.5a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11z', 'M8 5v3.2l2 1.3'],
+      check: ['M3.5 8.5l3 3 6-7'],
+      book: ['M2.5 3.5h4a1.5 1.5 0 0 1 1.5 1.5v8a1.5 1.5 0 0 0-1.5-1.5h-4z', 'M13.5 3.5h-4A1.5 1.5 0 0 0 8 5v8a1.5 1.5 0 0 1 1.5-1.5h4z'],
       starOn: ['M8 2.5l1.7 3.5 3.8.5-2.8 2.7.7 3.8L8 11.2 4.6 13l.7-3.8L2.5 6.5l3.8-.5z'],
     }
     const Glyph = ({ name, size = 16 }) => h('svg', { viewBox: '0 0 16 16', width: size, height: size, 'aria-hidden': true, ...stroke },
@@ -234,21 +237,23 @@ window.__ModuleLoader__.load({
     // original. Tabs: Kit, Sources, Task, Artifacts, Log. The composer at the bottom is how records
     // change: people say it, an agent session writes it.
     //
-    // A place is a tab and where in it: a unit, a folder, an artifact, Manage in the Shop. Each tab keeps
+    // A place is a section and where in it: a unit, a folder, an artifact, a shelf or a saved view in
+    // the Shop, a task type. The sidebar lists the sections and, under the one in front, its fixed
+    // places one level down. Each section keeps
     // its place, its filters and its scroll offset while another tab is in front. Going back up puts
     // the offset back and hands focus to the item you came from. A source opens over the place it was
     // opened from; ← → step through the list it was opened from; Esc or the trail goes back.
     const TABS = ['kit', 'shop', 'task', 'artifacts', 'log']
     const LAYERS = ['design', 'writing', 'task', 'publish']
-    const keyOf = (n) => `${n.tab}:${n.unit ?? n.target ?? n.artifact ?? n.mode ?? ''}${n.source ? `#${n.source}` : ''}`
+    const keyOf = (n) => `${n.tab}:${n.unit ?? n.target ?? n.artifact ?? n.mode ?? n.shelf ?? n.view ?? n.type ?? ''}${n.source ? `#${n.source}` : ''}`
     const placeOf = ({ source, list, from, ...place }) => place
-    const homeOf = (tab) => (tab === 'shop' && recall('praxis.shop.view', 'browse') === 'manage' ? { tab, mode: 'manage' } : { tab })
+    const homeOf = (tab) => ({ tab })
 
     async function loadKit() {
       const [units, bindings, revisions, packs] = await Promise.all([call('praxis_units'), call('praxis_bindings', {}), call('praxis_revisions'), call('praxis_packs')])
       const byPath = new Map()
       for (const b of bindings) { const p = b.target.split('#')[0]; (byPath.get(p) ?? byPath.set(p, []).get(p)).push(b) }
-      return { units, bindings, byPath, byId: new Map(units.map((u) => [u.id, u])), revisions: new Map(revisions.map((r) => [r.path, r])), packs }
+      return { units, bindings, byPath, byId: new Map(units.map((u) => [u.id, u])), revisions: new Map(revisions.revisions.map((r) => [r.path, r])), removed: revisions.removed, packs }
     }
 
     // Source records, fetched once while the page is open: a source hovered, focused or next in line
@@ -305,9 +310,13 @@ window.__ModuleLoader__.load({
       const reloadKit = React.useCallback(() => loadKit().then((k) => { setKit(k); setKitError(null) }, (e) => setKitError(String(e.message ?? e))), [])
       const reloadCatalog = React.useCallback(() => loadCatalog().then((c) => { setCatalog(c); setCatalogError(null) }, (e) => setCatalogError(String(e.message ?? e))), [])
       const loadUpkeep = React.useCallback(() => call('praxis_upkeep').then((r) => setAttention(upkeepCount(r)), () => {}), [])
-      React.useEffect(() => { reloadKit(); loadUpkeep(); asks().then(setRequests, () => {}) }, [reloadKit, loadUpkeep])
-      const wantCatalog = drawn.has('shop')
-      React.useEffect(() => { if (wantCatalog) reloadCatalog() }, [wantCatalog, reloadCatalog, stamp])
+      const [views, setViews] = React.useState([])
+      const reloadViews = React.useCallback(() => call('praxis_views').then(setViews, () => {}), [])
+      React.useEffect(() => { reloadKit(); loadUpkeep(); reloadViews(); asks().then(setRequests, () => {}) }, [reloadKit, loadUpkeep, reloadViews])
+      const viewsRef = React.useRef(views)
+      viewsRef.current = views
+      // The sidebar counts the shelf, so the catalog loads with the page.
+      React.useEffect(() => { reloadCatalog() }, [reloadCatalog, stamp])
       React.useEffect(() => { sources.clear() }, [stamp, sources])
       useReturn(nav.tab === 'kit', reloadKit)
       useReturn(nav.tab === 'shop', reloadCatalog)
@@ -368,6 +377,9 @@ window.__ModuleLoader__.load({
         }
         if (place.target) place.target.split('/').forEach((part, i, all) => { const path = all.slice(0, i + 1).join('/'); line.push({ label: part, to: { tab: 'kit', target: path }, key: `target:${path}` }) })
         if (place.mode === 'manage') line.push({ label: t('tab.manage'), to: { tab: 'shop', mode: 'manage' } })
+        if (place.shelf) line.push({ label: t(`shop.${place.shelf}`), to: { tab: 'shop', shelf: place.shelf } })
+        if (place.view) line.push({ label: viewsRef.current.find((v) => v.id === place.view)?.title ?? place.view, to: { tab: 'shop', view: place.view } })
+        if (place.type && kit) line.push({ label: kit.byId.get(place.type)?.title ?? place.type, to: { tab: 'task', type: place.type } })
         if (place.artifact) line.push({ label: label ?? place.artifact, to: { tab: 'artifacts', artifact: place.artifact }, key: `artifact:${place.artifact}` })
         return line
       }
@@ -398,7 +410,7 @@ window.__ModuleLoader__.load({
         // The tab already in front: close the source, or go up to the tab's first level, or to its top.
         if (cur.source) return closeSource()
         const line = lineage(cur)
-        if (line.length > 1 && cur.tab !== 'shop') return up(line[0].to, line[1].key)
+        if (line.length > 1 && cur.tab !== 'task') return up(line[0].to, line[1].key)
         scroll.current?.scrollTo({ top: 0, behavior: 'smooth' })
       }
       // Esc closes the innermost thing first: a field's own use of it, then an open source, then one
@@ -409,7 +421,7 @@ window.__ModuleLoader__.load({
         if (e.target.closest?.('input, textarea, select, [contenteditable="true"]')) return
         const cur = here.current
         const line = lineage(cur)
-        if (!cur.source && !(line.length > 1 && cur.tab !== 'shop')) return
+        if (!cur.source && !(line.length > 1 && cur.tab !== 'task')) return
         e.preventDefault()
         e.stopPropagation()
         if (cur.source) closeSource()
@@ -434,11 +446,11 @@ window.__ModuleLoader__.load({
         const ask = await asks({ distill: id })
         setRequests((r) => ({ ...r, asks: [ask, ...r.asks] }))
       }
-      const refresh = () => { reloadKit(); loadUpkeep(); sources.clear() }
+      const refresh = () => { loadUpkeep(); sources.clear(); return reloadKit() }
       const onReviewed = React.useCallback((next) => setCatalog((c) => (c ? { ...c, rows: c.rows.map((r) => (r.id === next.id ? { ...r, ...next } : r)) } : c)), [])
       const reviewedInList = React.useCallback((next) => { sources.forget(next.id); onReviewed(next) }, [sources, onReviewed])
       const rowsById = React.useMemo(() => new Map((catalog?.rows ?? []).map((r) => [r.id, r])), [catalog])
-      const shared = { t, go, up, kit, send, refresh, openSession, openPath, stamp, pick, openSource, last, sources, trailOf, scroller: scroll }
+      const shared = { t, go, up, kit, send, refresh, openSession, openPath, stamp, pick, openSource, last, sources, trailOf, scroller: scroll, views, reloadViews }
 
       // Every tab seen so far stays drawn; only the one in front shows.
       const panes = TABS.filter((v) => drawn.has(v)).map((v) => {
@@ -463,18 +475,60 @@ window.__ModuleLoader__.load({
           onTag: (x) => go({ tab: 'shop', tag: x, at: Date.now() }) })
       }
 
+      // A place in the sidebar: the section's first level goes back up like its own name does; a
+      // place already in front scrolls to its top.
+      const pickPlace = (to) => {
+        const cur = here.current
+        if (keyOf(placeOf(cur)) === keyOf(to)) { if (cur.source) return closeSource(); return scroll.current?.scrollTo({ top: 0, behavior: 'smooth' }) }
+        go({ ...to, at: Date.now() })
+      }
       return h('section', { className: 'pxs-page', 'aria-label': 'Praxis', onKeyDown },
-        h('div', { className: 'pxs-scroll', ref: scroll }, h('div', { className: 'pxs-content' },
-          h('header', { className: 'pxs-head' },
-            h('h1', { className: 'pxs-wordmark' }, h(PanelIcon, { size: 22 }), h('span', null, 'Praxis'))),
-          h('nav', { className: 'pxs-tabs', 'aria-label': t('tab.label') },
-            TABS.map((v) => h('button', { key: v, type: 'button', className: 'pxs-tab', 'aria-current': nav.tab === v ? 'page' : undefined, onClick: () => pickTab(v) },
-              t(`tab.${v}`), v === 'log' && attention ? h('span', { className: 'pxs-badge', 'aria-label': t('log.attention') }, String(attention)) : null))),
-          panes, detail)),
-        h(Composer, { t, available: requests.available, onSend: send },
-          h(AskStrip, { asks: requests.asks, t, openSession, openSource }),
-          cart.length ? h(Cart, { t, items: cart, setItems: setCart, openSource, addToChat }) : null))
+        h(Sidebar, { t, nav, kit, catalog, views, attention, pickTab, pickPlace }),
+        h('div', { className: 'pxs-main' },
+          h('div', { className: 'pxs-scroll', ref: scroll }, h('div', { className: 'pxs-content' }, panes, detail)),
+          h(Composer, { t, available: requests.available, onSend: send },
+            h(AskStrip, { asks: requests.asks, t, openSession, openSource }),
+            cart.length ? h(Cart, { t, items: cart, setItems: setCart, openSource, addToChat }) : null)))
     }
+
+    // ---- Sidebar: the five sections, and under the one in front its fixed places -----------------
+    // Kit opens on its layers, Shop on its shelves and the views a person saved, Task on the task
+    // types. These do not move with the data; filtering and grouping happen in the page itself.
+    function Sidebar({ t, nav, kit, catalog, views, attention, pickTab, pickPlace }) {
+      const units = kit?.units ?? []
+      const rows = catalog?.rows
+      const under = (layer) => units.filter((u) => u.id.startsWith(`${layer}/`)).length
+      const types = units.filter((u) => u.id.startsWith('task/types/'))
+      const open = rows?.filter((r) => !reviewed(r)).length
+      const places = {
+        kit: LAYERS.filter((l) => kit?.byId.has(l)).map((l) => ({ key: l, label: t(`layer.${l}`), glyph: l, n: under(l), to: { tab: 'kit', unit: l }, on: nav.unit === l || !!nav.unit?.startsWith(`${l}/`) })),
+        shop: [
+          { key: 'all', label: t('shop.all'), glyph: 'practice', n: rows?.length, to: { tab: 'shop' }, on: !nav.mode && !nav.shelf && !nav.view },
+          { key: 'new', label: t('shop.new'), glyph: 'clock', to: { tab: 'shop', shelf: 'new' }, on: nav.shelf === 'new' },
+          { key: 'used', label: t('shop.used'), glyph: 'refresh', to: { tab: 'shop', shelf: 'used' }, on: nav.shelf === 'used' },
+          { key: 'manage', label: t('tab.manage'), glyph: 'check', n: open, to: { tab: 'shop', mode: 'manage' }, on: nav.mode === 'manage' },
+          ...views.map((v) => ({ key: v.id, label: v.title, glyph: 'sliders', to: { tab: 'shop', view: v.id }, on: nav.view === v.id, saved: true })),
+        ],
+        task: types.map((u, i) => ({ key: u.id, label: u.title, glyph: 'task', to: { tab: 'task', type: u.id }, on: nav.type ? nav.type === u.id : i === 0 })),
+      }
+      const count = { kit: units.length || undefined, shop: rows?.length, log: attention || undefined }
+      return h('nav', { className: 'pxs-side', 'aria-label': t('tab.label') },
+        h('div', { className: 'pxs-side-head' }, h(PanelIcon, { size: 18 }), h('span', null, 'Praxis')),
+        h('ul', { className: 'pxs-side-list' }, TABS.map((v) => {
+          const here = nav.tab === v
+          const kids = here ? places[v] ?? [] : []
+          return h('li', { key: v },
+            h('button', { type: 'button', className: 'pxs-side-item', 'data-top': true, 'aria-current': here && !kids.some((x) => x.on) ? 'page' : undefined, 'data-here': here || undefined, onClick: () => pickTab(v) },
+              h(Glyph, { name: SECTION_GLYPH[v] }), h('span', { className: 'pxs-side-label' }, t(`tab.${v}`)),
+              count[v] ? h('span', { className: v === 'log' ? 'pxs-badge' : 'pxs-side-n', 'aria-label': v === 'log' ? t('log.attention') : undefined }, String(count[v])) : null),
+            kids.length ? h('ul', { className: 'pxs-side-sub' }, kids.map((x, i) => h('li', { key: x.key },
+              x.saved && !kids[i - 1]?.saved ? h('p', { className: 'pxs-side-group' }, t('shop.views')) : null,
+              h('button', { type: 'button', className: 'pxs-side-item', 'aria-current': x.on ? 'page' : undefined, onClick: () => pickPlace(x.to) },
+                h(Glyph, { name: x.glyph, size: 15 }), h('span', { className: 'pxs-side-label' }, x.label),
+                x.n ? h('span', { className: 'pxs-side-n' }, String(x.n)) : null)))) : null)
+        })))
+    }
+    const SECTION_GLYPH = { kit: 'book', shop: 'cart', task: 'task', artifacts: 'archive', log: 'clock' }
 
     const upkeepCount = (r) => (r.reload ? 1 : 0) + r.bindings.length + r.unfiled.length + r.sources.length + r.revisions.length + r.artifacts.length
       + r.collections.reduce((k, c) => k + (c.added?.length ?? 0) + (c.gone?.length ?? 0), 0)
@@ -508,7 +562,7 @@ window.__ModuleLoader__.load({
     // ---- Kit: home → layer → area → unit, and outside targets by path --------------------------
     const parentOf = (units, id) => { for (let p = id.split('/').slice(0, -1); p.length; p.pop()) { const x = p.join('/'); if (units.some((u) => u.id === x)) return x } return null }
 
-    function KitView({ t, go, nav, kit, send, refresh, trailOf, openSource, last, sources }) {
+    function KitView({ t, go, up, nav, kit, send, refresh, trailOf, openSource, last, sources }) {
       if (!kit) return h('div', { className: 'pxs-list', 'aria-busy': true }, [0, 1, 2].map((i) => h('div', { key: i, className: 'pxs-skel' }, h('i'), h('i'))))
       const { units, byPath } = kit
       const children = (id) => units.filter((u) => u.id !== id && parentOf(units, u.id) === id)
@@ -522,7 +576,7 @@ window.__ModuleLoader__.load({
           onOpen: () => go({ tab: 'kit', unit: u.id }),
           aside: [h(Count, { key: 'u', n: kids ? under(u.id).length - 1 : 0, glyph: 'article' }), h(Count, { key: 's', n: list.length, glyph: 'practice' }), alerts(list) ? h(Wait, { key: 'w' }, alerts(list)) : null] })
       }
-      const pages = { t, go, kit, refresh, trailOf, openSource, last, sources }
+      const pages = { t, go, up, kit, refresh, trailOf, openSource, last, sources }
       if (nav.unit && kit.byId.has(nav.unit)) return h(UnitPage, { ...pages, key: nav.unit, unit: kit.byId.get(nav.unit), children: children(nav.unit), unitEntry, send })
       if (nav.target) return h(TargetPage, { ...pages, key: nav.target, path: nav.target })
 
@@ -532,13 +586,64 @@ window.__ModuleLoader__.load({
       for (const b of outside) { const key = b.target.split('#')[0].split('/').slice(0, 2).join('/'); (groups.get(key) ?? groups.set(key, []).get(key)).push(b) }
       const layer = (id) => kit.byId.get(id)
       return h(React.Fragment, null,
+        h('h1', { className: 'pxs-place-title', tabIndex: -1 }, t('tab.kit')),
         h(Block, { label: t('kit.core') }, h('div', { className: 'pxs-list' }, ['design', 'writing'].map(layer).filter(Boolean).map(unitEntry))),
         h(Block, { label: 'Stream' }, h('div', { className: 'pxs-list' }, units.filter((u) => u.layer === 'stream').map(unitEntry))),
         h(Block, { label: t('kit.flow') }, h('div', { className: 'pxs-list' }, ['task', 'publish'].map(layer).filter(Boolean).map(unitEntry))),
         groups.size ? h(Block, { label: t('kit.other') }, h('div', { className: 'pxs-list' }, [...groups].map(([key, list]) => h(Entry, { key, dataKey: `target:${key}`, glyph: h(Glyph, { name: 'folder' }), title: key,
           desc: t('kit.files', { n: new Set(list.map((b) => b.target.split('#')[0])).size }), onOpen: () => go({ tab: 'kit', target: key }), aside: h(Count, { n: list.length, glyph: 'practice' }) })))) : null,
         kit.packs.length ? h(Block, { label: t('kit.packs') }, h('div', { className: 'pxs-list' }, kit.packs.map((p) => h(Entry, { key: p.id, glyph: h(Glyph, { name: 'archive' }), title: p.title, sub: p.kind, desc: p.purpose,
-          aside: h(Count, { n: p.sources, glyph: 'practice' }) })))) : null)
+          aside: h(Count, { n: p.sources, glyph: 'practice' }) })))) : null,
+        kit.removed.length ? h(Block, { label: t('outline.removed'), aside: h('span', { className: 'pxs-caption' }, String(kit.removed.length)) }, h('div', { className: 'pxs-list' }, kit.removed.map((x) =>
+          h(Entry, { key: x.path, glyph: h(Glyph, { name: 'archive' }), title: x.unit ?? x.path, sub: x.into ? t('outline.mergedInto', { u: x.into }) : x.path, desc: x.reason,
+            aside: h(ReasonButton, { t, label: t('outline.restore'), placeholder: t('outline.why'), run: (r) => call('praxis_outline', { action: 'restore', path: x.path, expected_revision: x.revision, reason: r }).then(refresh, () => {}) }) })))) : null)
+    }
+
+    // Changing the outline, the same moves an agent makes with praxis_outline: an area takes a new page
+    // or a new area under it; a page leaves the Kit on its own or merged into another, its sources moving
+    // with it. Every change says why; nothing in the package is touched.
+    function OutlineEdit({ t, kit, u, rev, refresh, go, up }) {
+      const [open, setOpen] = React.useState(null)
+      const [problem, setProblem] = React.useState(null)
+      const area = u.path.endsWith('/README.md')
+      const layer = !u.id.includes('/')
+      const parent = parentOf(kit.units, u.id)
+      const run = async (args, then) => { setProblem(null); try { const r = await call('praxis_outline', args); await refresh(); setOpen(null); then?.(r) } catch (e) { setProblem(e.status === 409 ? t('review.conflict') : String(e.message ?? e)) } }
+      const add = (e) => {
+        e.preventDefault()
+        const f = new FormData(e.currentTarget)
+        const name = String(f.get('name')).trim()
+        const holds = f.get('holds') === 'on'
+        const path = `${u.path.replace(/\/README\.md$/, '')}/${name}${holds ? '/README.md' : '.md'}`
+        const desc = String(f.get('description') ?? '').trim()
+        run({ action: 'add', path, body: `# ${String(f.get('title')).trim()}\n\n${desc}\n`, reason: String(f.get('why')).trim() }, (r) => go({ tab: 'kit', unit: r.id }))
+      }
+      const remove = (e) => {
+        e.preventDefault()
+        const f = new FormData(e.currentTarget)
+        run({ action: 'remove', unit: u.id, into: f.get('into') || undefined, expected_revision: rev?.revision ?? 0, reason: String(f.get('why')).trim() },
+          () => up(parent ? { tab: 'kit', unit: parent } : { tab: 'kit' }))
+      }
+      const others = kit.units.filter((x) => x.layer === u.layer && x.id !== u.id && !x.id.startsWith(`${u.id}/`))
+      return h('div', { className: 'pxs-outline-edit' },
+        h('div', { className: 'pxs-buttons' },
+          area || layer ? h(P.Button, { variant: 'ghost', size: 'sm', icon: h(P.IconPlusOutlineRegular, { size: 13 }), 'aria-expanded': open === 'add', onClick: () => setOpen(open === 'add' ? null : 'add') }, t('outline.add')) : null,
+          !layer ? h(P.Button, { variant: 'ghost', size: 'sm', 'aria-expanded': open === 'remove', onClick: () => setOpen(open === 'remove' ? null : 'remove') }, t('outline.remove')) : null),
+        problem ? h('p', { className: 'pxs-problem', role: 'alert' }, problem) : null,
+        open === 'add' ? h('form', { className: 'pxs-preset', onSubmit: add },
+          h('div', { className: 'pxs-fields' },
+            h('label', null, h('span', null, t('outline.title')), h('input', { name: 'title', required: true, autoFocus: true })),
+            h('label', null, h('span', null, t('outline.name')), h('input', { name: 'name', required: true, pattern: '[a-z0-9]+(-[a-z0-9]+)*', placeholder: 'glass' })),
+            h('label', null, h('span', null, t('outline.when')), h('input', { name: 'description' })),
+            h('label', null, h('span', null, t('outline.why')), h('input', { name: 'why', required: true }))),
+          h('label', { className: 'pxs-inline' }, h('input', { type: 'checkbox', name: 'holds' }), t('outline.holds')),
+          h('div', { className: 'pxs-buttons' }, h(P.Button, { variant: 'primary', size: 'sm', type: 'submit' }, t('outline.addDo')), h(P.Button, { variant: 'ghost', size: 'sm', onClick: () => setOpen(null) }, t('review.cancel')))) : null,
+        open === 'remove' ? h('form', { className: 'pxs-preset', onSubmit: remove },
+          h('div', { className: 'pxs-fields' },
+            h('label', null, h('span', null, t('outline.into')), h('select', { name: 'into', defaultValue: '' }, h('option', { value: '' }, t('outline.intoNone')), others.map((x) => h('option', { key: x.id, value: x.id }, `${x.title} · ${x.id}`)))),
+            h('label', null, h('span', null, t('outline.why')), h('input', { name: 'why', required: true, autoFocus: true }))),
+          h('p', { className: 'pxs-caption' }, area ? t('outline.areaNote') : t('outline.removeNote')),
+          h('div', { className: 'pxs-buttons' }, h(P.Button, { variant: 'primary', size: 'sm', type: 'submit' }, t('outline.removeDo')), h(P.Button, { variant: 'ghost', size: 'sm', onClick: () => setOpen(null) }, t('review.cancel')))) : null)
     }
 
     function UnitPage({ t, kit, unit: u, children, unitEntry, send, refresh, trailOf, ...pages }) {
@@ -553,15 +658,16 @@ window.__ModuleLoader__.load({
           meta: [u.id, u.version, u.updated_at ? day(u.updated_at) : null].filter(Boolean).join(' · ') },
           h('div', { className: 'pxs-buttons' },
             u.resident ? h(P.Tag, { tone: 'neutral' }, t('unit.resident')) : null,
-            rev ? h(P.Tag, { tone: 'neutral' }, t('unit.revised')) : null,
+            rev ? h(P.Tag, { tone: 'neutral' }, t(rev.added ? 'unit.added' : 'unit.revised')) : null,
             rev?.conflict ? h(Wait, null, t('unit.conflict')) : null)),
         h('p', { className: 'pxs-when', dir: 'auto' }, u.description),
-        rev ? h('p', { className: 'pxs-caption' }, t('unit.revisedWhy', { r: rev.reason })) : null,
+        rev ? h('p', { className: 'pxs-caption' }, t(rev.added ? 'unit.addedWhy' : 'unit.revisedWhy', { r: rev.reason })) : null,
         problem ? h('p', { className: 'pxs-problem', role: 'alert' }, problem) : null,
         h('div', { className: 'pxs-buttons' },
           h(P.Button, { variant: 'outline', size: 'sm', onClick: toggleBody }, body ? t('unit.hide') : t('unit.read')),
-          rev ? h(P.Button, { variant: 'ghost', size: 'sm', onClick: revert }, t('unit.revert')) : null,
+          rev && !rev.added ? h(P.Button, { variant: 'ghost', size: 'sm', onClick: revert }, t('unit.revert')) : null,
           h(P.Button, { variant: 'ghost', size: 'sm', onClick: () => send(t('ask.forUnit', { id: u.id, title: u.title })) }, t('unit.askSources'))),
+        h(OutlineEdit, { t, kit, u, rev, refresh, go: pages.go, up: pages.up }),
         body ? h('div', { className: 'pxs-doc' }, h(P.MarkdownText, { text: body })) : null,
         children.length ? h(Block, { label: t('unit.contents'), aside: h('span', { className: 'pxs-caption' }, String(children.length)) }, h('div', { className: 'pxs-list' }, children.map(unitEntry))) : null,
         !children.length || (kit.byPath.get(u.path) ?? []).length ? h(Bindings, { t, kit, path: u.path, refresh, ...pages }) : null)
@@ -623,10 +729,12 @@ window.__ModuleLoader__.load({
     }
 
     // ---- Task: what an agent would read for a task type, and the presets per pipeline ----------
-    function TaskView({ t, go, openSource, last, sources }) {
+    // The task type is the place, picked in the sidebar; the first one is the section's first page.
+    function TaskView({ t, go, nav, openSource, last, sources }) {
       const [entry, setEntry] = React.useState(null)
       const [presets, setPresets] = React.useState(null)
-      const [pick, setPick] = React.useState({ type: '', pipeline: '', preset: '', stream: '' })
+      const [pick, setPick] = React.useState({ type: nav.type ?? '', pipeline: '', preset: '', stream: '' })
+      React.useEffect(() => { if (nav.type) setPick((p) => (p.type === nav.type ? p : { ...p, type: nav.type })) }, [nav.type])
       const [r, setR] = React.useState(null)
       const [problem, setProblem] = React.useState(null)
       const [busy, setBusy] = React.useState(false)
@@ -649,7 +757,7 @@ window.__ModuleLoader__.load({
       const layerCount = r ? [...LAYERS, ...(r.stream ? ['stream'] : [])].map((l) => [l, r.units.filter((u) => u.id.split('/')[0] === l).length]) : []
       return h(React.Fragment, null,
         h('div', { className: 'pxs-task-picks' },
-          h('div', { className: 'pxs-pills', role: 'group', 'aria-label': t('task.type') }, entry.task_types.map((x) => h(P.Pill, { key: x.id, active: pick.type === x.id, 'aria-pressed': pick.type === x.id, onClick: () => set('type')(x.id) }, x.title))),
+          h('h1', { className: 'pxs-place-title', tabIndex: -1 }, entry.task_types.find((x) => x.id === pick.type)?.title ?? t('tab.task')),
           h('div', { className: 'pxs-task-selects' },
             h(P.SegmentedControl, { label: t('task.pipeline'), value: pick.pipeline, onChange: set('pipeline'), options: [{ value: '', label: t('task.default') }, { value: 'html', label: 'html' }, { value: 'video', label: 'video' }] }),
             select(t('task.preset'), pick.preset, [['', t('task.presetDefault')], ...(presets?.presets ?? []).map((p) => [p.id, `${p.pipeline} · ${p.title}`])], set('preset')),
@@ -735,6 +843,7 @@ window.__ModuleLoader__.load({
       const groups = projects.map((p) => [p, shown.filter((a) => a.project?.id === p.id)]).filter(([p, items]) => items.length || (!q && !kind && p.unregistered.length))
       const outside = shown.filter((a) => !a.project)
       return h(React.Fragment, null,
+        h('h1', { className: 'pxs-place-title', tabIndex: -1 }, t('tab.artifacts')),
         h('div', { className: 'pxs-bar' },
           h('div', { className: 'pxs-pills', role: 'group' }, ['', 'delivery', 'pipeline', 'example'].map((k) => h(P.Pill, { key: k || 'all', active: kind === k, 'aria-pressed': kind === k, onClick: () => setKind(k) }, k ? t(`kind.${k}`) : t('review.f.all')))),
           h(P.Input, { className: 'pxs-search', type: 'search', value: query, placeholder: t('art.search'), 'aria-label': t('art.search'), icon: h(P.IconSearchOutlineRegular, { size: 14 }), onChange: (e) => setQuery(e.target.value) })),
@@ -818,6 +927,7 @@ window.__ModuleLoader__.load({
       ].filter(Boolean)
       const line = (at, main, sub) => h('li', null, h('time', null, day(at)), h('div', null, h('p', null, main), sub ? h('p', { className: 'pxs-caption' }, sub) : null))
       return h(React.Fragment, null,
+        h('h1', { className: 'pxs-place-title', tabIndex: -1 }, t('tab.log')),
         problem ? h('p', { className: 'pxs-problem', role: 'alert' }, problem) : null,
         h(Block, { label: t('log.attention'), aside: items.length ? h(Wait, null, items.length) : null }, items.length ? h('div', { className: 'pxs-list' }, items) : h('p', { className: 'pxs-none' }, t('log.none'))),
         h(Block, { label: t('log.runs'), aside: h('span', { className: 'pxs-caption' }, String(runs.length)) }, runs.length ? h('ol', { className: 'pxs-versions' }, runs.slice(0, 40).map((r) =>
@@ -839,25 +949,39 @@ window.__ModuleLoader__.load({
         h(P.Button, { variant: 'primary', size: 'sm', type: 'submit', disabled: !text.trim() }, label))
     }
 
-    // ---- Shop: Browse lays the catalog out as shelves; Manage is the review queue ------------
-    // Browse and Manage are two places in the tab, each keeping its own scroll offset. What Browse
-    // shops for, the filters, search, tag and open shelves stay as they were while a source is open or
-    // another tab is in front.
-    function ShopView({ t, up, nav, kit, catalog, catalogError, reloadCatalog, onReviewed, openSource, last, pick, sources, scroller, active, stamp }) {
+    // ---- Shop: All lays the catalog out as shelves; Manage is the review queue -----------------
+    // The places are the sidebar's: All, the New and Recently used shelves, Manage, and the views a
+    // person saved. A saved view is a name for a filter: what it shops for, a tag, search words and
+    // how the shelves are grouped. Filters stay as they were while a source is open or another section
+    // is in front; picking a place in the sidebar sets them to that place's.
+    function ShopView({ t, go, up, nav, kit, catalog, catalogError, reloadCatalog, onReviewed, openSource, last, pick, sources, scroller, active, stamp, views, reloadViews }) {
       const mode = nav.mode === 'manage' ? 'manage' : 'browse'
+      const shelf = nav.shelf
+      const saved = nav.view ? views.find((v) => v.id === nav.view) : null
       const [filter, setFilter] = React.useState('open')
       const [query, setQuery] = React.useState('')
       const [searching, setSearching] = React.useState(false)
       const [view, setView] = React.useState(() => recall('praxis.shop.layout', 'list'))
       const [tag, setTag] = React.useState(null)
+      const [group, setGroup] = React.useState('area')
       const [openAreas, setOpenAreas] = React.useState(() => new Set())
-      // A tag picked on a source page arrives with the place it sends you to.
-      React.useEffect(() => { if (nav.tag) { setTag(nav.tag); setQuery(''); setSearching(false) } }, [nav.tag, nav.at])
+      const [problem, setProblem] = React.useState(null)
+      // A tag picked on a source page arrives with the place it sends you to; a saved view brings its
+      // filter; any other place picked in the sidebar starts clear.
+      const applied = React.useRef(null)
+      React.useEffect(() => {
+        if (nav.tag) { setTag(nav.tag); setQuery(''); setSearching(false); return }
+        if (nav.view && !saved) return
+        const mark = `${nav.view ?? ''}|${nav.at ?? ''}`
+        if (applied.current === mark || (!nav.view && !nav.at)) return
+        applied.current = mark
+        const f = saved?.filter ?? {}
+        setNeed(f.need ?? ''); setTag(f.tag ?? null); setQuery(f.query ?? ''); setSearching(!!f.query); setGroup(f.group ?? 'area'); setProblem(null)
+      }, [nav.tag, nav.at, nav.view, saved])
 
       const rows = catalog?.rows ?? null
       const byId = React.useMemo(() => new Map((rows ?? []).map((r) => [r.id, r])), [rows])
       const switchView = (v) => { setView(v); remember('praxis.shop.layout', v) }
-      const switchMode = (v) => { remember('praxis.shop.view', v); up(v === 'manage' ? { tab: 'shop', mode: 'manage' } : { tab: 'shop' }) }
       const keep = (r) => (filter === 'open' ? !reviewed(r) : filter === 'needs-work' ? reviewed(r) && r.review.verdict === 'needs-work' : filter === 'reviewed' ? reviewed(r)
         : filter === 'link-only' ? !r.stock : filter === 'restock' ? !!r.stock?.restock : true)
 
@@ -907,26 +1031,47 @@ window.__ModuleLoader__.load({
       }, [said])
       const hits = found.q === said ? found.hits : null
       const filtering = terms.length > 0 || !!tag
-      const shopping = mode === 'browse' && !!need
+      const shopping = mode === 'browse' && !shelf && !!need
       // A changed filter shows its result from the top.
-      const asked = `${mode}|${need}|${filter}|${tag}|${said}`
+      const asked = `${mode}|${shelf}|${nav.view}|${need}|${filter}|${tag}|${said}|${group}`
       const before = React.useRef(asked)
       React.useEffect(() => { if (before.current !== asked && active) scroller?.current?.scrollTo({ top: 0 }); before.current = asked }, [asked])
       const match = (r) => (!tag || r.tags?.includes(tag)) && (terms.every((x) => [r.title, r.description, r.url, r.id, ...(r.tags ?? [])].join(' ').toLowerCase().includes(x)) || !!hits?.has(r.id))
-      const pool = shopping ? needRows : rows
+      // The two shelves, each in the order it names: newest collected, latest read by a run.
+      const fresh = rows ? rows.filter((r) => r.captured_at).sort((a, b) => String(b.captured_at).localeCompare(String(a.captured_at))) : []
+      const recent = used.map((x) => byId.get(x)).filter(Boolean)
+      const pool = shelf ? (rows && (shelf === 'new' ? fresh : recent)) : shopping ? needRows : rows
       const shown = (pool ?? []).filter((r) => (mode === 'browse' || keep(r)) && match(r)).map((r) => (hits?.get(r.id) ? { ...r, matched: hits.get(r.id) } : r))
-      const layers = mode === 'browse' && !shopping && catalog ? shelves(catalog.outline, catalog.forms, shown) : []
+      // How All is laid out: by Kit area as shelves (the default), by form, or as one list.
+      const shelved = mode === 'browse' && !shopping && !shelf
+      const layers = shelved && group === 'area' && catalog ? shelves(catalog.outline, catalog.forms, shown) : []
+      const byForm = shelved && group === 'form' && catalog ? catalog.forms.map((f) => ({ form: f, rows: shown.filter((r) => r.form === f) })).filter((x) => x.rows.length) : []
       const full = (g) => filtering || openAreas.has(g.area)
       // Before the shelves, while nothing narrows them: the newest arrivals and what runs read lately.
-      const strips = mode === 'browse' && !shopping && !filtering && rows ? [
-        { area: 'new', title: t('shop.new'), basis: t('shop.newBasis'), own: rows.filter((r) => r.captured_at) },
-        { area: 'used', title: t('shop.used'), basis: t('shop.usedBasis'), own: used.map((x) => byId.get(x)).filter(Boolean) },
+      const strips = shelved && group === 'area' && !filtering && !nav.view && rows ? [
+        { area: 'new', title: t('shop.new'), basis: t('shop.newBasis'), own: fresh },
+        { area: 'used', title: t('shop.used'), basis: t('shop.usedBasis'), own: recent },
       ].filter((x) => x.own.length) : []
       // What ← → step through: the sources in the order they are drawn, or the row a source was opened from.
-      const order = () => [...new Set((mode === 'browse' && !shopping ? layers.flatMap((l) => l.groups.flatMap((g) => onShelf(g, full(g)))) : shown).map((r) => r.id))]
+      const order = () => [...new Set((layers.length ? layers.flatMap((l) => l.groups.flatMap((g) => onShelf(g, full(g)))) : byForm.length ? byForm.flatMap((f) => f.rows) : shown).map((r) => r.id))]
       const open = (r, list) => openSource(r.id, { list: list ?? order(), seed: r })
       const pickTag = (x) => setTag((cur) => (cur === x ? null : x))
-      const clearAll = () => { setQuery(''); setTag(null); setSearching(false); setNeed('') }
+      const clearAll = () => { setQuery(''); setTag(null); setSearching(false); setNeed(''); setGroup('area') }
+      // The filter as a saved view keeps it; a view names it once, and is changed or removed from its own place.
+      const current = Object.fromEntries([['need', need], ['tag', tag ?? ''], ['query', said], ['group', group === 'area' ? '' : group]].filter(([, v]) => v))
+      const same = (a = {}, b = {}) => ['need', 'tag', 'query', 'group'].every((k) => (a[k] ?? '') === (b[k] ?? ''))
+      const keepView = async (title) => {
+        setProblem(null)
+        try { const v = await call('praxis_view_save', { title, filter: current }); await reloadViews(); go({ tab: 'shop', view: v.id }) } catch (e) { setProblem(String(e.message ?? e)) }
+      }
+      const changeView = async (fields) => {
+        setProblem(null)
+        try { await call('praxis_view_save', { id: saved.id, expected_revision: saved.revision, ...fields }); await reloadViews() } catch (e) { setProblem(e.status === 409 ? t('review.conflict') : String(e.message ?? e)) }
+      }
+      const dropView = async () => {
+        setProblem(null)
+        try { await call('praxis_view_remove', { id: saved.id, expected_revision: saved.revision }); await reloadViews(); up({ tab: 'shop' }) } catch (e) { setProblem(String(e.message ?? e)) }
+      }
       const entry = (r, list) => (view === 'grid'
         ? h(SourceCard, { key: r.id, row: r, t, pick, sources, onTag: pickTag, tag, last: r.id === last, onOpen: () => open(r, list) })
         : h(SourceRow, { key: r.id, row: r, t, pick, sources, last: r.id === last, onOpen: () => open(r, list), onReviewed, onConflict: () => open(r, list) }))
@@ -936,23 +1081,38 @@ window.__ModuleLoader__.load({
       else if (!rows || (shopping && !needRows)) body = h('div', { className: 'pxs-list', 'aria-busy': true }, [0, 1, 2, 3, 4].map((i) => h('div', { key: i, className: 'pxs-skel' }, h('i'), h('i'))))
       else if (!shown.length) body = filtering || shopping ? h(Empty, { title: t('review.noMatch'), hint: t('review.noMatchHint'), action: h(P.Button, { variant: 'outline', size: 'sm', onClick: clearAll }, t('review.clearAll')) })
         : mode === 'browse' ? h(Empty, { title: t('review.empty.all'), hint: t('review.empty.allHint') }) : h(Empty, { title: t(`review.empty.${filter}`) })
-      else if (shopping || mode === 'manage') body = h('div', { className: view === 'grid' ? 'pxs-grid' : 'pxs-list' }, shown.map((r) => entry(r)))
+      else if (byForm.length) body = h('div', { className: 'pxs-outline' }, byForm.map((f) => h('section', { key: f.form, className: 'pxs-form-group' },
+        h('h4', null, h(Glyph, { name: f.form, size: 14 }), t(`form.${f.form}`), h('span', { className: 'pxs-caption' }, String(f.rows.length))),
+        h('div', { className: view === 'grid' ? 'pxs-grid' : 'pxs-list' }, f.rows.map((r) => entry(r))))))
+      else if (!layers.length) body = h('div', { className: view === 'grid' ? 'pxs-grid' : 'pxs-list' }, shown.map((r) => entry(r)))
       else body = h(React.Fragment, null, strips.length ? h(Strips, { strips, t, view, entry, openAreas, setOpenAreas }) : null, h(Outline, { layers, t, view, entry, filtering, full, setOpenAreas }))
 
       // What the filters leave, said once beside them: a status message, read out when it changes.
       const status = !rows ? '' : filtering ? t('review.matches', { n: shown.length })
         : shopping ? (needRows ? t(need.startsWith('page:') ? 'shop.forPage' : 'shop.forTask', { n: shown.length }) : '')
-          : mode === 'browse' ? t('tab.browseHint', { n: rows.length }) : ''
+          : shelf ? t(shelf === 'new' ? 'shop.newBasis' : 'shop.usedBasis') : mode === 'browse' ? t('tab.browseHint', { n: rows.length }) : ''
+      const title = saved ? saved.title : shelf ? t(`shop.${shelf}`) : mode === 'manage' ? t('tab.manage') : t('tab.shop')
+      const narrowed = Object.keys(current).length > 0
       return h(React.Fragment, null,
+        h('header', { className: 'pxs-place' },
+          h('h1', { className: 'pxs-place-title', tabIndex: -1 }, title),
+          h('div', { className: 'pxs-buttons' },
+            saved ? h(React.Fragment, null,
+              !same(saved.filter, current) ? h(P.Button, { variant: 'outline', size: 'sm', onClick: () => changeView({ filter: current }) }, t('shop.viewUpdate')) : null,
+              h(ReasonButton, { t, label: t('shop.viewRename'), placeholder: t('shop.viewName'), run: (name) => changeView({ title: name }) }),
+              h(P.Button, { variant: 'ghost', size: 'sm', onClick: dropView }, t('shop.viewRemove')))
+              : mode === 'browse' && !shelf && narrowed ? h(ReasonButton, { t, label: t('shop.viewSave'), placeholder: t('shop.viewName'), run: keepView }) : null)),
+        problem ? h('p', { className: 'pxs-problem', role: 'alert' }, problem) : null,
         h('div', { className: 'pxs-bar' },
-          h('div', { className: 'pxs-modes' }, h(P.SegmentedControl, { label: t('tab.scope'), value: mode, onChange: switchMode,
-            options: [{ value: 'browse', label: t('tab.browse') }, { value: 'manage', label: t('tab.manage') }] }),
-          mode === 'browse' && kit ? h('label', { className: 'pxs-select pxs-for' }, h('span', { className: 'pxs-caption' }, t('shop.for')),
+          h('div', { className: 'pxs-modes' },
+          mode === 'browse' && !shelf && kit ? h('label', { className: 'pxs-select pxs-for' }, h('span', { className: 'pxs-caption' }, t('shop.for')),
             h('select', { value: need, onChange: (e) => setNeed(e.target.value) },
               h('option', { value: '' }, t('shop.forAny')),
               types.length ? h('optgroup', { label: t('shop.forTypes') }, types.map((u) => h('option', { key: u.id, value: `type:${u.id}` }, u.title))) : null,
               streams.length ? h('optgroup', { label: t('shop.forStreams') }, streams.map((u) => h('option', { key: u.id, value: `stream:${u.id}` }, u.title))) : null,
               pageIds.length ? h('optgroup', { label: t('shop.forPages') }, pageIds.map((id) => h('option', { key: id, value: `page:${id}` }, kit.byId.get(id)?.title ?? id))) : null)) : null,
+          shelved ? h('label', { className: 'pxs-select pxs-for' }, h('span', { className: 'pxs-caption' }, t('shop.group')),
+            h('select', { value: group, onChange: (e) => setGroup(e.target.value) }, ['area', 'form', 'none'].map((g) => h('option', { key: g, value: g }, t(`shop.group.${g}`))))) : null,
           mode === 'manage' ? h('div', { className: 'pxs-pills', role: 'group', 'aria-label': t('review.filter') },
             ['open', 'needs-work', 'reviewed', 'link-only', 'restock', 'all'].map((v) => h(P.Pill, { key: v, active: filter === v, 'aria-pressed': filter === v, onClick: () => setFilter(v) }, t(`review.f.${v}`)))) : null,
           tag ? h('button', { type: 'button', className: 'pxs-tag-on', 'aria-label': `${t('review.clearTag')}: ${tag}`, onClick: () => setTag(null) }, '#', tag, h(Glyph, { name: 'close', size: 12 })) : null,
@@ -1027,18 +1187,32 @@ window.__ModuleLoader__.load({
           addToChat ? h(P.Button, { size: 'sm', icon: h(Glyph, { name: 'chat', size: 14 }), onClick: checkout }, t('cart.chat')) : null))
     }
 
+    /**
+     * Requests in flight, one line each; finished ones fold into a single line that shows the latest
+     * outcome, with the earlier ones behind "N more". Dismiss puts away everything finished so far.
+     */
     function AskStrip({ asks, t, openSession, openSource }) {
-      const recent = asks.filter((a) => a.status === 'running' || Date.now() - Date.parse(a.done_at ?? a.at) < 864e5).slice(0, 4)
-      if (!recent.length) return null
-      return h('ul', { className: 'pxs-asks', 'aria-live': 'polite' }, recent.map((a) => h('li', { key: a.id, 'data-status': a.status },
+      const [seen, setSeen] = React.useState(() => Number(recall('praxis.asks.seen', 0)))
+      const [open, setOpen] = React.useState(false)
+      const running = asks.filter((a) => a.status === 'running')
+      const finished = asks.filter((a) => a.status !== 'running' && Date.parse(a.done_at ?? a.at) > Math.max(seen, Date.now() - 864e5))
+      if (!running.length && !finished.length) return null
+      const dismiss = () => { const now = Date.now(); remember('praxis.asks.seen', String(now)); setSeen(now); setOpen(false) }
+      const outcome = (a) => a.status === 'done' && a.kind === 'distill' ? (a.distilled?.length ? [t('ask.distilled'), ' ', h('button', { key: 's', type: 'button', className: 'pxs-link', onClick: () => openSource(a.source, { list: [a.source], seed: { title: a.text } }) }, a.text)] : t('ask.distillNone'))
+        : a.status === 'done' ? (a.captured.length ? [t('ask.done', { n: a.captured.length }), ...a.captured.slice(0, 3).map((x) => h(React.Fragment, { key: x.id }, ' ',
+          h('button', { type: 'button', className: 'pxs-link', onClick: () => openSource(x.id, { list: a.captured.map((y) => y.id), seed: x }) }, x.title)))] : t('ask.doneNone'))
+          : t(`ask.${a.status}`)
+      const line = (a, tail) => h('li', { key: a.id, 'data-status': a.status },
         a.status === 'running' ? h('span', { className: 'pxs-spin', 'aria-hidden': true }) : h(a.status === 'done' ? P.IconCheckOutlineRegular : P.IconWarningOutlineRegular, { size: 14 }),
-        h('span', { className: 'pxs-ask-text' },
-          a.status === 'running' ? h(P.TextShimmer, { active: true }, a.kind === 'distill' ? t('ask.distilling', { title: a.text }) : t('ask.running'))
-            : a.status === 'done' && a.kind === 'distill' ? (a.distilled?.length ? [t('ask.distilled'), ' ', h('button', { key: 's', type: 'button', className: 'pxs-link', onClick: () => openSource(a.source, { list: [a.source], seed: { title: a.text } }) }, a.text)] : t('ask.distillNone'))
-            : a.status === 'done' ? (a.captured.length ? [t('ask.done', { n: a.captured.length }), ...a.captured.slice(0, 3).map((x) => h(React.Fragment, { key: x.id }, ' ',
-              h('button', { type: 'button', className: 'pxs-link', onClick: () => openSource(x.id, { list: a.captured.map((y) => y.id), seed: x }) }, x.title)))] : t('ask.doneNone'))
-              : t(`ask.${a.status}`)),
-        h('button', { type: 'button', className: 'pxs-link', onClick: () => openSession(a.session) }, t('ask.session')))))
+        h('span', { className: 'pxs-ask-text' }, a.status === 'running' ? h(P.TextShimmer, { active: true }, a.kind === 'distill' ? t('ask.distilling', { title: a.text }) : t('ask.running')) : outcome(a)),
+        h('button', { type: 'button', className: 'pxs-link', onClick: () => openSession(a.session) }, t('ask.session')), tail)
+      const [latest, ...earlier] = finished
+      return h('ul', { className: 'pxs-asks', 'aria-live': 'polite' },
+        running.map((a) => line(a)),
+        latest ? line(latest, [
+          earlier.length ? h('button', { key: 'more', type: 'button', className: 'pxs-link', 'aria-expanded': open, onClick: () => setOpen(!open) }, open ? t('ask.fewer') : t('ask.more', { n: earlier.length })) : null,
+          h('button', { key: 'x', type: 'button', className: 'pxs-ask-x', 'aria-label': t('ask.dismiss'), onClick: dismiss }, h(Glyph, { name: 'close', size: 12 }))]) : null,
+        open ? earlier.map((a) => line(a)) : null)
     }
 
     /** affectUI Chat Composer, plain: grows to six lines, Enter sends, Shift+Enter breaks a line. */
@@ -1487,13 +1661,35 @@ window.__ModuleLoader__.load({
     }
 
     const PAGE_CSS = `
-.pxs-page{position:relative;width:100%;height:100%;min-height:0;display:flex;flex-direction:column;color:var(--dsw-alias-label-primary);background:var(--dsw-alias-bg-base);font-size:14px;line-height:1.6}
+.pxs-page{position:relative;width:100%;height:100%;min-height:0;display:flex;container-type:inline-size;color:var(--dsw-alias-label-primary);background:var(--dsw-alias-bg-base);font-size:14px;line-height:1.6}
+.pxs-main{position:relative;flex:1;min-width:0;min-height:0;display:flex;flex-direction:column}
 .pxs-scroll{flex:1;min-height:0;overflow:auto;scrollbar-gutter:stable}
+.pxs-side{flex:none;width:232px;box-sizing:border-box;overflow:auto;padding:20px 12px;border-right:.5px solid var(--dsw-alias-border-l3);background:var(--dsw-alias-bg-layer-1)}
+.pxs-side-head{display:flex;align-items:center;gap:8px;height:32px;margin:0 0 14px;padding:0 10px;font-size:15px;font-weight:600;letter-spacing:-.01em}
+.pxs-side-head svg{color:var(--dsw-alias-label-secondary)}
+.pxs-side-list,.pxs-side-sub{list-style:none;margin:0;padding:0;display:grid;gap:2px}
+.pxs-side-sub{margin:2px 0 6px 17px;padding-left:8px;border-left:.5px solid var(--dsw-alias-border-l3);animation:pxs-in .18s cubic-bezier(.22,1,.36,1)}
+.pxs-side-item{display:flex;align-items:center;gap:10px;width:100%;min-height:34px;padding:0 10px;border:0;border-radius:10px;background:none;color:var(--dsw-alias-label-secondary);font:inherit;font-size:14px;text-align:left;cursor:pointer;transition:background .14s ease,color .14s ease}
+.pxs-side-item svg{flex:none;color:var(--dsw-alias-label-tertiary)}
+@media (hover:hover){.pxs-side-item:hover{background:var(--dsw-alias-interactive-bg-hover);color:var(--dsw-alias-label-primary)}}
+.pxs-side-item[data-here]{color:var(--dsw-alias-label-primary)}
+.pxs-side-item[aria-current=page]{background:var(--dsw-alias-bg-layer-2);color:var(--dsw-alias-label-primary);font-weight:500}
+.pxs-side-item[aria-current=page] svg{color:var(--dsw-alias-state-business-primary)}
+.pxs-side-item:focus-visible{outline:2px solid var(--dsw-focus-ring-color);outline-offset:-2px}
+.pxs-side-label{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pxs-side-n{color:var(--dsw-alias-label-tertiary);font-size:12px;font-variant-numeric:tabular-nums}
+.pxs-side-group{margin:10px 0 2px;padding:0 10px;color:var(--dsw-alias-label-tertiary);font-size:12px}
+.pxs-outline-edit{margin:4px 0 0}.pxs-outline-edit .pxs-preset{margin-top:8px}
+.pxs-place{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 16px;min-height:32px}
+.pxs-place-title{margin:0;font-size:22px;line-height:30px;font-weight:600;letter-spacing:-.01em;outline:0}
+.pxs-pane>.pxs-place-title{margin-bottom:8px}
+@container (width<720px){.pxs-side{width:60px;padding:16px 8px}.pxs-side-head span,.pxs-side-label,.pxs-side-n,.pxs-side-sub{display:none}.pxs-side-head,.pxs-side-item{justify-content:center;padding:0}.pxs-side-item .pxs-badge{position:absolute;transform:translate(10px,-10px)}.pxs-side-item{position:relative}}
 .pxs-content{max-width:880px;margin:0 auto;padding:0 clamp(20px,4vw,48px) 140px;min-height:100%;box-sizing:border-box}
 .pxs-wait{display:inline-flex;align-items:center;height:20px;padding:0 8px;border-radius:999px;background:var(--dsw-alias-state-business-tertiary);color:var(--dsw-alias-state-business-primary);font-size:12px;font-weight:500}
 .pxs-ev{font-size:12px;color:var(--dsw-alias-label-tertiary);white-space:nowrap}
-.pxs-head{padding-top:48px}
-[data-platform=darwin] .pxs-head{padding-top:calc(48px + var(--dsh-frame-top-clearance,0px))}
+.pxs-content{padding-top:36px}
+[data-platform=darwin] .pxs-content{padding-top:calc(36px + var(--dsh-frame-top-clearance,0px))}
+[data-platform=darwin] .pxs-side{padding-top:calc(20px + var(--dsh-frame-top-clearance,0px))}
 .pxs-wordmark{display:flex;align-items:center;gap:10px;margin:0;font-size:22px;line-height:30px;font-weight:600;letter-spacing:-.01em}
 .pxs-wordmark svg{flex:none;color:var(--dsw-alias-label-secondary)}
 .pxs-tabs{display:flex;flex-wrap:wrap;gap:4px 22px;margin:22px 0 8px;border-bottom:.5px solid var(--dsw-alias-border-l3)}
@@ -1609,6 +1805,7 @@ window.__ModuleLoader__.load({
 .pxs-asks li{display:flex;align-items:center;gap:8px;min-height:32px;padding:4px 12px;border-radius:12px;background:var(--dsw-alias-bg-layer-1);box-shadow:inset 0 0 0 .5px var(--dsw-alias-border-l2);font-size:13px;color:var(--dsw-alias-label-secondary);animation:pxs-in .2s cubic-bezier(.22,1,.36,1)}
 .pxs-asks li[data-status=done] svg{color:var(--dsw-alias-state-business-primary)}
 .pxs-asks li[data-status=failed] svg,.pxs-asks li[data-status=stopped] svg{color:var(--dsw-alias-state-error-primary)}
+.pxs-ask-x{display:grid;place-items:center;width:24px;height:24px;margin-right:-6px;padding:0;border:0;border-radius:8px;background:none;color:var(--dsw-alias-label-tertiary);cursor:pointer}.pxs-ask-x:hover{background:var(--dsw-alias-bg-layer-2);color:var(--dsw-alias-label-secondary)}
 .pxs-ask-text{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .pxs-link{flex:none;padding:0;border:0;background:none;color:var(--dsw-alias-state-business-primary);font:inherit;font-size:12.5px;cursor:pointer;border-radius:4px}
 .pxs-spin{flex:none;width:14px;height:14px;border-radius:50%;border:1.6px solid color-mix(in srgb,currentColor 22%,transparent);border-top-color:currentColor;animation:pxs-rot .8s linear infinite}

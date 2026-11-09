@@ -581,6 +581,38 @@ test('a unit revision lives in the overlay, applies everywhere, and conflicts wh
   assert.equal(p.history({ id: 'kit/design/controls.md' })[0].body, '# 控件\n\n按真实交付改过的说法。\n')
 })
 
+test('the outline grows and shrinks in the data: an area at any depth, a page under it, a merge that moves its sources, a restore', () => {
+  const { root, p } = setup()
+  const why = { reason: '交付里出现了同一维度的新语法', by: 'agent' }
+  assert.throws(() => p.addUnit({ path: 'kit/design/surfaces/glass.md', body: '# 玻璃\n\n半透明表面。', ...why }), /no area at kit\/design\/surfaces/)
+  p.addUnit({ path: 'kit/design/surfaces/README.md', body: '# 表面\n\n表面材质的语法。', ...why })
+  const glass = p.addUnit({ path: 'kit/design/surfaces/glass.md', body: '# 玻璃\n\n半透明表面。', ...why })
+  p.addUnit({ path: 'kit/design/surfaces/blur.md', body: '# 模糊\n\n背后内容的模糊。', ...why })
+  assert.equal(glass.id, 'design/surfaces/glass')
+  assert.deepEqual(p.units({ layer: 'design' }).filter((u) => u.path.endsWith('/README.md') && u.id !== 'design').map((u) => u.id), ['design/surfaces'])
+  assert.equal(existsSync(join(root, 'pkg/kit/design/surfaces')), false, 'the package is untouched')
+  assert.throws(() => p.addUnit({ path: 'kit/design/surfaces/glass.md', body: '# 玻璃\n', ...why }), /page exists/)
+  assert.deepEqual(p.upkeep().revisions, [], 'an added page is no conflict')
+
+  const [s] = p.materials.capture([{ url: 'https://example.org/blur', title: 'Blur', form: 'case', description: '做背景模糊时打开；取强度。', summary: '一个模糊样例。', read_scope: '看过页面', limits: '单例。', revisit_when: '改版时。' }], { task: '测试', by: 'agent' })
+  p.materials.curate(`${s.id}@kit/design/surfaces/blur.md`, { description: '模糊强度的样例', enabled: true }, { expected_revision: 0, by: 'agent' })
+  assert.throws(() => p.removeUnit({ unit: 'design/surfaces/blur', ...why }), /1 sources hang/)
+  assert.throws(() => p.removeUnit({ unit: 'design/surfaces', ...why }), /still holds 2 pages/)
+  const out = p.removeUnit({ unit: 'design/surfaces/blur', into: 'design/surfaces/glass', reason: '模糊并进玻璃一页', by: 'person' })
+  assert.deepEqual(out.moved, [s.id])
+  assert.equal(p.unit('design/surfaces/blur'), undefined)
+  const moved = p.materials.binding(`${s.id}@kit/design/surfaces/glass.md`)
+  assert.deepEqual([moved.state, moved.description, moved.enabled], ['active', '模糊强度的样例', true])
+  assert.equal(p.materials.binding(`${s.id}@kit/design/surfaces/blur.md`).state, 'removed')
+  assert.throws(() => p.materials.curate(`${s.id}@kit/design/surfaces/blur.md`, { enabled: true }, { by: 'agent' }), /target does not exist/)
+
+  p.restoreUnit({ path: 'kit/design/surfaces/blur.md', expected_revision: out.revision, reason: '还是分开', by: 'person' })
+  assert.equal(p.unit('design/surfaces/blur').title, '模糊')
+  p.removeUnit({ unit: 'design/controls', into: 'design/motion', reason: '包里的页也可以拿出', by: 'person' })
+  assert.equal(p.unit('design/controls'), undefined)
+  assert.deepEqual(p.removedUnits().map((x) => x.path), ['kit/design/controls.md'])
+})
+
 test('JSON writes keep the file\'s own formatting and change only what changed', () => {
   const hand = '{\n  "a": ["x", "y"],\n  "list": [{"slug": "s1", "tags": ["A", "B"]},\n    {"slug": "s2"}\n  ],\n  "n": 1\n}'
   const v = JSON.parse(hand)

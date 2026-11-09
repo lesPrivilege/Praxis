@@ -16,7 +16,7 @@ dsh plugin --profile <profile> add /path/to/dsh-praxis-<版本>.tgz
 
 `link:` 指向目录本身；打包文件会复制一份进 profile。装完重启 DSH 才会加载插件，profile 由桌面应用管理时重启桌面应用。插件代码更新后同样要重启：`praxis_entry` 的结果带 `reload` 时，宿主还在运行旧代码。
 
-插件给 agent 会话注册 worker 用的 13 个工具：`praxis_entry`、`praxis_resolve`、`praxis_unit`、`praxis_search`、`praxis_catalog`、`praxis_file`、`praxis_source`、`praxis_curate`、`praxis_capture`、`praxis_stock`、`praxis_consume`、`praxis_projects`、`praxis_project`。维护名册、预设与产物的其余工具在控制面、命令行与 MCP。
+插件给 agent 会话注册 worker 用的 14 个工具：`praxis_entry`、`praxis_resolve`、`praxis_unit`、`praxis_outline`、`praxis_search`、`praxis_catalog`、`praxis_file`、`praxis_source`、`praxis_curate`、`praxis_capture`、`praxis_stock`、`praxis_consume`、`praxis_projects`、`praxis_project`。维护名册、预设与产物的其余工具在控制面、命令行与 MCP。
 
 插件配置写在 profile 的 `cordis.patch.yml`：
 

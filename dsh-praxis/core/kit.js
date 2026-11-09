@@ -83,8 +83,11 @@ export class Kit {
    * overlay folder (same relative path) replaces the package's page: revisions a user or agent made
    * live in their data, and a package upgrade never overwrites them. `streams` is the data root's
    * folder of authored pages ({ dir, path: file → record path }); they read as units of layer `stream`.
+   * A page in the overlay that the package does not have is a page a user or agent added (`added`);
+   * a folder with a README there is a new area, at any depth. `removed` lists the paths taken out of
+   * the Kit, package pages or added ones; they are not units.
    */
-  constructor(pkg, overlay, streams) {
+  constructor(pkg, overlay, streams, removed = new Set()) {
     this.pkg = pkg
     this.overlay = overlay
     this.streamFiles = new Map()
@@ -93,9 +96,17 @@ export class Kit {
     this.byAlias = new Map()
     for (const [layer, rootRel] of Object.entries(LAYERS)) {
       const root = join(pkg, rootRel)
-      if (!existsSync(root)) continue
-      for (const file of walk(root)) {
-        const path = relative(pkg, file).split('\\').join('/')
+      const files = new Map()
+      for (const [base, added] of [[pkg, false], [overlay, true]]) {
+        const dir = base && join(base, rootRel)
+        if (!dir || !existsSync(dir)) continue
+        for (const file of walk(dir)) {
+          const path = relative(base, file).split('\\').join('/')
+          if (!files.has(path)) files.set(path, { file: join(pkg, path), added })
+        }
+      }
+      for (const [path, { file, added }] of files) {
+        if (removed.has(path)) continue
         const text = this.text(path)
         const id = unitId(layer, root, file)
         const aliases = [...text.matchAll(ID_LINE)].map((m) => m[1])
@@ -109,6 +120,7 @@ export class Kit {
           aliases: [...new Set(aliases)],
           version: createHash('sha256').update(text).digest('hex').slice(0, 12),
           ...(this.revised(path) ? { overlay: true } : {}),
+          ...(added ? { added: true } : {}),
         }
         this.units.set(id, unit)
         this.byPath.set(path, unit)

@@ -22,7 +22,8 @@
 | Binding | 一个来源挂到一个页面上的关系：目录里的 description、取用题解、启用、收藏、优先级、tag 与 review；关系与维护信息都在名册里 | [binding](schemas/binding.schema.json) |
 | Stream | 一页自撰：一个持续探索的方向，写主张、未决问题和取用的 Kit 单元；文件在数据根的 `streams/`，来源挂到这一页。读作 `stream` 层的单元，不进包，修订直接改文件 | 实现见 [kit.js](core/kit.js)，用法见数据根 `streams/README.md` |
 | MaterialRevision | 实际取得的一份原件或资产：一个库存版本（download 或 distill），或来源包记录的快照 | 库存见 [stock.js](core/stock.js)；草案 [material-revision](schemas/material-revision.schema.json) |
-| KitRevision | 对一个 Kit 单元的修订：整页存在数据根的覆盖层，记理由、依据的范例，以及写修订时包内原页的 hash | 实现见 [index.js](core/index.js) |
+| KitRevision | 对 Kit 纲目的一次改动：修订一页（整页存在数据根的覆盖层，记理由、依据的范例，以及写修订时包内原页的 hash）、加一页或一个区域、拿出一页（可合并到另一页） | 实现见 [index.js](core/index.js) |
+| ShopView | Praxis 页上存下的一组 Shop 筛选：名称、For、tag、搜索词、分组；列在侧栏，不是分类，不改来源 | 实现见 [index.js](core/index.js) |
 | Preset、Run | 可编辑的默认配置；一次任务实际用到的输入、单元版本、来源与配置，以及来源会话 | 实现见 [core](core/README.md) |
 | Project | 一件工作所在的目录：根、用途、布局（哪些路径放底稿、中间产物、最终产物，按 glob）；产物属于包含它的最深一个项目 | 实现见 [projects.js](core/projects.js) |
 | Artifact | 一件本地产物，三类：`delivery` 交付、`pipeline` 再做同类交付的方法、`example` 为示范某种做法预先做的样张。身份、按内容区分的版本（sha256、产出它的 Run、派生自哪一版、用哪件 pipeline 做成）、最近一次 review（写明针对哪一版）、`serves`（作为范例服务哪些 Kit 页、何时对照）。字节留在主人的工作区 | 实现见 [artifacts.js](core/artifacts.js) |
@@ -87,6 +88,7 @@
 | stock | Source 与 download、distill 或 list | download 按版本留下原件取得的内容（与最新版本相同时不建新版本），distill 留下 agent 写的提炼；版本只增不改，删除要人确认；resolve 只披露最新版本的位置 |
 | retire | 自有 Source 与理由 | 来源离开名册的活动列表，挂载随之停用，记录与历史保留 |
 | revise | KitUnit 修订后的整页，加理由与依据的范例 | 修订写进覆盖层，立即对所有入口生效，包内原页不动；包升级后原页变了，列为冲突，合并或撤回（revert） |
+| outline | 加：已有区域下的新页或新区域；拿出：一页，可带合并去的页；放回 | 纲目随用途增长：同一维度的新语法是区域下的新页，区域下可再分区域；拿出时挂载随合并搬走，没有去处又有挂载时拒绝；拆分、改名与挪位置由加、改、拿出组合而成。人与 agent 用同一个 `praxis_outline` |
 
 每个操作配一个完整范例：输入语境、修改后的完整记录、取舍理由、完成条件。范例传达“怎样维护才合适”，schema 只检查字段、类型、引用和版本；校验通过不等于内容合格。第一个范例是 explore 中遇到一个设计参考：capture → curate 到一个 Design 单元 → 下一次任务 resolve 到它 → consume 记下版本 → 来源更新后 refresh。
 
@@ -102,7 +104,7 @@
 
 **挂载都在名册里。** 来源包可以声明关系（registry 记录的 `grammar_paths`）。在 Praxis 里新建、移除、恢复或编辑的关系记在 `bindings.json`，按 `<来源 ID>@<页面路径>` 对上；Kit 页写 `kit/…`。一条挂载可见，要么是来源包声明了它且没有在名册里移除，要么是在名册里建的。一页的全部来源在一处读出，任何写入都不碰来源包。
 
-**分类就是 Kit 的层与区域。** 预设分类是 Kit 的各层，以及层下每个带 README 的目录。来源按编目里的 `category` 归类，也按所挂页面所在的区域归类，可以同时在几个区域。`praxis_search` 可按分类查。
+**分类就是 Kit 的层与区域。** 预设分类是 Kit 的各层，以及层下每个带 README 的目录，包括覆盖层里加上的区域。来源按编目里的 `category` 归类，也按所挂页面所在的区域归类，可以同时在几个区域。`praxis_search` 可按分类查。
 
 **检查与集合。** refresh 的每次检查追加到数据根的 `checks.jsonl`：状态、HTTP 码、内容 hash。HTML 页另记正文 hash（去掉标签、脚本、样式与注释），因为标记里带每次载入都不同的令牌；判断变化时 HTML 比正文，其余比字节。相邻两次不同是来源变了，挂载的 review 记下当时的来源版本，来源此后再变才出信号；最近一次答复 404、410 或域名已不存在是链接失效，两者都让受影响的挂载出现信号。拒绝访问、限流与超时说明的是检查所在的网络，记进检查但不算失效。集合类来源（作品集、组件库、动画库）用 `members.pattern` 声明成员链接的 URL 模式；第一次检查只作基线，之后列出上游新增、名册里还没有的成员，以及名册里有、上游已下线的成员。新增的可以 capture（写 `member_of`）或带理由跳过（`praxis_skip_member`），下线的可以淘汰；处理理由进维护记录。`praxis_source` 对集合另给成员账目：最近一次检查列出的每条成员链接，记已登记（对应的来源）、不收录（理由）或未处理，并标出比上一次检查新增的。
 

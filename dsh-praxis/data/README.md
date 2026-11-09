@@ -13,9 +13,10 @@
 | `checks.jsonl` | 追加式来源检查：来源、时间、状态、HTTP 码、内容 hash（HTML 另记正文 hash）、大小与类型，打不开时记错误；集合类来源另记成员链接；备货时的抓取也记一条（`via: stock`） |
 | `stock/` | 来源的本地库存：`<来源>/<UTC 时间戳>/` 一个版本，`manifest.json` 记来源、取自哪个 URL、文件清单（路径、sha256、大小、来源 URL）、原件当时的 hash、封面、没取的文件与原因、与上一版的差别；distill 版本是 `distill.md` 加依据与模型。版本只增不改；只有 `manifest.json` 与 `distill.md` 进 Git |
 | `presets.json` | 预设：流水线、名称、字段值、tag、是否默认、revision |
+| `views.json` | Praxis 页存下的 Shop 看法：名称与筛选（For、tag、搜索词、分组）、revision。第一次存看法时建立 |
 | `projects.json` | 项目：根目录（仓库内为仓库路径，仓库外为绝对路径）、名称、用途、布局（按角色给路径模式：draft 底稿、build 中间产物、final 最终产物、evidence 验收回执与留存帧进 Git、tmp 临时文件不进 Git；缺的角色由模板 standard 补齐）、状态与 revision |
 | `artifacts.json` | 产物：名称、说明、媒介、种类（`delivery` 交付、`pipeline` 管线、`example` 范例）、`serves`（作为范例服务哪些 Kit 页、何时对照）、位置（仓库内为仓库路径，仓库外为绝对路径）、版本（sha256、大小、时间、运行、派生自）、最近一次 review（写明针对哪一版）、状态与 revision。文件本身不在这里 |
-| `revisions.json`、`overlay/kit/…` | 对 Kit 单元的修订：登记理由、依据的范例与写修订时包内原页的 hash；修订后的整页放在 `overlay/` 的同名路径。第一次修订时建立 |
+| `revisions.json`、`overlay/kit/…` | 对 Kit 纲目的改动：修订（理由、依据的范例与写修订时包内原页的 hash）、加上的页与区域（`added`）、拿出 Kit 的页（`state: removed`，并到哪一页记在 `into`）；修订或加上的整页放在 `overlay/` 的同名路径。第一次改动时建立 |
 | `history.jsonl` | 追加式维护记录：时间、操作、对象、revision、操作者、任务、理由，以及这一版写下的字段值（`set`）；`praxis_history` 按 `id` 过滤可回查一条挂载、来源或预设的每个版本 |
 | [runs/](runs/README.md) | 每次 consume 一个文件：读了哪些单元（含版本）与来源（含内容 hash），读过的来源与单元之间的挂载（含 revision），产物（产物 ID、版本、hash），以及来源会话 |
 

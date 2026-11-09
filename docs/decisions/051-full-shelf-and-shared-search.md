@@ -26,8 +26,8 @@
 | 建议 | 处理 |
 |---|---|
 | 五个一级入口：Kit、Shop、Task、Artifacts、Log | 已有；Sources 改名 Shop 随 ADR-050 第 1 步 |
-| 侧栏加子栏，分开工作范围与纲目 | 不改：每个标签记着自己的位置，路径条说明在哪一级（ADR-050 已先行的第三轮），没有新的需要 |
-| 可编辑纲目：节点有正文与子树，人和 agent 用同一组编辑动作 | 不新增对象：自撰编排是 stream 与 Kit 修订，同一来源进多个语境是挂载，预设分组是形态与区域，查询视图是 Review、标签筛选与 ADR-050 的新上架、最近被用过 |
+| 侧栏加子栏，分开工作范围与纲目 | 已由 [ADR-052](052-sidebar-views-and-editable-outline.md) 推翻，改为侧栏加固定的一级。原处理：不改：每个标签记着自己的位置，路径条说明在哪一级（ADR-050 已先行的第三轮），没有新的需要 |
+| 可编辑纲目：节点有正文与子树，人和 agent 用同一组编辑动作 | 已由 [ADR-052](052-sidebar-views-and-editable-outline.md) 推翻：`praxis_outline` 在覆盖层里增删 Kit 的页与区域。原处理：不新增对象：自撰编排是 stream 与 Kit 修订，同一来源进多个语境是挂载，预设分组是形态与区域，查询视图是 Review、标签筛选与 ADR-050 的新上架、最近被用过 |
 | 浏览、编排、引用、编辑分开 | 已是不同操作：Praxis 页导航；stream 与 Kit 修订；curate、remove、restore；source_update、file |
 | 合集与单项分开（SEESAW 一类） | 已有：`members.pattern`、`member_of`、成员账目与跳过理由 |
 | Blur、Glass、Hover 各归其位 | 已有：foundations/relations 的 G06 材质（不透明度、模糊、描边、阴影、遮罩），interaction/states 的悬停 |

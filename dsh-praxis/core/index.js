@@ -26,10 +26,13 @@ export function createPraxis(options = {}) {
   const dataDir = where.data
   const overlay = join(dataDir, 'overlay')
   const streams = { dir: join(dataDir, 'streams'), path: pathsFor(where).normalize }
-  const kit = () => new Kit(where.package, overlay, streams)
   const revisions = new Collection(join(dataDir, 'revisions.json'), join(dataDir, 'history.jsonl'))
-  const materials = new Materials(where, { categories: () => kit().areas() })
+  // Pages taken out of the Kit: package pages and added ones alike, each until restored.
+  const removedPages = () => new Set(Object.entries(revisions.all()).filter(([, r]) => r.state === 'removed').map(([path]) => path))
+  const kit = () => new Kit(where.package, overlay, streams, removedPages())
+  const materials = new Materials(where, { categories: () => kit().areas(), page: (path) => (path.startsWith('kit/') ? kit().byPath.has(path) : undefined) })
   const presets = new Collection(join(dataDir, 'presets.json'), join(dataDir, 'history.jsonl'))
+  const views = new Collection(join(dataDir, 'views.json'), join(dataDir, 'history.jsonl'))
   const artifacts = new Artifacts(where)
   const projects = new Projects(where)
   const stock = createStock({ root: join(dataDir, 'stock') })
@@ -103,7 +106,7 @@ export function createPraxis(options = {}) {
       if (u.layer === 'stream') throw new Error(`a stream is edited in place: ${u.path}`)
       if (!reason?.trim()) throw new Error('a revision needs reason')
       if (!/^# .+/m.test(body ?? '')) throw new Error('body must be the whole page, starting with its # title')
-      const base = hash(k.packaged(u.path))
+      const base = u.added ? null : hash(k.packaged(u.path))
       const saved = revisions.update(u.path, expected_revision, (cur = {}) => ({ ...cur, unit: u.id, base, reason: reason.trim(), example, state: 'active' }), { op: 'revise-unit', by, reason, task, example })
       const file = join(overlay, u.path)
       mkdirSync(dirname(file), { recursive: true })
@@ -116,6 +119,7 @@ export function createPraxis(options = {}) {
       const u = kit().find(ref)
       const rec = u && revisions.get(u.path)
       if (!rec || rec.state !== 'active') throw new Error(`no revision for: ${ref}`)
+      if (rec.added) throw new Error(`an added page has no package page to go back to; use praxis_unit_remove: ${ref}`)
       const file = join(overlay, u.path)
       const body = readFileSync(file, 'utf8')
       revisions.update(u.path, expected_revision, (cur) => ({ ...cur, state: 'reverted' }), { op: 'revert-unit', by, reason, body })
@@ -127,9 +131,83 @@ export function createPraxis(options = {}) {
     revisionList() {
       const k = kit()
       return Object.entries(revisions.all()).filter(([, r]) => r.state === 'active').map(([path, r]) => ({
-        path, unit: r.unit, reason: r.reason, example: r.example, revision: r.revision,
-        conflict: existsSync(join(where.package, path)) ? hash(k.packaged(path)) !== r.base : true,
+        path, unit: r.unit, reason: r.reason, example: r.example, revision: r.revision, ...(r.added ? { added: true } : {}),
+        conflict: r.added ? false : existsSync(join(where.package, path)) ? hash(k.packaged(path)) !== r.base : true,
       }))
+    },
+
+    /**
+     * Add a page to the Kit, in the user's data: `path` is where it sits (`kit/<layer>/…/<name>.md`),
+     * and a `README.md` path makes a new area that further pages go under. The folder it goes in must
+     * already be an area, so the outline stays one tree at any depth. The page is whole, from its # title.
+     */
+    addUnit({ path, body, reason, example, by, task }) {
+      const k = kit()
+      const at = String(path ?? '').replace(/^\/+/, '')
+      const layer = Object.entries(LAYERS).find(([, root]) => at.startsWith(`${root}/`))?.[0]
+      if (!layer || !at.endsWith('.md') || at.split('/').some((x) => !x || x === '.' || x === '..')) throw new Error(`path must be a page under a Kit layer, like kit/design/foundations/glass.md: ${path}`)
+      if (k.byPath.has(at) || removedPages().has(at) || revisions.get(at)?.state === 'active') throw new Error(`page exists or was removed (restore it instead): ${at}`)
+      const folder = dirname(at)
+      const parent = at.endsWith('/README.md') ? dirname(folder) : folder
+      if (!k.byPath.has(`${parent}/README.md`)) throw new Error(`no area at ${parent}: add ${parent}/README.md first`)
+      if (!reason?.trim()) throw new Error('an added page needs reason')
+      if (!/^# .+/m.test(body ?? '')) throw new Error('body must be the whole page, starting with its # title')
+      const saved = revisions.update(at, 0, () => ({ unit: null, added: true, base: null, reason: reason.trim(), example, state: 'active' }), { op: 'add-unit', by, reason, task, example })
+      const file = join(overlay, at)
+      mkdirSync(dirname(file), { recursive: true })
+      writeFileSync(file, body.endsWith('\n') ? body : `${body}\n`)
+      const u = kit().byPath.get(at)
+      revisions.update(at, saved.revision, (cur) => ({ ...cur, unit: u.id }), { op: 'add-unit-id', by })
+      return { ...this.unit(u.id), revision: saved.revision + 1 }
+    },
+
+    /**
+     * Take a page out of the Kit. Sources hung on it move with `into` (another page: a merge), else the
+     * page must have none. An area goes only once nothing is left under it. The page's text stays in
+     * the data, and praxis_unit_restore puts it back.
+     */
+    removeUnit({ unit: ref, into, expected_revision, reason, by, task }) {
+      const k = kit()
+      const u = k.find(ref)
+      if (!u) throw new Error(`unknown unit: ${ref}`)
+      if (u.layer === 'stream') throw new Error(`a stream is edited in place: ${u.path}`)
+      if (!u.id.includes('/')) throw new Error(`a layer stays: ${u.id}`)
+      if (!reason?.trim()) throw new Error('removing a page needs reason')
+      const area = u.path.endsWith('/README.md') ? dirname(u.path) : null
+      const left = area ? k.list().filter((x) => x.path !== u.path && x.path.startsWith(`${area}/`)) : []
+      if (left.length) throw new Error(`${u.id} still holds ${left.length} pages; move or remove them first`)
+      const target = into ? k.find(into) : null
+      if (into && (!target || target.id === u.id)) throw new Error(`unknown page to merge into: ${into}`)
+      const hung = materials.listBindings({ target: u.path }).filter((b) => b.target.split('#')[0] === u.path)
+      if (hung.length && !target) throw new Error(`${hung.length} sources hang on ${u.id}; name a page to merge into, or remove them first`)
+      const moved = []
+      for (const b of hung) {
+        const next = `${b.source}@${target.path}`
+        const there = materials.binding(next)
+        if (!there || there.state === 'removed') {
+          const fields = Object.fromEntries(['description', 'usage', 'enabled', 'favorite', 'priority', 'tags'].map((x) => [x, b[x]]).filter(([, v]) => v !== undefined))
+          materials.curate(next, fields, { expected_revision: there?.revision ?? 0, by, reason: `merged from ${u.id}: ${reason}`, task })
+        }
+        materials.remove(b.id, { expected_revision: b.revision, by, reason: `merged into ${target.id}`, task })
+        moved.push(b.source)
+      }
+      const saved = revisions.update(u.path, expected_revision ?? (revisions.get(u.path)?.revision ?? 0), (cur = {}) => ({ ...cur, unit: u.id, was: cur.state ?? 'package', into: target?.id, reason: reason.trim(), state: 'removed' }), { op: 'remove-unit', by, reason, task, into: target?.id })
+      return { id: u.id, path: u.path, into: target?.id, moved, revision: saved.revision }
+    },
+
+    /** Put a removed page back as it was: the package's page, or the revised or added one. */
+    restoreUnit({ path, expected_revision, reason, by }) {
+      const rec = revisions.get(path)
+      if (!rec || rec.state !== 'removed') throw new Error(`not a removed page: ${path}`)
+      const state = rec.was === 'active' ? 'active' : 'reverted'
+      const saved = revisions.update(path, expected_revision, (cur) => ({ ...cur, state }), { op: 'restore-unit', by, reason })
+      const u = kit().byPath.get(path)
+      return { ...(u ? this.unit(u.id) : { path }), revision: saved.revision }
+    },
+
+    /** Pages taken out of the Kit, newest last: where they were and what they merged into. */
+    removedUnits() {
+      return Object.entries(revisions.all()).filter(([, r]) => r.state === 'removed').map(([path, r]) => ({ path, unit: r.unit, into: r.into, reason: r.reason, revision: r.revision }))
     },
 
     /**
@@ -408,6 +486,30 @@ export function createPraxis(options = {}) {
     removePreset({ id, expected_revision, by, reason }) {
       if (!presets.get(id)) throw new Error(`unknown preset: ${id}`)
       const saved = presets.update(id, expected_revision, (cur) => ({ ...cur, state: 'removed', default: false }), { op: 'preset-remove', by, reason })
+      return { id, ...saved }
+    },
+
+    /** Shop views a person saved: a name for a filter, listed under Shop in the page's sidebar. */
+    views() {
+      return Object.entries(views.all()).map(([id, v]) => ({ id, ...v })).filter((v) => v.state !== 'removed')
+    },
+
+    /** Create (no id) or rename or refilter a view; updates carry the revision they read. */
+    saveView({ id, title, filter, expected_revision, by }) {
+      const current = id ? views.get(id) : undefined
+      if (id && !current) throw new Error(`unknown view: ${id}`)
+      const name = (title ?? current?.title ?? '').trim()
+      if (!name) throw new Error('a view needs a title')
+      const keys = ['need', 'tag', 'query', 'group']
+      const kept = Object.fromEntries(keys.map((k) => [k, (filter ?? current?.filter ?? {})[k]]).filter(([, v]) => typeof v === 'string' && v))
+      const key = id ?? `view-${Date.now().toString(36)}`
+      const saved = views.update(key, id ? expected_revision : 0, (cur = {}) => ({ ...cur, title: name, filter: kept, state: 'active' }), { op: 'view', by })
+      return { id: key, ...saved }
+    },
+
+    removeView({ id, expected_revision, by }) {
+      if (!views.get(id)) throw new Error(`unknown view: ${id}`)
+      const saved = views.update(id, expected_revision, (cur) => ({ ...cur, state: 'removed' }), { op: 'view-remove', by })
       return { id, ...saved }
     },
 

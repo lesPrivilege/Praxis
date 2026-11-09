@@ -58,10 +58,12 @@ export function bindingId(sourceId, target) {
 
 export class Materials {
   /** `where` is the resolved locations (paths.js); `categories()` lists the Kit areas a source may be filed under. */
-  constructor(where, { categories = () => [] } = {}) {
+  constructor(where, { categories = () => [], page = () => undefined } = {}) {
     this.where = where
     this.paths = pathsFor(where)
     this.categories = categories
+    // Whether a Kit path is a page now (pages are added and removed in the data); undefined elsewhere.
+    this.page = page
     const history = join(where.data, 'history.jsonl')
     this.bindings = new Collection(join(where.data, 'bindings.json'), history)
     this.own = new Collection(join(where.data, 'sources.json'), history)
@@ -315,7 +317,8 @@ export class Materials {
     if (!s) throw new Error(`unknown source: ${id.slice(0, at)}`)
     writable(s)
     const target = this.paths.normalize(id.slice(at + 1))
-    if (!existsSync(this.paths.absolute(target))) throw new Error(`target does not exist: ${target}`)
+    const page = this.page(target.split('#')[0])
+    if (page === false || (page === undefined && !existsSync(this.paths.absolute(target)))) throw new Error(`target does not exist: ${target}`)
     const allowed = ['description', 'usage', 'enabled', 'favorite', 'priority', 'tags']
     for (const key of Object.keys(patch)) if (!allowed.includes(key)) throw new Error(`not curatable: ${key}`)
     if (patch.description !== undefined && patch.description.length > 240) throw new Error('description over 240 characters')
