@@ -49,12 +49,11 @@ MCP 服务走 stdio，提供全部工具，以及：
 
 `env` 可以省略，省略时与 DSH 插件按同一顺序解析数据根。DSH 用了非默认的 `DSH_HOME` 时，给 MCP 设同样的 `DSH_HOME`，或用 `PRAXIS_DATA` 指向同一个数据根。
 
-## 命令行与独立网页
+## 命令行
 
 ```bash
 node <包>/adapters/cli.js help                     # 列出工具
 node <包>/adapters/cli.js resolve '{"task_type":"technical-explainer"}'
-node <包>/adapters/cli.js serve [端口]              # 控制面，默认 http://127.0.0.1:7878/
 node <包>/adapters/cli.js export [archive.tar.gz]  # 备份，见下文
 ```
 

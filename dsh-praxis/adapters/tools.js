@@ -91,7 +91,7 @@ export const TOOLS = [
   {
     name: 'praxis_catalog',
     agent: true,
-    description: `来源编目：按 Kit 的层与区域，再按形态（${FORMS.join('、')}）排成纲目，每条带 description（何时打开、取什么）。不给 area 与 query 时只返回纲目与各形态的条数；给 area（如 design/interaction）或 query 时返回条目：标题、description、URL、证据状态、所挂页面与信号。找某类做法或范例时先看纲目再展开一个区域，读原件用 URL，详情用 praxis_source。`,
+    description: `来源编目：按 Kit 的层与区域，再按形态（${FORMS.join('、')}）排成纲目，每条带 description（何时打开、取什么）。不给 area 与 query 时只返回纲目与各形态的条数；给 area（如 design/interaction）或 query 时返回条目：标题、description、URL、证据状态、所挂页面与信号。找某类做法或范例时先看纲目，再展开一个区域，凭 description 判断要不要深入；praxis_source 给出读取范围与摘录定位，采用前按 URL 回原件读，不以概要代替原件。`,
     parameters: { area: str('Kit 区域，如 design/motion；给出时返回该区域及其子区域的条目'), form: str('只看一种形态'), query: str('空格分隔的关键词') },
     run: (p, a) => p.catalog(a),
   },

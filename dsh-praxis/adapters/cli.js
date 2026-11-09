@@ -1,6 +1,5 @@
 #!/usr/bin/env node
 // praxis <tool> [json-args]   e.g.  praxis resolve '{"task_type":"technical-explainer"}'
-// praxis serve [port]          control plane at http://127.0.0.1:7878/
 // praxis export|check|restore <archive.tar.gz> [--force]   control plane state backup
 import * as http from 'node:http'
 import { createPraxis } from '../core/index.js'
@@ -10,13 +9,6 @@ import { TOOLS, callTool } from './tools.js'
 http.setGlobalProxyFromEnv?.()
 
 const [name, raw] = process.argv.slice(2)
-if (name === 'serve') {
-  const { serve } = await import('./http.js')
-  const port = Number(raw ?? process.env.PRAXIS_PORT ?? 7878)
-  await serve(createPraxis(), { port })
-  console.log(`Praxis control plane: http://127.0.0.1:${port}/`)
-  await new Promise(() => {})
-}
 if (!name || name === 'help' || name === '--help') {
   for (const t of TOOLS) console.log(`${t.name.replace(/^praxis_/, '').padEnd(10)} ${t.description}`)
   process.exit(0)

@@ -1,10 +1,14 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { createServer } from './mcp.js'
-import { CALL_PATH, PAGE_PATH, hostIsLoopback, praxisFetch } from './http.js'
+import { CALL_PATH, praxisFetch } from './http.js'
 import { TOOLS, callTool, inputSchema, jsonValue } from './tools.js'
 import { createPraxis } from '../core/index.js'
 import { apply, entryText } from './dsh.js'
+import { askPrompt, createAsks } from './ask.js'
+import { mkdtempSync } from 'node:fs'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
 
 // A stand-in core: adapters only route calls, so they are tested against a fake.
 const calls = []
@@ -71,11 +75,10 @@ test('MCP resources are the catalog (links, never originals) and prompts start a
   assert.match(out[5].result.messages[0].content.text, /praxis_resolve/)
 })
 
-test('HTTP: page and call routes, JSON guard, errors', async () => {
+test('HTTP: call route, JSON guard, errors; no page route', async () => {
   const fetch = praxisFetch(fake)
-  let res = await fetch(new Request(`http://dsh${PAGE_PATH}`))
-  assert.equal(res.status, 200); assert.match(await res.text(), /Praxis 控制面/)
-  res = await fetch(call({ tool: 'praxis_resolve', args: { task_type: 'x' } }))
+  assert.equal((await fetch(new Request('http://dsh/api/praxis'))).status, 404, 'the page lives in the DSH client now')
+  let res = await fetch(call({ tool: 'praxis_resolve', args: { task_type: 'x' } }))
   assert.equal(res.status, 200)
   assert.deepEqual(calls.at(-1), ['resolve', { task_type: 'x' }])
   res = await fetch(call({ tool: 'praxis_resolve' }, { 'content-type': 'text/plain' }))
@@ -84,8 +87,6 @@ test('HTTP: page and call routes, JSON guard, errors', async () => {
   assert.equal(res.status, 400)
   res = await fetch(new Request(`http://dsh${CALL_PATH}`))
   assert.equal(res.status, 404)
-  assert.equal(hostIsLoopback({ headers: { host: '[::1]:80' } }), true)
-  assert.equal(hostIsLoopback({ headers: { host: 'evil.example:7878' } }), false)
 })
 
 test('DSH plugin registers the worker tools, three Connection routes, /praxis and an agent-only prompt section', async () => {
@@ -105,7 +106,7 @@ test('DSH plugin registers the worker tools, three Connection routes, /praxis an
   assert.ok(!tools.some((t) => t.name === 'praxis_preset_save'), 'maintenance tools stay off the session')
   assert.equal(commands[0].name, 'praxis')
   assert.match(commands[0].handler({ rawInput: '' }).text, /任务类型/)
-  assert.deepEqual(routes.map((r) => [r.path, r.methods]), [[PAGE_PATH, ['GET', 'HEAD']], [CALL_PATH, ['POST']], ['/api/praxis.file', ['GET', 'HEAD']]])
+  assert.deepEqual(routes.map((r) => [r.path, r.methods]), [[CALL_PATH, ['POST']], ['/api/praxis.file', ['GET', 'HEAD']], ['/api/praxis.ask', ['GET', 'POST']]])
   assert.equal(tools.find((t) => t.name === 'praxis_unit').isConcurrencySafe(), true)
   assert.equal(tools.find((t) => t.name === 'praxis_curate').isConcurrencySafe, undefined)
   await assert.rejects(tools.find((t) => t.name === 'praxis_unit').execute({ ref: 'no/such/unit' }), /unknown unit/)
@@ -139,4 +140,34 @@ test('tool values are lossless JSON: absent fields omitted, non-JSON values refu
   for (const t of (await callTool(praxis, 'praxis_entry', {})).task_types) {
     for (const pipeline of t.pipelines) lossless(await callTool(praxis, 'praxis_resolve', { task_type: t.id, pipeline }))
   }
+})
+
+test('a capture request runs as a Host-created agent session; outside DSH the route says so', async () => {
+  const data = mkdtempSync(join(tmpdir(), 'praxis-ask-'))
+  const praxis = { where: { data }, materials: { roster: () => ({ list: [{ id: 'praxis:x', title: 'X', url: 'https://x.example', captured_for: { session: { host: 'dsh', id: 'S' } } }] }) } }
+  const offline = praxisFetch(praxis, 'test', createAsks({}, praxis))
+  assert.deepEqual(await (await offline(new Request('http://dsh/api/praxis.ask'))).json(), { available: false, asks: [] })
+  assert.equal((await offline(new Request('http://dsh/api/praxis.ask', { method: 'POST', headers: { 'content-type': 'application/json' }, body: '{"text":"https://x.example"}' }))).status, 501)
+
+  const sent = []
+  let idle
+  const agent = { session: {}, followup: (m) => sent.push(m), whenIdle: () => new Promise((r) => { idle = r }) }
+  const created = []
+  const services = {
+    sessionController: { create: async (r) => created.push(r), resolveAgent: async () => ({ agent }) },
+    agents: { get: () => agent },
+  }
+  const asks = createAsks({ get: (name) => services[name] }, praxis)
+  const ask = await asks.start('收这个 https://x.example 和 https://y.example')
+  assert.deepEqual([ask.status, ask.urls, created[0].cwd], ['running', ['https://x.example', 'https://y.example'], data])
+  assert.ok(Object.isFrozen(sent[0]) && sent[0].role === 'user')
+  assert.match(sent[0].content[0].text, /praxis_capture/)
+  assert.ok(sent[0].content[0].text.includes('<<<\n收这个 https://x.example'), 'the words go in as quoted data')
+  idle(); await new Promise((r) => setTimeout(r, 0))
+  services.sessionController.resolveAgent = async () => ({ agent })
+  const [done] = asks.list()
+  assert.equal(done.status, 'done')
+  assert.deepEqual(done.captured, [], 'only sources captured in its own session count')
+  await assert.rejects(asks.start('   '), /nothing to capture/)
+  assert.match(askPrompt('a'), /打开原件读/)
 })

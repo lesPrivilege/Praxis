@@ -1,10 +1,11 @@
 // DSH plugin (cordis): registers the worker's Praxis tools natively, adds a short entry section to
 // agent sessions' system prompt (the root of the progressive catalog), registers a /praxis command,
-// and serves the control plane on three exact Connection routes. Enable with
+// and serves the Praxis page's data on three exact Connection routes (call, file, ask). Enable with
 //   dsh plugin --profile <profile> add link:<path to dsh-praxis>
 import { createPraxis } from '../core/index.js'
 import { TOOLS, callTool, inputSchema } from './tools.js'
-import { CALL_PATH, FILE_PATH, PAGE_PATH, praxisFetch } from './http.js'
+import { ASK_PATH, CALL_PATH, FILE_PATH, praxisFetch } from './http.js'
+import { createAsks } from './ask.js'
 
 export const name = 'praxis'
 export const inject = { tools: { required: true }, connection: { required: false }, systemPrompt: { required: false }, commands: { required: false } }
@@ -12,7 +13,7 @@ export const inject = { tools: { required: true }, connection: { required: false
 export function apply(ctx, config = {}) {
   const praxis = createPraxis({ data: config.data })
 
-  // Only the tools a worker uses during a task; maintenance stays on the control plane, CLI and MCP,
+  // Only the tools a worker uses during a task; maintenance stays on the Praxis page, CLI and MCP,
   // so every session carries a short schema.
   for (const tool of TOOLS.filter((t) => t.agent)) {
     ctx.tools.register({
@@ -30,16 +31,17 @@ export function apply(ctx, config = {}) {
     })
   }
 
-  // The control plane rides DSH's authenticated /api channel, on Web and Desktop alike.
+  // The Praxis page reads through DSH's authenticated /api channel, on Web and Desktop alike.
   const connection = ctx.connection
   if (connection) {
-    const fetch = praxisFetch(praxis, 'dsh-ui')
-    ctx.effect(() => connection.fetch.register({ path: PAGE_PATH, methods: ['GET', 'HEAD'], requestBody: 'buffered', fetch }), 'dsh-praxis: page route')
+    // Capture requests run as agent sessions the Host creates, like scheduled tasks.
+    const fetch = praxisFetch(praxis, 'dsh-ui', createAsks(ctx, praxis))
     ctx.effect(() => connection.fetch.register({ path: CALL_PATH, methods: ['POST'], requestBody: 'buffered', fetch }), 'dsh-praxis: call route')
     ctx.effect(() => connection.fetch.register({ path: FILE_PATH, methods: ['GET', 'HEAD'], requestBody: 'buffered', fetch }), 'dsh-praxis: file route')
+    ctx.effect(() => connection.fetch.register({ path: ASK_PATH, methods: ['GET', 'POST'], requestBody: 'buffered', fetch }), 'dsh-praxis: capture route')
   }
 
-  // `/praxis` alone opens the control plane (the client decorates the same name); with any text it
+  // `/praxis` alone opens the Praxis page (the client decorates the same name); with any text it
   // answers in the session view with what Praxis offers and what needs someone now. Not sent to the model.
   const commands = ctx.commands
   if (commands) {
@@ -61,7 +63,7 @@ export function apply(ctx, config = {}) {
 export function entryText(praxis) {
   const entry = praxis.entry()
   const lines = [
-    'Praxis Kit：写作、编排、设计与报告的方法，加一份来源名册。做这类任务时先 praxis_resolve（任务类型 + 流水线），只读结果列出的单元（praxis_unit 读全文）；素材是挂在这些单元上的来源，带原件 URL 与摘录定位，需要核对、引用或借鉴时按定位回原件读。用户点名一条 stream 时，resolve 带上 stream。要找外部参考，先 praxis_catalog、praxis_search，名册不够或要核实时才上网；值得留下的新参考用 praxis_capture 成批登记、写明为哪件任务收录，再用 praxis_curate 挂到单元上。产物放在已登记项目的约定位置（praxis_projects 查，没有就 praxis_project 登记）；交付前用 praxis_consume 记下实际读过的单元和来源，并登记交付的文件。',
+    'Praxis Kit：写作、编排、设计与报告的方法，加一份来源名册。做这类任务时先 praxis_resolve（任务类型 + 流水线），只读结果列出的单元（praxis_unit 读全文）；素材是挂在这些单元上的来源：description 与概要是索引，用来判断要不要打开；要采用一个来源，按 URL 与摘录定位回原件读，consume 只记真正读过原件的来源。用户点名一条 stream 时，resolve 带上 stream。要找外部参考，先 praxis_catalog、praxis_search，名册不够或要核实时才上网；值得留下的新参考用 praxis_capture 成批登记、写明为哪件任务收录，再用 praxis_curate 挂到单元上。产物放在已登记项目的约定位置（praxis_projects 查，没有就 praxis_project 登记）；交付前用 praxis_consume 记下实际读过的单元和来源，并登记交付的文件。',
     '常驻：',
     ...entry.resident.map((u) => `- ${u.id}：${u.description}`),
     '任务类型：',

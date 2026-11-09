@@ -1,109 +1,68 @@
-// DSH web client half: a right-sidebar tab type "Praxis" whose body embeds the control plane
-// the server half serves on the authenticated /api channel of the same origin. The body also
-// relays the frame's file requests to the host: preview in DSH's document tab, reveal, open.
-// `/praxis` opens the tab; praxis_resolve and praxis_consume calls show as compact cards.
+// DSH web client half: the Praxis page in the left sidebar is the whole control plane (Kit,
+// sources, task, artifacts, log), built from DSH's own controls and reading through the
+// authenticated /api/praxis.call route. Its composer hands requests to an agent session.
+// `/praxis` opens the page; praxis_resolve and praxis_consume calls show as cards that link into it.
 window.__ModuleLoader__.load({
   id: 'dsh-praxis',
   factory: (require) => {
     var module = { exports: {} }
     Object.defineProperty(module.exports, Symbol.toStringTag, { value: 'Module' })
     const React = require('react')
-    const TAB = 'dsh-praxis/control-plane'
     const NS = 'praxis'
     const COPY = {
-      zh: { title: 'Praxis 控制面', description: 'Kit 整合包：单元、来源、预设与记录', frame: 'Praxis 控制面', command: '打开 Praxis 控制面',
-        resolve: '按 Praxis 取用', consume: '在 Praxis 登记', units: '单元', materials: '素材', artifacts: '产物', sources: '来源', open: '控制面', running: '进行中', failed: '没有完成',
-        panel: 'Praxis',
-        'review.title': '来源 review', 'review.lede': '名册里每个已编目来源的 description 写的是何时打开、取什么。展开一条，对照原件和收录理由，判断它准不准。',
-        'review.reload': '刷新', 'review.controlPlane': '打开控制面', 'review.filter': '筛选', 'review.search': '按标题、说明或链接找',
-        'review.f.open': '待看', 'review.f.needs-work': '待改', 'review.f.reviewed': '已 review', 'review.f.all': '全部',
-        'review.empty.open': '当前的 description 都 review 过了。新登记的来源会出现在这里。', 'review.empty.needs-work': '没有标为待改的来源。', 'review.empty.reviewed': '还没有 review 过的来源。', 'review.empty.all': '名册里还没有编目的来源。',
-        'review.noMatch': '没有匹配的来源', 'review.failed': '读不到名册：', 'review.stale': '上次 review（r{r}）之后编目又改过',
-        'review.url': '原件', 'review.summary': '概要', 'review.why': '收录理由', 'review.area': 'Kit 分类', 'review.noArea': '未分类', 'review.scope': '读取范围', 'review.limits': '边界', 'review.pages': '挂在这些页上',
-        'review.last': '上次 review：{v}，r{r}，{by}，{at}', 'review.note': 'review 说明（可选）', 'review.rewrite': '改写', 'review.saveRevised': '保存并记为已改', 'review.cancel': '取消', 'review.saveHint': '⌘/Ctrl + Enter 保存，Esc 取消',
-        'review.description': 'description，240 字以内', 'review.recorded': '已记录：{v}', 'review.conflict': '这条刚被别处改过，刷新后再看。',
-        'v.accurate': '准确', 'v.revised': '已改', 'v.needs-work': '待改',
-        'form.standard': '标准规范', 'form.practice': '成熟实践', 'form.component-library': '组件库', 'form.case-library': '案例库', 'form.case': '单个案例', 'form.skill': 'Skill', 'form.tool': '工具', 'form.article': '文章', 'form.research': '研究' },
-      en: { title: 'Praxis', description: 'Kit bundle: units, sources, presets and log', frame: 'Praxis control plane', command: 'Open the Praxis control plane',
+      en: { title: 'Praxis', description: 'Kit bundle: units, sources, presets and log', command: 'Open the Praxis control plane',
         resolve: 'Praxis resolve', consume: 'Praxis record', units: 'units', materials: 'materials', artifacts: 'artifacts', sources: 'sources', open: 'Control plane', running: 'running', failed: 'Failed',
         panel: 'Praxis',
-        'review.title': 'Source review', 'review.lede': 'Each catalogued source carries a description: when to open it and what to take. Open one, compare it with the original and why it was collected, and judge whether it holds.',
-        'review.reload': 'Reload', 'review.controlPlane': 'Open control plane', 'review.filter': 'Filter', 'review.search': 'Find by title, description or link',
+        'review.title': 'Praxis',
+        'review.controlPlane': 'Control plane', 'review.filter': 'Filter', 'review.search': 'Find a source', 'review.view': 'View', 'review.view.list': 'List', 'review.view.grid': 'Grid', 'review.more': 'More',
         'review.f.open': 'To review', 'review.f.needs-work': 'Needs work', 'review.f.reviewed': 'Reviewed', 'review.f.all': 'All',
-        'review.empty.open': 'Every current description has a review. Newly captured sources show up here.', 'review.empty.needs-work': 'No source is marked needs work.', 'review.empty.reviewed': 'No source has been reviewed yet.', 'review.empty.all': 'The roster has no catalogued sources yet.',
-        'review.noMatch': 'No matching sources', 'review.failed': 'Could not read the roster:', 'review.stale': 'Entry edited since the last review (r{r})',
-        'review.url': 'Original', 'review.summary': 'Summary', 'review.why': 'Collected for', 'review.area': 'Kit area', 'review.noArea': 'Unfiled', 'review.scope': 'Read scope', 'review.limits': 'Limits', 'review.pages': 'Attached to',
-        'review.last': 'Last review: {v}, r{r}, {by}, {at}', 'review.note': 'Review note (optional)', 'review.rewrite': 'Rewrite', 'review.saveRevised': 'Save as revised', 'review.cancel': 'Cancel', 'review.saveHint': '⌘/Ctrl + Enter to save, Esc to cancel',
-        'review.description': 'Description, up to 240 characters', 'review.recorded': 'Recorded: {v}', 'review.conflict': 'Someone changed this entry meanwhile. Reload and look again.',
+        'review.empty.open': 'Every current description has been reviewed. New sources show up here.', 'review.empty.needs-work': 'No source is marked needs work.', 'review.empty.reviewed': 'Nothing reviewed yet.', 'review.empty.all': 'No sources yet. Paste a link below.',
+        'review.noMatch': 'No matching sources', 'review.failed': 'Could not read the roster:', 'review.noArea': 'Unfiled',
+        'review.openOriginal': 'Open original', 'review.markAccurate': 'Description is accurate', 'review.markNeedsWork': 'Description needs work',
+        'review.scope': 'How far it was read', 'review.excerpts': 'Where in the original', 'review.limits': 'Limits', 'review.summary': 'Summary', 'review.why': 'Why it was collected', 'review.pages': 'Attached to',
+        'review.question': 'Is this description right?', 'review.last': 'Last: {v}, {by}, {at}', 'review.note': 'What is wrong; Praxis will fix it', 'review.noteHint': '⌘/Ctrl + Enter to send, Esc to cancel',
+        'review.sendNeedsWork': 'Mark needs work and send to Praxis', 'review.cancel': 'Cancel', 'review.recorded': 'Recorded: {v}', 'review.sentToAgent': 'Marked needs work; Praxis is revising it',
+        'ev.verified': 'Original read', 'ev.partial': 'Partly read', 'ev.unavailable': 'Not read',
+        'tab.kit': 'Kit', 'tab.sources': 'Sources', 'tab.task': 'Task', 'tab.artifacts': 'Artifacts', 'tab.log': 'Log',
+        'kit.core': 'Core', 'kit.flow': 'Downstream workflows', 'kit.other': 'Bound outside the Kit', 'kit.files': '{n} files', 'kit.packs': 'Source packs',
+        'kit.sources': 'Sources on this page', 'kit.showRemoved': 'Show removed', 'kit.noSources': 'No sources on this page yet.', 'kit.restore': 'Restore', 'kit.favorite': 'Star', 'kit.enabled': 'On',
+        'kit.check': 'Check the original', 'kit.bindingAccurate': 'Description here is accurate', 'kit.bindingNeedsWork': 'Description here needs work', 'kit.remove': 'Remove (restorable)',
+        'unit.resident': 'Resident', 'unit.revised': 'Revised', 'unit.conflict': 'Revision conflicts with the updated page', 'unit.revisedWhy': 'Revised because: {r}', 'unit.read': 'Read the page', 'unit.hide': 'Hide the page', 'unit.revert': 'Revert revision', 'unit.askSources': 'Ask Praxis for sources', 'unit.contents': 'Contents',
+        'task.type': 'Task type', 'task.pipeline': 'Pipeline', 'task.default': 'Default', 'task.preset': 'Preset', 'task.presetDefault': 'Pipeline default', 'task.noStream': 'None', 'task.flow': 'Units per layer',
+        'task.units': 'Units to read', 'task.materials': 'Materials', 'task.noMaterials': 'No enabled materials on these units yet.', 'task.exemplars': 'Examples and pipelines', 'task.presetValues': 'Preset: {p}', 'task.acceptance': 'Acceptance',
+        'task.presets': 'Presets', 'task.isDefault': 'Default', 'task.newPreset': 'New {p} preset', 'task.presetName': 'Name', 'task.presetWhen': 'When to use', 'task.makeDefault': 'Default for {p}', 'task.save': 'Save', 'task.removePreset': 'Delete preset', 'yes': 'Yes', 'no': 'No',
+        'art.search': 'Find an artifact', 'art.unregistered': '{n} final files not registered', 'art.outside': 'Outside every project', 'art.none': 'No artifacts registered yet.', 'art.openFile': 'Open file', 'art.reveal': 'Show in Finder', 'art.failed': 'The host could not open the file', 'art.serves': 'Serves these pages', 'art.servesNone': 'No pages recorded.',
+        'art.versions': 'Versions', 'art.noRun': 'No run record', 'art.basis': 'Basis changed', 'art.used': 'Used', 'art.madeWith': 'Pipeline', 'art.question': 'This is v{v}. Reviewed?', 'art.record': 'Record', 'review.noteOptional': 'Note (optional)', 'review.conflict': 'Someone changed this meanwhile. Reload and look again.',
+        'kind.delivery': 'Delivery', 'kind.pipeline': 'Pipeline', 'kind.example': 'Example',
+        'as.modified': 'Unregistered changes', 'as.missing': 'File not found', 'as.needs_work': 'Needs work', 'as.misplaced': 'Outside the layout', 'as.basis_changed': 'Basis changed',
+        'av.needs-work': 'Needs work', 'av.checked': 'Checked', 'av.accepted': 'Accepted',
+        'gap.needs_work': 'Needs work', 'gap.changed': 'Original changed', 'gap.unreachable': 'Unreachable',
+        'log.attention': 'Needs attention', 'log.reload': 'Plugin code changed; restart DSH to load it', 'log.unfiled': 'Not catalogued', 'log.sendFile': 'Send to Praxis to file', 'log.added': 'New upstream member', 'log.sendCapture': 'Send to Praxis', 'log.skip': 'Skip', 'log.skipWhy': 'Why skip it',
+        'log.gone': 'Gone upstream', 'log.retire': 'Retire', 'log.retireWhy': 'Why retire it', 'log.none': 'Nothing needs attention.', 'log.runs': 'Runs', 'log.runCounts': '{u} units · {b} bindings · {a} artifacts', 'log.openArtifact': 'Artifact', 'log.noRuns': 'No runs yet.', 'log.history': 'Maintenance', 'log.noHistory': 'No maintenance yet.',
+        'ask.forUnit': 'Find sources for Kit unit {id} ({title}): check the roster first, then look further if needed; read each original, capture it and attach it to this page, describing when this page uses it and what to take.', 'ask.file': 'Source {id} ({title}) is not catalogued. Read the original, then set form, category and description, and attach it where it clearly serves.', 'ask.member': '{url}\nA new upstream member of collection {id}.',
+        'tab.label': 'View', 'tab.catalog': 'Catalog', 'tab.review': 'Review', 'tab.catalogHint': '{n} sources', 'layer.design': 'Design', 'layer.writing': 'Writing', 'layer.task': 'Task', 'layer.publish': 'Publish', 'layer.stream': 'Stream', 'd.depth': 'Read depth', 'd.check': 'Upstream check', 'd.unreachable': 'Unreachable', 'd.noCheck': 'Not checked yet', 'd.captured': 'Captured', 'd.read': 'What was actually read', 'd.noExcerpts': 'No excerpts. Read the original through before using it.', 'd.noPages': 'Not attached to a Kit page yet; catalogued only.', 'd.serves': 'Serves through these pages', 'd.runs': 'Read by these tasks', 'd.noRuns': 'No task has recorded reading it.', 'd.revisit': 'When to revisit',
+        'ask.label': 'Capture or change sources', 'ask.placeholder': 'Paste links or a conversation, or tell Praxis what to change', 'ask.unavailable': 'No agent here; open Praxis in DSH to paste links', 'ask.send': 'Send',
+        'ask.running': 'Reading the originals and filing', 'ask.done': 'Captured {n}: {titles}', 'ask.doneNone': 'Done; nothing new captured', 'ask.failed': 'Did not finish', 'ask.stopped': 'Session stopped before finishing', 'ask.session': 'Session',
+        'ask.revise': 'The description of source {id} ({title}) was marked needs work: {note}. Read the original, then rewrite its description; change form, category or attachment descriptions if needed.', 'ask.noNote': 'no reason given',
         'v.accurate': 'Accurate', 'v.revised': 'Revised', 'v.needs-work': 'Needs work',
         'form.standard': 'Standard', 'form.practice': 'Practice', 'form.component-library': 'Component library', 'form.case-library': 'Case library', 'form.case': 'Case', 'form.skill': 'Skill', 'form.tool': 'Tool', 'form.article': 'Article', 'form.research': 'Research' },
     }
 
-    // Same mark as the control plane's header: three layers, shortening downward.
-    function Icon() {
-      return React.createElement('svg', { viewBox: '0 0 24 24', width: 48, height: 48, fill: 'currentColor', 'aria-hidden': true },
-        React.createElement('rect', { x: 4, y: 4, width: 16, height: 3.2, rx: 1.6 }),
-        React.createElement('rect', { x: 4, y: 9.6, width: 12, height: 3.2, rx: 1.6, opacity: 0.7 }),
-        React.createElement('rect', { x: 4, y: 15.2, width: 8, height: 3.2, rx: 1.6, opacity: 0.45 }))
-    }
-
-    // The address DSH's document preview claims, as @deepseek-ai/dsh-util-workspace-path spells it.
-    const segment = (s) => encodeURIComponent(s).replace(/%3A/gi, ':')
-    const fileAddress = (sessionId, path) => `dsh-resource://file/session/${segment(sessionId)}/${path.split('/').map(segment).join('/')}`
-
     function apply(ctx) {
-      ctx.effect(() => ctx.locale.register(NS, COPY), 'dsh-praxis: locale')
+      // The UI stays in English whatever the Host language: one stable vocabulary for people and agents.
+      ctx.effect(() => ctx.locale.register(NS, { en: COPY.en, zh: COPY.en }), 'dsh-praxis: locale')
       const t = ctx.locale.bind(NS)
 
-      // {type:'praxis:file', id, action:'preview'|'reveal'|'open', path:<absolute>} from the frame only.
-      async function fileAction(tab, sessionId, { action, path }) {
-        if (action === 'preview') {
-          if (!sessionId) return { ok: false, error: 'no session' }
-          ;(tab?.actions ?? ctx.sidebarRight).openResource(fileAddress(sessionId, path))
-          return { ok: true }
-        }
-        if (action === 'reveal' || action === 'open') {
-          const result = await ctx.remote.session.openWorkspacePath(action === 'reveal' ? { path, action } : { path })
-          return { ok: !!result?.ok }
-        }
-        return { ok: false, error: `unknown action: ${action}` }
+      // Everything opens the one Praxis page in the left sidebar, at a route when there is one.
+      const openPage = (route) => {
+        ctx.layout.selectPanel(PANEL)
+        if (route) setTimeout(() => window.dispatchEvent(new CustomEvent(GO, { detail: route })), 0)
       }
-
-      function Body({ sessionId, useTabInfo }) {
-        const frame = React.useRef(null)
-        const tab = useTabInfo?.().tab
-        React.useEffect(() => {
-          function onMessage(event) {
-            const data = event.data
-            if (!frame.current || event.source !== frame.current.contentWindow || data?.type !== 'praxis:file') return
-            fileAction(tab, sessionId, data)
-              .catch((error) => ({ ok: false, error: String(error?.message ?? error) }))
-              .then((result) => event.source.postMessage({ type: 'praxis:file:result', id: data.id, ...result }, location.origin))
-          }
-          window.addEventListener('message', onMessage)
-          return () => window.removeEventListener('message', onMessage)
-        }, [tab, sessionId])
-        return React.createElement('iframe', {
-          ref: frame,
-          src: '/api/praxis',
-          title: t('frame'),
-          style: { border: 0, width: '100%', height: '100%', display: 'block', background: 'transparent' },
-        })
-      }
-
-      ctx.effect(() => ctx.sidebarRightTabs.register({
-        id: TAB,
-        kind: 'praxis',
-        title: () => 'Praxis',
-        // The iframe keeps its place and open cards across tab, Session and collapse changes.
-        keepMounted: true,
-        guide: [{ id: 'praxis', order: 60, title: () => t('title'), description: () => t('description'), icon: Icon }],
-      }), 'dsh-praxis: tab type')
-      ctx.effect(() => ctx.slots.inject('sidebar.right.pane.tab', () => ctx.slots.register({ name: 'sidebar.right.pane.tab', key: TAB }, Body)), 'dsh-praxis: tab body')
-
-      const openPanel = () => ctx.sidebarRight.openTab('praxis', { revealIfOpened: true })
-      // Bare `/praxis` opens the control plane; with text it reaches the host command.
+      const openPanel = () => openPage()
+      // Bare `/praxis` opens the page; with text it reaches the host command.
       ctx.effect(() => ctx.commandUi.decorate({ name: 'praxis', available: () => true, ui: { kind: 'action', run: openPanel } }), 'dsh-praxis: command')
+      // Reveal in Finder or open in the default app, through the Host (no session needed).
+      const openPath = async (path, action) => !!(await ctx.remote.session.openWorkspacePath(action === 'reveal' ? { path, action } : { path }))?.ok
 
       // A settled call's value is the JSON text the server half rendered.
       const valueOf = (block) => {
@@ -114,7 +73,7 @@ window.__ModuleLoader__.load({
       // affectUI Tool Call Card: icon tile, tool name in mono, a one-line summary, the status
       // (spinner and live timer, a check that draws itself with the duration, or Failed), and a
       // body that grows open. Restyled on DSH tokens.
-      function Card({ name, summary, status, error, children }) {
+      function Card({ name, summary, status, error, page, children }) {
         const [open, setOpen] = React.useState(false)
         const started = React.useRef(Date.now())
         const [ms, setMs] = React.useState(0)
@@ -133,7 +92,7 @@ window.__ModuleLoader__.load({
                 : status === 'success' ? h('svg', { className: 'pxc-ok', viewBox: '0 0 16 16', 'aria-hidden': true }, h('path', { d: 'M3.5 8.4 6.6 11.3 12.5 4.9', pathLength: 1 }))
                   : h('svg', { className: 'pxc-err', viewBox: '0 0 16 16', 'aria-hidden': true }, h('circle', { cx: 8, cy: 8, r: 6 }), h('path', { d: 'M8 5v3.4M8 10.9v.1' })),
               time),
-            h('span', { role: 'link', tabIndex: 0, className: 'pxc-link', onClick: (e) => { e.stopPropagation(); openPanel() }, onKeyDown: (e) => { if (e.key === 'Enter') { e.stopPropagation(); openPanel() } } }, t('open')),
+            h('span', { role: 'link', tabIndex: 0, className: 'pxc-link', onClick: (e) => { e.stopPropagation(); openPage(page) }, onKeyDown: (e) => { if (e.key === 'Enter') { e.stopPropagation(); openPage(page) } } }, t('open')),
             h('svg', { className: 'pxc-chev', viewBox: '0 0 16 16', 'aria-hidden': true }, h('path', { d: 'M4.5 6.25 8 9.75l3.5-3.5' }))),
           h('div', { className: 'pxc-body', inert: !open || undefined }, h('div', { className: 'pxc-clip' }, h('div', { className: 'pxc-sections' },
             status === 'error' ? h('p', { className: 'pxc-error', dir: 'auto' }, error || t('failed')) : children))))
@@ -144,21 +103,22 @@ window.__ModuleLoader__.load({
         const v = valueOf(block)
         const units = v?.units ?? []
         const mats = v?.materials ?? []
-        return h(Card, { name: 'praxis_resolve', status: statusOf(block, phase), error: errorOf(block),
+        return h(Card, { name: 'praxis_resolve', status: statusOf(block, phase), error: errorOf(block), page: { tab: 'task' },
           summary: v ? `${v.task_type?.title ?? ''} ${v.pipeline ?? ''} · ${units.length} ${t('units')} · ${mats.length} ${t('materials')}` : '' },
           h('div', { className: 'pxc-section' }, h('span', { className: 'pxc-label' }, t('units')),
-            h('ul', { className: 'pxc-list' }, units.map((u) => h('li', { key: u.id }, h('span', null, u.title), h('span', { className: 'pxc-dim' }, u.reasons?.join('；')))))),
+            h('ul', { className: 'pxc-list' }, units.map((u) => h('li', { key: u.id }, h('button', { type: 'button', className: 'pxc-file', onClick: () => openPage({ tab: 'kit', unit: u.id }) }, u.title), h('span', { className: 'pxc-dim' }, u.reasons?.join('；')))))),
           mats.length ? h('div', { className: 'pxc-section' }, h('span', { className: 'pxc-label' }, t('materials')),
-            h('ul', { className: 'pxc-list' }, mats.map((m) => h('li', { key: m.binding }, m.url ? h('a', { href: m.url, target: '_blank', rel: 'noreferrer' }, m.title) : h('span', null, m.title), h('span', { className: 'pxc-dim' }, m.description))))) : null)
+            h('ul', { className: 'pxc-list' }, mats.map((m) => h('li', { key: m.binding }, h('button', { type: 'button', className: 'pxc-file', onClick: () => openPage({ tab: 'sources', source: m.source }) }, m.title), h('span', { className: 'pxc-dim' }, m.description))))) : null)
       }
       function ConsumeRow({ block, phase, openFile }) {
         const v = valueOf(block)
         const files = v?.artifacts ?? []
-        return h(Card, { name: 'praxis_consume', status: statusOf(block, phase), error: errorOf(block),
+        return h(Card, { name: 'praxis_consume', status: statusOf(block, phase), error: errorOf(block), page: { tab: 'log' },
           summary: v ? `${v.title} · ${(v.units ?? []).length} ${t('units')} · ${(v.sources ?? []).length} ${t('sources')} · ${files.length} ${t('artifacts')}` : '' },
           h('div', { className: 'pxc-section' }, h('span', { className: 'pxc-label' }, t('artifacts')),
             h('ul', { className: 'pxc-list' }, files.map((a) => h('li', { key: a.artifact },
-              h('button', { type: 'button', className: 'pxc-file', onClick: () => openFile?.(a.absolute) }, a.path), h('span', { className: 'pxc-dim' }, `v${a.version}`))))))
+              h('button', { type: 'button', className: 'pxc-file', onClick: () => openFile?.(a.absolute) }, a.path),
+              h('button', { type: 'button', className: 'pxc-link', onClick: () => openPage({ tab: 'artifacts', artifact: a.artifact }) }, `v${a.version}`))))))
       }
       for (const [key, Row] of [['praxis_resolve', ResolveRow], ['praxis_consume', ConsumeRow]]) {
         ctx.effect(() => ctx.slots.inject('tool.call.toolview', () => ctx.slots.register({ name: 'tool.call.toolview', key }, Row)), `dsh-praxis: ${key} card`)
@@ -168,19 +128,24 @@ window.__ModuleLoader__.load({
       ctx.effect(() => {
         const style = document.createElement('style')
         style.dataset.plugin = 'dsh-praxis'
-        style.textContent = REVIEW_CSS
+        style.textContent = PAGE_CSS
         document.head.append(style)
         return () => style.remove()
       }, 'dsh-praxis: styles')
       ctx.effect(() => ctx.slots.inject('sidebar.panellist', () => ctx.slots.register({ name: 'sidebar.panellist', id: PANEL, order: 40, locale: NS, label: () => t('panel') }, PanelIcon)), 'dsh-praxis: sidebar entry')
-      ctx.effect(() => ctx.slots.inject('main', () => ctx.slots.register({ name: 'main', key: PANEL, locale: NS, inject: () => ({ openPanel }) }, ReviewPage)), 'dsh-praxis: review page')
+      ctx.effect(() => ctx.slots.inject('main', () => ctx.slots.register({ name: 'main', key: PANEL, locale: NS, inject: () => ({ openSession: (id) => ctx.uiWorkspace.openSession(id), openPath }) }, PraxisPage)), 'dsh-praxis: page')
     }
 
-    // ---- source review page -------------------------------------------------------------------
-    // One row per catalogued source, newest first. "To review" holds rows whose current description
-    // has no review yet; a verdict confirms in place, then the row folds away (affectUI Decision Inbox).
+    // ---- sources page -------------------------------------------------------------------------
+    // Laid out like Claude's Artifacts page: a title, pill filters with search and a list/grid
+    // switch, the sources, and a composer docked at the bottom. People never edit a record: they
+    // paste links or say what to change, and an agent session does it (Claude memory works the
+    // same way). What a row shows is what a reader needs to decide whether to open the original;
+    // the detail leads with pointers into it.
     const PANEL = 'praxis'
+    const GO = 'praxis:go'
     const P = require('@deepseek-ai/dsh-client-ui-primitives')
+    const h = React.createElement
 
     async function call(tool, args = {}) {
       const res = await fetch('/api/praxis.call', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ tool, args }) })
@@ -188,16 +153,58 @@ window.__ModuleLoader__.load({
       if (!res.ok) throw Object.assign(new Error(body.error || res.statusText), { status: res.status })
       return body
     }
-
-    function PanelIcon({ size = 16 }) {
-      return React.createElement('svg', { viewBox: '0 0 16 16', width: size, height: size, fill: 'currentColor', 'aria-hidden': true },
-        React.createElement('rect', { x: 2, y: 3, width: 12, height: 2, rx: 1 }),
-        React.createElement('rect', { x: 2, y: 7, width: 9, height: 2, rx: 1, opacity: 0.7 }),
-        React.createElement('rect', { x: 2, y: 11, width: 6, height: 2, rx: 1, opacity: 0.45 }))
+    async function asks(text) {
+      const res = await fetch('/api/praxis.ask', text === undefined ? {} : { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ text }) })
+      const body = await res.json()
+      if (!res.ok) throw new Error(body.error || res.statusText)
+      return body
     }
 
+    function PanelIcon({ size = 16 }) {
+      return h('svg', { viewBox: '0 0 16 16', width: size, height: size, fill: 'currentColor', 'aria-hidden': true },
+        h('rect', { x: 2, y: 3, width: 12, height: 2, rx: 1 }),
+        h('rect', { x: 2, y: 7, width: 9, height: 2, rx: 1, opacity: 0.7 }),
+        h('rect', { x: 2, y: 11, width: 6, height: 2, rx: 1, opacity: 0.45 }))
+    }
+
+    // Native glyphs for the stable controls and the nine forms: 16px grid, 1.4 stroke.
+    const stroke = { fill: 'none', stroke: 'currentColor', strokeWidth: 1.4, strokeLinecap: 'round', strokeLinejoin: 'round' }
+    const GLYPHS = {
+      list: ['M3 4.5h10', 'M3 8h10', 'M3 11.5h10'],
+      grid: ['M3 3h4v4H3z', 'M9 3h4v4H9z', 'M3 9h4v4H3z', 'M9 9h4v4H9z'],
+      out: ['M9.5 3H13v3.5', 'M13 3 7.5 8.5', 'M11.5 9.5V12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V5.5a1 1 0 0 1 1-1h2.5'],
+      up: ['M8 13V3.5', 'M4 7.5 8 3.5l4 4'],
+      back: ['M10 3.5 5.5 8l4.5 4.5'],
+      standard: ['M4 2.5h8v11H4z', 'M6 5.5h4', 'M6 8h4', 'M6 10.5h2.5'],
+      practice: ['M3 4.5 8 2l5 2.5L8 7z', 'M3 8l5 2.5L13 8', 'M3 11.5 8 14l5-2.5'],
+      'component-library': ['M3 3h4v4H3z', 'M9 3h4v4H9z', 'M3 9h4v4H3z', 'M9.5 9.5h3v3h-3z'],
+      'case-library': ['M2.5 4.5h11v8h-11z', 'M5 2.5h6', 'M5 9.5l2-2 1.5 1.5 2.5-2.5'],
+      case: ['M3 3.5h10v9H3z', 'M3 10l3-3 2.5 2.5L10.5 7 13 9.5'],
+      skill: ['M5 5 2.5 8 5 11', 'M11 5l2.5 3L11 11', 'M9 3.5 7 12.5'],
+      tool: ['M10.2 2.4a3.5 3.5 0 0 0-4.3 4.6L2.6 10.3a1.4 1.4 0 0 0 2 2L7.9 9a3.5 3.5 0 0 0 4.6-4.3l-2 2-1.6-.4-.4-1.6z'],
+      article: ['M3.5 3h9v10h-9z', 'M5.5 5.5h5', 'M5.5 8h5', 'M5.5 10.5h3'],
+      research: ['M7 3a4 4 0 1 0 0 8 4 4 0 0 0 0-8z', 'M10 10l3.5 3.5'],
+      design: ['M8 2.5a5.5 5.5 0 1 0 0 11c1 0 1.5-.6 1.5-1.3 0-.9-.8-1-.8-1.9 0-.7.6-1.3 1.3-1.3h1.2A2.3 2.3 0 0 0 13.5 6.7 5 5 0 0 0 8 2.5z', 'M5.3 7.3h.01', 'M7.6 5.2h.01', 'M10.3 5.8h.01'],
+      writing: ['M3 4.5h10', 'M3 8h10', 'M3 11.5h6'],
+      task: ['M8 2.5a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11z', 'M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5z'],
+      publish: ['M8 10.5V3', 'M5 6 8 3l3 3', 'M3 10.5v2h10v-2'],
+      stream: ['M2.5 6c1.8-1.6 3.7-1.6 5.5 0s3.7 1.6 5.5 0', 'M2.5 10c1.8-1.6 3.7-1.6 5.5 0s3.7 1.6 5.5 0'],
+      folder: ['M2.5 4.5a1 1 0 0 1 1-1h3l1.5 1.5h4.5a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1h-9a1 1 0 0 1-1-1z'],
+      archive: ['M2.5 3.5h11v3h-11z', 'M3.5 6.5v6h9v-6', 'M6.5 9h3'],
+      refresh: ['M13 8a5 5 0 1 1-1.5-3.6', 'M13 3v2.5h-2.5'],
+      sliders: ['M3 5h6', 'M11 5h2', 'M3 11h2', 'M7 11h6', 'M10 3.5v3', 'M6 9.5v3'],
+      star: ['M8 2.5l1.7 3.5 3.8.5-2.8 2.7.7 3.8L8 11.2 4.6 13l.7-3.8L2.5 6.5l3.8-.5z'],
+      starOn: ['M8 2.5l1.7 3.5 3.8.5-2.8 2.7.7 3.8L8 11.2 4.6 13l.7-3.8L2.5 6.5l3.8-.5z'],
+    }
+    const Glyph = ({ name, size = 16 }) => h('svg', { viewBox: '0 0 16 16', width: size, height: size, 'aria-hidden': true, ...stroke },
+      (GLYPHS[name] ?? GLYPHS.article).map((d) => h('path', { key: d, d })))
+
+    const hostOf = (url) => { try { return new URL(url).host.replace(/^www\./, '') } catch { return '' } }
+    const day = (iso) => (iso ? new Intl.DateTimeFormat(document.documentElement.lang || undefined, { month: 'short', day: 'numeric' }).format(new Date(iso)) : '')
     /** A review counts until the entry is edited again; core says whether it still holds. */
     const reviewed = (row) => !!row.review?.current
+    const remember = (key, value) => { try { value === undefined ? localStorage.getItem(key) : localStorage.setItem(key, value) } catch {} }
+    const recall = (key, fallback) => { try { return localStorage.getItem(key) ?? fallback } catch { return fallback } }
 
     async function loadCatalog() {
       const outline = await call('praxis_catalog', {})
@@ -209,143 +216,702 @@ window.__ModuleLoader__.load({
           if (!row.areas.some((a) => a.area === area.area)) row.areas.push({ area: area.area, title: area.title })
         }
       })
-      return [...byId.values()].sort((a, b) => String(b.captured_at ?? '').localeCompare(String(a.captured_at ?? '')) || a.title.localeCompare(b.title))
+      const rows = [...byId.values()].sort((a, b) => String(b.captured_at ?? '').localeCompare(String(a.captured_at ?? '')) || a.title.localeCompare(b.title))
+      return { rows, outline: outline.areas, forms: outline.forms }
     }
 
-    function ReviewPage({ t, openPanel }) {
-      const h = React.createElement
+    // ---- the Praxis page ------------------------------------------------------------------------
+    // One page in the left sidebar is the whole control plane. Its levels follow the agent's path:
+    // Kit (layer → area → unit) and the sources hung on each unit, then a source's record and its
+    // original. Tabs: Kit, Sources, Task, Artifacts, Log. The composer at the bottom is how records
+    // change: people say it, an agent session writes it.
+    const TABS = ['kit', 'sources', 'task', 'artifacts', 'log']
+    const LAYERS = ['design', 'writing', 'task', 'publish']
+
+    async function loadKit() {
+      const [units, bindings, revisions, packs] = await Promise.all([call('praxis_units'), call('praxis_bindings', {}), call('praxis_revisions'), call('praxis_packs')])
+      const byPath = new Map()
+      for (const b of bindings) { const p = b.target.split('#')[0]; (byPath.get(p) ?? byPath.set(p, []).get(p)).push(b) }
+      return { units, bindings, byPath, byId: new Map(units.map((u) => [u.id, u])), revisions: new Map(revisions.map((r) => [r.path, r])), packs }
+    }
+
+    function PraxisPage({ t, openSession, openPath }) {
+      const [nav, setNav] = React.useState(() => ({ tab: recall('praxis.tab', 'kit') }))
+      const [kit, setKit] = React.useState(null)
+      const [kitError, setKitError] = React.useState(null)
+      const [attention, setAttention] = React.useState(0)
+      const [requests, setRequests] = React.useState({ available: false, asks: [] })
+      const [stamp, setStamp] = React.useState(0)
+      const scroll = React.useRef(null)
+
+      const reloadKit = React.useCallback(() => loadKit().then(setKit, (e) => setKitError(String(e.message ?? e))), [])
+      const loadUpkeep = React.useCallback(() => call('praxis_upkeep').then((r) => setAttention(upkeepCount(r)), () => {}), [])
+      React.useEffect(() => { reloadKit(); loadUpkeep(); asks().then(setRequests, () => {}) }, [reloadKit, loadUpkeep])
+      // While an agent is working, look again every few seconds; when it settles, everything reloads.
+      const running = requests.asks.some((a) => a.status === 'running')
+      React.useEffect(() => {
+        if (!running) return
+        const timer = setInterval(() => asks().then((next) => {
+          setRequests(next)
+          if (!next.asks.some((a) => a.status === 'running')) { reloadKit(); loadUpkeep(); setStamp((n) => n + 1) }
+        }, () => {}), 3000)
+        return () => clearInterval(timer)
+      }, [running, reloadKit, loadUpkeep])
+
+      const go = React.useCallback((next) => {
+        setNav((cur) => {
+          const to = typeof next === 'function' ? next(cur) : next
+          if (to.tab) remember('praxis.tab', to.tab)
+          return to
+        })
+        scroll.current?.scrollTo({ top: 0 })
+      }, [])
+      React.useEffect(() => {
+        const on = (e) => go(e.detail)
+        window.addEventListener(GO, on)
+        return () => window.removeEventListener(GO, on)
+      }, [go])
+      const send = async (text) => {
+        const ask = await asks(text)
+        setRequests((r) => ({ ...r, asks: [ask, ...r.asks] }))
+      }
+      const refresh = () => { reloadKit(); loadUpkeep() }
+      const shared = { t, go, nav, kit, send, refresh, openSession, openPath, stamp }
+
+      const view = nav.tab === 'sources' ? h(SourcesView, { ...shared, key: 'sources' })
+        : nav.tab === 'task' ? h(TaskView, { ...shared, key: 'task' })
+          : nav.tab === 'artifacts' ? h(ArtifactsView, { ...shared, key: 'artifacts' })
+            : nav.tab === 'log' ? h(LogView, { ...shared, key: 'log', onCount: setAttention })
+              : kitError ? h('p', { className: 'pxs-empty' }, t('review.failed'), ' ', kitError)
+                : h(KitView, { ...shared, key: 'kit' })
+
+      return h('section', { className: 'pxs-page', 'aria-label': 'Praxis' },
+        h('div', { className: 'pxs-scroll', ref: scroll }, h('div', { className: 'pxs-content' },
+          h('header', { className: 'pxs-head' },
+            h('h1', { className: 'pxs-wordmark' }, h(PanelIcon, { size: 22 }), h('span', null, 'Praxis'))),
+          h('nav', { className: 'pxs-tabs', 'aria-label': t('tab.label') },
+            TABS.map((v) => h('button', { key: v, type: 'button', className: 'pxs-tab', 'aria-current': nav.tab === v ? 'page' : undefined, onClick: () => go({ tab: v }) },
+              t(`tab.${v}`), v === 'log' && attention ? h('span', { className: 'pxs-badge', 'aria-label': t('log.attention') }, String(attention)) : null))),
+          view)),
+        h(Composer, { t, available: requests.available, onSend: send }, h(AskStrip, { asks: requests.asks, t, openSession })))
+    }
+
+    const upkeepCount = (r) => (r.reload ? 1 : 0) + r.bindings.length + r.unfiled.length + r.sources.length + r.revisions.length + r.artifacts.length
+      + r.collections.reduce((k, c) => k + (c.added?.length ?? 0) + (c.gone?.length ?? 0), 0)
+
+    // Shared pieces of every view: a crumb trail, a page title, an entry row and an empty line.
+    function Crumbs({ trail }) {
+      return h('nav', { className: 'pxs-crumbs', 'aria-label': 'Breadcrumb' }, trail.map((c, i) => h(React.Fragment, { key: i },
+        i ? h('span', { className: 'pxs-sep', 'aria-hidden': true }, '/') : null,
+        c.onClick ? h('button', { type: 'button', onClick: c.onClick }, c.label) : h('span', { 'aria-current': 'page' }, c.label))))
+    }
+    function Title({ glyph, title, meta, children }) {
+      return h('header', { className: 'pxs-detail-head' },
+        glyph ? h('span', { className: 'pxs-tile lg' }, glyph) : null,
+        h('div', { className: 'pxs-detail-title' }, h('h1', { dir: 'auto' }, title), meta ? h('p', { className: 'pxs-caption' }, meta) : null),
+        children)
+    }
+    function Entry({ glyph, title, aside, sub, desc, onOpen, children, mark }) {
+      return h('div', { className: 'pxs-row', 'data-mark': mark },
+        h('button', { type: 'button', className: 'pxs-row-main', onClick: onOpen, disabled: !onOpen },
+          h('span', { className: 'pxs-tile' }, glyph),
+          h('span', { className: 'pxs-row-text' },
+            h('span', { className: 'pxs-row-title', dir: 'auto' }, title, sub ? h('span', { className: 'pxs-host' }, sub) : null),
+            desc ? h('span', { className: 'pxs-row-desc', dir: 'auto' }, desc) : null)),
+        h('span', { className: 'pxs-row-side' }, aside, children))
+    }
+    const Count = ({ n, glyph }) => (n ? h('span', { className: 'pxs-count-chip' }, h(Glyph, { name: glyph, size: 12 }), n) : null)
+    const Wait = ({ children }) => h('span', { className: 'pxs-wait' }, children)
+
+    // ---- Kit: home → layer → area → unit, and outside targets by path --------------------------
+    const parentOf = (units, id) => { for (let p = id.split('/').slice(0, -1); p.length; p.pop()) { const x = p.join('/'); if (units.some((u) => u.id === x)) return x } return null }
+
+    function KitView({ t, go, nav, kit, send, refresh }) {
+      if (!kit) return h('div', { className: 'pxs-list', 'aria-busy': true }, [0, 1, 2].map((i) => h('div', { key: i, className: 'pxs-skel' }, h('i'), h('i'))))
+      const { units, byPath } = kit
+      const children = (id) => units.filter((u) => u.id !== id && parentOf(units, u.id) === id)
+      const under = (id) => units.filter((u) => u.id === id || u.id.startsWith(`${id}/`))
+      const sourcesUnder = (id) => under(id).flatMap((u) => byPath.get(u.path) ?? []).filter((b) => b.state !== 'removed')
+      const alerts = (list) => list.filter((b) => b.signals.length).length
+      const unitEntry = (u) => {
+        const kids = children(u.id).length
+        const list = kids ? sourcesUnder(u.id) : (byPath.get(u.path) ?? []).filter((b) => b.state !== 'removed')
+        return h(Entry, { key: u.id, glyph: h(Glyph, { name: !u.id.includes('/') ? u.layer : kids ? 'folder' : 'article' }), title: u.title, desc: u.description,
+          onOpen: () => go({ tab: 'kit', unit: u.id }),
+          aside: [h(Count, { key: 'u', n: kids ? under(u.id).length - 1 : 0, glyph: 'article' }), h(Count, { key: 's', n: list.length, glyph: 'practice' }), alerts(list) ? h(Wait, { key: 'w' }, alerts(list)) : null] })
+      }
+      if (nav.unit && kit.byId.has(nav.unit)) return h(UnitPage, { t, go, kit, unit: kit.byId.get(nav.unit), children: children(nav.unit), unitEntry, send, refresh })
+      if (nav.target) return h(TargetPage, { t, go, kit, path: nav.target })
+
+      const kitPaths = new Set(units.map((u) => u.path))
+      const outside = kit.bindings.filter((b) => b.state !== 'removed' && !kitPaths.has(b.target.split('#')[0]))
+      const groups = new Map()
+      for (const b of outside) { const key = b.target.split('#')[0].split('/').slice(0, 2).join('/'); (groups.get(key) ?? groups.set(key, []).get(key)).push(b) }
+      const layer = (id) => kit.byId.get(id)
+      return h(React.Fragment, null,
+        h(Block, { label: t('kit.core') }, h('div', { className: 'pxs-list' }, ['design', 'writing'].map(layer).filter(Boolean).map(unitEntry))),
+        h(Block, { label: 'Stream' }, h('div', { className: 'pxs-list' }, units.filter((u) => u.layer === 'stream').map(unitEntry))),
+        h(Block, { label: t('kit.flow') }, h('div', { className: 'pxs-list' }, ['task', 'publish'].map(layer).filter(Boolean).map(unitEntry))),
+        groups.size ? h(Block, { label: t('kit.other') }, h('div', { className: 'pxs-list' }, [...groups].map(([key, list]) => h(Entry, { key, glyph: h(Glyph, { name: 'folder' }), title: key,
+          desc: t('kit.files', { n: new Set(list.map((b) => b.target.split('#')[0])).size }), onOpen: () => go({ tab: 'kit', target: key }), aside: h(Count, { n: list.length, glyph: 'practice' }) })))) : null,
+        kit.packs.length ? h(Block, { label: t('kit.packs') }, h('div', { className: 'pxs-list' }, kit.packs.map((p) => h(Entry, { key: p.id, glyph: h(Glyph, { name: 'archive' }), title: p.title, sub: p.kind, desc: p.purpose,
+          aside: h(Count, { n: p.sources, glyph: 'practice' }) })))) : null)
+    }
+
+    function UnitPage({ t, go, kit, unit: u, children, unitEntry, send, refresh }) {
+      const [body, setBody] = React.useState(null)
+      const [problem, setProblem] = React.useState(null)
+      const rev = kit.revisions.get(u.path)
+      const trail = [{ label: 'Kit', onClick: () => go({ tab: 'kit' }) }]
+      for (let p = parentOf(kit.units, u.id); p; p = parentOf(kit.units, p)) trail.splice(1, 0, { label: kit.byId.get(p)?.title ?? p, onClick: ((id) => () => go({ tab: 'kit', unit: id }))(p) })
+      trail.push({ label: u.title })
+      const toggleBody = async () => { if (body) return setBody(null); try { setBody((await call('praxis_unit', { ref: u.id })).body) } catch (e) { setProblem(String(e.message ?? e)) } }
+      const revert = async () => { try { await call('praxis_unit_revert', { unit: u.id, expected_revision: rev.revision }); refresh() } catch (e) { setProblem(String(e.message ?? e)) } }
+      return h('article', { className: 'pxs-page-body' },
+        h(Crumbs, { trail }),
+        h(Title, { glyph: h(Glyph, { name: children.length ? 'folder' : u.layer, size: 20 }), title: u.title,
+          meta: [u.id, u.version, u.updated_at ? day(u.updated_at) : null].filter(Boolean).join(' · ') },
+          h('div', { className: 'pxs-buttons' },
+            u.resident ? h(P.Tag, { tone: 'neutral' }, t('unit.resident')) : null,
+            rev ? h(P.Tag, { tone: 'neutral' }, t('unit.revised')) : null,
+            rev?.conflict ? h(Wait, null, t('unit.conflict')) : null)),
+        h('p', { className: 'pxs-when', dir: 'auto' }, u.description),
+        rev ? h('p', { className: 'pxs-caption' }, t('unit.revisedWhy', { r: rev.reason })) : null,
+        problem ? h('p', { className: 'pxs-problem', role: 'alert' }, problem) : null,
+        h('div', { className: 'pxs-buttons' },
+          h(P.Button, { variant: 'outline', size: 'sm', onClick: toggleBody }, body ? t('unit.hide') : t('unit.read')),
+          rev ? h(P.Button, { variant: 'ghost', size: 'sm', onClick: revert }, t('unit.revert')) : null,
+          h(P.Button, { variant: 'ghost', size: 'sm', onClick: () => send(t('ask.forUnit', { id: u.id, title: u.title })) }, t('unit.askSources'))),
+        body ? h('div', { className: 'pxs-doc' }, h(P.MarkdownText, { text: body })) : null,
+        children.length ? h(Block, { label: t('unit.contents'), aside: h('span', { className: 'pxs-caption' }, String(children.length)) }, h('div', { className: 'pxs-list' }, children.map(unitEntry))) : null,
+        !children.length || (kit.byPath.get(u.path) ?? []).length ? h(Bindings, { t, go, path: u.path, refresh }) : null)
+    }
+
+    function TargetPage({ t, go, kit, path }) {
+      const list = kit.bindings.filter((b) => b.state !== 'removed').filter((b) => { const p = b.target.split('#')[0]; return p === path || p.startsWith(`${path}/`) })
+      const kids = new Map()
+      for (const b of list) {
+        const p = b.target.split('#')[0]
+        if (p === path) continue
+        const key = `${path}/${p.slice(path.length + 1).split('/')[0]}`
+        ;(kids.get(key) ?? kids.set(key, []).get(key)).push(b)
+      }
+      const trail = [{ label: 'Kit', onClick: () => go({ tab: 'kit' }) }]
+      const parts = path.split('/')
+      parts.forEach((part, i) => trail.push(i === parts.length - 1 ? { label: part } : { label: part, onClick: () => go({ tab: 'kit', target: parts.slice(0, i + 1).join('/') }) }))
+      return h('article', { className: 'pxs-page-body' },
+        h(Crumbs, { trail }),
+        h(Title, { glyph: h(Glyph, { name: kids.size ? 'folder' : 'article', size: 20 }), title: parts.at(-1), meta: path }),
+        kids.size ? h(Block, { label: t('unit.contents'), aside: h('span', { className: 'pxs-caption' }, String(kids.size)) }, h('div', { className: 'pxs-list' }, [...kids].sort((a, b) => a[0].localeCompare(b[0])).map(([key, items]) =>
+          h(Entry, { key, glyph: h(Glyph, { name: items.some((b) => b.target.split('#')[0] !== key) ? 'folder' : 'article' }), title: key.split('/').pop(), sub: key, onOpen: () => go({ tab: 'kit', target: key }), aside: h(Count, { n: items.length, glyph: 'practice' }) })))) : null,
+        list.some((b) => b.target.split('#')[0] === path) ? h(Bindings, { t, go, path }) : null)
+    }
+
+    // The sources hung on one page: each says what it is for here and how far its original was read.
+    // A person switches, stars, checks or removes them; descriptions are written by the agent.
+    function Bindings({ t, go, path, refresh }) {
+      const [list, setList] = React.useState(null)
+      const [removed, setRemoved] = React.useState(false)
+      const [problem, setProblem] = React.useState(null)
+      const load = React.useCallback(() => call('praxis_bindings', { target: path, include_removed: removed }).then((all) => setList(all.filter((b) => b.target.split('#')[0] === path)), (e) => setProblem(String(e.message ?? e))), [path, removed])
+      React.useEffect(() => { load() }, [load])
+      const act = async (fn) => { setProblem(null); try { await fn(); await load(); refresh?.() } catch (e) { setProblem(e.status === 409 ? t('review.conflict') : String(e.message ?? e)); load() } }
+      const shown = (list ?? []).slice().sort((a, b) => (b.priority === 'preferred') - (a.priority === 'preferred') || b.favorite - a.favorite || b.enabled - a.enabled)
+      return h(Block, { label: t('kit.sources'), aside: h('span', { className: 'pxs-caption' }, String((list ?? []).filter((b) => b.state !== 'removed').length)) },
+        h('div', { className: 'pxs-bindings-bar' }, h(P.Checkbox, { checked: removed, onChange: setRemoved, label: t('kit.showRemoved') })),
+        problem ? h('p', { className: 'pxs-problem', role: 'alert' }, problem) : null,
+        !list ? h('div', { className: 'pxs-skel' }, h('i'), h('i')) : !shown.length ? h('p', { className: 'pxs-none' }, t('kit.noSources')) : h('div', { className: 'pxs-list' }, shown.map((b) => {
+          const off = b.state === 'removed'
+          return h(Entry, { key: b.id, mark: off ? 'removed' : !b.enabled ? 'off' : undefined,
+            glyph: h(Glyph, { name: b.form ?? 'article' }), title: b.title, desc: b.description, onOpen: () => go({ tab: 'sources', source: b.source }),
+            aside: [b.signals.map((g) => h(Wait, { key: g }, t(`gap.${g}`))), b.review ? h(P.Tag, { key: 'r', tone: 'neutral' }, t(`v.${b.review.verdict}`)) : null, h(ReadWord, { key: 'e', row: b, t })] },
+            off ? h(P.Button, { variant: 'ghost', size: 'sm', onClick: () => act(() => call('praxis_restore', { binding: b.id, expected_revision: b.revision })) }, t('kit.restore'))
+              : h(React.Fragment, null,
+                h('button', { type: 'button', className: 'pxs-star', 'aria-pressed': b.favorite, 'aria-label': t('kit.favorite'), title: t('kit.favorite'), onClick: () => act(() => call('praxis_curate', { binding: b.id, expected_revision: b.revision, favorite: !b.favorite })) }, h(Glyph, { name: b.favorite ? 'starOn' : 'star', size: 14 })),
+                h(P.Switch, { checked: b.enabled, label: t('kit.enabled'), onChange: () => act(() => call('praxis_curate', { binding: b.id, expected_revision: b.revision, enabled: !b.enabled })) }),
+                h(BindingMenu, { b, t, act })))
+        })))
+    }
+    function BindingMenu({ b, t, act }) {
+      const [open, setOpen] = React.useState(false)
+      const pick = (fn) => () => { setOpen(false); act(fn) }
+      return h(P.Menu, { open, onClose: () => setOpen(false), align: 'end', portal: true,
+        anchor: h(P.Button, { variant: 'ghost', size: 'sm', 'aria-label': t('review.more'), 'aria-haspopup': 'menu', 'aria-expanded': open, icon: h(P.IconEllipsisOutlineRegular, { size: 16 }), onClick: () => setOpen(!open) }) },
+        h(P.MenuItemButton, { icon: h(P.IconRefreshOutlineRegular, { size: 14 }), onSelect: pick(() => call('praxis_refresh', { source: b.source })) }, t('kit.check')),
+        h(P.MenuItemButton, { icon: h(P.IconCheckOutlineRegular, { size: 14 }), separatorBefore: true, onSelect: pick(() => call('praxis_review', { binding: b.id, revision: b.revision, verdict: 'accurate' })) }, t('kit.bindingAccurate')),
+        h(P.MenuItemButton, { icon: h(P.IconWarningOutlineRegular, { size: 14 }), onSelect: pick(() => call('praxis_review', { binding: b.id, revision: b.revision, verdict: 'needs-work' })) }, t('kit.bindingNeedsWork')),
+        h(P.MenuItemButton, { icon: h(P.IconTrashOutlineRegular, { size: 14 }), separatorBefore: true, onSelect: pick(() => call('praxis_remove', { binding: b.id, expected_revision: b.revision })) }, t('kit.remove')))
+    }
+
+    // ---- Task: what an agent would read for a task type, and the presets per pipeline ----------
+    function TaskView({ t, go, kit }) {
+      const [entry, setEntry] = React.useState(null)
+      const [presets, setPresets] = React.useState(null)
+      const [pick, setPick] = React.useState({ type: '', pipeline: '', preset: '', stream: '' })
+      const [r, setR] = React.useState(null)
+      const [problem, setProblem] = React.useState(null)
+      const loadPresets = React.useCallback(() => call('praxis_presets').then(setPresets, () => {}), [])
+      React.useEffect(() => { call('praxis_entry').then((e) => { setEntry(e); setPick((p) => ({ ...p, type: p.type || e.task_types[0]?.id || '' })) }); loadPresets() }, [loadPresets])
+      React.useEffect(() => {
+        if (!pick.type) return
+        setProblem(null)
+        call('praxis_resolve', { task_type: pick.type, pipeline: pick.pipeline || undefined, preset: pick.preset || undefined, stream: pick.stream || undefined }).then(setR, (e) => setProblem(String(e.message ?? e)))
+      }, [pick])
+      if (!entry) return h('div', { className: 'pxs-skel' }, h('i'), h('i'))
+      const set = (k) => (v) => setPick((p) => ({ ...p, [k]: v }))
+      const select = (label, value, options, onChange) => h('label', { className: 'pxs-select' }, h('span', { className: 'pxs-caption' }, label),
+        h('select', { value, onChange: (e) => onChange(e.target.value) }, options.map(([v, l]) => h('option', { key: v, value: v }, l))))
+      const layerCount = r ? [...LAYERS, ...(r.stream ? ['stream'] : [])].map((l) => [l, r.units.filter((u) => u.id.split('/')[0] === l).length]) : []
+      return h(React.Fragment, null,
+        h('div', { className: 'pxs-task-picks' },
+          h('div', { className: 'pxs-pills', role: 'group', 'aria-label': t('task.type') }, entry.task_types.map((x) => h(P.Pill, { key: x.id, active: pick.type === x.id, 'aria-pressed': pick.type === x.id, onClick: () => set('type')(x.id) }, x.title))),
+          h('div', { className: 'pxs-task-selects' },
+            h(P.SegmentedControl, { label: t('task.pipeline'), value: pick.pipeline, onChange: set('pipeline'), options: [{ value: '', label: t('task.default') }, { value: 'html', label: 'html' }, { value: 'video', label: 'video' }] }),
+            select(t('task.preset'), pick.preset, [['', t('task.presetDefault')], ...(presets?.presets ?? []).map((p) => [p.id, `${p.pipeline} · ${p.title}`])], set('preset')),
+            entry.streams.length ? select('Stream', pick.stream, [['', t('task.noStream')], ...entry.streams.map((s) => [s.id, s.title])], set('stream')) : null)),
+        problem ? h('p', { className: 'pxs-problem', role: 'alert' }, problem) : null,
+        r ? h(React.Fragment, null,
+          h('p', { className: 'pxs-when', dir: 'auto' }, r.task_type.outcome),
+          h('div', { className: 'pxs-flow', 'aria-label': t('task.flow') }, layerCount.map(([l, n]) => h('span', { key: l, 'data-zero': !n || undefined }, h('b', null, n), l)), h('span', { 'data-zero': !r.materials.length || undefined }, h('b', null, r.materials.length), t('task.materials'))),
+          h(Block, { label: t('task.units'), aside: h('span', { className: 'pxs-caption' }, String(r.units.length)) }, h('div', { className: 'pxs-list' }, r.units.map((u) =>
+            h(Entry, { key: u.id, glyph: h(Glyph, { name: u.id.split('/')[0] }), title: u.title, sub: u.id, desc: u.description, onOpen: () => go({ tab: 'kit', unit: u.id }), aside: u.reasons.map((x) => h(P.Tag, { key: x, tone: 'neutral' }, x)) })))),
+          h(Block, { label: t('task.materials'), aside: h('span', { className: 'pxs-caption' }, String(r.materials.length)) }, r.materials.length ? h('div', { className: 'pxs-list' }, r.materials.map((m) =>
+            h(Entry, { key: m.binding, glyph: h(Glyph, { name: 'practice' }), title: m.title, sub: hostOf(m.url), desc: m.description, onOpen: () => go({ tab: 'sources', source: m.source }), aside: h(ReadWord, { row: m, t }) }))) : h('p', { className: 'pxs-none' }, t('task.noMaterials'))),
+          r.exemplars.length ? h(Block, { label: t('task.exemplars'), aside: h('span', { className: 'pxs-caption' }, String(r.exemplars.length)) }, h('div', { className: 'pxs-list' }, r.exemplars.map((x) =>
+            h(Entry, { key: x.artifact, glyph: h(Glyph, { name: 'archive' }), title: x.title, sub: t(`kind.${x.kind}`), desc: x.description ?? x.path, onOpen: () => go({ tab: 'artifacts', artifact: x.artifact }) })))) : null,
+          r.preset ? h(Block, { label: t('task.presetValues', { p: r.preset.title }) }, h('dl', { className: 'pxs-kv' }, Object.entries(r.preset.values).map(([k, v]) => h(React.Fragment, { key: k }, h('dt', null, k), h('dd', null, Array.isArray(v) ? v.join(' ') : String(v)))))) : null,
+          h(Block, { label: t('task.acceptance'), aside: h('span', { className: 'pxs-caption' }, String(r.task_type.acceptance.length)) }, h('ol', { className: 'pxs-checks' }, r.task_type.acceptance.map((a, i) => h('li', { key: i, dir: 'auto' }, a))))) : h('div', { className: 'pxs-skel' }, h('i'), h('i')),
+        presets ? h(Presets, { t, data: presets, reload: loadPresets }) : null)
+    }
+
+    // Presets are settings, not records: a person edits them here directly.
+    function Presets({ t, data, reload }) {
+      const [edit, setEdit] = React.useState(null)
+      const [problem, setProblem] = React.useState(null)
+      const save = async (e) => {
+        e.preventDefault()
+        const form = new FormData(e.currentTarget)
+        const fields = data.fields[edit.pipeline]
+        const values = {}
+        for (const f of fields) {
+          const raw = String(form.get(f.key) ?? '').trim()
+          if (raw) values[f.key] = f.type === 'number' ? Number(raw) : f.type === 'boolean' ? raw === 'true' : f.type === 'list' ? raw.split(/\s+/) : raw
+        }
+        try {
+          await call('praxis_preset_save', { id: edit.id || undefined, expected_revision: edit.id ? edit.revision : undefined, pipeline: edit.pipeline,
+            title: String(form.get('title')).trim(), description: String(form.get('description') ?? '').trim() || undefined, default: form.get('default') === 'on', values, tags: edit.tags ?? [] })
+          setEdit(null); reload()
+        } catch (err) { setProblem(err.status === 409 ? t('review.conflict') : String(err.message ?? err)) }
+      }
+      const remove = async () => { try { await call('praxis_preset_remove', { id: edit.id, expected_revision: edit.revision }); setEdit(null); reload() } catch (err) { setProblem(String(err.message ?? err)) } }
+      return h(Block, { label: t('task.presets') },
+        Object.keys(data.fields).map((pipeline) => h('div', { key: pipeline, className: 'pxs-form-group' },
+          h('h3', null, pipeline),
+          h('div', { className: 'pxs-list' }, data.presets.filter((p) => p.pipeline === pipeline).map((p) =>
+            h(Entry, { key: p.id, glyph: h(Glyph, { name: 'sliders' }), title: p.title, sub: p.id, desc: p.description, onOpen: () => { setProblem(null); setEdit(p) }, aside: p.default ? h(P.Tag, { tone: 'neutral' }, t('task.isDefault')) : null }))),
+          h(P.Button, { variant: 'ghost', size: 'sm', icon: h(P.IconPlusOutlineRegular, { size: 13 }), onClick: () => setEdit({ pipeline, title: '', values: {}, revision: 0 }) }, t('task.newPreset', { p: pipeline })))),
+        edit ? h('form', { className: 'pxs-preset', onSubmit: save, key: edit.id ?? `new-${edit.pipeline}` },
+          h('h3', null, edit.id ? edit.title : t('task.newPreset', { p: edit.pipeline })),
+          problem ? h('p', { className: 'pxs-problem', role: 'alert' }, problem) : null,
+          h('div', { className: 'pxs-fields' },
+            h('label', null, h('span', null, t('task.presetName')), h('input', { name: 'title', defaultValue: edit.title, required: true })),
+            h('label', null, h('span', null, t('task.presetWhen')), h('input', { name: 'description', defaultValue: edit.description ?? '' })),
+            data.fields[edit.pipeline].map((f) => {
+              const v = edit.values?.[f.key]
+              return h('label', { key: f.key }, h('span', null, f.label ?? f.key, f.required ? ' *' : ''),
+                f.type === 'boolean' ? h('select', { name: f.key, defaultValue: v === true ? 'true' : v === false ? 'false' : '' }, h('option', { value: '' }, '—'), h('option', { value: 'true' }, t('yes')), h('option', { value: 'false' }, t('no')))
+                  : h('input', { name: f.key, defaultValue: Array.isArray(v) ? v.join(' ') : (v ?? ''), placeholder: f.hint ?? '', required: f.required }))
+            })),
+          h('label', { className: 'pxs-inline' }, h('input', { type: 'checkbox', name: 'default', defaultChecked: !!edit.default }), t('task.makeDefault', { p: edit.pipeline })),
+          h('div', { className: 'pxs-buttons' },
+            h(P.Button, { variant: 'primary', size: 'sm', type: 'submit' }, t('task.save')),
+            h(P.Button, { variant: 'ghost', size: 'sm', onClick: () => setEdit(null) }, t('review.cancel')),
+            edit.id ? h(P.Button, { variant: 'ghost', size: 'sm', onClick: remove }, t('task.removePreset')) : null)) : null)
+    }
+
+    // ---- Artifacts: local work by project; a version's run says what it was made from -----------
+    const ART_VERDICTS = ['needs-work', 'checked', 'accepted']
+    function ArtifactsView({ t, go, nav, openPath }) {
+      const [list, setList] = React.useState(null)
+      const [projects, setProjects] = React.useState([])
+      const [kind, setKind] = React.useState('')
+      const [query, setQuery] = React.useState('')
+      const load = React.useCallback(() => Promise.all([call('praxis_artifacts', { limit: 500 }), call('praxis_projects')]).then(([a, p]) => { setList(a); setProjects(p) }), [])
+      React.useEffect(() => { load() }, [load])
+      if (nav.artifact) return h(ArtifactDetail, { t, go, id: nav.artifact, reload: load, openPath })
+      if (!list) return h('div', { className: 'pxs-skel' }, h('i'), h('i'))
+      const q = query.trim().toLowerCase()
+      const shown = list.filter((a) => (!kind || a.kind === kind) && (!q || `${a.title} ${a.description ?? ''} ${a.path}`.toLowerCase().includes(q)))
+      const row = (a) => h(Entry, { key: a.id, glyph: h(Glyph, { name: a.kind === 'pipeline' ? 'tool' : a.kind === 'example' ? 'case' : 'article' }), title: a.title, sub: `v${a.version}`, desc: a.project_path ?? a.path,
+        onOpen: () => go({ tab: 'artifacts', artifact: a.id }),
+        aside: [a.kind !== 'delivery' ? h(P.Tag, { key: 'k', tone: 'neutral' }, t(`kind.${a.kind}`)) : null, a.status === 'modified' ? h(P.Tag, { key: 'm', tone: 'neutral' }, t('as.modified')) : null, a.signals.map((g) => h(Wait, { key: g }, t(`as.${g}`)))] })
+      const groups = projects.map((p) => [p, shown.filter((a) => a.project?.id === p.id)]).filter(([p, items]) => items.length || (!q && !kind && p.unregistered.length))
+      const outside = shown.filter((a) => !a.project)
+      return h(React.Fragment, null,
+        h('div', { className: 'pxs-bar' },
+          h('div', { className: 'pxs-pills', role: 'group' }, ['', 'delivery', 'pipeline', 'example'].map((k) => h(P.Pill, { key: k || 'all', active: kind === k, 'aria-pressed': kind === k, onClick: () => setKind(k) }, k ? t(`kind.${k}`) : t('review.f.all')))),
+          h(P.Input, { className: 'pxs-search', type: 'search', value: query, placeholder: t('art.search'), 'aria-label': t('art.search'), icon: h(P.IconSearchOutlineRegular, { size: 14 }), onChange: (e) => setQuery(e.target.value) })),
+        !groups.length && !outside.length ? h('p', { className: 'pxs-empty' }, t(list.length ? 'review.noMatch' : 'art.none')) : null,
+        groups.map(([p, items]) => h(Block, { key: p.id, label: p.title, aside: h('span', { className: 'pxs-caption' }, p.root || '.') },
+          p.unregistered.length ? h('details', { className: 'pxs-unreg' }, h('summary', null, h(Wait, null, t('art.unregistered', { n: p.unregistered.length }))), h('ul', null, p.unregistered.map((f) => h('li', { key: f }, h('code', null, f))))) : null,
+          h('div', { className: 'pxs-list' }, items.map(row)))),
+        outside.length ? h(Block, { label: t('art.outside') }, h('div', { className: 'pxs-list' }, outside.map(row))) : null)
+    }
+
+    function ArtifactDetail({ t, go, id, reload, openPath }) {
+      const [a, setA] = React.useState(null)
+      const [note, setNote] = React.useState('')
+      const [verdict, setVerdict] = React.useState('checked')
+      const [problem, setProblem] = React.useState(null)
+      const load = React.useCallback(() => call('praxis_artifact', { id }).then(setA, (e) => setProblem(String(e.message ?? e))), [id])
+      React.useEffect(() => { load() }, [load])
+      const review = async () => { try { await call('praxis_artifact_review', { id, version: a.version, verdict, note: note.trim() || undefined }); setNote(''); load(); reload() } catch (e) { setProblem(String(e.message ?? e)) } }
+      if (!a) return problem ? h('p', { className: 'pxs-problem' }, problem) : h('div', { className: 'pxs-skel' }, h('i'), h('i'))
+      return h('article', { className: 'pxs-page-body' },
+        h(Crumbs, { trail: [{ label: t('tab.artifacts'), onClick: () => go({ tab: 'artifacts' }) }, { label: a.title }] }),
+        h(Title, { glyph: h(Glyph, { name: 'article', size: 20 }), title: a.title, meta: [a.kind !== 'delivery' ? t(`kind.${a.kind}`) : null, `v${a.version}`, a.path].filter(Boolean).join(' · ') },
+          h('div', { className: 'pxs-buttons' },
+            h(P.Button, { variant: 'ghost', size: 'sm', onClick: () => openPath(a.absolute, 'reveal').then((ok) => ok || setProblem(t('art.failed'))) }, t('art.reveal')),
+            h('button', { type: 'button', className: 'pxs-open', onClick: () => openPath(a.absolute, 'open').then((ok) => ok || setProblem(t('art.failed'))) }, t('art.openFile'), h(Glyph, { name: 'out', size: 14 })))),
+        a.description ? h('p', { className: 'pxs-when', dir: 'auto' }, a.description) : null,
+        a.signals.length ? h('p', null, a.signals.map((g) => h(Wait, { key: g }, t(`as.${g}`)))) : null,
+        problem ? h('p', { className: 'pxs-problem', role: 'alert' }, problem) : null,
+        h(Block, { label: t('art.serves') }, a.serves.length ? h('div', { className: 'pxs-list' }, a.serves.map((s) =>
+          h(Entry, { key: s.target, glyph: h(Glyph, { name: 'article' }), title: s.unit ?? s.target, desc: s.description, onOpen: s.unit ? () => go({ tab: 'kit', unit: s.unit }) : undefined }))) : h('p', { className: 'pxs-none' }, t('art.servesNone'))),
+        h(Block, { label: t('art.versions'), aside: h('span', { className: 'pxs-caption' }, String(a.versions.length)) }, h('ol', { className: 'pxs-versions' }, [...a.versions].reverse().map((v) =>
+          h('li', { key: v.version },
+            h('time', null, day(v.at)),
+            h('div', null,
+              h('p', null, h('b', null, `v${v.version}`), ' ', v.run ? v.run.title : v.by ?? t('art.noRun'), v.run?.changed ? [' ', h(Wait, { key: 'c' }, t('art.basis'))] : null),
+              v.run && (v.run.units.length || v.run.sources.length) ? h('p', { className: 'pxs-links' }, h('span', { className: 'pxs-caption' }, t('art.used')),
+                v.run.units.map((u) => h('button', { key: u, type: 'button', className: 'pxs-link', onClick: () => go({ tab: 'kit', unit: u }) }, u)),
+                v.run.sources.map((x) => h('button', { key: x.id, type: 'button', className: 'pxs-link', onClick: () => go({ tab: 'sources', source: x.id }) }, x.title))) : null,
+              v.made_with ? h('p', { className: 'pxs-links' }, h('span', { className: 'pxs-caption' }, t('art.madeWith')), h('button', { type: 'button', className: 'pxs-link', onClick: () => go({ tab: 'artifacts', artifact: v.made_with.id }) }, v.made_with.title)) : null,
+              v.review ? h('p', { className: 'pxs-caption' }, `${t(`av.${v.review.verdict}`)} · ${v.review.by ?? '—'}${v.review.note ? ` · ${v.review.note}` : ''}`) : null))))),
+        h('footer', { className: 'pxs-verdict' },
+          h('span', { className: 'pxs-verdict-q' }, t('art.question', { v: a.version })),
+          h('div', { className: 'pxs-ask-note' },
+            h(P.SegmentedControl, { label: t('art.question', { v: a.version }), value: verdict, onChange: setVerdict, options: ART_VERDICTS.map((v) => ({ value: v, label: t(`av.${v}`) })) }),
+            h(P.Input, { value: note, placeholder: t('review.noteOptional'), 'aria-label': t('review.noteOptional'), onChange: (e) => setNote(e.target.value) })),
+          h(P.Button, { variant: 'primary', size: 'sm', onClick: review }, t('art.record'))))
+    }
+
+    // ---- Log: what needs someone now (usually nothing), then runs and maintenance -------------
+    function LogView({ t, go, send, refresh, onCount, stamp }) {
+      const [up, setUp] = React.useState(null)
+      const [runs, setRuns] = React.useState(null)
+      const [history, setHistory] = React.useState(null)
+      const [problem, setProblem] = React.useState(null)
+      const load = React.useCallback(() => Promise.all([call('praxis_upkeep'), call('praxis_runs'), call('praxis_history', { limit: 60 })])
+        .then(([u, r, hs]) => { setUp(u); setRuns(r); setHistory(hs); onCount(upkeepCount(u)) }, (e) => setProblem(String(e.message ?? e))), [onCount])
+      React.useEffect(() => { load() }, [load, stamp])
+      const act = async (fn) => { try { await fn(); load(); refresh() } catch (e) { setProblem(String(e.message ?? e)) } }
+      if (!up) return problem ? h('p', { className: 'pxs-problem' }, problem) : h('div', { className: 'pxs-skel' }, h('i'), h('i'))
+      const items = [
+        up.reload ? h(Entry, { key: 'reload', glyph: h(Glyph, { name: 'refresh' }), title: t('log.reload') }) : null,
+        ...up.bindings.map((b) => h(Entry, { key: b.id, glyph: h(Glyph, { name: 'practice' }), title: b.title, sub: b.unit ?? b.target, onOpen: () => go(b.unit ? { tab: 'kit', unit: b.unit } : { tab: 'kit', target: b.target.split('#')[0] }), aside: b.signals.map((g) => h(Wait, { key: g }, t(`gap.${g}`))) })),
+        ...up.sources.map((s) => h(Entry, { key: s.id, glyph: h(Glyph, { name: 'practice' }), title: s.title, sub: s.id, onOpen: () => go({ tab: 'sources', source: s.id }), aside: s.signals.map((g) => h(Wait, { key: g }, t(`gap.${g}`))) })),
+        ...up.unfiled.map((s) => h(Entry, { key: s.id, glyph: h(Glyph, { name: 'practice' }), title: s.title, sub: s.id, desc: t('log.unfiled'), aside: h(P.Button, { variant: 'ghost', size: 'sm', onClick: () => send(t('ask.file', { id: s.id, title: s.title })) }, t('log.sendFile')) })),
+        ...up.collections.flatMap((c) => [
+          ...(c.added ?? []).map((url) => h(Entry, { key: `${c.id}+${url}`, glyph: h(Glyph, { name: 'case-library' }), title: url, sub: c.title ?? c.id, desc: t('log.added'),
+            aside: [h(P.Button, { key: 'a', variant: 'ghost', size: 'sm', onClick: () => send(t('ask.member', { url, id: c.id })) }, t('log.sendCapture')),
+              h(ReasonButton, { key: 's', t, label: t('log.skip'), placeholder: t('log.skipWhy'), run: (r) => act(() => call('praxis_skip_member', { source: c.id, url, reason: r, expected_revision: c.revision })) })] })),
+          ...(c.gone ?? []).map((m) => h(Entry, { key: `${c.id}-${m.id}`, glyph: h(Glyph, { name: 'case-library' }), title: m.title ?? m.id, sub: c.title ?? c.id, desc: t('log.gone'),
+            aside: h(ReasonButton, { t, label: t('log.retire'), placeholder: t('log.retireWhy'), run: (r) => act(() => call('praxis_retire', { source: m.id, reason: r, expected_revision: m.revision })) }) }))]),
+        ...up.revisions.map((x) => h(Entry, { key: x.unit, glyph: h(Glyph, { name: 'article' }), title: x.unit, desc: t('unit.conflict'), onOpen: () => go({ tab: 'kit', unit: x.unit }),
+          aside: h(P.Button, { variant: 'ghost', size: 'sm', onClick: () => act(() => call('praxis_unit_revert', { unit: x.unit, expected_revision: x.revision })) }, t('unit.revert')) })),
+        ...up.artifacts.map((a) => h(Entry, { key: a.id, glyph: h(Glyph, { name: 'article' }), title: a.title, sub: a.path, onOpen: () => go({ tab: 'artifacts', artifact: a.id }), aside: a.signals.map((g) => h(Wait, { key: g }, t(`as.${g}`))) })),
+      ].filter(Boolean)
+      const line = (at, main, sub) => h('li', null, h('time', null, day(at)), h('div', null, h('p', null, main), sub ? h('p', { className: 'pxs-caption' }, sub) : null))
+      return h(React.Fragment, null,
+        problem ? h('p', { className: 'pxs-problem', role: 'alert' }, problem) : null,
+        h(Block, { label: t('log.attention'), aside: items.length ? h(Wait, null, items.length) : null }, items.length ? h('div', { className: 'pxs-list' }, items) : h('p', { className: 'pxs-none' }, t('log.none'))),
+        h(Block, { label: t('log.runs'), aside: h('span', { className: 'pxs-caption' }, String(runs.length)) }, runs.length ? h('ol', { className: 'pxs-versions' }, runs.slice(0, 40).map((r) =>
+          h('li', { key: r.id }, h('time', null, day(r.at)), h('div', null,
+            h('p', null, r.title),
+            h('p', { className: 'pxs-links' }, h('span', { className: 'pxs-caption' }, t('log.runCounts', { u: r.units.length, b: r.bindings.length, a: r.artifacts.length })),
+              r.artifacts[0]?.artifact ? h('button', { type: 'button', className: 'pxs-link', onClick: () => go({ tab: 'artifacts', artifact: r.artifacts[0].artifact }) }, t('log.openArtifact')) : null))))) : h('p', { className: 'pxs-none' }, t('log.noRuns'))),
+        h(Block, { label: t('log.history'), aside: h('span', { className: 'pxs-caption' }, String(history.length)) }, history.length ? h('ol', { className: 'pxs-versions' }, history.map((x, i) =>
+          h(React.Fragment, { key: i }, line(x.at, h(React.Fragment, null, h('code', null, x.op), ' ', x.id ?? ''), [x.by, x.reason].filter(Boolean).join(' · '))))) : h('p', { className: 'pxs-none' }, t('log.noHistory'))))
+    }
+
+    // An action that needs a written reason: the button opens a one-line field in place.
+    function ReasonButton({ t, label, placeholder, run }) {
+      const [open, setOpen] = React.useState(false)
+      const [text, setText] = React.useState('')
+      if (!open) return h(P.Button, { variant: 'ghost', size: 'sm', onClick: () => setOpen(true) }, label)
+      return h('form', { className: 'pxs-reason', onSubmit: (e) => { e.preventDefault(); if (text.trim()) { run(text.trim()); setOpen(false) } } },
+        h(P.Input, { value: text, autoFocus: true, placeholder, 'aria-label': placeholder, onChange: (e) => setText(e.target.value), onKeyDown: (e) => { if (e.key === 'Escape') setOpen(false) } }),
+        h(P.Button, { variant: 'primary', size: 'sm', type: 'submit', disabled: !text.trim() }, label))
+    }
+
+    // ---- Sources: the catalog by Kit area and form, and the review queue --------------------
+    function SourcesView({ t, go, nav, send, openSession, stamp }) {
       const [rows, setRows] = React.useState(null)
+      const [outline, setOutline] = React.useState({ areas: [], forms: [] })
+      const [mode, setMode] = React.useState(() => recall('praxis.sources.tab', 'catalog'))
       const [error, setError] = React.useState(null)
       const [filter, setFilter] = React.useState('open')
       const [query, setQuery] = React.useState('')
-      const [openId, setOpenId] = React.useState(null)
-      const [gone, setGone] = React.useState(() => new Set())
+      const [searching, setSearching] = React.useState(false)
+      const [view, setView] = React.useState(() => recall('praxis.sources.view', 'list'))
 
       const load = React.useCallback(() => {
         setError(null)
-        loadCatalog().then(setRows, (e) => setError(String(e.message ?? e)))
+        loadCatalog().then((c) => { setRows(c.rows); setOutline({ areas: c.outline, forms: c.forms }) }, (e) => setError(String(e.message ?? e)))
       }, [])
-      React.useEffect(load, [load])
+      React.useEffect(() => { load() }, [load, stamp])
 
-      // A settled row stays in view long enough to read its confirmation, then folds if the filter no longer holds it.
-      const settle = (next) => {
-        setRows((all) => all.map((r) => (r.id === next.id ? { ...r, ...next } : r)))
-        setTimeout(() => setGone((g) => new Set(g).add(next.id)), 1100)
-      }
-      const keep = (r) => {
-        if (filter === 'open') return !reviewed(r)
-        if (filter === 'needs-work') return reviewed(r) && r.review.verdict === 'needs-work'
-        if (filter === 'reviewed') return reviewed(r)
-        return true
-      }
+      const update = (next) => setRows((all) => all.map((r) => (r.id === next.id ? { ...r, ...next } : r)))
+      const switchView = (v) => { setView(v); remember('praxis.sources.view', v) }
+      const switchMode = (v) => { setMode(v); remember('praxis.sources.tab', v) }
+      const open = (id) => go({ tab: 'sources', source: id })
+      const keep = (r) => (filter === 'open' ? !reviewed(r) : filter === 'needs-work' ? reviewed(r) && r.review.verdict === 'needs-work' : filter === 'reviewed' ? reviewed(r) : true)
       const terms = query.trim().toLowerCase().split(/\s+/).filter(Boolean)
       const match = (r) => terms.every((x) => [r.title, r.description, r.url, r.id].join(' ').toLowerCase().includes(x))
-      // Rows settled under this filter stay mounted (folded, inert) until the filter changes.
-      const changeFilter = (f) => { setFilter(f); setGone(new Set()); setOpenId(null); setRows((all) => all?.map((r) => (r.settled ? { ...r, settled: false } : r))) }
-      const shown = (rows ?? []).filter((r) => match(r) && (keep(r) || r.settled))
+      const shown = (rows ?? []).filter((r) => (mode === 'catalog' || keep(r)) && match(r))
+      const entry = (r) => (view === 'grid' ? h(SourceCard, { key: r.id, row: r, t, onOpen: () => open(r.id) }) : h(SourceRow, { key: r.id, row: r, t, onOpen: () => open(r.id), onReviewed: update }))
+      const current = nav.source && (rows?.find((r) => r.id === nav.source) ?? (rows ? { id: nav.source, title: nav.source, form: 'article', areas: [], description: '' } : null))
 
-      const head = h('div', { className: 'pxr-head' },
-        h('div', null, h('h1', null, t('review.title')), h('p', { className: 'pxr-lede' }, t('review.lede'))),
-        h('div', { className: 'pxr-actions' },
-          h(P.Button, { variant: 'ghost', size: 'sm', icon: h(P.IconRefreshOutlineRegular, { size: 14 }), onClick: load }, t('review.reload')),
-          h(P.Button, { variant: 'outline', size: 'sm', onClick: openPanel }, t('review.controlPlane'))))
-      const tools = h('div', { className: 'pxr-tools' },
-        h(P.SegmentedControl, { label: t('review.filter'), value: filter, onChange: changeFilter,
-          options: ['open', 'needs-work', 'reviewed', 'all'].map((v) => ({ value: v, label: t(`review.f.${v}`) })) }),
-        h(P.Input, { className: 'pxr-search', type: 'search', role: 'searchbox', value: query, placeholder: t('review.search'), 'aria-label': t('review.search'),
-          icon: h(P.IconSearchOutlineRegular, { size: 14 }), onChange: (e) => setQuery(e.target.value) }))
-
+      if (current) return h(SourceDetail, { row: current, t, openSession, onBack: () => go({ tab: 'sources' }), onReviewed: update, send })
       let body
-      if (error) body = h('div', { className: 'pxr-empty' }, h(P.StateDot, { state: 'error' }), ' ', t('review.failed'), ' ', error)
-      else if (!rows) body = h('div', { className: 'pxr-list', 'aria-busy': true }, [0, 1, 2, 3].map((i) => h('div', { key: i, className: 'pxr-skel' }, h('i'), h('i'))))
-      else if (!shown.length) body = h('p', { className: 'pxr-empty' }, terms.length ? t('review.noMatch') : t(`review.empty.${filter}`))
-      else body = h('div', { className: 'pxr-list' }, shown.map((r) => h(ReviewRow, {
-        key: r.id, row: r, t, open: openId === r.id, folding: gone.has(r.id) && !keep(r),
-        onToggle: () => setOpenId(openId === r.id ? null : r.id), onSettled: (next) => settle({ ...next, settled: true }),
-      })))
+      if (error) body = h('p', { className: 'pxs-empty' }, h(P.StateDot, { state: 'error' }), ' ', t('review.failed'), ' ', error)
+      else if (!rows) body = h('div', { className: 'pxs-list', 'aria-busy': true }, [0, 1, 2, 3, 4].map((i) => h('div', { key: i, className: 'pxs-skel' }, h('i'), h('i'))))
+      else if (!shown.length) body = h('p', { className: 'pxs-empty' }, terms.length ? t('review.noMatch') : mode === 'catalog' ? t('review.empty.all') : t(`review.empty.${filter}`))
+      else if (mode === 'catalog') body = h(Outline, { areas: outline.areas, forms: outline.forms, rows: shown, t, view, entry, searching: terms.length > 0 })
+      else body = h('div', { className: view === 'grid' ? 'pxs-grid' : 'pxs-list' }, shown.map(entry))
 
-      return h('section', { className: 'pxr-page', 'aria-label': t('review.title') },
-        h('div', { className: 'pxr-scroll' }, h('div', { className: 'pxr-content' }, head, tools, body)))
+      return h(React.Fragment, null,
+        h('div', { className: 'pxs-bar' },
+          h('div', { className: 'pxs-modes' }, h(P.SegmentedControl, { label: t('tab.label'), value: mode, onChange: switchMode,
+            options: [{ value: 'catalog', label: t('tab.catalog') }, { value: 'review', label: t('tab.review') }] }),
+          mode === 'review' ? h('div', { className: 'pxs-pills', role: 'group', 'aria-label': t('review.filter') },
+            ['open', 'needs-work', 'reviewed', 'all'].map((v) => h(P.Pill, { key: v, active: filter === v, 'aria-pressed': filter === v, onClick: () => setFilter(v) }, t(`review.f.${v}`))))
+            : h('span', { className: 'pxs-caption' }, t('tab.catalogHint', { n: rows?.length ?? 0 }))),
+          h('div', { className: 'pxs-icons' },
+            searching ? h(P.Input, { className: 'pxs-search', type: 'search', role: 'searchbox', value: query, autoFocus: true, placeholder: t('review.search'), 'aria-label': t('review.search'),
+              icon: h(P.IconSearchOutlineRegular, { size: 14 }), onChange: (e) => setQuery(e.target.value),
+              onKeyDown: (e) => { if (e.key === 'Escape') { setQuery(''); setSearching(false) } },
+              onBlur: () => { if (!query) setSearching(false) } })
+              : h(P.Button, { variant: 'ghost', size: 'sm', 'aria-label': t('review.search'), title: t('review.search'), icon: h(P.IconSearchOutlineRegular, { size: 16 }), onClick: () => setSearching(true) }),
+            h('div', { className: 'pxs-views', role: 'group', 'aria-label': t('review.view') },
+              ['list', 'grid'].map((v) => h('button', { key: v, type: 'button', className: 'pxs-view', 'aria-pressed': view === v, 'aria-label': t(`review.view.${v}`), title: t(`review.view.${v}`), onClick: () => switchView(v) }, h(Glyph, { name: v })))))),
+        body)
     }
 
-    function ReviewRow({ row, t, open, folding, onToggle, onSettled }) {
-      const h = React.createElement
-      const [detail, setDetail] = React.useState(null)
-      const [note, setNote] = React.useState('')
-      const [draft, setDraft] = React.useState(null)
+    /** Requests from the last day: running ones shimmer, finished ones name what was captured. */
+    function AskStrip({ asks, t, openSession }) {
+      const recent = asks.filter((a) => a.status === 'running' || Date.now() - Date.parse(a.done_at ?? a.at) < 864e5).slice(0, 4)
+      if (!recent.length) return null
+      return h('ul', { className: 'pxs-asks', 'aria-live': 'polite' }, recent.map((a) => h('li', { key: a.id, 'data-status': a.status },
+        a.status === 'running' ? h('span', { className: 'pxs-spin', 'aria-hidden': true }) : h(a.status === 'done' ? P.IconCheckOutlineRegular : P.IconWarningOutlineRegular, { size: 14 }),
+        h('span', { className: 'pxs-ask-text' },
+          a.status === 'running' ? h(P.TextShimmer, { active: true }, t('ask.running'))
+            : a.status === 'done' ? (a.captured.length ? t('ask.done', { n: a.captured.length, titles: a.captured.map((s) => s.title).slice(0, 3).join('、') }) : t('ask.doneNone'))
+              : t(`ask.${a.status}`)),
+        h('button', { type: 'button', className: 'pxs-link', onClick: () => openSession(a.session) }, t('ask.session')))))
+    }
+
+    /** affectUI Chat Composer, plain: grows to six lines, Enter sends, Shift+Enter breaks a line. */
+    function Composer({ t, available, onSend, children }) {
+      const [text, setText] = React.useState('')
       const [busy, setBusy] = React.useState(false)
-      const [done, setDone] = React.useState(null)
       const [problem, setProblem] = React.useState(null)
-      React.useEffect(() => {
-        if (!open) { setDone(null); setDraft(null); setProblem(null); return }
-        if (!detail) call('praxis_source', { id: row.id }).then(setDetail, (e) => setProblem(String(e.message ?? e)))
-      }, [open])
+      const ref = React.useRef(null)
+      React.useLayoutEffect(() => {
+        const el = ref.current
+        if (!el) return
+        el.style.height = 'auto'
+        el.style.height = `${Math.min(el.scrollHeight, 6 * 22 + 4)}px`
+      }, [text])
+      const submit = async () => {
+        if (!text.trim() || busy || !available) return
+        setBusy(true); setProblem(null)
+        try { await onSend(text.trim()); setText('') } catch (e) { setProblem(String(e.message ?? e)) } finally { setBusy(false) }
+      }
+      return h('div', { className: 'pxs-dock' },
+        children,
+        problem ? h('p', { className: 'pxs-problem', role: 'alert' }, problem) : null,
+        h('form', { className: 'pxs-composer', 'data-disabled': !available || undefined, onSubmit: (e) => { e.preventDefault(); submit() } },
+          h('textarea', { ref, rows: 1, value: text, disabled: !available, 'aria-label': t('ask.label'),
+            placeholder: available ? t('ask.placeholder') : t('ask.unavailable'),
+            onChange: (e) => setText(e.target.value),
+            onKeyDown: (e) => { if (e.key === 'Enter' && !e.shiftKey && !e.nativeEvent.isComposing) { e.preventDefault(); submit() } } }),
+          h('button', { type: 'submit', className: 'pxs-send', disabled: !available || busy || !text.trim(), 'aria-label': t('ask.send'), title: t('ask.send') },
+            busy ? h('span', { className: 'pxs-spin', 'aria-hidden': true }) : h(Glyph, { name: 'up' }))))
+    }
+
+    // The catalog's own structure, kept from the control plane: Kit layer → area (title and
+    // description) → form, each group folding open; the entries inside are the same rows or cards.
+    function Outline({ areas, forms, rows, t, view, entry, searching }) {
+      const groups = areas.map((a) => {
+        const own = rows.filter((r) => r.areas.some((x) => x.area === a.area))
+        return { ...a, byForm: forms.map((f) => ({ form: f, rows: own.filter((r) => r.form === f) })).filter((g) => g.rows.length), n: own.length }
+      }).filter((g) => g.n)
+      const layers = []
+      for (const g of groups) {
+        const layer = g.area.split('/')[0] || ''
+        ;(layers.find((l) => l.layer === layer) ?? (layers.push({ layer, groups: [] }), layers.at(-1))).groups.push(g)
+      }
+      return h('div', { className: 'pxs-outline' }, layers.map((l) => h('section', { key: l.layer || '-', className: 'pxs-layer' },
+        h('h2', { className: 'pxs-layer-title' }, l.layer ? t(`layer.${l.layer}`) : t('review.noArea')),
+        l.groups.map((g) => h('details', { key: g.area || '-', className: 'pxs-area', open: searching || undefined },
+          h('summary', null,
+            h('span', { className: 'pxs-area-head' }, h('span', { className: 'pxs-area-title' }, g.title || g.area || t('review.noArea')), h('span', { className: 'pxs-caption' }, g.area)),
+            g.description ? h('span', { className: 'pxs-area-desc', dir: 'auto' }, g.description) : null,
+            h('span', { className: 'pxs-area-forms' }, g.byForm.map((f) => h('span', { key: f.form, className: 'pxs-form-count' }, h(Glyph, { name: f.form, size: 12 }), t(`form.${f.form}`), h('b', null, f.rows.length))))),
+          g.byForm.map((f) => h('div', { key: f.form, className: 'pxs-form-group' },
+            h('h3', null, h(Glyph, { name: f.form, size: 14 }), t(`form.${f.form}`), h('span', { className: 'pxs-caption' }, String(f.rows.length))),
+            h('div', { className: view === 'grid' ? 'pxs-grid' : 'pxs-list' }, f.rows.map(entry)))))))))
+    }
+
+    // Vermilion marks only what waits on a person; a settled verdict is plain.
+    function StateTag({ row, t }) {
+      if (!reviewed(row)) return null
+      return row.review.verdict === 'needs-work' ? h('span', { className: 'pxs-wait' }, t('v.needs-work')) : h(P.Tag, { tone: 'neutral' }, t(`v.${row.review.verdict}`))
+    }
+    // How far the original was read, in three steps: the left edge draws it, the word says it.
+    const readOf = (status) => (status === 'verified' ? 'verified' : status === 'unavailable' ? 'unavailable' : 'partial')
+    const ReadWord = ({ row, t }) => h('span', { className: 'pxs-ev' }, t(`ev.${readOf(row.evidence_status)}`))
+
+    function RowMenu({ row, t, onReviewed }) {
+      const [open, setOpen] = React.useState(false)
+      const verdict = async (v) => {
+        setOpen(false)
+        const s = await call('praxis_review', { source: row.id, verdict: v })
+        onReviewed({ id: row.id, entry_revision: s.entry_revision, review: { verdict: v, revision: s.review?.revision, by: s.review?.by, at: s.review?.at, current: true } })
+      }
+      return h(P.Menu, { open, onClose: () => setOpen(false), align: 'end', portal: true,
+        anchor: h(P.Button, { variant: 'ghost', size: 'sm', 'aria-label': t('review.more'), 'aria-haspopup': 'menu', 'aria-expanded': open, icon: h(P.IconEllipsisOutlineRegular, { size: 16 }),
+          onClick: (e) => { e.stopPropagation(); setOpen(!open) } }) },
+        h(P.MenuItemButton, { icon: h(Glyph, { name: 'out', size: 14 }), onSelect: () => { setOpen(false); window.open(row.url, '_blank', 'noreferrer') } }, t('review.openOriginal')),
+        h(P.MenuItemButton, { icon: h(P.IconCheckOutlineRegular, { size: 14 }), separatorBefore: true, onSelect: () => verdict('accurate') }, t('review.markAccurate')),
+        h(P.MenuItemButton, { icon: h(P.IconWarningOutlineRegular, { size: 14 }), onSelect: () => verdict('needs-work') }, t('review.markNeedsWork')))
+    }
+
+    function SourceRow({ row, t, onOpen, onReviewed }) {
+      return h('div', { className: 'pxs-row' },
+        h('button', { type: 'button', className: 'pxs-row-main', onClick: onOpen },
+          h('span', { className: 'pxs-tile', title: t(`form.${row.form}`) }, h(Glyph, { name: row.form })),
+          h('span', { className: 'pxs-row-text' },
+            h('span', { className: 'pxs-row-title', dir: 'auto' }, row.title, h('span', { className: 'pxs-host' }, hostOf(row.url))),
+            h('span', { className: 'pxs-row-desc', dir: 'auto' }, row.description))),
+        h('span', { className: 'pxs-row-side' }, h(StateTag, { row, t }), h(ReadWord, { row, t }), h('time', { dateTime: row.captured_at }, day(row.captured_at)), h(RowMenu, { row, t, onReviewed })))
+    }
+
+    // A card is the same record as a row, laid out for scanning: what it is, where it lives, when to open it.
+    function SourceCard({ row, t, onOpen }) {
+      return h('button', { type: 'button', className: 'pxs-card', onClick: onOpen },
+        h('span', { className: 'pxs-card-head' },
+          h('span', { className: 'pxs-tile' }, h(Glyph, { name: row.form })),
+          h('span', { className: 'pxs-card-text' },
+            h('span', { className: 'pxs-row-title', dir: 'auto' }, row.title),
+            h('span', { className: 'pxs-caption' }, hostOf(row.url)))),
+        h('span', { className: 'pxs-card-desc', dir: 'auto' }, row.description),
+        h('span', { className: 'pxs-card-foot' },
+          h(ReadWord, { row, t }), h('time', { dateTime: row.captured_at }, day(row.captured_at)), h(StateTag, { row, t })))
+    }
+
+    // Full-page detail, one fixed schema for every source so the eye learns where things are:
+    // when to open it; evidence (how far it was read, the last upstream check, when it came in);
+    // where in the original; where it is used; limits and when to revisit; why it was collected;
+    // then the verdict. A block with nothing to show keeps its place and says so.
+    const DEPTH = ['unavailable', 'partial', 'verified']
+    function DepthMeter({ level, t }) {
+      const at = DEPTH.indexOf(level ?? 'partial')
+      return h('div', { className: 'pxs-meter', role: 'img', 'aria-label': t(`ev.${DEPTH[at]}`) },
+        h('div', { className: 'pxs-meter-bar' }, DEPTH.map((d, i) => h('span', { key: d, 'data-on': i <= at || undefined, 'data-level': DEPTH[at] }))),
+        h('span', { className: 'pxs-meter-label' }, t(`ev.${DEPTH[at]}`)))
+    }
+    function Stat({ label, children }) {
+      return h('div', { className: 'pxs-stat' }, h('span', { className: 'pxs-stat-label' }, label), h('div', { className: 'pxs-stat-value' }, children))
+    }
+    function Block({ label, aside, children }) {
+      return h('section', { className: 'pxs-block' }, h('header', null, h('h2', null, label), aside ?? null), children)
+    }
+    const None = ({ children }) => h('p', { className: 'pxs-none' }, children)
+
+    function SourceDetail({ row, t, openSession, onBack, onReviewed, send }) {
+      const [d, setD] = React.useState(null)
+      const [problem, setProblem] = React.useState(null)
+      const [asking, setAsking] = React.useState(false)
+      const [note, setNote] = React.useState('')
+      const [done, setDone] = React.useState(null)
+      const [busy, setBusy] = React.useState(false)
+      React.useEffect(() => { call('praxis_source', { id: row.id }).then(setD, (e) => setProblem(String(e.message ?? e))) }, [row.id])
 
       async function verdict(v) {
         setBusy(true); setProblem(null)
         try {
-          let next = row
-          if (v === 'revised') {
-            const s = await call('praxis_file', { source: row.id, expected_revision: row.entry_revision, description: draft.trim() })
-            next = { ...next, description: s.description, entry_revision: s.entry_revision }
-            setDetail(s)
-          }
           const s = await call('praxis_review', { source: row.id, verdict: v, note: note.trim() || undefined })
-          next = { ...next, entry_revision: s.entry_revision, review: { verdict: v, revision: s.review?.revision, by: s.review?.by, at: s.review?.at, current: true } }
-          setDone(v); setDraft(null)
-          onSettled(next)
-        } catch (e) {
-          setProblem(e.status === 409 ? t('review.conflict') : String(e.message ?? e))
-        } finally { setBusy(false) }
+          onReviewed({ id: row.id, entry_revision: s.entry_revision, review: { verdict: v, revision: s.review?.revision, by: s.review?.by, at: s.review?.at, current: true } })
+          // A description marked needs work goes to an agent, the only one who rewrites records.
+          if (v === 'needs-work') await send(t('ask.revise', { id: row.id, title: row.title, note: note.trim() || t('ask.noNote') }))
+          setDone(v); setAsking(false)
+        } catch (e) { setProblem(String(e.message ?? e)) } finally { setBusy(false) }
       }
 
-      const current = reviewed(row)
-      const state = current ? (row.review.verdict === 'needs-work' ? h(P.Tag, { tone: 'warning' }, t('v.needs-work')) : h(P.Tag, { tone: 'success' }, t(`v.${row.review.verdict}`))) : null
-      const stale = !current && row.review ? h('span', { className: 'pxr-caption' }, t('review.stale', { r: row.review.revision })) : null
-      const head = h('button', { type: 'button', className: 'pxr-row-head', 'aria-expanded': open, onClick: onToggle },
-        h(open ? P.IconChevronDownOutlineRegular : P.IconChevronRightOutlineRegular, { size: 14, className: 'pxr-chev' }),
-        h('span', { className: 'pxr-row-text' },
-          h('span', { className: 'pxr-row-title', dir: 'auto' }, row.title),
-          h('span', { className: 'pxr-row-desc', dir: 'auto' }, row.description), stale),
-        h('span', { className: 'pxr-row-meta' }, h(P.Tag, { tone: 'neutral' }, t(`form.${row.form}`)), state))
-
-      let more = null
-      if (open) {
-        const d = detail
-        more = h('div', { className: 'pxr-more' },
-          problem ? h('p', { className: 'pxr-problem', role: 'alert' }, problem) : null,
-          !d ? h('div', { className: 'pxr-skel' }, h('i'), h('i')) : h(React.Fragment, null,
-            h('dl', { className: 'pxr-facts' },
-              h('dt', null, t('review.url')), h('dd', null, h('a', { href: d.url, target: '_blank', rel: 'noreferrer' }, d.url)),
-              d.summary ? [h('dt', { key: 'a' }, t('review.summary')), h('dd', { key: 'b', dir: 'auto' }, d.summary)] : null,
-              h('dt', null, t('review.why')), h('dd', { dir: 'auto' }, d.captured_for?.task ?? d.collection?.purpose ?? '—'),
-              h('dt', null, t('review.area')), h('dd', null, row.areas.map((a) => a.title || a.area || t('review.noArea')).join(' · ')),
-              d.read_scope ? [h('dt', { key: 'a' }, t('review.scope')), h('dd', { key: 'b', dir: 'auto' }, d.read_scope)] : null,
-              d.limits?.length ? [h('dt', { key: 'a' }, t('review.limits')), h('dd', { key: 'b', dir: 'auto' }, d.limits.join('；'))] : null),
-            d.excerpts?.length ? h('ul', { className: 'pxr-excerpts' }, d.excerpts.map((x, i) => h('li', { key: i }, h('span', { className: 'pxr-caption' }, x.locator), ' ', x.claim))) : null,
-            d.relations?.length ? h('div', { className: 'pxr-pages' }, h('span', { className: 'pxr-caption' }, t('review.pages')),
-              h('ul', null, d.relations.map((b) => h('li', { key: b.binding }, h('code', null, b.unit ?? b.target), ' ', h('span', { dir: 'auto' }, b.description))))) : null,
-            row.review ? h('p', { className: 'pxr-caption' }, t('review.last', { v: t(`v.${row.review.verdict}`), r: row.review.revision, by: row.review.by ?? '—', at: (row.review.at ?? '').slice(0, 10) })) : null,
-            done ? h('p', { className: 'pxr-done', role: 'status' }, h(P.IconCheckOutlineRegular, { size: 14 }), ' ', t('review.recorded', { v: t(`v.${done}`) }))
-              : h('div', { className: 'pxr-decide' },
-                draft !== null ? h(DraftBox, { value: draft, onChange: setDraft, label: t('review.description'), hint: t('review.saveHint'),
-                  onSave: () => { if (!busy && draft.trim() && draft.trim() !== row.description) verdict('revised') }, onCancel: () => setDraft(null) }) : null,
-                h(P.Input, { value: note, placeholder: t('review.note'), 'aria-label': t('review.note'), onChange: (e) => setNote(e.target.value) }),
-                h('div', { className: 'pxr-buttons' },
-                  draft !== null
-                    ? [h(P.Button, { key: 's', variant: 'primary', size: 'sm', disabled: busy || !draft.trim() || draft.trim() === row.description, onClick: () => verdict('revised') }, t('review.saveRevised')),
-                      h(P.Button, { key: 'c', variant: 'ghost', size: 'sm', disabled: busy, onClick: () => setDraft(null) }, t('review.cancel'))]
-                    : [h(P.Button, { key: 'a', variant: 'primary', size: 'sm', disabled: busy, icon: h(P.IconCheckOutlineRegular, { size: 13 }), onClick: () => verdict('accurate') }, t('v.accurate')),
-                      h(P.Button, { key: 'n', variant: 'outline', size: 'sm', disabled: busy, onClick: () => verdict('needs-work') }, t('v.needs-work')),
-                      h(P.Button, { key: 'e', variant: 'ghost', size: 'sm', disabled: busy, icon: h(P.IconEditOutlineRegular, { size: 13 }), onClick: () => setDraft(row.description ?? '') }, t('review.rewrite'))]))))
-      }
-      return h('div', { className: 'pxr-row', 'data-open': open || undefined, 'data-gone': folding || undefined, inert: folding || undefined },
-        h('div', { className: 'pxr-row-inner' }, head, more))
+      const check = d?.check
+      const excerpts = d?.excerpts ?? []
+      const pages = d?.relations ?? []
+      const runs = d?.used_by ?? []
+      const link = (href, text, cls = 'pxs-loc') => h('a', { href, target: '_blank', rel: 'noreferrer', className: cls }, text)
+      return h('article', { className: 'pxs-detail' },
+        h('button', { type: 'button', className: 'pxs-back', onClick: onBack }, h(Glyph, { name: 'back', size: 14 }), t('review.title')),
+        h('header', { className: 'pxs-detail-head' },
+          h('span', { className: 'pxs-tile lg' }, h(Glyph, { name: row.form, size: 20 })),
+          h('div', { className: 'pxs-detail-title' },
+            h('h1', { dir: 'auto' }, d?.title ?? row.title),
+            h('p', { className: 'pxs-caption' }, [t(`form.${row.form}`), hostOf(row.url), row.areas.map((a) => a.title || a.area || t('review.noArea')).join(' · ')].filter(Boolean).join(' · '))),
+          (d?.url ?? row.url) ? h('a', { className: 'pxs-open', href: d?.url ?? row.url, target: '_blank', rel: 'noreferrer' }, t('review.openOriginal'), h(Glyph, { name: 'out', size: 14 })) : null),
+        h('p', { className: 'pxs-when', dir: 'auto' }, d?.description ?? row.description),
+        problem ? h('p', { className: 'pxs-problem', role: 'alert' }, problem) : null,
+        !d ? h('div', { className: 'pxs-skel' }, h('i'), h('i'), h('i')) : h(React.Fragment, null,
+          h('div', { className: 'pxs-stats' },
+            h(Stat, { label: t('d.depth') }, h(DepthMeter, { level: d.evidence_status, t })),
+            h(Stat, { label: t('d.check') }, check
+              ? h('span', { className: 'pxs-check' }, h(P.StateDot, { state: check.status === 'ok' ? 'ongoing' : 'error' }), check.status === 'ok' ? `HTTP ${check.http}` : t('d.unreachable'), h('span', { className: 'pxs-caption' }, day(check.at)))
+              : h('span', { className: 'pxs-caption' }, t('d.noCheck'))),
+            h(Stat, { label: t('d.captured') }, h('span', null, day(d.captured_for?.at) || '—', h('span', { className: 'pxs-caption' }, d.captured_for?.by ?? d.collection?.title ?? '')))),
+          h(Block, { label: t('d.read') }, d.read_scope ? h('p', { dir: 'auto' }, d.read_scope) : h(None, null, '—')),
+          h(Block, { label: t('review.excerpts'), aside: excerpts.length ? h('span', { className: 'pxs-caption' }, String(excerpts.length)) : null },
+            excerpts.length ? h('ol', { className: 'pxs-rail' }, excerpts.map((x, i) => h('li', { key: i },
+              h('span', { className: 'pxs-rail-dot', 'aria-hidden': true }, i + 1),
+              h('div', null, x.locator ? (/^https?:\/\//.test(x.locator) ? link(x.locator, x.locator) : h('span', { className: 'pxs-loc' }, x.locator)) : null, h('p', { dir: 'auto' }, x.claim)))))
+              : h(None, null, t('d.noExcerpts'))),
+          h(Block, { label: t('review.pages') },
+            pages.length ? h('div', { className: 'pxs-map' },
+              h('span', { className: 'pxs-map-node' }, h(Glyph, { name: row.form, size: 14 }), h('span', null, row.title)),
+              h('ul', null, pages.map((b) => h('li', { key: b.binding, 'data-off': !b.enabled || undefined },
+                h('code', null, b.unit ?? b.target), h('span', { dir: 'auto' }, b.description)))))
+              : h(None, null, t('d.noPages')),
+            d.serves?.length ? h('p', { className: 'pxs-serves' }, h('span', { className: 'pxs-caption' }, t('d.serves')), d.serves.map((x) => h(P.Tag, { key: x.id, tone: 'neutral' }, x.title))) : null),
+          h(Block, { label: t('d.runs'), aside: runs.length ? h('span', { className: 'pxs-caption' }, String(runs.length)) : null },
+            runs.length ? h('ol', { className: 'pxs-timeline' }, runs.slice(0, 6).map((r, i) => h('li', { key: i }, h('time', null, day(r.at)), h('span', { dir: 'auto' }, r.title))))
+              : h(None, null, t('d.noRuns'))),
+          h('div', { className: 'pxs-pair' },
+            h(Block, { label: t('review.limits') }, d.limits?.filter(Boolean).length ? h('p', { dir: 'auto' }, d.limits.filter(Boolean).join('；')) : h(None, null, '—')),
+            h(Block, { label: t('d.revisit') }, d.revisit_when ? h('p', { dir: 'auto' }, d.revisit_when) : h(None, null, '—'))),
+          h(Block, { label: t('review.why') },
+            h('p', { dir: 'auto' }, d.captured_for?.task ?? d.collection?.purpose ?? '—',
+              d.captured_for?.session?.id ? [' ', h('button', { key: 's', type: 'button', className: 'pxs-link', onClick: () => openSession(d.captured_for.session.id) }, t('ask.session'))] : null),
+            d.summary ? h('details', { className: 'pxs-summary' }, h('summary', null, t('review.summary')), h('p', { dir: 'auto' }, d.summary)) : null)),
+        h('footer', { className: 'pxs-verdict' },
+          done ? h('p', { className: 'pxs-done', role: 'status' }, h(P.IconCheckOutlineRegular, { size: 14 }), ' ', t(done === 'needs-work' ? 'review.sentToAgent' : 'review.recorded', { v: t(`v.${done}`) }))
+            : asking ? h('div', { className: 'pxs-ask-note' },
+              h(DraftBox, { value: note, onChange: setNote, label: t('review.note'), hint: t('review.noteHint'), onSave: () => verdict('needs-work'), onCancel: () => setAsking(false) }),
+              h('div', { className: 'pxs-buttons' },
+                h(P.Button, { variant: 'primary', size: 'sm', disabled: busy, onClick: () => verdict('needs-work') }, t('review.sendNeedsWork')),
+                h(P.Button, { variant: 'ghost', size: 'sm', disabled: busy, onClick: () => setAsking(false) }, t('review.cancel'))))
+              : h(React.Fragment, null,
+                h('span', { className: 'pxs-verdict-q' }, t('review.question'), row.review ? h('span', { className: 'pxs-caption' }, ' ', t('review.last', { v: t(`v.${row.review.verdict}`), r: row.review.revision, by: row.review.by ?? '—', at: (row.review.at ?? '').slice(0, 10) })) : null),
+                h('div', { className: 'pxs-buttons' },
+                  h(P.Button, { variant: 'primary', size: 'sm', disabled: busy, icon: h(P.IconCheckOutlineRegular, { size: 13 }), onClick: () => verdict('accurate') }, t('v.accurate')),
+                  h(P.Button, { variant: 'outline', size: 'sm', disabled: busy, onClick: () => setAsking(true) }, t('v.needs-work'))))))
     }
 
     // affectUI Text Area: grows with the text, a count that warns near the limit, ⌘/Ctrl+Enter saves, Escape cancels.
     function DraftBox({ value, onChange, onSave, onCancel, label, hint, max = 240 }) {
-      const h = React.createElement
       const ref = React.useRef(null)
       React.useLayoutEffect(() => {
         const el = ref.current
@@ -353,77 +919,234 @@ window.__ModuleLoader__.load({
         el.style.height = 'auto'
         el.style.height = `${Math.min(el.scrollHeight + 2, 240)}px`
       }, [value])
-      React.useEffect(() => { ref.current?.focus(); ref.current?.setSelectionRange(value.length, value.length) }, [])
+      React.useEffect(() => { ref.current?.focus() }, [])
       const left = max - value.length
-      return h('div', { className: 'pxr-draft' },
-        h('textarea', { ref, value, maxLength: max, rows: 2, 'aria-label': label, 'aria-describedby': 'pxr-draft-hint',
+      return h('div', { className: 'pxs-draft' },
+        h('textarea', { ref, value, maxLength: max, rows: 2, 'aria-label': label, placeholder: label,
           onChange: (e) => onChange(e.target.value),
           onKeyDown: (e) => {
             if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) { e.preventDefault(); onSave() }
             if (e.key === 'Escape') { e.preventDefault(); onCancel() }
           } }),
-        h('div', { className: 'pxr-draft-foot' },
-          h('span', { id: 'pxr-draft-hint', className: 'pxr-caption' }, hint),
-          h('span', { className: 'pxr-count', 'data-near': left <= 20 || undefined, 'aria-live': left <= 20 ? 'polite' : 'off' }, `${value.length}/${max}`)))
+        h('div', { className: 'pxs-draft-foot' },
+          h('span', { className: 'pxs-caption' }, hint),
+          h('span', { className: 'pxs-count', 'data-near': left <= 20 || undefined }, `${value.length}/${max}`)))
     }
 
-    const REVIEW_CSS = `
-.pxr-page{width:100%;height:100%;min-height:0;display:flex;color:var(--dsw-alias-label-primary);background:var(--dsw-alias-bg-base);font-size:14px;line-height:1.6}
-.pxr-scroll{flex:1;min-height:0;overflow:auto;scrollbar-gutter:stable}
-.pxr-content{max-width:960px;margin:0 auto;padding:0 clamp(24px,4vw,48px) 48px}
-@media (width<=767px){.pxr-content{padding-inline:20px}}
-.pxr-head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-start;gap:16px;padding-top:28px;margin-bottom:20px}
-[data-platform=darwin] .pxr-head{padding-top:calc(28px + var(--dsh-frame-top-clearance,0px))}
-.pxr-head h1{margin:0;font-size:20px;font-weight:500;line-height:28px}
-.pxr-lede{margin:4px 0 0;max-width:60ch;color:var(--dsw-alias-label-secondary);font-size:13px}
-.pxr-actions{display:flex;gap:8px;align-items:center}
-.pxr-tools{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;margin-bottom:12px}
-.pxr-search{flex:1;min-width:180px}
-.pxr-list{display:flex;flex-direction:column}
-.pxr-row{display:grid;grid-template-rows:1fr;transition:grid-template-rows 460ms cubic-bezier(.22,1,.36,1),opacity 300ms ease}
-.pxr-row[data-gone]{grid-template-rows:0fr;opacity:0}
-.pxr-row-inner{min-height:0;overflow:hidden;border-radius:12px}
-.pxr-row+.pxr-row .pxr-row-inner{box-shadow:0 -.5px 0 var(--dsw-alias-border-l2)}
-.pxr-row[data-open] .pxr-row-inner{background:var(--dsw-alias-bg-layer-1);box-shadow:0 0 0 .5px var(--dsw-alias-border-l2)}
-.pxr-row-head{display:flex;align-items:flex-start;gap:10px;width:100%;padding:10px 8px;border:0;border-radius:12px;background:none;color:inherit;font:inherit;text-align:left;cursor:pointer}
-@media (hover:hover){.pxr-row:not([data-open]) .pxr-row-head:hover{background:var(--dsw-alias-interactive-bg-hover)}}
-.pxr-row-head:focus-visible{outline:2px solid var(--dsw-focus-ring-color);outline-offset:-2px}
-.pxr-chev{flex:none;margin-top:4px;color:var(--dsw-alias-label-tertiary)}
-.pxr-row-text{flex:1;min-width:0;display:flex;flex-direction:column}
-.pxr-row-title{font-weight:500;overflow-wrap:anywhere}
-.pxr-row-desc{color:var(--dsw-alias-label-secondary);font-size:13px;overflow-wrap:anywhere}
-.pxr-row:not([data-open]) .pxr-row-desc{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.pxr-row-meta{flex:none;display:flex;flex-direction:column;align-items:flex-end;gap:4px}
-.pxr-caption{color:var(--dsw-alias-label-tertiary);font-size:12px}
-.pxr-more{padding:0 16px 14px 32px;animation:pxr-in 360ms cubic-bezier(.22,1,.36,1)}
-.pxr-facts{display:grid;grid-template-columns:max-content minmax(0,1fr);gap:4px 14px;margin:0 0 10px;font-size:13px}
-.pxr-facts dt{color:var(--dsw-alias-label-tertiary)}
-.pxr-facts dd{margin:0;overflow-wrap:anywhere}
-.pxr-facts a{color:var(--dsw-alias-state-business-primary)}
-.pxr-excerpts,.pxr-pages ul{margin:6px 0 10px;padding-left:18px;font-size:13px}
-.pxr-pages code{font-size:12px;color:var(--dsw-alias-label-secondary)}
-.pxr-decide{display:flex;flex-direction:column;gap:8px;margin-top:10px}
-.pxr-buttons{display:flex;flex-wrap:wrap;gap:8px}
-.pxr-draft{display:flex;flex-direction:column;gap:2px}
-.pxr-draft textarea{width:100%;box-sizing:border-box;min-height:56px;padding:8px 10px;border:.5px solid var(--dsw-alias-border-l3);border-radius:10px;background:var(--dsw-alias-bg-base);color:inherit;font:inherit;font-size:13px;line-height:1.55;resize:none;overflow:auto;transition:height .18s cubic-bezier(.22,1,.36,1),border-color .16s ease,box-shadow .16s ease}
-.pxr-draft textarea:focus-visible{outline:0;border-color:var(--dsw-focus-ring-color);box-shadow:0 0 0 3px color-mix(in srgb,var(--dsw-focus-ring-color) 22%,transparent)}
-.pxr-draft-foot{display:flex;justify-content:space-between;gap:8px}
-.pxr-count{color:var(--dsw-alias-label-tertiary);font-size:12px;font-variant-numeric:tabular-nums;transition:color .16s ease}
-.pxr-count[data-near]{color:var(--dsw-alias-state-error-primary)}
-.pxr-done{display:inline-flex;align-items:center;gap:6px;margin:10px 0 0;color:var(--dsw-alias-state-business-primary);font-size:13px;font-weight:500;animation:pxr-in 360ms cubic-bezier(.22,1,.36,1)}
-.pxr-problem{margin:0 0 8px;color:var(--dsw-alias-state-error-primary);font-size:13px}
-.pxr-empty{padding:32px 8px;color:var(--dsw-alias-label-tertiary);font-size:13px}
-.pxr-skel{display:flex;flex-direction:column;gap:8px;padding:12px 8px}
-.pxr-skel i{display:block;height:10px;border-radius:5px;background:linear-gradient(90deg,var(--dsw-alias-border-l1) 0%,var(--dsw-alias-border-l2) 50%,var(--dsw-alias-border-l1) 100%);background-size:200% 100%;animation:pxr-shimmer 1.4s linear infinite}
-.pxr-skel i:first-child{width:40%}.pxr-skel i:last-child{width:72%}
-@keyframes pxr-shimmer{from{background-position:100% 0}to{background-position:-100% 0}}
-@keyframes pxr-in{from{opacity:0;transform:translateY(3px)}}
-@media (prefers-reduced-motion:reduce){.pxr-row{transition:none}.pxr-more,.pxr-done,.pxr-skel i{animation:none}}
+    const PAGE_CSS = `
+.pxs-page{--pxs-rule:rgb(196 64 44);--pxs-rule-soft:rgb(196 64 44 / .12);position:relative;width:100%;height:100%;min-height:0;display:flex;flex-direction:column;color:var(--dsw-alias-label-primary);background:var(--dsw-alias-bg-base);font-size:14px;line-height:1.6}
+.pxs-scroll{flex:1;min-height:0;overflow:auto;scrollbar-gutter:stable}
+.pxs-content{max-width:880px;margin:0 auto;padding:0 clamp(20px,4vw,48px) 140px;min-height:100%;box-sizing:border-box}
+body[data-ds-dark-theme] .pxs-page{--pxs-rule:rgb(232 112 90);--pxs-rule-soft:rgb(232 112 90 / .16)}
+.pxs-wait{display:inline-flex;align-items:center;height:20px;padding:0 8px;border-radius:999px;background:var(--pxs-rule-soft);color:var(--pxs-rule);font-size:12px;font-weight:500}
+.pxs-ev{font-size:12px;color:var(--dsw-alias-label-tertiary);white-space:nowrap}
+.pxs-head{padding-top:48px}
+[data-platform=darwin] .pxs-head{padding-top:calc(48px + var(--dsh-frame-top-clearance,0px))}
+.pxs-wordmark{display:flex;align-items:center;gap:10px;margin:0;font-size:22px;line-height:30px;font-weight:600;letter-spacing:-.01em}
+.pxs-wordmark svg{flex:none;color:var(--dsw-alias-label-secondary)}
+.pxs-tabs{display:flex;flex-wrap:wrap;gap:4px 22px;margin:22px 0 8px;border-bottom:.5px solid var(--dsw-alias-border-l3)}
+.pxs-tab{position:relative;display:inline-flex;align-items:center;gap:6px;padding:8px 0 10px;border:0;background:none;color:var(--dsw-alias-label-tertiary);font:inherit;font-size:14px;cursor:pointer;transition:color .16s ease}
+.pxs-tab:hover{color:var(--dsw-alias-label-primary)}
+.pxs-tab[aria-current=page]{color:var(--dsw-alias-label-primary);font-weight:500}
+.pxs-tab[aria-current=page]::after{content:"";position:absolute;left:0;right:0;bottom:-.5px;height:2px;border-radius:1px;background:var(--dsw-alias-label-primary)}
+.pxs-tab:focus-visible{outline:2px solid var(--dsw-focus-ring-color);outline-offset:2px;border-radius:4px}
+.pxs-badge{min-width:16px;height:16px;padding:0 4px;border-radius:8px;background:var(--pxs-rule);color:#fff;font:600 10px/16px ui-monospace,'SF Mono',Menlo,monospace;text-align:center}
+.pxs-modes{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px}
+.pxs-page-body{animation:pxs-in .36s cubic-bezier(.22,1,.36,1)}
+.pxs-crumbs{display:flex;flex-wrap:wrap;align-items:center;gap:2px;margin:18px 0 14px;font-size:13px;color:var(--dsw-alias-label-tertiary)}
+.pxs-crumbs button{padding:2px 6px;border:0;border-radius:6px;background:none;color:inherit;font:inherit;cursor:pointer}
+.pxs-crumbs button:hover{color:var(--dsw-alias-label-primary);background:var(--dsw-alias-interactive-bg-hover)}
+.pxs-crumbs [aria-current]{padding:2px 6px;color:var(--dsw-alias-label-primary)}
+.pxs-sep{color:var(--dsw-alias-border-l4)}
+.pxs-count-chip{display:inline-flex;align-items:center;gap:4px;font:500 11.5px ui-monospace,'SF Mono',Menlo,monospace;color:var(--dsw-alias-label-tertiary)}
+.pxs-row[data-mark=off] .pxs-row-title,.pxs-row[data-mark=off] .pxs-row-desc{color:var(--dsw-alias-label-tertiary)}
+.pxs-row[data-mark=removed]{opacity:.55}
+.pxs-row-main:disabled{cursor:default}
+.pxs-star{display:grid;place-items:center;width:28px;height:28px;padding:0;border:0;border-radius:7px;background:none;color:var(--dsw-alias-label-tertiary);cursor:pointer}
+.pxs-star[aria-pressed=true]{color:var(--dsw-alias-label-primary)}
+.pxs-star[aria-pressed=true] path{fill:currentColor}
+.pxs-star:hover{background:var(--dsw-alias-interactive-bg-hover)}
+.pxs-bindings-bar{display:flex;justify-content:flex-end;margin:-30px 0 8px;font-size:12.5px}
+.pxs-doc{margin:16px 0 0;padding:18px 22px;border-radius:12px;background:var(--dsw-alias-bg-layer-1);font-size:14px;max-height:560px;overflow:auto}
+.pxs-task-picks{display:grid;gap:12px;margin:18px 0 6px}
+.pxs-task-selects{display:flex;flex-wrap:wrap;align-items:flex-end;gap:12px 18px}
+.pxs-select{display:flex;flex-direction:column;gap:4px}
+.pxs-select select,.pxs-fields input,.pxs-fields select{min-width:180px;height:32px;padding:0 10px;border:.5px solid var(--dsw-alias-border-l3);border-radius:8px;background:var(--dsw-alias-bg-base);color:inherit;font:inherit;font-size:13px}
+.pxs-select select:focus-visible,.pxs-fields input:focus-visible,.pxs-fields select:focus-visible{outline:2px solid var(--dsw-focus-ring-color);outline-offset:0}
+.pxs-flow{display:flex;flex-wrap:wrap;margin:14px 0 4px;border-top:.5px solid var(--dsw-alias-border-l3);border-bottom:.5px solid var(--dsw-alias-border-l3)}
+.pxs-flow span{flex:1 1 0;min-width:76px;display:flex;flex-direction:column;gap:2px;padding:10px 12px;font-size:12px;color:var(--dsw-alias-label-tertiary);text-transform:capitalize}
+.pxs-flow span+span{border-left:.5px solid var(--dsw-alias-border-l2)}
+.pxs-flow b{font-size:22px;line-height:28px;font-weight:600;color:var(--dsw-alias-label-primary)}
+.pxs-flow span[data-zero] b{color:var(--dsw-alias-border-l4)}
+.pxs-kv{display:grid;grid-template-columns:max-content minmax(0,1fr);gap:4px 16px;margin:0;font-size:13px}
+.pxs-kv dt{color:var(--dsw-alias-label-tertiary);font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:12px}
+.pxs-kv dd{margin:0;overflow-wrap:anywhere}
+.pxs-checks{margin:0;padding-left:20px;display:grid;gap:6px;font-size:13.5px;color:var(--dsw-alias-label-secondary)}
+.pxs-preset{margin-top:12px;padding:16px;border-radius:12px;background:var(--dsw-alias-bg-layer-1);display:grid;gap:12px}
+.pxs-preset h3{margin:0;font-size:14px;font-weight:500}
+.pxs-fields{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px 16px}
+.pxs-fields label{display:flex;flex-direction:column;gap:4px;font-size:12px;color:var(--dsw-alias-label-tertiary)}
+.pxs-fields input,.pxs-fields select{min-width:0}
+.pxs-inline{display:inline-flex;align-items:center;gap:8px;font-size:13px}
+.pxs-unreg{margin:0 0 8px;font-size:12.5px}
+.pxs-unreg summary{cursor:pointer;list-style:none}
+.pxs-unreg ul{margin:6px 0 0;padding-left:18px;color:var(--dsw-alias-label-secondary)}
+.pxs-versions{list-style:none;margin:0;padding:0;display:grid}
+.pxs-versions li{display:grid;grid-template-columns:72px minmax(0,1fr);gap:12px;padding:8px 0;border-top:.5px solid var(--dsw-alias-border-l2)}
+.pxs-versions li:first-child{border-top:0}
+.pxs-versions time{color:var(--dsw-alias-label-tertiary);font-size:12.5px;font-variant-numeric:tabular-nums}
+.pxs-versions p{margin:0;font-size:13.5px;overflow-wrap:anywhere}
+.pxs-versions code{font-size:12px;color:var(--dsw-alias-label-secondary)}
+.pxs-links{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;margin-top:4px!important}
+.pxs-reason{display:flex;align-items:center;gap:6px}
+@media (width<=767px){.pxs-bindings-bar{margin:0 0 8px}.pxs-versions li{grid-template-columns:1fr}}
+.pxs-outline{display:grid;grid-template-columns:minmax(0,1fr);gap:36px}
+.pxs-layer,.pxs-area,.pxs-form-group{min-width:0}
+.pxs-area>summary{min-width:0}
+.pxs-layer-title{margin:0 0 8px;font-size:16px;line-height:24px;font-weight:600}
+.pxs-area{border-top:.5px solid var(--dsw-alias-border-l4);background:none}
+.pxs-area>summary{display:grid;gap:4px;padding:14px 4px;cursor:pointer;list-style:none;transition:background-color .16s ease}
+.pxs-area>summary::-webkit-details-marker{display:none}
+@media (hover:hover){.pxs-area>summary:hover{background:var(--dsw-alias-interactive-bg-hover)}}
+.pxs-area>summary:focus-visible{outline:2px solid var(--dsw-focus-ring-color);outline-offset:-2px}
+.pxs-area[open]>summary{border-bottom:.5px solid var(--dsw-alias-border-l2)}
+.pxs-area-head{display:flex;align-items:baseline;gap:10px}
+.pxs-area-title{font-size:15px;line-height:22px;font-weight:500}
+.pxs-area-desc{color:var(--dsw-alias-label-secondary);font-size:13px}
+.pxs-area-forms{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+.pxs-form-count{display:inline-flex;align-items:center;gap:5px;padding:2px 8px;border-radius:999px;background:var(--dsw-alias-bg-layer-1);color:var(--dsw-alias-label-secondary);font-size:12px}
+.pxs-form-count b{font-weight:500;color:var(--dsw-alias-label-primary);font-variant-numeric:tabular-nums}
+.pxs-form-group{padding:10px 0 6px 4px}
+.pxs-form-group h3{display:flex;align-items:center;gap:6px;margin:4px 4px 6px;font-size:12px;font-weight:500;color:var(--dsw-alias-label-tertiary)}
+.pxs-form-group .pxs-grid{padding:4px}
+.pxs-bar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 16px;margin:24px 0 16px}
+.pxs-pills{display:flex;flex-wrap:wrap;gap:6px}
+.pxs-icons{display:flex;align-items:center;gap:6px}
+.pxs-search{width:220px}
+.pxs-views{display:flex;gap:2px}
+.pxs-view{display:grid;place-items:center;width:30px;height:30px;padding:0;border:0;border-radius:8px;background:none;color:var(--dsw-alias-label-tertiary);cursor:pointer;transition:background-color .16s ease,color .16s ease,box-shadow .16s ease}
+.pxs-view:hover{color:var(--dsw-alias-label-primary);background:var(--dsw-alias-interactive-bg-hover)}
+.pxs-view[aria-pressed=true]{color:var(--dsw-alias-state-business-primary);box-shadow:inset 0 0 0 1px var(--dsw-alias-state-business-primary)}
+.pxs-view:focus-visible,.pxs-row-main:focus-visible,.pxs-card:focus-visible,.pxs-back:focus-visible,.pxs-link:focus-visible,.pxs-open:focus-visible,.pxs-send:focus-visible{outline:2px solid var(--dsw-focus-ring-color);outline-offset:2px}
+.pxs-asks{list-style:none;margin:0 auto 8px;padding:0;display:grid;gap:4px}
+.pxs-asks li{display:flex;align-items:center;gap:8px;min-height:32px;padding:4px 12px;border-radius:12px;background:var(--dsw-alias-bg-layer-1);box-shadow:inset 0 0 0 .5px var(--dsw-alias-border-l2);font-size:13px;color:var(--dsw-alias-label-secondary);animation:pxs-in .36s cubic-bezier(.22,1,.36,1)}
+.pxs-asks li[data-status=done] svg{color:var(--dsw-alias-state-business-primary)}
+.pxs-asks li[data-status=failed] svg,.pxs-asks li[data-status=stopped] svg{color:var(--dsw-alias-state-error-primary)}
+.pxs-ask-text{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pxs-link{flex:none;padding:0;border:0;background:none;color:var(--dsw-alias-state-business-primary);font:inherit;font-size:12.5px;cursor:pointer;border-radius:4px}
+.pxs-spin{flex:none;width:14px;height:14px;border-radius:50%;border:1.6px solid color-mix(in srgb,currentColor 22%,transparent);border-top-color:currentColor;animation:pxs-rot .8s linear infinite}
+.pxs-list{display:flex;flex-direction:column}
+.pxs-row{display:flex;align-items:center;gap:8px;border-radius:12px;transition:background-color .16s ease}
+@media (hover:hover){.pxs-row:hover{background:var(--dsw-alias-interactive-bg-hover)}}
+.pxs-row-main{flex:1;min-width:0;display:flex;align-items:center;gap:12px;padding:10px 8px;border:0;border-radius:12px;background:none;color:inherit;font:inherit;text-align:left;cursor:pointer}
+.pxs-tile{flex:none;display:grid;place-items:center;width:30px;height:30px;border-radius:8px;background:var(--dsw-alias-bg-layer-1);box-shadow:inset 0 0 0 .5px var(--dsw-alias-border-l2);color:var(--dsw-alias-label-secondary)}
+.pxs-tile.lg{width:44px;height:44px;border-radius:12px}
+.pxs-row-text{flex:1;min-width:0;display:flex;flex-direction:column}
+.pxs-row-title{font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pxs-host{margin-left:8px;color:var(--dsw-alias-label-tertiary);font-weight:400;font-size:12.5px}
+.pxs-row-desc{color:var(--dsw-alias-label-secondary);font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pxs-row-side{flex:none;display:flex;align-items:center;gap:10px;padding-right:4px;color:var(--dsw-alias-label-tertiary);font-size:12.5px;font-variant-numeric:tabular-nums}
+.pxs-row-side time{min-width:52px;text-align:right}
+.pxs-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px}
+.pxs-card{display:flex;flex-direction:column;gap:10px;min-height:148px;padding:14px 16px;border:0;border-radius:16px;background:var(--dsw-alias-bg-base);box-shadow:inset 0 0 0 .5px var(--dsw-alias-border-l3),0 1px 2px rgba(0,0,0,.04);color:inherit;font:inherit;text-align:left;cursor:pointer;overflow:hidden;transition:box-shadow .2s ease,transform .2s cubic-bezier(.22,1,.36,1)}
+@media (hover:hover){.pxs-card:hover{transform:translateY(-1px);box-shadow:inset 0 0 0 .5px var(--dsw-alias-border-l4),0 6px 18px rgba(0,0,0,.06)}}
+.pxs-card-head{display:flex;align-items:center;gap:10px;min-width:0}
+.pxs-card-desc{flex:1;color:var(--dsw-alias-label-secondary);font-size:13px;line-height:1.55;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.pxs-card-foot{display:flex;align-items:center;gap:10px;color:var(--dsw-alias-label-tertiary);font-size:12px;font-variant-numeric:tabular-nums}
+.pxs-card-foot time{margin-right:auto}
+.pxs-card-text{flex:1;min-width:0;display:flex;flex-direction:column}
+.pxs-caption{color:var(--dsw-alias-label-tertiary);font-size:12px}
+.pxs-detail{padding-top:28px;animation:pxs-in .36s cubic-bezier(.22,1,.36,1)}
+[data-platform=darwin] .pxs-detail{padding-top:calc(28px + var(--dsh-frame-top-clearance,0px))}
+.pxs-back{display:inline-flex;align-items:center;gap:4px;margin:0 0 18px -6px;padding:4px 6px;border:0;border-radius:8px;background:none;color:var(--dsw-alias-label-tertiary);font:inherit;font-size:13px;cursor:pointer}
+.pxs-back:hover{color:var(--dsw-alias-label-primary);background:var(--dsw-alias-interactive-bg-hover)}
+.pxs-detail-head{display:flex;align-items:flex-start;gap:14px}
+.pxs-detail-title{flex:1;min-width:0}
+.pxs-detail-title h1{margin:0;font-size:20px;line-height:28px;font-weight:600;overflow-wrap:anywhere}
+.pxs-open{flex:none;display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 14px;border-radius:16px;background:var(--dsw-alias-label-primary);color:var(--dsw-alias-bg-base);font-size:13px;font-weight:500;text-decoration:none;transition:opacity .16s ease}
+.pxs-open:hover{opacity:.86}
+.pxs-when{margin:20px 0 8px;font-size:16px;line-height:1.65;color:var(--dsw-alias-label-primary)}
+.pxs-loc{font:12px ui-monospace,'SF Mono',Menlo,monospace;color:var(--dsw-alias-label-tertiary)}
+a.pxs-loc{color:var(--dsw-alias-state-business-primary)}
+.pxs-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;margin:20px 0 4px;border-radius:14px;overflow:hidden;background:var(--dsw-alias-border-l2);box-shadow:0 0 0 .5px var(--dsw-alias-border-l2)}
+.pxs-stat{display:flex;flex-direction:column;gap:6px;padding:12px 14px;background:var(--dsw-alias-bg-base)}
+.pxs-stat-label{font-size:12px;color:var(--dsw-alias-label-tertiary)}
+.pxs-stat-value{font-size:13.5px;min-height:20px}
+.pxs-stat-value>span{display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap}
+.pxs-meter{display:flex;align-items:center;gap:10px}
+.pxs-meter-bar{display:flex;gap:3px}
+.pxs-meter-bar span{width:22px;height:6px;border-radius:3px;background:var(--dsw-alias-border-l2);transition:background-color .3s ease}
+.pxs-meter-bar span[data-on]{background:var(--dsw-alias-label-primary)}
+.pxs-meter-bar span[data-on][data-level=unavailable]{background:var(--dsw-alias-label-tertiary)}
+.pxs-meter-label{font-size:13px}
+.pxs-check{display:inline-flex;align-items:center;gap:6px}
+.pxs-block{margin-top:22px}
+.pxs-block>header{display:flex;align-items:baseline;gap:8px;margin-bottom:8px}
+.pxs-block h2{margin:0;font-size:14px;line-height:22px;font-weight:600;color:var(--dsw-alias-label-primary)}
+.pxs-block p{margin:0;color:var(--dsw-alias-label-secondary);font-size:13.5px;overflow-wrap:anywhere}
+.pxs-none{color:var(--dsw-alias-label-tertiary)!important;font-size:13px!important}
+.pxs-rail{list-style:none;margin:0;padding:0;display:grid}
+.pxs-rail li{position:relative;display:grid;grid-template-columns:22px minmax(0,1fr);gap:10px;padding-bottom:12px}
+.pxs-rail li:not(:last-child)::before{content:"";position:absolute;left:10.5px;top:22px;bottom:0;width:1px;background:var(--dsw-alias-border-l3)}
+.pxs-rail-dot{display:grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--dsw-alias-bg-layer-1);box-shadow:inset 0 0 0 .5px var(--dsw-alias-border-l3);font-size:11px;font-variant-numeric:tabular-nums;color:var(--dsw-alias-label-secondary)}
+.pxs-rail li>div{display:flex;flex-direction:column;gap:2px;padding-top:2px}
+.pxs-rail p{color:var(--dsw-alias-label-primary)!important}
+.pxs-map{display:grid;grid-template-columns:minmax(120px,30%) minmax(0,1fr);align-items:center;gap:0}
+.pxs-map-node{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:10px;background:var(--dsw-alias-bg-layer-1);box-shadow:inset 0 0 0 .5px var(--dsw-alias-border-l3);font-size:13px;font-weight:500;min-width:0}
+.pxs-map-node span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pxs-map ul{list-style:none;margin:0;padding:0 0 0 28px;display:grid;gap:8px;position:relative}
+.pxs-map ul::before{content:"";position:absolute;left:0;top:50%;width:14px;height:1px;background:var(--dsw-alias-border-l4)}
+.pxs-map li{position:relative;display:flex;flex-direction:column;gap:2px;padding:8px 12px;border-radius:10px;box-shadow:inset 0 0 0 .5px var(--dsw-alias-border-l2);font-size:13px;color:var(--dsw-alias-label-secondary)}
+.pxs-map li::before{content:"";position:absolute;left:-14px;top:50%;width:14px;height:1px;background:var(--dsw-alias-border-l4)}
+.pxs-map li::after{content:"";position:absolute;left:-14px;top:-4px;bottom:-4px;width:1px;background:var(--dsw-alias-border-l4)}
+.pxs-map li:first-child::after{top:50%}.pxs-map li:last-child::after{bottom:50%}.pxs-map li:only-child::after{display:none}
+.pxs-map li[data-off]{opacity:.55}
+.pxs-map code{font-size:12px;color:var(--dsw-alias-label-primary)}
+.pxs-serves{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:10px!important}
+.pxs-timeline{list-style:none;margin:0;padding:0;display:grid;gap:6px;font-size:13px}
+.pxs-timeline li{display:grid;grid-template-columns:64px minmax(0,1fr);gap:10px;color:var(--dsw-alias-label-secondary)}
+.pxs-timeline time{color:var(--dsw-alias-label-tertiary);font-variant-numeric:tabular-nums}
+.pxs-pair{display:grid;grid-template-columns:1fr 1fr;gap:0 24px}
+.pxs-summary{margin-top:10px}
+.pxs-summary summary{cursor:pointer;font-size:12.5px;color:var(--dsw-alias-label-tertiary);list-style:none}
+.pxs-summary summary::before{content:"›";display:inline-block;margin-right:6px;transition:transform .2s ease}
+.pxs-summary[open] summary::before{transform:rotate(90deg)}
+.pxs-summary p{margin-top:6px!important}
+@media (width<=767px){.pxs-stats{grid-template-columns:1fr}.pxs-pair{grid-template-columns:1fr}.pxs-map{grid-template-columns:1fr}.pxs-map ul{padding:8px 0 0 14px}.pxs-map ul::before{display:none}}
+.pxs-verdict{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 16px;margin-top:28px;padding:14px 16px;border-radius:14px;background:var(--dsw-alias-bg-layer-1)}
+.pxs-verdict-q{font-size:13.5px;color:var(--dsw-alias-label-secondary)}
+.pxs-buttons{display:flex;flex-wrap:wrap;gap:8px}
+.pxs-ask-note{flex:1;display:flex;flex-direction:column;gap:8px}
+.pxs-done{display:inline-flex;align-items:center;gap:6px;margin:0;color:var(--dsw-alias-state-business-primary);font-size:13px;font-weight:500;animation:pxs-in .36s cubic-bezier(.22,1,.36,1)}
+.pxs-draft{display:flex;flex-direction:column;gap:2px}
+.pxs-draft textarea{width:100%;box-sizing:border-box;min-height:56px;padding:8px 10px;border:.5px solid var(--dsw-alias-border-l3);border-radius:10px;background:var(--dsw-alias-bg-base);color:inherit;font:inherit;font-size:13px;line-height:1.55;resize:none;overflow:auto}
+.pxs-draft textarea:focus-visible{outline:0;border-color:var(--dsw-focus-ring-color);box-shadow:0 0 0 3px color-mix(in srgb,var(--dsw-focus-ring-color) 22%,transparent)}
+.pxs-draft-foot{display:flex;justify-content:space-between;gap:8px}
+.pxs-count{color:var(--dsw-alias-label-tertiary);font-size:12px;font-variant-numeric:tabular-nums}
+.pxs-count[data-near]{color:var(--dsw-alias-state-error-primary)}
+.pxs-dock{position:absolute;left:0;right:0;bottom:0;padding:0 clamp(20px,4vw,48px) 20px;pointer-events:none;background:linear-gradient(to bottom,transparent,var(--dsw-alias-bg-base) 40%)}
+.pxs-dock>*{pointer-events:auto;max-width:784px;margin-left:auto;margin-right:auto}
+.pxs-composer{display:flex;align-items:center;gap:10px;padding:10px 10px 10px 22px;border-radius:28px;background:var(--dsw-alias-bg-base);box-shadow:inset 0 0 0 .5px var(--dsw-alias-border-l3),0 4px 16px rgba(0,0,0,.06);transition:box-shadow .2s ease}
+.pxs-composer:focus-within{box-shadow:inset 0 0 0 .5px var(--dsw-alias-border-l4),0 6px 22px rgba(0,0,0,.08)}
+.pxs-composer textarea{box-sizing:border-box;flex:1;min-height:36px;max-height:136px;padding:7px 0;border:0;outline:0;background:none;color:inherit;font:inherit;font-size:15px;line-height:22px;resize:none}
+.pxs-composer textarea::placeholder{color:var(--dsw-alias-label-tertiary)}
+.pxs-send{flex:none;display:grid;place-items:center;width:36px;height:36px;padding:0;border:0;border-radius:50%;background:var(--dsw-alias-label-primary);color:var(--dsw-alias-bg-base);cursor:pointer;transition:opacity .16s ease,transform .16s ease}
+.pxs-send:disabled{background:var(--dsw-alias-interactive-bg-hover);color:var(--dsw-alias-label-tertiary);cursor:default}
+.pxs-send:not(:disabled):active{transform:scale(.94)}
+.pxs-problem{margin:0 0 8px;color:var(--dsw-alias-state-error-primary);font-size:13px}
+.pxs-empty{padding:40px 8px;color:var(--dsw-alias-label-tertiary);font-size:13px}
+.pxs-skel{display:flex;flex-direction:column;gap:8px;padding:14px 8px}
+.pxs-skel i{display:block;height:10px;border-radius:5px;background:linear-gradient(90deg,var(--dsw-alias-border-l1) 0%,var(--dsw-alias-border-l2) 50%,var(--dsw-alias-border-l1) 100%);background-size:200% 100%;animation:pxs-shimmer 1.4s linear infinite}
+.pxs-skel i:first-child{width:40%}.pxs-skel i:nth-child(2){width:72%}.pxs-skel i:nth-child(3){width:56%}
+@media (width<=767px){.pxs-host,.pxs-row-side time,.pxs-row-side .pxs-ev{display:none}.pxs-detail-head{flex-wrap:wrap}.pxs-content{padding-left:16px;padding-right:16px}}
+@keyframes pxs-shimmer{from{background-position:100% 0}to{background-position:-100% 0}}
+@keyframes pxs-in{from{opacity:0;transform:translateY(3px)}}
+@keyframes pxs-rot{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.pxs-page *{animation-duration:1ms!important;animation-iteration-count:1!important;transition-duration:1ms!important}}
 .pxc{margin:4px 0;border-radius:12px;background:var(--dsw-alias-bg-base);box-shadow:inset 0 0 0 .5px var(--dsw-alias-border-l3);font-size:13px;line-height:1.45;color:var(--dsw-alias-label-secondary)}
 .pxc-head{display:flex;align-items:center;gap:10px;width:100%;min-height:40px;padding:6px 10px 6px 7px;border:0;border-radius:12px;background:none;color:inherit;font:inherit;text-align:left;cursor:pointer;transition:background-color .16s ease}
 .pxc[data-open] .pxc-head{border-radius:12px 12px 0 0}
 .pxc-head:disabled{cursor:default}
-@media (hover:hover){.pxc-head:not(:disabled):hover{background:var(--dsw-alias-interactive-bg-hover)}}
 .pxc-head:focus-visible,.pxc-link:focus-visible{outline:2px solid var(--dsw-focus-ring-color);outline-offset:-2px}
 .pxc-icon{display:grid;place-items:center;flex:none;width:26px;height:26px;border-radius:7px;background:var(--dsw-alias-bg-layer-1);box-shadow:inset 0 0 0 .5px var(--dsw-alias-border-l2);color:var(--dsw-alias-label-primary)}
 .pxc-main{display:flex;align-items:baseline;gap:8px;flex:1;min-width:0}
@@ -457,7 +1180,7 @@ window.__ModuleLoader__.load({
 `
 
     module.exports.apply = apply
-    module.exports.inject = ['slots', 'sidebarRightTabs', 'sidebarRight', 'locale', 'remote', 'remote.session', 'commandUi']
+    module.exports.inject = ['slots', 'locale', 'remote', 'remote.session', 'commandUi', 'uiWorkspace', 'layout']
     return module.exports
   },
 })

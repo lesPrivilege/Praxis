@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-11-09 · dsh-praxis 0.3.0：Praxis 页合并控制面
+
+- DSH 左侧栏的 Praxis 页成为唯一的控制面：Kit、Sources、Task、Artifacts、Log 五个标签，层级与 agent 的渐进路径一致（praxis → 编目与描述 → 原件）。右侧栏 iframe、`/api/praxis` 页面路由、`cli serve` 与 `dsh-praxis/ui/` 一并删除；`/praxis` 和 resolve、consume 的工具卡片都打开这一页。
+- 每个标签底部有同一个输入框：贴链接或另一段对话，Host 起一个后台会话，由 agent 读原件、`praxis_capture` 登记、`praxis_curate` 挂到它服务的 Kit 页；人不直接编辑记录。请求记在数据根的 `asks.json`，经 `/api/praxis.ask` 读写；收录 prompt 只许用 `praxis_*` 与读网页的工具，不读写文件、不跑命令。
+- Sources 分 Catalog（层 → 领域 → 形态）与 Review 两种视图，详情页固定字段；review 是否仍对当前版本有效由 core 的 `review.current` 给出。
+- 界面只用英文，字体随 DSH，读取深度只写成文字；红色只留给等人处理的事项。
+
 ## 2026-11-01 · 架构收敛
 
 - 按 [ADR-049](docs/decisions/049-architecture-convergence.md) 定位：Design 与 Writing 为核，名册与 stream 编目，Reporting、现场工作、视频都是下游工作流。根 `kit/` 不动，改定位。架构总页、根 README 与各入口随之更新。
@@ -78,7 +85,7 @@
 
 ## 2026-10-25 · dsh-praxis 控制面：渐进披露、轻维护、中英界面
 
-- [控制面](dsh-praxis/ui/README.md)的目录改成 层 → 领域 → 单元 的渐进披露，加上“Kit 之外的挂载”按路径展开；单元页以来源卡片为主，正文按需展开。界面对齐 DSH 客户端的 token 与控件形状，嵌入时跟随 DSH 的明暗与语言。
+- 控制面（后并入 DSH 左侧栏的 Praxis 页）的目录改成 层 → 领域 → 单元 的渐进披露，加上“Kit 之外的挂载”按路径展开；单元页以来源卡片为主，正文按需展开。界面对齐 DSH 客户端的 token 与控件形状，嵌入时跟随 DSH 的明暗与语言。
 - 维护只列信号：新增 `praxis_upkeep`（待改、来源已变的挂载，过期交付，未挂载的新登记），放在“记录”顶部，通常为空；未写说明、未 review 不再计数。取舍补记在 [ADR-038](docs/decisions/038-dsh-praxis-control-plane.md#补充目录维护与语言2026-10-25)。
 - 单元带最近一次提交时间（一次 `git log`）。界面文字中英两套，Kit 与来源内容保留原语言；DSH 侧栏引导卡随语言切换。
 - 对齐 DSH 官方插件文档：控制面改走 DSH Connection 的两条精确路由（`/api/praxis`、`/api/praxis.call`），桌面应用里也能打开，且受 DSH 会话认证保护；入口段改用 `systemPrompt.section`；侧栏标签 `keepMounted`、引导卡中英词典；补插件展示信息与用户文档 [DETAIL](dsh-praxis/docs/DETAIL.zh.md)。未做：schemastery `Config`、发布。
@@ -93,7 +100,7 @@
 
 ## 2026-10-23 · dsh-praxis 控制面与 DSH 插件
 
-- 实现 [dsh-praxis](dsh-praxis/README.md) 的控制面：[core](dsh-praxis/core/README.md)（Kit 单元索引、任务展开、来源与挂载维护、收录、快照刷新、预设、运行记录与 stale、导出恢复），[工具表](dsh-praxis/adapters/README.md)经 DSH 插件、DSH 右侧栏标签、MCP 服务（`.mcp.json`）、命令行和 [网页](dsh-praxis/ui/README.md)提供。取舍见 [ADR-038](docs/decisions/038-dsh-praxis-control-plane.md)。
+- 实现 [dsh-praxis](dsh-praxis/README.md) 的控制面：[core](dsh-praxis/core/README.md)（Kit 单元索引、任务展开、来源与挂载维护、收录、快照刷新、预设、运行记录与 stale、导出恢复），[工具表](dsh-praxis/adapters/README.md)经 DSH 插件、DSH 右侧栏标签、MCP 服务（`.mcp.json`）、命令行和 网页提供。取舍见 [ADR-038](docs/decisions/038-dsh-praxis-control-plane.md)。
 - `kit/design/` 迁入 `dsh-praxis/kit/design/`；来源 catalog、艺术软件图谱与 SaaS 图谱的路径随之更新，艺术软件图谱回归测试的期望值同步改路径。
 - 插件以 `link:` 装进本机 DSH 的 desktop profile（包 dsh-praxis），桌面应用重启后加载；验证在临时 headless 与 web profile 里做，之后已删除。
 - `node --test` 15 项、仓库检查、`test_atlas_index.py` 与 SaaS 图谱检查通过。没有真实任务里的使用，没有对照。

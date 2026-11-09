@@ -20,7 +20,7 @@
 | CatalogEntry | 一个来源在来源编目里的位置与说明：形态、Kit 分类、description（何时打开、取什么）与对它的 review；自有来源与来源包里的条目都可编目，记在名册里 | 实现见 [materials.js](core/materials.js) |
 | SourcePack | 按引用接入的一组来源：一份 registry 格式的文件，或项目自己的来源索引；文件留在主人那里，Praxis 原地读取、从不写入 | 实现见 [materials.js](core/materials.js) |
 | Binding | 一个来源挂到一个页面上的关系：目录里的 description、取用题解、启用、收藏、优先级、tag 与 review；关系与维护信息都在名册里 | [binding](schemas/binding.schema.json) |
-| Stream | 一页自撰：一个持续探索的方向，写主张、未决问题和取用的 Kit 单元；文件在数据根的 `streams/`，来源挂到这一页。读作 `stream` 层的单元，不进包，修订直接改文件 | 实现见 [kit.js](core/kit.js)，用法见 [Streams](data/streams/README.md) |
+| Stream | 一页自撰：一个持续探索的方向，写主张、未决问题和取用的 Kit 单元；文件在数据根的 `streams/`，来源挂到这一页。读作 `stream` 层的单元，不进包，修订直接改文件 | 实现见 [kit.js](core/kit.js)，用法见数据根 `streams/README.md` |
 | MaterialRevision | 实际取得的一份原件或资产：快照、附件、图片、音视频、代码、模板、组件 | [material-revision](schemas/material-revision.schema.json) |
 | KitRevision | 对一个 Kit 单元的修订：整页存在数据根的覆盖层，记理由、依据的范例，以及写修订时包内原页的 hash | 实现见 [index.js](core/index.js) |
 | Preset、Run | 可编辑的默认配置；一次任务实际用到的输入、单元版本、来源与配置，以及来源会话 | 实现见 [core](core/README.md) |

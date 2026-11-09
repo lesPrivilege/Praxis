@@ -7,16 +7,15 @@ Praxis 是一套设计与写作的工作方法（Kit），加一份来源名册�
 | Kit | Task、Writing、Design、Publish 四层，每层一组短页，随包发布。Task 决定这次做什么、走哪条 Publish 流水线、取哪些 Writing 方法与 Design 范式；Writing 与 Design 的入口常驻，其余按任务读取 |
 | 名册 | 自有来源，加按引用接入的来源包（只读）。来源经挂载连到 Kit 页，挂载说明写这个来源对这一页有什么用；还没挂上的来源按 Kit 的层与区域归类 |
 | Stream | 用户自撰的探索方向，一页一条，在数据根的 `streams/`；来源挂到这一页，指定 stream 就能取用 |
-| 控制面 | 一套 core：维护名册、挂载、预设、项目、产物与运行记录，四个入口共用 |
+| 控制面 | 一套 core：维护名册、挂载、预设、项目、产物与运行记录，三个入口共用 |
 
-## 四个入口
+## 三个入口
 
 | 入口 | 给谁 | 提供什么 |
 |---|---|---|
-| DSH 插件 | DSH 里的 agent 会话与人 | worker 用的 10 个工具、系统提示里的入口段、`/praxis` 命令、右侧栏“Praxis”控制面、左侧栏“Praxis”来源 review 页、resolve 与 consume 的工具卡片 |
+| DSH 插件 | DSH 里的 agent 会话与人 | worker 用的 10 个工具、系统提示里的入口段、`/praxis` 命令、左侧栏“Praxis”页（控制面：Kit、来源、任务、产物、记录，底部输入框交给 agent 收录与修改）、resolve 与 consume 的工具卡片 |
 | MCP | 其他 agent（Claude Code、Codex 等） | 全部工具，加 resources（入口、单元、来源、产物）与 prompts（每个任务类型一条） |
 | 命令行 | 人与脚本 | 全部工具，加备份、校验与恢复 |
-| 独立网页 | 不经 DSH 的人 | 与 DSH 右侧栏相同的控制面，默认 <http://127.0.0.1:7878/> |
 
 ## 数据在哪
 
@@ -39,7 +38,6 @@ DSH 插件、MCP 与命令行按同一顺序解析，不另行指定时共用一
 | 判断一条做法归哪一层 | [分层体例](layers.md) |
 | 弄清对象、操作和目录控件的含义 | [对象与操作](objects.md) |
 | 查对象的字段草案 | [Schemas](schemas/README.md) |
-| 浏览控制面各页 | [控制面](ui/README.md) |
 | 查入口与工具表 | [Adapters](adapters/README.md) |
 | 改代码 | [Core](core/README.md) |
 

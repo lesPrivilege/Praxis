@@ -42,4 +42,4 @@
 
 ## 实现
 
-数据层、MCP、DSH 插件与客户端、控制面和预设已实现，见 [Core](core/README.md)、[Adapters](adapters/README.md)、[控制面](ui/README.md)；取舍见 [ADR-038](../docs/decisions/038-dsh-praxis-control-plane.md)。还没做的：Video 流水线按预设真正调用 TTS 与渲染；独立 Reporting 存储作为模块接入；Kit 单元的 description review（目前只有挂载上的）。
+数据层、MCP、DSH 插件与客户端、控制面和预设已实现，见 [Core](core/README.md)、[Adapters](adapters/README.md)、[Praxis 页](docs/DETAIL.zh.md)；取舍见 [ADR-038](../docs/decisions/038-dsh-praxis-control-plane.md)。还没做的：Video 流水线按预设真正调用 TTS 与渲染；独立 Reporting 存储作为模块接入；Kit 单元的 description review（目前只有挂载上的）。

@@ -455,7 +455,7 @@ export class Materials {
    * `members` marks a collection whose upstream lists member links matching the pattern;
    * `member_of` names the collection a member came from.
    */
-  capture(items, { task, by, reason } = {}) {
+  capture(items, { task, by, reason, session } = {}) {
     if (!task?.trim()) throw new Error('capture needs task: what these sources were collected for')
     if (!Array.isArray(items) || !items.length) throw new Error('capture needs at least one source')
     const { list, byId } = this.roster()
@@ -486,7 +486,7 @@ export class Materials {
         tags: input.tags ?? [],
         ...(input.members ? { members: { pattern: input.members.pattern } } : {}), ...(input.member_of ? { member_of: input.member_of } : {}),
         excerpts: (input.excerpts ?? []).map((e, i) => ({ id: `${slug}-C${i + 1}`, locator: e.locator, claim: e.claim })),
-        captured_for: { task: task.trim(), by, at }, state: 'active',
+        captured_for: { task: task.trim(), by, at, ...(session ? { session } : {}) }, state: 'active',
       }
       const entry = { form: input.form, description: input.description.trim(), ...(input.category ? { category: input.category } : {}) }
       return { id, record, entry }
