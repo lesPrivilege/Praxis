@@ -56,7 +56,7 @@ export const TOOLS = [
   {
     name: 'praxis_unit_revise',
     description: '修订一个 Kit 单元：给出修订后的整页（从 # 标题开始）、理由和依据的范例（某次运行、review 或产物）。修订存在用户数据里，立即对所有入口生效；包里的原页不动，包升级后原页变了，upkeep 会把这条修订列为冲突。带上读到的 revision（新修订填 0）。',
-    parameters: { unit: str('单元 ID 或路径'), body: str('修订后的整页 Markdown'), expected_revision: num('读到的 revision；新修订填 0'), reason: str('为什么改'), example: str('依据：运行 ID、review 或产物'), by: who.by, task: who.task },
+    parameters: { unit: str('单元 ID 或路径'), body: str('修订后的整页 Markdown'), expected_revision: num('读到的 revision：从未修订过的单元填 0；撤回过的单元填 praxis_upkeep 或上次返回的 revision'), reason: str('为什么改'), example: str('依据：运行 ID、review 或产物'), by: who.by, task: who.task },
     required: ['unit', 'body', 'reason', 'expected_revision'],
     run: (p, a) => p.reviseUnit(a),
     writes: true,
@@ -97,6 +97,7 @@ export const TOOLS = [
   },
   {
     name: 'praxis_file',
+    agent: true,
     description: `编目一个来源（自有来源或来源包里的条目）：形态、Kit 分类与 description，240 字以内，同时服务目录浏览、agent 发现与 review；挂载上没写 description 时沿用它。来源包从不被写入，编目记在名册里。带上读到的 entry_revision（首次编目填 0）。${FILING}`,
     parameters: { source: str('来源 ID'), expected_revision: num('读到的 entry_revision；首次编目填 0'), form: str(`形态：${FORMS.join('、')}`), category: str('Kit 分类：层或区域，如 design/interaction'), description: str('何时打开、取什么'), ...who },
     required: ['source'],
@@ -110,7 +111,7 @@ export const TOOLS = [
   {
     name: 'praxis_source',
     agent: true,
-    description: '读一个来源的条目：出处、编目（形态、Kit 分类、description 与它的 review）、概要、证据状态、读取范围、限制、摘录与定位、快照、最近一次上游检查；它为什么收录（自有来源的收录任务，或来源包的用途）；挂在哪些页面、经这些页面服务哪些任务类型；哪些运行读过它、交付了什么；集合类来源另列成员账目（上游每条成员链接：已登记、不收录或未处理）与上游新增、下线。不含原件全文。',
+    description: '读一个来源的条目：state（active 或 retired）、出处、编目（形态、Kit 分类、description 与它的 review；review.current 说这条 review 判的是否就是现在的 description）、概要、证据状态、读取范围、限制、摘录与定位、快照、最近一次上游检查；它为什么收录（自有来源的收录任务，或来源包的用途）；挂在哪些页面、经这些页面服务哪些任务类型；哪些运行读过它、交付了什么；集合类来源另列成员账目（上游每条成员链接：已登记、不收录或未处理）与上游新增、下线。不含原件全文。',
     parameters: { id: str('来源 ID 或别名') },
     required: ['id'],
     run: (p, a) => p.source(a.id) ?? missing(`unknown source: ${a.id}`),
@@ -163,7 +164,7 @@ export const TOOLS = [
   },
   {
     name: 'praxis_review',
-    description: '记录一次 description review：挂载的 description（binding），或来源编目的 description（source）。针对当前或指定 revision，结论为 accurate、revised 或 needs-work。',
+    description: '记录一次 description review：挂载的 description（binding），或来源编目的 description（source）。结论为 accurate、revised 或 needs-work。review 判的是当时那段 description：description 改了，这条 review 就不再 current，needs-work 也不再算信号，等下一次 review。已淘汰的来源不能 review。',
     parameters: { binding: str('挂载 ID'), source: str('来源 ID：review 它的编目'), verdict: str('accurate、revised 或 needs-work'), note: str('说明'), revision: num('看到的 revision（来源用 entry_revision）；与当前不同时拒绝，先读新内容再判断；省略为当前'), by: who.by },
     required: ['verdict'],
     run: (p, a) => (a.binding ? p.materials.review(a.binding, a) : a.source ? p.materials.reviewEntry(a.source, a) : missing('review needs binding or source')),
@@ -172,7 +173,7 @@ export const TOOLS = [
   {
     name: 'praxis_capture',
     agent: true,
-    description: `登记新来源（一次任务里 explore 或用户指定的来源线得到的网页参考），可一次多条：全部核对后一次写入，同一 URL 已在名册的返回已有条目。名册只记链接、概要与摘录，不存原件；本地文件、项目材料和自己的笔记不是来源，用 praxis_consume 记为产物 trace。task 写这批来源为哪件任务收录，留在每条记录上，供人 review 时知道它为什么在名册里。form（${FORMS.join('、')}）、category（Kit 的层或区域）与 description（何时打开、取什么）把它编进来源编目；之后可用 praxis_curate 挂到具体单元上。${FILING}作品集、组件库这类会随上游增减的集合，用 members 给出成员链接的 URL 模式，refresh 时会对照上游列出新增与下线；从集合里登记的成员用 member_of 指回集合。来源已在项目里有自己的登记文件时，用 praxis_register_index 按引用登记，不逐条复制。`,
+    description: `登记新来源（一次任务里 explore 或用户指定的来源线得到的网页参考），可一次多条：全部核对后一次写入，同一 URL 已在名册的返回已有条目（existing；那条已淘汰时另有 retired: true，不能再收，要用就另找来源）。名册只记链接、概要与摘录，不存原件；本地文件、项目材料和自己的笔记不是来源，用 praxis_consume 记为产物 trace。task 写这批来源为哪件任务收录，留在每条记录上，供人 review 时知道它为什么在名册里。form（${FORMS.join('、')}）、category（Kit 的层或区域）与 description（何时打开、取什么）把它编进来源编目；之后可用 praxis_curate 挂到具体单元上。${FILING}作品集、组件库这类会随上游增减的集合，用 members 给出成员链接的 URL 模式，refresh 时会对照上游列出新增与下线；从集合里登记的成员用 member_of 指回集合。来源已在项目里有自己的登记文件时，用 praxis_register_index 按引用登记，不逐条复制。`,
     parameters: {
       sources: { type: 'array', description: '要登记的来源', items: { type: 'object', properties: {
         url: str('原 URL（http 或 https）'), title: str('标题'), form: str(`形态：${FORMS.join('、')}`), description: str('何时打开、取什么，240 字以内'),
@@ -235,7 +236,7 @@ export const TOOLS = [
   },
   {
     name: 'praxis_retire',
-    description: '淘汰一条自有来源：它离开名册的活动列表，挂载随之停用，记录与历史保留。必须写理由，例如上游已下线或已被更好的来源取代。来源包里的条目在来源包自己那里维护。',
+    description: '淘汰一条自有来源：它离开名册的活动列表，挂载随之停用，记录与历史保留。淘汰是终态：之后仍可读（state 为 retired），不能再编目、挂载、review 或改条目，也不能再淘汰一次。必须写理由，例如上游已下线或已被更好的来源取代。来源包里的条目在来源包自己那里维护。',
     parameters: { source: str('来源 ID'), expected_revision: num('读到的 revision'), ...who },
     required: ['source', 'reason'],
     run: (p, a) => p.materials.retire(a.source, a),

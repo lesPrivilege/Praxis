@@ -12,24 +12,19 @@ import { createHash } from 'node:crypto'
 import { appendFileSync, existsSync, mkdirSync, readFileSync, statSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { Collection, ConflictError, readJson } from './store.js'
+import { EVIDENCE, VERDICTS as VERDICT_LIST, reviewCurrent, seenDescription, writable } from './states.js'
 import { pathsFor } from './paths.js'
 import { clip } from './kit.js'
 
 const SLUG = /^[A-Za-z0-9][A-Za-z0-9._-]*$/
 // Own sources are `praxis:<slug>`; pack sources keep the pack's ids.
 export const OWN = 'praxis'
-export const STATUSES = ['verified', 'partial', 'unavailable']
+export const STATUSES = EVIDENCE
 export const INDEX_FIELDS = ['id', 'title', 'url', 'summary', 'read_scope', 'status', 'tags']
-
-// Signals that a binding needs someone now. Default states (no curated description, never
-// reviewed, disabled) are not signals: the source summary stands in until someone has a reason
-// to curate. `changed`: the source's content changed after the binding's last review.
-// `unreachable`: the last check found the link gone (404, 410, or a host that no longer resolves).
-// A refusal, a rate limit or a timeout says more about the network that checked than about the link.
-export const SIGNALS = ['needs_work', 'changed', 'unreachable']
+// Signals, verdicts and the source and binding lifecycles are declared in states.js.
+export { SIGNALS, VERDICTS } from './states.js'
 // What kind of thing a source is: the catalog's second level under a Kit area.
 export const FORMS = ['standard', 'practice', 'component-library', 'case-library', 'case', 'skill', 'tool', 'article', 'research']
-export const VERDICTS = ['accurate', 'revised', 'needs-work']
 const GONE = (c) => c.status === 'unreachable' && ([404, 410].includes(c.http) || c.error === 'ENOTFOUND')
 
 // What a check compares: an HTML page by its text, since markup carries per-load tokens and its bytes
@@ -51,7 +46,7 @@ export function signalsOf(b, state) {
   // A review records the source version it saw; one recorded before that is placed by time.
   const seen = last && (last.source_version !== undefined ? last.source_version === state?.current.get(b.source) : last.at >= since)
   return [
-    last?.verdict === 'needs-work' && 'needs_work',
+    last?.verdict === 'needs-work' && last.current !== false && 'needs_work',
     since && !seen && 'changed',
     state?.unreachable.has(b.source) && 'unreachable',
   ].filter(Boolean)
@@ -151,13 +146,23 @@ export class Materials {
     })
   }
 
+  /**
+   * A catalog entry's review with `current`: the description it judged is still the description.
+   * Reviews from before descriptions were recorded count while no write followed the review write.
+   */
+  entryReview(s) {
+    if (!s.review) return undefined
+    return { ...s.review, current: reviewCurrent(s.review, s.description, s.entry_revision === s.review.revision + 1) }
+  }
+
   /** One source as readers and tools see it, with what refresh has observed of it. */
   source(ref) {
     const s = this.roster().byId.get(ref)
     if (!s) return undefined
     const { declared, ...rest } = s
-    const signals = s.form ? signalsOf({ source: s.id, review: s.review }, this.sourceState()) : []
-    return { ...rest, purpose_tags: s.tags, signals, ...this.observed(s) }
+    const review = this.entryReview(s)
+    const signals = s.form ? signalsOf({ source: s.id, review }, this.sourceState()) : []
+    return { ...rest, state: s.state ?? 'active', review, purpose_tags: s.tags, signals, ...this.observed(s) }
   }
 
   /** What a source's collection was gathered for: the pack registration's purpose, or its catalog README's lede. */
@@ -257,10 +262,11 @@ export class Materials {
       tags: rec.tags ?? s?.tags ?? [],
       state: rec.state === 'removed' ? 'removed' : 'active',
       declared: !!s?.declared.includes(target),
-      review: rec.review,
+      review: undefined,
       revision: rec.revision ?? 0,
       evidence_status: s?.evidence_status,
     }
+    if (rec.review) b.review = { ...rec.review, current: reviewCurrent(rec.review, b.description) }
     b.signals = signalsOf(b, state)
     return b
   }
@@ -270,6 +276,7 @@ export class Materials {
     const at = id.lastIndexOf('@')
     const s = this.roster().byId.get(id.slice(0, at))
     if (!s) throw new Error(`unknown source: ${id.slice(0, at)}`)
+    writable(s)
     const target = this.paths.normalize(id.slice(at + 1))
     if (!existsSync(this.paths.absolute(target))) throw new Error(`target does not exist: ${target}`)
     const allowed = ['description', 'usage', 'enabled', 'favorite', 'priority', 'tags']
@@ -305,13 +312,13 @@ export class Materials {
   review(id, { revision, verdict, note, by }) {
     const b = this.binding(id)
     if (!b) throw new Error(`unknown binding: ${id}`)
-    if (!VERDICTS.includes(verdict)) throw new Error(`verdict must be ${VERDICTS.join(', ')}`)
+    if (!VERDICT_LIST.includes(verdict)) throw new Error(`verdict must be ${VERDICT_LIST.join(', ')}`)
     // A verdict is about the description the reviewer saw: if it changed since, say so instead of recording it.
     if (revision != null && revision !== b.revision) throw new ConflictError(b.id, revision, b.revision, b)
     const reviewed = revision ?? b.revision
     this.bindings.update(b.id, undefined, (cur = {}) => ({
       ...cur, source: b.source, target: b.target, title: b.title, state: cur?.state ?? b.state,
-      review: { revision: reviewed, source_version: this.source(b.source)?.version ?? null, by, verdict, note, at: new Date().toISOString() },
+      review: { revision: reviewed, ...seenDescription(b.description), source_version: this.source(b.source)?.version ?? null, by, verdict, note, at: new Date().toISOString() },
     }), { op: 'review', by, verdict })
     return this.binding(b.id)
   }
@@ -329,6 +336,7 @@ export class Materials {
   file(id, patch, { expected_revision, by, reason, task } = {}) {
     const s = this.roster().byId.get(id)
     if (!s) throw new Error(`unknown source: ${id}`)
+    writable(s)
     for (const key of Object.keys(patch)) if (!['form', 'category', 'description'].includes(key)) throw new Error(`not a catalog field: ${key}`)
     this.checkEntry(patch)
     this.cache = undefined
@@ -346,11 +354,12 @@ export class Materials {
   reviewEntry(id, { revision, verdict, note, by }) {
     const s = this.roster().byId.get(id)
     if (!s?.form) throw new Error(`not in the catalog: ${id}`)
-    if (!VERDICTS.includes(verdict)) throw new Error(`verdict must be ${VERDICTS.join(', ')}`)
+    writable(s)
+    if (!VERDICT_LIST.includes(verdict)) throw new Error(`verdict must be ${VERDICT_LIST.join(', ')}`)
     if (revision != null && revision !== s.entry_revision) throw new ConflictError(s.id, revision, s.entry_revision, { description: s.description, revision: s.entry_revision })
     this.cache = undefined
     this.catalog.update(s.id, undefined, (cur) => ({
-      ...cur, review: { revision: revision ?? cur.revision, source_version: this.source(s.id)?.version ?? null, by, verdict, note, at: new Date().toISOString() },
+      ...cur, review: { revision: revision ?? cur.revision, ...seenDescription(s.description), source_version: this.source(s.id)?.version ?? null, by, verdict, note, at: new Date().toISOString() },
     }), { op: 'review', by, verdict })
     return this.source(s.id)
   }
@@ -471,7 +480,7 @@ export class Materials {
       for (const field of ['title', 'summary', 'read_scope', 'limits', 'revisit_when', 'form', 'description']) {
         if (!input[field]?.trim()) throw new Error(`capture needs ${field}: ${input.title ?? url}`)
       }
-      if (byUrl.has(normalizeUrl(url))) return { id: byUrl.get(normalizeUrl(url)), existing: true }
+      if (byUrl.has(normalizeUrl(url))) { const id = byUrl.get(normalizeUrl(url)); return { id, existing: true, ...(byId.get(id)?.state === 'retired' ? { retired: true } : {}) } }
       const slug = input.slug ?? slugify(input.title, url)
       if (!SLUG.test(slug)) throw new Error(`bad slug: ${slug}`)
       const id = `${OWN}:${slug}`
@@ -499,9 +508,9 @@ export class Materials {
       this.catalog.update(id, 0, () => entry, { op: 'file', by, reason, task, fields: Object.keys(entry) })
     }
     this.cache = undefined
-    return plan.map(({ id, existing }) => {
+    return plan.map(({ id, existing, retired }) => {
       const s = this.source(id)
-      return { id, title: s.title, url: s.url, existing: !!existing }
+      return { id, title: s.title, url: s.url, existing: !!existing, ...(retired ? { retired: true } : {}) }
     })
   }
 
@@ -509,6 +518,7 @@ export class Materials {
   updateOwn(id, patch, { expected_revision, by, reason, task } = {}) {
     const cur = this.own.get(id)
     if (!cur) throw new Error(`not an own source: ${id}; pack sources are maintained in their pack`)
+    writable({ ...cur, id })
     const allowed = ['title', 'url', 'summary', 'read_scope', 'evidence_status', 'limits', 'revisit_when', 'tags', 'members', 'member_of', 'excerpts']
     for (const key of Object.keys(patch)) if (!allowed.includes(key)) throw new Error(`not editable: ${key}`)
     if (patch.url !== undefined && !/^https?:\/\//.test(patch.url)) throw new Error('url must be http(s)')
@@ -525,7 +535,9 @@ export class Materials {
 
   /** Retire an own source: it leaves the roster's active lists and its relations stop; the record stays. */
   retire(id, { expected_revision, reason, by, task } = {}) {
-    if (!this.own.get(id)) throw new Error(`not an own source: ${id}; pack sources are maintained in their pack`)
+    const cur = this.own.get(id)
+    if (!cur) throw new Error(`not an own source: ${id}; pack sources are maintained in their pack`)
+    writable({ ...cur, id })
     if (!reason?.trim()) throw new Error('retire needs reason')
     this.cache = undefined
     this.own.update(id, expected_revision, (cur) => ({ ...cur, state: 'retired', retired: { reason: reason.trim(), by, at: new Date().toISOString() } }), { op: 'retire', by, reason, task })

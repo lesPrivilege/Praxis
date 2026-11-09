@@ -398,15 +398,15 @@ export function createPraxis(options = {}) {
         const row = {
           id: s.id, title: s.title, form: s.form, description: s.description, url: s.url, evidence_status: s.evidence_status,
           pack: s.pack, member_of: s.member_of, collection: s.members ? true : undefined, pages: pages.get(s.id) ?? [],
-          signals: signalsOf({ source: s.id, review: s.review }, state),
+          signals: signalsOf({ source: s.id, review: materials.entryReview(s) }, state),
           // What a person reviewing the catalog needs per row: which description revision is current,
           // the latest review and the revision it saw, and when the source came in.
           entry_revision: s.entry_revision, captured_at: s.captured_for?.at,
           // Use tags find a source across areas; the first excerpt previews what it says, with where.
           tags: s.tags?.length ? s.tags : undefined,
           preview: s.excerpts?.[0] ? { claim: s.excerpts[0].claim, locator: s.excerpts[0].locator } : undefined,
-          // The review write is itself a catalog revision, so a review is current while it was the last write.
-          review: s.review ? { verdict: s.review.verdict, revision: s.review.revision, by: s.review.by, at: s.review.at, current: s.entry_revision === s.review.revision + 1 } : undefined,
+          // `current`: the description the review judged is still the description (states.js).
+          review: s.review ? (({ verdict, revision, by, at, current }) => ({ verdict, revision, by, at, current }))(materials.entryReview(s)) : undefined,
         }
         for (const a of new Set((filed.get(s.id) ?? ['']).map(areaOf))) {
           if (area !== undefined && a !== area && !a.startsWith(`${area}/`)) continue
@@ -544,7 +544,7 @@ function catalogSignals(materials) {
   for (const b of materials.listBindings()) for (const g of b.signals) shown.set(b.source, new Set([...(shown.get(b.source) ?? []), g]))
   const state = materials.sourceState()
   return materials.roster().list.filter((s) => s.form && s.state !== 'retired').flatMap((s) => {
-    const signals = signalsOf({ source: s.id, review: s.review }, state).filter((g) => g === 'needs_work' || !shown.get(s.id)?.has(g))
+    const signals = signalsOf({ source: s.id, review: materials.entryReview(s) }, state).filter((g) => g === 'needs_work' || !shown.get(s.id)?.has(g))
     return signals.length ? [{ id: s.id, title: s.title, signals, revision: s.entry_revision }] : []
   })
 }

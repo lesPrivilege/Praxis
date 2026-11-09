@@ -701,7 +701,7 @@ window.__ModuleLoader__.load({
         returning.current = false
         scroller?.current?.scrollTo({ top: place.current })
       })
-      if (current) return h(SourceDetail, { row: current, t, openSession, pick: { inCart, toggleCart }, onBack: back, onTag: (x) => { setTag(x); go({ tab: 'sources' }) }, onReviewed: update, send })
+      if (current) return h(SourceDetail, { key: current.id, row: current, t, openSession, pick: { inCart, toggleCart }, onBack: back, onTag: (x) => { setTag(x); go({ tab: 'sources' }) }, onReviewed: update, send })
       let body
       if (error) body = h('p', { className: 'pxs-empty' }, h(P.StateDot, { state: 'error' }), ' ', t('review.failed'), ' ', error)
       else if (!rows) body = h('div', { className: 'pxs-list', 'aria-busy': true }, [0, 1, 2, 3, 4].map((i) => h('div', { key: i, className: 'pxs-skel' }, h('i'), h('i'))))
@@ -840,11 +840,14 @@ window.__ModuleLoader__.load({
 
     function RowMenu({ row, t, onReviewed, onConflict }) {
       const [open, setOpen] = React.useState(false)
+      const busy = React.useRef(false)
       const verdict = async (v) => {
         setOpen(false)
+        if (busy.current) return
+        busy.current = true
         let s
-        try { s = await call('praxis_review', { source: row.id, verdict: v, revision: row.entry_revision }) } catch (e) { if (e.status === 409) return onConflict?.(); throw e }
-        onReviewed({ id: row.id, entry_revision: s.entry_revision, review: { verdict: v, revision: s.review?.revision, by: s.review?.by, at: s.review?.at, current: true } })
+        try { s = await call('praxis_review', { source: row.id, verdict: v, revision: row.entry_revision }) } catch { return onConflict?.() } finally { busy.current = false }
+        onReviewed({ id: row.id, entry_revision: s.entry_revision, review: s.review })
       }
       return h(P.Menu, { open, onClose: () => setOpen(false), align: 'end', portal: true,
         anchor: h(P.Button, { variant: 'ghost', size: 'sm', 'aria-label': t('review.more'), 'aria-haspopup': 'menu', 'aria-expanded': open, icon: h(P.IconEllipsisOutlineRegular, { size: 16 }),
@@ -900,7 +903,7 @@ window.__ModuleLoader__.load({
     // then the verdict. A block with nothing to show keeps its place and says so.
     const DEPTH = ['unavailable', 'partial', 'verified']
     function DepthMeter({ level, t }) {
-      const at = DEPTH.indexOf(level ?? 'partial')
+      const at = DEPTH.indexOf(readOf(level))
       return h('div', { className: 'pxs-meter', role: 'img', 'aria-label': t(`ev.${DEPTH[at]}`) },
         h('div', { className: 'pxs-meter-bar' }, DEPTH.map((d, i) => h('span', { key: d, 'data-on': i <= at || undefined, 'data-level': DEPTH[at] }))),
         h('span', { className: 'pxs-meter-label' }, t(`ev.${DEPTH[at]}`)))
@@ -932,7 +935,8 @@ window.__ModuleLoader__.load({
             if (e.status !== 409) throw e
             setD(await call('praxis_source', { id: row.id })); setProblem(t('review.changed')); return
           }
-          onReviewed({ id: row.id, entry_revision: s.entry_revision, review: { verdict: v, revision: s.review?.revision, by: s.review?.by, at: s.review?.at, current: true } })
+          onReviewed({ id: row.id, entry_revision: s.entry_revision, review: s.review })
+          setD((cur) => (cur ? { ...cur, entry_revision: s.entry_revision, review: s.review, description: s.description } : cur))
           // A description marked needs work goes to an agent, the only one who rewrites records.
           if (v === 'needs-work') await send(t('ask.revise', { id: row.id, title: row.title, note: note.trim() || t('ask.noNote') }))
           setDone(v); setAsking(false)

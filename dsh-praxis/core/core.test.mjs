@@ -264,6 +264,10 @@ test('upkeep lists only signals: needs-work, changed sources, stale runs, unfile
   assert.deepEqual(signals(), ['needs_work'])
   const [fresh] = p.materials.capture([{ url: 'https://example.org/new', title: '新来源', form: 'article', description: '查做法时打开；取步骤。', summary: '概要', read_scope: '读过', limits: '边界', revisit_when: '修订时' }], { task: '测试', by: 'test' })
   p.materials.file(SRC, { form: 'standard', description: '写控件时打开；取键盘约定。' }, { expected_revision: 0, by: 'test' })
+  // The binding showed the summary when it was judged; filing a description replaced that text, so the verdict lapses.
+  assert.equal(p.materials.binding(BIND).review.current, false)
+  assert.ok(!signals().includes('needs_work'), 'a verdict on a description that has since changed is not a signal')
+  p.materials.review(BIND, { verdict: 'needs-work', by: 'test' })
   p.materials.reviewEntry(SRC, { verdict: 'needs-work', by: 'test' })
   p.materials.reviewEntry(fresh.id, { verdict: 'needs-work', by: 'test' })
   const up = p.upkeep()
@@ -596,4 +600,24 @@ test('JSON writes keep the file\'s own formatting and change only what changed',
     assert.equal(patchJson(text, next), JSON.stringify(next, null, indent), `canonical files stay canonical (indent ${indent})`)
     assert.equal(patchJson(text, JSON.parse(text)), text, 'unchanged data, unchanged text')
   }
+})
+
+test('lifecycles: a retired source stays readable but takes no writes; a rewrite clears needs-work until reviewed again', () => {
+  const { p } = setup()
+  const item = { url: 'https://example.org/guide', title: 'Guide', form: 'practice', description: '做交互说明时打开；取键盘约定。', summary: '一份指南。', read_scope: '读了正文', limits: '未运行示例。', revisit_when: '改版时。' }
+  const [g] = p.materials.capture([item], { task: '测试', by: 'agent' })
+  const src = () => p.materials.source(g.id)
+  assert.equal(src().state, 'active')
+  p.materials.reviewEntry(g.id, { verdict: 'needs-work', revision: src().entry_revision, by: 'person' })
+  assert.deepEqual([src().review.current, src().signals], [true, ['needs_work']])
+  p.materials.file(g.id, { description: '写自定义控件的键盘行为时打开；取焦点约定。' }, { expected_revision: src().entry_revision, by: 'agent' })
+  assert.deepEqual([src().review.current, src().signals], [false, []], 'the rewrite waits for a review; it is no longer a signal')
+  p.materials.reviewEntry(g.id, { verdict: 'accurate', revision: src().entry_revision, by: 'person' })
+  assert.deepEqual([src().review.verdict, src().review.current], ['accurate', true])
+  p.materials.retire(g.id, { reason: '上游下线', by: 'person' })
+  assert.equal(src().state, 'retired', 'a retired source is still readable')
+  assert.throws(() => p.materials.file(g.id, { description: '别的说明。' }, { by: 'agent' }), /retired/)
+  assert.throws(() => p.materials.reviewEntry(g.id, { verdict: 'accurate', by: 'person' }), /retired/)
+  assert.throws(() => p.materials.retire(g.id, { reason: '再次', by: 'person' }), /retired/, 'retiring is final and happens once')
+  assert.deepEqual(p.materials.capture([item], { task: '再收', by: 'agent' }).map((r) => [r.id, r.existing, r.retired]), [[g.id, true, true]], 'capturing a retired URL says so')
 })

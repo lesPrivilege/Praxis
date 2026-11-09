@@ -4,8 +4,8 @@
 // Kit pages it serves. Each request is kept in the data root as asks.json, with the session it
 // ran in, so the page can show it running and then point at what it captured.
 import { randomUUID } from 'node:crypto'
-import { existsSync, readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
+import { readJson, withLock, writeJson } from '../core/store.js'
 
 // A pasted conversation can be long; the agent reads all of it.
 const MAX = 60000
@@ -51,9 +51,15 @@ const freeze = (value) => {
  */
 export function createAsks(ctx, praxis) {
   const file = join(praxis.where.data, 'asks.json')
-  const read = () => (existsSync(file) ? JSON.parse(readFileSync(file, 'utf8')) : [])
-  const write = (list) => writeFileSync(file, `${JSON.stringify(list.slice(0, KEEP), null, 2)}\n`)
-  const patch = (id, fields) => write(read().map((a) => (a.id === id ? { ...a, ...fields } : a)))
+  // Requests move running → done | failed (ASK_STATES in core/states.js); stopped is read, not written.
+  // Writes take the file lock and replace the file whole, so two agents finishing together lose nothing;
+  // trimming to the last KEEP never drops a request that is still running.
+  const read = () => readJson(file, [])
+  const change = (fn) => withLock(file, () => {
+    const next = fn(read())
+    writeJson(file, next.filter((a, i) => i < KEEP || a.status === 'running'))
+  })
+  const patch = (id, fields) => change((list) => list.map((a) => (a.id === id ? { ...a, ...fields } : a)))
   const cwd = praxis.where.base ?? praxis.where.data
 
   /** What one request produced: the sources captured in its session. */
@@ -61,8 +67,10 @@ export function createAsks(ctx, praxis) {
     const captured = praxis.materials.roster().list
       .filter((s) => s.captured_for?.session?.id === a.session)
       .map((s) => ({ id: s.id, title: s.title, url: s.url }))
-    // A request left running by a Host restart has no live agent any more.
-    const live = a.status !== 'running' || ctx.get?.('agents')?.get(a.session) !== undefined
+    // A request left running by a Host restart has no live agent any more. A Host that does not
+    // expose its agents cannot tell, so the request keeps its recorded state.
+    const agents = ctx.get?.('agents')
+    const live = a.status !== 'running' || !agents || agents.get(a.session) !== undefined
     return { ...a, status: live ? a.status : 'stopped', captured }
   }
 
@@ -88,7 +96,7 @@ export function createAsks(ctx, praxis) {
       const title = urls.length ? `Praxis · 收录 ${urls.length} 个链接` : 'Praxis · 来源请求'
       try { ctx.get?.('sessionTitle')?.rename(agent.session, title) } catch {}
       const record = { id, text, urls, session, status: 'running', at: new Date().toISOString() }
-      write([record, ...read()])
+      change((list) => [record, ...list])
       agent.followup(freeze({ id: randomUUID(), role: 'user', content: [{ type: 'text', text: askPrompt(text) }], source: { kind: 'praxis' } }))
       await ctx.get?.('sessions')?.flush(agent.session)
       agent.whenIdle().then(
