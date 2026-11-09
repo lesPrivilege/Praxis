@@ -105,7 +105,7 @@ test('DSH plugin registers the worker tools, three Connection routes, /praxis an
   assert.deepEqual(tools.map((t) => t.name), TOOLS.filter((t) => t.agent).map((t) => t.name))
   assert.ok(!tools.some((t) => t.name === 'praxis_preset_save'), 'maintenance tools stay off the session')
   assert.equal(commands[0].name, 'praxis')
-  assert.match(commands[0].handler({ rawInput: '' }).text, /任务类型/)
+  assert.match(commands[0].handler({ rawInput: '' }).text, /Task types/)
   assert.deepEqual(routes.map((r) => [r.path, r.methods]), [[CALL_PATH, ['POST']], ['/api/praxis.file', ['GET', 'HEAD']], ['/api/praxis.ask', ['GET', 'POST']]])
   assert.equal(tools.find((t) => t.name === 'praxis_unit').isConcurrencySafe(), true)
   assert.equal(tools.find((t) => t.name === 'praxis_curate').isConcurrencySafe, undefined)

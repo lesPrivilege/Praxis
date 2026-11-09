@@ -10,39 +10,40 @@ window.__ModuleLoader__.load({
     const React = require('react')
     const NS = 'praxis'
     const COPY = {
-      en: { title: 'Praxis', description: 'Kit bundle: units, sources, presets and log', command: 'Open the Praxis control plane',
-        resolve: 'Praxis resolve', consume: 'Praxis record', units: 'units', materials: 'materials', artifacts: 'artifacts', sources: 'sources', open: 'Control plane', running: 'running', failed: 'Failed',
+      en: { title: 'Praxis', units: 'units', materials: 'materials', artifacts: 'artifacts', sources: 'sources', open: 'Open in Praxis', running: 'running', failed: 'Failed',
         panel: 'Praxis',
-        'review.title': 'Praxis',
-        'review.controlPlane': 'Control plane', 'review.filter': 'Filter', 'review.search': 'Find a source', 'review.view': 'View', 'review.view.list': 'List', 'review.view.grid': 'Grid', 'review.more': 'More',
+        'review.filter': 'Review state', 'review.search': 'Find a source', 'review.view': 'Layout', 'review.view.list': 'List', 'review.view.grid': 'Grid', 'review.more': 'More actions',
         'review.f.open': 'To review', 'review.f.needs-work': 'Needs work', 'review.f.reviewed': 'Reviewed', 'review.f.all': 'All',
-        'review.empty.open': 'Every current description has been reviewed. New sources show up here.', 'review.empty.needs-work': 'No source is marked needs work.', 'review.empty.reviewed': 'Nothing reviewed yet.', 'review.empty.all': 'No sources yet. Paste a link below.',
-        'review.noMatch': 'No matching sources', 'review.changed': 'The description changed while you were reading. Read the new one, then decide.', 'review.tag': 'Tag', 'review.clearTag': 'Clear tag', 'review.failed': 'Could not read the roster:', 'review.noArea': 'Unfiled',
-        'review.openOriginal': 'Open original', 'cart.add': 'Add to cart', 'cart.remove': 'Remove from cart', 'cart.in': 'In cart', 'cart.label': 'Cart', 'cart.count': '{n} in cart', 'cart.clear': 'Clear', 'cart.chat': 'Open in chat', 'cart.copy': 'Copy', 'cart.copied': 'Copied', 'cart.copyFailed': 'Could not copy', 'cart.hint': 'Take these sources into a chat, or copy them for another agent', 'review.markAccurate': 'Description is accurate', 'review.markNeedsWork': 'Description needs work',
-        'review.scope': 'How far it was read', 'review.excerpts': 'Where in the original', 'review.limits': 'Limits', 'review.summary': 'Summary', 'review.why': 'Why it was collected', 'review.pages': 'Attached to',
-        'review.question': 'Is this description right?', 'review.last': 'Last: {v}, {by}, {at}', 'review.note': 'What is wrong; Praxis will fix it', 'review.noteHint': '⌘/Ctrl + Enter to send, Esc to cancel',
+        'review.empty.open': 'Nothing to review', 'review.empty.needs-work': 'No source needs work', 'review.empty.reviewed': 'Nothing reviewed yet',
+        'review.empty.all': 'No sources yet', 'review.empty.allHint': 'Paste links or a conversation in the box below.',
+        'review.failedTitle': 'Could not load sources', 'review.noMatch': 'No source matches', 'review.noMatchHint': 'Try other words or another tag.', 'review.clearAll': 'Clear filters', 'review.matches': '{n} matching', 'review.retry': 'Try again',
+        'review.prev': 'Previous source', 'review.next': 'Next source', 'shelf.all': 'Show all {n}', 'shelf.less': 'Show fewer',
+        'review.changed': 'The description changed while you were reading, so nothing was recorded. This is the new one.', 'review.clearTag': 'Clear tag', 'review.noArea': 'Unfiled',
+        'review.openOriginal': 'Open original', 'cart.add': 'Add to cart', 'cart.remove': 'Remove from cart', 'cart.in': 'In cart', 'cart.label': 'Cart', 'cart.count': '{n} in cart', 'cart.clear': 'Clear', 'cart.chat': 'Open in chat', 'cart.copy': 'Copy', 'cart.copied': 'Copied', 'cart.copyFailed': 'Could not copy', 'review.markAccurate': 'Description is accurate', 'review.markNeedsWork': 'Description needs work',
+        'review.excerpts': 'Where in the original', 'review.limits': 'Limits', 'review.summary': 'Summary', 'review.pages': 'Attached to',
+        'review.question': 'Is this description right?', 'review.last': 'Last: {v}, {by}, {at}', 'review.note': 'What is wrong', 'review.noteHint': '⌘/Ctrl + Enter to send, Esc to cancel',
         'review.sendNeedsWork': 'Mark needs work and send to Praxis', 'review.cancel': 'Cancel', 'review.recorded': 'Recorded: {v}', 'review.sentToAgent': 'Marked needs work; Praxis is revising it',
         'ev.verified': 'Original read', 'ev.partial': 'Partly read', 'ev.unavailable': 'Not read',
         'tab.kit': 'Kit', 'tab.sources': 'Sources', 'tab.task': 'Task', 'tab.artifacts': 'Artifacts', 'tab.log': 'Log',
-        'kit.core': 'Core', 'kit.flow': 'Downstream workflows', 'kit.other': 'Bound outside the Kit', 'kit.files': '{n} files', 'kit.packs': 'Source packs',
-        'kit.sources': 'Sources on this page', 'kit.showRemoved': 'Show removed', 'kit.noSources': 'No sources on this page yet.', 'kit.restore': 'Restore', 'kit.favorite': 'Star', 'kit.enabled': 'On',
-        'kit.check': 'Check the original', 'kit.bindingAccurate': 'Description here is accurate', 'kit.bindingNeedsWork': 'Description here needs work', 'kit.remove': 'Remove (restorable)',
-        'unit.resident': 'Resident', 'unit.revised': 'Revised', 'unit.conflict': 'Revision conflicts with the updated page', 'unit.revisedWhy': 'Revised because: {r}', 'unit.read': 'Read the page', 'unit.hide': 'Hide the page', 'unit.revert': 'Revert revision', 'unit.askSources': 'Ask Praxis for sources', 'unit.contents': 'Contents',
+        'kit.core': 'Core', 'kit.flow': 'Downstream workflows', 'kit.other': 'Outside the Kit', 'kit.files': '{n} files', 'kit.packs': 'Source packs', 'kit.failed': 'Could not load the Kit:',
+        'kit.sources': 'Sources on this page', 'kit.showRemoved': 'Show removed', 'kit.noSources': 'No sources on this page', 'kit.restore': 'Restore', 'kit.favorite': 'Star', 'kit.enabled': 'Use in tasks',
+        'kit.check': 'Check the original', 'kit.bindingAccurate': 'Description here is accurate', 'kit.bindingNeedsWork': 'Description here needs work', 'kit.remove': 'Remove from this page',
+        'unit.resident': 'Always in context', 'unit.revised': 'Revised', 'unit.conflict': 'Revision conflicts with the updated page', 'unit.revisedWhy': 'Revised because: {r}', 'unit.read': 'Show full text', 'unit.hide': 'Hide full text', 'unit.revert': 'Revert revision', 'unit.askSources': 'Ask Praxis for sources', 'unit.contents': 'Contents',
         'task.type': 'Task type', 'task.pipeline': 'Pipeline', 'task.default': 'Default', 'task.preset': 'Preset', 'task.presetDefault': 'Pipeline default', 'task.noStream': 'None', 'task.flow': 'Units per layer',
-        'task.units': 'Units to read', 'task.materials': 'Materials', 'task.noMaterials': 'No enabled materials on these units yet.', 'task.exemplars': 'Examples and pipelines', 'task.presetValues': 'Preset: {p}', 'task.acceptance': 'Acceptance',
+        'task.units': 'Units to read', 'task.materials': 'Materials', 'task.noMaterials': 'No sources for these units', 'task.exemplars': 'Examples and pipelines', 'task.presetValues': 'Preset: {p}', 'task.acceptance': 'Acceptance',
         'task.presets': 'Presets', 'task.isDefault': 'Default', 'task.newPreset': 'New {p} preset', 'task.presetName': 'Name', 'task.presetWhen': 'When to use', 'task.makeDefault': 'Default for {p}', 'task.save': 'Save', 'task.removePreset': 'Delete preset', 'yes': 'Yes', 'no': 'No',
-        'art.search': 'Find an artifact', 'art.unregistered': '{n} final files not registered', 'art.outside': 'Outside every project', 'art.none': 'No artifacts registered yet.', 'art.openFile': 'Open file', 'art.reveal': 'Show in Finder', 'art.failed': 'The host could not open the file', 'art.serves': 'Serves these pages', 'art.servesNone': 'No pages recorded.',
-        'art.versions': 'Versions', 'art.noRun': 'No run record', 'art.basis': 'Basis changed', 'art.used': 'Used', 'art.madeWith': 'Pipeline', 'art.question': 'This is v{v}. Reviewed?', 'art.record': 'Record', 'review.noteOptional': 'Note (optional)', 'review.conflict': 'Someone changed this meanwhile. Reload and look again.',
+        'art.search': 'Find an artifact', 'art.unregistered': '{n} final files not registered', 'art.outside': 'Outside every project', 'art.none': 'No artifacts yet', 'art.noMatch': 'No artifact matches', 'art.openFile': 'Open file', 'art.reveal': 'Show in Finder', 'art.failed': 'The host could not open the file', 'art.serves': 'Serves these pages', 'art.servesNone': 'No pages recorded',
+        'art.versions': 'Versions', 'art.noRun': 'No run record', 'art.basis': 'Basis changed', 'art.used': 'Used', 'art.madeWith': 'Pipeline', 'art.question': 'Verdict on v{v}', 'art.record': 'Record', 'review.noteOptional': 'Note (optional)', 'review.conflict': 'Someone changed this meanwhile. Reload and look again.',
         'kind.delivery': 'Delivery', 'kind.pipeline': 'Pipeline', 'kind.example': 'Example',
         'as.modified': 'Unregistered changes', 'as.missing': 'File not found', 'as.needs_work': 'Needs work', 'as.misplaced': 'Outside the layout', 'as.basis_changed': 'Basis changed',
         'av.needs-work': 'Needs work', 'av.checked': 'Checked', 'av.accepted': 'Accepted',
         'gap.needs_work': 'Needs work', 'gap.changed': 'Original changed', 'gap.unreachable': 'Unreachable',
         'log.attention': 'Needs attention', 'log.reload': 'Plugin code changed; restart DSH to load it', 'log.unfiled': 'Not catalogued', 'log.sendFile': 'Send to Praxis to file', 'log.added': 'New upstream member', 'log.sendCapture': 'Send to Praxis', 'log.skip': 'Skip', 'log.skipWhy': 'Why skip it',
-        'log.gone': 'Gone upstream', 'log.retire': 'Retire', 'log.retireWhy': 'Why retire it', 'log.none': 'Nothing needs attention.', 'log.runs': 'Runs', 'log.runCounts': '{u} units · {b} bindings · {a} artifacts', 'log.openArtifact': 'Artifact', 'log.noRuns': 'No runs yet.', 'log.history': 'Maintenance', 'log.noHistory': 'No maintenance yet.',
+        'log.gone': 'Gone upstream', 'log.retire': 'Retire', 'log.retireWhy': 'Why retire it', 'log.none': 'Nothing needs attention', 'log.runs': 'Runs', 'log.runCounts': '{u} units · {s} sources', 'log.noRuns': 'No runs yet', 'log.history': 'Maintenance', 'log.noHistory': 'No maintenance yet',
         'ask.forUnit': 'Find sources for Kit unit {id} ({title}): check the roster first, then look further if needed; read each original, capture it and attach it to this page, describing when this page uses it and what to take.', 'ask.file': 'Source {id} ({title}) is not catalogued. Read the original, then set form, category and description, and attach it where it clearly serves.', 'ask.member': '{url}\nA new upstream member of collection {id}.',
-        'tab.label': 'View', 'tab.catalog': 'Catalog', 'tab.review': 'Review', 'tab.catalogHint': '{n} sources', 'layer.design': 'Design', 'layer.writing': 'Writing', 'layer.task': 'Task', 'layer.publish': 'Publish', 'layer.stream': 'Stream', 'd.depth': 'Read depth', 'd.check': 'Upstream check', 'd.unreachable': 'Unreachable', 'd.noCheck': 'Not checked yet', 'd.captured': 'Captured', 'd.read': 'What was actually read', 'd.noExcerpts': 'No excerpts. Read the original through before using it.', 'd.noPages': 'Not attached to a Kit page yet; catalogued only.', 'd.serves': 'Serves through these pages', 'd.runs': 'Read by these tasks', 'd.noRuns': 'No task has recorded reading it.', 'd.revisit': 'When to revisit',
+        'tab.label': 'Sections', 'tab.scope': 'Sources', 'tab.catalog': 'Catalog', 'tab.review': 'Review', 'tab.catalogHint': '{n} sources', 'layer.design': 'Design', 'layer.writing': 'Writing', 'layer.task': 'Task', 'layer.publish': 'Publish', 'layer.stream': 'Stream', 'd.checked': 'Original checked {at}: HTTP {http}', 'd.unreachable': 'The original could not be reached when checked on {at}. The excerpts and read scope below are what Praxis has.', 'd.noCheck': 'Original not checked yet', 'd.activity': 'Activity', 'd.collected': 'Collected for: {task}', 'd.fromPack': 'From the {pack} pack', 'd.readFor': 'Read for: {title}', 'd.read': 'What was read', 'd.noExcerpts': 'No excerpts; read the whole original before using it', 'd.noPages': 'Not attached to any Kit page', 'd.serves': 'Reaches these task types', 'd.noRuns': 'No run has read it', 'd.revisit': 'When to revisit',
         'ask.label': 'Capture or change sources', 'ask.placeholder': 'Paste links or a conversation, or tell Praxis what to change', 'ask.unavailable': 'No agent here; open Praxis in DSH to paste links', 'ask.send': 'Send',
-        'ask.running': 'Reading the originals and filing', 'ask.done': 'Captured {n}: {titles}', 'ask.doneNone': 'Done; nothing new captured', 'ask.failed': 'Did not finish', 'ask.stopped': 'Session stopped before finishing', 'ask.session': 'Session',
+        'ask.running': 'Reading the originals and filing', 'ask.done': 'Captured {n}:', 'ask.doneNone': 'Done; nothing new captured', 'ask.failed': 'Did not finish', 'ask.stopped': 'Session stopped before finishing', 'ask.session': 'Session',
         'ask.revise': 'The description of source {id} ({title}) was marked needs work: {note}. Read the original, then rewrite its description; change form, category or attachment descriptions if needed.', 'ask.noNote': 'no reason given',
         'v.accurate': 'Accurate', 'v.revised': 'Revised', 'v.needs-work': 'Needs work',
         'form.standard': 'Standard', 'form.practice': 'Practice', 'form.component-library': 'Component library', 'form.case-library': 'Case library', 'form.case': 'Case', 'form.skill': 'Skill', 'form.tool': 'Tool', 'form.article': 'Article', 'form.research': 'Research' },
@@ -175,6 +176,7 @@ window.__ModuleLoader__.load({
       out: ['M9.5 3H13v3.5', 'M13 3 7.5 8.5', 'M11.5 9.5V12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V5.5a1 1 0 0 1 1-1h2.5'],
       up: ['M8 13V3.5', 'M4 7.5 8 3.5l4 4'],
       back: ['M10 3.5 5.5 8l4.5 4.5'],
+      forward: ['M6 3.5 10.5 8 6 12.5'],
       standard: ['M4 2.5h8v11H4z', 'M6 5.5h4', 'M6 8h4', 'M6 10.5h2.5'],
       practice: ['M3 4.5 8 2l5 2.5L8 7z', 'M3 8l5 2.5L13 8', 'M3 11.5 8 14l5-2.5'],
       'component-library': ['M3 3h4v4H3z', 'M9 3h4v4H9z', 'M3 9h4v4H3z', 'M9.5 9.5h3v3h-3z'],
@@ -231,8 +233,16 @@ window.__ModuleLoader__.load({
     // Kit (layer → area → unit) and the sources hung on each unit, then a source's record and its
     // original. Tabs: Kit, Sources, Task, Artifacts, Log. The composer at the bottom is how records
     // change: people say it, an agent session writes it.
+    //
+    // A place is a tab and where in it: a unit, a folder, an artifact, the review queue. Each tab keeps
+    // its place, its filters and its scroll offset while another tab is in front. Going back up puts
+    // the offset back and hands focus to the item you came from. A source opens over the place it was
+    // opened from; ← → step through the list it was opened from; Esc or the trail goes back.
     const TABS = ['kit', 'sources', 'task', 'artifacts', 'log']
     const LAYERS = ['design', 'writing', 'task', 'publish']
+    const keyOf = (n) => `${n.tab}:${n.unit ?? n.target ?? n.artifact ?? n.mode ?? ''}${n.source ? `#${n.source}` : ''}`
+    const placeOf = ({ source, list, from, ...place }) => place
+    const homeOf = (tab) => (tab === 'sources' && recall('praxis.sources.tab', 'catalog') === 'review' ? { tab, mode: 'review' } : { tab })
 
     async function loadKit() {
       const [units, bindings, revisions, packs] = await Promise.all([call('praxis_units'), call('praxis_bindings', {}), call('praxis_revisions'), call('praxis_packs')])
@@ -241,24 +251,64 @@ window.__ModuleLoader__.load({
       return { units, bindings, byPath, byId: new Map(units.map((u) => [u.id, u])), revisions: new Map(revisions.map((r) => [r.path, r])), packs }
     }
 
+    // Source records, fetched once while the page is open: a source hovered, focused or next in line
+    // is already drawn when it opens.
+    function sourceCache() {
+      const asked = new Map()
+      const known = new Map()
+      const get = (id) => {
+        if (!asked.has(id)) asked.set(id, call('praxis_source', { id }).then((d) => { known.set(id, d); return d }, (e) => { asked.delete(id); throw e }))
+        return asked.get(id)
+      }
+      return { get, peek: (id) => known.get(id), put: (id, d) => { known.set(id, d); asked.set(id, Promise.resolve(d)) }, forget: (id) => { asked.delete(id); known.delete(id) }, clear: () => { asked.clear(); known.clear() } }
+    }
+    /** Pointer or focus resting on a source for a moment fetches its record. */
+    const intentOn = (sources, id) => {
+      let timer
+      return { onPointerEnter: () => { timer = setTimeout(() => sources.get(id).catch(() => {}), 80) }, onPointerLeave: () => clearTimeout(timer), onFocus: () => sources.get(id).catch(() => {}) }
+    }
+    /** Runs `fn` when a kept pane comes to the front again, so it never shows stale records. */
+    function useReturn(active, fn) {
+      const was = React.useRef(active)
+      React.useEffect(() => { if (active && !was.current) fn(); was.current = active }, [active])
+    }
+
     function PraxisPage({ t, openSession, openPath, addToChat }) {
-      const [nav, setNav] = React.useState(() => ({ tab: recall('praxis.tab', 'kit') }))
+      const [nav, setNav] = React.useState(() => { const tab = recall('praxis.tab', 'kit'); return homeOf(TABS.includes(tab) ? tab : 'kit') })
+      const here = React.useRef(nav)
+      here.current = nav
+      const places = React.useRef({ [nav.tab]: nav })
+      const tops = React.useRef({})
+      const settle = React.useRef(null)
+      const seeds = React.useRef(new Map())
+      const stepping = React.useRef(false)
+      const [drawn, setDrawn] = React.useState(() => new Set([nav.tab]))
+      const [last, setLast] = React.useState(null)
       const [kit, setKit] = React.useState(null)
       const [kitError, setKitError] = React.useState(null)
+      const [catalog, setCatalog] = React.useState(null)
+      const [catalogError, setCatalogError] = React.useState(null)
       const [attention, setAttention] = React.useState(0)
       const [requests, setRequests] = React.useState({ available: false, asks: [] })
       const [stamp, setStamp] = React.useState(0)
+      const sources = React.useMemo(sourceCache, [])
       const scroll = React.useRef(null)
       // The cart: sources a person picked to work with, kept in this browser until taken into a chat.
       const [cart, setCart] = React.useState(() => { try { return JSON.parse(recall('praxis.cart', '[]')) } catch { return [] } })
       React.useEffect(() => { remember('praxis.cart', JSON.stringify(cart)) }, [cart])
       const toggleCart = React.useCallback((row) => setCart((c) => (c.some((x) => x.id === row.id) ? c.filter((x) => x.id !== row.id)
         : [...c, { id: row.id, title: row.title, url: row.url, description: row.description }])), [])
-      const inCart = (id) => cart.some((x) => x.id === id)
+      const pick = { inCart: (id) => cart.some((x) => x.id === id), toggleCart }
 
-      const reloadKit = React.useCallback(() => loadKit().then(setKit, (e) => setKitError(String(e.message ?? e))), [])
+      const reloadKit = React.useCallback(() => loadKit().then((k) => { setKit(k); setKitError(null) }, (e) => setKitError(String(e.message ?? e))), [])
+      const reloadCatalog = React.useCallback(() => loadCatalog().then((c) => { setCatalog(c); setCatalogError(null) }, (e) => setCatalogError(String(e.message ?? e))), [])
       const loadUpkeep = React.useCallback(() => call('praxis_upkeep').then((r) => setAttention(upkeepCount(r)), () => {}), [])
       React.useEffect(() => { reloadKit(); loadUpkeep(); asks().then(setRequests, () => {}) }, [reloadKit, loadUpkeep])
+      const wantCatalog = drawn.has('sources')
+      React.useEffect(() => { if (wantCatalog) reloadCatalog() }, [wantCatalog, reloadCatalog, stamp])
+      React.useEffect(() => { sources.clear() }, [stamp, sources])
+      useReturn(nav.tab === 'kit', reloadKit)
+      useReturn(nav.tab === 'sources', reloadCatalog)
       // While an agent is working, look again every few seconds; when it settles, everything reloads.
       const running = requests.asks.some((a) => a.status === 'running')
       React.useEffect(() => {
@@ -270,64 +320,174 @@ window.__ModuleLoader__.load({
         return () => clearInterval(timer)
       }, [running, reloadKit, loadUpkeep])
 
-      const go = React.useCallback((next) => {
-        setNav((cur) => {
-          const to = typeof next === 'function' ? next(cur) : next
-          if (to.tab) remember('praxis.tab', to.tab)
-          return to
-        })
-        scroll.current?.scrollTo({ top: 0 })
+      // Every move goes through here: remember where the page sat, then draw the new place at `top`
+      // and hand focus to the first of `focus` (item keys) that is on screen.
+      const move = React.useCallback((to, how = {}) => {
+        const cur = here.current
+        if (scroll.current) tops.current[keyOf(cur)] = scroll.current.scrollTop
+        places.current[to.tab] = to
+        here.current = to
+        settle.current = { top: how.top ?? 0, focus: how.focus, title: how.title }
+        stepping.current = !!how.step
+        if (to.tab !== cur.tab) remember('praxis.tab', to.tab)
+        setDrawn((s) => (s.has(to.tab) ? s : new Set(s).add(to.tab)))
+        setNav(to)
       }, [])
+      React.useLayoutEffect(() => {
+        const s = settle.current
+        const box = scroll.current
+        if (!s || !box) return
+        settle.current = null
+        box.scrollTop = s.top
+        // A new page takes focus at its title, so the keyboard and a screen reader start there.
+        if (s.title) box.querySelector('.pxs-detail h1, .pxs-pane:not([hidden]) h1[tabindex]')?.focus({ preventScroll: true })
+        // The item is looked for where the page is, then in the dock (the cart, the capture line).
+        const scopes = [box.querySelector('.pxs-pane:not([hidden])'), box.parentElement?.querySelector('.pxs-dock')].filter(Boolean)
+        for (const key of [].concat(s.focus ?? [])) {
+          const el = scopes.map((x) => x.querySelector(`[data-key="${CSS.escape(key)}"]`)).find(Boolean)
+          if (!el) continue
+          el.scrollIntoView({ block: 'nearest' })
+          ;(el.matches('button') ? el : el.querySelector('button'))?.focus({ preventScroll: true })
+          break
+        }
+      }, [nav])
+      // Down or across: a new place, from its top.
+      const go = React.useCallback((next) => move(typeof next === 'function' ? next(here.current) : next, { title: true }), [move])
+      // Back up to a place already seen.
+      const up = React.useCallback((to, focus) => move(to, { top: tops.current[keyOf(to)] ?? 0, focus }), [move])
+
+      // The places down to `place`, each with the key it is listed under one level up.
+      const lineage = (place, label) => {
+        const line = [{ label: t(`tab.${place.tab}`), to: { tab: place.tab } }]
+        if (place.unit && kit) {
+          const chain = []
+          for (let p = place.unit; p; p = parentOf(kit.units, p)) chain.unshift(p)
+          for (const id of chain) line.push({ label: kit.byId.get(id)?.title ?? id, to: { tab: 'kit', unit: id }, key: `unit:${id}` })
+        }
+        if (place.target) place.target.split('/').forEach((part, i, all) => { const path = all.slice(0, i + 1).join('/'); line.push({ label: part, to: { tab: 'kit', target: path }, key: `target:${path}` }) })
+        if (place.mode === 'review') line.push({ label: t('tab.review'), to: { tab: 'sources', mode: 'review' } })
+        if (place.artifact) line.push({ label: label ?? place.artifact, to: { tab: 'artifacts', artifact: place.artifact }, key: `artifact:${place.artifact}` })
+        return line
+      }
+      // A page's trail ends at its parent; each step goes back up with focus on the way down.
+      const trailOf = (place, label) => {
+        const line = lineage(place, label)
+        return line.slice(0, -1).map((x, i) => ({ label: x.label, onClick: () => up(x.to, line[i + 1].key) }))
+      }
+
+      const openSource = React.useCallback((id, { list, label, seed } = {}) => {
+        const cur = here.current
+        if (seed) seeds.current.set(id, seed)
+        move({ ...placeOf(cur), source: id, list: list ?? [id], from: cur.source ? cur.from : label })
+      }, [move])
+      const stepSource = React.useCallback((id) => move({ ...here.current, source: id }, { step: true }), [move])
+      const closeSource = React.useCallback(() => {
+        const cur = here.current
+        if (!cur.source) return
+        const list = cur.list ?? []
+        const at = list.indexOf(cur.source)
+        setLast(cur.source)
+        // Back where it was opened; if it left that list (reviewed out of the queue), the next one takes focus.
+        up(placeOf(cur), [cur.source, ...list.slice(at + 1), ...list.slice(0, Math.max(at, 0)).reverse()].map((id) => `source:${id}`))
+      }, [up])
+      const pickTab = (v) => {
+        const cur = here.current
+        if (v !== cur.tab) { const to = places.current[v] ?? homeOf(v); return move(to, { top: tops.current[keyOf(to)] ?? 0 }) }
+        // The tab already in front: close the source, or go up to the tab's first level, or to its top.
+        if (cur.source) return closeSource()
+        const line = lineage(cur)
+        if (line.length > 1 && cur.tab !== 'sources') return up(line[0].to, line[1].key)
+        scroll.current?.scrollTo({ top: 0, behavior: 'smooth' })
+      }
+      // Esc closes the innermost thing first: a field's own use of it, then an open source, then one
+      // level up. An Esc used here stops here, so the Host does not also act on it.
+      const onKeyDown = (e) => {
+        if (e.key !== 'Escape' || e.altKey || e.metaKey || e.ctrlKey || e.shiftKey) return
+        if (e.defaultPrevented) return e.stopPropagation()
+        if (e.target.closest?.('input, textarea, select, [contenteditable="true"]')) return
+        const cur = here.current
+        const line = lineage(cur)
+        if (!cur.source && !(line.length > 1 && cur.tab !== 'sources')) return
+        e.preventDefault()
+        e.stopPropagation()
+        if (cur.source) closeSource()
+        else up(line.at(-2).to, line.at(-1).key)
+      }
       React.useEffect(() => {
-        const on = (e) => go(e.detail)
+        const on = (e) => {
+          const r = e.detail ?? {}
+          if (r.source) move({ ...placeOf(places.current.sources ?? homeOf('sources')), source: r.source, list: [r.source] })
+          else if (r.tab) go(r)
+        }
         window.addEventListener(GO, on)
         return () => window.removeEventListener(GO, on)
-      }, [go])
+      }, [go, move])
+
       const send = async (text) => {
         const ask = await asks(text)
         setRequests((r) => ({ ...r, asks: [ask, ...r.asks] }))
       }
-      const refresh = () => { reloadKit(); loadUpkeep() }
-      const shared = { t, go, nav, kit, send, refresh, openSession, openPath, stamp, inCart, toggleCart, scroller: scroll }
+      const refresh = () => { reloadKit(); loadUpkeep(); sources.clear() }
+      const onReviewed = React.useCallback((next) => setCatalog((c) => (c ? { ...c, rows: c.rows.map((r) => (r.id === next.id ? { ...r, ...next } : r)) } : c)), [])
+      const reviewedInList = React.useCallback((next) => { sources.forget(next.id); onReviewed(next) }, [sources, onReviewed])
+      const rowsById = React.useMemo(() => new Map((catalog?.rows ?? []).map((r) => [r.id, r])), [catalog])
+      const shared = { t, go, up, kit, send, refresh, openSession, openPath, stamp, pick, openSource, last, sources, trailOf, scroller: scroll }
 
-      const view = nav.tab === 'sources' ? h(SourcesView, { ...shared, key: 'sources' })
-        : nav.tab === 'task' ? h(TaskView, { ...shared, key: 'task' })
-          : nav.tab === 'artifacts' ? h(ArtifactsView, { ...shared, key: 'artifacts' })
-            : nav.tab === 'log' ? h(LogView, { ...shared, key: 'log', onCount: setAttention })
-              : kitError ? h('p', { className: 'pxs-empty' }, t('review.failed'), ' ', kitError)
-                : h(KitView, { ...shared, key: 'kit' })
+      // Every tab seen so far stays drawn; only the one in front shows.
+      const panes = TABS.filter((v) => drawn.has(v)).map((v) => {
+        const active = v === nav.tab
+        const props = { ...shared, nav: placeOf(active ? nav : places.current[v] ?? homeOf(v)), active: active && !nav.source }
+        const body = v === 'sources' ? h(SourcesView, { ...props, catalog, catalogError, reloadCatalog, onReviewed: reviewedInList })
+          : v === 'task' ? h(TaskView, props)
+            : v === 'artifacts' ? h(ArtifactsView, props)
+              : v === 'log' ? h(LogView, { ...props, onCount: setAttention })
+                : kitError && !kit ? h('p', { className: 'pxs-empty' }, t('kit.failed'), ' ', kitError) : h(KitView, props)
+        return h('div', { key: v, className: 'pxs-pane', hidden: !active || !!nav.source || undefined }, body)
+      })
+      let detail = null
+      if (nav.source) {
+        const list = nav.list ?? []
+        const at = list.indexOf(nav.source)
+        const line = lineage(placeOf(nav), nav.from)
+        detail = h(SourceDetail, { key: nav.source, id: nav.source, quiet: stepping.current, seed: rowsById.get(nav.source) ?? seeds.current.get(nav.source), t, go, kit, openSession, pick, sources, send, onReviewed,
+          steps: { prev: at > 0 ? list[at - 1] : null, next: at >= 0 ? list[at + 1] ?? null : null }, onStep: stepSource,
+          trail: line.map((x, i) => ({ label: x.label, onClick: i === line.length - 1 ? closeSource : () => up(x.to, line[i + 1].key) })),
+          onTag: (x) => go({ tab: 'sources', tag: x, at: Date.now() }) })
+      }
 
-      return h('section', { className: 'pxs-page', 'aria-label': 'Praxis' },
+      return h('section', { className: 'pxs-page', 'aria-label': 'Praxis', onKeyDown },
         h('div', { className: 'pxs-scroll', ref: scroll }, h('div', { className: 'pxs-content' },
           h('header', { className: 'pxs-head' },
             h('h1', { className: 'pxs-wordmark' }, h(PanelIcon, { size: 22 }), h('span', null, 'Praxis'))),
           h('nav', { className: 'pxs-tabs', 'aria-label': t('tab.label') },
-            TABS.map((v) => h('button', { key: v, type: 'button', className: 'pxs-tab', 'aria-current': nav.tab === v ? 'page' : undefined, onClick: () => go({ tab: v }) },
+            TABS.map((v) => h('button', { key: v, type: 'button', className: 'pxs-tab', 'aria-current': nav.tab === v ? 'page' : undefined, onClick: () => pickTab(v) },
               t(`tab.${v}`), v === 'log' && attention ? h('span', { className: 'pxs-badge', 'aria-label': t('log.attention') }, String(attention)) : null))),
-          view)),
+          panes, detail)),
         h(Composer, { t, available: requests.available, onSend: send },
-          h(AskStrip, { asks: requests.asks, t, openSession }),
-          cart.length ? h(Cart, { t, items: cart, setItems: setCart, go, addToChat }) : null))
+          h(AskStrip, { asks: requests.asks, t, openSession, openSource }),
+          cart.length ? h(Cart, { t, items: cart, setItems: setCart, openSource, addToChat }) : null))
     }
 
     const upkeepCount = (r) => (r.reload ? 1 : 0) + r.bindings.length + r.unfiled.length + r.sources.length + r.revisions.length + r.artifacts.length
       + r.collections.reduce((k, c) => k + (c.added?.length ?? 0) + (c.gone?.length ?? 0), 0)
 
-    // Shared pieces of every view: a crumb trail, a page title, an entry row and an empty line.
+    // Shared pieces of every view: a trail, a page title, an entry row and an empty line.
+    // A trail names the places above this page; the page's own name is its title.
     function Crumbs({ trail }) {
+      if (!trail.length) return null
       return h('nav', { className: 'pxs-crumbs', 'aria-label': 'Breadcrumb' }, trail.map((c, i) => h(React.Fragment, { key: i },
         i ? h('span', { className: 'pxs-sep', 'aria-hidden': true }, '/') : null,
-        c.onClick ? h('button', { type: 'button', onClick: c.onClick }, c.label) : h('span', { 'aria-current': 'page' }, c.label))))
+        h('button', { type: 'button', onClick: c.onClick }, c.label))))
     }
     function Title({ glyph, title, meta, children }) {
       return h('header', { className: 'pxs-detail-head' },
         glyph ? h('span', { className: 'pxs-tile lg' }, glyph) : null,
-        h('div', { className: 'pxs-detail-title' }, h('h1', { dir: 'auto' }, title), meta ? h('p', { className: 'pxs-caption' }, meta) : null),
+        h('div', { className: 'pxs-detail-title' }, h('h1', { dir: 'auto', tabIndex: -1 }, title), meta ? h('p', { className: 'pxs-caption' }, meta) : null),
         children)
     }
-    function Entry({ glyph, title, aside, sub, desc, onOpen, children, mark }) {
-      return h('div', { className: 'pxs-row', 'data-mark': mark },
-        h('button', { type: 'button', className: 'pxs-row-main', onClick: onOpen, disabled: !onOpen },
+    function Entry({ glyph, title, aside, sub, desc, onOpen, children, mark, dataKey, last, intent }) {
+      return h('div', { className: 'pxs-row', 'data-mark': mark, 'data-key': dataKey, 'data-last': last || undefined },
+        h('button', { type: 'button', className: 'pxs-row-main', onClick: onOpen, disabled: !onOpen, ...intent },
           h('span', { className: 'pxs-tile' }, glyph),
           h('span', { className: 'pxs-row-text' },
             h('span', { className: 'pxs-row-title', dir: 'auto' }, title, sub ? h('span', { className: 'pxs-host' }, sub) : null),
@@ -340,7 +500,7 @@ window.__ModuleLoader__.load({
     // ---- Kit: home → layer → area → unit, and outside targets by path --------------------------
     const parentOf = (units, id) => { for (let p = id.split('/').slice(0, -1); p.length; p.pop()) { const x = p.join('/'); if (units.some((u) => u.id === x)) return x } return null }
 
-    function KitView({ t, go, nav, kit, send, refresh }) {
+    function KitView({ t, go, nav, kit, send, refresh, trailOf, openSource, last, sources }) {
       if (!kit) return h('div', { className: 'pxs-list', 'aria-busy': true }, [0, 1, 2].map((i) => h('div', { key: i, className: 'pxs-skel' }, h('i'), h('i'))))
       const { units, byPath } = kit
       const children = (id) => units.filter((u) => u.id !== id && parentOf(units, u.id) === id)
@@ -350,12 +510,13 @@ window.__ModuleLoader__.load({
       const unitEntry = (u) => {
         const kids = children(u.id).length
         const list = kids ? sourcesUnder(u.id) : (byPath.get(u.path) ?? []).filter((b) => b.state !== 'removed')
-        return h(Entry, { key: u.id, glyph: h(Glyph, { name: !u.id.includes('/') ? u.layer : kids ? 'folder' : 'article' }), title: u.title, desc: u.description,
+        return h(Entry, { key: u.id, dataKey: `unit:${u.id}`, glyph: h(Glyph, { name: !u.id.includes('/') ? u.layer : kids ? 'folder' : 'article' }), title: u.title, desc: u.description,
           onOpen: () => go({ tab: 'kit', unit: u.id }),
           aside: [h(Count, { key: 'u', n: kids ? under(u.id).length - 1 : 0, glyph: 'article' }), h(Count, { key: 's', n: list.length, glyph: 'practice' }), alerts(list) ? h(Wait, { key: 'w' }, alerts(list)) : null] })
       }
-      if (nav.unit && kit.byId.has(nav.unit)) return h(UnitPage, { t, go, kit, unit: kit.byId.get(nav.unit), children: children(nav.unit), unitEntry, send, refresh })
-      if (nav.target) return h(TargetPage, { t, go, kit, path: nav.target })
+      const pages = { t, go, kit, refresh, trailOf, openSource, last, sources }
+      if (nav.unit && kit.byId.has(nav.unit)) return h(UnitPage, { ...pages, key: nav.unit, unit: kit.byId.get(nav.unit), children: children(nav.unit), unitEntry, send })
+      if (nav.target) return h(TargetPage, { ...pages, key: nav.target, path: nav.target })
 
       const kitPaths = new Set(units.map((u) => u.path))
       const outside = kit.bindings.filter((b) => b.state !== 'removed' && !kitPaths.has(b.target.split('#')[0]))
@@ -366,23 +527,20 @@ window.__ModuleLoader__.load({
         h(Block, { label: t('kit.core') }, h('div', { className: 'pxs-list' }, ['design', 'writing'].map(layer).filter(Boolean).map(unitEntry))),
         h(Block, { label: 'Stream' }, h('div', { className: 'pxs-list' }, units.filter((u) => u.layer === 'stream').map(unitEntry))),
         h(Block, { label: t('kit.flow') }, h('div', { className: 'pxs-list' }, ['task', 'publish'].map(layer).filter(Boolean).map(unitEntry))),
-        groups.size ? h(Block, { label: t('kit.other') }, h('div', { className: 'pxs-list' }, [...groups].map(([key, list]) => h(Entry, { key, glyph: h(Glyph, { name: 'folder' }), title: key,
+        groups.size ? h(Block, { label: t('kit.other') }, h('div', { className: 'pxs-list' }, [...groups].map(([key, list]) => h(Entry, { key, dataKey: `target:${key}`, glyph: h(Glyph, { name: 'folder' }), title: key,
           desc: t('kit.files', { n: new Set(list.map((b) => b.target.split('#')[0])).size }), onOpen: () => go({ tab: 'kit', target: key }), aside: h(Count, { n: list.length, glyph: 'practice' }) })))) : null,
         kit.packs.length ? h(Block, { label: t('kit.packs') }, h('div', { className: 'pxs-list' }, kit.packs.map((p) => h(Entry, { key: p.id, glyph: h(Glyph, { name: 'archive' }), title: p.title, sub: p.kind, desc: p.purpose,
           aside: h(Count, { n: p.sources, glyph: 'practice' }) })))) : null)
     }
 
-    function UnitPage({ t, go, kit, unit: u, children, unitEntry, send, refresh }) {
+    function UnitPage({ t, kit, unit: u, children, unitEntry, send, refresh, trailOf, ...pages }) {
       const [body, setBody] = React.useState(null)
       const [problem, setProblem] = React.useState(null)
       const rev = kit.revisions.get(u.path)
-      const trail = [{ label: 'Kit', onClick: () => go({ tab: 'kit' }) }]
-      for (let p = parentOf(kit.units, u.id); p; p = parentOf(kit.units, p)) trail.splice(1, 0, { label: kit.byId.get(p)?.title ?? p, onClick: ((id) => () => go({ tab: 'kit', unit: id }))(p) })
-      trail.push({ label: u.title })
       const toggleBody = async () => { if (body) return setBody(null); try { setBody((await call('praxis_unit', { ref: u.id })).body) } catch (e) { setProblem(String(e.message ?? e)) } }
       const revert = async () => { try { await call('praxis_unit_revert', { unit: u.id, expected_revision: rev.revision }); refresh() } catch (e) { setProblem(String(e.message ?? e)) } }
       return h('article', { className: 'pxs-page-body' },
-        h(Crumbs, { trail }),
+        h(Crumbs, { trail: trailOf({ tab: 'kit', unit: u.id }) }),
         h(Title, { glyph: h(Glyph, { name: children.length ? 'folder' : u.layer, size: 20 }), title: u.title,
           meta: [u.id, u.version, u.updated_at ? day(u.updated_at) : null].filter(Boolean).join(' · ') },
           h('div', { className: 'pxs-buttons' },
@@ -398,10 +556,10 @@ window.__ModuleLoader__.load({
           h(P.Button, { variant: 'ghost', size: 'sm', onClick: () => send(t('ask.forUnit', { id: u.id, title: u.title })) }, t('unit.askSources'))),
         body ? h('div', { className: 'pxs-doc' }, h(P.MarkdownText, { text: body })) : null,
         children.length ? h(Block, { label: t('unit.contents'), aside: h('span', { className: 'pxs-caption' }, String(children.length)) }, h('div', { className: 'pxs-list' }, children.map(unitEntry))) : null,
-        !children.length || (kit.byPath.get(u.path) ?? []).length ? h(Bindings, { t, go, path: u.path, refresh }) : null)
+        !children.length || (kit.byPath.get(u.path) ?? []).length ? h(Bindings, { t, kit, path: u.path, refresh, ...pages }) : null)
     }
 
-    function TargetPage({ t, go, kit, path }) {
+    function TargetPage({ t, go, kit, path, trailOf, ...pages }) {
       const list = kit.bindings.filter((b) => b.state !== 'removed').filter((b) => { const p = b.target.split('#')[0]; return p === path || p.startsWith(`${path}/`) })
       const kids = new Map()
       for (const b of list) {
@@ -410,21 +568,19 @@ window.__ModuleLoader__.load({
         const key = `${path}/${p.slice(path.length + 1).split('/')[0]}`
         ;(kids.get(key) ?? kids.set(key, []).get(key)).push(b)
       }
-      const trail = [{ label: 'Kit', onClick: () => go({ tab: 'kit' }) }]
-      const parts = path.split('/')
-      parts.forEach((part, i) => trail.push(i === parts.length - 1 ? { label: part } : { label: part, onClick: () => go({ tab: 'kit', target: parts.slice(0, i + 1).join('/') }) }))
       return h('article', { className: 'pxs-page-body' },
-        h(Crumbs, { trail }),
-        h(Title, { glyph: h(Glyph, { name: kids.size ? 'folder' : 'article', size: 20 }), title: parts.at(-1), meta: path }),
+        h(Crumbs, { trail: trailOf({ tab: 'kit', target: path }) }),
+        h(Title, { glyph: h(Glyph, { name: kids.size ? 'folder' : 'article', size: 20 }), title: path.split('/').at(-1), meta: path }),
         kids.size ? h(Block, { label: t('unit.contents'), aside: h('span', { className: 'pxs-caption' }, String(kids.size)) }, h('div', { className: 'pxs-list' }, [...kids].sort((a, b) => a[0].localeCompare(b[0])).map(([key, items]) =>
-          h(Entry, { key, glyph: h(Glyph, { name: items.some((b) => b.target.split('#')[0] !== key) ? 'folder' : 'article' }), title: key.split('/').pop(), sub: key, onOpen: () => go({ tab: 'kit', target: key }), aside: h(Count, { n: items.length, glyph: 'practice' }) })))) : null,
-        list.some((b) => b.target.split('#')[0] === path) ? h(Bindings, { t, go, path }) : null)
+          h(Entry, { key, dataKey: `target:${key}`, glyph: h(Glyph, { name: items.some((b) => b.target.split('#')[0] !== key) ? 'folder' : 'article' }), title: key.split('/').pop(), sub: key, onOpen: () => go({ tab: 'kit', target: key }), aside: h(Count, { n: items.length, glyph: 'practice' }) })))) : null,
+        list.some((b) => b.target.split('#')[0] === path) ? h(Bindings, { t, kit, path, ...pages }) : null)
     }
 
     // The sources hung on one page: each says what it is for here and how far its original was read.
     // A person switches, stars, checks or removes them; descriptions are written by the agent.
-    function Bindings({ t, go, path, refresh }) {
-      const [list, setList] = React.useState(null)
+    function Bindings({ t, kit, path, refresh, openSource, last, sources }) {
+      // Drawn at once from the Kit already loaded, then read again with every state.
+      const [list, setList] = React.useState(() => (kit ? (kit.byPath.get(path) ?? []).filter((b) => b.target.split('#')[0] === path) : null))
       const [removed, setRemoved] = React.useState(false)
       const [problem, setProblem] = React.useState(null)
       const load = React.useCallback(() => call('praxis_bindings', { target: path, include_removed: removed }).then((all) => setList(all.filter((b) => b.target.split('#')[0] === path)), (e) => setProblem(String(e.message ?? e))), [path, removed])
@@ -436,8 +592,9 @@ window.__ModuleLoader__.load({
         problem ? h('p', { className: 'pxs-problem', role: 'alert' }, problem) : null,
         !list ? h('div', { className: 'pxs-skel' }, h('i'), h('i')) : !shown.length ? h('p', { className: 'pxs-none' }, t('kit.noSources')) : h('div', { className: 'pxs-list' }, shown.map((b) => {
           const off = b.state === 'removed'
-          return h(Entry, { key: b.id, mark: off ? 'removed' : !b.enabled ? 'off' : undefined,
-            glyph: h(Glyph, { name: b.form ?? 'article' }), title: b.title, desc: b.description, onOpen: () => go({ tab: 'sources', source: b.source }),
+          return h(Entry, { key: b.id, mark: off ? 'removed' : !b.enabled ? 'off' : undefined, dataKey: `source:${b.source}`, last: b.source === last, intent: intentOn(sources, b.source),
+            glyph: h(Glyph, { name: b.form ?? 'article' }), title: b.title, desc: b.description,
+            onOpen: () => openSource(b.source, { list: shown.filter((x) => x.state !== 'removed').map((x) => x.source), seed: { title: b.title, form: b.form } }),
             aside: [b.signals.map((g) => h(Wait, { key: g }, t(`gap.${g}`))), b.review ? h(P.Tag, { key: 'r', tone: 'neutral' }, t(`v.${b.review.verdict}`)) : null, h(ReadWord, { key: 'e', row: b, t })] },
             off ? h(P.Button, { variant: 'ghost', size: 'sm', onClick: () => act(() => call('praxis_restore', { binding: b.id, expected_revision: b.revision })) }, t('kit.restore'))
               : h(React.Fragment, null,
@@ -458,18 +615,24 @@ window.__ModuleLoader__.load({
     }
 
     // ---- Task: what an agent would read for a task type, and the presets per pipeline ----------
-    function TaskView({ t, go, kit }) {
+    function TaskView({ t, go, openSource, last, sources }) {
       const [entry, setEntry] = React.useState(null)
       const [presets, setPresets] = React.useState(null)
       const [pick, setPick] = React.useState({ type: '', pipeline: '', preset: '', stream: '' })
       const [r, setR] = React.useState(null)
       const [problem, setProblem] = React.useState(null)
+      const [busy, setBusy] = React.useState(false)
+      const asked = React.useRef(0)
       const loadPresets = React.useCallback(() => call('praxis_presets').then(setPresets, () => {}), [])
       React.useEffect(() => { call('praxis_entry').then((e) => { setEntry(e); setPick((p) => ({ ...p, type: p.type || e.task_types[0]?.id || '' })) }); loadPresets() }, [loadPresets])
       React.useEffect(() => {
         if (!pick.type) return
-        setProblem(null)
-        call('praxis_resolve', { task_type: pick.type, pipeline: pick.pipeline || undefined, preset: pick.preset || undefined, stream: pick.stream || undefined }).then(setR, (e) => setProblem(String(e.message ?? e)))
+        // The last answer stays in view, dimmed, until the new one arrives; a late answer to an old pick is dropped.
+        const n = ++asked.current
+        setProblem(null); setBusy(true)
+        call('praxis_resolve', { task_type: pick.type, pipeline: pick.pipeline || undefined, preset: pick.preset || undefined, stream: pick.stream || undefined })
+          .then((x) => { if (n === asked.current) setR(x) }, (e) => { if (n === asked.current) setProblem(String(e.message ?? e)) })
+          .finally(() => { if (n === asked.current) setBusy(false) })
       }, [pick])
       if (!entry) return h('div', { className: 'pxs-skel' }, h('i'), h('i'))
       const set = (k) => (v) => setPick((p) => ({ ...p, [k]: v }))
@@ -484,15 +647,16 @@ window.__ModuleLoader__.load({
             select(t('task.preset'), pick.preset, [['', t('task.presetDefault')], ...(presets?.presets ?? []).map((p) => [p.id, `${p.pipeline} · ${p.title}`])], set('preset')),
             entry.streams.length ? select('Stream', pick.stream, [['', t('task.noStream')], ...entry.streams.map((s) => [s.id, s.title])], set('stream')) : null)),
         problem ? h('p', { className: 'pxs-problem', role: 'alert' }, problem) : null,
-        r ? h(React.Fragment, null,
+        r ? h('div', { className: 'pxs-result', 'aria-busy': busy || undefined },
           h('p', { className: 'pxs-when', dir: 'auto' }, r.task_type.outcome),
           h('div', { className: 'pxs-flow', 'aria-label': t('task.flow') }, layerCount.map(([l, n]) => h('span', { key: l, 'data-zero': !n || undefined }, h('b', null, n), l)), h('span', { 'data-zero': !r.materials.length || undefined }, h('b', null, r.materials.length), t('task.materials'))),
           h(Block, { label: t('task.units'), aside: h('span', { className: 'pxs-caption' }, String(r.units.length)) }, h('div', { className: 'pxs-list' }, r.units.map((u) =>
-            h(Entry, { key: u.id, glyph: h(Glyph, { name: u.id.split('/')[0] }), title: u.title, sub: u.id, desc: u.description, onOpen: () => go({ tab: 'kit', unit: u.id }), aside: u.reasons.map((x) => h(P.Tag, { key: x, tone: 'neutral' }, x)) })))),
+            h(Entry, { key: u.id, dataKey: `unit:${u.id}`, glyph: h(Glyph, { name: u.id.split('/')[0] }), title: u.title, sub: u.id, desc: u.description, onOpen: () => go({ tab: 'kit', unit: u.id }), aside: u.reasons.map((x) => h(P.Tag, { key: x, tone: 'neutral' }, x)) })))),
           h(Block, { label: t('task.materials'), aside: h('span', { className: 'pxs-caption' }, String(r.materials.length)) }, r.materials.length ? h('div', { className: 'pxs-list' }, r.materials.map((m) =>
-            h(Entry, { key: m.binding, glyph: h(Glyph, { name: 'practice' }), title: m.title, sub: hostOf(m.url), desc: m.description, onOpen: () => go({ tab: 'sources', source: m.source }), aside: h(ReadWord, { row: m, t }) }))) : h('p', { className: 'pxs-none' }, t('task.noMaterials'))),
+            h(Entry, { key: m.binding, dataKey: `source:${m.source}`, last: m.source === last, intent: intentOn(sources, m.source), glyph: h(Glyph, { name: m.form ?? 'article' }), title: m.title, sub: hostOf(m.url), desc: m.description,
+              onOpen: () => openSource(m.source, { list: r.materials.map((x) => x.source), seed: { title: m.title, url: m.url, form: m.form } }), aside: h(ReadWord, { row: m, t }) }))) : h('p', { className: 'pxs-none' }, t('task.noMaterials'))),
           r.exemplars.length ? h(Block, { label: t('task.exemplars'), aside: h('span', { className: 'pxs-caption' }, String(r.exemplars.length)) }, h('div', { className: 'pxs-list' }, r.exemplars.map((x) =>
-            h(Entry, { key: x.artifact, glyph: h(Glyph, { name: 'archive' }), title: x.title, sub: t(`kind.${x.kind}`), desc: x.description ?? x.path, onOpen: () => go({ tab: 'artifacts', artifact: x.artifact }) })))) : null,
+            h(Entry, { key: x.artifact, dataKey: `artifact:${x.artifact}`, glyph: h(Glyph, { name: 'archive' }), title: x.title, sub: t(`kind.${x.kind}`), desc: x.description ?? x.path, onOpen: () => go({ tab: 'artifacts', artifact: x.artifact }) })))) : null,
           r.preset ? h(Block, { label: t('task.presetValues', { p: r.preset.title }) }, h('dl', { className: 'pxs-kv' }, Object.entries(r.preset.values).map(([k, v]) => h(React.Fragment, { key: k }, h('dt', null, k), h('dd', null, Array.isArray(v) ? v.join(' ') : String(v)))))) : null,
           h(Block, { label: t('task.acceptance'), aside: h('span', { className: 'pxs-caption' }, String(r.task_type.acceptance.length)) }, h('ol', { className: 'pxs-checks' }, r.task_type.acceptance.map((a, i) => h('li', { key: i, dir: 'auto' }, a))))) : h('div', { className: 'pxs-skel' }, h('i'), h('i')),
         presets ? h(Presets, { t, data: presets, reload: loadPresets }) : null)
@@ -545,18 +709,19 @@ window.__ModuleLoader__.load({
 
     // ---- Artifacts: local work by project; a version's run says what it was made from -----------
     const ART_VERDICTS = ['needs-work', 'checked', 'accepted']
-    function ArtifactsView({ t, go, nav, openPath }) {
+    function ArtifactsView({ t, go, nav, openPath, active, kit, trailOf, openSource, last, sources }) {
       const [list, setList] = React.useState(null)
       const [projects, setProjects] = React.useState([])
       const [kind, setKind] = React.useState('')
       const [query, setQuery] = React.useState('')
       const load = React.useCallback(() => Promise.all([call('praxis_artifacts', { limit: 500 }), call('praxis_projects')]).then(([a, p]) => { setList(a); setProjects(p) }), [])
       React.useEffect(() => { load() }, [load])
-      if (nav.artifact) return h(ArtifactDetail, { t, go, id: nav.artifact, reload: load, openPath })
+      useReturn(active, load)
+      if (nav.artifact) return h(ArtifactDetail, { key: nav.artifact, t, go, id: nav.artifact, seed: list?.find((x) => x.id === nav.artifact), reload: load, openPath, kit, trailOf, openSource, last, sources })
       if (!list) return h('div', { className: 'pxs-skel' }, h('i'), h('i'))
       const q = query.trim().toLowerCase()
       const shown = list.filter((a) => (!kind || a.kind === kind) && (!q || `${a.title} ${a.description ?? ''} ${a.path}`.toLowerCase().includes(q)))
-      const row = (a) => h(Entry, { key: a.id, glyph: h(Glyph, { name: a.kind === 'pipeline' ? 'tool' : a.kind === 'example' ? 'case' : 'article' }), title: a.title, sub: `v${a.version}`, desc: a.project_path ?? a.path,
+      const row = (a) => h(Entry, { key: a.id, dataKey: `artifact:${a.id}`, glyph: h(Glyph, { name: a.kind === 'pipeline' ? 'tool' : a.kind === 'example' ? 'case' : 'article' }), title: a.title, sub: `v${a.version}`, desc: a.project_path ?? a.path,
         onOpen: () => go({ tab: 'artifacts', artifact: a.id }),
         aside: [a.kind !== 'delivery' ? h(P.Tag, { key: 'k', tone: 'neutral' }, t(`kind.${a.kind}`)) : null, a.status === 'modified' ? h(P.Tag, { key: 'm', tone: 'neutral' }, t('as.modified')) : null, a.signals.map((g) => h(Wait, { key: g }, t(`as.${g}`)))] })
       const groups = projects.map((p) => [p, shown.filter((a) => a.project?.id === p.id)]).filter(([p, items]) => items.length || (!q && !kind && p.unregistered.length))
@@ -565,14 +730,14 @@ window.__ModuleLoader__.load({
         h('div', { className: 'pxs-bar' },
           h('div', { className: 'pxs-pills', role: 'group' }, ['', 'delivery', 'pipeline', 'example'].map((k) => h(P.Pill, { key: k || 'all', active: kind === k, 'aria-pressed': kind === k, onClick: () => setKind(k) }, k ? t(`kind.${k}`) : t('review.f.all')))),
           h(P.Input, { className: 'pxs-search', type: 'search', value: query, placeholder: t('art.search'), 'aria-label': t('art.search'), icon: h(P.IconSearchOutlineRegular, { size: 14 }), onChange: (e) => setQuery(e.target.value) })),
-        !groups.length && !outside.length ? h('p', { className: 'pxs-empty' }, t(list.length ? 'review.noMatch' : 'art.none')) : null,
+        !groups.length && !outside.length ? h('p', { className: 'pxs-empty' }, t(list.length ? 'art.noMatch' : 'art.none')) : null,
         groups.map(([p, items]) => h(Block, { key: p.id, label: p.title, aside: h('span', { className: 'pxs-caption' }, p.root || '.') },
           p.unregistered.length ? h('details', { className: 'pxs-unreg' }, h('summary', null, h(Wait, null, t('art.unregistered', { n: p.unregistered.length }))), h('ul', null, p.unregistered.map((f) => h('li', { key: f }, h('code', null, f))))) : null,
           h('div', { className: 'pxs-list' }, items.map(row)))),
         outside.length ? h(Block, { label: t('art.outside') }, h('div', { className: 'pxs-list' }, outside.map(row))) : null)
     }
 
-    function ArtifactDetail({ t, go, id, reload, openPath }) {
+    function ArtifactDetail({ t, go, id, seed, reload, openPath, kit, trailOf, openSource, last, sources }) {
       const [a, setA] = React.useState(null)
       const [note, setNote] = React.useState('')
       const [verdict, setVerdict] = React.useState('checked')
@@ -580,9 +745,13 @@ window.__ModuleLoader__.load({
       const load = React.useCallback(() => call('praxis_artifact', { id }).then(setA, (e) => setProblem(String(e.message ?? e))), [id])
       React.useEffect(() => { load() }, [load])
       const review = async () => { try { await call('praxis_artifact_review', { id, version: a.version, verdict, note: note.trim() || undefined }); setNote(''); load(); reload() } catch (e) { setProblem(String(e.message ?? e)) } }
-      if (!a) return problem ? h('p', { className: 'pxs-problem' }, problem) : h('div', { className: 'pxs-skel' }, h('i'), h('i'))
+      const trail = h(Crumbs, { trail: trailOf({ tab: 'artifacts', artifact: id }) })
+      // The row it was opened from already names it: draw that while the versions load.
+      if (!a) return h('article', { className: 'pxs-page-body' }, trail,
+        seed ? h(Title, { glyph: h(Glyph, { name: 'article', size: 20 }), title: seed.title, meta: [seed.kind !== 'delivery' ? t(`kind.${seed.kind}`) : null, `v${seed.version}`, seed.path].filter(Boolean).join(' · ') }) : null,
+        problem ? h('p', { className: 'pxs-problem' }, problem) : h('div', { className: 'pxs-skel' }, h('i'), h('i')))
       return h('article', { className: 'pxs-page-body' },
-        h(Crumbs, { trail: [{ label: t('tab.artifacts'), onClick: () => go({ tab: 'artifacts' }) }, { label: a.title }] }),
+        trail,
         h(Title, { glyph: h(Glyph, { name: 'article', size: 20 }), title: a.title, meta: [a.kind !== 'delivery' ? t(`kind.${a.kind}`) : null, `v${a.version}`, a.path].filter(Boolean).join(' · ') },
           h('div', { className: 'pxs-buttons' },
             h(P.Button, { variant: 'ghost', size: 'sm', onClick: () => openPath(a.absolute, 'reveal').then((ok) => ok || setProblem(t('art.failed'))) }, t('art.reveal')),
@@ -591,15 +760,16 @@ window.__ModuleLoader__.load({
         a.signals.length ? h('p', null, a.signals.map((g) => h(Wait, { key: g }, t(`as.${g}`)))) : null,
         problem ? h('p', { className: 'pxs-problem', role: 'alert' }, problem) : null,
         h(Block, { label: t('art.serves') }, a.serves.length ? h('div', { className: 'pxs-list' }, a.serves.map((s) =>
-          h(Entry, { key: s.target, glyph: h(Glyph, { name: 'article' }), title: s.unit ?? s.target, desc: s.description, onOpen: s.unit ? () => go({ tab: 'kit', unit: s.unit }) : undefined }))) : h('p', { className: 'pxs-none' }, t('art.servesNone'))),
+          h(Entry, { key: s.target, glyph: h(Glyph, { name: 'article' }), title: (s.unit && kit?.byId.get(s.unit)?.title) || s.unit || s.target, desc: s.description, onOpen: s.unit ? () => go({ tab: 'kit', unit: s.unit }) : undefined }))) : h('p', { className: 'pxs-none' }, t('art.servesNone'))),
         h(Block, { label: t('art.versions'), aside: h('span', { className: 'pxs-caption' }, String(a.versions.length)) }, h('ol', { className: 'pxs-versions' }, [...a.versions].reverse().map((v) =>
           h('li', { key: v.version },
             h('time', null, day(v.at)),
             h('div', null,
               h('p', null, h('b', null, `v${v.version}`), ' ', v.run ? v.run.title : v.by ?? t('art.noRun'), v.run?.changed ? [' ', h(Wait, { key: 'c' }, t('art.basis'))] : null),
               v.run && (v.run.units.length || v.run.sources.length) ? h('p', { className: 'pxs-links' }, h('span', { className: 'pxs-caption' }, t('art.used')),
-                v.run.units.map((u) => h('button', { key: u, type: 'button', className: 'pxs-link', onClick: () => go({ tab: 'kit', unit: u }) }, u)),
-                v.run.sources.map((x) => h('button', { key: x.id, type: 'button', className: 'pxs-link', onClick: () => go({ tab: 'sources', source: x.id }) }, x.title))) : null,
+                v.run.units.map((u) => h('button', { key: u, type: 'button', className: 'pxs-link', onClick: () => go({ tab: 'kit', unit: u }) }, kit?.byId.get(u)?.title ?? u)),
+                v.run.sources.map((x) => h('button', { key: x.id, type: 'button', className: 'pxs-link', 'data-key': `source:${x.id}`, 'data-last': x.id === last || undefined, ...intentOn(sources, x.id),
+                  onClick: () => openSource(x.id, { list: v.run.sources.map((y) => y.id), label: a.title, seed: { title: x.title } }) }, x.title))) : null,
               v.made_with ? h('p', { className: 'pxs-links' }, h('span', { className: 'pxs-caption' }, t('art.madeWith')), h('button', { type: 'button', className: 'pxs-link', onClick: () => go({ tab: 'artifacts', artifact: v.made_with.id }) }, v.made_with.title)) : null,
               v.review ? h('p', { className: 'pxs-caption' }, `${t(`av.${v.review.verdict}`)} · ${v.review.by ?? '—'}${v.review.note ? ` · ${v.review.note}` : ''}`) : null))))),
         h('footer', { className: 'pxs-verdict' },
@@ -611,7 +781,7 @@ window.__ModuleLoader__.load({
     }
 
     // ---- Log: what needs someone now (usually nothing), then runs and maintenance -------------
-    function LogView({ t, go, send, refresh, onCount, stamp }) {
+    function LogView({ t, go, send, refresh, onCount, stamp, active, openSource, last, sources }) {
       const [up, setUp] = React.useState(null)
       const [runs, setRuns] = React.useState(null)
       const [history, setHistory] = React.useState(null)
@@ -619,13 +789,15 @@ window.__ModuleLoader__.load({
       const load = React.useCallback(() => Promise.all([call('praxis_upkeep'), call('praxis_runs'), call('praxis_history', { limit: 60 })])
         .then(([u, r, hs]) => { setUp(u); setRuns(r); setHistory(hs); onCount(upkeepCount(u)) }, (e) => setProblem(String(e.message ?? e))), [onCount])
       React.useEffect(() => { load() }, [load, stamp])
+      useReturn(active, load)
       const act = async (fn) => { try { await fn(); load(); refresh() } catch (e) { setProblem(String(e.message ?? e)) } }
       if (!up) return problem ? h('p', { className: 'pxs-problem' }, problem) : h('div', { className: 'pxs-skel' }, h('i'), h('i'))
       const items = [
         up.reload ? h(Entry, { key: 'reload', glyph: h(Glyph, { name: 'refresh' }), title: t('log.reload') }) : null,
         ...up.bindings.map((b) => h(Entry, { key: b.id, glyph: h(Glyph, { name: 'practice' }), title: b.title, sub: b.unit ?? b.target, onOpen: () => go(b.unit ? { tab: 'kit', unit: b.unit } : { tab: 'kit', target: b.target.split('#')[0] }), aside: b.signals.map((g) => h(Wait, { key: g }, t(`gap.${g}`))) })),
-        ...up.sources.map((s) => h(Entry, { key: s.id, glyph: h(Glyph, { name: 'practice' }), title: s.title, sub: s.id, onOpen: () => go({ tab: 'sources', source: s.id }), aside: s.signals.map((g) => h(Wait, { key: g }, t(`gap.${g}`))) })),
-        ...up.unfiled.map((s) => h(Entry, { key: s.id, glyph: h(Glyph, { name: 'practice' }), title: s.title, sub: s.id, desc: t('log.unfiled'), aside: h(P.Button, { variant: 'ghost', size: 'sm', onClick: () => send(t('ask.file', { id: s.id, title: s.title })) }, t('log.sendFile')) })),
+        ...up.sources.map((s) => h(Entry, { key: s.id, dataKey: `source:${s.id}`, last: s.id === last, intent: intentOn(sources, s.id), glyph: h(Glyph, { name: s.form ?? 'article' }), title: s.title, sub: hostOf(s.url),
+          onOpen: () => openSource(s.id, { list: up.sources.map((x) => x.id), seed: { title: s.title, form: s.form, url: s.url } }), aside: s.signals.map((g) => h(Wait, { key: g }, t(`gap.${g}`))) })),
+        ...up.unfiled.map((s) => h(Entry, { key: s.id, glyph: h(Glyph, { name: 'article' }), title: s.title, sub: hostOf(s.url), desc: t('log.unfiled'), aside: h(P.Button, { variant: 'ghost', size: 'sm', onClick: () => send(t('ask.file', { id: s.id, title: s.title })) }, t('log.sendFile')) })),
         ...up.collections.flatMap((c) => [
           ...(c.added ?? []).map((url) => h(Entry, { key: `${c.id}+${url}`, glyph: h(Glyph, { name: 'case-library' }), title: url, sub: c.title ?? c.id, desc: t('log.added'),
             aside: [h(P.Button, { key: 'a', variant: 'ghost', size: 'sm', onClick: () => send(t('ask.member', { url, id: c.id })) }, t('log.sendCapture')),
@@ -643,8 +815,8 @@ window.__ModuleLoader__.load({
         h(Block, { label: t('log.runs'), aside: h('span', { className: 'pxs-caption' }, String(runs.length)) }, runs.length ? h('ol', { className: 'pxs-versions' }, runs.slice(0, 40).map((r) =>
           h('li', { key: r.id }, h('time', null, day(r.at)), h('div', null,
             h('p', null, r.title),
-            h('p', { className: 'pxs-links' }, h('span', { className: 'pxs-caption' }, t('log.runCounts', { u: r.units.length, b: r.bindings.length, a: r.artifacts.length })),
-              r.artifacts[0]?.artifact ? h('button', { type: 'button', className: 'pxs-link', onClick: () => go({ tab: 'artifacts', artifact: r.artifacts[0].artifact }) }, t('log.openArtifact')) : null))))) : h('p', { className: 'pxs-none' }, t('log.noRuns'))),
+            h('p', { className: 'pxs-links' }, h('span', { className: 'pxs-caption' }, t('log.runCounts', { u: r.units.length, s: r.sources.length })),
+              r.artifacts.filter((x) => x.artifact).map((x) => h('button', { key: x.artifact, type: 'button', className: 'pxs-link', onClick: () => go({ tab: 'artifacts', artifact: x.artifact }) }, `${x.path.split('/').pop()} v${x.version}`))))))) : h('p', { className: 'pxs-none' }, t('log.noRuns'))),
         h(Block, { label: t('log.history'), aside: h('span', { className: 'pxs-caption' }, String(history.length)) }, history.length ? h('ol', { className: 'pxs-versions' }, history.map((x, i) =>
           h(React.Fragment, { key: i }, line(x.at, h(React.Fragment, null, h('code', null, x.op), ' ', x.id ?? ''), [x.by, x.reason].filter(Boolean).join(' · '))))) : h('p', { className: 'pxs-none' }, t('log.noHistory'))))
     }
@@ -660,67 +832,63 @@ window.__ModuleLoader__.load({
     }
 
     // ---- Sources: the catalog by Kit area and form, and the review queue --------------------
-    function SourcesView({ t, go, nav, send, openSession, stamp, inCart, toggleCart, scroller }) {
-      const [rows, setRows] = React.useState(null)
-      const [outline, setOutline] = React.useState({ areas: [], forms: [] })
-      const [mode, setMode] = React.useState(() => recall('praxis.sources.tab', 'catalog'))
-      const [error, setError] = React.useState(null)
+    // Catalog and Review are two places in the tab, each keeping its own scroll offset; filters,
+    // search, tag and open shelves stay as they were while a source is open or another tab in front.
+    function SourcesView({ t, up, nav, catalog, catalogError, reloadCatalog, onReviewed, openSource, last, pick, sources, scroller, active }) {
+      const mode = nav.mode === 'review' ? 'review' : 'catalog'
       const [filter, setFilter] = React.useState('open')
       const [query, setQuery] = React.useState('')
       const [searching, setSearching] = React.useState(false)
       const [view, setView] = React.useState(() => recall('praxis.sources.view', 'list'))
       const [tag, setTag] = React.useState(null)
       const [openAreas, setOpenAreas] = React.useState(() => new Set())
-      // Coming back from a source returns to the same place: filters, search and open areas live here,
-      // and the scroll offset is put back once the list is drawn again.
-      const place = React.useRef(0)
+      // A tag picked on a source page arrives with the place it sends you to.
+      React.useEffect(() => { if (nav.tag) { setTag(nav.tag); setQuery(''); setSearching(false) } }, [nav.tag, nav.at])
 
-      const load = React.useCallback(() => {
-        setError(null)
-        loadCatalog().then((c) => { setRows(c.rows); setOutline({ areas: c.outline, forms: c.forms }) }, (e) => setError(String(e.message ?? e)))
-      }, [])
-      React.useEffect(() => { load() }, [load, stamp])
-
-      const update = (next) => setRows((all) => all.map((r) => (r.id === next.id ? { ...r, ...next } : r)))
+      const rows = catalog?.rows ?? null
       const switchView = (v) => { setView(v); remember('praxis.sources.view', v) }
-      const switchMode = (v) => { setMode(v); remember('praxis.sources.tab', v) }
-      const open = (id) => { place.current = scroller?.current?.scrollTop ?? 0; go({ tab: 'sources', source: id }) }
-      const returning = React.useRef(false)
-      const back = () => { returning.current = true; go({ tab: 'sources' }) }
-      const pickTag = (x) => { setTag((cur) => (cur === x ? null : x)); scroller?.current?.scrollTo({ top: 0 }) }
+      const switchMode = (v) => { remember('praxis.sources.tab', v); up(v === 'review' ? { tab: 'sources', mode: 'review' } : { tab: 'sources' }) }
       const keep = (r) => (filter === 'open' ? !reviewed(r) : filter === 'needs-work' ? reviewed(r) && r.review.verdict === 'needs-work' : filter === 'reviewed' ? reviewed(r) : true)
       const terms = query.trim().toLowerCase().split(/\s+/).filter(Boolean)
+      const filtering = terms.length > 0 || !!tag
+      // A changed filter shows its result from the top.
+      const asked = `${filter}|${tag}|${terms.join(' ')}`
+      const before = React.useRef(asked)
+      React.useEffect(() => { if (before.current !== asked && active) scroller?.current?.scrollTo({ top: 0 }); before.current = asked }, [asked])
       const match = (r) => (!tag || r.tags?.includes(tag)) && terms.every((x) => [r.title, r.description, r.url, r.id, ...(r.tags ?? [])].join(' ').toLowerCase().includes(x))
       const shown = (rows ?? []).filter((r) => (mode === 'catalog' || keep(r)) && match(r))
-      const pick = { inCart, toggleCart }
-      const entry = (r) => (view === 'grid' ? h(SourceCard, { key: r.id, row: r, t, pick, onTag: pickTag, tag, onOpen: () => open(r.id) }) : h(SourceRow, { key: r.id, row: r, t, pick, onOpen: () => open(r.id), onReviewed: update, onConflict: () => open(r.id) }))
-      const current = nav.source && (rows?.find((r) => r.id === nav.source) ?? (rows ? { id: nav.source, title: nav.source, form: 'article', areas: [], description: '' } : null))
+      const layers = mode === 'catalog' && catalog ? shelves(catalog.outline, catalog.forms, shown) : []
+      const full = (g) => filtering || openAreas.has(g.area)
+      // What ← → step through: the sources in the order they are drawn.
+      const order = () => [...new Set((mode === 'catalog' ? layers.flatMap((l) => l.groups.flatMap((g) => onShelf(g, full(g)))) : shown).map((r) => r.id))]
+      const open = (id) => openSource(id, { list: order() })
+      const pickTag = (x) => setTag((cur) => (cur === x ? null : x))
+      const clearAll = () => { setQuery(''); setTag(null); setSearching(false) }
+      const entry = (r) => (view === 'grid'
+        ? h(SourceCard, { key: r.id, row: r, t, pick, sources, onTag: pickTag, tag, last: r.id === last, onOpen: () => open(r.id) })
+        : h(SourceRow, { key: r.id, row: r, t, pick, sources, last: r.id === last, onOpen: () => open(r.id), onReviewed, onConflict: () => open(r.id) }))
 
-      React.useLayoutEffect(() => {
-        if (current || !returning.current || !rows) return
-        returning.current = false
-        scroller?.current?.scrollTo({ top: place.current })
-      })
-      if (current) return h(SourceDetail, { key: current.id, row: current, t, openSession, pick: { inCart, toggleCart }, onBack: back, onTag: (x) => { setTag(x); go({ tab: 'sources' }) }, onReviewed: update, send })
       let body
-      if (error) body = h('p', { className: 'pxs-empty' }, h(P.StateDot, { state: 'error' }), ' ', t('review.failed'), ' ', error)
+      if (catalogError && !rows) body = h(Empty, { title: t('review.failedTitle'), hint: catalogError, action: h(P.Button, { variant: 'outline', size: 'sm', onClick: reloadCatalog }, t('review.retry')) })
       else if (!rows) body = h('div', { className: 'pxs-list', 'aria-busy': true }, [0, 1, 2, 3, 4].map((i) => h('div', { key: i, className: 'pxs-skel' }, h('i'), h('i'))))
-      else if (!shown.length) body = h('p', { className: 'pxs-empty' }, terms.length || tag ? t('review.noMatch') : mode === 'catalog' ? t('review.empty.all') : t(`review.empty.${filter}`))
-      else if (mode === 'catalog') body = h(Outline, { areas: outline.areas, forms: outline.forms, rows: shown, t, view, entry, searching: terms.length > 0 || !!tag, openAreas, setOpenAreas })
+      else if (!shown.length) body = filtering ? h(Empty, { title: t('review.noMatch'), hint: t('review.noMatchHint'), action: h(P.Button, { variant: 'outline', size: 'sm', onClick: clearAll }, t('review.clearAll')) })
+        : mode === 'catalog' ? h(Empty, { title: t('review.empty.all'), hint: t('review.empty.allHint') }) : h(Empty, { title: t(`review.empty.${filter}`) })
+      else if (mode === 'catalog') body = h(Outline, { layers, t, view, entry, filtering, full, setOpenAreas })
       else body = h('div', { className: view === 'grid' ? 'pxs-grid' : 'pxs-list' }, shown.map(entry))
 
       return h(React.Fragment, null,
         h('div', { className: 'pxs-bar' },
-          h('div', { className: 'pxs-modes' }, h(P.SegmentedControl, { label: t('tab.label'), value: mode, onChange: switchMode,
+          h('div', { className: 'pxs-modes' }, h(P.SegmentedControl, { label: t('tab.scope'), value: mode, onChange: switchMode,
             options: [{ value: 'catalog', label: t('tab.catalog') }, { value: 'review', label: t('tab.review') }] }),
           mode === 'review' ? h('div', { className: 'pxs-pills', role: 'group', 'aria-label': t('review.filter') },
-            ['open', 'needs-work', 'reviewed', 'all'].map((v) => h(P.Pill, { key: v, active: filter === v, 'aria-pressed': filter === v, onClick: () => setFilter(v) }, t(`review.f.${v}`))))
-            : h('span', { className: 'pxs-caption' }, t('tab.catalogHint', { n: rows?.length ?? 0 })),
-          tag ? h('button', { type: 'button', className: 'pxs-tag-on', 'aria-label': `${t('review.clearTag')}: ${tag}`, onClick: () => setTag(null) }, '#', tag, h(Glyph, { name: 'close', size: 12 })) : null),
+            ['open', 'needs-work', 'reviewed', 'all'].map((v) => h(P.Pill, { key: v, active: filter === v, 'aria-pressed': filter === v, onClick: () => setFilter(v) }, t(`review.f.${v}`)))) : null,
+          tag ? h('button', { type: 'button', className: 'pxs-tag-on', 'aria-label': `${t('review.clearTag')}: ${tag}`, onClick: () => setTag(null) }, '#', tag, h(Glyph, { name: 'close', size: 12 })) : null,
+          // What the filters leave, said once beside them: a status message, read out when it changes.
+          h('span', { className: 'pxs-caption', role: 'status' }, !rows ? '' : filtering ? t('review.matches', { n: shown.length }) : mode === 'catalog' ? t('tab.catalogHint', { n: rows.length }) : '')),
           h('div', { className: 'pxs-icons' },
             searching ? h(P.Input, { className: 'pxs-search', type: 'search', role: 'searchbox', value: query, autoFocus: true, placeholder: t('review.search'), 'aria-label': t('review.search'),
               icon: h(P.IconSearchOutlineRegular, { size: 14 }), onChange: (e) => setQuery(e.target.value),
-              onKeyDown: (e) => { if (e.key === 'Escape') { setQuery(''); setSearching(false) } },
+              onKeyDown: (e) => { if (e.key === 'Escape') { e.preventDefault(); setQuery(''); setSearching(false) } },
               onBlur: () => { if (!query) setSearching(false) } })
               : h(P.Button, { variant: 'ghost', size: 'sm', 'aria-label': t('review.search'), title: t('review.search'), icon: h(P.IconSearchOutlineRegular, { size: 16 }), onClick: () => setSearching(true) }),
             h('div', { className: 'pxs-views', role: 'group', 'aria-label': t('review.view') },
@@ -738,30 +906,31 @@ window.__ModuleLoader__.load({
       ...items.map((x, i) => `${i + 1}. ${x.title} — ${x.url}${x.description ? ` — When: ${x.description}` : ''} (praxis: ${x.id})`),
     ].join('\n')
 
-    function Cart({ t, items, setItems, go, addToChat }) {
+    function Cart({ t, items, setItems, openSource, addToChat }) {
       const [copied, setCopied] = React.useState(null)
       const copy = () => navigator.clipboard.writeText(cartText(items)).then(() => setCopied('ok'), () => setCopied('failed'))
       React.useEffect(() => { if (!copied) return; const id = setTimeout(() => setCopied(null), 1800); return () => clearTimeout(id) }, [copied])
       return h('section', { className: 'pxs-cart', 'aria-label': t('cart.label') },
         h('header', null,
-          h(Glyph, { name: 'cart' }), h('b', null, t('cart.count', { n: items.length })), h('span', { className: 'pxs-caption' }, t('cart.hint')),
+          h(Glyph, { name: 'cart' }), h('b', null, t('cart.count', { n: items.length })),
           h('button', { type: 'button', className: 'pxs-link', onClick: () => setItems([]) }, t('cart.clear'))),
         h('ul', null, items.map((x) => h('li', { key: x.id },
-          h('button', { type: 'button', className: 'pxs-cart-item', title: x.description, onClick: () => go({ tab: 'sources', source: x.id }) }, x.title),
+          h('button', { type: 'button', className: 'pxs-cart-item', 'data-key': `source:${x.id}`, title: x.description, onClick: () => openSource(x.id, { list: items.map((y) => y.id), seed: x }) }, x.title),
           h('button', { type: 'button', className: 'pxs-cart-x', 'aria-label': `${t('cart.remove')}: ${x.title}`, onClick: () => setItems((c) => c.filter((y) => y.id !== x.id)) }, h(Glyph, { name: 'close', size: 12 }))))),
         h('footer', null,
           h(P.Button, { variant: 'ghost', size: 'sm', icon: h(Glyph, { name: 'copy', size: 14 }), onClick: copy }, copied === 'ok' ? t('cart.copied') : copied === 'failed' ? t('cart.copyFailed') : t('cart.copy')),
           addToChat ? h(P.Button, { size: 'sm', icon: h(Glyph, { name: 'chat', size: 14 }), onClick: () => { addToChat(cartText(items)); setItems([]) } }, t('cart.chat')) : null))
     }
 
-    function AskStrip({ asks, t, openSession }) {
+    function AskStrip({ asks, t, openSession, openSource }) {
       const recent = asks.filter((a) => a.status === 'running' || Date.now() - Date.parse(a.done_at ?? a.at) < 864e5).slice(0, 4)
       if (!recent.length) return null
       return h('ul', { className: 'pxs-asks', 'aria-live': 'polite' }, recent.map((a) => h('li', { key: a.id, 'data-status': a.status },
         a.status === 'running' ? h('span', { className: 'pxs-spin', 'aria-hidden': true }) : h(a.status === 'done' ? P.IconCheckOutlineRegular : P.IconWarningOutlineRegular, { size: 14 }),
         h('span', { className: 'pxs-ask-text' },
           a.status === 'running' ? h(P.TextShimmer, { active: true }, t('ask.running'))
-            : a.status === 'done' ? (a.captured.length ? t('ask.done', { n: a.captured.length, titles: a.captured.map((s) => s.title).slice(0, 3).join('、') }) : t('ask.doneNone'))
+            : a.status === 'done' ? (a.captured.length ? [t('ask.done', { n: a.captured.length }), ...a.captured.slice(0, 3).map((x) => h(React.Fragment, { key: x.id }, ' ',
+              h('button', { type: 'button', className: 'pxs-link', onClick: () => openSource(x.id, { list: a.captured.map((y) => y.id), seed: x }) }, x.title)))] : t('ask.doneNone'))
               : t(`ask.${a.status}`)),
         h('button', { type: 'button', className: 'pxs-link', onClick: () => openSession(a.session) }, t('ask.session')))))
     }
@@ -804,39 +973,58 @@ window.__ModuleLoader__.load({
             busy ? h('span', { className: 'pxs-spin', 'aria-hidden': true }) : h(Glyph, { name: 'up' }))))
     }
 
-    // The catalog's own structure, kept from the control plane: Kit layer → area (title and
-    // description) → form, each group folding open; the entries inside are the same rows or cards.
-    function Outline({ areas, forms, rows, t, view, entry, searching, openAreas, setOpenAreas }) {
-      const groups = areas.map((a) => {
-        const own = rows.filter((r) => r.areas.some((x) => x.area === a.area))
-        return { ...a, byForm: forms.map((f) => ({ form: f, rows: own.filter((r) => r.form === f) })).filter((g) => g.rows.length), n: own.length }
-      }).filter((g) => g.n)
+    // The catalog's own structure, laid out as shelves: Kit layer, then each area with its newest few
+    // sources in view and the rest one click away, shown in full by form. A search or a tag shows every
+    // match in full. Nothing is folded shut: the first view is already sources.
+    const SHELF = 3
+    function shelves(areas, forms, rows) {
       const layers = []
-      for (const g of groups) {
-        const layer = g.area.split('/')[0] || ''
+      for (const a of areas) {
+        const own = rows.filter((r) => r.areas.some((x) => x.area === a.area))
+        if (!own.length) continue
+        const g = { ...a, own, byForm: forms.map((f) => ({ form: f, rows: own.filter((r) => r.form === f) })).filter((x) => x.rows.length) }
+        const layer = a.area.split('/')[0] || ''
         ;(layers.find((l) => l.layer === layer) ?? (layers.push({ layer, groups: [] }), layers.at(-1))).groups.push(g)
       }
+      return layers
+    }
+    /** What one area shows, in the order it is drawn: in full by form, or its newest few. */
+    const onShelf = (g, full) => (full ? g.byForm.flatMap((f) => f.rows) : g.own.slice(0, SHELF))
+
+    function Outline({ layers, t, view, entry, filtering, full, setOpenAreas }) {
+      const items = (rows) => h('div', { className: view === 'grid' ? 'pxs-grid' : 'pxs-list' }, rows.map(entry))
       return h('div', { className: 'pxs-outline' }, layers.map((l) => h('section', { key: l.layer || '-', className: 'pxs-layer' },
         h('h2', { className: 'pxs-layer-title' }, l.layer ? t(`layer.${l.layer}`) : t('review.noArea')),
-        l.groups.map((g) => h('details', { key: g.area || '-', className: 'pxs-area', open: searching || openAreas.has(g.area) || undefined,
-          onToggle: (e) => { if (searching) return; const on = e.currentTarget.open; setOpenAreas((cur) => { const next = new Set(cur); on ? next.add(g.area) : next.delete(g.area); return next }) } },
-          h('summary', null,
-            h('span', { className: 'pxs-area-head' }, h('span', { className: 'pxs-area-title' }, g.title || g.area || t('review.noArea')), h('span', { className: 'pxs-caption' }, g.area)),
-            g.description ? h('span', { className: 'pxs-area-desc', dir: 'auto' }, g.description) : null,
-            h('span', { className: 'pxs-area-forms' }, g.byForm.map((f) => h('span', { key: f.form, className: 'pxs-form-count' }, h(Glyph, { name: f.form, size: 12 }), t(`form.${f.form}`), h('b', null, f.rows.length))))),
-          g.byForm.map((f) => h('div', { key: f.form, className: 'pxs-form-group' },
-            h('h3', null, h(Glyph, { name: f.form, size: 14 }), t(`form.${f.form}`), h('span', { className: 'pxs-caption' }, String(f.rows.length))),
-            h('div', { className: view === 'grid' ? 'pxs-grid' : 'pxs-list' }, f.rows.map(entry)))))))))
+        l.groups.map((g) => {
+          const all = full(g)
+          const toggle = (e) => {
+            const head = e.currentTarget.closest('.pxs-area')
+            setOpenAreas((cur) => { const next = new Set(cur); all ? next.delete(g.area) : next.add(g.area); return next })
+            // Folding a long shelf back keeps its heading where the eye is, instead of leaving you far below it.
+            if (all) requestAnimationFrame(() => head?.scrollIntoView({ block: 'nearest' }))
+          }
+          return h('section', { key: g.area || '-', className: 'pxs-area' },
+            h('header', { className: 'pxs-area-head' },
+              h('div', { className: 'pxs-area-text' },
+                h('h3', { className: 'pxs-area-title' }, g.title || g.area || t('review.noArea')),
+                g.description ? h('p', { className: 'pxs-area-desc', dir: 'auto' }, g.description) : null),
+              !filtering && g.own.length > SHELF ? h('button', { type: 'button', className: 'pxs-shelf-more', 'aria-expanded': all, onClick: toggle }, all ? t('shelf.less') : t('shelf.all', { n: g.own.length })) : null),
+            all ? g.byForm.map((f) => h('div', { key: f.form, className: 'pxs-form-group' },
+              h('h4', null, h(Glyph, { name: f.form, size: 14 }), t(`form.${f.form}`), h('span', { className: 'pxs-caption' }, String(f.rows.length))),
+              items(f.rows)))
+              : items(onShelf(g, false)))
+        }))))
     }
 
-    // Vermilion marks only what waits on a person; a settled verdict is plain.
+    // The accent marks only what waits on a person; a settled verdict is plain.
     function StateTag({ row, t }) {
       if (!reviewed(row)) return null
       return row.review.verdict === 'needs-work' ? h('span', { className: 'pxs-wait' }, t('v.needs-work')) : h(P.Tag, { tone: 'neutral' }, t(`v.${row.review.verdict}`))
     }
-    // How far the original was read, in three steps: the left edge draws it, the word says it.
+    // How far the original was read, in three steps: the detail draws it as a meter and says it in words.
     const readOf = (status) => (status === 'verified' ? 'verified' : status === 'unavailable' ? 'unavailable' : 'partial')
-    const ReadWord = ({ row, t }) => h('span', { className: 'pxs-ev' }, t(`ev.${readOf(row.evidence_status)}`))
+    // Partly read is where most sources stand, so lists name only the exceptions; the detail shows all three.
+    const ReadWord = ({ row, t }) => { const at = readOf(row.evidence_status); return at === 'partial' ? null : h('span', { className: 'pxs-ev', 'data-level': at }, t(`ev.${at}`)) }
 
     function RowMenu({ row, t, onReviewed, onConflict }) {
       const [open, setOpen] = React.useState(false)
@@ -865,42 +1053,44 @@ window.__ModuleLoader__.load({
         onClick: (e) => { e.stopPropagation(); pick.toggleCart(row) } }, h(Glyph, { name: on ? 'cartIn' : 'cartAdd' }), label ? h('span', null, t(on ? 'cart.in' : 'cart.add')) : null)
     }
 
-    function SourceRow({ row, t, pick, onOpen, onReviewed, onConflict }) {
-      return h('div', { className: 'pxs-row' },
-        h('button', { type: 'button', className: 'pxs-row-main', onClick: onOpen },
+    function SourceRow({ row, t, pick, sources, last, onOpen, onReviewed, onConflict }) {
+      return h('div', { className: 'pxs-row', 'data-key': `source:${row.id}`, 'data-last': last || undefined },
+        h('button', { type: 'button', className: 'pxs-row-main', onClick: onOpen, ...intentOn(sources, row.id) },
           h('span', { className: 'pxs-tile', title: t(`form.${row.form}`) }, h(Glyph, { name: row.form })),
           h('span', { className: 'pxs-row-text' },
             h('span', { className: 'pxs-row-title', dir: 'auto' }, row.title, h('span', { className: 'pxs-host' }, hostOf(row.url))),
-            h('span', { className: 'pxs-row-desc', dir: 'auto' }, row.description))),
+            h('span', { className: 'pxs-row-desc', dir: 'auto', title: row.description }, row.description))),
         h('span', { className: 'pxs-row-side' }, h(StateTag, { row, t }), h(ReadWord, { row, t }), h('time', { dateTime: row.captured_at }, day(row.captured_at)), h(CartButton, { row, t, pick }), h(RowMenu, { row, t, onReviewed, onConflict })))
     }
 
-    // A card is the same record as a row, laid out for scanning: what it is, where it lives, when to open it.
     const Tags = ({ tags, active, onTag, max = 3 }) => (tags?.length ? h('span', { className: 'pxs-tags' },
       tags.slice(0, max).map((x) => h('button', { key: x, type: 'button', className: 'pxs-tagchip', 'aria-pressed': active === x, onClick: (e) => { e.stopPropagation(); onTag?.(x) } }, '#', x))) : null)
 
-    // A card reads like an item on a shelf: a look at what is inside (the first excerpt, with where it
-    // is in the original), what it is and where it lives, when to open it, then its use tags.
-    function SourceCard({ row, t, pick, onOpen, onTag, tag }) {
-      return h('div', { className: 'pxs-card', 'data-picked': pick.inCart(row.id) || undefined },
-        h('button', { type: 'button', className: 'pxs-card-main', onClick: onOpen },
+    // A card reads like an item on a shelf: a look inside (the first excerpt, with where it is in the
+    // original), then its name, kind and site, and when to open it. Tags, state, date and the cart sit
+    // at the foot, weaker than what the card is about.
+    function SourceCard({ row, t, pick, sources, last, onOpen, onTag, tag }) {
+      return h('div', { className: 'pxs-card', 'data-key': `source:${row.id}`, 'data-picked': pick.inCart(row.id) || undefined, 'data-last': last || undefined },
+        h('button', { type: 'button', className: 'pxs-card-main', onClick: onOpen, ...intentOn(sources, row.id) },
           row.preview ? h('span', { className: 'pxs-card-look', dir: 'auto' }, h('q', null, row.preview.claim), h('small', null, row.preview.locator)) : null,
-          h('span', { className: 'pxs-card-head' },
-            h('span', { className: 'pxs-tile' }, h(Glyph, { name: row.form })),
-            h('span', { className: 'pxs-card-text' },
-              h('span', { className: 'pxs-row-title', dir: 'auto' }, row.title),
-              h('span', { className: 'pxs-caption' }, hostOf(row.url)))),
-          h('span', { className: 'pxs-card-desc', dir: 'auto' }, row.description),
-          h('span', { className: 'pxs-card-foot' },
-            h(ReadWord, { row, t }), h('time', { dateTime: row.captured_at }, day(row.captured_at)), h(StateTag, { row, t }))),
-        h(Tags, { tags: row.tags, active: tag, onTag }),
-        h(CartButton, { row, t, pick }))
+          h('span', { className: 'pxs-card-title', dir: 'auto' }, row.title),
+          h('span', { className: 'pxs-card-meta' }, h(Glyph, { name: row.form, size: 12 }), h('span', null, [t(`form.${row.form}`), hostOf(row.url)].filter(Boolean).join(' · '))),
+          h('span', { className: 'pxs-card-desc', dir: 'auto' }, row.description)),
+        h('div', { className: 'pxs-card-foot' },
+          h(Tags, { tags: row.tags, active: tag, onTag }),
+          h('span', { className: 'pxs-card-facts' }, h(StateTag, { row, t }), h(ReadWord, { row, t }), h('time', { dateTime: row.captured_at }, day(row.captured_at))),
+          h(CartButton, { row, t, pick })))
     }
 
-    // Full-page detail, one fixed schema for every source so the eye learns where things are:
-    // when to open it; evidence (how far it was read, the last upstream check, when it came in);
-    // where in the original; where it is used; limits and when to revisit; why it was collected;
-    // then the verdict. A block with nothing to show keeps its place and says so.
+    // An empty list says why it is empty and what to do next: a short title, a hint when the next
+    // step is not obvious, at most one action.
+    const Empty = ({ title, hint, action }) => h('div', { className: 'pxs-empty' }, h('p', { className: 'pxs-empty-title' }, title), hint ? h('p', null, hint) : null, action ? h('div', { className: 'pxs-empty-action' }, action) : null)
+
+    // Full-page detail, one fixed schema for every source so the eye learns where things are. It reads
+    // in the order a decision needs: what it is and when to open it; what the original holds, how far
+    // it was read, its limits and why it was collected; then the question on the description, beside
+    // the evidence it rests on. Where it is used and who read it follow as paths onward. A block with
+    // nothing to show keeps its place and says so.
     const DEPTH = ['unavailable', 'partial', 'verified']
     function DepthMeter({ level, t }) {
       const at = DEPTH.indexOf(readOf(level))
@@ -908,37 +1098,63 @@ window.__ModuleLoader__.load({
         h('div', { className: 'pxs-meter-bar' }, DEPTH.map((d, i) => h('span', { key: d, 'data-on': i <= at || undefined, 'data-level': DEPTH[at] }))),
         h('span', { className: 'pxs-meter-label' }, t(`ev.${DEPTH[at]}`)))
     }
-    function Stat({ label, children }) {
-      return h('div', { className: 'pxs-stat' }, h('span', { className: 'pxs-stat-label' }, label), h('div', { className: 'pxs-stat-value' }, children))
-    }
     function Block({ label, aside, children }) {
       return h('section', { className: 'pxs-block' }, h('header', null, h('h2', null, label), aside ?? null), children)
     }
     const None = ({ children }) => h('p', { className: 'pxs-none' }, children)
 
-    function SourceDetail({ row, t, openSession, pick, onBack, onTag, onReviewed, send }) {
-      const [d, setD] = React.useState(null)
+    function SourceDetail({ id, quiet, seed, t, go, kit, openSession, pick, sources, steps, onStep, trail, onTag, onReviewed, send }) {
+      // Drawn from the record already fetched when there is one, else from the row it was opened from.
+      const [d, setD] = React.useState(() => sources.peek(id) ?? null)
       const [problem, setProblem] = React.useState(null)
       const [asking, setAsking] = React.useState(false)
       const [note, setNote] = React.useState('')
       const [done, setDone] = React.useState(null)
       const [busy, setBusy] = React.useState(false)
-      React.useEffect(() => { call('praxis_source', { id: row.id }).then(setD, (e) => setProblem(String(e.message ?? e))) }, [row.id])
+      const head = React.useRef(null)
+      const verdictBar = React.useRef(null)
+      // Focus never drops to the page: a closed note hands it back to Needs work, a recorded verdict to Next source.
+      const asked = React.useRef(false)
+      React.useEffect(() => {
+        if (asking) { asked.current = true; return }
+        if (!asked.current) return
+        asked.current = false
+        if (!done) verdictBar.current?.querySelector('button:last-of-type')?.focus({ preventScroll: true })
+      }, [asking, done])
+      React.useEffect(() => { if (done) (verdictBar.current?.querySelector('button') ?? head.current)?.focus({ preventScroll: true }) }, [done])
+      React.useEffect(() => {
+        let live = true
+        sources.get(id).then((x) => { if (live) setD(x) }, (e) => { if (live) setProblem(String(e.message ?? e)) })
+        return () => { live = false }
+      }, [id, sources])
+      // The neighbours load now, so ← → draw at once.
+      React.useEffect(() => { for (const x of [steps.prev, steps.next]) if (x) sources.get(x).catch(() => {}) }, [steps.prev, steps.next, sources])
+      const row = { id, title: id, form: 'article', ...seed, ...d }
+      // The title takes focus on arrival, so a screen reader names the new page and ← → keep stepping.
+      React.useEffect(() => { head.current?.focus({ preventScroll: true }) }, [])
+      const stepKey = (e) => {
+        if (e.altKey || e.metaKey || e.ctrlKey || e.shiftKey || e.target.closest?.('input, textarea, select, [contenteditable="true"]')) return
+        const to = e.key === 'ArrowLeft' ? steps.prev : e.key === 'ArrowRight' ? steps.next : null
+        if (to) { e.preventDefault(); onStep(to) }
+      }
 
       async function verdict(v) {
         setBusy(true); setProblem(null)
         try {
           // The verdict is about the description on screen; if it changed meanwhile, show the new one first.
-          const seen = d?.entry_revision ?? row.entry_revision
+          const seen = row.entry_revision
           let s
-          try { s = await call('praxis_review', { source: row.id, verdict: v, note: note.trim() || undefined, revision: seen }) } catch (e) {
+          try { s = await call('praxis_review', { source: id, verdict: v, note: note.trim() || undefined, revision: seen }) } catch (e) {
             if (e.status !== 409) throw e
-            setD(await call('praxis_source', { id: row.id })); setProblem(t('review.changed')); return
+            sources.forget(id)
+            setD(await sources.get(id)); setProblem(t('review.changed')); return
           }
-          onReviewed({ id: row.id, entry_revision: s.entry_revision, review: s.review })
-          setD((cur) => (cur ? { ...cur, entry_revision: s.entry_revision, review: s.review, description: s.description } : cur))
+          onReviewed({ id, entry_revision: s.entry_revision, review: s.review })
+          const next = { ...row, entry_revision: s.entry_revision, review: s.review, description: s.description ?? row.description }
+          sources.put(id, next)
+          setD(next)
           // A description marked needs work goes to an agent, the only one who rewrites records.
-          if (v === 'needs-work') await send(t('ask.revise', { id: row.id, title: row.title, note: note.trim() || t('ask.noNote') }))
+          if (v === 'needs-work') await send(t('ask.revise', { id, title: row.title, note: note.trim() || t('ask.noNote') }))
           setDone(v); setAsking(false)
         } catch (e) { setProblem(String(e.message ?? e)) } finally { setBusy(false) }
       }
@@ -948,60 +1164,75 @@ window.__ModuleLoader__.load({
       const pages = d?.relations ?? []
       const runs = d?.used_by ?? []
       const link = (href, text, cls = 'pxs-loc') => h('a', { href, target: '_blank', rel: 'noreferrer', className: cls }, text)
-      return h('article', { className: 'pxs-detail' },
-        h('button', { type: 'button', className: 'pxs-back', onClick: onBack }, h(Glyph, { name: 'back', size: 14 }), t('review.title')),
+      const pageTitle = (b) => (b.unit && kit?.byId.get(b.unit)?.title) || b.unit || b.target
+      const stepButton = (to, glyph, label) => h('button', { type: 'button', className: 'pxs-step', disabled: !to, 'aria-label': label, title: to ? `${label} (${glyph === 'back' ? '←' : '→'})` : undefined, onClick: () => onStep(to) }, h(Glyph, { name: glyph, size: 14 }))
+      // Its Kit area: its own category, else the areas of the pages it is attached to.
+      const areas = row.category ? [row.category] : [...new Set((d?.relations ?? []).map((b) => b.unit?.split('/').slice(0, 2).join('/')).filter(Boolean))]
+      const area = areas.map((a) => kit?.byId.get(a)?.title ?? a).join(' · ')
+      return h('article', { className: 'pxs-detail', 'data-quiet': quiet || undefined, onKeyDown: stepKey },
+        h('div', { className: 'pxs-detail-bar' },
+          h(Crumbs, { trail }),
+          steps.prev || steps.next ? h('div', { className: 'pxs-steps' }, stepButton(steps.prev, 'back', t('review.prev')), stepButton(steps.next, 'forward', t('review.next'))) : null),
         h('header', { className: 'pxs-detail-head' },
           h('span', { className: 'pxs-tile lg' }, h(Glyph, { name: row.form, size: 20 })),
           h('div', { className: 'pxs-detail-title' },
-            h('h1', { dir: 'auto' }, d?.title ?? row.title),
-            h('p', { className: 'pxs-caption' }, [t(`form.${row.form}`), hostOf(row.url), row.areas.map((a) => a.title || a.area || t('review.noArea')).join(' · ')].filter(Boolean).join(' · '))),
-          h('div', { className: 'pxs-detail-actions' }, h(CartButton, { row: { ...row, ...(d ? { title: d.title, url: d.url, description: d.description } : {}) }, t, pick, label: true }),
-            (d?.url ?? row.url) ? h('a', { className: 'pxs-open', href: d?.url ?? row.url, target: '_blank', rel: 'noreferrer' }, t('review.openOriginal'), h(Glyph, { name: 'out', size: 14 })) : null)),
-        h('p', { className: 'pxs-when', dir: 'auto' }, d?.description ?? row.description),
-        h(Tags, { tags: d?.tags ?? row.tags, onTag, max: 12 }),
+            h('h1', { dir: 'auto', tabIndex: -1, ref: head }, row.title),
+            h('p', { className: 'pxs-caption' }, [t(`form.${row.form}`), hostOf(row.url), area].filter(Boolean).join(' · '))),
+          h('div', { className: 'pxs-detail-actions' }, h(CartButton, { row, t, pick, label: true }),
+            row.url ? h('a', { className: 'pxs-open', href: row.url, target: '_blank', rel: 'noreferrer' }, t('review.openOriginal'), h(Glyph, { name: 'out', size: 14 })) : null)),
+        // An original that stopped answering changes how everything below can be used: say it first.
+        check && check.status !== 'ok' ? h('p', { className: 'pxs-notice', role: 'note' }, h(P.IconWarningOutlineRegular, { size: 14 }), h('span', null, t('d.unreachable', { at: day(check.at) }))) : null,
+        h('p', { className: 'pxs-when', dir: 'auto' }, row.description),
+        h(Tags, { tags: row.tags, onTag, max: 12 }),
         problem ? h('p', { className: 'pxs-problem', role: 'alert' }, problem) : null,
         !d ? h('div', { className: 'pxs-skel' }, h('i'), h('i'), h('i')) : h(React.Fragment, null,
-          h('div', { className: 'pxs-stats' },
-            h(Stat, { label: t('d.depth') }, h(DepthMeter, { level: d.evidence_status, t })),
-            h(Stat, { label: t('d.check') }, check
-              ? h('span', { className: 'pxs-check' }, h(P.StateDot, { state: check.status === 'ok' ? 'ongoing' : 'error' }), check.status === 'ok' ? `HTTP ${check.http}` : t('d.unreachable'), h('span', { className: 'pxs-caption' }, day(check.at)))
-              : h('span', { className: 'pxs-caption' }, t('d.noCheck'))),
-            h(Stat, { label: t('d.captured') }, h('span', null, day(d.captured_for?.at) || '—', h('span', { className: 'pxs-caption' }, d.captured_for?.by ?? d.collection?.title ?? '')))),
-          h(Block, { label: t('d.read') }, d.read_scope ? h('p', { dir: 'auto' }, d.read_scope) : h(None, null, '—')),
           h(Block, { label: t('review.excerpts'), aside: excerpts.length ? h('span', { className: 'pxs-caption' }, String(excerpts.length)) : null },
             excerpts.length ? h('ol', { className: 'pxs-rail' }, excerpts.map((x, i) => h('li', { key: i },
               h('span', { className: 'pxs-rail-dot', 'aria-hidden': true }, i + 1),
               h('div', null, x.locator ? (/^https?:\/\//.test(x.locator) ? link(x.locator, x.locator) : h('span', { className: 'pxs-loc' }, x.locator)) : null, h('p', { dir: 'auto' }, x.claim)))))
               : h(None, null, t('d.noExcerpts'))),
-          h(Block, { label: t('review.pages') },
-            pages.length ? h('div', { className: 'pxs-map' },
-              h('span', { className: 'pxs-map-node' }, h(Glyph, { name: row.form, size: 14 }), h('span', null, row.title)),
-              h('ul', null, pages.map((b) => h('li', { key: b.binding, 'data-off': !b.enabled || undefined },
-                h('code', null, b.unit ?? b.target), h('span', { dir: 'auto' }, b.description)))))
-              : h(None, null, t('d.noPages')),
-            d.serves?.length ? h('p', { className: 'pxs-serves' }, h('span', { className: 'pxs-caption' }, t('d.serves')), d.serves.map((x) => h(P.Tag, { key: x.id, tone: 'neutral' }, x.title))) : null),
-          h(Block, { label: t('d.runs'), aside: runs.length ? h('span', { className: 'pxs-caption' }, String(runs.length)) : null },
-            runs.length ? h('ol', { className: 'pxs-timeline' }, runs.slice(0, 6).map((r, i) => h('li', { key: i }, h('time', null, day(r.at)), h('span', { dir: 'auto' }, r.title))))
-              : h(None, null, t('d.noRuns'))),
+          h(Block, { label: t('d.read'), aside: h(DepthMeter, { level: d.evidence_status, t }) },
+            d.read_scope ? h('p', { dir: 'auto' }, d.read_scope) : h(None, null, '—'),
+            check?.status === 'ok' || !check ? h('p', { className: 'pxs-fact' }, check ? t('d.checked', { at: day(check.at), http: check.http }) : t('d.noCheck')) : null,
+            d.summary ? h('details', { className: 'pxs-summary' }, h('summary', null, t('review.summary')), h('p', { dir: 'auto' }, d.summary)) : null),
           h('div', { className: 'pxs-pair' },
             h(Block, { label: t('review.limits') }, d.limits?.filter(Boolean).length ? h('p', { dir: 'auto' }, d.limits.filter(Boolean).join('；')) : h(None, null, '—')),
             h(Block, { label: t('d.revisit') }, d.revisit_when ? h('p', { dir: 'auto' }, d.revisit_when) : h(None, null, '—'))),
-          h(Block, { label: t('review.why') },
-            h('p', { dir: 'auto' }, d.captured_for?.task ?? d.collection?.purpose ?? '—',
-              d.captured_for?.session?.id ? [' ', h('button', { key: 's', type: 'button', className: 'pxs-link', onClick: () => openSession(d.captured_for.session.id) }, t('ask.session'))] : null),
-            d.summary ? h('details', { className: 'pxs-summary' }, h('summary', null, t('review.summary')), h('p', { dir: 'auto' }, d.summary)) : null)),
-        h('footer', { className: 'pxs-verdict' },
-          done ? h('p', { className: 'pxs-done', role: 'status' }, h(P.IconCheckOutlineRegular, { size: 14 }), ' ', t(done === 'needs-work' ? 'review.sentToAgent' : 'review.recorded', { v: t(`v.${done}`) }))
-            : asking ? h('div', { className: 'pxs-ask-note' },
-              h(DraftBox, { value: note, onChange: setNote, label: t('review.note'), hint: t('review.noteHint'), onSave: () => verdict('needs-work'), onCancel: () => setAsking(false) }),
-              h('div', { className: 'pxs-buttons' },
-                h(P.Button, { variant: 'primary', size: 'sm', disabled: busy, onClick: () => verdict('needs-work') }, t('review.sendNeedsWork')),
-                h(P.Button, { variant: 'ghost', size: 'sm', disabled: busy, onClick: () => setAsking(false) }, t('review.cancel'))))
-              : h(React.Fragment, null,
-                h('span', { className: 'pxs-verdict-q' }, t('review.question'), row.review ? h('span', { className: 'pxs-caption' }, ' ', t('review.last', { v: t(`v.${row.review.verdict}`), r: row.review.revision, by: row.review.by ?? '—', at: (row.review.at ?? '').slice(0, 10) })) : null),
+          h('footer', { className: 'pxs-verdict', ref: verdictBar },
+            done ? h(React.Fragment, null,
+              h('p', { className: 'pxs-done', role: 'status' }, h(P.IconCheckOutlineRegular, { size: 14 }), ' ', t(done === 'needs-work' ? 'review.sentToAgent' : 'review.recorded', { v: t(`v.${done}`) })),
+              steps.next ? h(P.Button, { variant: 'ghost', size: 'sm', onClick: () => onStep(steps.next) }, t('review.next')) : null)
+              : asking ? h('div', { className: 'pxs-ask-note' },
+                h(DraftBox, { value: note, onChange: setNote, label: t('review.note'), hint: t('review.noteHint'), onSave: () => verdict('needs-work'), onCancel: () => setAsking(false) }),
                 h('div', { className: 'pxs-buttons' },
-                  h(P.Button, { variant: 'primary', size: 'sm', disabled: busy, icon: h(P.IconCheckOutlineRegular, { size: 13 }), onClick: () => verdict('accurate') }, t('v.accurate')),
-                  h(P.Button, { variant: 'outline', size: 'sm', disabled: busy, onClick: () => setAsking(true) }, t('v.needs-work'))))))
+                  h(P.Button, { variant: 'primary', size: 'sm', disabled: busy, onClick: () => verdict('needs-work') }, t('review.sendNeedsWork')),
+                  h(P.Button, { variant: 'ghost', size: 'sm', disabled: busy, onClick: () => setAsking(false) }, t('review.cancel'))))
+                : h(React.Fragment, null,
+                  h('span', { className: 'pxs-verdict-q' }, t('review.question'), row.review ? h('span', { className: 'pxs-caption' }, ' ', t('review.last', { v: t(`v.${row.review.verdict}`), by: row.review.by ?? '—', at: (row.review.at ?? '').slice(0, 10) })) : null),
+                  h('div', { className: 'pxs-buttons' },
+                    h(P.Button, { variant: 'primary', size: 'sm', disabled: busy, icon: h(P.IconCheckOutlineRegular, { size: 13 }), onClick: () => verdict('accurate') }, t('v.accurate')),
+                    h(P.Button, { variant: 'outline', size: 'sm', disabled: busy, onClick: () => setAsking(true) }, t('v.needs-work'))))),
+          // Paths onward: each page this source is attached to, with what that page takes from it.
+          h(Block, { label: t('review.pages') },
+            pages.length ? h('ul', { className: 'pxs-paths' }, pages.map((b) => h('li', { key: b.binding },
+              h('button', { type: 'button', className: 'pxs-path', 'data-off': !b.enabled || undefined, onClick: () => go(b.unit ? { tab: 'kit', unit: b.unit } : { tab: 'kit', target: b.target.split('#')[0] }) },
+                h('span', { className: 'pxs-path-text' },
+                  h('span', { className: 'pxs-path-title', dir: 'auto' }, pageTitle(b)),
+                  b.description ? h('span', { className: 'pxs-path-desc', dir: 'auto' }, b.description) : null),
+                h(Glyph, { name: 'forward', size: 14 })))))
+              : h(None, null, t('d.noPages')),
+            d.serves?.length ? h('p', { className: 'pxs-serves' }, h('span', { className: 'pxs-caption' }, t('d.serves')), d.serves.map((x) => h(P.Tag, { key: x.id, tone: 'neutral' }, x.title))) : null),
+          // Activity is the roster's record of this source, apart from the entry above: what it was
+          // collected for and which runs read it. The entry reads the same in any project; this does not.
+          h(Block, { label: t('d.activity') },
+            h('ol', { className: 'pxs-timeline' },
+              d.captured_for || d.collection ? h('li', { key: 'in' }, h('time', null, day(d.captured_for?.at)),
+                h('span', { dir: 'auto' }, d.captured_for ? t('d.collected', { task: d.captured_for.task ?? '—' }) : [t('d.fromPack', { pack: d.collection.title ?? '—' }), d.collection.purpose ? ` — ${d.collection.purpose}` : ''].join(''),
+                  d.captured_for?.by ? h('span', { className: 'pxs-caption' }, ' · ', d.captured_for.by) : null,
+                  d.captured_for?.session?.id ? [' · ', h('button', { key: 's', type: 'button', className: 'pxs-link', onClick: () => openSession(d.captured_for.session.id) }, t('ask.session'))] : null)) : null,
+              runs.slice(0, 6).map((r, i) => h('li', { key: i }, h('time', null, day(r.at)), h('span', { dir: 'auto' }, t('d.readFor', { title: r.title }),
+                r.artifacts.map((a) => h(React.Fragment, { key: a.artifact }, ' · ', h('button', { type: 'button', className: 'pxs-link', onClick: () => go({ tab: 'artifacts', artifact: a.artifact }) }, `${a.path.split('/').pop()} v${a.version}`))))))),
+            runs.length ? null : h(None, null, t('d.noRuns')))))
     }
 
     // affectUI Text Area: grows with the text, a count that warns near the limit, ⌘/Ctrl+Enter saves, Escape cancels.
@@ -1039,16 +1270,16 @@ window.__ModuleLoader__.load({
 .pxs-wordmark svg{flex:none;color:var(--dsw-alias-label-secondary)}
 .pxs-tabs{display:flex;flex-wrap:wrap;gap:4px 22px;margin:22px 0 8px;border-bottom:.5px solid var(--dsw-alias-border-l3)}
 .pxs-tab{position:relative;display:inline-flex;align-items:center;gap:6px;padding:8px 0 10px;border:0;background:none;color:var(--dsw-alias-label-tertiary);font:inherit;font-size:14px;cursor:pointer;transition:color .16s ease}
-.pxs-tab:hover{color:var(--dsw-alias-label-primary)}
-.pxs-tab[aria-current=page]{color:var(--dsw-alias-label-primary);font-weight:500}
+@media (hover:hover){.pxs-tab:hover{color:var(--dsw-alias-label-primary)}}
+.pxs-tab[aria-current=page]{color:var(--dsw-alias-label-primary)}
 .pxs-tab[aria-current=page]::after{content:"";position:absolute;left:0;right:0;bottom:-.5px;height:2px;border-radius:1px;background:var(--dsw-alias-label-primary)}
 .pxs-tab:focus-visible{outline:2px solid var(--dsw-focus-ring-color);outline-offset:2px;border-radius:4px}
 .pxs-badge{min-width:16px;height:16px;padding:0 4px;border-radius:8px;background:var(--dsw-alias-state-business-primary);color:var(--dsw-static-neutral-bluish-00);font-size:10px;line-height:16px;font-weight:600;font-variant-numeric:tabular-nums;text-align:center}
 .pxs-modes{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px}
-.pxs-page-body{animation:pxs-in .36s cubic-bezier(.22,1,.36,1)}
+.pxs-page-body{animation:pxs-in .2s cubic-bezier(.22,1,.36,1)}
 .pxs-crumbs{display:flex;flex-wrap:wrap;align-items:center;gap:2px;margin:18px 0 14px;font-size:13px;color:var(--dsw-alias-label-tertiary)}
 .pxs-crumbs button{padding:2px 6px;border:0;border-radius:6px;background:none;color:inherit;font:inherit;cursor:pointer}
-.pxs-crumbs button:hover{color:var(--dsw-alias-label-primary);background:var(--dsw-alias-interactive-bg-hover)}
+@media (hover:hover){.pxs-crumbs button:hover{color:var(--dsw-alias-label-primary);background:var(--dsw-alias-interactive-bg-hover)}}
 .pxs-crumbs [aria-current]{padding:2px 6px;color:var(--dsw-alias-label-primary)}
 .pxs-sep{color:var(--dsw-alias-border-l4)}
 .pxs-count-chip{display:inline-flex;align-items:center;gap:4px;font:500 11.5px ui-monospace,'SF Mono',Menlo,monospace;color:var(--dsw-alias-label-tertiary)}
@@ -1058,7 +1289,7 @@ window.__ModuleLoader__.load({
 .pxs-star{display:grid;place-items:center;width:28px;height:28px;padding:0;border:0;border-radius:7px;background:none;color:var(--dsw-alias-label-tertiary);cursor:pointer}
 .pxs-star[aria-pressed=true]{color:var(--dsw-alias-label-primary)}
 .pxs-star[aria-pressed=true] path{fill:currentColor}
-.pxs-star:hover{background:var(--dsw-alias-interactive-bg-hover)}
+@media (hover:hover){.pxs-star:hover{background:var(--dsw-alias-interactive-bg-hover)}}
 .pxs-bindings-bar{display:flex;justify-content:flex-end;margin:-30px 0 8px;font-size:12.5px}
 .pxs-doc{margin:16px 0 0;padding:18px 22px;border-radius:12px;background:var(--dsw-alias-bg-layer-1);font-size:14px;max-height:560px;overflow:auto}
 .pxs-task-picks{display:grid;gap:12px;margin:18px 0 6px}
@@ -1066,6 +1297,8 @@ window.__ModuleLoader__.load({
 .pxs-select{display:flex;flex-direction:column;gap:4px}
 .pxs-select select,.pxs-fields input,.pxs-fields select{min-width:180px;height:32px;padding:0 10px;border:.5px solid var(--dsw-alias-border-l3);border-radius:8px;background:var(--dsw-alias-bg-base);color:inherit;font:inherit;font-size:13px}
 .pxs-select select:focus-visible,.pxs-fields input:focus-visible,.pxs-fields select:focus-visible{outline:2px solid var(--dsw-focus-ring-color);outline-offset:0}
+.pxs-result{transition:opacity .15s ease}
+.pxs-result[aria-busy]{opacity:.55}
 .pxs-flow{display:flex;flex-wrap:wrap;margin:14px 0 4px;border-top:.5px solid var(--dsw-alias-border-l3);border-bottom:.5px solid var(--dsw-alias-border-l3)}
 .pxs-flow span{flex:1 1 0;min-width:76px;display:flex;flex-direction:column;gap:2px;padding:10px 12px;font-size:12px;color:var(--dsw-alias-label-tertiary);text-transform:capitalize}
 .pxs-flow span+span{border-left:.5px solid var(--dsw-alias-border-l2)}
@@ -1093,42 +1326,37 @@ window.__ModuleLoader__.load({
 .pxs-links{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;margin-top:4px!important}
 .pxs-reason{display:flex;align-items:center;gap:6px}
 @media (width<=767px){.pxs-bindings-bar{margin:0 0 8px}.pxs-versions li{grid-template-columns:1fr}}
-.pxs-outline{display:grid;grid-template-columns:minmax(0,1fr);gap:36px}
+.pxs-outline{display:grid;grid-template-columns:minmax(0,1fr);gap:40px}
 .pxs-layer,.pxs-area,.pxs-form-group{min-width:0}
-.pxs-area>summary{min-width:0}
-.pxs-layer-title{margin:0 0 8px;font-size:16px;line-height:24px;font-weight:600}
-.pxs-area{border-top:.5px solid var(--dsw-alias-border-l4);background:none}
-.pxs-area>summary{display:grid;gap:4px;padding:14px 4px;cursor:pointer;list-style:none;transition:background-color .16s ease}
-.pxs-area>summary::-webkit-details-marker{display:none}
-@media (hover:hover){.pxs-area>summary:hover{background:var(--dsw-alias-interactive-bg-hover)}}
-.pxs-area>summary:focus-visible{outline:2px solid var(--dsw-focus-ring-color);outline-offset:-2px}
-.pxs-area[open]>summary{border-bottom:.5px solid var(--dsw-alias-border-l2)}
-.pxs-area-head{display:flex;align-items:baseline;gap:10px}
-.pxs-area-title{font-size:15px;line-height:22px;font-weight:500}
-.pxs-area-desc{color:var(--dsw-alias-label-secondary);font-size:13px}
-.pxs-area-forms{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
-.pxs-form-count{display:inline-flex;align-items:center;gap:5px;padding:2px 8px;border-radius:999px;background:var(--dsw-alias-bg-layer-1);color:var(--dsw-alias-label-secondary);font-size:12px}
-.pxs-form-count b{font-weight:500;color:var(--dsw-alias-label-primary);font-variant-numeric:tabular-nums}
-.pxs-form-group{padding:10px 0 6px 4px}
-.pxs-form-group h3{display:flex;align-items:center;gap:6px;margin:4px 4px 6px;font-size:12px;font-weight:500;color:var(--dsw-alias-label-tertiary)}
-.pxs-form-group .pxs-grid{padding:4px}
+.pxs-layer-title{margin:0;font-size:13px;line-height:20px;font-weight:600;color:var(--dsw-alias-label-tertiary)}
+.pxs-area{margin-top:18px}
+.pxs-area+.pxs-area{margin-top:30px}
+.pxs-area-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:8px}
+.pxs-area-text{min-width:0}
+.pxs-area-title{margin:0;font-size:15px;line-height:22px;font-weight:600}
+.pxs-area-desc{margin:2px 0 0;color:var(--dsw-alias-label-secondary);font-size:13px;line-height:1.55}
+.pxs-shelf-more{flex:none;padding:3px 8px;border:0;border-radius:8px;background:none;color:var(--dsw-alias-state-business-primary);font:inherit;font-size:13px;white-space:nowrap;cursor:pointer}
+@media (hover:hover){.pxs-shelf-more:hover{background:var(--dsw-alias-interactive-bg-hover)}}
+.pxs-form-group{padding:6px 0 4px}
+.pxs-form-group h4{display:flex;align-items:center;gap:6px;margin:6px 8px;font-size:12px;font-weight:500;color:var(--dsw-alias-label-tertiary)}
 .pxs-bar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 16px;margin:24px 0 16px}
 .pxs-pills{display:flex;flex-wrap:wrap;gap:6px}
 .pxs-icons{display:flex;align-items:center;gap:6px}
 .pxs-search{width:220px}
 .pxs-views{display:flex;gap:2px}
 .pxs-view{display:grid;place-items:center;width:30px;height:30px;padding:0;border:0;border-radius:8px;background:none;color:var(--dsw-alias-label-tertiary);cursor:pointer;transition:background-color .16s ease,color .16s ease,box-shadow .16s ease}
-.pxs-view:hover{color:var(--dsw-alias-label-primary);background:var(--dsw-alias-interactive-bg-hover)}
+@media (hover:hover){.pxs-view:hover{color:var(--dsw-alias-label-primary);background:var(--dsw-alias-interactive-bg-hover)}}
 .pxs-view[aria-pressed=true]{color:var(--dsw-alias-state-business-primary);box-shadow:inset 0 0 0 1px var(--dsw-alias-state-business-primary)}
-.pxs-view:focus-visible,.pxs-row-main:focus-visible,.pxs-card-main:focus-visible,.pxs-cart-btn:focus-visible,.pxs-cart-add:focus-visible,.pxs-cart-item:focus-visible,.pxs-cart-x:focus-visible,.pxs-back:focus-visible,.pxs-link:focus-visible,.pxs-open:focus-visible,.pxs-send:focus-visible{outline:2px solid var(--dsw-focus-ring-color);outline-offset:2px}
+.pxs-view:focus-visible,.pxs-step:focus-visible,.pxs-shelf-more:focus-visible,.pxs-path:focus-visible,.pxs-tagchip:focus-visible,.pxs-row-main:focus-visible,.pxs-card-main:focus-visible,.pxs-cart-btn:focus-visible,.pxs-cart-add:focus-visible,.pxs-cart-item:focus-visible,.pxs-cart-x:focus-visible,.pxs-crumbs button:focus-visible,.pxs-link:focus-visible,.pxs-open:focus-visible,.pxs-send:focus-visible{outline:2px solid var(--dsw-focus-ring-color);outline-offset:2px}
 .pxs-cart-btn{flex:none;display:inline-grid;place-items:center;width:28px;height:28px;padding:0;border:0;border-radius:8px;background:none;color:var(--dsw-alias-label-tertiary);cursor:pointer;opacity:0;transition:opacity .16s ease,background-color .16s ease,color .16s ease}
-.pxs-cart-btn:hover{background:var(--dsw-alias-interactive-bg-hover);color:var(--dsw-alias-label-primary)}
+@media (hover:hover){.pxs-cart-btn:hover{background:var(--dsw-alias-interactive-bg-hover);color:var(--dsw-alias-label-primary)}}
 .pxs-cart-btn[aria-pressed=true]{opacity:1;color:var(--dsw-alias-state-business-primary)}
-.pxs-row:hover .pxs-cart-btn,.pxs-card:hover .pxs-cart-btn,.pxs-cart-btn:focus-visible{opacity:1}
+.pxs-cart-btn:focus-visible{opacity:1}
+@media (hover:hover){.pxs-row:hover .pxs-cart-btn,.pxs-card:hover .pxs-cart-btn{opacity:1}}
 @media (hover:none){.pxs-cart-btn{opacity:1}}
 .pxs-detail-actions{display:flex;align-items:center;gap:8px;flex:none}
 .pxs-cart-add{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 12px;border:0;border-radius:999px;background:none;box-shadow:inset 0 0 0 .5px var(--dsw-alias-border-l4);color:var(--dsw-alias-label-primary);font:inherit;font-size:13px;cursor:pointer}
-.pxs-cart-add:hover{background:var(--dsw-alias-interactive-bg-hover)}
+@media (hover:hover){.pxs-cart-add:hover{background:var(--dsw-alias-interactive-bg-hover)}}
 .pxs-cart-add[aria-pressed=true]{color:var(--dsw-alias-state-business-primary);background:var(--dsw-alias-state-business-tertiary);box-shadow:none}
 .pxs-cart{margin:0 auto 8px;padding:10px 12px;border-radius:16px;background:var(--dsw-alias-bg-base);box-shadow:inset 0 0 0 .5px var(--dsw-alias-border-l3),var(--dsw-shadow-lv2);display:grid;gap:8px}
 .pxs-cart header{display:flex;align-items:center;gap:8px;min-width:0}
@@ -1139,10 +1367,10 @@ window.__ModuleLoader__.load({
 .pxs-cart li{display:inline-flex;align-items:center;max-width:100%;border-radius:999px;background:var(--dsw-alias-bg-layer-1);box-shadow:inset 0 0 0 .5px var(--dsw-alias-border-l2)}
 .pxs-cart-item{max-width:240px;padding:3px 4px 3px 10px;border:0;background:none;color:var(--dsw-alias-label-primary);font:inherit;font-size:12.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:pointer}
 .pxs-cart-x{display:inline-grid;place-items:center;width:22px;height:22px;margin-right:2px;padding:0;border:0;border-radius:50%;background:none;color:var(--dsw-alias-label-tertiary);cursor:pointer}
-.pxs-cart-x:hover{background:var(--dsw-alias-interactive-bg-hover);color:var(--dsw-alias-label-primary)}
+@media (hover:hover){.pxs-cart-x:hover{background:var(--dsw-alias-interactive-bg-hover);color:var(--dsw-alias-label-primary)}}
 .pxs-cart footer{display:flex;justify-content:flex-end;gap:6px}
 .pxs-asks{list-style:none;margin:0 auto 8px;padding:0;display:grid;gap:4px}
-.pxs-asks li{display:flex;align-items:center;gap:8px;min-height:32px;padding:4px 12px;border-radius:12px;background:var(--dsw-alias-bg-layer-1);box-shadow:inset 0 0 0 .5px var(--dsw-alias-border-l2);font-size:13px;color:var(--dsw-alias-label-secondary);animation:pxs-in .36s cubic-bezier(.22,1,.36,1)}
+.pxs-asks li{display:flex;align-items:center;gap:8px;min-height:32px;padding:4px 12px;border-radius:12px;background:var(--dsw-alias-bg-layer-1);box-shadow:inset 0 0 0 .5px var(--dsw-alias-border-l2);font-size:13px;color:var(--dsw-alias-label-secondary);animation:pxs-in .2s cubic-bezier(.22,1,.36,1)}
 .pxs-asks li[data-status=done] svg{color:var(--dsw-alias-state-business-primary)}
 .pxs-asks li[data-status=failed] svg,.pxs-asks li[data-status=stopped] svg{color:var(--dsw-alias-state-error-primary)}
 .pxs-ask-text{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -1161,52 +1389,58 @@ window.__ModuleLoader__.load({
 .pxs-row-side{flex:none;display:flex;align-items:center;gap:10px;padding-right:4px;color:var(--dsw-alias-label-tertiary);font-size:12.5px;font-variant-numeric:tabular-nums}
 .pxs-row-side time{min-width:52px;text-align:right}
 .pxs-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px}
-.pxs-card{position:relative;display:flex;min-height:148px;border:0;border-radius:16px;background:var(--dsw-alias-bg-base);box-shadow:inset 0 0 0 .5px var(--dsw-alias-border-l3),var(--dsw-shadow-lv1);color:inherit;font:inherit;text-align:left;cursor:pointer;overflow:hidden;transition:box-shadow .2s ease,transform .2s cubic-bezier(.22,1,.36,1)}
+.pxs-card{position:relative;display:flex;flex-direction:column;min-height:148px;border-radius:16px;background:var(--dsw-alias-bg-base);box-shadow:inset 0 0 0 .5px var(--dsw-alias-border-l3),var(--dsw-shadow-lv1);overflow:hidden;transition:box-shadow .16s ease,transform .16s cubic-bezier(.22,1,.36,1)}
 @media (hover:hover){.pxs-card:hover{transform:translateY(-1px);box-shadow:inset 0 0 0 .5px var(--dsw-alias-border-l4),var(--dsw-shadow-lv2)}}
-.pxs-card-main{flex:1;min-width:0;display:flex;flex-direction:column;gap:10px;padding:14px 16px;border:0;border-radius:inherit;background:none;color:inherit;font:inherit;text-align:left;cursor:pointer}
+.pxs-card-main{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px;padding:14px 16px 8px;border:0;border-radius:inherit;background:none;color:inherit;font:inherit;text-align:left;cursor:pointer}
 .pxs-card[data-picked]{box-shadow:inset 0 0 0 1px var(--dsw-alias-state-business-primary),var(--dsw-shadow-lv1)}
-.pxs-card .pxs-cart-btn{position:absolute;top:10px;right:10px}
-.pxs-card-look{display:grid;gap:4px;padding:10px 12px;border-radius:10px;background:var(--dsw-alias-bg-layer-1)}
-.pxs-card-look q{color:var(--dsw-alias-label-primary);font-size:12.5px;line-height:1.55;quotes:none;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.pxs-card[data-last]:not([data-picked]){box-shadow:inset 0 0 0 1px var(--dsw-alias-border-l4),var(--dsw-shadow-lv1)}
+.pxs-card-look{display:grid;gap:4px;margin-bottom:8px;padding:10px 12px;border-radius:10px;background:var(--dsw-alias-bg-layer-1)}
+.pxs-card-look q{color:var(--dsw-alias-label-secondary);font-size:12.5px;line-height:1.55;quotes:none;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
 .pxs-card-look small{color:var(--dsw-alias-label-tertiary);font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.pxs-card{flex-direction:column}
-.pxs-card>.pxs-tags{padding:0 16px 14px;margin-top:-4px}
 .pxs-tags{display:flex;flex-wrap:wrap;gap:4px 6px}
 .pxs-tagchip{padding:1px 8px;border:0;border-radius:999px;background:var(--dsw-alias-bg-layer-1);color:var(--dsw-alias-label-secondary);font:inherit;font-size:11.5px;cursor:pointer}
-.pxs-tagchip:hover{background:var(--dsw-alias-interactive-bg-hover);color:var(--dsw-alias-label-primary)}
+@media (hover:hover){.pxs-tagchip:hover{background:var(--dsw-alias-interactive-bg-hover);color:var(--dsw-alias-label-primary)}}
 .pxs-tagchip[aria-pressed=true],.pxs-tag-on{background:var(--dsw-alias-state-business-tertiary);color:var(--dsw-alias-state-business-primary)}
 .pxs-tag-on{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border:0;border-radius:999px;font:inherit;font-size:12px;cursor:pointer}
 .pxs-detail .pxs-tags{margin:-4px 0 16px}
-.pxs-card-head{padding-right:28px;display:flex;align-items:center;gap:10px;min-width:0}
-.pxs-card-desc{flex:1;color:var(--dsw-alias-label-secondary);font-size:13px;line-height:1.55;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
-.pxs-card-foot{display:flex;align-items:center;gap:10px;color:var(--dsw-alias-label-tertiary);font-size:12px;font-variant-numeric:tabular-nums}
-.pxs-card-foot time{margin-right:auto}
-.pxs-card-text{flex:1;min-width:0;display:flex;flex-direction:column}
+.pxs-card-title{font-size:15px;line-height:22px;font-weight:600;color:var(--dsw-alias-label-primary);overflow-wrap:anywhere;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.pxs-card-meta{display:flex;align-items:center;gap:5px;min-width:0;color:var(--dsw-alias-label-tertiary);font-size:12px}
+.pxs-card-meta svg{flex:none}
+.pxs-card-meta span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pxs-card-desc{margin-top:4px;color:var(--dsw-alias-label-secondary);font-size:13px;line-height:1.55;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.pxs-card-foot{display:flex;flex-wrap:wrap;align-items:center;gap:4px 8px;min-height:28px;padding:0 10px 10px 16px}
+.pxs-card-foot .pxs-tags{min-width:0}
+.pxs-card-facts{flex:none;display:inline-flex;align-items:center;gap:8px;margin-left:auto;color:var(--dsw-alias-label-tertiary);font-size:12px;font-variant-numeric:tabular-nums}
+.pxs-row,.pxs-card{scroll-margin:16px 0 150px}
+.pxs-row[data-last]{background:color-mix(in srgb,var(--dsw-alias-interactive-bg-hover) 70%,transparent)}
 .pxs-caption{color:var(--dsw-alias-label-tertiary);font-size:12px}
-.pxs-detail{padding-top:28px;animation:pxs-in .36s cubic-bezier(.22,1,.36,1)}
-[data-platform=darwin] .pxs-detail{padding-top:calc(28px + var(--dsh-frame-top-clearance,0px))}
-.pxs-back{display:inline-flex;align-items:center;gap:4px;margin:0 0 18px -6px;padding:4px 6px;border:0;border-radius:8px;background:none;color:var(--dsw-alias-label-tertiary);font:inherit;font-size:13px;cursor:pointer}
-.pxs-back:hover{color:var(--dsw-alias-label-primary);background:var(--dsw-alias-interactive-bg-hover)}
+.pxs-detail{animation:pxs-in .18s cubic-bezier(.22,1,.36,1)}
+.pxs-detail[data-quiet]{animation:none}
+.pxs-detail-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:28px;margin:18px 0 14px}
+.pxs-detail-bar .pxs-crumbs{margin:0}
+.pxs-steps{display:flex;gap:2px}
+.pxs-step{display:grid;place-items:center;width:28px;height:28px;padding:0;border:0;border-radius:8px;background:none;color:var(--dsw-alias-label-secondary);cursor:pointer}
+.pxs-step:disabled{color:var(--dsw-alias-border-l4);cursor:default}
+@media (hover:hover){.pxs-step:not(:disabled):hover{color:var(--dsw-alias-label-primary);background:var(--dsw-alias-interactive-bg-hover)}}
+.pxs-detail-title h1:focus{outline:none}
+.pxs-notice{display:flex;align-items:flex-start;gap:8px;margin:18px 0 0;padding:10px 12px;border-radius:10px;background:var(--dsw-alias-bg-layer-1);color:var(--dsw-alias-label-primary);font-size:13px}
+.pxs-notice svg{flex:none;margin-top:3px;color:var(--dsw-alias-state-error-primary)}
 .pxs-detail-head{display:flex;align-items:flex-start;gap:14px}
 .pxs-detail-title{flex:1;min-width:0}
 .pxs-detail-title h1{margin:0;font-size:20px;line-height:28px;font-weight:600;overflow-wrap:anywhere}
 .pxs-open{flex:none;display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 14px;border-radius:16px;background:var(--dsw-alias-label-primary);color:var(--dsw-alias-bg-base);font-size:13px;font-weight:500;text-decoration:none;transition:opacity .16s ease}
-.pxs-open:hover{opacity:.86}
+@media (hover:hover){.pxs-open:hover{opacity:.86}}
 .pxs-when{margin:20px 0 8px;font-size:16px;line-height:1.65;color:var(--dsw-alias-label-primary)}
 .pxs-loc{font:12px ui-monospace,'SF Mono',Menlo,monospace;color:var(--dsw-alias-label-tertiary)}
 a.pxs-loc{color:var(--dsw-alias-state-business-primary)}
-.pxs-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;margin:20px 0 4px;border-radius:14px;overflow:hidden;background:var(--dsw-alias-border-l2);box-shadow:0 0 0 .5px var(--dsw-alias-border-l2)}
-.pxs-stat{display:flex;flex-direction:column;gap:6px;padding:12px 14px;background:var(--dsw-alias-bg-base)}
-.pxs-stat-label{font-size:12px;color:var(--dsw-alias-label-tertiary)}
-.pxs-stat-value{font-size:13.5px;min-height:20px}
-.pxs-stat-value>span{display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap}
 .pxs-meter{display:flex;align-items:center;gap:10px}
 .pxs-meter-bar{display:flex;gap:3px}
 .pxs-meter-bar span{width:22px;height:6px;border-radius:3px;background:var(--dsw-alias-border-l2);transition:background-color .3s ease}
 .pxs-meter-bar span[data-on]{background:var(--dsw-alias-label-primary)}
 .pxs-meter-bar span[data-on][data-level=unavailable]{background:var(--dsw-alias-label-tertiary)}
 .pxs-meter-label{font-size:13px}
-.pxs-check{display:inline-flex;align-items:center;gap:6px}
+.pxs-block>header .pxs-meter{align-self:center}
+.pxs-block .pxs-fact{margin-top:6px;color:var(--dsw-alias-label-tertiary);font-size:12px}
 .pxs-block{margin-top:22px}
 .pxs-block>header{display:flex;align-items:baseline;gap:8px;margin-bottom:8px}
 .pxs-block h2{margin:0;font-size:14px;line-height:22px;font-weight:600;color:var(--dsw-alias-label-primary)}
@@ -1218,17 +1452,14 @@ a.pxs-loc{color:var(--dsw-alias-state-business-primary)}
 .pxs-rail-dot{display:grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--dsw-alias-bg-layer-1);box-shadow:inset 0 0 0 .5px var(--dsw-alias-border-l3);font-size:11px;font-variant-numeric:tabular-nums;color:var(--dsw-alias-label-secondary)}
 .pxs-rail li>div{display:flex;flex-direction:column;gap:2px;padding-top:2px}
 .pxs-rail p{color:var(--dsw-alias-label-primary)!important}
-.pxs-map{display:grid;grid-template-columns:minmax(120px,30%) minmax(0,1fr);align-items:center;gap:0}
-.pxs-map-node{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:10px;background:var(--dsw-alias-bg-layer-1);box-shadow:inset 0 0 0 .5px var(--dsw-alias-border-l3);font-size:13px;font-weight:500;min-width:0}
-.pxs-map-node span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.pxs-map ul{list-style:none;margin:0;padding:0 0 0 28px;display:grid;gap:8px;position:relative}
-.pxs-map ul::before{content:"";position:absolute;left:0;top:50%;width:14px;height:1px;background:var(--dsw-alias-border-l4)}
-.pxs-map li{position:relative;display:flex;flex-direction:column;gap:2px;padding:8px 12px;border-radius:10px;box-shadow:inset 0 0 0 .5px var(--dsw-alias-border-l2);font-size:13px;color:var(--dsw-alias-label-secondary)}
-.pxs-map li::before{content:"";position:absolute;left:-14px;top:50%;width:14px;height:1px;background:var(--dsw-alias-border-l4)}
-.pxs-map li::after{content:"";position:absolute;left:-14px;top:-4px;bottom:-4px;width:1px;background:var(--dsw-alias-border-l4)}
-.pxs-map li:first-child::after{top:50%}.pxs-map li:last-child::after{bottom:50%}.pxs-map li:only-child::after{display:none}
-.pxs-map li[data-off]{opacity:.55}
-.pxs-map code{font-size:12px;color:var(--dsw-alias-label-primary)}
+.pxs-paths{list-style:none;margin:0 -10px;padding:0;display:grid}
+.pxs-path{width:100%;display:flex;align-items:center;gap:12px;padding:8px 10px;border:0;border-radius:10px;background:none;color:inherit;font:inherit;text-align:left;cursor:pointer;transition:background-color .16s ease}
+@media (hover:hover){.pxs-path:hover{background:var(--dsw-alias-interactive-bg-hover)}}
+.pxs-path[data-off]{opacity:.55}
+.pxs-path>svg{flex:none;color:var(--dsw-alias-label-tertiary)}
+.pxs-path-text{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.pxs-path-title{font-size:13.5px;font-weight:500;color:var(--dsw-alias-label-primary)}
+.pxs-path-desc{font-size:13px;color:var(--dsw-alias-label-secondary)}
 .pxs-serves{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:10px!important}
 .pxs-timeline{list-style:none;margin:0;padding:0;display:grid;gap:6px;font-size:13px}
 .pxs-timeline li{display:grid;grid-template-columns:64px minmax(0,1fr);gap:10px;color:var(--dsw-alias-label-secondary)}
@@ -1239,12 +1470,12 @@ a.pxs-loc{color:var(--dsw-alias-state-business-primary)}
 .pxs-summary summary::before{content:"›";display:inline-block;margin-right:6px;transition:transform .2s ease}
 .pxs-summary[open] summary::before{transform:rotate(90deg)}
 .pxs-summary p{margin-top:6px!important}
-@media (width<=767px){.pxs-stats{grid-template-columns:1fr}.pxs-pair{grid-template-columns:1fr}.pxs-map{grid-template-columns:1fr}.pxs-map ul{padding:8px 0 0 14px}.pxs-map ul::before{display:none}}
+@media (width<=767px){.pxs-pair{grid-template-columns:1fr}}
 .pxs-verdict{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 16px;margin-top:28px;padding:14px 16px;border-radius:14px;background:var(--dsw-alias-bg-layer-1)}
 .pxs-verdict-q{font-size:13.5px;color:var(--dsw-alias-label-secondary)}
 .pxs-buttons{display:flex;flex-wrap:wrap;gap:8px}
 .pxs-ask-note{flex:1;display:flex;flex-direction:column;gap:8px}
-.pxs-done{display:inline-flex;align-items:center;gap:6px;margin:0;color:var(--dsw-alias-state-business-primary);font-size:13px;font-weight:500;animation:pxs-in .36s cubic-bezier(.22,1,.36,1)}
+.pxs-done{display:inline-flex;align-items:center;gap:6px;margin:0;color:var(--dsw-alias-state-business-primary);font-size:13px;font-weight:500;animation:pxs-in .2s cubic-bezier(.22,1,.36,1)}
 .pxs-draft{display:flex;flex-direction:column;gap:2px}
 .pxs-draft textarea{width:100%;box-sizing:border-box;min-height:56px;padding:8px 10px;border:.5px solid var(--dsw-alias-border-l3);border-radius:10px;background:var(--dsw-alias-bg-base);color:inherit;font:inherit;font-size:13px;line-height:1.55;resize:none;overflow:auto}
 .pxs-draft textarea:focus-visible{outline:0;border-color:var(--dsw-focus-ring-color);box-shadow:0 0 0 3px color-mix(in srgb,var(--dsw-focus-ring-color) 22%,transparent)}
@@ -1262,10 +1493,15 @@ a.pxs-loc{color:var(--dsw-alias-state-business-primary)}
 .pxs-send:not(:disabled):active{transform:scale(.94)}
 .pxs-problem{margin:0 0 8px;color:var(--dsw-alias-state-error-primary);font-size:13px}
 .pxs-empty{padding:40px 8px;color:var(--dsw-alias-label-tertiary);font-size:13px}
+.pxs-empty p{margin:0 0 4px}
+.pxs-empty-title{color:var(--dsw-alias-label-primary);font-size:14px;font-weight:500}
+.pxs-empty-action{margin-top:12px}
 .pxs-skel{display:flex;flex-direction:column;gap:8px;padding:14px 8px}
 .pxs-skel i{display:block;height:10px;border-radius:5px;background:linear-gradient(90deg,var(--dsw-alias-border-l1) 0%,var(--dsw-alias-border-l2) 50%,var(--dsw-alias-border-l1) 100%);background-size:200% 100%;animation:pxs-shimmer 1.4s linear infinite}
 .pxs-skel i:first-child{width:40%}.pxs-skel i:nth-child(2){width:72%}.pxs-skel i:nth-child(3){width:56%}
 @media (width<=767px){.pxs-host,.pxs-row-side time,.pxs-row-side .pxs-ev{display:none}.pxs-detail-head{flex-wrap:wrap}.pxs-content{padding-left:16px;padding-right:16px}}
+.pxs-cart-btn,.pxs-cart-add,.pxs-open,.pxs-view,.pxs-step,.pxs-shelf-more,.pxs-tagchip{transition:opacity .16s ease,background-color .16s ease,color .16s ease,box-shadow .16s ease,transform .1s ease-out}
+.pxs-cart-btn:active,.pxs-cart-add:active,.pxs-open:active,.pxs-view:active,.pxs-step:not(:disabled):active,.pxs-shelf-more:active,.pxs-tagchip:active{transform:scale(.97)}
 @keyframes pxs-shimmer{from{background-position:100% 0}to{background-position:-100% 0}}
 @keyframes pxs-in{from{opacity:0;transform:translateY(3px)}}
 @keyframes pxs-rot{to{transform:rotate(360deg)}}

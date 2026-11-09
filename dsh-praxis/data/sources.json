@@ -295,20 +295,20 @@
     "praxis:emil-7-animation-tips": {
       "title": "7 Practical Animation Tips",
       "url": "https://emilkowal.ski/ui/7-practical-animation-tips",
-      "summary": "Emil Kowalski 的七条动效做法，含时长、缓动与减弱动效。",
-      "read_scope": "fetched 200 (curl; WebFetch blocked by domain check), title and body text sampled",
-      "evidence_status": "partial",
-      "limits": "这个团队为自己的产品写的做法，取方法，不照搬品牌与选择",
+      "summary": "Emil Kowalski 的七条界面动效做法：按钮按下用 :active 缩到 0.97；入场不从 scale(0) 起，从 0.9 以上开始；相邻 tooltip 第二次起不再延迟也不动画；进出屏幕用 ease-out，内置曲线偏弱可自定义；弹层从触发处缩放（transform-origin）；UI 动画一般低于 300ms，一天见几十上百次的交互干脆不加动画；调不顺时加少量 blur 融合前后两态。",
+      "read_scope": "读过全文文字；交互演示未操作。",
+      "evidence_status": "verified",
+      "limits": "个人经验与自制示例，数值没有用户测试支撑；文中不讲减弱动效。",
       "revisit_when": "原页改版，或要引用其中的具体条目时",
       "tags": [],
-      "excerpts": [],
+      "excerpts": [{"id": "emil-7-animation-tips-C1", "locator": "1. Scale your buttons", "claim": "所有操作都要尽快给反馈；按钮按下时用 :active 缩到 0.97。"}, {"id": "emil-7-animation-tips-C2", "locator": "2. Don’t animate from scale(0)", "claim": "入场从 0.9 以上的缩放开始；从 0 起会像凭空出现。"}, {"id": "emil-7-animation-tips-C3", "locator": "4. Choose the right easing", "claim": "进出屏幕的元素用 ease-out；同为 300ms 的下拉，ease-in 的显得更慢。"}, {"id": "emil-7-animation-tips-C4", "locator": "5. Make your animations origin-aware", "claim": "弹层应从触发处缩放出来；transform-origin 默认居中，多半是错的。"}, {"id": "emil-7-animation-tips-C5", "locator": "6. Keep your animations fast", "claim": "UI 动画一般低于 300ms；一天见几十上百次的动画或悬停效果干脆去掉。"}],
       "captured_for": {
         "task": "召回早期 Praxis 与 Courtwork design 系列收录的来源，按名册规范登记并挂到 Kit 页",
         "by": "claude-opus-5-5",
         "at": "2026-10-27T05:14:42.064Z"
       },
       "state": "active",
-      "revision": 1
+      "revision": 2
     },
     "praxis:wcag22-understanding-contrast-minimum": {
       "title": "Understanding SC 1.4.3 Contrast (Minimum)",
@@ -688,37 +688,6 @@
       "state": "active",
       "revision": 1
     },
-    "praxis:azivor-reference": {
-      "title": "Reference — A Visual Collection（AI 公司视觉图库）",
-      "url": "https://azivor.github.io/reference/",
-      "summary": "公开图库，收四家 AI 公司的 90 件品牌与研究配图，每件带署名和策展人写的设计观察，可按公司和图像处理类型筛选。能支持的判断：编辑拼贴、纸面与物理隐喻、天体尺度、暗场弧光各自成立的条件。图像类型里 Photo + graphic 占 78 件。它展示的是品牌传播材料，不是这些公司的产品界面规范。",
-      "read_scope": "ChatGPT 读了仓库 Azivor/reference 的 data/references.json（commit 2cc52b3a，tree 3d01c685，blob ddf48f02），覆盖 90/90 条元数据与策展人观察，并按章节中文提炼；0/90 张高清图逐张看过，外链未批量复核。本会话读了提炼包的 README、横向专题与目录，没有看图。",
-      "evidence_status": "partial",
-      "limits": "归纳不是品牌官方规范；未做像素级核验，不能据此给色值、字号或动效时长。图片版权归各家，不能作生产素材。不说明法律 SaaS 的交互，合同审阅等任务流另查。",
-      "revisit_when": "上游 references.json 增删条目时，按稳定 ID 只修订变化章节；需要颜色、字级或细部位置时，回原出处看高清图。",
-      "tags": [
-        "visual-reference",
-        "brand",
-        "editorial",
-        "collage",
-        "cinematic",
-        "material"
-      ],
-      "excerpts": [
-        {
-          "id": "azivor-reference-C1",
-          "locator": "https://github.com/Azivor/reference/blob/main/data/references.json",
-          "claim": "90 条原始记录：Anthropic 60、Perplexity 12、OpenAI 11、Grok / xAI 7；Image treatment 是跨品牌筛选，不是第五个集合"
-        }
-      ],
-      "captured_for": {
-        "task": "入账 2026-11-02 ChatGPT「参考库分析」：Reference 图库逐章 distill 索引（vault/distilled/reference-gallery-20261031）",
-        "by": "mcp:claude-code",
-        "at": "2026-11-02T06:30:37.433Z"
-      },
-      "state": "active",
-      "revision": 2
-    },
     "praxis:open-claude-ui": {
       "title": "Open Claude UI（社区对 Claude Desktop 界面的 React 还原）",
       "url": "https://github.com/Caho1/open-claude-ui",
@@ -940,6 +909,519 @@
         "task": "入账 2026-10-28 云端研究包：agent 产品界面与 SaaS 官网/价格浮层设计参考（vault/distilled/agent-design-reference-20261028）",
         "by": "mcp:claude-code",
         "at": "2026-10-28T11:27:53.939Z"
+      },
+      "state": "active",
+      "revision": 1
+    },
+    "praxis:azivor-reference": {
+      "title": "Reference — A Visual Collection（AI 公司视觉图库）",
+      "url": "https://azivor.github.io/reference/",
+      "summary": "公开图库，收四家 AI 公司的 90 件品牌与研究配图，每件带署名和策展人写的设计观察，可按公司和图像处理类型筛选。能支持的判断：编辑拼贴、纸面与物理隐喻、天体尺度、暗场弧光各自成立的条件。图像类型里 Photo + graphic 占 78 件。它展示的是品牌传播材料，不是这些公司的产品界面规范。",
+      "read_scope": "ChatGPT 读了仓库 Azivor/reference 的 data/references.json（commit 2cc52b3a，tree 3d01c685，blob ddf48f02），覆盖 90/90 条元数据与策展人观察，并按章节中文提炼；0/90 张高清图逐张看过，外链未批量复核。本会话读了提炼包的 README、横向专题与目录，没有看图。",
+      "evidence_status": "partial",
+      "limits": "归纳不是品牌官方规范；未做像素级核验，不能据此给色值、字号或动效时长。图片版权归各家，不能作生产素材。不说明法律 SaaS 的交互，合同审阅等任务流另查。",
+      "revisit_when": "上游 references.json 增删条目时，按稳定 ID 只修订变化章节；需要颜色、字级或细部位置时，回原出处看高清图。",
+      "tags": [
+        "visual-reference",
+        "brand",
+        "editorial",
+        "collage",
+        "cinematic",
+        "material"
+      ],
+      "excerpts": [
+        {
+          "id": "azivor-reference-C1",
+          "locator": "https://github.com/Azivor/reference/blob/main/data/references.json",
+          "claim": "90 条原始记录：Anthropic 60、Perplexity 12、OpenAI 11、Grok / xAI 7；Image treatment 是跨品牌筛选，不是第五个集合"
+        }
+      ],
+      "captured_for": {
+        "task": "入账 2026-11-02 ChatGPT「参考库分析」：Reference 图库逐章 distill 索引（vault/distilled/reference-gallery-20261031）",
+        "by": "mcp:claude-code",
+        "at": "2026-11-02T06:30:37.433Z"
+      },
+      "state": "active",
+      "revision": 2
+    },
+    "praxis:nn-g-progressive-disclosure": {
+      "title": "NN/g：Progressive Disclosure",
+      "url": "https://www.nngroup.com/articles/progressive-disclosure/",
+      "summary": "Jakob Nielsen（2006）对渐进披露的定义与两条可用性标准：主次划分要对，初始层只放多数人常用的少数选项，出现在初始层本身就表示重要；从初始层到次级层的路径要明显，入口显眼、标签有信息气味。超过两层通常难用，需要三层以上时先简化。另区分分步披露（向导），只适合步骤彼此独立的任务。",
+      "read_scope": "全文要点（WebFetch 抽取）；三条摘录逐字对过原文；配图未看。",
+      "evidence_status": "partial",
+      "limits": "2006 年的通用原则，没有界面数值；哪些项算常用要靠自己的任务数据判断。",
+      "revisit_when": "要给详情页加第三层折叠，或决定哪些字段进首屏时。",
+      "tags": [],
+      "excerpts": [
+        {
+          "id": "nn-g-progressive-disclosure-C1",
+          "locator": "Benefits of Progressive Disclosure",
+          "claim": "出现在初始层本身就告诉用户它重要；初始层小，熟手也少扫无关项。"
+        },
+        {
+          "id": "nn-g-progressive-disclosure-C2",
+          "locator": "Usability Criteria for Progressive Disclosure",
+          "claim": "进入次级层的控件要放在显眼处，标签要让人预知后面是什么。"
+        },
+        {
+          "id": "nn-g-progressive-disclosure-C3",
+          "locator": "Usability Criteria for Progressive Disclosure",
+          "claim": "超过两层披露通常可用性差，用户会在层间迷路；需要三层以上时先简化设计。"
+        }
+      ],
+      "captured_for": {
+        "task": "打磨 Praxis 页的 Sources 目录、来源详情与 review：减噪、渐进披露、筛选、空态与就近反馈（按 2026-11-09 外部短名单逐条读原件后收录）",
+        "by": "claude-opus-5-5（初读：sonnet 读者三组；摘录对过原文）",
+        "at": "2026-11-09T06:12:26.840Z"
+      },
+      "state": "active",
+      "revision": 1
+    },
+    "praxis:nn-g-memory-recognition-and-recall-in-user-interfaces": {
+      "title": "NN/g：Memory Recognition and Recall in User Interfaces",
+      "url": "https://www.nngroup.com/articles/recognition-and-recall/",
+      "summary": "Raluca Budiu（2024）讲识别与回忆的记忆机制：记忆的激活取决于练习、近期使用与当前情境，识别有更多线索，所以比回忆容易。界面上的做法：给出最近访问与最近搜索，提供收藏、心愿单这类保存入口，让功能保持可见而不靠记命令，用搜索建议把写查询变成识别，用针对当前页面的提示代替一次性教程。",
+      "read_scope": "全文要点（WebFetch 抽取）；三条摘录逐字对过原文；配图未看。",
+      "evidence_status": "partial",
+      "limits": "讲记忆机制与通用原则，没有可量化的界面规格。",
+      "revisit_when": "要加最近用过、收藏或搜索建议时。",
+      "tags": [],
+      "excerpts": [
+        {
+          "id": "nn-g-memory-recognition-and-recall-in-user-interfaces-C1",
+          "locator": "History and Previously Visited Content",
+          "claim": "提供最近访问的页面与最近的搜索，帮人接着做没做完、又想不起来的事。"
+        },
+        {
+          "id": "nn-g-memory-recognition-and-recall-in-user-interfaces-C2",
+          "locator": "History and Previously Visited Content",
+          "claim": "收藏、心愿单、购物清单这类保存工具，都让内容可以靠识别找回。"
+        },
+        {
+          "id": "nn-g-memory-recognition-and-recall-in-user-interfaces-C3",
+          "locator": "Recognition in User Interfaces",
+          "claim": "搜索建议把写查询的回忆任务部分变成识别任务。"
+        }
+      ],
+      "captured_for": {
+        "task": "打磨 Praxis 页的 Sources 目录、来源详情与 review：减噪、渐进披露、筛选、空态与就近反馈（按 2026-11-09 外部短名单逐条读原件后收录）",
+        "by": "claude-opus-5-5（初读：sonnet 读者三组；摘录对过原文）",
+        "at": "2026-11-09T06:12:26.840Z"
+      },
+      "state": "active",
+      "revision": 1
+    },
+    "praxis:gov-uk-design-system-accordion": {
+      "title": "GOV.UK Design System：Accordion",
+      "url": "https://design-system.service.gov.uk/components/accordion/",
+      "summary": "GOV.UK 设计系统对手风琴组件的使用条件：它会把内容藏起来，不是所有人都会注意到或会用，只在研究支持时使用。所有人都要看的内容不放进去；先在不用手风琴的情况下测试，通常更好的做法是精简内容、分页、同页用标题分段或页首锚点。不拆一连串问题，不嵌套；不禁用章节，没有内容的章节要删掉或说明原因。另给出手风琴、tabs 与 details 的取舍。",
+      "read_scope": "全页要点（WebFetch 抽取）；使用条件与禁用章节两节逐字对过原文；代码示例与配图未看。",
+      "evidence_status": "partial",
+      "limits": "只讲这一个组件的取舍，不是通用的折叠准则；研究结论来自公共服务场景。",
+      "revisit_when": "要在目录或详情里加多段折叠，或决定默认展开哪些段时。",
+      "tags": [],
+      "excerpts": [
+        {
+          "id": "gov-uk-design-system-accordion-C1",
+          "locator": "When not to use this component",
+          "claim": "所有用户都要看的内容不要放进手风琴；先在不用手风琴的情况下测试内容。"
+        },
+        {
+          "id": "gov-uk-design-system-accordion-C2",
+          "locator": "When not to use this component",
+          "claim": "通常更好的是精简内容、分页、同页用标题分段或页首锚点链接；不要手风琴套手风琴。"
+        },
+        {
+          "id": "gov-uk-design-system-accordion-C3",
+          "locator": "Do not disable sections",
+          "claim": "没有内容的章节要么删掉，要么说明为什么为空，不要禁用。"
+        }
+      ],
+      "captured_for": {
+        "task": "打磨 Praxis 页的 Sources 目录、来源详情与 review：减噪、渐进披露、筛选、空态与就近反馈（按 2026-11-09 外部短名单逐条读原件后收录）",
+        "by": "claude-opus-5-5（初读：sonnet 读者三组；摘录对过原文）",
+        "at": "2026-11-09T06:12:26.840Z"
+      },
+      "state": "active",
+      "revision": 1
+    },
+    "praxis:carbon-filtering": {
+      "title": "Carbon：Filtering",
+      "url": "https://www.carbondesignsystem.com/building-blocks/core/patterns/filtering",
+      "summary": "IBM Carbon 的筛选模式：按选择方式分单选（像单选按钮）、多选（像复选框）与多类别。批量应用适合跨多个类别、要多想一会儿或数据返回慢的情形；即时更新适合只在一个类别里选、或通常只选一项。多类别放页面左侧或数据上方，不进菜单或下拉。筛选收在抽屉、下拉或菜单里时，收起状态至少要标出已应用的个数，并能直接清除；每个类别能一次清空回到默认，多类别还要能一次全清。",
+      "read_scope": "读过全文文字；示例图未看。",
+      "evidence_status": "verified",
+      "limits": "针对企业数据表格与大数据集；没有讲零结果时怎么办，也没给已应用筛选的具体样式。",
+      "revisit_when": "筛选从单一类别扩到多个类别时。",
+      "tags": [],
+      "excerpts": [
+        {
+          "id": "carbon-filtering-C1",
+          "locator": "Multiple filters with instant updates",
+          "claim": "只在一个类别里选、或通常只选一项时，每次选择后立即更新结果。"
+        },
+        {
+          "id": "carbon-filtering-C2",
+          "locator": "Filter states",
+          "claim": "筛选收在抽屉、下拉或菜单里时，收起状态至少要显示已应用的个数，并能不展开就清除。"
+        },
+        {
+          "id": "carbon-filtering-C3",
+          "locator": "Resetting filters",
+          "claim": "每个类别能一次清空回到默认；多个类别同时生效时，还要能一次清除全部。"
+        },
+        {
+          "id": "carbon-filtering-C4",
+          "locator": "Selecting multiple categories",
+          "claim": "多类别筛选放在页面左侧或数据上方，不要放进菜单或下拉。"
+        }
+      ],
+      "captured_for": {
+        "task": "打磨 Praxis 页的 Sources 目录、来源详情与 review：减噪、渐进披露、筛选、空态与就近反馈（按 2026-11-09 外部短名单逐条读原件后收录）",
+        "by": "claude-opus-5-5（初读：sonnet 读者三组；摘录对过原文）",
+        "at": "2026-11-09T06:12:26.840Z"
+      },
+      "state": "active",
+      "revision": 2
+    },
+    "praxis:carbon-empty-states": {
+      "title": "Carbon：Empty states",
+      "url": "https://www.carbondesignsystem.com/building-blocks/core/patterns/empty-states",
+      "summary": "IBM Carbon 的空态模式：按成因分首次使用尚无数据、用户操作之后（无搜索结果、流程完成）与出错（权限、系统、需要配置）。结构是可选插图、简短标题（尽量写成正面陈述）、说明下一步的正文、可选主操作与次要链接。首次无数据要具体、字少，只给一条直接的路，不留死路；无结果时说明原因并建议调整搜索或筛选；出错时让人明白问题，知道有哪些纠正动作。",
+      "read_scope": "全文要点（WebFetch 抽取）；标题写法、无结果与出错三处逐字对过原文；示例图未看。",
+      "evidence_status": "partial",
+      "limits": "面向企业产品；错误与引导流程的独立模式页尚未发布。",
+      "revisit_when": "改空目录、零结果或读取失败的文案与动作时。",
+      "tags": [],
+      "excerpts": [
+        {
+          "id": "carbon-empty-states-C1",
+          "locator": "Anatomy",
+          "claim": "标题尽量写成正面陈述：“Start by adding data assets” 比 “You don't have any data assets.” 好。"
+        },
+        {
+          "id": "carbon-empty-states-C2",
+          "locator": "User action empty states",
+          "claim": "说明为什么看到这条消息并给出后续步骤；没有搜索结果时建议调整搜索或筛选。"
+        },
+        {
+          "id": "carbon-empty-states-C3",
+          "locator": "Error management empty states",
+          "claim": "权限、系统或需要配置导致显示不了时，让人明白问题，并知道有哪些纠正动作可做。"
+        }
+      ],
+      "captured_for": {
+        "task": "打磨 Praxis 页的 Sources 目录、来源详情与 review：减噪、渐进披露、筛选、空态与就近反馈（按 2026-11-09 外部短名单逐条读原件后收录）",
+        "by": "claude-opus-5-5（初读：sonnet 读者三组；摘录对过原文）",
+        "at": "2026-11-09T06:12:26.840Z"
+      },
+      "state": "active",
+      "revision": 2
+    },
+    "praxis:refactoring-ui": {
+      "title": "Refactoring UI",
+      "url": "https://refactoringui.com/",
+      "summary": "Adam Wathan 与 Steve Schoger 的付费书《Refactoring UI》官网。公开部分有一条完整技巧“少用边框”：边框多了显得杂乱，可改用阴影、对比底色或加大间距来区分元素；另有九章目录，如 Hierarchy is Everything 下的弱化以突出、标签是最后手段、彩色背景上不用灰字，Layout and Spacing 下的从多留白开始、避免含糊间距，Finishing Touches 下的别忽略空态。正文需购买或领取两章试读。",
+      "read_scope": "官网公开文字与完整目录；正文、试读章节与视频未读。",
+      "evidence_status": "partial",
+      "limits": "正文是商业内容，未读；目录条目只能当检查提示，不能说明做法的理由与细节。",
+      "revisit_when": "拿到书或试读章节、需要层级与间距的具体做法时。",
+      "tags": [],
+      "excerpts": [
+        {
+          "id": "refactoring-ui-C1",
+          "locator": "Use fewer borders（官网公开技巧）",
+          "claim": "边框太多会显得杂乱；可改用阴影、对比底色或加大间距来区分元素。"
+        },
+        {
+          "id": "refactoring-ui-C2",
+          "locator": "目录 · Hierarchy is Everything",
+          "claim": "列有 De-emphasize to emphasize、Labels are a last resort、Don’t use grey text on colored backgrounds 等条目。"
+        },
+        {
+          "id": "refactoring-ui-C3",
+          "locator": "目录 · Layout and Spacing",
+          "claim": "列有 Start with too much white space、Avoid ambiguous spacing 等条目。"
+        }
+      ],
+      "captured_for": {
+        "task": "打磨 Praxis 页的 Sources 目录、来源详情与 review：减噪、渐进披露、筛选、空态与就近反馈（按 2026-11-09 外部短名单逐条读原件后收录）",
+        "by": "claude-opus-5-5（初读：sonnet 读者三组；摘录对过原文）",
+        "at": "2026-11-09T06:12:26.840Z"
+      },
+      "state": "active",
+      "revision": 1
+    },
+    "praxis:rauno-freiberg-web-interface-guidelines": {
+      "title": "Rauno Freiberg：Web Interface Guidelines",
+      "url": "https://interfaces.rauno.me/",
+      "summary": "Rauno Freiberg 的网页界面细节清单，持续更新，作者自称部分主观，分交互、排印、运动、触屏、性能、可访问性与设计七组短条目。例如：相邻的可交互列表项之间不留死区，靠加大内边距填满；悬停或选中态不改字重以免排版位移；交互动画不超过 200ms，按钮按下缩到约 0.96 而非 0.8；高频低新意的操作不加多余动画；反馈出现在触发处附近，复制成功在原处短暂打勾而不弹通知；空态应提示新建。",
+      "read_scope": "读过全文文字。",
+      "evidence_status": "verified",
+      "limits": "个人经验清单，条目简短，不给依据与测试；与所用组件库的规范冲突时以组件库为准。",
+      "revisit_when": "交付前做细节检查，或怀疑某个状态变化引起抖动、死区时。",
+      "tags": [],
+      "excerpts": [
+        {
+          "id": "rauno-freiberg-web-interface-guidelines-C1",
+          "locator": "Interactivity",
+          "claim": "竖排或横排列表里相邻的可交互项之间不留死区，靠加大内边距填满。"
+        },
+        {
+          "id": "rauno-freiberg-web-interface-guidelines-C2",
+          "locator": "Typography",
+          "claim": "悬停或选中态不改字重，避免排版位移。"
+        },
+        {
+          "id": "rauno-freiberg-web-interface-guidelines-C3",
+          "locator": "Motion",
+          "claim": "交互动画不超过 200ms；按钮按下缩到约 0.96 或 0.9；右键菜单、列表增删、悬停琐碎按钮这类高频低新意的操作不加多余动画。"
+        },
+        {
+          "id": "rauno-freiberg-web-interface-guidelines-C4",
+          "locator": "Design",
+          "claim": "反馈放在触发处附近：复制成功在原处短暂显示对勾而不弹通知，表单出错高亮对应输入框。"
+        },
+        {
+          "id": "rauno-freiberg-web-interface-guidelines-C5",
+          "locator": "Touch",
+          "claim": "悬停样式只给 @media (hover: hover) 的设备，避免触屏按下时闪出悬停态。"
+        }
+      ],
+      "captured_for": {
+        "task": "打磨 Praxis 页的 Sources 目录、来源详情与 review：减噪、渐进披露、筛选、空态与就近反馈（按 2026-11-09 外部短名单逐条读原件后收录）",
+        "by": "claude-opus-5-5（初读：sonnet 读者三组；摘录对过原文）",
+        "at": "2026-11-09T06:12:26.840Z"
+      },
+      "state": "active",
+      "revision": 2
+    },
+    "praxis:eagle-how-to-use-eagle-as-a-file-viewer": {
+      "title": "Eagle：How To Use Eagle As a File Viewer",
+      "url": "https://eagle.cool/blog/post/how-to-preview-files-in-eagle",
+      "summary": "素材管理软件 Eagle 的官方博客教程，讲浏览素材的布局与预览：瀑布流适合长图与网页截图混排，对齐布局不裁切、便于整理与搜索，网格用固定框、便于快速找与多选，列表便于看清文件信息；悬停缩略图角上的“+”或按 Z 快速预览，长图一键适应窗口，双击或按 C 进详情写备注；在图上按住右键左右滑动切换上一张、下一张；视频悬停沿进度条移动即可预览。",
+      "read_scope": "读过全文文字；截图与动图未看；未运行 Eagle。",
+      "evidence_status": "verified",
+      "limits": "产品教程，快捷键以 Mac 为准；只描述行为，不给设计依据或研究。",
+      "revisit_when": "做素材的快速预览，或详情里的上一条、下一条时。",
+      "tags": [],
+      "excerpts": [
+        {
+          "id": "eagle-how-to-use-eagle-as-a-file-viewer-C1",
+          "locator": "1. Change layouts smoothly",
+          "claim": "网格用固定框、不管比例，适合快速找与多选；列表便于看清文件信息；对齐布局不裁切，适合整理与搜索。"
+        },
+        {
+          "id": "eagle-how-to-use-eagle-as-a-file-viewer-C2",
+          "locator": "2. Tips for previewing the images · a. Hover preview",
+          "claim": "悬停缩略图右下角的“+”或按 Z 就能快速预览，不必打开。"
+        },
+        {
+          "id": "eagle-how-to-use-eagle-as-a-file-viewer-C3",
+          "locator": "2. Tips for previewing the images · e. Basic image editing",
+          "claim": "双击或按 C 进入详情模式写备注。"
+        },
+        {
+          "id": "eagle-how-to-use-eagle-as-a-file-viewer-C4",
+          "locator": "3. Mouse and right-click gesture",
+          "claim": "在图上按住右键左右滑动，切换上一张、下一张。"
+        }
+      ],
+      "captured_for": {
+        "task": "打磨 Praxis 页的 Sources 目录、来源详情与 review：减噪、渐进披露、筛选、空态与就近反馈（按 2026-11-09 外部短名单逐条读原件后收录）",
+        "by": "claude-opus-5-5（初读：sonnet 读者三组；摘录对过原文）",
+        "at": "2026-11-09T06:12:26.840Z"
+      },
+      "state": "active",
+      "revision": 2
+    },
+    "praxis:are-na-connections": {
+      "title": "Are.na：Connections",
+      "url": "https://help.are.na/docs/getting-started/connections",
+      "summary": "Are.na 帮助文档讲连接：频道与块靠连接相互接起来，站内没有点赞或收藏，只有连接。频道可在缩略图的 Connect 按钮或频道页头的 This channel appears in 一栏连到别的频道。浏览就是沿连接走：悬停连接会出现那个频道的小预览，帮人判断要不要沿这条路走；每条连接都是人建立的，是人们为彼此铺的路。",
+      "read_scope": "读过全文文字；演示视频未看。",
+      "evidence_status": "verified",
+      "limits": "帮助文档很短，没讲块自身的连接显示在哪里，也没有界面数值。",
+      "revisit_when": "要让人从一个对象沿关系走到相关集合时。",
+      "tags": [],
+      "excerpts": [
+        {
+          "id": "are-na-connections-C1",
+          "locator": "Connecting channels",
+          "claim": "频道页头有 This channel appears in 一栏，列出它被连到的频道。"
+        },
+        {
+          "id": "are-na-connections-C2",
+          "locator": "Traversing connections",
+          "claim": "悬停一条连接会出现那个频道的小预览，帮人决定要不要沿这条路走。"
+        },
+        {
+          "id": "are-na-connections-C3",
+          "locator": "Traversing connections",
+          "claim": "每条连接都是人建立的，是人们为彼此铺的路径。"
+        }
+      ],
+      "captured_for": {
+        "task": "打磨 Praxis 页的 Sources 目录、来源详情与 review：减噪、渐进披露、筛选、空态与就近反馈（按 2026-11-09 外部短名单逐条读原件后收录）",
+        "by": "claude-opus-5-5（初读：sonnet 读者三组；摘录对过原文）",
+        "at": "2026-11-09T06:12:26.840Z"
+      },
+      "state": "active",
+      "revision": 2
+    },
+    "praxis:impeccable-the-missing-design-vocabulary-for-agents": {
+      "title": "Impeccable：The missing design vocabulary for agents",
+      "url": "https://impeccable.style/",
+      "summary": "Paul Bakaus 的 Impeccable：给 AI agent 的一套设计命令与检测器，命令按创建、评审、细化、简化、收尾与设计系统分组。critique 做带评分的 UX 评审，audit 出无障碍、性能、主题与响应式的分级报告；distill 删掉不需要的元素，clarify 改含糊文案，typeset 修字体与层级，polish 做发布前的最后一遍，另有 harden、onboard、extract 等。落地页用对比样张列出常见反例，如卡片套卡片、处处同等强调、状态标签堆叠、空泛的按钮与标题文案。",
+      "read_scope": "落地页文字与 GitHub README 要点（WebFetch 抽取）；命令名与反例名逐字对过落地页；未安装、未运行。",
+      "evidence_status": "partial",
+      "limits": "工具介绍页，只给反例名与少量样张，没有判定阈值；不能代替真实使用的检验。未安装运行。",
+      "revisit_when": "要给一页做系统的设计评审，或考虑把检查交给 agent 时。",
+      "tags": [],
+      "excerpts": [
+        {
+          "id": "impeccable-the-missing-design-vocabulary-for-agents-C1",
+          "locator": "落地页命令目录",
+          "claim": "命令分 create、evaluate、refine、simplify、harden、system 几组；评审用 critique 与 audit。"
+        },
+        {
+          "id": "impeccable-the-missing-design-vocabulary-for-agents-C2",
+          "locator": "落地页反例样张",
+          "claim": "列出 Cards in cards、Everything equal、Status-chip soup、Generic CTA 等反例名。"
+        }
+      ],
+      "captured_for": {
+        "task": "打磨 Praxis 页的 Sources 目录、来源详情与 review：减噪、渐进披露、筛选、空态与就近反馈（按 2026-11-09 外部短名单逐条读原件后收录）",
+        "by": "claude-opus-5-5（初读：sonnet 读者三组；摘录对过原文）",
+        "at": "2026-11-09T06:12:26.840Z"
+      },
+      "state": "active",
+      "revision": 1
+    },
+    "praxis:apple-hig-writing": {
+      "title": "Apple HIG：Writing",
+      "url": "https://developer.apple.com/design/human-interface-guidelines/writing",
+      "summary": "Apple 人机界面指南里讲界面文字的一页。先定语气，再按情境调整口吻；列一份常用词表保持用语一致；逐词检查是否必要，能少则少，拿不准就读出声。每屏把最重要的信息放前面；按钮与链接多半用动词，链接不用“点击这里”；建立固定的语言模式和大小写规则；多步流程的动作词前后一致，用 Done 表示完成；少用物主代词，不用“我们”；按设备写对手势；空状态给出下一步，尽量附按钮或链接；错误信息靠近问题、不责怪人、说清怎么改，语言解决不了的常见错误说明交互该重做；设置标签写清开启时做什么；文本框给提示文字。",
+      "read_scope": "全文（页面所用的 DocC 数据，2025-12-16 版）；示例截图未看。",
+      "evidence_status": "verified",
+      "limits": "平台通用准则，示例多取自 Apple 自家 app；词表与语气由各产品自己定。",
+      "revisit_when": "定一套界面的用语、大小写规则或多步流程的动作词时。",
+      "tags": [],
+      "excerpts": [
+        {
+          "id": "apple-hig-writing-C1",
+          "locator": "Getting started",
+          "claim": "列一份常用词并照着用，保持用语一致；逐词检查是否必要，能少用就少用。"
+        },
+        {
+          "id": "apple-hig-writing-C2",
+          "locator": "Best practices › Be action oriented",
+          "claim": "按钮和链接的标签几乎总是用动词；链接不写“点击这里”，写出去向。"
+        },
+        {
+          "id": "apple-hig-writing-C3",
+          "locator": "Best practices › Provide clear next steps on any blank screens",
+          "claim": "空状态要告诉人能做什么，尽量给出去做的按钮或链接；它多半是暂时的，不放会消失的关键信息。"
+        },
+        {
+          "id": "apple-hig-writing-C4",
+          "locator": "Best practices › Write clear error messages",
+          "claim": "错误信息靠近问题、不责怪人、说清怎么改；语言解决不了的常见错误，说明交互要重新设计。"
+        },
+        {
+          "id": "apple-hig-writing-C5",
+          "locator": "Best practices › Keep settings labels clear and simple",
+          "claim": "设置标签写清开启时做什么，关闭时的含义由人推断。"
+        }
+      ],
+      "captured_for": {
+        "task": "审 Praxis 页的界面文字与导航连续性：外部对话（二手材料）引的出处，逐个回原件核对后收录",
+        "by": "claude-opus-5-5",
+        "at": "2026-11-09T07:54:06.756Z"
+      },
+      "state": "active",
+      "revision": 1
+    },
+    "praxis:apple-hig-offering-help": {
+      "title": "Apple HIG：Offering help",
+      "url": "https://developer.apple.com/design/human-interface-guidelines/offering-help",
+      "summary": "Apple 人机界面指南讲情境帮助的一页。帮助的形式随任务复杂度定，并直接对应人此刻在做的动作，不需要时容易跳过；不用帮助内容讲标准组件或通用模式怎么用，只说它在本 app 里执行什么；非标准控件用动画或图示快速说明。Tip 是短暂的小视图，适合三步以内的简单功能，一两句、面向动作、不夹推广，并按资格规则只给可能受益的人看、控制频次。macOS 与 visionOS 的 tooltip 只描述被关注的那个控件，以动词开头说它做什么，不复述控件名，尽量不超过 60 到 75 个字符；一个控件要很多字才说得清时，考虑简化界面。",
+      "read_scope": "全文（页面所用的 DocC 数据，2023-12-05 版）；配图未看。",
+      "evidence_status": "verified",
+      "limits": "提示与悬停说明两节针对 Apple 平台的 TipKit 与系统 tooltip；不讲帮助菜单与新手引导怎么写。",
+      "revisit_when": "想在界面上加提示文字、新功能提示或悬停说明时。",
+      "tags": [],
+      "excerpts": [
+        {
+          "id": "apple-hig-offering-help-C1",
+          "locator": "Best practices",
+          "claim": "帮助直接对应人此刻在做的动作或任务，不需要时容易关掉或绕开。"
+        },
+        {
+          "id": "apple-hig-offering-help-C2",
+          "locator": "Best practices",
+          "claim": "不用帮助内容解释标准组件或通用模式怎么用，只说它在本 app 里执行什么。"
+        },
+        {
+          "id": "apple-hig-offering-help-C3",
+          "locator": "Creating tips",
+          "claim": "提示适合三步以内的简单功能，一两句、面向动作，不放推广或与当前流程无关的内容。"
+        },
+        {
+          "id": "apple-hig-offering-help-C4",
+          "locator": "Platform considerations › macOS, visionOS",
+          "claim": "悬停说明只讲被关注的控件，用动词说它做什么，不复述控件名；要很多字才说得清时，考虑简化界面。"
+        }
+      ],
+      "captured_for": {
+        "task": "审 Praxis 页的界面文字与导航连续性：外部对话（二手材料）引的出处，逐个回原件核对后收录",
+        "by": "claude-opus-5-5",
+        "at": "2026-11-09T07:54:06.756Z"
+      },
+      "state": "active",
+      "revision": 1
+    },
+    "praxis:gov-uk-design-system-button": {
+      "title": "GOV.UK Design System：Button",
+      "url": "https://design-system.service.gov.uk/components/button/",
+      "summary": "GOV.UK 设计系统的按钮组件页。按钮帮人执行一个动作，文字用句首大写写清动作，如 Start now、Save and continue、Confirm and send，需要时多加词说清对象；主按钮与表单左缘对齐。默认按钮给一页的主要行动，避免一页多个；次要按钮给次要行动，行动太多时先简化或分页；警告按钮只用于难以撤销的破坏性动作，放在最后的确认步，不只靠红色传达；深色背景用反色按钮并满足 4.5:1 对比；禁用按钮对比差、易让人困惑，研究不支持就不用；两个以上按钮成组；可让按钮忽略第二次点击，慢网络下先告诉人正在处理。研究：绿色的开始按钮提高了点击率。",
+      "read_scope": "全文（页面 HTML 与官方仓库里的 Markdown 原稿）；交互示例未操作。",
+      "evidence_status": "verified",
+      "limits": "公共服务表单场景的取舍；绿色按钮的结论来自 GOV.UK 自己的测试。",
+      "revisit_when": "设计一页的主次按钮、破坏性操作或防重复提交时。",
+      "tags": [],
+      "excerpts": [
+        {
+          "id": "gov-uk-design-system-button-C1",
+          "locator": "How it works",
+          "claim": "按钮文字用句首大写，写出它执行的动作；需要时多加词说清对象，如 Add another address。"
+        },
+        {
+          "id": "gov-uk-design-system-button-C2",
+          "locator": "Default buttons",
+          "claim": "一页避免多个默认按钮：主要行动不止一个会削弱它们，也让人不知道下一步做什么。"
+        },
+        {
+          "id": "gov-uk-design-system-button-C3",
+          "locator": "Warning buttons",
+          "claim": "警告按钮只用于难以撤销的破坏性动作，放在额外的确认步；不能只靠红色说明后果。"
+        },
+        {
+          "id": "gov-uk-design-system-button-C4",
+          "locator": "Disabled buttons",
+          "claim": "禁用按钮对比差、会让部分用户困惑，除非研究表明有帮助，否则不用。"
+        },
+        {
+          "id": "gov-uk-design-system-button-C5",
+          "locator": "Stop users from accidentally sending information more than once",
+          "claim": "双击会重复提交；可让按钮忽略第二次点击，慢网络下先告诉人正在处理。"
+        }
+      ],
+      "captured_for": {
+        "task": "审 Praxis 页的界面文字与导航连续性：外部对话（二手材料）引的出处，逐个回原件核对后收录",
+        "by": "claude-opus-5-5",
+        "at": "2026-11-09T07:54:06.756Z"
       },
       "state": "active",
       "revision": 1

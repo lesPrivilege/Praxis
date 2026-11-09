@@ -513,7 +513,7 @@ function servedBy(k) {
 function material(b, s) {
   const excerpts = s?.excerpts ?? []
   return {
-    binding: b.id, source: b.source, title: b.title, description: clip(b.description, 100),
+    binding: b.id, source: b.source, title: b.title, form: s?.form, description: clip(b.description, 100),
     url: s?.url, evidence_status: s?.evidence_status, read_scope: s?.read_scope ? clip(s.read_scope, 100) : undefined,
     excerpts: excerpts.slice(0, 4).map((e) => ({ ...(e.locator ? { locator: e.locator } : {}), claim: clip(e.claim ?? '', 120) })),
     more_excerpts: excerpts.length > 4 ? excerpts.length - 4 : undefined,
@@ -545,7 +545,7 @@ function catalogSignals(materials) {
   const state = materials.sourceState()
   return materials.roster().list.filter((s) => s.form && s.state !== 'retired').flatMap((s) => {
     const signals = signalsOf({ source: s.id, review: materials.entryReview(s) }, state).filter((g) => g === 'needs_work' || !shown.get(s.id)?.has(g))
-    return signals.length ? [{ id: s.id, title: s.title, signals, revision: s.entry_revision }] : []
+    return signals.length ? [{ id: s.id, title: s.title, form: s.form, url: s.url, signals, revision: s.entry_revision }] : []
   })
 }
 

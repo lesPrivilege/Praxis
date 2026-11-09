@@ -13,7 +13,7 @@ const list = (description) => ({ type: 'array', items: { type: 'string' }, descr
 // A lookup miss is a failed call on every surface: CLI exit 1, MCP isError, DSH tool error, HTTP 400.
 const missing = (message) => { throw new Error(message) }
 // How a source is filed, written into the tools that file one, so maintenance needs no exploration first.
-const FILING = `编目规则：形态看来源本身。规范性文本（WCAG、APG、W3C、MDN）是 standard；一家设计系统或平台的指南是 practice；逐个说明组件的文档是 component-library；收一批作品或样式的站点是 case-library；单件作品或单页是 case；写给 agent 的指令（SKILL.md、design.md）是 skill；库、服务或工具的文档是 tool；文章、博客是 article；论文与研究是 research。category 填会用到它的 Kit 页所在的区域（如 design/interaction）；拿不准就填层（design、writing、publish、task），不自建区域；新的风格、配色、笔触只是新来源，不新增形态或区域。description 写“<何时>时打开；取<什么>。”，一两个短句。`
+const FILING = `编目规则：形态看来源本身。规范性文本（WCAG、APG、W3C、MDN）是 standard；一家设计系统或平台的指南是 practice；逐个说明组件的文档是 component-library；收一批作品或样式的站点是 case-library；单件作品或单页是 case；写给 agent 的指令（SKILL.md、design.md）是 skill；库、服务或工具的文档是 tool；文章、博客是 article；论文与研究是 research。category 填会用到它的 Kit 页所在的区域（如 design/interaction）；拿不准就填层（design、writing、publish、task），不自建区域；新的风格、配色、笔触只是新来源，不新增形态或区域。description 写“<何时>时打开；取<什么>。”，一两个短句。条目只写来源本身：description、概要、摘录、边界与何时重访都不提本地项目，也不引别的来源，任何任务拿到都能用；某个项目怎样用了它，记在 praxis_consume 的运行记录里。`
 // What local work is recorded, and what is left out as noise.
 const LOCAL = `本地产物只登记三类：delivery（真实交付，在已登记项目里）、pipeline（再做同类交付的方法：构建脚本或写明步骤的 README）、example（为示范某种做法预先做的样张）。pipeline 与 example 用 serves 写它服务哪些 Kit 页、何时对照，可以不在项目里；delivery 经 review 接受（accepted）且写了 serves，才作为范例给到任务。过程记录（dogfooding、review 记录、蒸馏笔记、会话纪要）不登记，运行记录就是它们的痕迹。`
 const serves = { type: 'array', description: '它服务的 Kit 页：何时对照、看什么', items: { type: 'object', properties: { target: str('Kit 页路径，如 kit/design/interaction/controls.md'), description: str('“<何时>时对照；看<什么>。”') }, required: ['target'] } }
@@ -125,7 +125,7 @@ export const TOOLS = [
   {
     name: 'praxis_curate',
     agent: true,
-    description: '维护一条挂载：改 description、取用题解、启用、收藏、优先级或 tag；挂载不存在时新建（目标页必须存在；Kit 页写 kit/…，stream 写 praxis_entry 给出的路径），关系记在名册里，不写来源包。description 写这个来源对这一页有什么用，不抄来源概要。带上读到的 revision 作为 expected_revision，版本已变会被拒绝并返回当前内容。常规修改直接生效。',
+    description: '维护一条挂载：改 description、取用题解、启用、收藏、优先级或 tag；挂载不存在时新建（目标页必须存在；Kit 页写 kit/…，stream 写 praxis_entry 给出的路径），关系记在名册里，不写来源包。description 写这个来源对这一页有什么用，不抄来源概要，也不提本地项目。带上读到的 revision 作为 expected_revision，版本已变会被拒绝并返回当前内容。常规修改直接生效。',
     parameters: {
       binding: str('挂载 ID：<来源 ID>@<目标路径>，Kit 页如 kit/design/controls.md'),
       expected_revision: num('读取时的 revision；新建填 0'),
@@ -173,7 +173,7 @@ export const TOOLS = [
   {
     name: 'praxis_capture',
     agent: true,
-    description: `登记新来源（一次任务里 explore 或用户指定的来源线得到的网页参考），可一次多条：全部核对后一次写入，同一 URL 已在名册的返回已有条目（existing；那条已淘汰时另有 retired: true，不能再收，要用就另找来源）。名册只记链接、概要与摘录，不存原件；本地文件、项目材料和自己的笔记不是来源，用 praxis_consume 记为产物 trace。task 写这批来源为哪件任务收录，留在每条记录上，供人 review 时知道它为什么在名册里。form（${FORMS.join('、')}）、category（Kit 的层或区域）与 description（何时打开、取什么）把它编进来源编目；之后可用 praxis_curate 挂到具体单元上。${FILING}作品集、组件库这类会随上游增减的集合，用 members 给出成员链接的 URL 模式，refresh 时会对照上游列出新增与下线；从集合里登记的成员用 member_of 指回集合。来源已在项目里有自己的登记文件时，用 praxis_register_index 按引用登记，不逐条复制。`,
+    description: `登记新来源（一次任务里 explore 或用户指定的来源线得到的网页参考），可一次多条：全部核对后一次写入，同一 URL 已在名册的返回已有条目（existing；那条已淘汰时另有 retired: true，不能再收，要用就另找来源）。名册只记链接、概要与摘录，不存原件；本地文件、项目材料和自己的笔记不是来源，用 praxis_consume 记为产物 trace。task 写这批来源为哪件任务收录：它是收录记录，和读过它的运行一起列在来源的活动里，供人 review 时知道它为什么在名册里，不写进 description 与概要。form（${FORMS.join('、')}）、category（Kit 的层或区域）与 description（何时打开、取什么）把它编进来源编目；之后可用 praxis_curate 挂到具体单元上。${FILING}作品集、组件库这类会随上游增减的集合，用 members 给出成员链接的 URL 模式，refresh 时会对照上游列出新增与下线；从集合里登记的成员用 member_of 指回集合。来源已在项目里有自己的登记文件时，用 praxis_register_index 按引用登记，不逐条复制。`,
     parameters: {
       sources: { type: 'array', description: '要登记的来源', items: { type: 'object', properties: {
         url: str('原 URL（http 或 https）'), title: str('标题'), form: str(`形态：${FORMS.join('、')}`), description: str('何时打开、取什么，240 字以内'),
@@ -217,7 +217,7 @@ export const TOOLS = [
   },
   {
     name: 'praxis_source_update',
-    description: '修订一条自有来源的记录：标题、链接、概要、读取范围、证据状态、边界、何时重访、tag、摘录；members 把它标为集合（给出成员链接的 URL 模式），member_of 指明它来自哪个集合。形态、Kit 分类与 description 用 praxis_file 改。带上读到的 revision。来源包里的条目在来源包自己那里维护。',
+    description: '修订一条自有来源的记录：标题、链接、概要、读取范围、证据状态、边界、何时重访、tag、摘录；members 把它标为集合（给出成员链接的 URL 模式），member_of 指明它来自哪个集合。形态、Kit 分类与 description 用 praxis_file 改。写法同 praxis_capture：不提本地项目，不引别的来源。带上读到的 revision。来源包里的条目在来源包自己那里维护。',
     parameters: {
       source: str('来源 ID'), expected_revision: num('读到的 revision'),
       title: str('标题'), url: str('URL'), summary: str('概要'), read_scope: str('读取范围'), evidence_status: str('verified、partial 或 unavailable'),

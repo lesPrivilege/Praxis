@@ -47,7 +47,7 @@ export function apply(ctx, config = {}) {
   if (commands) {
     ctx.effect(() => commands.register({
       name: 'praxis',
-      description: 'Praxis：打开控制面；带文字时列出任务类型与待处理事项',
+      description: 'Open Praxis; with text, list task types and what needs attention',
       input: { hint: '[status]' },
       handler: () => ({ kind: 'success', text: statusText(praxis) }),
     }), 'dsh-praxis: command')
@@ -77,12 +77,12 @@ export function statusText(praxis) {
   const entry = praxis.entry()
   const up = praxis.upkeep()
   const counts = [
-    ['挂载', up.bindings.length], ['编目放不下的来源', up.unfiled.length], ['编目条目', up.sources.length], ['集合有变化', up.collections.length],
-    ['单元修订冲突', up.revisions.length], ['产物', up.artifacts.length],
+    ['sources on Kit pages', up.bindings.length], ['not catalogued', up.unfiled.length], ['catalog entries', up.sources.length], ['collections changed', up.collections.length],
+    ['revision conflicts', up.revisions.length], ['artifacts', up.artifacts.length],
   ].filter(([, n]) => n)
   return [
-    `任务类型：${entry.task_types.map((t) => t.id.replace('task/types/', '')).join('、')}`,
-    counts.length ? `待处理：${counts.map(([k, n]) => `${k} ${n}`).join('，')}。在控制面里处理：/praxis` : '待处理：无',
-    ...(up.reload ? ['插件代码已更新，重启 DSH 后生效。'] : []),
+    `Task types: ${entry.task_types.map((t) => t.id.replace('task/types/', '')).join(', ')}`,
+    counts.length ? `Needs attention: ${counts.map(([k, n]) => `${n} ${k}`).join(', ')}. Open the Log in Praxis: /praxis` : 'Nothing needs attention',
+    ...(up.reload ? ['Plugin code changed; restart DSH to load it'] : []),
   ].join('\n')
 }

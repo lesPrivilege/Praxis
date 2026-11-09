@@ -327,7 +327,7 @@ export class Materials {
   unfiled() {
     const bound = new Set(this.listBindings().map((b) => b.source))
     return this.roster().list.filter((s) => s.pack === undefined && s.state !== 'retired' && (!s.form || (!s.category && !bound.has(s.id))))
-      .map((s) => ({ id: s.id, title: s.title, summary: clip(s.summary ?? '', 160), evidence_status: s.evidence_status, form: s.form, category: s.category }))
+      .map((s) => ({ id: s.id, title: s.title, url: s.url, summary: clip(s.summary ?? '', 160), evidence_status: s.evidence_status, form: s.form, category: s.category }))
   }
 
   // ---- the catalog -----------------------------------------------------------------------------
